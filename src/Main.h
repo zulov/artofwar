@@ -10,7 +10,6 @@ namespace Urho3D {
 	class Sprite;
 }
 
-// All Urho3D classes reside in namespace Urho3D
 using namespace Urho3D;
 
 const float TOUCH_SENSITIVITY = 2.0f;

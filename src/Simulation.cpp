@@ -54,6 +54,14 @@ void Test::createCamera() {
 	cameraManager = new CameraManager(context_);
 }
 
+void Test::createLight() {
+	Node* lightNode = scene->CreateChild("DirectionalLight");
+	lightNode->SetDirection(Vector3(-0.6f, -1.0f, -0.8f)); // The direction vector does not need to be normalized
+	Light* light = lightNode->CreateComponent<Light>();
+	light->SetLightType(LIGHT_DIRECTIONAL);
+	light->SetColor(Color(0.7f, 0.35f, 0.0f));
+}
+
 void Test::CreateInstructions() {
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 	UI* ui = GetSubsystem<UI>();

@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="src\EnviromentStrategy.cpp" />
     <ClCompile Include="src\ForceStrategy.cpp" />
-    <ClCompile Include="src\Unit.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\CameraManager.cpp">
       <Filter>camera</Filter>
@@ -18,11 +17,14 @@
       <Filter>camera\behave</Filter>
     </ClCompile>
     <ClCompile Include="src\Simulation.cpp" />
+    <ClCompile Include="src\Unit.cpp">
+      <Filter>objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Control.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\EnviromentStrategy.h" />
     <ClInclude Include="src\ForceStrategy.h" />
-    <ClInclude Include="src\Unit.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\CameraManager.h">
       <Filter>camera</Filter>
@@ -40,6 +42,10 @@
       <Filter>camera\behave</Filter>
     </ClInclude>
     <ClInclude Include="src\Simulation.h" />
+    <ClInclude Include="src\Unit.h">
+      <Filter>objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Control.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="D:\Programowanie\vs2015\urho_test\CoreData" />
@@ -53,6 +59,9 @@
     </Filter>
     <Filter Include="camera\behave">
       <UniqueIdentifier>{6dad2672-9730-4bd2-bb2a-aa33117d6ac7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects">
+      <UniqueIdentifier>{a0e705d3-615f-43b5-a56d-2140397beed5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
