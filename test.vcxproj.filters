@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\EnviromentStrategy.cpp" />
+    <ClCompile Include="src\ForceStrategy.cpp" />
+    <ClCompile Include="src\Unit.cpp" />
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\CameraManager.cpp">
+      <Filter>camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FreeCameraBehave.cpp">
+      <Filter>camera\behave</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CameraBehave.cpp">
+      <Filter>camera\behave</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RtsCameraBehave.cpp">
+      <Filter>camera\behave</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Simulation.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\EnviromentStrategy.h" />
+    <ClInclude Include="src\ForceStrategy.h" />
+    <ClInclude Include="src\Unit.h" />
+    <ClInclude Include="src\Main.h" />
+    <ClInclude Include="src\CameraManager.h">
+      <Filter>camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FreeCameraBehave.h">
+      <Filter>camera\behave</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CameraEnums.h">
+      <Filter>camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CameraBehave.h">
+      <Filter>camera\behave</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RtsCameraBehave.h">
+      <Filter>camera\behave</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Simulation.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\Programowanie\vs2015\urho_test\CoreData" />
+    <None Include="D:\Programowanie\vs2015\urho_test\Data" />
+    <None Include="D:\Programowanie\Urho3d-build\bin\CoreData.pak" />
+    <None Include="D:\Programowanie\Urho3d-build\bin\Data.pak" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="camera">
+      <UniqueIdentifier>{8e3c4e8a-11f5-4b49-a338-79468fb9e0a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="camera\behave">
+      <UniqueIdentifier>{6dad2672-9730-4bd2-bb2a-aa33117d6ac7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

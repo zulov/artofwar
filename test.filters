@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="D:\Programowanie\vs2015\urho_test\CoreData" />
+    <None Include="D:\Programowanie\vs2015\urho_test\Data" />
+    <None Include="D:\Programowanie\Urho3d-build\bin\CoreData.pak" />
+    <None Include="D:\Programowanie\Urho3d-build\bin\Data.pak" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{8DBF30CC-79DA-3B25-8916-9C5CEDD2BECA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{7146D683-9ADE-31BD-B9F7-8D57D97E08AF}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Sample.cpp" />
+    <ClCompile Include="Test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sample.h" />
+    <ClInclude Include="Test.h" />
+  </ItemGroup>
+</Project>
