@@ -3,6 +3,7 @@
 #include <Urho3D/Engine/Application.h>
 #include <Urho3D/Input/Input.h>
 #include "CameraManager.h"
+#include "Control.h"
 
 namespace Urho3D {
 	class Node;
@@ -38,6 +39,7 @@ protected:
 	MouseMode useMouseMode_;
 
 	CameraManager * cameraManager;
+
 private:
 	void CreateLogo();
 	void SetWindowTitleAndIcon();

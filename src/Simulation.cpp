@@ -19,11 +19,11 @@
 
 #include "Simulation.h"
 
-URHO3D_DEFINE_APPLICATION_MAIN(Test)
+URHO3D_DEFINE_APPLICATION_MAIN(Simulation)
 
-Test::Test(Context* context) :Main(context), animate(false) {}
+Simulation::Simulation(Context* context) :Main(context), animate(false) {}
 
-void Test::Start() {
+void Simulation::Start() {
 	Main::Start();
 	CreateScene();
 	CreateInstructions();
@@ -35,7 +35,7 @@ void Test::Start() {
 	forceStrategy = new ForceStrategy();
 }
 
-void Test::CreateScene() {
+void Simulation::CreateScene() {
 	if (!scene) {
 		scene = new Scene(context_);
 	} else {
@@ -50,11 +50,11 @@ void Test::CreateScene() {
 }
 
 
-void Test::createCamera() {
+void Simulation::createCamera() {
 	cameraManager = new CameraManager(context_);
 }
 
-void Test::createLight() {
+void Simulation::createLight() {
 	Node* lightNode = scene->CreateChild("DirectionalLight");
 	lightNode->SetDirection(Vector3(-0.6f, -1.0f, -0.8f)); // The direction vector does not need to be normalized
 	Light* light = lightNode->CreateComponent<Light>();
@@ -62,7 +62,7 @@ void Test::createLight() {
 	light->SetColor(Color(0.7f, 0.35f, 0.0f));
 }
 
-void Test::CreateInstructions() {
+void Simulation::CreateInstructions() {
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 	UI* ui = GetSubsystem<UI>();
 
@@ -82,12 +82,12 @@ void Test::CreateInstructions() {
 }
 
 
-void Test::SubscribeToEvents() {
+void Simulation::SubscribeToEvents() {
 	// Subscribe HandleUpdate() function for processing update events
-	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Test, HandleUpdate));
+	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Simulation, HandleUpdate));
 }
 
-void Test::moveCamera(float timeStep) {
+void Simulation::moveCamera(float timeStep) {
 	// Do not move if the UI has a focused element (the console)
 	if (GetSubsystem<UI>()->GetFocusElement()) { return; }
 
@@ -122,13 +122,20 @@ void Test::moveCamera(float timeStep) {
 	cameraManager->translate(Vector3::UP * MOVE_SPEED * timeStep*wheel);
 }
 
-void Test::AnimateObjects(float timeStep) {
+void Simulation::AnimateObjects(float timeStep) {
 	URHO3D_PROFILE(AnimateObjects);
 	calculateForces();
 	moveUnits(timeStep);
 }
 
-void Test::HandleUpdate(StringHash eventType, VariantMap& eventData) {
+void Simulation::moveUnits(float timeStep) {
+	for (unsigned i = 0; i < units.size(); ++i) {
+		units.at(i)->applyForce(timeStep);
+		units.at(i)->move(timeStep);
+	}
+}
+
+void Simulation::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	using namespace Update;
 
 	float timeStep = eventData[P_TIMESTEP].GetFloat();
@@ -138,7 +145,7 @@ void Test::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		animate = !animate;
 	}
 
-	control();
+	reset();
 	moveCamera(timeStep);
 
 	// Animate scene if enabled
@@ -147,7 +154,7 @@ void Test::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	}
 }
 
-void Test::calculateForces() {
+void Simulation::calculateForces() {
 	for (unsigned i = 0; i < units.size(); ++i) {
 		std::vector<Unit*> neighbours = envStrategy->getNeighbours(units[i], units);
 
@@ -163,7 +170,7 @@ void Test::calculateForces() {
 	}
 }
 
-void Test::control() {
+void Simulation::reset() {
 	Input* input = GetSubsystem<Input>();
 
 	if (input->GetKeyDown(KEY_P)) {
@@ -171,7 +178,7 @@ void Test::control() {
 	}
 }
 
-void Test::resetUnits() {
+void Simulation::resetUnits() {
 	for (int i = 0; i < units.size(); i++) {
 		scene->RemoveChild(units[i]->getNode());
 		delete units[i];
@@ -180,7 +187,7 @@ void Test::resetUnits() {
 	createUnits(20, 1.5);
 }
 
-void Test::createUnits(int size, double space) {
+void Simulation::createUnits(int size, double space) {
 	int startSize = -(size / 2);
 	int endSize = size + startSize;
 
@@ -201,7 +208,7 @@ void Test::createUnits(int size, double space) {
 	}
 }
 
-void Test::createZone() {
+void Simulation::createZone() {
 	Node* zoneNode = scene->CreateChild("Zone");
 	Zone* zone = zoneNode->CreateComponent<Zone>();
 	zone->SetBoundingBox(BoundingBox(-1000.0f, 1000.0f));

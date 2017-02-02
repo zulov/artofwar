@@ -14,36 +14,14 @@ namespace Urho3D {
 	class Scene;
 }
 
-class Test : public Main {
-	URHO3D_OBJECT(Test, Main);
+class Simulation : public Main {
+	URHO3D_OBJECT(Simulation, Main);
 
 public:
-	Test(Context* context);
+	Simulation(Context* context);
 	virtual void Start();
 
 protected:
-	/// Return XML patch instructions for screen joystick layout for a specific sample app, if any.
-	virtual String GetScreenJoystickPatchString() const {
-		return
-			"<patch>"
-			"    <remove sel=\"/element/element[./attribute[@name='Name' and @value='Button0']]/attribute[@name='Is Visible']\" />"
-			"    <replace sel=\"/element/element[./attribute[@name='Name' and @value='Button0']]/element[./attribute[@name='Name' and @value='Label']]/attribute[@name='Text']/@value\">Group</replace>"
-			"    <add sel=\"/element/element[./attribute[@name='Name' and @value='Button0']]\">"
-			"        <element type=\"Text\">"
-			"            <attribute name=\"Name\" value=\"KeyBinding\" />"
-			"            <attribute name=\"Text\" value=\"G\" />"
-			"        </element>"
-			"    </add>"
-			"    <remove sel=\"/element/element[./attribute[@name='Name' and @value='Button1']]/attribute[@name='Is Visible']\" />"
-			"    <replace sel=\"/element/element[./attribute[@name='Name' and @value='Button1']]/element[./attribute[@name='Name' and @value='Label']]/attribute[@name='Text']/@value\">Animation</replace>"
-			"    <add sel=\"/element/element[./attribute[@name='Name' and @value='Button1']]\">"
-			"        <element type=\"Text\">"
-			"            <attribute name=\"Name\" value=\"KeyBinding\" />"
-			"            <attribute name=\"Text\" value=\"SPACE\" />"
-			"        </element>"
-			"    </add>"
-			"</patch>";
-	}
 
 private:	
 	void CreateScene();
@@ -52,16 +30,10 @@ private:
 	void createZone();
 	void createUnits(int size, double space);
 	void CreateInstructions();
-	//void SetupViewport();
 	void SubscribeToEvents();
 	void moveCamera(float timeStep);
 	void AnimateObjects(float timeStep);
-	void moveUnits(float timeStep) {
-		for (unsigned i = 0; i < units.size(); ++i) {
-			units.at(i)->applyForce(timeStep);
-			units.at(i)->move(timeStep);
-		}
-	}
+	void moveUnits(float timeStep);
 	void HandleUpdate(StringHash eventType, VariantMap& eventData);
 
 	bool animate;
@@ -75,6 +47,6 @@ private:
 	void calculateForces();
 	EnviromentStrategy *envStrategy;
 	ForceStrategy * forceStrategy;
-	void control();
+	void reset();
 	void resetUnits();
 };

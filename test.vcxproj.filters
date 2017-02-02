@@ -20,7 +20,6 @@
     <ClCompile Include="src\Unit.cpp">
       <Filter>objects</Filter>
     </ClCompile>
-    <ClCompile Include="src\Control.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\EnviromentStrategy.h" />
@@ -45,7 +44,6 @@
     <ClInclude Include="src\Unit.h">
       <Filter>objects</Filter>
     </ClInclude>
-    <ClInclude Include="src\Control.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="D:\Programowanie\vs2015\urho_test\CoreData" />
