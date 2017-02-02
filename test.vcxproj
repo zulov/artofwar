@@ -264,8 +264,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   <ItemGroup>
     <None Include="D:\Programowanie\vs2015\urho_test\CoreData" />
     <None Include="D:\Programowanie\vs2015\urho_test\Data" />
-    <None Include="D:\Programowanie\Urho3d-build\bin\CoreData.pak" />
-    <None Include="D:\Programowanie\Urho3d-build\bin\Data.pak" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="D:/Programowanie/Urho3d-build/ZERO_CHECK.vcxproj">
