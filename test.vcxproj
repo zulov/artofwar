@@ -123,9 +123,9 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>D:/Programowanie/Urho3d-build/Source/Samples/test/Release/test.lib</ImportLibrary>
+      <ImportLibrary>D:\Programowanie\vs2015\urho_test/Release/test.lib</ImportLibrary>
       <OptimizeReferences>true</OptimizeReferences>
-      <ProgramDataBaseFile>D:/Programowanie/Urho3d-build/bin/test.pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>D:\Programowanie\vs2015\urho_test/bin/test.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
       <Version>
       </Version>
@@ -251,7 +251,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>D:/Programowanie/Urho3d-build/Source/Samples/test/Debug/test_d.lib</ImportLibrary>
+      <ImportLibrary>D:\Programowanie\vs2015\urho_test/Debug/test_d.lib</ImportLibrary>
       <ProgramDataBaseFile>D:/Programowanie/Urho3d-build/bin/test_d.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
       <Version>
