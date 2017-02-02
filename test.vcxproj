@@ -71,7 +71,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\Programowanie\vs2015\urho_test\src;D:\Programowanie\Urho3d-build\include;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\Bullet;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programowanie\vs2015\urho_test\src;D:\Programowanie\vs2015\urho_test\include;D:\Programowanie\vs2015\urho_test\include\Urho3D\ThirdParty;D:\Programowanie\vs2015\urho_test\include\Urho3D\ThirdParty\Bullet;D:\Programowanie\vs2015\urho_test\include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -201,7 +201,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\Programowanie\vs2015\urho_test\src;D:\Programowanie\Urho3d-build\include;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\Bullet;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Programowanie\vs2015\urho_test\src;D:\Programowanie\vs2015\urho_test\include;D:\Programowanie\vs2015\urho_test\include\Urho3D\ThirdParty;D:\Programowanie\vs2015\urho_test\include\Urho3D\ThirdParty\Bullet;D:\Programowanie\vs2015\urho_test\include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
