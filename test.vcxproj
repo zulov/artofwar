@@ -196,8 +196,11 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Building.cpp" />
     <ClCompile Include="src\CameraBehave.cpp" />
     <ClCompile Include="src\CameraManager.cpp" />
+    <ClCompile Include="src\Controls.cpp" />
+    <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EnviromentStrategy.cpp" />
     <ClCompile Include="src\ForceStrategy.cpp" />
     <ClCompile Include="src\FreeCameraBehave.cpp" />
@@ -207,9 +210,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="src\Simulation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\CameraBehave.h" />
     <ClInclude Include="src\CameraEnums.h" />
     <ClInclude Include="src\CameraManager.h" />
+    <ClInclude Include="src\Controls.h" />
+    <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\EnviromentStrategy.h" />
     <ClInclude Include="src\ForceStrategy.h" />
     <ClInclude Include="src\FreeCameraBehave.h" />

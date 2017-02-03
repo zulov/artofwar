@@ -20,6 +20,13 @@
     <ClCompile Include="src\Unit.cpp">
       <Filter>objects</Filter>
     </ClCompile>
+    <ClCompile Include="src\Controls.cpp" />
+    <ClCompile Include="src\Building.cpp">
+      <Filter>objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entity.cpp">
+      <Filter>objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\EnviromentStrategy.h" />
@@ -42,6 +49,13 @@
     </ClInclude>
     <ClInclude Include="src\Simulation.h" />
     <ClInclude Include="src\Unit.h">
+      <Filter>objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Controls.h" />
+    <ClInclude Include="src\Building.h">
+      <Filter>objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity.h">
       <Filter>objects</Filter>
     </ClInclude>
   </ItemGroup>

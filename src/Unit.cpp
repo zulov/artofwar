@@ -1,15 +1,12 @@
 #include "Unit.h"
 
-Unit::Unit(Vector3 _position, Urho3D::Node* _boxNode){
-	node = _boxNode;
-	position = _position;
-	acceleration = Vector3();
-	velocity = Vector3();
-	rotation = Vector3();
+Unit::Unit(Vector3 _position, Urho3D::Node* _boxNode) : Entity(_position, _boxNode) {
+
+	maxSeparationDistance = 4;
 	mass = 1;
 	maxSpeed = 1;
-	minimalDistance = 0.71;
-	maxSeparationDistance = 4;
+	acceleration = Vector3();
+	velocity = Vector3();
 }
 
 Unit::~Unit() {
@@ -25,20 +22,8 @@ void Unit::setAcceleration(Vector3 _acceleration) {
 	acceleration = _acceleration;
 }
 
-Urho3D::Vector3 Unit::getPosition() {
-	return position;
-}
-
 double Unit::getMaxSeparationDistance() {
 	return maxSeparationDistance;
-}
-
-double Unit::getMinimalDistance() {
-	return minimalDistance;
-}
-
-Urho3D::Node * Unit::getNode() {
-	return node;
 }
 
 void Unit::applyForce(double timeStep) {
