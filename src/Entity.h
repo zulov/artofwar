@@ -11,13 +11,21 @@ public:
 	Vector3 getPosition();
 	double getMinimalDistance();
 	Urho3D::Node * getNode();
+	int getLevelOfBucket();
+	int getBucketX();
+	int getBucketY();
+	bool isAlive();
+	bool checkBucketXY(int posX, int posY);
+	void setBucket(int posX, int posY);
 protected:
 	Urho3D::Node* node;
 	Vector3 position;
 	Vector3 rotation;
 	double minimalDistance;
 
-
-
+private:
+	int bucketLevel;
+	int bucketX, bucketY;
+	bool alive;
 };
 

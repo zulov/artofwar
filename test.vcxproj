@@ -196,6 +196,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Bucket.cpp" />
+    <ClCompile Include="src\BucketGrid.cpp" />
     <ClCompile Include="src\Building.cpp" />
     <ClCompile Include="src\CameraBehave.cpp" />
     <ClCompile Include="src\CameraManager.cpp" />
@@ -210,6 +212,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="src\Simulation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Bucket.h" />
+    <ClInclude Include="src\BucketGrid.h" />
     <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\CameraBehave.h" />
     <ClInclude Include="src\CameraEnums.h" />

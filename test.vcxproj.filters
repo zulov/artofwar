@@ -27,6 +27,8 @@
     <ClCompile Include="src\Entity.cpp">
       <Filter>objects</Filter>
     </ClCompile>
+    <ClCompile Include="src\BucketGrid.cpp" />
+    <ClCompile Include="src\Bucket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\EnviromentStrategy.h" />
@@ -58,6 +60,8 @@
     <ClInclude Include="src\Entity.h">
       <Filter>objects</Filter>
     </ClInclude>
+    <ClInclude Include="src\BucketGrid.h" />
+    <ClInclude Include="src\Bucket.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="D:\Programowanie\vs2015\urho_test\CoreData" />
