@@ -171,7 +171,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>D:\Programowanie\vs2015\urho_test/Debug/test_d.lib</ImportLibrary>
-      <ProgramDataBaseFile>D:/Programowanie/Urho3d-build/bin/test_d.pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>D:\Programowanie\vs2015\urho_test/bin/test_d.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
       <Version>
       </Version>
