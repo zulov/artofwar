@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "Unit.h"
+#include "BucketGrid.h"
 
 class EnviromentStrategy {
 
@@ -10,7 +11,10 @@ public:
 	~EnviromentStrategy();
 	
 	std::vector<Unit *> getNeighbours(Unit * unit, std::vector<Unit *> units);
+	void prepare(std::vector<Unit *> units);
+	void update(Unit * unit);
 private:
 	const double separationDistance = 2;
+	BucketGrid* bucketGrid;
 };
 

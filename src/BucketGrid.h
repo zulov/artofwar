@@ -5,9 +5,9 @@ public:
 
 	BucketGrid(double _resolution, double _size);
 	Bucket* getBucketAt(int x, int y);
-	void writeToGrid(std::vector<Entity *> crowd);
-	void updateGrid(Entity * entity);
-	std::vector <Entity *> getArrayNeight(Entity * entity);
+	void writeToGrid(std::vector<Unit *> crowd);
+	void updateGrid(Unit * entity);
+	std::vector <Unit *> getArrayNeight(Unit * entity);
 	int getIndex(int _posX, int _posY);
 	int calcXCordFromEdge(int index);
 	int calcYCordFromEdge(int index);

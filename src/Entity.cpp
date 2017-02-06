@@ -8,7 +8,7 @@ Entity::Entity(Vector3 _position, Urho3D::Node* _boxNode) {
 	rotation = Vector3();
 	minimalDistance = 0.71;
 	alive = true;
-	bucketLevel = 3;
+	bucketLevel = 2;
 }
 
 Entity::~Entity() {}

@@ -1,15 +1,15 @@
 #pragma once
 #include <vector>
-#include "Entity.h"
+#include "Unit.h"
 #include <algorithm>
 class Bucket {
 public:
 	Bucket();
 	~Bucket();
 
-	std::vector<Entity*> getContent();
-	void add(Entity* entity);
-	void remove(Entity* entity);
+	std::vector<Unit*> getContent();
+	void add(Unit* entity);
+	void remove(Unit* entity);
 	void clearContent();
 	int getSum();
 	void addToSum();
@@ -17,7 +17,7 @@ public:
 
 private:
 	int sum;
-	std::vector <Entity*> content;
+	std::vector <Unit*> content;
 	Vector3 position;
 };
 

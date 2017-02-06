@@ -33,6 +33,7 @@ void Simulation::Start() {
 	srand(time(NULL));
 	envStrategy = new EnviromentStrategy();
 	forceStrategy = new ForceStrategy();
+	envStrategy->prepare(units);
 }
 
 void Simulation::CreateScene() {
@@ -132,6 +133,7 @@ void Simulation::moveUnits(float timeStep) {
 	for (unsigned i = 0; i < units.size(); ++i) {
 		units.at(i)->applyForce(timeStep);
 		units.at(i)->move(timeStep);
+		envStrategy->update(units.at(i));
 	}
 }
 
@@ -206,6 +208,7 @@ void Simulation::createUnits(int size, double space) {
 			units.push_back(newUnit);
 		}
 	}
+
 }
 
 void Simulation::createZone() {
