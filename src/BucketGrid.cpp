@@ -23,25 +23,25 @@ BucketGrid::BucketGrid(double _resolution, double _size) {
 }
 void BucketGrid::writeToGrid(std::vector<Unit*> entitys) {
 	for (int i = 0; i < entitys.size(); i++) {
-		Vector3  pos = entitys[i]->getPosition();
+		Vector3 pos = entitys[i]->getPosition();
 		int posX = getIntegerPos(pos.x_);
-		int posY = getIntegerPos(pos.y_);
+		int posZ = getIntegerPos(pos.z_);
 
-		entitys[i]->setBucket(posX, posY);
-		getBucketAt(posX, posY)->add(entitys[i]);
+		entitys[i]->setBucket(posX, posZ);
+		getBucketAt(posX, posZ)->add(entitys[i]);
 	}
 }
 
 void BucketGrid::updateGrid(Unit* entity) {
 	Vector3 pos = entity->getPosition();
 	int posX = getIntegerPos(pos.x_);
-	int posY = getIntegerPos(pos.y_);
+	int posZ = getIntegerPos(pos.z_);
 	if (!entity->isAlive()) {
-		getBucketAt(entity->getBucketX(), entity->getBucketY())->remove(entity);
-	} else if (!entity->checkBucketXY(posX, posY)) {
-		getBucketAt(entity->getBucketX(), entity->getBucketY())->remove(entity);
-		getBucketAt(posX, posY)->add(entity);
-		entity->setBucket(posX, posY);
+		getBucketAt(entity->getBucketX(), entity->getBucketZ())->remove(entity);
+	} else if (entity->bucketHasChanged(posX, posZ)) {
+		getBucketAt(entity->getBucketX(), entity->getBucketZ())->remove(entity);
+		getBucketAt(posX, posZ)->add(entity);
+		entity->setBucket(posX, posZ);
 	}
 }
 
@@ -53,19 +53,18 @@ std::vector <Unit*> BucketGrid::getArrayNeight(Unit* entity) {
 	std::vector<Unit*> crowd;
 	int level = entity->getLevelOfBucket();
 	int dX = entity->getBucketX();
-	int dY = entity->getBucketY();
+	int dZ = entity->getBucketZ();
 
 	int sqLevel = level*level;
 
 	for (int i = -level; i <= level; i++) {
 		for (int j = -level; j <= level; j++) {
 			if (sqLevel >= i*i + j*j) {
-				Bucket * bucket = getBucketAt(i + dX, j + dY);
+				Bucket * bucket = getBucketAt(i + dX, j + dZ);
 				std::vector<Unit *> content = bucket->getContent();
 				if (!content.empty()) {
 					crowd.insert(crowd.end(), content.begin(), content.end());
 				}
-				
 			}
 		}
 	}
@@ -73,19 +72,19 @@ std::vector <Unit*> BucketGrid::getArrayNeight(Unit* entity) {
 	return crowd;
 }
 
-Bucket *BucketGrid::getBucketAt(int _x, int _y) {
+Bucket *BucketGrid::getBucketAt(int _x, int _z) {
 	int posX = _x + resolution / 2;
-	int posY = _y + resolution / 2;
+	int posZ = _z + resolution / 2;
 
-	int index = getIndex(posX, posY);
+	int index = getIndex(posX, posZ);
 	if (index == 0) {
-		return bucketList.at(posX).at(posY);
+		return bucketList.at(posX).at(posZ);
 	} else {
 		return edgeBuckets[index];
 	}
 }
 
-int BucketGrid::getIndex(int _posX, int _posY) {
+int BucketGrid::getIndex(int _posX, int _posZ) {
 	int index = 0;
 
 	if (_posX < 0) {
@@ -94,9 +93,9 @@ int BucketGrid::getIndex(int _posX, int _posY) {
 		index += 2;
 	}
 
-	if (_posY < 0) {
+	if (_posZ < 0) {
 		index += 4;
-	} else if (_posY >= resolution) {
+	} else if (_posZ >= resolution) {
 		index += 8;
 	}
 

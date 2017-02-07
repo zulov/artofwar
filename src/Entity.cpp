@@ -29,21 +29,25 @@ int Entity::getBucketX() {
 	return bucketX;
 }
 
-int Entity::getBucketY() {
-	return bucketY;
+int Entity::getBucketZ() {
+	return bucketZ;
 }
 
 bool Entity::isAlive() {
 	return alive;
 }
 
-bool Entity::checkBucketXY(int posX, int posY) {
-	return true;//TODO
+bool Entity::bucketHasChanged(int posX, int posZ) {
+	if (bucketX == posX && bucketZ == posZ) {
+		return false;
+	} else {
+		return true;
+	}
 }
 
-void Entity::setBucket(int posX, int posY) {
+void Entity::setBucket(int posX, int posZ) {
 	bucketX = posX;
-	bucketY = posY;
+	bucketZ = posZ;
 }
 
 Urho3D::Vector3 Entity::getPosition() {

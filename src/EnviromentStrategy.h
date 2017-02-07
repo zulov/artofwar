@@ -14,7 +14,7 @@ public:
 	void prepare(std::vector<Unit *> units);
 	void update(Unit * unit);
 private:
-	const double separationDistance = 2;
+	const double separationDistance = 3;
 	BucketGrid* bucketGrid;
 };
 

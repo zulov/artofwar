@@ -13,9 +13,9 @@ public:
 	Urho3D::Node * getNode();
 	int getLevelOfBucket();
 	int getBucketX();
-	int getBucketY();
+	int getBucketZ();
 	bool isAlive();
-	bool checkBucketXY(int posX, int posY);
+	bool bucketHasChanged(int posX, int posY);
 	void setBucket(int posX, int posY);
 protected:
 	Urho3D::Node* node;
@@ -25,7 +25,7 @@ protected:
 
 private:
 	int bucketLevel;
-	int bucketX, bucketY;
+	int bucketX, bucketZ;
 	bool alive;
 };
 
