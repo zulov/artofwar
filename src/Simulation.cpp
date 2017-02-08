@@ -46,7 +46,7 @@ void Simulation::CreateScene() {
 
 	createZone();
 	createLight();
-	createUnits(20, 1.5);
+	createUnits(25, 1.5);
 	createCamera();
 }
 

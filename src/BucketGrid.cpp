@@ -4,9 +4,10 @@
 BucketGrid::BucketGrid(double _resolution, double _size) {
 	resolution = _resolution;
 	size = _size;
-
+	bucketList.reserve(resolution);
 	for (int i = 0; i < resolution; i++) {
 		std::vector<Bucket *> list;
+		list.reserve(resolution);
 		bucketList.push_back(list);
 	}
 	for (int i = 0; i < resolution; i++) {
@@ -14,7 +15,7 @@ BucketGrid::BucketGrid(double _resolution, double _size) {
 			bucketList[i].push_back(new Bucket());
 		}
 	}
-
+	edgeBuckets.reserve(64);
 	for (int i = 0; i < 64; i++) {
 		edgeBuckets.push_back(new Bucket());
 	}
@@ -56,14 +57,14 @@ std::vector <Unit*> BucketGrid::getArrayNeight(Unit* entity) {
 	int dZ = entity->getBucketZ();
 
 	int sqLevel = level*level;
-
+	crowd.reserve(20);
 	for (int i = -level; i <= level; i++) {
 		for (int j = -level; j <= level; j++) {
 			if (sqLevel >= i*i + j*j) {
 				Bucket * bucket = getBucketAt(i + dX, j + dZ);
 				std::vector<Unit *> content = bucket->getContent();
 				if (!content.empty()) {
-					crowd.insert(crowd.end(), content.begin(), content.end());
+					crowd.insert(crowd.end(), content.begin(), content.end());			
 				}
 			}
 		}

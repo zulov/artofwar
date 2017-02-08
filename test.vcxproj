@@ -113,6 +113,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <SubSystem>Console</SubSystem>
       <Version>
       </Version>
+      <Profile>true</Profile>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>

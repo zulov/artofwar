@@ -9,6 +9,7 @@ EnviromentStrategy::~EnviromentStrategy() {}
 
 std::vector<Unit *> EnviromentStrategy::getNeighbours(Unit * unit, std::vector<Unit *> units) {
 	std::vector<Unit*> neights;
+	neights.reserve(10);
 	std::vector<Unit *> arrayNeight = bucketGrid->getArrayNeight(unit);
 
 	for (int i = 0; i < arrayNeight.size(); ++i) {
@@ -23,7 +24,7 @@ std::vector<Unit *> EnviromentStrategy::getNeighbours(Unit * unit, std::vector<U
 }
 
 void EnviromentStrategy::prepare(std::vector<Unit *> units) {
-	bucketGrid = new BucketGrid(200, 200);
+	bucketGrid = new BucketGrid(300, 300);
 	bucketGrid->writeToGrid(units);
 }
 

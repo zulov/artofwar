@@ -4,7 +4,7 @@ Unit::Unit(Vector3 _position, Urho3D::Node* _boxNode) : Entity(_position, _boxNo
 
 	maxSeparationDistance = 4;
 	mass = 1;
-	maxSpeed = 1;
+	maxSpeed = 2;
 	acceleration = Vector3();
 	velocity = Vector3();
 }
@@ -14,6 +14,7 @@ Unit::~Unit() {
 }
 
 void Unit::move(double timeStep) {
+	velocity *= 0.95;
 	position += velocity*timeStep;
 	node->SetPosition(position);
 }
