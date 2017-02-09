@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\EnviromentStrategy.cpp" />
     <ClCompile Include="src\ForceStrategy.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\CameraManager.cpp">
@@ -16,7 +15,6 @@
     <ClCompile Include="src\RtsCameraBehave.cpp">
       <Filter>camera\behave</Filter>
     </ClCompile>
-    <ClCompile Include="src\Simulation.cpp" />
     <ClCompile Include="src\Unit.cpp">
       <Filter>objects</Filter>
     </ClCompile>
@@ -27,11 +25,19 @@
     <ClCompile Include="src\Entity.cpp">
       <Filter>objects</Filter>
     </ClCompile>
-    <ClCompile Include="src\BucketGrid.cpp" />
-    <ClCompile Include="src\Bucket.cpp" />
+    <ClCompile Include="src\Benchmark.cpp" />
+    <ClCompile Include="src\EnviromentStrategy.cpp">
+      <Filter>env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BucketGrid.cpp">
+      <Filter>env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bucket.cpp">
+      <Filter>env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Simulation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\EnviromentStrategy.h" />
     <ClInclude Include="src\ForceStrategy.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\CameraManager.h">
@@ -60,8 +66,16 @@
     <ClInclude Include="src\Entity.h">
       <Filter>objects</Filter>
     </ClInclude>
-    <ClInclude Include="src\BucketGrid.h" />
-    <ClInclude Include="src\Bucket.h" />
+    <ClInclude Include="src\Benchmark.h" />
+    <ClInclude Include="src\EnviromentStrategy.h">
+      <Filter>env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BucketGrid.h">
+      <Filter>env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bucket.h">
+      <Filter>env</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="D:\Programowanie\vs2015\urho_test\CoreData" />
@@ -76,6 +90,9 @@
     </Filter>
     <Filter Include="objects">
       <UniqueIdentifier>{a0e705d3-615f-43b5-a56d-2140397beed5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="env">
+      <UniqueIdentifier>{a17ba19d-3813-473b-adf9-2cea0e1c2901}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -9,6 +9,8 @@
 #include <ctime>
 #include "EnviromentStrategy.h"
 #include "ForceStrategy.h"
+#include "Benchmark.h"
+
 namespace Urho3D {
 	class Node;
 	class Scene;
@@ -38,7 +40,7 @@ private:
 
 	bool animate;
 
-	std::vector<Unit*> units;
+	std::vector<Unit*> *units;
 
 	//CONST
 	const float ROTATE_SPEED = 115.0f;
@@ -49,4 +51,11 @@ private:
 	ForceStrategy * forceStrategy;
 	void reset();
 	void resetUnits();
+private:
+	void updateHud(float timeStep);
+	Text* fpsText;
+	Benchmark * benchmark;
+	int edgeSize = 200;
+	double spaceSize = 1.5;
+
 };

@@ -22,14 +22,15 @@ BucketGrid::BucketGrid(double _resolution, double _size) {
 	maxContentCount = 0;
 	maxSum = 0;
 }
-void BucketGrid::writeToGrid(std::vector<Unit*> entitys) {
-	for (int i = 0; i < entitys.size(); i++) {
-		Vector3 pos = entitys[i]->getPosition();
+
+void BucketGrid::writeToGrid(std::vector<Unit*> *entitys) {
+	for (int i = 0; i < entitys->size(); i++) {
+		Vector3 pos = entitys->at(i)->getPosition();
 		int posX = getIntegerPos(pos.x_);
 		int posZ = getIntegerPos(pos.z_);
 
-		entitys[i]->setBucket(posX, posZ);
-		getBucketAt(posX, posZ)->add(entitys[i]);
+		entitys->at(i)->setBucket(posX, posZ);
+		getBucketAt(posX, posZ)->add(entitys->at(i));
 	}
 }
 
@@ -50,21 +51,21 @@ int BucketGrid::getIntegerPos(double value) {
 	if (value < 0) { return  (int)(value / size*(resolution)) - 1; } else { return  (int)(value / size*(resolution)); }
 }
 
-std::vector <Unit*> BucketGrid::getArrayNeight(Unit* entity) {
-	std::vector<Unit*> crowd;
+std::vector <Unit*> * BucketGrid::getArrayNeight(Unit* entity) {
+	std::vector<Unit*> *crowd = new std::vector<Unit *>();
+	crowd->reserve(20);
 	int level = entity->getLevelOfBucket();
 	int dX = entity->getBucketX();
 	int dZ = entity->getBucketZ();
 
 	int sqLevel = level*level;
-	crowd.reserve(20);
 	for (int i = -level; i <= level; i++) {
 		for (int j = -level; j <= level; j++) {
 			if (sqLevel >= i*i + j*j) {
 				Bucket * bucket = getBucketAt(i + dX, j + dZ);
-				std::vector<Unit *> content = bucket->getContent();
-				if (!content.empty()) {
-					crowd.insert(crowd.end(), content.begin(), content.end());			
+				std::vector<Unit *> *content = bucket->getContent();
+				if (!content->empty()) {
+					crowd->insert(crowd->end(), content->begin(), content->end());
 				}
 			}
 		}

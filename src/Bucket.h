@@ -7,7 +7,7 @@ public:
 	Bucket();
 	~Bucket();
 
-	std::vector<Unit*> getContent();
+	std::vector<Unit*> *getContent();
 	void add(Unit* entity);
 	void remove(Unit* entity);
 	void clearContent();
@@ -17,7 +17,7 @@ public:
 
 private:
 	int sum;
-	std::vector <Unit*> content;
+	std::vector <Unit*>* content;
 	Vector3 position;
 };
 

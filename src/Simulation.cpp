@@ -21,7 +21,11 @@
 
 URHO3D_DEFINE_APPLICATION_MAIN(Simulation)
 
-Simulation::Simulation(Context* context) :Main(context), animate(false) {}
+Simulation::Simulation(Context* context) :Main(context), animate(false) {
+	benchmark = new Benchmark();
+	units = new std::vector<Unit *>();
+	units->reserve(edgeSize*edgeSize);
+}
 
 void Simulation::Start() {
 	Main::Start();
@@ -46,7 +50,7 @@ void Simulation::CreateScene() {
 
 	createZone();
 	createLight();
-	createUnits(25, 1.5);
+	createUnits(edgeSize, spaceSize);
 	createCamera();
 }
 
@@ -67,19 +71,16 @@ void Simulation::CreateInstructions() {
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 	UI* ui = GetSubsystem<UI>();
 
-	Text* instructionText = ui->GetRoot()->CreateChild<Text>();
-
 	Urho3D::String msg = "Liczba jednostek: ";
-	msg += units.size();
+	msg += units->size();
+	
+	Text* instructionText = ui->GetRoot()->CreateChild<Text>();
 	instructionText->SetText(msg);
 	instructionText->SetFont(cache->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 12);
-	// The text has multiple rows. Center them in relation to each other
 	instructionText->SetTextAlignment(HA_CENTER);
-
-	// Position the text relative to the screen center
 	instructionText->SetHorizontalAlignment(HA_LEFT);
-	instructionText->SetVerticalAlignment(VA_CENTER);
-	instructionText->SetPosition(0, ui->GetRoot()->GetHeight() / 8);
+	instructionText->SetVerticalAlignment(VA_TOP);
+	instructionText->SetPosition(0,0);
 }
 
 
@@ -107,6 +108,7 @@ void Simulation::moveCamera(float timeStep) {
 	cameraManager->setRotation(Quaternion(pitch_, yaw_, 0.0f));
 
 	// Read WASD keys and move the camera scene node to the corresponding direction if they are pressed
+	
 	if (input->GetKeyDown(KEY_W)) {
 		cameraManager->translate(Vector3::FORWARD * MOVE_SPEED * timeStep);
 	}
@@ -130,10 +132,10 @@ void Simulation::AnimateObjects(float timeStep) {
 }
 
 void Simulation::moveUnits(float timeStep) {
-	for (unsigned i = 0; i < units.size(); ++i) {
-		units.at(i)->applyForce(timeStep);
-		units.at(i)->move(timeStep);
-		envStrategy->update(units.at(i));
+	for (unsigned i = 0; i < units->size(); ++i) {
+		units->at(i)->applyForce(timeStep);
+		units->at(i)->move(timeStep);
+		envStrategy->update(units->at(i));
 	}
 }
 
@@ -154,21 +156,24 @@ void Simulation::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	if (animate) {
 		AnimateObjects(timeStep);
 	}
+	updateHud(timeStep);
 }
 
 void Simulation::calculateForces() {
-	for (unsigned i = 0; i < units.size(); ++i) {
-		std::vector<Unit*> neighbours = envStrategy->getNeighbours(units[i], units);
+	for (unsigned i = 0; i < units->size(); ++i) {
+		std::vector<Unit*> *neighbours = envStrategy->getNeighbours((*units)[i], units);
 
-		Vector3  sepPedestrian = forceStrategy->separationUnits(units[i], neighbours);
-		Vector3  sepObstacle = forceStrategy->separationObstacle(units[i], 0);
+		Vector3  sepPedestrian = forceStrategy->separationUnits((*units)[i], neighbours);
+		Vector3  sepObstacle = forceStrategy->separationObstacle((*units)[i], 0);
 
-		Vector3  destForce = Vector3();// forceStrategy->destinationForce(units[i]);
+		Vector3  destForce = Vector3();// forceStrategy->destinationForce((*units)[i]);
 		Vector3  rand = forceStrategy->randomForce();
 
 		Vector3  forces = sepPedestrian += sepObstacle += destForce += rand;
 
-		units[i]->setAcceleration(forces);
+		(*units)[i]->setAcceleration(forces);
+
+		delete neighbours;
 	}
 }
 
@@ -181,12 +186,36 @@ void Simulation::reset() {
 }
 
 void Simulation::resetUnits() {
-	for (int i = 0; i < units.size(); i++) {
-		scene->RemoveChild(units[i]->getNode());
-		delete units[i];
+	for (int i = 0; i < units->size(); i++) {
+		scene->RemoveChild((*units)[i]->getNode());
+		delete (*units)[i];
 	}
-	units.clear();
-	createUnits(20, 1.5);
+	units->clear();
+	createUnits(edgeSize, spaceSize);
+}
+
+void Simulation::updateHud(float timeStep) {
+	FrameInfo frameInfo = GetSubsystem<Renderer>()->GetFrameInfo();
+	double fps = 1.0 / timeStep;
+
+	benchmark->add(fps);
+	Urho3D::String msg = "Frames: " + String(frameInfo.frameNumber_);
+	msg += "\nFPS: " + String(fps);
+	msg += "\navg FPS: " + String(benchmark->getAverageFPS());
+
+	ResourceCache* cache = GetSubsystem<ResourceCache>();
+	UI* ui = GetSubsystem<UI>();
+	ui->GetRoot()->RemoveChild(fpsText);
+
+	fpsText = ui->GetRoot()->CreateChild<Text>();
+	fpsText->SetText(msg);
+	fpsText->SetFont(cache->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 12);
+	fpsText->SetTextAlignment(HA_LEFT);
+	fpsText->SetHorizontalAlignment(HA_LEFT);
+	fpsText->SetVerticalAlignment(VA_TOP);
+	fpsText->SetPosition(0, 20);
+
+
 }
 
 void Simulation::createUnits(int size, double space) {
@@ -205,7 +234,7 @@ void Simulation::createUnits(int size, double space) {
 			boxObject->SetModel(cache->GetResource<Model>("Models/Cube.mdl"));
 
 			Unit * newUnit = new Unit(position, boxNode);
-			units.push_back(newUnit);
+			units->push_back(newUnit);
 		}
 	}
 

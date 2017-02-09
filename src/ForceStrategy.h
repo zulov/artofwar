@@ -10,7 +10,7 @@ public:
 	~ForceStrategy();
 
 	Urho3D::Vector3 separationObstacle(Unit * unit, void* param2);
-	Urho3D::Vector3 separationUnits(Unit * unit, std::vector<Unit *> units);
+	Urho3D::Vector3 separationUnits(Unit * unit, std::vector<Unit *> *units);
 	Urho3D::Vector3 randomForce();
 private:
 	const double coef = 1;

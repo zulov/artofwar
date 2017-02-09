@@ -11,22 +11,21 @@ Urho3D::Vector3 ForceStrategy::separationObstacle(Unit * unit, void* param2) {
 	return Vector3();
 }
 
-Urho3D::Vector3 ForceStrategy::separationUnits(Unit * unit, std::vector<Unit*> units) {
+Urho3D::Vector3 ForceStrategy::separationUnits(Unit * unit, std::vector<Unit*> *units) {
 	Urho3D::Vector3 force;
 
-	for (int i = 0; i < units.size(); i++) {
-		double distance = (units[i]->getPosition() - unit->getPosition()).Length();
+	for (int i = 0; i < units->size(); i++) {
+		double distance = ((*units)[i]->getPosition() - unit->getPosition()).Length();
 		if (distance > unit->getMaxSeparationDistance()) { continue; }
 
-		Urho3D::Vector3 newForce = unit->getPosition() - units[i]->getPosition();
+		Urho3D::Vector3 newForce = unit->getPosition() - (*units)[i]->getPosition();
 		newForce /= distance;
-		double minimalDistance = (unit->getMinimalDistance() + units[i]->getMinimalDistance());
+		double minimalDistance = (unit->getMinimalDistance() + (*units)[i]->getMinimalDistance());
 		double coef = calculateCoef(distance, minimalDistance);
 
 		newForce *= coef;
 		force += newForce;
 	}
-
 
 	force *= boostCoef;
 	return force;
