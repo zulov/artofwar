@@ -108,21 +108,11 @@ void Simulation::moveCamera(float timeStep) {
 	cameraManager->setRotation(Quaternion(pitch_, yaw_, 0.0f));
 
 	// Read WASD keys and move the camera scene node to the corresponding direction if they are pressed
-	
-	if (input->GetKeyDown(KEY_W)) {
-		cameraManager->translate(Vector3::FORWARD * MOVE_SPEED * timeStep);
-	}
-	if (input->GetKeyDown(KEY_S)) {
-		cameraManager->translate(Vector3::BACK * MOVE_SPEED * timeStep);
-	}
-	if (input->GetKeyDown(KEY_A)) {
-		cameraManager->translate(Vector3::LEFT * MOVE_SPEED * timeStep);
-	}
-	if (input->GetKeyDown(KEY_D)) {
-		cameraManager->translate(Vector3::RIGHT * MOVE_SPEED * timeStep);
-	}
+	bool cameraKeys[4] = { input->GetKeyDown(KEY_W) ,input->GetKeyDown(KEY_S), input->GetKeyDown(KEY_A), input->GetKeyDown(KEY_D) };
 	int wheel = input->GetMouseMoveWheel();
-	cameraManager->translate(Vector3::UP * MOVE_SPEED * timeStep*wheel);
+	
+	cameraManager->translate(cameraKeys, wheel, timeStep);
+
 }
 
 void Simulation::AnimateObjects(float timeStep) {

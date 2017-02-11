@@ -13,8 +13,33 @@ RtsCameraBehave::RtsCameraBehave(Urho3D::Context* context) {
 
 RtsCameraBehave::~RtsCameraBehave() {}
 
-void RtsCameraBehave::translate(Urho3D::Vector3 vector) {
-	cameraNode->Translate(vector);
+void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
+	if (cameraKeys[0]) {
+		cameraNode->Translate(Urho3D::Vector3::FORWARD * timeStep);
+	}
+	if (cameraKeys[1]) {
+		cameraNode->Translate(Urho3D::Vector3::BACK * timeStep);
+	}
+	if (cameraKeys[2]) {
+		cameraNode->Translate(Urho3D::Vector3::LEFT * timeStep);
+	}
+	if (cameraKeys[3]) {
+		cameraNode->Translate(Urho3D::Vector3::RIGHT * timeStep);
+	}
+	if (wheel != 0) {
+		Urho3D::Vector3 pos = cameraNode->GetPosition();
+		double diff = pos.y_ - minY;
+		cameraNode->Translate(Urho3D::Vector3::UP * timeStep*wheel*diff);
+		pos = cameraNode->GetPosition();
+		if (pos.y_ < minY) {
+			pos.y_ = minY;
+			
+		} else if (pos.y_>maxY) {
+			pos.y_ = maxY;
+		}
+		cameraNode->SetPosition(pos);
+	}
+	
 }
 
 void RtsCameraBehave::rotate() {

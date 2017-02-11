@@ -21,12 +21,13 @@ void CameraManager::setRotation(const Urho3D::Quaternion& rotation) {
 	activeBehave->setRotate(rotation);
 }
 
-void CameraManager::translate(Urho3D::Vector3 vector) {
-	activeBehave->translate(vector);
-}
+
 
 Urho3D::Camera *CameraManager::getComponent() {
 	//return cameraNode->GetComponent<Camera>();
 	return activeBehave->getComponent();
 }
 
+void CameraManager::translate(bool cameraKeys[], int wheel, float timeStep) {
+	activeBehave->translate(cameraKeys, wheel, timeStep*MOVE_SPEED);
+}

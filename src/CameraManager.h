@@ -13,12 +13,12 @@ public:
 	~CameraManager();
 	void setCameraBehave(int _type);
 	void setRotation(const Urho3D::Quaternion& rotation);
-	void translate(Urho3D::Vector3 vector);
 	Camera *getComponent();
+	void translate(bool cameraKeys[], int wheel, float timeStep);
 private:
 
 	std::vector<CameraBehave*> cameraBehaves;
 	CameraBehave* activeBehave;
-
+	float MOVE_SPEED = 20;
 };
 

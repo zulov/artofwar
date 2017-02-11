@@ -12,8 +12,19 @@ FreeCameraBehave::FreeCameraBehave(Urho3D::Context* context) {
 
 FreeCameraBehave::~FreeCameraBehave() {}
 
-void FreeCameraBehave::translate(Urho3D::Vector3 vector) {
-	cameraNode->Translate(vector);
+void FreeCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
+	if (cameraKeys[0]) {
+		cameraNode->Translate(Urho3D::Vector3::FORWARD * timeStep);
+	}
+	if (cameraKeys[1]) {
+		cameraNode->Translate(Urho3D::Vector3::BACK * timeStep);
+	}
+	if (cameraKeys[2]) {
+		cameraNode->Translate(Urho3D::Vector3::LEFT * timeStep);
+	}
+	if (cameraKeys[3]) {
+		cameraNode->Translate(Urho3D::Vector3::RIGHT * timeStep);
+	}
 }
 
 void FreeCameraBehave::rotate() {

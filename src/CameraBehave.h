@@ -9,7 +9,7 @@ public:
 	CameraBehave();
 	~CameraBehave();
 
-	virtual void translate(Urho3D::Vector3 vector) = 0;
+	virtual void translate(bool cameraKeys[], int wheel, float timeStep) = 0;
 	virtual void rotate() = 0;
 	virtual void setRotate(const Urho3D::Quaternion& rotation) = 0;
 	Urho3D::Camera * getComponent();
