@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\ForceStrategy.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\CameraManager.cpp">
       <Filter>camera</Filter>
@@ -27,18 +26,23 @@
     </ClCompile>
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\EnviromentStrategy.cpp">
-      <Filter>env</Filter>
+      <Filter>simulation\env</Filter>
     </ClCompile>
     <ClCompile Include="src\BucketGrid.cpp">
-      <Filter>env</Filter>
+      <Filter>simulation\env</Filter>
     </ClCompile>
     <ClCompile Include="src\Bucket.cpp">
-      <Filter>env</Filter>
+      <Filter>simulation\env</Filter>
     </ClCompile>
-    <ClCompile Include="src\Simulation.cpp" />
+    <ClCompile Include="src\Hud.cpp" />
+    <ClCompile Include="src\Simulation.cpp">
+      <Filter>simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ForceStrategy.cpp">
+      <Filter>simulation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\ForceStrategy.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\CameraManager.h">
       <Filter>camera</Filter>
@@ -55,7 +59,6 @@
     <ClInclude Include="src\RtsCameraBehave.h">
       <Filter>camera\behave</Filter>
     </ClInclude>
-    <ClInclude Include="src\Simulation.h" />
     <ClInclude Include="src\Unit.h">
       <Filter>objects</Filter>
     </ClInclude>
@@ -68,13 +71,20 @@
     </ClInclude>
     <ClInclude Include="src\Benchmark.h" />
     <ClInclude Include="src\EnviromentStrategy.h">
-      <Filter>env</Filter>
+      <Filter>simulation\env</Filter>
     </ClInclude>
     <ClInclude Include="src\BucketGrid.h">
-      <Filter>env</Filter>
+      <Filter>simulation\env</Filter>
     </ClInclude>
     <ClInclude Include="src\Bucket.h">
-      <Filter>env</Filter>
+      <Filter>simulation\env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hud.h" />
+    <ClInclude Include="src\Simulation.h">
+      <Filter>simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ForceStrategy.h">
+      <Filter>simulation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -91,7 +101,10 @@
     <Filter Include="objects">
       <UniqueIdentifier>{a0e705d3-615f-43b5-a56d-2140397beed5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="env">
+    <Filter Include="simulation">
+      <UniqueIdentifier>{9bd420fb-ca05-4b30-b42e-f3c13d30c02b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="simulation\env">
       <UniqueIdentifier>{a17ba19d-3813-473b-adf9-2cea0e1c2901}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

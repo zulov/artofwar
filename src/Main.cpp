@@ -105,6 +105,9 @@ void Main::CreateConsoleAndDebugHud() {
 	// Create debug HUD.
 	DebugHud* debugHud = engine_->CreateDebugHud();
 	debugHud->SetDefaultStyle(xmlFile);
+
+	GetSubsystem<Input>()->SetMouseVisible(true);
+	GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(xmlFile);
 }
 
 void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
@@ -122,9 +125,11 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	} else if (key == KEY_1) {
 		cameraManager->setCameraBehave(CameraBehaviorType::FREE);
 		SetupViewport();
+		InitMouseMode(cameraManager->getMouseMode());
 	} else if (key == KEY_2) {
 		cameraManager->setCameraBehave(CameraBehaviorType::RTS);
 		SetupViewport();
+		InitMouseMode(cameraManager->getMouseMode());
 	}
 
 }

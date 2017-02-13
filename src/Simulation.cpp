@@ -30,7 +30,7 @@ Simulation::Simulation(Context* context) :Main(context), animate(false) {
 void Simulation::Start() {
 	Main::Start();
 	CreateScene();
-	CreateInstructions();
+	
 	SetupViewport();
 	SubscribeToEvents();
 	Main::InitMouseMode(MM_RELATIVE);
@@ -38,6 +38,8 @@ void Simulation::Start() {
 	envStrategy = new EnviromentStrategy();
 	forceStrategy = new ForceStrategy();
 	envStrategy->prepare(units);
+	hud= new Hud(context_, GetSubsystem<UI>(), GetSubsystem<ResourceCache>());
+	hud->createStaticHud(String("Liczba jednostek") + String(units->size()));
 }
 
 void Simulation::CreateScene() {
@@ -67,22 +69,6 @@ void Simulation::createLight() {
 	light->SetColor(Color(0.7f, 0.35f, 0.0f));
 }
 
-void Simulation::CreateInstructions() {
-	ResourceCache* cache = GetSubsystem<ResourceCache>();
-	UI* ui = GetSubsystem<UI>();
-
-	Urho3D::String msg = "Liczba jednostek: ";
-	msg += units->size();
-	
-	Text* instructionText = ui->GetRoot()->CreateChild<Text>();
-	instructionText->SetText(msg);
-	instructionText->SetFont(cache->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 12);
-	instructionText->SetTextAlignment(HA_CENTER);
-	instructionText->SetHorizontalAlignment(HA_LEFT);
-	instructionText->SetVerticalAlignment(VA_TOP);
-	instructionText->SetPosition(0,0);
-}
-
 
 void Simulation::SubscribeToEvents() {
 	// Subscribe HandleUpdate() function for processing update events
@@ -102,17 +88,14 @@ void Simulation::moveCamera(float timeStep) {
 	IntVector2 mouseMove = input->GetMouseMove();
 	yaw_ += MOUSE_SENSITIVITY * mouseMove.x_;
 	pitch_ += MOUSE_SENSITIVITY * mouseMove.y_;
-	pitch_ = Clamp(pitch_, -90.0f, 90.0f);
+	//pitch_ = Clamp(pitch_, -90.0f, 90.0f);
 
-	// Construct new orientation for the camera scene node from yaw and pitch. Roll is fixed to zero
 	cameraManager->setRotation(Quaternion(pitch_, yaw_, 0.0f));
 
-	// Read WASD keys and move the camera scene node to the corresponding direction if they are pressed
 	bool cameraKeys[4] = { input->GetKeyDown(KEY_W) ,input->GetKeyDown(KEY_S), input->GetKeyDown(KEY_A), input->GetKeyDown(KEY_D) };
 	int wheel = input->GetMouseMoveWheel();
 	
 	cameraManager->translate(cameraKeys, wheel, timeStep);
-
 }
 
 void Simulation::AnimateObjects(float timeStep) {
@@ -192,6 +175,8 @@ void Simulation::updateHud(float timeStep) {
 	Urho3D::String msg = "Frames: " + String(frameInfo.frameNumber_);
 	msg += "\nFPS: " + String(fps);
 	msg += "\navg FPS: " + String(benchmark->getAverageFPS());
+	msg += "\nCamera: ";
+	msg += "\n\t"+cameraManager->getInfo();
 
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 	UI* ui = GetSubsystem<UI>();
@@ -204,7 +189,6 @@ void Simulation::updateHud(float timeStep) {
 	fpsText->SetHorizontalAlignment(HA_LEFT);
 	fpsText->SetVerticalAlignment(VA_TOP);
 	fpsText->SetPosition(0, 20);
-
 
 }
 

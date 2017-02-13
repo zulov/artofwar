@@ -10,5 +10,3 @@ CameraBehave::~CameraBehave() {}
 Urho3D::Camera * CameraBehave::getComponent() {
 	return cameraNode->GetComponent<Urho3D::Camera>();
 }
-
-

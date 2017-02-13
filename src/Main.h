@@ -50,6 +50,4 @@ private:
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
 
 	bool paused;
-
-
 };

@@ -10,6 +10,7 @@
 #include "EnviromentStrategy.h"
 #include "ForceStrategy.h"
 #include "Benchmark.h"
+#include "Hud.h"
 
 namespace Urho3D {
 	class Node;
@@ -31,7 +32,7 @@ private:
 	void createLight();
 	void createZone();
 	void createUnits(int size, double space);
-	void CreateInstructions();
+	void CreateStaticHud();
 	void SubscribeToEvents();
 	void moveCamera(float timeStep);
 	void AnimateObjects(float timeStep);
@@ -55,7 +56,8 @@ private:
 	void updateHud(float timeStep);
 	Text* fpsText;
 	Benchmark * benchmark;
-	int edgeSize = 200;
+	int edgeSize = 25;
 	double spaceSize = 1.5;
+	Hud * hud;
 
 };

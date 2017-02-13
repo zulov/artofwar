@@ -31,3 +31,11 @@ Urho3D::Camera *CameraManager::getComponent() {
 void CameraManager::translate(bool cameraKeys[], int wheel, float timeStep) {
 	activeBehave->translate(cameraKeys, wheel, timeStep*MOVE_SPEED);
 }
+
+String CameraManager::getInfo() {
+	return activeBehave->getInfo();
+}
+
+Urho3D::MouseMode CameraManager::getMouseMode() {
+	return activeBehave->getMouseMode();
+}

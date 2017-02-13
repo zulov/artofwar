@@ -15,6 +15,8 @@ public:
 	void setRotation(const Urho3D::Quaternion& rotation);
 	Camera *getComponent();
 	void translate(bool cameraKeys[], int wheel, float timeStep);
+	String getInfo();
+	MouseMode getMouseMode();
 private:
 
 	std::vector<CameraBehave*> cameraBehaves;
