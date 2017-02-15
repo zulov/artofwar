@@ -11,6 +11,7 @@
 #include "ForceStrategy.h"
 #include "Benchmark.h"
 #include "Hud.h"
+#include <Urho3D/UI/Text3D.h>
 
 namespace Urho3D {
 	class Node;
@@ -23,6 +24,8 @@ class Simulation : public Main {
 public:
 	Simulation(Context* context);
 	virtual void Start();
+
+	void createGround();
 
 protected:
 

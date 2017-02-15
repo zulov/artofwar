@@ -40,6 +40,19 @@ void Simulation::Start() {
 	envStrategy->prepare(units);
 	hud= new Hud(context_, GetSubsystem<UI>(), GetSubsystem<ResourceCache>());
 	hud->createStaticHud(String("Liczba jednostek") + String(units->size()));
+
+	createGround();
+
+}
+
+void Simulation::createGround() {
+	ResourceCache* cache = GetSubsystem<ResourceCache>();
+	Node* planeNode = scene->CreateChild("Plane");
+	planeNode->SetScale(Vector3(100.0f, 1.0f, 100.0f));
+	planeNode->SetPosition(Vector3(0, -1.0f, 0));
+	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
+	planeObject->SetModel(cache->GetResource<Model>("Models/Plane.mdl"));
+	planeObject->SetMaterial(cache->GetResource<Material>("Materials/StoneTiled.xml"));
 }
 
 void Simulation::CreateScene() {
@@ -206,6 +219,16 @@ void Simulation::createUnits(int size, double space) {
 
 			StaticModel* boxObject = boxNode->CreateComponent<StaticModel>();
 			boxObject->SetModel(cache->GetResource<Model>("Models/Cube.mdl"));
+
+			Node * title = boxNode->CreateChild("title");
+			title->SetPosition(Vector3(0.0f, 1.2f, 0.0f));
+			Text3D* titleText = title->CreateComponent<Text3D>();
+			titleText->SetText("Entity");
+
+			titleText->SetFont(cache->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 24);
+			titleText->SetColor(Color::GREEN);
+			titleText->SetAlignment(HA_CENTER, VA_CENTER);
+			titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
 
 			Unit * newUnit = new Unit(position, boxNode);
 			units->push_back(newUnit);

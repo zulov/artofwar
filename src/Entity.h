@@ -1,6 +1,10 @@
 #pragma once
 #include <Urho3D/Scene/Node.h>
 #include <Urho3D/Math/Vector3.h>
+#include <Urho3D/UI/Text3D.h>
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/UI/Font.h>
+#include <Urho3D/Core/Object.h>
 
 using namespace Urho3D;
 
@@ -27,5 +31,7 @@ private:
 	int bucketLevel;
 	int bucketX, bucketZ;
 	bool alive;
+	Node* title;
+	Text3D* titleText;
 };
 
