@@ -2,7 +2,7 @@
 
 
 
-Hud::Hud(Urho3D::Context* context, UI* _ui, ResourceCache* _cache) {
+Hud::Hud(Context* context, UI* _ui, ResourceCache* _cache, Graphics* _graphics) {
 	ui = _ui;
 	cache = _cache;
 	window = new Window(context);
@@ -38,6 +38,12 @@ Hud::Hud(Urho3D::Context* context, UI* _ui, ResourceCache* _cache) {
 	button->SetStyleAuto();
 	lineEdit->SetStyleAuto();
 
+	XMLFile* style = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
+	SharedPtr<Cursor> cursor(new Cursor(context));
+	cursor->SetStyleAuto(style);
+	ui->SetCursor(cursor);
+
+	cursor->SetPosition(_graphics->GetWidth() / 2, _graphics->GetHeight() / 2);
 }
 
 

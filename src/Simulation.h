@@ -11,6 +11,7 @@
 #include "ForceStrategy.h"
 #include "Benchmark.h"
 #include "Hud.h"
+#include "Controls.h"
 #include <Urho3D/UI/Text3D.h>
 
 namespace Urho3D {
@@ -34,6 +35,8 @@ private:
 	void createCamera();
 	void createLight();
 	void createZone();
+	//bool raycast(float maxDistance, Vector3& hitPos, Drawable*& hitDrawable);
+	void clickLeft();
 	void createUnits(int size, double space);
 	void SubscribeToEvents();
 	void moveCamera(float timeStep);
@@ -61,5 +64,7 @@ private:
 	int edgeSize = 20;
 	double spaceSize = 1.5;
 	Hud * hud;
+	Controls * controls;
 
+	void clickRight();
 };

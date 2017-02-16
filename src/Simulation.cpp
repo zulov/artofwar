@@ -25,12 +25,13 @@ Simulation::Simulation(Context* context) :Main(context), animate(false) {
 	benchmark = new Benchmark();
 	units = new std::vector<Unit *>();
 	units->reserve(edgeSize*edgeSize);
+	
 }
 
 void Simulation::Start() {
 	Main::Start();
 	CreateScene();
-	
+
 	SetupViewport();
 	SubscribeToEvents();
 	Main::InitMouseMode(MM_RELATIVE);
@@ -38,16 +39,16 @@ void Simulation::Start() {
 	envStrategy = new EnviromentStrategy();
 	forceStrategy = new ForceStrategy();
 	envStrategy->prepare(units);
-	hud= new Hud(context_, GetSubsystem<UI>(), GetSubsystem<ResourceCache>());
+	hud = new Hud(context_, GetSubsystem<UI>(), GetSubsystem<ResourceCache>(), GetSubsystem<Graphics>());
 	hud->createStaticHud(String("Liczba jednostek") + String(units->size()));
-
+	controls = new Controls(GetSubsystem<UI>(), GetSubsystem<Graphics>());
 	createGround();
 
 }
 
 void Simulation::createGround() {
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
-	Node* planeNode = scene->CreateChild("Plane");
+	Node* planeNode = scene->CreateChild("Ground");
 	planeNode->SetScale(Vector3(100.0f, 1.0f, 100.0f));
 	planeNode->SetPosition(Vector3(0, -1.0f, 0));
 	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
@@ -80,6 +81,7 @@ void Simulation::createLight() {
 	Light* light = lightNode->CreateComponent<Light>();
 	light->SetLightType(LIGHT_DIRECTIONAL);
 	light->SetColor(Color(0.7f, 0.35f, 0.0f));
+
 }
 
 
@@ -107,8 +109,15 @@ void Simulation::moveCamera(float timeStep) {
 
 	bool cameraKeys[4] = { input->GetKeyDown(KEY_W) ,input->GetKeyDown(KEY_S), input->GetKeyDown(KEY_A), input->GetKeyDown(KEY_D) };
 	int wheel = input->GetMouseMoveWheel();
-	
 	cameraManager->translate(cameraKeys, wheel, timeStep);
+
+	// Set destination or spawn a new jack with left mouse button
+	if (input->GetMouseButtonPress(MOUSEB_LEFT)) {
+		clickLeft();
+	} else if (input->GetMouseButtonPress(MOUSEB_RIGHT)) {
+		clickRight();
+	}
+
 }
 
 void Simulation::AnimateObjects(float timeStep) {
@@ -189,7 +198,7 @@ void Simulation::updateHud(float timeStep) {
 	msg += "\nFPS: " + String(fps);
 	msg += "\navg FPS: " + String(benchmark->getAverageFPS());
 	msg += "\nCamera: ";
-	msg += "\n\t"+cameraManager->getInfo();
+	msg += "\n\t" + cameraManager->getInfo();
 
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 	UI* ui = GetSubsystem<UI>();
@@ -204,6 +213,7 @@ void Simulation::updateHud(float timeStep) {
 	fpsText->SetPosition(0, 20);
 
 }
+
 
 void Simulation::createUnits(int size, double space) {
 	int startSize = -(size / 2);
@@ -244,4 +254,41 @@ void Simulation::createZone() {
 	zone->SetFogColor(Color(0.2f, 0.2f, 0.2f));
 	zone->SetFogStart(200.0f);
 	zone->SetFogEnd(300.0f);
+}
+
+void Simulation::clickLeft() {
+	Vector3 hitPos;
+	Drawable* hitDrawable;
+
+	if (controls->raycast(250.0f, hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
+		Node* hitNode = hitDrawable->GetNode();
+
+		if (hitNode->GetName() == "Box") {
+			Node* child = hitNode->GetChild("title");
+			Text3D * text = child->GetComponent<Text3D>();
+			text->SetColor(Color::RED);
+			
+		} else if (hitNode->GetName() == "Ground") {
+			
+		}
+	}
+}
+
+
+void Simulation::clickRight() {
+	Vector3 hitPos;
+	Drawable* hitDrawable;
+
+	if (controls->raycast(250.0f, hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
+		Node* hitNode = hitDrawable->GetNode();
+
+		if (hitNode->GetName() == "Box") {
+			Node* child = hitNode->GetChild("title");
+			Text3D * text = child->GetComponent<Text3D>();
+			text->SetColor(Color::GREEN);
+		
+		} else if (hitNode->GetName() == "Ground") {
+
+		}
+	}
 }

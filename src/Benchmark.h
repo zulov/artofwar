@@ -1,5 +1,7 @@
 #pragma once
 #define LENGTH 200
+
+
 class Benchmark {
 public:
 	Benchmark();

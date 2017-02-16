@@ -9,12 +9,13 @@
 #include <Urho3D/UI/Window.h>
 #include <Urho3D/UI/Font.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/Graphics/Graphics.h>
 
 using namespace Urho3D;
 
 class Hud {
 public:
-	Hud(Context* context, UI* _ui, ResourceCache* _cache);
+	Hud(Context* context, UI* _ui, ResourceCache* _cache, Graphics* _graphics);
 	~Hud();
 	void createStaticHud(String msg);
 private:
