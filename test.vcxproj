@@ -55,7 +55,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\Programowanie\vs2015\urho_test\src;D:\Programowanie\vs2015\urho_test\include;D:\Programowanie\vs2015\urho_test\include\Urho3D\ThirdParty;D:\Programowanie\vs2015\urho_test\include\Urho3D\ThirdParty\Bullet;D:\Programowanie\vs2015\urho_test\include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\Bullet;include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -107,9 +107,9 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>D:\Programowanie\vs2015\urho_test/Release/test.lib</ImportLibrary>
+      <ImportLibrary>Release/test.lib</ImportLibrary>
       <OptimizeReferences>true</OptimizeReferences>
-      <ProgramDataBaseFile>D:\Programowanie\vs2015\urho_test/bin/test.pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>bin/test.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
       <Version>
       </Version>
@@ -121,7 +121,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\Programowanie\vs2015\urho_test\src;D:\Programowanie\vs2015\urho_test\include;D:\Programowanie\vs2015\urho_test\include\Urho3D\ThirdParty;D:\Programowanie\vs2015\urho_test\include\Urho3D\ThirdParty\Bullet;D:\Programowanie\vs2015\urho_test\include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\Bullet;include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -171,8 +171,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <ImportLibrary>D:\Programowanie\vs2015\urho_test/Debug/test_d.lib</ImportLibrary>
-      <ProgramDataBaseFile>D:\Programowanie\vs2015\urho_test/bin/test_d.pdb</ProgramDataBaseFile>
+      <ImportLibrary>Debug/test_d.lib</ImportLibrary>
+      <ProgramDataBaseFile>bin/test_d.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
       <Version>
       </Version>
@@ -182,8 +182,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="D:\Programowanie\vs2015\urho_test\CoreData" />
-    <None Include="D:\Programowanie\vs2015\urho_test\Data" />
+    <None Include="CoreData" />
+    <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="D:/Programowanie/Urho3d-build/ZERO_CHECK.vcxproj">
