@@ -38,8 +38,14 @@
     <ClCompile Include="src\Simulation.cpp">
       <Filter>simulation</Filter>
     </ClCompile>
+    <ClCompile Include="src\EntityFactory.cpp">
+      <Filter>objects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectList.cpp">
+      <Filter>objects</Filter>
+    </ClCompile>
     <ClCompile Include="src\ForceStrategy.cpp">
-      <Filter>simulation</Filter>
+      <Filter>simulation\force</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -83,8 +89,14 @@
     <ClInclude Include="src\Simulation.h">
       <Filter>simulation</Filter>
     </ClInclude>
+    <ClInclude Include="src\EntityFactory.h">
+      <Filter>objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectList.h">
+      <Filter>objects</Filter>
+    </ClInclude>
     <ClInclude Include="src\ForceStrategy.h">
-      <Filter>simulation</Filter>
+      <Filter>simulation\force</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +118,9 @@
     </Filter>
     <Filter Include="simulation\env">
       <UniqueIdentifier>{a17ba19d-3813-473b-adf9-2cea0e1c2901}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="simulation\force">
+      <UniqueIdentifier>{abf22b7a-6de9-4d35-a0ad-23b43d4703ca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

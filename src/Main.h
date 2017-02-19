@@ -2,8 +2,11 @@
 
 #include <Urho3D/Engine/Application.h>
 #include <Urho3D/Input/Input.h>
+#include <Urho3D/Graphics/Zone.h>
 #include "CameraManager.h"
 #include "Control.h"
+#include "Hud.h"
+#include <Urho3D/Graphics/Octree.h>
 
 namespace Urho3D {
 	class Node;
@@ -26,22 +29,22 @@ public:
 	virtual void Stop();
 
 protected:
-	/// Return XML patch instructions for screen joystick layout for a specific sample app, if any.
-	virtual String GetScreenJoystickPatchString() const { return String::EMPTY; }
 	void InitMouseMode(MouseMode mode);
 	void SetupViewport();
 
+	void createZone();
+	void CreateScene();
+	void createCamera();
+	void createLight();
 	SharedPtr<Scene> scene;
-
 	float yaw_;
 	float pitch_;
-	bool touchEnabled_;
+
 	MouseMode useMouseMode_;
 
 	CameraManager * cameraManager;
 
 private:
-	void CreateLogo();
 	void SetWindowTitleAndIcon();
 	void CreateConsoleAndDebugHud();
 	void HandleMouseModeRequest(StringHash eventType, VariantMap& eventData);
@@ -50,4 +53,5 @@ private:
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
 
 	bool paused;
+	Hud * hud;
 };

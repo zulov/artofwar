@@ -22,7 +22,7 @@
 #include <Urho3D/UI/Window.h>
 #include <Main.h>
 
-Main::Main(Context* context) : Application(context), yaw_(0.0f), pitch_(0.0f), touchEnabled_(false), paused(false), useMouseMode_(MM_ABSOLUTE) {}
+Main::Main(Context* context) : Application(context), yaw_(0.0f), pitch_(0.0f), paused(false), useMouseMode_(MM_ABSOLUTE) {}
 
 void Main::Setup() {
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
@@ -30,17 +30,21 @@ void Main::Setup() {
 	engineParameters_[EP_FULL_SCREEN] = false;
 	engineParameters_[EP_HEADLESS] = false;
 	engineParameters_[EP_SOUND] = false;
-	engineParameters_[EP_WINDOW_HEIGHT] = 720;
-	engineParameters_[EP_WINDOW_WIDTH] = 1360;
+	engineParameters_[EP_WINDOW_HEIGHT] = 768;
+	engineParameters_[EP_WINDOW_WIDTH] = 1366;
 }
 
 void Main::Start() {
-	CreateLogo();
+	
 	SetWindowTitleAndIcon();
-	CreateConsoleAndDebugHud();
-
+	
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
+
+	hud = new Hud(context_, GetSubsystem<UI>(), GetSubsystem<ResourceCache>(), GetSubsystem<Graphics>());
+	hud->createStaticHud(String("Liczba jednostek") + String("??"));
+	hud->createLogo();
+	CreateConsoleAndDebugHud();
 }
 
 void Main::Stop() {
@@ -62,49 +66,20 @@ void Main::InitMouseMode(MouseMode mode) {
 
 }
 
-void Main::CreateLogo() {
-	ResourceCache* cache = GetSubsystem<ResourceCache>();
-	Texture2D* logoTexture = cache->GetResource<Texture2D>("textures/minimap.png");
-	if (!logoTexture) {
-		return;
-	}
-
-	UI* ui = GetSubsystem<UI>();
-	Urho3D::Sprite *logoSprite_ = ui->GetRoot()->CreateChild<Sprite>();
-
-	logoSprite_->SetTexture(logoTexture);
-
-	int textureWidth = logoTexture->GetWidth();
-	int textureHeight = logoTexture->GetHeight();
-
-	logoSprite_->SetScale(256.0f / textureWidth);
-	logoSprite_->SetSize(textureWidth, textureHeight);
-	logoSprite_->SetHotSpot(textureWidth, textureHeight);
-	logoSprite_->SetAlignment(HA_RIGHT, VA_BOTTOM);
-	logoSprite_->SetOpacity(0.9f);
-}
-
 void Main::SetWindowTitleAndIcon() {
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 	Graphics* graphics = GetSubsystem<Graphics>();
 	Image* icon = cache->GetResource<Image>("textures/UrhoIcon.png");
 	graphics->SetWindowIcon(icon);
-	graphics->SetWindowTitle("Urho3D Sample");
+	graphics->SetWindowTitle("Art of War 2017");
 }
 
 void Main::CreateConsoleAndDebugHud() {
-	// Get default style
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 	XMLFile* xmlFile = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
 
-	// Create console
-	Console* console = engine_->CreateConsole();
-	console->SetDefaultStyle(xmlFile);
-	console->GetBackground()->SetOpacity(0.8f);
-
-	// Create debug HUD.
-	DebugHud* debugHud = engine_->CreateDebugHud();
-	debugHud->SetDefaultStyle(xmlFile);
+	hud->createConsole(engine_);
+	hud->createDebugHud(engine_);
 
 	GetSubsystem<Input>()->SetMouseVisible(true);
 	GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(xmlFile);
@@ -171,4 +146,39 @@ void Main::SetupViewport() {
 	// Set up a viewport to the Renderer subsystem so that the 3D scene can be seen
 	SharedPtr<Viewport> viewport(new Viewport(context_, scene, cameraManager->getComponent()));
 	renderer->SetViewport(0, viewport);
+}
+
+void Main::createZone() {
+	Node* zoneNode = scene->CreateChild("Zone");
+	Zone* zone = zoneNode->CreateComponent<Zone>();
+	zone->SetBoundingBox(BoundingBox(-1000.0f, 1000.0f));
+	zone->SetFogColor(Color(0.2f, 0.2f, 0.2f));
+	zone->SetFogStart(200.0f);
+	zone->SetFogEnd(300.0f);
+}
+
+void Main::CreateScene() {
+	if (!scene) {
+		scene = new Scene(context_);
+	} else {
+		scene->Clear();
+	}
+	scene->CreateComponent<Octree>();
+
+	createZone();
+	createLight();
+	createCamera();
+}
+
+
+void Main::createCamera() {
+	cameraManager = new CameraManager(context_);
+}
+
+void Main::createLight() {
+	Node* lightNode = scene->CreateChild("DirectionalLight");
+	lightNode->SetDirection(Vector3(-0.6f, -1.0f, -0.8f)); // The direction vector does not need to be normalized
+	Light* light = lightNode->CreateComponent<Light>();
+	light->SetLightType(LIGHT_DIRECTIONAL);
+	light->SetColor(Color(0.7f, 0.35f, 0.0f));
 }

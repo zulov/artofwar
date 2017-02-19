@@ -10,7 +10,7 @@
 #include "EnviromentStrategy.h"
 #include "ForceStrategy.h"
 #include "Benchmark.h"
-#include "Hud.h"
+
 #include "Controls.h"
 #include <Urho3D/UI/Text3D.h>
 
@@ -31,19 +31,18 @@ public:
 protected:
 
 private:	
-	void CreateScene();
-	void createCamera();
-	void createLight();
-	void createZone();
-	//bool raycast(float maxDistance, Vector3& hitPos, Drawable*& hitDrawable);
 	void clickLeft();
+	void clickRight();
 	void createUnits(int size, double space);
 	void SubscribeToEvents();
 	void moveCamera(float timeStep);
 	void AnimateObjects(float timeStep);
 	void moveUnits(float timeStep);
 	void HandleUpdate(StringHash eventType, VariantMap& eventData);
-
+	void calculateForces();
+	void reset();
+	void resetUnits();
+	void updateHud(float timeStep);	
 	bool animate;
 
 	std::vector<Unit*> *units;
@@ -52,19 +51,15 @@ private:
 	const float ROTATE_SPEED = 115.0f;
 	const double coef = 10;
 
-	void calculateForces();
 	EnviromentStrategy *envStrategy;
 	ForceStrategy * forceStrategy;
-	void reset();
-	void resetUnits();
-private:
-	void updateHud(float timeStep);
+
 	Text* fpsText;
 	Benchmark * benchmark;
 	int edgeSize = 20;
 	double spaceSize = 1.5;
-	Hud * hud;
+
 	Controls * controls;
 
-	void clickRight();
+
 };

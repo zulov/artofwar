@@ -25,12 +25,13 @@ Simulation::Simulation(Context* context) :Main(context), animate(false) {
 	benchmark = new Benchmark();
 	units = new std::vector<Unit *>();
 	units->reserve(edgeSize*edgeSize);
-	
 }
 
 void Simulation::Start() {
 	Main::Start();
 	CreateScene();
+
+	createUnits(edgeSize, spaceSize);
 
 	SetupViewport();
 	SubscribeToEvents();
@@ -39,8 +40,7 @@ void Simulation::Start() {
 	envStrategy = new EnviromentStrategy();
 	forceStrategy = new ForceStrategy();
 	envStrategy->prepare(units);
-	hud = new Hud(context_, GetSubsystem<UI>(), GetSubsystem<ResourceCache>(), GetSubsystem<Graphics>());
-	hud->createStaticHud(String("Liczba jednostek") + String(units->size()));
+
 	controls = new Controls(GetSubsystem<UI>(), GetSubsystem<Graphics>());
 	createGround();
 
@@ -56,33 +56,6 @@ void Simulation::createGround() {
 	planeObject->SetMaterial(cache->GetResource<Material>("Materials/StoneTiled.xml"));
 }
 
-void Simulation::CreateScene() {
-	if (!scene) {
-		scene = new Scene(context_);
-	} else {
-		scene->Clear();
-	}
-	scene->CreateComponent<Octree>();
-
-	createZone();
-	createLight();
-	createUnits(edgeSize, spaceSize);
-	createCamera();
-}
-
-
-void Simulation::createCamera() {
-	cameraManager = new CameraManager(context_);
-}
-
-void Simulation::createLight() {
-	Node* lightNode = scene->CreateChild("DirectionalLight");
-	lightNode->SetDirection(Vector3(-0.6f, -1.0f, -0.8f)); // The direction vector does not need to be normalized
-	Light* light = lightNode->CreateComponent<Light>();
-	light->SetLightType(LIGHT_DIRECTIONAL);
-	light->SetColor(Color(0.7f, 0.35f, 0.0f));
-
-}
 
 
 void Simulation::SubscribeToEvents() {
@@ -245,15 +218,6 @@ void Simulation::createUnits(int size, double space) {
 		}
 	}
 
-}
-
-void Simulation::createZone() {
-	Node* zoneNode = scene->CreateChild("Zone");
-	Zone* zone = zoneNode->CreateComponent<Zone>();
-	zone->SetBoundingBox(BoundingBox(-1000.0f, 1000.0f));
-	zone->SetFogColor(Color(0.2f, 0.2f, 0.2f));
-	zone->SetFogStart(200.0f);
-	zone->SetFogEnd(300.0f);
 }
 
 void Simulation::clickLeft() {

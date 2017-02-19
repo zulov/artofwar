@@ -58,3 +58,37 @@ void Hud::createStaticHud(String msg) {
 	instructionText->SetVerticalAlignment(VA_TOP);
 	instructionText->SetPosition(0, 0);
 }
+
+void Hud::createLogo() {
+	Texture2D* logoTexture = cache->GetResource<Texture2D>("textures/minimap.png");
+	if (!logoTexture) {
+		return;
+	}
+	Urho3D::Sprite *logoSprite_ = ui->GetRoot()->CreateChild<Sprite>();
+
+	logoSprite_->SetTexture(logoTexture);
+
+	int textureWidth = logoTexture->GetWidth();
+	int textureHeight = logoTexture->GetHeight();
+
+	logoSprite_->SetScale(256.0f / textureWidth);
+	logoSprite_->SetSize(textureWidth, textureHeight);
+	logoSprite_->SetHotSpot(textureWidth, textureHeight);
+	logoSprite_->SetAlignment(HA_RIGHT, VA_BOTTOM);
+	logoSprite_->SetOpacity(0.9f);
+}
+
+void Hud::createDebugHud(SharedPtr<Engine> engine) {
+	XMLFile* xmlFile = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
+
+	DebugHud* debugHud = engine->CreateDebugHud();
+	debugHud->SetDefaultStyle(xmlFile);
+}
+
+void Hud::createConsole(SharedPtr<Engine> engine) {
+	XMLFile* xmlFile = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
+
+	Console* console = engine->CreateConsole();
+	console->SetDefaultStyle(xmlFile);
+	console->GetBackground()->SetOpacity(0.8f);
+}
