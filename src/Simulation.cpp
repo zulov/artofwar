@@ -1,7 +1,6 @@
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Core/Profiler.h>
 #include <Urho3D/Engine/Engine.h>
-
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
@@ -43,7 +42,6 @@ void Simulation::Start() {
 
 	controls = new Controls(GetSubsystem<UI>(), GetSubsystem<Graphics>());
 	createGround();
-
 }
 
 void Simulation::createGround() {
@@ -55,8 +53,6 @@ void Simulation::createGround() {
 	planeObject->SetModel(cache->GetResource<Model>("Models/Plane.mdl"));
 	planeObject->SetMaterial(cache->GetResource<Material>("Materials/StoneTiled.xml"));
 }
-
-
 
 void Simulation::SubscribeToEvents() {
 	// Subscribe HandleUpdate() function for processing update events
