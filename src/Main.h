@@ -6,6 +6,7 @@
 #include "CameraManager.h"
 #include "Control.h"
 #include "Hud.h"
+#include "CameraEnums.h"
 #include <Urho3D/Graphics/Octree.h>
 
 namespace Urho3D {

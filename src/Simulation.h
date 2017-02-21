@@ -2,17 +2,12 @@
 
 #include "Main.h"
 #include "Unit.h"
-#include <iostream>
 #include <vector>
-#include <cstdlib>
-#include <cstdio>
 #include <ctime>
 #include "EnviromentStrategy.h"
 #include "ForceStrategy.h"
 #include "Benchmark.h"
-
 #include "Controls.h"
-#include <Urho3D/UI/Text3D.h>
 
 namespace Urho3D {
 	class Node;

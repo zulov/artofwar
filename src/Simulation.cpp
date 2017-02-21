@@ -7,7 +7,6 @@
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Graphics/Renderer.h>
 #include <Urho3D/Graphics/StaticModelGroup.h>
-#include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/Scene.h>
@@ -20,10 +19,10 @@
 
 URHO3D_DEFINE_APPLICATION_MAIN(Simulation)
 
-Simulation::Simulation(Context* context) :Main(context), animate(false) {
+Simulation::Simulation(Context* context) : Main(context), animate(false) {
 	benchmark = new Benchmark();
 	units = new std::vector<Unit *>();
-	units->reserve(edgeSize*edgeSize);
+	units->reserve(edgeSize * edgeSize);
 }
 
 void Simulation::Start() {
@@ -65,7 +64,6 @@ void Simulation::moveCamera(float timeStep) {
 
 	Input* input = GetSubsystem<Input>();
 
-	const float MOVE_SPEED = 20.0f;
 	const float MOUSE_SENSITIVITY = 0.1f;
 
 	// Use this frame's mouse motion to adjust camera node yaw and pitch. Clamp the pitch between -90 and 90 degrees
@@ -76,14 +74,15 @@ void Simulation::moveCamera(float timeStep) {
 
 	cameraManager->setRotation(Quaternion(pitch_, yaw_, 0.0f));
 
-	bool cameraKeys[4] = { input->GetKeyDown(KEY_W) ,input->GetKeyDown(KEY_S), input->GetKeyDown(KEY_A), input->GetKeyDown(KEY_D) };
+	bool cameraKeys[4] = {input->GetKeyDown(KEY_W) ,input->GetKeyDown(KEY_S), input->GetKeyDown(KEY_A), input->GetKeyDown(KEY_D)};
 	int wheel = input->GetMouseMoveWheel();
 	cameraManager->translate(cameraKeys, wheel, timeStep);
 
 	// Set destination or spawn a new jack with left mouse button
 	if (input->GetMouseButtonPress(MOUSEB_LEFT)) {
 		clickLeft();
-	} else if (input->GetMouseButtonPress(MOUSEB_RIGHT)) {
+	}
+	else if (input->GetMouseButtonPress(MOUSEB_RIGHT)) {
 		clickRight();
 	}
 
@@ -116,7 +115,6 @@ void Simulation::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	reset();
 	moveCamera(timeStep);
 
-	// Animate scene if enabled
 	if (animate) {
 		AnimateObjects(timeStep);
 	}
@@ -125,15 +123,15 @@ void Simulation::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 
 void Simulation::calculateForces() {
 	for (unsigned i = 0; i < units->size(); ++i) {
-		std::vector<Unit*> *neighbours = envStrategy->getNeighbours((*units)[i], units);
+		std::vector<Unit*>* neighbours = envStrategy->getNeighbours((*units)[i], units);
 
-		Vector3  sepPedestrian = forceStrategy->separationUnits((*units)[i], neighbours);
-		Vector3  sepObstacle = forceStrategy->separationObstacle((*units)[i], 0);
+		Vector3 sepPedestrian = forceStrategy->separationUnits((*units)[i], neighbours);
+		Vector3 sepObstacle = forceStrategy->separationObstacle((*units)[i], 0);
 
-		Vector3  destForce = Vector3();// forceStrategy->destinationForce((*units)[i]);
-		Vector3  rand = forceStrategy->randomForce();
+		Vector3 destForce = Vector3();// forceStrategy->destinationForce((*units)[i]);
+		Vector3 rand = forceStrategy->randomForce();
 
-		Vector3  forces = sepPedestrian += sepObstacle += destForce += rand;
+		Vector3 forces = sepPedestrian += sepObstacle += destForce += rand;
 
 		(*units)[i]->setAcceleration(forces);
 
@@ -199,7 +197,7 @@ void Simulation::createUnits(int size, double space) {
 			StaticModel* boxObject = boxNode->CreateComponent<StaticModel>();
 			boxObject->SetModel(cache->GetResource<Model>("Models/Cube.mdl"));
 
-			Node * title = boxNode->CreateChild("title");
+			Node* title = boxNode->CreateChild("title");
 			title->SetPosition(Vector3(0.0f, 1.2f, 0.0f));
 			Text3D* titleText = title->CreateComponent<Text3D>();
 			titleText->SetText("Entity");
@@ -209,7 +207,7 @@ void Simulation::createUnits(int size, double space) {
 			titleText->SetAlignment(HA_CENTER, VA_CENTER);
 			titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
 
-			Unit * newUnit = new Unit(position, boxNode);
+			Unit* newUnit = new Unit(position, boxNode);
 			units->push_back(newUnit);
 		}
 	}
@@ -225,11 +223,12 @@ void Simulation::clickLeft() {
 
 		if (hitNode->GetName() == "Box") {
 			Node* child = hitNode->GetChild("title");
-			Text3D * text = child->GetComponent<Text3D>();
+			Text3D* text = child->GetComponent<Text3D>();
 			text->SetColor(Color::RED);
-			
-		} else if (hitNode->GetName() == "Ground") {
-			
+
+		}
+		else if (hitNode->GetName() == "Ground") {
+
 		}
 	}
 }
@@ -244,10 +243,11 @@ void Simulation::clickRight() {
 
 		if (hitNode->GetName() == "Box") {
 			Node* child = hitNode->GetChild("title");
-			Text3D * text = child->GetComponent<Text3D>();
+			Text3D* text = child->GetComponent<Text3D>();
 			text->SetColor(Color::GREEN);
-		
-		} else if (hitNode->GetName() == "Ground") {
+
+		}
+		else if (hitNode->GetName() == "Ground") {
 
 		}
 	}
