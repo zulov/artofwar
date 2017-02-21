@@ -32,8 +32,8 @@ Urho3D::Vector3 ForceStrategy::separationUnits(Unit * unit, std::vector<Unit*> *
 }
 
 Urho3D::Vector3 ForceStrategy::randomForce() {
-	double x = ((double)rand() / (RAND_MAX))*coef - (coef / 2);
-	double y = ((double)rand() / (RAND_MAX))*coef - (coef / 2);
+	double x = ((double)rand() / (RAND_MAX)) * coef - (coef / 2);
+	double y = ((double)rand() / (RAND_MAX)) * coef - (coef / 2);
 	//return Urho3D::Vector3(x, 0, y);
 	return Urho3D::Vector3(0, 0, 0);
 }

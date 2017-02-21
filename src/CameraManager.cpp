@@ -10,17 +10,17 @@ CameraManager::CameraManager(Urho3D::Context* context) {
 	activeBehave = cameraBehaves.at(0);
 }
 
-CameraManager::~CameraManager() {}
+CameraManager::~CameraManager() {
+	while (!cameraBehaves.empty()) {
+		delete cameraBehaves.back();
+		cameraBehaves.pop_back();
+	}
+}
 
 
 void CameraManager::setCameraBehave(int _type) {
 	activeBehave = cameraBehaves.at(_type);
 }
-
-void CameraManager::setRotation(const Urho3D::Quaternion& rotation) {
-	activeBehave->setRotate(rotation);
-}
-
 
 
 Urho3D::Camera *CameraManager::getComponent() {
@@ -38,4 +38,8 @@ String CameraManager::getInfo() {
 
 Urho3D::MouseMode CameraManager::getMouseMode() {
 	return activeBehave->getMouseMode();
+}
+
+void CameraManager::rotate(const IntVector2& mouse_move) {
+	activeBehave->rotate(mouse_move, MOUSE_SENSITIVITY);
 }

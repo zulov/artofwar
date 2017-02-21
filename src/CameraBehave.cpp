@@ -1,7 +1,6 @@
 #include "CameraBehave.h"
 
 
-
 CameraBehave::CameraBehave() {}
 
 

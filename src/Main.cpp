@@ -21,8 +21,17 @@
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/UI/Window.h>
 #include <Main.h>
+#include <Urho3D/UI/Text3D.h>
+#include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Core/CoreEvents.h>
 
-Main::Main(Context* context) : Application(context), yaw_(0.0f), pitch_(0.0f), paused(false), useMouseMode_(MM_ABSOLUTE) {}
+URHO3D_DEFINE_APPLICATION_MAIN(Main)
+
+
+Main::Main(Context* context) : Application(context), paused(false), useMouseMode_(MM_ABSOLUTE) {
+	simulation = new Simulation(context);
+	benchmark = new Benchmark();
+}
 
 void Main::Setup() {
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
@@ -35,20 +44,37 @@ void Main::Setup() {
 }
 
 void Main::Start() {
-	
 	SetWindowTitleAndIcon();
-	
+
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
 
 	hud = new Hud(context_, GetSubsystem<UI>(), GetSubsystem<ResourceCache>(), GetSubsystem<Graphics>());
 	hud->createStaticHud(String("Liczba jednostek") + String("??"));
 	hud->createLogo();
+
 	CreateConsoleAndDebugHud();
+	CreateScene();
+
+	std::vector<Unit*>* units = createUnits(edgeSize, spaceSize);
+	simulation->setUnits(units);
+	SetupViewport();
+	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
+
+	InitMouseMode(MM_RELATIVE);
+	controls = new Controls(GetSubsystem<UI>(), GetSubsystem<Graphics>());
 }
 
 void Main::Stop() {
 	engine_->DumpResources(true);
+}
+
+void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
+	float timeStep = eventData[SceneUpdate::P_TIMESTEP].GetFloat();
+	simulation->update(GetSubsystem<Input>(), timeStep);
+	updateHud(timeStep);
+	moveCamera(timeStep);
+
 }
 
 void Main::InitMouseMode(MouseMode mode) {
@@ -143,7 +169,6 @@ void Main::HandleMouseModeChange(StringHash /*eventType*/, VariantMap& eventData
 void Main::SetupViewport() {
 	Renderer* renderer = GetSubsystem<Renderer>();
 
-	// Set up a viewport to the Renderer subsystem so that the 3D scene can be seen
 	SharedPtr<Viewport> viewport(new Viewport(context_, scene, cameraManager->getComponent()));
 	renderer->SetViewport(0, viewport);
 }
@@ -168,6 +193,7 @@ void Main::CreateScene() {
 	createZone();
 	createLight();
 	createCamera();
+	createGround();
 }
 
 
@@ -181,4 +207,127 @@ void Main::createLight() {
 	Light* light = lightNode->CreateComponent<Light>();
 	light->SetLightType(LIGHT_DIRECTIONAL);
 	light->SetColor(Color(0.7f, 0.35f, 0.0f));
+}
+
+void Main::clickLeft() {
+	Vector3 hitPos;
+	Drawable* hitDrawable;
+
+	if (controls->raycast(250.0f, hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
+		Node* hitNode = hitDrawable->GetNode();
+
+		if (hitNode->GetName() == "Box") {
+			Node* child = hitNode->GetChild("title");
+			Text3D* text = child->GetComponent<Text3D>();
+			text->SetColor(Color::RED);
+
+		} else if (hitNode->GetName() == "Ground") {
+
+		}
+	}
+}
+
+void Main::clickRight() {
+	Vector3 hitPos;
+	Drawable* hitDrawable;
+
+	if (controls->raycast(250.0f, hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
+		Node* hitNode = hitDrawable->GetNode();
+
+		if (hitNode->GetName() == "Box") {
+			Node* child = hitNode->GetChild("title");
+			Text3D* text = child->GetComponent<Text3D>();
+			text->SetColor(Color::GREEN);
+
+		} else if (hitNode->GetName() == "Ground") {
+
+		}
+	}
+}
+
+void Main::createGround() {
+	ResourceCache* cache = GetSubsystem<ResourceCache>();
+	Node* planeNode = scene->CreateChild("Ground");
+	planeNode->SetScale(Vector3(100.0f, 1.0f, 100.0f));
+	planeNode->SetPosition(Vector3(0, -1.0f, 0));
+	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
+	planeObject->SetModel(cache->GetResource<Model>("Models/Plane.mdl"));
+	planeObject->SetMaterial(cache->GetResource<Material>("Materials/StoneTiled.xml"));
+}
+
+void Main::updateHud(float timeStep) {
+	FrameInfo frameInfo = GetSubsystem<Renderer>()->GetFrameInfo();
+	double fps = 1.0 / timeStep;
+
+	benchmark->add(fps);
+	Urho3D::String msg = "Frames: " + String(frameInfo.frameNumber_);
+	msg += "\nFPS: " + String(fps);
+	msg += "\navg FPS: " + String(benchmark->getAverageFPS());
+	msg += "\nCamera: ";
+	msg += "\n\t" + cameraManager->getInfo();
+
+	ResourceCache* cache = GetSubsystem<ResourceCache>();
+	UI* ui = GetSubsystem<UI>();
+	ui->GetRoot()->RemoveChild(fpsText);
+
+	fpsText = ui->GetRoot()->CreateChild<Text>();
+	fpsText->SetText(msg);
+	fpsText->SetFont(cache->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 12);
+	fpsText->SetTextAlignment(HA_LEFT);
+	fpsText->SetHorizontalAlignment(HA_LEFT);
+	fpsText->SetVerticalAlignment(VA_TOP);
+	fpsText->SetPosition(0, 20);
+}
+
+std::vector<Unit*>* Main::createUnits(int size, double space) {
+	int startSize = -(size / 2);
+	int endSize = size + startSize;
+
+	ResourceCache* cache = GetSubsystem<ResourceCache>();
+	std::vector<Unit*>* units = new std::vector<Unit *>();
+	units->reserve(edgeSize * edgeSize);
+
+	for (int y = startSize; y < endSize; ++y) {
+		for (int x = startSize; x < endSize; ++x) {
+			Vector3 position = Vector3(x * space, 0, y * space);
+			Node* boxNode = scene->CreateChild("Box");
+			boxNode->SetPosition(position);
+
+			StaticModel* boxObject = boxNode->CreateComponent<StaticModel>();
+			boxObject->SetModel(cache->GetResource<Model>("Models/Cube.mdl"));
+
+			Node* title = boxNode->CreateChild("title");
+			title->SetPosition(Vector3(0.0f, 1.2f, 0.0f));
+			Text3D* titleText = title->CreateComponent<Text3D>();
+			titleText->SetText("Entity");
+
+			titleText->SetFont(cache->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 24);
+			titleText->SetColor(Color::GREEN);
+			titleText->SetAlignment(HA_CENTER, VA_CENTER);
+			titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
+
+			Unit* newUnit = new Unit(position, boxNode);
+			units->push_back(newUnit);
+		}
+	}
+	return units;
+}
+
+
+void Main::moveCamera(float timeStep) {
+	if (GetSubsystem<UI>()->GetFocusElement()) { return; }
+
+	Input* input = GetSubsystem<Input>();
+
+
+	bool cameraKeys[4] = {input->GetKeyDown(KEY_W), input->GetKeyDown(KEY_S), input->GetKeyDown(KEY_A), input->GetKeyDown(KEY_D)};
+	int wheel = input->GetMouseMoveWheel();
+	cameraManager->translate(cameraKeys, wheel, timeStep);
+	cameraManager->rotate(input->GetMouseMove());
+
+	if (input->GetMouseButtonPress(MOUSEB_LEFT)) {
+		clickLeft();
+	} else if (input->GetMouseButtonPress(MOUSEB_RIGHT)) {
+		clickRight();
+	}
 }

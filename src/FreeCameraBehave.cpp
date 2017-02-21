@@ -28,11 +28,14 @@ void FreeCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 	}
 }
 
-void FreeCameraBehave::rotate() {
-
+void FreeCameraBehave::rotate(const IntVector2& mouseMove, const double mouse_sensitivity) {
+	yaw += mouse_sensitivity * mouseMove.x_;
+	pitch += mouse_sensitivity * mouseMove.y_;
+	//pitch_ = Clamp(pitch_, -90.0f, 90.0f);
+	this->setRotation(Quaternion(pitch, yaw, 0.0f));
 }
 
-void FreeCameraBehave::setRotate(const Urho3D::Quaternion& rotation) {
+void FreeCameraBehave::setRotation(const Urho3D::Quaternion& rotation) {
 	cameraNode->SetRotation(rotation);
 }
 

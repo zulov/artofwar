@@ -12,13 +12,13 @@ public:
 	CameraManager(Urho3D::Context* context);
 	~CameraManager();
 	void setCameraBehave(int _type);
-	void setRotation(const Urho3D::Quaternion& rotation);
 	Camera *getComponent();
 	void translate(bool cameraKeys[], int wheel, float timeStep);
 	String getInfo();
 	MouseMode getMouseMode();
+	void rotate(const IntVector2& mouse_move);
 private:
-
+	const double MOUSE_SENSITIVITY = 0.1f;
 	std::vector<CameraBehave*> cameraBehaves;
 	CameraBehave* activeBehave;
 	float MOVE_SPEED = 20;

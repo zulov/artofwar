@@ -6,8 +6,14 @@
 #include "CameraManager.h"
 #include "Control.h"
 #include "Hud.h"
-#include "CameraEnums.h"
-#include <Urho3D/Graphics/Octree.h>
+#include "Benchmark.h"
+#include "Controls.h"
+#include "Simulation.h"
+#include "Unit.h"
+
+#include <Urho3D/Scene/Scene.h>
+#include <Urho3D/UI/Text.h>
+#include <Urho3D/Graphics/Model.h>
 
 namespace Urho3D {
 	class Node;
@@ -28,6 +34,7 @@ public:
 	virtual void Setup();
 	virtual void Start();
 	virtual void Stop();
+	void HandleUpdate(StringHash eventType, VariantMap& eventData);
 
 protected:
 	void InitMouseMode(MouseMode mode);
@@ -37,12 +44,15 @@ protected:
 	void CreateScene();
 	void createCamera();
 	void createLight();
+	void clickLeft();
+	void clickRight();
+	void createGround();
+	void updateHud(float timeStep);
+	std::vector<Unit*>* createUnits(int size, double space);
+	void moveCamera(float timeStep);
 	SharedPtr<Scene> scene;
-	float yaw_;
-	float pitch_;
 
 	MouseMode useMouseMode_;
-
 	CameraManager * cameraManager;
 
 private:
@@ -55,4 +65,10 @@ private:
 
 	bool paused;
 	Hud * hud;
+	Controls * controls;
+	Simulation * simulation;
+	Text* fpsText;
+	Benchmark* benchmark;
+	int edgeSize = 20;
+	double spaceSize = 1.5;
 };

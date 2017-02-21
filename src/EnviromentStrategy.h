@@ -11,7 +11,7 @@ public:
 	~EnviromentStrategy();
 	
 	std::vector<Unit *> *getNeighbours(Unit * unit, std::vector<Unit *> *units);
-	void prepare(std::vector<Unit *> *units);
+	void populate(std::vector<Unit *> *units);
 	void update(Unit * unit);
 private:
 	const double separationDistance = 3;

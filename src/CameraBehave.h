@@ -12,8 +12,8 @@ public:
 	~CameraBehave();
 
 	virtual void translate(bool cameraKeys[], int wheel, float timeStep) = 0;
-	virtual void rotate() = 0;
-	virtual void setRotate(const Urho3D::Quaternion& rotation) = 0;
+	virtual void rotate(const IntVector2& mouseMove, const double mouse_sensitivity) = 0;
+	virtual void setRotation(const Urho3D::Quaternion& rotation) = 0;
 	Urho3D::Camera * getComponent();
 	virtual Urho3D::String getInfo() = 0;
 	virtual MouseMode getMouseMode() = 0;
