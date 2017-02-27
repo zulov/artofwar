@@ -1,30 +1,26 @@
 #include <Urho3D/Core/CoreEvents.h>
-#include <Urho3D/Core/Profiler.h>
 #include <Urho3D/Engine/Engine.h>
-
 #include <Urho3D/Graphics/Renderer.h>
-
 #include <Urho3D/Input/Input.h>
-
 #include <Urho3D/DebugNew.h>
-
 #include "Simulation.h"
 
 
-Simulation::Simulation(Context* context) {
-
+Simulation::Simulation(Context* context, ResourceCache* _cache, SharedPtr<Scene> _scene) {
 	envStrategy = new EnviromentStrategy();
 	forceStrategy = new ForceStrategy();
+	objectManager = new ObjectManager(_cache, _scene);
 	srand(time(NULL));
+	animate = false;
 }
 
-void Simulation::setUnits(std::vector<Unit*>* units) {
-	this->units = units;
+
+void Simulation::createUnits() {
+	units = objectManager->createUnits();
 	envStrategy->populate(units);
 }
 
 void Simulation::animateObjects(float timeStep) {
-	//URHO3D_PROFILE(animateObjects);
 	calculateForces();
 	moveUnits(timeStep);
 }
@@ -32,14 +28,11 @@ void Simulation::animateObjects(float timeStep) {
 void Simulation::update(Input* input, float timeStep) {
 	using namespace Update;
 
-	//float timeStep = eventData[P_TIMESTEP].GetFloat();
-
-	//Input* input = GetSubsystem<Input>();
 	if (input->GetKeyPress(KEY_SPACE)) {
 		animate = !animate;
 	}
 
-	reset();
+	//reset();
 
 	if (animate) {
 		animateObjects(timeStep);
@@ -72,25 +65,3 @@ void Simulation::calculateForces() {
 		delete neighbours;
 	}
 }
-
-void Simulation::reset() {
-//	Input* input = GetSubsystem<Input>();
-//
-//	if (input->GetKeyDown(KEY_P)) {
-//		resetUnits();
-//	}
-}
-
-void Simulation::resetUnits() {
-//	for (int i = 0; i < units->size(); i++) {
-//		scene->RemoveChild((*units)[i]->getNode());
-//		delete (*units)[i];
-//	}
-//	units->clear();
-//	createUnits(edgeSize, spaceSize);
-}
-
-
-
-
-

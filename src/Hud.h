@@ -18,6 +18,10 @@
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Engine/Engine.h>
+#include <Urho3D/Graphics/Drawable.h>
+#include "CameraManager.h"
+#include "Benchmark.h"
+
 
 using namespace Urho3D;
 
@@ -29,10 +33,12 @@ public:
 	void createLogo();
 	void createDebugHud(SharedPtr<Engine> engine);
 	void createConsole(SharedPtr<Engine> engine);
+	void updateHud(Benchmark * benchmark, CameraManager *cameraManager);
 
 private:
 	Window *window;
 	UI* ui;
 	ResourceCache* cache;
+	Text* fpsText;
 };
 

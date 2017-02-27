@@ -7,6 +7,7 @@ public:
 	Benchmark();
 	~Benchmark();
 	double getAverageFPS();
+	double getLastFPS();
 	void add(double fps);
 	void save();
 private:

@@ -14,6 +14,7 @@
 #include <Urho3D/Scene/Scene.h>
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/Graphics/Model.h>
+#include "LevelBuilder.h"
 
 namespace Urho3D {
 	class Node;
@@ -39,21 +40,13 @@ public:
 protected:
 	void InitMouseMode(MouseMode mode);
 	void SetupViewport();
-
-	void createZone();
-	void CreateScene();
-	void createCamera();
-	void createLight();
 	void clickLeft();
 	void clickRight();
-	void createGround();
-	void updateHud(float timeStep);
 	std::vector<Unit*>* createUnits(int size, double space);
 	void moveCamera(float timeStep);
-	SharedPtr<Scene> scene;
-
+	void reset();
+	void resetUnits();
 	MouseMode useMouseMode_;
-	CameraManager * cameraManager;
 
 private:
 	void SetWindowTitleAndIcon();
@@ -63,12 +56,12 @@ private:
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
 
-	bool paused;
+	Simulation * simulation;
+	Benchmark* benchmark;
+	CameraManager * cameraManager;
 	Hud * hud;
 	Controls * controls;
-	Simulation * simulation;
-	Text* fpsText;
-	Benchmark* benchmark;
-	int edgeSize = 20;
-	double spaceSize = 1.5;
+	LevelBuilder * levelBuilder;
+
+	SharedPtr<Scene> scene;
 };

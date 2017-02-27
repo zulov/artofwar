@@ -38,15 +38,22 @@
     <ClCompile Include="src\Simulation.cpp">
       <Filter>simulation</Filter>
     </ClCompile>
-    <ClCompile Include="src\EntityFactory.cpp">
-      <Filter>objects</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ObjectList.cpp">
-      <Filter>objects</Filter>
-    </ClCompile>
     <ClCompile Include="src\ForceStrategy.cpp">
       <Filter>simulation\force</Filter>
     </ClCompile>
+    <ClCompile Include="src\ObjectManager.cpp">
+      <Filter>objects\collection</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BuildingFactory.cpp">
+      <Filter>objects\collection</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnitFactory.cpp">
+      <Filter>objects\collection</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EntityFactory.cpp">
+      <Filter>objects\collection</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LevelBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -89,15 +96,22 @@
     <ClInclude Include="src\Simulation.h">
       <Filter>simulation</Filter>
     </ClInclude>
-    <ClInclude Include="src\EntityFactory.h">
-      <Filter>objects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ObjectList.h">
-      <Filter>objects</Filter>
-    </ClInclude>
     <ClInclude Include="src\ForceStrategy.h">
       <Filter>simulation\force</Filter>
     </ClInclude>
+    <ClInclude Include="src\ObjectManager.h">
+      <Filter>objects\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BuildingFactory.h">
+      <Filter>objects\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnitFactory.h">
+      <Filter>objects\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityFactory.h">
+      <Filter>objects\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LevelBuilder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
@@ -121,6 +135,9 @@
     </Filter>
     <Filter Include="simulation\force">
       <UniqueIdentifier>{abf22b7a-6de9-4d35-a0ad-23b43d4703ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects\collection">
+      <UniqueIdentifier>{f4112f10-b35f-4d45-9ed6-c68b71f28fb7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

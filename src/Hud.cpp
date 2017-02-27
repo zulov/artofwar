@@ -1,7 +1,5 @@
 #include "Hud.h"
 
-
-
 Hud::Hud(Context* context, UI* _ui, ResourceCache* _cache, Graphics* _graphics) {
 	ui = _ui;
 	cache = _cache;
@@ -91,4 +89,21 @@ void Hud::createConsole(SharedPtr<Engine> engine) {
 	Console* console = engine->CreateConsole();
 	console->SetDefaultStyle(xmlFile);
 	console->GetBackground()->SetOpacity(0.8f);
+}
+
+void Hud::updateHud(Benchmark * benchmark, CameraManager *cameraManager) {
+	Urho3D::String msg = "FPS: " + String(benchmark->getLastFPS());
+	msg += "\navg FPS: " + String(benchmark->getAverageFPS());
+	msg += "\nCamera: ";
+	msg += "\n\t" + cameraManager->getInfo();
+
+	ui->GetRoot()->RemoveChild(fpsText);
+
+	fpsText = ui->GetRoot()->CreateChild<Text>();
+	fpsText->SetText(msg);
+	fpsText->SetFont(cache->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 12);
+	fpsText->SetTextAlignment(HA_LEFT);
+	fpsText->SetHorizontalAlignment(HA_LEFT);
+	fpsText->SetVerticalAlignment(VA_TOP);
+	fpsText->SetPosition(0, 20);
 }

@@ -15,6 +15,10 @@ double Benchmark::getAverageFPS() {
 	return avg;
 }
 
+double Benchmark::getLastFPS() {
+	return data[index];
+}
+
 void Benchmark::add(double fps) {
 	index++;
 	if (index >= LENGTH) {

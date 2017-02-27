@@ -6,6 +6,7 @@
 #include <ctime>
 #include "EnviromentStrategy.h"
 #include "ForceStrategy.h"
+#include "ObjectManager.h"
 
 
 namespace Urho3D {
@@ -15,20 +16,16 @@ namespace Urho3D {
 
 class Simulation
 {
-	//URHO3D_OBJECT(Simulation, Main);
-
 public:
-	Simulation(Context* context);
+	Simulation(Context* context, ResourceCache* _cache, SharedPtr<Scene> _scene);
 	void update(Input* input, float timeStep);
 	void setUnits(std::vector<Unit*>* units);
+	void createUnits();
 
 private:
 	void animateObjects(float timeStep);
 	void moveUnits(float timeStep);
-
 	void calculateForces();
-	void reset();
-	void resetUnits();
 
 	bool animate;
 
@@ -40,6 +37,6 @@ private:
 
 	EnviromentStrategy* envStrategy;
 	ForceStrategy* forceStrategy;
-
+	ObjectManager * objectManager;
 
 };
