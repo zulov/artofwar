@@ -5,6 +5,8 @@
 Controls::Controls(UI* _ui, Graphics* _graphics) {
 	ui = _ui;
 	graphics = _graphics;
+	selected = new std::vector<Entity*>();
+	selected->reserve(10);
 }
 
 
@@ -34,6 +36,15 @@ bool Controls::raycast(float maxDistance, Vector3& hitPos, Drawable*& hitDrawabl
 	}
 
 	return false;
+}
+
+void Controls::select(Entity * entity) {
+	if(entity->getType()== selectedType) {
+		
+	}else {
+		selected->clear();
+	}
+	selected->push_back(entity);
 }
 
 

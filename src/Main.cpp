@@ -148,7 +148,6 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 	}
 }
 
-// If the user clicks the canvas, attempt to switch to relative mouse mode on web platform
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {
 	Console* console = GetSubsystem<Console>();
 	if (console && console->IsVisible()) { return; }

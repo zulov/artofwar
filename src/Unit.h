@@ -11,6 +11,7 @@ public:
 
 	void move(double timeStep);
 	void applyForce(double timeStep);
+	virtual int getType() override;
 	void setAcceleration(Vector3 _acceleration);
 	double getMaxSeparationDistance();
 

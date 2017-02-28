@@ -18,6 +18,7 @@ public:
 	bool isAlive();
 	bool bucketHasChanged(int posX, int posY);
 	void setBucket(int posX, int posY);
+	virtual int getType();
 protected:
 	Urho3D::Node* node;
 	Vector3 position;

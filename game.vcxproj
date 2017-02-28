@@ -232,6 +232,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\EntityFactory.h" />
     <ClInclude Include="src\LevelBuilder.h" />
+    <ClInclude Include="src\ObjectEnums.h" />
     <ClInclude Include="src\UnitFactory.h" />
     <ClInclude Include="src\EnviromentStrategy.h" />
     <ClInclude Include="src\ForceStrategy.h" />

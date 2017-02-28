@@ -1,4 +1,5 @@
 #include "Unit.h"
+#include "ObjectEnums.h"
 
 Unit::Unit(Vector3 _position, Urho3D::Node* _boxNode) : Entity(_position, _boxNode) {
 
@@ -34,4 +35,8 @@ void Unit::applyForce(double timeStep) {
 		velocity.Normalize();
 		velocity *= maxSpeed;
 	}
+}
+
+int Unit::getType() {
+	return UNIT;
 }

@@ -1,5 +1,5 @@
 #include "Entity.h"
-
+#include "ObjectEnums.h"
 
 
 Entity::Entity(Vector3 _position, Urho3D::Node* _boxNode) {
@@ -49,6 +49,10 @@ bool Entity::bucketHasChanged(int posX, int posZ) {
 void Entity::setBucket(int posX, int posZ) {
 	bucketX = posX;
 	bucketZ = posZ;
+}
+
+int Entity::getType() {
+	return ENTITY;
 }
 
 Urho3D::Vector3 Entity::getPosition() {

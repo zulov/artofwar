@@ -112,6 +112,7 @@
       <Filter>objects\collection</Filter>
     </ClInclude>
     <ClInclude Include="src\LevelBuilder.h" />
+    <ClInclude Include="src\ObjectEnums.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
