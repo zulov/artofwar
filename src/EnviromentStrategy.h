@@ -13,6 +13,7 @@ public:
 	std::vector<Unit *> *getNeighbours(Unit * unit, std::vector<Unit *> *units);
 	void populate(std::vector<Unit *> *units);
 	void update(Unit * unit);
+	void clear();
 private:
 	const double separationDistance = 3;
 	BucketGrid* bucketGrid;

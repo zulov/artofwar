@@ -46,6 +46,7 @@ void Simulation::moveUnits(float timeStep) {
 		units->at(i)->move(timeStep);
 		envStrategy->update(units->at(i));
 	}
+	envStrategy->clear();
 }
 
 void Simulation::calculateForces() {

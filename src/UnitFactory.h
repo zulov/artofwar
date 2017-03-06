@@ -9,7 +9,8 @@ public:
 	~UnitFactory();
 	std::vector<Unit*>* createUnits();
 
-	int size = 20;
+	int size = 50;
 	double space = 1.5;
 };
 
+ 

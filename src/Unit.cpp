@@ -2,7 +2,6 @@
 #include "ObjectEnums.h"
 
 Unit::Unit(Vector3 _position, Urho3D::Node* _boxNode) : Entity(_position, _boxNode) {
-
 	maxSeparationDistance = 4;
 	mass = 1;
 	maxSpeed = 2;
@@ -15,9 +14,9 @@ Unit::~Unit() {
 }
 
 void Unit::move(double timeStep) {
-	velocity *= 0.95;
-	position += velocity*timeStep;
+	position += velocity * timeStep;
 	node->SetPosition(position);
+	velocity *= 0.95;
 }
 
 void Unit::setAcceleration(Vector3 _acceleration) {
@@ -30,8 +29,8 @@ double Unit::getMaxSeparationDistance() {
 
 void Unit::applyForce(double timeStep) {
 	double coef = timeStep / mass;
-	velocity += acceleration*coef;
-	if (velocity.Length() > maxSpeed*maxSpeed) {
+	velocity += acceleration * coef;
+	if (velocity.Length() > maxSpeed * maxSpeed) {
 		velocity.Normalize();
 		velocity *= maxSpeed;
 	}

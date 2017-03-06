@@ -9,7 +9,6 @@ Entity::Entity(Vector3 _position, Urho3D::Node* _boxNode) {
 	minimalDistance = 0.71;
 	alive = true;
 	bucketLevel = 2;
-
 }
 
 Entity::~Entity() {}

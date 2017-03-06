@@ -25,7 +25,7 @@ std::vector<Unit*>* UnitFactory::createUnits() {
 			Vector3 position = Vector3(x * space, 0, y * space);
 			Node* boxNode = scene->CreateChild("Box");
 			boxNode->SetPosition(position);
-
+			
 			StaticModel* boxObject = boxNode->CreateComponent<StaticModel>();
 			boxObject->SetModel(cache->GetResource<Model>("Models/Cube.mdl"));
 

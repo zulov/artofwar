@@ -21,9 +21,10 @@ BucketGrid::BucketGrid(double _resolution, double _size) {
 	}
 	maxContentCount = 0;
 	maxSum = 0;
+	cache = new std::unordered_map<long, std::vector<Unit *>*>();
 }
 
-void BucketGrid::writeToGrid(std::vector<Unit*> *entitys) {
+void BucketGrid::writeToGrid(std::vector<Unit*>* entitys) {
 	for (int i = 0; i < entitys->size(); i++) {
 		Vector3 pos = entitys->at(i)->getPosition();
 		int posX = getIntegerPos(pos.x_);
@@ -48,33 +49,43 @@ void BucketGrid::updateGrid(Unit* entity) {
 }
 
 int BucketGrid::getIntegerPos(double value) {
-	if (value < 0) { return  (int)(value / size*(resolution)) - 1; } else { return  (int)(value / size*(resolution)); }
+	if (value < 0) { return (int)(value / size * (resolution)) - 1; } else { return (int)(value / size * (resolution)); }
 }
 
-std::vector <Unit*> * BucketGrid::getArrayNeight(Unit* entity) {
-	std::vector<Unit*> *crowd = new std::vector<Unit *>();
-	crowd->reserve(20);
+int BucketGrid::cacheKey(int dX, int dZ) {
+	return ((dX+1000) << 10) + dZ;
+}
+
+std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
 	int level = entity->getLevelOfBucket();
 	int dX = entity->getBucketX();
 	int dZ = entity->getBucketZ();
+	long key = cacheKey(dX, dZ);
+	auto iter = cache->find(key);
+	if (iter != cache->end()) {
+		return iter->second;
+	} else {
+		std::vector<Unit*>* crowd = new std::vector<Unit *>();
+		crowd->reserve(20);
 
-	int sqLevel = level*level;
-	for (int i = -level; i <= level; i++) {
-		for (int j = -level; j <= level; j++) {
-			if (sqLevel >= i*i + j*j) {
-				Bucket * bucket = getBucketAt(i + dX, j + dZ);
-				std::vector<Unit *> *content = bucket->getContent();
-				if (!content->empty()) {
-					crowd->insert(crowd->end(), content->begin(), content->end());
+		int sqLevel = level * level;
+		for (int i = -level; i <= level; i++) {
+			for (int j = -level; j <= level; j++) {
+				if (sqLevel >= i * i + j * j) {
+					Bucket* bucket = getBucketAt(i + dX, j + dZ);
+					std::vector<Unit *>* content = bucket->getContent();
+					if (!content->empty()) {
+						crowd->insert(crowd->end(), content->begin(), content->end());
+					}
 				}
 			}
 		}
+		cache->insert(std::pair<long, std::vector <Unit*>* >(key, crowd));
+		return crowd;
 	}
-
-	return crowd;
 }
 
-Bucket *BucketGrid::getBucketAt(int _x, int _z) {
+Bucket* BucketGrid::getBucketAt(int _x, int _z) {
 	int posX = _x + resolution / 2;
 	int posZ = _z + resolution / 2;
 
@@ -141,4 +152,8 @@ void BucketGrid::clean() {
 
 		}
 	}*/
+}
+
+void BucketGrid::clearAfterStep() {
+	cache->clear();
 }

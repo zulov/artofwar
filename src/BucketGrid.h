@@ -1,5 +1,7 @@
 #pragma once
 #include "Bucket.h"
+#include <unordered_map>
+
 class BucketGrid {
 public:
 
@@ -15,10 +17,11 @@ public:
 
 	std::vector<std::vector<Bucket*>> getBucketList();
 	void clean();
+	void clearAfterStep();
 private:
-	
 
 	int getIntegerPos(double value);
+	int cacheKey(int dX, int dZ);
 	std::vector<Bucket*> edgeBuckets;
 	std::vector<std::vector<Bucket*>> bucketList;
 	double resolution;
@@ -26,5 +29,7 @@ private:
 
 	double maxContentCount;
 	double maxSum;
+
+	std::unordered_map<long, std::vector <Unit*>* > *cache;
 };
 
