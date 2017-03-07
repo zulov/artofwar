@@ -21,7 +21,10 @@ BucketGrid::BucketGrid(double _resolution, double _size) {
 	}
 	maxContentCount = 0;
 	maxSum = 0;
-	cache = new std::unordered_map<long, std::vector<Unit *>*>();
+	cache = new std::vector<Unit*>*[resolution * resolution];
+	for (int i = 0; i < resolution * resolution; i++) {
+		cache[i] = nullptr;
+	}
 }
 
 void BucketGrid::writeToGrid(std::vector<Unit*>* entitys) {
@@ -49,11 +52,18 @@ void BucketGrid::updateGrid(Unit* entity) {
 }
 
 int BucketGrid::getIntegerPos(double value) {
-	if (value < 0) { return (int)(value / size * (resolution)) - 1; } else { return (int)(value / size * (resolution)); }
+	if (value < 0) {
+		return (int)(value / size * (resolution)) - 1;
+	} else {
+		return (int)(value / size * (resolution));
+	}
 }
 
 int BucketGrid::cacheKey(int dX, int dZ) {
-	return ((dX+1000) << 10) + dZ;
+	int x = dX + resolution / 2;
+	int z = dZ + resolution / 2;
+
+	return (int)resolution * x + z;
 }
 
 std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
@@ -61,12 +71,12 @@ std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
 	int dX = entity->getBucketX();
 	int dZ = entity->getBucketZ();
 	long key = cacheKey(dX, dZ);
-	auto iter = cache->find(key);
-	if (iter != cache->end()) {
-		return iter->second;
+
+	if (cache[key] != nullptr) {
+		return cache[key];
 	} else {
 		std::vector<Unit*>* crowd = new std::vector<Unit *>();
-		crowd->reserve(20);
+		crowd->reserve((lastSize+maxSize)/2);
 
 		int sqLevel = level * level;
 		for (int i = -level; i <= level; i++) {
@@ -80,7 +90,11 @@ std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
 				}
 			}
 		}
-		cache->insert(std::pair<long, std::vector <Unit*>* >(key, crowd));
+		cache[key] = crowd;
+		lastSize = crowd->size();
+		if (maxSize < crowd->size()) {
+			maxSize = crowd->size();
+		}
 		return crowd;
 	}
 }
@@ -155,5 +169,11 @@ void BucketGrid::clean() {
 }
 
 void BucketGrid::clearAfterStep() {
-	cache->clear();
+	for (int i = 0; i < resolution * resolution; i++) {
+		if (cache[i] != nullptr) {
+			cache[i]->clear();
+			delete cache[i];
+			cache[i] = nullptr;
+		}
+	}
 }

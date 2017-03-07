@@ -2,14 +2,15 @@
 #include "Bucket.h"
 #include <unordered_map>
 
-class BucketGrid {
+class BucketGrid
+{
 public:
 
 	BucketGrid(double _resolution, double _size);
 	Bucket* getBucketAt(int x, int z);
-	void writeToGrid(std::vector<Unit *> *crowd);
-	void updateGrid(Unit * entity);
-	std::vector <Unit *> *getArrayNeight(Unit * entity);
+	void writeToGrid(std::vector<Unit *>* crowd);
+	void updateGrid(Unit* entity);
+	std::vector<Unit *>* getArrayNeight(Unit* entity);
 	int getIndex(int _posX, int _posZ);
 	int calcXCordFromEdge(int index);
 	int calcYCordFromEdge(int index);
@@ -30,6 +31,7 @@ private:
 	double maxContentCount;
 	double maxSum;
 
-	std::unordered_map<long, std::vector <Unit*>* > *cache;
+	std::vector<Unit*>** cache;
+	int lastSize = 10;
+	int maxSize = 20;
 };
-
