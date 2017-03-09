@@ -177,14 +177,15 @@ void Main::clickLeft() {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
-	if (controls->raycast(250.0f, hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
+	if (controls->raycast(hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
 		Node* hitNode = hitDrawable->GetNode();
 
 		if (hitNode->GetName() == "Box") {
+
 			Node* child = hitNode->GetChild("title");
 			Text3D* text = child->GetComponent<Text3D>();
 			text->SetColor(Color::RED);
-
+			//controls->select()
 		} else if (hitNode->GetName() == "Ground") {
 
 		}
@@ -195,7 +196,7 @@ void Main::clickRight() {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
-	if (controls->raycast(250.0f, hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
+	if (controls->raycast(hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
 		Node* hitNode = hitDrawable->GetNode();
 
 		if (hitNode->GetName() == "Box") {

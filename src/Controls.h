@@ -15,16 +15,17 @@
 
 using namespace Urho3D;
 
-class Controls {
+class Controls
+{
 public:
 	Controls(UI* _ui, Graphics* _graphics);
 	~Controls();
-	bool raycast(float maxDistance, Vector3 & hitPos, Drawable *& hitDrawable, Camera * camera, Scene * scene);
+	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera, Scene* scene);
 	void select(Entity* entity);
 private:
 	UI* ui;
 	Graphics* graphics;
-	std::vector<Entity*> *selected;
+	std::vector<Entity*>* selected;
 	ObjectType selectedType;
+	float maxDistance = 300;
 };
-

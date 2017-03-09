@@ -14,11 +14,10 @@ Controls::~Controls() {}
 
 
 
-bool Controls::raycast(float maxDistance, Vector3& hitPos, Drawable*& hitDrawable, Camera* camera, Scene * scene) {
-	hitDrawable = 0;
+bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera, Scene * scene) {
+	hitDrawable = nullptr;
 
 	IntVector2 pos = ui->GetCursorPosition();
-	// Check the cursor is visible and there is no UI element in front of the cursor
 	if (!ui->GetCursor()->IsVisible() || ui->GetElementAt(pos, true)) {
 		return false;
 	}
@@ -39,7 +38,7 @@ bool Controls::raycast(float maxDistance, Vector3& hitPos, Drawable*& hitDrawabl
 }
 
 void Controls::select(Entity * entity) {
-	if(entity->getType()== selectedType) {
+	if(entity->getType() == selectedType) {
 		
 	}else {
 		selected->clear();

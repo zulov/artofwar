@@ -42,7 +42,7 @@ void LevelBuilder::createLight() {
 
 void LevelBuilder::createGround() {
 	Node* planeNode = scene->CreateChild("Ground");
-	planeNode->SetScale(Vector3(100.0f, 1.0f, 100.0f));
+	planeNode->SetScale(Vector3(300, 1.0f, 300));
 	planeNode->SetPosition(Vector3(0, -1.0f, 0));
 	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
 	planeObject->SetModel(cache->GetResource<Model>("Models/Plane.mdl"));
