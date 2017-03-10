@@ -2,10 +2,11 @@
 #include <Urho3D/Scene/Node.h>
 #include <Urho3D/Math/Vector3.h>
 #include <Urho3D/UI/Text3D.h>
+#include <Urho3D/Scene/Component.h>
 
 using namespace Urho3D;
 
-class Entity {
+class Entity  {
 public:
 	Entity(Vector3 _position, Urho3D::Node* _boxNode);
 	~Entity();

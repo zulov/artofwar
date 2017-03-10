@@ -24,12 +24,14 @@
 #include <Urho3D/UI/Text3D.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Core/CoreEvents.h>
+#include "LinkComponent.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
 
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE) {
 	benchmark = new Benchmark();
+	context->RegisterFactory<LinkComponent>();
 }
 
 void Main::Setup() {
@@ -40,6 +42,9 @@ void Main::Setup() {
 	engineParameters_[EP_SOUND] = false;
 	engineParameters_[EP_WINDOW_HEIGHT] = 768;
 	engineParameters_[EP_WINDOW_WIDTH] = 1366;
+
+
+
 }
 
 void Main::Start() {
@@ -181,7 +186,8 @@ void Main::clickLeft() {
 		Node* hitNode = hitDrawable->GetNode();
 
 		if (hitNode->GetName() == "Box") {
-
+			LinkComponent *lc = hitNode->GetComponent<LinkComponent>();
+			
 			Node* child = hitNode->GetChild("title");
 			Text3D* text = child->GetComponent<Text3D>();
 			text->SetColor(Color::RED);

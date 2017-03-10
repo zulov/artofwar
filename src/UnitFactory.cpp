@@ -6,12 +6,14 @@
 #include <Urho3D/UI/Font.h>
 #include <Urho3D/Graphics/Model.h>
 #include "EntityFactory.h"
+#include "LinkComponent.h"
 
-UnitFactory::UnitFactory(ResourceCache* _cache, SharedPtr<Urho3D::Scene> _scene):EntityFactory(_cache, _scene) {
+UnitFactory::UnitFactory(ResourceCache* _cache, SharedPtr<Urho3D::Scene> _scene): EntityFactory(_cache, _scene) {
 
 }
 
-UnitFactory::~UnitFactory() {}
+UnitFactory::~UnitFactory() {
+}
 
 std::vector<Unit*>* UnitFactory::createUnits() {
 	int startSize = -(size / 2);
@@ -23,13 +25,13 @@ std::vector<Unit*>* UnitFactory::createUnits() {
 	for (int y = startSize; y < endSize; ++y) {
 		for (int x = startSize; x < endSize; ++x) {
 			Vector3 position = Vector3(x * space, 0, y * space);
-			Node* boxNode = scene->CreateChild("Box");
-			boxNode->SetPosition(position);
-			
-			StaticModel* boxObject = boxNode->CreateComponent<StaticModel>();
+			Node* node = scene->CreateChild("Box");
+			node->SetPosition(position);
+
+			StaticModel* boxObject = node->CreateComponent<StaticModel>();
 			boxObject->SetModel(cache->GetResource<Model>("Models/Cube.mdl"));
 
-			Node* title = boxNode->CreateChild("title");
+			Node* title = node->CreateChild("title");
 			title->SetPosition(Vector3(0.0f, 1.2f, 0.0f));
 			Text3D* titleText = title->CreateComponent<Text3D>();
 			titleText->SetText("Entity");
@@ -39,8 +41,11 @@ std::vector<Unit*>* UnitFactory::createUnits() {
 			titleText->SetAlignment(HA_CENTER, VA_CENTER);
 			titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
 
-			Unit* newUnit = new Unit(position, boxNode);
+			Unit* newUnit = new Unit(position, node);
 			units->push_back(newUnit);
+			LinkComponent* lc = node->CreateComponent<LinkComponent>();
+
+			lc->bound(node, newUnit);
 		}
 	}
 	return units;

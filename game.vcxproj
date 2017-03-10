@@ -208,6 +208,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EntityFactory.cpp" />
     <ClCompile Include="src\LevelBuilder.cpp" />
+    <ClCompile Include="src\LinkComponent.cpp" />
     <ClCompile Include="src\UnitFactory.cpp" />
     <ClCompile Include="src\EnviromentStrategy.cpp" />
     <ClCompile Include="src\ForceStrategy.cpp" />
@@ -232,6 +233,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\EntityFactory.h" />
     <ClInclude Include="src\LevelBuilder.h" />
+    <ClInclude Include="src\LinkComponent.h" />
     <ClInclude Include="src\ObjectEnums.h" />
     <ClInclude Include="src\UnitFactory.h" />
     <ClInclude Include="src\EnviromentStrategy.h" />

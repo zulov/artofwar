@@ -54,6 +54,9 @@
       <Filter>objects\collection</Filter>
     </ClCompile>
     <ClCompile Include="src\LevelBuilder.cpp" />
+    <ClCompile Include="src\LinkComponent.cpp">
+      <Filter>objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -113,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="src\LevelBuilder.h" />
     <ClInclude Include="src\ObjectEnums.h" />
+    <ClInclude Include="src\LinkComponent.h">
+      <Filter>objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
