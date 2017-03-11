@@ -2,12 +2,13 @@
 #include "ObjectEnums.h"
 
 
-Building::Building(Vector3 _position, Urho3D::Node* _boxNode) : Entity(_position, _boxNode) {
+Building::Building(Vector3 _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_position, _boxNode, _font) {
 
 }
 
 
-Building::~Building() {}
+Building::~Building() {
+}
 
 
 int Building::getType() {

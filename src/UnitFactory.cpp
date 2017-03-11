@@ -21,7 +21,7 @@ std::vector<Unit*>* UnitFactory::createUnits() {
 
 	std::vector<Unit*>* units = new std::vector<Unit *>();
 	units->reserve(size * size);
-
+	Font* font = cache->GetResource<Font>("Fonts/Anonymous Pro.ttf");
 	for (int y = startSize; y < endSize; ++y) {
 		for (int x = startSize; x < endSize; ++x) {
 			Vector3 position = Vector3(x * space, 0, y * space);
@@ -31,17 +31,7 @@ std::vector<Unit*>* UnitFactory::createUnits() {
 			StaticModel* boxObject = node->CreateComponent<StaticModel>();
 			boxObject->SetModel(cache->GetResource<Model>("Models/Cube.mdl"));
 
-			Node* title = node->CreateChild("title");
-			title->SetPosition(Vector3(0.0f, 1.2f, 0.0f));
-			Text3D* titleText = title->CreateComponent<Text3D>();
-			titleText->SetText("Entity");
-
-			titleText->SetFont(cache->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 24);
-			titleText->SetColor(Color::GREEN);
-			titleText->SetAlignment(HA_CENTER, VA_CENTER);
-			titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
-
-			Unit* newUnit = new Unit(position, node);
+			Unit* newUnit = new Unit(position, node, font);
 			units->push_back(newUnit);
 			LinkComponent* lc = node->CreateComponent<LinkComponent>();
 

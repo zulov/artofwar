@@ -44,7 +44,6 @@ void Main::Setup() {
 	engineParameters_[EP_WINDOW_WIDTH] = 1366;
 
 
-
 }
 
 void Main::Start() {
@@ -186,12 +185,10 @@ void Main::clickLeft() {
 		Node* hitNode = hitDrawable->GetNode();
 
 		if (hitNode->GetName() == "Box") {
-			LinkComponent *lc = hitNode->GetComponent<LinkComponent>();
-			
-			Node* child = hitNode->GetChild("title");
-			Text3D* text = child->GetComponent<Text3D>();
-			text->SetColor(Color::RED);
-			//controls->select()
+			LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+			Entity* clicked = lc->getEntity();
+			controls->select(clicked);
+
 		} else if (hitNode->GetName() == "Ground") {
 
 		}
@@ -206,9 +203,7 @@ void Main::clickRight() {
 		Node* hitNode = hitDrawable->GetNode();
 
 		if (hitNode->GetName() == "Box") {
-			Node* child = hitNode->GetChild("title");
-			Text3D* text = child->GetComponent<Text3D>();
-			text->SetColor(Color::GREEN);
+			controls->unSelect(0);
 
 		} else if (hitNode->GetName() == "Ground") {
 

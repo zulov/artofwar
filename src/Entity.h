@@ -6,13 +6,14 @@
 
 using namespace Urho3D;
 
-class Entity  {
+class Entity
+{
 public:
-	Entity(Vector3 _position, Urho3D::Node* _boxNode);
+	Entity(Vector3 _position, Urho3D::Node* _boxNode, Font* _font);
 	~Entity();
 	Vector3 getPosition();
 	double getMinimalDistance();
-	Urho3D::Node * getNode();
+	Urho3D::Node* getNode();
 	int getLevelOfBucket();
 	int getBucketX();
 	int getBucketZ();
@@ -20,17 +21,18 @@ public:
 	bool bucketHasChanged(int posX, int posY);
 	void setBucket(int posX, int posY);
 	virtual int getType();
+	virtual void select() =0;
+	virtual void unSelect() =0;
 protected:
 	Urho3D::Node* node;
 	Vector3 position;
 	Vector3 rotation;
 	double minimalDistance;
-
+	Font* font;
 private:
 	int bucketLevel;
 	int bucketX, bucketZ;
 	bool alive;
-	Node* title;
-	Text3D* titleText;
-};
 
+	
+};

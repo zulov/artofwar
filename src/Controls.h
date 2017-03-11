@@ -21,7 +21,9 @@ public:
 	Controls(UI* _ui, Graphics* _graphics);
 	~Controls();
 	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera, Scene* scene);
+	void unselect(Entity* entity);
 	void select(Entity* entity);
+	void unSelect(int type);
 private:
 	UI* ui;
 	Graphics* graphics;

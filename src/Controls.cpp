@@ -37,13 +37,21 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera, 
 	return false;
 }
 
+void Controls::unSelect(int type) {
+	selectedType = ObjectType(type);
+	for (int i = 0; i < selected->size();i++) {
+		selected->at(i)->unSelect();
+	}
+	selected->clear();
+}
+
 void Controls::select(Entity * entity) {
 	if(entity->getType() == selectedType) {
 		
 	}else {
-		selected->clear();
+		unSelect(entity->getType());
 	}
+	entity->select();
 	selected->push_back(entity);
 }
-
 

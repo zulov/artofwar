@@ -2,13 +2,14 @@
 #include "ObjectEnums.h"
 
 
-Entity::Entity(Vector3 _position, Urho3D::Node* _boxNode) {
+Entity::Entity(Vector3 _position, Urho3D::Node* _boxNode, Font * _font) {
 	node = _boxNode;
 	position = _position;
 	rotation = Vector3();
 	minimalDistance = 0.71;
 	alive = true;
 	bucketLevel = 2;
+	font = _font;
 }
 
 Entity::~Entity() {}
