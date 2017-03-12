@@ -177,38 +177,47 @@ void Main::SetupViewport() {
 	renderer->SetViewport(0, viewport);
 }
 
-void Main::clickLeft() {
+void Main::clickLeft(Drawable* hitDrawable) {
+	Node* hitNode = hitDrawable->GetNode();
+
+	if (hitNode->GetName() == "Box") {
+		LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+		Entity* clicked = lc->getEntity();
+		controls->select(clicked);
+
+	} else if (hitNode->GetName() == "Ground") {
+
+	}
+
+}
+
+void Main::click(int button) {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
 	if (controls->raycast(hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
 		Node* hitNode = hitDrawable->GetNode();
-
-		if (hitNode->GetName() == "Box") {
-			LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
-			Entity* clicked = lc->getEntity();
-			controls->select(clicked);
-
-		} else if (hitNode->GetName() == "Ground") {
-
+		switch (button) {
+		case MOUSEB_LEFT:
+			clickLeft(hitDrawable);
+			break;
+		case MOUSEB_RIGHT:
+			clickRight(hitDrawable);
+			break;
 		}
 	}
 }
 
-void Main::clickRight() {
-	Vector3 hitPos;
-	Drawable* hitDrawable;
+void Main::clickRight(Drawable* hitDrawable) {
+	Node* hitNode = hitDrawable->GetNode();
 
-	if (controls->raycast(hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
-		Node* hitNode = hitDrawable->GetNode();
+	if (hitNode->GetName() == "Box") {
+		controls->unSelect(0);
 
-		if (hitNode->GetName() == "Box") {
-			controls->unSelect(0);
+	} else if (hitNode->GetName() == "Ground") {
 
-		} else if (hitNode->GetName() == "Ground") {
-
-		}
 	}
+
 }
 
 void Main::moveCamera(float timeStep) {
@@ -222,9 +231,9 @@ void Main::moveCamera(float timeStep) {
 	cameraManager->rotate(input->GetMouseMove());
 
 	if (input->GetMouseButtonPress(MOUSEB_LEFT)) {
-		clickLeft();
+		click(MOUSEB_LEFT);
 	} else if (input->GetMouseButtonPress(MOUSEB_RIGHT)) {
-		clickRight();
+		click(MOUSEB_RIGHT);
 	}
 }
 

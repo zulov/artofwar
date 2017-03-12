@@ -40,8 +40,9 @@ public:
 protected:
 	void InitMouseMode(MouseMode mode);
 	void SetupViewport();
-	void clickLeft();
-	void clickRight();
+	void clickLeft(Drawable* hitDrawable);
+	void click(int button);
+	void clickRight(Drawable* hitDrawable);
 	std::vector<Unit*>* createUnits(int size, double space);
 	void moveCamera(float timeStep);
 	void reset();
