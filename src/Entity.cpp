@@ -55,6 +55,12 @@ int Entity::getType() {
 	return ENTITY;
 }
 
+void Entity::select() {
+}
+
+void Entity::unSelect() {
+}
+
 Urho3D::Vector3 Entity::getPosition() {
 	return position;
 }

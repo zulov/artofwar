@@ -21,8 +21,8 @@ public:
 	bool bucketHasChanged(int posX, int posY);
 	void setBucket(int posX, int posY);
 	virtual int getType();
-	virtual void select() =0;
-	virtual void unSelect() =0;
+	virtual void select();
+	virtual void unSelect();
 protected:
 	Urho3D::Node* node;
 	Vector3 position;

@@ -15,6 +15,9 @@ ObjectManager::~ObjectManager() {
 	delete units;
 	delete buildings;
 	delete entities;
+
+	delete unitFactory;
+	delete buildingFactory;
 }
 
 void ObjectManager::add(Unit* unit) {
@@ -24,6 +27,7 @@ void ObjectManager::add(Unit* unit) {
 
 void ObjectManager::add(Entity* entity) {
 	entities->push_back(entity);
+	createLink(entity->getNode(), entity);
 }
 
 void ObjectManager::add(Building* building) {
@@ -57,4 +61,11 @@ std::vector<Entity*>* ObjectManager::getEntities() {
 
 std::vector<Unit*>* ObjectManager::createUnits() {
 	return unitFactory->createUnits();
+}
+
+
+void ObjectManager::createLink(Node* node, Entity* entity) {
+	LinkComponent* lc = node->CreateComponent<LinkComponent>();
+
+	lc->bound(node, entity);
 }

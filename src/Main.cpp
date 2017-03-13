@@ -59,7 +59,7 @@ void Main::Start() {
 	CreateConsoleAndDebugHud();
 
 	levelBuilder = new LevelBuilder(GetSubsystem<ResourceCache>());
-	scene = levelBuilder->CreateScene(context_);
+	scene = levelBuilder->CreateScene(context_, nullptr);
 	cameraManager = new CameraManager(context_);
 	simulation = new Simulation(context_, GetSubsystem<ResourceCache>(), scene);
 	simulation->createUnits();

@@ -24,6 +24,7 @@ public:
 	std::vector<Entity*>* getEntities();
 
 	std::vector<Unit*>* createUnits();
+	static  void createLink(Node* node, Entity* entity);
 private:
 
 	std::vector<Unit*> *units;

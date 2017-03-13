@@ -7,6 +7,7 @@
 #include <Urho3D/Graphics/Model.h>
 #include "EntityFactory.h"
 #include "LinkComponent.h"
+#include "ObjectManager.h"
 
 UnitFactory::UnitFactory(ResourceCache* _cache, SharedPtr<Urho3D::Scene> _scene): EntityFactory(_cache, _scene) {
 
@@ -14,6 +15,7 @@ UnitFactory::UnitFactory(ResourceCache* _cache, SharedPtr<Urho3D::Scene> _scene)
 
 UnitFactory::~UnitFactory() {
 }
+
 
 std::vector<Unit*>* UnitFactory::createUnits() {
 	int startSize = -(size / 2);
@@ -33,9 +35,7 @@ std::vector<Unit*>* UnitFactory::createUnits() {
 
 			Unit* newUnit = new Unit(position, node, font);
 			units->push_back(newUnit);
-			LinkComponent* lc = node->CreateComponent<LinkComponent>();
-
-			lc->bound(node, newUnit);
+			ObjectManager::createLink(node, newUnit);//to zrobic pozniej przy dodawaniu do object managerra
 		}
 	}
 	return units;
