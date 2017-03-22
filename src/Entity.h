@@ -3,6 +3,7 @@
 #include <Urho3D/Math/Vector3.h>
 #include <Urho3D/UI/Text3D.h>
 #include <Urho3D/Scene/Component.h>
+#include "../ActionType.h"
 
 using namespace Urho3D;
 
@@ -23,6 +24,7 @@ public:
 	virtual int getType();
 	virtual void select();
 	virtual void unSelect();
+	virtual void action(ActionType actionType, Entity * entity);
 protected:
 	Urho3D::Node* node;
 	Vector3 position;

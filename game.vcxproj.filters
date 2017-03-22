@@ -41,21 +41,24 @@
     <ClCompile Include="src\ForceStrategy.cpp">
       <Filter>simulation\force</Filter>
     </ClCompile>
-    <ClCompile Include="src\ObjectManager.cpp">
-      <Filter>objects\collection</Filter>
-    </ClCompile>
+    <ClCompile Include="src\LevelBuilder.cpp" />
     <ClCompile Include="src\BuildingFactory.cpp">
-      <Filter>objects\collection</Filter>
-    </ClCompile>
-    <ClCompile Include="src\UnitFactory.cpp">
-      <Filter>objects\collection</Filter>
+      <Filter>objects\collection\factory</Filter>
     </ClCompile>
     <ClCompile Include="src\EntityFactory.cpp">
-      <Filter>objects\collection</Filter>
+      <Filter>objects\collection\factory</Filter>
     </ClCompile>
-    <ClCompile Include="src\LevelBuilder.cpp" />
+    <ClCompile Include="src\UnitFactory.cpp">
+      <Filter>objects\collection\factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectManager.cpp">
+      <Filter>objects\collection\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SceneObjectManager.cpp">
+      <Filter>objects\collection\manager</Filter>
+    </ClCompile>
     <ClCompile Include="src\LinkComponent.cpp">
-      <Filter>objects</Filter>
+      <Filter>objects\collection\link</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,21 +105,29 @@
     <ClInclude Include="src\ForceStrategy.h">
       <Filter>simulation\force</Filter>
     </ClInclude>
-    <ClInclude Include="src\ObjectManager.h">
-      <Filter>objects\collection</Filter>
-    </ClInclude>
+    <ClInclude Include="src\LevelBuilder.h" />
     <ClInclude Include="src\BuildingFactory.h">
-      <Filter>objects\collection</Filter>
-    </ClInclude>
-    <ClInclude Include="src\UnitFactory.h">
-      <Filter>objects\collection</Filter>
+      <Filter>objects\collection\factory</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityFactory.h">
-      <Filter>objects\collection</Filter>
+      <Filter>objects\collection\factory</Filter>
     </ClInclude>
-    <ClInclude Include="src\LevelBuilder.h" />
-    <ClInclude Include="src\ObjectEnums.h" />
+    <ClInclude Include="src\UnitFactory.h">
+      <Filter>objects\collection\factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectManager.h">
+      <Filter>objects\collection\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneObjectManager.h">
+      <Filter>objects\collection\manager</Filter>
+    </ClInclude>
     <ClInclude Include="src\LinkComponent.h">
+      <Filter>objects\collection\link</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectEnums.h">
+      <Filter>objects</Filter>
+    </ClInclude>
+    <ClInclude Include="ActionType.h">
       <Filter>objects</Filter>
     </ClInclude>
   </ItemGroup>
@@ -145,6 +156,15 @@
     </Filter>
     <Filter Include="objects\collection">
       <UniqueIdentifier>{f4112f10-b35f-4d45-9ed6-c68b71f28fb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects\collection\factory">
+      <UniqueIdentifier>{fcbf3bc5-ce6a-4cc5-8b67-3e0841a8f513}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects\collection\manager">
+      <UniqueIdentifier>{108402b7-d8b3-48e3-b880-bf9103f78faf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects\collection\link">
+      <UniqueIdentifier>{1afe235c-f383-41e8-acf9-aa5ae746e6e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

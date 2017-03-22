@@ -61,6 +61,10 @@ void Entity::select() {
 void Entity::unSelect() {
 }
 
+void Entity::action(ActionType actionType, Entity* entity) {
+
+}
+
 Urho3D::Vector3 Entity::getPosition() {
 	return position;
 }

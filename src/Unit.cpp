@@ -5,12 +5,15 @@ Unit::Unit(Vector3 _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_pos
 	maxSeparationDistance = 4;
 	mass = 1;
 	maxSpeed = 2;
+	minSpeed = maxSpeed * 0.2f;
 	acceleration = Vector3();
 	velocity = Vector3();
+	aims = new std::vector<Vector3*>();//linkedlist albo ze wskaznikiem
 }
 
 Unit::~Unit() {
 	//delete node;
+	delete aims;
 }
 
 void Unit::move(double timeStep) {
@@ -27,12 +30,46 @@ double Unit::getMaxSeparationDistance() {
 	return maxSeparationDistance;
 }
 
+void Unit::action(ActionType actionType, Entity* entity) {
+	switch (actionType) {
+	case ADD_AIM:
+		addAim(entity);
+		break;
+	case FOLLOW:
+		break;
+	default:
+		break;//zalogowaæ
+	}
+}
+
+Vector3* Unit::getAim() {
+	if (aims->size() > 0) {
+		return aims->at(0);
+	}
+	return nullptr;
+}
+
+Vector3 Unit::getVelocity() {
+	return velocity;
+}
+
+double Unit::getMass() {
+	return mass;
+}
+
+void Unit::addAim(Entity* entity) {
+	aims->push_back(new Vector3(entity->getPosition()));
+}
+
 void Unit::applyForce(double timeStep) {
 	double coef = timeStep / mass;
 	velocity += acceleration * coef;
-	if (velocity.Length() > maxSpeed * maxSpeed) {
+	double velLenght = velocity.Length();
+	if (velLenght > maxSpeed * maxSpeed) {
 		velocity.Normalize();
 		velocity *= maxSpeed;
+	} else if (velLenght < minSpeed) {
+		velocity = Vector3();
 	}
 }
 

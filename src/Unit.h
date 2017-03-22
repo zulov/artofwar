@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include <vector>
 
 using namespace Urho3D;
 
@@ -16,13 +17,19 @@ public:
 	void unSelect() override;
 	void setAcceleration(Vector3 _acceleration);
 	double getMaxSeparationDistance();
-
+	virtual void action(ActionType actionType, Entity * entity) override;
+	Vector3 *getAim();
+	Vector3 getVelocity();
+	double getMass();
 protected:
 	Vector3 acceleration;
 	Vector3 velocity;
 	double mass;
 	double maxSpeed;
 	double maxSeparationDistance;
-
+	double minSpeed;
+	std::vector<Vector3*> *aims;
+private:
+	void addAim(Entity * entity);
 };
 
