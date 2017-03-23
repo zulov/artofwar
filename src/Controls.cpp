@@ -1,7 +1,6 @@
 #include "Controls.h"
 
 
-
 Controls::Controls(UI* _ui, Graphics* _graphics) {
 	ui = _ui;
 	graphics = _graphics;
@@ -10,11 +9,11 @@ Controls::Controls(UI* _ui, Graphics* _graphics) {
 }
 
 
-Controls::~Controls() {}
+Controls::~Controls() {
+}
 
 
-
-bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera, Scene * scene) {
+bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera, Scene* scene) {
 	hitDrawable = nullptr;
 
 	IntVector2 pos = ui->GetCursorPosition();
@@ -39,19 +38,24 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera, 
 
 void Controls::unSelect(int type) {
 	selectedType = ObjectType(type);
-	for (int i = 0; i < selected->size();i++) {
+	for (int i = 0; i < selected->size(); i++) {
 		selected->at(i)->unSelect();
 	}
 	selected->clear();
 }
 
-void Controls::select(Entity * entity) {
-	if(entity->getType() == selectedType) {
-		
-	}else {
+void Controls::action(ActionType action, Entity* entity) {
+	for (int i = 0; i < selected->size(); i++) {
+		selected->at(i)->action(action, entity);
+	}
+}
+
+void Controls::select(Entity* entity) {
+	if (entity->getType() == selectedType) {
+
+	} else {
 		unSelect(entity->getType());
 	}
 	entity->select();
 	selected->push_back(entity);
 }
-

@@ -26,7 +26,8 @@ using namespace Urho3D;
 
 const float TOUCH_SENSITIVITY = 2.0f;
 
-class Main : public Application {
+class Main : public Application
+{
 	// Enable type information.
 	URHO3D_OBJECT(Main, Application);
 
@@ -40,9 +41,9 @@ public:
 protected:
 	void InitMouseMode(MouseMode mode);
 	void SetupViewport();
-	void clickLeft(Drawable* hitDrawable);
+	void clickLeft(Drawable* hitDrawable, Vector3 hitPos);
 	void click(int button);
-	void clickRight(Drawable* hitDrawable);
+	void clickRight(Drawable* hitDrawable, Vector3 hitPos);
 	std::vector<Unit*>* createUnits(int size, double space);
 	void moveCamera(float timeStep);
 	void reset();
@@ -57,12 +58,12 @@ private:
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
 
-	Simulation * simulation;
+	Simulation* simulation;
 	Benchmark* benchmark;
-	CameraManager * cameraManager;
-	Hud * hud;
-	Controls * controls;
-	LevelBuilder * levelBuilder;
+	CameraManager* cameraManager;
+	Hud* hud;
+	Controls* controls;
+	LevelBuilder* levelBuilder;
 
 	SharedPtr<Scene> scene;
 };

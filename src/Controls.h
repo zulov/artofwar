@@ -24,6 +24,7 @@ public:
 	void unselect(Entity* entity);
 	void select(Entity* entity);
 	void unSelect(int type);
+	void action(ActionType action, Entity* entity);
 private:
 	UI* ui;
 	Graphics* graphics;

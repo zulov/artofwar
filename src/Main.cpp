@@ -42,8 +42,6 @@ void Main::Setup() {
 	engineParameters_[EP_SOUND] = false;
 	engineParameters_[EP_WINDOW_HEIGHT] = 768;
 	engineParameters_[EP_WINDOW_WIDTH] = 1366;
-
-
 }
 
 void Main::Start() {
@@ -84,7 +82,6 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 
 void Main::InitMouseMode(MouseMode mode) {
 	useMouseMode_ = mode;
-
 	Input* input = GetSubsystem<Input>();
 
 	Console* console = GetSubsystem<Console>();
@@ -94,7 +91,6 @@ void Main::InitMouseMode(MouseMode mode) {
 			input->SetMouseMode(MM_ABSOLUTE, true);
 		}
 	}
-
 }
 
 void Main::SetWindowTitleAndIcon() {
@@ -137,7 +133,6 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 		SetupViewport();
 		InitMouseMode(cameraManager->getMouseMode());
 	}
-
 }
 
 void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
@@ -177,7 +172,24 @@ void Main::SetupViewport() {
 	renderer->SetViewport(0, viewport);
 }
 
-void Main::clickLeft(Drawable* hitDrawable) {
+void Main::click(int button) {
+	Vector3 hitPos;
+	Drawable* hitDrawable;
+
+	if (controls->raycast(hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
+		Node* hitNode = hitDrawable->GetNode();
+		switch (button) {
+		case MOUSEB_LEFT:
+			clickLeft(hitDrawable, hitPos);
+			break;
+		case MOUSEB_RIGHT:
+			clickRight(hitDrawable, hitPos);
+			break;
+		}
+	}
+}
+
+void Main::clickLeft(Drawable* hitDrawable, Vector3 hitPos) {
 	Node* hitNode = hitDrawable->GetNode();
 
 	if (hitNode->GetName() == "Box") {
@@ -188,36 +200,18 @@ void Main::clickLeft(Drawable* hitDrawable) {
 	} else if (hitNode->GetName() == "Ground") {
 
 	}
-
 }
 
-void Main::click(int button) {
-	Vector3 hitPos;
-	Drawable* hitDrawable;
-
-	if (controls->raycast(hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
-		Node* hitNode = hitDrawable->GetNode();
-		switch (button) {
-		case MOUSEB_LEFT:
-			clickLeft(hitDrawable);
-			break;
-		case MOUSEB_RIGHT:
-			clickRight(hitDrawable);
-			break;
-		}
-	}
-}
-
-void Main::clickRight(Drawable* hitDrawable) {
+void Main::clickRight(Drawable* hitDrawable, Vector3 hitPos) {
 	Node* hitNode = hitDrawable->GetNode();
 
 	if (hitNode->GetName() == "Box") {
 		controls->unSelect(0);
 
 	} else if (hitNode->GetName() == "Ground") {
-
+		Entity* entity = new Entity(hitPos, nullptr, nullptr);
+		controls->action(ADD_AIM, entity);
 	}
-
 }
 
 void Main::moveCamera(float timeStep) {

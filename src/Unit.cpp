@@ -58,7 +58,9 @@ double Unit::getMass() {
 }
 
 void Unit::addAim(Entity* entity) {
-	aims->push_back(new Vector3(entity->getPosition()));
+	Vector3 pos=entity->getPosition();
+	pos.y_ = 0;
+	aims->push_back(new Vector3(pos));
 }
 
 void Unit::applyForce(double timeStep) {

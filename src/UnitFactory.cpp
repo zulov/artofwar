@@ -36,7 +36,7 @@ std::vector<Unit*>* UnitFactory::createUnits() {
 			Unit* newUnit = new Unit(position, node, font);
 			units->push_back(newUnit);
 			ObjectManager::createLink(node, newUnit);//to zrobic pozniej przy dodawaniu do object managerra
-			newUnit->action(ADD_AIM, new Entity(Vector3(100, 0, 0), nullptr, nullptr));//tymczasowo
+			//newUnit->action(ADD_AIM, new Entity(Vector3(100, 0, 0), nullptr, nullptr));//tymczasowo
 		}
 	}
 	return units;
