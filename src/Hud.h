@@ -36,6 +36,7 @@ public:
 	void updateHud(Benchmark * benchmark, CameraManager *cameraManager);
 
 private:
+	void someMenuExample(Context* context);
 	Window *window;
 	UI* ui;
 	ResourceCache* cache;

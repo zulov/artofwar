@@ -128,10 +128,8 @@
     <ClInclude Include="src\ObjectEnums.h">
       <Filter>objects</Filter>
     </ClInclude>
-    <ClInclude Include="ActionType.h">
-      <Filter>objects</Filter>
-    </ClInclude>
     <ClInclude Include="src\Aims.h" />
+    <ClInclude Include="src\ActionType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

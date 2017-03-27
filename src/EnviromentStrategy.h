@@ -15,7 +15,7 @@ public:
 	void update(Unit * unit);
 	void clear();
 private:
-	const double separationDistance = 3;
+	const double separationDistance = 4;
 	BucketGrid* bucketGrid;
 };
 

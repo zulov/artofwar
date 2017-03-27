@@ -223,7 +223,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="src\Simulation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ActionType.h" />
+    <ClInclude Include="src\ActionType.h" />
     <ClInclude Include="src\Aims.h" />
     <ClInclude Include="src\Benchmark.h" />
     <ClInclude Include="src\Bucket.h" />

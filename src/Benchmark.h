@@ -1,5 +1,6 @@
 #pragma once
-#define LENGTH 200
+#define LENGTH 500
+#include <fstream>
 
 
 class Benchmark {
@@ -10,11 +11,13 @@ public:
 	double getLastFPS();
 	void add(double fps);
 	void save();
+	long getLoops();
 private:
 	double data[LENGTH];
 	int index;
 	double sum;
 	double avg;
-
+	std::ofstream output;
+	long loops = 0;
 };
 

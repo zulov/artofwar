@@ -3,7 +3,7 @@
 #include <Urho3D/Math/Vector3.h>
 #include <Urho3D/UI/Text3D.h>
 #include <Urho3D/Scene/Component.h>
-#include "../ActionType.h"
+#include "ActionType.h"
 
 using namespace Urho3D;
 

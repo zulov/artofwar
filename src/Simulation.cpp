@@ -11,7 +11,7 @@ Simulation::Simulation(Context* context, ResourceCache* _cache, SharedPtr<Scene>
 	forceStrategy = new ForceStrategy();
 	objectManager = new ObjectManager(_cache, _scene);
 	srand(time(NULL));
-	animate = false;
+	animate = true;
 }
 
 

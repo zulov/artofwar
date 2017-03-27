@@ -42,6 +42,9 @@ void Main::Setup() {
 	engineParameters_[EP_SOUND] = false;
 	engineParameters_[EP_WINDOW_HEIGHT] = 768;
 	engineParameters_[EP_WINDOW_WIDTH] = 1366;
+	engine_->SetMaxFps(1000);
+	engine_->SetMinFps(0.1);
+
 }
 
 void Main::Start() {
@@ -52,7 +55,7 @@ void Main::Start() {
 
 	hud = new Hud(context_, GetSubsystem<UI>(), GetSubsystem<ResourceCache>(), GetSubsystem<Graphics>());
 	hud->createStaticHud(String("Liczba jednostek") + String("??"));
-	hud->createLogo();
+	//hud->createLogo();
 
 	CreateConsoleAndDebugHud();
 
@@ -73,7 +76,7 @@ void Main::Stop() {
 }
 
 void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
-	float timeStep = eventData[SceneUpdate::P_TIMESTEP].GetFloat();
+	double timeStep = eventData[SceneUpdate::P_TIMESTEP].GetDouble();
 	simulation->update(GetSubsystem<Input>(), timeStep);
 	benchmark->add(1.0 / timeStep);
 	hud->updateHud(benchmark, cameraManager);
