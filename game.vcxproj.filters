@@ -60,6 +60,7 @@
     <ClCompile Include="src\LinkComponent.cpp">
       <Filter>objects\collection\link</Filter>
     </ClCompile>
+    <ClCompile Include="src\Aims.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -130,6 +131,7 @@
     <ClInclude Include="ActionType.h">
       <Filter>objects</Filter>
     </ClInclude>
+    <ClInclude Include="src\Aims.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

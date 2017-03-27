@@ -28,7 +28,7 @@ protected:
 	double maxSpeed;
 	double maxSeparationDistance;
 	double minSpeed;
-	std::vector<Vector3*> *aims;
+	std::vector<Urho3D::Vector3*> *aims;
 private:
 	void addAim(Entity * entity);
 };

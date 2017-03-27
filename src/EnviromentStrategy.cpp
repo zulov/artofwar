@@ -29,7 +29,6 @@ void EnviromentStrategy::populate(std::vector<Unit *>* units) {
 	bucketGrid->writeToGrid(units);
 }
 
-
 void EnviromentStrategy::update(Unit * unit) {
 	bucketGrid->updateGrid(unit);
 }

@@ -8,7 +8,7 @@ Unit::Unit(Vector3 _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_pos
 	minSpeed = maxSpeed * 0.2f;
 	acceleration = Vector3();
 	velocity = Vector3();
-	aims = new std::vector<Vector3*>();//linkedlist albo ze wskaznikiem
+	aims = new std::vector<Urho3D::Vector3*>();
 }
 
 Unit::~Unit() {
