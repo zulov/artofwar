@@ -11,13 +11,8 @@ public:
 	void add(Unit* entity);
 	void remove(Unit* entity);
 	void clearContent();
-	int getSum();
-	void addToSum();
-	void clearSum();
-
 private:
-	int sum;
 	std::vector <Unit*>* content;
-	Vector3 position;
+	Vector3 corners[4];
 };
 

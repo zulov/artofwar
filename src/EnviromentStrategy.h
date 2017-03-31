@@ -4,6 +4,9 @@
 #include "Unit.h"
 #include "BucketGrid.h"
 
+#define BUCKET_GRID_RESOLUTION 150
+#define BUCKET_GRID_SIZE 300
+
 class EnviromentStrategy {
 
 public:

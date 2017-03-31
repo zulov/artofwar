@@ -57,8 +57,12 @@ double Unit::getMass() {
 	return mass;
 }
 
+double Unit::getUnitRadius() {
+	return unitRadius;
+}
+
 void Unit::addAim(Entity* entity) {
-	Vector3 pos=entity->getPosition();
+	Vector3 pos = entity->getPosition();
 	pos.y_ = 0;
 	aims->push_back(new Vector3(pos));
 }

@@ -2,28 +2,24 @@
 #include "ObjectEnums.h"
 
 
-Entity::Entity(Vector3 _position, Urho3D::Node* _boxNode, Font * _font) {
+Entity::Entity(Vector3 _position, Urho3D::Node* _boxNode, Font* _font) {
 	node = _boxNode;
 	position = _position;
 	rotation = Vector3();
 	minimalDistance = 0.71;
 	alive = true;
-	bucketLevel = 2;
 	font = _font;
 }
 
-Entity::~Entity() {}
+Entity::~Entity() {
+}
 
 double Entity::getMinimalDistance() {
 	return minimalDistance;
 }
 
-Urho3D::Node * Entity::getNode() {
+Urho3D::Node* Entity::getNode() {
 	return node;
-}
-
-int Entity::getLevelOfBucket() {
-	return bucketLevel;
 }
 
 int Entity::getBucketX() {

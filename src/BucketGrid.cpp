@@ -4,6 +4,8 @@
 BucketGrid::BucketGrid(int _resolution, double _size) {
 	resolution = _resolution;
 	size = _size;
+	fieldSize = size / resolution;
+
 	bucketList.reserve(resolution);
 	for (int i = 0; i < resolution; i++) {
 		std::vector<Bucket *> list;
@@ -69,7 +71,9 @@ void BucketGrid::updateSizes(int size) {
 }
 
 std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
-	int level = entity->getLevelOfBucket();
+	double unitRadius = entity->getUnitRadius();
+	double cubeSize = size / resolution;//b
+	int level = unitRadius / cubeSize + 0.99;
 	int dX = entity->getBucketX();
 	int dZ = entity->getBucketZ();
 	long key = cacheHash(dX, dZ);
@@ -79,22 +83,20 @@ std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
 	} else {
 		std::vector<Unit*>* crowd = new std::vector<Unit *>();
 		crowd->reserve((lastSize + maxSize) / 2);
-
+		std::vector<std::pair<int, int>*>* levels = getEnvIndexs(entity->getMaxSeparationDistance());
 		int sqLevel = level * level;
-		for (int i = -level; i <= level; i++) {
-			for (int j = -level; j <= level; j++) {
-				if (sqLevel >= i * i + j * j) {
-					Bucket* bucket = getBucketAt(i + dX, j + dZ);
-					std::vector<Unit *>* content = bucket->getContent();
-					if (!content->empty()) {
-						crowd->insert(crowd->end(), content->begin(), content->end());
-					}
-				}
+		for (int i = 0; i < levels->size(); i++) {
+			std::pair<int, int>* pair = levels->at(i);
+			Bucket* bucket = getBucketAt(pair->first + dX, pair->second + dZ);
+			std::vector<Unit *>* content = bucket->getContent();
+			if (!content->empty()) {
+				crowd->insert(crowd->end(), content->begin(), content->end());
 			}
 		}
 		cache[key] = crowd;
 
 		updateSizes(crowd->size());
+		delete levels;
 		return crowd;
 	}
 }
@@ -113,7 +115,7 @@ Bucket* BucketGrid::getBucketAt(int _x, int _z) {
 bool BucketGrid::isInSide(int _posX, int _posZ) const {
 	if (_posX < 0 || _posX >= resolution || _posZ < 0 || _posZ >= resolution) {
 		return false;
-	}else {
+	} else {
 		return true;
 	}
 }
@@ -137,4 +139,32 @@ void BucketGrid::clearAfterStep() {
 			cache[i] = nullptr;
 		}
 	}
+}
+
+bool BucketGrid::fieldInCircle(int i, int j, double radius) {
+	int x = i * fieldSize;
+	int y = j * fieldSize;
+	if (x * x + y * y < radius * radius) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+std::vector<std::pair<int, int>*>* BucketGrid::getEnvIndexs(double radius) {
+	std::vector<std::pair<int, int>*>* indexes = new std::vector<std::pair<int, int>*>();
+
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 10; j++) {
+			if (fieldInCircle(i, j, radius)) {
+				int x = i + 1;
+				int y = j + 1;
+				indexes->push_back(new std::pair<int, int>(x, y));
+				indexes->push_back(new std::pair<int, int>(x, -y));
+				indexes->push_back(new std::pair<int, int>(-x, y));
+				indexes->push_back(new std::pair<int, int>(-x, -y));
+			}
+		}
+	}
+	return indexes;
 }

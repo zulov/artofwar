@@ -21,6 +21,7 @@ public:
 	Vector3 *getAim();
 	Vector3 getVelocity();
 	double getMass();
+	double getUnitRadius();
 protected:
 	Vector3 acceleration;
 	Vector3 velocity;
@@ -31,5 +32,6 @@ protected:
 	std::vector<Urho3D::Vector3*> *aims;
 private:
 	void addAim(Entity * entity);
+	double unitRadius = 4;
 };
 

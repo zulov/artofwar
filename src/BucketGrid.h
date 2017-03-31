@@ -15,6 +15,8 @@ public:
 	void clean();
 	void clearAfterStep();
 private:
+	bool fieldInCircle(int i, int j, double radius);
+	std::vector<std::pair <int, int>*>* getEnvIndexs(double radius);
 	int getIntegerPos(double value);
 	int cacheHash(int dX, int dZ);
 	void updateSizes(int size);
@@ -22,6 +24,7 @@ private:
 	std::vector<std::vector<Bucket*>> bucketList;
 	int resolution;
 	double size;
+	double fieldSize;
 
 	std::vector<Unit*>** cache;
 	int lastSize = 10;

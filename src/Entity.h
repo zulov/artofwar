@@ -15,7 +15,6 @@ public:
 	Vector3 getPosition();
 	double getMinimalDistance();
 	Urho3D::Node* getNode();
-	int getLevelOfBucket();
 	int getBucketX();
 	int getBucketZ();
 	bool isAlive();
@@ -32,9 +31,6 @@ protected:
 	double minimalDistance;
 	Font* font;
 private:
-	int bucketLevel;
 	int bucketX, bucketZ;
-	bool alive;
-
-	
+	bool alive;	
 };

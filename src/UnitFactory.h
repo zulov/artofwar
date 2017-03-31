@@ -10,7 +10,7 @@ public:
 	void createLink(Node* node, Unit* newUnit);
 	std::vector<Unit*>* createUnits();
 
-	int size = 30;
+	int size = 20;
 	double space = 1.25;
 };
 

@@ -26,7 +26,7 @@ std::vector<Unit *> *EnviromentStrategy::getNeighbours(Unit * unit, std::vector<
 }
 
 void EnviromentStrategy::populate(std::vector<Unit *>* units) {
-	bucketGrid = new BucketGrid(150, 300);
+	bucketGrid = new BucketGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE);
 	bucketGrid->writeToGrid(units);
 }
 
