@@ -96,6 +96,10 @@ std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
 		cache[key] = crowd;
 
 		updateSizes(crowd->size());
+		for (int i = 0; i< levels->size(); i++){
+			delete (levels->at(i));
+		}
+		levels->clear();
 		delete levels;
 		return crowd;
 	}
@@ -165,6 +169,14 @@ std::vector<std::pair<int, int>*>* BucketGrid::getEnvIndexs(double radius) {
 				indexes->push_back(new std::pair<int, int>(-x, -y));
 			}
 		}
+		if (fieldInCircle(i, 0, radius)) {
+			int x = i + 1;
+			indexes->push_back(new std::pair<int, int>(x, 0));
+			indexes->push_back(new std::pair<int, int>(0, x));
+			indexes->push_back(new std::pair<int, int>(-x, 0));
+			indexes->push_back(new std::pair<int, int>(0, -x));
+		}
 	}
+	indexes->push_back(new std::pair<int, int>(0, 0));
 	return indexes;
 }
