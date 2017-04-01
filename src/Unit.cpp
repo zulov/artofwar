@@ -1,13 +1,13 @@
 #include "Unit.h"
 #include "ObjectEnums.h"
 
-Unit::Unit(Vector3 _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_position, _boxNode, _font) {
+Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_position, _boxNode, _font) {
 	maxSeparationDistance = 4;
 	mass = 1;
 	maxSpeed = 2;
 	minSpeed = maxSpeed * 0.2f;
-	acceleration = Vector3();
-	velocity = Vector3();
+	acceleration = new Vector3();
+	velocity = new Vector3();
 	aims = new std::vector<Urho3D::Vector3*>();
 }
 
@@ -17,12 +17,12 @@ Unit::~Unit() {
 }
 
 void Unit::move(double timeStep) {
-	position += velocity * timeStep;
-	node->SetPosition(position);
-	velocity *= 0.95;
+	(*position) += (*velocity) * timeStep;
+	node->SetPosition(*position);
+	(*velocity) *= 0.95;
 }
 
-void Unit::setAcceleration(Vector3 _acceleration) {
+void Unit::setAcceleration(Vector3* _acceleration) {
 	acceleration = _acceleration;
 }
 
@@ -49,7 +49,7 @@ Vector3* Unit::getAim() {
 	return nullptr;
 }
 
-Vector3 Unit::getVelocity() {
+Vector3* Unit::getVelocity() {
 	return velocity;
 }
 
@@ -62,20 +62,20 @@ double Unit::getUnitRadius() {
 }
 
 void Unit::addAim(Entity* entity) {
-	Vector3 pos = entity->getPosition();
-	pos.y_ = 0;
-	aims->push_back(new Vector3(pos));
+	Vector3* pos = entity->getPosition();
+	pos->y_ = 0;
+	aims->push_back(new Vector3(*pos));
 }
 
 void Unit::applyForce(double timeStep) {
 	double coef = timeStep / mass;
-	velocity += acceleration * coef;
-	double velLenght = velocity.Length();
+	(*velocity) += (*acceleration) * coef;
+	double velLenght = velocity->LengthSquared();
 	if (velLenght > maxSpeed * maxSpeed) {
-		velocity.Normalize();
-		velocity *= maxSpeed;
-	} else if (velLenght < minSpeed) {
-		velocity = Vector3();
+		velocity->Normalize();
+		(*velocity) *= maxSpeed;
+	} else if (velLenght < minSpeed * minSpeed) {
+		velocity = new Vector3();
 	}
 }
 

@@ -26,12 +26,12 @@ std::vector<Unit*>* UnitFactory::createUnits() {
 	Font* font = cache->GetResource<Font>("Fonts/Anonymous Pro.ttf");
 	for (int y = startSize; y < endSize; ++y) {
 		for (int x = startSize; x < endSize; ++x) {
-			Vector3 position = Vector3(x * space, 0, y * space);
+			Vector3 *position = new Vector3(x * space, 0, y * space);
 			Node* node = scene->CreateChild("Box");
-			node->SetPosition(position);
+			node->SetPosition(*position);
 
-			StaticModel* boxObject = node->CreateComponent<StaticModel>();
-			boxObject->SetModel(cache->GetResource<Model>("Models/Cube.mdl"));
+			//StaticModel* boxObject = node->CreateComponent<StaticModel>();
+			//boxObject->SetModel(cache->GetResource<Model>("Models/Cube.mdl"));
 
 			Unit* newUnit = new Unit(position, node, font);
 			units->push_back(newUnit);

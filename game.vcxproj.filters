@@ -130,6 +130,7 @@
     </ClInclude>
     <ClInclude Include="src\Aims.h" />
     <ClInclude Include="src\ActionType.h" />
+    <ClInclude Include="math.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

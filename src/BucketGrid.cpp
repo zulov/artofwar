@@ -40,9 +40,9 @@ BucketGrid::~BucketGrid() {
 
 void BucketGrid::writeToGrid(std::vector<Unit*>* entitys) {
 	for (int i = 0; i < entitys->size(); ++i) {
-		Vector3 pos = entitys->at(i)->getPosition();
-		int posX = getIntegerPos(pos.x_);
-		int posZ = getIntegerPos(pos.z_);
+		Vector3* pos = entitys->at(i)->getPosition();
+		int posX = getIntegerPos(pos->x_);
+		int posZ = getIntegerPos(pos->z_);
 
 		entitys->at(i)->setBucket(posX, posZ);
 		getBucketAt(posX, posZ)->add(entitys->at(i));
@@ -50,9 +50,9 @@ void BucketGrid::writeToGrid(std::vector<Unit*>* entitys) {
 }
 
 void BucketGrid::updateGrid(Unit* entity) {
-	Vector3 pos = entity->getPosition();
-	int posX = getIntegerPos(pos.x_);
-	int posZ = getIntegerPos(pos.z_);
+	Vector3* pos = entity->getPosition();
+	int posX = getIntegerPos(pos->x_);
+	int posZ = getIntegerPos(pos->z_);
 	if (!entity->isAlive()) {
 		getBucketAt(entity->getBucketX(), entity->getBucketZ())->remove(entity);
 	} else if (entity->bucketHasChanged(posX, posZ)) {
@@ -104,7 +104,7 @@ std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
 		crowd->reserve((lastSize + maxSize) / 2);
 		std::vector<std::pair<int, int>*>* levels = getEnvIndexsFromCache(entity->getMaxSeparationDistance());
 
-		for (int i = 0; i < levels->size(); i++) {
+		for (int i = 0; i < levels->size(); ++i) {
 			std::pair<int, int>* pair = levels->at(i);
 			Bucket* bucket = getBucketAt(pair->first + dX, pair->second + dZ);
 			std::vector<Unit *>* content = bucket->getContent();

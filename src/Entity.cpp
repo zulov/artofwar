@@ -2,16 +2,18 @@
 #include "ObjectEnums.h"
 
 
-Entity::Entity(Vector3 _position, Urho3D::Node* _boxNode, Font* _font) {
+Entity::Entity(Vector3 *_position, Urho3D::Node* _boxNode, Font* _font) {
 	node = _boxNode;
 	position = _position;
-	rotation = Vector3();
+	rotation = new Vector3();
 	minimalDistance = 0.71;
 	alive = true;
 	font = _font;
 }
 
 Entity::~Entity() {
+	delete position;
+	delete rotation;
 }
 
 double Entity::getMinimalDistance() {
@@ -61,6 +63,6 @@ void Entity::action(ActionType actionType, Entity* entity) {
 
 }
 
-Urho3D::Vector3 Entity::getPosition() {
+Urho3D::Vector3 *Entity::getPosition() {
 	return position;
 }

@@ -53,13 +53,13 @@ void Simulation::calculateForces() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		std::vector<Unit*>* neighbours = envStrategy->getNeighbours((*units)[i], units);
 
-		Vector3 *sepPedestrian = forceStrategy->separationUnits((*units)[i], neighbours);
-		Vector3 *sepObstacle = forceStrategy->separationObstacle((*units)[i], 0);
+		Vector3* sepPedestrian = forceStrategy->separationUnits((*units)[i], neighbours);
+		Vector3* sepObstacle = forceStrategy->separationObstacle((*units)[i], 0);
 
-		Vector3 *destForce =  forceStrategy->destination((*units)[i]);
-		Vector3 *rand = forceStrategy->randomForce();
+		Vector3* destForce = forceStrategy->destination((*units)[i]);
+		Vector3* rand = forceStrategy->randomForce();
 
-		Vector3 forces = (*sepPedestrian) += (*sepObstacle) += (*destForce) += (*rand);
+		Vector3* forces = new Vector3((*sepPedestrian) += (*sepObstacle) += (*destForce) += (*rand));
 		delete sepPedestrian;
 		delete sepObstacle;
 		delete destForce;

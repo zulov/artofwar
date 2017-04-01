@@ -10,9 +10,9 @@ using namespace Urho3D;
 class Entity
 {
 public:
-	Entity(Vector3 _position, Urho3D::Node* _boxNode, Font* _font);
+	Entity(Vector3 *_position, Urho3D::Node* _boxNode, Font* _font);
 	~Entity();
-	Vector3 getPosition();
+	Vector3 *getPosition();
 	double getMinimalDistance();
 	Urho3D::Node* getNode();
 	int getBucketX();
@@ -26,8 +26,8 @@ public:
 	virtual void action(ActionType actionType, Entity * entity);
 protected:
 	Urho3D::Node* node;
-	Vector3 position;
-	Vector3 rotation;
+	Vector3 *position;
+	Vector3 *rotation;
 	double minimalDistance;
 	Font* font;
 private:

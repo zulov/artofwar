@@ -212,7 +212,7 @@ void Main::clickRight(Drawable* hitDrawable, Vector3 hitPos) {
 		controls->unSelect(0);
 
 	} else if (hitNode->GetName() == "Ground") {
-		Entity* entity = new Entity(hitPos, nullptr, nullptr);
+		Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
 		controls->action(ADD_AIM, entity);
 	}
 }
