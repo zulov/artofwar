@@ -2,14 +2,19 @@
 #include "Bucket.h"
 #include <unordered_map>
 
+#define MAX_SEP_DIST 10
+#define RES_SEP_DIST 100
+
 class BucketGrid
 {
 public:
 
 	BucketGrid(int _resolution, double _size);
+	~BucketGrid();
 	Bucket* getBucketAt(int x, int z);
 	void writeToGrid(std::vector<Unit *>* crowd);
 	void updateGrid(Unit* entity);
+	std::vector<std::pair<int, int>*>* getEnvIndexsFromCache(double getMaxSeparationDistance);
 	std::vector<Unit *>* getArrayNeight(Unit* entity);
 
 	void clean();
@@ -27,6 +32,7 @@ private:
 	double fieldSize;
 
 	std::vector<Unit*>** cache;
+	std::vector<std::pair <int, int>*>** levelsCache;
 	int lastSize = 10;
 	int maxSize = 20;
 };

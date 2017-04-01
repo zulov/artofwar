@@ -22,6 +22,20 @@ BucketGrid::BucketGrid(int _resolution, double _size) {
 	for (int i = 0; i < resolution * resolution; ++i) {
 		cache[i] = nullptr;
 	}
+	levelsCache = new std::vector<std::pair<int, int>*>*[RES_SEP_DIST];
+	for (int i = 0; i < RES_SEP_DIST; ++i) {
+		levelsCache[i] = getEnvIndexs((((double)MAX_SEP_DIST) / RES_SEP_DIST) * i);
+	}
+}
+
+BucketGrid::~BucketGrid() {
+
+	//	for (int i = 0; i < RES_SEP_DIST; i++) {
+	//		delete (levels->at(i));
+	//	}
+	//	levels->clear();
+	//	delete levels;
+
 }
 
 void BucketGrid::writeToGrid(std::vector<Unit*>* entitys) {
@@ -48,6 +62,12 @@ void BucketGrid::updateGrid(Unit* entity) {
 	}
 }
 
+std::vector<std::pair<int, int>*>* BucketGrid::getEnvIndexsFromCache(double dist) {
+	double diff = ((double)MAX_SEP_DIST) / RES_SEP_DIST;
+	int index = dist / diff;
+	return levelsCache[index];
+}
+
 int BucketGrid::getIntegerPos(double value) {
 	if (value < 0) {
 		return (int)(value / size * (resolution)) - 1;
@@ -72,8 +92,7 @@ void BucketGrid::updateSizes(int size) {
 
 std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
 	double unitRadius = entity->getUnitRadius();
-	double cubeSize = size / resolution;//b
-	int level = unitRadius / cubeSize + 0.99;
+
 	int dX = entity->getBucketX();
 	int dZ = entity->getBucketZ();
 	long key = cacheHash(dX, dZ);
@@ -83,8 +102,8 @@ std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
 	} else {
 		std::vector<Unit*>* crowd = new std::vector<Unit *>();
 		crowd->reserve((lastSize + maxSize) / 2);
-		std::vector<std::pair<int, int>*>* levels = getEnvIndexs(entity->getMaxSeparationDistance());
-		int sqLevel = level * level;
+		std::vector<std::pair<int, int>*>* levels = getEnvIndexsFromCache(entity->getMaxSeparationDistance());
+
 		for (int i = 0; i < levels->size(); i++) {
 			std::pair<int, int>* pair = levels->at(i);
 			Bucket* bucket = getBucketAt(pair->first + dX, pair->second + dZ);
@@ -96,11 +115,7 @@ std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
 		cache[key] = crowd;
 
 		updateSizes(crowd->size());
-		for (int i = 0; i< levels->size(); i++){
-			delete (levels->at(i));
-		}
-		levels->clear();
-		delete levels;
+
 		return crowd;
 	}
 }
