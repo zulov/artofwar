@@ -41,6 +41,7 @@ void Simulation::update(Input* input, float timeStep) {
 }
 
 void Simulation::moveUnits(float timeStep) {
+	timeStep = 0.05;
 	for (unsigned i = 0; i < units->size(); ++i) {
 		units->at(i)->applyForce(timeStep);
 		units->at(i)->move(timeStep);

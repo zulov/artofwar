@@ -2,6 +2,7 @@
 #include "Unit.h"
 #include <vector>
 #include "EntityFactory.h"
+#include "defines.h"
 
 class UnitFactory :public EntityFactory {
 public:
@@ -10,8 +11,8 @@ public:
 	void createLink(Node* node, Unit* newUnit);
 	std::vector<Unit*>* createUnits();
 
-	int size = 100;
-	double space = 1.25;
+	int size = UNITS_NUMBER;
+	double space = 1;
 };
 
  

@@ -42,7 +42,7 @@ void Main::Setup() {
 	engineParameters_[EP_SOUND] = false;
 	engineParameters_[EP_WINDOW_HEIGHT] = 768;
 	engineParameters_[EP_WINDOW_WIDTH] = 1366;
-	engine_->SetMaxFps(1000);
+	engine_->SetMaxFps(10000);
 	engine_->SetMinFps(0.1);
 
 }

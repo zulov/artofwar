@@ -235,6 +235,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="src\CameraEnums.h" />
     <ClInclude Include="src\CameraManager.h" />
     <ClInclude Include="src\Controls.h" />
+    <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\EntityFactory.h" />
     <ClInclude Include="src\LevelBuilder.h" />

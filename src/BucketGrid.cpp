@@ -80,7 +80,7 @@ int BucketGrid::cacheHash(int dX, int dZ) {
 	int x = dX + resolution / 2;
 	int z = dZ + resolution / 2;
 
-	return (int)resolution * x + z;
+	return resolution * x + z;
 }
 
 void BucketGrid::updateSizes(int size) {
@@ -173,8 +173,8 @@ bool BucketGrid::fieldInCircle(int i, int j, double radius) {
 std::vector<std::pair<int, int>*>* BucketGrid::getEnvIndexs(double radius) {
 	std::vector<std::pair<int, int>*>* indexes = new std::vector<std::pair<int, int>*>();
 
-	for (int i = 0; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
+	for (int i = 0; i < RES_SEP_DIST; i++) {
+		for (int j = 0; j < RES_SEP_DIST; j++) {
 			if (fieldInCircle(i, j, radius)) {
 				int x = i + 1;
 				int y = j + 1;

@@ -4,8 +4,6 @@
 #include "Unit.h"
 #include "BucketGrid.h"
 
-#define BUCKET_GRID_RESOLUTION 75
-#define BUCKET_GRID_SIZE 300
 
 class EnviromentStrategy {
 
@@ -19,7 +17,7 @@ public:
 	void update(Unit * unit);
 	void clear();
 private:
-	//const double separationDistance = 4;
+
 	BucketGrid* bucketGrid;
 };
 

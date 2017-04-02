@@ -1,8 +1,9 @@
 #include "Unit.h"
 #include "ObjectEnums.h"
+#include "Main.h"
 
 Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_position, _boxNode, _font) {
-	maxSeparationDistance = 4;
+	maxSeparationDistance = SEP_RADIUS;
 	mass = 1;
 	maxSpeed = 2;
 	minSpeed = maxSpeed * 0.2f;

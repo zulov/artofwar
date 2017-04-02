@@ -1,4 +1,5 @@
 #include "EnviromentStrategy.h"
+#include "Main.h"
 
 EnviromentStrategy::EnviromentStrategy() {
 
