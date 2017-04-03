@@ -43,21 +43,23 @@ void Simulation::update(Input* input, float timeStep) {
 void Simulation::moveUnits(float timeStep) {
 	timeStep = 0.05;
 	for (unsigned i = 0; i < units->size(); ++i) {
-		units->at(i)->applyForce(timeStep);
-		units->at(i)->move(timeStep);
-		envStrategy->update(units->at(i));
+		Unit * unit = (*units)[i];
+		unit->applyForce(timeStep);
+		unit->move(timeStep);
+		envStrategy->update(unit);
 	}
 	envStrategy->clear();
 }
 
 void Simulation::calculateForces() {
 	for (unsigned i = 0; i < units->size(); ++i) {
-		std::vector<Unit*>* neighbours = envStrategy->getNeighbours((*units)[i], units);
+		Unit * unit = (*units)[i];
+		std::vector<Unit*>* neighbours = envStrategy->getNeighbours(unit, units);
 
-		Vector3* sepPedestrian = forceStrategy->separationUnits((*units)[i], neighbours);
-		Vector3* sepObstacle = forceStrategy->separationObstacle((*units)[i], 0);
+		Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
+		Vector3* sepObstacle = forceStrategy->separationObstacle(unit, 0);
 
-		Vector3* destForce = forceStrategy->destination((*units)[i]);
+		Vector3* destForce = forceStrategy->destination(unit);
 		Vector3* rand = forceStrategy->randomForce();
 
 		Vector3* forces = new Vector3((*sepPedestrian) += (*sepObstacle) += (*destForce) += (*rand));
@@ -66,7 +68,7 @@ void Simulation::calculateForces() {
 		delete destForce;
 		delete rand;
 
-		(*units)[i]->setAcceleration(forces);
+		unit->setAcceleration(forces);
 
 		delete neighbours;
 	}

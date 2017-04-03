@@ -105,12 +105,10 @@ std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
 		std::vector<std::pair<int, int>*>* levels = getEnvIndexsFromCache(entity->getMaxSeparationDistance());
 
 		for (int i = 0; i < levels->size(); ++i) {
-			std::pair<int, int>* pair = levels->at(i);
+			std::pair<int, int>* pair = (*levels)[i];
 			Bucket* bucket = getBucketAt(pair->first + dX, pair->second + dZ);
 			std::vector<Unit *>* content = bucket->getContent();
-			if (!content->empty()) {
-				crowd->insert(crowd->end(), content->begin(), content->end());
-			}
+			crowd->insert(crowd->end(), content->begin(), content->end());
 		}
 		cache[key] = crowd;
 
@@ -125,7 +123,7 @@ Bucket* BucketGrid::getBucketAt(int _x, int _z) {
 	int posZ = _z + resolution / 2;
 
 	if (isInSide(posX, posZ)) {
-		return bucketList.at(posX).at(posZ);
+		return bucketList[posX][posZ];
 	} else {
 		return new Bucket();
 	}
