@@ -24,6 +24,7 @@ void Unit::move(double timeStep) {
 }
 
 void Unit::setAcceleration(Vector3* _acceleration) {
+	delete acceleration;
 	acceleration = _acceleration;
 }
 
@@ -76,7 +77,9 @@ void Unit::applyForce(double timeStep) {
 		velocity->Normalize();
 		(*velocity) *= maxSpeed;
 	} else if (velLenght < minSpeed * minSpeed) {
-		velocity = new Vector3();
+		velocity->x_ = 0;
+		velocity->y_ = 0;
+		velocity->z_ = 0;
 	}
 }
 
