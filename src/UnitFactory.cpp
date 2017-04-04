@@ -30,8 +30,8 @@ std::vector<Unit*>* UnitFactory::createUnits() {
 			Node* node = scene->CreateChild("Box");
 			node->SetPosition(*position);
 
-			StaticModel* boxObject = node->CreateComponent<StaticModel>();
-			boxObject->SetModel(cache->GetResource<Model>("Models/Cube.mdl"));
+			//StaticModel* boxObject = node->CreateComponent<StaticModel>();
+			//boxObject->SetModel(cache->GetResource<Model>("Models/Cube.mdl"));
 
 			Unit* newUnit = new Unit(position, node, font);
 			units->push_back(newUnit);

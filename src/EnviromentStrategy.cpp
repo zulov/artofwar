@@ -25,8 +25,7 @@ std::vector<Unit *>* EnviromentStrategy::getNeighbours(Unit* unit, std::vector<U
 		Unit * neight = (*arrayNeight)[i];
 		if (unit == neight) { continue; }
 
-		Vector3* otherPosition = neight->getPosition();
-		double sqDistance = getSqDistance(unitPosition, otherPosition);
+		double sqDistance = getSqDistance(unitPosition, neight->getPosition());
 
 		if (sqDistance < sqSeparationDistance) {
 			neights->push_back(neight);

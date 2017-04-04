@@ -1,4 +1,5 @@
 #include "BucketGrid.h"
+#include <iostream>
 
 
 BucketGrid::BucketGrid(int _resolution, double _size) {
@@ -85,14 +86,9 @@ int BucketGrid::cacheHash(int dX, int dZ) {
 
 void BucketGrid::updateSizes(int size) {
 	lastSize = size;
-	if (maxSize < size) {
-		maxSize = size;
-	}
 }
 
 std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
-	double unitRadius = entity->getUnitRadius();
-
 	int dX = entity->getBucketX();
 	int dZ = entity->getBucketZ();
 	long key = cacheHash(dX, dZ);
@@ -101,7 +97,7 @@ std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
 		return cache[key];
 	} else {
 		std::vector<Unit*>* crowd = new std::vector<Unit *>();
-		crowd->reserve((lastSize + maxSize) / 2);
+		crowd->reserve(((lastSize+1)* 1.2f));
 		std::vector<std::pair<int, int>*>* levels = getEnvIndexsFromCache(entity->getMaxSeparationDistance());
 
 		for (int i = 0; i < levels->size(); ++i) {
@@ -170,7 +166,6 @@ bool BucketGrid::fieldInCircle(int i, int j, double radius) {
 
 std::vector<std::pair<int, int>*>* BucketGrid::getEnvIndexs(double radius) {
 	std::vector<std::pair<int, int>*>* indexes = new std::vector<std::pair<int, int>*>();
-
 	for (int i = 0; i < RES_SEP_DIST; i++) {
 		for (int j = 0; j < RES_SEP_DIST; j++) {
 			if (fieldInCircle(i, j, radius)) {

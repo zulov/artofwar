@@ -18,16 +18,18 @@ Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Unit*>* 
 
 	for (int i = 0; i < units->size(); ++i) {
 		Unit* neight = (*units)[i];
-		double sqDistance = ((*neight->getPosition()) - (*unit->getPosition())).LengthSquared();//t¹ ró¿nice mozna wykorzystac pozniej
+		
+		Vector3 diff = *unit->getPosition() - *neight->getPosition();
+		double sqDistance = diff.LengthSquared();
 		if (sqDistance > unit->getMaxSeparationDistance() * unit->getMaxSeparationDistance()) { continue; }
 		double distance = sqrt(sqDistance);
-		Urho3D::Vector3 newForce = (*unit->getPosition()) - (*neight->getPosition());
-		newForce /= distance;
+		
+		diff /= distance;
 		double minimalDistance = (unit->getMinimalDistance() + neight->getMinimalDistance());
 		double coef = calculateCoef(distance, minimalDistance);//poprawic kolejnosc zeby ograniczyc operacje na vektorze
 
-		newForce *= coef;
-		(*force) += newForce;
+		diff *= coef;
+		(*force) += diff;
 	}
 
 	(*force) *= boostCoef;

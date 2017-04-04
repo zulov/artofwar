@@ -1,5 +1,5 @@
 #pragma once
-#define LENGTH 500
+#define LENGTH 2000
 #include <fstream>
 
 

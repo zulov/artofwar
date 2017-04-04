@@ -29,7 +29,7 @@ hold off;
 
 legend ("0,5", "0,75", "1", "1,25", "1,5", "2");
 xlim([100 50176]);
-ylim([0 0.05]);
+
 xlabel("wielkość tłumu");
 ylabel("czas obliczenia kroku");
 
@@ -44,7 +44,7 @@ plot(x,y12,"*-m");
 hold off;
 legend ("2,5", "3", "4", "5", "7,5", "10");
 xlim([100 50176]);
-ylim([0 0.05]);
+
 xlabel("wielkość tłumu");
 ylabel("czas obliczenia kroku");
 
