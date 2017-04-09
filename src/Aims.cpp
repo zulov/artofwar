@@ -1,9 +1,12 @@
 #include "Aims.h"
+#include "utils.h"
 
 
 Aims::Aims() {
 	aims = new std::vector<Urho3D::Vector3*>();
 	aims->reserve(10);
+	index = 0;
+	radius = 2;
 }
 
 
@@ -25,9 +28,16 @@ bool Aims::check(Urho3D::Vector3* pedestrian) {
 		index++;
 	}
 	if (index >= aims->size()) {
-		index = aims->size() - 1;
+		index = 0;
+		clear_vector(aims);
 		return true;
 	} else {
 		return false;
 	}
+}
+
+void Aims::add(Entity* entity) {
+	Urho3D::Vector3* pos = entity->getPosition();
+	pos->y_ = 0;
+	aims->push_back(new Urho3D::Vector3(*pos));
 }

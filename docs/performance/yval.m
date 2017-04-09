@@ -11,7 +11,6 @@ function retval = yval(path)
   p9  = load(strcat(path,"perf09.txt"));
   p10 = load(strcat(path,"perf10.txt"));
   p11 = load(strcat(path,"perf11.txt"));
-  p12 = load(strcat(path,"perf12.txt"));
 
   mp1  = mean(prctile(sort(p1 (:,1)),PERCENT));
   mp2  = mean(prctile(sort(p2 (:,1)),PERCENT));
@@ -24,6 +23,6 @@ function retval = yval(path)
   mp9  = mean(prctile(sort(p9 (:,1)),PERCENT));
   mp10 = mean(prctile(sort(p10(:,1)),PERCENT));
   mp11 = mean(prctile(sort(p11(:,1)),PERCENT));
-  mp12 = mean(prctile(sort(p12(:,1)),PERCENT));
-    retval = [1/mp1  1/mp2  1/mp3  1/mp4  1/mp5  1/mp6  1/mp7  1/mp8  1/mp9  1/mp10 1/mp11 1/mp12];
+    retval = [1/mp1  1/mp2  1/mp3  1/mp4  1/mp5  1/mp6  1/mp7  1/mp8  1/mp9  1/mp10 1/mp11];
+
 endfunction

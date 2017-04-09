@@ -252,6 +252,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="src\Unit.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\Simulation.h" />
+    <ClInclude Include="src\utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

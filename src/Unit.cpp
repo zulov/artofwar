@@ -9,7 +9,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_po
 	minSpeed = maxSpeed * 0.2f;
 	acceleration = new Vector3();
 	velocity = new Vector3();
-	aims = new std::vector<Urho3D::Vector3*>();
+	aims = new Aims();
 }
 
 Unit::~Unit() {
@@ -21,6 +21,7 @@ void Unit::move(double timeStep) {
 	(*position) += (*velocity) * timeStep;
 	node->SetPosition(*position);
 	(*velocity) *= 0.95;
+	aims->check(position);
 }
 
 void Unit::setAcceleration(Vector3* _acceleration) {
@@ -45,10 +46,7 @@ void Unit::action(ActionType actionType, Entity* entity) {
 }
 
 Vector3* Unit::getAim() {
-	if (aims->size() > 0) {
-		return aims->at(0);
-	}
-	return nullptr;
+	return aims->getAim();
 }
 
 Vector3* Unit::getVelocity() {
@@ -64,9 +62,7 @@ double Unit::getUnitRadius() {
 }
 
 void Unit::addAim(Entity* entity) {
-	Vector3* pos = entity->getPosition();
-	pos->y_ = 0;
-	aims->push_back(new Vector3(*pos));
+	aims->add(entity);
 }
 
 void Unit::applyForce(double timeStep) {

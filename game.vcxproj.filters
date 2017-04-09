@@ -132,6 +132,7 @@
     <ClInclude Include="src\ActionType.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="src\defines.h" />
+    <ClInclude Include="src\utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include <vector>
+#include "Aims.h"
 
 using namespace Urho3D;
 
@@ -29,7 +30,7 @@ protected:
 	double maxSpeed;
 	double maxSeparationDistance;
 	double minSpeed;
-	std::vector<Urho3D::Vector3*>* aims;
+	Aims* aims;
 private:
 	void addAim(Entity* entity);
 	double unitRadius = 2;
