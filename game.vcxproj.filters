@@ -61,6 +61,7 @@
       <Filter>objects\collection\link</Filter>
     </ClCompile>
     <ClCompile Include="src\Aims.cpp" />
+    <ClCompile Include="src\Game.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -133,6 +134,7 @@
     <ClInclude Include="math.h" />
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\utils.h" />
+    <ClInclude Include="src\Game.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

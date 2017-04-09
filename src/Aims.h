@@ -2,7 +2,7 @@
 #include <Urho3D/Math/Vector3.h>
 #include <vector>
 #include "Entity.h"
-
+#include <Urho3D/Graphics/Model.h>
 class Entity;
 
 class Aims

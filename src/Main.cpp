@@ -25,6 +25,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Core/CoreEvents.h>
 #include "LinkComponent.h"
+#include "Game.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
@@ -47,6 +48,7 @@ void Main::Setup() {
 }
 
 void Main::Start() {
+	Game* game = Game::getInstance();
 	SetWindowTitleAndIcon();
 
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
@@ -60,6 +62,8 @@ void Main::Start() {
 
 	levelBuilder = new LevelBuilder(GetSubsystem<ResourceCache>());
 	scene = levelBuilder->CreateScene(context_, nullptr);
+	game->setScene(scene);
+	game->setCache(GetSubsystem<ResourceCache>());
 	cameraManager = new CameraManager(context_);
 	simulation = new Simulation(context_, GetSubsystem<ResourceCache>(), scene);
 	simulation->createUnits();

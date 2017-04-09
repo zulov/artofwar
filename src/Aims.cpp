@@ -1,5 +1,7 @@
 #include "Aims.h"
 #include "utils.h"
+#include <Urho3D/Graphics/StaticModel.h>
+#include "Game.h"
 
 
 Aims::Aims() {
@@ -40,4 +42,11 @@ void Aims::add(Entity* entity) {
 	Urho3D::Vector3* pos = entity->getPosition();
 	pos->y_ = 0;
 	aims->push_back(new Urho3D::Vector3(*pos));
+	Game * game = Game::getInstance();
+	Node* node = game->getScene()->CreateChild("Box");
+	node->SetPosition(*pos);
+
+	StaticModel* boxObject = node->CreateComponent<StaticModel>();
+	boxObject->SetModel(game->getCache()->GetResource<Model>("Models/aim.mdl"));
+
 }
