@@ -13,17 +13,16 @@
 class ObjectManager;
 using namespace Urho3D;
 
-class LevelBuilder {
+class LevelBuilder
+{
 public:
-	LevelBuilder(ResourceCache* _cache);
+	LevelBuilder();
 	~LevelBuilder();
-	SharedPtr<Scene> CreateScene(Context* context, ObjectManager* objectManager);
+	SharedPtr<Scene> CreateScene(ObjectManager* objectManager);
 
 private:
 	SharedPtr<Scene> scene;
-	ResourceCache* cache;
 	Entity* createZone();
 	Entity* createLight();
 	Entity* createGround();
 };
-

@@ -1,13 +1,12 @@
 #include "ObjectManager.h"
 
 
-ObjectManager::ObjectManager(ResourceCache* _cache, SharedPtr<Scene> _scene) {
-	scene = _scene;
+ObjectManager::ObjectManager() {
 	units = new std::vector<Unit*>();
 	buildings = new std::vector<Building*>();
 	entities = new std::vector<Entity*>();
-	unitFactory = new UnitFactory(_cache, _scene);
-	buildingFactory = new BuildingFactory(_cache, _scene);
+	unitFactory = new UnitFactory();
+	buildingFactory = new BuildingFactory();
 }
 
 

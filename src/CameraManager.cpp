@@ -1,10 +1,10 @@
 #include "CameraManager.h"
 
-CameraManager::CameraManager(Urho3D::Context* context) {	
-	CameraBehave * cameraBehave = new FreeCameraBehave(context);
+CameraManager::CameraManager() {	
+	CameraBehave * cameraBehave = new FreeCameraBehave();
 	cameraBehaves.push_back(cameraBehave);
 
-	cameraBehave = new RtsCameraBehave(context);
+	cameraBehave = new RtsCameraBehave();
 	cameraBehaves.push_back(cameraBehave);
 
 	activeBehave = cameraBehaves.at(0);

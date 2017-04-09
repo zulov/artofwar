@@ -17,7 +17,7 @@ namespace Urho3D {
 class Simulation
 {
 public:
-	Simulation(Context* context, ResourceCache* _cache, SharedPtr<Scene> _scene);
+	Simulation();
 	void update(Input* input, float timeStep);
 	void setUnits(std::vector<Unit*>* units);
 	void createUnits();

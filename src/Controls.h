@@ -18,16 +18,14 @@ using namespace Urho3D;
 class Controls
 {
 public:
-	Controls(UI* _ui, Graphics* _graphics);
+	Controls();
 	~Controls();
-	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera, Scene* scene);
+	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
 	void unselect(Entity* entity);
 	void select(Entity* entity);
 	void unSelect(int type);
 	void action(ActionType action, Entity* entity);
 private:
-	UI* ui;
-	Graphics* graphics;
 	std::vector<Entity*>* selected;
 	ObjectType selectedType;
 	float maxDistance = 300;

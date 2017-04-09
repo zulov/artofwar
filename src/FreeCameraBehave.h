@@ -5,7 +5,7 @@ using namespace Urho3D;
 class FreeCameraBehave : public CameraBehave
 {
 public:
-	FreeCameraBehave(Urho3D::Context* context);
+	FreeCameraBehave();
 	~FreeCameraBehave();
 
 	void translate(bool cameraKeys[], int wheel, float timeStep) override;

@@ -1,18 +1,18 @@
 #include "LevelBuilder.h"
 #include "ObjectManager.h"
+#include "Game.h"
 
 
-LevelBuilder::LevelBuilder(ResourceCache* _cache) {
-	cache = _cache;
+LevelBuilder::LevelBuilder() {
 }
 
 
 LevelBuilder::~LevelBuilder() {
 }
 
-SharedPtr<Scene> LevelBuilder::CreateScene(Context* context, ObjectManager* objectManager) {
+SharedPtr<Scene> LevelBuilder::CreateScene(ObjectManager* objectManager) {
 	if (!scene) {
-		scene = new Scene(context);
+		scene = new Scene(Game::getInstance()->getContext());
 	} else {
 		scene->Clear();
 	}
@@ -58,8 +58,8 @@ Entity* LevelBuilder::createGround() {
 	planeNode->SetScale(Vector3(300, 1.0f, 300));
 	planeNode->SetPosition(Vector3(0, -1.0f, 0));
 	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
-	planeObject->SetModel(cache->GetResource<Model>("Models/Plane.mdl"));
-	planeObject->SetMaterial(cache->GetResource<Material>("Materials/StoneTiled.xml"));
+	planeObject->SetModel(Game::getInstance()->getCache()->GetResource<Model>("Models/Plane.mdl"));
+	planeObject->SetMaterial(Game::getInstance()->getCache()->GetResource<Material>("Materials/StoneTiled.xml"));
 
 	Entity * entity = new Entity(new Vector3(), planeNode, nullptr);
 	return entity;

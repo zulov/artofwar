@@ -27,19 +27,17 @@ using namespace Urho3D;
 
 class Hud {
 public:
-	Hud(Context* context, UI* _ui, ResourceCache* _cache, Graphics* _graphics);
+	Hud();
 	~Hud();
 	void createStaticHud(String msg);
 	void createLogo();
-	void createDebugHud(SharedPtr<Engine> engine);
-	void createConsole(SharedPtr<Engine> engine);
+	void createDebugHud();
+	void createConsole();
 	void updateHud(Benchmark * benchmark, CameraManager *cameraManager);
 
 private:
-	void someMenuExample(Context* context);
+	void someMenuExample();
 	Window *window;
-	UI* ui;
-	ResourceCache* cache;
 	Text* fpsText;
 };
 

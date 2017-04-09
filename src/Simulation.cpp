@@ -6,10 +6,10 @@
 #include "Simulation.h"
 
 
-Simulation::Simulation(Context* context, ResourceCache* _cache, SharedPtr<Scene> _scene) {
+Simulation::Simulation() {
 	envStrategy = new EnviromentStrategy();
 	forceStrategy = new ForceStrategy();
-	objectManager = new ObjectManager(_cache, _scene);
+	objectManager = new ObjectManager();
 	srand(time(NULL));
 	animate = true;
 }

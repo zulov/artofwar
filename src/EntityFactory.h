@@ -8,12 +8,9 @@ using namespace Urho3D;
 
 class EntityFactory {
 public:
-	EntityFactory(ResourceCache* cache, SharedPtr<Urho3D::Scene> scene);
+	EntityFactory();
 	~EntityFactory();
-	
 protected:
-	ResourceCache* cache;
-	SharedPtr<Urho3D::Scene> scene;
 
 };
 

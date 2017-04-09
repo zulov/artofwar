@@ -53,25 +53,25 @@ void Main::Start() {
 
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
-
-	hud = new Hud(context_, GetSubsystem<UI>(), GetSubsystem<ResourceCache>(), GetSubsystem<Graphics>());
+	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->setGraphics(GetSubsystem<Graphics>())->setContext(context_)->setEngine(engine_);
+	hud = new Hud();
 	hud->createStaticHud(String("Liczba jednostek") + String("??"));
 	//hud->createLogo();
 
 	CreateConsoleAndDebugHud();
 
-	levelBuilder = new LevelBuilder(GetSubsystem<ResourceCache>());
-	scene = levelBuilder->CreateScene(context_, nullptr);
+	levelBuilder = new LevelBuilder();
+	scene = levelBuilder->CreateScene(nullptr);
 	game->setScene(scene);
 	game->setCache(GetSubsystem<ResourceCache>());
-	cameraManager = new CameraManager(context_);
-	simulation = new Simulation(context_, GetSubsystem<ResourceCache>(), scene);
+	cameraManager = new CameraManager();
+	simulation = new Simulation();
 	simulation->createUnits();
 	SetupViewport();
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
 
 	InitMouseMode(MM_RELATIVE);
-	controls = new Controls(GetSubsystem<UI>(), GetSubsystem<Graphics>());
+	controls = new Controls();
 }
 
 void Main::Stop() {
@@ -111,8 +111,8 @@ void Main::CreateConsoleAndDebugHud() {
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 	XMLFile* xmlFile = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
 
-	hud->createConsole(engine_);
-	hud->createDebugHud(engine_);
+	hud->createConsole();
+	hud->createDebugHud();
 
 	GetSubsystem<Input>()->SetMouseVisible(true);
 	GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(xmlFile);
@@ -182,7 +182,7 @@ void Main::click(int button) {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
-	if (controls->raycast(hitPos, hitDrawable, cameraManager->getComponent(), scene)) {
+	if (controls->raycast(hitPos, hitDrawable, cameraManager->getComponent())) {
 		Node* hitNode = hitDrawable->GetNode();
 		switch (button) {
 		case MOUSEB_LEFT:

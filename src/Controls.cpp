@@ -1,9 +1,8 @@
 #include "Controls.h"
+#include "Game.h"
 
 
-Controls::Controls(UI* _ui, Graphics* _graphics) {
-	ui = _ui;
-	graphics = _graphics;
+Controls::Controls() {
 	selected = new std::vector<Entity*>();
 	selected->reserve(10);
 }
@@ -13,19 +12,19 @@ Controls::~Controls() {
 }
 
 
-bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera, Scene* scene) {
+bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {
 	hitDrawable = nullptr;
 
-	IntVector2 pos = ui->GetCursorPosition();
-	if (!ui->GetCursor()->IsVisible() || ui->GetElementAt(pos, true)) {
+	IntVector2 pos = Game::getInstance()->getUI()->GetCursorPosition();
+	if (!Game::getInstance()->getUI()->GetCursor()->IsVisible() || Game::getInstance()->getUI()->GetElementAt(pos, true)) {
 		return false;
 	}
 
-	Ray cameraRay = camera->GetScreenRay((float)pos.x_ / graphics->GetWidth(), (float)pos.y_ / graphics->GetHeight());
+	Ray cameraRay = camera->GetScreenRay((float)pos.x_ / Game::getInstance()->getGraphics()->GetWidth(), (float)pos.y_ / Game::getInstance()->getGraphics()->GetHeight());
 
 	PODVector<RayQueryResult> results;
 	RayOctreeQuery query(results, cameraRay, RAY_TRIANGLE, maxDistance, DRAWABLE_GEOMETRY);
-	scene->GetComponent<Octree>()->RaycastSingle(query);
+	Game::getInstance()->getScene()->GetComponent<Octree>()->RaycastSingle(query);
 	if (results.Size()) {
 		RayQueryResult& result = results[0];
 		hitPos = result.position_;

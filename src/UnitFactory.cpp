@@ -8,8 +8,9 @@
 #include "EntityFactory.h"
 #include "LinkComponent.h"
 #include "ObjectManager.h"
+#include "Game.h"
 
-UnitFactory::UnitFactory(ResourceCache* _cache, SharedPtr<Urho3D::Scene> _scene): EntityFactory(_cache, _scene) {
+UnitFactory::UnitFactory(): EntityFactory() {
 
 }
 
@@ -23,15 +24,16 @@ std::vector<Unit*>* UnitFactory::createUnits() {
 
 	std::vector<Unit*>* units = new std::vector<Unit *>();
 	units->reserve(size * size);
-	Font* font = cache->GetResource<Font>("Fonts/Anonymous Pro.ttf");
+	Game * game = Game::getInstance();
+	Font* font = game->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf");
 	for (int y = startSize; y < endSize; ++y) {
 		for (int x = startSize; x < endSize; ++x) {
 			Vector3 *position = new Vector3(x * space, 0, y * space);
-			Node* node = scene->CreateChild("Box");
+			Node* node = game->getScene()->CreateChild("Box");
 			node->SetPosition(*position);
 
 			StaticModel* boxObject = node->CreateComponent<StaticModel>();
-			boxObject->SetModel(cache->GetResource<Model>("Models/Cube.mdl"));
+			boxObject->SetModel(game->getCache()->GetResource<Model>("Models/Cube.mdl"));
 
 			Unit* newUnit = new Unit(position, node, font);
 			units->push_back(newUnit);

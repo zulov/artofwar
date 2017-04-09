@@ -1,9 +1,9 @@
 #include "RtsCameraBehave.h"
+#include "Game.h"
 
 
-
-RtsCameraBehave::RtsCameraBehave(Urho3D::Context* context) {
-	cameraNode = new Urho3D::Node(context);
+RtsCameraBehave::RtsCameraBehave() {
+	cameraNode = new Urho3D::Node(Game::getInstance()->getContext());
 	cameraNode->SetPosition(Urho3D::Vector3(0.0f, 10.0f, -10.0f));
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN + Urho3D::Vector3::FORWARD);
 	Urho3D::Camera* camera = cameraNode->CreateComponent<Urho3D::Camera>();
@@ -12,7 +12,8 @@ RtsCameraBehave::RtsCameraBehave(Urho3D::Context* context) {
 }
 
 
-RtsCameraBehave::~RtsCameraBehave() {}
+RtsCameraBehave::~RtsCameraBehave() {
+}
 
 void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 	if (cameraKeys[0]) {
@@ -31,7 +32,7 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 		Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
 		double diff = pos.y_ - minY;
 		diff += 10;
-		pos += Urho3D::Vector3(0, 1, 0)*timeStep*wheel*diff;
+		pos += Urho3D::Vector3(0, 1, 0) * timeStep * wheel * diff;
 
 		if (pos.y_ < minY) {
 			pos.y_ = minY;
@@ -39,7 +40,7 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 			pos.y_ = maxY;
 		}
 		cameraNode->SetWorldPosition(pos);
-		cameraNode->SetDirection((Urho3D::Vector3::DOWN + Urho3D::Vector3::FORWARD/diff*20));
+		cameraNode->SetDirection((Urho3D::Vector3::DOWN + Urho3D::Vector3::FORWARD / diff * 20));
 	}
 
 }
@@ -53,7 +54,7 @@ void RtsCameraBehave::setRotation(const Urho3D::Quaternion& rotation) {
 }
 
 Urho3D::String RtsCameraBehave::getInfo() {
-	return name + " \t" + cameraNode->GetPosition().ToString() +"\n" + cameraNode->GetRotation().ToString();
+	return name + " \t" + cameraNode->GetPosition().ToString() + "\n" + cameraNode->GetRotation().ToString();
 }
 
 Urho3D::MouseMode RtsCameraBehave::getMouseMode() {

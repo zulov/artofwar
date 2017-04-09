@@ -9,7 +9,7 @@
 
 class ObjectManager {
 public:
-	ObjectManager(ResourceCache* _cache, SharedPtr<Scene> _scene);
+	ObjectManager();
 	~ObjectManager();
 	void add(Unit* unit);
 	void add(Entity* entity);
@@ -33,7 +33,6 @@ private:
 
 	UnitFactory * unitFactory;
 	BuildingFactory * buildingFactory;
-	SharedPtr<Scene> scene;
 
 };
 

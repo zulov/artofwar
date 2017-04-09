@@ -9,7 +9,7 @@ using namespace Urho3D;
 
 class CameraManager {
 public:
-	CameraManager(Urho3D::Context* context);
+	CameraManager();
 	~CameraManager();
 	void setCameraBehave(int _type);
 	Camera *getComponent();
