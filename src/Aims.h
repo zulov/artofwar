@@ -3,6 +3,7 @@
 #include <vector>
 #include "Entity.h"
 #include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/Material.h>
 class Entity;
 
 class Aims

@@ -40,13 +40,17 @@ bool Aims::check(Urho3D::Vector3* pedestrian) {
 
 void Aims::add(Entity* entity) {
 	Urho3D::Vector3* pos = entity->getPosition();
-	pos->y_ = 0;
-	aims->push_back(new Urho3D::Vector3(*pos));
+	pos->y_ = 2;
 	Game * game = Game::getInstance();
 	Node* node = game->getScene()->CreateChild("Box");
 	node->SetPosition(*pos);
+	node->SetRotation(Quaternion(0, 0, 180));
 
-	StaticModel* boxObject = node->CreateComponent<StaticModel>();
-	boxObject->SetModel(game->getCache()->GetResource<Model>("Models/aim.mdl"));
+	StaticModel* model = node->CreateComponent<StaticModel>();
+	model->SetModel(game->getCache()->GetResource<Model>("Models/aim.mdl"));
+	model->SetMaterial(Game::getInstance()->getCache()->GetResource<Material>("Materials/red.xml"));
+
+	pos->y_ = 0;
+	aims->push_back(new Urho3D::Vector3(*pos));
 
 }
