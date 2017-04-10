@@ -65,5 +65,4 @@ private:
 	Controls* controls;
 	LevelBuilder* levelBuilder;
 
-	SharedPtr<Scene> scene;
 };

@@ -11,11 +11,9 @@ LevelBuilder::~LevelBuilder() {
 }
 
 SharedPtr<Scene> LevelBuilder::CreateScene(ObjectManager* objectManager) {
-	if (!scene) {
-		scene = new Scene(Game::getInstance()->getContext());
-	} else {
-		scene->Clear();
-	}
+
+	scene = new Scene(Game::getInstance()->getContext());
+
 	scene->CreateComponent<Octree>();
 
 	Entity* zone = createZone();
@@ -38,7 +36,7 @@ Entity* LevelBuilder::createZone() {
 	zone->SetFogStart(200.0f);
 	zone->SetFogEnd(300.0f);
 
-	Entity * entity = new Entity(new Vector3(), zoneNode, nullptr);
+	Entity* entity = new Entity(new Vector3(), zoneNode, nullptr);
 	return entity;
 }
 
@@ -49,7 +47,7 @@ Entity* LevelBuilder::createLight() {
 	light->SetLightType(LIGHT_DIRECTIONAL);
 	light->SetColor(Color(0.7f, 0.35f, 0.0f));
 
-	Entity * entity = new Entity(new Vector3(), lightNode, nullptr);
+	Entity* entity = new Entity(new Vector3(), lightNode, nullptr);
 	return entity;
 }
 
@@ -61,7 +59,7 @@ Entity* LevelBuilder::createGround() {
 	planeObject->SetModel(Game::getInstance()->getCache()->GetResource<Model>("Models/Plane.mdl"));
 	planeObject->SetMaterial(Game::getInstance()->getCache()->GetResource<Material>("Materials/StoneTiled.xml"));
 
-	Entity * entity = new Entity(new Vector3(), planeNode, nullptr);
+	Entity* entity = new Entity(new Vector3(), planeNode, nullptr);
 	return entity;
 
 }

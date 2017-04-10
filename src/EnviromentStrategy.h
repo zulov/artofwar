@@ -17,7 +17,6 @@ public:
 	void update(Unit * unit);
 	void clear();
 private:
-
 	BucketGrid* bucketGrid;
 };
 

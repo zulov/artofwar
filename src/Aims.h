@@ -2,8 +2,8 @@
 #include <Urho3D/Math/Vector3.h>
 #include <vector>
 #include "Entity.h"
-#include <Urho3D/Graphics/Model.h>
-#include <Urho3D/Graphics/Material.h>
+
+#include "Aim.h"
 class Entity;
 
 class Aims
@@ -11,11 +11,11 @@ class Aims
 public:
 	Aims();
 	~Aims();
-	Urho3D::Vector3* getAim();
+	Aim* getAim();
+	Vector3 *getAimPos();
 	bool check(Urho3D::Vector3* pedestrian);
 	void add(Entity* entity);
 private:
-	std::vector<Urho3D::Vector3*>* aims;
-	double radius;
+	std::vector<Aim*>* aims;
 	int index;
 };

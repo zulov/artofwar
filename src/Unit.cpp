@@ -46,7 +46,7 @@ void Unit::action(ActionType actionType, Entity* entity) {
 }
 
 Vector3* Unit::getAim() {
-	return aims->getAim();
+	return aims->getAimPos();
 }
 
 Vector3* Unit::getVelocity() {

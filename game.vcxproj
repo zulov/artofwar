@@ -197,6 +197,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Aim.cpp" />
     <ClCompile Include="src\Aims.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\Bucket.cpp" />
@@ -226,6 +227,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   <ItemGroup>
     <ClInclude Include="math.h" />
     <ClInclude Include="src\ActionType.h" />
+    <ClInclude Include="src\Aim.h" />
     <ClInclude Include="src\Aims.h" />
     <ClInclude Include="src\Benchmark.h" />
     <ClInclude Include="src\Bucket.h" />

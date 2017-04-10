@@ -61,9 +61,7 @@ void Main::Start() {
 	CreateConsoleAndDebugHud();
 
 	levelBuilder = new LevelBuilder();
-	scene = levelBuilder->CreateScene(nullptr);
-	game->setScene(scene);
-	game->setCache(GetSubsystem<ResourceCache>());
+	game->setScene(levelBuilder->CreateScene(nullptr));
 	cameraManager = new CameraManager();
 	simulation = new Simulation();
 	simulation->createUnits();
@@ -174,7 +172,7 @@ void Main::HandleMouseModeChange(StringHash /*eventType*/, VariantMap& eventData
 void Main::SetupViewport() {
 	Renderer* renderer = GetSubsystem<Renderer>();
 
-	SharedPtr<Viewport> viewport(new Viewport(context_, scene, cameraManager->getComponent()));
+	SharedPtr<Viewport> viewport(new Viewport(context_, Game::getInstance()->getScene(), cameraManager->getComponent()));
 	renderer->SetViewport(0, viewport);
 }
 

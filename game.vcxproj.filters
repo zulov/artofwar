@@ -62,6 +62,7 @@
     </ClCompile>
     <ClCompile Include="src\Aims.cpp" />
     <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\Aim.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -135,6 +136,7 @@
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\Aim.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

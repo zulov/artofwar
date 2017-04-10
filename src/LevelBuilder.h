@@ -21,7 +21,7 @@ public:
 	SharedPtr<Scene> CreateScene(ObjectManager* objectManager);
 
 private:
-	SharedPtr<Scene> scene;
+	SharedPtr<Urho3D::Scene> scene;
 	Entity* createZone();
 	Entity* createLight();
 	Entity* createGround();
