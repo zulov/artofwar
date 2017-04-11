@@ -14,7 +14,7 @@ Aim::Aim(Urho3D::Vector3* _position) {
 	Urho3D::StaticModel* model = node->CreateComponent<Urho3D::StaticModel>();
 	model->SetModel(game->getCache()->GetResource<Urho3D::Model>("Models/aim.mdl"));
 	model->SetMaterial(Game::getInstance()->getCache()->GetResource<Urho3D::Material>("Materials/red.xml"));
-
+	position->y_ = 0;
 	radius = 2;
 }
 

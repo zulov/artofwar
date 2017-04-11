@@ -12,7 +12,7 @@ public:
 	std::vector<Unit*>* createUnits();
 
 	int size = UNITS_NUMBER;
-	double space = 1;
+	double space = INIT_SPACE;
 };
 
  

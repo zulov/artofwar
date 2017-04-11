@@ -64,5 +64,5 @@ private:
 	Hud* hud;
 	Controls* controls;
 	LevelBuilder* levelBuilder;
-
+	SceneObjectManager * sceneObjectManager;
 };

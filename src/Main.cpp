@@ -59,9 +59,9 @@ void Main::Start() {
 	//hud->createLogo();
 
 	CreateConsoleAndDebugHud();
-
+	sceneObjectManager = new SceneObjectManager();
 	levelBuilder = new LevelBuilder();
-	game->setScene(levelBuilder->CreateScene(nullptr));
+	game->setScene(levelBuilder->CreateScene(sceneObjectManager));
 	cameraManager = new CameraManager();
 	simulation = new Simulation();
 	simulation->createUnits();
@@ -202,7 +202,9 @@ void Main::clickLeft(Drawable* hitDrawable, Vector3 hitPos) {
 		controls->select(clicked);
 
 	} else if (hitNode->GetName() == "Ground") {
-
+		LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+		Entity* clicked = lc->getEntity();
+		controls->select(clicked);
 	}
 }
 

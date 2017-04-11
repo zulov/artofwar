@@ -6,7 +6,7 @@
 #include <ctime>
 #include "EnviromentStrategy.h"
 #include "ForceStrategy.h"
-#include "ObjectManager.h"
+#include "SimulationObjectManager.h"
 
 
 namespace Urho3D {
@@ -37,6 +37,6 @@ private:
 
 	EnviromentStrategy* envStrategy;
 	ForceStrategy* forceStrategy;
-	ObjectManager * objectManager;
+	SimulationObjectManager * objectManager;
 
 };

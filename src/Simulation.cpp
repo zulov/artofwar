@@ -9,7 +9,7 @@
 Simulation::Simulation() {
 	envStrategy = new EnviromentStrategy();
 	forceStrategy = new ForceStrategy();
-	objectManager = new ObjectManager();
+	objectManager = new SimulationObjectManager();
 	srand(time(NULL));
 	animate = true;
 }

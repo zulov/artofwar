@@ -197,6 +197,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AbstractObjectManager.cpp" />
     <ClCompile Include="src\Aim.cpp" />
     <ClCompile Include="src\Aims.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
@@ -218,7 +219,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="src\ForceStrategy.cpp" />
     <ClCompile Include="src\FreeCameraBehave.cpp" />
     <ClCompile Include="src\Hud.cpp" />
-    <ClCompile Include="src\ObjectManager.cpp" />
+    <ClCompile Include="src\SimulationObjectManager.cpp" />
     <ClCompile Include="src\RtsCameraBehave.cpp" />
     <ClCompile Include="src\Unit.cpp" />
     <ClCompile Include="src\Main.cpp" />
@@ -226,6 +227,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="math.h" />
+    <ClInclude Include="src\AbstractObjectManager.h" />
     <ClInclude Include="src\ActionType.h" />
     <ClInclude Include="src\Aim.h" />
     <ClInclude Include="src\Aims.h" />
@@ -251,7 +253,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="src\ForceStrategy.h" />
     <ClInclude Include="src\FreeCameraBehave.h" />
     <ClInclude Include="src\Hud.h" />
-    <ClInclude Include="src\ObjectManager.h" />
+    <ClInclude Include="src\SimulationObjectManager.h" />
     <ClInclude Include="src\RtsCameraBehave.h" />
     <ClInclude Include="src\Unit.h" />
     <ClInclude Include="src\Main.h" />

@@ -7,7 +7,7 @@
 #include <Urho3D/Graphics/Model.h>
 #include "EntityFactory.h"
 #include "LinkComponent.h"
-#include "ObjectManager.h"
+#include "SimulationObjectManager.h"
 #include "Game.h"
 
 UnitFactory::UnitFactory(): EntityFactory() {
@@ -37,7 +37,6 @@ std::vector<Unit*>* UnitFactory::createUnits() {
 
 			Unit* newUnit = new Unit(position, node, font);
 			units->push_back(newUnit);
-			ObjectManager::createLink(node, newUnit);//to zrobic pozniej przy dodawaniu do object managerra
 		}
 	}
 	return units;

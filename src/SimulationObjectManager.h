@@ -6,13 +6,15 @@
 #include "Building.h"
 #include "BuildingFactory.h"
 #include "UnitFactory.h"
+#include "AbstractObjectManager.h"
+#include "SceneObjectManager.h"
 
-class ObjectManager {
+class SimulationObjectManager :public AbstractObjectManager {
 public:
-	ObjectManager();
-	~ObjectManager();
+	SimulationObjectManager();
+	~SimulationObjectManager();
 	void add(Unit* unit);
-	void add(Entity* entity);
+	void add(Entity* entity) override;
 	void add(Building* building);
 
 	void addAll(std::vector<Unit*> *_units);
@@ -24,12 +26,9 @@ public:
 	std::vector<Entity*>* getEntities();
 
 	std::vector<Unit*>* createUnits();
-	static  void createLink(Node* node, Entity* entity);
 private:
-
 	std::vector<Unit*> *units;
 	std::vector<Building*> *buildings;
-	std::vector<Entity*> *entities;
 
 	UnitFactory * unitFactory;
 	BuildingFactory * buildingFactory;

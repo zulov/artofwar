@@ -51,9 +51,6 @@
     <ClCompile Include="src\UnitFactory.cpp">
       <Filter>objects\collection\factory</Filter>
     </ClCompile>
-    <ClCompile Include="src\ObjectManager.cpp">
-      <Filter>objects\collection\manager</Filter>
-    </ClCompile>
     <ClCompile Include="src\SceneObjectManager.cpp">
       <Filter>objects\collection\manager</Filter>
     </ClCompile>
@@ -63,6 +60,12 @@
     <ClCompile Include="src\Aims.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Aim.cpp" />
+    <ClCompile Include="src\SimulationObjectManager.cpp">
+      <Filter>objects\collection\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AbstractObjectManager.cpp">
+      <Filter>objects\collection\manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -118,9 +121,6 @@
     <ClInclude Include="src\UnitFactory.h">
       <Filter>objects\collection\factory</Filter>
     </ClInclude>
-    <ClInclude Include="src\ObjectManager.h">
-      <Filter>objects\collection\manager</Filter>
-    </ClInclude>
     <ClInclude Include="src\SceneObjectManager.h">
       <Filter>objects\collection\manager</Filter>
     </ClInclude>
@@ -137,6 +137,12 @@
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Aim.h" />
+    <ClInclude Include="src\SimulationObjectManager.h">
+      <Filter>objects\collection\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AbstractObjectManager.h">
+      <Filter>objects\collection\manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

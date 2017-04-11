@@ -1,5 +1,5 @@
 #include "LevelBuilder.h"
-#include "ObjectManager.h"
+#include "SimulationObjectManager.h"
 #include "Game.h"
 
 
@@ -10,7 +10,7 @@ LevelBuilder::LevelBuilder() {
 LevelBuilder::~LevelBuilder() {
 }
 
-SharedPtr<Scene> LevelBuilder::CreateScene(ObjectManager* objectManager) {
+SharedPtr<Scene> LevelBuilder::CreateScene(SceneObjectManager* objectManager) {
 
 	scene = new Scene(Game::getInstance()->getContext());
 
@@ -20,9 +20,9 @@ SharedPtr<Scene> LevelBuilder::CreateScene(ObjectManager* objectManager) {
 	Entity* light = createLight();
 	Entity* ground = createGround();
 
-	//objectManager.add(zone);
-	//objectManager.add(light);
-	//objectManager.add(ground);
+	objectManager->add(zone);
+	objectManager->add(light);
+	objectManager->add(ground);
 
 	return scene;
 }

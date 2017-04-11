@@ -10,7 +10,8 @@
 #include <Urho3D/Graphics/Material.h>
 #include "Entity.h"
 
-class ObjectManager;
+class SceneObjectManager;
+class SimulationObjectManager;
 using namespace Urho3D;
 
 class LevelBuilder
@@ -18,7 +19,7 @@ class LevelBuilder
 public:
 	LevelBuilder();
 	~LevelBuilder();
-	SharedPtr<Scene> CreateScene(ObjectManager* objectManager);
+	SharedPtr<Scene> CreateScene(SceneObjectManager* objectManager);
 
 private:
 	SharedPtr<Urho3D::Scene> scene;
