@@ -25,8 +25,21 @@ public:
 	void select(Entity* entity);
 	void unSelect(int type);
 	void action(ActionType action, Entity* entity);
+
+	void clickDownRight(Drawable* hitdrawable, Vector3 hitPos);
+	void clickDownLeft(Drawable* hitDrawable, Vector3 hitPos);
+	void clickDown(const int button);
+
+	void clickLeft(Drawable* hitDrawable, Vector3 hitPos);
+	void click(int button);
+	void clickRight(Drawable* hitDrawable, Vector3 hitPos);
+	void release(const int button);
 private:
 	std::vector<Entity*>* selected;
 	ObjectType selectedType;
 	float maxDistance = 300;
+
+	bool mouseLeftHeld = false;
+	bool mouseRightHeld = false;
+	bool mouseMiddleHeld = false;
 };

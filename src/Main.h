@@ -41,10 +41,8 @@ public:
 protected:
 	void InitMouseMode(MouseMode mode);
 	void SetupViewport();
-	void clickLeft(Drawable* hitDrawable, Vector3 hitPos);
-	void click(int button);
-	void clickRight(Drawable* hitDrawable, Vector3 hitPos);
 	std::vector<Unit*>* createUnits(int size, double space);
+
 	void moveCamera(float timeStep);
 	void reset();
 	void resetUnits();
@@ -65,4 +63,5 @@ private:
 	Controls* controls;
 	LevelBuilder* levelBuilder;
 	SceneObjectManager * sceneObjectManager;
+
 };

@@ -69,3 +69,12 @@ Game* Game::setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine) {
 	engine = _engine;
 	return this;
 }
+
+CameraManager* Game::getCameraManager() const {
+	return cameraManager;
+}
+
+Game* Game::setCameraManager(CameraManager* cameraManager) {
+	this->cameraManager = cameraManager;
+	return this;
+}

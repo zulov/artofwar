@@ -63,6 +63,7 @@ void Main::Start() {
 	levelBuilder = new LevelBuilder();
 	game->setScene(levelBuilder->CreateScene(sceneObjectManager));
 	cameraManager = new CameraManager();
+	game->setCameraManager(cameraManager);
 	simulation = new Simulation();
 	simulation->createUnits();
 	SetupViewport();
@@ -176,50 +177,6 @@ void Main::SetupViewport() {
 	renderer->SetViewport(0, viewport);
 }
 
-void Main::click(int button) {
-	Vector3 hitPos;
-	Drawable* hitDrawable;
-
-	if (controls->raycast(hitPos, hitDrawable, cameraManager->getComponent())) {
-		Node* hitNode = hitDrawable->GetNode();
-		switch (button) {
-		case MOUSEB_LEFT:
-			clickLeft(hitDrawable, hitPos);
-			break;
-		case MOUSEB_RIGHT:
-			clickRight(hitDrawable, hitPos);
-			break;
-		}
-	}
-}
-
-void Main::clickLeft(Drawable* hitDrawable, Vector3 hitPos) {
-	Node* hitNode = hitDrawable->GetNode();
-
-	if (hitNode->GetName() == "Box") {
-		LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
-		Entity* clicked = lc->getEntity();
-		controls->select(clicked);
-
-	} else if (hitNode->GetName() == "Ground") {
-		LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
-		Entity* clicked = lc->getEntity();
-		controls->select(clicked);
-	}
-}
-
-void Main::clickRight(Drawable* hitDrawable, Vector3 hitPos) {
-	Node* hitNode = hitDrawable->GetNode();
-
-	if (hitNode->GetName() == "Box") {
-		controls->unSelect(0);
-
-	} else if (hitNode->GetName() == "Ground") {
-		Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
-		controls->action(ADD_AIM, entity);
-	}
-}
-
 void Main::moveCamera(float timeStep) {
 	if (GetSubsystem<UI>()->GetFocusElement()) { return; }
 
@@ -231,9 +188,19 @@ void Main::moveCamera(float timeStep) {
 	cameraManager->rotate(input->GetMouseMove());
 
 	if (input->GetMouseButtonPress(MOUSEB_LEFT)) {
-		click(MOUSEB_LEFT);
-	} else if (input->GetMouseButtonPress(MOUSEB_RIGHT)) {
-		click(MOUSEB_RIGHT);
+		controls->click(MOUSEB_LEFT);
+	} else if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
+		controls->clickDown(MOUSEB_LEFT);
+	} else {
+		controls->release(MOUSEB_LEFT);
+	}
+
+	if (input->GetMouseButtonPress(MOUSEB_RIGHT)) {
+		controls->click(MOUSEB_RIGHT);
+	} else if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+		controls->clickDown(MOUSEB_RIGHT);
+	} else {
+		controls->release(MOUSEB_RIGHT);
 	}
 }
 

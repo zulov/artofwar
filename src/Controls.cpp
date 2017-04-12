@@ -1,5 +1,6 @@
 #include "Controls.h"
 #include "Game.h"
+#include "Main.h"
 
 
 Controls::Controls() {
@@ -10,7 +11,6 @@ Controls::Controls() {
 
 Controls::~Controls() {
 }
-
 
 bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {
 	hitDrawable = nullptr;
@@ -57,4 +57,90 @@ void Controls::select(Entity* entity) {
 	}
 	entity->select();
 	selected->push_back(entity);
+}
+
+void Controls::click(int button) {
+	Vector3 hitPos;
+	Drawable* hitDrawable;
+
+	if (raycast(hitPos, hitDrawable, Game::getInstance()->getCameraManager()->getComponent())) {
+		Node* hitNode = hitDrawable->GetNode();
+		switch (button) {
+		case MOUSEB_LEFT:
+			clickLeft(hitDrawable, hitPos);
+			break;
+		case MOUSEB_RIGHT:
+			clickRight(hitDrawable, hitPos);
+			break;
+		}
+	}
+}
+
+void Controls::clickLeft(Drawable* hitDrawable, Vector3 hitPos) {
+	Node* hitNode = hitDrawable->GetNode();
+
+	if (hitNode->GetName() == "Box") {
+		LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+		Entity* clicked = lc->getEntity();
+		select(clicked);
+	} else if (hitNode->GetName() == "Ground") {
+		LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+		Entity* clicked = lc->getEntity();
+		select(clicked);
+	}
+}
+
+void Controls::clickRight(Drawable* hitDrawable, Vector3 hitPos) {
+	Node* hitNode = hitDrawable->GetNode();
+
+	if (hitNode->GetName() == "Box") {
+		unSelect(ENTITY);
+	} else if (hitNode->GetName() == "Ground") {
+		Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
+		action(ADD_AIM, entity);
+	}
+}
+
+void Controls::release(const int button) {
+	switch (button) {
+	case MOUSEB_LEFT:
+		mouseLeftHeld = false;
+		break;
+	case MOUSEB_RIGHT:
+		mouseRightHeld = false;
+		break;
+	case MOUSEB_MIDDLE:
+		mouseMiddleHeld = false;
+		break;
+	}
+}
+
+void Controls::clickDownRight(Drawable* hitdrawable, Vector3 hitPos) {
+
+}
+
+void Controls::clickDownLeft(Drawable* hitDrawable, Vector3 hitPos) {
+
+}
+
+void Controls::clickDown(const int button) {
+	Vector3 hitPos;
+	Drawable* hitDrawable;
+
+	if (raycast(hitPos, hitDrawable, Game::getInstance()->getCameraManager()->getComponent())) {
+		Node* hitNode = hitDrawable->GetNode();
+		switch (button) {
+		case MOUSEB_LEFT:
+			clickDownLeft(hitDrawable, hitPos);
+			mouseLeftHeld = true;
+			break;
+		case MOUSEB_RIGHT:
+			clickDownRight(hitDrawable, hitPos);
+			mouseRightHeld = true;
+			break;
+		case MOUSEB_MIDDLE:
+			mouseMiddleHeld = true;
+			break;
+		}
+	}
 }
