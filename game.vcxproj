@@ -90,15 +90,8 @@
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>setlocal
-E:\Programy\CMake\bin\cmake.exe -E copy_if_different "C:/Program Files (x86)/Windows Kits/10/Redist/D3D/x64/d3dcompiler_47.dll" D:/Programowanie/Urho3d-build/bin
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
@@ -155,15 +148,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>setlocal
-E:\Programy\CMake\bin\cmake.exe -E copy_if_different "C:/Program Files (x86)/Windows Kits/10/Redist/D3D/x64/d3dcompiler_47.dll" D:/Programowanie/Urho3d-build/bin
-if %errorlevel% neq 0 goto :cmEnd
-:cmEnd
-endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
-:cmErrorLevel
-exit /b %1
-:cmDone
-if %errorlevel% neq 0 goto :VCEnd</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
