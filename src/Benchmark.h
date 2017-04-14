@@ -1,7 +1,7 @@
 #pragma once
-#define LENGTH 2000
-#include <fstream>
 
+#include <fstream>
+#include "defines.h"
 
 class Benchmark {
 public:
@@ -13,7 +13,7 @@ public:
 	void save();
 	long getLoops();
 private:
-	double data[LENGTH];
+	double data[BENCH_LENGTH];
 	int index;
 	double sum;
 	double avg;

@@ -7,3 +7,7 @@
 #define BUCKET_GRID_RESOLUTION 140//1200;800;400;200;80;40
 									//0,33;0,5;1;2;5;10
 #define BUCKET_GRID_SIZE 420
+
+#define BENCH_LENGTH 2000
+#define BENCH_SKIP 2
+#define BENCH_ENABLE false

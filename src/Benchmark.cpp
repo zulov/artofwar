@@ -32,8 +32,8 @@ double Benchmark::getLastFPS() {
 
 void Benchmark::add(double fps) {
 	index++;
-	if (index >= LENGTH) {
-		avg = sum / LENGTH;
+	if (index >= BENCH_LENGTH) {
+		avg = sum / BENCH_LENGTH;
 		index = 0;
 		sum = 0;
 		save();
@@ -45,8 +45,10 @@ void Benchmark::add(double fps) {
 }
 
 void Benchmark::save() {
-	for (int count = 0; count < LENGTH; count++) {
-		output << data[count] << std::endl;
+	if (BENCH_ENABLE) {
+		for (int count = BENCH_SKIP; count < BENCH_LENGTH; count++) {
+			output << data[count] << std::endl;
+		}
 	}
 }
 
