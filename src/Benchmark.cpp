@@ -13,13 +13,16 @@ Benchmark::Benchmark() {
 	std::string name = "result/" + std::to_string(1900 + ltm->tm_year) + "" + std::to_string(1 + ltm->tm_mon) + "" +
 		std::to_string(ltm->tm_mday) + "" + std::to_string(1 + ltm->tm_hour) + "" +
 		std::to_string(1 + ltm->tm_min) + "" + std::to_string(+ ltm->tm_sec) + "performance.txt";
-
-	output.open(name);
+	if (BENCH_ENABLE) {
+		output.open(name);
+	}
 }
 
 
 Benchmark::~Benchmark() {
-	output.close();
+	if (BENCH_ENABLE) {
+		output.close();
+	}
 }
 
 double Benchmark::getAverageFPS() {
