@@ -66,6 +66,12 @@
     <ClCompile Include="src\AbstractObjectManager.cpp">
       <Filter>objects\collection\manager</Filter>
     </ClCompile>
+    <ClCompile Include="src\CommandList.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Command.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -143,6 +149,12 @@
     <ClInclude Include="src\AbstractObjectManager.h">
       <Filter>objects\collection\manager</Filter>
     </ClInclude>
+    <ClInclude Include="src\CommandList.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Command.h">
+      <Filter>command</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
@@ -178,6 +190,9 @@
     </Filter>
     <Filter Include="objects\collection\link">
       <UniqueIdentifier>{1afe235c-f383-41e8-acf9-aa5ae746e6e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="command">
+      <UniqueIdentifier>{198a48f4-a3df-47d3-8728-95e09b3f265d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -34,13 +34,13 @@ double Benchmark::getLastFPS() {
 }
 
 void Benchmark::add(double fps) {
-	index++;
+	++index;
 	if (index >= BENCH_LENGTH) {
 		avg = sum / BENCH_LENGTH;
 		index = 0;
 		sum = 0;
 		save();
-		loops++;
+		++loops;
 	}
 
 	data[index] = fps;

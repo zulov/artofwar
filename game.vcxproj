@@ -193,6 +193,8 @@
     <ClCompile Include="src\BuildingFactory.cpp" />
     <ClCompile Include="src\CameraBehave.cpp" />
     <ClCompile Include="src\CameraManager.cpp" />
+    <ClCompile Include="src\Command.cpp" />
+    <ClCompile Include="src\CommandList.cpp" />
     <ClCompile Include="src\Controls.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\EntityFactory.cpp" />
@@ -225,6 +227,8 @@
     <ClInclude Include="src\CameraBehave.h" />
     <ClInclude Include="src\CameraEnums.h" />
     <ClInclude Include="src\CameraManager.h" />
+    <ClInclude Include="src\Command.h" />
+    <ClInclude Include="src\CommandList.h" />
     <ClInclude Include="src\Controls.h" />
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\Entity.h" />

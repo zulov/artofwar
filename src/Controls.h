@@ -26,13 +26,14 @@ public:
 	void unSelect(int type);
 	void action(ActionType action, Entity* entity);
 
-	void clickDownRight(Drawable* hitdrawable, Vector3 hitPos);
-	void clickDownLeft(Drawable* hitDrawable, Vector3 hitPos);
+	void clickDownRight(Vector3 hitPos);
+	void clickDownLeft(Vector3 hitPos);
 	void clickDown(const int button);
 
 	void clickLeft(Drawable* hitDrawable, Vector3 hitPos);
 	void click(int button);
 	void clickRight(Drawable* hitDrawable, Vector3 hitPos);
+	void leftReleased(std::pair<Entity*, Entity*>* held);
 	void release(const int button);
 private:
 	std::vector<Entity*>* selected;
@@ -42,4 +43,9 @@ private:
 	bool mouseLeftHeld = false;
 	bool mouseRightHeld = false;
 	bool mouseMiddleHeld = false;
+
+	std::pair<Entity*, Entity*> *leftHeld;
+	std::pair<Entity*, Entity*> *middleHeld;
+	std::pair<Entity*, Entity*> *rightHeld;
+
 };

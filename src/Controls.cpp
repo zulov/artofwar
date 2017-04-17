@@ -6,10 +6,17 @@
 Controls::Controls() {
 	selected = new std::vector<Entity*>();
 	selected->reserve(10);
+
+	leftHeld = new std::pair<Entity*, Entity*>();
+	middleHeld = new std::pair<Entity*, Entity*>();
+	rightHeld = new std::pair<Entity*, Entity*>();
 }
 
 
 Controls::~Controls() {
+	delete leftHeld;
+	delete middleHeld;
+	delete rightHeld;
 }
 
 bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {
@@ -78,7 +85,7 @@ void Controls::click(int button) {
 
 void Controls::clickLeft(Drawable* hitDrawable, Vector3 hitPos) {
 	Node* hitNode = hitDrawable->GetNode();
-
+	
 	if (hitNode->GetName() == "Box") {
 		LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
 		Entity* clicked = lc->getEntity();
@@ -101,26 +108,45 @@ void Controls::clickRight(Drawable* hitDrawable, Vector3 hitPos) {
 	}
 }
 
+void Controls::leftReleased(std::pair<Entity*, Entity*>* held){
+
+}
+
 void Controls::release(const int button) {
-	switch (button) {
-	case MOUSEB_LEFT:
-		mouseLeftHeld = false;
-		break;
-	case MOUSEB_RIGHT:
-		mouseRightHeld = false;
-		break;
-	case MOUSEB_MIDDLE:
-		mouseMiddleHeld = false;
-		break;
+	
+	Vector3 hitPos;
+	Drawable* hitDrawable;
+
+	if (raycast(hitPos, hitDrawable, Game::getInstance()->getCameraManager()->getComponent())) {
+		Entity * entity = new Entity(&hitPos, nullptr, nullptr);
+		switch (button) {
+		case MOUSEB_LEFT:
+			mouseLeftHeld = false;
+			leftHeld->second = entity;
+			leftReleased(leftHeld);
+			break;
+		case MOUSEB_RIGHT:
+			mouseRightHeld = false;
+			rightHeld->second = entity;
+			break;
+		case MOUSEB_MIDDLE:
+			mouseMiddleHeld = false;
+			middleHeld->second = entity;
+			break;
+		}
 	}
 }
 
-void Controls::clickDownRight(Drawable* hitdrawable, Vector3 hitPos) {
+void Controls::clickDownRight(Vector3 hitPos) {
+	Entity * entity = new Entity(&hitPos, nullptr, nullptr);
 
+	rightHeld->first = entity;
 }
 
-void Controls::clickDownLeft(Drawable* hitDrawable, Vector3 hitPos) {
+void Controls::clickDownLeft(Vector3 hitPos) {
+	Entity * entity = new Entity(&hitPos, nullptr, nullptr);
 
+	leftHeld->first = entity;
 }
 
 void Controls::clickDown(const int button) {
@@ -131,11 +157,11 @@ void Controls::clickDown(const int button) {
 		Node* hitNode = hitDrawable->GetNode();
 		switch (button) {
 		case MOUSEB_LEFT:
-			clickDownLeft(hitDrawable, hitPos);
+			clickDownLeft(hitPos);
 			mouseLeftHeld = true;
 			break;
 		case MOUSEB_RIGHT:
-			clickDownRight(hitDrawable, hitPos);
+			clickDownRight(hitPos);
 			mouseRightHeld = true;
 			break;
 		case MOUSEB_MIDDLE:
