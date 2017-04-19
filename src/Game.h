@@ -4,6 +4,7 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/Engine/Engine.h>
 #include "CameraManager.h"
+#include "CommandList.h"
 
 class Game
 {
@@ -17,6 +18,7 @@ public:
 	Game* setScene(const Urho3D::SharedPtr<Urho3D::Scene>& scene);
 	Game* setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine);
 	Game* setCameraManager(CameraManager* cameraManager);
+	Game* setCommmandList(CommandList* _commmandList);
 
 	CameraManager* getCameraManager() const;
 	Urho3D::ResourceCache* getCache() const;
@@ -25,6 +27,7 @@ public:
 	Urho3D::UI* getUI() const;
 	Urho3D::Graphics* getGraphics() const;
 	Urho3D::SharedPtr<Urho3D::Engine> getEngine() const;
+	CommandList* getCommandList() const;
 private:
 	Game();
 	static Game* instance;
@@ -35,4 +38,5 @@ private:
 	Urho3D::Graphics* graphics;
 	Urho3D::SharedPtr<Urho3D::Engine> engine;
 	CameraManager * cameraManager;
+	CommandList * commmandList;
 };

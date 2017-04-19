@@ -61,9 +61,10 @@ void Main::Start() {
 	CreateConsoleAndDebugHud();
 	sceneObjectManager = new SceneObjectManager();
 	levelBuilder = new LevelBuilder();
-	game->setScene(levelBuilder->CreateScene(sceneObjectManager));
+	commandList = new CommandList;
 	cameraManager = new CameraManager();
-	game->setCameraManager(cameraManager);
+	game->setScene(levelBuilder->CreateScene(sceneObjectManager))->setCommmandList(commandList)->setCameraManager(cameraManager);
+
 	simulation = new Simulation();
 	simulation->createUnits();
 	SetupViewport();
@@ -83,6 +84,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	benchmark->add(1.0 / timeStep);
 	hud->updateHud(benchmark, cameraManager);
 	moveCamera(timeStep);
+	commandList->execute();
 }
 
 void Main::InitMouseMode(MouseMode mode) {

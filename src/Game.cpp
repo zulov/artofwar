@@ -26,6 +26,10 @@ Urho3D::SharedPtr<Urho3D::Engine> Game::getEngine() const {
 	return engine;
 }
 
+CommandList* Game::getCommandList() const {
+	return commmandList;
+}
+
 Game::Game() {
 }
 
@@ -76,5 +80,10 @@ CameraManager* Game::getCameraManager() const {
 
 Game* Game::setCameraManager(CameraManager* cameraManager) {
 	this->cameraManager = cameraManager;
+	return this;
+}
+
+Game* Game::setCommmandList(CommandList* _commmandList) {
+	commmandList = _commmandList;
 	return this;
 }

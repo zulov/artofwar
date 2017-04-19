@@ -13,6 +13,5 @@ public:
 	void clearContent();
 private:
 	std::vector <Unit*>* content;
-	Vector3 corners[4];
 };
 

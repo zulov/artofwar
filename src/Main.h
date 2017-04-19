@@ -63,5 +63,6 @@ private:
 	Controls* controls;
 	LevelBuilder* levelBuilder;
 	SceneObjectManager * sceneObjectManager;
+	CommandList * commandList;
 
 };
