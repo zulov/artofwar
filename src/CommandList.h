@@ -9,10 +9,8 @@ class CommandList
 public:
 	CommandList();
 	~CommandList();
-	void add(std::vector<Entity*>* entities, ActionType action, Entity* paremater);
+	void add(Command* command);
 	void execute();
 private:
-	std::vector<Command*> *commands;
-
+	std::vector<Command*>* commands;
 };
-

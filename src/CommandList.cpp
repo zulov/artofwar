@@ -9,8 +9,7 @@ CommandList::CommandList() {
 CommandList::~CommandList() {
 }
 
-void CommandList::add(std::vector<Entity*>* entities, ActionType action, Entity* paremater) {
-	Command * command = new Command(entities, action, paremater);
+void CommandList::add(Command * command) {
 
 	commands->push_back(command);
 }

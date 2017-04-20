@@ -104,7 +104,9 @@ void Controls::clickRight(Drawable* hitDrawable, Vector3 hitPos) {
 		unSelect(ENTITY);
 	} else if (hitNode->GetName() == "Ground") {
 		Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
-		Game::getInstance()->getCommandList()->add(selected, ADD_AIM, entity);
+		Command * command = new Command(selected, ADD_AIM, entity);
+
+		Game::getInstance()->getCommandList()->add(command);
 		
 		//action(ADD_AIM, entity);
 	}

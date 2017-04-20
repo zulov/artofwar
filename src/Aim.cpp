@@ -7,7 +7,7 @@ Aim::Aim(Urho3D::Vector3* _position) {
 	position = new Urho3D::Vector3(*_position);
 	position->y_ = 2;
 	Game* game = Game::getInstance();
-	Urho3D::Node* node = game->getScene()->CreateChild("Box");
+	node = game->getScene()->CreateChild("Box");
 	node->SetPosition(*position);
 	node->SetRotation(Urho3D::Quaternion(0, 0, 180));
 
@@ -20,6 +20,7 @@ Aim::Aim(Urho3D::Vector3* _position) {
 
 
 Aim::~Aim() {
+	Game::getInstance()->getScene()->RemoveChild(node);
 }
 
 Urho3D::Vector3* Aim::getPosition() {

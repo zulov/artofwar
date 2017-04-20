@@ -13,6 +13,5 @@ public:
 private:
 	Urho3D::Vector3* position;
 	double radius;
-
+	Urho3D::Node* node;
 };
-
