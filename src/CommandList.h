@@ -9,8 +9,8 @@ class CommandList
 public:
 	CommandList();
 	~CommandList();
-	void add(Command* command);
+	void add(AbstractCommand* command);
 	void execute();
 private:
-	std::vector<Command*>* commands;
+	std::vector<AbstractCommand*>* commands;
 };

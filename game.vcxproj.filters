@@ -72,6 +72,12 @@
     <ClCompile Include="src\Command.cpp">
       <Filter>command</Filter>
     </ClCompile>
+    <ClCompile Include="src\AbstractCommand.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CommandSelect.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -153,6 +159,12 @@
       <Filter>command</Filter>
     </ClInclude>
     <ClInclude Include="src\Command.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AbstractCommand.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CommandSelect.h">
       <Filter>command</Filter>
     </ClInclude>
   </ItemGroup>

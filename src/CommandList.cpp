@@ -2,14 +2,14 @@
 
 
 CommandList::CommandList() {
-	commands = new std::vector<Command*>();
+	commands = new std::vector<AbstractCommand*>();
 }
 
 
 CommandList::~CommandList() {
 }
 
-void CommandList::add(Command * command) {
+void CommandList::add(AbstractCommand * command) {
 
 	commands->push_back(command);
 }

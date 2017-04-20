@@ -183,6 +183,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AbstractCommand.cpp" />
     <ClCompile Include="src\AbstractObjectManager.cpp" />
     <ClCompile Include="src\Aim.cpp" />
     <ClCompile Include="src\Aims.cpp" />
@@ -194,6 +195,7 @@
     <ClCompile Include="src\CameraBehave.cpp" />
     <ClCompile Include="src\CameraManager.cpp" />
     <ClCompile Include="src\Command.cpp" />
+    <ClCompile Include="src\CommandSelect.cpp" />
     <ClCompile Include="src\CommandList.cpp" />
     <ClCompile Include="src\Controls.cpp" />
     <ClCompile Include="src\Entity.cpp" />
@@ -215,6 +217,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="math.h" />
+    <ClInclude Include="src\AbstractCommand.h" />
     <ClInclude Include="src\AbstractObjectManager.h" />
     <ClInclude Include="src\ActionType.h" />
     <ClInclude Include="src\Aim.h" />
@@ -228,6 +231,7 @@
     <ClInclude Include="src\CameraEnums.h" />
     <ClInclude Include="src\CameraManager.h" />
     <ClInclude Include="src\Command.h" />
+    <ClInclude Include="src\CommandSelect.h" />
     <ClInclude Include="src\CommandList.h" />
     <ClInclude Include="src\Controls.h" />
     <ClInclude Include="src\defines.h" />

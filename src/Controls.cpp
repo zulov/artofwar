@@ -1,6 +1,7 @@
 #include "Controls.h"
 #include "Game.h"
 #include "Main.h"
+#include "CommandSelect.h"
 
 
 Controls::Controls() {
@@ -113,7 +114,8 @@ void Controls::clickRight(Drawable* hitDrawable, Vector3 hitPos) {
 }
 
 void Controls::leftReleased(std::pair<Entity*, Entity*>* held){
-
+	CommandSelect * command = new CommandSelect(held);
+	Game::getInstance()->getCommandList()->add(command);
 }
 
 void Controls::release(const int button) {
@@ -132,6 +134,7 @@ void Controls::release(const int button) {
 		case MOUSEB_RIGHT:
 			mouseRightHeld = false;
 			rightHeld->second = entity;
+			//rightReleased(rightHeld);
 			break;
 		case MOUSEB_MIDDLE:
 			mouseMiddleHeld = false;
