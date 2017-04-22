@@ -86,7 +86,7 @@ void Controls::click(int button) {
 
 void Controls::clickLeft(Drawable* hitDrawable, Vector3 hitPos) {
 	Node* hitNode = hitDrawable->GetNode();
-	
+
 	if (hitNode->GetName() == "Box") {
 		LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
 		Entity* clicked = lc->getEntity();
@@ -105,53 +105,62 @@ void Controls::clickRight(Drawable* hitDrawable, Vector3 hitPos) {
 		unSelect(ENTITY);
 	} else if (hitNode->GetName() == "Ground") {
 		Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
-		Command * command = new Command(selected, ADD_AIM, entity);
+		Command* command = new Command(selected, ADD_AIM, entity);
 
 		Game::getInstance()->getCommandList()->add(command);
-		
+
 		//action(ADD_AIM, entity);
 	}
 }
 
-void Controls::leftReleased(std::pair<Entity*, Entity*>* held){
-	CommandSelect * command = new CommandSelect(held);
-	Game::getInstance()->getCommandList()->add(command);
+void Controls::leftReleased(std::pair<Entity*, Entity*>* held) {
+	std::vector<Entity*>* entities = Game::getInstance()->getMediator()->getEntities(held);
+	for (int i = 0; i < entities->size(); ++i) {//TODO zastapic wrzuceniem na raz
+		select((*entities)[i]);
+	}
+	delete entities;
 }
 
 void Controls::release(const int button) {
-	
+
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
 	if (raycast(hitPos, hitDrawable, Game::getInstance()->getCameraManager()->getComponent())) {
-		Entity * entity = new Entity(&hitPos, nullptr, nullptr);
+		Entity* entity = new Entity(&hitPos, nullptr, nullptr);
 		switch (button) {
 		case MOUSEB_LEFT:
-			mouseLeftHeld = false;
-			leftHeld->second = entity;
-			leftReleased(leftHeld);
+			if (mouseLeftHeld == true) {
+				mouseLeftHeld = false;
+				leftHeld->second = entity;
+				leftReleased(leftHeld);
+			}
 			break;
 		case MOUSEB_RIGHT:
-			mouseRightHeld = false;
-			rightHeld->second = entity;
-			//rightReleased(rightHeld);
+			if (mouseRightHeld == true) {
+				mouseRightHeld = false;
+				rightHeld->second = entity;
+				//rightReleased(rightHeld);
+			}
 			break;
 		case MOUSEB_MIDDLE:
-			mouseMiddleHeld = false;
-			middleHeld->second = entity;
+			if (mouseMiddleHeld == true) {
+				mouseMiddleHeld = false;
+				middleHeld->second = entity;
+			}
 			break;
 		}
 	}
 }
 
 void Controls::clickDownRight(Vector3 hitPos) {
-	Entity * entity = new Entity(&hitPos, nullptr, nullptr);
+	Entity* entity = new Entity(&hitPos, nullptr, nullptr);
 
 	rightHeld->first = entity;
 }
 
 void Controls::clickDownLeft(Vector3 hitPos) {
-	Entity * entity = new Entity(&hitPos, nullptr, nullptr);
+	Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
 
 	leftHeld->first = entity;
 }
@@ -164,15 +173,21 @@ void Controls::clickDown(const int button) {
 		Node* hitNode = hitDrawable->GetNode();
 		switch (button) {
 		case MOUSEB_LEFT:
-			clickDownLeft(hitPos);
-			mouseLeftHeld = true;
+			if (mouseLeftHeld == false) {
+				clickDownLeft(hitPos);
+				mouseLeftHeld = true;
+			}
 			break;
 		case MOUSEB_RIGHT:
-			clickDownRight(hitPos);
-			mouseRightHeld = true;
+			if (mouseRightHeld == false) {
+				clickDownRight(hitPos);
+				mouseRightHeld = true;
+			}
 			break;
 		case MOUSEB_MIDDLE:
-			mouseMiddleHeld = true;
+			if (mouseMiddleHeld == false) {
+				mouseMiddleHeld = true;
+			}
 			break;
 		}
 	}

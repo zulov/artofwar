@@ -19,7 +19,7 @@ BucketGrid::BucketGrid(int _resolution, double _size) {
 		}
 	}
 
-	cache = new std::vector<Unit*>*[resolution * resolution];
+	cache = new std::vector<Entity*>*[resolution * resolution];
 	for (int i = 0; i < resolution * resolution; ++i) {
 		cache[i] = nullptr;
 	}
@@ -50,7 +50,7 @@ void BucketGrid::writeToGrid(std::vector<Unit*>* entitys) {
 	}
 }
 
-void BucketGrid::updateGrid(Unit* entity) {
+void BucketGrid::updateGrid(Entity* entity) {
 	Vector3* pos = entity->getPosition();
 	int posX = getIntegerPos(pos->x_);
 	int posZ = getIntegerPos(pos->z_);
@@ -88,7 +88,7 @@ void BucketGrid::updateSizes(int size) {
 	lastSize = size;
 }
 
-std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
+std::vector<Entity*>* BucketGrid::getArrayNeight(Unit* entity) {
 	int dX = entity->getBucketX();
 	int dZ = entity->getBucketZ();
 	long key = cacheHash(dX, dZ);
@@ -96,14 +96,14 @@ std::vector<Unit*>* BucketGrid::getArrayNeight(Unit* entity) {
 	if (cache[key] != nullptr) {
 		return cache[key];
 	} else {
-		std::vector<Unit*>* crowd = new std::vector<Unit *>();
-		crowd->reserve(((lastSize+1)* 1.2f));
+		std::vector<Entity*>* crowd = new std::vector<Entity *>();
+		crowd->reserve(((lastSize + 1) * 1.2f));
 		std::vector<std::pair<int, int>*>* levels = getEnvIndexsFromCache(entity->getMaxSeparationDistance());
 
 		for (int i = 0; i < levels->size(); ++i) {
 			std::pair<int, int>* pair = (*levels)[i];
 			Bucket* bucket = getBucketAt(pair->first + dX, pair->second + dZ);
-			std::vector<Unit *>* content = bucket->getContent();
+			std::vector<Entity *>* content = bucket->getContent();
 			crowd->insert(crowd->end(), content->begin(), content->end());
 		}
 		cache[key] = crowd;
@@ -152,6 +152,25 @@ void BucketGrid::clearAfterStep() {
 			cache[i] = nullptr;
 		}
 	}
+}
+
+std::vector<Entity*>* BucketGrid::getArrayNeight(std::pair<Entity*, Entity*>* pair) {
+	Vector3* begin = pair->first->getPosition();
+	Vector3* end = pair->second->getPosition();
+	std::vector<Entity*>* entities = new std::vector<Entity*>();
+	int posBeginX = getIntegerPos(begin->x_);
+	int posBeginZ = getIntegerPos(begin->z_);
+	int posEndX = getIntegerPos(end->x_);
+	int posEndZ = getIntegerPos(end->z_);
+
+	for (int i = Min(posBeginX, posEndX); i < Max(posBeginX, posEndX); ++i) {
+		for (int j = Min(posBeginZ, posEndZ); j < Max(posBeginZ, posEndZ); ++j) {
+			Bucket* bucket = getBucketAt(i, j);
+			std::vector<Entity *>* content = bucket->getContent();
+			entities->insert(entities->end(), content->begin(), content->end());
+		}
+	}
+	return entities;
 }
 
 bool BucketGrid::fieldInCircle(int i, int j, double radius) {

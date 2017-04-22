@@ -6,8 +6,8 @@
 #include "Simulation.h"
 
 
-Simulation::Simulation() {
-	envStrategy = new EnviromentStrategy();
+Simulation::Simulation(EnviromentStrategy *_enviromentStrategy) {
+	envStrategy = _enviromentStrategy;
 	forceStrategy = new ForceStrategy();
 	objectManager = new SimulationObjectManager();
 	srand(time(NULL));
@@ -26,18 +26,13 @@ void Simulation::animateObjects(float timeStep) {
 }
 
 void Simulation::update(Input* input, float timeStep) {
-	using namespace Update;
-
 	if (input->GetKeyPress(KEY_SPACE)) {
 		animate = !animate;
 	}
 
-	//reset();
-
 	if (animate) {
 		animateObjects(timeStep);
 	}
-
 }
 
 void Simulation::moveUnits(float timeStep) {
@@ -54,7 +49,7 @@ void Simulation::moveUnits(float timeStep) {
 void Simulation::calculateForces() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit * unit = (*units)[i];
-		std::vector<Unit*>* neighbours = envStrategy->getNeighbours(unit, units);
+		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit, units);
 
 		Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
 		Vector3* sepObstacle = forceStrategy->separationObstacle(unit, 0);

@@ -203,6 +203,7 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\LevelBuilder.cpp" />
     <ClCompile Include="src\LinkComponent.cpp" />
+    <ClCompile Include="src\Mediator.cpp" />
     <ClCompile Include="src\SceneObjectManager.cpp" />
     <ClCompile Include="src\UnitFactory.cpp" />
     <ClCompile Include="src\EnviromentStrategy.cpp" />
@@ -240,6 +241,7 @@
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\LevelBuilder.h" />
     <ClInclude Include="src\LinkComponent.h" />
+    <ClInclude Include="src\Mediator.h" />
     <ClInclude Include="src\ObjectEnums.h" />
     <ClInclude Include="src\SceneObjectManager.h" />
     <ClInclude Include="src\UnitFactory.h" />

@@ -13,16 +13,16 @@ float EnviromentStrategy::getSqDistance(Vector3* unitPosition, Vector3* otherPos
 	return ((*otherPosition) - (*unitPosition)).LengthSquared();
 }
 
-std::vector<Unit *>* EnviromentStrategy::getNeighbours(Unit* unit, std::vector<Unit *>* units) {
-	std::vector<Unit*>* neights = new std::vector<Unit *>();
-	std::vector<Unit *>* arrayNeight = bucketGrid->getArrayNeight(unit);
+std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, std::vector<Unit *>* units) {
+	std::vector<Entity*>* neights = new std::vector<Entity *>();
+	std::vector<Entity *>* arrayNeight = bucketGrid->getArrayNeight(unit);
 	//std::vector<Unit *> *arrayNeight = units;
 
 	neights->reserve(arrayNeight->size());
 	double sqSeparationDistance = unit->getMaxSeparationDistance() * unit->getMaxSeparationDistance();
 	Vector3* unitPosition = unit->getPosition();
 	for (int i = 0; i < arrayNeight->size(); ++i) {
-		Unit * neight = (*arrayNeight)[i];
+		Entity* neight = (*arrayNeight)[i];
 		if (unit == neight) { continue; }
 
 		double sqDistance = getSqDistance(unitPosition, neight->getPosition());
@@ -46,4 +46,8 @@ void EnviromentStrategy::update(Unit* unit) {
 
 void EnviromentStrategy::clear() {
 	bucketGrid->clearAfterStep();
+}
+
+std::vector<Entity*>* EnviromentStrategy::getNeighbours(std::pair<Entity*, Entity*>* pair) {
+	return bucketGrid->getArrayNeight(pair);
 }

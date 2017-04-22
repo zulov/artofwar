@@ -18,7 +18,7 @@ namespace Urho3D {
 class Simulation
 {
 public:
-	Simulation();
+	Simulation(EnviromentStrategy *_enviromentStrategy);
 	void update(Input* input, float timeStep);
 	void setUnits(std::vector<Unit*>* units);
 	void createUnits();

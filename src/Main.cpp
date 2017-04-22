@@ -49,29 +49,33 @@ void Main::Setup() {
 
 void Main::Start() {
 	Game* game = Game::getInstance();
+	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->setGraphics(GetSubsystem<Graphics>())->setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
 	SetWindowTitleAndIcon();
-
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
-	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->setGraphics(GetSubsystem<Graphics>())->setContext(context_)->setEngine(engine_);
+
 	hud = new Hud();
 	hud->createStaticHud(String("Liczba jednostek") + String("??"));
 	//hud->createLogo();
 
 	CreateConsoleAndDebugHud();
+
 	sceneObjectManager = new SceneObjectManager();
 	levelBuilder = new LevelBuilder();
 	commandList = new CommandList;
 	cameraManager = new CameraManager();
 	game->setScene(levelBuilder->CreateScene(sceneObjectManager))->setCommmandList(commandList)->setCameraManager(cameraManager);
-
-	simulation = new Simulation();
+	EnviromentStrategy* enviromentStrategy = new EnviromentStrategy();
+	simulation = new Simulation(enviromentStrategy);
 	simulation->createUnits();
 	SetupViewport();
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
 
 	InitMouseMode(MM_RELATIVE);
 	controls = new Controls();
+
+	mediator = new Mediator(enviromentStrategy, controls);
+	game->setMediator(mediator);
 }
 
 void Main::Stop() {
@@ -91,7 +95,7 @@ void Main::InitMouseMode(MouseMode mode) {
 	useMouseMode_ = mode;
 	Input* input = GetSubsystem<Input>();
 
-	Console* console = GetSubsystem<Console>();
+	Console* console = Game::getInstance()->getConsole();
 	if (useMouseMode_ != MM_ABSOLUTE) {
 		input->SetMouseMode(useMouseMode_);
 		if (console && console->IsVisible()) {
@@ -101,15 +105,14 @@ void Main::InitMouseMode(MouseMode mode) {
 }
 
 void Main::SetWindowTitleAndIcon() {
-	ResourceCache* cache = GetSubsystem<ResourceCache>();
-	Graphics* graphics = GetSubsystem<Graphics>();
-	Image* icon = cache->GetResource<Image>("textures/UrhoIcon.png");
+	Graphics* graphics = Game::getInstance()->getGraphics();
+	Image* icon = Game::getInstance()->getCache()->GetResource<Image>("textures/UrhoIcon.png");
 	graphics->SetWindowIcon(icon);
 	graphics->SetWindowTitle("Art of War 2017");
 }
 
 void Main::CreateConsoleAndDebugHud() {
-	ResourceCache* cache = GetSubsystem<ResourceCache>();
+	ResourceCache* cache = Game::getInstance()->getCache();
 	XMLFile* xmlFile = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
 
 	hud->createConsole();
@@ -204,21 +207,4 @@ void Main::moveCamera(float timeStep) {
 	} else {
 		controls->release(MOUSEB_RIGHT);
 	}
-}
-
-void Main::reset() {
-	Input* input = GetSubsystem<Input>();
-
-	if (input->GetKeyDown(KEY_P)) {
-		resetUnits();
-	}
-}
-
-void Main::resetUnits() {
-	//	for (int i = 0; i < units->size(); i++) {
-	//		scene->RemoveChild((*units)[i]->getNode());
-	//		delete (*units)[i];
-	//	}
-	//	units->clear();
-	//	createUnits(edgeSize, spaceSize);
 }

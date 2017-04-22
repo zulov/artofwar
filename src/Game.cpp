@@ -30,6 +30,14 @@ CommandList* Game::getCommandList() const {
 	return commmandList;
 }
 
+Console* Game::getConsole() const {
+	return console;
+}
+
+Mediator* Game::getMediator() const {
+	return mediator;
+}
+
 Game::Game() {
 }
 
@@ -85,5 +93,15 @@ Game* Game::setCameraManager(CameraManager* cameraManager) {
 
 Game* Game::setCommmandList(CommandList* _commmandList) {
 	commmandList = _commmandList;
+	return this;
+}
+
+Game* Game::setConsole(Console* _console) {
+	console = _console;
+	return this;
+}
+
+Game* Game::setMediator(Mediator* _mediator) {
+	mediator = _mediator;
 	return this;
 }

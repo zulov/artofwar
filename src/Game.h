@@ -6,6 +6,8 @@
 #include "CameraManager.h"
 #include "CommandList.h"
 
+class Mediator;
+
 class Game
 {
 public:
@@ -19,6 +21,8 @@ public:
 	Game* setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine);
 	Game* setCameraManager(CameraManager* cameraManager);
 	Game* setCommmandList(CommandList* _commmandList);
+	Game* setConsole(Console* _console);
+	Game* setMediator(Mediator* _mediator);
 
 	CameraManager* getCameraManager() const;
 	Urho3D::ResourceCache* getCache() const;
@@ -28,6 +32,8 @@ public:
 	Urho3D::Graphics* getGraphics() const;
 	Urho3D::SharedPtr<Urho3D::Engine> getEngine() const;
 	CommandList* getCommandList() const;
+	Console* getConsole() const;
+	Mediator* getMediator() const;
 private:
 	Game();
 	static Game* instance;
@@ -39,4 +45,7 @@ private:
 	Urho3D::SharedPtr<Urho3D::Engine> engine;
 	CameraManager * cameraManager;
 	CommandList * commmandList;
+	Console* console;
+	Mediator * mediator;
+
 };

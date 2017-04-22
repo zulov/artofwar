@@ -12,10 +12,11 @@ public:
 	~EnviromentStrategy();
 	float getSqDistance(Vector3* unitPosition, Vector3* otherPosition);
 
-	std::vector<Unit *> *getNeighbours(Unit * unit, std::vector<Unit *> *units);
+	std::vector<Entity *> *getNeighbours(Unit * unit, std::vector<Unit *> *units);
 	void populate(std::vector<Unit *> *units);
 	void update(Unit * unit);
 	void clear();
+	std::vector<Entity *> * getNeighbours(std::pair<Entity*, Entity*>* pair);
 private:
 	BucketGrid* bucketGrid;
 };

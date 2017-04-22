@@ -15,6 +15,7 @@
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/Graphics/Model.h>
 #include "LevelBuilder.h"
+#include "Mediator.h"
 
 namespace Urho3D {
 	class Node;
@@ -44,8 +45,6 @@ protected:
 	std::vector<Unit*>* createUnits(int size, double space);
 
 	void moveCamera(float timeStep);
-	void reset();
-	void resetUnits();
 	MouseMode useMouseMode_;
 
 private:
@@ -64,5 +63,5 @@ private:
 	LevelBuilder* levelBuilder;
 	SceneObjectManager * sceneObjectManager;
 	CommandList * commandList;
-
+	Mediator * mediator;
 };

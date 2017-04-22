@@ -13,11 +13,11 @@ Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, void* param2) {
 	return new Vector3();
 }
 
-Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Unit*>* units) {
+Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Entity*>* units) {
 	Vector3* force = new Vector3();
 
 	for (int i = 0; i < units->size(); ++i) {
-		Unit* neight = (*units)[i];
+		Entity* neight = (*units)[i];
 		
 		Vector3 diff = *unit->getPosition() - *neight->getPosition();
 		double sqDistance = diff.LengthSquared();

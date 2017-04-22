@@ -78,6 +78,7 @@
     <ClCompile Include="src\CommandSelect.cpp">
       <Filter>command</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mediator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -167,6 +168,7 @@
     <ClInclude Include="src\CommandSelect.h">
       <Filter>command</Filter>
     </ClInclude>
+    <ClInclude Include="src\Mediator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
