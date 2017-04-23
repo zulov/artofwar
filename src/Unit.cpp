@@ -39,6 +39,9 @@ void Unit::action(ActionType actionType, Entity* entity) {
 	case ADD_AIM:
 		addAim(entity);
 		break;
+	case APPEND_AIM:
+		appendAim(entity);
+		break;
 	case FOLLOW:
 		break;
 	default:
@@ -62,7 +65,12 @@ double Unit::getUnitRadius() {
 	return unitRadius;
 }
 
+void Unit::appendAim(Entity* entity) {
+	aims->add(entity);
+}
+
 void Unit::addAim(Entity* entity) {
+	aims->clearAims();
 	aims->add(entity);
 }
 

@@ -191,9 +191,9 @@ void Main::moveCamera(float timeStep) {
 	int wheel = input->GetMouseMoveWheel();
 	cameraManager->translate(cameraKeys, wheel, timeStep);
 	cameraManager->rotate(input->GetMouseMove());
-
+	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
 	if (input->GetMouseButtonPress(MOUSEB_LEFT)) {
-		controls->click(MOUSEB_LEFT);
+		controls->click(MOUSEB_LEFT, shiftPressed);
 	} else if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
 		controls->clickDown(MOUSEB_LEFT);
 	} else {
@@ -201,7 +201,7 @@ void Main::moveCamera(float timeStep) {
 	}
 
 	if (input->GetMouseButtonPress(MOUSEB_RIGHT)) {
-		controls->click(MOUSEB_RIGHT);
+		controls->click(MOUSEB_RIGHT, shiftPressed);
 	} else if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
 		controls->clickDown(MOUSEB_RIGHT);
 	} else {

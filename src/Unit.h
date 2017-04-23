@@ -32,6 +32,7 @@ protected:
 	double minSpeed;
 	Aims* aims;
 private:
+	void appendAim(Entity* entity);
 	void addAim(Entity* entity);
 	double unitRadius = 2;
 };

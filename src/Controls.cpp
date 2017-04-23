@@ -67,7 +67,7 @@ void Controls::select(Entity* entity) {
 	selected->push_back(entity);
 }
 
-void Controls::click(int button) {
+void Controls::click(int button, bool shiftPressed) {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
@@ -78,7 +78,7 @@ void Controls::click(int button) {
 			clickLeft(hitDrawable, hitPos);
 			break;
 		case MOUSEB_RIGHT:
-			clickRight(hitDrawable, hitPos);
+			clickRight(hitDrawable, hitPos, shiftPressed);
 			break;
 		}
 	}
@@ -98,14 +98,20 @@ void Controls::clickLeft(Drawable* hitDrawable, Vector3 hitPos) {
 	}
 }
 
-void Controls::clickRight(Drawable* hitDrawable, Vector3 hitPos) {
+void Controls::clickRight(Drawable* hitDrawable, Vector3 hitPos, bool shiftPressed) {
 	Node* hitNode = hitDrawable->GetNode();
 
 	if (hitNode->GetName() == "Box") {
 		unSelect(ENTITY);
 	} else if (hitNode->GetName() == "Ground") {
 		Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
-		Command* command = new Command(selected, ADD_AIM, entity);
+		Command* command;
+		if (shiftPressed) {
+			command = new Command(selected, APPEND_AIM, entity);
+		} else {
+			command = new Command(selected, ADD_AIM, entity);
+		}
+
 
 		Game::getInstance()->getCommandList()->add(command);
 

@@ -25,6 +25,11 @@ Vector3* Aims::getAimPos() {
 	return (*aims)[index]->getPosition();
 }
 
+void Aims::clearAims() {
+	index = 0;
+	clear_vector(aims);
+}
+
 bool Aims::check(Urho3D::Vector3* pedestrian) {
 	if (aims->size() == 0) { return false; }
 	Aim* aim = getAim();
@@ -35,8 +40,7 @@ bool Aims::check(Urho3D::Vector3* pedestrian) {
 		index++;
 	}
 	if (index >= aims->size()) {
-		index = 0;
-		clear_vector(aims);
+		clearAims();
 		return true;
 	} else {
 		return false;

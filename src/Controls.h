@@ -31,8 +31,8 @@ public:
 	void clickDown(const int button);
 
 	void clickLeft(Drawable* hitDrawable, Vector3 hitPos);
-	void click(int button);
-	void clickRight(Drawable* hitDrawable, Vector3 hitPos);
+	void click(int button, bool shiftPressed);
+	void clickRight(Drawable* hitDrawable, Vector3 hitPos, bool shiftPressed);
 	void leftReleased(std::pair<Entity*, Entity*>* held);
 	void release(const int button);
 private:

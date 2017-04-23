@@ -13,6 +13,7 @@ public:
 	~Aims();
 	Aim* getAim();
 	Vector3 *getAimPos();
+	void clearAims();
 	bool check(Urho3D::Vector3* pedestrian);
 	void add(Entity* entity);
 private:
