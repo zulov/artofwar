@@ -16,14 +16,15 @@ Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, void* param2) {
 Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Entity*>* units) {
 	Vector3* force = new Vector3();
 
+	double sqSepDist = unit->getMaxSeparationDistance() * unit->getMaxSeparationDistance();
 	for (int i = 0; i < units->size(); ++i) {
 		Entity* neight = (*units)[i];
-		
+
 		Vector3 diff = *unit->getPosition() - *neight->getPosition();
 		double sqDistance = diff.LengthSquared();
-		if (sqDistance > unit->getMaxSeparationDistance() * unit->getMaxSeparationDistance()) { continue; }
+		if (sqDistance > sqSepDist) { continue; }
 		double distance = sqrt(sqDistance);
-		
+
 		diff /= distance;
 		double minimalDistance = (unit->getMinimalDistance() + neight->getMinimalDistance());
 		double coef = calculateCoef(distance, minimalDistance);//poprawic kolejnosc zeby ograniczyc operacje na vektorze
@@ -37,16 +38,16 @@ Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Entity*>
 }
 
 Urho3D::Vector3* ForceStrategy::destination(Unit* unit) {
-	Vector3* force = new Vector3();
 	if (unit->getAim() != nullptr) {
-		force = new Vector3((*(unit->getAim())) - (*unit->getPosition()));
+		Vector3* force = new Vector3((*(unit->getAim())) - (*unit->getPosition()));
 		force->Normalize();
 		(*force) *= boostCoef;
 		(*force) -= (*unit->getVelocity());
 		(*force) /= 0.5;
 		(*force) *= unit->getMass();
+		return force;
 	}
-	return force;
+	return new Vector3();
 }
 
 Urho3D::Vector3* ForceStrategy::randomForce() {
@@ -61,7 +62,7 @@ double ForceStrategy::calculateCoef(double distance, double minDist) {
 	if (parameter <= 0.04) {//zapobieganie nieskonczonosci
 		parameter = 0.04;
 	}
-	double coef = exp256((minDist) / parameter) - 1;
+	double coef = exp256(minDist / parameter) - 1;
 	//coef *= sepCoefWall;
 
 	return coef;

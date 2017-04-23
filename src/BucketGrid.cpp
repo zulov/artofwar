@@ -163,8 +163,8 @@ std::vector<Entity*>* BucketGrid::getArrayNeight(std::pair<Entity*, Entity*>* pa
 	int posEndX = getIntegerPos(end->x_);
 	int posEndZ = getIntegerPos(end->z_);
 
-	for (int i = Min(posBeginX, posEndX); i < Max(posBeginX, posEndX); ++i) {
-		for (int j = Min(posBeginZ, posEndZ); j < Max(posBeginZ, posEndZ); ++j) {
+	for (int i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
+		for (int j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
 			Bucket* bucket = getBucketAt(i, j);
 			std::vector<Entity *>* content = bucket->getContent();
 			entities->insert(entities->end(), content->begin(), content->end());

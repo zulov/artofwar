@@ -1,6 +1,7 @@
 #include "Unit.h"
 #include "ObjectEnums.h"
 #include "Main.h"
+#include "Game.h"
 
 Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_position, _boxNode, _font) {
 	maxSeparationDistance = SEP_RADIUS;
@@ -93,6 +94,9 @@ void Unit::select() {
 	titleText->SetColor(Color::GREEN);
 	titleText->SetAlignment(HA_CENTER, VA_CENTER);
 	titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
+	StaticModel* model = node->GetComponent<StaticModel>();
+	
+	model->SetMaterial(Game::getInstance()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
 }
 
 void Unit::unSelect() {
@@ -101,4 +105,6 @@ void Unit::unSelect() {
 		node->RemoveChild(child);
 	}
 
+	StaticModel* model = node->GetComponent<StaticModel>();
+	model->SetMaterial(nullptr);//SetMaterial(Game::getInstance()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
 }
