@@ -6,7 +6,7 @@
 Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_position, _boxNode, _font) {
 	maxSeparationDistance = SEP_RADIUS;
 	mass = 1;
-	maxSpeed = 2;
+	maxSpeed = 5;
 	minSpeed = maxSpeed * 0.2f;
 	acceleration = new Vector3();
 	velocity = new Vector3();
@@ -73,7 +73,7 @@ void Unit::applyForce(double timeStep) {
 	if (velLenght > maxSpeed * maxSpeed) {
 		velocity->Normalize();
 		(*velocity) *= maxSpeed;
-	} else if (velLenght < minSpeed * minSpeed) {
+	} else if (velLenght > 0 && velLenght < minSpeed * minSpeed) {
 		velocity->x_ = 0;
 		velocity->y_ = 0;
 		velocity->z_ = 0;
@@ -95,7 +95,7 @@ void Unit::select() {
 	titleText->SetAlignment(HA_CENTER, VA_CENTER);
 	titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
 	StaticModel* model = node->GetComponent<StaticModel>();
-	
+
 	model->SetMaterial(Game::getInstance()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
 }
 

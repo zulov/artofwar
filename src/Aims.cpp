@@ -22,7 +22,7 @@ Aim* Aims::getAim() {
 
 Vector3* Aims::getAimPos() {
 	if (index >= aims->size()) { return nullptr; }
-	return aims->at(index)->getPosition();
+	return (*aims)[index]->getPosition();
 }
 
 bool Aims::check(Urho3D::Vector3* pedestrian) {

@@ -17,5 +17,7 @@ private:
 	const double coef = 1;
 	double calculateCoef(double distance, double minDist);
 	double boostCoef = 10;
+	double sepCoef = 1;
+	double aimCoef = 2;
 };
 
