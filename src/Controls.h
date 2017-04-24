@@ -12,13 +12,14 @@
 #include <vector>
 #include "Entity.h"
 #include "ObjectEnums.h"
+#include <Urho3D/Input/Input.h>
 
 using namespace Urho3D;
 
 class Controls
 {
 public:
-	Controls();
+	Controls(Input* _input);
 	~Controls();
 	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
 	void unselect(Entity* entity);
@@ -30,13 +31,14 @@ public:
 	void clickDownLeft(Vector3 hitPos);
 	void clickDown(const int button);
 
-	void clickLeft(Drawable* hitDrawable, Vector3 hitPos);
-	void click(int button, bool shiftPressed);
+	void clickLeft(Drawable* hitDrawable, Vector3 hitPos, bool ctrlPressed);
+	void click(int button);
 	void clickRight(Drawable* hitDrawable, Vector3 hitPos, bool shiftPressed);
-	void leftReleased(std::pair<Entity*, Entity*>* held);
+	void leftReleased(std::pair<Entity*, Entity*>* held, bool ctrlPressed);
+	void rightReleased(std::pair<Entity*, Entity*>* pair, bool shiftPressed);
 	void release(const int button);
 private:
-	std::vector<Entity*>* selected;
+	std::vector<Entity*>* selected;//TODO to powinien byæ set
 	ObjectType selectedType;
 	float maxDistance = 300;
 
@@ -48,4 +50,5 @@ private:
 	std::pair<Entity*, Entity*> *middleHeld;
 	std::pair<Entity*, Entity*> *rightHeld;
 
+	Input* input;
 };

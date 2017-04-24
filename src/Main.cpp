@@ -72,7 +72,7 @@ void Main::Start() {
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
 
 	InitMouseMode(MM_RELATIVE);
-	controls = new Controls();
+	controls = new Controls(GetSubsystem<Input>());
 
 	mediator = new Mediator(enviromentStrategy, controls);
 	game->setMediator(mediator);
@@ -191,18 +191,20 @@ void Main::moveCamera(float timeStep) {
 	int wheel = input->GetMouseMoveWheel();
 	cameraManager->translate(cameraKeys, wheel, timeStep);
 	cameraManager->rotate(input->GetMouseMove());
-	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
-	if (input->GetMouseButtonPress(MOUSEB_LEFT)) {
-		controls->click(MOUSEB_LEFT, shiftPressed);
-	} else if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
+
+	//	if (input->GetMouseButtonPress(MOUSEB_LEFT)) {
+	//		controls->click(MOUSEB_LEFT);
+	//	} else 
+	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
 		controls->clickDown(MOUSEB_LEFT);
 	} else {
 		controls->release(MOUSEB_LEFT);
 	}
 
-	if (input->GetMouseButtonPress(MOUSEB_RIGHT)) {
-		controls->click(MOUSEB_RIGHT, shiftPressed);
-	} else if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+	//	if (input->GetMouseButtonPress(MOUSEB_RIGHT)) {
+	//		controls->click(MOUSEB_RIGHT);
+	//	} else
+	if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
 		controls->clickDown(MOUSEB_RIGHT);
 	} else {
 		controls->release(MOUSEB_RIGHT);
