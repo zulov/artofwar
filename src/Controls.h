@@ -32,7 +32,6 @@ public:
 	void clickDown(const int button);
 
 	void clickLeft(Drawable* hitDrawable, Vector3 hitPos, bool ctrlPressed);
-	void click(int button);
 	void clickRight(Drawable* hitDrawable, Vector3 hitPos, bool shiftPressed);
 	void leftReleased(std::pair<Entity*, Entity*>* held, bool ctrlPressed);
 	void rightReleased(std::pair<Entity*, Entity*>* pair, bool shiftPressed);
@@ -51,4 +50,5 @@ private:
 	std::pair<Entity*, Entity*> *rightHeld;
 
 	Input* input;
+	double clickDistance = 2;
 };

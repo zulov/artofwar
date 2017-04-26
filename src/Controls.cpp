@@ -68,27 +68,6 @@ void Controls::select(Entity* entity) {
 	selected->push_back(entity);
 }
 
-void Controls::click(int button) {
-	Vector3 hitPos;
-	Drawable* hitDrawable;
-
-	if (raycast(hitPos, hitDrawable, Game::getInstance()->getCameraManager()->getComponent())) {
-		Node* hitNode = hitDrawable->GetNode();
-		switch (button) {
-		case MOUSEB_LEFT: {
-			bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
-			clickLeft(hitDrawable, hitPos, ctrlPressed);
-			break;
-		}
-		case MOUSEB_RIGHT: {
-			bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
-			clickRight(hitDrawable, hitPos, shiftPressed);
-			break;
-		}
-		}
-	}
-}
-
 void Controls::clickLeft(Drawable* hitDrawable, Vector3 hitPos, bool ctrlPressed) {
 	Node* hitNode = hitDrawable->GetNode();
 
@@ -161,7 +140,6 @@ void Controls::rightReleased(std::pair<Entity*, Entity*>* pair, bool shiftPresse
 }
 
 void Controls::release(const int button) {
-
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
@@ -173,12 +151,11 @@ void Controls::release(const int button) {
 				mouseLeftHeld = false;
 				leftHeld->second = entity;
 				double dist = (*(leftHeld->first->getPosition()) - *(leftHeld->second->getPosition())).Length();
-				if(dist>1) {
+				if(dist>clickDistance) {
 					leftReleased(leftHeld, input->GetKeyDown(KEY_CTRL));
 				}else {
 					clickLeft(hitDrawable, hitPos, input->GetKeyDown(KEY_CTRL));
-				}
-				
+				}		
 			}
 			break;
 		case MOUSEB_RIGHT:
@@ -186,7 +163,7 @@ void Controls::release(const int button) {
 				mouseRightHeld = false;
 				rightHeld->second = entity;
 				double dist = (*(rightHeld->first->getPosition()) - *(rightHeld->second->getPosition())).Length();
-				if (dist>1) {
+				if (dist>clickDistance) {
 					rightReleased(rightHeld, input->GetKeyDown(KEY_SHIFT));
 				}
 				else {
