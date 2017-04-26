@@ -44,7 +44,7 @@ protected:
 	void SetupViewport();
 	std::vector<Unit*>* createUnits(int size, double space);
 
-	void moveCamera(float timeStep);
+	void control(float timeStep);
 	MouseMode useMouseMode_;
 
 private:

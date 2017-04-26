@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Main.h"
 #include "CommandSelect.h"
+#include "BuildCommand.h"
 
 
 Controls::Controls(Input* _input) {
@@ -24,16 +25,16 @@ Controls::~Controls() {
 bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {
 	hitDrawable = nullptr;
 
-	IntVector2 pos = Game::getInstance()->getUI()->GetCursorPosition();
-	if (!Game::getInstance()->getUI()->GetCursor()->IsVisible() || Game::getInstance()->getUI()->GetElementAt(pos, true)) {
+	IntVector2 pos = Game::get()->getUI()->GetCursorPosition();
+	if (!Game::get()->getUI()->GetCursor()->IsVisible() || Game::get()->getUI()->GetElementAt(pos, true)) {
 		return false;
 	}
 
-	Ray cameraRay = camera->GetScreenRay((float)pos.x_ / Game::getInstance()->getGraphics()->GetWidth(), (float)pos.y_ / Game::getInstance()->getGraphics()->GetHeight());
+	Ray cameraRay = camera->GetScreenRay((float)pos.x_ / Game::get()->getGraphics()->GetWidth(), (float)pos.y_ / Game::get()->getGraphics()->GetHeight());
 
 	PODVector<RayQueryResult> results;
 	RayOctreeQuery query(results, cameraRay, RAY_TRIANGLE, maxDistance, DRAWABLE_GEOMETRY);
-	Game::getInstance()->getScene()->GetComponent<Octree>()->RaycastSingle(query);
+	Game::get()->getScene()->GetComponent<Octree>()->RaycastSingle(query);
 	if (results.Size()) {
 		RayQueryResult& result = results[0];
 		hitPos = result.position_;
@@ -68,10 +69,12 @@ void Controls::select(Entity* entity) {
 	selected->push_back(entity);
 }
 
-void Controls::clickLeft(Drawable* hitDrawable, Vector3 hitPos, bool ctrlPressed) {
+void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {
 	Node* hitNode = hitDrawable->GetNode();
+	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
 
 	if (hitNode->GetName() == "Box") {
+
 		if (!ctrlPressed) {
 			unSelect(ENTITY);
 		}
@@ -79,18 +82,30 @@ void Controls::clickLeft(Drawable* hitDrawable, Vector3 hitPos, bool ctrlPressed
 		Entity* clicked = lc->getEntity();
 		select(clicked);
 	} else if (hitNode->GetName() == "Ground") {
-		if (!ctrlPressed) {
-			unSelect(ENTITY);
+		switch (controlsState) {
+		case SELECT: {
+			if (!ctrlPressed) {
+				unSelect(ENTITY);
+			}
+			LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+			Entity* clicked = lc->getEntity();
+			select(clicked);
 		}
-		LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
-		Entity* clicked = lc->getEntity();
-		select(clicked);
+			break;
+		case BUILD: {
+			unSelect(ENTITY);
+			build(hitPos);
+		}
+			break;
+		}
+
+
 	}
 }
 
-void Controls::clickRight(Drawable* hitDrawable, Vector3 hitPos, bool shiftPressed) {
+void Controls::rightClick(Drawable* hitDrawable, Vector3 hitPos) {
 	Node* hitNode = hitDrawable->GetNode();
-
+	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
 	if (hitNode->GetName() == "Box") {
 		unSelect(ENTITY);
 	} else if (hitNode->GetName() == "Ground") {
@@ -102,15 +117,15 @@ void Controls::clickRight(Drawable* hitDrawable, Vector3 hitPos, bool shiftPress
 			command = new Command(selected, ADD_AIM, entity);
 		}
 
-
-		Game::getInstance()->getCommandList()->add(command);
+		Game::get()->getCommandList()->add(command);
 
 		//action(ADD_AIM, entity);
 	}
 }
 
-void Controls::leftReleased(std::pair<Entity*, Entity*>* held, bool ctrlPressed) {
-	std::vector<Entity*>* entities = Game::getInstance()->getMediator()->getEntities(held);
+void Controls::leftHold(std::pair<Entity*, Entity*>* held) {
+	std::vector<Entity*>* entities = Game::get()->getMediator()->getEntities(held);
+	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
 	if (!ctrlPressed) {
 		unSelect(ENTITY);
 	}
@@ -120,30 +135,32 @@ void Controls::leftReleased(std::pair<Entity*, Entity*>* held, bool ctrlPressed)
 	delete entities;
 }
 
-void Controls::rightReleased(std::pair<Entity*, Entity*>* pair, bool shiftPressed) {
+void Controls::rightHold(std::pair<Entity*, Entity*>* pair) {
 	Entity* entity1 = new Entity(new Vector3(*pair->first->getPosition()), nullptr, nullptr);
 	Entity* entity2 = new Entity(new Vector3(*pair->second->getPosition()), nullptr, nullptr);
 	Command* command1;
 	Command* command2;
+
+	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
+
 	if (shiftPressed) {
 		command1 = new Command(selected, APPEND_AIM, entity1);
 		command2 = new Command(selected, APPEND_AIM, entity2);
-	}
-	else {
+	} else {
 		command1 = new Command(selected, ADD_AIM, entity1);
 		command2 = new Command(selected, APPEND_AIM, entity2);
 	}
 
 
-	Game::getInstance()->getCommandList()->add(command1);
-	Game::getInstance()->getCommandList()->add(command2);
+	Game::get()->getCommandList()->add(command1);
+	Game::get()->getCommandList()->add(command2);
 }
 
 void Controls::release(const int button) {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
-	if (raycast(hitPos, hitDrawable, Game::getInstance()->getCameraManager()->getComponent())) {
+	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
 		Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
 		switch (button) {
 		case MOUSEB_LEFT:
@@ -151,11 +168,11 @@ void Controls::release(const int button) {
 				mouseLeftHeld = false;
 				leftHeld->second = entity;
 				double dist = (*(leftHeld->first->getPosition()) - *(leftHeld->second->getPosition())).Length();
-				if(dist>clickDistance) {
-					leftReleased(leftHeld, input->GetKeyDown(KEY_CTRL));
-				}else {
-					clickLeft(hitDrawable, hitPos, input->GetKeyDown(KEY_CTRL));
-				}		
+				if (dist > clickDistance) {
+					leftHold(leftHeld);
+				} else {
+					leftClick(hitDrawable, hitPos);
+				}
 			}
 			break;
 		case MOUSEB_RIGHT:
@@ -163,11 +180,10 @@ void Controls::release(const int button) {
 				mouseRightHeld = false;
 				rightHeld->second = entity;
 				double dist = (*(rightHeld->first->getPosition()) - *(rightHeld->second->getPosition())).Length();
-				if (dist>clickDistance) {
-					rightReleased(rightHeld, input->GetKeyDown(KEY_SHIFT));
-				}
-				else {
-					clickRight(hitDrawable, hitPos, input->GetKeyDown(KEY_SHIFT));
+				if (dist > clickDistance) {
+					rightHold(rightHeld);
+				} else {
+					rightClick(hitDrawable, hitPos);
 				}
 			}
 			break;
@@ -178,6 +194,14 @@ void Controls::release(const int button) {
 			}
 			break;
 		}
+	}
+}
+
+void Controls::updateState() {
+	if (input->GetKeyDown(KEY_8)) {
+		controlsState = SELECT;
+	} else if (input->GetKeyDown(KEY_9)) {
+		controlsState = BUILD;
 	}
 }
 
@@ -197,8 +221,8 @@ void Controls::clickDown(const int button) {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
-	if (raycast(hitPos, hitDrawable, Game::getInstance()->getCameraManager()->getComponent())) {
-		Node* hitNode = hitDrawable->GetNode();
+	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
+		//Node* hitNode = hitDrawable->GetNode();
 		switch (button) {
 		case MOUSEB_LEFT:
 			if (mouseLeftHeld == false) {
@@ -219,4 +243,9 @@ void Controls::clickDown(const int button) {
 			break;
 		}
 	}
+}
+
+void Controls::build(const Vector3& vector3) {
+	BuildCommand * buildCommand = new BuildCommand(vector3);
+	Game::get()->getBuildList()->add(buildCommand);
 }

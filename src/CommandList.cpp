@@ -7,10 +7,10 @@ CommandList::CommandList() {
 
 
 CommandList::~CommandList() {
+	delete commands;
 }
 
 void CommandList::add(AbstractCommand * command) {
-
 	commands->push_back(command);
 }
 

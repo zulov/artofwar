@@ -6,21 +6,21 @@
 Aim::Aim(Urho3D::Vector3* _position) {
 	position = new Urho3D::Vector3(*_position);
 	position->y_ = 2;
-	Game* game = Game::getInstance();
+	Game* game = Game::get();
 	node = game->getScene()->CreateChild("Box");
 	node->SetPosition(*position);
 	node->SetRotation(Urho3D::Quaternion(0, 0, 180));
 
 	Urho3D::StaticModel* model = node->CreateComponent<Urho3D::StaticModel>();
 	model->SetModel(game->getCache()->GetResource<Urho3D::Model>("Models/aim.mdl"));
-	model->SetMaterial(Game::getInstance()->getCache()->GetResource<Urho3D::Material>("Materials/red.xml"));
+	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/red.xml"));
 	position->y_ = 0;
 	radius = 2;
 }
 
 
 Aim::~Aim() {
-	Game::getInstance()->getScene()->RemoveChild(node);
+	Game::get()->getScene()->RemoveChild(node);
 }
 
 Urho3D::Vector3* Aim::getPosition() {

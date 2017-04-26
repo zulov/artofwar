@@ -3,16 +3,16 @@
 #include "Game.h"
 
 
-LevelBuilder::LevelBuilder() {
+LevelBuilder::LevelBuilder(BuildList* _buildList) {
+	buildList = _buildList;
 }
 
-
 LevelBuilder::~LevelBuilder() {
+
 }
 
 SharedPtr<Scene> LevelBuilder::CreateScene(SceneObjectManager* objectManager) {
-
-	scene = new Scene(Game::getInstance()->getContext());
+	scene = new Scene(Game::get()->getContext());
 
 	scene->CreateComponent<Octree>();
 
@@ -25,6 +25,10 @@ SharedPtr<Scene> LevelBuilder::CreateScene(SceneObjectManager* objectManager) {
 	objectManager->add(ground);
 
 	return scene;
+}
+
+void LevelBuilder::execute() {
+	buildList->execute();
 }
 
 
@@ -56,8 +60,8 @@ Entity* LevelBuilder::createGround() {
 	planeNode->SetScale(Vector3(300, 1.0f, 300));
 	planeNode->SetPosition(Vector3(0, -1.0f, 0));
 	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
-	planeObject->SetModel(Game::getInstance()->getCache()->GetResource<Model>("Models/Plane.mdl"));
-	planeObject->SetMaterial(Game::getInstance()->getCache()->GetResource<Material>("Materials/StoneTiled.xml"));
+	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/Plane.mdl"));
+	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/StoneTiled.xml"));
 
 	Entity* entity = new Entity(new Vector3(), planeNode, nullptr);
 	return entity;

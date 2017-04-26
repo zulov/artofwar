@@ -3,17 +3,17 @@
 
 
 Hud::Hud() {
-	window = new Window(Game::getInstance()->getContext());
-	Game::getInstance()->getUI()->GetRoot()->AddChild(window);
+	window = new Window(Game::get()->getContext());
+	Game::get()->getUI()->GetRoot()->AddChild(window);
 
 	//someMenuExample(context);
 
-	XMLFile* style = Game::getInstance()->getCache()->GetResource<XMLFile>("UI/DefaultStyle.xml");
-	SharedPtr<Cursor> cursor(new Cursor(Game::getInstance()->getContext()));
+	XMLFile* style = Game::get()->getCache()->GetResource<XMLFile>("UI/DefaultStyle.xml");
+	SharedPtr<Cursor> cursor(new Cursor(Game::get()->getContext()));
 	cursor->SetStyleAuto(style);
-	Game::getInstance()->getUI()->SetCursor(cursor);
+	Game::get()->getUI()->SetCursor(cursor);
 
-	cursor->SetPosition(Game::getInstance()->getGraphics()->GetWidth() / 2, Game::getInstance()->getGraphics()->GetHeight() / 2);
+	cursor->SetPosition(Game::get()->getGraphics()->GetWidth() / 2, Game::get()->getGraphics()->GetHeight() / 2);
 }
 
 
@@ -25,14 +25,14 @@ void Hud::someMenuExample() {
 	window->SetAlignment(HA_RIGHT, VA_TOP);
 	window->SetName("Window");
 
-	CheckBox* checkBox = new CheckBox(Game::getInstance()->getContext());
+	CheckBox* checkBox = new CheckBox(Game::get()->getContext());
 	checkBox->SetName("CheckBox");
 
-	Button* button = new Button(Game::getInstance()->getContext());
+	Button* button = new Button(Game::get()->getContext());
 	button->SetName("Button");
 	button->SetMinHeight(24);
 
-	LineEdit* lineEdit = new LineEdit(Game::getInstance()->getContext());
+	LineEdit* lineEdit = new LineEdit(Game::get()->getContext());
 	lineEdit->SetName("LineEdit");
 	lineEdit->SetMinHeight(24);
 
@@ -46,9 +46,9 @@ void Hud::someMenuExample() {
 }
 
 void Hud::createStaticHud(String msg) {
-	Text* instructionText = Game::getInstance()->getUI()->GetRoot()->CreateChild<Text>();
+	Text* instructionText = Game::get()->getUI()->GetRoot()->CreateChild<Text>();
 	instructionText->SetText(msg);
-	instructionText->SetFont(Game::getInstance()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 12);
+	instructionText->SetFont(Game::get()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 12);
 	instructionText->SetTextAlignment(HA_CENTER);
 	instructionText->SetHorizontalAlignment(HA_LEFT);
 	instructionText->SetVerticalAlignment(VA_TOP);
@@ -56,11 +56,11 @@ void Hud::createStaticHud(String msg) {
 }
 
 void Hud::createLogo() {
-	Texture2D* logoTexture = Game::getInstance()->getCache()->GetResource<Texture2D>("textures/minimap.png");
+	Texture2D* logoTexture = Game::get()->getCache()->GetResource<Texture2D>("textures/minimap.png");
 	if (!logoTexture) {
 		return;
 	}
-	Urho3D::Sprite *logoSprite_ = Game::getInstance()->getUI()->GetRoot()->CreateChild<Sprite>();
+	Urho3D::Sprite *logoSprite_ = Game::get()->getUI()->GetRoot()->CreateChild<Sprite>();
 
 	logoSprite_->SetTexture(logoTexture);
 
@@ -75,16 +75,16 @@ void Hud::createLogo() {
 }
 
 void Hud::createDebugHud() {
-	XMLFile* xmlFile = Game::getInstance()->getCache()->GetResource<XMLFile>("UI/DefaultStyle.xml");
+	XMLFile* xmlFile = Game::get()->getCache()->GetResource<XMLFile>("UI/DefaultStyle.xml");
 
-	DebugHud* debugHud = Game::getInstance()->getEngine()->CreateDebugHud();
+	DebugHud* debugHud = Game::get()->getEngine()->CreateDebugHud();
 	debugHud->SetDefaultStyle(xmlFile);
 }
 
 void Hud::createConsole() {
-	XMLFile* xmlFile = Game::getInstance()->getCache()->GetResource<XMLFile>("UI/DefaultStyle.xml");
+	XMLFile* xmlFile = Game::get()->getCache()->GetResource<XMLFile>("UI/DefaultStyle.xml");
 
-	Console* console = Game::getInstance()->getEngine()->CreateConsole();
+	Console* console = Game::get()->getEngine()->CreateConsole();
 	console->SetDefaultStyle(xmlFile);
 	console->GetBackground()->SetOpacity(0.8f);
 }
@@ -96,11 +96,11 @@ void Hud::updateHud(Benchmark * benchmark, CameraManager *cameraManager) {
 	msg += "\nCamera: ";
 	msg += "\n\t" + cameraManager->getInfo();
 
-	Game::getInstance()->getUI()->GetRoot()->RemoveChild(fpsText);
+	Game::get()->getUI()->GetRoot()->RemoveChild(fpsText);
 
-	fpsText = Game::getInstance()->getUI()->GetRoot()->CreateChild<Text>();
+	fpsText = Game::get()->getUI()->GetRoot()->CreateChild<Text>();
 	fpsText->SetText(msg);
-	fpsText->SetFont(Game::getInstance()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 12);
+	fpsText->SetFont(Game::get()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 12);
 	fpsText->SetTextAlignment(HA_LEFT);
 	fpsText->SetHorizontalAlignment(HA_LEFT);
 	fpsText->SetVerticalAlignment(VA_TOP);

@@ -38,11 +38,15 @@ Mediator* Game::getMediator() const {
 	return mediator;
 }
 
+BuildList* Game::getBuildList() const {
+	return buildList;
+}
+
 Game::Game() {
 }
 
 
-Game* Game::getInstance() {
+Game* Game::get() {
 	if (instance == nullptr) {
 		instance = new Game();
 	}
@@ -103,5 +107,10 @@ Game* Game::setConsole(Console* _console) {
 
 Game* Game::setMediator(Mediator* _mediator) {
 	mediator = _mediator;
+	return this;
+}
+
+Game* Game::setBuildList(BuildList* _buildList) {
+	buildList = _buildList;
 	return this;
 }

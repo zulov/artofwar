@@ -104,7 +104,7 @@ void Unit::select() {
 	titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
 	StaticModel* model = node->GetComponent<StaticModel>();
 
-	model->SetMaterial(Game::getInstance()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
+	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
 }
 
 void Unit::unSelect() {
@@ -114,5 +114,5 @@ void Unit::unSelect() {
 	}
 
 	StaticModel* model = node->GetComponent<StaticModel>();
-	model->SetMaterial(nullptr);//SetMaterial(Game::getInstance()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
+	model->SetMaterial(nullptr);//SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
 }

@@ -190,8 +190,10 @@
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\Bucket.cpp" />
     <ClCompile Include="src\BucketGrid.cpp" />
+    <ClCompile Include="src\BuildCommand.cpp" />
     <ClCompile Include="src\Building.cpp" />
     <ClCompile Include="src\BuildingFactory.cpp" />
+    <ClCompile Include="src\BuildList.cpp" />
     <ClCompile Include="src\CameraBehave.cpp" />
     <ClCompile Include="src\CameraManager.cpp" />
     <ClCompile Include="src\Command.cpp" />
@@ -226,8 +228,10 @@
     <ClInclude Include="src\Benchmark.h" />
     <ClInclude Include="src\Bucket.h" />
     <ClInclude Include="src\BucketGrid.h" />
+    <ClInclude Include="src\BuildCommand.h" />
     <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\BuildingFactory.h" />
+    <ClInclude Include="src\BuildList.h" />
     <ClInclude Include="src\CameraBehave.h" />
     <ClInclude Include="src\CameraEnums.h" />
     <ClInclude Include="src\CameraManager.h" />
@@ -235,6 +239,7 @@
     <ClInclude Include="src\CommandSelect.h" />
     <ClInclude Include="src\CommandList.h" />
     <ClInclude Include="src\Controls.h" />
+    <ClInclude Include="src\ControlsState.h" />
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\EntityFactory.h" />

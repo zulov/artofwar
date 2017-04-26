@@ -24,7 +24,7 @@ std::vector<Unit*>* UnitFactory::createUnits() {
 
 	std::vector<Unit*>* units = new std::vector<Unit *>();
 	units->reserve(size * size);
-	Game * game = Game::getInstance();
+	Game * game = Game::get();
 	Font* font = game->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf");
 	for (int y = startSize; y < endSize; ++y) {
 		for (int x = startSize; x < endSize; ++x) {

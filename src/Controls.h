@@ -13,6 +13,7 @@
 #include "Entity.h"
 #include "ObjectEnums.h"
 #include <Urho3D/Input/Input.h>
+#include "ControlsState.h"
 
 using namespace Urho3D;
 
@@ -31,11 +32,14 @@ public:
 	void clickDownLeft(Vector3 hitPos);
 	void clickDown(const int button);
 
-	void clickLeft(Drawable* hitDrawable, Vector3 hitPos, bool ctrlPressed);
-	void clickRight(Drawable* hitDrawable, Vector3 hitPos, bool shiftPressed);
-	void leftReleased(std::pair<Entity*, Entity*>* held, bool ctrlPressed);
-	void rightReleased(std::pair<Entity*, Entity*>* pair, bool shiftPressed);
+	void build(const Vector3& vector3);
+	void leftClick(Drawable* hitDrawable, Vector3 hitPos);
+	void leftHold(std::pair<Entity*, Entity*>* held);
+
+	void rightClick(Drawable* hitDrawable, Vector3 hitPos);
+	void rightHold(std::pair<Entity*, Entity*>* pair);
 	void release(const int button);
+	void updateState();
 private:
 	std::vector<Entity*>* selected;//TODO to powinien byæ set
 	ObjectType selectedType;
@@ -51,4 +55,5 @@ private:
 
 	Input* input;
 	double clickDistance = 2;
+	ControlsState controlsState = ControlsState::SELECT;
 };

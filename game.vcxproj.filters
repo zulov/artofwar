@@ -66,9 +66,6 @@
     <ClCompile Include="src\AbstractObjectManager.cpp">
       <Filter>objects\collection\manager</Filter>
     </ClCompile>
-    <ClCompile Include="src\CommandList.cpp">
-      <Filter>command</Filter>
-    </ClCompile>
     <ClCompile Include="src\Command.cpp">
       <Filter>command</Filter>
     </ClCompile>
@@ -79,6 +76,15 @@
       <Filter>command</Filter>
     </ClCompile>
     <ClCompile Include="src\Mediator.cpp" />
+    <ClCompile Include="src\BuildCommand.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CommandList.cpp">
+      <Filter>command\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BuildList.cpp">
+      <Filter>command\list</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -156,9 +162,6 @@
     <ClInclude Include="src\AbstractObjectManager.h">
       <Filter>objects\collection\manager</Filter>
     </ClInclude>
-    <ClInclude Include="src\CommandList.h">
-      <Filter>command</Filter>
-    </ClInclude>
     <ClInclude Include="src\Command.h">
       <Filter>command</Filter>
     </ClInclude>
@@ -169,6 +172,16 @@
       <Filter>command</Filter>
     </ClInclude>
     <ClInclude Include="src\Mediator.h" />
+    <ClInclude Include="src\ControlsState.h" />
+    <ClInclude Include="src\CommandList.h">
+      <Filter>command\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BuildList.h">
+      <Filter>command\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BuildCommand.h">
+      <Filter>command</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
@@ -207,6 +220,9 @@
     </Filter>
     <Filter Include="command">
       <UniqueIdentifier>{198a48f4-a3df-47d3-8728-95e09b3f265d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="command\list">
+      <UniqueIdentifier>{8f9c94d7-7213-4f82-993e-25a31df51c6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

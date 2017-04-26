@@ -48,7 +48,7 @@ void Main::Setup() {
 }
 
 void Main::Start() {
-	Game* game = Game::getInstance();
+	Game* game = Game::get();
 	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->setGraphics(GetSubsystem<Graphics>())->setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
 	SetWindowTitleAndIcon();
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
@@ -61,10 +61,11 @@ void Main::Start() {
 	CreateConsoleAndDebugHud();
 
 	sceneObjectManager = new SceneObjectManager();
-	levelBuilder = new LevelBuilder();
+	BuildList* buildList = new BuildList();
+	levelBuilder = new LevelBuilder(buildList);
 	commandList = new CommandList;
 	cameraManager = new CameraManager();
-	game->setScene(levelBuilder->CreateScene(sceneObjectManager))->setCommmandList(commandList)->setCameraManager(cameraManager);
+	game->setScene(levelBuilder->CreateScene(sceneObjectManager))->setCommmandList(commandList)->setCameraManager(cameraManager)->setBuildList(buildList);
 	EnviromentStrategy* enviromentStrategy = new EnviromentStrategy();
 	simulation = new Simulation(enviromentStrategy);
 	simulation->createUnits();
@@ -87,15 +88,16 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	simulation->update(GetSubsystem<Input>(), timeStep);
 	benchmark->add(1.0 / timeStep);
 	hud->updateHud(benchmark, cameraManager);
-	moveCamera(timeStep);
+	control(timeStep);
 	commandList->execute();
+	levelBuilder->execute();
 }
 
 void Main::InitMouseMode(MouseMode mode) {
 	useMouseMode_ = mode;
 	Input* input = GetSubsystem<Input>();
 
-	Console* console = Game::getInstance()->getConsole();
+	Console* console = Game::get()->getConsole();
 	if (useMouseMode_ != MM_ABSOLUTE) {
 		input->SetMouseMode(useMouseMode_);
 		if (console && console->IsVisible()) {
@@ -105,14 +107,14 @@ void Main::InitMouseMode(MouseMode mode) {
 }
 
 void Main::SetWindowTitleAndIcon() {
-	Graphics* graphics = Game::getInstance()->getGraphics();
-	Image* icon = Game::getInstance()->getCache()->GetResource<Image>("textures/UrhoIcon.png");
+	Graphics* graphics = Game::get()->getGraphics();
+	Image* icon = Game::get()->getCache()->GetResource<Image>("textures/UrhoIcon.png");
 	graphics->SetWindowIcon(icon);
 	graphics->SetWindowTitle("Art of War 2017");
 }
 
 void Main::CreateConsoleAndDebugHud() {
-	ResourceCache* cache = Game::getInstance()->getCache();
+	ResourceCache* cache = Game::get()->getCache();
 	XMLFile* xmlFile = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
 
 	hud->createConsole();
@@ -178,13 +180,13 @@ void Main::HandleMouseModeChange(StringHash /*eventType*/, VariantMap& eventData
 void Main::SetupViewport() {
 	Renderer* renderer = GetSubsystem<Renderer>();
 
-	SharedPtr<Viewport> viewport(new Viewport(context_, Game::getInstance()->getScene(), cameraManager->getComponent()));
+	SharedPtr<Viewport> viewport(new Viewport(context_, Game::get()->getScene(), cameraManager->getComponent()));
 	renderer->SetViewport(0, viewport);
 }
 
-void Main::moveCamera(float timeStep) {
+void Main::control(float timeStep) {
 	if (GetSubsystem<UI>()->GetFocusElement()) { return; }
-
+	controls->updateState();
 	Input* input = GetSubsystem<Input>();
 
 	bool cameraKeys[4] = {input->GetKeyDown(KEY_W), input->GetKeyDown(KEY_S), input->GetKeyDown(KEY_A), input->GetKeyDown(KEY_D)};
@@ -192,18 +194,12 @@ void Main::moveCamera(float timeStep) {
 	cameraManager->translate(cameraKeys, wheel, timeStep);
 	cameraManager->rotate(input->GetMouseMove());
 
-	//	if (input->GetMouseButtonPress(MOUSEB_LEFT)) {
-	//		controls->click(MOUSEB_LEFT);
-	//	} else 
 	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
 		controls->clickDown(MOUSEB_LEFT);
 	} else {
 		controls->release(MOUSEB_LEFT);
 	}
 
-	//	if (input->GetMouseButtonPress(MOUSEB_RIGHT)) {
-	//		controls->click(MOUSEB_RIGHT);
-	//	} else
 	if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
 		controls->clickDown(MOUSEB_RIGHT);
 	} else {

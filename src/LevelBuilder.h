@@ -9,6 +9,7 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Material.h>
 #include "Entity.h"
+#include "BuildList.h"
 
 class SceneObjectManager;
 class SimulationObjectManager;
@@ -17,13 +18,14 @@ using namespace Urho3D;
 class LevelBuilder
 {
 public:
-	LevelBuilder();
+	LevelBuilder(BuildList* _buildList);
 	~LevelBuilder();
 	SharedPtr<Scene> CreateScene(SceneObjectManager* objectManager);
-
+	void execute();
 private:
 	SharedPtr<Urho3D::Scene> scene;
 	Entity* createZone();
 	Entity* createLight();
 	Entity* createGround();
+	BuildList* buildList;
 };
