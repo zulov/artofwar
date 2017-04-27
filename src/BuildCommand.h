@@ -4,6 +4,7 @@
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include "Game.h"
+#include "LevelBuilder.h"
 
 
 namespace Urho3D {
@@ -17,5 +18,6 @@ public:
 	~BuildCommand();
 	virtual void execute() override;
 private:
+	LevelBuilder * levelBuilder;
 	Urho3D::Vector3 * position;
 };

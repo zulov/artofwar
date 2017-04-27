@@ -19,5 +19,4 @@ void BuildCommand::execute() {
 	Urho3D::StaticModel* model = node->CreateComponent<Urho3D::StaticModel>();
 	model->SetModel(game->getCache()->GetResource<Urho3D::Model>("Models/Tower.mdl"));
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/tower.xml"));
-
 }

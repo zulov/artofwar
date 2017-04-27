@@ -36,7 +36,7 @@ Entity* LevelBuilder::createZone() {
 	Node* zoneNode = scene->CreateChild("Zone");
 	Zone* zone = zoneNode->CreateComponent<Zone>();
 	zone->SetBoundingBox(BoundingBox(-1000.0f, 1000.0f));
-	zone->SetFogColor(Color(0.2f, 0.2f, 0.2f));
+	zone->SetFogColor(Color(0.15f, 0.15f, 0.3f));
 	zone->SetFogStart(200.0f);
 	zone->SetFogEnd(300.0f);
 
@@ -46,10 +46,10 @@ Entity* LevelBuilder::createZone() {
 
 Entity* LevelBuilder::createLight() {
 	Node* lightNode = scene->CreateChild("DirectionalLight");
-	lightNode->SetDirection(Vector3(-0.6f, -1.0f, -0.8f)); // The direction vector does not need to be normalized
+	lightNode->SetDirection(Vector3(0.6f, -1.0f, 0.8f)); // The direction vector does not need to be normalized
 	Light* light = lightNode->CreateComponent<Light>();
 	light->SetLightType(LIGHT_DIRECTIONAL);
-	light->SetColor(Color(0.7f, 0.35f, 0.0f));
+	light->SetColor(Color(0.7f, 0.6f, 0.6f));
 
 	Entity* entity = new Entity(new Vector3(), lightNode, nullptr);
 	return entity;
