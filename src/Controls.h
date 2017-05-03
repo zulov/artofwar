@@ -15,6 +15,13 @@
 #include <Urho3D/Input/Input.h>
 #include "ControlsState.h"
 
+#include "Game.h"
+#include "SimulationCommand.h"
+#include "BuildCommand.h"
+#include "LinkComponent.h"
+#include "Mediator.h"
+
+
 using namespace Urho3D;
 
 class Controls

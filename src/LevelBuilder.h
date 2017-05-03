@@ -11,6 +11,7 @@
 #include "Entity.h"
 #include "BuildList.h"
 
+class BuildList;
 class SceneObjectManager;
 class SimulationObjectManager;
 using namespace Urho3D;
@@ -18,9 +19,9 @@ using namespace Urho3D;
 class LevelBuilder
 {
 public:
-	LevelBuilder(BuildList* _buildList);
+	LevelBuilder(BuildList* _buildList, SceneObjectManager* _objectManager);
 	~LevelBuilder();
-	SharedPtr<Scene> CreateScene(SceneObjectManager* objectManager);
+	SharedPtr<Scene> createScene();
 	void execute();
 private:
 	SharedPtr<Urho3D::Scene> scene;
@@ -28,4 +29,5 @@ private:
 	Entity* createLight();
 	Entity* createGround();
 	BuildList* buildList;
+	SceneObjectManager* objectManager;
 };

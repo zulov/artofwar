@@ -24,14 +24,12 @@ public:
 	std::vector<Unit*> *getUnits();
 	std::vector<Building*> *getBuildings();
 	std::vector<Entity*>* getEntities();
-
-	std::vector<Unit*>* createUnits();
+	std::vector<Unit*>* createUnits(unsigned number, UnitType unitType, Vector3* center, SpacingType spacingType);
 private:
 	std::vector<Unit*> *units;
 	std::vector<Building*> *buildings;
-
+	
 	UnitFactory * unitFactory;
 	BuildingFactory * buildingFactory;
-
 };
 

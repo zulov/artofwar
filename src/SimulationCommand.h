@@ -3,11 +3,11 @@
 #include <vector>
 #include "AbstractCommand.h"
 
-class Command:public AbstractCommand
+class SimulationCommand:public AbstractCommand
 {
 public:
-	Command(std::vector<Entity*>* entities, ActionType action, Entity* paremater);
-	~Command();
+	SimulationCommand(std::vector<Entity*>* entities, ActionType action, Entity* paremater);
+	~SimulationCommand();
 	virtual void execute() override;
 private:
 	std::vector<Entity*>* entities;

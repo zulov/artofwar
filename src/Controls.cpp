@@ -1,9 +1,4 @@
 #include "Controls.h"
-#include "Game.h"
-#include "Main.h"
-#include "CommandSelect.h"
-#include "BuildCommand.h"
-
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Entity*>();
@@ -110,11 +105,11 @@ void Controls::rightClick(Drawable* hitDrawable, Vector3 hitPos) {
 		unSelect(ENTITY);
 	} else if (hitNode->GetName() == "Ground") {
 		Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
-		Command* command;
+		SimulationCommand* command;
 		if (shiftPressed) {
-			command = new Command(selected, APPEND_AIM, entity);
+			command = new SimulationCommand(selected, APPEND_AIM, entity);
 		} else {
-			command = new Command(selected, ADD_AIM, entity);
+			command = new SimulationCommand(selected, ADD_AIM, entity);
 		}
 
 		Game::get()->getCommandList()->add(command);
@@ -138,17 +133,17 @@ void Controls::leftHold(std::pair<Entity*, Entity*>* held) {
 void Controls::rightHold(std::pair<Entity*, Entity*>* pair) {
 	Entity* entity1 = new Entity(new Vector3(*pair->first->getPosition()), nullptr, nullptr);
 	Entity* entity2 = new Entity(new Vector3(*pair->second->getPosition()), nullptr, nullptr);
-	Command* command1;
-	Command* command2;
+	SimulationCommand* command1;
+	SimulationCommand* command2;
 
 	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
 
 	if (shiftPressed) {
-		command1 = new Command(selected, APPEND_AIM, entity1);
-		command2 = new Command(selected, APPEND_AIM, entity2);
+		command1 = new SimulationCommand(selected, APPEND_AIM, entity1);
+		command2 = new SimulationCommand(selected, APPEND_AIM, entity2);
 	} else {
-		command1 = new Command(selected, ADD_AIM, entity1);
-		command2 = new Command(selected, APPEND_AIM, entity2);
+		command1 = new SimulationCommand(selected, ADD_AIM, entity1);
+		command2 = new SimulationCommand(selected, APPEND_AIM, entity2);
 	}
 
 

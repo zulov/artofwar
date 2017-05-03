@@ -66,9 +66,6 @@
     <ClCompile Include="src\AbstractObjectManager.cpp">
       <Filter>objects\collection\manager</Filter>
     </ClCompile>
-    <ClCompile Include="src\Command.cpp">
-      <Filter>command</Filter>
-    </ClCompile>
     <ClCompile Include="src\AbstractCommand.cpp">
       <Filter>command</Filter>
     </ClCompile>
@@ -79,11 +76,14 @@
     <ClCompile Include="src\BuildCommand.cpp">
       <Filter>command</Filter>
     </ClCompile>
+    <ClCompile Include="src\BuildList.cpp">
+      <Filter>command\list</Filter>
+    </ClCompile>
     <ClCompile Include="src\CommandList.cpp">
       <Filter>command\list</Filter>
     </ClCompile>
-    <ClCompile Include="src\BuildList.cpp">
-      <Filter>command\list</Filter>
+    <ClCompile Include="src\SimulationCommand.cpp">
+      <Filter>command</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -162,9 +162,6 @@
     <ClInclude Include="src\AbstractObjectManager.h">
       <Filter>objects\collection\manager</Filter>
     </ClInclude>
-    <ClInclude Include="src\Command.h">
-      <Filter>command</Filter>
-    </ClInclude>
     <ClInclude Include="src\AbstractCommand.h">
       <Filter>command</Filter>
     </ClInclude>
@@ -173,13 +170,19 @@
     </ClInclude>
     <ClInclude Include="src\Mediator.h" />
     <ClInclude Include="src\ControlsState.h" />
-    <ClInclude Include="src\CommandList.h">
-      <Filter>command\list</Filter>
-    </ClInclude>
     <ClInclude Include="src\BuildList.h">
       <Filter>command\list</Filter>
     </ClInclude>
     <ClInclude Include="src\BuildCommand.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnitType.h" />
+    <ClInclude Include="src\BuildingType.h" />
+    <ClInclude Include="src\SpacingType.h" />
+    <ClInclude Include="src\CommandList.h">
+      <Filter>command\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SimulationCommand.h">
       <Filter>command</Filter>
     </ClInclude>
   </ItemGroup>

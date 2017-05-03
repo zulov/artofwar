@@ -3,15 +3,16 @@
 #include "Game.h"
 
 
-LevelBuilder::LevelBuilder(BuildList* _buildList) {
+LevelBuilder::LevelBuilder(BuildList* _buildList, SceneObjectManager* _objectManager) {
 	buildList = _buildList;
+	objectManager = _objectManager;
 }
 
 LevelBuilder::~LevelBuilder() {
 
 }
 
-SharedPtr<Scene> LevelBuilder::CreateScene(SceneObjectManager* objectManager) {
+SharedPtr<Scene> LevelBuilder::createScene() {
 	scene = new Scene(Game::get()->getContext());
 
 	scene->CreateComponent<Octree>();

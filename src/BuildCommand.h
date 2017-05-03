@@ -17,6 +17,7 @@ public:
 	BuildCommand(Urho3D::Vector3 _pos);
 	~BuildCommand();
 	virtual void execute() override;
+	void setLevelBuilder(LevelBuilder* _levelBuilder);
 private:
 	LevelBuilder * levelBuilder;
 	Urho3D::Vector3 * position;

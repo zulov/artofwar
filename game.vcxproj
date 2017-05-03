@@ -196,7 +196,7 @@
     <ClCompile Include="src\BuildList.cpp" />
     <ClCompile Include="src\CameraBehave.cpp" />
     <ClCompile Include="src\CameraManager.cpp" />
-    <ClCompile Include="src\Command.cpp" />
+    <ClCompile Include="src\SimulationCommand.cpp" />
     <ClCompile Include="src\CommandSelect.cpp" />
     <ClCompile Include="src\CommandList.cpp" />
     <ClCompile Include="src\Controls.cpp" />
@@ -231,11 +231,12 @@
     <ClInclude Include="src\BuildCommand.h" />
     <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\BuildingFactory.h" />
+    <ClInclude Include="src\BuildingType.h" />
     <ClInclude Include="src\BuildList.h" />
     <ClInclude Include="src\CameraBehave.h" />
     <ClInclude Include="src\CameraEnums.h" />
     <ClInclude Include="src\CameraManager.h" />
-    <ClInclude Include="src\Command.h" />
+    <ClInclude Include="src\SimulationCommand.h" />
     <ClInclude Include="src\CommandSelect.h" />
     <ClInclude Include="src\CommandList.h" />
     <ClInclude Include="src\Controls.h" />
@@ -249,6 +250,7 @@
     <ClInclude Include="src\Mediator.h" />
     <ClInclude Include="src\ObjectEnums.h" />
     <ClInclude Include="src\SceneObjectManager.h" />
+    <ClInclude Include="src\SpacingType.h" />
     <ClInclude Include="src\UnitFactory.h" />
     <ClInclude Include="src\EnviromentStrategy.h" />
     <ClInclude Include="src\ForceStrategy.h" />
@@ -259,6 +261,7 @@
     <ClInclude Include="src\Unit.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\Simulation.h" />
+    <ClInclude Include="src\UnitType.h" />
     <ClInclude Include="src\utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

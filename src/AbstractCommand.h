@@ -3,6 +3,6 @@ class AbstractCommand
 {
 public:
 	AbstractCommand();
-	~AbstractCommand();
+	virtual ~AbstractCommand();
 	virtual void execute() =0;
 };

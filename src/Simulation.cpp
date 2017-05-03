@@ -6,17 +6,20 @@
 #include "Simulation.h"
 
 
-Simulation::Simulation(EnviromentStrategy *_enviromentStrategy) {
+Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, CommandList* _commandList) {
 	envStrategy = _enviromentStrategy;
 	forceStrategy = new ForceStrategy();
 	objectManager = new SimulationObjectManager();
 	srand(time(NULL));
 	animate = true;
+	units = new std::vector<Unit*>();
+	envStrategy->populate(units);
+	commandList = _commandList;
 }
 
 
 void Simulation::createUnits() {
-	units = objectManager->createUnits();
+	units = objectManager->createUnits(UNITS_NUMBER, UnitType::ARCHER, new Vector3(0, 0, 0), SpacingType::CONSTANT);
 	envStrategy->populate(units);
 }
 
@@ -33,12 +36,13 @@ void Simulation::update(Input* input, float timeStep) {
 	if (animate) {
 		animateObjects(timeStep);
 	}
+	commandList->execute();
 }
 
 void Simulation::moveUnits(float timeStep) {
 	timeStep = 0.05;
 	for (unsigned i = 0; i < units->size(); ++i) {
-		Unit * unit = (*units)[i];
+		Unit* unit = (*units)[i];
 		unit->applyForce(timeStep);
 		unit->move(timeStep);
 		envStrategy->update(unit);
@@ -48,7 +52,7 @@ void Simulation::moveUnits(float timeStep) {
 
 void Simulation::calculateForces() {
 	for (unsigned i = 0; i < units->size(); ++i) {
-		Unit * unit = (*units)[i];
+		Unit* unit = (*units)[i];
 		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit, units);
 
 		Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);

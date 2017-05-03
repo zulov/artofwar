@@ -1,6 +1,7 @@
 #pragma once
 #include "EnviromentStrategy.h"
-#include "Controls.h"
+
+class Controls;
 
 class Mediator
 {

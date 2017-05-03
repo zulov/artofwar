@@ -1,5 +1,7 @@
 #pragma once
-#include "Command.h"
+#include "AbstractCommand.h"
+#include <utility>
+#include "Entity.h"
 
 class CommandSelect :public AbstractCommand
 {

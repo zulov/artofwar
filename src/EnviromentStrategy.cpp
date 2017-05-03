@@ -2,7 +2,7 @@
 #include "Main.h"
 
 EnviromentStrategy::EnviromentStrategy() {
-
+	bucketGrid = nullptr;
 }
 
 
@@ -36,6 +36,9 @@ std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, std::vector
 }
 
 void EnviromentStrategy::populate(std::vector<Unit *>* units) {
+	if (bucketGrid != nullptr) {
+		delete bucketGrid;
+	}
 	bucketGrid = new BucketGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE);
 	bucketGrid->writeToGrid(units);
 }

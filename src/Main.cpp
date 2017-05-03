@@ -62,13 +62,14 @@ void Main::Start() {
 
 	sceneObjectManager = new SceneObjectManager();
 	BuildList* buildList = new BuildList();
-	levelBuilder = new LevelBuilder(buildList);
+	levelBuilder = new LevelBuilder(buildList, sceneObjectManager);
+	buildList->setBuildList(levelBuilder);
 	commandList = new CommandList;
 	cameraManager = new CameraManager();
-	game->setScene(levelBuilder->CreateScene(sceneObjectManager))->setCommmandList(commandList)->setCameraManager(cameraManager)->setBuildList(buildList);
+	game->setScene(levelBuilder->createScene())->setCommmandList(commandList)->setCameraManager(cameraManager)->setBuildList(buildList);
 	EnviromentStrategy* enviromentStrategy = new EnviromentStrategy();
-	simulation = new Simulation(enviromentStrategy);
-	simulation->createUnits();
+	simulation = new Simulation(enviromentStrategy, commandList);
+	//simulation->createUnits();
 	SetupViewport();
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
 
@@ -89,7 +90,6 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	benchmark->add(1.0 / timeStep);
 	hud->updateHud(benchmark, cameraManager);
 	control(timeStep);
-	commandList->execute();
 	levelBuilder->execute();
 }
 
