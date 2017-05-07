@@ -19,7 +19,7 @@ public:
 
 	double getSpecSize(SpacingType spacing);
 	String getModelName(UnitType unitType);
-	std::vector<Unit*>* createUnits(unsigned int number, UnitType unitType, Vector3 *center, SpacingType spacingType);
+	std::vector<Unit*>* create(unsigned int number, UnitType unitType, Vector3 *center, SpacingType spacingType);
 
 	//int size = UNITS_NUMBER;
 	//double space = INIT_SPACE;

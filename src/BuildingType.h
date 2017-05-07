@@ -1,5 +1,5 @@
 #pragma once
-enum BuldingType
+enum BuildingType
 {
 	HOUSE = 0,
 	TOWER = 1,

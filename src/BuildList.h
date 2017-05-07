@@ -1,15 +1,17 @@
 #pragma once
 #include "CommandList.h"
-#include "LevelBuilder.h"
-class LevelBuilder;
+#include "SceneObjectManager.h"
+#include "BuildCommand.h"
+
+
 class BuildList:public CommandList
 {
 public:
 	BuildList();
 	~BuildList();
-	void setBuildList(LevelBuilder* _levelBuilder);
+	void setSceneObjectManager(SceneObjectManager * _sceneObjectManager);
 	virtual void setParemeters(AbstractCommand* command) override;
 
 private:
-	LevelBuilder * levelBuilder;
+	SceneObjectManager * sceneObjectManager;
 };

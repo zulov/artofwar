@@ -1,4 +1,7 @@
 #include "Controls.h"
+#include "ActionCommand.h"
+#include "CommandList.h"
+#include "SimulationCommandList.h"
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Entity*>();
@@ -69,7 +72,6 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {
 	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
 
 	if (hitNode->GetName() == "Box") {
-
 		if (!ctrlPressed) {
 			unSelect(ENTITY);
 		}
@@ -89,12 +91,10 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {
 			break;
 		case BUILD: {
 			unSelect(ENTITY);
-			build(hitPos);
+			build(new Vector3(hitPos));
 		}
 			break;
 		}
-
-
 	}
 }
 
@@ -105,16 +105,14 @@ void Controls::rightClick(Drawable* hitDrawable, Vector3 hitPos) {
 		unSelect(ENTITY);
 	} else if (hitNode->GetName() == "Ground") {
 		Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
-		SimulationCommand* command;
+		ActionCommand* command;
 		if (shiftPressed) {
-			command = new SimulationCommand(selected, APPEND_AIM, entity);
+			command = new ActionCommand(selected, APPEND_AIM, entity);
 		} else {
-			command = new SimulationCommand(selected, ADD_AIM, entity);
+			command = new ActionCommand(selected, ADD_AIM, entity);
 		}
 
 		Game::get()->getCommandList()->add(command);
-
-		//action(ADD_AIM, entity);
 	}
 }
 
@@ -133,17 +131,17 @@ void Controls::leftHold(std::pair<Entity*, Entity*>* held) {
 void Controls::rightHold(std::pair<Entity*, Entity*>* pair) {
 	Entity* entity1 = new Entity(new Vector3(*pair->first->getPosition()), nullptr, nullptr);
 	Entity* entity2 = new Entity(new Vector3(*pair->second->getPosition()), nullptr, nullptr);
-	SimulationCommand* command1;
-	SimulationCommand* command2;
+	ActionCommand* command1;
+	ActionCommand* command2;
 
 	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
 
 	if (shiftPressed) {
-		command1 = new SimulationCommand(selected, APPEND_AIM, entity1);
-		command2 = new SimulationCommand(selected, APPEND_AIM, entity2);
+		command1 = new ActionCommand(selected, APPEND_AIM, entity1);
+		command2 = new ActionCommand(selected, APPEND_AIM, entity2);
 	} else {
-		command1 = new SimulationCommand(selected, ADD_AIM, entity1);
-		command2 = new SimulationCommand(selected, APPEND_AIM, entity2);
+		command1 = new ActionCommand(selected, ADD_AIM, entity1);
+		command2 = new ActionCommand(selected, APPEND_AIM, entity2);
 	}
 
 
@@ -240,7 +238,7 @@ void Controls::clickDown(const int button) {
 	}
 }
 
-void Controls::build(const Vector3& vector3) {
-	BuildCommand * buildCommand = new BuildCommand(vector3);
-	Game::get()->getBuildList()->add(buildCommand);
+void Controls::build(Vector3* pos) {
+	SimulationCommand* simulationCommand = new SimulationCommand(1, BuildingType::TOWER, pos, SpacingType::CONSTANT);
+	Game::get()->getSimCommandList()->add(simulationCommand);
 }

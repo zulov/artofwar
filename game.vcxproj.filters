@@ -85,6 +85,12 @@
     <ClCompile Include="src\SimulationCommand.cpp">
       <Filter>command</Filter>
     </ClCompile>
+    <ClCompile Include="src\SimulationCommandList.cpp">
+      <Filter>command\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ActionCommand.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -183,6 +189,12 @@
       <Filter>command\list</Filter>
     </ClInclude>
     <ClInclude Include="src\SimulationCommand.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SimulationCommandList.h">
+      <Filter>command\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ActionCommand.h">
       <Filter>command</Filter>
     </ClInclude>
   </ItemGroup>

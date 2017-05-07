@@ -1,31 +1,4 @@
-#include <Urho3D/Engine/Application.h>
-#include <Urho3D/Graphics/Camera.h>
-#include <Urho3D/Engine/Console.h>
-#include <Urho3D/UI/Cursor.h>
-#include <Urho3D/Engine/DebugHud.h>
-#include <Urho3D/Engine/Engine.h>
-#include <Urho3D/Engine/EngineDefs.h>
-#include <Urho3D/IO/FileSystem.h>
-#include <Urho3D/Graphics/Graphics.h>
-#include <Urho3D/Input/Input.h>
-#include <Urho3D/Input/InputEvents.h>
-#include <Urho3D/Graphics/Renderer.h>
-#include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Scene/Scene.h>
-#include <Urho3D/Scene/SceneEvents.h>
-#include <Urho3D/UI/Sprite.h>
-#include <Urho3D/Graphics/Texture2D.h>
-#include <Urho3D/Core/Timer.h>
-#include <Urho3D/UI/UI.h>
-#include <Urho3D/Resource/XMLFile.h>
-#include <Urho3D/IO/Log.h>
-#include <Urho3D/UI/Window.h>
 #include <Main.h>
-#include <Urho3D/UI/Text3D.h>
-#include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Core/CoreEvents.h>
-#include "LinkComponent.h"
-#include "Game.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
@@ -61,23 +34,27 @@ void Main::Start() {
 	CreateConsoleAndDebugHud();
 
 	sceneObjectManager = new SceneObjectManager();
+
+	levelBuilder = new LevelBuilder(sceneObjectManager);
+
 	BuildList* buildList = new BuildList();
-	levelBuilder = new LevelBuilder(buildList, sceneObjectManager);
-	buildList->setBuildList(levelBuilder);
+	buildList->setSceneObjectManager(sceneObjectManager);
+
 	commandList = new CommandList;
 	cameraManager = new CameraManager();
-	game->setScene(levelBuilder->createScene())->setCommmandList(commandList)->setCameraManager(cameraManager)->setBuildList(buildList);
+	SimulationObjectManager* simulationObjectManager = new SimulationObjectManager();
+	SimulationCommandList* simulationCommandList = new SimulationCommandList(simulationObjectManager);
 	EnviromentStrategy* enviromentStrategy = new EnviromentStrategy();
-	simulation = new Simulation(enviromentStrategy, commandList);
+	mediator = new Mediator(enviromentStrategy, controls);
+	game->setScene(levelBuilder->createScene())->setCommmandList(commandList)->setCameraManager(cameraManager)->setBuildList(buildList)->setSimCommandList(simulationCommandList)->setMediator(mediator);
+
+	simulation = new Simulation(enviromentStrategy, simulationCommandList, simulationObjectManager, commandList);
 	//simulation->createUnits();
 	SetupViewport();
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
 
 	InitMouseMode(MM_RELATIVE);
 	controls = new Controls(GetSubsystem<Input>());
-
-	mediator = new Mediator(enviromentStrategy, controls);
-	game->setMediator(mediator);
 }
 
 void Main::Stop() {

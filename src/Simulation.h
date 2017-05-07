@@ -7,8 +7,16 @@
 #include "EnviromentStrategy.h"
 #include "ForceStrategy.h"
 #include "SimulationObjectManager.h"
+#include "SimulationCommandList.h"
 #include "CommandList.h"
+#include <Urho3D/Core/CoreEvents.h>
+#include <Urho3D/Engine/Engine.h>
+#include <Urho3D/Graphics/Renderer.h>
+#include <Urho3D/Input/Input.h>
+#include <Urho3D/DebugNew.h>
 
+
+class SimulationCommandList;
 
 namespace Urho3D {
 	class Node;
@@ -18,9 +26,8 @@ namespace Urho3D {
 class Simulation
 {
 public:
-	Simulation(EnviromentStrategy *_enviromentStrategy, CommandList* _commandList);
+	Simulation(EnviromentStrategy* _enviromentStrategy, SimulationCommandList* _simCommandList, SimulationObjectManager* _simObjectManager, CommandList* commandList);
 	void update(Input* input, float timeStep);
-	void setUnits(std::vector<Unit*>* units);
 	void createUnits();
 
 private:
@@ -38,6 +45,7 @@ private:
 
 	EnviromentStrategy* envStrategy;
 	ForceStrategy* forceStrategy;
-	SimulationObjectManager * objectManager;
-	CommandList *commandList;
+	SimulationObjectManager* simObjectManager;
+	SimulationCommandList* simCommandList;
+	CommandList* commandList;
 };

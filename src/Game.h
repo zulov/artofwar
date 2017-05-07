@@ -4,10 +4,12 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/Engine/Engine.h>
 #include "CameraManager.h"
-#include "CommandList.h"
-#include "BuildList.h"
 
-class Mediator;
+
+class CommandList;
+class Mediator; 
+class BuildList;
+class SimulationCommandList;
 
 class Game
 {
@@ -25,6 +27,7 @@ public:
 	Game* setConsole(Console* _console);
 	Game* setMediator(Mediator* _mediator);
 	Game* setBuildList(BuildList* _buildList);
+	Game* setSimCommandList(SimulationCommandList* _simCommandList);
 
 
 	CameraManager* getCameraManager() const;
@@ -38,6 +41,7 @@ public:
 	Console* getConsole() const;
 	Mediator* getMediator() const;
 	BuildList* getBuildList() const;
+	SimulationCommandList* getSimCommandList() const;
 private:
 	Game();
 	static Game* instance;
@@ -48,8 +52,10 @@ private:
 	Urho3D::Graphics* graphics;
 	Urho3D::SharedPtr<Urho3D::Engine> engine;
 	CameraManager* cameraManager;
-	CommandList* commmandList;
+	
 	Console* console;
 	Mediator* mediator;
 	BuildList* buildList;
+	CommandList* commmandList;
+	SimulationCommandList * simCommandList;
 };

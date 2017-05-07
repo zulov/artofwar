@@ -2,7 +2,6 @@
 
 
 UnitFactory::UnitFactory(): EntityFactory() {
-
 }
 
 UnitFactory::~UnitFactory() {
@@ -31,8 +30,7 @@ String UnitFactory::getModelName(UnitType unitType) {
 	}
 }
 
-
-std::vector<Unit*>* UnitFactory::createUnits(unsigned int number, UnitType unitType, Vector3* center, SpacingType spacingType) {
+std::vector<Unit*>* UnitFactory::create(unsigned int number, UnitType unitType, Vector3* center, SpacingType spacingType) {
 	std::vector<Unit*>* units = new std::vector<Unit *>();
 	units->reserve(number);
 
@@ -62,7 +60,5 @@ std::vector<Unit*>* UnitFactory::createUnits(unsigned int number, UnitType unitT
 		}
 		++y;
 	}
-
-
 	return units;
 }

@@ -14,7 +14,6 @@
 #include "ObjectEnums.h"
 #include <Urho3D/Input/Input.h>
 #include "ControlsState.h"
-
 #include "Game.h"
 #include "SimulationCommand.h"
 #include "BuildCommand.h"
@@ -39,7 +38,7 @@ public:
 	void clickDownLeft(Vector3 hitPos);
 	void clickDown(const int button);
 
-	void build(const Vector3& vector3);
+	void build(Vector3* pos);
 	void leftClick(Drawable* hitDrawable, Vector3 hitPos);
 	void leftHold(std::pair<Entity*, Entity*>* held);
 
@@ -56,9 +55,9 @@ private:
 	bool mouseRightHeld = false;
 	bool mouseMiddleHeld = false;
 
-	std::pair<Entity*, Entity*> *leftHeld;
-	std::pair<Entity*, Entity*> *middleHeld;
-	std::pair<Entity*, Entity*> *rightHeld;
+	std::pair<Entity*, Entity*>* leftHeld;
+	std::pair<Entity*, Entity*>* middleHeld;
+	std::pair<Entity*, Entity*>* rightHeld;
 
 	Input* input;
 	double clickDistance = 2;

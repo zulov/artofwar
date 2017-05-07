@@ -42,6 +42,10 @@ BuildList* Game::getBuildList() const {
 	return buildList;
 }
 
+SimulationCommandList* Game::getSimCommandList() const {
+	return simCommandList;
+}
+
 Game::Game() {
 }
 
@@ -112,5 +116,10 @@ Game* Game::setMediator(Mediator* _mediator) {
 
 Game* Game::setBuildList(BuildList* _buildList) {
 	buildList = _buildList;
+	return this;
+}
+
+Game* Game::setSimCommandList(SimulationCommandList* _simCommandList) {
+	simCommandList = _simCommandList;
 	return this;
 }

@@ -1,25 +1,20 @@
-#include <Urho3D/Core/CoreEvents.h>
-#include <Urho3D/Engine/Engine.h>
-#include <Urho3D/Graphics/Renderer.h>
-#include <Urho3D/Input/Input.h>
-#include <Urho3D/DebugNew.h>
 #include "Simulation.h"
 
 
-Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, CommandList* _commandList) {
+Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationCommandList* _simCommandList, SimulationObjectManager* _simObjectManager, CommandList* _commandList) {
 	envStrategy = _enviromentStrategy;
 	forceStrategy = new ForceStrategy();
-	objectManager = new SimulationObjectManager();
+	simObjectManager = _simObjectManager;
 	srand(time(NULL));
 	animate = true;
-	units = new std::vector<Unit*>();
-	envStrategy->populate(units);
+	createUnits();
+	simCommandList = _simCommandList;
 	commandList = _commandList;
 }
 
-
 void Simulation::createUnits() {
-	units = objectManager->createUnits(UNITS_NUMBER, UnitType::ARCHER, new Vector3(0, 0, 0), SpacingType::CONSTANT);
+	simObjectManager->addUnits(UNITS_NUMBER, UnitType::WARRIOR, new Vector3(0, 0, 0), SpacingType::CONSTANT);
+	units = simObjectManager->getUnits();
 	envStrategy->populate(units);
 }
 
@@ -36,6 +31,7 @@ void Simulation::update(Input* input, float timeStep) {
 	if (animate) {
 		animateObjects(timeStep);
 	}
+	simCommandList->execute();
 	commandList->execute();
 }
 

@@ -1,10 +1,7 @@
 #include "LevelBuilder.h"
-#include "SimulationObjectManager.h"
-#include "Game.h"
 
 
-LevelBuilder::LevelBuilder(BuildList* _buildList, SceneObjectManager* _objectManager) {
-	buildList = _buildList;
+LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 	objectManager = _objectManager;
 }
 
@@ -29,7 +26,7 @@ SharedPtr<Scene> LevelBuilder::createScene() {
 }
 
 void LevelBuilder::execute() {
-	buildList->execute();
+	//buildList->execute();
 }
 
 

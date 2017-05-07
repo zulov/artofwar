@@ -11,6 +11,7 @@ public:
 	~CommandList();
 	void add(AbstractCommand* command);
 	void execute();
+protected: 
 	virtual void setParemeters(AbstractCommand* command);
 private:
 	std::vector<AbstractCommand*>* commands;

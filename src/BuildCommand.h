@@ -3,9 +3,10 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/StaticModel.h>
-#include "Game.h"
-#include "LevelBuilder.h"
-
+#include "BuildingType.h"
+#include "SpacingType.h"
+#include "Building.h"
+#include "SceneObjectManager.h"
 
 namespace Urho3D {
 	class Vector3;
@@ -14,11 +15,11 @@ namespace Urho3D {
 class BuildCommand:public AbstractCommand
 {
 public:
-	BuildCommand(Urho3D::Vector3 _pos);
+	BuildCommand();
 	~BuildCommand();
-	virtual void execute() override;
-	void setLevelBuilder(LevelBuilder* _levelBuilder);
+	void execute() override;
+	void setSceneObjectManager(SceneObjectManager* _sceneObjectManager);
 private:
-	LevelBuilder * levelBuilder;
-	Urho3D::Vector3 * position;
+	SceneObjectManager* sceneObjectManager;
+
 };
