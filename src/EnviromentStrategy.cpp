@@ -2,7 +2,8 @@
 #include "Main.h"
 
 EnviromentStrategy::EnviromentStrategy() {
-	bucketGrid = nullptr;
+	unitGrid = new BucketGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE);
+	buildingGrid = new BucketGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE);
 }
 
 
@@ -15,7 +16,7 @@ float EnviromentStrategy::getSqDistance(Vector3* unitPosition, Vector3* otherPos
 
 std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, std::vector<Unit *>* units) {
 	std::vector<Entity*>* neights = new std::vector<Entity *>();
-	std::vector<Entity *>* arrayNeight = bucketGrid->getArrayNeight(unit);
+	std::vector<Entity *>* arrayNeight = unitGrid->getArrayNeight(unit);
 	//std::vector<Unit *> *arrayNeight = units;
 
 	neights->reserve(arrayNeight->size());
@@ -35,22 +36,24 @@ std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, std::vector
 	return neights;
 }
 
-void EnviromentStrategy::populate(std::vector<Unit *>* units) {
-	if (bucketGrid != nullptr) {
-		delete bucketGrid;
+void EnviromentStrategy::update(std::vector<Unit*>* units) {
+	for (int i = 0; i < units->size(); ++i) {
+		Unit *unit =(*units)[i];
+		unitGrid->updateGrid(unit);
 	}
-	bucketGrid = new BucketGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE);
-	bucketGrid->writeToGrid(units);
 }
 
-void EnviromentStrategy::update(Unit* unit) {
-	bucketGrid->updateGrid(unit);
+void EnviromentStrategy::update(std::vector<Building*>* buildings) {
+	for (int i = 0; i < buildings->size(); ++i) {
+		Building* building = (*buildings)[i];
+		buildingGrid->updateGrid(building);
+	}
 }
 
 void EnviromentStrategy::clear() {
-	bucketGrid->clearAfterStep();
+	unitGrid->clearAfterStep();
 }
 
 std::vector<Entity*>* EnviromentStrategy::getNeighbours(std::pair<Entity*, Entity*>* pair) {
-	return bucketGrid->getArrayNeight(pair);
+	return unitGrid->getArrayNeight(pair);
 }

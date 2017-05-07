@@ -38,6 +38,7 @@ private:
 	bool animate;
 
 	std::vector<Unit*>* units;
+	std::vector<Building*>* buildings;
 
 	//CONST
 	const float ROTATE_SPEED = 115.0f;

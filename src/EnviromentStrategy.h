@@ -3,6 +3,8 @@
 #include <vector>
 #include "Unit.h"
 #include "BucketGrid.h"
+#include "Building.h"
+#include <vector>
 
 
 class EnviromentStrategy {
@@ -13,11 +15,12 @@ public:
 	float getSqDistance(Vector3* unitPosition, Vector3* otherPosition);
 
 	std::vector<Entity *> *getNeighbours(Unit * unit, std::vector<Unit *> *units);
-	void populate(std::vector<Unit *> *units);
-	void update(Unit * unit);
+	void update(std::vector<Unit*>* units);
+	void update(std::vector<Building*>* buildings);
 	void clear();
 	std::vector<Entity *> * getNeighbours(std::pair<Entity*, Entity*>* pair);
 private:
-	BucketGrid* bucketGrid;
+	BucketGrid* unitGrid;
+	BucketGrid* buildingGrid;
 };
 

@@ -7,15 +7,14 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 	simObjectManager = _simObjectManager;
 	srand(time(NULL));
 	animate = true;
-	createUnits();
 	simCommandList = _simCommandList;
 	commandList = _commandList;
+	createUnits();
 }
 
 void Simulation::createUnits() {
-	simObjectManager->addUnits(UNITS_NUMBER, UnitType::WARRIOR, new Vector3(0, 0, 0), SpacingType::CONSTANT);
-	units = simObjectManager->getUnits();
-	envStrategy->populate(units);
+	simCommandList->add(new SimulationCommand(UNITS_NUMBER, UnitType::WARRIOR, new Vector3(0, 0, 0), SpacingType::CONSTANT));
+	
 }
 
 void Simulation::animateObjects(float timeStep) {
@@ -29,10 +28,18 @@ void Simulation::update(Input* input, float timeStep) {
 	}
 
 	if (animate) {
+		simCommandList->execute();
+		commandList->execute();
+		units = simObjectManager->getUnits();
+		buildings = simObjectManager->getBuildings();
+		
+		envStrategy->update(units);
+		envStrategy->update(buildings);
+
 		animateObjects(timeStep);
+		envStrategy->clear();
 	}
-	simCommandList->execute();
-	commandList->execute();
+	
 }
 
 void Simulation::moveUnits(float timeStep) {
@@ -41,9 +48,8 @@ void Simulation::moveUnits(float timeStep) {
 		Unit* unit = (*units)[i];
 		unit->applyForce(timeStep);
 		unit->move(timeStep);
-		envStrategy->update(unit);
 	}
-	envStrategy->clear();
+
 }
 
 void Simulation::calculateForces() {
