@@ -3,7 +3,7 @@
 
 EnviromentStrategy::EnviromentStrategy() {
 	unitGrid = new BucketGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE);
-	buildingGrid = new BucketGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE);
+	obstacleGrid = new BucketGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD);
 }
 
 
@@ -14,10 +14,18 @@ float EnviromentStrategy::getSqDistance(Vector3* unitPosition, Vector3* otherPos
 	return ((*otherPosition) - (*unitPosition)).LengthSquared();
 }
 
-std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, std::vector<Unit *>* units) {
+std::vector<Entity*>* EnviromentStrategy::getNeighbours(Unit* unit) {
+	return getNeighbours(unit, unitGrid);
+}
+
+std::vector<Entity*>* EnviromentStrategy::getBuildings(Unit* unit) {
+	return getNeighbours(unit, obstacleGrid);
+}
+
+std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGrid* bucketGrid) {
 	std::vector<Entity*>* neights = new std::vector<Entity *>();
-	std::vector<Entity *>* arrayNeight = unitGrid->getArrayNeight(unit);
-	//std::vector<Unit *> *arrayNeight = units;
+	std::vector<Entity *>* arrayNeight = bucketGrid->getArrayNeight(unit);
+	//std::vector<Unit *> *arrayNeight = entities;
 
 	neights->reserve(arrayNeight->size());
 	double sqSeparationDistance = unit->getMaxSeparationDistance() * unit->getMaxSeparationDistance();
@@ -38,7 +46,7 @@ std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, std::vector
 
 void EnviromentStrategy::update(std::vector<Unit*>* units) {
 	for (int i = 0; i < units->size(); ++i) {
-		Unit *unit =(*units)[i];
+		Unit* unit = (*units)[i];
 		unitGrid->updateGrid(unit);
 	}
 }
@@ -46,14 +54,19 @@ void EnviromentStrategy::update(std::vector<Unit*>* units) {
 void EnviromentStrategy::update(std::vector<Building*>* buildings) {
 	for (int i = 0; i < buildings->size(); ++i) {
 		Building* building = (*buildings)[i];
-		buildingGrid->updateGrid(building);
+		obstacleGrid->updateGrid(building);
 	}
 }
 
 void EnviromentStrategy::clear() {
 	unitGrid->clearAfterStep();
+	obstacleGrid->clearAfterStep();
 }
 
 std::vector<Entity*>* EnviromentStrategy::getNeighbours(std::pair<Entity*, Entity*>* pair) {
 	return unitGrid->getArrayNeight(pair);
+}
+
+std::vector<Entity*>* EnviromentStrategy::getBuildings(std::pair<Entity*, Entity*>* pair) {
+	return obstacleGrid->getArrayNeight(pair);
 }

@@ -9,9 +9,13 @@ ForceStrategy::ForceStrategy() {
 ForceStrategy::~ForceStrategy() {
 }
 
-Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, void* param2) {
-	return new Vector3();
+Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, std::vector<Entity*>* obstacles) {
+	if(!obstacles->empty()) {
+		int a = 5;
+	}
+	return separationUnits(unit, obstacles);
 }
+
 
 Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Entity*>* units) {
 	Vector3* force = new Vector3();

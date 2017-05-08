@@ -49,16 +49,16 @@ void Simulation::moveUnits(float timeStep) {
 		unit->applyForce(timeStep);
 		unit->move(timeStep);
 	}
-
 }
 
 void Simulation::calculateForces() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
-		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit, units);
+		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit);
+		std::vector<Entity*>* buildings = envStrategy->getBuildings(unit);
 
 		Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
-		Vector3* sepObstacle = forceStrategy->separationObstacle(unit, 0);
+		Vector3* sepObstacle = forceStrategy->separationObstacle(unit, buildings);
 
 		Vector3* destForce = forceStrategy->destination(unit);
 		Vector3* rand = forceStrategy->randomForce();

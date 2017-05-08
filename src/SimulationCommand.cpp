@@ -5,6 +5,7 @@ SimulationCommand::SimulationCommand(int _number, BuildingType _buildingType, Ve
 	number = _number;
 	buildingType = _buildingType;
 	position = _position;
+	position->y_ = 0;
 	spacingType = _spacingType;
 	objectType = ObjectType::BUILDING;
 }
