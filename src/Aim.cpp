@@ -21,6 +21,7 @@ Aim::Aim(Urho3D::Vector3* _position) {
 
 Aim::~Aim() {
 	Game::get()->getScene()->RemoveChild(node);
+	delete position;
 }
 
 Urho3D::Vector3* Aim::getPosition() {

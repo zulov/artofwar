@@ -10,9 +10,6 @@ ForceStrategy::~ForceStrategy() {
 }
 
 Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, std::vector<Entity*>* obstacles) {
-	if(!obstacles->empty()) {
-		int a = 5;
-	}
 	return separationUnits(unit, obstacles);
 }
 
@@ -20,9 +17,10 @@ Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, std::vector<Entit
 Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Entity*>* units) {
 	Vector3* force = new Vector3();
 
-	double sqSepDist = unit->getMaxSeparationDistance() * unit->getMaxSeparationDistance();
 	for (int i = 0; i < units->size(); ++i) {
 		Entity* neight = (*units)[i];
+		double sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
+		sqSepDist *= sqSepDist;
 
 		Vector3 diff = *unit->getPosition() - *neight->getPosition();
 		double sqDistance = diff.LengthSquared();
@@ -30,19 +28,19 @@ Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Entity*>
 		double distance = sqrt(sqDistance);
 
 		diff /= distance;
-		double minimalDistance = (unit->getMinimalDistance() + neight->getMinimalDistance());
+		double minimalDistance = unit->getMinimalDistance() + neight->getMinimalDistance();
 		double coef = calculateCoef(distance, minimalDistance);//poprawic kolejnosc zeby ograniczyc operacje na vektorze
 
 		diff *= coef;
 		(*force) += diff;
 	}
 
-	(*force) *= boostCoef*sepCoef;
+	(*force) *= boostCoef * sepCoef;
 	return force;
 }
 
 Urho3D::Vector3* ForceStrategy::destination(Unit* unit) {
-	Vector3 * aim = unit->getAim();
+	Vector3* aim = unit->getAim();
 	if (aim != nullptr) {
 		Vector3* force = new Vector3((*(aim)) - (*unit->getPosition()));
 		force->Normalize();
@@ -65,10 +63,10 @@ Urho3D::Vector3* ForceStrategy::randomForce() {
 
 double ForceStrategy::calculateCoef(double distance, double minDist) {
 	double parameter = distance - minDist;
-	if (parameter <= 0.04) {//zapobieganie nieskonczonosci
-		parameter = 0.04;
+	if (parameter <= 0.1) {//zapobieganie nieskonczonosci
+		parameter = 0.1;
 	}
-	double coef = exp256(minDist / parameter) - 1;
+	double coef = exp(minDist / parameter) - 1;
 	//coef *= sepCoefWall;
 
 	return coef;

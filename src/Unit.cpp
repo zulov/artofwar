@@ -11,6 +11,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_po
 	acceleration = new Vector3();
 	velocity = new Vector3();
 	aims = new Aims();
+	minimalDistance = 0.5;
 }
 
 Unit::~Unit() {

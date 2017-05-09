@@ -9,6 +9,7 @@ ActionCommand::ActionCommand(std::vector<Entity*>* entities, ActionType action, 
 
 
 ActionCommand::~ActionCommand() {
+	delete paremater;
 }
 
 void ActionCommand::execute() {

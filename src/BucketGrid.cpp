@@ -89,8 +89,10 @@ void BucketGrid::updateSizes(int size) {
 }
 
 std::vector<Entity*>* BucketGrid::getArrayNeight(Unit* entity) {
-	int dX = entity->getBucketX();
-	int dZ = entity->getBucketZ();
+	Vector3* pos = entity->getPosition();
+	int dX = getIntegerPos(pos->x_);
+	int dZ = getIntegerPos(pos->z_);
+
 	long key = cacheHash(dX, dZ);
 
 	if (cache[key] != nullptr) {

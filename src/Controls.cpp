@@ -51,11 +51,11 @@ void Controls::unSelect(int type) {
 	selected->clear();
 }
 
-void Controls::action(ActionType action, Entity* entity) {
-	for (int i = 0; i < selected->size(); i++) {
-		selected->at(i)->action(action, entity);
-	}
-}
+//void Controls::action(ActionType action, Entity* entity) {
+//	for (int i = 0; i < selected->size(); i++) {
+//		selected->at(i)->action(action, entity);
+//	}
+//}
 
 void Controls::select(Entity* entity) {
 	if (entity->getType() == selectedType) {

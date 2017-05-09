@@ -14,7 +14,7 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 
 void Simulation::createUnits() {
 	simCommandList->add(new SimulationCommand(UNITS_NUMBER, UnitType::WARRIOR, new Vector3(0, 0, 0), SpacingType::CONSTANT));
-	
+
 }
 
 void Simulation::animateObjects(float timeStep) {
@@ -32,14 +32,14 @@ void Simulation::update(Input* input, float timeStep) {
 		commandList->execute();
 		units = simObjectManager->getUnits();
 		buildings = simObjectManager->getBuildings();
-		
+
 		envStrategy->update(units);
 		envStrategy->update(buildings);
 
 		animateObjects(timeStep);
 		envStrategy->clear();
 	}
-	
+
 }
 
 void Simulation::moveUnits(float timeStep) {
@@ -72,5 +72,6 @@ void Simulation::calculateForces() {
 		unit->setAcceleration(forces);
 
 		delete neighbours;
+		delete buildings;
 	}
 }

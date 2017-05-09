@@ -52,5 +52,4 @@ void Aims::add(Entity* entity) {
 
 	pos->y_ = 0;
 	aims->push_back(new Aim(pos));
-
 }

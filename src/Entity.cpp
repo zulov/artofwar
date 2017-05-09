@@ -6,11 +6,9 @@ Entity::Entity(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) {
 	node = _boxNode;
 	position = _position;
 	rotation = new Vector3();
-	minimalDistance = 0.5;
 	alive = true;
 	font = _font;
 	bucketZ = bucketX = INT_MIN;
-
 }
 
 Entity::~Entity() {
