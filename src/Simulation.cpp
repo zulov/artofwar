@@ -10,11 +10,15 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 	simCommandList = _simCommandList;
 	commandList = _commandList;
 	createUnits();
+	aims = new std::vector<Aims*>();
+	aims->reserve(20);
+	for (int i = 0; i < 20; ++i) {
+		aims->push_back(new Aims(0));
+	}
 }
 
 void Simulation::createUnits() {
 	simCommandList->add(new SimulationCommand(UNITS_NUMBER, UnitType::WARRIOR, new Vector3(0, 0, 0), SpacingType::CONSTANT));
-
 }
 
 void Simulation::animateObjects(float timeStep) {
@@ -38,8 +42,10 @@ void Simulation::update(Input* input, float timeStep) {
 
 		animateObjects(timeStep);
 		envStrategy->clear();
+		for (int i = 0; i < aims->size(); ++i) {
+			(*aims)[i]->clearAims();
+		}
 	}
-
 }
 
 void Simulation::moveUnits(float timeStep) {

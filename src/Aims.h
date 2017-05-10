@@ -9,14 +9,16 @@ class Entity;
 class Aims
 {
 public:
-	Aims();
+	Aims(int _references);
 	~Aims();
-	Aim* getAim();
-	Vector3 *getAimPos();
+	Aim* getAim(int index);
+	Vector3 *getAimPos(int index);
 	void clearAims();
-	bool check(Urho3D::Vector3* pedestrian);
+	bool ifReach(Urho3D::Vector3* pedestrian, int index);
 	void add(Entity* entity);
+	bool check(int aimIndex);
+	int getReferences();
 private:
 	std::vector<Aim*>* aims;
-	int index;
+	int references;
 };

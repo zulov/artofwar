@@ -31,8 +31,9 @@ protected:
 	double maxSeparationDistance;
 	double minSpeed;
 	Aims* aims;
+	int aimIndex = 0;
 private:
-	void appendAim(Entity* entity);
-	void addAim(Entity* entity);
+	void appendAim(Aims* _aims);
+	void addAim(Aims* _aims);
 	double unitRadius = 2;
 };

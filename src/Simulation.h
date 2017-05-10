@@ -39,7 +39,7 @@ private:
 
 	std::vector<Unit*>* units;
 	std::vector<Building*>* buildings;
-
+	std::vector<Aims*>* aims;
 	//CONST
 	const float ROTATE_SPEED = 115.0f;
 	const double coef = 10;

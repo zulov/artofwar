@@ -10,20 +10,27 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_po
 	minSpeed = maxSpeed * 0.2f;
 	acceleration = new Vector3();
 	velocity = new Vector3();
-	aims = new Aims();
 	minimalDistance = 0.5;
+	aims = nullptr;
 }
 
 Unit::~Unit() {
 	//delete node;
-	delete aims;
+	//delete aims;
 }
 
 void Unit::move(double timeStep) {
 	(*position) += (*velocity) * timeStep;
 	node->SetPosition(*position);
 	(*velocity) *= 0.95;
-	aims->check(position);
+	if (aims != nullptr) {
+		bool reach = aims->ifReach(position, aimIndex);
+		if (reach) { aimIndex++; }
+		bool end = aims->check(aimIndex);
+		if (end) {
+			aims = nullptr;
+		}
+	}
 }
 
 void Unit::setAcceleration(Vector3* _acceleration) {
@@ -51,7 +58,10 @@ void Unit::action(ActionType actionType, Entity* entity) {
 }
 
 Vector3* Unit::getAim() {
-	return aims->getAimPos();
+	if (aims == nullptr) {
+		return nullptr;
+	}
+	return aims->getAimPos(aimIndex);
 }
 
 Vector3* Unit::getVelocity() {
@@ -66,13 +76,13 @@ double Unit::getUnitRadius() {
 	return unitRadius;
 }
 
-void Unit::appendAim(Entity* entity) {
-	aims->add(entity);
+void Unit::appendAim(Aims* _aims) {
+	aims = _aims;
 }
 
-void Unit::addAim(Entity* entity) {
-	aims->clearAims();
-	aims->add(entity);
+void Unit::addAim(Aims* _aims) {
+	aimIndex = 0;
+	aims = _aims;
 }
 
 void Unit::applyForce(double timeStep) {
