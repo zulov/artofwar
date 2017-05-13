@@ -1,7 +1,10 @@
 #pragma once
-#include "Entity.h"
+
 #include <vector>
-#include "Aims.h"
+#include "ObjectEnums.h"
+#include "defines.h"
+#include "Game.h"
+#include "Entity.h"
 
 using namespace Urho3D;
 
@@ -18,7 +21,7 @@ public:
 	void unSelect() override;
 	void setAcceleration(Vector3* _acceleration);
 	double getMaxSeparationDistance();
-	virtual void action(ActionType actionType, Entity* entity) override;
+	void action(ActionType actionType, ActionParameter* parameter) override;
 	Vector3* getAim();
 	Vector3* getVelocity();
 	double getMass();
@@ -32,8 +35,9 @@ protected:
 	double minSpeed;
 	Aims* aims;
 	int aimIndex = 0;
+	Aims* getAims() override;
 private:
-	void appendAim(Aims* _aims);
-	void addAim(Aims* _aims);
+	void appendAim(ActionParameter* actionParameter);
+	void addAim(ActionParameter* actionParameter);
 	double unitRadius = 2;
 };

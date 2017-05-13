@@ -1,7 +1,5 @@
 #include "Aims.h"
-#include "utils.h"
-#include <Urho3D/Graphics/StaticModel.h>
-#include "Game.h"
+
 
 
 Aims::Aims(int _references) {
@@ -19,7 +17,7 @@ Aim* Aims::getAim(int index) {
 	return aims->at(index);
 }
 
-Vector3* Aims::getAimPos(int index) {
+Urho3D::Vector3* Aims::getAimPos(int index) {
 	if (index >= aims->size()) { return nullptr; }
 	return (*aims)[index]->getPosition();
 }
@@ -35,7 +33,7 @@ bool Aims::ifReach(Urho3D::Vector3* pedestrian, int index) {
 	if (aims->size() == 0) { return false; }
 	Aim* aim = getAim(index);
 	if (aim == nullptr) { return false; }
-	Vector3* pos = aim->getPosition();
+	Urho3D::Vector3* pos = aim->getPosition();
 	double distance = ((*pos) - (*pedestrian)).Length();
 	if (distance <= aim->getRadius()) {
 		return true;
@@ -44,16 +42,14 @@ bool Aims::ifReach(Urho3D::Vector3* pedestrian, int index) {
 
 }
 
-void Aims::add(Entity* entity) {
-	Urho3D::Vector3* pos = entity->getPosition();
-
+void Aims::add(Urho3D::Vector3* pos) {
 	pos->y_ = 0;
 	aims->push_back(new Aim(pos));
 }
 
 bool Aims::check(int aimIndex) {
 	if (aimIndex >= aims->size()) {
-		--references;
+		reduce();
 		return true;
 	} else {
 		return false;
@@ -62,4 +58,12 @@ bool Aims::check(int aimIndex) {
 
 int Aims::getReferences() {
 	return references;
+}
+
+void Aims::reduce() {
+	--references;
+}
+
+void Aims::up() {
+	++references;
 }

@@ -183,9 +183,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AimContainer.cpp" />
     <ClCompile Include="src\AbstractCommand.cpp" />
     <ClCompile Include="src\AbstractObjectManager.cpp" />
     <ClCompile Include="src\ActionCommand.cpp" />
+    <ClCompile Include="src\ActionCommandList.cpp" />
+    <ClCompile Include="src\ActionParameter.cpp" />
     <ClCompile Include="src\Aim.cpp" />
     <ClCompile Include="src\Aims.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
@@ -221,10 +224,13 @@
     <ClCompile Include="src\Simulation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AimContainer.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="src\AbstractCommand.h" />
     <ClInclude Include="src\AbstractObjectManager.h" />
     <ClInclude Include="src\ActionCommand.h" />
+    <ClInclude Include="src\ActionCommandList.h" />
+    <ClInclude Include="src\ActionParameter.h" />
     <ClInclude Include="src\ActionType.h" />
     <ClInclude Include="src\Aim.h" />
     <ClInclude Include="src\Aims.h" />

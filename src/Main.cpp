@@ -40,15 +40,14 @@ void Main::Start() {
 	BuildList* buildList = new BuildList();
 	buildList->setSceneObjectManager(sceneObjectManager);
 
-	commandList = new CommandList;
 	cameraManager = new CameraManager();
 	SimulationObjectManager* simulationObjectManager = new SimulationObjectManager();
 	SimulationCommandList* simulationCommandList = new SimulationCommandList(simulationObjectManager);
 	EnviromentStrategy* enviromentStrategy = new EnviromentStrategy();
 	mediator = new Mediator(enviromentStrategy, controls);
-	game->setScene(levelBuilder->createScene())->setCommmandList(commandList)->setCameraManager(cameraManager)->setBuildList(buildList)->setSimCommandList(simulationCommandList)->setMediator(mediator);
+	game->setScene(levelBuilder->createScene())->setCameraManager(cameraManager)->setBuildList(buildList)->setSimCommandList(simulationCommandList)->setMediator(mediator);
 
-	simulation = new Simulation(enviromentStrategy, simulationCommandList, simulationObjectManager, commandList);
+	simulation = new Simulation(enviromentStrategy, simulationCommandList, simulationObjectManager);
 	//simulation->createUnits();
 	SetupViewport();
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));

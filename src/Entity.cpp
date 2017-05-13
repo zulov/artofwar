@@ -59,8 +59,11 @@ void Entity::select() {
 void Entity::unSelect() {
 }
 
-void Entity::action(ActionType actionType, Entity* entity) {
+void Entity::action(ActionType actionType, ActionParameter* parameter) {
+}
 
+Aims* Entity::getAims() {
+	return nullptr;
 }
 
 Urho3D::Vector3* Entity::getPosition() {

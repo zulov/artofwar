@@ -4,6 +4,8 @@
 #include <Urho3D/UI/Text3D.h>
 #include <Urho3D/Scene/Component.h>
 #include "ActionType.h"
+#include "Aims.h"
+#include "ActionParameter.h"
 
 using namespace Urho3D;
 
@@ -23,7 +25,8 @@ public:
 	virtual int getType();
 	virtual void select();
 	virtual void unSelect();
-	virtual void action(ActionType actionType, Entity * entity);
+	virtual void action(ActionType actionType, ActionParameter * parameter);
+	virtual Aims * getAims();
 protected:
 	Urho3D::Node* node;
 	Vector3 *position;

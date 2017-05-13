@@ -57,9 +57,7 @@
     <ClCompile Include="src\LinkComponent.cpp">
       <Filter>objects\collection\link</Filter>
     </ClCompile>
-    <ClCompile Include="src\Aims.cpp" />
     <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\Aim.cpp" />
     <ClCompile Include="src\SimulationObjectManager.cpp">
       <Filter>objects\collection\manager</Filter>
     </ClCompile>
@@ -88,8 +86,23 @@
     <ClCompile Include="src\SimulationCommandList.cpp">
       <Filter>command\list</Filter>
     </ClCompile>
+    <ClCompile Include="src\ActionCommandList.cpp">
+      <Filter>command\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Aim.cpp">
+      <Filter>aim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Aims.cpp">
+      <Filter>aim</Filter>
+    </ClCompile>
+    <ClCompile Include="AimContainer.cpp">
+      <Filter>aim</Filter>
+    </ClCompile>
     <ClCompile Include="src\ActionCommand.cpp">
-      <Filter>command</Filter>
+      <Filter>command\action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ActionParameter.cpp">
+      <Filter>command\action</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,13 +168,11 @@
     <ClInclude Include="src\ObjectEnums.h">
       <Filter>objects</Filter>
     </ClInclude>
-    <ClInclude Include="src\Aims.h" />
     <ClInclude Include="src\ActionType.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\Game.h" />
-    <ClInclude Include="src\Aim.h" />
     <ClInclude Include="src\SimulationObjectManager.h">
       <Filter>objects\collection\manager</Filter>
     </ClInclude>
@@ -194,8 +205,23 @@
     <ClInclude Include="src\SimulationCommandList.h">
       <Filter>command\list</Filter>
     </ClInclude>
+    <ClInclude Include="src\ActionCommandList.h">
+      <Filter>command\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Aim.h">
+      <Filter>aim</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Aims.h">
+      <Filter>aim</Filter>
+    </ClInclude>
+    <ClInclude Include="AimContainer.h">
+      <Filter>aim</Filter>
+    </ClInclude>
     <ClInclude Include="src\ActionCommand.h">
-      <Filter>command</Filter>
+      <Filter>command\action</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ActionParameter.h">
+      <Filter>command\action</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -238,6 +264,12 @@
     </Filter>
     <Filter Include="command\list">
       <UniqueIdentifier>{8f9c94d7-7213-4f82-993e-25a31df51c6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="aim">
+      <UniqueIdentifier>{75b9a203-d933-4710-ba06-ef611dfd6f81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="command\action">
+      <UniqueIdentifier>{6057b42d-85b6-4e28-b62a-6d7741dc70a8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -6,6 +6,7 @@
 #include "CameraManager.h"
 
 
+class ActionCommandList;
 class CommandList;
 class Mediator; 
 class BuildList;
@@ -23,7 +24,7 @@ public:
 	Game* setScene(const Urho3D::SharedPtr<Urho3D::Scene>& scene);
 	Game* setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine);
 	Game* setCameraManager(CameraManager* cameraManager);
-	Game* setCommmandList(CommandList* _commmandList);
+	Game* setActionCommmandList(ActionCommandList* _actionCommmandList);
 	Game* setConsole(Console* _console);
 	Game* setMediator(Mediator* _mediator);
 	Game* setBuildList(BuildList* _buildList);
@@ -37,7 +38,7 @@ public:
 	Urho3D::UI* getUI() const;
 	Urho3D::Graphics* getGraphics() const;
 	Urho3D::SharedPtr<Urho3D::Engine> getEngine() const;
-	CommandList* getCommandList() const;
+	ActionCommandList* getActionCommandList() const;
 	Console* getConsole() const;
 	Mediator* getMediator() const;
 	BuildList* getBuildList() const;
@@ -56,6 +57,6 @@ private:
 	Console* console;
 	Mediator* mediator;
 	BuildList* buildList;
-	CommandList* commmandList;
+	ActionCommandList* actionCommandList;
 	SimulationCommandList * simCommandList;
 };

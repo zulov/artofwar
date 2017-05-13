@@ -1,7 +1,5 @@
 #include "Unit.h"
-#include "ObjectEnums.h"
-#include "Main.h"
-#include "Game.h"
+
 
 Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_position, _boxNode, _font) {
 	maxSeparationDistance = SEP_RADIUS;
@@ -25,11 +23,14 @@ void Unit::move(double timeStep) {
 	(*velocity) *= 0.95;
 	if (aims != nullptr) {
 		bool reach = aims->ifReach(position, aimIndex);
-		if (reach) { aimIndex++; }
-		bool end = aims->check(aimIndex);
-		if (end) {
-			aims = nullptr;
+		if (reach) {
+			aimIndex++;
+			bool end = aims->check(aimIndex);
+			if (end) {
+				aims = nullptr;
+			}
 		}
+
 	}
 }
 
@@ -42,13 +43,13 @@ double Unit::getMaxSeparationDistance() {
 	return maxSeparationDistance;
 }
 
-void Unit::action(ActionType actionType, Entity* entity) {
+void Unit::action(ActionType actionType, ActionParameter* parameter) {
 	switch (actionType) {
 	case ADD_AIM:
-		addAim(entity);
+		addAim(parameter);
 		break;
 	case APPEND_AIM:
-		appendAim(entity);
+		appendAim(parameter);
 		break;
 	case FOLLOW:
 		break;
@@ -76,13 +77,30 @@ double Unit::getUnitRadius() {
 	return unitRadius;
 }
 
-void Unit::appendAim(Aims* _aims) {
-	aims = _aims;
+Aims* Unit::getAims() {
+	return aims;
 }
 
-void Unit::addAim(Aims* _aims) {
+void Unit::appendAim(ActionParameter* actionParameter) {
+	if (actionParameter->getAims() != aims && aims != nullptr) {
+		aims->reduce();
+		aimIndex = 0;
+		aims = actionParameter->getAims();
+		aims->up();
+	} else if (aims == nullptr) {
+		aimIndex = 0;
+		aims = actionParameter->getAims();
+		aims->up();
+	}
+}
+
+void Unit::addAim(ActionParameter* actionParameter) {
+	if (actionParameter->getAims() != aims && aims != nullptr) {
+		aims->reduce();
+	}
 	aimIndex = 0;
-	aims = _aims;
+	aims = actionParameter->getAims();
+	aims->up();
 }
 
 void Unit::applyForce(double timeStep) {

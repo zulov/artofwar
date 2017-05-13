@@ -1,20 +1,17 @@
 #include "Simulation.h"
 
 
-Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationCommandList* _simCommandList, SimulationObjectManager* _simObjectManager, CommandList* _commandList) {
+Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationCommandList* _simCommandList, SimulationObjectManager* _simObjectManager) {
 	envStrategy = _enviromentStrategy;
 	forceStrategy = new ForceStrategy();
 	simObjectManager = _simObjectManager;
 	srand(time(NULL));
 	animate = true;
 	simCommandList = _simCommandList;
-	commandList = _commandList;
+	aimContainer = new AimContainer();
+	actionCommandList = new ActionCommandList(aimContainer);
+	Game::get()->setActionCommmandList(actionCommandList);
 	createUnits();
-	aims = new std::vector<Aims*>();
-	aims->reserve(20);
-	for (int i = 0; i < 20; ++i) {
-		aims->push_back(new Aims(0));
-	}
 }
 
 void Simulation::createUnits() {
@@ -33,7 +30,7 @@ void Simulation::update(Input* input, float timeStep) {
 
 	if (animate) {
 		simCommandList->execute();
-		commandList->execute();
+		actionCommandList->execute();
 		units = simObjectManager->getUnits();
 		buildings = simObjectManager->getBuildings();
 
@@ -42,9 +39,7 @@ void Simulation::update(Input* input, float timeStep) {
 
 		animateObjects(timeStep);
 		envStrategy->clear();
-		for (int i = 0; i < aims->size(); ++i) {
-			(*aims)[i]->clearAims();
-		}
+		aimContainer->clean();
 	}
 }
 

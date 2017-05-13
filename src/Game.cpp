@@ -26,8 +26,8 @@ Urho3D::SharedPtr<Urho3D::Engine> Game::getEngine() const {
 	return engine;
 }
 
-CommandList* Game::getCommandList() const {
-	return commmandList;
+ActionCommandList* Game::getActionCommandList() const {
+	return actionCommandList;
 }
 
 Console* Game::getConsole() const {
@@ -99,8 +99,8 @@ Game* Game::setCameraManager(CameraManager* cameraManager) {
 	return this;
 }
 
-Game* Game::setCommmandList(CommandList* _commmandList) {
-	commmandList = _commmandList;
+Game* Game::setActionCommmandList(ActionCommandList* _actionCommmandList) {
+	actionCommandList = _actionCommmandList;
 	return this;
 }
 

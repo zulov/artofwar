@@ -86,5 +86,5 @@ private:
 	LevelBuilder* levelBuilder;
 	SceneObjectManager * sceneObjectManager;
 	Mediator * mediator;
-	CommandList * commandList;
+	ActionCommandList * actionCommandList;
 };

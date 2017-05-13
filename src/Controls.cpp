@@ -5,7 +5,7 @@
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Entity*>();
-	selected->reserve(10);
+	selected->reserve(25);
 
 	leftHeld = new std::pair<Entity*, Entity*>();
 	middleHeld = new std::pair<Entity*, Entity*>();
@@ -46,7 +46,7 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 void Controls::unSelect(int type) {
 	selectedType = ObjectType(type);
 	for (int i = 0; i < selected->size(); i++) {
-		selected->at(i)->unSelect();
+		(*selected)[i]->unSelect();
 	}
 	selected->clear();
 }
@@ -104,15 +104,15 @@ void Controls::rightClick(Drawable* hitDrawable, Vector3 hitPos) {
 	if (hitNode->GetName() == "Box") {
 		unSelect(ENTITY);
 	} else if (hitNode->GetName() == "Ground") {
-		Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
+		Vector3* pos = new Vector3(hitPos);
 		ActionCommand* command;
 		if (shiftPressed) {
-			command = new ActionCommand(selected, APPEND_AIM, entity);
+			command = new ActionCommand(selected, APPEND_AIM, pos);
 		} else {
-			command = new ActionCommand(selected, ADD_AIM, entity);
+			command = new ActionCommand(selected, ADD_AIM, pos);
 		}
 
-		Game::get()->getCommandList()->add(command);
+		Game::get()->getActionCommandList()->add(command);
 	}
 }
 
@@ -129,24 +129,24 @@ void Controls::leftHold(std::pair<Entity*, Entity*>* held) {
 }
 
 void Controls::rightHold(std::pair<Entity*, Entity*>* pair) {
-	Entity* entity1 = new Entity(new Vector3(*pair->first->getPosition()), nullptr, nullptr);
-	Entity* entity2 = new Entity(new Vector3(*pair->second->getPosition()), nullptr, nullptr);
+	Vector3* pos1 = new Vector3(*pair->first->getPosition());
+	Vector3* pos2 = new Vector3(*pair->second->getPosition());//TODO czy ta para jest usuwana
 	ActionCommand* command1;
 	ActionCommand* command2;
 
 	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
 
 	if (shiftPressed) {
-		command1 = new ActionCommand(selected, APPEND_AIM, entity1);
-		command2 = new ActionCommand(selected, APPEND_AIM, entity2);
+		command1 = new ActionCommand(selected, APPEND_AIM, pos1);
+		command2 = new ActionCommand(selected, APPEND_AIM, pos2);
 	} else {
-		command1 = new ActionCommand(selected, ADD_AIM, entity1);
-		command2 = new ActionCommand(selected, APPEND_AIM, entity2);
+		command1 = new ActionCommand(selected, ADD_AIM, pos1);
+		command2 = new ActionCommand(selected, APPEND_AIM, pos2);
 	}
 
 
-	Game::get()->getCommandList()->add(command1);
-	Game::get()->getCommandList()->add(command2);
+	Game::get()->getActionCommandList()->add(command1);
+	Game::get()->getActionCommandList()->add(command2);
 }
 
 void Controls::release(const int button) {
