@@ -95,14 +95,14 @@
     <ClCompile Include="src\Aims.cpp">
       <Filter>aim</Filter>
     </ClCompile>
-    <ClCompile Include="AimContainer.cpp">
-      <Filter>aim</Filter>
-    </ClCompile>
     <ClCompile Include="src\ActionCommand.cpp">
       <Filter>command\action</Filter>
     </ClCompile>
     <ClCompile Include="src\ActionParameter.cpp">
       <Filter>command\action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AimContainer.cpp">
+      <Filter>aim</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,7 +169,6 @@
       <Filter>objects</Filter>
     </ClInclude>
     <ClInclude Include="src\ActionType.h" />
-    <ClInclude Include="math.h" />
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\Game.h" />
@@ -214,14 +213,15 @@
     <ClInclude Include="src\Aims.h">
       <Filter>aim</Filter>
     </ClInclude>
-    <ClInclude Include="AimContainer.h">
-      <Filter>aim</Filter>
-    </ClInclude>
     <ClInclude Include="src\ActionCommand.h">
       <Filter>command\action</Filter>
     </ClInclude>
     <ClInclude Include="src\ActionParameter.h">
       <Filter>command\action</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math.h" />
+    <ClInclude Include="src\AimContainer.h">
+      <Filter>aim</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
