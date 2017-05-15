@@ -1,7 +1,39 @@
 #include "UnitFactory.h"
+#include <iostream>
+using namespace std;
 
+static int callback(void *data, int argc, char **argv, char **azColName) {
+	int i;
+	fprintf(stderr, "%s: ", (const char*)data);
+	for (i = 0; i<argc; i++) {
+		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+	}
+	printf("\n");
+	return 0;
+}
 
 UnitFactory::UnitFactory(): EntityFactory() {
+	int rc;
+	char* error;
+
+	sqlite3* db;
+	rc = sqlite3_open("Data/Database/base.db", &db);
+	if (rc) {
+		cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(db) << endl << endl;
+		sqlite3_close(db);
+	}
+
+	char *sql = "SELECT * from units";
+
+	rc = sqlite3_exec(db, sql, callback, nullptr, &error);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "SQL error: %s\n", error);
+		sqlite3_free(error);
+	}
+	else {
+		fprintf(stdout, "Operation done successfully\n");
+	}
+	sqlite3_close(db);
 }
 
 UnitFactory::~UnitFactory() {

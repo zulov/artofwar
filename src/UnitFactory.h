@@ -11,6 +11,7 @@
 #include <Urho3D/Graphics/Model.h>
 #include "LinkComponent.h"
 #include "Game.h"
+#include "sqlite3/sqlite3.h"
 
 class UnitFactory :public EntityFactory {
 public:
@@ -20,9 +21,6 @@ public:
 	double getSpecSize(SpacingType spacing);
 	String getModelName(UnitType unitType);
 	std::vector<Unit*>* create(unsigned int number, UnitType unitType, Vector3 *center, SpacingType spacingType);
-
-	//int size = UNITS_NUMBER;
-	//double space = INIT_SPACE;
 };
 
  

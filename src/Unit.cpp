@@ -20,7 +20,7 @@ Unit::~Unit() {
 void Unit::move(double timeStep) {
 	(*position) += (*velocity) * timeStep;
 	node->SetPosition(*position);
-	(*velocity) *= 0.95;
+	(*velocity) *= 0.95;//TODO to dac jaki wspolczynnik tarcia terenu
 	if (aims != nullptr) {
 		bool reach = aims->ifReach(position, aimIndex);
 		if (reach) {
@@ -139,6 +139,7 @@ void Unit::select() {
 void Unit::unSelect() {
 	Node* child = node->GetChild("title");
 	if (child) {
+		child->RemoveAllChildren();
 		node->RemoveChild(child);
 	}
 

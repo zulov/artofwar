@@ -6,9 +6,10 @@ test.dir
 test.VC.VC.opendb
 lib
 Release
-Urho3D
 /artofwar.VC.VC.opendb
 /artofwar.VC.db
 art_of_war.dir
 result
 *.rar
+include
+/Data/Database/base.db
