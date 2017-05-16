@@ -222,6 +222,9 @@
     <ClInclude Include="src\AimContainer.h">
       <Filter>aim</Filter>
     </ClInclude>
+    <ClInclude Include="src\db_strcut.h">
+      <Filter>database</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
@@ -269,6 +272,9 @@
     </Filter>
     <Filter Include="command\action">
       <UniqueIdentifier>{6057b42d-85b6-4e28-b62a-6d7741dc70a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="database">
+      <UniqueIdentifier>{19df1394-7985-47ee-acd5-95a41ec3e776}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,14 +1,20 @@
 #include "UnitFactory.h"
+#include "db_strcut.h"
 
 using namespace std;
 
-static int callback(void *data, int argc, char **argv, char **azColName) {
-	int i;
-	fprintf(stderr, "%s: ", (const char*)data);
-	for (i = 0; i<argc; i++) {
-		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-	}
-	printf("\n");
+static int callback(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	xyz->unit = db_unit(argv[0], atof(argv[1]), atof(argv[2]), atoi(argv[3]), argv[4], argv[5], argv[6], atof(argv[7]), atof(argv[8]), atof(argv[9]));//toDO moza sprobowac pêtl¹
+	//	for (int i = 0; i < argc; i++) {
+	//
+	//		if (strcmp(azColName[i], "name") == 0) {
+	//			
+	//		}else if (strcmp(azColName[i], "name") == 0) {
+	//			
+	//		}
+	//	}
+
 	return 0;
 }
 
@@ -23,15 +29,12 @@ UnitFactory::UnitFactory(): EntityFactory() {
 		sqlite3_close(db);
 	}
 
-	char *sql = "SELECT * from units";
-
-	rc = sqlite3_exec(db, sql, callback, nullptr, &error);
+	char* sql = "SELECT * from units where type =0";
+	db_container *dbContainer = new db_container();
+	rc = sqlite3_exec(db, sql, callback, dbContainer, &error);
 	if (rc != SQLITE_OK) {
 		fprintf(stderr, "SQL error: %s\n", error);
 		sqlite3_free(error);
-	}
-	else {
-		fprintf(stdout, "Operation done successfully\n");
 	}
 	sqlite3_close(db);
 }

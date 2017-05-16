@@ -22,6 +22,7 @@ public:
 	double getSpecSize(SpacingType spacing);
 	String getModelName(UnitType unitType);
 	std::vector<Unit*>* create(unsigned int number, UnitType unitType, Vector3 *center, SpacingType spacingType);
+
 };
 
  
