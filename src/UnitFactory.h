@@ -12,6 +12,7 @@
 #include "LinkComponent.h"
 #include "Game.h"
 #include "sqlite3/sqlite3.h"
+#include <iostream>
 
 class UnitFactory :public EntityFactory {
 public:

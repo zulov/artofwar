@@ -244,7 +244,6 @@
     <ClInclude Include="src\CameraBehave.h" />
     <ClInclude Include="src\CameraEnums.h" />
     <ClInclude Include="src\CameraManager.h" />
-    <ClInclude Include="src\math.h" />
     <ClInclude Include="src\SimulationCommand.h" />
     <ClInclude Include="src\CommandSelect.h" />
     <ClInclude Include="src\CommandList.h" />

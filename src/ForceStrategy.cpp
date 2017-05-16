@@ -1,6 +1,4 @@
 #include "ForceStrategy.h"
-#include "../math.h"
-
 
 ForceStrategy::ForceStrategy() {
 }

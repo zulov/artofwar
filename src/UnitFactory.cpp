@@ -1,5 +1,5 @@
 #include "UnitFactory.h"
-#include <iostream>
+
 using namespace std;
 
 static int callback(void *data, int argc, char **argv, char **azColName) {

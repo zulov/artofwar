@@ -219,7 +219,6 @@
     <ClInclude Include="src\ActionParameter.h">
       <Filter>command\action</Filter>
     </ClInclude>
-    <ClInclude Include="src\math.h" />
     <ClInclude Include="src\AimContainer.h">
       <Filter>aim</Filter>
     </ClInclude>

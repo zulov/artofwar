@@ -1,6 +1,4 @@
 #pragma once
-
-
 #include "Unit.h"
 #include <vector>
 #include <ctime>
@@ -15,8 +13,7 @@
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/DebugNew.h>
 #include "ActionCommandList.h"
-#include "../AimContainer.h"
-
+#include "AimContainer.h"
 
 class SimulationCommandList;
 
