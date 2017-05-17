@@ -1,4 +1,8 @@
 #pragma once
+#define UNITS_NUMBER_DB 50
+#define BULDINGS_NUMBER_DB 50
+#include <Urho3D/Container/Str.h>
+
 struct db_unit
 {
 	Urho3D::String name;
@@ -29,7 +33,22 @@ struct db_unit
 	};
 };
 
+struct db_building
+{
+	Urho3D::String name;
+	double minDist;
+	int type;
+	Urho3D::String model;
+	Urho3D::String texture;
+	Urho3D::String font;
+	double scale;
+
+	db_building() {
+	};
+};
+
 struct db_container
 {
-	db_unit unit;
+	db_unit* units[UNITS_NUMBER_DB];
+	db_building* buildings[BULDINGS_NUMBER_DB];
 };

@@ -104,6 +104,9 @@
     <ClCompile Include="src\AimContainer.cpp">
       <Filter>aim</Filter>
     </ClCompile>
+    <ClCompile Include="src\DatabaseCache.cpp">
+      <Filter>database</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -223,6 +226,9 @@
       <Filter>aim</Filter>
     </ClInclude>
     <ClInclude Include="src\db_strcut.h">
+      <Filter>database</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DatabaseCache.h">
       <Filter>database</Filter>
     </ClInclude>
   </ItemGroup>

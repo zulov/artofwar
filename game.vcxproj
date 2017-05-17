@@ -200,6 +200,7 @@
     <ClCompile Include="src\BuildList.cpp" />
     <ClCompile Include="src\CameraBehave.cpp" />
     <ClCompile Include="src\CameraManager.cpp" />
+    <ClCompile Include="src\DatabaseCache.cpp" />
     <ClCompile Include="src\SimulationCommand.cpp" />
     <ClCompile Include="src\CommandSelect.cpp" />
     <ClCompile Include="src\CommandList.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="src\CameraBehave.h" />
     <ClInclude Include="src\CameraEnums.h" />
     <ClInclude Include="src\CameraManager.h" />
+    <ClInclude Include="src\DatabaseCache.h" />
     <ClInclude Include="src\db_strcut.h" />
     <ClInclude Include="src\SimulationCommand.h" />
     <ClInclude Include="src\CommandSelect.h" />

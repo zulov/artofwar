@@ -13,7 +13,7 @@ class Unit : public Entity
 public:
 	Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font);
 	~Unit();
-
+	void populate(db_unit* definition);
 	void move(double timeStep);
 	void applyForce(double timeStep);
 	virtual int getType() override;

@@ -2,19 +2,22 @@
 
 
 Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_position, _boxNode, _font) {
-	maxSeparationDistance = SEP_RADIUS;
-	mass = 1;
-	maxSpeed = 5;
-	minSpeed = maxSpeed * 0.2f;
 	acceleration = new Vector3();
 	velocity = new Vector3();
-	minimalDistance = 0.5;
 	aims = nullptr;
 }
 
 Unit::~Unit() {
 	//delete node;
 	//delete aims;
+}
+
+void Unit::populate(db_unit* definition) {
+	maxSeparationDistance = definition->maxSep;
+	mass = definition->mass;
+	maxSpeed = definition->maxSpeed;
+	minSpeed = maxSpeed * 0.2f;
+	minimalDistance = definition->minDist;
 }
 
 void Unit::move(double timeStep) {

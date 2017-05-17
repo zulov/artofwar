@@ -88,3 +88,17 @@ hold on;
 plot(xz,z,"*-r");
 plot(xz,zb,"*-b");
 hold off;
+
+figure;
+[xx, yy] = meshgrid (xz, x);
+xd= [y1;
+     y2;
+     y3;
+     y4;
+     y5;
+     y6];
+
+mesh (x, xz, xd);
+xlabel ("crowd size");
+ylabel ("cell size");
+zlabel ("compute frame time");

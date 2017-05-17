@@ -46,6 +46,10 @@ SimulationCommandList* Game::getSimCommandList() const {
 	return simCommandList;
 }
 
+DatabaseCache* Game::getDatabaseCache() const {
+	return databaseCache;
+}
+
 Game::Game() {
 }
 
@@ -121,5 +125,10 @@ Game* Game::setBuildList(BuildList* _buildList) {
 
 Game* Game::setSimCommandList(SimulationCommandList* _simCommandList) {
 	simCommandList = _simCommandList;
+	return this;
+}
+
+Game* Game::setDatabaseCache(DatabaseCache* _databaseCache) {
+	databaseCache = _databaseCache;
 	return this;
 }
