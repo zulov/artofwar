@@ -19,8 +19,8 @@ double UnitFactory::getSpecSize(SpacingType spacing) {
 std::vector<Unit*>* UnitFactory::create(unsigned int number, UnitType unitType, Vector3* center, SpacingType spacingType) {
 	std::vector<Unit*>* units = new std::vector<Unit *>();
 	units->reserve(number);
-	db_unit* dbUnit = Game::get()->getDatabaseCache()->getUnit(unitType);
 	Game* game = Game::get();
+	db_unit* dbUnit = game->getDatabaseCache()->getUnit(unitType);
 	Font* font = game->getCache()->GetResource<Font>("Fonts/" + dbUnit->font);
 
 	int yMax = number / sqrt(number);
@@ -36,7 +36,6 @@ std::vector<Unit*>* UnitFactory::create(unsigned int number, UnitType unitType, 
 			node->SetPosition(*position);
 
 			StaticModel* boxObject = node->CreateComponent<StaticModel>();
-
 			boxObject->SetModel(game->getCache()->GetResource<Model>(modelName));
 
 			Unit* newUnit = new Unit(position, node, font);

@@ -195,9 +195,6 @@
     <ClInclude Include="src\BuildCommand.h">
       <Filter>command</Filter>
     </ClInclude>
-    <ClInclude Include="src\UnitType.h" />
-    <ClInclude Include="src\BuildingType.h" />
-    <ClInclude Include="src\SpacingType.h" />
     <ClInclude Include="src\CommandList.h">
       <Filter>command\list</Filter>
     </ClInclude>
@@ -230,6 +227,15 @@
     </ClInclude>
     <ClInclude Include="src\DatabaseCache.h">
       <Filter>database</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BuildingType.h">
+      <Filter>objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SpacingType.h">
+      <Filter>objects\collection</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnitType.h">
+      <Filter>objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

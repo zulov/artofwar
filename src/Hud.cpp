@@ -6,7 +6,7 @@ Hud::Hud() {
 	window = new Window(Game::get()->getContext());
 	Game::get()->getUI()->GetRoot()->AddChild(window);
 
-	//someMenuExample(context);
+	someMenuExample();
 
 	XMLFile* style = Game::get()->getCache()->GetResource<XMLFile>("UI/DefaultStyle.xml");
 	SharedPtr<Cursor> cursor(new Cursor(Game::get()->getContext()));
@@ -14,35 +14,72 @@ Hud::Hud() {
 	Game::get()->getUI()->SetCursor(cursor);
 
 	cursor->SetPosition(Game::get()->getGraphics()->GetWidth() / 2, Game::get()->getGraphics()->GetHeight() / 2);
+
 }
 
 
-Hud::~Hud() {}
+Hud::~Hud() {
+}
+
+template <std::size_t SIZE>
+void Hud::populateList(Font* font, DropDownList* dropDownList, std::array<String, SIZE> elements) {
+	for (String mode : elements) {
+		Text* text = new Text(Game::get()->getContext());
+		text->SetText(mode);
+		text->SetFont(font, 12);
+		dropDownList->AddItem(text);
+	}
+}
+
+void Hud::initDropDownList(DropDownList* dropDownList) {
+	dropDownList->SetFixedHeight(24);
+	dropDownList->SetFixedWidth(100);
+	dropDownList->SetResizePopup(true);
+
+	XMLFile* xmlFile = Game::get()->getCache()->GetResource<XMLFile>("UI/DefaultStyle.xml");
+
+	dropDownList->SetStyleAuto(xmlFile);
+}
 
 void Hud::someMenuExample() {
-	window->SetMinWidth(384);
+	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
+	Texture2D* warriorIcon = Game::get()->getCache()->GetResource<Texture2D>("textures/warriorIcon64.png");
+	window->SetMinWidth(256);
+	window->SetMinHeight(50);
 	window->SetLayout(LM_VERTICAL, 6, IntRect(6, 6, 6, 6));
-	window->SetAlignment(HA_RIGHT, VA_TOP);
+	window->SetAlignment(HA_LEFT, VA_BOTTOM);
 	window->SetName("Window");
+	window->SetTexture(wood);
+	window->SetTiled(true);
 
-	CheckBox* checkBox = new CheckBox(Game::get()->getContext());
-	checkBox->SetName("CheckBox");
+	Font* font = Game::get()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf");
+	DropDownList* dropDownList = new DropDownList(Game::get()->getContext());
+	DropDownList* dropDownList1 = new DropDownList(Game::get()->getContext());
+
+	std::array<String, 3> modes{{"Select","Deploy","Build"}};
+	populateList(font, dropDownList, modes);
+
+	std::array<String, 3> modes1{{"Select","Deploy","Build"}};
+	populateList(font, dropDownList1, modes1);
+
+	initDropDownList(dropDownList);
+	initDropDownList(dropDownList1);
+
+	window->AddChild(dropDownList);
+	window->AddChild(dropDownList1);
 
 	Button* button = new Button(Game::get()->getContext());
-	button->SetName("Button");
+	XMLFile* xmlFile = Game::get()->getCache()->GetResource<XMLFile>("UI/DefaultStyle.xml");
+	button->SetStyle("Icon", xmlFile);
+
 	button->SetMinHeight(24);
-
-	LineEdit* lineEdit = new LineEdit(Game::get()->getContext());
-	lineEdit->SetName("LineEdit");
-	lineEdit->SetMinHeight(24);
-
-	window->AddChild(checkBox);
+	button->SetTexture(warriorIcon);
+	
+	button->SetFixedSize(64, 64);
+	button->SetTiled(true);
 	window->AddChild(button);
-	window->AddChild(lineEdit);
 
-	checkBox->SetStyleAuto();
-	button->SetStyleAuto();
-	lineEdit->SetStyleAuto();
+
 }
 
 void Hud::createStaticHud(String msg) {
@@ -60,7 +97,7 @@ void Hud::createLogo() {
 	if (!logoTexture) {
 		return;
 	}
-	Urho3D::Sprite *logoSprite_ = Game::get()->getUI()->GetRoot()->CreateChild<Sprite>();
+	Urho3D::Sprite* logoSprite_ = Game::get()->getUI()->GetRoot()->CreateChild<Sprite>();
 
 	logoSprite_->SetTexture(logoTexture);
 
@@ -89,7 +126,7 @@ void Hud::createConsole() {
 	console->GetBackground()->SetOpacity(0.8f);
 }
 
-void Hud::updateHud(Benchmark * benchmark, CameraManager *cameraManager) {
+void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {
 	Urho3D::String msg = "FPS: " + String(benchmark->getLastFPS());
 	msg += "\navg FPS: " + String(benchmark->getAverageFPS());
 	msg += "\nLoops: " + String(benchmark->getLoops());
