@@ -166,6 +166,21 @@ void Main::control(float timeStep) {
 	Input* input = GetSubsystem<Input>();
 
 	bool cameraKeys[4] = {input->GetKeyDown(KEY_W), input->GetKeyDown(KEY_S), input->GetKeyDown(KEY_A), input->GetKeyDown(KEY_D)};
+	int width = Game::get()->getGraphics()->GetWidth();
+	int height = Game::get()->getGraphics()->GetHeight();
+	IntVector2 cursorPos = Game::get()->getUI()->GetCursorPosition();
+	float border = 10.f;
+	if (cursorPos.x_ < width / border) {
+		cameraKeys[2] = true;
+	}else if(cursorPos.x_ >width - (width / border)) {
+		cameraKeys[3] = true;
+	}
+	if (cursorPos.y_ < height / border) {
+		cameraKeys[0] = true;
+	}
+	else if (cursorPos.y_ >height - (height / border)) {
+		cameraKeys[1] = true;
+	}
 	int wheel = input->GetMouseMoveWheel();
 	cameraManager->translate(cameraKeys, wheel, timeStep);
 	cameraManager->rotate(input->GetMouseMove());

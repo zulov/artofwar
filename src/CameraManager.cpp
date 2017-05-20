@@ -1,7 +1,7 @@
 #include "CameraManager.h"
 
-CameraManager::CameraManager() {	
-	CameraBehave * cameraBehave = new FreeCameraBehave();
+CameraManager::CameraManager() {
+	CameraBehave* cameraBehave = new FreeCameraBehave();
 	cameraBehaves.push_back(cameraBehave);
 
 	cameraBehave = new RtsCameraBehave();
@@ -23,13 +23,13 @@ void CameraManager::setCameraBehave(int _type) {
 }
 
 
-Urho3D::Camera *CameraManager::getComponent() {
+Urho3D::Camera* CameraManager::getComponent() {
 	//return cameraNode->GetComponent<Camera>();
 	return activeBehave->getComponent();
 }
 
 void CameraManager::translate(bool cameraKeys[], int wheel, float timeStep) {
-	activeBehave->translate(cameraKeys, wheel, timeStep*MOVE_SPEED);
+	activeBehave->translate(cameraKeys, wheel, timeStep * MOVE_SPEED);
 }
 
 String CameraManager::getInfo() {
