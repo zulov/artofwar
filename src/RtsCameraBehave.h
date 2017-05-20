@@ -13,6 +13,6 @@ public:
 	virtual Urho3D::String getInfo();
 	virtual MouseMode getMouseMode();
 private:
-	float maxY=100, minY=5;
+	float maxY=200, minY=5;
 };
 

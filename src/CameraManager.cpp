@@ -7,7 +7,7 @@ CameraManager::CameraManager() {
 	cameraBehave = new RtsCameraBehave();
 	cameraBehaves.push_back(cameraBehave);
 
-	activeBehave = cameraBehaves.at(0);
+	activeBehave = cameraBehaves.at(1);
 }
 
 CameraManager::~CameraManager() {

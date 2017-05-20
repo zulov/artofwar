@@ -30,8 +30,8 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 	}
 	if (wheel != 0) {
 		Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
-		double diff = pos.y_ - minY;
-		diff += 10;
+		double diff = sqrt(pos.y_ - minY)+1;
+
 		pos += Urho3D::Vector3(0, 1, 0) * timeStep * wheel * diff;
 
 		if (pos.y_ < minY) {
@@ -39,8 +39,10 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 		} else if (pos.y_ > maxY) {
 			pos.y_ = maxY;
 		}
+		double a = 10;
+
 		cameraNode->SetWorldPosition(pos);
-		cameraNode->SetDirection((Urho3D::Vector3::DOWN + Urho3D::Vector3::FORWARD / diff * 20));
+		cameraNode->SetDirection(Urho3D::Vector3::DOWN*diff + Urho3D::Vector3::FORWARD * a);
 	}
 
 }
