@@ -190,12 +190,12 @@ void Controls::release(const int button) {
 	}
 }
 
-void Controls::updateState() {
-	if (input->GetKeyDown(KEY_8)) {
-		controlsState = SELECT;
-	} else if (input->GetKeyDown(KEY_9)) {
-		controlsState = BUILD;
-	}
+void Controls::updateState(ControlsState state) {
+	controlsState = state;
+}
+
+void Controls::hudAction(HudElement* hud) {
+
 }
 
 void Controls::clickDownRight(Vector3 hitPos) {

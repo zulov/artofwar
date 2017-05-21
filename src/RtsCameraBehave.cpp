@@ -4,8 +4,8 @@
 
 RtsCameraBehave::RtsCameraBehave() {
 	cameraNode = new Urho3D::Node(Game::get()->getContext());
-	cameraNode->SetPosition(Urho3D::Vector3(0.0f, 10.0f, -10.0f));
-	double diff = sqrt(10.0f - minY) + 1;
+	cameraNode->SetPosition(Urho3D::Vector3(0.0f, 50.0f, -50.0f));
+	double diff = sqrt(50.0f - minY) + 1;
 	double a = 10;
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * a);
 	Urho3D::Camera* camera = cameraNode->CreateComponent<Urho3D::Camera>();

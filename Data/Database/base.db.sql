@@ -24,4 +24,15 @@ INSERT INTO `unit_type` (name,id) VALUES ('warrior',0),
  ('cavalry',2),
  ('archer',3),
  ('worker',4);
+CREATE TABLE `hud_size` (
+	`id`	INTEGER,
+	`name`	TEXT,
+	`icon_size_x`	INTEGER,
+	`icon_size_y`	INTEGER,
+	PRIMARY KEY(`id`)
+);
+INSERT INTO `hud_size` (id,name,icon_size_x,icon_size_y) VALUES (0,'s',42,42),
+ (1,'m',64,64),
+ (2,'l',86,86),
+ (3,'xl',128,128);
 COMMIT;

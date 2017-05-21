@@ -7,9 +7,11 @@ using namespace std;
 class DatabaseCache
 {
 public:
+	void ifError(int rc, char* error);
 	DatabaseCache();
 	~DatabaseCache();
 	db_unit* getUnit(int i);
+	db_hud_size* getHudSize(int i);
 private:
 	db_container* dbContainer;
 };

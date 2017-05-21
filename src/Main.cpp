@@ -22,13 +22,20 @@ void Main::Setup() {
 
 void Main::Start() {
 	Game* game = Game::get();
-	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->setGraphics(GetSubsystem<Graphics>())->setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
+	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->setGraphics(GetSubsystem<Graphics>())->setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_)->setDatabaseCache(new DatabaseCache());
 	SetWindowTitleAndIcon();
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
 
 	hud = new Hud();
 	hud->createStaticHud(String("Liczba jednostek") + String("??"));
+
+	for (HudElement* hudElement : *(hud->getButtonsToSubscribe())) {
+		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main,HandleUIButtton));
+	}
+	for (HudElement* hudElement : *(hud->getListsToSubscribe())) {
+		SubscribeToEvent(hudElement->getUIElement(), E_ITEMSELECTED, URHO3D_HANDLER(Main, HandleUIList));
+	}
 	//hud->createLogo();
 
 	CreateConsoleAndDebugHud();
@@ -45,7 +52,7 @@ void Main::Start() {
 	SimulationCommandList* simulationCommandList = new SimulationCommandList(simulationObjectManager);
 	EnviromentStrategy* enviromentStrategy = new EnviromentStrategy();
 	mediator = new Mediator(enviromentStrategy, controls);
-	game->setScene(levelBuilder->createScene())->setCameraManager(cameraManager)->setBuildList(buildList)->setSimCommandList(simulationCommandList)->setMediator(mediator)->setDatabaseCache(new DatabaseCache());
+	game->setScene(levelBuilder->createScene())->setCameraManager(cameraManager)->setBuildList(buildList)->setSimCommandList(simulationCommandList)->setMediator(mediator);
 
 	simulation = new Simulation(enviromentStrategy, simulationCommandList, simulationObjectManager);
 	//simulation->createUnits();
@@ -123,6 +130,20 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	}
 }
 
+void Main::HandleUIButtton(StringHash eventType, VariantMap& eventData) {
+	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
+	HudElement* hud = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+	controls->hudAction(hud);
+}
+
+void Main::HandleUIList(StringHash eventType, VariantMap& eventData) {
+	UIElement* element = (UIElement*)eventData[ItemSelected::P_ELEMENT].GetVoidPtr();
+	ControlsState state = ControlsState(eventData[ItemSelected::P_SELECTION].GetInt());
+	controls->updateState(state);
+	HudElement* hud = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+	controls->hudAction(hud);
+}
+
 void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 	using namespace KeyDown;
 
@@ -161,24 +182,22 @@ void Main::SetupViewport() {
 }
 
 void Main::control(float timeStep) {
-	if (GetSubsystem<UI>()->GetFocusElement()) { return; }
-	controls->updateState();
+	//if (GetSubsystem<UI>()->GetFocusElement()) { return; }
 	Input* input = GetSubsystem<Input>();
 
 	bool cameraKeys[4] = {input->GetKeyDown(KEY_W), input->GetKeyDown(KEY_S), input->GetKeyDown(KEY_A), input->GetKeyDown(KEY_D)};
 	int width = Game::get()->getGraphics()->GetWidth();
 	int height = Game::get()->getGraphics()->GetHeight();
 	IntVector2 cursorPos = Game::get()->getUI()->GetCursorPosition();
-	float border = 10.f;
+	float border = 64.f;
 	if (cursorPos.x_ < width / border) {
 		cameraKeys[2] = true;
-	}else if(cursorPos.x_ >width - (width / border)) {
+	} else if (cursorPos.x_ > width - (width / border)) {
 		cameraKeys[3] = true;
 	}
 	if (cursorPos.y_ < height / border) {
 		cameraKeys[0] = true;
-	}
-	else if (cursorPos.y_ >height - (height / border)) {
+	} else if (cursorPos.y_ > height - (height / border)) {
 		cameraKeys[1] = true;
 	}
 	int wheel = input->GetMouseMoveWheel();

@@ -23,6 +23,8 @@
 #include "CameraManager.h"
 #include "Benchmark.h"
 #include <array>
+#include "HudElement.h"
+#include "db_strcut.h"
 
 using namespace Urho3D;
 
@@ -35,13 +37,30 @@ public:
 	void createDebugHud();
 	void createConsole();
 	void updateHud(Benchmark * benchmark, CameraManager *cameraManager);
-
+	std::vector<HudElement*> *getButtonsToSubscribe();
+	std::vector<HudElement*> *getListsToSubscribe();
 private:
-	void someMenuExample();
-	Window *window;
+	void createMenu();
+	void createBuild();
+	void createUnits();
+	void createTop();
+	Window *menuWindow;
+	Window *miniMapWindow;
+	Window *topWindow;
+	Window *buildWindow;
+	Window *unitsWindow;
+
 	Text* fpsText;
+	std::vector<HudElement*> *buttons;
+	std::vector<HudElement*> *lists;
+
+	XMLFile* style;
+	db_hud_size* hudSize;
+	template<std::size_t SIZE>
+	void createBuildingIcons(Texture2D* warriorIcon, std::array<BuildingType, SIZE> buildings);
 	template<std::size_t SIZE>
 	void populateList(Font* font, DropDownList* dropDownList, std::array<String, SIZE> elements);
+
 	void initDropDownList(DropDownList* dropDownList);
 };
 

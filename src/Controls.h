@@ -19,6 +19,7 @@
 #include "BuildCommand.h"
 #include "LinkComponent.h"
 #include "Mediator.h"
+#include "HudElement.h"
 
 
 using namespace Urho3D;
@@ -45,7 +46,8 @@ public:
 	void rightClick(Drawable* hitDrawable, Vector3 hitPos);
 	void rightHold(std::pair<Entity*, Entity*>* pair);
 	void release(const int button);
-	void updateState();
+	void updateState(ControlsState state);
+	void hudAction(HudElement* hud);
 private:
 	std::vector<Entity*>* selected;//TODO to powinien byæ set
 	ObjectType selectedType;

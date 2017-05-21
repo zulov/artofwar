@@ -10,6 +10,24 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int id = atoi(argv[0]);
+	int id1 = atoi(argv[2]);
+	int id2 = atoi(argv[3]);
+	char* a = argv[1];
+	xyz->hudSizes[id] = new db_hud_size(atoi(argv[0]), argv[1], atoi(argv[2]), atoi(argv[3]));//toDO moza sprobowac pêtl¹
+
+	return 0;
+}
+
+void DatabaseCache::ifError(int rc, char* error) {
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "SQL error: %s\n", error);
+		sqlite3_free(error);
+	}
+}
+
 DatabaseCache::DatabaseCache() {
 	int rc;
 	char* error;
@@ -23,13 +41,16 @@ DatabaseCache::DatabaseCache() {
 
 	char* sqlUnits = "SELECT * from units";
 	char* sqlBuildings = "SELECT * from buildings";
+	char* sqlHudSizes = "SELECT * from hud_size";
+
 	dbContainer = new db_container();
+
 	rc = sqlite3_exec(database, sqlUnits, loadUnits, dbContainer, &error);
-	//rc = sqlite3_exec(database, sqlBuildings, loadBuildings, dbContainer, &error);
-	if (rc != SQLITE_OK) {
-		fprintf(stderr, "SQL error: %s\n", error);
-		sqlite3_free(error);
-	}
+	ifError(rc, error);
+
+	rc = sqlite3_exec(database, sqlHudSizes, loadHudSizes, dbContainer, &error);
+	ifError(rc, error);
+
 	sqlite3_close(database);
 }
 
@@ -40,4 +61,8 @@ DatabaseCache::~DatabaseCache() {
 
 db_unit* DatabaseCache::getUnit(int i) {
 	return dbContainer->units[i];
+}
+
+db_hud_size* DatabaseCache::getHudSize(int i) {
+	return dbContainer->hudSizes[i];
 }

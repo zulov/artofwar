@@ -34,7 +34,6 @@
     <ClCompile Include="src\Bucket.cpp">
       <Filter>simulation\env</Filter>
     </ClCompile>
-    <ClCompile Include="src\Hud.cpp" />
     <ClCompile Include="src\Simulation.cpp">
       <Filter>simulation</Filter>
     </ClCompile>
@@ -107,6 +106,12 @@
     <ClCompile Include="src\DatabaseCache.cpp">
       <Filter>database</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hud.cpp">
+      <Filter>hud</Filter>
+    </ClCompile>
+    <ClCompile Include="src\HudElement.cpp">
+      <Filter>hud</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -145,7 +150,6 @@
     <ClInclude Include="src\Bucket.h">
       <Filter>simulation\env</Filter>
     </ClInclude>
-    <ClInclude Include="src\Hud.h" />
     <ClInclude Include="src\Simulation.h">
       <Filter>simulation</Filter>
     </ClInclude>
@@ -237,6 +241,12 @@
     <ClInclude Include="src\UnitType.h">
       <Filter>objects</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hud.h">
+      <Filter>hud</Filter>
+    </ClInclude>
+    <ClInclude Include="src\HudElement.h">
+      <Filter>hud</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
@@ -287,6 +297,9 @@
     </Filter>
     <Filter Include="database">
       <UniqueIdentifier>{19df1394-7985-47ee-acd5-95a41ec3e776}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hud">
+      <UniqueIdentifier>{6eeb60b3-0845-41f7-8728-33704b094a65}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

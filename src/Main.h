@@ -77,7 +77,8 @@ private:
 	void HandleMouseModeChange(StringHash eventType, VariantMap& eventData);
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
-
+	void HandleUIButtton(StringHash eventType, VariantMap& eventData);
+	void HandleUIList(StringHash eventType, VariantMap& eventData);
 	Simulation* simulation;
 	Benchmark* benchmark;
 	CameraManager* cameraManager;
