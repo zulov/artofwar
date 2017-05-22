@@ -1,5 +1,6 @@
 #pragma once
 #include "CameraBehave.h"
+
 using namespace Urho3D;
 
 class RtsCameraBehave : public CameraBehave {

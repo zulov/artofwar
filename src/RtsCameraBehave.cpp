@@ -1,7 +1,6 @@
 #include "RtsCameraBehave.h"
 #include "Game.h"
 
-
 RtsCameraBehave::RtsCameraBehave() {
 	cameraNode = new Urho3D::Node(Game::get()->getContext());
 	cameraNode->SetPosition(Urho3D::Vector3(0.0f, 50.0f, -50.0f));
@@ -19,7 +18,7 @@ RtsCameraBehave::~RtsCameraBehave() {
 
 void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 	Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
-	double diff = sqrt((pos.y_ - minY)/10) + 1;
+	double diff = sqrt((pos.y_ - minY) / 10) + 1;
 
 	if (cameraKeys[0]) {
 		cameraNode->Translate(diff * Urho3D::Vector3::FORWARD * timeStep, Urho3D::TS_WORLD);
@@ -37,7 +36,7 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 		Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
 		double diff = sqrt(pos.y_ - minY) + 1;
 
-		pos += Urho3D::Vector3(0, 1, 0) * timeStep * wheel * diff;
+		pos += Urho3D::Vector3(0, 1, 0) * timeStep * wheel * diff * 1.5;
 
 		if (pos.y_ < minY) {
 			pos.y_ = minY;

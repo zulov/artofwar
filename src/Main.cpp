@@ -9,20 +9,24 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE) 
 }
 
 void Main::Setup() {
+	Game* game = Game::get();
+	game->setDatabaseCache(new DatabaseCache());
+	db_graph_settings* graphSettings = game->getDatabaseCache()->getGraphSettings(0);
+
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
 	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName() + ".log";
-	engineParameters_[EP_FULL_SCREEN] = false;
+	engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
 	engineParameters_[EP_HEADLESS] = false;
 	engineParameters_[EP_SOUND] = false;
-	engineParameters_[EP_WINDOW_HEIGHT] = 768;
-	engineParameters_[EP_WINDOW_WIDTH] = 1366;
-	engine_->SetMaxFps(10000);
-	engine_->SetMinFps(0.1);
+	engineParameters_[EP_WINDOW_HEIGHT] = graphSettings->res_y;
+	engineParameters_[EP_WINDOW_WIDTH] = graphSettings->res_x;
+	engine_->SetMaxFps(graphSettings->max_fps);
+	engine_->SetMinFps(graphSettings->min_fps);
 }
 
 void Main::Start() {
 	Game* game = Game::get();
-	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->setGraphics(GetSubsystem<Graphics>())->setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_)->setDatabaseCache(new DatabaseCache());
+	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->setGraphics(GetSubsystem<Graphics>())->setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
 	SetWindowTitleAndIcon();
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));

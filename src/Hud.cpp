@@ -5,8 +5,9 @@
 Hud::Hud() {
 	buttons = new std::vector<HudElement*>();
 	lists = new std::vector<HudElement*>();
-	style = Game::get()->getCache()->GetResource<XMLFile>("UI/DefaultStyle.xml");
-	hudSize = Game::get()->getDatabaseCache()->getHudSize(1);//TODO z settings to wziac
+	db_graph_settings* graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
+	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->style);
+	hudSize = Game::get()->getDatabaseCache()->getHudSize(graphSettings->hud_size);//TODO z settings to wziac
 	createMenu();
 	createBuild();
 	createTop();

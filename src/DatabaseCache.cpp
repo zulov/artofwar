@@ -13,10 +13,15 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	int id1 = atoi(argv[2]);
-	int id2 = atoi(argv[3]);
-	char* a = argv[1];
 	xyz->hudSizes[id] = new db_hud_size(atoi(argv[0]), argv[1], atoi(argv[2]), atoi(argv[3]));//toDO moza sprobowac pêtl¹
+
+	return 0;
+}
+
+int static loadGraphSettings(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int id = atoi(argv[0]);
+	xyz->graphSettings[id] = new db_graph_settings(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4], atoi(argv[5]),atof(argv[6]), atof(argv[7]));//toDO moza sprobowac pêtl¹
 
 	return 0;
 }
@@ -28,11 +33,16 @@ void DatabaseCache::ifError(int rc, char* error) {
 	}
 }
 
+void DatabaseCache::execute(char* sqlUnits, int(* callback)(void*, int, char**, char**), db_container* dbContainer) {
+	char* error;
+	int rc;
+	rc = sqlite3_exec(database, sqlUnits, callback, dbContainer, &error);
+	ifError(rc, error);
+}
+
 DatabaseCache::DatabaseCache() {
 	int rc;
-	char* error;
 
-	sqlite3* database;
 	rc = sqlite3_open("Data/Database/base.db", &database);
 	if (rc) {
 		cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << endl << endl;
@@ -45,11 +55,9 @@ DatabaseCache::DatabaseCache() {
 
 	dbContainer = new db_container();
 
-	rc = sqlite3_exec(database, sqlUnits, loadUnits, dbContainer, &error);
-	ifError(rc, error);
-
-	rc = sqlite3_exec(database, sqlHudSizes, loadHudSizes, dbContainer, &error);
-	ifError(rc, error);
+	execute("SELECT * from units", loadUnits, dbContainer);
+	execute("SELECT * from hud_size", loadHudSizes, dbContainer);
+	execute("SELECT * from graph_settings", loadGraphSettings, dbContainer);
 
 	sqlite3_close(database);
 }
@@ -65,4 +73,8 @@ db_unit* DatabaseCache::getUnit(int i) {
 
 db_hud_size* DatabaseCache::getHudSize(int i) {
 	return dbContainer->hudSizes[i];
+}
+
+db_graph_settings* DatabaseCache::getGraphSettings(int i) {
+	return dbContainer->graphSettings[i];
 }
