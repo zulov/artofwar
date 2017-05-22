@@ -13,7 +13,6 @@
 	<element type="Icon">
         <attribute name="Pressed Image Offset" value="-3 -3" />
         <attribute name="Hover Image Offset" value="3 3" />
-        <attribute name="Pressed Child Offset" value="-1 1" />
     </element>
     <element type="ToggledButton" style="Button" auto="false">
         <attribute name="Image Rect" value="160 64 176 80" />

@@ -1,8 +1,10 @@
-#pragma once
+﻿#pragma once
 #define UNITS_NUMBER_DB 50
 #define BULDINGS_NUMBER_DB 50
 #define HUD_SIZES_NUMBER_DB 4
 #define GRAPH_SETTINGS_NUMBER_DB 4
+#define TYPE_NUMBER_DB 50
+
 #include <Urho3D/Container/Str.h>
 
 struct db_unit
@@ -30,9 +32,6 @@ struct db_unit
 		maxSpeed(maxSpeed),
 		scale(scale) {
 	}
-
-	db_unit() {
-	};
 };
 
 struct db_building
@@ -45,8 +44,15 @@ struct db_building
 	Urho3D::String font;
 	double scale;
 
-	db_building() {
-	};
+	db_building(char* name, double minDist, int type, char* model, char* texture, char* font, double scale)
+		: name(name),
+		minDist(minDist),
+		type(type),
+		model(model),
+		texture(texture),
+		font(font),
+		scale(scale) {
+	}
 };
 
 struct db_hud_size
@@ -55,12 +61,16 @@ struct db_hud_size
 	Urho3D::String name;
 	int icon_size_x;
 	int icon_size_y;
+	int space_size_x;
+	int space_size_y;
 
-	db_hud_size(int id, char* name, int iconSizeX, int iconSizeY)
+	db_hud_size(int id, char* name, int iconSizeX, int iconSizeY, int spaceSizeX, int spaceSizeY)
 		: id(id),
 		name(name),
 		icon_size_x(iconSizeX),
-		icon_size_y(iconSizeY) {
+		icon_size_y(iconSizeY),
+		space_size_x(spaceSizeX),
+		space_size_y(spaceSizeY) {
 	}
 };
 
@@ -87,10 +97,38 @@ struct db_graph_settings
 	}
 };
 
+struct db_unit_type
+{
+	int id;
+	Urho3D::String name;
+	Urho3D::String icon;
+
+	db_unit_type(int id, char* name, char* icon)
+		: id(id),
+		name(name),
+		icon(icon) {
+	}
+};
+
+struct db_building_type
+{
+	int id;
+	Urho3D::String name;
+	Urho3D::String icon;
+
+	db_building_type(int id, char* name, char* icon)
+		: id(id),
+		name(name),
+		icon(icon) {
+	}
+};
+
 struct db_container
 {
 	db_unit* units[UNITS_NUMBER_DB];
 	db_building* buildings[BULDINGS_NUMBER_DB];
 	db_hud_size* hudSizes[HUD_SIZES_NUMBER_DB];
 	db_graph_settings* graphSettings[GRAPH_SETTINGS_NUMBER_DB];
+	db_unit_type* unitTypes[TYPE_NUMBER_DB];
+	db_building_type* buildingTypes[TYPE_NUMBER_DB];
 };

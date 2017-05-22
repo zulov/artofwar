@@ -4,7 +4,7 @@
 
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
-	int id = atoi(argv[3]);
+	int id = atoi(argv[3]);//TODO to nie powinno byc jako type ale id
 	xyz->units[id] = new db_unit(argv[0], atof(argv[1]), atof(argv[2]), atoi(argv[3]), argv[4], argv[5], argv[6], atof(argv[7]), atof(argv[8]), atof(argv[9]));//toDO moza sprobowac pêtl¹
 
 	return 0;
@@ -13,7 +13,7 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->hudSizes[id] = new db_hud_size(atoi(argv[0]), argv[1], atoi(argv[2]), atoi(argv[3]));//toDO moza sprobowac pêtl¹
+	xyz->hudSizes[id] = new db_hud_size(atoi(argv[0]), argv[1], atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));//toDO moza sprobowac pêtl¹
 
 	return 0;
 }
@@ -21,7 +21,31 @@ int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 int static loadGraphSettings(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->graphSettings[id] = new db_graph_settings(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4], atoi(argv[5]),atof(argv[6]), atof(argv[7]));//toDO moza sprobowac pêtl¹
+	xyz->graphSettings[id] = new db_graph_settings(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4], atoi(argv[5]), atof(argv[6]), atof(argv[7]));//toDO moza sprobowac pêtl¹
+
+	return 0;
+}
+
+int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int id = atoi(argv[0]);
+	xyz->buildings[id] = new db_building(argv[1], atof(argv[2]), atoi(argv[3]), argv[4], argv[5], argv[6], atof(argv[7]));
+
+	return 0;
+}
+
+int static loadBuildingType(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int id = atoi(argv[0]);
+	xyz->buildingTypes[id] = new db_building_type(atoi(argv[0]), argv[1], argv[2]);
+
+	return 0;
+}
+
+int static loadUnitType(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int id = atoi(argv[0]);
+	xyz->unitTypes[id] = new db_unit_type(atoi(argv[0]), argv[1], argv[2]);
 
 	return 0;
 }
@@ -33,7 +57,7 @@ void DatabaseCache::ifError(int rc, char* error) {
 	}
 }
 
-void DatabaseCache::execute(char* sqlUnits, int(* callback)(void*, int, char**, char**), db_container* dbContainer) {
+void DatabaseCache::execute(char* sqlUnits, int (* callback)(void*, int, char**, char**), db_container* dbContainer) {
 	char* error;
 	int rc;
 	rc = sqlite3_exec(database, sqlUnits, callback, dbContainer, &error);
@@ -49,15 +73,14 @@ DatabaseCache::DatabaseCache() {
 		sqlite3_close(database);
 	}
 
-	char* sqlUnits = "SELECT * from units";
-	char* sqlBuildings = "SELECT * from buildings";
-	char* sqlHudSizes = "SELECT * from hud_size";
-
 	dbContainer = new db_container();
 
 	execute("SELECT * from units", loadUnits, dbContainer);
 	execute("SELECT * from hud_size", loadHudSizes, dbContainer);
 	execute("SELECT * from graph_settings", loadGraphSettings, dbContainer);
+	execute("SELECT * from building", loadBuildings, dbContainer);
+	execute("SELECT * from building_type", loadBuildingType, dbContainer);
+	execute("SELECT * from unit_type", loadUnitType, dbContainer);
 
 	sqlite3_close(database);
 }
@@ -77,4 +100,16 @@ db_hud_size* DatabaseCache::getHudSize(int i) {
 
 db_graph_settings* DatabaseCache::getGraphSettings(int i) {
 	return dbContainer->graphSettings[i];
+}
+
+db_building* DatabaseCache::getBuilding(int i) {
+	return dbContainer->buildings[i];
+}
+
+db_building_type* DatabaseCache::getBuildingType(int i) {
+	return dbContainer->buildingTypes[i];
+}
+
+db_unit_type* DatabaseCache::getUnitType(int i) {
+	return dbContainer->unitTypes[i];
 }

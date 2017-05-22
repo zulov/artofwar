@@ -56,8 +56,11 @@ private:
 
 	XMLFile* style;
 	db_hud_size* hudSize;
+	Font* font;
 	template<std::size_t SIZE>
-	void createBuildingIcons(Texture2D* warriorIcon, std::array<BuildingType, SIZE> buildings);
+	void createBuildingIcons(std::array<BuildingType, SIZE> buildings);
+	template<std::size_t SIZE>
+	void createUnitIcons(std::array<UnitType, SIZE> units);
 	template<std::size_t SIZE>
 	void populateList(Font* font, DropDownList* dropDownList, std::array<String, SIZE> elements);
 

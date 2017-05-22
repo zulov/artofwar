@@ -8,6 +8,8 @@ Hud::Hud() {
 	db_graph_settings* graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
 	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->style);
 	hudSize = Game::get()->getDatabaseCache()->getHudSize(graphSettings->hud_size);//TODO z settings to wziac
+	font = Game::get()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf");
+
 	createMenu();
 	createBuild();
 	createTop();
@@ -23,6 +25,7 @@ Hud::Hud() {
 
 Hud::~Hud() {
 }
+
 
 template <std::size_t SIZE>
 void Hud::populateList(Font* font, DropDownList* dropDownList, std::array<String, SIZE> elements) {
@@ -48,15 +51,14 @@ void Hud::createMenu() {
 	Game::get()->getUI()->GetRoot()->AddChild(menuWindow);
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 
-	menuWindow->SetMinWidth(128);
-	menuWindow->SetMinHeight(128);
-	menuWindow->SetLayout(LM_VERTICAL, 6, IntRect(6, 6, 6, 6));
+	menuWindow->SetFixedWidth(2 * (hudSize->icon_size_x + hudSize->space_size_x));
+	menuWindow->SetFixedHeight(2 * (hudSize->icon_size_y + hudSize->space_size_y));
+	menuWindow->SetLayout(LM_VERTICAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_x, hudSize->space_size_x, hudSize->space_size_x));
 	menuWindow->SetAlignment(HA_LEFT, VA_BOTTOM);
 	menuWindow->SetName("Window");
 	menuWindow->SetTexture(wood);
 	menuWindow->SetTiled(true);
 
-	Font* font = Game::get()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf");
 	DropDownList* dropDownList = new DropDownList(Game::get()->getContext());
 
 	std::array<String, 3> modes{{"Select","Build","Deploy"}};
@@ -69,13 +71,51 @@ void Hud::createMenu() {
 	lists->push_back(hudElement);
 }
 
+void Hud::createBuild() {
+	buildWindow = new Window(Game::get()->getContext());
+	Game::get()->getUI()->GetRoot()->AddChild(buildWindow);
+	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
+	buildWindow->SetMinWidth(512);
+	buildWindow->SetMinHeight(64);
+	buildWindow->SetLayout(LM_HORIZONTAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_x, hudSize->space_size_x, hudSize->space_size_x));
+	buildWindow->SetAlignment(HA_LEFT, VA_BOTTOM);
+	buildWindow->SetPosition(2 * (hudSize->icon_size_x + hudSize->space_size_x), 0);
+	buildWindow->SetName("Window");
+	buildWindow->SetTexture(wood);
+	buildWindow->SetTiled(true);
+
+	std::array<BuildingType, 4> buildings{{HOUSE,TOWER,BARRACKS,ARCHERY_RANGE}};
+	createBuildingIcons(buildings);
+}
+
+void Hud::createUnits() {
+	unitsWindow = new Window(Game::get()->getContext());
+	Game::get()->getUI()->GetRoot()->AddChild(unitsWindow);
+	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
+	unitsWindow->SetMinWidth(512);
+	unitsWindow->SetMinHeight(64);
+	unitsWindow->SetLayout(LM_HORIZONTAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_x, hudSize->space_size_x, hudSize->space_size_x));
+	unitsWindow->SetAlignment(HA_LEFT, VA_BOTTOM);
+	unitsWindow->SetPosition(2 * (hudSize->icon_size_x + hudSize->space_size_x), -(hudSize->icon_size_y + 2 * hudSize->space_size_y));
+	unitsWindow->SetName("Window");
+	unitsWindow->SetTexture(wood);
+	unitsWindow->SetTiled(true);
+
+	std::array<UnitType, 5> units{{WARRIOR, PIKEMAN,CAVALRY,ARCHER ,WORKER}};
+	createUnitIcons(units);
+}
+
 template <std::size_t SIZE>
-void Hud::createBuildingIcons(Texture2D* warriorIcon, std::array<BuildingType, SIZE> buildings) {
+void Hud::createBuildingIcons(std::array<BuildingType, SIZE> buildings) {
 	for (BuildingType type : buildings) {
+		db_building_type* buidling = Game::get()->getDatabaseCache()->getBuildingType(type);
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/" + hudSize->name + "/" + buidling->icon);
 		Button* button = new Button(Game::get()->getContext());
+
 		button->SetStyle("Icon", style);
-		button->SetTexture(warriorIcon);
+		button->SetTexture(texture);
 		button->SetFixedSize(hudSize->icon_size_x, hudSize->icon_size_y);
+		button->SetTiled(true);
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setBuildingType(type);
@@ -85,53 +125,24 @@ void Hud::createBuildingIcons(Texture2D* warriorIcon, std::array<BuildingType, S
 	}
 }
 
-void Hud::createBuild() {
-	buildWindow = new Window(Game::get()->getContext());
-	Game::get()->getUI()->GetRoot()->AddChild(buildWindow);
-	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
-	buildWindow->SetMinWidth(512);
-	buildWindow->SetMinHeight(64);
-	buildWindow->SetLayout(LM_HORIZONTAL, 6, IntRect(6, 6, 6, 6));
-	buildWindow->SetAlignment(HA_LEFT, VA_BOTTOM);
-	buildWindow->SetPosition(128, 0);
-	buildWindow->SetName("Window");
-	buildWindow->SetTexture(wood);
-	buildWindow->SetTiled(true);
+template <std::size_t SIZE>
+void Hud::createUnitIcons(std::array<UnitType, SIZE> units) {
+	for (UnitType type : units) {
+		db_unit_type* unit = Game::get()->getDatabaseCache()->getUnitType(type);
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/" + hudSize->name + "/" + unit->icon);
+		Button* button = new Button(Game::get()->getContext());
 
-	Texture2D* warriorIcon = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/" + hudSize->name + "/warrior.png");
+		button->SetStyle("Icon", style);
+		button->SetTexture(texture);
+		button->SetFixedSize(hudSize->icon_size_x, hudSize->icon_size_y);
+		button->SetTiled(true);
 
-	std::array<BuildingType, 4> buildings{{HOUSE,TOWER,BARRACKS,ARCHERY_RANGE}};
-	createBuildingIcons(warriorIcon, buildings);
-}
-
-void Hud::createUnits() {
-	unitsWindow = new Window(Game::get()->getContext());
-	Game::get()->getUI()->GetRoot()->AddChild(unitsWindow);
-	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
-	unitsWindow->SetMinWidth(512);
-	unitsWindow->SetMinHeight(64);
-	unitsWindow->SetLayout(LM_HORIZONTAL, 6, IntRect(6, 6, 6, 6));
-	unitsWindow->SetAlignment(HA_LEFT, VA_BOTTOM);
-	unitsWindow->SetPosition(128, -64);
-	unitsWindow->SetName("Window");
-	unitsWindow->SetTexture(wood);
-	unitsWindow->SetTiled(true);
-
-	Texture2D* houseIcon = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/" + hudSize->name + "/house.png");
-	Button* button = new Button(Game::get()->getContext());
-
-	button->SetStyle("Icon", style);
-
-	button->SetMinHeight(24);
-	button->SetTexture(houseIcon);
-
-	button->SetFixedSize(hudSize->icon_size_x, hudSize->icon_size_y);
-	button->SetTiled(true);
-	HudElement* hudElement = new HudElement(button);
-	hudElement->setUnitType(UnitType::WARRIOR);
-	button->SetVar("HudElement", hudElement);
-	buttons->push_back(hudElement);
-	unitsWindow->AddChild(button);
+		HudElement* hudElement = new HudElement(button);
+		hudElement->setUnitType(type);
+		button->SetVar("HudElement", hudElement);
+		buttons->push_back(hudElement);
+		unitsWindow->AddChild(button);
+	}
 }
 
 void Hud::createTop() {
@@ -147,7 +158,6 @@ void Hud::createTop() {
 	topWindow->SetTexture(wood);
 	topWindow->SetTiled(true);
 
-	Font* font = Game::get()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf");
 	String modes[] = {"Z³oto","Kamieñ","Drewno"};
 	for (String mode : modes) {
 		Text* text = new Text(Game::get()->getContext());
@@ -161,7 +171,7 @@ void Hud::createTop() {
 void Hud::createStaticHud(String msg) {
 	Text* instructionText = Game::get()->getUI()->GetRoot()->CreateChild<Text>();
 	instructionText->SetText(msg);
-	instructionText->SetFont(Game::get()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 12);
+	instructionText->SetFont(font, 12);
 	instructionText->SetTextAlignment(HA_CENTER);
 	instructionText->SetHorizontalAlignment(HA_LEFT);
 	instructionText->SetVerticalAlignment(VA_TOP);
@@ -209,7 +219,7 @@ void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {
 
 	fpsText = Game::get()->getUI()->GetRoot()->CreateChild<Text>();
 	fpsText->SetText(msg);
-	fpsText->SetFont(Game::get()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 12);
+	fpsText->SetFont(font, 12);
 	fpsText->SetTextAlignment(HA_LEFT);
 	fpsText->SetHorizontalAlignment(HA_LEFT);
 	fpsText->SetVerticalAlignment(VA_TOP);
