@@ -40,6 +40,7 @@ public:
 	void clickDown(const int button);
 
 	void build(Vector3* pos);
+	void deploy(Vector3* pos);
 	void leftClick(Drawable* hitDrawable, Vector3 hitPos);
 	void leftHold(std::pair<Entity*, Entity*>* held);
 
@@ -63,5 +64,8 @@ private:
 
 	Input* input;
 	double clickDistance = 2;
-	ControlsState controlsState = ControlsState::SELECT;
+	ControlsState state = ControlsState::SELECT;
+	BuildingType toBuild;
+	UnitType toDeploy;
+	Entity* temp;
 };

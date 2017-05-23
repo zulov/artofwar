@@ -43,15 +43,17 @@ struct db_building
 	Urho3D::String texture;
 	Urho3D::String font;
 	double scale;
+	Urho3D::String texture_temp;
 
-	db_building(char* name, double minDist, int type, char* model, char* texture, char* font, double scale)
+	db_building(char* name, double minDist, int type, char* model, char* texture, char* font, double scale, char* texture_temp)
 		: name(name),
 		minDist(minDist),
 		type(type),
 		model(model),
 		texture(texture),
 		font(font),
-		scale(scale) {
+		scale(scale),
+		texture_temp(texture_temp) {
 	}
 };
 

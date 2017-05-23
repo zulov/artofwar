@@ -15,9 +15,13 @@ public:
 	BuildingType getBuildingType() const;
 	void setBuildingType(BuildingType buildingType);
 
+	bool isUnitType1() const;
+	bool isBuildType1() const;
 private:
 	Urho3D::UIElement * uiElement;
 	UnitType unitType;
 	BuildingType buildingType;
+	bool isUnitType = false;
+	bool isBuildType = false;
 };
 

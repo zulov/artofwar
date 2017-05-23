@@ -34,10 +34,10 @@ CREATE TABLE "hud_size" (
 	`space_size_y`	INTEGER,
 	PRIMARY KEY(`id`)
 );
-INSERT INTO `hud_size` (id,name,icon_size_x,icon_size_y,space_size_x,space_size_y) VALUES (0,'s',42,42,8,8),
- (1,'m',64,64,12,12),
- (2,'l',86,86,16,16),
- (3,'xl',128,128,24,24);
+INSERT INTO `hud_size` (id,name,icon_size_x,icon_size_y,space_size_x,space_size_y) VALUES (0,'s',42,42,8,4),
+ (1,'m',64,64,12,6),
+ (2,'l',86,86,16,8),
+ (3,'xl',128,128,24,12);
 CREATE TABLE "graph_settings" (
 	`id`	INTEGER,
 	`hud_size`	INTEGER,
@@ -70,9 +70,12 @@ CREATE TABLE "building" (
 	`texture`	TEXT,
 	`font`	TEXT,
 	`scale`	REAL,
+	`texture_temp`	TEXT,
 	PRIMARY KEY(`id`),
 	FOREIGN KEY(`type`) REFERENCES `building_type`(`id`)
 );
-INSERT INTO `building` (id,name,minDist,type,model,texture,font,scale) VALUES (0,'tower',3.0,1,'Tower.mdl','tower.xml','Anonymous Pro.ttf',1.0),
- (1,'house',4.0,0,'House.mdl','house.xml','Anonymous Pro.ttf',1.0);
+INSERT INTO `building` (id,name,minDist,type,model,texture,font,scale,texture_temp) VALUES (0,'house',6.0,0,'House.mdl','house.xml','Anonymous Pro.ttf',1.0,'house_temp.xml'),
+ (1,'tower',3.0,1,'Tower.mdl','tower.xml','Anonymous Pro.ttf',1.0,'tower_temp.xml'),
+ (2,'barracks',10.0,2,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml'),
+ (3,'archery_range',6.0,3,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml');
 COMMIT;

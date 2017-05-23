@@ -35,17 +35,18 @@ String BuildingFactory::getMaterialName(BuildingType building) {
 	}
 }
 
-std::vector<Building*>* BuildingFactory::create(unsigned int number, BuildingType unitType, Vector3* center, SpacingType spacingType) {
+std::vector<Building*>* BuildingFactory::create(unsigned int number, BuildingType buildingType, Vector3* center, SpacingType spacingType) {//TODO nie typ a id konkretnej jednostki
 	std::vector<Building*>* buildings = new std::vector<Building *>();
 	buildings->reserve(number);
 
 	Game* game = Game::get();
-	Font* font = game->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf");
+	db_building* dbBuilding = game->getDatabaseCache()->getBuilding(buildingType);
+	Font* font = game->getCache()->GetResource<Font>("Fonts/"+ dbBuilding->font);
 
 	int yMax = number / sqrt(number);
 	double space = 1;
-	String modelName = "Models/" + getModelName(unitType);
-	String materialName = "Materials/" + getMaterialName(unitType);
+	String modelName = "Models/" + dbBuilding->model;
+	String materialName = "Materials/" + dbBuilding->texture;
 	int produced = 0;
 	int y = 0;
 
@@ -62,6 +63,7 @@ std::vector<Building*>* BuildingFactory::create(unsigned int number, BuildingTyp
 
 			Building* building = new Building(new Vector3(*position), node, font);
 			buildings->push_back(building);
+			building->populate(dbBuilding);
 			++produced;
 			if (produced >= number) { break; }
 		}

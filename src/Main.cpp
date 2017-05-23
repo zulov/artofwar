@@ -144,6 +144,7 @@ void Main::HandleUIList(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[ItemSelected::P_ELEMENT].GetVoidPtr();
 	ControlsState state = ControlsState(eventData[ItemSelected::P_SELECTION].GetInt());
 	controls->updateState(state);
+	hud->updateState(state);
 	HudElement* hud = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
 	controls->hudAction(hud);
 }

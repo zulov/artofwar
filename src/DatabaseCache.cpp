@@ -29,7 +29,7 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->buildings[id] = new db_building(argv[1], atof(argv[2]), atoi(argv[3]), argv[4], argv[5], argv[6], atof(argv[7]));
+	xyz->buildings[id] = new db_building(argv[1], atof(argv[2]), atoi(argv[3]), argv[4], argv[5], argv[6], atof(argv[7]), argv[8]);
 
 	return 0;
 }
@@ -59,15 +59,12 @@ void DatabaseCache::ifError(int rc, char* error) {
 
 void DatabaseCache::execute(char* sqlUnits, int (* callback)(void*, int, char**, char**), db_container* dbContainer) {
 	char* error;
-	int rc;
-	rc = sqlite3_exec(database, sqlUnits, callback, dbContainer, &error);
+	int rc = sqlite3_exec(database, sqlUnits, callback, dbContainer, &error);
 	ifError(rc, error);
 }
 
 DatabaseCache::DatabaseCache() {
-	int rc;
-
-	rc = sqlite3_open("Data/Database/base.db", &database);
+	int rc = sqlite3_open("Data/Database/base.db", &database);
 	if (rc) {
 		cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << endl << endl;
 		sqlite3_close(database);

@@ -25,6 +25,7 @@
 #include <array>
 #include "HudElement.h"
 #include "db_strcut.h"
+#include "ControlsState.h"
 
 using namespace Urho3D;
 
@@ -39,6 +40,7 @@ public:
 	void updateHud(Benchmark * benchmark, CameraManager *cameraManager);
 	std::vector<HudElement*> *getButtonsToSubscribe();
 	std::vector<HudElement*> *getListsToSubscribe();
+	void updateState(ControlsState state);
 private:
 	void createMenu();
 	void createBuild();

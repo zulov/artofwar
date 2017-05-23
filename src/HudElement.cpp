@@ -18,6 +18,7 @@ UnitType HudElement::getUnitType() const {
 
 void HudElement::setUnitType(UnitType unitType) {
 	this->unitType = unitType;
+	isUnitType = true;
 }
 
 BuildingType HudElement::getBuildingType() const {
@@ -26,4 +27,13 @@ BuildingType HudElement::getBuildingType() const {
 
 void HudElement::setBuildingType(BuildingType buildingType) {
 	this->buildingType = buildingType;
+	isBuildType = true;
+}
+
+bool HudElement::isUnitType1() const {
+	return isUnitType;
+}
+
+bool HudElement::isBuildType1() const {
+	return isBuildType;
 }

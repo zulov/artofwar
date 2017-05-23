@@ -53,7 +53,7 @@ void Hud::createMenu() {
 
 	menuWindow->SetFixedWidth(2 * (hudSize->icon_size_x + hudSize->space_size_x));
 	menuWindow->SetFixedHeight(2 * (hudSize->icon_size_y + hudSize->space_size_y));
-	menuWindow->SetLayout(LM_VERTICAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_x, hudSize->space_size_x, hudSize->space_size_x));
+	menuWindow->SetLayout(LM_VERTICAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_y, hudSize->space_size_x, hudSize->space_size_y));
 	menuWindow->SetAlignment(HA_LEFT, VA_BOTTOM);
 	menuWindow->SetName("Window");
 	menuWindow->SetTexture(wood);
@@ -77,12 +77,12 @@ void Hud::createBuild() {
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 	buildWindow->SetMinWidth(512);
 	buildWindow->SetMinHeight(64);
-	buildWindow->SetLayout(LM_HORIZONTAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_x, hudSize->space_size_x, hudSize->space_size_x));
+	buildWindow->SetLayout(LM_HORIZONTAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_y, hudSize->space_size_x, hudSize->space_size_y));
 	buildWindow->SetAlignment(HA_LEFT, VA_BOTTOM);
 	buildWindow->SetPosition(2 * (hudSize->icon_size_x + hudSize->space_size_x), 0);
-	buildWindow->SetName("Window");
 	buildWindow->SetTexture(wood);
 	buildWindow->SetTiled(true);
+	buildWindow->SetVisible(false);
 
 	std::array<BuildingType, 4> buildings{{HOUSE,TOWER,BARRACKS,ARCHERY_RANGE}};
 	createBuildingIcons(buildings);
@@ -94,12 +94,12 @@ void Hud::createUnits() {
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 	unitsWindow->SetMinWidth(512);
 	unitsWindow->SetMinHeight(64);
-	unitsWindow->SetLayout(LM_HORIZONTAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_x, hudSize->space_size_x, hudSize->space_size_x));
+	unitsWindow->SetLayout(LM_HORIZONTAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_y, hudSize->space_size_x, hudSize->space_size_y));
 	unitsWindow->SetAlignment(HA_LEFT, VA_BOTTOM);
-	unitsWindow->SetPosition(2 * (hudSize->icon_size_x + hudSize->space_size_x), -(hudSize->icon_size_y + 2 * hudSize->space_size_y));
-	unitsWindow->SetName("Window");
+	unitsWindow->SetPosition(2 * (hudSize->icon_size_x + hudSize->space_size_x), 0);
 	unitsWindow->SetTexture(wood);
 	unitsWindow->SetTiled(true);
+	unitsWindow->SetVisible(false);
 
 	std::array<UnitType, 5> units{{WARRIOR, PIKEMAN,CAVALRY,ARCHER ,WORKER}};
 	createUnitIcons(units);
@@ -232,4 +232,22 @@ std::vector<HudElement*>* Hud::getButtonsToSubscribe() {
 
 std::vector<HudElement*>* Hud::getListsToSubscribe() {
 	return lists;
+}
+
+void Hud::updateState(ControlsState state) {
+	switch(state) {
+	case SELECT: 
+		buildWindow->SetVisible(false);
+		unitsWindow->SetVisible(false);
+		break;
+	case BUILD: 
+		buildWindow->SetVisible(true);
+		unitsWindow->SetVisible(false);
+		break;
+	case DEPLOY: 
+		buildWindow->SetVisible(false);
+		unitsWindow->SetVisible(true);
+		break;
+	default: ;
+	}
 }

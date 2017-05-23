@@ -79,7 +79,7 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {
 		Entity* clicked = lc->getEntity();
 		select(clicked);
 	} else if (hitNode->GetName() == "Ground") {
-		switch (controlsState) {
+		switch (state) {
 		case SELECT: {
 			if (!ctrlPressed) {
 				unSelect(ENTITY);
@@ -87,11 +87,15 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {
 			LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
 			Entity* clicked = lc->getEntity();
 			select(clicked);
+			
 		}
 			break;
 		case BUILD: {
 			unSelect(ENTITY);
 			build(new Vector3(hitPos));
+		}case DEPLOY: {
+			unSelect(ENTITY);
+			deploy(new Vector3(hitPos));
 		}
 			break;
 		}
@@ -191,11 +195,22 @@ void Controls::release(const int button) {
 }
 
 void Controls::updateState(ControlsState state) {
-	controlsState = state;
+	this->state = state;
 }
 
 void Controls::hudAction(HudElement* hud) {
-
+	if (hud->isBuildType1()) {
+		BuildingType type = hud->getBuildingType();
+		if (state == ControlsState::BUILD) {
+			toBuild = type;
+		}
+	}
+	if (hud->isUnitType1()) {
+		UnitType type = hud->getUnitType();
+		if (state == ControlsState::DEPLOY) {
+			toDeploy = type;
+		}
+	}
 }
 
 void Controls::clickDownRight(Vector3 hitPos) {
@@ -239,6 +254,11 @@ void Controls::clickDown(const int button) {
 }
 
 void Controls::build(Vector3* pos) {
-	SimulationCommand* simulationCommand = new SimulationCommand(1, BuildingType::TOWER, pos, SpacingType::CONSTANT);
+	SimulationCommand* simulationCommand = new SimulationCommand(1, toBuild, pos, SpacingType::CONSTANT);
+	Game::get()->getSimCommandList()->add(simulationCommand);
+}
+
+void Controls::deploy(Vector3* pos) {
+	SimulationCommand* simulationCommand = new SimulationCommand(10, toDeploy, pos, SpacingType::CONSTANT);
 	Game::get()->getSimCommandList()->add(simulationCommand);
 }

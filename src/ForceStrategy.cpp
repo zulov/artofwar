@@ -61,10 +61,10 @@ Urho3D::Vector3* ForceStrategy::randomForce() {
 
 double ForceStrategy::calculateCoef(double distance, double minDist) {
 	double parameter = distance - minDist;
-	if (parameter <= 0.1) {//zapobieganie nieskonczonosci
-		parameter = 0.1;
+	if (parameter <= 0.05) {//zapobieganie nieskonczonosci
+		parameter = 0.05;
 	}
-	double coef = exp(minDist / parameter) - 1;
+	double coef = exp(1 / parameter) - 1;
 	//coef *= sepCoefWall;
 
 	return coef;
