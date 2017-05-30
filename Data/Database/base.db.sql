@@ -25,6 +25,12 @@ INSERT INTO `unit_type` (id,name,icon) VALUES (0,'warrior','warrior.png'),
  (2,'cavalry','cavalry.png'),
  (3,'archer','bow.png'),
  (4,'worker','hammer.png');
+CREATE TABLE `nation` (
+	`id`	INTEGER,
+	`name`	TEXT,
+	PRIMARY KEY(`id`)
+);
+INSERT INTO `nation` (id,name) VALUES (0,NULL);
 CREATE TABLE "hud_size" (
 	`id`	INTEGER,
 	`name`	TEXT,
