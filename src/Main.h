@@ -40,6 +40,8 @@
 #include <Urho3D/UI/Text3D.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/Window.h>
+#include "Player.h"
+#include "PlayersManager.h"
 
 
 namespace Urho3D {
@@ -65,10 +67,6 @@ public:
 protected:
 	void InitMouseMode(MouseMode mode);
 	void SetupViewport();
-	std::vector<Unit*>* createUnits(int size, double space);
-
-	void control(float timeStep);
-	MouseMode useMouseMode_;
 
 private:
 	void SetWindowTitleAndIcon();
@@ -79,6 +77,9 @@ private:
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
 	void HandleUIButtton(StringHash eventType, VariantMap& eventData);
 	void HandleUIList(StringHash eventType, VariantMap& eventData);
+	void control(float timeStep);
+
+	MouseMode useMouseMode_;
 	Simulation* simulation;
 	Benchmark* benchmark;
 	CameraManager* cameraManager;
@@ -88,4 +89,5 @@ private:
 	SceneObjectManager * sceneObjectManager;
 	Mediator * mediator;
 	ActionCommandList * actionCommandList;
+
 };

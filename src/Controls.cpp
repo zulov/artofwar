@@ -87,15 +87,18 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {
 			LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
 			Entity* clicked = lc->getEntity();
 			select(clicked);
-			
+
 		}
 			break;
 		case BUILD: {
 			unSelect(ENTITY);
 			build(new Vector3(hitPos));
-		}case DEPLOY: {
+			break;
+		}
+		case DEPLOY: {
 			unSelect(ENTITY);
 			deploy(new Vector3(hitPos));
+			break;
 		}
 			break;
 		}
@@ -254,11 +257,11 @@ void Controls::clickDown(const int button) {
 }
 
 void Controls::build(Vector3* pos) {
-	SimulationCommand* simulationCommand = new SimulationCommand(1, toBuild, pos, SpacingType::CONSTANT);
+	SimulationCommand* simulationCommand = new SimulationCommand(1, toBuild, pos, SpacingType::CONSTANT, 0);//TODO pobrac parametry z jakiegos zrod³a
 	Game::get()->getSimCommandList()->add(simulationCommand);
 }
 
 void Controls::deploy(Vector3* pos) {
-	SimulationCommand* simulationCommand = new SimulationCommand(10, toDeploy, pos, SpacingType::CONSTANT);
+	SimulationCommand* simulationCommand = new SimulationCommand(10, toDeploy, pos, SpacingType::CONSTANT, 0);
 	Game::get()->getSimCommandList()->add(simulationCommand);
 }

@@ -50,6 +50,14 @@ int static loadUnitType(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+int static loadNation(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int id = atoi(argv[0]);
+	xyz->nations[id] = new db_nation(atoi(argv[0]), argv[1]);
+
+	return 0;
+}
+
 void DatabaseCache::ifError(int rc, char* error) {
 	if (rc != SQLITE_OK) {
 		fprintf(stderr, "SQL error: %s\n", error);
@@ -78,6 +86,7 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from building", loadBuildings, dbContainer);
 	execute("SELECT * from building_type", loadBuildingType, dbContainer);
 	execute("SELECT * from unit_type", loadUnitType, dbContainer);
+	execute("SELECT * from nation", loadNation, dbContainer);
 
 	sqlite3_close(database);
 }
@@ -109,4 +118,8 @@ db_building_type* DatabaseCache::getBuildingType(int i) {
 
 db_unit_type* DatabaseCache::getUnitType(int i) {
 	return dbContainer->unitTypes[i];
+}
+
+db_nation* DatabaseCache::getNation(int i) {
+	return dbContainer->nations[i];
 }

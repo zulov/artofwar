@@ -2,7 +2,6 @@
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
-
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE) {
 	benchmark = new Benchmark();
 	context->RegisterFactory<LinkComponent>();
@@ -40,8 +39,6 @@ void Main::Start() {
 	for (HudElement* hudElement : *(hud->getListsToSubscribe())) {
 		SubscribeToEvent(hudElement->getUIElement(), E_ITEMSELECTED, URHO3D_HANDLER(Main, HandleUIList));
 	}
-	//hud->createLogo();
-
 	CreateConsoleAndDebugHud();
 
 	sceneObjectManager = new SceneObjectManager();
@@ -56,15 +53,16 @@ void Main::Start() {
 	SimulationCommandList* simulationCommandList = new SimulationCommandList(simulationObjectManager);
 	EnviromentStrategy* enviromentStrategy = new EnviromentStrategy();
 	mediator = new Mediator(enviromentStrategy, controls);
-	game->setScene(levelBuilder->createScene())->setCameraManager(cameraManager)->setBuildList(buildList)->setSimCommandList(simulationCommandList)->setMediator(mediator);
+	game->setScene(levelBuilder->createScene())->setCameraManager(cameraManager)->setBuildList(buildList)->setSimCommandList(simulationCommandList)->setMediator(mediator)->setPlayersManager(new PlayersManager());
 
 	simulation = new Simulation(enviromentStrategy, simulationCommandList, simulationObjectManager);
-	//simulation->createUnits();
+
 	SetupViewport();
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
 
 	InitMouseMode(MM_RELATIVE);
 	controls = new Controls(GetSubsystem<Input>());
+
 }
 
 void Main::Stop() {

@@ -15,9 +15,8 @@ Aim::Aim(Urho3D::Vector3* _position) {
 	model->SetModel(game->getCache()->GetResource<Urho3D::Model>("Models/aim.mdl"));
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/red.xml"));
 	position->y_ = 0;
-	radius = 2;
+	radius = 3;
 }
-
 
 Aim::~Aim() {
 	node->RemoveAllComponents();

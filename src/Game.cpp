@@ -50,6 +50,10 @@ DatabaseCache* Game::getDatabaseCache() const {
 	return databaseCache;
 }
 
+PlayersManager* Game::getPlayersManager() const {
+	return  playersManager;
+}
+
 Game::Game() {
 }
 
@@ -130,5 +134,10 @@ Game* Game::setSimCommandList(SimulationCommandList* _simCommandList) {
 
 Game* Game::setDatabaseCache(DatabaseCache* _databaseCache) {
 	databaseCache = _databaseCache;
+	return this;
+}
+
+Game* Game::setPlayersManager(PlayersManager* _playersManager) {
+	playersManager = _playersManager;
 	return this;
 }

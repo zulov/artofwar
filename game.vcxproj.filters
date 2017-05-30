@@ -112,6 +112,15 @@
     <ClCompile Include="src\HudElement.cpp">
       <Filter>hud</Filter>
     </ClCompile>
+    <ClCompile Include="src\Resources.cpp">
+      <Filter>player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player.cpp">
+      <Filter>player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PlayersManager.cpp">
+      <Filter>player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -247,6 +256,15 @@
     <ClInclude Include="src\HudElement.h">
       <Filter>hud</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resources.h">
+      <Filter>player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player.h">
+      <Filter>player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PlayersManager.h">
+      <Filter>player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
@@ -300,6 +318,9 @@
     </Filter>
     <Filter Include="hud">
       <UniqueIdentifier>{6eeb60b3-0845-41f7-8728-33704b094a65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="player">
+      <UniqueIdentifier>{a426ca75-77e3-409c-b4a7-2c9a5cc1216d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

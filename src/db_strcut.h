@@ -4,6 +4,7 @@
 #define HUD_SIZES_NUMBER_DB 4
 #define GRAPH_SETTINGS_NUMBER_DB 4
 #define TYPE_NUMBER_DB 50
+#define NATION_NUMBER_DB 50
 
 #include <Urho3D/Container/Str.h>
 
@@ -125,6 +126,17 @@ struct db_building_type
 	}
 };
 
+struct db_nation
+{
+	int id;
+	Urho3D::String name;
+
+	db_nation(int id, char* name)
+		: id(id),
+		name(name) {
+	}
+};
+
 struct db_container
 {
 	db_unit* units[UNITS_NUMBER_DB];
@@ -133,4 +145,5 @@ struct db_container
 	db_graph_settings* graphSettings[GRAPH_SETTINGS_NUMBER_DB];
 	db_unit_type* unitTypes[TYPE_NUMBER_DB];
 	db_building_type* buildingTypes[TYPE_NUMBER_DB];
+	db_nation* nations[NATION_NUMBER_DB];
 };

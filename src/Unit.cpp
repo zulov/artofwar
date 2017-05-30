@@ -106,6 +106,10 @@ void Unit::addAim(ActionParameter* actionParameter) {
 	aims->up();
 }
 
+void Unit::attack(Entity* entity) {
+
+}
+
 void Unit::applyForce(double timeStep) {
 	double coef = timeStep / mass;
 	(*velocity) += (*acceleration) * coef;

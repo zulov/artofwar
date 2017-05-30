@@ -64,8 +64,8 @@ std::vector<Entity*>* SimulationObjectManager::getEntities() {
 	return entities;
 }
 
-void SimulationObjectManager::addUnits(unsigned int number, UnitType unitType, Vector3* center, SpacingType spacingType) {
-	std::vector<Unit*>* newUnits = unitFactory->create(number, unitType, center, spacingType);
+void SimulationObjectManager::addUnits(unsigned int number, UnitType unitType, Vector3* center, SpacingType spacingType, int player) {
+	std::vector<Unit*>* newUnits = unitFactory->create(number, unitType, center, spacingType, player);
 	addAll(newUnits);
 	delete newUnits;
 	delete center;

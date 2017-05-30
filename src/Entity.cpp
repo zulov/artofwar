@@ -49,6 +49,14 @@ void Entity::setBucket(int posX, int posZ) {
 	bucketZ = posZ;
 }
 
+void Entity::setTeam(int _team) {
+	team = _team;
+}
+
+void Entity::setPlayer(int player) {
+	this->player = player;
+}
+
 int Entity::getType() {
 	return ENTITY;
 }

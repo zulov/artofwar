@@ -26,6 +26,7 @@ public:
 	Vector3* getVelocity();
 	double getMass();
 	double getUnitRadius();
+
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
@@ -40,4 +41,10 @@ private:
 	void appendAim(ActionParameter* actionParameter);
 	void addAim(ActionParameter* actionParameter);
 	double unitRadius = 2;
+
+	void attack(Entity* entity);
+
+	double hpCoef = 100;
+	double attackCoef = 10;
+	double defenseCoef = 0.3;
 };

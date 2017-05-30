@@ -5,6 +5,7 @@
 #include <Urho3D/Engine/Engine.h>
 #include "CameraManager.h"
 #include "DatabaseCache.h"
+#include "PlayersManager.h"
 
 
 class ActionCommandList;
@@ -31,6 +32,7 @@ public:
 	Game* setBuildList(BuildList* _buildList);
 	Game* setSimCommandList(SimulationCommandList* _simCommandList);
 	Game* setDatabaseCache(DatabaseCache* _databaseCache);
+	Game* setPlayersManager(PlayersManager* _playersManager);
 
 
 	CameraManager* getCameraManager() const;
@@ -46,6 +48,7 @@ public:
 	BuildList* getBuildList() const;
 	SimulationCommandList* getSimCommandList() const;
 	DatabaseCache* getDatabaseCache() const;
+	PlayersManager* getPlayersManager() const;
 private:
 	Game();
 	static Game* instance;
@@ -55,13 +58,14 @@ private:
 	Urho3D::UI* ui;
 	Urho3D::Graphics* graphics;
 	Urho3D::SharedPtr<Urho3D::Engine> engine;
+
 	CameraManager* cameraManager;
-	
 	Console* console;
 	Mediator* mediator;
 	BuildList* buildList;
 	ActionCommandList* actionCommandList;
 	SimulationCommandList * simCommandList;
 	DatabaseCache * databaseCache;
+	PlayersManager * playersManager;
 
 };

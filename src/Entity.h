@@ -22,6 +22,8 @@ public:
 	bool isAlive();
 	bool bucketHasChanged(int posX, int posY);
 	void setBucket(int posX, int posY);
+	void setTeam(int _team);
+	void setPlayer(int player);
 	virtual int getType();
 	virtual void select();
 	virtual void unSelect();
@@ -35,5 +37,8 @@ protected:
 	Font* font;
 private:
 	int bucketX, bucketZ;
-	bool alive;	
+	bool alive;
+	int team;
+	int player;
+
 };

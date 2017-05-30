@@ -16,7 +16,7 @@ public:
 	std::vector<Unit*> *getUnits();
 	std::vector<Building*> *getBuildings();
 	std::vector<Entity*>* getEntities();
-	void addUnits(unsigned number, UnitType unitType, Vector3* center, SpacingType spacingType);
+	void addUnits(unsigned number, UnitType unitType, Vector3* center, SpacingType spacingType, int player);
 	void addBuildings(unsigned number, BuildingType buildingType, Vector3* center, SpacingType spacingType);
 private:
 	std::vector<Unit*> *units;
