@@ -10,10 +10,10 @@ CREATE TABLE "units" (
 	`mass`	REAL,
 	`maxSpeed`	REAL,
 	`scale`	REAL,
-	FOREIGN KEY(`type`) REFERENCES 'units_type'('id')
+	FOREIGN KEY(`type`) REFERENCES `unit_type`(`id`)
 );
 INSERT INTO `units` (name,minDist,maxSep,type,model,texture,font,mass,maxSpeed,scale) VALUES ('warrior',0.5,3.0,0,'Cube.mdl','red.xml','Anonymous Pro.ttf',1.0,5.0,1.0),
- ('archer',0.4,2.0,4,'Cylinder.mdl','red.xml','Anonymous Pro.ttf',0.8,6.0,1.0);
+ ('archer',0.4,2.0,3,'Cylinder.mdl','red.xml','Anonymous Pro.ttf',0.8,6.0,1.0);
 CREATE TABLE "unit_type" (
 	`id`	INTEGER,
 	`name`	TEXT,
@@ -67,21 +67,4 @@ INSERT INTO `building_type` (id,name,icon) VALUES (0,'house','house.png'),
  (1,'tower','tower.png'),
  (2,'barracks','house.png'),
  (3,'archery_range','house.png');
-CREATE TABLE "building" (
-	`id`	INTEGER,
-	`name`	TEXT,
-	`minDist`	REAL,
-	`type`	INTEGER,
-	`model`	TEXT,
-	`texture`	TEXT,
-	`font`	TEXT,
-	`scale`	REAL,
-	`texture_temp`	TEXT,
-	PRIMARY KEY(`id`),
-	FOREIGN KEY(`type`) REFERENCES `building_type`(`id`)
-);
-INSERT INTO `building` (id,name,minDist,type,model,texture,font,scale,texture_temp) VALUES (0,'house',6.0,0,'House.mdl','house.xml','Anonymous Pro.ttf',1.0,'house_temp.xml'),
- (1,'tower',3.0,1,'Tower.mdl','tower.xml','Anonymous Pro.ttf',1.0,'tower_temp.xml'),
- (2,'barracks',10.0,2,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml'),
- (3,'archery_range',6.0,3,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml');
 COMMIT;
