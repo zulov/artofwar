@@ -147,6 +147,16 @@ void Unit::select() {
 	StaticModel* model = node->GetComponent<StaticModel>();
 
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
+
+
+	Node* planeNode = node->CreateChild("healthBar");
+	planeNode->SetScale(Vector3(1, 1, 0.3f));
+	planeNode->SetPosition(Vector3(0, 1.5f, 0));
+	planeNode->Pitch(-90);
+
+	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
+	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/Plane.mdl"));
+	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
 }
 
 void Unit::unSelect() {
