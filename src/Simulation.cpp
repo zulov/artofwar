@@ -14,12 +14,18 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 	createUnits();
 }
 
+void Simulation::action(float timeStep) {
+	for (unsigned i = 0; i < units->size(); ++i) {
+		Unit* unit = (*units)[i];
+	}
+}
+
 void Simulation::createUnits() {
 	simCommandList->add(new SimulationCommand(UNITS_NUMBER, UnitType::WARRIOR, new Vector3(0, 0, 0), SpacingType::CONSTANT, 0));
 	simCommandList->add(new SimulationCommand(UNITS_NUMBER, UnitType::WARRIOR, new Vector3(-50, 0, -50), SpacingType::CONSTANT, 1));
 }
 
-void Simulation::animateObjects(float timeStep) {
+void Simulation::move(float timeStep) {
 	calculateForces();
 	moveUnits(timeStep);
 }
@@ -32,13 +38,15 @@ void Simulation::update(Input* input, float timeStep) {
 	if (animate) {
 		simCommandList->execute();
 		actionCommandList->execute();
+
 		units = simObjectManager->getUnits();
 		buildings = simObjectManager->getBuildings();
 
 		envStrategy->update(units);
 		envStrategy->update(buildings);
 
-		animateObjects(timeStep);
+		move(timeStep);
+		action(timeStep);
 		envStrategy->clear();
 		aimContainer->clean();
 	}

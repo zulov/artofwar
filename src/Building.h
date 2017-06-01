@@ -9,5 +9,6 @@ public:
 	~Building();
 	virtual int getType() override;
 	void populate(db_building* dbBuilding);
+	void absorbAttack(double attackCoef) override;
 };
 

@@ -74,6 +74,14 @@ Aims* Entity::getAims() {
 	return nullptr;
 }
 
+int Entity::getTeam() {
+	return team;
+}
+
+void Entity::absorbAttack(double attackCoef) {
+	
+}
+
 Urho3D::Vector3* Entity::getPosition() {
 	return position;
 }

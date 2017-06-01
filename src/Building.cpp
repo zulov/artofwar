@@ -19,3 +19,6 @@ int Building::getType() {
 void Building::populate(db_building* dbBuilding) {
 	minimalDistance = dbBuilding->minDist;
 }
+
+void Building::absorbAttack(double attackCoef) {
+}

@@ -80,6 +80,10 @@ double Unit::getUnitRadius() {
 	return unitRadius;
 }
 
+void Unit::absorbAttack(double attackCoef) {
+	hpCoef -= attackCoef * defenseCoef;
+}
+
 Aims* Unit::getAims() {
 	return aims;
 }
@@ -107,7 +111,9 @@ void Unit::addAim(ActionParameter* actionParameter) {
 }
 
 void Unit::attack(Entity* entity) {
-
+	if (this->team != entity->getTeam()) {
+		entity->absorbAttack(attackCoef);
+	}
 }
 
 void Unit::applyForce(double timeStep) {

@@ -12,9 +12,9 @@ using namespace Urho3D;
 class Entity
 {
 public:
-	Entity(Vector3 *_position, Urho3D::Node* _boxNode, Font* _font);
+	Entity(Vector3* _position, Urho3D::Node* _boxNode, Font* _font);
 	virtual ~Entity();
-	Vector3 *getPosition();
+	Vector3* getPosition();
 	double getMinimalDistance();
 	Urho3D::Node* getNode();
 	int getBucketX();
@@ -27,18 +27,19 @@ public:
 	virtual int getType();
 	virtual void select();
 	virtual void unSelect();
-	virtual void action(ActionType actionType, ActionParameter * parameter);
-	virtual Aims * getAims();
+	virtual void action(ActionType actionType, ActionParameter* parameter);
+	virtual Aims* getAims();
+	int getTeam();
+	virtual void absorbAttack(double attackCoef);
 protected:
 	Urho3D::Node* node;
-	Vector3 *position;
-	Vector3 *rotation;
+	Vector3* position;
+	Vector3* rotation;
 	double minimalDistance;
 	Font* font;
+	int team;
+	int player;
 private:
 	int bucketX, bucketZ;
 	bool alive;
-	int team;
-	int player;
-
 };

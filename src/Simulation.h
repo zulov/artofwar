@@ -26,11 +26,12 @@ class Simulation
 {
 public:
 	Simulation(EnviromentStrategy* _enviromentStrategy, SimulationCommandList* _simCommandList, SimulationObjectManager* _simObjectManager);
+	void action(float timeStep);
 	void update(Input* input, float timeStep);
 	void createUnits();
 
 private:
-	void animateObjects(float timeStep);
+	void move(float timeStep);
 	void moveUnits(float timeStep);
 	void calculateForces();
 

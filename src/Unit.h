@@ -16,7 +16,7 @@ public:
 	void populate(db_unit* definition);
 	void move(double timeStep);
 	void applyForce(double timeStep);
-	virtual int getType() override;
+	int getType() override;
 	void select() override;
 	void unSelect() override;
 	void setAcceleration(Vector3* _acceleration);
@@ -26,7 +26,7 @@ public:
 	Vector3* getVelocity();
 	double getMass();
 	double getUnitRadius();
-
+	void absorbAttack(double attackCoef) override;
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
@@ -47,4 +47,5 @@ private:
 	double hpCoef = 100;
 	double attackCoef = 10;
 	double defenseCoef = 0.3;
+	double attackSpeed = 1;
 };
