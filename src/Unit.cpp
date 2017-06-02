@@ -136,7 +136,7 @@ int Unit::getType() {
 
 void Unit::select() {
 	Node* title = node->CreateChild("title");
-	title->SetPosition(Vector3(0.0f, 1.2f, 0.0f));
+	title->SetPosition(Vector3(0.0f, 1.5f, 0.0f));
 	Text3D* titleText = title->CreateComponent<Text3D>();
 	titleText->SetText("Entity");
 
@@ -144,18 +144,19 @@ void Unit::select() {
 	titleText->SetColor(Color::GREEN);
 	titleText->SetAlignment(HA_CENTER, VA_CENTER);
 	titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
+
 	StaticModel* model = node->GetComponent<StaticModel>();
 
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
 
 
 	Node* planeNode = node->CreateChild("healthBar");
-	planeNode->SetScale(Vector3(1, 1, 0.3f));
-	planeNode->SetPosition(Vector3(0, 1.5f, 0));
-	planeNode->Pitch(-90);
+	planeNode->SetScale(Vector3(2 * (hpCoef / maxHpCoef), 0.3, 0.3f));
+	planeNode->SetPosition(Vector3(0, 1.2f, 0));
+	planeNode->Pitch(-70);
 
 	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
-	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/Plane.mdl"));
+	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/Cube.mdl"));
 	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
 }
 
@@ -164,6 +165,12 @@ void Unit::unSelect() {
 	if (child) {
 		child->RemoveAllChildren();
 		node->RemoveChild(child);
+	}
+
+	Node* child1 = node->GetChild("healthBar");
+	if (child1) {
+		child1->RemoveAllChildren();
+		node->RemoveChild(child1);
 	}
 
 	StaticModel* model = node->GetComponent<StaticModel>();

@@ -45,6 +45,7 @@ private:
 	void attack(Entity* entity);
 
 	double hpCoef = 100;
+	double maxHpCoef = 100;
 	double attackCoef = 10;
 	double defenseCoef = 0.3;
 	double attackSpeed = 1;
