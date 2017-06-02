@@ -265,6 +265,9 @@
     <ClInclude Include="src\PlayersManager.h">
       <Filter>player</Filter>
     </ClInclude>
+    <ClInclude Include="src\UnitState.h">
+      <Filter>objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -281,6 +281,7 @@
     <ClInclude Include="src\Unit.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\Simulation.h" />
+    <ClInclude Include="src\UnitState.h" />
     <ClInclude Include="src\UnitType.h" />
     <ClInclude Include="src\utils.h" />
   </ItemGroup>

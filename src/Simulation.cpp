@@ -15,8 +15,15 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 }
 
 void Simulation::action(float timeStep) {
+	timeStep = 0.5;
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
+		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit);//TODO przypisac na jedna klatke, albo nie bo i tak jest w cechu?? albo ci co sa w okolicyt o ich brac pod uwage promien odciecia
+		for (int j = 0; j < neighbours->size(); ++j) {
+			Entity* entity = (*neighbours)[j];
+
+			unit->attack(entity);
+		}
 	}
 }
 
@@ -64,8 +71,8 @@ void Simulation::moveUnits(float timeStep) {
 void Simulation::calculateForces() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
-		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit);
-		std::vector<Entity*>* buildings = envStrategy->getBuildings(unit);
+		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit);//TODO przypisac na jedna klatke
+		std::vector<Entity*>* buildings = envStrategy->getBuildings(unit);//TODO przypisac na jedna klatke
 
 		Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
 		Vector3* sepObstacle = forceStrategy->separationObstacle(unit, buildings);

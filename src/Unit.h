@@ -27,6 +27,7 @@ public:
 	double getMass();
 	double getUnitRadius();
 	void absorbAttack(double attackCoef) override;
+	void attack(Entity* entity);
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
@@ -41,12 +42,13 @@ private:
 	void appendAim(ActionParameter* actionParameter);
 	void addAim(ActionParameter* actionParameter);
 	double unitRadius = 2;
+	Node* healthBar;
 
-	void attack(Entity* entity);
 
 	double hpCoef = 100;
 	double maxHpCoef = 100;
 	double attackCoef = 10;
+	double attackRange = minimalDistance+2;//TODO Range czy pojedyncze?
 	double defenseCoef = 0.3;
 	double attackSpeed = 1;
 };

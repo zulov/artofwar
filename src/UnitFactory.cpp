@@ -42,6 +42,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, UnitType unitType, Vect
 			Unit* newUnit = new Unit(position, node, font);
 			newUnit->populate(dbUnit);
 			newUnit->setPlayer(player);
+			newUnit->setTeam(player);//TODO ustawic team
 			units->push_back(newUnit);
 			++produced;
 			if (produced >= number) { break; }

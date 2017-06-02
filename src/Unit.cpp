@@ -5,6 +5,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_po
 	acceleration = new Vector3();
 	velocity = new Vector3();
 	aims = nullptr;
+	healthBar = nullptr;
 }
 
 Unit::~Unit() {
@@ -82,6 +83,11 @@ double Unit::getUnitRadius() {
 
 void Unit::absorbAttack(double attackCoef) {
 	hpCoef -= attackCoef * defenseCoef;
+	if (healthBar) {
+		double healthBarSize = 2 * (hpCoef / maxHpCoef);
+		if (healthBarSize <= 0) { healthBarSize = 0; }
+		healthBar->SetScale(Vector3(healthBarSize, 0.3, 0.3f));
+	}
 }
 
 Aims* Unit::getAims() {
@@ -146,16 +152,17 @@ void Unit::select() {
 	titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
 
 	StaticModel* model = node->GetComponent<StaticModel>();
-
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
 
 
-	Node* planeNode = node->CreateChild("healthBar");
-	planeNode->SetScale(Vector3(2 * (hpCoef / maxHpCoef), 0.3, 0.3f));
-	planeNode->SetPosition(Vector3(0, 1.2f, 0));
-	planeNode->Pitch(-70);
+	healthBar = node->CreateChild("healthBar");
+	double healthBarSize = 2 * (hpCoef / maxHpCoef);
+	if (healthBarSize <= 0) { healthBarSize = 0; }
+	healthBar->SetScale(Vector3(healthBarSize, 0.3, 0.3f));
+	healthBar->SetPosition(Vector3(0, 1.2f, 0));
+	healthBar->Pitch(-70);
 
-	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
+	StaticModel* planeObject = healthBar->CreateComponent<StaticModel>();
 	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/Cube.mdl"));
 	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
 }
@@ -167,10 +174,11 @@ void Unit::unSelect() {
 		node->RemoveChild(child);
 	}
 
-	Node* child1 = node->GetChild("healthBar");
+	Node* child1 = healthBar;
 	if (child1) {
 		child1->RemoveAllChildren();
 		node->RemoveChild(child1);
+		healthBar = nullptr;
 	}
 
 	StaticModel* model = node->GetComponent<StaticModel>();
