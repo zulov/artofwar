@@ -14,21 +14,21 @@ float EnviromentStrategy::getSqDistance(Vector3* unitPosition, Vector3* otherPos
 	return ((*otherPosition) - (*unitPosition)).LengthSquared();
 }
 
-std::vector<Entity*>* EnviromentStrategy::getNeighbours(Unit* unit) {
-	return getNeighbours(unit, unitGrid);
+std::vector<Entity*>* EnviromentStrategy::getNeighbours(Unit* unit, double radius) {
+	return getNeighbours(unit, unitGrid, radius);
 }
 
-std::vector<Entity*>* EnviromentStrategy::getBuildings(Unit* unit) {
-	return getNeighbours(unit, obstacleGrid);
+std::vector<Entity*>* EnviromentStrategy::getBuildings(Unit* unit, double radius) {
+	return getNeighbours(unit, obstacleGrid, radius);
 }
 
-std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGrid* bucketGrid) {
+std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGrid* bucketGrid, double radius) {
 	std::vector<Entity*>* neights = new std::vector<Entity *>();
 	std::vector<Entity *>* arrayNeight = bucketGrid->getArrayNeight(unit);
 	//std::vector<Unit *> *arrayNeight = entities;
 
 	neights->reserve(arrayNeight->size());
-	double sqSeparationDistance = unit->getMaxSeparationDistance() * unit->getMaxSeparationDistance();
+	double sqSeparationDistance = radius * radius;
 	Vector3* unitPosition = unit->getPosition();
 	for (int i = 0; i < arrayNeight->size(); ++i) {
 		Entity* neight = (*arrayNeight)[i];

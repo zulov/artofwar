@@ -1,4 +1,5 @@
 #include "Unit.h"
+#include "ActionCommand.h"
 
 
 Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_position, _boxNode, _font) {
@@ -6,6 +7,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_po
 	velocity = new Vector3();
 	aims = nullptr;
 	healthBar = nullptr;
+	unitState = US_STOP;
 }
 
 Unit::~Unit() {
@@ -66,6 +68,7 @@ Vector3* Unit::getAim() {
 	if (aims == nullptr) {
 		return nullptr;
 	}
+	unitState = US_GOTO;
 	return aims->getAimPos(aimIndex);
 }
 
@@ -88,6 +91,36 @@ void Unit::absorbAttack(double attackCoef) {
 		if (healthBarSize <= 0) { healthBarSize = 0; }
 		healthBar->SetScale(Vector3(healthBarSize, 0.3, 0.3f));
 	}
+}
+
+void Unit::attack(vector<Entity*>* enemies) {
+	if (unitState == US_STOP) {
+		double minDistance = 9999;
+		Entity* entityClosest = nullptr;
+		for (int j = 0; j < enemies->size(); ++j) {
+			Entity* entity = (*enemies)[j];
+			double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
+			if (distance <= minDistance) {
+				minDistance = distance;
+				entityClosest = entity;
+			}
+		}
+		if (entityClosest) {
+			minDistance = sqrt(minDistance);
+			if (minDistance < attackRange) {
+				attack(entityClosest);
+				//attackRange();
+			} else if (minDistance < attackIntrest) {
+				ActionCommand* command = new ActionCommand(this, ADD_AIM, entityClosest->getPosition());
+				Game::get()->getActionCommandList()->add(command);
+			}
+		}
+	}
+
+}
+
+void Unit::attack(Entity* enemy) {
+	enemy->absorbAttack(attackCoef);
 }
 
 Aims* Unit::getAims() {
@@ -116,11 +149,11 @@ void Unit::addAim(ActionParameter* actionParameter) {
 	aims->up();
 }
 
-void Unit::attack(Entity* entity) {
-	if (this->team != entity->getTeam()) {
-		entity->absorbAttack(attackCoef);
-	}
-}
+//void Unit::attack(Entity* entity) {
+//	if ((unitState == UnitState::US_ATTACK || unitState == UnitState::US_STOP || unitState == UnitState::US_CHARAGE)) {
+//		entity->absorbAttack(attackCoef);
+//	}
+//}
 
 void Unit::applyForce(double timeStep) {
 	double coef = timeStep / mass;
@@ -129,10 +162,17 @@ void Unit::applyForce(double timeStep) {
 	if (velLenght > maxSpeed * maxSpeed) {
 		velocity->Normalize();
 		(*velocity) *= maxSpeed;
+		if (unitState != US_GOTO) {
+			unitState = US_MOVE;
+		}
+
 	} else if (velLenght > 0 && velLenght < minSpeed * minSpeed) {
 		velocity->x_ = 0;
 		velocity->y_ = 0;
 		velocity->z_ = 0;
+		if (unitState != US_GOTO) {
+			unitState = US_STOP;
+		}
 	}
 }
 

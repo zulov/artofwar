@@ -5,8 +5,15 @@ ActionCommand::ActionCommand(std::vector<Entity*>* entities, ActionType action, 
 	this->entities = entities;
 	this->action = action;
 	this->pos = parameter;
+	this->entity = nullptr;
 }
 
+ActionCommand::ActionCommand(Entity* entity, ActionType action, Vector3* paremater) {
+	this->entity = entity;
+	this->action = action;
+	this->pos = paremater;
+	this->entities = nullptr;
+}
 
 ActionCommand::~ActionCommand() {
 	//delete parameter;
@@ -22,9 +29,12 @@ void ActionCommand::execute() {
 	aims->add(pos);
 	ActionParameter* localParameter = new ActionParameter();
 	localParameter->setAims(aims);
-
-	for (int i = 0; i < entities->size(); ++i) {
-		(*entities)[i]->action(action, localParameter);
+	if (entity) {
+		entity->action(action, localParameter);
+	} else {
+		for (int i = 0; i < entities->size(); ++i) {
+			(*entities)[i]->action(action, localParameter);
+		}
 	}
 	delete localParameter;
 }

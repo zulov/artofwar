@@ -5,6 +5,7 @@
 #include "defines.h"
 #include "Game.h"
 #include "Entity.h"
+#include "UnitState.h"
 
 using namespace Urho3D;
 
@@ -27,7 +28,9 @@ public:
 	double getMass();
 	double getUnitRadius();
 	void absorbAttack(double attackCoef) override;
-	void attack(Entity* entity);
+	void attack(vector<Entity*>* enemies);
+	void attack(Entity *enemy);
+
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
@@ -43,12 +46,13 @@ private:
 	void addAim(ActionParameter* actionParameter);
 	double unitRadius = 2;
 	Node* healthBar;
-
+	UnitState unitState;
 
 	double hpCoef = 100;
 	double maxHpCoef = 100;
 	double attackCoef = 10;
-	double attackRange = minimalDistance+2;//TODO Range czy pojedyncze?
+	double attackRange = minimalDistance + 2;//TODO Range czy pojedyncze?
 	double defenseCoef = 0.3;
 	double attackSpeed = 1;
+	double attackIntrest = 10;
 };
