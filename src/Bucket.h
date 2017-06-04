@@ -1,17 +1,18 @@
 #pragma once
 #include <vector>
 #include "Unit.h"
+#include <list>
 
 class Bucket {
 public:
 	Bucket();
 	~Bucket();
 
-	std::vector<Entity*> *getContent();
+	list<Entity*> *getContent();
 	void add(Entity* entity);
 	void remove(Entity* entity);
 	void clearContent();
 private:
-	std::vector <Entity*>* content;
+	list<Entity*>* content;
 };
 

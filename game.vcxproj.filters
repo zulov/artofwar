@@ -28,12 +28,6 @@
     <ClCompile Include="src\EnviromentStrategy.cpp">
       <Filter>simulation\env</Filter>
     </ClCompile>
-    <ClCompile Include="src\BucketGrid.cpp">
-      <Filter>simulation\env</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Bucket.cpp">
-      <Filter>simulation\env</Filter>
-    </ClCompile>
     <ClCompile Include="src\Simulation.cpp">
       <Filter>simulation</Filter>
     </ClCompile>
@@ -122,6 +116,15 @@
       <Filter>player</Filter>
     </ClCompile>
     <ClCompile Include="src\OperatorType.h" />
+    <ClCompile Include="src\BucketIterator.cpp">
+      <Filter>simulation\env\bucket</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BucketGrid.cpp">
+      <Filter>simulation\env\bucket</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Bucket.cpp">
+      <Filter>simulation\env\bucket</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -152,12 +155,6 @@
     </ClInclude>
     <ClInclude Include="src\Benchmark.h" />
     <ClInclude Include="src\EnviromentStrategy.h">
-      <Filter>simulation\env</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BucketGrid.h">
-      <Filter>simulation\env</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Bucket.h">
       <Filter>simulation\env</Filter>
     </ClInclude>
     <ClInclude Include="src\Simulation.h">
@@ -269,6 +266,15 @@
     <ClInclude Include="src\UnitState.h">
       <Filter>objects</Filter>
     </ClInclude>
+    <ClInclude Include="src\BucketIterator.h">
+      <Filter>simulation\env\bucket</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BucketGrid.h">
+      <Filter>simulation\env\bucket</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Bucket.h">
+      <Filter>simulation\env\bucket</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
@@ -325,6 +331,9 @@
     </Filter>
     <Filter Include="player">
       <UniqueIdentifier>{a426ca75-77e3-409c-b4a7-2c9a5cc1216d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="simulation\env\bucket">
+      <UniqueIdentifier>{06d3429f-4b65-4b03-bce6-7058dac6f83a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

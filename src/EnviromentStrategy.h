@@ -2,12 +2,13 @@
 
 #include <vector>
 #include "Unit.h"
+#include "BucketIterator.h"
 #include "BucketGrid.h"
+
 #include "Building.h"
 #include "defines.h"
 #include <vector>
 #include "OperatorType.h"
-
 
 class EnviromentStrategy
 {

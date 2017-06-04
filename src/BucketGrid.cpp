@@ -1,6 +1,5 @@
 #include "BucketGrid.h"
-#include <iostream>
-
+#include "BucketIterator.h"
 
 BucketGrid::BucketGrid(int _resolution, double _size) {
 	resolution = _resolution;
@@ -19,7 +18,7 @@ BucketGrid::BucketGrid(int _resolution, double _size) {
 		}
 	}
 
-	cache = new std::vector<Entity*>*[resolution * resolution];
+	cache = new std::list<Entity*>*[resolution * resolution];
 	for (int i = 0; i < resolution * resolution; ++i) {
 		cache[i] = nullptr;
 	}
@@ -88,32 +87,35 @@ void BucketGrid::updateSizes(int size) {
 	lastSize = size;
 }
 
-std::vector<Entity*>* BucketGrid::getArrayNeight(Unit* entity, double radius) {
+BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius) {
 	Vector3* pos = entity->getPosition();
 	int dX = getIntegerPos(pos->x_);
 	int dZ = getIntegerPos(pos->z_);
 
-	long key = cacheHash(dX, dZ);
+	//long key = cacheHash(dX, dZ);
 
-	if (cache[key] != nullptr) {//todo uwzglednic radius
-		return cache[key];
-	} else {
-		std::vector<Entity*>* crowd = new std::vector<Entity *>();
-		crowd->reserve(((lastSize + 1) * 1.2f));
-		std::vector<std::pair<int, int>*>* levels = getEnvIndexsFromCache(radius);
+	BucketIterator* bucketIterator = new BucketIterator(getEnvIndexsFromCache(radius), dX, dZ, this);
+	return bucketIterator;
 
-		for (int i = 0; i < levels->size(); ++i) {
-			std::pair<int, int>* pair = (*levels)[i];
-			Bucket* bucket = getBucketAt(pair->first + dX, pair->second + dZ);
-			std::vector<Entity *>* content = bucket->getContent();
-			crowd->insert(crowd->end(), content->begin(), content->end());
-		}
-		cache[key] = crowd;
-
-		updateSizes(crowd->size());
-
-		return crowd;
-	}
+	//	if (cache[key] != nullptr) {//todo uwzglednic radius
+	//		return cache[key];
+	//	} else {
+	//		std::list<Entity*>* crowd = new std::list<Entity *>();//TODO moze tu tez lista?
+	//		//crowd->reserve(((lastSize + 1) * 1.2f));
+	//		std::vector<std::pair<int, int>*>* levels = getEnvIndexsFromCache(radius);
+	//
+	//		for (int i = 0; i < levels->size(); ++i) {
+	//			std::pair<int, int>* pair = (*levels)[i];
+	//			Bucket* bucket = getBucketAt(pair->first + dX, pair->second + dZ);
+	//			list<Entity *>* content = bucket->getContent();
+	//			crowd->insert(crowd->end(), content->begin(), content->end());
+	//		}
+	//		cache[key] = crowd;
+	//
+	//		updateSizes(crowd->size());
+	//
+	//		return crowd;
+	//	}
 }
 
 Bucket* BucketGrid::getBucketAt(int _x, int _z) {
@@ -159,7 +161,7 @@ void BucketGrid::clearAfterStep() {
 std::vector<Entity*>* BucketGrid::getArrayNeight(std::pair<Entity*, Entity*>* pair) {
 	Vector3* begin = pair->first->getPosition();
 	Vector3* end = pair->second->getPosition();
-	std::vector<Entity*>* entities = new std::vector<Entity*>();
+	std::vector<Entity*>* entities = new std::vector<Entity*>();//TOODO reserva zrobic sensownego
 	int posBeginX = getIntegerPos(begin->x_);
 	int posBeginZ = getIntegerPos(begin->z_);
 	int posEndX = getIntegerPos(end->x_);
@@ -168,7 +170,7 @@ std::vector<Entity*>* BucketGrid::getArrayNeight(std::pair<Entity*, Entity*>* pa
 	for (int i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
 		for (int j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
 			Bucket* bucket = getBucketAt(i, j);
-			std::vector<Entity *>* content = bucket->getContent();
+			list<Entity *>* content = bucket->getContent();
 			entities->insert(entities->end(), content->begin(), content->end());
 		}
 	}
