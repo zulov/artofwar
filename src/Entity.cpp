@@ -8,7 +8,9 @@ Entity::Entity(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) {
 	rotation = new Vector3();
 	alive = true;
 	font = _font;
-	bucketZ = bucketX = INT_MIN;
+	for (int i = 0; i < BUCKET_SET_NUMBER; ++i) {
+		bucketZ[i] = bucketX[i] = INT_MIN;
+	}
 }
 
 Entity::~Entity() {
@@ -24,29 +26,29 @@ Urho3D::Node* Entity::getNode() {
 	return node;
 }
 
-int Entity::getBucketX() {
-	return bucketX;
+int Entity::getBucketX(int param) {
+	return bucketX[param];
 }
 
-int Entity::getBucketZ() {
-	return bucketZ;
+int Entity::getBucketZ(int param) {
+	return bucketZ[param];
 }
 
 bool Entity::isAlive() {
 	return alive;
 }
 
-bool Entity::bucketHasChanged(int posX, int posZ) {
-	if (bucketX == posX && bucketZ == posZ) {
+bool Entity::bucketHasChanged(int posX, int posZ, int param) {
+	if (bucketX[param] == posX && bucketZ[param] == posZ) {
 		return false;
 	} else {
 		return true;
 	}
 }
 
-void Entity::setBucket(int posX, int posZ) {
-	bucketX = posX;
-	bucketZ = posZ;
+void Entity::setBucket(int posX, int posZ, int param) {
+	bucketX[param] = posX;
+	bucketZ[param] = posZ;
 }
 
 void Entity::setTeam(int _team) {
@@ -68,10 +70,6 @@ void Entity::unSelect() {
 }
 
 void Entity::action(ActionType actionType, ActionParameter* parameter) {
-}
-
-Aims* Entity::getAims() {
-	return nullptr;
 }
 
 int Entity::getTeam() {

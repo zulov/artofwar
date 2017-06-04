@@ -22,6 +22,7 @@ public:
 	void unSelect() override;
 	void setAcceleration(Vector3* _acceleration);
 	double getMaxSeparationDistance();
+
 	void action(ActionType actionType, ActionParameter* parameter) override;
 	Vector3* getAim();
 	Vector3* getVelocity();
@@ -39,11 +40,12 @@ protected:
 	double maxSeparationDistance;
 	double minSpeed;
 	Aims* aims;
+	Vector3 *aimPosition;
 	int aimIndex = 0;
-	Aims* getAims() override;
 private:
 	void appendAim(ActionParameter* actionParameter);
 	void addAim(ActionParameter* actionParameter);
+	void followAim(ActionParameter* parameter);
 	double unitRadius = 2;
 	Node* healthBar;
 	UnitState unitState;
@@ -51,7 +53,7 @@ private:
 	double hpCoef = 100;
 	double maxHpCoef = 100;
 	double attackCoef = 10;
-	double attackRange = minimalDistance + 2;//TODO Range czy pojedyncze?
+	double attackRange;//TODO Range czy pojedyncze?
 	double defenseCoef = 0.3;
 	double attackSpeed = 1;
 	double attackIntrest = 10;

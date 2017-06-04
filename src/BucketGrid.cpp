@@ -39,27 +39,27 @@ BucketGrid::~BucketGrid() {
 
 }
 
-void BucketGrid::writeToGrid(std::vector<Unit*>* entitys) {
-	for (int i = 0; i < entitys->size(); ++i) {
-		Vector3* pos = entitys->at(i)->getPosition();
+void BucketGrid::writeToGrid(std::vector<Unit*>* entities, int param) {
+	for (int i = 0; i < entities->size(); ++i) {
+		Vector3* pos = entities->at(i)->getPosition();
 		int posX = getIntegerPos(pos->x_);
 		int posZ = getIntegerPos(pos->z_);
 
-		entitys->at(i)->setBucket(posX, posZ);
-		getBucketAt(posX, posZ)->add(entitys->at(i));
+		entities->at(i)->setBucket(posX, posZ, param);
+		getBucketAt(posX, posZ)->add(entities->at(i));
 	}
 }
 
-void BucketGrid::updateGrid(Entity* entity) {
+void BucketGrid::updateGrid(Entity* entity, int team) {
 	Vector3* pos = entity->getPosition();
 	int posX = getIntegerPos(pos->x_);
 	int posZ = getIntegerPos(pos->z_);
 	if (!entity->isAlive()) {
-		getBucketAt(entity->getBucketX(), entity->getBucketZ())->remove(entity);
-	} else if (entity->bucketHasChanged(posX, posZ)) {
-		getBucketAt(entity->getBucketX(), entity->getBucketZ())->remove(entity);
+		getBucketAt(entity->getBucketX(team), entity->getBucketZ(team))->remove(entity);
+	} else if (entity->bucketHasChanged(posX, posZ, team)) {
+		getBucketAt(entity->getBucketX(team), entity->getBucketZ(team))->remove(entity);
 		getBucketAt(posX, posZ)->add(entity);
-		entity->setBucket(posX, posZ);
+		entity->setBucket(posX, posZ, team);
 	}
 }
 
@@ -88,19 +88,19 @@ void BucketGrid::updateSizes(int size) {
 	lastSize = size;
 }
 
-std::vector<Entity*>* BucketGrid::getArrayNeight(Unit* entity) {
+std::vector<Entity*>* BucketGrid::getArrayNeight(Unit* entity, double radius) {
 	Vector3* pos = entity->getPosition();
 	int dX = getIntegerPos(pos->x_);
 	int dZ = getIntegerPos(pos->z_);
 
 	long key = cacheHash(dX, dZ);
 
-	if (cache[key] != nullptr) {
+	if (cache[key] != nullptr) {//todo uwzglednic radius
 		return cache[key];
 	} else {
 		std::vector<Entity*>* crowd = new std::vector<Entity *>();
 		crowd->reserve(((lastSize + 1) * 1.2f));
-		std::vector<std::pair<int, int>*>* levels = getEnvIndexsFromCache(entity->getMaxSeparationDistance());
+		std::vector<std::pair<int, int>*>* levels = getEnvIndexsFromCache(radius);
 
 		for (int i = 0; i < levels->size(); ++i) {
 			std::pair<int, int>* pair = (*levels)[i];

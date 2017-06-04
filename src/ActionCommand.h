@@ -2,7 +2,6 @@
 #include <vector>
 #include "Entity.h"
 #include "AbstractCommand.h"
-#include "Aims.h"
 #include "Simulation.h"
 
 class ActionCommand :public AbstractCommand
@@ -17,7 +16,7 @@ private:
 	std::vector<Entity*>* entities;
 	Entity* entity;
 	ActionType action;
-	ActionParameter* parameter;
+
 	AimContainer* aimContainer;
-	Vector3* pos;
+	Vector3* aimPosition;
 };

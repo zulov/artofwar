@@ -121,6 +121,7 @@
     <ClCompile Include="src\PlayersManager.cpp">
       <Filter>player</Filter>
     </ClCompile>
+    <ClCompile Include="src\OperatorType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />

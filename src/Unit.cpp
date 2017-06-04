@@ -7,6 +7,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_po
 	velocity = new Vector3();
 	aims = nullptr;
 	healthBar = nullptr;
+	aimPosition = nullptr;
 	unitState = US_STOP;
 }
 
@@ -21,6 +22,7 @@ void Unit::populate(db_unit* definition) {
 	maxSpeed = definition->maxSpeed;
 	minSpeed = maxSpeed * 0.2f;
 	minimalDistance = definition->minDist;
+	attackRange = minimalDistance + 2;
 }
 
 void Unit::move(double timeStep) {
@@ -36,7 +38,17 @@ void Unit::move(double timeStep) {
 				aims = nullptr;
 			}
 		}
+	} else if (aimPosition != nullptr) {//TODO a co jak cel umrze?
+		bool reach = false;
 
+		double distance = ((*position) - (*aimPosition)).Length();
+		if (distance <= 3) {
+			reach = true;
+		}
+
+		if (reach) {
+			aimPosition = nullptr;
+		}
 	}
 }
 
@@ -58,6 +70,7 @@ void Unit::action(ActionType actionType, ActionParameter* parameter) {
 		appendAim(parameter);
 		break;
 	case FOLLOW:
+		followAim(parameter);
 		break;
 	default:
 		break;//zalogowaæ
@@ -65,11 +78,14 @@ void Unit::action(ActionType actionType, ActionParameter* parameter) {
 }
 
 Vector3* Unit::getAim() {
-	if (aims == nullptr) {
-		return nullptr;
+	if (aims) {
+		unitState = US_GOTO;
+		return aims->getAimPos(aimIndex);
 	}
-	unitState = US_GOTO;
-	return aims->getAimPos(aimIndex);
+	if (aimPosition) {
+		return aimPosition;
+	}
+	return nullptr;
 }
 
 Vector3* Unit::getVelocity() {
@@ -94,7 +110,7 @@ void Unit::absorbAttack(double attackCoef) {
 }
 
 void Unit::attack(vector<Entity*>* enemies) {
-	if (unitState == US_STOP) {
+	if (unitState == US_STOP || unitState == US_ATTACK) {
 		double minDistance = 9999;
 		Entity* entityClosest = nullptr;
 		for (int j = 0; j < enemies->size(); ++j) {
@@ -109,22 +125,18 @@ void Unit::attack(vector<Entity*>* enemies) {
 			minDistance = sqrt(minDistance);
 			if (minDistance < attackRange) {
 				attack(entityClosest);
+				unitState = US_ATTACK;
 				//attackRange();
 			} else if (minDistance < attackIntrest) {
-				ActionCommand* command = new ActionCommand(this, ADD_AIM, entityClosest->getPosition());
+				ActionCommand* command = new ActionCommand(this, FOLLOW, entityClosest->getPosition());
 				Game::get()->getActionCommandList()->add(command);
 			}
 		}
 	}
-
 }
 
 void Unit::attack(Entity* enemy) {
 	enemy->absorbAttack(attackCoef);
-}
-
-Aims* Unit::getAims() {
-	return aims;
 }
 
 void Unit::appendAim(ActionParameter* actionParameter) {
@@ -149,13 +161,22 @@ void Unit::addAim(ActionParameter* actionParameter) {
 	aims->up();
 }
 
-//void Unit::attack(Entity* entity) {
-//	if ((unitState == UnitState::US_ATTACK || unitState == UnitState::US_STOP || unitState == UnitState::US_CHARAGE)) {
-//		entity->absorbAttack(attackCoef);
-//	}
-//}
+void Unit::followAim(ActionParameter* parameter) {
+	aimPosition = parameter->getAimPosition();
+	aimIndex = 0;
+	if (aims != nullptr) {
+		aims->reduce();
+		aims = nullptr;
+	}
+}
 
 void Unit::applyForce(double timeStep) {
+	if (unitState == US_ATTACK) {
+		velocity->x_ = 0;
+		velocity->y_ = 0;
+		velocity->z_ = 0;
+		return;
+	}
 	double coef = timeStep / mass;
 	(*velocity) += (*acceleration) * coef;
 	double velLenght = velocity->LengthSquared();

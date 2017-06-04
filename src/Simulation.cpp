@@ -18,7 +18,7 @@ void Simulation::action(float timeStep) {
 	timeStep = 0.5;
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
-		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit, 10);//TODO przypisac na jedna klatke, albo nie bo i tak jest w cechu?? albo ci co sa w okolicyt o ich brac pod uwage promien odciecia
+		std::vector<Entity*>* neighbours = envStrategy->getNeighboursFromTeam(unit, 6, unit->getTeam(), NOT_EQUAL);
 		std::vector<Entity*>* enemies = new std::vector<Entity*>();
 		enemies->reserve(neighbours->size());
 
@@ -29,6 +29,8 @@ void Simulation::action(float timeStep) {
 			}
 		}
 		unit->attack(enemies);
+		delete enemies;
+		delete neighbours;
 	}
 }
 
@@ -58,6 +60,7 @@ void Simulation::update(Input* input, float timeStep) {
 		envStrategy->update(buildings);
 
 		move(timeStep);
+		
 		action(timeStep);
 		envStrategy->clear();
 		aimContainer->clean();

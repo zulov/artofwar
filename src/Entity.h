@@ -6,6 +6,7 @@
 #include "ActionType.h"
 #include "Aims.h"
 #include "ActionParameter.h"
+#include "defines.h"
 
 using namespace Urho3D;
 
@@ -17,18 +18,17 @@ public:
 	Vector3* getPosition();
 	double getMinimalDistance();
 	Urho3D::Node* getNode();
-	int getBucketX();
-	int getBucketZ();
+	int getBucketX(int param);
+	int getBucketZ(int param);
 	bool isAlive();
-	bool bucketHasChanged(int posX, int posY);
-	void setBucket(int posX, int posY);
+	bool bucketHasChanged(int posX, int posY,int param);
+	void setBucket(int posX, int posY, int param);
 	void setTeam(int _team);
 	void setPlayer(int player);
 	virtual int getType();
 	virtual void select();
 	virtual void unSelect();
 	virtual void action(ActionType actionType, ActionParameter* parameter);
-	virtual Aims* getAims();
 	int getTeam();
 	virtual void absorbAttack(double attackCoef);
 protected:
@@ -40,6 +40,7 @@ protected:
 	int team;
 	int player;
 private:
-	int bucketX, bucketZ;
+	int bucketX[BUCKET_SET_NUMBER];
+	int bucketZ[BUCKET_SET_NUMBER];
 	bool alive;
 };
