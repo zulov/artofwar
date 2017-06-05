@@ -37,4 +37,5 @@ private:
 	std::vector<std::pair<int, int>*>** levelsCache;
 	int lastSize = 10;
 	int maxSize = 20;
+	Bucket *empty;
 };

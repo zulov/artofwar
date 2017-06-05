@@ -21,10 +21,11 @@ BucketGrid::BucketGrid(int _resolution, double _size) {
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((((double)MAX_SEP_DIST) / RES_SEP_DIST) * i);
 	}
+	empty = new Bucket();
 }
 
 BucketGrid::~BucketGrid() {
-
+	delete empty;
 	//	for (int i = 0; i < RES_SEP_DIST; i++) {
 	//		delete (levels->at(i));
 	//	}
@@ -81,7 +82,7 @@ Bucket* BucketGrid::getBucketAt(int _x, int _z) {
 	if (isInSide(posX, posZ)) {
 		return bucketList[posX][posZ];
 	} else {
-		return new Bucket();
+		return empty;
 	}
 }
 

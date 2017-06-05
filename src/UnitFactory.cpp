@@ -29,7 +29,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, UnitType unitType, Vect
 	String modelName = "Models/" + dbUnit->model;
 	int produced = 0;
 	int y = 0;
-	double sideSize = xMax * space;
+	double sideSize = xMax * space/2;
 	while (produced < number) {
 		for (int x = 0; x < xMax; ++x) {
 			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_, y * space + center->z_ - sideSize);
