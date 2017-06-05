@@ -15,7 +15,6 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 }
 
 void Simulation::action(float timeStep) {
-	timeStep = 0.5;
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
 		std::vector<Entity*>* enemies = envStrategy->getNeighboursFromTeam(unit, 6, unit->getTeam(), NOT_EQUAL);
@@ -30,10 +29,6 @@ void Simulation::createUnits() {
 	simCommandList->add(new SimulationCommand(UNITS_NUMBER, UnitType::ARCHER, new Vector3(-50, 0, -50), SpacingType::CONSTANT, 1));
 }
 
-void Simulation::move(float timeStep) {
-	calculateForces();
-	moveUnits(timeStep);
-}
 
 void Simulation::update(Input* input, float timeStep) {
 	if (input->GetKeyPress(KEY_SPACE)) {
@@ -41,27 +36,43 @@ void Simulation::update(Input* input, float timeStep) {
 	}
 
 	if (animate) {
-		simCommandList->execute();
-		actionCommandList->execute();
-
+		
+		if (timeStep > maxTimeFrame) {
+			timeStep = maxTimeFrame;
+		}
+		accumulateTime += timeStep;
 		units = simObjectManager->getUnits();
 		buildings = simObjectManager->getBuildings();
 
-		envStrategy->update(units);
-		envStrategy->update(buildings);
+		if (accumulateTime >= maxTimeFrame) {
+			double diff = maxTimeFrame - (accumulateTime - timeStep);
+			moveUnits(diff);
+			accumulateTime -= maxTimeFrame;
 
-		move(timeStep);
-		
-		action(timeStep);
+			simCommandList->execute();
+			actionCommandList->execute();
+
+
+			envStrategy->update(units);
+			envStrategy->update(buildings);
+			calculateForces();
+			for (unsigned i = 0; i < units->size(); ++i) {
+				Unit* unit = (*units)[i];
+				unit->applyForce(maxTimeFrame);
+			}
+			action(timeStep);
+			timeStep = accumulateTime;
+		}
+
+		moveUnits(timeStep);
+
 		aimContainer->clean();
 	}
 }
 
 void Simulation::moveUnits(float timeStep) {
-	timeStep = 0.05;
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
-		unit->applyForce(timeStep);
 		unit->move(timeStep);
 	}
 }
@@ -69,7 +80,7 @@ void Simulation::moveUnits(float timeStep) {
 void Simulation::calculateForces() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
-		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit, unit->getMaxSeparationDistance());//TODO przypisac na jedna klatke
+		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit, unit->getMaxSeparationDistance());
 		std::vector<Entity*>* buildings = envStrategy->getBuildings(unit, unit->getMaxSeparationDistance());//TODO jakis inny parametr niz max separaatino dist
 
 		Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);

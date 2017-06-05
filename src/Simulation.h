@@ -31,15 +31,15 @@ public:
 	void createUnits();
 
 private:
-	void move(float timeStep);
 	void moveUnits(float timeStep);
 	void calculateForces();
-
 	bool animate;
+	double accumulateTime = 0;
+	double maxTimeFrame = 0.05;
 
 	std::vector<Unit*>* units;
 	std::vector<Building*>* buildings;
-	AimContainer * aimContainer;
+	AimContainer* aimContainer;
 	//CONST
 	const float ROTATE_SPEED = 115.0f;
 	const double coef = 10;

@@ -28,7 +28,7 @@ void Unit::populate(db_unit* definition) {
 void Unit::move(double timeStep) {
 	(*position) += (*velocity) * timeStep;
 	node->SetPosition(*position);
-	(*velocity) *= 0.95;//TODO to dac jaki wspolczynnik tarcia terenu
+	
 	if (aims != nullptr) {
 		bool reach = aims->ifReach(position, aimIndex);
 		if (reach) {
@@ -181,6 +181,7 @@ void Unit::applyForce(double timeStep) {
 		return;
 	}
 	double coef = timeStep / mass;
+	(*velocity) *= 0.95;//TODO to dac jaki wspolczynnik tarcia terenu
 	(*velocity) += (*acceleration) * coef;
 	double velLenght = velocity->LengthSquared();
 	if (velLenght > maxSpeed * maxSpeed) {
