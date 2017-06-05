@@ -3,6 +3,7 @@
 
 BucketGrid::BucketGrid(int _resolution, double _size) {
 	resolution = _resolution;
+	halfResolution = resolution / 2;
 	size = _size;
 	fieldSize = size / resolution;
 	bucketList = new Bucket**[resolution];
@@ -16,10 +17,6 @@ BucketGrid::BucketGrid(int _resolution, double _size) {
 		}
 	}
 
-	//	cache = new std::list<Entity*>*[resolution * resolution];
-	//	for (int i = 0; i < resolution * resolution; ++i) {
-	//		cache[i] = nullptr;
-	//	}
 	levelsCache = new std::vector<std::pair<int, int>*>*[RES_SEP_DIST];
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((((double)MAX_SEP_DIST) / RES_SEP_DIST) * i);
@@ -50,24 +47,16 @@ void BucketGrid::updateGrid(Entity* entity, int team) {
 }
 
 std::vector<std::pair<int, int>*>* BucketGrid::getEnvIndexsFromCache(double dist) {
-	double diff = ((double)MAX_SEP_DIST) / RES_SEP_DIST;
 	int index = dist / diff;
 	return levelsCache[index];
 }
 
 int BucketGrid::getIntegerPos(double value) {
 	if (value < 0) {
-		return (int)(value / size * (resolution)) - 1;
+		return (int)(value / size * resolution) - 1;
 	} else {
-		return (int)(value / size * (resolution));
+		return (int)(value / size * resolution);
 	}
-}
-
-int BucketGrid::cacheHash(int dX, int dZ) {
-	int x = dX + resolution / 2;
-	int z = dZ + resolution / 2;
-
-	return resolution * x + z;
 }
 
 void BucketGrid::updateSizes(int size) {
@@ -86,8 +75,8 @@ BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius) {
 }
 
 Bucket* BucketGrid::getBucketAt(int _x, int _z) {
-	int posX = _x + resolution / 2;
-	int posZ = _z + resolution / 2;
+	int posX = _x + halfResolution;
+	int posZ = _z + halfResolution;
 
 	if (isInSide(posX, posZ)) {
 		return bucketList[posX][posZ];

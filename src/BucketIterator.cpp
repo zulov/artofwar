@@ -10,14 +10,13 @@ BucketIterator::BucketIterator(std::vector<std::pair<int, int>*>* _levels, int _
 	currentContent = bucketGrid->getBucketAt(pair->first + dX, pair->second + dZ)->getContent();
 	sizeContent = currentContent->size();
 	levelSize = levels->size();
-	index++;
+	++index;
 }
 
 BucketIterator::~BucketIterator() {
 }
 
 Entity* BucketIterator::next() {
-
 	while (secondIndex == sizeContent) {
 		if (index >= levelSize) { return nullptr; }
 		std::pair<int, int>* pair = (*levels)[index];
