@@ -18,19 +18,10 @@ void Simulation::action(float timeStep) {
 	timeStep = 0.5;
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
-		std::vector<Entity*>* neighbours = envStrategy->getNeighboursFromTeam(unit, 6, unit->getTeam(), NOT_EQUAL);
-		std::vector<Entity*>* enemies = new std::vector<Entity*>();
-		enemies->reserve(neighbours->size());
+		std::vector<Entity*>* enemies = envStrategy->getNeighboursFromTeam(unit, 6, unit->getTeam(), NOT_EQUAL);
 
-		for (int j = 0; j < neighbours->size(); ++j) {
-			Entity* entity = (*neighbours)[j];
-			if (unit->getTeam() != entity->getTeam()) {
-				enemies->push_back(entity);
-			}
-		}
 		unit->attack(enemies);
 		delete enemies;
-		delete neighbours;
 	}
 }
 

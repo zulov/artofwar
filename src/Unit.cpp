@@ -145,10 +145,12 @@ void Unit::appendAim(ActionParameter* actionParameter) {
 		aimIndex = 0;
 		aims = actionParameter->getAims();
 		aims->up();
+		aimPosition = nullptr;
 	} else if (aims == nullptr) {
 		aimIndex = 0;
 		aims = actionParameter->getAims();
 		aims->up();
+		aimPosition = nullptr;
 	}
 }
 
@@ -159,6 +161,7 @@ void Unit::addAim(ActionParameter* actionParameter) {
 	aimIndex = 0;
 	aims = actionParameter->getAims();
 	aims->up();
+	aimPosition = nullptr;
 }
 
 void Unit::followAim(ActionParameter* parameter) {
