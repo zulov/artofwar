@@ -49,9 +49,8 @@ std::vector<Entity*>* EnviromentStrategy::getBuildings(Unit* unit, double radius
 std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGrid* bucketGrid, double radius) {
 	std::vector<Entity*>* neights = new std::vector<Entity *>();
 	BucketIterator* bucketIterator = bucketGrid->getArrayNeight(unit, radius);
-	//std::vector<Unit *> *arrayNeight = entities;
 
-	neights->reserve(30);
+	neights->reserve(10);//TODO sparametryzowac
 	double sqSeparationDistance = radius * radius;
 	Vector3* unitPosition = unit->getPosition();
 
@@ -65,7 +64,7 @@ std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGrid*
 		}
 	}
 	delete bucketIterator;
-	//delete arrayNeight;
+
 	return neights;
 }
 
@@ -81,14 +80,6 @@ void EnviromentStrategy::update(std::vector<Building*>* buildings) {
 	for (int i = 0; i < buildings->size(); ++i) {
 		Building* building = (*buildings)[i];
 		obstacleGrid->updateGrid(building, 0);
-	}
-}
-
-void EnviromentStrategy::clear() {
-	allUnitGrid->clearAfterStep();
-	obstacleGrid->clearAfterStep();
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		teamUnitGrid[i]->clearAfterStep();
 	}
 }
 

@@ -15,11 +15,13 @@ public:
 	Entity* next();
 private:
 	int index = 0;
+	int secondIndex = 0;
+	int sizeContent;
+	int levelSize;
 	std::vector<std::pair<int, int>*>* levels;
 	int dX;
 	int dZ;
-	std::list<Entity*>::const_iterator iterator;
-	std::list<Entity *>* currentContent;
+	std::vector<Entity *>* currentContent;
 	BucketGrid * bucketGrid;
 
 };

@@ -14,13 +14,11 @@ public:
 	BucketGrid(int _resolution, double _size);
 	~BucketGrid();
 	Bucket* getBucketAt(int x, int z);
-	void writeToGrid(std::vector<Unit*>* entities, int param);
 	void updateGrid(Entity* entity, int team);
 	std::vector<std::pair<int, int>*>* getEnvIndexsFromCache(double getMaxSeparationDistance);
 	BucketIterator* getArrayNeight(Unit* entity, double radius);
 
 	void clean();
-	void clearAfterStep();
 	std::vector<Entity *>* getArrayNeight(std::pair<Entity*, Entity*>* pair);
 private:
 	bool fieldInCircle(int i, int j, double radius);
@@ -29,12 +27,11 @@ private:
 	int cacheHash(int dX, int dZ);
 	void updateSizes(int size);
 	bool isInSide(int _posX, int _posZ) const;
-	std::vector<std::vector<Bucket*>> bucketList;
+	Bucket*** bucketList;
 	int resolution;
 	double size;
 	double fieldSize;
 
-	std::list<Entity*>** cache;
 	std::vector<std::pair<int, int>*>** levelsCache;
 	int lastSize = 10;
 	int maxSize = 20;

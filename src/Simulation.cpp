@@ -62,7 +62,6 @@ void Simulation::update(Input* input, float timeStep) {
 		move(timeStep);
 		
 		action(timeStep);
-		envStrategy->clear();
 		aimContainer->clean();
 	}
 }

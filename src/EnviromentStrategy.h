@@ -22,7 +22,6 @@ public:
 	std::vector<Entity *>* getNeighbours(Unit* unit, BucketGrid* bucketGrid, double radius);
 	void update(std::vector<Unit*>* units);
 	void update(std::vector<Building*>* buildings);
-	void clear();
 	std::vector<Entity *>* getNeighbours(std::pair<Entity*, Entity*>* pair);
 	std::vector<Entity *>* getBuildings(std::pair<Entity*, Entity*>* pair);
 private:

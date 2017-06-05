@@ -2,14 +2,15 @@
 
 
 Bucket::~Bucket() {
-	delete content;
+
 }
 
 Bucket::Bucket() {
-	content = new std::list<Entity *>();
+	content = new std::vector<Entity *>();
+	content->reserve(10);
 }
 
-std::list<Entity *>* Bucket::getContent() {
+std::vector<Entity *>* Bucket::getContent() {
 	return content;
 }
 
@@ -22,5 +23,8 @@ void Bucket::add(Entity* entity) {
 }
 
 void Bucket::remove(Entity* entity) {
-	content->remove(entity);
+	ptrdiff_t pos = std::find(content->begin(), content->end(), entity) - content->begin();
+	if (pos < content->size()) {
+		content->erase(content->begin() + pos);
+	}
 }
