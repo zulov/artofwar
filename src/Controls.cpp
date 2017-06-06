@@ -165,7 +165,7 @@ void Controls::release(const int button) {
 		case MOUSEB_LEFT:
 			if (mouseLeftHeld == true) {
 				mouseLeftHeld = false;
-				Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
+				Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);//TODO moze to ca³e entity to za duzo?
 				leftHeld->second = entity;
 				double dist = (*(leftHeld->first->getPosition()) - *(leftHeld->second->getPosition())).Length();
 				if (dist > clickDistance) {
