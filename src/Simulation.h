@@ -26,9 +26,12 @@ class Simulation
 {
 public:
 	Simulation(EnviromentStrategy* _enviromentStrategy, SimulationCommandList* _simCommandList, SimulationObjectManager* _simObjectManager);
-	void action(float timeStep);
+	void action();
 	void update(Input* input, float timeStep);
 	void createUnits();
+	float updateTime(float timeStep);
+	void countFrame();
+	void applyForce();
 
 private:
 	void moveUnits(float timeStep);
@@ -36,7 +39,8 @@ private:
 	bool animate;
 	double accumulateTime = 0;
 	double maxTimeFrame = 0.05;
-
+	int framesPeriod = 20;
+	int currentFrameNumber = 0;
 	std::vector<Unit*>* units;
 	std::vector<Building*>* buildings;
 	AimContainer* aimContainer;

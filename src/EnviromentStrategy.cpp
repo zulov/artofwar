@@ -48,12 +48,12 @@ std::vector<Entity*>* EnviromentStrategy::getBuildings(Unit* unit, double radius
 
 std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGrid* bucketGrid, double radius) {
 	std::vector<Entity*>* neights = new std::vector<Entity *>();
-	BucketIterator* bucketIterator = bucketGrid->getArrayNeight(unit, radius);
+	
 
 	neights->reserve(10);//TODO sparametryzowac
 	double sqSeparationDistance = radius * radius;
 	Vector3* unitPosition = unit->getPosition();
-
+	BucketIterator* bucketIterator = bucketGrid->getArrayNeight(unit, radius);
 	while (Entity* neight = bucketIterator->next()) {
 		if (unit == neight) { continue; }
 

@@ -69,8 +69,6 @@ BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius) {
 	int dX = getIntegerPos(pos->x_);
 	int dZ = getIntegerPos(pos->z_);
 
-	//long key = cacheHash(dX, dZ);
-
 	BucketIterator* bucketIterator = new BucketIterator(getEnvIndexsFromCache(radius), dX, dZ, this);
 	return bucketIterator;
 }
@@ -92,17 +90,6 @@ bool BucketGrid::isInSide(int _posX, int _posZ) const {
 	} else {
 		return true;
 	}
-}
-
-void BucketGrid::clean() {
-	/*for (int i = 0; i < resolution; i++) {
-		for (int j = 0; j < resolution; j++) {
-			if (bucketList[i] != nullptr &&bucketList[i]->default[j] != nullptr) {
-				bucketList[i]->default[j]->removeCube();
-			}
-
-		}
-	}*/
 }
 
 std::vector<Entity*>* BucketGrid::getArrayNeight(std::pair<Entity*, Entity*>* pair) {

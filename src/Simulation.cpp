@@ -5,6 +5,8 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 	envStrategy = _enviromentStrategy;
 	forceStrategy = new ForceStrategy();
 	simObjectManager = _simObjectManager;
+	units = simObjectManager->getUnits();
+	buildings = simObjectManager->getBuildings();
 	srand(time(NULL));
 	animate = true;
 	simCommandList = _simCommandList;
@@ -14,7 +16,7 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 	createUnits();
 }
 
-void Simulation::action(float timeStep) {
+void Simulation::action() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
 		std::vector<Entity*>* enemies = envStrategy->getNeighboursFromTeam(unit, 6, unit->getTeam(), NOT_EQUAL);
@@ -30,43 +32,59 @@ void Simulation::createUnits() {
 }
 
 
+float Simulation::updateTime(float timeStep) {
+	if (timeStep > maxTimeFrame) {
+		timeStep = maxTimeFrame;
+	}
+	accumulateTime += timeStep;
+	return timeStep;
+}
+
+void Simulation::countFrame() {
+	++currentFrameNumber;
+	if(currentFrameNumber>= framesPeriod) {
+		currentFrameNumber = 0;
+	}
+}
+
+void Simulation::applyForce() {
+	for (unsigned i = 0; i < units->size(); ++i) {
+		Unit* unit = (*units)[i];
+		unit->applyForce(maxTimeFrame);
+	}
+}
+
 void Simulation::update(Input* input, float timeStep) {
 	if (input->GetKeyPress(KEY_SPACE)) {
 		animate = !animate;
 	}
 
 	if (animate) {
-		
-		if (timeStep > maxTimeFrame) {
-			timeStep = maxTimeFrame;
-		}
-		accumulateTime += timeStep;
-		units = simObjectManager->getUnits();
-		buildings = simObjectManager->getBuildings();
-
+		timeStep = updateTime(timeStep);
 		if (accumulateTime >= maxTimeFrame) {
+			countFrame();
 			double diff = maxTimeFrame - (accumulateTime - timeStep);
 			moveUnits(diff);
 			accumulateTime -= maxTimeFrame;
+			if (currentFrameNumber % 3==0) {
+				simCommandList->execute();
+				actionCommandList->execute();
+				aimContainer->clean();
+				action();
+			}
 
-			simCommandList->execute();
-			actionCommandList->execute();
-
-
+			units = simObjectManager->getUnits();
+			buildings = simObjectManager->getBuildings();
 			envStrategy->update(units);
 			envStrategy->update(buildings);
 			calculateForces();
-			for (unsigned i = 0; i < units->size(); ++i) {
-				Unit* unit = (*units)[i];
-				unit->applyForce(maxTimeFrame);
-			}
-			action(timeStep);
+			applyForce();
+		
 			timeStep = accumulateTime;
-		}
 
+		}
 		moveUnits(timeStep);
 
-		aimContainer->clean();
 	}
 }
 

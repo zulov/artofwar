@@ -160,12 +160,12 @@ void Controls::release(const int button) {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
-	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
+	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {	
 		switch (button) {
 		case MOUSEB_LEFT:
 			if (mouseLeftHeld == true) {
 				mouseLeftHeld = false;
+				Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
 				leftHeld->second = entity;
 				double dist = (*(leftHeld->first->getPosition()) - *(leftHeld->second->getPosition())).Length();
 				if (dist > clickDistance) {
@@ -178,6 +178,7 @@ void Controls::release(const int button) {
 		case MOUSEB_RIGHT:
 			if (mouseRightHeld == true) {
 				mouseRightHeld = false;
+				Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
 				rightHeld->second = entity;
 				double dist = (*(rightHeld->first->getPosition()) - *(rightHeld->second->getPosition())).Length();
 				if (dist > clickDistance) {
@@ -188,6 +189,7 @@ void Controls::release(const int button) {
 			}
 			break;
 		case MOUSEB_MIDDLE:
+			Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
 			if (mouseMiddleHeld == true) {
 				mouseMiddleHeld = false;
 				middleHeld->second = entity;

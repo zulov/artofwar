@@ -56,7 +56,7 @@ Urho3D::Vector3* ForceStrategy::randomForce() {
 	//double x = ((double)rand() / (RAND_MAX)) * coef - (coef / 2);
 	//double y = ((double)rand() / (RAND_MAX)) * coef - (coef / 2);
 	//return Urho3D::Vector3(x, 0, y);
-	return new Vector3(0, 0, 0);
+	return new Vector3();
 }
 
 double ForceStrategy::calculateCoef(double distance, double minDist) {

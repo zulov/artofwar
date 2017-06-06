@@ -18,7 +18,6 @@ public:
 	std::vector<std::pair<int, int>*>* getEnvIndexsFromCache(double getMaxSeparationDistance);
 	BucketIterator* getArrayNeight(Unit* entity, double radius);
 
-	void clean();
 	std::vector<Entity *>* getArrayNeight(std::pair<Entity*, Entity*>* pair);
 private:
 	bool fieldInCircle(int i, int j, double radius);

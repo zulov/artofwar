@@ -1,6 +1,6 @@
 #pragma once
 
-#define UNITS_NUMBER 300//10;22;32;45;55;63;71;100;141;200;245
+#define UNITS_NUMBER 30//10;22;32;45;55;63;71;100;141;200;245
 #define SEP_RADIUS 3;
 #define INIT_SPACE 1
 
