@@ -24,7 +24,7 @@ CREATE TABLE "unit_type" (
 	PRIMARY KEY(`id`)
 );
 INSERT INTO `unit_type` (id,name,icon) VALUES (0,'warrior','warrior.png'),
- (1,'pikeman','warrior.png'),
+ (1,'pikeman','spear.png'),
  (2,'cavalry','cavalry.png'),
  (3,'archer','bow.png'),
  (4,'worker','hammer.png');

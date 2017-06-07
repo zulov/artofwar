@@ -21,7 +21,7 @@ public:
 	int getBucketX(int param);
 	int getBucketZ(int param);
 	bool isAlive();
-	bool bucketHasChanged(int posX, int posY,int param);
+	bool bucketHasChanged(int posX, int posY, int param);
 	void setBucket(int posX, int posY, int param);
 	void setTeam(int _team);
 	void setPlayer(int player);
@@ -39,8 +39,10 @@ protected:
 	Font* font;
 	int team;
 	int player;
+	bool rotatable = true;
 private:
 	int bucketX[BUCKET_SET_NUMBER];
 	int bucketZ[BUCKET_SET_NUMBER];
 	bool alive;
+
 };

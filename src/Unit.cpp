@@ -28,6 +28,10 @@ void Unit::populate(db_unit* definition) {
 void Unit::move(double timeStep) {
 	(*position) += (*velocity) * timeStep;
 	node->SetPosition(*position);
+	
+	if (rotatable) {
+		node->SetDirection(*rotation);
+	}
 
 	if (aims != nullptr) {
 		bool reach = aims->ifReach(position, aimIndex);
@@ -197,13 +201,18 @@ void Unit::applyForce(double timeStep) {
 			unitState = US_MOVE;
 		}
 
-	} else if (velLenght > 0 && velLenght < minSpeed * minSpeed) {
+	} else if (velLenght < minSpeed * minSpeed) {
 		velocity->x_ = 0;
 		velocity->y_ = 0;
 		velocity->z_ = 0;
 		if (unitState != US_GOTO) {
 			unitState = US_STOP;
 		}
+	} else {
+
+		rotation->x_ = velocity->x_;
+		rotation->y_ = velocity->y_;
+		rotation->z_ = velocity->z_;
 	}
 }
 
