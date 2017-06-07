@@ -24,6 +24,7 @@ public:
 	void update(std::vector<Building*>* buildings);
 	std::vector<Entity *>* getNeighbours(std::pair<Entity*, Entity*>* pair);
 	std::vector<Entity *>* getBuildings(std::pair<Entity*, Entity*>* pair);
+	double getGroundHeightAt(double x, double z);
 private:
 	BucketGrid* allUnitGrid;
 	BucketGrid* teamUnitGrid[MAX_PLAYERS];

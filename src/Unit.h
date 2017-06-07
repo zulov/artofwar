@@ -31,6 +31,7 @@ public:
 	void absorbAttack(double attackCoef) override;
 	void attack(vector<Entity*>* enemies);
 	void attack(Entity *enemy);
+	void updateHeight(double y, double timeStep);
 
 protected:
 	Vector3* acceleration;

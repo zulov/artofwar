@@ -42,7 +42,7 @@ float Simulation::updateTime(float timeStep) {
 
 void Simulation::countFrame() {
 	++currentFrameNumber;
-	if(currentFrameNumber>= framesPeriod) {
+	if (currentFrameNumber >= framesPeriod) {
 		currentFrameNumber = 0;
 	}
 }
@@ -51,6 +51,9 @@ void Simulation::applyForce() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
 		unit->applyForce(maxTimeFrame);
+		Vector3* pos = unit->getPosition();
+		double y = envStrategy->getGroundHeightAt(pos->x_, pos->z_);
+		unit->updateHeight(y, maxTimeFrame);
 	}
 }
 
@@ -66,7 +69,7 @@ void Simulation::update(Input* input, float timeStep) {
 			double diff = maxTimeFrame - (accumulateTime - timeStep);
 			moveUnits(diff);
 			accumulateTime -= maxTimeFrame;
-			if (currentFrameNumber % 3==0) {
+			if (currentFrameNumber % 3 == 0) {
 				simCommandList->execute();
 				actionCommandList->execute();
 				aimContainer->clean();
@@ -79,12 +82,11 @@ void Simulation::update(Input* input, float timeStep) {
 			envStrategy->update(buildings);
 			calculateForces();
 			applyForce();
-		
+
 			timeStep = accumulateTime;
 
 		}
 		moveUnits(timeStep);
-
 	}
 }
 

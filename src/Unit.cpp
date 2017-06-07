@@ -28,7 +28,7 @@ void Unit::populate(db_unit* definition) {
 void Unit::move(double timeStep) {
 	(*position) += (*velocity) * timeStep;
 	node->SetPosition(*position);
-	
+
 	if (aims != nullptr) {
 		bool reach = aims->ifReach(position, aimIndex);
 		if (reach) {
@@ -137,6 +137,12 @@ void Unit::attack(vector<Entity*>* enemies) {
 
 void Unit::attack(Entity* enemy) {
 	enemy->absorbAttack(attackCoef);
+}
+
+void Unit::updateHeight(double y, double timeStep) {
+	double diff = position->y_ - y;
+	(*velocity) *= 1 + diff * mass * timeStep;
+	position->y_ = y;
 }
 
 void Unit::appendAim(ActionParameter* actionParameter) {

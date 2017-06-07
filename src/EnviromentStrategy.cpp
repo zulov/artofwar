@@ -78,8 +78,7 @@ void EnviromentStrategy::update(std::vector<Unit*>* units) {//TODO a jakby gridy
 
 void EnviromentStrategy::update(std::vector<Building*>* buildings) {
 	for (int i = 0; i < buildings->size(); ++i) {
-		Building* building = (*buildings)[i];
-		obstacleGrid->updateGrid(building, 0);
+		obstacleGrid->updateGrid((*buildings)[i], 0);
 	}
 }
 
@@ -89,4 +88,8 @@ std::vector<Entity*>* EnviromentStrategy::getNeighbours(std::pair<Entity*, Entit
 
 std::vector<Entity*>* EnviromentStrategy::getBuildings(std::pair<Entity*, Entity*>* pair) {
 	return obstacleGrid->getArrayNeight(pair);
+}
+
+double EnviromentStrategy::getGroundHeightAt(double x, double z) {
+	return 0.0;
 }
