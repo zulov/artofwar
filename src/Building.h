@@ -7,7 +7,7 @@ class Building : public Entity {
 public:
 	Building(Vector3 *_position, Urho3D::Node* _boxNode, Font * _font);
 	~Building();
-	virtual int getType() override;
+	ObjectType getType() override;
 	void populate(db_building* dbBuilding);
 	void absorbAttack(double attackCoef) override;
 };

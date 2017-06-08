@@ -17,7 +17,7 @@ public:
 	void populate(db_unit* definition);
 	void move(double timeStep);
 	void applyForce(double timeStep);
-	int getType() override;
+	ObjectType getType() override;
 	void select() override;
 	void unSelect() override;
 	void setAcceleration(Vector3* _acceleration);

@@ -32,6 +32,7 @@ public:
 	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
 	void unselect(Entity* entity);
 	void select(Entity* entity);
+	void controlEntity(Vector3 hitPos, bool ctrlPressed, Entity* clicked);
 	void unSelect(int type);
 	void action(ActionType action, Entity* entity);
 

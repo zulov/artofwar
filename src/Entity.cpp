@@ -59,7 +59,7 @@ void Entity::setPlayer(int player) {
 	this->player = player;
 }
 
-int Entity::getType() {
+ObjectType Entity::getType() {
 	return ENTITY;
 }
 

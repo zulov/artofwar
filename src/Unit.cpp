@@ -222,7 +222,7 @@ void Unit::applyForce(double timeStep) {
 	}
 }
 
-int Unit::getType() {
+ObjectType Unit::getType() {
 	return UNIT;
 }
 

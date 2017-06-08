@@ -67,42 +67,52 @@ void Controls::select(Entity* entity) {
 	selected->push_back(entity);
 }
 
-void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {
-	Node* hitNode = hitDrawable->GetNode();
-	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
-
-	if (hitNode->GetName() == "Box") {
+void Controls::controlEntity(Vector3 hitPos, bool ctrlPressed, Entity* clicked) {
+	switch (state) {
+	case SELECT: {
 		if (!ctrlPressed) {
 			unSelect(ENTITY);
 		}
-		LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
-		Entity* clicked = lc->getEntity();
 		select(clicked);
-	} else if (hitNode->GetName() == "Ground") {
-		switch (state) {
-		case SELECT: {
-			if (!ctrlPressed) {
-				unSelect(ENTITY);
-			}
-			LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
-			Entity* clicked = lc->getEntity();
-			select(clicked);
-
-		}
-			break;
-		case BUILD: {
-			unSelect(ENTITY);
-			build(new Vector3(hitPos));
-			break;
-		}
-		case DEPLOY: {
-			unSelect(ENTITY);
-			deploy(new Vector3(hitPos));
-			break;
-		}
-			break;
-		}
 	}
+		break;
+	case BUILD: {
+		unSelect(ENTITY);
+		build(new Vector3(hitPos));
+		break;
+	}
+	case DEPLOY: {
+		unSelect(ENTITY);
+		deploy(new Vector3(hitPos));
+		break;
+	}
+
+	}
+}
+
+void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {//TODO referencja
+	Node* hitNode = hitDrawable->GetNode();
+	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
+	LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+	Entity* clicked = lc->getEntity();
+	ObjectType type = clicked->getType();
+	switch (type) {
+	case ENTITY:
+		controlEntity(hitPos, ctrlPressed, clicked);
+		break;
+	case UNIT:
+		if (!ctrlPressed) {
+			unSelect(ENTITY);
+		}
+
+		select(clicked);
+		break;
+
+	case BUILDING: break;
+	case RESOURCE: break;
+	default: ;
+	}
+
 }
 
 void Controls::rightClick(Drawable* hitDrawable, Vector3 hitPos) {
@@ -160,7 +170,7 @@ void Controls::release(const int button) {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
-	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {	
+	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
 		switch (button) {
 		case MOUSEB_LEFT:
 			if (mouseLeftHeld == true) {

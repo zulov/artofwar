@@ -7,6 +7,7 @@
 #include "Aims.h"
 #include "ActionParameter.h"
 #include "defines.h"
+#include "ObjectEnums.h"
 
 using namespace Urho3D;
 
@@ -25,7 +26,7 @@ public:
 	void setBucket(int posX, int posY, int param);
 	void setTeam(int _team);
 	void setPlayer(int player);
-	virtual int getType();
+	virtual ObjectType getType();
 	virtual void select();
 	virtual void unSelect();
 	virtual void action(ActionType actionType, ActionParameter* parameter);

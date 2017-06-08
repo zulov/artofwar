@@ -12,7 +12,7 @@ Building::~Building() {
 }
 
 
-int Building::getType() {
+ObjectType Building::getType() {
 	return BUILDING;
 }
 
