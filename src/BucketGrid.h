@@ -3,8 +3,8 @@
 #include <unordered_map>
 #include <iostream>
 
-#define MAX_SEP_DIST 12
-#define RES_SEP_DIST 100
+#define MAX_SEP_DIST 20
+#define RES_SEP_DIST 200
 class BucketIterator;
 
 class BucketGrid

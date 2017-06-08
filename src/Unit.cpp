@@ -23,15 +23,12 @@ void Unit::populate(db_unit* definition) {
 	minSpeed = maxSpeed * 0.2f;
 	minimalDistance = definition->minDist;
 	attackRange = minimalDistance + 2;
+	textureName = "Materials/" + definition->texture;
 }
 
 void Unit::move(double timeStep) {
 	(*position) += (*velocity) * timeStep;
 	node->SetPosition(*position);
-	
-	if (rotatable) {
-		node->SetDirection(*rotation);
-	}
 
 	if (aims != nullptr) {
 		bool reach = aims->ifReach(position, aimIndex);
@@ -89,6 +86,9 @@ Vector3* Unit::getAim() {
 	if (aimPosition) {
 		return aimPosition;
 	}
+	if (unitState == US_GOTO) {
+		unitState = US_STOP;
+	}
 	return nullptr;
 }
 
@@ -105,7 +105,7 @@ double Unit::getUnitRadius() {
 }
 
 void Unit::absorbAttack(double attackCoef) {
-	hpCoef -= attackCoef * defenseCoef;
+	hpCoef -= attackCoef * (1 - defenseCoef);
 	if (healthBar) {
 		double healthBarSize = 2 * (hpCoef / maxHpCoef);
 		if (healthBarSize <= 0) { healthBarSize = 0; }
@@ -183,6 +183,12 @@ void Unit::followAim(ActionParameter* parameter) {
 	}
 }
 
+void Unit::updateRotation() {
+	if (rotatable) {
+		node->SetDirection(*rotation);
+	}
+}
+
 void Unit::applyForce(double timeStep) {
 	if (unitState == US_ATTACK) {
 		velocity->x_ = 0;
@@ -221,15 +227,15 @@ int Unit::getType() {
 }
 
 void Unit::select() {
-	Node* title = node->CreateChild("title");
-	title->SetPosition(Vector3(0.0f, 1.5f, 0.0f));
-	Text3D* titleText = title->CreateComponent<Text3D>();
-	titleText->SetText("Entity");
-
-	titleText->SetFont(font, 24);
-	titleText->SetColor(Color::GREEN);
-	titleText->SetAlignment(HA_CENTER, VA_CENTER);
-	titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
+//	Node* title = node->CreateChild("title");
+//	title->SetPosition(Vector3(0.0f, 1.5f, 0.0f));
+//	Text3D* titleText = title->CreateComponent<Text3D>();
+//	titleText->SetText("Entity");
+//
+//	titleText->SetFont(font, 24);
+//	titleText->SetColor(Color::GREEN);
+//	titleText->SetAlignment(HA_CENTER, VA_CENTER);
+//	titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
 
 	StaticModel* model = node->GetComponent<StaticModel>();
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
@@ -248,11 +254,11 @@ void Unit::select() {
 }
 
 void Unit::unSelect() {
-	Node* child = node->GetChild("title");
-	if (child) {
-		child->RemoveAllChildren();
-		node->RemoveChild(child);
-	}
+//	Node* child = node->GetChild("title");
+//	if (child) {
+//		child->RemoveAllChildren();
+//		node->RemoveChild(child);
+//	}
 
 	Node* child1 = healthBar;
 	if (child1) {
@@ -262,5 +268,5 @@ void Unit::unSelect() {
 	}
 
 	StaticModel* model = node->GetComponent<StaticModel>();
-	model->SetMaterial(nullptr);//SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
+	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>(textureName));
 }

@@ -32,7 +32,7 @@ public:
 	void attack(vector<Entity*>* enemies);
 	void attack(Entity *enemy);
 	void updateHeight(double y, double timeStep);
-
+	void updateRotation();
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
@@ -47,6 +47,7 @@ private:
 	void appendAim(ActionParameter* actionParameter);
 	void addAim(ActionParameter* actionParameter);
 	void followAim(ActionParameter* parameter);
+
 	double unitRadius = 2;
 	Node* healthBar;
 	UnitState unitState;

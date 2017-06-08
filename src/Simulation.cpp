@@ -19,7 +19,7 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 void Simulation::action() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
-		std::vector<Entity*>* enemies = envStrategy->getNeighboursFromTeam(unit, 6, unit->getTeam(), NOT_EQUAL);
+		std::vector<Entity*>* enemies = envStrategy->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
 
 		unit->attack(enemies);
 		delete enemies;
@@ -51,6 +51,7 @@ void Simulation::applyForce() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
 		unit->applyForce(maxTimeFrame);
+		unit->updateRotation();
 		Vector3* pos = unit->getPosition();
 		double y = envStrategy->getGroundHeightAt(pos->x_, pos->z_);
 		unit->updateHeight(y, maxTimeFrame);

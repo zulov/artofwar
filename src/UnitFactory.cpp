@@ -22,7 +22,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, UnitType unitType, Vect
 	Game* game = Game::get();
 	db_unit* dbUnit = game->getDatabaseCache()->getUnit(unitType);
 	Font* font = game->getCache()->GetResource<Font>("Fonts/" + dbUnit->font);
-
+	String textureName = "Materials/" + dbUnit->texture;
 	int xMax = number / sqrt(number);
 
 	double space = getSpecSize(spacingType);
@@ -38,7 +38,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, UnitType unitType, Vect
 
 			StaticModel* boxObject = node->CreateComponent<StaticModel>();
 			boxObject->SetModel(game->getCache()->GetResource<Model>(modelName));
-
+			boxObject->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>(textureName));
 			Unit* newUnit = new Unit(position, node, font);
 			newUnit->populate(dbUnit);
 			newUnit->setPlayer(player);

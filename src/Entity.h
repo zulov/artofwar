@@ -40,6 +40,7 @@ protected:
 	int team;
 	int player;
 	bool rotatable = true;
+	String textureName;
 private:
 	int bucketX[BUCKET_SET_NUMBER];
 	int bucketZ[BUCKET_SET_NUMBER];

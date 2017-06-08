@@ -36,7 +36,7 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 		Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
 		double diff = sqrt(pos.y_ - minY) + 1;
 
-		pos += Urho3D::Vector3(0, 1, 0) * timeStep * wheel * diff * 1.5;
+		pos += Vector3::DOWN * wheel * diff * 1.5;
 
 		if (pos.y_ < minY) {
 			pos.y_ = minY;
