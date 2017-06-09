@@ -12,7 +12,7 @@ using namespace Urho3D;
 class Unit : public Entity
 {
 public:
-	Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font);
+	Unit(Vector3* _position, Urho3D::Node* _boxNode);
 	~Unit();
 	void populate(db_unit* definition);
 	void move(double timeStep);

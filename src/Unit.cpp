@@ -2,7 +2,7 @@
 #include "ActionCommand.h"
 
 
-Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_position, _boxNode, _font) {
+Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxNode) {
 	acceleration = new Vector3();
 	velocity = new Vector3();
 	aims = nullptr;

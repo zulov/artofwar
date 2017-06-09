@@ -14,7 +14,7 @@ using namespace Urho3D;
 class Entity
 {
 public:
-	Entity(Vector3* _position, Urho3D::Node* _boxNode, Font* _font);
+	Entity(Vector3* _position, Urho3D::Node* _boxNode);
 	virtual ~Entity();
 	Vector3* getPosition();
 	double getMinimalDistance();
@@ -37,7 +37,6 @@ protected:
 	Vector3* position;
 	Vector3* rotation;
 	double minimalDistance;
-	Font* font;
 	int team;
 	int player;
 	bool rotatable = true;

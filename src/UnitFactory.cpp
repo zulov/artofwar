@@ -21,14 +21,13 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, UnitType unitType, Vect
 	units->reserve(number);
 	Game* game = Game::get();
 	db_unit* dbUnit = game->getDatabaseCache()->getUnit(unitType);
-	Font* font = game->getCache()->GetResource<Font>("Fonts/" + dbUnit->font);
 	String textureName = "Materials/" + dbUnit->texture;
-	int xMax = number / sqrt(number);
 
 	double space = getSpecSize(spacingType);
 	String modelName = "Models/" + dbUnit->model;
 	int produced = 0;
 	int y = 0;
+	int xMax = number / sqrt(number);
 	double sideSize = xMax * space/2;
 	while (produced < number) {
 		for (int x = 0; x < xMax; ++x) {
@@ -36,10 +35,11 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, UnitType unitType, Vect
 			Node* node = game->getScene()->CreateChild("Box");
 			node->SetPosition(*position);
 
-			StaticModel* boxObject = node->CreateComponent<StaticModel>();
-			boxObject->SetModel(game->getCache()->GetResource<Model>(modelName));
-			boxObject->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>(textureName));
-			Unit* newUnit = new Unit(position, node, font);
+			StaticModel* model = node->CreateComponent<StaticModel>();
+			model->SetModel(game->getCache()->GetResource<Model>(modelName));
+			model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>(textureName));
+			
+			Unit* newUnit = new Unit(position, node);
 			newUnit->populate(dbUnit);
 			newUnit->setPlayer(player);
 			newUnit->setTeam(player);//TODO ustawic team

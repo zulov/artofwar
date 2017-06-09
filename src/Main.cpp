@@ -75,6 +75,8 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	benchmark->add(1.0 / timeStep);
 	hud->updateHud(benchmark, cameraManager);
 	control(timeStep);
+	SelectedInfo* selectedInfo = controls->getSelectedInfo();
+	hud->updateSelected(selectedInfo);
 	levelBuilder->execute();
 }
 

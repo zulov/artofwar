@@ -5,12 +5,13 @@
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Entity*>();
-	selected->reserve(25);
+	selected->reserve(100);
 
 	leftHeld = new std::pair<Entity*, Entity*>();
 	middleHeld = new std::pair<Entity*, Entity*>();
 	rightHeld = new std::pair<Entity*, Entity*>();
 	input = _input;
+	selectedInfo = new SelectedInfo();
 }
 
 
@@ -18,6 +19,8 @@ Controls::~Controls() {
 	delete leftHeld;
 	delete middleHeld;
 	delete rightHeld;
+	delete selectedInfo;
+	delete selected;
 }
 
 bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {
@@ -44,11 +47,13 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 }
 
 void Controls::unSelect(int type) {
-	selectedType = ObjectType(type);
+
 	for (int i = 0; i < selected->size(); i++) {
 		(*selected)[i]->unSelect();
 	}
 	selected->clear();
+	selectedInfo->selectedType = selectedType = ObjectType(type);
+	selectedInfo->allNumber = selected->size();
 }
 
 //void Controls::action(ActionType action, Entity* entity) {
@@ -58,34 +63,39 @@ void Controls::unSelect(int type) {
 //}
 
 void Controls::select(Entity* entity) {
-	if (entity->getType() == selectedType) {
-
-	} else {
+	ObjectType entityType = entity->getType();
+	if (entity->getType() != selectedType) {
 		unSelect(entity->getType());
 	}
+
 	entity->select();
 	selected->push_back(entity);
+	selectedInfo->selectedType = selectedType = entityType;
+	selectedInfo->allNumber = selected->size();
 }
 
 void Controls::controlEntity(Vector3 hitPos, bool ctrlPressed, Entity* clicked) {
 	switch (state) {
-	case SELECT: {
+	case SELECT:
+		{
 		if (!ctrlPressed) {
 			unSelect(ENTITY);
 		}
 		select(clicked);
-	}
+		}
 		break;
-	case BUILD: {
+	case BUILD:
+		{
 		unSelect(ENTITY);
 		build(new Vector3(hitPos));
 		break;
-	}
-	case DEPLOY: {
+		}
+	case DEPLOY:
+		{
 		unSelect(ENTITY);
 		deploy(new Vector3(hitPos));
 		break;
-	}
+		}
 
 	}
 }
@@ -108,7 +118,14 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {//TODO referenc
 		select(clicked);
 		break;
 
-	case BUILDING: break;
+	case BUILDING:
+		if (!ctrlPressed) {
+			unSelect(ENTITY);
+		}
+
+		select(clicked);
+		break;
+
 	case RESOURCE: break;
 	default: ;
 	}
@@ -175,8 +192,7 @@ void Controls::release(const int button) {
 		case MOUSEB_LEFT:
 			if (mouseLeftHeld == true) {
 				mouseLeftHeld = false;
-				Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);//TODO moze to ca³e entity to za duzo?
-				leftHeld->second = entity;
+				leftHeld->second = new Entity(new Vector3(hitPos), nullptr);//TODO moze to ca³e entity to za duzo?
 				double dist = (*(leftHeld->first->getPosition()) - *(leftHeld->second->getPosition())).Length();
 				if (dist > clickDistance) {
 					leftHold(leftHeld);
@@ -188,7 +204,7 @@ void Controls::release(const int button) {
 		case MOUSEB_RIGHT:
 			if (mouseRightHeld == true) {
 				mouseRightHeld = false;
-				Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
+				Entity* entity = new Entity(new Vector3(hitPos), nullptr);
 				rightHeld->second = entity;
 				double dist = (*(rightHeld->first->getPosition()) - *(rightHeld->second->getPosition())).Length();
 				if (dist > clickDistance) {
@@ -199,10 +215,9 @@ void Controls::release(const int button) {
 			}
 			break;
 		case MOUSEB_MIDDLE:
-			Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
 			if (mouseMiddleHeld == true) {
 				mouseMiddleHeld = false;
-				middleHeld->second = entity;
+				middleHeld->second = new Entity(new Vector3(hitPos), nullptr);
 			}
 			break;
 		}
@@ -229,13 +244,13 @@ void Controls::hudAction(HudElement* hud) {
 }
 
 void Controls::clickDownRight(Vector3 hitPos) {
-	Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
+	Entity* entity = new Entity(new Vector3(hitPos), nullptr);
 
 	rightHeld->first = entity;
 }
 
 void Controls::clickDownLeft(Vector3 hitPos) {
-	Entity* entity = new Entity(new Vector3(hitPos), nullptr, nullptr);
+	Entity* entity = new Entity(new Vector3(hitPos), nullptr);
 
 	leftHeld->first = entity;
 }
@@ -276,4 +291,8 @@ void Controls::build(Vector3* pos) {
 void Controls::deploy(Vector3* pos) {
 	SimulationCommand* simulationCommand = new SimulationCommand(10, toDeploy, pos, SpacingType::CONSTANT, 0);
 	Game::get()->getSimCommandList()->add(simulationCommand);
+}
+
+SelectedInfo* Controls::getSelectedInfo() {
+	return selectedInfo;
 }

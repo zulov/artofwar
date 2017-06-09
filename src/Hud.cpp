@@ -14,6 +14,7 @@ Hud::Hud() {
 	createBuild();
 	createTop();
 	createUnits();
+	createSelectedInfo();
 
 	SharedPtr<Cursor> cursor(new Cursor(Game::get()->getContext()));
 	cursor->SetStyleAuto(style);
@@ -168,6 +169,21 @@ void Hud::createTop() {
 
 }
 
+void Hud::createSelectedInfo() {
+	selectedInfoWindow = new Window(Game::get()->getContext());
+	Game::get()->getUI()->GetRoot()->AddChild(selectedInfoWindow);
+	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
+
+	selectedInfoWindow->SetMinWidth(512);
+	selectedInfoWindow->SetMinHeight(64);
+	selectedInfoWindow->SetLayout(LM_HORIZONTAL, 6, IntRect(6, 6, 6, 6));
+	selectedInfoWindow->SetAlignment(HA_CENTER, VA_BOTTOM);
+	selectedInfoWindow->SetName("Window");
+	selectedInfoWindow->SetTexture(wood);
+	selectedInfoWindow->SetTiled(true);
+
+}
+
 void Hud::createStaticHud(String msg) {
 	Text* instructionText = Game::get()->getUI()->GetRoot()->CreateChild<Text>();
 	instructionText->SetText(msg);
@@ -235,19 +251,27 @@ std::vector<HudElement*>* Hud::getListsToSubscribe() {
 }
 
 void Hud::updateState(ControlsState state) {
-	switch(state) {
-	case SELECT: 
+	switch (state) {
+	case SELECT:
 		buildWindow->SetVisible(false);
 		unitsWindow->SetVisible(false);
 		break;
-	case BUILD: 
+	case BUILD:
 		buildWindow->SetVisible(true);
 		unitsWindow->SetVisible(false);
 		break;
-	case DEPLOY: 
+	case DEPLOY:
 		buildWindow->SetVisible(false);
 		unitsWindow->SetVisible(true);
 		break;
 	default: ;
 	}
+}
+
+void Hud::updateSelected(SelectedInfo* selectedInfo) {
+	selectedInfoWindow->RemoveAllChildren();
+	Text* text = new Text(Game::get()->getContext());
+	text->SetText((*selectedInfo->getMessage()));
+	text->SetFont(font, 12);
+	selectedInfoWindow->AddChild(text);
 }

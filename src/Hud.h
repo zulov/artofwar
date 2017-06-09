@@ -26,6 +26,7 @@
 #include "HudElement.h"
 #include "db_strcut.h"
 #include "ControlsState.h"
+#include "SelectedInfo.h"
 
 using namespace Urho3D;
 
@@ -41,16 +42,19 @@ public:
 	std::vector<HudElement*> *getButtonsToSubscribe();
 	std::vector<HudElement*> *getListsToSubscribe();
 	void updateState(ControlsState state);
+	void updateSelected(SelectedInfo* selectedInfo);
 private:
 	void createMenu();
 	void createBuild();
 	void createUnits();
 	void createTop();
+	void createSelectedInfo();
 	Window *menuWindow;
 	Window *miniMapWindow;
 	Window *topWindow;
 	Window *buildWindow;
 	Window *unitsWindow;
+	Window *selectedInfoWindow;
 
 	Text* fpsText;
 	std::vector<HudElement*> *buttons;

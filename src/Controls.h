@@ -20,6 +20,7 @@
 #include "LinkComponent.h"
 #include "Mediator.h"
 #include "HudElement.h"
+#include "SelectedInfo.h"
 
 
 using namespace Urho3D;
@@ -50,6 +51,7 @@ public:
 	void release(const int button);
 	void updateState(ControlsState state);
 	void hudAction(HudElement* hud);
+	SelectedInfo* getSelectedInfo();
 private:
 	std::vector<Entity*>* selected;//TODO to powinien byæ set
 	ObjectType selectedType;
@@ -69,4 +71,5 @@ private:
 	BuildingType toBuild;
 	UnitType toDeploy;
 	Entity* temp;
+	SelectedInfo* selectedInfo;
 };

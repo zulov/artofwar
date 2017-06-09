@@ -17,7 +17,6 @@
     <ClCompile Include="src\Unit.cpp">
       <Filter>objects</Filter>
     </ClCompile>
-    <ClCompile Include="src\Controls.cpp" />
     <ClCompile Include="src\Building.cpp">
       <Filter>objects</Filter>
     </ClCompile>
@@ -125,6 +124,12 @@
     <ClCompile Include="src\Bucket.cpp">
       <Filter>simulation\env\bucket</Filter>
     </ClCompile>
+    <ClCompile Include="src\Controls.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SelectedInfo.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -146,7 +151,6 @@
     <ClInclude Include="src\Unit.h">
       <Filter>objects</Filter>
     </ClInclude>
-    <ClInclude Include="src\Controls.h" />
     <ClInclude Include="src\Building.h">
       <Filter>objects</Filter>
     </ClInclude>
@@ -275,6 +279,12 @@
     <ClInclude Include="src\Bucket.h">
       <Filter>simulation\env\bucket</Filter>
     </ClInclude>
+    <ClInclude Include="src\Controls.h">
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SelectedInfo.h">
+      <Filter>control</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
@@ -334,6 +344,9 @@
     </Filter>
     <Filter Include="simulation\env\bucket">
       <UniqueIdentifier>{06d3429f-4b65-4b03-bce6-7058dac6f83a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="control">
+      <UniqueIdentifier>{4f946446-b3a9-4105-986d-09d1da4734cc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

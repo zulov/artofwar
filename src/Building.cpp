@@ -3,7 +3,7 @@
 #include "db_strcut.h"
 
 
-Building::Building(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) : Entity(_position, _boxNode, _font) {
+Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxNode) {
 	
 }
 

@@ -2,12 +2,11 @@
 #include "ObjectEnums.h"
 
 
-Entity::Entity(Vector3* _position, Urho3D::Node* _boxNode, Font* _font) {
+Entity::Entity(Vector3* _position, Urho3D::Node* _boxNode) {
 	node = _boxNode;
 	position = _position;
 	rotation = new Vector3();
 	alive = true;
-	font = _font;
 	for (int i = 0; i < BUCKET_SET_NUMBER; ++i) {
 		bucketZ[i] = bucketX[i] = INT_MIN;
 	}
