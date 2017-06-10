@@ -94,7 +94,7 @@ void Hud::createUnits() {
 	Game::get()->getUI()->GetRoot()->AddChild(unitsWindow);
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 	unitsWindow->SetMinWidth(512);
-	unitsWindow->SetMinHeight(64);
+	unitsWindow->SetMinHeight(hudSize->space_size_y + 2 * hudSize->space_size_y);
 	unitsWindow->SetLayout(LM_HORIZONTAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_y, hudSize->space_size_x, hudSize->space_size_y));
 	unitsWindow->SetAlignment(HA_LEFT, VA_BOTTOM);
 	unitsWindow->SetPosition(2 * (hudSize->icon_size_x + hudSize->space_size_x), 0);
@@ -153,7 +153,7 @@ void Hud::createTop() {
 
 	topWindow->SetMinWidth(512);
 	topWindow->SetMinHeight(24);
-	topWindow->SetLayout(LM_HORIZONTAL, 6, IntRect(6, 6, 6, 6));
+	topWindow->SetLayout(LM_HORIZONTAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_y, hudSize->space_size_x, hudSize->space_size_y));
 	topWindow->SetAlignment(HA_RIGHT, VA_TOP);
 	topWindow->SetName("Window");
 	topWindow->SetTexture(wood);
@@ -255,14 +255,17 @@ void Hud::updateState(ControlsState state) {
 	case SELECT:
 		buildWindow->SetVisible(false);
 		unitsWindow->SetVisible(false);
+		selectedInfoWindow->SetVisible(true);
 		break;
 	case BUILD:
 		buildWindow->SetVisible(true);
 		unitsWindow->SetVisible(false);
+		selectedInfoWindow->SetVisible(false);
 		break;
 	case DEPLOY:
 		buildWindow->SetVisible(false);
 		unitsWindow->SetVisible(true);
+		selectedInfoWindow->SetVisible(false);
 		break;
 	default: ;
 	}
@@ -284,7 +287,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 
 				Button* button = new Button(Game::get()->getContext());
 				button->SetStyleAuto(style);
-				
+
 				button->AddChild(text);
 				button->SetFixedSize(hudSize->icon_size_x, hudSize->icon_size_y);
 				selectedInfoWindow->AddChild(button);
