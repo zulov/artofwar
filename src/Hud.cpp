@@ -269,9 +269,11 @@ void Hud::updateState(ControlsState state) {
 }
 
 void Hud::updateSelected(SelectedInfo* selectedInfo) {
-	selectedInfoWindow->RemoveAllChildren();
-	Text* text = new Text(Game::get()->getContext());
-	text->SetText((*selectedInfo->getMessage()));
-	text->SetFont(font, 12);
-	selectedInfoWindow->AddChild(text);
+	if (selectedInfo->hasChanged()) {
+		selectedInfoWindow->RemoveAllChildren();
+		Text* text = new Text(Game::get()->getContext());
+		text->SetText((*selectedInfo->getMessage()));
+		text->SetFont(font, 12);
+		selectedInfoWindow->AddChild(text);
+	}
 }

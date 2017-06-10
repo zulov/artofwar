@@ -52,8 +52,9 @@ void Controls::unSelect(int type) {
 		(*selected)[i]->unSelect();
 	}
 	selected->clear();
-	selectedInfo->selectedType = selectedType = ObjectType(type);
-	selectedInfo->allNumber = selected->size();
+	selectedType = ObjectType(type);
+	selectedInfo->setSelectedType(selectedType);
+	selectedInfo->setAllNumber(selected->size());
 }
 
 //void Controls::action(ActionType action, Entity* entity) {
@@ -70,8 +71,10 @@ void Controls::select(Entity* entity) {
 
 	entity->select();
 	selected->push_back(entity);
-	selectedInfo->selectedType = selectedType = entityType;
-	selectedInfo->allNumber = selected->size();
+
+	selectedType = entityType;
+	selectedInfo->setSelectedType(selectedType);
+	selectedInfo->setAllNumber(selected->size());
 }
 
 void Controls::controlEntity(Vector3 hitPos, bool ctrlPressed, Entity* clicked) {
