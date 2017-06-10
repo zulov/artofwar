@@ -8,6 +8,7 @@
 class SelectedInfo
 {
 public:
+	void initLines();
 	void clearLines();
 	SelectedInfo();
 	~SelectedInfo();

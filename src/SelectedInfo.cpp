@@ -1,9 +1,16 @@
 #include "SelectedInfo.h"
 
+void SelectedInfo::initLines() {
+	for (int i = 0; i < SELECTED_INFO_SIZE; ++i) {
+		lines[i] = nullptr;
+	}
+}
 
 void SelectedInfo::clearLines() {
 	for (int i = 0; i < SELECTED_INFO_SIZE; ++i) {
-		lines[i] = new Urho3D::String();
+		if (lines[i] != nullptr) {
+			lines[i] = new Urho3D::String();
+		}
 	}
 }
 
@@ -12,7 +19,7 @@ SelectedInfo::SelectedInfo() {
 	allNumber = 0;
 
 	lines = new Urho3D::String*[SELECTED_INFO_SIZE];
-	clearLines();
+	initLines();
 }
 
 
@@ -29,12 +36,12 @@ Urho3D::String* SelectedInfo::getMessage() {
 Urho3D::String** SelectedInfo::getLines() {
 	clearLines();
 	for (int i = 0; i < SELECTED_INFO_SIZE; ++i) {
-		if(number[i]>0) {
-			lines[i] = new Urho3D::String(number[i] + "/" + Urho3D::String(allNumber));
-		}else {
-			lines[i] = new Urho3D::String();
+		if (number[i] > 0) {
+			lines[i] = new Urho3D::String(Urho3D::String(number[i]) + "/" + Urho3D::String(allNumber));
+		} else {
+			lines[i] = nullptr;
 		}
-		
+
 	}
 	return lines;
 }
