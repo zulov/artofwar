@@ -275,13 +275,19 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 		text->SetText((*selectedInfo->getMessage()));
 		text->SetFont(font, 12);
 		selectedInfoWindow->AddChild(text);
-		String**lines = selectedInfo->getLines();
+		String** lines = selectedInfo->getLines();
 		for (int i = 0; i < SELECTED_INFO_SIZE; ++i) {
-			if((lines[i])!=nullptr) {
+			if ((lines[i]) != nullptr) {
 				Text* text = new Text(Game::get()->getContext());
 				text->SetText((*lines[i]));
 				text->SetFont(font, 12);
-				selectedInfoWindow->AddChild(text);
+
+				Button* button = new Button(Game::get()->getContext());
+				button->SetStyleAuto(style);
+				
+				button->AddChild(text);
+				button->SetFixedSize(hudSize->icon_size_x, hudSize->icon_size_y);
+				selectedInfoWindow->AddChild(button);
 			}
 		}
 	}
