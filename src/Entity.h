@@ -27,6 +27,7 @@ public:
 	void setTeam(int _team);
 	void setPlayer(int player);
 	virtual ObjectType getType();
+	virtual int getSubType();
 	virtual void select();
 	virtual void unSelect();
 	virtual void action(ActionType actionType, ActionParameter* parameter);

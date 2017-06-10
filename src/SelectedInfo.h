@@ -8,21 +8,26 @@
 class SelectedInfo
 {
 public:
+	void clearLines();
 	SelectedInfo();
 	~SelectedInfo();
 	Urho3D::String* getMessage();
+	Urho3D::String** getLines();
 	bool hasChanged();
 
 	void setAllNumber(int allNumber);
 	void setSelectedType(ObjectType selectedType);
+	void setNumberAt(int type, int value);
+	void incNumberAt(int type);
 	void setUnitsTypes(UnitType unitTypes[]);
 	void setBuildingTypes(BuildingType buildingTypes[]);
+	void reset();
 private:
 	bool changed = false;
 	Urho3D::String* message;
 	int allNumber;
 	ObjectType selectedType;
-	UnitType unitTypes[SELECTED_INFO_SIZE];
-	BuildingType buildingTypes[SELECTED_INFO_SIZE];
 	int number[SELECTED_INFO_SIZE];
+	Urho3D::String** lines;
+
 };

@@ -24,6 +24,7 @@ void Unit::populate(db_unit* definition) {
 	minimalDistance = definition->minDist;
 	attackRange = minimalDistance + 2;
 	textureName = "Materials/" + definition->texture;
+	unitType = UnitType(definition->type);
 }
 
 void Unit::move(double timeStep) {
@@ -226,16 +227,20 @@ ObjectType Unit::getType() {
 	return UNIT;
 }
 
+int Unit::getSubType() {
+	return unitType;
+}
+
 void Unit::select() {
-//	Node* title = node->CreateChild("title");
-//	title->SetPosition(Vector3(0.0f, 1.5f, 0.0f));
-//	Text3D* titleText = title->CreateComponent<Text3D>();
-//	titleText->SetText("Entity");
-//
-//	titleText->SetFont(font, 24);
-//	titleText->SetColor(Color::GREEN);
-//	titleText->SetAlignment(HA_CENTER, VA_CENTER);
-//	titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
+	//	Node* title = node->CreateChild("title");
+	//	title->SetPosition(Vector3(0.0f, 1.5f, 0.0f));
+	//	Text3D* titleText = title->CreateComponent<Text3D>();
+	//	titleText->SetText("Entity");
+	//
+	//	titleText->SetFont(font, 24);
+	//	titleText->SetColor(Color::GREEN);
+	//	titleText->SetAlignment(HA_CENTER, VA_CENTER);
+	//	titleText->SetFaceCameraMode(FC_LOOKAT_MIXED);
 
 	StaticModel* model = node->GetComponent<StaticModel>();
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
@@ -254,11 +259,11 @@ void Unit::select() {
 }
 
 void Unit::unSelect() {
-//	Node* child = node->GetChild("title");
-//	if (child) {
-//		child->RemoveAllChildren();
-//		node->RemoveChild(child);
-//	}
+	//	Node* child = node->GetChild("title");
+	//	if (child) {
+	//		child->RemoveAllChildren();
+	//		node->RemoveChild(child);
+	//	}
 
 	Node* child1 = healthBar;
 	if (child1) {

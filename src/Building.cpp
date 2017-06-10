@@ -4,7 +4,7 @@
 
 
 Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxNode) {
-	
+
 }
 
 
@@ -16,8 +16,13 @@ ObjectType Building::getType() {
 	return BUILDING;
 }
 
+int Building::getSubType() {
+	return buildingType;
+}
+
 void Building::populate(db_building* dbBuilding) {
 	minimalDistance = dbBuilding->minDist;
+	buildingType = BuildingType(dbBuilding->type);
 }
 
 void Building::absorbAttack(double attackCoef) {

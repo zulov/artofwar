@@ -275,5 +275,12 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 		text->SetText((*selectedInfo->getMessage()));
 		text->SetFont(font, 12);
 		selectedInfoWindow->AddChild(text);
+		String**lines = selectedInfo->getLines();
+		for (int i = 0; i < SELECTED_INFO_SIZE; ++i) {
+			Text* text = new Text(Game::get()->getContext());
+			text->SetText((*lines[i]));
+			text->SetFont(font, 12);
+			selectedInfoWindow->AddChild(text);
+		}
 	}
 }

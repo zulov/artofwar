@@ -54,7 +54,7 @@ void Controls::unSelect(int type) {
 	selected->clear();
 	selectedType = ObjectType(type);
 	selectedInfo->setSelectedType(selectedType);
-	selectedInfo->setAllNumber(selected->size());
+	selectedInfo->reset();
 }
 
 //void Controls::action(ActionType action, Entity* entity) {
@@ -71,7 +71,8 @@ void Controls::select(Entity* entity) {
 
 	entity->select();
 	selected->push_back(entity);
-
+	int subType = entity->getSubType();
+	selectedInfo->incNumberAt(subType);
 	selectedType = entityType;
 	selectedInfo->setSelectedType(selectedType);
 	selectedInfo->setAllNumber(selected->size());

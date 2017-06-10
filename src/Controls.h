@@ -72,4 +72,5 @@ private:
 	UnitType toDeploy;
 	Entity* temp;
 	SelectedInfo* selectedInfo;
+	int selectedEntititesTypes[SELECTED_INFO_SIZE];
 };

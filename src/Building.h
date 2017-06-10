@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "BuildingType.h"
 
 struct db_building;
 
@@ -8,7 +9,10 @@ public:
 	Building(Vector3 *_position, Urho3D::Node* _boxNode);
 	~Building();
 	ObjectType getType() override;
+	int getSubType() override;
 	void populate(db_building* dbBuilding);
 	void absorbAttack(double attackCoef) override;
+private:
+	BuildingType buildingType;
 };
 

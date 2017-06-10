@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "Entity.h"
 #include "UnitState.h"
+#include "UnitType.h"
 
 using namespace Urho3D;
 
@@ -18,6 +19,7 @@ public:
 	void move(double timeStep);
 	void applyForce(double timeStep);
 	ObjectType getType() override;
+	int getSubType() override;
 	void select() override;
 	void unSelect() override;
 	void setAcceleration(Vector3* _acceleration);
@@ -51,6 +53,7 @@ private:
 	double unitRadius = 2;
 	Node* healthBar;
 	UnitState unitState;
+	UnitType unitType;
 
 	double hpCoef = 100;
 	double maxHpCoef = 100;

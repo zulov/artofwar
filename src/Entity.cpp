@@ -62,6 +62,10 @@ ObjectType Entity::getType() {
 	return ENTITY;
 }
 
+int Entity::getSubType() {
+	return -1;
+}
+
 void Entity::select() {
 }
 
