@@ -102,25 +102,53 @@ void Hud::createUnits() {
 	unitsWindow->SetTiled(true);
 	unitsWindow->SetVisible(false);
 
-	std::array<UnitType, 5> units{{WARRIOR, PIKEMAN,CAVALRY,ARCHER ,WORKER}};
+	std::array<UnitType, 5> units{{WARRIOR, PIKEMAN, CAVALRY, ARCHER ,WORKER}};
 	createUnitIcons(units);
+}
+
+Button* Hud::simpleButton(Urho3D::Sprite* sprite) {
+	Button* button = new Button(Game::get()->getContext());
+	button->SetStyleAuto(style);
+	button->SetFixedSize(hudSize->icon_size_x, hudSize->icon_size_y);
+	button->AddChild(sprite);
+	return button;
+}
+
+Sprite* Hud::createSprite(Texture2D* texture) {
+	Urho3D::Sprite* sprite = new Sprite(Game::get()->getContext());
+
+	sprite->SetTexture(texture);
+	int textureWidth = texture->GetWidth();
+	int textureHeight = texture->GetHeight();
+	double scaleX = (hudSize->icon_size_x - hudSize->space_size_x) / (double)textureWidth;
+	double scaleY = (hudSize->icon_size_y - hudSize->space_size_y) / (double)textureHeight;
+	if (scaleX < scaleY) {
+		sprite->SetScale(scaleX);
+	} else {
+		sprite->SetScale(scaleY);
+	}
+
+	sprite->SetSize(textureWidth, textureHeight);
+	sprite->SetHotSpot(textureWidth / 2, textureHeight / 2);
+	sprite->SetAlignment(HA_CENTER, VA_CENTER);
+	sprite->SetOpacity(0.9f);
+	return sprite;
 }
 
 template <std::size_t SIZE>
 void Hud::createBuildingIcons(std::array<BuildingType, SIZE> buildings) {
 	for (BuildingType type : buildings) {
 		db_building_type* buidling = Game::get()->getDatabaseCache()->getBuildingType(type);
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/" + hudSize->name + "/" + buidling->icon);
-		Button* button = new Button(Game::get()->getContext());
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + buidling->icon);
 
-		button->SetStyle("Icon", style);
-		button->SetTexture(texture);
-		button->SetFixedSize(hudSize->icon_size_x, hudSize->icon_size_y);
-		button->SetTiled(true);
+		Sprite* sprite = createSprite(texture);
+
+		Button* button = simpleButton(sprite);
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setBuildingType(type);
 		button->SetVar("HudElement", hudElement);
+
 		buttons->push_back(hudElement);
 		buildWindow->AddChild(button);
 	}
@@ -130,13 +158,12 @@ template <std::size_t SIZE>
 void Hud::createUnitIcons(std::array<UnitType, SIZE> units) {
 	for (UnitType type : units) {
 		db_unit_type* unit = Game::get()->getDatabaseCache()->getUnitType(type);
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/" + hudSize->name + "/" + unit->icon);
-		Button* button = new Button(Game::get()->getContext());
 
-		button->SetStyle("Icon", style);
-		button->SetTexture(texture);
-		button->SetFixedSize(hudSize->icon_size_x, hudSize->icon_size_y);
-		button->SetTiled(true);
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
+
+		Sprite* sprite = createSprite(texture);
+
+		Button* button = simpleButton(sprite);
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setUnitType(type);

@@ -63,6 +63,8 @@ private:
 	XMLFile* style;
 	db_hud_size* hudSize;
 	Font* font;
+	Button* simpleButton(Urho3D::Sprite* sprite);
+	Sprite* createSprite(Texture2D* texture);
 	template<std::size_t SIZE>
 	void createBuildingIcons(std::array<BuildingType, SIZE> buildings);
 	template<std::size_t SIZE>
