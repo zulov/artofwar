@@ -28,6 +28,16 @@ INSERT INTO `unit_type` (id,name,icon) VALUES (0,'warrior','warrior.png'),
  (2,'cavalry','cavalry.png'),
  (3,'archer','bow.png'),
  (4,'worker','hammer.png');
+CREATE TABLE `resource` (
+	`id`	INTEGER,
+	`name`	TEXT,
+	`icon`	TEXT,
+	PRIMARY KEY(`id`)
+);
+INSERT INTO `resource` (id,name,icon) VALUES (0,'gold','gold.png'),
+ (1,'wood','wood.png'),
+ (2,'food','food.png'),
+ (3,'stone','stone.png');
 CREATE TABLE `nation` (
 	`id`	INTEGER,
 	`name`	TEXT,

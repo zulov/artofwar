@@ -19,6 +19,9 @@ public:
 	db_building_type* getBuildingType(int i);
 	db_unit_type* getUnitType(int i);
 	db_nation* getNation(int i);
+	db_resource* getResource(int i);
+
+	int getResourceSize();
 private:
 	db_container* dbContainer;
 	sqlite3* database;

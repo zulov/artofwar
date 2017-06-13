@@ -106,22 +106,22 @@ void Hud::createUnits() {
 	createUnitIcons(units);
 }
 
-Button* Hud::simpleButton(Urho3D::Sprite* sprite) {
+Button* Hud::simpleButton(Urho3D::Sprite* sprite, int sizeX, int sizeY) {
 	Button* button = new Button(Game::get()->getContext());
 	button->SetStyleAuto(style);
-	button->SetFixedSize(hudSize->icon_size_x, hudSize->icon_size_y);
+	button->SetFixedSize(sizeX, sizeY);
 	button->AddChild(sprite);
 	return button;
 }
 
-Sprite* Hud::createSprite(Texture2D* texture) {
+Sprite* Hud::createSprite(Texture2D* texture, int sizeX, int sizeY) {
 	Urho3D::Sprite* sprite = new Sprite(Game::get()->getContext());
 
 	sprite->SetTexture(texture);
 	int textureWidth = texture->GetWidth();
 	int textureHeight = texture->GetHeight();
-	double scaleX = (hudSize->icon_size_x - hudSize->space_size_x) / (double)textureWidth;
-	double scaleY = (hudSize->icon_size_y - hudSize->space_size_y) / (double)textureHeight;
+	double scaleX = (sizeX) / (double)textureWidth;
+	double scaleY = (sizeY) / (double)textureHeight;
 	if (scaleX < scaleY) {
 		sprite->SetScale(scaleX);
 	} else {
@@ -141,9 +141,8 @@ void Hud::createBuildingIcons(std::array<BuildingType, SIZE> buildings) {
 		db_building_type* buidling = Game::get()->getDatabaseCache()->getBuildingType(type);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + buidling->icon);
 
-		Sprite* sprite = createSprite(texture);
-
-		Button* button = simpleButton(sprite);
+		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
+		Button* button = simpleButton(sprite, hudSize->icon_size_x, hudSize->icon_size_y);
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setBuildingType(type);
@@ -161,9 +160,8 @@ void Hud::createUnitIcons(std::array<UnitType, SIZE> units) {
 
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
-		Sprite* sprite = createSprite(texture);
-
-		Button* button = simpleButton(sprite);
+		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
+		Button* button = simpleButton(sprite, hudSize->icon_size_x, hudSize->icon_size_y);
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setUnitType(type);
@@ -179,21 +177,24 @@ void Hud::createTop() {
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 
 	topWindow->SetMinWidth(512);
-	topWindow->SetMinHeight(24);
+	topWindow->SetMinHeight((hudSize->icon_size_y + 2 * hudSize->space_size_y) / 2);//TODO sprawdzic ten rozmiar czy to ma sens
 	topWindow->SetLayout(LM_HORIZONTAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_y, hudSize->space_size_x, hudSize->space_size_y));
 	topWindow->SetAlignment(HA_RIGHT, VA_TOP);
 	topWindow->SetName("Window");
 	topWindow->SetTexture(wood);
 	topWindow->SetTiled(true);
+	int size = Game::get()->getDatabaseCache()->getResourceSize();
 
-	String modes[] = {"Z³oto","Kamieñ","Drewno"};
-	for (String mode : modes) {
-		Text* text = new Text(Game::get()->getContext());
-		text->SetText(mode);
-		text->SetFont(font, 12);
-		topWindow->AddChild(text);
+	for (int i = 0; i < size; ++i) {
+		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + resource->icon);
+
+		Sprite* sprite = createSprite(texture, (hudSize->icon_size_x - hudSize->space_size_x) / 2, (hudSize->icon_size_y - hudSize->space_size_y) / 2);
+
+		Button* button = simpleButton(sprite, hudSize->icon_size_x * 2, hudSize->icon_size_y / 2);
+		
+		topWindow->AddChild(button);
 	}
-
 }
 
 void Hud::createSelectedInfo() {

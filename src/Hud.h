@@ -30,7 +30,8 @@
 
 using namespace Urho3D;
 
-class Hud {
+class Hud
+{
 public:
 	Hud();
 	~Hud();
@@ -38,9 +39,9 @@ public:
 	void createLogo();
 	void createDebugHud();
 	void createConsole();
-	void updateHud(Benchmark * benchmark, CameraManager *cameraManager);
-	std::vector<HudElement*> *getButtonsToSubscribe();
-	std::vector<HudElement*> *getListsToSubscribe();
+	void updateHud(Benchmark* benchmark, CameraManager* cameraManager);
+	std::vector<HudElement*>* getButtonsToSubscribe();
+	std::vector<HudElement*>* getListsToSubscribe();
 	void updateState(ControlsState state);
 	void updateSelected(SelectedInfo* selectedInfo);
 private:
@@ -49,29 +50,28 @@ private:
 	void createUnits();
 	void createTop();
 	void createSelectedInfo();
-	Window *menuWindow;
-	Window *miniMapWindow;
-	Window *topWindow;
-	Window *buildWindow;
-	Window *unitsWindow;
-	Window *selectedInfoWindow;
+	Window* menuWindow;
+	Window* miniMapWindow;
+	Window* topWindow;
+	Window* buildWindow;
+	Window* unitsWindow;
+	Window* selectedInfoWindow;
 
 	Text* fpsText;
-	std::vector<HudElement*> *buttons;
-	std::vector<HudElement*> *lists;
+	std::vector<HudElement*>* buttons;
+	std::vector<HudElement*>* lists;
 
 	XMLFile* style;
 	db_hud_size* hudSize;
 	Font* font;
-	Button* simpleButton(Urho3D::Sprite* sprite);
-	Sprite* createSprite(Texture2D* texture);
-	template<std::size_t SIZE>
+	Button* simpleButton(Urho3D::Sprite* sprite, int sizeX, int sizeY);
+	Sprite* createSprite(Texture2D* texture, int sizeX, int sizeY);
+	template <std::size_t SIZE>
 	void createBuildingIcons(std::array<BuildingType, SIZE> buildings);
-	template<std::size_t SIZE>
+	template <std::size_t SIZE>
 	void createUnitIcons(std::array<UnitType, SIZE> units);
-	template<std::size_t SIZE>
+	template <std::size_t SIZE>
 	void populateList(Font* font, DropDownList* dropDownList, std::array<String, SIZE> elements);
 
 	void initDropDownList(DropDownList* dropDownList);
 };
-
