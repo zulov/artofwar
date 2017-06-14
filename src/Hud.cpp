@@ -21,6 +21,7 @@ Hud::Hud() {
 	Game::get()->getUI()->SetCursor(cursor);
 
 	cursor->SetPosition(Game::get()->getGraphics()->GetWidth() / 2, Game::get()->getGraphics()->GetHeight() / 2);
+
 }
 
 
@@ -39,8 +40,8 @@ void Hud::populateList(Font* font, DropDownList* dropDownList, std::array<String
 }
 
 void Hud::initDropDownList(DropDownList* dropDownList) {
-	dropDownList->SetFixedHeight(24);
-	dropDownList->SetFixedWidth(120);
+	dropDownList->SetFixedHeight(hudSize->icon_size_x / 2);
+	dropDownList->SetFixedWidth(2 * hudSize->icon_size_x);
 	dropDownList->SetResizePopup(true);
 
 	dropDownList->SetStyleAuto(style);
@@ -77,7 +78,7 @@ void Hud::createBuild() {
 	Game::get()->getUI()->GetRoot()->AddChild(buildWindow);
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 	buildWindow->SetMinWidth(512);
-	buildWindow->SetMinHeight(64);
+	buildWindow->SetMinHeight(hudSize->icon_size_y + 2 * hudSize->space_size_y);
 	buildWindow->SetLayout(LM_HORIZONTAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_y, hudSize->space_size_x, hudSize->space_size_y));
 	buildWindow->SetAlignment(HA_LEFT, VA_BOTTOM);
 	buildWindow->SetPosition(2 * (hudSize->icon_size_x + hudSize->space_size_x), 0);
@@ -94,7 +95,7 @@ void Hud::createUnits() {
 	Game::get()->getUI()->GetRoot()->AddChild(unitsWindow);
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 	unitsWindow->SetMinWidth(512);
-	unitsWindow->SetMinHeight(hudSize->space_size_y + 2 * hudSize->space_size_y);
+	unitsWindow->SetMinHeight(hudSize->icon_size_y + 2 * hudSize->space_size_y);
 	unitsWindow->SetLayout(LM_HORIZONTAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_y, hudSize->space_size_x, hudSize->space_size_y));
 	unitsWindow->SetAlignment(HA_LEFT, VA_BOTTOM);
 	unitsWindow->SetPosition(2 * (hudSize->icon_size_x + hudSize->space_size_x), 0);
@@ -192,7 +193,7 @@ void Hud::createTop() {
 		Sprite* sprite = createSprite(texture, (hudSize->icon_size_x - hudSize->space_size_x) / 2, (hudSize->icon_size_y - hudSize->space_size_y) / 2);
 
 		Button* button = simpleButton(sprite, hudSize->icon_size_x * 2, hudSize->icon_size_y / 2);
-		
+
 		topWindow->AddChild(button);
 	}
 }
@@ -203,8 +204,8 @@ void Hud::createSelectedInfo() {
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 
 	selectedInfoWindow->SetMinWidth(512);
-	selectedInfoWindow->SetMinHeight(64);
-	selectedInfoWindow->SetLayout(LM_HORIZONTAL, 6, IntRect(6, 6, 6, 6));
+	selectedInfoWindow->SetMinHeight(hudSize->icon_size_y + 2 * hudSize->space_size_y);
+	selectedInfoWindow->SetLayout(LM_HORIZONTAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_y, hudSize->space_size_x, hudSize->space_size_y));
 	selectedInfoWindow->SetAlignment(HA_CENTER, VA_BOTTOM);
 	selectedInfoWindow->SetName("Window");
 	selectedInfoWindow->SetTexture(wood);
@@ -271,6 +272,7 @@ void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {
 }
 
 std::vector<HudElement*>* Hud::getButtonsToSubscribe() {
+	//SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleUIButtton));
 	return buttons;
 }
 

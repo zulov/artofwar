@@ -30,7 +30,7 @@
 
 using namespace Urho3D;
 
-class Hud
+class Hud 
 {
 public:
 	Hud();
