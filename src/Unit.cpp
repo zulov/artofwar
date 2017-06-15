@@ -12,8 +12,12 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxN
 }
 
 Unit::~Unit() {
-	//delete node;
-	//delete aims;
+	delete acceleration;
+	delete velocity;
+	aimPosition = nullptr;
+	if(aims) {
+		aims->reduce();
+	}
 }
 
 void Unit::populate(db_unit* definition) {
@@ -216,9 +220,7 @@ void Unit::applyForce(double timeStep) {
 			unitState = US_STOP;
 		}
 	} else {
-
 		rotation->x_ = velocity->x_;
-		rotation->y_ = velocity->y_;
 		rotation->z_ = velocity->z_;
 	}
 }

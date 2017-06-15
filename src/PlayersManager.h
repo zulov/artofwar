@@ -10,6 +10,7 @@ public:
 	~PlayersManager();
 	Player* getActivePlayer();
 	std::vector<Player*>* getTeam(int i);
+	void changeActive(int i);
 private:
 	Player* activePlayer;
 	std::vector<Player*>* allPlayers;

@@ -1,12 +1,17 @@
 #include "Resources.h"
+#include "Game.h"
 
 
 Resources::Resources() {
-	gold = 0;
-	wood = 0;
-	food = 0;
+	int size = Game::get()->getDatabaseCache()->getResourceSize();
+
+	for (int i = 0; i < size; ++i) {
+		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
+		names[i] = new String(resource->name);
+	}
 }
 
 
 Resources::~Resources() {
+
 }

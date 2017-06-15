@@ -24,3 +24,7 @@ Player* PlayersManager::getActivePlayer() {
 std::vector<Player*>* PlayersManager::getTeam(int i) {
 	return teams[i];
 }
+
+void PlayersManager::changeActive(int i) {
+	activePlayer = (*allPlayers)[i];
+}
