@@ -130,6 +130,9 @@
     <ClCompile Include="src\SelectedInfo.cpp">
       <Filter>control</Filter>
     </ClCompile>
+    <ClCompile Include="src\ResourceEntity.cpp">
+      <Filter>objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -284,6 +287,9 @@
     </ClInclude>
     <ClInclude Include="src\SelectedInfo.h">
       <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceEntity.h">
+      <Filter>objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

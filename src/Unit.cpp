@@ -251,10 +251,10 @@ void Unit::select() {
 }
 
 void Unit::unSelect() {
-	Node* child1 = healthBar;
-	if (child1) {
-		child1->RemoveAllChildren();
-		node->RemoveChild(child1);
+	Node* child = healthBar;
+	if (child) {
+		child->RemoveAllChildren();
+		node->RemoveChild(child);
 		healthBar = nullptr;
 	}
 

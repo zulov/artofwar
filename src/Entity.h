@@ -14,7 +14,7 @@ using namespace Urho3D;
 class Entity
 {
 public:
-	Entity(Vector3* _position, Urho3D::Node* _boxNode);
+	Entity(Vector3* _position, Urho3D::Node* _node);
 	virtual ~Entity();
 	Vector3* getPosition();
 	double getMinimalDistance();

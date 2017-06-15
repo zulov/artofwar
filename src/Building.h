@@ -6,7 +6,7 @@ struct db_building;
 
 class Building : public Entity {
 public:
-	Building(Vector3 *_position, Urho3D::Node* _boxNode);
+	Building(Vector3 *_position, Urho3D::Node* _node);
 	~Building();
 	ObjectType getType() override;
 	int getSubType() override;
