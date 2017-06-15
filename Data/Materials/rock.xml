@@ -1,0 +1,6 @@
+<material>
+	<technique name="Techniques/Diff.xml"/>
+	<texture name="Textures/stone.tga" unit="diffuse"/>
+	<parameter name="MatDiffColor" value="0.588 0.588 0.588 1"/>
+	<parameter name="MatSpecColor" value="0 0 0 6"/>
+</material>

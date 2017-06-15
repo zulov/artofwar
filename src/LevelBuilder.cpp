@@ -17,6 +17,9 @@ SharedPtr<Scene> LevelBuilder::createScene() {
 	Entity* zone = createZone();
 	Entity* light = createLight();
 	Entity* ground = createGround();
+	Entity* tree = createTree();
+	Entity* rock = createRock();
+	Entity* gold = createGold();
 
 	objectManager->add(zone);
 	objectManager->add(light);
@@ -27,6 +30,45 @@ SharedPtr<Scene> LevelBuilder::createScene() {
 
 void LevelBuilder::execute() {
 	//buildList->execute();
+}
+
+Entity* LevelBuilder::createRock() {
+	Node* node = scene->CreateChild("Tree");
+
+	node->SetPosition(Vector3(30, 0.0f, 0));
+	StaticModel* planeObject = node->CreateComponent<StaticModel>();
+	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/rock.mdl"));
+	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/rock.xml"));
+
+
+	Entity* entity = new Entity(new Vector3(), node);
+	return entity;
+}
+
+Entity* LevelBuilder::createGold() {
+	Node* node = scene->CreateChild("Tree");
+
+	node->SetPosition(Vector3(20, 0.0f, 0));
+	StaticModel* planeObject = node->CreateComponent<StaticModel>();
+	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/rock.mdl"));
+	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/gold.xml"));
+
+
+	Entity* entity = new Entity(new Vector3(), node);
+	return entity;
+}
+
+Entity* LevelBuilder::createTree() {
+	Node* node = scene->CreateChild("Tree");
+
+	node->SetPosition(Vector3(0, 0.0f, 0));
+	StaticModel* planeObject = node->CreateComponent<StaticModel>();
+	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/tree.mdl"));
+	planeObject->SetMaterial(0, Game::get()->getCache()->GetResource<Material>("Materials/tree0.xml"));
+	planeObject->SetMaterial(1, Game::get()->getCache()->GetResource<Material>("Materials/tree1.xml"));
+
+	Entity* entity = new Entity(new Vector3(), node);
+	return entity;
 }
 
 
@@ -56,7 +98,7 @@ Entity* LevelBuilder::createLight() {
 Entity* LevelBuilder::createGround() {
 	Node* planeNode = scene->CreateChild("Ground");
 	planeNode->SetScale(Vector3(300, 1.0f, 300));
-	planeNode->SetPosition(Vector3(0, -1.0f, 0));
+	planeNode->SetPosition(Vector3());
 	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
 	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/Plane.mdl"));
 	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/StoneTiled.xml"));

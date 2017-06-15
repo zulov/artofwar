@@ -21,8 +21,12 @@ public:
 	~LevelBuilder();
 	SharedPtr<Scene> createScene();
 	void execute();
+	Entity* createRock();
+	Entity* createGold();
+
 private:
 	SharedPtr<Urho3D::Scene> scene;
+	Entity* createTree();
 	Entity* createZone();
 	Entity* createLight();
 	Entity* createGround();

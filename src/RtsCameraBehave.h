@@ -3,7 +3,8 @@
 
 using namespace Urho3D;
 
-class RtsCameraBehave : public CameraBehave {
+class RtsCameraBehave : public CameraBehave
+{
 public:
 	RtsCameraBehave();
 	~RtsCameraBehave();
@@ -14,6 +15,5 @@ public:
 	virtual Urho3D::String getInfo();
 	virtual MouseMode getMouseMode();
 private:
-	float maxY=200, minY=5;
+	float maxY = 200, minY = 3;
 };
-
