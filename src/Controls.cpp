@@ -139,9 +139,13 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {//TODO referenc
 void Controls::rightClick(Drawable* hitDrawable, Vector3 hitPos) {
 	Node* hitNode = hitDrawable->GetNode();
 	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
-	if (hitNode->GetName() == "Box") {
-		unSelect(ENTITY);
-	} else if (hitNode->GetName() == "Ground") {
+	LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+	Entity* clicked = lc->getEntity();
+	ObjectType type = clicked->getType();
+	switch (type) {
+
+	case ENTITY:
+		{
 		Vector3* pos = new Vector3(hitPos);
 		ActionCommand* command;
 		if (shiftPressed) {
@@ -151,6 +155,16 @@ void Controls::rightClick(Drawable* hitDrawable, Vector3 hitPos) {
 		}
 
 		Game::get()->getActionCommandList()->add(command);
+		break;
+		}
+	case UNIT:
+		{
+		unSelect(ENTITY);
+		break;
+		}
+	case BUILDING: break;
+	case RESOURCE: break;
+	default: ;
 	}
 }
 

@@ -1,11 +1,24 @@
 #include "ResourceEntity.h"
 
 
-
-
 ResourceEntity::ResourceEntity(Vector3* _position, Urho3D::Node* _node) : Entity(_position, _node) {
 }
 
-ResourceEntity::~ResourceEntity()
-{
+ResourceEntity::~ResourceEntity() {
+	if(name) {
+		delete name;
+	}
+}
+
+ObjectType ResourceEntity::getType() {
+	return RESOURCE;
+}
+
+int ResourceEntity::getSubType() {
+	return type;
+}
+
+void ResourceEntity::populate(db_resource* dbResource) {
+	type = dbResource->id;
+	name = new String(dbResource->name);
 }

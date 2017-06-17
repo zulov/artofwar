@@ -238,7 +238,7 @@ void Unit::select() {
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
 
 
-	healthBar = node->CreateChild("healthBar");
+	healthBar = node->CreateChild();
 	double healthBarSize = 2 * (hpCoef / maxHpCoef);
 	if (healthBarSize <= 0) { healthBarSize = 0; }
 	healthBar->SetScale(Vector3(healthBarSize, 0.3, 0.3f));

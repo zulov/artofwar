@@ -54,7 +54,7 @@ std::vector<Building*>* BuildingFactory::create(unsigned int number, BuildingTyp
 		for (int x = 0; x < xMax; ++x) {
 			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_, y * space + center->z_ - sideSize);
 
-			Node* node = game->getScene()->CreateChild("Building");
+			Node* node = game->getScene()->CreateChild();
 			node->SetPosition(*position);
 
 			Urho3D::StaticModel* model = node->CreateComponent<Urho3D::StaticModel>();

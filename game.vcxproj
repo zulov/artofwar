@@ -208,6 +208,7 @@
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PlayersManager.cpp" />
     <ClCompile Include="src\ResourceEntity.cpp" />
+    <ClCompile Include="src\ResourceFactory.cpp" />
     <ClCompile Include="src\Resources.cpp" />
     <ClCompile Include="src\SelectedInfo.cpp" />
     <ClCompile Include="src\SimulationCommand.cpp" />
@@ -261,7 +262,9 @@
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\PlayersManager.h" />
     <ClInclude Include="src\ResourceEntity.h" />
+    <ClInclude Include="src\ResourceFactory.h" />
     <ClInclude Include="src\Resources.h" />
+    <ClInclude Include="src\ResourceType.h" />
     <ClInclude Include="src\SelectedInfo.h" />
     <ClInclude Include="src\SimulationCommand.h" />
     <ClInclude Include="src\CommandSelect.h" />

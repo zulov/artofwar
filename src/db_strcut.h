@@ -7,6 +7,8 @@
 #define NATION_NUMBER_DB 50
 #define RESOURCE_NUMBER_DB 4
 
+#define SPLIT_SIGN '\n'
+
 #include <Urho3D/Container/Str.h>
 
 struct db_unit
@@ -143,12 +145,18 @@ struct db_resource
 	int id;
 	Urho3D::String name;
 	Urho3D::String icon;
+	int maxCapacity;
+	Urho3D::Vector<Urho3D::String> texture;
+	Urho3D::String model;
 
 
-	db_resource(int id, char* name, char* icon)
+	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model)
 		: id(id),
 		name(name),
-		icon(icon) {
+		icon(icon),
+		maxCapacity(maxCapacity),
+		texture(Urho3D::String(texture).Split(SPLIT_SIGN)),
+		model(model) {
 	}
 };
 

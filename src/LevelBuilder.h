@@ -11,6 +11,9 @@
 #include "Entity.h"
 #include "Game.h"
 #include "SceneObjectManager.h"
+#include "ResourceEntity.h"
+#include "ResourceType.h"
+#include "ResourceEntity.h"
 
 using namespace Urho3D;
 
@@ -21,12 +24,11 @@ public:
 	~LevelBuilder();
 	SharedPtr<Scene> createScene();
 	void execute();
-	Entity* createRock();
-	Entity* createGold();
+	
 
 private:
 	SharedPtr<Urho3D::Scene> scene;
-	Entity* createTree();
+
 	Entity* createZone();
 	Entity* createLight();
 	Entity* createGround();

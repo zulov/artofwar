@@ -32,7 +32,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, UnitType unitType, Vect
 	while (produced < number) {
 		for (int x = 0; x < xMax; ++x) {
 			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_, y * space + center->z_ - sideSize);
-			Node* node = game->getScene()->CreateChild("Box");
+			Node* node = game->getScene()->CreateChild();
 			node->SetPosition(*position);
 
 			StaticModel* model = node->CreateComponent<StaticModel>();

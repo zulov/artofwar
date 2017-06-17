@@ -17,9 +17,9 @@ SharedPtr<Scene> LevelBuilder::createScene() {
 	Entity* zone = createZone();
 	Entity* light = createLight();
 	Entity* ground = createGround();
-	Entity* tree = createTree();
-	Entity* rock = createRock();
-	Entity* gold = createGold();
+	//Entity* tree = createResource(ResourceType::WOOD, new Vector3(20, 0.0f, 0));
+	//Entity* rock = createResource(ResourceType::STONE, new Vector3(30, 0.0f, 0));
+	//Entity* gold = createResource(ResourceType::GOLD, new Vector3(40, 0.0f, 0));
 
 	objectManager->add(zone);
 	objectManager->add(light);
@@ -32,48 +32,8 @@ void LevelBuilder::execute() {
 	//buildList->execute();
 }
 
-Entity* LevelBuilder::createRock() {
-	Node* node = scene->CreateChild("Tree");
-
-	node->SetPosition(Vector3(30, 0.0f, 0));
-	StaticModel* planeObject = node->CreateComponent<StaticModel>();
-	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/rock.mdl"));
-	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/rock.xml"));
-
-
-	Entity* entity = new Entity(new Vector3(), node);
-	return entity;
-}
-
-Entity* LevelBuilder::createGold() {
-	Node* node = scene->CreateChild("Tree");
-
-	node->SetPosition(Vector3(20, 0.0f, 0));
-	StaticModel* planeObject = node->CreateComponent<StaticModel>();
-	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/rock.mdl"));
-	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/gold.xml"));
-
-
-	Entity* entity = new Entity(new Vector3(), node);
-	return entity;
-}
-
-Entity* LevelBuilder::createTree() {
-	Node* node = scene->CreateChild("Tree");
-
-	node->SetPosition(Vector3(0, 0.0f, 0));
-	StaticModel* planeObject = node->CreateComponent<StaticModel>();
-	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/tree.mdl"));
-	planeObject->SetMaterial(0, Game::get()->getCache()->GetResource<Material>("Materials/tree0.xml"));
-	planeObject->SetMaterial(1, Game::get()->getCache()->GetResource<Material>("Materials/tree1.xml"));
-
-	Entity* entity = new Entity(new Vector3(), node);
-	return entity;
-}
-
-
 Entity* LevelBuilder::createZone() {
-	Node* zoneNode = scene->CreateChild("Zone");
+	Node* zoneNode = scene->CreateChild();
 	Zone* zone = zoneNode->CreateComponent<Zone>();
 	zone->SetBoundingBox(BoundingBox(-1000.0f, 1000.0f));
 	zone->SetFogColor(Color(0.15f, 0.15f, 0.3f));
@@ -85,7 +45,7 @@ Entity* LevelBuilder::createZone() {
 }
 
 Entity* LevelBuilder::createLight() {
-	Node* lightNode = scene->CreateChild("DirectionalLight");
+	Node* lightNode = scene->CreateChild();
 	lightNode->SetDirection(Vector3(0.6f, -1.0f, 0.8f)); // The direction vector does not need to be normalized
 	Light* light = lightNode->CreateComponent<Light>();
 	light->SetLightType(LIGHT_DIRECTIONAL);
@@ -96,7 +56,7 @@ Entity* LevelBuilder::createLight() {
 }
 
 Entity* LevelBuilder::createGround() {
-	Node* planeNode = scene->CreateChild("Ground");
+	Node* planeNode = scene->CreateChild();
 	planeNode->SetScale(Vector3(300, 1.0f, 300));
 	planeNode->SetPosition(Vector3());
 	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();

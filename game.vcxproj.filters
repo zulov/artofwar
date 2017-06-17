@@ -133,6 +133,9 @@
     <ClCompile Include="src\ResourceEntity.cpp">
       <Filter>objects</Filter>
     </ClCompile>
+    <ClCompile Include="src\ResourceFactory.cpp">
+      <Filter>objects\collection\factory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -290,6 +293,10 @@
     </ClInclude>
     <ClInclude Include="src\ResourceEntity.h">
       <Filter>objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceType.h" />
+    <ClInclude Include="src\ResourceFactory.h">
+      <Filter>objects\collection\factory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
