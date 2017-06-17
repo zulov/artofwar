@@ -17,9 +17,6 @@ SharedPtr<Scene> LevelBuilder::createScene() {
 	Entity* zone = createZone();
 	Entity* light = createLight();
 	Entity* ground = createGround();
-	//Entity* tree = createResource(ResourceType::WOOD, new Vector3(20, 0.0f, 0));
-	//Entity* rock = createResource(ResourceType::STONE, new Vector3(30, 0.0f, 0));
-	//Entity* gold = createResource(ResourceType::GOLD, new Vector3(40, 0.0f, 0));
 
 	objectManager->add(zone);
 	objectManager->add(light);

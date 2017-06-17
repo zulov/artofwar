@@ -3,21 +3,25 @@
 
 SimulationCommand::SimulationCommand(int _number, BuildingType _buildingType, Vector3* _position, SpacingType _spacingType, int _player) {
 	number = _number;
-	buildingType = _buildingType;
 	position = _position;
-	position->y_ = 0;
 	spacingType = _spacingType;
-	objectType = ObjectType::BUILDING;
 	player = _player;
+
+	buildingType = _buildingType;
+	objectType = ObjectType::BUILDING;
 }
 
 SimulationCommand::SimulationCommand(int _number, UnitType _unitType, Vector3* _position, SpacingType _spacingType, int _player) {
 	number = _number;
-	unitType = _unitType;
 	position = _position;
 	spacingType = _spacingType;
-	objectType = ObjectType::UNIT;
 	player = _player;
+
+	unitType = _unitType;
+	objectType = ObjectType::UNIT;
+}
+
+SimulationCommand::SimulationCommand(int _number, ResourceType _resourceType, Vector3* _position, SpacingType _spacingType, int _player) {
 }
 
 SimulationCommand::~SimulationCommand() {
@@ -31,9 +35,11 @@ void SimulationCommand::execute() {
 		simulationObjectManager->addUnits(number, unitType, position, spacingType, player);
 		break;
 	case BUILDING:
-		simulationObjectManager->addBuildings(number, buildingType, position, spacingType);
+		simulationObjectManager->addBuildings(number, buildingType, position, spacingType, player);
 		break;
-	case RESOURCE: break;
+	case RESOURCE: 
+		simulationObjectManager->addResources(number, resourceType, position, spacingType);
+		break;
 
 	}
 }

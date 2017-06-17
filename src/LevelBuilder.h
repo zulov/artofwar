@@ -11,9 +11,7 @@
 #include "Entity.h"
 #include "Game.h"
 #include "SceneObjectManager.h"
-#include "ResourceEntity.h"
-#include "ResourceType.h"
-#include "ResourceEntity.h"
+
 
 using namespace Urho3D;
 

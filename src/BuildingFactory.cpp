@@ -9,32 +9,6 @@ BuildingFactory::BuildingFactory(): EntityFactory() {
 BuildingFactory::~BuildingFactory() {
 }
 
-String BuildingFactory::getModelName(BuildingType building) {
-	switch (building) {
-	case BARRACKS:
-		return "Barracks.mdl";
-	case HOUSE:
-		return "House.mdl";
-	case TOWER:
-		return "Tower.mdl";
-	case ARCHERY_RANGE:
-		return "Cylinder.mdl";
-	}
-}
-
-String BuildingFactory::getMaterialName(BuildingType building) {
-	switch (building) {
-	case BARRACKS:
-		return "barracks.xml";
-	case HOUSE:
-		return "house.xml";
-	case TOWER:
-		return "tower.xml";
-	case ARCHERY_RANGE:
-		return "cylinder.xml";
-	}
-}
-
 std::vector<Building*>* BuildingFactory::create(unsigned int number, BuildingType buildingType, Vector3* center, SpacingType spacingType) {//TODO nie typ a id konkretnej jednostki
 	std::vector<Building*>* buildings = new std::vector<Building *>();
 	buildings->reserve(number);

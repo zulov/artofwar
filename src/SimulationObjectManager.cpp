@@ -4,10 +4,17 @@
 SimulationObjectManager::SimulationObjectManager() {
 	units = new std::vector<Unit*>();
 	buildings = new std::vector<Building*>();
+	resources = new std::vector<ResourceEntity*>();
 	entities = new std::vector<Entity*>();
+	
+	units->reserve(10000);
+	buildings->reserve(1000);
+	resources->reserve(1000);
+	entities->reserve(20000);
 
 	unitFactory = new UnitFactory();
 	buildingFactory = new BuildingFactory();
+	resourceFactory = new ResourceFactory();
 }
 
 
@@ -15,9 +22,11 @@ SimulationObjectManager::~SimulationObjectManager() {
 	delete units;
 	delete buildings;
 	delete entities;
+	delete resources;
 
 	delete unitFactory;
 	delete buildingFactory;
+	delete resourceFactory;
 }
 
 void SimulationObjectManager::add(Unit* unit) {
@@ -34,21 +43,32 @@ void SimulationObjectManager::add(Building* building) {
 	add(static_cast<Entity*>(building));
 }
 
+void SimulationObjectManager::add(ResourceEntity* resourceEntity) {
+	resources->push_back(resourceEntity);
+	add(static_cast<Entity*>(resourceEntity));
+}
+
 void SimulationObjectManager::addAll(std::vector<Unit*>* _units) {
-	for (int i = 0; i < _units->size(); ++i) {
-		add(_units->at(i));
+	for (auto entity : (*_units)) {
+		add(entity);
 	}
 }
 
 void SimulationObjectManager::addAll(std::vector<Building*>* _buildings) {
-	for (int i = 0; i < _buildings->size(); ++i) {
-		add(_buildings->at(i));
+	for (auto entity : (*_buildings)) {
+		add(entity);
 	}
 }
 
 void SimulationObjectManager::addAll(std::vector<Entity*>* _entities) {
-	for (int i = 0; i < _entities->size(); ++i) {
-		add(_entities->at(i));
+	for (auto entity : (*_entities)) {
+		add(entity);
+	}
+}
+
+void SimulationObjectManager::addAll(std::vector<ResourceEntity*>* _resources) {
+	for (auto entity : (*_resources)) {
+		add(entity);
 	}
 }
 
@@ -64,6 +84,10 @@ std::vector<Entity*>* SimulationObjectManager::getEntities() {
 	return entities;
 }
 
+std::vector<ResourceEntity*>* SimulationObjectManager::getResources() {
+	return resources;
+}
+
 void SimulationObjectManager::addUnits(unsigned int number, UnitType unitType, Vector3* center, SpacingType spacingType, int player) {
 	std::vector<Unit*>* newUnits = unitFactory->create(number, unitType, center, spacingType, player);
 	addAll(newUnits);
@@ -71,9 +95,16 @@ void SimulationObjectManager::addUnits(unsigned int number, UnitType unitType, V
 	delete center;
 }
 
-void SimulationObjectManager::addBuildings(unsigned int number, BuildingType buildingType, Vector3* center, SpacingType spacingType) {
+void SimulationObjectManager::addBuildings(unsigned int number, BuildingType buildingType, Vector3* center, SpacingType spacingType, int player) {
 	std::vector<Building*>* newBuildings = buildingFactory->create(number, buildingType, center, spacingType);
 	addAll(newBuildings);
 	delete newBuildings;
+	delete center;
+}
+
+void SimulationObjectManager::addResources(unsigned number, ResourceType resourceType, Vector3* center, SpacingType spacingType) {
+	std::vector<ResourceEntity*>* newResources = resourceFactory->create(number, resourceType, center, spacingType);
+	addAll(newResources);
+	delete newResources;
 	delete center;
 }
