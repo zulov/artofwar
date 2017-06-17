@@ -28,16 +28,21 @@ INSERT INTO `unit_type` (id,name,icon) VALUES (0,'warrior','warrior.png'),
  (2,'cavalry','cavalry.png'),
  (3,'archer','bow.png'),
  (4,'worker','hammer.png');
-CREATE TABLE `resource` (
+CREATE TABLE "resource" (
 	`id`	INTEGER,
 	`name`	TEXT,
 	`icon`	TEXT,
+	`maxCapacity`	INTEGER,
+	`texture`	TEXT,
+	`model`	TEXT,
 	PRIMARY KEY(`id`)
 );
-INSERT INTO `resource` (id,name,icon) VALUES (0,'gold','gold.png'),
- (1,'wood','wood.png'),
- (2,'food','food.png'),
- (3,'stone','stone.png');
+INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model) VALUES (0,'gold','gold.png',1000,'gold.xml
+','rock.mdl'),
+ (1,'wood','wood.png',100,'tree0.xml
+tree1.xml','tree.mdl'),
+ (2,'food','food.png',100,'food.xml',NULL),
+ (3,'stone','stone.png',1000,'stone.xml','rock.mdl');
 CREATE TABLE `nation` (
 	`id`	INTEGER,
 	`name`	TEXT,
