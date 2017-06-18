@@ -110,14 +110,12 @@ void Simulation::calculateForces() {
 		Vector3* destForce = forceStrategy->destination(unit);
 		Vector3* rand = forceStrategy->randomForce();
 
-		Vector3* forces = new Vector3((*sepPedestrian) += (*sepObstacle) += (*destForce) += (*rand));
-		delete sepPedestrian;
+		(*sepPedestrian) += (*sepObstacle) += (*destForce) += (*rand);
+		unit->setAcceleration(sepPedestrian);
+
 		delete sepObstacle;
 		delete destForce;
 		delete rand;
-
-		unit->setAcceleration(forces);
-
 		delete neighbours;
 		delete buildings;
 	}

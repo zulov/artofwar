@@ -66,7 +66,7 @@ private:
 	std::pair<Entity*, Entity*>* rightHeld;
 
 	Input* input;
-	double clickDistance = 2;
+	double clickDistance = 2 * 2;
 	ControlsState state = ControlsState::SELECT;
 	BuildingType toBuild;
 	UnitType toDeploy;

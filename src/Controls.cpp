@@ -204,40 +204,41 @@ void Controls::rightHold(std::pair<Entity*, Entity*>* pair) {
 void Controls::release(const int button) {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
-
-	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		switch (button) {
-		case MOUSEB_LEFT:
-			if (mouseLeftHeld == true) {
-				mouseLeftHeld = false;
-				leftHeld->second = new Entity(new Vector3(hitPos), nullptr);//TODO moze to ca³e entity to za duzo?
-				double dist = (*(leftHeld->first->getPosition()) - *(leftHeld->second->getPosition())).Length();
-				if (dist > clickDistance) {
-					leftHold(leftHeld);
-				} else {
-					leftClick(hitDrawable, hitPos);
+	if (mouseLeftHeld == true || mouseRightHeld == true || mouseMiddleHeld == true) {
+		if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
+			switch (button) {
+			case MOUSEB_LEFT:
+				if (mouseLeftHeld == true) {
+					mouseLeftHeld = false;
+					leftHeld->second = new Entity(new Vector3(hitPos), nullptr);//TODO moze to ca³e entity to za duzo?
+					double dist = (*(leftHeld->first->getPosition()) - *(leftHeld->second->getPosition())).LengthSquared();
+					if (dist > clickDistance) {
+						leftHold(leftHeld);
+					} else {
+						leftClick(hitDrawable, hitPos);
+					}
 				}
-			}
-			break;
-		case MOUSEB_RIGHT:
-			if (mouseRightHeld == true) {
-				mouseRightHeld = false;
-				Entity* entity = new Entity(new Vector3(hitPos), nullptr);
-				rightHeld->second = entity;
-				double dist = (*(rightHeld->first->getPosition()) - *(rightHeld->second->getPosition())).Length();
-				if (dist > clickDistance) {
-					rightHold(rightHeld);
-				} else {
-					rightClick(hitDrawable, hitPos);
+				break;
+			case MOUSEB_RIGHT:
+				if (mouseRightHeld == true) {
+					mouseRightHeld = false;
+					Entity* entity = new Entity(new Vector3(hitPos), nullptr);
+					rightHeld->second = entity;
+					double dist = (*(rightHeld->first->getPosition()) - *(rightHeld->second->getPosition())).LengthSquared();
+					if (dist > clickDistance) {
+						rightHold(rightHeld);
+					} else {
+						rightClick(hitDrawable, hitPos);
+					}
 				}
+				break;
+			case MOUSEB_MIDDLE:
+				if (mouseMiddleHeld == true) {
+					mouseMiddleHeld = false;
+					middleHeld->second = new Entity(new Vector3(hitPos), nullptr);
+				}
+				break;
 			}
-			break;
-		case MOUSEB_MIDDLE:
-			if (mouseMiddleHeld == true) {
-				mouseMiddleHeld = false;
-				middleHeld->second = new Entity(new Vector3(hitPos), nullptr);
-			}
-			break;
 		}
 	}
 }
