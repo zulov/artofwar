@@ -8,22 +8,14 @@ UnitFactory::UnitFactory(): EntityFactory() {
 UnitFactory::~UnitFactory() {
 }
 
-double UnitFactory::getSpecSize(SpacingType spacing) {
-	switch (spacing) {
-	case CONSTANT:
-	case RANDOM:
-		return INIT_SPACE;
-	}
-}
-
-std::vector<Unit*>* UnitFactory::create(unsigned number, UnitType unitType, Vector3* center, SpacingType spacingType, int player) {
+std::vector<Unit*>* UnitFactory::create(unsigned number, UnitType unitType, Vector3* center, SpacingType spacing, int player) {
 	std::vector<Unit*>* units = new std::vector<Unit *>();
 	units->reserve(number);
 	Game* game = Game::get();
 	db_unit* dbUnit = game->getDatabaseCache()->getUnit(unitType);
 	String textureName = "Materials/" + dbUnit->texture;
 
-	double space = getSpecSize(spacingType);
+	double space = getSpecSize(spacing);
 	String modelName = "Models/" + dbUnit->model;
 	int produced = 0;
 	int y = 0;

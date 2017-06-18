@@ -18,8 +18,8 @@ public:
 	UnitFactory();
 	~UnitFactory();
 
-	double getSpecSize(SpacingType spacing);
-	std::vector<Unit*>* create(unsigned int number, UnitType unitType, Vector3 *center, SpacingType spacingType, int player);
+
+	std::vector<Unit*>* create(unsigned int number, UnitType unitType, Vector3 *center, SpacingType spacing, int player);
 
 };
 

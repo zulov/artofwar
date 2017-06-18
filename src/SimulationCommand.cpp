@@ -22,6 +22,13 @@ SimulationCommand::SimulationCommand(int _number, UnitType _unitType, Vector3* _
 }
 
 SimulationCommand::SimulationCommand(int _number, ResourceType _resourceType, Vector3* _position, SpacingType _spacingType, int _player) {
+	number = _number;
+	position = _position;
+	spacingType = _spacingType;
+	player = _player;
+
+	resourceType = _resourceType;
+	objectType = ObjectType::RESOURCE;
 }
 
 SimulationCommand::~SimulationCommand() {
