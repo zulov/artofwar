@@ -8,6 +8,7 @@ EnviromentStrategy::EnviromentStrategy() {
 	}
 
 	obstacleGrid = new BucketGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD);
+	resourceGrid = new BucketGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE);
 }
 
 
@@ -48,9 +49,8 @@ std::vector<Entity*>* EnviromentStrategy::getBuildings(Unit* unit, double radius
 
 std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGrid* bucketGrid, double radius) {
 	std::vector<Entity*>* neights = new std::vector<Entity *>();
-	
-
 	neights->reserve(10);//TODO sparametryzowac
+
 	double sqSeparationDistance = radius * radius;
 	Vector3* unitPosition = unit->getPosition();
 	BucketIterator* bucketIterator = bucketGrid->getArrayNeight(unit, radius);
@@ -66,6 +66,10 @@ std::vector<Entity *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGrid*
 	delete bucketIterator;
 
 	return neights;
+}
+
+std::vector<Entity*>* EnviromentStrategy::getResources(Unit* unit, double radius) {
+	return getNeighbours(unit, resourceGrid, radius);
 }
 
 void EnviromentStrategy::update(std::vector<Unit*>* units) {//TODO a jakby gridy same sie aktualizowaly a jako parametr dostawa³ tylko nowe te co dosta³y nie by³ oby potrzby przechowywania numerów?
