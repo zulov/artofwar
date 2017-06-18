@@ -23,7 +23,6 @@ private:
 	bool fieldInCircle(int i, int j, double radius);
 	std::vector<std::pair<int, int>*>* getEnvIndexs(double radius);
 	int getIntegerPos(double value);
-	void updateSizes(int size);
 	bool isInSide(int _posX, int _posZ) const;
 	Bucket*** bucketList;
 	int resolution;
@@ -34,7 +33,5 @@ private:
 	double diff = ((double)MAX_SEP_DIST) / RES_SEP_DIST;
 
 	std::vector<std::pair<int, int>*>** levelsCache;
-	int lastSize = 10;
-	int maxSize = 20;
 	Bucket *empty;
 };

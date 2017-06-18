@@ -136,6 +136,9 @@
     <ClCompile Include="src\ResourceFactory.cpp">
       <Filter>objects\collection\factory</Filter>
     </ClCompile>
+    <ClCompile Include="src\Gradient.cpp">
+      <Filter>simulation\env\gradient</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -298,6 +301,9 @@
     <ClInclude Include="src\ResourceFactory.h">
       <Filter>objects\collection\factory</Filter>
     </ClInclude>
+    <ClInclude Include="src\Gradient.h">
+      <Filter>simulation\env\gradient</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
@@ -360,6 +366,9 @@
     </Filter>
     <Filter Include="control">
       <UniqueIdentifier>{4f946446-b3a9-4105-986d-09d1da4734cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="simulation\env\gradient">
+      <UniqueIdentifier>{c34a7fa4-bcfc-4fee-8728-70d65e63d815}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

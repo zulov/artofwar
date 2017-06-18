@@ -21,6 +21,7 @@ BucketGrid::BucketGrid(int _resolution, double _size) {
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((((double)MAX_SEP_DIST) / RES_SEP_DIST) * i);
 	}
+	
 	empty = new Bucket();
 }
 
@@ -58,10 +59,6 @@ int BucketGrid::getIntegerPos(double value) {
 	} else {
 		return (int)(value / size * resolution);
 	}
-}
-
-void BucketGrid::updateSizes(int size) {
-	lastSize = size;
 }
 
 BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius) {

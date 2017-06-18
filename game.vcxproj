@@ -203,6 +203,7 @@
     <ClCompile Include="src\CameraBehave.cpp" />
     <ClCompile Include="src\CameraManager.cpp" />
     <ClCompile Include="src\DatabaseCache.cpp" />
+    <ClCompile Include="src\Gradient.cpp" />
     <ClCompile Include="src\HudElement.cpp" />
     <ClCompile Include="src\OperatorType.h" />
     <ClCompile Include="src\Player.cpp" />
@@ -258,6 +259,7 @@
     <ClInclude Include="src\CameraManager.h" />
     <ClInclude Include="src\DatabaseCache.h" />
     <ClInclude Include="src\db_strcut.h" />
+    <ClInclude Include="src\Gradient.h" />
     <ClInclude Include="src\HudElement.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\PlayersManager.h" />
