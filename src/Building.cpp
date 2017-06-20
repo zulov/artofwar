@@ -27,3 +27,11 @@ void Building::populate(db_building* dbBuilding) {
 
 void Building::absorbAttack(double attackCoef) {
 }
+
+bool Building::isInGrandient() {
+	return inGradient;
+}
+
+void Building::setInGradinet(bool _inGradient) {
+	inGradient = _inGradient;
+}

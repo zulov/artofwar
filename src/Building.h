@@ -12,7 +12,10 @@ public:
 	int getSubType() override;
 	void populate(db_building* dbBuilding);
 	void absorbAttack(double attackCoef) override;
+	bool isInGrandient();
+	void setInGradinet(bool _inGradient);
 private:
 	BuildingType buildingType;
+	bool inGradient = false;
 };
 

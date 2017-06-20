@@ -7,6 +7,14 @@ ForceStrategy::ForceStrategy() {
 ForceStrategy::~ForceStrategy() {
 }
 
+Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, Vector3* repulse) {
+	Vector3* force = new Vector3(*repulse);
+
+
+	(*force) *= coef*boostCoef * sepCoef;
+	return force;
+}
+
 Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, std::vector<Entity*>* obstacles) {
 	return separationUnits(unit, obstacles);
 }
@@ -65,7 +73,6 @@ double ForceStrategy::calculateCoef(double distance, double minDist) {
 		parameter = 0.05;
 	}
 	double coef = exp(1 / parameter) - 1;
-	//coef *= sepCoefWall;
 
 	return coef;
 }

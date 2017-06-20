@@ -9,6 +9,8 @@ EnviromentStrategy::EnviromentStrategy() {
 
 	obstacleGrid = new BucketGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD);
 	resourceGrid = new BucketGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE);
+
+	gradient = new Gradient(GRADIENT_GRID_SIZE, GRADIENT_GRID_RESOLUTION);
 }
 
 
@@ -27,7 +29,8 @@ std::vector<Entity*>* EnviromentStrategy::getNeighboursFromTeam(Unit* unit, doub
 	switch (operatorType) {
 	case EQUAL:
 		return getNeighbours(unit, teamUnitGrid[team], radius);
-	case NOT_EQUAL: {
+	case NOT_EQUAL:
+		{
 		std::vector<Entity*>* neight = new std::vector<Entity*>();
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
 			if (team != i) {
@@ -37,7 +40,7 @@ std::vector<Entity*>* EnviromentStrategy::getNeighboursFromTeam(Unit* unit, doub
 			}
 		}
 		return neight;
-	}
+		}
 	default:
 		return new std::vector<Entity*>();;
 	}
@@ -82,8 +85,21 @@ void EnviromentStrategy::update(std::vector<Unit*>* units) {//TODO a jakby gridy
 
 void EnviromentStrategy::update(std::vector<Building*>* buildings) {
 	for (int i = 0; i < buildings->size(); ++i) {
-		obstacleGrid->updateGrid((*buildings)[i], 0);
+		Building* building = (*buildings)[i];
+
+		if (!building->isInGrandient()) {
+			gradient->add(building);
+			building->setInGradinet(true);
+		}
 	}
+}
+
+void EnviromentStrategy::add(Entity* entity) {
+	gradient->add(entity);
+}
+
+Vector3* EnviromentStrategy::getRepulsiveAt(Vector3 * position) {
+	return gradient->getValueAt(position->x_, position->z_);
 }
 
 std::vector<Entity*>* EnviromentStrategy::getNeighbours(std::pair<Entity*, Entity*>* pair) {

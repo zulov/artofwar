@@ -10,6 +10,7 @@
 #include <vector>
 #include "OperatorType.h"
 #include "ResourceEntity.h"
+#include "Gradient.h"
 
 class EnviromentStrategy
 {
@@ -27,6 +28,9 @@ public:
 
 	void update(std::vector<Unit*>* units);
 	void update(std::vector<Building*>* buildings);
+	void add(Entity *entity);
+	Vector3 * getRepulsiveAt(Vector3 * position);
+
 	std::vector<Entity *>* getNeighbours(std::pair<Entity*, Entity*>* pair);
 	std::vector<Entity *>* getBuildings(std::pair<Entity*, Entity*>* pair);
 	double getGroundHeightAt(double x, double z);
@@ -35,4 +39,5 @@ private:
 	BucketGrid* teamUnitGrid[MAX_PLAYERS];
 	BucketGrid* obstacleGrid;
 	BucketGrid* resourceGrid;
+	Gradient * gradient;
 };

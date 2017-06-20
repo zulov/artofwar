@@ -35,14 +35,15 @@ CREATE TABLE "resource" (
 	`maxCapacity`	INTEGER,
 	`texture`	TEXT,
 	`model`	TEXT,
+	`scale`	REAL,
 	PRIMARY KEY(`id`)
 );
-INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model) VALUES (0,'gold','gold.png',1000,'gold.xml
-','rock.mdl'),
+INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale) VALUES (0,'gold','gold.png',1000,'gold.xml
+','rock.mdl',0.75),
  (1,'wood','wood.png',100,'tree0.xml
-tree1.xml','tree.mdl'),
- (2,'food','food.png',100,'food.xml',NULL),
- (3,'stone','stone.png',1000,'stone.xml','rock.mdl');
+tree1.xml','tree.mdl',1.75),
+ (2,'food','food.png',100,'food.xml',NULL,1.0),
+ (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.75);
 CREATE TABLE `nation` (
 	`id`	INTEGER,
 	`name`	TEXT,
@@ -84,7 +85,8 @@ CREATE TABLE `building_type` (
 INSERT INTO `building_type` (id,name,icon) VALUES (0,'house','house.png'),
  (1,'tower','tower.png'),
  (2,'barracks','house.png'),
- (3,'archery_range','house.png');
+ (3,'archery_range','house.png'),
+ (4,'mock','mock.png');
 CREATE TABLE "building" (
 	`id`	INTEGER,
 	`name`	TEXT,
@@ -101,5 +103,6 @@ CREATE TABLE "building" (
 INSERT INTO `building` (id,name,minDist,type,model,texture,font,scale,texture_temp) VALUES (0,'house',6.0,0,'House.mdl','house.xml','Anonymous Pro.ttf',1.0,'house_temp.xml'),
  (1,'tower',3.0,1,'Tower.mdl','tower.xml','Anonymous Pro.ttf',1.0,'tower_temp.xml'),
  (2,'barracks',10.0,2,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml'),
- (3,'archery_range',6.0,3,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml');
+ (3,'archery_range',6.0,3,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml'),
+ (4,'mock',10.0,4,'cube.mdl','transparent.xml','Anonymous Pro.ttf',10.0,'transparent_temp.xml');
 COMMIT;

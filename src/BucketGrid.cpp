@@ -21,18 +21,12 @@ BucketGrid::BucketGrid(int _resolution, double _size) {
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((((double)MAX_SEP_DIST) / RES_SEP_DIST) * i);
 	}
-	
+
 	empty = new Bucket();
 }
 
 BucketGrid::~BucketGrid() {
 	delete empty;
-	//	for (int i = 0; i < RES_SEP_DIST; i++) {
-	//		delete (levels->at(i));
-	//	}
-	//	levels->clear();
-	//	delete levels;
-
 }
 
 void BucketGrid::updateGrid(Entity* entity, int team) {
@@ -56,9 +50,9 @@ std::vector<std::pair<int, int>*>* BucketGrid::getEnvIndexsFromCache(double dist
 int BucketGrid::getIntegerPos(double value) {
 	if (value < 0) {
 		return (int)(value / size * resolution) - 1;
-	} else {
-		return (int)(value / size * resolution);
 	}
+	return (int)(value / size * resolution);
+
 }
 
 BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius) {

@@ -28,12 +28,11 @@ void Simulation::action() {
 
 void Simulation::createUnits() {
 	simCommandList->add(new SimulationCommand(UNITS_NUMBER, UnitType::WARRIOR, new Vector3(0, 0, 0), SpacingType::CONSTANT, 0));
-	simCommandList->add(new SimulationCommand(UNITS_NUMBER, UnitType::ARCHER, new Vector3(-50, 0, -50), SpacingType::CONSTANT, 1));
+	//simCommandList->add(new SimulationCommand(UNITS_NUMBER, UnitType::ARCHER, new Vector3(-50, 0, -50), SpacingType::CONSTANT, 1));
 
-	simCommandList->add(new SimulationCommand(4, ResourceType::GOLD, new Vector3(-50, 0, 35), SpacingType::CONSTANT, 1));
-	simCommandList->add(new SimulationCommand(4, ResourceType::STONE, new Vector3(40, 0, 25), SpacingType::CONSTANT, 1));
-	simCommandList->add(new SimulationCommand(9, ResourceType::WOOD, new Vector3(30, 0, 0), SpacingType::CONSTANT, 1));
-
+	//simCommandList->add(new SimulationCommand(4, ResourceType::GOLD, new Vector3(-50, 0, 35), SpacingType::CONSTANT, 1));
+	//simCommandList->add(new SimulationCommand(4, ResourceType::STONE, new Vector3(40, 0, 25), SpacingType::CONSTANT, 1));
+	//simCommandList->add(new SimulationCommand(9, ResourceType::WOOD, new Vector3(30, 0, 0), SpacingType::CONSTANT, 1));
 }
 
 
@@ -86,6 +85,7 @@ void Simulation::update(Input* input, float timeStep) {
 			buildings = simObjectManager->getBuildings();
 			envStrategy->update(units);
 			envStrategy->update(buildings);
+
 			calculateForces();
 			applyForce();
 
@@ -108,13 +108,16 @@ void Simulation::calculateForces() {
 		Unit* unit = (*units)[i];
 		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit, unit->getMaxSeparationDistance());
 		std::vector<Entity*>* buildings = envStrategy->getBuildings(unit, unit->getMaxSeparationDistance());//TODO jakis inny parametr niz max separaatino dist
+		Vector3 * repulsive = envStrategy->getRepulsiveAt(unit->getPosition());
 
 		Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
-		Vector3* sepObstacle = forceStrategy->separationObstacle(unit, buildings);
+		Vector3* sepObstacle = forceStrategy->separationObstacle(unit, repulsive);
 
 		Vector3* destForce = forceStrategy->destination(unit);
 		Vector3* rand = forceStrategy->randomForce();
-
+		if(sepObstacle->Length()>0) {
+			int a = 5;
+		}
 		(*sepPedestrian) += (*sepObstacle) += (*destForce) += (*rand);
 		unit->setAcceleration(sepPedestrian);
 

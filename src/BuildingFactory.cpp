@@ -30,7 +30,7 @@ std::vector<Building*>* BuildingFactory::create(unsigned int number, BuildingTyp
 
 			Node* node = game->getScene()->CreateChild();
 			node->SetPosition(*position);
-
+			node->SetScale(dbBuilding->scale);
 			Urho3D::StaticModel* model = node->CreateComponent<Urho3D::StaticModel>();
 			model->SetModel(game->getCache()->GetResource<Urho3D::Model>(modelName));
 			model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>(materialName));

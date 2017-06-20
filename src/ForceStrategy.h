@@ -8,6 +8,7 @@ class ForceStrategy {
 public:
 	ForceStrategy();
 	~ForceStrategy();
+	Urho3D::Vector3* separationObstacle(Unit* unit, Vector3* repulse);
 
 	Urho3D::Vector3 *separationObstacle(Unit * unit, std::vector<Entity *> *obstacles);
 	Urho3D::Vector3 *separationUnits(Unit * unit, std::vector<Entity *> *units);

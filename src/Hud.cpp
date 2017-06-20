@@ -85,9 +85,9 @@ void Hud::createBuild() {
 	buildWindow->SetTexture(wood);
 	buildWindow->SetTiled(true);
 	buildWindow->SetVisible(false);
+	int typesSize = Game::get()->getDatabaseCache()->getBuildingTypeSize();
 
-	std::array<BuildingType, 4> buildings{{HOUSE,TOWER,BARRACKS,ARCHERY_RANGE}};
-	createBuildingIcons(buildings);
+	createBuildingIcons();
 }
 
 void Hud::createUnits() {
@@ -136,17 +136,19 @@ Sprite* Hud::createSprite(Texture2D* texture, int sizeX, int sizeY) {
 	return sprite;
 }
 
-template <std::size_t SIZE>
-void Hud::createBuildingIcons(std::array<BuildingType, SIZE> buildings) {
-	for (BuildingType type : buildings) {
-		db_building_type* buidling = Game::get()->getDatabaseCache()->getBuildingType(type);
+
+void Hud::createBuildingIcons() {
+	int size = Game::get()->getDatabaseCache()->getBuildingTypeSize();
+
+	for (int i = 0; i < size; ++i) {
+		db_building_type* buidling = Game::get()->getDatabaseCache()->getBuildingType(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + buidling->icon);
 
 		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
 		Button* button = simpleButton(sprite, hudSize->icon_size_x, hudSize->icon_size_y);
 
 		HudElement* hudElement = new HudElement(button);
-		hudElement->setBuildingType(type);
+		hudElement->setBuildingType(BuildingType(i));
 		button->SetVar("HudElement", hudElement);
 
 		buttons->push_back(hudElement);

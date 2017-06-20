@@ -141,3 +141,8 @@ db_resource* DatabaseCache::getResource(int i) {
 int DatabaseCache::getResourceSize() {
 	return dbContainer->resource_size;
 }
+
+int DatabaseCache::getBuildingTypeSize() {
+	return dbContainer->building_type_size;
+}
+
