@@ -39,6 +39,7 @@ public:
 	void createLogo();
 	void createDebugHud();
 	void createConsole();
+	void createMyDebugHud();
 	void updateHud(Benchmark* benchmark, CameraManager* cameraManager);
 	std::vector<HudElement*>* getButtonsToSubscribe();
 	std::vector<HudElement*>* getListsToSubscribe();

@@ -15,6 +15,7 @@ Hud::Hud() {
 	createTop();
 	createUnits();
 	createSelectedInfo();
+	createMyDebugHud();
 
 	SharedPtr<Cursor> cursor(new Cursor(Game::get()->getContext()));
 	cursor->SetStyleAuto(style);
@@ -255,6 +256,15 @@ void Hud::createConsole() {
 	console->GetBackground()->SetOpacity(0.8f);
 }
 
+void Hud::createMyDebugHud() {
+	fpsText = Game::get()->getUI()->GetRoot()->CreateChild<Text>();
+	fpsText->SetFont(font, 12);
+	fpsText->SetTextAlignment(HA_LEFT);
+	fpsText->SetHorizontalAlignment(HA_LEFT);
+	fpsText->SetVerticalAlignment(VA_TOP);
+	fpsText->SetPosition(0, 20);
+}
+
 void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {
 	Urho3D::String msg = "FPS: " + String(benchmark->getLastFPS());
 	msg += "\navg FPS: " + String(benchmark->getAverageFPS());
@@ -262,15 +272,7 @@ void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {
 	msg += "\nCamera: ";
 	msg += "\n\t" + cameraManager->getInfo();
 
-	Game::get()->getUI()->GetRoot()->RemoveChild(fpsText);
-
-	fpsText = Game::get()->getUI()->GetRoot()->CreateChild<Text>();
 	fpsText->SetText(msg);
-	fpsText->SetFont(font, 12);
-	fpsText->SetTextAlignment(HA_LEFT);
-	fpsText->SetHorizontalAlignment(HA_LEFT);
-	fpsText->SetVerticalAlignment(VA_TOP);
-	fpsText->SetPosition(0, 20);
 }
 
 std::vector<HudElement*>* Hud::getButtonsToSubscribe() {

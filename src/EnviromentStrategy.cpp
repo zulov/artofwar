@@ -10,7 +10,7 @@ EnviromentStrategy::EnviromentStrategy() {
 	obstacleGrid = new BucketGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD);
 	resourceGrid = new BucketGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE);
 
-	gradient = new Gradient(GRADIENT_GRID_SIZE, GRADIENT_GRID_RESOLUTION);
+	gradient = new Gradient(GRADIENT_GRID_RESOLUTION, GRADIENT_GRID_SIZE);
 }
 
 
@@ -98,7 +98,7 @@ void EnviromentStrategy::add(Entity* entity) {
 	gradient->add(entity);
 }
 
-Vector3* EnviromentStrategy::getRepulsiveAt(Vector3 * position) {
+Vector3* EnviromentStrategy::getRepulsiveAt(Vector3* position) {
 	return gradient->getValueAt(position->x_, position->z_);
 }
 

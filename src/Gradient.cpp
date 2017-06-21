@@ -1,4 +1,5 @@
 #include "Gradient.h"
+#include <iostream>
 
 
 Gradient::Gradient(int _resolution, double _size) {
@@ -48,13 +49,13 @@ void Gradient::add(Entity* entity) {
 	double ddX = getDoublePos(pos->x_) + halfResolution;
 	double ddZ = getDoublePos(pos->z_) + halfResolution;
 
-
-	double level = entity->getMinimalDistance() / (size / resolution) + 1;
+	double level = entity->getMinimalDistance() / (size / resolution) * 2;
 	Vector3 position(ddX, 0, ddZ);
-	for (int i = -level; i < level; ++i) {//TODO zwiekszyc zasieg
-		for (int j = -level; j < level; ++j) {
-			double centerX = (dX + i + 0.5) / size * resolution;
-			double centerZ = (dZ + j + 0.5) / size * resolution;
+	for (int i = -level; i <= level; ++i) {//TODO zwiekszyc zasieg
+		for (int j = -level; j <= level; ++j) {
+			double bucketSize = (size / resolution);
+			double centerX = dX + (i + 0.5) * bucketSize;
+			double centerZ = dZ + (j + 0.5) * bucketSize;
 
 			Vector3 center(centerX, 0, centerZ);
 			Vector3 dir = center - position;
@@ -64,18 +65,20 @@ void Gradient::add(Entity* entity) {
 			double coef = calculateCoef(distance, minimalDistance);
 			dir *= coef;
 			(*values[dX + i][dZ + j]) += dir;
+			std::cout << coef << " ";
 		}
+		std::cout << std::endl;
 	}
 
 	int a = 5;
 }
 
 double Gradient::calculateCoef(double distance, double minDist) {
-	double parameter = distance - minDist;
-	if (parameter <= 0.05) {//zapobieganie nieskonczonosci
+	double parameter = distance - minDist/2;
+	if (parameter <= 0.05) {
 		parameter = 0.05;
 	}
 	double coef = exp(1 / parameter) - 1;
+	return exp(minDist / (distance + 0.05)) - 1+ coef;
 
-	return coef;
 }
