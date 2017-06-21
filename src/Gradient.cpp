@@ -22,15 +22,12 @@ Gradient::Gradient(int _resolution, double _size) {
 Gradient::~Gradient() {
 }
 
-Urho3D::Vector3* Gradient::getValueAt(double x, double z) {
+Urho3D::Vector3* Gradient::getValueAt(double x, double z) {//TODO zrobic srednie z sasiednich
 	return values[getIntegerPos(x) + halfResolution][getIntegerPos(z) + halfResolution];
 }
 
 int Gradient::getIntegerPos(double value) {
-	if (value < 0) {
-		return (int)(value / size * resolution) - 1;
-	}
-	return (int)(value / size * resolution);
+	return getDoublePos(value);
 }
 
 double Gradient::getDoublePos(double value) {
@@ -48,12 +45,12 @@ void Gradient::add(Entity* entity) {
 
 	double ddX = getDoublePos(pos->x_) + halfResolution;
 	double ddZ = getDoublePos(pos->z_) + halfResolution;
-
-	double level = entity->getMinimalDistance() / (size / resolution) * 2;
+	double bucketSize = (size / resolution);
+	double level = entity->getMinimalDistance() / (bucketSize) * 2;
 	Vector3 position(ddX, 0, ddZ);
 	for (int i = -level; i <= level; ++i) {//TODO zwiekszyc zasieg
 		for (int j = -level; j <= level; ++j) {
-			double bucketSize = (size / resolution);
+
 			double centerX = dX + (i + 0.5) * bucketSize;
 			double centerZ = dZ + (j + 0.5) * bucketSize;
 
@@ -65,12 +62,8 @@ void Gradient::add(Entity* entity) {
 			double coef = calculateCoef(distance, minimalDistance);
 			dir *= coef;
 			(*values[dX + i][dZ + j]) += dir;
-			std::cout << coef << " ";
 		}
-		std::cout << std::endl;
 	}
-
-	int a = 5;
 }
 
 double Gradient::calculateCoef(double distance, double minDist) {

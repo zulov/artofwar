@@ -1,6 +1,6 @@
 #pragma once
 
-#define UNITS_NUMBER 500
+#define UNITS_NUMBER 200
 #define SEP_RADIUS 3;
 #define INIT_SPACE 1
 
