@@ -36,14 +36,15 @@ CREATE TABLE "resource" (
 	`texture`	TEXT,
 	`model`	TEXT,
 	`scale`	REAL,
+	`minDist`	REAL,
 	PRIMARY KEY(`id`)
 );
-INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale) VALUES (0,'gold','gold.png',1000,'gold.xml
-','rock.mdl',0.75),
+INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,minDist) VALUES (0,'gold','gold.png',1000,'gold.xml
+','rock.mdl',0.75,3.0),
  (1,'wood','wood.png',100,'tree0.xml
-tree1.xml','tree.mdl',1.75),
- (2,'food','food.png',100,'food.xml',NULL,1.0),
- (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.75);
+tree1.xml','tree.mdl',1.75,5.0),
+ (2,'food','food.png',100,'food.xml',NULL,1.0,4.0),
+ (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.75,3.0);
 CREATE TABLE `nation` (
 	`id`	INTEGER,
 	`name`	TEXT,

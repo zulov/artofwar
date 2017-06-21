@@ -94,8 +94,15 @@ void EnviromentStrategy::update(std::vector<Building*>* buildings) {
 	}
 }
 
-void EnviromentStrategy::add(Entity* entity) {
-	gradient->add(entity);
+void EnviromentStrategy::update(std::vector<ResourceEntity*>* resources) {
+	for (int i = 0; i < resources->size(); ++i) {
+		ResourceEntity* resource = (*resources)[i];
+
+		if (!resource->isInGrandient()) {
+			gradient->add(resource);
+			resource->setInGradinet(true);
+		}
+	}
 }
 
 Vector3* EnviromentStrategy::getRepulsiveAt(Vector3* position) {

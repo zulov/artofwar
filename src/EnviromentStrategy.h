@@ -28,6 +28,7 @@ public:
 
 	void update(std::vector<Unit*>* units);
 	void update(std::vector<Building*>* buildings);
+	void update(std::vector<ResourceEntity*>* resources);
 	void add(Entity *entity);
 	Vector3 * getRepulsiveAt(Vector3 * position);
 

@@ -61,7 +61,7 @@ int static loadNation(void* data, int argc, char** argv, char** azColName) {
 int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->resources[id] = new db_resource(atoi(argv[0]), argv[1], argv[2], atoi(argv[3]), argv[4], argv[5], atof(argv[6]));
+	xyz->resources[id] = new db_resource(atoi(argv[0]), argv[1], argv[2], atoi(argv[3]), argv[4], argv[5], atof(argv[6]), atof(argv[7]));
 	xyz->resource_size++;
 
 	return 0;

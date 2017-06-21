@@ -11,10 +11,13 @@ public:
 	ObjectType getType() override;
 	virtual int getSubType() override;
 	void populate(db_resource* dbResource);
+	bool isInGrandient();
+	void setInGradinet(bool _inGradient);
 private:
 	String * name;
 	int type;
 	int amonut;
+	bool inGradient = false;
 };
 
 

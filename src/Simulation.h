@@ -43,6 +43,7 @@ private:
 	int currentFrameNumber = 0;
 	std::vector<Unit*>* units;
 	std::vector<Building*>* buildings;
+	std::vector<ResourceEntity*>* resources;
 	AimContainer* aimContainer;
 	//CONST
 	const float ROTATE_SPEED = 115.0f;
