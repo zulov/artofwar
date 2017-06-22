@@ -15,7 +15,7 @@ CREATE TABLE "units" (
 INSERT INTO `units` (name,minDist,maxSep,type,model,texture,font,mass,maxSpeed,scale) VALUES ('warrior',0.5,2.0,0,'Cube.mdl','grey.xml','Anonymous Pro.ttf',1.0,5.0,1.0),
  ('archer',0.4,2.0,3,'Prism.mdl','darkgrey.xml','Anonymous Pro.ttf',0.8,6.0,1.0),
  ('pikeman',0.4,2.0,1,'Pyramid.mdl','red.xml','Anonymous Pro.ttf',0.9,3.0,1.0),
- ('cavalry',0.6,3.5,2,'Cylinder.mdl','red.xml','Anonymous Pro.ttf',2.0,12.0,1.0),
+ ('cavalry',0.6,3.5,2,'horse.mdl','horse.xml','Anonymous Pro.ttf',2.0,12.0,1.0),
  ('worker',0.3,2.0,4,'Sphere.mdl','red.xml','Anonymous Pro.ttf',0.5,3.0,1.0);
 CREATE TABLE "unit_type" (
 	`id`	INTEGER,
