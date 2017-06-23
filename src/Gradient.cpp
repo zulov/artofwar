@@ -71,7 +71,6 @@ double Gradient::calculateCoef(double distance, double minDist) {
 	if (parameter <= 0.05) {
 		parameter = 0.05;
 	}
-	double coef = exp(1 / parameter) - 1;
-	return exp(minDist / (distance + 0.05)) - 1+ coef;
+	return exp(minDist / (distance + 0.05)) +exp(1 / parameter) - 2;
 
 }
