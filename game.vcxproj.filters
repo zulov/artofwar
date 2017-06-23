@@ -14,9 +14,6 @@
     <ClCompile Include="src\RtsCameraBehave.cpp">
       <Filter>camera\behave</Filter>
     </ClCompile>
-    <ClCompile Include="src\Unit.cpp">
-      <Filter>objects</Filter>
-    </ClCompile>
     <ClCompile Include="src\Building.cpp">
       <Filter>objects</Filter>
     </ClCompile>
@@ -139,6 +136,18 @@
     <ClCompile Include="src\Gradient.cpp">
       <Filter>simulation\env\gradient</Filter>
     </ClCompile>
+    <ClCompile Include="src\Unit.cpp">
+      <Filter>objects\unit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnitState.cpp">
+      <Filter>objects\state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StateManager.cpp">
+      <Filter>objects\state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\State.cpp">
+      <Filter>objects\state</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -156,9 +165,6 @@
     </ClInclude>
     <ClInclude Include="src\RtsCameraBehave.h">
       <Filter>camera\behave</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Unit.h">
-      <Filter>objects</Filter>
     </ClInclude>
     <ClInclude Include="src\Building.h">
       <Filter>objects</Filter>
@@ -258,9 +264,6 @@
     <ClInclude Include="src\SpacingType.h">
       <Filter>objects\collection</Filter>
     </ClInclude>
-    <ClInclude Include="src\UnitType.h">
-      <Filter>objects</Filter>
-    </ClInclude>
     <ClInclude Include="src\Hud.h">
       <Filter>hud</Filter>
     </ClInclude>
@@ -275,9 +278,6 @@
     </ClInclude>
     <ClInclude Include="src\PlayersManager.h">
       <Filter>player</Filter>
-    </ClInclude>
-    <ClInclude Include="src\UnitState.h">
-      <Filter>objects</Filter>
     </ClInclude>
     <ClInclude Include="src\BucketIterator.h">
       <Filter>simulation\env\bucket</Filter>
@@ -303,6 +303,24 @@
     </ClInclude>
     <ClInclude Include="src\Gradient.h">
       <Filter>simulation\env\gradient</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnitType.h">
+      <Filter>objects\unit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Unit.h">
+      <Filter>objects\unit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnitStateType.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnitState.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StateManager.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\State.h">
+      <Filter>objects\state</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -369,6 +387,12 @@
     </Filter>
     <Filter Include="simulation\env\gradient">
       <UniqueIdentifier>{c34a7fa4-bcfc-4fee-8728-70d65e63d815}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects\unit">
+      <UniqueIdentifier>{72e8eaca-7fa2-44db-84b8-7f45e9afc753}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects\state">
+      <UniqueIdentifier>{e7772225-aee1-486b-be4d-501a5eb7d027}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

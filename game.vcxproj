@@ -224,6 +224,8 @@
     <ClCompile Include="src\Mediator.cpp" />
     <ClCompile Include="src\SceneObjectManager.cpp" />
     <ClCompile Include="src\SimulationCommandList.cpp" />
+    <ClCompile Include="src\State.cpp" />
+    <ClCompile Include="src\StateManager.cpp" />
     <ClCompile Include="src\UnitFactory.cpp" />
     <ClCompile Include="src\EnviromentStrategy.cpp" />
     <ClCompile Include="src\ForceStrategy.cpp" />
@@ -234,6 +236,7 @@
     <ClCompile Include="src\Unit.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
+    <ClCompile Include="src\UnitState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AbstractCommand.h" />
@@ -284,6 +287,8 @@
     <ClInclude Include="src\SceneObjectManager.h" />
     <ClInclude Include="src\SimulationCommandList.h" />
     <ClInclude Include="src\SpacingType.h" />
+    <ClInclude Include="src\State.h" />
+    <ClInclude Include="src\StateManager.h" />
     <ClInclude Include="src\UnitFactory.h" />
     <ClInclude Include="src\EnviromentStrategy.h" />
     <ClInclude Include="src\ForceStrategy.h" />
@@ -295,6 +300,7 @@
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\Simulation.h" />
     <ClInclude Include="src\UnitState.h" />
+    <ClInclude Include="src\UnitStateType.h" />
     <ClInclude Include="src\UnitType.h" />
     <ClInclude Include="src\utils.h" />
   </ItemGroup>

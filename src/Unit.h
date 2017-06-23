@@ -5,7 +5,7 @@
 #include "defines.h"
 #include "Game.h"
 #include "Entity.h"
-#include "UnitState.h"
+#include "UnitStateType.h"
 #include "UnitType.h"
 
 using namespace Urho3D;
@@ -52,7 +52,7 @@ private:
 
 	double unitRadius = 2;
 	Node* healthBar;
-	UnitState unitState;
+	UnitStateType unitState;
 	UnitType unitType;
 
 	double hpCoef = 100;

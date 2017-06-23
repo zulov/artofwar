@@ -1,10 +1,9 @@
 #pragma once
-enum UnitState
+#include "State.h"
+
+class UnitState :public State
 {
-	US_STOP = 0,
-	US_GOTO,//do celu
-	US_MOVE,//porusza sie
-	US_ATTACK,
-	US_DEFEND,
-	US_CHARAGE
+public:
+	UnitState();
+	~UnitState();
 };
