@@ -223,25 +223,6 @@ void Hud::createStaticHud(String msg) {
 	instructionText->SetPosition(0, 0);
 }
 
-void Hud::createLogo() {
-	Texture2D* logoTexture = Game::get()->getCache()->GetResource<Texture2D>("textures/minimap.png");
-	if (!logoTexture) {
-		return;
-	}
-	Urho3D::Sprite* logoSprite_ = Game::get()->getUI()->GetRoot()->CreateChild<Sprite>();
-
-	logoSprite_->SetTexture(logoTexture);
-
-	int textureWidth = logoTexture->GetWidth();
-	int textureHeight = logoTexture->GetHeight();
-
-	logoSprite_->SetScale(256.0f / textureWidth);
-	logoSprite_->SetSize(textureWidth, textureHeight);
-	logoSprite_->SetHotSpot(textureWidth, textureHeight);
-	logoSprite_->SetAlignment(HA_RIGHT, VA_BOTTOM);
-	logoSprite_->SetOpacity(0.9f);
-}
-
 void Hud::createDebugHud() {
 	DebugHud* debugHud = Game::get()->getEngine()->CreateDebugHud();
 	debugHud->SetDefaultStyle(style);
@@ -302,7 +283,7 @@ void Hud::updateState(ControlsState state) {
 	}
 }
 
-void Hud::updateSelected(SelectedInfo* selectedInfo) {
+void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a sterowac widzialnsocia
 	if (selectedInfo->hasChanged()) {
 		selectedInfoWindow->RemoveAllChildren();
 		Text* text = new Text(Game::get()->getContext());
@@ -315,12 +296,14 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 				Text* text = new Text(Game::get()->getContext());
 				text->SetText((*lines[i]));
 				text->SetFont(font, 12);
+				db_unit_type* unit = Game::get()->getDatabaseCache()->getUnitType(i);
+				Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
-				Button* button = new Button(Game::get()->getContext());
-				button->SetStyleAuto(style);
+				Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
+				Button* button = simpleButton(sprite, hudSize->icon_size_x, hudSize->icon_size_y);
 
 				button->AddChild(text);
-				button->SetFixedSize(hudSize->icon_size_x, hudSize->icon_size_y);
+
 				selectedInfoWindow->AddChild(button);
 			}
 		}

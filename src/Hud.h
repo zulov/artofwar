@@ -36,7 +36,6 @@ public:
 	Hud();
 	~Hud();
 	void createStaticHud(String msg);
-	void createLogo();
 	void createDebugHud();
 	void createConsole();
 	void createMyDebugHud();
