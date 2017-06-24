@@ -27,6 +27,7 @@
 #include "db_strcut.h"
 #include "ControlsState.h"
 #include "SelectedInfo.h"
+#include "SelectedHudPanel.h"
 
 using namespace Urho3D;
 
@@ -57,6 +58,8 @@ private:
 	Window* unitsWindow;
 	Window* selectedInfoWindow;
 
+	SelectedHudPanel * selectedHudPanel;
+
 	Text* fpsText;
 	std::vector<HudElement*>* buttons;
 	std::vector<HudElement*>* lists;
@@ -64,8 +67,6 @@ private:
 	XMLFile* style;
 	db_hud_size* hudSize;
 	Font* font;
-	Button* simpleButton(Urho3D::Sprite* sprite, int sizeX, int sizeY);
-	Sprite* createSprite(Texture2D* texture, int sizeX, int sizeY);
 	void createBuildingIcons();
 	void createUnitIcons();
 	template <std::size_t SIZE>

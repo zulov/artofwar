@@ -1,4 +1,5 @@
 #pragma once
+#define OBJECT_TYPE_NUMBER 4
 enum ObjectType
 {
 	ENTITY = 0,

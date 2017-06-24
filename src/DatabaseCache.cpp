@@ -146,3 +146,7 @@ int DatabaseCache::getBuildingTypeSize() {
 	return dbContainer->building_type_size;
 }
 
+int DatabaseCache::getUnitTypeSize() {
+	return dbContainer->unit_type_size;
+}
+

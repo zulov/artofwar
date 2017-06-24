@@ -23,6 +23,7 @@ public:
 
 	int getResourceSize();
 	int getBuildingTypeSize();
+	int getUnitTypeSize();
 private:
 	db_container* dbContainer;
 	sqlite3* database;

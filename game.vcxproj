@@ -211,6 +211,7 @@
     <ClCompile Include="src\ResourceEntity.cpp" />
     <ClCompile Include="src\ResourceFactory.cpp" />
     <ClCompile Include="src\Resources.cpp" />
+    <ClCompile Include="src\SelectedHudPanel.cpp" />
     <ClCompile Include="src\SelectedInfo.cpp" />
     <ClCompile Include="src\SimulationCommand.cpp" />
     <ClCompile Include="src\CommandSelect.cpp" />
@@ -257,6 +258,7 @@
     <ClInclude Include="src\BuildingFactory.h" />
     <ClInclude Include="src\BuildingType.h" />
     <ClInclude Include="src\BuildList.h" />
+    <ClInclude Include="src\ButtonUtils.h" />
     <ClInclude Include="src\CameraBehave.h" />
     <ClInclude Include="src\CameraEnums.h" />
     <ClInclude Include="src\CameraManager.h" />
@@ -270,6 +272,7 @@
     <ClInclude Include="src\ResourceFactory.h" />
     <ClInclude Include="src\Resources.h" />
     <ClInclude Include="src\ResourceType.h" />
+    <ClInclude Include="src\SelectedHudPanel.h" />
     <ClInclude Include="src\SelectedInfo.h" />
     <ClInclude Include="src\SimulationCommand.h" />
     <ClInclude Include="src\CommandSelect.h" />

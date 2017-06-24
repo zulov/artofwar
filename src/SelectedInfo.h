@@ -18,10 +18,9 @@ public:
 
 	void setAllNumber(int allNumber);
 	void setSelectedType(ObjectType selectedType);
+	ObjectType getSelectedType();
 	void setNumberAt(int type, int value);
 	void incNumberAt(int type);
-	void setUnitsTypes(UnitType unitTypes[]);
-	void setBuildingTypes(BuildingType buildingTypes[]);
 	void reset();
 private:
 	bool changed = false;

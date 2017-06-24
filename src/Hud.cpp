@@ -22,12 +22,12 @@ Hud::Hud() {
 	Game::get()->getUI()->SetCursor(cursor);
 
 	cursor->SetPosition(Game::get()->getGraphics()->GetWidth() / 2, Game::get()->getGraphics()->GetHeight() / 2);
+	selectedHudPanel = new SelectedHudPanel(style, hudSize, font, selectedInfoWindow);
 }
 
 
 Hud::~Hud() {
 }
-
 
 template <std::size_t SIZE>
 void Hud::populateList(Font* font, DropDownList* dropDownList, std::array<String, SIZE> elements) {
@@ -85,7 +85,6 @@ void Hud::createBuild() {
 	buildWindow->SetTexture(wood);
 	buildWindow->SetTiled(true);
 	buildWindow->SetVisible(false);
-	int typesSize = Game::get()->getDatabaseCache()->getBuildingTypeSize();
 
 	createBuildingIcons();
 }
@@ -106,34 +105,6 @@ void Hud::createUnits() {
 	createUnitIcons();
 }
 
-Button* Hud::simpleButton(Urho3D::Sprite* sprite, int sizeX, int sizeY) {
-	Button* button = new Button(Game::get()->getContext());
-	button->SetStyleAuto(style);
-	button->SetFixedSize(sizeX, sizeY);
-	button->AddChild(sprite);
-	return button;
-}
-
-Sprite* Hud::createSprite(Texture2D* texture, int sizeX, int sizeY) {
-	Urho3D::Sprite* sprite = new Sprite(Game::get()->getContext());
-
-	sprite->SetTexture(texture);
-	int textureWidth = texture->GetWidth();
-	int textureHeight = texture->GetHeight();
-	double scaleX = (sizeX) / (double)textureWidth;
-	double scaleY = (sizeY) / (double)textureHeight;
-	if (scaleX < scaleY) {
-		sprite->SetScale(scaleX);
-	} else {
-		sprite->SetScale(scaleY);
-	}
-
-	sprite->SetSize(textureWidth, textureHeight);
-	sprite->SetHotSpot(textureWidth / 2, textureHeight / 2);
-	sprite->SetAlignment(HA_CENTER, VA_CENTER);
-	sprite->SetOpacity(0.9f);
-	return sprite;
-}
 
 void Hud::createBuildingIcons() {
 	int size = Game::get()->getDatabaseCache()->getBuildingTypeSize();
@@ -143,7 +114,7 @@ void Hud::createBuildingIcons() {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + buidling->icon);
 
 		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
-		Button* button = simpleButton(sprite, hudSize->icon_size_x, hudSize->icon_size_y);
+		Button* button = simpleButton(style, sprite, hudSize->icon_size_x, hudSize->icon_size_y);
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setBuildingType(BuildingType(i));
@@ -155,14 +126,14 @@ void Hud::createBuildingIcons() {
 }
 
 void Hud::createUnitIcons() {
-	int size = Game::get()->getDatabaseCache()->getBuildingTypeSize();
+	int size = Game::get()->getDatabaseCache()->getUnitTypeSize();
 
 	for (int i = 0; i < size; ++i) {
 		db_unit_type* unit = Game::get()->getDatabaseCache()->getUnitType(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
 		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
-		Button* button = simpleButton(sprite, hudSize->icon_size_x, hudSize->icon_size_y);
+		Button* button = simpleButton(style, sprite, hudSize->icon_size_x, hudSize->icon_size_y);
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setUnitType(UnitType(i));
@@ -191,8 +162,7 @@ void Hud::createTop() {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + resource->icon);
 
 		Sprite* sprite = createSprite(texture, (hudSize->icon_size_x - hudSize->space_size_x) / 2, (hudSize->icon_size_y - hudSize->space_size_y) / 2);
-
-		Button* button = simpleButton(sprite, hudSize->icon_size_x * 2, hudSize->icon_size_y / 2);
+		Button* button = simpleButton(style, sprite, hudSize->icon_size_x * 2, hudSize->icon_size_y / 2);
 
 		topWindow->AddChild(button);
 	}
@@ -285,27 +255,6 @@ void Hud::updateState(ControlsState state) {
 
 void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a sterowac widzialnsocia
 	if (selectedInfo->hasChanged()) {
-		selectedInfoWindow->RemoveAllChildren();
-		Text* text = new Text(Game::get()->getContext());
-		text->SetText((*selectedInfo->getMessage()));
-		text->SetFont(font, 12);
-		selectedInfoWindow->AddChild(text);
-		String** lines = selectedInfo->getLines();
-		for (int i = 0; i < SELECTED_INFO_SIZE; ++i) {
-			if ((lines[i]) != nullptr) {
-				Text* text = new Text(Game::get()->getContext());
-				text->SetText((*lines[i]));
-				text->SetFont(font, 12);
-				db_unit_type* unit = Game::get()->getDatabaseCache()->getUnitType(i);
-				Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
-
-				Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
-				Button* button = simpleButton(sprite, hudSize->icon_size_x, hudSize->icon_size_y);
-
-				button->AddChild(text);
-
-				selectedInfoWindow->AddChild(button);
-			}
-		}
+		selectedHudPanel->updateSelected(selectedInfo);
 	}
 }

@@ -148,6 +148,9 @@
     <ClCompile Include="src\State.cpp">
       <Filter>objects\state</Filter>
     </ClCompile>
+    <ClCompile Include="src\SelectedHudPanel.cpp">
+      <Filter>hud</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -321,6 +324,12 @@
     </ClInclude>
     <ClInclude Include="src\State.h">
       <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ButtonUtils.h">
+      <Filter>hud</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SelectedHudPanel.h">
+      <Filter>hud</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

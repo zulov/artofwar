@@ -37,7 +37,7 @@ Urho3D::String** SelectedInfo::getLines() {
 	clearLines();
 	for (int i = 0; i < SELECTED_INFO_SIZE; ++i) {
 		if (number[i] > 0) {
-			lines[i] = new Urho3D::String(Urho3D::String(number[i]) + "/" + Urho3D::String(allNumber));
+			lines[i] = new Urho3D::String(Urho3D::String(number[i]));
 		} else {
 			lines[i] = nullptr;
 		}
@@ -58,6 +58,10 @@ void SelectedInfo::setAllNumber(int allNumber) {
 void SelectedInfo::setSelectedType(ObjectType selectedType) {
 	this->selectedType = selectedType;
 	changed = true;
+}
+
+ObjectType SelectedInfo::getSelectedType() {
+	return selectedType;
 }
 
 void SelectedInfo::setNumberAt(int type, int value) {
