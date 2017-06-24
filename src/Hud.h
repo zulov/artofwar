@@ -68,8 +68,7 @@ private:
 	Button* simpleButton(Urho3D::Sprite* sprite, int sizeX, int sizeY);
 	Sprite* createSprite(Texture2D* texture, int sizeX, int sizeY);
 	void createBuildingIcons();
-	template <std::size_t SIZE>
-	void createUnitIcons(std::array<UnitType, SIZE> units);
+	void createUnitIcons();
 	template <std::size_t SIZE>
 	void populateList(Font* font, DropDownList* dropDownList, std::array<String, SIZE> elements);
 

@@ -22,7 +22,6 @@ Hud::Hud() {
 	Game::get()->getUI()->SetCursor(cursor);
 
 	cursor->SetPosition(Game::get()->getGraphics()->GetWidth() / 2, Game::get()->getGraphics()->GetHeight() / 2);
-
 }
 
 
@@ -104,8 +103,7 @@ void Hud::createUnits() {
 	unitsWindow->SetTiled(true);
 	unitsWindow->SetVisible(false);
 
-	std::array<UnitType, 5> units{{WARRIOR, PIKEMAN, CAVALRY, ARCHER ,WORKER}};
-	createUnitIcons(units);
+	createUnitIcons();
 }
 
 Button* Hud::simpleButton(Urho3D::Sprite* sprite, int sizeX, int sizeY) {
@@ -137,7 +135,6 @@ Sprite* Hud::createSprite(Texture2D* texture, int sizeX, int sizeY) {
 	return sprite;
 }
 
-
 void Hud::createBuildingIcons() {
 	int size = Game::get()->getDatabaseCache()->getBuildingTypeSize();
 
@@ -157,18 +154,18 @@ void Hud::createBuildingIcons() {
 	}
 }
 
-template <std::size_t SIZE>
-void Hud::createUnitIcons(std::array<UnitType, SIZE> units) {
-	for (UnitType type : units) {
-		db_unit_type* unit = Game::get()->getDatabaseCache()->getUnitType(type);
+void Hud::createUnitIcons() {
+	int size = Game::get()->getDatabaseCache()->getBuildingTypeSize();
 
+	for (int i = 0; i < size; ++i) {
+		db_unit_type* unit = Game::get()->getDatabaseCache()->getUnitType(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
 		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
 		Button* button = simpleButton(sprite, hudSize->icon_size_x, hudSize->icon_size_y);
 
 		HudElement* hudElement = new HudElement(button);
-		hudElement->setUnitType(type);
+		hudElement->setUnitType(UnitType(i));
 		button->SetVar("HudElement", hudElement);
 		buttons->push_back(hudElement);
 		unitsWindow->AddChild(button);
