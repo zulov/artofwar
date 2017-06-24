@@ -130,7 +130,14 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {//TODO referenc
 		select(clicked);
 		break;
 
-	case RESOURCE: break;
+	case RESOURCE: 
+		if (!ctrlPressed) {
+			unSelect(ENTITY);
+		}
+
+		select(clicked);
+		break;
+		
 	default: ;
 	}
 
@@ -222,7 +229,7 @@ void Controls::release(const int button) {
 			case MOUSEB_RIGHT:
 				if (mouseRightHeld == true) {
 					mouseRightHeld = false;
-					Entity* entity = new Entity(new Vector3(hitPos), nullptr);
+					Entity* entity = new Entity(new Vector3(hitPos), nullptr);//TODO czy to entity jest usywane?
 					rightHeld->second = entity;
 					double dist = (*(rightHeld->first->getPosition()) - *(rightHeld->second->getPosition())).LengthSquared();
 					if (dist > clickDistance) {
@@ -264,13 +271,19 @@ void Controls::hudAction(HudElement* hud) {
 
 void Controls::clickDownRight(Vector3 hitPos) {
 	Entity* entity = new Entity(new Vector3(hitPos), nullptr);
-
+	if (rightHeld->first != nullptr) {
+		delete rightHeld->first;
+		rightHeld->first = nullptr;
+	}
 	rightHeld->first = entity;
 }
 
 void Controls::clickDownLeft(Vector3 hitPos) {
 	Entity* entity = new Entity(new Vector3(hitPos), nullptr);
-
+	if(leftHeld->first!=nullptr) {
+		delete leftHeld->first;
+		leftHeld->first = nullptr;
+	}
 	leftHeld->first = entity;
 }
 

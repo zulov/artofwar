@@ -54,7 +54,7 @@ private:
 	Window* menuWindow;
 	Window* miniMapWindow;
 	Window* topWindow;
-	Window* buildWindow;
+	Window* buildWindow;//TODO uwspolnic z jednostkmai menu, sterowac tylko widocznoscia
 	Window* unitsWindow;
 	Window* selectedInfoWindow;
 
