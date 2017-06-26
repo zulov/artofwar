@@ -109,7 +109,7 @@ void Simulation::calculateForces() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
 		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit, unit->getMaxSeparationDistance());
-		std::vector<Entity*>* buildings = envStrategy->getBuildings(unit, unit->getMaxSeparationDistance());//TODO jakis inny parametr niz max separaatino dist
+		//std::vector<Entity*>* buildings = envStrategy->getBuildings(unit, unit->getMaxSeparationDistance());//TODO jakis inny parametr niz max separaatino dist
 		Vector3 * repulsive = envStrategy->getRepulsiveAt(unit->getPosition());
 
 		Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
@@ -127,6 +127,6 @@ void Simulation::calculateForces() {
 		delete destForce;
 		delete rand;
 		delete neighbours;
-		delete buildings;
+		//delete buildings;
 	}
 }

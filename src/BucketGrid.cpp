@@ -107,9 +107,9 @@ bool BucketGrid::fieldInCircle(int i, int j, double radius) {
 	int y = j * fieldSize;
 	if (x * x + y * y < radius * radius) {
 		return true;
-	} else {
-		return false;
 	}
+	return false;
+
 }
 
 std::vector<std::pair<int, int>*>* BucketGrid::getEnvIndexs(double radius) {

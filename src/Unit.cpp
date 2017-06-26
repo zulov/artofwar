@@ -9,6 +9,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxN
 	healthBar = nullptr;
 	aimPosition = nullptr;
 	unitState = US_STOP;
+	node->SetPosition(*_position);
 }
 
 Unit::~Unit() {
