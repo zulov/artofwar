@@ -1,8 +1,8 @@
 #include "State.h"
 
 
-State::State() {
-	//unit = _unit;
+State::State(Unit* _unit) {
+	unit = _unit;
 }
 
 State::~State() {

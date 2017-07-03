@@ -4,7 +4,7 @@
 class StopState :public State
 {
 public:
-	StopState();
+	StopState(Unit* _unit);
 	~StopState();
 	void onStart() override;
 	void onEnd() override;
