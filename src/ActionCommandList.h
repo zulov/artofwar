@@ -1,7 +1,7 @@
 #pragma once
 #include "CommandList.h"
+#include "AimContainer.h"
 
-class AimContainer;
 
 class ActionCommandList :public CommandList
 {

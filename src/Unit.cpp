@@ -1,7 +1,6 @@
 #include "Unit.h"
 #include "ActionCommand.h"
 
-
 Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxNode) {
 	acceleration = new Vector3();
 	velocity = new Vector3();
@@ -10,13 +9,18 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxN
 	aimPosition = nullptr;
 	unitState = US_STOP;
 	node->SetPosition(*_position);
+	states = new State*();
+	for (int i = 0; i < STATE_SIZE; ++i) {
+		states[i] = nullptr;
+	}
+	//states[0] = new StopState(this);
 }
 
 Unit::~Unit() {
 	delete acceleration;
 	delete velocity;
 	aimPosition = nullptr;
-	if(aims) {
+	if (aims) {
 		aims->reduce();
 	}
 }
@@ -28,7 +32,7 @@ void Unit::populate(db_unit* definition) {
 	minSpeed = maxSpeed * 0.2f;
 	minimalDistance = definition->minDist;
 	attackRange = minimalDistance + 2;
-	textureName = "Materials/" + definition->texture;
+	//textureName = "Materials/" + String(definition->texture);
 	unitType = UnitType(definition->type);
 }
 

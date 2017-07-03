@@ -32,6 +32,7 @@ SimulationCommand::SimulationCommand(int _number, ResourceType _resourceType, Ve
 }
 
 SimulationCommand::~SimulationCommand() {
+	delete position;
 }
 
 void SimulationCommand::execute() {
@@ -44,7 +45,7 @@ void SimulationCommand::execute() {
 	case BUILDING:
 		simulationObjectManager->addBuildings(number, buildingType, position, spacingType, player);
 		break;
-	case RESOURCE: 
+	case RESOURCE:
 		simulationObjectManager->addResources(number, resourceType, position, spacingType);
 		break;
 

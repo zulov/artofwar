@@ -41,9 +41,9 @@ private:
 	double maxTimeFrame = 0.05;
 	int framesPeriod = 20;
 	int currentFrameNumber = 0;
-	std::vector<Unit*>* units;
-	std::vector<Building*>* buildings;
-	std::vector<ResourceEntity*>* resources;
+	vector<Unit*>* units;
+	vector<Building*>* buildings;
+	vector<ResourceEntity*>* resources;
 	AimContainer* aimContainer;
 	//CONST
 	const float ROTATE_SPEED = 115.0f;

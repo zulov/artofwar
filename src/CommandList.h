@@ -8,7 +8,7 @@ class CommandList
 {
 public:
 	CommandList();
-	~CommandList();
+	virtual ~CommandList();
 	void add(AbstractCommand* command);
 	void execute();
 protected: 

@@ -1,16 +1,16 @@
 #pragma once
 
 #include <vector>
-#include "Unit.h"
+
 #include "BucketIterator.h"
 #include "BucketGrid.h"
-
 #include "Building.h"
 #include "defines.h"
 #include <vector>
 #include "OperatorType.h"
 #include "ResourceEntity.h"
 #include "Gradient.h"
+
 
 class EnviromentStrategy
 {
@@ -26,9 +26,9 @@ public:
 
 	std::vector<Entity*>* getResources(Unit* unit, double radius);
 
-	void update(std::vector<Unit*>* units);
-	void update(std::vector<Building*>* buildings);
-	void update(std::vector<ResourceEntity*>* resources);
+	void update(vector<Unit*>* units);
+	void update(vector<Building*>* buildings);
+	void update(vector<ResourceEntity*>* resources);
 	void add(Entity *entity);
 	Vector3 * getRepulsiveAt(Vector3 * position);
 

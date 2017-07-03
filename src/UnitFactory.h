@@ -18,7 +18,6 @@ public:
 	UnitFactory();
 	~UnitFactory();
 
-
 	std::vector<Unit*>* create(unsigned int number, UnitType unitType, Vector3 *center, SpacingType spacing, int player);
 
 };

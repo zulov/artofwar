@@ -8,7 +8,8 @@
 #include "UnitStateType.h"
 #include "UnitType.h"
 
-using namespace Urho3D;
+
+class State;
 
 class Unit : public Entity
 {
@@ -53,6 +54,7 @@ private:
 	double unitRadius = 2;
 	Node* healthBar;
 	UnitStateType unitState;
+	State **states;
 	UnitType unitType;
 
 	double hpCoef = 100;

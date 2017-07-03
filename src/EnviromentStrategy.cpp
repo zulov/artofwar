@@ -1,5 +1,5 @@
 #include "EnviromentStrategy.h"
-#include "Main.h"
+
 
 EnviromentStrategy::EnviromentStrategy() {
 	allUnitGrid = new BucketGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE);

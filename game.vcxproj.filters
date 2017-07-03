@@ -139,9 +139,6 @@
     <ClCompile Include="src\Unit.cpp">
       <Filter>objects\unit</Filter>
     </ClCompile>
-    <ClCompile Include="src\UnitState.cpp">
-      <Filter>objects\state</Filter>
-    </ClCompile>
     <ClCompile Include="src\StateManager.cpp">
       <Filter>objects\state</Filter>
     </ClCompile>
@@ -150,6 +147,12 @@
     </ClCompile>
     <ClCompile Include="src\SelectedHudPanel.cpp">
       <Filter>hud</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FollowState.cpp">
+      <Filter>objects\state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StopState.cpp">
+      <Filter>objects\state</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -316,9 +319,6 @@
     <ClInclude Include="src\UnitStateType.h">
       <Filter>objects\state</Filter>
     </ClInclude>
-    <ClInclude Include="src\UnitState.h">
-      <Filter>objects\state</Filter>
-    </ClInclude>
     <ClInclude Include="src\StateManager.h">
       <Filter>objects\state</Filter>
     </ClInclude>
@@ -330,6 +330,12 @@
     </ClInclude>
     <ClInclude Include="src\SelectedHudPanel.h">
       <Filter>hud</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FollowState.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StopState.h">
+      <Filter>objects\state</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
