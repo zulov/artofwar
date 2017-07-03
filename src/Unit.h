@@ -9,7 +9,7 @@
 #include "UnitType.h"
 
 
-class State;
+//class State;
 
 class Unit : public Entity
 {
@@ -54,7 +54,7 @@ private:
 	double unitRadius = 2;
 	Node* healthBar;
 	UnitStateType unitState;
-	State **states;
+	//State **states;
 	UnitType unitType;
 
 	double hpCoef = 100;

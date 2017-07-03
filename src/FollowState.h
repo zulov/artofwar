@@ -5,7 +5,7 @@
 class FollowState: public State 
 {
 public:
-	FollowState(Unit* _unit);
+	FollowState();
 	~FollowState();
 	void onStart() override;
 	void onEnd() override;

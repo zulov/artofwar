@@ -92,19 +92,16 @@ void SimulationObjectManager::addUnits(unsigned int number, UnitType unitType, V
 	std::vector<Unit*>* newUnits = unitFactory->create(number, unitType, center, spacingType, player);
 	addAll(newUnits);
 	delete newUnits;
-	delete center;
 }
 
 void SimulationObjectManager::addBuildings(unsigned int number, BuildingType buildingType, Vector3* center, SpacingType spacingType, int player) {
 	std::vector<Building*>* newBuildings = buildingFactory->create(number, buildingType, center, spacingType);
 	addAll(newBuildings);
 	delete newBuildings;
-	delete center;
 }
 
 void SimulationObjectManager::addResources(unsigned number, ResourceType resourceType, Vector3* center, SpacingType spacingType) {
 	std::vector<ResourceEntity*>* newResources = resourceFactory->create(number, resourceType, center, spacingType);
 	addAll(newResources);
 	delete newResources;
-	delete center;
 }

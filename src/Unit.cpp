@@ -9,10 +9,10 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxN
 	aimPosition = nullptr;
 	unitState = US_STOP;
 	node->SetPosition(*_position);
-	states = new State*();
-	for (int i = 0; i < STATE_SIZE; ++i) {
-		states[i] = nullptr;
-	}
+//	states = new State*();
+//	for (int i = 0; i < STATE_SIZE; ++i) {
+//		states[i] = nullptr;
+//	}
 	//states[0] = new StopState(this);
 }
 
@@ -32,7 +32,7 @@ void Unit::populate(db_unit* definition) {
 	minSpeed = maxSpeed * 0.2f;
 	minimalDistance = definition->minDist;
 	attackRange = minimalDistance + 2;
-	//textureName = "Materials/" + String(definition->texture);
+	textureName = "Materials/" + String(definition->texture);
 	unitType = UnitType(definition->type);
 }
 
