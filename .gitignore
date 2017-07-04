@@ -13,3 +13,4 @@ result
 *.rar
 include
 /Data/Database/base.db
+/CoreData

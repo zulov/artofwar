@@ -264,13 +264,9 @@ void Unit::select() {
 
 void Unit::unSelect() {
 	billboard->enabled_ = false;
-//	Node* child = healthBar;
-//	if (child) {
-//		child->RemoveAllChildren();
-//		node->RemoveChild(child);
-//		healthBar = nullptr;
-//	}
+
 	billboardObject->Commit();
+
 	StaticModel* model = node->GetComponent<StaticModel>();
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>(textureName));
 }
