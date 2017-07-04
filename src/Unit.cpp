@@ -14,6 +14,22 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxN
 		states[i] = nullptr;
 	}
 	//states[0] = new StopState(this);
+
+	healthBar = node->CreateChild();
+	double healthBarSize = (hpCoef / maxHpCoef);
+	if (healthBarSize <= 0) { healthBarSize = 0; }
+	healthBar->SetPosition(Vector3(0, 1.2f, 0));
+
+	billboardObject = healthBar->CreateComponent<BillboardSet>();
+	billboardObject->SetNumBillboards(2);
+	billboardObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
+	billboardObject->SetSorted(true);
+
+	billboard = billboardObject->GetBillboard(0);
+	billboard->size_ = Vector2(healthBarSize, 0.2);
+	billboard->enabled_ = false;
+
+	billboardObject->Commit();
 }
 
 Unit::~Unit() {
@@ -32,7 +48,7 @@ void Unit::populate(db_unit* definition) {
 	minSpeed = maxSpeed * 0.2f;
 	minimalDistance = definition->minDist;
 	attackRange = minimalDistance + 2;
-	//textureName = "Materials/" + String(definition->texture);
+	textureName = "Materials/" + String(definition->texture);
 	unitType = UnitType(definition->type);
 }
 
@@ -242,27 +258,19 @@ void Unit::select() {
 	StaticModel* model = node->GetComponent<StaticModel>();
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
 
-
-	healthBar = node->CreateChild();
-	double healthBarSize = 2 * (hpCoef / maxHpCoef);
-	if (healthBarSize <= 0) { healthBarSize = 0; }
-	healthBar->SetScale(Vector3(healthBarSize, 0.3, 0.3f));
-	healthBar->SetPosition(Vector3(0, 1.2f, 0));
-	healthBar->Pitch(-70);
-
-	StaticModel* planeObject = healthBar->CreateComponent<StaticModel>();
-	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/Cube.mdl"));
-	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
+	billboard->enabled_ = true;
+	billboardObject->Commit();
 }
 
 void Unit::unSelect() {
-	Node* child = healthBar;
-	if (child) {
-		child->RemoveAllChildren();
-		node->RemoveChild(child);
-		healthBar = nullptr;
-	}
-
+	billboard->enabled_ = false;
+//	Node* child = healthBar;
+//	if (child) {
+//		child->RemoveAllChildren();
+//		node->RemoveChild(child);
+//		healthBar = nullptr;
+//	}
+	billboardObject->Commit();
 	StaticModel* model = node->GetComponent<StaticModel>();
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>(textureName));
 }

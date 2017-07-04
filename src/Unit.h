@@ -7,7 +7,7 @@
 #include "Entity.h"
 #include "UnitStateType.h"
 #include "UnitType.h"
-
+#include <Urho3D/Graphics/BillboardSet.h>
 
 class State;
 
@@ -53,6 +53,8 @@ private:
 
 	double unitRadius = 2;
 	Node* healthBar;
+	Billboard* billboard;
+	BillboardSet* billboardObject;
 	UnitStateType unitState;
 	State **states;
 	UnitType unitType;
