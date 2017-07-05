@@ -118,5 +118,5 @@ std::vector<Entity*>* EnviromentStrategy::getBuildings(std::pair<Entity*, Entity
 }
 
 double EnviromentStrategy::getGroundHeightAt(double x, double z) {
-	return 1.0;
+	return 0.0;
 }

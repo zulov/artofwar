@@ -40,7 +40,7 @@ protected:
 	double minimalDistance;
 	int team;
 	int player;
-	bool rotatable = true;
+	bool rotatable;
 	String textureName;
 private:
 	int bucketX[BUCKET_SET_NUMBER];

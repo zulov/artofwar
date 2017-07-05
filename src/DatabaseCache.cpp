@@ -5,7 +5,7 @@
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[3]);//TODO to nie powinno byc jako type ale id
-	xyz->units[id] = new db_unit(argv[0], atof(argv[1]), atof(argv[2]), atoi(argv[3]), argv[4], argv[5], argv[6], atof(argv[7]), atof(argv[8]), atof(argv[9]));//toDO moza sprobowac pêtl¹
+	xyz->units[id] = new db_unit(argv[0], atof(argv[1]), atof(argv[2]), atoi(argv[3]), argv[4], argv[5], argv[6], atof(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]));//toDO moza sprobowac pêtl¹
 	xyz->units_size++;
 	return 0;
 }

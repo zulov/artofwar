@@ -16,6 +16,7 @@ class Unit : public Entity
 public:
 	Unit(Vector3* _position, Urho3D::Node* _boxNode);
 	~Unit();
+	double getHealthBarSize();
 	void populate(db_unit* definition);
 	void move(double timeStep);
 	void applyForce(double timeStep);
@@ -31,6 +32,7 @@ public:
 	Vector3* getVelocity();
 	double getMass();
 	double getUnitRadius();
+	void updateHealthBar();
 	void absorbAttack(double attackCoef) override;
 	void attack(vector<Entity*>* enemies);
 	void attack(Entity *enemy);

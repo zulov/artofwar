@@ -23,8 +23,9 @@ struct db_unit
 	double mass;
 	double maxSpeed;
 	double scale;
+	bool rotatable;
 
-	db_unit(char* name, double minDist, double maxSep, int type, char* model, char* texture, char* font, double mass, double maxSpeed, double scale)
+	db_unit(char* name, double minDist, double maxSep, int type, char* model, char* texture, char* font, double mass, double maxSpeed, double scale, int rotatable)
 		: name(name),
 		minDist(minDist),
 		maxSep(maxSep),
@@ -34,7 +35,8 @@ struct db_unit
 		font(font),
 		mass(mass),
 		maxSpeed(maxSpeed),
-		scale(scale) {
+		scale(scale),
+		rotatable(rotatable) {
 	}
 };
 
@@ -159,7 +161,7 @@ struct db_resource
 		maxCapacity(maxCapacity),
 		texture(Urho3D::String(texture).Split(SPLIT_SIGN)),
 		model(model),
-		scale(scale), 
+		scale(scale),
 		minDist(minDist) {
 	}
 };

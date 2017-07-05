@@ -1,6 +1,7 @@
 #include "Unit.h"
 #include "ActionCommand.h"
 
+
 Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxNode) {
 	acceleration = new Vector3();
 	velocity = new Vector3();
@@ -16,9 +17,13 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxN
 	//states[0] = new StopState(this);
 
 	healthBar = node->CreateChild();
-	double healthBarSize = (hpCoef / maxHpCoef);
-	if (healthBarSize <= 0) { healthBarSize = 0; }
-	healthBar->SetPosition(Vector3(0, 1.2f, 0));
+	double healthBarSize = getHealthBarSize();
+
+	StaticModel* model = node->GetComponent<StaticModel>();
+	Model* model3d = model->GetModel();//TODO razy scale?
+	Vector3 boundingBox = model3d->GetBoundingBox().Size();
+
+	healthBar->SetPosition(Vector3(0, boundingBox.y_ * 1.2f, 0));
 
 	billboardObject = healthBar->CreateComponent<BillboardSet>();
 	billboardObject->SetNumBillboards(2);
@@ -41,6 +46,12 @@ Unit::~Unit() {
 	}
 }
 
+double Unit::getHealthBarSize() {
+	double healthBarSize = (hpCoef / maxHpCoef);
+	if (healthBarSize <= 0) { healthBarSize = 0; }
+	return healthBarSize;
+}
+
 void Unit::populate(db_unit* definition) {
 	maxSeparationDistance = definition->maxSep;
 	mass = definition->mass;
@@ -50,6 +61,7 @@ void Unit::populate(db_unit* definition) {
 	attackRange = minimalDistance + 2;
 	textureName = "Materials/" + String(definition->texture);
 	unitType = UnitType(definition->type);
+	rotatable = definition->rotatable;
 }
 
 void Unit::move(double timeStep) {
@@ -130,12 +142,17 @@ double Unit::getUnitRadius() {
 	return unitRadius;
 }
 
+void Unit::updateHealthBar() {
+	double healthBarSize = getHealthBarSize();
+
+	billboard->size_ = Vector2(healthBarSize, 0.2);
+	billboardObject->Commit();
+}
+
 void Unit::absorbAttack(double attackCoef) {
 	hpCoef -= attackCoef * (1 - defenseCoef);
-	if (healthBar) {
-		double healthBarSize = 2 * (hpCoef / maxHpCoef);
-		if (healthBarSize <= 0) { healthBarSize = 0; }
-		healthBar->SetScale(Vector3(healthBarSize, 0.3, 0.3f));
+	if (billboard->enabled_) {
+		updateHealthBar();
 	}
 }
 
@@ -259,7 +276,7 @@ void Unit::select() {
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
 
 	billboard->enabled_ = true;
-	billboardObject->Commit();
+	updateHealthBar();
 }
 
 void Unit::unSelect() {

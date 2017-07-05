@@ -20,9 +20,10 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, UnitType unitType, Vect
 	int produced = 0;
 	int y = 0;
 	int xMax = number / sqrt(number);
-	double sideSize = xMax * space/2;
-	Model * model3d = game->getCache()->GetResource<Model>(modelName);
-	Material * material = Game::get()->getCache()->GetResource<Urho3D::Material>(textureName);
+	double sideSize = xMax * space / 2;
+	Model* model3d = game->getCache()->GetResource<Model>(modelName);
+
+	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>(textureName);
 	while (produced < number) {
 		for (int x = 0; x < xMax; ++x) {
 			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_, y * space + center->z_ - sideSize);
@@ -32,7 +33,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, UnitType unitType, Vect
 			StaticModel* model = node->CreateComponent<StaticModel>();
 			model->SetModel(model3d);
 			model->SetMaterial(material);
-			
+
 			Unit* newUnit = new Unit(position, node);
 			newUnit->populate(dbUnit);
 			newUnit->setPlayer(player);

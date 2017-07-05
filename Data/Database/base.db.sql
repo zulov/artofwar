@@ -10,13 +10,14 @@ CREATE TABLE "units" (
 	`mass`	REAL,
 	`maxSpeed`	REAL,
 	`scale`	REAL,
+	`rotatable`	INTEGER,
 	FOREIGN KEY(`type`) REFERENCES `unit_type`(`id`)
 );
-INSERT INTO `units` (name,minDist,maxSep,type,model,texture,font,mass,maxSpeed,scale) VALUES ('warrior',0.5,2.0,0,'Cube.mdl','grey.xml','Anonymous Pro.ttf',1.0,5.0,1.0),
- ('archer',0.4,2.0,3,'Prism.mdl','darkgrey.xml','Anonymous Pro.ttf',0.8,6.0,1.0),
- ('pikeman',0.4,2.0,1,'Pyramid.mdl','red.xml','Anonymous Pro.ttf',0.9,3.0,1.0),
- ('cavalry',0.6,3.5,2,'horse.mdl','horse.xml','Anonymous Pro.ttf',2.0,12.0,1.0),
- ('worker',0.3,2.0,4,'Sphere.mdl','red.xml','Anonymous Pro.ttf',0.5,3.0,1.0);
+INSERT INTO `units` (name,minDist,maxSep,type,model,texture,font,mass,maxSpeed,scale,rotatable) VALUES ('warrior',0.5,2.0,0,'Cube.mdl','grey.xml','Anonymous Pro.ttf',1.0,5.0,1.0,1),
+ ('archer',0.4,2.0,3,'Hedra.mdl','darkgrey.xml','Anonymous Pro.ttf',0.8,6.0,1.0,1),
+ ('pikeman',0.4,2.0,1,'Pyramid.mdl','red.xml','Anonymous Pro.ttf',0.9,3.0,1.0,1),
+ ('cavalry',0.6,3.5,2,'horse.mdl','horse.xml','Anonymous Pro.ttf',2.0,12.0,1.0,1),
+ ('worker',0.3,2.0,4,'Sphere.mdl','red.xml','Anonymous Pro.ttf',0.5,3.0,1.0,1);
 CREATE TABLE "unit_type" (
 	`id`	INTEGER,
 	`name`	TEXT,
@@ -76,7 +77,7 @@ CREATE TABLE "graph_settings" (
 	PRIMARY KEY(`id`),
 	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`)
 );
-INSERT INTO `graph_settings` (id,hud_size,res_x,res_y,style,fullscreen,max_fps,min_fps) VALUES (0,1,1366,768,'DefaultStyle.xml','false',10000.0,0.01);
+INSERT INTO `graph_settings` (id,hud_size,res_x,res_y,style,fullscreen,max_fps,min_fps) VALUES (0,1,1366,768,'DefaultStyle.xml','false',140.0,0.01);
 CREATE TABLE `building_type` (
 	`id`	INTEGER,
 	`name`	TEXT,
@@ -88,22 +89,4 @@ INSERT INTO `building_type` (id,name,icon) VALUES (0,'house','house.png'),
  (2,'barracks','house.png'),
  (3,'archery_range','house.png'),
  (4,'mock','mock.png');
-CREATE TABLE "building" (
-	`id`	INTEGER,
-	`name`	TEXT,
-	`minDist`	REAL,
-	`type`	INTEGER,
-	`model`	TEXT,
-	`texture`	TEXT,
-	`font`	TEXT,
-	`scale`	REAL,
-	`texture_temp`	TEXT,
-	PRIMARY KEY(`id`),
-	FOREIGN KEY(`type`) REFERENCES `building_type`(`id`)
-);
-INSERT INTO `building` (id,name,minDist,type,model,texture,font,scale,texture_temp) VALUES (0,'house',6.0,0,'House.mdl','house.xml','Anonymous Pro.ttf',1.0,'house_temp.xml'),
- (1,'tower',3.0,1,'Tower.mdl','tower.xml','Anonymous Pro.ttf',1.0,'tower_temp.xml'),
- (2,'barracks',10.0,2,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml'),
- (3,'archery_range',6.0,3,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml'),
- (4,'mock',10.0,4,'cube.mdl','transparent.xml','Anonymous Pro.ttf',10.0,'transparent_temp.xml');
 COMMIT;
