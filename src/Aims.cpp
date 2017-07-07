@@ -1,23 +1,22 @@
 #include "Aims.h"
 
 
-
-Aims::Aims(int _references) {
+Aims::Aims() {
 	aims = new std::vector<Aim*>();
 	aims->reserve(10);
-	references = _references;
+	references = 0;
 }
 
 Aims::~Aims() {
 	delete aims;
 }
 
-Aim* Aims::getAim(int index) {
+Aim* Aims::getAim(short index) {
 	if (index >= aims->size()) { return nullptr; }
 	return aims->at(index);
 }
 
-Urho3D::Vector3* Aims::getAimPos(int index) {
+Urho3D::Vector3* Aims::getAimPos(short index) {
 	if (index >= aims->size()) { return nullptr; }
 	return (*aims)[index]->getPosition();
 }

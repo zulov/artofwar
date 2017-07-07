@@ -25,11 +25,11 @@ Urho3D::Node* Entity::getNode() {
 	return node;
 }
 
-int Entity::getBucketX(int param) {
+signed char Entity::getBucketX(signed char param) {
 	return bucketX[param];
 }
 
-int Entity::getBucketZ(int param) {
+signed char Entity::getBucketZ(signed char param) {
 	return bucketZ[param];
 }
 
@@ -37,7 +37,7 @@ bool Entity::isAlive() {
 	return alive;
 }
 
-bool Entity::bucketHasChanged(int posX, int posZ, int param) {
+bool Entity::bucketHasChanged(short int posX, short int posZ, short int param) {
 	if (bucketX[param] == posX && bucketZ[param] == posZ) {
 		return false;
 	} else {
@@ -45,16 +45,16 @@ bool Entity::bucketHasChanged(int posX, int posZ, int param) {
 	}
 }
 
-void Entity::setBucket(int posX, int posZ, int param) {
+void Entity::setBucket(short int posX, short int posZ, short int param) {
 	bucketX[param] = posX;
 	bucketZ[param] = posZ;
 }
 
-void Entity::setTeam(int _team) {
+void Entity::setTeam(signed char _team) {
 	team = _team;
 }
 
-void Entity::setPlayer(int player) {
+void Entity::setPlayer(signed char player) {
 	this->player = player;
 }
 
@@ -75,7 +75,7 @@ void Entity::unSelect() {
 void Entity::action(ActionType actionType, ActionParameter* parameter) {
 }
 
-int Entity::getTeam() {
+signed char Entity::getTeam() {
 	return team;
 }
 

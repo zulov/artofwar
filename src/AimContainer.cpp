@@ -5,7 +5,7 @@ AimContainer::AimContainer() {
 	aims = new std::vector<Aims*>();
 	aims->reserve(AIMS_CAPACITY);
 	for (int i = 0; i < AIMS_CAPACITY; ++i) {
-		aims->push_back(new Aims(0));
+		aims->push_back(new Aims());
 	}
 	index = 0;
 }
@@ -28,7 +28,7 @@ Aims* AimContainer::getNext() {
 			return (*aims)[index];
 		}
 	}
-	aims->push_back(new Aims(0));
+	aims->push_back(new Aims());
 	index = aims->size() - 1;
 	return (*aims)[index];
 }

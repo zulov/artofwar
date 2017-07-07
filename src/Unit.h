@@ -35,7 +35,7 @@ public:
 	void updateHealthBar();
 	void absorbAttack(double attackCoef) override;
 	void attack(vector<Entity*>* enemies);
-	void attack(Entity *enemy);
+	void attack(Entity* enemy);
 	void updateHeight(double y, double timeStep);
 	void updateRotation();
 protected:
@@ -46,21 +46,24 @@ protected:
 	double maxSeparationDistance;
 	double minSpeed;
 	Aims* aims;
-	Vector3 *aimPosition;
+	Vector3* aimPosition;
 	int aimIndex = 0;
 private:
 	void appendAim(ActionParameter* actionParameter);
 	void addAim(ActionParameter* actionParameter);
 	void followAim(ActionParameter* parameter);
 
-	double unitRadius = 2;
 	Node* healthBar;
+	Node* selectShadow;
 	Billboard* billboard;
+	Billboard* billboardShadow;
 	BillboardSet* billboardObject;
+	BillboardSet* billboardSetShadow;
 	UnitStateType unitState;
-	State **states;
+	State** states;
 	UnitType unitType;
 
+	double unitRadius = 2;
 	double hpCoef = 100;
 	double maxHpCoef = 100;
 	double attackCoef = 10;

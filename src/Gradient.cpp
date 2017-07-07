@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-Gradient::Gradient(int _resolution, double _size) {
+Gradient::Gradient(short _resolution, double _size) {
 	resolution = _resolution;
 	halfResolution = resolution / 2;
 	size = _size;

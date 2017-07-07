@@ -10,17 +10,17 @@ class BucketGrid;
 class BucketIterator
 {
 public:
-	BucketIterator(std::vector<std::pair<int, int>*>* _levels, int _dX, int _dZ, BucketGrid * _bucketGrid);
+	BucketIterator(std::vector<std::pair<short, short>*>* _levels, short _dX, short _dZ, BucketGrid * _bucketGrid);
 	~BucketIterator();
 	Entity* next();
 private:
-	int index = 0;
-	int secondIndex = 0;
-	int sizeContent;
-	int levelSize;
-	std::vector<std::pair<int, int>*>* levels;
-	int dX;
-	int dZ;
+	short index = 0;
+	short secondIndex = 0;
+	short sizeContent;
+	short levelSize;
+	std::vector<std::pair<short, short>*>* levels;
+	short dX;
+	short dZ;
 	std::vector<Entity *>* currentContent;
 	BucketGrid * bucketGrid;
 

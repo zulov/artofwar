@@ -6,7 +6,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxN
 	acceleration = new Vector3();
 	velocity = new Vector3();
 	aims = nullptr;
-	healthBar = nullptr;
+
 	aimPosition = nullptr;
 	unitState = US_STOP;
 	node->SetPosition(*_position);
@@ -23,10 +23,10 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxN
 	Model* model3d = model->GetModel();//TODO razy scale?
 	Vector3 boundingBox = model3d->GetBoundingBox().Size();
 
-	healthBar->SetPosition(Vector3(0, boundingBox.y_ * 1.2f, 0));
-
+	healthBar->SetPosition(Vector3(0, boundingBox.y_ * 1.3f, 0));
+	
 	billboardObject = healthBar->CreateComponent<BillboardSet>();
-	billboardObject->SetNumBillboards(2);
+	billboardObject->SetNumBillboards(1);
 	billboardObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
 	billboardObject->SetSorted(true);
 
@@ -34,7 +34,21 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxN
 	billboard->size_ = Vector2(healthBarSize, 0.2);
 	billboard->enabled_ = false;
 
+	selectShadow = node->CreateChild();
+	selectShadow->SetPosition(Vector3(0, 0.1, 0));
+	selectShadow->Rotate(Quaternion(90, 0, 0));
+	billboardSetShadow = selectShadow->CreateComponent<BillboardSet>();
+	billboardSetShadow->SetNumBillboards(1);
+	billboardSetShadow->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/select.xml"));
+	billboardSetShadow->SetSorted(true);
+	billboardSetShadow->SetFaceCameraMode(FaceCameraMode::FC_NONE);
+	billboardShadow = billboardSetShadow->GetBillboard(0);
+	billboardShadow->size_ = Vector2(boundingBox.x_* 1.3f, boundingBox.z_* 1.3f);
+
+	billboardShadow->enabled_ = false;
+
 	billboardObject->Commit();
+	billboardSetShadow->Commit();
 }
 
 Unit::~Unit() {
@@ -66,8 +80,8 @@ void Unit::populate(db_unit* definition) {
 
 void Unit::move(double timeStep) {
 	(*position) += (*velocity) * timeStep;
-	node->SetPosition(*position);
-
+	//node->SetPosition(*position);
+	node->Translate((*velocity) * timeStep, TS_WORLD);
 	if (aims != nullptr) {
 		bool reach = aims->ifReach(position, aimIndex);
 		if (reach) {
@@ -147,6 +161,7 @@ void Unit::updateHealthBar() {
 
 	billboard->size_ = Vector2(healthBarSize, 0.2);
 	billboardObject->Commit();
+	billboardSetShadow->Commit();
 }
 
 void Unit::absorbAttack(double attackCoef) {
@@ -276,14 +291,16 @@ void Unit::select() {
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green.xml"));
 
 	billboard->enabled_ = true;
+	billboardShadow->enabled_ = true;
 	updateHealthBar();
 }
 
 void Unit::unSelect() {
 	billboard->enabled_ = false;
+	billboardShadow->enabled_ = false;
 
 	billboardObject->Commit();
-
+	billboardSetShadow->Commit();
 	StaticModel* model = node->GetComponent<StaticModel>();
 	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>(textureName));
 }
