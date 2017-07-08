@@ -29,7 +29,7 @@ BucketGrid::~BucketGrid() {
 	delete empty;
 }
 
-void BucketGrid::updateGrid(Entity* entity, int team) {
+void BucketGrid::updateGrid(Physical* entity, int team) {
 	Vector3* pos = entity->getPosition();
 	int posX = getIntegerPos(pos->x_);
 	int posZ = getIntegerPos(pos->z_);
@@ -83,10 +83,10 @@ bool BucketGrid::isInSide(int _posX, int _posZ) const {
 	}
 }
 
-std::vector<Entity*>* BucketGrid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair) {
+std::vector<Physical*>* BucketGrid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair) {
 	Vector3* begin = pair->first;
 	Vector3* end = pair->second;
-	std::vector<Entity*>* entities = new std::vector<Entity*>();//TOODO reserva zrobic sensownego
+	std::vector<Physical*>* entities = new std::vector<Physical*>();//TOODO reserva zrobic sensownego
 	int posBeginX = getIntegerPos(begin->x_);
 	int posBeginZ = getIntegerPos(begin->z_);
 	int posEndX = getIntegerPos(end->x_);
@@ -95,7 +95,7 @@ std::vector<Entity*>* BucketGrid::getArrayNeight(std::pair<Vector3*, Vector3*>* 
 	for (int i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
 		for (int j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
 			Bucket* bucket = getBucketAt(i, j);
-			vector<Entity *>* content = bucket->getContent();
+			vector<Physical *>* content = bucket->getContent();
 			entities->insert(entities->end(), content->begin(), content->end());
 		}
 	}
@@ -109,7 +109,6 @@ bool BucketGrid::fieldInCircle(int i, int j, double radius) {
 		return true;
 	}
 	return false;
-
 }
 
 std::vector<std::pair<short, short>*>* BucketGrid::getEnvIndexs(double radius) {

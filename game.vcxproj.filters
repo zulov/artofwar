@@ -154,6 +154,9 @@
     <ClCompile Include="src\StopState.cpp">
       <Filter>objects\state</Filter>
     </ClCompile>
+    <ClCompile Include="src\Physical.cpp">
+      <Filter>objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -336,6 +339,9 @@
     </ClInclude>
     <ClInclude Include="src\StopState.h">
       <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Physical.h">
+      <Filter>objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -19,7 +19,7 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 void Simulation::action() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
-		std::vector<Entity*>* enemies = envStrategy->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
+		std::vector<Physical*>* enemies = envStrategy->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
 
 		unit->attack(enemies);
 		delete enemies;
@@ -107,8 +107,8 @@ void Simulation::moveUnits(float timeStep) {
 void Simulation::calculateForces() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
-		std::vector<Entity*>* neighbours = envStrategy->getNeighbours(unit, unit->getMaxSeparationDistance());
-		//std::vector<Entity*>* buildings = envStrategy->getBuildings(unit, unit->getMaxSeparationDistance());//TODO jakis inny parametr niz max separaatino dist
+		std::vector<Physical*>* neighbours = envStrategy->getNeighbours(unit, unit->getMaxSeparationDistance());
+		//std::vector<Physical*>* buildings = envStrategy->getBuildings(unit, unit->getMaxSeparationDistance());//TODO jakis inny parametr niz max separaatino dist
 		Vector3 * repulsive = envStrategy->getRepulsiveAt(unit->getPosition());
 
 		Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
@@ -116,9 +116,7 @@ void Simulation::calculateForces() {
 
 		Vector3* destForce = forceStrategy->destination(unit);
 		Vector3* rand = forceStrategy->randomForce();
-		if(sepObstacle->Length()>0) {
-			int a = 5;
-		}
+
 		(*sepPedestrian) += (*sepObstacle) += (*destForce) += (*rand);
 		unit->setAcceleration(sepPedestrian);
 

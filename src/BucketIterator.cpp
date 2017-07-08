@@ -16,7 +16,7 @@ BucketIterator::BucketIterator(std::vector<std::pair<short, short>*>* _levels, s
 BucketIterator::~BucketIterator() {
 }
 
-Entity* BucketIterator::next() {
+Physical* BucketIterator::next() {
 	while (secondIndex == sizeContent) {
 		if (index >= levelSize) { return nullptr; }
 		std::pair<short, short>* pair = (*levels)[index];
@@ -26,7 +26,7 @@ Entity* BucketIterator::next() {
 		secondIndex = 0;
 	}
 
-	Entity* entity = (*currentContent)[secondIndex];
+	Physical* entity = (*currentContent)[secondIndex];
 	++secondIndex;
 	return entity;
 

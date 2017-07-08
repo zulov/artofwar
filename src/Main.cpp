@@ -19,6 +19,7 @@ void Main::Setup() {
 	engineParameters_[EP_SOUND] = false;
 	engineParameters_[EP_WINDOW_HEIGHT] = graphSettings->res_y;
 	engineParameters_[EP_WINDOW_WIDTH] = graphSettings->res_x;
+	
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
 }

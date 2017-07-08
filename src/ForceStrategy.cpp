@@ -15,16 +15,16 @@ Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, Vector3* repulse)
 	return force;
 }
 
-Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, std::vector<Entity*>* obstacles) {
+Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, std::vector<Physical*>* obstacles) {
 	return separationUnits(unit, obstacles);
 }
 
 
-Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Entity*>* units) {
+Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Physical*>* units) {
 	Vector3* force = new Vector3();
 
 	for (int i = 0; i < units->size(); ++i) {
-		Entity* neight = (*units)[i];
+		Physical* neight = (*units)[i];
 		double sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 

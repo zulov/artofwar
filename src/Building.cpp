@@ -3,7 +3,7 @@
 #include "db_strcut.h"
 
 
-Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxNode) {
+Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode, BUILDING) {
 
 }
 
@@ -15,11 +15,6 @@ double Building::getHealthBarSize() {
 	double healthBarSize = (1);
 	if (healthBarSize <= 0) { healthBarSize = 0; }
 	return healthBarSize;
-}
-
-
-ObjectType Building::getType() {
-	return BUILDING;
 }
 
 int Building::getSubType() {

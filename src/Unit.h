@@ -8,10 +8,11 @@
 #include "UnitStateType.h"
 #include "UnitType.h"
 #include <Urho3D/Graphics/BillboardSet.h>
+#include "Physical.h"
 
 class State;
 
-class Unit : public Entity
+class Unit : public Physical
 {
 public:
 	Unit(Vector3* _position, Urho3D::Node* _boxNode);
@@ -20,7 +21,6 @@ public:
 	void populate(db_unit* definition);
 	void move(double timeStep);
 	void applyForce(double timeStep);
-	ObjectType getType() override;
 	int getSubType() override;
 	void setAcceleration(Vector3* _acceleration);
 	double getMaxSeparationDistance();
@@ -31,8 +31,8 @@ public:
 	double getMass();
 	double getUnitRadius();
 	void absorbAttack(double attackCoef) override;
-	void attack(vector<Entity*>* enemies);
-	void attack(Entity* enemy);
+	void attack(vector<Physical*>* enemies);
+	void attack(Physical* enemy);
 	void updateHeight(double y, double timeStep);
 	void updateRotation();
 protected:

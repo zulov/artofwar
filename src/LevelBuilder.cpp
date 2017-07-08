@@ -1,4 +1,5 @@
 #include "LevelBuilder.h"
+#include "Physical.h"
 
 
 LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
@@ -37,7 +38,7 @@ Entity* LevelBuilder::createZone() {
 	zone->SetFogStart(200.0f);
 	zone->SetFogEnd(300.0f);
 
-	Entity* entity = new Entity(new Vector3(), zoneNode);
+	Entity* entity = new Entity(zoneNode, ENTITY);
 	return entity;
 }
 
@@ -48,7 +49,7 @@ Entity* LevelBuilder::createLight() {
 	light->SetLightType(LIGHT_DIRECTIONAL);
 	light->SetColor(Color(0.7f, 0.6f, 0.6f));
 
-	Entity* entity = new Entity(new Vector3(), lightNode);
+	Entity* entity = new Entity(lightNode, ENTITY);
 	return entity;
 }
 
@@ -60,7 +61,7 @@ Entity* LevelBuilder::createGround() {
 	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/Plane.mdl"));
 	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/StoneTiled.xml"));
 
-	Entity* entity = new Entity(new Vector3(), planeNode);
+	Entity* entity = new Physical(new Vector3, planeNode, PHISICAL);
 	return entity;
 
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include "Entity.h"
-#include <vector>
 #include "AbstractObjectManager.h"
 
 class SceneObjectManager :public AbstractObjectManager
@@ -11,4 +10,3 @@ public:
 
 	void add(Entity* entity) override;
 };
-

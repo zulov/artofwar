@@ -2,7 +2,7 @@
 #include "ActionCommand.h"
 
 
-Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_position, _boxNode) {
+Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode,UNIT) {
 	acceleration = new Vector3();
 	velocity = new Vector3();
 	aims = nullptr;
@@ -129,12 +129,12 @@ void Unit::absorbAttack(double attackCoef) {
 	}
 }
 
-void Unit::attack(vector<Entity*>* enemies) {
+void Unit::attack(vector<Physical*>* enemies) {
 	if (unitState == US_STOP || unitState == US_ATTACK) {
 		double minDistance = 9999;
-		Entity* entityClosest = nullptr;
+		Physical* entityClosest = nullptr;
 		for (int j = 0; j < enemies->size(); ++j) {
-			Entity* entity = (*enemies)[j];
+			Physical* entity = (*enemies)[j];
 			double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
 			if (distance <= minDistance) {
 				minDistance = distance;
@@ -155,7 +155,7 @@ void Unit::attack(vector<Entity*>* enemies) {
 	}
 }
 
-void Unit::attack(Entity* enemy) {
+void Unit::attack(Physical* enemy) {
 	enemy->absorbAttack(attackCoef);
 }
 
@@ -227,6 +227,7 @@ void Unit::applyForce(double timeStep) {
 		velocity->x_ = 0;
 		velocity->y_ = 0;
 		velocity->z_ = 0;
+		///velocity->ZERO;
 		if (unitState != US_GOTO) {
 			unitState = US_STOP;
 		}
@@ -234,10 +235,6 @@ void Unit::applyForce(double timeStep) {
 		rotation->x_ = velocity->x_;
 		rotation->z_ = velocity->z_;
 	}
-}
-
-ObjectType Unit::getType() {
-	return UNIT;
 }
 
 int Unit::getSubType() {

@@ -1,14 +1,14 @@
 #include "ActionCommand.h"
 
 
-ActionCommand::ActionCommand(std::vector<Entity*>* entities, ActionType action, Vector3* parameter) {
+ActionCommand::ActionCommand(std::vector<Physical*>* entities, ActionType action, Vector3* parameter) {
 	this->entities = entities;
 	this->action = action;
 	this->aimPosition = parameter;
 	this->entity = nullptr;
 }
 
-ActionCommand::ActionCommand(Entity* entity, ActionType action, Vector3* paremater) {
+ActionCommand::ActionCommand(Physical* entity, ActionType action, Vector3* paremater) {
 	this->entity = entity;
 	this->action = action;
 	this->aimPosition = paremater;

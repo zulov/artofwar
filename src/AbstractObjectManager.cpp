@@ -2,13 +2,11 @@
 #include "LinkComponent.h"
 
 
-AbstractObjectManager::AbstractObjectManager()
-{
+AbstractObjectManager::AbstractObjectManager() {
 }
 
 
-AbstractObjectManager::~AbstractObjectManager()
-{
+AbstractObjectManager::~AbstractObjectManager() {
 }
 
 

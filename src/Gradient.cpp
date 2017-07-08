@@ -37,7 +37,7 @@ double Gradient::getDoublePos(double value) {
 	return (value / size * resolution);
 }
 
-void Gradient::add(Entity* entity) {
+void Gradient::add(Physical* entity) {
 	Urho3D::Vector3* pos = entity->getPosition();
 
 	int dX = getIntegerPos(pos->x_) + halfResolution;

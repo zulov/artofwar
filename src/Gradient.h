@@ -1,8 +1,6 @@
 #pragma once
 #include <Urho3D/Math/Vector3.h>
-#include "Entity.h"
-
-class Entity;
+#include "Physical.h"
 
 class Gradient
 {
@@ -13,9 +11,9 @@ public:
 	int getIntegerPos(double value);
 	double getDoublePos(double value);
 	
-	void add(Entity * entity);
+	void add(Physical * entity);
 	double calculateCoef(double distance, double minDist);
-	void remove(Entity * entity);
+	void remove(Physical * entity);
 private:
 	Urho3D::Vector3*** values;
 	short resolution;

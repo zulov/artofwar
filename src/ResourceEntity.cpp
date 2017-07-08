@@ -1,18 +1,14 @@
 #include "ResourceEntity.h"
 
 
-ResourceEntity::ResourceEntity(Vector3* _position, Urho3D::Node* _node) : Entity(_position, _node) {
-	
+ResourceEntity::ResourceEntity(Vector3* _position, Urho3D::Node* _node) : Physical(_position, _node, RESOURCE) {
+
 }
 
 ResourceEntity::~ResourceEntity() {
-	if(name) {
+	if (name) {
 		delete name;
 	}
-}
-
-ObjectType ResourceEntity::getType() {
-	return RESOURCE;
 }
 
 int ResourceEntity::getSubType() {

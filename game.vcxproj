@@ -207,6 +207,7 @@
     <ClCompile Include="src\Gradient.cpp" />
     <ClCompile Include="src\HudElement.cpp" />
     <ClCompile Include="src\OperatorType.h" />
+    <ClCompile Include="src\Physical.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PlayersManager.cpp" />
     <ClCompile Include="src\ResourceEntity.cpp" />
@@ -268,6 +269,7 @@
     <ClInclude Include="src\FollowState.h" />
     <ClInclude Include="src\Gradient.h" />
     <ClInclude Include="src\HudElement.h" />
+    <ClInclude Include="src\Physical.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\PlayersManager.h" />
     <ClInclude Include="src\ResourceEntity.h" />

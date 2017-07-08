@@ -1,14 +1,14 @@
 #pragma once
 #include "Entity.h"
 #include "db_strcut.h"
+#include "Physical.h"
 
 class ResourceEntity :
-	public Entity
+	public Physical
 {
 public:
 	ResourceEntity(Vector3* _position, Urho3D::Node* _node);
 	virtual ~ResourceEntity();
-	ObjectType getType() override;
 	virtual int getSubType() override;
 	void populate(db_resource* dbResource);
 	bool isInGrandient();

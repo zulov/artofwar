@@ -7,11 +7,11 @@ public:
 	Bucket();
 	~Bucket();
 
-	std::vector<Entity*> *getContent();
-	void add(Entity* entity);
-	void remove(Entity* entity);
+	std::vector<Physical*> *getContent();
+	void add(Physical* entity);
+	void remove(Physical* entity);
 	void clearContent();
 private:
-	std::vector <Entity*>* content;
+	std::vector <Physical*>* content;
 };
 

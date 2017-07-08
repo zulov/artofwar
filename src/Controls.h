@@ -31,11 +31,11 @@ public:
 	Controls(Input* _input);
 	~Controls();
 	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
-	void unselect(Entity* entity);
-	void select(Entity* entity);
-	void controlEntity(Vector3 hitPos, bool ctrlPressed, Entity* clicked);
+	void unselect(Physical* entity);
+	void select(Physical* entity);
+	void controlEntity(Vector3 hitPos, bool ctrlPressed, Physical* clicked);
 	void unSelect(int type);
-	void action(ActionType action, Entity* entity);
+	void action(ActionType action, Physical* entity);
 
 	void clickDownRight(Vector3 hitPos);
 	void clickDownLeft(Vector3 hitPos);
@@ -53,7 +53,7 @@ public:
 	void hudAction(HudElement* hud);
 	SelectedInfo* getSelectedInfo();
 private:
-	std::vector<Entity*>* selected;//TODO to powinien byæ set
+	std::vector<Physical*>* selected;//TODO to powinien byæ set
 	ObjectType selectedType;
 	float maxDistance = 300;
 
@@ -70,7 +70,7 @@ private:
 	ControlsState state = ControlsState::SELECT;
 	BuildingType toBuild;
 	UnitType toDeploy;
-	Entity* temp;
+	Physical* temp;
 	SelectedInfo* selectedInfo;
 	int selectedEntititesTypes[SELECTED_INFO_SIZE];
 };

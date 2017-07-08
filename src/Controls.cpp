@@ -4,7 +4,7 @@
 #include "SimulationCommandList.h"
 
 Controls::Controls(Input* _input) {
-	selected = new std::vector<Entity*>();
+	selected = new std::vector<Physical*>();
 	selected->reserve(100);
 
 	leftHeld = new std::pair<Vector3*, Vector3*>();
@@ -35,11 +35,12 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 
 	PODVector<RayQueryResult> results;
 	RayOctreeQuery query(results, cameraRay, RAY_TRIANGLE, maxDistance, DRAWABLE_GEOMETRY);
-	Game::get()->getScene()->GetComponent<Octree>()->RaycastSingle(query);
+	Game::get()->getScene()->GetComponent<Octree>()->Raycast(query);
 	if (results.Size()) {
 		RayQueryResult& result = results[0];
 		hitPos = result.position_;
 		hitDrawable = result.drawable_;
+		Node* node = result.node_;
 		return true;
 	}
 
@@ -47,7 +48,6 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 }
 
 void Controls::unSelect(int type) {
-
 	for (int i = 0; i < selected->size(); i++) {
 		(*selected)[i]->unSelect();
 	}
@@ -63,7 +63,7 @@ void Controls::unSelect(int type) {
 //	}
 //}
 
-void Controls::select(Entity* entity) {
+void Controls::select(Physical* entity) {
 	ObjectType entityType = entity->getType();
 	if (entity->getType() != selectedType) {
 		unSelect(entity->getType());
@@ -78,7 +78,7 @@ void Controls::select(Entity* entity) {
 	selectedInfo->setAllNumber(selected->size());
 }
 
-void Controls::controlEntity(Vector3 hitPos, bool ctrlPressed, Entity* clicked) {
+void Controls::controlEntity(Vector3 hitPos, bool ctrlPressed, Physical* clicked) {
 	switch (state) {
 	case SELECT:
 		{
@@ -108,10 +108,15 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {//TODO referenc
 	Node* hitNode = hitDrawable->GetNode();
 	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
 	LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
-	Entity* clicked = lc->getEntity();
+
+	if (lc == nullptr) {
+		return;
+	}
+	Physical* clicked = lc->getPhysical();
 	ObjectType type = clicked->getType();
+
 	switch (type) {
-	case ENTITY:
+	case PHISICAL:
 		controlEntity(hitPos, ctrlPressed, clicked);
 		break;
 	case UNIT:
@@ -134,7 +139,7 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {//TODO referenc
 		if (!ctrlPressed) {
 			unSelect(ENTITY);
 		}
-
+		hitNode->Translate(Vector3::UP);
 		select(clicked);
 		break;
 
@@ -147,11 +152,15 @@ void Controls::rightClick(Drawable* hitDrawable, Vector3 hitPos) {
 	Node* hitNode = hitDrawable->GetNode();
 	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
 	LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
-	Entity* clicked = lc->getEntity();
+	if (lc == nullptr) {
+		return;
+	}
+	Physical* clicked = lc->getPhysical();
 	ObjectType type = clicked->getType();
+
 	switch (type) {
 
-	case ENTITY:
+	case PHISICAL:
 		{
 		Vector3* pos = new Vector3(hitPos);
 		ActionCommand* command;
@@ -176,7 +185,7 @@ void Controls::rightClick(Drawable* hitDrawable, Vector3 hitPos) {
 }
 
 void Controls::leftHold(std::pair<Vector3*, Vector3*>* held) {
-	std::vector<Entity*>* entities = Game::get()->getMediator()->getEntities(held);
+	std::vector<Physical*>* entities = Game::get()->getMediator()->getEntities(held);
 	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
 	if (!ctrlPressed) {
 		unSelect(ENTITY);
@@ -202,7 +211,6 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>* pair) {
 		command1 = new ActionCommand(selected, ADD_AIM, pos1);
 		command2 = new ActionCommand(selected, APPEND_AIM, pos2);
 	}
-
 
 	Game::get()->getActionCommandList()->add(command1);
 	Game::get()->getActionCommandList()->add(command2);

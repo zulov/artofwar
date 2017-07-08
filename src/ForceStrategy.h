@@ -10,8 +10,8 @@ public:
 	~ForceStrategy();
 	Urho3D::Vector3* separationObstacle(Unit* unit, Vector3* repulse);
 
-	Urho3D::Vector3 *separationObstacle(Unit * unit, std::vector<Entity *> *obstacles);
-	Urho3D::Vector3 *separationUnits(Unit * unit, std::vector<Entity *> *units);
+	Urho3D::Vector3 *separationObstacle(Unit * unit, std::vector<Physical *> *obstacles);
+	Urho3D::Vector3 *separationUnits(Unit * unit, std::vector<Physical *> *units);
 	Urho3D::Vector3 *destination(Unit * unit);
 	Urho3D::Vector3 *randomForce();
 private:
