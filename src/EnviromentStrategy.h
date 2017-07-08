@@ -32,8 +32,8 @@ public:
 	void add(Entity *entity);
 	Vector3 * getRepulsiveAt(Vector3 * position);
 
-	std::vector<Entity *>* getNeighbours(std::pair<Entity*, Entity*>* pair);
-	std::vector<Entity *>* getBuildings(std::pair<Entity*, Entity*>* pair);
+	std::vector<Entity *>* getNeighbours(std::pair<Vector3*, Vector3*>* pair);
+	std::vector<Entity *>* getBuildings(std::pair<Vector3*, Vector3*>* pair);
 	double getGroundHeightAt(double x, double z);
 private:
 	BucketGrid* allUnitGrid;

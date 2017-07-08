@@ -10,6 +10,6 @@ Mediator::Mediator(EnviromentStrategy* _enviromentStrategy, Controls* _controls)
 Mediator::~Mediator() {
 }
 
-std::vector<Entity*> *Mediator::getEntities(std::pair<Entity*, Entity*>* held) {
+std::vector<Entity*> *Mediator::getEntities(std::pair<Vector3*, Vector3*>* held) {
 	return enviromentStrategy->getNeighbours(held);
 }

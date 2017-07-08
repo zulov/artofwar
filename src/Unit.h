@@ -22,8 +22,6 @@ public:
 	void applyForce(double timeStep);
 	ObjectType getType() override;
 	int getSubType() override;
-	void select() override;
-	void unSelect() override;
 	void setAcceleration(Vector3* _acceleration);
 	double getMaxSeparationDistance();
 
@@ -32,7 +30,6 @@ public:
 	Vector3* getVelocity();
 	double getMass();
 	double getUnitRadius();
-	void updateHealthBar();
 	void absorbAttack(double attackCoef) override;
 	void attack(vector<Entity*>* enemies);
 	void attack(Entity* enemy);
@@ -53,12 +50,6 @@ private:
 	void addAim(ActionParameter* actionParameter);
 	void followAim(ActionParameter* parameter);
 
-	Node* healthBar;
-	Node* selectShadow;
-	Billboard* billboard;
-	Billboard* billboardShadow;
-	BillboardSet* billboardObject;
-	BillboardSet* billboardSetShadow;
 	UnitStateType unitState;
 	State** states;
 	UnitType unitType;

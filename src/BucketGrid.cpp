@@ -83,9 +83,9 @@ bool BucketGrid::isInSide(int _posX, int _posZ) const {
 	}
 }
 
-std::vector<Entity*>* BucketGrid::getArrayNeight(std::pair<Entity*, Entity*>* pair) {
-	Vector3* begin = pair->first->getPosition();
-	Vector3* end = pair->second->getPosition();
+std::vector<Entity*>* BucketGrid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair) {
+	Vector3* begin = pair->first;
+	Vector3* end = pair->second;
 	std::vector<Entity*>* entities = new std::vector<Entity*>();//TOODO reserva zrobic sensownego
 	int posBeginX = getIntegerPos(begin->x_);
 	int posBeginZ = getIntegerPos(begin->z_);

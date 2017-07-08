@@ -24,6 +24,7 @@ void ResourceEntity::populate(db_resource* dbResource) {
 	name = new String(dbResource->name);
 	minimalDistance = dbResource->minDist;
 }
+
 bool ResourceEntity::isInGrandient() {
 	return inGradient;
 }

@@ -109,11 +109,11 @@ Vector3* EnviromentStrategy::getRepulsiveAt(Vector3* position) {
 	return gradient->getValueAt(position->x_, position->z_);
 }
 
-std::vector<Entity*>* EnviromentStrategy::getNeighbours(std::pair<Entity*, Entity*>* pair) {
+std::vector<Entity*>* EnviromentStrategy::getNeighbours(std::pair<Vector3*, Vector3*>* pair) {
 	return allUnitGrid->getArrayNeight(pair);
 }
 
-std::vector<Entity*>* EnviromentStrategy::getBuildings(std::pair<Entity*, Entity*>* pair) {
+std::vector<Entity*>* EnviromentStrategy::getBuildings(std::pair<Vector3*, Vector3*>* pair) {
 	return obstacleGrid->getArrayNeight(pair);
 }
 

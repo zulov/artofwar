@@ -7,9 +7,9 @@ Controls::Controls(Input* _input) {
 	selected = new std::vector<Entity*>();
 	selected->reserve(100);
 
-	leftHeld = new std::pair<Entity*, Entity*>();
-	middleHeld = new std::pair<Entity*, Entity*>();
-	rightHeld = new std::pair<Entity*, Entity*>();
+	leftHeld = new std::pair<Vector3*, Vector3*>();
+	middleHeld = new std::pair<Vector3*, Vector3*>();
+	rightHeld = new std::pair<Vector3*, Vector3*>();
 	input = _input;
 	selectedInfo = new SelectedInfo();
 }
@@ -130,14 +130,14 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {//TODO referenc
 		select(clicked);
 		break;
 
-	case RESOURCE: 
+	case RESOURCE:
 		if (!ctrlPressed) {
 			unSelect(ENTITY);
 		}
 
 		select(clicked);
 		break;
-		
+
 	default: ;
 	}
 
@@ -175,7 +175,7 @@ void Controls::rightClick(Drawable* hitDrawable, Vector3 hitPos) {
 	}
 }
 
-void Controls::leftHold(std::pair<Entity*, Entity*>* held) {
+void Controls::leftHold(std::pair<Vector3*, Vector3*>* held) {
 	std::vector<Entity*>* entities = Game::get()->getMediator()->getEntities(held);
 	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
 	if (!ctrlPressed) {
@@ -187,9 +187,9 @@ void Controls::leftHold(std::pair<Entity*, Entity*>* held) {
 	delete entities;
 }
 
-void Controls::rightHold(std::pair<Entity*, Entity*>* pair) {
-	Vector3* pos1 = new Vector3(*pair->first->getPosition());
-	Vector3* pos2 = new Vector3(*pair->second->getPosition());//TODO czy ta para jest usuwana
+void Controls::rightHold(std::pair<Vector3*, Vector3*>* pair) {
+	Vector3* pos1 = new Vector3(*pair->first);
+	Vector3* pos2 = new Vector3(*pair->second);//TODO czy ta para jest usuwana
 	ActionCommand* command1;
 	ActionCommand* command2;
 
@@ -217,8 +217,8 @@ void Controls::release(const int button) {
 			case MOUSEB_LEFT:
 				if (mouseLeftHeld == true) {
 					mouseLeftHeld = false;
-					leftHeld->second = new Entity(new Vector3(hitPos), nullptr);//TODO moze to ca³e entity to za duzo?
-					double dist = (*(leftHeld->first->getPosition()) - *(leftHeld->second->getPosition())).LengthSquared();
+					leftHeld->second = new Vector3(hitPos);
+					double dist = (*(leftHeld->first) - *(leftHeld->second)).LengthSquared();
 					if (dist > clickDistance) {
 						leftHold(leftHeld);
 					} else {
@@ -229,9 +229,8 @@ void Controls::release(const int button) {
 			case MOUSEB_RIGHT:
 				if (mouseRightHeld == true) {
 					mouseRightHeld = false;
-					Entity* entity = new Entity(new Vector3(hitPos), nullptr);//TODO czy to entity jest usywane?
-					rightHeld->second = entity;
-					double dist = (*(rightHeld->first->getPosition()) - *(rightHeld->second->getPosition())).LengthSquared();
+					rightHeld->second = new Vector3(hitPos);//TODO czy to entity jest usywane?
+					double dist = (*(rightHeld->first) - *(rightHeld->second)).LengthSquared();
 					if (dist > clickDistance) {
 						rightHold(rightHeld);
 					} else {
@@ -242,7 +241,7 @@ void Controls::release(const int button) {
 			case MOUSEB_MIDDLE:
 				if (mouseMiddleHeld == true) {
 					mouseMiddleHeld = false;
-					middleHeld->second = new Entity(new Vector3(hitPos), nullptr);
+					middleHeld->second = new Vector3(hitPos);
 				}
 				break;
 			}
@@ -270,21 +269,19 @@ void Controls::hudAction(HudElement* hud) {
 }
 
 void Controls::clickDownRight(Vector3 hitPos) {
-	Entity* entity = new Entity(new Vector3(hitPos), nullptr);
 	if (rightHeld->first != nullptr) {
 		delete rightHeld->first;
 		rightHeld->first = nullptr;
 	}
-	rightHeld->first = entity;
+	rightHeld->first = new Vector3(hitPos);
 }
 
 void Controls::clickDownLeft(Vector3 hitPos) {
-	Entity* entity = new Entity(new Vector3(hitPos), nullptr);
-	if(leftHeld->first!=nullptr) {
+	if (leftHeld->first != nullptr) {
 		delete leftHeld->first;
 		leftHeld->first = nullptr;
 	}
-	leftHeld->first = entity;
+	leftHeld->first = new Vector3(hitPos);
 }
 
 void Controls::clickDown(const int button) {

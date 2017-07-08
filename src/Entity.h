@@ -8,6 +8,7 @@
 #include "ActionParameter.h"
 #include "defines.h"
 #include "ObjectEnums.h"
+#include <Urho3D/Graphics/BillboardSet.h>
 
 using namespace Urho3D;
 
@@ -16,6 +17,8 @@ class Entity
 public:
 	Entity(Vector3* _position, Urho3D::Node* _node);
 	virtual ~Entity();
+	void updateHealthBar();
+	virtual double getHealthBarSize();
 	Vector3* getPosition();
 	double getMinimalDistance();
 	Urho3D::Node* getNode();
@@ -42,6 +45,13 @@ protected:
 	signed char player;
 	bool rotatable;
 	String textureName;
+
+	Node* healthBar;
+	Node* selectShadow;
+	Billboard* billboard;
+	Billboard* billboardShadow;
+	BillboardSet* billboardSetBar;
+	BillboardSet* billboardSetShadow;
 private:
 	short int bucketX[BUCKET_SET_NUMBER];
 	short int bucketZ[BUCKET_SET_NUMBER];

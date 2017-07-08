@@ -44,10 +44,10 @@ public:
 	void build(Vector3* pos);
 	void deploy(Vector3* pos);
 	void leftClick(Drawable* hitDrawable, Vector3 hitPos);
-	void leftHold(std::pair<Entity*, Entity*>* held);
+	void leftHold(std::pair<Vector3*, Vector3*>* held);
 
 	void rightClick(Drawable* hitDrawable, Vector3 hitPos);
-	void rightHold(std::pair<Entity*, Entity*>* pair);
+	void rightHold(std::pair<Vector3*, Vector3*>* pair);
 	void release(const int button);
 	void updateState(ControlsState state);
 	void hudAction(HudElement* hud);
@@ -61,9 +61,9 @@ private:
 	bool mouseRightHeld = false;
 	bool mouseMiddleHeld = false;
 
-	std::pair<Entity*, Entity*>* leftHeld;
-	std::pair<Entity*, Entity*>* middleHeld;
-	std::pair<Entity*, Entity*>* rightHeld;
+	std::pair<Vector3*, Vector3*>* leftHeld;
+	std::pair<Vector3*, Vector3*>* middleHeld;
+	std::pair<Vector3*, Vector3*>* rightHeld;
 
 	Input* input;
 	double clickDistance = 2 * 2;

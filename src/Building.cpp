@@ -11,6 +11,12 @@ Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Entity(_positio
 Building::~Building() {
 }
 
+double Building::getHealthBarSize() {
+	double healthBarSize = (1);
+	if (healthBarSize <= 0) { healthBarSize = 0; }
+	return healthBarSize;
+}
+
 
 ObjectType Building::getType() {
 	return BUILDING;

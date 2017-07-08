@@ -8,6 +8,7 @@ class Building : public Entity {
 public:
 	Building(Vector3 *_position, Urho3D::Node* _node);
 	~Building();
+	double getHealthBarSize();
 	ObjectType getType() override;
 	int getSubType() override;
 	void populate(db_building* dbBuilding);
