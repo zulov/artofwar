@@ -23,7 +23,7 @@ Controls::~Controls() {
 	delete selected;
 }
 
-bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {//TODO nie robic tak czesto
+bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {
 	hitDrawable = nullptr;
 
 	IntVector2 pos = Game::get()->getUI()->GetCursorPosition();
@@ -39,7 +39,7 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 	int i = 0;
 	while (i < results.Size()) {
 		RayQueryResult& result = results[i];
-		
+
 		Node* node = result.node_;
 		LinkComponent* lc = node->GetComponent<LinkComponent>();
 		if (lc == nullptr) { ++i; } else {
@@ -48,7 +48,6 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 			return true;
 		}
 	}
-
 	return false;
 }
 
@@ -61,12 +60,6 @@ void Controls::unSelect(int type) {
 	selectedInfo->setSelectedType(selectedType);
 	selectedInfo->reset();
 }
-
-//void Controls::action(ActionType action, Entity* entity) {
-//	for (int i = 0; i < selected->size(); i++) {
-//		selected->at(i)->action(action, entity);
-//	}
-//}
 
 void Controls::select(Physical* entity) {
 	ObjectType entityType = entity->getType();
@@ -83,7 +76,7 @@ void Controls::select(Physical* entity) {
 	selectedInfo->setAllNumber(selected->size());
 }
 
-void Controls::controlEntity(Vector3 hitPos, bool ctrlPressed, Physical* clicked) {
+void Controls::controlEntity(Vector3& hitPos, bool ctrlPressed, Physical* clicked) {
 	switch (state) {
 	case SELECT:
 		{
@@ -109,7 +102,7 @@ void Controls::controlEntity(Vector3 hitPos, bool ctrlPressed, Physical* clicked
 	}
 }
 
-void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {//TODO referencja
+void Controls::leftClick(Drawable* hitDrawable, Vector3& hitPos) {
 	Node* hitNode = hitDrawable->GetNode();
 	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
 	LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
@@ -152,7 +145,7 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {//TODO referenc
 
 }
 
-void Controls::rightClick(Drawable* hitDrawable, Vector3 hitPos) {
+void Controls::rightClick(Drawable* hitDrawable, Vector3& hitPos) {
 	Node* hitNode = hitDrawable->GetNode();
 	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
 	LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
@@ -223,41 +216,44 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>* pair) {
 void Controls::release(const int button) {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
-	if (mouseLeftHeld == true || mouseRightHeld == true || mouseMiddleHeld == true) {
-		if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-			switch (button) {
-			case MOUSEB_LEFT:
-				if (mouseLeftHeld == true) {
-					mouseLeftHeld = false;
-					leftHeld->second = new Vector3(hitPos);
-					double dist = (*(leftHeld->first) - *(leftHeld->second)).LengthSquared();
-					if (dist > clickDistance) {
-						leftHold(leftHeld);
-					} else {
-						leftClick(hitDrawable, hitPos);
-					}
+
+	switch (button) {
+	case MOUSEB_LEFT:
+		if (mouseLeftHeld == true) {
+			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
+				mouseLeftHeld = false;
+				leftHeld->second = new Vector3(hitPos);
+				double dist = (*(leftHeld->first) - *(leftHeld->second)).LengthSquared();
+				if (dist > clickDistance) {
+					leftHold(leftHeld);
+				} else {
+					leftClick(hitDrawable, hitPos);
 				}
-				break;
-			case MOUSEB_RIGHT:
-				if (mouseRightHeld == true) {
-					mouseRightHeld = false;
-					rightHeld->second = new Vector3(hitPos);//TODO czy to entity jest usywane?
-					double dist = (*(rightHeld->first) - *(rightHeld->second)).LengthSquared();
-					if (dist > clickDistance) {
-						rightHold(rightHeld);
-					} else {
-						rightClick(hitDrawable, hitPos);
-					}
-				}
-				break;
-			case MOUSEB_MIDDLE:
-				if (mouseMiddleHeld == true) {
-					mouseMiddleHeld = false;
-					middleHeld->second = new Vector3(hitPos);
-				}
-				break;
 			}
 		}
+		break;
+	case MOUSEB_RIGHT:
+		if (mouseRightHeld == true) {
+			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
+				mouseRightHeld = false;
+				rightHeld->second = new Vector3(hitPos);//TODO czy ten Vector jest usuwany?
+				double dist = (*(rightHeld->first) - *(rightHeld->second)).LengthSquared();
+				if (dist > clickDistance) {
+					rightHold(rightHeld);
+				} else {
+					rightClick(hitDrawable, hitPos);
+				}
+			}
+		}
+		break;
+	case MOUSEB_MIDDLE:
+		if (mouseMiddleHeld == true) {
+			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
+				mouseMiddleHeld = false;
+				middleHeld->second = new Vector3(hitPos);
+			}
+		}
+		break;
 	}
 }
 
@@ -280,7 +276,7 @@ void Controls::hudAction(HudElement* hud) {
 	}
 }
 
-void Controls::clickDownRight(Vector3 hitPos) {
+void Controls::clickDownRight(Vector3 &hitPos) {
 	if (rightHeld->first != nullptr) {
 		delete rightHeld->first;
 		rightHeld->first = nullptr;
@@ -288,7 +284,7 @@ void Controls::clickDownRight(Vector3 hitPos) {
 	rightHeld->first = new Vector3(hitPos);
 }
 
-void Controls::clickDownLeft(Vector3 hitPos) {
+void Controls::clickDownLeft(Vector3 &hitPos) {
 	if (leftHeld->first != nullptr) {
 		delete leftHeld->first;
 		leftHeld->first = nullptr;
@@ -300,28 +296,32 @@ void Controls::clickDown(const int button) {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
-	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		//Node* hitNode = hitDrawable->GetNode();
-		switch (button) {
-		case MOUSEB_LEFT:
-			if (mouseLeftHeld == false) {
+	switch (button) {
+	case MOUSEB_LEFT:
+		if (mouseLeftHeld == false) {
+			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
 				clickDownLeft(hitPos);
 				mouseLeftHeld = true;
 			}
-			break;
-		case MOUSEB_RIGHT:
-			if (mouseRightHeld == false) {
+		}
+		break;
+	case MOUSEB_RIGHT:
+		if (mouseRightHeld == false) {
+			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
 				clickDownRight(hitPos);
 				mouseRightHeld = true;
 			}
-			break;
-		case MOUSEB_MIDDLE:
-			if (mouseMiddleHeld == false) {
+		}
+		break;
+	case MOUSEB_MIDDLE:
+		if (mouseMiddleHeld == false) {
+			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
 				mouseMiddleHeld = true;
 			}
-			break;
 		}
+		break;
 	}
+
 }
 
 void Controls::build(Vector3* pos) {
