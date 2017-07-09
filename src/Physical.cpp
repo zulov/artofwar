@@ -11,10 +11,13 @@ Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): E
 	
 	StaticModel* model = node->GetComponent<StaticModel>();
 	if (model && type != ENTITY && type != PHISICAL) {
+		billboardNode = node->CreateChild();
+		billboardNode->Pitch(90);
+		barNode = node->CreateChild();
 		Model* model3d = model->GetModel();//TODO razy scale?
 		Vector3 boundingBox = model3d->GetBoundingBox().Size();
 
-		billboardSetBar = node->CreateComponent<BillboardSet>();
+		billboardSetBar = barNode->CreateComponent<BillboardSet>();
 		billboardSetBar->SetNumBillboards(1);
 		billboardSetBar->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
 		billboardSetBar->SetSorted(true);
@@ -24,19 +27,17 @@ Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): E
 		billboard->position_ = Vector3(0, boundingBox.y_ * 1.3f, 0);
 		billboard->enabled_ = false;
 
-		billboardSetShadow = node->CreateComponent<BillboardSet>();
+		billboardSetShadow = billboardNode->CreateComponent<BillboardSet>();
 		billboardSetShadow->SetNumBillboards(1);
 		billboardSetShadow->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/select.xml"));
 		billboardSetShadow->SetSorted(true);
 		billboardSetShadow->SetFaceCameraMode(FaceCameraMode::FC_NONE);
-
+		
 		billboardShadow = billboardSetShadow->GetBillboard(0);
 		billboardShadow->size_ = Vector2(boundingBox.x_ * 1.3f, boundingBox.z_ * 1.3f);
-
+		billboardShadow->position_ = Vector3(0, 0, -0.1);
 		billboardShadow->enabled_ = false;
-		billboardShadow->position_ = Vector3(0, 0.1, 0);
-		billboardShadow->rotation_ = 90;
-		billboardShadow->direction_ = Vector3::UP;
+		
 
 		billboardSetBar->Commit();
 		billboardSetShadow->Commit();

@@ -23,7 +23,7 @@ Controls::~Controls() {
 	delete selected;
 }
 
-bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {
+bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {//TODO nie robic tak czesto
 	hitDrawable = nullptr;
 
 	IntVector2 pos = Game::get()->getUI()->GetCursorPosition();
@@ -36,12 +36,17 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 	PODVector<RayQueryResult> results;
 	RayOctreeQuery query(results, cameraRay, RAY_TRIANGLE, maxDistance, DRAWABLE_GEOMETRY);
 	Game::get()->getScene()->GetComponent<Octree>()->Raycast(query);
-	if (results.Size()) {
-		RayQueryResult& result = results[0];
-		hitPos = result.position_;
-		hitDrawable = result.drawable_;
+	int i = 0;
+	while (i < results.Size()) {
+		RayQueryResult& result = results[i];
+		
 		Node* node = result.node_;
-		return true;
+		LinkComponent* lc = node->GetComponent<LinkComponent>();
+		if (lc == nullptr) { ++i; } else {
+			hitPos = result.position_;
+			hitDrawable = result.drawable_;
+			return true;
+		}
 	}
 
 	return false;
@@ -139,7 +144,6 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3 hitPos) {//TODO referenc
 		if (!ctrlPressed) {
 			unSelect(ENTITY);
 		}
-		hitNode->Translate(Vector3::UP);
 		select(clicked);
 		break;
 

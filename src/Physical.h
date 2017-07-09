@@ -31,7 +31,8 @@ protected:
 	bool rotatable;
 	String textureName;
 
-	//Node* selectShadow;
+	Node* billboardNode;
+	Node* barNode;
 	Billboard* billboard;
 	Billboard* billboardShadow;
 	BillboardSet* billboardSetBar;
