@@ -321,7 +321,6 @@ void Controls::clickDown(const int button) {
 		}
 		break;
 	}
-
 }
 
 void Controls::build(Vector3* pos) {
