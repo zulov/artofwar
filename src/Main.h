@@ -63,6 +63,8 @@ public:
 	virtual void Start();
 	virtual void Stop();
 	void HandleUpdate(StringHash eventType, VariantMap& eventData);
+	void HandleWindowClick(StringHash eventType, VariantMap& eventData);
+	void HandleEndWindowClick(StringHash eventType, VariantMap& eventData);
 
 protected:
 	void InitMouseMode(MouseMode mode);

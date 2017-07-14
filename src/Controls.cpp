@@ -276,7 +276,7 @@ void Controls::hudAction(HudElement* hud) {
 	}
 }
 
-void Controls::clickDownRight(Vector3 &hitPos) {
+void Controls::clickDownRight(Vector3& hitPos) {
 	if (rightHeld->first != nullptr) {
 		delete rightHeld->first;
 		rightHeld->first = nullptr;
@@ -284,7 +284,7 @@ void Controls::clickDownRight(Vector3 &hitPos) {
 	rightHeld->first = new Vector3(hitPos);
 }
 
-void Controls::clickDownLeft(Vector3 &hitPos) {
+void Controls::clickDownLeft(Vector3& hitPos) {
 	if (leftHeld->first != nullptr) {
 		delete leftHeld->first;
 		leftHeld->first = nullptr;
@@ -335,4 +335,45 @@ void Controls::deploy(Vector3* pos) {
 
 SelectedInfo* Controls::getSelectedInfo() {
 	return selectedInfo;
+}
+
+void Controls::deactivate() {
+	active = false;
+	mouseMiddleHeld = false;
+	mouseRightHeld = false;
+	mouseLeftHeld = false;
+	if (rightHeld->first != nullptr) {
+		delete rightHeld->first;
+		rightHeld->first = nullptr;
+	}
+	if (rightHeld->second != nullptr) {
+		delete rightHeld->second;
+		rightHeld->second = nullptr;
+	}
+
+	if (leftHeld->first != nullptr) {
+		delete leftHeld->first;
+		leftHeld->first = nullptr;
+	}
+	if (leftHeld->second != nullptr) {
+		delete leftHeld->second;
+		leftHeld->second = nullptr;
+	}
+
+	if (middleHeld->first != nullptr) {
+		delete middleHeld->first;
+		middleHeld->first = nullptr;
+	}
+	if (middleHeld->second != nullptr) {
+		delete middleHeld->second;
+		middleHeld->second = nullptr;
+	}
+}
+
+bool Controls::isActive() {
+	return active;
+}
+
+void Controls::activate() {
+	active = true;
 }

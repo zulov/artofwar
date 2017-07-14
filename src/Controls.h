@@ -52,6 +52,9 @@ public:
 	void updateState(ControlsState state);
 	void hudAction(HudElement* hud);
 	SelectedInfo* getSelectedInfo();
+	void deactivate();
+	bool isActive();
+	void activate();
 private:
 	std::vector<Physical*>* selected;//TODO to powinien byæ set
 	ObjectType selectedType;
@@ -70,7 +73,9 @@ private:
 	ControlsState state = ControlsState::SELECT;
 	BuildingType toBuild;
 	UnitType toDeploy;
-	Physical* temp;
+
 	SelectedInfo* selectedInfo;
 	int selectedEntititesTypes[SELECTED_INFO_SIZE];
+
+	bool active = true;
 };

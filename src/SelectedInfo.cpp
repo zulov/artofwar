@@ -9,7 +9,7 @@ void SelectedInfo::initLines() {
 void SelectedInfo::clearLines() {
 	for (int i = 0; i < SELECTED_INFO_SIZE; ++i) {
 		if (lines[i] != nullptr) {
-			lines[i] = new Urho3D::String();
+			lines[i] = nullptr;
 		}
 	}
 }

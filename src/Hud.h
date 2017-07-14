@@ -43,14 +43,18 @@ public:
 	void updateHud(Benchmark* benchmark, CameraManager* cameraManager);
 	std::vector<HudElement*>* getButtonsToSubscribe();
 	std::vector<HudElement*>* getListsToSubscribe();
+	std::vector<Window*>* getWindows();
 	void updateState(ControlsState state);
 	void updateSelected(SelectedInfo* selectedInfo);
 private:
+	Window * createWindow();
+
 	void createMenu();
 	void createBuild();
 	void createUnits();
 	void createTop();
 	void createSelectedInfo();
+	void createMiniMap();
 	Window* menuWindow;
 	Window* miniMapWindow;
 	Window* topWindow;
@@ -63,6 +67,7 @@ private:
 	Text* fpsText;
 	std::vector<HudElement*>* buttons;
 	std::vector<HudElement*>* lists;
+	std::vector<Window*>* windows;
 
 	XMLFile* style;
 	db_hud_size* hudSize;

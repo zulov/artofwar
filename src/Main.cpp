@@ -19,7 +19,7 @@ void Main::Setup() {
 	engineParameters_[EP_SOUND] = false;
 	engineParameters_[EP_WINDOW_HEIGHT] = graphSettings->res_y;
 	engineParameters_[EP_WINDOW_WIDTH] = graphSettings->res_x;
-	
+
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
 }
@@ -35,10 +35,16 @@ void Main::Start() {
 	hud->createStaticHud(String("Liczba jednostek") + String("??"));
 
 	for (HudElement* hudElement : *(hud->getButtonsToSubscribe())) {
-		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main,HandleUIButtton));
+		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleUIButtton));
 	}
 	for (HudElement* hudElement : *(hud->getListsToSubscribe())) {
 		SubscribeToEvent(hudElement->getUIElement(), E_ITEMSELECTED, URHO3D_HANDLER(Main, HandleUIList));
+	}
+	for (Window* window : *(hud->getWindows())) {
+		//SubscribeToEvent(window, E_CLICK, URHO3D_HANDLER(Main, HandleWindowClick));
+		SubscribeToEvent(window, E_CLICKEND, URHO3D_HANDLER(Main, HandleWindowClick));
+		SubscribeToEvent(window, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleWindowClick));
+		SubscribeToEvent(window, E_HOVEREND, URHO3D_HANDLER(Main, HandleEndWindowClick));
 	}
 	CreateConsoleAndDebugHud();
 
@@ -79,6 +85,14 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	SelectedInfo* selectedInfo = controls->getSelectedInfo();
 	hud->updateSelected(selectedInfo);
 	levelBuilder->execute();
+}
+
+void Main::HandleWindowClick(StringHash eventType, VariantMap& eventData) {
+	controls->deactivate();
+}
+
+void Main::HandleEndWindowClick(StringHash eventType, VariantMap& eventData) {
+	controls->activate();
 }
 
 void Main::InitMouseMode(MouseMode mode) {
@@ -144,6 +158,7 @@ void Main::HandleUIButtton(StringHash eventType, VariantMap& eventData) {
 void Main::HandleUIList(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[ItemSelected::P_ELEMENT].GetVoidPtr();
 	ControlsState state = ControlsState(eventData[ItemSelected::P_SELECTION].GetInt());
+	controls->deactivate();
 	controls->updateState(state);
 	hud->updateState(state);
 	HudElement* hud = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
@@ -210,15 +225,17 @@ void Main::control(float timeStep) {
 	cameraManager->translate(cameraKeys, wheel, timeStep);
 	cameraManager->rotate(input->GetMouseMove());
 
-	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
-		controls->clickDown(MOUSEB_LEFT);
-	} else {
-		controls->release(MOUSEB_LEFT);
-	}
+	if (controls->isActive()) {
+		if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
+			controls->clickDown(MOUSEB_LEFT);
+		} else {
+			controls->release(MOUSEB_LEFT);
+		}
 
-	if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
-		controls->clickDown(MOUSEB_RIGHT);
-	} else {
-		controls->release(MOUSEB_RIGHT);
-	}
+		if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+			controls->clickDown(MOUSEB_RIGHT);
+		} else {
+			controls->release(MOUSEB_RIGHT);
+		}
+	} 
 }

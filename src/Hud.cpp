@@ -5,6 +5,7 @@
 Hud::Hud() {
 	buttons = new std::vector<HudElement*>();
 	lists = new std::vector<HudElement*>();
+	windows = new std::vector<Window*>();
 	db_graph_settings* graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
 	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->style);
 	hudSize = Game::get()->getDatabaseCache()->getHudSize(graphSettings->hud_size);//TODO z settings to wziac
@@ -16,6 +17,8 @@ Hud::Hud() {
 	createUnits();
 	createSelectedInfo();
 	createMyDebugHud();
+	createMiniMap();
+
 
 	SharedPtr<Cursor> cursor(new Cursor(Game::get()->getContext()));
 	cursor->SetStyleAuto(style);
@@ -43,18 +46,18 @@ void Hud::initDropDownList(DropDownList* dropDownList) {
 	dropDownList->SetFixedHeight(hudSize->icon_size_x / 2);
 	dropDownList->SetFixedWidth(2 * hudSize->icon_size_x);
 	dropDownList->SetResizePopup(true);
-
 	dropDownList->SetStyleAuto(style);
+
 	menuWindow->AddChild(dropDownList);
 }
 
 void Hud::createMenu() {
-	menuWindow = new Window(Game::get()->getContext());
+	menuWindow = createWindow();
 	Game::get()->getUI()->GetRoot()->AddChild(menuWindow);
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 
-	menuWindow->SetFixedWidth(2 * (hudSize->icon_size_x + hudSize->space_size_x));
-	menuWindow->SetFixedHeight(2 * (hudSize->icon_size_y + hudSize->space_size_y));
+	menuWindow->SetFixedWidth(3 * hudSize->icon_size_x + 4 * hudSize->space_size_x);
+	menuWindow->SetFixedHeight(hudSize->icon_size_y + 2 * hudSize->space_size_y);
 	menuWindow->SetLayout(LM_VERTICAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_y, hudSize->space_size_x, hudSize->space_size_y));
 	menuWindow->SetAlignment(HA_LEFT, VA_BOTTOM);
 	menuWindow->SetName("Window");
@@ -74,7 +77,7 @@ void Hud::createMenu() {
 }
 
 void Hud::createBuild() {
-	buildWindow = new Window(Game::get()->getContext());
+	buildWindow = createWindow();
 	Game::get()->getUI()->GetRoot()->AddChild(buildWindow);
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 	buildWindow->SetMinWidth(512);
@@ -90,7 +93,7 @@ void Hud::createBuild() {
 }
 
 void Hud::createUnits() {
-	unitsWindow = new Window(Game::get()->getContext());
+	unitsWindow = createWindow();
 	Game::get()->getUI()->GetRoot()->AddChild(unitsWindow);
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 	unitsWindow->SetMinWidth(512);
@@ -144,7 +147,7 @@ void Hud::createUnitIcons() {
 }
 
 void Hud::createTop() {
-	topWindow = new Window(Game::get()->getContext());
+	topWindow = createWindow();
 	Game::get()->getUI()->GetRoot()->AddChild(topWindow);
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 
@@ -169,7 +172,7 @@ void Hud::createTop() {
 }
 
 void Hud::createSelectedInfo() {
-	selectedInfoWindow = new Window(Game::get()->getContext());
+	selectedInfoWindow = createWindow();
 	Game::get()->getUI()->GetRoot()->AddChild(selectedInfoWindow);
 	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
 
@@ -181,6 +184,19 @@ void Hud::createSelectedInfo() {
 	selectedInfoWindow->SetTexture(wood);
 	selectedInfoWindow->SetTiled(true);
 
+}
+
+void Hud::createMiniMap() {
+	miniMapWindow = createWindow();
+	Game::get()->getUI()->GetRoot()->AddChild(miniMapWindow);
+	Texture2D* wood = Game::get()->getCache()->GetResource<Texture2D>("textures/wood.png");
+	miniMapWindow->SetFixedWidth(3 * hudSize->icon_size_x + 2 * hudSize->space_size_x);
+	miniMapWindow->SetFixedHeight(3 * hudSize->icon_size_y + 2 * hudSize->space_size_y);
+	miniMapWindow->SetLayout(LM_VERTICAL, hudSize->space_size_x, IntRect(hudSize->space_size_x, hudSize->space_size_y, hudSize->space_size_x, hudSize->space_size_y));
+	miniMapWindow->SetAlignment(HA_RIGHT, VA_BOTTOM);
+	miniMapWindow->SetName("Window");
+	miniMapWindow->SetTexture(wood);
+	miniMapWindow->SetTiled(true);
 }
 
 void Hud::createStaticHud(String msg) {
@@ -232,6 +248,10 @@ std::vector<HudElement*>* Hud::getListsToSubscribe() {
 	return lists;
 }
 
+std::vector<Window*>* Hud::getWindows() {
+	return windows;
+}
+
 void Hud::updateState(ControlsState state) {
 	switch (state) {
 	case SELECT:
@@ -257,4 +277,10 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a ster
 	if (selectedInfo->hasChanged()) {
 		selectedHudPanel->updateSelected(selectedInfo);
 	}
+}
+
+Window* Hud::createWindow() {
+	Window* window = new Window(Game::get()->getContext());
+	windows->push_back(window);
+	return window;
 }
