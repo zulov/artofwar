@@ -1,16 +1,8 @@
 #include "BucketIterator.h"
 #include "BucketGrid.h"
 
-BucketIterator::BucketIterator(std::vector<std::pair<short, short>*>* _levels, short _dX, short _dZ, BucketGrid* _bucketGrid) {
-	levels = _levels;
-	dX = _dX;
-	dZ = _dZ;
-	std::pair<short, short>* pair = (*levels)[index];
-	bucketGrid = _bucketGrid;
-	currentContent = bucketGrid->getBucketAt(pair->first + dX, pair->second + dZ)->getContent();
-	sizeContent = currentContent->size();
-	levelSize = levels->size();
-	++index;
+BucketIterator::BucketIterator() {
+
 }
 
 BucketIterator::~BucketIterator() {
@@ -30,4 +22,18 @@ Physical* BucketIterator::next() {
 	++secondIndex;
 	return entity;
 
+}
+
+void BucketIterator::init(std::vector<std::pair<short, short>*>* _levels, short _dX, short _dZ, BucketGrid* _bucketGrid) {
+	levels = _levels;
+	dX = _dX;
+	dZ = _dZ;
+	index = 0;
+	secondIndex = 0;
+	std::pair<short, short>* pair = (*levels)[index];
+	bucketGrid = _bucketGrid;
+	currentContent = bucketGrid->getBucketAt(pair->first + dX, pair->second + dZ)->getContent();
+	sizeContent = currentContent->size();
+	levelSize = levels->size();
+	++index;
 }

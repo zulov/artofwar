@@ -1,8 +1,8 @@
 #pragma once
 
-#define UNITS_NUMBER 200
+#define UNITS_NUMBER 5000
 #define SEP_RADIUS 3;
-#define INIT_SPACE 1
+#define INIT_SPACE 0.5
 
 #define BUCKET_GRID_RESOLUTION 140
 #define BUCKET_GRID_RESOLUTION_BUILD 42
@@ -25,3 +25,5 @@
 #define BUCKET_SET_NUMBER 2
 
 #define STATE_SIZE 5
+
+#define MAX_THREADS 4

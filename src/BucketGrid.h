@@ -16,10 +16,11 @@ public:
 	Bucket* getBucketAt(int x, int z);
 	void updateGrid(Physical* entity, int team);
 	std::vector<std::pair<short, short>*>* getEnvIndexsFromCache(double getMaxSeparationDistance);
-	BucketIterator* getArrayNeight(Unit* entity, double radius);
+	BucketIterator* getArrayNeight(Unit* entity, double radius, short thread);
 
 	std::vector<Physical *>* getArrayNeight(std::pair<Vector3*, Vector3*>* pair);
 private:
+	BucketIterator** iterators;
 	bool fieldInCircle(int i, int j, double radius);
 	std::vector<std::pair<short, short>*>* getEnvIndexs(double radius);
 	int getIntegerPos(double value);

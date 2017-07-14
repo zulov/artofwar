@@ -56,7 +56,7 @@ std::vector<Physical *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGri
 
 	double sqSeparationDistance = radius * radius;
 	Vector3* unitPosition = unit->getPosition();
-	BucketIterator* bucketIterator = bucketGrid->getArrayNeight(unit, radius);
+	BucketIterator* bucketIterator = bucketGrid->getArrayNeight(unit, radius, 0);
 	while (Physical* neight = bucketIterator->next()) {
 		if (unit == neight) { continue; }
 
@@ -66,7 +66,6 @@ std::vector<Physical *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGri
 			neights->push_back(neight);
 		}
 	}
-	delete bucketIterator;
 
 	return neights;
 }

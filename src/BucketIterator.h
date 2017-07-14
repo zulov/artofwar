@@ -9,9 +9,10 @@ class BucketGrid;
 class BucketIterator
 {
 public:
-	BucketIterator(std::vector<std::pair<short, short>*>* _levels, short _dX, short _dZ, BucketGrid * _bucketGrid);
+	BucketIterator();
 	~BucketIterator();
 	Physical* next();
+	void init(std::vector<std::pair<short, short>*>* _levels, short _dX, short _dZ, BucketGrid * _bucketGrid);
 private:
 	short index = 0;
 	short secondIndex = 0;

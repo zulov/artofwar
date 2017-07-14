@@ -23,10 +23,15 @@ BucketGrid::BucketGrid(short _resolution, double _size) {
 	}
 
 	empty = new Bucket();
+	iterators = new BucketIterator*[MAX_THREADS];
+	for (int i = 0; i < MAX_THREADS; ++i) {
+		iterators[i] = new BucketIterator();
+	}
 }
 
 BucketGrid::~BucketGrid() {
 	delete empty;
+	delete[] iterators;
 }
 
 void BucketGrid::updateGrid(Physical* entity, int team) {
@@ -55,12 +60,13 @@ int BucketGrid::getIntegerPos(double value) {
 
 }
 
-BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius) {
+BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius, short thread) {
 	Vector3* pos = entity->getPosition();
 	int dX = getIntegerPos(pos->x_);
 	int dZ = getIntegerPos(pos->z_);
 
-	BucketIterator* bucketIterator = new BucketIterator(getEnvIndexsFromCache(radius), dX, dZ, this);
+	BucketIterator* bucketIterator = iterators[thread];
+	bucketIterator->init(getEnvIndexsFromCache(radius), dX, dZ, this);
 	return bucketIterator;
 }
 
