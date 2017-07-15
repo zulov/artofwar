@@ -1,8 +1,8 @@
 #pragma once
 
-#define UNITS_NUMBER 5000
+#define UNITS_NUMBER 200
 #define SEP_RADIUS 3;
-#define INIT_SPACE 0.5
+#define INIT_SPACE 1
 
 #define BUCKET_GRID_RESOLUTION 140
 #define BUCKET_GRID_RESOLUTION_BUILD 42
@@ -19,7 +19,6 @@
 #define BENCH_LENGTH 200
 #define BENCH_SKIP 2
 #define BENCH_ENABLE false
-
 
 #define MAX_PLAYERS 2
 #define BUCKET_SET_NUMBER 2

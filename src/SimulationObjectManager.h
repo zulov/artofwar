@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <Urho3D/Graphics/StaticModelGroup.h>
 #include "Unit.h"
 #include "Entity.h"
 #include "Building.h"

@@ -6,7 +6,7 @@ SimulationObjectManager::SimulationObjectManager() {
 	buildings = new std::vector<Building*>();
 	resources = new std::vector<ResourceEntity*>();
 	entities = new std::vector<Entity*>();
-	
+
 	units->reserve(10000);
 	buildings->reserve(1000);
 	resources->reserve(1000);
