@@ -13,7 +13,7 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->hudSizes[id] = new db_hud_size(atoi(argv[0]), argv[1], atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]));//toDO moza sprobowac pêtl¹
+	xyz->hudSizes[id] = new db_hud_size(atoi(argv[0]), argv[1], atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6], argv[7]);//toDO moza sprobowac pêtl¹
 	xyz->hud_size_size++;
 	return 0;
 }

@@ -20,6 +20,7 @@
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Engine/Engine.h>
 #include <Urho3D/Graphics/Drawable.h>
+#include <Urho3D/UI/ListView.h>
 #include "CameraManager.h"
 #include "Benchmark.h"
 #include <array>
@@ -34,6 +35,7 @@ using namespace Urho3D;
 class Hud 
 {
 public:
+	void replaceVariables(XMLFile* xmlFile, db_hud_size* hudSize);
 	Hud();
 	~Hud();
 	void createStaticHud(String msg);
@@ -70,6 +72,7 @@ private:
 	std::vector<Window*>* windows;
 
 	XMLFile* style;
+	XMLFile* windowStyle;
 	db_hud_size* hudSize;
 	Font* font;
 	void createBuildingIcons();

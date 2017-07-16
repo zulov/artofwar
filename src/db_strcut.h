@@ -71,14 +71,18 @@ struct db_hud_size
 	int icon_size_y;
 	int space_size_x;
 	int space_size_y;
+	Urho3D::Vector<Urho3D::String> names;
+	Urho3D::Vector<Urho3D::String> values;
 
-	db_hud_size(int id, char* name, int iconSizeX, int iconSizeY, int spaceSizeX, int spaceSizeY)
+	db_hud_size(int id, char* name, int iconSizeX, int iconSizeY, int spaceSizeX, int spaceSizeY, char* names, char* values)
 		: id(id),
 		name(name),
 		icon_size_x(iconSizeX),
 		icon_size_y(iconSizeY),
 		space_size_x(spaceSizeX),
-		space_size_y(spaceSizeY) {
+		space_size_y(spaceSizeY),
+		names(Urho3D::String(names).Split(SPLIT_SIGN)),
+		values(Urho3D::String(values).Split(SPLIT_SIGN)){
 	}
 };
 

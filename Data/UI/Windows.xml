@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<elements>
+	<element type="MyWindow" style="Window">
+		<attribute name="Texture" value="Texture2D;Textures/wood.png" />
+		<attribute name="Tiled" value="true" />
+	</element>
+	
+	<element type="TopWindow" style="MyWindow">
+		<attribute name="Min Size" value="$bigX 44"/>
+        <attribute name="Max Size" value="$bigX 44" />
+		<attribute name="Vert Alignment" value="Top" />
+		<attribute name="Horiz Alignment" value="Right" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<attribute name="Layout Spacing" value="$spaceX" />
+        <attribute name="Layout Border" value="$spaceX $spaceY $spaceX $spaceY" />
+
+	</element>
+	<element type="MenuWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Left" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Spacing" value="$spaceX" />
+        <attribute name="Layout Border" value="$spaceX $spaceY $spaceX $spaceY" />
+
+	</element>
+	<element type="BuildWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Left" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Spacing" value="$spaceX" />
+        <attribute name="Layout Border" value="$spaceX $spaceY $spaceX $spaceY" />
+        <attribute name="Is Visible" value="false" />
+
+	</element>
+	<element type="UnitsWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Left" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Spacing" value="$spaceX" />
+        <attribute name="Layout Border" value="$spaceX $spaceY $spaceX $spaceY" />
+        <attribute name="Is Visible" value="false" />
+	</element>
+	<element type="MiniMapWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Right" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Spacing" value="$spaceX" />
+        <attribute name="Layout Border" value="$spaceX $spaceY $spaceX $spaceY" />
+	</element>	
+	<element type="SelectedInfoWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<attribute name="Layout Spacing" value="$spaceX" />
+        <attribute name="Layout Border" value="$spaceX $spaceY $spaceX $spaceY" />
+		<attribute name="Min Size" value="$bigX $iconY"/>
+		
+	</element>
+</elements>
