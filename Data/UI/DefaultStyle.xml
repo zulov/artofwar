@@ -1,12 +1,5 @@
 <elements>
-	<xsl:variable name="iconX" select="64"/>
-	<xsl:variable name="iconY" select="64"/>
-	<xsl:variable name="spaceX" select="12"/>
-	<xsl:variable name="spaceY" select="6"/>
 
-	
-	<xsl:variable name="bigY" select="288"/>
-		
     <element type="BorderImage" >
         <attribute name="Texture" value="Texture2D;Textures/UI.png" />
         <attribute name="Blend Mode" value="alpha" />
