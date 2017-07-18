@@ -52,6 +52,37 @@ CREATE TABLE `nation` (
 	PRIMARY KEY(`id`)
 );
 INSERT INTO `nation` (id,name) VALUES (0,NULL);
+CREATE TABLE "hud_size_vars" (
+	`id`	INTEGER,
+	`hud_size`	INTEGER,
+	`name`	TEXT,
+	`value`	REAL,
+	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`)
+);
+INSERT INTO `hud_size_vars` (id,hud_size,name,value) VALUES (0,0,'iconX',42.0),
+ (1,0,'iconY',42.0),
+ (2,0,'spaceX',8.0),
+ (3,0,'spaceY',4.0),
+ (4,0,'bigX',420.0),
+ (5,0,'bigY',236.0),
+ (6,1,'iconX',64.0),
+ (7,1,'iconY',64.0),
+ (8,1,'spaceX',12.0),
+ (9,1,'spaceY',6.0),
+ (10,1,'bigX',640.0),
+ (11,1,'bigY',360.0),
+ (12,2,'iconX',86.0),
+ (13,2,'iconY',86.0),
+ (14,2,'spaceX',16.0),
+ (15,2,'spaceY',8.0),
+ (16,2,'bigX',860.0),
+ (17,2,'bigY',483.0),
+ (18,3,'iconX',128.0),
+ (19,3,'iconY',128.0),
+ (20,3,'spaceX',24.0),
+ (21,3,'spaceY',12.0),
+ (22,3,'bigX',1280.0),
+ (23,3,'bigY',720.0);
 CREATE TABLE "hud_size" (
 	`id`	INTEGER,
 	`name`	TEXT,

@@ -20,10 +20,12 @@ public:
 	db_unit_type* getUnitType(int i);
 	db_nation* getNation(int i);
 	db_resource* getResource(int i);
+	db_hud_vars* getHudVar(int i);
 
 	int getResourceSize();
 	int getBuildingTypeSize();
 	int getUnitTypeSize();
+	int getHudVarsSize();
 private:
 	db_container* dbContainer;
 	sqlite3* database;

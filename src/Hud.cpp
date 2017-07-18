@@ -8,10 +8,41 @@ void Hud::replaceVariables(XMLFile* xmlFile, db_hud_size* hudSize) {
 	const char* chars = windowsStyleString.CString();
 
 	std::string asStr(chars);
-	for (int i = 0; i < hudSize->names.Size(); ++i) {
-		auto var = hudSize->names[i];
-		asStr = std::regex_replace(asStr, std::regex(hudSize->names[i].CString()), hudSize->values[i].CString());
+
+
+	exprtk::symbol_table<double> symbol_table;
+	int varsSize = Game::get()->getDatabaseCache()->getHudVarsSize();
+	for (int i = 0; i < varsSize; ++i) {//TODO to lepiej zrobiczapytaniem?
+		db_hud_vars* var = Game::get()->getDatabaseCache()->getHudVar(i);
+		if (var != nullptr && var->hud_size == hudSize->id) {
+			symbol_table.add_variable(var->name.CString(), var->value);
+		}
 	}
+
+	typedef exprtk::expression<double> expression_t;
+	typedef exprtk::parser<double> parser_t;
+	expression_t expression;
+	expression.register_symbol_table(symbol_table);
+
+	std::regex reg("\\{[^\\}]*\\}");
+
+	std::regex_iterator<std::string::iterator> iterator(asStr.begin(), asStr.end(), reg);
+	std::regex_iterator<std::string::iterator> rend;
+	std:vector<double> *values = new vector<double>();
+
+	while (iterator != rend) {
+		std::string expression_string = iterator->str().substr(1, iterator->str().length() - 2);
+		parser_t parser;
+		parser.compile(expression_string, expression);
+		double y = expression.value();
+		values->push_back(y);
+		++iterator;
+	}
+
+	for(auto var : (*values)) {
+		asStr = std::regex_replace(asStr, reg, std::to_string((int)var), regex_constants::format_first_only);
+	}
+	cout << asStr << endl;
 	xmlFile->FromString(asStr.c_str());
 }
 
@@ -24,9 +55,12 @@ Hud::Hud() {
 	windowStyle = Game::get()->getCache()->GetResource<XMLFile>("UI/Windows.xml");
 	hudSize = Game::get()->getDatabaseCache()->getHudSize(graphSettings->hud_size);
 
-	replaceVariables(style, hudSize);
+	//vector<db_hud_vars*>* vars = new vector<db_hud_vars*>();
+
+
+	//replaceVariables(style, hudSize);
 	replaceVariables(windowStyle, hudSize);
-	
+
 	font = Game::get()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf");
 
 	createMenu();
@@ -44,30 +78,6 @@ Hud::Hud() {
 	cursor->SetPosition(Game::get()->getGraphics()->GetWidth() / 2, Game::get()->getGraphics()->GetHeight() / 2);
 	selectedHudPanel = new SelectedHudPanel(style, hudSize, font, selectedInfoWindow);
 
-	{
-		typedef exprtk::symbol_table<double> symbol_table_t;
-		typedef exprtk::expression<double>     expression_t;
-		typedef exprtk::parser<double>             parser_t;
-		std::string expression_string = "clamp(-1.0,sin(2 * pi * x) + cos(x / 2 * pi),+1.0)";
-
-		double x;
-
-		symbol_table_t symbol_table;
-		symbol_table.add_variable("x", x);
-		symbol_table.add_constants();
-
-		expression_t expression;
-		expression.register_symbol_table(symbol_table);
-
-		parser_t parser;
-		parser.compile(expression_string, expression);
-
-		for (x = double(-5); x <= double(+5); x += double(0.001))
-		{
-			double y = expression.value();
-			printf("%19.15f\t%19.15f\n", x, y);
-		}
-	}
 }
 
 
@@ -96,7 +106,7 @@ void Hud::initDropDownList(DropDownList* dropDownList) {
 void Hud::createMenu() {
 	menuWindow = createWindow();
 	Game::get()->getUI()->GetRoot()->AddChild(menuWindow);
-	
+
 	menuWindow->SetStyle("MenuWindow", windowStyle);
 
 	menuWindow->SetFixedWidth(3 * hudSize->icon_size_x + 4 * hudSize->space_size_x);

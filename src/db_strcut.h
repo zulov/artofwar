@@ -6,6 +6,7 @@
 #define TYPE_NUMBER_DB 50
 #define NATION_NUMBER_DB 50
 #define RESOURCE_NUMBER_DB 4
+#define HUD_VARS_NUMBER_DB 50
 
 #define SPLIT_SIGN '\n'
 
@@ -170,6 +171,21 @@ struct db_resource
 	}
 };
 
+struct db_hud_vars
+{
+	int id;
+	int hud_size;
+	Urho3D::String name;
+	double value;
+
+	db_hud_vars(int id, int hudSize, char* name, double value)
+		: id(id),
+		hud_size(hudSize),
+		name(name),
+		value(value) {
+	}
+};
+
 struct db_container
 {
 	db_unit* units[UNITS_NUMBER_DB];
@@ -180,6 +196,7 @@ struct db_container
 	db_building_type* buildingTypes[TYPE_NUMBER_DB];
 	db_nation* nations[NATION_NUMBER_DB];
 	db_resource* resources[RESOURCE_NUMBER_DB];
+	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB];
 
 	int units_size = 0;
 	int hud_size_size = 0;
@@ -189,4 +206,5 @@ struct db_container
 	int building_type_size = 0;
 	int resource_size = 0;
 	int nation_size = 0;
+	int hud_vars_size = 0;
 };

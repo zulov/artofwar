@@ -67,6 +67,15 @@ int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int id = atoi(argv[0]);
+	xyz->hudVars[id] = new db_hud_vars(atoi(argv[0]), atoi(argv[1]), argv[2], atof(argv[3]));
+	xyz->hud_vars_size++;
+
+	return 0;
+}
+
 void DatabaseCache::ifError(int rc, char* error) {
 	if (rc != SQLITE_OK) {
 		fprintf(stderr, "SQL error: %s\n", error);
@@ -97,6 +106,7 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from unit_type", loadUnitType, dbContainer);
 	execute("SELECT * from nation", loadNation, dbContainer);
 	execute("SELECT * from resource", loadResource, dbContainer);
+	execute("SELECT * from hud_size_vars", loadHudVars, dbContainer);
 
 	sqlite3_close(database);
 }
@@ -138,6 +148,10 @@ db_resource* DatabaseCache::getResource(int i) {
 	return dbContainer->resources[i];
 }
 
+db_hud_vars* DatabaseCache::getHudVar(int i) {
+	return dbContainer->hudVars[i];
+}
+
 int DatabaseCache::getResourceSize() {
 	return dbContainer->resource_size;
 }
@@ -150,3 +164,6 @@ int DatabaseCache::getUnitTypeSize() {
 	return dbContainer->unit_type_size;
 }
 
+int DatabaseCache::getHudVarsSize() {
+	return dbContainer->hud_vars_size;
+}
