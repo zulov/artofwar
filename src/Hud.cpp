@@ -74,7 +74,6 @@ Hud::Hud() {
 
 	cursor->SetPosition(Game::get()->getGraphics()->GetWidth() / 2, Game::get()->getGraphics()->GetHeight() / 2);
 	selectedHudPanel = new SelectedHudPanel(style, hudSize, font, selectedInfoWindow);
-
 }
 
 
@@ -102,12 +101,7 @@ void Hud::initDropDownList(DropDownList* dropDownList) {
 
 void Hud::createMenu() {
 	menuWindow = createWindow();
-	Game::get()->getUI()->GetRoot()->AddChild(menuWindow);
-
 	menuWindow->SetStyle("MenuWindow", windowStyle);
-
-	menuWindow->SetFixedWidth(3 * hudSize->icon_size_x + 4 * hudSize->space_size_x);
-	menuWindow->SetFixedHeight(hudSize->icon_size_y + 2 * hudSize->space_size_y);
 
 	DropDownList* dropDownList = new DropDownList(Game::get()->getContext());
 
@@ -123,24 +117,14 @@ void Hud::createMenu() {
 
 void Hud::createBuild() {
 	buildWindow = createWindow();
-	Game::get()->getUI()->GetRoot()->AddChild(buildWindow);
 	buildWindow->SetStyle("BuildWindow", windowStyle);
-
-	buildWindow->SetMinWidth(hudSize->icon_size_x + 2 * hudSize->space_size_x);
-	buildWindow->SetMinHeight(8 * hudSize->icon_size_y + 9 * hudSize->space_size_y);
-	buildWindow->SetPosition(0, -(hudSize->icon_size_y + 2 * hudSize->space_size_y));
 
 	createBuildingIcons();
 }
 
 void Hud::createUnits() {
 	unitsWindow = createWindow();
-	Game::get()->getUI()->GetRoot()->AddChild(unitsWindow);
 	unitsWindow->SetStyle("UnitsWindow", windowStyle);
-
-	unitsWindow->SetMinWidth(hudSize->icon_size_x + 3 * hudSize->space_size_x);
-	unitsWindow->SetFixedHeight(3 * hudSize->icon_size_y + 4 * hudSize->space_size_y);
-	unitsWindow->SetPosition(0, -(hudSize->icon_size_y + 2 * hudSize->space_size_y));
 
 	createUnitIcons();
 }
@@ -197,7 +181,6 @@ void Hud::createUnitIcons() {
 
 void Hud::createTop() {
 	topWindow = createWindow();
-	Game::get()->getUI()->GetRoot()->AddChild(topWindow);
 	topWindow->SetStyle("TopWindow", windowStyle);
 
 	int size = Game::get()->getDatabaseCache()->getResourceSize();
@@ -214,20 +197,12 @@ void Hud::createTop() {
 
 void Hud::createSelectedInfo() {
 	selectedInfoWindow = createWindow();
-	Game::get()->getUI()->GetRoot()->AddChild(selectedInfoWindow);
 	selectedInfoWindow->SetStyle("SelectedInfoWindow", windowStyle);
-
-	//selectedInfoWindow->SetMinHeight(hudSize->icon_size_y + 2 * hudSize->space_size_y);
 }
 
 void Hud::createMiniMap() {
 	miniMapWindow = createWindow();
-	Game::get()->getUI()->GetRoot()->AddChild(miniMapWindow);
 	miniMapWindow->SetStyle("MiniMapWindow", windowStyle);
-
-	miniMapWindow->SetFixedWidth(3 * hudSize->icon_size_x + 2 * hudSize->space_size_x);
-	miniMapWindow->SetFixedHeight(3 * hudSize->icon_size_y + 2 * hudSize->space_size_y);
-
 }
 
 void Hud::createStaticHud(String msg) {
@@ -313,5 +288,6 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a ster
 Window* Hud::createWindow() {
 	Window* window = new Window(Game::get()->getContext());
 	windows->push_back(window);
+	Game::get()->getUI()->GetRoot()->AddChild(window);
 	return window;
 }
