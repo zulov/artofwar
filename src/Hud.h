@@ -38,7 +38,7 @@ public:
 	void replaceVariables(XMLFile* xmlFile, int hudSizeId);
 	Hud();
 	~Hud();
-	void createStaticHud(String msg);
+	void createStaticHud(String &msg);
 	void createDebugHud();
 	void createConsole();
 	void createMyDebugHud();
@@ -49,7 +49,7 @@ public:
 	void updateState(ControlsState state);
 	void updateSelected(SelectedInfo* selectedInfo);
 private:
-	Window * createWindow();
+	Window * createWindow(const String& styleName);
 
 	void createMenu();
 	void createBuild();
@@ -72,7 +72,6 @@ private:
 	std::vector<Window*>* windows;
 
 	XMLFile* style;
-	XMLFile* windowStyle;
 	db_hud_size* hudSize;
 	Font* font;
 	void createBuildingIcons();

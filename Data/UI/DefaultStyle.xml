@@ -11,10 +11,6 @@
         <attribute name="Hover Image Offset" value="0 16" />
         <attribute name="Pressed Child Offset" value="-1 1" />
     </element>
-	<element type="Icon">
-        <attribute name="Pressed Image Offset" value="-3 -3" />
-        <attribute name="Hover Image Offset" value="3 3" />
-    </element>
     <element type="ToggledButton" style="Button" auto="false">
         <attribute name="Image Rect" value="160 64 176 80" />
     </element>
@@ -392,5 +388,88 @@
     <element type="ViewportBorder" style="BorderImage">
         <attribute name="Image Rect" value="50 5 51 6" />
         <attribute name="Border" value="0 0 0 0" />
+    </element>
+	
+<!--
+  MY UI
+-->	
+	<element type="MyWindow" style="Window">		
+		<!--
+		<attribute name="Texture" value="Texture2D;Textures/wood.png" />
+		<attribute name="Tiled" value="true" />
+		-->
+	</element>
+	
+	<element type="TopWindow" style="MyWindow">
+		<attribute name="Min Size" value="{bigX} {iconY/2+2*spaceY}"/>
+        <attribute name="Max Size" value="{bigX} {iconY/2+2*spaceY}" />
+		<attribute name="Vert Alignment" value="Top" />
+		<attribute name="Horiz Alignment" value="Right" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<attribute name="Layout Spacing" value="{spaceX}" />
+        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+	</element>
+	<element type="MenuWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Left" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Spacing" value="{spaceX}" />
+        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+		<attribute name="Min Size" value="{3*iconX+4spaceX} {iconY+2*spaceY}"/>
+		<attribute name="Max Size" value="{3*iconX+4spaceX} {iconY+2*spaceY}"/>
+	</element>
+	<element type="BuildWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Left" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Spacing" value="{spaceX}" />
+        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+        <attribute name="Is Visible" value="false" />
+		<attribute name="Min Size" value="{iconX+2*spaceX} {8*iconY+9*spaceY}"/>
+		<attribute name="Max Size" value="{iconX+2*spaceX} {8*iconY+9*spaceY}"/>
+		<attribute name="Position" value="0 -{iconY+2*spaceY}"/>
+	</element>
+	<element type="UnitsWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Left" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Spacing" value="{spaceX}" />
+        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+        <attribute name="Is Visible" value="false" />
+		<attribute name="Min Size" value="{iconX+3*spaceX} {4*iconY+5*spaceY}"/>
+		<attribute name="Max Size" value="{iconX+3*spaceX} {4*iconY+5*spaceY}"/>
+		<attribute name="Position" value="0 -{iconY+2*spaceY}"/>
+	</element>
+	<element type="MiniMapWindow" style="MyWindow">
+		<attribute name="Min Size" value="{3*iconX+2*spaceX} {3*iconY+2*spaceY}"/>
+        <attribute name="Max Size" value="{3*iconX+2*spaceX} {3*iconY+2*spaceY}" />
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Right" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Spacing" value="{spaceX}" />
+        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+	</element>	
+	<element type="SelectedInfoWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<attribute name="Layout Spacing" value="{spaceX}" />
+        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+		<attribute name="Min Size" value="{bigX} {iconY+2*spaceY}"/>
+	</element>
+	
+	
+	<element type="MyDropDown" style="DropDownList" >
+		<attribute name="Min Size" value="{2*iconX} {iconY/2}"/>
+		<attribute name="Max Size" value="{2*iconX} {iconY/2}"/>
+		<attribute name="Resize Popup" value="true" />
+	</element>
+	<element type="TopButtons" style="Button" >
+		<attribute name="Min Size" value="{2*iconX} {iconY/2}"/>
+		<attribute name="Max Size" value="{2*iconX} {iconY/2}"/>
+	</element>
+	<element type="Icon" style="Button">
+        <attribute name="Min Size" value="{iconX} {iconY}" />
+        <attribute name="Max Size" value="{iconX} {iconY}" />
     </element>
 </elements>

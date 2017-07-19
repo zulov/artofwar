@@ -4,10 +4,10 @@
 #include "Game.h"
 #include <Urho3D/Graphics/Texture2D.h>
 
-static Urho3D::Button*  simpleButton(Urho3D::XMLFile* style, Urho3D::Sprite* sprite, int sizeX, int sizeY) {
+static Urho3D::Button* simpleButton(Urho3D::XMLFile* style, Urho3D::Sprite* sprite, const String& styleName) {
 	Urho3D::Button* button = new Urho3D::Button(Game::get()->getContext());
-	button->SetStyleAuto(style);
-	button->SetFixedSize(sizeX, sizeY);
+	button->SetStyle(styleName, style);
+	
 	button->AddChild(sprite);
 	return button;
 }
@@ -22,8 +22,7 @@ static Urho3D::Sprite* createSprite(Texture2D* texture, int sizeX, int sizeY) {
 	double scaleY = (sizeY) / (double)textureHeight;
 	if (scaleX < scaleY) {
 		sprite->SetScale(scaleX);
-	}
-	else {
+	} else {
 		sprite->SetScale(scaleY);
 	}
 

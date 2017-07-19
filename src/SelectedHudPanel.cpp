@@ -18,7 +18,6 @@ SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, db_hud_size* _hudSiz
 	buttons[ObjectType::BUILDING] = new Urho3D::Button*[buildingTypeSize];
 	buttons[ObjectType::RESOURCE] = new Urho3D::Button*[resourceSize];
 
-
 	//createButton(entityTypeSize, ENTITY);
 	createButton(unitTypeSize, UNIT);
 	createButton(buildingTypeSize, BUILDING);
@@ -33,7 +32,7 @@ void SelectedHudPanel::createButton(int size, ObjectType index) {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
 
 		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
-		buttons[index][i] = simpleButton(style, sprite, hudSize->icon_size_x, hudSize->icon_size_y);
+		buttons[index][i] = simpleButton(style, sprite, "Icon");
 		Text * text = new Text(Game::get()->getContext());
 		text->SetName("Text");
 		buttons[index][i]->AddChild(text);
@@ -41,7 +40,6 @@ void SelectedHudPanel::createButton(int size, ObjectType index) {
 		window->AddChild(buttons[index][i]);
 	}
 }
-
 
 SelectedHudPanel::~SelectedHudPanel() {
 }

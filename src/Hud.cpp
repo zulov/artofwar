@@ -52,11 +52,9 @@ Hud::Hud() {
 	windows = new std::vector<Window*>();
 	db_graph_settings* graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
 	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->style);
-	windowStyle = Game::get()->getCache()->GetResource<XMLFile>("UI/Windows.xml");
 	hudSize = Game::get()->getDatabaseCache()->getHudSize(graphSettings->hud_size);
 
 	replaceVariables(style, graphSettings->hud_size);
-	replaceVariables(windowStyle, graphSettings->hud_size);
 
 	font = Game::get()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf");
 
@@ -76,7 +74,6 @@ Hud::Hud() {
 	selectedHudPanel = new SelectedHudPanel(style, hudSize, font, selectedInfoWindow);
 }
 
-
 Hud::~Hud() {
 }
 
@@ -91,17 +88,13 @@ void Hud::populateList(Font* font, DropDownList* dropDownList, std::array<String
 }
 
 void Hud::initDropDownList(DropDownList* dropDownList) {
-	dropDownList->SetFixedHeight(hudSize->icon_size_x / 2);
-	dropDownList->SetFixedWidth(2 * hudSize->icon_size_x);
-	dropDownList->SetResizePopup(true);
-	dropDownList->SetStyleAuto(style);
+	dropDownList->SetStyle("MyDropDown", style);
 
 	menuWindow->AddChild(dropDownList);
 }
 
 void Hud::createMenu() {
-	menuWindow = createWindow();
-	menuWindow->SetStyle("MenuWindow", windowStyle);
+	menuWindow = createWindow("MenuWindow");
 
 	DropDownList* dropDownList = new DropDownList(Game::get()->getContext());
 
@@ -116,19 +109,14 @@ void Hud::createMenu() {
 }
 
 void Hud::createBuild() {
-	buildWindow = createWindow();
-	buildWindow->SetStyle("BuildWindow", windowStyle);
-
+	buildWindow = createWindow("BuildWindow");
 	createBuildingIcons();
 }
 
 void Hud::createUnits() {
-	unitsWindow = createWindow();
-	unitsWindow->SetStyle("UnitsWindow", windowStyle);
-
+	unitsWindow = createWindow("UnitsWindow");
 	createUnitIcons();
 }
-
 
 void Hud::createBuildingIcons() {
 	int size = Game::get()->getDatabaseCache()->getBuildingTypeSize();
@@ -138,7 +126,7 @@ void Hud::createBuildingIcons() {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + buidling->icon);
 
 		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
-		Button* button = simpleButton(style, sprite, hudSize->icon_size_x, hudSize->icon_size_y);
+		Button* button = simpleButton(style, sprite, "Icon");
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setBuildingType(BuildingType(i));
@@ -152,8 +140,7 @@ void Hud::createBuildingIcons() {
 void Hud::createUnitIcons() {
 	int size = Game::get()->getDatabaseCache()->getUnitTypeSize();
 	ListView* scrollBar = unitsWindow->CreateChild<ListView>();
-	//	ScrollBar* scrollBar1 = unitsWindow->CreateChild<ScrollBar>();
-
+	
 	scrollBar->SetStyleAuto(style);
 	//scrollBar->SetLayout(LM_VERTICAL, 0, IntRect::ZERO);
 	scrollBar->SetScrollBarsVisible(false, true);
@@ -168,7 +155,7 @@ void Hud::createUnitIcons() {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
 		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
-		Button* button = simpleButton(style, sprite, hudSize->icon_size_x, hudSize->icon_size_y);
+		Button* button = simpleButton(style, sprite, "Icon");
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setUnitType(UnitType(i));
@@ -180,8 +167,7 @@ void Hud::createUnitIcons() {
 }
 
 void Hud::createTop() {
-	topWindow = createWindow();
-	topWindow->SetStyle("TopWindow", windowStyle);
+	topWindow = createWindow("TopWindow");
 
 	int size = Game::get()->getDatabaseCache()->getResourceSize();
 	for (int i = 0; i < size; ++i) {
@@ -189,23 +175,21 @@ void Hud::createTop() {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + resource->icon);
 
 		Sprite* sprite = createSprite(texture, (hudSize->icon_size_x - hudSize->space_size_x) / 2, (hudSize->icon_size_y - hudSize->space_size_y) / 2);
-		Button* button = simpleButton(style, sprite, hudSize->icon_size_x * 2, hudSize->icon_size_y / 2);
+		Button* button = simpleButton(style, sprite, "TopButtons");
 
 		topWindow->AddChild(button);
 	}
 }
 
 void Hud::createSelectedInfo() {
-	selectedInfoWindow = createWindow();
-	selectedInfoWindow->SetStyle("SelectedInfoWindow", windowStyle);
+	selectedInfoWindow = createWindow("SelectedInfoWindow");
 }
 
 void Hud::createMiniMap() {
-	miniMapWindow = createWindow();
-	miniMapWindow->SetStyle("MiniMapWindow", windowStyle);
+	miniMapWindow = createWindow("MiniMapWindow");
 }
 
-void Hud::createStaticHud(String msg) {
+void Hud::createStaticHud(String &msg) {
 	Text* instructionText = Game::get()->getUI()->GetRoot()->CreateChild<Text>();
 	instructionText->SetText(msg);
 	instructionText->SetFont(font, 12);
@@ -246,7 +230,6 @@ void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {
 }
 
 std::vector<HudElement*>* Hud::getButtonsToSubscribe() {
-	//SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleUIButtton));
 	return buttons;
 }
 
@@ -285,9 +268,10 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a ster
 	}
 }
 
-Window* Hud::createWindow() {
+Window* Hud::createWindow(const String& styleName) {
 	Window* window = new Window(Game::get()->getContext());
 	windows->push_back(window);
+	window->SetStyle(styleName, style);
 	Game::get()->getUI()->GetRoot()->AddChild(window);
 	return window;
 }
