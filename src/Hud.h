@@ -35,7 +35,7 @@ using namespace Urho3D;
 class Hud 
 {
 public:
-	void replaceVariables(XMLFile* xmlFile, db_hud_size* hudSize);
+	void replaceVariables(XMLFile* xmlFile, int hudSizeId);
 	Hud();
 	~Hud();
 	void createStaticHud(String msg);

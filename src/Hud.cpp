@@ -3,18 +3,17 @@
 #include <regex>
 #include <exprtk/exprtk.hpp>
 
-void Hud::replaceVariables(XMLFile* xmlFile, db_hud_size* hudSize) {
-	auto windowsStyleString = xmlFile->ToString();
-	const char* chars = windowsStyleString.CString();
+void Hud::replaceVariables(XMLFile* xmlFile, int hudSizeId) {
+	auto styleString = xmlFile->ToString();
+	const char* chars = styleString.CString();
 
 	std::string asStr(chars);
-
 
 	exprtk::symbol_table<double> symbol_table;
 	int varsSize = Game::get()->getDatabaseCache()->getHudVarsSize();
 	for (int i = 0; i < varsSize; ++i) {//TODO to lepiej zrobiczapytaniem?
 		db_hud_vars* var = Game::get()->getDatabaseCache()->getHudVar(i);
-		if (var != nullptr && var->hud_size == hudSize->id) {
+		if (var != nullptr && var->hud_size == hudSizeId) {
 			symbol_table.add_variable(var->name.CString(), var->value);
 		}
 	}
@@ -28,7 +27,7 @@ void Hud::replaceVariables(XMLFile* xmlFile, db_hud_size* hudSize) {
 
 	std::regex_iterator<std::string::iterator> iterator(asStr.begin(), asStr.end(), reg);
 	std::regex_iterator<std::string::iterator> rend;
-	std:vector<double> *values = new vector<double>();
+	std::vector<double>* values = new vector<double>();
 
 	while (iterator != rend) {
 		std::string expression_string = iterator->str().substr(1, iterator->str().length() - 2);
@@ -39,11 +38,12 @@ void Hud::replaceVariables(XMLFile* xmlFile, db_hud_size* hudSize) {
 		++iterator;
 	}
 
-	for(auto var : (*values)) {
+	for (auto var : (*values)) {
 		asStr = std::regex_replace(asStr, reg, std::to_string((int)var), regex_constants::format_first_only);
 	}
-	cout << asStr << endl;
+
 	xmlFile->FromString(asStr.c_str());
+	delete values;
 }
 
 Hud::Hud() {
@@ -55,11 +55,8 @@ Hud::Hud() {
 	windowStyle = Game::get()->getCache()->GetResource<XMLFile>("UI/Windows.xml");
 	hudSize = Game::get()->getDatabaseCache()->getHudSize(graphSettings->hud_size);
 
-	//vector<db_hud_vars*>* vars = new vector<db_hud_vars*>();
-
-
-	//replaceVariables(style, hudSize);
-	replaceVariables(windowStyle, hudSize);
+	replaceVariables(style, graphSettings->hud_size);
+	replaceVariables(windowStyle, graphSettings->hud_size);
 
 	font = Game::get()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf");
 
