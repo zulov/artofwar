@@ -32,8 +32,7 @@ void Main::Start() {
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
 
 	hud = new Hud();
-	hud->createStaticHud(String("Liczba jednostek") + String("??"));
-
+	
 	for (HudElement* hudElement : *(hud->getButtonsToSubscribe())) {
 		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleUIButtton));
 	}

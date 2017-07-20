@@ -38,7 +38,6 @@ public:
 	void replaceVariables(XMLFile* xmlFile, int hudSizeId);
 	Hud();
 	~Hud();
-	void createStaticHud(String &msg);
 	void createDebugHud();
 	void createConsole();
 	void createMyDebugHud();
@@ -63,6 +62,7 @@ private:
 	Window* buildWindow;//TODO uwspolnic z jednostkmai menu, sterowac tylko widocznoscia
 	Window* unitsWindow;
 	Window* selectedInfoWindow;
+	Window* myDebugHud;
 
 	SelectedHudPanel * selectedHudPanel;
 

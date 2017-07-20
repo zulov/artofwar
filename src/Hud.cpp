@@ -125,8 +125,8 @@ void Hud::createBuildingIcons() {
 		db_building_type* buidling = Game::get()->getDatabaseCache()->getBuildingType(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + buidling->icon);
 
-		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
-		Button* button = simpleButton(style, sprite, "Icon");
+		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y, style, "Sprite");
+		Button* button = simpleButton(sprite, style, "Icon");
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setBuildingType(BuildingType(i));
@@ -154,8 +154,8 @@ void Hud::createUnitIcons() {
 		db_unit_type* unit = Game::get()->getDatabaseCache()->getUnitType(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
-		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
-		Button* button = simpleButton(style, sprite, "Icon");
+		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y, style, "Sprite");
+		Button* button = simpleButton(sprite, style,  "Icon");
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setUnitType(UnitType(i));
@@ -174,8 +174,8 @@ void Hud::createTop() {
 		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + resource->icon);
 
-		Sprite* sprite = createSprite(texture, (hudSize->icon_size_x - hudSize->space_size_x) / 2, (hudSize->icon_size_y - hudSize->space_size_y) / 2);
-		Button* button = simpleButton(style, sprite, "TopButtons");
+		Sprite* sprite = createSprite(texture, (hudSize->icon_size_x - hudSize->space_size_x) / 2, (hudSize->icon_size_y - hudSize->space_size_y) / 2, style, "Sprite");
+		Button* button = simpleButton(sprite, style, "TopButtons");
 
 		topWindow->AddChild(button);
 	}
@@ -187,16 +187,6 @@ void Hud::createSelectedInfo() {
 
 void Hud::createMiniMap() {
 	miniMapWindow = createWindow("MiniMapWindow");
-}
-
-void Hud::createStaticHud(String &msg) {
-	Text* instructionText = Game::get()->getUI()->GetRoot()->CreateChild<Text>();
-	instructionText->SetText(msg);
-	instructionText->SetFont(font, 12);
-	instructionText->SetTextAlignment(HA_CENTER);
-	instructionText->SetHorizontalAlignment(HA_LEFT);
-	instructionText->SetVerticalAlignment(VA_TOP);
-	instructionText->SetPosition(0, 0);
 }
 
 void Hud::createDebugHud() {
@@ -211,12 +201,10 @@ void Hud::createConsole() {
 }
 
 void Hud::createMyDebugHud() {
-	fpsText = Game::get()->getUI()->GetRoot()->CreateChild<Text>();
-	fpsText->SetFont(font, 12);
-	fpsText->SetTextAlignment(HA_LEFT);
-	fpsText->SetHorizontalAlignment(HA_LEFT);
-	fpsText->SetVerticalAlignment(VA_TOP);
-	fpsText->SetPosition(0, 20);
+	myDebugHud = createWindow("MyDebugHudWindow");
+	
+	fpsText = myDebugHud->CreateChild<Text>();
+	fpsText->SetStyle("MyText", style);
 }
 
 void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {

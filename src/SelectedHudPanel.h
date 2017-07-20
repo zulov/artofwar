@@ -28,7 +28,6 @@ private:
 	Urho3D::XMLFile* style;
 	db_hud_size* hudSize;
 	Font* font;
-	Text* label;
 	Window* window;
 };
 

@@ -6,8 +6,7 @@ SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, db_hud_size* _hudSiz
 	font = _font;
 	window = _window;
 	buttons = new Button**[OBJECT_TYPE_NUMBER];
-	label = new Text(Game::get()->getContext());
-	window->AddChild(label);
+
 	//int entityTypeSize = Game::get()->getDatabaseCache()->getEmtityTypeSize();
 	int unitTypeSize = Game::get()->getDatabaseCache()->getUnitTypeSize();
 	int buildingTypeSize = Game::get()->getDatabaseCache()->getBuildingTypeSize();
@@ -31,9 +30,9 @@ void SelectedHudPanel::createButton(int size, ObjectType index) {
 
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
 
-		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y);
-		buttons[index][i] = simpleButton(style, sprite, "Icon");
-		Text * text = new Text(Game::get()->getContext());
+		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y, style, "Sprite");
+		buttons[index][i] = simpleButton(sprite, style, "Icon");
+		Text* text = new Text(Game::get()->getContext());
 		text->SetName("Text");
 		buttons[index][i]->AddChild(text);
 		buttons[index][i]->SetVisible(false);
@@ -86,20 +85,17 @@ int SelectedHudPanel::getSize(ObjectType type) {
 }
 
 void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
-	label->SetText((*selectedInfo->getMessage()));
-	label->SetFont(font, 12);
-
 	hide();
 	ObjectType type = selectedInfo->getSelectedType();
 	int size = getSize(type);
 	String** lines = selectedInfo->getLines();
 	for (int i = 0; i < size; ++i) {
 		if ((lines[i]) != nullptr) {
-			Text * text = (Text*)buttons[selectedInfo->getSelectedType()][i]->GetChild("Text", false);
+			Text* text = (Text*)buttons[selectedInfo->getSelectedType()][i]->GetChild("Text", false);
 
 			text->SetText((*lines[i]));
 			text->SetFont(font, 12);
-			buttons[selectedInfo->getSelectedType()][i]->SetVisible(true);	
+			buttons[selectedInfo->getSelectedType()][i]->SetVisible(true);
 		}
 
 	}

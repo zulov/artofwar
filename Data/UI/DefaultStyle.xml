@@ -207,7 +207,7 @@
     <element type="Window" style="BorderImage">
         <attribute name="Image Rect" value="48 0 64 16" />
         <attribute name="Border" value="4 4 4 4" />
-        <attribute name="Resize Border" value="8 8 8 8" />
+        <attribute name="Resize Border" value="4 4 4 4" />
     </element>
     <element type="DialogWindow" style="Window" auto="false">
         <attribute name="Is Movable" value="true" />
@@ -458,6 +458,16 @@
 		<attribute name="Min Size" value="{bigX} {iconY+2*spaceY}"/>
 	</element>
 	
+	<element type="MyDebugHudWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Top" />
+		<attribute name="Horiz Alignment" value="Left" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Spacing" value="{spaceX}" />
+        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+		<attribute name="Min Size" value="{3*iconX} {iconY*2}"/>
+		<attribute name="Opacity" value="0.5" />
+	</element>
+	
 	
 	<element type="MyDropDown" style="DropDownList" >
 		<attribute name="Min Size" value="{2*iconX} {iconY/2}"/>
@@ -472,4 +482,17 @@
         <attribute name="Min Size" value="{iconX} {iconY}" />
         <attribute name="Max Size" value="{iconX} {iconY}" />
     </element>
+	
+	<element type="Sprite">
+        <attribute name="Vert Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Opacity" value="0.8" />
+    </element>
+	
+	<element type="MyText" style="Text" >
+		<attribute name="Font" value="Font;Fonts/Anonymous Pro.ttf" />
+		<attribute name="Font Size" value="{fontSize}" />
+		<attribute name="Color" value="0.85 0.85 0.85" />
+		<attribute name="Text Alignment" value="Left" />
+	</element>
 </elements>
