@@ -52,11 +52,8 @@ Hud::Hud() {
 	windows = new std::vector<Window*>();
 	db_graph_settings* graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
 	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->style);
-	hudSize = Game::get()->getDatabaseCache()->getHudSize(graphSettings->hud_size);
-
+	
 	replaceVariables(style, graphSettings->hud_size);
-
-	font = Game::get()->getCache()->GetResource<Font>("Fonts/Anonymous Pro.ttf");
 
 	createMenu();
 	createBuild();
@@ -71,18 +68,18 @@ Hud::Hud() {
 	Game::get()->getUI()->SetCursor(cursor);
 
 	cursor->SetPosition(Game::get()->getGraphics()->GetWidth() / 2, Game::get()->getGraphics()->GetHeight() / 2);
-	selectedHudPanel = new SelectedHudPanel(style, hudSize, font, selectedInfoWindow);
+	selectedHudPanel = new SelectedHudPanel(style, selectedInfoWindow);
 }
 
 Hud::~Hud() {
 }
 
 template <std::size_t SIZE>
-void Hud::populateList(Font* font, DropDownList* dropDownList, std::array<String, SIZE> elements) {
+void Hud::populateList(DropDownList* dropDownList, std::array<String, SIZE> elements) {
 	for (String mode : elements) {
 		Text* text = new Text(Game::get()->getContext());
 		text->SetText(mode);
-		text->SetFont(font, 12);
+		text->SetStyle("MyText", style);
 		dropDownList->AddItem(text);
 	}
 }
@@ -99,7 +96,7 @@ void Hud::createMenu() {
 	DropDownList* dropDownList = new DropDownList(Game::get()->getContext());
 
 	std::array<String, 3> modes{{"Select","Build","Deploy"}};
-	populateList(font, dropDownList, modes);
+	populateList(dropDownList, modes);
 
 	initDropDownList(dropDownList);
 
@@ -125,7 +122,7 @@ void Hud::createBuildingIcons() {
 		db_building_type* buidling = Game::get()->getDatabaseCache()->getBuildingType(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + buidling->icon);
 
-		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y, style, "Sprite");
+		Sprite* sprite = createSprite(texture, style, "Sprite");
 		Button* button = simpleButton(sprite, style, "Icon");
 
 		HudElement* hudElement = new HudElement(button);
@@ -154,7 +151,7 @@ void Hud::createUnitIcons() {
 		db_unit_type* unit = Game::get()->getDatabaseCache()->getUnitType(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
-		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y, style, "Sprite");
+		Sprite* sprite = createSprite(texture, style, "Sprite");
 		Button* button = simpleButton(sprite, style,  "Icon");
 
 		HudElement* hudElement = new HudElement(button);
@@ -174,7 +171,7 @@ void Hud::createTop() {
 		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + resource->icon);
 
-		Sprite* sprite = createSprite(texture, (hudSize->icon_size_x - hudSize->space_size_x) / 2, (hudSize->icon_size_y - hudSize->space_size_y) / 2, style, "Sprite");
+		Sprite* sprite = createSprite(texture, style, "SpriteLeft");
 		Button* button = simpleButton(sprite, style, "TopButtons");
 
 		topWindow->AddChild(button);

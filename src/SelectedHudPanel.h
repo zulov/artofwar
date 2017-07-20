@@ -15,7 +15,7 @@
 class SelectedHudPanel
 {
 public:
-	SelectedHudPanel(Urho3D::XMLFile* _style, db_hud_size* _hudSize, Font* _font, Window* _window);
+	SelectedHudPanel(Urho3D::XMLFile* _style, Window* _window);
 	~SelectedHudPanel();
 	
 	void updateSelected(SelectedInfo* selectedInfo);
@@ -26,8 +26,6 @@ private:
 	void createButton(int size, ObjectType index);
 	Urho3D::Button*** buttons;
 	Urho3D::XMLFile* style;
-	db_hud_size* hudSize;
-	Font* font;
 	Window* window;
 };
 

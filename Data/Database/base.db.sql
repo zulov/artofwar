@@ -82,7 +82,11 @@ INSERT INTO `hud_size_vars` (id,hud_size,name,value) VALUES (0,0,'iconX',42.0),
  (20,3,'spaceX',24.0),
  (21,3,'spaceY',12.0),
  (22,3,'bigX',1280.0),
- (23,3,'bigY',720.0);
+ (23,3,'bigY',720.0),
+ (24,0,'fontSize',10.0),
+ (25,1,'fontSize',12.0),
+ (26,2,'fontSize',14.0),
+ (27,3,'fontSize',18.0);
 CREATE TABLE "hud_size" (
 	`id`	INTEGER,
 	`name`	TEXT,

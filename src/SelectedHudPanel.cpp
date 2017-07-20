@@ -1,9 +1,7 @@
 #include "SelectedHudPanel.h"
 
-SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, db_hud_size* _hudSize, Font* _font, Window* _window) {
+SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, Window* _window) {
 	style = _style;
-	hudSize = _hudSize;
-	font = _font;
 	window = _window;
 	buttons = new Button**[OBJECT_TYPE_NUMBER];
 
@@ -30,7 +28,7 @@ void SelectedHudPanel::createButton(int size, ObjectType index) {
 
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
 
-		Sprite* sprite = createSprite(texture, hudSize->icon_size_x - hudSize->space_size_x, hudSize->icon_size_y - hudSize->space_size_y, style, "Sprite");
+		Sprite* sprite = createSprite(texture, style, "Sprite");
 		buttons[index][i] = simpleButton(sprite, style, "Icon");
 		Text* text = new Text(Game::get()->getContext());
 		text->SetName("Text");
@@ -94,7 +92,7 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 			Text* text = (Text*)buttons[selectedInfo->getSelectedType()][i]->GetChild("Text", false);
 
 			text->SetText((*lines[i]));
-			text->SetFont(font, 12);
+			text->SetStyle("MyText", style);
 			buttons[selectedInfo->getSelectedType()][i]->SetVisible(true);
 		}
 

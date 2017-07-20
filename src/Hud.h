@@ -72,12 +72,10 @@ private:
 	std::vector<Window*>* windows;
 
 	XMLFile* style;
-	db_hud_size* hudSize;
-	Font* font;
 	void createBuildingIcons();
 	void createUnitIcons();
 	template <std::size_t SIZE>
-	void populateList(Font* font, DropDownList* dropDownList, std::array<String, SIZE> elements);
+	void populateList(DropDownList* dropDownList, std::array<String, SIZE> elements);
 
 	void initDropDownList(DropDownList* dropDownList);
 };
