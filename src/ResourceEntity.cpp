@@ -1,8 +1,8 @@
 #include "ResourceEntity.h"
 
-
+double ResourceEntity::hbMaxSize = 3.0;
 ResourceEntity::ResourceEntity(Vector3* _position, Urho3D::Node* _node) : Physical(_position, _node, RESOURCE) {
-
+	
 }
 
 ResourceEntity::~ResourceEntity() {

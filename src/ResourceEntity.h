@@ -18,6 +18,7 @@ private:
 	int type;
 	int amonut;
 	bool inGradient = false;
+	static double hbMaxSize;
 };
 
 

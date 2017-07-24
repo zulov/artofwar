@@ -1,8 +1,9 @@
 #include "Unit.h"
 #include "ActionCommand.h"
 
+double Unit::hbMaxSize = 1.0;
 
-Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode,UNIT) {
+Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode, UNIT) {
 	acceleration = new Vector3();
 	velocity = new Vector3();
 	aims = nullptr;
@@ -14,6 +15,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 	for (int i = 0; i < STATE_SIZE; ++i) {
 		states[i] = nullptr;
 	}
+
 	//states[0] = new StopState(this);
 }
 
@@ -27,7 +29,7 @@ Unit::~Unit() {
 }
 
 double Unit::getHealthBarSize() {
-	double healthBarSize = (hpCoef / maxHpCoef);
+	double healthBarSize = hbMaxSize * (hpCoef / maxHpCoef);
 	if (healthBarSize <= 0) { healthBarSize = 0; }
 	return healthBarSize;
 }

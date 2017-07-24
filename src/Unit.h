@@ -62,4 +62,5 @@ private:
 	double defenseCoef = 0.3;
 	double attackSpeed = 1;
 	double attackIntrest = 10;
+	static double hbMaxSize;
 };

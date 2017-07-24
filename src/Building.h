@@ -18,5 +18,6 @@ public:
 private:
 	BuildingType buildingType;
 	bool inGradient = false;
+	static double hbMaxSize;
 };
 

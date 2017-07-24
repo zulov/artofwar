@@ -29,4 +29,5 @@ protected:
 	ObjectType type = ENTITY;
 private:
 	bool alive;
+
 };
