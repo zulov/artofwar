@@ -425,8 +425,8 @@
 		<attribute name="Layout Spacing" value="{spaceX}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
         <attribute name="Is Visible" value="false" />
-		<attribute name="Min Size" value="{iconX+2*spaceX} {8*iconY+9*spaceY}"/>
-		<attribute name="Max Size" value="{iconX+2*spaceX} {8*iconY+9*spaceY}"/>
+		<attribute name="Min Size" value="{iconX+2*spaceX} {bigY}"/>
+		<attribute name="Max Size" value="{iconX+2*spaceX} {bigY}"/>
 		<attribute name="Position" value="0 -{iconY+2*spaceY}"/>
 	</element>
 	<element type="UnitsWindow" style="MyWindow">
@@ -436,13 +436,13 @@
 		<attribute name="Layout Spacing" value="{spaceX}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
         <attribute name="Is Visible" value="false" />
-		<attribute name="Min Size" value="{iconX+3*spaceX} {4*iconY+5*spaceY}"/>
-		<attribute name="Max Size" value="{iconX+3*spaceX} {4*iconY+5*spaceY}"/>
+		<attribute name="Min Size" value="{2*iconX} {bigY}"/>
+		<attribute name="Max Size" value="{2*iconX} {bigY}"/>
 		<attribute name="Position" value="0 -{iconY+2*spaceY}"/>
 	</element>
 	<element type="MiniMapWindow" style="MyWindow">
-		<attribute name="Min Size" value="{3*iconX+2*spaceX} {3*iconY+2*spaceY}"/>
-        <attribute name="Max Size" value="{3*iconX+2*spaceX} {3*iconY+2*spaceY}" />
+		<attribute name="Min Size" value="{4*iconX+2*spaceX} {4*iconY+2*spaceY}"/>
+        <attribute name="Max Size" value="{4*iconX+2*spaceX} {4*iconY+2*spaceY}" />
 		<attribute name="Vert Alignment" value="Bottom" />
 		<attribute name="Horiz Alignment" value="Right" />
 		<attribute name="Layout Mode" value="Vertical" />
@@ -455,7 +455,7 @@
 		<attribute name="Layout Mode" value="Horizontal" />
 		<attribute name="Layout Spacing" value="{spaceX}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
-		<attribute name="Min Size" value="{bigX} {iconY+2*spaceY}"/>
+		<attribute name="Min Size" value="{bigX} {2*iconY+3*spaceY}"/>
 	</element>
 	
 	<element type="MyDebugHudWindow" style="MyWindow">
@@ -502,5 +502,9 @@
 		<attribute name="Font Size" value="{fontSize}" />
 		<attribute name="Color" value="0.85 0.85 0.85" />
 		<attribute name="Text Alignment" value="Left" />
+	</element>
+	
+	<element type="MyListView" style="ListView" >
+		
 	</element>
 </elements>

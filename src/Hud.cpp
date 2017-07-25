@@ -138,11 +138,11 @@ void Hud::createUnitIcons() {
 	int size = Game::get()->getDatabaseCache()->getUnitTypeSize();
 	ListView* scrollBar = unitsWindow->CreateChild<ListView>();
 	
-	scrollBar->SetStyleAuto(style);
+	scrollBar->SetStyle("MyListView", style);
 	//scrollBar->SetLayout(LM_VERTICAL, 0, IntRect::ZERO);
 	scrollBar->SetScrollBarsVisible(false, true);
-	//scrollBar->SetIndentSpacing(hudSize->space_size_y);
-	scrollBar->SetEnabled(true);
+	
+	//scrollBar->SetEnabled(true);
 	scrollBar->SetHighlightMode(HM_ALWAYS);
 	scrollBar->SetSelectOnClickEnd(false);
 
@@ -153,7 +153,7 @@ void Hud::createUnitIcons() {
 
 		Sprite* sprite = createSprite(texture, style, "Sprite");
 		Button* button = simpleButton(sprite, style,  "Icon");
-
+		//->SetChildOffset(IntVector2(10, 20));
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setUnitType(UnitType(i));
 		button->SetVar("HudElement", hudElement);
