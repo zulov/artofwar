@@ -172,7 +172,6 @@
     <element type="ScrollView">
         <element type="ScrollBar" internal="true">
             <attribute name="Size" value="0 16" />
-            <attribute name="Horiz Alignment" value="Left" />
         </element>
         <element type="ScrollBar" internal="true">
             <attribute name="Size" value="16 0" />
@@ -182,6 +181,7 @@
             <attribute name="Border" value="4 4 4 4" />
             <attribute name="Hover Image Offset" value="16 16" />
             <attribute name="Clip Border" value="2 2 2 2" />
+			
         </element>
     </element>
     <element type="ProgressBar" style="BorderImage">
@@ -418,27 +418,22 @@
 		<attribute name="Min Size" value="{3*iconX+4spaceX} {iconY+2*spaceY}"/>
 		<attribute name="Max Size" value="{3*iconX+4spaceX} {iconY+2*spaceY}"/>
 	</element>
-	<element type="BuildWindow" style="MyWindow">
+	<element type="LeftWindow" style="MyWindow">
 		<attribute name="Vert Alignment" value="Bottom" />
 		<attribute name="Horiz Alignment" value="Left" />
 		<attribute name="Layout Mode" value="Vertical" />
 		<attribute name="Layout Spacing" value="{spaceX}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
         <attribute name="Is Visible" value="false" />
-		<attribute name="Min Size" value="{iconX+2*spaceX} {bigY}"/>
-		<attribute name="Max Size" value="{iconX+2*spaceX} {bigY}"/>
+		<attribute name="Min Size" value="{iconX+2*spaceX + iconX/2} {bigY/2+iconY}"/>
+		<attribute name="Max Size" value="{iconX+2*spaceX + iconX/2} {bigY/2+iconY}"/>
 		<attribute name="Position" value="0 -{iconY+2*spaceY}"/>
 	</element>
-	<element type="UnitsWindow" style="MyWindow">
-		<attribute name="Vert Alignment" value="Bottom" />
-		<attribute name="Horiz Alignment" value="Left" />
-		<attribute name="Layout Mode" value="Vertical" />
-		<attribute name="Layout Spacing" value="{spaceX}" />
-        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
-        <attribute name="Is Visible" value="false" />
-		<attribute name="Min Size" value="{2*iconX} {bigY}"/>
-		<attribute name="Max Size" value="{2*iconX} {bigY}"/>
-		<attribute name="Position" value="0 -{iconY+2*spaceY}"/>
+	<element type="BuildWindow" style="LeftWindow">
+		
+	</element>
+	<element type="UnitsWindow" style="LeftWindow">
+		
 	</element>
 	<element type="MiniMapWindow" style="MyWindow">
 		<attribute name="Min Size" value="{4*iconX+2*spaceX} {4*iconY+2*spaceY}"/>
@@ -505,6 +500,25 @@
 	</element>
 	
 	<element type="MyListView" style="ListView" >
-		
+		<attribute name="Auto Show/Hide Scrollbars" value="false true"/>
+		<attribute name="Highlight Mode" value="Always" />
+		<attribute name="Select On Click End" value="false" />
+		<element type="ScrollBar" internal="true">
+			<attribute name="Is Visible" value="false" />
+			<attribute name="Size" value="0 {iconX/3}" />
+        </element>
+        <element type="ScrollBar" internal="true">
+			<attribute name="Horiz Alignment" value="Left" />
+			<attribute name="Size" value="{iconX/3} 0" />
+        </element>
+        <element type="BorderImage" internal="true">
+			<attribute name="Horiz Alignment" value="Right" />
+			<attribute name="Hover Image Offset" value="null" />
+			<attribute name="Layout Mode" value="Vertical" />
+			<attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+			<element internal="true">
+                <attribute name="Layout Spacing" value="{spaceY}" />
+            </element>
+        </element>
 	</element>
 </elements>

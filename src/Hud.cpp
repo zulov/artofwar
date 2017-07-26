@@ -117,6 +117,8 @@ void Hud::createUnits() {
 
 void Hud::createBuildingIcons() {
 	int size = Game::get()->getDatabaseCache()->getBuildingTypeSize();
+	ListView* panel = buildWindow->CreateChild<ListView>();
+	panel->SetStyle("MyListView", style);
 
 	for (int i = 0; i < size; ++i) {
 		db_building_type* buidling = Game::get()->getDatabaseCache()->getBuildingType(i);
@@ -127,39 +129,30 @@ void Hud::createBuildingIcons() {
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setBuildingType(BuildingType(i));
-		button->SetVar("HudElement", hudElement);
 
+		button->SetVar("HudElement", hudElement);
 		buttons->push_back(hudElement);
-		buildWindow->AddChild(button);
+		panel->AddItem(button);
 	}
 }
 
 void Hud::createUnitIcons() {
 	int size = Game::get()->getDatabaseCache()->getUnitTypeSize();
-	ListView* scrollBar = unitsWindow->CreateChild<ListView>();
-	
-	scrollBar->SetStyle("MyListView", style);
-	//scrollBar->SetLayout(LM_VERTICAL, 0, IntRect::ZERO);
-	scrollBar->SetScrollBarsVisible(false, true);
-	
-	//scrollBar->SetEnabled(true);
-	scrollBar->SetHighlightMode(HM_ALWAYS);
-	scrollBar->SetSelectOnClickEnd(false);
+	ListView* panel = unitsWindow->CreateChild<ListView>();
+	panel->SetStyle("MyListView", style);
 
-	//scrollBar->SetClearSelectionOnDefocus(false);
 	for (int i = 0; i < size; ++i) {
 		db_unit_type* unit = Game::get()->getDatabaseCache()->getUnitType(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
 		Sprite* sprite = createSprite(texture, style, "Sprite");
 		Button* button = simpleButton(sprite, style,  "Icon");
-		//->SetChildOffset(IntVector2(10, 20));
+
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setUnitType(UnitType(i));
 		button->SetVar("HudElement", hudElement);
 		buttons->push_back(hudElement);
-		scrollBar->AddItem(button);
-		//scrollBar->AddChild(button);
+		panel->AddItem(button);
 	}
 }
 
