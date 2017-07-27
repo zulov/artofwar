@@ -70,7 +70,7 @@ private:
 	std::vector<HudElement*>* buttons;
 	std::vector<HudElement*>* lists;
 	std::vector<Window*>* windows;
-
+	db_graph_settings* graphSettings;
 	XMLFile* style;
 	void createBuildingIcons();
 	void createUnitIcons();

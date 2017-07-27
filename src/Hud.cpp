@@ -17,6 +17,10 @@ void Hud::replaceVariables(XMLFile* xmlFile, int hudSizeId) {
 			symbol_table.add_variable(var->name.CString(), var->value);
 		}
 	}
+	double resX = (double)graphSettings->res_x;
+	double resY = (double)graphSettings->res_y;
+	symbol_table.add_variable("resX", resX);
+	symbol_table.add_variable("resY", resY);
 
 	typedef exprtk::expression<double> expression_t;
 	typedef exprtk::parser<double> parser_t;
@@ -50,7 +54,7 @@ Hud::Hud() {
 	buttons = new std::vector<HudElement*>();
 	lists = new std::vector<HudElement*>();
 	windows = new std::vector<Window*>();
-	db_graph_settings* graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
+	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
 	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->style);
 	
 	replaceVariables(style, graphSettings->hud_size);
