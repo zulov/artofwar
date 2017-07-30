@@ -9,9 +9,11 @@
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/Window.h>
 #include <Urho3D/UI/Sprite.h>
+#include <Urho3D/UI/ListView.h>
 #include "ButtonUtils.h"
 
 #define MAX_ICON_SELECTION 20
+#define LINES_IN_SELECTION 4
 
 class SelectedHudPanel
 {
@@ -29,5 +31,6 @@ private:
 	Urho3D::Button**** buttons;
 	Urho3D::XMLFile* style;
 	Window* window;
+	UIElement **test;
 };
 

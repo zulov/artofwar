@@ -5,6 +5,11 @@ SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, Window* _window) {
 	style = _style;
 	window = _window;
 	buttons = new Button***[OBJECT_TYPE_NUMBER];
+	test = new UIElement*[LINES_IN_SELECTION];
+	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
+		test[i] = window->CreateChild<UIElement>();
+		test[i]->SetStyle("MyListRow", style);
+	}
 
 	int unitTypeSize = Game::get()->getDatabaseCache()->getUnitTypeSize();
 	int buildingTypeSize = Game::get()->getDatabaseCache()->getBuildingTypeSize();
@@ -13,11 +18,10 @@ SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, Window* _window) {
 	initButtons(ObjectType::UNIT, unitTypeSize);
 	initButtons(ObjectType::BUILDING, buildingTypeSize);
 	initButtons(ObjectType::RESOURCE, resourceSize);
-
 }
 
 void SelectedHudPanel::initButtons(ObjectType type, int size) {
-	
+
 	buttons[type] = new Button**[size];
 
 	for (int i = 0; i < size; ++i) {
@@ -32,14 +36,17 @@ void SelectedHudPanel::createButton(int size, ObjectType index) {
 
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
 
-		Sprite* sprite = createSprite(texture, style, "Sprite");
 		for (int j = 0; j < MAX_ICON_SELECTION; ++j) {
-			buttons[index][i][j] = simpleButton(sprite, style, "Icon");
+			Sprite* sprite = createSprite(texture, style, "SmallSprite");
+			buttons[index][i][j] = simpleButton(sprite, style, "SmallIcon");
 			Text* text = new Text(Game::get()->getContext());
 			text->SetName("Text");
 			buttons[index][i][j]->AddChild(text);
 			buttons[index][i][j]->SetVisible(true);
-			window->AddChild(buttons[index][i][j]);
+
+			test[j%LINES_IN_SELECTION]->AddChild(buttons[index][i][j]);
+			//window->AddChild(buttons[index][i][j]);
+			
 		}
 	}
 }
@@ -55,7 +62,6 @@ void SelectedHudPanel::hide() {
 				buttons[i][j][k]->SetVisible(true);
 			}
 		}
-		
 	}
 }
 
@@ -98,11 +104,11 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 	String** lines = selectedInfo->getLines();
 	for (int i = 0; i < size; ++i) {
 		if ((lines[i]) != nullptr) {
-//			Text* text = (Text*)buttons[selectedInfo->getSelectedType()][i]->GetChild("Text", false);
-//
-//			text->SetText((*lines[i]));
-//			text->SetStyle("MyText", style);
-//			buttons[selectedInfo->getSelectedType()][i]->SetVisible(true);
+			//			Text* text = (Text*)buttons[selectedInfo->getSelectedType()][i]->GetChild("Text", false);
+			//
+			//			text->SetText((*lines[i]));
+			//			text->SetStyle("MyText", style);
+			//			buttons[selectedInfo->getSelectedType()][i]->SetVisible(true);
 		}
 
 	}
