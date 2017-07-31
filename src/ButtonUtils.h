@@ -3,6 +3,7 @@
 #include <Urho3D/UI/Button.h>
 #include "Game.h"
 #include <Urho3D/Graphics/Texture2D.h>
+#include <Urho3D/Urho2D/Sprite2D.h>
 
 static Urho3D::Button* simpleButton(Urho3D::Sprite* sprite, Urho3D::XMLFile* style, const String& styleName) {
 	Urho3D::Button* button = new Urho3D::Button(Game::get()->getContext());
@@ -14,6 +15,7 @@ static Urho3D::Button* simpleButton(Urho3D::Sprite* sprite, Urho3D::XMLFile* sty
 
 static Urho3D::Sprite* createSprite(Texture2D* texture, Urho3D::XMLFile* style, const String& styleName) {
 	Urho3D::Sprite* sprite = new Sprite(Game::get()->getContext());
+	
 	sprite->SetStyle(styleName, style);
 	
 	sprite->SetTexture(texture);
@@ -34,3 +36,4 @@ static Urho3D::Sprite* createSprite(Texture2D* texture, Urho3D::XMLFile* style, 
 
 	return sprite;
 }
+

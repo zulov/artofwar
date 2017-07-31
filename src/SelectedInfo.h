@@ -4,6 +4,7 @@
 #include "BuildingType.h"
 #include <Urho3D/Container/Str.h>
 #define SELECTED_INFO_SIZE 10
+#define SELECTED_INFO_SIZE_2 330
 
 class SelectedInfo
 {
@@ -14,6 +15,7 @@ public:
 	~SelectedInfo();
 	Urho3D::String* getMessage();
 	Urho3D::String** getLines();
+	double** getHps();
 	bool hasChanged();
 
 	void setAllNumber(int allNumber);
@@ -29,5 +31,5 @@ private:
 	ObjectType selectedType;
 	int number[SELECTED_INFO_SIZE];
 	Urho3D::String** lines;
-
+	double **hps;
 };

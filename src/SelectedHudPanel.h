@@ -11,8 +11,9 @@
 #include <Urho3D/UI/Sprite.h>
 #include <Urho3D/UI/ListView.h>
 #include "ButtonUtils.h"
+#include <Urho3D/Urho2D/Sprite2D.h>
 
-#define MAX_ICON_SELECTION 20
+#define MAX_ICON_SELECTION 33
 #define LINES_IN_SELECTION 4
 
 class SelectedHudPanel
@@ -28,7 +29,7 @@ private:
 	String getName(ObjectType index, int i);
 	int getSize(ObjectType type);
 	void createButton(int size, ObjectType index);
-	Urho3D::Button**** buttons;
+	Urho3D::Button** buttons;
 	Urho3D::XMLFile* style;
 	Window* window;
 	UIElement **test;
