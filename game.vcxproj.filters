@@ -157,6 +157,9 @@
     <ClCompile Include="src\Physical.cpp">
       <Filter>objects</Filter>
     </ClCompile>
+    <ClCompile Include="src\SelectedInfoType.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -342,6 +345,9 @@
     </ClInclude>
     <ClInclude Include="src\Physical.h">
       <Filter>objects</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SelectedInfoType.h">
+      <Filter>control</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

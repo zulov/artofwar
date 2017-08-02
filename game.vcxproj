@@ -217,6 +217,7 @@
     <ClCompile Include="src\Resources.cpp" />
     <ClCompile Include="src\SelectedHudPanel.cpp" />
     <ClCompile Include="src\SelectedInfo.cpp" />
+    <ClCompile Include="src\SelectedInfoType.cpp" />
     <ClCompile Include="src\SimulationCommand.cpp" />
     <ClCompile Include="src\CommandSelect.cpp" />
     <ClCompile Include="src\CommandList.cpp" />
@@ -280,6 +281,7 @@
     <ClInclude Include="src\ResourceType.h" />
     <ClInclude Include="src\SelectedHudPanel.h" />
     <ClInclude Include="src\SelectedInfo.h" />
+    <ClInclude Include="src\SelectedInfoType.h" />
     <ClInclude Include="src\SimulationCommand.h" />
     <ClInclude Include="src\CommandSelect.h" />
     <ClInclude Include="src\CommandList.h" />

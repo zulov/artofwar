@@ -55,8 +55,10 @@ public:
 	void deactivate();
 	bool isActive();
 	void activate();
+
 private:
 	std::vector<Physical*>* selected;//TODO to powinien byæ set
+
 	ObjectType selectedType;
 	float maxDistance = 300;
 
@@ -75,7 +77,5 @@ private:
 	UnitType toDeploy;
 
 	SelectedInfo* selectedInfo;
-	int selectedEntititesTypes[SELECTED_INFO_SIZE];
-
 	bool active = true;
 };

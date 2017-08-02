@@ -26,3 +26,5 @@
 #define STATE_SIZE 5
 
 #define MAX_THREADS 4
+
+#define MAX_SIZE_TYPES 10

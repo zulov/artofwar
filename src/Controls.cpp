@@ -5,7 +5,8 @@
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Physical*>();
-	selected->reserve(100);
+	selected->reserve(4000);
+
 
 	leftHeld = new std::pair<Vector3*, Vector3*>();
 	middleHeld = new std::pair<Vector3*, Vector3*>();
@@ -21,6 +22,7 @@ Controls::~Controls() {
 	delete rightHeld;
 	delete selectedInfo;
 	delete selected;
+
 }
 
 bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {
@@ -59,6 +61,7 @@ void Controls::unSelect(int type) {
 	selectedType = ObjectType(type);
 	selectedInfo->setSelectedType(selectedType);
 	selectedInfo->reset();
+
 }
 
 void Controls::select(Physical* entity) {
@@ -70,10 +73,12 @@ void Controls::select(Physical* entity) {
 	entity->select();
 	selected->push_back(entity);
 	int subType = entity->getSubType();
-	selectedInfo->incNumberAt(subType);
+
 	selectedType = entityType;
 	selectedInfo->setSelectedType(selectedType);
 	selectedInfo->setAllNumber(selected->size());
+	selectedInfo->select(entity);
+
 }
 
 void Controls::controlEntity(Vector3& hitPos, bool ctrlPressed, Physical* clicked) {

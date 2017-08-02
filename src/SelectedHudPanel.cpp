@@ -17,7 +17,7 @@ SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, Window* _window) {
 
 	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
 		for (int j = 0; j < MAX_ICON_SELECTION; ++j) {
-			test[i]->AddChild(buttons[i * LINES_IN_SELECTION + j]);
+			test[i]->AddChild(buttons[i * MAX_ICON_SELECTION + j]);
 		}
 	}
 }
@@ -66,21 +66,23 @@ int SelectedHudPanel::getSize(ObjectType type) {
 void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 	hide();
 	ObjectType type = selectedInfo->getSelectedType();
-	int size = getSize(type);
-	//	String** lines = selectedInfo->getLines();
-	//	for (int i = 0; i < size; ++i) {
-	//		if ((lines[i]) != nullptr) {			
-	//			buttons[selectedInfo->getSelectedType()][i]->SetVisible(true);
-	//		}
-	//	}
-
-	double** hps = selectedInfo->getHps();
+	SelectedInfoType** infoTypes = selectedInfo->getSelecteType();
 	int k = 0;
-	for (int i = 0; i < SELECTED_INFO_SIZE; ++i) {
-		for (int j = 0; j < SELECTED_INFO_SIZE_2; ++j) {
-			if (hps[i][j] != -1) {
-				buttons[k++]->SetVisible(true);
+	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
+		std::vector<Physical*>* data = infoTypes[i]->getData();
+		if (data->empty()) { continue; }
+		String name = getName(type, i);
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
+
+		
+		for (auto sth: (*data)) {
+			if (k < LINES_IN_SELECTION * MAX_ICON_SELECTION) {
+				Sprite* sprite = createSprite(texture, style, "SmallSprite");
+				buttons[k]->SetVisible(true);
+				buttons[k]->RemoveAllChildren();
+				buttons[k++]->AddChild(sprite);
 			}
 		}
+		
 	}
 }
