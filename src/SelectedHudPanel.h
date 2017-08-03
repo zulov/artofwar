@@ -20,8 +20,7 @@ class SelectedHudPanel
 {
 public:
 	SelectedHudPanel(Urho3D::XMLFile* _style, Window* _window);
-	~SelectedHudPanel();
-	
+	~SelectedHudPanel();	
 	void updateSelected(SelectedInfo* selectedInfo);
 	void hide();
 private:

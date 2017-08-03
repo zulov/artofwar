@@ -72,7 +72,6 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 	int all = selectedInfo->getAllNumber();
 	int selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
 	int ratio = all / (LINES_IN_SELECTION * MAX_ICON_SELECTION - selectedSubTypeNumber+2) + 1;
-	cout << ratio << endl;
 	int k = 0;
 	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
 		std::vector<Physical*>* data = infoTypes[i]->getData();
@@ -81,7 +80,6 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
 		int upTo = 0;
 		for (int j = 0; j < data->size(); ++j) {
-			//if (k < LINES_IN_SELECTION * MAX_ICON_SELECTION) {
 			Sprite* sprite = createSprite(texture, style, "SmallSprite");
 			if (upTo == 0) {
 				buttons[k]->SetVisible(true);
@@ -91,16 +89,14 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 				text->SetText("");
 				++k;
 			} else {
-				
 				Text* text = (Text*)buttons[k-1]->GetChild(0);
-				text->SetText(String(upTo + 1));
+				text->SetText(String(upTo + 1));//TODO mozna zoptymalizowac ustawaic raz na koniec
 			}
 			++upTo;
 			if (upTo >= ratio) {
 				upTo = 0;
 			}
-			
-			//}
+
 		}
 	}
 }
