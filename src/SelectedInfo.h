@@ -10,27 +10,20 @@
 class SelectedInfo
 {
 public:
-	void initLines();
-	void clearLines();
+	void clear();
 	SelectedInfo();
 	~SelectedInfo();
-	Urho3D::String* getMessage();
-	
 	bool hasChanged();
-
 	void setAllNumber(int allNumber);
 	void setSelectedType(ObjectType selectedType);
 	ObjectType getSelectedType();
-	
+	int getAllNumber();
 	void reset();
 	SelectedInfoType** getSelecteType();
 	void select(Physical* entity);
 private:
 	bool changed = false;
-	Urho3D::String* message;
 	int allNumber;
 	ObjectType selectedType;
 	SelectedInfoType** selectedByType;
-	Urho3D::String** lines;
-	double **hps;
 };

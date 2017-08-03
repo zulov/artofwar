@@ -7,6 +7,8 @@ SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, Window* _window) {
 	buttons = new Button*[LINES_IN_SELECTION * MAX_ICON_SELECTION];
 	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
 		buttons[i] = simpleButton(nullptr, style, "SmallIcon");
+		Text* text = buttons[i]->CreateChild<Text>();
+		text->SetStyle("MyText", style);
 	}
 
 	test = new UIElement*[LINES_IN_SELECTION];
@@ -67,22 +69,37 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 	hide();
 	ObjectType type = selectedInfo->getSelectedType();
 	SelectedInfoType** infoTypes = selectedInfo->getSelecteType();
+	int all = selectedInfo->getAllNumber();
+	int ratio = all / (LINES_IN_SELECTION * MAX_ICON_SELECTION + 1) + 1;
+	cout << ratio << endl;
 	int k = 0;
 	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
 		std::vector<Physical*>* data = infoTypes[i]->getData();
 		if (data->empty()) { continue; }
 		String name = getName(type, i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
-
-		
-		for (auto sth: (*data)) {
-			if (k < LINES_IN_SELECTION * MAX_ICON_SELECTION) {
-				Sprite* sprite = createSprite(texture, style, "SmallSprite");
+		int upTo = 0;
+		for (int j = 0; j < data->size(); ++j) {
+			//if (k < LINES_IN_SELECTION * MAX_ICON_SELECTION) {
+			Sprite* sprite = createSprite(texture, style, "SmallSprite");
+			if (upTo == 0) {
 				buttons[k]->SetVisible(true);
-				buttons[k]->RemoveAllChildren();
-				buttons[k++]->AddChild(sprite);
+				buttons[k]->RemoveChildAtIndex(1);
+				buttons[k]->AddChild(sprite);
+				Text* text = (Text*)buttons[k]->GetChild(0);
+				text->SetText("");
+				++k;
+			} else {
+				
+				Text* text = (Text*)buttons[k-1]->GetChild(0);
+				text->SetText(String(upTo + 1));
 			}
+			++upTo;
+			if (upTo >= ratio) {
+				upTo = 0;
+			}
+			
+			//}
 		}
-		
 	}
 }

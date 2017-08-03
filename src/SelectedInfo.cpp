@@ -3,18 +3,7 @@
 #include "SelectedInfoType.h"
 
 SelectedInfo::SelectedInfo() {
-	message = new Urho3D::String();
 	allNumber = 0;
-
-	lines = new Urho3D::String*[MAX_SIZE_TYPES];
-	hps = new double*[MAX_SIZE_TYPES];
-	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
-		hps[i] = new double[MAX_SELECTEDIN_TYPE];
-		for (int j = 0; j < MAX_SELECTEDIN_TYPE; ++j) {
-			hps[i][j] = -1;
-		}
-	}
-	initLines();
 
 	selectedByType = new SelectedInfoType*[MAX_SIZE_TYPES];
 	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
@@ -30,33 +19,9 @@ SelectedInfo::~SelectedInfo() {
 	delete[] selectedByType;
 }
 
-void SelectedInfo::initLines() {
-	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
-		lines[i] = nullptr;
-	}
+void SelectedInfo::clear() {
+	
 }
-
-void SelectedInfo::clearLines() {
-	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
-		if (lines[i] != nullptr) {
-			lines[i] = nullptr;
-		}
-	}
-
-	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
-		for (int j = 0; j < MAX_SELECTEDIN_TYPE; ++j) {
-			hps[i][j] = -1;
-		}
-	}
-}
-
-Urho3D::String* SelectedInfo::getMessage() {
-	delete message;
-	message = new Urho3D::String("Zaznaczeni: " + Urho3D::String(allNumber));
-	changed = false;
-	return message;
-}
-
 
 bool SelectedInfo::hasChanged() {
 	return changed;
@@ -76,6 +41,10 @@ ObjectType SelectedInfo::getSelectedType() {
 	return selectedType;
 }
 
+int SelectedInfo::getAllNumber() {
+	return allNumber;
+}
+
 void SelectedInfo::reset() {
 	changed = true;
 	this->allNumber = 0;
@@ -87,11 +56,11 @@ void SelectedInfo::reset() {
 SelectedInfoType** SelectedInfo::getSelecteType() {
 	changed = false;
 	return selectedByType;
-	
+
 }
 
 void SelectedInfo::select(Physical* entity) {
-	if(entity->getSubType()>=0) {
+	if (entity->getSubType() >= 0) {
 		selectedByType[entity->getSubType()]->add(entity);
 	}
 	changed = true;
