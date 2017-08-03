@@ -70,7 +70,8 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 	ObjectType type = selectedInfo->getSelectedType();
 	SelectedInfoType** infoTypes = selectedInfo->getSelecteType();
 	int all = selectedInfo->getAllNumber();
-	int ratio = all / (LINES_IN_SELECTION * MAX_ICON_SELECTION + 1) + 1;
+	int selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
+	int ratio = all / (LINES_IN_SELECTION * MAX_ICON_SELECTION - selectedSubTypeNumber+2) + 1;
 	cout << ratio << endl;
 	int k = 0;
 	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {

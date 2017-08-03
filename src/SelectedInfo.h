@@ -21,9 +21,11 @@ public:
 	void reset();
 	SelectedInfoType** getSelecteType();
 	void select(Physical* entity);
+	int getSelectedSubTypeNumber();
 private:
 	bool changed = false;
 	int allNumber;
+	int allSubTypeNumber;
 	ObjectType selectedType;
 	SelectedInfoType** selectedByType;
 };

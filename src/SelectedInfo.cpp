@@ -4,7 +4,7 @@
 
 SelectedInfo::SelectedInfo() {
 	allNumber = 0;
-
+	allSubTypeNumber = 0;
 	selectedByType = new SelectedInfoType*[MAX_SIZE_TYPES];
 	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
 		selectedByType[i] = new SelectedInfoType();
@@ -20,7 +20,7 @@ SelectedInfo::~SelectedInfo() {
 }
 
 void SelectedInfo::clear() {
-	
+
 }
 
 bool SelectedInfo::hasChanged() {
@@ -47,7 +47,8 @@ int SelectedInfo::getAllNumber() {
 
 void SelectedInfo::reset() {
 	changed = true;
-	this->allNumber = 0;
+	allNumber = 0;
+	allSubTypeNumber = 0;
 	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
 		selectedByType[i]->clear();
 	}
@@ -62,6 +63,13 @@ SelectedInfoType** SelectedInfo::getSelecteType() {
 void SelectedInfo::select(Physical* entity) {
 	if (entity->getSubType() >= 0) {
 		selectedByType[entity->getSubType()]->add(entity);
+		if (selectedByType[entity->getSubType()]->getData()->size() == 1) {
+			++allSubTypeNumber;
+		}
 	}
 	changed = true;
+}
+
+int SelectedInfo::getSelectedSubTypeNumber() {
+	return allSubTypeNumber;
 }
