@@ -1,6 +1,7 @@
 #include "Physical.h"
 #include "Game.h"
 #include <Urho3D/Graphics/Octree.h>
+
 Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): Entity(_node, _type) {
 	position = _position;
 	rotation = new Vector3();
@@ -38,7 +39,6 @@ Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): E
 		billboardShadow->position_ = Vector3(0, 0, -0.1);
 		billboardShadow->enabled_ = false;
 		
-
 		billboardSetBar->Commit();
 		billboardSetShadow->Commit();
 	}
@@ -55,7 +55,6 @@ void Physical::updateHealthBar() {
 
 	billboard->size_ = Vector2(healthBarSize, 0.2);
 	billboardSetBar->Commit();
-	billboardSetShadow->Commit();
 }
 
 double Physical::getHealthBarSize() {

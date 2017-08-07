@@ -4,11 +4,9 @@
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, Window* _window) {
 	style = _style;
 	window = _window;
-	buttons = new Button*[LINES_IN_SELECTION * MAX_ICON_SELECTION];
+	elements = new SelectedHudElement*[LINES_IN_SELECTION * MAX_ICON_SELECTION];
 	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
-		buttons[i] = simpleButton(nullptr, style, "SmallIcon");
-		Text* text = buttons[i]->CreateChild<Text>();
-		text->SetStyle("MyText", style);
+		elements[i] = new SelectedHudElement(style);
 	}
 
 	test = new UIElement*[LINES_IN_SELECTION];
@@ -19,7 +17,7 @@ SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, Window* _window) {
 
 	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
 		for (int j = 0; j < MAX_ICON_SELECTION; ++j) {
-			test[i]->AddChild(buttons[i * MAX_ICON_SELECTION + j]);
+			test[i]->AddChild(elements[i * MAX_ICON_SELECTION + j]->getButton());
 		}
 	}
 }
@@ -29,7 +27,7 @@ SelectedHudPanel::~SelectedHudPanel() {
 
 void SelectedHudPanel::hide() {
 	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
-		buttons[i]->SetVisible(false);
+		elements[i]->hide();
 	}
 }
 
@@ -71,7 +69,7 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 	SelectedInfoType** infoTypes = selectedInfo->getSelecteType();
 	int all = selectedInfo->getAllNumber();
 	int selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
-	int ratio = all / (LINES_IN_SELECTION * MAX_ICON_SELECTION - selectedSubTypeNumber+2) + 1;
+	int ratio = all / (LINES_IN_SELECTION * MAX_ICON_SELECTION - selectedSubTypeNumber + 2) + 1;
 	int k = 0;
 	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
 		std::vector<Physical*>* data = infoTypes[i]->getData();
@@ -80,17 +78,18 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
 		int upTo = 0;
 		for (int j = 0; j < data->size(); ++j) {
-			Sprite* sprite = createSprite(texture, style, "SmallSprite");
+			//Sprite* sprite = createSprite(texture, style, "SmallSprite");
+			
 			if (upTo == 0) {
-				buttons[k]->SetVisible(true);
-				buttons[k]->RemoveChildAtIndex(1);
-				buttons[k]->AddChild(sprite);
-				Text* text = (Text*)buttons[k]->GetChild(0);
-				text->SetText("");
+				elements[k]->show();
+				//elements[k]->RemoveChildAtIndex(1);
+				//elements[k]->AddChild(sprite);
+				elements[k]->hideText();
+
 				++k;
+
 			} else {
-				Text* text = (Text*)buttons[k-1]->GetChild(0);
-				text->SetText(String(upTo + 1));//TODO mozna zoptymalizowac ustawaic raz na koniec
+				elements[k]->setText(String(upTo + 1));//TODO mozna zoptymalizowac ustawaic raz na koniec
 			}
 			++upTo;
 			if (upTo >= ratio) {

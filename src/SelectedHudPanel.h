@@ -12,6 +12,7 @@
 #include <Urho3D/UI/ListView.h>
 #include "ButtonUtils.h"
 #include <Urho3D/Urho2D/Sprite2D.h>
+#include "SelectedHudElement.h"
 
 #define MAX_ICON_SELECTION 33
 #define LINES_IN_SELECTION 4
@@ -23,11 +24,12 @@ public:
 	~SelectedHudPanel();	
 	void updateSelected(SelectedInfo* selectedInfo);
 	void hide();
+
 private:
 	String getName(ObjectType index, int i);
 	int getSize(ObjectType type);
 	
-	Urho3D::Button** buttons;
+	SelectedHudElement** elements;
 	Urho3D::XMLFile* style;
 	Window* window;
 	UIElement **test;

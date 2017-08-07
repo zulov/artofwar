@@ -145,9 +145,6 @@
     <ClCompile Include="src\State.cpp">
       <Filter>objects\state</Filter>
     </ClCompile>
-    <ClCompile Include="src\SelectedHudPanel.cpp">
-      <Filter>hud</Filter>
-    </ClCompile>
     <ClCompile Include="src\FollowState.cpp">
       <Filter>objects\state</Filter>
     </ClCompile>
@@ -159,6 +156,12 @@
     </ClCompile>
     <ClCompile Include="src\SelectedInfoType.cpp">
       <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SelectedHudElement.cpp">
+      <Filter>hud\select</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SelectedHudPanel.cpp">
+      <Filter>hud\select</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -334,9 +337,6 @@
     <ClInclude Include="src\ButtonUtils.h">
       <Filter>hud</Filter>
     </ClInclude>
-    <ClInclude Include="src\SelectedHudPanel.h">
-      <Filter>hud</Filter>
-    </ClInclude>
     <ClInclude Include="src\FollowState.h">
       <Filter>objects\state</Filter>
     </ClInclude>
@@ -348,6 +348,12 @@
     </ClInclude>
     <ClInclude Include="src\SelectedInfoType.h">
       <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SelectedHudElement.h">
+      <Filter>hud\select</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SelectedHudPanel.h">
+      <Filter>hud\select</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -420,6 +426,9 @@
     </Filter>
     <Filter Include="objects\state">
       <UniqueIdentifier>{e7772225-aee1-486b-be4d-501a5eb7d027}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hud\select">
+      <UniqueIdentifier>{3a84c391-3576-4bf1-8923-bcff059dde54}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
