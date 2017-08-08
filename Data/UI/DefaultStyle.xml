@@ -486,21 +486,21 @@
 	<element type="Sprite">
         <attribute name="Vert Alignment" value="Center" />
 		<attribute name="Horiz Alignment" value="Center" />
-		<attribute name="Size" value="{iconX-spaceX} {iconY-spaceY}" />
-		<attribute name="Hotspot" value="50 50" />
+		<attribute name="My Size" value="{iconX-spaceX} {iconY-spaceY}" />
+		<attribute name="Percent HotSpot" value="0.5 0.5" />
 		<attribute name="Opacity" value="0.8" />
     </element>
 		
 	<element type="SmallSprite" style="Sprite">
         <attribute name="Vert Alignment" value="Center" />
 		<attribute name="Horiz Alignment" value="Center" />
-		<attribute name="Size" value="{(iconX-spaceX)*2/3} {(iconY-spaceY)*2/3}" />
+		<attribute name="My Size" value="{(iconX-spaceX)*2/3} {(iconY-spaceY)*2/3}" />
     </element>
 	
 	<element type="SpriteLeft" style="Sprite">
 		<attribute name="Horiz Alignment" value="Left" />
-		<attribute name="Size" value="{(iconX-spaceX)/2} {(iconY-spaceY)/2}" />
-		<attribute name="Hotspot" value="0 50" />
+		<attribute name="My Size" value="{(iconX-spaceX)/2} {(iconY-spaceY)/2}" />
+		<attribute name="Percent HotSpot" value="0.0 0.5" />
     </element>
 	
 	<element type="MyText" style="Text" >

@@ -128,7 +128,7 @@ void Hud::createBuildingIcons() {
 		db_building_type* buidling = Game::get()->getDatabaseCache()->getBuildingType(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + buidling->icon);
 
-		Sprite* sprite = createSprite(texture, style, "Sprite");
+		MySprite* sprite = createSprite(texture, style, "Sprite");
 		Button* button = simpleButton(sprite, style, "Icon");
 
 		HudElement* hudElement = new HudElement(button);
@@ -149,7 +149,7 @@ void Hud::createUnitIcons() {
 		db_unit_type* unit = Game::get()->getDatabaseCache()->getUnitType(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
-		Sprite* sprite = createSprite(texture, style, "Sprite");
+		MySprite* sprite = createSprite(texture, style, "Sprite");
 		Button* button = simpleButton(sprite, style,  "Icon");
 
 		HudElement* hudElement = new HudElement(button);
@@ -168,7 +168,7 @@ void Hud::createTop() {
 		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + resource->icon);
 
-		Sprite* sprite = createSprite(texture, style, "SpriteLeft");
+		MySprite* sprite = createSprite(texture, style, "SpriteLeft");
 		Button* button = simpleButton(sprite, style, "TopButtons");
 
 		topWindow->AddChild(button);

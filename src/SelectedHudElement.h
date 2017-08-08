@@ -1,8 +1,8 @@
 #pragma once
 #include <Urho3D/UI/Button.h>
 #include "Physical.h"
-#include <Urho3D/UI/Sprite.h>
 #include <Urho3D/UI/Text.h>
+#include "MySprite.h"
 
 #define MAX_SELECTED_IN_BUTTON 3
 
@@ -19,10 +19,11 @@ public:
 
 	void setText(const String& msg);
 	void hideText();
+	void setTexture(Texture2D* texture);
 private:
 	Urho3D::Button* button;
 	Physical** selected;
 	Urho3D::XMLFile* style;
-	Sprite* icon;
+	MySprite* icon;
 	Text* text;
 };

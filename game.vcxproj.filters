@@ -163,6 +163,9 @@
     <ClCompile Include="src\SelectedHudPanel.cpp">
       <Filter>hud\select</Filter>
     </ClCompile>
+    <ClCompile Include="src\MySprite.cpp">
+      <Filter>hud</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -354,6 +357,9 @@
     </ClInclude>
     <ClInclude Include="src\SelectedHudPanel.h">
       <Filter>hud\select</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MySprite.h">
+      <Filter>hud</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

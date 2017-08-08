@@ -13,6 +13,7 @@ SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* _style) {
 	text = button->CreateChild<Text>();
 	text->SetStyle("MyText", style);
 	icon = createEmptySprite(style, "SmallSprite");
+	button->AddChild(icon);
 }
 
 
@@ -32,6 +33,7 @@ void SelectedHudElement::hide() {
 
 void SelectedHudElement::show() {
 	button->SetVisible(true);
+
 }
 
 void SelectedHudElement::setText(const String& msg) {
@@ -41,4 +43,8 @@ void SelectedHudElement::setText(const String& msg) {
 
 void SelectedHudElement::hideText() {
 	text->SetVisible(false);
+}
+
+void SelectedHudElement::setTexture(Texture2D* texture) {
+	setTextureToSprite(icon, texture);
 }

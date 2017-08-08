@@ -5,6 +5,7 @@ URHO3D_DEFINE_APPLICATION_MAIN(Main)
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE) {
 	benchmark = new Benchmark();
 	context->RegisterFactory<LinkComponent>();
+	MySprite::RegisterObject(context);
 }
 
 void Main::Setup() {
@@ -32,7 +33,7 @@ void Main::Start() {
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
 
 	hud = new Hud();
-	
+
 	for (HudElement* hudElement : *(hud->getButtonsToSubscribe())) {
 		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleUIButtton));
 	}
@@ -236,5 +237,5 @@ void Main::control(float timeStep) {
 		} else {
 			controls->release(MOUSEB_RIGHT);
 		}
-	} 
+	}
 }

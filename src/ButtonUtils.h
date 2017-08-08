@@ -4,8 +4,10 @@
 #include "Game.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Urho2D/Sprite2D.h>
+#include <Urho3D/IO/FileSystem.h>
+#include "MySprite.h"
 
-static Urho3D::Button* simpleButton(Urho3D::Sprite* sprite, Urho3D::XMLFile* style, const String& styleName) {
+static Urho3D::Button* simpleButton(MySprite* sprite, Urho3D::XMLFile* style, const String& styleName) {
 	Urho3D::Button* button = new Urho3D::Button(Game::get()->getContext());
 	button->SetStyle(styleName, style);
 
@@ -13,35 +15,37 @@ static Urho3D::Button* simpleButton(Urho3D::Sprite* sprite, Urho3D::XMLFile* sty
 	return button;
 }
 
-static Urho3D::Sprite* createEmptySprite(Urho3D::XMLFile* style, const String& styleName) {
-	Urho3D::Sprite* sprite = new Sprite(Game::get()->getContext());
+static MySprite* createEmptySprite(Urho3D::XMLFile* style, const String& styleName) {
+	MySprite* sprite = new MySprite(Game::get()->getContext());
 
 	sprite->SetStyle(styleName, style);
 	return sprite;
 }
 
-static void setTextureToSprite(Sprite* sprite, Texture2D* texture) {
+static void setTextureToSprite(MySprite* sprite, Texture2D* texture) {
 	sprite->SetTexture(texture);
 	int textureWidth = texture->GetWidth();
 	int textureHeight = texture->GetHeight();
-	IntVector2 size = sprite->GetSize();
+	//IntVector2 size = sprite->GetSize();
+	IntVector2 size = sprite->getMySize();
 	double scaleX = (size.x_) / (double)textureWidth;
 	double scaleY = (size.y_) / (double)textureHeight;
+	sprite->SetScale(1);
 	if (scaleX < scaleY) {
 		sprite->SetScale(scaleX);
-	}
-	else {
+	} else {
 		sprite->SetScale(scaleY);
 	}
 
 	sprite->SetSize(textureWidth, textureHeight);
-	IntVector2 hotSpot = sprite->GetHotSpot();
-	sprite->SetHotSpot(textureWidth * hotSpot.x_ / 100, textureHeight * hotSpot.y_ / 100);
+	Vector2 perHotSpot = sprite->getPercentHotSpot();
+	
+	sprite->SetHotSpot(textureWidth * perHotSpot.x_, textureHeight * perHotSpot.y_);
 }
 
 
-static Urho3D::Sprite* createSprite(Texture2D* texture, Urho3D::XMLFile* style, const String& styleName) {
-	Urho3D::Sprite* sprite = createEmptySprite(style, styleName);
+static MySprite* createSprite(Texture2D* texture, Urho3D::XMLFile* style, const String& styleName) {
+	MySprite* sprite = createEmptySprite(style, styleName);
 	setTextureToSprite(sprite, texture);
 
 	return sprite;

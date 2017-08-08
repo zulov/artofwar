@@ -82,6 +82,7 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 			
 			if (upTo == 0) {
 				elements[k]->show();
+				elements[k]->setTexture(texture);
 				//elements[k]->RemoveChildAtIndex(1);
 				//elements[k]->AddChild(sprite);
 				elements[k]->hideText();
