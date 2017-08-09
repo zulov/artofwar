@@ -90,7 +90,7 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 				++k;
 
 			} else {
-				elements[k]->setText(String(upTo + 1));//TODO mozna zoptymalizowac ustawaic raz na koniec
+				elements[k-1]->setText(String(upTo + 1));//TODO mozna zoptymalizowac ustawaic raz na koniec
 			}
 			++upTo;
 			if (upTo >= ratio) {
