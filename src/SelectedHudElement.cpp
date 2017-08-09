@@ -10,6 +10,7 @@ SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* _style) {
 	}
 	style = _style;
 	button = simpleButton(nullptr, style, "SmallIcon");
+	button->SetVisible(false);
 	text = button->CreateChild<Text>();
 	text->SetStyle("MyText", style);
 	icon = createEmptySprite(style, "SmallSprite");

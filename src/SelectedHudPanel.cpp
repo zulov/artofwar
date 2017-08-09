@@ -76,27 +76,18 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 		if (data->empty()) { continue; }
 		String name = getName(type, i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
-		int upTo = 0;
-		for (int j = 0; j < data->size(); ++j) {
-			//Sprite* sprite = createSprite(texture, style, "SmallSprite");
-			
-			if (upTo == 0) {
-				elements[k]->show();
-				elements[k]->setTexture(texture);
-				//elements[k]->RemoveChildAtIndex(1);
-				//elements[k]->AddChild(sprite);
-				elements[k]->hideText();
+		for (int j = 0; j < data->size(); j += ratio) {
+			int max = Min(data->size(), j + ratio);
+			int diff = max - j;
 
-				++k;
+			elements[k]->show();
+			elements[k]->setTexture(texture);
+			elements[k]->hideText();
 
-			} else {
-				elements[k-1]->setText(String(upTo + 1));//TODO mozna zoptymalizowac ustawaic raz na koniec
+			if (diff > 1) {
+				elements[k]->setText(String(diff));
 			}
-			++upTo;
-			if (upTo >= ratio) {
-				upTo = 0;
-			}
-
+			++k;
 		}
 	}
 }
