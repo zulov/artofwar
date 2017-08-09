@@ -37,6 +37,10 @@ void Main::Start() {
 	for (HudElement* hudElement : *(hud->getButtonsToSubscribe())) {
 		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleUIButtton));
 	}
+
+	for (HudElement* hudElement : *(hud->getButtonsSelectedToSubscribe())) {
+		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButtton));
+	}
 	for (HudElement* hudElement : *(hud->getListsToSubscribe())) {
 		SubscribeToEvent(hudElement->getUIElement(), E_ITEMSELECTED, URHO3D_HANDLER(Main, HandleUIList));
 	}

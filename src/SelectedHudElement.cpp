@@ -15,6 +15,7 @@ SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* _style) {
 	text->SetStyle("MyText", style);
 	icon = createEmptySprite(style, "SmallSprite");
 	button->AddChild(icon);
+	button->SetVar("SelectedHudElement", this);
 }
 
 
@@ -48,4 +49,11 @@ void SelectedHudElement::hideText() {
 
 void SelectedHudElement::setTexture(Texture2D* texture) {
 	setTextureToSprite(icon, texture);
+}
+
+void SelectedHudElement::add(vector<Physical*> *physicals) {
+	selectedIndex = physicals->size();
+	for (int i = 0; i < selectedIndex; ++i) {
+		selected[i] = physicals->at(i);
+	}
 }

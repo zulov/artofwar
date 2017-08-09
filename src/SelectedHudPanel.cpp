@@ -79,7 +79,8 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 		for (int j = 0; j < data->size(); j += ratio) {
 			int max = Min(data->size(), j + ratio);
 			int diff = max - j;
-
+			std::vector<Physical*>* sub = new vector<Physical*>(data->begin()+j, data->begin() + max);
+			elements[k]->add(sub);
 			elements[k]->show();
 			elements[k]->setTexture(texture);
 			elements[k]->hideText();
@@ -88,6 +89,7 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 				elements[k]->setText(String(diff));
 			}
 			++k;
+			delete sub;
 		}
 	}
 }

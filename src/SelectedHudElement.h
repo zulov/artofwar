@@ -13,16 +13,18 @@ public:
 	~SelectedHudElement();
 	void unSelect();
 	void select(ObjectType objetType, int subType);
-	Button * getButton();
+	Button* getButton();
 	void hide();
 	void show();
 
 	void setText(const String& msg);
 	void hideText();
 	void setTexture(Texture2D* texture);
+	void add(std::vector<Physical*> *physicals);
 private:
 	Urho3D::Button* button;
 	Physical** selected;
+	short selectedIndex = 0;
 	Urho3D::XMLFile* style;
 	MySprite* icon;
 	Text* text;
