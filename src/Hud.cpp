@@ -2,6 +2,7 @@
 #include "Game.h"
 #include <regex>
 #include <exprtk/exprtk.hpp>
+#include "ButtonUtils.h"
 
 void Hud::replaceVariables(XMLFile* xmlFile, int hudSizeId) {
 	auto styleString = xmlFile->ToString();

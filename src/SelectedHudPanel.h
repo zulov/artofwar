@@ -7,8 +7,7 @@
 #include <Urho3D/UI/Window.h>
 #include "SelectedInfo.h"
 #include <Urho3D/UI/Text.h>
-#include "ButtonUtils.h"
-#include <Urho3D/Urho2D/Sprite2D.h>
+#include <Urho3D/Graphics/Texture2D.h>
 #include "SelectedHudElement.h"
 
 class SelectedHudPanel

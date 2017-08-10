@@ -4,6 +4,7 @@
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, Window* _window) {
 	style = _style;
 	window = _window;
+	IntVector2 windowMaxSize = window->GetMaxSize();
 	elements = new SelectedHudElement*[LINES_IN_SELECTION * MAX_ICON_SELECTION];
 	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
 		elements[i] = new SelectedHudElement(style);
@@ -39,7 +40,6 @@ void SelectedHudPanel::hide() {
 }
 
 std::vector<Button*>* SelectedHudPanel::getButtonsSelectedToSubscribe() {
-
 	return buttons;
 }
 
