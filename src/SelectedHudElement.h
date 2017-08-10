@@ -21,10 +21,10 @@ public:
 	void hideText();
 	void setTexture(Texture2D* texture);
 	void add(std::vector<Physical*> *physicals);
+	std::vector<Physical*>* getSelected();
 private:
 	Urho3D::Button* button;
-	Physical** selected;
-	short selectedIndex = 0;
+	std::vector<Physical*>* selected;
 	Urho3D::XMLFile* style;
 	MySprite* icon;
 	Text* text;

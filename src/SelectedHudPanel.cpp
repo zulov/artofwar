@@ -20,15 +20,27 @@ SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, Window* _window) {
 			test[i]->AddChild(elements[i * MAX_ICON_SELECTION + j]->getButton());
 		}
 	}
+
+	buttons = new std::vector<Button*>();
+	buttons->reserve(LINES_IN_SELECTION * MAX_ICON_SELECTION);
+	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
+		buttons->push_back(elements[i]->getButton());
+	}
 }
 
 SelectedHudPanel::~SelectedHudPanel() {
+	delete buttons;
 }
 
 void SelectedHudPanel::hide() {
 	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
 		elements[i]->hide();
 	}
+}
+
+std::vector<Button*>* SelectedHudPanel::getButtonsSelectedToSubscribe() {
+
+	return buttons;
 }
 
 String SelectedHudPanel::getName(ObjectType index, int i) {
@@ -79,14 +91,15 @@ void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 		for (int j = 0; j < data->size(); j += ratio) {
 			int max = Min(data->size(), j + ratio);
 			int diff = max - j;
-			std::vector<Physical*>* sub = new vector<Physical*>(data->begin()+j, data->begin() + max);
+			std::vector<Physical*>* sub = new vector<Physical*>(data->begin() + j, data->begin() + max);
 			elements[k]->add(sub);
 			elements[k]->show();
 			elements[k]->setTexture(texture);
-			elements[k]->hideText();
-
+			
 			if (diff > 1) {
 				elements[k]->setText(String(diff));
+			}else {
+				elements[k]->hideText();
 			}
 			++k;
 			delete sub;

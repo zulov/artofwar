@@ -47,6 +47,7 @@ public:
 	std::vector<Window*>* getWindows();
 	void updateState(ControlsState state);
 	void updateSelected(SelectedInfo* selectedInfo);
+	std::vector<Button*>* getButtonsSelectedToSubscribe();
 private:
 	Window * createWindow(const String& styleName);
 

@@ -38,8 +38,8 @@ void Main::Start() {
 		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleUIButtton));
 	}
 
-	for (HudElement* hudElement : *(hud->getButtonsSelectedToSubscribe())) {
-		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButtton));
+	for (Button* buttton : *(hud->getButtonsSelectedToSubscribe())) {
+		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButtton));
 	}
 	for (HudElement* hudElement : *(hud->getListsToSubscribe())) {
 		SubscribeToEvent(hudElement->getUIElement(), E_ITEMSELECTED, URHO3D_HANDLER(Main, HandleUIList));
@@ -157,6 +157,17 @@ void Main::HandleUIButtton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	HudElement* hud = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
 	controls->hudAction(hud);
+}
+
+void Main::HandleSelectedButtton(StringHash eventType, VariantMap& eventData) {
+	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
+	SelectedHudElement* sHudElement = (SelectedHudElement *)element->GetVar("SelectedHudElement").GetVoidPtr();
+	std::vector<Physical*> *selected = sHudElement->getSelected();
+	controls->unSelect(ENTITY);
+	for (auto physical :(*selected)) {
+		controls->select(physical);
+	}
+	
 }
 
 void Main::HandleUIList(StringHash eventType, VariantMap& eventData) {

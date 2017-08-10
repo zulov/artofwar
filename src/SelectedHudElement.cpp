@@ -4,10 +4,9 @@
 
 
 SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* _style) {
-	selected = new Physical*[MAX_SELECTED_IN_BUTTON];
-	for (int i = 0; i < MAX_SELECTED_IN_BUTTON; ++i) {
-		selected[i] = nullptr;
-	}
+	selected = new std::vector<Physical*>();
+	selected->reserve(MAX_SELECTED_IN_BUTTON);
+
 	style = _style;
 	button = simpleButton(nullptr, style, "SmallIcon");
 	button->SetVisible(false);
@@ -51,9 +50,13 @@ void SelectedHudElement::setTexture(Texture2D* texture) {
 	setTextureToSprite(icon, texture);
 }
 
-void SelectedHudElement::add(vector<Physical*> *physicals) {
-	selectedIndex = physicals->size();
-	for (int i = 0; i < selectedIndex; ++i) {
-		selected[i] = physicals->at(i);
+void SelectedHudElement::add(vector<Physical*>* physicals) {
+	selected->clear();
+	for (int i = 0; i < physicals->size(); ++i) {
+		selected->push_back(physicals->at(i));
 	}
+}
+
+std::vector<Physical*>* SelectedHudElement::getSelected() {
+	return selected;
 }

@@ -7,15 +7,9 @@
 #include <Urho3D/UI/Window.h>
 #include "SelectedInfo.h"
 #include <Urho3D/UI/Text.h>
-#include <Urho3D/UI/Window.h>
-#include <Urho3D/UI/Sprite.h>
-#include <Urho3D/UI/ListView.h>
 #include "ButtonUtils.h"
 #include <Urho3D/Urho2D/Sprite2D.h>
 #include "SelectedHudElement.h"
-
-#define MAX_ICON_SELECTION 33
-#define LINES_IN_SELECTION 4
 
 class SelectedHudPanel
 {
@@ -24,11 +18,14 @@ public:
 	~SelectedHudPanel();	
 	void updateSelected(SelectedInfo* selectedInfo);
 	void hide();
+	std::vector<Button*>* getButtonsSelectedToSubscribe();
 
 private:
+	short MAX_ICON_SELECTION = 33;
+	short LINES_IN_SELECTION = 4;
 	String getName(ObjectType index, int i);
 	int getSize(ObjectType type);
-	
+	std::vector<Button*>* buttons;
 	SelectedHudElement** elements;
 	Urho3D::XMLFile* style;
 	Window* window;
