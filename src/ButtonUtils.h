@@ -3,8 +3,6 @@
 #include <Urho3D/UI/Button.h>
 #include "Game.h"
 #include <Urho3D/Graphics/Texture2D.h>
-#include <Urho3D/Urho2D/Sprite2D.h>
-#include <Urho3D/IO/FileSystem.h>
 #include "MySprite.h"
 
 static Urho3D::Button* simpleButton(MySprite* sprite, Urho3D::XMLFile* style, const String& styleName) {

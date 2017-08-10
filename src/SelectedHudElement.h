@@ -2,9 +2,10 @@
 #include <Urho3D/UI/Button.h>
 #include "Physical.h"
 #include <Urho3D/UI/Text.h>
+#include <Urho3D/UI/ProgressBar.h>
 #include "MySprite.h"
 
-#define MAX_SELECTED_IN_BUTTON 3
+#define MAX_SELECTED_IN_BUTTON 2
 
 class SelectedHudElement
 {
@@ -27,5 +28,7 @@ private:
 	std::vector<Physical*>* selected;
 	Urho3D::XMLFile* style;
 	MySprite* icon;
+	ProgressBar** bars;
 	Text* text;
+	UIElement* mock;
 };

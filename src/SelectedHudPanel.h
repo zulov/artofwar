@@ -2,10 +2,8 @@
 #include <Urho3D/UI/Button.h>
 #include "ObjectEnums.h"
 #include "Game.h"
-#include <Urho3D/UI/Font.h>
 #include "SelectedInfo.h"
 #include <Urho3D/UI/Window.h>
-#include "SelectedInfo.h"
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/Graphics/Texture2D.h>
 #include "SelectedHudElement.h"

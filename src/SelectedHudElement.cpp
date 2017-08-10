@@ -15,6 +15,19 @@ SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* _style) {
 	icon = createEmptySprite(style, "SmallSprite");
 	button->AddChild(icon);
 	button->SetVar("SelectedHudElement", this);
+	mock = button->CreateChild<UIElement>();
+	mock->SetStyle("mock", style);
+
+	//Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/bar/full.png");
+
+	bars = new ProgressBar*[MAX_SELECTED_IN_BUTTON];
+	for (int i = 0; i < MAX_SELECTED_IN_BUTTON; ++i) {
+		bars[i] = mock->CreateChild<ProgressBar>();
+		bars[i]->SetStyle("MiniProgressBar", style);
+		bars[i]->SetRange(1);
+		bars[i]->SetValue(0.5);
+		bars[i]->SetVisible(false);
+	}
 }
 
 
@@ -52,8 +65,17 @@ void SelectedHudElement::setTexture(Texture2D* texture) {
 
 void SelectedHudElement::add(vector<Physical*>* physicals) {
 	selected->clear();
+
+	for (int i = 0; i < MAX_SELECTED_IN_BUTTON; ++i) {
+		bars[i]->SetVisible(false);
+	}
 	for (int i = 0; i < physicals->size(); ++i) {
 		selected->push_back(physicals->at(i));
+		if (i < MAX_SELECTED_IN_BUTTON) {
+			bars[i]->SetRange(1);
+			bars[i]->SetValue(physicals->at(i)->getHealthBarSize());
+			bars[i]->SetVisible(true);
+		}
 	}
 }
 
