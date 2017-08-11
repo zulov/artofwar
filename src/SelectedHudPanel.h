@@ -18,7 +18,7 @@ public:
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
 
 private:
-	short MAX_ICON_SELECTION = 33;
+	short MAX_ICON_SELECTION = 31;
 	short LINES_IN_SELECTION = 4;
 	String getName(ObjectType index, int i);
 	int getSize(ObjectType type);

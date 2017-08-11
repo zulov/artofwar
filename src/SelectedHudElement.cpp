@@ -45,7 +45,6 @@ void SelectedHudElement::hide() {
 
 void SelectedHudElement::show() {
 	button->SetVisible(true);
-
 }
 
 void SelectedHudElement::setText(const String& msg) {
