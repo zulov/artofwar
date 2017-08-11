@@ -479,8 +479,8 @@
     </element>
 	
 	<element type="SmallIcon" style="Button">
-        <attribute name="Min Size" value="{iconX*2/3} {iconY*2/3}" />
-        <attribute name="Max Size" value="{iconX*2/3} {iconY*2/3}" />
+        <attribute name="Min Size" value="{iconX*3/4} {iconY*3/4}" />
+        <attribute name="Max Size" value="{iconX*3/4} {iconY*3/4}" />
     </element>
 
 	<element type="Sprite">
@@ -494,7 +494,7 @@
 	<element type="SmallSprite" style="Sprite">
         <attribute name="Vert Alignment" value="Center" />
 		<attribute name="Horiz Alignment" value="Center" />
-		<attribute name="My Size" value="{(iconX-spaceX)*2/3} {(iconY-spaceY)*2/3}" />
+		<attribute name="My Size" value="{(iconX-spaceX)*3/4} {(iconY-spaceY)*3/4}" />
     </element>
 	
 	<element type="SpriteLeft" style="Sprite">
@@ -534,18 +534,18 @@
 	</element>
 	
 	<element type="MyListRow" style="ListRow" >
-		<attribute name="Layout Spacing" value="{spaceX*2/3}" />
+		<attribute name="Layout Spacing" value="{spaceX*3/4}" />
         
-		<attribute name="Min Size" value="100 {iconY*2/3+spaceY}" />
-		<attribute name="Max Size" value="10000 {iconY*2/3+spaceY}" />
+		<attribute name="Min Size" value="100 {iconY*3/4+spaceY}" />
+		<attribute name="Max Size" value="10000 {iconY*3/4+spaceY}" />
 	</element>
 	
 	<element type="mock">
 		<attribute name="Layout Spacing" value="0" />
         <attribute name="Layout Mode" value="Vertical" />
 		<attribute name="Vert Alignment" value="Bottom" />
-		<attribute name="Min Size" value="{iconX*2/3} {0}" />
-        <attribute name="Max Size" value="{iconX*2/3} {iconY*2/3}" />
+		<attribute name="Min Size" value="{iconX*3/4} {0}" />
+        <attribute name="Max Size" value="{iconX*3/4} {iconY*3/4}" />
 	</element>
 	
 	<element type="MiniProgressBar" style="ProgressBar">

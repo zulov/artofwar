@@ -18,8 +18,6 @@ SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* _style) {
 	mock = button->CreateChild<UIElement>();
 	mock->SetStyle("mock", style);
 
-	//Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/bar/full.png");
-
 	bars = new ProgressBar*[MAX_SELECTED_IN_BUTTON];
 	for (int i = 0; i < MAX_SELECTED_IN_BUTTON; ++i) {
 		bars[i] = mock->CreateChild<ProgressBar>();
