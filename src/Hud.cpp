@@ -121,12 +121,12 @@ void Hud::createUnits() {
 }
 
 void Hud::createBuildingIcons() {
-	int size = Game::get()->getDatabaseCache()->getBuildingTypeSize();
+	int size = Game::get()->getDatabaseCache()->getBuildingSize();//TODO pobrac tylko dla nation
 	ListView* panel = buildWindow->CreateChild<ListView>();
 	panel->SetStyle("MyListView", style);
 
 	for (int i = 0; i < size; ++i) {
-		db_building_type* buidling = Game::get()->getDatabaseCache()->getBuildingType(i);
+		db_building* buidling = Game::get()->getDatabaseCache()->getBuilding(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + buidling->icon);
 
 		MySprite* sprite = createSprite(texture, style, "Sprite");
@@ -142,12 +142,12 @@ void Hud::createBuildingIcons() {
 }
 
 void Hud::createUnitIcons() {
-	int size = Game::get()->getDatabaseCache()->getUnitTypeSize();
+	int size = Game::get()->getDatabaseCache()->getUnitSize();//TODO pobrac tylko dla nation i budynku
 	ListView* panel = unitsWindow->CreateChild<ListView>();
 	panel->SetStyle("MyListView", style);
 
 	for (int i = 0; i < size; ++i) {
-		db_unit_type* unit = Game::get()->getDatabaseCache()->getUnitType(i);
+		db_unit* unit = Game::get()->getDatabaseCache()->getUnit(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
 		MySprite* sprite = createSprite(texture, style, "Sprite");

@@ -19,7 +19,7 @@ public:
 	ObjectType getSelectedType();
 	int getAllNumber();
 	void reset();
-	SelectedInfoType** getSelecteType();
+	std::vector<SelectedInfoType*>* getSelecteType();
 	void select(Physical* entity);
 	int getSelectedSubTypeNumber();
 private:
@@ -27,5 +27,5 @@ private:
 	int allNumber;
 	int allSubTypeNumber;
 	ObjectType selectedType;
-	SelectedInfoType** selectedByType;
+	std::vector<SelectedInfoType*>* selectedByType;
 };

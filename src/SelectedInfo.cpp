@@ -5,18 +5,17 @@
 SelectedInfo::SelectedInfo() {
 	allNumber = 0;
 	allSubTypeNumber = 0;
-	selectedByType = new SelectedInfoType*[MAX_SIZE_TYPES];
+	selectedByType = new vector<SelectedInfoType*>();
+	selectedByType->reserve(MAX_SIZE_TYPES);
+
 	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
-		selectedByType[i] = new SelectedInfoType();
+		selectedByType->push_back(new SelectedInfoType());
 	}
 }
 
 
 SelectedInfo::~SelectedInfo() {
-	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
-		delete selectedByType[i];
-	}
-	delete[] selectedByType;
+	clear_vector(selectedByType);
 }
 
 void SelectedInfo::clear() {
@@ -49,21 +48,20 @@ void SelectedInfo::reset() {
 	changed = true;
 	allNumber = 0;
 	allSubTypeNumber = 0;
-	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
-		selectedByType[i]->clear();
+	for (int i = 0; i < selectedByType->size(); ++i) {
+		selectedByType->at(i)->clear();
 	}
 }
 
-SelectedInfoType** SelectedInfo::getSelecteType() {
+vector<SelectedInfoType*>* SelectedInfo::getSelecteType() {
 	changed = false;
 	return selectedByType;
-
 }
 
 void SelectedInfo::select(Physical* entity) {
-	if (entity->getSubType() >= 0) {
-		selectedByType[entity->getSubType()]->add(entity);
-		if (selectedByType[entity->getSubType()]->getData()->size() == 1) {
+	if (entity->getSubTypeId() >= 0) {
+		selectedByType->at(entity->getSubTypeId())->add(entity);
+		if (selectedByType->at(entity->getSubTypeId())->getData()->size() == 1) {
 			++allSubTypeNumber;
 		}
 	}

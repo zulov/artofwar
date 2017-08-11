@@ -9,7 +9,9 @@ public:
 	void clear();
 	void add(Physical* physical);
 	std::vector<Physical*>* getData();
+	int getId();
 private:
+	int id;
 	std::vector<Physical*>* data;
 };
 

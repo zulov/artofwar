@@ -9,12 +9,14 @@ class ResourceEntity :
 public:
 	ResourceEntity(Vector3* _position, Urho3D::Node* _node);
 	virtual ~ResourceEntity();
-	virtual int getSubType() override;
-	void populate(db_resource* dbResource);
+	int getSubType() override;
+	int getSubTypeId() override;
+	void populate(db_resource* _dbResource);
 	bool isInGrandient();
 	void setInGradinet(bool _inGradient);
 private:
 	String * name;
+	db_resource * dbResource;
 	int type;
 	int amonut;
 	bool inGradient = false;

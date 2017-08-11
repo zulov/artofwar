@@ -26,6 +26,9 @@ public:
 	int getBuildingTypeSize();
 	int getUnitTypeSize();
 	int getHudVarsSize();
+	int getBuildingSize();
+	int getUnitSize();
+
 private:
 	db_container* dbContainer;
 	sqlite3* database;

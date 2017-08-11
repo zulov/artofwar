@@ -3,6 +3,7 @@
 #include "db_strcut.h"
 
 double Building::hbMaxSize = 5.0;
+
 Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode, BUILDING) {
 	hbMaxSize = 5.0;
 }
@@ -12,7 +13,7 @@ Building::~Building() {
 }
 
 double Building::getHealthBarSize() {
-	double healthBarSize = (5);
+	double healthBarSize = (hbMaxSize);
 	if (healthBarSize <= 0) { healthBarSize = 0; }
 	return healthBarSize;
 }
@@ -21,9 +22,14 @@ int Building::getSubType() {
 	return buildingType;
 }
 
-void Building::populate(db_building* dbBuilding) {
-	minimalDistance = dbBuilding->minDist;
-	buildingType = BuildingType(dbBuilding->type);
+int Building::getSubTypeId() {
+	return dbBuilding->id;
+}
+
+void Building::populate(db_building* _dbBuilding) {
+	minimalDistance = _dbBuilding->minDist;
+	buildingType = BuildingType(_dbBuilding->type);
+	dbBuilding = _dbBuilding;
 }
 
 void Building::absorbAttack(double attackCoef) {

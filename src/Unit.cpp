@@ -34,16 +34,17 @@ double Unit::getHealthBarSize() {
 	return healthBarSize;
 }
 
-void Unit::populate(db_unit* definition) {
-	maxSeparationDistance = definition->maxSep;
-	mass = definition->mass;
-	maxSpeed = definition->maxSpeed;
+void Unit::populate(db_unit* _dbUnit) {
+	maxSeparationDistance = _dbUnit->maxSep;
+	mass = _dbUnit->mass;
+	maxSpeed = _dbUnit->maxSpeed;
 	minSpeed = maxSpeed * 0.2f;
-	minimalDistance = definition->minDist;
+	minimalDistance = _dbUnit->minDist;
 	attackRange = minimalDistance + 2;
-	textureName = "Materials/" + String(definition->texture);
-	unitType = UnitType(definition->type);
-	rotatable = definition->rotatable;
+	textureName = "Materials/" + String(_dbUnit->texture);
+	unitType = UnitType(_dbUnit->type);
+	rotatable = _dbUnit->rotatable;
+	dbUnit = _dbUnit;
 }
 
 void Unit::move(double timeStep) {
@@ -241,4 +242,8 @@ void Unit::applyForce(double timeStep) {
 
 int Unit::getSubType() {
 	return unitType;
+}
+
+int Unit::getSubTypeId() {
+	return dbUnit->id;
 }

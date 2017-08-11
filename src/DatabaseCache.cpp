@@ -4,8 +4,8 @@
 
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
-	int id = atoi(argv[3]);//TODO to nie powinno byc jako type ale id
-	xyz->units[id] = new db_unit(argv[0], atof(argv[1]), atof(argv[2]), atoi(argv[3]), argv[4], argv[5], argv[6], atof(argv[7]), atof(argv[8]), atof(argv[9]), atoi(argv[10]));//toDO moza sprobowac pêtl¹
+	int id = atoi(argv[0]);
+	xyz->units[id] = new db_unit(id, argv[1], atof(argv[2]), atof(argv[3]), atoi(argv[4]), argv[5], argv[6], argv[7], atof(argv[8]), atof(argv[9]), atof(argv[10]), atoi(argv[11]), atoi(argv[12]), argv[13]);
 	xyz->units_size++;
 	return 0;
 }
@@ -13,7 +13,7 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->hudSizes[id] = new db_hud_size(atoi(argv[0]), argv[1], atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6], argv[7]);//toDO moza sprobowac pêtl¹
+	xyz->hudSizes[id] = new db_hud_size(id, argv[1]);
 	xyz->hud_size_size++;
 	return 0;
 }
@@ -21,7 +21,7 @@ int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 int static loadGraphSettings(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->graphSettings[id] = new db_graph_settings(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4], atoi(argv[5]), atof(argv[6]), atof(argv[7]));//toDO moza sprobowac pêtl¹
+	xyz->graphSettings[id] = new db_graph_settings(id, atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4], atoi(argv[5]), atof(argv[6]), atof(argv[7]));
 	xyz->graph_settings_size++;
 	return 0;
 }
@@ -29,7 +29,7 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->buildings[id] = new db_building(argv[1], atof(argv[2]), atoi(argv[3]), argv[4], argv[5], argv[6], atof(argv[7]), argv[8]);
+	xyz->buildings[id] = new db_building(id, argv[1], atof(argv[2]), atoi(argv[3]), argv[4], argv[5], argv[6], atof(argv[7]), argv[8], atoi(argv[9]), argv[10]);
 	xyz->building_size++;
 	return 0;
 }
@@ -37,7 +37,7 @@ int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 int static loadBuildingType(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->buildingTypes[id] = new db_building_type(atoi(argv[0]), argv[1], argv[2]);
+	xyz->buildingTypes[id] = new db_building_type(id, argv[1]);
 	xyz->building_type_size++;
 	return 0;
 }
@@ -45,7 +45,7 @@ int static loadBuildingType(void* data, int argc, char** argv, char** azColName)
 int static loadUnitType(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->unitTypes[id] = new db_unit_type(atoi(argv[0]), argv[1], argv[2]);
+	xyz->unitTypes[id] = new db_unit_type(id, argv[1], argv[2]);
 	xyz->unit_type_size++;
 	return 0;
 }
@@ -53,7 +53,7 @@ int static loadUnitType(void* data, int argc, char** argv, char** azColName) {
 int static loadNation(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->nations[id] = new db_nation(atoi(argv[0]), argv[1]);
+	xyz->nations[id] = new db_nation(id, argv[1]);
 	xyz->nation_size++;
 	return 0;
 }
@@ -61,7 +61,7 @@ int static loadNation(void* data, int argc, char** argv, char** azColName) {
 int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->resources[id] = new db_resource(atoi(argv[0]), argv[1], argv[2], atoi(argv[3]), argv[4], argv[5], atof(argv[6]), atof(argv[7]));
+	xyz->resources[id] = new db_resource(id, argv[1], argv[2], atoi(argv[3]), argv[4], argv[5], atof(argv[6]), atof(argv[7]));
 	xyz->resource_size++;
 
 	return 0;
@@ -70,7 +70,7 @@ int static loadResource(void* data, int argc, char** argv, char** azColName) {
 int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->hudVars[id] = new db_hud_vars(atoi(argv[0]), atoi(argv[1]), argv[2], atof(argv[3]));
+	xyz->hudVars[id] = new db_hud_vars(id, atoi(argv[1]), argv[2], atof(argv[3]));
 	xyz->hud_vars_size++;
 
 	return 0;
@@ -166,4 +166,12 @@ int DatabaseCache::getUnitTypeSize() {
 
 int DatabaseCache::getHudVarsSize() {
 	return dbContainer->hud_vars_size;
+}
+
+int DatabaseCache::getBuildingSize() {
+	return dbContainer->building_size;
+}
+
+int DatabaseCache::getUnitSize() {
+	return dbContainer->units_size;
 }

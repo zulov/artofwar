@@ -14,6 +14,7 @@
 
 struct db_unit
 {
+	int id;
 	Urho3D::String name;
 	double minDist;
 	double maxSep;
@@ -25,9 +26,12 @@ struct db_unit
 	double maxSpeed;
 	double scale;
 	bool rotatable;
+	int nation;
+	Urho3D::String icon;
 
-	db_unit(char* name, double minDist, double maxSep, int type, char* model, char* texture, char* font, double mass, double maxSpeed, double scale, int rotatable)
-		: name(name),
+	db_unit(int id, char* name, double minDist, double maxSep, int type, char* model, char* texture, char* font, double mass, double maxSpeed, double scale, int rotatable,int nation, char* icon)
+		: id(id),
+		name(name),
 		minDist(minDist),
 		maxSep(maxSep),
 		type(type),
@@ -37,12 +41,15 @@ struct db_unit
 		mass(mass),
 		maxSpeed(maxSpeed),
 		scale(scale),
-		rotatable(rotatable) {
+		rotatable(rotatable),
+		nation(nation),
+		icon(icon) {
 	}
 };
 
 struct db_building
 {
+	int id;
 	Urho3D::String name;
 	double minDist;
 	int type;
@@ -51,16 +58,21 @@ struct db_building
 	Urho3D::String font;
 	double scale;
 	Urho3D::String texture_temp;
+	int nation;
+	Urho3D::String icon;
 
-	db_building(char* name, double minDist, int type, char* model, char* texture, char* font, double scale, char* texture_temp)
-		: name(name),
+	db_building(int id, char* name, double minDist, int type, char* model, char* texture, char* font, double scale, char* texture_temp, int nation, char* icon)
+		: id(id),
+		name(name),
 		minDist(minDist),
 		type(type),
 		model(model),
 		texture(texture),
 		font(font),
 		scale(scale),
-		texture_temp(texture_temp) {
+		texture_temp(texture_temp),
+		nation(nation),
+		icon(icon) {
 	}
 };
 
@@ -68,22 +80,10 @@ struct db_hud_size
 {
 	int id;
 	Urho3D::String name;
-	int icon_size_x;
-	int icon_size_y;
-	int space_size_x;
-	int space_size_y;
-	Urho3D::Vector<Urho3D::String> names;
-	Urho3D::Vector<Urho3D::String> values;
 
-	db_hud_size(int id, char* name, int iconSizeX, int iconSizeY, int spaceSizeX, int spaceSizeY, char* names, char* values)
+	db_hud_size(int id, char* name)
 		: id(id),
-		name(name),
-		icon_size_x(iconSizeX),
-		icon_size_y(iconSizeY),
-		space_size_x(spaceSizeX),
-		space_size_y(spaceSizeY),
-		names(Urho3D::String(names).Split(SPLIT_SIGN)),
-		values(Urho3D::String(values).Split(SPLIT_SIGN)){
+		name(name) {
 	}
 };
 
@@ -114,12 +114,10 @@ struct db_unit_type
 {
 	int id;
 	Urho3D::String name;
-	Urho3D::String icon;
 
 	db_unit_type(int id, char* name, char* icon)
 		: id(id),
-		name(name),
-		icon(icon) {
+		name(name) {
 	}
 };
 
@@ -127,12 +125,10 @@ struct db_building_type
 {
 	int id;
 	Urho3D::String name;
-	Urho3D::String icon;
 
-	db_building_type(int id, char* name, char* icon)
+	db_building_type(int id, char* name)
 		: id(id),
-		name(name),
-		icon(icon) {
+		name(name) {
 	}
 };
 
@@ -157,7 +153,6 @@ struct db_resource
 	Urho3D::String model;
 	double scale;
 	double minDist;
-
 
 	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, double scale, double minDist)
 		: id(id),

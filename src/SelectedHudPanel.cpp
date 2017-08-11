@@ -49,13 +49,13 @@ String SelectedHudPanel::getName(ObjectType index, int i) {
 	case ENTITY:
 		return "mock.png";
 	case UNIT:
-		return dbCache->getUnitType(i)->icon;
+		return dbCache->getUnit(i)->icon;
 	case BUILDING:
-		return dbCache->getBuildingType(i)->icon;
+		return dbCache->getBuilding(i)->icon;
 	case RESOURCE:
 		return dbCache->getResource(i)->icon;
 	default:
-		return "mock.png";;
+		return "mock.png";
 	}
 }
 
@@ -78,15 +78,16 @@ int SelectedHudPanel::getSize(ObjectType type) {
 void SelectedHudPanel::updateSelected(SelectedInfo* selectedInfo) {
 	hide();
 	ObjectType type = selectedInfo->getSelectedType();
-	SelectedInfoType** infoTypes = selectedInfo->getSelecteType();
+	vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+
 	int all = selectedInfo->getAllNumber();
 	int selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
 	int ratio = all / (LINES_IN_SELECTION * MAX_ICON_SELECTION - selectedSubTypeNumber + 2) + 1;
 	int k = 0;
-	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
-		std::vector<Physical*>* data = infoTypes[i]->getData();
+	for (int i = 0; i < infoTypes->size(); ++i) {
+		std::vector<Physical*>* data = infoTypes->at(i)->getData();
 		if (data->empty()) { continue; }
-		String name = getName(type, i);
+		String name = getName(type, infoTypes->at(i)->getId());
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
 		for (int j = 0; j < data->size(); j += ratio) {
 			int max = Min(data->size(), j + ratio);

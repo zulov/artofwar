@@ -29,5 +29,9 @@ int Entity::getSubType() {
 	return -1;
 }
 
+int Entity::getSubTypeId() {
+	return -1;
+}
+
 void Entity::action(ActionType actionType, ActionParameter* parameter) {
 }

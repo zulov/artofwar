@@ -18,10 +18,11 @@ public:
 	Unit(Vector3* _position, Urho3D::Node* _boxNode);
 	~Unit();
 	double getHealthBarSize();
-	void populate(db_unit* definition);
+	void populate(db_unit* _dbUnit);
 	void move(double timeStep);
 	void applyForce(double timeStep);
 	int getSubType() override;
+	int getSubTypeId() override;
 	void setAcceleration(Vector3* _acceleration);
 	double getMaxSeparationDistance();
 
@@ -53,6 +54,8 @@ private:
 	UnitStateType unitState;
 	State** states;
 	UnitType unitType;
+
+	db_unit* dbUnit;
 
 	double unitRadius = 2;
 	double hpCoef = 100;

@@ -23,6 +23,7 @@ public:
 
 	ObjectType getType();
 	virtual int getSubType();
+	virtual int getSubTypeId();
 	virtual void action(ActionType actionType, ActionParameter* parameter);
 protected:
 	Urho3D::Node* node;

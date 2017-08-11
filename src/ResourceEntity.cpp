@@ -1,8 +1,9 @@
 #include "ResourceEntity.h"
 
 double ResourceEntity::hbMaxSize = 3.0;
+
 ResourceEntity::ResourceEntity(Vector3* _position, Urho3D::Node* _node) : Physical(_position, _node, RESOURCE) {
-	
+
 }
 
 ResourceEntity::~ResourceEntity() {
@@ -15,10 +16,15 @@ int ResourceEntity::getSubType() {
 	return type;
 }
 
-void ResourceEntity::populate(db_resource* dbResource) {
-	type = dbResource->id;
-	name = new String(dbResource->name);
-	minimalDistance = dbResource->minDist;
+int ResourceEntity::getSubTypeId() {
+	return dbResource->id;
+}
+
+void ResourceEntity::populate(db_resource* _dbResource) {
+	type = _dbResource->id;
+	name = new String(_dbResource->name);
+	minimalDistance = _dbResource->minDist;
+	dbResource = _dbResource;
 }
 
 bool ResourceEntity::isInGrandient() {

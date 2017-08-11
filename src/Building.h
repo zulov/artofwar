@@ -11,12 +11,14 @@ public:
 	~Building();
 	double getHealthBarSize();
 	int getSubType() override;
-	void populate(db_building* dbBuilding);
+	int getSubTypeId() override;
+	void populate(db_building* _dbBuilding);
 	void absorbAttack(double attackCoef) override;
 	bool isInGrandient();
 	void setInGradinet(bool _inGradient);
 private:
 	BuildingType buildingType;
+	db_building* dbBuilding;
 	bool inGradient = false;
 	static double hbMaxSize;
 };
