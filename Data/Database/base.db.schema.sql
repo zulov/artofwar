@@ -63,6 +63,15 @@ CREATE TABLE "graph_settings" (
 	PRIMARY KEY(`id`),
 	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`)
 );
+CREATE TABLE "cost_unit" (
+	`id`	INTEGER,
+	`resource`	INTEGER,
+	`value`	INTEGER,
+	`unit`	INTEGER,
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
+);
 CREATE TABLE `building_type` (
 	`id`	INTEGER,
 	`name`	TEXT,

@@ -11,6 +11,7 @@
 #define SPLIT_SIGN '\n'
 
 #include <Urho3D/Container/Str.h>
+#include <vector>
 
 struct db_unit
 {
@@ -29,7 +30,7 @@ struct db_unit
 	int nation;
 	Urho3D::String icon;
 
-	db_unit(int id, char* name, double minDist, double maxSep, int type, char* model, char* texture, char* font, double mass, double maxSpeed, double scale, int rotatable,int nation, char* icon)
+	db_unit(int id, char* name, double minDist, double maxSep, int type, char* model, char* texture, char* font, double mass, double maxSpeed, double scale, int rotatable, int nation, char* icon)
 		: id(id),
 		name(name),
 		minDist(minDist),
@@ -192,6 +193,7 @@ struct db_container
 	db_nation* nations[NATION_NUMBER_DB];
 	db_resource* resources[RESOURCE_NUMBER_DB];
 	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB];
+	std::vector<db_unit*>* unitsForBuilding[BULDINGS_NUMBER_DB];
 
 	int units_size = 0;
 	int hud_size_size = 0;
@@ -202,4 +204,12 @@ struct db_container
 	int resource_size = 0;
 	int nation_size = 0;
 	int hud_vars_size = 0;
+
+
+	explicit db_container() {
+		for (int i = 0; i < BULDINGS_NUMBER_DB; ++i) {
+			unitsForBuilding[i] = new std::vector<db_unit*>();
+			unitsForBuilding[i]->reserve(10);
+		}
+	}
 };

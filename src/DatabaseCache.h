@@ -3,6 +3,7 @@
 #include <iostream>
 #include "db_strcut.h"
 #include "BuildingType.h"
+#include <vector>
 using namespace std;
 
 class DatabaseCache
@@ -28,6 +29,7 @@ public:
 	int getHudVarsSize();
 	int getBuildingSize();
 	int getUnitSize();
+	std::vector<db_unit*>* getUnitsForBuilding(int id);
 
 private:
 	db_container* dbContainer;

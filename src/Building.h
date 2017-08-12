@@ -2,24 +2,27 @@
 #include "Entity.h"
 #include "BuildingType.h"
 #include "Physical.h"
+#include "db_strcut.h"
 
 struct db_building;
 
-class Building : public Physical {
+class Building : public Physical
+{
 public:
-	Building(Vector3 *_position, Urho3D::Node* _node);
+	Building(Vector3* _position, Urho3D::Node* _node);
 	~Building();
-	double getHealthBarSize();
+	double getHealthBarSize() override;
 	int getSubType() override;
 	int getSubTypeId() override;
-	void populate(db_building* _dbBuilding);
+	void populate(db_building* _dbBuilding, std::vector<db_unit*>* _units);
 	void absorbAttack(double attackCoef) override;
 	bool isInGrandient();
 	void setInGradinet(bool _inGradient);
 private:
 	BuildingType buildingType;
 	db_building* dbBuilding;
+	std::vector<db_unit*>* units;
+
 	bool inGradient = false;
 	static double hbMaxSize;
 };
-

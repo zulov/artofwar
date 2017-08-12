@@ -15,6 +15,7 @@ std::vector<Building*>* BuildingFactory::create(unsigned int number, int id, Vec
 
 	Game* game = Game::get();
 	db_building* dbBuilding = game->getDatabaseCache()->getBuilding(id);
+	std::vector<db_unit*>* dbUnits = game->getDatabaseCache()->getUnitsForBuilding(id);
 	Font* font = game->getCache()->GetResource<Font>("Fonts/"+ dbBuilding->font);
 
 	int xMax = number / sqrt(number);
@@ -37,7 +38,7 @@ std::vector<Building*>* BuildingFactory::create(unsigned int number, int id, Vec
 
 			Building* building = new Building(position, node);
 			buildings->push_back(building);
-			building->populate(dbBuilding);
+			building->populate(dbBuilding, dbUnits);
 			++produced;
 			if (produced >= number) { break; }
 		}

@@ -76,6 +76,13 @@ int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+int static loadBuildingToUnit(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int buildingId = atoi(argv[1]);
+	xyz->unitsForBuilding[buildingId]->push_back(xyz->units[atoi(argv[2])]);
+
+	return 0;
+}
 void DatabaseCache::ifError(int rc, char* error) {
 	if (rc != SQLITE_OK) {
 		fprintf(stderr, "SQL error: %s\n", error);
@@ -107,6 +114,8 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from nation", loadNation, dbContainer);
 	execute("SELECT * from resource", loadResource, dbContainer);
 	execute("SELECT * from hud_size_vars", loadHudVars, dbContainer);
+	execute("SELECT * from building_to_unit", loadBuildingToUnit, dbContainer);
+
 
 	sqlite3_close(database);
 }
@@ -174,4 +183,8 @@ int DatabaseCache::getBuildingSize() {
 
 int DatabaseCache::getUnitSize() {
 	return dbContainer->units_size;
+}
+
+std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) {
+	return dbContainer->unitsForBuilding[id];
 }

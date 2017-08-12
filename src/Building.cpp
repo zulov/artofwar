@@ -26,10 +26,11 @@ int Building::getSubTypeId() {
 	return dbBuilding->id;
 }
 
-void Building::populate(db_building* _dbBuilding) {
+void Building::populate(db_building* _dbBuilding, std::vector<db_unit*>* _units) {
 	minimalDistance = _dbBuilding->minDist;
 	buildingType = BuildingType(_dbBuilding->type);
 	dbBuilding = _dbBuilding;
+	units = _units;
 }
 
 void Building::absorbAttack(double attackCoef) {
