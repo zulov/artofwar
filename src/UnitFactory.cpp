@@ -8,11 +8,11 @@ UnitFactory::UnitFactory(): EntityFactory() {
 UnitFactory::~UnitFactory() {
 }
 
-std::vector<Unit*>* UnitFactory::create(unsigned number, UnitType unitType, Vector3* center, SpacingType spacing, int player) {
+std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center, SpacingType spacing, int player) {
 	std::vector<Unit*>* units = new std::vector<Unit *>();
 	units->reserve(number);
 	Game* game = Game::get();
-	db_unit* dbUnit = game->getDatabaseCache()->getUnit(unitType);
+	db_unit* dbUnit = game->getDatabaseCache()->getUnit(id);
 	String textureName = "Materials/" + dbUnit->texture;
 
 	double space = getSpecSize(spacing);

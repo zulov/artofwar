@@ -10,11 +10,11 @@ ResourceFactory::ResourceFactory() {
 ResourceFactory::~ResourceFactory() {
 }
 
-std::vector<ResourceEntity*>* ResourceFactory::create(unsigned number, ResourceType type, Vector3* center, SpacingType spacing) {
+std::vector<ResourceEntity*>* ResourceFactory::create(unsigned number, int id, Vector3* center, SpacingType spacing) {
 	std::vector<ResourceEntity*>* resources = new std::vector<ResourceEntity *>();
 	resources->reserve(number);
 
-	db_resource* dbResource = Game::get()->getDatabaseCache()->getResource(type);
+	db_resource* dbResource = Game::get()->getDatabaseCache()->getResource(id);
 
 	double space = getSpecSize(spacing)*spaceCoef;
 	String modelName = "Models/" + dbResource->model;

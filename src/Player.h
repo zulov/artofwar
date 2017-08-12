@@ -7,6 +7,8 @@ class Player
 public:
 	Player(int nationId, int team);
 	~Player();
+	int getNation();
+	int getTeam();
 private:
 	Resources* resources;
 	db_nation* dbNation;

@@ -21,9 +21,9 @@ public:
 	vector<Entity*>* getEntities();
 	vector<ResourceEntity*>* getResources();
 
-	void addUnits(unsigned number, UnitType unitType, Vector3* center, SpacingType spacingType, int player);
-	void addBuildings(unsigned number, BuildingType buildingType, Vector3* center, SpacingType spacingType, int player);
-	void addResources(unsigned number, ResourceType resourceType, Vector3* center, SpacingType spacingType);
+	void addUnits(unsigned number, int id, Vector3* center, SpacingType spacingType, int player);
+	void addBuildings(unsigned number, int id, Vector3* center, SpacingType spacingType, int player);
+	void addResources(unsigned number, int id, Vector3* center, SpacingType spacingType);
 private:
 	vector<Unit*>* units;
 	vector<Building*>* buildings;

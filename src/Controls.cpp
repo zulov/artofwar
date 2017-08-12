@@ -329,12 +329,12 @@ void Controls::clickDown(const int button) {
 }
 
 void Controls::build(Vector3* pos) {
-	SimulationCommand* simulationCommand = new SimulationCommand(1, toBuild, pos, SpacingType::CONSTANT, 0);//TODO pobrac parametry z jakiegos zrod³a
+	SimulationCommand* simulationCommand = new SimulationCommand(ObjectType::BUILDING, 1, toBuild, pos, SpacingType::CONSTANT, 0);//TODO pobrac parametry z jakiegos zrod³a
 	Game::get()->getSimCommandList()->add(simulationCommand);
 }
 
 void Controls::deploy(Vector3* pos) {
-	SimulationCommand* simulationCommand = new SimulationCommand(10, toDeploy, pos, SpacingType::CONSTANT, 0);
+	SimulationCommand* simulationCommand = new SimulationCommand(ObjectType::UNIT, 10, toDeploy, pos, SpacingType::CONSTANT, 0);
 	Game::get()->getSimCommandList()->add(simulationCommand);
 }
 

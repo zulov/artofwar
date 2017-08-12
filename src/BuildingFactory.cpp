@@ -9,12 +9,12 @@ BuildingFactory::BuildingFactory(): EntityFactory() {
 BuildingFactory::~BuildingFactory() {
 }
 
-std::vector<Building*>* BuildingFactory::create(unsigned int number, BuildingType buildingType, Vector3* center, SpacingType spacingType) {//TODO nie typ a id konkretnej jednostki
+std::vector<Building*>* BuildingFactory::create(unsigned int number, int id, Vector3* center, SpacingType spacingType) {//TODO nie typ a id konkretnej jednostki
 	std::vector<Building*>* buildings = new std::vector<Building *>();
 	buildings->reserve(number);
 
 	Game* game = Game::get();
-	db_building* dbBuilding = game->getDatabaseCache()->getBuilding(buildingType);
+	db_building* dbBuilding = game->getDatabaseCache()->getBuilding(id);
 	Font* font = game->getCache()->GetResource<Font>("Fonts/"+ dbBuilding->font);
 
 	int xMax = number / sqrt(number);

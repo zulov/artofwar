@@ -31,7 +31,7 @@ void Main::Start() {
 	SetWindowTitleAndIcon();
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
-
+	game->setPlayersManager(new PlayersManager());
 	hud = new Hud();
 
 	for (HudElement* hudElement : *(hud->getButtonsToSubscribe())) {
@@ -64,7 +64,7 @@ void Main::Start() {
 	SimulationCommandList* simulationCommandList = new SimulationCommandList(simulationObjectManager);
 	EnviromentStrategy* enviromentStrategy = new EnviromentStrategy();
 	mediator = new Mediator(enviromentStrategy, controls);
-	game->setScene(levelBuilder->createScene())->setCameraManager(cameraManager)->setBuildList(buildList)->setSimCommandList(simulationCommandList)->setMediator(mediator)->setPlayersManager(new PlayersManager());
+	game->setScene(levelBuilder->createScene())->setCameraManager(cameraManager)->setBuildList(buildList)->setSimCommandList(simulationCommandList)->setMediator(mediator);
 
 	simulation = new Simulation(enviromentStrategy, simulationCommandList, simulationObjectManager);
 

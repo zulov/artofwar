@@ -27,12 +27,12 @@ void Simulation::action() {
 }
 
 void Simulation::createUnits() {
-	simCommandList->add(new SimulationCommand(UNITS_NUMBER, UnitType::WARRIOR, new Vector3(0, 0, 0), SpacingType::CONSTANT, 0));
-	simCommandList->add(new SimulationCommand(UNITS_NUMBER, UnitType::ARCHER, new Vector3(-50, 0, -50), SpacingType::CONSTANT, 1));
+	simCommandList->add(new SimulationCommand(ObjectType::UNIT, UNITS_NUMBER, UnitType::WARRIOR, new Vector3(0, 0, 0), SpacingType::CONSTANT, 0));
+	simCommandList->add(new SimulationCommand(ObjectType::UNIT, UNITS_NUMBER, UnitType::ARCHER, new Vector3(-50, 0, -50), SpacingType::CONSTANT, 1));
 
-	simCommandList->add(new SimulationCommand(4, ResourceType::GOLD, new Vector3(-50, 0, 35), SpacingType::CONSTANT, 1));
-	simCommandList->add(new SimulationCommand(4, ResourceType::STONE, new Vector3(40, 0, 25), SpacingType::CONSTANT, 1));
-	simCommandList->add(new SimulationCommand(9, ResourceType::WOOD, new Vector3(30, 0, 0), SpacingType::CONSTANT, 1));
+	simCommandList->add(new SimulationCommand(ObjectType::RESOURCE, 4, ResourceType::GOLD, new Vector3(-50, 0, 45), SpacingType::CONSTANT, 1));
+	simCommandList->add(new SimulationCommand(ObjectType::RESOURCE, 4, ResourceType::STONE, new Vector3(50, 0, 25), SpacingType::CONSTANT, 1));
+	simCommandList->add(new SimulationCommand(ObjectType::RESOURCE, 9, ResourceType::WOOD, new Vector3(40, 0, 0), SpacingType::CONSTANT, 1));
 }
 
 

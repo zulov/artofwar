@@ -9,7 +9,7 @@ class ResourceFactory :public EntityFactory
 public:
 	ResourceFactory();
 	~ResourceFactory();
-	std::vector<ResourceEntity*>* create(unsigned number, ResourceType resourceType, Vector3* center, SpacingType spacing);
+	std::vector<ResourceEntity*>* create(unsigned number, int id, Vector3* center, SpacingType spacing);
 private:
 	double spaceCoef = 7;
 };

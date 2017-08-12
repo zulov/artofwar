@@ -11,3 +11,11 @@ Player::Player(int nationId, int team) {
 Player::~Player() {
 
 }
+
+int Player::getNation() {
+	return dbNation->id;
+}
+
+int Player::getTeam() {
+	return team;
+}

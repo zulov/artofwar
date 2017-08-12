@@ -60,10 +60,13 @@ Hud::Hud() {
 	
 	replaceVariables(style, graphSettings->hud_size);
 
+	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
+
 	createMenu();
-	createBuild();
+	createBuild(nation);
+	createUnits(nation);
 	createTop();
-	createUnits();
+	
 	createSelectedInfo();
 	createMyDebugHud();
 	createMiniMap();
@@ -110,24 +113,25 @@ void Hud::createMenu() {
 	lists->push_back(hudElement);
 }
 
-void Hud::createBuild() {
+void Hud::createBuild(int nation) {
 	buildWindow = createWindow("BuildWindow");
-	createBuildingIcons();
+	createBuildingIcons(nation);
 }
 
-void Hud::createUnits() {
+void Hud::createUnits(int nation) {
 	unitsWindow = createWindow("UnitsWindow");
-	createUnitIcons();
+	createUnitIcons(nation);
 }
 
-void Hud::createBuildingIcons() {
+void Hud::createBuildingIcons(int nation) {
 	int size = Game::get()->getDatabaseCache()->getBuildingSize();//TODO pobrac tylko dla nation
 	ListView* panel = buildWindow->CreateChild<ListView>();
 	panel->SetStyle("MyListView", style);
 
 	for (int i = 0; i < size; ++i) {
-		db_building* buidling = Game::get()->getDatabaseCache()->getBuilding(i);
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + buidling->icon);
+		db_building* building = Game::get()->getDatabaseCache()->getBuilding(i);
+		if (building == nullptr || building->nation != nation) { continue; }
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + building->icon);
 
 		MySprite* sprite = createSprite(texture, style, "Sprite");
 		Button* button = simpleButton(sprite, style, "Icon");
@@ -141,17 +145,18 @@ void Hud::createBuildingIcons() {
 	}
 }
 
-void Hud::createUnitIcons() {
+void Hud::createUnitIcons(int nation) {
 	int size = Game::get()->getDatabaseCache()->getUnitSize();//TODO pobrac tylko dla nation i budynku
 	ListView* panel = unitsWindow->CreateChild<ListView>();
 	panel->SetStyle("MyListView", style);
 
 	for (int i = 0; i < size; ++i) {
 		db_unit* unit = Game::get()->getDatabaseCache()->getUnit(i);
+		if (unit == nullptr || unit->nation != nation) { continue; }
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
 		MySprite* sprite = createSprite(texture, style, "Sprite");
-		Button* button = simpleButton(sprite, style,  "Icon");
+		Button* button = simpleButton(sprite, style, "Icon");
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setUnitType(UnitType(i));
@@ -197,7 +202,7 @@ void Hud::createConsole() {
 
 void Hud::createMyDebugHud() {
 	myDebugHud = createWindow("MyDebugHudWindow");
-	
+
 	fpsText = myDebugHud->CreateChild<Text>();
 	fpsText->SetStyle("MyText", style);
 }

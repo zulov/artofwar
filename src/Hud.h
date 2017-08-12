@@ -52,8 +52,8 @@ private:
 	Window * createWindow(const String& styleName);
 
 	void createMenu();
-	void createBuild();
-	void createUnits();
+	void createBuild(int nation);
+	void createUnits(int nation);
 	void createTop();
 	void createSelectedInfo();
 	void createMiniMap();
@@ -73,8 +73,8 @@ private:
 	std::vector<Window*>* windows;
 	db_graph_settings* graphSettings;
 	XMLFile* style;
-	void createBuildingIcons();
-	void createUnitIcons();
+	void createBuildingIcons(int nation);
+	void createUnitIcons(int nation);
 	template <std::size_t SIZE>
 	void populateList(DropDownList* dropDownList, std::array<String, SIZE> elements);
 

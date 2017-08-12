@@ -88,20 +88,20 @@ std::vector<ResourceEntity*>* SimulationObjectManager::getResources() {
 	return resources;
 }
 
-void SimulationObjectManager::addUnits(unsigned int number, UnitType unitType, Vector3* center, SpacingType spacingType, int player) {
-	std::vector<Unit*>* newUnits = unitFactory->create(number, unitType, center, spacingType, player);
+void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* center, SpacingType spacingType, int player) {
+	std::vector<Unit*>* newUnits = unitFactory->create(number, id, center, spacingType, player);
 	addAll(newUnits);
 	delete newUnits;
 }
 
-void SimulationObjectManager::addBuildings(unsigned int number, BuildingType buildingType, Vector3* center, SpacingType spacingType, int player) {
-	std::vector<Building*>* newBuildings = buildingFactory->create(number, buildingType, center, spacingType);
+void SimulationObjectManager::addBuildings(unsigned int number, int id, Vector3* center, SpacingType spacingType, int player) {
+	std::vector<Building*>* newBuildings = buildingFactory->create(number, id, center, spacingType);
 	addAll(newBuildings);
 	delete newBuildings;
 }
 
-void SimulationObjectManager::addResources(unsigned number, ResourceType resourceType, Vector3* center, SpacingType spacingType) {
-	std::vector<ResourceEntity*>* newResources = resourceFactory->create(number, resourceType, center, spacingType);
+void SimulationObjectManager::addResources(unsigned number, int id, Vector3* center, SpacingType spacingType) {
+	std::vector<ResourceEntity*>* newResources = resourceFactory->create(number, id, center, spacingType);
 	addAll(newResources);
 	delete newResources;
 }
