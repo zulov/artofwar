@@ -34,7 +34,11 @@ void Main::Start() {
 	game->setPlayersManager(new PlayersManager());
 	hud = new Hud();
 
-	for (HudElement* hudElement : *(hud->getButtonsToSubscribe())) {
+	for (HudElement* hudElement : *(hud->getButtonsBuildToSubscribe())) {
+		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleUIButtton));
+	}
+
+	for (HudElement* hudElement : *(hud->getButtonsUnitsToSubscribe())) {
 		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleUIButtton));
 	}
 

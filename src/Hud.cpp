@@ -51,142 +51,43 @@ void Hud::replaceVariables(XMLFile* xmlFile, int hudSizeId) {
 	delete values;
 }
 
+void Hud::createCursor() {
+	SharedPtr<Cursor> cursor(new Cursor(Game::get()->getContext()));
+	cursor->SetStyleAuto(style);
+	Game::get()->getUI()->SetCursor(cursor);
+	cursor->SetPosition(Game::get()->getGraphics()->GetWidth() / 2, Game::get()->getGraphics()->GetHeight() / 2);
+}
+
 Hud::Hud() {
 	buttons = new std::vector<HudElement*>();
 	lists = new std::vector<HudElement*>();
 	windows = new std::vector<Window*>();
 	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
 	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->style);
-	
+
 	replaceVariables(style, graphSettings->hud_size);
+
+	createCursor();
 
 	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
 
-	createMenu();
-	createBuild(nation);
-	createUnits(nation);
-	createTop();
-	
-	createSelectedInfo();
-	createMyDebugHud();
-	createMiniMap();
+	selectedHudPanel = new SelectedHudPanel(style);
+	buildPanel = new BuildPanel(style, nation);
+	unitsPanel = new UnitsPanel(style, nation);
+	debugPanel = new DebugPanel(style);
+	topPanel = new TopPanel(style);
+	miniMapPanel = new MiniMapPanel(style);
+	menuPanel = new MenuPanel(style);
 
-	SharedPtr<Cursor> cursor(new Cursor(Game::get()->getContext()));
-	cursor->SetStyleAuto(style);
-	Game::get()->getUI()->SetCursor(cursor);
-
-	cursor->SetPosition(Game::get()->getGraphics()->GetWidth() / 2, Game::get()->getGraphics()->GetHeight() / 2);
-	selectedHudPanel = new SelectedHudPanel(style, selectedInfoWindow);
+	windows->push_back(menuPanel->createWindow("MenuWindow"));
+	windows->push_back(buildPanel->createWindow("BuildWindow"));
+	windows->push_back(unitsPanel->createWindow("UnitsWindow"));
+	windows->push_back(miniMapPanel->createWindow("MiniMapWindow"));
+	windows->push_back(debugPanel->createWindow("MyDebugHudWindow"));
+	windows->push_back(topPanel->createWindow("TopWindow"));
 }
 
 Hud::~Hud() {
-}
-
-template <std::size_t SIZE>
-void Hud::populateList(DropDownList* dropDownList, std::array<String, SIZE> elements) {
-	for (String mode : elements) {
-		Text* text = new Text(Game::get()->getContext());
-		text->SetText(mode);
-		text->SetStyle("MyText", style);
-		dropDownList->AddItem(text);
-	}
-}
-
-void Hud::initDropDownList(DropDownList* dropDownList) {
-	dropDownList->SetStyle("MyDropDown", style);
-
-	menuWindow->AddChild(dropDownList);
-}
-
-void Hud::createMenu() {
-	menuWindow = createWindow("MenuWindow");
-
-	DropDownList* dropDownList = new DropDownList(Game::get()->getContext());
-
-	std::array<String, 3> modes{{"Select","Build","Deploy"}};
-	populateList(dropDownList, modes);
-
-	initDropDownList(dropDownList);
-
-	HudElement* hudElement = new HudElement(dropDownList);
-	dropDownList->SetVar("HudElement", hudElement);
-	lists->push_back(hudElement);
-}
-
-void Hud::createBuild(int nation) {
-	buildWindow = createWindow("BuildWindow");
-	createBuildingIcons(nation);
-}
-
-void Hud::createUnits(int nation) {
-	unitsWindow = createWindow("UnitsWindow");
-	createUnitIcons(nation);
-}
-
-void Hud::createBuildingIcons(int nation) {
-	int size = Game::get()->getDatabaseCache()->getBuildingSize();//TODO pobrac tylko dla nation
-	ListView* panel = buildWindow->CreateChild<ListView>();
-	panel->SetStyle("MyListView", style);
-
-	for (int i = 0; i < size; ++i) {
-		db_building* building = Game::get()->getDatabaseCache()->getBuilding(i);
-		if (building == nullptr || building->nation != nation) { continue; }
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + building->icon);
-
-		MySprite* sprite = createSprite(texture, style, "Sprite");
-		Button* button = simpleButton(sprite, style, "Icon");
-
-		HudElement* hudElement = new HudElement(button);
-		hudElement->setBuildingType(BuildingType(i));
-
-		button->SetVar("HudElement", hudElement);
-		buttons->push_back(hudElement);
-		panel->AddItem(button);
-	}
-}
-
-void Hud::createUnitIcons(int nation) {
-	int size = Game::get()->getDatabaseCache()->getUnitSize();//TODO pobrac tylko dla nation i budynku
-	ListView* panel = unitsWindow->CreateChild<ListView>();
-	panel->SetStyle("MyListView", style);
-
-	for (int i = 0; i < size; ++i) {
-		db_unit* unit = Game::get()->getDatabaseCache()->getUnit(i);
-		if (unit == nullptr || unit->nation != nation) { continue; }
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
-
-		MySprite* sprite = createSprite(texture, style, "Sprite");
-		Button* button = simpleButton(sprite, style, "Icon");
-
-		HudElement* hudElement = new HudElement(button);
-		hudElement->setUnitType(UnitType(i));
-		button->SetVar("HudElement", hudElement);
-		buttons->push_back(hudElement);
-		panel->AddItem(button);
-	}
-}
-
-void Hud::createTop() {
-	topWindow = createWindow("TopWindow");
-
-	int size = Game::get()->getDatabaseCache()->getResourceSize();
-	for (int i = 0; i < size; ++i) {
-		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + resource->icon);
-
-		MySprite* sprite = createSprite(texture, style, "SpriteLeft");
-		Button* button = simpleButton(sprite, style, "TopButtons");
-
-		topWindow->AddChild(button);
-	}
-}
-
-void Hud::createSelectedInfo() {
-	selectedInfoWindow = createWindow("SelectedInfoWindow");
-}
-
-void Hud::createMiniMap() {
-	miniMapWindow = createWindow("MiniMapWindow");
 }
 
 void Hud::createDebugHud() {
@@ -200,13 +101,6 @@ void Hud::createConsole() {
 	console->GetBackground()->SetOpacity(0.8f);
 }
 
-void Hud::createMyDebugHud() {
-	myDebugHud = createWindow("MyDebugHudWindow");
-
-	fpsText = myDebugHud->CreateChild<Text>();
-	fpsText->SetStyle("MyText", style);
-}
-
 void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {
 	Urho3D::String msg = "FPS: " + String(benchmark->getLastFPS());
 	msg += "\navg FPS: " + String(benchmark->getAverageFPS());
@@ -214,15 +108,19 @@ void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {
 	msg += "\nCamera: ";
 	msg += "\n\t" + cameraManager->getInfo();
 
-	fpsText->SetText(msg);
+	debugPanel->setText(msg);
 }
 
-std::vector<HudElement*>* Hud::getButtonsToSubscribe() {
-	return buttons;
+std::vector<HudElement*>* Hud::getButtonsBuildToSubscribe() {
+	return buildPanel->getButtons();
+}
+
+std::vector<HudElement*>* Hud::getButtonsUnitsToSubscribe() {
+	return unitsPanel->getButtons();
 }
 
 std::vector<HudElement*>* Hud::getListsToSubscribe() {
-	return lists;
+	return menuPanel->getLists();
 }
 
 std::vector<Window*>* Hud::getWindows() {
@@ -232,19 +130,19 @@ std::vector<Window*>* Hud::getWindows() {
 void Hud::updateState(ControlsState state) {
 	switch (state) {
 	case SELECT:
-		buildWindow->SetVisible(false);
-		unitsWindow->SetVisible(false);
-		selectedInfoWindow->SetVisible(true);
+		buildPanel->setVisible(false);
+		unitsPanel->setVisible(false);
+		//selectedInfoWindow->SetVisible(true);
 		break;
 	case BUILD:
-		buildWindow->SetVisible(true);
-		unitsWindow->SetVisible(false);
-		selectedInfoWindow->SetVisible(false);
+		buildPanel->setVisible(true);
+		unitsPanel->setVisible(false);
+		//selectedInfoWindow->SetVisible(false);
 		break;
 	case DEPLOY:
-		buildWindow->SetVisible(false);
-		unitsWindow->SetVisible(true);
-		selectedInfoWindow->SetVisible(false);
+		buildPanel->setVisible(false);
+		unitsPanel->setVisible(true);
+		//selectedInfoWindow->SetVisible(false);
 		break;
 	default: ;
 	}
@@ -258,12 +156,4 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a ster
 
 std::vector<Button*>* Hud::getButtonsSelectedToSubscribe() {
 	return selectedHudPanel->getButtonsSelectedToSubscribe();
-}
-
-Window* Hud::createWindow(const String& styleName) {
-	Window* window = new Window(Game::get()->getContext());
-	windows->push_back(window);
-	window->SetStyle(styleName, style);
-	Game::get()->getUI()->GetRoot()->AddChild(window);
-	return window;
 }

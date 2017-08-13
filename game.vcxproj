@@ -188,6 +188,7 @@
   <ItemGroup>
     <ClCompile Include="src\AbstractCommand.cpp" />
     <ClCompile Include="src\AbstractObjectManager.cpp" />
+    <ClCompile Include="src\AbstractWindowPanel.cpp" />
     <ClCompile Include="src\ActionCommand.cpp" />
     <ClCompile Include="src\ActionCommandList.cpp" />
     <ClCompile Include="src\ActionParameter.cpp" />
@@ -202,12 +203,16 @@
     <ClCompile Include="src\Building.cpp" />
     <ClCompile Include="src\BuildingFactory.cpp" />
     <ClCompile Include="src\BuildList.cpp" />
+    <ClCompile Include="src\BuildPanel.cpp" />
     <ClCompile Include="src\CameraBehave.cpp" />
     <ClCompile Include="src\CameraManager.cpp" />
     <ClCompile Include="src\DatabaseCache.cpp" />
+    <ClCompile Include="src\DebugPanel.cpp" />
     <ClCompile Include="src\FollowState.cpp" />
     <ClCompile Include="src\Gradient.cpp" />
     <ClCompile Include="src\HudElement.cpp" />
+    <ClCompile Include="src\MenuPanel.cpp" />
+    <ClCompile Include="src\MiniMapPanel.cpp" />
     <ClCompile Include="src\MySprite.cpp" />
     <ClCompile Include="src\OperatorType.h" />
     <ClCompile Include="src\Physical.cpp" />
@@ -235,6 +240,7 @@
     <ClCompile Include="src\State.cpp" />
     <ClCompile Include="src\StateManager.cpp" />
     <ClCompile Include="src\StopState.cpp" />
+    <ClCompile Include="src\TopPanel.cpp" />
     <ClCompile Include="src\UnitFactory.cpp" />
     <ClCompile Include="src\EnviromentStrategy.cpp" />
     <ClCompile Include="src\ForceStrategy.cpp" />
@@ -245,10 +251,12 @@
     <ClCompile Include="src\Unit.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
+    <ClCompile Include="src\UnitsPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AbstractCommand.h" />
     <ClInclude Include="src\AbstractObjectManager.h" />
+    <ClInclude Include="src\AbstractWindowPanel.h" />
     <ClInclude Include="src\ActionCommand.h" />
     <ClInclude Include="src\ActionCommandList.h" />
     <ClInclude Include="src\ActionParameter.h" />
@@ -265,15 +273,19 @@
     <ClInclude Include="src\BuildingFactory.h" />
     <ClInclude Include="src\BuildingType.h" />
     <ClInclude Include="src\BuildList.h" />
+    <ClInclude Include="src\BuildPanel.h" />
     <ClInclude Include="src\ButtonUtils.h" />
     <ClInclude Include="src\CameraBehave.h" />
     <ClInclude Include="src\CameraEnums.h" />
     <ClInclude Include="src\CameraManager.h" />
     <ClInclude Include="src\DatabaseCache.h" />
     <ClInclude Include="src\db_strcut.h" />
+    <ClInclude Include="src\DebugPanel.h" />
     <ClInclude Include="src\FollowState.h" />
     <ClInclude Include="src\Gradient.h" />
     <ClInclude Include="src\HudElement.h" />
+    <ClInclude Include="src\MenuPanel.h" />
+    <ClInclude Include="src\MiniMapPanel.h" />
     <ClInclude Include="src\MySprite.h" />
     <ClInclude Include="src\Physical.h" />
     <ClInclude Include="src\Player.h" />
@@ -305,6 +317,7 @@
     <ClInclude Include="src\State.h" />
     <ClInclude Include="src\StateManager.h" />
     <ClInclude Include="src\StopState.h" />
+    <ClInclude Include="src\TopPanel.h" />
     <ClInclude Include="src\UnitFactory.h" />
     <ClInclude Include="src\EnviromentStrategy.h" />
     <ClInclude Include="src\ForceStrategy.h" />
@@ -315,6 +328,7 @@
     <ClInclude Include="src\Unit.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\Simulation.h" />
+    <ClInclude Include="src\UnitsPanel.h" />
     <ClInclude Include="src\UnitStateType.h" />
     <ClInclude Include="src\UnitType.h" />
     <ClInclude Include="src\utils.h" />

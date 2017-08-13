@@ -5,7 +5,7 @@
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Physical*>();
-	selected->reserve(4000);
+	selected->reserve(5000);
 
 
 	leftHeld = new std::pair<Vector3*, Vector3*>();
@@ -78,7 +78,6 @@ void Controls::select(Physical* entity) {
 	selectedInfo->setSelectedType(selectedType);
 	selectedInfo->setAllNumber(selected->size());
 	selectedInfo->select(entity);
-
 }
 
 void Controls::controlEntity(Vector3& hitPos, bool ctrlPressed, Physical* clicked) {

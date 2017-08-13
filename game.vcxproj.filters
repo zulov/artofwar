@@ -158,13 +158,34 @@
       <Filter>control</Filter>
     </ClCompile>
     <ClCompile Include="src\SelectedHudElement.cpp">
-      <Filter>hud\select</Filter>
+      <Filter>hud\windows\select</Filter>
     </ClCompile>
     <ClCompile Include="src\SelectedHudPanel.cpp">
-      <Filter>hud\select</Filter>
+      <Filter>hud\windows\select</Filter>
     </ClCompile>
     <ClCompile Include="src\MySprite.cpp">
       <Filter>hud</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AbstractWindowPanel.cpp">
+      <Filter>hud\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BuildPanel.cpp">
+      <Filter>hud\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnitsPanel.cpp">
+      <Filter>hud\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MenuPanel.cpp">
+      <Filter>hud\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MiniMapPanel.cpp">
+      <Filter>hud\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TopPanel.cpp">
+      <Filter>hud\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DebugPanel.cpp">
+      <Filter>hud\windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -353,13 +374,34 @@
       <Filter>control</Filter>
     </ClInclude>
     <ClInclude Include="src\SelectedHudElement.h">
-      <Filter>hud\select</Filter>
+      <Filter>hud\windows\select</Filter>
     </ClInclude>
     <ClInclude Include="src\SelectedHudPanel.h">
-      <Filter>hud\select</Filter>
+      <Filter>hud\windows\select</Filter>
     </ClInclude>
     <ClInclude Include="src\MySprite.h">
       <Filter>hud</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AbstractWindowPanel.h">
+      <Filter>hud\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BuildPanel.h">
+      <Filter>hud\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnitsPanel.h">
+      <Filter>hud\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MenuPanel.h">
+      <Filter>hud\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MiniMapPanel.h">
+      <Filter>hud\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TopPanel.h">
+      <Filter>hud\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DebugPanel.h">
+      <Filter>hud\windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -433,7 +475,10 @@
     <Filter Include="objects\state">
       <UniqueIdentifier>{e7772225-aee1-486b-be4d-501a5eb7d027}</UniqueIdentifier>
     </Filter>
-    <Filter Include="hud\select">
+    <Filter Include="hud\windows">
+      <UniqueIdentifier>{37364c93-315d-4265-8b8b-a7336b20a4cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hud\windows\select">
       <UniqueIdentifier>{3a84c391-3576-4bf1-8923-bcff059dde54}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

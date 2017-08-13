@@ -23,12 +23,18 @@
 #include <Urho3D/UI/ListView.h>
 #include "CameraManager.h"
 #include "Benchmark.h"
-#include <array>
+
 #include "HudElement.h"
 #include "db_strcut.h"
 #include "ControlsState.h"
 #include "SelectedInfo.h"
 #include "SelectedHudPanel.h"
+#include "BuildPanel.h"
+#include "UnitsPanel.h"
+#include "DebugPanel.h"
+#include "MenuPanel.h"
+#include "TopPanel.h"
+#include "MiniMapPanel.h"
 
 using namespace Urho3D;
 
@@ -36,47 +42,34 @@ class Hud
 {
 public:
 	void replaceVariables(XMLFile* xmlFile, int hudSizeId);
+	void createCursor();
 	Hud();
 	~Hud();
 	void createDebugHud();
 	void createConsole();
-	void createMyDebugHud();
 	void updateHud(Benchmark* benchmark, CameraManager* cameraManager);
-	std::vector<HudElement*>* getButtonsToSubscribe();
+	std::vector<HudElement*>* getButtonsBuildToSubscribe();
+	std::vector<HudElement*>* getButtonsUnitsToSubscribe();
 	std::vector<HudElement*>* getListsToSubscribe();
 	std::vector<Window*>* getWindows();
 	void updateState(ControlsState state);
 	void updateSelected(SelectedInfo* selectedInfo);
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
 private:
-	Window * createWindow(const String& styleName);
-
-	void createMenu();
-	void createBuild(int nation);
-	void createUnits(int nation);
-	void createTop();
-	void createSelectedInfo();
-	void createMiniMap();
-	Window* menuWindow;
-	Window* miniMapWindow;
-	Window* topWindow;
-	Window* buildWindow;//TODO uwspolnic z jednostkmai menu, sterowac tylko widocznoscia
-	Window* unitsWindow;
-	Window* selectedInfoWindow;
-	Window* myDebugHud;
 
 	SelectedHudPanel * selectedHudPanel;
+	BuildPanel * buildPanel;
+	UnitsPanel * unitsPanel;
+	DebugPanel *debugPanel;
+	TopPanel * topPanel;
+	MiniMapPanel * miniMapPanel;
+	MenuPanel * menuPanel;
 
-	Text* fpsText;
 	std::vector<HudElement*>* buttons;
 	std::vector<HudElement*>* lists;
 	std::vector<Window*>* windows;
 	db_graph_settings* graphSettings;
 	XMLFile* style;
-	void createBuildingIcons(int nation);
-	void createUnitIcons(int nation);
-	template <std::size_t SIZE>
-	void populateList(DropDownList* dropDownList, std::array<String, SIZE> elements);
+	
 
-	void initDropDownList(DropDownList* dropDownList);
 };

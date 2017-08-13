@@ -1,9 +1,8 @@
 #include "SelectedHudPanel.h"
 
 
-SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style, Window* _window) {
-	style = _style;
-	window = _window;
+SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style):AbstractWindowPanel(_style) {
+	window = createWindow("SelectedInfoWindow");
 	IntVector2 windowMaxSize = window->GetMaxSize();
 	elements = new SelectedHudElement*[LINES_IN_SELECTION * MAX_ICON_SELECTION];
 	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
@@ -41,6 +40,9 @@ void SelectedHudPanel::hide() {
 
 std::vector<Button*>* SelectedHudPanel::getButtonsSelectedToSubscribe() {
 	return buttons;
+}
+
+void SelectedHudPanel::createBody() {
 }
 
 String SelectedHudPanel::getName(ObjectType index, int i) {
