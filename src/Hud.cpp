@@ -157,3 +157,11 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a ster
 std::vector<Button*>* Hud::getButtonsSelectedToSubscribe() {
 	return selectedHudPanel->getButtonsSelectedToSubscribe();
 }
+
+void Hud::hoverOnIcon(HudElement* hudElement) {
+	menuPanel->setInfo(hudElement);
+}
+
+void Hud::hoverOffIcon(HudElement* hudElement) {
+	menuPanel->removeInfo();
+}

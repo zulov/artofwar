@@ -75,6 +75,8 @@ private:
 	void CreateConsoleAndDebugHud();
 	void HandleMouseModeRequest(StringHash eventType, VariantMap& eventData);
 	void HandleMouseModeChange(StringHash eventType, VariantMap& eventData);
+	void HandleUIButttonHoverOn(StringHash, VariantMap& eventData);
+	void HandleUIButttonHoverOff(StringHash, VariantMap& eventData);
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
 	void HandleUIButtton(StringHash eventType, VariantMap& eventData);

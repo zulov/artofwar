@@ -14,6 +14,7 @@ public:
 	void populate(db_resource* _dbResource);
 	bool isInGrandient();
 	void setInGradinet(bool _inGradient);
+	double getHealthBarSize() override;
 private:
 	String * name;
 	db_resource * dbResource;

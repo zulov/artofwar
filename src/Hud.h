@@ -55,6 +55,8 @@ public:
 	void updateState(ControlsState state);
 	void updateSelected(SelectedInfo* selectedInfo);
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
+	void hoverOnIcon(HudElement* hudElement);
+	void hoverOffIcon(HudElement* hudElement);
 private:
 
 	SelectedHudPanel * selectedHudPanel;

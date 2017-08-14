@@ -83,6 +83,27 @@ int static loadBuildingToUnit(void* data, int argc, char** argv, char** azColNam
 
 	return 0;
 }
+
+int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int unitId = atoi(argv[3]);
+	int resourceId = atoi(argv[1]);
+	db_resource* dbResource = xyz->resources[resourceId];
+	xyz->costForUnit[unitId]->push_back(new db_unit_cost(atoi(argv[0]), resourceId, atoi(argv[2]), unitId, dbResource->name));
+
+	return 0;
+}
+
+int static loadCostBuilding(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int buildingId = atoi(argv[3]);
+	int resourceId = atoi(argv[1]);
+	db_resource* dbResource = xyz->resources[resourceId];
+	xyz->costForBuilding[buildingId]->push_back(new db_building_cost(atoi(argv[0]), resourceId, atoi(argv[2]), buildingId, dbResource->name));
+
+	return 0;
+}
+
 void DatabaseCache::ifError(int rc, char* error) {
 	if (rc != SQLITE_OK) {
 		fprintf(stderr, "SQL error: %s\n", error);
@@ -115,6 +136,8 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from resource", loadResource, dbContainer);
 	execute("SELECT * from hud_size_vars", loadHudVars, dbContainer);
 	execute("SELECT * from building_to_unit", loadBuildingToUnit, dbContainer);
+	execute("SELECT * from cost_building", loadCostBuilding, dbContainer);
+	execute("SELECT * from cost_unit", loadCostUnit, dbContainer);
 
 
 	sqlite3_close(database);
@@ -187,4 +210,12 @@ int DatabaseCache::getUnitSize() {
 
 std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) {
 	return dbContainer->unitsForBuilding[id];
+}
+
+std::vector<db_unit_cost*>* DatabaseCache::getCostForUnit(int id) {
+	return dbContainer->costForUnit[id];
+}
+
+std::vector<db_building_cost*>* DatabaseCache::getCostForBuilding(int id) {
+	return dbContainer->costForBuilding[id];
 }

@@ -14,9 +14,6 @@
     <ClCompile Include="src\RtsCameraBehave.cpp">
       <Filter>camera\behave</Filter>
     </ClCompile>
-    <ClCompile Include="src\Building.cpp">
-      <Filter>objects</Filter>
-    </ClCompile>
     <ClCompile Include="src\Entity.cpp">
       <Filter>objects</Filter>
     </ClCompile>
@@ -127,9 +124,6 @@
     <ClCompile Include="src\SelectedInfo.cpp">
       <Filter>control</Filter>
     </ClCompile>
-    <ClCompile Include="src\ResourceEntity.cpp">
-      <Filter>objects</Filter>
-    </ClCompile>
     <ClCompile Include="src\ResourceFactory.cpp">
       <Filter>objects\collection\factory</Filter>
     </ClCompile>
@@ -187,6 +181,12 @@
     <ClCompile Include="src\DebugPanel.cpp">
       <Filter>hud\windows</Filter>
     </ClCompile>
+    <ClCompile Include="src\ResourceEntity.cpp">
+      <Filter>objects\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Building.cpp">
+      <Filter>objects\building</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -204,9 +204,6 @@
     </ClInclude>
     <ClInclude Include="src\RtsCameraBehave.h">
       <Filter>camera\behave</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Building.h">
-      <Filter>objects</Filter>
     </ClInclude>
     <ClInclude Include="src\Entity.h">
       <Filter>objects</Filter>
@@ -257,7 +254,6 @@
       <Filter>command</Filter>
     </ClInclude>
     <ClInclude Include="src\Mediator.h" />
-    <ClInclude Include="src\ControlsState.h" />
     <ClInclude Include="src\BuildList.h">
       <Filter>command\list</Filter>
     </ClInclude>
@@ -297,9 +293,6 @@
     <ClInclude Include="src\DatabaseCache.h">
       <Filter>database</Filter>
     </ClInclude>
-    <ClInclude Include="src\BuildingType.h">
-      <Filter>objects</Filter>
-    </ClInclude>
     <ClInclude Include="src\SpacingType.h">
       <Filter>objects\collection</Filter>
     </ClInclude>
@@ -333,10 +326,6 @@
     <ClInclude Include="src\SelectedInfo.h">
       <Filter>control</Filter>
     </ClInclude>
-    <ClInclude Include="src\ResourceEntity.h">
-      <Filter>objects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceType.h" />
     <ClInclude Include="src\ResourceFactory.h">
       <Filter>objects\collection\factory</Filter>
     </ClInclude>
@@ -402,6 +391,21 @@
     </ClInclude>
     <ClInclude Include="src\DebugPanel.h">
       <Filter>hud\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ControlsState.h">
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceType.h">
+      <Filter>objects\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ResourceEntity.h">
+      <Filter>objects\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BuildingType.h">
+      <Filter>objects\building</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Building.h">
+      <Filter>objects\building</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -480,6 +484,12 @@
     </Filter>
     <Filter Include="hud\windows\select">
       <UniqueIdentifier>{3a84c391-3576-4bf1-8923-bcff059dde54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects\resource">
+      <UniqueIdentifier>{ead220a6-65e9-45b1-a315-eaba19c3fed7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="objects\building">
+      <UniqueIdentifier>{9c6253a0-711a-4ff1-9abc-2399f8935363}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

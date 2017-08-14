@@ -182,6 +182,40 @@ struct db_hud_vars
 	}
 };
 
+struct db_unit_cost
+{
+	int id;
+	int resource;
+	int value;
+	int unit;
+	Urho3D::String resourceName;
+
+	db_unit_cost(int id, int resource, int value, int unit, Urho3D::String resourceName)
+		: id(id),
+		resource(resource),
+		value(value),
+		unit(unit),
+		resourceName(resourceName) {
+	}
+};
+
+struct db_building_cost
+{
+	int id;
+	int resource;
+	int value;
+	int building;
+	Urho3D::String resourceName;
+
+	db_building_cost(int id, int resource, int value, int building, Urho3D::String resourceName)
+		: id(id),
+		resource(resource),
+		value(value),
+		building(building),
+		resourceName(resourceName) {
+	}
+};
+
 struct db_container
 {
 	db_unit* units[UNITS_NUMBER_DB];
@@ -194,6 +228,8 @@ struct db_container
 	db_resource* resources[RESOURCE_NUMBER_DB];
 	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB];
 	std::vector<db_unit*>* unitsForBuilding[BULDINGS_NUMBER_DB];
+	std::vector<db_building_cost*>* costForBuilding[BULDINGS_NUMBER_DB];
+	std::vector<db_unit_cost*>* costForUnit[UNITS_NUMBER_DB];
 
 	int units_size = 0;
 	int hud_size_size = 0;
@@ -210,6 +246,12 @@ struct db_container
 		for (int i = 0; i < BULDINGS_NUMBER_DB; ++i) {
 			unitsForBuilding[i] = new std::vector<db_unit*>();
 			unitsForBuilding[i]->reserve(10);
+			costForBuilding[i] = new std::vector<db_building_cost*>();
+			costForBuilding[i]->reserve(10);
+		}
+		for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
+			costForUnit[i] = new std::vector<db_unit_cost*>();
+			costForUnit[i]->reserve(10);
 		}
 	}
 };

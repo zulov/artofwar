@@ -266,18 +266,9 @@ void Controls::updateState(ControlsState state) {
 }
 
 void Controls::hudAction(HudElement* hud) {
-	if (hud->isBuildType1()) {
-		BuildingType type = hud->getBuildingType();
-		if (state == ControlsState::BUILD) {
-			toBuild = type;
-		}
-	}
-	if (hud->isUnitType1()) {
-		UnitType type = hud->getUnitType();
-		if (state == ControlsState::DEPLOY) {
-			toDeploy = type;
-		}
-	}
+	typeToCreate = hud->getType();
+	idToCreate = hud->getId();
+	
 }
 
 void Controls::clickDownRight(Vector3& hitPos) {
@@ -328,12 +319,12 @@ void Controls::clickDown(const int button) {
 }
 
 void Controls::build(Vector3* pos) {
-	SimulationCommand* simulationCommand = new SimulationCommand(ObjectType::BUILDING, 1, toBuild, pos, SpacingType::CONSTANT, 0);//TODO pobrac parametry z jakiegos zrod³a
+	SimulationCommand* simulationCommand = new SimulationCommand(ObjectType::BUILDING, 1, idToCreate, pos, SpacingType::CONSTANT, 0);//TODO pobrac parametry z jakiegos zrod³a
 	Game::get()->getSimCommandList()->add(simulationCommand);
 }
 
 void Controls::deploy(Vector3* pos) {
-	SimulationCommand* simulationCommand = new SimulationCommand(ObjectType::UNIT, 10, toDeploy, pos, SpacingType::CONSTANT, 0);
+	SimulationCommand* simulationCommand = new SimulationCommand(ObjectType::UNIT, 10, idToCreate, pos, SpacingType::CONSTANT, 0);
 	Game::get()->getSimCommandList()->add(simulationCommand);
 }
 

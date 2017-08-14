@@ -72,6 +72,15 @@ CREATE TABLE "cost_unit" (
 	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
 	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
 );
+CREATE TABLE `cost_building` (
+	`id`	INTEGER,
+	`resource`	INTEGER,
+	`value`	INTEGER,
+	`building`	INTEGER,
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
+	FOREIGN KEY(`building`) REFERENCES `building`(`id`)
+);
 CREATE TABLE `building_type` (
 	`id`	INTEGER,
 	`name`	TEXT,

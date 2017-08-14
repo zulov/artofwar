@@ -35,7 +35,7 @@ void BuildPanel::createBody() {
 		Button* button = simpleButton(sprite, style, "Icon");
 
 		HudElement* hudElement = new HudElement(button);
-		hudElement->setBuildingType(BuildingType(i));
+		hudElement->setId(i, ObjectType::BUILDING);
 
 		button->SetVar("HudElement", hudElement);
 		buttons->push_back(hudElement);

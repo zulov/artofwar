@@ -30,6 +30,8 @@ public:
 	int getBuildingSize();
 	int getUnitSize();
 	std::vector<db_unit*>* getUnitsForBuilding(int id);
+	std::vector<db_unit_cost*>* getCostForUnit(int id);
+	std::vector<db_building_cost*>* getCostForBuilding(int id);
 
 private:
 	db_container* dbContainer;

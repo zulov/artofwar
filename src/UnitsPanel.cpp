@@ -36,7 +36,8 @@ void UnitsPanel::createBody() {
 		Button* button = simpleButton(sprite, style, "Icon");
 
 		HudElement* hudElement = new HudElement(button);
-		hudElement->setUnitType(UnitType(i));
+		hudElement->setId(i, ObjectType::UNIT);
+
 		button->SetVar("HudElement", hudElement);
 		buttons->push_back(hudElement);
 		panel->AddItem(button);

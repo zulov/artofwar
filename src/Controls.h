@@ -73,8 +73,9 @@ private:
 	Input* input;
 	double clickDistance = 2 * 2;
 	ControlsState state = ControlsState::SELECT;
-	BuildingType toBuild;
-	UnitType toDeploy;
+
+	short idToCreate;
+	ObjectType typeToCreate;
 
 	SelectedInfo* selectedInfo;
 	bool active = true;
