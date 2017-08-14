@@ -10,11 +10,13 @@ class AbstractWindowPanel
 public:
 	AbstractWindowPanel(Urho3D::XMLFile* _style);
 	~AbstractWindowPanel();
-	Urho3D::Window * createWindow(const Urho3D::String& styleName);
+	Urho3D::String& getStyleName();
+	Urho3D::Window * createWindow();
 	void setVisible(bool enable);
 protected:
 	Urho3D::XMLFile* style;
 	Urho3D::Window * window;
+	Urho3D::String styleName;
 private:
 	virtual void createBody()=0;
 };

@@ -2,8 +2,24 @@
 
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style):AbstractWindowPanel(_style) {
-	window = createWindow("SelectedInfoWindow");
-	IntVector2 windowMaxSize = window->GetMaxSize();
+	styleName = "SelectedInfoWindow";
+}
+
+SelectedHudPanel::~SelectedHudPanel() {
+	delete buttons;
+}
+
+void SelectedHudPanel::hide() {
+	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
+		elements[i]->hide();
+	}
+}
+
+std::vector<Button*>* SelectedHudPanel::getButtonsSelectedToSubscribe() {
+	return buttons;
+}
+
+void SelectedHudPanel::createBody() {
 	elements = new SelectedHudElement*[LINES_IN_SELECTION * MAX_ICON_SELECTION];
 	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
 		elements[i] = new SelectedHudElement(style);
@@ -26,23 +42,6 @@ SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style):AbstractWindowPanel(
 	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
 		buttons->push_back(elements[i]->getButton());
 	}
-}
-
-SelectedHudPanel::~SelectedHudPanel() {
-	delete buttons;
-}
-
-void SelectedHudPanel::hide() {
-	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
-		elements[i]->hide();
-	}
-}
-
-std::vector<Button*>* SelectedHudPanel::getButtonsSelectedToSubscribe() {
-	return buttons;
-}
-
-void SelectedHudPanel::createBody() {
 }
 
 String SelectedHudPanel::getName(ObjectType index, int i) {

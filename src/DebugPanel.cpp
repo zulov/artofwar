@@ -2,6 +2,7 @@
 
 
 DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
+	styleName = "MyDebugHudWindow";
 }
 
 

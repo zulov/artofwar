@@ -3,6 +3,7 @@
 
 
 TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
+	styleName = "TopWindow";
 }
 
 

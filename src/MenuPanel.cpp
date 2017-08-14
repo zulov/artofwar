@@ -3,6 +3,7 @@
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
+	styleName = "MenuWindow";
 }
 
 

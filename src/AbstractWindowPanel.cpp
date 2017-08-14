@@ -11,15 +11,17 @@ AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style) {
 AbstractWindowPanel::~AbstractWindowPanel() {
 }
 
-Urho3D::Window* AbstractWindowPanel::createWindow(const Urho3D::String& styleName) {
+Urho3D::String& AbstractWindowPanel::getStyleName() {
+	return styleName;
+}
+
+Urho3D::Window* AbstractWindowPanel::createWindow() {
 	window = new Urho3D::Window(Game::get()->getContext());
-	//windows->push_back(window);
-	window->SetStyle(styleName, style);
+	window->SetStyle(getStyleName(), style);
 	Game::get()->getUI()->GetRoot()->AddChild(window);
 
 	createBody();
 	
-
 	return window;
 }
 

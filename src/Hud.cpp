@@ -79,12 +79,13 @@ Hud::Hud() {
 	miniMapPanel = new MiniMapPanel(style);
 	menuPanel = new MenuPanel(style);
 
-	windows->push_back(menuPanel->createWindow("MenuWindow"));
-	windows->push_back(buildPanel->createWindow("BuildWindow"));
-	windows->push_back(unitsPanel->createWindow("UnitsWindow"));
-	windows->push_back(miniMapPanel->createWindow("MiniMapWindow"));
-	windows->push_back(debugPanel->createWindow("MyDebugHudWindow"));
-	windows->push_back(topPanel->createWindow("TopWindow"));
+	windows->push_back(menuPanel->createWindow());
+	windows->push_back(buildPanel->createWindow());
+	windows->push_back(unitsPanel->createWindow());
+	windows->push_back(miniMapPanel->createWindow());
+	windows->push_back(debugPanel->createWindow());
+	windows->push_back(topPanel->createWindow());
+	windows->push_back(selectedHudPanel->createWindow());
 }
 
 Hud::~Hud() {
@@ -105,8 +106,7 @@ void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {
 	Urho3D::String msg = "FPS: " + String(benchmark->getLastFPS());
 	msg += "\navg FPS: " + String(benchmark->getAverageFPS());
 	msg += "\nLoops: " + String(benchmark->getLoops());
-	msg += "\nCamera: ";
-	msg += "\n\t" + cameraManager->getInfo();
+	msg += "\nCamera: \n\t" + cameraManager->getInfo();
 
 	debugPanel->setText(msg);
 }

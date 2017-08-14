@@ -7,6 +7,7 @@
 
 BuildPanel::BuildPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {
 	nation = _nation;
+	styleName = "BuildWindow";
 }
 
 

@@ -2,6 +2,7 @@
 
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
+	styleName = "MiniMapWindow";
 }
 
 

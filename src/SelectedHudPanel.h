@@ -17,7 +17,7 @@ public:
 	void updateSelected(SelectedInfo* selectedInfo);
 	void hide();
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
-
+	
 private:
 	void createBody() override;
 	short MAX_ICON_SELECTION = 31;
@@ -26,7 +26,6 @@ private:
 	int getSize(ObjectType type);
 	std::vector<Button*>* buttons;
 	SelectedHudElement** elements;
-	Window* window;
 	UIElement **test;
 };
 
