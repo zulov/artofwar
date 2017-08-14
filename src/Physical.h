@@ -33,7 +33,7 @@ protected:
 
 	Node* billboardNode;
 	Node* barNode;
-	Billboard* billboard;
+	Billboard* billboardBar;
 	Billboard* billboardShadow;
 	BillboardSet* billboardSetBar;
 	BillboardSet* billboardSetShadow;

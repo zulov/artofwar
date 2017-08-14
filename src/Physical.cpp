@@ -9,7 +9,7 @@ Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): E
 	for (int i = 0; i < BUCKET_SET_NUMBER; ++i) {
 		bucketZ[i] = bucketX[i] = INT_MIN;
 	}
-	
+
 	StaticModel* model = node->GetComponent<StaticModel>();
 	if (model && type != ENTITY && type != PHISICAL) {
 		billboardNode = node->CreateChild();
@@ -23,22 +23,22 @@ Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): E
 		billboardSetBar->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
 		billboardSetBar->SetSorted(true);
 
-		billboard = billboardSetBar->GetBillboard(0);
-		billboard->size_ = Vector2(2, 0.2);
-		billboard->position_ = Vector3(0, boundingBox.y_ * 1.3f, 0);
-		billboard->enabled_ = false;
+		billboardBar = billboardSetBar->GetBillboard(0);
+		billboardBar->size_ = Vector2(2, 0.2);
+		billboardBar->position_ = Vector3(0, boundingBox.y_ * 1.3f, 0);
+		billboardBar->enabled_ = false;
 
 		billboardSetShadow = billboardNode->CreateComponent<BillboardSet>();
 		billboardSetShadow->SetNumBillboards(1);
 		billboardSetShadow->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/select.xml"));
 		billboardSetShadow->SetSorted(true);
 		billboardSetShadow->SetFaceCameraMode(FaceCameraMode::FC_NONE);
-		
+
 		billboardShadow = billboardSetShadow->GetBillboard(0);
 		billboardShadow->size_ = Vector2(boundingBox.x_ * 1.3f, boundingBox.z_ * 1.3f);
 		billboardShadow->position_ = Vector3(0, 0, -0.1);
 		billboardShadow->enabled_ = false;
-		
+
 		billboardSetBar->Commit();
 		billboardSetShadow->Commit();
 	}
@@ -53,7 +53,7 @@ Physical::~Physical() {
 void Physical::updateHealthBar() {
 	double healthBarSize = getHealthBarSize();
 
-	billboard->size_ = Vector2(healthBarSize, 0.2);
+	billboardBar->size_ = Vector2(healthBarSize, 0.2) / node->GetScale2D();
 	billboardSetBar->Commit();
 }
 
@@ -108,14 +108,14 @@ Urho3D::Vector3* Physical::getPosition() {
 
 void Physical::select() {
 	if (type == PHISICAL) { return; }
-	billboard->enabled_ = true;
+	billboardBar->enabled_ = true;
 	billboardShadow->enabled_ = true;
 	updateHealthBar();
 }
 
 void Physical::unSelect() {
 	if (type == PHISICAL) { return; }
-	billboard->enabled_ = false;
+	billboardBar->enabled_ = false;
 	billboardShadow->enabled_ = false;
 
 	billboardSetBar->Commit();

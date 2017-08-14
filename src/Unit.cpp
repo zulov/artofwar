@@ -127,7 +127,7 @@ double Unit::getUnitRadius() {
 
 void Unit::absorbAttack(double attackCoef) {
 	hpCoef -= attackCoef * (1 - defenseCoef);
-	if (billboard->enabled_) {
+	if (billboardBar->enabled_) {
 		updateHealthBar();
 	}
 }
