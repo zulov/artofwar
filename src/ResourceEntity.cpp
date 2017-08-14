@@ -3,7 +3,7 @@
 double ResourceEntity::hbMaxSize = 3.0;
 
 ResourceEntity::ResourceEntity(Vector3* _position, Urho3D::Node* _node) : Physical(_position, _node, RESOURCE) {
-
+	hbMaxSize = 3.0;
 }
 
 ResourceEntity::~ResourceEntity() {
@@ -33,4 +33,8 @@ bool ResourceEntity::isInGrandient() {
 
 void ResourceEntity::setInGradinet(bool _inGradient) {
 	inGradient = _inGradient;
+}
+
+double ResourceEntity::getHealthBarSize() {
+	return hbMaxSize;
 }
