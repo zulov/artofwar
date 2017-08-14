@@ -93,6 +93,10 @@ void Physical::setPlayer(signed char player) {
 	this->player = player;
 }
 
+String Physical::toMultiLineString() {
+	return "Physical";
+}
+
 signed char Physical::getTeam() {
 	return team;
 }

@@ -18,6 +18,7 @@ public:
 	void absorbAttack(double attackCoef) override;
 	bool isInGrandient();
 	void setInGradinet(bool _inGradient);
+	String toMultiLineString() override;
 private:
 	BuildingType buildingType;
 	db_building* dbBuilding;

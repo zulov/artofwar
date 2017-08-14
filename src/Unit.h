@@ -36,6 +36,7 @@ public:
 	void attack(Physical* enemy);
 	void updateHeight(double y, double timeStep);
 	void updateRotation();
+	String toMultiLineString() override;
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
@@ -58,12 +59,7 @@ private:
 	db_unit* dbUnit;
 
 	double unitRadius = 2;
-	double hpCoef = 100;
-	double maxHpCoef = 100;
-	double attackCoef = 10;
-	double attackRange;//TODO Range czy pojedyncze?
-	double defenseCoef = 0.3;
-	double attackSpeed = 1;
+
 	double attackIntrest = 10;
 	static double hbMaxSize;
 };

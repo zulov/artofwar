@@ -208,6 +208,14 @@ void Unit::updateRotation() {
 	}
 }
 
+String Unit::toMultiLineString() {
+	String msg = dbUnit->name;
+	msg += "\nAtak: " + String(attackCoef);
+	msg += "\nObrona: " + String(defenseCoef);
+	msg += "\nZdrowie: " + String(hpCoef) + "/" + String(maxHpCoef);
+	return msg;
+}
+
 void Unit::applyForce(double timeStep) {
 	if (unitState == US_ATTACK) {
 		velocity->x_ = 0;

@@ -132,17 +132,14 @@ void Hud::updateState(ControlsState state) {
 	case SELECT:
 		buildPanel->setVisible(false);
 		unitsPanel->setVisible(false);
-		//selectedInfoWindow->SetVisible(true);
 		break;
 	case BUILD:
 		buildPanel->setVisible(true);
 		unitsPanel->setVisible(false);
-		//selectedInfoWindow->SetVisible(false);
 		break;
 	case DEPLOY:
 		buildPanel->setVisible(false);
 		unitsPanel->setVisible(true);
-		//selectedInfoWindow->SetVisible(false);
 		break;
 	default: ;
 	}
@@ -151,6 +148,7 @@ void Hud::updateState(ControlsState state) {
 void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a sterowac widzialnsocia
 	if (selectedInfo->hasChanged()) {
 		selectedHudPanel->updateSelected(selectedInfo);
+		menuPanel->updateSelected(selectedInfo);
 	}
 }
 

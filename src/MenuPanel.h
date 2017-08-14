@@ -7,6 +7,7 @@
 #include "HudElement.h"
 #include <Urho3D/UI/Text.h>
 #include "db_strcut.h"
+#include "SelectedInfo.h"
 
 class MenuPanel :public AbstractWindowPanel
 {
@@ -18,6 +19,7 @@ public:
 	Urho3D::String stringFrom(db_unit* dbUnit, std::vector<db_unit_cost*>* costs);
 	Urho3D::String stringFrom(db_building* dbBuilding, std::vector<db_building_cost*>* costs);
 	void setInfo(HudElement* hudElement);
+	void updateSelected(SelectedInfo* selectedInfo);
 
 private:
 	void createBody() override;

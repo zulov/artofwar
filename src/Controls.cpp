@@ -7,7 +7,6 @@ Controls::Controls(Input* _input) {
 	selected = new std::vector<Physical*>();
 	selected->reserve(5000);
 
-
 	leftHeld = new std::pair<Vector3*, Vector3*>();
 	middleHeld = new std::pair<Vector3*, Vector3*>();
 	rightHeld = new std::pair<Vector3*, Vector3*>();
@@ -22,7 +21,6 @@ Controls::~Controls() {
 	delete rightHeld;
 	delete selectedInfo;
 	delete selected;
-
 }
 
 bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {
@@ -54,7 +52,7 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 }
 
 void Controls::unSelect(int type) {
-	for (int i = 0; i < selected->size(); i++) {
+	for (int i = 0; i < selected->size(); ++i) {
 		(*selected)[i]->unSelect();
 	}
 	selected->clear();
@@ -102,7 +100,6 @@ void Controls::controlEntity(Vector3& hitPos, bool ctrlPressed, Physical* clicke
 		deploy(new Vector3(hitPos));
 		break;
 		}
-
 	}
 }
 
@@ -263,12 +260,12 @@ void Controls::release(const int button) {
 
 void Controls::updateState(ControlsState state) {
 	this->state = state;
+	idToCreate = -1;
 }
 
 void Controls::hudAction(HudElement* hud) {
 	typeToCreate = hud->getType();
 	idToCreate = hud->getId();
-	
 }
 
 void Controls::clickDownRight(Vector3& hitPos) {
@@ -319,13 +316,17 @@ void Controls::clickDown(const int button) {
 }
 
 void Controls::build(Vector3* pos) {
-	SimulationCommand* simulationCommand = new SimulationCommand(ObjectType::BUILDING, 1, idToCreate, pos, SpacingType::CONSTANT, 0);//TODO pobrac parametry z jakiegos zrod³a
-	Game::get()->getSimCommandList()->add(simulationCommand);
+	if (idToCreate >= 0) {
+		SimulationCommand* simulationCommand = new SimulationCommand(ObjectType::BUILDING, 1, idToCreate, pos, SpacingType::CONSTANT, 0);//TODO pobrac parametry z jakiegos zrod³a
+		Game::get()->getSimCommandList()->add(simulationCommand);
+	}
 }
 
 void Controls::deploy(Vector3* pos) {
-	SimulationCommand* simulationCommand = new SimulationCommand(ObjectType::UNIT, 10, idToCreate, pos, SpacingType::CONSTANT, 0);
-	Game::get()->getSimCommandList()->add(simulationCommand);
+	if (idToCreate >= 0) {
+		SimulationCommand* simulationCommand = new SimulationCommand(ObjectType::UNIT, 10, idToCreate, pos, SpacingType::CONSTANT, 0);
+		Game::get()->getSimCommandList()->add(simulationCommand);
+	}
 }
 
 SelectedInfo* Controls::getSelectedInfo() {

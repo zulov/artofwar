@@ -61,6 +61,26 @@ void MenuPanel::setInfo(HudElement* hudElement) {
 
 }
 
+void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
+	ObjectType type = selectedInfo->getSelectedType();
+	if(selectedInfo->getAllNumber()==1) {
+		text->SetVisible(true);
+		vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+		for (int i = 0; i < infoTypes->size(); ++i) {
+			std::vector<Physical*>* data = infoTypes->at(i)->getData();
+			if (!data->empty()) {
+				Physical* physical = data->at(0);
+				String msg = physical->toMultiLineString();
+				text->SetText(msg);
+				break;
+			}
+		}
+		
+	}else {
+		text->SetVisible(false);
+	}
+}
+
 void MenuPanel::createBody() {
 	lists = new std::vector<HudElement*>();
 	Urho3D::DropDownList* dropDownList = window->CreateChild<Urho3D::DropDownList>();

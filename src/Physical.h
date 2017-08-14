@@ -22,6 +22,7 @@ public:
 	void setBucket(short posX, short posY, short param);
 	void setTeam(signed char _team);
 	void setPlayer(signed char player);
+	virtual String toMultiLineString();
 protected:
 	Vector3* position;
 	Vector3* rotation;
@@ -29,6 +30,13 @@ protected:
 	signed char team;
 	signed char player;
 	bool rotatable;
+	double hpCoef = 100;
+	double maxHpCoef = 100;
+	double attackCoef = 10;
+	double attackRange;
+	double defenseCoef = 0.3;
+	double attackSpeed = 1;
+
 	String textureName;
 
 	Node* billboardNode;

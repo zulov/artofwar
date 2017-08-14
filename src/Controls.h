@@ -74,7 +74,7 @@ private:
 	double clickDistance = 2 * 2;
 	ControlsState state = ControlsState::SELECT;
 
-	short idToCreate;
+	short idToCreate=-1;
 	ObjectType typeToCreate;
 
 	SelectedInfo* selectedInfo;

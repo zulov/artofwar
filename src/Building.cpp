@@ -43,3 +43,11 @@ bool Building::isInGrandient() {
 void Building::setInGradinet(bool _inGradient) {
 	inGradient = _inGradient;
 }
+
+String Building::toMultiLineString() {
+	String msg = dbBuilding->name;
+	msg += "\nAtak: " + String(attackCoef);
+	msg += "\nObrona: " + String(defenseCoef);
+	msg += "\nZdrowie: " + String(hpCoef) + "/" + String(maxHpCoef);
+	return msg;
+}

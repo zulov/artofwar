@@ -38,3 +38,9 @@ void ResourceEntity::setInGradinet(bool _inGradient) {
 double ResourceEntity::getHealthBarSize() {
 	return hbMaxSize;
 }
+
+String ResourceEntity::toMultiLineString() {
+	String msg = dbResource->name;
+	msg += "\nZasobów: " + String(amonut);
+	return msg;
+}
