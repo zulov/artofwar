@@ -187,6 +187,9 @@
     <ClCompile Include="src\Building.cpp">
       <Filter>objects\building</Filter>
     </ClCompile>
+    <ClCompile Include="src\OrdersPanel.cpp">
+      <Filter>hud\windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -406,6 +409,9 @@
     </ClInclude>
     <ClInclude Include="src\Building.h">
       <Filter>objects\building</Filter>
+    </ClInclude>
+    <ClInclude Include="src\OrdersPanel.h">
+      <Filter>hud\windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

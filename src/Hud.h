@@ -66,6 +66,7 @@ private:
 	TopPanel * topPanel;
 	MiniMapPanel * miniMapPanel;
 	MenuPanel * menuPanel;
+	OrdersPanel * ordersPanel;
 
 	std::vector<HudElement*>* buttons;
 	std::vector<HudElement*>* lists;

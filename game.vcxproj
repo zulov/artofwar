@@ -215,6 +215,7 @@
     <ClCompile Include="src\MiniMapPanel.cpp" />
     <ClCompile Include="src\MySprite.cpp" />
     <ClCompile Include="src\OperatorType.h" />
+    <ClCompile Include="src\OrdersPanel.cpp" />
     <ClCompile Include="src\Physical.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PlayersManager.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="src\MenuPanel.h" />
     <ClInclude Include="src\MiniMapPanel.h" />
     <ClInclude Include="src\MySprite.h" />
+    <ClInclude Include="src\OrdersPanel.h" />
     <ClInclude Include="src\Physical.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\PlayersManager.h" />

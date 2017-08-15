@@ -40,9 +40,8 @@ public:
 	void clickDownRight(Vector3 &hitPos);
 	void clickDownLeft(Vector3 &hitPos);
 	void clickDown(const int button);
+	void create(ObjectType type, Vector3* pos, int number);
 
-	void build(Vector3* pos);
-	void deploy(Vector3* pos);
 	void leftClick(Drawable* hitDrawable, Vector3 &hitPos);
 	void leftHold(std::pair<Vector3*, Vector3*>* held);
 

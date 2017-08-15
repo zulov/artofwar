@@ -436,6 +436,9 @@
 	<element type="UnitsWindow" style="LeftWindow">
 		
 	</element>
+	<element type="OrdersWindow" style="LeftWindow">
+		
+	</element>
 	<element type="MiniMapWindow" style="MyWindow">
 		<attribute name="Min Size" value="{4*iconX+2*spaceX} {4*iconY+2*spaceY}"/>
         <attribute name="Max Size" value="{4*iconX+2*spaceX} {4*iconY+2*spaceY}" />

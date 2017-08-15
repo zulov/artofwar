@@ -149,6 +149,23 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a ster
 	if (selectedInfo->hasChanged()) {
 		selectedHudPanel->updateSelected(selectedInfo);
 		menuPanel->updateSelected(selectedInfo);
+		switch (selectedInfo->getSelectedType()) {
+		
+		case UNIT: 
+			ordersPanel->show(selectedInfo);
+			buildPanel->setVisible(false);
+			unitsPanel->setVisible(false);
+			break;
+		case BUILDING: 
+			ordersPanel->setVisible(false);
+			buildPanel->setVisible(false);
+			unitsPanel->show(selectedInfo);
+			break;
+		default: 
+			ordersPanel->setVisible(false);
+			buildPanel->show(selectedInfo);
+			unitsPanel->setVisible(false);
+		}
 	}
 }
 

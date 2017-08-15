@@ -59,7 +59,6 @@ void Controls::unSelect(int type) {
 	selectedType = ObjectType(type);
 	selectedInfo->setSelectedType(selectedType);
 	selectedInfo->reset();
-
 }
 
 void Controls::select(Physical* entity) {
@@ -91,13 +90,13 @@ void Controls::controlEntity(Vector3& hitPos, bool ctrlPressed, Physical* clicke
 	case BUILD:
 		{
 		unSelect(ENTITY);
-		build(new Vector3(hitPos));
+		create(ObjectType::BUILDING, new Vector3(hitPos), 1);
 		break;
 		}
 	case DEPLOY:
 		{
 		unSelect(ENTITY);
-		deploy(new Vector3(hitPos));
+		create(ObjectType::UNIT,new Vector3(hitPos), 10);
 		break;
 		}
 	}
@@ -315,16 +314,9 @@ void Controls::clickDown(const int button) {
 	}
 }
 
-void Controls::build(Vector3* pos) {
+void Controls::create(ObjectType type, Vector3* pos, int number) {
 	if (idToCreate >= 0) {
-		SimulationCommand* simulationCommand = new SimulationCommand(ObjectType::BUILDING, 1, idToCreate, pos, SpacingType::CONSTANT, 0);//TODO pobrac parametry z jakiegos zrod³a
-		Game::get()->getSimCommandList()->add(simulationCommand);
-	}
-}
-
-void Controls::deploy(Vector3* pos) {
-	if (idToCreate >= 0) {
-		SimulationCommand* simulationCommand = new SimulationCommand(ObjectType::UNIT, 10, idToCreate, pos, SpacingType::CONSTANT, 0);
+		SimulationCommand* simulationCommand = new SimulationCommand(type, number, idToCreate, pos, SpacingType::CONSTANT, 0);
 		Game::get()->getSimCommandList()->add(simulationCommand);
 	}
 }
