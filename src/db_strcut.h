@@ -7,6 +7,7 @@
 #define NATION_NUMBER_DB 50
 #define RESOURCE_NUMBER_DB 4
 #define HUD_VARS_NUMBER_DB 50
+#define ORDERS_NUMBER_DB 20
 
 #define SPLIT_SIGN '\n'
 
@@ -216,6 +217,18 @@ struct db_building_cost
 	}
 };
 
+struct db_order
+{
+	int id;
+	Urho3D::String icon;
+
+
+	db_order(int id, char* icon)
+		: id(id),
+		icon(icon) {
+	}
+};
+
 struct db_container
 {
 	db_unit* units[UNITS_NUMBER_DB];
@@ -230,6 +243,8 @@ struct db_container
 	std::vector<db_unit*>* unitsForBuilding[BULDINGS_NUMBER_DB];
 	std::vector<db_building_cost*>* costForBuilding[BULDINGS_NUMBER_DB];
 	std::vector<db_unit_cost*>* costForUnit[UNITS_NUMBER_DB];
+	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB];
+	db_order* orders[ORDERS_NUMBER_DB];
 
 	int units_size = 0;
 	int hud_size_size = 0;
@@ -240,6 +255,7 @@ struct db_container
 	int resource_size = 0;
 	int nation_size = 0;
 	int hud_vars_size = 0;
+	int orders_size = 0;
 
 
 	explicit db_container() {
@@ -252,6 +268,8 @@ struct db_container
 		for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
 			costForUnit[i] = new std::vector<db_unit_cost*>();
 			costForUnit[i]->reserve(10);
+			ordersToUnit[i] = new std::vector<db_order*>();
+			ordersToUnit[i]->reserve(10);
 		}
 	}
 };

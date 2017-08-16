@@ -78,6 +78,7 @@ Hud::Hud() {
 	topPanel = new TopPanel(style);
 	miniMapPanel = new MiniMapPanel(style);
 	menuPanel = new MenuPanel(style);
+	ordersPanel = new OrdersPanel(style);
 
 	windows->push_back(menuPanel->createWindow());
 	windows->push_back(buildPanel->createWindow());
@@ -86,6 +87,7 @@ Hud::Hud() {
 	windows->push_back(debugPanel->createWindow());
 	windows->push_back(topPanel->createWindow());
 	windows->push_back(selectedHudPanel->createWindow());
+	windows->push_back(ordersPanel->createWindow());
 }
 
 Hud::~Hud() {

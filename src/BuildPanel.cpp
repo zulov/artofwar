@@ -19,6 +19,10 @@ std::vector<HudElement*>* BuildPanel::getButtons() {
 	return buttons;
 }
 
+void BuildPanel::show(SelectedInfo* selectedInfo) {
+	setVisible(true);
+}
+
 void BuildPanel::createBody() {
 	int size = Game::get()->getDatabaseCache()->getBuildingSize();
 	buttons = new std::vector<HudElement*>();

@@ -14,6 +14,10 @@ OrdersPanel::OrdersPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 OrdersPanel::~OrdersPanel() {
 }
 
+void OrdersPanel::show(SelectedInfo* selectedInfo) {
+	setVisible(true);
+}
+
 void OrdersPanel::createBody() {
 	int size = Game::get()->getDatabaseCache()->getOrdersSize();
 	buttons = new std::vector<HudElement*>();
@@ -22,18 +26,18 @@ void OrdersPanel::createBody() {
 	panel->SetStyle("MyListView", style);
 
 	for (int i = 0; i < size; ++i) {
-		db_order* order = Game::get()->getDatabaseCache()->getUnit(i);
+		db_order* order = Game::get()->getDatabaseCache()->getOrder(i);
 		if (order == nullptr) { continue; }
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + order->icon);
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/orders/" + order->icon);
 
 		MySprite* sprite = createSprite(texture, style, "Sprite");
 		Button* button = simpleButton(sprite, style, "Icon");
 
-		HudElement* hudElement = new HudElement(button);//TODO inny obiekt
-		hudElement->setId(i, //TODO nie unit ObjectType::UNIT);
+		//HudElement* hudElement = new HudElement(button);//TODO inny obiekt
+		//hudElement->setId(i, //TODO nie unit ObjectType::UNIT);
 
-		button->SetVar("HudElement", hudElement);
-		buttons->push_back(hudElement);
+		//button->SetVar("HudElement", hudElement);
+		//buttons->push_back(hudElement);
 		panel->AddItem(button);
 	}
 }

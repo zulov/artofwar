@@ -35,6 +35,7 @@
 #include "MenuPanel.h"
 #include "TopPanel.h"
 #include "MiniMapPanel.h"
+#include "OrdersPanel.h"
 
 using namespace Urho3D;
 

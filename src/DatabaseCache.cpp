@@ -104,6 +104,24 @@ int static loadCostBuilding(void* data, int argc, char** argv, char** azColName)
 	return 0;
 }
 
+int static loadOrders(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int id = atoi(argv[0]);
+	xyz->orders[id] = new db_order(id, argv[1]);
+	xyz->orders_size++;
+	return 0;
+}
+
+int static loadOrdersToUnit(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int orderId = atoi(argv[2]);
+	int unitId = atoi(argv[1]);
+	db_order* dbOrder = xyz->orders[orderId];
+	xyz->ordersToUnit[unitId]->push_back(dbOrder);
+
+	return 0;
+}
+
 void DatabaseCache::ifError(int rc, char* error) {
 	if (rc != SQLITE_OK) {
 		fprintf(stderr, "SQL error: %s\n", error);
@@ -111,7 +129,7 @@ void DatabaseCache::ifError(int rc, char* error) {
 	}
 }
 
-void DatabaseCache::execute(char* sqlUnits, int (* callback)(void*, int, char**, char**), db_container* dbContainer) {
+void DatabaseCache::execute(char* sqlUnits, int (* callback)(void*, int, char**, char**)) {
 	char* error;
 	int rc = sqlite3_exec(database, sqlUnits, callback, dbContainer, &error);
 	ifError(rc, error);
@@ -126,18 +144,20 @@ DatabaseCache::DatabaseCache() {
 
 	dbContainer = new db_container();
 
-	execute("SELECT * from units", loadUnits, dbContainer);
-	execute("SELECT * from hud_size", loadHudSizes, dbContainer);
-	execute("SELECT * from graph_settings", loadGraphSettings, dbContainer);
-	execute("SELECT * from building", loadBuildings, dbContainer);
-	execute("SELECT * from building_type", loadBuildingType, dbContainer);
-	execute("SELECT * from unit_type", loadUnitType, dbContainer);
-	execute("SELECT * from nation", loadNation, dbContainer);
-	execute("SELECT * from resource", loadResource, dbContainer);
-	execute("SELECT * from hud_size_vars", loadHudVars, dbContainer);
-	execute("SELECT * from building_to_unit", loadBuildingToUnit, dbContainer);
-	execute("SELECT * from cost_building", loadCostBuilding, dbContainer);
-	execute("SELECT * from cost_unit", loadCostUnit, dbContainer);
+	execute("SELECT * from units", loadUnits);
+	execute("SELECT * from hud_size", loadHudSizes);
+	execute("SELECT * from graph_settings", loadGraphSettings);
+	execute("SELECT * from building", loadBuildings);
+	execute("SELECT * from building_type", loadBuildingType);
+	execute("SELECT * from unit_type", loadUnitType);
+	execute("SELECT * from nation", loadNation);
+	execute("SELECT * from resource", loadResource);
+	execute("SELECT * from hud_size_vars", loadHudVars);
+	execute("SELECT * from building_to_unit", loadBuildingToUnit);
+	execute("SELECT * from cost_building", loadCostBuilding);
+	execute("SELECT * from cost_unit", loadCostUnit);
+	execute("SELECT * from orders", loadOrders);
+	execute("SELECT * from orders_to_unit", loadOrdersToUnit);
 
 
 	sqlite3_close(database);
@@ -184,6 +204,10 @@ db_hud_vars* DatabaseCache::getHudVar(int i) {
 	return dbContainer->hudVars[i];
 }
 
+db_order* DatabaseCache::getOrder(int i) {
+	return dbContainer->orders[i];
+}
+
 int DatabaseCache::getResourceSize() {
 	return dbContainer->resource_size;
 }
@@ -206,6 +230,10 @@ int DatabaseCache::getBuildingSize() {
 
 int DatabaseCache::getUnitSize() {
 	return dbContainer->units_size;
+}
+
+int DatabaseCache::getOrdersSize() {
+	return dbContainer->orders_size;
 }
 
 std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) {

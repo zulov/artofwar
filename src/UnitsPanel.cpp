@@ -20,6 +20,10 @@ std::vector<HudElement*>* UnitsPanel::getButtons() {
 	return buttons;
 }
 
+void UnitsPanel::show(SelectedInfo* selectedInfo) {
+	setVisible(true);
+}
+
 void UnitsPanel::createBody() {
 	int size = Game::get()->getDatabaseCache()->getUnitSize();
 	buttons = new std::vector<HudElement*>();
