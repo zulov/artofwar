@@ -4,6 +4,9 @@
 #include "MySprite.h"
 #include "ButtonUtils.h"
 #include "HudElement.h"
+#include <set>
+#include <algorithm>
+#include <unordered_set>
 
 
 UnitsPanel::UnitsPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {
@@ -22,6 +25,34 @@ std::vector<HudElement*>* UnitsPanel::getButtons() {
 
 void UnitsPanel::show(SelectedInfo* selectedInfo) {
 	setVisible(true);
+	vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+
+	unordered_set<int> common = {0,1,2,3,4,5,6,7,8,9,10};
+
+	for (int i = 0; i < infoTypes->size(); ++i) {
+		std::vector<Physical*>* data = infoTypes->at(i)->getData();
+		if (!data->empty()) {
+			std::vector<db_unit*>* units = Game::get()->getDatabaseCache()->getUnitsForBuilding(i);
+			unordered_set<int> common2;
+			for (int j = 0; j < units->size(); ++j) {//todo to zrobic raz i pobierac
+				common2.insert(units->at(j)->id);
+			}
+			unordered_set<int> temp(common);
+			for (const auto& id : temp) {
+				if (common2.find(id) == common2.end()) {
+					common.erase(id);
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < buttons->size(); ++i) {
+		if (common.find(i) != common.end()) {
+			buttons->at(i)->getUIElement()->SetVisible(true);
+		} else {
+			buttons->at(i)->getUIElement()->SetVisible(false);
+		}
+	}
 }
 
 void UnitsPanel::createBody() {

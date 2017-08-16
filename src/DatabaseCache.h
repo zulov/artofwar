@@ -27,6 +27,7 @@ public:
 	std::vector<db_unit*>* getUnitsForBuilding(int id);
 	std::vector<db_unit_cost*>* getCostForUnit(int id);
 	std::vector<db_building_cost*>* getCostForBuilding(int id);
+	std::vector<db_order*>* getOrdersForUnit(int id);
 
 	int getResourceSize();
 	int getBuildingTypeSize();

@@ -2,8 +2,8 @@
 #include "AbstractWindowPanel.h"
 #include <vector>
 #include "HudElement.h"
+#include "SelectedInfo.h"
 
-class SelectedInfo;
 
 class UnitsPanel:public AbstractWindowPanel
 {

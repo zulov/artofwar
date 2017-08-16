@@ -247,3 +247,7 @@ std::vector<db_unit_cost*>* DatabaseCache::getCostForUnit(int id) {
 std::vector<db_building_cost*>* DatabaseCache::getCostForBuilding(int id) {
 	return dbContainer->costForBuilding[id];
 }
+
+std::vector<db_order*>* DatabaseCache::getOrdersForUnit(int id) {
+	return dbContainer->ordersToUnit[id];
+}
