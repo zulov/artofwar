@@ -34,6 +34,19 @@ CREATE TABLE "resource" (
 	`minDist`	REAL,
 	PRIMARY KEY(`id`)
 );
+CREATE TABLE `orders_to_unit` (
+	`id`	INTEGER,
+	`unit`	INTEGER,
+	`order`	INTEGER,
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
+	FOREIGN KEY(`order`) REFERENCES `orders`(`id`)
+);
+CREATE TABLE `orders` (
+	`id`	INTEGER,
+	`icon`	TEXT,
+	PRIMARY KEY(`id`)
+);
 CREATE TABLE `nation` (
 	`id`	INTEGER,
 	`name`	TEXT,
