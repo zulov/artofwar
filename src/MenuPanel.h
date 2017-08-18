@@ -14,7 +14,6 @@ class MenuPanel :public AbstractWindowPanel
 public:
 	MenuPanel(Urho3D::XMLFile* _style);
 	~MenuPanel();
-	std::vector<HudElement*>* getLists();
 	void removeInfo();
 	Urho3D::String stringFrom(db_unit* dbUnit, std::vector<db_unit_cost*>* costs);
 	Urho3D::String stringFrom(db_building* dbBuilding, std::vector<db_building_cost*>* costs);
@@ -24,6 +23,5 @@ public:
 private:
 	void createBody() override;
 	Urho3D::Text* text;
-	std::vector<HudElement*>* lists;
 };
 

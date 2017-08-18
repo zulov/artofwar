@@ -49,11 +49,8 @@ void Main::Start() {
 	for (Button* buttton : *(hud->getButtonsSelectedToSubscribe())) {
 		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButtton));
 	}
-	for (HudElement* hudElement : *(hud->getListsToSubscribe())) {
-		SubscribeToEvent(hudElement->getUIElement(), E_ITEMSELECTED, URHO3D_HANDLER(Main, HandleUIList));
-	}
+
 	for (Window* window : *(hud->getWindows())) {
-		//SubscribeToEvent(window, E_CLICK, URHO3D_HANDLER(Main, HandleWindowClick));
 		SubscribeToEvent(window, E_CLICKEND, URHO3D_HANDLER(Main, HandleWindowClick));
 		SubscribeToEvent(window, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleWindowClick));
 		SubscribeToEvent(window, E_HOVEREND, URHO3D_HANDLER(Main, HandleEndWindowClick));
@@ -175,7 +172,6 @@ void Main::HandleSelectedButtton(StringHash eventType, VariantMap& eventData) {
 	for (auto physical :(*selected)) {
 		controls->select(physical);
 	}
-	
 }
 
 void Main::HandleUIList(StringHash eventType, VariantMap& eventData) {
@@ -183,7 +179,7 @@ void Main::HandleUIList(StringHash eventType, VariantMap& eventData) {
 	ControlsState state = ControlsState(eventData[ItemSelected::P_SELECTION].GetInt());
 	controls->deactivate();
 	controls->updateState(state);
-	hud->updateState(state);
+
 	HudElement* hud = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
 	controls->hudAction(hud);
 }
@@ -229,7 +225,6 @@ void Main::HandleUIButttonHoverOff(StringHash /*eventType*/, VariantMap& eventDa
 	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
 	hud->hoverOffIcon(hudElement);
 }
-
 
 void Main::SetupViewport() {
 	Renderer* renderer = GetSubsystem<Renderer>();

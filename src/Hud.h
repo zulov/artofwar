@@ -51,9 +51,8 @@ public:
 	void updateHud(Benchmark* benchmark, CameraManager* cameraManager);
 	std::vector<HudElement*>* getButtonsBuildToSubscribe();
 	std::vector<HudElement*>* getButtonsUnitsToSubscribe();
-	std::vector<HudElement*>* getListsToSubscribe();
 	std::vector<Window*>* getWindows();
-	void updateState(ControlsState state);
+	
 	void updateSelected(SelectedInfo* selectedInfo);
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
 	void hoverOnIcon(HudElement* hudElement);

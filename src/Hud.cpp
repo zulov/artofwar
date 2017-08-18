@@ -121,30 +121,8 @@ std::vector<HudElement*>* Hud::getButtonsUnitsToSubscribe() {
 	return unitsPanel->getButtons();
 }
 
-std::vector<HudElement*>* Hud::getListsToSubscribe() {
-	return menuPanel->getLists();
-}
-
 std::vector<Window*>* Hud::getWindows() {
 	return windows;
-}
-
-void Hud::updateState(ControlsState state) {
-	switch (state) {
-	case SELECT:
-		buildPanel->setVisible(false);
-		unitsPanel->setVisible(false);
-		break;
-	case BUILD:
-		buildPanel->setVisible(true);
-		unitsPanel->setVisible(false);
-		break;
-	case DEPLOY:
-		buildPanel->setVisible(false);
-		unitsPanel->setVisible(true);
-		break;
-	default: ;
-	}
 }
 
 void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a sterowac widzialnsocia
