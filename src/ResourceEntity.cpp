@@ -24,6 +24,7 @@ void ResourceEntity::populate(db_resource* _dbResource) {
 	type = _dbResource->id;
 	name = new String(_dbResource->name);
 	minimalDistance = _dbResource->minDist;
+	amonut = _dbResource->maxCapacity;
 	dbResource = _dbResource;
 }
 

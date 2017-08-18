@@ -426,8 +426,8 @@
 		<attribute name="Layout Spacing" value="{spaceX}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
         <attribute name="Is Visible" value="false" />
-		<attribute name="Min Size" value="{iconX+2*spaceX + iconX/2} {resY/2}"/>
-		<attribute name="Max Size" value="{iconX+2*spaceX + iconX/2} {resY/2}"/>
+		<attribute name="Min Size" value="{iconX+spaceX + iconX/2} {resY/2}"/>
+		<attribute name="Max Size" value="{iconX+spaceX + iconX/2} {resY/2}"/>
 		<attribute name="Position" value="0 -{4*iconY+2*spaceY}"/>
 	</element>
 	<element type="BuildWindow" style="LeftWindow">
@@ -520,17 +520,19 @@
 		<attribute name="Select On Click End" value="false" />
 		<element type="ScrollBar" internal="true">
 			<attribute name="Is Visible" value="false" />
-			<attribute name="Size" value="0 {iconX/3}" />
+			<attribute name="Size" value="0 {iconX/4}" />
         </element>
         <element type="ScrollBar" internal="true">
 			<attribute name="Horiz Alignment" value="Left" />
-			<attribute name="Size" value="{iconX/3} 0" />
+			<attribute name="Size" value="{iconX/4} 0" />
+			<attribute name="Max Size" value="{iconX/4} 2048" />
+			<attribute name="Min Size" value="{iconX/4} {iconY/4}" />
         </element>
         <element type="BorderImage" internal="true">
 			<attribute name="Horiz Alignment" value="Right" />
 			<attribute name="Hover Image Offset" value="null" />
 			<attribute name="Layout Mode" value="Vertical" />
-			<attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+			<attribute name="Layout Border" value="{spaceX/2} {spaceY/2} {spaceX/2} {spaceY/2}" />
 			<element internal="true">
                 <attribute name="Layout Spacing" value="{spaceY}" />
             </element>

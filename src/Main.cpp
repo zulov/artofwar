@@ -246,7 +246,7 @@ void Main::control(float timeStep) {
 	int width = Game::get()->getGraphics()->GetWidth();
 	int height = Game::get()->getGraphics()->GetHeight();
 	IntVector2 cursorPos = Game::get()->getUI()->GetCursorPosition();
-	float border = 64.f;
+	float border = 256.f;
 	if (cursorPos.x_ < width / border) {
 		cameraKeys[2] = true;
 	} else if (cursorPos.x_ > width - (width / border)) {

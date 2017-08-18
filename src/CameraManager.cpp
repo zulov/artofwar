@@ -17,14 +17,12 @@ CameraManager::~CameraManager() {
 	}
 }
 
-
 void CameraManager::setCameraBehave(int _type) {
 	activeBehave = cameraBehaves.at(_type);
 }
 
 
 Urho3D::Camera* CameraManager::getComponent() {
-	//return cameraNode->GetComponent<Camera>();
 	return activeBehave->getComponent();
 }
 
