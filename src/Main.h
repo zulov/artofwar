@@ -55,7 +55,8 @@ private:
 	void HandleUIButttonHoverOff(StringHash, VariantMap& eventData);
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
-	void HandleUIButtton(StringHash eventType, VariantMap& eventData);
+	void HandleBuildButtton(StringHash eventType, VariantMap& eventData);
+	void HandleUnitButtton(StringHash eventType, VariantMap& eventData);
 	void HandleSelectedButtton(StringHash eventType, VariantMap& eventData);
 	void control(float timeStep);
 

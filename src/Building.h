@@ -19,6 +19,7 @@ public:
 	bool isInGrandient();
 	void setInGradinet(bool _inGradient);
 	String toMultiLineString() override;
+	void buttonAction(short id) override;
 private:
 	BuildingType buildingType;
 	db_building* dbBuilding;

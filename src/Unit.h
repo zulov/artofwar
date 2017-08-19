@@ -37,6 +37,7 @@ public:
 	void updateHeight(double y, double timeStep);
 	void updateRotation();
 	String toMultiLineString() override;
+	void buttonAction(short id) override;
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;

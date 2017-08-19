@@ -216,6 +216,10 @@ String Unit::toMultiLineString() {
 	return msg;
 }
 
+void Unit::buttonAction(short id) {
+
+}
+
 void Unit::applyForce(double timeStep) {
 	if (unitState == US_ATTACK) {
 		velocity->x_ = 0;

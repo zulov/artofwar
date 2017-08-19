@@ -51,3 +51,7 @@ String Building::toMultiLineString() {
 	msg += "\nZdrowie: " + String(hpCoef) + "/" + String(maxHpCoef);
 	return msg;
 }
+
+void Building::buttonAction(short id) {
+
+}

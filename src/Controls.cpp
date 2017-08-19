@@ -367,3 +367,10 @@ bool Controls::isActive() {
 void Controls::activate() {
 	active = true;
 }
+
+void Controls::action(HudElement* hudElement) {
+	short id = hudElement->getId();
+	for (int i = 0; i < selected->size(); ++i) {
+		(*selected)[i]->buttonAction(id);
+	}
+}

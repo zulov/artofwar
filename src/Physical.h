@@ -6,7 +6,7 @@ class Physical :
 	public Entity
 {
 public:
-	Physical(Vector3 *_position, Urho3D::Node* _node, ObjectType _type);
+	Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type);
 	~Physical();
 	void updateHealthBar();
 	virtual double getHealthBarSize();
@@ -22,7 +22,8 @@ public:
 	void setBucket(short posX, short posY, short param);
 	void setTeam(signed char _team);
 	void setPlayer(signed char player);
-	virtual String toMultiLineString();
+	virtual String toMultiLineString();//TODO optimize create only if change and pointer?
+	virtual void buttonAction (short id);
 protected:
 	Vector3* position;
 	Vector3* rotation;
@@ -49,4 +50,3 @@ private:
 	short int bucketX[BUCKET_SET_NUMBER];
 	short int bucketZ[BUCKET_SET_NUMBER];
 };
-

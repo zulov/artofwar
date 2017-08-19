@@ -35,13 +35,13 @@ void Main::Start() {
 	hud = new Hud();
 
 	for (HudElement* hudElement : *(hud->getButtonsBuildToSubscribe())) {
-		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleUIButtton));
+		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleBuildButtton));
 		SubscribeToEvent(hudElement->getUIElement(), E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleUIButttonHoverOn));
 		SubscribeToEvent(hudElement->getUIElement(), E_HOVEREND, URHO3D_HANDLER(Main, HandleUIButttonHoverOff));
 	}
 
 	for (HudElement* hudElement : *(hud->getButtonsUnitsToSubscribe())) {
-		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleUIButtton));
+		SubscribeToEvent(hudElement->getUIElement(), E_CLICK, URHO3D_HANDLER(Main, HandleUnitButtton));
 		SubscribeToEvent(hudElement->getUIElement(), E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleUIButttonHoverOn));
 		SubscribeToEvent(hudElement->getUIElement(), E_HOVEREND, URHO3D_HANDLER(Main, HandleUIButttonHoverOff));
 	}
@@ -161,10 +161,16 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	}
 }
 
-void Main::HandleUIButtton(StringHash eventType, VariantMap& eventData) {
+void Main::HandleBuildButtton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
 	controls->hudAction(hudElement);
+}
+
+void Main::HandleUnitButtton(StringHash eventType, VariantMap& eventData) {
+	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
+	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+	controls->action(hudElement);
 }
 
 void Main::HandleSelectedButtton(StringHash eventType, VariantMap& eventData) {

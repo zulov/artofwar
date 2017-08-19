@@ -97,6 +97,10 @@ String Physical::toMultiLineString() {
 	return "Physical";
 }
 
+void Physical::buttonAction(short id) {
+
+}
+
 signed char Physical::getTeam() {
 	return team;
 }
