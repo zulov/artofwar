@@ -163,8 +163,8 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 
 void Main::HandleUIButtton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	HudElement* hud = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
-	controls->hudAction(hud);
+	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+	controls->hudAction(hudElement);
 }
 
 void Main::HandleSelectedButtton(StringHash eventType, VariantMap& eventData) {

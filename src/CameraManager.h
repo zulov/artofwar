@@ -14,7 +14,7 @@ public:
 	void setCameraBehave(int _type);
 	Camera *getComponent();
 	void translate(bool cameraKeys[], int wheel, float timeStep);
-	String getInfo();
+	String *getInfo();
 	MouseMode getMouseMode();
 	void rotate(const IntVector2& mouse_move);
 private:

@@ -22,15 +22,19 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 
 	if (cameraKeys[0]) {
 		cameraNode->Translate(diff * Urho3D::Vector3::FORWARD * timeStep, Urho3D::TS_WORLD);
+		changed = true;
 	}
 	if (cameraKeys[1]) {
 		cameraNode->Translate(diff * Urho3D::Vector3::BACK * timeStep, Urho3D::TS_WORLD);
+		changed = true;
 	}
 	if (cameraKeys[2]) {
 		cameraNode->Translate(diff * Urho3D::Vector3::LEFT * timeStep, Urho3D::TS_WORLD);
+		changed = true;
 	}
 	if (cameraKeys[3]) {
 		cameraNode->Translate(diff * Urho3D::Vector3::RIGHT * timeStep, Urho3D::TS_WORLD);
+		changed = true;
 	}
 	if (wheel != 0) {
 		Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
@@ -47,6 +51,7 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 
 		cameraNode->SetWorldPosition(pos);
 		cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * a);
+		changed = true;
 	}
 
 }
@@ -59,8 +64,12 @@ void RtsCameraBehave::setRotation(const Urho3D::Quaternion& rotation) {
 
 }
 
-Urho3D::String RtsCameraBehave::getInfo() {
-	return name + " \t" + cameraNode->GetPosition().ToString() + "\n" + cameraNode->GetRotation().ToString();
+Urho3D::String *RtsCameraBehave::getInfo() {
+	if(changed) {
+		(*info)= name + " \t" + cameraNode->GetPosition().ToString() + "\n" + cameraNode->GetRotation().ToString();
+		changed = false;
+	}
+	return info;
 }
 
 Urho3D::MouseMode RtsCameraBehave::getMouseMode() {

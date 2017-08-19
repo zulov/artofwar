@@ -1,11 +1,16 @@
 #include "CameraBehave.h"
 
 
-CameraBehave::CameraBehave() {}
+CameraBehave::CameraBehave() {
+	info = new String();
+	changed = true;
+}
 
 
-CameraBehave::~CameraBehave() {}
+CameraBehave::~CameraBehave() {
+	delete info;
+}
 
-Urho3D::Camera * CameraBehave::getComponent() {
+Urho3D::Camera* CameraBehave::getComponent() {
 	return cameraNode->GetComponent<Urho3D::Camera>();
 }

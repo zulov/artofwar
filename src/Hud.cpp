@@ -108,7 +108,7 @@ void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {
 	Urho3D::String msg = "FPS: " + String(benchmark->getLastFPS());
 	msg += "\navg FPS: " + String(benchmark->getAverageFPS());
 	msg += "\nLoops: " + String(benchmark->getLoops());
-	msg += "\nCamera: \n\t" + cameraManager->getInfo();
+	msg += "\nCamera: \n\t" + (*cameraManager->getInfo());
 
 	debugPanel->setText(msg);
 }

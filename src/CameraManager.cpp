@@ -30,7 +30,7 @@ void CameraManager::translate(bool cameraKeys[], int wheel, float timeStep) {
 	activeBehave->translate(cameraKeys, wheel, timeStep * MOVE_SPEED);
 }
 
-String CameraManager::getInfo() {
+String *CameraManager::getInfo() {
 	return activeBehave->getInfo();
 }
 
