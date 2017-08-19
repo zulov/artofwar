@@ -45,4 +45,8 @@ void BuildPanel::createBody() {
 		buttons->push_back(hudElement);
 		panel->AddItem(button);
 	}
+	BorderImage* element = panel->CreateChild<BorderImage>();
+	element->SetStyle("EditorDivider", style);
+	panel->AddItem(element);
+	
 }

@@ -57,11 +57,9 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 }
 
 void RtsCameraBehave::rotate(const IntVector2& mouseMove, const double mouse_sensitivity) {
-
 }
 
 void RtsCameraBehave::setRotation(const Urho3D::Quaternion& rotation) {
-
 }
 
 Urho3D::String *RtsCameraBehave::getInfo() {
