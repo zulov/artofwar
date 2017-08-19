@@ -31,12 +31,10 @@ public:
 	Controls(Input* _input);
 	~Controls();
 	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
-	void unselect(Physical* entity);
 	void select(Physical* entity);
 	void controlEntity(Vector3 &hitPos, bool ctrlPressed, Physical* clicked);
-	void unSelect(int type);
-	void action(ActionType action, Physical* entity);
-
+	void unSelect();
+	
 	void clickDownRight(Vector3 &hitPos);
 	void clickDownLeft(Vector3 &hitPos);
 	void clickDown(const int button);
@@ -48,7 +46,7 @@ public:
 	void rightClick(Drawable* hitDrawable, Vector3 &hitPos);
 	void rightHold(std::pair<Vector3*, Vector3*>* pair);
 	void release(const int button);
-	void updateState(ControlsState state);
+	void updateState(SelectedInfo* selectedInfo);
 	void hudAction(HudElement* hud);
 	SelectedInfo* getSelectedInfo();
 	void deactivate();
@@ -71,7 +69,7 @@ private:
 
 	Input* input;
 	double clickDistance = 2 * 2;
-	ControlsState state = ControlsState::SELECT;
+	ControlsState state = ControlsState::DEFAULT;
 
 	short idToCreate=-1;
 	ObjectType typeToCreate;

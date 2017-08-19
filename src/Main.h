@@ -81,7 +81,6 @@ private:
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
 	void HandleUIButtton(StringHash eventType, VariantMap& eventData);
 	void HandleSelectedButtton(StringHash eventType, VariantMap& eventData);
-	void HandleUIList(StringHash eventType, VariantMap& eventData);
 	void control(float timeStep);
 
 	MouseMode useMouseMode_;

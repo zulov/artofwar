@@ -92,7 +92,10 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	hud->updateHud(benchmark, cameraManager);
 	control(timeStep);
 	SelectedInfo* selectedInfo = controls->getSelectedInfo();
-	hud->updateSelected(selectedInfo);
+	if (selectedInfo->hasChanged()) {
+		hud->updateSelected(selectedInfo);
+		controls->updateState(selectedInfo);
+	}
 	levelBuilder->execute();
 }
 
@@ -168,20 +171,10 @@ void Main::HandleSelectedButtton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	SelectedHudElement* sHudElement = (SelectedHudElement *)element->GetVar("SelectedHudElement").GetVoidPtr();
 	std::vector<Physical*> *selected = sHudElement->getSelected();
-	controls->unSelect(ENTITY);
+	controls->unSelect();
 	for (auto physical :(*selected)) {
 		controls->select(physical);
 	}
-}
-
-void Main::HandleUIList(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = (UIElement*)eventData[ItemSelected::P_ELEMENT].GetVoidPtr();
-	ControlsState state = ControlsState(eventData[ItemSelected::P_SELECTION].GetInt());
-	controls->deactivate();
-	controls->updateState(state);
-
-	HudElement* hud = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
-	controls->hudAction(hud);
 }
 
 void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {

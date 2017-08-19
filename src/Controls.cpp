@@ -51,12 +51,12 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 	return false;
 }
 
-void Controls::unSelect(int type) {
+void Controls::unSelect() {
 	for (int i = 0; i < selected->size(); ++i) {
 		(*selected)[i]->unSelect();
 	}
 	selected->clear();
-	selectedType = ObjectType(type);
+	selectedType = ObjectType::ENTITY;
 	selectedInfo->setSelectedType(selectedType);
 	selectedInfo->reset();
 }
@@ -64,7 +64,7 @@ void Controls::unSelect(int type) {
 void Controls::select(Physical* entity) {
 	ObjectType entityType = entity->getType();
 	if (entity->getType() != selectedType) {
-		unSelect(entity->getType());
+		unSelect();
 	}
 
 	entity->select();
@@ -79,26 +79,26 @@ void Controls::select(Physical* entity) {
 
 void Controls::controlEntity(Vector3& hitPos, bool ctrlPressed, Physical* clicked) {
 	switch (state) {
-	case SELECT:
+	case DEFAULT:
 		{
 		if (!ctrlPressed) {
-			unSelect(ENTITY);
+			unSelect();
 		}
 		select(clicked);
 		}
 		break;
 	case BUILD:
 		{
-		unSelect(ENTITY);
+		unSelect();
 		create(ObjectType::BUILDING, new Vector3(hitPos), 1);
 		break;
 		}
-	case DEPLOY:
-		{
-		unSelect(ENTITY);
-		create(ObjectType::UNIT,new Vector3(hitPos), 10);
-		break;
-		}
+//	case DEPLOY:
+//		{
+//		unSelect(ENTITY);
+//		create(ObjectType::UNIT,new Vector3(hitPos), 10);
+//		break;
+//		}
 	}
 }
 
@@ -118,25 +118,12 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3& hitPos) {
 		controlEntity(hitPos, ctrlPressed, clicked);
 		break;
 	case UNIT:
-		if (!ctrlPressed) {
-			unSelect(ENTITY);
-		}
-
-		select(clicked);
-		break;
-
 	case BUILDING:
-		if (!ctrlPressed) {
-			unSelect(ENTITY);
-		}
-
-		select(clicked);
-		break;
-
 	case RESOURCE:
 		if (!ctrlPressed) {
-			unSelect(ENTITY);
+			unSelect();
 		}
+
 		select(clicked);
 		break;
 
@@ -172,7 +159,7 @@ void Controls::rightClick(Drawable* hitDrawable, Vector3& hitPos) {
 		}
 	case UNIT:
 		{
-		unSelect(ENTITY);
+		unSelect();
 		break;
 		}
 	case BUILDING: break;
@@ -185,7 +172,7 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>* held) {
 	std::vector<Physical*>* entities = Game::get()->getMediator()->getEntities(held);
 	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
 	if (!ctrlPressed) {
-		unSelect(ENTITY);
+		unSelect();
 	}
 	for (int i = 0; i < entities->size(); ++i) {//TODO zastapic wrzuceniem na raz
 		select((*entities)[i]);
@@ -257,10 +244,24 @@ void Controls::release(const int button) {
 	}
 }
 
-void Controls::updateState(ControlsState state) {
-	this->state = state;
+void Controls::updateState(SelectedInfo* selectedInfo) {
+	this->state = DEFAULT;
+//	switch (selectedInfo->getSelectedType()) {
+//
+//	case UNIT: 
+//		
+//		break;
+//	case BUILDING: break;
+//	case RESOURCE: break;
+//	default: ;
+//	}
 	idToCreate = -1;
 }
+
+//void Controls::updateState(ControlsState state) {
+//	this->state = state;
+//	idToCreate = -1;
+//}
 
 void Controls::hudAction(HudElement* hud) {
 	typeToCreate = hud->getType();
