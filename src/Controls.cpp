@@ -93,12 +93,12 @@ void Controls::controlEntity(Vector3& hitPos, bool ctrlPressed, Physical* clicke
 		create(ObjectType::BUILDING, new Vector3(hitPos), 1);
 		break;
 		}
-//	case DEPLOY:
-//		{
-//		unSelect(ENTITY);
-//		create(ObjectType::UNIT,new Vector3(hitPos), 10);
-//		break;
-//		}
+		//	case DEPLOY:
+		//		{
+		//		unSelect(ENTITY);
+		//		create(ObjectType::UNIT,new Vector3(hitPos), 10);
+		//		break;
+		//		}
 	}
 }
 
@@ -246,15 +246,15 @@ void Controls::release(const int button) {
 
 void Controls::updateState(SelectedInfo* selectedInfo) {
 	this->state = DEFAULT;
-//	switch (selectedInfo->getSelectedType()) {
-//
-//	case UNIT: 
-//		
-//		break;
-//	case BUILDING: break;
-//	case RESOURCE: break;
-//	default: ;
-//	}
+	//	switch (selectedInfo->getSelectedType()) {
+	//
+	//	case UNIT: 
+	//		
+	//		break;
+	//	case BUILDING: break;
+	//	case RESOURCE: break;
+	//	default: ;
+	//	}
 	idToCreate = -1;
 }
 
@@ -265,6 +265,7 @@ void Controls::updateState(SelectedInfo* selectedInfo) {
 
 void Controls::hudAction(HudElement* hud) {
 	typeToCreate = hud->getType();
+	state = BUILD;
 	idToCreate = hud->getId();
 }
 
