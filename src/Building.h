@@ -4,6 +4,7 @@
 #include "Physical.h"
 #include "db_strcut.h"
 #include "QueueElement.h"
+#include "QueueManager.h"
 
 struct db_building;
 
@@ -21,11 +22,12 @@ public:
 	void setInGradinet(bool _inGradient);
 	String toMultiLineString() override;
 	void buttonAction(short id) override;
+	void updateQueue(float time);
 private:
 	BuildingType buildingType;
 	db_building* dbBuilding;
 	std::vector<db_unit*>* units;
-	std::vector<QueueElement*> *queue;
+	QueueManager* queue;
 	bool inGradient = false;
 	static double hbMaxSize;
 };

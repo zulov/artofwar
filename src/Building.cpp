@@ -6,8 +6,7 @@ double Building::hbMaxSize = 5.0;
 
 Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode, BUILDING) {
 	hbMaxSize = 5.0;
-	queue = new std::vector<QueueElement*>();
-	queue->reserve(DEFAULT_VECTOR_SIZE);
+	queue = new QueueManager();
 }
 
 
@@ -55,5 +54,9 @@ String Building::toMultiLineString() {
 }
 
 void Building::buttonAction(short id) {
+	queue->add(1, BUILDING, id);
+}
 
+void Building::updateQueue(float time) {
+	queue->update(time);
 }

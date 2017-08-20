@@ -88,6 +88,10 @@ void Simulation::update(Input* input, float timeStep) {
 			envStrategy->update(buildings);
 			envStrategy->update(resources);
 
+			for (Building* build : (*buildings)) {
+				build->updateQueue(maxTimeFrame);
+			}
+
 			calculateForces();
 			applyForce();
 
