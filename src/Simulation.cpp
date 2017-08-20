@@ -89,7 +89,10 @@ void Simulation::update(Input* input, float timeStep) {
 			envStrategy->update(resources);
 
 			for (Building* build : (*buildings)) {
-				build->updateQueue(maxTimeFrame);
+				std::vector<QueueElement*>* dones = build->updateQueue(maxTimeFrame);
+				for (auto done : (*dones)) {
+					simCommandList->add(new SimulationCommand(done->getType(), done->getAmount(), done->getSubtype(), new Vector3(*(build->getTarget())), SpacingType::CONSTANT, 0));
+				}
 			}
 
 			calculateForces();
@@ -113,7 +116,7 @@ void Simulation::calculateForces() {
 		Unit* unit = (*units)[i];
 		std::vector<Physical*>* neighbours = envStrategy->getNeighbours(unit, unit->getMaxSeparationDistance());
 		//std::vector<Physical*>* buildings = envStrategy->getBuildings(unit, unit->getMaxSeparationDistance());//TODO jakis inny parametr niz max separaatino dist
-		Vector3 * repulsive = envStrategy->getRepulsiveAt(unit->getPosition());
+		Vector3* repulsive = envStrategy->getRepulsiveAt(unit->getPosition());
 
 		Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
 		Vector3* sepObstacle = forceStrategy->separationObstacle(unit, repulsive);

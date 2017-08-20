@@ -42,3 +42,15 @@ bool QueueElement::update(float time) {
 	}
 	return false;
 }
+
+ObjectType QueueElement::getType() {
+	return type;
+}
+
+short QueueElement::getSubtype() {
+	return subType;
+}
+
+short QueueElement::getAmount() {
+	return amount;
+}

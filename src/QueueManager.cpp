@@ -1,6 +1,7 @@
 #include "QueueManager.h"
 #include "defines.h"
 #include <iostream>
+#include "utils.h"
 
 
 QueueManager::QueueManager() {
@@ -12,6 +13,8 @@ QueueManager::QueueManager() {
 
 
 QueueManager::~QueueManager() {
+	clear_vector(queue);
+	clear_vector(ended);
 }
 
 void QueueManager::add(short value, ObjectType type, short id) {
@@ -28,7 +31,7 @@ void QueueManager::add(short value, ObjectType type, short id) {
 }
 
 std::vector<QueueElement*>* QueueManager::update(float time) {
-	ended->clear();
+	clear_vector(ended);
 	for (int i = queue->size() - 1; i >= 0; --i) {
 		QueueElement* element = queue->at(i);
 		if (element->update(time)) {

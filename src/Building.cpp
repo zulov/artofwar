@@ -7,6 +7,9 @@ double Building::hbMaxSize = 5.0;
 Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode, BUILDING) {
 	hbMaxSize = 5.0;
 	queue = new QueueManager();
+	target = new Vector3(*_position);
+	target->x_ += 20;
+	target->z_ += 20;
 }
 
 
@@ -54,9 +57,13 @@ String Building::toMultiLineString() {
 }
 
 void Building::buttonAction(short id) {
-	queue->add(1, BUILDING, id);
+	queue->add(1, UNIT, id);
 }
 
-void Building::updateQueue(float time) {
-	queue->update(time);
+std::vector<QueueElement*>* Building::updateQueue(float time) {
+	return queue->update(time);
+}
+
+Vector3* Building::getTarget() {
+	return target;//TODO target to nie to samo co gdzie sie maja pojawiac!
 }

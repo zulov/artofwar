@@ -22,8 +22,10 @@ public:
 	void setInGradinet(bool _inGradient);
 	String toMultiLineString() override;
 	void buttonAction(short id) override;
-	void updateQueue(float time);
+	std::vector<QueueElement*>* updateQueue(float time);
+	Vector3* getTarget();
 private:
+	Vector3 *target;
 	BuildingType buildingType;
 	db_building* dbBuilding;
 	std::vector<db_unit*>* units;

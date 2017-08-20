@@ -10,6 +10,9 @@ public:
 	short add(short value);
 	void remove(short value);
 	bool update(float time);
+	ObjectType getType();
+	short getSubtype();
+	short getAmount();
 private:
 	ObjectType type;
 	short subType;

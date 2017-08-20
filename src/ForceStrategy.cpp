@@ -31,6 +31,12 @@ Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Physical
 		Vector3 diff = *unit->getPosition() - *neight->getPosition();
 		double sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist) { continue; }
+		if(sqDistance==0) {
+			force->x_ = ((double)rand() / (RAND_MAX)) * coef - (coef / 2);
+			force->z_ = ((double)rand() / (RAND_MAX)) * coef - (coef / 2);
+			(*force) *= boostCoef * sepCoef;
+			return force;
+		}
 		double distance = sqrt(sqDistance);
 
 		diff /= distance;
