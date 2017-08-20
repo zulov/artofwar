@@ -7,7 +7,7 @@ Bucket::~Bucket() {
 
 Bucket::Bucket() {
 	content = new std::vector<Physical *>();
-	content->reserve(10);
+	content->reserve(DEFAULT_VECTOR_SIZE);
 }
 
 std::vector<Physical *>* Bucket::getContent() {

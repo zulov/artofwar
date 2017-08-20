@@ -28,3 +28,5 @@
 #define MAX_THREADS 4
 
 #define MAX_SIZE_TYPES 10
+
+#define DEFAULT_VECTOR_SIZE 10

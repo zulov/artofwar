@@ -6,6 +6,8 @@ double Building::hbMaxSize = 5.0;
 
 Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode, BUILDING) {
 	hbMaxSize = 5.0;
+	queue = new std::vector<QueueElement*>();
+	queue->reserve(DEFAULT_VECTOR_SIZE);
 }
 
 

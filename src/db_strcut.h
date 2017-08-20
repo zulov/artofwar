@@ -13,6 +13,7 @@
 
 #include <Urho3D/Container/Str.h>
 #include <vector>
+#include "defines.h"
 
 struct db_unit
 {
@@ -261,15 +262,15 @@ struct db_container
 	explicit db_container() {
 		for (int i = 0; i < BULDINGS_NUMBER_DB; ++i) {
 			unitsForBuilding[i] = new std::vector<db_unit*>();
-			unitsForBuilding[i]->reserve(10);
+			unitsForBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
 			costForBuilding[i] = new std::vector<db_building_cost*>();
-			costForBuilding[i]->reserve(10);
+			costForBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
 		}
 		for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
 			costForUnit[i] = new std::vector<db_unit_cost*>();
-			costForUnit[i]->reserve(10);
+			costForUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 			ordersToUnit[i] = new std::vector<db_order*>();
-			ordersToUnit[i]->reserve(10);
+			ordersToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 		}
 	}
 };

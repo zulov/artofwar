@@ -8,7 +8,6 @@ Benchmark::Benchmark() {
 	sum = 0;
 	avg = 0;
 	time_t now = time(0);
-	char* dt = ctime(&now);
 	tm* ltm = localtime(&now);
 	std::string name = "result/" + std::to_string(1900 + ltm->tm_year) + "" + std::to_string(1 + ltm->tm_mon) + "" +
 		std::to_string(ltm->tm_mday) + "" + std::to_string(1 + ltm->tm_hour) + "" +

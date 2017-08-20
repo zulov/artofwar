@@ -58,7 +58,6 @@ void MenuPanel::setInfo(HudElement* hudElement) {
 }
 
 void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
-	ObjectType type = selectedInfo->getSelectedType();
 	if(selectedInfo->getAllNumber()==1) {
 		text->SetVisible(true);
 		vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();

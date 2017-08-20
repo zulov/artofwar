@@ -52,7 +52,7 @@ std::vector<Physical*>* EnviromentStrategy::getBuildings(Unit* unit, double radi
 
 std::vector<Physical *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGrid* bucketGrid, double radius) {
 	std::vector<Physical*>* neights = new std::vector<Physical *>();
-	neights->reserve(10);//TODO sparametryzowac
+	neights->reserve(DEFAULT_VECTOR_SIZE);//TODO sparametryzowac
 
 	double sqSeparationDistance = radius * radius;
 	Vector3* unitPosition = unit->getPosition();

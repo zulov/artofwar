@@ -1,9 +1,10 @@
 #include "Aims.h"
+#include "defines.h"
 
 
 Aims::Aims() {
 	aims = new std::vector<Aim*>();
-	aims->reserve(10);
+	aims->reserve(DEFAULT_VECTOR_SIZE);
 	references = 0;
 }
 

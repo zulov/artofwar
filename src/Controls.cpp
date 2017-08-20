@@ -69,7 +69,6 @@ void Controls::select(Physical* entity) {
 
 	entity->select();
 	selected->push_back(entity);
-	int subType = entity->getSubType();
 
 	selectedType = entityType;
 	selectedInfo->setSelectedType(selectedType);

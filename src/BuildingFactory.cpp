@@ -16,7 +16,6 @@ std::vector<Building*>* BuildingFactory::create(unsigned int number, int id, Vec
 	Game* game = Game::get();
 	db_building* dbBuilding = game->getDatabaseCache()->getBuilding(id);
 	std::vector<db_unit*>* dbUnits = game->getDatabaseCache()->getUnitsForBuilding(id);
-	Font* font = game->getCache()->GetResource<Font>("Fonts/"+ dbBuilding->font);
 
 	int xMax = number / sqrt(number);
 	double space = 1;

@@ -17,7 +17,7 @@ class Unit : public Physical
 public:
 	Unit(Vector3* _position, Urho3D::Node* _boxNode);
 	~Unit();
-	double getHealthBarSize();
+	double getHealthBarSize() override;
 	void populate(db_unit* _dbUnit);
 	void move(double timeStep);
 	void applyForce(double timeStep);

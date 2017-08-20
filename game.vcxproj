@@ -219,6 +219,7 @@
     <ClCompile Include="src\Physical.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\PlayersManager.cpp" />
+    <ClCompile Include="src\QueueElement.cpp" />
     <ClCompile Include="src\ResourceEntity.cpp" />
     <ClCompile Include="src\ResourceFactory.cpp" />
     <ClCompile Include="src\Resources.cpp" />
@@ -255,6 +256,7 @@
     <ClCompile Include="src\UnitsPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\AbstractCommand.h" />
     <ClInclude Include="src\AbstractObjectManager.h" />
     <ClInclude Include="src\AbstractWindowPanel.h" />
@@ -292,6 +294,7 @@
     <ClInclude Include="src\Physical.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\PlayersManager.h" />
+    <ClInclude Include="src\QueueElement.h" />
     <ClInclude Include="src\ResourceEntity.h" />
     <ClInclude Include="src\ResourceFactory.h" />
     <ClInclude Include="src\Resources.h" />

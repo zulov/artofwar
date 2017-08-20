@@ -3,6 +3,7 @@
 #include "BuildingType.h"
 #include "Physical.h"
 #include "db_strcut.h"
+#include "QueueElement.h"
 
 struct db_building;
 
@@ -24,7 +25,7 @@ private:
 	BuildingType buildingType;
 	db_building* dbBuilding;
 	std::vector<db_unit*>* units;
-
+	std::vector<QueueElement*> *queue;
 	bool inGradient = false;
 	static double hbMaxSize;
 };

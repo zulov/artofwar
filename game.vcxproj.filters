@@ -190,6 +190,7 @@
     <ClCompile Include="src\OrdersPanel.cpp">
       <Filter>hud\windows</Filter>
     </ClCompile>
+    <ClCompile Include="src\QueueElement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -413,6 +414,8 @@
     <ClInclude Include="src\OrdersPanel.h">
       <Filter>hud\windows</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\QueueElement.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -8,7 +8,7 @@ class ActionCommandList :public CommandList
 public:
 	ActionCommandList(AimContainer * _aimContainer);
 	~ActionCommandList();
-	void setParemeters(AbstractCommand* command);
+	void setParemeters(AbstractCommand* command) override;
 private:
 	AimContainer * aimContainer;
 };
