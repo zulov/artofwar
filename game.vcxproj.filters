@@ -196,6 +196,12 @@
     <ClCompile Include="src\QueueElement.cpp">
       <Filter>objects\building</Filter>
     </ClCompile>
+    <ClCompile Include="src\QueuePanel.cpp">
+      <Filter>hud\windows\queue</Filter>
+    </ClCompile>
+    <ClCompile Include="src\QueueHudElement.cpp">
+      <Filter>hud\windows\queue</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -426,6 +432,12 @@
     <ClInclude Include="src\QueueElement.h">
       <Filter>objects\building</Filter>
     </ClInclude>
+    <ClInclude Include="src\QueuePanel.h">
+      <Filter>hud\windows\queue</Filter>
+    </ClInclude>
+    <ClInclude Include="src\QueueHudElement.h">
+      <Filter>hud\windows\queue</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
@@ -509,6 +521,9 @@
     </Filter>
     <Filter Include="objects\building">
       <UniqueIdentifier>{9c6253a0-711a-4ff1-9abc-2399f8935363}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hud\windows\queue">
+      <UniqueIdentifier>{911cea19-f003-4bdf-86bf-c221d4cd609d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

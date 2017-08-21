@@ -11,7 +11,7 @@ Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, Vector3* repulse)
 	Vector3* force = new Vector3(*repulse);
 
 
-	(*force) *= coef*boostCoef * sepCoef;
+	(*force) *= coef * boostCoef * sepCoef;
 	return force;
 }
 
@@ -31,7 +31,7 @@ Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Physical
 		Vector3 diff = *unit->getPosition() - *neight->getPosition();
 		double sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist) { continue; }
-		if(sqDistance==0) {
+		if (sqDistance == 0) {
 			force->x_ = ((double)rand() / (RAND_MAX)) * coef - (coef / 2);
 			force->z_ = ((double)rand() / (RAND_MAX)) * coef - (coef / 2);
 			(*force) *= boostCoef * sepCoef;

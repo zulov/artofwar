@@ -24,6 +24,7 @@ public:
 	void buttonAction(short id) override;
 	std::vector<QueueElement*>* updateQueue(float time);
 	Vector3* getTarget();
+	QueueManager* getQueue();
 private:
 	Vector3 *target;
 	BuildingType buildingType;

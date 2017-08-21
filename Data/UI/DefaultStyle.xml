@@ -454,7 +454,7 @@
 		<attribute name="Layout Mode" value="Vertical" />
 		<attribute name="Layout Spacing" value="{spaceY/3}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY/3} {spaceX} {spaceY/3}" />
-		<attribute name="Min Size" value="{resX -(4*iconX+2*spaceX) -(4*iconX+2*spaceX)} {2*iconY+3*spaceY}"/>
+		<attribute name="Min Size" value="{resX -(4*iconX+2*spaceX) -(4*iconX+2*spaceX)} {3*iconY+3*spaceY}"/>
 		<attribute name="Max Size" value="{resX -(4*iconX+2*spaceX) -(4*iconX+2*spaceX)} {3*iconY+3*spaceY}"/>
 	</element>
 	
@@ -466,6 +466,17 @@
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
 		<attribute name="Min Size" value="{3*iconX} {iconY*2}"/>
 		<attribute name="Opacity" value="0.5" />
+	</element>
+	
+	<element type="QueueWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<attribute name="Layout Spacing" value="{spaceX}" />
+        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+		<attribute name="Min Size" value="{resX -(4*iconX+2*spaceX) -(4*iconX+2*spaceX)} {iconY}"/>
+		<attribute name="Opacity" value="0.3" />
+		<attribute name="Position" value="0 -{3*iconY+3*spaceY}"/>
 	</element>
 	
 	<element type="MyDropDown" style="DropDownList" >

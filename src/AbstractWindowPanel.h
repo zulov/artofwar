@@ -9,7 +9,7 @@ class AbstractWindowPanel
 {
 public:
 	AbstractWindowPanel(Urho3D::XMLFile* _style);
-	~AbstractWindowPanel();
+	virtual ~AbstractWindowPanel();
 	Urho3D::String& getStyleName();
 	Urho3D::Window * createWindow();
 	void setVisible(bool enable);

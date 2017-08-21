@@ -67,3 +67,7 @@ std::vector<QueueElement*>* Building::updateQueue(float time) {
 Vector3* Building::getTarget() {
 	return target;//TODO target to nie to samo co gdzie sie maja pojawiac!
 }
+
+QueueManager* Building::getQueue() {
+	return queue;
+}

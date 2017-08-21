@@ -79,6 +79,7 @@ Hud::Hud() {
 	miniMapPanel = new MiniMapPanel(style);
 	menuPanel = new MenuPanel(style);
 	ordersPanel = new OrdersPanel(style);
+	queuePanel = new QueuePanel(style);
 
 	windows->push_back(menuPanel->createWindow());
 	windows->push_back(buildPanel->createWindow());
@@ -88,6 +89,7 @@ Hud::Hud() {
 	windows->push_back(topPanel->createWindow());
 	windows->push_back(selectedHudPanel->createWindow());
 	windows->push_back(ordersPanel->createWindow());
+	windows->push_back(queuePanel->createWindow());
 }
 
 Hud::~Hud() {
@@ -126,7 +128,7 @@ std::vector<Window*>* Hud::getWindows() {
 }
 
 void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a sterowac widzialnsocia
-	selectedHudPanel->updateSelected(selectedInfo);
+	selectedHudPanel->update(selectedInfo);
 	menuPanel->updateSelected(selectedInfo);
 	switch (selectedInfo->getSelectedType()) {
 
@@ -134,16 +136,19 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a ster
 		ordersPanel->show(selectedInfo);
 		buildPanel->setVisible(false);
 		unitsPanel->setVisible(false);
+		queuePanel->setVisible(false);
 		break;
 	case BUILDING:
 		ordersPanel->setVisible(false);
 		buildPanel->setVisible(false);
 		unitsPanel->show(selectedInfo);
+		queuePanel->show(selectedInfo);
 		break;
 	default:
 		ordersPanel->setVisible(false);
 		buildPanel->show(selectedInfo);
 		unitsPanel->setVisible(false);
+		queuePanel->setVisible(false);
 	}
 }
 

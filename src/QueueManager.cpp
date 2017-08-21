@@ -41,3 +41,11 @@ std::vector<QueueElement*>* QueueManager::update(float time) {
 	}
 	return ended;
 }
+
+short QueueManager::getSize() {
+	return queue->size();
+}
+
+QueueElement* QueueManager::getAt(short i) {
+	return queue->at(i);
+}

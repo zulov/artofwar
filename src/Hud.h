@@ -36,6 +36,7 @@
 #include "TopPanel.h"
 #include "MiniMapPanel.h"
 #include "OrdersPanel.h"
+#include "QueuePanel.h"
 
 using namespace Urho3D;
 
@@ -67,6 +68,7 @@ private:
 	MiniMapPanel * miniMapPanel;
 	MenuPanel * menuPanel;
 	OrdersPanel * ordersPanel;
+	QueuePanel * queuePanel;
 
 	std::vector<HudElement*>* buttons;
 	std::vector<HudElement*>* lists;
