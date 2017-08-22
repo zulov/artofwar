@@ -1,5 +1,6 @@
 BEGIN TRANSACTION;
-INSERT INTO `units` (id,name,minDist,maxSep,type,model,texture,font,mass,maxSpeed,scale,rotatable,nation,icon) VALUES (0,'warrior',0.5,2.0,0,'Cube.mdl','grey.xml','Anonymous Pro.ttf',1.0,5.0,1.0,1,0,'warrior.png'),
+INSERT INTO `units` (id,name,minDist,maxSep,type,model,texture,font,mass,maxSpeed,scale,rotatable,nation,icon) 
+VALUES (0,'warrior',0.5,2.0,0,'Cube.mdl','grey.xml','Anonymous Pro.ttf',1.0,5.0,1.0,1,0,'warrior.png'),
  (1,'archer',0.4,2.0,3,'Hedra.mdl','darkgrey.xml','Anonymous Pro.ttf',0.8,6.0,1.0,1,0,'archer.png'),
  (2,'pikeman',0.4,2.0,1,'Pyramid.mdl','red.xml','Anonymous Pro.ttf',0.9,3.0,1.0,1,0,'pikeman.png'),
  (3,'cavalry',0.6,3.5,2,'horse.mdl','horse.xml','Anonymous Pro.ttf',2.0,12.0,1.0,1,0,'cavalry.png'),
@@ -15,7 +16,7 @@ INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,minDist) VA
 tree1.xml','tree.mdl',1.75,5.0),
  (2,'food','food.png',100,'food.xml',NULL,1.0,4.0),
  (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.75,3.0);
-INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
+INSERT INTO `orders_to_unit` (id,unit,'order') VALUES (0,0,0),
  (1,0,1),
  (2,0,3),
  (3,0,4),
@@ -117,10 +118,11 @@ INSERT INTO `building_to_unit` (id,building,unit) VALUES (0,4,0),
  (10,5,2),
  (11,5,3),
  (12,0,4);
-INSERT INTO `building` (id,name,minDist,type,model,texture,font,scale,texture_temp,nation,icon) VALUES (0,'house',6.0,0,'House.mdl','house.xml','Anonymous Pro.ttf',1.0,'house_temp.xml',0,'house.png'),
- (1,'tower',3.0,1,'Tower.mdl','tower.xml','Anonymous Pro.ttf',1.0,'tower_temp.xml',0,'tower.png'),
- (2,'barracks',10.0,2,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml',0,'barracks.png'),
- (3,'archery_range',6.0,3,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml',0,'archery_range.png'),
- (4,'mock',10.0,4,'cube.mdl','transparent.xml','Anonymous Pro.ttf',10.0,'transparent_temp.xml',0,'mock.png'),
- (5,'mock_enemy',5.0,4,'cube.mdl','transparent.xml','Anonymous Pro.ttf',5.0,'transparent_temp.xml',1,'mock2.png');
+INSERT INTO `building` (id,name,minDist,type,model,texture,font,scale,texture_temp,nation,icon,queue_max_capacity) 
+VALUES (0,'house',6.0,0,'House.mdl','house.xml','Anonymous Pro.ttf',1.0,'house_temp.xml',0,'house.png',5),
+ (1,'tower',3.0,1,'Tower.mdl','tower.xml','Anonymous Pro.ttf',1.0,'tower_temp.xml',0,'tower.png',5),
+ (2,'barracks',10.0,2,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml',0,'barracks.png',10),
+ (3,'archery_range',6.0,3,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml',0,'archery_range.png',10),
+ (4,'mock',10.0,4,'cube.mdl','transparent.xml','Anonymous Pro.ttf',10.0,'transparent_temp.xml',0,'mock.png',20),
+ (5,'mock_enemy',5.0,4,'cube.mdl','transparent.xml','Anonymous Pro.ttf',5.0,'transparent_temp.xml',1,'mock2.png',20);
 COMMIT;

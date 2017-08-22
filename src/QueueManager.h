@@ -5,15 +5,16 @@
 class QueueManager
 {
 public:
-	QueueManager();
+	QueueManager(short _maxCapacity);
 	~QueueManager();
 	void add(short value, ObjectType type, short id);
 	void remove(short value, ObjectType type, short id);
-	std::vector<QueueElement*> * update(float time);
+	QueueElement* update(float time);
 	short getSize();
 	QueueElement* getAt(short i);
 private:
 	std::vector<QueueElement*> *queue;
-	std::vector<QueueElement*>* ended;
+	
+	short maxCapacity;
 };
 

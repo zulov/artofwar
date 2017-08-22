@@ -4,17 +4,16 @@
 #include "utils.h"
 
 
-QueueManager::QueueManager() {
+QueueManager::QueueManager(short _maxCapacity) {
 	queue = new std::vector<QueueElement*>();
 	queue->reserve(DEFAULT_VECTOR_SIZE);
-	ended = new std::vector<QueueElement*>();
-	ended->reserve(DEFAULT_VECTOR_SIZE);
+
+	maxCapacity = _maxCapacity;
 }
 
 
 QueueManager::~QueueManager() {
 	clear_vector(queue);
-	clear_vector(ended);
 }
 
 void QueueManager::add(short value, ObjectType type, short id) {
@@ -24,22 +23,20 @@ void QueueManager::add(short value, ObjectType type, short id) {
 		}
 	}
 	while (value > 0) {
-		QueueElement* element = new QueueElement(type, id);
+		QueueElement* element = new QueueElement(type, id, maxCapacity);
 		value = element->add(value);
 		queue->push_back(element);
 	}
 }
 
-std::vector<QueueElement*>* QueueManager::update(float time) {
-	clear_vector(ended);
-	for (int i = queue->size() - 1; i >= 0; --i) {
-		QueueElement* element = queue->at(i);
+QueueElement* QueueManager::update(float time) {
+	if (queue->size() > 0) {
+		QueueElement* element = queue->at(0);
 		if (element->update(time)) {
-			ended->push_back(element);
-			queue->erase(queue->begin() + i);
+			queue->erase(queue->begin());
+			return element;
 		}
 	}
-	return ended;
 }
 
 short QueueManager::getSize() {

@@ -22,7 +22,7 @@ public:
 	void setInGradinet(bool _inGradient);
 	String toMultiLineString() override;
 	void buttonAction(short id) override;
-	std::vector<QueueElement*>* updateQueue(float time);
+	QueueElement* updateQueue(float time);
 	Vector3* getTarget();
 	QueueManager* getQueue();
 private:

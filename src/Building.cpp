@@ -6,7 +6,7 @@ double Building::hbMaxSize = 5.0;
 
 Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode, BUILDING) {
 	hbMaxSize = 5.0;
-	queue = new QueueManager();
+	
 	target = new Vector3(*_position);
 	target->x_ += 20;
 	target->z_ += 20;
@@ -35,6 +35,7 @@ void Building::populate(db_building* _dbBuilding, std::vector<db_unit*>* _units)
 	buildingType = BuildingType(_dbBuilding->type);
 	dbBuilding = _dbBuilding;
 	units = _units;
+	queue = new QueueManager(_dbBuilding->queueMaxCapacity);
 }
 
 void Building::absorbAttack(double attackCoef) {
@@ -60,7 +61,7 @@ void Building::buttonAction(short id) {
 	queue->add(1, UNIT, id);
 }
 
-std::vector<QueueElement*>* Building::updateQueue(float time) {
+QueueElement* Building::updateQueue(float time) {
 	return queue->update(time);
 }
 

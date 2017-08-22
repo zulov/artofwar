@@ -4,7 +4,7 @@
 class QueueElement
 {
 public:
-	QueueElement(ObjectType _type, short _subType);
+	QueueElement(ObjectType _type, short _subType, short _maxCapacity);
 	~QueueElement();
 	bool checkType(ObjectType _type, short _subType);
 	short add(short value);

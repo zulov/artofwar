@@ -1,11 +1,12 @@
 #include "QueueElement.h"
 
-QueueElement::QueueElement(ObjectType _type, short _subType) {
+QueueElement::QueueElement(ObjectType _type, short _subType, short _maxCapacity) {
 	elapsedSeconds = 0;
 	amount = 0;
 	secondsToComplete = initialSecondsToComplete;
 	type = _type;
 	subType = _subType;
+	maxCapacity = _maxCapacity;
 }
 
 QueueElement::~QueueElement() {
@@ -20,7 +21,7 @@ bool QueueElement::checkType(ObjectType _type, short _subType) {
 
 short QueueElement::add(short value) {
 	short rest;
-	if (maxCapacity > amount + value) {
+	if (maxCapacity <= amount + value) {
 		rest = amount + value - maxCapacity;
 		amount = maxCapacity;
 	} else {

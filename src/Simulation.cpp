@@ -89,8 +89,8 @@ void Simulation::update(Input* input, float timeStep) {
 			envStrategy->update(resources);
 
 			for (Building* build : (*buildings)) {
-				std::vector<QueueElement*>* dones = build->updateQueue(maxTimeFrame);
-				for (auto done : (*dones)) {
+				QueueElement* done = build->updateQueue(maxTimeFrame);
+				if (done) {
 					simCommandList->add(new SimulationCommand(done->getType(), done->getAmount(), done->getSubtype(), new Vector3(*(build->getTarget())), SpacingType::CONSTANT, 0));
 				}
 			}

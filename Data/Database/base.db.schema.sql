@@ -118,7 +118,8 @@ CREATE TABLE "building" (
 	`scale`	REAL,
 	`texture_temp`	TEXT,
 	`nation`	INTEGER,
-	`icon`	TEXT,
+	`icon`	TEXT, 
+	`queue_max_capacity`	INTEGER,
 	PRIMARY KEY(`id`),
 	FOREIGN KEY(`type`) REFERENCES `building_type`(`id`),
 	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)

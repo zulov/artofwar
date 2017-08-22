@@ -63,8 +63,9 @@ struct db_building
 	Urho3D::String texture_temp;
 	int nation;
 	Urho3D::String icon;
+	short queueMaxCapacity;
 
-	db_building(int id, char* name, double minDist, int type, char* model, char* texture, char* font, double scale, char* texture_temp, int nation, char* icon)
+	db_building(int id, char* name, double minDist, int type, char* model, char* texture, char* font, double scale, char* texture_temp, int nation, char* icon,int queueMaxCapacity)
 		: id(id),
 		name(name),
 		minDist(minDist),
@@ -75,7 +76,8 @@ struct db_building
 		scale(scale),
 		texture_temp(texture_temp),
 		nation(nation),
-		icon(icon) {
+		icon(icon),
+		queueMaxCapacity(queueMaxCapacity){
 	}
 };
 
