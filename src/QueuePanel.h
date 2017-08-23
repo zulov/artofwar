@@ -16,9 +16,10 @@ public:
 	String getIconName(ObjectType index, int id);
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
 	void show(SelectedInfo* selectedInfo);
+	void update(SelectedInfo* selectedInfo);
 private:
 	void update(QueueManager* queue, short& j);
-	void hide();
+	void hideElements(int from);
 	void createBody() override;
 	short MAX_ICON_SELECTION = 31;
 

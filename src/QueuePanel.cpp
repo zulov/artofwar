@@ -45,22 +45,28 @@ std::vector<Button*>* QueuePanel::getButtonsSelectedToSubscribe() {
 }
 
 void QueuePanel::show(SelectedInfo* selectedInfo) {//TODO tu moga byc problemy przy duzej ilosci
-	hide();
 	setVisible(true);
-	vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
-	short j = 0;
-	for (int i = 0; i < infoTypes->size(); ++i) {
-		std::vector<Physical*>* data = infoTypes->at(i)->getData();
-		for (Physical* physical : (*data)) {//TODO przeniesc kolejke do Physical
-			Building* building = static_cast<Building*>(physical);
-			update(building->getQueue(), j);
-		}
-
-	}
+	update(selectedInfo);
 }
 
-void QueuePanel::hide() {
-	for (int i = 0; i < MAX_ICON_SELECTION; ++i) {
+void QueuePanel::update(SelectedInfo* selectedInfo) {
+	short j = 0;
+	if (window->IsVisible()) {
+		vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+
+		for (int i = 0; i < infoTypes->size(); ++i) {
+			std::vector<Physical*>* data = infoTypes->at(i)->getData();
+			for (Physical* physical : (*data)) {//TODO przeniesc kolejke do Physical
+				Building* building = static_cast<Building*>(physical);
+				update(building->getQueue(), j);
+			}
+		}
+	}
+	hideElements(j);
+}
+
+void QueuePanel::hideElements(int from) {
+	for (int i = from; i < MAX_ICON_SELECTION; ++i) {
 		elements[i]->hide();
 	}
 }

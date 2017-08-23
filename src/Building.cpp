@@ -8,8 +8,8 @@ Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_posit
 	hbMaxSize = 5.0;
 	
 	target = new Vector3(*_position);
-	target->x_ += 20;
-	target->z_ += 20;
+	target->x_ += 5;
+	target->z_ += 5;
 }
 
 
