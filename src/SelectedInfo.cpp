@@ -54,7 +54,6 @@ void SelectedInfo::reset() {
 }
 
 vector<SelectedInfoType*>* SelectedInfo::getSelecteType() {
-	changed = false;
 	return selectedByType;
 }
 
@@ -70,4 +69,8 @@ void SelectedInfo::select(Physical* entity) {
 
 int SelectedInfo::getSelectedSubTypeNumber() {
 	return allSubTypeNumber;
+}
+
+void SelectedInfo::resetChanged() {
+	changed = false;
 }
