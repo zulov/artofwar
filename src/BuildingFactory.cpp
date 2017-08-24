@@ -24,6 +24,8 @@ std::vector<Building*>* BuildingFactory::create(unsigned int number, int id, Vec
 	int produced = 0;
 	int y = 0;
 	double sideSize = xMax * space / 2;
+	Model* model = game->getCache()->GetResource<Urho3D::Model>(modelName);
+	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>(materialName);
 	while (produced < number) {
 		for (int x = 0; x < xMax; ++x) {
 			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_, y * space + center->z_ - sideSize);
@@ -31,9 +33,9 @@ std::vector<Building*>* BuildingFactory::create(unsigned int number, int id, Vec
 			Node* node = game->getScene()->CreateChild();
 			node->SetPosition(*position);
 			node->SetScale(dbBuilding->scale);
-			Urho3D::StaticModel* model = node->CreateComponent<Urho3D::StaticModel>();
-			model->SetModel(game->getCache()->GetResource<Urho3D::Model>(modelName));
-			model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>(materialName));
+			Urho3D::StaticModel* staticModel = node->CreateComponent<Urho3D::StaticModel>();
+			staticModel->SetModel(model);
+			staticModel->SetMaterial(material);
 
 			Building* building = new Building(position, node);
 			buildings->push_back(building);
