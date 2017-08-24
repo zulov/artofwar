@@ -525,6 +525,11 @@
 		<attribute name="Text Alignment" value="Left" />
 	</element>
 	
+	<element type="MiniText" style="MyText" >
+		<attribute name="Font" value="Font;Fonts/Anonymous Pro.ttf" />
+		<attribute name="Font Size" value="{fontSize*8/10}" />
+	</element>
+	
 	<element type="MyListView" style="ListView" >
 		<attribute name="Auto Show/Hide Scrollbars" value="false true"/>
 		<attribute name="Highlight Mode" value="Always" />

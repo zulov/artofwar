@@ -17,6 +17,7 @@ public:
 	void setText(const Urho3D::String& msg);
 	void hideText();
 	void setTexture(Urho3D::Texture2D* texture);
+	void setProgress(float progress);
 private:
 	Urho3D::Button* button;
 	Urho3D::XMLFile* style;

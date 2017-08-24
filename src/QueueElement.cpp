@@ -55,3 +55,11 @@ short QueueElement::getSubtype() {
 short QueueElement::getAmount() {
 	return amount;
 }
+
+short QueueElement::getMaxCapacity() {
+	return maxCapacity;
+}
+
+float QueueElement::getProgress() {
+	return elapsedSeconds / secondsToComplete;
+}

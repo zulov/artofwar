@@ -7,7 +7,7 @@ QueueHudElement::QueueHudElement(Urho3D::XMLFile* _style) {
 	button = simpleButton(nullptr, style, "SmallIcon");
 	button->SetVisible(false);
 	text = button->CreateChild<Text>();
-	text->SetStyle("MyText", style);
+	text->SetStyle("MiniText", style);
 	icon = createEmptySprite(style, "SmallSprite");
 	button->AddChild(icon);
 	button->SetVar("SelectedHudElement", this);
@@ -18,7 +18,7 @@ QueueHudElement::QueueHudElement(Urho3D::XMLFile* _style) {
 	bar->SetStyle("MiniProgressBar", style);
 	bar->SetRange(1);
 	bar->SetValue(0.5);
-	bar->SetVisible(false);	
+	bar->SetVisible(true);	
 }
 
 
@@ -48,4 +48,8 @@ void QueueHudElement::hideText() {
 
 void QueueHudElement::setTexture(Texture2D* texture) {
 	setTextureToSprite(icon, texture);
+}
+
+void QueueHudElement::setProgress(float progress) {
+	bar->SetValue(progress);
 }

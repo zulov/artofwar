@@ -13,6 +13,8 @@ public:
 	ObjectType getType();
 	short getSubtype();
 	short getAmount();
+	short getMaxCapacity();
+	float getProgress();
 private:
 	ObjectType type;
 	short subType;

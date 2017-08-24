@@ -18,8 +18,9 @@ void QueuePanel::update(QueueManager* queue, short& j) {
 		elements[j]->show();
 		String name = getIconName(element->getType(), element->getSubtype());
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
-		elements[j]->setText(String(element->getAmount()));
+		elements[j]->setText(String(element->getAmount()) + "/" + String(element->getMaxCapacity()));
 		elements[j]->setTexture(texture);
+		elements[j]->setProgress(element->getProgress());
 		++j;
 	}
 }
