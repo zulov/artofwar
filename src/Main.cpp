@@ -78,7 +78,6 @@ void Main::Start() {
 
 	InitMouseMode(MM_RELATIVE);
 	controls = new Controls(GetSubsystem<Input>());
-
 }
 
 void Main::Stop() {

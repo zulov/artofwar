@@ -90,6 +90,8 @@ Hud::Hud() {
 	windows->push_back(selectedHudPanel->createWindow());
 	windows->push_back(ordersPanel->createWindow());
 	windows->push_back(queuePanel->createWindow());
+
+	buildPanel->show();
 }
 
 Hud::~Hud() {
@@ -147,7 +149,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a ster
 			break;
 		default:
 			ordersPanel->setVisible(false);
-			buildPanel->show(selectedInfo);
+			buildPanel->show();
 			unitsPanel->setVisible(false);
 			queuePanel->setVisible(false);
 		}

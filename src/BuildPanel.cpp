@@ -18,7 +18,7 @@ std::vector<HudElement*>* BuildPanel::getButtons() {
 	return buttons;
 }
 
-void BuildPanel::show(SelectedInfo* selectedInfo) {
+void BuildPanel::show() {
 	setVisible(true);
 }
 

@@ -11,7 +11,7 @@ public:
 	BuildPanel(Urho3D::XMLFile* _style, int _nation);
 	~BuildPanel();
 	std::vector<HudElement*>*getButtons();
-	void show(SelectedInfo* selectedInfo);
+	void show();
 private:
 	void createBody() override;
 	std::vector<HudElement*>* buttons;
