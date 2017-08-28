@@ -252,10 +252,6 @@ void Unit::applyForce(double timeStep) {
 	}
 }
 
-int Unit::getSubType() {
-	return unitType;
-}
-
 int Unit::getSubTypeId() {
 	return dbUnit->id;
 }

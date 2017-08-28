@@ -6,6 +6,7 @@ class Resources
 {
 public:
 	Resources();
+	Resources(float valueForAll);
 	~Resources();
 	
 	bool reduce(float * cost);

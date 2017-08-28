@@ -22,10 +22,6 @@ double Building::getHealthBarSize() {
 	return healthBarSize;
 }
 
-int Building::getSubType() {
-	return buildingType;
-}
-
 int Building::getSubTypeId() {
 	return dbBuilding->id;
 }

@@ -21,7 +21,6 @@ public:
 	void populate(db_unit* _dbUnit);
 	void move(double timeStep);
 	void applyForce(double timeStep);
-	int getSubType() override;
 	int getSubTypeId() override;
 	void setAcceleration(Vector3* _acceleration);
 	double getMaxSeparationDistance();

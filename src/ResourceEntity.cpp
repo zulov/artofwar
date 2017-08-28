@@ -12,10 +12,6 @@ ResourceEntity::~ResourceEntity() {
 	}
 }
 
-int ResourceEntity::getSubType() {
-	return type;
-}
-
 int ResourceEntity::getSubTypeId() {
 	return dbResource->id;
 }

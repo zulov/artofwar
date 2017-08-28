@@ -14,7 +14,6 @@ public:
 	Building(Vector3* _position, Urho3D::Node* _node);
 	~Building();
 	double getHealthBarSize() override;
-	int getSubType() override;
 	int getSubTypeId() override;
 	void populate(db_building* _dbBuilding, std::vector<db_unit*>* _units);
 	void absorbAttack(double attackCoef) override;

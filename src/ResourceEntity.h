@@ -9,7 +9,6 @@ class ResourceEntity :
 public:
 	ResourceEntity(Vector3* _position, Urho3D::Node* _node);
 	virtual ~ResourceEntity();
-	int getSubType() override;
 	int getSubTypeId() override;
 	void populate(db_resource* _dbResource);
 	bool isInGrandient();

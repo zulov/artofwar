@@ -25,10 +25,6 @@ ObjectType Entity::getType() {
 	return type;
 }
 
-int Entity::getSubType() {
-	return -1;
-}
-
 int Entity::getSubTypeId() {
 	return -1;
 }

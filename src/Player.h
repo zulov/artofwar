@@ -9,6 +9,7 @@ public:
 	~Player();
 	int getNation();
 	int getTeam();
+	Resources* getResources();
 private:
 	Resources* resources;
 	db_nation* dbNation;
