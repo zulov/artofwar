@@ -65,8 +65,8 @@ void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
 			std::vector<Physical*>* data = infoTypes->at(i)->getData();
 			if (!data->empty()) {
 				Physical* physical = data->at(0);
-				String msg = physical->toMultiLineString();
-				text->SetText(msg);
+				String *msg = physical->toMultiLineString();
+				text->SetText(*msg);
 				break;
 			}
 		}

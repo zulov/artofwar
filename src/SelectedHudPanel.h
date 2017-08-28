@@ -24,7 +24,6 @@ private:
 	short MAX_ICON_SELECTION = 31;
 	short LINES_IN_SELECTION = 4;
 	String getIconName(ObjectType index, int i);
-	int getSize(ObjectType type);
 	std::vector<Button*>* buttons;
 	SelectedHudElement** elements;
 	UIElement **rows;

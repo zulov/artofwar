@@ -22,7 +22,7 @@ public:
 	std::vector<SelectedInfoType*>* getSelecteType();
 	void select(Physical* entity);
 	int getSelectedSubTypeNumber();
-	void resetChanged();
+	void hasBeedUpdatedDrawn();
 private:
 	bool changed = false;
 	int allNumber;

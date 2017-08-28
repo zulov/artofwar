@@ -4,7 +4,7 @@
 
 Player::Player(int nationId, int team) {
 	dbNation = Game::get()->getDatabaseCache()->getNation(nationId);
-	resources = new Resources(10000);
+	resources = new Resources(1000);
 
 	this->team = team;
 }

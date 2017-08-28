@@ -115,6 +115,8 @@ void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {
 	msg += "\nCamera: \n\t" + (*cameraManager->getInfo());
 
 	debugPanel->setText(msg);
+	
+	topPanel->update(Game::get()->getPlayersManager()->getActivePlayer()->getResources());
 }
 
 std::vector<HudElement*>* Hud::getButtonsBuildToSubscribe() {

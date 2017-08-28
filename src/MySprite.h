@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Urho3D/UI/Sprite.h>
+
 using namespace Urho3D;
 
 class MySprite : public Sprite

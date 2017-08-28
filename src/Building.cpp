@@ -1,12 +1,13 @@
 #include "Building.h"
 #include "ObjectEnums.h"
 #include "db_strcut.h"
+#include "Game.h"
 
 double Building::hbMaxSize = 5.0;
 
 Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode, BUILDING) {
 	hbMaxSize = 5.0;
-	
+
 	target = new Vector3(*_position);
 	target->x_ += 5;
 	target->z_ += 5;
@@ -45,16 +46,21 @@ void Building::setInGradinet(bool _inGradient) {
 	inGradient = _inGradient;
 }
 
-String Building::toMultiLineString() {
-	String msg = dbBuilding->name;
-	msg += "\nAtak: " + String(attackCoef);
-	msg += "\nObrona: " + String(defenseCoef);
-	msg += "\nZdrowie: " + String(hpCoef) + "/" + String(maxHpCoef);
-	return msg;
+String* Building::toMultiLineString() {
+	(*menuString) = dbBuilding->name;
+	(*menuString) += "\nAtak: " + String(attackCoef);
+	(*menuString) += "\nObrona: " + String(defenseCoef);
+	(*menuString) += "\nZdrowie: " + String(hpCoef) + "/" + String(maxHpCoef);
+	return menuString;
 }
 
 void Building::buttonAction(short id) {
-	queue->add(1, UNIT, id);
+	Resources* resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
+	std::vector<db_unit_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
+
+	if (resources->reduce(costs)) {
+		queue->add(1, UNIT, id);
+	}
 }
 
 QueueElement* Building::updateQueue(float time) {

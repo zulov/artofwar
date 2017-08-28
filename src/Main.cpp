@@ -95,7 +95,8 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	if (selectedInfo->hasChanged()) {
 		controls->updateState(selectedInfo);
 	}
-	selectedInfo->resetChanged();
+	
+	selectedInfo->hasBeedUpdatedDrawn();
 	levelBuilder->execute();
 }
 

@@ -22,7 +22,7 @@ public:
 	void setBucket(short posX, short posY, short param);
 	void setTeam(signed char _team);
 	void setPlayer(signed char player);
-	virtual String toMultiLineString();//TODO optimize create only if change and pointer?
+	virtual String *toMultiLineString();//TODO optimize create only if change and pointer?
 	virtual void buttonAction (short id);
 protected:
 	Vector3* position;
@@ -46,7 +46,9 @@ protected:
 	Billboard* billboardShadow;
 	BillboardSet* billboardSetBar;
 	BillboardSet* billboardSetShadow;
+	String *menuString;
 private:
+
 	short int bucketX[BUCKET_SET_NUMBER];
 	short int bucketZ[BUCKET_SET_NUMBER];
 };

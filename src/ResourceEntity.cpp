@@ -36,8 +36,8 @@ double ResourceEntity::getHealthBarSize() {
 	return hbMaxSize;
 }
 
-String ResourceEntity::toMultiLineString() {
-	String msg = dbResource->name;
-	msg += "\nZasobów: " + String(amonut);
-	return msg;
+String *ResourceEntity::toMultiLineString() {
+	(*menuString) = dbResource->name;
+	(*menuString) += "\nZasobów: " + String(amonut);
+	return menuString;
 }

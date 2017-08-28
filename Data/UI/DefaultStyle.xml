@@ -569,6 +569,15 @@
         <attribute name="Max Size" value="{iconX*3/4} {iconY*3/4}" />
 	</element>
 	
+	<element type="mockCenter">
+		<attribute name="Layout Spacing" value="{spaceX/2}" />
+        <attribute name="Layout Mode" value="Horizontal" />
+		<attribute name="Horiz Alignment" value="Left" />
+		<attribute name="Position" value="{iconX/2} 0"/>
+		<attribute name="Min Size" value="0 {iconY/2}"/>
+		<attribute name="Max Size" value="{iconX} {iconY/2}"/>
+	</element>
+	
 	<element type="MiniProgressBar" style="ProgressBar">
         <attribute name="Min Size" value="0 {spaceY*2}" />
         <attribute name="Max Size" value="128 {spaceY*2}" />

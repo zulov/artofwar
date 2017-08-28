@@ -42,6 +42,8 @@ Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): E
 		billboardSetBar->Commit();
 		billboardSetShadow->Commit();
 	}
+
+	menuString = new String("Physical");
 }
 
 Physical::~Physical() {
@@ -93,8 +95,8 @@ void Physical::setPlayer(signed char player) {
 	this->player = player;
 }
 
-String Physical::toMultiLineString() {
-	return "Physical";
+String* Physical::toMultiLineString() {
+	return menuString;
 }
 
 void Physical::buttonAction(short id) {

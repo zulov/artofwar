@@ -208,12 +208,12 @@ void Unit::updateRotation() {
 	}
 }
 
-String Unit::toMultiLineString() {
-	String msg = dbUnit->name;
-	msg += "\nAtak: " + String(attackCoef);
-	msg += "\nObrona: " + String(defenseCoef);
-	msg += "\nZdrowie: " + String(hpCoef) + "/" + String(maxHpCoef);
-	return msg;
+String* Unit::toMultiLineString() {
+	(*menuString) = dbUnit->name;
+	(*menuString) += "\nAtak: " + String(attackCoef);
+	(*menuString) += "\nObrona: " + String(defenseCoef);
+	(*menuString) += "\nZdrowie: " + String(hpCoef) + "/" + String(maxHpCoef);
+	return menuString;
 }
 
 void Unit::buttonAction(short id) {

@@ -175,9 +175,6 @@
     <ClCompile Include="src\MiniMapPanel.cpp">
       <Filter>hud\windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\TopPanel.cpp">
-      <Filter>hud\windows</Filter>
-    </ClCompile>
     <ClCompile Include="src\DebugPanel.cpp">
       <Filter>hud\windows</Filter>
     </ClCompile>
@@ -201,6 +198,12 @@
     </ClCompile>
     <ClCompile Include="src\QueueHudElement.cpp">
       <Filter>hud\windows\queue</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TopPanel.cpp">
+      <Filter>hud\windows\top</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TopHudElement.cpp">
+      <Filter>hud\windows\top</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -401,9 +404,6 @@
     <ClInclude Include="src\MiniMapPanel.h">
       <Filter>hud\windows</Filter>
     </ClInclude>
-    <ClInclude Include="src\TopPanel.h">
-      <Filter>hud\windows</Filter>
-    </ClInclude>
     <ClInclude Include="src\DebugPanel.h">
       <Filter>hud\windows</Filter>
     </ClInclude>
@@ -437,6 +437,12 @@
     </ClInclude>
     <ClInclude Include="src\QueueHudElement.h">
       <Filter>hud\windows\queue</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TopPanel.h">
+      <Filter>hud\windows\top</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TopHudElement.h">
+      <Filter>hud\windows\top</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -524,6 +530,9 @@
     </Filter>
     <Filter Include="hud\windows\queue">
       <UniqueIdentifier>{911cea19-f003-4bdf-86bf-c221d4cd609d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="hud\windows\top">
+      <UniqueIdentifier>{889de42f-bda6-48b2-b01a-5ad4c82609ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

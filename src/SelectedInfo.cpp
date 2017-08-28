@@ -71,6 +71,6 @@ int SelectedInfo::getSelectedSubTypeNumber() {
 	return allSubTypeNumber;
 }
 
-void SelectedInfo::resetChanged() {
+void SelectedInfo::hasBeedUpdatedDrawn() {
 	changed = false;
 }

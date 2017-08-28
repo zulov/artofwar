@@ -8,7 +8,7 @@
 class QueueHudElement
 {
 public:
-	QueueHudElement(Urho3D::XMLFile* _style);
+	QueueHudElement(Urho3D::XMLFile* style);
 	~QueueHudElement();
 	Urho3D::Button* getButton();
 	void hide();
@@ -20,10 +20,9 @@ public:
 	void setProgress(float progress);
 private:
 	Urho3D::Button* button;
-	Urho3D::XMLFile* style;
+
 	MySprite* icon;
 	ProgressBar* bar;
 	Urho3D::Text* text;
 	Urho3D::UIElement* mock;
 };
-

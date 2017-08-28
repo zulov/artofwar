@@ -14,30 +14,55 @@ Resources::Resources(float valueForAll) {
 		names[i] = new String(resource->name);
 		values[i] = valueForAll;
 	}
+	changed = true;
 }
 
 
 Resources::~Resources() {
-
+	delete names;
 }
 
-bool Resources::reduce(float* cost) {
-	for (int i = 0; i < size; ++i) {
-		values[i] -= cost[i];
-		if (values[i] < 0) {
-			revert(i, cost);
+bool Resources::reduce(std::vector<db_unit_cost*>* costs) {
+	for (int i = 0; i < costs->size(); ++i) {
+		int j = costs->at(i)->resource;
+		values[j] -= costs->at(i)->value;
+		if (values[j] < 0) {
+			revert(i, costs);
 			return false;
 		}
 	}
+	changed = true;
 	return true;
 }
 
 void Resources::add(int id, float value) {
 	values[id] += value;
+	changed = true;
 }
 
-void Resources::revert(int end, float* cost) {
+bool Resources::hasChanged() {
+	return changed;
+}
+
+short Resources::getSize() {
+	return size;
+}
+
+float* Resources::getValues() {
+	return values;
+}
+
+Urho3D::String** Resources::getNames() {
+	return names;
+}
+
+void Resources::hasBeedUpdatedDrawn() {
+	changed = false;
+}
+
+void Resources::revert(int end, std::vector<db_unit_cost*>* costs) {
 	for (int i = 0; i < end + 1; ++i) {
-		values[i] += cost[i];
+		int j = costs->at(i)->resource;
+		values[j] += costs->at(i)->value;
 	}
 }

@@ -2,8 +2,7 @@
 #include "ButtonUtils.h"
 
 
-QueueHudElement::QueueHudElement(Urho3D::XMLFile* _style) {
-	style = _style;
+QueueHudElement::QueueHudElement(Urho3D::XMLFile* style) {
 	button = simpleButton(nullptr, style, "SmallIcon");
 	button->SetVisible(false);
 	text = button->CreateChild<Text>();

@@ -1,0 +1,24 @@
+#pragma once
+
+#include "MySprite.h"
+#include <Urho3D/UI/Text.h>
+#include <Urho3D/UI/Button.h>
+
+class TopHudElement
+{
+public:
+	TopHudElement(Urho3D::XMLFile* style, Texture2D* texture, String& nameTxt);
+	~TopHudElement();
+	Urho3D::Button* getButton();
+	void hide();
+	void show();
+	void setText(const Urho3D::String& msg);
+private:
+	Urho3D::Button* button;
+
+	MySprite* icon;
+
+	Urho3D::Text* name;
+	Urho3D::Text* value;
+	Urho3D::UIElement* mock;
+};

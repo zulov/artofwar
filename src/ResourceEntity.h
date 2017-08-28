@@ -14,7 +14,7 @@ public:
 	bool isInGrandient();
 	void setInGradinet(bool _inGradient);
 	double getHealthBarSize() override;
-	String toMultiLineString() override;
+	String *toMultiLineString() override;
 private:
 	String * name;
 	db_resource * dbResource;

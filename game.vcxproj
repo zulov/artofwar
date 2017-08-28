@@ -245,6 +245,7 @@
     <ClCompile Include="src\State.cpp" />
     <ClCompile Include="src\StateManager.cpp" />
     <ClCompile Include="src\StopState.cpp" />
+    <ClCompile Include="src\TopHudElement.cpp" />
     <ClCompile Include="src\TopPanel.cpp" />
     <ClCompile Include="src\UnitFactory.cpp" />
     <ClCompile Include="src\EnviromentStrategy.cpp" />
@@ -328,6 +329,7 @@
     <ClInclude Include="src\State.h" />
     <ClInclude Include="src\StateManager.h" />
     <ClInclude Include="src\StopState.h" />
+    <ClInclude Include="src\TopHudElement.h" />
     <ClInclude Include="src\TopPanel.h" />
     <ClInclude Include="src\UnitFactory.h" />
     <ClInclude Include="src\EnviromentStrategy.h" />

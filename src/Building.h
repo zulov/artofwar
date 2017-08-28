@@ -19,13 +19,13 @@ public:
 	void absorbAttack(double attackCoef) override;
 	bool isInGrandient();
 	void setInGradinet(bool _inGradient);
-	String toMultiLineString() override;
+	String* toMultiLineString() override;
 	void buttonAction(short id) override;
 	QueueElement* updateQueue(float time);
 	Vector3* getTarget();
 	QueueManager* getQueue();
 private:
-	Vector3 *target;
+	Vector3* target;
 	BuildingType buildingType;
 	db_building* dbBuilding;
 	std::vector<db_unit*>* units;
