@@ -297,8 +297,13 @@ void Controls::clickDown(const int button) {
 
 void Controls::create(ObjectType type, Vector3* pos, int number) {
 	if (idToCreate >= 0) {
-		SimulationCommand* simulationCommand = new SimulationCommand(type, number, idToCreate, pos, SpacingType::CONSTANT, 0);
-		Game::get()->getSimCommandList()->add(simulationCommand);
+		Resources* resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
+		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForBuilding(idToCreate);
+
+		if (resources->reduce(costs)) {
+			SimulationCommand* simulationCommand = new SimulationCommand(type, number, idToCreate, pos, SpacingType::CONSTANT, 0);
+			Game::get()->getSimCommandList()->add(simulationCommand);
+		}
 	}
 }
 
