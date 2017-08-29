@@ -65,7 +65,7 @@ struct db_building
 	Urho3D::String icon;
 	short queueMaxCapacity;
 
-	db_building(int id, char* name, double minDist, int type, char* model, char* texture, char* font, double scale, char* texture_temp, int nation, char* icon,int queueMaxCapacity)
+	db_building(int id, char* name, double minDist, int type, char* model, char* texture, char* font, double scale, char* texture_temp, int nation, char* icon, int queueMaxCapacity)
 		: id(id),
 		name(name),
 		minDist(minDist),
@@ -77,7 +77,7 @@ struct db_building
 		texture_temp(texture_temp),
 		nation(nation),
 		icon(icon),
-		queueMaxCapacity(queueMaxCapacity){
+		queueMaxCapacity(queueMaxCapacity) {
 	}
 };
 
@@ -186,37 +186,20 @@ struct db_hud_vars
 	}
 };
 
-struct db_unit_cost
+struct db_cost
 {
 	int id;
 	int resource;
 	int value;
-	int unit;
 	Urho3D::String resourceName;
+	int thing;
 
-	db_unit_cost(int id, int resource, int value, int unit, Urho3D::String resourceName)
+	db_cost(int id, int resource, int value, Urho3D::String resourceName, int thing)
 		: id(id),
 		resource(resource),
 		value(value),
-		unit(unit),
-		resourceName(resourceName) {
-	}
-};
-
-struct db_building_cost
-{
-	int id;
-	int resource;
-	int value;
-	int building;
-	Urho3D::String resourceName;
-
-	db_building_cost(int id, int resource, int value, int building, Urho3D::String resourceName)
-		: id(id),
-		resource(resource),
-		value(value),
-		building(building),
-		resourceName(resourceName) {
+		resourceName(resourceName),
+		thing(thing){
 	}
 };
 
@@ -244,8 +227,8 @@ struct db_container
 	db_resource* resources[RESOURCE_NUMBER_DB];
 	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB];
 	std::vector<db_unit*>* unitsForBuilding[BULDINGS_NUMBER_DB];
-	std::vector<db_building_cost*>* costForBuilding[BULDINGS_NUMBER_DB];
-	std::vector<db_unit_cost*>* costForUnit[UNITS_NUMBER_DB];
+	std::vector<db_cost*>* costForBuilding[BULDINGS_NUMBER_DB];
+	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB];
 	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB];
 	db_order* orders[ORDERS_NUMBER_DB];
 
@@ -265,11 +248,11 @@ struct db_container
 		for (int i = 0; i < BULDINGS_NUMBER_DB; ++i) {
 			unitsForBuilding[i] = new std::vector<db_unit*>();
 			unitsForBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
-			costForBuilding[i] = new std::vector<db_building_cost*>();
+			costForBuilding[i] = new std::vector<db_cost*>();
 			costForBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
 		}
 		for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
-			costForUnit[i] = new std::vector<db_unit_cost*>();
+			costForUnit[i] = new std::vector<db_cost*>();
 			costForUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 			ordersToUnit[i] = new std::vector<db_order*>();
 			ordersToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);

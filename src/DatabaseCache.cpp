@@ -89,7 +89,7 @@ int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
 	int unitId = atoi(argv[3]);
 	int resourceId = atoi(argv[1]);
 	db_resource* dbResource = xyz->resources[resourceId];
-	xyz->costForUnit[unitId]->push_back(new db_unit_cost(atoi(argv[0]), resourceId, atoi(argv[2]), unitId, dbResource->name));
+	xyz->costForUnit[unitId]->push_back(new db_cost(atoi(argv[0]), resourceId, atoi(argv[2]), dbResource->name, unitId));
 
 	return 0;
 }
@@ -99,7 +99,7 @@ int static loadCostBuilding(void* data, int argc, char** argv, char** azColName)
 	int buildingId = atoi(argv[3]);
 	int resourceId = atoi(argv[1]);
 	db_resource* dbResource = xyz->resources[resourceId];
-	xyz->costForBuilding[buildingId]->push_back(new db_building_cost(atoi(argv[0]), resourceId, atoi(argv[2]), buildingId, dbResource->name));
+	xyz->costForBuilding[buildingId]->push_back(new db_cost(atoi(argv[0]), resourceId, atoi(argv[2]), dbResource->name, buildingId));
 
 	return 0;
 }
@@ -240,11 +240,11 @@ std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) {
 	return dbContainer->unitsForBuilding[id];
 }
 
-std::vector<db_unit_cost*>* DatabaseCache::getCostForUnit(int id) {
+std::vector<db_cost*>* DatabaseCache::getCostForUnit(int id) {
 	return dbContainer->costForUnit[id];
 }
 
-std::vector<db_building_cost*>* DatabaseCache::getCostForBuilding(int id) {
+std::vector<db_cost*>* DatabaseCache::getCostForBuilding(int id) {
 	return dbContainer->costForBuilding[id];
 }
 

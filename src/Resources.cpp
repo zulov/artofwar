@@ -22,7 +22,7 @@ Resources::~Resources() {
 	delete names;
 }
 
-bool Resources::reduce(std::vector<db_unit_cost*>* costs) {
+bool Resources::reduce(std::vector<db_cost*>* costs) {
 	for (int i = 0; i < costs->size(); ++i) {
 		int j = costs->at(i)->resource;
 		values[j] -= costs->at(i)->value;
@@ -60,7 +60,7 @@ void Resources::hasBeedUpdatedDrawn() {
 	changed = false;
 }
 
-void Resources::revert(int end, std::vector<db_unit_cost*>* costs) {
+void Resources::revert(int end, std::vector<db_cost*>* costs) {
 	for (int i = 0; i < end + 1; ++i) {
 		int j = costs->at(i)->resource;
 		values[j] += costs->at(i)->value;

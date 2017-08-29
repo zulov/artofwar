@@ -56,7 +56,7 @@ String* Building::toMultiLineString() {
 
 void Building::buttonAction(short id) {
 	Resources* resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
-	std::vector<db_unit_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
+	std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
 
 	if (resources->reduce(costs)) {
 		queue->add(1, UNIT, id);

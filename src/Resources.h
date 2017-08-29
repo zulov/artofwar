@@ -8,7 +8,7 @@ public:
 	Resources();
 	Resources(float valueForAll);
 	~Resources();
-	bool reduce(std::vector<db_unit_cost*>* costs);
+	bool reduce(std::vector<db_cost*>* costs);
 	void add(int id, float value);
 	bool hasChanged();
 	short getSize();
@@ -17,7 +17,7 @@ public:
 	void hasBeedUpdatedDrawn();
 private:
 	bool changed;
-	void revert(int end, std::vector<db_unit_cost*>* costs);
+	void revert(int end, std::vector<db_cost*>* costs);
 	Urho3D::String* names[RESOURCE_NUMBER_DB];
 	float values[RESOURCE_NUMBER_DB];
 	int size;
