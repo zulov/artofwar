@@ -29,12 +29,11 @@ void TopPanel::createBody() {
 	menuList = window->CreateChild<DropDownList>();
 	menuList->SetStyle("MyDropDown", style);
 	{//test
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/mock2.png");
-		MySprite*	icon = createSprite(texture, style, "Sprite");
-		Button * button = simpleButton(icon, style, "TopButtons");
-		Text * text = button->CreateChild<Text>();
-		text->SetText("Test");
-		menuList->AddItem(button); 
+		
+		
+		Text * text = window->CreateChild<Text>();
+		text->SetStyle("MyText", style);
+		text->SetText("Test"); 
 		menuList->AddItem(text);
 	}
 }

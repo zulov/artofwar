@@ -5,8 +5,6 @@ TopHudElement::TopHudElement(Urho3D::XMLFile* style, Texture2D* texture, String&
 	icon = createSprite(texture, style, "SpriteLeft");
 	button = simpleButton(icon, style, "TopButtons");
 
-	button->SetVisible(true);
-
 	mock = button->CreateChild<UIElement>();
 	mock->SetStyle("mockCenter", style);
 

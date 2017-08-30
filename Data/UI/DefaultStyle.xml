@@ -481,13 +481,15 @@
 	
 	<element type="MyDropDown" style="DropDownList" >
 		<attribute name="Min Size" value="{2*iconX} {iconY/2}"/>
-		<attribute name="Max Size" value="{3*iconX} {iconY/2}"/>
+		<attribute name="Max Size" value="{2*iconX} {iconY/2}"/>
 		<attribute name="Resize Popup" value="true" />
 	</element>
+	
 	<element type="TopButtons" style="Button" >
 		<attribute name="Min Size" value="{2*iconX} {iconY/2}"/>
 		<attribute name="Max Size" value="{2*iconX} {iconY/2}"/>
 	</element>
+	
 	<element type="Icon" style="Button">
         <attribute name="Min Size" value="{iconX} {iconY}" />
         <attribute name="Max Size" value="{iconX} {iconY}" />
