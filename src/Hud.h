@@ -58,6 +58,7 @@ public:
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
 	void hoverOnIcon(HudElement* hudElement);
 	void hoverOffIcon(HudElement* hudElement);
+	std::vector<HudElement*>* getButtonsOrdersToSubscribe();
 private:
 
 	SelectedHudPanel * selectedHudPanel;

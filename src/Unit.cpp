@@ -217,7 +217,7 @@ String* Unit::toMultiLineString() {
 }
 
 void Unit::buttonAction(short id) {
-	cout << id << endl;
+	
 }
 
 void Unit::applyForce(double timeStep) {

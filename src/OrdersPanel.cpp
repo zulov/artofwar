@@ -18,6 +18,10 @@ void OrdersPanel::show(SelectedInfo* selectedInfo) {
 	setVisible(true);
 }
 
+std::vector<HudElement*>* OrdersPanel::getButtons() {
+	return  buttons;
+}
+
 void OrdersPanel::createBody() {
 	int size = Game::get()->getDatabaseCache()->getOrdersSize();
 	buttons = new std::vector<HudElement*>();
@@ -33,11 +37,11 @@ void OrdersPanel::createBody() {
 		MySprite* sprite = createSprite(texture, style, "Sprite");
 		Button* button = simpleButton(sprite, style, "Icon");
 
-		//HudElement* hudElement = new HudElement(button);//TODO inny obiekt
-		//hudElement->setId(i, //TODO nie unit ObjectType::UNIT);
+		HudElement* hudElement = new HudElement(button);//TODO inny obiekt
+		hudElement->setId(i, ObjectType::ENTITY);
 
-		//button->SetVar("HudElement", hudElement);
-		//buttons->push_back(hudElement);
+		button->SetVar("HudElement", hudElement);
+		buttons->push_back(hudElement);
 		panel->AddItem(button);
 	}
 }

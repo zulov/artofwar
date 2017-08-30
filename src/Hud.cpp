@@ -171,3 +171,7 @@ void Hud::hoverOnIcon(HudElement* hudElement) {
 void Hud::hoverOffIcon(HudElement* hudElement) {
 	menuPanel->removeInfo();
 }
+
+std::vector<HudElement*>* Hud::getButtonsOrdersToSubscribe() {
+	return ordersPanel->getButtons();
+}

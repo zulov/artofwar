@@ -51,13 +51,14 @@ private:
 	void CreateConsoleAndDebugHud();
 	void HandleMouseModeRequest(StringHash eventType, VariantMap& eventData);
 	void HandleMouseModeChange(StringHash eventType, VariantMap& eventData);
-	void HandleUIButttonHoverOn(StringHash, VariantMap& eventData);
-	void HandleUIButttonHoverOff(StringHash, VariantMap& eventData);
+	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
+	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
-	void HandleBuildButtton(StringHash eventType, VariantMap& eventData);
-	void HandleUnitButtton(StringHash eventType, VariantMap& eventData);
-	void HandleSelectedButtton(StringHash eventType, VariantMap& eventData);
+	void HandleBuildButton(StringHash eventType, VariantMap& eventData);
+	void HandleUnitButton(StringHash eventType, VariantMap& eventData);
+	void HandleOrdersButton(StringHash eventType, VariantMap& eventData);
+	void HandleSelectedButton(StringHash eventType, VariantMap& eventData);
 	void control(float timeStep);
 
 	MouseMode useMouseMode_;
