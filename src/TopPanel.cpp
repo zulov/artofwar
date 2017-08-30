@@ -1,5 +1,6 @@
 #include "TopPanel.h"
 #include "Game.h"
+#include "ButtonUtils.h"
 
 TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "TopWindow";
@@ -22,6 +23,19 @@ void TopPanel::createBody() {
 		elements[i] = new TopHudElement(style, texture, resource->name);
 		window->AddChild(elements[i]->getButton());
 		buttons->push_back(elements[i]->getButton());
+	}
+	BorderImage *separator = window->CreateChild<BorderImage>();
+	separator->SetStyle("EditorVerticalDivider", style);
+	menuList = window->CreateChild<DropDownList>();
+	menuList->SetStyle("MyDropDown", style);
+	{//test
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/mock2.png");
+		MySprite*	icon = createSprite(texture, style, "Sprite");
+		Button * button = simpleButton(icon, style, "TopButtons");
+		Text * text = button->CreateChild<Text>();
+		text->SetText("Test");
+		menuList->AddItem(button); 
+		menuList->AddItem(text);
 	}
 }
 

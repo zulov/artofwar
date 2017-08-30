@@ -5,6 +5,7 @@
 #include <vector>
 #include <Urho3D/Graphics/Texture2D.h>
 #include "Resources.h"
+#include <Urho3D/UI/DropDownList.h>
 
 
 class TopPanel :public AbstractWindowPanel
@@ -19,5 +20,6 @@ private:
 	void createBody() override;
 	std::vector<Button*>* buttons;
 	TopHudElement** elements;
+	DropDownList * menuList;
 };
 
