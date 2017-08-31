@@ -444,6 +444,9 @@
     <ClInclude Include="src\TopHudElement.h">
       <Filter>hud\windows\top</Filter>
     </ClInclude>
+    <ClInclude Include="src\OrderType.h">
+      <Filter>objects\unit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

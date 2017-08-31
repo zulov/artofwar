@@ -50,6 +50,7 @@ protected:
 private:
 	void appendAim(ActionParameter* actionParameter);
 	void addAim(ActionParameter* actionParameter);
+	void removeAim();
 	void followAim(ActionParameter* parameter);
 
 	UnitStateType unitState;

@@ -295,6 +295,7 @@
     <ClInclude Include="src\MiniMapPanel.h" />
     <ClInclude Include="src\MySprite.h" />
     <ClInclude Include="src\OrdersPanel.h" />
+    <ClInclude Include="src\OrderType.h" />
     <ClInclude Include="src\Physical.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\PlayersManager.h" />

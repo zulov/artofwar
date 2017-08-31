@@ -1,5 +1,6 @@
 #include "Unit.h"
 #include "ActionCommand.h"
+#include "OrderType.h"
 
 double Unit::hbMaxSize = 1.0;
 
@@ -193,13 +194,18 @@ void Unit::addAim(ActionParameter* actionParameter) {
 	aimPosition = nullptr;
 }
 
-void Unit::followAim(ActionParameter* parameter) {
-	aimPosition = parameter->getAimPosition();
-	aimIndex = 0;
+void Unit::removeAim() {
 	if (aims != nullptr) {
 		aims->reduce();
 		aims = nullptr;
 	}
+	aimIndex = 0;
+	aimPosition = nullptr;
+}
+
+void Unit::followAim(ActionParameter* parameter) {
+	removeAim();
+	aimPosition = parameter->getAimPosition();
 }
 
 void Unit::updateRotation() {
@@ -217,7 +223,20 @@ String* Unit::toMultiLineString() {
 }
 
 void Unit::buttonAction(short id) {
-	
+	OrderType type = OrderType(id);
+
+	switch (type) {
+	case OrderType::GO: break;
+	case OrderType::STOP: 
+		removeAim();
+		break;
+	case OrderType::CHARGE: break;
+	case OrderType::ATTACK: break;
+	case OrderType::PATROL: break;
+	case OrderType::DEAD: break;
+	case OrderType::DEFEND: break;
+	default: ;
+	}
 }
 
 void Unit::applyForce(double timeStep) {
