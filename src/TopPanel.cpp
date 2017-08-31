@@ -11,6 +11,10 @@ TopPanel::~TopPanel() {
 }
 
 void TopPanel::createBody() {
+	unitsNumber = window->CreateChild<Text>();
+	unitsNumber->SetStyle("MyText", style);
+	unitsNumber->SetText("Test");
+
 	int size = Game::get()->getDatabaseCache()->getResourceSize();
 
 	elements = new TopHudElement*[size];
@@ -29,8 +33,6 @@ void TopPanel::createBody() {
 	menuList = window->CreateChild<DropDownList>();
 	menuList->SetStyle("MyDropDown", style);
 	{//test
-		
-		
 		Text * text = window->CreateChild<Text>();
 		text->SetStyle("MyText", style);
 		text->SetText("Test"); 
@@ -40,6 +42,10 @@ void TopPanel::createBody() {
 
 std::vector<Button*>* TopPanel::getButtonsSelectedToSubscribe() {
 	return buttons;
+}
+
+void TopPanel::update(int value) {
+	unitsNumber->SetText(String(value));
 }
 
 void TopPanel::update(Resources* resources) {

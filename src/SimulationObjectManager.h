@@ -24,6 +24,7 @@ public:
 	void addUnits(unsigned number, int id, Vector3* center, SpacingType spacingType, int player);
 	void addBuildings(unsigned number, int id, Vector3* center, SpacingType spacingType, int player);
 	void addResources(unsigned number, int id, Vector3* center, SpacingType spacingType);
+	void cleanAfterStep();
 private:
 	vector<Unit*>* units;
 	vector<Building*>* buildings;

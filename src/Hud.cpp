@@ -108,15 +108,19 @@ void Hud::createConsole() {
 	console->GetBackground()->SetOpacity(0.8f);
 }
 
-void Hud::updateHud(Benchmark* benchmark, CameraManager* cameraManager) {
+void Hud::update(Benchmark* benchmark, CameraManager* cameraManager) {
 	Urho3D::String msg = "FPS: " + String(benchmark->getLastFPS());
 	msg += "\navg FPS: " + String(benchmark->getAverageFPS());
 	msg += "\nLoops: " + String(benchmark->getLoops());
 	msg += "\nCamera: \n\t" + (*cameraManager->getInfo());
 
 	debugPanel->setText(msg);
-	
+
 	topPanel->update(Game::get()->getPlayersManager()->getActivePlayer()->getResources());
+}
+
+void Hud::update(int unitsNumber) {
+	topPanel->update(unitsNumber);
 }
 
 std::vector<HudElement*>* Hud::getButtonsBuildToSubscribe() {
@@ -155,7 +159,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a ster
 			unitsPanel->setVisible(false);
 			queuePanel->setVisible(false);
 		}
-	}else {
+	} else {
 		queuePanel->update(selectedInfo);
 	}
 }

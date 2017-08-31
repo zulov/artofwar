@@ -40,7 +40,7 @@
 
 using namespace Urho3D;
 
-class Hud 
+class Hud
 {
 public:
 	void replaceVariables(XMLFile* xmlFile, int hudSizeId);
@@ -49,11 +49,12 @@ public:
 	~Hud();
 	void createDebugHud();
 	void createConsole();
-	void updateHud(Benchmark* benchmark, CameraManager* cameraManager);
+	void update(Benchmark* benchmark, CameraManager* cameraManager);
+	void update(int unitsNumber);
 	std::vector<HudElement*>* getButtonsBuildToSubscribe();
 	std::vector<HudElement*>* getButtonsUnitsToSubscribe();
 	std::vector<Window*>* getWindows();
-	
+
 	void updateSelected(SelectedInfo* selectedInfo);
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
 	void hoverOnIcon(HudElement* hudElement);
@@ -61,21 +62,19 @@ public:
 	std::vector<HudElement*>* getButtonsOrdersToSubscribe();
 private:
 
-	SelectedHudPanel * selectedHudPanel;
-	BuildPanel * buildPanel;
-	UnitsPanel * unitsPanel;
-	DebugPanel *debugPanel;
-	TopPanel * topPanel;
-	MiniMapPanel * miniMapPanel;
-	MenuPanel * menuPanel;
-	OrdersPanel * ordersPanel;
-	QueuePanel * queuePanel;
+	SelectedHudPanel* selectedHudPanel;
+	BuildPanel* buildPanel;
+	UnitsPanel* unitsPanel;
+	DebugPanel* debugPanel;
+	TopPanel* topPanel;
+	MiniMapPanel* miniMapPanel;
+	MenuPanel* menuPanel;
+	OrdersPanel* ordersPanel;
+	QueuePanel* queuePanel;
 
 	std::vector<HudElement*>* buttons;
 	std::vector<HudElement*>* lists;
 	std::vector<Window*>* windows;
 	db_graph_settings* graphSettings;
 	XMLFile* style;
-	
-
 };

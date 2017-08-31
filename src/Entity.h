@@ -6,7 +6,6 @@
 #include "ActionType.h"
 #include "Aims.h"
 #include "ActionParameter.h"
-#include "defines.h"
 #include "ObjectEnums.h"
 
 using namespace Urho3D;
@@ -27,7 +26,6 @@ public:
 protected:
 	Urho3D::Node* node;
 	ObjectType type = ENTITY;
-private:
-	bool alive;
+	bool alive;	
 
 };

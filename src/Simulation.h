@@ -32,6 +32,8 @@ public:
 	float updateTime(float timeStep);
 	void countFrame();
 	void applyForce();
+	void updateBuildingQueue();
+	int getUnitsNumber();
 
 private:
 	void moveUnits(float timeStep);

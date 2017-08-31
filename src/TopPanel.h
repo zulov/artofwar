@@ -14,6 +14,7 @@ public:
 	TopPanel(Urho3D::XMLFile* _style);
 	~TopPanel();
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
+	void update(int value);
 	void update(Resources* resources);
 private:
 	
@@ -21,5 +22,6 @@ private:
 	std::vector<Button*>* buttons;
 	TopHudElement** elements;
 	DropDownList * menuList;
+	Text * unitsNumber;
 };
 

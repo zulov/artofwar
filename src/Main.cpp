@@ -35,21 +35,21 @@ void Main::Start() {
 	hud = new Hud();
 
 	for (HudElement* hudElement : *(hud->getButtonsBuildToSubscribe())) {
-		UIElement * element = hudElement->getUIElement();
+		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleBuildButton));
 		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleUIButtonHoverOn));
 		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Main, HandleUIButtonHoverOff));
 	}
 
 	for (HudElement* hudElement : *(hud->getButtonsUnitsToSubscribe())) {
-		UIElement * element = hudElement->getUIElement();
+		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleUnitButton));
 		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleUIButtonHoverOn));
 		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Main, HandleUIButtonHoverOff));
 	}
 
 	for (HudElement* hudElement : *(hud->getButtonsOrdersToSubscribe())) {
-		UIElement * element = hudElement->getUIElement();
+		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleOrdersButton));
 		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleUIButtonHoverOn));
 		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Main, HandleUIButtonHoverOff));
@@ -97,14 +97,16 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	double timeStep = eventData[SceneUpdate::P_TIMESTEP].GetDouble();
 	simulation->update(GetSubsystem<Input>(), timeStep);
 	benchmark->add(1.0 / timeStep);
-	hud->updateHud(benchmark, cameraManager);
+	int unitsNumber = simulation->getUnitsNumber();
+	hud->update(unitsNumber);
+	hud->update(benchmark, cameraManager);
 	control(timeStep);
 	SelectedInfo* selectedInfo = controls->getSelectedInfo();
 	hud->updateSelected(selectedInfo);
 	if (selectedInfo->hasChanged()) {
 		controls->updateState(selectedInfo);
 	}
-	
+
 	selectedInfo->hasBeedUpdatedDrawn();
 	levelBuilder->execute();
 }

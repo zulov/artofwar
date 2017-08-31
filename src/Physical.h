@@ -1,7 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include <Urho3D/Graphics/BillboardSet.h>
-
+#include "defines.h"
 class Physical :
 	public Entity
 {

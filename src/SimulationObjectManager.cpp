@@ -1,4 +1,5 @@
 #include "SimulationObjectManager.h"
+#include <algorithm>
 
 
 SimulationObjectManager::SimulationObjectManager() {
@@ -104,4 +105,18 @@ void SimulationObjectManager::addResources(unsigned number, int id, Vector3* cen
 	std::vector<ResourceEntity*>* newResources = resourceFactory->create(number, id, center, spacingType);
 	addAll(newResources);
 	delete newResources;
+}
+
+void SimulationObjectManager::cleanAfterStep() {
+	units->erase(
+	             std::remove_if(
+	                            units->begin(), units->end(),
+	                            [](Unit* unit) {
+	                            if (!unit->isAlive()) {
+		                            delete unit;
+		                            return true;
+	                            }
+	                            return false;
+                            }),
+	             units->end());
 }

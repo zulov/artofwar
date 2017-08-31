@@ -62,6 +62,19 @@ void Simulation::applyForce() {
 	}
 }
 
+void Simulation::updateBuildingQueue() {
+	for (Building* build : (*buildings)) {
+		QueueElement* done = build->updateQueue(maxTimeFrame);
+		if (done) {
+			simCommandList->add(new SimulationCommand(done->getType(), done->getAmount(), done->getSubtype(), new Vector3(*(build->getTarget())), SpacingType::CONSTANT, 0));
+		}
+	}
+}
+
+int Simulation::getUnitsNumber() {
+	return units->size();
+}
+
 void Simulation::update(Input* input, float timeStep) {
 	if (input->GetKeyPress(KEY_SPACE)) {
 		animate = !animate;
@@ -84,19 +97,17 @@ void Simulation::update(Input* input, float timeStep) {
 			units = simObjectManager->getUnits();
 			buildings = simObjectManager->getBuildings();
 			resources = simObjectManager->getResources();
+
 			envStrategy->update(units);
 			envStrategy->update(buildings);
 			envStrategy->update(resources);
 
-			for (Building* build : (*buildings)) {
-				QueueElement* done = build->updateQueue(maxTimeFrame);
-				if (done) {
-					simCommandList->add(new SimulationCommand(done->getType(), done->getAmount(), done->getSubtype(), new Vector3(*(build->getTarget())), SpacingType::CONSTANT, 0));
-				}
-			}
+			updateBuildingQueue();
 
 			calculateForces();
 			applyForce();
+
+			simObjectManager->cleanAfterStep();
 
 			timeStep = accumulateTime;
 		}

@@ -229,12 +229,18 @@ void Unit::buttonAction(short id) {
 	case OrderType::GO: break;
 	case OrderType::STOP: 
 		removeAim();
+		unitState = UnitStateType::US_STOP;
 		break;
 	case OrderType::CHARGE: break;
 	case OrderType::ATTACK: break;
 	case OrderType::PATROL: break;
-	case OrderType::DEAD: break;
-	case OrderType::DEFEND: break;
+	case OrderType::DEAD: 
+		alive = false;
+		break;
+	case OrderType::DEFEND: 
+		removeAim();
+		unitState = UnitStateType::US_DEFEND;
+		break;
 	default: ;
 	}
 }
