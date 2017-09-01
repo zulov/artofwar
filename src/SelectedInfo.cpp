@@ -13,13 +13,8 @@ SelectedInfo::SelectedInfo() {
 	}
 }
 
-
 SelectedInfo::~SelectedInfo() {
 	clear_vector(selectedByType);
-}
-
-void SelectedInfo::clear() {
-
 }
 
 bool SelectedInfo::hasChanged() {

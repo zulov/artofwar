@@ -10,7 +10,6 @@
 class SelectedInfo
 {
 public:
-	void clear();
 	SelectedInfo();
 	~SelectedInfo();
 	bool hasChanged();

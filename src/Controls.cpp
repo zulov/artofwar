@@ -2,6 +2,7 @@
 #include "ActionCommand.h"
 #include "CommandList.h"
 #include "SimulationCommandList.h"
+#include <algorithm>
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Physical*>();
@@ -51,7 +52,7 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 	return false;
 }
 
-void Controls::unSelect() {
+void Controls::unSelectAll() {
 	for (int i = 0; i < selected->size(); ++i) {
 		(*selected)[i]->unSelect();
 	}
@@ -64,7 +65,7 @@ void Controls::unSelect() {
 void Controls::select(Physical* entity) {
 	ObjectType entityType = entity->getType();
 	if (entity->getType() != selectedType) {
-		unSelect();
+		unSelectAll();
 	}
 
 	entity->select();
@@ -81,14 +82,14 @@ void Controls::controlEntity(Vector3& hitPos, bool ctrlPressed, Physical* clicke
 	case DEFAULT:
 		{
 		if (!ctrlPressed) {
-			unSelect();
+			unSelectAll();
 		}
 		select(clicked);
 		}
 		break;
 	case BUILD:
 		{
-		unSelect();
+		unSelectAll();
 		create(ObjectType::BUILDING, new Vector3(hitPos), 1);
 		break;
 		}
@@ -114,7 +115,7 @@ void Controls::leftClick(Drawable* hitDrawable, Vector3& hitPos) {
 	case BUILDING:
 	case RESOURCE:
 		if (!ctrlPressed) {
-			unSelect();
+			unSelectAll();
 		}
 
 		select(clicked);
@@ -152,7 +153,7 @@ void Controls::rightClick(Drawable* hitDrawable, Vector3& hitPos) {
 		}
 	case UNIT:
 		{
-		unSelect();
+		unSelectAll();
 		break;
 		}
 	case BUILDING: break;
@@ -165,7 +166,7 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>* held) {
 	std::vector<Physical*>* entities = Game::get()->getMediator()->getEntities(held);
 	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
 	if (!ctrlPressed) {
-		unSelect();
+		unSelectAll();
 	}
 	for (int i = 0; i < entities->size(); ++i) {//TODO zastapic wrzuceniem na raz
 		select((*entities)[i]);
@@ -357,4 +358,25 @@ void Controls::action(HudElement* hudElement) {
 	for (int i = 0; i < selected->size(); ++i) {
 		(*selected)[i]->buttonAction(id);
 	}
+}
+
+void Controls::cleanAfterStep() {
+	int preSize = selected->size();
+	selected->erase(
+	                std::remove_if(
+	                               selected->begin(), selected->end(),
+	                               [](Physical* physical) {
+	                               if (!physical->isAlive()) {
+		                               return true;
+	                               }
+	                               return false;
+                               }),
+	                selected->end());
+	if (selected->size() != preSize) {
+		unSelectAll();
+		for (auto physical : (*selected)) {
+			select(physical);
+		}
+	}
+
 }

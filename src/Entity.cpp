@@ -3,14 +3,14 @@
 #include "Game.h"
 
 
-Entity::Entity(Urho3D::Node* _boxNode, ObjectType _type) {
-	node = _boxNode;	
+Entity::Entity(Urho3D::Node* _node, ObjectType _type) {
+	node = _node;	
 	alive = true;
 	type = _type;
 }
 
 Entity::~Entity() {
-	
+	node->Remove();
 }
 
 Urho3D::Node* Entity::getNode() {

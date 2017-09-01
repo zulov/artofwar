@@ -49,6 +49,7 @@ protected:
 private:
 	void SetWindowTitleAndIcon();
 	void CreateConsoleAndDebugHud();
+	void changeCamera(int type);
 	void HandleMouseModeRequest(StringHash eventType, VariantMap& eventData);
 	void HandleMouseModeChange(StringHash eventType, VariantMap& eventData);
 	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);

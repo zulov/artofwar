@@ -33,7 +33,7 @@ public:
 	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
 	void select(Physical* entity);
 	void controlEntity(Vector3 &hitPos, bool ctrlPressed, Physical* clicked);
-	void unSelect();
+	void unSelectAll();
 	
 	void clickDownRight(Vector3 &hitPos);
 	void clickDownLeft(Vector3 &hitPos);
@@ -53,6 +53,7 @@ public:
 	bool isActive();
 	void activate();
 	void action(HudElement* hudElement);
+	void cleanAfterStep();
 
 private:
 	std::vector<Physical*>* selected;//TODO to powinien byæ set

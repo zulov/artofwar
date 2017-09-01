@@ -150,10 +150,14 @@ void Main::CreateConsoleAndDebugHud() {
 	GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(xmlFile);
 }
 
-void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
-	using namespace KeyUp;
+void Main::changeCamera(int type) {
+	cameraManager->setCameraBehave(type);
+	SetupViewport();
+	InitMouseMode(cameraManager->getMouseMode());
+}
 
-	int key = eventData[P_KEY].GetInt();
+void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
+	int key = eventData[KeyUp::P_KEY].GetInt();
 
 	if (key == KEY_ESCAPE) {
 		Console* console = GetSubsystem<Console>();
@@ -163,13 +167,9 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 			engine_->Exit();
 		}
 	} else if (key == KEY_1) {
-		cameraManager->setCameraBehave(CameraBehaviorType::FREE);
-		SetupViewport();
-		InitMouseMode(cameraManager->getMouseMode());
+		changeCamera(CameraBehaviorType::FREE);
 	} else if (key == KEY_2) {
-		cameraManager->setCameraBehave(CameraBehaviorType::RTS);
-		SetupViewport();
-		InitMouseMode(cameraManager->getMouseMode());
+		changeCamera(CameraBehaviorType::RTS);
 	}
 }
 
@@ -195,7 +195,7 @@ void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	SelectedHudElement* sHudElement = (SelectedHudElement *)element->GetVar("SelectedHudElement").GetVoidPtr();
 	std::vector<Physical*>* selected = sHudElement->getSelected();
-	controls->unSelect();
+	controls->unSelectAll();
 	for (auto physical :(*selected)) {
 		controls->select(physical);
 	}
@@ -286,4 +286,5 @@ void Main::control(float timeStep) {
 			controls->release(MOUSEB_RIGHT);
 		}
 	}
+	controls->cleanAfterStep();
 }
