@@ -18,6 +18,7 @@ class Game
 {
 public:
 	static Game* get();
+	static void init();
 	~Game();
 	Game* setCache(Urho3D::ResourceCache* _cache);
 	Game* setContext(Urho3D::Context* _context);

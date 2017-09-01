@@ -59,10 +59,13 @@ Game::Game() {
 
 
 Game* Game::get() {
+	return instance;
+}
+
+void Game::init() {
 	if (instance == nullptr) {
 		instance = new Game();
 	}
-	return instance;
 }
 
 Game::~Game() {

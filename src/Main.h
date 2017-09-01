@@ -36,11 +36,10 @@ class Main : public Application
 public:
 	Main(Context* context);
 	void Setup() override;
+	void subscribeToEvents();
 	void Start() override;
 	void Stop() override;
 	void HandleUpdate(StringHash eventType, VariantMap& eventData);
-	void HandleWindowClick(StringHash eventType, VariantMap& eventData);
-	void HandleEndWindowClick(StringHash eventType, VariantMap& eventData);
 
 protected:
 	void InitMouseMode(MouseMode mode);
@@ -48,8 +47,8 @@ protected:
 
 private:
 	void SetWindowTitleAndIcon();
-	void CreateConsoleAndDebugHud();
-	void changeCamera(int type);
+	void HandleWindowClick(StringHash eventType, VariantMap& eventData);
+	void HandleEndWindowClick(StringHash eventType, VariantMap& eventData);
 	void HandleMouseModeRequest(StringHash eventType, VariantMap& eventData);
 	void HandleMouseModeChange(StringHash eventType, VariantMap& eventData);
 	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
@@ -60,7 +59,9 @@ private:
 	void HandleUnitButton(StringHash eventType, VariantMap& eventData);
 	void HandleOrdersButton(StringHash eventType, VariantMap& eventData);
 	void HandleSelectedButton(StringHash eventType, VariantMap& eventData);
+
 	void control(float timeStep);
+	void changeCamera(int type);
 
 	MouseMode useMouseMode_;
 	Simulation* simulation;

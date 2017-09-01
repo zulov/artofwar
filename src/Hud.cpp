@@ -59,14 +59,15 @@ void Hud::createCursor() {
 }
 
 Hud::Hud() {
-	buttons = new std::vector<HudElement*>();
-	lists = new std::vector<HudElement*>();
 	windows = new std::vector<Window*>();
 	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
+
 	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->style);
-
 	replaceVariables(style, graphSettings->hud_size);
+	Game::get()->getUI()->GetRoot()->SetDefaultStyle(style);
 
+	createConsole();
+	createDebugHud();
 	createCursor();
 
 	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();

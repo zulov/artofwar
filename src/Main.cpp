@@ -6,6 +6,7 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE) 
 	benchmark = new Benchmark();
 	context->RegisterFactory<LinkComponent>();
 	MySprite::RegisterObject(context);
+	Game::init();
 }
 
 void Main::Setup() {
@@ -25,15 +26,44 @@ void Main::Setup() {
 	engine_->SetMinFps(graphSettings->min_fps);
 }
 
+
+
 void Main::Start() {
 	Game* game = Game::get();
 	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->setGraphics(GetSubsystem<Graphics>())->setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
 	SetWindowTitleAndIcon();
-	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
-	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
 	game->setPlayersManager(new PlayersManager());
 	hud = new Hud();
+	
+	sceneObjectManager = new SceneObjectManager();
 
+	levelBuilder = new LevelBuilder(sceneObjectManager);
+
+	BuildList* buildList = new BuildList();
+	buildList->setSceneObjectManager(sceneObjectManager);
+
+	cameraManager = new CameraManager();
+	SimulationObjectManager* simulationObjectManager = new SimulationObjectManager();
+	SimulationCommandList* simulationCommandList = new SimulationCommandList(simulationObjectManager);
+	EnviromentStrategy* enviromentStrategy = new EnviromentStrategy();
+	mediator = new Mediator(enviromentStrategy, controls);
+	game->setScene(levelBuilder->createScene())->setCameraManager(cameraManager)->setBuildList(buildList)->setSimCommandList(simulationCommandList)->setMediator(mediator);
+
+	simulation = new Simulation(enviromentStrategy, simulationCommandList, simulationObjectManager);
+
+	SetupViewport();
+
+	InitMouseMode(MM_RELATIVE);
+	controls = new Controls(GetSubsystem<Input>());
+
+	subscribeToEvents();
+}
+
+void Main::Stop() {
+	engine_->DumpResources(true);
+}
+
+void Main::subscribeToEvents() {
 	for (HudElement* hudElement : *(hud->getButtonsBuildToSubscribe())) {
 		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleBuildButton));
@@ -64,39 +94,18 @@ void Main::Start() {
 		SubscribeToEvent(window, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleWindowClick));
 		SubscribeToEvent(window, E_HOVEREND, URHO3D_HANDLER(Main, HandleEndWindowClick));
 	}
-	CreateConsoleAndDebugHud();
 
-	sceneObjectManager = new SceneObjectManager();
-
-	levelBuilder = new LevelBuilder(sceneObjectManager);
-
-	BuildList* buildList = new BuildList();
-	buildList->setSceneObjectManager(sceneObjectManager);
-
-	cameraManager = new CameraManager();
-	SimulationObjectManager* simulationObjectManager = new SimulationObjectManager();
-	SimulationCommandList* simulationCommandList = new SimulationCommandList(simulationObjectManager);
-	EnviromentStrategy* enviromentStrategy = new EnviromentStrategy();
-	mediator = new Mediator(enviromentStrategy, controls);
-	game->setScene(levelBuilder->createScene())->setCameraManager(cameraManager)->setBuildList(buildList)->setSimCommandList(simulationCommandList)->setMediator(mediator);
-
-	simulation = new Simulation(enviromentStrategy, simulationCommandList, simulationObjectManager);
-
-	SetupViewport();
+	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
+	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
-
-	InitMouseMode(MM_RELATIVE);
-	controls = new Controls(GetSubsystem<Input>());
-}
-
-void Main::Stop() {
-	engine_->DumpResources(true);
 }
 
 void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	double timeStep = eventData[SceneUpdate::P_TIMESTEP].GetDouble();
-	simulation->update(GetSubsystem<Input>(), timeStep);
 	benchmark->add(1.0 / timeStep);
+
+	simulation->update(GetSubsystem<Input>(), timeStep);
+	
 	int unitsNumber = simulation->getUnitsNumber();
 	hud->update(unitsNumber);
 	hud->update(benchmark, cameraManager);
@@ -107,6 +116,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		controls->updateState(selectedInfo);
 	}
 
+	controls->cleanAfterStep();//ToDO reagowac na zmiane z symulacjie ze cos sie stanelo
 	selectedInfo->hasBeedUpdatedDrawn();
 	levelBuilder->execute();
 }
@@ -137,17 +147,6 @@ void Main::SetWindowTitleAndIcon() {
 	Image* icon = Game::get()->getCache()->GetResource<Image>("textures/UrhoIcon.png");
 	graphics->SetWindowIcon(icon);
 	graphics->SetWindowTitle("Art of War 2017");
-}
-
-void Main::CreateConsoleAndDebugHud() {
-	ResourceCache* cache = Game::get()->getCache();
-	XMLFile* xmlFile = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
-
-	hud->createConsole();
-	hud->createDebugHud();
-
-	GetSubsystem<Input>()->SetMouseVisible(true);
-	GetSubsystem<UI>()->GetRoot()->SetDefaultStyle(xmlFile);
 }
 
 void Main::changeCamera(int type) {
@@ -286,5 +285,4 @@ void Main::control(float timeStep) {
 			controls->release(MOUSEB_RIGHT);
 		}
 	}
-	controls->cleanAfterStep();
 }
