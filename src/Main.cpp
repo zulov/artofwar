@@ -106,10 +106,12 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	benchmark->add(1.0 / timeStep);
 
 	simulation->update(GetSubsystem<Input>(), timeStep);
-	SimulationInfo *simulationInfo = simulation->getInfo();
+	SimulationInfo* simulationInfo = simulation->getInfo();
 	control(timeStep);
-	SelectedInfo* selectedInfo = controls->getInfo();
+	controls->clean(simulationInfo);
 	
+	SelectedInfo* selectedInfo = controls->getInfo();
+
 	hud->updateSelected(selectedInfo);
 	hud->update(simulation->getUnitsNumber());
 	hud->update(benchmark, cameraManager);
@@ -118,9 +120,10 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		controls->updateState(selectedInfo);
 	}
 
-	controls->cleanAfterStep();//ToDO reagowac na zmiane z symulacjie ze cos sie stanelo
+
 	selectedInfo->hasBeedUpdatedDrawn();
 	levelBuilder->execute();
+	simulation->dispose();
 }
 
 void Main::HandleWindowClick(StringHash eventType, VariantMap& eventData) {

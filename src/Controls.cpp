@@ -360,7 +360,7 @@ void Controls::action(HudElement* hudElement) {
 	}
 }
 
-void Controls::cleanAfterStep() {
+void Controls::refreshSelected() {
 	int preSize = selected->size();
 	selected->erase(
 	                std::remove_if(
@@ -378,5 +378,26 @@ void Controls::cleanAfterStep() {
 			select(physical);
 		}
 	}
+}
 
+void Controls::clean(SimulationInfo* simulationInfo) {
+	bool condition;
+	switch (selectedType) {
+
+	case UNIT:
+		condition = simulationInfo->ifUnitDied();
+		break;
+	case BUILDING:
+		condition = simulationInfo->ifBuildingDied();
+		break;
+	case RESOURCE:
+		condition = simulationInfo->ifResourceDied();
+		break;
+	default:
+		condition = false;
+	}
+
+	if (condition) {
+		refreshSelected();
+	}
 }

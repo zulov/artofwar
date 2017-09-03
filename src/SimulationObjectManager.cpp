@@ -6,12 +6,12 @@ SimulationObjectManager::SimulationObjectManager() {
 	units = new std::vector<Unit*>();
 	buildings = new std::vector<Building*>();
 	resources = new std::vector<ResourceEntity*>();
-	entities = new std::vector<Entity*>();
+	toDispose = new std::vector<Physical*>();
 
 	units->reserve(10000);
 	buildings->reserve(1000);
 	resources->reserve(1000);
-	entities->reserve(20000);
+	toDispose->reserve(1000);
 
 	unitFactory = new UnitFactory();
 	buildingFactory = new BuildingFactory();
@@ -22,10 +22,10 @@ SimulationObjectManager::SimulationObjectManager() {
 
 
 SimulationObjectManager::~SimulationObjectManager() {
-	delete units;
-	delete buildings;
-	delete entities;
-	delete resources;
+	clear_and_delete_vector(units);
+	clear_and_delete_vector(buildings);
+	clear_and_delete_vector(resources);
+	clear_and_delete_vector(toDispose);
 
 	delete unitFactory;
 	delete buildingFactory;
@@ -34,45 +34,26 @@ SimulationObjectManager::~SimulationObjectManager() {
 
 void SimulationObjectManager::add(Unit* unit) {
 	units->push_back(unit);
-	add(static_cast<Entity*>(unit));
-}
-
-void SimulationObjectManager::add(Entity* entity) {
-	AbstractObjectManager::add(entity);
 }
 
 void SimulationObjectManager::add(Building* building) {
 	buildings->push_back(building);
-	add(static_cast<Entity*>(building));
 }
 
 void SimulationObjectManager::add(ResourceEntity* resourceEntity) {
 	resources->push_back(resourceEntity);
-	add(static_cast<Entity*>(resourceEntity));
 }
 
 void SimulationObjectManager::addAll(std::vector<Unit*>* _units) {
-	for (auto entity : (*_units)) {
-		add(entity);
-	}
+	units->insert(std::end(*units), std::begin(*_units), std::end(*_units));
 }
 
 void SimulationObjectManager::addAll(std::vector<Building*>* _buildings) {
-	for (auto entity : (*_buildings)) {
-		add(entity);
-	}
-}
-
-void SimulationObjectManager::addAll(std::vector<Entity*>* _entities) {
-	for (auto entity : (*_entities)) {
-		add(entity);
-	}
+	buildings->insert(std::end(*buildings), std::begin(*_buildings), std::end(*_buildings));
 }
 
 void SimulationObjectManager::addAll(std::vector<ResourceEntity*>* _resources) {
-	for (auto entity : (*_resources)) {
-		add(entity);
-	}
+	resources->insert(std::end(*resources), std::begin(*_resources), std::end(*_resources));
 }
 
 std::vector<Unit*>* SimulationObjectManager::getUnits() {
@@ -83,52 +64,61 @@ std::vector<Building*>* SimulationObjectManager::getBuildings() {
 	return buildings;
 }
 
-std::vector<Entity*>* SimulationObjectManager::getEntities() {
-	return entities;
-}
-
 std::vector<ResourceEntity*>* SimulationObjectManager::getResources() {
 	return resources;
 }
 
 void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* center, SpacingType spacingType, int player) {
-	std::vector<Unit*>* newUnits = unitFactory->create(number, id, center, spacingType, player);
-	addAll(newUnits);
+	tempUnits = unitFactory->create(number, id, center, spacingType, player);
+	addAll(tempUnits);
 	simulationInfo->setAmountUnitChanged();
-	delete newUnits;
+	tempUnits->clear();
 }
 
 void SimulationObjectManager::addBuildings(unsigned int number, int id, Vector3* center, SpacingType spacingType, int player) {
-	std::vector<Building*>* newBuildings = buildingFactory->create(number, id, center, spacingType);
-	addAll(newBuildings);
+	tempBuildings = buildingFactory->create(number, id, center, spacingType);
+	addAll(tempBuildings);
 	simulationInfo->setAmountBuildingChanged();
-	delete newBuildings;
+	tempBuildings->clear();
 }
 
 void SimulationObjectManager::addResources(unsigned number, int id, Vector3* center, SpacingType spacingType) {
-	std::vector<ResourceEntity*>* newResources = resourceFactory->create(number, id, center, spacingType);
-	addAll(newResources);
+	tempResources = resourceFactory->create(number, id, center, spacingType);
+	addAll(tempResources);
 	simulationInfo->setAmountResourceChanged();
-	delete newResources;
+	tempResources->clear();
 }
 
-void SimulationObjectManager::cleanAfterStep() {
-	if (simulationInfo->ifUnitDied()) {
-		units->erase(
-		             std::remove_if(
-		                            units->begin(), units->end(),
-		                            [](Unit* unit) {
-		                            if (!unit->isAlive()) {
-			                            delete unit;
-			                            return true;
-		                            }
-		                            return false;
-	                            }),
-		             units->end());
+void SimulationObjectManager::clean() {
+	//if (simulationInfo->ifUnitDied()) {//TODO przemyslec to
+	int prevSize = units->size();
+	std::function<bool(Physical*)> function = std::bind(&SimulationObjectManager::shouldDelete, this, placeholders::_1);
+
+	units->erase(
+	             std::remove_if(
+	                            units->begin(), units->end(),
+	                            function
+	                           ),
+	             units->end());
+	if (units->size() != prevSize) {
+		simulationInfo->setUnitDied();
 	}
+}
+
+bool SimulationObjectManager::shouldDelete(Physical* physical) {
+	if (!physical->isAlive()) {
+		toDispose->push_back(physical);
+		return true;
+	}
+	return false;
 }
 
 void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
 	simulationInfo->set(this->simulationInfo);
 	this->simulationInfo->reset();
+}
+
+void SimulationObjectManager::dispose() {
+	clear_vector(toDispose);
+	simulationInfo->reset();
 }

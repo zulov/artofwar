@@ -187,7 +187,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AbstractCommand.cpp" />
-    <ClCompile Include="src\AbstractObjectManager.cpp" />
     <ClCompile Include="src\AbstractWindowPanel.cpp" />
     <ClCompile Include="src\ActionCommand.cpp" />
     <ClCompile Include="src\ActionCommandList.cpp" />
@@ -263,7 +262,6 @@
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\AbstractCommand.h" />
-    <ClInclude Include="src\AbstractObjectManager.h" />
     <ClInclude Include="src\AbstractWindowPanel.h" />
     <ClInclude Include="src\ActionCommand.h" />
     <ClInclude Include="src\ActionCommandList.h" />

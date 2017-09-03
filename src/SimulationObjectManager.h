@@ -7,11 +7,10 @@
 #include "Building.h"
 #include "BuildingFactory.h"
 #include "UnitFactory.h"
-#include "AbstractObjectManager.h"
 #include "ResourceFactory.h"
 #include "SimulationInfo.h"
 
-class SimulationObjectManager :public AbstractObjectManager
+class SimulationObjectManager
 {
 public:
 	SimulationObjectManager();
@@ -19,21 +18,21 @@ public:
 
 	vector<Unit*>* getUnits();
 	vector<Building*>* getBuildings();
-	vector<Entity*>* getEntities();
 	vector<ResourceEntity*>* getResources();
 
 	void addUnits(unsigned number, int id, Vector3* center, SpacingType spacingType, int player);
 	void addBuildings(unsigned number, int id, Vector3* center, SpacingType spacingType, int player);
 	void addResources(unsigned number, int id, Vector3* center, SpacingType spacingType);
-	void cleanAfterStep();
+	void clean();
 	void updateInfo(SimulationInfo* simulationInfo);
+	void dispose();
 private:
 	vector<Unit*>* units;
 	vector<Building*>* buildings;
 	vector<ResourceEntity*>* resources;
+	vector<Physical*>* toDispose;
 
 	void add(Unit* unit);
-	void add(Entity* entity) override;
 	void add(Building* building);
 	void add(ResourceEntity* resourceEntity);
 
@@ -47,4 +46,10 @@ private:
 	ResourceFactory* resourceFactory;
 
 	SimulationInfo* simulationInfo;
+
+
+	bool shouldDelete(Physical* physical);
+	std::vector<Unit*>* tempUnits;
+	std::vector<Building*>* tempBuildings;
+	std::vector<ResourceEntity*>* tempResources;
 };

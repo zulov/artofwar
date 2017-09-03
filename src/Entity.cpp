@@ -1,12 +1,15 @@
 #include "Entity.h"
 #include "ObjectEnums.h"
 #include "Game.h"
+#include "LinkComponent.h"
 
 
 Entity::Entity(Urho3D::Node* _node, ObjectType _type) {
 	node = _node;	
 	alive = true;
 	type = _type;
+	LinkComponent* lc = node->CreateComponent<LinkComponent>();
+	lc->bound(node, this);
 }
 
 Entity::~Entity() {

@@ -37,6 +37,7 @@ public:
 	int getUnitsNumber();
 	SimulationInfo* getInfo();
 	void updateEnviroment();
+	void dispose();
 
 private:
 	void moveUnits(float timeStep);

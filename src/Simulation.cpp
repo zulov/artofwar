@@ -90,6 +90,10 @@ void Simulation::updateEnviroment() {
 	}
 }
 
+void Simulation::dispose() {
+	simObjectManager->dispose();
+}
+
 void Simulation::update(Input* input, float timeStep) {
 	if (input->GetKeyPress(KEY_SPACE)) {
 		animate = !animate;
@@ -110,6 +114,7 @@ void Simulation::update(Input* input, float timeStep) {
 				action();
 			}
 			updateEnviroment();
+			simObjectManager->clean();
 			simObjectManager->updateInfo(simulationInfo);
 
 			units = simObjectManager->getUnits();//TOdo te linijki sa pewnie nie potrzebne
@@ -120,8 +125,6 @@ void Simulation::update(Input* input, float timeStep) {
 
 			calculateForces();
 			applyForce();
-
-			simObjectManager->cleanAfterStep();
 
 			timeStep = accumulateTime;
 		}

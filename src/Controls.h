@@ -53,7 +53,8 @@ public:
 	bool isActive();
 	void activate();
 	void action(HudElement* hudElement);
-	void cleanAfterStep();
+	void refreshSelected();
+	void clean(SimulationInfo *simulationInfo);
 
 private:
 	std::vector<Physical*>* selected;//TODO to powinien byæ set
