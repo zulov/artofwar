@@ -28,7 +28,7 @@ void ActionCommand::execute() {
 	} else if(action == FOLLOW) {
 		ActionParameter* localParameter = new ActionParameter();
 		localParameter->setAimPosition(aimPosition);
-		entity->action(action, localParameter);
+		entity->action(action, localParameter);//TODO tu leci null pointer
 		delete localParameter;
 		return;
 	}
