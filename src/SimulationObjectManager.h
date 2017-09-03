@@ -9,6 +9,7 @@
 #include "UnitFactory.h"
 #include "AbstractObjectManager.h"
 #include "ResourceFactory.h"
+#include "SimulationInfo.h"
 
 class SimulationObjectManager :public AbstractObjectManager
 {
@@ -25,6 +26,7 @@ public:
 	void addBuildings(unsigned number, int id, Vector3* center, SpacingType spacingType, int player);
 	void addResources(unsigned number, int id, Vector3* center, SpacingType spacingType);
 	void cleanAfterStep();
+	void updateInfo(SimulationInfo* simulationInfo);
 private:
 	vector<Unit*>* units;
 	vector<Building*>* buildings;
@@ -43,4 +45,6 @@ private:
 	UnitFactory* unitFactory;
 	BuildingFactory* buildingFactory;
 	ResourceFactory* resourceFactory;
+
+	SimulationInfo* simulationInfo;
 };

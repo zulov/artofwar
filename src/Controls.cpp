@@ -308,7 +308,7 @@ void Controls::create(ObjectType type, Vector3* pos, int number) {
 	}
 }
 
-SelectedInfo* Controls::getSelectedInfo() {
+SelectedInfo* Controls::getInfo() {
 	return selectedInfo;
 }
 

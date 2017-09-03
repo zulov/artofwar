@@ -13,6 +13,7 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 	aimContainer = new AimContainer();
 	actionCommandList = new ActionCommandList(aimContainer);
 	Game::get()->setActionCommmandList(actionCommandList);
+	simulationInfo = new SimulationInfo();
 	createUnits();
 }
 
@@ -75,12 +76,27 @@ int Simulation::getUnitsNumber() {
 	return units->size();
 }
 
+SimulationInfo* Simulation::getInfo() {
+	return simulationInfo;
+}
+
+void Simulation::updateEnviroment() {
+	envStrategy->update(units);
+	if (simulationInfo->ifAmountBuildingChanged()) {
+		envStrategy->update(buildings);
+	}
+	if (simulationInfo->ifAmountResourceChanged()) {
+		envStrategy->update(resources);
+	}
+}
+
 void Simulation::update(Input* input, float timeStep) {
 	if (input->GetKeyPress(KEY_SPACE)) {
 		animate = !animate;
 	}
 
 	if (animate) {
+		simulationInfo->reset();
 		timeStep = updateTime(timeStep);
 		if (accumulateTime >= maxTimeFrame) {
 			countFrame();
@@ -93,14 +109,12 @@ void Simulation::update(Input* input, float timeStep) {
 				aimContainer->clean();
 				action();
 			}
+			updateEnviroment();
+			simObjectManager->updateInfo(simulationInfo);
 
-			units = simObjectManager->getUnits();
+			units = simObjectManager->getUnits();//TOdo te linijki sa pewnie nie potrzebne
 			buildings = simObjectManager->getBuildings();
 			resources = simObjectManager->getResources();
-
-			envStrategy->update(units);
-			envStrategy->update(buildings);
-			envStrategy->update(resources);
 
 			updateBuildingQueue();
 

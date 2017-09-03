@@ -242,6 +242,7 @@
     <ClCompile Include="src\Mediator.cpp" />
     <ClCompile Include="src\SceneObjectManager.cpp" />
     <ClCompile Include="src\SimulationCommandList.cpp" />
+    <ClCompile Include="src\SimulationInfo.cpp" />
     <ClCompile Include="src\State.cpp" />
     <ClCompile Include="src\StateManager.cpp" />
     <ClCompile Include="src\StopState.cpp" />
@@ -326,6 +327,7 @@
     <ClInclude Include="src\ObjectEnums.h" />
     <ClInclude Include="src\SceneObjectManager.h" />
     <ClInclude Include="src\SimulationCommandList.h" />
+    <ClInclude Include="src\SimulationInfo.h" />
     <ClInclude Include="src\SpacingType.h" />
     <ClInclude Include="src\State.h" />
     <ClInclude Include="src\StateManager.h" />

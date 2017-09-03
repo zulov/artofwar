@@ -16,6 +16,8 @@ SimulationObjectManager::SimulationObjectManager() {
 	unitFactory = new UnitFactory();
 	buildingFactory = new BuildingFactory();
 	resourceFactory = new ResourceFactory();
+
+	simulationInfo = new SimulationInfo();
 }
 
 
@@ -92,31 +94,41 @@ std::vector<ResourceEntity*>* SimulationObjectManager::getResources() {
 void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* center, SpacingType spacingType, int player) {
 	std::vector<Unit*>* newUnits = unitFactory->create(number, id, center, spacingType, player);
 	addAll(newUnits);
+	simulationInfo->setAmountUnitChanged();
 	delete newUnits;
 }
 
 void SimulationObjectManager::addBuildings(unsigned int number, int id, Vector3* center, SpacingType spacingType, int player) {
 	std::vector<Building*>* newBuildings = buildingFactory->create(number, id, center, spacingType);
 	addAll(newBuildings);
+	simulationInfo->setAmountBuildingChanged();
 	delete newBuildings;
 }
 
 void SimulationObjectManager::addResources(unsigned number, int id, Vector3* center, SpacingType spacingType) {
 	std::vector<ResourceEntity*>* newResources = resourceFactory->create(number, id, center, spacingType);
 	addAll(newResources);
+	simulationInfo->setAmountResourceChanged();
 	delete newResources;
 }
 
 void SimulationObjectManager::cleanAfterStep() {
-	units->erase(
-	             std::remove_if(
-	                            units->begin(), units->end(),
-	                            [](Unit* unit) {
-	                            if (!unit->isAlive()) {
-		                            delete unit;
-		                            return true;
-	                            }
-	                            return false;
-                            }),
-	             units->end());
+	if (simulationInfo->ifUnitDied()) {
+		units->erase(
+		             std::remove_if(
+		                            units->begin(), units->end(),
+		                            [](Unit* unit) {
+		                            if (!unit->isAlive()) {
+			                            delete unit;
+			                            return true;
+		                            }
+		                            return false;
+	                            }),
+		             units->end());
+	}
+}
+
+void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
+	simulationInfo->set(this->simulationInfo);
+	this->simulationInfo->reset();
 }

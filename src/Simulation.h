@@ -14,6 +14,7 @@
 #include <Urho3D/DebugNew.h>
 #include "ActionCommandList.h"
 #include "AimContainer.h"
+#include "SimulationInfo.h"
 
 class SimulationCommandList;
 
@@ -34,6 +35,8 @@ public:
 	void applyForce();
 	void updateBuildingQueue();
 	int getUnitsNumber();
+	SimulationInfo* getInfo();
+	void updateEnviroment();
 
 private:
 	void moveUnits(float timeStep);
@@ -50,6 +53,8 @@ private:
 	//CONST
 	const float ROTATE_SPEED = 115.0f;
 	const double coef = 10;
+
+	SimulationInfo* simulationInfo;
 
 	EnviromentStrategy* envStrategy;
 	ForceStrategy* forceStrategy;

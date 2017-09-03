@@ -205,6 +205,7 @@
     <ClCompile Include="src\TopHudElement.cpp">
       <Filter>hud\windows\top</Filter>
     </ClCompile>
+    <ClCompile Include="src\SimulationInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -447,6 +448,7 @@
     <ClInclude Include="src\OrderType.h">
       <Filter>objects\unit</Filter>
     </ClInclude>
+    <ClInclude Include="src\SimulationInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

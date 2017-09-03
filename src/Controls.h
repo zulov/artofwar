@@ -48,7 +48,7 @@ public:
 	void release(const int button);
 	void updateState(SelectedInfo* selectedInfo);
 	void hudAction(HudElement* hud);
-	SelectedInfo* getSelectedInfo();
+	SelectedInfo* getInfo();
 	void deactivate();
 	bool isActive();
 	void activate();

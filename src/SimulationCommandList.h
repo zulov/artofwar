@@ -11,7 +11,7 @@ public:
 	SimulationCommandList(SimulationObjectManager * _simulationObjectManager);
 	virtual ~SimulationCommandList();
 protected:
-	virtual void setParemeters(AbstractCommand* command) override;
+	void setParemeters(AbstractCommand* command) override;
 private:
 	SimulationObjectManager * simulationObjectManager;
 };

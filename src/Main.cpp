@@ -1,4 +1,5 @@
 #include <Main.h>
+#include "SimulationInfo.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
@@ -105,13 +106,14 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	benchmark->add(1.0 / timeStep);
 
 	simulation->update(GetSubsystem<Input>(), timeStep);
-	
-	int unitsNumber = simulation->getUnitsNumber();
-	hud->update(unitsNumber);
-	hud->update(benchmark, cameraManager);
+	SimulationInfo *simulationInfo = simulation->getInfo();
 	control(timeStep);
-	SelectedInfo* selectedInfo = controls->getSelectedInfo();
+	SelectedInfo* selectedInfo = controls->getInfo();
+	
 	hud->updateSelected(selectedInfo);
+	hud->update(simulation->getUnitsNumber());
+	hud->update(benchmark, cameraManager);
+
 	if (selectedInfo->hasChanged()) {
 		controls->updateState(selectedInfo);
 	}
