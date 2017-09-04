@@ -16,33 +16,47 @@ ActionCommand::ActionCommand(Physical* entity, ActionType action, Vector3* parem
 }
 
 ActionCommand::~ActionCommand() {
-	//delete parameter;
 }
 
-void ActionCommand::execute() {
-	Aims* aims;
-	if (action == ADD_AIM) {
-		aims = aimContainer->getNext();
-	} else if (action == APPEND_AIM) {
-		aims = aimContainer->getCurrent();
-	} else if(action == FOLLOW) {
-		ActionParameter* localParameter = new ActionParameter();
-		localParameter->setAimPosition(aimPosition);
-		entity->action(action, localParameter);//TODO tu leci null pointer
-		delete localParameter;
-		return;
-	}
-	aims->add(aimPosition);
-	ActionParameter* localParameter = new ActionParameter();
-	localParameter->setAims(aims);
+void ActionCommand::applyAim(ActionParameter* localParameter) {
 	if (entity) {
 		entity->action(action, localParameter);
 	} else {
-		for (int i = 0; i < entities->size(); ++i) {
-			(*entities)[i]->action(action, localParameter);
+		for (Physical* physical : (*entities)) {
+			physical->action(action, localParameter);
 		}
 	}
+}
+
+void ActionCommand::applyAim(Aims* aims) {
+	aims->add(aimPosition);
+	ActionParameter* localParameter = new ActionParameter();
+	localParameter->setAims(aims);
+	applyAim(localParameter);
 	delete localParameter;
+}
+
+void ActionCommand::execute() {
+	switch (action) {
+	case ADD_AIM:
+		applyAim(aimContainer->getNext());
+		break;
+	case APPEND_AIM:
+		applyAim(aimContainer->getCurrent());
+		break;
+
+	case FOLLOW:
+		{
+		ActionParameter* localParameter = new ActionParameter();
+		localParameter->setAimPosition(aimPosition);
+		applyAim(localParameter);//TODO tu leci null pointer
+		delete localParameter;
+		}
+		break;
+	default: ;
+	}
+
+
 }
 
 void ActionCommand::setAimConteiner(AimContainer* _aimContainer) {

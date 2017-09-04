@@ -10,6 +10,7 @@ public:
 	ActionCommand(std::vector<Physical*>* entities, ActionType action, Vector3* paremater);
 	ActionCommand(Physical* entity, ActionType action, Vector3* paremater);
 	~ActionCommand();
+	void applyAim(ActionParameter* localParameter);
 	void execute() override;
 	void setAimConteiner(AimContainer* _aimContainer);
 private:
@@ -19,4 +20,7 @@ private:
 
 	AimContainer* aimContainer;
 	Vector3* aimPosition;
+
+	void applyAim(Aims* aims);
+
 };
