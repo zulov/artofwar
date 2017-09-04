@@ -41,6 +41,7 @@ public:
 
 private:
 	void moveUnits(float timeStep);
+	void moveUnitsAndCheck(float timeStep);
 	void calculateForces();
 	bool animate;
 	double accumulateTime = 0;

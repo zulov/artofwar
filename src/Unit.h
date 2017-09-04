@@ -19,6 +19,7 @@ public:
 	~Unit();
 	double getHealthBarSize() override;
 	void populate(db_unit* _dbUnit);
+	void checkAim();
 	void move(double timeStep);
 	void applyForce(double timeStep);
 	int getSubTypeId() override;

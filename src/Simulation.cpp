@@ -116,9 +116,9 @@ void Simulation::update(Input* input, float timeStep) {
 			accumulateTime -= maxTimeFrame;
 			if (currentFrameNumber % 3 == 0) {
 				simCommandList->execute();
-				actionCommandList->execute();
 				aimContainer->clean();
 				action();
+				actionCommandList->execute();
 			}
 			updateEnviroment();
 			simObjectManager->clean();
@@ -134,15 +134,23 @@ void Simulation::update(Input* input, float timeStep) {
 			applyForce();
 
 			timeStep = accumulateTime;
+			moveUnitsAndCheck(timeStep);
+		} else {
+			moveUnits(timeStep);
 		}
-		moveUnits(timeStep);
 	}
 }
 
 void Simulation::moveUnits(float timeStep) {
-	for (unsigned i = 0; i < units->size(); ++i) {
-		Unit* unit = (*units)[i];
+	for (auto unit : (*units)) {
 		unit->move(timeStep);
+	}
+}
+
+void Simulation::moveUnitsAndCheck(float timeStep) {
+	for (auto unit : (*units)) {
+		unit->move(timeStep);
+		unit->checkAim();
 	}
 }
 

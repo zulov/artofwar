@@ -48,10 +48,7 @@ void Unit::populate(db_unit* _dbUnit) {
 	dbUnit = _dbUnit;
 }
 
-void Unit::move(double timeStep) {
-	(*position) += (*velocity) * timeStep;
-	//node->SetPosition(*position);
-	node->Translate((*velocity) * timeStep, TS_WORLD);
+void Unit::checkAim() {
 	if (aims != nullptr) {
 		bool reach = aims->ifReach(position, aimIndex);
 		if (reach) {
@@ -73,6 +70,12 @@ void Unit::move(double timeStep) {
 			followTo = nullptr;
 		}
 	}
+}
+
+void Unit::move(double timeStep) {
+	(*position) += (*velocity) * timeStep;
+	//node->SetPosition(*position);
+	node->Translate((*velocity) * timeStep, TS_WORLD);
 }
 
 void Unit::setAcceleration(Vector3* _acceleration) {
