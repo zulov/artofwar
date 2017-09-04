@@ -1,6 +1,7 @@
 #include "Physical.h"
 #include "Game.h"
 #include <Urho3D/Graphics/Octree.h>
+#include "ActionCommand.h"
 
 Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): Entity(_node, _type) {
 	position = _position;
@@ -49,6 +50,7 @@ Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): E
 Physical::~Physical() {
 	delete position;
 	delete rotation;
+	delete menuString;
 }
 
 
@@ -101,6 +103,22 @@ String* Physical::toMultiLineString() {
 
 void Physical::buttonAction(short id) {
 
+}
+
+bool Physical::hasEnemy() {
+	if (enemyToAttack != nullptr) {
+		if ((*this->getPosition() - *enemyToAttack->getPosition()).LengthSquared() < attackRange * attackRange) {
+			return true;
+		}
+	}
+	enemyToAttack = nullptr;
+	return false;
+}
+
+void Physical::clean() {
+	if (enemyToAttack != nullptr && !enemyToAttack->isAlive()) {
+		enemyToAttack = nullptr;
+	}
 }
 
 signed char Physical::getTeam() {

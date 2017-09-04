@@ -20,10 +20,17 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 void Simulation::action() {
 	for (unsigned i = 0; i < units->size(); ++i) {
 		Unit* unit = (*units)[i];
-		std::vector<Physical*>* enemies = envStrategy->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
+		if (unit->getState() == US_STOP || unit->getState() == US_ATTACK) {
+			if (unit->hasEnemy()) {
+				unit->attack();
+			} else {
+				std::vector<Physical*>* enemies = envStrategy->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
 
-		unit->attack(enemies);
-		delete enemies;
+				unit->attack(enemies);
+				delete enemies;
+			}
+		}
+
 	}
 }
 

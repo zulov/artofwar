@@ -133,34 +133,42 @@ void Unit::absorbAttack(double attackCoef) {
 	}
 }
 
-void Unit::attack(vector<Physical*>* enemies) {
-	if (unitState == US_STOP || unitState == US_ATTACK) {
-		double minDistance = 9999;
-		Physical* entityClosest = nullptr;
-		for (int j = 0; j < enemies->size(); ++j) {
-			Physical* entity = (*enemies)[j];
-			double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
-			if (distance <= minDistance) {
-				minDistance = distance;
-				entityClosest = entity;
-			}
-		}
-		if (entityClosest) {
-			minDistance = sqrt(minDistance);
-			if (minDistance < attackRange) {
-				attack(entityClosest);
-				unitState = US_ATTACK;
-				//attackRange();
-			} else if (minDistance < attackIntrest) {
-				ActionCommand* command = new ActionCommand(this, FOLLOW, entityClosest->getPosition());
-				Game::get()->getActionCommandList()->add(command);
-			}
+void Unit::attackIfCloseEnough(double& distance, Physical* closest) {
+	if (closest) {
+		if (distance < attackRange * attackRange) {
+			attack(closest);
+			//attackRange();
+		} else if (distance < attackIntrest * attackIntrest) {
+			ActionCommand* command = new ActionCommand(this, FOLLOW, closest->getPosition());
+			Game::get()->getActionCommandList()->add(command);
 		}
 	}
 }
 
+void Unit::attack(vector<Physical*>* enemies) {
+
+	double minDistance = 9999;
+	Physical* entityClosest = nullptr;
+	for (int j = 0; j < enemies->size(); ++j) {
+		Physical* entity = (*enemies)[j];
+		double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
+		if (distance <= minDistance) {
+			minDistance = distance;
+			entityClosest = entity;
+		}
+	}
+	attackIfCloseEnough(minDistance, entityClosest);
+
+}
+
 void Unit::attack(Physical* enemy) {
+	unitState = US_ATTACK;
 	enemy->absorbAttack(attackCoef);
+	enemyToAttack = enemy;
+}
+
+void Unit::attack() {
+	attack(enemyToAttack);
 }
 
 void Unit::updateHeight(double y, double timeStep) {
@@ -227,22 +235,26 @@ void Unit::buttonAction(short id) {
 
 	switch (type) {
 	case OrderType::GO: break;
-	case OrderType::STOP: 
+	case OrderType::STOP:
 		removeAim();
 		unitState = UnitStateType::US_STOP;
 		break;
 	case OrderType::CHARGE: break;
 	case OrderType::ATTACK: break;
 	case OrderType::PATROL: break;
-	case OrderType::DEAD: 
+	case OrderType::DEAD:
 		alive = false;
 		break;
-	case OrderType::DEFEND: 
+	case OrderType::DEFEND:
 		removeAim();
 		unitState = UnitStateType::US_DEFEND;
 		break;
 	default: ;
 	}
+}
+
+UnitStateType Unit::getState() {
+	return unitState;
 }
 
 void Unit::applyForce(double timeStep) {

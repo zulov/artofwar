@@ -110,6 +110,7 @@ bool SimulationObjectManager::shouldDelete(Physical* physical) {
 		toDispose->push_back(physical);
 		return true;
 	}
+	physical->clean();
 	return false;
 }
 

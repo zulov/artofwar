@@ -31,12 +31,15 @@ public:
 	double getMass();
 	double getUnitRadius();
 	void absorbAttack(double attackCoef) override;
+	
 	void attack(vector<Physical*>* enemies);
 	void attack(Physical* enemy);
+	void attack();
 	void updateHeight(double y, double timeStep);
 	void updateRotation();
 	String *toMultiLineString() override;
 	void buttonAction(short id) override;
+	UnitStateType getState();
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
@@ -52,7 +55,7 @@ private:
 	void addAim(ActionParameter* actionParameter);
 	void removeAim();
 	void followAim(ActionParameter* parameter);
-
+	void attackIfCloseEnough(double& minDistance, Physical* entityClosest);
 	UnitStateType unitState;
 	State** states;
 	UnitType unitType;

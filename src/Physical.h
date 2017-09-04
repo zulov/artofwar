@@ -23,22 +23,29 @@ public:
 	void setBucket(short posX, short posY, short param);
 	void setTeam(signed char _team);
 	void setPlayer(signed char player);
-	virtual String* toMultiLineString();//TODO optimize create only if change and pointer?
+	virtual String* toMultiLineString();
 	virtual void buttonAction(short id);
+
+	bool hasEnemy();
+	void clean();
 protected:
 	Vector3* position;
 	Vector3* rotation;
+	String* menuString;
+
+	Physical* enemyToAttack = nullptr;
+
 	double minimalDistance;
+	bool rotatable;
 	signed char team;
 	signed char player;
-	bool rotatable;
+
 	double hpCoef = 100;
 	double maxHpCoef = 100;
 	double attackCoef = 10;
 	double attackRange;
 	double defenseCoef = 0.3;
 	double attackSpeed = 1;
-
 	String textureName;
 
 	Node* billboardNode;
@@ -47,7 +54,7 @@ protected:
 	Billboard* billboardShadow;
 	BillboardSet* billboardSetBar;
 	BillboardSet* billboardSetShadow;
-	String* menuString;
+
 private:
 
 	short int bucketX[BUCKET_SET_NUMBER];
