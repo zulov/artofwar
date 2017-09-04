@@ -1,5 +1,6 @@
 #pragma once
-#include "Entity.h"
+#include <vector>
+#include "objects/Entity.h"
 
 class SceneObjectManager
 {

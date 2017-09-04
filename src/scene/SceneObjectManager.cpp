@@ -1,4 +1,6 @@
 #include "SceneObjectManager.h"
+#include "utils.h"
+#include "objects/Entity.h"
 
 
 SceneObjectManager::SceneObjectManager() {
