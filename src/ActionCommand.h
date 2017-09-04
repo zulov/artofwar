@@ -8,7 +8,9 @@ class ActionCommand :public AbstractCommand
 {
 public:
 	ActionCommand(std::vector<Physical*>* entities, ActionType action, Vector3* paremater);
+	ActionCommand(std::vector<Physical*>* entities, ActionType action, Physical* paremater);
 	ActionCommand(Physical* entity, ActionType action, Vector3* paremater);
+	ActionCommand(Physical* entity, ActionType action, Physical* paremater);
 	~ActionCommand();
 	void applyAim(ActionParameter* localParameter);
 	void execute() override;
@@ -20,6 +22,7 @@ private:
 
 	AimContainer* aimContainer;
 	Vector3* aimPosition;
+	Physical* toFollow;
 
 	void applyAim(Aims* aims);
 

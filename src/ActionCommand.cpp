@@ -6,13 +6,31 @@ ActionCommand::ActionCommand(std::vector<Physical*>* entities, ActionType action
 	this->action = action;
 	this->aimPosition = parameter;
 	this->entity = nullptr;
+	this->toFollow = nullptr;
 }
 
-ActionCommand::ActionCommand(Physical* entity, ActionType action, Vector3* paremater) {
+ActionCommand::ActionCommand(std::vector<Physical*>* entities, ActionType action, Physical* paremeter) {
+	this->entities = entities;
+	this->action = action;
+	this->toFollow = paremeter;
+	this->entity = nullptr;
+	this->aimPosition = nullptr;
+}
+
+ActionCommand::ActionCommand(Physical* entity, ActionType action, Vector3* paremeter) {
 	this->entity = entity;
 	this->action = action;
-	this->aimPosition = paremater;
+	this->aimPosition = paremeter;
 	this->entities = nullptr;
+	this->toFollow = nullptr;
+}
+
+ActionCommand::ActionCommand(Physical* entity, ActionType action, Physical* paremeter) {
+	this->entity = entity;
+	this->action = action;
+	this->toFollow = paremeter;
+	this->entities = nullptr;
+	this->aimPosition = nullptr;
 }
 
 ActionCommand::~ActionCommand() {
@@ -47,10 +65,12 @@ void ActionCommand::execute() {
 
 	case FOLLOW:
 		{
-		ActionParameter* localParameter = new ActionParameter();
-		localParameter->setAimPosition(aimPosition);
-		applyAim(localParameter);//TODO tu leci null pointer
-		delete localParameter;
+		if (toFollow != nullptr && toFollow->isAlive()) {
+			ActionParameter* localParameter = new ActionParameter();
+			localParameter->setFollowTo(toFollow);
+			applyAim(localParameter);//TODO tu leci null pointer
+			delete localParameter;
+		}
 		}
 		break;
 	default: ;

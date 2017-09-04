@@ -40,6 +40,7 @@ public:
 	String *toMultiLineString() override;
 	void buttonAction(short id) override;
 	UnitStateType getState();
+	void clean() override;
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
@@ -48,7 +49,7 @@ protected:
 	double maxSeparationDistance;
 	double minSpeed;
 	Aims* aims;
-	Vector3* aimPosition;
+	Physical* followTo;
 	int aimIndex = 0;
 private:
 	void appendAim(ActionParameter* actionParameter);

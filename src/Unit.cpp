@@ -9,7 +9,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 	velocity = new Vector3();
 	aims = nullptr;
 
-	aimPosition = nullptr;
+	followTo = nullptr;
 	unitState = US_STOP;
 	node->SetPosition(*_position);
 	states = new State*[STATE_SIZE];
@@ -23,7 +23,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 Unit::~Unit() {
 	delete acceleration;
 	delete velocity;
-	aimPosition = nullptr;
+	followTo = nullptr;
 	if (aims) {
 		aims->reduce();
 	}
@@ -61,16 +61,16 @@ void Unit::move(double timeStep) {
 				aims = nullptr;
 			}
 		}
-	} else if (aimPosition != nullptr) {//TODO a co jak cel umrze?
+	} else if (followTo != nullptr) {//TODO a co jak cel umrze?
 		bool reach = false;
 
-		double distance = ((*position) - (*aimPosition)).Length();
+		double distance = ((*position) - (*followTo->getPosition())).Length();
 		if (distance <= 3) {
 			reach = true;
 		}
 
 		if (reach) {
-			aimPosition = nullptr;
+			followTo = nullptr;
 		}
 	}
 }
@@ -105,8 +105,8 @@ Vector3* Unit::getAim() {
 		unitState = US_GOTO;
 		return aims->getAimPos(aimIndex);
 	}
-	if (aimPosition) {
-		return aimPosition;
+	if (followTo) {
+		return followTo->getPosition();
 	}
 	if (unitState == US_GOTO) {
 		unitState = US_STOP;
@@ -139,7 +139,7 @@ void Unit::attackIfCloseEnough(double& distance, Physical* closest) {
 			attack(closest);
 			//attackRange();
 		} else if (distance < attackIntrest * attackIntrest) {
-			ActionCommand* command = new ActionCommand(this, FOLLOW, closest->getPosition());
+			ActionCommand* command = new ActionCommand(this, FOLLOW, closest);
 			Game::get()->getActionCommandList()->add(command);
 		}
 	}
@@ -183,12 +183,12 @@ void Unit::appendAim(ActionParameter* actionParameter) {
 		aimIndex = 0;
 		aims = actionParameter->getAims();
 		aims->up();
-		aimPosition = nullptr;
+		followTo = nullptr;
 	} else if (aims == nullptr) {
 		aimIndex = 0;
 		aims = actionParameter->getAims();
 		aims->up();
-		aimPosition = nullptr;
+		followTo = nullptr;
 	}
 }
 
@@ -199,7 +199,7 @@ void Unit::addAim(ActionParameter* actionParameter) {
 	aimIndex = 0;
 	aims = actionParameter->getAims();
 	aims->up();
-	aimPosition = nullptr;
+	followTo = nullptr;
 }
 
 void Unit::removeAim() {
@@ -208,12 +208,12 @@ void Unit::removeAim() {
 		aims = nullptr;
 	}
 	aimIndex = 0;
-	aimPosition = nullptr;
+	followTo = nullptr;
 }
 
 void Unit::followAim(ActionParameter* parameter) {
 	removeAim();
-	aimPosition = parameter->getAimPosition();
+	followTo = parameter->getFollowTo();
 }
 
 void Unit::updateRotation() {
@@ -255,6 +255,13 @@ void Unit::buttonAction(short id) {
 
 UnitStateType Unit::getState() {
 	return unitState;
+}
+
+void Unit::clean() {
+	if (followTo != nullptr && !followTo->isAlive()) {
+		enemyToAttack = nullptr;
+	}
+	Physical::clean();
 }
 
 void Unit::applyForce(double timeStep) {

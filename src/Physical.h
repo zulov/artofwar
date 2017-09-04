@@ -27,7 +27,7 @@ public:
 	virtual void buttonAction(short id);
 
 	bool hasEnemy();
-	void clean();
+	virtual void clean();
 protected:
 	Vector3* position;
 	Vector3* rotation;
