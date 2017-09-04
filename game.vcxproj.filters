@@ -3,13 +3,6 @@
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
-    <ClCompile Include="src\LevelBuilder.cpp" />
-    <ClCompile Include="src\UnitFactory.cpp">
-      <Filter>objects\collection\factory</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SceneObjectManager.cpp">
-      <Filter>objects\collection\manager</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Mediator.cpp" />
     <ClCompile Include="src\BuildCommand.cpp">
@@ -24,43 +17,13 @@
     <ClCompile Include="src\Aim.cpp">
       <Filter>aim</Filter>
     </ClCompile>
-    <ClCompile Include="src\ActionParameter.cpp">
-      <Filter>command\action</Filter>
-    </ClCompile>
     <ClCompile Include="src\Hud.cpp">
       <Filter>hud</Filter>
     </ClCompile>
     <ClCompile Include="src\HudElement.cpp">
       <Filter>hud</Filter>
     </ClCompile>
-    <ClCompile Include="src\PlayersManager.cpp">
-      <Filter>player</Filter>
-    </ClCompile>
     <ClCompile Include="src\OperatorType.h" />
-    <ClCompile Include="src\Unit.cpp">
-      <Filter>objects\unit</Filter>
-    </ClCompile>
-    <ClCompile Include="src\StateManager.cpp">
-      <Filter>objects\state</Filter>
-    </ClCompile>
-    <ClCompile Include="src\State.cpp">
-      <Filter>objects\state</Filter>
-    </ClCompile>
-    <ClCompile Include="src\StopState.cpp">
-      <Filter>objects\state</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SelectedInfoType.cpp">
-      <Filter>control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\UnitsPanel.cpp">
-      <Filter>hud\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TopPanel.cpp">
-      <Filter>hud\windows\top</Filter>
-    </ClCompile>
-    <ClCompile Include="src\TopHudElement.cpp">
-      <Filter>hud\windows\top</Filter>
-    </ClCompile>
     <ClCompile Include="src\camera\CameraManager.cpp">
       <Filter>camera</Filter>
     </ClCompile>
@@ -99,12 +62,6 @@
     </ClCompile>
     <ClCompile Include="src\simulation\env\bucket\BucketIterator.cpp">
       <Filter>simulation\env\bucket</Filter>
-    </ClCompile>
-    <ClCompile Include="src\objects\user\aim\Aims.cpp">
-      <Filter>aim</Filter>
-    </ClCompile>
-    <ClCompile Include="src\objects\user\aim\AimContainer.cpp">
-      <Filter>aim</Filter>
     </ClCompile>
     <ClCompile Include="src\objects\building\Building.cpp">
       <Filter>objects\building</Filter>
@@ -203,14 +160,54 @@
     <ClCompile Include="src\simulation\SimulationObjectManager.cpp">
       <Filter>objects\collection\manager</Filter>
     </ClCompile>
+    <ClCompile Include="src\objects\unit\aim\AimContainer.cpp">
+      <Filter>aim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\unit\aim\Aims.cpp">
+      <Filter>aim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\state\State.cpp">
+      <Filter>objects\state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\state\StateManager.cpp">
+      <Filter>objects\state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\state\StopState.cpp">
+      <Filter>objects\state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hud\window\TopPanel.cpp">
+      <Filter>hud\windows\top</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hud\window\TopHudElement.cpp">
+      <Filter>hud\windows\top</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\unit\UnitFactory.cpp">
+      <Filter>objects\collection\factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\unit\Unit.cpp">
+      <Filter>objects\unit</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hud\window\UnitsPanel.cpp">
+      <Filter>hud\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\player\PlayersManager.cpp">
+      <Filter>player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\control\SelectedInfoType.cpp">
+      <Filter>control</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\unit\ActionParameter.cpp">
+      <Filter>command\action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\SceneObjectManager.cpp">
+      <Filter>objects\collection\manager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\LevelBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\Benchmark.h" />
     <ClInclude Include="src\LevelBuilder.h" />
-    <ClInclude Include="src\UnitFactory.h">
-      <Filter>objects\collection\factory</Filter>
-    </ClInclude>
     <ClInclude Include="src\SceneObjectManager.h">
       <Filter>objects\collection\manager</Filter>
     </ClInclude>
@@ -225,52 +222,19 @@
     <ClInclude Include="src\BuildList.h">
       <Filter>command\list</Filter>
     </ClInclude>
-    <ClInclude Include="src\ActionParameter.h">
-      <Filter>command\action</Filter>
-    </ClInclude>
     <ClInclude Include="src\SpacingType.h">
       <Filter>objects\collection</Filter>
     </ClInclude>
     <ClInclude Include="src\PlayersManager.h">
       <Filter>player</Filter>
     </ClInclude>
-    <ClInclude Include="src\UnitType.h">
-      <Filter>objects\unit</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Unit.h">
-      <Filter>objects\unit</Filter>
-    </ClInclude>
-    <ClInclude Include="src\UnitStateType.h">
-      <Filter>objects\state</Filter>
-    </ClInclude>
-    <ClInclude Include="src\StateManager.h">
-      <Filter>objects\state</Filter>
-    </ClInclude>
-    <ClInclude Include="src\State.h">
-      <Filter>objects\state</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ButtonUtils.h">
-      <Filter>hud</Filter>
-    </ClInclude>
-    <ClInclude Include="src\StopState.h">
-      <Filter>objects\state</Filter>
-    </ClInclude>
     <ClInclude Include="src\SelectedInfoType.h">
       <Filter>control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\UnitsPanel.h">
-      <Filter>hud\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceType.h">
       <Filter>objects\resource</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="src\TopPanel.h">
-      <Filter>hud\windows\top</Filter>
-    </ClInclude>
-    <ClInclude Include="src\TopHudElement.h">
-      <Filter>hud\windows\top</Filter>
-    </ClInclude>
     <ClInclude Include="src\OrderType.h">
       <Filter>objects\unit</Filter>
     </ClInclude>
@@ -321,15 +285,6 @@
     </ClInclude>
     <ClInclude Include="src\simulation\env\bucket\BucketIterator.h">
       <Filter>simulation\env\bucket</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objects\user\aim\Aim.h">
-      <Filter>aim</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objects\user\aim\Aims.h">
-      <Filter>aim</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objects\user\aim\AimContainer.h">
-      <Filter>aim</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\building\Building.h">
       <Filter>objects\building</Filter>
@@ -442,6 +397,51 @@
     <ClInclude Include="src\simulation\SimulationInfo.h" />
     <ClInclude Include="src\simulation\SimulationObjectManager.h">
       <Filter>objects\collection\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\aim\Aim.h">
+      <Filter>aim</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\aim\AimContainer.h">
+      <Filter>aim</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\aim\Aims.h">
+      <Filter>aim</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\state\State.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\state\StateManager.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\state\StopState.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hud\window\TopPanel.h">
+      <Filter>hud\windows\top</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hud\window\TopHudElement.h">
+      <Filter>hud\windows\top</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\UnitFactory.h">
+      <Filter>objects\collection\factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\Unit.h">
+      <Filter>objects\unit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\UnitStateType.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\UnitType.h">
+      <Filter>objects\unit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hud\window\UnitsPanel.h">
+      <Filter>hud\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hud\ButtonUtils.h">
+      <Filter>hud</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\ActionParameter.h">
+      <Filter>command\action</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
