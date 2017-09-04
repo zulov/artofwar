@@ -1,13 +1,15 @@
 #pragma once
 
 #include <vector>
-#include "BucketIterator.h"
-#include "BucketGrid.h"
-#include "Building.h"
+#include "simulation/env/bucket/BucketIterator.h"
+#include "simulation/env/bucket/BucketGrid.h"
+#include "objects/building/Building.h"
 #include "defines.h"
 #include "OperatorType.h"
-#include "ResourceEntity.h"
+#include "objects/resource/ResourceEntity.h"
 #include "Gradient.h"
+#include "objects/unit/Unit.h"
+#include "objects/Physical.h"
 
 
 class EnviromentStrategy
@@ -24,9 +26,9 @@ public:
 
 	std::vector<Physical*>* getResources(Unit* unit, double radius);
 
-	void update(vector<Unit*>* units);
-	void update(vector<Building*>* buildings);
-	void update(vector<ResourceEntity*>* resources);
+	void update(std::vector<Unit*>* units);
+	void update(std::vector<Building*>* buildings);
+	void update(std::vector<ResourceEntity*>* resources);
 	void add(Entity *entity);
 	Vector3 * getRepulsiveAt(Vector3 * position);
 

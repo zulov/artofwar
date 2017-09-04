@@ -4,10 +4,10 @@
 #include <array>
 #include <vector>
 #include <Urho3D/UI/DropDownList.h>
-#include "HudElement.h"
+#include "hud/HudElement.h"
 #include <Urho3D/UI/Text.h>
-#include "db_strcut.h"
-#include "SelectedInfo.h"
+#include "database/db_strcut.h"
+#include "control/SelectedInfo.h"
 
 class MenuPanel :public AbstractWindowPanel
 {

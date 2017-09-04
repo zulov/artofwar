@@ -3,13 +3,13 @@
 
 #include "camera/CameraManager.h"
 #include "Control.h"
-#include "Hud.h"
+#include "hud/Hud.h"
 #include "Benchmark.h"
-#include "Controls.h"
-#include "Simulation.h"
-#include "LevelBuilder.h"
+#include "control/Controls.h"
+#include "simulation/Simulation.h"
+#include "scene/LevelBuilder.h"
 #include "Mediator.h"
-#include "BuildList.h"
+#include "commands/BuildList.h"
 
 #include <Urho3D/Engine/Application.h>
 #include <Urho3D/Engine/EngineDefs.h>

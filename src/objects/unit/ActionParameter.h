@@ -1,5 +1,6 @@
 #pragma once
-#include "Aims.h"
+
+#include "aim/Aims.h"
 
 class Physical;
 

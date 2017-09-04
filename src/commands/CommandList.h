@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "AbstractCommand.h"
-#include "Entity.h"
+#include "objects/Entity.h"
 #include <vector>
 
 class CommandList

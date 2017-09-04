@@ -1,6 +1,6 @@
 #pragma once
 #include "AbstractWindowPanel.h"
-#include "HudElement.h"
+#include "hud/HudElement.h"
 #include <vector>
 
 class SelectedInfo;

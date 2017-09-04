@@ -1,5 +1,5 @@
 #pragma once
-#include "EntityFactory.h"
+#include "objects/EntityFactory.h"
 #include "ResourceType.h"
 #include "ResourceEntity.h"
 #include "SpacingType.h"

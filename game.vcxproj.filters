@@ -5,9 +5,6 @@
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Mediator.cpp" />
-    <ClCompile Include="src\Aim.cpp">
-      <Filter>aim</Filter>
-    </ClCompile>
     <ClCompile Include="src\OperatorType.h" />
     <ClCompile Include="src\camera\CameraManager.cpp">
       <Filter>camera</Filter>
@@ -202,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="src\commands\BuildList.cpp">
       <Filter>command\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\unit\aim\Aim.cpp">
+      <Filter>aim</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

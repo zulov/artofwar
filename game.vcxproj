@@ -191,7 +191,7 @@
     <ClCompile Include="src\commands\ActionCommand.cpp" />
     <ClCompile Include="src\commands\ActionCommandList.cpp" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
-    <ClCompile Include="src\Aim.cpp" />
+    <ClCompile Include="src\objects\unit\aim\Aim.cpp" />
     <ClCompile Include="src\objects\unit\aim\AimContainer.cpp" />
     <ClCompile Include="src\objects\unit\aim\Aims.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />

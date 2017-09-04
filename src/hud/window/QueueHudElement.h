@@ -1,7 +1,7 @@
 #pragma once
 #include <Urho3D/UI/UIElement.h>
 #include <Urho3D/UI/Text.h>
-#include "MySprite.h"
+#include "hud/MySprite.h"
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/ProgressBar.h>
 

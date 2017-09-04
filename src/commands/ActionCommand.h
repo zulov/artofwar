@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
-#include "Entity.h"
+#include "objects/Entity.h"
 #include "AbstractCommand.h"
-#include "Simulation.h"
+#include "simulation/Simulation.h"
 
 class ActionCommand :public AbstractCommand
 {

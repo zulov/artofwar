@@ -4,8 +4,8 @@
 
 #include <Urho3D/Scene/Component.h>
 #include "ActionType.h"
-#include "Aims.h"
-#include "ActionParameter.h"
+#include "unit/aim/Aims.h"
+#include "unit/ActionParameter.h"
 #include "ObjectEnums.h"
 
 using namespace Urho3D;

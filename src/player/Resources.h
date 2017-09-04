@@ -1,6 +1,6 @@
 #pragma once
 #include <Urho3D/Container/Str.h>
-#include "db_strcut.h"
+#include "database/db_strcut.h"
 
 class Resources
 {

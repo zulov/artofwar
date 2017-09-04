@@ -4,8 +4,8 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/Engine/Engine.h>
 #include "camera/CameraManager.h"
-#include "DatabaseCache.h"
-#include "PlayersManager.h"
+#include "database/DatabaseCache.h"
+#include "player/PlayersManager.h"
 
 
 class ActionCommandList;
