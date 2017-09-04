@@ -99,9 +99,6 @@
     <ClCompile Include="src\player\Physical.cpp">
       <Filter>objects</Filter>
     </ClCompile>
-    <ClCompile Include="src\hud\window\QueueElement.cpp">
-      <Filter>objects\building</Filter>
-    </ClCompile>
     <ClCompile Include="src\hud\window\QueueHudElement.cpp">
       <Filter>hud\windows\queue</Filter>
     </ClCompile>
@@ -202,6 +199,9 @@
     </ClCompile>
     <ClCompile Include="src\objects\unit\aim\Aim.cpp">
       <Filter>aim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\building\QueueElement.cpp">
+      <Filter>objects\building</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -339,9 +339,6 @@
     <ClInclude Include="src\player\Player.h">
       <Filter>player</Filter>
     </ClInclude>
-    <ClInclude Include="src\hud\window\QueueElement.h">
-      <Filter>objects\building</Filter>
-    </ClInclude>
     <ClInclude Include="src\hud\window\QueueHudElement.h">
       <Filter>hud\windows\queue</Filter>
     </ClInclude>
@@ -442,6 +439,9 @@
     <ClInclude Include="src\scene\LevelBuilder.h" />
     <ClInclude Include="src\commands\BuildList.h">
       <Filter>command\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\building\QueueElement.h">
+      <Filter>objects\building</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

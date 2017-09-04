@@ -1,7 +1,7 @@
 #pragma once
 #include <Urho3D/UI/UIElement.h>
-#include "UnitType.h"
-#include "BuildingType.h"
+#include "objects/unit/UnitType.h"
+#include "objects/building/BuildingType.h"
 #include "ObjectEnums.h"
 
 class HudElement

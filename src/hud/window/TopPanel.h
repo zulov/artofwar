@@ -4,7 +4,7 @@
 #include "TopHudElement.h"
 #include <vector>
 #include <Urho3D/Graphics/Texture2D.h>
-#include "Resources.h"
+#include "player/Resources.h"
 #include <Urho3D/UI/DropDownList.h>
 
 

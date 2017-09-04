@@ -1,9 +1,9 @@
 #pragma once
 #include <Urho3D/UI/Button.h>
-#include "Physical.h"
+#include "objects/Physical.h"
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/ProgressBar.h>
-#include "MySprite.h"
+#include "hud/MySprite.h"
 
 #define MAX_SELECTED_IN_BUTTON 2
 

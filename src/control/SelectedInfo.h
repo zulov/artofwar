@@ -1,7 +1,7 @@
 #pragma once
-#include "UnitType.h"
+#include "objects/unit/UnitType.h"
 #include "ObjectEnums.h"
-#include "BuildingType.h"
+#include "objects/building//BuildingType.h"
 #include <Urho3D/Container/Str.h>
 #include "SelectedInfoType.h"
 

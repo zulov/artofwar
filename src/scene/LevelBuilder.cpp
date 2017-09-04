@@ -1,5 +1,5 @@
 #include "LevelBuilder.h"
-#include "Physical.h"
+#include "objects/Physical.h"
 
 
 LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {

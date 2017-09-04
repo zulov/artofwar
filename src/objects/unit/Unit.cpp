@@ -1,5 +1,5 @@
 #include "Unit.h"
-#include "ActionCommand.h"
+#include "commands/ActionCommand.h"
 #include "OrderType.h"
 
 double Unit::hbMaxSize = 1.0;

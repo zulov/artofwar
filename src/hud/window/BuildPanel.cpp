@@ -1,6 +1,6 @@
 #include "BuildPanel.h"
-#include "HudElement.h"
-#include "ButtonUtils.h"
+#include "../HudElement.h"
+#include "../ButtonUtils.h"
 #include <Urho3D/UI/ListView.h>
 
 

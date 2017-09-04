@@ -1,7 +1,7 @@
 #include "Controls.h"
-#include "ActionCommand.h"
-#include "CommandList.h"
-#include "SimulationCommandList.h"
+#include "commands/ActionCommand.h"
+#include "commands/CommandList.h"
+#include "commands/SimulationCommandList.h"
 #include <algorithm>
 
 Controls::Controls(Input* _input) {

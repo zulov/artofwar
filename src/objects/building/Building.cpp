@@ -1,6 +1,6 @@
 #include "Building.h"
 #include "ObjectEnums.h"
-#include "db_strcut.h"
+#include "database/db_strcut.h"
 #include "Game.h"
 
 double Building::hbMaxSize = 5.0;

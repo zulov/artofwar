@@ -4,11 +4,11 @@
 #include "ObjectEnums.h"
 #include "defines.h"
 #include "Game.h"
-#include "Entity.h"
+#include "objects/Entity.h"
 #include "UnitStateType.h"
 #include "UnitType.h"
 #include <Urho3D/Graphics/BillboardSet.h>
-#include "Physical.h"
+#include "objects/Physical.h"
 
 class State;
 

@@ -1,8 +1,8 @@
 #pragma once
-#include "Entity.h"
+#include "objects/Entity.h"
 #include "BuildingType.h"
-#include "Physical.h"
-#include "db_strcut.h"
+#include "objects/Physical.h"
+#include "database/db_strcut.h"
 #include "QueueElement.h"
 #include "QueueManager.h"
 

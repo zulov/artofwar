@@ -1,7 +1,7 @@
 #pragma once
-#include "Entity.h"
-#include "db_strcut.h"
-#include "Physical.h"
+#include "objects/Entity.h"
+#include "database/db_strcut.h"
+#include "objects/Physical.h"
 
 class ResourceEntity :
 	public Physical

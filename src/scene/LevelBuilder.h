@@ -8,7 +8,7 @@
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Material.h>
-#include "Entity.h"
+#include "objects/Entity.h"
 #include "Game.h"
 #include "SceneObjectManager.h"
 

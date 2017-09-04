@@ -1,6 +1,6 @@
 #pragma once
 #include <Urho3D/Math/Vector3.h>
-#include "Physical.h"
+#include "objects/Physical.h"
 
 class Gradient
 {

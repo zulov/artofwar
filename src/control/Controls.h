@@ -10,16 +10,16 @@
 #include <Urho3D/Core/Context.h>
 #include <Urho3D/Scene/Scene.h>
 #include <vector>
-#include "Entity.h"
+#include "objects/Entity.h"
 #include "ObjectEnums.h"
 #include <Urho3D/Input/Input.h>
 #include "ControlsState.h"
 #include "Game.h"
-#include "SimulationCommand.h"
-#include "BuildCommand.h"
-#include "LinkComponent.h"
+#include "commands/SimulationCommand.h"
+#include "commands/BuildCommand.h"
+#include "objects/LinkComponent.h"
 #include "Mediator.h"
-#include "HudElement.h"
+#include "hud/HudElement.h"
 #include "SelectedInfo.h"
 
 

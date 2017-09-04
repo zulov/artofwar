@@ -1,5 +1,5 @@
 #include "QueueHudElement.h"
-#include "ButtonUtils.h"
+#include "../ButtonUtils.h"
 
 
 QueueHudElement::QueueHudElement(Urho3D::XMLFile* style) {

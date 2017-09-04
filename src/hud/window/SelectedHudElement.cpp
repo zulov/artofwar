@@ -1,6 +1,6 @@
 #include "SelectedHudElement.h"
 #include <Urho3D/UI/Text.h>
-#include "ButtonUtils.h"
+#include "hud/ButtonUtils.h"
 
 
 SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* _style) {

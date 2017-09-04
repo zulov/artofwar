@@ -1,9 +1,9 @@
 #include "UnitsPanel.h"
 #include "Game.h"
 #include <Urho3D/UI/ListView.h>
-#include "MySprite.h"
-#include "ButtonUtils.h"
-#include "HudElement.h"
+#include "hud/MySprite.h"
+#include "hud/ButtonUtils.h"
+#include "hud/HudElement.h"
 #include <set>
 #include <algorithm>
 #include <unordered_set>

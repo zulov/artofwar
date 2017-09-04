@@ -1,19 +1,19 @@
 #pragma once
-#include "Unit.h"
+#include "objects/unit/Unit.h"
 #include <vector>
 #include <ctime>
-#include "EnviromentStrategy.h"
-#include "ForceStrategy.h"
+#include "simulation/env/EnviromentStrategy.h"
+#include "simulation/force/ForceStrategy.h"
 #include "SimulationObjectManager.h"
-#include "SimulationCommandList.h"
-#include "CommandList.h"
+#include "commands/SimulationCommandList.h"
+#include "commands/CommandList.h"
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Engine/Engine.h>
 #include <Urho3D/Graphics/Renderer.h>
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/DebugNew.h>
-#include "ActionCommandList.h"
-#include "AimContainer.h"
+#include "commands/ActionCommandList.h"
+#include "objects/unit/aim/AimContainer.h"
 #include "SimulationInfo.h"
 
 class SimulationCommandList;

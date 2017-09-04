@@ -1,8 +1,8 @@
 #pragma once
-#include "Entity.h"
+#include "objects/Entity.h"
 #include <vector>
 #include "AbstractCommand.h"
-#include "SimulationObjectManager.h"
+#include "simulation/SimulationObjectManager.h"
 #include "ObjectEnums.h"
 
 class SimulationCommand:public AbstractCommand

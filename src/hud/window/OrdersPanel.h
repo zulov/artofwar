@@ -1,8 +1,8 @@
 #pragma once
 #include "AbstractWindowPanel.h"
-#include "HudElement.h"
+#include "../HudElement.h"
 #include <vector>
-#include "SelectedInfo.h"
+#include "control/SelectedInfo.h"
 
 class OrdersPanel :public AbstractWindowPanel
 {

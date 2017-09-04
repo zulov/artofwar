@@ -2,12 +2,12 @@
 
 #include <vector>
 #include <Urho3D/Graphics/StaticModelGroup.h>
-#include "Unit.h"
-#include "Entity.h"
-#include "Building.h"
-#include "BuildingFactory.h"
-#include "UnitFactory.h"
-#include "ResourceFactory.h"
+#include "objects/unit/Unit.h"
+#include "objects/Entity.h"
+#include "objects/building/Building.h"
+#include "objects/building/BuildingFactory.h"
+#include "objects/unit/UnitFactory.h"
+#include "objects/resource/ResourceFactory.h"
 #include "SimulationInfo.h"
 
 class SimulationObjectManager

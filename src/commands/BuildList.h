@@ -1,6 +1,6 @@
 #pragma once
 #include "CommandList.h"
-#include "SceneObjectManager.h"
+#include "scene/SceneObjectManager.h"
 #include "BuildCommand.h"
 
 

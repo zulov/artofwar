@@ -1,7 +1,7 @@
 #pragma once
 #include "Unit.h"
 #include <vector>
-#include "EntityFactory.h"
+#include "objects/EntityFactory.h"
 #include "defines.h"
 #include "SpacingType.h"
 #include "UnitType.h"
@@ -9,7 +9,7 @@
 #include <Urho3D/Core/Object.h>
 #include <Urho3D/UI/Font.h>
 #include <Urho3D/Graphics/Model.h>
-#include "LinkComponent.h"
+#include "objects/LinkComponent.h"
 #include "Game.h"
 
 

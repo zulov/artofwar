@@ -1,7 +1,7 @@
 #pragma once
 #include "AbstractCommand.h"
 #include <utility>
-#include "Entity.h"
+#include "objects/Entity.h"
 
 class CommandSelect :public AbstractCommand
 {

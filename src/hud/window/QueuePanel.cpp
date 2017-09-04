@@ -1,6 +1,6 @@
 #include "QueuePanel.h"
 #include "Game.h"
-#include "Building.h"
+#include "objects/building/Building.h"
 
 
 QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {

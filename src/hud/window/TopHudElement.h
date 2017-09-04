@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MySprite.h"
+#include "hud/MySprite.h"
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/Button.h>
 

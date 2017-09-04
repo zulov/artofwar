@@ -1,5 +1,5 @@
 #pragma once
-#include "Physical.h"
+#include "objects/Physical.h"
 
 class SelectedInfoType
 {

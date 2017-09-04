@@ -1,6 +1,6 @@
 #include "ResourceFactory.h"
 #include "Game.h"
-#include "Building.h"
+#include "objects/building/Building.h"
 
 
 ResourceFactory::ResourceFactory() {
