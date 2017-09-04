@@ -1,5 +1,5 @@
 #pragma once
-#include "CameraBehave.h"
+#include "camera/CameraBehave.h"
 using namespace Urho3D;
 
 class FreeCameraBehave : public CameraBehave

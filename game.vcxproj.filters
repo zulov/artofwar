@@ -2,16 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\CameraManager.cpp">
-      <Filter>camera</Filter>
-    </ClCompile>
     <ClCompile Include="src\FreeCameraBehave.cpp">
-      <Filter>camera\behave</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CameraBehave.cpp">
-      <Filter>camera\behave</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RtsCameraBehave.cpp">
       <Filter>camera\behave</Filter>
     </ClCompile>
     <ClCompile Include="src\Entity.cpp">
@@ -203,22 +194,19 @@
       <Filter>hud\windows\top</Filter>
     </ClCompile>
     <ClCompile Include="src\SimulationInfo.cpp" />
+    <ClCompile Include="src\camera\CameraManager.cpp">
+      <Filter>camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\camera\CameraBehave.cpp">
+      <Filter>camera\behave</Filter>
+    </ClCompile>
+    <ClCompile Include="src\camera\RtsCameraBehave.cpp">
+      <Filter>camera\behave</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
-    <ClInclude Include="src\CameraManager.h">
-      <Filter>camera</Filter>
-    </ClInclude>
     <ClInclude Include="src\FreeCameraBehave.h">
-      <Filter>camera\behave</Filter>
-    </ClInclude>
-    <ClInclude Include="src\CameraEnums.h">
-      <Filter>camera</Filter>
-    </ClInclude>
-    <ClInclude Include="src\CameraBehave.h">
-      <Filter>camera\behave</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RtsCameraBehave.h">
       <Filter>camera\behave</Filter>
     </ClInclude>
     <ClInclude Include="src\Entity.h">
@@ -443,6 +431,18 @@
       <Filter>objects\unit</Filter>
     </ClInclude>
     <ClInclude Include="src\SimulationInfo.h" />
+    <ClInclude Include="src\camera\CameraEnums.h">
+      <Filter>camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\camera\CameraBehave.h">
+      <Filter>camera\behave</Filter>
+    </ClInclude>
+    <ClInclude Include="src\camera\CameraManager.h">
+      <Filter>camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\camera\RtsCameraBehave.h">
+      <Filter>camera\behave</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -203,8 +203,8 @@
     <ClCompile Include="src\BuildingFactory.cpp" />
     <ClCompile Include="src\BuildList.cpp" />
     <ClCompile Include="src\BuildPanel.cpp" />
-    <ClCompile Include="src\CameraBehave.cpp" />
-    <ClCompile Include="src\CameraManager.cpp" />
+    <ClCompile Include="src\camera\CameraBehave.cpp" />
+    <ClCompile Include="src\camera\CameraManager.cpp" />
     <ClCompile Include="src\DatabaseCache.cpp" />
     <ClCompile Include="src\DebugPanel.cpp" />
     <ClCompile Include="src\FollowState.cpp" />
@@ -253,7 +253,7 @@
     <ClCompile Include="src\FreeCameraBehave.cpp" />
     <ClCompile Include="src\Hud.cpp" />
     <ClCompile Include="src\SimulationObjectManager.cpp" />
-    <ClCompile Include="src\RtsCameraBehave.cpp" />
+    <ClCompile Include="src\camera\RtsCameraBehave.cpp" />
     <ClCompile Include="src\Unit.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Simulation.cpp" />
@@ -281,9 +281,9 @@
     <ClInclude Include="src\BuildList.h" />
     <ClInclude Include="src\BuildPanel.h" />
     <ClInclude Include="src\ButtonUtils.h" />
-    <ClInclude Include="src\CameraBehave.h" />
-    <ClInclude Include="src\CameraEnums.h" />
-    <ClInclude Include="src\CameraManager.h" />
+    <ClInclude Include="src\camera\CameraBehave.h" />
+    <ClInclude Include="src\camera\CameraEnums.h" />
+    <ClInclude Include="src\camera\CameraManager.h" />
     <ClInclude Include="src\DatabaseCache.h" />
     <ClInclude Include="src\db_strcut.h" />
     <ClInclude Include="src\DebugPanel.h" />
@@ -338,7 +338,7 @@
     <ClInclude Include="src\FreeCameraBehave.h" />
     <ClInclude Include="src\Hud.h" />
     <ClInclude Include="src\SimulationObjectManager.h" />
-    <ClInclude Include="src\RtsCameraBehave.h" />
+    <ClInclude Include="src\camera\RtsCameraBehave.h" />
     <ClInclude Include="src\Unit.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\Simulation.h" />

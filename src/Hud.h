@@ -21,7 +21,7 @@
 #include <Urho3D/Engine/Engine.h>
 #include <Urho3D/Graphics/Drawable.h>
 #include <Urho3D/UI/ListView.h>
-#include "CameraManager.h"
+#include "camera/CameraManager.h"
 #include "Benchmark.h"
 
 #include "HudElement.h"

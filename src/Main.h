@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "CameraManager.h"
+#include "camera/CameraManager.h"
 #include "Control.h"
 #include "Hud.h"
 #include "Benchmark.h"

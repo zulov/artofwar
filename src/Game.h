@@ -3,7 +3,7 @@
 #include <Urho3D/Scene/Scene.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/Engine/Engine.h>
-#include "CameraManager.h"
+#include "camera/CameraManager.h"
 #include "DatabaseCache.h"
 #include "PlayersManager.h"
 
