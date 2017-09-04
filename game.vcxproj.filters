@@ -5,23 +5,8 @@
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Mediator.cpp" />
-    <ClCompile Include="src\BuildCommand.cpp">
-      <Filter>command</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BuildList.cpp">
-      <Filter>command\list</Filter>
-    </ClCompile>
-    <ClCompile Include="src\CommandList.cpp">
-      <Filter>command\list</Filter>
-    </ClCompile>
     <ClCompile Include="src\Aim.cpp">
       <Filter>aim</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Hud.cpp">
-      <Filter>hud</Filter>
-    </ClCompile>
-    <ClCompile Include="src\HudElement.cpp">
-      <Filter>hud</Filter>
     </ClCompile>
     <ClCompile Include="src\OperatorType.h" />
     <ClCompile Include="src\camera\CameraManager.cpp">
@@ -203,14 +188,25 @@
       <Filter>objects\collection\manager</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\LevelBuilder.cpp" />
+    <ClCompile Include="src\hud\HudElement.cpp">
+      <Filter>hud</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hud\Hud.cpp">
+      <Filter>hud</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commands\BuildCommand.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commands\CommandList.cpp">
+      <Filter>command\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commands\BuildList.cpp">
+      <Filter>command\list</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\Benchmark.h" />
-    <ClInclude Include="src\LevelBuilder.h" />
-    <ClInclude Include="src\SceneObjectManager.h">
-      <Filter>objects\collection\manager</Filter>
-    </ClInclude>
     <ClInclude Include="src\ObjectEnums.h">
       <Filter>objects</Filter>
     </ClInclude>
@@ -219,20 +215,8 @@
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Mediator.h" />
-    <ClInclude Include="src\BuildList.h">
-      <Filter>command\list</Filter>
-    </ClInclude>
     <ClInclude Include="src\SpacingType.h">
       <Filter>objects\collection</Filter>
-    </ClInclude>
-    <ClInclude Include="src\PlayersManager.h">
-      <Filter>player</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SelectedInfoType.h">
-      <Filter>control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ResourceType.h">
-      <Filter>objects\resource</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\OrderType.h">
@@ -442,6 +426,22 @@
     </ClInclude>
     <ClInclude Include="src\objects\unit\ActionParameter.h">
       <Filter>command\action</Filter>
+    </ClInclude>
+    <ClInclude Include="src\player\PlayersManager.h">
+      <Filter>player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\control\SelectedInfoType.h">
+      <Filter>control</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\SceneObjectManager.h">
+      <Filter>objects\collection\manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\resource\ResourceType.h">
+      <Filter>objects\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\LevelBuilder.h" />
+    <ClInclude Include="src\commands\BuildList.h">
+      <Filter>command\list</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

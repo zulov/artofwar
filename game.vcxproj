@@ -198,10 +198,10 @@
     <ClCompile Include="src\simulation\env\bucket\Bucket.cpp" />
     <ClCompile Include="src\simulation\env\bucket\BucketGrid.cpp" />
     <ClCompile Include="src\simulation\env\bucket\BucketIterator.cpp" />
-    <ClCompile Include="src\BuildCommand.cpp" />
+    <ClCompile Include="src\commands\BuildCommand.cpp" />
     <ClCompile Include="src\objects\building\Building.cpp" />
     <ClCompile Include="src\objects\building\BuildingFactory.cpp" />
-    <ClCompile Include="src\BuildList.cpp" />
+    <ClCompile Include="src\commands\BuildList.cpp" />
     <ClCompile Include="src\hud\window\BuildPanel.cpp" />
     <ClCompile Include="src\camera\CameraBehave.cpp" />
     <ClCompile Include="src\camera\CameraManager.cpp" />
@@ -209,7 +209,7 @@
     <ClCompile Include="src\hud\window\DebugPanel.cpp" />
     <ClCompile Include="src\objects\state\FollowState.cpp" />
     <ClCompile Include="src\simulation\env\Gradient.cpp" />
-    <ClCompile Include="src\HudElement.cpp" />
+    <ClCompile Include="src\hud\HudElement.cpp" />
     <ClCompile Include="src\hud\window\MenuPanel.cpp" />
     <ClCompile Include="src\hud\window\MiniMapPanel.cpp" />
     <ClCompile Include="src\hud\MySprite.cpp" />
@@ -231,7 +231,7 @@
     <ClCompile Include="src\control\SelectedInfoType.cpp" />
     <ClCompile Include="src\commands\SimulationCommand.cpp" />
     <ClCompile Include="src\commands\CommandSelect.cpp" />
-    <ClCompile Include="src\CommandList.cpp" />
+    <ClCompile Include="src\commands\CommandList.cpp" />
     <ClCompile Include="src\control\Controls.cpp" />
     <ClCompile Include="src\objects\Entity.cpp" />
     <ClCompile Include="src\objects\EntityFactory.cpp" />
@@ -251,7 +251,7 @@
     <ClCompile Include="src\simulation\env\EnviromentStrategy.cpp" />
     <ClCompile Include="src\simulation\force\ForceStrategy.cpp" />
     <ClCompile Include="src\camera\FreeCameraBehave.cpp" />
-    <ClCompile Include="src\Hud.cpp" />
+    <ClCompile Include="src\hud\Hud.cpp" />
     <ClCompile Include="src\simulation\SimulationObjectManager.cpp" />
     <ClCompile Include="src\camera\RtsCameraBehave.cpp" />
     <ClCompile Include="src\objects\unit\Unit.cpp" />
@@ -278,7 +278,7 @@
     <ClInclude Include="src\objects\building\Building.h" />
     <ClInclude Include="src\objects\building\BuildingFactory.h" />
     <ClInclude Include="src\objects\building\BuildingType.h" />
-    <ClInclude Include="src\BuildList.h" />
+    <ClInclude Include="src\commands\BuildList.h" />
     <ClInclude Include="src\hud\window\BuildPanel.h" />
     <ClInclude Include="src\hud\ButtonUtils.h" />
     <ClInclude Include="src\camera\CameraBehave.h" />
@@ -297,7 +297,7 @@
     <ClInclude Include="src\OrderType.h" />
     <ClInclude Include="src\objects\Physical.h" />
     <ClInclude Include="src\player\Player.h" />
-    <ClInclude Include="src\PlayersManager.h" />
+    <ClInclude Include="src\player\PlayersManager.h" />
     <ClInclude Include="src\hud\window\QueueElement.h" />
     <ClInclude Include="src\hud\window\QueueHudElement.h" />
     <ClInclude Include="src\objects\building\QueueManager.h" />
@@ -305,11 +305,11 @@
     <ClInclude Include="src\objects\resource\ResourceEntity.h" />
     <ClInclude Include="src\objects\resource\ResourceFactory.h" />
     <ClInclude Include="src\player\Resources.h" />
-    <ClInclude Include="src\ResourceType.h" />
+    <ClInclude Include="src\objects\resource\ResourceType.h" />
     <ClInclude Include="src\hud\window\SelectedHudElement.h" />
     <ClInclude Include="src\hud\window\SelectedHudPanel.h" />
     <ClInclude Include="src\control\SelectedInfo.h" />
-    <ClInclude Include="src\SelectedInfoType.h" />
+    <ClInclude Include="src\control\SelectedInfoType.h" />
     <ClInclude Include="src\commands\SimulationCommand.h" />
     <ClInclude Include="src\commands\CommandSelect.h" />
     <ClInclude Include="src\commands\CommandList.h" />
@@ -319,11 +319,11 @@
     <ClInclude Include="src\objects\Entity.h" />
     <ClInclude Include="src\objects\EntityFactory.h" />
     <ClInclude Include="src\Game.h" />
-    <ClInclude Include="src\LevelBuilder.h" />
+    <ClInclude Include="src\scene\LevelBuilder.h" />
     <ClInclude Include="src\objects\LinkComponent.h" />
     <ClInclude Include="src\Mediator.h" />
     <ClInclude Include="src\ObjectEnums.h" />
-    <ClInclude Include="src\SceneObjectManager.h" />
+    <ClInclude Include="src\scene\SceneObjectManager.h" />
     <ClInclude Include="src\commands\SimulationCommandList.h" />
     <ClInclude Include="src\simulation\SimulationInfo.h" />
     <ClInclude Include="src\SpacingType.h" />
