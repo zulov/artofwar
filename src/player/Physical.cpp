@@ -1,7 +1,8 @@
-#include "Physical.h"
+#include "objects/Physical.h"
 #include "Game.h"
 #include <Urho3D/Graphics/Octree.h>
-#include "ActionCommand.h"
+#include "commands/ActionCommand.h"
+
 
 Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): Entity(_node, _type) {
 	position = _position;
