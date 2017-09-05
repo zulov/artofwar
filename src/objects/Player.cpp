@@ -4,13 +4,13 @@
 
 Player::Player(int nationId, int team) {
 	dbNation = Game::get()->getDatabaseCache()->getNation(nationId);
-	resources = new Resources(1000);
+	resources = new Resources(100000);
 
 	this->team = team;
 }
 
 Player::~Player() {
-
+	delete resources;
 }
 
 int Player::getNation() {

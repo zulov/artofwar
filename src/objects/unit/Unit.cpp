@@ -262,7 +262,7 @@ UnitStateType Unit::getState() {
 
 void Unit::clean() {
 	if (followTo != nullptr && !followTo->isAlive()) {
-		enemyToAttack = nullptr;
+		followTo = nullptr;
 	}
 	Physical::clean();
 }
