@@ -60,8 +60,7 @@ void Simulation::countFrame() {
 }
 
 void Simulation::applyForce() {
-	for (unsigned i = 0; i < units->size(); ++i) {
-		Unit* unit = (*units)[i];
+	for (auto unit : (*units)) {
 		unit->applyForce(maxTimeFrame);
 		unit->updateRotation();
 		Vector3* pos = unit->getPosition();
@@ -120,9 +119,9 @@ void Simulation::update(Input* input, float timeStep) {
 				action();
 				actionCommandList->execute();
 			}
-			updateEnviroment();
 			simObjectManager->clean();
 			simObjectManager->updateInfo(simulationInfo);
+			updateEnviroment();
 
 			units = simObjectManager->getUnits();//TOdo te linijki sa pewnie nie potrzebne
 			buildings = simObjectManager->getBuildings();
@@ -155,8 +154,7 @@ void Simulation::moveUnitsAndCheck(float timeStep) {
 }
 
 void Simulation::calculateForces() {
-	for (unsigned i = 0; i < units->size(); ++i) {
-		Unit* unit = (*units)[i];
+	for (auto unit : (*units)) {
 		std::vector<Physical*>* neighbours = envStrategy->getNeighbours(unit, unit->getMaxSeparationDistance());
 		//std::vector<Physical*>* buildings = envStrategy->getBuildings(unit, unit->getMaxSeparationDistance());//TODO jakis inny parametr niz max separaatino dist
 		Vector3* repulsive = envStrategy->getRepulsiveAt(unit->getPosition());

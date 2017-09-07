@@ -75,17 +75,14 @@ std::vector<Physical*>* EnviromentStrategy::getResources(Unit* unit, double radi
 }
 
 void EnviromentStrategy::update(std::vector<Unit*>* units) {//TODO a jakby gridy same sie aktualizowaly a jako parametr dostawa³ tylko nowe te co dosta³y nie by³ oby potrzby przechowywania numerów?
-	for (int i = 0; i < units->size(); ++i) {
-		Unit* unit = (*units)[i];
+	for (auto unit : (*units)) {
 		allUnitGrid->updateGrid(unit, 0);
 		teamUnitGrid[unit->getTeam()]->updateGrid(unit, 1);
 	}
 }
 
 void EnviromentStrategy::update(std::vector<Building*>* buildings) {
-	for (int i = 0; i < buildings->size(); ++i) {
-		Building* building = (*buildings)[i];
-
+	for (auto building : (*buildings)) {
 		if (!building->isInGrandient()) {
 			gradient->add(building);
 			building->setInGradinet(true);
@@ -94,9 +91,7 @@ void EnviromentStrategy::update(std::vector<Building*>* buildings) {
 }
 
 void EnviromentStrategy::update(std::vector<ResourceEntity*>* resources) {
-	for (int i = 0; i < resources->size(); ++i) {
-		ResourceEntity* resource = (*resources)[i];
-
+	for (auto resource : (*resources)) {
 		if (!resource->isInGrandient()) {
 			gradient->add(resource);
 			resource->setInGradinet(true);
