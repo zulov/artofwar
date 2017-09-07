@@ -7,7 +7,7 @@
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/Graphics/Texture2D.h>
 #include "SelectedHudElement.h"
-#include "AbstractWindowPanel.h"
+#include "../AbstractWindowPanel.h"
 
 class SelectedHudPanel :public AbstractWindowPanel
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "AbstractWindowPanel.h"
+#include "../AbstractWindowPanel.h"
 
 class MiniMapPanel :public AbstractWindowPanel
 {

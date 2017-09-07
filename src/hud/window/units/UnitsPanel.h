@@ -1,5 +1,5 @@
 #pragma once
-#include "AbstractWindowPanel.h"
+#include "../AbstractWindowPanel.h"
 #include <vector>
 #include "hud/HudElement.h"
 #include "control/SelectedInfo.h"

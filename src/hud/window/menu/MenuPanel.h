@@ -1,5 +1,5 @@
 #pragma once
-#include "AbstractWindowPanel.h"
+#include "../AbstractWindowPanel.h"
 #include <Urho3D/UI/Text.h>
 #include <array>
 #include <vector>

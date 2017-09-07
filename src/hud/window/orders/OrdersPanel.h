@@ -1,6 +1,6 @@
 #pragma once
-#include "AbstractWindowPanel.h"
-#include "../HudElement.h"
+#include "../AbstractWindowPanel.h"
+#include "../../HudElement.h"
 #include <vector>
 #include "control/SelectedInfo.h"
 

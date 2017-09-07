@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AbstractWindowPanel.h"
+#include "../AbstractWindowPanel.h"
 #include "TopHudElement.h"
 #include <vector>
 #include <Urho3D/Graphics/Texture2D.h>

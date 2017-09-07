@@ -1,9 +1,9 @@
 #include "OrdersPanel.h"
 #include "Game.h"
 #include <Urho3D/UI/ListView.h>
-#include "../MySprite.h"
+#include "../../MySprite.h"
 #include <Urho3D/UI/Button.h>
-#include "../ButtonUtils.h"
+#include "../../ButtonUtils.h"
 
 
 OrdersPanel::OrdersPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
