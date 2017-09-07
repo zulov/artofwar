@@ -7,7 +7,7 @@
 class TopHudElement
 {
 public:
-	TopHudElement(Urho3D::XMLFile* style, Texture2D* texture, String& nameTxt);
+	TopHudElement(Urho3D::XMLFile* style, Texture2D* texture);
 	~TopHudElement();
 	Urho3D::Button* getButton();
 	void hide();
@@ -18,7 +18,6 @@ private:
 
 	MySprite* icon;
 
-	Urho3D::Text* name;
 	Urho3D::Text* value;
 	Urho3D::UIElement* mock;
 };

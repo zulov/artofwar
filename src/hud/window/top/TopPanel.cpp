@@ -24,7 +24,7 @@ void TopPanel::createBody() {
 		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + resource->icon);
 
-		elements[i] = new TopHudElement(style, texture, resource->name);
+		elements[i] = new TopHudElement(style, texture);
 		window->AddChild(elements[i]->getButton());
 		buttons->push_back(elements[i]->getButton());
 	}
