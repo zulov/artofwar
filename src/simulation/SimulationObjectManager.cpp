@@ -120,6 +120,8 @@ void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
 }
 
 void SimulationObjectManager::dispose() {
-	clear_vector(toDispose);
+	if (!toDispose->empty()) {
+		clear_vector(toDispose);
+	}
 	simulationInfo->reset();
 }

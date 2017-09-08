@@ -149,11 +149,9 @@ void Unit::attackIfCloseEnough(double& distance, Physical* closest) {
 }
 
 void Unit::attack(vector<Physical*>* enemies) {
-
 	double minDistance = 9999;
 	Physical* entityClosest = nullptr;
-	for (int j = 0; j < enemies->size(); ++j) {
-		Physical* entity = (*enemies)[j];
+	for (auto entity : (*enemies)) {
 		double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
 		if (distance <= minDistance) {
 			minDistance = distance;
@@ -161,7 +159,6 @@ void Unit::attack(vector<Physical*>* enemies) {
 		}
 	}
 	attackIfCloseEnough(minDistance, entityClosest);
-
 }
 
 void Unit::attack(Physical* enemy) {

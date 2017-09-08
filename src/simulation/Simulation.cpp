@@ -18,8 +18,7 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 }
 
 void Simulation::action() {
-	for (unsigned i = 0; i < units->size(); ++i) {
-		Unit* unit = (*units)[i];
+	for (auto unit : (*units)) {
 		if (unit->getState() == US_STOP || unit->getState() == US_ATTACK) {
 			if (unit->hasEnemy()) {
 				unit->attack();
@@ -30,7 +29,6 @@ void Simulation::action() {
 				delete enemies;
 			}
 		}
-
 	}
 }
 
@@ -87,7 +85,7 @@ SimulationInfo* Simulation::getInfo() {
 }
 
 void Simulation::updateEnviroment() {
-	envStrategy->update(units);
+	
 	if (simulationInfo->ifAmountBuildingChanged()) {
 		envStrategy->update(buildings);
 	}
@@ -119,6 +117,7 @@ void Simulation::update(Input* input, float timeStep) {
 				action();
 				actionCommandList->execute();
 			}
+			envStrategy->update(units);
 			simObjectManager->clean();
 			simObjectManager->updateInfo(simulationInfo);
 			updateEnviroment();
