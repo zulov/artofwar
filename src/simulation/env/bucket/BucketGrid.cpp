@@ -57,7 +57,6 @@ int BucketGrid::getIntegerPos(double value) {
 		return (int)(value / size * resolution) - 1;
 	}
 	return (int)(value / size * resolution);
-
 }
 
 BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius, short thread) {

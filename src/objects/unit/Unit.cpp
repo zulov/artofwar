@@ -74,7 +74,6 @@ void Unit::checkAim() {
 
 void Unit::move(double timeStep) {
 	(*position) += (*velocity) * timeStep;
-	//node->SetPosition(*position);
 	node->Translate((*velocity) * timeStep, TS_WORLD);
 }
 
