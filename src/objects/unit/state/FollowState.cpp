@@ -1,7 +1,7 @@
 #include "FollowState.h"
 
 
-FollowState::FollowState(Unit* _unit): State(_unit) {
+FollowState::FollowState(): State() {
 }
 
 FollowState::~FollowState() {

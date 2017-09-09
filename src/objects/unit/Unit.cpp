@@ -12,10 +12,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 	followTo = nullptr;
 	unitState = US_STOP;
 	node->SetPosition(*_position);
-	states = new State*[STATE_SIZE];
-	for (int i = 0; i < STATE_SIZE; ++i) {
-		states[i] = nullptr;
-	}
+
 
 	//states[0] = new StopState(this);
 }

@@ -186,6 +186,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\objects\unit\state\ChargeState.cpp" />
+    <ClCompile Include="src\objects\unit\state\DeadState.cpp" />
+    <ClCompile Include="src\objects\unit\state\DefendState.cpp" />
+    <ClCompile Include="src\objects\unit\state\GoState.cpp" />
     <ClCompile Include="src\commands\AbstractCommand.cpp" />
     <ClCompile Include="src\hud\window\AbstractWindowPanel.cpp" />
     <ClCompile Include="src\commands\ActionCommand.cpp" />
@@ -195,6 +199,8 @@
     <ClCompile Include="src\objects\unit\aim\AimContainer.cpp" />
     <ClCompile Include="src\objects\unit\aim\Aims.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
+    <ClCompile Include="src\objects\unit\state\AttackState.cpp" />
+    <ClCompile Include="src\objects\unit\state\PatrolState.cpp" />
     <ClCompile Include="src\simulation\env\bucket\Bucket.cpp" />
     <ClCompile Include="src\simulation\env\bucket\BucketGrid.cpp" />
     <ClCompile Include="src\simulation\env\bucket\BucketIterator.cpp" />
@@ -207,7 +213,7 @@
     <ClCompile Include="src\camera\CameraManager.cpp" />
     <ClCompile Include="src\database\DatabaseCache.cpp" />
     <ClCompile Include="src\hud\window\debug\DebugPanel.cpp" />
-    <ClCompile Include="src\objects\state\FollowState.cpp" />
+    <ClCompile Include="src\objects\unit\state\FollowState.cpp" />
     <ClCompile Include="src\simulation\env\Gradient.cpp" />
     <ClCompile Include="src\hud\HudElement.cpp" />
     <ClCompile Include="src\hud\window\menu\MenuPanel.cpp" />
@@ -242,9 +248,9 @@
     <ClCompile Include="src\scene\SceneObjectManager.cpp" />
     <ClCompile Include="src\commands\SimulationCommandList.cpp" />
     <ClCompile Include="src\simulation\SimulationInfo.cpp" />
-    <ClCompile Include="src\objects\state\State.cpp" />
-    <ClCompile Include="src\objects\state\StateManager.cpp" />
-    <ClCompile Include="src\objects\state\StopState.cpp" />
+    <ClCompile Include="src\objects\unit\state\State.cpp" />
+    <ClCompile Include="src\objects\unit\state\StateManager.cpp" />
+    <ClCompile Include="src\objects\unit\state\StopState.cpp" />
     <ClCompile Include="src\hud\window\top\TopHudElement.cpp" />
     <ClCompile Include="src\hud\window\top\TopPanel.cpp" />
     <ClCompile Include="src\objects\unit\UnitFactory.cpp" />
@@ -271,6 +277,12 @@
     <ClInclude Include="src\objects\unit\aim\AimContainer.h" />
     <ClInclude Include="src\objects\unit\aim\Aims.h" />
     <ClInclude Include="src\Benchmark.h" />
+    <ClInclude Include="src\objects\unit\state\AttackState.h" />
+    <ClInclude Include="src\objects\unit\state\ChargeState.h" />
+    <ClInclude Include="src\objects\unit\state\DeadState.h" />
+    <ClInclude Include="src\objects\unit\state\DefendState.h" />
+    <ClInclude Include="src\objects\unit\state\GoState.h" />
+    <ClInclude Include="src\objects\unit\state\PatrolState.h" />
     <ClInclude Include="src\simulation\env\bucket\Bucket.h" />
     <ClInclude Include="src\simulation\env\bucket\BucketGrid.h" />
     <ClInclude Include="src\simulation\env\bucket\BucketIterator.h" />
@@ -287,7 +299,7 @@
     <ClInclude Include="src\database\DatabaseCache.h" />
     <ClInclude Include="src\database\db_strcut.h" />
     <ClInclude Include="src\hud\window\debug\DebugPanel.h" />
-    <ClInclude Include="src\objects\state\FollowState.h" />
+    <ClInclude Include="src\objects\unit\state\FollowState.h" />
     <ClInclude Include="src\simulation\env\Gradient.h" />
     <ClInclude Include="src\hud\HudElement.h" />
     <ClInclude Include="src\hud\window\menu\MenuPanel.h" />
@@ -327,9 +339,9 @@
     <ClInclude Include="src\commands\SimulationCommandList.h" />
     <ClInclude Include="src\simulation\SimulationInfo.h" />
     <ClInclude Include="src\SpacingType.h" />
-    <ClInclude Include="src\objects\state\State.h" />
-    <ClInclude Include="src\objects\state\StateManager.h" />
-    <ClInclude Include="src\objects\state\StopState.h" />
+    <ClInclude Include="src\objects\unit\state\State.h" />
+    <ClInclude Include="src\objects\unit\state\StateManager.h" />
+    <ClInclude Include="src\objects\unit\state\StopState.h" />
     <ClInclude Include="src\hud\window\top\TopHudElement.h" />
     <ClInclude Include="src\hud\window\top\TopPanel.h" />
     <ClInclude Include="src\objects\unit\UnitFactory.h" />

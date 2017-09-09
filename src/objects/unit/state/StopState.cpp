@@ -1,7 +1,7 @@
 #include "StopState.h"
 
 
-StopState::StopState(Unit* _unit): State(_unit) {
+StopState::StopState(): State() {
 }
 
 StopState::~StopState() {

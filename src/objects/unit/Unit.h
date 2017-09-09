@@ -9,11 +9,13 @@
 #include "UnitType.h"
 #include <Urho3D/Graphics/BillboardSet.h>
 #include "objects/Physical.h"
+#include "state/StateManager.h"
 
 class State;
 
 class Unit : public Physical
 {
+	friend class State;
 public:
 	Unit(Vector3* _position, Urho3D::Node* _boxNode);
 	~Unit();
@@ -32,13 +34,13 @@ public:
 	double getMass();
 	double getUnitRadius();
 	void absorbAttack(double attackCoef) override;
-	
+
 	void attack(vector<Physical*>* enemies);
 	void attack(Physical* enemy);
 	void attack();
 	void updateHeight(double y, double timeStep);
 	void updateRotation();
-	String *toMultiLineString() override;
+	String* toMultiLineString() override;
 	void buttonAction(short id) override;
 	UnitStateType getState();
 	void clean() override;
@@ -59,11 +61,11 @@ private:
 	void followAim(ActionParameter* parameter);
 	void attackIfCloseEnough(double& minDistance, Physical* entityClosest);
 	UnitStateType unitState;
-	State** states;
+
 	UnitType unitType;
 
 	db_unit* dbUnit;
-
+	StateManager* states;
 	double unitRadius = 2;
 
 	double attackIntrest = 10;

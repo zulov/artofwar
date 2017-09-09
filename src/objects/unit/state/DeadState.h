@@ -1,12 +1,11 @@
 #pragma once
 #include "State.h"
 
-
-class FollowState: public State 
+class DeadState : public State
 {
 public:
-	FollowState();
-	~FollowState();
+	DeadState();
+	~DeadState();
 	void onStart() override;
 	void onEnd() override;
 	void execute() override;

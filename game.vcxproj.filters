@@ -63,9 +63,6 @@
     <ClCompile Include="src\simulation\env\EnviromentStrategy.cpp">
       <Filter>simulation\env</Filter>
     </ClCompile>
-    <ClCompile Include="src\objects\state\FollowState.cpp">
-      <Filter>objects\state</Filter>
-    </ClCompile>
     <ClCompile Include="src\simulation\force\ForceStrategy.cpp">
       <Filter>simulation\force</Filter>
     </ClCompile>
@@ -117,15 +114,6 @@
     </ClCompile>
     <ClCompile Include="src\objects\unit\aim\Aims.cpp">
       <Filter>aim</Filter>
-    </ClCompile>
-    <ClCompile Include="src\objects\state\State.cpp">
-      <Filter>objects\state</Filter>
-    </ClCompile>
-    <ClCompile Include="src\objects\state\StateManager.cpp">
-      <Filter>objects\state</Filter>
-    </ClCompile>
-    <ClCompile Include="src\objects\state\StopState.cpp">
-      <Filter>objects\state</Filter>
     </ClCompile>
     <ClCompile Include="src\objects\unit\UnitFactory.cpp">
       <Filter>objects\collection\factory</Filter>
@@ -203,6 +191,24 @@
     <ClCompile Include="src\hud\window\orders\OrdersPanel.cpp">
       <Filter>hud\windows</Filter>
     </ClCompile>
+    <ClCompile Include="src\objects\unit\state\FollowState.cpp">
+      <Filter>objects\state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\unit\state\State.cpp">
+      <Filter>objects\state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\unit\state\StateManager.cpp">
+      <Filter>objects\state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\unit\state\StopState.cpp">
+      <Filter>objects\state</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\unit\state\AttackState.cpp" />
+    <ClCompile Include="src\objects\unit\state\GoState.cpp" />
+    <ClCompile Include="src\objects\unit\state\ChargeState.cpp" />
+    <ClCompile Include="src\objects\unit\state\PatrolState.cpp" />
+    <ClCompile Include="src\objects\unit\state\DefendState.cpp" />
+    <ClCompile Include="src\objects\unit\state\DeadState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -297,9 +303,6 @@
     <ClInclude Include="src\simulation\env\EnviromentStrategy.h">
       <Filter>simulation\env</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\state\FollowState.h">
-      <Filter>objects\state</Filter>
-    </ClInclude>
     <ClInclude Include="src\simulation\force\ForceStrategy.h">
       <Filter>simulation\force</Filter>
     </ClInclude>
@@ -360,15 +363,6 @@
     </ClInclude>
     <ClInclude Include="src\objects\unit\aim\Aims.h">
       <Filter>aim</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objects\state\State.h">
-      <Filter>objects\state</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objects\state\StateManager.h">
-      <Filter>objects\state</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objects\state\StopState.h">
-      <Filter>objects\state</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\unit\UnitFactory.h">
       <Filter>objects\collection\factory</Filter>
@@ -443,6 +437,24 @@
     <ClInclude Include="src\hud\window\orders\OrdersPanel.h">
       <Filter>hud\windows</Filter>
     </ClInclude>
+    <ClInclude Include="src\objects\unit\state\FollowState.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\state\State.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\state\StateManager.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\state\StopState.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\state\GoState.h" />
+    <ClInclude Include="src\objects\unit\state\AttackState.h" />
+    <ClInclude Include="src\objects\unit\state\ChargeState.h" />
+    <ClInclude Include="src\objects\unit\state\PatrolState.h" />
+    <ClInclude Include="src\objects\unit\state\DefendState.h" />
+    <ClInclude Include="src\objects\unit\state\DeadState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
