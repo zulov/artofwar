@@ -8,5 +8,6 @@ enum class UnitStateType :short
 	PATROL,
 	DEAD,
 	DEFEND,
-	MOVE//porusza sie
+	MOVE,
+	FOLLOW//porusza sie
 };

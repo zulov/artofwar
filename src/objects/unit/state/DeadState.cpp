@@ -1,17 +1,16 @@
 #include "DeadState.h"
+#include "../Unit.h"
 
 
-
-DeadState::DeadState()
-{
+DeadState::DeadState() {
 }
 
 
-DeadState::~DeadState()
-{
+DeadState::~DeadState() {
 }
 
 void DeadState::onStart(Unit* unit) {
+	unit->alive = false;
 }
 
 void DeadState::onEnd(Unit* unit) {

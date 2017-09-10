@@ -9,6 +9,7 @@
 #include "DefendState.h"
 #include "UnitStateType.h"
 #include "MoveState.h"
+#include "FollowState.h"
 #include "../Unit.h"
 
 StateManager::StateManager() {
@@ -21,6 +22,7 @@ StateManager::StateManager() {
 	states[static_cast<int>(UnitStateType::DEAD)] = new DeadState();
 	states[static_cast<int>(UnitStateType::DEFEND)] = new DefendState();
 	states[static_cast<int>(UnitStateType::MOVE)] = new MoveState();
+	states[static_cast<int>(UnitStateType::FOLLOW)] = new FollowState();
 }
 
 

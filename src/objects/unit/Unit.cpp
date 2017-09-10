@@ -88,13 +88,16 @@ double Unit::getMaxSeparationDistance() {
 void Unit::action(ActionType actionType, ActionParameter* parameter) {
 	switch (actionType) {
 	case ADD_AIM:
-		addAim(parameter);
+		addAim(parameter);//TODO parameter do stanu???
+		states->changeState(this, UnitStateType::GO);
 		break;
 	case APPEND_AIM:
-		appendAim(parameter);
+		appendAim(parameter);//TODO parameter do stanu???
+		states->changeState(this, UnitStateType::GO);
 		break;
 	case FOLLOW:
-		followAim(parameter);
+		followAim(parameter);//TODO parameter do stanu???
+		states->changeState(this, UnitStateType::FOLLOW);
 		break;
 	default:
 		break;//zalogowaæ
@@ -240,7 +243,7 @@ void Unit::buttonAction(short id) {
 	case OrderType::ATTACK: break;
 	case OrderType::PATROL: break;
 	case OrderType::DEAD:
-		alive = false;
+		states->changeState(this, UnitStateType::DEAD);
 		break;
 	case OrderType::DEFEND:
 		states->changeState(this, UnitStateType::DEFEND);
