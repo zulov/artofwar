@@ -7,21 +7,39 @@
 #include "PatrolState.h"
 #include "DeadState.h"
 #include "DefendState.h"
-
+#include "UnitStateType.h"
+#include "MoveState.h"
+#include "../Unit.h"
 
 StateManager::StateManager() {
 	states = new State*[STATE_SIZE];
-
-	states[0] = new GoState();
-	states[1] = new StopState();
-	states[2] = new ChargeState();
-	states[3] = new AttackState();
-	states[4] = new PatrolState();
-	states[5] = new DeadState();
-	states[6] = new DefendState();
-	
+	states[static_cast<int>(UnitStateType::GO)] = new GoState();
+	states[static_cast<int>(UnitStateType::STOP)] = new StopState();
+	states[static_cast<int>(UnitStateType::CHARAGE)] = new ChargeState();
+	states[static_cast<int>(UnitStateType::ATTACK)] = new AttackState();
+	states[static_cast<int>(UnitStateType::PATROL)] = new PatrolState();
+	states[static_cast<int>(UnitStateType::DEAD)] = new DeadState();
+	states[static_cast<int>(UnitStateType::DEFEND)] = new DefendState();
+	states[static_cast<int>(UnitStateType::MOVE)] = new MoveState();
 }
 
 
 StateManager::~StateManager() {
+}
+
+void StateManager::changeState(Unit* unit, UnitStateType stateTo) {
+	State * stateFrom = states[static_cast<int>(unit->getState())];
+	if (stateFrom->validateTransition(stateTo)) {
+		stateFrom->onEnd(unit);
+		unit->setState(stateTo);
+		states[static_cast<int>(stateTo)]->onStart(unit);
+	}
+}
+
+bool StateManager::checkChangeState(Unit* unit, UnitStateType stateTo) {
+	State * stateFrom = states[static_cast<int>(unit->getState())];
+	if (stateFrom->validateTransition(stateTo)) {
+		return true;
+	}
+	return false;
 }

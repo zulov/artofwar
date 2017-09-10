@@ -5,9 +5,8 @@
 #include "defines.h"
 #include "Game.h"
 #include "objects/Entity.h"
-#include "UnitStateType.h"
+#include "state/UnitStateType.h"
 #include "UnitType.h"
-#include <Urho3D/Graphics/BillboardSet.h>
 #include "objects/Physical.h"
 #include "state/StateManager.h"
 
@@ -16,6 +15,8 @@ class State;
 class Unit : public Physical
 {
 	friend class State;
+	friend class StopState;
+	friend class DefendState;
 public:
 	Unit(Vector3* _position, Urho3D::Node* _boxNode);
 	~Unit();
@@ -44,6 +45,7 @@ public:
 	void buttonAction(short id) override;
 	UnitStateType getState();
 	void clean() override;
+	void setState(UnitStateType state);
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
@@ -60,14 +62,14 @@ private:
 	void removeAim();
 	void followAim(ActionParameter* parameter);
 	void attackIfCloseEnough(double& minDistance, Physical* entityClosest);
+	
 	UnitStateType unitState;
-
 	UnitType unitType;
 
 	db_unit* dbUnit;
 	StateManager* states;
-	double unitRadius = 2;
 
+	double unitRadius = 2;
 	double attackIntrest = 10;
 	static double hbMaxSize;
 };

@@ -1,17 +1,18 @@
 #include "FollowState.h"
 
 
-FollowState::FollowState(): State() {
+FollowState::FollowState() {
+	transitions.insert(UnitStateType::DEAD);
 }
 
 FollowState::~FollowState() {
 }
 
-void FollowState::onStart(){
+void FollowState::onStart(Unit* unit){
 }
 
-void FollowState::onEnd() {
+void FollowState::onEnd(Unit* unit) {
 }
 
-void FollowState::execute() {
+void FollowState::execute(Unit* unit) {
 }

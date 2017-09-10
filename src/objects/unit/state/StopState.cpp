@@ -1,17 +1,21 @@
 #include "StopState.h"
+#include "../Unit.h"
 
 
-StopState::StopState(): State() {
+StopState::StopState() {
+	transitions.insert(UnitStateType::DEFEND);
+	transitions.insert(UnitStateType::DEAD);
 }
 
 StopState::~StopState() {
 }
 
-void StopState::onStart() {
+void StopState::onStart(Unit* unit) {
+	unit->removeAim();
 }
 
-void StopState::onEnd() {
+void StopState::onEnd(Unit* unit) {
 }
 
-void StopState::execute() {
+void StopState::execute(Unit* unit) {
 }

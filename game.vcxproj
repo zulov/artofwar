@@ -200,6 +200,7 @@
     <ClCompile Include="src\objects\unit\aim\Aims.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\objects\unit\state\AttackState.cpp" />
+    <ClCompile Include="src\objects\unit\state\MoveState.cpp" />
     <ClCompile Include="src\objects\unit\state\PatrolState.cpp" />
     <ClCompile Include="src\simulation\env\bucket\Bucket.cpp" />
     <ClCompile Include="src\simulation\env\bucket\BucketGrid.cpp" />
@@ -282,6 +283,7 @@
     <ClInclude Include="src\objects\unit\state\DeadState.h" />
     <ClInclude Include="src\objects\unit\state\DefendState.h" />
     <ClInclude Include="src\objects\unit\state\GoState.h" />
+    <ClInclude Include="src\objects\unit\state\MoveState.h" />
     <ClInclude Include="src\objects\unit\state\PatrolState.h" />
     <ClInclude Include="src\simulation\env\bucket\Bucket.h" />
     <ClInclude Include="src\simulation\env\bucket\BucketGrid.h" />
@@ -355,7 +357,7 @@
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\simulation\Simulation.h" />
     <ClInclude Include="src\hud\window\units\UnitsPanel.h" />
-    <ClInclude Include="src\objects\unit\UnitStateType.h" />
+    <ClInclude Include="src\objects\unit\state\UnitStateType.h" />
     <ClInclude Include="src\objects\unit\UnitType.h" />
     <ClInclude Include="src\utils.h" />
   </ItemGroup>

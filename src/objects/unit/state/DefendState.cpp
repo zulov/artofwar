@@ -1,18 +1,22 @@
 #include "DefendState.h"
+#include "../Unit.h"
 
 
 DefendState::DefendState() {
+	transitions.insert(UnitStateType::STOP);
+	transitions.insert(UnitStateType::DEAD);
 }
 
 
 DefendState::~DefendState() {
 }
 
-void DefendState::onStart() {
+void DefendState::onStart(Unit* unit) {
+	unit->removeAim();
 }
 
-void DefendState::onEnd() {
+void DefendState::onEnd(Unit* unit) {
 }
 
-void DefendState::execute() {
+void DefendState::execute(Unit* unit) {
 }

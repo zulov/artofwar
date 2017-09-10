@@ -13,14 +13,14 @@
 #include "Game.h"
 
 
-class UnitFactory :public EntityFactory {
+class UnitFactory : public EntityFactory
+{
 public:
 	UnitFactory();
 	~UnitFactory();
 
-	std::vector<Unit*>* create(unsigned int number, int id, Vector3 *center, SpacingType spacing, int player);
+	std::vector<Unit*>* create(unsigned int number, int id, Vector3* center, SpacingType spacing, int player);
 private:
 	std::vector<Unit*>* units;
+	StateManager* states;
 };
-
- 

@@ -1,12 +1,13 @@
 #pragma once
 #include "State.h"
 
-class StopState :public State
+class MoveState : public State
 {
 public:
-	StopState();
-	~StopState();
+	MoveState();
+	~MoveState();
 	void onStart(Unit* unit) override;
 	void onEnd(Unit* unit) override;
 	void execute(Unit* unit) override;
 };
+

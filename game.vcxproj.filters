@@ -209,6 +209,7 @@
     <ClCompile Include="src\objects\unit\state\PatrolState.cpp" />
     <ClCompile Include="src\objects\unit\state\DefendState.cpp" />
     <ClCompile Include="src\objects\unit\state\DeadState.cpp" />
+    <ClCompile Include="src\objects\unit\state\MoveState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -370,9 +371,6 @@
     <ClInclude Include="src\objects\unit\Unit.h">
       <Filter>objects\unit</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\unit\UnitStateType.h">
-      <Filter>objects\state</Filter>
-    </ClInclude>
     <ClInclude Include="src\objects\unit\UnitType.h">
       <Filter>objects\unit</Filter>
     </ClInclude>
@@ -455,6 +453,10 @@
     <ClInclude Include="src\objects\unit\state\PatrolState.h" />
     <ClInclude Include="src\objects\unit\state\DefendState.h" />
     <ClInclude Include="src\objects\unit\state\DeadState.h" />
+    <ClInclude Include="src\objects\unit\state\UnitStateType.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\state\MoveState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

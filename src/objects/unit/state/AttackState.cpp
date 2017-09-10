@@ -2,17 +2,20 @@
 
 
 AttackState::AttackState() {
+	transitions.insert(UnitStateType::STOP);
+	transitions.insert(UnitStateType::DEFEND);
+	transitions.insert(UnitStateType::DEAD);
 }
 
 
 AttackState::~AttackState() {
 }
 
-void AttackState::onStart() {
+void AttackState::onStart(Unit* unit) {
 }
 
-void AttackState::onEnd() {
+void AttackState::onEnd(Unit* unit) {
 }
 
-void AttackState::execute() {
+void AttackState::execute(Unit* unit) {
 }

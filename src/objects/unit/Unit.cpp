@@ -10,7 +10,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 	aims = nullptr;
 
 	followTo = nullptr;
-	unitState = US_STOP;
+	unitState = UnitStateType::STOP;
 	node->SetPosition(*_position);
 
 }
@@ -40,9 +40,9 @@ void Unit::populate(db_unit* _dbUnit, StateManager* _states) {
 	textureName = "Materials/" + String(_dbUnit->texture);
 	unitType = UnitType(_dbUnit->type);
 	rotatable = _dbUnit->rotatable;
-	
+
 	states = _states;
-	
+
 	dbUnit = _dbUnit;
 }
 
@@ -56,7 +56,8 @@ void Unit::checkAim() {
 				aims = nullptr;
 			}
 		}
-	} else if (followTo != nullptr) {//TODO a co jak cel umrze?
+	} else if (followTo != nullptr) {
+		//TODO a co jak cel umrze?
 		bool reach = false;
 
 		double distance = ((*position) - (*followTo->getPosition())).Length();
@@ -102,14 +103,14 @@ void Unit::action(ActionType actionType, ActionParameter* parameter) {
 
 Vector3* Unit::getAim() {
 	if (aims) {
-		unitState = US_GOTO;
+		unitState = UnitStateType::GO;
 		return aims->getAimPos(aimIndex);
 	}
 	if (followTo) {
 		return followTo->getPosition();
 	}
-	if (unitState == US_GOTO) {
-		unitState = US_STOP;
+	if (unitState == UnitStateType::GO) {
+		unitState = UnitStateType::STOP;
 	}
 	return nullptr;
 }
@@ -159,7 +160,7 @@ void Unit::attack(vector<Physical*>* enemies) {
 }
 
 void Unit::attack(Physical* enemy) {
-	unitState = US_ATTACK;
+	unitState = UnitStateType::ATTACK;
 	enemy->absorbAttack(attackCoef);
 	enemyToAttack = enemy;
 }
@@ -233,8 +234,7 @@ void Unit::buttonAction(short id) {
 	switch (type) {
 	case OrderType::GO: break;
 	case OrderType::STOP:
-		removeAim();
-		unitState = UnitStateType::US_STOP;
+		states->changeState(this, UnitStateType::STOP);
 		break;
 	case OrderType::CHARGE: break;
 	case OrderType::ATTACK: break;
@@ -243,8 +243,7 @@ void Unit::buttonAction(short id) {
 		alive = false;
 		break;
 	case OrderType::DEFEND:
-		removeAim();
-		unitState = UnitStateType::US_DEFEND;
+		states->changeState(this, UnitStateType::DEFEND);
 		break;
 	default: ;
 	}
@@ -261,8 +260,12 @@ void Unit::clean() {
 	Physical::clean();
 }
 
+void Unit::setState(UnitStateType state) {
+	this->unitState = state;
+}
+
 void Unit::applyForce(double timeStep) {
-	if (unitState == US_ATTACK) {
+	if (unitState == UnitStateType::ATTACK) {
 		velocity->x_ = 0;
 		velocity->y_ = 0;
 		velocity->z_ = 0;
@@ -275,17 +278,16 @@ void Unit::applyForce(double timeStep) {
 	if (velLenght > maxSpeed * maxSpeed) {
 		velocity->Normalize();
 		(*velocity) *= maxSpeed;
-		if (unitState != US_GOTO) {
-			unitState = US_MOVE;
+		if (unitState != UnitStateType::GO) {
+			unitState = UnitStateType::MOVE;
 		}
-
 	} else if (velLenght < minSpeed * minSpeed) {
 		velocity->x_ = 0;
 		velocity->y_ = 0;
 		velocity->z_ = 0;
 		///velocity->ZERO;
-		if (unitState != US_GOTO) {
-			unitState = US_STOP;
+		if (unitState != UnitStateType::GO) {
+			unitState = UnitStateType::STOP;
 		}
 	} else {
 		rotation->x_ = velocity->x_;

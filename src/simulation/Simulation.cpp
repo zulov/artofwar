@@ -19,7 +19,7 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 
 void Simulation::action() {
 	for (auto unit : (*units)) {
-		if (unit->getState() == US_STOP || unit->getState() == US_ATTACK) {
+		if (unit->getState() == UnitStateType::STOP || unit->getState() == UnitStateType::ATTACK) {
 			if (unit->hasEnemy()) {
 				unit->attack();
 			} else {

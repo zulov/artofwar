@@ -11,11 +11,11 @@ DeadState::~DeadState()
 {
 }
 
-void DeadState::onStart() {
+void DeadState::onStart(Unit* unit) {
 }
 
-void DeadState::onEnd() {
+void DeadState::onEnd(Unit* unit) {
 }
 
-void DeadState::execute() {
+void DeadState::execute(Unit* unit) {
 }

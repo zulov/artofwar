@@ -6,8 +6,8 @@ class DefendState : public State
 public:
 	DefendState();
 	~DefendState();
-	void onStart() override;
-	void onEnd() override;
-	void execute() override;
+	void onStart(Unit* unit) override;
+	void onEnd(Unit* unit) override;
+	void execute(Unit* unit) override;
 };
 

@@ -6,8 +6,8 @@ class AttackState : public State
 public:
 	AttackState();
 	~AttackState();
-	void onStart() override;
-	void onEnd() override;
-	void execute() override;
+	void onStart(Unit* unit) override;
+	void onEnd(Unit* unit) override;
+	void execute(Unit* unit) override;
 };
 

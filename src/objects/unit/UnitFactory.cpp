@@ -4,28 +4,28 @@
 UnitFactory::UnitFactory(): EntityFactory() {
 	units = new std::vector<Unit *>();
 	units->reserve(DEFAULT_VECTOR_SIZE);
+	states = new StateManager();
 }
 
 UnitFactory::~UnitFactory() {
 	units->clear();
 	delete units;
+	delete states;
 }
 
 std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center, SpacingType spacing, int player) {
-
 	Game* game = Game::get();
 	db_unit* dbUnit = game->getDatabaseCache()->getUnit(id);
-	String textureName = "Materials/" + dbUnit->texture;
 
 	double space = getSpecSize(spacing);
-	String modelName = "Models/" + dbUnit->model;
 	int produced = 0;
 	int y = 0;
 	int xMax = number / sqrt(number);
 	double sideSize = xMax * space / 2;
-	Model* model3d = game->getCache()->GetResource<Model>(modelName);
 
-	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>(textureName);
+	Model* model3d = game->getCache()->GetResource<Model>("Models/" + dbUnit->model);
+	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbUnit->texture);
+
 	while (produced < number) {
 		for (int x = 0; x < xMax; ++x) {
 			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_,
@@ -38,7 +38,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center
 			model->SetMaterial(material);
 
 			Unit* newUnit = new Unit(position, node);
-			newUnit->populate(dbUnit,nullptr);
+			newUnit->populate(dbUnit, states);
 			newUnit->setPlayer(player);
 			newUnit->setTeam(player);//TODO ustawic team
 			units->push_back(newUnit);
