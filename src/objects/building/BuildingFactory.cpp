@@ -3,16 +3,16 @@
 
 
 BuildingFactory::BuildingFactory(): EntityFactory() {
-
+	buildings = new std::vector<Building *>();
+	buildings->reserve(DEFAULT_VECTOR_SIZE);
 }
 
 BuildingFactory::~BuildingFactory() {
+	buildings->clear();
+	delete buildings;
 }
 
-std::vector<Building*>* BuildingFactory::create(unsigned int number, int id, Vector3* center, SpacingType spacingType) {//TODO nie typ a id konkretnej jednostki
-	std::vector<Building*>* buildings = new std::vector<Building *>();
-	buildings->reserve(number);
-
+std::vector<Building*>* BuildingFactory::create(unsigned int number, int id, Vector3* center, SpacingType spacingType) {
 	Game* game = Game::get();
 	db_building* dbBuilding = game->getDatabaseCache()->getBuilding(id);
 	std::vector<db_unit*>* dbUnits = game->getDatabaseCache()->getUnitsForBuilding(id);
@@ -28,7 +28,8 @@ std::vector<Building*>* BuildingFactory::create(unsigned int number, int id, Vec
 	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>(materialName);
 	while (produced < number) {
 		for (int x = 0; x < xMax; ++x) {
-			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_, y * space + center->z_ - sideSize);
+			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_,
+			                                y * space + center->z_ - sideSize);
 
 			Node* node = game->getScene()->CreateChild();
 			node->SetPosition(*position);

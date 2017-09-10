@@ -12,4 +12,5 @@ public:
 	std::vector<ResourceEntity*>* create(unsigned number, int id, Vector3* center, SpacingType spacing);
 private:
 	double spaceCoef = 7;
+	std::vector<ResourceEntity*>* resources;
 };

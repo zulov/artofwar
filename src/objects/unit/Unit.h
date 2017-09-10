@@ -20,7 +20,7 @@ public:
 	Unit(Vector3* _position, Urho3D::Node* _boxNode);
 	~Unit();
 	double getHealthBarSize() override;
-	void populate(db_unit* _dbUnit);
+	void populate(db_unit* _dbUnit, StateManager* _states);
 	void checkAim();
 	void move(double timeStep);
 	void applyForce(double timeStep);

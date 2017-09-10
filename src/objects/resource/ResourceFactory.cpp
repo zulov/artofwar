@@ -4,19 +4,20 @@
 
 
 ResourceFactory::ResourceFactory() {
+	resources = new std::vector<ResourceEntity *>();
+	resources->reserve(DEFAULT_VECTOR_SIZE);
 }
 
 
 ResourceFactory::~ResourceFactory() {
+	resources->clear();
+	delete resources;
 }
 
 std::vector<ResourceEntity*>* ResourceFactory::create(unsigned number, int id, Vector3* center, SpacingType spacing) {
-	std::vector<ResourceEntity*>* resources = new std::vector<ResourceEntity *>();
-	resources->reserve(number);
-
 	db_resource* dbResource = Game::get()->getDatabaseCache()->getResource(id);
 
-	double space = getSpecSize(spacing)*spaceCoef;
+	double space = getSpecSize(spacing) * spaceCoef;
 	String modelName = "Models/" + dbResource->model;
 	int produced = 0;
 	int y = 0;
@@ -25,7 +26,8 @@ std::vector<ResourceEntity*>* ResourceFactory::create(unsigned number, int id, V
 	while (produced < number) {
 		for (int x = 0; x < xMax; ++x) {
 			Node* node = Game::get()->getScene()->CreateChild();
-			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_, y * space + center->z_ - sideSize);
+			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_,
+			                                y * space + center->z_ - sideSize);
 			node->SetPosition((*position));
 			node->Scale(dbResource->scale);
 			StaticModel* model = node->CreateComponent<StaticModel>();

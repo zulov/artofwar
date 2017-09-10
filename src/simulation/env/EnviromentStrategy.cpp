@@ -15,6 +15,11 @@ EnviromentStrategy::EnviromentStrategy() {
 
 
 EnviromentStrategy::~EnviromentStrategy() {
+	delete obstacleGrid;
+	delete resourceGrid;
+	delete gradient;
+	delete allUnitGrid;
+	delete[] teamUnitGrid;
 }
 
 float EnviromentStrategy::getSqDistance(Vector3* unitPosition, Vector3* otherPosition) {

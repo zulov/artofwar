@@ -17,5 +17,7 @@ public:
 	BuildingFactory();
 	~BuildingFactory();
 	std::vector<Building*>* create(unsigned number, int id, Vector3* center, SpacingType spacingType);
+private:
+	std::vector<Building*>* buildings;
 };
 

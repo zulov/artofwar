@@ -13,8 +13,6 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 	unitState = US_STOP;
 	node->SetPosition(*_position);
 
-
-	//states[0] = new StopState(this);
 }
 
 Unit::~Unit() {
@@ -32,7 +30,7 @@ double Unit::getHealthBarSize() {
 	return healthBarSize;
 }
 
-void Unit::populate(db_unit* _dbUnit) {
+void Unit::populate(db_unit* _dbUnit, StateManager* _states) {
 	maxSeparationDistance = _dbUnit->maxSep;
 	mass = _dbUnit->mass;
 	maxSpeed = _dbUnit->maxSpeed;
@@ -42,6 +40,9 @@ void Unit::populate(db_unit* _dbUnit) {
 	textureName = "Materials/" + String(_dbUnit->texture);
 	unitType = UnitType(_dbUnit->type);
 	rotatable = _dbUnit->rotatable;
+	
+	states = _states;
+	
 	dbUnit = _dbUnit;
 }
 
