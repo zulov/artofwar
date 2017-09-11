@@ -19,7 +19,8 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 
 void Simulation::action() {
 	for (auto unit : (*units)) {
-		if (unit->getState() == UnitStateType::STOP || unit->getState() == UnitStateType::ATTACK) {
+		//unit->getState() == UnitStateType::STOP || unit->getState() == UnitStateType::ATTACK
+		if (unit->checkTransition(UnitStateType::ATTACK) ) {
 			if (unit->hasEnemy()) {
 				unit->attack();
 			} else {
@@ -40,7 +41,6 @@ void Simulation::createUnits() {
 	simCommandList->add(new SimulationCommand(ObjectType::RESOURCE, 4, ResourceType::STONE, new Vector3(50, 0, 25), SpacingType::CONSTANT, 1));
 	simCommandList->add(new SimulationCommand(ObjectType::RESOURCE, 9, ResourceType::WOOD, new Vector3(40, 0, 0), SpacingType::CONSTANT, 1));
 }
-
 
 float Simulation::updateTime(float timeStep) {
 	if (timeStep > maxTimeFrame) {

@@ -21,6 +21,7 @@ class Unit : public Physical
 	friend class GoState;
 	friend class PatrolState;
 	friend class FollowState;
+	friend class AttackState;
 public:
 	Unit(Vector3* _position, Urho3D::Node* _boxNode);
 	~Unit();
@@ -50,6 +51,7 @@ public:
 	UnitStateType getState();
 	void clean() override;
 	void setState(UnitStateType state);
+	bool checkTransition(UnitStateType state);
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;

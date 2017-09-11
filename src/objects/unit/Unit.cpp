@@ -47,26 +47,18 @@ void Unit::populate(db_unit* _dbUnit, StateManager* _states) {
 }
 
 void Unit::checkAim() {
-	if (aims != nullptr) {
-		bool reach = aims->ifReach(position, aimIndex);
-		if (reach) {
-			aimIndex++;
-			bool end = aims->check(aimIndex);
-			if (end) {
+	if (aims) {
+		if (aims->ifReach(position, aimIndex)) {
+			++aimIndex;
+			if (aims->check(aimIndex)) {
 				aims = nullptr;
+				states->changeState(this, UnitStateType::MOVE);
 			}
 		}
-	} else if (followTo != nullptr) {
-		//TODO a co jak cel umrze?
-		bool reach = false;
-
-		double distance = ((*position) - (*followTo->getPosition())).Length();
-		if (distance <= 3) {
-			reach = true;
-		}
-
-		if (reach) {
+	} else if (followTo) {
+		if (((*position) - (*followTo->getPosition())).LengthSquared() <= 3 * 3) {
 			followTo = nullptr;
+			states->changeState(this, UnitStateType::MOVE);
 		}
 	}
 }
@@ -103,15 +95,12 @@ void Unit::action(ActionType actionType, ActionParameter* parameter) {
 
 Vector3* Unit::getAim() {
 	if (aims) {
-		unitState = UnitStateType::GO;
 		return aims->getAimPos(aimIndex);
 	}
 	if (followTo) {
 		return followTo->getPosition();
 	}
-	if (unitState == UnitStateType::GO) {
-		unitState = UnitStateType::STOP;
-	}
+
 	return nullptr;
 }
 
@@ -160,7 +149,7 @@ void Unit::attack(vector<Physical*>* enemies) {
 }
 
 void Unit::attack(Physical* enemy) {
-	unitState = UnitStateType::ATTACK;
+	states->changeState(this, UnitStateType::ATTACK);
 	enemy->absorbAttack(attackCoef);
 	enemyToAttack = enemy;
 }
@@ -264,32 +253,28 @@ void Unit::setState(UnitStateType state) {
 	this->unitState = state;
 }
 
+bool Unit::checkTransition(UnitStateType state) {
+	return states->checkChangeState(this, state);
+}
+
 void Unit::applyForce(double timeStep) {
 	if (unitState == UnitStateType::ATTACK) {
-		velocity->x_ = 0;
-		velocity->y_ = 0;
-		velocity->z_ = 0;
+		(*velocity) = Vector3::ZERO;
 		return;
 	}
 	double coef = timeStep / mass;
 	(*velocity) *= 0.95;//TODO to dac jaki wspolczynnik tarcia terenu
 	(*velocity) += (*acceleration) * coef;
 	double velLenght = velocity->LengthSquared();
-	if (velLenght > maxSpeed * maxSpeed) {
-		velocity->Normalize();
-		(*velocity) *= maxSpeed;
-		if (unitState != UnitStateType::GO) {
-			unitState = UnitStateType::MOVE;
-		}
-	} else if (velLenght < minSpeed * minSpeed) {
-		velocity->x_ = 0;
-		velocity->y_ = 0;
-		velocity->z_ = 0;
-		///velocity->ZERO;
-		if (unitState != UnitStateType::GO) {
-			unitState = UnitStateType::STOP;
-		}
+	if (velLenght < minSpeed * minSpeed) {
+		(*velocity) = Vector3::ZERO;//TODO dac to do zmiany stanu?
+		states->changeState(this, UnitStateType::STOP);//TODO ERROR to moze byc zle bo co gdy jest GO a val 
 	} else {
+		if (velLenght > maxSpeed * maxSpeed) {
+			velocity->Normalize();
+			(*velocity) *= maxSpeed;
+			states->changeState(this, UnitStateType::MOVE);
+		}
 		rotation->x_ = velocity->x_;
 		rotation->z_ = velocity->z_;
 	}

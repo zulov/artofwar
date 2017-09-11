@@ -6,6 +6,7 @@ PatrolState::PatrolState() {
 	transitions.insert(UnitStateType::STOP);
 	transitions.insert(UnitStateType::DEFEND);
 	transitions.insert(UnitStateType::DEAD);
+	transitions.insert(UnitStateType::GO);
 }
 
 
@@ -15,7 +16,7 @@ PatrolState::~PatrolState() {
 void PatrolState::onStart(Unit* unit) {
 }
 void PatrolState::onStart(Unit* unit, ActionParameter* parameter) {
-	unit->appendAim(parameter);//TODO parameter do stanu???
+	unit->appendAim(parameter);
 }
 
 

@@ -3,7 +3,11 @@
 
 
 FollowState::FollowState() {
+	transitions.insert(UnitStateType::STOP);
+	transitions.insert(UnitStateType::DEFEND);
 	transitions.insert(UnitStateType::DEAD);
+	transitions.insert(UnitStateType::GO);
+	transitions.insert(UnitStateType::PATROL);
 }
 
 FollowState::~FollowState() {
@@ -12,7 +16,7 @@ FollowState::~FollowState() {
 void FollowState::onStart(Unit* unit){
 }
 void FollowState::onStart(Unit* unit, ActionParameter* parameter) {
-	unit->followAim(parameter);//TODO parameter do stanu???
+	unit->followAim(parameter);
 }
 
 
