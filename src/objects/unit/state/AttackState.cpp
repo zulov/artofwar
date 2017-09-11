@@ -14,6 +14,9 @@ AttackState::~AttackState() {
 void AttackState::onStart(Unit* unit) {
 }
 
+void AttackState::onStart(Unit* unit, ActionParameter* parameter) {
+}
+
 void AttackState::onEnd(Unit* unit) {
 }
 

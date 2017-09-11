@@ -36,12 +36,12 @@ ActionCommand::ActionCommand(Physical* entity, ActionType action, Physical* pare
 ActionCommand::~ActionCommand() {
 }
 
-void ActionCommand::applyAim(ActionParameter* localParameter) {
+void ActionCommand::applyAim(ActionParameter* parameter) {
 	if (entity) {
-		entity->action(action, localParameter);
+		entity->action(action, parameter);
 	} else {
 		for (Physical* physical : (*entities)) {
-			physical->action(action, localParameter);
+			physical->action(action, parameter);
 		}
 	}
 }

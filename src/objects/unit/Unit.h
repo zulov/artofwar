@@ -18,6 +18,9 @@ class Unit : public Physical
 	friend class StopState;
 	friend class DefendState;
 	friend class DeadState;
+	friend class GoState;
+	friend class PatrolState;
+	friend class FollowState;
 public:
 	Unit(Vector3* _position, Urho3D::Node* _boxNode);
 	~Unit();

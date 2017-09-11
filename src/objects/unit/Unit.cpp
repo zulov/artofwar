@@ -88,16 +88,13 @@ double Unit::getMaxSeparationDistance() {
 void Unit::action(ActionType actionType, ActionParameter* parameter) {
 	switch (actionType) {
 	case ADD_AIM:
-		addAim(parameter);//TODO parameter do stanu???
-		states->changeState(this, UnitStateType::GO);
+		states->changeState(this, UnitStateType::GO, parameter);
 		break;
 	case APPEND_AIM:
-		appendAim(parameter);//TODO parameter do stanu???
-		states->changeState(this, UnitStateType::GO);
+		states->changeState(this, UnitStateType::PATROL, parameter);
 		break;
 	case FOLLOW:
-		followAim(parameter);//TODO parameter do stanu???
-		states->changeState(this, UnitStateType::FOLLOW);
+		states->changeState(this, UnitStateType::FOLLOW, parameter);
 		break;
 	default:
 		break;//zalogowaæ

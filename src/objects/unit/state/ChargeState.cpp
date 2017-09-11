@@ -11,6 +11,8 @@ ChargeState::~ChargeState() {
 
 void ChargeState::onStart(Unit* unit) {
 }
+void ChargeState::onStart(Unit* unit, ActionParameter* parameter) {
+}
 
 void ChargeState::onEnd(Unit* unit) {
 }

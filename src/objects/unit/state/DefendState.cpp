@@ -14,6 +14,9 @@ DefendState::~DefendState() {
 void DefendState::onStart(Unit* unit) {
 	unit->removeAim();
 }
+void DefendState::onStart(Unit* unit, ActionParameter* parameter) {
+}
+
 
 void DefendState::onEnd(Unit* unit) {
 }

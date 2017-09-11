@@ -38,6 +38,15 @@ void StateManager::changeState(Unit* unit, UnitStateType stateTo) {
 	}
 }
 
+void StateManager::changeState(Unit* unit, UnitStateType stateTo, ActionParameter* actionParameter) {
+	State * stateFrom = states[static_cast<int>(unit->getState())];
+	if (stateFrom->validateTransition(stateTo)) {
+		stateFrom->onEnd(unit);
+		unit->setState(stateTo);
+		states[static_cast<int>(stateTo)]->onStart(unit, actionParameter);
+	}
+}
+
 bool StateManager::checkChangeState(Unit* unit, UnitStateType stateTo) {
 	State * stateFrom = states[static_cast<int>(unit->getState())];
 	if (stateFrom->validateTransition(stateTo)) {

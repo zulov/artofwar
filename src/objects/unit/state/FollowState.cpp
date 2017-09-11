@@ -1,4 +1,5 @@
 #include "FollowState.h"
+#include "../Unit.h"
 
 
 FollowState::FollowState() {
@@ -10,6 +11,10 @@ FollowState::~FollowState() {
 
 void FollowState::onStart(Unit* unit){
 }
+void FollowState::onStart(Unit* unit, ActionParameter* parameter) {
+	unit->followAim(parameter);//TODO parameter do stanu???
+}
+
 
 void FollowState::onEnd(Unit* unit) {
 }

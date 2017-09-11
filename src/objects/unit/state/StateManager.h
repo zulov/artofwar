@@ -1,5 +1,6 @@
 #pragma once
 #include "State.h"
+#include "objects/unit/ActionParameter.h"
 
 
 class StateManager
@@ -9,6 +10,7 @@ public:
 	~StateManager();
 
 	void changeState(Unit* unit, UnitStateType stateTo);
+	void changeState(Unit* unit, UnitStateType stateTo, ActionParameter * actionParameter);
 	bool checkChangeState(Unit* unit, UnitStateType stateTo);
 private:
 	State** states;
