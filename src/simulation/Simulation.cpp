@@ -19,7 +19,6 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 
 void Simulation::action() {
 	for (auto unit : (*units)) {
-		//unit->getState() == UnitStateType::STOP || unit->getState() == UnitStateType::ATTACK
 		if (unit->checkTransition(UnitStateType::ATTACK) ) {
 			if (unit->hasEnemy()) {
 				unit->attack();
@@ -60,8 +59,7 @@ void Simulation::countFrame() {
 void Simulation::applyForce() {
 	for (auto unit : (*units)) {
 		unit->applyForce(maxTimeFrame);
-		unit->updateRotation();
-		Vector3* pos = unit->getPosition();
+		Vector3* pos = unit->getPosition();//TODO to przeniesc do mova?
 		double y = envStrategy->getGroundHeightAt(pos->x_, pos->z_);
 		unit->updateHeight(y, maxTimeFrame);
 	}
@@ -84,8 +82,7 @@ SimulationInfo* Simulation::getInfo() {
 	return simulationInfo;
 }
 
-void Simulation::updateEnviroment() {
-	
+void Simulation::updateEnviroment() {	
 	if (simulationInfo->ifAmountBuildingChanged()) {
 		envStrategy->update(buildings);
 	}
@@ -162,14 +159,12 @@ void Simulation::calculateForces() {
 		Vector3* sepObstacle = forceStrategy->separationObstacle(unit, repulsive);
 
 		Vector3* destForce = forceStrategy->destination(unit);
-		Vector3* rand = forceStrategy->randomForce();
 
-		(*sepPedestrian) += (*sepObstacle) += (*destForce) += (*rand);
+		(*sepPedestrian) += (*sepObstacle) += (*destForce);
 		unit->setAcceleration(sepPedestrian);
 
 		delete sepObstacle;
 		delete destForce;
-		delete rand;
 		delete neighbours;
 		//delete buildings;
 	}

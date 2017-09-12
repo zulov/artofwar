@@ -44,7 +44,7 @@ Entity* LevelBuilder::createZone() {
 
 Entity* LevelBuilder::createLight() {
 	Node* lightNode = scene->CreateChild();
-	lightNode->SetDirection(Vector3(0.6f, -1.0f, 0.8f)); // The direction vector does not need to be normalized
+	lightNode->SetDirection(Vector3(0.6f, -1.0f, 0.8f)); 
 	Light* light = lightNode->CreateComponent<Light>();
 	light->SetLightType(LIGHT_DIRECTIONAL);
 	light->SetColor(Color(0.7f, 0.6f, 0.6f));

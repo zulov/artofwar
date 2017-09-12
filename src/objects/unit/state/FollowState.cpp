@@ -16,7 +16,8 @@ FollowState::~FollowState() {
 void FollowState::onStart(Unit* unit){
 }
 void FollowState::onStart(Unit* unit, ActionParameter* parameter) {
-	unit->followAim(parameter);
+	unit->removeAim();
+	unit->followTo = parameter->getFollowTo();
 }
 
 

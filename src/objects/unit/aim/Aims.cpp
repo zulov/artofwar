@@ -14,7 +14,7 @@ Aims::~Aims() {
 
 Aim* Aims::getAim(short index) {
 	if (index >= aims->size()) { return nullptr; }
-	return aims->at(index);
+	return (*aims)[index];
 }
 
 Urho3D::Vector3* Aims::getAimPos(short index) {
@@ -34,8 +34,8 @@ bool Aims::ifReach(Urho3D::Vector3* pedestrian, int index) {
 	Aim* aim = getAim(index);
 	if (aim == nullptr) { return false; }
 	Urho3D::Vector3* pos = aim->getPosition();
-	double distance = ((*pos) - (*pedestrian)).Length();
-	if (distance <= aim->getRadius()) {
+	double distance = ((*pos) - (*pedestrian)).LengthSquared();
+	if (distance <= aim->getRadius()*aim->getRadius()) {
 		return true;
 	}
 	return false;
@@ -51,9 +51,9 @@ bool Aims::check(int aimIndex) {
 	if (aimIndex >= aims->size()) {
 		reduce();
 		return true;
-	} else {
-		return false;
 	}
+	return false;
+
 }
 
 int Aims::getReferences() {

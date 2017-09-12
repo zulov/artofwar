@@ -9,6 +9,7 @@ StopState::StopState() {
 	transitions.insert(UnitStateType::PATROL);
 	transitions.insert(UnitStateType::FOLLOW);
 	transitions.insert(UnitStateType::ATTACK);
+	transitions.insert(UnitStateType::MOVE);
 }
 
 StopState::~StopState() {
@@ -16,6 +17,7 @@ StopState::~StopState() {
 
 void StopState::onStart(Unit* unit) {
 	unit->removeAim();
+	(*unit->velocity) = Vector3::ZERO;
 }
 
 void StopState::onStart(Unit* unit, ActionParameter* parameter) {

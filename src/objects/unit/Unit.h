@@ -45,7 +45,6 @@ public:
 	void attack(Physical* enemy);
 	void attack();
 	void updateHeight(double y, double timeStep);
-	void updateRotation();
 	String* toMultiLineString() override;
 	void buttonAction(short id) override;
 	UnitStateType getState();

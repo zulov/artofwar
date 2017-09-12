@@ -12,7 +12,6 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 	followTo = nullptr;
 	unitState = UnitStateType::STOP;
 	node->SetPosition(*_position);
-
 }
 
 Unit::~Unit() {
@@ -64,8 +63,10 @@ void Unit::checkAim() {
 }
 
 void Unit::move(double timeStep) {
-	(*position) += (*velocity) * timeStep;
-	node->Translate((*velocity) * timeStep, TS_WORLD);
+	if (unitState != UnitStateType::STOP) {
+		(*position) += (*velocity) * timeStep;
+		node->Translate((*velocity) * timeStep, TS_WORLD);
+	}
 }
 
 void Unit::setAcceleration(Vector3* _acceleration) {
@@ -198,17 +199,6 @@ void Unit::removeAim() {
 	followTo = nullptr;
 }
 
-void Unit::followAim(ActionParameter* parameter) {
-	removeAim();
-	followTo = parameter->getFollowTo();
-}
-
-void Unit::updateRotation() {
-	if (rotatable) {
-		node->SetDirection(*rotation);
-	}
-}
-
 String* Unit::toMultiLineString() {
 	(*menuString) = dbUnit->name;
 	(*menuString) += "\nAtak: " + String(attackCoef);
@@ -267,16 +257,18 @@ void Unit::applyForce(double timeStep) {
 	(*velocity) += (*acceleration) * coef;
 	double velLenght = velocity->LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
-		(*velocity) = Vector3::ZERO;//TODO dac to do zmiany stanu?
 		states->changeState(this, UnitStateType::STOP);//TODO ERROR to moze byc zle bo co gdy jest GO a val 
 	} else {
 		if (velLenght > maxSpeed * maxSpeed) {
 			velocity->Normalize();
-			(*velocity) *= maxSpeed;
-			states->changeState(this, UnitStateType::MOVE);
+			(*velocity) *= maxSpeed;	
 		}
-		rotation->x_ = velocity->x_;
-		rotation->z_ = velocity->z_;
+		states->changeState(this, UnitStateType::MOVE);
+		if (rotatable) {
+			rotation->x_ = velocity->x_;
+			rotation->z_ = velocity->z_;
+			node->SetDirection(*rotation);
+		}
 	}
 }
 
