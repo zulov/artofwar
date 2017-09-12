@@ -54,7 +54,7 @@ String* Building::toMultiLineString() {
 	return menuString;
 }
 
-void Building::buttonAction(short id) {
+void Building::action(short id, ActionParameter* parameter) {
 	Resources* resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 	std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
 

@@ -33,8 +33,6 @@ public:
 	int getSubTypeId() override;
 	void setAcceleration(Vector3* _acceleration);
 	double getMaxSeparationDistance();
-
-	void action(ActionType actionType, ActionParameter* parameter) override;
 	Vector3* getAim();
 	Vector3* getVelocity();
 	double getMass();
@@ -46,11 +44,12 @@ public:
 	void attack();
 	void updateHeight(double y, double timeStep);
 	String* toMultiLineString() override;
-	void buttonAction(short id) override;
+	void action(short id, ActionParameter* parameter) override;
 	UnitStateType getState();
 	void clean() override;
 	void setState(UnitStateType state);
 	bool checkTransition(UnitStateType state);
+	void executeState();//TODO niewiadomo gdzie to uzyc
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
@@ -67,7 +66,7 @@ private:
 	void removeAim();
 	void followAim(ActionParameter* parameter);
 	void attackIfCloseEnough(double& minDistance, Physical* entityClosest);
-	
+
 	UnitStateType unitState;
 	UnitType unitType;
 

@@ -46,7 +46,8 @@ INSERT INTO `orders` (id,icon) VALUES (0,'go.png'),
  (3,'attack.png'),
  (4,'patrol.png'),
  (5,'dead.png'),
- (6,'defend.png');
+ (6,'defend.png'),
+ (7,'follow.png');
 INSERT INTO `nation` (id,name) VALUES (0,'basic'),
  (1,'enemy');
 INSERT INTO `hud_size_vars` (id,hud_size,name,value) VALUES (0,0,'iconX',42.0),

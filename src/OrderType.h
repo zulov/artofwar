@@ -7,5 +7,6 @@ enum class OrderType
 	ATTACK,
 	PATROL,
 	DEAD,
-	DEFEND
+	DEFEND,
+	FOLLOW
 };

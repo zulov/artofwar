@@ -119,7 +119,7 @@ void Simulation::update(Input* input, float timeStep) {
 			simObjectManager->updateInfo(simulationInfo);
 			updateEnviroment();
 
-			units = simObjectManager->getUnits();//TOdo te linijki sa pewnie nie potrzebne
+			units = simObjectManager->getUnits();//TODO te linijki sa pewnie nie potrzebne
 			buildings = simObjectManager->getBuildings();
 			resources = simObjectManager->getResources();
 

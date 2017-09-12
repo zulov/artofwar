@@ -102,7 +102,7 @@ String* Physical::toMultiLineString() {
 	return menuString;
 }
 
-void Physical::buttonAction(short id) {
+void Physical::action(short id, ActionParameter* parameter) {
 
 }
 

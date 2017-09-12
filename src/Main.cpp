@@ -113,7 +113,10 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	SelectedInfo* selectedInfo = controls->getInfo();
 
 	hud->updateSelected(selectedInfo);
-	hud->update(simulation->getUnitsNumber());
+	if(simulationInfo->ifAmountUnitChanged()) {
+		hud->update(simulation->getUnitsNumber());
+	}
+	
 	hud->update(benchmark, cameraManager);
 
 	if (selectedInfo->hasChanged()) {

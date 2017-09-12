@@ -30,7 +30,7 @@ StateManager::~StateManager() {
 }
 
 void StateManager::changeState(Unit* unit, UnitStateType stateTo) {
-	State * stateFrom = states[static_cast<int>(unit->getState())];
+	State* stateFrom = states[static_cast<int>(unit->getState())];
 	if (stateFrom->validateTransition(stateTo)) {
 		stateFrom->onEnd(unit);
 		unit->setState(stateTo);
@@ -39,7 +39,7 @@ void StateManager::changeState(Unit* unit, UnitStateType stateTo) {
 }
 
 void StateManager::changeState(Unit* unit, UnitStateType stateTo, ActionParameter* actionParameter) {
-	State * stateFrom = states[static_cast<int>(unit->getState())];
+	State* stateFrom = states[static_cast<int>(unit->getState())];
 	if (stateFrom->validateTransition(stateTo)) {
 		stateFrom->onEnd(unit);
 		unit->setState(stateTo);
@@ -48,9 +48,14 @@ void StateManager::changeState(Unit* unit, UnitStateType stateTo, ActionParamete
 }
 
 bool StateManager::checkChangeState(Unit* unit, UnitStateType stateTo) {
-	State * stateFrom = states[static_cast<int>(unit->getState())];
+	State* stateFrom = states[static_cast<int>(unit->getState())];
 	if (stateFrom->validateTransition(stateTo)) {
 		return true;
 	}
 	return false;
+}
+
+void StateManager::execute(Unit* unit) {
+	State* state = states[static_cast<int>(unit->getState())];
+	state->execute(unit);
 }

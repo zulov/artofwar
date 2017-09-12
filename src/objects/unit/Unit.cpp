@@ -78,22 +78,6 @@ double Unit::getMaxSeparationDistance() {
 	return maxSeparationDistance;
 }
 
-void Unit::action(ActionType actionType, ActionParameter* parameter) {
-	switch (actionType) {
-	case ADD_AIM:
-		states->changeState(this, UnitStateType::GO, parameter);
-		break;
-	case APPEND_AIM:
-		states->changeState(this, UnitStateType::PATROL, parameter);
-		break;
-	case FOLLOW:
-		states->changeState(this, UnitStateType::FOLLOW, parameter);
-		break;
-	default:
-		break;//zalogowaæ
-	}
-}
-
 Vector3* Unit::getAim() {
 	if (aims) {
 		return aims->getAimPos(aimIndex);
@@ -130,7 +114,7 @@ void Unit::attackIfCloseEnough(double& distance, Physical* closest) {
 			attack(closest);
 			//attackRange();
 		} else if (distance < attackIntrest * attackIntrest) {
-			ActionCommand* command = new ActionCommand(this, FOLLOW, closest);
+			ActionCommand* command = new ActionCommand(this, OrderType::FOLLOW, closest);
 			Game::get()->getActionCommandList()->add(command);
 		}
 	}
@@ -207,22 +191,29 @@ String* Unit::toMultiLineString() {
 	return menuString;
 }
 
-void Unit::buttonAction(short id) {
+void Unit::action(short id, ActionParameter* parameter) {
 	OrderType type = OrderType(id);
 
 	switch (type) {
-	case OrderType::GO: break;
+	case OrderType::GO:
+		states->changeState(this, UnitStateType::GO, parameter);
+		break;
 	case OrderType::STOP:
 		states->changeState(this, UnitStateType::STOP);
 		break;
 	case OrderType::CHARGE: break;
 	case OrderType::ATTACK: break;
-	case OrderType::PATROL: break;
+	case OrderType::PATROL:
+		states->changeState(this, UnitStateType::PATROL, parameter);
+		break;
 	case OrderType::DEAD:
 		states->changeState(this, UnitStateType::DEAD);
 		break;
 	case OrderType::DEFEND:
 		states->changeState(this, UnitStateType::DEFEND);
+		break;
+	case OrderType::FOLLOW:
+		states->changeState(this, UnitStateType::FOLLOW, parameter);
 		break;
 	default: ;
 	}
@@ -240,11 +231,15 @@ void Unit::clean() {
 }
 
 void Unit::setState(UnitStateType state) {
-	this->unitState = state;
+	unitState = state;
 }
 
 bool Unit::checkTransition(UnitStateType state) {
 	return states->checkChangeState(this, state);
+}
+
+void Unit::executeState() {
+	states->execute(this);
 }
 
 void Unit::applyForce(double timeStep) {
@@ -252,16 +247,16 @@ void Unit::applyForce(double timeStep) {
 		(*velocity) = Vector3::ZERO;
 		return;
 	}
-	double coef = timeStep / mass;
+
 	(*velocity) *= 0.95;//TODO to dac jaki wspolczynnik tarcia terenu
-	(*velocity) += (*acceleration) * coef;
+	(*velocity) += (*acceleration) * (timeStep / mass);
 	double velLenght = velocity->LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
-		states->changeState(this, UnitStateType::STOP);//TODO ERROR to moze byc zle bo co gdy jest GO a val 
+		states->changeState(this, UnitStateType::STOP);
 	} else {
 		if (velLenght > maxSpeed * maxSpeed) {
 			velocity->Normalize();
-			(*velocity) *= maxSpeed;	
+			(*velocity) *= maxSpeed;
 		}
 		states->changeState(this, UnitStateType::MOVE);
 		if (rotatable) {

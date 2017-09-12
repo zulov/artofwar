@@ -143,9 +143,9 @@ void Controls::rightClick(Drawable* hitDrawable, Vector3& hitPos) {
 		Vector3* pos = new Vector3(hitPos);
 		ActionCommand* command;
 		if (shiftPressed) {
-			command = new ActionCommand(selected, APPEND_AIM, pos);
+			command = new ActionCommand(selected, OrderType::PATROL, pos);
 		} else {
-			command = new ActionCommand(selected, ADD_AIM, pos);
+			command = new ActionCommand(selected, OrderType::GO, pos);
 		}
 
 		Game::get()->getActionCommandList()->add(command);
@@ -183,11 +183,11 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>* pair) {
 	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
 
 	if (shiftPressed) {
-		command1 = new ActionCommand(selected, APPEND_AIM, pos1);
-		command2 = new ActionCommand(selected, APPEND_AIM, pos2);
+		command1 = new ActionCommand(selected, OrderType::PATROL, pos1);
+		command2 = new ActionCommand(selected, OrderType::PATROL, pos2);
 	} else {
-		command1 = new ActionCommand(selected, ADD_AIM, pos1);
-		command2 = new ActionCommand(selected, APPEND_AIM, pos2);
+		command1 = new ActionCommand(selected, OrderType::GO, pos1);
+		command2 = new ActionCommand(selected, OrderType::PATROL, pos2);
 	}
 
 	Game::get()->getActionCommandList()->add(command1);
@@ -356,7 +356,7 @@ void Controls::activate() {
 void Controls::action(HudElement* hudElement) {
 	short id = hudElement->getId();
 	for (int i = 0; i < selected->size(); ++i) {
-		(*selected)[i]->buttonAction(id);
+		(*selected)[i]->action(id,nullptr);//TODO przemyslec to
 	}
 }
 

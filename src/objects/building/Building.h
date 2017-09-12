@@ -20,7 +20,7 @@ public:
 	bool isInGrandient();
 	void setInGradinet(bool _inGradient);
 	String* toMultiLineString() override;
-	void buttonAction(short id) override;
+	void action(short id, ActionParameter* parameter) override;
 	QueueElement* updateQueue(float time);
 	Vector3* getTarget();
 	QueueManager* getQueue();

@@ -24,7 +24,7 @@ public:
 	void setTeam(signed char _team);
 	void setPlayer(signed char player);
 	virtual String* toMultiLineString();
-	virtual void buttonAction(short id);
+	virtual void action(short id, ActionParameter* parameter);
 
 	bool hasEnemy();
 	virtual void clean();
