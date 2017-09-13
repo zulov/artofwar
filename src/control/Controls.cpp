@@ -32,7 +32,8 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 		return false;
 	}
 
-	Ray cameraRay = camera->GetScreenRay((float)pos.x_ / Game::get()->getGraphics()->GetWidth(), (float)pos.y_ / Game::get()->getGraphics()->GetHeight());
+	Ray cameraRay = camera->GetScreenRay((float)pos.x_ / Game::get()->getGraphics()->GetWidth(),
+	                                     (float)pos.y_ / Game::get()->getGraphics()->GetHeight());
 
 	PODVector<RayQueryResult> results;
 	RayOctreeQuery query(results, cameraRay, RAY_TRIANGLE, maxDistance, DRAWABLE_GEOMETRY);
@@ -168,7 +169,8 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>* held) {
 	if (!ctrlPressed) {
 		unSelectAll();
 	}
-	for (int i = 0; i < entities->size(); ++i) {//TODO zastapic wrzuceniem na raz
+	for (int i = 0; i < entities->size(); ++i) {
+		//TODO zastapic wrzuceniem na raz
 		select((*entities)[i]);
 	}
 	delete entities;
@@ -302,7 +304,8 @@ void Controls::create(ObjectType type, Vector3* pos, int number) {
 		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForBuilding(idToCreate);
 
 		if (resources->reduce(costs)) {
-			SimulationCommand* simulationCommand = new SimulationCommand(type, number, idToCreate, pos, SpacingType::CONSTANT, 0);
+			SimulationCommand* simulationCommand = new SimulationCommand
+				(type, number, idToCreate, pos, SpacingType::CONSTANT, 0);
 			Game::get()->getSimCommandList()->add(simulationCommand);
 		}
 	}
@@ -355,9 +358,26 @@ void Controls::activate() {
 
 void Controls::action(HudElement* hudElement) {
 	short id = hudElement->getId();
-	for (int i = 0; i < selected->size(); ++i) {
-		(*selected)[i]->action(id,nullptr);//TODO przemyslec to
+	OrderType type = OrderType(id);
+	switch (type) {
+	case OrderType::GO: 
+	case OrderType::CHARGE: 
+	case OrderType::ATTACK: 
+	case OrderType::PATROL: 
+	case OrderType::FOLLOW: 
+		state = ControlsState::ORDER;
+		orderType = type;
+		break;
+	case OrderType::STOP: 
+	case OrderType::DEFEND:
+	case OrderType::DEAD: 
+		for (int i = 0; i < selected->size(); ++i) {
+			(*selected)[i]->action(id, nullptr);//TODO przemyslec to
+		}
+		break;
+	default: ;
 	}
+
 }
 
 void Controls::refreshSelected() {
@@ -365,7 +385,8 @@ void Controls::refreshSelected() {
 	selected->erase(
 	                std::remove_if(
 	                               selected->begin(), selected->end(),
-	                               [](Physical* physical) {
+	                               [](Physical* physical)
+                               {
 	                               if (!physical->isAlive()) {
 		                               return true;
 	                               }

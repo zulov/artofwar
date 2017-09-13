@@ -21,6 +21,7 @@
 #include "Mediator.h"
 #include "hud/HudElement.h"
 #include "SelectedInfo.h"
+#include "OrderType.h"
 
 
 using namespace Urho3D;
@@ -73,7 +74,7 @@ private:
 	Input* input;
 	double clickDistance = 2 * 2;
 	ControlsState state = ControlsState::DEFAULT;
-
+	OrderType orderType = OrderType::GO;
 	short idToCreate=-1;
 	ObjectType typeToCreate;
 

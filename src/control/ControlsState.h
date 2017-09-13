@@ -3,5 +3,6 @@
 enum ControlsState
 {
 	DEFAULT = 0,
-	BUILD
+	BUILD,
+	ORDER
 };
