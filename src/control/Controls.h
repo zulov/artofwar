@@ -31,36 +31,39 @@ class Controls
 public:
 	Controls(Input* _input);
 	~Controls();
-	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
-	void select(Physical* entity);
-	void controlEntity(Vector3 &hitPos, bool ctrlPressed, Physical* clicked);
-	void unSelectAll();
 	
-	void clickDownRight(Vector3 &hitPos);
-	void clickDownLeft(Vector3 &hitPos);
-	void clickDown(const int button);
-	void create(ObjectType type, Vector3* pos, int number);
+	void select(Physical* entity);
+	void unSelectAll();
 
-	void leftClick(Drawable* hitDrawable, Vector3 &hitPos);
+	void clickDown(const int button);
+
+	void leftClick(Physical* clicked, Vector3& hitPos);
 	void leftHold(std::pair<Vector3*, Vector3*>* held);
 
-	void rightClick(Drawable* hitDrawable, Vector3 &hitPos);
+	void rightClick(Physical* clicked, Vector3& hitPos);
 	void rightHold(std::pair<Vector3*, Vector3*>* pair);
+
 	void release(const int button);
 	void updateState(SelectedInfo* selectedInfo);
 	void hudAction(HudElement* hud);
 	SelectedInfo* getInfo();
+
 	void deactivate();
 	bool isActive();
 	void activate();
 	void action(HudElement* hudElement);
-	void refreshSelected();
-	void clean(SimulationInfo *simulationInfo);
+	void clean(SimulationInfo* simulationInfo);
 
 private:
+	void create(ObjectType type, Vector3* pos, int number);
+	void setFirst(Vector3& hitPos, std::pair<Vector3*, Vector3*>* var);
+	void refreshSelected();
+	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
+	void controlEntity(Vector3& hitPos, Physical* clicked);
+	void cleanPair(std::pair<Vector3*, Vector3*>* var);
+
 	std::vector<Physical*>* selected;//TODO to powinien byæ set
 
-	ObjectType selectedType;
 	float maxDistance = 300;
 
 	bool mouseLeftHeld = false;
@@ -72,12 +75,13 @@ private:
 	std::pair<Vector3*, Vector3*>* rightHeld;
 
 	Input* input;
-	double clickDistance = 2 * 2;
+	ObjectType selectedType;
 	ControlsState state = ControlsState::DEFAULT;
 	OrderType orderType = OrderType::GO;
-	short idToCreate=-1;
 	ObjectType typeToCreate;
-
 	SelectedInfo* selectedInfo;
+	short idToCreate = -1;
+	double clickDistance = 2 * 2;
 	bool active = true;
+
 };

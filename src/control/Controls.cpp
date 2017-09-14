@@ -17,17 +17,20 @@ Controls::Controls(Input* _input) {
 
 
 Controls::~Controls() {
+	cleanPair(rightHeld);
+	cleanPair(leftHeld);
+	cleanPair(middleHeld);
+
 	delete leftHeld;
 	delete middleHeld;
 	delete rightHeld;
+
 	delete selectedInfo;
 	delete selected;
 }
 
 bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {
-	hitDrawable = nullptr;
-
-	IntVector2 pos = Game::get()->getUI()->GetCursorPosition();
+	const IntVector2 pos = Game::get()->getUI()->GetCursorPosition();
 	if (!Game::get()->getUI()->GetCursor()->IsVisible() || Game::get()->getUI()->GetElementAt(pos, true)) {
 		return false;
 	}
@@ -50,6 +53,8 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 			return true;
 		}
 	}
+	hitDrawable = nullptr;
+
 	return false;
 }
 
@@ -78,11 +83,11 @@ void Controls::select(Physical* entity) {
 	selectedInfo->select(entity);
 }
 
-void Controls::controlEntity(Vector3& hitPos, bool ctrlPressed, Physical* clicked) {
+void Controls::controlEntity(Vector3& hitPos, Physical* clicked) {
 	switch (state) {
 	case DEFAULT:
 		{
-		if (!ctrlPressed) {
+		if (!input->GetKeyDown(KEY_CTRL)) {
 			unSelectAll();
 		}
 		select(clicked);
@@ -97,59 +102,34 @@ void Controls::controlEntity(Vector3& hitPos, bool ctrlPressed, Physical* clicke
 	}
 }
 
-void Controls::leftClick(Drawable* hitDrawable, Vector3& hitPos) {
-	Node* hitNode = hitDrawable->GetNode();
-	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
-	LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
-
-	if (lc == nullptr) {
-		return;
-	}
-	Physical* clicked = lc->getPhysical();
-	ObjectType type = clicked->getType();
-
-	switch (type) {
+void Controls::leftClick(Physical* clicked, Vector3& hitPos) {
+	switch (clicked->getType()) {
 	case PHISICAL:
-		controlEntity(hitPos, ctrlPressed, clicked);
+		controlEntity(hitPos, clicked);
 		break;
 	case UNIT:
 	case BUILDING:
 	case RESOURCE:
-		if (!ctrlPressed) {
+		if (!input->GetKeyDown(KEY_CTRL)) {
 			unSelectAll();
 		}
-
 		select(clicked);
 		break;
-
 	default: ;
 	}
-
 }
 
-void Controls::rightClick(Drawable* hitDrawable, Vector3& hitPos) {
-	Node* hitNode = hitDrawable->GetNode();
-	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
-	LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
-	if (lc == nullptr) {
-		return;
-	}
-	Physical* clicked = lc->getPhysical();
-	ObjectType type = clicked->getType();
-
-	switch (type) {
-
+void Controls::rightClick(Physical* clicked, Vector3& hitPos) {
+	switch (clicked->getType()) {
 	case PHISICAL:
 		{
-		Vector3* pos = new Vector3(hitPos);
-		ActionCommand* command;
-		if (shiftPressed) {
-			command = new ActionCommand(selected, OrderType::PATROL, pos);
+		OrderType type;
+		if (input->GetKeyDown(KEY_SHIFT)) {
+			type = OrderType::PATROL;
 		} else {
-			command = new ActionCommand(selected, OrderType::GO, pos);
+			type = OrderType::GO;
 		}
-
-		Game::get()->getActionCommandList()->add(command);
+		Game::get()->getActionCommandList()->add(new ActionCommand(selected, type, new Vector3(hitPos)));
 		break;
 		}
 	case UNIT:
@@ -210,7 +190,13 @@ void Controls::release(const int button) {
 				if (dist > clickDistance) {
 					leftHold(leftHeld);
 				} else {
-					leftClick(hitDrawable, hitPos);
+					Node* hitNode = hitDrawable->GetNode();
+					LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+
+					if (lc) {
+						Physical* clicked = lc->getPhysical();
+						leftClick(clicked, hitPos);
+					}
 				}
 			}
 		}
@@ -224,7 +210,13 @@ void Controls::release(const int button) {
 				if (dist > clickDistance) {
 					rightHold(rightHeld);
 				} else {
-					rightClick(hitDrawable, hitPos);
+					Node* hitNode = hitDrawable->GetNode();
+					LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+					if (lc) {
+						Physical* clicked = lc->getPhysical();
+						rightClick(clicked, hitPos);
+					}
+
 				}
 			}
 		}
@@ -251,20 +243,12 @@ void Controls::hudAction(HudElement* hud) {
 	idToCreate = hud->getId();
 }
 
-void Controls::clickDownRight(Vector3& hitPos) {
-	if (rightHeld->first != nullptr) {
-		delete rightHeld->first;
-		rightHeld->first = nullptr;
+void Controls::setFirst(Vector3& hitPos, std::pair<Vector3*, Vector3*>* var) {
+	if (var->first != nullptr) {
+		delete var->first;
+		var->first = nullptr;
 	}
-	rightHeld->first = new Vector3(hitPos);
-}
-
-void Controls::clickDownLeft(Vector3& hitPos) {
-	if (leftHeld->first != nullptr) {
-		delete leftHeld->first;
-		leftHeld->first = nullptr;
-	}
-	leftHeld->first = new Vector3(hitPos);
+	var->first = new Vector3(hitPos);
 }
 
 void Controls::clickDown(const int button) {
@@ -275,7 +259,7 @@ void Controls::clickDown(const int button) {
 	case MOUSEB_LEFT:
 		if (mouseLeftHeld == false) {
 			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-				clickDownLeft(hitPos);
+				setFirst(hitPos, leftHeld);
 				mouseLeftHeld = true;
 			}
 		}
@@ -283,7 +267,7 @@ void Controls::clickDown(const int button) {
 	case MOUSEB_RIGHT:
 		if (mouseRightHeld == false) {
 			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-				clickDownRight(hitPos);
+				setFirst(hitPos, rightHeld);
 				mouseRightHeld = true;
 			}
 		}
@@ -315,37 +299,26 @@ SelectedInfo* Controls::getInfo() {
 	return selectedInfo;
 }
 
+void Controls::cleanPair(std::pair<Vector3*, Vector3*>* var) {
+	if (var->first != nullptr) {
+		delete var->first;
+		var->first = nullptr;
+	}
+	if (var->second != nullptr) {
+		delete var->second;
+		var->second = nullptr;
+	}
+}
+
 void Controls::deactivate() {
 	active = false;
 	mouseMiddleHeld = false;
 	mouseRightHeld = false;
 	mouseLeftHeld = false;
-	if (rightHeld->first != nullptr) {
-		delete rightHeld->first;
-		rightHeld->first = nullptr;
-	}
-	if (rightHeld->second != nullptr) {
-		delete rightHeld->second;
-		rightHeld->second = nullptr;
-	}
 
-	if (leftHeld->first != nullptr) {
-		delete leftHeld->first;
-		leftHeld->first = nullptr;
-	}
-	if (leftHeld->second != nullptr) {
-		delete leftHeld->second;
-		leftHeld->second = nullptr;
-	}
-
-	if (middleHeld->first != nullptr) {
-		delete middleHeld->first;
-		middleHeld->first = nullptr;
-	}
-	if (middleHeld->second != nullptr) {
-		delete middleHeld->second;
-		middleHeld->second = nullptr;
-	}
+	cleanPair(rightHeld);
+	cleanPair(leftHeld);
+	cleanPair(middleHeld);
 }
 
 bool Controls::isActive() {
@@ -360,24 +333,23 @@ void Controls::action(HudElement* hudElement) {
 	short id = hudElement->getId();
 	OrderType type = OrderType(id);
 	switch (type) {
-	case OrderType::GO: 
-	case OrderType::CHARGE: 
-	case OrderType::ATTACK: 
-	case OrderType::PATROL: 
-	case OrderType::FOLLOW: 
+	case OrderType::GO:
+	case OrderType::CHARGE:
+	case OrderType::ATTACK:
+	case OrderType::PATROL:
+	case OrderType::FOLLOW:
 		state = ControlsState::ORDER;
 		orderType = type;
 		break;
-	case OrderType::STOP: 
+	case OrderType::STOP:
 	case OrderType::DEFEND:
-	case OrderType::DEAD: 
+	case OrderType::DEAD:
 		for (int i = 0; i < selected->size(); ++i) {
 			(*selected)[i]->action(id, nullptr);//TODO przemyslec to
 		}
 		break;
 	default: ;
 	}
-
 }
 
 void Controls::refreshSelected() {
