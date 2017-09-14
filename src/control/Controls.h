@@ -35,8 +35,6 @@ public:
 	void select(Physical* entity);
 	void unSelectAll();
 
-
-	void updateState(SelectedInfo* selectedInfo);
 	void hudAction(HudElement* hud);
 	SelectedInfo* getInfo();
 
@@ -54,7 +52,8 @@ private:
 	void controlEntity(Vector3& hitPos, Physical* clicked);
 	void cleanPair(std::pair<Vector3*, Vector3*>* var);
 
-	void clickDown(const int button);
+	void clickDownRight();
+	void clickDownLeft();
 
 	void leftClick(Physical* clicked, Vector3& hitPos);
 	void rightClick(Physical* clicked, Vector3& hitPos);
@@ -62,7 +61,9 @@ private:
 	void leftHold(std::pair<Vector3*, Vector3*>* held);
 	void rightHold(std::pair<Vector3*, Vector3*>* held);
 
-	void release(const int button);
+	void releaseRight();
+	void releaseLeft();
+	void updateState();
 
 	std::vector<Physical*>* selected;//TODO to powinien byæ set
 

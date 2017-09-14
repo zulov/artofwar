@@ -67,7 +67,7 @@ void Controls::unSelectAll() {
 
 void Controls::select(Physical* entity) {
 	ObjectType entityType = entity->getType();
-	if (entity->getType() != selectedType) {
+	if (entityType != selectedType) {
 		unSelectAll();
 	}
 
@@ -163,60 +163,56 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>* held) {
 	}
 
 	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[0], new Vector3(*held->first)));
-	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1], new Vector3(*held->second)));//TODO czy ta para jest usuwana
+	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1], new Vector3(*held->second)));
+	//TODO czy ta para jest usuwana
 }
 
-void Controls::release(const int button) {
+
+void Controls::releaseLeft() {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
-	switch (button) {
-	case MOUSEB_LEFT:
-		if (mouseLeftHeld == true) {
-			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-				mouseLeftHeld = false;
-				leftHeld->second = new Vector3(hitPos);
-				double dist = (*(leftHeld->first) - *(leftHeld->second)).LengthSquared();
-				if (dist > clickDistance) {
-					leftHold(leftHeld);
-				} else {
-					Node* hitNode = hitDrawable->GetNode();
-					LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
-
-					if (lc) {
-						Physical* clicked = lc->getPhysical();
-						leftClick(clicked, hitPos);
-					}
-				}
+	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
+		mouseLeftHeld = false;
+		leftHeld->second = new Vector3(hitPos);
+		double dist = (*(leftHeld->first) - *(leftHeld->second)).LengthSquared();
+		if (dist > clickDistance) {
+			leftHold(leftHeld);
+		} else {
+			Node* hitNode = hitDrawable->GetNode();
+			LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+			if (lc) {
+				leftClick(lc->getPhysical(), hitPos);
 			}
 		}
-		break;
-	case MOUSEB_RIGHT:
-		if (mouseRightHeld == true) {
-			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-				mouseRightHeld = false;
-				rightHeld->second = new Vector3(hitPos);//TODO czy ten Vector jest usuwany?
-				double dist = (*(rightHeld->first) - *(rightHeld->second)).LengthSquared();
-				if (dist > clickDistance) {
-					rightHold(rightHeld);
-				} else {
-					Node* hitNode = hitDrawable->GetNode();
-					LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
-					if (lc) {
-						Physical* clicked = lc->getPhysical();
-						rightClick(clicked, hitPos);
-					}
-
-				}
-			}
-		}
-		break;
 	}
 }
 
-void Controls::updateState(SelectedInfo* selectedInfo) {
-	state = DEFAULT;
-	idToCreate = -1;
+void Controls::releaseRight() {
+	Vector3 hitPos;
+	Drawable* hitDrawable;
+
+	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
+		mouseRightHeld = false;
+		rightHeld->second = new Vector3(hitPos);//TODO czy ten Vector jest usuwany?
+		double dist = (*(rightHeld->first) - *(rightHeld->second)).LengthSquared();
+		if (dist > clickDistance) {
+			rightHold(rightHeld);
+		} else {
+			Node* hitNode = hitDrawable->GetNode();
+			LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+			if (lc) {
+				rightClick(lc->getPhysical(), hitPos);
+			}
+		}
+	}
+}
+
+void Controls::updateState() {
+	if (selectedInfo->hasChanged()) {
+		state = DEFAULT;
+		idToCreate = -1;
+	}
 }
 
 void Controls::hudAction(HudElement* hud) {
@@ -233,27 +229,23 @@ void Controls::setFirst(Vector3& hitPos, std::pair<Vector3*, Vector3*>* var) {
 	var->first = new Vector3(hitPos);
 }
 
-void Controls::clickDown(const int button) {
+void Controls::clickDownLeft() {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
-	switch (button) {
-	case MOUSEB_LEFT:
-		if (mouseLeftHeld == false) {
-			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-				setFirst(hitPos, leftHeld);
-				mouseLeftHeld = true;
-			}
-		}
-		break;
-	case MOUSEB_RIGHT:
-		if (mouseRightHeld == false) {
-			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-				setFirst(hitPos, rightHeld);
-				mouseRightHeld = true;
-			}
-		}
-		break;
+	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
+		setFirst(hitPos, leftHeld);
+		mouseLeftHeld = true;
+	}
+}
+
+void Controls::clickDownRight() {
+	Vector3 hitPos;
+	Drawable* hitDrawable;
+
+	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
+		setFirst(hitPos, rightHeld);
+		mouseRightHeld = true;
 	}
 }
 
@@ -362,20 +354,25 @@ void Controls::clean(SimulationInfo* simulationInfo) {
 	if (condition) {
 		refreshSelected();
 	}
+	updateState();
 }
 
 void Controls::control() {
 	if (active) {
 		if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
-			clickDown(MOUSEB_LEFT);
-		} else {
-			release(MOUSEB_LEFT);
+			if (!mouseLeftHeld) {
+				clickDownLeft();
+			}
+		} else if (mouseLeftHeld) {
+			releaseLeft();
 		}
 
 		if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
-			clickDown(MOUSEB_RIGHT);
-		} else {
-			release(MOUSEB_RIGHT);
+			if (!mouseRightHeld) {
+				clickDownRight();
+			}
+		} else if (mouseRightHeld) {
+			releaseRight();
 		}
 	}
 }

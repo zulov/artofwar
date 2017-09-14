@@ -119,11 +119,6 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	
 	hud->update(benchmark, cameraManager);
 
-	if (selectedInfo->hasChanged()) {
-		controls->updateState(selectedInfo);
-	}
-
-
 	selectedInfo->hasBeedUpdatedDrawn();
 	levelBuilder->execute();
 	simulation->dispose();
