@@ -189,13 +189,15 @@ void Main::HandleBuildButton(StringHash eventType, VariantMap& eventData) {
 void Main::HandleUnitButton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
-	controls->action(hudElement);
+
+	controls->order(hudElement->getId());
 }
 
 void Main::HandleOrdersButton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
-	controls->action(hudElement);
+
+	controls->order(hudElement->getId());
 }
 
 void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
@@ -257,11 +259,12 @@ void Main::SetupViewport() {
 	renderer->SetViewport(0, viewport);
 }
 
-void Main::control(float timeStep) {
-	//if (GetSubsystem<UI>()->GetFocusElement()) { return; }
-	Input* input = GetSubsystem<Input>();
+void Main::createCameraKeys(Input* input, bool cameraKeys[4]) {
+	cameraKeys[0] = input->GetKeyDown(KEY_W);
+	cameraKeys[1] = input->GetKeyDown(KEY_S);
+	cameraKeys[2] = input->GetKeyDown(KEY_A);
+	cameraKeys[3] = input->GetKeyDown(KEY_D);
 
-	bool cameraKeys[4] = {input->GetKeyDown(KEY_W), input->GetKeyDown(KEY_S), input->GetKeyDown(KEY_A), input->GetKeyDown(KEY_D)};
 	int width = Game::get()->getGraphics()->GetWidth();
 	int height = Game::get()->getGraphics()->GetHeight();
 	IntVector2 cursorPos = Game::get()->getUI()->GetCursorPosition();
@@ -276,21 +279,17 @@ void Main::control(float timeStep) {
 	} else if (cursorPos.y_ > height - (height / border)) {
 		cameraKeys[1] = true;
 	}
+}
+
+void Main::control(float timeStep) {
+	//if (GetSubsystem<UI>()->GetFocusElement()) { return; }
+	Input* input = GetSubsystem<Input>();
+
+	bool cameraKeys[4];
+	createCameraKeys(input, cameraKeys);
 	int wheel = input->GetMouseMoveWheel();
 	cameraManager->translate(cameraKeys, wheel, timeStep);
 	cameraManager->rotate(input->GetMouseMove());
 
-	if (controls->isActive()) {
-		if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
-			controls->clickDown(MOUSEB_LEFT);
-		} else {
-			controls->release(MOUSEB_LEFT);
-		}
-
-		if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
-			controls->clickDown(MOUSEB_RIGHT);
-		} else {
-			controls->release(MOUSEB_RIGHT);
-		}
-	}
+	controls->control();
 }

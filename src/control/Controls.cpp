@@ -9,7 +9,6 @@ Controls::Controls(Input* _input) {
 	selected->reserve(5000);
 
 	leftHeld = new std::pair<Vector3*, Vector3*>();
-	middleHeld = new std::pair<Vector3*, Vector3*>();
 	rightHeld = new std::pair<Vector3*, Vector3*>();
 	input = _input;
 	selectedInfo = new SelectedInfo();
@@ -19,10 +18,8 @@ Controls::Controls(Input* _input) {
 Controls::~Controls() {
 	cleanPair(rightHeld);
 	cleanPair(leftHeld);
-	cleanPair(middleHeld);
 
 	delete leftHeld;
-	delete middleHeld;
 	delete rightHeld;
 
 	delete selectedInfo;
@@ -144,36 +141,29 @@ void Controls::rightClick(Physical* clicked, Vector3& hitPos) {
 }
 
 void Controls::leftHold(std::pair<Vector3*, Vector3*>* held) {
-	std::vector<Physical*>* entities = Game::get()->getMediator()->getEntities(held);
-	bool ctrlPressed = input->GetKeyDown(KEY_CTRL);
-	if (!ctrlPressed) {
+	if (!input->GetKeyDown(KEY_CTRL)) {
 		unSelectAll();
 	}
-	for (int i = 0; i < entities->size(); ++i) {
-		//TODO zastapic wrzuceniem na raz
-		select((*entities)[i]);
+	std::vector<Physical*>* entities = Game::get()->getMediator()->getEntities(held);
+	for (auto entity : (* entities)) {
+		select(entity); //TODO zastapic wrzuceniem na raz
 	}
 	delete entities;
 }
 
-void Controls::rightHold(std::pair<Vector3*, Vector3*>* pair) {
-	Vector3* pos1 = new Vector3(*pair->first);
-	Vector3* pos2 = new Vector3(*pair->second);//TODO czy ta para jest usuwana
-	ActionCommand* command1;
-	ActionCommand* command2;
+void Controls::rightHold(std::pair<Vector3*, Vector3*>* held) {
+	OrderType type[2];
 
-	bool shiftPressed = input->GetKeyDown(KEY_SHIFT);
-
-	if (shiftPressed) {
-		command1 = new ActionCommand(selected, OrderType::PATROL, pos1);
-		command2 = new ActionCommand(selected, OrderType::PATROL, pos2);
+	if (input->GetKeyDown(KEY_SHIFT)) {
+		type[0] = OrderType::PATROL;
+		type[1] = OrderType::PATROL;
 	} else {
-		command1 = new ActionCommand(selected, OrderType::GO, pos1);
-		command2 = new ActionCommand(selected, OrderType::PATROL, pos2);
+		type[0] = OrderType::GO;
+		type[1] = OrderType::PATROL;
 	}
 
-	Game::get()->getActionCommandList()->add(command1);
-	Game::get()->getActionCommandList()->add(command2);
+	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[0], new Vector3(*held->first)));
+	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1], new Vector3(*held->second)));//TODO czy ta para jest usuwana
 }
 
 void Controls::release(const int button) {
@@ -221,14 +211,6 @@ void Controls::release(const int button) {
 			}
 		}
 		break;
-	case MOUSEB_MIDDLE:
-		if (mouseMiddleHeld == true) {
-			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-				mouseMiddleHeld = false;
-				middleHeld->second = new Vector3(hitPos);
-			}
-		}
-		break;
 	}
 }
 
@@ -272,13 +254,6 @@ void Controls::clickDown(const int button) {
 			}
 		}
 		break;
-	case MOUSEB_MIDDLE:
-		if (mouseMiddleHeld == false) {
-			if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-				mouseMiddleHeld = true;
-			}
-		}
-		break;
 	}
 }
 
@@ -312,25 +287,19 @@ void Controls::cleanPair(std::pair<Vector3*, Vector3*>* var) {
 
 void Controls::deactivate() {
 	active = false;
-	mouseMiddleHeld = false;
+
 	mouseRightHeld = false;
 	mouseLeftHeld = false;
 
 	cleanPair(rightHeld);
 	cleanPair(leftHeld);
-	cleanPair(middleHeld);
-}
-
-bool Controls::isActive() {
-	return active;
 }
 
 void Controls::activate() {
 	active = true;
 }
 
-void Controls::action(HudElement* hudElement) {
-	short id = hudElement->getId();
+void Controls::order(short id) {
 	OrderType type = OrderType(id);
 	switch (type) {
 	case OrderType::GO:
@@ -392,5 +361,21 @@ void Controls::clean(SimulationInfo* simulationInfo) {
 
 	if (condition) {
 		refreshSelected();
+	}
+}
+
+void Controls::control() {
+	if (active) {
+		if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
+			clickDown(MOUSEB_LEFT);
+		} else {
+			release(MOUSEB_LEFT);
+		}
+
+		if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+			clickDown(MOUSEB_RIGHT);
+		} else {
+			release(MOUSEB_RIGHT);
+		}
 	}
 }

@@ -31,7 +31,7 @@ using namespace Urho3D;
 
 class Main : public Application
 {
-	URHO3D_OBJECT(Main, Application);
+URHO3D_OBJECT(Main, Application);
 
 public:
 	Main(Context* context);
@@ -62,6 +62,7 @@ private:
 
 	void control(float timeStep);
 	void changeCamera(int type);
+	void createCameraKeys(Input* input, bool cameraKeys[4]);
 
 	MouseMode useMouseMode_;
 	Simulation* simulation;
@@ -70,8 +71,7 @@ private:
 	Hud* hud;
 	Controls* controls;
 	LevelBuilder* levelBuilder;
-	SceneObjectManager * sceneObjectManager;
-	Mediator * mediator;
-	ActionCommandList * actionCommandList;
-
+	SceneObjectManager* sceneObjectManager;
+	Mediator* mediator;
+	ActionCommandList* actionCommandList;
 };

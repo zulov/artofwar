@@ -35,24 +35,16 @@ public:
 	void select(Physical* entity);
 	void unSelectAll();
 
-	void clickDown(const int button);
 
-	void leftClick(Physical* clicked, Vector3& hitPos);
-	void leftHold(std::pair<Vector3*, Vector3*>* held);
-
-	void rightClick(Physical* clicked, Vector3& hitPos);
-	void rightHold(std::pair<Vector3*, Vector3*>* pair);
-
-	void release(const int button);
 	void updateState(SelectedInfo* selectedInfo);
 	void hudAction(HudElement* hud);
 	SelectedInfo* getInfo();
 
 	void deactivate();
-	bool isActive();
 	void activate();
-	void action(HudElement* hudElement);
+	void order(short id);
 	void clean(SimulationInfo* simulationInfo);
+	void control();
 
 private:
 	void create(ObjectType type, Vector3* pos, int number);
@@ -62,16 +54,24 @@ private:
 	void controlEntity(Vector3& hitPos, Physical* clicked);
 	void cleanPair(std::pair<Vector3*, Vector3*>* var);
 
+	void clickDown(const int button);
+
+	void leftClick(Physical* clicked, Vector3& hitPos);
+	void rightClick(Physical* clicked, Vector3& hitPos);
+
+	void leftHold(std::pair<Vector3*, Vector3*>* held);
+	void rightHold(std::pair<Vector3*, Vector3*>* held);
+
+	void release(const int button);
+
 	std::vector<Physical*>* selected;//TODO to powinien byæ set
 
 	float maxDistance = 300;
 
 	bool mouseLeftHeld = false;
 	bool mouseRightHeld = false;
-	bool mouseMiddleHeld = false;
 
 	std::pair<Vector3*, Vector3*>* leftHeld;
-	std::pair<Vector3*, Vector3*>* middleHeld;
 	std::pair<Vector3*, Vector3*>* rightHeld;
 
 	Input* input;
