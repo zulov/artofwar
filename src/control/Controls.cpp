@@ -8,20 +8,12 @@ Controls::Controls(Input* _input) {
 	selected = new std::vector<Physical*>();
 	selected->reserve(5000);
 
-	leftHeld = new std::pair<Vector3*, Vector3*>();
-	rightHeld = new std::pair<Vector3*, Vector3*>();
 	input = _input;
 	selectedInfo = new SelectedInfo();
 }
 
 
 Controls::~Controls() {
-	cleanPair(rightHeld);
-	cleanPair(leftHeld);
-
-	delete leftHeld;
-	delete rightHeld;
-
 	delete selectedInfo;
 	delete selected;
 }
@@ -173,11 +165,11 @@ void Controls::releaseLeft() {
 	Drawable* hitDrawable;
 
 	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		mouseLeftHeld = false;
-		leftHeld->second = new Vector3(hitPos);
-		double dist = (*(leftHeld->first) - *(leftHeld->second)).LengthSquared();
+		left.isHeld = false;
+		left.held->second = new Vector3(hitPos);
+		double dist = (*(left.held->first) - *(left.held->second)).LengthSquared();
 		if (dist > clickDistance) {
-			leftHold(leftHeld);
+			leftHold(left.held);
 		} else {
 			Node* hitNode = hitDrawable->GetNode();
 			LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
@@ -193,11 +185,11 @@ void Controls::releaseRight() {
 	Drawable* hitDrawable;
 
 	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		mouseRightHeld = false;
-		rightHeld->second = new Vector3(hitPos);//TODO czy ten Vector jest usuwany?
-		double dist = (*(rightHeld->first) - *(rightHeld->second)).LengthSquared();
+		right.isHeld = false;
+		right.held->second = new Vector3(hitPos);//TODO czy ten Vector jest usuwany?
+		double dist = (*(right.held->first) - *(right.held->second)).LengthSquared();
 		if (dist > clickDistance) {
-			rightHold(rightHeld);
+			rightHold(right.held);
 		} else {
 			Node* hitNode = hitDrawable->GetNode();
 			LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
@@ -221,21 +213,12 @@ void Controls::hudAction(HudElement* hud) {
 	idToCreate = hud->getId();
 }
 
-void Controls::setFirst(Vector3& hitPos, std::pair<Vector3*, Vector3*>* var) {
-	if (var->first != nullptr) {
-		delete var->first;
-		var->first = nullptr;
-	}
-	var->first = new Vector3(hitPos);
-}
-
 void Controls::clickDownLeft() {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
 	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		setFirst(hitPos, leftHeld);
-		mouseLeftHeld = true;
+		left.setFirst(hitPos);
 	}
 }
 
@@ -244,8 +227,7 @@ void Controls::clickDownRight() {
 	Drawable* hitDrawable;
 
 	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		setFirst(hitPos, rightHeld);
-		mouseRightHeld = true;
+		right.setFirst(hitPos);
 	}
 }
 
@@ -266,25 +248,10 @@ SelectedInfo* Controls::getInfo() {
 	return selectedInfo;
 }
 
-void Controls::cleanPair(std::pair<Vector3*, Vector3*>* var) {
-	if (var->first != nullptr) {
-		delete var->first;
-		var->first = nullptr;
-	}
-	if (var->second != nullptr) {
-		delete var->second;
-		var->second = nullptr;
-	}
-}
-
 void Controls::deactivate() {
 	active = false;
-
-	mouseRightHeld = false;
-	mouseLeftHeld = false;
-
-	cleanPair(rightHeld);
-	cleanPair(leftHeld);
+	left.clean();
+	right.clean();
 }
 
 void Controls::activate() {
@@ -360,18 +327,18 @@ void Controls::clean(SimulationInfo* simulationInfo) {
 void Controls::control() {
 	if (active) {
 		if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
-			if (!mouseLeftHeld) {
+			if (!left.isHeld) {
 				clickDownLeft();
 			}
-		} else if (mouseLeftHeld) {
+		} else if (left.isHeld) {
 			releaseLeft();
 		}
 
 		if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
-			if (!mouseRightHeld) {
+			if (!right.isHeld) {
 				clickDownRight();
 			}
-		} else if (mouseRightHeld) {
+		} else if (right.isHeld) {
 			releaseRight();
 		}
 	}

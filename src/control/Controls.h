@@ -22,6 +22,7 @@
 #include "hud/HudElement.h"
 #include "SelectedInfo.h"
 #include "OrderType.h"
+#include "MouseButton.h"
 
 
 using namespace Urho3D;
@@ -50,7 +51,6 @@ private:
 	void refreshSelected();
 	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
 	void controlEntity(Vector3& hitPos, Physical* clicked);
-	void cleanPair(std::pair<Vector3*, Vector3*>* var);
 
 	void clickDownRight();
 	void clickDownLeft();
@@ -69,11 +69,8 @@ private:
 
 	float maxDistance = 300;
 
-	bool mouseLeftHeld = false;
-	bool mouseRightHeld = false;
-
-	std::pair<Vector3*, Vector3*>* leftHeld;
-	std::pair<Vector3*, Vector3*>* rightHeld;
+	MouseButton left;
+	MouseButton right;
 
 	Input* input;
 	ObjectType selectedType;

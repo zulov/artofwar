@@ -457,6 +457,7 @@
       <Filter>objects\state</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\unit\state\MoveState.h" />
+    <ClInclude Include="src\control\MouseButton.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
