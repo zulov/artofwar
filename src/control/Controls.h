@@ -54,6 +54,7 @@ private:
 
 	void clickDownRight();
 	void clickDownLeft();
+	void clickDown(MouseButton &var);
 
 	void leftClick(Physical* clicked, Vector3& hitPos);
 	void rightClick(Physical* clicked, Vector3& hitPos);

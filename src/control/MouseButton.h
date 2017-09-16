@@ -34,6 +34,12 @@ struct MouseButton
 		isHeld = true;
 	}
 
+	void setSecond(Vector3& hitPos) {
+		held->second = new Vector3(hitPos);
+		isHeld = false;
+	}
+
+
 	bool isHeld = false;
 
 	std::pair<Urho3D::Vector3*, Urho3D::Vector3*>* held;

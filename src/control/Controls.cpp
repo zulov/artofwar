@@ -165,14 +165,12 @@ void Controls::releaseLeft() {
 	Drawable* hitDrawable;
 
 	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		left.isHeld = false;
-		left.held->second = new Vector3(hitPos);
+		left.setSecond(hitPos);
 		double dist = (*(left.held->first) - *(left.held->second)).LengthSquared();
 		if (dist > clickDistance) {
 			leftHold(left.held);
 		} else {
-			Node* hitNode = hitDrawable->GetNode();
-			LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+			LinkComponent* lc = hitDrawable->GetNode()->GetComponent<LinkComponent>();
 			if (lc) {
 				leftClick(lc->getPhysical(), hitPos);
 			}
@@ -185,14 +183,12 @@ void Controls::releaseRight() {
 	Drawable* hitDrawable;
 
 	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		right.isHeld = false;
-		right.held->second = new Vector3(hitPos);//TODO czy ten Vector jest usuwany?
+		right.setSecond(hitPos);
 		double dist = (*(right.held->first) - *(right.held->second)).LengthSquared();
 		if (dist > clickDistance) {
 			rightHold(right.held);
 		} else {
-			Node* hitNode = hitDrawable->GetNode();
-			LinkComponent* lc = hitNode->GetComponent<LinkComponent>();
+			LinkComponent* lc = hitDrawable->GetNode()->GetComponent<LinkComponent>();
 			if (lc) {
 				rightClick(lc->getPhysical(), hitPos);
 			}
@@ -214,20 +210,19 @@ void Controls::hudAction(HudElement* hud) {
 }
 
 void Controls::clickDownLeft() {
-	Vector3 hitPos;
-	Drawable* hitDrawable;
-
-	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		left.setFirst(hitPos);
-	}
+	clickDown(left);
 }
 
 void Controls::clickDownRight() {
+	clickDown(right);
+}
+
+void Controls::clickDown(MouseButton& var) {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
 
 	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		right.setFirst(hitPos);
+		var.setFirst(hitPos);
 	}
 }
 
