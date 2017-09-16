@@ -10,13 +10,12 @@ public:
 	ActionParameter();
 	~ActionParameter();
 	Aims* getAims();
-	Urho3D::Vector3 * getAimPosition();
 	Physical * getFollowTo();
 	void setAims(Aims* _aims);
-	void setAimPosition(Urho3D::Vector3* _aim);
+	void setVector(Urho3D::Vector3* _aim);
 	void setFollowTo(Physical * physical);
 private:
-	Urho3D::Vector3* aimPosition;
+	Urho3D::Vector3* vector;
 	Aims * aims;
 	Physical * followTo;
 };

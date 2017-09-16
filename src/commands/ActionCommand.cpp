@@ -4,7 +4,7 @@
 ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector3* parameter) {
 	this->entities = entities;
 	this->action = action;
-	this->aimPosition = parameter;
+	this->vector = parameter;
 	this->entity = nullptr;
 	this->toFollow = nullptr;
 }
@@ -14,13 +14,13 @@ ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action,
 	this->action = action;
 	this->toFollow = paremeter;
 	this->entity = nullptr;
-	this->aimPosition = nullptr;
+	this->vector = nullptr;
 }
 
 ActionCommand::ActionCommand(Physical* entity, OrderType action, Vector3* paremeter) {
 	this->entity = entity;
 	this->action = action;
-	this->aimPosition = paremeter;
+	this->vector = paremeter;
 	this->entities = nullptr;
 	this->toFollow = nullptr;
 }
@@ -30,13 +30,13 @@ ActionCommand::ActionCommand(Physical* entity, OrderType action, Physical* parem
 	this->action = action;
 	this->toFollow = paremeter;
 	this->entities = nullptr;
-	this->aimPosition = nullptr;
+	this->vector = nullptr;
 }
 
 ActionCommand::~ActionCommand() {
 }
 
-void ActionCommand::applyAim(ActionParameter* parameter) {
+void ActionCommand::applyAction(ActionParameter* parameter) {
 	short id = static_cast<int>(action);
 	if (entity) {
 		entity->action(id, parameter);
@@ -48,10 +48,10 @@ void ActionCommand::applyAim(ActionParameter* parameter) {
 }
 
 void ActionCommand::applyAim(Aims* aims) {
-	aims->add(aimPosition);
+	aims->add(vector);
 	ActionParameter* localParameter = new ActionParameter();
 	localParameter->setAims(aims);
-	applyAim(localParameter);
+	applyAction(localParameter);
 	delete localParameter;
 }
 
@@ -68,10 +68,16 @@ void ActionCommand::execute() {
 		if (toFollow != nullptr && toFollow->isAlive()) {
 			ActionParameter* localParameter = new ActionParameter();
 			localParameter->setFollowTo(toFollow);
-			applyAim(localParameter);//TODO tu leci null pointer
+			applyAction(localParameter);
 			delete localParameter;
 		}
 		}
+		break;
+	case OrderType::CHARGE:
+		ActionParameter* localParameter = new ActionParameter();
+		localParameter->setVector(vector);
+		applyAction(localParameter);
+		delete localParameter;
 		break;
 	default: ;
 	}

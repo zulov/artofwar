@@ -13,7 +13,7 @@ public:
 	ActionCommand(Physical* entity, OrderType action, Vector3* paremater);
 	ActionCommand(Physical* entity, OrderType action, Physical* paremater);
 	~ActionCommand();
-	void applyAim(ActionParameter* localParameter);
+	void applyAction(ActionParameter* localParameter);
 	void execute() override;
 	void setAimConteiner(AimContainer* _aimContainer);
 private:
@@ -22,7 +22,7 @@ private:
 	OrderType action;
 
 	AimContainer* aimContainer;
-	Vector3* aimPosition;
+	Vector3* vector;
 	Physical* toFollow;
 
 	void applyAim(Aims* aims);

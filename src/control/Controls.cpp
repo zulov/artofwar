@@ -151,11 +151,11 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>* held) {
 		type[1] = OrderType::PATROL;
 	} else {
 		type[0] = OrderType::GO;
-		type[1] = OrderType::PATROL;
+		type[1] = OrderType::CHARGE;
 	}
 
 	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[0], new Vector3(*held->first)));
-	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1], new Vector3(*held->second)));
+	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1], new Vector3(*held->second - *held->first)));
 	//TODO czy ta para jest usuwana
 }
 

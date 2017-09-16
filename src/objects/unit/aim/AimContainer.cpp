@@ -1,10 +1,10 @@
 #include "AimContainer.h"
-#define AIMS_CAPACITY 20
+#include "defines.h"
 
 AimContainer::AimContainer() {
 	aims = new std::vector<Aims*>();
-	aims->reserve(AIMS_CAPACITY);
-	for (int i = 0; i < AIMS_CAPACITY; ++i) {
+	aims->reserve(DEFAULT_VECTOR_SIZE);
+	for (int i = 0; i < DEFAULT_VECTOR_SIZE; ++i) {
 		aims->push_back(new Aims());
 	}
 	index = 0;
