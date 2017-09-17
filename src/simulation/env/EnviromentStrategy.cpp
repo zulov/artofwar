@@ -104,7 +104,7 @@ void EnviromentStrategy::update(std::vector<ResourceEntity*>* resources) {
 	}
 }
 
-Vector3* EnviromentStrategy::getRepulsiveAt(Vector3* position) {
+Vector2& EnviromentStrategy::getRepulsiveAt(Vector3* position) {
 	return gradient->getValueAt(position->x_, position->z_);
 }
 

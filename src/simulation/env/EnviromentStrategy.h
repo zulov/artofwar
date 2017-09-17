@@ -30,7 +30,7 @@ public:
 	void update(std::vector<Building*>* buildings);
 	void update(std::vector<ResourceEntity*>* resources);
 	void add(Entity *entity);
-	Vector3 * getRepulsiveAt(Vector3 * position);
+	Vector2 & getRepulsiveAt(Vector3 * position);
 
 	std::vector<Physical *>* getNeighbours(std::pair<Vector3*, Vector3*>* pair);
 	std::vector<Physical *>* getBuildings(std::pair<Vector3*, Vector3*>* pair);

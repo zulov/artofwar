@@ -7,9 +7,8 @@ ForceStrategy::ForceStrategy() {
 ForceStrategy::~ForceStrategy() {
 }
 
-Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, Vector3* repulse) {
-	Vector3* force = new Vector3(*repulse);
-
+Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, Vector2& repulse) {
+	Vector3* force = new Vector3(repulse.x_, 0, repulse.y_);
 
 	(*force) *= coef * boostCoef * sepCoef;
 	return force;

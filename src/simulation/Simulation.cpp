@@ -153,7 +153,7 @@ void Simulation::calculateForces() {
 	for (auto unit : (*units)) {
 		std::vector<Physical*>* neighbours = envStrategy->getNeighbours(unit, unit->getMaxSeparationDistance());
 		//std::vector<Physical*>* buildings = envStrategy->getBuildings(unit, unit->getMaxSeparationDistance());//TODO jakis inny parametr niz max separaatino dist
-		Vector3* repulsive = envStrategy->getRepulsiveAt(unit->getPosition());
+		Vector2 repulsive = envStrategy->getRepulsiveAt(unit->getPosition());
 
 		Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
 		Vector3* sepObstacle = forceStrategy->separationObstacle(unit, repulsive);

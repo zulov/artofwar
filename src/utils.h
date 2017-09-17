@@ -10,7 +10,7 @@ void clear_vector(std::vector<T*>* container) {
 }
 
 template <typename T>
-void clear_vector(std::vector<T*> &container) {
+void clear_vector(std::vector<T*>& container) {
 	for (T* obj : container) {
 		delete obj;
 	}

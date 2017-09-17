@@ -11,7 +11,7 @@ public:
 	Aims* getNext();
 	Aims* getCurrent();
 private:
-	std::vector<Aims*>* aims;
+	std::vector<Aims*> aims;
 	int index;
 };
 
