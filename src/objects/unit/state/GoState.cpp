@@ -9,6 +9,7 @@ GoState::GoState() {
 	transitions.insert(UnitStateType::GO);
 	transitions.insert(UnitStateType::PATROL);
 	transitions.insert(UnitStateType::FOLLOW);
+	transitions.insert(UnitStateType::CHARAGE);
 }
 
 

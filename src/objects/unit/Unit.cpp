@@ -9,7 +9,6 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 	velocity = new Vector3();
 	aims = nullptr;
 
-	followTo = nullptr;
 	unitState = UnitStateType::STOP;
 	node->SetPosition(*_position);
 }
@@ -17,7 +16,6 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 Unit::~Unit() {
 	delete acceleration;
 	delete velocity;
-	followTo = nullptr;
 	if (aims) {
 		aims->reduce();
 	}
@@ -47,17 +45,12 @@ void Unit::populate(db_unit* _dbUnit, StateManager* _states) {
 
 void Unit::checkAim() {
 	if (aims) {
-		if (aims->ifReach(position, aimIndex)) {
+		if (aims->ifReach(this, aimIndex)) {
 			++aimIndex;
 			if (aims->check(aimIndex)) {
 				aims = nullptr;
 				states->changeState(this, UnitStateType::MOVE);
 			}
-		}
-	} else if (followTo) {
-		if (((*position) - (*followTo->getPosition())).LengthSquared() <= 3 * 3) {
-			followTo = nullptr;
-			states->changeState(this, UnitStateType::MOVE);
 		}
 	}
 }
@@ -78,12 +71,9 @@ double Unit::getMaxSeparationDistance() {
 	return maxSeparationDistance;
 }
 
-Vector3* Unit::getAim() {
+Vector3* Unit::getDestination() {
 	if (aims) {
-		return aims->getAimPos(aimIndex);
-	}
-	if (followTo) {
-		return followTo->getPosition();
+		return aims->getDirection(this, aimIndex);
 	}
 
 	return nullptr;
@@ -155,12 +145,10 @@ void Unit::appendAim(ActionParameter* actionParameter) {
 		aimIndex = 0;
 		aims = actionParameter->getAims();
 		aims->up();
-		followTo = nullptr;
 	} else if (aims == nullptr) {
 		aimIndex = 0;
 		aims = actionParameter->getAims();
 		aims->up();
-		followTo = nullptr;
 	}
 }
 
@@ -171,7 +159,6 @@ void Unit::addAim(ActionParameter* actionParameter) {
 	aimIndex = 0;
 	aims = actionParameter->getAims();
 	aims->up();
-	followTo = nullptr;
 }
 
 void Unit::removeAim() {
@@ -180,7 +167,6 @@ void Unit::removeAim() {
 		aims = nullptr;
 	}
 	aimIndex = 0;
-	followTo = nullptr;
 }
 
 String* Unit::toMultiLineString() {
@@ -201,7 +187,9 @@ void Unit::action(short id, ActionParameter* parameter) {
 	case OrderType::STOP:
 		states->changeState(this, UnitStateType::STOP);
 		break;
-	case OrderType::CHARGE: break;
+	case OrderType::CHARGE:
+		states->changeState(this, UnitStateType::CHARAGE, parameter);
+		break;
 	case OrderType::ATTACK: break;
 	case OrderType::PATROL:
 		states->changeState(this, UnitStateType::PATROL, parameter);
@@ -223,10 +211,7 @@ UnitStateType Unit::getState() {
 	return unitState;
 }
 
-void Unit::clean() {
-	if (followTo != nullptr && !followTo->isAlive()) {
-		followTo = nullptr;
-	}
+void Unit::clean() {//TODO pamietac zeby wyczyscic followTO
 	Physical::clean();
 }
 

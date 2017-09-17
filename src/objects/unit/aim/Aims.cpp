@@ -1,5 +1,5 @@
 #include "Aims.h"
-#include "defines.h"
+#include "TargetAim.h"
 
 
 Aims::Aims() {
@@ -9,14 +9,9 @@ Aims::Aims() {
 Aims::~Aims() {
 }
 
-Aim* Aims::getAim(short index) {
+Urho3D::Vector3* Aims::getDirection(Unit* unit, short index) {
 	if (index >= aims.size()) { return nullptr; }
-	return aims[index];
-}
-
-Urho3D::Vector3* Aims::getAimPos(short index) {
-	if (index >= aims.size()) { return nullptr; }
-	return aims[index]->getPosition();
+	return aims[index]->getDirection(unit);
 }
 
 void Aims::clearAims() {
@@ -26,22 +21,15 @@ void Aims::clearAims() {
 	}
 }
 
-bool Aims::ifReach(Urho3D::Vector3* pedestrian, int index) {
-	if (aims.size() == 0) { return false; }
-	Aim* aim = getAim(index);
+bool Aims::ifReach(Unit* unit, int index) {
+	if (index >= aims.size()) { return false; }
+	Aim* aim = aims[index];
 	if (aim == nullptr) { return false; }
-	Urho3D::Vector3* pos = aim->getPosition();
-	double distance = ((*pos) - (*pedestrian)).LengthSquared();
-	if (distance <= aim->getRadius()*aim->getRadius()) {
-		return true;
-	}
-	return false;
-
+	return aim->ifReach(unit);
 }
 
-void Aims::add(Urho3D::Vector3* pos) {
-	pos->y_ = 0;
-	aims.push_back(new Aim(pos));
+void Aims::add(Aim *aim) {
+	aims.push_back(aim);
 }
 
 bool Aims::check(int aimIndex) {
@@ -50,7 +38,6 @@ bool Aims::check(int aimIndex) {
 		return true;
 	}
 	return false;
-
 }
 
 int Aims::getReferences() {

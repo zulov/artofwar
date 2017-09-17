@@ -3,7 +3,6 @@
 #include <vector>
 #include "Aim.h"
 #include "utils.h"
-#include <Urho3D/Graphics/StaticModel.h>
 
 class Entity;
 
@@ -12,11 +11,10 @@ class Aims
 public:
 	Aims();
 	~Aims();
-	Aim* getAim(short index);
-	Urho3D::Vector3* getAimPos(short index);
+	Urho3D::Vector3* getDirection(Unit* unit, short index);
 	void clearAims();
-	bool ifReach(Urho3D::Vector3* pedestrian, int index);
-	void add(Urho3D::Vector3* pos);
+	bool ifReach(Unit* unit, int index);
+	void add(Aim* aim);
 	bool check(int aimIndex);
 	int getReferences();
 	void reduce();

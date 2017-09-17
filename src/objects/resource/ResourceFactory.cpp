@@ -1,6 +1,9 @@
 #include "ResourceFactory.h"
 #include "Game.h"
 #include "objects/building/Building.h"
+#include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Graphics/Material.h>
 
 
 ResourceFactory::ResourceFactory() {

@@ -22,6 +22,7 @@ class Unit : public Physical
 	friend class PatrolState;
 	friend class FollowState;
 	friend class AttackState;
+	friend class ChargeState;
 public:
 	Unit(Vector3* _position, Urho3D::Node* _boxNode);
 	~Unit();
@@ -33,7 +34,7 @@ public:
 	int getSubTypeId() override;
 	void setAcceleration(Vector3* _acceleration);
 	double getMaxSeparationDistance();
-	Vector3* getAim();
+	Vector3* getDestination();
 	Vector3* getVelocity();
 	double getMass();
 	double getUnitRadius();
@@ -58,7 +59,6 @@ protected:
 	double maxSeparationDistance;
 	double minSpeed;
 	Aims* aims;
-	Physical* followTo;
 	int aimIndex = 0;
 private:
 	void appendAim(ActionParameter* actionParameter);

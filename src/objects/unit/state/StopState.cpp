@@ -10,6 +10,7 @@ StopState::StopState() {
 	transitions.insert(UnitStateType::FOLLOW);
 	transitions.insert(UnitStateType::ATTACK);
 	transitions.insert(UnitStateType::MOVE);
+	transitions.insert(UnitStateType::CHARAGE);
 }
 
 StopState::~StopState() {

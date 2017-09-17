@@ -186,6 +186,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
+    <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
+    <ClCompile Include="src\objects\unit\aim\TargetAim.cpp" />
     <ClCompile Include="src\objects\unit\state\ChargeState.cpp" />
     <ClCompile Include="src\objects\unit\state\DeadState.cpp" />
     <ClCompile Include="src\objects\unit\state\DefendState.cpp" />
@@ -279,6 +282,9 @@
     <ClInclude Include="src\objects\unit\aim\AimContainer.h" />
     <ClInclude Include="src\objects\unit\aim\Aims.h" />
     <ClInclude Include="src\Benchmark.h" />
+    <ClInclude Include="src\objects\unit\aim\ChargeAim.h" />
+    <ClInclude Include="src\objects\unit\aim\FollowAim.h" />
+    <ClInclude Include="src\objects\unit\aim\TargetAim.h" />
     <ClInclude Include="src\objects\unit\state\AttackState.h" />
     <ClInclude Include="src\objects\unit\state\ChargeState.h" />
     <ClInclude Include="src\objects\unit\state\DeadState.h" />

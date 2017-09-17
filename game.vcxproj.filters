@@ -210,6 +210,9 @@
     <ClCompile Include="src\objects\unit\state\DefendState.cpp" />
     <ClCompile Include="src\objects\unit\state\DeadState.cpp" />
     <ClCompile Include="src\objects\unit\state\MoveState.cpp" />
+    <ClCompile Include="src\objects\unit\aim\TargetAim.cpp" />
+    <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
+    <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -458,6 +461,9 @@
     </ClInclude>
     <ClInclude Include="src\objects\unit\state\MoveState.h" />
     <ClInclude Include="src\control\MouseButton.h" />
+    <ClInclude Include="src\objects\unit\aim\TargetAim.h" />
+    <ClInclude Include="src\objects\unit\aim\FollowAim.h" />
+    <ClInclude Include="src\objects\unit\aim\ChargeAim.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

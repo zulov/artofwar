@@ -23,6 +23,7 @@ private:
 
 	AimContainer* aimContainer;
 	Vector3* vector;
+
 	Physical* toFollow;
 
 	void applyAim(Aims* aims);

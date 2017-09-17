@@ -51,9 +51,8 @@ Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Physical
 }
 
 Urho3D::Vector3* ForceStrategy::destination(Unit* unit) {
-	Vector3* aim = unit->getAim();
-	if (aim != nullptr) {
-		Vector3* force = new Vector3((*(aim)) - (*unit->getPosition()));
+	Vector3* force = unit->getDestination();
+	if (force != nullptr) {
 		force->Normalize();
 		(*force) *= boostCoef;
 		(*force) -= (*unit->getVelocity());

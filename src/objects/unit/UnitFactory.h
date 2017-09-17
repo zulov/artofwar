@@ -9,6 +9,7 @@
 #include <Urho3D/Core/Object.h>
 #include <Urho3D/UI/Font.h>
 #include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/Material.h>
 #include "objects/LinkComponent.h"
 #include "Game.h"
 
