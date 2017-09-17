@@ -3,23 +3,20 @@
 
 
 Aims::Aims() {
-	aims = new std::vector<Aim*>();
-	aims->reserve(DEFAULT_VECTOR_SIZE);
 	references = 0;
 }
 
 Aims::~Aims() {
-	delete aims;
 }
 
 Aim* Aims::getAim(short index) {
-	if (index >= aims->size()) { return nullptr; }
-	return (*aims)[index];
+	if (index >= aims.size()) { return nullptr; }
+	return aims[index];
 }
 
 Urho3D::Vector3* Aims::getAimPos(short index) {
-	if (index >= aims->size()) { return nullptr; }
-	return (*aims)[index]->getPosition();
+	if (index >= aims.size()) { return nullptr; }
+	return aims[index]->getPosition();
 }
 
 void Aims::clearAims() {
@@ -30,7 +27,7 @@ void Aims::clearAims() {
 }
 
 bool Aims::ifReach(Urho3D::Vector3* pedestrian, int index) {
-	if (aims->size() == 0) { return false; }
+	if (aims.size() == 0) { return false; }
 	Aim* aim = getAim(index);
 	if (aim == nullptr) { return false; }
 	Urho3D::Vector3* pos = aim->getPosition();
@@ -44,11 +41,11 @@ bool Aims::ifReach(Urho3D::Vector3* pedestrian, int index) {
 
 void Aims::add(Urho3D::Vector3* pos) {
 	pos->y_ = 0;
-	aims->push_back(new Aim(pos));
+	aims.push_back(new Aim(pos));
 }
 
 bool Aims::check(int aimIndex) {
-	if (aimIndex >= aims->size()) {
+	if (aimIndex >= aims.size()) {
 		reduce();
 		return true;
 	}

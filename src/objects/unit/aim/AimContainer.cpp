@@ -15,8 +15,8 @@ AimContainer::~AimContainer() {
 }
 
 void AimContainer::clean() {
-	for (int i = 0; i < aims->size(); ++i) {
-		(*aims)[i]->clearAims();
+	for (auto aim : (*aims)) {
+		aim->clearAims();
 	}
 }
 

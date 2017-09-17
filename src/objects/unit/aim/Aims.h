@@ -22,6 +22,6 @@ public:
 	void reduce();
 	void up();
 private:
-	std::vector<Aim*>* aims;
+	std::vector<Aim*> aims;
 	short int references;
 };
