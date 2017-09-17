@@ -3,11 +3,10 @@
 #include "hud/ButtonUtils.h"
 
 
-SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* _style) {
+SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* style) {
 	selected = new std::vector<Physical*>();
 	selected->reserve(MAX_SELECTED_IN_BUTTON);
 
-	style = _style;
 	button = simpleButton(nullptr, style, "SmallIcon");
 	button->SetVisible(false);
 	text = button->CreateChild<Text>();

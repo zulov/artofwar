@@ -47,7 +47,7 @@ std::vector<Physical*>* EnviromentStrategy::getNeighboursFromTeam(Unit* unit, do
 		return neight;
 		}
 	default:
-		return new std::vector<Physical*>();;
+		return new std::vector<Physical*>();
 	}
 }
 

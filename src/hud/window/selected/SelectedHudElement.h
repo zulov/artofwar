@@ -10,7 +10,7 @@
 class SelectedHudElement
 {
 public:
-	SelectedHudElement(Urho3D::XMLFile* _style);
+	SelectedHudElement(Urho3D::XMLFile* style);
 	~SelectedHudElement();
 	void unSelect();
 	void select(ObjectType objetType, int subType);
@@ -26,7 +26,7 @@ public:
 private:
 	Urho3D::Button* button;
 	std::vector<Physical*>* selected;
-	Urho3D::XMLFile* style;
+
 	MySprite* icon;
 	ProgressBar** bars;
 	Text* text;

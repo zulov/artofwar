@@ -15,7 +15,7 @@ public:
 	double calculateCoef(double distance, double minDist);
 	void remove(Physical * entity);
 private:
-	Urho3D::Vector2** values;
+	Urho3D::Vector2* values;
 	short resolution;
 	short halfResolution;
 	double size;

@@ -7,23 +7,16 @@ Gradient::Gradient(short _resolution, double _size) {
 	halfResolution = resolution / 2;
 	size = _size;
 	fieldSize = size / resolution;
-	values = new Urho3D::Vector2*[resolution];
-
-	for (int i = 0; i < resolution; ++i) {
-		values[i] = new Urho3D::Vector2 [resolution];
-	}
-//	for (int i = 0; i < resolution; ++i) {
-//		for (int j = 0; j < resolution; ++j) {
-//			values[i][j] = new Urho3D::Vector2();
-//		}
-//	}
+	values = new Urho3D::Vector2[resolution * resolution];
 }
 
 Gradient::~Gradient() {
+	delete[] values;
 }
 
-Urho3D::Vector2& Gradient::getValueAt(double x, double z) {//TODO zrobic srednie z sasiednich
-	return values[getIntegerPos(x) + halfResolution][getIntegerPos(z) + halfResolution];
+Urho3D::Vector2& Gradient::getValueAt(double x, double z) {
+	//TODO zrobic srednie z sasiednich
+	return values[(getIntegerPos(x) + halfResolution) * resolution + getIntegerPos(z) + halfResolution];
 }
 
 int Gradient::getIntegerPos(double value) {
@@ -48,7 +41,8 @@ void Gradient::add(Physical* entity) {
 	double bucketSize = (size / resolution);
 	double level = entity->getMinimalDistance() / (bucketSize) * 2;
 	Vector2 position(ddX, ddZ);
-	for (int i = -level; i <= level; ++i) {//TODO zwiekszyc zasieg
+	for (int i = -level; i <= level; ++i) {
+		//TODO zwiekszyc zasieg
 		for (int j = -level; j <= level; ++j) {
 
 			double centerX = dX + (i + 0.5) * bucketSize;
@@ -61,16 +55,16 @@ void Gradient::add(Physical* entity) {
 			double minimalDistance = entity->getMinimalDistance();
 			double coef = calculateCoef(distance, minimalDistance);
 			dir *= coef;
-			values[dX + i][dZ + j] += dir;
+			values[(dX + i) * resolution + dZ + j] += dir;
 		}
 	}
 }
 
 double Gradient::calculateCoef(double distance, double minDist) {
-	double parameter = distance - minDist/2;
+	double parameter = distance - minDist / 2;
 	if (parameter <= 0.05) {
 		parameter = 0.05;
 	}
-	return exp(minDist / (distance + 0.05)) +exp(1 / parameter) - 2;
+	return exp(minDist / (distance + 0.05)) + exp(1 / parameter) - 2;
 
 }
