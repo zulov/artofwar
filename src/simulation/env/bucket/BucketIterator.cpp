@@ -13,7 +13,7 @@ Physical* BucketIterator::next() {
 		if (index >= levelSize) { return nullptr; }
 		std::pair<short, short>* pair = (*levels)[index];
 		++index;
-		currentContent = bucketGrid->getBucketAt(pair->first + dX, pair->second + dZ)->getContent();
+		currentContent = bucketGrid->getContentAt(pair->first + dX, pair->second + dZ);
 		sizeContent = currentContent->size();
 		secondIndex = 0;
 	}
@@ -32,7 +32,7 @@ void BucketIterator::init(std::vector<std::pair<short, short>*>* _levels, short 
 	secondIndex = 0;
 	std::pair<short, short>* pair = (*levels)[index];
 	bucketGrid = _bucketGrid;
-	currentContent = bucketGrid->getBucketAt(pair->first + dX, pair->second + dZ)->getContent();
+	currentContent = bucketGrid->getContentAt(pair->first + dX, pair->second + dZ);
 	sizeContent = currentContent->size();
 	levelSize = levels->size();
 	++index;

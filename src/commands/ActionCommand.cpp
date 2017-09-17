@@ -74,10 +74,12 @@ void ActionCommand::execute() {
 		}
 		break;
 	case OrderType::CHARGE:
+		{
 		ActionParameter* localParameter = new ActionParameter();
 		localParameter->setVector(vector);
 		applyAction(localParameter);
 		delete localParameter;
+		}
 		break;
 	default: ;
 	}

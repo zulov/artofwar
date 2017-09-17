@@ -6,15 +6,10 @@ BucketGrid::BucketGrid(short _resolution, double _size) {
 	halfResolution = resolution / 2;
 	size = _size;
 	fieldSize = size / resolution;
-	bucketList = new Bucket**[resolution];
+	buckets = new Bucket*[resolution];
 
 	for (int i = 0; i < resolution; i++) {
-		bucketList[i] = new Bucket *[resolution];
-	}
-	for (int i = 0; i < resolution; ++i) {
-		for (int j = 0; j < resolution; ++j) {
-			bucketList[i][j] = new Bucket();
-		}
+		buckets[i] = new Bucket [resolution];
 	}
 
 	levelsCache = new std::vector<std::pair<short, short>*>*[RES_SEP_DIST];
@@ -22,27 +17,27 @@ BucketGrid::BucketGrid(short _resolution, double _size) {
 		levelsCache[i] = getEnvIndexs((((double)MAX_SEP_DIST) / RES_SEP_DIST) * i);
 	}
 
-	empty = new Bucket();
 	iterators = new BucketIterator*[MAX_THREADS];
 	for (int i = 0; i < MAX_THREADS; ++i) {
 		iterators[i] = new BucketIterator();
 	}
+
+	empty = new std::vector<Physical*>();
 }
 
 BucketGrid::~BucketGrid() {
-	delete empty;
 	delete[] iterators;
 }
 
-void BucketGrid::updateGrid(Physical* entity, int team) {
+void BucketGrid::updateGrid(Physical* entity, short team) {
 	Vector3* pos = entity->getPosition();
 	int posX = getIntegerPos(pos->x_);
 	int posZ = getIntegerPos(pos->z_);
 	if (!entity->isAlive()) {
-		getBucketAt(entity->getBucketX(team), entity->getBucketZ(team))->remove(entity);
+		removeAt(entity->getBucketX(team), entity->getBucketZ(team), entity);
 	} else if (entity->bucketHasChanged(posX, posZ, team)) {
-		getBucketAt(entity->getBucketX(team), entity->getBucketZ(team))->remove(entity);
-		getBucketAt(posX, posZ)->add(entity);
+		removeAt(entity->getBucketX(team), entity->getBucketZ(team), entity);
+		addAt(posX, posZ, entity);
 		entity->setBucket(posX, posZ, team);
 	}
 }
@@ -69,23 +64,39 @@ BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius, short th
 	return bucketIterator;
 }
 
-Bucket* BucketGrid::getBucketAt(int _x, int _z) {
-	int posX = _x + halfResolution;
-	int posZ = _z + halfResolution;
+void BucketGrid::removeAt(short x, short z, Physical* entity) {
+	int posX = x + halfResolution;
+	int posZ = z + halfResolution;
 
 	if (isInSide(posX, posZ)) {
-		return bucketList[posX][posZ];
-	} else {
-		return empty;
+		buckets[posX][posZ].remove(entity);
 	}
+}
+
+void BucketGrid::addAt(short x, short z, Physical* entity) {
+	int posX = x + halfResolution;
+	int posZ = z + halfResolution;
+
+	if (isInSide(posX, posZ)) {
+		buckets[posX][posZ].add(entity);
+	}
+}
+
+std::vector<Physical*>* BucketGrid::getContentAt(short x, short z) {
+	int posX = x + halfResolution;
+	int posZ = z + halfResolution;
+
+	if (isInSide(posX, posZ)) {
+		return buckets[posX][posZ].getContent();
+	}
+	return empty;
 }
 
 bool BucketGrid::isInSide(int _posX, int _posZ) const {
 	if (_posX < 0 || _posX >= resolution || _posZ < 0 || _posZ >= resolution) {
 		return false;
-	} else {
-		return true;
 	}
+	return true;
 }
 
 std::vector<Physical*>* BucketGrid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair) {
@@ -99,8 +110,7 @@ std::vector<Physical*>* BucketGrid::getArrayNeight(std::pair<Vector3*, Vector3*>
 
 	for (int i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
 		for (int j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
-			Bucket* bucket = getBucketAt(i, j);
-			vector<Physical *>* content = bucket->getContent();
+			vector<Physical *>* content = getContentAt(i, j);
 			entities->insert(entities->end(), content->begin(), content->end());
 		}
 	}
