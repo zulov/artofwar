@@ -18,11 +18,14 @@ ChargeState::~ChargeState() {
 
 void ChargeState::onStart(Unit* unit) {
 }
+
 void ChargeState::onStart(Unit* unit, ActionParameter* parameter) {
 	unit->addAim(parameter);
+	unit->maxSpeed = unit->dbUnit->maxSpeed * 2;
 }
 
 void ChargeState::onEnd(Unit* unit) {
+	unit->maxSpeed = unit->dbUnit->maxSpeed;
 }
 
 void ChargeState::execute(Unit* unit) {
