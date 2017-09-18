@@ -9,6 +9,7 @@ public:
 	~TargetAim();
 	Urho3D::Vector3* getDirection(Unit* unit) override;
 	bool ifReach(Unit* unit) override;
+	bool expired() override;
 private:
 	Urho3D::Vector3* position;
 	double radius;

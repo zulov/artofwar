@@ -110,7 +110,6 @@ void Simulation::update(Input* input, float timeStep) {
 			accumulateTime -= maxTimeFrame;
 			if (currentFrameNumber % 3 == 0) {
 				simCommandList->execute();
-				aimContainer->clean();
 				action();
 				actionCommandList->execute();
 			}
@@ -130,6 +129,7 @@ void Simulation::update(Input* input, float timeStep) {
 
 			timeStep = accumulateTime;
 			moveUnitsAndCheck(timeStep);
+			aimContainer->clean();
 		} else {
 			moveUnits(timeStep);
 		}

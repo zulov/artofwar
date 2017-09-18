@@ -40,3 +40,7 @@ Urho3D::Vector3* ChargeAim::getDirection(Unit* unit) {
 bool ChargeAim::ifReach(Unit* unit) {
 	return false;
 }
+
+bool ChargeAim::expired() {
+	return false;
+}

@@ -213,6 +213,7 @@
     <ClCompile Include="src\objects\unit\aim\TargetAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
+    <ClCompile Include="src\objects\unit\aim\DummyAim.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -464,6 +465,7 @@
     <ClInclude Include="src\objects\unit\aim\TargetAim.h" />
     <ClInclude Include="src\objects\unit\aim\FollowAim.h" />
     <ClInclude Include="src\objects\unit\aim\ChargeAim.h" />
+    <ClInclude Include="src\objects\unit\aim\DummyAim.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

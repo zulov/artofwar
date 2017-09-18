@@ -24,3 +24,7 @@ bool FollowAim::ifReach(Unit* unit) {
 	}
 	return false;
 }
+
+bool FollowAim::expired() {
+	return !physical->isAlive();
+}

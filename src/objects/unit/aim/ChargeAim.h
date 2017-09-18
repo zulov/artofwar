@@ -10,6 +10,7 @@ public:
 	~ChargeAim();
 	Urho3D::Vector3* getDirection(Unit* unit) override;
 	bool ifReach(Unit* unit) override;
+	bool expired() override;
 private:
 	Urho3D::Vector3* direction;
 	double distance;

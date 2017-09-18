@@ -40,3 +40,7 @@ bool TargetAim::ifReach(Unit* unit) {
 	}
 	return false;
 }
+
+bool TargetAim::expired() {
+	return false;
+}

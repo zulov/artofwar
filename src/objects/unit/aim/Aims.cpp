@@ -1,5 +1,6 @@
 #include "Aims.h"
 #include "TargetAim.h"
+#include "DummyAim.h"
 
 
 Aims::Aims() {
@@ -18,6 +19,14 @@ void Aims::clearAims() {
 	if (references <= 0) {
 		clear_vector(aims);
 		references = 0;
+	} else {
+		for (int i = 0; i < aims.size(); ++i) {
+			Aim* aim = aims[i];
+			if (aim->expired()) {
+				delete aim;
+				aims[i] = new DummyAim();
+			}
+		}
 	}
 }
 
@@ -28,7 +37,7 @@ bool Aims::ifReach(Unit* unit, int index) {
 	return aim->ifReach(unit);
 }
 
-void Aims::add(Aim *aim) {
+void Aims::add(Aim* aim) {
 	aims.push_back(aim);
 }
 
