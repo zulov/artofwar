@@ -18,7 +18,6 @@ StopState::~StopState() {
 
 void StopState::onStart(Unit* unit) {
 	unit->removeAim();
-	(*unit->velocity) = Vector3::ZERO;
 }
 
 void StopState::onStart(Unit* unit, ActionParameter* parameter) {

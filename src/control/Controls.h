@@ -47,7 +47,6 @@ public:
 
 private:
 	void create(ObjectType type, Vector3* pos, int number);
-	void setFirst(Vector3& hitPos, std::pair<Vector3*, Vector3*>* var);
 	void refreshSelected();
 	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
 	void controlEntity(Vector3& hitPos, Physical* clicked);
@@ -64,7 +63,7 @@ private:
 
 	void releaseRight();
 	void releaseLeft();
-	void updateState();
+	void resetState();
 
 	std::vector<Physical*>* selected;//TODO to powinien byæ set
 

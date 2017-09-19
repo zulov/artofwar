@@ -6,6 +6,7 @@ MoveState::MoveState() {
 	transitions.insert(UnitStateType::DEFEND);
 	transitions.insert(UnitStateType::DEAD);
 	transitions.insert(UnitStateType::GO);
+	transitions.insert(UnitStateType::ATTACK);
 	transitions.insert(UnitStateType::PATROL);
 	transitions.insert(UnitStateType::FOLLOW);
 	transitions.insert(UnitStateType::CHARAGE);

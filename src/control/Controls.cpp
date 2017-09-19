@@ -155,7 +155,8 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>* held) {
 	}
 
 	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[0], new Vector3(*held->first)));
-	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1], new Vector3(*held->second - *held->first)));
+	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1],
+	                                                           new Vector3(*held->second - *held->first)));
 	//TODO czy ta para jest usuwana
 }
 
@@ -196,7 +197,7 @@ void Controls::releaseRight() {
 	}
 }
 
-void Controls::updateState() {
+void Controls::resetState() {
 	if (selectedInfo->hasChanged()) {
 		state = DEFAULT;
 		idToCreate = -1;
@@ -316,7 +317,7 @@ void Controls::clean(SimulationInfo* simulationInfo) {
 	if (condition) {
 		refreshSelected();
 	}
-	updateState();
+	resetState();
 }
 
 void Controls::control() {
