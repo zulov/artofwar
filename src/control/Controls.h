@@ -51,8 +51,6 @@ private:
 	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
 	void controlEntity(Vector3& hitPos, Physical* clicked);
 
-	void clickDownRight();
-	void clickDownLeft();
 	void clickDown(MouseButton &var);
 
 	void leftClick(Physical* clicked, Vector3& hitPos);
@@ -63,6 +61,7 @@ private:
 
 	void releaseRight();
 	void releaseLeft();
+	void releaseBuildLeft();
 	void resetState();
 
 	std::vector<Physical*>* selected;//TODO to powinien byæ set

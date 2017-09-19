@@ -179,6 +179,18 @@ void Controls::releaseLeft() {
 	}
 }
 
+void Controls::releaseBuildLeft() {
+	Vector3 hitPos;
+	Drawable* hitDrawable;
+
+	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
+		LinkComponent* lc = hitDrawable->GetNode()->GetComponent<LinkComponent>();
+		if (lc) {
+			leftClick(lc->getPhysical(), hitPos);
+		}
+	}
+}
+
 void Controls::releaseRight() {
 	Vector3 hitPos;
 	Drawable* hitDrawable;
@@ -199,6 +211,7 @@ void Controls::releaseRight() {
 
 void Controls::resetState() {
 	if (selectedInfo->hasChanged()) {
+		//TODO to dziwny warunek
 		state = DEFAULT;
 		idToCreate = -1;
 	}
@@ -208,14 +221,6 @@ void Controls::hudAction(HudElement* hud) {
 	typeToCreate = hud->getType();
 	state = BUILD;
 	idToCreate = hud->getId();
-}
-
-void Controls::clickDownLeft() {
-	clickDown(left);
-}
-
-void Controls::clickDownRight() {
-	clickDown(right);
 }
 
 void Controls::clickDown(MouseButton& var) {
@@ -322,20 +327,39 @@ void Controls::clean(SimulationInfo* simulationInfo) {
 
 void Controls::control() {
 	if (active) {
-		if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
-			if (!left.isHeld) {
-				clickDownLeft();
+
+		switch (state) {
+
+		case DEFAULT:
+			if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
+				if (!left.isHeld) {
+					clickDown(left);
+				}
+			} else if (left.isHeld) {
+				releaseLeft();
 			}
-		} else if (left.isHeld) {
-			releaseLeft();
+
+			if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+				if (!right.isHeld) {
+					clickDown(right);
+				}
+			} else if (right.isHeld) {
+				releaseRight();
+			}
+			break;
+		case BUILD:
+			if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
+				releaseBuildLeft();
+			}
+
+			if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+				state = DEFAULT;
+				idToCreate = -1;
+			}
+			break;
+		case ORDER: break;
+		default: ;
 		}
 
-		if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
-			if (!right.isHeld) {
-				clickDownRight();
-			}
-		} else if (right.isHeld) {
-			releaseRight();
-		}
 	}
 }
