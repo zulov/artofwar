@@ -64,7 +64,6 @@ private:
 	void appendAim(ActionParameter* actionParameter);
 	void addAim(ActionParameter* actionParameter);
 	void removeAim();
-	void followAim(ActionParameter* parameter);
 	void attackIfCloseEnough(double& minDistance, Physical* entityClosest);
 
 	UnitStateType unitState;

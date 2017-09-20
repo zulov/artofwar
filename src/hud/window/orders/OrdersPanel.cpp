@@ -4,6 +4,7 @@
 #include "../../MySprite.h"
 #include <Urho3D/UI/Button.h>
 #include "../../ButtonUtils.h"
+#include <unordered_set>
 
 
 OrdersPanel::OrdersPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
@@ -16,6 +17,35 @@ OrdersPanel::~OrdersPanel() {
 
 void OrdersPanel::show(SelectedInfo* selectedInfo) {
 	setVisible(true);
+	vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+
+	unordered_set<int> common = { 0,1,2,3,4,5,6,7,8,9,10 };
+
+	for (int i = 0; i < infoTypes->size(); ++i) {
+		std::vector<Physical*>* data = infoTypes->at(i)->getData();
+		if (!data->empty()) {
+			std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
+			unordered_set<int> common2;
+			for (int j = 0; j < orders->size(); ++j) {//todo to zrobic raz i pobierac
+				common2.insert(orders->at(j)->id);
+			}
+			unordered_set<int> temp(common);
+			for (const auto& id : temp) {
+				if (common2.find(id) == common2.end()) {
+					common.erase(id);
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < buttons->size(); ++i) {
+		if (common.find(i) != common.end()) {
+			buttons->at(i)->getUIElement()->SetVisible(true);
+		}
+		else {
+			buttons->at(i)->getUIElement()->SetVisible(false);
+		}
+	}
 }
 
 std::vector<HudElement*>* OrdersPanel::getButtons() {

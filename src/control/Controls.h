@@ -41,11 +41,15 @@ public:
 
 	void deactivate();
 	void activate();
+
 	void order(short id);
 	void clean(SimulationInfo* simulationInfo);
 	void control();
 
 private:
+	void orderUnit(short id);
+	void orderBuilding(short id);
+
 	void create(ObjectType type, Vector3* pos, int number);
 	void refreshSelected();
 	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
@@ -54,7 +58,7 @@ private:
 	void clickDown(MouseButton &var);
 
 	void leftClick(Physical* clicked, Vector3& hitPos);
-	void rightClick(Physical* clicked, Vector3& hitPos);
+	void rightClickDefault(Physical* clicked, Vector3& hitPos);
 
 	void leftHold(std::pair<Vector3*, Vector3*>* held);
 	void rightHold(std::pair<Vector3*, Vector3*>* held);

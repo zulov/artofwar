@@ -39,7 +39,8 @@ INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
  (21,3,4),
  (22,4,0),
  (23,4,1),
- (24,4,4);
+ (24,4,4),
+ (25,4,7);
 INSERT INTO `orders` (id,icon) VALUES (0,'go.png'),
  (1,'stop.png'),
  (2,'charge.png'),
@@ -47,7 +48,8 @@ INSERT INTO `orders` (id,icon) VALUES (0,'go.png'),
  (4,'patrol.png'),
  (5,'dead.png'),
  (6,'defend.png'),
- (7,'follow.png');
+ (7,'follow.png'),
+ (8,'collect.png');
 INSERT INTO `nation` (id,name) VALUES (0,'basic'),
  (1,'enemy');
 INSERT INTO `hud_size_vars` (id,hud_size,name,value) VALUES (0,0,'iconX',42.0),

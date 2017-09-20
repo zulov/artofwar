@@ -108,7 +108,7 @@ void Controls::leftClick(Physical* clicked, Vector3& hitPos) {
 	}
 }
 
-void Controls::rightClick(Physical* clicked, Vector3& hitPos) {
+void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos) {
 	switch (clicked->getType()) {
 	case PHISICAL:
 		{
@@ -123,10 +123,13 @@ void Controls::rightClick(Physical* clicked, Vector3& hitPos) {
 		}
 	case UNIT:
 		{
-		unSelectAll();
+		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked));
+		//unSelectAll();
 		break;
 		}
-	case BUILDING: break;
+	case BUILDING: 
+		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked));
+		break;
 	case RESOURCE: break;
 	default: ;
 	}
@@ -176,6 +179,7 @@ void Controls::releaseLeft() {
 				leftClick(lc->getPhysical(), hitPos);
 			}
 		}
+		left.clean();
 	}
 }
 
@@ -203,9 +207,10 @@ void Controls::releaseRight() {
 		} else {
 			LinkComponent* lc = hitDrawable->GetNode()->GetComponent<LinkComponent>();
 			if (lc) {
-				rightClick(lc->getPhysical(), hitPos);
+				rightClickDefault(lc->getPhysical(), hitPos);
 			}
 		}
+		right.clean();
 	}
 }
 
@@ -259,7 +264,7 @@ void Controls::activate() {
 	active = true;
 }
 
-void Controls::order(short id) {
+void Controls::orderUnit(short id) {
 	OrderType type = OrderType(id);
 	switch (type) {
 	case OrderType::GO:
@@ -279,6 +284,27 @@ void Controls::order(short id) {
 		break;
 	default: ;
 	}
+}
+
+void Controls::orderBuilding(short id) {
+	for (int i = 0; i < selected->size(); ++i) {
+		(*selected)[i]->action(id, nullptr);//TODO przemyslec to
+	}
+}
+
+void Controls::order(short id) {
+	switch (selectedType) {
+
+	case UNIT: 
+		orderUnit(id);
+		break;
+	case BUILDING: 
+		orderBuilding(id);
+		break;
+	case RESOURCE: break;
+	default: ;
+	}
+	
 }
 
 void Controls::refreshSelected() {

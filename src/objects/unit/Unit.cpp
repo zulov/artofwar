@@ -104,8 +104,7 @@ void Unit::attackIfCloseEnough(double& distance, Physical* closest) {
 			attack(closest);
 			//attackRange();
 		} else if (distance < attackIntrest * attackIntrest) {
-			ActionCommand* command = new ActionCommand(this, OrderType::FOLLOW, closest);
-			Game::get()->getActionCommandList()->add(command);
+			Game::get()->getActionCommandList()->add(new ActionCommand(this, OrderType::FOLLOW, closest));
 		}
 	}
 }

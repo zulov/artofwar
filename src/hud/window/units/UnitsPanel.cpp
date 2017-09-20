@@ -4,7 +4,6 @@
 #include "hud/MySprite.h"
 #include "hud/ButtonUtils.h"
 #include "hud/HudElement.h"
-#include <set>
 #include <algorithm>
 #include <unordered_set>
 
