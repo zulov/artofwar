@@ -3,7 +3,8 @@ INSERT INTO `units` (id,name,minDist,maxSep,type,model,texture,font,mass,maxSpee
  (1,'archer',0.4,2.0,3,'Hedra.mdl','darkgrey.xml','Anonymous Pro.ttf',0.8,6.0,1.0,1,0,'archer.png'),
  (2,'pikeman',0.4,2.0,1,'Pyramid.mdl','red.xml','Anonymous Pro.ttf',0.9,3.0,1.0,1,0,'pikeman.png'),
  (3,'cavalry',0.6,3.5,2,'horse.mdl','horse.xml','Anonymous Pro.ttf',2.0,12.0,1.0,1,0,'cavalry.png'),
- (4,'worker',0.3,2.0,4,'Sphere.mdl','red.xml','Anonymous Pro.ttf',0.5,3.0,1.0,1,0,'worker.png');
+ (4,'worker',0.3,2.0,4,'Sphere.mdl','red.xml','Anonymous Pro.ttf',0.5,3.0,1.0,0,0,'worker.png'),
+ (5,'general',0.5,2.0,0,'general.mdl','general.xml','Anonymous Pro.ttf',1.0,7.0,1.0,1,0,'general.png');
 INSERT INTO `unit_type` (id,name) VALUES (0,'warrior'),
  (1,'pikeman'),
  (2,'cavalry'),
@@ -40,7 +41,15 @@ INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
  (22,4,0),
  (23,4,1),
  (24,4,4),
- (25,4,7);
+ (25,4,7),
+ (26,5,0),
+ (27,5,1),
+ (28,5,2),
+ (29,5,3),
+ (30,5,4),
+ (31,5,5),
+ (32,5,6),
+ (33,5,7);
 INSERT INTO `orders` (id,icon) VALUES (0,'go.png'),
  (1,'stop.png'),
  (2,'charge.png'),
@@ -90,7 +99,8 @@ INSERT INTO `cost_unit` (id,resource,value,unit) VALUES (0,0,90,3),
  (2,0,80,1),
  (3,1,130,2),
  (4,2,50,4),
- (5,1,30,1);
+ (5,1,30,1),
+ (6,0,200,5);
 INSERT INTO `cost_building` (id,resource,value,building) VALUES (0,3,100,0),
  (1,1,50,0),
  (2,3,100,1),
@@ -119,7 +129,9 @@ INSERT INTO `building_to_unit` (id,building,unit) VALUES (0,4,0),
  (9,5,1),
  (10,5,2),
  (11,5,3),
- (12,0,4);
+ (12,0,4),
+ (13,4,5),
+ (14,5,5);
 INSERT INTO `building` (id,name,minDist,type,model,texture,font,scale,texture_temp,nation,icon,queue_max_capacity) VALUES (0,'house',6.0,0,'House2.mdl','house2.xml','Anonymous Pro.ttf',3.0,'house_temp.xml',0,'house.png',5),
  (1,'tower',3.0,1,'Tower.mdl','tower.xml','Anonymous Pro.ttf',1.0,'tower_temp.xml',0,'tower.png',5),
  (2,'barracks',10.0,2,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml',0,'barracks.png',10),

@@ -1,7 +1,8 @@
 #include "Simulation.h"
 
 
-Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationCommandList* _simCommandList, SimulationObjectManager* _simObjectManager) {
+Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationCommandList* _simCommandList,
+                       SimulationObjectManager* _simObjectManager) {
 	envStrategy = _enviromentStrategy;
 	forceStrategy = new ForceStrategy();
 	simObjectManager = _simObjectManager;
@@ -19,7 +20,7 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 
 void Simulation::action() {
 	for (auto unit : (*units)) {
-		if (unit->checkTransition(UnitStateType::ATTACK) ) {
+		if (unit->checkTransition(UnitStateType::ATTACK)) {
 			if (unit->hasEnemy()) {
 				unit->attack();
 			} else {
@@ -33,12 +34,17 @@ void Simulation::action() {
 }
 
 void Simulation::createUnits() {
-	simCommandList->add(new SimulationCommand(ObjectType::UNIT, UNITS_NUMBER, 0, new Vector3(0, 0, 0), SpacingType::CONSTANT, 0));
-	simCommandList->add(new SimulationCommand(ObjectType::UNIT, UNITS_NUMBER, 1, new Vector3(-50, 0, -50), SpacingType::CONSTANT, 1));
+	simCommandList->add(new SimulationCommand(UNIT, UNITS_NUMBER / 5, 0, new Vector3(10, 0, 10), CONSTANT, 0));
+	simCommandList->add(new SimulationCommand(UNIT, UNITS_NUMBER / 5, 1, new Vector3(10, 0, -10), CONSTANT, 0));
+	simCommandList->add(new SimulationCommand(UNIT, UNITS_NUMBER / 5, 2, new Vector3(-10, 0, 10), CONSTANT, 0));
+	simCommandList->add(new SimulationCommand(UNIT, UNITS_NUMBER / 5, 4, new Vector3(-10, 0, -10), CONSTANT, 0));
+	simCommandList->add(new SimulationCommand(UNIT, UNITS_NUMBER / 5, 5, new Vector3(0, 0, 0), CONSTANT, 0));
 
-	simCommandList->add(new SimulationCommand(ObjectType::RESOURCE, 4, ResourceType::GOLD, new Vector3(-50, 0, 45), SpacingType::CONSTANT, 1));
-	simCommandList->add(new SimulationCommand(ObjectType::RESOURCE, 4, ResourceType::STONE, new Vector3(50, 0, 25), SpacingType::CONSTANT, 1));
-	simCommandList->add(new SimulationCommand(ObjectType::RESOURCE, 9, ResourceType::WOOD, new Vector3(40, 0, 0), SpacingType::CONSTANT, 1));
+	simCommandList->add(new SimulationCommand(UNIT, UNITS_NUMBER, 3, new Vector3(-50, 0, -50), CONSTANT, 1));
+
+	simCommandList->add(new SimulationCommand(RESOURCE, 4, GOLD, new Vector3(-50, 0, 45), CONSTANT, 1));
+	simCommandList->add(new SimulationCommand(RESOURCE, 4, STONE, new Vector3(50, 0, 25), CONSTANT, 1));
+	simCommandList->add(new SimulationCommand(RESOURCE, 9, WOOD, new Vector3(40, 0, 0), CONSTANT, 1));
 }
 
 float Simulation::updateTime(float timeStep) {
@@ -69,7 +75,8 @@ void Simulation::updateBuildingQueue() {
 	for (Building* build : (*buildings)) {
 		QueueElement* done = build->updateQueue(maxTimeFrame);
 		if (done) {
-			simCommandList->add(new SimulationCommand(done->getType(), done->getAmount(), done->getSubtype(), new Vector3(*(build->getTarget())), SpacingType::CONSTANT, 0));
+			simCommandList->add(new SimulationCommand(done->getType(), done->getAmount(), done->getSubtype(),
+			                                          new Vector3(*(build->getTarget())), SpacingType::CONSTANT, 0));
 		}
 	}
 }
@@ -82,7 +89,7 @@ SimulationInfo* Simulation::getInfo() {
 	return simulationInfo;
 }
 
-void Simulation::updateEnviroment() {	
+void Simulation::updateEnviroment() {
 	if (simulationInfo->ifAmountBuildingChanged()) {
 		envStrategy->update(buildings);
 	}
