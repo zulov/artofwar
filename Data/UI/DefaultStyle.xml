@@ -551,6 +551,7 @@
 			<attribute name="Hover Image Offset" value="null" />
 			<attribute name="Layout Mode" value="Vertical" />
 			<attribute name="Layout Border" value="{spaceX/2} {spaceY/2} {spaceX/2} {spaceY/2}" />
+			<attribute name="Max Size" value="{iconX+spaceX + iconX/2} {resY/2-spaceY}"/>
 			<element internal="true">
                 <attribute name="Layout Spacing" value="{spaceY}" />
             </element>
