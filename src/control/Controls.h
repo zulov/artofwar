@@ -44,6 +44,10 @@ public:
 
 	void order(short id);
 	void clean(SimulationInfo* simulationInfo);
+	void defaultControl();
+	void buildControl();
+
+	void orderControl();
 	void control();
 
 private:
@@ -64,9 +68,11 @@ private:
 	void rightHold(std::pair<Vector3*, Vector3*>* held);
 
 	void releaseRight();
+	bool orderAction();
 	void releaseLeft();
 	void releaseBuildLeft();
-	void resetState();
+	void resetState();	
+	void toDefault();
 
 	std::vector<Physical*>* selected;//TODO to powinien byæ set
 
@@ -77,7 +83,7 @@ private:
 
 	Input* input;
 	ObjectType selectedType;
-	ControlsState state = ControlsState::DEFAULT;
+	ControlsState state = DEFAULT;
 	OrderType orderType = OrderType::GO;
 	ObjectType typeToCreate;
 	SelectedInfo* selectedInfo;

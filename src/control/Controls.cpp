@@ -25,7 +25,7 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 	}
 
 	Ray cameraRay = camera->GetScreenRay((float)pos.x_ / Game::get()->getGraphics()->GetWidth(),
-	                                     (float)pos.y_ / Game::get()->getGraphics()->GetHeight());
+		(float)pos.y_ / Game::get()->getGraphics()->GetHeight());
 
 	PODVector<RayQueryResult> results;
 	RayOctreeQuery query(results, cameraRay, RAY_TRIANGLE, maxDistance, DRAWABLE_GEOMETRY);
@@ -36,7 +36,8 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 
 		Node* node = result.node_;
 		LinkComponent* lc = node->GetComponent<LinkComponent>();
-		if (lc == nullptr) { ++i; } else {
+		if (lc == nullptr) { ++i; }
+		else {
 			hitPos = result.position_;
 			hitDrawable = result.drawable_;
 			return true;
@@ -87,27 +88,28 @@ void Controls::leftClickBuild(Physical* clicked, Vector3& hitPos) {
 void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos) {
 	switch (clicked->getType()) {
 	case PHISICAL:
-		{
+	{
 		OrderType type;
 		if (input->GetKeyDown(KEY_SHIFT)) {
 			type = OrderType::PATROL;
-		} else {
+		}
+		else {
 			type = OrderType::GO;
 		}
 		Game::get()->getActionCommandList()->add(new ActionCommand(selected, type, new Vector3(hitPos)));
 		break;
-		}
+	}
 	case UNIT:
-		{
+	{
 		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked));
 		//unSelectAll();
 		break;
-		}
+	}
 	case BUILDING:
 		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked));
 		break;
 	case RESOURCE: break;
-	default: ;
+	default:;
 	}
 }
 
@@ -116,7 +118,7 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>* held) {
 		unSelectAll();
 	}
 	std::vector<Physical*>* entities = Game::get()->getMediator()->getEntities(held);
-	for (auto entity : (* entities)) {
+	for (auto entity : (*entities)) {
 		select(entity); //TODO zastapic wrzuceniem na raz
 	}
 	delete entities;
@@ -128,14 +130,15 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>* held) {
 	if (input->GetKeyDown(KEY_SHIFT)) {
 		type[0] = OrderType::PATROL;
 		type[1] = OrderType::PATROL;
-	} else {
+	}
+	else {
 		type[0] = OrderType::GO;
 		type[1] = OrderType::CHARGE;
 	}
 
 	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[0], new Vector3(*held->first)));
 	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1],
-	                                                           new Vector3(*held->second - *held->first)));
+		new Vector3(*held->second - *held->first)));
 	//TODO czy ta para jest usuwana
 }
 
@@ -149,7 +152,8 @@ void Controls::releaseLeft() {
 		double dist = (*(left.held->first) - *(left.held->second)).LengthSquared();
 		if (dist > clickDistance) {
 			leftHold(left.held);
-		} else {
+		}
+		else {
 			LinkComponent* lc = hitDrawable->GetNode()->GetComponent<LinkComponent>();
 			if (lc) {
 				leftClick(lc->getPhysical(), hitPos);
@@ -180,7 +184,8 @@ void Controls::releaseRight() {
 		double dist = (*(right.held->first) - *(right.held->second)).LengthSquared();
 		if (dist > clickDistance) {
 			rightHold(right.held);
-		} else {
+		}
+		else {
 			LinkComponent* lc = hitDrawable->GetNode()->GetComponent<LinkComponent>();
 			if (lc) {
 				rightClickDefault(lc->getPhysical(), hitPos);
@@ -190,11 +195,24 @@ void Controls::releaseRight() {
 	}
 }
 
+bool Controls::orderAction() {
+	Vector3 hitPos;
+	Drawable* hitDrawable;
+
+	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
+		LinkComponent* lc = hitDrawable->GetNode()->GetComponent<LinkComponent>();
+		if (lc) {
+			rightClickDefault(lc->getPhysical(), hitPos);
+			return true;
+		}
+	}
+	return false;
+}
+
 void Controls::resetState() {
 	if (selectedInfo->hasChanged()) {
 		//TODO to dziwny warunek
-		state = DEFAULT;
-		idToCreate = -1;
+		toDefault();
 	}
 }
 
@@ -220,7 +238,7 @@ void Controls::create(ObjectType type, Vector3* pos, int number) {
 
 		if (resources->reduce(costs)) {
 			SimulationCommand* simulationCommand = new SimulationCommand
-				(type, number, idToCreate, pos, SpacingType::CONSTANT, 0);
+			(type, number, idToCreate, pos, SpacingType::CONSTANT, 0);
 			Game::get()->getSimCommandList()->add(simulationCommand);
 		}
 	}
@@ -258,7 +276,7 @@ void Controls::orderUnit(short id) {
 			(*selected)[i]->action(id, nullptr);//TODO przemyslec to
 		}
 		break;
-	default: ;
+	default:;
 	}
 }
 
@@ -278,7 +296,7 @@ void Controls::order(short id) {
 		orderBuilding(id);
 		break;
 	case RESOURCE: break;
-	default: ;
+	default:;
 	}
 
 }
@@ -286,16 +304,16 @@ void Controls::order(short id) {
 void Controls::refreshSelected() {
 	int preSize = selected->size();
 	selected->erase(
-	                std::remove_if(
-	                               selected->begin(), selected->end(),
-	                               [](Physical* physical)
-                               {
-	                               if (!physical->isAlive()) {
-		                               return true;
-	                               }
-	                               return false;
-                               }),
-	                selected->end());
+		std::remove_if(
+			selected->begin(), selected->end(),
+			[](Physical* physical)
+	{
+		if (!physical->isAlive()) {
+			return true;
+		}
+		return false;
+	}),
+		selected->end());
 	if (selected->size() != preSize) {
 		unSelectAll();
 		for (auto physical : (*selected)) {
@@ -327,46 +345,90 @@ void Controls::clean(SimulationInfo* simulationInfo) {
 	resetState();
 }
 
+void Controls::toDefault() {
+	state = DEFAULT;
+	left.clean();
+	right.clean();
+	idToCreate = -1;
+}
+
+void Controls::defaultControl() {
+	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
+		if (!left.isHeld) {
+			clickDown(left);
+		}
+	}
+	else if (left.isHeld) {
+		releaseLeft();
+	}
+
+	if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+		if (!right.isHeld) {
+			clickDown(right);
+		}
+	}
+	else if (right.isHeld) {
+		releaseRight();
+	}
+}
+
+
+void Controls::buildControl() {
+	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
+		if (!left.isHeld) {
+			left.markHeld();
+		}
+	}
+	else if (left.isHeld) {
+		releaseBuildLeft();
+	}
+
+	if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+		toDefault();
+	}
+}
+
+void Controls::orderControl() {
+
+	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
+		if (!left.isHeld) {
+			left.markHeld();
+		}
+	}
+	else if (left.isHeld) {
+		switch (orderType) {
+		case OrderType::GO:
+		case OrderType::ATTACK:
+		case OrderType::PATROL:
+		case OrderType::FOLLOW:
+			if (orderAction()) {
+				toDefault();
+			}
+			break;
+		case OrderType::CHARGE:
+
+			break;
+		default:;
+		}
+	}
+
+	if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+		toDefault();
+	}
+}
+
 void Controls::control() {
 	if (active) {
-
 		switch (state) {
-
 		case DEFAULT:
-			if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
-				if (!left.isHeld) {
-					clickDown(left);
-				}
-			} else if (left.isHeld) {
-				releaseLeft();
-			}
-
-			if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
-				if (!right.isHeld) {
-					clickDown(right);
-				}
-			} else if (right.isHeld) {
-				releaseRight();
-			}
+			defaultControl();
 			break;
 		case BUILD:
-			if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
-				releaseBuildLeft();
-			}
-
-			if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
-				state = DEFAULT;
-				idToCreate = -1;
-			}
+			buildControl();
 			break;
 		case ORDER:
-			if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
-				state = DEFAULT;
-				idToCreate = -1;
-			}
+			orderControl();
 			break;
-		default: ;
 		}
-
 	}
 }

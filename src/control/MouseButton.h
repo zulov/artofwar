@@ -39,6 +39,10 @@ struct MouseButton
 		isHeld = false;
 	}
 
+	void markHeld() {
+		isHeld = true;
+	}
+
 
 	bool isHeld = false;
 
