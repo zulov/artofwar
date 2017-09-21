@@ -54,14 +54,13 @@ public:
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
+	Aims* aims;
 	double mass;
 	double maxSpeed;
 	double maxSeparationDistance;
 	double minSpeed;
-	Aims* aims;
 	int aimIndex = 0;
 private:
-	void appendAim(ActionParameter* actionParameter);
 	void addAim(ActionParameter* actionParameter);
 	void removeAim();
 	void attackIfCloseEnough(double& minDistance, Physical* entityClosest);

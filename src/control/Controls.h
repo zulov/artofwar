@@ -53,11 +53,11 @@ private:
 	void create(ObjectType type, Vector3* pos, int number);
 	void refreshSelected();
 	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
-	void controlEntity(Vector3& hitPos, Physical* clicked);
 
 	void clickDown(MouseButton &var);
 
 	void leftClick(Physical* clicked, Vector3& hitPos);
+	void leftClickBuild(Physical* clicked, Vector3& hitPos);
 	void rightClickDefault(Physical* clicked, Vector3& hitPos);
 
 	void leftHold(std::pair<Vector3*, Vector3*>* held);

@@ -72,40 +72,16 @@ void Controls::select(Physical* entity) {
 	selectedInfo->select(entity);
 }
 
-void Controls::controlEntity(Vector3& hitPos, Physical* clicked) {
-	switch (state) {
-	case DEFAULT:
-		{
-		if (!input->GetKeyDown(KEY_CTRL)) {
-			unSelectAll();
-		}
-		select(clicked);
-		}
-		break;
-	case BUILD:
-		{
+void Controls::leftClick(Physical* clicked, Vector3& hitPos) {
+	if (!input->GetKeyDown(KEY_CTRL)) {
 		unSelectAll();
-		create(ObjectType::BUILDING, new Vector3(hitPos), 1);
-		break;
-		}
 	}
+	select(clicked);
 }
 
-void Controls::leftClick(Physical* clicked, Vector3& hitPos) {
-	switch (clicked->getType()) {
-	case PHISICAL:
-		controlEntity(hitPos, clicked);
-		break;
-	case UNIT:
-	case BUILDING:
-	case RESOURCE:
-		if (!input->GetKeyDown(KEY_CTRL)) {
-			unSelectAll();
-		}
-		select(clicked);
-		break;
-	default: ;
-	}
+void Controls::leftClickBuild(Physical* clicked, Vector3& hitPos) {
+	unSelectAll();
+	create(ObjectType::BUILDING, new Vector3(hitPos), 1);
 }
 
 void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos) {
@@ -127,7 +103,7 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos) {
 		//unSelectAll();
 		break;
 		}
-	case BUILDING: 
+	case BUILDING:
 		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked));
 		break;
 	case RESOURCE: break;
@@ -190,7 +166,7 @@ void Controls::releaseBuildLeft() {
 	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
 		LinkComponent* lc = hitDrawable->GetNode()->GetComponent<LinkComponent>();
 		if (lc) {
-			leftClick(lc->getPhysical(), hitPos);
+			leftClickBuild(lc->getPhysical(), hitPos);
 		}
 	}
 }
@@ -295,16 +271,16 @@ void Controls::orderBuilding(short id) {
 void Controls::order(short id) {
 	switch (selectedType) {
 
-	case UNIT: 
+	case UNIT:
 		orderUnit(id);
 		break;
-	case BUILDING: 
+	case BUILDING:
 		orderBuilding(id);
 		break;
 	case RESOURCE: break;
 	default: ;
 	}
-	
+
 }
 
 void Controls::refreshSelected() {
@@ -383,7 +359,12 @@ void Controls::control() {
 				idToCreate = -1;
 			}
 			break;
-		case ORDER: break;
+		case ORDER:
+			if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+				state = DEFAULT;
+				idToCreate = -1;
+			}
+			break;
 		default: ;
 		}
 

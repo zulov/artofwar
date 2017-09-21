@@ -138,26 +138,17 @@ void Unit::updateHeight(double y, double timeStep) {
 	position->y_ = y;
 }
 
-void Unit::appendAim(ActionParameter* actionParameter) {
-	if (actionParameter->getAims() != aims && aims != nullptr) {
-		aims->reduce();
-		aimIndex = 0;
-		aims = actionParameter->getAims();
-		aims->up();
-	} else if (aims == nullptr) {
-		aimIndex = 0;
-		aims = actionParameter->getAims();
-		aims->up();
-	}
-}
-
 void Unit::addAim(ActionParameter* actionParameter) {
-	if (actionParameter->getAims() != aims && aims != nullptr) {
-		aims->reduce();
+	if (actionParameter->getAims() != aims) {
+		if(aims != nullptr) {
+			aims->reduce();
+		}
+
+		aimIndex = 0;
+		aims = actionParameter->getAims();
+		aims->up();
 	}
-	aimIndex = 0;
-	aims = actionParameter->getAims();
-	aims->up();
+	
 }
 
 void Unit::removeAim() {
