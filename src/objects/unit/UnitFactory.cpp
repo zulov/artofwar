@@ -5,6 +5,7 @@ UnitFactory::UnitFactory(): EntityFactory() {
 	units = new std::vector<Unit *>();
 	units->reserve(DEFAULT_VECTOR_SIZE);
 	states = new StateManager();
+	Unit::setStates(states);
 }
 
 UnitFactory::~UnitFactory() {
@@ -38,7 +39,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center
 			model->SetMaterial(material);
 
 			Unit* newUnit = new Unit(position, node);
-			newUnit->populate(dbUnit, states);
+			newUnit->populate(dbUnit);
 			newUnit->setPlayer(player);
 			newUnit->setTeam(player);//TODO ustawic team
 			units->push_back(newUnit);

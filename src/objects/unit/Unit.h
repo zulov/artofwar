@@ -27,7 +27,7 @@ public:
 	Unit(Vector3* _position, Urho3D::Node* _boxNode);
 	~Unit();
 	double getHealthBarSize() override;
-	void populate(db_unit* _dbUnit, StateManager* _states);
+	void populate(db_unit* _dbUnit);
 	void checkAim();
 	void move(double timeStep);
 	void applyForce(double timeStep);
@@ -51,6 +51,7 @@ public:
 	void setState(UnitStateType state);
 	bool checkTransition(UnitStateType state);
 	void executeState();//TODO niewiadomo gdzie to uzyc
+	static void setStates(StateManager* _states);
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
@@ -69,7 +70,7 @@ private:
 	UnitType unitType;
 
 	db_unit* dbUnit;
-	StateManager* states;
+	static StateManager* states;
 
 	double unitRadius = 2;
 	double attackIntrest = 10;

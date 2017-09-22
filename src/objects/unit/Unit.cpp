@@ -3,6 +3,7 @@
 #include "OrderType.h"
 
 double Unit::hbMaxSize = 1.0;
+StateManager* Unit::states = nullptr;
 
 Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode, UNIT) {
 	acceleration = new Vector3();
@@ -27,7 +28,7 @@ double Unit::getHealthBarSize() {
 	return healthBarSize;
 }
 
-void Unit::populate(db_unit* _dbUnit, StateManager* _states) {
+void Unit::populate(db_unit* _dbUnit) {
 	maxSeparationDistance = _dbUnit->maxSep;
 	mass = _dbUnit->mass;
 	maxSpeed = _dbUnit->maxSpeed;
@@ -37,8 +38,6 @@ void Unit::populate(db_unit* _dbUnit, StateManager* _states) {
 	textureName = "Materials/" + String(_dbUnit->texture);
 	unitType = UnitType(_dbUnit->type);
 	rotatable = _dbUnit->rotatable;
-
-	states = _states;
 
 	dbUnit = _dbUnit;
 }
@@ -140,7 +139,7 @@ void Unit::updateHeight(double y, double timeStep) {
 
 void Unit::addAim(ActionParameter* actionParameter) {
 	if (actionParameter->getAims() != aims) {
-		if(aims != nullptr) {
+		if (aims != nullptr) {
 			aims->reduce();
 		}
 
@@ -148,7 +147,7 @@ void Unit::addAim(ActionParameter* actionParameter) {
 		aims = actionParameter->getAims();
 		aims->up();
 	}
-	
+
 }
 
 void Unit::removeAim() {
@@ -201,7 +200,8 @@ UnitStateType Unit::getState() {
 	return unitState;
 }
 
-void Unit::clean() {//TODO pamietac zeby wyczyscic followTO
+void Unit::clean() {
+	//TODO pamietac zeby wyczyscic followTO
 	Physical::clean();
 }
 
@@ -215,6 +215,10 @@ bool Unit::checkTransition(UnitStateType state) {
 
 void Unit::executeState() {
 	states->execute(this);
+}
+
+void Unit::setStates(StateManager* _states) {
+	Unit::states = _states;
 }
 
 void Unit::applyForce(double timeStep) {

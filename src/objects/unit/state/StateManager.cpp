@@ -23,6 +23,12 @@ StateManager::StateManager() {
 	states[static_cast<int>(UnitStateType::DEFEND)] = new DefendState();
 	states[static_cast<int>(UnitStateType::MOVE)] = new MoveState();
 	states[static_cast<int>(UnitStateType::FOLLOW)] = new FollowState();
+	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
+		std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
+		for (auto order : *orders) {
+			ordersToUnit[i].insert(UnitStateType(order->id));
+		}
+	}
 }
 
 
@@ -38,9 +44,13 @@ void StateManager::changeState(Unit* unit, UnitStateType stateTo) {
 	}
 }
 
+bool StateManager::validateState(int id, UnitStateType stateTo) {
+	return ordersToUnit[id].find(stateTo) != ordersToUnit[id].end();
+}
+
 void StateManager::changeState(Unit* unit, UnitStateType stateTo, ActionParameter* actionParameter) {
 	State* stateFrom = states[static_cast<int>(unit->getState())];
-	if (stateFrom->validateTransition(stateTo)) {
+	if (stateFrom->validateTransition(stateTo) && validateState(unit->getSubTypeId(), stateTo)) {
 		stateFrom->onEnd(unit);
 		unit->setState(stateTo);
 		states[static_cast<int>(stateTo)]->onStart(unit, actionParameter);
