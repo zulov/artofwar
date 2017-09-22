@@ -9,6 +9,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 	acceleration = new Vector3();
 	velocity = new Vector3();
 	aims = nullptr;
+	resource = nullptr;
 
 	unitState = UnitStateType::STOP;
 	node->SetPosition(*_position);
@@ -35,7 +36,7 @@ void Unit::populate(db_unit* _dbUnit) {
 	minSpeed = maxSpeed * 0.2f;
 	minimalDistance = _dbUnit->minDist;
 	attackRange = minimalDistance + 2;
-	textureName = "Materials/" + String(_dbUnit->texture);
+	//textureName = "Materials/" + String(_dbUnit->texture);
 	unitType = UnitType(_dbUnit->type);
 	rotatable = _dbUnit->rotatable;
 
@@ -131,6 +132,13 @@ void Unit::attack() {
 	attack(enemyToAttack);
 }
 
+double Unit::collect() {
+	if (resource) {
+		return resource->collect(collectSpeed);
+	}
+	return 0;
+}
+
 void Unit::updateHeight(double y, double timeStep) {
 	double diff = position->y_ - y;
 	(*velocity) *= 1 + diff * mass * timeStep;
@@ -201,7 +209,9 @@ UnitStateType Unit::getState() {
 }
 
 void Unit::clean() {
-	//TODO pamietac zeby wyczyscic followTO
+	if (resource != nullptr && !resource->isAlive()) {
+		resource = nullptr;
+	}
 	Physical::clean();
 }
 

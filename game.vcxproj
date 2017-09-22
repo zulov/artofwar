@@ -96,7 +96,7 @@
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:x64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib;odbc32.lib;odbccp32.lib;lib\sqlite3.lib;lib\Urho3D.lib;lib\muparser.lib</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;winmm.lib;imm32.lib;version.lib;ws2_32.lib;dbghelp.lib;d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib;odbc32.lib;odbccp32.lib;lib\sqlite3.lib;lib\Urho3D.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <GenerateDebugInformation>No</GenerateDebugInformation>
@@ -191,6 +191,7 @@
     <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\TargetAim.cpp" />
     <ClCompile Include="src\objects\unit\state\ChargeState.cpp" />
+    <ClCompile Include="src\objects\unit\state\CollectState.cpp" />
     <ClCompile Include="src\objects\unit\state\DeadState.cpp" />
     <ClCompile Include="src\objects\unit\state\DefendState.cpp" />
     <ClCompile Include="src\objects\unit\state\GoState.cpp" />
@@ -289,6 +290,7 @@
     <ClInclude Include="src\objects\unit\aim\TargetAim.h" />
     <ClInclude Include="src\objects\unit\state\AttackState.h" />
     <ClInclude Include="src\objects\unit\state\ChargeState.h" />
+    <ClInclude Include="src\objects\unit\state\CollectState.h" />
     <ClInclude Include="src\objects\unit\state\DeadState.h" />
     <ClInclude Include="src\objects\unit\state\DefendState.h" />
     <ClInclude Include="src\objects\unit\state\GoState.h" />

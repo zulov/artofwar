@@ -10,13 +10,13 @@ INSERT INTO `unit_type` (id,name) VALUES (0,'warrior'),
  (2,'cavalry'),
  (3,'archer'),
  (4,'worker');
-INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,minDist) VALUES (0,'gold','gold.png',1000,'gold.xml
-','rock.mdl',0.75,3.0),
+INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,minDist,maxUsers) VALUES (0,'gold','gold.png',1000,'gold.xml
+','rock.mdl',0.75,3.0,4),
  (1,'wood','wood.png',100,'tree0.xml
-tree1.xml','tree.mdl',1.75,5.0),
- (2,'food','food.png',100,'food.xml',NULL,1.0,4.0),
- (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.75,3.0);
-INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
+tree1.xml','tree.mdl',1.75,5.0,3),
+ (2,'food','food.png',100,'food.xml',NULL,1.0,4.0,3),
+ (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.75,3.0,4);
+INSERT INTO `orders_to_unit` (id,unit,'order') VALUES (0,0,0),
  (1,0,1),
  (2,0,3),
  (3,0,4),

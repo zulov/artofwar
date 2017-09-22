@@ -32,6 +32,7 @@ CREATE TABLE "resource" (
 	`model`	TEXT,
 	`scale`	REAL,
 	`minDist`	REAL,
+	`maxUsers`	INTEGER,
 	PRIMARY KEY(`id`)
 );
 CREATE TABLE `orders_to_unit` (

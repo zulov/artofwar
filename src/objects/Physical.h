@@ -46,7 +46,7 @@ protected:
 	double attackRange;
 	double defenseCoef = 0.3;
 	double attackSpeed = 1;
-	String textureName;
+	//String textureName;
 
 	Node* billboardNode;
 	Node* barNode;

@@ -9,10 +9,11 @@ public:
 	PlayersManager();
 	~PlayersManager();
 	Player* getActivePlayer();
-	std::vector<Player*>* getTeam(int i);
-	void changeActive(int i);
+	Player* getPlayer(short i);
+	std::vector<Player*>* getTeam(short i);
+	void changeActive(short i);
 private:
 	Player* activePlayer;
-	std::vector<Player*>* allPlayers;
+	std::vector<Player*> allPlayers;
 	std::vector<Player*>* teams[TEAMS_NUMBER];
 };

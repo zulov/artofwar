@@ -21,6 +21,7 @@ void ResourceEntity::populate(db_resource* _dbResource) {
 	name = new String(_dbResource->name);
 	minimalDistance = _dbResource->minDist;
 	amonut = _dbResource->maxCapacity;
+	maxUsers = _dbResource->maxUsers;
 	dbResource = _dbResource;
 }
 
@@ -36,8 +37,17 @@ double ResourceEntity::getHealthBarSize() {
 	return hbMaxSize;
 }
 
-String *ResourceEntity::toMultiLineString() {
+String* ResourceEntity::toMultiLineString() {
 	(*menuString) = dbResource->name;
 	(*menuString) += "\nZasobów: " + String(amonut);
 	return menuString;
+}
+
+double ResourceEntity::collect(double collectSpeed) {
+	if (amonut - collectSpeed > 0) {
+		amonut -= collectSpeed;
+		return collectSpeed;
+	}
+	amonut = 0;
+	return amonut;
 }

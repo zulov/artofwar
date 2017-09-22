@@ -15,13 +15,15 @@ public:
 	void setInGradinet(bool _inGradient);
 	double getHealthBarSize() override;
 	String *toMultiLineString() override;
+	double collect(double collectSpeed);
 private:
 	String * name;
 	db_resource * dbResource;
 	int type;
-	int amonut;
+	double amonut;
 	bool inGradient = false;
 	static double hbMaxSize;
+	int maxUsers;
 };
 
 

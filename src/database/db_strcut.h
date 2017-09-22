@@ -32,7 +32,8 @@ struct db_unit
 	int nation;
 	Urho3D::String icon;
 
-	db_unit(int id, char* name, double minDist, double maxSep, int type, char* model, char* texture, char* font, double mass, double maxSpeed, double scale, int rotatable, int nation, char* icon)
+	db_unit(int id, char* name, double minDist, double maxSep, int type, char* model, char* texture, char* font,
+	        double mass, double maxSpeed, double scale, int rotatable, int nation, char* icon)
 		: id(id),
 		name(name),
 		minDist(minDist),
@@ -65,7 +66,8 @@ struct db_building
 	Urho3D::String icon;
 	short queueMaxCapacity;
 
-	db_building(int id, char* name, double minDist, int type, char* model, char* texture, char* font, double scale, char* texture_temp, int nation, char* icon, int queueMaxCapacity)
+	db_building(int id, char* name, double minDist, int type, char* model, char* texture, char* font, double scale,
+	            char* texture_temp, int nation, char* icon, int queueMaxCapacity)
 		: id(id),
 		name(name),
 		minDist(minDist),
@@ -158,8 +160,10 @@ struct db_resource
 	Urho3D::String model;
 	double scale;
 	double minDist;
+	int maxUsers;
 
-	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, double scale, double minDist)
+	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, double scale, double minDist,
+	            int maxUsers)
 		: id(id),
 		name(name),
 		icon(icon),
@@ -167,7 +171,8 @@ struct db_resource
 		texture(Urho3D::String(texture).Split(SPLIT_SIGN)),
 		model(model),
 		scale(scale),
-		minDist(minDist) {
+		minDist(minDist),
+		maxUsers(maxUsers) {
 	}
 };
 
@@ -199,7 +204,7 @@ struct db_cost
 		resource(resource),
 		value(value),
 		resourceName(resourceName),
-		thing(thing){
+		thing(thing) {
 	}
 };
 

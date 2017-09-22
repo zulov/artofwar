@@ -5,7 +5,7 @@
 
 
 Entity::Entity(Urho3D::Node* _node, ObjectType _type) {
-	node = _node;	
+	node = _node;
 	alive = true;
 	type = _type;
 	LinkComponent* lc = node->CreateComponent<LinkComponent>();
@@ -13,6 +13,8 @@ Entity::Entity(Urho3D::Node* _node, ObjectType _type) {
 }
 
 Entity::~Entity() {
+	node->RemoveAllChildren();
+	node->RemoveAllComponents();
 	node->Remove();
 }
 
