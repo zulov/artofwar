@@ -77,6 +77,7 @@ private:
 
 	db_unit* dbUnit;
 	static StateManager* states;
+	UnitStateType actionState;
 
 	double unitRadius = 2;
 	double attackIntrest = 10;

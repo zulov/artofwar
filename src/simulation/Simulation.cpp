@@ -6,8 +6,6 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 	envStrategy = _enviromentStrategy;
 	forceStrategy = new ForceStrategy();
 	simObjectManager = _simObjectManager;
-	units = simObjectManager->getUnits();
-	buildings = simObjectManager->getBuildings();
 	srand(time(NULL));
 	animate = true;
 	simCommandList = _simCommandList;
@@ -16,9 +14,13 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 	Game::get()->setActionCommmandList(actionCommandList);
 	simulationInfo = new SimulationInfo();
 	createUnits();
+
+	units = simObjectManager->getUnits();
+	buildings = simObjectManager->getBuildings();
+	resources = simObjectManager->getResources();
 }
 
-void Simulation::action() {
+void Simulation::selftAI() {
 	for (auto unit : (*units)) {
 		if (unit->checkTransition(UnitStateType::ATTACK)) {
 			if (unit->hasEnemy()) {
@@ -102,6 +104,12 @@ void Simulation::dispose() {
 	simObjectManager->dispose();
 }
 
+void Simulation::performAction() {
+	for (auto unit : (*units)) {
+		unit->executeState();
+	}
+}
+
 void Simulation::update(Input* input, float timeStep) {
 	if (input->GetKeyPress(KEY_SPACE)) {
 		animate = !animate;
@@ -112,12 +120,12 @@ void Simulation::update(Input* input, float timeStep) {
 		timeStep = updateTime(timeStep);
 		if (accumulateTime >= maxTimeFrame) {
 			countFrame();
-			double diff = maxTimeFrame - (accumulateTime - timeStep);
-			moveUnits(diff);
+
+			moveUnits(maxTimeFrame - (accumulateTime - timeStep));
 			accumulateTime -= maxTimeFrame;
 			if (currentFrameNumber % 3 == 0) {
 				simCommandList->execute();
-				action();
+				selftAI();
 				actionCommandList->execute();
 			}
 			envStrategy->update(units);
@@ -125,18 +133,13 @@ void Simulation::update(Input* input, float timeStep) {
 			simObjectManager->updateInfo(simulationInfo);
 			updateEnviroment();
 
-			units = simObjectManager->getUnits();//TODO te linijki sa pewnie nie potrzebne
-			buildings = simObjectManager->getBuildings();
-			resources = simObjectManager->getResources();
-
-			updateBuildingQueue();
-
 			calculateForces();
 			applyForce();
 
-			timeStep = accumulateTime;
-			moveUnitsAndCheck(timeStep);
-			aimContainer->clean();
+			moveUnitsAndCheck(accumulateTime);
+
+			performAction();
+			updateBuildingQueue();
 		} else {
 			moveUnits(timeStep);
 		}
@@ -154,6 +157,7 @@ void Simulation::moveUnitsAndCheck(float timeStep) {
 		unit->move(timeStep);
 		unit->checkAim();
 	}
+	aimContainer->clean();
 }
 
 void Simulation::calculateForces() {

@@ -124,7 +124,6 @@ void Unit::attack(vector<Physical*>* enemies) {
 
 void Unit::attack(Physical* enemy) {
 	states->changeState(this, UnitStateType::ATTACK);
-	enemy->absorbAttack(attackCoef);
 	enemyToAttack = enemy;
 }
 
@@ -147,15 +146,10 @@ void Unit::updateHeight(double y, double timeStep) {
 
 void Unit::addAim(ActionParameter* actionParameter) {
 	if (actionParameter->getAims() != aims) {
-		if (aims != nullptr) {
-			aims->reduce();
-		}
-
-		aimIndex = 0;
+		removeAim();
 		aims = actionParameter->getAims();
 		aims->up();
 	}
-
 }
 
 void Unit::removeAim() {

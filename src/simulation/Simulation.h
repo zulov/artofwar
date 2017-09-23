@@ -27,7 +27,7 @@ class Simulation
 {
 public:
 	Simulation(EnviromentStrategy* _enviromentStrategy, SimulationCommandList* _simCommandList, SimulationObjectManager* _simObjectManager);
-	void action();
+	void selftAI();
 	void update(Input* input, float timeStep);
 	void createUnits();
 	float updateTime(float timeStep);
@@ -38,6 +38,7 @@ public:
 	SimulationInfo* getInfo();
 	void updateEnviroment();
 	void dispose();
+	void performAction();
 
 private:
 	void moveUnits(float timeStep);
@@ -51,13 +52,9 @@ private:
 	vector<Unit*>* units;
 	vector<Building*>* buildings;
 	vector<ResourceEntity*>* resources;
+
 	AimContainer* aimContainer;
-	//CONST
-	const float ROTATE_SPEED = 115.0f;
-	const double coef = 10;
-
 	SimulationInfo* simulationInfo;
-
 	EnviromentStrategy* envStrategy;
 	ForceStrategy* forceStrategy;
 	SimulationObjectManager* simObjectManager;

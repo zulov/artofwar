@@ -24,8 +24,10 @@ void AttackState::onStart(Unit* unit, ActionParameter* parameter) {
 }
 
 void AttackState::onEnd(Unit* unit) {
+	unit->enemyToAttack = nullptr;
 }
 
 void AttackState::execute(Unit* unit) {
 	(*unit->velocity) = Urho3D::Vector3::ZERO;
+	unit->enemyToAttack->absorbAttack(unit->attackCoef);
 }
