@@ -11,6 +11,7 @@
 #include "MoveState.h"
 #include "FollowState.h"
 #include "../Unit.h"
+#include "CollectState.h"
 
 StateManager::StateManager() {
 	states = new State*[STATE_SIZE];
@@ -23,6 +24,7 @@ StateManager::StateManager() {
 	states[static_cast<int>(UnitStateType::DEFEND)] = new DefendState();
 	states[static_cast<int>(UnitStateType::MOVE)] = new MoveState();
 	states[static_cast<int>(UnitStateType::FOLLOW)] = new FollowState();
+	states[static_cast<int>(UnitStateType::COLLECT)] = new CollectState();
 	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
 		std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
 		for (auto order : *orders) {

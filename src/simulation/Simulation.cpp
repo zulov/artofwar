@@ -20,18 +20,44 @@ Simulation::Simulation(EnviromentStrategy* _enviromentStrategy, SimulationComman
 	resources = simObjectManager->getResources();
 }
 
+void Simulation::tryToAttack(vector<Unit*>::value_type unit) {
+	if (unit->hasEnemy()) {
+		unit->toAttack();
+	} else {
+		std::vector<Physical*>* enemies = envStrategy->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
+
+		unit->toAttack(enemies);
+		delete enemies;
+	}
+}
+
+void Simulation::tryToCollect(Unit* unit) {
+	if (unit->hasResource()) {
+		unit->toCollect();
+	} else {
+		std::vector<Physical*>* resources = envStrategy->getResources(unit, 12);
+
+		unit->toCollect(resources);
+		delete resources;
+	}
+}
+
 void Simulation::selftAI() {
 	for (auto unit : (*units)) {
-		if (unit->checkTransition(UnitStateType::ATTACK)) {
-			if (unit->hasEnemy()) {
-				unit->attack();
-			} else {
-				std::vector<Physical*>* enemies = envStrategy->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
-
-				unit->attack(enemies);
-				delete enemies;
+		if (unit->getState() == UnitStateType::STOP || unit->getState() == UnitStateType::MOVE) {
+			if (unit->checkTransition(unit->getActionState())) {
+				switch (unit->getActionState()) {
+				case UnitStateType::ATTACK:
+					tryToAttack(unit);
+					break;
+				case UnitStateType::COLLECT:
+					tryToCollect(unit);
+					break;
+				default: ;
+				}
 			}
 		}
+
 	}
 }
 

@@ -6,7 +6,7 @@ AttackState::AttackState() {
 	transitions.insert(UnitStateType::STOP);
 	transitions.insert(UnitStateType::DEFEND);
 	transitions.insert(UnitStateType::DEAD);
-	transitions.insert(UnitStateType::ATTACK);
+	//transitions.insert(UnitStateType::ATTACK);
 	transitions.insert(UnitStateType::GO);
 	transitions.insert(UnitStateType::FOLLOW);
 	transitions.insert(UnitStateType::CHARAGE);

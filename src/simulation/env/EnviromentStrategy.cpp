@@ -30,7 +30,8 @@ std::vector<Physical*>* EnviromentStrategy::getNeighbours(Unit* unit, double rad
 	return getNeighbours(unit, allUnitGrid, radius);
 }
 
-std::vector<Physical*>* EnviromentStrategy::getNeighboursFromTeam(Unit* unit, double radius, int team, OperatorType operatorType) {
+std::vector<Physical*>* EnviromentStrategy::getNeighboursFromTeam(Unit* unit, double radius, int team,
+                                                                  OperatorType operatorType) {
 	switch (operatorType) {
 	case EQUAL:
 		return getNeighbours(unit, teamUnitGrid[team], radius);
@@ -79,7 +80,8 @@ std::vector<Physical*>* EnviromentStrategy::getResources(Unit* unit, double radi
 	return getNeighbours(unit, resourceGrid, radius);
 }
 
-void EnviromentStrategy::update(std::vector<Unit*>* units) {//TODO a jakby gridy same sie aktualizowaly a jako parametr dostawa³ tylko nowe te co dosta³y nie by³ oby potrzby przechowywania numerów?
+void EnviromentStrategy::update(std::vector<Unit*>* units) {
+	//TODO a jakby gridy same sie aktualizowaly a jako parametr dostawa³ tylko nowe te co dosta³y nie by³ oby potrzby przechowywania numerów?
 	for (auto unit : (*units)) {
 		allUnitGrid->updateGrid(unit, 0);
 		teamUnitGrid[unit->getTeam()]->updateGrid(unit, 1);
@@ -99,6 +101,7 @@ void EnviromentStrategy::update(std::vector<ResourceEntity*>* resources) {
 	for (auto resource : (*resources)) {
 		if (!resource->isInGrandient()) {
 			gradient->add(resource);
+			resourceGrid->updateGrid(resource, 0);
 			resource->setInGradinet(true);
 		}
 	}

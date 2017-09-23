@@ -10,6 +10,7 @@ MoveState::MoveState() {
 	transitions.insert(UnitStateType::PATROL);
 	transitions.insert(UnitStateType::FOLLOW);
 	transitions.insert(UnitStateType::CHARAGE);
+	transitions.insert(UnitStateType::COLLECT);
 }
 
 

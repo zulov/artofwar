@@ -44,10 +44,23 @@ String* ResourceEntity::toMultiLineString() {
 }
 
 double ResourceEntity::collect(double collectSpeed) {
-	if (amonut - collectSpeed > 0) {
+	if (amonut - collectSpeed >= 0) {
 		amonut -= collectSpeed;
 		return collectSpeed;
 	}
+	const double toReturn = amonut;
 	amonut = 0;
-	return amonut;
+	return toReturn;
+}
+
+bool ResourceEntity::belowLimit() {
+	return users < maxUsers;
+}
+
+void ResourceEntity::up() {
+	++users;
+}
+
+void ResourceEntity::reduce() {
+	--users;
 }

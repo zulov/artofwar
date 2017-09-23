@@ -6,19 +6,19 @@ class Resources
 {
 public:
 	Resources();
-	Resources(float valueForAll);
+	Resources(double valueForAll);
 	~Resources();
 	bool reduce(std::vector<db_cost*>* costs);
-	void add(int id, float value);
+	void add(int id, double value);
 	bool hasChanged();
 	short getSize();
-	float *getValues();
+	double *getValues();
 	Urho3D::String** getNames();
 	void hasBeedUpdatedDrawn();
 private:
 	bool changed;
 	void revert(int end, std::vector<db_cost*>* costs);
 	Urho3D::String* names[RESOURCE_NUMBER_DB];
-	float values[RESOURCE_NUMBER_DB];
+	double values[RESOURCE_NUMBER_DB];
 	int size;
 };

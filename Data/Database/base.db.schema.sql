@@ -14,6 +14,7 @@ CREATE TABLE "units" (
 	`rotatable`	INTEGER,
 	`nation`	INTEGER,
 	`icon`	TEXT,
+	`actionState`	INTEGER,
 	PRIMARY KEY(`id`),
 	FOREIGN KEY(`type`) REFERENCES `unit_type`(`id`),
 	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)

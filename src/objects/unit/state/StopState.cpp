@@ -11,6 +11,7 @@ StopState::StopState() {
 	transitions.insert(UnitStateType::ATTACK);
 	transitions.insert(UnitStateType::MOVE);
 	transitions.insert(UnitStateType::CHARAGE);
+	transitions.insert(UnitStateType::COLLECT);
 }
 
 StopState::~StopState() {

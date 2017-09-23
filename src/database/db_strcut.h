@@ -31,9 +31,10 @@ struct db_unit
 	bool rotatable;
 	int nation;
 	Urho3D::String icon;
+	int actionState;
 
 	db_unit(int id, char* name, double minDist, double maxSep, int type, char* model, char* texture, char* font,
-	        double mass, double maxSpeed, double scale, int rotatable, int nation, char* icon)
+	        double mass, double maxSpeed, double scale, int rotatable, int nation, char* icon, int actionState)
 		: id(id),
 		name(name),
 		minDist(minDist),
@@ -47,7 +48,8 @@ struct db_unit
 		scale(scale),
 		rotatable(rotatable),
 		nation(nation),
-		icon(icon) {
+		icon(icon), 
+		actionState(actionState) {
 	}
 };
 

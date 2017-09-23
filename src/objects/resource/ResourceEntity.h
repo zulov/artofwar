@@ -14,17 +14,18 @@ public:
 	bool isInGrandient();
 	void setInGradinet(bool _inGradient);
 	double getHealthBarSize() override;
-	String *toMultiLineString() override;
+	String* toMultiLineString() override;
 	double collect(double collectSpeed);
+	bool belowLimit();
+	void up();
+	void reduce();
 private:
-	String * name;
-	db_resource * dbResource;
+	String* name;
+	db_resource* dbResource;
 	int type;
 	double amonut;
 	bool inGradient = false;
 	static double hbMaxSize;
 	int maxUsers;
+	int users = 0;
 };
-
-
-

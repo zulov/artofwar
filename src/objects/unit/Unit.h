@@ -36,26 +36,30 @@ public:
 	int getSubTypeId() override;
 	void setAcceleration(Vector3* _acceleration);
 	double getMaxSeparationDistance();
-	Vector3* getDestination();
+	Vector3* getDestination(double boostCoef, double aimCoef);
 	Vector3* getVelocity();
-	double getMass();
 	double getUnitRadius();
 	void absorbAttack(double attackCoef) override;
 
-	void attack(vector<Physical*>* enemies);
-	void attack(Physical* enemy);
-	void attack();
+	void toAttack(vector<Physical*>* enemies);
+	void toAttack(Physical* enemy);
+	void toAttack();
 
-	double collect();
+	
+	void toCollect(vector<Physical*>* enemies);
+	void toCollect(ResourceEntity * _resource);
+	void toCollect();
 
 	void updateHeight(double y, double timeStep);
 	String* toMultiLineString() override;
 	void action(short id, ActionParameter* parameter) override;
 	UnitStateType getState();
+	UnitStateType getActionState();
 	void clean() override;
 	void setState(UnitStateType state);
 	bool checkTransition(UnitStateType state);
-	void executeState();//TODO niewiadomo gdzie to uzyc
+	void executeState();
+	bool hasResource();
 	static void setStates(StateManager* _states);
 protected:
 	Vector3* acceleration;
@@ -68,9 +72,11 @@ protected:
 	int aimIndex = 0;
 private:
 	ResourceEntity* resource;
+	Vector3* toResource;
 	void addAim(ActionParameter* actionParameter);
 	void removeAim();
-	void attackIfCloseEnough(double& minDistance, Physical* entityClosest);
+	void attackIfCloseEnough(double& distance, Physical* closest);
+	void collectIfCloseEnough(double distance, ResourceEntity* closest);
 
 	UnitStateType unitState;
 	UnitType unitType;

@@ -27,23 +27,29 @@ class Simulation
 {
 public:
 	Simulation(EnviromentStrategy* _enviromentStrategy, SimulationCommandList* _simCommandList, SimulationObjectManager* _simObjectManager);
-	void selftAI();
+
 	void update(Input* input, float timeStep);
-	void createUnits();
-	float updateTime(float timeStep);
-	void countFrame();
-	void applyForce();
-	void updateBuildingQueue();
+
 	int getUnitsNumber();
 	SimulationInfo* getInfo();
-	void updateEnviroment();
 	void dispose();
-	void performAction();
-
+	
 private:
 	void moveUnits(float timeStep);
 	void moveUnitsAndCheck(float timeStep);
 	void calculateForces();
+	void performAction();
+	float updateTime(float timeStep);
+	void updateEnviroment();
+	void createUnits();
+	void countFrame();
+	void applyForce();
+	void updateBuildingQueue();
+	void selftAI();
+
+	void tryToAttack(vector<Unit*>::value_type unit);
+	void tryToCollect(Unit* unit);
+
 	bool animate;
 	double accumulateTime = 0;
 	double maxTimeFrame = 0.05;

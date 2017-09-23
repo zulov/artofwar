@@ -10,6 +10,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 	velocity = new Vector3();
 	aims = nullptr;
 	resource = nullptr;
+	toResource = new Vector3();
 
 	unitState = UnitStateType::STOP;
 	node->SetPosition(*_position);
@@ -18,6 +19,7 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 Unit::~Unit() {
 	delete acceleration;
 	delete velocity;
+	delete toResource;
 	if (aims) {
 		aims->reduce();
 	}
@@ -35,11 +37,11 @@ void Unit::populate(db_unit* _dbUnit) {
 	maxSpeed = _dbUnit->maxSpeed;
 	minSpeed = maxSpeed * 0.2f;
 	minimalDistance = _dbUnit->minDist;
-	attackRange = minimalDistance + 2;
+	attackRange = minimalDistance + 5;
 	//textureName = "Materials/" + String(_dbUnit->texture);
 	unitType = UnitType(_dbUnit->type);
 	rotatable = _dbUnit->rotatable;
-
+	actionState = UnitStateType(_dbUnit->actionState);
 	dbUnit = _dbUnit;
 }
 
@@ -71,20 +73,26 @@ double Unit::getMaxSeparationDistance() {
 	return maxSeparationDistance;
 }
 
-Vector3* Unit::getDestination() {
+Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
 	if (aims) {
-		return aims->getDirection(this, aimIndex);
+		auto dir = aims->getDirection(this, aimIndex) ? aims->getDirection(this, aimIndex) : toResource;
+		if (dir) {
+			Vector3* force = new Vector3(*dir);
+			force->Normalize();
+			(*force) *= boostCoef;
+			(*force) -= (*velocity);
+			(*force) /= 0.5;
+			(*force) *= mass;
+			(*force) *= aimCoef;
+			return force;
+		}
 	}
 
-	return nullptr;
+	return new Vector3();
 }
 
 Vector3* Unit::getVelocity() {
 	return velocity;
-}
-
-double Unit::getMass() {
-	return mass;
 }
 
 double Unit::getUnitRadius() {
@@ -101,7 +109,7 @@ void Unit::absorbAttack(double attackCoef) {
 void Unit::attackIfCloseEnough(double& distance, Physical* closest) {
 	if (closest) {
 		if (distance < attackRange * attackRange) {
-			attack(closest);
+			toAttack(closest);
 			//attackRange();
 		} else if (distance < attackIntrest * attackIntrest) {
 			Game::get()->getActionCommandList()->add(new ActionCommand(this, OrderType::FOLLOW, closest));
@@ -109,7 +117,17 @@ void Unit::attackIfCloseEnough(double& distance, Physical* closest) {
 	}
 }
 
-void Unit::attack(vector<Physical*>* enemies) {
+void Unit::collectIfCloseEnough(double distance, ResourceEntity* closest) {
+	if (closest) {
+		if (distance < attackRange * attackRange) {
+			toCollect(closest);
+		} else if (distance < attackIntrest * attackIntrest) {
+			Game::get()->getActionCommandList()->add(new ActionCommand(this, OrderType::FOLLOW, closest));
+		}
+	}
+}
+
+void Unit::toAttack(vector<Physical*>* enemies) {
 	double minDistance = 9999;
 	Physical* entityClosest = nullptr;
 	for (auto entity : (*enemies)) {
@@ -122,20 +140,38 @@ void Unit::attack(vector<Physical*>* enemies) {
 	attackIfCloseEnough(minDistance, entityClosest);
 }
 
-void Unit::attack(Physical* enemy) {
+void Unit::toAttack(Physical* enemy) {
 	states->changeState(this, UnitStateType::ATTACK);
 	enemyToAttack = enemy;
 }
 
-void Unit::attack() {
-	attack(enemyToAttack);
+void Unit::toAttack() {
+	toAttack(enemyToAttack);
 }
 
-double Unit::collect() {
-	if (resource) {
-		return resource->collect(collectSpeed);
+void Unit::toCollect(vector<Physical*>* enemies) {
+	double minDistance = 9999;
+	ResourceEntity* entityClosest = nullptr;
+	for (auto entity : (*enemies)) {
+		ResourceEntity* resource = static_cast<ResourceEntity*>(entity);
+		if (resource->belowLimit()) {
+			const double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
+			if (distance <= minDistance) {
+				minDistance = distance;
+				entityClosest = resource;
+			}
+		}
 	}
-	return 0;
+	collectIfCloseEnough(minDistance, entityClosest);
+}
+
+void Unit::toCollect() {
+	return toCollect(resource);
+}
+
+void Unit::toCollect(ResourceEntity* _resource) {
+	states->changeState(this, UnitStateType::COLLECT);
+	resource = _resource;
 }
 
 void Unit::updateHeight(double y, double timeStep) {
@@ -202,6 +238,10 @@ UnitStateType Unit::getState() {
 	return unitState;
 }
 
+UnitStateType Unit::getActionState() {
+	return actionState;
+}
+
 void Unit::clean() {
 	if (resource != nullptr && !resource->isAlive()) {
 		resource = nullptr;
@@ -219,6 +259,10 @@ bool Unit::checkTransition(UnitStateType state) {
 
 void Unit::executeState() {
 	states->execute(this);
+}
+
+bool Unit::hasResource() {
+	return resource;
 }
 
 void Unit::setStates(StateManager* _states) {

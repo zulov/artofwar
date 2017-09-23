@@ -1,8 +1,6 @@
 #pragma once
 #include "sqlite3/sqlite3.h"
-#include <iostream>
 #include "db_strcut.h"
-#include "objects/building/BuildingType.h"
 #include <vector>
 using namespace std;
 
