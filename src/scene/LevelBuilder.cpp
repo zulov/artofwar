@@ -27,7 +27,6 @@ SharedPtr<Scene> LevelBuilder::createScene() {
 }
 
 void LevelBuilder::execute() {
-	//buildList->execute();
 }
 
 Entity* LevelBuilder::createZone() {
@@ -35,8 +34,8 @@ Entity* LevelBuilder::createZone() {
 	Zone* zone = zoneNode->CreateComponent<Zone>();
 	zone->SetBoundingBox(BoundingBox(-1000.0f, 1000.0f));
 	zone->SetFogColor(Color(0.15f, 0.15f, 0.3f));
-	zone->SetFogStart(200.0f);
-	zone->SetFogEnd(300.0f);
+	zone->SetFogStart(200);
+	zone->SetFogEnd(300);
 
 	Entity* entity = new Entity(zoneNode, ENTITY);
 	return entity;
@@ -55,7 +54,7 @@ Entity* LevelBuilder::createLight() {
 
 Entity* LevelBuilder::createGround() {
 	Node* planeNode = scene->CreateChild();
-	planeNode->SetScale(Vector3(300, 1.0f, 300));
+	planeNode->SetScale(Vector3(1024, 1.0f, 1024));
 	planeNode->SetPosition(Vector3());
 	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
 	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/Plane.mdl"));

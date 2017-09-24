@@ -24,7 +24,7 @@ void Simulation::tryToAttack(vector<Unit*>::value_type unit) {
 	if (unit->hasEnemy()) {
 		unit->toAttack();
 	} else {
-		std::vector<Physical*>* enemies = envStrategy->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
+		std::vector<Unit*>* enemies = envStrategy->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
 
 		unit->toAttack(enemies);
 		delete enemies;
@@ -35,10 +35,10 @@ void Simulation::tryToCollect(Unit* unit) {
 	if (unit->hasResource()) {
 		unit->toCollect();
 	} else {
-		std::vector<Physical*>* resources = envStrategy->getResources(unit, 12);
-
-		unit->toCollect(resources);
-		delete resources;
+		//		std::vector<Physical*>* resources = envStrategy->getResources(unit, 12);
+		//
+		//		unit->toCollect(resources);
+		//		delete resources;
 	}
 }
 
@@ -73,6 +73,8 @@ void Simulation::createUnits() {
 	simCommandList->add(new SimulationCommand(RESOURCE, 4, GOLD, new Vector3(-50, 0, 45), CONSTANT, 1));
 	simCommandList->add(new SimulationCommand(RESOURCE, 4, STONE, new Vector3(50, 0, 25), CONSTANT, 1));
 	simCommandList->add(new SimulationCommand(RESOURCE, 9, WOOD, new Vector3(40, 0, 0), CONSTANT, 1));
+
+	simCommandList->add(new SimulationCommand(RESOURCE, 1, STONE, new Vector3(0, 0, 0), CONSTANT, 1));
 }
 
 float Simulation::updateTime(float timeStep) {
@@ -119,11 +121,14 @@ SimulationInfo* Simulation::getInfo() {
 
 void Simulation::updateEnviroment() {
 	if (simulationInfo->ifAmountBuildingChanged()) {
-		envStrategy->update(buildings);
+		envStrategy->update(simObjectManager->getBuildingsToAdd());
+		simObjectManager->clearBuildingsToAdd();
 	}
 	if (simulationInfo->ifAmountResourceChanged()) {
-		envStrategy->update(resources);
+		envStrategy->update(simObjectManager->getResourcesToAdd());
+		simObjectManager->clearResourcesToAdd();
 	}
+	simObjectManager->clearUnitsToAdd();
 }
 
 void Simulation::dispose() {
@@ -188,21 +193,23 @@ void Simulation::moveUnitsAndCheck(float timeStep) {
 
 void Simulation::calculateForces() {
 	for (auto unit : (*units)) {
-		std::vector<Physical*>* neighbours = envStrategy->getNeighbours(unit, unit->getMaxSeparationDistance());
-		//std::vector<Physical*>* buildings = envStrategy->getBuildings(unit, unit->getMaxSeparationDistance());//TODO jakis inny parametr niz max separaatino dist
-		Vector2 repulsive = envStrategy->getRepulsiveAt(unit->getPosition());
+		Vector3* validPos = envStrategy->validatePosition(unit->getPosition());
+		if (!validPos) {
+			std::vector<Unit*>* neighbours = envStrategy->getNeighbours(unit, unit->getMaxSeparationDistance());
+			Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
 
-		Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
-		Vector3* sepObstacle = forceStrategy->separationObstacle(unit, repulsive);
+			Vector3* destForce = forceStrategy->destination(unit);
 
-		Vector3* destForce = forceStrategy->destination(unit);
+			(*sepPedestrian) += (*destForce);
+			unit->setAcceleration(sepPedestrian);
 
-		(*sepPedestrian) += (*sepObstacle) += (*destForce);
-		unit->setAcceleration(sepPedestrian);
+			delete destForce;
+			delete neighbours;
+		} else {
+			(*validPos) *= 20;
+			unit->setAcceleration(validPos);
+		}
 
-		delete sepObstacle;
-		delete destForce;
-		delete neighbours;
-		//delete buildings;
+
 	}
 }

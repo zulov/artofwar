@@ -5,16 +5,18 @@
 
 double Building::hbMaxSize = 5.0;
 
-Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode, BUILDING) {
+Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Static(_position, _boxNode, BUILDING) {
 	hbMaxSize = 5.0;
 
 	target = new Vector3(*_position);
 	target->x_ += 5;
 	target->z_ += 5;
+
 }
 
 
 Building::~Building() {
+	delete queue;
 }
 
 double Building::getHealthBarSize() {
@@ -23,12 +25,12 @@ double Building::getHealthBarSize() {
 	return healthBarSize;
 }
 
-int Building::getSubTypeId() {
+int Building::getID() {
 	return dbBuilding->id;
 }
 
 void Building::populate(db_building* _dbBuilding, std::vector<db_unit*>* _units) {
-	minimalDistance = _dbBuilding->minDist;
+	gridSize = IntVector2(_dbBuilding->minDist, _dbBuilding->minDist);
 	buildingType = BuildingType(_dbBuilding->type);
 	dbBuilding = _dbBuilding;
 	units = _units;
@@ -36,14 +38,6 @@ void Building::populate(db_building* _dbBuilding, std::vector<db_unit*>* _units)
 }
 
 void Building::absorbAttack(double attackCoef) {
-}
-
-bool Building::isInGrandient() {
-	return inGradient;
-}
-
-void Building::setInGradinet(bool _inGradient) {
-	inGradient = _inGradient;
 }
 
 String* Building::toMultiLineString() {

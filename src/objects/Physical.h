@@ -16,7 +16,7 @@ public:
 	virtual void select();
 	virtual void unSelect();
 	Vector3* getPosition();
-	double getMinimalDistance();
+
 	signed char getBucketX(signed char param);
 	signed char getBucketZ(signed char param);
 	bool bucketHasChanged(short posX, short posY, short param);
@@ -35,8 +35,6 @@ protected:
 
 	Physical* enemyToAttack = nullptr;
 
-	double minimalDistance;
-	bool rotatable;
 	signed char team;
 	signed char player;
 

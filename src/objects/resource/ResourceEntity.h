@@ -1,18 +1,17 @@
 #pragma once
 #include "objects/Entity.h"
 #include "database/db_strcut.h"
-#include "objects/Physical.h"
+#include "objects/Static.h"
 
 class ResourceEntity :
-	public Physical
+	public Static
 {
 public:
 	ResourceEntity(Vector3* _position, Urho3D::Node* _node);
 	virtual ~ResourceEntity();
-	int getSubTypeId() override;
+	int getID() override;
 	void populate(db_resource* _dbResource);
-	bool isInGrandient();
-	void setInGradinet(bool _inGradient);
+
 	double getHealthBarSize() override;
 	String* toMultiLineString() override;
 	double collect(double collectSpeed);

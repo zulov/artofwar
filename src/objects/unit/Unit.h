@@ -33,15 +33,17 @@ public:
 	void checkAim();
 	void move(double timeStep);
 	void applyForce(double timeStep);
-	int getSubTypeId() override;
+	int getID() override;
 	void setAcceleration(Vector3* _acceleration);
 	double getMaxSeparationDistance();
 	Vector3* getDestination(double boostCoef, double aimCoef);
 	Vector3* getVelocity();
 	double getUnitRadius();
+	double getMinimalDistance();
+
 	void absorbAttack(double attackCoef) override;
 
-	void toAttack(vector<Physical*>* enemies);
+	void toAttack(vector<Unit*>* enemies);
 	void toAttack(Physical* enemy);
 	void toAttack();
 
@@ -69,22 +71,23 @@ protected:
 	double maxSpeed;
 	double maxSeparationDistance;
 	double minSpeed;
-	int aimIndex = 0;
+	short aimIndex = 0;
 private:
-	ResourceEntity* resource;
-	Vector3* toResource;
 	void addAim(ActionParameter* actionParameter);
 	void removeAim();
-	void attackIfCloseEnough(double& distance, Physical* closest);
+	void attackIfCloseEnough(double& distance, Unit* closest);
 	void collectIfCloseEnough(double distance, ResourceEntity* closest);
-
-	UnitStateType unitState;
-	UnitType unitType;
-
+	ResourceEntity* resource;
+	Vector3* toResource;
 	db_unit* dbUnit;
 	static StateManager* states;
-	UnitStateType actionState;
 
+	UnitStateType unitState;
+	UnitStateType actionState;
+	UnitType unitType;
+
+	double minimalDistance;
+	bool rotatable;
 	double unitRadius = 2;
 	double attackIntrest = 10;
 	double collectSpeed = 2;

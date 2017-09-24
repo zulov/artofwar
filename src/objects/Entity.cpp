@@ -30,7 +30,7 @@ ObjectType Entity::getType() {
 	return type;
 }
 
-int Entity::getSubTypeId() {
+int Entity::getID() {
 	return -1;
 }
 

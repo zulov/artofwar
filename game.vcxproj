@@ -186,6 +186,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\objects\Static.cpp" />
     <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\DummyAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
@@ -220,7 +221,6 @@
     <ClCompile Include="src\database\DatabaseCache.cpp" />
     <ClCompile Include="src\hud\window\debug\DebugPanel.cpp" />
     <ClCompile Include="src\objects\unit\state\FollowState.cpp" />
-    <ClCompile Include="src\simulation\env\Gradient.cpp" />
     <ClCompile Include="src\hud\HudElement.cpp" />
     <ClCompile Include="src\hud\window\menu\MenuPanel.cpp" />
     <ClCompile Include="src\hud\window\minimap\MiniMapPanel.cpp" />
@@ -278,6 +278,7 @@
     <ClInclude Include="src\hud\window\AbstractWindowPanel.h" />
     <ClInclude Include="src\commands\ActionCommand.h" />
     <ClInclude Include="src\commands\ActionCommandList.h" />
+    <ClInclude Include="src\objects\Static.h" />
     <ClInclude Include="src\objects\unit\ActionParameter.h" />
     <ClInclude Include="src\ActionType.h" />
     <ClInclude Include="src\objects\unit\aim\Aim.h" />
@@ -313,7 +314,6 @@
     <ClInclude Include="src\database\db_strcut.h" />
     <ClInclude Include="src\hud\window\debug\DebugPanel.h" />
     <ClInclude Include="src\objects\unit\state\FollowState.h" />
-    <ClInclude Include="src\simulation\env\Gradient.h" />
     <ClInclude Include="src\hud\HudElement.h" />
     <ClInclude Include="src\hud\window\menu\MenuPanel.h" />
     <ClInclude Include="src\hud\window\minimap\MiniMapPanel.h" />

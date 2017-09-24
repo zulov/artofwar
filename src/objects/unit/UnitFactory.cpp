@@ -15,6 +15,7 @@ UnitFactory::~UnitFactory() {
 }
 
 std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center, SpacingType spacing, int player) {
+	units->clear();
 	Game* game = Game::get();
 	db_unit* dbUnit = game->getDatabaseCache()->getUnit(id);
 

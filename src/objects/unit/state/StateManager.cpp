@@ -52,7 +52,7 @@ bool StateManager::validateState(int id, UnitStateType stateTo) {
 
 void StateManager::changeState(Unit* unit, UnitStateType stateTo, ActionParameter* actionParameter) {
 	State* stateFrom = states[static_cast<int>(unit->getState())];
-	if (stateFrom->validateTransition(stateTo) && validateState(unit->getSubTypeId(), stateTo)) {
+	if (stateFrom->validateTransition(stateTo) && validateState(unit->getID(), stateTo)) {
 		stateFrom->onEnd(unit);
 		unit->setState(stateTo);
 		states[static_cast<int>(stateTo)]->onStart(unit, actionParameter);

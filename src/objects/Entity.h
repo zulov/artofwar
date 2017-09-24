@@ -1,7 +1,5 @@
 #pragma once
 #include <Urho3D/Scene/Node.h>
-#include <Urho3D/Math/Vector3.h>
-
 #include <Urho3D/Scene/Component.h>
 #include "ActionType.h"
 #include "unit/aim/Aims.h"
@@ -17,11 +15,9 @@ public:
 	virtual ~Entity();
 
 	Urho3D::Node* getNode();
-
 	bool isAlive();
-
 	ObjectType getType();
-	virtual int getSubTypeId();
+	virtual int getID();
 	virtual void action(ActionType actionType, ActionParameter* parameter);
 protected:
 	Urho3D::Node* node;

@@ -8,6 +8,10 @@ SimulationObjectManager::SimulationObjectManager() {
 	resources = new std::vector<ResourceEntity*>();
 	toDispose = new std::vector<Physical*>();
 
+	unitsToAdd = new std::vector<Unit*>();
+	buildingsToAdd = new std::vector<Building*>();;
+	resourcesToAdd = new std::vector<ResourceEntity*>();
+
 	units->reserve(10000);
 	buildings->reserve(1000);
 	resources->reserve(1000);
@@ -46,14 +50,17 @@ void SimulationObjectManager::add(ResourceEntity* resourceEntity) {
 
 void SimulationObjectManager::addAll(std::vector<Unit*>* _units) {
 	units->insert(std::end(*units), std::begin(*_units), std::end(*_units));
+	//unitsToAdd->insert(std::end(*unitsToAdd), std::begin(*_units), std::end(*_units));
 }
 
 void SimulationObjectManager::addAll(std::vector<Building*>* _buildings) {
 	buildings->insert(std::end(*buildings), std::begin(*_buildings), std::end(*_buildings));
+	buildingsToAdd->insert(std::end(*buildingsToAdd), std::begin(*_buildings), std::end(*_buildings));
 }
 
 void SimulationObjectManager::addAll(std::vector<ResourceEntity*>* _resources) {
 	resources->insert(std::end(*resources), std::begin(*_resources), std::end(*_resources));
+	resourcesToAdd->insert(std::end(*resourcesToAdd), std::begin(*_resources), std::end(*_resources));
 }
 
 std::vector<Unit*>* SimulationObjectManager::getUnits() {
@@ -68,25 +75,46 @@ std::vector<ResourceEntity*>* SimulationObjectManager::getResources() {
 	return resources;
 }
 
-void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* center, SpacingType spacingType, int player) {
-	tempUnits = unitFactory->create(number, id, center, spacingType, player);
-	addAll(tempUnits);
-	simulationInfo->setAmountUnitChanged();
-	tempUnits->clear();
+vector<Unit*>* SimulationObjectManager::getUnitsToAdd() {
+	return unitsToAdd;
 }
 
-void SimulationObjectManager::addBuildings(unsigned int number, int id, Vector3* center, SpacingType spacingType, int player) {
-	tempBuildings = buildingFactory->create(number, id, center, spacingType);
-	addAll(tempBuildings);
+vector<Building*>* SimulationObjectManager::getBuildingsToAdd() {
+	return buildingsToAdd;
+}
+
+vector<ResourceEntity*>* SimulationObjectManager::getResourcesToAdd() {
+	return resourcesToAdd;
+}
+
+void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* center, SpacingType spacingType,
+                                       int player) {
+	unitsTemp = unitFactory->create(number, id, center, spacingType, player);
+	addAll(unitsTemp);
+	simulationInfo->setAmountUnitChanged();
+}
+
+void SimulationObjectManager::addBuildings(unsigned int number, int id, Vector3* center, SpacingType spacingType,
+                                           int player) {
+	buildingsTemp = buildingFactory->create(number, id, center, spacingType);
+	addAll(buildingsTemp);
 	simulationInfo->setAmountBuildingChanged();
-	tempBuildings->clear();
 }
 
 void SimulationObjectManager::addResources(unsigned number, int id, Vector3* center, SpacingType spacingType) {
-	tempResources = resourceFactory->create(number, id, center, spacingType);
-	addAll(tempResources);
+	resourcesTemp = resourceFactory->create(number, id, center, spacingType);
+	addAll(resourcesTemp);
 	simulationInfo->setAmountResourceChanged();
-	tempResources->clear();
+}
+
+void SimulationObjectManager::clearUnitsToAdd() {
+	unitsToAdd->clear();
+}
+void SimulationObjectManager::clearBuildingsToAdd() {
+	buildingsToAdd->clear();
+}
+void SimulationObjectManager::clearResourcesToAdd() {
+	resourcesToAdd->clear();
 }
 
 void SimulationObjectManager::clean() {

@@ -20,17 +20,21 @@ public:
 	vector<Building*>* getBuildings();
 	vector<ResourceEntity*>* getResources();
 
+	vector<Unit*>* getUnitsToAdd();
+	vector<Building*>* getBuildingsToAdd();
+	vector<ResourceEntity*>* getResourcesToAdd();
+
 	void addUnits(unsigned number, int id, Vector3* center, SpacingType spacingType, int player);
 	void addBuildings(unsigned number, int id, Vector3* center, SpacingType spacingType, int player);
 	void addResources(unsigned number, int id, Vector3* center, SpacingType spacingType);
+	void clearUnitsToAdd();
+	void clearBuildingsToAdd();
+	void clearResourcesToAdd();
 	void clean();
 	void updateInfo(SimulationInfo* simulationInfo);
 	void dispose();
 private:
-	vector<Unit*>* units;
-	vector<Building*>* buildings;
-	vector<ResourceEntity*>* resources;
-	vector<Physical*>* toDispose;
+	bool shouldDelete(Physical* physical);
 
 	void add(Unit* unit);
 	void add(Building* building);
@@ -38,7 +42,6 @@ private:
 
 	void addAll(vector<Unit*>* _units);
 	void addAll(vector<Building*>* _buildings);
-	void addAll(vector<Entity*>* _entities);
 	void addAll(vector<ResourceEntity*>* _resources);
 
 	UnitFactory* unitFactory;
@@ -47,9 +50,16 @@ private:
 
 	SimulationInfo* simulationInfo;
 
+	vector<Unit*>* units;
+	vector<Building*>* buildings;
+	vector<ResourceEntity*>* resources;
+	vector<Physical*>* toDispose;
 
-	bool shouldDelete(Physical* physical);
-	std::vector<Unit*>* tempUnits;
-	std::vector<Building*>* tempBuildings;
-	std::vector<ResourceEntity*>* tempResources;
+	vector<Unit*>* unitsToAdd;
+	vector<Building*>* buildingsToAdd;
+	vector<ResourceEntity*>* resourcesToAdd;
+
+	vector<Unit*>* unitsTemp;
+	vector<Building*>* buildingsTemp;
+	vector<ResourceEntity*>* resourcesTemp;
 };

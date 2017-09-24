@@ -66,10 +66,6 @@ double Physical::getHealthBarSize() {
 	return 1;
 }
 
-double Physical::getMinimalDistance() {
-	return minimalDistance;
-}
-
 signed char Physical::getBucketX(signed char param) {
 	return bucketX[param];
 }

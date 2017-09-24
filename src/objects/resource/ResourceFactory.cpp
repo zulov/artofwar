@@ -18,6 +18,7 @@ ResourceFactory::~ResourceFactory() {
 }
 
 std::vector<ResourceEntity*>* ResourceFactory::create(unsigned number, int id, Vector3* center, SpacingType spacing) {
+	resources->clear();
 	db_resource* dbResource = Game::get()->getDatabaseCache()->getResource(id);
 
 	double space = getSpecSize(spacing) * spaceCoef;

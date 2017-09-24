@@ -11,7 +11,7 @@ public:
 	Urho3D::Vector3* separationObstacle(Unit* unit, Vector2& repulse);
 
 	Urho3D::Vector3 *separationObstacle(Unit * unit, std::vector<Physical *> *obstacles);
-	Urho3D::Vector3 *separationUnits(Unit * unit, std::vector<Physical *> *units);
+	Urho3D::Vector3 *separationUnits(Unit * unit, std::vector<Unit *> *units);
 	Urho3D::Vector3 *destination(Unit * unit);
 private:
 	const double coef = 1;

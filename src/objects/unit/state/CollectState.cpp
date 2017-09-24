@@ -28,7 +28,7 @@ void CollectState::execute(Unit* unit) {
 
 	if (unit->resource) {
 		double value = unit->resource->collect(unit->collectSpeed);
-		resources->add(unit->resource->getSubTypeId(), value);
+		resources->add(unit->resource->getID(), value);
 		(*unit->toResource) = *unit->resource->getPosition() - *unit->position;
 	}
 

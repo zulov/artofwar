@@ -22,14 +22,14 @@ BucketGrid::BucketGrid(short _resolution, double _size) {
 		iterators[i] = new BucketIterator();
 	}
 
-	empty = new std::vector<Physical*>();
+	empty = new std::vector<Unit*>();
 }
 
 BucketGrid::~BucketGrid() {
 	delete[] iterators;
 }
 
-void BucketGrid::updateGrid(Physical* entity, short team) {
+void BucketGrid::updateGrid(Unit* entity, short team) {
 	Vector3* pos = entity->getPosition();
 	int posX = getIntegerPos(pos->x_);
 	int posZ = getIntegerPos(pos->z_);
@@ -40,6 +40,39 @@ void BucketGrid::updateGrid(Physical* entity, short team) {
 		addAt(posX, posZ, entity);
 		entity->setBucket(posX, posZ, team);
 	}
+}
+
+bool BucketGrid::validateAdd(Static* object) {
+	Vector3* pos = object->getPosition();
+	int posX = getIntegerPos(pos->x_) + halfResolution;
+	int posZ = getIntegerPos(pos->z_) + halfResolution;
+	if (isInSide(posX, posZ) &&
+		buckets[posX][posZ].getType() == ObjectType::UNIT) {
+		return true;
+	}
+	return false;
+}
+
+void BucketGrid::addStatic(Static* object) {//TODO duzo poprawek trzeba, rozmair œrodek validacja
+	if (validateAdd(object)) {
+		IntVector2 size = object->getGridSize();
+		Vector3* pos = object->getPosition();
+		int posX = getIntegerPos(pos->x_) + halfResolution;
+		int posZ = getIntegerPos(pos->z_) + halfResolution;
+		object->setBucket(posX, posZ, 0);
+		for (int i = 0; i < size.x_; ++i) {
+			for (int j = 0; j < size.y_; ++j) {
+				buckets[posX+i][posZ+j].setStatic(object);
+			}
+		}
+		
+	}
+}
+
+void BucketGrid::removeStatic(Static* object) {
+	int posX = object->getBucketX(0);
+	int posZ = object->getBucketZ(0);
+	buckets[posX][posZ].removeStatic();
 }
 
 std::vector<std::pair<short, short>*>* BucketGrid::getEnvIndexsFromCache(double dist) {
@@ -64,7 +97,7 @@ BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius, short th
 	return bucketIterator;
 }
 
-void BucketGrid::removeAt(short x, short z, Physical* entity) {
+void BucketGrid::removeAt(short x, short z, Unit* entity) {
 	int posX = x + halfResolution;
 	int posZ = z + halfResolution;
 
@@ -73,7 +106,7 @@ void BucketGrid::removeAt(short x, short z, Physical* entity) {
 	}
 }
 
-void BucketGrid::addAt(short x, short z, Physical* entity) {
+void BucketGrid::addAt(short x, short z, Unit* entity) {
 	int posX = x + halfResolution;
 	int posZ = z + halfResolution;
 
@@ -82,7 +115,7 @@ void BucketGrid::addAt(short x, short z, Physical* entity) {
 	}
 }
 
-std::vector<Physical*>* BucketGrid::getContentAt(short x, short z) {
+std::vector<Unit*>* BucketGrid::getContentAt(short x, short z) {
 	int posX = x + halfResolution;
 	int posZ = z + halfResolution;
 
@@ -110,11 +143,31 @@ std::vector<Physical*>* BucketGrid::getArrayNeight(std::pair<Vector3*, Vector3*>
 
 	for (int i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
 		for (int j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
-			vector<Physical *>* content = getContentAt(i, j);
+			vector<Unit *>* content = getContentAt(i, j);
 			entities->insert(entities->end(), content->begin(), content->end());
 		}
 	}
 	return entities;
+}
+
+Vector3* BucketGrid::validatePosition(Vector3* position) {
+	int posX = getIntegerPos(position->x_) + halfResolution;
+	int posZ = getIntegerPos(position->z_) + halfResolution;
+
+	if (isInSide(posX, posZ)) {
+
+		if (buckets[posX][posZ].getType() != ObjectType::UNIT) {
+
+			double bucketSize = (size / resolution);
+			double cX = posX + (0.5) * bucketSize;
+			double cZ = posZ + (0.5) * bucketSize;
+
+			Vector3* direction = new Vector3(cX - position->x_, 0, cZ - position->z_);
+			direction->Normalize();
+			return direction;
+		}
+	}
+	return nullptr;
 }
 
 bool BucketGrid::fieldInCircle(int i, int j, double radius) {

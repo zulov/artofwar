@@ -57,6 +57,11 @@ void Unit::checkAim() {
 	}
 }
 
+
+double Unit::getMinimalDistance() {
+	return minimalDistance;
+}
+
 void Unit::move(double timeStep) {
 	if (unitState != UnitStateType::STOP) {
 		(*position) += (*velocity) * timeStep;
@@ -106,7 +111,7 @@ void Unit::absorbAttack(double attackCoef) {
 	}
 }
 
-void Unit::attackIfCloseEnough(double& distance, Physical* closest) {
+void Unit::attackIfCloseEnough(double& distance, Unit* closest) {
 	if (closest) {
 		if (distance < attackRange * attackRange) {
 			toAttack(closest);
@@ -127,9 +132,9 @@ void Unit::collectIfCloseEnough(double distance, ResourceEntity* closest) {
 	}
 }
 
-void Unit::toAttack(vector<Physical*>* enemies) {
+void Unit::toAttack(vector<Unit*>* enemies) {
 	double minDistance = 9999;
-	Physical* entityClosest = nullptr;
+	Unit* entityClosest = nullptr;
 	for (auto entity : (*enemies)) {
 		double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
 		if (distance <= minDistance) {
@@ -294,6 +299,6 @@ void Unit::applyForce(double timeStep) {
 	}
 }
 
-int Unit::getSubTypeId() {
+int Unit::getID() {
 	return dbUnit->id;
 }

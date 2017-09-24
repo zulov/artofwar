@@ -66,9 +66,6 @@
     <ClCompile Include="src\simulation\force\ForceStrategy.cpp">
       <Filter>simulation\force</Filter>
     </ClCompile>
-    <ClCompile Include="src\simulation\env\Gradient.cpp">
-      <Filter>simulation\env\gradient</Filter>
-    </ClCompile>
     <ClCompile Include="src\objects\LinkComponent.cpp">
       <Filter>objects\collection\link</Filter>
     </ClCompile>
@@ -215,6 +212,7 @@
     <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\DummyAim.cpp" />
     <ClCompile Include="src\objects\unit\state\CollectState.cpp" />
+    <ClCompile Include="src\objects\Static.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -311,9 +309,6 @@
     </ClInclude>
     <ClInclude Include="src\simulation\force\ForceStrategy.h">
       <Filter>simulation\force</Filter>
-    </ClInclude>
-    <ClInclude Include="src\simulation\env\Gradient.h">
-      <Filter>simulation\env\gradient</Filter>
     </ClInclude>
     <ClInclude Include="src\hud\Hud.h">
       <Filter>hud</Filter>
@@ -468,6 +463,7 @@
     <ClInclude Include="src\objects\unit\aim\ChargeAim.h" />
     <ClInclude Include="src\objects\unit\aim\DummyAim.h" />
     <ClInclude Include="src\objects\unit\state\CollectState.h" />
+    <ClInclude Include="src\objects\Static.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
