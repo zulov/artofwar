@@ -34,7 +34,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center
 			                                y * space + center->z_ - sideSize);
 			Node* node = game->getScene()->CreateChild();
 			node->SetPosition(*position);
-
+			node->Scale(dbUnit->scale);
 			StaticModel* model = node->CreateComponent<StaticModel>();
 			model->SetModel(model3d);
 			model->SetMaterial(material);

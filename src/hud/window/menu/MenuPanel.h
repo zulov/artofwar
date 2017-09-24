@@ -23,5 +23,6 @@ public:
 private:
 	void createBody() override;
 	Urho3D::Text* text;
+	Urho3D::Text* text2;
 };
 

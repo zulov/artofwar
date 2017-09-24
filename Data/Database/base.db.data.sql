@@ -1,11 +1,10 @@
 BEGIN TRANSACTION;
-INSERT INTO `units` (id,name,minDist,maxSep,type,model,texture,font,mass,maxSpeed,scale,rotatable,nation,icon,actionState) VALUES 
- (0,'warrior',0.5,2.0,0,'Cube.mdl','grey.xml','Anonymous Pro.ttf',1.0,5.0,1.0,1,0,'warrior.png',3),
- (1,'archer',0.4,2.0,3,'Hedra.mdl','darkgrey.xml','Anonymous Pro.ttf',0.8,6.0,1.0,1,0,'archer.png',3),
- (2,'pikeman',0.4,2.0,1,'Pyramid.mdl','red.xml','Anonymous Pro.ttf',0.9,3.0,1.0,1,0,'pikeman.png',6),
- (3,'cavalry',0.6,3.5,2,'horse.mdl','horse.xml','Anonymous Pro.ttf',2.0,12.0,1.0,1,0,'cavalry.png',3),
- (4,'worker',0.3,2.0,4,'Sphere.mdl','red.xml','Anonymous Pro.ttf',0.5,3.0,1.0,0,0,'worker.png',9),
- (5,'general',0.5,2.0,0,'general.mdl','general.xml','Anonymous Pro.ttf',1.0,7.0,1.0,1,0,'general.png',1);
+INSERT INTO `units` (id,name,minDist,maxSep,type,model,texture,font,mass,maxSpeed,scale,rotatable,nation,icon,actionState) VALUES (0,'warrior',0.5,2.0,0,'Cube.mdl','grey.xml','Anonymous Pro.ttf',1.0,5.0,0.5,1,0,'warrior.png',3),
+ (1,'archer',0.4,2.0,3,'Hedra.mdl','darkgrey.xml','Anonymous Pro.ttf',0.8,6.0,0.4,1,0,'archer.png',3),
+ (2,'pikeman',0.4,2.0,1,'Pyramid.mdl','red.xml','Anonymous Pro.ttf',0.9,3.0,0.4,1,0,'pikeman.png',6),
+ (3,'cavalry',0.6,2.0,2,'horse.mdl','horse.xml','Anonymous Pro.ttf',2.0,12.0,0.6,1,0,'cavalry.png',3),
+ (4,'worker',0.3,2.0,4,'Sphere.mdl','red.xml','Anonymous Pro.ttf',0.5,3.0,0.3,0,0,'worker.png',9),
+ (5,'general',0.5,2.0,0,'general.mdl','general.xml','Anonymous Pro.ttf',1.0,7.0,0.5,1,0,'general.png',1);
 INSERT INTO `unit_type` (id,name) VALUES (0,'warrior'),
  (1,'pikeman'),
  (2,'cavalry'),
@@ -17,7 +16,7 @@ INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,minDist,max
 tree1.xml','tree.mdl',1.75,5.0,3),
  (2,'food','food.png',100,'food.xml',NULL,1.0,4.0,3),
  (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.75,3.0,4);
-INSERT INTO `orders_to_unit` (id,unit,'order') VALUES (0,0,0),
+INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
  (1,0,1),
  (2,0,3),
  (3,0,4),

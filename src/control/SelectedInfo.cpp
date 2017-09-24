@@ -11,6 +11,7 @@ SelectedInfo::SelectedInfo() {
 	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
 		selectedByType->push_back(new SelectedInfoType());
 	}
+	message = new String();
 }
 
 SelectedInfo::~SelectedInfo() {
@@ -68,4 +69,13 @@ int SelectedInfo::getSelectedSubTypeNumber() {
 
 void SelectedInfo::hasBeedUpdatedDrawn() {
 	changed = false;
+}
+
+String* SelectedInfo::getMessage() {
+	return message;
+}
+
+void SelectedInfo::setMessage(String& s) {
+	(*message) = String(s);
+	changed = true;
 }

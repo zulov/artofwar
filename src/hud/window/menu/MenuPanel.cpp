@@ -12,6 +12,7 @@ MenuPanel::~MenuPanel() {
 
 void MenuPanel::removeInfo() {
 	text->SetVisible(false);
+	text2->SetVisible(false);
 }
 
 Urho3D::String MenuPanel::stringFrom(db_unit* dbUnit, std::vector<db_cost*>* costs) {
@@ -73,10 +74,17 @@ void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
 	}else {
 		text->SetVisible(false);
 	}
+	String *msg = selectedInfo->getMessage();
+	text2->SetText(*msg);
+	text2->SetVisible(true);
 }
 
 void MenuPanel::createBody() {
 	text = window->CreateChild<Urho3D::Text>();
 	text->SetStyle("MyText", style);
 	text->SetText("");
+
+	text2 = window->CreateChild<Urho3D::Text>();
+	text2->SetStyle("MyText", style);
+	text2->SetText("");
 }

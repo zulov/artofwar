@@ -363,6 +363,14 @@ void Controls::defaultControl() {
 	} else if (right.isHeld) {
 		releaseRight();
 	}
+	if (input->GetMouseButtonDown(MOUSEB_MIDDLE)) {
+		Vector3 hitPos;
+		Drawable* hitDrawable;
+
+		if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
+			selectedInfo->setMessage(hitPos.ToString());
+		}
+	}
 }
 
 

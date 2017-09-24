@@ -58,7 +58,7 @@ Entity* LevelBuilder::createGround() {
 	planeNode->SetPosition(Vector3());
 	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
 	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/Plane.mdl"));
-	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/StoneTiled.xml"));
+	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/test.xml"));
 
 	Entity* entity = new Physical(new Vector3, planeNode, PHISICAL);
 	return entity;
