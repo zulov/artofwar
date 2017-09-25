@@ -26,7 +26,7 @@ Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): E
 		billboardSetBar->SetSorted(true);
 
 		billboardBar = billboardSetBar->GetBillboard(0);
-		billboardBar->size_ = Vector2(2, 0.2);
+		billboardBar->size_ = Vector2(2, 0.1);
 		billboardBar->position_ = Vector3(0, boundingBox.y_ * 1.3f, 0);
 		billboardBar->enabled_ = false;
 
@@ -58,7 +58,7 @@ Physical::~Physical() {
 void Physical::updateHealthBar() {
 	double healthBarSize = getHealthBarSize();
 
-	billboardBar->size_ = Vector2(healthBarSize, 0.2) / node->GetScale2D();
+	billboardBar->size_ = Vector2(healthBarSize, 0.1) / node->GetScale2D();
 	billboardSetBar->Commit();
 }
 

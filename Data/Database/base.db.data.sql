@@ -11,11 +11,11 @@ INSERT INTO `unit_type` (id,name) VALUES (0,'warrior'),
  (3,'archer'),
  (4,'worker');
 INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,minDist,maxUsers) VALUES (0,'gold','gold.png',1000,'gold.xml
-','rock.mdl',0.75,3.0,4),
+','rock.mdl',0.5,2.0,4),
  (1,'wood','wood.png',100,'tree0.xml
-tree1.xml','tree.mdl',1.75,5.0,3),
- (2,'food','food.png',100,'food.xml',NULL,1.0,4.0,3),
- (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.75,3.0,4);
+tree1.xml','tree.mdl',1.0,3.0,3),
+ (2,'food','food.png',100,'food.xml',NULL,0.5,2.0,3),
+ (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.5,2.0,4);
 INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
  (1,0,1),
  (2,0,3),
@@ -133,10 +133,10 @@ INSERT INTO `building_to_unit` (id,building,unit) VALUES (0,4,0),
  (12,0,4),
  (13,4,5),
  (14,5,5);
-INSERT INTO `building` (id,name,minDist,type,model,texture,font,scale,texture_temp,nation,icon,queue_max_capacity) VALUES (0,'house',6.0,0,'House2.mdl','house2.xml','Anonymous Pro.ttf',3.0,'house_temp.xml',0,'house.png',5),
- (1,'tower',3.0,1,'Tower.mdl','tower.xml','Anonymous Pro.ttf',1.0,'tower_temp.xml',0,'tower.png',5),
- (2,'barracks',10.0,2,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml',0,'barracks.png',10),
- (3,'archery_range',6.0,3,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',1.0,'barracks_temp.xml',0,'archery_range.png',10),
- (4,'mock',10.0,4,'cube.mdl','transparent.xml','Anonymous Pro.ttf',10.0,'transparent_temp.xml',0,'mock.png',20),
- (5,'mock_enemy',5.0,4,'cube.mdl','transparent.xml','Anonymous Pro.ttf',5.0,'transparent_temp.xml',1,'mock2.png',20);
+INSERT INTO `building` (id,name,minDist,type,model,texture,font,scale,texture_temp,nation,icon,queue_max_capacity) VALUES (0,'house',2.5,0,'House2.mdl','house2.xml','Anonymous Pro.ttf',2.5,'house_temp.xml',0,'house.png',5),
+ (1,'tower',0.5,1,'Tower.mdl','tower.xml','Anonymous Pro.ttf',0.5,'tower_temp.xml',0,'tower.png',5),
+ (2,'barracks',0.5,2,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',0.5,'barracks_temp.xml',0,'barracks.png',10),
+ (3,'archery_range',0.5,3,'Barracks.mdl','barracks.xml','Anonymous Pro.ttf',0.5,'barracks_temp.xml',0,'archery_range.png',10),
+ (4,'mock',5.0,4,'cube.mdl','transparent.xml','Anonymous Pro.ttf',5.0,'transparent_temp.xml',0,'mock.png',20),
+ (5,'mock_enemy',2.5,4,'cube.mdl','transparent.xml','Anonymous Pro.ttf',2.5,'transparent_temp.xml',1,'mock2.png',20);
 COMMIT;
