@@ -12,7 +12,7 @@ BucketGrid::BucketGrid(short _resolution, double _size) {
 		buckets[i] = new Bucket [resolution];
 	}
 
-	levelsCache = new std::vector<std::pair<short, short>>*[RES_SEP_DIST];
+	levelsCache = new std::vector<std::pair<char, char>>*[RES_SEP_DIST];
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((((double)MAX_SEP_DIST) / RES_SEP_DIST) * i);
 	}
@@ -77,7 +77,7 @@ void BucketGrid::removeStatic(Static* object) {
 	buckets[posX][posZ].removeStatic();
 }
 
-std::vector<std::pair<short, short>>* BucketGrid::getEnvIndexsFromCache(double dist) {
+std::vector<std::pair<char, char>>* BucketGrid::getEnvIndexsFromCache(double dist) {
 	int index = dist / diff;
 	return levelsCache[index];
 }
@@ -185,27 +185,27 @@ bool BucketGrid::fieldInCircle(int i, int j, double radius) {
 	return false;
 }
 
-std::vector<std::pair<short, short>>* BucketGrid::getEnvIndexs(double radius) {
-	std::vector<std::pair<short, short>>* indexes = new std::vector<std::pair<short, short>>();
+std::vector<std::pair<char, char>>* BucketGrid::getEnvIndexs(double radius) {
+	std::vector<std::pair<char, char>>* indexes = new std::vector<std::pair<char, char>>();
 	for (int i = 0; i < RES_SEP_DIST; i++) {
 		for (int j = 0; j < RES_SEP_DIST; j++) {
 			if (fieldInCircle(i, j, radius)) {
 				int x = i + 1;
 				int y = j + 1;
-				indexes->push_back(std::pair<short, short>(x, y));
-				indexes->push_back(std::pair<short, short>(x, -y));
-				indexes->push_back(std::pair<short, short>(-x, y));
-				indexes->push_back(std::pair<short, short>(-x, -y));
+				indexes->push_back(std::pair<char, char>(x, y));
+				indexes->push_back(std::pair<char, char>(x, -y));
+				indexes->push_back(std::pair<char, char>(-x, y));
+				indexes->push_back(std::pair<char, char>(-x, -y));
 			}
 		}
 		if (fieldInCircle(i, 0, radius)) {
 			int x = i + 1;
-			indexes->push_back(std::pair<short, short>(x, 0));
-			indexes->push_back(std::pair<short, short>(0, x));
-			indexes->push_back(std::pair<short, short>(-x, 0));
-			indexes->push_back(std::pair<short, short>(0, -x));
+			indexes->push_back(std::pair<char, char>(x, 0));
+			indexes->push_back(std::pair<char, char>(0, x));
+			indexes->push_back(std::pair<char, char>(-x, 0));
+			indexes->push_back(std::pair<char, char>(0, -x));
 		}
 	}
-	indexes->push_back(std::pair<short, short>(0, 0));
+	indexes->push_back(std::pair<char, char>(0, 0));
 	return indexes;
 }

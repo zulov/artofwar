@@ -167,7 +167,6 @@ DatabaseCache::DatabaseCache() {
 
 
 	sqlite3_close(database);
-
 }
 
 

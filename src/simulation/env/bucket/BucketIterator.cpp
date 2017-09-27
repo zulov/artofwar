@@ -23,7 +23,7 @@ Unit* BucketIterator::next() {
 
 }
 
-void BucketIterator::init(std::vector<std::pair<short, short>>* _levels, short _dX, short _dZ,
+void BucketIterator::init(std::vector<std::pair<char, char>>* _levels, short _dX, short _dZ,
                           BucketGrid* _bucketGrid) {
 	levels = _levels;
 	dX = _dX;

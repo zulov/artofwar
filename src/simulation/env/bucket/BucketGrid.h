@@ -18,14 +18,14 @@ public:
 	void addStatic(Static* object);
 	void removeStatic(Static* object);
 
-	std::vector<std::pair<short, short>>* getEnvIndexsFromCache(double getMaxSeparationDistance);
+	std::vector<std::pair<char, char>>* getEnvIndexsFromCache(double getMaxSeparationDistance);
 	BucketIterator* getArrayNeight(Unit* entity, double radius, short thread);
 	std::vector<Physical *>* getArrayNeight(std::pair<Vector3*, Vector3*>* pair);
 	Vector3* validatePosition(Vector3* position);
 private:
 	BucketIterator** iterators;
 	bool fieldInCircle(int i, int j, double radius);
-	std::vector<std::pair<short, short>>* getEnvIndexs(double radius);
+	std::vector<std::pair<char, char>>* getEnvIndexs(double radius);
 	int getIntegerPos(double value);
 	int getIndex(double value);
 	bool isInSide(int _posX, int _posZ) const;
@@ -40,6 +40,6 @@ private:
 
 	double diff = ((double)MAX_SEP_DIST) / RES_SEP_DIST;
 
-	std::vector<std::pair<short, short>>** levelsCache;
+	std::vector<std::pair<char, char>>** levelsCache;
 	std::vector<Unit*>* empty;
 };
