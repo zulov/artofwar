@@ -89,6 +89,10 @@ int BucketGrid::getIntegerPos(double value) {
 	return (int)(value / size * resolution);
 }
 
+int BucketGrid::getIndex(double value) {
+	return getIntegerPos(value) + halfResolution;
+}
+
 BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius, short thread) {
 	Vector3* pos = entity->getPosition();
 	int dX = getIntegerPos(pos->x_);

@@ -34,5 +34,4 @@ void BucketIterator::init(std::vector<std::pair<short, short>>* _levels, short _
 	currentContent = bucketGrid->getContentAt((*levels)[index].first + dX, (*levels)[index].second + dZ);
 	sizeContent = currentContent->size();
 	levelSize = levels->size();
-	++index;
 }

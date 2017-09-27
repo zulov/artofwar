@@ -27,6 +27,7 @@ private:
 	bool fieldInCircle(int i, int j, double radius);
 	std::vector<std::pair<short, short>>* getEnvIndexs(double radius);
 	int getIntegerPos(double value);
+	int getIndex(double value);
 	bool isInSide(int _posX, int _posZ) const;
 	void addAt(short x, short z, Unit* entity);
 	void removeAt(short x, short z, Unit* entity);
