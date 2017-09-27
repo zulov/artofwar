@@ -12,7 +12,7 @@ public:
 	BucketGrid(short _resolution, double _size);
 	~BucketGrid();
 
-	std::vector<Unit *>* getContentAt(short x, short z);
+	std::vector<Unit *>* getContentAt(short posX, short posZ);
 	void updateGrid(Unit* entity, short team);
 	bool validateAdd(Static* object);
 	void addStatic(Static* object);
@@ -26,11 +26,10 @@ private:
 	BucketIterator** iterators;
 	bool fieldInCircle(int i, int j, double radius);
 	std::vector<std::pair<char, char>>* getEnvIndexs(double radius);
-	int getIntegerPos(double value);
-	int getIndex(double value);
-	bool isInSide(int _posX, int _posZ) const;
-	void addAt(short x, short z, Unit* entity);
-	void removeAt(short x, short z, Unit* entity);
+	short getIndex(double value);
+	bool isInSide(short _posX, short _posZ) const;
+	void addAt(short posX, short posZ, Unit* entity);
+	void removeAt(short posX, short posZ, Unit* entity);
 
 	Bucket** buckets;
 	short resolution;

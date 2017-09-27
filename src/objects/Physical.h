@@ -17,12 +17,12 @@ public:
 	virtual void unSelect();
 	Vector3* getPosition();
 
-	signed char getBucketX(signed char param);
-	signed char getBucketZ(signed char param);
-	bool bucketHasChanged(short posX, short posY, short param);
-	void setBucket(short posX, short posY, short param);
-	void setTeam(signed char _team);
-	void setPlayer(signed char player);
+	short getBucketX(char param);
+	short getBucketZ(char param);
+	bool bucketHasChanged(short posX, short posY, char param);
+	void setBucket(short posX, short posY, char param);
+	void setTeam(char _team);
+	void setPlayer(char player);
 	virtual String* toMultiLineString();
 	virtual void action(short id, ActionParameter* parameter);
 
@@ -55,6 +55,6 @@ protected:
 
 private:
 
-	short int bucketX[BUCKET_SET_NUMBER];
-	short int bucketZ[BUCKET_SET_NUMBER];
+	short bucketX[BUCKET_SET_NUMBER];
+	short bucketZ[BUCKET_SET_NUMBER];
 };

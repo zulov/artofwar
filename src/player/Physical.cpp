@@ -66,31 +66,31 @@ double Physical::getHealthBarSize() {
 	return 1;
 }
 
-signed char Physical::getBucketX(signed char param) {
+short Physical::getBucketX(char param) {
 	return bucketX[param];
 }
 
-signed char Physical::getBucketZ(signed char param) {
+short Physical::getBucketZ(char param) {
 	return bucketZ[param];
 }
 
-bool Physical::bucketHasChanged(short int posX, short int posZ, short int param) {
+bool Physical::bucketHasChanged(short int posX, short int posZ, char param) {
 	if (bucketX[param] == posX && bucketZ[param] == posZ) {
 		return false;
 	}
 	return true;
 }
 
-void Physical::setBucket(short int posX, short int posZ, short int param) {
+void Physical::setBucket(short int posX, short int posZ, char param) {
 	bucketX[param] = posX;
 	bucketZ[param] = posZ;
 }
 
-void Physical::setTeam(signed char _team) {
+void Physical::setTeam(char _team) {
 	team = _team;
 }
 
-void Physical::setPlayer(signed char player) {
+void Physical::setPlayer(char player) {
 	this->player = player;
 }
 

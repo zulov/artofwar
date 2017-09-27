@@ -7,7 +7,8 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
 	xyz->units[id] = new db_unit(id, argv[1], atof(argv[2]), atof(argv[3]), atoi(argv[4]), argv[5], argv[6], argv[7],
-	                             atof(argv[8]), atof(argv[9]), atof(argv[10]), atoi(argv[11]), atoi(argv[12]), argv[13], atoi(argv[14]));
+	                             atof(argv[8]), atof(argv[9]), atof(argv[10]), atoi(argv[11]), atoi(argv[12]), argv[13],
+	                             atoi(argv[14]));
 	xyz->units_size++;
 	return 0;
 }
@@ -167,6 +168,8 @@ DatabaseCache::DatabaseCache() {
 
 
 	sqlite3_close(database);
+	cout << sizeof(short int) << endl;
+	cout << sizeof(short) << endl;
 }
 
 
