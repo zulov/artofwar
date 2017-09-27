@@ -12,7 +12,7 @@ BucketGrid::BucketGrid(short _resolution, double _size) {
 		buckets[i] = new Bucket [resolution];
 	}
 
-	levelsCache = new std::vector<std::pair<short, short>*>*[RES_SEP_DIST];
+	levelsCache = new std::vector<std::pair<short, short>>*[RES_SEP_DIST];
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((((double)MAX_SEP_DIST) / RES_SEP_DIST) * i);
 	}
@@ -27,6 +27,7 @@ BucketGrid::BucketGrid(short _resolution, double _size) {
 
 BucketGrid::~BucketGrid() {
 	delete[] iterators;
+	delete empty;
 }
 
 void BucketGrid::updateGrid(Unit* entity, short team) {
@@ -53,7 +54,8 @@ bool BucketGrid::validateAdd(Static* object) {
 	return false;
 }
 
-void BucketGrid::addStatic(Static* object) {//TODO duzo poprawek trzeba, rozmair œrodek validacja
+void BucketGrid::addStatic(Static* object) {
+	//TODO duzo poprawek trzeba, rozmair œrodek validacja
 	if (validateAdd(object)) {
 		IntVector2 size = object->getGridSize();
 		Vector3* pos = object->getPosition();
@@ -62,10 +64,10 @@ void BucketGrid::addStatic(Static* object) {//TODO duzo poprawek trzeba, rozmair
 		object->setBucket(posX, posZ, 0);
 		for (int i = 0; i < size.x_; ++i) {
 			for (int j = 0; j < size.y_; ++j) {
-				buckets[posX+i][posZ+j].setStatic(object);
+				buckets[posX + i][posZ + j].setStatic(object);
 			}
 		}
-		
+
 	}
 }
 
@@ -75,7 +77,7 @@ void BucketGrid::removeStatic(Static* object) {
 	buckets[posX][posZ].removeStatic();
 }
 
-std::vector<std::pair<short, short>*>* BucketGrid::getEnvIndexsFromCache(double dist) {
+std::vector<std::pair<short, short>>* BucketGrid::getEnvIndexsFromCache(double dist) {
 	int index = dist / diff;
 	return levelsCache[index];
 }
@@ -179,27 +181,27 @@ bool BucketGrid::fieldInCircle(int i, int j, double radius) {
 	return false;
 }
 
-std::vector<std::pair<short, short>*>* BucketGrid::getEnvIndexs(double radius) {
-	std::vector<std::pair<short, short>*>* indexes = new std::vector<std::pair<short, short>*>();
+std::vector<std::pair<short, short>>* BucketGrid::getEnvIndexs(double radius) {
+	std::vector<std::pair<short, short>>* indexes = new std::vector<std::pair<short, short>>();
 	for (int i = 0; i < RES_SEP_DIST; i++) {
 		for (int j = 0; j < RES_SEP_DIST; j++) {
 			if (fieldInCircle(i, j, radius)) {
 				int x = i + 1;
 				int y = j + 1;
-				indexes->push_back(new std::pair<short, short>(x, y));
-				indexes->push_back(new std::pair<short, short>(x, -y));
-				indexes->push_back(new std::pair<short, short>(-x, y));
-				indexes->push_back(new std::pair<short, short>(-x, -y));
+				indexes->push_back(std::pair<short, short>(x, y));
+				indexes->push_back(std::pair<short, short>(x, -y));
+				indexes->push_back(std::pair<short, short>(-x, y));
+				indexes->push_back(std::pair<short, short>(-x, -y));
 			}
 		}
 		if (fieldInCircle(i, 0, radius)) {
 			int x = i + 1;
-			indexes->push_back(new std::pair<short, short>(x, 0));
-			indexes->push_back(new std::pair<short, short>(0, x));
-			indexes->push_back(new std::pair<short, short>(-x, 0));
-			indexes->push_back(new std::pair<short, short>(0, -x));
+			indexes->push_back(std::pair<short, short>(x, 0));
+			indexes->push_back(std::pair<short, short>(0, x));
+			indexes->push_back(std::pair<short, short>(-x, 0));
+			indexes->push_back(std::pair<short, short>(0, -x));
 		}
 	}
-	indexes->push_back(new std::pair<short, short>(0, 0));
+	indexes->push_back(std::pair<short, short>(0, 0));
 	return indexes;
 }

@@ -7,7 +7,7 @@ Bucket::~Bucket() {
 
 Bucket::Bucket() {
 	content = new std::vector<Unit *>();
-	content->reserve(DEFAULT_VECTOR_SIZE);
+	content->reserve(DEFAULT_VECTOR_SIZE/2);
 	removeStatic();
 }
 
@@ -33,6 +33,7 @@ ObjectType Bucket::getType() {
 void Bucket::setStatic(Static* _object) {
 	object = _object;
 	type = object->getType();
+	content->clear();
 	int a = 5;
 }
 

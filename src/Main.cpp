@@ -8,6 +8,7 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE) 
 	context->RegisterFactory<LinkComponent>();
 	MySprite::RegisterObject(context);
 	Game::init();
+
 }
 
 void Main::Setup() {
