@@ -11,16 +11,15 @@ public:
 	~Physical();
 	void updateHealthBar();
 	virtual double getHealthBarSize();
+	int getBucketIndex(char param);
+	bool bucketHasChanged(int _bucketIndex, char param);
+	void setBucket(int _bucketIndex, char param);
 	signed char getTeam();
 	virtual void absorbAttack(double attackCoef);
 	virtual void select();
 	virtual void unSelect();
 	Vector3* getPosition();
 
-	short getBucketX(char param);
-	short getBucketZ(char param);
-	bool bucketHasChanged(short posX, short posY, char param);
-	void setBucket(short posX, short posY, char param);
 	void setTeam(char _team);
 	void setPlayer(char player);
 	virtual String* toMultiLineString();
@@ -44,7 +43,6 @@ protected:
 	double attackRange;
 	double defenseCoef = 0.3;
 	double attackSpeed = 1;
-	//String textureName;
 
 	Node* billboardNode;
 	Node* barNode;
@@ -55,6 +53,5 @@ protected:
 
 private:
 
-	short bucketX[BUCKET_SET_NUMBER];
-	short bucketZ[BUCKET_SET_NUMBER];
+	int bucketIndex[BUCKET_SET_NUMBER];
 };

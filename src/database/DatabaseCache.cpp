@@ -168,8 +168,6 @@ DatabaseCache::DatabaseCache() {
 
 
 	sqlite3_close(database);
-	cout << sizeof(short int) << endl;
-	cout << sizeof(short) << endl;
 }
 
 

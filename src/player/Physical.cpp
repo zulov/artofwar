@@ -9,7 +9,7 @@ Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): E
 	rotation = new Vector3();
 
 	for (int i = 0; i < BUCKET_SET_NUMBER; ++i) {
-		bucketZ[i] = bucketX[i] = INT_MIN;
+		bucketIndex[i] = INT_MIN;
 	}
 
 	StaticModel* model = node->GetComponent<StaticModel>();
@@ -66,24 +66,19 @@ double Physical::getHealthBarSize() {
 	return 1;
 }
 
-short Physical::getBucketX(char param) {
-	return bucketX[param];
+int Physical::getBucketIndex(char param) {
+	return bucketIndex[param];
 }
 
-short Physical::getBucketZ(char param) {
-	return bucketZ[param];
-}
-
-bool Physical::bucketHasChanged(short int posX, short int posZ, char param) {
-	if (bucketX[param] == posX && bucketZ[param] == posZ) {
+bool Physical::bucketHasChanged(int _bucketIndex, char param) {
+	if (bucketIndex[param] == _bucketIndex) {
 		return false;
 	}
 	return true;
 }
 
-void Physical::setBucket(short int posX, short int posZ, char param) {
-	bucketX[param] = posX;
-	bucketZ[param] = posZ;
+void Physical::setBucket(int _bucketIndex, char param) {
+	bucketIndex[param] = _bucketIndex;
 }
 
 void Physical::setTeam(char _team) {
