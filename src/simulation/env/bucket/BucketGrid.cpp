@@ -83,18 +83,16 @@ std::vector<std::pair<char, char>>* BucketGrid::getEnvIndexsFromCache(double dis
 
 short BucketGrid::getIndex(double value) {
 	if (value < 0) {
-		return (short)(value / size * resolution) - 1 + halfResolution;
+		return (short)(value / size * resolution) + halfResolution - 1;
 	}
 	return (short)(value / size * resolution) + halfResolution;
 }
 
 BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius, short thread) {
 	Vector3* pos = entity->getPosition();
-	short dX = getIndex(pos->x_);
-	short dZ = getIndex(pos->z_);
 
 	BucketIterator* bucketIterator = iterators[thread];
-	bucketIterator->init(getEnvIndexsFromCache(radius), dX, dZ, this);
+	bucketIterator->init(getEnvIndexsFromCache(radius), getIndex(pos->x_), getIndex(pos->z_), this);
 	return bucketIterator;
 }
 
@@ -147,18 +145,14 @@ Vector3* BucketGrid::validatePosition(Vector3* position) {
 	short posX = getIndex(position->x_);
 	short posZ = getIndex(position->z_);
 
-	if (isInSide(posX, posZ)) {
+	if (isInSide(posX, posZ) && buckets[posX][posZ].getType() != ObjectType::UNIT) {
+		double bucketSize = (size / resolution);
+		double cX = posX + (0.5) * bucketSize;
+		double cZ = posZ + (0.5) * bucketSize;
 
-		if (buckets[posX][posZ].getType() != ObjectType::UNIT) {
-
-			double bucketSize = (size / resolution);
-			double cX = posX + (0.5) * bucketSize;
-			double cZ = posZ + (0.5) * bucketSize;
-
-			Vector3* direction = new Vector3(cX - position->x_, 0, cZ - position->z_);
-			direction->Normalize();
-			return direction;
-		}
+		Vector3* direction = new Vector3(cX - position->x_, 0, cZ - position->z_);
+		direction->Normalize();
+		return direction;
 	}
 	return nullptr;
 }
@@ -174,8 +168,8 @@ bool BucketGrid::fieldInCircle(int i, int j, double radius) {
 
 std::vector<std::pair<char, char>>* BucketGrid::getEnvIndexs(double radius) {
 	std::vector<std::pair<char, char>>* indexes = new std::vector<std::pair<char, char>>();
-	for (int i = 0; i < RES_SEP_DIST; i++) {
-		for (int j = 0; j < RES_SEP_DIST; j++) {
+	for (int i = 0; i < RES_SEP_DIST; ++i) {
+		for (int j = 0; j < RES_SEP_DIST; ++j) {
 			if (fieldInCircle(i, j, radius)) {
 				int x = i + 1;
 				int y = j + 1;
@@ -183,6 +177,8 @@ std::vector<std::pair<char, char>>* BucketGrid::getEnvIndexs(double radius) {
 				indexes->push_back(std::pair<char, char>(x, -y));
 				indexes->push_back(std::pair<char, char>(-x, y));
 				indexes->push_back(std::pair<char, char>(-x, -y));
+			} else {
+				break;
 			}
 		}
 		if (fieldInCircle(i, 0, radius)) {
@@ -191,6 +187,8 @@ std::vector<std::pair<char, char>>* BucketGrid::getEnvIndexs(double radius) {
 			indexes->push_back(std::pair<char, char>(0, x));
 			indexes->push_back(std::pair<char, char>(-x, 0));
 			indexes->push_back(std::pair<char, char>(0, -x));
+		} else {
+			break;
 		}
 	}
 	indexes->push_back(std::pair<char, char>(0, 0));

@@ -20,7 +20,7 @@ SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* style) {
 	bars = new ProgressBar*[MAX_SELECTED_IN_BUTTON];
 	for (int i = 0; i < MAX_SELECTED_IN_BUTTON; ++i) {
 		bars[i] = mock->CreateChild<ProgressBar>();
-		bars[i]->SetStyle("MiniProgressBar", style);
+		bars[i]->SetStyle("MiniProgressBar");
 		bars[i]->SetRange(1);
 		bars[i]->SetValue(0.5);
 		bars[i]->SetVisible(false);
