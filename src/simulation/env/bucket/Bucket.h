@@ -13,10 +13,13 @@ public:
 	ObjectType getType();
 	void setStatic(Static* object);
 	void removeStatic();
-
+	void setCenter(double _centerX, double _centerY);
+	Vector3* getDirectrionFrom(Vector3* position);
 private:
 	std::vector <Unit*>* content;
 	Static* object;
 	ObjectType type;
+	double centerX;
+	double centerY;
 };
 

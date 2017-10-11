@@ -19,7 +19,7 @@ int ResourceEntity::getID() {
 void ResourceEntity::populate(db_resource* _dbResource) {
 	type = _dbResource->id;
 	name = new String(_dbResource->name);
-	gridSize = IntVector2(_dbResource->minDist, _dbResource->minDist);
+	gridSize = IntVector2(_dbResource->sizeX, _dbResource->sizeZ);
 	amonut = _dbResource->maxCapacity;
 	maxUsers = _dbResource->maxUsers;
 	dbResource = _dbResource;

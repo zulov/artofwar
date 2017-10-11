@@ -19,6 +19,22 @@ BucketGrid::BucketGrid(short _resolution, double _size) {
 		iterators[i] = new BucketIterator();
 	}
 
+	const double bucketSize = (size / resolution);
+	short posX = 0;
+	short posZ = 0;
+
+	for (int i = 0; i < resolution * resolution; ++i) {
+		double cX = posX + (0.5) * bucketSize;
+		double cZ = posZ + (0.5) * bucketSize;
+
+		buckets[i].setCenter(cX, cZ);
+		++posZ;
+		if (posZ > resolution) {
+			++posX;
+			posZ = 0;
+		}
+	}
+
 	empty = new std::vector<Unit*>();
 }
 
@@ -132,10 +148,10 @@ std::vector<Physical*>* BucketGrid::getArrayNeight(std::pair<Vector3*, Vector3*>
 	Vector3* end = pair->second;
 	std::vector<Physical*>* entities = new std::vector<Physical*>();//TOODO reserva zrobic sensownego
 	entities->reserve(DEFAULT_VECTOR_SIZE);
-	short posBeginX = getIndex(begin->x_);
-	short posBeginZ = getIndex(begin->z_);
-	short posEndX = getIndex(end->x_);
-	short posEndZ = getIndex(end->z_);
+	const short posBeginX = getIndex(begin->x_);
+	const short posBeginZ = getIndex(begin->z_);
+	const short posEndX = getIndex(end->x_);
+	const short posEndZ = getIndex(end->z_);
 
 	for (short i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
 		for (short j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
@@ -156,11 +172,9 @@ Vector3* BucketGrid::validatePosition(Vector3* position) {
 	short posZ = getIndex(position->z_);
 	const int index = getIndex(posX, posZ);
 	if (buckets[index].getType() != ObjectType::UNIT) {
-		double bucketSize = (size / resolution);
-		double cX = posX + (0.5) * bucketSize;
-		double cZ = posZ + (0.5) * bucketSize;
 
-		Vector3* direction = new Vector3(cX - position->x_, 0, cZ - position->z_);
+		Vector3* direction = buckets[index].getDirectrionFrom(position);
+
 		direction->Normalize();
 		return direction;
 	}

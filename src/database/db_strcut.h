@@ -57,7 +57,8 @@ struct db_building
 {
 	int id;
 	Urho3D::String name;
-	double minDist;
+	int sizeX;
+	int sizeZ;
 	int type;
 	Urho3D::String model;
 	Urho3D::String texture;
@@ -68,11 +69,12 @@ struct db_building
 	Urho3D::String icon;
 	short queueMaxCapacity;
 
-	db_building(int id, char* name, double minDist, int type, char* model, char* texture, char* font, double scale,
+	db_building(int id, char* name, int sizeX, int sizeZ, int type, char* model, char* texture, char* font, double scale,
 	            char* texture_temp, int nation, char* icon, int queueMaxCapacity)
 		: id(id),
 		name(name),
-		minDist(minDist),
+		sizeX(sizeX),
+		sizeZ(sizeZ),
 		type(type),
 		model(model),
 		texture(texture),
@@ -161,10 +163,11 @@ struct db_resource
 	Urho3D::Vector<Urho3D::String> texture;
 	Urho3D::String model;
 	double scale;
-	double minDist;
+	int sizeX;
+	int sizeZ;
 	int maxUsers;
 
-	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, double scale, double minDist,
+	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, double scale, int sizeX, int sizeZ,
 	            int maxUsers)
 		: id(id),
 		name(name),
@@ -173,7 +176,8 @@ struct db_resource
 		texture(Urho3D::String(texture).Split(SPLIT_SIGN)),
 		model(model),
 		scale(scale),
-		minDist(minDist),
+		sizeX(sizeX),
+		sizeZ(sizeZ),
 		maxUsers(maxUsers) {
 	}
 };

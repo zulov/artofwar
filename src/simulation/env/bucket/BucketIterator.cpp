@@ -20,7 +20,6 @@ Unit* BucketIterator::next() {
 	Unit* entity = (*currentContent)[secondIndex];
 	++secondIndex;
 	return entity;
-
 }
 
 void BucketIterator::init(std::vector<int>* _levels, int _center, BucketGrid* _bucketGrid) {

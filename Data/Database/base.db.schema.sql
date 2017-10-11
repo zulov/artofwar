@@ -32,7 +32,8 @@ CREATE TABLE "resource" (
 	`texture`	TEXT,
 	`model`	TEXT,
 	`scale`	REAL,
-	`minDist`	REAL,
+	`sizeX`	INTEGER,
+	`sizeZ`	INTEGER,
 	`maxUsers`	INTEGER,
 	PRIMARY KEY(`id`)
 );
@@ -112,7 +113,8 @@ CREATE TABLE `building_to_unit` (
 CREATE TABLE "building" (
 	`id`	INTEGER,
 	`name`	TEXT,
-	`minDist`	REAL,
+	`sizeX`	INTEGER,
+	`sizeZ`	INTEGER,
 	`type`	INTEGER,
 	`model`	TEXT,
 	`texture`	TEXT,

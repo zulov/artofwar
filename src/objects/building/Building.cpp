@@ -30,7 +30,7 @@ int Building::getID() {
 }
 
 void Building::populate(db_building* _dbBuilding, std::vector<db_unit*>* _units) {
-	gridSize = IntVector2(_dbBuilding->minDist, _dbBuilding->minDist);
+	gridSize = IntVector2(_dbBuilding->sizeX, _dbBuilding->sizeZ);
 	buildingType = BuildingType(_dbBuilding->type);
 	dbBuilding = _dbBuilding;
 	units = _units;

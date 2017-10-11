@@ -7,7 +7,7 @@ Bucket::~Bucket() {
 
 Bucket::Bucket() {
 	content = new std::vector<Unit *>();
-	content->reserve(DEFAULT_VECTOR_SIZE/2);
+	content->reserve(DEFAULT_VECTOR_SIZE / 2);
 	removeStatic();
 }
 
@@ -34,10 +34,18 @@ void Bucket::setStatic(Static* _object) {
 	object = _object;
 	type = object->getType();
 	content->clear();
-	int a = 5;
 }
 
 void Bucket::removeStatic() {
 	object = nullptr;
 	type = ObjectType::UNIT;
+}
+
+void Bucket::setCenter(double _centerX, double _centerY) {
+	centerX = _centerX;
+	centerY = _centerY;
+}
+
+Vector3* Bucket::getDirectrionFrom(Vector3* position) {
+	return new Vector3(centerX - position->x_, 0, centerY - position->z_);
 }
