@@ -244,13 +244,19 @@ SelectedInfo* Controls::getInfo() {
 }
 
 void Controls::deactivate() {
-	active = false;
-	left.clean();
-	right.clean();
+	if (active) {
+		active = true;
+		left.clean();
+		right.clean();
+	}
 }
 
 void Controls::activate() {
-	active = true;
+	if (!active) {
+		active = true;
+		left.clean();
+		right.clean();
+	}
 }
 
 void Controls::orderUnit(short id) {
@@ -418,8 +424,7 @@ void Controls::orderControl() {
 		if (!right.isHeld) {
 			right.markHeld();
 		}
-	}
-	else if (right.isHeld) {
+	} else if (right.isHeld) {
 		toDefault();
 	}
 }

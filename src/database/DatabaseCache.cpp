@@ -33,8 +33,8 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), argv[5], argv[6], argv[7],
-	                                     atof(argv[8]), argv[9], atoi(argv[10]), argv[11], atoi(argv[12]));
+	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), argv[5], argv[6],
+	                                     argv[7], atof(argv[8]), argv[9], atoi(argv[10]), argv[11], atoi(argv[12]));
 	xyz->building_size++;
 	return 0;
 }

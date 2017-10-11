@@ -1,5 +1,6 @@
 #include <Main.h>
 #include "simulation/SimulationInfo.h"
+#include <iostream>
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
@@ -17,7 +18,8 @@ void Main::Setup() {
 	db_graph_settings* graphSettings = game->getDatabaseCache()->getGraphSettings(0);
 
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
-	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName() + ".log";
+	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName() +
+		".log";
 	engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
 	engineParameters_[EP_HEADLESS] = false;
 	engineParameters_[EP_SOUND] = false;
@@ -28,15 +30,14 @@ void Main::Setup() {
 	engine_->SetMinFps(graphSettings->min_fps);
 }
 
-
-
 void Main::Start() {
 	Game* game = Game::get();
-	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->setGraphics(GetSubsystem<Graphics>())->setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
+	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->setGraphics(GetSubsystem<Graphics>())->
+	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
 	SetWindowTitleAndIcon();
 	game->setPlayersManager(new PlayersManager());
 	hud = new Hud();
-	
+
 	sceneObjectManager = new SceneObjectManager();
 
 	levelBuilder = new LevelBuilder(sceneObjectManager);
@@ -49,7 +50,8 @@ void Main::Start() {
 	SimulationCommandList* simulationCommandList = new SimulationCommandList(simulationObjectManager);
 	EnviromentStrategy* enviromentStrategy = new EnviromentStrategy();
 	mediator = new Mediator(enviromentStrategy, controls);
-	game->setScene(levelBuilder->createScene())->setCameraManager(cameraManager)->setBuildList(buildList)->setSimCommandList(simulationCommandList)->setMediator(mediator);
+	game->setScene(levelBuilder->createScene())->setCameraManager(cameraManager)->setBuildList(buildList)->
+	      setSimCommandList(simulationCommandList)->setMediator(mediator);
 
 	simulation = new Simulation(enviromentStrategy, simulationCommandList, simulationObjectManager);
 
@@ -66,35 +68,29 @@ void Main::Stop() {
 }
 
 void Main::subscribeToEvents() {
-	for (HudElement* hudElement : *(hud->getButtonsBuildToSubscribe())) {
+	for (auto hudElement : *hud->getButtonsBuildToSubscribe()) {
 		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleBuildButton));
 		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleUIButtonHoverOn));
 		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Main, HandleUIButtonHoverOff));
 	}
 
-	for (HudElement* hudElement : *(hud->getButtonsUnitsToSubscribe())) {
+	for (auto hudElement : *hud->getButtonsUnitsToSubscribe()) {
 		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleUnitButton));
 		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleUIButtonHoverOn));
 		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Main, HandleUIButtonHoverOff));
 	}
 
-	for (HudElement* hudElement : *(hud->getButtonsOrdersToSubscribe())) {
+	for (auto hudElement : *hud->getButtonsOrdersToSubscribe()) {
 		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleOrdersButton));
 		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleUIButtonHoverOn));
 		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Main, HandleUIButtonHoverOff));
 	}
 
-	for (Button* buttton : *(hud->getButtonsSelectedToSubscribe())) {
+	for (auto buttton : *hud->getButtonsSelectedToSubscribe()) {
 		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButton));
-	}
-
-	for (Window* window : *(hud->getWindows())) {
-		SubscribeToEvent(window, E_CLICKEND, URHO3D_HANDLER(Main, HandleWindowClick));
-		SubscribeToEvent(window, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleWindowClick));
-		SubscribeToEvent(window, E_HOVEREND, URHO3D_HANDLER(Main, HandleEndWindowClick));
 	}
 
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
@@ -110,27 +106,19 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	SimulationInfo* simulationInfo = simulation->getInfo();
 	control(timeStep);
 	controls->clean(simulationInfo);
-	
+
 	SelectedInfo* selectedInfo = controls->getInfo();
 
 	hud->updateSelected(selectedInfo);
-	if(simulationInfo->ifAmountUnitChanged()) {
+	if (simulationInfo->ifAmountUnitChanged()) {
 		hud->update(simulation->getUnitsNumber());
 	}
-	
+
 	hud->update(benchmark, cameraManager);
 
 	selectedInfo->hasBeedUpdatedDrawn();
 	levelBuilder->execute();
 	simulation->dispose();
-}
-
-void Main::HandleWindowClick(StringHash eventType, VariantMap& eventData) {
-	controls->deactivate();
-}
-
-void Main::HandleEndWindowClick(StringHash eventType, VariantMap& eventData) {
-	controls->activate();
 }
 
 void Main::InitMouseMode(MouseMode mode) {
@@ -201,7 +189,7 @@ void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	SelectedHudElement* sHudElement = (SelectedHudElement *)element->GetVar("SelectedHudElement").GetVoidPtr();
 	std::vector<Physical*>* selected = sHudElement->getSelected();
 	controls->unSelectAll();
-	for (auto physical :(*selected)) {
+	for (auto physical : (*selected)) {
 		controls->select(physical);
 	}
 }
@@ -278,7 +266,15 @@ void Main::createCameraKeys(Input* input, bool cameraKeys[4]) {
 }
 
 void Main::control(float timeStep) {
-	//if (GetSubsystem<UI>()->GetFocusElement()) { return; }
+	IntVector2 cursorPos= Game::get()->getUI()->GetCursorPosition();
+	UIElement* element = GetSubsystem<UI>()->GetElementAt(cursorPos, false);
+
+	if (element) {
+		controls->deactivate();
+	} else {
+		controls->activate();
+	}
+
 	Input* input = GetSubsystem<Input>();
 
 	bool cameraKeys[4];

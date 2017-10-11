@@ -47,8 +47,6 @@ protected:
 
 private:
 	void SetWindowTitleAndIcon();
-	void HandleWindowClick(StringHash eventType, VariantMap& eventData);
-	void HandleEndWindowClick(StringHash eventType, VariantMap& eventData);
 	void HandleMouseModeRequest(StringHash eventType, VariantMap& eventData);
 	void HandleMouseModeChange(StringHash eventType, VariantMap& eventData);
 	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
