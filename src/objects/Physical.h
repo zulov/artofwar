@@ -7,7 +7,7 @@ class Physical :
 	public Entity
 {
 public:
-	Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type);
+	Physical(Vector3* _position, ObjectType _type);
 	~Physical();
 	void updateHealthBar();
 	virtual double getHealthBarSize();
@@ -19,6 +19,7 @@ public:
 	virtual void select();
 	virtual void unSelect();
 	Vector3* getPosition();
+	void initBillbords();
 
 	void setTeam(char _team);
 	void setPlayer(char player);

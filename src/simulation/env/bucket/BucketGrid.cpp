@@ -59,15 +59,22 @@ void BucketGrid::updateGrid(Unit* entity, short team) {
 }
 
 bool BucketGrid::validateAdd(Static* object) {
+	IntVector2 size = object->getGridSize();
 	Vector3* pos = object->getPosition();
 	short posX = getIndex(pos->x_);
 	short posZ = getIndex(pos->z_);
-	const int index = posX * resolution + posZ;
-	if (inRange(index) &&
-		buckets[index].getType() == ObjectType::UNIT) {
-		return true;
+
+	for (int i = posX; i < posX+size.x_; ++i) {
+		for (int j = posZ; j < posZ+size.y_; ++j) {
+			const int index = i * resolution + j;
+			if (!(inRange(index) &&
+				buckets[index].getType() == ObjectType::UNIT)) {
+				return false;
+			}
+		}
 	}
-	return false;
+
+	return true;
 }
 
 void BucketGrid::addStatic(Static* object) {

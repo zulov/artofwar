@@ -3,15 +3,27 @@
 #include <Urho3D/Graphics/Octree.h>
 #include "commands/ActionCommand.h"
 
-
-Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): Entity(_node, _type) {
+Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
 	position = _position;
 	rotation = new Vector3();
+
+	node->SetPosition(*position);
 
 	for (int i = 0; i < BUCKET_SET_NUMBER; ++i) {
 		bucketIndex[i] = INT_MIN;
 	}
 
+	menuString = new String("Physical");
+}
+
+Physical::~Physical() {
+	delete position;
+	delete rotation;
+	delete menuString;
+}
+
+
+void Physical::initBillbords() {
 	StaticModel* model = node->GetComponent<StaticModel>();
 	if (model && type != ENTITY && type != PHISICAL) {
 		billboardNode = node->CreateChild();
@@ -44,16 +56,7 @@ Physical::Physical(Vector3* _position, Urho3D::Node* _node, ObjectType _type): E
 		billboardSetBar->Commit();
 		billboardSetShadow->Commit();
 	}
-
-	menuString = new String("Physical");
 }
-
-Physical::~Physical() {
-	delete position;
-	delete rotation;
-	delete menuString;
-}
-
 
 void Physical::updateHealthBar() {
 	double healthBarSize = getHealthBarSize();

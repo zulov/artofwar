@@ -11,7 +11,7 @@ using namespace Urho3D;
 class Entity
 {
 public:
-	Entity(Urho3D::Node* _node, ObjectType _type);
+	Entity(ObjectType _type);
 	virtual ~Entity();
 
 	Urho3D::Node* getNode();

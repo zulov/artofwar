@@ -20,7 +20,7 @@ class LevelBuilder
 public:
 	LevelBuilder(SceneObjectManager* _objectManager);
 	~LevelBuilder();
-	SharedPtr<Scene> createScene();
+	void createScene();
 	void execute();
 	
 

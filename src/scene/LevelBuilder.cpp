@@ -4,17 +4,18 @@
 
 LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 	objectManager = _objectManager;
+	scene = new Scene(Game::get()->getContext());
+
+	scene->CreateComponent<Octree>();
+
+	Game::get()->setScene(scene);
 }
 
 LevelBuilder::~LevelBuilder() {
 
 }
 
-SharedPtr<Scene> LevelBuilder::createScene() {
-	scene = new Scene(Game::get()->getContext());
-
-	scene->CreateComponent<Octree>();
-
+void LevelBuilder::createScene() {
 	Entity* zone = createZone();
 	Entity* light = createLight();
 	Entity* ground = createGround();
@@ -22,45 +23,44 @@ SharedPtr<Scene> LevelBuilder::createScene() {
 	objectManager->add(zone);
 	objectManager->add(light);
 	objectManager->add(ground);
-
-	return scene;
 }
 
 void LevelBuilder::execute() {
 }
 
 Entity* LevelBuilder::createZone() {
-	Node* zoneNode = scene->CreateChild();
+	Entity* entity = new Entity(ENTITY);
+
+	Node* zoneNode = entity->getNode();
 	Zone* zone = zoneNode->CreateComponent<Zone>();
 	zone->SetBoundingBox(BoundingBox(-1000.0f, 1000.0f));
 	zone->SetFogColor(Color(0.15f, 0.15f, 0.3f));
 	zone->SetFogStart(200);
 	zone->SetFogEnd(300);
 
-	Entity* entity = new Entity(zoneNode, ENTITY);
 	return entity;
 }
 
 Entity* LevelBuilder::createLight() {
-	Node* lightNode = scene->CreateChild();
-	lightNode->SetDirection(Vector3(0.6f, -1.0f, 0.8f)); 
+	Entity* entity = new Entity(ENTITY);
+	Node* lightNode = entity->getNode();
+	lightNode->SetDirection(Vector3(0.6f, -1.0f, 0.8f));
 	Light* light = lightNode->CreateComponent<Light>();
 	light->SetLightType(LIGHT_DIRECTIONAL);
 	light->SetColor(Color(0.7f, 0.6f, 0.6f));
 
-	Entity* entity = new Entity(lightNode, ENTITY);
 	return entity;
 }
 
 Entity* LevelBuilder::createGround() {
-	Node* planeNode = scene->CreateChild();
+	Entity* entity = new Physical(new Vector3, PHISICAL);
+
+	Node* planeNode = entity->getNode();
 	planeNode->SetScale(Vector3(1024, 1.0f, 1024));
-	planeNode->SetPosition(Vector3());
+
 	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
 	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/Plane.mdl"));
 	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/test.xml"));
 
-	Entity* entity = new Physical(new Vector3, planeNode, PHISICAL);
 	return entity;
-
 }

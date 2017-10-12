@@ -60,7 +60,6 @@ private:
 
 	void control(float timeStep);
 	void changeCamera(int type);
-	void createCameraKeys(Input* input, bool cameraKeys[4]);
 
 	MouseMode useMouseMode_;
 	Simulation* simulation;

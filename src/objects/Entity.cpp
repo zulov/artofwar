@@ -4,8 +4,8 @@
 #include "LinkComponent.h"
 
 
-Entity::Entity(Urho3D::Node* _node, ObjectType _type) {
-	node = _node;
+Entity::Entity(ObjectType _type) {
+	node = Game::get()->getScene()->CreateChild();
 	alive = true;
 	type = _type;
 	LinkComponent* lc = node->CreateComponent<LinkComponent>();

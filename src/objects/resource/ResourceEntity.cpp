@@ -1,9 +1,24 @@
 #include "ResourceEntity.h"
+#include "Game.h"
+#include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/StaticModel.h>
 
 double ResourceEntity::hbMaxSize = 3.0;
 
-ResourceEntity::ResourceEntity(Vector3* _position, Urho3D::Node* _node) : Static(_position, _node, RESOURCE) {
+ResourceEntity::ResourceEntity(Vector3* _position, int id) : Static(_position, RESOURCE) {
 	hbMaxSize = 3.0;
+	db_resource* dbResource = Game::get()->getDatabaseCache()->getResource(id);
+	String modelName = "Models/" + dbResource->model;
+	populate(dbResource);
+	node->Scale(dbResource->scale);
+	StaticModel* model = node->CreateComponent<StaticModel>();
+	model->SetModel(Game::get()->getCache()->GetResource<Model>(modelName));
+	for (int i = 0; i < dbResource->texture.Size(); ++i) {
+		model->SetMaterial(i, Game::get()->getCache()->GetResource<Material>("Materials/" + dbResource->texture[i]));
+	}
+	initBillbords();
+
 }
 
 ResourceEntity::~ResourceEntity() {
@@ -23,6 +38,7 @@ void ResourceEntity::populate(db_resource* _dbResource) {
 	amonut = _dbResource->maxCapacity;
 	maxUsers = _dbResource->maxUsers;
 	dbResource = _dbResource;
+	plane->SetScale(Vector3(_dbResource->sizeX, 1, _dbResource->sizeZ));
 }
 
 double ResourceEntity::getHealthBarSize() {

@@ -5,7 +5,7 @@
 double Unit::hbMaxSize = 1.0;
 StateManager* Unit::states = nullptr;
 
-Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _boxNode, UNIT) {
+Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT) {
 	acceleration = new Vector3();
 	velocity = new Vector3();
 	aims = nullptr;
@@ -13,7 +13,21 @@ Unit::Unit(Vector3* _position, Urho3D::Node* _boxNode) : Physical(_position, _bo
 	toResource = new Vector3();
 
 	unitState = UnitStateType::STOP;
-	node->SetPosition(*_position);
+
+	populate(Game::get()->getDatabaseCache()->getUnit(id));
+	Model* model3d = Game::get()->getCache()->GetResource<Model>("Models/" + dbUnit->model);
+	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbUnit->texture);
+
+	node->Scale(dbUnit->scale);
+	StaticModel* model = node->CreateComponent<StaticModel>();
+	model->SetModel(model3d);
+	model->SetMaterial(material);
+
+	setPlayer(player);
+	setTeam(player);//TODO ustawic team
+
+	initBillbords();
+
 }
 
 Unit::~Unit() {

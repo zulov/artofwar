@@ -94,9 +94,9 @@ void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* cen
 	simulationInfo->setAmountUnitChanged();
 }
 
-void SimulationObjectManager::addBuildings(unsigned int number, int id, Vector3* center, SpacingType spacingType,
+void SimulationObjectManager::addBuildings(int id, Vector3* center, SpacingType spacingType,
                                            int player) {
-	buildingsTemp = buildingFactory->create(number, id, center, spacingType);
+	buildingsTemp = buildingFactory->create(id, center, player);
 	addAll(buildingsTemp);
 	simulationInfo->setAmountBuildingChanged();
 }

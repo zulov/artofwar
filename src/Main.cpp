@@ -50,7 +50,8 @@ void Main::Start() {
 	SimulationCommandList* simulationCommandList = new SimulationCommandList(simulationObjectManager);
 	EnviromentStrategy* enviromentStrategy = new EnviromentStrategy();
 	mediator = new Mediator(enviromentStrategy, controls);
-	game->setScene(levelBuilder->createScene())->setCameraManager(cameraManager)->setBuildList(buildList)->
+	levelBuilder->createScene();
+	game->setCameraManager(cameraManager)->setBuildList(buildList)->
 	      setSimCommandList(simulationCommandList)->setMediator(mediator);
 
 	simulation = new Simulation(enviromentStrategy, simulationCommandList, simulationObjectManager);
@@ -99,7 +100,7 @@ void Main::subscribeToEvents() {
 }
 
 void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
-	double timeStep = eventData[SceneUpdate::P_TIMESTEP].GetDouble();
+	const double timeStep = eventData[SceneUpdate::P_TIMESTEP].GetDouble();
 	benchmark->add(1.0 / timeStep);
 
 	simulation->update(GetSubsystem<Input>(), timeStep);
@@ -203,7 +204,10 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 		GetSubsystem<Console>()->Toggle();
 	} else if (key == KEY_F2) {
 		GetSubsystem<DebugHud>()->ToggleAll();
-	}
+	} 
+//	else if (key == KEY_F3) {
+//		levelBuilder->
+//	}
 }
 
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {

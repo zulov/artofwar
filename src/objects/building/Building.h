@@ -11,7 +11,7 @@ struct db_building;
 class Building : public Static
 {
 public:
-	Building(Vector3* _position, Urho3D::Node* _node);
+	Building(Vector3* _position, int id, int player);
 	~Building();
 	double getHealthBarSize() override;
 	int getID() override;

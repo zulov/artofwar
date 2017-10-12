@@ -16,7 +16,7 @@ class BuildingFactory :public EntityFactory {
 public:
 	BuildingFactory();
 	~BuildingFactory();
-	std::vector<Building*>* create(unsigned number, int id, Vector3* center, SpacingType spacingType);
+	std::vector<Building*>* create(int id, Vector3* center, int player);
 private:
 	std::vector<Building*>* buildings;
 };

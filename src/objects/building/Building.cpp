@@ -2,15 +2,31 @@
 #include "ObjectEnums.h"
 #include "database/db_strcut.h"
 #include "Game.h"
+#include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/StaticModel.h>
 
 double Building::hbMaxSize = 5.0;
-
-Building::Building(Vector3* _position, Urho3D::Node* _boxNode) : Static(_position, _boxNode, BUILDING) {
+Building::Building(Vector3* _position, int id, int player) : Static(_position, BUILDING) {
 	hbMaxSize = 5.0;
 
 	target = new Vector3(*_position);
 	target->x_ += 5;
 	target->z_ += 5;
+
+	db_building* dbBuilding = Game::get()->getDatabaseCache()->getBuilding(id);
+	std::vector<db_unit*>* dbUnits = Game::get()->getDatabaseCache()->getUnitsForBuilding(id);
+	populate(dbBuilding, dbUnits);
+	Model* model = Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbBuilding->model);
+	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbBuilding->texture);
+
+
+	node->SetScale(dbBuilding->scale);
+	Urho3D::StaticModel* staticModel = node->CreateComponent<Urho3D::StaticModel>();
+	staticModel->SetModel(model);
+	staticModel->SetMaterial(material);
+
+	initBillbords();
 
 }
 
@@ -35,6 +51,9 @@ void Building::populate(db_building* _dbBuilding, std::vector<db_unit*>* _units)
 	dbBuilding = _dbBuilding;
 	units = _units;
 	queue = new QueueManager(_dbBuilding->queueMaxCapacity);
+
+	plane->SetScale(Vector3(_dbBuilding->sizeX,1,_dbBuilding->sizeZ));
+
 }
 
 void Building::absorbAttack(double attackCoef) {

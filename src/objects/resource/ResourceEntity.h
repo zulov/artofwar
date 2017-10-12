@@ -7,7 +7,7 @@ class ResourceEntity :
 	public Static
 {
 public:
-	ResourceEntity(Vector3* _position, Urho3D::Node* _node);
+	ResourceEntity(Vector3* _position, int id);
 	virtual ~ResourceEntity();
 	int getID() override;
 	void populate(db_resource* _dbResource);

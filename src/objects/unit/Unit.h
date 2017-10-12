@@ -26,7 +26,7 @@ class Unit : public Physical
 	friend class ChargeState;
 	friend class CollectState;
 public:
-	Unit(Vector3* _position, Urho3D::Node* _boxNode);
+	Unit(Vector3* _position, int id, int player);
 	~Unit();
 	double getHealthBarSize() override;
 	void populate(db_unit* _dbUnit);
@@ -47,9 +47,9 @@ public:
 	void toAttack(Physical* enemy);
 	void toAttack();
 
-	
+
 	void toCollect(vector<Physical*>* enemies);
-	void toCollect(ResourceEntity * _resource);
+	void toCollect(ResourceEntity* _resource);
 	void toCollect();
 
 	void updateHeight(double y, double timeStep);
