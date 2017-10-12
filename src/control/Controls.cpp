@@ -308,12 +308,12 @@ void Controls::refreshSelected() {
 	                std::remove_if(
 	                               selected->begin(), selected->end(),
 	                               [](Physical* physical)
-                               {
-	                               if (!physical->isAlive()) {
-		                               return true;
-	                               }
-	                               return false;
-                               }),
+	                               {
+		                               if (!physical->isAlive()) {
+			                               return true;
+		                               }
+		                               return false;
+	                               }),
 	                selected->end());
 	if (selected->size() != preSize) {
 		unSelectAll();
@@ -430,17 +430,15 @@ void Controls::orderControl() {
 }
 
 void Controls::control() {
-	if (active) {
-		switch (state) {
-		case DEFAULT:
-			defaultControl();
-			break;
-		case BUILD:
-			buildControl();
-			break;
-		case ORDER:
-			orderControl();
-			break;
-		}
+	switch (state) {
+	case DEFAULT:
+		defaultControl();
+		break;
+	case BUILD:
+		buildControl();
+		break;
+	case ORDER:
+		orderControl();
+		break;
 	}
 }

@@ -251,12 +251,11 @@ void Main::control(float timeStep) {
 		controls->deactivate();
 	} else {
 		controls->activate();
+		controls->control();
 	}
 
 	Input* input = GetSubsystem<Input>();
 
 	cameraManager->translate(cursorPos, input, timeStep);
 	cameraManager->rotate(input->GetMouseMove());
-
-	controls->control();
 }
