@@ -19,23 +19,19 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center
 	Game* game = Game::get();
 
 	double space = getSpecSize(spacing);
-	int produced = 0;
+
 	int y = 0;
 	int xMax = number / sqrt(number);
 	double sideSize = xMax * space / 2;
 
-	while (produced < number) {
+	while (units->size() < number) {
 		for (int x = 0; x < xMax; ++x) {
 			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_,
-			                                y * space + center->z_ - sideSize);
-			
-
+			                                y * space + center->z_ - sideSize);		
 			Unit* newUnit = new Unit(position, id, player);
 
-
 			units->push_back(newUnit);
-			++produced;
-			if (produced >= number) { break; }
+			if (units->size() >= number) { break; }
 		}
 		++y;
 	}

@@ -25,7 +25,7 @@ Physical::~Physical() {
 
 void Physical::initBillbords() {
 	StaticModel* model = node->GetComponent<StaticModel>();
-	if (model && type != ENTITY && type != PHISICAL) {
+	if (model) {
 		billboardNode = node->CreateChild();
 		billboardNode->Pitch(90);
 		barNode = node->CreateChild();

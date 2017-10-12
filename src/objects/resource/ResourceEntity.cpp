@@ -18,7 +18,6 @@ ResourceEntity::ResourceEntity(Vector3* _position, int id) : Static(_position, R
 		model->SetMaterial(i, Game::get()->getCache()->GetResource<Material>("Materials/" + dbResource->texture[i]));
 	}
 	initBillbords();
-
 }
 
 ResourceEntity::~ResourceEntity() {

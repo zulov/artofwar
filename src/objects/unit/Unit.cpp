@@ -27,7 +27,6 @@ Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT) {
 	setTeam(player);//TODO ustawic team
 
 	initBillbords();
-
 }
 
 Unit::~Unit() {
