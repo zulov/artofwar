@@ -22,12 +22,11 @@ void SimulationCommand::execute() {
 		simulationObjectManager->addUnits(number, id, position, spacingType, player);
 		break;
 	case BUILDING:
-		simulationObjectManager->addBuildings(id, position, spacingType, player);
+		simulationObjectManager->addBuildings(id, position, player);
 		break;
 	case RESOURCE:
 		simulationObjectManager->addResources(number, id, position, spacingType);
 		break;
-
 	}
 }
 

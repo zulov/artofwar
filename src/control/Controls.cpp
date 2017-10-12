@@ -81,7 +81,7 @@ void Controls::leftClick(Physical* clicked, Vector3& hitPos) {
 
 void Controls::leftClickBuild(Physical* clicked, Vector3& hitPos) {
 	unSelectAll();
-	create(ObjectType::BUILDING, new Vector3(hitPos), 1);
+	createBuilding(new Vector3(hitPos));
 }
 
 void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftPressed) {
@@ -226,14 +226,14 @@ void Controls::clickDown(MouseButton& var) {
 	}
 }
 
-void Controls::create(ObjectType type, Vector3* pos, int number) {
+void Controls::createBuilding(Vector3* pos) {
 	if (idToCreate >= 0) {
 		Resources* resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForBuilding(idToCreate);
 
 		if (resources->reduce(costs)) {
 			SimulationCommand* simulationCommand = new SimulationCommand
-				(type, number, idToCreate, pos, SpacingType::CONSTANT, 0);
+				(ObjectType::BUILDING, 1, idToCreate, pos, SpacingType::CONSTANT, 0);
 			Game::get()->getSimCommandList()->add(simulationCommand);
 		}
 	}

@@ -91,28 +91,36 @@ void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* cen
                                        int player) {
 	unitsTemp = unitFactory->create(number, id, center, spacingType, player);
 	addAll(unitsTemp);
-	simulationInfo->setAmountUnitChanged();
+	if (!unitsTemp->empty()) {
+		simulationInfo->setAmountUnitChanged();
+	}
 }
 
-void SimulationObjectManager::addBuildings(int id, Vector3* center, SpacingType spacingType,
+void SimulationObjectManager::addBuildings(int id, Vector3* center,
                                            int player) {
 	buildingsTemp = buildingFactory->create(id, center, player);
 	addAll(buildingsTemp);
-	simulationInfo->setAmountBuildingChanged();
+	if (!buildingsTemp->empty()) {
+		simulationInfo->setAmountBuildingChanged();
+	}
 }
 
 void SimulationObjectManager::addResources(unsigned number, int id, Vector3* center, SpacingType spacingType) {
 	resourcesTemp = resourceFactory->create(number, id, center, spacingType);
 	addAll(resourcesTemp);
-	simulationInfo->setAmountResourceChanged();
+	if (!resourcesTemp->empty()) {
+		simulationInfo->setAmountResourceChanged();
+	}
 }
 
 void SimulationObjectManager::clearUnitsToAdd() {
 	unitsToAdd->clear();
 }
+
 void SimulationObjectManager::clearBuildingsToAdd() {
 	buildingsToAdd->clear();
 }
+
 void SimulationObjectManager::clearResourcesToAdd() {
 	resourcesToAdd->clear();
 }

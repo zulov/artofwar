@@ -54,7 +54,7 @@ private:
 	void orderUnit(short id);
 	void orderBuilding(short id);
 
-	void create(ObjectType type, Vector3* pos, int number);
+	void createBuilding(Vector3* pos);
 	void refreshSelected();
 	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
 

@@ -73,8 +73,15 @@ void Simulation::createUnits() {
 	simCommandList->add(new SimulationCommand(RESOURCE, 4, GOLD, new Vector3(-50, 0, 45), CONSTANT, 1));
 	simCommandList->add(new SimulationCommand(RESOURCE, 4, STONE, new Vector3(50, 0, 25), CONSTANT, 1));
 	simCommandList->add(new SimulationCommand(RESOURCE, 9, WOOD, new Vector3(40, 0, 0), CONSTANT, 1));
-
 	simCommandList->add(new SimulationCommand(RESOURCE, 1, STONE, new Vector3(0, 0, 0), CONSTANT, 1));
+
+
+	simCommandList->add(new SimulationCommand(BUILDING, 1, 0, new Vector3(40, 0, 30), CONSTANT, 0));
+	simCommandList->add(new SimulationCommand(BUILDING, 1, 1, new Vector3(30, 0, 30), CONSTANT, 0));
+	simCommandList->add(new SimulationCommand(BUILDING, 1, 2, new Vector3(20, 0, 30), CONSTANT, 0));
+	simCommandList->add(new SimulationCommand(BUILDING, 1, 3, new Vector3(10, 0, 30), CONSTANT, 0));
+	simCommandList->add(new SimulationCommand(BUILDING, 1, 4, new Vector3(0, 0, 30), CONSTANT, 0));
+	simCommandList->add(new SimulationCommand(BUILDING, 1, 5, new Vector3(-10, 0, 30), CONSTANT, 1));
 }
 
 float Simulation::updateTime(float timeStep) {
