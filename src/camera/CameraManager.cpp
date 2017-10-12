@@ -1,4 +1,6 @@
 #include "CameraManager.h"
+#include "Game.h"
+#include <Urho3D/Graphics/Graphics.h>
 
 CameraManager::CameraManager() {
 	CameraBehave* cameraBehave = new FreeCameraBehave();
@@ -8,6 +10,15 @@ CameraManager::CameraManager() {
 	cameraBehaves.push_back(cameraBehave);
 
 	activeBehave = cameraBehaves.at(1);
+	float border = 256.f;
+
+	int width = Game::get()->getGraphics()->GetWidth();
+	int height = Game::get()->getGraphics()->GetHeight();
+	widthEdge = width / border;
+	heightEdge = height / border;
+
+	widthEdgeMax = width - widthEdge;
+	heightEdgeMax = height - heightEdge;
 }
 
 CameraManager::~CameraManager() {
@@ -21,16 +32,36 @@ void CameraManager::setCameraBehave(int _type) {
 	activeBehave = cameraBehaves.at(_type);
 }
 
-
 Urho3D::Camera* CameraManager::getComponent() {
 	return activeBehave->getComponent();
 }
 
-void CameraManager::translate(bool cameraKeys[], int wheel, float timeStep) {
+void CameraManager::createCameraKeys(Input* input, bool cameraKeys[4], const IntVector2& cursorPos) {
+	cameraKeys[0] = input->GetKeyDown(KEY_W);
+	cameraKeys[1] = input->GetKeyDown(KEY_S);
+	cameraKeys[2] = input->GetKeyDown(KEY_A);
+	cameraKeys[3] = input->GetKeyDown(KEY_D);
+
+	if (cursorPos.x_ < widthEdge) {
+		cameraKeys[2] = true;
+	} else if (cursorPos.x_ > widthEdgeMax) {
+		cameraKeys[3] = true;
+	}
+	if (cursorPos.y_ < heightEdge) {
+		cameraKeys[0] = true;
+	} else if (cursorPos.y_ > heightEdgeMax) {
+		cameraKeys[1] = true;
+	}
+}
+
+void CameraManager::translate(const IntVector2& cursorPos, Input* input, float timeStep) {
+	bool cameraKeys[4];
+	createCameraKeys(input, cameraKeys, cursorPos);
+	int wheel = input->GetMouseMoveWheel();
 	activeBehave->translate(cameraKeys, wheel, timeStep * MOVE_SPEED);
 }
 
-String *CameraManager::getInfo() {
+String* CameraManager::getInfo() {
 	return activeBehave->getInfo();
 }
 

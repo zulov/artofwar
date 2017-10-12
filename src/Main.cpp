@@ -243,28 +243,6 @@ void Main::SetupViewport() {
 	renderer->SetViewport(0, viewport);
 }
 
-void Main::createCameraKeys(Input* input, bool cameraKeys[4]) {
-	cameraKeys[0] = input->GetKeyDown(KEY_W);
-	cameraKeys[1] = input->GetKeyDown(KEY_S);
-	cameraKeys[2] = input->GetKeyDown(KEY_A);
-	cameraKeys[3] = input->GetKeyDown(KEY_D);
-
-	int width = Game::get()->getGraphics()->GetWidth();
-	int height = Game::get()->getGraphics()->GetHeight();
-	IntVector2 cursorPos = Game::get()->getUI()->GetCursorPosition();
-	float border = 256.f;
-	if (cursorPos.x_ < width / border) {
-		cameraKeys[2] = true;
-	} else if (cursorPos.x_ > width - (width / border)) {
-		cameraKeys[3] = true;
-	}
-	if (cursorPos.y_ < height / border) {
-		cameraKeys[0] = true;
-	} else if (cursorPos.y_ > height - (height / border)) {
-		cameraKeys[1] = true;
-	}
-}
-
 void Main::control(float timeStep) {
 	IntVector2 cursorPos= Game::get()->getUI()->GetCursorPosition();
 	UIElement* element = GetSubsystem<UI>()->GetElementAt(cursorPos, false);
@@ -277,10 +255,7 @@ void Main::control(float timeStep) {
 
 	Input* input = GetSubsystem<Input>();
 
-	bool cameraKeys[4];
-	createCameraKeys(input, cameraKeys);
-	int wheel = input->GetMouseMoveWheel();
-	cameraManager->translate(cameraKeys, wheel, timeStep);
+	cameraManager->translate(cursorPos, input, timeStep);
 	cameraManager->rotate(input->GetMouseMove());
 
 	controls->control();
