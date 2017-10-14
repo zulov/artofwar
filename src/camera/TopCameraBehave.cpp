@@ -20,8 +20,7 @@ TopCameraBehave::~TopCameraBehave() {
 }
 
 void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
-	Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
-	double diff = sqrt((pos.y_ - minY) / 10) + 1;
+	double diff = sqrt((orthoSize - minY) / 10) + 1;
 
 	if (cameraKeys[0]) {
 		cameraNode->Translate(diff * Urho3D::Vector3::FORWARD * timeStep, Urho3D::TS_WORLD);
@@ -40,18 +39,15 @@ void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 		changed = true;
 	}
 	if (wheel != 0) {
-		
-		double diff = sqrt(orthoSize - minY) + 1;
-		orthoSize -= wheel * diff * 1.5;		
+		orthoSize -= wheel * (sqrt(orthoSize - minY) + 1) * 1.5;
 
 		if (orthoSize < minY) {
 			orthoSize = minY;
-		}
-		else if (orthoSize > maxY) {
+		} else if (orthoSize > maxY) {
 			orthoSize = maxY;
 		}
 		camera->SetOrthoSize(orthoSize);
-		cameraNode->SetWorldPosition(pos);
+		
 
 		changed = true;
 	}

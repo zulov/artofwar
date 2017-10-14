@@ -39,7 +39,7 @@ void Bucket::setStatic(Static* _object) {
 	type = object->getType();
 	content->clear();
 	if (box) {
-		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
+		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red_alpha.xml"));
 	}
 }
 
@@ -47,7 +47,7 @@ void Bucket::removeStatic() {
 	object = nullptr;
 	type = ObjectType::UNIT;
 	if (box) {
-		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue.xml"));
+		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue_alpha.xml"));
 	}
 }
 
@@ -63,7 +63,7 @@ void Bucket::createBox(double bucketSize) {
 	box->Translate(Vector3::UP * 5, TS_PARENT);
 	model = box->CreateComponent<StaticModel>();
 	model->SetModel(Game::get()->getCache()->GetResource<Model>("Models/box.mdl"));
-	model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue.xml"));
+	model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue_alpha.xml"));
 	box->SetEnabled(true);
 }
 
