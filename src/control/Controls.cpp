@@ -230,8 +230,10 @@ void Controls::createBuilding(Vector3* pos) {
 	if (idToCreate >= 0) {
 		Resources* resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForBuilding(idToCreate);
+		Enviroment* env = Game::get()->getEnviroment();
+		db_building* db_building = Game::get()->getDatabaseCache()->getBuilding(idToCreate);
 
-		if (resources->reduce(costs)) {
+		if (env->validateStatic(db_building, pos) && resources->reduce(costs)) {
 			CreationCommand* simulationCommand = new CreationCommand
 				(ObjectType::BUILDING, 1, idToCreate, pos, SpacingType::CONSTANT, 0);
 			Game::get()->getSimCommandList()->add(simulationCommand);

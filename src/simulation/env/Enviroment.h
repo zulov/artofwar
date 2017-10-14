@@ -11,11 +11,11 @@
 #include "objects/Physical.h"
 
 
-class EnviromentStrategy
+class Enviroment
 {
 public:
-	EnviromentStrategy();
-	~EnviromentStrategy();
+	Enviroment();
+	~Enviroment();
 	float getSqDistance(Vector3* unitPosition, Vector3* otherPosition);
 	std::vector<Unit *>* getNeighbours(Unit* unit, double radius);
 	std::vector<Unit *>* getNeighboursFromTeam(Unit* unit, double radius, int team, OperatorType operatorType);
@@ -34,6 +34,7 @@ public:
 	std::vector<Physical *>* getNeighbours(std::pair<Vector3*, Vector3*>* pair);
 	std::vector<Physical *>* getBuildings(std::pair<Vector3*, Vector3*>* pair);
 	double getGroundHeightAt(double x, double z);
+	bool validateStatic(db_building* dbBuilding, Vector3* pos);
 
 private:
 	BucketGrid* allUnitGrid;

@@ -51,7 +51,11 @@ DatabaseCache* Game::getDatabaseCache() const {
 }
 
 PlayersManager* Game::getPlayersManager() const {
-	return  playersManager;
+	return playersManager;
+}
+
+Enviroment* Game::getEnviroment() const {
+	return enviroment;
 }
 
 Game::Game() {
@@ -142,5 +146,10 @@ Game* Game::setDatabaseCache(DatabaseCache* _databaseCache) {
 
 Game* Game::setPlayersManager(PlayersManager* _playersManager) {
 	playersManager = _playersManager;
+	return this;
+}
+
+Game* Game::setEnviroment(Enviroment* _enviroment) {
+	enviroment = _enviroment;
 	return this;
 }

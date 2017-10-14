@@ -59,8 +59,8 @@ void Bucket::setCenter(double _centerX, double _centerY) {
 void Bucket::createBox(double bucketSize) {
 	box = Game::get()->getScene()->CreateChild();
 	box->SetPosition(Vector3(centerX, 0, centerY));
-	box->Scale(Vector3(bucketSize / 2, 1, bucketSize / 2));
-	box->Translate(Vector3::UP * 5, TS_PARENT);
+	box->Scale(Vector3(bucketSize * 0.8, 1, bucketSize * 0.8));
+	box->Translate(Vector3::UP * 10, TS_PARENT);
 	model = box->CreateComponent<StaticModel>();
 	model->SetModel(Game::get()->getCache()->GetResource<Model>("Models/box.mdl"));
 	model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue_alpha.xml"));

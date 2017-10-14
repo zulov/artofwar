@@ -60,12 +60,6 @@
     <ClCompile Include="src\objects\EntityFactory.cpp">
       <Filter>objects\collection\factory</Filter>
     </ClCompile>
-    <ClCompile Include="src\simulation\env\EnviromentStrategy.cpp">
-      <Filter>simulation\env</Filter>
-    </ClCompile>
-    <ClCompile Include="src\simulation\force\ForceStrategy.cpp">
-      <Filter>simulation\force</Filter>
-    </ClCompile>
     <ClCompile Include="src\objects\LinkComponent.cpp">
       <Filter>objects\collection\link</Filter>
     </ClCompile>
@@ -214,6 +208,12 @@
       <Filter>command</Filter>
     </ClCompile>
     <ClCompile Include="src\camera\TopCameraBehave.cpp" />
+    <ClCompile Include="src\simulation\env\Enviroment.cpp">
+      <Filter>simulation\env</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simulation\force\Force.cpp">
+      <Filter>simulation\force</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -304,12 +304,6 @@
     </ClInclude>
     <ClInclude Include="src\objects\EntityFactory.h">
       <Filter>objects\collection\factory</Filter>
-    </ClInclude>
-    <ClInclude Include="src\simulation\env\EnviromentStrategy.h">
-      <Filter>simulation\env</Filter>
-    </ClInclude>
-    <ClInclude Include="src\simulation\force\ForceStrategy.h">
-      <Filter>simulation\force</Filter>
     </ClInclude>
     <ClInclude Include="src\hud\Hud.h">
       <Filter>hud</Filter>
@@ -466,6 +460,12 @@
       <Filter>command</Filter>
     </ClInclude>
     <ClInclude Include="src\camera\TopCameraBehave.h" />
+    <ClInclude Include="src\simulation\env\Enviroment.h">
+      <Filter>simulation\env</Filter>
+    </ClInclude>
+    <ClInclude Include="src\simulation\force\Force.h">
+      <Filter>simulation\force</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

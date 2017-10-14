@@ -1,20 +1,20 @@
-#include "ForceStrategy.h"
+#include "Force.h"
 
-ForceStrategy::ForceStrategy() {
+Force::Force() {
 }
 
 
-ForceStrategy::~ForceStrategy() {
+Force::~Force() {
 }
 
-Urho3D::Vector3* ForceStrategy::separationObstacle(Unit* unit, Vector2& repulse) {
+Urho3D::Vector3* Force::separationObstacle(Unit* unit, Vector2& repulse) {
 	Vector3* force = new Vector3(repulse.x_, 0, repulse.y_);
 
 	(*force) *= coef * boostCoef * sepCoef;
 	return force;
 }
 
-Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Unit*>* units) {
+Urho3D::Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 	Vector3* force = new Vector3();
 
 	for (int i = 0; i < units->size(); ++i) {
@@ -45,11 +45,11 @@ Urho3D::Vector3* ForceStrategy::separationUnits(Unit* unit, std::vector<Unit*>* 
 	return force;
 }
 
-Urho3D::Vector3* ForceStrategy::destination(Unit* unit) {
+Urho3D::Vector3* Force::destination(Unit* unit) {
 	return unit->getDestination(boostCoef, aimCoef);
 }
 
-double ForceStrategy::calculateCoef(double distance, double minDist) {
+double Force::calculateCoef(double distance, double minDist) {
 	double parameter = distance - minDist / 2;
 	if (parameter <= 0.05) {
 		parameter = 0.05;

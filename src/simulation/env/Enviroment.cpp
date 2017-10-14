@@ -1,7 +1,7 @@
-#include "EnviromentStrategy.h"
+#include "Enviroment.h"
 
 
-EnviromentStrategy::EnviromentStrategy() {
+Enviroment::Enviroment() {
 	allUnitGrid = new BucketGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, true);
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		teamUnitGrid[i] = new BucketGrid(BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY);
@@ -9,11 +9,10 @@ EnviromentStrategy::EnviromentStrategy() {
 
 	obstacleGrid = new BucketGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD);
 	resourceGrid = new BucketGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE);
-
 }
 
 
-EnviromentStrategy::~EnviromentStrategy() {
+Enviroment::~Enviroment() {
 	delete obstacleGrid;
 	delete resourceGrid;
 
@@ -21,15 +20,15 @@ EnviromentStrategy::~EnviromentStrategy() {
 	delete[] teamUnitGrid;
 }
 
-float EnviromentStrategy::getSqDistance(Vector3* unitPosition, Vector3* otherPosition) {
+float Enviroment::getSqDistance(Vector3* unitPosition, Vector3* otherPosition) {
 	return ((*otherPosition) - (*unitPosition)).LengthSquared();
 }
 
-std::vector<Unit*>* EnviromentStrategy::getNeighbours(Unit* unit, double radius) {
+std::vector<Unit*>* Enviroment::getNeighbours(Unit* unit, double radius) {
 	return getNeighbours(unit, allUnitGrid, radius);
 }
 
-std::vector<Unit*>* EnviromentStrategy::getNeighboursFromTeam(Unit* unit, double radius, int team,
+std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, double radius, int team,
                                                               OperatorType operatorType) {
 	switch (operatorType) {
 	case EQUAL:
@@ -55,7 +54,7 @@ std::vector<Unit*>* EnviromentStrategy::getNeighboursFromTeam(Unit* unit, double
 //	return getNeighbours(unit, obstacleGrid, radius);
 //}
 
-std::vector<Unit *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGrid* bucketGrid, double radius) {
+std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, BucketGrid* bucketGrid, double radius) {
 	std::vector<Unit*>* neights = new std::vector<Unit *>();
 	neights->reserve(DEFAULT_VECTOR_SIZE);//TODO sparametryzowac
 
@@ -79,20 +78,20 @@ std::vector<Unit *>* EnviromentStrategy::getNeighbours(Unit* unit, BucketGrid* b
 //	return getNeighbours(unit, resourceGrid, radius);
 //}
 
-void EnviromentStrategy::update(std::vector<Unit*>* units) {
+void Enviroment::update(std::vector<Unit*>* units) {
 	for (auto unit : (*units)) {
 		allUnitGrid->updateGrid(unit, 0);
 		teamUnitGrid[unit->getTeam()]->updateGrid(unit, 1);
 	}
 }
 
-void EnviromentStrategy::update(std::vector<Building*>* buildings) {
+void Enviroment::update(std::vector<Building*>* buildings) {
 	for (auto building : (*buildings)) {
 		allUnitGrid->addStatic(building);
 	}
 }
 
-void EnviromentStrategy::update(std::vector<ResourceEntity*>* resources) {
+void Enviroment::update(std::vector<ResourceEntity*>* resources) {
 	for (auto resource : (*resources)) {
 		allUnitGrid->addStatic(resource);
 	}
@@ -102,18 +101,22 @@ void EnviromentStrategy::update(std::vector<ResourceEntity*>* resources) {
 //	return gradient->getValueAt(position->x_, position->z_);
 //}
 
-Vector3* EnviromentStrategy::validatePosition(Vector3* position) {
+Vector3* Enviroment::validatePosition(Vector3* position) {
 	return allUnitGrid->validatePosition(position);
 }
 
-std::vector<Physical*>* EnviromentStrategy::getNeighbours(std::pair<Vector3*, Vector3*>* pair) {
+std::vector<Physical*>* Enviroment::getNeighbours(std::pair<Vector3*, Vector3*>* pair) {
 	return allUnitGrid->getArrayNeight(pair);
 }
 
-std::vector<Physical*>* EnviromentStrategy::getBuildings(std::pair<Vector3*, Vector3*>* pair) {
+std::vector<Physical*>* Enviroment::getBuildings(std::pair<Vector3*, Vector3*>* pair) {
 	return obstacleGrid->getArrayNeight(pair);
 }
 
-double EnviromentStrategy::getGroundHeightAt(double x, double z) {
+double Enviroment::getGroundHeightAt(double x, double z) {
 	return 0.0;
+}
+
+bool Enviroment::validateStatic(db_building* dbBuilding, Vector3* pos) {
+	return true;
 }

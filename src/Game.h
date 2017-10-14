@@ -13,6 +13,7 @@ class CommandList;
 class Mediator; 
 class BuildList;
 class SimulationCommandList;
+class Enviroment;
 
 class Game
 {
@@ -34,6 +35,7 @@ public:
 	Game* setSimCommandList(SimulationCommandList* _simCommandList);
 	Game* setDatabaseCache(DatabaseCache* _databaseCache);
 	Game* setPlayersManager(PlayersManager* _playersManager);
+	Game* setEnviroment(Enviroment* _enviroment);
 
 
 	CameraManager* getCameraManager() const;
@@ -50,6 +52,7 @@ public:
 	SimulationCommandList* getSimCommandList() const;
 	DatabaseCache* getDatabaseCache() const;
 	PlayersManager* getPlayersManager() const;
+	Enviroment* getEnviroment() const;
 private:
 	Game();
 	static Game* instance;
@@ -68,5 +71,6 @@ private:
 	SimulationCommandList * simCommandList;
 	DatabaseCache * databaseCache;
 	PlayersManager * playersManager;
+	Enviroment * enviroment;
 
 };

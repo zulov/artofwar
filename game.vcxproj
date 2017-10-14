@@ -261,8 +261,8 @@
     <ClCompile Include="src\hud\window\top\TopHudElement.cpp" />
     <ClCompile Include="src\hud\window\top\TopPanel.cpp" />
     <ClCompile Include="src\objects\unit\UnitFactory.cpp" />
-    <ClCompile Include="src\simulation\env\EnviromentStrategy.cpp" />
-    <ClCompile Include="src\simulation\force\ForceStrategy.cpp" />
+    <ClCompile Include="src\simulation\env\Enviroment.cpp" />
+    <ClCompile Include="src\simulation\force\Force.cpp" />
     <ClCompile Include="src\camera\FreeCameraBehave.cpp" />
     <ClCompile Include="src\hud\Hud.cpp" />
     <ClCompile Include="src\simulation\SimulationObjectManager.cpp" />
@@ -360,8 +360,8 @@
     <ClInclude Include="src\hud\window\top\TopHudElement.h" />
     <ClInclude Include="src\hud\window\top\TopPanel.h" />
     <ClInclude Include="src\objects\unit\UnitFactory.h" />
-    <ClInclude Include="src\simulation\env\EnviromentStrategy.h" />
-    <ClInclude Include="src\simulation\force\ForceStrategy.h" />
+    <ClInclude Include="src\simulation\env\Enviroment.h" />
+    <ClInclude Include="src\simulation\force\Force.h" />
     <ClInclude Include="src\camera\FreeCameraBehave.h" />
     <ClInclude Include="src\hud\Hud.h" />
     <ClInclude Include="src\simulation\SimulationObjectManager.h" />

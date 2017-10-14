@@ -3,11 +3,11 @@
 #include <vector>
 #include "objects/unit/Unit.h"
 
-class ForceStrategy {
+class Force {
 
 public:
-	ForceStrategy();
-	~ForceStrategy();
+	Force();
+	~Force();
 	Urho3D::Vector3* separationObstacle(Unit* unit, Vector2& repulse);
 
 	Urho3D::Vector3 *separationUnits(Unit * unit, std::vector<Unit *> *units);

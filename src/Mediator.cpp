@@ -1,7 +1,7 @@
 #include "Mediator.h"
 
 
-Mediator::Mediator(EnviromentStrategy* _enviromentStrategy, Controls* _controls) {
+Mediator::Mediator(Enviroment* _enviromentStrategy, Controls* _controls) {
 	enviromentStrategy = _enviromentStrategy;
 	controls = _controls;
 }
