@@ -186,6 +186,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera\TopCameraBehave.cpp" />
     <ClCompile Include="src\objects\Static.cpp" />
     <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\DummyAim.cpp" />
@@ -241,7 +242,7 @@
     <ClCompile Include="src\hud\window\selected\SelectedHudPanel.cpp" />
     <ClCompile Include="src\control\SelectedInfo.cpp" />
     <ClCompile Include="src\control\SelectedInfoType.cpp" />
-    <ClCompile Include="src\commands\SimulationCommand.cpp" />
+    <ClCompile Include="src\commands\CreationCommand.cpp" />
     <ClCompile Include="src\commands\CommandSelect.cpp" />
     <ClCompile Include="src\commands\CommandList.cpp" />
     <ClCompile Include="src\control\Controls.cpp" />
@@ -273,6 +274,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="src\camera\TopCameraBehave.h" />
     <ClInclude Include="src\commands\AbstractCommand.h" />
     <ClInclude Include="src\control\MouseButton.h" />
     <ClInclude Include="src\hud\window\AbstractWindowPanel.h" />
@@ -335,7 +337,7 @@
     <ClInclude Include="src\hud\window\selected\SelectedHudPanel.h" />
     <ClInclude Include="src\control\SelectedInfo.h" />
     <ClInclude Include="src\control\SelectedInfoType.h" />
-    <ClInclude Include="src\commands\SimulationCommand.h" />
+    <ClInclude Include="src\commands\CreationCommand.h" />
     <ClInclude Include="src\commands\CommandSelect.h" />
     <ClInclude Include="src\commands\CommandList.h" />
     <ClInclude Include="src\control\Controls.h" />

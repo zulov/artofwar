@@ -22,5 +22,6 @@ protected:
 	Urho3D::String name;
 	Urho3D::String *info;
 	bool changed;
+	Urho3D::Camera* camera;
 };
 

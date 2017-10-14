@@ -8,7 +8,7 @@ class BucketIterator;
 class BucketGrid
 {
 public:
-	BucketGrid(short _resolution, double _size);
+	BucketGrid(short _resolution, double _size, bool _debugEnabled = false);
 	~BucketGrid();
 
 	void updateGrid(Unit* entity, short team);
@@ -23,7 +23,7 @@ public:
 	std::vector<Physical *>* getArrayNeight(std::pair<Vector3*, Vector3*>* pair);
 	int getIndex(short posX, short posZ);
 	Vector3* validatePosition(Vector3* position);
-	
+
 private:
 	BucketIterator** iterators;
 	bool fieldInCircle(short i, short j, double radius);
@@ -34,10 +34,12 @@ private:
 	void removeAt(int index, Unit* entity);
 
 	Bucket* buckets;
+	Node** boxes;
 	short resolution;
 	short halfResolution;
 	double size;
 	double fieldSize;
+	bool debugEnabled;
 
 	double diff = ((double)MAX_SEP_DIST) / RES_SEP_DIST;
 

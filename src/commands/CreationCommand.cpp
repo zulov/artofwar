@@ -1,7 +1,7 @@
-#include "SimulationCommand.h"
+#include "CreationCommand.h"
 
 
-SimulationCommand::SimulationCommand(ObjectType type, int _number, int id, Vector3* _position, SpacingType _spacingType, int _player) {
+CreationCommand::CreationCommand(ObjectType type, int _number, int id, Vector3* _position, SpacingType _spacingType, int _player) {
 	number = _number;
 	position = _position;
 	spacingType = _spacingType;
@@ -10,11 +10,11 @@ SimulationCommand::SimulationCommand(ObjectType type, int _number, int id, Vecto
 	objectType = type;
 }
 
-SimulationCommand::~SimulationCommand() {
+CreationCommand::~CreationCommand() {
 	delete position;
 }
 
-void SimulationCommand::execute() {
+void CreationCommand::execute() {
 	switch (objectType) {
 	case ENTITY:
 		break;
@@ -30,6 +30,6 @@ void SimulationCommand::execute() {
 	}
 }
 
-void SimulationCommand::setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager) {
+void CreationCommand::setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager) {
 	simulationObjectManager = _simulationObjectManager;
 }

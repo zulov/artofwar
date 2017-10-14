@@ -1,13 +1,17 @@
 #include "Bucket.h"
-
+#include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Model.h>
 
 Bucket::~Bucket() {
 	delete content;
+	box->Remove();
 }
 
 Bucket::Bucket() {
 	content = new std::vector<Unit *>();
 	content->reserve(DEFAULT_VECTOR_SIZE / 2);
+	box = nullptr;
 	removeStatic();
 }
 
@@ -34,16 +38,33 @@ void Bucket::setStatic(Static* _object) {
 	object = _object;
 	type = object->getType();
 	content->clear();
+	if (box) {
+		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
+	}
 }
 
 void Bucket::removeStatic() {
 	object = nullptr;
 	type = ObjectType::UNIT;
+	if (box) {
+		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue.xml"));
+	}
 }
 
 void Bucket::setCenter(double _centerX, double _centerY) {
 	centerX = _centerX;
 	centerY = _centerY;
+}
+
+void Bucket::createBox(double bucketSize) {
+	box = Game::get()->getScene()->CreateChild();
+	box->SetPosition(Vector3(centerX, 0, centerY));
+	box->Scale(Vector3(bucketSize / 2, 1, bucketSize / 2));
+	box->Translate(Vector3::UP * 5, TS_PARENT);
+	model = box->CreateComponent<StaticModel>();
+	model->SetModel(Game::get()->getCache()->GetResource<Model>("Models/box.mdl"));
+	model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue.xml"));
+	box->SetEnabled(true);
 }
 
 Vector3* Bucket::getDirectrionFrom(Vector3* position) {

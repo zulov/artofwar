@@ -162,6 +162,8 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 		changeCamera(CameraBehaviorType::FREE);
 	} else if (key == KEY_2) {
 		changeCamera(CameraBehaviorType::RTS);
+	} else if (key == KEY_3) {
+		changeCamera(CameraBehaviorType::TOP);
 	}
 }
 

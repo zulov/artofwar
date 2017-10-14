@@ -9,6 +9,6 @@ SimulationCommandList::~SimulationCommandList() {
 }
 
 void SimulationCommandList::setParemeters(AbstractCommand* command) {
-	SimulationCommand* m = static_cast<SimulationCommand *>(command);
+	CreationCommand* m = static_cast<CreationCommand *>(command);
 	m->setSimulationObjectManager(simulationObjectManager);
 }

@@ -37,7 +37,7 @@ void ResourceEntity::populate(db_resource* _dbResource) {
 	amonut = _dbResource->maxCapacity;
 	maxUsers = _dbResource->maxUsers;
 	dbResource = _dbResource;
-	plane->SetScale(Vector3(_dbResource->sizeX, 1, _dbResource->sizeZ));
+	//plane->SetScale(Vector3(_dbResource->sizeX, 1, _dbResource->sizeZ));
 }
 
 double ResourceEntity::getHealthBarSize() {

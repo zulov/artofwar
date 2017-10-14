@@ -1,12 +1,18 @@
 #include "BucketGrid.h"
 #include "BucketIterator.h"
 #include <algorithm>
+#include <ostream>
+#include <iostream>
+#include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Model.h>
 
-BucketGrid::BucketGrid(short _resolution, double _size) {
+BucketGrid::BucketGrid(short _resolution, double _size, bool _debugEnabled) {
 	resolution = _resolution;
 	halfResolution = resolution / 2;
 	size = _size;
 	fieldSize = size / resolution;
+	debugEnabled = _debugEnabled;
 	buckets = new Bucket[resolution * resolution];
 
 	levelsCache = new std::vector<int>*[RES_SEP_DIST];
@@ -23,19 +29,29 @@ BucketGrid::BucketGrid(short _resolution, double _size) {
 	short posX = 0;
 	short posZ = 0;
 
+	int miniRes = resolution / 8;
+	boxes = new Node*[miniRes * miniRes];
+
 	for (int i = 0; i < resolution * resolution; ++i) {
-		double cX = posX + (0.5) * bucketSize;
-		double cZ = posZ + (0.5) * bucketSize;
+		double cX = (posX + 0.5) * bucketSize - size / 2;
+		double cZ = (posZ + 0.5) * bucketSize - size / 2;
 
 		buckets[i].setCenter(cX, cZ);
+		if (debugEnabled &&
+			(cX > -miniRes && cX < miniRes) &&
+			(cZ > -miniRes && cZ < miniRes)) {
+			buckets[i].createBox(bucketSize);
+		}
 		++posZ;
-		if (posZ > resolution) {
+		if (posZ >= resolution) {
 			++posX;
 			posZ = 0;
 		}
 	}
 
 	empty = new std::vector<Unit*>();
+
+
 }
 
 BucketGrid::~BucketGrid() {
@@ -64,8 +80,8 @@ bool BucketGrid::validateAdd(Static* object) {
 	short posX = getIndex(pos->x_);
 	short posZ = getIndex(pos->z_);
 
-	for (int i = posX; i < posX+size.x_; ++i) {
-		for (int j = posZ; j < posZ+size.y_; ++j) {
+	for (int i = posX; i < posX + size.x_; ++i) {
+		for (int j = posZ; j < posZ + size.y_; ++j) {
 			const int index = i * resolution + j;
 			if (!(inRange(index) &&
 				buckets[index].getType() == ObjectType::UNIT)) {

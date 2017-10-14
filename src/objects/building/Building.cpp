@@ -52,8 +52,7 @@ void Building::populate(db_building* _dbBuilding, std::vector<db_unit*>* _units)
 	units = _units;
 	queue = new QueueManager(_dbBuilding->queueMaxCapacity);
 
-	plane->SetScale(Vector3(_dbBuilding->sizeX,1,_dbBuilding->sizeZ));
-
+	//plane->SetScale(Vector3(_dbBuilding->sizeX,1,_dbBuilding->sizeZ));
 }
 
 void Building::absorbAttack(double attackCoef) {

@@ -2,7 +2,7 @@
 
 
 EnviromentStrategy::EnviromentStrategy() {
-	allUnitGrid = new BucketGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE);
+	allUnitGrid = new BucketGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, true);
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		teamUnitGrid[i] = new BucketGrid(BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY);
 	}

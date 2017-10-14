@@ -96,9 +96,6 @@
     <ClCompile Include="src\simulation\Simulation.cpp">
       <Filter>simulation</Filter>
     </ClCompile>
-    <ClCompile Include="src\commands\SimulationCommand.cpp">
-      <Filter>command</Filter>
-    </ClCompile>
     <ClCompile Include="src\commands\SimulationCommandList.cpp">
       <Filter>command\list</Filter>
     </ClCompile>
@@ -213,6 +210,10 @@
     <ClCompile Include="src\objects\unit\aim\DummyAim.cpp" />
     <ClCompile Include="src\objects\unit\state\CollectState.cpp" />
     <ClCompile Include="src\objects\Static.cpp" />
+    <ClCompile Include="src\commands\CreationCommand.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+    <ClCompile Include="src\camera\TopCameraBehave.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -346,9 +347,6 @@
     <ClInclude Include="src\simulation\Simulation.h">
       <Filter>simulation</Filter>
     </ClInclude>
-    <ClInclude Include="src\commands\SimulationCommand.h">
-      <Filter>command</Filter>
-    </ClInclude>
     <ClInclude Include="src\commands\SimulationCommandList.h">
       <Filter>command\list</Filter>
     </ClInclude>
@@ -464,6 +462,10 @@
     <ClInclude Include="src\objects\unit\aim\DummyAim.h" />
     <ClInclude Include="src\objects\unit\state\CollectState.h" />
     <ClInclude Include="src\objects\Static.h" />
+    <ClInclude Include="src\commands\CreationCommand.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="src\camera\TopCameraBehave.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

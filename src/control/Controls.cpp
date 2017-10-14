@@ -232,7 +232,7 @@ void Controls::createBuilding(Vector3* pos) {
 		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForBuilding(idToCreate);
 
 		if (resources->reduce(costs)) {
-			SimulationCommand* simulationCommand = new SimulationCommand
+			CreationCommand* simulationCommand = new CreationCommand
 				(ObjectType::BUILDING, 1, idToCreate, pos, SpacingType::CONSTANT, 0);
 			Game::get()->getSimCommandList()->add(simulationCommand);
 		}

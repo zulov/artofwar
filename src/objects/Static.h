@@ -8,7 +8,7 @@ public:
 	~Static();
 	IntVector2& getGridSize();
 protected:
-	Node * plane;
+
 	IntVector2 gridSize;
 };
 

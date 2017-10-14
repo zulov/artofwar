@@ -1,13 +1,13 @@
 #include "CameraManager.h"
 #include "Game.h"
 #include <Urho3D/Graphics/Graphics.h>
+#include "TopCameraBehave.h"
 
 CameraManager::CameraManager() {
-	CameraBehave* cameraBehave = new FreeCameraBehave();
-	cameraBehaves.push_back(cameraBehave);
 
-	cameraBehave = new RtsCameraBehave();
-	cameraBehaves.push_back(cameraBehave);
+	cameraBehaves.push_back(new FreeCameraBehave());
+	cameraBehaves.push_back(new RtsCameraBehave());
+	cameraBehaves.push_back(new TopCameraBehave());
 
 	activeBehave = cameraBehaves.at(1);
 	float border = 256.f;

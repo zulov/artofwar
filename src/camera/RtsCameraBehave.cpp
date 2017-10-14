@@ -7,7 +7,7 @@ RtsCameraBehave::RtsCameraBehave() {
 	double diff = sqrt(50.0f - minY) + 1;
 	double a = 10;
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * a);
-	Urho3D::Camera* camera = cameraNode->CreateComponent<Urho3D::Camera>();
+	camera = cameraNode->CreateComponent<Urho3D::Camera>();
 	camera->SetFarClip(300.0f);
 	name = Urho3D::String("RTSCam");
 }
@@ -71,5 +71,5 @@ Urho3D::String *RtsCameraBehave::getInfo() {
 }
 
 Urho3D::MouseMode RtsCameraBehave::getMouseMode() {
-	return MM_FREE;
+	return MM_RELATIVE;
 }

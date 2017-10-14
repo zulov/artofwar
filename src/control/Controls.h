@@ -15,7 +15,7 @@
 #include <Urho3D/Input/Input.h>
 #include "ControlsState.h"
 #include "Game.h"
-#include "commands/SimulationCommand.h"
+#include "commands/CreationCommand.h"
 #include "commands/BuildCommand.h"
 #include "objects/LinkComponent.h"
 #include "Mediator.h"
