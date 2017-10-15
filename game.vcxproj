@@ -210,7 +210,7 @@
     <ClCompile Include="src\objects\unit\state\MoveState.cpp" />
     <ClCompile Include="src\objects\unit\state\PatrolState.cpp" />
     <ClCompile Include="src\simulation\env\bucket\Bucket.cpp" />
-    <ClCompile Include="src\simulation\env\bucket\BucketGrid.cpp" />
+    <ClCompile Include="src\simulation\env\bucket\Grid.cpp" />
     <ClCompile Include="src\simulation\env\bucket\BucketIterator.cpp" />
     <ClCompile Include="src\commands\BuildCommand.cpp" />
     <ClCompile Include="src\objects\building\Building.cpp" />
@@ -254,6 +254,8 @@
     <ClCompile Include="src\Mediator.cpp" />
     <ClCompile Include="src\scene\SceneObjectManager.cpp" />
     <ClCompile Include="src\commands\SimulationCommandList.cpp" />
+    <ClCompile Include="src\simulation\env\bucket\ComplexBucketData.cpp" />
+    <ClCompile Include="src\simulation\env\bucket\MainGrid.cpp" />
     <ClCompile Include="src\simulation\SimulationInfo.cpp" />
     <ClCompile Include="src\objects\unit\state\State.cpp" />
     <ClCompile Include="src\objects\unit\state\StateManager.cpp" />
@@ -300,7 +302,7 @@
     <ClInclude Include="src\objects\unit\state\MoveState.h" />
     <ClInclude Include="src\objects\unit\state\PatrolState.h" />
     <ClInclude Include="src\simulation\env\bucket\Bucket.h" />
-    <ClInclude Include="src\simulation\env\bucket\BucketGrid.h" />
+    <ClInclude Include="src\simulation\env\bucket\Grid.h" />
     <ClInclude Include="src\simulation\env\bucket\BucketIterator.h" />
     <ClInclude Include="src\commands\BuildCommand.h" />
     <ClInclude Include="src\objects\building\Building.h" />
@@ -352,6 +354,8 @@
     <ClInclude Include="src\ObjectEnums.h" />
     <ClInclude Include="src\scene\SceneObjectManager.h" />
     <ClInclude Include="src\commands\SimulationCommandList.h" />
+    <ClInclude Include="src\simulation\env\bucket\ComplexBucketData.h" />
+    <ClInclude Include="src\simulation\env\bucket\MainGrid.h" />
     <ClInclude Include="src\simulation\SimulationInfo.h" />
     <ClInclude Include="src\SpacingType.h" />
     <ClInclude Include="src\objects\unit\state\State.h" />

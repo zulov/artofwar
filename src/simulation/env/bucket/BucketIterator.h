@@ -4,7 +4,7 @@
 #include "objects/Physical.h"
 
 
-class BucketGrid;
+class Grid;
 
 class BucketIterator
 {
@@ -12,7 +12,7 @@ public:
 	BucketIterator();
 	~BucketIterator();
 	Unit* next();
-	void init(std::vector<int>* _levels, int _center, BucketGrid * _bucketGrid);
+	void init(std::vector<int>* _levels, int _center, Grid * _bucketGrid);
 private:
 	short index = 0;
 	short secondIndex = 0;
@@ -22,6 +22,6 @@ private:
 	int center;
 
 	std::vector<Unit *>* currentContent;
-	BucketGrid * bucketGrid;
+	Grid * bucketGrid;
 
 };

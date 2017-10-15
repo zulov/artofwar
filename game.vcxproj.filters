@@ -36,9 +36,6 @@
     <ClCompile Include="src\simulation\env\bucket\Bucket.cpp">
       <Filter>simulation\env\bucket</Filter>
     </ClCompile>
-    <ClCompile Include="src\simulation\env\bucket\BucketGrid.cpp">
-      <Filter>simulation\env\bucket</Filter>
-    </ClCompile>
     <ClCompile Include="src\simulation\env\bucket\BucketIterator.cpp">
       <Filter>simulation\env\bucket</Filter>
     </ClCompile>
@@ -214,6 +211,11 @@
     <ClCompile Include="src\simulation\force\Force.cpp">
       <Filter>simulation\force</Filter>
     </ClCompile>
+    <ClCompile Include="src\simulation\env\bucket\MainGrid.cpp" />
+    <ClCompile Include="src\simulation\env\bucket\Grid.cpp">
+      <Filter>simulation\env\bucket</Filter>
+    </ClCompile>
+    <ClCompile Include="src\simulation\env\bucket\ComplexBucketData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -270,9 +272,6 @@
       <Filter>hud\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\simulation\env\bucket\Bucket.h">
-      <Filter>simulation\env\bucket</Filter>
-    </ClInclude>
-    <ClInclude Include="src\simulation\env\bucket\BucketGrid.h">
       <Filter>simulation\env\bucket</Filter>
     </ClInclude>
     <ClInclude Include="src\simulation\env\bucket\BucketIterator.h">
@@ -466,6 +465,11 @@
     <ClInclude Include="src\simulation\force\Force.h">
       <Filter>simulation\force</Filter>
     </ClInclude>
+    <ClInclude Include="src\simulation\env\bucket\MainGrid.h" />
+    <ClInclude Include="src\simulation\env\bucket\Grid.h">
+      <Filter>simulation\env\bucket</Filter>
+    </ClInclude>
+    <ClInclude Include="src\simulation\env\bucket\ComplexBucketData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

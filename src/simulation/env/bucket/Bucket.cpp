@@ -1,18 +1,14 @@
 #include "Bucket.h"
-#include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Graphics/Material.h>
-#include <Urho3D/Graphics/Model.h>
+
 
 Bucket::~Bucket() {
 	delete content;
-	box->Remove();
+	delete data;
 }
 
 Bucket::Bucket() {
 	content = new std::vector<Unit *>();
 	content->reserve(DEFAULT_VECTOR_SIZE / 2);
-	box = nullptr;
-	removeStatic();
 }
 
 std::vector<Unit *>* Bucket::getContent() {
@@ -30,43 +26,31 @@ void Bucket::remove(Unit* entity) {
 	}
 }
 
-ObjectType Bucket::getType() {
-	return type;
+void Bucket::setCenter(double _centerX, double _centerY) {
+	data->setCenter(_centerX, _centerY);
 }
 
-void Bucket::setStatic(Static* _object) {
-	object = _object;
-	type = object->getType();
+ObjectType Bucket::getType() {
+	return data->getType();
+}
+
+void Bucket::setStatic(Static* object) {
 	content->clear();
-	if (box) {
-		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red_alpha.xml"));
-	}
+	data->setStatic(object);
 }
 
 void Bucket::removeStatic() {
-	object = nullptr;
-	type = ObjectType::UNIT;
-	if (box) {
-		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue_alpha.xml"));
-	}
-}
-
-void Bucket::setCenter(double _centerX, double _centerY) {
-	centerX = _centerX;
-	centerY = _centerY;
+	data->removeStatic();
 }
 
 void Bucket::createBox(double bucketSize) {
-	box = Game::get()->getScene()->CreateChild();
-	box->SetPosition(Vector3(centerX, 0, centerY));
-	box->Scale(Vector3(bucketSize * 0.8, 1, bucketSize * 0.8));
-	box->Translate(Vector3::UP * 10, TS_PARENT);
-	model = box->CreateComponent<StaticModel>();
-	model->SetModel(Game::get()->getCache()->GetResource<Model>("Models/box.mdl"));
-	model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue_alpha.xml"));
-	box->SetEnabled(true);
+	data->createBox(bucketSize);
 }
 
 Vector3* Bucket::getDirectrionFrom(Vector3* position) {
-	return new Vector3(centerX - position->x_, 0, centerY - position->z_);
+	return data->getDirectrionFrom(position);
+}
+
+void Bucket::upgrade() {
+	data = new ComplexBucketData();
 }

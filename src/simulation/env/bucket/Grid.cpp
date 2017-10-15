@@ -1,4 +1,4 @@
-#include "BucketGrid.h"
+#include "Grid.h"
 #include "BucketIterator.h"
 #include <algorithm>
 #include <ostream>
@@ -7,13 +7,12 @@
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 
-BucketGrid::BucketGrid(short _resolution, double _size, bool _debugEnabled) {
+Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
 	resolution = _resolution;
 	halfResolution = resolution / 2;
 	size = _size;
 	fieldSize = size / resolution;
 	debugEnabled = _debugEnabled;
-	buckets = new Bucket[resolution * resolution];
 
 	levelsCache = new std::vector<int>*[RES_SEP_DIST];
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
@@ -24,47 +23,21 @@ BucketGrid::BucketGrid(short _resolution, double _size, bool _debugEnabled) {
 	for (int i = 0; i < MAX_THREADS; ++i) {
 		iterators[i] = new BucketIterator();
 	}
-
-	const double bucketSize = (size / resolution);
-	short posX = 0;
-	short posZ = 0;
-
-	int miniRes = resolution / 8;
-	boxes = new Node*[miniRes * miniRes];
-
-	for (int i = 0; i < resolution * resolution; ++i) {
-		double cX = (posX + 0.5) * bucketSize - size / 2;
-		double cZ = (posZ + 0.5) * bucketSize - size / 2;
-
-		buckets[i].setCenter(cX, cZ);
-		if (debugEnabled &&
-			(cX > -miniRes && cX < miniRes) &&
-			(cZ > -miniRes && cZ < miniRes)) {
-			buckets[i].createBox(bucketSize);
-		}
-		++posZ;
-		if (posZ >= resolution) {
-			++posX;
-			posZ = 0;
-		}
-	}
-
+	buckets = new Bucket[resolution * resolution];
 	empty = new std::vector<Unit*>();
-
-
 }
 
-BucketGrid::~BucketGrid() {
+Grid::~Grid() {
 	delete[] iterators;
 	delete empty;
 	delete[] buckets;
 }
 
-void BucketGrid::updateGrid(Unit* entity, short team) {
+void Grid::updateGrid(Unit* entity, short team) {
 	Vector3* pos = entity->getPosition();
 	const short posX = getIndex(pos->x_);
 	const short posZ = getIndex(pos->z_);
-	const int index = posX * resolution + posZ;
+	const int index = getIndex(posX,posZ);
 	if (!entity->isAlive()) {
 		removeAt(entity->getBucketIndex(team), entity);
 	} else if (entity->bucketHasChanged(index, team)) {
@@ -74,54 +47,13 @@ void BucketGrid::updateGrid(Unit* entity, short team) {
 	}
 }
 
-bool BucketGrid::validateAdd(Static* object) {
-	IntVector2 size = object->getGridSize();
-	Vector3* pos = object->getPosition();
-	short posX = getIndex(pos->x_);
-	short posZ = getIndex(pos->z_);
 
-	for (int i = posX; i < posX + size.x_; ++i) {
-		for (int j = posZ; j < posZ + size.y_; ++j) {
-			const int index = i * resolution + j;
-			if (!(inRange(index) &&
-				buckets[index].getType() == ObjectType::UNIT)) {
-				return false;
-			}
-		}
-	}
-
-	return true;
-}
-
-void BucketGrid::addStatic(Static* object) {
-	//TODO duzo poprawek trzeba, rozmair œrodek validacja, sprawdzenie przedziaa³ów
-	if (validateAdd(object)) {
-		IntVector2 size = object->getGridSize();
-		Vector3* pos = object->getPosition();
-		short iX = getIndex(pos->x_);
-		short iZ = getIndex(pos->z_);
-		const int index = iX * resolution + iZ;
-		object->setBucket(index, 0);
-		for (short i = 0; i < size.x_; ++i) {
-			for (short j = 0; j < size.y_; ++j) {
-				const int index2 = (iX + i) * resolution + (iZ + j);
-				buckets[index2].setStatic(object);
-			}
-		}
-	}
-}
-
-void BucketGrid::removeStatic(Static* object) {
-	int index = object->getBucketIndex(0);
-	buckets[index].removeStatic();
-}
-
-std::vector<int>* BucketGrid::getEnvIndexsFromCache(double dist) {
+std::vector<int>* Grid::getEnvIndexsFromCache(double dist) {
 	int index = dist / diff;
 	return levelsCache[index];
 }
 
-short BucketGrid::getIndex(double value) {
+short Grid::getIndex(double value) {
 	if (value < 0) {
 		short index = (short)(value / size * resolution) + halfResolution - 1;
 		if (index >= 0) {
@@ -136,7 +68,7 @@ short BucketGrid::getIndex(double value) {
 	return 0;
 }
 
-BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius, short thread) {
+BucketIterator* Grid::getArrayNeight(Unit* entity, double radius, short thread) {
 	Vector3* pos = entity->getPosition();
 	int index = getIndex(getIndex(pos->x_), getIndex(pos->z_));
 
@@ -145,28 +77,28 @@ BucketIterator* BucketGrid::getArrayNeight(Unit* entity, double radius, short th
 	return bucketIterator;
 }
 
-void BucketGrid::removeAt(int index, Unit* entity) {
+void Grid::removeAt(int index, Unit* entity) {
 	if (inRange(index)) {
 		buckets[index].remove(entity);
 	}
 }
 
-void BucketGrid::addAt(int index, Unit* entity) {
+void Grid::addAt(int index, Unit* entity) {
 	buckets[index].add(entity);
 }
 
-bool BucketGrid::inRange(int index) {
+bool Grid::inRange(int index) {
 	return index >= 0 && index < resolution * resolution;
 }
 
-std::vector<Unit*>* BucketGrid::getContentAt(int index) {
+std::vector<Unit*>* Grid::getContentAt(int index) {
 	if (inRange(index)) {
 		return buckets[index].getContent();
 	}
 	return empty;
 }
 
-std::vector<Physical*>* BucketGrid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair) {
+std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair) {
 	Vector3* begin = pair->first;
 	Vector3* end = pair->second;
 	std::vector<Physical*>* entities = new std::vector<Physical*>();//TOODO reserva zrobic sensownego
@@ -186,25 +118,11 @@ std::vector<Physical*>* BucketGrid::getArrayNeight(std::pair<Vector3*, Vector3*>
 	return entities;
 }
 
-int BucketGrid::getIndex(short posX, short posZ) {
+int Grid::getIndex(short posX, short posZ) {
 	return posX * resolution + posZ;
 }
 
-Vector3* BucketGrid::validatePosition(Vector3* position) {
-	short posX = getIndex(position->x_);
-	short posZ = getIndex(position->z_);
-	const int index = getIndex(posX, posZ);
-	if (buckets[index].getType() != ObjectType::UNIT) {
-
-		Vector3* direction = buckets[index].getDirectrionFrom(position);
-
-		direction->Normalize();
-		return direction;
-	}
-	return nullptr;
-}
-
-bool BucketGrid::fieldInCircle(short i, short j, double radius) {
+bool Grid::fieldInCircle(short i, short j, double radius) {
 	short x = i * fieldSize;
 	short y = j * fieldSize;
 	if (x * x + y * y < radius * radius) {
@@ -213,7 +131,7 @@ bool BucketGrid::fieldInCircle(short i, short j, double radius) {
 	return false;
 }
 
-std::vector<int>* BucketGrid::getEnvIndexs(double radius) {
+std::vector<int>* Grid::getEnvIndexs(double radius) {
 	std::vector<int>* indexes = new std::vector<int>();
 	for (short i = 0; i < RES_SEP_DIST; ++i) {
 		for (short j = 0; j < RES_SEP_DIST; ++j) {

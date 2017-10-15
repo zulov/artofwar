@@ -1,5 +1,5 @@
 #include "BucketIterator.h"
-#include "BucketGrid.h"
+#include "Grid.h"
 
 BucketIterator::BucketIterator() {
 
@@ -22,7 +22,7 @@ Unit* BucketIterator::next() {
 	return entity;
 }
 
-void BucketIterator::init(std::vector<int>* _levels, int _center, BucketGrid* _bucketGrid) {
+void BucketIterator::init(std::vector<int>* _levels, int _center, Grid* _bucketGrid) {
 	levels = _levels;
 	center = _center;
 	index = 0;
