@@ -14,6 +14,7 @@
 #include <Urho3D/Container/Str.h>
 #include <vector>
 #include "defines.h"
+#include <Urho3D/Math/Vector2.h>
 
 struct db_unit
 {
@@ -57,7 +58,7 @@ struct db_building
 {
 	int id;
 	Urho3D::String name;
-	int sizeX;
+	Urho3D::IntVector2 size;
 	int sizeZ;
 	int type;
 	Urho3D::String model;
@@ -73,8 +74,7 @@ struct db_building
 	            char* texture_temp, int nation, char* icon, int queueMaxCapacity)
 		: id(id),
 		name(name),
-		sizeX(sizeX),
-		sizeZ(sizeZ),
+		size(Urho3D::IntVector2(sizeX, sizeZ)),
 		type(type),
 		model(model),
 		texture(texture),

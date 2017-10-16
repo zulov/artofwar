@@ -118,5 +118,5 @@ double Enviroment::getGroundHeightAt(double x, double z) {
 }
 
 bool Enviroment::validateStatic(db_building* dbBuilding, Vector3* pos) {
-	return true;
+	return mainGrid->validateAdd(dbBuilding->size, pos);
 }

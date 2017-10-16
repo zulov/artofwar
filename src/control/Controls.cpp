@@ -234,6 +234,7 @@ void Controls::createBuilding(Vector3* pos) {
 		db_building* db_building = Game::get()->getDatabaseCache()->getBuilding(idToCreate);
 
 		if (env->validateStatic(db_building, pos) && resources->reduce(costs)) {
+
 			CreationCommand* simulationCommand = new CreationCommand
 				(ObjectType::BUILDING, 1, idToCreate, pos, SpacingType::CONSTANT, 0);
 			Game::get()->getSimCommandList()->add(simulationCommand);

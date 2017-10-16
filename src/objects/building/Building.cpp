@@ -7,6 +7,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 
 double Building::hbMaxSize = 5.0;
+
 Building::Building(Vector3* _position, int id, int player) : Static(_position, BUILDING) {
 	hbMaxSize = 5.0;
 
@@ -46,7 +47,7 @@ int Building::getID() {
 }
 
 void Building::populate(db_building* _dbBuilding, std::vector<db_unit*>* _units) {
-	gridSize = IntVector2(_dbBuilding->sizeX, _dbBuilding->sizeZ);
+	gridSize = _dbBuilding->size;
 	buildingType = BuildingType(_dbBuilding->type);
 	dbBuilding = _dbBuilding;
 	units = _units;

@@ -31,12 +31,16 @@ MainGrid::~MainGrid() {
 bool MainGrid::validateAdd(Static* object) {
 	IntVector2 size = object->getGridSize();
 	Vector3* pos = object->getPosition();
-	short posX = getIndex(pos->x_);
-	short posZ = getIndex(pos->z_);
+	return validateAdd(size, pos);
+}
 
-	for (int i = posX; i < posX + size.x_; ++i) {
-		for (int j = posZ; j < posZ + size.y_; ++j) {
-			const int index = i * resolution + j;
+bool MainGrid::validateAdd(const IntVector2& size, Vector3* pos) {
+	short iX = getIndex(pos->x_);
+	short iZ = getIndex(pos->z_);
+
+	for (int i = iX; i < iX + size.x_; ++i) {
+		for (int j = iZ; j < iZ + size.y_; ++j) {
+			const int index = getIndex(i, j);
 			if (!(inRange(index) &&
 				buckets[index].getType() == ObjectType::UNIT)) {
 				return false;
@@ -54,12 +58,13 @@ void MainGrid::addStatic(Static* object) {
 		Vector3* pos = object->getPosition();
 		short iX = getIndex(pos->x_);
 		short iZ = getIndex(pos->z_);
-		const int index = iX * resolution + iZ;
-		object->setBucket(index, 0);
-		for (short i = 0; i < size.x_; ++i) {
-			for (short j = 0; j < size.y_; ++j) {
-				const int index2 = (iX + i) * resolution + (iZ + j);
-				buckets[index2].setStatic(object);
+
+		object->setBucket(getIndex(iX, iZ), 0);
+
+		for (int i = iX; i < iX + size.x_; ++i) {
+			for (int j = iZ; j < iZ + size.y_; ++j) {
+				const int index = getIndex(i, j);
+				buckets[index].setStatic(object);
 			}
 		}
 	}
