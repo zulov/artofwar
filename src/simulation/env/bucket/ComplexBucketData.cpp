@@ -45,7 +45,7 @@ void ComplexBucketData::createBox(double bucketSize) {
 	box->Scale(Vector3(bucketSize * 0.8, 1, bucketSize * 0.8));
 	box->Translate(Vector3::UP * 10, TS_PARENT);
 	model = box->CreateComponent<StaticModel>();
-	model->SetModel(Game::get()->getCache()->GetResource<Model>("Models/box.mdl"));
+	model->SetModel(Game::get()->getCache()->GetResource<Model>("Models/plane.mdl"));
 	model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue_alpha.xml"));
 	box->SetEnabled(true);
 }

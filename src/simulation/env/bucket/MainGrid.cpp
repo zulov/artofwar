@@ -38,8 +38,15 @@ bool MainGrid::validateAdd(const IntVector2& size, Vector3* pos) {
 	short iX = getIndex(pos->x_);
 	short iZ = getIndex(pos->z_);
 
-	for (int i = iX; i < iX + size.x_; ++i) {
-		for (int j = iZ; j < iZ + size.y_; ++j) {
+	int leftX = -(((size.x_ - 1)) / 2 + 0.5);
+	int rightX = size.x_ + leftX;
+
+	int leftZ = -(((size.y_ - 1)) / 2 + 0.5);
+	int rightZ = size.y_ + leftX;
+
+
+	for (int i = iX + leftX; i < iX + rightX; ++i) {
+		for (int j = iZ + leftZ; j < iZ + rightZ; ++j) {
 			const int index = getIndex(i, j);
 			if (!(inRange(index) &&
 				buckets[index].getType() == ObjectType::UNIT)) {
@@ -61,8 +68,15 @@ void MainGrid::addStatic(Static* object) {
 
 		object->setBucket(getIndex(iX, iZ), 0);
 
-		for (int i = iX; i < iX + size.x_; ++i) {
-			for (int j = iZ; j < iZ + size.y_; ++j) {
+		int leftX = -(((size.x_ - 1)) / 2 + 0.5);
+		int rightX = size.x_ + leftX;
+
+		int leftZ = -(((size.y_ - 1)) / 2 + 0.5);
+		int rightZ = size.y_ + leftX;
+
+
+		for (int i = iX + leftX; i < iX + rightX; ++i) {
+			for (int j = iZ+ leftZ; j < iZ + rightZ; ++j) {
 				const int index = getIndex(i, j);
 				buckets[index].setStatic(object);
 			}
