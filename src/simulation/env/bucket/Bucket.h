@@ -14,6 +14,7 @@ public:
 	void add(Unit* entity);
 	void remove(Unit* entity);
 	void setCenter(double _centerX, double _centerY);
+	Vector2 getCenter();
 
 	ObjectType getType();
 	void setStatic(Static* object);

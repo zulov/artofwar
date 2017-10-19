@@ -87,7 +87,7 @@ void MainGrid::removeStatic(Static* object) {
 	buckets[index].removeStatic();
 }
 
-Vector3* MainGrid::validatePosition(Vector3* position) {
+Vector3* MainGrid::getDirectionFrom(Vector3* position) {
 	short posX = getIndex(position->x_);
 	short posZ = getIndex(position->z_);
 	const int index = getIndex(posX, posZ);
@@ -99,4 +99,26 @@ Vector3* MainGrid::validatePosition(Vector3* position) {
 		return direction;
 	}
 	return nullptr;
+}
+
+Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector3* pos) {//TODO tu mozna to sporo zoptymalizowac ale pewnie nie ma potrzeby
+	short posX = getIndex(pos->x_);
+	short posZ = getIndex(pos->z_);
+
+
+	IntVector2 sizeX = calculateSize(size.x_);
+	IntVector2 sizeZ = calculateSize(size.y_);
+
+	short left = posX + sizeX.x_;
+	short right = posX + sizeX.y_-1;
+	short top = posZ + sizeZ.x_;
+	short bottom = posZ + sizeZ.y_-1;
+	const int index1 = getIndex(left, top);
+	const int index2 = getIndex(right, bottom);
+	Vector2 center1 = buckets[index1].getCenter();
+	Vector2 center2 = buckets[index2].getCenter();
+	Vector2 newCenter = (center1 + center2) / 2;
+	pos->x_ = newCenter.x_;
+	pos->z_ = newCenter.y_;
+	return pos;
 }

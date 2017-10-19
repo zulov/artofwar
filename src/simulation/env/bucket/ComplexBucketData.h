@@ -18,9 +18,9 @@ public:
 	void createBox(double bucketSize);
 	Urho3D::Vector3* getDirectrionFrom(Urho3D::Vector3* position);
 	void setCenter(double _centerX, double _centerY);
+	Urho3D::Vector2 getCenter();
 private:
-	double centerX;
-	double centerY;
+	Urho3D::Vector2 center;
 	Urho3D::Node* box;
 	Urho3D::StaticModel* model;
 	Static* object;

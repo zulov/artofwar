@@ -29,7 +29,7 @@ std::vector<Unit*>* Enviroment::getNeighbours(Unit* unit, double radius) {
 }
 
 std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, double radius, int team,
-                                                              OperatorType operatorType) {
+                                                      OperatorType operatorType) {
 	switch (operatorType) {
 	case EQUAL:
 		return getNeighbours(unit, teamUnitGrid[team], radius);
@@ -102,7 +102,7 @@ void Enviroment::update(std::vector<ResourceEntity*>* resources) {
 //}
 
 Vector3* Enviroment::validatePosition(Vector3* position) {
-	return mainGrid->validatePosition(position);
+	return mainGrid->getDirectionFrom(position);
 }
 
 std::vector<Physical*>* Enviroment::getNeighbours(std::pair<Vector3*, Vector3*>* pair) {
@@ -119,4 +119,8 @@ double Enviroment::getGroundHeightAt(double x, double z) {
 
 bool Enviroment::validateStatic(db_building* dbBuilding, Vector3* pos) {
 	return mainGrid->validateAdd(dbBuilding->size, pos);
+}
+
+Vector3* Enviroment::getValidPosition(db_building* dbBuilding, Vector3* pos) {
+	return mainGrid->getValidPosition(dbBuilding->size, pos);
 }

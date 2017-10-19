@@ -36,6 +36,7 @@ public:
 	std::vector<Physical *>* getBuildings(std::pair<Vector3*, Vector3*>* pair);
 	double getGroundHeightAt(double x, double z);
 	bool validateStatic(db_building* dbBuilding, Vector3* pos);
+	Vector3* getValidPosition(db_building* dbBuilding, Vector3* pos);
 
 private:
 	MainGrid* mainGrid;
