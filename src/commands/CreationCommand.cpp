@@ -1,7 +1,8 @@
 #include "CreationCommand.h"
 
 
-CreationCommand::CreationCommand(ObjectType type, int _number, int id, Vector3* _position, SpacingType _spacingType, int _player) {
+CreationCommand::CreationCommand(ObjectType type, int _number, int id, Vector3* _position, SpacingType _spacingType,
+                                 int _player) {
 	number = _number;
 	position = _position;
 	spacingType = _spacingType;
@@ -25,7 +26,7 @@ void CreationCommand::execute() {
 		simulationObjectManager->addBuildings(id, position, player);
 		break;
 	case RESOURCE:
-		simulationObjectManager->addResources(number, id, position, spacingType);
+		simulationObjectManager->addResources(id, position);
 		break;
 	}
 }

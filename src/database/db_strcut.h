@@ -163,8 +163,7 @@ struct db_resource
 	Urho3D::Vector<Urho3D::String> texture;
 	Urho3D::String model;
 	double scale;
-	int sizeX;
-	int sizeZ;
+	Urho3D::IntVector2 size;
 	int maxUsers;
 
 	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, double scale, int sizeX, int sizeZ,
@@ -176,8 +175,7 @@ struct db_resource
 		texture(Urho3D::String(texture).Split(SPLIT_SIGN)),
 		model(model),
 		scale(scale),
-		sizeX(sizeX),
-		sizeZ(sizeZ),
+		size(Urho3D::IntVector2(sizeX, sizeZ)),
 		maxUsers(maxUsers) {
 	}
 };

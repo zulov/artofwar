@@ -47,14 +47,14 @@ void Main::Start() {
 
 	cameraManager = new CameraManager();
 	SimulationObjectManager* simulationObjectManager = new SimulationObjectManager();
-	SimulationCommandList* simulationCommandList = new SimulationCommandList(simulationObjectManager);
+	CreationCommandList* creationCommandList = new CreationCommandList(simulationObjectManager);
 	Enviroment* enviromentStrategy = new Enviroment();
 	mediator = new Mediator(enviromentStrategy, controls);
 	levelBuilder->createScene();
 	game->setCameraManager(cameraManager)->setBuildList(buildList)->
-	      setSimCommandList(simulationCommandList)->setMediator(mediator)->setEnviroment(enviromentStrategy);
+	      setCreationCommandList(creationCommandList)->setMediator(mediator)->setEnviroment(enviromentStrategy);
 
-	simulation = new Simulation(enviromentStrategy, simulationCommandList, simulationObjectManager);
+	simulation = new Simulation(enviromentStrategy, creationCommandList, simulationObjectManager);
 
 	SetupViewport();
 

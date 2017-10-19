@@ -253,7 +253,7 @@
     <ClCompile Include="src\objects\LinkComponent.cpp" />
     <ClCompile Include="src\Mediator.cpp" />
     <ClCompile Include="src\scene\SceneObjectManager.cpp" />
-    <ClCompile Include="src\commands\SimulationCommandList.cpp" />
+    <ClCompile Include="src\commands\CreationCommandList.cpp" />
     <ClCompile Include="src\simulation\env\bucket\ComplexBucketData.cpp" />
     <ClCompile Include="src\simulation\env\bucket\MainGrid.cpp" />
     <ClCompile Include="src\simulation\SimulationInfo.cpp" />
@@ -353,7 +353,7 @@
     <ClInclude Include="src\Mediator.h" />
     <ClInclude Include="src\ObjectEnums.h" />
     <ClInclude Include="src\scene\SceneObjectManager.h" />
-    <ClInclude Include="src\commands\SimulationCommandList.h" />
+    <ClInclude Include="src\commands\CreationCommandList.h" />
     <ClInclude Include="src\simulation\env\bucket\ComplexBucketData.h" />
     <ClInclude Include="src\simulation\env\bucket\MainGrid.h" />
     <ClInclude Include="src\simulation\SimulationInfo.h" />

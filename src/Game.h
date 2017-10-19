@@ -12,7 +12,7 @@ class ActionCommandList;
 class CommandList;
 class Mediator; 
 class BuildList;
-class SimulationCommandList;
+class CreationCommandList;
 class Enviroment;
 
 class Game
@@ -32,7 +32,7 @@ public:
 	Game* setConsole(Console* _console);
 	Game* setMediator(Mediator* _mediator);
 	Game* setBuildList(BuildList* _buildList);
-	Game* setSimCommandList(SimulationCommandList* _simCommandList);
+	Game* setCreationCommandList(CreationCommandList* _simCommandList);
 	Game* setDatabaseCache(DatabaseCache* _databaseCache);
 	Game* setPlayersManager(PlayersManager* _playersManager);
 	Game* setEnviroment(Enviroment* _enviroment);
@@ -49,7 +49,7 @@ public:
 	Console* getConsole() const;
 	Mediator* getMediator() const;
 	BuildList* getBuildList() const;
-	SimulationCommandList* getSimCommandList() const;
+	CreationCommandList* getCreationCommandList() const;
 	DatabaseCache* getDatabaseCache() const;
 	PlayersManager* getPlayersManager() const;
 	Enviroment* getEnviroment() const;
@@ -68,7 +68,7 @@ private:
 	Mediator* mediator;
 	BuildList* buildList;
 	ActionCommandList* actionCommandList;
-	SimulationCommandList * simCommandList;
+	CreationCommandList * creationCommandList;
 	DatabaseCache * databaseCache;
 	PlayersManager * playersManager;
 	Enviroment * enviroment;

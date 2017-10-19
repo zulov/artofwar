@@ -17,26 +17,14 @@ ResourceFactory::~ResourceFactory() {
 	delete resources;
 }
 
-std::vector<ResourceEntity*>* ResourceFactory::create(unsigned number, int id, Vector3* center, SpacingType spacing) {
+std::vector<ResourceEntity*>* ResourceFactory::create(int id, Vector3* center) {
 	resources->clear();
 
-	double space = getSpecSize(spacing) * spaceCoef;
 
-	int y = 0;
-	int xMax = number / sqrt(number);
-	double sideSize = xMax * space / 2;
-	while (resources->size()  < number) {
-		for (int x = 0; x < xMax; ++x) {
+	Vector3* position = new Vector3(center->x_, center->y_, center->z_);
 
-			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_,
-			                                y * space + center->z_ - sideSize);
+	ResourceEntity* entity = new ResourceEntity(position, id);
+	resources->push_back(entity);
 
-			ResourceEntity* entity = new ResourceEntity(position, id);
-			resources->push_back(entity);
-
-			if (resources->size() >= number) { break; }
-		}
-		++y;
-	}
 	return resources;
 }

@@ -117,10 +117,10 @@ double Enviroment::getGroundHeightAt(double x, double z) {
 	return 0.0;
 }
 
-bool Enviroment::validateStatic(db_building* dbBuilding, Vector3* pos) {
-	return mainGrid->validateAdd(dbBuilding->size, pos);
+bool Enviroment::validateStatic(const IntVector2& size, Vector3* pos) {
+	return mainGrid->validateAdd(size, pos);
 }
 
-Vector3* Enviroment::getValidPosition(db_building* dbBuilding, Vector3* pos) {
-	return mainGrid->getValidPosition(dbBuilding->size, pos);
+Vector3* Enviroment::getValidPosition(const IntVector2& size, Vector3* pos) {
+	return mainGrid->getValidPosition(size, pos);
 }

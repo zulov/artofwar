@@ -105,8 +105,8 @@ void SimulationObjectManager::addBuildings(int id, Vector3* center,
 	}
 }
 
-void SimulationObjectManager::addResources(unsigned number, int id, Vector3* center, SpacingType spacingType) {
-	resourcesTemp = resourceFactory->create(number, id, center, spacingType);
+void SimulationObjectManager::addResources(int id, Vector3* center) {
+	resourcesTemp = resourceFactory->create(id, center);
 	addAll(resourcesTemp);
 	if (!resourcesTemp->empty()) {
 		simulationInfo->setAmountResourceChanged();

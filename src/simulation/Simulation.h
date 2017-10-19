@@ -5,7 +5,7 @@
 #include "simulation/env/Enviroment.h"
 #include "simulation/force/Force.h"
 #include "SimulationObjectManager.h"
-#include "commands/SimulationCommandList.h"
+#include "commands/CreationCommandList.h"
 #include "commands/CommandList.h"
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Engine/Engine.h>
@@ -16,7 +16,7 @@
 #include "objects/unit/aim/AimContainer.h"
 #include "SimulationInfo.h"
 
-class SimulationCommandList;
+class CreationCommandList;
 
 namespace Urho3D {
 	class Node;
@@ -26,7 +26,7 @@ namespace Urho3D {
 class Simulation
 {
 public:
-	Simulation(Enviroment* _enviromentStrategy, SimulationCommandList* _simCommandList, SimulationObjectManager* _simObjectManager);
+	Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList, SimulationObjectManager* _simObjectManager);
 
 	void update(Input* input, float timeStep);
 
@@ -64,6 +64,6 @@ private:
 	Enviroment* envStrategy;
 	Force* forceStrategy;
 	SimulationObjectManager* simObjectManager;
-	SimulationCommandList* simCommandList;
+	CreationCommandList* simCommandList;
 	ActionCommandList* actionCommandList;
 };

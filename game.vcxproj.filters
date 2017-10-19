@@ -87,9 +87,6 @@
     <ClCompile Include="src\simulation\Simulation.cpp">
       <Filter>simulation</Filter>
     </ClCompile>
-    <ClCompile Include="src\commands\SimulationCommandList.cpp">
-      <Filter>command\list</Filter>
-    </ClCompile>
     <ClCompile Include="src\simulation\SimulationInfo.cpp" />
     <ClCompile Include="src\simulation\SimulationObjectManager.cpp">
       <Filter>objects\collection\manager</Filter>
@@ -216,6 +213,9 @@
       <Filter>simulation\env\bucket</Filter>
     </ClCompile>
     <ClCompile Include="src\simulation\env\bucket\ComplexBucketData.cpp" />
+    <ClCompile Include="src\commands\CreationCommandList.cpp">
+      <Filter>command\list</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -339,9 +339,6 @@
     </ClInclude>
     <ClInclude Include="src\simulation\Simulation.h">
       <Filter>simulation</Filter>
-    </ClInclude>
-    <ClInclude Include="src\commands\SimulationCommandList.h">
-      <Filter>command\list</Filter>
     </ClInclude>
     <ClInclude Include="src\simulation\SimulationInfo.h" />
     <ClInclude Include="src\simulation\SimulationObjectManager.h">
@@ -470,6 +467,9 @@
       <Filter>simulation\env\bucket</Filter>
     </ClInclude>
     <ClInclude Include="src\simulation\env\bucket\ComplexBucketData.h" />
+    <ClInclude Include="src\commands\CreationCommandList.h">
+      <Filter>command\list</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

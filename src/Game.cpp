@@ -42,8 +42,8 @@ BuildList* Game::getBuildList() const {
 	return buildList;
 }
 
-SimulationCommandList* Game::getSimCommandList() const {
-	return simCommandList;
+CreationCommandList* Game::getCreationCommandList() const {
+	return creationCommandList;
 }
 
 DatabaseCache* Game::getDatabaseCache() const {
@@ -134,8 +134,8 @@ Game* Game::setBuildList(BuildList* _buildList) {
 	return this;
 }
 
-Game* Game::setSimCommandList(SimulationCommandList* _simCommandList) {
-	simCommandList = _simCommandList;
+Game* Game::setCreationCommandList(CreationCommandList* _simCommandList) {
+	creationCommandList = _simCommandList;
 	return this;
 }
 

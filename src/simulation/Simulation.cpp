@@ -1,7 +1,7 @@
 #include "Simulation.h"
 
 
-Simulation::Simulation(Enviroment* _enviromentStrategy, SimulationCommandList* _simCommandList,
+Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList,
                        SimulationObjectManager* _simObjectManager) {
 	envStrategy = _enviromentStrategy;
 	forceStrategy = new Force();
@@ -62,26 +62,26 @@ void Simulation::selftAI() {
 }
 
 void Simulation::createUnits() {
-	simCommandList->add(new CreationCommand(UNIT, UNITS_NUMBER / 5, 0, new Vector3(10, 0, 10), CONSTANT, 0));
-	simCommandList->add(new CreationCommand(UNIT, UNITS_NUMBER / 5, 1, new Vector3(10, 0, -10), CONSTANT, 0));
-	simCommandList->add(new CreationCommand(UNIT, UNITS_NUMBER / 5, 2, new Vector3(-10, 0, 10), CONSTANT, 0));
-	simCommandList->add(new CreationCommand(UNIT, UNITS_NUMBER / 5, 4, new Vector3(-10, 0, -10), CONSTANT, 0));
-	simCommandList->add(new CreationCommand(UNIT, UNITS_NUMBER / 5, 5, new Vector3(0, 0, 0), CONSTANT, 0));
+	simCommandList->addUnits(UNITS_NUMBER / 5, 0, new Vector3(10, 0, 10), CONSTANT, 0);
+	simCommandList->addUnits(UNITS_NUMBER / 5, 1, new Vector3(10, 0, -10), CONSTANT, 0);
+	simCommandList->addUnits(UNITS_NUMBER / 5, 2, new Vector3(-10, 0, 10), CONSTANT, 0);
+	simCommandList->addUnits(UNITS_NUMBER / 5, 4, new Vector3(-10, 0, -10), CONSTANT, 0);
+	simCommandList->addUnits(UNITS_NUMBER / 5, 5, new Vector3(0, 0, 0), CONSTANT, 0);
 
-	simCommandList->add(new CreationCommand(UNIT, UNITS_NUMBER, 3, new Vector3(-50, 0, -50), CONSTANT, 1));
+	simCommandList->addUnits(UNITS_NUMBER, 3, new Vector3(-50, 0, -50), CONSTANT, 1);
 
-	simCommandList->add(new CreationCommand(RESOURCE, 4, GOLD, new Vector3(-50, 0, 45), CONSTANT, 1));
-	simCommandList->add(new CreationCommand(RESOURCE, 4, STONE, new Vector3(50, 0, 25), CONSTANT, 1));
-	simCommandList->add(new CreationCommand(RESOURCE, 9, WOOD, new Vector3(40, 0, 0), CONSTANT, 1));
-	simCommandList->add(new CreationCommand(RESOURCE, 1, STONE, new Vector3(0, 0, 0), CONSTANT, 1));
+	simCommandList->addResource(GOLD, new Vector3(-50, 0, 45));
+	simCommandList->addResource(STONE, new Vector3(50, 0, 25));
+	simCommandList->addResource(WOOD, new Vector3(40, 0, 0));
+	simCommandList->addResource(STONE, new Vector3(0, 0, 0));
 
 
-	simCommandList->add(new CreationCommand(BUILDING, 1, 0, new Vector3(40, 0, 30), CONSTANT, 0));
-	simCommandList->add(new CreationCommand(BUILDING, 1, 1, new Vector3(30, 0, 30), CONSTANT, 0));
-	simCommandList->add(new CreationCommand(BUILDING, 1, 2, new Vector3(20, 0, 30), CONSTANT, 0));
-	simCommandList->add(new CreationCommand(BUILDING, 1, 3, new Vector3(10, 0, 30), CONSTANT, 0));
-	simCommandList->add(new CreationCommand(BUILDING, 1, 4, new Vector3(0, 0, 30), CONSTANT, 0));
-	simCommandList->add(new CreationCommand(BUILDING, 1, 5, new Vector3(-10, 0, 30), CONSTANT, 1));
+	simCommandList->addBuilding(0, new Vector3(40, 0, 30), 0);
+	simCommandList->addBuilding(1, new Vector3(30, 0, 30), 0);
+	simCommandList->addBuilding(2, new Vector3(20, 0, 30), 0);
+	simCommandList->addBuilding(3, new Vector3(10, 0, 30), 0);
+	simCommandList->addBuilding(4, new Vector3(0, 0, 30), 0);
+	simCommandList->addBuilding(5, new Vector3(-10, 0, 30), 1);
 }
 
 float Simulation::updateTime(float timeStep) {
@@ -113,7 +113,7 @@ void Simulation::updateBuildingQueue() {
 		QueueElement* done = build->updateQueue(maxTimeFrame);
 		if (done) {
 			simCommandList->add(new CreationCommand(done->getType(), done->getAmount(), done->getSubtype(),
-			                                          new Vector3(*(build->getTarget())), SpacingType::CONSTANT, 0));
+			                                        new Vector3(*(build->getTarget())), SpacingType::CONSTANT, 0));
 		}
 	}
 }

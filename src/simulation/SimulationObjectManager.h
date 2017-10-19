@@ -26,7 +26,7 @@ public:
 
 	void addUnits(unsigned number, int id, Vector3* center, SpacingType spacingType, int player);
 	void addBuildings(int id, Vector3* center, int player);
-	void addResources(unsigned number, int id, Vector3* center, SpacingType spacingType);
+	void addResources(int id, Vector3* center);
 	void clearUnitsToAdd();
 	void clearBuildingsToAdd();
 	void clearResourcesToAdd();

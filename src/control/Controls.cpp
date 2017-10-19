@@ -1,7 +1,7 @@
 #include "Controls.h"
 #include "commands/ActionCommand.h"
 #include "commands/CommandList.h"
-#include "commands/SimulationCommandList.h"
+#include "commands/CreationCommandList.h"
 #include <algorithm>
 
 Controls::Controls(Input* _input) {
@@ -228,17 +228,7 @@ void Controls::clickDown(MouseButton& var) {
 
 void Controls::createBuilding(Vector3* pos) {
 	if (idToCreate >= 0) {
-		Resources* resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
-		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForBuilding(idToCreate);
-		Enviroment* env = Game::get()->getEnviroment();
-		db_building* db_building = Game::get()->getDatabaseCache()->getBuilding(idToCreate);
-
-		if (env->validateStatic(db_building, pos) && resources->reduce(costs)) {
-			pos = env->getValidPosition(db_building, pos);
-			CreationCommand* simulationCommand = new CreationCommand
-				(ObjectType::BUILDING, 1, idToCreate, pos, SpacingType::CONSTANT, 0);
-			Game::get()->getSimCommandList()->add(simulationCommand);
-		}
+		Game::get()->getCreationCommandList()->addBuilding(idToCreate, pos, 0);
 	}
 }
 
