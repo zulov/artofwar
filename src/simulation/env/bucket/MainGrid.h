@@ -13,4 +13,7 @@ public:
 	void addStatic(Static* object);
 	void removeStatic(Static* object);
 	Vector3* validatePosition(Vector3* position);
+private:
+	IntVector2 calculateSize(int size);
+
 };
