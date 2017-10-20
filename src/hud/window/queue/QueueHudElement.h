@@ -4,6 +4,7 @@
 #include "hud/MySprite.h"
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/ProgressBar.h>
+#include "objects/building/QueueElement.h"
 
 class QueueHudElement
 {
@@ -18,6 +19,8 @@ public:
 	void hideText();
 	void setTexture(Urho3D::Texture2D* texture);
 	void setProgress(float progress);
+	void setData(QueueElement* _element);
+	void reduce(short amount);
 private:
 	Urho3D::Button* button;
 
@@ -25,4 +28,6 @@ private:
 	ProgressBar* bar;
 	Urho3D::Text* text;
 	Urho3D::UIElement* mock;
+
+	QueueElement* element;
 };

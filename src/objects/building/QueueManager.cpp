@@ -30,13 +30,21 @@ void QueueManager::add(short value, ObjectType type, short id) {
 }
 
 QueueElement* QueueManager::update(float time) {
+	for (int i = 0; i < queue->size(); ++i) {
+		if (queue->at(i)->getAmount() <= 0) {
+			queue->erase(queue->begin() + i);
+		}
+	}
 	if (queue->size() > 0) {
 		QueueElement* element = queue->at(0);
+
 		if (element->update(time)) {
 			queue->erase(queue->begin());
 			return element;
 		}
+
 	}
+	return nullptr;
 }
 
 short QueueManager::getSize() {

@@ -57,6 +57,7 @@ public:
 	std::vector<HudElement*>* getButtonsOrdersToSubscribe();
 	std::vector<HudElement*>* getButtonsBuildToSubscribe();
 	std::vector<HudElement*>* getButtonsUnitsToSubscribe();
+	std::vector<Button*>* getButtonsQueueToSubscribe();
 	std::vector<Window*>* getWindows();
 private:
 	void replaceVariables(XMLFile* xmlFile, int hudSizeId);

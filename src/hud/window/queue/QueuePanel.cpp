@@ -21,6 +21,8 @@ void QueuePanel::update(QueueManager* queue, short& j) {
 		elements[j]->setText(String(element->getAmount()) + "/" + String(element->getMaxCapacity()));
 		elements[j]->setTexture(texture);
 		elements[j]->setProgress(element->getProgress());
+		elements[j]->setData(element);
+
 		++j;
 	}
 }
@@ -41,7 +43,7 @@ String QueuePanel::getIconName(ObjectType index, int id) {
 	}
 }
 
-std::vector<Button*>* QueuePanel::getButtonsSelectedToSubscribe() {
+std::vector<Button*>* QueuePanel::getButtonsQueueToSubscribe() {
 	return buttons;
 }
 

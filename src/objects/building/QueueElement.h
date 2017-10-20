@@ -8,7 +8,7 @@ public:
 	~QueueElement();
 	bool checkType(ObjectType _type, short _subType);
 	short add(short value);
-	void remove(short value);
+	void reduce(short value);
 	bool update(float time);
 	ObjectType getType();
 	short getSubtype();

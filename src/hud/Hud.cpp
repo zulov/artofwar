@@ -132,6 +132,10 @@ std::vector<HudElement*>* Hud::getButtonsUnitsToSubscribe() {
 	return unitsPanel->getButtons();
 }
 
+std::vector<Button*>* Hud::getButtonsQueueToSubscribe() {
+	return queuePanel->getButtonsQueueToSubscribe();
+}
+
 std::vector<Window*>* Hud::getWindows() {
 	return windows;
 }

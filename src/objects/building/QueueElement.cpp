@@ -32,7 +32,7 @@ short QueueElement::add(short value) {
 	return rest;
 }
 
-void QueueElement::remove(short value) {
+void QueueElement::reduce(short value) {
 	amount -= value;
 }
 

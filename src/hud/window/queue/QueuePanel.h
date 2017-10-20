@@ -14,7 +14,7 @@ public:
 	~QueuePanel();
 
 	String getIconName(ObjectType index, int id);
-	std::vector<Button*>* getButtonsSelectedToSubscribe();
+	std::vector<Button*>* getButtonsQueueToSubscribe();
 	void show(SelectedInfo* selectedInfo);
 	void update(SelectedInfo* selectedInfo);
 private:

@@ -9,7 +9,7 @@ QueueHudElement::QueueHudElement(Urho3D::XMLFile* style) {
 	text->SetStyle("MiniText", style);
 	icon = createEmptySprite(style, "SmallSprite");
 	button->AddChild(icon);
-	button->SetVar("SelectedHudElement", this);
+	button->SetVar("QueueHudElement", this);
 	mock = button->CreateChild<UIElement>();
 	mock->SetStyle("mock", style);
 
@@ -17,7 +17,9 @@ QueueHudElement::QueueHudElement(Urho3D::XMLFile* style) {
 	bar->SetStyle("MiniProgressBar", style);
 	bar->SetRange(1);
 	bar->SetValue(0.5);
-	bar->SetVisible(true);	
+	bar->SetVisible(true);
+
+	element = nullptr;
 }
 
 
@@ -51,4 +53,12 @@ void QueueHudElement::setTexture(Texture2D* texture) {
 
 void QueueHudElement::setProgress(float progress) {
 	bar->SetValue(progress);
+}
+
+void QueueHudElement::setData(QueueElement* _element) {
+	element = _element;
+}
+
+void QueueHudElement::reduce(short amount) {
+	element->reduce(amount);
 }

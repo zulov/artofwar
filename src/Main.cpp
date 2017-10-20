@@ -94,6 +94,11 @@ void Main::subscribeToEvents() {
 		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButton));
 	}
 
+	for (auto buttton : *hud->getButtonsQueueToSubscribe()) {
+		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleQueueButton));
+		//SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleQueueButton));//TODO zrobic z prawym przyciskiem tez
+	}
+
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
@@ -197,6 +202,12 @@ void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	}
 }
 
+void Main::HandleQueueButton(StringHash eventType, VariantMap& eventData) {
+	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
+	QueueHudElement* qHudElement = (QueueHudElement *)element->GetVar("QueueHudElement").GetVoidPtr();
+	qHudElement->reduce(1);
+}
+
 void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 	using namespace KeyDown;
 
@@ -206,10 +217,10 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 		GetSubsystem<Console>()->Toggle();
 	} else if (key == KEY_F2) {
 		GetSubsystem<DebugHud>()->ToggleAll();
-	} 
-//	else if (key == KEY_F3) {
-//		levelBuilder->
-//	}
+	}
+	//	else if (key == KEY_F3) {
+	//		levelBuilder->
+	//	}
 }
 
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {
@@ -250,7 +261,7 @@ void Main::SetupViewport() {
 }
 
 void Main::control(float timeStep) {
-	IntVector2 cursorPos= Game::get()->getUI()->GetCursorPosition();
+	IntVector2 cursorPos = Game::get()->getUI()->GetCursorPosition();
 	UIElement* element = GetSubsystem<UI>()->GetElementAt(cursorPos, false);
 
 	if (element) {
