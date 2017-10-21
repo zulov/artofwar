@@ -37,6 +37,7 @@ public:
 	double getGroundHeightAt(double x, double z);
 	bool validateStatic(const IntVector2& size, Vector3* pos);
 	Vector3* getValidPosition(const IntVector2& size, Vector3* pos);
+	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos);
 
 private:
 	MainGrid* mainGrid;

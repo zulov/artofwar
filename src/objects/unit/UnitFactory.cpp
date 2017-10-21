@@ -14,11 +14,11 @@ UnitFactory::~UnitFactory() {
 	delete states;
 }
 
-std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center, SpacingType spacing, int player) {
+std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center, int player) {
 	units->clear();
 	Game* game = Game::get();
 
-	double space = getSpecSize(spacing);
+	double space = getSpecSize(CONSTANT);
 
 	int y = 0;
 	int xMax = number / sqrt(number);

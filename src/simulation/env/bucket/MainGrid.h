@@ -14,6 +14,7 @@ public:
 	void removeStatic(Static* object);
 	Vector3* getDirectionFrom(Vector3* position);
 	Vector3* getValidPosition(const IntVector2& size, Vector3* pos);
+	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos);
 private:
 	IntVector2 calculateSize(int size);
 

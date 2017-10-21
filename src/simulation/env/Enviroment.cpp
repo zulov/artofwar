@@ -122,5 +122,11 @@ bool Enviroment::validateStatic(const IntVector2& size, Vector3* pos) {
 }
 
 Vector3* Enviroment::getValidPosition(const IntVector2& size, Vector3* pos) {
-	return mainGrid->getValidPosition(size, pos);
+	Vector3* pos2 = mainGrid->getValidPosition(size, pos);
+	pos2->y_ = getGroundHeightAt(pos2->x_, pos2->z_);
+	return pos2;
+}
+
+IntVector2 Enviroment::getBucketCords(const IntVector2& size, Vector3* pos) {
+	return mainGrid->getBucketCords(size, pos);
 }

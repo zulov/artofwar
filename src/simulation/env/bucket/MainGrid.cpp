@@ -101,18 +101,18 @@ Vector3* MainGrid::getDirectionFrom(Vector3* position) {
 	return nullptr;
 }
 
-Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector3* pos) {//TODO tu mozna to sporo zoptymalizowac ale pewnie nie ma potrzeby
+Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector3* pos) {
+	//TODO tu mozna to sporo zoptymalizowac ale pewnie nie ma potrzeby
 	short posX = getIndex(pos->x_);
 	short posZ = getIndex(pos->z_);
-
 
 	IntVector2 sizeX = calculateSize(size.x_);
 	IntVector2 sizeZ = calculateSize(size.y_);
 
 	short left = posX + sizeX.x_;
-	short right = posX + sizeX.y_-1;
+	short right = posX + sizeX.y_ - 1;
 	short top = posZ + sizeZ.x_;
-	short bottom = posZ + sizeZ.y_-1;
+	short bottom = posZ + sizeZ.y_ - 1;
 	const int index1 = getIndex(left, top);
 	const int index2 = getIndex(right, bottom);
 	Vector2 center1 = buckets[index1].getCenter();
@@ -121,4 +121,8 @@ Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector3* pos) {//TOD
 	pos->x_ = newCenter.x_;
 	pos->z_ = newCenter.y_;
 	return pos;
+}
+
+IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector3* pos) {
+	return IntVector2(getIndex(pos->x_), getIndex(pos->z_));
 }

@@ -87,9 +87,9 @@ vector<ResourceEntity*>* SimulationObjectManager::getResourcesToAdd() {
 	return resourcesToAdd;
 }
 
-void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* center, SpacingType spacingType,
+void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* center,
                                        int player) {
-	unitsTemp = unitFactory->create(number, id, center, spacingType, player);
+	unitsTemp = unitFactory->create(number, id, center, player);
 	addAll(unitsTemp);
 	if (!unitsTemp->empty()) {
 		simulationInfo->setAmountUnitChanged();

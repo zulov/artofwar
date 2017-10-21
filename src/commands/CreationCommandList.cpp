@@ -9,8 +9,8 @@ CreationCommandList::CreationCommandList(SimulationObjectManager* _simulationObj
 CreationCommandList::~CreationCommandList() {
 }
 
-bool CreationCommandList::addUnits(int _number, int id, Vector3* _position, SpacingType _spacingType, int _player) {
-	add(new CreationCommand(UNIT, _number, id, _position, _spacingType, _player));
+bool CreationCommandList::addUnits(int _number, int id, Vector3* _position, int _player) {
+	add(new CreationCommand(UNIT, _number, id, _position,  _player));
 	return true;
 }
 
@@ -22,8 +22,9 @@ bool CreationCommandList::addBuilding(int id, Vector3* _position, int _player) {
 
 	if (env->validateStatic(db_building->size, _position) && resources->reduce(costs)) {
 		_position = env->getValidPosition(db_building->size, _position);
+		IntVector2 bucketCords = env->getBucketCords(db_building->size, _position);
 
-		add(new CreationCommand(BUILDING, 0, id, _position, CONSTANT, _player));
+		add(new CreationCommand(BUILDING, 0, id, _position, _player));
 		return true;
 	}
 	return false;
@@ -35,8 +36,9 @@ bool CreationCommandList::addResource(int id, Vector3* _position) {
 
 	if (env->validateStatic(db_resource->size, _position)) {
 		_position = env->getValidPosition(db_resource->size, _position);
+		IntVector2 bucketCords = env->getBucketCords(db_resource->size, _position);
 
-		add(new CreationCommand(RESOURCE, 0, id, _position, CONSTANT, -1));
+		add(new CreationCommand(RESOURCE, 0, id, _position, -1));
 		return true;
 	}
 	return false;

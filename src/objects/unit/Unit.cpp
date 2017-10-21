@@ -2,7 +2,7 @@
 #include "commands/ActionCommand.h"
 #include "OrderType.h"
 
-double Unit::hbMaxSize = 1.0;
+double Unit::hbMaxSize = 0.7;
 StateManager* Unit::states = nullptr;
 
 Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT) {

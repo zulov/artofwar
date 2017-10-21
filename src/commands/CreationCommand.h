@@ -5,10 +5,10 @@
 #include "simulation/SimulationObjectManager.h"
 #include "ObjectEnums.h"
 
-class CreationCommand:public AbstractCommand
+class CreationCommand : public AbstractCommand
 {
 public:
-	CreationCommand(ObjectType type, int _number, int id, Vector3* _position, SpacingType _spacingType, int _player);
+	CreationCommand(ObjectType type, int _number, int id, Vector3* _position, int _player);
 	virtual ~CreationCommand();
 	void execute() override;
 	void setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager);
@@ -19,5 +19,5 @@ private:
 	int player;
 	Vector3* position;
 	ObjectType objectType;
-	SpacingType spacingType;
+	IntVector2 bucketCords;
 };

@@ -1,11 +1,10 @@
 #include "CreationCommand.h"
 
 
-CreationCommand::CreationCommand(ObjectType type, int _number, int id, Vector3* _position, SpacingType _spacingType,
+CreationCommand::CreationCommand(ObjectType type, int _number, int id, Vector3* _position,
                                  int _player) {
 	number = _number;
 	position = _position;
-	spacingType = _spacingType;
 	player = _player;
 	this->id = id;
 	objectType = type;
@@ -20,7 +19,7 @@ void CreationCommand::execute() {
 	case ENTITY:
 		break;
 	case UNIT:
-		simulationObjectManager->addUnits(number, id, position, spacingType, player);
+		simulationObjectManager->addUnits(number, id, position,  player);
 		break;
 	case BUILDING:
 		simulationObjectManager->addBuildings(id, position, player);

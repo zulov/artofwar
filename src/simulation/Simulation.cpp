@@ -62,13 +62,13 @@ void Simulation::selftAI() {
 }
 
 void Simulation::createUnits() {
-	simCommandList->addUnits(UNITS_NUMBER / 5, 0, new Vector3(10, 0, 10), CONSTANT, 0);
-	simCommandList->addUnits(UNITS_NUMBER / 5, 1, new Vector3(10, 0, -10), CONSTANT, 0);
-	simCommandList->addUnits(UNITS_NUMBER / 5, 2, new Vector3(-10, 0, 10), CONSTANT, 0);
-	simCommandList->addUnits(UNITS_NUMBER / 5, 4, new Vector3(-10, 0, -10), CONSTANT, 0);
-	simCommandList->addUnits(UNITS_NUMBER / 5, 5, new Vector3(0, 0, 0), CONSTANT, 0);
+	simCommandList->addUnits(UNITS_NUMBER / 5, 0, new Vector3(10, 0, 10), 0);
+	simCommandList->addUnits(UNITS_NUMBER / 5, 1, new Vector3(10, 0, -10), 0);
+	simCommandList->addUnits(UNITS_NUMBER / 5, 2, new Vector3(-10, 0, 10), 0);
+	simCommandList->addUnits(UNITS_NUMBER / 5, 4, new Vector3(-10, 0, -10), 0);
+	simCommandList->addUnits(UNITS_NUMBER / 5, 5, new Vector3(0, 0, 0), 0);
 
-	simCommandList->addUnits(UNITS_NUMBER, 3, new Vector3(-50, 0, -50), CONSTANT, 1);
+	simCommandList->addUnits(UNITS_NUMBER, 3, new Vector3(-50, 0, -50), 1);
 
 	simCommandList->addResource(GOLD, new Vector3(-50, 0, 45));
 	simCommandList->addResource(STONE, new Vector3(50, 0, 25));
@@ -113,7 +113,7 @@ void Simulation::updateBuildingQueue() {
 		QueueElement* done = build->updateQueue(maxTimeFrame);
 		if (done) {
 			simCommandList->add(new CreationCommand(done->getType(), done->getAmount(), done->getSubtype(),
-			                                        new Vector3(*(build->getTarget())), SpacingType::CONSTANT, 0));
+			                                        new Vector3(*(build->getTarget())), 0));
 		}
 	}
 }
