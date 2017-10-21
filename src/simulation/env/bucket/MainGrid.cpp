@@ -65,8 +65,9 @@ void MainGrid::addStatic(Static* object) {
 	if (validateAdd(object)) {
 		IntVector2 size = object->getGridSize();
 		Vector3* pos = object->getPosition();
-		short iX = getIndex(pos->x_);
-		short iZ = getIndex(pos->z_);
+		IntVector2 bucketPos = object->getBucketPosition();
+		short iX = bucketPos.x_;
+		short iZ = bucketPos.y_;
 
 		object->setBucket(getIndex(iX, iZ), 0);
 

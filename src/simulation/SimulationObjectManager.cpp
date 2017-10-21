@@ -1,5 +1,6 @@
 #include "SimulationObjectManager.h"
 #include <algorithm>
+#include <simulation/env/Enviroment.h>
 
 
 SimulationObjectManager::SimulationObjectManager() {
@@ -97,18 +98,23 @@ void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* cen
 }
 
 void SimulationObjectManager::addBuildings(int id, Vector3* center,
-                                           int player) {
-	buildingsTemp = buildingFactory->create(id, center, player);
+                                           int player, IntVector2 _bucketCords) {
+	buildingsTemp = buildingFactory->create(id, center, player, _bucketCords);
 	addAll(buildingsTemp);
 	if (!buildingsTemp->empty()) {
+		simulationInfo->setAmountBuildingChanged();
+		Game::get()->getEnviroment()->update(buildingsToAdd);
+		buildingsToAdd->clear();
 		simulationInfo->setAmountBuildingChanged();
 	}
 }
 
-void SimulationObjectManager::addResources(int id, Vector3* center) {
-	resourcesTemp = resourceFactory->create(id, center);
+void SimulationObjectManager::addResources(int id, Vector3* center, IntVector2 _bucketCords) {
+	resourcesTemp = resourceFactory->create(id, center, _bucketCords);
 	addAll(resourcesTemp);
 	if (!resourcesTemp->empty()) {
+		Game::get()->getEnviroment()->update(resourcesToAdd);
+		resourcesToAdd->clear();
 		simulationInfo->setAmountResourceChanged();
 	}
 }

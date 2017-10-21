@@ -3,7 +3,7 @@
 
 Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList,
                        SimulationObjectManager* _simObjectManager) {
-	envStrategy = _enviromentStrategy;
+	enviroment = _enviromentStrategy;
 	forceStrategy = new Force();
 	simObjectManager = _simObjectManager;
 	srand(time(NULL));
@@ -24,7 +24,7 @@ void Simulation::tryToAttack(vector<Unit*>::value_type unit) {
 	if (unit->hasEnemy()) {
 		unit->toAttack();
 	} else {
-		std::vector<Unit*>* enemies = envStrategy->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
+		std::vector<Unit*>* enemies = enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
 
 		unit->toAttack(enemies);
 		delete enemies;
@@ -103,7 +103,7 @@ void Simulation::applyForce() {
 	for (auto unit : (*units)) {
 		unit->applyForce(maxTimeFrame);
 		Vector3* pos = unit->getPosition();//TODO to przeniesc do mova?
-		double y = envStrategy->getGroundHeightAt(pos->x_, pos->z_);
+		double y = enviroment->getGroundHeightAt(pos->x_, pos->z_);
 		unit->updateHeight(y, maxTimeFrame);
 	}
 }
@@ -127,14 +127,6 @@ SimulationInfo* Simulation::getInfo() {
 }
 
 void Simulation::updateEnviroment() {
-	if (simulationInfo->ifAmountBuildingChanged()) {
-		envStrategy->update(simObjectManager->getBuildingsToAdd());
-		simObjectManager->clearBuildingsToAdd();
-	}
-	if (simulationInfo->ifAmountResourceChanged()) {
-		envStrategy->update(simObjectManager->getResourcesToAdd());
-		simObjectManager->clearResourcesToAdd();
-	}
 	simObjectManager->clearUnitsToAdd();
 }
 
@@ -166,7 +158,7 @@ void Simulation::update(Input* input, float timeStep) {
 				selftAI();
 				actionCommandList->execute();
 			}
-			envStrategy->update(units);
+			enviroment->update(units);
 			simObjectManager->clean();
 			simObjectManager->updateInfo(simulationInfo);
 			updateEnviroment();
@@ -200,9 +192,9 @@ void Simulation::moveUnitsAndCheck(float timeStep) {
 
 void Simulation::calculateForces() {
 	for (auto unit : (*units)) {
-		Vector3* validPos = envStrategy->validatePosition(unit->getPosition());
+		Vector3* validPos = enviroment->validatePosition(unit->getPosition());
 		if (!validPos) {
-			std::vector<Unit*>* neighbours = envStrategy->getNeighbours(unit, unit->getMaxSeparationDistance());
+			std::vector<Unit*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 			Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
 
 			Vector3* destForce = forceStrategy->destination(unit);

@@ -25,8 +25,8 @@ public:
 	vector<ResourceEntity*>* getResourcesToAdd();
 
 	void addUnits(unsigned number, int id, Vector3* center, int player);
-	void addBuildings(int id, Vector3* center, int player);
-	void addResources(int id, Vector3* center);
+	void addBuildings(int id, Vector3* center, int player, IntVector2 _bucketCords);
+	void addResources(int id, Vector3* center, IntVector2 _bucketCords);
 	void clearUnitsToAdd();
 	void clearBuildingsToAdd();
 	void clearResourcesToAdd();

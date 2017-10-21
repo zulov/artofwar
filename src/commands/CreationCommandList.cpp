@@ -10,7 +10,7 @@ CreationCommandList::~CreationCommandList() {
 }
 
 bool CreationCommandList::addUnits(int _number, int id, Vector3* _position, int _player) {
-	add(new CreationCommand(UNIT, _number, id, _position,  _player));
+	add(new CreationCommand(UNIT, _number, id, _position, _player));
 	return true;
 }
 
@@ -24,7 +24,7 @@ bool CreationCommandList::addBuilding(int id, Vector3* _position, int _player) {
 		_position = env->getValidPosition(db_building->size, _position);
 		IntVector2 bucketCords = env->getBucketCords(db_building->size, _position);
 
-		add(new CreationCommand(BUILDING, 0, id, _position, _player));
+		add(new CreationCommand(BUILDING, id, _position, _player, bucketCords));
 		return true;
 	}
 	return false;
@@ -38,7 +38,7 @@ bool CreationCommandList::addResource(int id, Vector3* _position) {
 		_position = env->getValidPosition(db_resource->size, _position);
 		IntVector2 bucketCords = env->getBucketCords(db_resource->size, _position);
 
-		add(new CreationCommand(RESOURCE, 0, id, _position, -1));
+		add(new CreationCommand(RESOURCE, id, _position, -1, bucketCords));
 		return true;
 	}
 	return false;

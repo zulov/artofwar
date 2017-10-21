@@ -61,7 +61,7 @@ private:
 
 	AimContainer* aimContainer;
 	SimulationInfo* simulationInfo;
-	Enviroment* envStrategy;
+	Enviroment* enviroment;
 	Force* forceStrategy;
 	SimulationObjectManager* simObjectManager;
 	CreationCommandList* simCommandList;
