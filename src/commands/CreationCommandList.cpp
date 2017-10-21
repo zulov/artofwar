@@ -21,8 +21,8 @@ bool CreationCommandList::addBuilding(int id, Vector3* _position, int _player) {
 	db_building* db_building = Game::get()->getDatabaseCache()->getBuilding(id);
 
 	if (env->validateStatic(db_building->size, _position) && resources->reduce(costs)) {
-		_position = env->getValidPosition(db_building->size, _position);
 		IntVector2 bucketCords = env->getBucketCords(db_building->size, _position);
+		_position = env->getValidPosition(db_building->size, _position);
 
 		add(new CreationCommand(BUILDING, id, _position, _player, bucketCords));
 		return true;
@@ -35,8 +35,8 @@ bool CreationCommandList::addResource(int id, Vector3* _position) {
 	db_resource* db_resource = Game::get()->getDatabaseCache()->getResource(id);
 
 	if (env->validateStatic(db_resource->size, _position)) {
-		_position = env->getValidPosition(db_resource->size, _position);
 		IntVector2 bucketCords = env->getBucketCords(db_resource->size, _position);
+		_position = env->getValidPosition(db_resource->size, _position);
 
 		add(new CreationCommand(RESOURCE, id, _position, -1, bucketCords));
 		return true;
