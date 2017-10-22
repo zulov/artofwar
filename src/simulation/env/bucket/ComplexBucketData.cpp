@@ -51,7 +51,7 @@ void ComplexBucketData::createBox(double bucketSize) {
 }
 
 Vector3* ComplexBucketData::getDirectrionFrom(Vector3* position) {
-	return new Vector3(center.x_ - position->x_, 0, center.y_ - position->z_);
+	return new Vector3(position->x_ - center.x_, 0, position->z_ - center.y_);
 }
 
 void ComplexBucketData::setCenter(double _centerX, double _centerY) {
