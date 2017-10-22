@@ -37,8 +37,6 @@ private:
 	void removeAt(int index, Unit* entity);
 
 	Node** boxes;
-
-
 	double diff = ((double)MAX_SEP_DIST) / RES_SEP_DIST;
 
 	std::vector<int>** levelsCache;

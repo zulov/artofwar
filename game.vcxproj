@@ -356,6 +356,7 @@
     <ClInclude Include="src\commands\CreationCommandList.h" />
     <ClInclude Include="src\simulation\env\bucket\ComplexBucketData.h" />
     <ClInclude Include="src\simulation\env\bucket\MainGrid.h" />
+    <ClInclude Include="src\simulation\env\bucket\PriorityQueue.h" />
     <ClInclude Include="src\simulation\SimulationInfo.h" />
     <ClInclude Include="src\SpacingType.h" />
     <ClInclude Include="src\objects\unit\state\State.h" />

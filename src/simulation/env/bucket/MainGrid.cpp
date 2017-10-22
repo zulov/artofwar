@@ -1,10 +1,17 @@
-#include "MainGrid.h"
+ï»¿#include "MainGrid.h"
+#include <xlocale>
+#include <queue>
+#include <algorithm>
+#include "PriorityQueue.h"
+#include <iomanip>
+#include <iostream>
+
 
 MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_resolution, _size, _debugEnabled) {
 	short posX = 0;
 	short posZ = 0;
 
-	int miniRes = resolution / 8;
+	int miniRes = resolution / 16;
 
 	for (int i = 0; i < resolution * resolution; ++i) {
 		buckets[i].upgrade();
@@ -12,8 +19,8 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 		double cZ = (posZ + 0.5) * fieldSize - size / 2;
 		buckets[i].setCenter(cX, cZ);
 		if (debugEnabled &&
-			(cX > -miniRes && cX < miniRes) &&
-			(cZ > -miniRes && cZ < miniRes)) {
+			(cX > -(miniRes * fieldSize) && cX < (miniRes * fieldSize)) &&
+			(cZ > -(miniRes * fieldSize) && cZ < (miniRes * fieldSize))) {
 			buckets[i].createBox(fieldSize);
 		}
 		++posZ;
@@ -22,10 +29,12 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 			posZ = 0;
 		}
 	}
+	tempNeighbour = new vector<int>();
+	tempNeighbour->reserve(8);
 }
 
 MainGrid::~MainGrid() {
-
+	delete tempNeighbour;
 }
 
 bool MainGrid::validateAdd(Static* object) {
@@ -61,7 +70,6 @@ IntVector2 MainGrid::calculateSize(int size) {
 }
 
 void MainGrid::addStatic(Static* object) {
-	//TODO duzo poprawek trzeba, rozmair œrodek validacja, sprawdzenie przedziaa³ów
 	if (validateAdd(object)) {
 		IntVector2 size = object->getGridSize();
 		Vector3* pos = object->getPosition();
@@ -126,4 +134,122 @@ Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector3* pos) {
 
 IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector3* pos) {
 	return IntVector2(getIndex(pos->x_), getIndex(pos->z_));
+}
+
+vector<int>* MainGrid::neighbors(const int current) {
+	tempNeighbour->clear();
+	IntVector2 cords = getCords(current);
+	for (int i = -1; i <= 1; ++i) {
+		for (int j = -1; j <= 1; ++j) {
+			if (!(i == 0 && j == 0)) {
+				if (inSide(cords.x_ + i, cords.y_ + j)) {
+					tempNeighbour->push_back(getIndex(cords.x_ + i, cords.y_ + j));
+				} else {
+					int a = 5;
+				}
+			}
+		}
+	}
+	return tempNeighbour;
+}
+
+double MainGrid::cost(const int current, const int next) {
+	return (buckets[current].getCenter() - buckets[next].getCenter()).Length();
+}
+
+void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
+                        unordered_map<int, int>& came_from,
+                        std::unordered_map<int, double>& cost_so_far) {
+	int start = getIndex(startV.x_, startV.y_);
+	int goal = getIndex(goalV.x_, goalV.y_);
+	PriorityQueue<int, double> frontier;
+	frontier.put(start, 0);
+
+	came_from[start] = start;
+	cost_so_far[start] = 0;
+
+	while (!frontier.empty()) {
+		auto current = frontier.get();
+
+		if (current == goal) {
+			break;
+		}
+
+		for (auto& next : (*neighbors(current))) {
+			double new_cost = cost_so_far[current] + cost(current, next);
+			if (!cost_so_far.count(next) || new_cost < cost_so_far[next]) {
+				cost_so_far[next] = new_cost;
+				double priority = new_cost + heuristic(next, goal);
+				frontier.put(next, priority);
+				came_from[next] = current;
+			}
+		}
+	}
+}
+
+inline double MainGrid::heuristic(int from, int to) {
+	IntVector2 a = getCords(from);
+	IntVector2 b = getCords(to);
+	return abs(a.x_ - a.y_) + abs(b.x_ - b.y_);
+}
+
+IntVector2 MainGrid::getCords(const int index) {
+	return IntVector2(index / resolution, index % resolution);
+}
+
+void MainGrid::draw_grid(int field_width,
+                         unordered_map<int, double>* distances = nullptr,
+                         unordered_map<int, int>* point_to = nullptr,
+                         vector<int>* path = nullptr) {
+	for (int y = 0; y != resolution; ++y) {
+		for (int x = 0; x != resolution; ++x) {
+			int id = getIndex(x, y);
+			//std::wcout << std::left << std::setw(field_width);
+
+			if (point_to != nullptr && point_to->count(id)) {
+				IntVector2 cords2 = getCords((*point_to)[id]);
+				int x2 = cords2.x_;
+				int y2 = cords2.y_;
+
+				// TODO: how do I get setw to work with utf8?
+				if (x2 == x + 1) { std::wcout << ">"; } else if (x2 == x - 1) { std::wcout << "<"; } else if (y2 == y + 1) {
+					std::wcout << "u";
+				} else if (y2 == y - 1) { std::wcout << "d"; } else { std::wcout << "*"; }
+
+			} else if (distances != nullptr && distances->count(id)) {
+				std::wcout << "|" << (*distances)[id];
+			} else if (path != nullptr && find(path->begin(), path->end(), id) != path->end()) {
+				std::wcout << '@';
+			} else {
+				std::wcout << '.';
+			}
+		}
+		std::cout << std::endl;
+	}
+}
+
+
+vector<int> MainGrid::reconstruct_path(
+	IntVector2& startV, IntVector2& goalV,
+	unordered_map<int, int>& came_from) {
+
+	int start = getIndex(startV.x_, startV.y_);
+	int goal = getIndex(goalV.x_, goalV.y_);
+	vector<int> path;
+	int current = goal;
+	path.push_back(current);
+	while (current != start) {
+		current = came_from[current];
+		path.push_back(current);
+	}
+	path.push_back(start); // optional
+	std::reverse(path.begin(), path.end());
+	return path;
+}
+
+bool MainGrid::inSide(int x, int z) {
+	if (x < 0 || x >= resolution || z < 0 || z >= resolution) {
+		return false;
+	}
+	return true;
 }

@@ -1,8 +1,9 @@
 #include "Enviroment.h"
-
+#include <iostream>
 
 Enviroment::Enviroment() {
 	mainGrid = new MainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, true);
+
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		teamUnitGrid[i] = new Grid(BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY);
 	}
@@ -129,4 +130,17 @@ Vector3* Enviroment::getValidPosition(const IntVector2& size, Vector3* pos) {
 
 IntVector2 Enviroment::getBucketCords(const IntVector2& size, Vector3* pos) {
 	return mainGrid->getBucketCords(size, pos);
+}
+
+void Enviroment::testFind(IntVector2& startV, IntVector2& goalV) {
+	unordered_map<int, int> came_from;
+	std::unordered_map<int, double> cost_so_far;
+	mainGrid->findPath(startV, goalV, came_from, cost_so_far);
+	vector<int> path = mainGrid->reconstruct_path(startV, goalV, came_from);
+
+	mainGrid->draw_grid(2, nullptr, &came_from, nullptr);
+	std::cout << std::endl << std::endl;
+	mainGrid->draw_grid(2, &cost_so_far, nullptr, nullptr);
+	std::cout << std::endl << std::endl;
+	mainGrid->draw_grid(2, nullptr, nullptr, &path);
 }

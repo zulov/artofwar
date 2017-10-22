@@ -470,6 +470,7 @@
     <ClInclude Include="src\commands\CreationCommandList.h">
       <Filter>command\list</Filter>
     </ClInclude>
+    <ClInclude Include="src\simulation\env\bucket\PriorityQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

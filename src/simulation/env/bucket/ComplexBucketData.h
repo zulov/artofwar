@@ -25,4 +25,6 @@ private:
 	Urho3D::StaticModel* model;
 	Static* object;
 	ObjectType type;
+
+	float cost;
 };

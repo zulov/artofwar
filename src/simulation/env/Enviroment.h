@@ -38,7 +38,7 @@ public:
 	bool validateStatic(const IntVector2& size, Vector3* pos);
 	Vector3* getValidPosition(const IntVector2& size, Vector3* pos);
 	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos);
-
+	void testFind(IntVector2 &startV, IntVector2 &goalV);
 private:
 	MainGrid* mainGrid;
 	Grid* teamUnitGrid[MAX_PLAYERS];
