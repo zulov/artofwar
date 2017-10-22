@@ -145,4 +145,7 @@ void Enviroment::testFind(IntVector2& startV, IntVector2& goalV) {
 //	mainGrid->draw_grid_cost(cost_so_far);
 //	std::cout << std::endl << std::endl;
 //	mainGrid->draw_grid_path(&path);
+
+	delete[]came_from;
+	delete[]cost_so_far;
 }

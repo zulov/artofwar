@@ -163,7 +163,7 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
                         double cost_so_far[]) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
-	PriorityQueue<int, double> frontier;
+	PriorityQueue frontier;
 	frontier.put(start, 0);
 
 	came_from[start] = start;
