@@ -143,9 +143,10 @@ vector<int>* MainGrid::neighbors(const int current) {
 		for (int j = -1; j <= 1; ++j) {
 			if (!(i == 0 && j == 0)) {
 				if (inSide(cords.x_ + i, cords.y_ + j)) {
-					tempNeighbour->push_back(getIndex(cords.x_ + i, cords.y_ + j));
-				} else {
-					int a = 5;
+					int index = getIndex(cords.x_ + i, cords.y_ + j);
+					if (buckets[index].getType() == UNIT) {
+						tempNeighbour->push_back(index);
+					}
 				}
 			}
 		}
@@ -221,7 +222,11 @@ void MainGrid::draw_grid(int field_width,
 			} else if (path != nullptr && find(path->begin(), path->end(), id) != path->end()) {
 				std::wcout << '@';
 			} else {
-				std::wcout << '.';
+				if (buckets[id].getType() == UNIT) {
+					std::wcout << '.';
+				} else {
+					std::wcout << '#';
+				}
 			}
 		}
 		std::cout << std::endl;
