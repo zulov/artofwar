@@ -159,8 +159,8 @@ double MainGrid::cost(const int current, const int next) {
 }
 
 void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
-                        unordered_map<int, int>& came_from,
-                        std::unordered_map<int, double>& cost_so_far) {
+                        int came_from[],
+                        double cost_so_far[]) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
 	PriorityQueue<int, double> frontier;
@@ -178,13 +178,79 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
 
 		for (auto& next : (*neighbors(current))) {
 			double new_cost = cost_so_far[current] + cost(current, next);
-			if (!cost_so_far.count(next) || new_cost < cost_so_far[next]) {
+			if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
 				cost_so_far[next] = new_cost;
 				double priority = new_cost + heuristic(next, goal);
 				frontier.put(next, priority);
 				came_from[next] = current;
 			}
 		}
+	}
+}
+
+void MainGrid::draw_grid_from(int* cameFrom) {
+	for (int y = 0; y != resolution; ++y) {
+		for (int x = 0; x != resolution; ++x) {
+			int id = getIndex(x, y);
+			if (cameFrom[id] != -1) {
+				IntVector2 cords2 = getCords(cameFrom[id]);
+				int x2 = cords2.x_;
+				int y2 = cords2.y_;
+
+				if (x2 == x + 1) { std::wcout << ">"; } else if (x2 == x - 1) { std::wcout << "<"; } else if (y2 == y + 1) {
+					std::wcout << "u";
+				} else if (y2 == y - 1) { std::wcout << "d"; } else { std::wcout << "*"; }
+
+			} else {
+				if (buckets[id].getType() == UNIT) {
+					std::wcout << '.';
+				} else {
+					std::wcout << '#';
+				}
+			}
+
+			std::cout << std::endl;
+		}
+	}
+}
+
+void MainGrid::draw_grid_cost(double* costSoFar) {
+	for (int y = 0; y != resolution; ++y) {
+		for (int x = 0; x != resolution; ++x) {
+			int id = getIndex(x, y);
+			if (costSoFar[id] != -1) {
+				std::wcout << "|" << costSoFar[id];
+			} else {
+				if (buckets[id].getType() == UNIT) {
+					std::wcout << '.';
+				} else {
+					std::wcout << '#';
+				}
+			}
+
+			std::cout << std::endl;
+		}
+	}
+}
+
+void MainGrid::draw_grid_path(vector<int>* path) {
+	for (int y = 0; y != resolution; ++y) {
+		for (int x = 0; x != resolution; ++x) {
+			int id = getIndex(x, y);
+
+			if (find(path->begin(), path->end(), id) != path->end()) {
+				std::wcout << '@';
+			}
+			else {
+				if (buckets[id].getType() == UNIT) {
+					std::wcout << '.';
+				}
+				else {
+					std::wcout << '#';
+				}
+			}
+		}
+		std::cout << std::endl;
 	}
 }
 
@@ -198,45 +264,9 @@ IntVector2 MainGrid::getCords(const int index) {
 	return IntVector2(index / resolution, index % resolution);
 }
 
-void MainGrid::draw_grid(int field_width,
-                         unordered_map<int, double>* distances = nullptr,
-                         unordered_map<int, int>* point_to = nullptr,
-                         vector<int>* path = nullptr) {
-	for (int y = 0; y != resolution; ++y) {
-		for (int x = 0; x != resolution; ++x) {
-			int id = getIndex(x, y);
-			//std::wcout << std::left << std::setw(field_width);
-
-			if (point_to != nullptr && point_to->count(id)) {
-				IntVector2 cords2 = getCords((*point_to)[id]);
-				int x2 = cords2.x_;
-				int y2 = cords2.y_;
-
-				// TODO: how do I get setw to work with utf8?
-				if (x2 == x + 1) { std::wcout << ">"; } else if (x2 == x - 1) { std::wcout << "<"; } else if (y2 == y + 1) {
-					std::wcout << "u";
-				} else if (y2 == y - 1) { std::wcout << "d"; } else { std::wcout << "*"; }
-
-			} else if (distances != nullptr && distances->count(id)) {
-				std::wcout << "|" << (*distances)[id];
-			} else if (path != nullptr && find(path->begin(), path->end(), id) != path->end()) {
-				std::wcout << '@';
-			} else {
-				if (buckets[id].getType() == UNIT) {
-					std::wcout << '.';
-				} else {
-					std::wcout << '#';
-				}
-			}
-		}
-		std::cout << std::endl;
-	}
-}
-
-
 vector<int> MainGrid::reconstruct_path(
 	IntVector2& startV, IntVector2& goalV,
-	unordered_map<int, int>& came_from) {
+	int came_from[]) {
 
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);

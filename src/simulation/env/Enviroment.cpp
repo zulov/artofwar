@@ -133,14 +133,16 @@ IntVector2 Enviroment::getBucketCords(const IntVector2& size, Vector3* pos) {
 }
 
 void Enviroment::testFind(IntVector2& startV, IntVector2& goalV) {
-	unordered_map<int, int> came_from;
-	std::unordered_map<int, double> cost_so_far;
+	int* came_from = new int[512 * 512];
+	std::fill_n(came_from, 512 * 512, -1);
+	double* cost_so_far = new double[512 * 512];
+	std::fill_n(cost_so_far, 512 * 512, -1);
 	mainGrid->findPath(startV, goalV, came_from, cost_so_far);
-	vector<int> path = mainGrid->reconstruct_path(startV, goalV, came_from);
-
-	mainGrid->draw_grid(2, nullptr, &came_from, nullptr);
-	std::cout << std::endl << std::endl;
-	mainGrid->draw_grid(2, &cost_so_far, nullptr, nullptr);
-	std::cout << std::endl << std::endl;
-	mainGrid->draw_grid(2, nullptr, nullptr, &path);
+//	vector<int> path = mainGrid->reconstruct_path(startV, goalV, came_from);
+//
+//	mainGrid->draw_grid_from(came_from);
+//	std::cout << std::endl << std::endl;
+//	mainGrid->draw_grid_cost(cost_so_far);
+//	std::cout << std::endl << std::endl;
+//	mainGrid->draw_grid_path(&path);
 }

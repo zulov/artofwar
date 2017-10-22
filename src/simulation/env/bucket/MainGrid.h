@@ -18,16 +18,17 @@ public:
 	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos);
 	inline double heuristic(int from, int to);
 	IntVector2 getCords(const int index);
-	void draw_grid(int field_width, unordered_map<int, double>* distances, unordered_map<int, int>* point_to,
-	               vector<int>* path);
-	vector<int> reconstruct_path(IntVector2& startV, IntVector2& goalV, unordered_map<int, int>& came_from);
+
+	vector<int> reconstruct_path(IntVector2& startV, IntVector2& goalV, int came_from[]);
 	bool inSide(int x, int z);
-	vector<int> *neighbors(const int current);
+	vector<int>* neighbors(const int current);
 	double cost(const int current, const int next);
-	void findPath(IntVector2 &startV, IntVector2 &goalV,
-		unordered_map<int, int>& came_from,
-		std::unordered_map<int, double>& cost_so_far);
+	void findPath(IntVector2& startV, IntVector2& goalV,
+	              int came_from[], double cost_so_far[]);
+	void draw_grid_from(int* cameFrom);
+	void draw_grid_cost(double* costSoFar);
+	void draw_grid_path(vector<int>* path);
 private:
 	IntVector2 calculateSize(int size);
-	vector<int> *tempNeighbour;
+	vector<int>* tempNeighbour;
 };

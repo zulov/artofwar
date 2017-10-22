@@ -170,10 +170,10 @@ void Simulation::update(Input* input, float timeStep) {
 
 			performAction();
 			updateBuildingQueue();
-//			if (currentFrameNumber % 19 == 0) {
-//				enviroment->testFind(IntVector2(5, 5), IntVector2(50, 50));
-//				int a = 5;
-//			}
+			if (currentFrameNumber % 4 == 0) {
+				enviroment->testFind(IntVector2(5, 5), IntVector2(50, 50));
+				int a = 5;
+			}
 		} else {
 			moveUnits(timeStep);
 		}
