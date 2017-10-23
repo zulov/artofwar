@@ -1,5 +1,6 @@
 #include "Enviroment.h"
 #include <iostream>
+#include <chrono>
 
 Enviroment::Enviroment() {
 	mainGrid = new MainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, true);
@@ -133,19 +134,24 @@ IntVector2 Enviroment::getBucketCords(const IntVector2& size, Vector3* pos) {
 }
 
 void Enviroment::testFind(IntVector2& startV, IntVector2& goalV) {
+	auto start = std::chrono::system_clock::now();
 	int* came_from = new int[512 * 512];
 	std::fill_n(came_from, 512 * 512, -1);
 	double* cost_so_far = new double[512 * 512];
 	std::fill_n(cost_so_far, 512 * 512, -1);
 	mainGrid->findPath(startV, goalV, came_from, cost_so_far);
-//	vector<int> path = mainGrid->reconstruct_path(startV, goalV, came_from);
-//
-//	mainGrid->draw_grid_from(came_from);
-//	std::cout << std::endl << std::endl;
-//	mainGrid->draw_grid_cost(cost_so_far);
-//	std::cout << std::endl << std::endl;
-//	mainGrid->draw_grid_path(&path);
+//		vector<int> path = mainGrid->reconstruct_path(startV, goalV, came_from);
+//	
+//		mainGrid->draw_grid_from(came_from);
+//		std::cout << std::endl << std::endl;
+//		mainGrid->draw_grid_cost(cost_so_far);
+//		std::cout << std::endl << std::endl;
+//		mainGrid->draw_grid_path(&path);
 
 	delete[]came_from;
 	delete[]cost_so_far;
+	auto end = std::chrono::system_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+	                                                                      std::chrono::system_clock::now() - start);
+	cout << duration.count() << endl;
 }

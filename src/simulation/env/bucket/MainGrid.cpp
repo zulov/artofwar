@@ -170,7 +170,8 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
 	cost_so_far[start] = 0;
 
 	while (!frontier.empty()) {
-		auto current = frontier.get();
+		//cout << frontier.elements.size()<<" ";
+		const auto current = frontier.get();
 
 		if (current == goal) {
 			break;
@@ -178,7 +179,7 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
 
 		for (auto& next : (*neighbors(current))) {
 			double new_cost = cost_so_far[current] + cost(current, next);
-			if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
+			if (came_from[current]!=next && (cost_so_far[next] == -1 || new_cost < cost_so_far[next])) {
 				cost_so_far[next] = new_cost;
 				double priority = new_cost + heuristic(next, goal);
 				frontier.put(next, priority);
@@ -202,15 +203,11 @@ void MainGrid::draw_grid_from(int* cameFrom) {
 				} else if (y2 == y - 1) { std::wcout << "d"; } else { std::wcout << "*"; }
 
 			} else {
-				if (buckets[id].getType() == UNIT) {
-					std::wcout << '.';
-				} else {
-					std::wcout << '#';
-				}
+				drawEmpty(id);
 			}
 
-			std::cout << std::endl;
 		}
+		std::cout << std::endl;
 	}
 }
 
@@ -221,34 +218,9 @@ void MainGrid::draw_grid_cost(double* costSoFar) {
 			if (costSoFar[id] != -1) {
 				std::wcout << "|" << costSoFar[id];
 			} else {
-				if (buckets[id].getType() == UNIT) {
-					std::wcout << '.';
-				} else {
-					std::wcout << '#';
-				}
+				drawEmpty(id);
 			}
 
-			std::cout << std::endl;
-		}
-	}
-}
-
-void MainGrid::draw_grid_path(vector<int>* path) {
-	for (int y = 0; y != resolution; ++y) {
-		for (int x = 0; x != resolution; ++x) {
-			int id = getIndex(x, y);
-
-			if (find(path->begin(), path->end(), id) != path->end()) {
-				std::wcout << '@';
-			}
-			else {
-				if (buckets[id].getType() == UNIT) {
-					std::wcout << '.';
-				}
-				else {
-					std::wcout << '#';
-				}
-			}
 		}
 		std::cout << std::endl;
 	}
@@ -257,16 +229,30 @@ void MainGrid::draw_grid_path(vector<int>* path) {
 inline double MainGrid::heuristic(int from, int to) {
 	IntVector2 a = getCords(from);
 	IntVector2 b = getCords(to);
-	return abs(a.x_ - a.y_) + abs(b.x_ - b.y_);
+	return abs(a.x_ - b.x_) + abs(a.y_ - b.y_);
+}
+
+void MainGrid::draw_grid_path(vector<int>* path) {
+	for (int y = 0; y != resolution; ++y) {
+
+		for (int x = 0; x != resolution; ++x) {
+			int id = getIndex(x, y);
+
+			if (find(path->begin(), path->end(), id) != path->end()) {
+				std::wcout << '@';
+			} else {
+				drawEmpty(id);
+			}
+		}
+		std::cout << std::endl;
+	}
 }
 
 IntVector2 MainGrid::getCords(const int index) {
 	return IntVector2(index / resolution, index % resolution);
 }
 
-vector<int> MainGrid::reconstruct_path(
-	IntVector2& startV, IntVector2& goalV,
-	int came_from[]) {
+vector<int> MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, int came_from[]) {
 
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
@@ -281,6 +267,16 @@ vector<int> MainGrid::reconstruct_path(
 	std::reverse(path.begin(), path.end());
 	return path;
 }
+
+void MainGrid::drawEmpty(int id) {
+	if (buckets[id].getType() == UNIT) {
+		std::wcout << '.';
+	}
+	else {
+		std::wcout << '#';
+	}
+}
+
 
 bool MainGrid::inSide(int x, int z) {
 	if (x < 0 || x >= resolution || z < 0 || z >= resolution) {

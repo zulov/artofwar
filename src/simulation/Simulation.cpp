@@ -171,7 +171,7 @@ void Simulation::update(Input* input, float timeStep) {
 			performAction();
 			updateBuildingQueue();
 			if (currentFrameNumber % 4 == 0) {
-				enviroment->testFind(IntVector2(5, 5), IntVector2(50, 50));
+				enviroment->testFind(IntVector2(5, 5), IntVector2(BUCKET_GRID_RESOLUTION-5, BUCKET_GRID_RESOLUTION-5));
 				int a = 5;
 			}
 		} else {

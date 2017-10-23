@@ -27,6 +27,7 @@ public:
 	              int came_from[], double cost_so_far[]);
 	void draw_grid_from(int* cameFrom);
 	void draw_grid_cost(double* costSoFar);
+	void drawEmpty(int id);
 	void draw_grid_path(vector<int>* path);
 private:
 	IntVector2 calculateSize(int size);
