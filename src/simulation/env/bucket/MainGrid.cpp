@@ -155,7 +155,8 @@ vector<int>* MainGrid::neighbors(const int current) {
 }
 
 double MainGrid::cost(const int current, const int next) {
-	return (buckets[current].getCenter() - buckets[next].getCenter()).Length();
+	double result = (buckets[current].getCenter() - buckets[next].getCenter()).Length();
+	return result;
 }
 
 void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
@@ -174,12 +175,13 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
 		const auto current = frontier.get();
 
 		if (current == goal) {
+		//	cout << frontier.elements.size() << " ";
 			break;
 		}
 
 		for (auto& next : (*neighbors(current))) {
 			double new_cost = cost_so_far[current] + cost(current, next);
-			if (came_from[current]!=next && (cost_so_far[next] == -1 || new_cost < cost_so_far[next])) {
+			if (came_from[current] != next && (cost_so_far[next] == -1 || new_cost < cost_so_far[next])) {
 				cost_so_far[next] = new_cost;
 				double priority = new_cost + heuristic(next, goal);
 				frontier.put(next, priority);
@@ -229,7 +231,7 @@ void MainGrid::draw_grid_cost(double* costSoFar) {
 inline double MainGrid::heuristic(int from, int to) {
 	IntVector2 a = getCords(from);
 	IntVector2 b = getCords(to);
-	return abs(a.x_ - b.x_) + abs(a.y_ - b.y_);
+	return (abs(a.x_ - b.x_) + abs(a.y_ - b.y_)) * fieldSize;
 }
 
 void MainGrid::draw_grid_path(vector<int>* path) {
@@ -271,8 +273,7 @@ vector<int> MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, in
 void MainGrid::drawEmpty(int id) {
 	if (buckets[id].getType() == UNIT) {
 		std::wcout << '.';
-	}
-	else {
+	} else {
 		std::wcout << '#';
 	}
 }
