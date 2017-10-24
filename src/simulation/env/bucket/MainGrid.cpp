@@ -5,6 +5,7 @@
 #include "PriorityQueue.h"
 #include <iomanip>
 #include <iostream>
+#include "BucketQueue.h"
 
 
 MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_resolution, _size, _debugEnabled) {
@@ -164,7 +165,8 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
                         double cost_so_far[]) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
-	PriorityQueue frontier;
+	//PriorityQueue frontier;
+	BucketQueue frontier;
 	frontier.put(start, 0);
 
 	came_from[start] = start;

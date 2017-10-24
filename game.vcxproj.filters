@@ -216,6 +216,7 @@
     <ClCompile Include="src\commands\CreationCommandList.cpp">
       <Filter>command\list</Filter>
     </ClCompile>
+    <ClCompile Include="src\simulation\env\bucket\BucketQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -471,6 +472,7 @@
       <Filter>command\list</Filter>
     </ClInclude>
     <ClInclude Include="src\simulation\env\bucket\PriorityQueue.h" />
+    <ClInclude Include="src\simulation\env\bucket\BucketQueue.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
