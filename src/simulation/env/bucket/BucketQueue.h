@@ -9,7 +9,7 @@
 class BucketQueue
 {
 public:
-	BucketQueue();
+	BucketQueue(double _max, double _min);
 	~BucketQueue();
 	bool empty();
 	void put(int item, double priority);
@@ -18,8 +18,9 @@ public:
 private:
 	int getIndex(double priority);
 	int nextCurrent(int currentIndex);
-	double max = 3000;
-	double perBucket = max / QUEUE_BUCKETS_SIZE;
+	double max;
+	double min;
+	double perBucket;
 	int size = 0;
 	int currentIndex = 0;
 	typedef std::pair<double, int> PQElement;

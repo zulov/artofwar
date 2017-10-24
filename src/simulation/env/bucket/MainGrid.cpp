@@ -166,7 +166,7 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
 	//PriorityQueue frontier;
-	BucketQueue frontier;
+	BucketQueue frontier(2000, 1000);//TODO ustawić lepsze minimum
 	frontier.put(start, 0);
 
 	came_from[start] = start;
@@ -177,7 +177,7 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
 		const auto current = frontier.get();
 
 		if (current == goal) {
-		//	cout << frontier.elements.size() << " ";
+			//	cout << frontier.elements.size() << " ";
 			break;
 		}
 
