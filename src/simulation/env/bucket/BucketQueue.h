@@ -1,10 +1,11 @@
 #pragma once
 
-#define QUEUE_BUCKETS_SIZE 100
+#define QUEUE_BUCKETS_SIZE 10
 
 #include <functional>
 #include <vector>
 #include <queue>
+#include "fiboheap.h"
 
 class BucketQueue
 {
@@ -23,11 +24,11 @@ private:
 	double perBucket;
 	int size = 0;
 	int currentIndex = 0;
-	typedef std::pair<double, int> PQElement;
-	std::priority_queue<
-		PQElement,
-		std::vector<PQElement>,
-		std::greater<PQElement>>
-	buckets[QUEUE_BUCKETS_SIZE];
+//	typedef std::pair<double, int> PQElement;
+//	std::priority_queue<
+//		PQElement,
+//		std::vector<PQElement>,
+//		std::greater<PQElement>>
+	FibHeap buckets[QUEUE_BUCKETS_SIZE];
 	int histogram[QUEUE_BUCKETS_SIZE] = {0};
 };

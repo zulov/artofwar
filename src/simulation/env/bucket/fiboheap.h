@@ -21,9 +21,7 @@
 #include <cstddef>
 #include <math.h>
 #include <limits>
-#include <iostream>
 
-template <class T>
 class FibHeap
 {
 public:
@@ -31,14 +29,14 @@ public:
 	class FibNode
 	{
 	public:
-		FibNode(T k, int pl)
-			: key(k), mark(false), p(nullptr), left(nullptr), right(nullptr), child(nullptr), degree(-1), payload(pl) {
+		FibNode(double k, int pl): key(k), mark(false), p(nullptr), left(nullptr), right(nullptr), child(nullptr), degree(-1),
+			payload(pl) {
 		}
 
 		~FibNode() {
 		}
 
-		T key;
+		double key;
 		bool mark;
 		FibNode* p;
 		FibNode* left;
@@ -48,8 +46,7 @@ public:
 		int payload;
 	};
 
-	FibHeap()
-		: n(0), min(nullptr) {
+	FibHeap(): n(0), min(nullptr) {
 	}
 
 	~FibHeap() {
@@ -235,14 +232,12 @@ public:
 	}
 
 	void decrease_key(FibNode* x, int k) {
-		FibNode* y;
-
 		if (k > x->key) {
 			// error( "new key is greater than current key" );
 			return;
 		}
 		x->key = k;
-		y = x->p;
+		FibNode* y = x->p;
 		if (y != nullptr && x->key < y->key) {
 			cut(x, y);
 			cascading_cut(y);
@@ -287,7 +282,7 @@ public:
 	}
 
 	void remove_fibnode(FibNode* x) {
-		decrease_key(x, std::numeric_limits<T>::min());
+		decrease_key(x, std::numeric_limits<double>::min());
 		FibNode* fn = extract_min();
 		delete fn;
 	}
@@ -300,16 +295,18 @@ public:
 		return minimum();
 	}
 
-	T top() {
+	double top() {
 		return minimum()->key;
 	}
 
 	void pop() {
-		if (empty())
+		if (empty()) {
 			return;
+		}
 		FibNode* x = extract_min();
-		if (x)
+		if (x) {
 			delete x;
+		}
 	}
 
 	int get() {
@@ -319,14 +316,14 @@ public:
 		return toReturn;
 	}
 
-	FibNode* put(int pl, T k) {
+	FibNode* put(int pl, double k) {
 		FibNode* x = new FibNode(k, pl);
 		insert(x);
 		return x;
 	}
 
-	FibNode* put(T k) {
-		return put(k, nullptr);
+	FibNode* put(double k) {
+		return put(0, k);
 	}
 
 	unsigned int size() {
