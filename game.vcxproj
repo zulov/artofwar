@@ -305,7 +305,6 @@
     <ClInclude Include="src\simulation\env\bucket\Bucket.h" />
     <ClInclude Include="src\simulation\env\bucket\BucketQueue.h" />
     <ClInclude Include="src\simulation\env\bucket\fiboheap.h" />
-    <ClInclude Include="src\simulation\env\bucket\fiboqueue.h" />
     <ClInclude Include="src\simulation\env\bucket\Grid.h" />
     <ClInclude Include="src\simulation\env\bucket\BucketIterator.h" />
     <ClInclude Include="src\commands\BuildCommand.h" />

@@ -28,15 +28,15 @@ class FibHeap
 {
 public:
 
-	// node
 	class FibNode
 	{
 	public:
-		FibNode(T k, void* pl)
+		FibNode(T k, int pl)
 			: key(k), mark(false), p(nullptr), left(nullptr), right(nullptr), child(nullptr), degree(-1), payload(pl) {
 		}
 
-		~FibNode() {}
+		~FibNode() {
+		}
 
 		T key;
 		bool mark;
@@ -45,8 +45,8 @@ public:
 		FibNode* right;
 		FibNode* child;
 		int degree;
-		void* payload;
-	}; 
+		int payload;
+	};
 
 	FibHeap()
 		: n(0), min(nullptr) {
@@ -57,8 +57,9 @@ public:
 	}
 
 	void delete_fibnodes(FibNode* x) {
-		if (!x)
+		if (!x) {
 			return;
+		}
 
 		FibNode* cur = x;
 		while (true) {
@@ -236,7 +237,6 @@ public:
 	void decrease_key(FibNode* x, int k) {
 		FibNode* y;
 
-
 		if (k > x->key) {
 			// error( "new key is greater than current key" );
 			return;
@@ -312,14 +312,21 @@ public:
 			delete x;
 	}
 
-	FibNode* push(T k, void* pl) {
+	int get() {
+		FibNode* top = topNode();
+		int toReturn = top->payload;
+		pop();
+		return toReturn;
+	}
+
+	FibNode* put(int pl, T k) {
 		FibNode* x = new FibNode(k, pl);
 		insert(x);
 		return x;
 	}
 
-	FibNode* push(T k) {
-		return push(k, nullptr);
+	FibNode* put(T k) {
+		return put(k, nullptr);
 	}
 
 	unsigned int size() {
@@ -329,4 +336,3 @@ public:
 	int n;
 	FibNode* min;
 };
-
