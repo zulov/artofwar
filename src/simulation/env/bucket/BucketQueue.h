@@ -22,8 +22,8 @@ private:
 	double max;
 	double min;
 	double perBucket;
-	int size = 0;
-	int currentIndex = 0;
+	int size;
+	int currentIndex;
 //	typedef std::pair<double, int> PQElement;
 //	std::priority_queue<
 //		PQElement,

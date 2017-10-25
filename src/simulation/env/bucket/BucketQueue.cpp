@@ -6,6 +6,8 @@ BucketQueue::BucketQueue(double _max, double _min) {
 	max = _max;
 	min = _min;
 	perBucket = (max - min) / QUEUE_BUCKETS_SIZE;
+	currentIndex = 0;
+	size = 0;
 }
 
 BucketQueue::~BucketQueue() {

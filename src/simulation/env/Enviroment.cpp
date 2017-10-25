@@ -151,7 +151,7 @@ void Enviroment::testFind(IntVector2& startV, IntVector2& goalV) {
 	delete[]came_from;
 	delete[]cost_so_far;
 	auto end = std::chrono::system_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
 	                                                                      std::chrono::system_clock::now() - start);
 	cout << duration.count() << endl;
 }
