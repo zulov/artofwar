@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <iostream>
 #include "BucketQueue.h"
+#include "fiboheap.h"
 
 
 MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_resolution, _size, _debugEnabled) {
@@ -165,8 +166,10 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
                         double cost_so_far[]) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
+	double min = cost(start, goal);//TODO jak zmieni sie koszt na bardziej skąplikowany to może sie zepsuć a tu ma byćtylko prosta odległość
 	//PriorityQueue frontier;
-	BucketQueue frontier(2000, 1000);//TODO ustawić lepsze minimum
+	//FibHeap<int> frontier;
+	BucketQueue frontier(1000 + min, min);//TODO ustawić lepsze minimum
 	frontier.put(start, 0);
 
 	came_from[start] = start;

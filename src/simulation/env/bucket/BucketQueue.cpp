@@ -22,9 +22,9 @@ void BucketQueue::put(int item, double priority) {
 	int index = getIndex(priority);
 	buckets[index].emplace(priority, item);
 
-//	if (histogram[index] < buckets[index].size()) {
-//		histogram[index] = buckets[index].size();
-//	}
+	if (histogram[index] < buckets[index].size()) {
+		histogram[index] = buckets[index].size();
+	}
 	if (index <= currentIndex) {
 		currentIndex = index;
 	}
@@ -44,7 +44,8 @@ int BucketQueue::get() {
 int BucketQueue::getIndex(double priority) {
 	if (priority >= max) {
 		return QUEUE_BUCKETS_SIZE - 1;
-	} else if (priority < min) {
+	} 
+	if (priority < min) {
 		return 0;
 	}
 	return (priority-min) / perBucket;
