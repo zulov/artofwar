@@ -58,3 +58,11 @@ Vector3* Bucket::getDirectrionFrom(Vector3* position) {
 void Bucket::upgrade() {
 	data = new ComplexBucketData();
 }
+
+void Bucket::setNeightbours(vector<int>* tempNeighbour) {
+	data->setNeightbours(tempNeighbour);
+}
+
+vector<int>& Bucket::getNeightbours() {
+	return data->getNeightbours();
+}

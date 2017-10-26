@@ -23,6 +23,8 @@ public:
 	Vector3* getDirectrionFrom(Vector3* position);
 
 	void upgrade();
+	void setNeightbours(vector<int>* tempNeighbour);
+	vector<int>& getNeightbours();
 private:
 
 	std::vector<Unit*>* content;

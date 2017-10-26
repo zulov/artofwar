@@ -13,9 +13,12 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 	short posZ = 0;
 
 	int miniRes = resolution / 16;
+	tempNeighbour = new vector<int>();
+	tempNeighbour->reserve(8);
 
 	for (int i = 0; i < resolution * resolution; ++i) {
 		buckets[i].upgrade();
+
 		double cX = (posX + 0.5) * fieldSize - size / 2;
 		double cZ = (posZ + 0.5) * fieldSize - size / 2;
 		buckets[i].setCenter(cX, cZ);
@@ -30,8 +33,11 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 			posZ = 0;
 		}
 	}
-	tempNeighbour = new vector<int>();
-	tempNeighbour->reserve(8);
+
+	for (int i = 0; i < resolution * resolution; ++i) {
+		tempNeighbour = neighbors(i);
+		buckets[i].setNeightbours(tempNeighbour);
+	}
 }
 
 MainGrid::~MainGrid() {
@@ -83,6 +89,14 @@ void MainGrid::addStatic(Static* object) {
 		IntVector2 sizeX = calculateSize(size.x_);
 		IntVector2 sizeZ = calculateSize(size.y_);
 
+		for (int i = iX + sizeX.x_ - 1; i < iX + sizeX.y_ + 1; ++i) {
+			for (int j = iZ + sizeZ.x_ - 1; j < iZ + sizeZ.y_ + 1; ++j) {
+				const int index = getIndex(i, j);
+				tempNeighbour = neighbors(index);
+				buckets[index].setNeightbours(tempNeighbour);
+			}
+		}
+
 		for (int i = iX + sizeX.x_; i < iX + sizeX.y_; ++i) {
 			for (int j = iZ + sizeZ.x_; j < iZ + sizeZ.y_; ++j) {
 				const int index = getIndex(i, j);
@@ -92,7 +106,7 @@ void MainGrid::addStatic(Static* object) {
 	}
 }
 
-void MainGrid::removeStatic(Static* object) {
+void MainGrid::removeStatic(Static* object) {//TODO poprawic
 	int index = object->getBucketIndex(0);
 	buckets[index].removeStatic();
 }
@@ -165,7 +179,8 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
                         double cost_so_far[]) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
-	double min = cost(start, goal);//TODO jak zmieni sie koszt na bardziej skąplikowany to może sie zepsuć a tu ma byćtylko prosta odległość
+	double min = cost(start, goal);
+	//TODO jak zmieni sie koszt na bardziej skąplikowany to może sie zepsuć a tu ma byćtylko prosta odległość
 	//PriorityQueue frontier;
 	//FibHeap frontier;
 	BucketQueue frontier(1000 + min, min);//TODO ustawić lepsze minimum
@@ -183,7 +198,7 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
 			break;
 		}
 
-		for (auto& next : (*neighbors(current))) {
+		for (auto& next : buckets[current].getNeightbours()) {
 			double new_cost = cost_so_far[current] + cost(current, next);
 			if (came_from[current] != next && (cost_so_far[next] == -1 || new_cost < cost_so_far[next])) {
 				cost_so_far[next] = new_cost;
