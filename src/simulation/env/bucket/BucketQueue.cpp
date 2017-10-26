@@ -3,7 +3,7 @@
 
 
 BucketQueue::
-BucketQueue(double _max, double _min): max(_max), min(_min), currentIndex(QUEUE_BUCKETS_SIZE - 1), size(0) {
+BucketQueue(double _max, double _min): max(_max), min(_min), size(0), currentIndex(QUEUE_BUCKETS_SIZE - 1) {
 	perBucket = (max - min) / QUEUE_BUCKETS_SIZE;
 }
 

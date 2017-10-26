@@ -18,7 +18,6 @@
 
 #pragma once
 
-#include <cstddef>
 #include <math.h>
 #include <limits>
 
@@ -46,22 +45,21 @@ public:
 		int payload;
 	};
 
-	FibHeap(): n(0), min(nullptr), coef(
-	                                    log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)) {
+	FibHeap(): n(0), coef(
+	                      log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)), min(nullptr) {
 	}
 
 	~FibHeap() {
 		delete_fibnodes(min);
 	}
 
-	void delete_fibnodes(FibNode* x) {
+	static void delete_fibnodes(FibNode* x) {
 		if (!x) {
 			return;
 		}
 
 		FibNode* cur = x;
 		while (true) {
-
 			if (cur->left && cur->left != x) {
 				FibNode* tmp = cur;
 				cur = cur->left;
@@ -117,20 +115,17 @@ public:
 	}
 
 	FibNode* extract_min() {
-		FibNode *z, *x, *next;
-		FibNode** childList;
-
-		z = min;
+		FibNode* z = min;
 		if (z != nullptr) {
-			x = z->child;
+			FibNode* x = z->child;
 			if (x != nullptr) {
-				childList = new FibNode*[z->degree];
-				next = x;
-				for (int i = 0; i < (int)z->degree; i++) {
+				FibNode** childList = new FibNode*[z->degree];
+				FibNode* next = x;
+				for (int i = 0; i < (int)z->degree; ++i) {
 					childList[i] = next;
 					next = next->right;
 				}
-				for (int i = 0; i < (int)z->degree; i++) {
+				for (int i = 0; i < (int)z->degree; ++i) {
 					x = childList[i];
 					min->left->right = x;
 					x->left = min->left;
@@ -148,53 +143,49 @@ public:
 				min = z->right;
 				consolidate();
 			}
-			n--;
+			--n;
 		}
 		return z;
 	}
 
-
 	void consolidate() {
-		FibNode *w, *next, *x, *y, *temp;
-		FibNode **A, **rootList;
-		int d, rootSize;
 		int max_degree = static_cast<int>(floor(log(static_cast<double>(n)) / coef));
 
-		A = new FibNode*[max_degree + 2]; // plus two both for indexing to max degree and so A[max_degree+1] == NIL
+		FibNode** A = new FibNode*[max_degree + 2]; // plus two both for indexing to max degree and so A[max_degree+1] == NIL
 		std::fill_n(A, max_degree + 2, nullptr);
-		w = min;
-		rootSize = 0;
-		next = w;
+		FibNode* w = min;
+		int rootSize = 0;
+		FibNode* next = w;
 		do {
-			rootSize++;
+			++rootSize;
 			next = next->right;
 		} while (next != w);
-		rootList = new FibNode*[rootSize];
-		for (int i = 0; i < rootSize; i++) {
+		FibNode** rootList = new FibNode*[rootSize];
+		for (int i = 0; i < rootSize; ++i) {
 			rootList[i] = next;
 			next = next->right;
 		}
-		for (int i = 0; i < rootSize; i++) {
+		for (int i = 0; i < rootSize; ++i) {
 			w = rootList[i];
 
-			x = w;
-			d = x->degree;
+			FibNode* x = w;
+			int d = x->degree;
 			while (A[d] != nullptr) {
-				y = A[d];
+				FibNode* y = A[d];
 				if (x->key > y->key) {
-					temp = x;
+					FibNode* temp = x;
 					x = y;
 					y = temp;
 				}
 				fib_heap_link(y, x);
 				A[d] = nullptr;
-				d++;
+				++d;
 			}
 			A[d] = x;
 		}
 		delete [] rootList;
 		min = nullptr;
-		for (int i = 0; i < max_degree + 2; i++) {
+		for (int i = 0; i < max_degree + 2; ++i) {
 			if (A[i] != nullptr) {
 				if (min == nullptr) {
 					min = A[i]->left = A[i]->right = A[i];
@@ -213,7 +204,7 @@ public:
 		delete [] A;
 	}
 
-	void fib_heap_link(FibNode* y, FibNode* x) {
+	static void fib_heap_link(FibNode* y, FibNode* x) {
 		y->left->right = y->right;
 		y->right->left = y->left;
 		if (x->child != nullptr) {
@@ -227,7 +218,7 @@ public:
 			y->left = y;
 		}
 		y->p = x;
-		x->degree++;
+		++x->degree;
 		y->mark = false;
 	}
 
@@ -258,7 +249,7 @@ public:
 				y->child = x->right;
 			}
 		}
-		y->degree--;
+		--y->degree;
 		min->right->left = x;
 		x->right = min->right;
 		min->right = x;
@@ -268,9 +259,7 @@ public:
 	}
 
 	void cascading_cut(FibNode* y) {
-		FibNode* z;
-
-		z = y->p;
+		FibNode* z = y->p;
 		if (z != nullptr) {
 			if (y->mark == false) {
 				y->mark = true;
