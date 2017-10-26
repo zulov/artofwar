@@ -46,7 +46,8 @@ public:
 		int payload;
 	};
 
-	FibHeap(): n(0), min(nullptr) {
+	FibHeap(): n(0), min(nullptr), coef(
+	                                    log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)) {
 	}
 
 	~FibHeap() {
@@ -157,8 +158,7 @@ public:
 		FibNode *w, *next, *x, *y, *temp;
 		FibNode **A, **rootList;
 		int d, rootSize;
-		int max_degree = static_cast<int>(floor(log(static_cast<double>(n)) /
-		                                        log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)));
+		int max_degree = static_cast<int>(floor(log(static_cast<double>(n)) / coef));
 
 		A = new FibNode*[max_degree + 2]; // plus two both for indexing to max degree and so A[max_degree+1] == NIL
 		std::fill_n(A, max_degree + 2, nullptr);
@@ -331,5 +331,6 @@ public:
 	}
 
 	int n;
+	double coef;
 	FibNode* min;
 };

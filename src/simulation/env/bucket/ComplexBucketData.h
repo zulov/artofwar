@@ -19,7 +19,7 @@ public:
 	void createBox(double bucketSize);
 	Urho3D::Vector3* getDirectrionFrom(Urho3D::Vector3* position);
 	void setCenter(double _centerX, double _centerY);
-	Urho3D::Vector2 getCenter();
+	Urho3D::Vector2& getCenter();
 	void setNeightbours(std::vector<int>* tempNeightbours);
 	std::vector<int>& getNeightbours();
 private:

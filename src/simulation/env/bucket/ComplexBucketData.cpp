@@ -58,7 +58,7 @@ void ComplexBucketData::setCenter(double _centerX, double _centerY) {
 	center = Vector2(_centerX, _centerY);
 }
 
-Urho3D::Vector2 ComplexBucketData::getCenter() {
+Urho3D::Vector2& ComplexBucketData::getCenter() {
 	return center;
 }
 

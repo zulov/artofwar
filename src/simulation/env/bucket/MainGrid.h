@@ -23,8 +23,7 @@ public:
 	bool inSide(int x, int z);
 	vector<int>* neighbors(const int current);
 	double cost(const int current, const int next);
-	void findPath(IntVector2& startV, IntVector2& goalV,
-	              int came_from[], double cost_so_far[]);
+	void findPath(IntVector2& startV, IntVector2& goalV);
 	void draw_grid_from(int* cameFrom);
 	void draw_grid_cost(double* costSoFar);
 	void drawEmpty(int id);
@@ -32,4 +31,6 @@ public:
 private:
 	IntVector2 calculateSize(int size);
 	vector<int>* tempNeighbour;
+	int* came_from;
+	double* cost_so_far;
 };

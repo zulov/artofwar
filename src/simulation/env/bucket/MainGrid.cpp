@@ -38,10 +38,15 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 		tempNeighbour = neighbors(i);
 		buckets[i].setNeightbours(tempNeighbour);
 	}
+
+	came_from = new int[resolution * resolution];
+	cost_so_far = new double[resolution * resolution];
 }
 
 MainGrid::~MainGrid() {
 	delete tempNeighbour;
+	delete[]came_from;
+	delete[]cost_so_far;
 }
 
 bool MainGrid::validateAdd(Static* object) {
@@ -106,7 +111,8 @@ void MainGrid::addStatic(Static* object) {
 	}
 }
 
-void MainGrid::removeStatic(Static* object) {//TODO poprawic
+void MainGrid::removeStatic(Static* object) {
+	//TODO poprawic
 	int index = object->getBucketIndex(0);
 	buckets[index].removeStatic();
 }
@@ -174,15 +180,17 @@ double MainGrid::cost(const int current, const int next) {
 	return result;
 }
 
-void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
-                        int came_from[],
-                        double cost_so_far[]) {
+void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
+	std::fill_n(came_from, resolution * resolution, -1);
+	std::fill_n(cost_so_far, resolution * resolution, -1);
+
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
 	double min = cost(start, goal);
-	//TODO jak zmieni sie koszt na bardziej skąplikowany to może sie zepsuć a tu ma byćtylko prosta odległość
+	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma byćtylko prosta odległość
 	//PriorityQueue frontier;
 	//FibHeap frontier;
+
 	BucketQueue frontier(1000 + min, min);//TODO ustawić lepsze minimum
 	frontier.put(start, 0);
 
@@ -199,12 +207,14 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV,
 		}
 
 		for (auto& next : buckets[current].getNeightbours()) {
-			double new_cost = cost_so_far[current] + cost(current, next);
-			if (came_from[current] != next && (cost_so_far[next] == -1 || new_cost < cost_so_far[next])) {
-				cost_so_far[next] = new_cost;
-				double priority = new_cost + heuristic(next, goal);
-				frontier.put(next, priority);
-				came_from[next] = current;
+			if (came_from[current] != next) {
+				double new_cost = cost_so_far[current] + cost(current, next);
+				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
+					cost_so_far[next] = new_cost;
+					double priority = new_cost + heuristic(next, goal);
+					frontier.put(next, priority);
+					came_from[next] = current;
+				}
 			}
 		}
 	}
@@ -274,7 +284,6 @@ IntVector2 MainGrid::getCords(const int index) {
 }
 
 vector<int> MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, int came_from[]) {
-
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
 	vector<int> path;

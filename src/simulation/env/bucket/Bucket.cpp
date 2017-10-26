@@ -30,7 +30,7 @@ void Bucket::setCenter(double _centerX, double _centerY) {
 	data->setCenter(_centerX, _centerY);
 }
 
-Vector2 Bucket::getCenter() {
+Vector2& Bucket::getCenter() {
 	return data->getCenter();
 }
 
