@@ -20,6 +20,7 @@
 
 #include <math.h>
 #include <limits>
+#include <iostream>
 
 class FibHeap
 {
@@ -47,7 +48,8 @@ public:
 
 	FibHeap(): n(0), coef(
 	                      log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)), min(nullptr) {
-	}
+		std::fill_n(temp, 50, nullptr);
+	                      }
 
 	~FibHeap() {
 		delete_fibnodes(min);
@@ -59,20 +61,16 @@ public:
 		}
 
 		FibNode* cur = x;
-		while (true) {
-			if (cur->left && cur->left != x) {
-				FibNode* tmp = cur;
-				cur = cur->left;
-				if (tmp->child)
-					delete_fibnodes(tmp->child);
-				delete tmp;
-			} else {
-				if (cur->child)
-					delete_fibnodes(cur->child);
-				delete cur;
-				break;
-			}
+		while (cur->left && cur->left != x) {
+			FibNode* tmp = cur;
+			cur = cur->left;
+			if (tmp->child)
+				delete_fibnodes(tmp->child);
+			delete tmp;
 		}
+		if (cur->child)
+			delete_fibnodes(cur->child);
+		delete cur;
 	}
 
 	void insert(FibNode* x) {
@@ -119,21 +117,23 @@ public:
 		if (z != nullptr) {
 			FibNode* x = z->child;
 			if (x != nullptr) {
-				FibNode** childList = new FibNode*[z->degree];
+				//FibNode** childList = new FibNode*[z->degree];
+				std::fill_n(temp, z->degree, nullptr);
+				//std::cout << z->degree << "|";
 				FibNode* next = x;
 				for (int i = 0; i < (int)z->degree; ++i) {
-					childList[i] = next;
+					temp[i] = next;
 					next = next->right;
 				}
 				for (int i = 0; i < (int)z->degree; ++i) {
-					x = childList[i];
+					x = temp[i];
 					min->left->right = x;
 					x->left = min->left;
 					min->left = x;
 					x->right = min;
 					x->p = nullptr;
 				}
-				delete [] childList;
+				//delete [] childList;
 			}
 			z->left->right = z->right;
 			z->right->left = z->left;
@@ -149,10 +149,12 @@ public:
 	}
 
 	void consolidate() {
-		int max_degree = static_cast<int>(floor(log(static_cast<double>(n)) / coef));
+		const int max_degree = static_cast<int>(floor(log(static_cast<double>(n)) / coef)) + 2;
+		// plus two both for indexing to max degree and so A[max_degree+1] == NIL
 
-		FibNode** A = new FibNode*[max_degree + 2]; // plus two both for indexing to max degree and so A[max_degree+1] == NIL
-		std::fill_n(A, max_degree + 2, nullptr);
+		//FibNode** A = new FibNode*[max_degree];
+		//std::cout << max_degree << "|";
+		std::fill_n(temp, max_degree, nullptr);
 		FibNode* w = min;
 		int rootSize = 0;
 		FibNode* next = w;
@@ -161,6 +163,7 @@ public:
 			next = next->right;
 		} while (next != w);
 		FibNode** rootList = new FibNode*[rootSize];
+		std::cout << rootSize << "|";
 		for (int i = 0; i < rootSize; ++i) {
 			rootList[i] = next;
 			next = next->right;
@@ -170,38 +173,38 @@ public:
 
 			FibNode* x = w;
 			int d = x->degree;
-			while (A[d] != nullptr) {
-				FibNode* y = A[d];
+			while (temp[d] != nullptr) {
+				FibNode* y = temp[d];
 				if (x->key > y->key) {
 					FibNode* temp = x;
 					x = y;
 					y = temp;
 				}
 				fib_heap_link(y, x);
-				A[d] = nullptr;
+				temp[d] = nullptr;
 				++d;
 			}
-			A[d] = x;
+			temp[d] = x;
 		}
 		delete [] rootList;
 		min = nullptr;
-		for (int i = 0; i < max_degree + 2; ++i) {
-			if (A[i] != nullptr) {
+		for (int i = 0; i < max_degree; ++i) {
+			if (temp[i] != nullptr) {
 				if (min == nullptr) {
-					min = A[i]->left = A[i]->right = A[i];
+					min = temp[i]->left = temp[i]->right = temp[i];
 				} else {
-					min->left->right = A[i];
-					A[i]->left = min->left;
-					min->left = A[i];
-					A[i]->right = min;
+					min->left->right = temp[i];
+					temp[i]->left = min->left;
+					min->left = temp[i];
+					temp[i]->right = min;
 
-					if (A[i]->key < min->key) {
-						min = A[i];
+					if (temp[i]->key < min->key) {
+						min = temp[i];
 					}
 				}
 			}
 		}
-		delete [] A;
+		//delete [] A;
 	}
 
 	static void fib_heap_link(FibNode* y, FibNode* x) {
@@ -239,7 +242,6 @@ public:
 	}
 
 	void cut(FibNode* x, FibNode* y) {
-		// 1
 		if (x->right == x) {
 			y->child = nullptr;
 		} else {
@@ -322,4 +324,5 @@ public:
 	int n;
 	double coef;
 	FibNode* min;
+	FibNode* temp[50];
 };
