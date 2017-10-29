@@ -42,14 +42,14 @@ public:
 		FibNode* left;
 		FibNode* right;
 		FibNode* child;
-		int degree;
+		short degree;
 		int payload;
 	};
 
 	FibHeap(): n(0), coef(
-	                      log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)), min(nullptr) {
-		std::fill_n(temp, 50, nullptr);
-	                      }
+	                      1/log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)), min(nullptr) {
+		temp.resize(15, nullptr);
+	}
 
 	~FibHeap() {
 		delete_fibnodes(min);
@@ -118,14 +118,18 @@ public:
 			FibNode* x = z->child;
 			if (x != nullptr) {
 				//FibNode** childList = new FibNode*[z->degree];
-				std::fill_n(temp, z->degree, nullptr);
+				if (temp.size() < z->degree) {
+					temp.resize(z->degree);
+				}
+
+				std::fill_n(temp.begin(), z->degree, nullptr);
 				//std::cout << z->degree << "|";
 				FibNode* next = x;
-				for (int i = 0; i < (int)z->degree; ++i) {
+				for (int i = 0; i < z->degree; ++i) {
 					temp[i] = next;
 					next = next->right;
 				}
-				for (int i = 0; i < (int)z->degree; ++i) {
+				for (int i = 0; i < z->degree; ++i) {
 					x = temp[i];
 					min->left->right = x;
 					x->left = min->left;
@@ -149,12 +153,17 @@ public:
 	}
 
 	void consolidate() {
-		const int max_degree = static_cast<int>(floor(log(static_cast<double>(n)) / coef)) + 2;
+		const int max_degree = static_cast<int>(floor(log(static_cast<double>(n)) * coef)) + 2;
 		// plus two both for indexing to max degree and so A[max_degree+1] == NIL
 
 		//FibNode** A = new FibNode*[max_degree];
 		//std::cout << max_degree << "|";
-		std::fill_n(temp, max_degree, nullptr);
+		if (temp.size() < max_degree) {
+			temp.resize(max_degree);
+		}
+		
+		std::fill_n(temp.begin(), max_degree, nullptr);
+
 		FibNode* w = min;
 		int rootSize = 0;
 		FibNode* next = w;
@@ -162,14 +171,20 @@ public:
 			++rootSize;
 			next = next->right;
 		} while (next != w);
-		FibNode** rootList = new FibNode*[rootSize];
-		std::cout << rootSize << "|";
-		for (int i = 0; i < rootSize; ++i) {
-			rootList[i] = next;
+		int secondSize = max_degree + rootSize;
+		if (temp.size() < secondSize) {
+			temp.resize(secondSize);
+		}
+		std::fill_n(temp.begin() + max_degree, rootSize, nullptr);
+		//FibNode** rootList = new FibNode*[rootSize];
+
+		for (int i = max_degree; i < secondSize; ++i) {
+			//rootList[i] = next;
+			temp[i] = next;
 			next = next->right;
 		}
-		for (int i = 0; i < rootSize; ++i) {
-			w = rootList[i];
+		for (int i = max_degree; i < secondSize; ++i) {
+			w = temp[i];
 
 			FibNode* x = w;
 			int d = x->degree;
@@ -186,7 +201,7 @@ public:
 			}
 			temp[d] = x;
 		}
-		delete [] rootList;
+		//delete [] rootList;
 		min = nullptr;
 		for (int i = 0; i < max_degree; ++i) {
 			if (temp[i] != nullptr) {
@@ -301,20 +316,17 @@ public:
 	}
 
 	int get() {
-		FibNode* top = topNode();
-		int toReturn = top->payload;
+		int toReturn = topNode()->payload;
 		pop();
 		return toReturn;
 	}
 
-	FibNode* put(int pl, double k) {
-		FibNode* x = new FibNode(k, pl);
-		insert(x);
-		return x;
+	void put(int pl, double k) {
+		insert(new FibNode(k, pl));
 	}
 
-	FibNode* put(double k) {
-		return put(0, k);
+	void put(double k) {
+		put(0, k);
 	}
 
 	unsigned int size() {
@@ -324,5 +336,5 @@ public:
 	int n;
 	double coef;
 	FibNode* min;
-	FibNode* temp[50];
+	std::vector<FibNode*> temp;
 };
