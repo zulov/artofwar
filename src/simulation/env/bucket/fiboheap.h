@@ -30,7 +30,7 @@ public:
 	class FibNode
 	{
 	public:
-		FibNode(double k, int pl): key(k), mark(false), p(nullptr), left(nullptr), right(nullptr), child(nullptr), degree(-1),
+		FibNode(double k, int pl): key(k), left(nullptr), right(nullptr), child(nullptr), degree(-1),
 			payload(pl) {
 		}
 
@@ -43,8 +43,6 @@ public:
 
 		void reset() {
 			key = -1;
-			mark = false;
-			p = nullptr;
 			left = nullptr;
 			right = nullptr;
 			child = nullptr;
@@ -53,8 +51,6 @@ public:
 		}
 
 		double key;
-		bool mark;
-		FibNode* p;
 		FibNode* left;
 		FibNode* right;
 		FibNode* child;
@@ -118,9 +114,7 @@ public:
 
 	void insert(FibNode* x) {
 		x->degree = 0;
-		x->p = nullptr;
 		x->child = nullptr;
-		x->mark = false;
 		if (minNode == nullptr) {
 			minNode = x->left = x->right = x;
 		} else {
@@ -162,7 +156,6 @@ public:
 					x->left = minNode->left;
 					minNode->left = x;
 					x->right = minNode;
-					x->p = nullptr;
 				}
 
 			}
@@ -258,9 +251,7 @@ public:
 			y->right = y;
 			y->left = y;
 		}
-		y->p = x;
 		++x->degree;
-		y->mark = false;
 	}
 
 	bool empty() const {
