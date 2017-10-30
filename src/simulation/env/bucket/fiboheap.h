@@ -116,24 +116,6 @@ public:
 		std::fill_n(temp.begin(), temp.size(), nullptr);
 	}
 
-	void delete_fibnodes(FibNode* x) {
-		if (!x) {
-			return;
-		}
-
-		FibNode* cur = x;
-		while (cur->left && cur->left != x) {
-			FibNode* tmp = cur;
-			cur = cur->left;
-			if (tmp->child)
-				delete_fibnodes(tmp->child);
-			resetNode(tmp);
-		}
-		if (cur->child)
-			delete_fibnodes(cur->child);
-		resetNode(cur);
-	}
-
 	void insert(FibNode* x) {
 		x->degree = 0;
 		x->p = nullptr;
@@ -281,60 +263,6 @@ public:
 		y->mark = false;
 	}
 
-	void decrease_key(FibNode* x, int k) {
-		if (k > x->key) {
-			// error( "new key is greater than current key" );
-			return;
-		}
-		x->key = k;
-		FibNode* y = x->p;
-		if (y != nullptr && x->key < y->key) {
-			cut(x, y);
-			cascading_cut(y);
-		}
-		if (x->key < minNode->key) {
-			minNode = x;
-		}
-	}
-
-	void cut(FibNode* x, FibNode* y) {
-		if (x->right == x) {
-			y->child = nullptr;
-		} else {
-			x->right->left = x->left;
-			x->left->right = x->right;
-			if (y->child == x) {
-				y->child = x->right;
-			}
-		}
-		--y->degree;
-		minNode->right->left = x;
-		x->right = minNode->right;
-		minNode->right = x;
-		x->left = minNode;
-		x->p = nullptr;
-		x->mark = false;
-	}
-
-	void cascading_cut(FibNode* y) {
-		FibNode* z = y->p;
-		if (z != nullptr) {
-			if (y->mark == false) {
-				y->mark = true;
-			} else {
-				cut(y, z);
-				cascading_cut(z);
-			}
-		}
-	}
-
-	void remove_fibnode(FibNode* x) {
-		decrease_key(x, -999999);
-		FibNode* fn = extract_min();
-		resetNode(fn);
-		//delete fn;
-	}
-
 	bool empty() const {
 		return n == 0;
 	}
@@ -354,7 +282,6 @@ public:
 		FibNode* x = extract_min();
 		if (x) {
 			resetNode(x);
-			//delete x;
 		}
 	}
 
