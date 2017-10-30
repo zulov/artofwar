@@ -28,5 +28,5 @@ private:
 //		std::vector<PQElement>,
 //		std::greater<PQElement>>
 	FibHeap buckets[QUEUE_BUCKETS_SIZE];
-	int histogram[QUEUE_BUCKETS_SIZE] = {0};
+	//int histogram[QUEUE_BUCKETS_SIZE] = {0};
 };

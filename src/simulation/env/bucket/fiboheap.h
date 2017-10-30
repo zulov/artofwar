@@ -37,6 +37,21 @@ public:
 		~FibNode() {
 		}
 
+		bool isEmpty() {
+			return key < 0;
+		}
+
+		void reset() {
+			key = -1;
+			mark = false;
+			p = nullptr;
+			left = nullptr;
+			right = nullptr;
+			child = nullptr;
+			degree = -1;
+			payload = -1;
+		}
+
 		double key;
 		bool mark;
 		FibNode* p;
@@ -45,26 +60,63 @@ public:
 		FibNode* child;
 		short degree;
 		int payload;
+		int id;
 	};
 
 	FibHeap(): n(0), coef(
 	                      1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)), minNode(nullptr) {
 		temp.resize(15, nullptr);
+		cached.resize(100, nullptr);
+		for (int i = 0; i < 100; ++i) {
+			cached[i] = new FibNode(-1, -1);
+			cached[i]->id = i;
+		}
 	}
 
 	~FibHeap() {
-		delete_fibnodes(minNode);
+		//delete_fibnodes(minNode);
+		for (auto fibNode : cached) {
+			delete fibNode;
+		}
+	}
+
+	FibNode* getNode(int pl, double k) {
+		for (int i = lowestFree; i < cached.size(); ++i) {
+			auto fibNode = cached[i];
+			if (fibNode->isEmpty()) {
+				fibNode->payload = pl;
+				fibNode->key = k;
+				lowestFree = i + 1;
+				return fibNode;
+			}
+		}
+		FibNode* newNode = new FibNode(-1, -1);
+		newNode->payload = pl;
+		newNode->key = k;
+		newNode->id = cached.size() - 1;
+		cached.push_back(newNode);
+		lowestFree = cached.size() - 1;
+		return newNode;
+	}
+
+	void resetNode(FibNode* node) {
+		if (lowestFree > node->id) {
+			lowestFree = node->id;
+		}
+		node->reset();
 	}
 
 	void clear() {
-		delete_fibnodes(minNode);
+		for (auto fibNode : cached) {
+			fibNode->reset();
+		}
+		lowestFree = 0;
 		n = 0;
 		minNode = nullptr;
-		//clear_vector(temp);
 		std::fill_n(temp.begin(), temp.size(), nullptr);
 	}
 
-	static void delete_fibnodes(FibNode* x) {
+	void delete_fibnodes(FibNode* x) {
 		if (!x) {
 			return;
 		}
@@ -75,11 +127,11 @@ public:
 			cur = cur->left;
 			if (tmp->child)
 				delete_fibnodes(tmp->child);
-			delete tmp;
+			resetNode(tmp);
 		}
 		if (cur->child)
 			delete_fibnodes(cur->child);
-		delete cur;
+		resetNode(cur);
 	}
 
 	void insert(FibNode* x) {
@@ -105,34 +157,18 @@ public:
 		return minNode;
 	}
 
-	static FibHeap* union_fibheap(FibHeap* H1, FibHeap* H2) {
-		FibHeap* H = new FibHeap();
-		H->minNode = H1->minNode;
-		if (H->minNode != nullptr && H2->minNode != nullptr) {
-			H->minNode->right->left = H2->minNode->left;
-			H2->minNode->left->right = H->minNode->right;
-			H->minNode->right = H2->minNode;
-			H2->minNode->left = H->minNode;
-		}
-		if (H1->minNode == nullptr || (H2->minNode != nullptr && H2->minNode->key < H1->minNode->key)) {
-			H->minNode = H2->minNode;
-		}
-		H->n = H1->n + H2->n;
-		return H;
-	}
-
 	FibNode* extract_min() {
 		FibNode* z = minNode;
 		if (z != nullptr) {
 			FibNode* x = z->child;
 			if (x != nullptr) {
-				//FibNode** childList = new FibNode*[z->degree];
+
 				if (temp.size() < z->degree) {
 					temp.resize(z->degree);
 				}
 
 				std::fill_n(temp.begin(), z->degree, nullptr);
-				//std::cout << z->degree << "|";
+
 				FibNode* next = x;
 				for (int i = 0; i < z->degree; ++i) {
 					temp[i] = next;
@@ -146,7 +182,7 @@ public:
 					x->right = minNode;
 					x->p = nullptr;
 				}
-				//delete [] childList;
+
 			}
 			z->left->right = z->right;
 			z->right->left = z->left;
@@ -165,8 +201,6 @@ public:
 		const int max_degree = static_cast<int>(floor(log(static_cast<double>(n)) * coef)) + 2;
 		// plus two both for indexing to max degree and so A[max_degree+1] == NIL
 
-		//FibNode** A = new FibNode*[max_degree];
-		//std::cout << max_degree << "|";
 		if (temp.size() < max_degree) {
 			temp.resize(max_degree);
 		}
@@ -185,10 +219,8 @@ public:
 			temp.resize(secondSize);
 		}
 		std::fill_n(temp.begin() + max_degree, rootSize, nullptr);
-		//FibNode** rootList = new FibNode*[rootSize];
 
 		for (int i = max_degree; i < secondSize; ++i) {
-			//rootList[i] = next;
 			temp[i] = next;
 			next = next->right;
 		}
@@ -210,7 +242,7 @@ public:
 			}
 			temp[d] = x;
 		}
-		//delete [] rootList;
+
 		minNode = nullptr;
 		for (int i = 0; i < max_degree; ++i) {
 			if (temp[i] != nullptr) {
@@ -228,7 +260,7 @@ public:
 				}
 			}
 		}
-		//delete [] A;
+
 	}
 
 	static void fib_heap_link(FibNode* y, FibNode* x) {
@@ -299,7 +331,8 @@ public:
 	void remove_fibnode(FibNode* x) {
 		decrease_key(x, -999999);
 		FibNode* fn = extract_min();
-		delete fn;
+		resetNode(fn);
+		//delete fn;
 	}
 
 	bool empty() const {
@@ -320,7 +353,8 @@ public:
 		}
 		FibNode* x = extract_min();
 		if (x) {
-			delete x;
+			resetNode(x);
+			//delete x;
 		}
 	}
 
@@ -331,7 +365,7 @@ public:
 	}
 
 	void put(int pl, double k) {
-		insert(new FibNode(k, pl));
+		insert(getNode(pl, k));
 	}
 
 	void put(double k) {
@@ -346,4 +380,6 @@ public:
 	double coef;
 	FibNode* minNode;
 	std::vector<FibNode*> temp;
+	std::vector<FibNode*> cached;
+	int lowestFree = 0;
 };
