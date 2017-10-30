@@ -19,8 +19,9 @@
 #pragma once
 
 #include <math.h>
-#include <limits>
+
 #include <iostream>
+#include "utils.h"
 
 class FibHeap
 {
@@ -47,12 +48,20 @@ public:
 	};
 
 	FibHeap(): n(0), coef(
-	                      1/log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)), min(nullptr) {
+	                      1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)), minNode(nullptr) {
 		temp.resize(15, nullptr);
 	}
 
 	~FibHeap() {
-		delete_fibnodes(min);
+		delete_fibnodes(minNode);
+	}
+
+	void clear() {
+		delete_fibnodes(minNode);
+		n = 0;
+		minNode = nullptr;
+		//clear_vector(temp);
+		std::fill_n(temp.begin(), temp.size(), nullptr);
 	}
 
 	static void delete_fibnodes(FibNode* x) {
@@ -78,42 +87,42 @@ public:
 		x->p = nullptr;
 		x->child = nullptr;
 		x->mark = false;
-		if (min == nullptr) {
-			min = x->left = x->right = x;
+		if (minNode == nullptr) {
+			minNode = x->left = x->right = x;
 		} else {
-			min->left->right = x;
-			x->left = min->left;
-			min->left = x;
-			x->right = min;
-			if (x->key < min->key) {
-				min = x;
+			minNode->left->right = x;
+			x->left = minNode->left;
+			minNode->left = x;
+			x->right = minNode;
+			if (x->key < minNode->key) {
+				minNode = x;
 			}
 		}
 		++n;
 	}
 
 	FibNode* minimum() {
-		return min;
+		return minNode;
 	}
 
 	static FibHeap* union_fibheap(FibHeap* H1, FibHeap* H2) {
 		FibHeap* H = new FibHeap();
-		H->min = H1->min;
-		if (H->min != nullptr && H2->min != nullptr) {
-			H->min->right->left = H2->min->left;
-			H2->min->left->right = H->min->right;
-			H->min->right = H2->min;
-			H2->min->left = H->min;
+		H->minNode = H1->minNode;
+		if (H->minNode != nullptr && H2->minNode != nullptr) {
+			H->minNode->right->left = H2->minNode->left;
+			H2->minNode->left->right = H->minNode->right;
+			H->minNode->right = H2->minNode;
+			H2->minNode->left = H->minNode;
 		}
-		if (H1->min == nullptr || (H2->min != nullptr && H2->min->key < H1->min->key)) {
-			H->min = H2->min;
+		if (H1->minNode == nullptr || (H2->minNode != nullptr && H2->minNode->key < H1->minNode->key)) {
+			H->minNode = H2->minNode;
 		}
 		H->n = H1->n + H2->n;
 		return H;
 	}
 
 	FibNode* extract_min() {
-		FibNode* z = min;
+		FibNode* z = minNode;
 		if (z != nullptr) {
 			FibNode* x = z->child;
 			if (x != nullptr) {
@@ -131,10 +140,10 @@ public:
 				}
 				for (int i = 0; i < z->degree; ++i) {
 					x = temp[i];
-					min->left->right = x;
-					x->left = min->left;
-					min->left = x;
-					x->right = min;
+					minNode->left->right = x;
+					x->left = minNode->left;
+					minNode->left = x;
+					x->right = minNode;
 					x->p = nullptr;
 				}
 				//delete [] childList;
@@ -142,9 +151,9 @@ public:
 			z->left->right = z->right;
 			z->right->left = z->left;
 			if (z == z->right) {
-				min = nullptr;
+				minNode = nullptr;
 			} else {
-				min = z->right;
+				minNode = z->right;
 				consolidate();
 			}
 			--n;
@@ -161,10 +170,10 @@ public:
 		if (temp.size() < max_degree) {
 			temp.resize(max_degree);
 		}
-		
+
 		std::fill_n(temp.begin(), max_degree, nullptr);
 
-		FibNode* w = min;
+		FibNode* w = minNode;
 		int rootSize = 0;
 		FibNode* next = w;
 		do {
@@ -202,19 +211,19 @@ public:
 			temp[d] = x;
 		}
 		//delete [] rootList;
-		min = nullptr;
+		minNode = nullptr;
 		for (int i = 0; i < max_degree; ++i) {
 			if (temp[i] != nullptr) {
-				if (min == nullptr) {
-					min = temp[i]->left = temp[i]->right = temp[i];
+				if (minNode == nullptr) {
+					minNode = temp[i]->left = temp[i]->right = temp[i];
 				} else {
-					min->left->right = temp[i];
-					temp[i]->left = min->left;
-					min->left = temp[i];
-					temp[i]->right = min;
+					minNode->left->right = temp[i];
+					temp[i]->left = minNode->left;
+					minNode->left = temp[i];
+					temp[i]->right = minNode;
 
-					if (temp[i]->key < min->key) {
-						min = temp[i];
+					if (temp[i]->key < minNode->key) {
+						minNode = temp[i];
 					}
 				}
 			}
@@ -251,8 +260,8 @@ public:
 			cut(x, y);
 			cascading_cut(y);
 		}
-		if (x->key < min->key) {
-			min = x;
+		if (x->key < minNode->key) {
+			minNode = x;
 		}
 	}
 
@@ -267,10 +276,10 @@ public:
 			}
 		}
 		--y->degree;
-		min->right->left = x;
-		x->right = min->right;
-		min->right = x;
-		x->left = min;
+		minNode->right->left = x;
+		x->right = minNode->right;
+		minNode->right = x;
+		x->left = minNode;
 		x->p = nullptr;
 		x->mark = false;
 	}
@@ -288,7 +297,7 @@ public:
 	}
 
 	void remove_fibnode(FibNode* x) {
-		decrease_key(x, std::numeric_limits<double>::min());
+		decrease_key(x, -999999);
 		FibNode* fn = extract_min();
 		delete fn;
 	}
@@ -335,6 +344,6 @@ public:
 
 	int n;
 	double coef;
-	FibNode* min;
+	FibNode* minNode;
 	std::vector<FibNode*> temp;
 };

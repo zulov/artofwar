@@ -2,9 +2,7 @@
 #include <iostream>
 
 
-BucketQueue::
-BucketQueue(double _max, double _min): max(_max), min(_min), size(0), currentIndex(QUEUE_BUCKETS_SIZE - 1) {
-	perBucket = (max - min) / QUEUE_BUCKETS_SIZE;
+BucketQueue::BucketQueue() {
 }
 
 BucketQueue::~BucketQueue() {
@@ -13,6 +11,17 @@ BucketQueue::~BucketQueue() {
 	//			std::cout << histogram[i] << " ";
 	//		}
 	//		int a = 5;
+}
+
+void BucketQueue::init(double _max, double _min) {
+	max = _max;
+	min = _min;
+	size = 0;
+	currentIndex = QUEUE_BUCKETS_SIZE - 1;
+	perBucket = (max - min) / QUEUE_BUCKETS_SIZE;
+	for (int i = 0; i < QUEUE_BUCKETS_SIZE; ++i) {
+		buckets[i].clear();
+	}
 }
 
 bool BucketQueue::empty() { return size == 0; }

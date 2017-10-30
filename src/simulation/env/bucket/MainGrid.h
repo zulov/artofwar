@@ -2,6 +2,7 @@
 #include "Grid.h"
 #include "ComplexBucketData.h"
 #include <unordered_map>
+#include "BucketQueue.h"
 
 class MainGrid : public Grid
 {
@@ -33,4 +34,5 @@ private:
 	vector<int>* tempNeighbour;
 	int* came_from;
 	double* cost_so_far;
+	BucketQueue frontier;
 };

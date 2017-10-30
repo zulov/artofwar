@@ -2,11 +2,9 @@
 #include <xlocale>
 #include <queue>
 #include <algorithm>
-#include "PriorityQueue.h"
 #include <iomanip>
 #include <iostream>
 #include "BucketQueue.h"
-#include "fiboheap.h"
 
 MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_resolution, _size, _debugEnabled) {
 	short posX = 0;
@@ -191,7 +189,7 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	//PriorityQueue frontier;
 	//FibHeap frontier;
 
-	BucketQueue frontier(1000 + min, min);//TODO ustawić lepsze minimum
+	frontier.init(1000 + min, min);//TODO ustawić lepsze minimum
 	frontier.put(start, 0);
 
 	came_from[start] = start;
