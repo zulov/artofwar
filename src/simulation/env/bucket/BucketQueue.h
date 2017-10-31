@@ -15,7 +15,7 @@ public:
 	void init(double _max, double _min);
 private:
 	int getIndex(double priority);
-	int nextCurrent(int currentIndex);
+	void updateCurrentIndex();
 	double max;
 	double min;
 	double perBucket;

@@ -25,10 +25,10 @@ void BucketQueue::put(int item, double priority) {
 	int index = getIndex(priority);
 	buckets[index].put(item, priority);
 
-//		if (histogram[index] < buckets[index].size()) {
-//			histogram[index] = buckets[index].size();
-//		}
-	if (index <= currentIndex) {
+	//		if (histogram[index] < buckets[index].size()) {
+	//			histogram[index] = buckets[index].size();
+	//		}
+	if (index < currentIndex) {
 		currentIndex = index;
 	}
 	++size;
@@ -38,7 +38,7 @@ int BucketQueue::get() {
 	int best_item = buckets[currentIndex].get();
 
 	if (buckets[currentIndex].empty()) {
-		currentIndex = nextCurrent(currentIndex);
+		updateCurrentIndex();
 	}
 	--size;
 	return best_item;
@@ -54,11 +54,12 @@ int BucketQueue::getIndex(double priority) {
 	return (priority - min) / perBucket;
 }
 
-int BucketQueue::nextCurrent(int currentIndex) {
+void BucketQueue::updateCurrentIndex() {
 	for (int i = currentIndex + 1; i < QUEUE_BUCKETS_SIZE; ++i) {
 		if (!buckets[i].empty()) {
-			return i;
+			currentIndex = i;
+			break;
 		}
 	}
-	return QUEUE_BUCKETS_SIZE - 1;
+	currentIndex = QUEUE_BUCKETS_SIZE - 1;
 }

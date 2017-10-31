@@ -82,7 +82,7 @@ IntVector2 MainGrid::calculateSize(int size) {
 void MainGrid::addStatic(Static* object) {
 	if (validateAdd(object)) {
 		IntVector2 size = object->getGridSize();
-		Vector3* pos = object->getPosition();
+		//Vector3* pos = object->getPosition();
 		IntVector2 bucketPos = object->getBucketPosition();
 		short iX = bucketPos.x_;
 		short iZ = bucketPos.y_;
