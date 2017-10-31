@@ -23,8 +23,8 @@ public:
 	Vector3* getDirectrionFrom(Vector3* position);
 
 	void upgrade();
-	void setNeightbours(vector<std::pair<int, double>>* tempNeighbour);
-	std::vector<std::pair<int, double>>& getNeightbours();
+	void setNeightbours(vector<std::pair<int, double>*>* tempNeighbour);
+	std::vector<std::pair<int, double>*>& getNeightbours();
 private:
 
 	std::vector<Unit*>* content;

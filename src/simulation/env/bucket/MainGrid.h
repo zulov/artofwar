@@ -22,7 +22,7 @@ public:
 
 	vector<int> reconstruct_path(IntVector2& startV, IntVector2& goalV, int came_from[]);
 	bool inSide(int x, int z);
-	std::vector<std::pair<int, double>>* neighbors(const int current);
+	std::vector<std::pair<int, double>*>* neighbors(const int current);
 	double cost(const int current, const int next);
 	void findPath(IntVector2& startV, IntVector2& goalV);
 	void draw_grid_from(int* cameFrom);
@@ -31,8 +31,9 @@ public:
 	void draw_grid_path(vector<int>* path);
 private:
 	IntVector2 calculateSize(int size);
-	std::vector<std::pair<int, double>>* tempNeighbour;
+	std::vector<std::pair<int, double>*>* tempNeighbour;
 	int* came_from;
 	double* cost_so_far;
 	BucketQueue frontier;
+	//FibHeap frontier;
 };

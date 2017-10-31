@@ -6,11 +6,6 @@ BucketQueue::BucketQueue() {
 }
 
 BucketQueue::~BucketQueue() {
-	//		std::cout << std::endl;
-	//		for (int i = 0; i < QUEUE_BUCKETS_SIZE; ++i) {
-	//			std::cout << histogram[i] << " ";
-	//		}
-	//		int a = 5;
 }
 
 void BucketQueue::init(double _max, double _min) {
@@ -30,9 +25,9 @@ void BucketQueue::put(int item, double priority) {
 	int index = getIndex(priority);
 	buckets[index].put(item, priority);
 
-	//	if (histogram[index] < buckets[index].size()) {
-	//		histogram[index] = buckets[index].size();
-	//	}
+//		if (histogram[index] < buckets[index].size()) {
+//			histogram[index] = buckets[index].size();
+//		}
 	if (index <= currentIndex) {
 		currentIndex = index;
 	}

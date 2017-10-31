@@ -11,7 +11,7 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 	short posZ = 0;
 
 	int miniRes = resolution / 16;
-	tempNeighbour = new vector<std::pair<int, double>>();
+	tempNeighbour = new vector<std::pair<int, double>*>();
 	tempNeighbour->reserve(8);
 
 	for (int i = 0; i < resolution * resolution; ++i) {
@@ -155,7 +155,7 @@ IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector3* pos) {
 	return IntVector2(getIndex(pos->x_), getIndex(pos->z_));
 }
 
-std::vector<std::pair<int, double>>* MainGrid::neighbors(const int current) {
+std::vector<std::pair<int, double>*>* MainGrid::neighbors(const int current) {
 	tempNeighbour->clear();
 	IntVector2 cords = getCords(current);
 	for (int i = -1; i <= 1; ++i) {
@@ -165,7 +165,7 @@ std::vector<std::pair<int, double>>* MainGrid::neighbors(const int current) {
 					const int index = getIndex(cords.x_ + i, cords.y_ + j);
 					if (buckets[index].getType() == UNIT) {
 						double costD = cost(current, index);
-						tempNeighbour->push_back(pair<int, double>(index, costD));
+						tempNeighbour->push_back(new pair<int, double>(index, costD));
 					}
 				}
 			}
@@ -188,9 +188,9 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	double min = cost(start, goal);
 	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma byćtylko prosta odległość
 	//PriorityQueue frontier;
-	//FibHeap frontier;
-
-	frontier.init(1000 + min, min);//TODO ustawić lepsze minimum
+	
+	//frontier.clear();
+	frontier.init(750 + min, min);//TODO ustawić lepsze minimum
 	frontier.put(start, 0);
 
 	came_from[start] = start;
@@ -204,9 +204,9 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 		}
 
 		for (auto& neight : buckets[current].getNeightbours()) {
-			int next = neight.first;
+			int next = neight->first;
 			if (came_from[current] != next) {
-				const double new_cost = cost_so_far[current] + neight.second;
+				const double new_cost = cost_so_far[current] + neight->second;
 				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
 					cost_so_far[next] = new_cost;
 					const double priority = new_cost + heuristic(next, goal);
