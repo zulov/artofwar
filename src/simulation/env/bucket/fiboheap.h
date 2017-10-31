@@ -61,23 +61,23 @@ public:
 	FibHeap(): n(0), coef(
 	                      1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)), minNode(nullptr) {
 		temp.resize(15, nullptr);
-		cached.resize(300, nullptr);
+		pool.resize(300, nullptr);
 		for (int i = 0; i < 300; ++i) {
-			cached[i] = new FibNode(-1, -1);
-			cached[i]->id = i;
+			pool[i] = new FibNode(-1, -1);
+			pool[i]->id = i;
 		}
 	}
 
 	~FibHeap() {
 		//delete_fibnodes(minNode);
-		for (auto fibNode : cached) {
+		for (auto fibNode : pool) {
 			delete fibNode;
 		}
 	}
 
 	FibNode* getNode(int pl, double k) {
-		for (int i = lowestFree; i < cached.size(); ++i) {
-			auto fibNode = cached[i];
+		for (int i = lowestFree; i < pool.size(); ++i) {
+			auto fibNode = pool[i];
 			if (fibNode->isEmpty()) {
 				fibNode->payload = pl;
 				fibNode->key = k;
@@ -88,9 +88,9 @@ public:
 		FibNode* newNode = new FibNode(-1, -1);
 		newNode->payload = pl;
 		newNode->key = k;
-		newNode->id = cached.size() - 1;
-		cached.push_back(newNode);
-		lowestFree = cached.size() - 1;
+		newNode->id = pool.size() - 1;
+		pool.push_back(newNode);
+		lowestFree = pool.size() - 1;
 		return newNode;
 	}
 
@@ -102,30 +102,13 @@ public:
 	}
 
 	void clear() {
-		for (auto fibNode : cached) {
+		for (auto fibNode : pool) {
 			fibNode->reset();
 		}
 		lowestFree = 0;
 		n = 0;
 		minNode = nullptr;
 		std::fill_n(temp.begin(), temp.size(), nullptr);
-	}
-
-	void insert(FibNode* x) {
-		x->degree = 0;
-		x->child = nullptr;
-		if (minNode == nullptr) {
-			minNode = x->left = x->right = x;
-		} else {
-			minNode->left->right = x;
-			x->left = minNode->left;
-			minNode->left = x;
-			x->right = minNode;
-			if (x->key < minNode->key) {
-				minNode = x;
-			}
-		}
-		++n;
 	}
 
 	FibNode* minimum() {
@@ -257,14 +240,6 @@ public:
 		return n == 0;
 	}
 
-	FibNode* topNode() {
-		return minimum();
-	}
-
-	double top() {
-		return minimum()->key;
-	}
-
 	void pop() {
 		if (empty()) {
 			return;
@@ -276,17 +251,28 @@ public:
 	}
 
 	int get() {
-		int toReturn = topNode()->payload;
+		int toReturn = minimum()->payload;
 		pop();
 		return toReturn;
 	}
 
-	void put(int pl, double k) {
-		insert(getNode(pl, k));
-	}
-
-	void put(double k) {
-		put(0, k);
+	void put(const int pl, const double k) {
+		FibNode* x = getNode(pl, k);
+		x->degree = 0;
+		//x->child = nullptr;
+		if (minNode == nullptr) {
+			minNode = x->left = x->right = x;
+		}
+		else {
+			minNode->left->right = x;
+			x->left = minNode->left;
+			minNode->left = x;
+			x->right = minNode;
+			if (x->key < minNode->key) {
+				minNode = x;
+			}
+		}
+		++n;
 	}
 
 	unsigned int size() {
@@ -297,6 +283,6 @@ public:
 	double coef;
 	FibNode* minNode;
 	std::vector<FibNode*> temp;
-	std::vector<FibNode*> cached;
+	std::vector<FibNode*> pool;
 	int lowestFree = 0;
 };
