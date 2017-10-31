@@ -179,6 +179,16 @@ double MainGrid::cost(const int current, const int next) {
 	return result;
 }
 
+void MainGrid::debug(IntVector2& startV, IntVector2& goalV) {
+	vector<int> path = reconstruct_path(startV, goalV, came_from);
+
+	draw_grid_from(came_from);
+	std::cout << std::endl << std::endl;
+	draw_grid_cost(cost_so_far);
+	std::cout << std::endl << std::endl;
+	draw_grid_path(&path);
+}
+
 void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	std::fill_n(came_from, resolution * resolution, -1);
 	std::fill_n(cost_so_far, resolution * resolution, -1);
@@ -187,7 +197,6 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	int goal = getIndex(goalV.x_, goalV.y_);
 	double min = cost(start, goal);
 	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma byćtylko prosta odległość
-	//PriorityQueue frontier;
 	
 	//frontier.clear();
 	frontier.init(750 + min, min);//TODO ustawić lepsze minimum
@@ -216,6 +225,8 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 			}
 		}
 	}
+
+	//debug(startV, goalV);
 }
 
 void MainGrid::draw_grid_from(int* cameFrom) {

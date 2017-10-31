@@ -24,6 +24,7 @@ public:
 	bool inSide(int x, int z);
 	std::vector<std::pair<int, double>*>* neighbors(const int current);
 	double cost(const int current, const int next);
+	void debug(IntVector2& startV, IntVector2& goalV);
 	void findPath(IntVector2& startV, IntVector2& goalV);
 	void draw_grid_from(int* cameFrom);
 	void draw_grid_cost(double* costSoFar);

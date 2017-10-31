@@ -137,16 +137,6 @@ void Enviroment::testFind(IntVector2& startV, IntVector2& goalV) {
 	auto start = std::chrono::system_clock::now();
 
 	mainGrid->findPath(startV, goalV);
-//		vector<int> path = mainGrid->reconstruct_path(startV, goalV, came_from);
-//	
-//		mainGrid->draw_grid_from(came_from);
-//		std::cout << std::endl << std::endl;
-//		mainGrid->draw_grid_cost(cost_so_far);
-//		std::cout << std::endl << std::endl;
-//		mainGrid->draw_grid_path(&path);
-
-	auto end = std::chrono::system_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
-	                                                                      std::chrono::system_clock::now() - start);
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
 	cout << duration.count() << endl;
 }
