@@ -11,7 +11,7 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 	short posZ = 0;
 
 	int miniRes = resolution / 16;
-	tempNeighbour = new vector<int>();
+	tempNeighbour = new vector<std::pair<int, double>>();
 	tempNeighbour->reserve(8);
 
 	for (int i = 0; i < resolution * resolution; ++i) {
@@ -155,16 +155,17 @@ IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector3* pos) {
 	return IntVector2(getIndex(pos->x_), getIndex(pos->z_));
 }
 
-vector<int>* MainGrid::neighbors(const int current) {
+std::vector<std::pair<int, double>>* MainGrid::neighbors(const int current) {
 	tempNeighbour->clear();
 	IntVector2 cords = getCords(current);
 	for (int i = -1; i <= 1; ++i) {
 		for (int j = -1; j <= 1; ++j) {
 			if (!(i == 0 && j == 0)) {
 				if (inSide(cords.x_ + i, cords.y_ + j)) {
-					int index = getIndex(cords.x_ + i, cords.y_ + j);
+					const int index = getIndex(cords.x_ + i, cords.y_ + j);
 					if (buckets[index].getType() == UNIT) {
-						tempNeighbour->push_back(index);
+						double costD = cost(current, index);
+						tempNeighbour->push_back(pair<int, double>(index, costD));
 					}
 				}
 			}
@@ -196,20 +197,19 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	cost_so_far[start] = 0;
 
 	while (!frontier.empty()) {
-		//cout << frontier.elements.size()<<" ";
 		const auto current = frontier.get();
 
 		if (current == goal) {
-			//	cout << frontier.elements.size() << " ";
 			break;
 		}
 
-		for (auto& next : buckets[current].getNeightbours()) {
+		for (auto& neight : buckets[current].getNeightbours()) {
+			int next = neight.first;
 			if (came_from[current] != next) {
-				double new_cost = cost_so_far[current] + cost(current, next);
+				const double new_cost = cost_so_far[current] + neight.second;
 				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
 					cost_so_far[next] = new_cost;
-					double priority = new_cost + heuristic(next, goal);
+					const double priority = new_cost + heuristic(next, goal);
 					frontier.put(next, priority);
 					came_from[next] = current;
 				}

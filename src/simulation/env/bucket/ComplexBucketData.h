@@ -20,14 +20,14 @@ public:
 	Urho3D::Vector3* getDirectrionFrom(Urho3D::Vector3* position);
 	void setCenter(double _centerX, double _centerY);
 	Urho3D::Vector2& getCenter();
-	void setNeightbours(std::vector<int>* tempNeightbours);
-	std::vector<int>& getNeightbours();
+	void setNeightbours(std::vector<std::pair<int, double>>* tempNeightbours);
+	std::vector<std::pair<int, double>>& getNeightbours();
 private:
 	Urho3D::Vector2 center;
 	Urho3D::Node* box;
 	Urho3D::StaticModel* model;
 	Static* object;
 	ObjectType type;
-	std::vector<int> neighbour;
+	std::vector<std::pair<int, double>> neighbour;
 	float cost;
 };

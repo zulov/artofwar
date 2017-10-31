@@ -19,7 +19,6 @@
 #pragma once
 
 #include <math.h>
-
 #include <iostream>
 #include "utils.h"
 
@@ -62,8 +61,8 @@ public:
 	FibHeap(): n(0), coef(
 	                      1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)), minNode(nullptr) {
 		temp.resize(15, nullptr);
-		cached.resize(100, nullptr);
-		for (int i = 0; i < 100; ++i) {
+		cached.resize(300, nullptr);
+		for (int i = 0; i < 300; ++i) {
 			cached[i] = new FibNode(-1, -1);
 			cached[i]->id = i;
 		}
