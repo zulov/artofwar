@@ -63,7 +63,7 @@ Urho3D::Vector2& ComplexBucketData::getCenter() {
 }
 
 void ComplexBucketData::setNeightbours(std::vector<std::pair<int, double>*>* tempNeightbours) {
-	neighbour.clear();
+	clear_vector(neighbour);
 	neighbour.insert(neighbour.end(), tempNeightbours->begin(), tempNeightbours->end());
 }
 
