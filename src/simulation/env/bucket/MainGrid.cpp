@@ -107,7 +107,7 @@ void MainGrid::addStatic(Static* object) {
 				buckets[index].setStatic(object);
 			}
 		}
-		drawMapToFile("result/images/abc_"+ String(staticCounter++) + String(".bmp"));
+
 	}
 }
 
@@ -177,18 +177,26 @@ std::vector<std::pair<int, double>*>* MainGrid::neighbors(const int current) {
 }
 
 double MainGrid::cost(const int current, const int next) {
-	double result = (buckets[current].getCenter() - buckets[next].getCenter()).Length();
-	return result;
+	return (buckets[current].getCenter() - buckets[next].getCenter()).Length();
 }
 
 void MainGrid::debug(IntVector2& startV, IntVector2& goalV) {
-	vector<int> path = reconstruct_path(startV, goalV, came_from);
+	Image* image = new Image(Game::get()->getContext());
+	image->SetSize(resolution, resolution, 4);
+	String prefix = String(staticCounter) + "_";
+	drawMap(image);
+	image->SaveBMP("result/images/" + prefix + "1_grid_map.bmp");
+	draw_grid_from(came_from, image);
+	image->SaveBMP("result/images/" + prefix + "2_grid_from.bmp");
+	draw_grid_cost(cost_so_far, image);
+	image->SaveBMP("result/images/" + prefix + "3_grid_cost.bmp");
 
-	draw_grid_from(came_from);
-	std::cout << std::endl << std::endl;
-	draw_grid_cost(cost_so_far);
-	std::cout << std::endl << std::endl;
-	draw_grid_path(&path);
+	vector<int> path = reconstruct_path(startV, goalV, came_from);
+	draw_grid_path(&path, image);
+
+	image->SaveBMP("result/images/" + prefix + "4_grid_path.bmp");
+	delete image;
+	staticCounter++;
 }
 
 void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
@@ -228,10 +236,10 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 		}
 	}
 
-	//debug(startV, goalV);
+	debug(startV, goalV);
 }
 
-void MainGrid::draw_grid_from(int* cameFrom) {
+void MainGrid::draw_grid_from(int* cameFrom, Image* image) {
 	for (int y = 0; y != resolution; ++y) {
 		for (int x = 0; x != resolution; ++x) {
 			int id = getIndex(x, y);
@@ -244,27 +252,22 @@ void MainGrid::draw_grid_from(int* cameFrom) {
 					std::wcout << "u";
 				} else if (y2 == y - 1) { std::wcout << "d"; } else { std::wcout << "*"; }
 
-			} else {
-				drawEmpty(id);
 			}
-
 		}
-		std::cout << std::endl;
 	}
 }
 
-void MainGrid::draw_grid_cost(double* costSoFar) {
+void MainGrid::draw_grid_cost(double* costSoFar, Image* image) {
+	uint32_t* data = (uint32_t*)image->GetData();
+
 	for (int y = 0; y != resolution; ++y) {
 		for (int x = 0; x != resolution; ++x) {
 			int id = getIndex(x, y);
-			if (costSoFar[id] != -1) {
-				std::wcout << "|" << costSoFar[id];
-			} else {
-				drawEmpty(id);
-			}
 
+			if (costSoFar[id] != -1) {
+				image->SetPixel(x, y, Color::RED);
+			}
 		}
-		std::cout << std::endl;
 	}
 }
 
@@ -274,40 +277,30 @@ inline double MainGrid::heuristic(int from, int to) {
 	return (abs(a.x_ - b.x_) + abs(a.y_ - b.y_)) * fieldSize;
 }
 
-void MainGrid::draw_grid_path(vector<int>* path) {
+void MainGrid::draw_grid_path(vector<int>* path, Image* image) {
 	for (int y = 0; y != resolution; ++y) {
-
 		for (int x = 0; x != resolution; ++x) {
 			int id = getIndex(x, y);
 
 			if (find(path->begin(), path->end(), id) != path->end()) {
-				std::wcout << '@';
-			} else {
-				drawEmpty(id);
+				image->SetPixel(x, y, Color::GREEN);
 			}
 		}
-		std::cout << std::endl;
+
 	}
 }
 
-void MainGrid::drawMapToFile(String path) {
-	Image* image = new Image(Game::get()->getContext());
-	image->SetSize(resolution, resolution, 4);
-	uint32_t* data = (uint32_t*)image->GetData();
-	uint32_t* data_end = data + resolution*resolution;
-	uint32_t* ptr = data;
-	int index = 0;
-	for (ptr; ptr < data_end; ptr++) {
-		if(buckets[index].getType()==UNIT) {
-			*ptr = 0xFFFFFFFF;
-		}else {
-			*ptr = 0xFF000000;
+void MainGrid::drawMap(Image* image) {
+	for (int y = 0; y != resolution; ++y) {
+		for (int x = 0; x != resolution; ++x) {
+			int index = getIndex(x, y);
+			if (buckets[index].getType() == UNIT) {
+				image->SetPixel(x, y, Color::WHITE);
+			} else {
+				image->SetPixel(x, y, Color::BLACK);
+			}
 		}
-		
-		++index;
 	}
-	image->SaveBMP(path);
-	delete image;
 }
 
 IntVector2 MainGrid::getCords(const int index) {
@@ -328,15 +321,6 @@ vector<int> MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, in
 	std::reverse(path.begin(), path.end());
 	return path;
 }
-
-void MainGrid::drawEmpty(int id) {
-	if (buckets[id].getType() == UNIT) {
-		std::wcout << '.';
-	} else {
-		std::wcout << '#';
-	}
-}
-
 
 bool MainGrid::inSide(int x, int z) {
 	if (x < 0 || x >= resolution || z < 0 || z >= resolution) {

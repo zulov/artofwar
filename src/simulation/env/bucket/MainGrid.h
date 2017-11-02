@@ -26,11 +26,10 @@ public:
 	double cost(const int current, const int next);
 	void debug(IntVector2& startV, IntVector2& goalV);
 	void findPath(IntVector2& startV, IntVector2& goalV);
-	void draw_grid_from(int* cameFrom);
-	void draw_grid_cost(double* costSoFar);
-	void drawEmpty(int id);
-	void draw_grid_path(vector<int>* path);
-	void drawMapToFile(String path);
+	void draw_grid_from(int* cameFrom, Image* image);
+	void draw_grid_cost(double* costSoFar, Image* image);
+	void draw_grid_path(vector<int>* path, Image* image);
+	void drawMap(Image* image);
 private:
 	IntVector2 calculateSize(int size);
 	std::vector<std::pair<int, double>*>* tempNeighbour;
