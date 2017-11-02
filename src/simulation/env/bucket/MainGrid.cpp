@@ -211,8 +211,8 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 		if (current == goal) {
 			break;
 		}
-
-		for (auto& neight : buckets[current].getNeightbours()) {
+		auto& neights = buckets[current].getNeightbours();
+		for (auto& neight : neights) {
 			int next = neight->first;
 			if (came_from[current] != next) {
 				const double new_cost = cost_so_far[current] + neight->second;
