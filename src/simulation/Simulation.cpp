@@ -208,7 +208,5 @@ void Simulation::calculateForces() {
 			(*validPos) *= 20;
 			unit->setAcceleration(validPos);
 		}
-
-
 	}
 }

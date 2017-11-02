@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include "BucketQueue.h"
+#include "Urho3D/Resource/Image.h"
 
 MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_resolution, _size, _debugEnabled) {
 	short posX = 0;
@@ -106,6 +107,7 @@ void MainGrid::addStatic(Static* object) {
 				buckets[index].setStatic(object);
 			}
 		}
+		drawMapToFile("result/images/abc_"+ String(staticCounter++) + String(".bmp"));
 	}
 }
 
@@ -197,7 +199,7 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	int goal = getIndex(goalV.x_, goalV.y_);
 	double min = cost(start, goal);
 	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma byćtylko prosta odległość
-	
+
 	//frontier.clear();
 	frontier.init(750 + min, min);//TODO ustawić lepsze minimum
 	frontier.put(start, 0);
@@ -286,6 +288,26 @@ void MainGrid::draw_grid_path(vector<int>* path) {
 		}
 		std::cout << std::endl;
 	}
+}
+
+void MainGrid::drawMapToFile(String path) {
+	Image* image = new Image(Game::get()->getContext());
+	image->SetSize(resolution, resolution, 4);
+	uint32_t* data = (uint32_t*)image->GetData();
+	uint32_t* data_end = data + resolution*resolution;
+	uint32_t* ptr = data;
+	int index = 0;
+	for (ptr; ptr < data_end; ptr++) {
+		if(buckets[index].getType()==UNIT) {
+			*ptr = 0xFFFFFFFF;
+		}else {
+			*ptr = 0xFF000000;
+		}
+		
+		++index;
+	}
+	image->SaveBMP(path);
+	delete image;
 }
 
 IntVector2 MainGrid::getCords(const int index) {
