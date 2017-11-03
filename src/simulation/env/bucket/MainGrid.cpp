@@ -288,16 +288,22 @@ inline double MainGrid::heuristic(int from, int to) {
 
 void MainGrid::draw_grid_path(vector<int>* path, Image* image) {
 	uint32_t* data = (uint32_t*)image->GetData();
-	for (short y = 0; y != resolution; ++y) {
-		for (short x = 0; x != resolution; ++x) {
-			int id = getIndex(x, y);
-			if (find(path->begin(), path->end(), id) != path->end()) {
-				int idR = getIndex(resolution - y - 1, x);
-				*(data + idR) -= 0x0000007F;
-			}
-		}
-
+	for (auto value : *path) {
+		IntVector2 a=getCords(value);
+		int idR = getIndex(resolution - a.y_ - 1, a.x_);
+		*(data + idR) -= 0x0000007F;
 	}
+
+//	for (short y = 0; y != resolution; ++y) {
+//		for (short x = 0; x != resolution; ++x) {
+//			int id = getIndex(x, y);
+//			if (find(path->begin(), path->end(), id) != path->end()) {
+//				int idR = getIndex(resolution - y - 1, x);
+//				*(data + idR) -= 0x0000007F;
+//			}
+//		}
+//
+//	}
 }
 
 void MainGrid::drawMap(Image* image) {
