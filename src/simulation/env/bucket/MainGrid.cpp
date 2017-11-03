@@ -93,13 +93,6 @@ void MainGrid::addStatic(Static* object) {
 		IntVector2 sizeX = calculateSize(size.x_);
 		IntVector2 sizeZ = calculateSize(size.y_);
 
-		for (int i = iX + sizeX.x_ - 1; i < iX + sizeX.y_ + 1; ++i) {
-			for (int j = iZ + sizeZ.x_ - 1; j < iZ + sizeZ.y_ + 1; ++j) {
-				const int index = getIndex(i, j);
-				tempNeighbour = neighbors(index);
-				buckets[index].setNeightbours(tempNeighbour);
-			}
-		}
 
 		for (int i = iX + sizeX.x_; i < iX + sizeX.y_; ++i) {
 			for (int j = iZ + sizeZ.x_; j < iZ + sizeZ.y_; ++j) {
@@ -108,6 +101,13 @@ void MainGrid::addStatic(Static* object) {
 			}
 		}
 
+		for (int i = iX + sizeX.x_ - 1; i < iX + sizeX.y_ + 1; ++i) {
+			for (int j = iZ + sizeZ.x_ - 1; j < iZ + sizeZ.y_ + 1; ++j) {
+				const int index = getIndex(i, j);
+				tempNeighbour = neighbors(index);
+				buckets[index].setNeightbours(tempNeighbour);
+			}
+		}
 	}
 }
 
@@ -293,17 +293,6 @@ void MainGrid::draw_grid_path(vector<int>* path, Image* image) {
 		int idR = getIndex(resolution - a.y_ - 1, a.x_);
 		*(data + idR) -= 0x0000007F;
 	}
-
-//	for (short y = 0; y != resolution; ++y) {
-//		for (short x = 0; x != resolution; ++x) {
-//			int id = getIndex(x, y);
-//			if (find(path->begin(), path->end(), id) != path->end()) {
-//				int idR = getIndex(resolution - y - 1, x);
-//				*(data + idR) -= 0x0000007F;
-//			}
-//		}
-//
-//	}
 }
 
 void MainGrid::drawMap(Image* image) {
