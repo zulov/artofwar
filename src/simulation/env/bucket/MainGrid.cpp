@@ -186,8 +186,8 @@ void MainGrid::debug(IntVector2& startV, IntVector2& goalV) {
 	String prefix = String(staticCounter) + "_";
 	drawMap(image);
 	image->SaveBMP("result/images/" + prefix + "1_grid_map.bmp");
-	draw_grid_from(came_from, image);
-	image->SaveBMP("result/images/" + prefix + "2_grid_from.bmp");
+	//draw_grid_from(came_from, image);
+	//image->SaveBMP("result/images/" + prefix + "2_grid_from.bmp");
 	draw_grid_cost(cost_so_far, image);
 	image->SaveBMP("result/images/" + prefix + "3_grid_cost.bmp");
 
@@ -240,6 +240,7 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 }
 
 void MainGrid::draw_grid_from(int* cameFrom, Image* image) {
+	uint32_t* data = (uint32_t*)image->GetData();
 	for (int y = 0; y != resolution; ++y) {
 		for (int x = 0; x != resolution; ++x) {
 			int id = getIndex(x, y);
@@ -248,10 +249,15 @@ void MainGrid::draw_grid_from(int* cameFrom, Image* image) {
 				int x2 = cords2.x_;
 				int y2 = cords2.y_;
 
-				if (x2 == x + 1) { std::wcout << ">"; } else if (x2 == x - 1) { std::wcout << "<"; } else if (y2 == y + 1) {
-					std::wcout << "u";
-				} else if (y2 == y - 1) { std::wcout << "d"; } else { std::wcout << "*"; }
-
+				if (x2 == x + 1) {
+					*(data + id) -= 0x00003F00;
+				} else if (x2 == x - 1) {
+					*(data + id) -= 0x00007F00;
+				} else if (y2 == y + 1) {
+					*(data + id) -= 0x0000BF00;
+				} else if (y2 == y - 1) {
+					*(data + id) -= 0x0000FF00;
+				} 
 			}
 		}
 	}
@@ -262,10 +268,9 @@ void MainGrid::draw_grid_cost(double* costSoFar, Image* image) {
 
 	for (int y = 0; y != resolution; ++y) {
 		for (int x = 0; x != resolution; ++x) {
-			int id = getIndex(x, y);
-
+			int id = getIndex(x, y);	
 			if (costSoFar[id] != -1) {
-				image->SetPixel(x, y, Color::RED);
+				*(data + id) -= 0x0000007F;
 			}
 		}
 	}
@@ -278,12 +283,13 @@ inline double MainGrid::heuristic(int from, int to) {
 }
 
 void MainGrid::draw_grid_path(vector<int>* path, Image* image) {
+	uint32_t* data = (uint32_t*)image->GetData();
 	for (int y = 0; y != resolution; ++y) {
 		for (int x = 0; x != resolution; ++x) {
 			int id = getIndex(x, y);
 
 			if (find(path->begin(), path->end(), id) != path->end()) {
-				image->SetPixel(x, y, Color::GREEN);
+				*(data + id) -= 0x0000007F;
 			}
 		}
 
@@ -291,13 +297,14 @@ void MainGrid::draw_grid_path(vector<int>* path, Image* image) {
 }
 
 void MainGrid::drawMap(Image* image) {
+	uint32_t* data = (uint32_t*)image->GetData();
 	for (int y = 0; y != resolution; ++y) {
 		for (int x = 0; x != resolution; ++x) {
 			int index = getIndex(x, y);
 			if (buckets[index].getType() == UNIT) {
-				image->SetPixel(x, y, Color::WHITE);
+				*(data + index) = 0xFFFFFFFF;
 			} else {
-				image->SetPixel(x, y, Color::BLACK);
+				*(data + index) = 0xFF000000;
 			}
 		}
 	}
