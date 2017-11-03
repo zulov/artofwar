@@ -230,14 +230,14 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
 					cost_so_far[next] = new_cost;
 					const double priority = new_cost + heuristic(next, goal);
-					frontier.put(next, priority);
+					frontier.put(next, priority);//TODO a co sie stanie jesliwstawi sie kilka razytego samego noda?
 					came_from[next] = current;
 				}
 			}
 		}
 	}
 
-	debug(startV, goalV);
+	//debug(startV, goalV);
 }
 
 void MainGrid::draw_grid_from(int* cameFrom, Image* image) {
