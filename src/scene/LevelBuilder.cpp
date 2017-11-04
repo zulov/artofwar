@@ -7,12 +7,15 @@ LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 	scene = new Scene(Game::get()->getContext());
 
 	scene->CreateComponent<Octree>();
-
 	Game::get()->setScene(scene);
+	mapReader = new MapReader();
+	mapReader->read("data/map/test.png");
+	mapReader->read("data/map/test2.png");
+	mapReader->read("data/map/test3.png");
 }
 
 LevelBuilder::~LevelBuilder() {
-
+	delete mapReader;
 }
 
 void LevelBuilder::createScene() {

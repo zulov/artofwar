@@ -3,7 +3,6 @@
 #include <queue>
 #include <algorithm>
 #include <iomanip>
-#include <iostream>
 #include "BucketQueue.h"
 #include "Urho3D/Resource/Image.h"
 

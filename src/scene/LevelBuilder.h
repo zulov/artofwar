@@ -11,6 +11,7 @@
 #include "objects/Entity.h"
 #include "Game.h"
 #include "SceneObjectManager.h"
+#include "MapReader.h"
 
 
 using namespace Urho3D;
@@ -32,4 +33,6 @@ private:
 	Entity* createGround();
 	//BuildList* buildList;
 	SceneObjectManager* objectManager;
+	MapReader * mapReader;
+
 };
