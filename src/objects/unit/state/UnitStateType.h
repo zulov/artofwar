@@ -8,7 +8,7 @@ enum class UnitStateType :short
 	PATROL,
 	DEAD,
 	DEFEND,
-	MOVE,
 	FOLLOW,//porusza sie
-	COLLECT
+	COLLECT,
+	MOVE//TODO nie ma takiego orderu musi byæ rêcznie dodany?
 };

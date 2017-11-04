@@ -30,6 +30,7 @@ StateManager::StateManager() {
 		for (auto order : *orders) {
 			ordersToUnit[i].insert(UnitStateType(order->id));
 		}
+		ordersToUnit[i].insert(UnitStateType::MOVE);//TODO nie³¹dny hardcode bo stanie nie sa 1:1 z orderami
 	}
 }
 

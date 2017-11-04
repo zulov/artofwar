@@ -55,4 +55,5 @@ protected:
 private:
 
 	int bucketIndex[BUCKET_SET_NUMBER];
+	int *bucketIndexShift;
 };

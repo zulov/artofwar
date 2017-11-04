@@ -82,8 +82,8 @@ std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid* bucketGrid, dou
 
 void Enviroment::update(std::vector<Unit*>* units) {
 	for (auto unit : (*units)) {
-		mainGrid->updateGrid(unit, 0);
-		teamUnitGrid[unit->getTeam()]->updateGrid(unit, 1);
+		mainGrid->updateGrid(unit, -1);
+		teamUnitGrid[unit->getTeam()]->updateGrid(unit, unit->getTeam());
 	}
 }
 

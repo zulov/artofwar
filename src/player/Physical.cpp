@@ -12,7 +12,7 @@ Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
 	for (int i = 0; i < BUCKET_SET_NUMBER; ++i) {
 		bucketIndex[i] = INT_MIN;
 	}
-
+	bucketIndexShift = bucketIndex + 1;
 	menuString = new String("Physical");
 }
 
@@ -70,18 +70,18 @@ double Physical::getHealthBarSize() {
 }
 
 int Physical::getBucketIndex(char param) {
-	return bucketIndex[param];
+	return bucketIndexShift[param];
 }
 
 bool Physical::bucketHasChanged(int _bucketIndex, char param) {
-	if (bucketIndex[param] == _bucketIndex) {
+	if (bucketIndexShift[param] == _bucketIndex) {
 		return false;
 	}
 	return true;
 }
 
 void Physical::setBucket(int _bucketIndex, char param) {
-	bucketIndex[param] = _bucketIndex;
+	bucketIndexShift[param] = _bucketIndex;
 }
 
 void Physical::setTeam(char _team) {

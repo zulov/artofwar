@@ -47,7 +47,6 @@ public:
 	void toAttack(Physical* enemy);
 	void toAttack();
 
-
 	void toCollect(vector<Physical*>* enemies);
 	void toCollect(ResourceEntity* _resource);
 	void toCollect();

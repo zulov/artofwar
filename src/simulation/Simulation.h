@@ -45,7 +45,7 @@ private:
 	void countFrame();
 	void applyForce();
 	void updateBuildingQueue();
-	void selftAI();
+	void selfAI();
 
 	void tryToAttack(vector<Unit*>::value_type unit);
 	void tryToCollect(Unit* unit);
