@@ -9,9 +9,15 @@ LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 	scene->CreateComponent<Octree>();
 	Game::get()->setScene(scene);
 	mapReader = new MapReader();
-	mapReader->read("data/map/test.png");
-	mapReader->read("data/map/test2.png");
-	mapReader->read("data/map/test3.png");
+	Model* model = mapReader->read("data/map/test.png");
+
+	Node* node = Game::get()->getScene()->CreateChild("FromScratchObject");
+	node->SetPosition(Vector3(0.0f, 20.0f, 0.0f));
+	StaticModel* object = node->CreateComponent<StaticModel>();
+	object->SetModel(model);
+	object->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
+	//mapReader->read("data/map/test2.png");
+	//mapReader->read("data/map/test3.png");
 }
 
 LevelBuilder::~LevelBuilder() {
