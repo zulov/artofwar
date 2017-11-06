@@ -30,18 +30,18 @@ float MapReader::getValue(Image* image, int i, int j) {
 		j = height - 1;
 	}
 	unsigned result= image->GetPixelInt(i, j) & 0x000000FF;
-	return result / 20.f;
+	return result / 50.f;
 }
 
 void MapReader::append(Image* image, float* vertexData, int& index, int i, int j) {
 	vertexData[index++] = i;
-	vertexData[index++] = 0;// getValue(image, i, j);
+	vertexData[index++] = getValue(image, i, j);
 	vertexData[index++] = j;
 
 	vertexData[index++] = 0.0f;
 	vertexData[index++] = 1.0f;
 	vertexData[index++] = 0.0f;
-	//cout << vertexData[index - 6] <<  " " << vertexData[index - 4] << endl;
+	cout << vertexData[index - 6] <<  " " << vertexData[index - 4] << endl;
 
 }
 
@@ -53,7 +53,7 @@ Model* MapReader::read(Urho3D::String path) {
 	int width = image->GetWidth();
 
 	const unsigned numVertices = height * width * 6;//TODO dwa poligony razy 6 danych
-	float* vertexData = new float[numVertices*6];
+	float* vertexData = new float[numVertices * 6];
 	int index = 0;
 	for (int i = 0; i < width; ++i) {
 		for (int j = 0; j < height; ++j) {
@@ -67,7 +67,6 @@ Model* MapReader::read(Urho3D::String path) {
 
 		}
 	}
-	cout << index << endl;
 
 	//	float vertexData[] = {
 	//		// Position             Normal
@@ -119,7 +118,7 @@ Model* MapReader::read(Urho3D::String path) {
 
 		Vector3 edge1 = v1 - v2;
 		Vector3 edge2 = v1 - v3;
-		//n1 = n2 = n3 = edge1.CrossProduct(edge2).Normalized();
+		n1 = n2 = n3 = edge1.CrossProduct(edge2).Normalized();
 		//cout << v1.ToString().CString() << " " << v2.ToString().CString() << " " << v3.ToString().CString() << "||"<<
 		//	n1.ToString().CString() << endl;
 	}
@@ -140,7 +139,7 @@ Model* MapReader::read(Urho3D::String path) {
 	vertexBuffer->SetData(vertexData);
 
 	indexBuffer->SetShadowed(true);
-	indexBuffer->SetSize(numVertices, false);
+	indexBuffer->SetSize(numVertices, true);
 	indexBuffer->SetData(indexData);
 
 	geom->SetVertexBuffer(0, vertexBuffer);
@@ -163,6 +162,7 @@ Model* MapReader::read(Urho3D::String path) {
 	//	morphRangeCounts.Push(0);
 	//	fromScratchModel->SetVertexBuffers(vertexBuffers, morphRangeStarts, morphRangeCounts);
 	//	fromScratchModel->SetIndexBuffers(indexBuffers);
-
+	delete[] vertexData;
+	delete[] indexData;
 	return fromScratchModel;
 }

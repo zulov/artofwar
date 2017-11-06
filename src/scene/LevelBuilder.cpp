@@ -18,6 +18,7 @@ LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 
 	object->SetModel(model);
 	object->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
+	object->GetMaterial(0)->SetCullMode(CULL_NONE);
 	//mapReader->read("data/map/test2.png");
 	//mapReader->read("data/map/test3.png");
 }
