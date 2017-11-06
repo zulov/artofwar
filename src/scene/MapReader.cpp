@@ -39,7 +39,7 @@ void MapReader::append(Image* image, float* vertexData, int& index, int i, int j
 	vertexData[index++] = j;
 
 	vertexData[index++] = 0.0f;
-	vertexData[index++] = 1.0f;
+	vertexData[index++] = -1.0f;
 	vertexData[index++] = 0.0f;
 	cout << vertexData[index - 6] <<  " " << vertexData[index - 4] << endl;
 
@@ -58,54 +58,20 @@ Model* MapReader::read(Urho3D::String path) {
 	for (int i = 0; i < width; ++i) {
 		for (int j = 0; j < height; ++j) {
 			append(image, vertexData, index, i, j);
-			append(image, vertexData, index, i-1, j);
 			append(image, vertexData, index, i, j-1);
+			append(image, vertexData, index, i-1, j);
 
 			append(image, vertexData, index, i, j);
-			append(image, vertexData, index, i, j-1);
 			append(image, vertexData, index, i+1, j-1);
+			append(image, vertexData, index, i, j-1);
 
 		}
 	}
 
-	//	float vertexData[] = {
-	//		// Position             Normal
-	//		0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	//		0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f,
-	//		2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	//
-	//		0.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f,
-	//		2.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f,
-	//		2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	//
-	//		2.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	//		2.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f,
-	//		4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	//
-	//		2.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f,
-	//		4.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f,
-	//		4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	//
-	//		4.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	//		4.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f,
-	//		6.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	//
-	//		4.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f,
-	//		6.0f, 0.0f, 2.0f, 0.0f, 0.0f, 0.0f,
-	//		6.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-	//	};
 	int* indexData = new int[numVertices];
 	for (int i = 0; i < numVertices; ++i) {
 		indexData[i] = i;
 	}
-//	const unsigned short indexData[] = {
-//		0, 1, 2,
-//		3, 4, 5,
-//		6, 7, 8,
-//		9, 10, 11,
-//		12, 13, 14,
-//		15, 16, 17
-//	};
 
 	// Calculate face normals now
 	for (unsigned i = 0; i < numVertices; i += 3) {
