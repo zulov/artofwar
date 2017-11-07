@@ -9,6 +9,7 @@
 ComplexBucketData::ComplexBucketData() {
 	box = nullptr;
 	removeStatic();
+	neighbour.reserve(8);
 }
 
 
@@ -62,11 +63,11 @@ Urho3D::Vector2& ComplexBucketData::getCenter() {
 	return center;
 }
 
-void ComplexBucketData::setNeightbours(std::vector<std::pair<int, double>*>* tempNeightbours) {
+void ComplexBucketData::setNeightbours(std::vector<std::pair<int, float>*>* tempNeightbours) {
 	clear_vector(neighbour);
 	neighbour.insert(neighbour.end(), tempNeightbours->begin(), tempNeightbours->end());
 }
 
-std::vector<std::pair<int, double>*>& ComplexBucketData::getNeightbours() {
+std::vector<std::pair<int, float>*>& ComplexBucketData::getNeightbours() {
 	return neighbour;
 }

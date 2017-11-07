@@ -18,18 +18,17 @@ MapReader::~MapReader() {
 float MapReader::getValue(Image* image, int i, int j) {
 	int height = image->GetHeight();
 	int width = image->GetWidth();
-	if(i<0) {
+	if (i < 0) {
 		i = 0;
-	}else if(i>=width) {
+	} else if (i >= width) {
 		i = width - 1;
 	}
-	if (j<0) {
+	if (j < 0) {
 		j = 0;
-	}
-	else if (j >= height) {
+	} else if (j >= height) {
 		j = height - 1;
 	}
-	unsigned result= image->GetPixelInt(i, j) & 0x000000FF;
+	unsigned result = image->GetPixelInt(i, j) & 0x000000FF;
 	return result / 50.f;
 }
 
@@ -39,9 +38,9 @@ void MapReader::append(Image* image, float* vertexData, int& index, int i, int j
 	vertexData[index++] = j;
 
 	vertexData[index++] = 0.0f;
-	vertexData[index++] = -1.0f;
 	vertexData[index++] = 0.0f;
-	cout << vertexData[index - 6] <<  " " << vertexData[index - 4] << endl;
+	vertexData[index++] = 0.0f;
+	cout << vertexData[index - 6] << " " << vertexData[index - 4] << endl;
 
 }
 
@@ -58,12 +57,12 @@ Model* MapReader::read(Urho3D::String path) {
 	for (int i = 0; i < width; ++i) {
 		for (int j = 0; j < height; ++j) {
 			append(image, vertexData, index, i, j);
-			append(image, vertexData, index, i, j-1);
-			append(image, vertexData, index, i-1, j);
+			append(image, vertexData, index, i, j - 1);
+			append(image, vertexData, index, i - 1, j);
 
 			append(image, vertexData, index, i, j);
-			append(image, vertexData, index, i+1, j-1);
-			append(image, vertexData, index, i, j-1);
+			append(image, vertexData, index, i + 1, j - 1);
+			append(image, vertexData, index, i, j - 1);
 
 		}
 	}

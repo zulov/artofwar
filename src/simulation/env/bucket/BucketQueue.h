@@ -22,11 +22,5 @@ private:
 	int size;
 	int currentIndex;
 
-//	typedef std::pair<double, int> PQElement;
-//	std::priority_queue<
-//		PQElement,
-//		std::vector<PQElement>,
-//		std::greater<PQElement>>
 	FibHeap buckets[QUEUE_BUCKETS_SIZE];
-	//int histogram[QUEUE_BUCKETS_SIZE] = {0};
 };

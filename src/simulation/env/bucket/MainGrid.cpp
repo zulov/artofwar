@@ -11,7 +11,7 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 	short posZ = 0;
 
 	int miniRes = resolution / 16;
-	tempNeighbour = new vector<std::pair<int, double>*>();
+	tempNeighbour = new vector<std::pair<int, float>*>();
 	tempNeighbour->reserve(8);
 
 	for (int i = 0; i < resolution * resolution; ++i) {
@@ -38,7 +38,7 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 	}
 
 	came_from = new int[resolution * resolution];
-	cost_so_far = new double[resolution * resolution];
+	cost_so_far = new float[resolution * resolution];
 }
 
 MainGrid::~MainGrid() {
@@ -156,7 +156,7 @@ IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector3* pos) {
 	return IntVector2(getIndex(pos->x_), getIndex(pos->z_));
 }
 
-std::vector<std::pair<int, double>*>* MainGrid::neighbors(const int current) {
+std::vector<std::pair<int, float>*>* MainGrid::neighbors(const int current) {
 	tempNeighbour->clear();
 	IntVector2 cords = getCords(current);
 	for (int i = -1; i <= 1; ++i) {
@@ -166,7 +166,7 @@ std::vector<std::pair<int, double>*>* MainGrid::neighbors(const int current) {
 					const int index = getIndex(cords.x_ + i, cords.y_ + j);
 					if (buckets[index].getType() == UNIT) {
 						double costD = cost(current, index);
-						tempNeighbour->push_back(new pair<int, double>(index, costD));
+						tempNeighbour->push_back(new pair<int, float>(index, costD));
 					}
 				}
 			}
@@ -225,10 +225,10 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 		for (auto& neight : neights) {
 			int next = neight->first;
 			if (came_from[current] != next) {
-				const double new_cost = cost_so_far[current] + neight->second;
+				const float new_cost = cost_so_far[current] + neight->second;
 				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
 					cost_so_far[next] = new_cost;
-					const double priority = new_cost + heuristic(next, goal);
+					const float priority = new_cost + heuristic(next, goal);
 					frontier.put(next, priority);//TODO a co sie stanie jesliwstawi sie kilka razytego samego noda?
 					came_from[next] = current;
 				}
@@ -263,7 +263,7 @@ void MainGrid::draw_grid_from(int* cameFrom, Image* image) {
 	}
 }
 
-void MainGrid::draw_grid_cost(double* costSoFar, Image* image) {
+void MainGrid::draw_grid_cost(float* costSoFar, Image* image) {
 	uint32_t* data = (uint32_t*)image->GetData();
 
 	for (short y = 0; y != resolution; ++y) {
