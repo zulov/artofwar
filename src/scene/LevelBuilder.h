@@ -1,15 +1,10 @@
 #pragma once
 #include <Urho3D/Container/Ptr.h>
 #include <Urho3D/Scene/Scene.h>
-#include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/Graphics/Light.h>
-#include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Graphics/Octree.h>
-#include <Urho3D/Graphics/Model.h>
-#include <Urho3D/Graphics/Material.h>
+
 #include "objects/Entity.h"
-#include "Game.h"
 #include "SceneObjectManager.h"
 #include "MapReader.h"
 
@@ -21,16 +16,14 @@ class LevelBuilder
 public:
 	LevelBuilder(SceneObjectManager* _objectManager);
 	~LevelBuilder();
-	void createScene();
-	void execute();
-	
+	void createScene(int id);
 
 private:
 	SharedPtr<Urho3D::Scene> scene;
 
 	Entity* createZone();
-	Entity* createLight();
-	Entity* createGround();
+	Entity* createLight(Vector3& direction, Color &color, LightType lightType);
+	Entity* createGround(String heightMap, String texture, float horScale, float verScale);
 	//BuildList* buildList;
 	SceneObjectManager* objectManager;
 	MapReader * mapReader;

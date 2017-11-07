@@ -55,6 +55,14 @@ CREATE TABLE `nation` (
 	`name`	TEXT,
 	PRIMARY KEY(`id`)
 );
+CREATE TABLE `map` (
+	`id`	INTEGER,
+	`height_map`	TEXT,
+	`texture`	TEXT,
+	`scale_hor`	REAL,
+	`scale_ver`	REAL,
+	PRIMARY KEY(`id`)
+);
 CREATE TABLE "hud_size_vars" (
 	`id`	INTEGER,
 	`hud_size`	INTEGER,

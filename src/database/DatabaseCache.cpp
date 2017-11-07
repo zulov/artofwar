@@ -129,6 +129,18 @@ int static loadOrdersToUnit(void* data, int argc, char** argv, char** azColName)
 	return 0;
 }
 
+int static loadMap(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int id = atoi(argv[0]);
+
+	char* a = argv[3];
+	char* b = argv[4];
+
+	xyz->maps[id] = new db_map(id, argv[1], argv[2], atof(argv[3]), atof(argv[4]));
+	xyz->maps_size++;
+	return 0;
+}
+
 void DatabaseCache::ifError(int rc, char* error) {
 	if (rc != SQLITE_OK) {
 		fprintf(stderr, "SQL error: %s\n", error);
@@ -136,9 +148,9 @@ void DatabaseCache::ifError(int rc, char* error) {
 	}
 }
 
-void DatabaseCache::execute(char* sqlUnits, int (* callback)(void*, int, char**, char**)) {
+void DatabaseCache::execute(char* sql, int (*load)(void*, int, char**, char**)) {
 	char* error;
-	int rc = sqlite3_exec(database, sqlUnits, callback, dbContainer, &error);
+	int rc = sqlite3_exec(database, sql, load, dbContainer, &error);
 	ifError(rc, error);
 }
 
@@ -165,6 +177,7 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from cost_unit", loadCostUnit);
 	execute("SELECT * from orders", loadOrders);
 	execute("SELECT * from orders_to_unit", loadOrdersToUnit);
+	execute("SELECT * from map", loadMap);
 
 
 	sqlite3_close(database);
@@ -213,6 +226,10 @@ db_hud_vars* DatabaseCache::getHudVar(int i) {
 
 db_order* DatabaseCache::getOrder(int i) {
 	return dbContainer->orders[i];
+}
+
+db_map* DatabaseCache::getMap(int i) {
+	return dbContainer->maps[i];
 }
 
 int DatabaseCache::getResourceSize() {

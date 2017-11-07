@@ -50,7 +50,7 @@ void Main::Start() {
 	CreationCommandList* creationCommandList = new CreationCommandList(simulationObjectManager);
 	Enviroment* enviromentStrategy = new Enviroment();
 	mediator = new Mediator(enviromentStrategy, controls);
-	levelBuilder->createScene();
+	levelBuilder->createScene(0);
 	game->setCameraManager(cameraManager)->setBuildList(buildList)->
 	      setCreationCommandList(creationCommandList)->setMediator(mediator)->setEnviroment(enviromentStrategy);
 
@@ -123,7 +123,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	hud->update(benchmark, cameraManager);
 
 	selectedInfo->hasBeedUpdatedDrawn();
-	levelBuilder->execute();
+
 	simulation->dispose();
 }
 

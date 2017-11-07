@@ -8,6 +8,7 @@
 #define RESOURCE_NUMBER_DB 10
 #define HUD_VARS_NUMBER_DB 50
 #define ORDERS_NUMBER_DB 20
+#define MAP_NUMBER_DB 10
 
 #define SPLIT_SIGN '\n'
 
@@ -49,7 +50,7 @@ struct db_unit
 		scale(scale),
 		rotatable(rotatable),
 		nation(nation),
-		icon(icon), 
+		icon(icon),
 		actionState(actionState) {
 	}
 };
@@ -166,7 +167,8 @@ struct db_resource
 	Urho3D::IntVector2 size;
 	int maxUsers;
 
-	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, double scale, int sizeX, int sizeZ,
+	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, double scale, int sizeX,
+	            int sizeZ,
 	            int maxUsers)
 		: id(id),
 		name(name),
@@ -217,10 +219,27 @@ struct db_order
 	int id;
 	Urho3D::String icon;
 
-
 	db_order(int id, char* icon)
 		: id(id),
 		icon(icon) {
+	}
+};
+
+struct db_map
+{
+	int id;
+	Urho3D::String height_map;
+	Urho3D::String texture;
+	float scale_hor;
+	float scale_ver;
+
+
+	db_map(int id, char* heightMap, char* texture, float scaleHor, float scaleVer)
+		: id(id),
+		height_map(heightMap),
+		texture(texture),
+		scale_hor(scaleHor),
+		scale_ver(scaleVer) {
 	}
 };
 
@@ -240,6 +259,7 @@ struct db_container
 	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB];
 	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB];
 	db_order* orders[ORDERS_NUMBER_DB];
+	db_map* maps[MAP_NUMBER_DB];
 
 	int units_size = 0;
 	int hud_size_size = 0;
@@ -251,6 +271,7 @@ struct db_container
 	int nation_size = 0;
 	int hud_vars_size = 0;
 	int orders_size = 0;
+	int maps_size = 0;
 
 
 	explicit db_container() {

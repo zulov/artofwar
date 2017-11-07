@@ -67,6 +67,8 @@ INSERT INTO `orders` (id,icon) VALUES (0,'go.png'),
  (8,'collect.png');
 INSERT INTO `nation` (id,name) VALUES (0,'basic'),
  (1,'enemy');
+INSERT INTO `map` (id,height_map,texture,scale_hor,scale_ver) VALUES (0,'map/HeightMap.png','Materials/StoneTiled.xml',2.0,0.1),
+ (1,'map/test3.png','Materials/StoneTiled.xml',2.0,0.1);
 INSERT INTO `hud_size_vars` (id,hud_size,name,value) VALUES (0,0,'iconX',42.0),
  (1,0,'iconY',42.0),
  (2,0,'spaceX',4.0),

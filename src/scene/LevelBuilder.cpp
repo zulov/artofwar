@@ -1,6 +1,11 @@
 #include "LevelBuilder.h"
 #include "objects/Physical.h"
-
+#include <Urho3D/Graphics/Terrain.h>
+#include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Graphics/Octree.h>
+#include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/Material.h>
+#include "Game.h"
 
 LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 	objectManager = _objectManager;
@@ -9,35 +14,22 @@ LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 	scene->CreateComponent<Octree>();
 	Game::get()->setScene(scene);
 	mapReader = new MapReader();
-	Model* model = mapReader->read("data/map/mini.png");
 
-	Node* node = Game::get()->getScene()->CreateChild("FromScratchObject");
-	node->SetPosition(Vector3(-0.0f, 20.0f, 0.0f));
-	
-	StaticModel* object = node->CreateComponent<StaticModel>();
-
-	object->SetModel(model);
-	object->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
-	//object->GetMaterial(0)->SetCullMode(CULL_NONE);
-	//mapReader->read("data/map/test2.png");
-	//mapReader->read("data/map/test3.png");
 }
 
 LevelBuilder::~LevelBuilder() {
 	delete mapReader;
 }
 
-void LevelBuilder::createScene() {
+void LevelBuilder::createScene(int id) {
+	db_map* map = Game::get()->getDatabaseCache()->getMap(id);
 	Entity* zone = createZone();
-	Entity* light = createLight();
-	Entity* ground = createGround();
+	Entity* light = createLight(Vector3(0.6f, -1.0f, 0.8f), Color(0.7f, 0.6f, 0.6f), LIGHT_DIRECTIONAL);
+	Entity* ground = createGround(map->height_map, "Materials/StoneTiled.xml", 2, 0.1);
 
 	objectManager->add(zone);
 	objectManager->add(light);
 	objectManager->add(ground);
-}
-
-void LevelBuilder::execute() {
 }
 
 Entity* LevelBuilder::createZone() {
@@ -53,26 +45,28 @@ Entity* LevelBuilder::createZone() {
 	return entity;
 }
 
-Entity* LevelBuilder::createLight() {
+Entity* LevelBuilder::createLight(Vector3& direction, Color& color, LightType lightType) {
 	Entity* entity = new Entity(ENTITY);
 	Node* lightNode = entity->getNode();
-	lightNode->SetDirection(Vector3(0.6f, -1.0f, 0.8f));
+	lightNode->SetDirection(direction);
 	Light* light = lightNode->CreateComponent<Light>();
-	light->SetLightType(LIGHT_DIRECTIONAL);
-	light->SetColor(Color(0.7f, 0.6f, 0.6f));
+	light->SetLightType(lightType);
+	light->SetColor(color);
 
 	return entity;
 }
 
-Entity* LevelBuilder::createGround() {
+Entity* LevelBuilder::createGround(String heightMap, String texture, float horScale, float verScale) {
 	Entity* entity = new Physical(new Vector3, PHISICAL);
 
-	Node* planeNode = entity->getNode();
-	planeNode->SetScale(Vector3(1024, 1.0f, 1024));
+	Node* node = entity->getNode();
 
-	StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
-	planeObject->SetModel(Game::get()->getCache()->GetResource<Model>("Models/Plane.mdl"));
-	planeObject->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/test.xml"));
+	Terrain* terrain = node->CreateComponent<Terrain>();
+	terrain->SetPatchSize(64);
+	terrain->SetSpacing(Vector3(horScale, verScale, horScale));
+	terrain->SetSmoothing(false);
+	terrain->SetHeightMap(Game::get()->getCache()->GetResource<Image>(heightMap));
+	terrain->SetMaterial(Game::get()->getCache()->GetResource<Material>(texture));
 
 	return entity;
 }

@@ -8,7 +8,7 @@ class DatabaseCache
 {
 public:
 	void ifError(int rc, char* error);
-	void execute(char* sqlUnits, int (* loadUnits)(void*, int, char**, char**));
+	void execute(char* sql, int (* load)(void*, int, char**, char**));
 	DatabaseCache();
 	~DatabaseCache();
 	db_unit* getUnit(int i);
@@ -21,6 +21,7 @@ public:
 	db_resource* getResource(int i);
 	db_hud_vars* getHudVar(int i);
 	db_order* getOrder(int i);
+	db_map* getMap(int i);
 
 	std::vector<db_unit*>* getUnitsForBuilding(int id);
 	std::vector<db_cost*>* getCostForUnit(int id);
@@ -34,6 +35,7 @@ public:
 	int getBuildingSize();
 	int getUnitSize();
 	int getOrdersSize();
+	int getMapSize();
 
 
 private:
