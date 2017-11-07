@@ -6,6 +6,8 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Material.h>
 #include "Game.h"
+#include <Urho3D/Physics/RigidBody.h>
+#include <Urho3D/Physics/CollisionShape.h>
 
 LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 	objectManager = _objectManager;
@@ -13,23 +15,24 @@ LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 
 	scene->CreateComponent<Octree>();
 	Game::get()->setScene(scene);
-	mapReader = new MapReader();
-
 }
 
 LevelBuilder::~LevelBuilder() {
-	delete mapReader;
 }
 
 void LevelBuilder::createScene(int id) {
 	db_map* map = Game::get()->getDatabaseCache()->getMap(id);
 	Entity* zone = createZone();
 	Entity* light = createLight(Vector3(0.6f, -1.0f, 0.8f), Color(0.7f, 0.6f, 0.6f), LIGHT_DIRECTIONAL);
-	Entity* ground = createGround(map->height_map, "Materials/StoneTiled.xml", 2, 0.1);
+	Entity* ground = createGround(map->height_map, map->texture, map->scale_hor, map->scale_ver);
 
 	objectManager->add(zone);
 	objectManager->add(light);
 	objectManager->add(ground);
+}
+
+Terrain* LevelBuilder::getTerrian() {
+	return terrain;
 }
 
 Entity* LevelBuilder::createZone() {
@@ -61,12 +64,22 @@ Entity* LevelBuilder::createGround(String heightMap, String texture, float horSc
 
 	Node* node = entity->getNode();
 
-	Terrain* terrain = node->CreateComponent<Terrain>();
+	terrain = node->CreateComponent<Terrain>();
 	terrain->SetPatchSize(64);
 	terrain->SetSpacing(Vector3(horScale, verScale, horScale));
 	terrain->SetSmoothing(false);
 	terrain->SetHeightMap(Game::get()->getCache()->GetResource<Image>(heightMap));
 	terrain->SetMaterial(Game::get()->getCache()->GetResource<Material>(texture));
+	terrain->SetOccluder(true);
+	
+	unsigned  index = 0;
+	Node* child =node->GetChild(index);
+	//node->GetChild
+	//terrain->GetComponents()
+//	RigidBody* body = node->CreateComponent<RigidBody>();
+//	body->SetCollisionLayer(2); // Use layer bitmask 2 for static geometry
+//	CollisionShape* shape = node->CreateComponent<CollisionShape>();
+//	shape->SetTerrain();
 
 	return entity;
 }

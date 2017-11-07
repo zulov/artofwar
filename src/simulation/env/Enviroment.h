@@ -10,12 +10,13 @@
 #include "objects/unit/Unit.h"
 #include "objects/Physical.h"
 #include "bucket/MainGrid.h"
+#include <Urho3D/Graphics/Terrain.h>
 
 
 class Enviroment
 {
 public:
-	Enviroment();
+	Enviroment(Terrain * _terrian);
 	~Enviroment();
 	float getSqDistance(Vector3* unitPosition, Vector3* otherPosition);
 	std::vector<Unit *>* getNeighbours(Unit* unit, double radius);
@@ -44,4 +45,7 @@ private:
 	Grid* teamUnitGrid[MAX_PLAYERS];
 	Grid* obstacleGrid;
 	Grid* resourceGrid;
+
+	Terrain * terrian;
+
 };

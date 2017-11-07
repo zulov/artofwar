@@ -2,7 +2,7 @@
 #include <iostream>
 #include <chrono>
 
-Enviroment::Enviroment() {
+Enviroment::Enviroment(Terrain* _terrian) {
 	mainGrid = new MainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, true);
 
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
@@ -11,6 +11,7 @@ Enviroment::Enviroment() {
 
 	obstacleGrid = new Grid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD);
 	resourceGrid = new Grid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE);
+	terrian = _terrian;
 }
 
 
@@ -116,7 +117,7 @@ std::vector<Physical*>* Enviroment::getBuildings(std::pair<Vector3*, Vector3*>* 
 }
 
 double Enviroment::getGroundHeightAt(double x, double z) {
-	return 0.0;
+	return terrian->GetHeight(Vector3(x, 0, z));
 }
 
 bool Enviroment::validateStatic(const IntVector2& size, Vector3* pos) {

@@ -35,6 +35,7 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 		RayQueryResult& result = results[i];
 
 		Node* node = result.node_;
+		
 		LinkComponent* lc = node->GetComponent<LinkComponent>();
 		if (lc == nullptr) { ++i; } else {
 			hitPos = result.position_;

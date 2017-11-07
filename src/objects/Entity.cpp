@@ -8,8 +8,6 @@ Entity::Entity(ObjectType _type) {
 	node = Game::get()->getScene()->CreateChild();
 	alive = true;
 	type = _type;
-	LinkComponent* lc = node->CreateComponent<LinkComponent>();
-	lc->bound(node, this);
 }
 
 Entity::~Entity() {

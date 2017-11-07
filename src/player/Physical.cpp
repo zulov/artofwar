@@ -4,6 +4,10 @@
 #include "commands/ActionCommand.h"
 
 Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
+	
+	LinkComponent* lc = node->CreateComponent<LinkComponent>();
+	lc->bound(node, this);
+
 	position = _position;
 	rotation = new Vector3();
 

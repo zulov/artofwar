@@ -3,10 +3,9 @@
 #include <Urho3D/Scene/Scene.h>
 #include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/Graphics/Light.h>
-
 #include "objects/Entity.h"
 #include "SceneObjectManager.h"
-#include "MapReader.h"
+#include <Urho3D/Graphics/Terrain.h>
 
 
 using namespace Urho3D;
@@ -17,15 +16,14 @@ public:
 	LevelBuilder(SceneObjectManager* _objectManager);
 	~LevelBuilder();
 	void createScene(int id);
-
+	Terrain* getTerrian();
 private:
 	SharedPtr<Urho3D::Scene> scene;
 
 	Entity* createZone();
 	Entity* createLight(Vector3& direction, Color &color, LightType lightType);
 	Entity* createGround(String heightMap, String texture, float horScale, float verScale);
-	//BuildList* buildList;
-	SceneObjectManager* objectManager;
-	MapReader * mapReader;
 
+	SceneObjectManager* objectManager;
+	Terrain* terrain;
 };

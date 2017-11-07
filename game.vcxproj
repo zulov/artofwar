@@ -210,7 +210,6 @@
     <ClCompile Include="src\objects\unit\state\AttackState.cpp" />
     <ClCompile Include="src\objects\unit\state\MoveState.cpp" />
     <ClCompile Include="src\objects\unit\state\PatrolState.cpp" />
-    <ClCompile Include="src\scene\MapReader.cpp" />
     <ClCompile Include="src\simulation\env\bucket\Bucket.cpp" />
     <ClCompile Include="src\simulation\env\bucket\BucketQueue.cpp" />
     <ClCompile Include="src\simulation\env\bucket\Grid.cpp" />
@@ -304,7 +303,6 @@
     <ClInclude Include="src\objects\unit\state\GoState.h" />
     <ClInclude Include="src\objects\unit\state\MoveState.h" />
     <ClInclude Include="src\objects\unit\state\PatrolState.h" />
-    <ClInclude Include="src\scene\MapReader.h" />
     <ClInclude Include="src\simulation\env\bucket\Bucket.h" />
     <ClInclude Include="src\simulation\env\bucket\BucketQueue.h" />
     <ClInclude Include="src\simulation\env\bucket\fiboheap.h" />
