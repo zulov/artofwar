@@ -19,7 +19,7 @@ TopCameraBehave::TopCameraBehave() {
 TopCameraBehave::~TopCameraBehave() {
 }
 
-void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
+void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
 	double diff = sqrt((orthoSize - minY) / 10) + 1;
 
 	if (cameraKeys[0]) {

@@ -14,3 +14,7 @@ CameraBehave::~CameraBehave() {
 Urho3D::Camera* CameraBehave::getComponent() {
 	return cameraNode->GetComponent<Urho3D::Camera>();
 }
+
+const Vector3 & CameraBehave::getPosition() {
+	return cameraNode->GetPosition();
+}

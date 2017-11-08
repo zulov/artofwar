@@ -2,6 +2,7 @@
 #include "Game.h"
 #include <Urho3D/Graphics/Graphics.h>
 #include "TopCameraBehave.h"
+#include "simulation/env/Enviroment.h"
 
 CameraManager::CameraManager() {
 
@@ -58,7 +59,9 @@ void CameraManager::translate(const IntVector2& cursorPos, Input* input, float t
 	bool cameraKeys[4];
 	createCameraKeys(input, cameraKeys, cursorPos);
 	int wheel = input->GetMouseMoveWheel();
-	activeBehave->translate(cameraKeys, wheel, timeStep * MOVE_SPEED);
+	Vector3 pos = activeBehave->getPosition();
+	float min = Game::get()->getEnviroment()->getGroundHeightAt(pos.x_, pos.z_);
+	activeBehave->translate(cameraKeys, wheel, timeStep * MOVE_SPEED, min);
 }
 
 String* CameraManager::getInfo() {

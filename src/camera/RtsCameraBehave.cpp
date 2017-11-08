@@ -16,9 +16,17 @@ RtsCameraBehave::RtsCameraBehave() {
 RtsCameraBehave::~RtsCameraBehave() {
 }
 
-void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
+void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
 	Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
-	double diff = sqrt((pos.y_ - minY) / 10) + 1;
+	float localMin = minY + min;
+	float localMax = maxY + min;
+
+	double diff;
+	if (pos.y_ < localMin) {
+		diff = 1;
+	} else {
+		diff = sqrt((pos.y_ - localMin) / 10) + 1;
+	}
 
 	if (cameraKeys[0]) {
 		cameraNode->Translate(diff * Urho3D::Vector3::FORWARD * timeStep, Urho3D::TS_WORLD);
@@ -36,16 +44,19 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep) {
 		cameraNode->Translate(diff * Urho3D::Vector3::RIGHT * timeStep, Urho3D::TS_WORLD);
 		changed = true;
 	}
-	if (wheel != 0) {
+	if (wheel != 0 || pos.y_ < localMin) {
 		Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
-		double diff = sqrt(pos.y_ - minY) + 1;
+		if (pos.y_ < localMin) {
+			pos.y_ = localMin;
+		}
+		double diff = sqrt(pos.y_ - localMin) + 1;
 
 		pos += Vector3::DOWN * wheel * diff * 1.5;
 
-		if (pos.y_ < minY) {
-			pos.y_ = minY;
-		} else if (pos.y_ > maxY) {
-			pos.y_ = maxY;
+		if (pos.y_ < localMin) {
+			pos.y_ = localMin;
+		} else if (pos.y_ > localMax) {
+			pos.y_ = localMax;
 		}
 		double a = 10;
 
@@ -62,9 +73,9 @@ void RtsCameraBehave::rotate(const IntVector2& mouseMove, const double mouse_sen
 void RtsCameraBehave::setRotation(const Urho3D::Quaternion& rotation) {
 }
 
-Urho3D::String *RtsCameraBehave::getInfo() {
-	if(changed) {
-		(*info)= name + " \t" + cameraNode->GetPosition().ToString() + "\n" + cameraNode->GetRotation().ToString();
+Urho3D::String* RtsCameraBehave::getInfo() {
+	if (changed) {
+		(*info) = name + " \t" + cameraNode->GetPosition().ToString() + "\n" + cameraNode->GetRotation().ToString();
 		changed = false;
 	}
 	return info;
