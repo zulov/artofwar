@@ -72,12 +72,5 @@ Entity* LevelBuilder::createGround(String heightMap, String texture, float horSc
 	terrain->SetMaterial(Game::get()->getCache()->GetResource<Material>(texture));
 	terrain->SetOccluder(true);
 
-	//node->GetChild
-	//terrain->GetComponents()
-//	RigidBody* body = node->CreateComponent<RigidBody>();
-//	body->SetCollisionLayer(2); // Use layer bitmask 2 for static geometry
-//	CollisionShape* shape = node->CreateComponent<CollisionShape>();
-//	shape->SetTerrain();
-
 	return entity;
 }

@@ -78,12 +78,14 @@ double Unit::getMinimalDistance() {
 void Unit::move(double timeStep) {
 	if (unitState != UnitStateType::STOP) {
 		(*position) += (*velocity) * timeStep;
-		node->Translate((*velocity) * timeStep, TS_WORLD);
+		node->SetPosition((*position));
+		//node->Translate((*velocity) * timeStep, TS_WORLD);
 	}
 }
 
 void Unit::setAcceleration(Vector3* _acceleration) {
 	delete acceleration;
+	_acceleration->y_ = 0;
 	acceleration = _acceleration;
 }
 
