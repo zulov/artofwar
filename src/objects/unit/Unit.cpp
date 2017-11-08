@@ -196,6 +196,7 @@ void Unit::toCollect(ResourceEntity* _resource) {
 
 void Unit::updateHeight(double y, double timeStep) {
 	double diff = position->y_ - y;
+
 	(*velocity) *= 1 + diff * mass * timeStep;
 	position->y_ = y;
 }
