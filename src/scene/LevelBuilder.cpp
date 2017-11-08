@@ -71,9 +71,7 @@ Entity* LevelBuilder::createGround(String heightMap, String texture, float horSc
 	terrain->SetHeightMap(Game::get()->getCache()->GetResource<Image>(heightMap));
 	terrain->SetMaterial(Game::get()->getCache()->GetResource<Material>(texture));
 	terrain->SetOccluder(true);
-	
-	unsigned  index = 0;
-	Node* child =node->GetChild(index);
+
 	//node->GetChild
 	//terrain->GetComponents()
 //	RigidBody* body = node->CreateComponent<RigidBody>();

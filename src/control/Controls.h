@@ -25,6 +25,7 @@
 #include "MouseButton.h"
 
 
+struct hit_data;
 using namespace Urho3D;
 
 class Controls
@@ -56,7 +57,7 @@ private:
 
 	void createBuilding(Vector3* pos);
 	void refreshSelected();
-	bool raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera);
+	bool raycast(hit_data& hitData, Camera* camera);
 
 	void clickDown(MouseButton &var);
 

@@ -3,6 +3,7 @@
 #include "commands/CommandList.h"
 #include "commands/CreationCommandList.h"
 #include <algorithm>
+#include "HitData.h"
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Physical*>();
@@ -18,7 +19,7 @@ Controls::~Controls() {
 	delete selected;
 }
 
-bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) {
+bool Controls::raycast(hit_data& hitData, Camera* camera) {
 	const IntVector2 pos = Game::get()->getUI()->GetCursorPosition();
 	if (!Game::get()->getUI()->GetCursor()->IsVisible() || Game::get()->getUI()->GetElementAt(pos, true)) {
 		return false;
@@ -35,15 +36,28 @@ bool Controls::raycast(Vector3& hitPos, Drawable*& hitDrawable, Camera* camera) 
 		RayQueryResult& result = results[i];
 
 		Node* node = result.node_;
-		
+
 		LinkComponent* lc = node->GetComponent<LinkComponent>();
-		if (lc == nullptr) { ++i; } else {
-			hitPos = result.position_;
-			hitDrawable = result.drawable_;
+		if (lc == nullptr) {
+			Node* parent = node->GetParent();
+			lc = parent->GetComponent<LinkComponent>();
+			if (lc == nullptr) {
+				++i;
+			} else {
+				hitData.position = result.position_;
+				hitData.drawable = result.drawable_;
+				hitData.link = lc;
+				return true;
+			}
+		} else {
+			hitData.position = result.position_;
+			hitData.drawable = result.drawable_;
+			hitData.link = lc;
 			return true;
 		}
 	}
-	hitDrawable = nullptr;
+	hitData.drawable = nullptr;
+	hitData.link = nullptr;
 
 	return false;
 }
@@ -142,18 +156,17 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>* held) {
 
 
 void Controls::releaseLeft() {
-	Vector3 hitPos;
-	Drawable* hitDrawable;
+	hit_data hitData;
 
-	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		left.setSecond(hitPos);
+	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+		left.setSecond(hitData.position);
 		double dist = (*(left.held->first) - *(left.held->second)).LengthSquared();
 		if (dist > clickDistance) {
 			leftHold(left.held);
 		} else {
-			LinkComponent* lc = hitDrawable->GetNode()->GetComponent<LinkComponent>();
+			LinkComponent* lc = hitData.link;
 			if (lc) {
-				leftClick(lc->getPhysical(), hitPos);
+				leftClick(lc->getPhysical(), hitData.position);
 			}
 		}
 		left.clean();
@@ -161,30 +174,28 @@ void Controls::releaseLeft() {
 }
 
 void Controls::releaseBuildLeft() {
-	Vector3 hitPos;
-	Drawable* hitDrawable;
+	hit_data hitData;
 
-	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		LinkComponent* lc = hitDrawable->GetNode()->GetComponent<LinkComponent>();
+	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+		LinkComponent* lc = hitData.link;
 		if (lc) {
-			leftClickBuild(lc->getPhysical(), hitPos);
+			leftClickBuild(lc->getPhysical(), hitData.position);
 		}
 	}
 }
 
 void Controls::releaseRight() {
-	Vector3 hitPos;
-	Drawable* hitDrawable;
+	hit_data hitData;
 
-	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		right.setSecond(hitPos);
+	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+		right.setSecond(hitData.position);
 		double dist = (*(right.held->first) - *(right.held->second)).LengthSquared();
 		if (dist > clickDistance) {
 			rightHold(right.held);
 		} else {
-			LinkComponent* lc = hitDrawable->GetNode()->GetComponent<LinkComponent>();
+			LinkComponent* lc = hitData.link;
 			if (lc) {
-				rightClickDefault(lc->getPhysical(), hitPos, input->GetKeyDown(KEY_SHIFT));
+				rightClickDefault(lc->getPhysical(), hitData.position, input->GetKeyDown(KEY_SHIFT));
 			}
 		}
 		right.clean();
@@ -192,13 +203,12 @@ void Controls::releaseRight() {
 }
 
 bool Controls::orderAction(bool shiftPressed) {
-	Vector3 hitPos;
-	Drawable* hitDrawable;
+	hit_data hitData;
 
-	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		LinkComponent* lc = hitDrawable->GetNode()->GetComponent<LinkComponent>();
+	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+		LinkComponent* lc = hitData.link;
 		if (lc) {
-			rightClickDefault(lc->getPhysical(), hitPos, shiftPressed);
+			rightClickDefault(lc->getPhysical(), hitData.position, shiftPressed);
 			return true;
 		}
 	}
@@ -219,11 +229,10 @@ void Controls::hudAction(HudElement* hud) {
 }
 
 void Controls::clickDown(MouseButton& var) {
-	Vector3 hitPos;
-	Drawable* hitDrawable;
+	hit_data hitData;
 
-	if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-		var.setFirst(hitPos);
+	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+		var.setFirst(hitData.position);
 	}
 }
 
@@ -364,11 +373,10 @@ void Controls::defaultControl() {
 		releaseRight();
 	}
 	if (input->GetMouseButtonDown(MOUSEB_MIDDLE)) {
-		Vector3 hitPos;
-		Drawable* hitDrawable;
+		hit_data hitData;
 
-		if (raycast(hitPos, hitDrawable, Game::get()->getCameraManager()->getComponent())) {
-			selectedInfo->setMessage(hitPos.ToString());
+		if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+			selectedInfo->setMessage(hitData.position.ToString());
 		}
 	}
 }
