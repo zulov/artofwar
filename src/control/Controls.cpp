@@ -4,6 +4,7 @@
 #include "commands/CreationCommandList.h"
 #include <algorithm>
 #include "HitData.h"
+#include "camera/CameraManager.h"
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Physical*>();

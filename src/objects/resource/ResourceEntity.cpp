@@ -3,6 +3,8 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/StaticModel.h>
+#include "database/DatabaseCache.h"
+#include <Urho3D/Resource/ResourceCache.h>
 
 double ResourceEntity::hbMaxSize = 3.0;
 

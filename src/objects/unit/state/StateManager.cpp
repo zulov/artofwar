@@ -12,6 +12,7 @@
 #include "FollowState.h"
 #include "../Unit.h"
 #include "CollectState.h"
+#include "database/DatabaseCache.h"
 
 StateManager::StateManager() {
 	states = new State*[STATE_SIZE];

@@ -4,6 +4,8 @@
 #include <Urho3D/Graphics/Model.h>
 #include "Game.h"
 #include "objects/Static.h"
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/Scene/Scene.h>
 
 
 ComplexBucketData::ComplexBucketData() {

@@ -3,6 +3,8 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/Scene/Scene.h>
 
 ChargeAim::ChargeAim(Urho3D::Vector3* begin, Urho3D::Vector3* end) {
 	direction = new Urho3D::Vector3((*end) - (*begin));
@@ -16,7 +18,7 @@ ChargeAim::ChargeAim(Urho3D::Vector3* begin, Urho3D::Vector3* end) {
 
 	Urho3D::StaticModel* model = node->CreateComponent<Urho3D::StaticModel>();
 	model->SetModel(game->getCache()->GetResource<Urho3D::Model>("Models/arrow.mdl"));
-	model->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/red.xml"));
+	model->SetMaterial(game->getCache()->GetResource<Urho3D::Material>("Materials/red.xml"));
 
 	distance = 50;
 }
@@ -34,7 +36,7 @@ ChargeAim::~ChargeAim() {
 }
 
 Urho3D::Vector3* ChargeAim::getDirection(Unit* unit) {
-	return new Vector3((*direction));
+	return new Urho3D::Vector3((*direction));
 }
 
 bool ChargeAim::ifReach(Unit* unit) {

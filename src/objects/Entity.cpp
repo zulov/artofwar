@@ -2,6 +2,7 @@
 #include "ObjectEnums.h"
 #include "Game.h"
 #include "LinkComponent.h"
+#include <Urho3D/Scene/Scene.h>
 
 
 Entity::Entity(ObjectType _type) {

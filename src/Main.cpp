@@ -1,6 +1,9 @@
 #include <Main.h>
 #include "simulation/SimulationInfo.h"
 #include <iostream>
+#include "database/DatabaseCache.h"
+#include "player/PlayersManager.h"
+#include "Urho3D/Resource/Image.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 

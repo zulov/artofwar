@@ -1,5 +1,6 @@
 #include "Resources.h"
 #include "Game.h"
+#include "database/DatabaseCache.h"
 
 
 Resources::Resources() {
@@ -11,7 +12,7 @@ Resources::Resources(double valueForAll) {
 
 	for (int i = 0; i < size; ++i) {
 		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
-		names[i] = new String(resource->name);
+		names[i] = new Urho3D::String(resource->name);
 		values[i] = valueForAll;
 	}
 	changed = true;

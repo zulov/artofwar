@@ -1,6 +1,7 @@
 #include "Unit.h"
 #include "commands/ActionCommand.h"
 #include "OrderType.h"
+#include "database/DatabaseCache.h"
 
 double Unit::hbMaxSize = 0.7;
 StateManager* Unit::states = nullptr;
@@ -147,7 +148,7 @@ void Unit::collectIfCloseEnough(double distance, ResourceEntity* closest) {
 	}
 }
 
-void Unit::toAttack(vector<Unit*>* enemies) {
+void Unit::toAttack(std::vector<Unit*>* enemies) {
 	double minDistance = 9999;
 	Unit* entityClosest = nullptr;
 	for (auto entity : (*enemies)) {
@@ -169,7 +170,7 @@ void Unit::toAttack() {
 	toAttack(enemyToAttack);
 }
 
-void Unit::toCollect(vector<Physical*>* enemies) {
+void Unit::toCollect(std::vector<Physical*>* enemies) {
 	double minDistance = 9999;
 	ResourceEntity* entityClosest = nullptr;
 	for (auto entity : (*enemies)) {

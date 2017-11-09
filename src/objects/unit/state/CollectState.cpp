@@ -1,5 +1,7 @@
 #include "CollectState.h"
 #include "../Unit.h"
+#include "player/Resources.h"
+#include "player/PlayersManager.h"
 
 
 CollectState::CollectState() {

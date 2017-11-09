@@ -1,4 +1,6 @@
 #include "SelectedHudPanel.h"
+#include <Urho3D/Resource/ResourceCache.h>
+#include "database/DatabaseCache.h"
 
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style):AbstractWindowPanel(_style) {
@@ -63,7 +65,7 @@ String SelectedHudPanel::getIconName(ObjectType index, int i) {
 void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 	hide();
 	ObjectType type = selectedInfo->getSelectedType();
-	vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+	std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
 
 	int all = selectedInfo->getAllNumber();
 	int selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
@@ -77,7 +79,7 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 		for (int j = 0; j < data->size(); j += ratio) {
 			int max = Min(data->size(), j + ratio);
 			int diff = max - j;
-			std::vector<Physical*>* sub = new vector<Physical*>(data->begin() + j, data->begin() + max);
+			std::vector<Physical*>* sub = new std::vector<Physical*>(data->begin() + j, data->begin() + max);
 			elements[k]->add(sub);
 			elements[k]->show();
 			elements[k]->setTexture(texture);

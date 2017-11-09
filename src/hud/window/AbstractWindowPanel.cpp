@@ -1,6 +1,7 @@
 #include "AbstractWindowPanel.h"
 #include "Game.h"
 #include <Urho3D/UI/Text.h>
+#include <Urho3D/UI/UI.h>
 
 
 AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style) {

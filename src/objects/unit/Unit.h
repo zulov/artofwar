@@ -43,11 +43,11 @@ public:
 
 	void absorbAttack(double attackCoef) override;
 
-	void toAttack(vector<Unit*>* enemies);
+	void toAttack(std::vector<Unit*>* enemies);
 	void toAttack(Physical* enemy);
 	void toAttack();
 
-	void toCollect(vector<Physical*>* enemies);
+	void toCollect(std::vector<Physical*>* enemies);
 	void toCollect(ResourceEntity* _resource);
 	void toCollect();
 

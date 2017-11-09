@@ -4,6 +4,8 @@
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include "../Unit.h"
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/Scene/Scene.h>
 
 
 TargetAim::TargetAim(Urho3D::Vector3* _position) {

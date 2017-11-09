@@ -1,5 +1,6 @@
 #include "MenuPanel.h"
 #include "Game.h"
+#include "database/DatabaseCache.h"
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -61,7 +62,7 @@ void MenuPanel::setInfo(HudElement* hudElement) {
 void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
 	if(selectedInfo->getAllNumber()==1) {
 		text->SetVisible(true);
-		vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+		std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
 		for (int i = 0; i < infoTypes->size(); ++i) {
 			std::vector<Physical*>* data = infoTypes->at(i)->getData();
 			if (!data->empty()) {

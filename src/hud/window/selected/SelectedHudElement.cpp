@@ -59,7 +59,7 @@ void SelectedHudElement::setTexture(Texture2D* texture) {
 	setTextureToSprite(icon, texture);
 }
 
-void SelectedHudElement::add(vector<Physical*>* physicals) {
+void SelectedHudElement::add(std::vector<Physical*>* physicals) {
 	selected->clear();
 
 	for (int i = 0; i < MAX_SELECTED_IN_BUTTON; ++i) {

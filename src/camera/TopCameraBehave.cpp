@@ -48,7 +48,6 @@ void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 		}
 		camera->SetOrthoSize(orthoSize);
 		
-
 		changed = true;
 	}
 }

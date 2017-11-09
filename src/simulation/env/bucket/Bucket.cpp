@@ -59,7 +59,7 @@ void Bucket::upgrade() {
 	data = new ComplexBucketData();
 }
 
-void Bucket::setNeightbours(vector<std::pair<int, float>*>* tempNeighbour) {
+void Bucket::setNeightbours(std::vector<std::pair<int, float>*>* tempNeighbour) {
 	data->setNeightbours(tempNeighbour);
 }
 

@@ -1,5 +1,8 @@
 #include "CreationCommandList.h"
 #include "simulation/env/Enviroment.h"
+#include "database/DatabaseCache.h"
+#include "player/Resources.h"
+#include "player/PlayersManager.h"
 
 
 CreationCommandList::CreationCommandList(SimulationObjectManager* _simulationObjectManager) {

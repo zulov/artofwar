@@ -1,12 +1,16 @@
 #pragma once
-#include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Scene/Scene.h>
-#include <Urho3D/UI/UI.h>
+#include <Urho3D/Container/Ptr.h>
 #include <Urho3D/Engine/Engine.h>
-#include "camera/CameraManager.h"
-#include "database/DatabaseCache.h"
-#include "player/PlayersManager.h"
+#include <Urho3D/Scene/Scene.h>
 
+
+namespace Urho3D {
+	class Console;
+	class Graphics;
+	class Context;
+	class ResourceCache;
+	class UI;
+}
 
 class ActionCommandList;
 class CommandList;
@@ -14,6 +18,9 @@ class Mediator;
 class BuildList;
 class CreationCommandList;
 class Enviroment;
+class DatabaseCache;
+class CameraManager;
+class PlayersManager;
 
 class Game
 {
@@ -29,7 +36,7 @@ public:
 	Game* setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine);
 	Game* setCameraManager(CameraManager* cameraManager);
 	Game* setActionCommmandList(ActionCommandList* _actionCommmandList);
-	Game* setConsole(Console* _console);
+	Game* setConsole(Urho3D::Console* _console);
 	Game* setMediator(Mediator* _mediator);
 	Game* setBuildList(BuildList* _buildList);
 	Game* setCreationCommandList(CreationCommandList* _simCommandList);
@@ -46,7 +53,7 @@ public:
 	Urho3D::Graphics* getGraphics() const;
 	Urho3D::SharedPtr<Urho3D::Engine> getEngine() const;
 	ActionCommandList* getActionCommandList() const;
-	Console* getConsole() const;
+	Urho3D::Console* getConsole() const;
 	Mediator* getMediator() const;
 	BuildList* getBuildList() const;
 	CreationCommandList* getCreationCommandList() const;
@@ -64,7 +71,7 @@ private:
 	Urho3D::SharedPtr<Urho3D::Engine> engine;
 
 	CameraManager* cameraManager;
-	Console* console;
+	Urho3D::Console* console;
 	Mediator* mediator;
 	BuildList* buildList;
 	ActionCommandList* actionCommandList;

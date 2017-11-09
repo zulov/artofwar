@@ -30,7 +30,7 @@ ActionCommandList* Game::getActionCommandList() const {
 	return actionCommandList;
 }
 
-Console* Game::getConsole() const {
+Urho3D::Console* Game::getConsole() const {
 	return console;
 }
 
@@ -119,7 +119,7 @@ Game* Game::setActionCommmandList(ActionCommandList* _actionCommmandList) {
 	return this;
 }
 
-Game* Game::setConsole(Console* _console) {
+Game* Game::setConsole(Urho3D::Console* _console) {
 	console = _console;
 	return this;
 }

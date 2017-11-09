@@ -3,6 +3,8 @@
 #include <regex>
 #include <exprtk/exprtk.hpp>
 #include "ButtonUtils.h"
+#include "player/PlayersManager.h"
+#include "database/DatabaseCache.h"
 
 void Hud::replaceVariables(XMLFile* xmlFile, int hudSizeId) {
 	auto styleString = xmlFile->ToString();

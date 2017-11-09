@@ -4,6 +4,10 @@
 #include <unordered_map>
 #include "BucketQueue.h"
 
+namespace Urho3D {
+	class Image;
+}
+
 class MainGrid : public Grid
 {
 public:
@@ -20,7 +24,7 @@ public:
 	inline double heuristic(int from, int to);
 	IntVector2 getCords(const int index);
 
-	vector<int> reconstruct_path(IntVector2& startV, IntVector2& goalV, int came_from[]);
+	std::vector<int> reconstruct_path(IntVector2& startV, IntVector2& goalV, int came_from[]);
 	bool inSide(int x, int z);
 	std::vector<std::pair<int, float>*>* neighbors(const int current);
 	double cost(const int current, const int next);
@@ -28,7 +32,7 @@ public:
 	void findPath(IntVector2& startV, IntVector2& goalV);
 	void draw_grid_from(int* cameFrom, Image* image);
 	void draw_grid_cost(float* costSoFar, Image* image);
-	void draw_grid_path(vector<int>* path, Image* image);
+	void draw_grid_path(std::vector<int>* path, Image* image);
 	void drawMap(Image* image);
 private:
 	IntVector2 calculateSize(int size);

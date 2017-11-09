@@ -2,6 +2,9 @@
 #include "../../HudElement.h"
 #include "../../ButtonUtils.h"
 #include <Urho3D/UI/ListView.h>
+#include "objects/building/Building.h"
+#include "database/DatabaseCache.h"
+#include <Urho3D/Resource/ResourceCache.h>
 
 
 BuildPanel::BuildPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {

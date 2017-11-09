@@ -11,7 +11,7 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 	short posZ = 0;
 
 	int miniRes = resolution / 16;
-	tempNeighbour = new vector<std::pair<int, float>*>();
+	tempNeighbour = new std::vector<std::pair<int, float>*>();
 	tempNeighbour->reserve(8);
 
 	for (int i = 0; i < resolution * resolution; ++i) {
@@ -166,7 +166,7 @@ std::vector<std::pair<int, float>*>* MainGrid::neighbors(const int current) {
 					const int index = getIndex(cords.x_ + i, cords.y_ + j);
 					if (buckets[index].getType() == UNIT) {
 						double costD = cost(current, index);
-						tempNeighbour->push_back(new pair<int, float>(index, costD));
+						tempNeighbour->push_back(new std::pair<int, float>(index, costD));
 					}
 				}
 			}
@@ -191,7 +191,7 @@ void MainGrid::debug(IntVector2& startV, IntVector2& goalV) {
 	draw_grid_cost(cost_so_far, image);
 	image->SaveBMP("result/images/" + prefix + "3_grid_cost.bmp");
 
-	vector<int> path = reconstruct_path(startV, goalV, came_from);
+	std::vector<int> path = reconstruct_path(startV, goalV, came_from);
 	draw_grid_path(&path, image);
 
 	image->SaveBMP("result/images/" + prefix + "4_grid_path.bmp");
@@ -285,7 +285,7 @@ inline double MainGrid::heuristic(int from, int to) {
 	return (abs(a.x_ - b.x_) + abs(a.y_ - b.y_)) * fieldSize;
 }
 
-void MainGrid::draw_grid_path(vector<int>* path, Image* image) {
+void MainGrid::draw_grid_path(std::vector<int>* path, Image* image) {
 	uint32_t* data = (uint32_t*)image->GetData();
 	for (auto value : *path) {
 		IntVector2 a=getCords(value);
@@ -313,10 +313,10 @@ IntVector2 MainGrid::getCords(const int index) {
 	return IntVector2(index / resolution, index % resolution);
 }
 
-vector<int> MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, int came_from[]) {
+std::vector<int> MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, int came_from[]) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
-	vector<int> path;
+	std::vector<int> path;
 	int current = goal;
 	path.push_back(current);
 	while (current != start) {

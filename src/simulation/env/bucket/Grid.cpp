@@ -111,7 +111,7 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair
 	for (short i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
 		for (short j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
 			const int index = i * resolution + j;
-			vector<Unit *>* content = getContentAt(index);
+			std::vector<Unit *>* content = getContentAt(index);
 			entities->insert(entities->end(), content->begin(), content->end());
 		}
 	}

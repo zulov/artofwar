@@ -1,6 +1,8 @@
 #include "QueuePanel.h"
 #include "Game.h"
 #include "objects/building/Building.h"
+#include <Urho3D/Resource/ResourceCache.h>
+#include "database/DatabaseCache.h"
 
 
 QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -55,7 +57,7 @@ void QueuePanel::show(SelectedInfo* selectedInfo) {//TODO tu moga byc problemy p
 void QueuePanel::update(SelectedInfo* selectedInfo) {
 	short j = 0;
 	if (window->IsVisible()) {
-		vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+		std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
 
 		for (int i = 0; i < infoTypes->size(); ++i) {
 			std::vector<Physical*>* data = infoTypes->at(i)->getData();

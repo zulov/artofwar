@@ -10,6 +10,8 @@
 #include "objects/resource/ResourceFactory.h"
 #include "SimulationInfo.h"
 
+using namespace std;
+
 class SimulationObjectManager
 {
 public:

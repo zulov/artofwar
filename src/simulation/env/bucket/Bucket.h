@@ -23,7 +23,7 @@ public:
 	Vector3* getDirectrionFrom(Vector3* position);
 
 	void upgrade();
-	void setNeightbours(vector<std::pair<int, float>*>* tempNeighbour);
+	void setNeightbours(std::vector<std::pair<int, float>*>* tempNeighbour);
 	std::vector<std::pair<int, float>*>& getNeightbours();
 private:
 

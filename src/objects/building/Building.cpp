@@ -5,6 +5,10 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/StaticModel.h>
+#include "player/Resources.h"
+#include "player/PlayersManager.h"
+#include "database/DatabaseCache.h"
+#include <Urho3D/Resource/ResourceCache.h>
 
 double Building::hbMaxSize = 5.0;
 

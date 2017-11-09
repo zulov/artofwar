@@ -6,6 +6,8 @@
 #include "hud/HudElement.h"
 #include <algorithm>
 #include <unordered_set>
+#include <Urho3D/Resource/ResourceCache.h>
+#include "database/DatabaseCache.h"
 
 
 UnitsPanel::UnitsPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {

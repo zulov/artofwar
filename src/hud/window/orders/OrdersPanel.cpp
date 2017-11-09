@@ -5,6 +5,8 @@
 #include <Urho3D/UI/Button.h>
 #include "../../ButtonUtils.h"
 #include <unordered_set>
+#include "database/DatabaseCache.h"
+#include <Urho3D/Resource/ResourceCache.h>
 
 
 OrdersPanel::OrdersPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
@@ -17,19 +19,19 @@ OrdersPanel::~OrdersPanel() {
 
 void OrdersPanel::show(SelectedInfo* selectedInfo) {
 	setVisible(true);
-	vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+	std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
 
-	unordered_set<int> common = { 0,1,2,3,4,5,6,7,8,9,10 };
+	std::unordered_set<int> common = { 0,1,2,3,4,5,6,7,8,9,10 };
 
 	for (int i = 0; i < infoTypes->size(); ++i) {
 		std::vector<Physical*>* data = infoTypes->at(i)->getData();
 		if (!data->empty()) {
 			std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
-			unordered_set<int> common2;
+			std::unordered_set<int> common2;
 			for (int j = 0; j < orders->size(); ++j) {//todo to zrobic raz i pobierac
 				common2.insert(orders->at(j)->id);
 			}
-			unordered_set<int> temp(common);
+			std::unordered_set<int> temp(common);
 			for (const auto& id : temp) {
 				if (common2.find(id) == common2.end()) {
 					common.erase(id);
