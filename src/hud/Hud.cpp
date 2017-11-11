@@ -14,7 +14,8 @@ void Hud::replaceVariables(XMLFile* xmlFile, int hudSizeId) {
 
 	exprtk::symbol_table<double> symbol_table;
 	int varsSize = Game::get()->getDatabaseCache()->getHudVarsSize();
-	for (int i = 0; i < varsSize; ++i) {//TODO to lepiej zrobiczapytaniem?
+	for (int i = 0; i < varsSize; ++i) {
+		//TODO to lepiej zrobiczapytaniem?
 		db_hud_vars* var = Game::get()->getDatabaseCache()->getHudVar(i);
 		if (var != nullptr && var->hud_size == hudSizeId) {
 			symbol_table.add_variable(var->name.CString(), var->value);
@@ -95,9 +96,25 @@ Hud::Hud() {
 	windows->push_back(queuePanel->createWindow());
 
 	buildPanel->show();
+
+
+	bar = Game::get()->getUI()->GetRoot()->CreateChild<ProgressBar>();
+	bar->SetStyle("LargeProgressBar", style);
+	bar->SetRange(100);
+	bar->SetValue(0);
+	bar->SetVisible(true);
 }
 
 Hud::~Hud() {
+	delete selectedHudPanel;
+	delete buildPanel;
+	delete unitsPanel;
+	delete debugPanel;
+	delete topPanel;
+	delete miniMapPanel;
+	delete menuPanel;
+	delete ordersPanel;
+	delete queuePanel;
 }
 
 void Hud::createDebugHud() {
@@ -113,9 +130,11 @@ void Hud::createConsole() {
 
 void Hud::update(Benchmark* benchmark, CameraManager* cameraManager) {
 
-	debugPanel->setText(benchmark->getLastFPS(), benchmark->getAverageFPS(), benchmark->getLoops(), cameraManager->getInfo());
+	debugPanel->setText(benchmark->getLastFPS(), benchmark->getAverageFPS(), benchmark->getLoops(),
+	                    cameraManager->getInfo());
 
 	topPanel->update(Game::get()->getPlayersManager()->getActivePlayer()->getResources());
+	bar->ChangeValue(0.15);
 }
 
 void Hud::update(int unitsNumber) {
@@ -138,7 +157,8 @@ std::vector<Window*>* Hud::getWindows() {
 	return windows;
 }
 
-void Hud::updateSelected(SelectedInfo* selectedInfo) {//TODO raz stworzyc a sterowac widzialnsocia
+void Hud::updateSelected(SelectedInfo* selectedInfo) {
+	//TODO raz stworzyc a sterowac widzialnsocia
 	if (selectedInfo->hasChanged()) {
 		selectedHudPanel->update(selectedInfo);
 		menuPanel->updateSelected(selectedInfo);

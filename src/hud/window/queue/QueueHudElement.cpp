@@ -18,7 +18,7 @@ QueueHudElement::QueueHudElement(Urho3D::XMLFile* style) {
 	bar->SetRange(1);
 	bar->SetValue(0.5);
 	bar->SetVisible(true);
-
+	
 	element = nullptr;
 }
 

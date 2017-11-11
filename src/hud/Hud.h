@@ -78,4 +78,6 @@ private:
 	std::vector<Window*>* windows;
 	db_graph_settings* graphSettings;
 	XMLFile* style;
+
+	ProgressBar* bar;
 };
