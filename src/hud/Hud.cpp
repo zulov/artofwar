@@ -97,12 +97,6 @@ Hud::Hud() {
 
 	buildPanel->show();
 
-
-	bar = Game::get()->getUI()->GetRoot()->CreateChild<ProgressBar>();
-	bar->SetStyle("LargeProgressBar", style);
-	bar->SetRange(100);
-	bar->SetValue(0);
-	bar->SetVisible(true);
 }
 
 Hud::~Hud() {
@@ -134,7 +128,6 @@ void Hud::update(Benchmark* benchmark, CameraManager* cameraManager) {
 	                    cameraManager->getInfo());
 
 	topPanel->update(Game::get()->getPlayersManager()->getActivePlayer()->getResources());
-	bar->ChangeValue(0.15);
 }
 
 void Hud::update(int unitsNumber) {

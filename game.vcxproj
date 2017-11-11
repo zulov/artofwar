@@ -188,6 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\camera\TopCameraBehave.cpp" />
+    <ClCompile Include="src\hud\window\loading\LoadingPanel.cpp" />
     <ClCompile Include="src\objects\Static.cpp" />
     <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\DummyAim.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="src\hud\window\AbstractWindowPanel.h" />
     <ClInclude Include="src\commands\ActionCommand.h" />
     <ClInclude Include="src\commands\ActionCommandList.h" />
+    <ClInclude Include="src\hud\window\loading\LoadingPanel.h" />
     <ClInclude Include="src\objects\Static.h" />
     <ClInclude Include="src\objects\unit\ActionParameter.h" />
     <ClInclude Include="src\ActionType.h" />

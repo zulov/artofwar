@@ -79,5 +79,4 @@ private:
 	db_graph_settings* graphSettings;
 	XMLFile* style;
 
-	ProgressBar* bar;
 };

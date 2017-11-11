@@ -217,6 +217,7 @@
       <Filter>command\list</Filter>
     </ClCompile>
     <ClCompile Include="src\simulation\env\bucket\BucketQueue.cpp" />
+    <ClCompile Include="src\hud\window\loading\LoadingPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -475,6 +476,7 @@
     <ClInclude Include="src\simulation\env\bucket\BucketQueue.h" />
     <ClInclude Include="src\simulation\env\bucket\fiboheap.h" />
     <ClInclude Include="src\control\HitData.h" />
+    <ClInclude Include="src\hud\window\loading\LoadingPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
