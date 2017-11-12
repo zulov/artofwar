@@ -37,6 +37,7 @@
 #include "window/minimap/MiniMapPanel.h"
 #include "window/orders/OrdersPanel.h"
 #include "window/queue/QueuePanel.h"
+#include "window/loading/LoadingPanel.h"
 
 using namespace Urho3D;
 
@@ -74,6 +75,7 @@ private:
 	MenuPanel* menuPanel;
 	OrdersPanel* ordersPanel;
 	QueuePanel* queuePanel;
+	LoadingPanel* loadingPanel;
 
 	std::vector<Window*>* windows;
 	db_graph_settings* graphSettings;

@@ -439,6 +439,19 @@
 	<element type="OrdersWindow" style="LeftWindow">
 		
 	</element>
+	
+	<element type="LoadingWindow" style="MyWindow">
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Vert Alignment" value="Center" />
+			
+		<attribute name="Layout Spacing" value="{spaceX}" />
+        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+        <attribute name="Is Visible" value="true" />
+		<attribute name="Min Size" value="{resX/2} {resY/2}"/>
+		<attribute name="Max Size" value="{resX} {resY}"/>
+
+	</element>
+	
 	<element type="MiniMapWindow" style="MyWindow">
 		<attribute name="Min Size" value="{4*iconX+2*spaceX} {4*iconY+2*spaceY}"/>
         <attribute name="Max Size" value="{4*iconX+2*spaceX} {4*iconY+2*spaceY}" />
@@ -619,4 +632,16 @@
 			<attribute name="Tiled" value="true" />
         </element>
     </element>
+	
+	<element type="Background" >
+        <attribute name="Texture" value="Texture2D;Textures/back3.png" />
+        <attribute name="Blend Mode" value="alpha" />
+		
+		<attribute name="Size" value="{resX/2} {resY/3}" />
+		<attribute name="Vert Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Tiled" value="true" />
+		
+    </element>
+	
 </elements>

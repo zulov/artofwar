@@ -4,7 +4,7 @@
 
 
 LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
-
+	styleName = "LoadingWindow";
 }
 
 
@@ -13,9 +13,15 @@ LoadingPanel::~LoadingPanel() {
 
 void LoadingPanel::createBody() {
 
-	bar = Game::get()->getUI()->GetRoot()->CreateChild<Urho3D::ProgressBar>();
+	background = window->CreateChild<Urho3D::BorderImage>();
+	background->SetStyle("Background", style);
+	background->SetVisible(true);
+	background->SetOpacity(0.5);
+
+
+	bar = window->CreateChild<Urho3D::ProgressBar>();
 	bar->SetStyle("LargeProgressBar", style);
-	bar->SetRange(100);
+	bar->SetRange(1);
 	bar->SetValue(0);
 	bar->SetVisible(true);
 

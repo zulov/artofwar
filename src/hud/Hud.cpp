@@ -84,6 +84,7 @@ Hud::Hud() {
 	menuPanel = new MenuPanel(style);
 	ordersPanel = new OrdersPanel(style);
 	queuePanel = new QueuePanel(style);
+	loadingPanel = new LoadingPanel(style);
 
 	windows->push_back(menuPanel->createWindow());
 	windows->push_back(buildPanel->createWindow());
@@ -94,6 +95,7 @@ Hud::Hud() {
 	windows->push_back(selectedHudPanel->createWindow());
 	windows->push_back(ordersPanel->createWindow());
 	windows->push_back(queuePanel->createWindow());
+	windows->push_back(loadingPanel->createWindow());
 
 	buildPanel->show();
 
@@ -109,6 +111,7 @@ Hud::~Hud() {
 	delete menuPanel;
 	delete ordersPanel;
 	delete queuePanel;
+	delete loadingPanel;
 }
 
 void Hud::createDebugHud() {

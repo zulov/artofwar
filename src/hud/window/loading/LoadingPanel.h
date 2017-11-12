@@ -11,5 +11,6 @@ private:
 	void createBody() override;
 	void update(float progres);
 	Urho3D::ProgressBar* bar;
+	Urho3D::BorderImage * background;
 };
 
