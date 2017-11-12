@@ -22,6 +22,7 @@ LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 }
 
 LevelBuilder::~LevelBuilder() {
+	delete objectManager;
 }
 
 void LevelBuilder::createScene(int id) {

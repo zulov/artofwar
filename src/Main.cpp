@@ -41,29 +41,26 @@ void Main::Start() {
 	game->setGraphics(GetSubsystem<Graphics>());
 	game->setPlayersManager(new PlayersManager());
 	
-	hud = new Hud();
 	SetWindowTitleAndIcon();
 	
 	benchmark = new Benchmark();
+	hud = new Hud();
+	subscribeToEvents();
 
 	game->setCameraManager(new CameraManager());
 	levelBuilder = new LevelBuilder(new SceneObjectManager());
 	SetupViewport();
 	InitMouseMode(MM_RELATIVE);
+	controls = new Controls(GetSubsystem<Input>());
+	cameraManager = game->getCameraManager();
 
 	levelBuilder->createScene(1);
 	
 	Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
-
 	game->setCreationCommandList(new CreationCommandList())->setEnviroment(enviroment);
 
 	simulation = new Simulation(enviroment, game->getCreationCommandList());
 
-	controls = new Controls(GetSubsystem<Input>());
-
-	subscribeToEvents();
-
-	cameraManager = game->getCameraManager();
 }
 
 void Main::Stop() {
