@@ -281,6 +281,7 @@
     <ClInclude Include="src\commands\AbstractCommand.h" />
     <ClInclude Include="src\control\HitData.h" />
     <ClInclude Include="src\control\MouseButton.h" />
+    <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\hud\window\AbstractWindowPanel.h" />
     <ClInclude Include="src\commands\ActionCommand.h" />
     <ClInclude Include="src\commands\ActionCommandList.h" />

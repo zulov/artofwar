@@ -18,6 +18,7 @@
 #include <Urho3D/Input/InputEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/SceneEvents.h>
+#include "GameState.h"
 
 namespace Urho3D {
 	class Node;
@@ -34,7 +35,7 @@ URHO3D_OBJECT(Main, Application);
 public:
 	Main(Context* context);
 	void Setup() override;
-	void subscribeToEvents();
+	void load();
 	void Start() override;
 	void Stop() override;
 	void HandleUpdate(StringHash eventType, VariantMap& eventData);
@@ -44,6 +45,8 @@ protected:
 	void SetupViewport();
 
 private:
+	void subscribeToEvents();
+	void running(VariantMap& eventData);
 	void SetWindowTitleAndIcon();
 	void HandleMouseModeRequest(StringHash eventType, VariantMap& eventData);
 	void HandleMouseModeChange(StringHash eventType, VariantMap& eventData);
@@ -67,6 +70,5 @@ private:
 	Hud* hud;
 	Controls* controls;
 	LevelBuilder* levelBuilder;
-
-	ActionCommandList* actionCommandList;
+	GameState gameState;
 };

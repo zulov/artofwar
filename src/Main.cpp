@@ -8,6 +8,7 @@
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE) {
+	gameState = GameState::STARTING;
 	context->RegisterFactory<LinkComponent>();
 	MySprite::RegisterObject(context);
 	Game::init();
@@ -15,7 +16,7 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE) 
 
 void Main::Setup() {
 	Game* game = Game::get();
-	
+
 	game->setDatabaseCache(new DatabaseCache());
 
 	db_graph_settings* graphSettings = game->getDatabaseCache()->getGraphSettings(0);
@@ -33,16 +34,25 @@ void Main::Setup() {
 	engine_->SetMinFps(graphSettings->min_fps);
 
 	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
-		setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
+	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
+}
+
+void Main::load() {
+	levelBuilder->createScene(1);
+
+	Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
+	Game::get()->setCreationCommandList(new CreationCommandList())->setEnviroment(enviroment);
+
+	simulation = new Simulation(enviroment, Game::get()->getCreationCommandList());
 }
 
 void Main::Start() {
 	Game* game = Game::get();
 	game->setGraphics(GetSubsystem<Graphics>());
 	game->setPlayersManager(new PlayersManager());
-	
+
 	SetWindowTitleAndIcon();
-	
+
 	benchmark = new Benchmark();
 	hud = new Hud();
 	subscribeToEvents();
@@ -54,12 +64,7 @@ void Main::Start() {
 	controls = new Controls(GetSubsystem<Input>());
 	cameraManager = game->getCameraManager();
 
-	levelBuilder->createScene(1);
-	
-	Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
-	game->setCreationCommandList(new CreationCommandList())->setEnviroment(enviroment);
-
-	simulation = new Simulation(enviroment, game->getCreationCommandList());
+	gameState = GameState::MENU;
 
 }
 
@@ -103,7 +108,7 @@ void Main::subscribeToEvents() {
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
 }
 
-void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
+void Main::running(VariantMap& eventData) {
 	const double timeStep = eventData[SceneUpdate::P_TIMESTEP].GetDouble();
 	benchmark->add(1.0 / timeStep);
 
@@ -124,6 +129,26 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	selectedInfo->hasBeedUpdatedDrawn();
 
 	simulation->dispose();
+}
+
+void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
+	switch (gameState) {
+	case GameState::STARTING: break;
+	case GameState::LOADING: 
+		load();
+		gameState = GameState::RUNNING;
+		break;
+	case GameState::MENU: 
+		gameState = GameState::LOADING;
+		break;
+	case GameState::RUNNING: 
+		running(eventData);
+		break;
+	case GameState::PAUSE: break;
+	case GameState::ENDING: break;
+
+	}
+	
 }
 
 void Main::InitMouseMode(MouseMode mode) {
@@ -251,7 +276,8 @@ void Main::HandleUIButtonHoverOff(StringHash /*eventType*/, VariantMap& eventDat
 }
 
 void Main::SetupViewport() {
-	SharedPtr<Viewport> viewport(new Viewport(context_, Game::get()->getScene(), Game::get()->getCameraManager()->getComponent()));
+	SharedPtr<Viewport> viewport(new Viewport(context_, Game::get()->getScene(),
+	                                          Game::get()->getCameraManager()->getComponent()));
 	GetSubsystem<Renderer>()->SetViewport(0, viewport);
 }
 

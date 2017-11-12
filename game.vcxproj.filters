@@ -465,6 +465,7 @@
     <ClInclude Include="src\control\HitData.h" />
     <ClInclude Include="src\hud\window\loading\LoadingPanel.h" />
     <ClInclude Include="src\Progress.h" />
+    <ClInclude Include="src\GameState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
