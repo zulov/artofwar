@@ -64,8 +64,8 @@ void Hud::createCursor() {
 Hud::Hud() {
 	windows = new std::vector<Window*>();
 	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
-
-	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->style);
+	ResourceCache * rc = Game::get()->getCache();
+	style = rc->GetResource<XMLFile>("UI/" + graphSettings->style);
 	replaceVariables(style, graphSettings->hud_size);
 	Game::get()->getUI()->GetRoot()->SetDefaultStyle(style);
 

@@ -70,6 +70,6 @@ private:
 	Controls* controls;
 	LevelBuilder* levelBuilder;
 	SceneObjectManager* sceneObjectManager;
-	Mediator* mediator;
+
 	ActionCommandList* actionCommandList;
 };

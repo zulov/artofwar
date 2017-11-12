@@ -8,16 +8,16 @@
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE) {
-	benchmark = new Benchmark();
 	context->RegisterFactory<LinkComponent>();
 	MySprite::RegisterObject(context);
 	Game::init();
-
 }
 
 void Main::Setup() {
 	Game* game = Game::get();
+	
 	game->setDatabaseCache(new DatabaseCache());
+
 	db_graph_settings* graphSettings = game->getDatabaseCache()->getGraphSettings(0);
 
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
@@ -31,18 +31,21 @@ void Main::Setup() {
 
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
+
+	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
+		setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
 }
 
 void Main::Start() {
 	Game* game = Game::get();
-	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->setGraphics(GetSubsystem<Graphics>())->
-	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
-	SetWindowTitleAndIcon();
+	game->setGraphics(GetSubsystem<Graphics>());
 	game->setPlayersManager(new PlayersManager());
+	
 	hud = new Hud();
-
+	SetWindowTitleAndIcon();
+	
+	benchmark = new Benchmark();
 	sceneObjectManager = new SceneObjectManager();
-
 	levelBuilder = new LevelBuilder(sceneObjectManager);
 
 	BuildList* buildList = new BuildList();
@@ -55,7 +58,7 @@ void Main::Start() {
 	levelBuilder->createScene(1);
 	
 	Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
-	mediator = new Mediator(enviroment, controls);
+	Mediator* mediator = new Mediator(enviroment, controls);
 
 	game->setCameraManager(cameraManager)->setBuildList(buildList)->
 	      setCreationCommandList(creationCommandList)->setMediator(mediator)->setEnviroment(enviroment);
@@ -260,10 +263,8 @@ void Main::HandleUIButtonHoverOff(StringHash /*eventType*/, VariantMap& eventDat
 }
 
 void Main::SetupViewport() {
-	Renderer* renderer = GetSubsystem<Renderer>();
-
 	SharedPtr<Viewport> viewport(new Viewport(context_, Game::get()->getScene(), cameraManager->getComponent()));
-	renderer->SetViewport(0, viewport);
+	GetSubsystem<Renderer>()->SetViewport(0, viewport);
 }
 
 void Main::control(float timeStep) {
