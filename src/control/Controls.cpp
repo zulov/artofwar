@@ -131,7 +131,7 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>* held) {
 	if (!input->GetKeyDown(KEY_CTRL)) {
 		unSelectAll();
 	}
-	std::vector<Physical*>* entities = Game::get()->getMediator()->getEntities(held);
+	std::vector<Physical*>* entities = Game::get()->getEnviroment()->getNeighbours(held);
 	for (auto entity : (*entities)) {
 		select(entity); //TODO zastapic wrzuceniem na raz
 	}

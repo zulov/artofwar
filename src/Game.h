@@ -14,8 +14,7 @@ namespace Urho3D {
 
 class ActionCommandList;
 class CommandList;
-class Mediator; 
-class BuildList;
+
 class CreationCommandList;
 class Enviroment;
 class DatabaseCache;
@@ -37,8 +36,6 @@ public:
 	Game* setCameraManager(CameraManager* cameraManager);
 	Game* setActionCommmandList(ActionCommandList* _actionCommmandList);
 	Game* setConsole(Urho3D::Console* _console);
-	Game* setMediator(Mediator* _mediator);
-	Game* setBuildList(BuildList* _buildList);
 	Game* setCreationCommandList(CreationCommandList* _simCommandList);
 	Game* setDatabaseCache(DatabaseCache* _databaseCache);
 	Game* setPlayersManager(PlayersManager* _playersManager);
@@ -54,8 +51,6 @@ public:
 	Urho3D::SharedPtr<Urho3D::Engine> getEngine() const;
 	ActionCommandList* getActionCommandList() const;
 	Urho3D::Console* getConsole() const;
-	Mediator* getMediator() const;
-	BuildList* getBuildList() const;
 	CreationCommandList* getCreationCommandList() const;
 	DatabaseCache* getDatabaseCache() const;
 	PlayersManager* getPlayersManager() const;
@@ -72,8 +67,6 @@ private:
 
 	CameraManager* cameraManager;
 	Urho3D::Console* console;
-	Mediator* mediator;
-	BuildList* buildList;
 	ActionCommandList* actionCommandList;
 	CreationCommandList * creationCommandList;
 	DatabaseCache * databaseCache;

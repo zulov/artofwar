@@ -5,11 +5,12 @@
 #include "player/PlayersManager.h"
 
 
-CreationCommandList::CreationCommandList(SimulationObjectManager* _simulationObjectManager) {
-	simulationObjectManager = _simulationObjectManager;
+CreationCommandList::CreationCommandList() {
+	simulationObjectManager = new SimulationObjectManager();
 }
 
 CreationCommandList::~CreationCommandList() {
+	delete simulationObjectManager;
 }
 
 bool CreationCommandList::addUnits(int _number, int id, Vector3* _position, int _player) {
@@ -45,6 +46,10 @@ bool CreationCommandList::addResource(int id, Vector3* _position) {
 		return true;
 	}
 	return false;
+}
+
+SimulationObjectManager* CreationCommandList::getManager() {
+	return simulationObjectManager;
 }
 
 void CreationCommandList::setParemeters(AbstractCommand* command) {

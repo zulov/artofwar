@@ -4,7 +4,6 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\Mediator.cpp" />
     <ClCompile Include="src\OperatorType.h" />
     <ClCompile Include="src\camera\CameraManager.cpp">
       <Filter>camera</Filter>
@@ -122,13 +121,7 @@
     <ClCompile Include="src\hud\Hud.cpp">
       <Filter>hud</Filter>
     </ClCompile>
-    <ClCompile Include="src\commands\BuildCommand.cpp">
-      <Filter>command</Filter>
-    </ClCompile>
     <ClCompile Include="src\commands\CommandList.cpp">
-      <Filter>command\list</Filter>
-    </ClCompile>
-    <ClCompile Include="src\commands\BuildList.cpp">
       <Filter>command\list</Filter>
     </ClCompile>
     <ClCompile Include="src\objects\unit\aim\Aim.cpp">
@@ -230,7 +223,6 @@
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\Game.h" />
-    <ClInclude Include="src\Mediator.h" />
     <ClInclude Include="src\SpacingType.h">
       <Filter>objects\collection</Filter>
     </ClInclude>
@@ -261,9 +253,6 @@
     </ClInclude>
     <ClInclude Include="src\commands\ActionCommandList.h">
       <Filter>command\list</Filter>
-    </ClInclude>
-    <ClInclude Include="src\commands\BuildCommand.h">
-      <Filter>command</Filter>
     </ClInclude>
     <ClInclude Include="src\commands\CommandList.h">
       <Filter>command\list</Filter>
@@ -384,9 +373,6 @@
       <Filter>objects\resource</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\LevelBuilder.h" />
-    <ClInclude Include="src\commands\BuildList.h">
-      <Filter>command\list</Filter>
-    </ClInclude>
     <ClInclude Include="src\objects\building\QueueElement.h">
       <Filter>objects\building</Filter>
     </ClInclude>

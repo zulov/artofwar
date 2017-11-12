@@ -216,10 +216,8 @@
     <ClCompile Include="src\simulation\env\bucket\BucketQueue.cpp" />
     <ClCompile Include="src\simulation\env\bucket\Grid.cpp" />
     <ClCompile Include="src\simulation\env\bucket\BucketIterator.cpp" />
-    <ClCompile Include="src\commands\BuildCommand.cpp" />
     <ClCompile Include="src\objects\building\Building.cpp" />
     <ClCompile Include="src\objects\building\BuildingFactory.cpp" />
-    <ClCompile Include="src\commands\BuildList.cpp" />
     <ClCompile Include="src\hud\window\building\BuildPanel.cpp" />
     <ClCompile Include="src\camera\CameraBehave.cpp" />
     <ClCompile Include="src\camera\CameraManager.cpp" />
@@ -255,7 +253,6 @@
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\scene\LevelBuilder.cpp" />
     <ClCompile Include="src\objects\LinkComponent.cpp" />
-    <ClCompile Include="src\Mediator.cpp" />
     <ClCompile Include="src\scene\SceneObjectManager.cpp" />
     <ClCompile Include="src\commands\CreationCommandList.cpp" />
     <ClCompile Include="src\simulation\env\bucket\ComplexBucketData.cpp" />
@@ -313,11 +310,9 @@
     <ClInclude Include="src\simulation\env\bucket\fiboheap.h" />
     <ClInclude Include="src\simulation\env\bucket\Grid.h" />
     <ClInclude Include="src\simulation\env\bucket\BucketIterator.h" />
-    <ClInclude Include="src\commands\BuildCommand.h" />
     <ClInclude Include="src\objects\building\Building.h" />
     <ClInclude Include="src\objects\building\BuildingFactory.h" />
     <ClInclude Include="src\objects\building\BuildingType.h" />
-    <ClInclude Include="src\commands\BuildList.h" />
     <ClInclude Include="src\hud\window\building\BuildPanel.h" />
     <ClInclude Include="src\hud\ButtonUtils.h" />
     <ClInclude Include="src\camera\CameraBehave.h" />
@@ -359,7 +354,6 @@
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\scene\LevelBuilder.h" />
     <ClInclude Include="src\objects\LinkComponent.h" />
-    <ClInclude Include="src\Mediator.h" />
     <ClInclude Include="src\ObjectEnums.h" />
     <ClInclude Include="src\scene\SceneObjectManager.h" />
     <ClInclude Include="src\commands\CreationCommandList.h" />

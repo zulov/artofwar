@@ -1,11 +1,10 @@
 #include "Simulation.h"
 
 
-Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList,
-                       SimulationObjectManager* _simObjectManager) {
+Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList) {
 	enviroment = _enviromentStrategy;
 	forceStrategy = new Force();
-	simObjectManager = _simObjectManager;
+	simObjectManager = _simCommandList->getManager();
 	srand(time(NULL));
 	animate = true;
 	simCommandList = _simCommandList;

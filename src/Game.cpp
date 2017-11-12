@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "camera/CameraManager.h"
 
 Game* Game::instance = nullptr;
 
@@ -32,14 +33,6 @@ ActionCommandList* Game::getActionCommandList() const {
 
 Urho3D::Console* Game::getConsole() const {
 	return console;
-}
-
-Mediator* Game::getMediator() const {
-	return mediator;
-}
-
-BuildList* Game::getBuildList() const {
-	return buildList;
 }
 
 CreationCommandList* Game::getCreationCommandList() const {
@@ -121,16 +114,6 @@ Game* Game::setActionCommmandList(ActionCommandList* _actionCommmandList) {
 
 Game* Game::setConsole(Urho3D::Console* _console) {
 	console = _console;
-	return this;
-}
-
-Game* Game::setMediator(Mediator* _mediator) {
-	mediator = _mediator;
-	return this;
-}
-
-Game* Game::setBuildList(BuildList* _buildList) {
-	buildList = _buildList;
 	return this;
 }
 

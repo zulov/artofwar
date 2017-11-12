@@ -45,32 +45,25 @@ void Main::Start() {
 	SetWindowTitleAndIcon();
 	
 	benchmark = new Benchmark();
-	sceneObjectManager = new SceneObjectManager();
-	levelBuilder = new LevelBuilder(sceneObjectManager);
 
-	BuildList* buildList = new BuildList();
-	buildList->setSceneObjectManager(sceneObjectManager);
+	game->setCameraManager(new CameraManager());
+	levelBuilder = new LevelBuilder(new SceneObjectManager());
+	SetupViewport();
+	InitMouseMode(MM_RELATIVE);
 
-	cameraManager = new CameraManager();
-	SimulationObjectManager* simulationObjectManager = new SimulationObjectManager();
-	CreationCommandList* creationCommandList = new CreationCommandList(simulationObjectManager);
-	
 	levelBuilder->createScene(1);
 	
 	Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
-	Mediator* mediator = new Mediator(enviroment, controls);
 
-	game->setCameraManager(cameraManager)->setBuildList(buildList)->
-	      setCreationCommandList(creationCommandList)->setMediator(mediator)->setEnviroment(enviroment);
+	game->setCreationCommandList(new CreationCommandList())->setEnviroment(enviroment);
 
-	simulation = new Simulation(enviroment, creationCommandList, simulationObjectManager);
+	simulation = new Simulation(enviroment, game->getCreationCommandList());
 
-	SetupViewport();
-
-	InitMouseMode(MM_RELATIVE);
 	controls = new Controls(GetSubsystem<Input>());
 
 	subscribeToEvents();
+
+	cameraManager = game->getCameraManager();
 }
 
 void Main::Stop() {
@@ -227,9 +220,7 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 	} else if (key == KEY_F2) {
 		GetSubsystem<DebugHud>()->ToggleAll();
 	}
-	//	else if (key == KEY_F3) {
-	//		levelBuilder->
-	//	}
+
 }
 
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {
@@ -263,7 +254,7 @@ void Main::HandleUIButtonHoverOff(StringHash /*eventType*/, VariantMap& eventDat
 }
 
 void Main::SetupViewport() {
-	SharedPtr<Viewport> viewport(new Viewport(context_, Game::get()->getScene(), cameraManager->getComponent()));
+	SharedPtr<Viewport> viewport(new Viewport(context_, Game::get()->getScene(), Game::get()->getCameraManager()->getComponent()));
 	GetSubsystem<Renderer>()->SetViewport(0, viewport);
 }
 

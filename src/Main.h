@@ -8,8 +8,6 @@
 #include "control/Controls.h"
 #include "simulation/Simulation.h"
 #include "scene/LevelBuilder.h"
-#include "Mediator.h"
-#include "commands/BuildList.h"
 
 #include <Urho3D/Engine/Application.h>
 #include <Urho3D/Engine/EngineDefs.h>
@@ -69,7 +67,6 @@ private:
 	Hud* hud;
 	Controls* controls;
 	LevelBuilder* levelBuilder;
-	SceneObjectManager* sceneObjectManager;
 
 	ActionCommandList* actionCommandList;
 };

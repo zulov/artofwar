@@ -26,7 +26,7 @@ namespace Urho3D {
 class Simulation
 {
 public:
-	Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList, SimulationObjectManager* _simObjectManager);
+	Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList);
 
 	void update(Input* input, float timeStep);
 
