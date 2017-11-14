@@ -97,7 +97,7 @@ Hud::Hud() {
 	windows->push_back(queuePanel->createWindow());
 	windows->push_back(loadingPanel->createWindow());
 
-	buildPanel->show();
+	//buildPanel->show();
 
 }
 
@@ -158,6 +158,9 @@ void Hud::resetLoading() {
 }
 
 void Hud::endLoading() {
+	for (auto window : *windows) {
+		window->SetVisible(true);
+	}
 	loadingPanel->end();
 }
 
