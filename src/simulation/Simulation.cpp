@@ -12,7 +12,7 @@ Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _si
 	actionCommandList = new ActionCommandList(aimContainer);
 	Game::get()->setActionCommmandList(actionCommandList);
 	simulationInfo = new SimulationInfo();
-	createUnits();
+	//createUnits();
 
 	units = simObjectManager->getUnits();
 	buildings = simObjectManager->getBuildings();
@@ -174,6 +174,11 @@ void Simulation::update(Input* input, float timeStep) {
 			moveUnits(timeStep);
 		}
 	}
+}
+
+void Simulation::initScene() {
+	createUnits();
+	simCommandList->execute();
 }
 
 void Simulation::moveUnits(float timeStep) {

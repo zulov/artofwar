@@ -50,7 +50,6 @@ void Main::load() {
 	case 1:
 		{
 		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
-
 		Game::get()->setEnviroment(enviroment);
 		loadingState->sth = enviroment;
 		break;
@@ -67,6 +66,9 @@ void Main::load() {
 		simulation = new Simulation(static_cast<Enviroment*>(loadingState->sth), Game::get()->getCreationCommandList());
 		break;
 	case 4:
+		simulation->initScene();
+		break;
+	case 5:
 		gameState = GameState::RUNNING;
 		hud->endLoading();
 		break;

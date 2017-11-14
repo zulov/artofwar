@@ -29,7 +29,7 @@ public:
 	Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList);
 
 	void update(Input* input, float timeStep);
-
+	void initScene();
 	int getUnitsNumber();
 	SimulationInfo* getInfo();
 	void dispose();
