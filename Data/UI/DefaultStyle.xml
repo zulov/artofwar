@@ -641,6 +641,7 @@
 		<attribute name="Vert Alignment" value="Center" />
 		<attribute name="Horiz Alignment" value="Center" />
 		<attribute name="Tiled" value="true" />
+		<attribute name="Opacity" value="0.5" />
 		
     </element>
 	

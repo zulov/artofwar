@@ -11,13 +11,27 @@ LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 LoadingPanel::~LoadingPanel() {
 }
 
+void LoadingPanel::reset(int _stages) {
+	setVisible(true);
+	stagesNumber = _stages;
+	stage = 0;
+	update();
+}
+
+void LoadingPanel::inc() {
+	++stage;
+	update();
+}
+
+void LoadingPanel::end() {
+	setVisible(false);
+}
+
 void LoadingPanel::createBody() {
 
 	background = window->CreateChild<Urho3D::BorderImage>();
 	background->SetStyle("Background", style);
 	background->SetVisible(true);
-	background->SetOpacity(0.5);
-
 
 	bar = window->CreateChild<Urho3D::ProgressBar>();
 	bar->SetStyle("LargeProgressBar", style);
@@ -27,6 +41,7 @@ void LoadingPanel::createBody() {
 
 }
 
-void LoadingPanel::update(float progres) {
-	bar->SetValue(progres);
+void LoadingPanel::update() {
+	float val = stage / stagesNumber;
+	bar->SetValue(val);
 }

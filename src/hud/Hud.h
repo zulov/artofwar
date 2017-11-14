@@ -60,6 +60,10 @@ public:
 	std::vector<HudElement*>* getButtonsUnitsToSubscribe();
 	std::vector<Button*>* getButtonsQueueToSubscribe();
 	std::vector<Window*>* getWindows();
+	void resetLoading(int stages);
+	void endLoading();
+	void incLoading();
+
 private:
 	void replaceVariables(XMLFile* xmlFile, int hudSizeId);
 	void createDebugHud();

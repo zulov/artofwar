@@ -71,4 +71,6 @@ private:
 	Controls* controls;
 	LevelBuilder* levelBuilder;
 	GameState gameState;
+
+	int loadStage = 0;
 };

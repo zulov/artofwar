@@ -38,12 +38,30 @@ void Main::Setup() {
 }
 
 void Main::load() {
-	levelBuilder->createScene(1);
 
-	Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
-	Game::get()->setCreationCommandList(new CreationCommandList())->setEnviroment(enviroment);
-
-	simulation = new Simulation(enviroment, Game::get()->getCreationCommandList());
+	switch (loadStage) {
+	case 0:
+		{
+		hud->resetLoading(2);
+		levelBuilder->createScene(1);
+		hud->incLoading();
+		}
+		break;
+	case 1:
+		{
+		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
+		Game::get()->setCreationCommandList(new CreationCommandList())->setEnviroment(enviroment);
+		hud->incLoading();
+		simulation = new Simulation(enviroment, Game::get()->getCreationCommandList());
+		hud->incLoading();
+		hud->endLoading();
+		break;
+		}
+	case 2:
+		gameState = GameState::RUNNING;
+		break;
+	}
+	++loadStage;
 }
 
 void Main::Start() {
@@ -133,22 +151,21 @@ void Main::running(VariantMap& eventData) {
 
 void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	switch (gameState) {
-	case GameState::STARTING: break;
-	case GameState::LOADING: 
-		load();
-		gameState = GameState::RUNNING;
-		break;
-	case GameState::MENU: 
+	case GameState::MENU:
 		gameState = GameState::LOADING;
 		break;
-	case GameState::RUNNING: 
+	case GameState::LOADING:
+		load();
+
+		break;
+	case GameState::RUNNING:
 		running(eventData);
 		break;
 	case GameState::PAUSE: break;
 	case GameState::ENDING: break;
 
 	}
-	
+
 }
 
 void Main::InitMouseMode(MouseMode mode) {

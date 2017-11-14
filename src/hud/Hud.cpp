@@ -153,6 +153,18 @@ std::vector<Window*>* Hud::getWindows() {
 	return windows;
 }
 
+void Hud::resetLoading(int stages) {
+	loadingPanel->reset(stages);
+}
+
+void Hud::endLoading() {
+	loadingPanel->end();
+}
+
+void Hud::incLoading() {
+	loadingPanel->inc();
+}
+
 void Hud::updateSelected(SelectedInfo* selectedInfo) {
 	//TODO raz stworzyc a sterowac widzialnsocia
 	if (selectedInfo->hasChanged()) {
