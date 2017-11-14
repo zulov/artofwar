@@ -36,11 +36,10 @@ void Main::Setup() {
 
 	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
 	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
-	loadingState->reset(3);
+	loadingState->reset(4);
 }
 
 void Main::load() {
-
 	switch (loadingState->currentStage) {
 	case 0:
 		{
@@ -51,14 +50,23 @@ void Main::load() {
 	case 1:
 		{
 		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
-		Game::get()->setCreationCommandList(new CreationCommandList())->setEnviroment(enviroment);
+
+		Game::get()->setEnviroment(enviroment);
 		loadingState->sth = enviroment;
 		break;
 		}
 	case 2:
+		{
+		Enviroment* enviroment = static_cast<Enviroment*>(loadingState->sth);
+		enviroment->prepareGridToFind();
+
+		break;
+		}
+	case 3:
+		Game::get()->setCreationCommandList(new CreationCommandList());
 		simulation = new Simulation(static_cast<Enviroment*>(loadingState->sth), Game::get()->getCreationCommandList());
 		break;
-	case 3:
+	case 4:
 		gameState = GameState::RUNNING;
 		hud->endLoading();
 		break;
@@ -92,6 +100,7 @@ void Main::Start() {
 
 void Main::Stop() {
 	engine_->DumpResources(true);
+	delete loadingState;
 }
 
 void Main::subscribeToEvents() {
@@ -160,7 +169,6 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		break;
 	case GameState::LOADING:
 		load();
-
 		break;
 	case GameState::RUNNING:
 		running(eventData);

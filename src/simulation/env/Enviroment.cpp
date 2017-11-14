@@ -141,3 +141,7 @@ void Enviroment::testFind(IntVector2& startV, IntVector2& goalV) {
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
 	std::cout << duration.count() << std::endl;
 }
+
+void Enviroment::prepareGridToFind() {
+	mainGrid->prepareGridToFind();
+}

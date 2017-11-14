@@ -10,7 +10,7 @@ struct loading
 		start = std::chrono::system_clock::now();
 	}
 
-	~loading();
+	~loading(){}
 
 	float getProgres() {
 		return currentStage / stagesNumber;

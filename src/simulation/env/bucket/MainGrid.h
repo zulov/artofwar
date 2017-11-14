@@ -14,6 +14,7 @@ public:
 	MainGrid(short _resolution, double _size, bool _debugEnabled = false);
 	~MainGrid();
 
+	void prepareGridToFind();
 	bool validateAdd(Static* object);
 	bool validateAdd(const IntVector2& size, Vector3* pos);
 	void addStatic(Static* object);

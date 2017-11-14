@@ -6,13 +6,14 @@
 #include "BucketQueue.h"
 #include "Urho3D/Resource/Image.h"
 
+
 MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_resolution, _size, _debugEnabled) {
 	short posX = 0;
 	short posZ = 0;
 
 	int miniRes = resolution / 16;
 	tempNeighbour = new std::vector<std::pair<int, float>*>();
-	tempNeighbour->reserve(8);
+	tempNeighbour->reserve(10);
 
 	for (int i = 0; i < resolution * resolution; ++i) {
 		buckets[i].upgrade();
@@ -31,7 +32,15 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 			posZ = 0;
 		}
 	}
+}
 
+MainGrid::~MainGrid() {
+	delete tempNeighbour;
+	delete[]came_from;
+	delete[]cost_so_far;
+}
+
+void MainGrid::prepareGridToFind() {
 	for (int i = 0; i < resolution * resolution; ++i) {
 		tempNeighbour = neighbors(i);
 		buckets[i].setNeightbours(tempNeighbour);
@@ -41,11 +50,6 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 	cost_so_far = new float[resolution * resolution];
 }
 
-MainGrid::~MainGrid() {
-	delete tempNeighbour;
-	delete[]came_from;
-	delete[]cost_so_far;
-}
 
 bool MainGrid::validateAdd(Static* object) {
 	IntVector2 size = object->getGridSize();
