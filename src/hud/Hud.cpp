@@ -153,16 +153,16 @@ std::vector<Window*>* Hud::getWindows() {
 	return windows;
 }
 
-void Hud::resetLoading(int stages) {
-	loadingPanel->reset(stages);
+void Hud::resetLoading() {
+	loadingPanel->show();
 }
 
 void Hud::endLoading() {
 	loadingPanel->end();
 }
 
-void Hud::incLoading() {
-	loadingPanel->inc();
+void Hud::updateLoading(float progress) {
+	loadingPanel->update(progress);
 }
 
 void Hud::updateSelected(SelectedInfo* selectedInfo) {

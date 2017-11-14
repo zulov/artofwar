@@ -60,9 +60,9 @@ public:
 	std::vector<HudElement*>* getButtonsUnitsToSubscribe();
 	std::vector<Button*>* getButtonsQueueToSubscribe();
 	std::vector<Window*>* getWindows();
-	void resetLoading(int stages);
+	void resetLoading();
 	void endLoading();
-	void incLoading();
+	void updateLoading(float progress);
 
 private:
 	void replaceVariables(XMLFile* xmlFile, int hudSizeId);

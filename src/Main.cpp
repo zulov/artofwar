@@ -12,6 +12,7 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE) 
 	context->RegisterFactory<LinkComponent>();
 	MySprite::RegisterObject(context);
 	Game::init();
+	loadingState = new loading();
 }
 
 void Main::Setup() {
@@ -35,33 +36,36 @@ void Main::Setup() {
 
 	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
 	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
+	loadingState->reset(3);
 }
 
 void Main::load() {
 
-	switch (loadStage) {
+	switch (loadingState->currentStage) {
 	case 0:
 		{
-		hud->resetLoading(2);
+		hud->resetLoading();
 		levelBuilder->createScene(1);
-		hud->incLoading();
 		}
 		break;
 	case 1:
 		{
 		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
 		Game::get()->setCreationCommandList(new CreationCommandList())->setEnviroment(enviroment);
-		hud->incLoading();
-		simulation = new Simulation(enviroment, Game::get()->getCreationCommandList());
-		hud->incLoading();
-		hud->endLoading();
+		loadingState->sth = enviroment;
 		break;
 		}
 	case 2:
+		simulation = new Simulation(static_cast<Enviroment*>(loadingState->sth), Game::get()->getCreationCommandList());
+		break;
+	case 3:
 		gameState = GameState::RUNNING;
+		hud->endLoading();
 		break;
 	}
-	++loadStage;
+	loadingState->inc();
+	hud->updateLoading(loadingState->getProgres());
+
 }
 
 void Main::Start() {

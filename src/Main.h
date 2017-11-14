@@ -19,6 +19,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/SceneEvents.h>
 #include "GameState.h"
+#include "Loading.h"
 
 namespace Urho3D {
 	class Node;
@@ -72,5 +73,5 @@ private:
 	LevelBuilder* levelBuilder;
 	GameState gameState;
 
-	int loadStage = 0;
+	loading *loadingState;
 };

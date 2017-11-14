@@ -11,16 +11,10 @@ LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 LoadingPanel::~LoadingPanel() {
 }
 
-void LoadingPanel::reset(int _stages) {
+void LoadingPanel::show() {
 	setVisible(true);
-	stagesNumber = _stages;
-	stage = 0;
-	update();
-}
 
-void LoadingPanel::inc() {
-	++stage;
-	update();
+	update(0);
 }
 
 void LoadingPanel::end() {
@@ -41,7 +35,6 @@ void LoadingPanel::createBody() {
 
 }
 
-void LoadingPanel::update() {
-	float val = stage / stagesNumber;
-	bar->SetValue(val);
+void LoadingPanel::update(float progres) {
+	bar->SetValue(progres);
 }
