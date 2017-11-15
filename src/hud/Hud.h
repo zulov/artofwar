@@ -49,6 +49,7 @@ public:
 
 	void update(Benchmark* benchmark, CameraManager* cameraManager);
 	void update(int unitsNumber);
+	void createMiniMap();
 	void updateSelected(SelectedInfo* selectedInfo);
 
 	void hoverOnIcon(HudElement* hudElement);

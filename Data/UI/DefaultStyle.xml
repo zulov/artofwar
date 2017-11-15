@@ -455,9 +455,9 @@
         <attribute name="Max Size" value="{4*iconX+2*spaceX} {4*iconY+2*spaceY}" />
 		<attribute name="Vert Alignment" value="Bottom" />
 		<attribute name="Horiz Alignment" value="Right" />
-		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Mode" value="Horizontal" />
 		<attribute name="Layout Spacing" value="{spaceX}" />
-        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+        <attribute name="Layout Border" value="{spaceX*2} {spaceY*2} {spaceX*2} {spaceY*2}" />
 	</element>	
 	<element type="SelectedInfoWindow" style="MyWindow">
 		<attribute name="Vert Alignment" value="Bottom" />
@@ -642,5 +642,10 @@
 		<attribute name="Opacity" value="0.5" />
 		
     </element>
+	
+	<element type="MiniMap" >
+
+		<attribute name="Max Size" value="{iconX*3} {iconY*3}" />
+	</element>
 	
 </elements>

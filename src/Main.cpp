@@ -58,7 +58,7 @@ void Main::load() {
 		{
 		Enviroment* enviroment = static_cast<Enviroment*>(loadingState->sth);
 		enviroment->prepareGridToFind();
-
+		hud->createMiniMap();
 		break;
 		}
 	case 3:
