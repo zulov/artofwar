@@ -17,7 +17,7 @@ void MiniMapPanel::createEmpty() {
 	IntVector2 size = spr->GetSize();
 	Enviroment* env = Game::get()->getEnviroment();
 	uint32_t* data = (uint32_t*)minimap->GetData();
-	int a =minimap->GetHeight();
+	int a = minimap->GetHeight();
 
 	int idR = 0;
 	float div = 5;
@@ -26,14 +26,20 @@ void MiniMapPanel::createEmpty() {
 
 	float xinc = 1.0f / (size.x_ - 1);
 	float yinc = 1.0f / (size.y_ - 1);
-
+	float yVal = 1;
+	float xVal = 0;
 	for (short y = size.y_; y > 0; --y) {
 		for (short x = 0; x < size.x_; ++x) {
-			float val = env->getGroundHeightPercent(y * yinc, x * xinc, div);
+
+			float val = env->getGroundHeightPercent(yVal, xVal, div);
 			//std::cout << val << " ";
 			*(data + idR) = 0xFF003000 + unsigned(val) * 0X100;
 			++idR;
+			
+			xVal += xinc;
 		}
+		xVal = 0;
+		yVal -= yinc;
 		//std::cout << std::endl;
 	}
 

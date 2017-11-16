@@ -22,17 +22,15 @@ void LoadingPanel::end() {
 }
 
 void LoadingPanel::createBody() {
-
 	background = window->CreateChild<Urho3D::BorderImage>();
 	background->SetStyle("Background", style);
 	background->SetVisible(true);
 
-	bar = window->CreateChild<Urho3D::ProgressBar>();
+	bar = background->CreateChild<Urho3D::ProgressBar>();
 	bar->SetStyle("LargeProgressBar", style);
 	bar->SetRange(1);
 	bar->SetValue(0);
 	bar->SetVisible(true);
-
 }
 
 void LoadingPanel::update(float progres) {
