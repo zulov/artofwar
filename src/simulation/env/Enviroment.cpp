@@ -123,7 +123,8 @@ double Enviroment::getGroundHeightAt(double x, double z) {
 float Enviroment::getGroundHeightPercent(float y, float x, float div) {
 	float scale = terrian->GetSpacing().y_;
 	Vector3 a = Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2, 0,
-		y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2);
+	                    y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2);
+	//std::cout << y << " " << x << "|";
 	return terrian->GetHeight(a) / scale / div;
 }
 

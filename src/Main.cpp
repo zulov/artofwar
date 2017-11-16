@@ -44,7 +44,7 @@ void Main::load() {
 	case 0:
 		{
 		hud->resetLoading();
-		levelBuilder->createScene(1);
+		levelBuilder->createScene(0);
 		}
 		break;
 	case 1:

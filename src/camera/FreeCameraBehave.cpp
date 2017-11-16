@@ -16,7 +16,7 @@ FreeCameraBehave::~FreeCameraBehave() {
 
 void FreeCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
 	if (cameraKeys[0]) {
-		cameraNode->Translate(Urho3D::Vector3::FORWARD * timeStep);
+		cameraNode->Translate(Urho3D::Vector3::FORWARD * timeStep*5);
 		changed = true;
 	}
 	if (cameraKeys[1]) {
@@ -24,11 +24,11 @@ void FreeCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, f
 		changed = true;
 	}
 	if (cameraKeys[2]) {
-		cameraNode->Translate(Urho3D::Vector3::LEFT * timeStep);
+		cameraNode->Translate(Urho3D::Vector3::LEFT * timeStep*3);
 		changed = true;
 	}
 	if (cameraKeys[3]) {
-		cameraNode->Translate(Urho3D::Vector3::RIGHT * timeStep);
+		cameraNode->Translate(Urho3D::Vector3::RIGHT * timeStep*3);
 		changed = true;
 	}
 }
