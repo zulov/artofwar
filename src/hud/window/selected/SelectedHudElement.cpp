@@ -69,7 +69,7 @@ void SelectedHudElement::add(std::vector<Physical*>* physicals) {
 		selected->push_back(physicals->at(i));
 		if (i < MAX_SELECTED_IN_BUTTON) {
 			bars[i]->SetRange(1);
-			bars[i]->SetValue(physicals->at(i)->getHealthBarSize());
+			bars[i]->SetValue(physicals->at(i)->getHealthPercent());
 			bars[i]->SetVisible(true);
 		}
 	}

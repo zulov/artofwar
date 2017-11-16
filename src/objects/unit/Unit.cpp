@@ -45,6 +45,10 @@ double Unit::getHealthBarSize() {
 	return healthBarSize;
 }
 
+double Unit::getHealthPercent() {
+	return (hpCoef / maxHpCoef);
+}
+
 void Unit::populate(db_unit* _dbUnit) {
 	maxSeparationDistance = _dbUnit->maxSep;
 	mass = _dbUnit->mass;

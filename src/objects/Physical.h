@@ -11,6 +11,7 @@ public:
 	~Physical();
 	void updateHealthBar();
 	virtual double getHealthBarSize();
+	virtual double getHealthPercent();
 	int getBucketIndex(char param);
 	bool bucketHasChanged(int _bucketIndex, char param);
 	void setBucket(int _bucketIndex, char param);

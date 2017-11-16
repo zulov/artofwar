@@ -596,14 +596,14 @@
         <attribute name="Min Size" value="0 {spaceY*2}" />
         <attribute name="Max Size" value="128 {spaceY*2}" />
         <attribute name="Image Rect" value="48 0 64 16" />
-        <attribute name="Border" value="{spaceX/4} {spaceY/3} {spaceX/4} {spaceY/3}" />
+        <attribute name="Border" value="2 2 2 2" />
         <attribute name="Show Percent Text" value="false" />
         <attribute name="Opacity" value="0.8" />
 		<attribute name="Horiz Alignment" value="Left" />
 		
         <element type="BorderImage" internal="true">
-            <attribute name="Image Rect" value="160 80 176 96" />
-            <attribute name="Border" value="0 0 0 0" />
+            <attribute name="Image Rect" value="161 81 174 94" />
+            <attribute name="Border" value="1 1 1 1" />
             <attribute name="Hover Image Offset" value="0 0" />
         </element>
     </element>

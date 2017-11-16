@@ -73,6 +73,10 @@ double Physical::getHealthBarSize() {
 	return 1;
 }
 
+double Physical::getHealthPercent() {
+	return 1.0;
+}
+
 int Physical::getBucketIndex(char param) {
 	return bucketIndexShift[param];
 }
