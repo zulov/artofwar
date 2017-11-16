@@ -70,7 +70,7 @@ Entity* LevelBuilder::createGround(String heightMap, String texture, float horSc
 	Node* node = entity->getNode();
 
 	terrain = node->CreateComponent<Terrain>();
-	terrain->SetPatchSize(64);
+	terrain->SetPatchSize(8);
 	terrain->SetSpacing(Vector3(horScale, verScale, horScale));
 	terrain->SetSmoothing(false);
 	terrain->SetHeightMap(Game::get()->getCache()->GetResource<Image>(heightMap));
