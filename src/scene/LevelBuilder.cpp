@@ -58,6 +58,7 @@ Entity* LevelBuilder::createLight(Vector3& direction, Color& color, LightType li
 	Node* lightNode = entity->getNode();
 	lightNode->SetDirection(direction);
 	Light* light = lightNode->CreateComponent<Light>();
+	light->SetPerVertex(true);
 	light->SetLightType(lightType);
 	light->SetColor(color);
 
