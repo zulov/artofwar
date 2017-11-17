@@ -101,7 +101,7 @@ std::vector<Unit*>* Grid::getContentAt(int index) {
 
 int Grid::getSizeAt(int index) {
 	//if (inRange(index)) {
-	return buckets[index].getContent()->size();
+	return buckets[index].getSize();
 	//}
 }
 

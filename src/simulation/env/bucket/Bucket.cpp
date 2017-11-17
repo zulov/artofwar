@@ -9,6 +9,7 @@ Bucket::~Bucket() {
 Bucket::Bucket() {
 	content = new std::vector<Unit *>();
 	content->reserve(DEFAULT_VECTOR_SIZE / 2);
+	size = 0;
 }
 
 std::vector<Unit *>* Bucket::getContent() {
@@ -17,12 +18,14 @@ std::vector<Unit *>* Bucket::getContent() {
 
 void Bucket::add(Unit* entity) {
 	content->push_back(entity);
+	++size;
 }
 
 void Bucket::remove(Unit* entity) {
 	ptrdiff_t pos = std::find(content->begin(), content->end(), entity) - content->begin();
 	if (pos < content->size()) {
 		content->erase(content->begin() + pos);
+		--size;
 	}
 }
 
@@ -65,4 +68,8 @@ void Bucket::setNeightbours(std::vector<std::pair<int, float>*>* tempNeighbour) 
 
 std::vector<std::pair<int, float>*>& Bucket::getNeightbours() {
 	return data->getNeightbours();
+}
+
+int Bucket::getSize() {
+	return size;
 }

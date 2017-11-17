@@ -25,8 +25,9 @@ public:
 	void upgrade();
 	void setNeightbours(std::vector<std::pair<int, float>*>* tempNeighbour);
 	std::vector<std::pair<int, float>*>& getNeightbours();
+	int getSize();
 private:
-
+	int size;
 	std::vector<Unit*>* content;
 	ComplexBucketData* data;
 };
