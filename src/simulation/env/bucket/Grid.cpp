@@ -37,7 +37,7 @@ void Grid::updateGrid(Unit* entity, short team) {
 	Vector3* pos = entity->getPosition();
 	const short posX = getIndex(pos->x_);
 	const short posZ = getIndex(pos->z_);
-	const int index = getIndex(posX,posZ);
+	const int index = getIndex(posX, posZ);
 	if (!entity->isAlive()) {
 		removeAt(entity->getBucketIndex(team), entity);
 	} else if (entity->bucketHasChanged(index, team)) {
@@ -59,13 +59,14 @@ short Grid::getIndex(double value) {
 		if (index >= 0) {
 			return index;
 		}
+		return 0;
 	} else {
 		short index = (short)(value / size * resolution) + halfResolution;
 		if (index < resolution) {
 			return index;
 		}
+		return resolution-1;//TODO czy aby napewno?
 	}
-	return 0;
 }
 
 BucketIterator* Grid::getArrayNeight(Unit* entity, double radius, short thread) {
@@ -96,6 +97,12 @@ std::vector<Unit*>* Grid::getContentAt(int index) {
 		return buckets[index].getContent();
 	}
 	return empty;
+}
+
+int Grid::getSizeAt(int index) {
+	//if (inRange(index)) {
+	return buckets[index].getContent()->size();
+	//}
 }
 
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair) {

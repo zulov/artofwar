@@ -84,15 +84,14 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to) {
 	const short posBeginZ = getIndex(from.y_);
 	const short posEndX = getIndex(to.x_);
 	const short posEndZ = getIndex(to.y_);
+	//std::cout << posEndX - posBeginX << "*" << posEndZ - posBeginZ << std::endl;
 	ci->reset();
 	for (short i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
 		for (short j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
 			const int index = i * resolution + j;
-			std::vector<Unit *>* content = getContentAt(index);
-			if (content->size() > 0) {
 
-				ci->allNumber += content->size();
-			}
+			ci->allNumber += getSizeAt(index);
+
 		}
 	}
 	return ci;

@@ -162,6 +162,7 @@ content_info* Enviroment::getContentInfo(const Vector2& from, const Vector2& to)
 
 	float xTo = to.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
 	float yTo = to.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
+	//std::cout << xFrom << "-" << xTo << "$" << yFrom << "-" << yTo << std::endl;
 	return mainGrid->getContentInfo(Vector2(xFrom, yFrom), Vector2(xTo, yTo));
 	
 }
