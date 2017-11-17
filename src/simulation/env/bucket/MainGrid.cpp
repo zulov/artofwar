@@ -32,12 +32,14 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 			posZ = 0;
 		}
 	}
+	ci = new content_info();
 }
 
 MainGrid::~MainGrid() {
 	delete tempNeighbour;
 	delete[]came_from;
 	delete[]cost_so_far;
+	delete ci;
 }
 
 void MainGrid::prepareGridToFind() {
@@ -75,6 +77,25 @@ bool MainGrid::validateAdd(const IntVector2& size, Vector3* pos) {
 	}
 
 	return true;
+}
+
+content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to) {
+	const short posBeginX = getIndex(from.x_);
+	const short posBeginZ = getIndex(from.y_);
+	const short posEndX = getIndex(to.x_);
+	const short posEndZ = getIndex(to.y_);
+	ci->reset();
+	for (short i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
+		for (short j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
+			const int index = i * resolution + j;
+			std::vector<Unit *>* content = getContentAt(index);
+			if (content->size() > 0) {
+
+				ci->allNumber += content->size();
+			}
+		}
+	}
+	return ci;
 }
 
 IntVector2 MainGrid::calculateSize(int size) {
@@ -292,7 +313,7 @@ inline double MainGrid::heuristic(int from, int to) {
 void MainGrid::draw_grid_path(std::vector<int>* path, Image* image) {
 	uint32_t* data = (uint32_t*)image->GetData();
 	for (auto value : *path) {
-		IntVector2 a=getCords(value);
+		IntVector2 a = getCords(value);
 		int idR = getIndex(resolution - a.y_ - 1, a.x_);
 		*(data + idR) -= 0x0000007F;
 	}

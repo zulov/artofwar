@@ -467,6 +467,7 @@
     <ClInclude Include="src\Progress.h" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\Loading.h" />
+    <ClInclude Include="src\simulation\env\ContentInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

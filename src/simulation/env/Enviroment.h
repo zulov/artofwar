@@ -11,6 +11,7 @@
 #include "objects/Physical.h"
 #include "bucket/MainGrid.h"
 #include <Urho3D/Graphics/Terrain.h>
+#include "ContentInfo.h"
 
 
 class Enviroment
@@ -42,6 +43,7 @@ public:
 	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos);
 	void testFind(IntVector2 &startV, IntVector2 &goalV);
 	void prepareGridToFind();
+	content_info* getContentInfo(const Vector2& from, const Vector2& to);
 private:
 	MainGrid* mainGrid;
 	Grid* teamUnitGrid[MAX_PLAYERS];

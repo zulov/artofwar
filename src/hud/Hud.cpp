@@ -131,6 +131,7 @@ void Hud::update(Benchmark* benchmark, CameraManager* cameraManager) {
 	                    cameraManager->getInfo());
 
 	topPanel->update(Game::get()->getPlayersManager()->getActivePlayer()->getResources());
+	miniMapPanel->update();
 }
 
 void Hud::update(int unitsNumber) {

@@ -3,6 +3,7 @@
 #include "ComplexBucketData.h"
 #include <unordered_map>
 #include "BucketQueue.h"
+#include "simulation/env/ContentInfo.h"
 
 namespace Urho3D {
 	class Image;
@@ -35,6 +36,7 @@ public:
 	void draw_grid_cost(float* costSoFar, Image* image);
 	void draw_grid_path(std::vector<int>* path, Image* image);
 	void drawMap(Image* image);
+	content_info* getContentInfo(const Vector2& from, const Vector2& to);
 private:
 	IntVector2 calculateSize(int size);
 	std::vector<std::pair<int, float>*>* tempNeighbour;
@@ -42,5 +44,5 @@ private:
 	float* cost_so_far;
 	BucketQueue frontier;
 	int staticCounter = 0;
-	//FibHeap frontier;
+	content_info* ci;
 };
