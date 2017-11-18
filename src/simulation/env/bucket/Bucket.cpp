@@ -23,10 +23,17 @@ void Bucket::add(Unit* entity) {
 
 void Bucket::remove(Unit* entity) {
 	ptrdiff_t pos = std::find(content->begin(), content->end(), entity) - content->begin();
+//	if (pos < content->size()) {
+//		std::iter_swap(content->begin() + pos, content->end()-1);
+//		content->erase(content->end()-1);
+//		--size;
+//	}
+
 	if (pos < content->size()) {
 		content->erase(content->begin() + pos);
 		--size;
 	}
+
 }
 
 void Bucket::setCenter(double _centerX, double _centerY) {

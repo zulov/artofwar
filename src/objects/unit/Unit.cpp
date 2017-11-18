@@ -100,9 +100,19 @@ double Unit::getMaxSeparationDistance() {
 
 Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
 	if (aims) {
-		auto dir = aims->getDirection(this, aimIndex) ? aims->getDirection(this, aimIndex) : toResource;
-		if (dir) {
-			Vector3* force = new Vector3(*dir);
+		auto dir = aims->getDirection(this, aimIndex);
+		Vector3* force = nullptr;
+		if (dir == nullptr) {
+			dir = toResource;
+			if (!toResource) {
+				force = new Vector3(*toResource);
+			}
+		} else {
+			force = dir;
+		}
+
+		if (force) {
+			//Vector3* force = new Vector3(*dir);
 			force->Normalize();
 			(*force) *= boostCoef;
 			(*force) -= (*velocity);

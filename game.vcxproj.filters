@@ -211,7 +211,6 @@
     </ClCompile>
     <ClCompile Include="src\simulation\env\bucket\BucketQueue.cpp" />
     <ClCompile Include="src\hud\window\loading\LoadingPanel.cpp" />
-    <ClCompile Include="src\Progress.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -464,7 +463,6 @@
     <ClInclude Include="src\simulation\env\bucket\fiboheap.h" />
     <ClInclude Include="src\control\HitData.h" />
     <ClInclude Include="src\hud\window\loading\LoadingPanel.h" />
-    <ClInclude Include="src\Progress.h" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\Loading.h" />
     <ClInclude Include="src\simulation\env\ContentInfo.h" />
