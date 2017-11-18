@@ -1,5 +1,6 @@
 #pragma once
 #include "Bucket.h"
+#include "simulation/env/ContentInfo.h"
 
 #define MAX_SEP_DIST 20
 #define RES_SEP_DIST 200
@@ -11,10 +12,9 @@ public:
 	Grid(short _resolution, double _size, bool _debugEnabled = false);
 	~Grid();
 
-
 	void updateGrid(Unit* entity, short team);
 	std::vector<Unit*>* getContentAt(int index);
-	int getSizeAt(int index);
+	int &getSizeAt(int index);
 	std::vector<int>* getEnvIndexsFromCache(double getMaxSeparationDistance);
 	std::vector<Physical *>* getArrayNeight(std::pair<Vector3*, Vector3*>* pair);
 	BucketIterator* getArrayNeight(Unit* entity, double radius, short thread);
@@ -27,6 +27,7 @@ protected:
 	bool debugEnabled;
 	short halfResolution;
 	double size;
+	double invFieldSize;
 
 	Bucket* buckets;
 

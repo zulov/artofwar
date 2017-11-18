@@ -70,6 +70,6 @@ std::vector<std::pair<int, float>*>& Bucket::getNeightbours() {
 	return data->getNeightbours();
 }
 
-int Bucket::getSize() {
+int& Bucket::getSize() {
 	return size;
 }

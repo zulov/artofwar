@@ -156,13 +156,13 @@ void Enviroment::prepareGridToFind() {
 	mainGrid->prepareGridToFind();
 }
 
-content_info* Enviroment::getContentInfo(const Vector2& from, const Vector2& to) {
-	float xFrom = from.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
-	float yFrom = from.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
-
-	float xTo = to.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
-	float yTo = to.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
+content_info* Enviroment::getContentInfo(Vector2& from, Vector2& to) {
+	from.x_= from.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
+	from.y_= from.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
+	
+	to.x_ = to.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
+	to.y_ = to.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
 	//std::cout << xFrom << "-" << xTo << "$" << yFrom << "-" << yTo << std::endl;
-	return mainGrid->getContentInfo(Vector2(xFrom, yFrom), Vector2(xTo, yTo));
+	return mainGrid->getContentInfo(from, to);
 	
 }

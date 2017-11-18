@@ -6,12 +6,14 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
+#include "simulation/env/ContentInfo.h"
 
 Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
 	resolution = _resolution;
 	halfResolution = resolution / 2;
 	size = _size;
 	fieldSize = size / resolution;
+	invFieldSize = resolution / size;
 	debugEnabled = _debugEnabled;
 
 	levelsCache = new std::vector<int>*[RES_SEP_DIST];
@@ -55,17 +57,17 @@ std::vector<int>* Grid::getEnvIndexsFromCache(double dist) {
 
 short Grid::getIndex(double value) {
 	if (value < 0) {
-		short index = (short)(value / size * resolution) + halfResolution - 1;
+		short index = (short)(value * invFieldSize) + halfResolution - 1;
 		if (index >= 0) {
 			return index;
 		}
 		return 0;
 	} else {
-		short index = (short)(value / size * resolution) + halfResolution;
+		short index = (short)(value * invFieldSize) + halfResolution;
 		if (index < resolution) {
 			return index;
 		}
-		return resolution-1;//TODO czy aby napewno?
+		return resolution - 1;//TODO czy aby napewno?
 	}
 }
 
@@ -99,10 +101,8 @@ std::vector<Unit*>* Grid::getContentAt(int index) {
 	return empty;
 }
 
-int Grid::getSizeAt(int index) {
-	//if (inRange(index)) {
+int& Grid::getSizeAt(int index) {
 	return buckets[index].getSize();
-	//}
 }
 
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair) {
