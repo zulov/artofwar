@@ -15,7 +15,7 @@ MiniMapPanel::~MiniMapPanel() {
 	delete heightMap;
 }
 
-void MiniMapPanel::createEmpty() {
+void MiniMapPanel::createEmpty(int parts) {
 	IntVector2 size = spr->GetSize();
 	Enviroment* env = Game::get()->getEnviroment();
 	uint32_t* data = (uint32_t*)minimap->GetData();
@@ -42,6 +42,7 @@ void MiniMapPanel::createEmpty() {
 	text->SetData(minimap);
 
 	spr->SetTexture(text);
+	indexPerUpdate = size.x_ * size.y_ / parts + 1;
 }
 
 void MiniMapPanel::update() {
@@ -49,30 +50,29 @@ void MiniMapPanel::update() {
 	Enviroment* env = Game::get()->getEnviroment();
 	uint32_t* data = (uint32_t*)minimap->GetData();
 
-	int idR = 0;
 
 	float xinc = 1.0f / (size.x_);
 	float yinc = 1.0f / (size.y_);
 
-	float yVal = 1;
-	float xVal = 0;
-
-	for (; idR < size.y_ * size.x_; ++idR) {
-		float yVal = 1 - yinc * (idR / size.y_);
-		float xVal = 0 + xinc * (idR % size.y_);
+	int partIndex = 0;
+	for (; partIndex < indexPerUpdate && indexUpdate < size.y_ * size.x_; ++partIndex, ++indexUpdate) {
+		float yVal = 1 - yinc * (indexUpdate / size.y_);
+		float xVal = 0 + xinc * (indexUpdate % size.y_);
 
 		content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc));
 		if (ci->hasBuilding()) {
-			*(data + idR) = 0xFF900000;
+			*(data + indexUpdate) = 0xFF900000;
 		} else if (ci->hasResource()) {
-			*(data + idR) = 0xFF001000;
+			*(data + indexUpdate) = 0xFF001000;
 		} else if (ci->hasUnit()) {
-			*(data + idR) = 0xFFCF0000;
+			*(data + indexUpdate) = 0xFFCF0000;
 		} else {
-			*(data + idR) = heightMap[idR];
+			*(data + indexUpdate) = heightMap[indexUpdate];
 		}
 	}
-
+	if (indexUpdate >= size.y_ * size.x_) {
+		indexUpdate = 0;
+	}
 
 	text->SetData(minimap);
 

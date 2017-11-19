@@ -131,7 +131,7 @@ void Hud::update(Benchmark* benchmark, CameraManager* cameraManager) {
 	                    cameraManager->getInfo());
 
 	topPanel->update(Game::get()->getPlayersManager()->getActivePlayer()->getResources());
-	miniMapPanel->update();
+	miniMapPanel->update();//TODO robic updata co realn¹ klatkê
 }
 
 void Hud::update(int unitsNumber) {
@@ -139,7 +139,7 @@ void Hud::update(int unitsNumber) {
 }
 
 void Hud::createMiniMap() {
-	miniMapPanel->createEmpty();
+	miniMapPanel->createEmpty(20);
 }
 
 std::vector<HudElement*>* Hud::getButtonsBuildToSubscribe() {
