@@ -4,7 +4,7 @@
 #include <Urho3D/UI/Sprite.h>
 #include <Urho3D/UI/Button.h>
 
-#define MINI_MAP_BUTTON_NUMBER 5
+#define MINI_MAP_BUTTON_NUMBER 4
 
 
 class MiniMapPanel : public AbstractWindowPanel

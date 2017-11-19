@@ -512,15 +512,23 @@
     </element>
 	
 	<element type="MiniMapIcon" style="Button">
-        <attribute name="Min Size" value="{iconX*2/3} {iconY/2-spaceY}" />
-        <attribute name="Max Size" value="{iconX*2/3} {iconY/2-spaceY}" />
+        <attribute name="Min Size" value="{iconX-spaceX/2} {iconY/2-spaceY}" />
+        <attribute name="Max Size" value="{iconX-spaceX/2} {iconY/2-spaceY}" />
     </element>
 	
 	<element type="MiniMapListRow" style="ListRow" >
-		<attribute name="Layout Spacing" value="{spaceX}" />
+		<attribute name="Layout Spacing" value="{spaceX/2}" />
 		<attribute name="Min Size" value="100 {iconY/2}" />
 		<attribute name="Max Size" value="10000 {iconY/2}" />
 	</element>
+	
+	<element type="MiniMapSprite">
+        <attribute name="Vert Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="My Size" value="{iconX-spaceX} {iconY/2-spaceY}" />
+		<attribute name="Percent HotSpot" value="0.5 0.5" />
+		<attribute name="Opacity" value="0.8" />
+    </element>
 
 	<element type="Sprite">
         <attribute name="Vert Alignment" value="Center" />

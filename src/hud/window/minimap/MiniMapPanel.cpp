@@ -4,6 +4,8 @@
 #include <Urho3D/Graphics/Texture2D.h>
 #include "simulation/env/Enviroment.h"
 #include "simulation/env/ContentInfo.h"
+#include "hud/ButtonUtils.h"
+#include <Urho3D/Resource/ResourceCache.h>
 
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -81,13 +83,16 @@ void MiniMapPanel::update() {
 void MiniMapPanel::createBody() {
 	spr = window->CreateChild<Sprite>();
 
-	UIElement * row = window->CreateChild<UIElement>();
+	UIElement* row = window->CreateChild<UIElement>();
 	row->SetStyle("MiniMapListRow", style);
 
 	buttons = new Button*[MINI_MAP_BUTTON_NUMBER];
 	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
-		buttons[i] = row->CreateChild<Button>();
-		buttons[i]->SetStyle("MiniMapIcon", style);
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/minimap" + String(i) + ".png");
+
+		MySprite* sprite = createSprite(texture, style, "MiniMapSprite");
+		buttons[i] = simpleButton(sprite, style, "MiniMapIcon");
+		row->AddChild(buttons[i]);
 	}
 
 	IntVector2 size = spr->GetSize();
@@ -103,6 +108,5 @@ void MiniMapPanel::createBody() {
 	spr->SetTexture(text);
 	heightMap = new unsigned[size.x_ * size.x_];
 
-	
-	
+
 }
