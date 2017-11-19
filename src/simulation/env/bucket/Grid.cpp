@@ -62,13 +62,12 @@ short Grid::getIndex(double value) {
 			return index;
 		}
 		return 0;
-	} else {
-		short index = (short)(value * invFieldSize) + halfResolution;
-		if (index < resolution) {
-			return index;
-		}
-		return resolution - 1;//TODO czy aby napewno?
 	}
+	short index = (short)(value * invFieldSize) + halfResolution;
+	if (index < resolution) {
+		return index;
+	}
+	return resolution - 1;//TODO czy aby napewno?
 }
 
 BucketIterator* Grid::getArrayNeight(Unit* entity, double radius, short thread) {

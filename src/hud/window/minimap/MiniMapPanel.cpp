@@ -50,32 +50,29 @@ void MiniMapPanel::update() {
 	uint32_t* data = (uint32_t*)minimap->GetData();
 
 	int idR = 0;
-	float div = 5;
+
 	float xinc = 1.0f / (size.x_);
 	float yinc = 1.0f / (size.y_);
+
 	float yVal = 1;
 	float xVal = 0;
 
-	for (short y = size.y_; y > 0; --y) {
-		for (short x = 0; x < size.x_; ++x) {
+	for (; idR < size.y_ * size.x_; ++idR) {
+		float yVal = 1 - yinc * (idR / size.y_);
+		float xVal = 0 + xinc * (idR % size.y_);
 
-			content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc));
-			if (ci->hasBuilding()) {
-				*(data + idR) = 0xFF900000;
-			} else if (ci->hasResource()) {
-				*(data + idR) = 0xFF001000;
-			} else if (ci->hasUnit()) {
-				*(data + idR) = 0xFFCF0000;
-			} else {
-				*(data + idR) = heightMap[idR];
-			}
-
-			++idR;
-			xVal += xinc;
+		content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc));
+		if (ci->hasBuilding()) {
+			*(data + idR) = 0xFF900000;
+		} else if (ci->hasResource()) {
+			*(data + idR) = 0xFF001000;
+		} else if (ci->hasUnit()) {
+			*(data + idR) = 0xFFCF0000;
+		} else {
+			*(data + idR) = heightMap[idR];
 		}
-		xVal = 0;
-		yVal -= yinc;
 	}
+
 
 	text->SetData(minimap);
 
