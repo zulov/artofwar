@@ -89,8 +89,8 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to) {
 	for (short i = Min(posBeginX, posEndX); i < Max(posBeginX, posEndX); ++i) {
 		for (short j = Min(posBeginZ, posEndZ); j < Max(posBeginZ, posEndZ); ++j) {
 			const int index = i * resolution + j;
-			ObjectType type = buckets[index].getType();
-			switch (type) {
+			
+			switch (buckets[index].getType()) {
 			case BUILDING:
 				ci->allBuildingNumber++;
 				break;
@@ -102,7 +102,6 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to) {
 				break;
 			default: ;
 			}
-			ci->allNumber += getSizeAt(index);
 
 		}
 	}

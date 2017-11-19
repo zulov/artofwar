@@ -12,6 +12,7 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 
 
 MiniMapPanel::~MiniMapPanel() {
+	delete heightMap;
 }
 
 void MiniMapPanel::createEmpty() {
@@ -30,6 +31,7 @@ void MiniMapPanel::createEmpty() {
 		for (short x = 0; x < size.x_; ++x) {
 			float val = env->getGroundHeightPercent(yVal, xVal, div);
 			*(data + idR) = 0xFF003000 + unsigned(val) * 0X100;
+			heightMap[idR] = *(data + idR);
 			++idR;
 			xVal += xinc;
 		}
@@ -65,8 +67,7 @@ void MiniMapPanel::update() {
 			} else if (ci->hasUnit()) {
 				*(data + idR) = 0xFFCF0000;
 			} else {
-				float val = env->getGroundHeightPercent(yVal, xVal, div);
-				*(data + idR) = 0xFF003000 + unsigned(val) * 0X100;
+				*(data + idR) = heightMap[idR];
 			}
 
 			++idR;
@@ -99,4 +100,5 @@ void MiniMapPanel::createBody() {
 	text->SetData(minimap);
 
 	spr->SetTexture(text);
+	heightMap = new unsigned[size.x_ * size.x_];
 }

@@ -3,7 +3,7 @@
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/UI/Sprite.h>
 
-class MiniMapPanel :public AbstractWindowPanel
+class MiniMapPanel : public AbstractWindowPanel
 {
 public:
 	MiniMapPanel(Urho3D::XMLFile* _style);
@@ -15,5 +15,5 @@ private:
 	Urho3D::Sprite* spr;
 	Urho3D::Image* minimap;
 	Urho3D::Texture2D* text;
+	unsigned *heightMap;
 };
-
