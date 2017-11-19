@@ -13,7 +13,7 @@ public:
 	~Grid();
 
 	void updateGrid(Unit* entity, short team);
-	std::vector<Unit*>* getContentAt(int index);
+	std::vector<Unit*>& getContentAt(int index);
 	int &getSizeAt(int index);
 	std::vector<int>* getEnvIndexsFromCache(double getMaxSeparationDistance);
 	std::vector<Physical *>* getArrayNeight(std::pair<Vector3*, Vector3*>* pair);
@@ -42,5 +42,5 @@ private:
 	double diff = ((double)MAX_SEP_DIST) / RES_SEP_DIST;
 
 	std::vector<int>** levelsCache;
-	std::vector<Unit*>* empty;
+	std::vector<Unit*> empty;
 };

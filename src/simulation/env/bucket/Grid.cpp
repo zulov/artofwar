@@ -26,12 +26,12 @@ Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
 		iterators[i] = new BucketIterator();
 	}
 	buckets = new Bucket[resolution * resolution];
-	empty = new std::vector<Unit*>();
+	//empty = new std::vector<Unit*>();
 }
 
 Grid::~Grid() {
 	delete[] iterators;
-	delete empty;
+	//delete empty;
 	delete[] buckets;
 }
 
@@ -94,7 +94,7 @@ bool Grid::inRange(int index) {
 	return index >= 0 && index < resolution * resolution;
 }
 
-std::vector<Unit*>* Grid::getContentAt(int index) {
+std::vector<Unit*>& Grid::getContentAt(int index) {
 	if (inRange(index)) {
 		return buckets[index].getContent();
 	}
@@ -118,8 +118,8 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair
 	for (short i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
 		for (short j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
 			const int index = i * resolution + j;
-			std::vector<Unit *>* content = getContentAt(index);
-			entities->insert(entities->end(), content->begin(), content->end());
+			std::vector<Unit *>& content = getContentAt(index);//TODO czy tu ampersentma byc?
+			entities->insert(entities->end(), content.begin(), content.end());
 		}
 	}
 	return entities;

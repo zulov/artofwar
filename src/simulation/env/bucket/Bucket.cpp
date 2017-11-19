@@ -1,36 +1,37 @@
 #include "Bucket.h"
+#include <iostream>
 
 
 Bucket::~Bucket() {
-	delete content;
+	//delete content;
 	delete data;
 }
 
 Bucket::Bucket() {
-	content = new std::vector<Unit *>();
-	content->reserve(DEFAULT_VECTOR_SIZE / 2);
+	//content = new std::vector<Unit *>();
+	content.reserve(DEFAULT_VECTOR_SIZE / 2);
 	size = 0;
 }
 
-std::vector<Unit *>* Bucket::getContent() {
+std::vector<Unit *>& Bucket::getContent() {
 	return content;
 }
 
 void Bucket::add(Unit* entity) {
-	content->push_back(entity);
+	content.push_back(entity);
 	++size;
 }
 
 void Bucket::remove(Unit* entity) {
-	ptrdiff_t pos = std::find(content->begin(), content->end(), entity) - content->begin();
+	ptrdiff_t pos = std::find(content.begin(), content.end(), entity) - content.begin();
 //	if (pos < content->size()) {
 //		std::iter_swap(content->begin() + pos, content->end()-1);
 //		content->erase(content->end()-1);
 //		--size;
 //	}
 
-	if (pos < content->size()) {
-		content->erase(content->begin() + pos);
+	if (pos < content.size()) {
+		content.erase(content.begin() + pos);
 		--size;
 	}
 
@@ -49,7 +50,7 @@ ObjectType Bucket::getType() {
 }
 
 void Bucket::setStatic(Static* object) {
-	content->clear();
+	content.clear();
 	data->setStatic(object);
 }
 

@@ -10,7 +10,7 @@ public:
 	Bucket();
 	~Bucket();
 
-	std::vector<Unit*>* getContent();
+	std::vector<Unit*>& getContent();
 	void add(Unit* entity);
 	void remove(Unit* entity);
 	void setCenter(double _centerX, double _centerY);
@@ -28,6 +28,6 @@ public:
 	int &getSize();
 private:
 	int size;
-	std::vector<Unit*>* content;
+	std::vector<Unit*> content;
 	ComplexBucketData* data;
 };

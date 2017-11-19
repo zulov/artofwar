@@ -1,7 +1,7 @@
 #include "BucketIterator.h"
 #include "Grid.h"
 
-BucketIterator::BucketIterator() {
+BucketIterator::BucketIterator(): currentContent() {
 
 }
 
@@ -12,7 +12,7 @@ Unit* BucketIterator::next() {
 	while (secondIndex == sizeContent) {
 		if (index + 1 >= levelSize) { return nullptr; }
 		++index;
-		currentContent = bucketGrid->getContentAt((*levels)[index] + center);
+		currentContent = &bucketGrid->getContentAt((*levels)[index] + center);
 		sizeContent = currentContent->size();
 		secondIndex = 0;
 	}
@@ -28,7 +28,7 @@ void BucketIterator::init(std::vector<int>* _levels, int _center, Grid* _bucketG
 	index = 0;
 	secondIndex = 0;
 	bucketGrid = _bucketGrid;
-	currentContent = bucketGrid->getContentAt((*levels)[index] + center);
+	currentContent = &bucketGrid->getContentAt((*levels)[index] + center);
 	sizeContent = currentContent->size();
 	levelSize = levels->size();
 }
