@@ -2,6 +2,10 @@
 #include "../AbstractWindowPanel.h"
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/UI/Sprite.h>
+#include <Urho3D/UI/Button.h>
+
+#define MINI_MAP_BUTTON_NUMBER 5
+
 
 class MiniMapPanel : public AbstractWindowPanel
 {
@@ -15,6 +19,9 @@ private:
 	Urho3D::Sprite* spr;
 	Urho3D::Image* minimap;
 	Urho3D::Texture2D* text;
+
+	Urho3D::Button** buttons;
+
 	unsigned* heightMap;
 	int indexUpdate = 0;
 	int indexPerUpdate;

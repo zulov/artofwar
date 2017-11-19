@@ -50,14 +50,13 @@ void MiniMapPanel::update() {
 	Enviroment* env = Game::get()->getEnviroment();
 	uint32_t* data = (uint32_t*)minimap->GetData();
 
-
 	float xinc = 1.0f / (size.x_);
 	float yinc = 1.0f / (size.y_);
 
 	int partIndex = 0;
 	for (; partIndex < indexPerUpdate && indexUpdate < size.y_ * size.x_; ++partIndex, ++indexUpdate) {
-		float yVal = 1 - yinc * (indexUpdate / size.y_);
-		float xVal = 0 + xinc * (indexUpdate % size.y_);
+		float yVal = 1 - yinc * (indexUpdate / size.x_);
+		float xVal = 0 + xinc * (indexUpdate % size.x_);
 
 		content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc));
 		if (ci->hasBuilding()) {
@@ -82,12 +81,17 @@ void MiniMapPanel::update() {
 void MiniMapPanel::createBody() {
 	spr = window->CreateChild<Sprite>();
 
-	IntVector2 size = spr->GetSize();
-	if (size.x_ < size.y_) {
-		size.y_ = size.x_;
-	} else {
-		size.x_ = size.y_;
+	UIElement * row = window->CreateChild<UIElement>();
+	row->SetStyle("MiniMapListRow", style);
+
+	buttons = new Button*[MINI_MAP_BUTTON_NUMBER];
+	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
+		buttons[i] = row->CreateChild<Button>();
+		buttons[i]->SetStyle("MiniMapIcon", style);
 	}
+
+	IntVector2 size = spr->GetSize();
+
 	spr->SetMaxSize(size);
 	minimap = new Image(Game::get()->getContext());
 
@@ -98,4 +102,7 @@ void MiniMapPanel::createBody() {
 
 	spr->SetTexture(text);
 	heightMap = new unsigned[size.x_ * size.x_];
+
+	
+	
 }

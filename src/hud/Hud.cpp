@@ -139,7 +139,7 @@ void Hud::update(int unitsNumber) {
 }
 
 void Hud::createMiniMap() {
-	miniMapPanel->createEmpty(20);
+	miniMapPanel->createEmpty(160);
 }
 
 std::vector<HudElement*>* Hud::getButtonsBuildToSubscribe() {
