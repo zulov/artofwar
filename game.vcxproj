@@ -285,6 +285,7 @@
     <ClInclude Include="src\commands\ActionCommand.h" />
     <ClInclude Include="src\commands\ActionCommandList.h" />
     <ClInclude Include="src\hud\window\loading\LoadingPanel.h" />
+    <ClInclude Include="src\hud\window\minimap\MiniMapType.h" />
     <ClInclude Include="src\Loading.h" />
     <ClInclude Include="src\objects\Static.h" />
     <ClInclude Include="src\objects\unit\ActionParameter.h" />

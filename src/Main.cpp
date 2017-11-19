@@ -136,6 +136,10 @@ void Main::subscribeToEvents() {
 		//SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleQueueButton));//TODO zrobic z prawym przyciskiem tez
 	}
 
+	for (auto buttton : *hud->getButtonsMiniMapToSubscribe()) {
+		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapButton));
+	}
+
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
@@ -227,6 +231,11 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	}
 }
 
+void Main::HandleMiniMapButton(StringHash eventType, VariantMap& eventData) {
+	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
+	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+	hud->changeMiniMapType(hudElement->getId());
+}
 void Main::HandleBuildButton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();

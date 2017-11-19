@@ -56,14 +56,16 @@ public:
 	void hoverOffIcon(HudElement* hudElement);
 
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
+	std::vector<Button*>* getButtonsQueueToSubscribe();
+	std::vector<Button*>* getButtonsMiniMapToSubscribe();
 	std::vector<HudElement*>* getButtonsOrdersToSubscribe();
 	std::vector<HudElement*>* getButtonsBuildToSubscribe();
 	std::vector<HudElement*>* getButtonsUnitsToSubscribe();
-	std::vector<Button*>* getButtonsQueueToSubscribe();
 	std::vector<Window*>* getWindows();
 	void resetLoading();
 	void endLoading();
 	void updateLoading(float progress);
+	void changeMiniMapType(short id);
 
 private:
 	void replaceVariables(XMLFile* xmlFile, int hudSizeId);

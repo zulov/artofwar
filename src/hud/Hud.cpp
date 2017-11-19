@@ -64,7 +64,7 @@ void Hud::createCursor() {
 Hud::Hud() {
 	windows = new std::vector<Window*>();
 	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
-	ResourceCache * rc = Game::get()->getCache();
+	ResourceCache* rc = Game::get()->getCache();
 	style = rc->GetResource<XMLFile>("UI/" + graphSettings->style);
 	replaceVariables(style, graphSettings->hud_size);
 	Game::get()->getUI()->GetRoot()->SetDefaultStyle(style);
@@ -154,6 +154,10 @@ std::vector<Button*>* Hud::getButtonsQueueToSubscribe() {
 	return queuePanel->getButtonsQueueToSubscribe();
 }
 
+std::vector<Button*>* Hud::getButtonsMiniMapToSubscribe() {
+	return miniMapPanel->getButtonsMiniMapToSubscribe();
+}
+
 std::vector<Window*>* Hud::getWindows() {
 	return windows;
 }
@@ -171,6 +175,10 @@ void Hud::endLoading() {
 
 void Hud::updateLoading(float progress) {
 	loadingPanel->update(progress);
+}
+
+void Hud::changeMiniMapType(short id) {
+	miniMapPanel->changeMiniMapType(id);
 }
 
 void Hud::updateSelected(SelectedInfo* selectedInfo) {

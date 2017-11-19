@@ -6,6 +6,7 @@
 #include "simulation/env/ContentInfo.h"
 #include "hud/ButtonUtils.h"
 #include <Urho3D/Resource/ResourceCache.h>
+#include "hud/HudElement.h"
 
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -60,16 +61,35 @@ void MiniMapPanel::update() {
 		float yVal = 1 - yinc * (indexUpdate / size.x_);
 		float xVal = 0 + xinc * (indexUpdate % size.x_);
 
-		content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc));
-		if (ci->hasBuilding()) {
-			*(data + indexUpdate) = 0xFF900000;
-		} else if (ci->hasResource()) {
-			*(data + indexUpdate) = 0xFF001000;
-		} else if (ci->hasUnit()) {
-			*(data + indexUpdate) = 0xFFCF0000;
-		} else {
+		switch (type) {
+		case NOTHING:
 			*(data + indexUpdate) = heightMap[indexUpdate];
+			break;
+		case ALL:
+
+
+		case ALLY:
+
+
+		case ENEMY:{
+			content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc));
+			if (ci->hasBuilding()) {
+				*(data + indexUpdate) = 0xFF900000;
+			}
+			else if (ci->hasResource()) {
+				*(data + indexUpdate) = 0xFF001000;
+			}
+			else if (ci->hasUnit()) {
+				*(data + indexUpdate) = 0xFFCF0000;
+			}
+			else {
+				*(data + indexUpdate) = heightMap[indexUpdate];
+			}
+			break;
 		}
+		default: ;
+		}
+
 	}
 	if (indexUpdate >= size.y_ * size.x_) {
 		indexUpdate = 0;
@@ -80,20 +100,35 @@ void MiniMapPanel::update() {
 	spr->SetTexture(text);
 }
 
+std::vector<Urho3D::Button*>* MiniMapPanel::getButtonsMiniMapToSubscribe() {
+	return buttons;
+}
+
+void MiniMapPanel::changeMiniMapType(short id) {
+	type = MiniMapType(id);
+}
+
 void MiniMapPanel::createBody() {
 	spr = window->CreateChild<Sprite>();
 
 	UIElement* row = window->CreateChild<UIElement>();
 	row->SetStyle("MiniMapListRow", style);
-
-	buttons = new Button*[MINI_MAP_BUTTON_NUMBER];
+	buttons = new std::vector<Button*>();
+	buttons->reserve(MINI_MAP_BUTTON_NUMBER);
 	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/minimap" + String(i) + ".png");
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
+		>("textures/hud/icon/minimap" + String(i) + ".png");
 
 		MySprite* sprite = createSprite(texture, style, "MiniMapSprite");
-		buttons[i] = simpleButton(sprite, style, "MiniMapIcon");
-		row->AddChild(buttons[i]);
+		buttons->push_back(simpleButton(sprite, style, "MiniMapIcon"));
+
+		row->AddChild(buttons->at(i));
+		HudElement* hudElement = new HudElement(buttons->at(i));
+		hudElement->setId(i, ObjectType::ENTITY);
+
+		buttons->at(i)->SetVar("HudElement", hudElement);
 	}
+
 
 	IntVector2 size = spr->GetSize();
 
@@ -108,5 +143,5 @@ void MiniMapPanel::createBody() {
 	spr->SetTexture(text);
 	heightMap = new unsigned[size.x_ * size.x_];
 
-
+	type = MiniMapType::ALL;
 }
