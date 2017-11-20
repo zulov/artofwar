@@ -3,14 +3,13 @@
 
 
 Bucket::~Bucket() {
-	//delete content;
 	delete data;
 }
 
 Bucket::Bucket() {
-	//content = new std::vector<Unit *>();
 	content.reserve(DEFAULT_VECTOR_SIZE / 2);
 	size = 0;
+	std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
 }
 
 std::vector<Unit *>& Bucket::getContent() {
@@ -20,19 +19,21 @@ std::vector<Unit *>& Bucket::getContent() {
 void Bucket::add(Unit* entity) {
 	content.push_back(entity);
 	++size;
+	++unitsNumberPerPlayer[entity->getPlayer()];
 }
 
 void Bucket::remove(Unit* entity) {
 	ptrdiff_t pos = std::find(content.begin(), content.end(), entity) - content.begin();
-//	if (pos < content->size()) {
-//		std::iter_swap(content->begin() + pos, content->end()-1);
-//		content->erase(content->end()-1);
-//		--size;
-//	}
+	//	if (pos < content->size()) {
+	//		std::iter_swap(content->begin() + pos, content->end()-1);
+	//		content->erase(content->end()-1);
+	//		--size;
+	//	}
 
 	if (pos < content.size()) {
 		content.erase(content.begin() + pos);
 		--size;
+		--unitsNumberPerPlayer[entity->getPlayer()];
 	}
 
 }
@@ -80,4 +81,14 @@ std::vector<std::pair<int, float>*>& Bucket::getNeightbours() {
 
 int& Bucket::getSize() {
 	return size;
+}
+
+bool Bucket::incUnitsPerPlayer(content_info* ci) {
+	if (size > 0) {
+		for (int i = 0; i < MAX_PLAYERS; ++i) {
+			ci->unitsNumberPerPlayer[i] += unitsNumberPerPlayer[i];
+		}
+		return true;
+	}
+	return false;
 }

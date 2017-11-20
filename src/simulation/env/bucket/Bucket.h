@@ -3,6 +3,7 @@
 #include "objects/unit/Unit.h"
 #include <Urho3D/Graphics/StaticModel.h>
 #include "ComplexBucketData.h"
+#include "simulation/env/ContentInfo.h"
 
 class Bucket
 {
@@ -26,8 +27,10 @@ public:
 	void setNeightbours(std::vector<std::pair<int, float>*>* tempNeighbour);
 	std::vector<std::pair<int, float>*>& getNeightbours();
 	int &getSize();
+	bool incUnitsPerPlayer(content_info* ci);
 private:
 	int size;
+	int unitsNumberPerPlayer[MAX_PLAYERS];
 	std::vector<Unit*> content;
 	ComplexBucketData* data;
 };

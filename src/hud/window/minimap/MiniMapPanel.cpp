@@ -11,6 +11,11 @@
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "MiniMapWindow";
+	unitsColors[0] = 0xFFCF0000;
+	unitsColors[1] = 0xFF0000CF;
+
+	buildingColors[0] = 0xFF900000;
+	buildingColors[1] = 0xFF000090;
 }
 
 
@@ -72,7 +77,7 @@ void MiniMapPanel::update() {
 
 		switch (type) {
 		case NOTHING:
-			*(data + indexUpdate) = heightMap[indexUpdate];
+			changeValue(data, changed, heightMap[indexUpdate]);
 			break;
 		case ALL:
 
@@ -83,12 +88,15 @@ void MiniMapPanel::update() {
 		case ENEMY:
 			{
 			content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc));
-			if (ci->hasBuilding()) {
-				changeValue(data, changed, 0xFF900000);
+			if (ci->hasBuilding) {
+				char player = ci->biggestBuilding();
+				changeValue(data, changed, buildingColors[player]);
 			} else if (ci->hasResource()) {
 				changeValue(data, changed, 0xFF001000);
-			} else if (ci->hasUnit()) {
-				changeValue(data, changed, 0xFFCF0000);
+			} else if (ci->hasUnit) {
+				char player = ci->biggestUnits();
+
+				changeValue(data, changed, unitsColors[player]);
 			} else {
 				changeValue(data, changed, heightMap[indexUpdate]);
 			}

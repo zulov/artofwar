@@ -24,6 +24,7 @@ public:
 
 	void setTeam(char _team);
 	void setPlayer(char player);
+	char getPlayer();
 	virtual String* toMultiLineString();
 	virtual void action(short id, ActionParameter* parameter);
 

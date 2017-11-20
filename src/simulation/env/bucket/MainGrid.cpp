@@ -87,12 +87,12 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to) {
 	const short posEndX = getIndex(to.x_);
 	const short posEndZ = getIndex(to.y_);
 
-	ci->reset();
+	const short iMin = Min(posBeginX, posEndX);
+	const short iMax = Max(posBeginX, posEndX);
+	const short jMin = Min(posBeginZ, posEndZ);
+	const short jMax = Max(posBeginZ, posEndZ);
 
-	short iMin = Min(posBeginX, posEndX);
-	short iMax = Max(posBeginX, posEndX);
-	short jMin = Min(posBeginZ, posEndZ);
-	short jMax = Max(posBeginZ, posEndZ);
+	ci->reset();
 
 	for (short i = iMin; i < iMax; ++i) {
 		for (short j = jMin; j < jMax; ++j) {
@@ -100,13 +100,19 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to) {
 
 			switch (complexData[index].getType()) {
 			case BUILDING:
-				ci->allBuildingNumber++;
+				ci->hasBuilding = true;
+				ci->buildingNumberPerPlayer[complexData[index].getPlayer()]++;
 				break;
 			case RESOURCE:
 				ci->resourceNumber++;
 				break;
 			case UNIT:
-				ci->allNumber += getSizeAt(index);
+				{
+				const bool hasInc = buckets[index].incUnitsPerPlayer(ci);
+				if (hasInc) {
+					ci->hasUnit = true;
+				}
+				}
 				break;
 			default: ;
 			}

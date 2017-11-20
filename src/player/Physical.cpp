@@ -4,7 +4,7 @@
 #include "commands/ActionCommand.h"
 
 Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
-	
+
 	LinkComponent* lc = node->CreateComponent<LinkComponent>();
 	lc->bound(node, this);
 
@@ -98,6 +98,10 @@ void Physical::setTeam(char _team) {
 
 void Physical::setPlayer(char player) {
 	this->player = player;
+}
+
+char Physical::getPlayer() {
+	return player;
 }
 
 String* Physical::toMultiLineString() {

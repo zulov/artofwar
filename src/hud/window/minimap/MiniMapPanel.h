@@ -5,6 +5,7 @@
 #include <Urho3D/UI/Button.h>
 #include <vector>
 #include "MiniMapType.h"
+#include "defines.h"
 
 #define MINI_MAP_BUTTON_NUMBER 4
 
@@ -29,4 +30,6 @@ private:
 	unsigned* heightMap;
 	int indexUpdate = 0;
 	int indexPerUpdate;
+	unsigned unitsColors[MAX_PLAYERS];
+	unsigned buildingColors[MAX_PLAYERS];
 };
