@@ -45,4 +45,6 @@ private:
 	BucketQueue frontier;
 	int staticCounter = 0;
 	content_info* ci;
+
+	ComplexBucketData *complexData;
 };

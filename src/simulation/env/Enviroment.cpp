@@ -3,7 +3,7 @@
 #include <chrono>
 
 Enviroment::Enviroment(Terrain* _terrian) {
-	mainGrid = new MainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, true);
+	mainGrid = new MainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, false);
 
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		teamUnitGrid[i] = new Grid(BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY);

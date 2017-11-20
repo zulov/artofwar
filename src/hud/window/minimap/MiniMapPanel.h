@@ -15,6 +15,7 @@ public:
 	MiniMapPanel(Urho3D::XMLFile* _style);
 	~MiniMapPanel();
 	void createEmpty(int parts);
+	void changeValue(uint32_t* data, bool& changed, unsigned val);
 	void update();
 	std::vector<Urho3D::Button*>* getButtonsMiniMapToSubscribe();
 	void changeMiniMapType(short id);

@@ -66,8 +66,8 @@ Vector3* Bucket::getDirectrionFrom(Vector3* position) {
 	return data->getDirectrionFrom(position);
 }
 
-void Bucket::upgrade() {
-	data = new ComplexBucketData();
+void Bucket::upgrade(ComplexBucketData* _data) {
+	data = _data;
 }
 
 void Bucket::setNeightbours(std::vector<std::pair<int, float>*>* tempNeighbour) {

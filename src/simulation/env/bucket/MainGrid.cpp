@@ -14,16 +14,17 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 	int miniRes = resolution / 16;
 	tempNeighbour = new std::vector<std::pair<int, float>*>();
 	tempNeighbour->reserve(10);
-
+	double coef = (miniRes * fieldSize);
+	complexData = new ComplexBucketData[resolution * resolution];
 	for (int i = 0; i < resolution * resolution; ++i) {
-		buckets[i].upgrade();
+		buckets[i].upgrade(&complexData[i]);
 
 		double cX = (posX + 0.5) * fieldSize - size / 2;
 		double cZ = (posZ + 0.5) * fieldSize - size / 2;
 		buckets[i].setCenter(cX, cZ);
 		if (debugEnabled &&
-			(cX > -(miniRes * fieldSize) && cX < (miniRes * fieldSize)) &&
-			(cZ > -(miniRes * fieldSize) && cZ < (miniRes * fieldSize))) {
+			(cX > -coef && cX < coef) &&
+			(cZ > -coef && cZ < coef)) {
 			buckets[i].createBox(fieldSize);
 		}
 		++posZ;
@@ -40,6 +41,7 @@ MainGrid::~MainGrid() {
 	delete[]came_from;
 	delete[]cost_so_far;
 	delete ci;
+	delete[] complexData;
 }
 
 void MainGrid::prepareGridToFind() {
@@ -86,15 +88,21 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to) {
 	const short posEndZ = getIndex(to.y_);
 
 	ci->reset();
-	for (short i = Min(posBeginX, posEndX); i < Max(posBeginX, posEndX); ++i) {
-		for (short j = Min(posBeginZ, posEndZ); j < Max(posBeginZ, posEndZ); ++j) {
+
+	short iMin = Min(posBeginX, posEndX);
+	short iMax = Max(posBeginX, posEndX);
+	short jMin = Min(posBeginZ, posEndZ);
+	short jMax = Max(posBeginZ, posEndZ);
+
+	for (short i = iMin; i < iMax; ++i) {
+		for (short j = jMin; j < jMax; ++j) {
 			const int index = i * resolution + j;
-			
-			switch (buckets[index].getType()) {
+
+			switch (complexData[index].getType()) {
 			case BUILDING:
 				ci->allBuildingNumber++;
 				break;
-			case RESOURCE: 
+			case RESOURCE:
 				ci->resourceNumber++;
 				break;
 			case UNIT:

@@ -48,6 +48,14 @@ void MiniMapPanel::createEmpty(int parts) {
 	indexPerUpdate = size.x_ * size.y_ / parts + 1;
 }
 
+void MiniMapPanel::changeValue(uint32_t* data, bool& changed, unsigned val) {
+	unsigned q = *(data + indexUpdate);
+	if (*(data + indexUpdate) != val) {
+		changed = true;
+		*(data + indexUpdate) = val;
+	}
+}
+
 void MiniMapPanel::update() {
 	IntVector2 size = spr->GetSize();
 	Enviroment* env = Game::get()->getEnviroment();
@@ -57,6 +65,7 @@ void MiniMapPanel::update() {
 	float yinc = 1.0f / (size.y_);
 
 	int partIndex = 0;
+	bool changed = false;
 	for (; partIndex < indexPerUpdate && indexUpdate < size.y_ * size.x_; ++partIndex, ++indexUpdate) {
 		float yVal = 1 - yinc * (indexUpdate / size.x_);
 		float xVal = 0 + xinc * (indexUpdate % size.x_);
@@ -71,22 +80,20 @@ void MiniMapPanel::update() {
 		case ALLY:
 
 
-		case ENEMY:{
+		case ENEMY:
+			{
 			content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc));
 			if (ci->hasBuilding()) {
-				*(data + indexUpdate) = 0xFF900000;
-			}
-			else if (ci->hasResource()) {
-				*(data + indexUpdate) = 0xFF001000;
-			}
-			else if (ci->hasUnit()) {
-				*(data + indexUpdate) = 0xFFCF0000;
-			}
-			else {
-				*(data + indexUpdate) = heightMap[indexUpdate];
+				changeValue(data, changed, 0xFF900000);
+			} else if (ci->hasResource()) {
+				changeValue(data, changed, 0xFF001000);
+			} else if (ci->hasUnit()) {
+				changeValue(data, changed, 0xFFCF0000);
+			} else {
+				changeValue(data, changed, heightMap[indexUpdate]);
 			}
 			break;
-		}
+			}
 		default: ;
 		}
 
@@ -94,10 +101,12 @@ void MiniMapPanel::update() {
 	if (indexUpdate >= size.y_ * size.x_) {
 		indexUpdate = 0;
 	}
+	if (changed) {
+		text->SetData(minimap);
 
-	text->SetData(minimap);
+		spr->SetTexture(text);
+	}
 
-	spr->SetTexture(text);
 }
 
 std::vector<Urho3D::Button*>* MiniMapPanel::getButtonsMiniMapToSubscribe() {

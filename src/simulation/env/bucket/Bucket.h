@@ -22,7 +22,7 @@ public:
 	void createBox(double bucketSize);
 	Vector3* getDirectrionFrom(Vector3* position);
 
-	void upgrade();
+	void upgrade(ComplexBucketData* _data);
 	void setNeightbours(std::vector<std::pair<int, float>*>* tempNeighbour);
 	std::vector<std::pair<int, float>*>& getNeightbours();
 	int &getSize();

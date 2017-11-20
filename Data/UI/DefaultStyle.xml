@@ -451,12 +451,12 @@
 	</element>
 	
 	<element type="MiniMapWindow" style="MyWindow">
-		<attribute name="Min Size" value="{4*iconX+2*spaceX} {4*iconY+2*spaceY}"/>
-        <attribute name="Max Size" value="{4*iconX+2*spaceX} {4*iconY+2*spaceY}" />
+		<attribute name="Min Size" value="{4*iconX+2*spaceX} {4.5*iconY+3*spaceY}"/>
+        <attribute name="Max Size" value="{4*iconX+2*spaceX} {4.5*iconY+3*spaceY}" />
 		<attribute name="Vert Alignment" value="Bottom" />
 		<attribute name="Horiz Alignment" value="Right" />
 		<attribute name="Layout Mode" value="Vertical" />
-		<attribute name="Layout Spacing" value="{spaceX}" />
+		<attribute name="Layout Spacing" value="{spaceY}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
 	</element>	
 	<element type="SelectedInfoWindow" style="MyWindow">
