@@ -22,14 +22,14 @@ public:
 	Urho3D::Vector2& getCenter();
 	void setNeightbours(std::vector<std::pair<int, float>*>* tempNeightbours);
 	std::vector<std::pair<int, float>*>& getNeightbours();
-	char getPlayer();
+	char getAdditonalInfo();
 private:
 	Urho3D::Vector2 center;
 	Urho3D::Node* box;
 	Urho3D::StaticModel* model;
 	Static* object;
 	ObjectType type;
-	short player;
+	short additonalInfo;
 	std::vector<std::pair<int, float>*> neighbour;
 	float cost;
 };

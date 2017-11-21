@@ -14,16 +14,13 @@ struct content_info
 		allyBuilding = 0;
 		enemyBuilding = 0;
 		std::fill_n(buildingNumberPerPlayer, MAX_PLAYERS, 0);
-		resourceNumber = 0;
+		std::fill_n(resourceNumber, RESOURCE_NUMBER_DB, 0);
 
 		hasBuilding = false;
 		hasUnit = false;
+		hasResource = false;
 	}
 
-
-	bool hasResource() {
-		return resourceNumber > 0;
-	}
 
 	char biggestBuilding() {
 		return std::max_element(buildingNumberPerPlayer, buildingNumberPerPlayer + MAX_PLAYERS) -
@@ -33,6 +30,11 @@ struct content_info
 	char biggestUnits() {
 		return std::max_element(unitsNumberPerPlayer, unitsNumberPerPlayer + MAX_PLAYERS) -
 			unitsNumberPerPlayer;
+	}
+
+	char biggestResource() {
+		return std::max_element(resourceNumber, resourceNumber + RESOURCE_NUMBER_DB) -
+			resourceNumber;
 	}
 
 	int unitsNumberPerPlayer[MAX_PLAYERS];
@@ -45,5 +47,6 @@ struct content_info
 	int buildingNumberPerPlayer[MAX_PLAYERS];
 	bool hasBuilding;
 
-	int resourceNumber;
+	int resourceNumber[RESOURCE_NUMBER_DB];
+	bool hasResource;
 };

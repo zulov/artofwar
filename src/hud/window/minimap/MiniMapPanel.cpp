@@ -115,8 +115,9 @@ void MiniMapPanel::update() {
 			if (ci->hasBuilding) {
 				char player = ci->biggestBuilding();
 				changeValue(data, changed, buildingColors[player]);
-			} else if (ci->hasResource()) {
-				changeValue(data, changed, 0xFF001000);
+			} else if (ci->hasResource) {
+				char resID = ci->biggestResource();
+				changeValue(data, changed, resourceColors[resID]);
 			} else if (ci->hasUnit) {
 				char player = ci->biggestUnits();
 

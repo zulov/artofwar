@@ -12,7 +12,7 @@ ComplexBucketData::ComplexBucketData() {
 	box = nullptr;
 	removeStatic();
 	neighbour.reserve(8);
-	player = -1;
+	additonalInfo = -1;
 }
 
 
@@ -32,7 +32,12 @@ void ComplexBucketData::setStatic(Static* _object) {
 	if (box) {
 		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red_alpha.xml"));
 	}
-	player = _object->getPlayer();
+	if (_object->getType() == BUILDING) {
+		additonalInfo = _object->getPlayer();
+	} else {
+		char a = _object->getID();
+		additonalInfo = _object->getID();
+	}
 }
 
 void ComplexBucketData::removeStatic() {
@@ -41,7 +46,7 @@ void ComplexBucketData::removeStatic() {
 	if (box) {
 		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue_alpha.xml"));
 	}
-	player = -1;
+	additonalInfo = -1;
 }
 
 
@@ -77,6 +82,6 @@ std::vector<std::pair<int, float>*>& ComplexBucketData::getNeightbours() {
 	return neighbour;
 }
 
-char ComplexBucketData::getPlayer() {
-	return player;
+char ComplexBucketData::getAdditonalInfo() {
+	return additonalInfo;
 }

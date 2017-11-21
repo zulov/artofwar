@@ -101,10 +101,11 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to) {
 			switch (complexData[index].getType()) {
 			case BUILDING:
 				ci->hasBuilding = true;
-				ci->buildingNumberPerPlayer[complexData[index].getPlayer()]++;
+				ci->buildingNumberPerPlayer[complexData[index].getAdditonalInfo()]++;
 				break;
 			case RESOURCE:
-				ci->resourceNumber++;
+				ci->hasResource=true;
+				ci->resourceNumber[complexData[index].getAdditonalInfo()]++;
 				break;
 			case UNIT:
 				{
