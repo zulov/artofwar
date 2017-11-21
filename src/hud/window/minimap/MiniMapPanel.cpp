@@ -10,6 +10,7 @@
 #include <LinearMath/btVector3.h>
 #include "database/DatabaseCache.h"
 #include <Urho3D/UI/CheckBox.h>
+#include "player/PlayersManager.h"
 
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -41,6 +42,8 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 			resourceColors[i] = 0xFF808080;
 		}
 	}
+
+	std::fill_n(checks, MINI_MAP_BUTTON_NUMBER, true);
 }
 
 
@@ -100,36 +103,31 @@ void MiniMapPanel::update() {
 		float yVal = 1 - yinc * (indexUpdate / size.x_);
 		float xVal = 0 + xinc * (indexUpdate % size.x_);
 
-		switch (type) {
-		case NOTHING:
+
+		content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc));
+
+		if (checks[2] && ci->hasBuilding) {
+			char player = ci->biggestBuilding();
+			changeValue(data, changed, buildingColors[player]);
+		} else if (checks[1] && ci->hasResource) {
+			char resID = ci->biggestResource();
+			changeValue(data, changed, resourceColors[resID]);
+		} else if ((checks[3] || checks[4]) && ci->hasUnit) {
+			int active = Game::get()->getPlayersManager()->getActivePlayer()->getId();
+			if (checks[3] && !checks[4]) {
+				ci->unitsNumberPerPlayer[active] *= 1000;
+			}else if(!checks[3] && checks[4]) {
+				ci->unitsNumberPerPlayer[active] = 0;
+			}
+
+			char player = ci->biggestUnits();
+			changeValue(data, changed, unitsColors[player]);
+		} else if (checks[0]) {
 			changeValue(data, changed, heightMap[indexUpdate]);
-			break;
-		case ALL:
-
-
-		case ALLY:
-
-			break;
-		case ENEMY:
-			{
-			content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc));
-			if (ci->hasBuilding) {
-				char player = ci->biggestBuilding();
-				changeValue(data, changed, buildingColors[player]);
-			} else if (ci->hasResource) {
-				char resID = ci->biggestResource();
-				changeValue(data, changed, resourceColors[resID]);
-			} else if (ci->hasUnit) {
-				char player = ci->biggestUnits();
-
-				changeValue(data, changed, unitsColors[player]);
-			} else {
-				changeValue(data, changed, heightMap[indexUpdate]);
-			}
-			}
-			break;
-		default: ;
+		} else {
+			changeValue(data, changed, 0xFF222222);
 		}
+
 
 	}
 	if (indexUpdate >= size.y_ * size.x_) {
@@ -147,8 +145,8 @@ std::vector<Urho3D::UIElement*>* MiniMapPanel::getButtonsMiniMapToSubscribe() {
 	return elements;
 }
 
-void MiniMapPanel::changeMiniMapType(short id) {
-	type = MiniMapType(id);
+void MiniMapPanel::changeMiniMapType(short id, bool val) {
+	checks[id] = val;
 }
 
 void MiniMapPanel::createBody() {
@@ -184,7 +182,5 @@ void MiniMapPanel::createBody() {
 	text->SetData(minimap);
 
 	spr->SetTexture(text);
-	heightMap = new unsigned[size.x_ * size.x_];
-
-	type = MiniMapType::ALL;
+	heightMap = new unsigned[size.x_ * size.y_];
 }

@@ -177,8 +177,8 @@ void Hud::updateLoading(float progress) {
 	loadingPanel->update(progress);
 }
 
-void Hud::changeMiniMapType(short id) {
-	miniMapPanel->changeMiniMapType(id);
+void Hud::changeMiniMapType(short id, bool val) {
+	miniMapPanel->changeMiniMapType(id, val);
 }
 
 void Hud::updateSelected(SelectedInfo* selectedInfo) {

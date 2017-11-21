@@ -2,9 +2,9 @@
 
 
 PlayersManager::PlayersManager() {
-	activePlayer = new Player(0, 0);
+	activePlayer = new Player(0, 0, 0);
 	allPlayers.push_back(activePlayer);
-	Player* enemy = new Player(0, 1);
+	Player* enemy = new Player(0, 1, 1);
 	allPlayers.push_back(enemy);
 	teams[0] = new std::vector<Player*>();
 	teams[1] = new std::vector<Player*>();

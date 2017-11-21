@@ -65,7 +65,7 @@ public:
 	void resetLoading();
 	void endLoading();
 	void updateLoading(float progress);
-	void changeMiniMapType(short id);
+	void changeMiniMapType(short id, bool val);
 
 private:
 	void replaceVariables(XMLFile* xmlFile, int hudSizeId);

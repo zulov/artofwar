@@ -232,10 +232,11 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 }
 
 void Main::HandleMiniMapButton(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
+	CheckBox* element = (CheckBox*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
-	hud->changeMiniMapType(hudElement->getId());
+	hud->changeMiniMapType(hudElement->getId(), element->IsChecked());
 }
+
 void Main::HandleBuildButton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();

@@ -20,17 +20,17 @@ public:
 	void changeValue(uint32_t* data, bool& changed, unsigned val);
 	void update();
 	std::vector<Urho3D::UIElement*>* getButtonsMiniMapToSubscribe();
-	void changeMiniMapType(short id);
+	void changeMiniMapType(short id, bool val);
 private:
 	void createBody() override;
 	Urho3D::Sprite* spr;
 	Urho3D::Image* minimap;
 	Urho3D::Texture2D* text;
-	MiniMapType type;
-	std::vector<Urho3D::UIElement*> *elements;
+	std::vector<Urho3D::UIElement*>* elements;
 	unsigned* heightMap;
 	int indexUpdate = 0;
 	int indexPerUpdate;
+	bool checks[MINI_MAP_BUTTON_NUMBER];
 	unsigned unitsColors[PLAYER_COLORS_NUMBER_DB];
 	unsigned buildingColors[PLAYER_COLORS_NUMBER_DB];
 	unsigned resourceColors[RESOURCE_NUMBER_DB];
