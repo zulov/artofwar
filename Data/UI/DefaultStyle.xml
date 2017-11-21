@@ -516,6 +516,13 @@
         <attribute name="Max Size" value="{iconX*2/3-spaceX/2} {iconY/2-spaceY}" />
     </element>
 	
+	<element type="MiniMapCheckBox" style="CheckBox" >
+		<attribute name="Min Size" value="{iconX*2/3+spaceX} {iconY/2-spaceY}" />
+        <attribute name="Max Size" value="{iconX*2/3+spaceX} {iconY/2-spaceY}" />
+		<attribute name="Image Rect" value="192 80 208 96" />
+		<attribute name="Is Checked" value="true" />
+	</element>
+	
 	<element type="MiniMapListRow" style="ListRow" >
 		<attribute name="Layout Spacing" value="{spaceX/2}" />
 		<attribute name="Min Size" value="100 {iconY/2}" />
@@ -525,7 +532,7 @@
 	<element type="MiniMapSprite">
         <attribute name="Vert Alignment" value="Center" />
 		<attribute name="Horiz Alignment" value="Center" />
-		<attribute name="My Size" value="{iconX*2/3-spaceX} {iconY/2-spaceY}" />
+		<attribute name="My Size" value="{iconX*2/3+spaceX} {iconY/2-spaceY}" />
 		<attribute name="Percent HotSpot" value="0.5 0.5" />
 		<attribute name="Opacity" value="0.8" />
     </element>
@@ -593,6 +600,8 @@
 		<attribute name="Min Size" value="100 {iconY*3/4+spaceY}" />
 		<attribute name="Max Size" value="10000 {iconY*3/4+spaceY}" />
 	</element>
+	
+
 	
 	<element type="mock">
 		<attribute name="Layout Spacing" value="0" />

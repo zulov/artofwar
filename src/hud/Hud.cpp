@@ -154,7 +154,7 @@ std::vector<Button*>* Hud::getButtonsQueueToSubscribe() {
 	return queuePanel->getButtonsQueueToSubscribe();
 }
 
-std::vector<Button*>* Hud::getButtonsMiniMapToSubscribe() {
+std::vector<UIElement*>* Hud::getButtonsMiniMapToSubscribe() {
 	return miniMapPanel->getButtonsMiniMapToSubscribe();
 }
 

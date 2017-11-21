@@ -9,6 +9,7 @@
 #include "hud/HudElement.h"
 #include <LinearMath/btVector3.h>
 #include "database/DatabaseCache.h"
+#include <Urho3D/UI/CheckBox.h>
 
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -108,7 +109,7 @@ void MiniMapPanel::update() {
 
 		case ALLY:
 
-
+			break;
 		case ENEMY:
 			{
 			content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc));
@@ -125,8 +126,8 @@ void MiniMapPanel::update() {
 			} else {
 				changeValue(data, changed, heightMap[indexUpdate]);
 			}
-			break;
 			}
+			break;
 		default: ;
 		}
 
@@ -142,8 +143,8 @@ void MiniMapPanel::update() {
 
 }
 
-std::vector<Urho3D::Button*>* MiniMapPanel::getButtonsMiniMapToSubscribe() {
-	return buttons;
+std::vector<Urho3D::UIElement*>* MiniMapPanel::getButtonsMiniMapToSubscribe() {
+	return elements;
 }
 
 void MiniMapPanel::changeMiniMapType(short id) {
@@ -155,22 +156,22 @@ void MiniMapPanel::createBody() {
 
 	UIElement* row = window->CreateChild<UIElement>();
 	row->SetStyle("MiniMapListRow", style);
-	buttons = new std::vector<Button*>();
-	buttons->reserve(MINI_MAP_BUTTON_NUMBER);
+	elements = new std::vector<UIElement*>();
+	elements->reserve(MINI_MAP_BUTTON_NUMBER);
 	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
 		>("textures/hud/icon/minimap" + String(i) + ".png");
 
 		MySprite* sprite = createSprite(texture, style, "MiniMapSprite");
-		buttons->push_back(simpleButton(sprite, style, "MiniMapIcon"));
-
-		row->AddChild(buttons->at(i));
-		HudElement* hudElement = new HudElement(buttons->at(i));
+		CheckBox* box = row->CreateChild<CheckBox>();
+		box->SetStyle("MiniMapCheckBox", style);
+		elements->push_back(box);
+		box->AddChild(sprite);
+		HudElement* hudElement = new HudElement(elements->at(i));
 		hudElement->setId(i, ObjectType::ENTITY);
 
-		buttons->at(i)->SetVar("HudElement", hudElement);
+		elements->at(i)->SetVar("HudElement", hudElement);
 	}
-
 
 	IntVector2 size = spr->GetSize();
 

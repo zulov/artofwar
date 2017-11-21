@@ -8,7 +8,7 @@
 #include "defines.h"
 #include "database/db_strcut.h"
 
-#define MINI_MAP_BUTTON_NUMBER 4
+#define MINI_MAP_BUTTON_NUMBER 5
 
 
 class MiniMapPanel : public AbstractWindowPanel
@@ -19,7 +19,7 @@ public:
 	void createEmpty(int parts);
 	void changeValue(uint32_t* data, bool& changed, unsigned val);
 	void update();
-	std::vector<Urho3D::Button*>* getButtonsMiniMapToSubscribe();
+	std::vector<Urho3D::UIElement*>* getButtonsMiniMapToSubscribe();
 	void changeMiniMapType(short id);
 private:
 	void createBody() override;
@@ -27,7 +27,7 @@ private:
 	Urho3D::Image* minimap;
 	Urho3D::Texture2D* text;
 	MiniMapType type;
-	std::vector<Urho3D::Button*> *buttons;
+	std::vector<Urho3D::UIElement*> *elements;
 	unsigned* heightMap;
 	int indexUpdate = 0;
 	int indexPerUpdate;

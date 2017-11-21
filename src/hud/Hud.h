@@ -57,7 +57,7 @@ public:
 
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
 	std::vector<Button*>* getButtonsQueueToSubscribe();
-	std::vector<Button*>* getButtonsMiniMapToSubscribe();
+	std::vector<UIElement*>* getButtonsMiniMapToSubscribe();
 	std::vector<HudElement*>* getButtonsOrdersToSubscribe();
 	std::vector<HudElement*>* getButtonsBuildToSubscribe();
 	std::vector<HudElement*>* getButtonsUnitsToSubscribe();
