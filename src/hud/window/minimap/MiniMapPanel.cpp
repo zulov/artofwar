@@ -7,15 +7,39 @@
 #include "hud/ButtonUtils.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include "hud/HudElement.h"
+#include <LinearMath/btVector3.h>
+#include "database/DatabaseCache.h"
 
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "MiniMapWindow";
+
 	unitsColors[0] = 0xFFCF0000;
 	unitsColors[1] = 0xFF0000CF;
 
 	buildingColors[0] = 0xFF900000;
 	buildingColors[1] = 0xFF000090;
+	for (int i = 0; i < PLAYER_COLORS_NUMBER_DB; ++i) {
+		db_player_colors* col = Game::get()->getDatabaseCache()->getPlayerColor(i);
+		if (col) {
+			unitsColors[i] = col->unit;
+			buildingColors[i] = col->building;
+		} else {
+			unitsColors[i] = 0xFF505050;
+			buildingColors[i] = 0xFF505050;
+		}
+	}
+
+	int size = Game::get()->getDatabaseCache()->getResourceSize();
+
+	for (int i = 0; i < size; ++i) {
+		db_resource* res = Game::get()->getDatabaseCache()->getResource(i);
+		if (res) {
+			resourceColors[i] = res->mini_map_color;
+		} else {
+			resourceColors[i] = 0xFF808080;
+		}
+	}
 }
 
 

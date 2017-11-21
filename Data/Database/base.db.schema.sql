@@ -34,7 +34,13 @@ CREATE TABLE "resource" (
 	`scale`	REAL,
 	`sizeX`	INTEGER,
 	`sizeZ`	INTEGER,
-	`maxUsers`	INTEGER,
+	`maxUsers`	INTEGER, mini_map_color INTEGER,
+	PRIMARY KEY(`id`)
+);
+CREATE TABLE `player_colors` (
+	`id`	INTEGER,
+	`unit`	INTEGER,
+	`building`	INTEGER,
 	PRIMARY KEY(`id`)
 );
 CREATE TABLE `orders_to_unit` (

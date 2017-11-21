@@ -2,6 +2,15 @@
 #include <sqlite3/sqlite3.h>
 #include "db_strcut.h"
 #include <iostream>
+#include <sstream>
+
+static unsigned fromHex(char** argv, int index) {
+	unsigned x;
+	std::stringstream ss;
+	ss << std::hex << argv[index];
+	ss >> x;
+	return x;
+}
 
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
@@ -67,7 +76,7 @@ int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
 	xyz->resources[id] = new db_resource(id, argv[1], argv[2], atoi(argv[3]), argv[4], argv[5], atof(argv[6]),
-	                                     atoi(argv[7]), atoi(argv[8]), atoi(argv[9]));
+	                                     atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), fromHex(argv, 10));
 	xyz->resource_size++;
 
 	return 0;
@@ -133,11 +142,16 @@ int static loadMap(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
 
-	char* a = argv[3];
-	char* b = argv[4];
-
 	xyz->maps[id] = new db_map(id, argv[1], argv[2], atof(argv[3]), atof(argv[4]));
 	xyz->maps_size++;
+	return 0;
+}
+
+int static loadPlayerColors(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = (db_container *)data;
+	int id = atoi(argv[0]);;
+	xyz->playerColors[id] = new db_player_colors(id, fromHex(argv, 1), fromHex(argv, 2));
+	xyz->player_colors_size++;
 	return 0;
 }
 
@@ -178,6 +192,7 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from orders", loadOrders);
 	execute("SELECT * from orders_to_unit", loadOrdersToUnit);
 	execute("SELECT * from map", loadMap);
+	execute("SELECT * from player_colors", loadPlayerColors);
 
 
 	sqlite3_close(database);
@@ -232,6 +247,10 @@ db_map* DatabaseCache::getMap(int i) {
 	return dbContainer->maps[i];
 }
 
+db_player_colors* DatabaseCache::getPlayerColor(int i) {
+	return dbContainer->playerColors[i];
+}
+
 int DatabaseCache::getResourceSize() {
 	return dbContainer->resource_size;
 }
@@ -258,6 +277,14 @@ int DatabaseCache::getUnitSize() {
 
 int DatabaseCache::getOrdersSize() {
 	return dbContainer->orders_size;
+}
+
+int DatabaseCache::getMapSize() {
+	return dbContainer->maps_size;
+}
+
+int DatabaseCache::getPlayerColorsSize() {
+	return dbContainer->player_colors_size;
 }
 
 std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) {

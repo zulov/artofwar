@@ -6,6 +6,7 @@
 #include <vector>
 #include "MiniMapType.h"
 #include "defines.h"
+#include "database/db_strcut.h"
 
 #define MINI_MAP_BUTTON_NUMBER 4
 
@@ -30,6 +31,7 @@ private:
 	unsigned* heightMap;
 	int indexUpdate = 0;
 	int indexPerUpdate;
-	unsigned unitsColors[MAX_PLAYERS];
-	unsigned buildingColors[MAX_PLAYERS];
+	unsigned unitsColors[PLAYER_COLORS_NUMBER_DB];
+	unsigned buildingColors[PLAYER_COLORS_NUMBER_DB];
+	unsigned resourceColors[RESOURCE_NUMBER_DB];
 };

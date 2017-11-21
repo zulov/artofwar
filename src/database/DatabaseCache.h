@@ -22,6 +22,7 @@ public:
 	db_hud_vars* getHudVar(int i);
 	db_order* getOrder(int i);
 	db_map* getMap(int i);
+	db_player_colors* getPlayerColor(int i);
 
 	std::vector<db_unit*>* getUnitsForBuilding(int id);
 	std::vector<db_cost*>* getCostForUnit(int id);
@@ -36,6 +37,7 @@ public:
 	int getUnitSize();
 	int getOrdersSize();
 	int getMapSize();
+	int getPlayerColorsSize();
 
 
 private:

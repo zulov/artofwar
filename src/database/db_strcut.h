@@ -5,10 +5,11 @@
 #define GRAPH_SETTINGS_NUMBER_DB 4
 #define TYPE_NUMBER_DB 50
 #define NATION_NUMBER_DB 50
-#define RESOURCE_NUMBER_DB 10
+#define RESOURCE_NUMBER_DB 5
 #define HUD_VARS_NUMBER_DB 50
 #define ORDERS_NUMBER_DB 20
 #define MAP_NUMBER_DB 10
+#define PLAYER_COLORS_NUMBER_DB 10
 
 #define SPLIT_SIGN '\n'
 
@@ -166,10 +167,10 @@ struct db_resource
 	double scale;
 	Urho3D::IntVector2 size;
 	int maxUsers;
+	unsigned mini_map_color;
 
 	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, double scale, int sizeX,
-	            int sizeZ,
-	            int maxUsers)
+	            int sizeZ, int maxUsers, unsigned mini_map_color)
 		: id(id),
 		name(name),
 		icon(icon),
@@ -178,7 +179,8 @@ struct db_resource
 		model(model),
 		scale(scale),
 		size(Urho3D::IntVector2(sizeX, sizeZ)),
-		maxUsers(maxUsers) {
+		maxUsers(maxUsers),
+		mini_map_color(mini_map_color){
 	}
 };
 
@@ -243,23 +245,38 @@ struct db_map
 	}
 };
 
+struct db_player_colors
+{
+	int id;
+	unsigned unit;
+	unsigned building;
+
+
+	db_player_colors(int id, unsigned unit, unsigned building)
+		: id(id),
+		unit(unit),
+		building(building) {
+	}
+};
+
 struct db_container
 {
-	db_unit* units[UNITS_NUMBER_DB];
-	db_building* buildings[BULDINGS_NUMBER_DB];
-	db_hud_size* hudSizes[HUD_SIZES_NUMBER_DB];
-	db_graph_settings* graphSettings[GRAPH_SETTINGS_NUMBER_DB];
-	db_unit_type* unitTypes[TYPE_NUMBER_DB];
-	db_building_type* buildingTypes[TYPE_NUMBER_DB];
-	db_nation* nations[NATION_NUMBER_DB];
-	db_resource* resources[RESOURCE_NUMBER_DB];
-	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB];
+	db_unit* units[UNITS_NUMBER_DB] = { nullptr };
+	db_building* buildings[BULDINGS_NUMBER_DB] = { nullptr };
+	db_hud_size* hudSizes[HUD_SIZES_NUMBER_DB] = { nullptr };
+	db_graph_settings* graphSettings[GRAPH_SETTINGS_NUMBER_DB] = { nullptr };
+	db_unit_type* unitTypes[TYPE_NUMBER_DB] = { nullptr };
+	db_building_type* buildingTypes[TYPE_NUMBER_DB] = { nullptr };
+	db_nation* nations[NATION_NUMBER_DB] = { nullptr };
+	db_resource* resources[RESOURCE_NUMBER_DB] = { nullptr };
+	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB] = { nullptr };
 	std::vector<db_unit*>* unitsForBuilding[BULDINGS_NUMBER_DB];
 	std::vector<db_cost*>* costForBuilding[BULDINGS_NUMBER_DB];
 	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB];
 	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB];
-	db_order* orders[ORDERS_NUMBER_DB];
-	db_map* maps[MAP_NUMBER_DB];
+	db_order* orders[ORDERS_NUMBER_DB] = { nullptr };
+	db_map* maps[MAP_NUMBER_DB] = { nullptr };
+	db_player_colors* playerColors[PLAYER_COLORS_NUMBER_DB] = { nullptr };
 
 	int units_size = 0;
 	int hud_size_size = 0;
@@ -272,6 +289,7 @@ struct db_container
 	int hud_vars_size = 0;
 	int orders_size = 0;
 	int maps_size = 0;
+	int player_colors_size = 0;
 
 
 	explicit db_container() {

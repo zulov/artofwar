@@ -10,12 +10,14 @@ INSERT INTO `unit_type` (id,name) VALUES (0,'warrior'),
  (2,'cavalry'),
  (3,'archer'),
  (4,'worker');
-INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,sizeX,sizeZ,maxUsers) VALUES (0,'gold','gold.png',1000,'gold.xml
-','rock.mdl',0.5,2,2,4),
+INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,sizeX,sizeZ,maxUsers,mini_map_color) VALUES (0,'gold','gold.png',1000,'gold.xml
+','rock.mdl',0.5,2,2,4,'0xFF00D0FF'),
  (1,'wood','wood.png',100,'tree0.xml
-tree1.xml','tree.mdl',1.0,3,3,3),
- (2,'food','food.png',100,'food.xml',NULL,0.5,2,2,3),
- (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.5,2,2,4);
+tree1.xml','tree.mdl',1.0,3,3,3,'0xFF00B600'),
+ (2,'food','food.png',100,'food.xml',NULL,0.5,2,2,3,'0xFF9000A7'),
+ (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.5,2,2,4,'0xFF808080');
+INSERT INTO `player_colors` (id,unit,building) VALUES (0,'0xFFCF0000','0xFF900000'),
+ (1,'0xFF0000CF','0xFF000090');
 INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
  (1,0,1),
  (2,0,3),
@@ -101,7 +103,7 @@ INSERT INTO `hud_size` (id,name) VALUES (0,'s'),
  (1,'m'),
  (2,'l'),
  (3,'xl');
-INSERT INTO `graph_settings` (id,hud_size,res_x,res_y,style,fullscreen,max_fps,min_fps) VALUES (0,0,1366,768,'DefaultStyle.xml',0,140.0,1.0);
+INSERT INTO `graph_settings` (id,hud_size,res_x,res_y,style,fullscreen,max_fps,min_fps) VALUES (0,0,1600,900,'DefaultStyle.xml',0,140.0,1.0);
 INSERT INTO `cost_unit` (id,resource,value,unit) VALUES (0,0,90,3),
  (1,1,120,0),
  (2,0,80,1),
