@@ -13,7 +13,7 @@ public:
 	ComplexBucketData();
 	~ComplexBucketData();
 
-	ObjectType getType();
+	inline ObjectType getType();
 	void setStatic(Static* object);
 	void removeStatic();
 	void createBox(double bucketSize);
