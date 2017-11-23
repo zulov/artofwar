@@ -16,11 +16,6 @@
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "MiniMapWindow";
 
-	unitsColors[0] = 0xFFCF0000;
-	unitsColors[1] = 0xFF0000CF;
-
-	buildingColors[0] = 0xFF900000;
-	buildingColors[1] = 0xFF000090;
 	for (int i = 0; i < PLAYER_COLORS_NUMBER_DB; ++i) {
 		db_player_colors* col = Game::get()->getDatabaseCache()->getPlayerColor(i);
 		if (col) {
@@ -138,13 +133,17 @@ std::vector<Urho3D::UIElement*>* MiniMapPanel::getButtonsMiniMapToSubscribe() {
 	return elements;
 }
 
+Urho3D::Sprite* MiniMapPanel::getSpriteToSubscribe() {
+	return spr;
+}
+
 void MiniMapPanel::changeMiniMapType(short id, bool val) {
 	checks[id] = val;
 }
 
 void MiniMapPanel::createBody() {
 	spr = window->CreateChild<Sprite>();
-
+	spr->SetEnabled(true);
 	UIElement* row = window->CreateChild<UIElement>();
 	row->SetStyle("MiniMapListRow", style);
 	elements = new std::vector<UIElement*>();

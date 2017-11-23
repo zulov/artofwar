@@ -20,6 +20,7 @@ public:
 	void changeValue(uint32_t* data, bool& changed, unsigned val);
 	void update();
 	std::vector<Urho3D::UIElement*>* getButtonsMiniMapToSubscribe();
+	Urho3D::Sprite* getSpriteToSubscribe();
 	void changeMiniMapType(short id, bool val);
 private:
 	void createBody() override;

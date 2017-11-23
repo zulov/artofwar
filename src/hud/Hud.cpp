@@ -181,6 +181,10 @@ void Hud::changeMiniMapType(short id, bool val) {
 	miniMapPanel->changeMiniMapType(id, val);
 }
 
+Sprite* Hud::getSpriteMiniMapToSubscribe() {
+	return miniMapPanel->getSpriteToSubscribe();
+}
+
 void Hud::updateSelected(SelectedInfo* selectedInfo) {
 	//TODO raz stworzyc a sterowac widzialnsocia
 	if (selectedInfo->hasChanged()) {

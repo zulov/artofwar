@@ -3,6 +3,7 @@
 
 
 FreeCameraBehave::FreeCameraBehave() {
+	minY = 3;
 	cameraNode = new Urho3D::Node(Game::get()->getContext());
 	cameraNode->SetPosition(Urho3D::Vector3(0.0f, 50.0f, -50.0f));
 	camera = cameraNode->CreateComponent<Urho3D::Camera>();

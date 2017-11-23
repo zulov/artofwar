@@ -17,6 +17,7 @@ public:
 	String *getInfo();
 	MouseMode getMouseMode();
 	void rotate(const IntVector2& mouse_move);
+	void changePosition(float x, float y);
 private:
 	void createCameraKeys(Input* input, bool cameraKeys[4], const IntVector2& cursorPos);
 

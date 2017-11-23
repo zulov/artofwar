@@ -55,6 +55,7 @@ private:
 	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
+	void HandleMiniMapClick(StringHash eventType, VariantMap& eventData);
 	void HandleMiniMapButton(StringHash eventType, VariantMap& eventData);
 	void HandleBuildButton(StringHash eventType, VariantMap& eventData);
 	void HandleUnitButton(StringHash eventType, VariantMap& eventData);

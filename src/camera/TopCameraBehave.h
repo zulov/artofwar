@@ -13,7 +13,7 @@ public:
 	Urho3D::String* getInfo() override;
 	MouseMode getMouseMode() override;
 private:
-	float maxY = 200, minY = 20;
+	float maxY = 200;
 	float orthoSize = 100;
 };
 

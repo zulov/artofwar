@@ -66,6 +66,7 @@ public:
 	void endLoading();
 	void updateLoading(float progress);
 	void changeMiniMapType(short id, bool val);
+	Sprite* getSpriteMiniMapToSubscribe();
 
 private:
 	void replaceVariables(XMLFile* xmlFile, int hudSizeId);

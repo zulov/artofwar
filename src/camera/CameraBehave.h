@@ -18,11 +18,13 @@ public:
 	virtual Urho3D::String *getInfo() = 0;//TODO da sie to uwspolnic
 	virtual MouseMode getMouseMode() = 0;
 	const Vector3 & getPosition();
+	void changePosition(float percentX, float percentY);
 protected:
 	Urho3D::SharedPtr<Urho3D::Node> cameraNode;
 	Urho3D::String name;
 	Urho3D::String *info;
 	bool changed;
 	Urho3D::Camera* camera;
+	float minY;
 };
 

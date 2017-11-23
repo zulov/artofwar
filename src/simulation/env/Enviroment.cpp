@@ -11,7 +11,7 @@ Enviroment::Enviroment(Terrain* _terrian) {
 
 	obstacleGrid = new Grid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD);
 	resourceGrid = new Grid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE);
-	terrian = _terrian;	
+	terrian = _terrian;
 }
 
 
@@ -124,9 +124,18 @@ float Enviroment::getGroundHeightPercent(float y, float x, float div) {
 	float scale = terrian->GetSpacing().y_;
 	Vector3 a = Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2, 0,
 	                    y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2);
-	//float b = y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
-	//std::cout << a.x_ << " " << a.z_ << "|";
+
 	return terrian->GetHeight(a) / scale / div;
+}
+
+Vector3 Enviroment::getValidPosForCamera(float percentX, float percentY, const Vector3& pos, float min) {
+	Vector3 a = Vector3(percentX * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2, pos.y_,
+	                    percentY * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2);
+	float h = terrian->GetHeight(a);
+	if (h + min > pos.y_) {
+		a.y_ = h + min;
+	}
+	return a;
 }
 
 
@@ -157,12 +166,12 @@ void Enviroment::prepareGridToFind() {
 }
 
 content_info* Enviroment::getContentInfo(Vector2& from, Vector2& to, bool checks[], int activePlayer) {
-	from.x_= from.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
-	from.y_= from.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
-	
+	from.x_ = from.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
+	from.y_ = from.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
+
 	to.x_ = to.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
 	to.y_ = to.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
 	//std::cout << xFrom << "-" << xTo << "$" << yFrom << "-" << yTo << std::endl;
 	return mainGrid->getContentInfo(from, to, checks, activePlayer);
-	
+
 }

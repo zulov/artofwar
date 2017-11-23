@@ -75,3 +75,7 @@ Urho3D::MouseMode CameraManager::getMouseMode() {
 void CameraManager::rotate(const IntVector2& mouse_move) {
 	activeBehave->rotate(mouse_move, MOUSE_SENSITIVITY);
 }
+
+void CameraManager::changePosition(float x, float y) {
+	activeBehave->changePosition(x, y);
+}

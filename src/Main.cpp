@@ -139,6 +139,8 @@ void Main::subscribeToEvents() {
 	for (auto buttton : *hud->getButtonsMiniMapToSubscribe()) {
 		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapButton));
 	}
+	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
+	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));
 
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
@@ -229,6 +231,16 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	} else if (key == KEY_3) {
 		changeCamera(CameraBehaviorType::TOP);
 	}
+}
+
+void Main::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {
+	Sprite* element = (Sprite*)eventData[Urho3D::Click::P_ELEMENT].GetVoidPtr();
+	IntVector2 begin = element->GetScreenPosition();
+	IntVector2 size = element->GetSize();
+	float x = eventData[Urho3D::Click::P_X].GetInt() - begin.x_;
+	float y = size.y_ - (eventData[Urho3D::Click::P_Y].GetInt() - begin.y_);
+
+	cameraManager->changePosition(x / size.x_, y / size.y_);
 }
 
 void Main::HandleMiniMapButton(StringHash eventType, VariantMap& eventData) {
