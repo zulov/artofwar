@@ -53,4 +53,8 @@ private:
 
 	Terrain * terrian;
 
+	std::vector<Unit*>* neights;//TODO tu bedzie trzeba tablica jesli beda watki
+	std::vector<Unit*>* neights2;
+	std::vector<Unit*>* empty;
+
 };

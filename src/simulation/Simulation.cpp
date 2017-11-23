@@ -26,7 +26,6 @@ void Simulation::tryToAttack(vector<Unit*>::value_type unit) {
 		std::vector<Unit*>* enemies = enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
 
 		unit->toAttack(enemies);
-		delete enemies;
 	}
 }
 
@@ -208,7 +207,6 @@ void Simulation::calculateForces() {
 			unit->setAcceleration(sepPedestrian);
 
 			delete destForce;
-			delete neighbours;
 		} else {
 			(*validPos) *= 20;
 			unit->setAcceleration(validPos);

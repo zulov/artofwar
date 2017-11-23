@@ -3,6 +3,12 @@
 #include <chrono>
 
 Enviroment::Enviroment(Terrain* _terrian) {
+	neights = new std::vector<Unit *>();
+	neights2 = new std::vector<Unit *>();
+	empty = new std::vector<Unit *>();
+	neights->reserve(DEFAULT_VECTOR_SIZE * 2);
+	neights2->reserve(DEFAULT_VECTOR_SIZE * 2);
+
 	mainGrid = new MainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, false);
 
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
@@ -38,18 +44,18 @@ std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, double radius,
 		return getNeighbours(unit, teamUnitGrid[team], radius);
 	case NOT_EQUAL:
 		{
-		std::vector<Unit*>* neight = new std::vector<Unit*>();
+		neights2->clear();
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
 			if (team != i) {
-				std::vector<Unit*>* neight1 = getNeighbours(unit, teamUnitGrid[i], radius);
-				neight->insert(neight->end(), neight1->begin(), neight1->end());
-				delete neight1;
+				std::vector<Unit*>* neightLocal = getNeighbours(unit, teamUnitGrid[i], radius);
+				neights2->insert(neights2->end(), neightLocal->begin(), neightLocal->end());
+
 			}
 		}
-		return neight;
+		return neights2;
 		}
 	default:
-		return new std::vector<Unit*>();
+		return empty;
 	}
 }
 
@@ -58,8 +64,7 @@ std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, double radius,
 //}
 
 std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid* bucketGrid, double radius) {
-	std::vector<Unit*>* neights = new std::vector<Unit *>();
-	neights->reserve(DEFAULT_VECTOR_SIZE);//TODO sparametryzowac
+	neights->clear();
 
 	double sqSeparationDistance = radius * radius;
 	Vector3* unitPosition = unit->getPosition();
