@@ -102,9 +102,9 @@ void MiniMapPanel::update() {
 	for (; partIndex < indexPerUpdate && indexUpdate < size.y_ * size.x_; ++partIndex, ++indexUpdate) {
 		float yVal = 1 - yinc * (indexUpdate / size.x_);
 		float xVal = 0 + xinc * (indexUpdate % size.x_);
+		int activePlayer = Game::get()->getPlayersManager()->getActivePlayer()->getId();
 
-
-		content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc));
+		content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc), checks, activePlayer);
 
 		if (checks[2] && ci->hasBuilding) {
 			char player = ci->biggestBuilding();
@@ -113,13 +113,6 @@ void MiniMapPanel::update() {
 			char resID = ci->biggestResource();
 			changeValue(data, changed, resourceColors[resID]);
 		} else if ((checks[3] || checks[4]) && ci->hasUnit) {
-			int active = Game::get()->getPlayersManager()->getActivePlayer()->getId();
-			if (checks[3] && !checks[4]) {
-				ci->unitsNumberPerPlayer[active] *= 1000;
-			}else if(!checks[3] && checks[4]) {
-				ci->unitsNumberPerPlayer[active] = 0;
-			}
-
 			char player = ci->biggestUnits();
 			changeValue(data, changed, unitsColors[player]);
 		} else if (checks[0]) {

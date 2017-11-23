@@ -83,36 +83,45 @@ int& Bucket::getSize() {
 	return size;
 }
 
-bool Bucket::incUnitsPerPlayer(content_info* ci) {
+bool Bucket::incUnitsPerPlayer(content_info* ci, int activePlayer, bool checks[]) {
+	bool hasUnits = false;
 	if (size > 0) {
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
-			ci->unitsNumberPerPlayer[i] += unitsNumberPerPlayer[i];
+			if (((checks[3] && i == activePlayer) || (checks[4] && i != activePlayer)) && unitsNumberPerPlayer[i] > 0) {
+
+				ci->unitsNumberPerPlayer[i] += unitsNumberPerPlayer[i];
+				hasUnits = true;
+			}
 		}
-		return true;
+		return hasUnits;
 	}
 	return false;
 }
 
-void Bucket::update(content_info* ci) {
+void Bucket::update(content_info* ci, bool checks[], int activePlayer) {
 	switch (data->getType()) {
 	case UNIT:
 		{
-		const bool hasInc = incUnitsPerPlayer(ci);
-		if (hasInc) {
-			ci->hasUnit = true;
+		if (checks[3] || checks[4]) {
+			const bool hasInc = incUnitsPerPlayer(ci, activePlayer, checks);
+			if (hasInc) {
+				ci->hasUnit = true;
+			}
 		}
 		}
 		break;
 	case RESOURCE:
-		ci->hasResource = true;
-		ci->resourceNumber[data->getAdditonalInfo()]++;
+		if (checks[1]) {
+			ci->hasResource = true;
+			ci->resourceNumber[data->getAdditonalInfo()]++;
+		}
 		break;
 	case BUILDING:
-		ci->hasBuilding = true;
-		ci->buildingNumberPerPlayer[data->getAdditonalInfo()]++;
+		if (checks[2]) {
+			ci->hasBuilding = true;
+			ci->buildingNumberPerPlayer[data->getAdditonalInfo()]++;
+		}
 		break;
-
-
 	default: ;
 	}
 }

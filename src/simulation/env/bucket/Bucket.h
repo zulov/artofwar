@@ -27,8 +27,8 @@ public:
 	void setNeightbours(std::vector<std::pair<int, float>*>* tempNeighbour);
 	std::vector<std::pair<int, float>*>& getNeightbours();
 	int &getSize();
-	bool incUnitsPerPlayer(content_info* ci);
-	void update(content_info* ci);
+	bool incUnitsPerPlayer(content_info* ci, int activePlayer, bool checks[]);
+	void update(content_info* ci, bool checks[], int activePlayer);
 private:
 	int size;
 	int unitsNumberPerPlayer[MAX_PLAYERS];

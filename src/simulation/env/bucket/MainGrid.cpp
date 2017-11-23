@@ -81,7 +81,7 @@ bool MainGrid::validateAdd(const IntVector2& size, Vector3* pos) {
 	return true;
 }
 
-content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to) {
+content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to, bool checks[], int activePlayer) {
 	const short posBeginX = getIndex(from.x_);
 	const short posBeginZ = getIndex(from.y_);
 	const short posEndX = getIndex(to.x_);
@@ -97,7 +97,7 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to) {
 	for (short i = iMin; i < iMax; ++i) {
 		for (short j = jMin; j < jMax; ++j) {
 			const int index = i * resolution + j;
-			buckets[index].update(ci);
+			buckets[index].update(ci, checks, activePlayer);
 		}
 	}
 	return ci;
