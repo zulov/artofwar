@@ -92,3 +92,27 @@ bool Bucket::incUnitsPerPlayer(content_info* ci) {
 	}
 	return false;
 }
+
+void Bucket::update(content_info* ci) {
+	switch (data->getType()) {
+	case UNIT:
+		{
+		const bool hasInc = incUnitsPerPlayer(ci);
+		if (hasInc) {
+			ci->hasUnit = true;
+		}
+		}
+		break;
+	case RESOURCE:
+		ci->hasResource = true;
+		ci->resourceNumber[data->getAdditonalInfo()]++;
+		break;
+	case BUILDING:
+		ci->hasBuilding = true;
+		ci->buildingNumberPerPlayer[data->getAdditonalInfo()]++;
+		break;
+
+
+	default: ;
+	}
+}

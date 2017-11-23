@@ -1,5 +1,8 @@
 #pragma once
 #include <algorithm>
+#include "defines.h"
+#include "database/db_strcut.h"
+
 
 struct content_info
 {

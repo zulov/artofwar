@@ -28,6 +28,7 @@ public:
 	std::vector<std::pair<int, float>*>& getNeightbours();
 	int &getSize();
 	bool incUnitsPerPlayer(content_info* ci);
+	void update(content_info* ci);
 private:
 	int size;
 	int unitsNumberPerPlayer[MAX_PLAYERS];

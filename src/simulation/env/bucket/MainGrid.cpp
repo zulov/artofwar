@@ -97,27 +97,7 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to) {
 	for (short i = iMin; i < iMax; ++i) {
 		for (short j = jMin; j < jMax; ++j) {
 			const int index = i * resolution + j;
-
-			switch (complexData[index].getType()) {
-			case BUILDING:
-				ci->hasBuilding = true;
-				ci->buildingNumberPerPlayer[complexData[index].getAdditonalInfo()]++;
-				break;
-			case RESOURCE:
-				ci->hasResource=true;
-				ci->resourceNumber[complexData[index].getAdditonalInfo()]++;
-				break;
-			case UNIT:
-				{
-				const bool hasInc = buckets[index].incUnitsPerPlayer(ci);
-				if (hasInc) {
-					ci->hasUnit = true;
-				}
-				}
-				break;
-			default: ;
-			}
-
+			buckets[index].update(ci);
 		}
 	}
 	return ci;

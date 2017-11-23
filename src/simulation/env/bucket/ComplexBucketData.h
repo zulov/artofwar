@@ -4,6 +4,7 @@
 #include <Urho3D/Scene/Node.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
+#include "simulation/env/ContentInfo.h"
 
 class Static;
 
@@ -24,11 +25,11 @@ public:
 	std::vector<std::pair<int, float>*>& getNeightbours();
 	char getAdditonalInfo();
 private:
+	ObjectType type;
 	Urho3D::Vector2 center;
 	Urho3D::Node* box;
 	Urho3D::StaticModel* model;
 	Static* object;
-	ObjectType type;
 	short additonalInfo;
 	std::vector<std::pair<int, float>*> neighbour;
 	float cost;
