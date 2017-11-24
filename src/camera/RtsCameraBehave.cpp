@@ -46,22 +46,22 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 		changed = true;
 	}
 	if (wheel != 0 || pos.y_ < localMin) {
-		Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
-		if (pos.y_ < localMin) {
-			pos.y_ = localMin;
+		Urho3D::Vector3 pos2 = cameraNode->GetWorldPosition();
+		if (pos2.y_ < localMin) {
+			pos2.y_ = localMin;
 		}
-		double diff = sqrt(pos.y_ - localMin) + 1;
+		double diff = sqrt(pos2.y_ - localMin) + 1;
 
-		pos += Vector3::DOWN * wheel * diff * 1.5;
+		pos2 += Vector3::DOWN * wheel * diff * 1.5;
 
-		if (pos.y_ < localMin) {
-			pos.y_ = localMin;
-		} else if (pos.y_ > localMax) {
-			pos.y_ = localMax;
+		if (pos2.y_ < localMin) {
+			pos2.y_ = localMin;
+		} else if (pos2.y_ > localMax) {
+			pos2.y_ = localMax;
 		}
 		double a = 10;
 
-		cameraNode->SetWorldPosition(pos);
+		cameraNode->SetWorldPosition(pos2);
 		cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * a);
 		changed = true;
 	}

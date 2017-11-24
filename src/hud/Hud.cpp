@@ -5,6 +5,12 @@
 #include "ButtonUtils.h"
 #include "player/PlayersManager.h"
 #include "database/DatabaseCache.h"
+#include <Urho3D/UI/UI.h>
+#include <Urho3D/Graphics/Graphics.h>
+#include <Urho3D/Resource/XMLFile.h>
+#include <Urho3D/Engine/Console.h>
+#include <Urho3D/Engine/DebugHud.h>
+#include <Urho3D/Resource/ResourceCache.h>
 
 void Hud::replaceVariables(XMLFile* xmlFile, int hudSizeId) {
 	auto styleString = xmlFile->ToString();
@@ -64,8 +70,8 @@ void Hud::createCursor() {
 Hud::Hud() {
 	windows = new std::vector<Window*>();
 	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
-	ResourceCache* rc = Game::get()->getCache();
-	style = rc->GetResource<XMLFile>("UI/" + graphSettings->style);
+
+	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->style);
 	replaceVariables(style, graphSettings->hud_size);
 	Game::get()->getUI()->GetRoot()->SetDefaultStyle(style);
 

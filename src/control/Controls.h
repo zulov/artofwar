@@ -1,22 +1,13 @@
 #pragma once
 
-#include <Urho3D/Graphics/Graphics.h>
-#include <Urho3D/Math/Ray.h>
-#include <Urho3D/UI/UI.h>
+
 #include <Urho3D/Graphics/Renderer.h>
-#include <Urho3D/Graphics/Camera.h>
-#include <Urho3D/Graphics/OctreeQuery.h>
-#include <Urho3D/Graphics/Octree.h>
-#include <Urho3D/Core/Context.h>
-#include <Urho3D/Scene/Scene.h>
 #include <vector>
-#include "objects/Entity.h"
+
 #include "ObjectEnums.h"
 #include <Urho3D/Input/Input.h>
 #include "ControlsState.h"
-#include "Game.h"
 #include "commands/CreationCommand.h"
-#include "objects/LinkComponent.h"
 #include "hud/HudElement.h"
 #include "SelectedInfo.h"
 #include "OrderType.h"

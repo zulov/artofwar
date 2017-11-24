@@ -1,5 +1,4 @@
 #include "Bucket.h"
-#include <iostream>
 
 
 Bucket::~Bucket() {

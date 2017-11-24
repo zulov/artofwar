@@ -1,7 +1,5 @@
 #pragma once
 #include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Scene/Scene.h>
-#include "LinkComponent.h"
 #include "SpacingType.h"
 
 

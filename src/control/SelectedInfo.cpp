@@ -1,6 +1,7 @@
 #include "SelectedInfo.h"
 #include "Controls.h"
 #include "SelectedInfoType.h"
+#include "utils.h"
 
 SelectedInfo::SelectedInfo() {
 	allNumber = 0;

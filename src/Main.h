@@ -8,17 +8,12 @@
 #include "control/Controls.h"
 #include "simulation/Simulation.h"
 #include "scene/LevelBuilder.h"
-
 #include <Urho3D/Engine/Application.h>
-#include <Urho3D/Engine/EngineDefs.h>
 #include <Urho3D/Graphics/Graphics.h>
-#include <Urho3D/IO/FileSystem.h>
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/Input/InputEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Scene/SceneEvents.h>
-#include <Urho3D/Core/CoreEvents.h>
 #include "GameState.h"
 #include "Loading.h"
 

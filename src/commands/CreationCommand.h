@@ -1,6 +1,4 @@
 #pragma once
-#include "objects/Entity.h"
-#include <vector>
 #include "AbstractCommand.h"
 #include "simulation/SimulationObjectManager.h"
 #include "ObjectEnums.h"

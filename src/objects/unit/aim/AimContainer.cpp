@@ -1,5 +1,6 @@
 #include "AimContainer.h"
 #include "defines.h"
+#include "utils.h"
 
 AimContainer::AimContainer() {
 	aims.reserve(DEFAULT_VECTOR_SIZE);

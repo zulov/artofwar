@@ -1,10 +1,19 @@
 #include <Main.h>
 #include "simulation/SimulationInfo.h"
-#include <iostream>
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
 #include "Urho3D/Resource/Image.h"
 #include "camera/CameraEnums.h"
+#include <Urho3D/Scene/SceneEvents.h>
+#include <Urho3D/Core/CoreEvents.h>
+#include <Urho3D/Engine/EngineDefs.h>
+#include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/Engine/Console.h>
+#include <Urho3D/UI/CheckBox.h>
+#include <Urho3D/Engine/DebugHud.h>
+#include <Urho3D/UI/UI.h>
+#include <Urho3D/IO/FileSystem.h>
+#include "objects/LinkComponent.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
@@ -337,7 +346,7 @@ void Main::SetupViewport() {
 
 void Main::control(float timeStep) {
 	IntVector2 cursorPos = Game::get()->getUI()->GetCursorPosition();
-	UIElement* element = GetSubsystem<UI>()->GetElementAt(cursorPos, false);
+	UIElement* element = Game::get()->getUI()->GetElementAt(cursorPos, false);
 
 	if (element) {
 		controls->deactivate();

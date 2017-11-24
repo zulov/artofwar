@@ -3,9 +3,7 @@
 #include "ObjectEnums.h"
 #include "Game.h"
 #include "control/SelectedInfo.h"
-#include <Urho3D/UI/Window.h>
 #include <Urho3D/UI/Text.h>
-#include <Urho3D/Graphics/Texture2D.h>
 #include "SelectedHudElement.h"
 #include "../AbstractWindowPanel.h"
 

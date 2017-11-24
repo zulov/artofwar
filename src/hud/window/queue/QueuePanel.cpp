@@ -3,7 +3,7 @@
 #include "objects/building/Building.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include "database/DatabaseCache.h"
-
+#include "Urho3D/Graphics/Texture2D.h"
 
 QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "QueueWindow";

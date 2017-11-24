@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include "simulation/env/bucket/BucketIterator.h"
 #include "simulation/env/bucket/Grid.h"
 #include "objects/building/Building.h"
 #include "defines.h"
@@ -22,11 +21,8 @@ public:
 	static float getSqDistance(Vector3* unitPosition, Vector3* otherPosition);
 	std::vector<Unit *>* getNeighbours(Unit* unit, double radius);
 	std::vector<Unit *>* getNeighboursFromTeam(Unit* unit, double radius, int team, OperatorType operatorType);
-//	std::vector<Physical *>* getBuildings(Unit* unit, double radius);
 
 	std::vector<Unit *>* getNeighbours(Unit* unit, Grid* bucketGrid, double radius);
-
-	//std::vector<Physical*>* getResources(Unit* unit, double radius);
 
 	void update(std::vector<Unit*>* units);
 	void update(std::vector<Building*>* buildings);

@@ -1,6 +1,7 @@
 #include "Simulation.h"
 #include <ctime>
 #include "Game.h"
+#include "objects/resource/ResourceType.h"
 
 
 Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList) {

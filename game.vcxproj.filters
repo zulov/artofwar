@@ -465,7 +465,6 @@
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\Loading.h" />
     <ClInclude Include="src\simulation\env\ContentInfo.h" />
-    <ClInclude Include="src\hud\window\minimap\MiniMapType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

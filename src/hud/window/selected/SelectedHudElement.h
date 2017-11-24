@@ -13,7 +13,6 @@ public:
 	SelectedHudElement(Urho3D::XMLFile* style);
 	~SelectedHudElement();
 	void unSelect();
-	void select(ObjectType objetType, int subType);
 	Button* getButton();
 	void hide();
 	void show();

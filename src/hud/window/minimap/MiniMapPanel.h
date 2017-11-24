@@ -4,7 +4,7 @@
 #include <Urho3D/UI/Sprite.h>
 #include <Urho3D/UI/Button.h>
 #include <vector>
-#include "MiniMapType.h"
+
 #include "defines.h"
 #include "database/db_strcut.h"
 

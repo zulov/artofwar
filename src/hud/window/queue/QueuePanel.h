@@ -5,7 +5,6 @@
 #include "QueueHudElement.h"
 #include "objects/building/QueueManager.h"
 #include "control/SelectedInfo.h"
-#include <Urho3D/Graphics/Texture2D.h>
 
 class QueuePanel :public AbstractWindowPanel//TODO moze zrobic multilina
 {

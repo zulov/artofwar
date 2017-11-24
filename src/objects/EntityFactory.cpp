@@ -1,4 +1,5 @@
 #include "EntityFactory.h"
+#include "defines.h"
 
 EntityFactory::EntityFactory() {
 }

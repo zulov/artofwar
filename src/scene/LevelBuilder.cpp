@@ -1,15 +1,11 @@
 #include "LevelBuilder.h"
 #include "objects/Physical.h"
 #include <Urho3D/Graphics/Terrain.h>
-#include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Material.h>
 #include "Game.h"
 #include "Urho3D/Resource/Image.h"
-
-#include <Urho3D/Physics/RigidBody.h>
-#include <Urho3D/Physics/CollisionShape.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include "database/DatabaseCache.h"
 

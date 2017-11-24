@@ -2,7 +2,6 @@
 #include <Urho3D/Math/Vector3.h>
 #include <vector>
 #include "Aim.h"
-#include "utils.h"
 
 class Entity;
 

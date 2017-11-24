@@ -1,5 +1,4 @@
 #include "BucketQueue.h"
-#include <iostream>
 
 
 BucketQueue::BucketQueue() {

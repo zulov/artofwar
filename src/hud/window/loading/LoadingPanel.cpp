@@ -1,5 +1,4 @@
 #include "LoadingPanel.h"
-#include "Game.h"
 #include <Urho3D/UI/UI.h>
 
 

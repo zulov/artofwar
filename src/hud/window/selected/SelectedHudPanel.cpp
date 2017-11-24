@@ -1,7 +1,7 @@
 #include "SelectedHudPanel.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include "database/DatabaseCache.h"
-
+#include <Urho3D/Graphics/Texture2D.h>
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style):AbstractWindowPanel(_style) {
 	styleName = "SelectedInfoWindow";

@@ -1,11 +1,8 @@
 #pragma once
 #include "../AbstractWindowPanel.h"
 #include <Urho3D/UI/Text.h>
-#include <array>
 #include <vector>
-#include <Urho3D/UI/DropDownList.h>
 #include "hud/HudElement.h"
-#include <Urho3D/UI/Text.h>
 #include "database/db_strcut.h"
 #include "control/SelectedInfo.h"
 

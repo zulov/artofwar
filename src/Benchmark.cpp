@@ -24,7 +24,7 @@ Benchmark::~Benchmark() {
 	}
 }
 
-double Benchmark::getAverageFPS() {
+double Benchmark::getAverageFPS() const {
 	return avg;
 }
 
@@ -54,6 +54,6 @@ void Benchmark::save() {
 	}
 }
 
-long Benchmark::getLoops() {
+long Benchmark::getLoops() const {
 	return loops;
 }

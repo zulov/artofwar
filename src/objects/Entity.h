@@ -1,6 +1,5 @@
 #pragma once
 #include <Urho3D/Scene/Node.h>
-#include <Urho3D/Scene/Component.h>
 #include "ActionType.h"
 #include "unit/aim/Aims.h"
 #include "unit/ActionParameter.h"

@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include "objects/Entity.h"
 #include "AbstractCommand.h"
 #include "simulation/Simulation.h"
 #include "OrderType.h"

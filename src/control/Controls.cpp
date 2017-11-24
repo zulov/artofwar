@@ -5,6 +5,11 @@
 #include <algorithm>
 #include "HitData.h"
 #include "camera/CameraManager.h"
+#include "Game.h"
+#include <Urho3D/UI/UI.h>
+#include <Urho3D/Graphics/Graphics.h>
+#include <Urho3D/Graphics/OctreeQuery.h>
+#include <Urho3D/Graphics/Octree.h>
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Physical*>();

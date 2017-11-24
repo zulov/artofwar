@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <ostream>
 #include <iostream>
-#include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include "simulation/env/ContentInfo.h"
