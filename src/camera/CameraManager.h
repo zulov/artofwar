@@ -1,9 +1,6 @@
 #pragma once
 #include <vector>
-#include "CameraEnums.h"
 #include "CameraBehave.h"
-#include "FreeCameraBehave.h"
-#include "RtsCameraBehave.h"
 
 using namespace Urho3D;
 

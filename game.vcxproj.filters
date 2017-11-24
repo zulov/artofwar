@@ -458,7 +458,6 @@
     <ClInclude Include="src\commands\CreationCommandList.h">
       <Filter>command\list</Filter>
     </ClInclude>
-    <ClInclude Include="src\simulation\env\bucket\PriorityQueue.h" />
     <ClInclude Include="src\simulation\env\bucket\BucketQueue.h" />
     <ClInclude Include="src\simulation\env\bucket\fiboheap.h" />
     <ClInclude Include="src\control\HitData.h" />

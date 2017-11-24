@@ -7,7 +7,7 @@ using namespace std;
 class DatabaseCache
 {
 public:
-	void ifError(int rc, char* error);
+	static void ifError(int rc, char* error);
 	void execute(char* sql, int (* load)(void*, int, char**, char**));
 	DatabaseCache();
 	~DatabaseCache();

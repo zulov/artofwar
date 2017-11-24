@@ -24,8 +24,7 @@ Building::Building(Vector3* _position, int id, int player) : Static(_position, B
 	populate(dbBuilding, dbUnits);
 	Model* model = Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbBuilding->model);
 	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbBuilding->texture);
-
-
+	
 	node->SetScale(dbBuilding->scale);
 	Urho3D::StaticModel* staticModel = node->CreateComponent<Urho3D::StaticModel>();
 	staticModel->SetModel(model);

@@ -10,6 +10,7 @@ Bucket::Bucket() {
 	content.reserve(DEFAULT_VECTOR_SIZE / 2);
 	size = 0;
 	std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
+	data = nullptr;
 }
 
 std::vector<Unit *>& Bucket::getContent() {

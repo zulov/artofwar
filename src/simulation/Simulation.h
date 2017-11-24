@@ -1,15 +1,10 @@
 #pragma once
 #include "objects/unit/Unit.h"
 #include <vector>
-#include <ctime>
 #include "simulation/env/Enviroment.h"
 #include "simulation/force/Force.h"
 #include "SimulationObjectManager.h"
 #include "commands/CreationCommandList.h"
-#include "commands/CommandList.h"
-#include <Urho3D/Core/CoreEvents.h>
-#include <Urho3D/Engine/Engine.h>
-#include <Urho3D/Graphics/Renderer.h>
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/DebugNew.h>
 #include "commands/ActionCommandList.h"
@@ -62,7 +57,7 @@ private:
 	AimContainer* aimContainer;
 	SimulationInfo* simulationInfo;
 	Enviroment* enviroment;
-	Force* forceStrategy;
+	Force* force;
 	SimulationObjectManager* simObjectManager;
 	CreationCommandList* simCommandList;
 	ActionCommandList* actionCommandList;

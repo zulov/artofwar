@@ -1,10 +1,6 @@
 #pragma once
 
 #include <vector>
-#include "ObjectEnums.h"
-#include "defines.h"
-#include "Game.h"
-#include "objects/Entity.h"
 #include "state/UnitStateType.h"
 #include "UnitType.h"
 #include "objects/Physical.h"

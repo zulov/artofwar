@@ -2,6 +2,7 @@
 #include "../Unit.h"
 #include "player/Resources.h"
 #include "player/PlayersManager.h"
+#include "Game.h"
 
 
 CollectState::CollectState() {

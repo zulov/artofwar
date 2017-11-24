@@ -2,6 +2,9 @@
 #include "commands/ActionCommand.h"
 #include "OrderType.h"
 #include "database/DatabaseCache.h"
+#include "Game.h"
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Model.h>
 
 double Unit::hbMaxSize = 0.7;
 StateManager* Unit::states = nullptr;
@@ -103,7 +106,6 @@ Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
 		auto dir = aims->getDirection(this, aimIndex);
 		Vector3* force = nullptr;
 		if (dir == nullptr) {
-			dir = toResource;
 			if (!toResource) {
 				force = new Vector3(*toResource);
 			}

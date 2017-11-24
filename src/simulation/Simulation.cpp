@@ -1,9 +1,11 @@
 #include "Simulation.h"
+#include <ctime>
+#include "Game.h"
 
 
 Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList) {
 	enviroment = _enviromentStrategy;
-	forceStrategy = new Force();
+	force = new Force();
 	simObjectManager = _simCommandList->getManager();
 	srand(time(NULL));
 	animate = true;
@@ -12,7 +14,7 @@ Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _si
 	actionCommandList = new ActionCommandList(aimContainer);
 	Game::get()->setActionCommmandList(actionCommandList);
 	simulationInfo = new SimulationInfo();
-	//createUnits();
+
 
 	units = simObjectManager->getUnits();
 	buildings = simObjectManager->getBuildings();
@@ -199,9 +201,9 @@ void Simulation::calculateForces() {
 		Vector3* validPos = enviroment->validatePosition(unit->getPosition());
 		if (!validPos) {
 			std::vector<Unit*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
-			Vector3* sepPedestrian = forceStrategy->separationUnits(unit, neighbours);
+			Vector3* sepPedestrian = force->separationUnits(unit, neighbours);
 
-			Vector3* destForce = forceStrategy->destination(unit);
+			Vector3* destForce = force->destination(unit);
 
 			(*sepPedestrian) += (*destForce);
 			unit->setAcceleration(sepPedestrian);

@@ -18,6 +18,7 @@
 #include <Urho3D/Input/InputEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/SceneEvents.h>
+#include <Urho3D/Core/CoreEvents.h>
 #include "GameState.h"
 #include "Loading.h"
 

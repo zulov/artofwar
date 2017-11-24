@@ -35,7 +35,6 @@ void ComplexBucketData::setStatic(Static* _object) {
 	if (_object->getType() == BUILDING) {
 		additonalInfo = _object->getPlayer();
 	} else {
-		char a = _object->getID();
 		additonalInfo = _object->getID();
 	}
 }

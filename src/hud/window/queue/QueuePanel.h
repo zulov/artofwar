@@ -13,7 +13,7 @@ public:
 	QueuePanel(Urho3D::XMLFile* _style);
 	~QueuePanel();
 
-	String getIconName(ObjectType index, int id);
+	static String getIconName(ObjectType index, int id);
 	std::vector<Button*>* getButtonsQueueToSubscribe();
 	void show(SelectedInfo* selectedInfo);
 	void update(SelectedInfo* selectedInfo);

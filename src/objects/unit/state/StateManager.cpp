@@ -13,6 +13,7 @@
 #include "../Unit.h"
 #include "CollectState.h"
 #include "database/DatabaseCache.h"
+#include "Game.h"
 
 StateManager::StateManager() {
 	states = new State*[STATE_SIZE];

@@ -77,7 +77,6 @@ void MiniMapPanel::createEmpty(int parts) {
 }
 
 void MiniMapPanel::changeValue(uint32_t* data, bool& changed, unsigned val) {
-	unsigned q = *(data + indexUpdate);
 	if (*(data + indexUpdate) != val) {
 		changed = true;
 		*(data + indexUpdate) = val;

@@ -4,6 +4,7 @@
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
 #include "Urho3D/Resource/Image.h"
+#include "camera/CameraEnums.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 

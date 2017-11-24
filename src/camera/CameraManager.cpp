@@ -3,6 +3,8 @@
 #include <Urho3D/Graphics/Graphics.h>
 #include "TopCameraBehave.h"
 #include "simulation/env/Enviroment.h"
+#include "FreeCameraBehave.h"
+#include "RtsCameraBehave.h"
 
 CameraManager::CameraManager() {
 

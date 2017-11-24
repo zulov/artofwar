@@ -38,7 +38,7 @@ public:
 	void drawMap(Image* image);
 	content_info* getContentInfo(const Vector2& from, const Vector2& to, bool checks[], int activePlayer);
 private:
-	IntVector2 calculateSize(int size);
+	static IntVector2 calculateSize(int size);
 	std::vector<std::pair<int, float>*>* tempNeighbour;
 	int* came_from;
 	float* cost_so_far;

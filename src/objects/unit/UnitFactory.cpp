@@ -16,7 +16,6 @@ UnitFactory::~UnitFactory() {
 
 std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center, int player) {
 	units->clear();
-	Game* game = Game::get();
 
 	double space = getSpecSize(CONSTANT);
 

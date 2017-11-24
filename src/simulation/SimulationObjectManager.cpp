@@ -1,6 +1,7 @@
 #include "SimulationObjectManager.h"
 #include <algorithm>
 #include <simulation/env/Enviroment.h>
+#include "Game.h"
 
 
 SimulationObjectManager::SimulationObjectManager() {

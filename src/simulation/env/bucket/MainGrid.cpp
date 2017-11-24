@@ -5,6 +5,7 @@
 #include <iomanip>
 #include "BucketQueue.h"
 #include "Urho3D/Resource/Image.h"
+#include "Game.h"
 
 
 MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_resolution, _size, _debugEnabled) {

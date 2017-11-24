@@ -2,6 +2,8 @@
 #include "Game.h"
 #include <Urho3D/Graphics/Octree.h>
 #include "commands/ActionCommand.h"
+#include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/Material.h>
 
 Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
 
