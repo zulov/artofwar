@@ -18,7 +18,7 @@ class Enviroment
 public:
 	Enviroment(Terrain * _terrian);
 	~Enviroment();
-	static float getSqDistance(Vector3* unitPosition, Vector3* otherPosition);
+
 	std::vector<Unit *>* getNeighbours(Unit* unit, double radius);
 	std::vector<Unit *>* getNeighboursFromTeam(Unit* unit, double radius, int team, OperatorType operatorType);
 

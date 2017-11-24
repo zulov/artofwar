@@ -30,10 +30,6 @@ Enviroment::~Enviroment() {
 	delete[] teamUnitGrid;
 }
 
-float Enviroment::getSqDistance(Vector3* unitPosition, Vector3* otherPosition) {
-	return ((*otherPosition) - (*unitPosition)).LengthSquared();
-}
-
 std::vector<Unit*>* Enviroment::getNeighbours(Unit* unit, double radius) {
 	return getNeighbours(unit, mainGrid, radius);
 }
@@ -73,7 +69,7 @@ std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid* bucketGrid, dou
 	while (Unit* neight = bucketIterator->next()) {
 		if (unit == neight) { continue; }
 
-		double sqDistance = getSqDistance(unitPosition, neight->getPosition());
+		double sqDistance = ((*unitPosition) - (*neight->getPosition())).LengthSquared();
 
 		if (sqDistance < sqSeparationDistance) {
 			neights->push_back(neight);

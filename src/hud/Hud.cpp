@@ -91,6 +91,7 @@ Hud::Hud() {
 	ordersPanel = new OrdersPanel(style);
 	queuePanel = new QueuePanel(style);
 	loadingPanel = new LoadingPanel(style);
+	inGameMenuPanel = new InGameMenuPanel(style);
 
 	windows->push_back(menuPanel->createWindow());
 	windows->push_back(buildPanel->createWindow());
@@ -102,6 +103,7 @@ Hud::Hud() {
 	windows->push_back(ordersPanel->createWindow());
 	windows->push_back(queuePanel->createWindow());
 	windows->push_back(loadingPanel->createWindow());
+	windows->push_back(inGameMenuPanel->createWindow());
 
 	//buildPanel->show();
 

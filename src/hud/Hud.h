@@ -18,6 +18,7 @@
 #include "window/orders/OrdersPanel.h"
 #include "window/queue/QueuePanel.h"
 #include "window/loading/LoadingPanel.h"
+#include "window/in_game_menu/InGameMenuPanel.h"
 
 using namespace Urho3D;
 
@@ -64,6 +65,7 @@ private:
 	OrdersPanel* ordersPanel;
 	QueuePanel* queuePanel;
 	LoadingPanel* loadingPanel;
+	InGameMenuPanel * inGameMenuPanel;
 
 	std::vector<Window*>* windows;
 	db_graph_settings* graphSettings;

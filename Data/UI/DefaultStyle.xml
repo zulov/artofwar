@@ -490,6 +490,18 @@
 		<attribute name="Position" value="0 -{3*iconY+3*spaceY}"/>
 	</element>
 	
+	<element type="InGameMenuWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Top" />
+		<attribute name="Horiz Alignment" value="Right" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Spacing" value="{spaceY}" />
+        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+		<attribute name="Min Size" value="{iconX*5} {bigY/2}"/>
+
+		<attribute name="Position" value="0 {iconY/2+2*spaceY}"/>
+	</element>
+	
+	
 	<element type="MyDropDown" style="DropDownList" >
 		<attribute name="Min Size" value="{2*iconX} {iconY/2}"/>
 		<attribute name="Max Size" value="{2*iconX} {iconY/2}"/>

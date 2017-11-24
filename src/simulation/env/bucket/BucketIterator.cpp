@@ -10,8 +10,9 @@ BucketIterator::~BucketIterator() {
 
 Unit* BucketIterator::next() {
 	while (secondIndex == sizeContent) {
-		if (index + 1 >= levelSize) { return nullptr; }
 		++index;
+		if (index >= levelSize) { return nullptr; }
+
 		currentContent = &bucketGrid->getContentAt((*levels)[index] + center);
 		sizeContent = currentContent->size();
 		secondIndex = 0;
