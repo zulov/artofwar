@@ -4,6 +4,7 @@
 #include "database/DatabaseCache.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Graphics/Texture2D.h>
+#include "commands/ActionCommand.h"
 
 TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "TopWindow";
@@ -11,11 +12,17 @@ TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 
 
 TopPanel::~TopPanel() {
+	delete buttons;
+	int size = Game::get()->getDatabaseCache()->getResourceSize();
+	for (int i = 0; i < size; ++i) {
+		delete elements[i];
+	}
+	delete[] elements;
 }
 
 void TopPanel::createBody() {
 	unitsNumber = window->CreateChild<Text>();
-	unitsNumber->SetStyle("MyText", style);
+	unitsNumber->SetStyle("TopText", style);
 	unitsNumber->SetText("Test");
 
 	int size = Game::get()->getDatabaseCache()->getResourceSize();
@@ -31,14 +38,15 @@ void TopPanel::createBody() {
 		window->AddChild(elements[i]->getButton());
 		buttons->push_back(elements[i]->getButton());
 	}
-	BorderImage *separator = window->CreateChild<BorderImage>();
+	BorderImage* separator = window->CreateChild<BorderImage>();
 	separator->SetStyle("EditorVerticalDivider", style);
 	menuList = window->CreateChild<DropDownList>();
 	menuList->SetStyle("MyDropDown", style);
-	{//test
-		Text * text = window->CreateChild<Text>();
+	{
+		//test
+		Text* text = window->CreateChild<Text>();
 		text->SetStyle("MyText", style);
-		text->SetText("Test"); 
+		text->SetText("Test");
 		menuList->AddItem(text);
 	}
 }

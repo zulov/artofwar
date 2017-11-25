@@ -9,7 +9,7 @@ TopHudElement::TopHudElement(Urho3D::XMLFile* style, Texture2D* texture) {
 	mock->SetStyle("mockCenter", style);
 
 	value = mock->CreateChild<Text>();
-	value->SetStyle("MiniText", style);
+	value->SetStyle("TopText", style);
 
 	button->AddChild(icon);
 	button->SetVar("TopHudElement", this);

@@ -403,14 +403,15 @@
 	</element>
 	
 	<element type="TopWindow" style="MyWindow">
-		<attribute name="Min Size" value="{resX/3} {iconY/2+2*spaceY}"/>
+		<attribute name="Min Size" value="{resX/4} {iconY/2+2*spaceY}"/>
         <attribute name="Max Size" value="{resX/2} {iconY/2+2*spaceY}" />
 		<attribute name="Vert Alignment" value="Top" />
-		<attribute name="Horiz Alignment" value="Right" />
+		<attribute name="Horiz Alignment" value="Center" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<attribute name="Layout Spacing" value="{spaceX}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
 	</element>
+	
 	<element type="MenuWindow" style="MyWindow">
 		<attribute name="Vert Alignment" value="Bottom" />
 		<attribute name="Horiz Alignment" value="Left" />
@@ -420,6 +421,7 @@
 		<attribute name="Min Size" value="{4*iconX+2*spaceX} {4*iconY+2*spaceY}"/>
 		<attribute name="Max Size" value="{4*iconX+2*spaceX} {4*iconY+2*spaceY}"/>
 	</element>
+	
 	<element type="LeftWindow" style="MyWindow">
 		<attribute name="Vert Alignment" value="Bottom" />
 		<attribute name="Horiz Alignment" value="Left" />
@@ -430,6 +432,7 @@
 		<attribute name="Max Size" value="{iconX+spaceX + iconX/2} {resY/2}"/>
 		<attribute name="Position" value="0 -{4*iconY+2*spaceY}"/>
 	</element>
+	
 	<element type="BuildWindow" style="LeftWindow">
 		
 	</element>
@@ -497,10 +500,14 @@
 		<attribute name="Layout Spacing" value="{spaceY}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
 		<attribute name="Min Size" value="{iconX*5} {bigY/2}"/>
-
-		<attribute name="Position" value="0 {iconY/2+2*spaceY}"/>
 	</element>
 	
+	<element type="InGameToggledButton" style="Button" auto="false">
+        <attribute name="Opacity" value="0.4" />
+		<attribute name="Vert Alignment" value="Top" />
+		<attribute name="Horiz Alignment" value="Right" />
+		<attribute name="Min Size" value="{iconX} {iconY}"/>		
+    </element>
 	
 	<element type="MyDropDown" style="DropDownList" >
 		<attribute name="Min Size" value="{2*iconX} {iconY/2}"/>
@@ -509,8 +516,8 @@
 	</element>
 	
 	<element type="TopButtons" style="Button" >
-		<attribute name="Min Size" value="{2*iconX} {iconY/2}"/>
-		<attribute name="Max Size" value="{2*iconX} {iconY/2}"/>
+		<attribute name="Min Size" value="{iconX*1.75} {iconY/2}"/>
+		<attribute name="Max Size" value="{iconX*1.75} {iconY/2}"/>
 	</element>
 	
 	<element type="Icon" style="Button">
@@ -577,8 +584,12 @@
 	</element>
 	
 	<element type="MiniText" style="MyText" >
-		<attribute name="Font" value="Font;Fonts/Anonymous Pro.ttf" />
 		<attribute name="Font Size" value="{fontSize*8/10}" />
+	</element>
+	
+	<element type="TopText" style="MyText" >
+		<attribute name="Font Size" value="{fontSize}" />
+		<attribute name="Vert Alignment" value="Center" />
 	</element>
 	
 	<element type="MyListView" style="ListView" >
