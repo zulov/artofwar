@@ -67,6 +67,8 @@ private:
 	LoadingPanel* loadingPanel;
 	InGameMenuPanel * inGameMenuPanel;
 
+	std::vector<AbstractWindowPanel*> panels;
+
 	std::vector<Window*>* windows;
 	db_graph_settings* graphSettings;
 	XMLFile* style;

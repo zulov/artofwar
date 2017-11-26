@@ -81,17 +81,17 @@ Hud::Hud() {
 
 	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
 
-	selectedHudPanel = new SelectedHudPanel(style);
-	buildPanel = new BuildPanel(style, nation);
-	unitsPanel = new UnitsPanel(style, nation);
-	debugPanel = new DebugPanel(style);
-	topPanel = new TopPanel(style);
-	miniMapPanel = new MiniMapPanel(style);
-	menuPanel = new MenuPanel(style);
-	ordersPanel = new OrdersPanel(style);
-	queuePanel = new QueuePanel(style);
-	loadingPanel = new LoadingPanel(style);
-	inGameMenuPanel = new InGameMenuPanel(style);
+	panels.push_back(selectedHudPanel = new SelectedHudPanel(style));
+	panels.push_back(buildPanel = new BuildPanel(style, nation));
+	panels.push_back(unitsPanel = new UnitsPanel(style, nation));
+	panels.push_back(debugPanel = new DebugPanel(style));
+	panels.push_back(topPanel = new TopPanel(style));
+	panels.push_back(miniMapPanel = new MiniMapPanel(style));
+	panels.push_back(menuPanel = new MenuPanel(style));
+	panels.push_back(ordersPanel = new OrdersPanel(style));
+	panels.push_back(queuePanel = new QueuePanel(style));
+	panels.push_back(loadingPanel = new LoadingPanel(style));
+	panels.push_back(inGameMenuPanel = new InGameMenuPanel(style));
 
 	windows->push_back(menuPanel->createWindow());
 	windows->push_back(buildPanel->createWindow());
@@ -105,8 +105,9 @@ Hud::Hud() {
 	windows->push_back(loadingPanel->createWindow());
 	windows->push_back(inGameMenuPanel->createWindow());
 
-	//buildPanel->show();
-
+	for (auto panel : panels) {
+		panel->setVisible(false);
+	}
 }
 
 Hud::~Hud() {
@@ -120,6 +121,7 @@ Hud::~Hud() {
 	delete ordersPanel;
 	delete queuePanel;
 	delete loadingPanel;
+	delete inGameMenuPanel;
 }
 
 void Hud::createDebugHud() {
@@ -171,12 +173,15 @@ std::vector<Window*>* Hud::getWindows() {
 }
 
 void Hud::resetLoading() {
+	for (auto panel : panels) {
+		panel->setVisible(false);
+	}
 	loadingPanel->show();
 }
 
 void Hud::endLoading() {
-	for (auto window : *windows) {
-		window->SetVisible(true);
+	for (auto panel : panels) {
+		panel->setVisible(true);
 	}
 	loadingPanel->end();
 }

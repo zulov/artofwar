@@ -12,7 +12,7 @@ public:
 	virtual ~AbstractWindowPanel();
 	Urho3D::String& getStyleName();
 	Urho3D::Window * createWindow();
-	void setVisible(bool enable);
+	virtual void setVisible(bool enable);
 protected:
 	Urho3D::XMLFile* style;
 	Urho3D::Window * window;

@@ -394,10 +394,6 @@
   MY UI
 -->	
 	<element type="MyWindow" style="Window">		
-		<!--
-		<attribute name="Texture" value="Texture2D;Textures/wood.png" />
-		<attribute name="Tiled" value="true" />
-		-->
 		<attribute name="Is Visible" value="false" />
 		<attribute name="Opacity" value="0.8" />
 	</element>
@@ -406,10 +402,11 @@
 		<attribute name="Min Size" value="{resX/4} {iconY/2+2*spaceY}"/>
         <attribute name="Max Size" value="{resX/2} {iconY/2+2*spaceY}" />
 		<attribute name="Vert Alignment" value="Top" />
-		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Right" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<attribute name="Layout Spacing" value="{spaceX}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+        <attribute name="Position" value="{-iconX} 0" />
 	</element>
 	
 	<element type="MenuWindow" style="MyWindow">
@@ -450,7 +447,6 @@
         <attribute name="Layout Border" value="{iconX} {spaceY} {iconX} {spaceY}" />
 		<attribute name="Min Size" value="{resX/2} {resY/2}"/>
 		<attribute name="Max Size" value="{bigX} {bigY}"/>
-
 	</element>
 	
 	<element type="MiniMapWindow" style="MyWindow">
@@ -462,6 +458,7 @@
 		<attribute name="Layout Spacing" value="{spaceY}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
 	</element>	
+	
 	<element type="SelectedInfoWindow" style="MyWindow">
 		<attribute name="Vert Alignment" value="Bottom" />
 		<attribute name="Horiz Alignment" value="Center" />
@@ -499,15 +496,35 @@
 		<attribute name="Layout Mode" value="Vertical" />
 		<attribute name="Layout Spacing" value="{spaceY}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
-		<attribute name="Min Size" value="{iconX*5} {bigY/2}"/>
+		<attribute name="Min Size" value="{iconX*4} {bigY/3}"/>
+		<attribute name="Max Size" value="{iconX*5} {bigY/2}"/>
+		<attribute name="Position" value="0 {iconY/2+2*spaceY}"/>
 	</element>
 	
 	<element type="InGameToggledButton" style="Button" auto="false">
-        <attribute name="Opacity" value="0.4" />
 		<attribute name="Vert Alignment" value="Top" />
 		<attribute name="Horiz Alignment" value="Right" />
-		<attribute name="Min Size" value="{iconX} {iconY}"/>		
+		<attribute name="Min Size" value="{iconX} {iconY/2+2*spaceY}"/>		
     </element>
+	
+	<element type="InGameSprite">
+		<attribute name="Vert Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Left" />
+		<attribute name="My Size" value="{iconX-spaceX} {iconY-spaceY}" />
+		<attribute name="Percent HotSpot" value="0.0 0.5" />
+    </element>
+	
+	<element type="InGameButton"  style="Button" >
+        <attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Min Size" value="{iconX*4} {iconY}" />
+		<attribute name="Max Size" value="{iconX*4} {iconY}" />
+    </element>
+	
+	<element type="InGameText" style="MyText" >
+		<attribute name="Text Alignment" value="Right" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Vert Alignment" value="Center" />
+	</element>
 	
 	<element type="MyDropDown" style="DropDownList" >
 		<attribute name="Min Size" value="{2*iconX} {iconY/2}"/>
