@@ -149,7 +149,7 @@ void MiniMapPanel::createBody() {
 	elements->reserve(MINI_MAP_BUTTON_NUMBER);
 	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
-		>("textures/hud/icon/minimap" + String(i) + ".png");
+		>("textures/hud/icon/mm/minimap" + String(i) + ".png");
 
 		MySprite* sprite = createSprite(texture, style, "MiniMapSprite");
 		CheckBox* box = row->CreateChild<CheckBox>();

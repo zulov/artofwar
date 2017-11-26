@@ -42,7 +42,7 @@ void InGameMenuPanel::action(short id) {
 }
 
 void InGameMenuPanel::createBody() {
-	Urho3D::Texture2D* texture = Game::get()->getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/menu.png");
+	Urho3D::Texture2D* texture = Game::get()->getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/igm/menu.png");
 
 	MySprite* sprite = createSprite(texture, style, "InGameToggledSprite");
 	toggleButton = simpleButton(sprite, style, "InGameToggledButton");
