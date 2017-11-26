@@ -4,18 +4,19 @@
 		"en":"English"
 	},
 	"igm_0":{
-		"pl":"Ustawienia"
-	},
-	"igm_1":{
 		"pl":"Zapisz"
 	},
-	"igm_2":{
+	"igm_1":{
 		"pl":"Wczytaj"
 	},
+	"igm_2":{
+		"pl":"Ustawienia"
+	},
 	"igm_3":{
-		"pl":"Wyjście"
+		"pl":"Pomoc"
 	},
 	"igm_4":{
-		"pl":"Pomoc"
+		"pl":"Wyjście"
 	}
+
 }

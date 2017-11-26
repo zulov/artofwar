@@ -44,14 +44,14 @@ void InGameMenuPanel::action(short id) {
 void InGameMenuPanel::createBody() {
 	Urho3D::Texture2D* texture = Game::get()->getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/menu.png");
 
-	MySprite* sprite = createSprite(texture, style, "InGameSprite");
+	MySprite* sprite = createSprite(texture, style, "InGameToggledSprite");
 	toggleButton = simpleButton(sprite, style, "InGameToggledButton");
 	Game::get()->getUI()->GetRoot()->AddChild(toggleButton);
 
 	buttons = new std::vector<HudElement*>();
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		Texture2D* texture2 = Game::get()->getCache()->GetResource<Texture2D
-		>("textures/hud/icon/in_game_menu" + String(i) + ".png");
+		>("textures/hud/icon/igm/igm_" + String(i) + ".png");
 
 		MySprite* sprite2 = createSprite(texture2, style, "InGameSprite");
 		Button* button = simpleButton(sprite2, style, "InGameButton");
