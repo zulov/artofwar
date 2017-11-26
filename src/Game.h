@@ -2,6 +2,7 @@
 #include <Urho3D/Container/Ptr.h>
 #include <Urho3D/Engine/Engine.h>
 #include <Urho3D/Scene/Scene.h>
+#include <Urho3D/Resource/Localization.h>
 
 
 namespace Urho3D {
@@ -33,24 +34,27 @@ public:
 	Game* setGraphics(Urho3D::Graphics* _graphics);
 	Game* setScene(const Urho3D::SharedPtr<Urho3D::Scene>& scene);
 	Game* setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine);
+	Game* setConsole(Urho3D::Console* _console);
+	Game* setLocalization(Urho3D::Localization* _localization);
 	Game* setCameraManager(CameraManager* cameraManager);
 	Game* setActionCommmandList(ActionCommandList* _actionCommmandList);
-	Game* setConsole(Urho3D::Console* _console);
 	Game* setCreationCommandList(CreationCommandList* _simCommandList);
 	Game* setDatabaseCache(DatabaseCache* _databaseCache);
 	Game* setPlayersManager(PlayersManager* _playersManager);
 	Game* setEnviroment(Enviroment* _enviroment);
 
 
-	CameraManager* getCameraManager() const;
 	Urho3D::ResourceCache* getCache() const;
 	Urho3D::SharedPtr<Urho3D::Scene> getScene() const;
 	Urho3D::Context* getContext() const;
 	Urho3D::UI* getUI() const;
 	Urho3D::Graphics* getGraphics() const;
 	Urho3D::SharedPtr<Urho3D::Engine> getEngine() const;
-	ActionCommandList* getActionCommandList() const;
 	Urho3D::Console* getConsole() const;
+	Urho3D::Localization* getLocalization() const;
+
+	CameraManager* getCameraManager() const;
+	ActionCommandList* getActionCommandList() const;
 	CreationCommandList* getCreationCommandList() const;
 	DatabaseCache* getDatabaseCache() const;
 	PlayersManager* getPlayersManager() const;
@@ -58,15 +62,17 @@ public:
 private:
 	Game();
 	static Game* instance;
+
 	Urho3D::ResourceCache* cache;
 	Urho3D::SharedPtr<Urho3D::Scene> scene;
 	Urho3D::Context* context;
 	Urho3D::UI* ui;
 	Urho3D::Graphics* graphics;
 	Urho3D::SharedPtr<Urho3D::Engine> engine;
+	Urho3D::Console* console;
+	Urho3D::Localization* localization;
 
 	CameraManager* cameraManager;
-	Urho3D::Console* console;
 	ActionCommandList* actionCommandList;
 	CreationCommandList * creationCommandList;
 	DatabaseCache * databaseCache;

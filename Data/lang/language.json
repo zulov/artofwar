@@ -1,0 +1,21 @@
+{
+	"lang":{
+		"pl":"Język polski",
+		"en":"English"
+	},
+	"igm_0":{
+		"pl":"Ustawienia"
+	},
+	"igm_1":{
+		"pl":"Zapisz"
+	},
+	"igm_2":{
+		"pl":"Wczytaj"
+	},
+	"igm_3":{
+		"pl":"Wyjście"
+	},
+	"igm_4":{
+		"pl":"Pomoc"
+	}
+}

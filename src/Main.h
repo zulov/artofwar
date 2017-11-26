@@ -63,6 +63,7 @@ private:
 
 	void control(float timeStep);
 	void changeCamera(int type);
+	void InitLocalizationSystem();
 
 	MouseMode useMouseMode_;
 	Simulation* simulation;

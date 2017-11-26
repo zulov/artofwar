@@ -6,7 +6,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/Text.h>
 
-#define IN_GAME_MENU_BUTTON_NUMBER 4
+#define IN_GAME_MENU_BUTTON_NUMBER 5
 
 InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "InGameMenuWindow";
@@ -56,7 +56,8 @@ void InGameMenuPanel::createBody() {
 		MySprite* sprite2 = createSprite(texture2, style, "InGameSprite");
 		Button* button = simpleButton(sprite2, style, "InGameButton");
 		Text* text = button->CreateChild<Text>();
-		text->SetText("Test 1245");
+		String msg = Game::get()->getLocalization()->Get("igm_"+ String(i));
+		text->SetText(msg);
 		text->SetStyle("InGameText", style);
 
 		HudElement* hudElement = new HudElement(button);

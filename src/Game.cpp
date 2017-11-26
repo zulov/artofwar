@@ -35,6 +35,10 @@ Urho3D::Console* Game::getConsole() const {
 	return console;
 }
 
+Urho3D::Localization* Game::getLocalization() const {
+	return localization;
+}
+
 CreationCommandList* Game::getCreationCommandList() const {
 	return creationCommandList;
 }
@@ -114,6 +118,11 @@ Game* Game::setActionCommmandList(ActionCommandList* _actionCommmandList) {
 
 Game* Game::setConsole(Urho3D::Console* _console) {
 	console = _console;
+	return this;
+}
+
+Game* Game::setLocalization(Urho3D::Localization* _localization) {
+	localization = _localization;
 	return this;
 }
 

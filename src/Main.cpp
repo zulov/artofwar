@@ -14,6 +14,7 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/IO/FileSystem.h>
 #include "objects/LinkComponent.h"
+#include <Urho3D/Resource/Localization.h>
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
@@ -55,6 +56,7 @@ void Main::load() {
 		{
 		hud->resetLoading();
 		levelBuilder->createScene(1);
+
 		}
 		break;
 	case 1:
@@ -94,7 +96,7 @@ void Main::Start() {
 	game->setPlayersManager(new PlayersManager());
 
 	SetWindowTitleAndIcon();
-
+	InitLocalizationSystem();
 	benchmark = new Benchmark();
 	hud = new Hud();
 	subscribeToEvents();
@@ -228,6 +230,14 @@ void Main::changeCamera(int type) {
 	cameraManager->setCameraBehave(type);
 	SetupViewport();
 	InitMouseMode(cameraManager->getMouseMode());
+}
+
+void Main::InitLocalizationSystem() {
+
+	Localization* l10n = GetSubsystem<Localization>();
+
+	l10n->LoadJSONFile("lang/language.json");
+	Game::get()->setLocalization(l10n);
 }
 
 void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
