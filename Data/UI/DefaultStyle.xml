@@ -501,6 +501,16 @@
 		<attribute name="Position" value="0 {iconY/2+2*spaceY}"/>
 	</element>
 	
+	<element type="AdditionalInGameWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Layout Spacing" value="{spaceX}" />
+        <attribute name="Layout Border" value="{iconX} {spaceY} {iconX} {spaceY}" />
+		<attribute name="Min Size" value="{resX/2} {resY/2}"/>
+		<attribute name="Max Size" value="{bigX} {bigY}"/>
+		<attribute name="Position" value="0 {-2*iconY}"/>
+	</element>
+	
 	<element type="InGameToggledButton" style="Button" auto="false">
 		<attribute name="Vert Alignment" value="Top" />
 		<attribute name="Horiz Alignment" value="Right" />
@@ -558,6 +568,10 @@
 	<element type="MiniMapIcon" style="Button">
         <attribute name="Min Size" value="{iconX*2/3-spaceX/2} {iconY/2-spaceY}" />
         <attribute name="Max Size" value="{iconX*2/3-spaceX/2} {iconY/2-spaceY}" />
+    </element>
+	
+	<element type="MyCloseButton" style="CloseButton">
+		<attribute name="Horiz Alignment" value="Right" />
     </element>
 	
 	<element type="MiniMapCheckBox" style="CheckBox" >

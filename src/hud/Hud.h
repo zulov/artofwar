@@ -52,6 +52,8 @@ public:
 	Button* getToggleButtonInGameMenu();
 	void inGameAction(short id);
 	void toggleInGame();
+	Button* getInGameCloseButton();
+	void closeInGame();
 
 private:
 	void replaceVariables(XMLFile* xmlFile, int hudSizeId);

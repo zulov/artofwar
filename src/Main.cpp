@@ -156,6 +156,7 @@ void Main::subscribeToEvents() {
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleInGameMenuButton));
 	}
 	SubscribeToEvent(hud->getToggleButtonInGameMenu(), E_CLICK, URHO3D_HANDLER(Main, HandleToggleInGameMenuButton));
+	SubscribeToEvent(hud->getInGameCloseButton(), E_CLICK, URHO3D_HANDLER(Main, HandleCloseInGameMenuButton));
 
 	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
 	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));
@@ -320,6 +321,10 @@ void Main::HandleInGameMenuButton(StringHash eventType, VariantMap& eventData) {
 
 void Main::HandleToggleInGameMenuButton(StringHash eventType, VariantMap& eventData) {
 	hud->toggleInGame();
+}
+
+void Main::HandleCloseInGameMenuButton(StringHash eventType, VariantMap& eventData) {
+	hud->closeInGame();
 }
 
 void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {

@@ -20,12 +20,17 @@ void InGameMenuPanel::setVisible(bool enable) {
 		AbstractWindowPanel::setVisible(menuVisibility);
 	} else {
 		AbstractWindowPanel::setVisible(enable);
+		additionalWindow->SetVisible(enable);
 	}
 	toggleButton->SetVisible(enable);
 }
 
 Urho3D::Button* InGameMenuPanel::getToggleButton() {
 	return toggleButton;
+}
+
+Urho3D::Button* InGameMenuPanel::getCloseButton() {
+	return buttonClose;
 }
 
 std::vector<HudElement*>* InGameMenuPanel::getButtons() {
@@ -38,7 +43,11 @@ void InGameMenuPanel::toggle() {
 }
 
 void InGameMenuPanel::action(short id) {
+	additionalWindow->SetVisible(true);
+}
 
+void InGameMenuPanel::close() {
+	additionalWindow->SetVisible(false);
 }
 
 void InGameMenuPanel::createBody() {
@@ -56,7 +65,7 @@ void InGameMenuPanel::createBody() {
 		MySprite* sprite2 = createSprite(texture2, style, "InGameSprite");
 		Button* button = simpleButton(sprite2, style, "InGameButton");
 		Text* text = button->CreateChild<Text>();
-		String msg = Game::get()->getLocalization()->Get("igm_"+ String(i));
+		String msg = Game::get()->getLocalization()->Get("igm_" + String(i));
 		text->SetText(msg);
 		text->SetStyle("InGameText", style);
 
@@ -67,4 +76,11 @@ void InGameMenuPanel::createBody() {
 		button->SetVar("HudElement", hudElement);
 		window->AddChild(button);
 	}
+
+	additionalWindow = new Urho3D::Window(Game::get()->getContext());
+	additionalWindow->SetStyle("AdditionalInGameWindow", style);
+	Game::get()->getUI()->GetRoot()->AddChild(additionalWindow);
+
+	buttonClose = additionalWindow->CreateChild<Button>();
+	buttonClose->SetStyle("MyCloseButton");
 }

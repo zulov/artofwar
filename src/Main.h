@@ -60,6 +60,7 @@ private:
 	void HandleQueueButton(StringHash eventType, VariantMap& eventData);
 	void HandleInGameMenuButton(StringHash eventType, VariantMap& eventData);
 	void HandleToggleInGameMenuButton(StringHash eventType, VariantMap& eventData);
+	void HandleCloseInGameMenuButton(StringHash eventType, VariantMap& eventData);
 
 	void control(float timeStep);
 	void changeCamera(int type);

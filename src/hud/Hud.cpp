@@ -181,6 +181,14 @@ void Hud::toggleInGame() {
 	inGameMenuPanel->toggle();
 }
 
+Button* Hud::getInGameCloseButton() {
+	return inGameMenuPanel->getCloseButton();
+}
+
+void Hud::closeInGame() {
+	inGameMenuPanel->close();
+}
+
 void Hud::resetLoading() {
 	for (auto panel : panels) {
 		panel->setVisible(false);
