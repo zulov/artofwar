@@ -10,8 +10,13 @@ public:
 	InGameMenuPanel(Urho3D::XMLFile* _style);
 	~InGameMenuPanel();
 	void setVisible(bool enable) override;
+	Urho3D::Button* getToggleButton();
+	std::vector<HudElement*>* getButtons();
+	void toggle();
+	void action(short id);
 private:
 	void createBody() override;
+	bool menuVisibility = false;
 	Urho3D::Button* toggleButton;
 	std::vector<HudElement*>* buttons;
 };

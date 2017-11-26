@@ -12,6 +12,7 @@
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Resource/ResourceCache.h>
 
+
 void Hud::replaceVariables(XMLFile* xmlFile, int hudSizeId) {
 	auto styleString = xmlFile->ToString();
 	const char* chars = styleString.CString();
@@ -160,6 +161,10 @@ std::vector<HudElement*>* Hud::getButtonsUnitsToSubscribe() {
 	return unitsPanel->getButtons();
 }
 
+std::vector<HudElement*>* Hud::getButtonsInGemeMenuToSubscribe() {
+	return inGameMenuPanel->getButtons();
+}
+
 std::vector<Button*>* Hud::getButtonsQueueToSubscribe() {
 	return queuePanel->getButtonsQueueToSubscribe();
 }
@@ -170,6 +175,10 @@ std::vector<UIElement*>* Hud::getButtonsMiniMapToSubscribe() {
 
 std::vector<Window*>* Hud::getWindows() {
 	return windows;
+}
+
+void Hud::toggleInGame() {
+	inGameMenuPanel->toggle();
 }
 
 void Hud::resetLoading() {
@@ -196,6 +205,14 @@ void Hud::changeMiniMapType(short id, bool val) {
 
 Sprite* Hud::getSpriteMiniMapToSubscribe() {
 	return miniMapPanel->getSpriteToSubscribe();
+}
+
+Button* Hud::getToggleButtonInGameMenu() {
+	return inGameMenuPanel->getToggleButton();
+}
+
+void Hud::inGameAction(short id) {
+	inGameMenuPanel->action(id);
 }
 
 void Hud::updateSelected(SelectedInfo* selectedInfo) {

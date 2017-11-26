@@ -58,6 +58,8 @@ private:
 	void HandleOrdersButton(StringHash eventType, VariantMap& eventData);
 	void HandleSelectedButton(StringHash eventType, VariantMap& eventData);
 	void HandleQueueButton(StringHash eventType, VariantMap& eventData);
+	void HandleInGameMenuButton(StringHash eventType, VariantMap& eventData);
+	void HandleToggleInGameMenuButton(StringHash eventType, VariantMap& eventData);
 
 	void control(float timeStep);
 	void changeCamera(int type);

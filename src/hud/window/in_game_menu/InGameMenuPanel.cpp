@@ -16,8 +16,29 @@ InGameMenuPanel::~InGameMenuPanel() {
 }
 
 void InGameMenuPanel::setVisible(bool enable) {
-	AbstractWindowPanel::setVisible(enable);
+	if (enable) {
+		AbstractWindowPanel::setVisible(menuVisibility);
+	} else {
+		AbstractWindowPanel::setVisible(enable);
+	}
 	toggleButton->SetVisible(enable);
+}
+
+Urho3D::Button* InGameMenuPanel::getToggleButton() {
+	return toggleButton;
+}
+
+std::vector<HudElement*>* InGameMenuPanel::getButtons() {
+	return buttons;
+}
+
+void InGameMenuPanel::toggle() {
+	menuVisibility = !menuVisibility;
+	setVisible(true);
+}
+
+void InGameMenuPanel::action(short id) {
+
 }
 
 void InGameMenuPanel::createBody() {
