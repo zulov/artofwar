@@ -42,18 +42,12 @@ public:
 	std::vector<HudElement*>* getButtonsOrdersToSubscribe();
 	std::vector<HudElement*>* getButtonsBuildToSubscribe();
 	std::vector<HudElement*>* getButtonsUnitsToSubscribe();
-	std::vector<HudElement*>* getButtonsInGemeMenuToSubscribe();
 	std::vector<Window*>* getWindows();
 	void resetLoading();
 	void endLoading();
 	void updateLoading(float progress);
 	void changeMiniMapType(short id, bool val);
 	Sprite* getSpriteMiniMapToSubscribe();
-	Button* getToggleButtonInGameMenu();
-	void inGameAction(short id);
-	void toggleInGame();
-	std::vector<HudElement*>* getInGameCloseButton();
-	void closeInGame();
 
 private:
 	void replaceVariables(XMLFile* xmlFile, int hudSizeId);

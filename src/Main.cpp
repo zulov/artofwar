@@ -151,13 +151,7 @@ void Main::subscribeToEvents() {
 	for (auto buttton : *hud->getButtonsMiniMapToSubscribe()) {
 		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapButton));
 	}
-	for (auto hudElement : *hud->getButtonsInGemeMenuToSubscribe()) {
-		UIElement* element = hudElement->getUIElement();
-		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleInGameMenuButton));
-	}
-	SubscribeToEvent(hud->getToggleButtonInGameMenu(), E_CLICK, URHO3D_HANDLER(Main, HandleToggleInGameMenuButton));
-//	SubscribeToEvent(hud->getInGameCloseButton(), E_CLICK, URHO3D_HANDLER(Main, HandleCloseInGameMenuButton));
-
+	
 	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
 	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));
 
@@ -310,21 +304,6 @@ void Main::HandleQueueButton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	QueueHudElement* qHudElement = (QueueHudElement *)element->GetVar("QueueHudElement").GetVoidPtr();
 	qHudElement->reduce(1);
-}
-
-void Main::HandleInGameMenuButton(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
-	hud->inGameAction(hudElement->getId());
-
-}
-
-void Main::HandleToggleInGameMenuButton(StringHash eventType, VariantMap& eventData) {
-	hud->toggleInGame();
-}
-
-void Main::HandleCloseInGameMenuButton(StringHash eventType, VariantMap& eventData) {
-	hud->closeInGame();
 }
 
 void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {

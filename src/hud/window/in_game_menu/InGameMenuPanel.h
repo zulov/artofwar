@@ -11,14 +11,14 @@ public:
 	InGameMenuPanel(Urho3D::XMLFile* _style);
 	~InGameMenuPanel();
 	void setVisible(bool enable) override;
-	Urho3D::Button* getToggleButton();
-	std::vector<HudElement*>* getButtons();
-	std::vector<HudElement*>* getClosedButtons();
+
+private:
 	void toggle();
 	void action(short id);
 	void close();
-private:
 	void createBody() override;
+	void HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void HandleToggle(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	bool menuVisibility = false;
 	Urho3D::Button* toggleButton;
 	std::vector<HudElement*>* buttons;

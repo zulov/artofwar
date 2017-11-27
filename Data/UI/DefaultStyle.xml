@@ -572,8 +572,10 @@
 	
 	<element type="MyCloseButton" style="CloseButton">
 		<attribute name="Horiz Alignment" value="Right" />
-		<attribute name="Min Size" value="{sizeX/2} {sizeY/2}" />
-        <attribute name="Max Size" value="{sizeX/2} {sizeY/2}" />
+		<attribute name="Vert Alignment" value="Top" />
+		<attribute name="Min Size" value="{iconX*0.75} {iconY*0.75}" />
+        <attribute name="Max Size" value="{iconX/2} {iconY/2}" />
+		<attribute name="Position" value="{-spaceX} {spaceY} "/>
     </element>
 	
 	<element type="MiniMapCheckBox" style="CheckBox" >

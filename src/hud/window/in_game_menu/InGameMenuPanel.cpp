@@ -6,6 +6,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/Text.h>
 #include "hud/window/middle/FilePanel.h"
+#include <Urho3D/UI/UIEvents.h>
 
 #define IN_GAME_MENU_BUTTON_NUMBER 5
 
@@ -23,18 +24,6 @@ void InGameMenuPanel::setVisible(bool enable) {
 		AbstractWindowPanel::setVisible(enable);
 	}
 	toggleButton->SetVisible(enable);
-}
-
-Urho3D::Button* InGameMenuPanel::getToggleButton() {
-	return toggleButton;
-}
-
-std::vector<HudElement*>* InGameMenuPanel::getButtons() {
-	return buttons;
-}
-
-std::vector<HudElement*>* InGameMenuPanel::getClosedButtons() {
-	return new std::vector<HudElement*>();
 }
 
 void InGameMenuPanel::toggle() {
@@ -59,6 +48,7 @@ void InGameMenuPanel::createBody() {
 	MySprite* sprite = createSprite(texture, style, "InGameToggledSprite");
 	toggleButton = simpleButton(sprite, style, "InGameToggledButton");
 	Game::get()->getUI()->GetRoot()->AddChild(toggleButton);
+	SubscribeToEvent(toggleButton, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleToggle));
 
 	buttons = new std::vector<HudElement*>();
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
@@ -78,7 +68,9 @@ void InGameMenuPanel::createBody() {
 
 		button->SetVar("HudElement", hudElement);
 		window->AddChild(button);
+		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleButtonClick));
 	}
+
 
 	addionalPanels = new AbstractMiddlePanel*[IN_GAME_MENU_BUTTON_NUMBER];
 	addionalPanels[0] = new FilePanel(style);
@@ -89,4 +81,14 @@ void InGameMenuPanel::createBody() {
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		addionalPanels[i]->createWindow();
 	}
+}
+
+void InGameMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventData) {
+	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
+	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+
+	addionalPanels[hudElement->getId()]->setVisible(true);
+}
+void InGameMenuPanel::HandleToggle(StringHash eventType, VariantMap& eventData) {
+	toggle();
 }

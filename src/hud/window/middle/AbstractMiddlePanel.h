@@ -11,7 +11,7 @@ public:
 
 	void createBody() override;
 	Urho3D::Button* getCloseButton();
-	void Handle(Urho3D::StringHash, Urho3D::VariantMap& eventData);
+	void HandleClose(Urho3D::StringHash, Urho3D::VariantMap& eventData);
 private:
 	Urho3D::Button* buttonClose;
 	Urho3D::Text * title;
