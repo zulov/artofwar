@@ -4,6 +4,7 @@
 #include "player/PlayersManager.h"
 #include "Urho3D/Resource/Image.h"
 #include "camera/CameraEnums.h"
+#include "objects/LinkComponent.h"
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Engine/EngineDefs.h>
@@ -13,7 +14,6 @@
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/IO/FileSystem.h>
-#include "objects/LinkComponent.h"
 #include <Urho3D/Resource/Localization.h>
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
@@ -156,7 +156,7 @@ void Main::subscribeToEvents() {
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleInGameMenuButton));
 	}
 	SubscribeToEvent(hud->getToggleButtonInGameMenu(), E_CLICK, URHO3D_HANDLER(Main, HandleToggleInGameMenuButton));
-	SubscribeToEvent(hud->getInGameCloseButton(), E_CLICK, URHO3D_HANDLER(Main, HandleCloseInGameMenuButton));
+//	SubscribeToEvent(hud->getInGameCloseButton(), E_CLICK, URHO3D_HANDLER(Main, HandleCloseInGameMenuButton));
 
 	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
 	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));

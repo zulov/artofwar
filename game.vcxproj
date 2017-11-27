@@ -188,8 +188,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\camera\TopCameraBehave.cpp" />
+    <ClCompile Include="src\hud\window\middle\AbstractMiddlePanel.cpp" />
     <ClCompile Include="src\hud\window\in_game_menu\InGameMenuPanel.cpp" />
     <ClCompile Include="src\hud\window\loading\LoadingPanel.cpp" />
+    <ClCompile Include="src\hud\window\middle\FilePanel.cpp" />
     <ClCompile Include="src\objects\Static.cpp" />
     <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\DummyAim.cpp" />
@@ -282,11 +284,13 @@
     <ClInclude Include="src\control\HitData.h" />
     <ClInclude Include="src\control\MouseButton.h" />
     <ClInclude Include="src\GameState.h" />
+    <ClInclude Include="src\hud\window\middle\AbstractMiddlePanel.h" />
     <ClInclude Include="src\hud\window\AbstractWindowPanel.h" />
     <ClInclude Include="src\commands\ActionCommand.h" />
     <ClInclude Include="src\commands\ActionCommandList.h" />
     <ClInclude Include="src\hud\window\in_game_menu\InGameMenuPanel.h" />
     <ClInclude Include="src\hud\window\loading\LoadingPanel.h" />
+    <ClInclude Include="src\hud\window\middle\FilePanel.h" />
     <ClInclude Include="src\Loading.h" />
     <ClInclude Include="src\objects\Static.h" />
     <ClInclude Include="src\objects\unit\ActionParameter.h" />

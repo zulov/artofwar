@@ -5,8 +5,9 @@ namespace Urho3D {
 	class String;
 }
 
-class AbstractWindowPanel
+class AbstractWindowPanel :public Urho3D::Object
 {
+	URHO3D_OBJECT(AbstractWindowPanel, Object);
 public:
 	AbstractWindowPanel(Urho3D::XMLFile* _style);
 	virtual ~AbstractWindowPanel();

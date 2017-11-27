@@ -212,6 +212,8 @@
     <ClCompile Include="src\simulation\env\bucket\BucketQueue.cpp" />
     <ClCompile Include="src\hud\window\loading\LoadingPanel.cpp" />
     <ClCompile Include="src\hud\window\in_game_menu\InGameMenuPanel.cpp" />
+    <ClCompile Include="src\hud\window\middle\AbstractMiddlePanel.cpp" />
+    <ClCompile Include="src\hud\window\middle\FilePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -467,6 +469,8 @@
     <ClInclude Include="src\Loading.h" />
     <ClInclude Include="src\simulation\env\ContentInfo.h" />
     <ClInclude Include="src\hud\window\in_game_menu\InGameMenuPanel.h" />
+    <ClInclude Include="src\hud\window\middle\AbstractMiddlePanel.h" />
+    <ClInclude Include="src\hud\window\middle\FilePanel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -4,7 +4,7 @@
 #include <Urho3D/UI/UI.h>
 
 
-AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style) {
+AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style): Object(Game::get()->getContext()) {
 	style = _style;
 }
 

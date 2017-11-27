@@ -181,8 +181,8 @@ void Hud::toggleInGame() {
 	inGameMenuPanel->toggle();
 }
 
-Button* Hud::getInGameCloseButton() {
-	return inGameMenuPanel->getCloseButton();
+std::vector<HudElement*>* Hud::getInGameCloseButton() {
+	return inGameMenuPanel->getClosedButtons();
 }
 
 void Hud::closeInGame() {

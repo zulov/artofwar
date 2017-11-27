@@ -572,6 +572,8 @@
 	
 	<element type="MyCloseButton" style="CloseButton">
 		<attribute name="Horiz Alignment" value="Right" />
+		<attribute name="Min Size" value="{sizeX/2} {sizeY/2}" />
+        <attribute name="Max Size" value="{sizeX/2} {sizeY/2}" />
     </element>
 	
 	<element type="MiniMapCheckBox" style="CheckBox" >
@@ -722,17 +724,14 @@
 	<element type="Background" >
         <attribute name="Texture" value="Texture2D;Textures/back3.png" />
         <attribute name="Blend Mode" value="alpha" />
-		
 		<attribute name="Size" value="{resX/2-iconX} {resY/3}" />
 		<attribute name="Vert Alignment" value="Center" />
 		<attribute name="Horiz Alignment" value="Center" />
 		<attribute name="Tiled" value="true" />
-		<attribute name="Opacity" value="0.6" />
-		
+		<attribute name="Opacity" value="0.6" />	
     </element>
 	
 	<element type="MiniMap" >
-
 		<attribute name="Max Size" value="{iconX*3} {iconY*3}" />
 	</element>
 	

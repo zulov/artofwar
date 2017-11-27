@@ -3,6 +3,7 @@
 #include <Urho3D/UI/Button.h>
 #include "hud/HudElement.h"
 #include <vector>
+#include "hud/window/middle/AbstractMiddlePanel.h"
 
 class InGameMenuPanel : public AbstractWindowPanel
 {
@@ -11,8 +12,8 @@ public:
 	~InGameMenuPanel();
 	void setVisible(bool enable) override;
 	Urho3D::Button* getToggleButton();
-	Urho3D::Button* getCloseButton();
 	std::vector<HudElement*>* getButtons();
+	std::vector<HudElement*>* getClosedButtons();
 	void toggle();
 	void action(short id);
 	void close();
@@ -21,7 +22,6 @@ private:
 	bool menuVisibility = false;
 	Urho3D::Button* toggleButton;
 	std::vector<HudElement*>* buttons;
-	Urho3D::Window * additionalWindow;
-	Urho3D::Button* buttonClose;
+	AbstractMiddlePanel** addionalPanels;
 };
 

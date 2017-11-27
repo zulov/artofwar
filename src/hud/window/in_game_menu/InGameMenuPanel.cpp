@@ -5,6 +5,7 @@
 #include "hud/ButtonUtils.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/Text.h>
+#include "hud/window/middle/FilePanel.h"
 
 #define IN_GAME_MENU_BUTTON_NUMBER 5
 
@@ -20,7 +21,6 @@ void InGameMenuPanel::setVisible(bool enable) {
 		AbstractWindowPanel::setVisible(menuVisibility);
 	} else {
 		AbstractWindowPanel::setVisible(enable);
-		additionalWindow->SetVisible(enable);
 	}
 	toggleButton->SetVisible(enable);
 }
@@ -29,12 +29,12 @@ Urho3D::Button* InGameMenuPanel::getToggleButton() {
 	return toggleButton;
 }
 
-Urho3D::Button* InGameMenuPanel::getCloseButton() {
-	return buttonClose;
-}
-
 std::vector<HudElement*>* InGameMenuPanel::getButtons() {
 	return buttons;
+}
+
+std::vector<HudElement*>* InGameMenuPanel::getClosedButtons() {
+	return new std::vector<HudElement*>();
 }
 
 void InGameMenuPanel::toggle() {
@@ -43,11 +43,14 @@ void InGameMenuPanel::toggle() {
 }
 
 void InGameMenuPanel::action(short id) {
-	additionalWindow->SetVisible(true);
+	addionalPanels[id]->setVisible(true);
 }
 
 void InGameMenuPanel::close() {
-	additionalWindow->SetVisible(false);
+
+	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
+		addionalPanels[i]->setVisible(false);
+	}
 }
 
 void InGameMenuPanel::createBody() {
@@ -77,10 +80,13 @@ void InGameMenuPanel::createBody() {
 		window->AddChild(button);
 	}
 
-	additionalWindow = new Urho3D::Window(Game::get()->getContext());
-	additionalWindow->SetStyle("AdditionalInGameWindow", style);
-	Game::get()->getUI()->GetRoot()->AddChild(additionalWindow);
-
-	buttonClose = additionalWindow->CreateChild<Button>();
-	buttonClose->SetStyle("MyCloseButton");
+	addionalPanels = new AbstractMiddlePanel*[IN_GAME_MENU_BUTTON_NUMBER];
+	addionalPanels[0] = new FilePanel(style);
+	addionalPanels[1] = new FilePanel(style);
+	addionalPanels[2] = new AbstractMiddlePanel(style);
+	addionalPanels[3] = new AbstractMiddlePanel(style);
+	addionalPanels[4] = new AbstractMiddlePanel(style);
+	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
+		addionalPanels[i]->createWindow();
+	}
 }

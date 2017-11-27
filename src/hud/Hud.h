@@ -52,7 +52,7 @@ public:
 	Button* getToggleButtonInGameMenu();
 	void inGameAction(short id);
 	void toggleInGame();
-	Button* getInGameCloseButton();
+	std::vector<HudElement*>* getInGameCloseButton();
 	void closeInGame();
 
 private:

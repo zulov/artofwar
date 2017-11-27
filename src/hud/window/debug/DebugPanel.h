@@ -6,7 +6,7 @@ namespace Urho3D {
 	class XMLFile;
 }
 
-class DebugPanel:public AbstractWindowPanel
+class DebugPanel : public AbstractWindowPanel
 {
 public:
 	DebugPanel(Urho3D::XMLFile* _style);
@@ -16,6 +16,5 @@ public:
 private:
 	void createBody() override;
 	Urho3D::Text* fpsText;
-	Urho3D::String *msg;
+	Urho3D::String* msg;
 };
-
