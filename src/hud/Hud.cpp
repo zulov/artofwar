@@ -137,7 +137,6 @@ void Hud::createConsole() {
 }
 
 void Hud::update(Benchmark* benchmark, CameraManager* cameraManager) {
-
 	debugPanel->setText(benchmark->getLastFPS(), benchmark->getAverageFPS(), benchmark->getLoops(),
 	                    cameraManager->getInfo());
 
@@ -161,15 +160,6 @@ std::vector<HudElement*>* Hud::getButtonsUnitsToSubscribe() {
 	return unitsPanel->getButtons();
 }
 
-
-std::vector<Button*>* Hud::getButtonsQueueToSubscribe() {
-	return queuePanel->getButtonsQueueToSubscribe();
-}
-
-std::vector<UIElement*>* Hud::getButtonsMiniMapToSubscribe() {
-	return miniMapPanel->getButtonsMiniMapToSubscribe();
-}
-
 std::vector<Window*>* Hud::getWindows() {
 	return windows;
 }
@@ -190,10 +180,6 @@ void Hud::endLoading() {
 
 void Hud::updateLoading(float progress) {
 	loadingPanel->update(progress);
-}
-
-void Hud::changeMiniMapType(short id, bool val) {
-	miniMapPanel->changeMiniMapType(id, val);
 }
 
 Sprite* Hud::getSpriteMiniMapToSubscribe() {

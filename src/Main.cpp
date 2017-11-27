@@ -142,15 +142,6 @@ void Main::subscribeToEvents() {
 	for (auto buttton : *hud->getButtonsSelectedToSubscribe()) {
 		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButton));
 	}
-
-	for (auto buttton : *hud->getButtonsQueueToSubscribe()) {
-		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleQueueButton));
-		//SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleQueueButton));//TODO zrobic z prawym przyciskiem tez
-	}
-
-	for (auto buttton : *hud->getButtonsMiniMapToSubscribe()) {
-		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapButton));
-	}
 	
 	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
 	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));
@@ -228,7 +219,6 @@ void Main::changeCamera(int type) {
 }
 
 void Main::InitLocalizationSystem() {
-
 	Localization* l10n = GetSubsystem<Localization>();
 
 	l10n->LoadJSONFile("lang/language.json");
@@ -264,12 +254,6 @@ void Main::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {
 	cameraManager->changePosition(x / size.x_, y / size.y_);
 }
 
-void Main::HandleMiniMapButton(StringHash eventType, VariantMap& eventData) {
-	CheckBox* element = (CheckBox*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
-	hud->changeMiniMapType(hudElement->getId(), element->IsChecked());
-}
-
 void Main::HandleBuildButton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
@@ -298,12 +282,6 @@ void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	for (auto physical : (*selected)) {
 		controls->select(physical);
 	}
-}
-
-void Main::HandleQueueButton(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	QueueHudElement* qHudElement = (QueueHudElement *)element->GetVar("QueueHudElement").GetVoidPtr();
-	qHudElement->reduce(1);
 }
 
 void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {

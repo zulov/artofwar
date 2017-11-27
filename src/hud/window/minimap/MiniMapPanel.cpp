@@ -11,6 +11,7 @@
 #include "database/DatabaseCache.h"
 #include <Urho3D/UI/CheckBox.h>
 #include "player/PlayersManager.h"
+#include <Urho3D/UI/UIEvents.h>
 
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -128,10 +129,6 @@ void MiniMapPanel::update() {
 
 }
 
-std::vector<Urho3D::UIElement*>* MiniMapPanel::getButtonsMiniMapToSubscribe() {
-	return elements;
-}
-
 Urho3D::Sprite* MiniMapPanel::getSpriteToSubscribe() {
 	return spr;
 }
@@ -160,6 +157,8 @@ void MiniMapPanel::createBody() {
 		hudElement->setId(i, ObjectType::ENTITY);
 
 		elements->at(i)->SetVar("HudElement", hudElement);
+
+		SubscribeToEvent(box, E_CLICK, URHO3D_HANDLER(MiniMapPanel, HandleButton));
 	}
 
 	IntVector2 size = spr->GetSize();
@@ -174,4 +173,11 @@ void MiniMapPanel::createBody() {
 
 	spr->SetTexture(text);
 	heightMap = new unsigned[size.x_ * size.y_];
+}
+
+void MiniMapPanel::HandleButton(StringHash eventType, VariantMap& eventData) {
+	CheckBox* element = (CheckBox*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
+	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+
+	changeMiniMapType(hudElement->getId(), element->IsChecked());
 }

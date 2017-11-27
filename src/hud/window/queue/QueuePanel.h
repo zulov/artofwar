@@ -13,13 +13,13 @@ public:
 	~QueuePanel();
 
 	static String getIconName(ObjectType index, int id);
-	std::vector<Button*>* getButtonsQueueToSubscribe();
 	void show(SelectedInfo* selectedInfo);
 	void update(SelectedInfo* selectedInfo);
 private:
 	void update(QueueManager* queue, short& j);
 	void hideElements(int from);
 	void createBody() override;
+	void HandleReduce(StringHash eventType, VariantMap& eventData);
 	short MAX_ICON_SELECTION = 31;
 
 	std::vector<Button*>* buttons;

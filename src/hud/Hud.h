@@ -37,8 +37,6 @@ public:
 	void hoverOffIcon(HudElement* hudElement);
 
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
-	std::vector<Button*>* getButtonsQueueToSubscribe();
-	std::vector<UIElement*>* getButtonsMiniMapToSubscribe();
 	std::vector<HudElement*>* getButtonsOrdersToSubscribe();
 	std::vector<HudElement*>* getButtonsBuildToSubscribe();
 	std::vector<HudElement*>* getButtonsUnitsToSubscribe();
@@ -46,7 +44,6 @@ public:
 	void resetLoading();
 	void endLoading();
 	void updateLoading(float progress);
-	void changeMiniMapType(short id, bool val);
 	Sprite* getSpriteMiniMapToSubscribe();
 
 private:

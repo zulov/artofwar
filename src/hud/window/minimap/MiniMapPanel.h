@@ -19,11 +19,11 @@ public:
 	void createEmpty(int parts);
 	void changeValue(uint32_t* data, bool& changed, unsigned val);
 	void update();
-	std::vector<Urho3D::UIElement*>* getButtonsMiniMapToSubscribe();
 	Urho3D::Sprite* getSpriteToSubscribe();
 	void changeMiniMapType(short id, bool val);
 private:
 	void createBody() override;
+	void HandleButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	Urho3D::Sprite* spr;
 	Urho3D::Image* minimap;
 	Urho3D::Texture2D* text;
