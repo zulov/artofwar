@@ -139,7 +139,7 @@
         <attribute name="Max Size" value="16 16" />
         <attribute name="Image Rect" value="176 0 192 16" />
         <attribute name="Checked Image Offset" value="16 0" />
-        <attribute name="Hover Image Offset" value="0 16" />
+        <attribute name="Hover Image Offset" value="0 16" />		
     </element>
     <element type="Menu" style="BorderImage">
         <attribute name="Image Rect" value="112 0 128 16" />
@@ -544,6 +544,13 @@
 		<attribute name="Vert Alignment" value="Center" />
 	</element>
 	
+	<element type="MiddleMock">
+		<attribute name="Vert Alignment" value="Top" />
+		<attribute name="Min Size" value="{100} {0}" />
+        <attribute name="Max Size" value="{1000} {1000}" />
+		<attribute name="Position" value="0 {iconY*3}"/>
+	</element>
+	
 	<element type="MyDropDown" style="DropDownList" >
 		<attribute name="Min Size" value="{2*iconX} {iconY/2}"/>
 		<attribute name="Max Size" value="{2*iconX} {iconY/2}"/>
@@ -634,6 +641,12 @@
 		<attribute name="Font Size" value="{fontSize}" />
 		<attribute name="Vert Alignment" value="Center" />
 	</element>
+	<element type="MiddleTitle" style="MyText" >
+		<attribute name="Font Size" value="{fontSize*1.5}" />
+		<attribute name="Vert Alignment" value="Top" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Position" value="0 {iconY} "/>
+	</element>
 	
 	<element type="MyListView" style="ListView" >
 		<attribute name="Auto Show/Hide Scrollbars" value="false true"/>
@@ -666,7 +679,7 @@
 		<attribute name="Min Size" value="100 {iconY*3/4+spaceY}" />
 		<attribute name="Max Size" value="10000 {iconY*3/4+spaceY}" />
 	</element>
-
+	
 	<element type="mock">
 		<attribute name="Layout Spacing" value="0" />
         <attribute name="Layout Mode" value="Vertical" />
@@ -737,4 +750,7 @@
 		<attribute name="Max Size" value="{iconX*3} {iconY*3}" />
 	</element>
 	
+	  <element type="MyMenu" style="Menu">
+        <attribute name="Max Size" value="{iconX*3} {iconY*3}" />
+    </element>
 </elements>

@@ -20,7 +20,6 @@ private:
 	void createBody() override;
 	std::vector<Button*>* buttons;
 	TopHudElement** elements;
-	DropDownList * menuList;
 	Text * unitsNumber;
 };
 

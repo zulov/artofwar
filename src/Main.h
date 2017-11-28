@@ -47,10 +47,12 @@ private:
 	void SetWindowTitleAndIcon();
 	void HandleMouseModeRequest(StringHash eventType, VariantMap& eventData);
 	void HandleMouseModeChange(StringHash eventType, VariantMap& eventData);
-	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
-	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
+
+	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
+	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
+
 	void HandleMiniMapClick(StringHash eventType, VariantMap& eventData);
 	void HandleBuildButton(StringHash eventType, VariantMap& eventData);
 	void HandleUnitButton(StringHash eventType, VariantMap& eventData);

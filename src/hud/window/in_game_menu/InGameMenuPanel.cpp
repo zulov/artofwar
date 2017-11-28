@@ -32,11 +32,12 @@ void InGameMenuPanel::toggle() {
 }
 
 void InGameMenuPanel::action(short id) {
+	close();
+
 	addionalPanels[id]->setVisible(true);
 }
 
 void InGameMenuPanel::close() {
-
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		addionalPanels[i]->setVisible(false);
 	}
@@ -71,13 +72,13 @@ void InGameMenuPanel::createBody() {
 		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleButtonClick));
 	}
 
-
+	Localization *l10n =Game::get()->getLocalization();
 	addionalPanels = new AbstractMiddlePanel*[IN_GAME_MENU_BUTTON_NUMBER];
-	addionalPanels[0] = new FilePanel(style);
-	addionalPanels[1] = new FilePanel(style);
-	addionalPanels[2] = new AbstractMiddlePanel(style);
-	addionalPanels[3] = new AbstractMiddlePanel(style);
-	addionalPanels[4] = new AbstractMiddlePanel(style);
+	addionalPanels[0] = new FilePanel(style, l10n->Get("igm_0"));
+	addionalPanels[1] = new FilePanel(style, l10n->Get("igm_1"));
+	addionalPanels[2] = new AbstractMiddlePanel(style, l10n->Get("igm_2"));
+	addionalPanels[3] = new AbstractMiddlePanel(style, l10n->Get("igm_3"));
+	addionalPanels[4] = new AbstractMiddlePanel(style, l10n->Get("igm_4"));
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		addionalPanels[i]->createWindow();
 	}
@@ -87,8 +88,9 @@ void InGameMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventD
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
 
-	addionalPanels[hudElement->getId()]->setVisible(true);
+	action(hudElement->getId());
 }
+
 void InGameMenuPanel::HandleToggle(StringHash eventType, VariantMap& eventData) {
 	toggle();
 }

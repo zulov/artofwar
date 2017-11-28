@@ -38,17 +38,6 @@ void TopPanel::createBody() {
 		window->AddChild(elements[i]->getButton());
 		buttons->push_back(elements[i]->getButton());
 	}
-	BorderImage* separator = window->CreateChild<BorderImage>();
-	separator->SetStyle("EditorVerticalDivider", style);
-	menuList = window->CreateChild<DropDownList>();
-	menuList->SetStyle("MyDropDown", style);
-	{
-		//test
-		Text* text = window->CreateChild<Text>();
-		text->SetStyle("MyText", style);
-		text->SetText("Test");
-		menuList->AddItem(text);
-	}
 }
 
 std::vector<Button*>* TopPanel::getButtonsSelectedToSubscribe() {

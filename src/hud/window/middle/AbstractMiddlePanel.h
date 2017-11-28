@@ -3,16 +3,23 @@
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/Text.h>
 
+#define MIDDLE_LIST_ROW_NUMBER 3
+
 class AbstractMiddlePanel : public AbstractWindowPanel
 {
 public:
-	AbstractMiddlePanel(Urho3D::XMLFile* _style);
+	AbstractMiddlePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
 	~AbstractMiddlePanel();
 
 	void createBody() override;
-	Urho3D::Button* getCloseButton();
 	void HandleClose(Urho3D::StringHash, Urho3D::VariantMap& eventData);
+protected:
+	Urho3D::UIElement * body;
+
 private:
 	Urho3D::Button* buttonClose;
-	Urho3D::Text * title;
+	Urho3D::Text* title;
+	Urho3D::String msg;
+
+
 };
