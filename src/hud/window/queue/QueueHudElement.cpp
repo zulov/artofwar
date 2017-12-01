@@ -18,7 +18,7 @@ QueueHudElement::QueueHudElement(Urho3D::XMLFile* style) {
 	bar->SetRange(1);
 	bar->SetValue(0.5);
 	bar->SetVisible(true);
-	
+
 	element = nullptr;
 }
 
@@ -31,11 +31,15 @@ Urho3D::Button* QueueHudElement::getButton() {
 }
 
 void QueueHudElement::hide() {
-	button->SetVisible(false);
+	if (!button->IsVisible()) {
+		button->SetVisible(false);
+	}
 }
 
 void QueueHudElement::show() {
-	button->SetVisible(true);
+	if (button->IsVisible()) {
+		button->SetVisible(true);
+	}
 }
 
 void QueueHudElement::setText(const String& msg) {

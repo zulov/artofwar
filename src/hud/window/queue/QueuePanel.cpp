@@ -52,7 +52,7 @@ void QueuePanel::show(SelectedInfo* selectedInfo) {
 	update(selectedInfo);
 }
 
-void QueuePanel::update(SelectedInfo* selectedInfo) {
+void QueuePanel::update(SelectedInfo* selectedInfo) {//TODO wykonuje sie nawet jeœli sie nic nie zmieni³o
 	short j = 0;
 	if (window->IsVisible()) {
 		std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();

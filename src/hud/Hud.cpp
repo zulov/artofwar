@@ -11,6 +11,7 @@
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include <iostream>
 
 
 void Hud::replaceVariables(XMLFile* xmlFile, int hudSizeId) {
@@ -73,7 +74,27 @@ Hud::Hud() {
 	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
 
 	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->style);
+	XMLFile *style2 = Game::get()->getCache()->GetResource<XMLFile>("UI/a.xml");
 	replaceVariables(style, graphSettings->hud_size);
+	String a = style->ToString();
+	//style2->Patch(style);
+	XMLElement w = style2->GetRoot().GetChild();
+	rapidxml::xml_document<> doc;
+	char * r = strdup (style2->ToString().CString());
+	doc.parse<0>(r);
+	rapidxml::xml_node <>* root = doc.first_node();
+	root->first_attribute();
+
+	rapidxml::xml_node<> *node = doc.allocate_node(rapidxml::node_element, "author", "John Doe");
+	doc.first_node()->append_node(node);
+
+	std::stringstream ss;
+	ss << *doc.first_node();
+	std::string result_xml = ss.str();
+	std::cout << result_xml << std::endl;
+	style->Patch(style2);
+	String d = style2->ToString();
+	String ab = style->ToString();
 	Game::get()->getUI()->GetRoot()->SetDefaultStyle(style);
 
 	createConsole();
@@ -141,7 +162,7 @@ void Hud::update(Benchmark* benchmark, CameraManager* cameraManager) {
 	                    cameraManager->getInfo());
 
 	topPanel->update(Game::get()->getPlayersManager()->getActivePlayer()->getResources());
-	miniMapPanel->update();//TODO robic updata co realn¹ klatkê
+	miniMapPanel->update();
 }
 
 void Hud::update(int unitsNumber) {

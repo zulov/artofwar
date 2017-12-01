@@ -19,6 +19,9 @@
 #include "window/queue/QueuePanel.h"
 #include "window/loading/LoadingPanel.h"
 #include "window/in_game_menu/InGameMenuPanel.h"
+#include "xml/rapidxml.hpp"
+#include "xml/rapidxml_print.hpp"
+#include "xml/rapidxml_iterators.hpp"
 
 using namespace Urho3D;
 
