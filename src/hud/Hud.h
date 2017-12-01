@@ -50,7 +50,7 @@ public:
 	Sprite* getSpriteMiniMapToSubscribe();
 
 private:
-	void replaceVariables(XMLFile* xmlFile, int hudSizeId);
+	void  replaceVariables(std::string &xml, int hudSizeId);
 	void createDebugHud();
 	void createConsole();
 	void createCursor();

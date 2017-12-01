@@ -1,0 +1,24 @@
+<elements>
+	
+	<element type="TopWindow" style="MyWindow">
+		<attribute name="Min Size" value="{resX/4} {iconY/2+2*spaceY}"/>
+        <attribute name="Max Size" value="{resX/2} {iconY/2+2*spaceY}" />
+		<attribute name="Vert Alignment" value="Top" />
+		<attribute name="Horiz Alignment" value="Right" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<attribute name="Layout Spacing" value="{spaceX}" />
+        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+        <attribute name="Position" value="{-iconX} 0" />
+	</element>
+	
+	<element type="TopButtons" style="Button" >
+		<attribute name="Min Size" value="{iconX*1.75} {iconY/2}"/>
+		<attribute name="Max Size" value="{iconX*1.75} {iconY/2}"/>
+	</element>
+	
+	<element type="TopText" style="MyText" >
+		<attribute name="Font Size" value="{fontSize}" />
+		<attribute name="Vert Alignment" value="Center" />
+	</element>
+	
+</elements>

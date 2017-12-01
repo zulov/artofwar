@@ -14,11 +14,9 @@
 #include <iostream>
 
 
-void Hud::replaceVariables(XMLFile* xmlFile, int hudSizeId) {
-	auto styleString = xmlFile->ToString();
-	const char* chars = styleString.CString();
-
-	std::string asStr(chars);
+void Hud::replaceVariables(std::string &xml, int hudSizeId) {
+	//auto styleString = xmlFile->ToString();
+	//const char* chars = styleString.CString();
 
 	exprtk::symbol_table<double> symbol_table;
 	int varsSize = Game::get()->getDatabaseCache()->getHudVarsSize();
@@ -41,25 +39,22 @@ void Hud::replaceVariables(XMLFile* xmlFile, int hudSizeId) {
 
 	std::regex reg("\\{[^\\}]*\\}");
 
-	std::regex_iterator<std::string::iterator> iterator(asStr.begin(), asStr.end(), reg);
+	std::regex_iterator<std::string::iterator> iterator(xml.begin(), xml.end(), reg);
 	std::regex_iterator<std::string::iterator> rend;
-	std::vector<double>* values = new vector<double>();
+	std::vector<double> values;
 
 	while (iterator != rend) {
 		std::string expression_string = iterator->str().substr(1, iterator->str().length() - 2);
 		parser_t parser;
 		parser.compile(expression_string, expression);
 		double y = expression.value();
-		values->push_back(y);
+		values.push_back(y);
 		++iterator;
 	}
 
-	for (auto var : (*values)) {
-		asStr = std::regex_replace(asStr, reg, std::to_string((int)var), regex_constants::format_first_only);
+	for (auto var : values) {
+		xml = std::regex_replace(xml, reg, std::to_string((int)var), regex_constants::format_first_only);
 	}
-
-	xmlFile->FromString(asStr.c_str());
-	delete values;
 }
 
 void Hud::createCursor() {
@@ -73,28 +68,29 @@ Hud::Hud() {
 	windows = new std::vector<Window*>();
 	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
 
-	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->style);
-	XMLFile *style2 = Game::get()->getCache()->GetResource<XMLFile>("UI/a.xml");
-	replaceVariables(style, graphSettings->hud_size);
-	String a = style->ToString();
-	//style2->Patch(style);
-	XMLElement w = style2->GetRoot().GetChild();
-	rapidxml::xml_document<> doc;
-	char * r = strdup (style2->ToString().CString());
-	doc.parse<0>(r);
-	rapidxml::xml_node <>* root = doc.first_node();
-	root->first_attribute();
+	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->styles[0]);
 
-	rapidxml::xml_node<> *node = doc.allocate_node(rapidxml::node_element, "author", "John Doe");
-	doc.first_node()->append_node(node);
+	rapidxml::xml_document<> baseXML;
+	baseXML.parse<0>(_strdup(style->ToString().CString()));
+	for (int i = 1; i < graphSettings->styles.Size(); ++i) {
+		XMLFile* style2 = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->styles[i]);
+		rapidxml::xml_document<> additionalXML;
+		additionalXML.parse<0>(_strdup(style2->ToString().CString()));
+
+		rapidxml::xml_node<>* root = additionalXML.first_node();
+
+		for (rapidxml::xml_node<>* node = root->first_node(); node; node = node->next_sibling()) {
+			rapidxml::xml_node<>* clone = baseXML.clone_node(node);
+			baseXML.first_node()->append_node(clone);
+		}
+	}
 
 	std::stringstream ss;
-	ss << *doc.first_node();
+	ss << *baseXML.first_node();
 	std::string result_xml = ss.str();
-	std::cout << result_xml << std::endl;
-	style->Patch(style2);
-	String d = style2->ToString();
-	String ab = style->ToString();
+
+	replaceVariables(result_xml, graphSettings->hud_size);
+	style->FromString(result_xml.c_str());
 	Game::get()->getUI()->GetRoot()->SetDefaultStyle(style);
 
 	createConsole();

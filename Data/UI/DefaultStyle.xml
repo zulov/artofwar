@@ -391,23 +391,19 @@
     </element>
 	
 <!--
+	----
+	----
+	
   MY UI
+  	----
+	----
+	
 -->	
 	<element type="MyWindow" style="Window">		
 		<attribute name="Is Visible" value="false" />
 		<attribute name="Opacity" value="0.8" />
 	</element>
 	
-	<element type="TopWindow" style="MyWindow">
-		<attribute name="Min Size" value="{resX/4} {iconY/2+2*spaceY}"/>
-        <attribute name="Max Size" value="{resX/2} {iconY/2+2*spaceY}" />
-		<attribute name="Vert Alignment" value="Top" />
-		<attribute name="Horiz Alignment" value="Right" />
-		<attribute name="Layout Mode" value="Horizontal" />
-		<attribute name="Layout Spacing" value="{spaceX}" />
-        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
-        <attribute name="Position" value="{-iconX} 0" />
-	</element>
 	
 	<element type="MenuWindow" style="MyWindow">
 		<attribute name="Vert Alignment" value="Bottom" />
@@ -440,25 +436,6 @@
 		
 	</element>
 	
-	<element type="LoadingWindow" style="MyWindow">
-		<attribute name="Horiz Alignment" value="Center" />
-		<attribute name="Vert Alignment" value="Center" />		
-		<attribute name="Layout Spacing" value="{spaceX}" />
-        <attribute name="Layout Border" value="{iconX} {spaceY} {iconX} {spaceY}" />
-		<attribute name="Min Size" value="{resX/2} {resY/2}"/>
-		<attribute name="Max Size" value="{bigX} {bigY}"/>
-	</element>
-	
-	<element type="MiniMapWindow" style="MyWindow">
-		<attribute name="Min Size" value="{4*iconX+2*spaceX} {4.5*iconY+3*spaceY}"/>
-        <attribute name="Max Size" value="{4*iconX+2*spaceX} {4.5*iconY+3*spaceY}" />
-		<attribute name="Vert Alignment" value="Bottom" />
-		<attribute name="Horiz Alignment" value="Right" />
-		<attribute name="Layout Mode" value="Vertical" />
-		<attribute name="Layout Spacing" value="{spaceY}" />
-        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
-	</element>	
-	
 	<element type="SelectedInfoWindow" style="MyWindow">
 		<attribute name="Vert Alignment" value="Bottom" />
 		<attribute name="Horiz Alignment" value="Center" />
@@ -490,60 +467,6 @@
 		<attribute name="Position" value="0 -{3*iconY+3*spaceY}"/>
 	</element>
 	
-	<element type="InGameMenuWindow" style="MyWindow">
-		<attribute name="Vert Alignment" value="Top" />
-		<attribute name="Horiz Alignment" value="Right" />
-		<attribute name="Layout Mode" value="Vertical" />
-		<attribute name="Layout Spacing" value="{spaceY}" />
-        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
-		<attribute name="Min Size" value="{iconX*4} {bigY/3}"/>
-		<attribute name="Max Size" value="{iconX*5} {bigY/2}"/>
-		<attribute name="Position" value="0 {iconY/2+2*spaceY}"/>
-	</element>
-	
-	<element type="AdditionalInGameWindow" style="MyWindow">
-		<attribute name="Vert Alignment" value="Center" />
-		<attribute name="Horiz Alignment" value="Center" />
-		<attribute name="Layout Spacing" value="{spaceX}" />
-        <attribute name="Layout Border" value="{iconX} {spaceY} {iconX} {spaceY}" />
-		<attribute name="Min Size" value="{resX/2} {resY/2}"/>
-		<attribute name="Max Size" value="{bigX} {bigY}"/>
-		<attribute name="Position" value="0 {-2*iconY}"/>
-	</element>
-	
-	<element type="InGameToggledButton" style="Button" auto="false">
-		<attribute name="Vert Alignment" value="Top" />
-		<attribute name="Horiz Alignment" value="Right" />
-		<attribute name="Min Size" value="{iconX} {iconY/2+2*spaceY}"/>		
-    </element>
-	
-	<element type="InGameToggledSprite" >
-		<attribute name="Vert Alignment" value="Center" />
-		<attribute name="Horiz Alignment" value="Center" />
-		<attribute name="My Size" value="{iconX-2*spaceX} {iconY/2+spaceY}" />
-		<attribute name="Percent HotSpot" value="0.5 0.5" />
-    </element>
-	
-	<element type="InGameSprite">
-		<attribute name="Vert Alignment" value="Center" />
-		<attribute name="Horiz Alignment" value="Left" />
-		<attribute name="My Size" value="{iconX-2*spaceX} {iconY-2*spaceY}" />
-		<attribute name="Percent HotSpot" value="0.0 0.5" />
-		<attribute name="Position" value="{spaceX} 0"/>
-    </element>
-	
-	<element type="InGameButton"  style="Button" >
-        <attribute name="Horiz Alignment" value="Center" />
-		<attribute name="Min Size" value="{iconX*4} {iconY}" />
-		<attribute name="Max Size" value="{iconX*4} {iconY}" />
-    </element>
-	
-	<element type="InGameText" style="MyText" >
-		<attribute name="Text Alignment" value="Right" />
-		<attribute name="Horiz Alignment" value="Center" />
-		<attribute name="Vert Alignment" value="Center" />
-	</element>
-	
 	<element type="MiddleMock">
 		<attribute name="Vert Alignment" value="Top" />
 		<attribute name="Min Size" value="{100} {0}" />
@@ -557,11 +480,6 @@
 		<attribute name="Resize Popup" value="true" />
 	</element>
 	
-	<element type="TopButtons" style="Button" >
-		<attribute name="Min Size" value="{iconX*1.75} {iconY/2}"/>
-		<attribute name="Max Size" value="{iconX*1.75} {iconY/2}"/>
-	</element>
-	
 	<element type="Icon" style="Button">
         <attribute name="Min Size" value="{iconX} {iconY}" />
         <attribute name="Max Size" value="{iconX} {iconY}" />
@@ -572,11 +490,6 @@
         <attribute name="Max Size" value="{iconX*3/4} {iconY*3/4}" />
     </element>
 	
-	<element type="MiniMapIcon" style="Button">
-        <attribute name="Min Size" value="{iconX*2/3-spaceX/2} {iconY/2-spaceY}" />
-        <attribute name="Max Size" value="{iconX*2/3-spaceX/2} {iconY/2-spaceY}" />
-    </element>
-	
 	<element type="MyCloseButton" style="CloseButton">
 		<attribute name="Horiz Alignment" value="Right" />
 		<attribute name="Vert Alignment" value="Top" />
@@ -585,27 +498,6 @@
 		<attribute name="Position" value="{-spaceX} {spaceY} "/>
     </element>
 	
-	<element type="MiniMapCheckBox" style="CheckBox" >
-		<attribute name="Min Size" value="{iconX*2/3+spaceX} {iconY/2-spaceY}" />
-        <attribute name="Max Size" value="{iconX*2/3+spaceX} {iconY/2-spaceY}" />
-		<attribute name="Image Rect" value="192 80 208 96" />
-		<attribute name="Is Checked" value="true" />
-	</element>
-	
-	<element type="MiniMapListRow" style="ListRow" >
-		<attribute name="Layout Spacing" value="{spaceX/2}" />
-		<attribute name="Min Size" value="100 {iconY/2}" />
-		<attribute name="Max Size" value="10000 {iconY/2}" />
-	</element>
-	
-	<element type="MiniMapSprite">
-        <attribute name="Vert Alignment" value="Center" />
-		<attribute name="Horiz Alignment" value="Center" />
-		<attribute name="My Size" value="{iconX*2/3+spaceX} {iconY/2-spaceY}" />
-		<attribute name="Percent HotSpot" value="0.5 0.5" />
-		<attribute name="Opacity" value="0.8" />
-    </element>
-
 	<element type="Sprite">
         <attribute name="Vert Alignment" value="Center" />
 		<attribute name="Horiz Alignment" value="Center" />
@@ -636,11 +528,7 @@
 	<element type="MiniText" style="MyText" >
 		<attribute name="Font Size" value="{fontSize*8/10}" />
 	</element>
-	
-	<element type="TopText" style="MyText" >
-		<attribute name="Font Size" value="{fontSize}" />
-		<attribute name="Vert Alignment" value="Center" />
-	</element>
+
 	<element type="MiddleTitle" style="MyText" >
 		<attribute name="Font Size" value="{fontSize*1.5}" />
 		<attribute name="Vert Alignment" value="Top" />
@@ -712,45 +600,5 @@
             <attribute name="Hover Image Offset" value="0 0" />
         </element>
     </element>
-	
-	<element type="LargeProgressBar" style="ProgressBar">
-        <attribute name="Texture" value="Texture2D;Textures/progress-bar.png" />
-		<attribute name="Blend Mode" value="alpha" />
-
-		<attribute name="Min Size" value="{bigX/2} {iconX}" />
-        <attribute name="Max Size" value="{bigX} {iconX}" />
-        <attribute name="Image Rect" value="0 0 32 32" />
-        <attribute name="Border" value="8 8 8 8" />
-        <attribute name="Show Percent Text" value="true" />
-        <attribute name="Opacity" value="0.8" />
-		<attribute name="Horiz Alignment" value="Center" />
-		<attribute name="Vert Alignment" value="Center" />
-				
-        <element type="BorderImage" internal="true">
-			<attribute name="Texture" value="Texture2D;Textures/bar.png" />
-			<attribute name="Blend Mode" value="alpha" />
-			<attribute name="Image Rect" value="0 0 8 8" />
-			<attribute name="Border" value="2 2 2 2" />
-			<attribute name="Hover Image Offset" value="0 0" />
-			<attribute name="Tiled" value="true" />
-        </element>
-    </element>
-	
-	<element type="Background" >
-        <attribute name="Texture" value="Texture2D;Textures/back3.png" />
-        <attribute name="Blend Mode" value="alpha" />
-		<attribute name="Size" value="{resX/2-iconX} {resY/3}" />
-		<attribute name="Vert Alignment" value="Center" />
-		<attribute name="Horiz Alignment" value="Center" />
-		<attribute name="Tiled" value="true" />
-		<attribute name="Opacity" value="0.6" />	
-    </element>
-	
-	<element type="MiniMap" >
-		<attribute name="Max Size" value="{iconX*3} {iconY*3}" />
-	</element>
-	
-	  <element type="MyMenu" style="Menu">
-        <attribute name="Max Size" value="{iconX*3} {iconY*3}" />
-    </element>
+		
 </elements>
