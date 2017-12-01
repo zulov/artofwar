@@ -15,9 +15,6 @@
 
 
 void Hud::replaceVariables(std::string &xml, int hudSizeId) {
-	//auto styleString = xmlFile->ToString();
-	//const char* chars = styleString.CString();
-
 	exprtk::symbol_table<double> symbol_table;
 	int varsSize = Game::get()->getDatabaseCache()->getHudVarsSize();
 	for (int i = 0; i < varsSize; ++i) {

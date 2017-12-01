@@ -107,7 +107,10 @@ INSERT INTO `graph_settings` (id,hud_size,res_x,res_y,style,fullscreen,max_fps,m
 in_game.xml
 mini_map.xml
 top.xml
-loading.xml',0,140.0,1.0);
+loading.xml
+selected.xml
+queue.xml
+left.xml',0,140.0,1.0);
 INSERT INTO `cost_unit` (id,resource,value,unit) VALUES (0,0,90,3),
  (1,1,120,0),
  (2,0,80,1),

@@ -1,0 +1,18 @@
+<elements>
+
+	<element type="MiniText" style="MyText" >
+		<attribute name="Font Size" value="{fontSize*8/10}" />
+	</element>
+
+	<element type="QueueWindow" style="MyWindow">
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Layout Mode" value="Horizontal" />
+		<attribute name="Layout Spacing" value="{spaceX}" />
+        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+		<attribute name="Min Size" value="{resX -(4*iconX+2*spaceX) -(4*iconX+2*spaceX)} {iconY}"/>
+		<attribute name="Opacity" value="0.4" />
+		<attribute name="Position" value="0 -{3*iconY+3*spaceY}"/>
+	</element>
+	
+</elements>
