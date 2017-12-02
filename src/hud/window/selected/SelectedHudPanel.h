@@ -19,7 +19,7 @@ public:
 	void createRows();
 
 private:
-	void hide();
+	void hide(int i);
 	void createBody() override;
 	short maxInRow = 31;
 	short LINES_IN_SELECTION = 4;

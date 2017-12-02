@@ -11,23 +11,14 @@ SelectedHudPanel::~SelectedHudPanel() {
 	delete buttons;
 }
 
-void SelectedHudPanel::hide() {
-	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
+void SelectedHudPanel::hide(int i) {
+	for (; i < LINES_IN_SELECTION * maxInRow; ++i) {
 		elements[i]->hide();
 	}
 }
 
 std::vector<Button*>* SelectedHudPanel::getButtonsSelectedToSubscribe() {
 	return buttons;
-}
-
-int SelectedHudPanel::iconSize() {
-	UIElement * test = new UIElement(Game::get()->getContext());
-	test->SetStyle("SmallIcon", style);
-
-	int size = test->GetSize().x_+ rows[0]->GetLayoutSpacing();
-	test->Remove(); delete test;
-	return size;
 }
 
 void SelectedHudPanel::createBody() {
@@ -60,6 +51,15 @@ void SelectedHudPanel::createBody() {
 	}
 }
 
+int SelectedHudPanel::iconSize() {
+	UIElement * test = new UIElement(Game::get()->getContext());
+	test->SetStyle("SmallIcon", style);
+
+	int size = test->GetSize().x_ + rows[0]->GetLayoutSpacing();
+	test->Remove(); delete test;
+	return size;
+}
+
 void SelectedHudPanel::createRows() {
 	rows = new UIElement*[LINES_IN_SELECTION];
 	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
@@ -85,7 +85,6 @@ String SelectedHudPanel::getIconName(ObjectType index, int i) {
 }
 
 void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
-	hide();
 	ObjectType type = selectedInfo->getSelectedType();
 	std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
 
@@ -101,7 +100,7 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 		for (int j = 0; j < data->size(); j += ratio) {
 			int max = Min(data->size(), j + ratio);
 			int diff = max - j;
-			std::vector<Physical*>* sub = new std::vector<Physical*>(data->begin() + j, data->begin() + max);
+			std::vector<Physical*>* sub = new std::vector<Physical*>(data->begin() + j, data->begin() + max);//TODO nie tworzyc vectora tylko przekazac indeksy i data
 			elements[k]->add(sub);
 			elements[k]->show();
 			elements[k]->setTexture(texture);
@@ -115,4 +114,5 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 			delete sub;
 		}
 	}
+	hide(k);
 }
