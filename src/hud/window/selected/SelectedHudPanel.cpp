@@ -3,7 +3,7 @@
 #include "database/DatabaseCache.h"
 #include <Urho3D/Graphics/Texture2D.h>
 
-SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style):AbstractWindowPanel(_style) {
+SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "SelectedInfoWindow";
 }
 
@@ -12,7 +12,7 @@ SelectedHudPanel::~SelectedHudPanel() {
 }
 
 void SelectedHudPanel::hide() {
-	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
+	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
 		elements[i]->hide();
 	}
 }
@@ -21,28 +21,50 @@ std::vector<Button*>* SelectedHudPanel::getButtonsSelectedToSubscribe() {
 	return buttons;
 }
 
+int SelectedHudPanel::iconSize() {
+	UIElement * test = new UIElement(Game::get()->getContext());
+	test->SetStyle("SmallIcon", style);
+
+	int size = test->GetSize().x_+ rows[0]->GetLayoutSpacing();
+	test->Remove(); delete test;
+	return size;
+}
+
 void SelectedHudPanel::createBody() {
-	elements = new SelectedHudElement*[LINES_IN_SELECTION * MAX_ICON_SELECTION];
-	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
+	createRows();
+
+	int border = rows[0]->GetLayoutBorder().left_ + rows[0]->GetLayoutBorder().right_ + window->GetLayoutBorder().left_ +
+		window->
+		GetLayoutBorder().right_;
+	int space = window->GetSize().x_ - border;
+
+	int size = iconSize();
+
+	maxInRow = space / size;
+
+	elements = new SelectedHudElement*[LINES_IN_SELECTION * maxInRow];
+	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
 		elements[i] = new SelectedHudElement(style);
 	}
 
-	rows = new UIElement*[LINES_IN_SELECTION];
 	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
-		rows[i] = window->CreateChild<UIElement>();
-		rows[i]->SetStyle("MyListRow", style);
-	}
-
-	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
-		for (int j = 0; j < MAX_ICON_SELECTION; ++j) {
-			rows[i]->AddChild(elements[i * MAX_ICON_SELECTION + j]->getButton());
+		for (int j = 0; j < maxInRow; ++j) {
+			rows[i]->AddChild(elements[i * maxInRow + j]->getButton());
 		}
 	}
 
 	buttons = new std::vector<Button*>();
-	buttons->reserve(LINES_IN_SELECTION * MAX_ICON_SELECTION);
-	for (int i = 0; i < LINES_IN_SELECTION * MAX_ICON_SELECTION; ++i) {
+	buttons->reserve(LINES_IN_SELECTION * maxInRow);
+	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
 		buttons->push_back(elements[i]->getButton());
+	}
+}
+
+void SelectedHudPanel::createRows() {
+	rows = new UIElement*[LINES_IN_SELECTION];
+	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
+		rows[i] = window->CreateChild<UIElement>();
+		rows[i]->SetStyle("MyListRow", style);
 	}
 }
 
@@ -69,7 +91,7 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 
 	int all = selectedInfo->getAllNumber();
 	int selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
-	int ratio = all / (LINES_IN_SELECTION * MAX_ICON_SELECTION - selectedSubTypeNumber + 2) + 1;
+	int ratio = all / (LINES_IN_SELECTION * maxInRow - selectedSubTypeNumber + 2) + 1;
 	int k = 0;
 	for (int i = 0; i < infoTypes->size(); ++i) {
 		std::vector<Physical*>* data = infoTypes->at(i)->getData();
@@ -83,10 +105,10 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 			elements[k]->add(sub);
 			elements[k]->show();
 			elements[k]->setTexture(texture);
-			
+
 			if (diff > 1) {
 				elements[k]->setText(String(diff));
-			}else {
+			} else {
 				elements[k]->hideText();
 			}
 			++k;
