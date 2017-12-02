@@ -200,6 +200,10 @@ Sprite* Hud::getSpriteMiniMapToSubscribe() {
 	return miniMapPanel->getSpriteToSubscribe();
 }
 
+Button* Hud::getSaveButton() {
+	return inGameMenuPanel->getSaveButton();
+}
+
 void Hud::updateSelected(SelectedInfo* selectedInfo) {
 	//TODO raz stworzyc a sterowac widzialnsocia
 	if (selectedInfo->hasChanged()) {

@@ -290,6 +290,7 @@
     <ClInclude Include="src\commands\ActionCommandList.h" />
     <ClInclude Include="src\hud\window\in_game_menu\InGameMenuPanel.h" />
     <ClInclude Include="src\hud\window\loading\LoadingPanel.h" />
+    <ClInclude Include="src\hud\window\middle\FileFormData.h" />
     <ClInclude Include="src\hud\window\middle\FilePanel.h" />
     <ClInclude Include="src\Loading.h" />
     <ClInclude Include="src\objects\Static.h" />

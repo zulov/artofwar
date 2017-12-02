@@ -11,6 +11,7 @@ public:
 	InGameMenuPanel(Urho3D::XMLFile* _style);
 	~InGameMenuPanel();
 	void setVisible(bool enable) override;
+	Urho3D::Button* getSaveButton();
 
 private:
 	void toggle();

@@ -63,9 +63,12 @@
 	
 	<element type="MiddleMock">
 		<attribute name="Vert Alignment" value="Top" />
+		<attribute name="Horiz Alignment" value="Center" />
 		<attribute name="Min Size" value="{100} {0}" />
         <attribute name="Max Size" value="{1000} {1000}" />
 		<attribute name="Position" value="0 {iconY*3}"/>
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Spacing" value="{spaceY}" />
 	</element>
 	
 	<element type="MyCloseButton" style="CloseButton">
@@ -82,11 +85,11 @@
     </element>
 	
 	<element type="FileNameLineEdit" style="LineEdit">
-        <attribute name="Size" value="{iconX*4} {iconY/2}" />
+        <attribute name="Min Size" value="{iconX*4} {iconY/2}" />
     </element>
 	
 	<element type="FileConfirmButton"  style="Button" >
-		<attribute name="Size" value="{iconX*2} {iconY}" />
+		<attribute name="Min Size" value="{iconX*2} {iconY}" />
     </element>
 	
 	<element type="MiddleText" style="MyText" >

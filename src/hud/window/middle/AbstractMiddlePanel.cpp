@@ -27,3 +27,7 @@ void AbstractMiddlePanel::createBody() {
 void AbstractMiddlePanel::HandleClose(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
 	setVisible(false);
 }
+
+Urho3D::Button* AbstractMiddlePanel::getMainButton() {
+	return nullptr;
+}

@@ -48,6 +48,7 @@ public:
 	void endLoading();
 	void updateLoading(float progress);
 	Sprite* getSpriteMiniMapToSubscribe();
+	Button* getSaveButton();
 
 private:
 	void  replaceVariables(std::string &xml, int hudSizeId);

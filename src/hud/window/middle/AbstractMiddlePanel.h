@@ -13,6 +13,7 @@ public:
 
 	void createBody() override;
 	void HandleClose(Urho3D::StringHash, Urho3D::VariantMap& eventData);
+	virtual Urho3D::Button* getMainButton();
 protected:
 	Urho3D::UIElement * body;
 

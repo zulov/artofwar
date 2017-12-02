@@ -52,6 +52,7 @@ private:
 
 	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
 	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
+	void HandleSaveScene(StringHash, VariantMap& eventData);
 
 	void HandleMiniMapClick(StringHash eventType, VariantMap& eventData);
 	void HandleBuildButton(StringHash eventType, VariantMap& eventData);

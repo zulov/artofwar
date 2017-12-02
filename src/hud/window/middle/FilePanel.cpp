@@ -1,5 +1,8 @@
 #include "FilePanel.h"
 #include "Game.h"
+#include "FileFormData.h"
+#include <Urho3D/UI/UIEvents.h>
+#include "hud/HudElement.h"
 
 
 FilePanel::FilePanel(Urho3D::XMLFile* _style, Urho3D::String _title): AbstractMiddlePanel(_style, _title) {
@@ -7,6 +10,7 @@ FilePanel::FilePanel(Urho3D::XMLFile* _style, Urho3D::String _title): AbstractMi
 
 
 FilePanel::~FilePanel() {
+	delete data;
 }
 
 void FilePanel::createBody() {
@@ -14,18 +18,29 @@ void FilePanel::createBody() {
 	Urho3D::String name = Game::get()->getLocalization()->Get("save");
 	lineEdit = body->CreateChild<Urho3D::LineEdit>();
 	lineEdit->SetStyle("FileNameLineEdit", style);
-	lineEdit->SetPosition(0, 0);
+
+	SubscribeToEvent(lineEdit, Urho3D::E_DEFOCUSED, URHO3D_HANDLER(FilePanel, HandleValueChange));
 
 	action = body->CreateChild<Urho3D::Button>();
 	action->SetStyle("FileConfirmButton", style);
-	action->SetPosition(0, 64);
-	Urho3D::Text * textInButton = action->CreateChild<Urho3D::Text>();
+	data = new FileFormData();
+	action->SetVar("file_data", data);
+	
+	Urho3D::Text* textInButton = action->CreateChild<Urho3D::Text>();
 	textInButton->SetStyle("MiddleText", style);
 	textInButton->SetText(name);
-	
-//	list = body->CreateChild<Urho3D::DropDownList>();
-//	list->SetStyle("DropDownList", style);
-//	list->SetSize(128, 32);
-//	list->SetPosition(0, 128);
 
+	//	list = body->CreateChild<Urho3D::DropDownList>();
+	//	list->SetStyle("DropDownList", style);
+	//	list->SetSize(128, 32);
+	//	list->SetPosition(0, 128);
+
+}
+
+Urho3D::Button* FilePanel::getMainButton() {
+	return action;
+}
+
+void FilePanel::HandleValueChange(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	data->fileName = Urho3D::String(lineEdit->GetText());
 }

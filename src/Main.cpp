@@ -15,6 +15,7 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/IO/FileSystem.h>
 #include <Urho3D/Resource/Localization.h>
+#include "hud/window/middle/FileFormData.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
@@ -142,6 +143,8 @@ void Main::subscribeToEvents() {
 	for (auto buttton : *hud->getButtonsSelectedToSubscribe()) {
 		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButton));
 	}
+
+	SubscribeToEvent(hud->getSaveButton(), E_CLICK, URHO3D_HANDLER(Main, HandleSaveScene));
 	
 	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
 	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));
@@ -325,6 +328,12 @@ void Main::HandleUIButtonHoverOff(StringHash /*eventType*/, VariantMap& eventDat
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
 	hud->hoverOffIcon(hudElement);
+}
+
+void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
+	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
+	FileFormData* data = (FileFormData *)element->GetVar("file_data").GetVoidPtr();
+	int a = 5;
 }
 
 void Main::SetupViewport() {

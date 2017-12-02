@@ -26,6 +26,10 @@ void InGameMenuPanel::setVisible(bool enable) {
 	toggleButton->SetVisible(enable);
 }
 
+Urho3D::Button* InGameMenuPanel::getSaveButton() {
+	return addionalPanels[0]->getMainButton();
+}
+
 void InGameMenuPanel::toggle() {
 	menuVisibility = !menuVisibility;
 	setVisible(true);
