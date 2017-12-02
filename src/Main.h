@@ -16,6 +16,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include "GameState.h"
 #include "Loading.h"
+#include "scene/save/SceneSaver.h"
 
 namespace Urho3D {
 	class Node;
@@ -63,6 +64,7 @@ private:
 	void control(float timeStep);
 	void changeCamera(int type);
 	void InitLocalizationSystem();
+	void save(String name);
 
 	MouseMode useMouseMode_;
 	Simulation* simulation;
@@ -72,6 +74,6 @@ private:
 	Controls* controls;
 	LevelBuilder* levelBuilder;
 	GameState gameState;
-
+	SceneSaver * saver;
 	loading *loadingState;
 };

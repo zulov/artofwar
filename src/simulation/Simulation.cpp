@@ -135,6 +135,10 @@ void Simulation::dispose() {
 	simObjectManager->dispose();
 }
 
+void Simulation::save(SceneSaver* saver) {
+	saver->saveUnits(units);
+}
+
 void Simulation::performAction() {
 	for (auto unit : (*units)) {
 		unit->executeState();

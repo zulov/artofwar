@@ -1,16 +1,15 @@
 #pragma once
 #include <chrono>
+#include <iostream>
 
 struct loading
 {
 	loading() {
-		stagesNumber = 1;
-		currentStage = 0;
-		sth = nullptr;
-		start = std::chrono::system_clock::now();
+		reset(1);
 	}
 
-	~loading(){}
+	~loading() {
+	}
 
 	float getProgres() {
 		return currentStage / stagesNumber;
@@ -20,6 +19,7 @@ struct loading
 		stagesNumber = stages;
 		currentStage = 0;
 		sth = nullptr;
+		start = std::chrono::system_clock::now();
 	}
 
 	void inc() {

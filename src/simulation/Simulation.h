@@ -10,6 +10,7 @@
 #include "commands/ActionCommandList.h"
 #include "objects/unit/aim/AimContainer.h"
 #include "SimulationInfo.h"
+#include "scene/save/SceneSaver.h"
 
 class CreationCommandList;
 
@@ -28,7 +29,8 @@ public:
 	int getUnitsNumber();
 	SimulationInfo* getInfo();
 	void dispose();
-	
+	void save(SceneSaver* saver);
+
 private:
 	void moveUnits(float timeStep);
 	void moveUnitsAndCheck(float timeStep);

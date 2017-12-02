@@ -45,6 +45,8 @@ void Main::Setup() {
 
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
+	
+	saver = new SceneSaver(100);
 
 	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
 	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
@@ -57,7 +59,6 @@ void Main::load() {
 		{
 		hud->resetLoading();
 		levelBuilder->createScene(1);
-
 		}
 		break;
 	case 1:
@@ -70,7 +71,7 @@ void Main::load() {
 	case 2:
 		{
 		Enviroment* enviroment = static_cast<Enviroment*>(loadingState->sth);
-		enviroment->prepareGridToFind();
+		//enviroment->prepareGridToFind();
 		hud->createMiniMap();
 		break;
 		}
@@ -228,6 +229,11 @@ void Main::InitLocalizationSystem() {
 	Game::get()->setLocalization(l10n);
 }
 
+void Main::save(String name) {
+	saver->createSave(name);
+	simulation->save(saver);
+}
+
 void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	int key = eventData[KeyUp::P_KEY].GetInt();
 
@@ -244,6 +250,9 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 		changeCamera(CameraBehaviorType::RTS);
 	} else if (key == KEY_3) {
 		changeCamera(CameraBehaviorType::TOP);
+	} else if (key == KEY_F5) {
+		String name = "test" + String(rand());
+		save(name);
 	}
 }
 
@@ -333,6 +342,7 @@ void Main::HandleUIButtonHoverOff(StringHash /*eventType*/, VariantMap& eventDat
 void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	FileFormData* data = (FileFormData *)element->GetVar("file_data").GetVoidPtr();
+	save(data->fileName);
 	int a = 5;
 }
 
