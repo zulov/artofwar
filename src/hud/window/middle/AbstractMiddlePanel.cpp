@@ -13,12 +13,11 @@ AbstractMiddlePanel::~AbstractMiddlePanel() {
 
 
 void AbstractMiddlePanel::createBody() {
-
 	buttonClose = window->CreateChild<Urho3D::Button>();
 	buttonClose->SetStyle("MyCloseButton", style);
 	SubscribeToEvent(buttonClose, Urho3D::E_CLICK, URHO3D_HANDLER(AbstractMiddlePanel, HandleClose));
 	title = window->CreateChild<Urho3D::Text>();
-	title->SetStyle("MiddleTitle1", style);
+	title->SetStyle("MiddleTitle", style);
 	title->SetText(msg);
 
 	body = window->CreateChild<Urho3D::UIElement>();

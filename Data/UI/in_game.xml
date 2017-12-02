@@ -81,4 +81,17 @@
         <attribute name="Max Size" value="{iconX} {iconY}" />
     </element>
 	
+	<element type="FileNameLineEdit" style="LineEdit">
+        <attribute name="Size" value="{iconX*4} {iconY/2}" />
+    </element>
+	
+	<element type="FileConfirmButton"  style="Button" >
+		<attribute name="Size" value="{iconX*2} {iconY}" />
+    </element>
+	
+	<element type="MiddleText" style="MyText" >
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Vert Alignment" value="Center" />
+	</element>
+	
 </elements>

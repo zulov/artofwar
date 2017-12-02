@@ -17,6 +17,8 @@
 	},
 	"igm_4":{
 		"pl":"Wyjście"
+	},
+	"save":{
+		"pl":"Zapisz"
 	}
-
 }
