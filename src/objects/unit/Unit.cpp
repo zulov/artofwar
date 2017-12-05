@@ -325,7 +325,7 @@ std::string Unit::getColumns() {
 		"position_z		INT     NOT NULL,"
 		"state			INT     NOT NULL,"
 		"velocity_x		INT     NOT NULL,"//TODO czy dodac y?
-		"velocity_z		INT     NOT NULL,";
+		"velocity_z		INT     NOT NULL";
 }
 
 void Unit::setStates(StateManager* _states) {

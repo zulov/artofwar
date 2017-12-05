@@ -9,6 +9,7 @@
 #include "player/PlayersManager.h"
 #include "database/DatabaseCache.h"
 #include <Urho3D/Resource/ResourceCache.h>
+#include <string>
 
 double Building::hbMaxSize = 5.0;
 
@@ -78,11 +79,17 @@ void Building::action(short id, ActionParameter* parameter) {
 }
 
 std::string Building::getColumns() {
-	return Static::getColumns() + "";
+	return Static::getColumns() +
+		"target_x		INT     NOT NULL,"
+		"target_z		INT     NOT NULL";
 }
 
 std::string Building::getValues(int precision) {
-	return Static::getValues(precision) + "";
+	int target_x = target->x_ * precision;
+	int target_z = target->z_ * precision;
+	return Static::getValues(precision)
+		+ to_string(target_x) + ","
+		+ to_string(target_z);
 }
 
 QueueElement* Building::updateQueue(float time) {
