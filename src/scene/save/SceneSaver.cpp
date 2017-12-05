@@ -75,16 +75,17 @@ void SceneSaver::executeInsert(string sqlstatement) {
 
 void SceneSaver::saveUnits(std::vector<Unit*>* units) {
 	loadingState->inc("saving units");
+	if (units->empty()) { return; }
 	string sql = "INSERT INTO units VALUES ";
 	for (auto unit : *units) {
 		sql += " (" + unit->getValues(precision) + "),";
 	}
 	executeInsert(sql);
-
 }
 
 void SceneSaver::saveBuildings(std::vector<Building*>* buildings) {
 	loadingState->inc("saving buildings");
+	if (buildings->empty()) { return; }
 	string sql = "INSERT INTO buildings VALUES ";
 	for (auto building : *buildings) {
 		sql += " (" + building->getValues(precision) + "),";
@@ -94,6 +95,7 @@ void SceneSaver::saveBuildings(std::vector<Building*>* buildings) {
 
 void SceneSaver::saveResources(std::vector<ResourceEntity*>* resources) {
 	loadingState->inc("saving resources");
+	if (resources->empty()) { return; }
 	string sql = "INSERT INTO resources VALUES ";
 	for (auto resourceEntity : *resources) {
 		sql += " (" + resourceEntity->getValues(precision) + "),";

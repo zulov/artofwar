@@ -15,7 +15,6 @@ public:
 	db_hud_size* getHudSize(int i);
 	db_graph_settings* getGraphSettings(int i);
 	db_building* getBuilding(int i);
-	db_building_type* getBuildingType(int i);
 	db_unit_type* getUnitType(int i);
 	db_nation* getNation(int i);
 	db_resource* getResource(int i);
@@ -30,7 +29,6 @@ public:
 	std::vector<db_order*>* getOrdersForUnit(int id);
 
 	int getResourceSize();
-	int getBuildingTypeSize();
 	int getUnitTypeSize();
 	int getHudVarsSize();
 	int getBuildingSize();

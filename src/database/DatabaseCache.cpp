@@ -42,17 +42,9 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = (db_container *)data;
 	int id = atoi(argv[0]);
-	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), argv[5], argv[6],
+	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), argv[5], argv[6],
 	                                     argv[7], atof(argv[8]), argv[9], atoi(argv[10]), argv[11], atoi(argv[12]));
 	xyz->building_size++;
-	return 0;
-}
-
-int static loadBuildingType(void* data, int argc, char** argv, char** azColName) {
-	db_container* xyz = (db_container *)data;
-	int id = atoi(argv[0]);
-	xyz->buildingTypes[id] = new db_building_type(id, argv[1]);
-	xyz->building_type_size++;
 	return 0;
 }
 
@@ -181,7 +173,6 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from hud_size", loadHudSizes);
 	execute("SELECT * from graph_settings", loadGraphSettings);
 	execute("SELECT * from building", loadBuildings);
-	execute("SELECT * from building_type", loadBuildingType);
 	execute("SELECT * from unit_type", loadUnitType);
 	execute("SELECT * from nation", loadNation);
 	execute("SELECT * from resource", loadResource);
@@ -219,10 +210,6 @@ db_building* DatabaseCache::getBuilding(int i) {
 	return dbContainer->buildings[i];
 }
 
-db_building_type* DatabaseCache::getBuildingType(int i) {
-	return dbContainer->buildingTypes[i];
-}
-
 db_unit_type* DatabaseCache::getUnitType(int i) {
 	return dbContainer->unitTypes[i];
 }
@@ -253,10 +240,6 @@ db_player_colors* DatabaseCache::getPlayerColor(int i) {
 
 int DatabaseCache::getResourceSize() {
 	return dbContainer->resource_size;
-}
-
-int DatabaseCache::getBuildingTypeSize() {
-	return dbContainer->building_type_size;
 }
 
 int DatabaseCache::getUnitTypeSize() {

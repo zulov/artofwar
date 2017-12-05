@@ -52,7 +52,6 @@ int Building::getID() {
 
 void Building::populate(db_building* _dbBuilding, std::vector<db_unit*>* _units) {
 	gridSize = _dbBuilding->size;
-	buildingType = BuildingType(_dbBuilding->type);
 	dbBuilding = _dbBuilding;
 	units = _units;
 	queue = new QueueManager(_dbBuilding->queueMaxCapacity);

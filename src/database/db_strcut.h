@@ -62,7 +62,6 @@ struct db_building
 	Urho3D::String name;
 	Urho3D::IntVector2 size;
 	int sizeZ;
-	int type;
 	Urho3D::String model;
 	Urho3D::String texture;
 	Urho3D::String font;
@@ -72,12 +71,11 @@ struct db_building
 	Urho3D::String icon;
 	short queueMaxCapacity;
 
-	db_building(int id, char* name, int sizeX, int sizeZ, int type, char* model, char* texture, char* font, double scale,
+	db_building(int id, char* name, int sizeX, int sizeZ, char* model, char* texture, char* font, double scale,
 	            char* texture_temp, int nation, char* icon, int queueMaxCapacity)
 		: id(id),
 		name(name),
 		size(Urho3D::IntVector2(sizeX, sizeZ)),
-		type(type),
 		model(model),
 		texture(texture),
 		font(font),
@@ -129,17 +127,6 @@ struct db_unit_type
 	Urho3D::String name;
 
 	db_unit_type(int id, char* name, char* icon)
-		: id(id),
-		name(name) {
-	}
-};
-
-struct db_building_type
-{
-	int id;
-	Urho3D::String name;
-
-	db_building_type(int id, char* name)
 		: id(id),
 		name(name) {
 	}
@@ -266,7 +253,6 @@ struct db_container
 	db_hud_size* hudSizes[HUD_SIZES_NUMBER_DB] = { nullptr };
 	db_graph_settings* graphSettings[GRAPH_SETTINGS_NUMBER_DB] = { nullptr };
 	db_unit_type* unitTypes[TYPE_NUMBER_DB] = { nullptr };
-	db_building_type* buildingTypes[TYPE_NUMBER_DB] = { nullptr };
 	db_nation* nations[NATION_NUMBER_DB] = { nullptr };
 	db_resource* resources[RESOURCE_NUMBER_DB] = { nullptr };
 	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB] = { nullptr };
@@ -283,7 +269,6 @@ struct db_container
 	int building_size = 0;
 	int graph_settings_size = 0;
 	int unit_type_size = 0;
-	int building_type_size = 0;
 	int resource_size = 0;
 	int nation_size = 0;
 	int hud_vars_size = 0;

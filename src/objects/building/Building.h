@@ -27,7 +27,6 @@ public:
 	QueueManager* getQueue();
 private:
 	Vector3* target;
-	BuildingType buildingType;
 	db_building* dbBuilding;
 	std::vector<db_unit*>* units;
 	QueueManager* queue;
