@@ -27,7 +27,8 @@ public:
 	char getPlayer();
 	virtual String* toMultiLineString();
 	virtual void action(short id, ActionParameter* parameter);
-
+	static std::string getColumns();
+	std::string getValues(int precision) override;
 	bool hasEnemy();
 	virtual void clean();
 protected:

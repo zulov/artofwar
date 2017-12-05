@@ -24,7 +24,7 @@ Building::Building(Vector3* _position, int id, int player) : Static(_position, B
 	populate(dbBuilding, dbUnits);
 	Model* model = Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbBuilding->model);
 	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbBuilding->texture);
-	
+
 	node->SetScale(dbBuilding->scale);
 	Urho3D::StaticModel* staticModel = node->CreateComponent<Urho3D::StaticModel>();
 	staticModel->SetModel(model);
@@ -55,8 +55,6 @@ void Building::populate(db_building* _dbBuilding, std::vector<db_unit*>* _units)
 	dbBuilding = _dbBuilding;
 	units = _units;
 	queue = new QueueManager(_dbBuilding->queueMaxCapacity);
-
-	//plane->SetScale(Vector3(_dbBuilding->sizeX,1,_dbBuilding->sizeZ));
 }
 
 void Building::absorbAttack(double attackCoef) {
@@ -77,6 +75,14 @@ void Building::action(short id, ActionParameter* parameter) {
 	if (resources->reduce(costs)) {
 		queue->add(1, UNIT, id);
 	}
+}
+
+std::string Building::getColumns() {
+	return Static::getColumns() + "";
+}
+
+std::string Building::getValues(int precision) {
+	return Static::getValues(precision) + "";
 }
 
 QueueElement* Building::updateQueue(float time) {

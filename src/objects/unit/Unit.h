@@ -51,6 +51,7 @@ public:
 	void updateHeight(double y, double timeStep);
 	String* toMultiLineString() override;
 	void action(short id, ActionParameter* parameter) override;
+	std::string getValues(int precision) override;
 	UnitStateType getState();
 	UnitStateType getActionState();
 	void clean() override;
@@ -58,6 +59,7 @@ public:
 	bool checkTransition(UnitStateType state);
 	void executeState();
 	bool hasResource();
+	static std::string getColumns();
 	static void setStates(StateManager* _states);
 protected:
 	Vector3* acceleration;

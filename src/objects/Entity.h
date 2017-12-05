@@ -18,6 +18,9 @@ public:
 	ObjectType getType();
 	virtual int getID();
 	virtual void action(ActionType actionType, ActionParameter* parameter);
+	virtual std::string getValues(int precision);
+	static std::string getColumns();
+
 protected:
 	Urho3D::Node* node;
 	ObjectType type = ENTITY;

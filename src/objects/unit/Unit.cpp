@@ -5,6 +5,7 @@
 #include "Game.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
+#include <string>
 
 double Unit::hbMaxSize = 0.7;
 StateManager* Unit::states = nullptr;
@@ -272,6 +273,21 @@ void Unit::action(short id, ActionParameter* parameter) {
 	}
 }
 
+std::string Unit::getValues(int precision) {
+	int position_x = position->x_ * precision;
+	int position_z = position->z_ * precision;
+	int state = (int)unitState;
+	int velocity_x = velocity->x_ * precision;
+	int velocity_z = velocity->z_ * precision;
+	return Physical::getValues(precision)
+		+ to_string(position_x) + "," +
+		to_string(position_z) + "," +
+		to_string(state) + "," +
+		to_string(velocity_x) + "," +
+		to_string(velocity_z);
+
+}
+
 UnitStateType Unit::getState() {
 	return unitState;
 }
@@ -301,6 +317,15 @@ void Unit::executeState() {
 
 bool Unit::hasResource() {
 	return resource;
+}
+
+std::string Unit::getColumns() {
+	return Physical::getColumns() +
+		"position_x		INT     NOT NULL,"
+		"position_z		INT     NOT NULL,"
+		"state			INT     NOT NULL,"
+		"velocity_x		INT     NOT NULL,"//TODO czy dodac y?
+		"velocity_z		INT     NOT NULL,";
 }
 
 void Unit::setStates(StateManager* _states) {

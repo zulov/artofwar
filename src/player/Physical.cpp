@@ -4,6 +4,7 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Material.h>
 #include "objects/LinkComponent.h"
+#include <string>
 
 Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
 
@@ -112,6 +113,15 @@ String* Physical::toMultiLineString() {
 
 void Physical::action(short id, ActionParameter* parameter) {
 
+}
+
+std::string Physical::getColumns() {
+	return Entity::getColumns() + "hp_coef		INT     NOT NULL,";
+}
+
+std::string Physical::getValues(int precision) {
+	int hp_coef = getHealthPercent() * precision;
+	return Entity::getValues(precision) + to_string(hp_coef) + ",";
 }
 
 bool Physical::hasEnemy() {

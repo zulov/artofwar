@@ -137,6 +137,8 @@ void Simulation::dispose() {
 
 void Simulation::save(SceneSaver* saver) {
 	saver->saveUnits(units);
+	saver->saveBuildings(buildings);
+	saver->saveResources(resources);
 }
 
 void Simulation::performAction() {

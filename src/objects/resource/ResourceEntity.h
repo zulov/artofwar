@@ -14,6 +14,8 @@ public:
 
 	double getHealthBarSize() override;
 	String* toMultiLineString() override;
+	std::string getValues(int precision) override;
+	static std::string getColumns();
 	double collect(double collectSpeed);
 	bool belowLimit();
 	void up();

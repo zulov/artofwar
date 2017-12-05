@@ -20,6 +20,8 @@ public:
 
 	String* toMultiLineString() override;
 	void action(short id, ActionParameter* parameter) override;
+	static std::string getColumns();
+	std::string getValues(int precision) override;
 	QueueElement* updateQueue(float time);
 	Vector3* getTarget();
 	QueueManager* getQueue();

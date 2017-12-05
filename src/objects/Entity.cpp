@@ -2,6 +2,7 @@
 #include "ObjectEnums.h"
 #include "Game.h"
 #include <Urho3D/Scene/Scene.h>
+#include <string>
 
 
 Entity::Entity(ObjectType _type) {
@@ -33,4 +34,12 @@ int Entity::getID() {
 }
 
 void Entity::action(ActionType actionType, ActionParameter* parameter) {
+}
+
+std::string Entity::getValues(int precision) {
+	return std::to_string(getID()) + ",";
+}
+
+std::string Entity::getColumns() {
+	return "id				INT		NOT NULL,";
 }

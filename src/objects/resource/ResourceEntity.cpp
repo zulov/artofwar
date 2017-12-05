@@ -52,6 +52,14 @@ String* ResourceEntity::toMultiLineString() {
 	return menuString;
 }
 
+std::string ResourceEntity::getValues(int precision) {
+	return Static::getValues(precision) + "";
+}
+
+std::string ResourceEntity::getColumns() {
+	return Static::getColumns() + "";
+}
+
 double ResourceEntity::collect(double collectSpeed) {
 	if (amonut - collectSpeed >= 0) {
 		amonut -= collectSpeed;

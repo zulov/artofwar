@@ -45,7 +45,7 @@ void Main::Setup() {
 
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
-	
+
 	saver = new SceneSaver(100);
 
 	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
@@ -146,7 +146,7 @@ void Main::subscribeToEvents() {
 	}
 
 	SubscribeToEvent(hud->getSaveButton(), E_CLICK, URHO3D_HANDLER(Main, HandleSaveScene));
-	
+
 	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
 	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));
 
@@ -232,6 +232,7 @@ void Main::InitLocalizationSystem() {
 void Main::save(String name) {
 	saver->createSave(name);
 	simulation->save(saver);
+	saver->close();
 }
 
 void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
