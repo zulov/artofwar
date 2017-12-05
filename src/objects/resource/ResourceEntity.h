@@ -25,7 +25,7 @@ private:
 	db_resource* dbResource;
 	int type;
 	double amonut;
-	bool inGradient = false;
+
 	static double hbMaxSize;
 	int maxUsers;
 	int users = 0;

@@ -11,10 +11,13 @@ public:
 	SceneSaver(int _precision);
 	~SceneSaver();
 	void createUnitsTable();
+	void createTable(string sql);
 	void createBuildingsTable();
+	void createResourceTable();
 	void createTables();
 	void createDatabase(Urho3D::String fileName);
 	void createSave(Urho3D::String fileName);
+	void executeInsert(string sqlstatement);
 	void saveUnits(std::vector<Unit*>* units);
 	void saveBuildings(std::vector<Building*>* buildings);
 	void saveResources(std::vector<ResourceEntity*>* resources);

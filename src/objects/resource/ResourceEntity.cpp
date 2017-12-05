@@ -5,6 +5,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include "database/DatabaseCache.h"
 #include <Urho3D/Resource/ResourceCache.h>
+#include <string>
 
 double ResourceEntity::hbMaxSize = 3.0;
 
@@ -39,7 +40,7 @@ void ResourceEntity::populate(db_resource* _dbResource) {
 	amonut = _dbResource->maxCapacity;
 	maxUsers = _dbResource->maxUsers;
 	dbResource = _dbResource;
-	//plane->SetScale(Vector3(_dbResource->sizeX, 1, _dbResource->sizeZ));
+
 }
 
 double ResourceEntity::getHealthBarSize() {
@@ -53,11 +54,14 @@ String* ResourceEntity::toMultiLineString() {
 }
 
 std::string ResourceEntity::getValues(int precision) {
-	return Static::getValues(precision) + "";
+	int amountI = amonut * precision;
+	return Static::getValues(precision)
+		+ to_string(amountI);
 }
 
 std::string ResourceEntity::getColumns() {
-	return Static::getColumns() + "";
+	return Static::getColumns() +
+		"amount		INT     NOT NULL";
 }
 
 double ResourceEntity::collect(double collectSpeed) {
