@@ -16,7 +16,7 @@ public:
 	Urho3D::Node* getNode();
 	bool isAlive();
 	ObjectType getType();
-	virtual int getID();
+	virtual int getDbID();
 	virtual void action(ActionType actionType, ActionParameter* parameter);
 	virtual std::string getValues(int precision);
 	static std::string getColumns();

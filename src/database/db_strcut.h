@@ -24,7 +24,6 @@ struct db_unit
 	Urho3D::String name;
 	double minDist;
 	double maxSep;
-	int type;
 	Urho3D::String model;
 	Urho3D::String texture;
 	Urho3D::String font;
@@ -36,13 +35,12 @@ struct db_unit
 	Urho3D::String icon;
 	int actionState;
 
-	db_unit(int id, char* name, double minDist, double maxSep, int type, char* model, char* texture, char* font,
+	db_unit(int id, char* name, double minDist, double maxSep, char* model, char* texture, char* font,
 	        double mass, double maxSpeed, double scale, int rotatable, int nation, char* icon, int actionState)
 		: id(id),
 		name(name),
 		minDist(minDist),
 		maxSep(maxSep),
-		type(type),
 		model(model),
 		texture(texture),
 		font(font),
@@ -118,17 +116,6 @@ struct db_graph_settings
 		fullscreen(fullscreen),
 		max_fps(maxFps),
 		min_fps(minFps) {
-	}
-};
-
-struct db_unit_type
-{
-	int id;
-	Urho3D::String name;
-
-	db_unit_type(int id, char* name, char* icon)
-		: id(id),
-		name(name) {
 	}
 };
 
@@ -252,7 +239,6 @@ struct db_container
 	db_building* buildings[BULDINGS_NUMBER_DB] = { nullptr };
 	db_hud_size* hudSizes[HUD_SIZES_NUMBER_DB] = { nullptr };
 	db_graph_settings* graphSettings[GRAPH_SETTINGS_NUMBER_DB] = { nullptr };
-	db_unit_type* unitTypes[TYPE_NUMBER_DB] = { nullptr };
 	db_nation* nations[NATION_NUMBER_DB] = { nullptr };
 	db_resource* resources[RESOURCE_NUMBER_DB] = { nullptr };
 	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB] = { nullptr };

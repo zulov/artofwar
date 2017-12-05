@@ -60,8 +60,6 @@ void Unit::populate(db_unit* _dbUnit) {
 	minSpeed = maxSpeed * 0.2f;
 	minimalDistance = _dbUnit->minDist;
 	attackRange = minimalDistance + 5;
-	//textureName = "Materials/" + String(_dbUnit->texture);
-	unitType = UnitType(_dbUnit->type);
 	rotatable = _dbUnit->rotatable;
 	actionState = UnitStateType(_dbUnit->actionState);
 	dbUnit = _dbUnit;
@@ -115,7 +113,7 @@ Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
 		}
 
 		if (force) {
-			//Vector3* force = new Vector3(*dir);
+
 			force->Normalize();
 			(*force) *= boostCoef;
 			(*force) -= (*velocity);
@@ -284,7 +282,8 @@ std::string Unit::getValues(int precision) {
 		to_string(position_z) + "," +
 		to_string(state) + "," +
 		to_string(velocity_x) + "," +
-		to_string(velocity_z);
+		to_string(velocity_z) + "," +
+		to_string(aimIndex);
 
 }
 
@@ -325,7 +324,8 @@ std::string Unit::getColumns() {
 		"position_z		INT     NOT NULL,"
 		"state			INT     NOT NULL,"
 		"velocity_x		INT     NOT NULL,"//TODO czy dodac y?
-		"velocity_z		INT     NOT NULL";
+		"velocity_z		INT     NOT NULL,"
+		"aim_i		INT     NOT NULL";
 }
 
 void Unit::setStates(StateManager* _states) {
@@ -357,6 +357,6 @@ void Unit::applyForce(double timeStep) {
 	}
 }
 
-int Unit::getID() {
+int Unit::getDbID() {
 	return dbUnit->id;
 }

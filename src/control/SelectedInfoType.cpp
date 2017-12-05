@@ -18,7 +18,7 @@ void SelectedInfoType::clear() {
 
 void SelectedInfoType::add(Physical* physical) {
 	data->push_back(physical);
-	id = physical->getID();
+	id = physical->getDbID();
 }
 
 std::vector<Physical*>* SelectedInfoType::getData() {

@@ -29,7 +29,7 @@ ResourceEntity::~ResourceEntity() {
 	}
 }
 
-int ResourceEntity::getID() {
+int ResourceEntity::getDbID() {
 	return dbResource->id;
 }
 

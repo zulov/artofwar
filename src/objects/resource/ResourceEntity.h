@@ -9,7 +9,7 @@ class ResourceEntity :
 public:
 	ResourceEntity(Vector3* _position, int id);
 	virtual ~ResourceEntity();
-	int getID() override;
+	int getDbID() override;
 	void populate(db_resource* _dbResource);
 
 	double getHealthBarSize() override;

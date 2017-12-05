@@ -7,7 +7,6 @@
 #include <string>
 
 Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
-
 	LinkComponent* lc = node->CreateComponent<LinkComponent>();
 	lc->bound(node, this);
 
@@ -116,12 +115,16 @@ void Physical::action(short id, ActionParameter* parameter) {
 }
 
 std::string Physical::getColumns() {
-	return Entity::getColumns() + "hp_coef		INT     NOT NULL,";
+	return Entity::getColumns() 
+	+ "hp_coef		INT     NOT NULL,"
+	+ "player		INT     NOT NULL,";
 }
 
 std::string Physical::getValues(int precision) {
 	int hp_coef = getHealthPercent() * precision;
-	return Entity::getValues(precision) + to_string(hp_coef) + ",";
+	return Entity::getValues(precision) 
+	+ to_string(hp_coef) + ","
+	+ to_string(player) + ",";
 }
 
 bool Physical::hasEnemy() {

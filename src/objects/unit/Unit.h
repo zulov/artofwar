@@ -30,7 +30,7 @@ public:
 	void checkAim();
 	void move(double timeStep);
 	void applyForce(double timeStep);
-	int getID() override;
+	int getDbID() override;
 	void setAcceleration(Vector3* _acceleration);
 	double getMaxSeparationDistance();
 	Vector3* getDestination(double boostCoef, double aimCoef);
@@ -52,6 +52,7 @@ public:
 	String* toMultiLineString() override;
 	void action(short id, ActionParameter* parameter) override;
 	std::string getValues(int precision) override;
+
 	UnitStateType getState();
 	UnitStateType getActionState();
 	void clean() override;
@@ -59,6 +60,7 @@ public:
 	bool checkTransition(UnitStateType state);
 	void executeState();
 	bool hasResource();
+
 	static std::string getColumns();
 	static void setStates(StateManager* _states);
 protected:
@@ -82,7 +84,6 @@ private:
 
 	UnitStateType unitState;
 	UnitStateType actionState;
-	UnitType unitType;
 
 	double minimalDistance;
 	bool rotatable;

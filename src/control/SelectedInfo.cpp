@@ -55,9 +55,9 @@ vector<SelectedInfoType*>* SelectedInfo::getSelecteType() {
 }
 
 void SelectedInfo::select(Physical* entity) {
-	if (entity->getID() >= 0) {
-		selectedByType->at(entity->getID())->add(entity);
-		if (selectedByType->at(entity->getID())->getData()->size() == 1) {
+	if (entity->getDbID() >= 0) {
+		selectedByType->at(entity->getDbID())->add(entity);
+		if (selectedByType->at(entity->getDbID())->getData()->size() == 1) {
 			++allSubTypeNumber;
 		}
 	}

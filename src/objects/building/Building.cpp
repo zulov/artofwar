@@ -46,7 +46,7 @@ double Building::getHealthBarSize() {
 	return healthBarSize;
 }
 
-int Building::getID() {
+int Building::getDbID() {
 	return dbBuilding->id;
 }
 

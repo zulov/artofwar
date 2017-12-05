@@ -29,7 +29,7 @@ ObjectType Entity::getType() {
 	return type;
 }
 
-int Entity::getID() {
+int Entity::getDbID() {
 	return -1;
 }
 
@@ -37,9 +37,12 @@ void Entity::action(ActionType actionType, ActionParameter* parameter) {
 }
 
 std::string Entity::getValues(int precision) {
-	return std::to_string(getID()) + ",";
+	return std::to_string(getDbID()) + ","
+		+ std::to_string((int)alive) + ",";//TODO to pewnie nie potrzebne
 }
 
 std::string Entity::getColumns() {
-	return "id				INT		NOT NULL,";
+	return
+		"id_db				INT		NOT NULL,"
+		"alive				INT		NOT NULL,";
 }
