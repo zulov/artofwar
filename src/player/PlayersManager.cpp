@@ -31,3 +31,8 @@ std::vector<Player*>* PlayersManager::getTeam(short i) {
 void PlayersManager::changeActive(short i) {
 	activePlayer = allPlayers[i];
 }
+
+std::string PlayersManager::getColumns() {
+	return "id		INT     NOT NULL,"
+		"is_active		INT     NOT NULL";
+}

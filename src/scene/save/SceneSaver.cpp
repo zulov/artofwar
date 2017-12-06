@@ -3,6 +3,8 @@
 #include <ostream>
 #include <iostream>
 #include <string>
+#include "Game.h"
+#include "player/PlayersManager.h"
 
 
 SceneSaver::SceneSaver(int _precision) {
@@ -44,10 +46,7 @@ void SceneSaver::createResourceEntitiesTable() {
 }
 
 void SceneSaver::createPlayerTable() {
-	string sql = "CREATE TABLE players("
-		"id		INT     NOT NULL,"
-		"is_active		INT     NOT NULL"
-		");";
+	string sql = "CREATE TABLE players(" + PlayersManager::getColumns() + ");";
 	createTable(sql);
 }
 
@@ -60,11 +59,7 @@ void SceneSaver::createConfigTable() {
 }
 
 void SceneSaver::createResourceTable() {
-	string sql = "CREATE TABLE resources("
-		"player		INT     NOT NULL,"
-		"resource		INT     NOT NULL,"
-		"amount		INT     NOT NULL"
-		");";
+	string sql = "CREATE TABLE resources("+ Resources::getColumns() + ");";
 	createTable(sql);
 }
 
