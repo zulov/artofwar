@@ -13,6 +13,9 @@ public:
 	void createUnitsTable();
 	void createTable(string sql);
 	void createBuildingsTable();
+	void createResourceEntitiesTable();
+	void createPlayerTable();
+	void createConfigTable();
 	void createResourceTable();
 	void createTables();
 	void createDatabase(Urho3D::String fileName);
@@ -20,7 +23,7 @@ public:
 	void executeInsert(string sqlstatement);
 	void saveUnits(std::vector<Unit*>* units);
 	void saveBuildings(std::vector<Building*>* buildings);
-	void saveResources(std::vector<ResourceEntity*>* resources);
+	void saveResourceEntities(std::vector<ResourceEntity*>* resources);
 	void close();
 private:
 	sqlite3* database;

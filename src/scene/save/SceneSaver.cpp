@@ -37,16 +37,45 @@ void SceneSaver::createBuildingsTable() {
 	createTable(sql);
 }
 
-void SceneSaver::createResourceTable() {
-	string sql = "CREATE TABLE resources(" + ResourceEntity::getColumns() + ");";
+void SceneSaver::createResourceEntitiesTable() {
+	string sql = "CREATE TABLE resource_entities(" + ResourceEntity::getColumns() + ");";
 
+	createTable(sql);
+}
+
+void SceneSaver::createPlayerTable() {
+	string sql = "CREATE TABLE players("
+		"id		INT     NOT NULL,"
+		"is_active		INT     NOT NULL"
+		");";
+	createTable(sql);
+}
+
+void SceneSaver::createConfigTable() {
+	string sql = "CREATE TABLE config("
+		"precision		INT     NOT NULL,"
+		"map_name		TEXT     NOT NULL"
+		");";
+	createTable(sql);
+}
+
+void SceneSaver::createResourceTable() {
+	string sql = "CREATE TABLE resources("
+		"player		INT     NOT NULL,"
+		"resource		INT     NOT NULL,"
+		"amount		INT     NOT NULL"
+		");";
 	createTable(sql);
 }
 
 void SceneSaver::createTables() {
 	createUnitsTable();
 	createBuildingsTable();
+	createResourceEntitiesTable();
+	createPlayerTable();
+	createConfigTable();
 	createResourceTable();
+	//createAimsTable();
 }
 
 void SceneSaver::createDatabase(Urho3D::String fileName) {
@@ -93,10 +122,10 @@ void SceneSaver::saveBuildings(std::vector<Building*>* buildings) {
 	executeInsert(sql);
 }
 
-void SceneSaver::saveResources(std::vector<ResourceEntity*>* resources) {
-	loadingState->inc("saving resources");
+void SceneSaver::saveResourceEntities(std::vector<ResourceEntity*>* resources) {
+	loadingState->inc("saving resource_entities");
 	if (resources->empty()) { return; }
-	string sql = "INSERT INTO resources VALUES ";
+	string sql = "INSERT INTO resource_entities VALUES ";
 	for (auto resourceEntity : *resources) {
 		sql += " (" + resourceEntity->getValues(precision) + "),";
 	}

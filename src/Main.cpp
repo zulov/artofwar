@@ -254,6 +254,9 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	} else if (key == KEY_F5) {
 		String name = "test" + String(rand());
 		save(name);
+	}else if (key == KEY_F6) {
+		String name = "autosave";
+		loadSave(name);
 	}
 }
 
@@ -308,6 +311,9 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 		GetSubsystem<DebugHud>()->ToggleAll();
 	}
 
+}
+
+void Main::loadSave(const String& name) {
 }
 
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {
