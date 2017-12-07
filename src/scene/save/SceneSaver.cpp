@@ -127,6 +127,27 @@ void SceneSaver::saveResourceEntities(std::vector<ResourceEntity*>* resources) {
 	executeInsert(sql);
 }
 
+void SceneSaver::savePlayers(std::vector<Player*>& players) {
+	loadingState->inc("saving players");
+	if (players.empty()) { return; }
+	string sql = "INSERT INTO players VALUES ";
+	for (auto player : players) {
+		sql += " (" + player->getValues(precision) + "),";
+	}
+	executeInsert(sql);
+}
+
+void SceneSaver::saverResources(const vector<Player*>& players) {
+	loadingState->inc("saving resources");
+	if (players.empty()) { return; }
+	string sql = "INSERT INTO resources VALUES ";
+	for (auto player : players) {
+		Resources * resources = player->getResources();
+		sql += resources->getValues(precision, player->getId());
+	}
+	executeInsert(sql);
+}
+
 void SceneSaver::close() {
 	sqlite3_close(database);
 	loadingState->inc("");

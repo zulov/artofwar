@@ -32,6 +32,11 @@ void PlayersManager::changeActive(short i) {
 	activePlayer = allPlayers[i];
 }
 
+void PlayersManager::save(SceneSaver* saver) {
+	saver->savePlayers(allPlayers);
+	saver->saverResources(allPlayers);
+}
+
 std::string PlayersManager::getColumns() {
 	return "id		INT     NOT NULL,"
 		"is_active		INT     NOT NULL";

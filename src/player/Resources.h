@@ -15,6 +15,7 @@ public:
 	double *getValues();
 	Urho3D::String** getNames();
 	void hasBeedUpdatedDrawn();
+	std::string getValues(int precision, int player);
 	static std::string getColumns();
 private:
 	bool changed;

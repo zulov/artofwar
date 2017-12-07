@@ -11,6 +11,7 @@ public:
 	int getTeam();
 	int getId();
 	Resources* getResources();
+	std::string getValues(int precision);
 private:
 	Resources* resources;
 	db_nation* dbNation;

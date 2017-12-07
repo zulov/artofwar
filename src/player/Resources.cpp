@@ -1,6 +1,7 @@
 #include "Resources.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
+#include <string>
 
 
 Resources::Resources() {
@@ -9,11 +10,14 @@ Resources::Resources() {
 
 Resources::Resources(double valueForAll) {
 	size = Game::get()->getDatabaseCache()->getResourceSize();
-
-	for (int i = 0; i < size; ++i) {
+	int i = 0;
+	for (; i < size; ++i) {
 		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
 		names[i] = new Urho3D::String(resource->name);
 		values[i] = valueForAll;
+	}
+	for (; i < RESOURCE_NUMBER_DB; ++i) {
+		values[i] = 0;
 	}
 	changed = true;
 }
@@ -59,6 +63,14 @@ Urho3D::String** Resources::getNames() {
 
 void Resources::hasBeedUpdatedDrawn() {
 	changed = false;
+}
+
+std::string Resources::getValues(int precision, int player) {
+std:string str = "";
+	for (int i = 0; i < RESOURCE_NUMBER_DB; ++i) {
+		str += "(" + to_string(player) + "," + to_string(i) + "," + to_string((int)(values[i] * precision)) + "),";
+	}
+	return str;
 }
 
 std::string Resources::getColumns() {

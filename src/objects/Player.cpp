@@ -1,6 +1,7 @@
 #include "player/Player.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
+#include <string>
 
 
 Player::Player(int nationId, int team, int _id) {
@@ -28,4 +29,8 @@ int Player::getId() {
 
 Resources* Player::getResources() {
 	return resources;
+}
+
+std::string Player::getValues(int precision) {
+	return to_string(id) + "," + to_string(0);
 }

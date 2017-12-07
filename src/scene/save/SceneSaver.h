@@ -4,6 +4,7 @@
 #include "objects/unit/Unit.h"
 #include "Loading.h"
 #include "objects/building/Building.h"
+#include "player/Player.h"
 
 class SceneSaver
 {
@@ -24,6 +25,8 @@ public:
 	void saveUnits(std::vector<Unit*>* units);
 	void saveBuildings(std::vector<Building*>* buildings);
 	void saveResourceEntities(std::vector<ResourceEntity*>* resources);
+	void savePlayers(std::vector<Player*>& players);
+	void saverResources(const vector<Player*>& players);
 	void close();
 private:
 	sqlite3* database;
