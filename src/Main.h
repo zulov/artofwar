@@ -17,6 +17,7 @@
 #include "GameState.h"
 #include "Loading.h"
 #include "scene/save/SceneSaver.h"
+#include "scene/load/SceneLoader.h"
 
 namespace Urho3D {
 	class Node;
@@ -76,5 +77,6 @@ private:
 	LevelBuilder* levelBuilder;
 	GameState gameState;
 	SceneSaver * saver;
+	SceneLoader * loader;
 	loading *loadingState;
 };

@@ -47,6 +47,7 @@ void Main::Setup() {
 	engine_->SetMinFps(graphSettings->min_fps);
 
 	saver = new SceneSaver(100);
+	loader = new SceneLoader();
 
 	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
 	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
@@ -256,8 +257,8 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	} else if (key == KEY_F5) {
 		String name = "test" + String(rand());
 		save(name);
-	}else if (key == KEY_F6) {
-		String name = "autosave";
+	} else if (key == KEY_F6) {
+		String name = "quicksave";
 		loadSave(name);
 	}
 }
@@ -316,6 +317,8 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 }
 
 void Main::loadSave(const String& name) {
+	loader->createLoad(name);
+	loader->end();
 }
 
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {
