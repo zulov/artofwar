@@ -1,6 +1,8 @@
 #pragma once
 #include <chrono>
+#include <string>
 #include <iostream>
+
 
 struct loading
 {
@@ -44,5 +46,5 @@ struct loading
 private:
 	std::string msg = "";
 	float stagesNumber;
-	chrono::system_clock::time_point start;
+	std::chrono::system_clock::time_point start;
 };

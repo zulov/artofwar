@@ -214,6 +214,7 @@
     <ClCompile Include="src\objects\unit\state\AttackState.cpp" />
     <ClCompile Include="src\objects\unit\state\MoveState.cpp" />
     <ClCompile Include="src\objects\unit\state\PatrolState.cpp" />
+    <ClCompile Include="src\scene\load\SceneLoader.cpp" />
     <ClCompile Include="src\scene\save\SceneSaver.cpp" />
     <ClCompile Include="src\simulation\env\bucket\Bucket.cpp" />
     <ClCompile Include="src\simulation\env\bucket\BucketQueue.cpp" />
@@ -284,6 +285,7 @@
     <ClInclude Include="src\commands\AbstractCommand.h" />
     <ClInclude Include="src\control\HitData.h" />
     <ClInclude Include="src\control\MouseButton.h" />
+    <ClInclude Include="src\database\db_units.h" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\hud\window\middle\AbstractMiddlePanel.h" />
     <ClInclude Include="src\hud\window\AbstractWindowPanel.h" />
@@ -313,6 +315,7 @@
     <ClInclude Include="src\objects\unit\state\GoState.h" />
     <ClInclude Include="src\objects\unit\state\MoveState.h" />
     <ClInclude Include="src\objects\unit\state\PatrolState.h" />
+    <ClInclude Include="src\scene\load\SceneLoader.h" />
     <ClInclude Include="src\scene\save\SceneSaver.h" />
     <ClInclude Include="src\simulation\env\bucket\Bucket.h" />
     <ClInclude Include="src\simulation\env\bucket\BucketQueue.h" />

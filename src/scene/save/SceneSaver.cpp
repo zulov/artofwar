@@ -5,7 +5,8 @@
 #include <string>
 #include "Game.h"
 #include "player/PlayersManager.h"
-
+#include "database/db_units.h"
+#include "Loading.h"
 
 SceneSaver::SceneSaver(int _precision) {
 	//TODO zapisywanie powinno byc tylko miedzy klatkami
@@ -19,39 +20,37 @@ SceneSaver::~SceneSaver() {
 }
 
 void SceneSaver::createUnitsTable() {
-	string sql = "CREATE TABLE units(" + Unit::getColumns() + ");";
+	std::string sql = "CREATE TABLE units(" + Unit::getColumns() + ");";
 
 	createTable(sql);
 }
 
-void SceneSaver::createTable(string sql) {
+void SceneSaver::createTable(std::string sql) {
 	const char* charSql = sql.c_str();
-	rc = sqlite3_exec(database, charSql, nullptr, nullptr, nullptr);
-	if (rc) {
-		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << charSql << std::endl;
-		sqlite3_close(database);
-	}
+	char* error;
+	int rc = sqlite3_exec(database, charSql, nullptr, nullptr, &error);
+	ifError(rc, error);
 }
 
 void SceneSaver::createBuildingsTable() {
-	string sql = "CREATE TABLE buildings(" + Building::getColumns() + ");";
+	std::string sql = "CREATE TABLE buildings(" + Building::getColumns() + ");";
 
 	createTable(sql);
 }
 
 void SceneSaver::createResourceEntitiesTable() {
-	string sql = "CREATE TABLE resource_entities(" + ResourceEntity::getColumns() + ");";
+	std::string sql = "CREATE TABLE resource_entities(" + ResourceEntity::getColumns() + ");";
 
 	createTable(sql);
 }
 
 void SceneSaver::createPlayerTable() {
-	string sql = "CREATE TABLE players(" + PlayersManager::getColumns() + ");";
+	std::string sql = "CREATE TABLE players(" + PlayersManager::getColumns() + ");";
 	createTable(sql);
 }
 
 void SceneSaver::createConfigTable() {
-	string sql = "CREATE TABLE config("
+	std::string sql = "CREATE TABLE config("
 		"precision		INT     NOT NULL,"
 		"map			INT     NOT NULL"
 		");";
@@ -59,7 +58,7 @@ void SceneSaver::createConfigTable() {
 }
 
 void SceneSaver::createResourceTable() {
-	string sql = "CREATE TABLE resources(" + Resources::getColumns() + ");";
+	std::string sql = "CREATE TABLE resources(" + Resources::getColumns() + ");";
 	createTable(sql);
 }
 
@@ -75,7 +74,7 @@ void SceneSaver::createTables() {
 
 void SceneSaver::createDatabase(Urho3D::String fileName) {
 	std::string name = std::string("saves/") + fileName.CString() + ".db";
-	rc = sqlite3_open(name.c_str(), &database);
+	int rc = sqlite3_open(name.c_str(), &database);
 	if (rc) {
 		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
 		sqlite3_close(database);
@@ -83,13 +82,13 @@ void SceneSaver::createDatabase(Urho3D::String fileName) {
 }
 
 void SceneSaver::createSave(Urho3D::String fileName) {
-	loadingState->reset(3, "create database");
+	loadingState->reset(7, "create database");
 	createDatabase(fileName);
 	loadingState->inc("create Tables");
 	createTables();
 }
 
-void SceneSaver::executeInsert(string sqlstatement) {
+void SceneSaver::executeInsert(std::string sqlstatement) {
 	sqlstatement[sqlstatement.size() - 1] = ';';
 	sqlite3_stmt* stmt;
 	sqlite3_prepare(database, sqlstatement.c_str(), -1, &stmt, NULL);
@@ -100,7 +99,7 @@ void SceneSaver::executeInsert(string sqlstatement) {
 void SceneSaver::saveUnits(std::vector<Unit*>* units) {
 	loadingState->inc("saving units");
 	if (units->empty()) { return; }
-	string sql = "INSERT INTO units VALUES ";
+	std::string sql = "INSERT INTO units VALUES ";
 	for (auto unit : *units) {
 		sql += " (" + unit->getValues(precision) + "),";
 	}
@@ -110,7 +109,7 @@ void SceneSaver::saveUnits(std::vector<Unit*>* units) {
 void SceneSaver::saveBuildings(std::vector<Building*>* buildings) {
 	loadingState->inc("saving buildings");
 	if (buildings->empty()) { return; }
-	string sql = "INSERT INTO buildings VALUES ";
+	std::string sql = "INSERT INTO buildings VALUES ";
 	for (auto building : *buildings) {
 		sql += " (" + building->getValues(precision) + "),";
 	}
@@ -120,7 +119,7 @@ void SceneSaver::saveBuildings(std::vector<Building*>* buildings) {
 void SceneSaver::saveResourceEntities(std::vector<ResourceEntity*>* resources) {
 	loadingState->inc("saving resource_entities");
 	if (resources->empty()) { return; }
-	string sql = "INSERT INTO resource_entities VALUES ";
+	std::string sql = "INSERT INTO resource_entities VALUES ";
 	for (auto resourceEntity : *resources) {
 		sql += " (" + resourceEntity->getValues(precision) + "),";
 	}
@@ -130,17 +129,17 @@ void SceneSaver::saveResourceEntities(std::vector<ResourceEntity*>* resources) {
 void SceneSaver::savePlayers(std::vector<Player*>& players) {
 	loadingState->inc("saving players");
 	if (players.empty()) { return; }
-	string sql = "INSERT INTO players VALUES ";
+	std::string sql = "INSERT INTO players VALUES ";
 	for (auto player : players) {
 		sql += " (" + player->getValues(precision) + "),";
 	}
 	executeInsert(sql);
 }
 
-void SceneSaver::saveResources(const vector<Player*>& players) {
+void SceneSaver::saveResources(const std::vector<Player*>& players) {
 	loadingState->inc("saving resources");
 	if (players.empty()) { return; }
-	string sql = "INSERT INTO resources VALUES ";
+	std::string sql = "INSERT INTO resources VALUES ";
 	for (auto player : players) {
 		Resources* resources = player->getResources();
 		sql += resources->getValues(precision, player->getId());
@@ -150,8 +149,8 @@ void SceneSaver::saveResources(const vector<Player*>& players) {
 
 void SceneSaver::saveConfig() {
 	loadingState->inc("saving config");
-	string sql = "INSERT INTO config VALUES (";
-	sql += to_string(precision) + "," + "1" + "),";//TODO id mapy wpisac
+	std::string sql = "INSERT INTO config VALUES (";
+	sql += std::to_string(precision) + "," + "1" + "),";//TODO id mapy wpisac
 	executeInsert(sql);
 }
 

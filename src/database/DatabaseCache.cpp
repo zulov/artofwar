@@ -3,6 +3,7 @@
 #include "db_strcut.h"
 #include <iostream>
 #include <sstream>
+#include "db_units.h"
 
 static unsigned fromHex(char** argv, int index) {
 	unsigned x;
@@ -139,13 +140,6 @@ int static loadPlayerColors(void* data, int argc, char** argv, char** azColName)
 	return 0;
 }
 
-void DatabaseCache::ifError(int rc, char* error) {
-	if (rc != SQLITE_OK) {
-		fprintf(stderr, "SQL error: %s\n", error);
-		sqlite3_free(error);
-	}
-}
-
 void DatabaseCache::execute(char* sql, int (*load)(void*, int, char**, char**)) {
 	char* error;
 	int rc = sqlite3_exec(database, sql, load, dbContainer, &error);
@@ -157,6 +151,7 @@ DatabaseCache::DatabaseCache() {
 	if (rc) {
 		cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << endl << endl;
 		sqlite3_close(database);
+		return;
 	}
 
 	dbContainer = new db_container();
