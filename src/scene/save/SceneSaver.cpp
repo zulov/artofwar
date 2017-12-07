@@ -53,13 +53,13 @@ void SceneSaver::createPlayerTable() {
 void SceneSaver::createConfigTable() {
 	string sql = "CREATE TABLE config("
 		"precision		INT     NOT NULL,"
-		"map_name		TEXT     NOT NULL"
+		"map			INT     NOT NULL"
 		");";
 	createTable(sql);
 }
 
 void SceneSaver::createResourceTable() {
-	string sql = "CREATE TABLE resources("+ Resources::getColumns() + ");";
+	string sql = "CREATE TABLE resources(" + Resources::getColumns() + ");";
 	createTable(sql);
 }
 
@@ -137,14 +137,21 @@ void SceneSaver::savePlayers(std::vector<Player*>& players) {
 	executeInsert(sql);
 }
 
-void SceneSaver::saverResources(const vector<Player*>& players) {
+void SceneSaver::saveResources(const vector<Player*>& players) {
 	loadingState->inc("saving resources");
 	if (players.empty()) { return; }
 	string sql = "INSERT INTO resources VALUES ";
 	for (auto player : players) {
-		Resources * resources = player->getResources();
+		Resources* resources = player->getResources();
 		sql += resources->getValues(precision, player->getId());
 	}
+	executeInsert(sql);
+}
+
+void SceneSaver::saveConfig() {
+	loadingState->inc("saving config");
+	string sql = "INSERT INTO config VALUES (";
+	sql += to_string(precision) + "," + "1" + "),";//TODO id mapy wpisac
 	executeInsert(sql);
 }
 

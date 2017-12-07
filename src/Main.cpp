@@ -231,6 +231,7 @@ void Main::InitLocalizationSystem() {
 
 void Main::save(String name) {
 	saver->createSave(name);
+	saver->saveConfig();
 	simulation->save(saver);
 	Game::get()->getPlayersManager()->save(saver);
 	saver->close();

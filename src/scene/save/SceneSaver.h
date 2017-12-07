@@ -26,7 +26,8 @@ public:
 	void saveBuildings(std::vector<Building*>* buildings);
 	void saveResourceEntities(std::vector<ResourceEntity*>* resources);
 	void savePlayers(std::vector<Player*>& players);
-	void saverResources(const vector<Player*>& players);
+	void saveResources(const vector<Player*>& players);
+	void saveConfig();
 	void close();
 private:
 	sqlite3* database;

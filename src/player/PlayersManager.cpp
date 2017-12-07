@@ -34,7 +34,7 @@ void PlayersManager::changeActive(short i) {
 
 void PlayersManager::save(SceneSaver* saver) {
 	saver->savePlayers(allPlayers);
-	saver->saverResources(allPlayers);
+	saver->saveResources(allPlayers);
 }
 
 std::string PlayersManager::getColumns() {
