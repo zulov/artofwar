@@ -477,7 +477,7 @@
     <ClInclude Include="src\scene\save\SceneSaver.h" />
     <ClInclude Include="src\scene\load\SceneLoader.h" />
     <ClInclude Include="src\database\db_units.h" />
-    <ClInclude Include="src\scene\load\db_load.h" />
+    <ClInclude Include="src\scene\load\dbload_load.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

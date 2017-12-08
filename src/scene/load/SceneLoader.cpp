@@ -4,11 +4,12 @@
 #include <iostream>
 #include "Loading.h"
 #include "database/db_units.h"
-#include "db_load.h"
+#include "dbload_load.h"
 
 
 SceneLoader::SceneLoader() {
 	loadingState = new loading();
+	dbLoad = nullptr;
 }
 
 
@@ -16,17 +17,64 @@ SceneLoader::~SceneLoader() {
 	delete loadingState;
 }
 
-int static loadConfig(void* data, int argc, char** argv, char** azColName) {
-	db_load* xyz = (db_load *)data;
+
+int static load_config(void* data, int argc, char** argv, char** azColName) {
+	dbload_load* xyz = (dbload_load *)data;
 	xyz->config->precision = atoi(argv[0]);
 	xyz->config->map = atoi(argv[1]);
+	xyz->precision = atoi(argv[0]);
 	return 0;
+}
+
+int static load_units(void* data, int argc, char** argv, char** azColName) {
+	dbload_load* xyz = (dbload_load *)data;
+	int p = xyz->precision;
+	xyz->units->push_back(new dbload_unit(
+		atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
+		atoi(argv[3]), atof(argv[4]) / p, atof(argv[5]) / p,
+		atoi(argv[6]), atof(argv[7]) / p, atof(argv[8]) / p,
+		atoi(argv[9])
+		));
+
+	return 0;
+}
+
+int static load_buildings(void* data, int argc, char** argv, char** azColName) {
+	dbload_load* xyz = (dbload_load *)data;
+	int p = xyz->precision;
+	xyz->buildings->push_back(new dbload_building(
+		atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
+		atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
+		atof(argv[6]) / p, atof(argv[7]) / p
+	));
+
+	return 0;
+}
+
+int static load_resources(void* data, int argc, char** argv, char** azColName) {
+	dbload_load* xyz = (dbload_load *)data;
+	int p = xyz->precision;
+	xyz->resource_entities->push_back(new dbload_resource(
+		atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
+		atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
+		atof(argv[6]) / p
+	));
+
+	return 0;
+}
+
+void SceneLoader::reset() {
+	if (dbLoad) {
+		delete dbLoad;
+	}
+	dbLoad = new dbload_load();
+	loadingState->reset(3, "start loading");
 }
 
 
 void SceneLoader::createLoad(Urho3D::String fileName) {
-	loadingState->reset(3, "start loading");
-	dbLoad = new db_load();
+	reset();
+
 	std::string name = std::string("saves/") + fileName.CString() + ".db";
 	int rc = sqlite3_open(name.c_str(), &database);
 	if (rc) {
@@ -34,7 +82,25 @@ void SceneLoader::createLoad(Urho3D::String fileName) {
 		sqlite3_close(database);
 	}
 	loadingState->inc("load config");
-	load("SELECT * from config", loadConfig);
+	load("SELECT * from config", load_config);
+}
+
+std::vector<dbload_unit*>* SceneLoader::loadUnits() {
+	loadingState->inc("load units");
+	load("SELECT * from units", load_units);
+	return dbLoad->units;
+}
+
+std::vector<dbload_building*>* SceneLoader::loadBuildings() {
+	loadingState->inc("load buildings");
+	load("SELECT * from buildings", load_buildings);
+	return dbLoad->buildings;
+}
+
+std::vector<dbload_resource*>* SceneLoader::loadResources() {
+	loadingState->inc("load resource_entities");
+	load("SELECT * from resource_entities", load_resources);
+	return dbLoad->resource_entities;
 }
 
 void SceneLoader::load(char* sql, int (*load)(void*, int, char**, char**)) {
