@@ -318,9 +318,13 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 
 void Main::loadSave(const String& name) {
 	loader->createLoad(name);
+	
+	std::vector<dbload_player*>* players = loader->loadPlayers();
+	std::vector<dbload_resource*>* resources = loader->loadResources();
+
 	std::vector<dbload_unit*>* units = loader->loadUnits();
 	std::vector<dbload_building*>* buildings = loader->loadBuildings();
-	std::vector<dbload_resource*>* resources = loader->loadResources();
+	std::vector<dbload_resource_entities*>* resources_entities = loader->loadResourcesEntities();
 
 	loader->end();
 }

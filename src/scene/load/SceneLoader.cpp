@@ -26,6 +26,26 @@ int static load_config(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+int static load_players(void* data, int argc, char** argv, char** azColName) {
+	dbload_load* xyz = (dbload_load *)data;
+	int p = xyz->precision;
+	xyz->players->push_back(new dbload_player(
+		atoi(argv[0]), atoi(argv[1])
+	));
+
+	return 0;
+}
+
+int static load_resources(void* data, int argc, char** argv, char** azColName) {
+	dbload_load* xyz = (dbload_load *)data;
+	int p = xyz->precision;
+	xyz->resources->push_back(new dbload_resource(
+		atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p
+	));
+
+	return 0;
+}
+
 int static load_units(void* data, int argc, char** argv, char** azColName) {
 	dbload_load* xyz = (dbload_load *)data;
 	int p = xyz->precision;
@@ -51,10 +71,10 @@ int static load_buildings(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
-int static load_resources(void* data, int argc, char** argv, char** azColName) {
+int static load_resources_entities(void* data, int argc, char** argv, char** azColName) {
 	dbload_load* xyz = (dbload_load *)data;
 	int p = xyz->precision;
-	xyz->resource_entities->push_back(new dbload_resource(
+	xyz->resource_entities->push_back(new dbload_resource_entities(
 		atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
 		atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
 		atof(argv[6]) / p
@@ -85,6 +105,18 @@ void SceneLoader::createLoad(Urho3D::String fileName) {
 	load("SELECT * from config", load_config);
 }
 
+std::vector<dbload_player*>* SceneLoader::loadPlayers() {
+	loadingState->inc("load players");
+	load("SELECT * from players", load_players);
+	return dbLoad->players;
+}
+
+std::vector<dbload_resource*>* SceneLoader::loadResources() {
+	loadingState->inc("load resources");
+	load("SELECT * from resources", load_resources);
+	return dbLoad->resources;
+}
+
 std::vector<dbload_unit*>* SceneLoader::loadUnits() {
 	loadingState->inc("load units");
 	load("SELECT * from units", load_units);
@@ -97,9 +129,9 @@ std::vector<dbload_building*>* SceneLoader::loadBuildings() {
 	return dbLoad->buildings;
 }
 
-std::vector<dbload_resource*>* SceneLoader::loadResources() {
+std::vector<dbload_resource_entities*>* SceneLoader::loadResourcesEntities() {
 	loadingState->inc("load resource_entities");
-	load("SELECT * from resource_entities", load_resources);
+	load("SELECT * from resource_entities", load_resources_entities);
 	return dbLoad->resource_entities;
 }
 

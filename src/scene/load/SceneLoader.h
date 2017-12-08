@@ -13,9 +13,12 @@ public:
 	void reset();
 
 	void createLoad(Urho3D::String fileName);
+	std::vector<dbload_player*>* loadPlayers();
+	std::vector<dbload_resource*>* loadResources();
+
 	std::vector<dbload_unit*>* loadUnits();
 	std::vector<dbload_building*>* loadBuildings();
-	std::vector<dbload_resource*>* loadResources();
+	std::vector<dbload_resource_entities*>* loadResourcesEntities();
 	void end();
 private:
 

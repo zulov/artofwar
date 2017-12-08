@@ -72,12 +72,36 @@ struct dbload_building : dbload_static
 	}
 };
 
-struct dbload_resource : dbload_static
+struct dbload_resource_entities : dbload_static
 {
 	float amount;
 
-	dbload_resource(int idDb, bool alive, float hpCoef, int player, int bucX, int bucY, float amount)
+	dbload_resource_entities(int idDb, bool alive, float hpCoef, int player, int bucX, int bucY, float amount)
 		: dbload_static(idDb, alive, hpCoef, player, bucX, bucY),
+		amount(amount) {
+	}
+};
+
+struct  dbload_player
+{
+	int id;
+	bool is_active;
+
+	dbload_player(int id, bool isActive)
+		: id(id),
+		is_active(isActive) {
+	}
+};
+
+struct dbload_resource
+{
+	int player;
+	int resource;
+	float amount;
+
+	dbload_resource(int player, int resource, float amount)
+		: player(player),
+		resource(resource),
 		amount(amount) {
 	}
 };
@@ -87,13 +111,19 @@ struct dbload_load
 	dbload_load() {
 		precision = 1;
 		config = new dbload_config();
+		players = new std::vector<dbload_player*>();
+		resources = new std::vector<dbload_resource*>();
+
 		units = new std::vector<dbload_unit*>();
 		buildings = new std::vector<dbload_building*>();
-		resource_entities = new std::vector<dbload_resource*>();
+		resource_entities = new std::vector<dbload_resource_entities*>();
 	}
 
 	~dbload_load() {
 		delete config;
+		clear_and_delete_vector(players);
+		clear_and_delete_vector(resources);
+
 		clear_and_delete_vector(units);
 		clear_and_delete_vector(buildings);
 		clear_and_delete_vector(resource_entities);
@@ -102,7 +132,10 @@ struct dbload_load
 	int precision;
 	dbload_config* config;
 
+	std::vector<dbload_player*>* players;
+	std::vector<dbload_resource*>* resources;
+
 	std::vector<dbload_unit*>* units;
 	std::vector<dbload_building*>* buildings;
-	std::vector<dbload_resource*>* resource_entities;
+	std::vector<dbload_resource_entities*>* resource_entities;
 };
