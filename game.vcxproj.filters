@@ -20,15 +20,6 @@
     <ClCompile Include="src\commands\AbstractCommand.cpp">
       <Filter>command</Filter>
     </ClCompile>
-    <ClCompile Include="src\commands\ActionCommand.cpp">
-      <Filter>command\action</Filter>
-    </ClCompile>
-    <ClCompile Include="src\commands\ActionCommandList.cpp">
-      <Filter>command\list</Filter>
-    </ClCompile>
-    <ClCompile Include="src\commands\CommandSelect.cpp">
-      <Filter>command</Filter>
-    </ClCompile>
     <ClCompile Include="src\hud\window\AbstractWindowPanel.cpp">
       <Filter>hud\windows</Filter>
     </ClCompile>
@@ -191,9 +182,6 @@
     <ClCompile Include="src\objects\unit\aim\DummyAim.cpp" />
     <ClCompile Include="src\objects\unit\state\CollectState.cpp" />
     <ClCompile Include="src\objects\Static.cpp" />
-    <ClCompile Include="src\commands\CreationCommand.cpp">
-      <Filter>command</Filter>
-    </ClCompile>
     <ClCompile Include="src\camera\TopCameraBehave.cpp" />
     <ClCompile Include="src\simulation\env\Enviroment.cpp">
       <Filter>simulation\env</Filter>
@@ -206,9 +194,6 @@
       <Filter>simulation\env\bucket</Filter>
     </ClCompile>
     <ClCompile Include="src\simulation\env\bucket\ComplexBucketData.cpp" />
-    <ClCompile Include="src\commands\CreationCommandList.cpp">
-      <Filter>command\list</Filter>
-    </ClCompile>
     <ClCompile Include="src\simulation\env\bucket\BucketQueue.cpp" />
     <ClCompile Include="src\hud\window\loading\LoadingPanel.cpp" />
     <ClCompile Include="src\hud\window\in_game_menu\InGameMenuPanel.cpp" />
@@ -216,6 +201,18 @@
     <ClCompile Include="src\hud\window\middle\FilePanel.cpp" />
     <ClCompile Include="src\scene\save\SceneSaver.cpp" />
     <ClCompile Include="src\scene\load\SceneLoader.cpp" />
+    <ClCompile Include="src\commands\creation\CreationCommand.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commands\creation\CreationCommandList.cpp">
+      <Filter>command\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commands\action\ActionCommand.cpp">
+      <Filter>command\action</Filter>
+    </ClCompile>
+    <ClCompile Include="src\commands\action\ActionCommandList.cpp">
+      <Filter>command\list</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -252,17 +249,8 @@
     <ClInclude Include="src\commands\AbstractCommand.h">
       <Filter>command</Filter>
     </ClInclude>
-    <ClInclude Include="src\commands\ActionCommand.h">
-      <Filter>command\action</Filter>
-    </ClInclude>
-    <ClInclude Include="src\commands\ActionCommandList.h">
-      <Filter>command\list</Filter>
-    </ClInclude>
     <ClInclude Include="src\commands\CommandList.h">
       <Filter>command\list</Filter>
-    </ClInclude>
-    <ClInclude Include="src\commands\CommandSelect.h">
-      <Filter>command</Filter>
     </ClInclude>
     <ClInclude Include="src\hud\window\AbstractWindowPanel.h">
       <Filter>hud\windows</Filter>
@@ -445,9 +433,6 @@
     <ClInclude Include="src\objects\unit\aim\DummyAim.h" />
     <ClInclude Include="src\objects\unit\state\CollectState.h" />
     <ClInclude Include="src\objects\Static.h" />
-    <ClInclude Include="src\commands\CreationCommand.h">
-      <Filter>command</Filter>
-    </ClInclude>
     <ClInclude Include="src\camera\TopCameraBehave.h" />
     <ClInclude Include="src\simulation\env\Enviroment.h">
       <Filter>simulation\env</Filter>
@@ -460,9 +445,6 @@
       <Filter>simulation\env\bucket</Filter>
     </ClInclude>
     <ClInclude Include="src\simulation\env\bucket\ComplexBucketData.h" />
-    <ClInclude Include="src\commands\CreationCommandList.h">
-      <Filter>command\list</Filter>
-    </ClInclude>
     <ClInclude Include="src\simulation\env\bucket\BucketQueue.h" />
     <ClInclude Include="src\simulation\env\bucket\fiboheap.h" />
     <ClInclude Include="src\control\HitData.h" />
@@ -478,6 +460,18 @@
     <ClInclude Include="src\scene\load\SceneLoader.h" />
     <ClInclude Include="src\database\db_units.h" />
     <ClInclude Include="src\scene\load\dbload_container.h" />
+    <ClInclude Include="src\commands\creation\CreationCommandList.h">
+      <Filter>command\list</Filter>
+    </ClInclude>
+    <ClInclude Include="src\commands\creation\CreationCommand.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="src\commands\action\ActionCommand.h">
+      <Filter>command\action</Filter>
+    </ClInclude>
+    <ClInclude Include="src\commands\action\ActionCommandList.h">
+      <Filter>command\list</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -7,13 +7,14 @@
 #include "ObjectEnums.h"
 #include <Urho3D/Input/Input.h>
 #include "ControlsState.h"
-#include "commands/CreationCommand.h"
+#include "commands/creation/CreationCommand.h"
 #include "hud/HudElement.h"
 #include "SelectedInfo.h"
 #include "OrderType.h"
 #include "MouseButton.h"
 
 
+class SimulationInfo;
 struct hit_data;
 using namespace Urho3D;
 

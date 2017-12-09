@@ -1,11 +1,14 @@
 #include "Unit.h"
-#include "commands/ActionCommand.h"
+#include "commands/action/ActionCommand.h"
 #include "OrderType.h"
 #include "database/DatabaseCache.h"
 #include "Game.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/StaticModel.h>
 #include <string>
+#include <Urho3D/Resource/ResourceCache.h>
+#include "commands/action/ActionCommandList.h"
 
 double Unit::hbMaxSize = 0.7;
 StateManager* Unit::states = nullptr;
@@ -316,6 +319,15 @@ void Unit::executeState() {
 
 bool Unit::hasResource() {
 	return resource;
+}
+
+void Unit::load(dbload_unit* unit) {
+	unitState = UnitStateType(unit->state);//TODO nie wiem czy nie przepisaæpoprzez przejscie?
+	//aimIndex =unit->aim_i;
+	velocity->x_ = unit->vel_x;
+	velocity->z_ = unit->vel_z;
+	alive = unit->alive;
+	hpCoef = maxHpCoef * unit->hp_coef;
 }
 
 std::string Unit::getColumns() {

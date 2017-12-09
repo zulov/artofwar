@@ -16,6 +16,7 @@
 #include <Urho3D/IO/FileSystem.h>
 #include <Urho3D/Resource/Localization.h>
 #include "hud/window/middle/FileFormData.h"
+#include "commands/creation/CreationCommandList.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
@@ -82,7 +83,7 @@ void Main::load() {
 		simulation = new Simulation(static_cast<Enviroment*>(loadingState->sth), Game::get()->getCreationCommandList());
 		break;
 	case 4:
-		simulation->initScene();
+		simulation->initScene(loader);
 		break;
 	case 5:
 		gameState = GameState::RUNNING;

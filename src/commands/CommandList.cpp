@@ -1,4 +1,5 @@
 #include "CommandList.h"
+#include "utils.h"
 
 
 CommandList::CommandList() {
@@ -7,7 +8,7 @@ CommandList::CommandList() {
 
 
 CommandList::~CommandList() {
-	delete commands;
+	clear_and_delete_vector(commands);
 }
 
 void CommandList::add(AbstractCommand* command) {

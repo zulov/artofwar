@@ -1,8 +1,11 @@
 #pragma once
 #include <vector>
-#include "AbstractCommand.h"
-#include "simulation/Simulation.h"
+
 #include "OrderType.h"
+#include "commands/AbstractCommand.h"
+#include "objects/Physical.h"
+
+class AimContainer;
 
 class ActionCommand :public AbstractCommand
 {

@@ -1,7 +1,7 @@
 #pragma once
-#include "AbstractCommand.h"
 #include "simulation/SimulationObjectManager.h"
 #include "ObjectEnums.h"
+#include "commands/AbstractCommand.h"
 
 class CreationCommand : public AbstractCommand
 {

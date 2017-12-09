@@ -1,7 +1,5 @@
 #include "Controls.h"
-#include "commands/ActionCommand.h"
 #include "commands/CommandList.h"
-#include "commands/CreationCommandList.h"
 #include <algorithm>
 #include "HitData.h"
 #include "camera/CameraManager.h"
@@ -10,6 +8,10 @@
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Graphics/OctreeQuery.h>
 #include <Urho3D/Graphics/Octree.h>
+#include "commands/action/ActionCommand.h"
+#include "commands/action/ActionCommandList.h"
+#include "simulation/env/Enviroment.h"
+#include "commands/creation/CreationCommandList.h"
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Physical*>();

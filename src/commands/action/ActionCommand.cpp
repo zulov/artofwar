@@ -2,6 +2,7 @@
 #include "objects/unit/aim/TargetAim.h"
 #include "objects/unit/aim/FollowAim.h"
 #include "objects/unit/aim/ChargeAim.h"
+#include "objects/unit/aim/AimContainer.h"
 
 
 ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector3* parameter) {

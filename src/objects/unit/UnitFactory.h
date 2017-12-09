@@ -2,6 +2,7 @@
 #include "Unit.h"
 #include <vector>
 #include "objects/EntityFactory.h"
+#include "simulation/SimulationObjectManager.h"
 
 
 class UnitFactory : public EntityFactory
@@ -11,6 +12,7 @@ public:
 	~UnitFactory();
 
 	std::vector<Unit*>* create(unsigned int number, int id, Vector3* center, int player);
+	vector<Unit*>* load(dbload_unit* unit);
 private:
 	std::vector<Unit*>* units;
 	StateManager* states;

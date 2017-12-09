@@ -4,14 +4,15 @@
 #include "simulation/env/Enviroment.h"
 #include "simulation/force/Force.h"
 #include "SimulationObjectManager.h"
-#include "commands/CreationCommandList.h"
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/DebugNew.h>
-#include "commands/ActionCommandList.h"
 #include "objects/unit/aim/AimContainer.h"
 #include "SimulationInfo.h"
 #include "scene/save/SceneSaver.h"
+#include "commands/action/ActionCommandList.h"
 
+
+class SceneLoader;
 class CreationCommandList;
 
 namespace Urho3D {
@@ -23,9 +24,9 @@ class Simulation
 {
 public:
 	Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList);
-
+	~Simulation();
 	void update(Input* input, float timeStep);
-	void initScene();
+	void initScene(SceneLoader* loader);
 	int getUnitsNumber();
 	SimulationInfo* getInfo();
 	void dispose();
@@ -38,7 +39,7 @@ private:
 	void performAction();
 	float updateTime(float timeStep);
 	void updateEnviroment();
-	void createUnits();
+	void createUnits(SceneLoader* loader);
 	void countFrame();
 	void applyForce();
 	void updateBuildingQueue();

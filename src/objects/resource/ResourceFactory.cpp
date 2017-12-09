@@ -24,3 +24,11 @@ std::vector<ResourceEntity*>* ResourceFactory::create(int id, Vector3* center, I
 
 	return resources;
 }
+
+vector<ResourceEntity*>* ResourceFactory::load(dbload_resource_entities* resource) {
+	resources->clear();
+
+	//TODO
+
+	return resources;
+}

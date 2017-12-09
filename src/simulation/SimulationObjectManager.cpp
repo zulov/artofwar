@@ -92,32 +92,20 @@ vector<ResourceEntity*>* SimulationObjectManager::getResourcesToAdd() {
 void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* center,
                                        int player) {
 	unitsTemp = unitFactory->create(number, id, center, player);
-	addAll(unitsTemp);
-	if (!unitsTemp->empty()) {
-		simulationInfo->setAmountUnitChanged();
-	}
+	updateUnits();
 }
 
 void SimulationObjectManager::addBuildings(int id, Vector3* center,
                                            int player, IntVector2 _bucketCords) {
 	buildingsTemp = buildingFactory->create(id, center, player, _bucketCords);
-	addAll(buildingsTemp);
-	if (!buildingsTemp->empty()) {
-		simulationInfo->setAmountBuildingChanged();
-		Game::get()->getEnviroment()->update(buildingsToAdd);
-		buildingsToAdd->clear();
-		simulationInfo->setAmountBuildingChanged();
-	}
+	updateBuilding();
 }
+
+
 
 void SimulationObjectManager::addResources(int id, Vector3* center, IntVector2 _bucketCords) {
 	resourcesTemp = resourceFactory->create(id, center, _bucketCords);
-	addAll(resourcesTemp);
-	if (!resourcesTemp->empty()) {
-		Game::get()->getEnviroment()->update(resourcesToAdd);
-		resourcesToAdd->clear();
-		simulationInfo->setAmountResourceChanged();
-	}
+	updateResource();
 }
 
 void SimulationObjectManager::clearUnitsToAdd() {
@@ -145,6 +133,47 @@ void SimulationObjectManager::clean() {
 	             units->end());
 	if (units->size() != prevSize) {
 		simulationInfo->setUnitDied();
+	}
+}
+
+void SimulationObjectManager::load(dbload_unit* unit) {
+	unitsTemp = unitFactory->load(unit);
+	updateUnits();
+}
+
+void SimulationObjectManager::load(dbload_building* building) {
+	buildingsTemp = buildingFactory->load(building);
+	updateBuilding();
+}
+
+void SimulationObjectManager::load(dbload_resource_entities* resource) {
+	resourcesTemp = resourceFactory->load(resource);
+	updateResource();
+}
+
+void SimulationObjectManager::updateUnits() {
+	addAll(unitsTemp);
+	if (!unitsTemp->empty()) {
+		simulationInfo->setAmountUnitChanged();
+	}
+}
+
+void SimulationObjectManager::updateBuilding() {
+	addAll(buildingsTemp);
+	if (!buildingsTemp->empty()) {
+		simulationInfo->setAmountBuildingChanged();
+		Game::get()->getEnviroment()->update(buildingsToAdd);
+		buildingsToAdd->clear();
+		simulationInfo->setAmountBuildingChanged();
+	}
+}
+
+void SimulationObjectManager::updateResource() {
+	addAll(resourcesTemp);
+	if (!resourcesTemp->empty()) {
+		Game::get()->getEnviroment()->update(resourcesToAdd);
+		resourcesToAdd->clear();
+		simulationInfo->setAmountResourceChanged();
 	}
 }
 

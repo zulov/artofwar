@@ -7,6 +7,7 @@
 #include "objects/unit/UnitFactory.h"
 #include "objects/resource/ResourceFactory.h"
 #include "SimulationInfo.h"
+#include "scene/load/dbload_container.h"
 
 using namespace std;
 
@@ -30,10 +31,21 @@ public:
 	void clearUnitsToAdd();
 	void clearBuildingsToAdd();
 	void clearResourcesToAdd();
+
 	void clean();
 	void updateInfo(SimulationInfo* simulationInfo);
 	void dispose();
+
+	void load(dbload_unit* unit);
+	void load(dbload_building* building);
+	void load(dbload_resource_entities* resource);
+
 private:
+
+	void updateUnits();
+	void updateBuilding();
+	void updateResource();
+
 	bool shouldDelete(Physical* physical);
 
 	void add(Unit* unit);

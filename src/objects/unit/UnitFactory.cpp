@@ -26,7 +26,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center
 	while (units->size() < number) {
 		for (int x = 0; x < xMax; ++x) {
 			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_,
-			                                y * space + center->z_ - sideSize);		
+			                                y * space + center->z_ - sideSize);
 			Unit* newUnit = new Unit(position, id, player);
 
 			units->push_back(newUnit);
@@ -34,5 +34,18 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center
 		}
 		++y;
 	}
+	return units;
+}
+
+vector<Unit*>* UnitFactory::load(dbload_unit* unit) {
+	units->clear();
+
+
+	Vector3* position = new Vector3(unit->pos_x, 0, unit->pos_z);
+	Unit* newUnit = new Unit(position, unit->id_db, unit->player);
+	newUnit->load(unit);
+
+	units->push_back(newUnit);
+
 	return units;
 }

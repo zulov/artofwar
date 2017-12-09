@@ -1,7 +1,8 @@
 #pragma once
-#include "CommandList.h"
 #include "simulation/SimulationObjectManager.h"
 #include "CreationCommand.h"
+#include "scene/load/dbload_container.h"
+#include "commands/CommandList.h"
 
 class SimulationObjectManager;
 
@@ -14,6 +15,7 @@ public:
 	bool addBuilding(int id, Vector3* _position, int _player);
 	bool addResource(int id, Vector3* _position);
 	SimulationObjectManager* getManager();
+
 protected:
 	void setParemeters(AbstractCommand* command) override;
 private:

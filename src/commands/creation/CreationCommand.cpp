@@ -23,8 +23,6 @@ CreationCommand::~CreationCommand() {
 
 void CreationCommand::execute() {
 	switch (objectType) {
-	case ENTITY:
-		break;
 	case UNIT:
 		simulationObjectManager->addUnits(number, id, position, player);
 		break;

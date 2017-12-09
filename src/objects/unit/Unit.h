@@ -6,6 +6,7 @@
 #include "objects/Physical.h"
 #include "state/StateManager.h"
 #include "objects/resource/ResourceEntity.h"
+#include "scene/load/dbload_container.h"
 
 class State;
 
@@ -60,6 +61,7 @@ public:
 	bool checkTransition(UnitStateType state);
 	void executeState();
 	bool hasResource();
+	void load(dbload_unit* unit);
 
 	static std::string getColumns();
 	static void setStates(StateManager* _states);

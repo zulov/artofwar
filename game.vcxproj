@@ -204,8 +204,8 @@
     <ClCompile Include="src\objects\unit\state\GoState.cpp" />
     <ClCompile Include="src\commands\AbstractCommand.cpp" />
     <ClCompile Include="src\hud\window\AbstractWindowPanel.cpp" />
-    <ClCompile Include="src\commands\ActionCommand.cpp" />
-    <ClCompile Include="src\commands\ActionCommandList.cpp" />
+    <ClCompile Include="src\commands\action\ActionCommand.cpp" />
+    <ClCompile Include="src\commands\action\ActionCommandList.cpp" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
     <ClCompile Include="src\objects\unit\aim\Aim.cpp" />
     <ClCompile Include="src\objects\unit\aim\AimContainer.cpp" />
@@ -248,8 +248,7 @@
     <ClCompile Include="src\hud\window\selected\SelectedHudPanel.cpp" />
     <ClCompile Include="src\control\SelectedInfo.cpp" />
     <ClCompile Include="src\control\SelectedInfoType.cpp" />
-    <ClCompile Include="src\commands\CreationCommand.cpp" />
-    <ClCompile Include="src\commands\CommandSelect.cpp" />
+    <ClCompile Include="src\commands\creation\CreationCommand.cpp" />
     <ClCompile Include="src\commands\CommandList.cpp" />
     <ClCompile Include="src\control\Controls.cpp" />
     <ClCompile Include="src\objects\Entity.cpp" />
@@ -258,7 +257,7 @@
     <ClCompile Include="src\scene\LevelBuilder.cpp" />
     <ClCompile Include="src\objects\LinkComponent.cpp" />
     <ClCompile Include="src\scene\SceneObjectManager.cpp" />
-    <ClCompile Include="src\commands\CreationCommandList.cpp" />
+    <ClCompile Include="src\commands\creation\CreationCommandList.cpp" />
     <ClCompile Include="src\simulation\env\bucket\ComplexBucketData.cpp" />
     <ClCompile Include="src\simulation\env\bucket\MainGrid.cpp" />
     <ClCompile Include="src\simulation\SimulationInfo.cpp" />
@@ -289,8 +288,8 @@
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\hud\window\middle\AbstractMiddlePanel.h" />
     <ClInclude Include="src\hud\window\AbstractWindowPanel.h" />
-    <ClInclude Include="src\commands\ActionCommand.h" />
-    <ClInclude Include="src\commands\ActionCommandList.h" />
+    <ClInclude Include="src\commands\action\ActionCommand.h" />
+    <ClInclude Include="src\commands\action\ActionCommandList.h" />
     <ClInclude Include="src\hud\window\in_game_menu\InGameMenuPanel.h" />
     <ClInclude Include="src\hud\window\loading\LoadingPanel.h" />
     <ClInclude Include="src\hud\window\middle\FileFormData.h" />
@@ -356,8 +355,7 @@
     <ClInclude Include="src\hud\window\selected\SelectedHudPanel.h" />
     <ClInclude Include="src\control\SelectedInfo.h" />
     <ClInclude Include="src\control\SelectedInfoType.h" />
-    <ClInclude Include="src\commands\CreationCommand.h" />
-    <ClInclude Include="src\commands\CommandSelect.h" />
+    <ClInclude Include="src\commands\creation\CreationCommand.h" />
     <ClInclude Include="src\commands\CommandList.h" />
     <ClInclude Include="src\control\Controls.h" />
     <ClInclude Include="src\control\ControlsState.h" />
@@ -369,7 +367,7 @@
     <ClInclude Include="src\objects\LinkComponent.h" />
     <ClInclude Include="src\ObjectEnums.h" />
     <ClInclude Include="src\scene\SceneObjectManager.h" />
-    <ClInclude Include="src\commands\CreationCommandList.h" />
+    <ClInclude Include="src\commands\creation\CreationCommandList.h" />
     <ClInclude Include="src\simulation\env\bucket\ComplexBucketData.h" />
     <ClInclude Include="src\simulation\env\bucket\MainGrid.h" />
     <ClInclude Include="src\simulation\env\ContentInfo.h" />
