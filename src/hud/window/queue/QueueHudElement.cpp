@@ -31,13 +31,13 @@ Urho3D::Button* QueueHudElement::getButton() {
 }
 
 void QueueHudElement::hide() {
-	if (!button->IsVisible()) {
+	if (button->IsVisible()) {
 		button->SetVisible(false);
 	}
 }
 
 void QueueHudElement::show() {
-	if (button->IsVisible()) {
+	if (!button->IsVisible()) {
 		button->SetVisible(true);
 	}
 }

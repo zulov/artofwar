@@ -5,7 +5,7 @@
 #include <Urho3D/UI/ProgressBar.h>
 #include "hud/MySprite.h"
 
-#define MAX_SELECTED_IN_BUTTON 3
+#define MAX_SELECTED_IN_BUTTON 4
 
 class SelectedHudElement
 {

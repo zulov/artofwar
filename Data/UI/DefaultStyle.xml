@@ -443,8 +443,8 @@
 	</element>
 	
 	<element type="MiniProgressBar" style="ProgressBar">
-        <attribute name="Min Size" value="0 {spaceY*2}" />
-        <attribute name="Max Size" value="128 {spaceY*2}" />
+        <attribute name="Min Size" value="0 {spaceY*1.5}" />
+        <attribute name="Max Size" value="128 {spaceY*1.5}" />
         <attribute name="Image Rect" value="48 0 64 16" />
         <attribute name="Border" value="2 2 2 2" />
         <attribute name="Show Percent Text" value="false" />
@@ -452,8 +452,8 @@
 		<attribute name="Horiz Alignment" value="Left" />
 		
         <element type="BorderImage" internal="true">
-            <attribute name="Image Rect" value="161 81 174 94" />
-            <attribute name="Border" value="1 1 1 1" />
+            <attribute name="Image Rect" value="160 96 176 112" />
+            <attribute name="Border" value="0 0 0 0" />
             <attribute name="Hover Image Offset" value="0 0" />
         </element>
     </element>
