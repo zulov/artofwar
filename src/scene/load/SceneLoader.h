@@ -1,7 +1,7 @@
 #pragma once
 #include <Urho3D/Container/Str.h>
 #include <sqlite3/sqlite3.h>
-#include "dbload_load.h"
+#include "dbload_container.h"
 
 class loading;
 
@@ -10,8 +10,10 @@ class SceneLoader
 public:
 	SceneLoader();
 	~SceneLoader();
+	
+	void load();
 	void reset();
-
+	dbload_container* getData();
 	void createLoad(Urho3D::String fileName);
 	std::vector<dbload_player*>* loadPlayers();
 	std::vector<dbload_resource*>* loadResources();
@@ -26,7 +28,7 @@ private:
 	int precision;
 	loading * loadingState;
 	sqlite3* database;
-	dbload_load *dbLoad;
+	dbload_container *dbLoad;
 	
 };
 

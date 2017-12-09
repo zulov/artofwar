@@ -4,7 +4,7 @@
 #include <iostream>
 #include "Loading.h"
 #include "database/db_units.h"
-#include "dbload_load.h"
+#include "dbload_container.h"
 
 
 SceneLoader::SceneLoader() {
@@ -17,9 +17,18 @@ SceneLoader::~SceneLoader() {
 	delete loadingState;
 }
 
+void SceneLoader::load() {
+	loadPlayers();
+	loadResources();
+
+	loadUnits();
+	loadBuildings();
+	loadResourcesEntities();
+}
+
 
 int static load_config(void* data, int argc, char** argv, char** azColName) {
-	dbload_load* xyz = (dbload_load *)data;
+	dbload_container* xyz = (dbload_container *)data;
 	xyz->config->precision = atoi(argv[0]);
 	xyz->config->map = atoi(argv[1]);
 	xyz->precision = atoi(argv[0]);
@@ -27,58 +36,58 @@ int static load_config(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static load_players(void* data, int argc, char** argv, char** azColName) {
-	dbload_load* xyz = (dbload_load *)data;
+	dbload_container* xyz = (dbload_container *)data;
 	int p = xyz->precision;
 	xyz->players->push_back(new dbload_player(
-		atoi(argv[0]), atoi(argv[1])
-	));
+	                                          atoi(argv[0]), atoi(argv[1])
+	                                         ));
 
 	return 0;
 }
 
 int static load_resources(void* data, int argc, char** argv, char** azColName) {
-	dbload_load* xyz = (dbload_load *)data;
+	dbload_container* xyz = (dbload_container *)data;
 	int p = xyz->precision;
 	xyz->resources->push_back(new dbload_resource(
-		atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p
-	));
+	                                              atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p
+	                                             ));
 
 	return 0;
 }
 
 int static load_units(void* data, int argc, char** argv, char** azColName) {
-	dbload_load* xyz = (dbload_load *)data;
+	dbload_container* xyz = (dbload_container *)data;
 	int p = xyz->precision;
 	xyz->units->push_back(new dbload_unit(
-		atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
-		atoi(argv[3]), atof(argv[4]) / p, atof(argv[5]) / p,
-		atoi(argv[6]), atof(argv[7]) / p, atof(argv[8]) / p,
-		atoi(argv[9])
-		));
+	                                      atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
+	                                      atoi(argv[3]), atof(argv[4]) / p, atof(argv[5]) / p,
+	                                      atoi(argv[6]), atof(argv[7]) / p, atof(argv[8]) / p,
+	                                      atoi(argv[9])
+	                                     ));
 
 	return 0;
 }
 
 int static load_buildings(void* data, int argc, char** argv, char** azColName) {
-	dbload_load* xyz = (dbload_load *)data;
+	dbload_container* xyz = (dbload_container *)data;
 	int p = xyz->precision;
 	xyz->buildings->push_back(new dbload_building(
-		atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
-		atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
-		atof(argv[6]) / p, atof(argv[7]) / p
-	));
+	                                              atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
+	                                              atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
+	                                              atof(argv[6]) / p, atof(argv[7]) / p
+	                                             ));
 
 	return 0;
 }
 
 int static load_resources_entities(void* data, int argc, char** argv, char** azColName) {
-	dbload_load* xyz = (dbload_load *)data;
+	dbload_container* xyz = (dbload_container *)data;
 	int p = xyz->precision;
 	xyz->resource_entities->push_back(new dbload_resource_entities(
-		atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
-		atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
-		atof(argv[6]) / p
-	));
+	                                                               atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
+	                                                               atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
+	                                                               atof(argv[6]) / p
+	                                                              ));
 
 	return 0;
 }
@@ -87,8 +96,12 @@ void SceneLoader::reset() {
 	if (dbLoad) {
 		delete dbLoad;
 	}
-	dbLoad = new dbload_load();
+	dbLoad = new dbload_container();
 	loadingState->reset(3, "start loading");
+}
+
+dbload_container* SceneLoader::getData() {
+	return dbLoad;
 }
 
 

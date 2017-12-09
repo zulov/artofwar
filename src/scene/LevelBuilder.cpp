@@ -9,6 +9,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include "database/DatabaseCache.h"
 
+
 LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 	objectManager = _objectManager;
 	scene = new Scene(Game::get()->getContext());
@@ -21,8 +22,11 @@ LevelBuilder::~LevelBuilder() {
 	delete objectManager;
 }
 
-void LevelBuilder::createScene(int id) {
-	db_map* map = Game::get()->getDatabaseCache()->getMap(id);
+void LevelBuilder::createScene(SceneLoader* loader) {
+	loader->load();
+	dbload_container * data = loader->getData();
+	
+	db_map* map = Game::get()->getDatabaseCache()->getMap(data->config->map);
 	Entity* zone = createZone();
 	Entity* light = createLight(Vector3(0.6f, -1.0f, 0.8f), Color(0.7f, 0.6f, 0.6f), LIGHT_DIRECTIONAL);
 	Entity* ground = createGround(map->height_map, map->texture, map->scale_hor, map->scale_ver);

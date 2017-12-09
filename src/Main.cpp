@@ -59,7 +59,8 @@ void Main::load() {
 	case 0:
 		{
 		hud->resetLoading();
-		levelBuilder->createScene(1);
+		loader->createLoad("quicksave");
+		levelBuilder->createScene(loader);
 		}
 		break;
 	case 1:
@@ -318,7 +319,7 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 
 void Main::loadSave(const String& name) {
 	loader->createLoad(name);
-	
+	//loader->load();
 	std::vector<dbload_player*>* players = loader->loadPlayers();
 	std::vector<dbload_resource*>* resources = loader->loadResources();
 

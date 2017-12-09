@@ -106,9 +106,9 @@ struct dbload_resource
 	}
 };
 
-struct dbload_load
+struct dbload_container
 {
-	dbload_load() {
+	dbload_container() {
 		precision = 1;
 		config = new dbload_config();
 		players = new std::vector<dbload_player*>();
@@ -119,7 +119,7 @@ struct dbload_load
 		resource_entities = new std::vector<dbload_resource_entities*>();
 	}
 
-	~dbload_load() {
+	~dbload_container() {
 		delete config;
 		clear_and_delete_vector(players);
 		clear_and_delete_vector(resources);

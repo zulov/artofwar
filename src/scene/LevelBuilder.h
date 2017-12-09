@@ -6,6 +6,7 @@
 #include "objects/Entity.h"
 #include "SceneObjectManager.h"
 #include <Urho3D/Graphics/Terrain.h>
+#include "load/SceneLoader.h"
 
 
 using namespace Urho3D;
@@ -15,13 +16,13 @@ class LevelBuilder
 public:
 	LevelBuilder(SceneObjectManager* _objectManager);
 	~LevelBuilder();
-	void createScene(int id);
+	void createScene(SceneLoader* loader);
 	Terrain* getTerrian();
 private:
 	SharedPtr<Urho3D::Scene> scene;
 
 	Entity* createZone();
-	Entity* createLight(Vector3& direction, Color &color, LightType lightType);
+	Entity* createLight(Vector3& direction, Color& color, LightType lightType);
 	Entity* createGround(String heightMap, String texture, float horScale, float verScale);
 
 	SceneObjectManager* objectManager;

@@ -36,7 +36,7 @@ void Physical::initBillbords() {
 		billboardNode->Pitch(90);
 		barNode = node->CreateChild();
 		Model* model3d = model->GetModel();//TODO razy scale?
-		Vector3 boundingBox = model3d->GetBoundingBox().Size();
+		const Vector3 boundingBox = model3d->GetBoundingBox().Size();
 
 		billboardSetBar = barNode->CreateComponent<BillboardSet>();
 		billboardSetBar->SetNumBillboards(1);
@@ -56,7 +56,7 @@ void Physical::initBillbords() {
 
 		billboardShadow = billboardSetShadow->GetBillboard(0);
 		billboardShadow->size_ = Vector2(boundingBox.x_ * 1.3f, boundingBox.z_ * 1.3f);
-		billboardShadow->position_ = Vector3(0, 0, -0.1);
+		billboardShadow->position_ = Vector3(0, 0, -0.3);
 		billboardShadow->enabled_ = false;
 
 		billboardSetBar->Commit();
