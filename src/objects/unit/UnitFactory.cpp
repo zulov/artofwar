@@ -37,7 +37,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center
 	return units;
 }
 
-vector<Unit*>* UnitFactory::load(dbload_unit* unit) {
+std::vector<Unit*>* UnitFactory::load(dbload_unit* unit) {
 	units->clear();
 
 

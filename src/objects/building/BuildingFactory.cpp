@@ -23,7 +23,7 @@ std::vector<Building*>* BuildingFactory::create(int id, Vector3* center, int pla
 	return buildings;
 }
 
-vector<Building*>* BuildingFactory::load(dbload_building* building) {
+std::vector<Building*>* BuildingFactory::load(dbload_building* building) {
 	buildings->clear();
 
 	//TODO

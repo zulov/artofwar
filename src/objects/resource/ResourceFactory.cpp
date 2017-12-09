@@ -1,6 +1,5 @@
 #include "ResourceFactory.h"
 #include "Game.h"
-#include "objects/building/Building.h"
 
 ResourceFactory::ResourceFactory() {
 	resources = new std::vector<ResourceEntity *>();
@@ -25,7 +24,7 @@ std::vector<ResourceEntity*>* ResourceFactory::create(int id, Vector3* center, I
 	return resources;
 }
 
-vector<ResourceEntity*>* ResourceFactory::load(dbload_resource_entities* resource) {
+std::vector<ResourceEntity*>* ResourceFactory::load(dbload_resource_entities* resource) {
 	resources->clear();
 
 	//TODO

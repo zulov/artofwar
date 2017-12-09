@@ -36,6 +36,8 @@ SimulationObjectManager::~SimulationObjectManager() {
 	delete unitFactory;
 	delete buildingFactory;
 	delete resourceFactory;
+
+	delete simulationInfo;
 }
 
 void SimulationObjectManager::add(Unit* unit) {
@@ -100,7 +102,6 @@ void SimulationObjectManager::addBuildings(int id, Vector3* center,
 	buildingsTemp = buildingFactory->create(id, center, player, _bucketCords);
 	updateBuilding();
 }
-
 
 
 void SimulationObjectManager::addResources(int id, Vector3* center, IntVector2 _bucketCords) {
