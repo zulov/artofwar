@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "scene/load/SceneLoader.h"
 #include "commands/creation/CreationCommandList.h"
+#include "commands/creation/CreationCommand.h"
 
 
 Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList) {
@@ -79,28 +80,6 @@ void Simulation::createUnits(SceneLoader* loader) {
 	for (auto building : *data->buildings) {
 		simObjectManager->load(building);
 	}
-
-
-//	simCommandList->addUnits(UNITS_NUMBER / 5, 0, new Vector3(10, 0, 10), 0);
-//	simCommandList->addUnits(UNITS_NUMBER / 5, 1, new Vector3(10, 0, -10), 0);
-//	simCommandList->addUnits(UNITS_NUMBER / 5, 2, new Vector3(-10, 0, 10), 0);
-//	simCommandList->addUnits(UNITS_NUMBER / 5, 4, new Vector3(-10, 0, -10), 0);
-//	simCommandList->addUnits(UNITS_NUMBER / 5, 5, new Vector3(0, 0, 0), 0);
-//
-//	simCommandList->addUnits(UNITS_NUMBER, 3, new Vector3(-50, 0, -50), 1);
-//
-//	simCommandList->addResource(GOLD, new Vector3(-50, 0, 45));
-//	simCommandList->addResource(STONE, new Vector3(50, 0, 25));
-//	simCommandList->addResource(WOOD, new Vector3(40, 0, 0));
-//	simCommandList->addResource(STONE, new Vector3(0, 0, 0));
-//
-//
-//	simCommandList->addBuilding(0, new Vector3(40, 0, 30), 0);
-//	simCommandList->addBuilding(1, new Vector3(30, 0, 30), 0);
-//	simCommandList->addBuilding(2, new Vector3(20, 0, 30), 0);
-//	simCommandList->addBuilding(3, new Vector3(10, 0, 30), 0);
-//	simCommandList->addBuilding(4, new Vector3(0, 0, 30), 0);
-//	simCommandList->addBuilding(5, new Vector3(-10, 0, 30), 1);
 }
 
 float Simulation::updateTime(float timeStep) {

@@ -4,6 +4,7 @@
 #include "player/Resources.h"
 #include "player/PlayersManager.h"
 #include "Game.h"
+#include "CreationCommand.h"
 
 
 CreationCommandList::CreationCommandList() {

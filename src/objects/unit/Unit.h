@@ -2,7 +2,6 @@
 
 #include <vector>
 #include "state/UnitStateType.h"
-#include "UnitType.h"
 #include "objects/Physical.h"
 #include "state/StateManager.h"
 #include "objects/resource/ResourceEntity.h"

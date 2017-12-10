@@ -10,7 +10,6 @@
 #include <Urho3D/Engine/EngineDefs.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/Engine/Console.h>
-#include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/IO/FileSystem.h>

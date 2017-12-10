@@ -1,10 +1,12 @@
 #include "objects/Physical.h"
 #include "Game.h"
-#include "commands/ActionCommand.h"
+
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Material.h>
 #include "objects/LinkComponent.h"
 #include <string>
+#include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Resource/ResourceCache.h>
 
 Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
 	LinkComponent* lc = node->CreateComponent<LinkComponent>();
@@ -123,8 +125,8 @@ std::string Physical::getColumns() {
 std::string Physical::getValues(int precision) {
 	int hp_coef = getHealthPercent() * precision;
 	return Entity::getValues(precision) 
-	+ to_string(hp_coef) + ","
-	+ to_string(player) + ",";
+	+ std::to_string(hp_coef) + ","
+	+ std::to_string(player) + ",";
 }
 
 bool Physical::hasEnemy() {

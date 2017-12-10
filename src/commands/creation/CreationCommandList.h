@@ -1,7 +1,5 @@
 #pragma once
 #include "simulation/SimulationObjectManager.h"
-#include "CreationCommand.h"
-#include "scene/load/dbload_container.h"
 #include "commands/CommandList.h"
 
 class SimulationObjectManager;

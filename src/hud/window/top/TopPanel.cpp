@@ -4,7 +4,6 @@
 #include "database/DatabaseCache.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Graphics/Texture2D.h>
-#include "commands/ActionCommand.h"
 
 TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "TopWindow";
