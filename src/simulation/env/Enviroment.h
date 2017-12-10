@@ -41,6 +41,7 @@ public:
 	void prepareGridToFind();
 	content_info* getContentInfo(Vector2& from, Vector2& to, bool checks[], int activePlayer);
 	Vector3 getValidPosForCamera(float percentX, float percentY, const Vector3& pos, float min);
+	Vector3* getValidPosition(const IntVector2& size, const IntVector2& bucketCords);
 private:
 	MainGrid* mainGrid;
 	Grid* teamUnitGrid[MAX_PLAYERS];

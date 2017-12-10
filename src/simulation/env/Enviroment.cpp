@@ -140,9 +140,13 @@ Vector3 Enviroment::getValidPosForCamera(float percentX, float percentY, const V
 	return a;
 }
 
-
 bool Enviroment::validateStatic(const IntVector2& size, Vector3* pos) {
 	return mainGrid->validateAdd(size, pos);
+}
+
+Vector3* Enviroment::getValidPosition(const IntVector2& size, const IntVector2& bucketCords) {
+	Vector2 center = mainGrid->getCenterAt(bucketCords);
+	return getValidPosition(size, new Vector3(center.x_, 0, center.y_));
 }
 
 Vector3* Enviroment::getValidPosition(const IntVector2& size, Vector3* pos) {

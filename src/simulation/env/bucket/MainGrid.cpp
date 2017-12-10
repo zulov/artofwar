@@ -104,6 +104,11 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to, b
 	return ci;
 }
 
+Vector2 &MainGrid::getCenterAt(const IntVector2& cords) {
+	const int index = getIndex(cords.x_, cords.y_);
+	return buckets[index].getCenter();
+}
+
 IntVector2 MainGrid::calculateSize(int size) {
 	int first = -((size - 1) / 2);
 	int second = size + first;

@@ -37,6 +37,7 @@ public:
 	void draw_grid_path(std::vector<int>* path, Image* image);
 	void drawMap(Image* image);
 	content_info* getContentInfo(const Vector2& from, const Vector2& to, bool checks[], int activePlayer);
+	Vector2 & getCenterAt(const IntVector2& cords);
 private:
 	static IntVector2 calculateSize(int size);
 	std::vector<std::pair<int, float>*>* tempNeighbour;
