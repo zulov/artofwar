@@ -30,7 +30,6 @@ std::vector<Building*>* BuildingFactory::load(dbload_building* building) {
 	buildings->clear();
 	Enviroment* env = Game::get()->getEnviroment();
 
-
 	IntVector2 bucketCords(building->buc_x, building->buc_y);
 	db_building* db_building = Game::get()->getDatabaseCache()->getBuilding(building->id_db);
 
