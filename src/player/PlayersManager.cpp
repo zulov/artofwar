@@ -2,18 +2,26 @@
 
 
 PlayersManager::PlayersManager() {
-	activePlayer = new Player(0, 0, 0);
-	allPlayers.push_back(activePlayer);
-	Player* enemy = new Player(0, 1, 1);
-	allPlayers.push_back(enemy);
-	teams[0] = new std::vector<Player*>();
-	teams[1] = new std::vector<Player*>();
-	teams[0]->push_back(activePlayer);
-	teams[1]->push_back(enemy);
 }
 
 
 PlayersManager::~PlayersManager() {
+}
+
+void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dbload_resource*>* resources) {
+	for (auto player : *players) {
+		Player* newPlayer = new Player(0, player->team, player->id);
+		if (player->is_active) {
+			activePlayer = newPlayer;
+		}
+		allPlayers.push_back(newPlayer);
+		teams[player->team].push_back(newPlayer);
+	}
+
+	for (auto resource : *resources) {
+
+	}
+
 }
 
 Player* PlayersManager::getActivePlayer() {
@@ -24,7 +32,7 @@ Player* PlayersManager::getPlayer(short i) {
 	return allPlayers.at(i);
 }
 
-std::vector<Player*>* PlayersManager::getTeam(short i) {
+std::vector<Player*>& PlayersManager::getTeam(short i) {
 	return teams[i];
 }
 
@@ -39,5 +47,6 @@ void PlayersManager::save(SceneSaver* saver) {
 
 std::string PlayersManager::getColumns() {
 	return "id		INT     NOT NULL,"
-		"is_active		INT     NOT NULL";
+		"is_active		INT     NOT NULL,"
+		"team		INT     NOT NULL";
 }

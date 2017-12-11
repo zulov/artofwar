@@ -32,5 +32,5 @@ Resources* Player::getResources() {
 }
 
 std::string Player::getValues(int precision) {
-	return to_string(id) + "," + to_string(0);
+	return to_string(id) + "," + to_string(0) + "," + to_string(team);
 }

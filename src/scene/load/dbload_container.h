@@ -82,14 +82,16 @@ struct dbload_resource_entities : dbload_static
 	}
 };
 
-struct  dbload_player
+struct dbload_player
 {
 	int id;
 	bool is_active;
+	int team;
 
-	dbload_player(int id, bool isActive)
+	dbload_player(int id, bool isActive, int team)
 		: id(id),
-		is_active(isActive) {
+		is_active(isActive),
+		team(team) {
 	}
 };
 

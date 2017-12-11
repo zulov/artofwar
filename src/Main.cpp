@@ -86,6 +86,7 @@ void Main::load() {
 		break;
 	case 5:
 		gameState = GameState::RUNNING;
+		loader->end();
 		hud->endLoading();
 		break;
 	}
