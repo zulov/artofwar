@@ -38,7 +38,7 @@ int static load_config(void* data, int argc, char** argv, char** azColName) {
 int static load_players(void* data, int argc, char** argv, char** azColName) {
 	dbload_container* xyz = (dbload_container *)data;
 	xyz->players->push_back(new dbload_player(
-	                                          atoi(argv[0]), atoi(argv[1]), atoi(argv[2])
+	                                          atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3])
 	                                         ));
 
 	return 0;

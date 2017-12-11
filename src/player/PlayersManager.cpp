@@ -10,7 +10,7 @@ PlayersManager::~PlayersManager() {
 
 void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dbload_resource*>* resources) {
 	for (auto player : *players) {
-		Player* newPlayer = new Player(0, player->team, player->id);
+		Player* newPlayer = new Player(player->nation, player->team, player->id);
 		if (player->is_active) {
 			activePlayer = newPlayer;
 		}
@@ -52,5 +52,6 @@ void PlayersManager::save(SceneSaver* saver) {
 std::string PlayersManager::getColumns() {
 	return "id		INT     NOT NULL,"
 		"is_active		INT     NOT NULL,"
-		"team		INT     NOT NULL";
+		"team		INT     NOT NULL,"
+		"nation		INT     NOT NULL";
 }

@@ -32,7 +32,7 @@ Resources* Player::getResources() {
 }
 
 std::string Player::getValues(int precision) {
-	return to_string(id) + "," + to_string(0) + "," + to_string(team);
+	return to_string(id) + "," + to_string(0) + "," + to_string(team)+ "," + to_string(dbNation->id);
 }
 
 void Player::setResourceAmount(int resource, float amount) {

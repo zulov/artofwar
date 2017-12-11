@@ -87,11 +87,13 @@ struct dbload_player
 	int id;
 	bool is_active;
 	int team;
+	int nation;
 
-	dbload_player(int id, bool isActive, int team)
+	dbload_player(int id, bool isActive, int team, int nation)
 		: id(id),
 		is_active(isActive),
-		team(team) {
+		team(team),
+		nation(nation) {
 	}
 };
 
