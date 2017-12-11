@@ -6,7 +6,7 @@
 
 Player::Player(int nationId, int team, int _id) {
 	dbNation = Game::get()->getDatabaseCache()->getNation(nationId);
-	resources = new Resources(100000);
+	resources = new Resources(0);
 	id = _id;
 	this->team = team;
 }
@@ -33,4 +33,8 @@ Resources* Player::getResources() {
 
 std::string Player::getValues(int precision) {
 	return to_string(id) + "," + to_string(0) + "," + to_string(team);
+}
+
+void Player::setResourceAmount(int resource, float amount) {
+	resources->setValue(resource, amount);
 }

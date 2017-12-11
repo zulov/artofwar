@@ -19,7 +19,11 @@ void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dblo
 	}
 
 	for (auto resource : *resources) {
-
+		for (auto player : allPlayers) {
+			if (player->getId() == resource->player) {
+				player->setResourceAmount(resource->resource, resource->amount);
+			}
+		}
 	}
 
 }

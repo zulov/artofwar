@@ -12,6 +12,7 @@ public:
 	int getId();
 	Resources* getResources();
 	std::string getValues(int precision);
+	void setResourceAmount(int resource, float amount);
 private:
 	Resources* resources;
 	db_nation* dbNation;

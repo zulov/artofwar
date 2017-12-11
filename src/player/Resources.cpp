@@ -73,6 +73,11 @@ std:string str = "";
 	return str;
 }
 
+void Resources::setValue(int id, float amount) {
+	values[id] = amount;
+	changed = true;
+}
+
 std::string Resources::getColumns() {
 	return "player		INT     NOT NULL,"
 		"resource		INT     NOT NULL,"
