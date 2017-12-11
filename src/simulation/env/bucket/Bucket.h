@@ -2,8 +2,9 @@
 #include <vector>
 #include "objects/unit/Unit.h"
 #include <Urho3D/Graphics/StaticModel.h>
-#include "ComplexBucketData.h"
 #include "simulation/env/ContentInfo.h"
+
+class ComplexBucketData;
 
 class Bucket
 {
@@ -17,7 +18,6 @@ public:
 	void setCenter(double _centerX, double _centerY);
 	Vector2& getCenter();
 
-	ObjectType getType();
 	void setStatic(Static* object);
 	void removeStatic();
 	void createBox(double bucketSize);

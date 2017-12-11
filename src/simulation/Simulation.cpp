@@ -69,7 +69,7 @@ void Simulation::selfAI() {
 	}
 }
 
-void Simulation::createUnits(SceneLoader* loader) {
+void Simulation::loadEntities(SceneLoader* loader) {
 	dbload_container* data = loader->getData();
 	for (auto unit : *data->units) {
 		simObjectManager->load(unit);
@@ -182,7 +182,7 @@ void Simulation::update(Input* input, float timeStep) {
 }
 
 void Simulation::initScene(SceneLoader* loader) {
-	createUnits(loader);
+	loadEntities(loader);
 	simCommandList->execute();
 }
 

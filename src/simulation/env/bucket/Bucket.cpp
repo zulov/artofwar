@@ -1,8 +1,10 @@
 #include "Bucket.h"
-
+#include "ComplexBucketData.h"
 
 Bucket::~Bucket() {
-	delete data;
+	if (data) {
+		delete data;
+	}
 }
 
 Bucket::Bucket() {
@@ -44,10 +46,6 @@ void Bucket::setCenter(double _centerX, double _centerY) {
 
 Vector2& Bucket::getCenter() {
 	return data->getCenter();
-}
-
-ObjectType Bucket::getType() {
-	return data->getType();
 }
 
 void Bucket::setStatic(Static* object) {

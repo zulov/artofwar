@@ -14,7 +14,7 @@ public:
 	ComplexBucketData();
 	~ComplexBucketData();
 
-	ObjectType getType();
+	ObjectType getType() const { return type; };
 	void setStatic(Static* object);
 	void removeStatic();
 	void createBox(double bucketSize);
@@ -24,6 +24,7 @@ public:
 	void setNeightbours(std::vector<std::pair<int, float>*>* tempNeightbours);
 	std::vector<std::pair<int, float>*>& getNeightbours();
 	char getAdditonalInfo();
+	bool isUnit();
 private:
 	ObjectType type;
 	Urho3D::Vector2 center;

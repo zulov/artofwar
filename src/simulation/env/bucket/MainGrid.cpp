@@ -72,8 +72,7 @@ bool MainGrid::validateAdd(const IntVector2& size, Vector3* pos) {
 	for (int i = iX + sizeX.x_; i < iX + sizeX.y_; ++i) {
 		for (int j = iZ + sizeZ.x_; j < iZ + sizeZ.y_; ++j) {
 			const int index = getIndex(i, j);
-			if (!(inRange(index) &&
-				buckets[index].getType() == ObjectType::UNIT)) {
+			if (!(inRange(index) && complexData[index].isUnit())) {
 				return false;
 			}
 		}
@@ -104,7 +103,7 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to, b
 	return ci;
 }
 
-Vector2 &MainGrid::getCenterAt(const IntVector2& cords) {
+Vector2& MainGrid::getCenterAt(const IntVector2& cords) {
 	const int index = getIndex(cords.x_, cords.y_);
 	return buckets[index].getCenter();
 }
@@ -156,7 +155,7 @@ Vector3* MainGrid::getDirectionFrom(Vector3* position) {
 	short posX = getIndex(position->x_);
 	short posZ = getIndex(position->z_);
 	const int index = getIndex(posX, posZ);
-	if (buckets[index].getType() != ObjectType::UNIT) {
+	if (!complexData[index].isUnit()) {
 
 		Vector3* direction = buckets[index].getDirectrionFrom(position);
 
@@ -200,7 +199,7 @@ std::vector<std::pair<int, float>*>* MainGrid::neighbors(const int current) {
 			if (!(i == 0 && j == 0)) {
 				if (inSide(cords.x_ + i, cords.y_ + j)) {
 					const int index = getIndex(cords.x_ + i, cords.y_ + j);
-					if (buckets[index].getType() == UNIT) {
+					if (complexData[index].isUnit()) {
 						double costD = cost(current, index);
 						tempNeighbour->push_back(new std::pair<int, float>(index, costD));
 					}
@@ -336,7 +335,7 @@ void MainGrid::drawMap(Image* image) {
 		for (short x = 0; x != resolution; ++x) {
 			int index = getIndex(x, y);
 			int idR = getIndex(resolution - y - 1, x);
-			if (buckets[index].getType() == UNIT) {
+			if (complexData[index].isUnit()) {
 				*(data + idR) = 0xFFFFFFFF;
 			} else {
 				*(data + idR) = 0xFF000000;

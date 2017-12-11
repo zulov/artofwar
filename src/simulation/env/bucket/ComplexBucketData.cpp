@@ -20,11 +20,6 @@ ComplexBucketData::~ComplexBucketData() {
 	box->Remove();
 }
 
-
-ObjectType ComplexBucketData::getType() {
-	return type;
-}
-
 void ComplexBucketData::setStatic(Static* _object) {
 	object = _object;
 	type = object->getType();
@@ -83,4 +78,8 @@ std::vector<std::pair<int, float>*>& ComplexBucketData::getNeightbours() {
 
 char ComplexBucketData::getAdditonalInfo() {
 	return additonalInfo;
+}
+
+bool ComplexBucketData::isUnit() {
+	return type == UNIT;
 }

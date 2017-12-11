@@ -39,7 +39,7 @@ private:
 	void performAction();
 	float updateTime(float timeStep);
 	void updateEnviroment();
-	void createUnits(SceneLoader* loader);
+	void loadEntities(SceneLoader* loader);
 	void countFrame();
 	void applyForce();
 	void updateBuildingQueue();
