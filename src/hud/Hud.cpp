@@ -61,6 +61,38 @@ void Hud::createCursor() {
 	cursor->SetPosition(Game::get()->getGraphics()->GetWidth() / 2, Game::get()->getGraphics()->GetHeight() / 2);
 }
 
+void Hud::createMyPanels() {
+	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
+
+	panels.push_back(selectedHudPanel = new SelectedHudPanel(style));
+	panels.push_back(buildPanel = new BuildPanel(style, nation));
+	panels.push_back(unitsPanel = new UnitsPanel(style, nation));
+	panels.push_back(debugPanel = new DebugPanel(style));
+	panels.push_back(topPanel = new TopPanel(style));
+	panels.push_back(miniMapPanel = new MiniMapPanel(style));
+	panels.push_back(menuPanel = new MenuPanel(style));
+	panels.push_back(ordersPanel = new OrdersPanel(style));
+	panels.push_back(queuePanel = new QueuePanel(style));
+	panels.push_back(loadingPanel = new LoadingPanel(style));
+	panels.push_back(inGameMenuPanel = new InGameMenuPanel(style));
+
+	windows->push_back(menuPanel->createWindow());
+	windows->push_back(buildPanel->createWindow());
+	windows->push_back(unitsPanel->createWindow());
+	windows->push_back(miniMapPanel->createWindow());
+	windows->push_back(debugPanel->createWindow());
+	windows->push_back(topPanel->createWindow());
+	windows->push_back(selectedHudPanel->createWindow());
+	windows->push_back(ordersPanel->createWindow());
+	windows->push_back(queuePanel->createWindow());
+	windows->push_back(loadingPanel->createWindow());
+	windows->push_back(inGameMenuPanel->createWindow());
+
+	for (auto panel : panels) {
+		panel->setVisible(false);
+	}
+}
+
 Hud::Hud() {
 	windows = new std::vector<Window*>();
 	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
@@ -93,36 +125,6 @@ Hud::Hud() {
 	createConsole();
 	createDebugHud();
 	createCursor();
-
-	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
-
-	panels.push_back(selectedHudPanel = new SelectedHudPanel(style));
-	panels.push_back(buildPanel = new BuildPanel(style, nation));
-	panels.push_back(unitsPanel = new UnitsPanel(style, nation));
-	panels.push_back(debugPanel = new DebugPanel(style));
-	panels.push_back(topPanel = new TopPanel(style));
-	panels.push_back(miniMapPanel = new MiniMapPanel(style));
-	panels.push_back(menuPanel = new MenuPanel(style));
-	panels.push_back(ordersPanel = new OrdersPanel(style));
-	panels.push_back(queuePanel = new QueuePanel(style));
-	panels.push_back(loadingPanel = new LoadingPanel(style));
-	panels.push_back(inGameMenuPanel = new InGameMenuPanel(style));
-
-	windows->push_back(menuPanel->createWindow());
-	windows->push_back(buildPanel->createWindow());
-	windows->push_back(unitsPanel->createWindow());
-	windows->push_back(miniMapPanel->createWindow());
-	windows->push_back(debugPanel->createWindow());
-	windows->push_back(topPanel->createWindow());
-	windows->push_back(selectedHudPanel->createWindow());
-	windows->push_back(ordersPanel->createWindow());
-	windows->push_back(queuePanel->createWindow());
-	windows->push_back(loadingPanel->createWindow());
-	windows->push_back(inGameMenuPanel->createWindow());
-
-	for (auto panel : panels) {
-		panel->setVisible(false);
-	}
 }
 
 Hud::~Hud() {

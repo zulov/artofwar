@@ -37,6 +37,7 @@ public:
 	void load();
 	void Start() override;
 	void Stop() override;
+	void subscribeToUIEvents();
 	void HandleUpdate(StringHash eventType, VariantMap& eventData);
 
 protected:

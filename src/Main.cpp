@@ -58,8 +58,12 @@ void Main::load() {
 	switch (loadingState->currentStage) {
 	case 0:
 		{
-		hud->resetLoading();
 		loader->createLoad("quicksave");
+		Game::get()->getPlayersManager()->load(loader->loadPlayers(), loader->loadResources());
+		hud->createMyPanels();
+		subscribeToUIEvents();
+		hud->resetLoading();
+
 		levelBuilder->createScene(loader);
 		}
 		break;
@@ -122,7 +126,7 @@ void Main::Stop() {
 	delete loadingState;
 }
 
-void Main::subscribeToEvents() {
+void Main::subscribeToUIEvents() {
 	for (auto hudElement : *hud->getButtonsBuildToSubscribe()) {
 		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleBuildButton));
@@ -152,7 +156,9 @@ void Main::subscribeToEvents() {
 
 	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
 	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));
+}
 
+void Main::subscribeToEvents() {
 	SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Main, HandleKeyDown));
 	SubscribeToEvent(E_KEYUP, URHO3D_HANDLER(Main, HandleKeyUp));
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));

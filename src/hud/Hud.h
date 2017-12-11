@@ -49,12 +49,13 @@ public:
 	void updateLoading(float progress);
 	Sprite* getSpriteMiniMapToSubscribe();
 	Button* getSaveButton();
-
+	void createMyPanels();
 private:
 	void  replaceVariables(std::string &xml, int hudSizeId);
 	void createDebugHud();
 	void createConsole();
 	void createCursor();
+
 
 	SelectedHudPanel* selectedHudPanel;
 	BuildPanel* buildPanel;
