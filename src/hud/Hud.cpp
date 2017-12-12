@@ -128,21 +128,9 @@ Hud::Hud() {
 }
 
 Hud::~Hud() {
-	for (auto panel : panels) {
-		delete panel;
-	}
-	
-//	delete selectedHudPanel;
-//	delete buildPanel;
-//	delete unitsPanel;
-//	delete debugPanel;
-//	delete topPanel;
-//	delete miniMapPanel;
-//	delete menuPanel;
-//	delete ordersPanel;
-//	delete queuePanel;
-//	delete loadingPanel;
-//	delete inGameMenuPanel;
+	clear_vector(panels);
+	delete windows;
+
 }
 
 void Hud::createDebugHud() {

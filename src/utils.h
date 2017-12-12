@@ -27,3 +27,4 @@ void clear_and_delete_vector(std::vector<T*>* container) {
 	container->clear();
 	delete container;
 }
+

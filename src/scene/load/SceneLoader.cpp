@@ -15,6 +15,9 @@ SceneLoader::SceneLoader() {
 
 SceneLoader::~SceneLoader() {
 	delete loadingState;
+	if (dbLoad) {
+		delete dbLoad;
+	}
 }
 
 void SceneLoader::load() {

@@ -233,6 +233,7 @@ void MainGrid::debug(IntVector2& startV, IntVector2& goalV) {
 	draw_grid_path(&path, image);
 
 	image->SaveBMP("result/images/" + prefix + "4_grid_path.bmp");
+
 	delete image;
 	staticCounter++;
 }

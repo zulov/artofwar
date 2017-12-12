@@ -20,6 +20,7 @@ LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 
 LevelBuilder::~LevelBuilder() {
 	delete objectManager;
+	scene->Clear();
 }
 
 void LevelBuilder::createScene(SceneLoader* loader) {
