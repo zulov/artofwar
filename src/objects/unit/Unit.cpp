@@ -16,9 +16,9 @@ StateManager* Unit::states = nullptr;
 Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT) {
 	acceleration = new Vector3();
 	velocity = new Vector3();
+	toResource = new Vector3();
 	aims = nullptr;
 	resource = nullptr;
-	toResource = new Vector3();
 
 	unitState = UnitStateType::STOP;
 

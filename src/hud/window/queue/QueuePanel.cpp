@@ -12,6 +12,11 @@ QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 }
 
 QueuePanel::~QueuePanel() {
+	delete buttons;
+	for (int i = 0; i < MAX_ICON_SELECTION; ++i) {
+		delete elements[i];
+	}
+	delete[] elements;
 }
 
 void QueuePanel::update(QueueManager* queue, short& j) {
@@ -52,7 +57,8 @@ void QueuePanel::show(SelectedInfo* selectedInfo) {
 	update(selectedInfo);
 }
 
-void QueuePanel::update(SelectedInfo* selectedInfo) {//TODO wykonuje sie nawet jeœli sie nic nie zmieni³o
+void QueuePanel::update(SelectedInfo* selectedInfo) {
+	//TODO wykonuje sie nawet jeœli sie nic nie zmieni³o
 	short j = 0;
 	if (window->IsVisible()) {
 		std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();

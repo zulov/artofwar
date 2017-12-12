@@ -29,6 +29,8 @@ SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* style) {
 
 
 SelectedHudElement::~SelectedHudElement() {
+	delete selected;
+	delete[] bars;
 }
 
 void SelectedHudElement::unSelect() {

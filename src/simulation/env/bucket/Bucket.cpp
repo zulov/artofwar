@@ -2,9 +2,6 @@
 #include "ComplexBucketData.h"
 
 Bucket::~Bucket() {
-	if (data) {
-		delete data;
-	}
 }
 
 Bucket::Bucket() {

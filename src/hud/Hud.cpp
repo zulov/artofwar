@@ -14,7 +14,7 @@
 #include <iostream>
 
 
-void Hud::replaceVariables(std::string &xml, int hudSizeId) {
+void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 	exprtk::symbol_table<double> symbol_table;
 	int varsSize = Game::get()->getDatabaseCache()->getHudVarsSize();
 	for (int i = 0; i < varsSize; ++i) {
@@ -128,17 +128,21 @@ Hud::Hud() {
 }
 
 Hud::~Hud() {
-	delete selectedHudPanel;
-	delete buildPanel;
-	delete unitsPanel;
-	delete debugPanel;
-	delete topPanel;
-	delete miniMapPanel;
-	delete menuPanel;
-	delete ordersPanel;
-	delete queuePanel;
-	delete loadingPanel;
-	delete inGameMenuPanel;
+	for (auto panel : panels) {
+		delete panel;
+	}
+	
+//	delete selectedHudPanel;
+//	delete buildPanel;
+//	delete unitsPanel;
+//	delete debugPanel;
+//	delete topPanel;
+//	delete miniMapPanel;
+//	delete menuPanel;
+//	delete ordersPanel;
+//	delete queuePanel;
+//	delete loadingPanel;
+//	delete inGameMenuPanel;
 }
 
 void Hud::createDebugHud() {

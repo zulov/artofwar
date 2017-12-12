@@ -62,6 +62,7 @@ void Main::load() {
 		levelBuilder = new LevelBuilder(new SceneObjectManager());
 		SetupViewport();
 		Game::get()->getPlayersManager()->load(loader->loadPlayers(), loader->loadResources());
+		hud = new Hud();
 		hud->createMyPanels();
 		subscribeToUIEvents();
 		hud->resetLoading();
@@ -109,7 +110,7 @@ void Main::Start() {
 	SetWindowTitleAndIcon();
 	InitLocalizationSystem();
 	benchmark = new Benchmark();
-	hud = new Hud();
+
 	subscribeToEvents();
 
 	game->setCameraManager(new CameraManager());
@@ -119,7 +120,6 @@ void Main::Start() {
 	cameraManager = game->getCameraManager();
 
 	gameState = GameState::MENU;
-
 }
 
 void Main::Stop() {
@@ -271,6 +271,8 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	} else if (key == KEY_F6) {
 		String name = "quicksave";
 		loadSave(name);
+	} else if (key == KEY_F9) {
+		gameState = GameState::CLOSING;
 	}
 }
 
@@ -374,7 +376,6 @@ void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	FileFormData* data = (FileFormData *)element->GetVar("file_data").GetVoidPtr();
 	save(data->fileName);
-	int a = 5;
 }
 
 void Main::SetupViewport() {
@@ -384,12 +385,23 @@ void Main::SetupViewport() {
 }
 
 void Main::diposeScene() {
+	loadingState->reset(4, "dispose simulation");
+
 	delete simulation;
 	simulation = nullptr;
+	loadingState->inc("dispose creationList");
+
 	delete Game::get()->getCreationCommandList();
 	Game::get()->setCreationCommandList(nullptr);
+	loadingState->inc("dispose enviroment");
+
 	delete Game::get()->getEnviroment();
 	Game::get()->setEnviroment(nullptr);
+	loadingState->inc("dispose hud");
+
+	delete hud;
+	hud = nullptr;
+	loadingState->reset(4);
 }
 
 void Main::control(float timeStep) {

@@ -21,6 +21,9 @@ UnitsPanel::~UnitsPanel() {
 }
 
 std::vector<HudElement*>* UnitsPanel::getButtons() {
+	for (auto button : *buttons) {
+		delete button;
+	}
 	return buttons;
 }
 
@@ -35,7 +38,8 @@ void UnitsPanel::show(SelectedInfo* selectedInfo) {
 		if (!data->empty()) {
 			std::vector<db_unit*>* units = Game::get()->getDatabaseCache()->getUnitsForBuilding(i);
 			unordered_set<int> common2;
-			for (int j = 0; j < units->size(); ++j) {//todo to zrobic raz i pobierac
+			for (int j = 0; j < units->size(); ++j) {
+				//todo to zrobic raz i pobierac
 				common2.insert(units->at(j)->id);
 			}
 			unordered_set<int> temp(common);

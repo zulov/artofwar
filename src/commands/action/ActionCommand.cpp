@@ -38,7 +38,11 @@ ActionCommand::ActionCommand(Physical* entity, OrderType action, Physical* parem
 }
 
 ActionCommand::~ActionCommand() {
+	if (this->vector) {
+		delete vector;
+	}
 }
+
 
 void ActionCommand::applyAction(ActionParameter* parameter) {
 	short id = static_cast<int>(action);

@@ -38,11 +38,13 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 }
 
 MainGrid::~MainGrid() {
+	//delete[] complexData;
 	delete tempNeighbour;
-	delete[]came_from;
-	delete[]cost_so_far;
+	if (pathInited) {
+		delete[]came_from;
+		delete[]cost_so_far;
+	}
 	delete ci;
-	delete[] complexData;
 }
 
 void MainGrid::prepareGridToFind() {
@@ -53,6 +55,7 @@ void MainGrid::prepareGridToFind() {
 
 	came_from = new int[resolution * resolution];
 	cost_so_far = new float[resolution * resolution];
+	pathInited = true;
 }
 
 

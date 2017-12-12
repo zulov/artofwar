@@ -9,6 +9,11 @@ SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel
 
 SelectedHudPanel::~SelectedHudPanel() {
 	delete buttons;
+	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
+		delete elements[i];
+	}
+	delete[]elements;
+	delete[]rows;
 }
 
 void SelectedHudPanel::hide(int i) {
@@ -52,11 +57,12 @@ void SelectedHudPanel::createBody() {
 }
 
 int SelectedHudPanel::iconSize() {
-	UIElement * test = new UIElement(Game::get()->getContext());
+	UIElement* test = new UIElement(Game::get()->getContext());
 	test->SetStyle("SmallIcon", style);
 
 	int size = test->GetSize().x_ + rows[0]->GetLayoutSpacing();
-	test->Remove(); delete test;
+	test->Remove();
+	delete test;
 	return size;
 }
 
@@ -100,7 +106,8 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 		for (int j = 0; j < data->size(); j += ratio) {
 			int max = Min(data->size(), j + ratio);
 			int diff = max - j;
-			std::vector<Physical*>* sub = new std::vector<Physical*>(data->begin() + j, data->begin() + max);//TODO nie tworzyc vectora tylko przekazac indeksy i data
+			std::vector<Physical*>* sub = new std::vector<Physical*>(data->begin() + j, data->begin() + max);
+			//TODO nie tworzyc vectora tylko przekazac indeksy i data
 			elements[k]->add(sub);
 			elements[k]->show();
 			elements[k]->setTexture(texture);

@@ -15,20 +15,25 @@ OrdersPanel::OrdersPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 
 
 OrdersPanel::~OrdersPanel() {
+	for (auto button : *buttons) {
+		delete button;
+	}
+	delete buttons;
 }
 
 void OrdersPanel::show(SelectedInfo* selectedInfo) {
 	setVisible(true);
 	std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
 
-	std::unordered_set<int> common = { 0,1,2,3,4,5,6,7,8,9,10 };
+	std::unordered_set<int> common = {0,1,2,3,4,5,6,7,8,9,10};
 
 	for (int i = 0; i < infoTypes->size(); ++i) {
 		std::vector<Physical*>* data = infoTypes->at(i)->getData();
 		if (!data->empty()) {
 			std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
 			std::unordered_set<int> common2;
-			for (int j = 0; j < orders->size(); ++j) {//todo to zrobic raz i pobierac
+			for (int j = 0; j < orders->size(); ++j) {
+				//todo to zrobic raz i pobierac
 				common2.insert(orders->at(j)->id);
 			}
 			std::unordered_set<int> temp(common);
@@ -43,15 +48,14 @@ void OrdersPanel::show(SelectedInfo* selectedInfo) {
 	for (int i = 0; i < buttons->size(); ++i) {
 		if (common.find(i) != common.end()) {
 			buttons->at(i)->getUIElement()->SetVisible(true);
-		}
-		else {
+		} else {
 			buttons->at(i)->getUIElement()->SetVisible(false);
 		}
 	}
 }
 
 std::vector<HudElement*>* OrdersPanel::getButtons() {
-	return  buttons;
+	return buttons;
 }
 
 void OrdersPanel::createBody() {

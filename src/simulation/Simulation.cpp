@@ -24,8 +24,9 @@ Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _si
 }
 
 Simulation::~Simulation() {
-	delete simulationInfo;
+	delete force;
 	delete aimContainer;
+	delete simulationInfo;
 	delete actionCommandList;
 }
 

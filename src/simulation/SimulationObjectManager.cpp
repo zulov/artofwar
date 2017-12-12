@@ -33,6 +33,10 @@ SimulationObjectManager::~SimulationObjectManager() {
 	clear_and_delete_vector(resources);
 	clear_and_delete_vector(toDispose);
 
+	delete unitsToAdd;
+	delete buildingsToAdd;
+	delete resourcesToAdd;
+
 	delete unitFactory;
 	delete buildingFactory;
 	delete resourceFactory;

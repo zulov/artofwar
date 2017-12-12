@@ -15,6 +15,14 @@ InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_
 }
 
 InGameMenuPanel::~InGameMenuPanel() {
+	for (auto button : *buttons) {
+		delete button;
+	}
+	delete buttons;
+
+	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
+		delete addionalPanels[i];
+	}
 }
 
 void InGameMenuPanel::setVisible(bool enable) {
@@ -76,7 +84,7 @@ void InGameMenuPanel::createBody() {
 		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleButtonClick));
 	}
 
-	Localization *l10n =Game::get()->getLocalization();
+	Localization* l10n = Game::get()->getLocalization();
 	addionalPanels = new AbstractMiddlePanel*[IN_GAME_MENU_BUTTON_NUMBER];
 	addionalPanels[0] = new FilePanel(style, l10n->Get("igm_0"));
 	addionalPanels[1] = new FilePanel(style, l10n->Get("igm_1"));

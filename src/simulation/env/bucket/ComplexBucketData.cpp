@@ -6,6 +6,7 @@
 #include "objects/Static.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include "utils.h"
+#include <iostream>
 
 
 ComplexBucketData::ComplexBucketData() {
@@ -17,7 +18,9 @@ ComplexBucketData::ComplexBucketData() {
 
 
 ComplexBucketData::~ComplexBucketData() {
-	box->Remove();
+	if (box) {
+		box->Remove();
+	}
 }
 
 void ComplexBucketData::setStatic(Static* _object) {

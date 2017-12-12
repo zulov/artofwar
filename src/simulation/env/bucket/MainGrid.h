@@ -41,11 +41,14 @@ public:
 private:
 	static IntVector2 calculateSize(int size);
 	std::vector<std::pair<int, float>*>* tempNeighbour;
+
+	int staticCounter = 0;
+	content_info* ci;
+
 	int* came_from;
 	float* cost_so_far;
 	BucketQueue frontier;
-	int staticCounter = 0;
-	content_info* ci;
+	bool pathInited = false;
 
 	ComplexBucketData *complexData;
 };

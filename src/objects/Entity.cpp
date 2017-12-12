@@ -12,8 +12,6 @@ Entity::Entity(ObjectType _type) {
 }
 
 Entity::~Entity() {
-	node->RemoveAllChildren();
-	node->RemoveAllComponents();
 	node->Remove();
 }
 

@@ -25,13 +25,20 @@ Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
 		iterators[i] = new BucketIterator();
 	}
 	buckets = new Bucket[resolution * resolution];
-	//empty = new std::vector<Unit*>();
+
 }
 
 Grid::~Grid() {
+	for (int i = 0; i < MAX_THREADS; ++i) {
+		delete iterators[i];
+	}
 	delete[] iterators;
 	//delete empty;
 	delete[] buckets;
+	for (int i = 0; i < RES_SEP_DIST; ++i) {
+		delete levelsCache[i];
+	}
+	delete[]levelsCache;
 }
 
 void Grid::updateGrid(Unit* entity, short team) {

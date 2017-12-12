@@ -27,7 +27,12 @@ Enviroment::~Enviroment() {
 	delete resourceGrid;
 
 	delete mainGrid;
-	delete[] teamUnitGrid;
+	for (auto unitGrid : teamUnitGrid) {
+		delete unitGrid;
+	}
+	delete empty;
+	delete neights;
+	delete neights2;
 }
 
 std::vector<Unit*>* Enviroment::getNeighbours(Unit* unit, double radius) {

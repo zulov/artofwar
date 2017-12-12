@@ -9,6 +9,7 @@ SelectedInfoType::SelectedInfoType() {
 
 
 SelectedInfoType::~SelectedInfoType() {
+	delete data;
 }
 
 void SelectedInfoType::clear() {

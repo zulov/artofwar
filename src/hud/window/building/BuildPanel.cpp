@@ -14,6 +14,9 @@ BuildPanel::BuildPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPane
 
 
 BuildPanel::~BuildPanel() {
+	for (auto button : *buttons) {
+		delete button;
+	}
 	delete buttons;
 }
 
@@ -50,5 +53,5 @@ void BuildPanel::createBody() {
 	BorderImage* element = panel->CreateChild<BorderImage>();
 	element->SetStyle("EditorDivider", style);
 	panel->AddItem(element);
-	
+
 }
