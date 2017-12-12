@@ -8,11 +8,11 @@
 
 Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList) {
 	enviroment = _enviromentStrategy;
-	force = new Force();
 	simObjectManager = _simCommandList->getManager();
 	srand(time(NULL));
 	animate = true;
 	simCommandList = _simCommandList;
+	force = new Force();
 	aimContainer = new AimContainer();
 	simulationInfo = new SimulationInfo();
 	actionCommandList = new ActionCommandList(aimContainer);

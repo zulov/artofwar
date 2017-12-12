@@ -58,9 +58,11 @@ void Main::load() {
 	switch (loadingState->currentStage) {
 	case 0:
 		{
+		controls = new Controls(GetSubsystem<Input>());
 		loader->createLoad("quicksave");
 		levelBuilder = new LevelBuilder(new SceneObjectManager());
 		SetupViewport();
+		Game::get()->setPlayersManager(new PlayersManager());
 		Game::get()->getPlayersManager()->load(loader->loadPlayers(), loader->loadResources());
 		hud = new Hud();
 		hud->createMyPanels();
@@ -105,7 +107,6 @@ void Main::load() {
 void Main::Start() {
 	Game* game = Game::get();
 	game->setGraphics(GetSubsystem<Graphics>());
-	game->setPlayersManager(new PlayersManager());
 
 	SetWindowTitleAndIcon();
 	InitLocalizationSystem();
@@ -116,7 +117,7 @@ void Main::Start() {
 	game->setCameraManager(new CameraManager());
 
 	InitMouseMode(MM_RELATIVE);
-	controls = new Controls(GetSubsystem<Input>());
+
 	cameraManager = game->getCameraManager();
 
 	gameState = GameState::MENU;
@@ -385,23 +386,38 @@ void Main::SetupViewport() {
 }
 
 void Main::diposeScene() {
-	loadingState->reset(4, "dispose simulation");
+	loading* loading2 = new loading();
+	loading2->reset(4, "dispose simulation");
 
 	delete simulation;
 	simulation = nullptr;
-	loadingState->inc("dispose creationList");
+	loading2->inc("dispose creationList");
 
 	delete Game::get()->getCreationCommandList();
 	Game::get()->setCreationCommandList(nullptr);
-	loadingState->inc("dispose enviroment");
+	loading2->inc("dispose enviroment");
 
 	delete Game::get()->getEnviroment();
 	Game::get()->setEnviroment(nullptr);
-	loadingState->inc("dispose hud");
+
+	loading2->inc("dispose levelBuilder");
+	delete levelBuilder;
+	levelBuilder = nullptr;
+
+	loading2->inc("dispose playerManager");
+	delete Game::get()->getPlayersManager();
+	Game::get()->setPlayersManager(nullptr);
+
+	loading2->inc("dispose controls");
+	delete controls;
+	controls = nullptr;
+
+	loading2->inc("dispose hud");
 
 	delete hud;
 	hud = nullptr;
 	loadingState->reset(4);
+	delete loading2;
 }
 
 void Main::control(float timeStep) {

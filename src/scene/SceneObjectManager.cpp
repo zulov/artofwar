@@ -9,8 +9,7 @@ SceneObjectManager::SceneObjectManager() {
 
 
 SceneObjectManager::~SceneObjectManager() {
-	clear_vector(entities);
-	delete entities;
+	clear_and_delete_vector(entities);
 }
 
 void SceneObjectManager::add(Entity* entity) {

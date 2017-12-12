@@ -38,7 +38,7 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 }
 
 MainGrid::~MainGrid() {
-	//delete[] complexData;
+	delete[] complexData;
 	delete tempNeighbour;
 	if (pathInited) {
 		delete[]came_from;
