@@ -45,6 +45,7 @@ protected:
 	void SetupViewport();
 
 private:
+	void diposeScene();
 	void subscribeToEvents();
 	void running(VariantMap& eventData);
 	void SetWindowTitleAndIcon();

@@ -6,5 +6,5 @@ enum class GameState
 	MENU,
 	RUNNING,
 	PAUSE,
-	ENDING
+	CLOSING
 };

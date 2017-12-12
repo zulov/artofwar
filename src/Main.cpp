@@ -59,6 +59,8 @@ void Main::load() {
 	case 0:
 		{
 		loader->createLoad("quicksave");
+		levelBuilder = new LevelBuilder(new SceneObjectManager());
+		SetupViewport();
 		Game::get()->getPlayersManager()->load(loader->loadPlayers(), loader->loadResources());
 		hud->createMyPanels();
 		subscribeToUIEvents();
@@ -111,8 +113,7 @@ void Main::Start() {
 	subscribeToEvents();
 
 	game->setCameraManager(new CameraManager());
-	levelBuilder = new LevelBuilder(new SceneObjectManager());
-	SetupViewport();
+
 	InitMouseMode(MM_RELATIVE);
 	controls = new Controls(GetSubsystem<Input>());
 	cameraManager = game->getCameraManager();
@@ -199,8 +200,10 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		running(eventData);
 		break;
 	case GameState::PAUSE: break;
-	case GameState::ENDING: break;
-
+	case GameState::CLOSING:
+		diposeScene();
+		gameState = GameState::MENU;
+		break;
 	}
 
 }
@@ -378,6 +381,15 @@ void Main::SetupViewport() {
 	SharedPtr<Viewport> viewport(new Viewport(context_, Game::get()->getScene(),
 	                                          Game::get()->getCameraManager()->getComponent()));
 	GetSubsystem<Renderer>()->SetViewport(0, viewport);
+}
+
+void Main::diposeScene() {
+	delete simulation;
+	simulation = nullptr;
+	delete Game::get()->getCreationCommandList();
+	Game::get()->setCreationCommandList(nullptr);
+	delete Game::get()->getEnviroment();
+	Game::get()->setEnviroment(nullptr);
 }
 
 void Main::control(float timeStep) {
