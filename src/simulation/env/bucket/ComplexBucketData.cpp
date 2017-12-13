@@ -11,6 +11,7 @@
 
 ComplexBucketData::ComplexBucketData() {
 	box = nullptr;
+	model = nullptr;
 	removeStatic();
 	neighbour.reserve(8);
 	additonalInfo = -1;

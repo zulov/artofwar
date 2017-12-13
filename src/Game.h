@@ -27,6 +27,7 @@ class Game
 public:
 	static Game* get();
 	static void init();
+	static void dispose();
 	~Game();
 	Game* setCache(Urho3D::ResourceCache* _cache);
 	Game* setContext(Urho3D::Context* _context);
@@ -59,6 +60,7 @@ public:
 	DatabaseCache* getDatabaseCache() const;
 	PlayersManager* getPlayersManager() const;
 	Enviroment* getEnviroment() const;
+
 private:
 	Game();
 	static Game* instance;

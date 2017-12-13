@@ -34,10 +34,8 @@ URHO3D_OBJECT(Main, Application);
 public:
 	Main(Context* context);
 	void Setup() override;
-	void load();
 	void Start() override;
 	void Stop() override;
-	void subscribeToUIEvents();
 	void HandleUpdate(StringHash eventType, VariantMap& eventData);
 
 protected:
@@ -45,6 +43,7 @@ protected:
 	void SetupViewport();
 
 private:
+	void subscribeToUIEvents();
 	void diposeScene();
 	void subscribeToEvents();
 	void running(VariantMap& eventData);
@@ -68,6 +67,7 @@ private:
 	void control(float timeStep);
 	void changeCamera(int type);
 	void InitLocalizationSystem();
+	void load();
 	void save(String name);
 
 	MouseMode useMouseMode_;

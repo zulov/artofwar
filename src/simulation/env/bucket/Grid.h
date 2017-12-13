@@ -31,7 +31,7 @@ protected:
 	Bucket* buckets;
 
 private:
-	BucketIterator** iterators;
+	BucketIterator* iterators[MAX_THREADS];
 	bool fieldInCircle(short i, short j, double radius);
 	std::vector<int>* getEnvIndexs(double radius);
 	void addAt(int index, Unit* entity);
@@ -39,7 +39,7 @@ private:
 
 	double diff = ((double)MAX_SEP_DIST) / RES_SEP_DIST;
 
-	std::vector<int>** levelsCache;
+	std::vector<int>* levelsCache[RES_SEP_DIST];
 	std::vector<Unit*> empty;
 
 	std::vector<Physical*>* tempSelected;

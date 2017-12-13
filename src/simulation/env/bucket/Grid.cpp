@@ -15,12 +15,10 @@ Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
 	invFieldSize = resolution / size;
 	debugEnabled = _debugEnabled;
 
-	levelsCache = new std::vector<int>*[RES_SEP_DIST];
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((((double)MAX_SEP_DIST) / RES_SEP_DIST) * i);
 	}
 
-	iterators = new BucketIterator*[MAX_THREADS];
 	for (int i = 0; i < MAX_THREADS; ++i) {
 		iterators[i] = new BucketIterator();
 	}
@@ -29,16 +27,14 @@ Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
 }
 
 Grid::~Grid() {
-	for (int i = 0; i < MAX_THREADS; ++i) {
-		delete iterators[i];
+	for (auto iterator : iterators) {
+		delete iterator;
 	}
-	delete[] iterators;
+	for (auto cache : levelsCache)  {
+		delete cache;
+	}
 
 	delete[] buckets;
-	for (int i = 0; i < RES_SEP_DIST; ++i) {
-		delete levelsCache[i];
-	}
-	delete[]levelsCache;
 	delete tempSelected;
 }
 

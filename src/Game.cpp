@@ -69,6 +69,10 @@ void Game::init() {
 	}
 }
 
+void Game::dispose() {
+	delete instance;
+}
+
 Game::~Game() {
 }
 

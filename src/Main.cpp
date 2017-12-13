@@ -126,6 +126,10 @@ void Main::Start() {
 void Main::Stop() {
 	engine_->DumpResources(true);
 	delete loadingState;
+	delete loader;
+	delete saver;
+	delete benchmark;
+	Game::dispose();
 }
 
 void Main::subscribeToUIEvents() {
