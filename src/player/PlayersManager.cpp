@@ -6,6 +6,9 @@ PlayersManager::PlayersManager() {
 
 
 PlayersManager::~PlayersManager() {
+	for (auto player : allPlayers) {
+		delete player;
+	}
 }
 
 void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dbload_resource*>* resources) {

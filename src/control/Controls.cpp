@@ -142,7 +142,7 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>* held) {
 	for (auto entity : (*entities)) {
 		select(entity); //TODO zastapic wrzuceniem na raz
 	}
-	delete entities;
+
 }
 
 void Controls::rightHold(std::pair<Vector3*, Vector3*>* held) {

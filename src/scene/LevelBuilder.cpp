@@ -21,12 +21,13 @@ LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
 LevelBuilder::~LevelBuilder() {
 	delete objectManager;
 	scene->Clear();
+	scene->Remove();
 }
 
 void LevelBuilder::createScene(SceneLoader* loader) {
 	loader->load();
-	dbload_container * data = loader->getData();
-	
+	dbload_container* data = loader->getData();
+
 	db_map* map = Game::get()->getDatabaseCache()->getMap(data->config->map);
 	Entity* zone = createZone();
 	Entity* light = createLight(Vector3(0.6f, -1.0f, 0.8f), Color(0.7f, 0.6f, 0.6f), LIGHT_DIRECTIONAL);

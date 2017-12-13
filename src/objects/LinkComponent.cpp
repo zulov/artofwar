@@ -9,16 +9,9 @@ LinkComponent::LinkComponent(Urho3D::Context* context) : Component(context) {
 LinkComponent::~LinkComponent() {
 }
 
-void LinkComponent::bound(Urho3D::Node* _node, Entity* _entity) {
+void LinkComponent::bound(Urho3D::Node* _node, Physical* _physical) {
 	node = _node;
-	entity = _entity;
-	if(entity->getType()!=ENTITY) {
-		physical = static_cast<Physical*>(_entity);
-	}
-}
-
-Entity* LinkComponent::getEntity() {
-	return entity;
+	physical = _physical;
 }
 
 Physical* LinkComponent::getPhysical() {

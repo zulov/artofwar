@@ -22,11 +22,11 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 
 		double cX = (posX + 0.5) * fieldSize - size / 2;
 		double cZ = (posZ + 0.5) * fieldSize - size / 2;
-		buckets[i].setCenter(cX, cZ);
+		complexData[i].setCenter(cX, cZ);
 		if (debugEnabled &&
 			(cX > -coef && cX < coef) &&
 			(cZ > -coef && cZ < coef)) {
-			buckets[i].createBox(fieldSize);
+			complexData[i].createBox(fieldSize);
 		}
 		++posZ;
 		if (posZ >= resolution) {
@@ -50,9 +50,9 @@ MainGrid::~MainGrid() {
 void MainGrid::prepareGridToFind() {
 	for (int i = 0; i < resolution * resolution; ++i) {
 		tempNeighbour = neighbors(i);
-		buckets[i].setNeightbours(tempNeighbour);
+		complexData[i].setNeightbours(tempNeighbour);
 	}
-
+	tempNeighbour->clear();
 	came_from = new int[resolution * resolution];
 	cost_so_far = new float[resolution * resolution];
 	pathInited = true;
@@ -142,7 +142,7 @@ void MainGrid::addStatic(Static* object) {
 			for (int j = iZ + sizeZ.x_ - 1; j < iZ + sizeZ.y_ + 1; ++j) {
 				const int index = getIndex(i, j);
 				tempNeighbour = neighbors(index);
-				buckets[index].setNeightbours(tempNeighbour);
+				complexData[index].setNeightbours(tempNeighbour);
 			}
 		}
 	}

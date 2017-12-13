@@ -21,9 +21,7 @@ ComplexBucketData::~ComplexBucketData() {
 	if (box) {
 		box->Remove();
 	}
-	for (auto value : neighbour) {
-		delete value;
-	}
+	clear_vector(neighbour);
 }
 
 void ComplexBucketData::setStatic(Static* _object) {

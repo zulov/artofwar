@@ -25,7 +25,7 @@ Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
 		iterators[i] = new BucketIterator();
 	}
 	buckets = new Bucket[resolution * resolution];
-
+	tempSelected = new std::vector<Physical*>();
 }
 
 Grid::~Grid() {
@@ -33,12 +33,13 @@ Grid::~Grid() {
 		delete iterators[i];
 	}
 	delete[] iterators;
-	//delete empty;
+
 	delete[] buckets;
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		delete levelsCache[i];
 	}
 	delete[]levelsCache;
+	delete tempSelected;
 }
 
 void Grid::updateGrid(Unit* entity, short team) {
@@ -113,8 +114,8 @@ int& Grid::getSizeAt(int index) {
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair) {
 	Vector3* begin = pair->first;
 	Vector3* end = pair->second;
-	std::vector<Physical*>* entities = new std::vector<Physical*>();//TOODO reserva zrobic sensownego
-	entities->reserve(DEFAULT_VECTOR_SIZE);
+	tempSelected->clear();
+
 	const short posBeginX = getIndex(begin->x_);
 	const short posBeginZ = getIndex(begin->z_);
 	const short posEndX = getIndex(end->x_);
@@ -124,10 +125,10 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair
 		for (short j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
 			const int index = i * resolution + j;
 			std::vector<Unit *>& content = getContentAt(index);//TODO czy tu ampersentma byc?
-			entities->insert(entities->end(), content.begin(), content.end());
+			tempSelected->insert(tempSelected->end(), content.begin(), content.end());
 		}
 	}
-	return entities;
+	return tempSelected;
 }
 
 int Grid::getIndex(short posX, short posZ) {

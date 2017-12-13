@@ -15,16 +15,13 @@ public:
 	std::vector<Unit*>& getContent();
 	void add(Unit* entity);
 	void remove(Unit* entity);
-	void setCenter(double _centerX, double _centerY);
 	Vector2& getCenter();
 
 	void setStatic(Static* object);
 	void removeStatic();
-	void createBox(double bucketSize);
 	Vector3* getDirectrionFrom(Vector3* position);
 
 	void upgrade(ComplexBucketData* _data);
-	void setNeightbours(std::vector<std::pair<int, float>*>* tempNeighbour);
 	std::vector<std::pair<int, float>*>& getNeightbours();
 	int &getSize();
 	bool incUnitsPerPlayer(content_info* ci, int activePlayer, bool checks[]);

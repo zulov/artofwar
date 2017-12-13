@@ -3,6 +3,7 @@
 #include <math.h>
 #include <iostream>
 #include <vector>
+#include "utils.h"
 
 class FibHeap
 {
@@ -51,9 +52,7 @@ public:
 	}
 
 	~FibHeap() {
-		for (auto fibNode : pool) {
-			delete fibNode;
-		}
+		clear_vector(pool);
 	}
 
 	FibNode* getNode(int pl, double k) {

@@ -37,9 +37,10 @@ private:
 	void addAt(int index, Unit* entity);
 	void removeAt(int index, Unit* entity);
 
-	Node** boxes;
 	double diff = ((double)MAX_SEP_DIST) / RES_SEP_DIST;
 
 	std::vector<int>** levelsCache;
 	std::vector<Unit*> empty;
+
+	std::vector<Physical*>* tempSelected;
 };

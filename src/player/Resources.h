@@ -13,7 +13,6 @@ public:
 	bool hasChanged();
 	short getSize();
 	double *getValues();
-	Urho3D::String** getNames();
 	void hasBeedUpdatedDrawn();
 	std::string getValues(int precision, int player);
 	void setValue(int id, float amount);
@@ -21,7 +20,6 @@ public:
 private:
 	bool changed;
 	void revert(int end, std::vector<db_cost*>* costs);
-	Urho3D::String* names[RESOURCE_NUMBER_DB];
 	double values[RESOURCE_NUMBER_DB];
 	int size;
 };

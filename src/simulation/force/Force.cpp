@@ -17,8 +17,7 @@ Urho3D::Vector3* Force::separationObstacle(Unit* unit, Vector2& repulse) {
 Urho3D::Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 	Vector3* force = new Vector3();
 
-	for (int i = 0; i < units->size(); ++i) {
-		Unit* neight = (*units)[i];
+	for (auto neight : *units) {
 		double sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
@@ -26,16 +25,16 @@ Urho3D::Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 		const double sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist) { continue; }
 		if (sqDistance == 0) {
-			force->x_ = ((double)rand() / (RAND_MAX)) * coef - (coef / 2);
-			force->z_ = ((double)rand() / (RAND_MAX)) * coef - (coef / 2);
+			force->x_ = (static_cast<double>(rand()) / (RAND_MAX)) * coef - (coef / 2);
+			force->z_ = (static_cast<double>(rand()) / (RAND_MAX)) * coef - (coef / 2);
 			(*force) *= boostCoef * sepCoef;
 			return force;
 		}
 		const double distance = sqrt(sqDistance);
 
 		diff /= distance;
-		double minimalDistance = unit->getMinimalDistance() + neight->getMinimalDistance();
-		double coef = calculateCoef(distance, minimalDistance);//poprawic kolejnosc zeby ograniczyc operacje na vektorze
+		const double minimalDistance = unit->getMinimalDistance() + neight->getMinimalDistance();
+		const double coef = calculateCoef(distance, minimalDistance);
 
 		diff *= coef;
 		(*force) += diff;

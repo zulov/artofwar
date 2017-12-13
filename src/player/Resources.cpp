@@ -12,8 +12,7 @@ Resources::Resources(double valueForAll) {
 	size = Game::get()->getDatabaseCache()->getResourceSize();
 	int i = 0;
 	for (; i < size; ++i) {
-		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
-		names[i] = new Urho3D::String(resource->name);
+		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);		
 		values[i] = valueForAll;
 	}
 	for (; i < RESOURCE_NUMBER_DB; ++i) {
@@ -24,7 +23,6 @@ Resources::Resources(double valueForAll) {
 
 
 Resources::~Resources() {
-	delete names;
 }
 
 bool Resources::reduce(std::vector<db_cost*>* costs) {
@@ -55,10 +53,6 @@ short Resources::getSize() {
 
 double* Resources::getValues() {
 	return values;
-}
-
-Urho3D::String** Resources::getNames() {
-	return names;
 }
 
 void Resources::hasBeedUpdatedDrawn() {

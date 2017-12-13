@@ -9,9 +9,11 @@
 Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList) {
 	enviroment = _enviromentStrategy;
 	simObjectManager = _simCommandList->getManager();
+	simCommandList = _simCommandList;
+	
 	srand(time(NULL));
 	animate = true;
-	simCommandList = _simCommandList;
+
 	force = new Force();
 	aimContainer = new AimContainer();
 	simulationInfo = new SimulationInfo();
@@ -112,7 +114,7 @@ void Simulation::updateBuildingQueue() {
 		QueueElement* done = build->updateQueue(maxTimeFrame);
 		if (done) {
 			simCommandList->add(new CreationCommand(done->getType(), done->getAmount(), done->getSubtype(),
-			                                        new Vector3(*(build->getTarget())), 0));
+			                                        new Vector3(*build->getTarget()), 0));
 		}
 	}
 }
@@ -206,8 +208,8 @@ void Simulation::calculateForces() {
 		Vector3* validPos = enviroment->validatePosition(unit->getPosition());
 		if (!validPos) {
 			std::vector<Unit*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
-			Vector3* sepPedestrian = force->separationUnits(unit, neighbours);
 
+			Vector3* sepPedestrian = force->separationUnits(unit, neighbours);
 			Vector3* destForce = force->destination(unit);
 
 			(*sepPedestrian) += (*destForce);

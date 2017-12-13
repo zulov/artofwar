@@ -37,10 +37,6 @@ void Bucket::remove(Unit* entity) {
 
 }
 
-void Bucket::setCenter(double _centerX, double _centerY) {
-	data->setCenter(_centerX, _centerY);
-}
-
 Vector2& Bucket::getCenter() {
 	return data->getCenter();
 }
@@ -54,20 +50,12 @@ void Bucket::removeStatic() {
 	data->removeStatic();
 }
 
-void Bucket::createBox(double bucketSize) {
-	data->createBox(bucketSize);
-}
-
 Vector3* Bucket::getDirectrionFrom(Vector3* position) {
 	return data->getDirectrionFrom(position);
 }
 
 void Bucket::upgrade(ComplexBucketData* _data) {
 	data = _data;
-}
-
-void Bucket::setNeightbours(std::vector<std::pair<int, float>*>* tempNeighbour) {
-	data->setNeightbours(tempNeighbour);
 }
 
 std::vector<std::pair<int, float>*>& Bucket::getNeightbours() {
