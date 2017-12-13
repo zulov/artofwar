@@ -8,7 +8,6 @@ Bucket::Bucket() {
 	content.reserve(DEFAULT_VECTOR_SIZE / 2);
 	size = 0;
 	std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
-	data = nullptr;
 }
 
 std::vector<Unit *>& Bucket::getContent() {
@@ -37,31 +36,6 @@ void Bucket::remove(Unit* entity) {
 
 }
 
-Vector2& Bucket::getCenter() {
-	return data->getCenter();
-}
-
-void Bucket::setStatic(Static* object) {
-	content.clear();
-	data->setStatic(object);
-}
-
-void Bucket::removeStatic() {
-	data->removeStatic();
-}
-
-Vector3* Bucket::getDirectrionFrom(Vector3* position) {
-	return data->getDirectrionFrom(position);
-}
-
-void Bucket::upgrade(ComplexBucketData* _data) {
-	data = _data;
-}
-
-std::vector<std::pair<int, float>*>& Bucket::getNeightbours() {
-	return data->getNeightbours();
-}
-
 int& Bucket::getSize() {
 	return size;
 }
@@ -79,32 +53,4 @@ bool Bucket::incUnitsPerPlayer(content_info* ci, int activePlayer, bool checks[]
 		return hasUnits;
 	}
 	return false;
-}
-
-void Bucket::update(content_info* ci, bool checks[], int activePlayer) {
-	switch (data->getType()) {
-	case UNIT:
-		{
-		if (checks[3] || checks[4]) {
-			const bool hasInc = incUnitsPerPlayer(ci, activePlayer, checks);
-			if (hasInc) {
-				ci->hasUnit = true;
-			}
-		}
-		}
-		break;
-	case RESOURCE:
-		if (checks[1]) {
-			ci->hasResource = true;
-			ci->resourceNumber[data->getAdditonalInfo()]++;
-		}
-		break;
-	case BUILDING:
-		if (checks[2]) {
-			ci->hasBuilding = true;
-			ci->buildingNumberPerPlayer[data->getAdditonalInfo()]++;
-		}
-		break;
-	default: ;
-	}
 }

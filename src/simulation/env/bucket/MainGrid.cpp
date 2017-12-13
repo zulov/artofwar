@@ -18,8 +18,6 @@ MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_r
 	double coef = (miniRes * fieldSize);
 	complexData = new ComplexBucketData[resolution * resolution];
 	for (int i = 0; i < resolution * resolution; ++i) {
-		buckets[i].upgrade(&complexData[i]);
-
 		double cX = (posX + 0.5) * fieldSize - size / 2;
 		double cZ = (posZ + 0.5) * fieldSize - size / 2;
 		complexData[i].setCenter(cX, cZ);
@@ -100,7 +98,7 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to, b
 	for (short i = iMin; i < iMax; ++i) {
 		for (short j = jMin; j < jMax; ++j) {
 			const int index = i * resolution + j;
-			buckets[index].update(ci, checks, activePlayer);
+			updateInfo(index, ci, checks, activePlayer);
 		}
 	}
 	return ci;
@@ -108,7 +106,37 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to, b
 
 Vector2& MainGrid::getCenterAt(const IntVector2& cords) {
 	const int index = getIndex(cords.x_, cords.y_);
-	return buckets[index].getCenter();
+	return complexData[index].getCenter();
+}
+
+void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {
+	switch (complexData[index].getType()) {
+	case UNIT:
+		{
+		if (checks[3] || checks[4]) {
+			const bool hasInc = buckets[index].incUnitsPerPlayer(ci, activePlayer, checks);
+			if (hasInc) {
+				ci->hasUnit = true;
+			}
+		}
+		}
+		break;
+	case RESOURCE:
+		if (checks[1]) {
+			ci->hasResource = true;
+			ci->resourceNumber[complexData[index].getAdditonalInfo()]++;
+		}
+		break;
+	case BUILDING:
+		if (checks[2]) {
+			ci->hasBuilding = true;
+			ci->buildingNumberPerPlayer[complexData[index].getAdditonalInfo()]++;
+		}
+		break;
+	default: ;
+	}
+
+
 }
 
 IntVector2 MainGrid::calculateSize(int size) {
@@ -134,7 +162,7 @@ void MainGrid::addStatic(Static* object) {
 		for (int i = iX + sizeX.x_; i < iX + sizeX.y_; ++i) {
 			for (int j = iZ + sizeZ.x_; j < iZ + sizeZ.y_; ++j) {
 				const int index = getIndex(i, j);
-				buckets[index].setStatic(object);
+				complexData[index].setStatic(object);
 			}
 		}
 
@@ -151,7 +179,7 @@ void MainGrid::addStatic(Static* object) {
 void MainGrid::removeStatic(Static* object) {
 	//TODO poprawic
 	int index = object->getBucketIndex(0);
-	buckets[index].removeStatic();
+	complexData[index].removeStatic();
 }
 
 Vector3* MainGrid::getDirectionFrom(Vector3* position) {
@@ -160,7 +188,7 @@ Vector3* MainGrid::getDirectionFrom(Vector3* position) {
 	const int index = getIndex(posX, posZ);
 	if (!complexData[index].isUnit()) {
 
-		Vector3* direction = buckets[index].getDirectrionFrom(position);
+		Vector3* direction = complexData[index].getDirectrionFrom(position);
 
 		direction->Normalize();
 		return direction;
@@ -182,8 +210,8 @@ Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector3* pos) {
 	short bottom = posZ + sizeZ.y_ - 1;
 	const int index1 = getIndex(left, top);
 	const int index2 = getIndex(right, bottom);
-	Vector2 center1 = buckets[index1].getCenter();
-	Vector2 center2 = buckets[index2].getCenter();
+	Vector2 center1 = complexData[index1].getCenter();
+	Vector2 center2 = complexData[index2].getCenter();
 	Vector2 newCenter = (center1 + center2) / 2;
 	pos->x_ = newCenter.x_;
 	pos->z_ = newCenter.y_;
@@ -214,7 +242,7 @@ std::vector<std::pair<int, float>*>* MainGrid::neighbors(const int current) {
 }
 
 double MainGrid::cost(const int current, const int next) {
-	return (buckets[current].getCenter() - buckets[next].getCenter()).Length();
+	return (complexData[current].getCenter() - complexData[next].getCenter()).Length();
 }
 
 void MainGrid::debug(IntVector2& startV, IntVector2& goalV) {
@@ -260,7 +288,7 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 		if (current == goal) {
 			break;
 		}
-		auto& neights = buckets[current].getNeightbours();
+		auto& neights = complexData[current].getNeightbours();
 		for (auto& neight : neights) {
 			int next = neight->first;
 			if (came_from[current] != next) {

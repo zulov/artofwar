@@ -39,6 +39,7 @@ public:
 	content_info* getContentInfo(const Vector2& from, const Vector2& to, bool checks[], int activePlayer);
 	Vector2 & getCenterAt(const IntVector2& cords);
 private:
+	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
 	static IntVector2 calculateSize(int size);
 	std::vector<std::pair<int, float>*>* tempNeighbour;
 
