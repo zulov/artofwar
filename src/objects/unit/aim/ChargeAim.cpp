@@ -33,6 +33,9 @@ ChargeAim::ChargeAim(Urho3D::Vector3* _direction) {
 
 ChargeAim::~ChargeAim() {
 	delete direction;
+	if (node) {
+		node->Remove();
+	}
 }
 
 Urho3D::Vector3* ChargeAim::getDirection(Unit* unit) {

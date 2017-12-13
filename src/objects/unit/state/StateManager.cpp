@@ -16,7 +16,6 @@
 #include "Game.h"
 
 StateManager::StateManager() {
-	states = new State*[STATE_SIZE];
 	states[static_cast<int>(UnitStateType::GO)] = new GoState();
 	states[static_cast<int>(UnitStateType::STOP)] = new StopState();
 	states[static_cast<int>(UnitStateType::CHARAGE)] = new ChargeState();
@@ -38,6 +37,9 @@ StateManager::StateManager() {
 
 
 StateManager::~StateManager() {
+	for (auto state : states) {
+		delete state;
+	}
 }
 
 void StateManager::changeState(Unit* unit, UnitStateType stateTo) {

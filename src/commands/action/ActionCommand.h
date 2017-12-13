@@ -12,7 +12,6 @@ class ActionCommand :public AbstractCommand
 public:
 	ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector3* paremater);//TODO ten vector trzeba skopiowac raczej
 	ActionCommand(std::vector<Physical*>* entities, OrderType action, Physical* paremater);
-	ActionCommand(Physical* entity, OrderType action, Vector3* paremater);
 	ActionCommand(Physical* entity, OrderType action, Physical* paremater);
 	~ActionCommand();
 	

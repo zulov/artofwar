@@ -46,7 +46,7 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 MiniMapPanel::~MiniMapPanel() {
 	delete heightMap;
 	delete elements;
-	delete minimap;
+	//delete minimap;
 	text->Release();
 }
 

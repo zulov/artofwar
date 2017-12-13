@@ -2,7 +2,6 @@
 
 
 LinkComponent::LinkComponent(Urho3D::Context* context) : Component(context) {
-
 }
 
 

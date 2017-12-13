@@ -14,11 +14,11 @@ struct MouseButton
 	}
 
 	void clean() {
-		if (held->first != nullptr) {
+		if (held->first) {
 			delete held->first;
 			held->first = nullptr;
 		}
-		if (held->second != nullptr) {
+		if (held->second) {
 			delete held->second;
 			held->second = nullptr;
 		}

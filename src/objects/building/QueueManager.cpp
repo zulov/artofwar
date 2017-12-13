@@ -13,7 +13,7 @@ QueueManager::QueueManager(short _maxCapacity) {
 
 
 QueueManager::~QueueManager() {
-	clear_vector(queue);
+	clear_and_delete_vector(queue);
 }
 
 void QueueManager::add(short value, ObjectType type, short id) {

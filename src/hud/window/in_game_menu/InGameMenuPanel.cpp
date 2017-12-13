@@ -7,6 +7,7 @@
 #include <Urho3D/UI/Text.h>
 #include "hud/window/middle/FilePanel.h"
 #include <Urho3D/UI/UIEvents.h>
+#include "utils.h"
 
 #define IN_GAME_MENU_BUTTON_NUMBER 5
 
@@ -15,14 +16,12 @@ InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_
 }
 
 InGameMenuPanel::~InGameMenuPanel() {
-	for (auto button : *buttons) {
-		delete button;
-	}
-	delete buttons;
+	clear_and_delete_vector(buttons);
 
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		delete addionalPanels[i];
 	}
+	delete[]addionalPanels;
 }
 
 void InGameMenuPanel::setVisible(bool enable) {

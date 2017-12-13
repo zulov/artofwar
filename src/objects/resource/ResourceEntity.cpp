@@ -24,9 +24,7 @@ ResourceEntity::ResourceEntity(Vector3* _position, int id) : Static(_position, R
 }
 
 ResourceEntity::~ResourceEntity() {
-	if (name) {
-		delete name;
-	}
+
 }
 
 int ResourceEntity::getDbID() {
@@ -35,12 +33,10 @@ int ResourceEntity::getDbID() {
 
 void ResourceEntity::populate(db_resource* _dbResource) {
 	type = _dbResource->id;
-	name = new String(_dbResource->name);
 	gridSize = _dbResource->size;
 	amonut = _dbResource->maxCapacity;
 	maxUsers = _dbResource->maxUsers;
 	dbResource = _dbResource;
-
 }
 
 double ResourceEntity::getHealthBarSize() {

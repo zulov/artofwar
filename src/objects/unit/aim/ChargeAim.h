@@ -14,6 +14,6 @@ public:
 private:
 	Urho3D::Vector3* direction;
 	double distance;
-	Urho3D::Node* node;
+	Urho3D::Node* node=nullptr;
 };
 

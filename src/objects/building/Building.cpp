@@ -38,6 +38,7 @@ Building::Building(Vector3* _position, int id, int player) : Static(_position, B
 
 Building::~Building() {
 	delete queue;
+	delete target;
 }
 
 double Building::getHealthBarSize() {

@@ -9,6 +9,7 @@ Aims::Aims() {
 }
 
 Aims::~Aims() {
+	clear_vector(aims);
 }
 
 Urho3D::Vector3* Aims::getDirection(Unit* unit, short index) {

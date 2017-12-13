@@ -21,14 +21,6 @@ ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action,
 	this->vector = nullptr;
 }
 
-ActionCommand::ActionCommand(Physical* entity, OrderType action, Vector3* paremeter) {
-	this->entity = entity;
-	this->action = action;
-	this->vector = paremeter;
-	this->entities = nullptr;
-	this->toFollow = nullptr;
-}
-
 ActionCommand::ActionCommand(Physical* entity, OrderType action, Physical* paremeter) {
 	this->entity = entity;
 	this->action = action;

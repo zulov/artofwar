@@ -40,7 +40,6 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center
 std::vector<Unit*>* UnitFactory::load(dbload_unit* unit) {
 	units->clear();
 
-
 	Vector3* position = new Vector3(unit->pos_x, 0, unit->pos_z);
 	Unit* newUnit = new Unit(position, unit->id_db, unit->player);
 	newUnit->load(unit);

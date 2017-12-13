@@ -5,6 +5,7 @@
 #include "objects/building/Building.h"
 #include "database/DatabaseCache.h"
 #include <Urho3D/Resource/ResourceCache.h>
+#include "utils.h"
 
 
 BuildPanel::BuildPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {
@@ -14,10 +15,7 @@ BuildPanel::BuildPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPane
 
 
 BuildPanel::~BuildPanel() {
-	for (auto button : *buttons) {
-		delete button;
-	}
-	delete buttons;
+	clear_and_delete_vector(buttons);
 }
 
 std::vector<HudElement*>* BuildPanel::getButtons() {

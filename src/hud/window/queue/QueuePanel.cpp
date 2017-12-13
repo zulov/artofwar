@@ -96,7 +96,7 @@ void QueuePanel::createBody() {
 void QueuePanel::HandleReduce(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	QueueHudElement* qHudElement = (QueueHudElement *)element->GetVar("QueueHudElement").GetVoidPtr();
-	//TODO jesli klikniete prawym to odjac wiecej
+
 	int button = eventData[UIMouseClick::P_BUTTON].GetInt();
 	if (button == MOUSEB_LEFT) {
 		qHudElement->reduce(1);

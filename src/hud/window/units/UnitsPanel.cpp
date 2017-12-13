@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include <Urho3D/Resource/ResourceCache.h>
 #include "database/DatabaseCache.h"
+#include "utils.h"
 
 
 UnitsPanel::UnitsPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {
@@ -17,13 +18,10 @@ UnitsPanel::UnitsPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPane
 
 
 UnitsPanel::~UnitsPanel() {
-	delete buttons;
+	clear_and_delete_vector(buttons);
 }
 
 std::vector<HudElement*>* UnitsPanel::getButtons() {
-	for (auto button : *buttons) {
-		delete button;
-	}
 	return buttons;
 }
 

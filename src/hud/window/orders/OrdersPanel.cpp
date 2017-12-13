@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include "database/DatabaseCache.h"
 #include <Urho3D/Resource/ResourceCache.h>
+#include "utils.h"
 
 
 OrdersPanel::OrdersPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
@@ -15,10 +16,7 @@ OrdersPanel::OrdersPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 
 
 OrdersPanel::~OrdersPanel() {
-	for (auto button : *buttons) {
-		delete button;
-	}
-	delete buttons;
+	clear_and_delete_vector(buttons);
 }
 
 void OrdersPanel::show(SelectedInfo* selectedInfo) {

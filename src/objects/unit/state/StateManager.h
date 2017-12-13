@@ -16,7 +16,7 @@ public:
 	bool checkChangeState(Unit* unit, UnitStateType stateTo);
 	void execute(Unit* unit);
 private:
-	State** states;
+	State* states[STATE_SIZE];
 
 	std::set<UnitStateType> ordersToUnit[UNITS_NUMBER_DB];
 };

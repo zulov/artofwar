@@ -10,6 +10,7 @@ AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style): Object(Game::
 
 
 AbstractWindowPanel::~AbstractWindowPanel() {
+	window->Remove();
 }
 
 Urho3D::String& AbstractWindowPanel::getStyleName() {

@@ -17,6 +17,7 @@
 #include <vector>
 #include "defines.h"
 #include <Urho3D/Math/Vector2.h>
+#include "utils.h"
 
 struct db_unit
 {
@@ -277,4 +278,8 @@ struct db_container
 			ordersToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 		}
 	}
+	~db_container() {
+		
+	}
+
 };

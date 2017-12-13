@@ -21,7 +21,6 @@ public:
 	void up();
 	void reduce();
 private:
-	String* name;
 	db_resource* dbResource;
 	int type;
 	double amonut;

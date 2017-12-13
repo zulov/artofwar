@@ -25,7 +25,6 @@ TargetAim::TargetAim(Urho3D::Vector3* _position) {
 
 
 TargetAim::~TargetAim() {
-	node->RemoveAllComponents();
 	node->Remove();
 
 	delete position;
