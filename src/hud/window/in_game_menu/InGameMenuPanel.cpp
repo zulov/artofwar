@@ -22,6 +22,7 @@ InGameMenuPanel::~InGameMenuPanel() {
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		delete addionalPanels[i];
 	}
+	
 	delete[]addionalPanels;
 }
 

@@ -322,9 +322,7 @@ void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 }
 
 void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
-	using namespace KeyDown;
-
-	int key = eventData[P_KEY].GetInt();
+	const int key = eventData[KeyDown::P_KEY].GetInt();
 
 	if (key == KEY_F1) {
 		GetSubsystem<Console>()->Toggle();
@@ -384,6 +382,9 @@ void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 }
 
 void Main::SetupViewport() {
+//	if (!GetSubsystem<Renderer>()->GetViewport(0)) {
+//		delete GetSubsystem<Renderer>()->GetViewport(0);
+//	}
 	SharedPtr<Viewport> viewport(new Viewport(context_, Game::get()->getScene(),
 	                                          Game::get()->getCameraManager()->getComponent()));
 	GetSubsystem<Renderer>()->SetViewport(0, viewport);
@@ -391,16 +392,16 @@ void Main::SetupViewport() {
 
 void Main::diposeScene() {
 	loading* loading2 = new loading();
-	loading2->reset(4, "dispose simulation");
 
+	loading2->reset(4, "dispose simulation");
 	delete simulation;
 	simulation = nullptr;
-	loading2->inc("dispose creationList");
 
+	loading2->inc("dispose creationList");
 	delete Game::get()->getCreationCommandList();
 	Game::get()->setCreationCommandList(nullptr);
-	loading2->inc("dispose enviroment");
 
+	loading2->inc("dispose enviroment");
 	delete Game::get()->getEnviroment();
 	Game::get()->setEnviroment(nullptr);
 
@@ -424,8 +425,8 @@ void Main::diposeScene() {
 	delete loading2;
 }
 
-void Main::control(float timeStep) {
-	IntVector2 cursorPos = Game::get()->getUI()->GetCursorPosition();
+void Main::control(const float timeStep) const {
+	const IntVector2 cursorPos = Game::get()->getUI()->GetCursorPosition();
 	UIElement* element = Game::get()->getUI()->GetElementAt(cursorPos, false);
 
 	if (element) {

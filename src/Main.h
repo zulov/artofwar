@@ -64,7 +64,7 @@ private:
 	void HandleOrdersButton(StringHash eventType, VariantMap& eventData);
 	void HandleSelectedButton(StringHash eventType, VariantMap& eventData);
 
-	void control(float timeStep);
+	void control(float timeStep) const;
 	void changeCamera(int type);
 	void InitLocalizationSystem();
 	void load();

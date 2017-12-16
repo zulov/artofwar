@@ -61,18 +61,19 @@ void SelectedHudElement::setTexture(Texture2D* texture) {
 	setTextureToSprite(icon, texture);
 }
 
-void SelectedHudElement::add(std::vector<Physical*>* physicals) {
+void SelectedHudElement::add(std::vector<Physical*>* physicals, int start, int end) {
 	selected->clear();
 
 	for (int i = 0; i < MAX_SELECTED_IN_BUTTON; ++i) {
 		bars[i]->SetVisible(false);
 	}
-	for (int i = 0; i < physicals->size(); ++i) {
+	for (int i = start; i < end; ++i) {
 		selected->push_back(physicals->at(i));
-		if (i < MAX_SELECTED_IN_BUTTON) {
-			bars[i]->SetRange(1);
-			bars[i]->SetValue(physicals->at(i)->getHealthPercent());
-			bars[i]->SetVisible(true);
+		int ind = i - start;
+		if (ind < MAX_SELECTED_IN_BUTTON) {
+			bars[ind]->SetRange(1);
+			bars[ind]->SetValue(physicals->at(i)->getHealthPercent());
+			bars[ind]->SetVisible(true);
 		}
 	}
 }

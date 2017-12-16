@@ -131,6 +131,7 @@ Hud::~Hud() {
 	clear_vector(panels);
 	delete windows;
 	Game::get()->getUI()->GetCursor()->Remove();
+	//Game::get()->getUI()->GetRoot()->Remove();
 }
 
 void Hud::createDebugHud() {

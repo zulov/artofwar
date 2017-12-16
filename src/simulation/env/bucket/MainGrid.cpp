@@ -8,7 +8,8 @@
 #include "Game.h"
 
 
-MainGrid::MainGrid(const short _resolution, const double _size, const bool _debugEnabled): Grid(_resolution, _size, _debugEnabled) {
+MainGrid::MainGrid(const short _resolution, const double _size, const bool _debugEnabled): Grid(_resolution, _size,
+                                                                                                _debugEnabled) {
 	short posX = 0;
 	short posZ = 0;
 
@@ -32,6 +33,7 @@ MainGrid::MainGrid(const short _resolution, const double _size, const bool _debu
 			posZ = 0;
 		}
 	}
+
 	ci = new content_info();
 }
 

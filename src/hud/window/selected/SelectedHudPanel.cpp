@@ -106,9 +106,8 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 		for (int j = 0; j < data->size(); j += ratio) {
 			int max = Min(data->size(), j + ratio);
 			int diff = max - j;
-			std::vector<Physical*>* sub = new std::vector<Physical*>(data->begin() + j, data->begin() + max);
-			//TODO nie tworzyc vectora tylko przekazac indeksy i data
-			elements[k]->add(sub);
+
+			elements[k]->add(data, j, max);
 			elements[k]->show();
 			elements[k]->setTexture(texture);
 
@@ -118,7 +117,6 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 				elements[k]->hideText();
 			}
 			++k;
-			delete sub;
 		}
 	}
 	hide(k);

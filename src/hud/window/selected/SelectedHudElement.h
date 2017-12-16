@@ -20,7 +20,7 @@ public:
 	void setText(const String& msg);
 	void hideText();
 	void setTexture(Texture2D* texture);
-	void add(std::vector<Physical*> *physicals);
+	void add(std::vector<Physical*> *physicals, int start, int end);
 	std::vector<Physical*>* getSelected();
 private:
 	Urho3D::Button* button;

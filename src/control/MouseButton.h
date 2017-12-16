@@ -35,6 +35,10 @@ struct MouseButton
 	}
 
 	void setSecond(Vector3& hitPos) {
+		if (held->second != nullptr) {
+			delete held->second;
+			held->second = nullptr;
+		}
 		held->second = new Vector3(hitPos);
 		isHeld = false;
 	}
