@@ -12,14 +12,14 @@ public:
 	class FibNode
 	{
 	public:
-		FibNode(double k, int pl): key(k), left(nullptr), right(nullptr), child(nullptr), degree(-1),
+		FibNode(const double k, const int pl): key(k), left(nullptr), right(nullptr), child(nullptr), degree(-1),
 			payload(pl) {
 		}
 
 		~FibNode() {
 		}
 
-		bool isEmpty() {
+		bool isEmpty() const {
 			return key < 0;
 		}
 
@@ -55,9 +55,9 @@ public:
 		clear_vector(pool);
 	}
 
-	FibNode* getNode(int pl, double k) {
+	FibNode* getNode(const int pl, const double k) {
 		for (int i = lowestFree; i < pool.size(); ++i) {
-			auto fibNode = pool[i];
+			const auto fibNode = pool[i];
 			if (fibNode->isEmpty()) {
 				fibNode->payload = pl;
 				fibNode->key = k;
@@ -91,7 +91,7 @@ public:
 		std::fill_n(temp.begin(), temp.size(), nullptr);
 	}
 
-	FibNode* minimum() {
+	FibNode* minimum() const {
 		return minNode;
 	}
 
@@ -151,7 +151,7 @@ public:
 			++rootSize;
 			next = next->right;
 		} while (next != w);
-		int secondSize = max_degree + rootSize;
+		const int secondSize = max_degree + rootSize;
 		if (temp.size() < secondSize) {
 			temp.resize(secondSize);
 		}
@@ -231,7 +231,7 @@ public:
 	}
 
 	int get() {
-		int toReturn = minimum()->payload;
+		const int toReturn = minimum()->payload;
 		pop();
 		return toReturn;
 	}
@@ -256,7 +256,7 @@ public:
 	}
 
 	unsigned int size() {
-		return (unsigned int)n;
+		return static_cast<unsigned int>(n);
 	}
 
 	int n;

@@ -8,7 +8,7 @@ using namespace Urho3D;
 
 class CameraBehave {
 public:
-	CameraBehave();
+	CameraBehave(float _minY, String _name);
 	virtual ~CameraBehave();
 
 	virtual void translate(bool cameraKeys[], int wheel, float timeStep, float min) = 0;
@@ -21,10 +21,10 @@ public:
 	void changePosition(float percentX, float percentY);
 protected:
 	Urho3D::SharedPtr<Urho3D::Node> cameraNode;
-	Urho3D::String name;
 	Urho3D::String *info;
 	bool changed;
 	Urho3D::Camera* camera;
 	float minY;
+	Urho3D::String name;
 };
 

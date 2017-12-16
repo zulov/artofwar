@@ -1,16 +1,10 @@
 #include "RtsCameraBehave.h"
 #include "Game.h"
 
-RtsCameraBehave::RtsCameraBehave() {
-	minY = 3;
-	cameraNode = new Urho3D::Node(Game::get()->getContext());
-	cameraNode->SetPosition(Urho3D::Vector3(0.0f, 50.0f, -50.0f));
+RtsCameraBehave::RtsCameraBehave():CameraBehave(3,"RTSCam") {
 	double diff = sqrt(50.0f - minY) + 1;
 	double a = 10;
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * a);
-	camera = cameraNode->CreateComponent<Urho3D::Camera>();
-	camera->SetFarClip(300.0f);
-	name = Urho3D::String("RTSCam");
 }
 
 

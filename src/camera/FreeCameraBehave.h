@@ -6,7 +6,7 @@ class FreeCameraBehave : public CameraBehave
 {
 public:
 	FreeCameraBehave();
-	~FreeCameraBehave();
+	virtual ~FreeCameraBehave();
 
 	void translate(bool cameraKeys[], int wheel, float timeStep, float min) override;
 	void rotate(const IntVector2& mouseMove, const double mouse_sensitivity) override;

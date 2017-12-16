@@ -22,24 +22,24 @@ public:
 	std::vector<Unit *>* getNeighbours(Unit* unit, double radius);
 	std::vector<Unit *>* getNeighboursFromTeam(Unit* unit, double radius, int team, OperatorType operatorType);
 
-	std::vector<Unit *>* getNeighbours(Unit* unit, Grid* bucketGrid, double radius);
+	std::vector<Unit *>* getNeighbours(Unit* unit, Grid* bucketGrid, double radius) const;
 
 	void update(std::vector<Unit*>* units);
-	void update(std::vector<Building*>* buildings);
-	void update(std::vector<ResourceEntity*>* resources);
+	void update(std::vector<Building*>* buildings) const;
+	void update(std::vector<ResourceEntity*>* resources) const;
 
-	Vector3* validatePosition(Vector3 * position);
+	Vector3* validatePosition(Vector3 * position) const;
 
-	std::vector<Physical *>* getNeighbours(std::pair<Vector3*, Vector3*>* pair);
+	std::vector<Physical *>* getNeighbours(std::pair<Vector3*, Vector3*>* pair) const;
 	std::vector<Physical *>* getBuildings(std::pair<Vector3*, Vector3*>* pair);
 	double getGroundHeightAt(double x, double z);
 	float getGroundHeightPercent(float y, float x, float div);
 	bool validateStatic(const IntVector2& size, Vector3* pos);
 	Vector3* getValidPosition(const IntVector2& size, Vector3* pos);
-	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos);
+	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos) const;
 	void testFind(IntVector2 &startV, IntVector2 &goalV);
-	void prepareGridToFind();
-	content_info* getContentInfo(Vector2& from, Vector2& to, bool checks[], int activePlayer);
+	void prepareGridToFind() const;
+	content_info* getContentInfo(Vector2& from, Vector2& to, bool checks[], int activePlayer) const;
 	Vector3 getValidPosForCamera(float percentX, float percentY, const Vector3& pos, float min);
 	Vector3* getValidPosition(const IntVector2& size, const IntVector2& bucketCords);
 private:

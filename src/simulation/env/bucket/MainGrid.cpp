@@ -8,18 +8,18 @@
 #include "Game.h"
 
 
-MainGrid::MainGrid(short _resolution, double _size, bool _debugEnabled): Grid(_resolution, _size, _debugEnabled) {
+MainGrid::MainGrid(const short _resolution, const double _size, const bool _debugEnabled): Grid(_resolution, _size, _debugEnabled) {
 	short posX = 0;
 	short posZ = 0;
 
-	int miniRes = resolution / 16;
+	const int miniRes = resolution / 16;
 	tempNeighbour = new std::vector<std::pair<int, float>*>();
 	tempNeighbour->reserve(10);
 	double coef = (miniRes * fieldSize);
 	complexData = new ComplexBucketData[resolution * resolution];
 	for (int i = 0; i < resolution * resolution; ++i) {
-		double cX = (posX + 0.5) * fieldSize - size / 2;
-		double cZ = (posZ + 0.5) * fieldSize - size / 2;
+		const double cX = (posX + 0.5) * fieldSize - size / 2;
+		const double cZ = (posZ + 0.5) * fieldSize - size / 2;
 		complexData[i].setCenter(cX, cZ);
 		if (debugEnabled &&
 			(cX > -coef && cX < coef) &&

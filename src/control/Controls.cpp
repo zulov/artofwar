@@ -168,7 +168,7 @@ void Controls::releaseLeft() {
 
 	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
 		left.setSecond(hitData.position);
-		double dist = (*(left.held->first) - *(left.held->second)).LengthSquared();
+		const double dist = (*(left.held->first) - *(left.held->second)).LengthSquared();
 		if (dist > clickDistance) {
 			leftHold(left.held);
 		} else {

@@ -8,7 +8,7 @@ class Physical :
 {
 public:
 	Physical(Vector3* _position, ObjectType _type);
-	~Physical();
+	virtual ~Physical();
 	void updateHealthBar();
 	virtual double getHealthBarSize();
 	virtual double getHealthPercent();

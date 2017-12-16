@@ -9,7 +9,7 @@ class AbstractMiddlePanel : public AbstractWindowPanel
 {
 public:
 	AbstractMiddlePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
-	~AbstractMiddlePanel();
+	virtual ~AbstractMiddlePanel();
 
 	void createBody() override;
 	void HandleClose(Urho3D::StringHash, Urho3D::VariantMap& eventData);

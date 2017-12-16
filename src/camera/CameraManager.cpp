@@ -25,10 +25,7 @@ CameraManager::CameraManager() {
 }
 
 CameraManager::~CameraManager() {
-	while (!cameraBehaves.empty()) {
-		delete cameraBehaves.back();
-		cameraBehaves.pop_back();
-	}
+	clear_vector(cameraBehaves);
 }
 
 void CameraManager::setCameraBehave(int _type) {

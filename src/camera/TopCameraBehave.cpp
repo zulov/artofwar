@@ -2,18 +2,10 @@
 #include "Game.h"
 
 
-TopCameraBehave::TopCameraBehave() {
-	minY = 20;
-	cameraNode = new Urho3D::Node(Game::get()->getContext());
-	cameraNode->SetPosition(Urho3D::Vector3(0.0f, 50.0f, -50.0f));
+TopCameraBehave::TopCameraBehave():CameraBehave(20, "TopCam") {
 	double diff = sqrt(50.0f - minY) + 1;
-
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff);
-	camera = cameraNode->CreateComponent<Urho3D::Camera>();
 	camera->SetOrthographic(true);
-
-	camera->SetFarClip(300.0f);
-	name = Urho3D::String("TopCam");
 }
 
 
