@@ -10,7 +10,6 @@ BuildingFactory::BuildingFactory(): EntityFactory() {
 }
 
 BuildingFactory::~BuildingFactory() {
-	buildings->clear();
 	delete buildings;
 }
 

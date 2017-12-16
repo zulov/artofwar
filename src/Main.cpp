@@ -58,6 +58,8 @@ void Main::load() {
 	switch (loadingState->currentStage) {
 	case 0:
 		{
+		Game::get()->setCameraManager(new CameraManager());
+		cameraManager = Game::get()->getCameraManager();
 		controls = new Controls(GetSubsystem<Input>());
 		loader->createLoad("quicksave");
 		levelBuilder = new LevelBuilder(new SceneObjectManager());
@@ -114,11 +116,7 @@ void Main::Start() {
 
 	subscribeToEvents();
 
-	game->setCameraManager(new CameraManager());
-
 	InitMouseMode(MM_RELATIVE);
-
-	cameraManager = game->getCameraManager();
 
 	gameState = GameState::MENU;
 }
@@ -382,9 +380,9 @@ void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 }
 
 void Main::SetupViewport() {
-//	if (!GetSubsystem<Renderer>()->GetViewport(0)) {
-//		delete GetSubsystem<Renderer>()->GetViewport(0);
-//	}
+	//	if (!GetSubsystem<Renderer>()->GetViewport(0)) {
+	//		delete GetSubsystem<Renderer>()->GetViewport(0);
+	//	}
 	SharedPtr<Viewport> viewport(new Viewport(context_, Game::get()->getScene(),
 	                                          Game::get()->getCameraManager()->getComponent()));
 	GetSubsystem<Renderer>()->SetViewport(0, viewport);
@@ -397,6 +395,11 @@ void Main::diposeScene() {
 	delete simulation;
 	simulation = nullptr;
 
+	loading2->inc("dispose cameras");
+	delete cameraManager;
+	cameraManager = nullptr;
+	Game::get()->setCameraManager(nullptr);
+
 	loading2->inc("dispose creationList");
 	delete Game::get()->getCreationCommandList();
 	Game::get()->setCreationCommandList(nullptr);
@@ -404,10 +407,6 @@ void Main::diposeScene() {
 	loading2->inc("dispose enviroment");
 	delete Game::get()->getEnviroment();
 	Game::get()->setEnviroment(nullptr);
-
-	loading2->inc("dispose levelBuilder");
-	delete levelBuilder;
-	levelBuilder = nullptr;
 
 	loading2->inc("dispose playerManager");
 	delete Game::get()->getPlayersManager();
@@ -418,9 +417,13 @@ void Main::diposeScene() {
 	controls = nullptr;
 
 	loading2->inc("dispose hud");
-
 	delete hud;
 	hud = nullptr;
+
+	loading2->inc("dispose levelBuilder");
+	delete levelBuilder;
+	levelBuilder = nullptr;
+
 	loadingState->reset(4);
 	delete loading2;
 }

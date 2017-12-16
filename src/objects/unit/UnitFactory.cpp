@@ -9,7 +9,6 @@ UnitFactory::UnitFactory(): EntityFactory() {
 }
 
 UnitFactory::~UnitFactory() {
-	units->clear();
 	delete units;
 	delete states;
 }

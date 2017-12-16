@@ -11,7 +11,6 @@ ResourceFactory::ResourceFactory() {
 
 
 ResourceFactory::~ResourceFactory() {
-	resources->clear();
 	delete resources;
 }
 

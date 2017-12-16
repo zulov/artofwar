@@ -49,7 +49,6 @@ void Simulation::tryToCollect(Unit* unit) {
 		//		std::vector<Physical*>* resources = envStrategy->getResources(unit, 12);
 		//
 		//		unit->toCollect(resources);
-		//		delete resources;
 	}
 }
 
