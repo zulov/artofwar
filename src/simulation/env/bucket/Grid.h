@@ -1,8 +1,8 @@
 #pragma once
 #include "Bucket.h"
 
-#define MAX_SEP_DIST 20
-#define RES_SEP_DIST 200
+#define MAX_SEP_DIST 16
+#define RES_SEP_DIST 160
 class BucketIterator;
 
 class Grid
@@ -31,7 +31,6 @@ protected:
 	Bucket* buckets;
 
 private:
-	BucketIterator* iterators[MAX_THREADS];
 	bool fieldInCircle(short i, short j, double radius);
 	std::vector<int>* getEnvIndexs(double radius);
 	void addAt(int index, Unit* entity);
@@ -39,6 +38,7 @@ private:
 
 	double diff = ((double)MAX_SEP_DIST) / RES_SEP_DIST;
 
+	BucketIterator* iterators[MAX_THREADS];
 	std::vector<int>* levelsCache[RES_SEP_DIST];
 	std::vector<Unit*> empty;
 

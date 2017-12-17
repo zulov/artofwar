@@ -390,6 +390,7 @@ void Main::SetupViewport() {
 
 void Main::diposeScene() {
 	loading* loading2 = new loading();
+	Game::get()->getScene()->SetUpdateEnabled(false);
 
 	loading2->reset(4, "dispose simulation");
 	delete simulation;

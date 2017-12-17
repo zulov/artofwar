@@ -97,14 +97,21 @@ Hud::Hud() {
 	windows = new std::vector<Window*>();
 	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
 
-	style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->styles[0]);
-
+	//style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->styles[0]);
+	vector<char *> sth;
 	rapidxml::xml_document<> baseXML;
-	baseXML.parse<0>(_strdup(style->ToString().CString()));
-	for (int i = 1; i < graphSettings->styles.Size(); ++i) {
+	rapidxml::xml_node<>* a = baseXML.allocate_node(rapidxml::node_element, "elements");
+	baseXML.append_node(a);
+	//auto chs1 = _strdup(style->ToString().CString());
+	//sth.push_back(chs1);
+
+	//baseXML.parse<0>("<elements>  <element> </element></elements>");
+	for (int i = 0; i < graphSettings->styles.Size(); ++i) {
 		XMLFile* style2 = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->styles[i]);
 		rapidxml::xml_document<> additionalXML;
-		additionalXML.parse<0>(_strdup(style2->ToString().CString()));
+		auto chs = _strdup(style2->ToString().CString());
+		sth.push_back(chs);
+		additionalXML.parse<0>(chs);
 
 		rapidxml::xml_node<>* root = additionalXML.first_node();
 
@@ -117,9 +124,14 @@ Hud::Hud() {
 	std::stringstream ss;
 	ss << *baseXML.first_node();
 	std::string result_xml = ss.str();
+	for (auto value : sth) {
+		free(value);
+	}
 
 	replaceVariables(result_xml, graphSettings->hud_size);
-	style->FromString(result_xml.c_str());
+	style = new XMLFile(Game::get()->getContext());
+
+	style->FromString(result_xml.c_str());//TODO moze problem z pamiecia
 	Game::get()->getUI()->GetRoot()->SetDefaultStyle(style);
 
 	createConsole();
@@ -131,6 +143,7 @@ Hud::~Hud() {
 	clear_vector(panels);
 	delete windows;
 	Game::get()->getUI()->GetCursor()->Remove();
+	
 	//Game::get()->getUI()->GetRoot()->Remove();
 }
 

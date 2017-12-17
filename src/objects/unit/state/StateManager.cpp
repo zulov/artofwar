@@ -23,9 +23,9 @@ StateManager::StateManager() {
 	states[static_cast<int>(UnitStateType::PATROL)] = new PatrolState();
 	states[static_cast<int>(UnitStateType::DEAD)] = new DeadState();
 	states[static_cast<int>(UnitStateType::DEFEND)] = new DefendState();
-	states[static_cast<int>(UnitStateType::MOVE)] = new MoveState();
 	states[static_cast<int>(UnitStateType::FOLLOW)] = new FollowState();
 	states[static_cast<int>(UnitStateType::COLLECT)] = new CollectState();
+	states[static_cast<int>(UnitStateType::MOVE)] = new MoveState();
 	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
 		std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
 		for (auto order : *orders) {

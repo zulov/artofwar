@@ -6,7 +6,6 @@
 #include "simulation/env/ContentInfo.h"
 #include "hud/ButtonUtils.h"
 #include <Urho3D/Resource/ResourceCache.h>
-#include "hud/HudElement.h"
 #include <LinearMath/btVector3.h>
 #include "database/DatabaseCache.h"
 #include <Urho3D/UI/CheckBox.h>
@@ -44,10 +43,11 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 
 
 MiniMapPanel::~MiniMapPanel() {
-	delete heightMap;
+	delete[] heightMap;
 	delete elements;
 	delete minimap;
 	text->Release();
+	clear_and_delete_vector(hudElements);
 }
 
 void MiniMapPanel::createEmpty(int parts) {
@@ -147,6 +147,9 @@ void MiniMapPanel::createBody() {
 	row->SetStyle("MiniMapListRow", style);
 	elements = new std::vector<UIElement*>();
 	elements->reserve(MINI_MAP_BUTTON_NUMBER);
+
+	hudElements = new std::vector<HudElement*>();
+	hudElements->reserve(MINI_MAP_BUTTON_NUMBER);
 	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
 		>("textures/hud/icon/mm/minimap" + String(i) + ".png");
@@ -158,7 +161,7 @@ void MiniMapPanel::createBody() {
 		box->AddChild(sprite);
 		HudElement* hudElement = new HudElement(elements->at(i));
 		hudElement->setId(i, ObjectType::ENTITY);
-
+		hudElements->push_back(hudElement);
 		elements->at(i)->SetVar("HudElement", hudElement);
 
 		SubscribeToEvent(box, E_CLICK, URHO3D_HANDLER(MiniMapPanel, HandleButton));
