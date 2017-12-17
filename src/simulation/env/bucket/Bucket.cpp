@@ -5,7 +5,7 @@ Bucket::~Bucket() {
 }
 
 Bucket::Bucket() {
-	content.reserve(DEFAULT_VECTOR_SIZE / 2);
+	content.reserve(DEFAULT_VECTOR_SIZE / 3);
 	size = 0;
 	std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
 }

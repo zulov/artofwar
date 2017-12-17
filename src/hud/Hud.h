@@ -29,6 +29,7 @@ class Hud
 {
 public:
 	Hud();
+	void clear();
 	~Hud();
 
 	void update(Benchmark* benchmark, CameraManager* cameraManager);
@@ -50,6 +51,8 @@ public:
 	Sprite* getSpriteMiniMapToSubscribe();
 	Button* getSaveButton();
 	void createMyPanels();
+	void prepareStyle();
+	void preapreUrho();
 private:
 	void  replaceVariables(std::string &xml, int hudSizeId);
 	void createDebugHud();

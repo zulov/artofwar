@@ -66,7 +66,8 @@ void Main::load() {
 		SetupViewport();
 		Game::get()->setPlayersManager(new PlayersManager());
 		Game::get()->getPlayersManager()->load(loader->loadPlayers(), loader->loadResources());
-		hud = new Hud();
+	
+		hud->preapreUrho();
 		hud->createMyPanels();
 		subscribeToUIEvents();
 		hud->resetLoading();
@@ -117,7 +118,7 @@ void Main::Start() {
 	subscribeToEvents();
 
 	InitMouseMode(MM_RELATIVE);
-
+	hud = new Hud();
 	gameState = GameState::MENU;
 }
 
@@ -127,6 +128,7 @@ void Main::Stop() {
 	delete loader;
 	delete saver;
 	delete benchmark;
+	delete hud;
 	Game::dispose();
 }
 
@@ -418,8 +420,7 @@ void Main::diposeScene() {
 	controls = nullptr;
 
 	loading2->inc("dispose hud");
-	delete hud;
-	hud = nullptr;
+	hud->clear();
 
 	loading2->inc("dispose levelBuilder");
 	delete levelBuilder;

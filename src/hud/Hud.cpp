@@ -76,6 +76,8 @@ void Hud::createMyPanels() {
 	panels.push_back(loadingPanel = new LoadingPanel(style));
 	panels.push_back(inGameMenuPanel = new InGameMenuPanel(style));
 
+	windows = new std::vector<Window*>();
+
 	windows->push_back(menuPanel->createWindow());
 	windows->push_back(buildPanel->createWindow());
 	windows->push_back(unitsPanel->createWindow());
@@ -93,19 +95,12 @@ void Hud::createMyPanels() {
 	}
 }
 
-Hud::Hud() {
-	windows = new std::vector<Window*>();
-	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
-
-	//style = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->styles[0]);
+void Hud::prepareStyle() {
 	vector<char *> sth;
 	rapidxml::xml_document<> baseXML;
 	rapidxml::xml_node<>* a = baseXML.allocate_node(rapidxml::node_element, "elements");
 	baseXML.append_node(a);
-	//auto chs1 = _strdup(style->ToString().CString());
-	//sth.push_back(chs1);
 
-	//baseXML.parse<0>("<elements>  <element> </element></elements>");
 	for (int i = 0; i < graphSettings->styles.Size(); ++i) {
 		XMLFile* style2 = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->styles[i]);
 		rapidxml::xml_document<> additionalXML;
@@ -133,17 +128,30 @@ Hud::Hud() {
 
 	style->FromString(result_xml.c_str());//TODO moze problem z pamiecia
 	Game::get()->getUI()->GetRoot()->SetDefaultStyle(style);
+}
 
+void Hud::preapreUrho() {
 	createConsole();
 	createDebugHud();
 	createCursor();
 }
 
-Hud::~Hud() {
+Hud::Hud() {
+	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
+
+	prepareStyle();
+}
+
+
+void Hud::clear() {
 	clear_vector(panels);
 	delete windows;
 	Game::get()->getUI()->GetCursor()->Remove();
-	
+	Game::get()->getUI()->GetRoot()->RemoveAllChildren();
+}
+
+Hud::~Hud() {
+	clear();
 	//Game::get()->getUI()->GetRoot()->Remove();
 }
 
