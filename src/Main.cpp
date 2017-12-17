@@ -66,8 +66,7 @@ void Main::load() {
 		SetupViewport();
 		Game::get()->setPlayersManager(new PlayersManager());
 		Game::get()->getPlayersManager()->load(loader->loadPlayers(), loader->loadResources());
-	
-		hud->preapreUrho();
+
 		hud->createMyPanels();
 		subscribeToUIEvents();
 		hud->resetLoading();
@@ -117,8 +116,9 @@ void Main::Start() {
 
 	subscribeToEvents();
 
-	InitMouseMode(MM_RELATIVE);
 	hud = new Hud();
+	hud->preapreUrho();
+	InitMouseMode(MM_RELATIVE);
 	gameState = GameState::MENU;
 }
 
