@@ -61,11 +61,11 @@ void Building::populate(db_building* _dbBuilding, std::vector<db_unit*>* _units)
 void Building::absorbAttack(double attackCoef) {
 }
 
-String* Building::toMultiLineString() {
-	(*menuString) = dbBuilding->name;
-	(*menuString) += "\nAtak: " + String(attackCoef);
-	(*menuString) += "\nObrona: " + String(defenseCoef);
-	(*menuString) += "\nZdrowie: " + String(hpCoef) + "/" + String(maxHpCoef);
+String& Building::toMultiLineString() {
+	menuString = dbBuilding->name;
+	menuString += "\nAtak: " + String(attackCoef);
+	menuString += "\nObrona: " + String(defenseCoef);
+	menuString += "\nZdrowie: " + String(hpCoef) + "/" + String(maxHpCoef);
 	return menuString;
 }
 

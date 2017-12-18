@@ -21,13 +21,11 @@ Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
 		bucketIndex[i] = INT_MIN;
 	}
 	bucketIndexShift = bucketIndex + 1;
-	menuString = new String("Physical");
 }
 
 Physical::~Physical() {
 	delete position;
 	delete rotation;
-	delete menuString;
 }
 
 
@@ -108,7 +106,7 @@ char Physical::getPlayer() {
 	return player;
 }
 
-String* Physical::toMultiLineString() {
+String& Physical::toMultiLineString() {
 	return menuString;
 }
 

@@ -25,7 +25,7 @@ public:
 	void setTeam(char _team);
 	void setPlayer(char player);
 	char getPlayer();
-	virtual String* toMultiLineString();
+	virtual String& toMultiLineString();
 	virtual void action(short id, ActionParameter* parameter);
 	static std::string getColumns();
 	std::string getValues(int precision) override;
@@ -34,7 +34,7 @@ public:
 protected:
 	Vector3* position;
 	Vector3* rotation;
-	String* menuString;
+	String menuString = "";
 
 	Physical* enemyToAttack = nullptr;
 
@@ -58,5 +58,5 @@ protected:
 private:
 
 	int bucketIndex[BUCKET_SET_NUMBER];
-	int *bucketIndexShift;
+	int* bucketIndexShift;
 };

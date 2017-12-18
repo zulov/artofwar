@@ -13,7 +13,7 @@ public:
 	void populate(db_resource* _dbResource);
 
 	double getHealthBarSize() override;
-	String* toMultiLineString() override;
+	String& toMultiLineString() override;
 	std::string getValues(int precision) override;
 	static std::string getColumns();
 	double collect(double collectSpeed);

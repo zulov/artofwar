@@ -18,7 +18,7 @@ public:
 	void populate(db_building* _dbBuilding, std::vector<db_unit*>* _units);
 	void absorbAttack(double attackCoef) override;
 
-	String* toMultiLineString() override;
+	String& toMultiLineString() override;
 	void action(short id, ActionParameter* parameter) override;
 	static std::string getColumns();
 	std::string getValues(int precision) override;

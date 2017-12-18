@@ -49,7 +49,7 @@ public:
 	void toCollect();
 
 	void updateHeight(double y, double timeStep);
-	String* toMultiLineString() override;
+	String& toMultiLineString() override;
 	void action(short id, ActionParameter* parameter) override;
 	std::string getValues(int precision) override;
 
