@@ -4,13 +4,12 @@
 UnitFactory::UnitFactory(): EntityFactory() {
 	units = new std::vector<Unit *>();
 	units->reserve(DEFAULT_VECTOR_SIZE);
-	states = new StateManager();
-	Unit::setStates(states);
+	StateManager::init();
 }
 
 UnitFactory::~UnitFactory() {
 	delete units;
-	delete states;
+	StateManager::dispose();
 }
 
 std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center, int player) {

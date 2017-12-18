@@ -63,7 +63,6 @@ public:
 	void load(dbload_unit* unit);
 
 	static std::string getColumns();
-	static void setStates(StateManager* _states);
 protected:
 	Vector3* acceleration;
 	Vector3* velocity;
@@ -81,7 +80,6 @@ private:
 	ResourceEntity* resource;
 	Vector3* toResource;
 	db_unit* dbUnit;
-	static StateManager* states;
 
 	UnitStateType unitState;
 	UnitStateType actionState;

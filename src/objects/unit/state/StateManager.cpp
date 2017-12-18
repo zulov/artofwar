@@ -15,6 +15,8 @@
 #include "database/DatabaseCache.h"
 #include "Game.h"
 
+StateManager* StateManager::instance = nullptr;
+
 StateManager::StateManager() {
 	states[static_cast<int>(UnitStateType::GO)] = new GoState();
 	states[static_cast<int>(UnitStateType::STOP)] = new StopState();
@@ -75,4 +77,19 @@ bool StateManager::checkChangeState(Unit* unit, UnitStateType stateTo) {
 void StateManager::execute(Unit* unit) {
 	State* state = states[static_cast<int>(unit->getState())];
 	state->execute(unit);
+}
+
+StateManager* StateManager::get() {
+	return instance;
+}
+
+void StateManager::init() {
+	if (instance == nullptr) {
+		instance = new StateManager();
+	}
+}
+
+void StateManager::dispose() {
+	delete instance;
+	instance = nullptr;
 }

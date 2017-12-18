@@ -11,7 +11,6 @@
 #include "commands/action/ActionCommandList.h"
 
 double Unit::hbMaxSize = 0.7;
-StateManager* Unit::states = nullptr;
 
 Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT) {
 	acceleration = new Vector3();
@@ -74,7 +73,7 @@ void Unit::checkAim() {
 			++aimIndex;
 			if (aims->check(aimIndex)) {
 				aims = nullptr;
-				states->changeState(this, UnitStateType::MOVE);
+				StateManager::get()->changeState(this, UnitStateType::MOVE);
 			}
 		}
 	}
@@ -180,7 +179,7 @@ void Unit::toAttack(std::vector<Unit*>* enemies) {
 }
 
 void Unit::toAttack(Physical* enemy) {
-	states->changeState(this, UnitStateType::ATTACK);
+	StateManager::get()->changeState(this, UnitStateType::ATTACK);
 	enemyToAttack = enemy;
 }
 
@@ -209,7 +208,7 @@ void Unit::toCollect() {
 }
 
 void Unit::toCollect(ResourceEntity* _resource) {
-	states->changeState(this, UnitStateType::COLLECT);
+	StateManager::get()->changeState(this, UnitStateType::COLLECT);
 	resource = _resource;
 }
 
@@ -249,26 +248,26 @@ void Unit::action(short id, ActionParameter* parameter) {
 
 	switch (type) {
 	case OrderType::GO:
-		states->changeState(this, UnitStateType::GO, parameter);
+		StateManager::get()->changeState(this, UnitStateType::GO, parameter);
 		break;
 	case OrderType::STOP:
-		states->changeState(this, UnitStateType::STOP);
+		StateManager::get()->changeState(this, UnitStateType::STOP);
 		break;
 	case OrderType::CHARGE:
-		states->changeState(this, UnitStateType::CHARAGE, parameter);
+		StateManager::get()->changeState(this, UnitStateType::CHARAGE, parameter);
 		break;
 	case OrderType::ATTACK: break;
 	case OrderType::PATROL:
-		states->changeState(this, UnitStateType::PATROL, parameter);
+		StateManager::get()->changeState(this, UnitStateType::PATROL, parameter);
 		break;
 	case OrderType::DEAD:
-		states->changeState(this, UnitStateType::DEAD);
+		StateManager::get()->changeState(this, UnitStateType::DEAD);
 		break;
 	case OrderType::DEFEND:
-		states->changeState(this, UnitStateType::DEFEND);
+		StateManager::get()->changeState(this, UnitStateType::DEFEND);
 		break;
 	case OrderType::FOLLOW:
-		states->changeState(this, UnitStateType::FOLLOW, parameter);
+		StateManager::get()->changeState(this, UnitStateType::FOLLOW, parameter);
 		break;
 	default: ;
 	}
@@ -310,11 +309,11 @@ void Unit::setState(UnitStateType state) {
 }
 
 bool Unit::checkTransition(UnitStateType state) {
-	return states->checkChangeState(this, state);
+	return StateManager::get()->checkChangeState(this, state);
 }
 
 void Unit::executeState() {
-	states->execute(this);
+	StateManager::get()->execute(this);
 }
 
 bool Unit::hasResource() {
@@ -340,10 +339,6 @@ std::string Unit::getColumns() {
 		"aim_i		INT     NOT NULL";
 }
 
-void Unit::setStates(StateManager* _states) {
-	Unit::states = _states;
-}
-
 void Unit::applyForce(double timeStep) {
 	if (unitState == UnitStateType::ATTACK) {
 		(*velocity) = Vector3::ZERO;
@@ -354,13 +349,13 @@ void Unit::applyForce(double timeStep) {
 	(*velocity) += (*acceleration) * (timeStep / mass);
 	double velLenght = velocity->LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
-		states->changeState(this, UnitStateType::STOP);
+		StateManager::get()->changeState(this, UnitStateType::STOP);
 	} else {
 		if (velLenght > maxSpeed * maxSpeed) {
 			velocity->Normalize();
 			(*velocity) *= maxSpeed;
 		}
-		states->changeState(this, UnitStateType::MOVE);
+		StateManager::get()->changeState(this, UnitStateType::MOVE);
 		if (rotatable) {
 			rotation->x_ = velocity->x_;
 			rotation->z_ = velocity->z_;
