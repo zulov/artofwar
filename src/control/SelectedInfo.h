@@ -20,13 +20,13 @@ public:
 	void select(Physical* entity);
 	int getSelectedSubTypeNumber();
 	void hasBeedUpdatedDrawn();
-	String* getMessage();
-	void setMessage(String & s);
+	String& getMessage();
+	void setMessage(String& s);
 private:
 	bool changed = false;
 	int allNumber;
 	int allSubTypeNumber;
 	ObjectType selectedType;
 	std::vector<SelectedInfoType*>* selectedByType;
-	String* message;
+	String message = "";
 };

@@ -75,8 +75,8 @@ void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
 	}else {
 		text->SetVisible(false);
 	}
-	String *msg = selectedInfo->getMessage();
-	text2->SetText(*msg);
+
+	text2->SetText(selectedInfo->getMessage());
 	text2->SetVisible(true);
 }
 

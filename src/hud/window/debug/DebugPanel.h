@@ -16,5 +16,5 @@ public:
 private:
 	void createBody() override;
 	Urho3D::Text* fpsText;
-	Urho3D::String* msg;
+	Urho3D::String msg = "";
 };
