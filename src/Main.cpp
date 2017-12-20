@@ -124,6 +124,7 @@ void Main::Start() {
 
 void Main::Stop() {
 	engine_->DumpResources(true);
+	disposeScene();
 	delete loadingState;
 	delete loader;
 	delete saver;
@@ -206,7 +207,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		break;
 	case GameState::PAUSE: break;
 	case GameState::CLOSING:
-		diposeScene();
+		disposeScene();
 		gameState = GameState::MENU;
 		break;
 	}
@@ -390,7 +391,7 @@ void Main::SetupViewport() {
 	GetSubsystem<Renderer>()->SetViewport(0, viewport);
 }
 
-void Main::diposeScene() {
+void Main::disposeScene() {
 	loading* loading2 = new loading();
 	Game::get()->getScene()->SetUpdateEnabled(false);
 

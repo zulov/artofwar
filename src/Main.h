@@ -44,7 +44,7 @@ protected:
 
 private:
 	void subscribeToUIEvents();
-	void diposeScene();
+	void disposeScene();
 	void subscribeToEvents();
 	void running(VariantMap& eventData);
 	void SetWindowTitleAndIcon();
