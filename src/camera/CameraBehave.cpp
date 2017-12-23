@@ -16,6 +16,7 @@ CameraBehave::CameraBehave(float _minY, String _name) {
 
 CameraBehave::~CameraBehave() {
 	delete info;
+	  cameraNode->Remove();
 }
 
 Urho3D::Camera* CameraBehave::getComponent() {
