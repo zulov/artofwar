@@ -9,10 +9,10 @@ public:
 	LinkComponent(Context* context);
 	~LinkComponent();
 
-	void bound(Node* _node, Physical* _physical);
+	void bound(Physical* _physical);
 	Physical* getPhysical();
-	Node* getNode();
+
 private:
-	Node* node;
+
 	Physical* physical;
 };
