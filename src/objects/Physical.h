@@ -32,8 +32,8 @@ public:
 	bool hasEnemy();
 	virtual void clean();
 protected:
-	Vector3* position;
-	Vector3* rotation;
+	Vector3* position = nullptr;
+	Vector3* rotation = nullptr;
 	String menuString = "";
 
 	Physical* enemyToAttack = nullptr;
@@ -48,12 +48,12 @@ protected:
 	double defenseCoef = 0.3;
 	double attackSpeed = 1;
 
-	Node* billboardNode;
-	Node* barNode;
-	Billboard* billboardBar;
-	Billboard* billboardShadow;
-	BillboardSet* billboardSetBar;
-	BillboardSet* billboardSetShadow;
+	Node* billboardNode = nullptr;
+	Node* barNode = nullptr;
+	Billboard* billboardBar = nullptr;
+	Billboard* billboardShadow = nullptr;
+	BillboardSet* billboardSetBar = nullptr;
+	BillboardSet* billboardSetShadow = nullptr;
 
 private:
 

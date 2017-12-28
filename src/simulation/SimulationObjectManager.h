@@ -21,16 +21,9 @@ public:
 	vector<Building*>* getBuildings();
 	vector<ResourceEntity*>* getResources();
 
-	vector<Unit*>* getUnitsToAdd();
-	vector<Building*>* getBuildingsToAdd();
-	vector<ResourceEntity*>* getResourcesToAdd();
-
 	void addUnits(unsigned number, int id, Vector3* center, int player);
 	void addBuildings(int id, Vector3* center, int player, IntVector2 _bucketCords);
 	void addResources(int id, Vector3* center, IntVector2 _bucketCords);
-	void clearUnitsToAdd();
-	void clearBuildingsToAdd();
-	void clearResourcesToAdd();
 
 	void clean();
 	void updateInfo(SimulationInfo* simulationInfo);
@@ -56,9 +49,9 @@ private:
 	void addAll(vector<Building*>* _buildings);
 	void addAll(vector<ResourceEntity*>* _resources);
 
-	UnitFactory* unitFactory;
-	BuildingFactory* buildingFactory;
-	ResourceFactory* resourceFactory;
+	UnitFactory unitFactory;
+	BuildingFactory buildingFactory;
+	ResourceFactory resourceFactory;
 
 	SimulationInfo* simulationInfo;
 
@@ -67,7 +60,6 @@ private:
 	vector<ResourceEntity*>* resources;
 	vector<Physical*>* toDispose;
 
-	vector<Unit*>* unitsToAdd;
 	vector<Building*>* buildingsToAdd;
 	vector<ResourceEntity*>* resourcesToAdd;
 

@@ -6,15 +6,14 @@
 #include "commands/creation/CreationCommand.h"
 
 
-Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList) {
-	enviroment = _enviromentStrategy;
+Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _simCommandList) {
+	enviroment = _enviroment;
 	simObjectManager = _simCommandList->getManager();
 	simCommandList = _simCommandList;
 	
 	srand(time(NULL));
 	animate = true;
 
-	force = new Force();
 	aimContainer = new AimContainer();
 	simulationInfo = new SimulationInfo();
 	actionCommandList = new ActionCommandList(aimContainer);
@@ -28,7 +27,7 @@ Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _si
 Simulation::~Simulation() {
 	std::cout << accumulateTime << endl;
 	std::cout << currentFrameNumber << endl;
-	delete force;
+
 	delete aimContainer;
 	delete simulationInfo;
 	delete actionCommandList;
@@ -128,10 +127,6 @@ SimulationInfo* Simulation::getInfo() {
 	return simulationInfo;
 }
 
-void Simulation::updateEnviroment() {
-	simObjectManager->clearUnitsToAdd();
-}
-
 void Simulation::dispose() {
 	simObjectManager->dispose();
 }
@@ -169,7 +164,6 @@ void Simulation::update(Input* input, float timeStep) {
 			enviroment->update(units);
 			simObjectManager->clean();
 			simObjectManager->updateInfo(simulationInfo);
-			updateEnviroment();
 
 			calculateForces();
 			applyForce();
@@ -210,8 +204,8 @@ void Simulation::calculateForces() {
 		if (!validPos) {
 			std::vector<Unit*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
-			Vector3* sepPedestrian = force->separationUnits(unit, neighbours);
-			Vector3* destForce = force->destination(unit);
+			Vector3* sepPedestrian = force.separationUnits(unit, neighbours);
+			Vector3* destForce = force.destination(unit);
 
 			(*sepPedestrian) += (*destForce);
 			unit->setAcceleration(sepPedestrian);

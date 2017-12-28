@@ -16,7 +16,7 @@ MainGrid::MainGrid(const short _resolution, const double _size, const bool _debu
 	const int miniRes = resolution / 16;
 	tempNeighbour = new std::vector<std::pair<int, float>*>();
 	tempNeighbour->reserve(10);
-	double coef = (miniRes * fieldSize);
+	const double coef = (miniRes * fieldSize);
 	complexData = new ComplexBucketData[resolution * resolution];
 	for (int i = 0; i < resolution * resolution; ++i) {
 		const double cX = (posX + 0.5) * fieldSize - size / 2;
@@ -40,11 +40,11 @@ MainGrid::MainGrid(const short _resolution, const double _size, const bool _debu
 MainGrid::~MainGrid() {
 	delete[] complexData;
 	delete tempNeighbour;
+	delete ci;
 	if (pathInited) {
 		delete[]came_from;
 		delete[]cost_so_far;
 	}
-	delete ci;
 }
 
 void MainGrid::prepareGridToFind() {
@@ -234,7 +234,7 @@ std::vector<std::pair<int, float>*>* MainGrid::neighbors(const int current) {
 					const int index = getIndex(cords.x_ + i, cords.y_ + j);
 					if (complexData[index].isUnit()) {
 						double costD = cost(current, index);
-						tempNeighbour->push_back(new std::pair<int, float>(index, costD));
+						//tempNeighbour->push_back(new std::pair<int, float>(index, costD));
 					}
 				}
 			}

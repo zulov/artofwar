@@ -10,7 +10,6 @@ SimulationObjectManager::SimulationObjectManager() {
 	resources = new std::vector<ResourceEntity*>();
 	toDispose = new std::vector<Physical*>();
 
-	unitsToAdd = new std::vector<Unit*>();
 	buildingsToAdd = new std::vector<Building*>();;
 	resourcesToAdd = new std::vector<ResourceEntity*>();
 
@@ -18,10 +17,6 @@ SimulationObjectManager::SimulationObjectManager() {
 	buildings->reserve(1000);
 	resources->reserve(1000);
 	toDispose->reserve(1000);
-
-	unitFactory = new UnitFactory();
-	buildingFactory = new BuildingFactory();
-	resourceFactory = new ResourceFactory();
 
 	simulationInfo = new SimulationInfo();
 }
@@ -33,13 +28,8 @@ SimulationObjectManager::~SimulationObjectManager() {
 	clear_and_delete_vector(resources);
 	delete toDispose;
 
-	delete unitsToAdd;
 	delete buildingsToAdd;
 	delete resourcesToAdd;
-
-	delete unitFactory;
-	delete buildingFactory;
-	delete resourceFactory;
 
 	delete simulationInfo;
 }
@@ -83,46 +73,22 @@ std::vector<ResourceEntity*>* SimulationObjectManager::getResources() {
 	return resources;
 }
 
-vector<Unit*>* SimulationObjectManager::getUnitsToAdd() {
-	return unitsToAdd;
-}
-
-vector<Building*>* SimulationObjectManager::getBuildingsToAdd() {
-	return buildingsToAdd;
-}
-
-vector<ResourceEntity*>* SimulationObjectManager::getResourcesToAdd() {
-	return resourcesToAdd;
-}
-
 void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* center,
                                        int player) {
-	unitsTemp = unitFactory->create(number, id, center, player);
+	unitsTemp = unitFactory.create(number, id, center, player);
 	updateUnits();
 }
 
 void SimulationObjectManager::addBuildings(int id, Vector3* center,
                                            int player, IntVector2 _bucketCords) {
-	buildingsTemp = buildingFactory->create(id, center, player, _bucketCords);
+	buildingsTemp = buildingFactory.create(id, center, player, _bucketCords);
 	updateBuilding();
 }
 
 
 void SimulationObjectManager::addResources(int id, Vector3* center, IntVector2 _bucketCords) {
-	resourcesTemp = resourceFactory->create(id, center, _bucketCords);
+	resourcesTemp = resourceFactory.create(id, center, _bucketCords);
 	updateResource();
-}
-
-void SimulationObjectManager::clearUnitsToAdd() {
-	unitsToAdd->clear();
-}
-
-void SimulationObjectManager::clearBuildingsToAdd() {
-	buildingsToAdd->clear();
-}
-
-void SimulationObjectManager::clearResourcesToAdd() {
-	resourcesToAdd->clear();
 }
 
 void SimulationObjectManager::clean() {
@@ -142,17 +108,17 @@ void SimulationObjectManager::clean() {
 }
 
 void SimulationObjectManager::load(dbload_unit* unit) {
-	unitsTemp = unitFactory->load(unit);
+	unitsTemp = unitFactory.load(unit);
 	updateUnits();
 }
 
 void SimulationObjectManager::load(dbload_building* building) {
-	buildingsTemp = buildingFactory->load(building);
+	buildingsTemp = buildingFactory.load(building);
 	updateBuilding();
 }
 
 void SimulationObjectManager::load(dbload_resource_entities* resource) {
-	resourcesTemp = resourceFactory->load(resource);
+	resourcesTemp = resourceFactory.load(resource);
 	updateResource();
 }
 

@@ -14,7 +14,7 @@ using namespace Urho3D;
 class LevelBuilder
 {
 public:
-	LevelBuilder(SceneObjectManager* _objectManager);
+	LevelBuilder();
 	~LevelBuilder();
 	void createScene(SceneLoader* loader);
 	Terrain* getTerrian();

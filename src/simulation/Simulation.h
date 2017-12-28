@@ -38,7 +38,7 @@ private:
 	void calculateForces();
 	void performAction();
 	float updateTime(float timeStep);
-	void updateEnviroment();
+
 	void loadEntities(SceneLoader* loader);
 	void countFrame();
 	void applyForce();
@@ -53,6 +53,8 @@ private:
 	double maxTimeFrame = 0.05;
 	int framesPeriod = 20;
 	int currentFrameNumber = 0;
+	Force force;
+	
 	vector<Unit*>* units;
 	vector<Building*>* buildings;
 	vector<ResourceEntity*>* resources;
@@ -60,7 +62,6 @@ private:
 	AimContainer* aimContainer;
 	SimulationInfo* simulationInfo;
 	Enviroment* enviroment;
-	Force* force;
 	SimulationObjectManager* simObjectManager;
 	CreationCommandList* simCommandList;
 	ActionCommandList* actionCommandList;

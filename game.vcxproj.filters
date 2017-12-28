@@ -56,9 +56,6 @@
     <ClCompile Include="src\objects\Player.cpp">
       <Filter>player</Filter>
     </ClCompile>
-    <ClCompile Include="src\player\Physical.cpp">
-      <Filter>objects</Filter>
-    </ClCompile>
     <ClCompile Include="src\objects\building\QueueManager.cpp">
       <Filter>objects\building</Filter>
     </ClCompile>
@@ -212,6 +209,9 @@
     </ClCompile>
     <ClCompile Include="src\commands\action\ActionCommandList.cpp">
       <Filter>command\list</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\Physical.cpp">
+      <Filter>objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

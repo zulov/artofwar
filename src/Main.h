@@ -77,8 +77,8 @@ private:
 	Hud* hud;
 	Controls* controls;
 	LevelBuilder* levelBuilder;
+	SceneSaver* saver;
+	SceneLoader* loader;
+	loading* loadingState;
 	GameState gameState;
-	SceneSaver * saver;
-	SceneLoader * loader;
-	loading *loadingState;
 };

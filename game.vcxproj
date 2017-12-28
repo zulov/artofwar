@@ -234,7 +234,7 @@
     <ClCompile Include="src\hud\MySprite.cpp" />
     <ClCompile Include="src\OperatorType.h" />
     <ClCompile Include="src\hud\window\orders\OrdersPanel.cpp" />
-    <ClCompile Include="src\player\Physical.cpp" />
+    <ClCompile Include="src\objects\Physical.cpp" />
     <ClCompile Include="src\objects\Player.cpp" />
     <ClCompile Include="src\player\PlayersManager.cpp" />
     <ClCompile Include="src\objects\building\QueueElement.cpp" />

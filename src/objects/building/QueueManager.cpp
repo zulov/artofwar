@@ -38,7 +38,7 @@ QueueElement* QueueManager::update(float time) {
 	if (queue->size() > 0) {
 		QueueElement* element = queue->at(0);
 
-		if (element->update(time)) {
+		if (element->update(time)) {//TODO memoryleak
 			queue->erase(queue->begin());
 			return element;
 		}

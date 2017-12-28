@@ -62,7 +62,7 @@ void Main::load() {
 		cameraManager = Game::get()->getCameraManager();
 		controls = new Controls(GetSubsystem<Input>());
 		loader->createLoad("quicksave");
-		levelBuilder = new LevelBuilder(new SceneObjectManager());
+		levelBuilder = new LevelBuilder();
 		SetupViewport();
 		Game::get()->setPlayersManager(new PlayersManager());
 		Game::get()->getPlayersManager()->load(loader->loadPlayers(), loader->loadResources());

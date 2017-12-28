@@ -16,7 +16,6 @@ SelectedInfo::SelectedInfo() {
 
 SelectedInfo::~SelectedInfo() {
 	clear_and_delete_vector(selectedByType);
-
 }
 
 bool SelectedInfo::hasChanged() {

@@ -10,8 +10,8 @@
 #include "database/DatabaseCache.h"
 
 
-LevelBuilder::LevelBuilder(SceneObjectManager* _objectManager) {
-	objectManager = _objectManager;
+LevelBuilder::LevelBuilder() {
+	objectManager = new SceneObjectManager();
 	scene = new Scene(Game::get()->getContext());
 
 	scene->CreateComponent<Octree>();
