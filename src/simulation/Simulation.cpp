@@ -26,6 +26,8 @@ Simulation::Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _si
 }
 
 Simulation::~Simulation() {
+	std::cout << accumulateTime << endl;
+	std::cout << currentFrameNumber << endl;
 	delete force;
 	delete aimContainer;
 	delete simulationInfo;

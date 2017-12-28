@@ -123,7 +123,6 @@ void Main::Start() {
 }
 
 void Main::Stop() {
-	engine_->DumpResources(true);
 	disposeScene();
 	delete loadingState;
 	delete loader;
@@ -131,6 +130,7 @@ void Main::Stop() {
 	delete benchmark;
 	delete hud;
 	Game::dispose();
+	engine_->DumpResources(true);
 }
 
 void Main::subscribeToUIEvents() {

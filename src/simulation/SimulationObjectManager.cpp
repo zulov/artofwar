@@ -57,18 +57,18 @@ void SimulationObjectManager::add(ResourceEntity* resourceEntity) {
 }
 
 void SimulationObjectManager::addAll(std::vector<Unit*>* _units) {
-	units->insert(std::end(*units), std::begin(*_units), std::end(*_units));
+	units->insert(units->end(), _units->begin(), _units->end());
 	//unitsToAdd->insert(std::end(*unitsToAdd), std::begin(*_units), std::end(*_units));
 }
 
 void SimulationObjectManager::addAll(std::vector<Building*>* _buildings) {
-	buildings->insert(std::end(*buildings), std::begin(*_buildings), std::end(*_buildings));
-	buildingsToAdd->insert(std::end(*buildingsToAdd), std::begin(*_buildings), std::end(*_buildings));
+	buildings->insert(buildings->end(), _buildings->begin(), _buildings->end());
+	buildingsToAdd->insert(buildingsToAdd->end(), _buildings->begin(), _buildings->end());
 }
 
 void SimulationObjectManager::addAll(std::vector<ResourceEntity*>* _resources) {
-	resources->insert(std::end(*resources), std::begin(*_resources), std::end(*_resources));
-	resourcesToAdd->insert(std::end(*resourcesToAdd), std::begin(*_resources), std::end(*_resources));
+	resources->insert(resources->end(), _resources->begin(), _resources->end());
+	resourcesToAdd->insert(resourcesToAdd->end(), _resources->begin(), _resources->end());
 }
 
 std::vector<Unit*>* SimulationObjectManager::getUnits() {

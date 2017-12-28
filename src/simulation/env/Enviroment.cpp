@@ -23,15 +23,15 @@ Enviroment::Enviroment(Terrain* _terrian) {
 
 
 Enviroment::~Enviroment() {
-	delete obstacleGrid;
-	delete resourceGrid;
-	delete mainGrid;
-	for (auto unitGrid : teamUnitGrid) {
-		delete unitGrid;
-	}
-	delete empty;
-	delete neights;
-	delete neights2;
+//	delete obstacleGrid;
+//	delete resourceGrid;
+//	delete mainGrid;
+//	for (auto unitGrid : teamUnitGrid) {
+//		delete unitGrid;
+//	}
+//	delete empty;
+//	delete neights;
+//	delete neights2;
 }
 
 std::vector<Unit*>* Enviroment::getNeighbours(Unit* unit, const double radius) {

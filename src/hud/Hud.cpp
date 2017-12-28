@@ -145,7 +145,10 @@ Hud::Hud() {
 
 void Hud::clear() {
 	clear_vector(panels);
-	delete windows;
+	if (windows) {
+		delete windows;
+	}
+	windows = nullptr;
 	Game::get()->getUI()->GetCursor()->Remove();
 	Game::get()->getUI()->GetRoot()->RemoveAllChildren();
 }
