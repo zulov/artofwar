@@ -13,7 +13,7 @@ public:
 	Urho3D::Vector3 *separationUnits(Unit * unit, std::vector<Unit *> *units);
 	Urho3D::Vector3 *destination(Unit * unit);
 private:
-	const double coef = 1;
+	const float coef = 1;
 	float calculateCoef(double distance, double minDist);
 	float boostCoef = 10;
 	float sepCoef = 1;

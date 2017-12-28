@@ -49,8 +49,8 @@ private:
 	void tryToCollect(Unit* unit);
 
 	bool animate;
-	double accumulateTime = 0;
-	double maxTimeFrame = 0.05;
+	float accumulateTime = 0;
+	float maxTimeFrame = 0.05;
 	int framesPeriod = 20;
 	int currentFrameNumber = 0;
 	Force force;

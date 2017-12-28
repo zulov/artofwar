@@ -41,12 +41,12 @@ protected:
 	signed char team;
 	signed char player;
 
-	double hpCoef = 100;
-	double maxHpCoef = 100;
-	double attackCoef = 10;
-	double attackRange;
-	double defenseCoef = 0.3;
-	double attackSpeed = 1;
+	float hpCoef = 100;
+	float maxHpCoef = 100;
+	float attackCoef = 10;
+	float attackRange;
+	float defenseCoef = 0.3;
+	float attackSpeed = 1;
 
 	Node* billboardNode = nullptr;
 	Node* barNode = nullptr;

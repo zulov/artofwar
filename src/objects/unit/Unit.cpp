@@ -80,7 +80,7 @@ void Unit::checkAim() {
 }
 
 
-double Unit::getMinimalDistance() {
+float Unit::getMinimalDistance() {
 	return minimalDistance;
 }
 
@@ -98,7 +98,7 @@ void Unit::setAcceleration(Vector3* _acceleration) {
 	acceleration = _acceleration;
 }
 
-double Unit::getMaxSeparationDistance() {
+float Unit::getMaxSeparationDistance() {
 	return maxSeparationDistance;
 }
 
@@ -133,7 +133,7 @@ Vector3* Unit::getVelocity() {
 	return velocity;
 }
 
-double Unit::getUnitRadius() {
+float Unit::getUnitRadius() {
 	return unitRadius;
 }
 

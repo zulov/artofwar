@@ -32,7 +32,7 @@ public:
 
 	std::vector<Physical *>* getNeighbours(std::pair<Vector3*, Vector3*>* pair) const;
 	std::vector<Physical *>* getBuildings(std::pair<Vector3*, Vector3*>* pair);
-	float getGroundHeightAt(double x, double z);
+	float getGroundHeightAt(float x, float z);
 	float getGroundHeightPercent(float y, float x, float div);
 	bool validateStatic(const IntVector2& size, Vector3* pos);
 	Vector3* getValidPosition(const IntVector2& size, Vector3* pos);

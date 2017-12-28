@@ -18,11 +18,11 @@ Urho3D::Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 	Vector3* force = new Vector3();
 
 	for (auto neight : *units) {
-		double sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
+		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
 		Vector3 diff = *unit->getPosition() - *neight->getPosition();
-		const double sqDistance = diff.LengthSquared();
+		const float sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist) { continue; }
 		if (sqDistance == 0) {
 			force->x_ = (static_cast<double>(rand()) / (RAND_MAX)) * coef - (coef / 2);
@@ -30,11 +30,11 @@ Urho3D::Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 			(*force) *= boostCoef * sepCoef;
 			return force;
 		}
-		const double distance = sqrt(sqDistance);
+		const float distance = sqrt(sqDistance);
 
 		diff /= distance;
-		const double minimalDistance = unit->getMinimalDistance() + neight->getMinimalDistance();
-		const double coef = calculateCoef(distance, minimalDistance);
+		const float minimalDistance = unit->getMinimalDistance() + neight->getMinimalDistance();
+		const float coef = calculateCoef(distance, minimalDistance);
 
 		diff *= coef;
 		(*force) += diff;

@@ -32,11 +32,11 @@ public:
 	void applyForce(double timeStep);
 	int getDbID() override;
 	void setAcceleration(Vector3* _acceleration);
-	double getMaxSeparationDistance();
+	float getMaxSeparationDistance();
 	Vector3* getDestination(double boostCoef, double aimCoef);
 	Vector3* getVelocity();
-	double getUnitRadius();
-	double getMinimalDistance();
+	float getUnitRadius();
+	float getMinimalDistance();
 
 	void absorbAttack(double attackCoef) override;
 
@@ -67,10 +67,10 @@ protected:
 	Vector3* acceleration;
 	Vector3* velocity;
 	Aims* aims;
-	double mass;
-	double maxSpeed;
-	double maxSeparationDistance;
-	double minSpeed;
+	float mass;
+	float maxSpeed;
+	float maxSeparationDistance;
+	float minSpeed;
 	short aimIndex = 0;
 private:
 	void addAim(ActionParameter* actionParameter);

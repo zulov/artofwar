@@ -19,7 +19,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center
 
 	int y = 0;
 	int xMax = number / sqrt(number);
-	double sideSize = xMax * space / 2;
+	float sideSize = xMax * space / 2;
 
 	while (units->size() < number) {
 		for (int x = 0; x < xMax; ++x) {
