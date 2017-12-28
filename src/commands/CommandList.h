@@ -13,5 +13,5 @@ public:
 protected: 
 	virtual void setParemeters(AbstractCommand* command);
 private:
-	std::vector<AbstractCommand*>* commands;
+	std::vector<AbstractCommand*> commands;
 };

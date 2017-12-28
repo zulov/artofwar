@@ -113,7 +113,7 @@ std::vector<Physical*>* Enviroment::getBuildings(std::pair<Vector3*, Vector3*>* 
 	return obstacleGrid->getArrayNeight(pair);
 }
 
-double Enviroment::getGroundHeightAt(double x, double z) {
+float Enviroment::getGroundHeightAt(double x, double z) {
 	return terrian->GetHeight(Vector3(x, 0, z));
 }
 

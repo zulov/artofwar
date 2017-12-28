@@ -3,7 +3,7 @@
 
 
 TopCameraBehave::TopCameraBehave():CameraBehave(20, "TopCam") {
-	double diff = sqrt(50.0f - minY) + 1;
+	const auto diff = sqrt(50.0f - minY) + 1;
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff);
 	camera->SetOrthographic(true);
 }
@@ -13,7 +13,7 @@ TopCameraBehave::~TopCameraBehave() {
 }
 
 void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
-	double diff = sqrt((orthoSize - minY) / 10) + 1;
+	const auto diff = sqrt((orthoSize - minY) / 10) + 1;
 
 	if (cameraKeys[0]) {
 		cameraNode->Translate(diff * Urho3D::Vector3::FORWARD * timeStep, Urho3D::TS_WORLD);
@@ -32,7 +32,7 @@ void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 		changed = true;
 	}
 	if (wheel != 0) {
-		orthoSize -= wheel * (sqrt(orthoSize - minY) + 1) * 1.5;
+		orthoSize -= wheel * (sqrt(orthoSize - minY) + 1) * 1.5f;
 
 		if (orthoSize < minY) {
 			orthoSize = minY;

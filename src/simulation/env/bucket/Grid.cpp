@@ -38,7 +38,7 @@ Grid::~Grid() {
 	delete tempSelected;
 }
 
-void Grid::updateGrid(Unit* entity, short team) {
+void Grid::updateGrid(Unit* entity, const char team) {
 	Vector3* pos = entity->getPosition();
 	const short posX = getIndex(pos->x_);
 	const short posZ = getIndex(pos->z_);
@@ -54,7 +54,7 @@ void Grid::updateGrid(Unit* entity, short team) {
 
 
 std::vector<int>* Grid::getEnvIndexsFromCache(double dist) {
-	int index = dist / diff;
+	const int index = dist / diff;
 	return levelsCache[index];
 }
 

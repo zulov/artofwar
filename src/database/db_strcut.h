@@ -23,21 +23,21 @@ struct db_unit
 {
 	int id;
 	Urho3D::String name;
-	double minDist;
-	double maxSep;
+	float minDist;
+	float maxSep;
 	Urho3D::String model;
 	Urho3D::String texture;
 	Urho3D::String font;
-	double mass;
-	double maxSpeed;
-	double scale;
+	float mass;
+	float maxSpeed;
+	float scale;
 	bool rotatable;
 	int nation;
 	Urho3D::String icon;
 	int actionState;
 
-	db_unit(int id, char* name, double minDist, double maxSep, char* model, char* texture, char* font,
-	        double mass, double maxSpeed, double scale, int rotatable, int nation, char* icon, int actionState)
+	db_unit(int id, char* name, float minDist, float maxSep, char* model, char* texture, char* font,
+		float mass, float maxSpeed, float scale, int rotatable, int nation, char* icon, int actionState)
 		: id(id),
 		name(name),
 		minDist(minDist),
@@ -64,13 +64,13 @@ struct db_building
 	Urho3D::String model;
 	Urho3D::String texture;
 	Urho3D::String font;
-	double scale;
+	float scale;
 	Urho3D::String texture_temp;
 	int nation;
 	Urho3D::String icon;
 	short queueMaxCapacity;
 
-	db_building(int id, char* name, int sizeX, int sizeZ, char* model, char* texture, char* font, double scale,
+	db_building(int id, char* name, int sizeX, int sizeZ, char* model, char* texture, char* font, float scale,
 	            char* texture_temp, int nation, char* icon, int queueMaxCapacity)
 		: id(id),
 		name(name),
@@ -105,10 +105,10 @@ struct db_graph_settings
 	int res_y;
 	Urho3D::Vector<Urho3D::String> styles;
 	bool fullscreen;
-	double max_fps;
-	double min_fps;
+	float max_fps;
+	float min_fps;
 
-	db_graph_settings(int id, int hudSize, int resX, int resY, char* styles, int fullscreen, double maxFps, double minFps)
+	db_graph_settings(int id, int hudSize, int resX, int resY, char* styles, int fullscreen, float maxFps, float minFps)
 		: id(id),
 		hud_size(hudSize),
 		res_x(resX),
@@ -139,12 +139,12 @@ struct db_resource
 	int maxCapacity;
 	Urho3D::Vector<Urho3D::String> texture;
 	Urho3D::String model;
-	double scale;
+	float scale;
 	Urho3D::IntVector2 size;
 	int maxUsers;
 	unsigned mini_map_color;
 
-	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, double scale, int sizeX,
+	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, float scale, int sizeX,
 	            int sizeZ, int maxUsers, unsigned mini_map_color)
 		: id(id),
 		name(name),
@@ -164,9 +164,9 @@ struct db_hud_vars
 	int id;
 	int hud_size;
 	Urho3D::String name;
-	double value;
+	float value;
 
-	db_hud_vars(int id, int hudSize, char* name, double value)
+	db_hud_vars(int id, int hudSize, char* name, float value)
 		: id(id),
 		hud_size(hudSize),
 		name(name),

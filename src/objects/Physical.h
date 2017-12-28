@@ -10,8 +10,8 @@ public:
 	Physical(Vector3* _position, ObjectType _type);
 	virtual ~Physical();
 	void updateHealthBar();
-	virtual double getHealthBarSize();
-	virtual double getHealthPercent();
+	virtual float getHealthBarSize();
+	virtual float getHealthPercent();
 	int getBucketIndex(char param);
 	bool bucketHasChanged(int _bucketIndex, char param);
 	void setBucket(int _bucketIndex, char param);

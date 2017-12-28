@@ -39,7 +39,7 @@ void ResourceEntity::populate(db_resource* _dbResource) {
 	dbResource = _dbResource;
 }
 
-double ResourceEntity::getHealthBarSize() {
+float ResourceEntity::getHealthBarSize() {
 	return hbMaxSize;
 }
 

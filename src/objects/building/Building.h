@@ -13,7 +13,7 @@ class Building : public Static
 public:
 	Building(Vector3* _position, int id, int player);
 	~Building();
-	double getHealthBarSize() override;
+	float getHealthBarSize() override;
 	int getDbID() override;
 	void populate(db_building* _dbBuilding, std::vector<db_unit*>* _units);
 	void absorbAttack(double attackCoef) override;

@@ -12,7 +12,7 @@ public:
 	int getDbID() override;
 	void populate(db_resource* _dbResource);
 
-	double getHealthBarSize() override;
+	float getHealthBarSize() override;
 	String& toMultiLineString() override;
 	std::string getValues(int precision) override;
 	static std::string getColumns();
@@ -23,7 +23,7 @@ public:
 private:
 	db_resource* dbResource;
 	int type;
-	double amonut;
+	float amonut;
 
 	static double hbMaxSize;
 	int maxUsers;

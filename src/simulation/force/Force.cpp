@@ -48,7 +48,7 @@ Urho3D::Vector3* Force::destination(Unit* unit) {
 	return unit->getDestination(boostCoef, aimCoef);
 }
 
-double Force::calculateCoef(double distance, double minDist) {
+float Force::calculateCoef(double distance, double minDist) {
 	double parameter = distance - minDist / 2;
 	if (parameter <= 0.05) {
 		parameter = 0.05;

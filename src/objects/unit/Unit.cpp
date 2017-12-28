@@ -45,13 +45,13 @@ Unit::~Unit() {
 	}
 }
 
-double Unit::getHealthBarSize() {
+float Unit::getHealthBarSize() {
 	double healthBarSize = hbMaxSize * (hpCoef / maxHpCoef);
 	if (healthBarSize <= 0) { healthBarSize = 0; }
 	return healthBarSize;
 }
 
-double Unit::getHealthPercent() {
+float Unit::getHealthPercent() {
 	return (hpCoef / maxHpCoef);
 }
 

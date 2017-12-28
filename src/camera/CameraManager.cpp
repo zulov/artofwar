@@ -59,7 +59,7 @@ void CameraManager::translate(const IntVector2& cursorPos, Input* input, float t
 	createCameraKeys(input, cameraKeys, cursorPos);
 	int wheel = input->GetMouseMoveWheel();
 	Vector3 pos = activeBehave->getPosition();
-	float min = Game::get()->getEnviroment()->getGroundHeightAt(pos.x_, pos.z_);
+	const float min = Game::get()->getEnviroment()->getGroundHeightAt(pos.x_, pos.z_);
 	activeBehave->translate(cameraKeys, wheel, timeStep * MOVE_SPEED, min);
 }
 

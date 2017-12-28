@@ -26,8 +26,8 @@ static void setTextureToSprite(MySprite* sprite, Texture2D* texture) {
 	int textureHeight = texture->GetHeight();
 	//IntVector2 size = sprite->GetSize();
 	IntVector2 size = sprite->getMySize();
-	double scaleX = (size.x_) / (double)textureWidth;
-	double scaleY = (size.y_) / (double)textureHeight;
+	float scaleX = (size.x_) / (float)textureWidth;
+	float scaleY = (size.y_) / (float)textureHeight;
 	sprite->SetScale(1);
 	if (scaleX < scaleY) {
 		sprite->SetScale(scaleX);

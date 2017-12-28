@@ -11,7 +11,7 @@ public:
 	Grid(short _resolution, double _size, bool _debugEnabled = false);
 	~Grid();
 
-	void updateGrid(Unit* entity, short team);
+	void updateGrid(Unit* entity, char team);
 	std::vector<Unit*>& getContentAt(int index);
 	int &getSizeAt(int index);
 	std::vector<int>* getEnvIndexsFromCache(double getMaxSeparationDistance);

@@ -10,6 +10,6 @@ public:
 	EntityFactory();
 	~EntityFactory();
 protected:
-	double getSpecSize(SpacingType spacing);
+	float getSpecSize(SpacingType spacing);
 };
 

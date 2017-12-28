@@ -15,7 +15,7 @@
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {
-	exprtk::symbol_table<double> symbol_table;
+	exprtk::symbol_table<float> symbol_table;
 	int varsSize = Game::get()->getDatabaseCache()->getHudVarsSize();
 	for (int i = 0; i < varsSize; ++i) {
 		//TODO to lepiej zrobiczapytaniem?
@@ -24,13 +24,13 @@ void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 			symbol_table.add_variable(var->name.CString(), var->value);
 		}
 	}
-	double resX = (double)graphSettings->res_x;
-	double resY = (double)graphSettings->res_y;
+	float resX = (float)graphSettings->res_x;
+	float resY = (float)graphSettings->res_y;
 	symbol_table.add_variable("resX", resX);
 	symbol_table.add_variable("resY", resY);
 
-	typedef exprtk::expression<double> expression_t;
-	typedef exprtk::parser<double> parser_t;
+	typedef exprtk::expression<float> expression_t;
+	typedef exprtk::parser<float> parser_t;
 	expression_t expression;
 	expression.register_symbol_table(symbol_table);
 

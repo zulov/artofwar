@@ -65,17 +65,17 @@ void Physical::initBillbords() {
 }
 
 void Physical::updateHealthBar() {
-	double healthBarSize = getHealthBarSize();
+	float healthBarSize = getHealthBarSize();
 
 	billboardBar->size_ = Vector2(healthBarSize, 0.1) / node->GetScale2D();
 	billboardSetBar->Commit();
 }
 
-double Physical::getHealthBarSize() {
+float Physical::getHealthBarSize() {
 	return 1;
 }
 
-double Physical::getHealthPercent() {
+float Physical::getHealthPercent() {
 	return 1.0;
 }
 

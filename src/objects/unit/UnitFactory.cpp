@@ -15,7 +15,7 @@ UnitFactory::~UnitFactory() {
 std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center, int player) {
 	units->clear();
 
-	double space = getSpecSize(CONSTANT);
+	float space = getSpecSize(CONSTANT);
 
 	int y = 0;
 	int xMax = number / sqrt(number);

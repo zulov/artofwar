@@ -41,7 +41,7 @@ Building::~Building() {
 	delete target;
 }
 
-double Building::getHealthBarSize() {
+float Building::getHealthBarSize() {
 	double healthBarSize = (hbMaxSize);
 	if (healthBarSize <= 0) { healthBarSize = 0; }
 	return healthBarSize;

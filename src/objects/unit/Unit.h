@@ -24,8 +24,8 @@ class Unit : public Physical
 public:
 	Unit(Vector3* _position, int id, int player);
 	~Unit();
-	double getHealthBarSize() override;
-	double getHealthPercent() override;
+	float getHealthBarSize() override;
+	float getHealthPercent() override;
 	void populate(db_unit* _dbUnit);
 	void checkAim();
 	void move(double timeStep);

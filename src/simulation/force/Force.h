@@ -14,9 +14,9 @@ public:
 	Urho3D::Vector3 *destination(Unit * unit);
 private:
 	const double coef = 1;
-	double calculateCoef(double distance, double minDist);
-	double boostCoef = 10;
-	double sepCoef = 1;
-	double aimCoef = 2;
+	float calculateCoef(double distance, double minDist);
+	float boostCoef = 10;
+	float sepCoef = 1;
+	float aimCoef = 2;
 };
 
