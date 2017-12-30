@@ -107,7 +107,7 @@ dbload_container* SceneLoader::getData() {
 }
 
 
-void SceneLoader::createLoad(Urho3D::String fileName) {
+void SceneLoader::createLoad(const Urho3D::String& fileName) {
 	reset();
 
 	std::string name = std::string("saves/") + fileName.CString() + ".db";

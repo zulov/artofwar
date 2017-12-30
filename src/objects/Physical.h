@@ -45,7 +45,7 @@ protected:
 	float maxHpCoef = 100;
 	float attackCoef = 10;
 	float attackRange;
-	float defenseCoef = 0.3;
+	float defenseCoef = 0.3f;
 	float attackSpeed = 1;
 
 	Node* billboardNode = nullptr;

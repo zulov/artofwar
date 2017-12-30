@@ -84,10 +84,10 @@ private:
 	UnitStateType unitState;
 	UnitStateType actionState;
 
-	double minimalDistance;
+	float minimalDistance;
 	bool rotatable;
-	double unitRadius = 2;
-	double attackIntrest = 10;
-	double collectSpeed = 2;
-	static double hbMaxSize;
+	float unitRadius = 2;
+	float attackIntrest = 10;
+	float collectSpeed = 2;
+	static float hbMaxSize;
 };

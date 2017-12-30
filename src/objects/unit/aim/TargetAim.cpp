@@ -36,10 +36,7 @@ Urho3D::Vector3* TargetAim::getDirection(Unit* unit) {
 
 bool TargetAim::ifReach(Unit* unit) {
 	float dist = ((*unit->getPosition()) - (*position)).LengthSquared();
-	if (dist < radius * radius) {
-		return true;
-	}
-	return false;
+	return dist < radius * radius;
 }
 
 bool TargetAim::expired() {

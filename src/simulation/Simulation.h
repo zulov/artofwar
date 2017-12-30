@@ -50,7 +50,7 @@ private:
 
 	bool animate;
 	float accumulateTime = 0;
-	float maxTimeFrame = 0.05;
+	float maxTimeFrame = 0.05f;
 	int framesPeriod = 20;
 	int currentFrameNumber = 0;
 	Force force;

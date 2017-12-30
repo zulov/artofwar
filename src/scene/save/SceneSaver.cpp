@@ -25,7 +25,7 @@ void SceneSaver::createUnitsTable() {
 	createTable(sql);
 }
 
-void SceneSaver::createTable(std::string sql) {
+void SceneSaver::createTable(const std::string& sql) {
 	const char* charSql = sql.c_str();
 	char* error;
 	int rc = sqlite3_exec(database, charSql, nullptr, nullptr, &error);
@@ -72,7 +72,7 @@ void SceneSaver::createTables() {
 	//createAimsTable();
 }
 
-void SceneSaver::createDatabase(Urho3D::String fileName) {
+void SceneSaver::createDatabase(const Urho3D::String& fileName) {
 	std::string name = std::string("saves/") + fileName.CString() + ".db";
 	int rc = sqlite3_open(name.c_str(), &database);
 	if (rc) {

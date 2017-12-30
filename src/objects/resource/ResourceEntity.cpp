@@ -7,7 +7,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
 
-double ResourceEntity::hbMaxSize = 3.0;
+float ResourceEntity::hbMaxSize = 3.0f;
 
 ResourceEntity::ResourceEntity(Vector3* _position, int id) : Static(_position, RESOURCE) {
 	hbMaxSize = 3.0;

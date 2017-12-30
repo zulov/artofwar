@@ -18,10 +18,7 @@ Urho3D::Vector3* FollowAim::getDirection(Unit* unit) {
 
 bool FollowAim::ifReach(Unit* unit) {
 	float dist = ((*unit->getPosition()) - (*physical->getPosition())).LengthSquared();
-	if (dist < radius * radius) {
-		return true;
-	}
-	return false;
+	return dist < radius * radius;
 }
 
 bool FollowAim::expired() {

@@ -36,9 +36,9 @@ void UnitsPanel::show(SelectedInfo* selectedInfo) {
 		if (!data->empty()) {
 			std::vector<db_unit*>* units = Game::get()->getDatabaseCache()->getUnitsForBuilding(i);
 			unordered_set<int> common2;
-			for (int j = 0; j < units->size(); ++j) {
+			for (auto & unit : *units) {
 				//todo to zrobic raz i pobierac
-				common2.insert(units->at(j)->id);
+				common2.insert(unit->id);
 			}
 			unordered_set<int> temp(common);
 			for (const auto& id : temp) {

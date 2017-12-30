@@ -10,7 +10,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include "commands/action/ActionCommandList.h"
 
-double Unit::hbMaxSize = 0.7;
+float Unit::hbMaxSize = 0.7f;
 
 Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT) {
 	acceleration = new Vector3();
@@ -345,7 +345,7 @@ void Unit::applyForce(double timeStep) {
 		return;
 	}
 
-	(*velocity) *= 0.95;//TODO to dac jaki wspolczynnik tarcia terenu
+	(*velocity) *= 0.95f;//TODO to dac jaki wspolczynnik tarcia terenu
 	(*velocity) += (*acceleration) * (timeStep / mass);
 	double velLenght = velocity->LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {

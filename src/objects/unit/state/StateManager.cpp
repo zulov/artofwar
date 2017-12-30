@@ -68,10 +68,7 @@ void StateManager::changeState(Unit* unit, UnitStateType stateTo, ActionParamete
 
 bool StateManager::checkChangeState(Unit* unit, UnitStateType stateTo) {
 	State* stateFrom = states[static_cast<int>(unit->getState())];
-	if (stateFrom->validateTransition(stateTo)) {
-		return true;
-	}
-	return false;
+	return stateFrom->validateTransition(stateTo);
 }
 
 void StateManager::execute(Unit* unit) {

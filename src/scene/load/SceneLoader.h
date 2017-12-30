@@ -14,7 +14,7 @@ public:
 	void load();
 	void reset();
 	dbload_container* getData();
-	void createLoad(Urho3D::String fileName);
+	void createLoad(const Urho3D::String& fileName);
 	std::vector<dbload_player*>* loadPlayers();
 	std::vector<dbload_resource*>* loadResources();
 

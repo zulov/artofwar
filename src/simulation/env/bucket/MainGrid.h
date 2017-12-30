@@ -24,12 +24,12 @@ public:
 	Vector3* getValidPosition(const IntVector2& size, Vector3* pos);
 	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos);
 	inline double heuristic(int from, int to);
-	IntVector2 getCords(const int index);
+	IntVector2 getCords(int index);
 
 	std::vector<int> reconstruct_path(IntVector2& startV, IntVector2& goalV, int came_from[]);
 	bool inSide(int x, int z);
-	std::vector<std::pair<int, float>*>* neighbors(const int current);
-	double cost(const int current, const int next);
+	std::vector<std::pair<int, float>*>* neighbors(int current);
+	double cost(int current, int next);
 	void debug(IntVector2& startV, IntVector2& goalV);
 	void findPath(IntVector2& startV, IntVector2& goalV);
 	void draw_grid_from(int* cameFrom, Image* image);

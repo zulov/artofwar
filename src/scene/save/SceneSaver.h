@@ -14,7 +14,7 @@ public:
 	~SceneSaver();
 	
 	void createTables();
-	void createDatabase(Urho3D::String fileName);
+	void createDatabase(const Urho3D::String& fileName);
 	void createSave(Urho3D::String fileName);
 	void saveUnits(std::vector<Unit*>* units);
 	void saveBuildings(std::vector<Building*>* buildings);
@@ -27,7 +27,7 @@ private:
 	void executeInsert(std::string sqlstatement);
 
 	void createUnitsTable();
-	void createTable(std::string sql);
+	void createTable(const std::string& sql);
 	void createBuildingsTable();
 	void createResourceEntitiesTable();
 	void createPlayerTable();

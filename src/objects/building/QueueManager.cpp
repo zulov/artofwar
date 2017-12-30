@@ -17,9 +17,9 @@ QueueManager::~QueueManager() {
 }
 
 void QueueManager::add(short value, ObjectType type, short id) {
-	for (int i = 0; i < queue->size(); ++i) {
-		if (queue->at(i)->checkType(type, id)) {
-			value = queue->at(i)->add(value);
+	for (auto & i : *queue) {
+		if (i->checkType(type, id)) {
+			value = i->add(value);
 		}
 	}
 	while (value > 0) {
@@ -35,7 +35,7 @@ QueueElement* QueueManager::update(float time) {
 			queue->erase(queue->begin() + i);
 		}
 	}
-	if (queue->size() > 0) {
+	if (!queue->empty()) {
 		QueueElement* element = queue->at(0);
 
 		if (element->update(time)) {//TODO memoryleak

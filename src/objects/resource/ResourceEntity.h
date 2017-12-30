@@ -25,7 +25,7 @@ private:
 	int type;
 	float amonut;
 
-	static double hbMaxSize;
+	static float hbMaxSize;
 	int maxUsers;
 	int users = 0;
 };
