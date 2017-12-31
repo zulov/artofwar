@@ -15,7 +15,7 @@ public:
 	~ComplexBucketData();
 
 	ObjectType getType() const { return type; };
-	void setStatic(Static* object);
+	void setStatic(Static* _object);
 	void removeStatic();
 	void createBox(double bucketSize);
 	Urho3D::Vector3* getDirectrionFrom(Urho3D::Vector3* position);

@@ -13,10 +13,7 @@ QueueElement::~QueueElement() {
 }
 
 bool QueueElement::checkType(ObjectType _type, short _subType) {
-	if (type == _type && subType == _subType) {
-		return true;
-	}
-	return false;
+	return type == _type && subType == _subType;
 }
 
 short QueueElement::add(short value) {
@@ -38,10 +35,7 @@ void QueueElement::reduce(short value) {
 
 bool QueueElement::update(float time) {
 	elapsedSeconds += time;
-	if (elapsedSeconds >= secondsToComplete) {
-		return true;
-	}
-	return false;
+	return elapsedSeconds >= secondsToComplete;
 }
 
 ObjectType QueueElement::getType() {

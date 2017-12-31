@@ -55,6 +55,6 @@ SimulationObjectManager* CreationCommandList::getManager() {
 }
 
 void CreationCommandList::setParemeters(AbstractCommand* command) {
-	CreationCommand* m = static_cast<CreationCommand *>(command);
+	CreationCommand* m = dynamic_cast<CreationCommand *>(command);
 	m->setSimulationObjectManager(simulationObjectManager);
 }

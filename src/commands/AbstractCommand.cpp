@@ -7,3 +7,6 @@ AbstractCommand::AbstractCommand() {
 
 AbstractCommand::~AbstractCommand() {
 }
+
+void AbstractCommand::execute() {
+}

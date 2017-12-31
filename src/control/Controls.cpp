@@ -284,8 +284,8 @@ void Controls::orderUnit(short id) {
 	case OrderType::STOP:
 	case OrderType::DEFEND:
 	case OrderType::DEAD:
-		for (int i = 0; i < selected->size(); ++i) {
-			(*selected)[i]->action(id, nullptr);//TODO przemyslec to
+		for (auto & phy : *selected) {
+			phy->action(id, nullptr);//TODO przemyslec to
 		}
 		break;
 	default: ;
@@ -293,8 +293,8 @@ void Controls::orderUnit(short id) {
 }
 
 void Controls::orderBuilding(short id) {
-	for (int i = 0; i < selected->size(); ++i) {
-		(*selected)[i]->action(id, nullptr);//TODO przemyslec to
+	for (auto & phy : *selected) {
+		phy->action(id, nullptr);//TODO przemyslec to
 	}
 }
 
@@ -320,10 +320,7 @@ void Controls::refreshSelected() {
 	                               selected->begin(), selected->end(),
 	                               [](Physical* physical)
 	                               {
-		                               if (!physical->isAlive()) {
-			                               return true;
-		                               }
-		                               return false;
+		                               return !physical->isAlive();
 	                               }),
 	                selected->end());
 	if (selected->size() != preSize) {

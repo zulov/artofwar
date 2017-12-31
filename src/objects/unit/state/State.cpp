@@ -1,12 +1,8 @@
 #include "State.h"
 
-State::State() {
+State::State() = default;
 
-}
-
-State::~State() {
-
-}
+State::~State() = default;
 
 bool State::validateTransition(UnitStateType stateTo) {
 	return transitions.find(stateTo) != transitions.end();

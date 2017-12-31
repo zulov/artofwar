@@ -5,20 +5,23 @@
 
 
 Resources::Resources() {
-	Resources(0);
+	init(0);
 }
 
-Resources::Resources(double valueForAll) {
+void Resources::init(double valueForAll) {
 	size = Game::get()->getDatabaseCache()->getResourceSize();
 	int i = 0;
-	for (; i < size; ++i) {
-		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);		
+	for (; i < size; ++i) {	
 		values[i] = valueForAll;
 	}
 	for (; i < RESOURCE_NUMBER_DB; ++i) {
 		values[i] = 0;
 	}
 	changed = true;
+}
+
+Resources::Resources(double valueForAll) {
+	init(valueForAll);
 }
 
 

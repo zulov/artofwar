@@ -1,7 +1,7 @@
 #include "UnitFactory.h"
 
 
-UnitFactory::UnitFactory(): EntityFactory() {
+UnitFactory::UnitFactory() {
 	units = new std::vector<Unit *>();
 	units->reserve(DEFAULT_VECTOR_SIZE);
 	StateManager::init();
@@ -15,16 +15,14 @@ UnitFactory::~UnitFactory() {
 std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center, int player) {
 	units->clear();
 
-	float space = getSpecSize(CONSTANT);
-
 	int y = 0;
 	int xMax = number / sqrt(number);
-	float sideSize = xMax * space / 2;
+	float sideSize = xMax  / 2;
 
 	while (units->size() < number) {
 		for (int x = 0; x < xMax; ++x) {
-			Vector3* position = new Vector3(x * space + center->x_ - sideSize, 0 + center->y_,
-			                                y * space + center->z_ - sideSize);
+			Vector3* position = new Vector3(x + center->x_ - sideSize, 0 + center->y_,
+			                                y + center->z_ - sideSize);
 			Unit* newUnit = new Unit(position, id, player);
 
 			units->push_back(newUnit);

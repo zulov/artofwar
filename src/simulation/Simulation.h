@@ -23,7 +23,7 @@ namespace Urho3D {
 class Simulation
 {
 public:
-	Simulation(Enviroment* _enviromentStrategy, CreationCommandList* _simCommandList);
+	Simulation(Enviroment* _enviroment, CreationCommandList* _simCommandList);
 	~Simulation();
 	void update(Input* input, float timeStep);
 	void initScene(SceneLoader* loader);

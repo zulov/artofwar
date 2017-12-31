@@ -14,7 +14,6 @@ public:
 	void HandleValueChange(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 private:
 	Urho3D::LineEdit* lineEdit;
-	Urho3D::DropDownList* list;
 	Urho3D::Button* action;
 	FileFormData * data;
 };

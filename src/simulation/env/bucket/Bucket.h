@@ -16,7 +16,7 @@ public:
 	void remove(Unit* entity);
 
 	int& getSize();
-	bool incUnitsPerPlayer(content_info* ci, int activePlayer, bool checks[]);
+	bool incUnitsPerPlayer(content_info* ci, int activePlayer, const bool checks[]);
 private:
 	int size;
 	int unitsNumberPerPlayer[MAX_PLAYERS];

@@ -4,7 +4,7 @@
 #include "database/DatabaseCache.h"
 
 
-BuildingFactory::BuildingFactory(): EntityFactory() {
+BuildingFactory::BuildingFactory() {
 	buildings = new std::vector<Building *>();
 	buildings->reserve(DEFAULT_VECTOR_SIZE);
 }

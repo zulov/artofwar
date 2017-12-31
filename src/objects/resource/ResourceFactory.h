@@ -1,11 +1,10 @@
 #pragma once
-#include "objects/EntityFactory.h"
 #include "ResourceEntity.h"
 
 
 struct dbload_resource_entities;
 
-class ResourceFactory :public EntityFactory
+class ResourceFactory 
 {
 public:
 	ResourceFactory();

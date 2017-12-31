@@ -191,7 +191,7 @@ void Unit::toCollect(std::vector<Physical*>* enemies) {
 	double minDistance = 9999;
 	ResourceEntity* entityClosest = nullptr;
 	for (auto entity : (*enemies)) {
-		ResourceEntity* resource = static_cast<ResourceEntity*>(entity);
+		ResourceEntity* resource = dynamic_cast<ResourceEntity*>(entity);
 		if (resource->belowLimit()) {
 			const double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
 			if (distance <= minDistance) {

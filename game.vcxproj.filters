@@ -44,9 +44,6 @@
     <ClCompile Include="src\objects\Entity.cpp">
       <Filter>objects</Filter>
     </ClCompile>
-    <ClCompile Include="src\objects\EntityFactory.cpp">
-      <Filter>objects\collection\factory</Filter>
-    </ClCompile>
     <ClCompile Include="src\objects\LinkComponent.cpp">
       <Filter>objects\collection\link</Filter>
     </ClCompile>
@@ -284,9 +281,6 @@
     </ClInclude>
     <ClInclude Include="src\objects\Entity.h">
       <Filter>objects</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objects\EntityFactory.h">
-      <Filter>objects\collection\factory</Filter>
     </ClInclude>
     <ClInclude Include="src\hud\Hud.h">
       <Filter>hud</Filter>

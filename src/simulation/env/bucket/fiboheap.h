@@ -1,6 +1,6 @@
 #pragma once
 
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include <vector>
 #include "utils.h"

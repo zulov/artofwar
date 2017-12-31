@@ -53,7 +53,7 @@ private:
 
 	void leftClick(Physical* clicked, Vector3& hitPos);
 	void leftClickBuild(Physical* clicked, Vector3& hitPos);
-	void rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftPRessed);
+	void rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftPressed);
 
 	void leftHold(std::pair<Vector3*, Vector3*>* held);
 	void rightHold(std::pair<Vector3*, Vector3*>* held);

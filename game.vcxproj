@@ -252,7 +252,6 @@
     <ClCompile Include="src\commands\CommandList.cpp" />
     <ClCompile Include="src\control\Controls.cpp" />
     <ClCompile Include="src\objects\Entity.cpp" />
-    <ClCompile Include="src\objects\EntityFactory.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\scene\LevelBuilder.cpp" />
     <ClCompile Include="src\objects\LinkComponent.cpp" />
@@ -361,7 +360,6 @@
     <ClInclude Include="src\control\ControlsState.h" />
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\objects\Entity.h" />
-    <ClInclude Include="src\objects\EntityFactory.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\scene\LevelBuilder.h" />
     <ClInclude Include="src\objects\LinkComponent.h" />

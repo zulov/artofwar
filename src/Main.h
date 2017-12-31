@@ -2,7 +2,6 @@
 
 
 #include "camera/CameraManager.h"
-#include "Control.h"
 #include "hud/Hud.h"
 #include "Benchmark.h"
 #include "control/Controls.h"

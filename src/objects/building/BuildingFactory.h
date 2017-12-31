@@ -1,12 +1,12 @@
 #pragma once
-#include "objects/EntityFactory.h"
+
 #include "Building.h"
 #include <vector>
 
 
 struct dbload_building;
 
-class BuildingFactory :public EntityFactory {
+class BuildingFactory {
 public:
 	BuildingFactory();
 	~BuildingFactory();

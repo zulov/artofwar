@@ -40,7 +40,7 @@ int& Bucket::getSize() {
 	return size;
 }
 
-bool Bucket::incUnitsPerPlayer(content_info* ci, int activePlayer, bool checks[]) {
+bool Bucket::incUnitsPerPlayer(content_info* ci, int activePlayer, const bool checks[]) {
 	bool hasUnits = false;
 	if (size > 0) {
 		for (int i = 0; i < MAX_PLAYERS; ++i) {

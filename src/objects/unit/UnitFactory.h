@@ -1,10 +1,9 @@
 #pragma once
 #include "Unit.h"
 #include <vector>
-#include "objects/EntityFactory.h"
 
 
-class UnitFactory : public EntityFactory
+class UnitFactory
 {
 public:
 	UnitFactory();
@@ -14,5 +13,4 @@ public:
 	std::vector<Unit*>* load(dbload_unit* unit);
 private:
 	std::vector<Unit*>* units;
-	StateManager* states;
 };

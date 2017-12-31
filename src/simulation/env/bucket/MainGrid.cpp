@@ -398,8 +398,5 @@ std::vector<int> MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goal
 }
 
 bool MainGrid::inSide(int x, int z) {
-	if (x < 0 || x >= resolution || z < 0 || z >= resolution) {
-		return false;
-	}
-	return true;
+	return !(x < 0 || x >= resolution || z < 0 || z >= resolution);
 }

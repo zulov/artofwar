@@ -134,10 +134,7 @@ int Grid::getIndex(short posX, short posZ) {
 bool Grid::fieldInCircle(short i, short j, double radius) {
 	short x = i * fieldSize;
 	short y = j * fieldSize;
-	if (x * x + y * y < radius * radius) {
-		return true;
-	}
-	return false;
+	return x * x + y * y < radius * radius;
 }
 
 std::vector<int>* Grid::getEnvIndexs(double radius) {

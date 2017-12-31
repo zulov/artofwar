@@ -10,6 +10,6 @@ ActionCommandList::~ActionCommandList() {
 }
 
 void ActionCommandList::setParemeters(AbstractCommand* command) {
-	ActionCommand* m = static_cast<ActionCommand *>(command);
+	ActionCommand* m = dynamic_cast<ActionCommand *>(command);
 	m->setAimConteiner(aimContainer);
 }

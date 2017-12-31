@@ -6,6 +6,7 @@ class Resources
 {
 public:
 	Resources();
+	void init(double valueForAll);
 	Resources(double valueForAll);
 	~Resources();
 	bool reduce(std::vector<db_cost*>* costs);
