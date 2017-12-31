@@ -39,6 +39,8 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 	}
 
 	std::fill_n(checks, MINI_MAP_BUTTON_NUMBER, true);
+	elements = new std::vector<UIElement*>();
+	hudElements = new std::vector<HudElement*>();
 }
 
 
@@ -145,11 +147,10 @@ void MiniMapPanel::createBody() {
 	spr->SetEnabled(true);
 	UIElement* row = window->CreateChild<UIElement>();
 	row->SetStyle("MiniMapListRow", style);
-	elements = new std::vector<UIElement*>();
-	elements->reserve(MINI_MAP_BUTTON_NUMBER);
 
-	hudElements = new std::vector<HudElement*>();
+	elements->reserve(MINI_MAP_BUTTON_NUMBER);
 	hudElements->reserve(MINI_MAP_BUTTON_NUMBER);
+
 	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
 		>("textures/hud/icon/mm/minimap" + String(i) + ".png");

@@ -13,6 +13,7 @@
 
 InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "InGameMenuWindow";
+	buttons = new std::vector<HudElement*>();
 }
 
 InGameMenuPanel::~InGameMenuPanel() {
@@ -64,7 +65,7 @@ void InGameMenuPanel::createBody() {
 	Game::get()->getUI()->GetRoot()->AddChild(toggleButton);
 	SubscribeToEvent(toggleButton, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleToggle));
 
-	buttons = new std::vector<HudElement*>();
+
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		Texture2D* texture2 = Game::get()->getCache()->GetResource<Texture2D
 		>("textures/hud/icon/igm/igm_" + String(i) + ".png");

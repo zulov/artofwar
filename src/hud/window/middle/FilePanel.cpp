@@ -6,6 +6,7 @@
 
 
 FilePanel::FilePanel(Urho3D::XMLFile* _style, Urho3D::String _title): AbstractMiddlePanel(_style, _title) {
+	data = nullptr;
 }
 
 

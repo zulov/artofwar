@@ -11,6 +11,7 @@
 BuildPanel::BuildPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {
 	nation = _nation;
 	styleName = "BuildWindow";
+	buttons = new std::vector<HudElement*>();
 }
 
 
@@ -28,7 +29,7 @@ void BuildPanel::show() {
 
 void BuildPanel::createBody() {
 	int size = Game::get()->getDatabaseCache()->getBuildingSize();
-	buttons = new std::vector<HudElement*>();
+
 	buttons->reserve(size);
 	ListView* panel = window->CreateChild<ListView>();
 	panel->SetStyle("MyListView", style);

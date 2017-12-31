@@ -13,7 +13,7 @@ public:
 	void save();
 	long getLoops() const;
 private:
-	double data[BENCH_LENGTH];
+	double data[BENCH_LENGTH]{};
 	int index;
 	double sum;
 	double avg;

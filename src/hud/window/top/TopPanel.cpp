@@ -7,6 +7,10 @@
 
 TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "TopWindow";
+	int size = Game::get()->getDatabaseCache()->getResourceSize();
+
+	elements = new TopHudElement*[size];
+	buttons = new std::vector<Button*>();
 }
 
 
@@ -26,8 +30,6 @@ void TopPanel::createBody() {
 
 	int size = Game::get()->getDatabaseCache()->getResourceSize();
 
-	elements = new TopHudElement*[size];
-	buttons = new std::vector<Button*>();
 	buttons->reserve(size);
 	for (int i = 0; i < size; ++i) {
 		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);

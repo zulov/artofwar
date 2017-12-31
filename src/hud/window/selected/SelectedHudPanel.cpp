@@ -5,6 +5,8 @@
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "SelectedInfoWindow";
+
+	buttons = new std::vector<Button*>();
 }
 
 SelectedHudPanel::~SelectedHudPanel() {
@@ -39,6 +41,7 @@ void SelectedHudPanel::createBody() {
 	maxInRow = space / size;
 
 	elements = new SelectedHudElement*[LINES_IN_SELECTION * maxInRow];
+
 	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
 		elements[i] = new SelectedHudElement(style);
 	}
@@ -49,7 +52,6 @@ void SelectedHudPanel::createBody() {
 		}
 	}
 
-	buttons = new std::vector<Button*>();
 	buttons->reserve(LINES_IN_SELECTION * maxInRow);
 	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
 		buttons->push_back(elements[i]->getButton());

@@ -12,6 +12,7 @@
 
 OrdersPanel::OrdersPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "OrdersWindow";
+	buttons = new std::vector<HudElement*>();
 }
 
 
@@ -58,7 +59,7 @@ std::vector<HudElement*>* OrdersPanel::getButtons() {
 
 void OrdersPanel::createBody() {
 	int size = Game::get()->getDatabaseCache()->getOrdersSize();
-	buttons = new std::vector<HudElement*>();
+
 	buttons->reserve(size);
 	ListView* panel = window->CreateChild<ListView>();
 	panel->SetStyle("MyListView", style);
