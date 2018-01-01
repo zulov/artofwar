@@ -15,8 +15,8 @@ CameraManager::CameraManager() {
 	activeBehave = cameraBehaves.at(1);
 	float border = 256.f;
 
-	int width = Game::get()->getGraphics()->GetWidth();
-	int height = Game::get()->getGraphics()->GetHeight();
+	const int width = Game::get()->getGraphics()->GetWidth();
+	const int height = Game::get()->getGraphics()->GetHeight();
 	widthEdge = width / border;
 	heightEdge = height / border;
 

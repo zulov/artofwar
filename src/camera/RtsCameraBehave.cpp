@@ -12,8 +12,8 @@ RtsCameraBehave::~RtsCameraBehave() = default;
 
 void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
 	Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
-	float localMin = minY + min;
-	float localMax = maxY + min;
+	const float localMin = minY + min;
+	const float localMax = maxY + min;
 
 	double diff;
 	if (pos.y_ < localMin) {

@@ -1,7 +1,7 @@
 #include "LinkComponent.h"
 
 
-LinkComponent::LinkComponent(Urho3D::Context* context) : Component(context) {
+LinkComponent::LinkComponent(Urho3D::Context* context) : Component(context), physical(nullptr) {
 }
 
 

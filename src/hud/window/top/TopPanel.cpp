@@ -28,7 +28,7 @@ void TopPanel::createBody() {
 	unitsNumber->SetStyle("TopText", style);
 	unitsNumber->SetText("Test");
 
-	int size = Game::get()->getDatabaseCache()->getResourceSize();
+	const int size = Game::get()->getDatabaseCache()->getResourceSize();
 
 	buttons->reserve(size);
 	for (int i = 0; i < size; ++i) {

@@ -12,7 +12,7 @@
 
 float Unit::hbMaxSize = 0.7f;
 
-Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT) {
+Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT), dbUnit(nullptr) {
 	acceleration = new Vector3();
 	velocity = new Vector3();
 	toResource = new Vector3();
@@ -31,7 +31,7 @@ Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT) {
 	model->SetMaterial(material);
 
 	setPlayer(player);
-	setTeam(player);//TODO ustawic team
+	setTeam(player); //TODO ustawic team
 
 	initBillbords();
 }
@@ -274,11 +274,11 @@ void Unit::action(short id, ActionParameter* parameter) {
 }
 
 std::string Unit::getValues(int precision) {
-	int position_x = position->x_ * precision;
-	int position_z = position->z_ * precision;
-	int state = (int)unitState;
-	int velocity_x = velocity->x_ * precision;
-	int velocity_z = velocity->z_ * precision;
+	const int position_x = position->x_ * precision;
+	const int position_z = position->z_ * precision;
+	const int state = static_cast<int>(unitState);
+	const int velocity_x = velocity->x_ * precision;
+	const int velocity_z = velocity->z_ * precision;
 	return Physical::getValues(precision)
 		+ to_string(position_x) + "," +
 		to_string(position_z) + "," +

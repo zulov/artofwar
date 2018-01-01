@@ -5,7 +5,7 @@ class MoveState : public State
 {
 public:
 	MoveState();
-	~MoveState();
+	~MoveState() override;
 	void onStart(Unit* unit) override;
 	void onStart(Unit* unit, ActionParameter* parameter) override;
 	void onEnd(Unit* unit) override;

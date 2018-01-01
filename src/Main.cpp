@@ -24,7 +24,6 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE) 
 	context->RegisterFactory<LinkComponent>();
 	MySprite::RegisterObject(context);
 	Game::init();
-	loadingState = new loading();
 }
 
 void Main::Setup() {
@@ -51,11 +50,11 @@ void Main::Setup() {
 
 	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
 	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
-	loadingState->reset(4);
+	loadingState.reset(4);
 }
 
 void Main::load() {
-	switch (loadingState->currentStage) {
+	switch (loadingState.currentStage) {
 	case 0:
 		{
 		Game::get()->setCameraManager(new CameraManager());
@@ -78,19 +77,19 @@ void Main::load() {
 		{
 		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
 		Game::get()->setEnviroment(enviroment);
-		loadingState->sth = enviroment;
+		loadingState.sth = enviroment;
 		break;
 		}
 	case 2:
 		{
-		Enviroment* enviroment = static_cast<Enviroment*>(loadingState->sth);
+		Enviroment* enviroment = static_cast<Enviroment*>(loadingState.sth);
 		//enviroment->prepareGridToFind();
 		hud->createMiniMap();
 		break;
 		}
 	case 3:
 		Game::get()->setCreationCommandList(new CreationCommandList());
-		simulation = new Simulation(static_cast<Enviroment*>(loadingState->sth), Game::get()->getCreationCommandList());
+		simulation = new Simulation(static_cast<Enviroment*>(loadingState.sth), Game::get()->getCreationCommandList());
 		break;
 	case 4:
 		simulation->initScene(loader);
@@ -101,8 +100,8 @@ void Main::load() {
 		hud->endLoading();
 		break;
 	}
-	loadingState->inc();
-	hud->updateLoading(loadingState->getProgres());
+	loadingState.inc();
+	hud->updateLoading(loadingState.getProgres());
 
 }
 
@@ -124,7 +123,6 @@ void Main::Start() {
 
 void Main::Stop() {
 	disposeScene();
-	delete loadingState;
 	delete loader;
 	delete saver;
 	delete benchmark;
@@ -283,7 +281,7 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 }
 
 void Main::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {
-	Sprite* element = (Sprite*)eventData[Urho3D::Click::P_ELEMENT].GetVoidPtr();
+	Sprite* element = static_cast<Sprite*>(eventData[Urho3D::Click::P_ELEMENT].GetVoidPtr());
 	IntVector2 begin = element->GetScreenPosition();
 	IntVector2 size = element->GetSize();
 	float x = eventData[Urho3D::Click::P_X].GetInt() - begin.x_;
@@ -293,14 +291,14 @@ void Main::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {
 }
 
 void Main::HandleBuildButton(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
 	controls->hudAction(hudElement);
 }
 
 void Main::HandleUnitButton(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
 
 	controls->order(hudElement->getId());
 }
@@ -313,8 +311,8 @@ void Main::HandleOrdersButton(StringHash eventType, VariantMap& eventData) {
 }
 
 void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	SelectedHudElement* sHudElement = (SelectedHudElement *)element->GetVar("SelectedHudElement").GetVoidPtr();
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	SelectedHudElement* sHudElement = static_cast<SelectedHudElement *>(element->GetVar("SelectedHudElement").GetVoidPtr());
 	std::vector<Physical*>* selected = sHudElement->getSelected();
 	controls->unSelectAll();
 	for (auto physical : (*selected)) {
@@ -365,8 +363,8 @@ void Main::HandleMouseModeChange(StringHash /*eventType*/, VariantMap& eventData
 }
 
 void Main::HandleUIButtonHoverOn(StringHash /*eventType*/, VariantMap& eventData) {
-	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
 	hud->hoverOnIcon(hudElement);
 }
 
@@ -377,8 +375,8 @@ void Main::HandleUIButtonHoverOff(StringHash /*eventType*/, VariantMap& eventDat
 }
 
 void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
-	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	FileFormData* data = (FileFormData *)element->GetVar("file_data").GetVoidPtr();
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	FileFormData* data = static_cast<FileFormData *>(element->GetVar("file_data").GetVoidPtr());
 	save(data->fileName);
 }
 
@@ -427,7 +425,7 @@ void Main::disposeScene() {
 	delete levelBuilder;
 	levelBuilder = nullptr;
 
-	loadingState->reset(4);
+	loadingState.reset(4);
 	delete loading2;
 }
 

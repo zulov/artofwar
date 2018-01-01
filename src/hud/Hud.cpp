@@ -34,7 +34,7 @@ void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 	expression_t expression;
 	expression.register_symbol_table(symbol_table);
 
-	std::regex reg("\\{[^\\}]*\\}");
+	std::regex reg(R"(\{[^\}]*\})");
 
 	std::regex_iterator<std::string::iterator> iterator(xml.begin(), xml.end(), reg);
 	std::regex_iterator<std::string::iterator> rend;
@@ -126,7 +126,7 @@ void Hud::prepareStyle() {
 	replaceVariables(result_xml, graphSettings->hud_size);
 	style = new XMLFile(Game::get()->getContext());
 
-	style->FromString(result_xml.c_str());//TODO moze problem z pamiecia
+	style->FromString(result_xml.c_str()); //TODO moze problem z pamiecia
 	Game::get()->getUI()->GetRoot()->SetDefaultStyle(style);
 }
 
@@ -145,9 +145,9 @@ Hud::Hud() {
 
 void Hud::clear() {
 	clear_vector(panels);
-	if (windows) {
-		delete windows;
-	}
+
+	delete windows;
+
 	windows = nullptr;
 	Game::get()->getUI()->GetCursor()->Remove();
 	Game::get()->getUI()->GetRoot()->RemoveAllChildren();

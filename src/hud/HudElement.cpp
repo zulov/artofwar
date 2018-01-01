@@ -5,8 +5,7 @@ HudElement::HudElement(Urho3D::UIElement* _uiElement) {
 	uiElement = _uiElement;
 }
 
-HudElement::~HudElement() {
-}
+HudElement::~HudElement() = default;
 
 Urho3D::UIElement* HudElement::getUIElement() {
 	return uiElement;

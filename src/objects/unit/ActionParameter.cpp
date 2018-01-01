@@ -1,12 +1,10 @@
 #include "ActionParameter.h"
 
 
-ActionParameter::ActionParameter() {
-}
+ActionParameter::ActionParameter() = default;
 
 
-ActionParameter::~ActionParameter() {
-}
+ActionParameter::~ActionParameter() = default;
 
 Aims* ActionParameter::getAims() {
 	return aims;

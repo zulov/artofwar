@@ -242,10 +242,10 @@ struct db_container
 	db_nation* nations[NATION_NUMBER_DB] = { nullptr };
 	db_resource* resources[RESOURCE_NUMBER_DB] = { nullptr };
 	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB] = { nullptr };
-	std::vector<db_unit*>* unitsForBuilding[BULDINGS_NUMBER_DB];
-	std::vector<db_cost*>* costForBuilding[BULDINGS_NUMBER_DB];
-	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB];
-	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB];
+	std::vector<db_unit*>* unitsForBuilding[BULDINGS_NUMBER_DB]{};
+	std::vector<db_cost*>* costForBuilding[BULDINGS_NUMBER_DB]{};
+	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB]{};
+	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB]{};
 	db_order* orders[ORDERS_NUMBER_DB] = { nullptr };
 	db_map* maps[MAP_NUMBER_DB] = { nullptr };
 	db_player_colors* playerColors[PLAYER_COLORS_NUMBER_DB] = { nullptr };

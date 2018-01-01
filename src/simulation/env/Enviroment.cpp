@@ -12,8 +12,8 @@ Enviroment::Enviroment(Terrain* _terrian) {
 
 	mainGrid = new MainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, false);
 
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		teamUnitGrid[i] = new Grid(BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY);
+	for (auto & grid : teamUnitGrid) {
+		grid = new Grid(BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY);
 	}
 
 	obstacleGrid = new Grid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD);
@@ -23,15 +23,15 @@ Enviroment::Enviroment(Terrain* _terrian) {
 
 
 Enviroment::~Enviroment() {
-//	delete obstacleGrid;
-//	delete resourceGrid;
-//	delete mainGrid;
-//	for (auto unitGrid : teamUnitGrid) {
-//		delete unitGrid;
-//	}
-//	delete empty;
-//	delete neights;
-//	delete neights2;
+	delete obstacleGrid;
+	delete resourceGrid;
+	delete mainGrid;
+	for (auto unitGrid : teamUnitGrid) {
+		delete unitGrid;
+	}
+	delete empty;
+	delete neights;
+	delete neights2;
 }
 
 std::vector<Unit*>* Enviroment::getNeighbours(Unit* unit, const double radius) {

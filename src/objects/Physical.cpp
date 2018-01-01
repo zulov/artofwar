@@ -17,8 +17,8 @@ Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
 
 	node->SetPosition(*position);
 
-	for (int i = 0; i < BUCKET_SET_NUMBER; ++i) {
-		bucketIndex[i] = INT_MIN;
+	for (int & bucket : bucketIndex) {
+		bucket = INT_MIN;
 	}
 	bucketIndexShift = bucketIndex + 1;
 }

@@ -8,13 +8,11 @@
 
 
 SceneLoader::SceneLoader() {
-	loadingState = new loading();
 	dbLoad = nullptr;
 }
 
 
 SceneLoader::~SceneLoader() {
-	delete loadingState;
 	if (dbLoad) {
 		delete dbLoad;
 	}
@@ -31,7 +29,7 @@ void SceneLoader::load() {
 
 
 int static load_config(void* data, int argc, char** argv, char** azColName) {
-	dbload_container* xyz = (dbload_container *)data;
+	dbload_container* xyz = static_cast<dbload_container *>(data);
 	xyz->config->precision = atoi(argv[0]);
 	xyz->config->map = atoi(argv[1]);
 	xyz->precision = atoi(argv[0]);
@@ -39,7 +37,7 @@ int static load_config(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static load_players(void* data, int argc, char** argv, char** azColName) {
-	dbload_container* xyz = (dbload_container *)data;
+	dbload_container* xyz = static_cast<dbload_container *>(data);
 	xyz->players->push_back(new dbload_player(
 	                                          atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3])
 	                                         ));
@@ -48,7 +46,7 @@ int static load_players(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static load_resources(void* data, int argc, char** argv, char** azColName) {
-	dbload_container* xyz = (dbload_container *)data;
+	dbload_container* xyz = static_cast<dbload_container *>(data);
 	int p = xyz->precision;
 	xyz->resources->push_back(new dbload_resource(
 	                                              atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p
@@ -58,7 +56,7 @@ int static load_resources(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static load_units(void* data, int argc, char** argv, char** azColName) {
-	dbload_container* xyz = (dbload_container *)data;
+	dbload_container* xyz = static_cast<dbload_container *>(data);
 	int p = xyz->precision;
 	xyz->units->push_back(new dbload_unit(
 	                                      atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
@@ -71,7 +69,7 @@ int static load_units(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static load_buildings(void* data, int argc, char** argv, char** azColName) {
-	dbload_container* xyz = (dbload_container *)data;
+	dbload_container* xyz = static_cast<dbload_container *>(data);
 	int p = xyz->precision;
 	xyz->buildings->push_back(new dbload_building(
 	                                              atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
@@ -83,7 +81,7 @@ int static load_buildings(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static load_resources_entities(void* data, int argc, char** argv, char** azColName) {
-	dbload_container* xyz = (dbload_container *)data;
+	dbload_container* xyz = static_cast<dbload_container *>(data);
 	int p = xyz->precision;
 	xyz->resource_entities->push_back(new dbload_resource_entities(
 	                                                               atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
@@ -99,7 +97,7 @@ void SceneLoader::reset() {
 		delete dbLoad;
 	}
 	dbLoad = new dbload_container();
-	loadingState->reset(3, "start loading");
+	loadingState.reset(3, "start loading");
 }
 
 dbload_container* SceneLoader::getData() {
@@ -116,36 +114,36 @@ void SceneLoader::createLoad(const Urho3D::String& fileName) {
 		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
 		sqlite3_close(database);
 	}
-	loadingState->inc("load config");
+	loadingState.inc("load config");
 	load("SELECT * from config", load_config);
 }
 
 std::vector<dbload_player*>* SceneLoader::loadPlayers() {
-	loadingState->inc("load players");
+	loadingState.inc("load players");
 	load("SELECT * from players", load_players);
 	return dbLoad->players;
 }
 
 std::vector<dbload_resource*>* SceneLoader::loadResources() {
-	loadingState->inc("load resources");
+	loadingState.inc("load resources");
 	load("SELECT * from resources", load_resources);
 	return dbLoad->resources;
 }
 
 std::vector<dbload_unit*>* SceneLoader::loadUnits() {
-	loadingState->inc("load units");
+	loadingState.inc("load units");
 	load("SELECT * from units", load_units);
 	return dbLoad->units;
 }
 
 std::vector<dbload_building*>* SceneLoader::loadBuildings() {
-	loadingState->inc("load buildings");
+	loadingState.inc("load buildings");
 	load("SELECT * from buildings", load_buildings);
 	return dbLoad->buildings;
 }
 
 std::vector<dbload_resource_entities*>* SceneLoader::loadResourcesEntities() {
-	loadingState->inc("load resource_entities");
+	loadingState.inc("load resource_entities");
 	load("SELECT * from resource_entities", load_resources_entities);
 	return dbLoad->resource_entities;
 }
@@ -158,5 +156,5 @@ void SceneLoader::load(const char* sql, int (*load)(void*, int, char**, char**))
 
 void SceneLoader::end() {
 	sqlite3_close(database);
-	loadingState->inc("");
+	loadingState.inc("");
 }

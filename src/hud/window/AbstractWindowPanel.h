@@ -7,8 +7,8 @@ namespace Urho3D {
 
 class AbstractWindowPanel :public Urho3D::Object
 {
-	URHO3D_OBJECT(AbstractWindowPanel, Object);
-public:
+	URHO3D_OBJECT(AbstractWindowPanel, Object)
+
 	AbstractWindowPanel(Urho3D::XMLFile* _style);
 	virtual ~AbstractWindowPanel();
 	Urho3D::String& getStyleName();

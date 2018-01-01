@@ -4,6 +4,7 @@
 #include "objects/building/Building.h"
 #include "player/Player.h"
 #include <sqlite3/sqlite3.h>
+#include "Loading.h"
 
 class loading;
 
@@ -37,6 +38,6 @@ private:
 	sqlite3* database;
 	int precision;
 
-	loading * loadingState;
+	loading loadingState;
 };
 

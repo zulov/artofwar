@@ -3,6 +3,8 @@
 #include <Urho3D/Graphics/BillboardSet.h>
 #include "defines.h"
 
+class ActionParameter;
+
 class Physical :
 	public Entity
 {

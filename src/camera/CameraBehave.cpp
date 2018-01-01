@@ -28,9 +28,9 @@ const Vector3& CameraBehave::getPosition() {
 }
 
 void CameraBehave::changePosition(float percentX, float percentY) {
-	Vector3 pos = cameraNode->GetPosition();
+	const Vector3 pos = cameraNode->GetPosition();
 
-	Vector3 newPos = Game::get()->getEnviroment()->getValidPosForCamera(percentX, percentY, pos, minY);
+	const Vector3 newPos = Game::get()->getEnviroment()->getValidPosForCamera(percentX, percentY, pos, minY);
 
 	cameraNode->SetPosition(newPos);
 	changed = true;

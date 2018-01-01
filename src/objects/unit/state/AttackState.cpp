@@ -16,7 +16,7 @@ AttackState::AttackState() {
 AttackState::~AttackState() = default;
 
 void AttackState::onStart(Unit* unit) {
-	(*unit->velocity) = Urho3D::Vector3::ZERO;
+	*unit->velocity = Urho3D::Vector3::ZERO;
 }
 
 void AttackState::onStart(Unit* unit, ActionParameter* parameter) {

@@ -8,7 +8,7 @@ Force::~Force() = default;
 Urho3D::Vector3* Force::separationObstacle(Unit* unit, Vector2& repulse) {
 	Vector3* force = new Vector3(repulse.x_, 0, repulse.y_);
 
-	(*force) *= coef * boostCoef * sepCoef;
+	*force *= coef * boostCoef * sepCoef;
 	return force;
 }
 

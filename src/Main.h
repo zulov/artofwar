@@ -28,9 +28,8 @@ using namespace Urho3D;
 
 class Main : public Application
 {
-URHO3D_OBJECT(Main, Application);
+URHO3D_OBJECT(Main, Application)
 
-public:
 	Main(Context* context);
 	void Setup() override;
 	void Start() override;
@@ -78,6 +77,6 @@ private:
 	LevelBuilder* levelBuilder;
 	SceneSaver* saver;
 	SceneLoader* loader;
-	loading* loadingState;
+	loading loadingState;
 	GameState gameState;
 };

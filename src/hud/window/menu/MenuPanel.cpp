@@ -34,7 +34,7 @@ Urho3D::String MenuPanel::stringFrom(db_building* dbBuilding, std::vector<db_cos
 void MenuPanel::setInfo(HudElement* hudElement) {
 	String s = "";
 	ObjectType type = hudElement->getType();
-	short id = hudElement->getId();
+	const short id = hudElement->getId();
 	switch (type) {
 
 	case UNIT:

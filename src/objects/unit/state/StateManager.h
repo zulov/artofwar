@@ -20,7 +20,7 @@ public:
 private:
 	StateManager();
 	~StateManager();
-	State* states[STATE_SIZE];
+	State* states[STATE_SIZE]{};
 	std::set<UnitStateType> ordersToUnit[UNITS_NUMBER_DB];
 
 	static StateManager* instance;

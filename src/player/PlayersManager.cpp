@@ -1,8 +1,7 @@
 #include "PlayersManager.h"
 
 
-PlayersManager::PlayersManager() {
-}
+PlayersManager::PlayersManager() = default;
 
 
 PlayersManager::~PlayersManager() {

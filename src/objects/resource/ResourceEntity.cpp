@@ -12,7 +12,7 @@ float ResourceEntity::hbMaxSize = 3.0f;
 ResourceEntity::ResourceEntity(Vector3* _position, int id) : Static(_position, RESOURCE) {
 	hbMaxSize = 3.0;
 	db_resource* dbResource = Game::get()->getDatabaseCache()->getResource(id);
-	String modelName = "Models/" + dbResource->model;
+	const String modelName = "Models/" + dbResource->model;
 	populate(dbResource);
 	node->Scale(dbResource->scale);
 	StaticModel* model = node->CreateComponent<StaticModel>();

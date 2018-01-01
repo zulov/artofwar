@@ -6,10 +6,10 @@ using namespace Urho3D;
 
 class MySprite : public Sprite
 {
-	URHO3D_OBJECT(MySprite, Sprite);
-public:
+	URHO3D_OBJECT(MySprite, Sprite)
+
 	MySprite(Urho3D::Context* context);
-	~MySprite();
+	~MySprite() override;
 	static void RegisterObject(Urho3D::Context* context);
 	const Vector2& getPercentHotSpot() const;
 	const IntVector2& getMySize() const;

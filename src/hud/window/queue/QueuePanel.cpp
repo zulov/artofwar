@@ -22,7 +22,7 @@ QueuePanel::~QueuePanel() {
 }
 
 void QueuePanel::update(QueueManager* queue, short& j) {
-	short size = queue->getSize();
+	const short size = queue->getSize();
 	for (int i = 0; i < size; ++i) {
 		QueueElement* element = queue->getAt(i);
 		elements[j]->show();
@@ -95,8 +95,8 @@ void QueuePanel::createBody() {
 }
 
 void QueuePanel::HandleReduce(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	QueueHudElement* qHudElement = (QueueHudElement *)element->GetVar("QueueHudElement").GetVoidPtr();
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	QueueHudElement* qHudElement = static_cast<QueueHudElement *>(element->GetVar("QueueHudElement").GetVoidPtr());
 
 	int button = eventData[UIMouseClick::P_BUTTON].GetInt();
 	if (button == MOUSEB_LEFT) {

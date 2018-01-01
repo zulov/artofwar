@@ -5,7 +5,7 @@ class TopCameraBehave : public CameraBehave
 {
 public:
 	TopCameraBehave();
-	virtual ~TopCameraBehave();
+	~TopCameraBehave() override;
 	void translate(bool cameraKeys[], int wheel, float timeStep, float min) override;
 	void rotate(const IntVector2& mouseMove, double mouse_sensitivity) override;
 

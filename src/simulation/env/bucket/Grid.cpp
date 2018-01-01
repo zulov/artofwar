@@ -1,11 +1,12 @@
 #include "Grid.h"
 #include "BucketIterator.h"
-#include <algorithm>
-#include <ostream>
-#include <iostream>
+#include "simulation/env/ContentInfo.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
-#include "simulation/env/ContentInfo.h"
+#include <algorithm>
+#include <iostream>
+#include <ostream>
+
 
 Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
 	resolution = _resolution;
@@ -19,8 +20,8 @@ Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
 		levelsCache[i] = getEnvIndexs((((double)MAX_SEP_DIST) / RES_SEP_DIST) * i);
 	}
 
-	for (int i = 0; i < MAX_THREADS; ++i) {
-		iterators[i] = new BucketIterator();
+	for (auto & iterator : iterators) {
+		iterator = new BucketIterator();
 	}
 	buckets = new Bucket[resolution * resolution];
 	tempSelected = new std::vector<Physical*>();

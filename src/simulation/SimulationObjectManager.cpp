@@ -10,7 +10,7 @@ SimulationObjectManager::SimulationObjectManager() {
 	resources = new std::vector<ResourceEntity*>();
 	toDispose = new std::vector<Physical*>();
 
-	buildingsToAdd = new std::vector<Building*>();;
+	buildingsToAdd = new std::vector<Building*>();
 	resourcesToAdd = new std::vector<ResourceEntity*>();
 
 	units->reserve(10000);

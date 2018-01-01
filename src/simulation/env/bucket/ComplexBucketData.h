@@ -14,7 +14,7 @@ public:
 	ComplexBucketData();
 	~ComplexBucketData();
 
-	ObjectType getType() const { return type; };
+	ObjectType getType() const { return type; }
 	void setStatic(Static* _object);
 	void removeStatic();
 	void createBox(double bucketSize);
@@ -30,8 +30,8 @@ private:
 	Urho3D::Vector2 center;
 	Urho3D::Node* box;
 	Urho3D::StaticModel* model;
-	Static* object;
-	short additonalInfo;
+	Static* object{};
+	short additonalInfo{};
 	std::vector<std::pair<int, float>*> neighbour;
-	float cost;
+	float cost{};
 };

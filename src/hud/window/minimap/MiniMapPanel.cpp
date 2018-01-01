@@ -100,8 +100,8 @@ void MiniMapPanel::update() {
 	int partIndex = 0;
 	bool changed = false;
 	for (; partIndex < indexPerUpdate && indexUpdate < size.y_ * size.x_; ++partIndex, ++indexUpdate) {
-		float yVal = 1 - yinc * (indexUpdate / size.x_);
-		float xVal = 0 + xinc * (indexUpdate % size.x_);
+		const float yVal = 1 - yinc * (indexUpdate / size.x_);
+		const float xVal = 0 + xinc * (indexUpdate % size.x_);
 		int activePlayer = Game::get()->getPlayersManager()->getActivePlayer()->getId();
 
 		content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc), checks, activePlayer);
