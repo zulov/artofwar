@@ -1,9 +1,10 @@
 #pragma once
-#include "hud/window/AbstractWindowPanel.h"
-#include <Urho3D/UI/Button.h>
 #include "hud/HudElement.h"
-#include <vector>
+#include "hud/window/AbstractWindowPanel.h"
 #include "hud/window/middle/AbstractMiddlePanel.h"
+#include <Urho3D/UI/Button.h>
+#include <vector>
+
 
 class InGameMenuPanel : public AbstractWindowPanel
 {
@@ -25,4 +26,3 @@ private:
 	std::vector<HudElement*>* buttons;
 	AbstractMiddlePanel** addionalPanels;
 };
-

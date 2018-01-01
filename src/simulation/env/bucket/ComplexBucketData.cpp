@@ -1,11 +1,11 @@
 #include "ComplexBucketData.h"
-#include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Graphics/Material.h>
-#include <Urho3D/Graphics/Model.h>
 #include "Game.h"
 #include "objects/Static.h"
-#include <Urho3D/Resource/ResourceCache.h>
 #include "utils.h"
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Resource/ResourceCache.h>
 #include <iostream>
 
 
@@ -21,7 +21,6 @@ ComplexBucketData::~ComplexBucketData() {
 	if (box) {
 		box->Remove();
 	}
-	clear_vector(neighbour);
 }
 
 void ComplexBucketData::setStatic(Static* _object) {
@@ -71,12 +70,12 @@ Urho3D::Vector2& ComplexBucketData::getCenter() {
 	return center;
 }
 
-void ComplexBucketData::setNeightbours(std::vector<std::pair<int, float>*>* tempNeightbours) {
-	clear_vector(neighbour);
+void ComplexBucketData::setNeightbours(std::vector<std::pair<int, float>>* tempNeightbours) {
+	neighbour.clear();
 	neighbour.insert(neighbour.end(), tempNeightbours->begin(), tempNeightbours->end());
 }
 
-std::vector<std::pair<int, float>*>& ComplexBucketData::getNeightbours() {
+std::vector<std::pair<int, float>>& ComplexBucketData::getNeightbours() {
 	return neighbour;
 }
 

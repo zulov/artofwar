@@ -21,8 +21,8 @@ public:
 	Urho3D::Vector3* getDirectrionFrom(Urho3D::Vector3* position);
 	void setCenter(double _centerX, double _centerY);
 	Urho3D::Vector2& getCenter();
-	void setNeightbours(std::vector<std::pair<int, float>*>* tempNeightbours);
-	std::vector<std::pair<int, float>*>& getNeightbours();
+	void setNeightbours(std::vector<std::pair<int, float>>* tempNeightbours);
+	std::vector<std::pair<int, float>>& getNeightbours();
 	char getAdditonalInfo();
 	bool isUnit();
 private:
@@ -32,6 +32,6 @@ private:
 	Urho3D::StaticModel* model;
 	Static* object{};
 	short additonalInfo{};
-	std::vector<std::pair<int, float>*> neighbour;
+	std::vector<std::pair<int, float>> neighbour;
 	float cost{};
 };

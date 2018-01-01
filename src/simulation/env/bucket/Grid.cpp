@@ -54,7 +54,7 @@ void Grid::updateGrid(Unit* entity, const char team) {
 }
 
 
-std::vector<int>* Grid::getEnvIndexsFromCache(double dist) {
+std::vector<short>* Grid::getEnvIndexsFromCache(double dist) {
 	const int index = dist / diff;
 	return levelsCache[index];
 }
@@ -138,13 +138,13 @@ bool Grid::fieldInCircle(short i, short j, double radius) {
 	return x * x + y * y < radius * radius;
 }
 
-std::vector<int>* Grid::getEnvIndexs(double radius) {
-	std::vector<int>* indexes = new std::vector<int>();
+std::vector<short>* Grid::getEnvIndexs(double radius) {
+	std::vector<short>* indexes = new std::vector<short>();
 	for (short i = 0; i < RES_SEP_DIST; ++i) {
 		for (short j = 0; j < RES_SEP_DIST; ++j) {
 			if (fieldInCircle(i, j, radius)) {
 				short x = i + 1;
-				int y = j + 1;
+				short y = j + 1;
 				indexes->push_back(getIndex(x, y));
 				indexes->push_back(getIndex(x, -y));
 				indexes->push_back(getIndex(-x, y));

@@ -11,16 +11,16 @@ public:
 	BucketIterator();
 	~BucketIterator();
 	Unit* next();
-	void init(std::vector<int>* _levels, int _center, Grid * _bucketGrid);
+	void init(std::vector<short>* _levels, int _center, Grid * _bucketGrid);
 private:
 	short index = 0;
 	short secondIndex = 0;
 	short sizeContent;
 	short levelSize;
-	std::vector<int>* levels;
+	std::vector<short>* levels;
 	int center;
 
-	std::vector<Unit *>* currentContent;
+	std::vector<Unit *>* currentContent{};
 	Grid * bucketGrid;
 
 };

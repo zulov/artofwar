@@ -1,10 +1,11 @@
 #pragma once
-#include <Urho3D/UI/UIElement.h>
-#include <Urho3D/UI/Text.h>
 #include "hud/MySprite.h"
+#include "objects/building/QueueElement.h"
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/ProgressBar.h>
-#include "objects/building/QueueElement.h"
+#include <Urho3D/UI/Text.h>
+#include <Urho3D/UI/UIElement.h>
+
 
 class QueueHudElement
 {

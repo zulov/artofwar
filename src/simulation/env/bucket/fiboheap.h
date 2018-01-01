@@ -1,9 +1,10 @@
 #pragma once
 
+#include "utils.h"
 #include <cmath>
 #include <iostream>
 #include <vector>
-#include "utils.h"
+
 
 class FibHeap
 {

@@ -1,11 +1,11 @@
 ﻿#include "MainGrid.h"
-#include <xlocale>
-#include <queue>
+#include "BucketQueue.h"
+#include "Game.h"
+#include "Urho3D/Resource/Image.h"
 #include <algorithm>
 #include <iomanip>
-#include "BucketQueue.h"
-#include "Urho3D/Resource/Image.h"
-#include "Game.h"
+#include <queue>
+
 
 
 MainGrid::MainGrid(const short _resolution, const double _size, const bool _debugEnabled): Grid(_resolution, _size,
@@ -14,9 +14,10 @@ MainGrid::MainGrid(const short _resolution, const double _size, const bool _debu
 	short posZ = 0;
 
 	const int miniRes = resolution / 16;
-	tempNeighbour = new std::vector<std::pair<int, float>*>();
+	tempNeighbour = new std::vector<std::pair<int, float>>();
 	tempNeighbour->reserve(10);
 	const double coef = (miniRes * fieldSize);
+
 	complexData = new ComplexBucketData[resolution * resolution];
 	for (int i = 0; i < resolution * resolution; ++i) {
 		const double cX = (posX + 0.5) * fieldSize - size / 2;
@@ -224,7 +225,7 @@ IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector3* pos) {
 	return IntVector2(getIndex(pos->x_), getIndex(pos->z_));
 }
 
-std::vector<std::pair<int, float>*>* MainGrid::neighbors(const int current) {
+std::vector<std::pair<int, float>>* MainGrid::neighbors(const int current) {
 	tempNeighbour->clear();
 	IntVector2 cords = getCords(current);
 	for (int i = -1; i <= 1; ++i) {
@@ -234,7 +235,7 @@ std::vector<std::pair<int, float>*>* MainGrid::neighbors(const int current) {
 					const int index = getIndex(cords.x_ + i, cords.y_ + j);
 					if (complexData[index].isUnit()) {
 						double costD = cost(current, index);
-						//tempNeighbour->push_back(new std::pair<int, float>(index, costD));
+						//tempNeighbour->push_back(std::pair<int, float>(index, costD));
 					}
 				}
 			}
@@ -292,9 +293,9 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 		}
 		auto& neights = complexData[current].getNeightbours();
 		for (auto& neight : neights) {
-			int next = neight->first;
+			int next = neight.first;
 			if (came_from[current] != next) {
-				const float new_cost = cost_so_far[current] + neight->second;
+				const float new_cost = cost_so_far[current] + neight.second;
 				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
 					cost_so_far[next] = new_cost;
 					const float priority = new_cost + heuristic(next, goal);

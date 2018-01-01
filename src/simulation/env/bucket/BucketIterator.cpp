@@ -21,7 +21,7 @@ Unit* BucketIterator::next() {
 	return entity;
 }
 
-void BucketIterator::init(std::vector<int>* _levels, int _center, Grid* _bucketGrid) {
+void BucketIterator::init(std::vector<short>* _levels, int _center, Grid* _bucketGrid) {
 	levels = _levels;
 	center = _center;
 	index = 0;
