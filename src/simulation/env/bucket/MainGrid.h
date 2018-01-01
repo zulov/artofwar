@@ -26,14 +26,14 @@ public:
 	inline double heuristic(int from, int to);
 	IntVector2 getCords(int index);
 
-	std::vector<int> reconstruct_path(IntVector2& startV, IntVector2& goalV, int came_from[]);
+	std::vector<int> reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]);
 	bool inSide(int x, int z);
 	std::vector<std::pair<int, float>*>* neighbors(int current);
 	double cost(int current, int next);
 	void debug(IntVector2& startV, IntVector2& goalV);
 	void findPath(IntVector2& startV, IntVector2& goalV);
 	void draw_grid_from(int* cameFrom, Image* image);
-	void draw_grid_cost(float* costSoFar, Image* image);
+	void draw_grid_cost(const float* costSoFar, Image* image);
 	void draw_grid_path(std::vector<int>* path, Image* image);
 	void drawMap(Image* image);
 	content_info* getContentInfo(const Vector2& from, const Vector2& to, bool checks[], int activePlayer);

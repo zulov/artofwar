@@ -31,9 +31,9 @@ void OrdersPanel::show(SelectedInfo* selectedInfo) {
 		if (!data->empty()) {
 			std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
 			std::unordered_set<int> common2;
-			for (int j = 0; j < orders->size(); ++j) {
+			for (auto & order : *orders) {
 				//todo to zrobic raz i pobierac
-				common2.insert(orders->at(j)->id);
+				common2.insert(order->id);
 			}
 			std::unordered_set<int> temp(common);
 			for (const auto& id : temp) {

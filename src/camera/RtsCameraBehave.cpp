@@ -2,14 +2,13 @@
 #include "Game.h"
 
 RtsCameraBehave::RtsCameraBehave():CameraBehave(3,"RTSCam") {
-	double diff = sqrt(50.0f - minY) + 1;
-	double a = 10;
+	const double diff = sqrt(50.0f - minY) + 1;
+	const double a = 10;
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * a);
 }
 
 
-RtsCameraBehave::~RtsCameraBehave() {
-}
+RtsCameraBehave::~RtsCameraBehave() = default;
 
 void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
 	Urho3D::Vector3 pos = cameraNode->GetWorldPosition();

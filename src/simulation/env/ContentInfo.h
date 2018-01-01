@@ -25,17 +25,17 @@ struct content_info
 	}
 
 
-	char biggestBuilding() {
+	unsigned char biggestBuilding() {
 		return std::max_element(buildingNumberPerPlayer, buildingNumberPerPlayer + MAX_PLAYERS) -
 			buildingNumberPerPlayer;
 	}
 
-	char biggestUnits() {
+	unsigned char biggestUnits() {
 		return std::max_element(unitsNumberPerPlayer, unitsNumberPerPlayer + MAX_PLAYERS) -
 			unitsNumberPerPlayer;
 	}
 
-	char biggestResource() {
+	unsigned char biggestResource() {
 		return std::max_element(resourceNumber, resourceNumber + RESOURCE_NUMBER_DB) -
 			resourceNumber;
 	}

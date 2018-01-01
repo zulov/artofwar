@@ -5,12 +5,10 @@
 #include "Game.h"
 
 
-CollectState::CollectState() {
-}
+CollectState::CollectState() = default;
 
 
-CollectState::~CollectState() {
-}
+CollectState::~CollectState() = default;
 
 void CollectState::onStart(Unit* unit) {
 }
@@ -23,14 +21,14 @@ void CollectState::onStart(Unit* unit, ActionParameter* parameter) {
 void CollectState::onEnd(Unit* unit) {
 	unit->resource->reduce();
 	unit->resource = nullptr;
-	(*unit->toResource) = Vector3();;
+	(*unit->toResource) = Vector3();
 }
 
 void CollectState::execute(Unit* unit) {
 	Resources* resources = Game::get()->getPlayersManager()->getPlayer(unit->player)->getResources();
 
 	if (unit->resource) {
-		double value = unit->resource->collect(unit->collectSpeed);
+		const double value = unit->resource->collect(unit->collectSpeed);
 		resources->add(unit->resource->getDbID(), value);
 		(*unit->toResource) = *unit->resource->getPosition() - *unit->position;
 	}

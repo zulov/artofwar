@@ -13,8 +13,7 @@ GoState::GoState() {
 }
 
 
-GoState::~GoState() {
-}
+GoState::~GoState() = default;
 
 void GoState::onStart(Unit* unit) {
 }

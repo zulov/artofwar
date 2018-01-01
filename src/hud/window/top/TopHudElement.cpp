@@ -16,8 +16,7 @@ TopHudElement::TopHudElement(Urho3D::XMLFile* style, Texture2D* texture) {
 }
 
 
-TopHudElement::~TopHudElement() {
-}
+TopHudElement::~TopHudElement() = default;
 
 Urho3D::Button* TopHudElement::getButton() {
 	return button;

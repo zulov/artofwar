@@ -16,7 +16,7 @@ FilePanel::~FilePanel() {
 
 void FilePanel::createBody() {
 	AbstractMiddlePanel::createBody();
-	Urho3D::String name = Game::get()->getLocalization()->Get("save");
+	const Urho3D::String name = Game::get()->getLocalization()->Get("save");
 	lineEdit = body->CreateChild<Urho3D::LineEdit>();
 	lineEdit->SetStyle("FileNameLineEdit", style);
 

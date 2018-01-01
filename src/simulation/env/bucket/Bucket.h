@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "objects/unit/Unit.h"
-#include <Urho3D/Graphics/StaticModel.h>
 #include "simulation/env/ContentInfo.h"
 
 

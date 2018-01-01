@@ -10,8 +10,7 @@ FollowState::FollowState() {
 	transitions.insert(UnitStateType::PATROL);
 }
 
-FollowState::~FollowState() {
-}
+FollowState::~FollowState() = default;
 
 void FollowState::onStart(Unit* unit){
 }

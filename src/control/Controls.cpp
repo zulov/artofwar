@@ -71,8 +71,8 @@ bool Controls::raycast(hit_data& hitData, Camera* camera) {
 }
 
 void Controls::unSelectAll() {
-	for (int i = 0; i < selected->size(); ++i) {
-		(*selected)[i]->unSelect();
+	for (auto & phy : *selected) {
+		phy->unSelect();
 	}
 	selected->clear();
 	selectedType = ObjectType::ENTITY;

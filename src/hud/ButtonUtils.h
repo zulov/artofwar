@@ -22,8 +22,8 @@ static MySprite* createEmptySprite(Urho3D::XMLFile* style, const String& styleNa
 
 static void setTextureToSprite(MySprite* sprite, Texture2D* texture) {
 	sprite->SetTexture(texture);
-	int textureWidth = texture->GetWidth();
-	int textureHeight = texture->GetHeight();
+	const int textureWidth = texture->GetWidth();
+	const int textureHeight = texture->GetHeight();
 	//IntVector2 size = sprite->GetSize();
 	IntVector2 size = sprite->getMySize();
 	float scaleX = (size.x_) / (float)textureWidth;

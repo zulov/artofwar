@@ -9,15 +9,14 @@ FollowAim::FollowAim(Physical* _physical) {
 }
 
 
-FollowAim::~FollowAim() {
-}
+FollowAim::~FollowAim() = default;
 
 Urho3D::Vector3* FollowAim::getDirection(Unit* unit) {
 	return new Vector3((*physical->getPosition()) - (*unit->getPosition()));
 }
 
 bool FollowAim::ifReach(Unit* unit) {
-	float dist = ((*unit->getPosition()) - (*physical->getPosition())).LengthSquared();
+	const float dist = ((*unit->getPosition()) - (*physical->getPosition())).LengthSquared();
 	return dist < radius * radius;
 }
 

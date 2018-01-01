@@ -1,11 +1,9 @@
 #include "BucketQueue.h"
 
 
-BucketQueue::BucketQueue() {
-}
+BucketQueue::BucketQueue() = default;
 
-BucketQueue::~BucketQueue() {
-}
+BucketQueue::~BucketQueue() = default;
 
 void BucketQueue::init(double _max, double _min) {
 	max = _max;
@@ -13,8 +11,8 @@ void BucketQueue::init(double _max, double _min) {
 	size = 0;
 	currentIndex = QUEUE_BUCKETS_SIZE - 1;
 	perBucket = (max - min) / QUEUE_BUCKETS_SIZE;
-	for (int i = 0; i < QUEUE_BUCKETS_SIZE; ++i) {
-		buckets[i].clear();
+	for (auto & bucket : buckets) {
+		bucket.clear();
 	}
 }
 

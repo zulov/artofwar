@@ -65,8 +65,8 @@ void QueuePanel::update(SelectedInfo* selectedInfo) {
 	if (window->IsVisible()) {
 		std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
 
-		for (int i = 0; i < infoTypes->size(); ++i) {
-			std::vector<Physical*>* data = infoTypes->at(i)->getData();
+		for (auto & infoType : *infoTypes) {
+			std::vector<Physical*>* data = infoType->getData();
 			for (Physical* physical : (*data)) {
 				//TODO przeniesc kolejke do Physical
 				Building* building = dynamic_cast<Building*>(physical);

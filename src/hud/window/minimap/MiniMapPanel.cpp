@@ -107,13 +107,13 @@ void MiniMapPanel::update() {
 		content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc), checks, activePlayer);
 
 		if (checks[2] && ci->hasBuilding) {
-			char player = ci->biggestBuilding();
+			unsigned char player = ci->biggestBuilding();
 			changeValue(data, changed, buildingColors[player]);
 		} else if (checks[1] && ci->hasResource) {
-			char resID = ci->biggestResource();
+			unsigned char resID = ci->biggestResource();
 			changeValue(data, changed, resourceColors[resID]);
 		} else if ((checks[3] || checks[4]) && ci->hasUnit) {
-			char player = ci->biggestUnits();
+			unsigned char player = ci->biggestUnits();
 			changeValue(data, changed, unitsColors[player]);
 		} else if (checks[0]) {
 			changeValue(data, changed, heightMap[indexUpdate]);

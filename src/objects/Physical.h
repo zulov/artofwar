@@ -22,9 +22,9 @@ public:
 	Vector3* getPosition();
 	void initBillbords();
 
-	void setTeam(char _team);
-	void setPlayer(char player);
-	char getPlayer();
+	void setTeam(unsigned char _team);
+	void setPlayer(unsigned char player);
+	unsigned char getPlayer();
 	virtual String& toMultiLineString();
 	virtual void action(short id, ActionParameter* parameter);
 	static std::string getColumns();
@@ -38,8 +38,8 @@ protected:
 
 	Physical* enemyToAttack = nullptr;
 
-	signed char team;
-	signed char player;
+	unsigned char team;
+	unsigned char player;
 
 	float hpCoef = 100;
 	float maxHpCoef = 100;

@@ -25,8 +25,7 @@ Resources::Resources(double valueForAll) {
 }
 
 
-Resources::~Resources() {
-}
+Resources::~Resources() = default;
 
 bool Resources::reduce(std::vector<db_cost*>* costs) {
 	for (int i = 0; i < costs->size(); ++i) {

@@ -9,8 +9,7 @@ TopCameraBehave::TopCameraBehave():CameraBehave(20, "TopCam") {
 }
 
 
-TopCameraBehave::~TopCameraBehave() {
-}
+TopCameraBehave::~TopCameraBehave() = default;
 
 void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
 	const auto diff = sqrt((orthoSize - minY) / 10) + 1;

@@ -1,6 +1,5 @@
 #pragma once
 #include "objects/Entity.h"
-#include "BuildingType.h"
 #include "database/db_strcut.h"
 #include "QueueElement.h"
 #include "QueueManager.h"

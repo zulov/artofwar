@@ -2,8 +2,7 @@
 #include "utils.h"
 
 
-CommandList::CommandList() {
-}
+CommandList::CommandList() = default;
 
 
 CommandList::~CommandList() {
@@ -15,10 +14,10 @@ void CommandList::add(AbstractCommand* command) {
 }
 
 void CommandList::execute() {
-	for (int i = 0; i < commands.size(); ++i) {
-		setParemeters(commands[i]);
-		commands[i]->execute();
-		delete commands[i];
+	for (auto & command : commands) {
+		setParemeters(command);
+		command->execute();
+		delete command;
 	}
 	commands.clear();
 }

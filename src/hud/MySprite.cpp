@@ -40,8 +40,7 @@ MySprite::MySprite(Context* context) :
 }
 
 
-MySprite::~MySprite() {
-}
+MySprite::~MySprite() = default;
 
 void MySprite::RegisterObject(Context* context) {
 	context->RegisterFactory<MySprite>();

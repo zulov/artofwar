@@ -12,8 +12,7 @@ SimulationInfo::SimulationInfo() {
 }
 
 
-SimulationInfo::~SimulationInfo() {
-}
+SimulationInfo::~SimulationInfo() = default;
 
 bool SimulationInfo::ifUnitDied() {
 	return *unitDied;

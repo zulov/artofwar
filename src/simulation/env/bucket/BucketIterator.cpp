@@ -2,11 +2,9 @@
 #include "Grid.h"
 
 BucketIterator::BucketIterator(): currentContent() {
-
 }
 
-BucketIterator::~BucketIterator() {
-}
+BucketIterator::~BucketIterator() = default;
 
 Unit* BucketIterator::next() {
 	while (secondIndex == sizeContent) {

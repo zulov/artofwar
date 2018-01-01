@@ -2,12 +2,10 @@
 #include "../Unit.h"
 
 
-DeadState::DeadState() {
-}
+DeadState::DeadState() = default;
 
 
-DeadState::~DeadState() {
-}
+DeadState::~DeadState() = default;
 
 void DeadState::onStart(Unit* unit) {
 	unit->alive = false;

@@ -6,8 +6,7 @@ DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 }
 
 
-DebugPanel::~DebugPanel() {
-}
+DebugPanel::~DebugPanel() = default;
 
 void DebugPanel::setText(double getLastFps, double getAverageFps, long getLoops, Urho3D::String* string) {
 	msg.Clear();

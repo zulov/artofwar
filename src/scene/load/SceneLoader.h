@@ -23,9 +23,8 @@ public:
 	std::vector<dbload_resource_entities*>* loadResourcesEntities();
 	void end();
 private:
+	void load(const char* sql, int (*load)(void*, int, char**, char**));
 
-	void load(char* sql, int (*load)(void*, int, char**, char**));
-	int precision;
 	loading * loadingState;
 	sqlite3* database;
 	dbload_container *dbLoad;

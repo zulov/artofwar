@@ -31,9 +31,6 @@ int Entity::getDbID() {
 	return -1;
 }
 
-void Entity::action(ActionType actionType, ActionParameter* parameter) {
-}
-
 std::string Entity::getValues(int precision) {
 	return std::to_string(getDbID()) + ","
 		+ std::to_string((int)alive) + ",";//TODO to pewnie nie potrzebne

@@ -1,12 +1,10 @@
 #include "AbstractCommand.h"
 
 
-AbstractCommand::AbstractCommand() {
-}
+AbstractCommand::AbstractCommand() = default;
 
 
-AbstractCommand::~AbstractCommand() {
-}
+AbstractCommand::~AbstractCommand() = default;
 
 void AbstractCommand::execute() {
 }

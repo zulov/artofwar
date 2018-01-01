@@ -1,7 +1,5 @@
 #include "Aim.h"
 
-Aim::Aim() {
-}
+Aim::Aim() = default;
 
-Aim::~Aim() {
-}
+Aim::~Aim() = default;

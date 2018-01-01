@@ -1,12 +1,10 @@
 #include "DummyAim.h"
 
 
-DummyAim::DummyAim() {
-}
+DummyAim::DummyAim() = default;
 
 
-DummyAim::~DummyAim() {
-}
+DummyAim::~DummyAim() = default;
 
 Urho3D::Vector3* DummyAim::getDirection(Unit* unit) {
 	return new Urho3D::Vector3();

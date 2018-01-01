@@ -100,10 +100,10 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 	int selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
 	int ratio = all / (LINES_IN_SELECTION * maxInRow - selectedSubTypeNumber + 2) + 1;
 	int k = 0;
-	for (int i = 0; i < infoTypes->size(); ++i) {
-		std::vector<Physical*>* data = infoTypes->at(i)->getData();
+	for (auto & infoType : *infoTypes) {
+		std::vector<Physical*>* data = infoType->getData();
 		if (data->empty()) { continue; }
-		String name = getIconName(type, infoTypes->at(i)->getId());
+		String name = getIconName(type, infoType->getId());
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
 		for (int j = 0; j < data->size(); j += ratio) {
 			int max = Min(data->size(), j + ratio);

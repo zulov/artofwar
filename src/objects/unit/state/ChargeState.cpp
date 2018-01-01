@@ -13,8 +13,7 @@ ChargeState::ChargeState() {
 }
 
 
-ChargeState::~ChargeState() {
-}
+ChargeState::~ChargeState() = default;
 
 void ChargeState::onStart(Unit* unit) {
 }

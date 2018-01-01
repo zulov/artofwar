@@ -23,8 +23,7 @@ QueueHudElement::QueueHudElement(Urho3D::XMLFile* style) {
 }
 
 
-QueueHudElement::~QueueHudElement() {
-}
+QueueHudElement::~QueueHudElement() = default;
 
 Urho3D::Button* QueueHudElement::getButton() {
 	return button;

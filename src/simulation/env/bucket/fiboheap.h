@@ -16,8 +16,7 @@ public:
 			payload(pl) {
 		}
 
-		~FibNode() {
-		}
+		~FibNode() = default;
 
 		bool isEmpty() const {
 			return key < 0;

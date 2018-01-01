@@ -14,8 +14,7 @@ StopState::StopState() {
 	transitions.insert(UnitStateType::COLLECT);
 }
 
-StopState::~StopState() {
-}
+StopState::~StopState() = default;
 
 void StopState::onStart(Unit* unit) {
 	unit->removeAim();

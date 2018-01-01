@@ -6,8 +6,7 @@ FreeCameraBehave::FreeCameraBehave(): CameraBehave(3, "FreeCam") {
 }
 
 
-FreeCameraBehave::~FreeCameraBehave() {
-}
+FreeCameraBehave::~FreeCameraBehave() = default;
 
 void FreeCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
 	if (cameraKeys[0]) {

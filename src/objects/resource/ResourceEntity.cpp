@@ -23,9 +23,7 @@ ResourceEntity::ResourceEntity(Vector3* _position, int id) : Static(_position, R
 	initBillbords();
 }
 
-ResourceEntity::~ResourceEntity() {
-
-}
+ResourceEntity::~ResourceEntity() = default;
 
 int ResourceEntity::getDbID() {
 	return dbResource->id;

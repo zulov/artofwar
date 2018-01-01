@@ -8,9 +8,7 @@ AbstractMiddlePanel::AbstractMiddlePanel(Urho3D::XMLFile* _style, Urho3D::String
 }
 
 
-AbstractMiddlePanel::~AbstractMiddlePanel() {
-}
-
+AbstractMiddlePanel::~AbstractMiddlePanel() = default;
 
 void AbstractMiddlePanel::createBody() {
 	buttonClose = window->CreateChild<Urho3D::Button>();

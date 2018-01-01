@@ -10,8 +10,7 @@ PatrolState::PatrolState() {
 }
 
 
-PatrolState::~PatrolState() {
-}
+PatrolState::~PatrolState() = default;
 
 void PatrolState::onStart(Unit* unit) {
 }

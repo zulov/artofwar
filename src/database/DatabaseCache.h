@@ -7,7 +7,7 @@ using namespace std;
 class DatabaseCache
 {
 public:
-	void execute(char* sql, int (* load)(void*, int, char**, char**));
+	void execute(const char* sql, int (* load)(void*, int, char**, char**));
 	DatabaseCache();
 	~DatabaseCache();
 	db_unit* getUnit(int i);

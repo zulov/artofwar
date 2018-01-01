@@ -7,8 +7,7 @@ LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 }
 
 
-LoadingPanel::~LoadingPanel() {
-}
+LoadingPanel::~LoadingPanel() = default;
 
 void LoadingPanel::show() {
 	setVisible(true);

@@ -2,6 +2,7 @@
 #include <chrono>
 #include <string>
 #include <iostream>
+#include <utility>
 
 
 struct loading
@@ -10,8 +11,7 @@ struct loading
 		reset(1);
 	}
 
-	~loading() {
-	}
+	~loading() = default;
 
 	float getProgres() {
 		return currentStage / stagesNumber;
@@ -25,7 +25,7 @@ struct loading
 	}
 
 	void reset(int stages, std::string _msg) {
-		msg = _msg;
+		msg = std::move(_msg);
 		reset(stages);
 	}
 
@@ -38,7 +38,7 @@ struct loading
 
 	void inc(std::string _msg) {
 		inc();
-		msg = _msg;
+		msg = std::move(_msg);
 	}
 
 	void* sth;

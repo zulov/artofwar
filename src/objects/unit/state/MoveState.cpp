@@ -14,8 +14,7 @@ MoveState::MoveState() {
 }
 
 
-MoveState::~MoveState() {
-}
+MoveState::~MoveState() = default;
 
 void MoveState::onStart(Unit* unit) {
 }

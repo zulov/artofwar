@@ -94,15 +94,15 @@ void Physical::setBucket(int _bucketIndex, char param) {
 	bucketIndexShift[param] = _bucketIndex;
 }
 
-void Physical::setTeam(char _team) {
+void Physical::setTeam(unsigned char _team) {
 	team = _team;
 }
 
-void Physical::setPlayer(char player) {
+void Physical::setPlayer(unsigned char player) {
 	this->player = player;
 }
 
-char Physical::getPlayer() {
+unsigned char Physical::getPlayer() {
 	return player;
 }
 

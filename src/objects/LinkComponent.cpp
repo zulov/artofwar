@@ -5,8 +5,7 @@ LinkComponent::LinkComponent(Urho3D::Context* context) : Component(context) {
 }
 
 
-LinkComponent::~LinkComponent() {
-}
+LinkComponent::~LinkComponent() = default;
 
 void LinkComponent::bound(Physical* _physical) {
 	physical = _physical;

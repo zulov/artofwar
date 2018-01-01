@@ -5,7 +5,6 @@
 #include "simulation/force/Force.h"
 #include "SimulationObjectManager.h"
 #include <Urho3D/Input/Input.h>
-#include <Urho3D/DebugNew.h>
 #include "objects/unit/aim/AimContainer.h"
 #include "SimulationInfo.h"
 #include "scene/save/SceneSaver.h"

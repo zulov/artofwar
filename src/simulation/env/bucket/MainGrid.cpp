@@ -332,7 +332,7 @@ void MainGrid::draw_grid_from(int* cameFrom, Image* image) {
 	}
 }
 
-void MainGrid::draw_grid_cost(float* costSoFar, Image* image) {
+void MainGrid::draw_grid_cost(const float* costSoFar, Image* image) {
 	uint32_t* data = (uint32_t*)image->GetData();
 
 	for (short y = 0; y != resolution; ++y) {
@@ -382,7 +382,7 @@ IntVector2 MainGrid::getCords(const int index) {
 	return IntVector2(index / resolution, index % resolution);
 }
 
-std::vector<int> MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, int came_from[]) {
+std::vector<int> MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
 	std::vector<int> path;

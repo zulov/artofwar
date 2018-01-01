@@ -1,8 +1,7 @@
 #include "Bucket.h"
 #include "ComplexBucketData.h"
 
-Bucket::~Bucket() {
-}
+Bucket::~Bucket() = default;
 
 Bucket::Bucket() {
 	content.reserve(DEFAULT_VECTOR_SIZE / 3);

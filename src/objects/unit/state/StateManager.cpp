@@ -1,5 +1,4 @@
 #include "StateManager.h"
-#include "defines.h"
 #include "GoState.h"
 #include "StopState.h"
 #include "ChargeState.h"

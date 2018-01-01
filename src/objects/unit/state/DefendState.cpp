@@ -8,8 +8,7 @@ DefendState::DefendState() {
 }
 
 
-DefendState::~DefendState() {
-}
+DefendState::~DefendState() = default;
 
 void DefendState::onStart(Unit* unit) {
 	unit->removeAim();

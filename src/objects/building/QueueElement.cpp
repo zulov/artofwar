@@ -9,8 +9,7 @@ QueueElement::QueueElement(ObjectType _type, short _subType, short _maxCapacity)
 	maxCapacity = _maxCapacity;
 }
 
-QueueElement::~QueueElement() {
-}
+QueueElement::~QueueElement() = default;
 
 bool QueueElement::checkType(ObjectType _type, short _subType) {
 	return type == _type && subType == _subType;

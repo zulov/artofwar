@@ -12,8 +12,8 @@ public:
 	MenuPanel(Urho3D::XMLFile* _style);
 	~MenuPanel();
 	void removeInfo();
-	Urho3D::String stringFrom(db_unit* dbUnit, std::vector<db_cost*>* costs);
-	Urho3D::String stringFrom(db_building* dbBuilding, std::vector<db_cost*>* costs);
+	static Urho3D::String stringFrom(db_unit* dbUnit, std::vector<db_cost*>* costs);
+	static Urho3D::String stringFrom(db_building* dbBuilding, std::vector<db_cost*>* costs);
 	void setInfo(HudElement* hudElement);
 	void updateSelected(SelectedInfo* selectedInfo);
 

@@ -44,8 +44,8 @@ void SelectedInfo::reset() {
 	changed = true;
 	allNumber = 0;
 	allSubTypeNumber = 0;
-	for (int i = 0; i < selectedByType->size(); ++i) {
-		selectedByType->at(i)->clear();
+	for (auto & element : *selectedByType) {
+		element->clear();
 	}
 }
 

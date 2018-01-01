@@ -6,8 +6,7 @@ ActionCommandList::ActionCommandList(AimContainer * _aimContainer) {
 	aimContainer = _aimContainer;
 }
 
-ActionCommandList::~ActionCommandList() {
-}
+ActionCommandList::~ActionCommandList() = default;
 
 void ActionCommandList::setParemeters(AbstractCommand* command) {
 	ActionCommand* m = dynamic_cast<ActionCommand *>(command);

@@ -8,8 +8,7 @@ MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 }
 
 
-MenuPanel::~MenuPanel() {
-}
+MenuPanel::~MenuPanel() = default;
 
 void MenuPanel::removeInfo() {
 	text->SetVisible(false);
