@@ -20,7 +20,6 @@ struct loading
 	void reset(int stages) {
 		stagesNumber = stages;
 		currentStage = 0;
-		sth = nullptr;
 		start = std::chrono::system_clock::now();
 	}
 
@@ -41,7 +40,6 @@ struct loading
 		msg = std::move(_msg);
 	}
 
-	void* sth;
 	int currentStage;
 private:
 	std::string msg = "";

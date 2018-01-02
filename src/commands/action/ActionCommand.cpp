@@ -1,9 +1,10 @@
 #include "ActionCommand.h"
-#include "objects/unit/aim/TargetAim.h"
-#include "objects/unit/aim/FollowAim.h"
-#include "objects/unit/aim/ChargeAim.h"
-#include "objects/unit/aim/AimContainer.h"
 #include "objects/unit/ActionParameter.h"
+#include "objects/unit/aim/AimContainer.h"
+#include "objects/unit/aim/ChargeAim.h"
+#include "objects/unit/aim/FollowAim.h"
+#include "objects/unit/aim/TargetAim.h"
+
 
 
 ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector3* parameter) {
@@ -37,8 +38,8 @@ ActionCommand::~ActionCommand() {
 }
 
 
-void ActionCommand::applyAction(ActionParameter* parameter) {
-	short id = static_cast<int>(action);
+void ActionCommand::applyAction(ActionParameter& parameter) {
+	short id = static_cast<short>(action);
 	if (entity) {
 		entity->action(id, parameter);
 	} else {
@@ -50,10 +51,9 @@ void ActionCommand::applyAction(ActionParameter* parameter) {
 
 void ActionCommand::applyAim(Aims* aims) {
 	aims->add(new TargetAim(vector));
-	ActionParameter* localParameter = new ActionParameter();
-	localParameter->setAims(aims);
+	ActionParameter localParameter;
+	localParameter.setAims(aims);
 	applyAction(localParameter);
-	delete localParameter;
 }
 
 void ActionCommand::execute() {
@@ -69,10 +69,9 @@ void ActionCommand::execute() {
 		if (toFollow != nullptr && toFollow->isAlive()) {
 			Aims* aims = aimContainer->getNext();
 			aims->add(new FollowAim(toFollow));
-			ActionParameter* localParameter = new ActionParameter();
-			localParameter->setAims(aims);
+			ActionParameter localParameter;
+			localParameter.setAims(aims);
 			applyAction(localParameter);
-			delete localParameter;
 		}
 		}
 		break;
@@ -80,10 +79,10 @@ void ActionCommand::execute() {
 		{
 		Aims* aims = aimContainer->getNext();
 		aims->add(new ChargeAim(vector));
-		ActionParameter* localParameter = new ActionParameter();
-		localParameter->setAims(aims);
+		ActionParameter localParameter;
+		localParameter.setAims(aims);
 		applyAction(localParameter);
-		delete localParameter;
+		
 		}
 		break;
 	default: ;

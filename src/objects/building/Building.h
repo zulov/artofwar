@@ -18,14 +18,14 @@ public:
 	void absorbAttack(double attackCoef) override;
 
 	String& toMultiLineString() override;
-	void action(short id, ActionParameter* parameter) override;
+	void action(short id, ActionParameter& parameter) override;
 	static std::string getColumns();
 	std::string getValues(int precision) override;
 	QueueElement* updateQueue(float time);
-	Vector3* getTarget();
+	Vector3& getTarget();
 	QueueManager* getQueue();
 private:
-	Vector3* target;
+	Vector3 target;
 	db_building* dbBuilding;
 	std::vector<db_unit*>* units;
 	QueueManager* queue;

@@ -26,11 +26,11 @@ public:
 	Simulation(Enviroment* _enviroment, CreationCommandList* _simCommandList);
 	~Simulation();
 	void update(Input* input, float timeStep);
-	void initScene(SceneLoader* loader);
+	void initScene(SceneLoader& loader);
 	int getUnitsNumber();
 	SimulationInfo* getInfo();
 	void dispose();
-	void save(SceneSaver* saver);
+	void save(SceneSaver& saver);
 
 private:
 	void moveUnits(float timeStep);
@@ -39,7 +39,7 @@ private:
 	void performAction();
 	float updateTime(float timeStep);
 
-	void loadEntities(SceneLoader* loader);
+	void loadEntities(SceneLoader& loader);
 	void countFrame();
 	void applyForce();
 	void updateBuildingQueue();

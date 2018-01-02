@@ -4,42 +4,39 @@
 
 struct MouseButton
 {
-	MouseButton() {
-		held = new std::pair<Vector3*, Vector3*>();
-	}
+	MouseButton() = default;
 
 	~MouseButton() {
 		clean();
-		delete held;
 	}
 
 	void clean() {
-		if (held->first) {
-			delete held->first;
-			held->first = nullptr;
+		if (held.first) {
+			delete held.first;
+			held.first = nullptr;
 		}
-		if (held->second) {
-			delete held->second;
-			held->second = nullptr;
+		if (held.second) {
+			delete held.second;
+			held.second = nullptr;
 		}
 		isHeld = false;
 	}
 
-	void setFirst(Vector3& hitPos) {
-		if (held->first != nullptr) {
-			delete held->first;
-			held->first = nullptr;
+	void setFirst(Urho3D::Vector3& hitPos) {
+		if (held.first != nullptr) {
+			delete held.first;
+			held.first = nullptr;
 		}
-		held->first = new Vector3(hitPos);
+		held.first = new Urho3D::Vector3(hitPos);
 		isHeld = true;
 	}
 
-	void setSecond(Vector3& hitPos) {
-		if (held->second != nullptr) {
-			delete held->second;
-			held->second = nullptr;
+	void setSecond(Urho3D::Vector3& hitPos) {
+		if (held.second != nullptr) {
+			delete held.second;
+			held.second = nullptr;
 		}
-		held->second = new Vector3(hitPos);
+		held.second = new Urho3D::Vector3(hitPos);
 		isHeld = false;
 	}
 
@@ -49,6 +46,5 @@ struct MouseButton
 
 
 	bool isHeld = false;
-
-	std::pair<Urho3D::Vector3*, Urho3D::Vector3*>* held;
+	std::pair<Urho3D::Vector3*, Urho3D::Vector3*> held;
 };

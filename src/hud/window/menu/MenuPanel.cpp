@@ -61,11 +61,11 @@ void MenuPanel::setInfo(HudElement* hudElement) {
 void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
 	if(selectedInfo->getAllNumber()==1) {
 		text->SetVisible(true);
-		std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
-		for (int i = 0; i < infoTypes->size(); ++i) {
-			std::vector<Physical*>* data = infoTypes->at(i)->getData();
-			if (!data->empty()) {
-				Physical* physical = data->at(0);
+		std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelecteType();
+		for (auto & infoType : infoTypes) {
+			std::vector<Physical*>& data = infoType->getData();
+			if (!data.empty()) {
+				Physical* physical = data.at(0);
 
 				text->SetText(physical->toMultiLineString());
 				break;

@@ -3,7 +3,6 @@
 #include <ostream>
 #include <iostream>
 #include <string>
-#include "Game.h"
 #include "player/PlayersManager.h"
 #include "database/db_units.h"
 #include "Loading.h"

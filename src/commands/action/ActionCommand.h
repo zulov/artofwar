@@ -18,7 +18,7 @@ public:
 	void execute() override;
 	void setAimConteiner(AimContainer* _aimContainer);
 private:
-	void applyAction(ActionParameter* parameter);
+	void applyAction(ActionParameter& parameter);
 	std::vector<Physical*>* entities;
 	Physical* entity;
 	OrderType action;

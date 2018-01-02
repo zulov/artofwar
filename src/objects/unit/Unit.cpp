@@ -1,19 +1,19 @@
 #include "Unit.h"
-#include "commands/action/ActionCommand.h"
-#include "OrderType.h"
-#include "database/DatabaseCache.h"
 #include "Game.h"
+#include "OrderType.h"
+#include "commands/action/ActionCommand.h"
+#include "commands/action/ActionCommandList.h"
+#include "database/DatabaseCache.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
-#include <string>
 #include <Urho3D/Resource/ResourceCache.h>
-#include "commands/action/ActionCommandList.h"
+#include <string>
+
 
 float Unit::hbMaxSize = 0.7f;
 
 Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT), dbUnit(nullptr) {
-	acceleration = new Vector3();
 	velocity = new Vector3();
 	toResource = new Vector3();
 	aims = nullptr;
@@ -37,7 +37,6 @@ Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT), 
 }
 
 Unit::~Unit() {
-	delete acceleration;
 	delete velocity;
 	delete toResource;
 	if (aims) {
@@ -93,9 +92,8 @@ void Unit::move(double timeStep) {
 }
 
 void Unit::setAcceleration(Vector3* _acceleration) {
-	delete acceleration;
-	_acceleration->y_ = 0;
-	acceleration = _acceleration;
+	acceleration.x_ = _acceleration->x_;
+	acceleration.z_ = _acceleration->z_;
 }
 
 float Unit::getMaxSeparationDistance() {
@@ -127,10 +125,6 @@ Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
 	}
 
 	return new Vector3();
-}
-
-Vector3* Unit::getVelocity() {
-	return velocity;
 }
 
 float Unit::getUnitRadius() {
@@ -219,10 +213,10 @@ void Unit::updateHeight(double y, double timeStep) {
 	position->y_ = y;
 }
 
-void Unit::addAim(ActionParameter* actionParameter) {
-	if (actionParameter->getAims() != aims) {
+void Unit::addAim(ActionParameter& actionParameter) {
+	if (actionParameter.getAims() != aims) {
 		removeAim();
-		aims = actionParameter->getAims();
+		aims = actionParameter.getAims();
 		aims->up();
 	}
 }
@@ -243,7 +237,7 @@ String& Unit::toMultiLineString() {
 	return menuString;
 }
 
-void Unit::action(short id, ActionParameter* parameter) {
+void Unit::action(short id, ActionParameter& parameter) {
 	OrderType type = OrderType(id);
 
 	switch (type) {
@@ -346,7 +340,7 @@ void Unit::applyForce(double timeStep) {
 	}
 
 	(*velocity) *= 0.95f;//TODO to dac jaki wspolczynnik tarcia terenu
-	(*velocity) += (*acceleration) * (timeStep / mass);
+	(*velocity) += acceleration * (timeStep / mass);
 	double velLenght = velocity->LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
 		StateManager::get()->changeState(this, UnitStateType::STOP);
@@ -357,9 +351,9 @@ void Unit::applyForce(double timeStep) {
 		}
 		StateManager::get()->changeState(this, UnitStateType::MOVE);
 		if (rotatable) {
-			rotation->x_ = velocity->x_;
-			rotation->z_ = velocity->z_;
-			node->SetDirection(*rotation);
+			rotation.x_ = velocity->x_;
+			rotation.z_ = velocity->z_;
+			node->SetDirection(rotation);
 		}
 	}
 }

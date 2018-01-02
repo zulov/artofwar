@@ -149,12 +149,13 @@ void Hud::clear() {
 	delete windows;
 
 	windows = nullptr;
-	Game::get()->getUI()->GetCursor()->Remove();
 	Game::get()->getUI()->GetRoot()->RemoveAllChildren();
 }
 
 Hud::~Hud() {
 	clear();
+	
+	Game::get()->getUI()->GetCursor()->Remove();
 	//Game::get()->getUI()->GetRoot()->Remove();
 }
 

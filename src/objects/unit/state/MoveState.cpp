@@ -18,7 +18,7 @@ MoveState::~MoveState() = default;
 
 void MoveState::onStart(Unit* unit) {
 }
-void MoveState::onStart(Unit* unit, ActionParameter* parameter) {
+void MoveState::onStart(Unit* unit, ActionParameter&parameter) {
 }
 
 

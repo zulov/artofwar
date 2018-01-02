@@ -1,8 +1,7 @@
 #include "BucketIterator.h"
 #include "Grid.h"
 
-BucketIterator::BucketIterator(): currentContent() {
-}
+BucketIterator::BucketIterator() = default;
 
 BucketIterator::~BucketIterator() = default;
 

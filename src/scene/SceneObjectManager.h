@@ -1,6 +1,7 @@
 #pragma once
-#include <vector>
 #include "objects/Entity.h"
+#include <vector>
+
 
 class SceneObjectManager
 {
@@ -10,6 +11,6 @@ public:
 
 	void add(Entity* entity);
 private:
-	std::vector<Entity*> *entities;
+	std::vector<Entity*> entities;
 
 };

@@ -7,7 +7,6 @@
 #include <queue>
 
 
-
 MainGrid::MainGrid(const short _resolution, const double _size, const bool _debugEnabled): Grid(_resolution, _size,
                                                                                                 _debugEnabled) {
 	short posX = 0;
@@ -48,7 +47,7 @@ MainGrid::~MainGrid() {
 	}
 }
 
-void MainGrid::prepareGridToFind() {
+void MainGrid::prepareGridToFind()  {
 	for (int i = 0; i < resolution * resolution; ++i) {
 		tempNeighbour = neighbors(i);
 		complexData[i].setNeightbours(tempNeighbour);
@@ -63,12 +62,12 @@ void MainGrid::prepareGridToFind() {
 bool MainGrid::validateAdd(Static* object) {
 	IntVector2 size = object->getGridSize();
 	Vector3* pos = object->getPosition();
-	return validateAdd(size, pos);
+	return validateAdd(size, *pos);
 }
 
-bool MainGrid::validateAdd(const IntVector2& size, Vector3* pos) {
-	short iX = getIndex(pos->x_);
-	short iZ = getIndex(pos->z_);
+bool MainGrid::validateAdd(const IntVector2& size, Vector3& pos) {
+	short iX = getIndex(pos.x_);
+	short iZ = getIndex(pos.z_);
 
 	IntVector2 sizeX = calculateSize(size.x_);
 	IntVector2 sizeZ = calculateSize(size.y_);
@@ -221,7 +220,7 @@ Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector3* pos) {
 	return pos;
 }
 
-IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector3* pos) {
+IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector3* pos) const {
 	return IntVector2(getIndex(pos->x_), getIndex(pos->z_));
 }
 
@@ -279,7 +278,7 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma byćtylko prosta odległość
 
 	//frontier.clear();
-	frontier.init(750 + min, min);//TODO ustawić lepsze minimum
+	frontier.init(750 + min, min); //TODO ustawić lepsze minimum
 	frontier.put(start, 0);
 
 	came_from[start] = start;
@@ -299,7 +298,7 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
 					cost_so_far[next] = new_cost;
 					const float priority = new_cost + heuristic(next, goal);
-					frontier.put(next, priority);//TODO a co sie stanie jesliwstawi sie kilka razytego samego noda?
+					frontier.put(next, priority); //TODO a co sie stanie jesliwstawi sie kilka razytego samego noda?
 					came_from[next] = current;
 				}
 			}

@@ -18,7 +18,7 @@ GoState::~GoState() = default;
 void GoState::onStart(Unit* unit) {
 }
 
-void GoState::onStart(Unit* unit, ActionParameter* parameter) {
+void GoState::onStart(Unit* unit, ActionParameter& parameter) {
 	unit->addAim(parameter);
 }
 

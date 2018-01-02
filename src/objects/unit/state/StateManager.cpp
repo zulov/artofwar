@@ -1,18 +1,19 @@
 #include "StateManager.h"
-#include "GoState.h"
-#include "StopState.h"
-#include "ChargeState.h"
+#include "../Unit.h"
 #include "AttackState.h"
-#include "PatrolState.h"
+#include "ChargeState.h"
+#include "CollectState.h"
 #include "DeadState.h"
 #include "DefendState.h"
-#include "UnitStateType.h"
-#include "MoveState.h"
 #include "FollowState.h"
-#include "../Unit.h"
-#include "CollectState.h"
-#include "database/DatabaseCache.h"
 #include "Game.h"
+#include "GoState.h"
+#include "MoveState.h"
+#include "PatrolState.h"
+#include "StopState.h"
+#include "UnitStateType.h"
+#include "database/DatabaseCache.h"
+
 
 StateManager* StateManager::instance = nullptr;
 
@@ -56,7 +57,7 @@ bool StateManager::validateState(int id, UnitStateType stateTo) {
 	return ordersToUnit[id].find(stateTo) != ordersToUnit[id].end();
 }
 
-void StateManager::changeState(Unit* unit, UnitStateType stateTo, ActionParameter* actionParameter) {
+void StateManager::changeState(Unit* unit, UnitStateType stateTo, ActionParameter& actionParameter) {
 	State* stateFrom = states[static_cast<int>(unit->getState())];
 	if (stateFrom->validateTransition(stateTo) && validateState(unit->getDbID(), stateTo)) {
 		stateFrom->onEnd(unit);

@@ -48,7 +48,6 @@ void SimulationObjectManager::add(ResourceEntity* resourceEntity) {
 
 void SimulationObjectManager::addAll(std::vector<Unit*>* _units) {
 	units->insert(units->end(), _units->begin(), _units->end());
-	//unitsToAdd->insert(std::end(*unitsToAdd), std::begin(*_units), std::end(*_units));
 }
 
 void SimulationObjectManager::addAll(std::vector<Building*>* _buildings) {

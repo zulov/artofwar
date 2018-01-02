@@ -1,17 +1,18 @@
 #include "Controls.h"
-#include "commands/CommandList.h"
-#include <algorithm>
+#include "Game.h"
 #include "HitData.h"
 #include "camera/CameraManager.h"
-#include "Game.h"
-#include <Urho3D/UI/UI.h>
-#include <Urho3D/Graphics/Graphics.h>
-#include <Urho3D/Graphics/OctreeQuery.h>
-#include <Urho3D/Graphics/Octree.h>
+#include "commands/CommandList.h"
 #include "commands/action/ActionCommand.h"
-#include "simulation/env/Enviroment.h"
 #include "commands/creation/CreationCommandList.h"
+#include "simulation/env/Enviroment.h"
+#include <Urho3D/Graphics/Graphics.h>
+#include <Urho3D/Graphics/Octree.h>
+#include <Urho3D/Graphics/OctreeQuery.h>
+#include <Urho3D/UI/UI.h>
+#include <algorithm>
 #include "commands/action/ActionCommandList.h"
+
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Physical*>();
@@ -33,7 +34,7 @@ bool Controls::raycast(hit_data& hitData, Camera* camera) {
 		return false;
 	}
 
-	Ray cameraRay = camera->GetScreenRay((float)pos.x_ / Game::get()->getGraphics()->GetWidth(),
+	const Ray cameraRay = camera->GetScreenRay((float)pos.x_ / Game::get()->getGraphics()->GetWidth(),
 	                                     (float)pos.y_ / Game::get()->getGraphics()->GetHeight());
 
 	PODVector<RayQueryResult> results;
@@ -104,7 +105,7 @@ void Controls::leftClick(Physical* clicked, Vector3& hitPos) {
 
 void Controls::leftClickBuild(Physical* clicked, Vector3& hitPos) {
 	unSelectAll();
-	createBuilding(new Vector3(hitPos));
+	createBuilding(hitPos);
 }
 
 void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftPressed) {
@@ -134,7 +135,7 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 	}
 }
 
-void Controls::leftHold(std::pair<Vector3*, Vector3*>* held) {
+void Controls::leftHold(std::pair<Vector3*, Vector3*>& held) {
 	if (!input->GetKeyDown(KEY_CTRL)) {
 		unSelectAll();
 	}
@@ -145,7 +146,7 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>* held) {
 
 }
 
-void Controls::rightHold(std::pair<Vector3*, Vector3*>* held) {
+void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
 	OrderType type[2];
 
 	if (input->GetKeyDown(KEY_SHIFT)) {
@@ -156,9 +157,9 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>* held) {
 		type[1] = OrderType::CHARGE;
 	}
 
-	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[0], new Vector3(*held->first)));
+	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[0], new Vector3(*held.first)));
 	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1],
-	                                                           new Vector3(*held->second - *held->first)));
+	                                                           new Vector3(*held.second - *held.first)));
 	//TODO czy ta para jest usuwana
 }
 
@@ -168,7 +169,7 @@ void Controls::releaseLeft() {
 
 	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
 		left.setSecond(hitData.position);
-		const double dist = (*(left.held->first) - *(left.held->second)).LengthSquared();
+		const double dist = (*(left.held.first) - *(left.held.second)).LengthSquared();
 		if (dist > clickDistance) {
 			leftHold(left.held);
 		} else {
@@ -197,7 +198,7 @@ void Controls::releaseRight() {
 
 	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
 		right.setSecond(hitData.position);
-		double dist = (*(right.held->first) - *(right.held->second)).LengthSquared();
+		double dist = (*(right.held.first) - *(right.held.second)).LengthSquared();
 		if (dist > clickDistance) {
 			rightHold(right.held);
 		} else {
@@ -244,7 +245,7 @@ void Controls::clickDown(MouseButton& var) {
 	}
 }
 
-void Controls::createBuilding(Vector3* pos) {
+void Controls::createBuilding(Vector3& pos) {
 	if (idToCreate >= 0) {
 		Game::get()->getCreationCommandList()->addBuilding(idToCreate, pos, 0);
 	}
@@ -285,7 +286,7 @@ void Controls::orderUnit(short id) {
 	case OrderType::DEFEND:
 	case OrderType::DEAD:
 		for (auto & phy : *selected) {
-			phy->action(id, nullptr);//TODO przemyslec to
+			phy->action(id, ActionParameter());//TODO przemyslec to
 		}
 		break;
 	default: ;
@@ -294,7 +295,7 @@ void Controls::orderUnit(short id) {
 
 void Controls::orderBuilding(short id) {
 	for (auto & phy : *selected) {
-		phy->action(id, nullptr);//TODO przemyslec to
+		phy->action(id, ActionParameter());//TODO przemyslec to
 	}
 }
 

@@ -18,7 +18,7 @@ ChargeState::~ChargeState() = default;
 void ChargeState::onStart(Unit* unit) {
 }
 
-void ChargeState::onStart(Unit* unit, ActionParameter* parameter) {
+void ChargeState::onStart(Unit* unit, ActionParameter& parameter) {
 	unit->addAim(parameter);
 	unit->maxSpeed = unit->dbUnit->maxSpeed * 2;
 }

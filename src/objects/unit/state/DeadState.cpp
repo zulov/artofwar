@@ -10,7 +10,7 @@ DeadState::~DeadState() = default;
 void DeadState::onStart(Unit* unit) {
 	unit->alive = false;
 }
-void DeadState::onStart(Unit* unit, ActionParameter* parameter) {
+void DeadState::onStart(Unit* unit, ActionParameter& parameter) {
 }
 
 

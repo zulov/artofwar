@@ -1,6 +1,6 @@
 #pragma once
-#include "objects/Entity.h"
 #include "database/db_strcut.h"
+#include "objects/Entity.h"
 #include "objects/Static.h"
 
 class ResourceEntity :

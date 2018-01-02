@@ -1,10 +1,11 @@
 #include "CameraManager.h"
+#include "FreeCameraBehave.h"
 #include "Game.h"
-#include <Urho3D/Graphics/Graphics.h>
+#include "RtsCameraBehave.h"
 #include "TopCameraBehave.h"
 #include "simulation/env/Enviroment.h"
-#include "FreeCameraBehave.h"
-#include "RtsCameraBehave.h"
+#include <Urho3D/Graphics/Graphics.h>
+
 
 CameraManager::CameraManager() {
 

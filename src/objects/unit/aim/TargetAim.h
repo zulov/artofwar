@@ -11,7 +11,7 @@ public:
 	bool ifReach(Unit* unit) override;
 	bool expired() override;
 private:
-	Urho3D::Vector3* position;
+	Urho3D::Vector3 position;
 	double radius;
 	Urho3D::Node* node;
 };

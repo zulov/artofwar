@@ -13,7 +13,7 @@ public:
 	short getSize();
 	QueueElement* getAt(short i);
 private:
-	std::vector<QueueElement*> *queue;
+	std::vector<QueueElement*> queue;
 	
 	short maxCapacity;
 };

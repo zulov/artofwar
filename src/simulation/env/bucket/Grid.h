@@ -15,11 +15,11 @@ public:
 	std::vector<Unit*>& getContentAt(int index);
 	int &getSizeAt(int index);
 	std::vector<short>* getEnvIndexsFromCache(double dist);
-	std::vector<Physical *>* getArrayNeight(std::pair<Vector3*, Vector3*>* pair);
+	std::vector<Physical *>* getArrayNeight(std::pair<Vector3*, Vector3*>& pair);
 	BucketIterator* getArrayNeight(Unit* entity, double radius, short thread);
 	int getIndex(short posX, short posZ);
 protected:
-	short getIndex(double value);
+	short getIndex(double value) const;
 	bool inRange(int index);
 	short resolution;
 	double fieldSize;

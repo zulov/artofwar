@@ -20,7 +20,7 @@ void StopState::onStart(Unit* unit) {
 	unit->removeAim();
 }
 
-void StopState::onStart(Unit* unit, ActionParameter* parameter) {
+void StopState::onStart(Unit* unit, ActionParameter& parameter) {
 
 }
 

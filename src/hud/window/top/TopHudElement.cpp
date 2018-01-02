@@ -11,7 +11,6 @@ TopHudElement::TopHudElement(Urho3D::XMLFile* style, Texture2D* texture) {
 	value = mock->CreateChild<Text>();
 	value->SetStyle("TopText", style);
 
-	button->AddChild(icon);
 	button->SetVar("TopHudElement", this);
 }
 

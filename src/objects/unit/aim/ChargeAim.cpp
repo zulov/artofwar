@@ -6,10 +6,10 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/Scene.h>
 
-ChargeAim::ChargeAim(Urho3D::Vector3* begin, Urho3D::Vector3* end) {
-	direction = new Urho3D::Vector3((*end) - (*begin));
-	direction->y_ = 0;
-	direction->Normalize();
+ChargeAim::ChargeAim(Urho3D::Vector3* begin, Urho3D::Vector3* end) :direction((*end) - (*begin)){
+
+	direction.y_ = 0;
+	direction.Normalize();
 
 	Game* game = Game::get();
 	node = game->getScene()->CreateChild();
@@ -23,23 +23,21 @@ ChargeAim::ChargeAim(Urho3D::Vector3* begin, Urho3D::Vector3* end) {
 	distance = 50;
 }
 
-ChargeAim::ChargeAim(Urho3D::Vector3* _direction) {
-	direction = new Urho3D::Vector3(*_direction);
-	direction->y_ = 0;
-	direction->Normalize();
+ChargeAim::ChargeAim(Urho3D::Vector3* _direction):direction(*_direction) {
+	direction.y_ = 0;
+	direction.Normalize();
 	distance = 50;
 }
 
 
 ChargeAim::~ChargeAim() {
-	delete direction;
 	if (node) {
 		node->Remove();
 	}
 }
 
 Urho3D::Vector3* ChargeAim::getDirection(Unit* unit) {
-	return new Urho3D::Vector3((*direction));
+	return new Urho3D::Vector3(direction);
 }
 
 bool ChargeAim::ifReach(Unit* unit) {

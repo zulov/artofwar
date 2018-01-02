@@ -41,8 +41,8 @@ public:
 		int id;
 	};
 
-	FibHeap(): n(0), coef(
-	                      1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)), minNode(nullptr) {
+	FibHeap(): coef(
+	                      1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)) {
 		temp.resize(15, nullptr);
 		pool.resize(400, nullptr);
 		for (int i = 0; i < 400; ++i) {
@@ -259,9 +259,9 @@ public:
 		return static_cast<unsigned int>(n);
 	}
 
-	int n;
+	int n{0};
 	double coef;
-	FibNode* minNode;
+	FibNode* minNode{nullptr};
 	std::vector<FibNode*> temp;
 	std::vector<FibNode*> pool;
 	int lowestFree = 0;

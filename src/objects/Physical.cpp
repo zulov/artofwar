@@ -13,7 +13,6 @@ Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
 	lc->bound(this);
 
 	position = _position;
-	rotation = new Vector3();
 
 	node->SetPosition(*position);
 
@@ -25,7 +24,6 @@ Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
 
 Physical::~Physical() {
 	delete position;
-	delete rotation;
 }
 
 
@@ -110,7 +108,7 @@ String& Physical::toMultiLineString() {
 	return menuString;
 }
 
-void Physical::action(short id, ActionParameter* parameter) {
+void Physical::action(short id, ActionParameter& parameter) {
 
 }
 

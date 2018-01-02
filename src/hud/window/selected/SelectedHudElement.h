@@ -1,9 +1,10 @@
 #pragma once
-#include <Urho3D/UI/Button.h>
-#include "objects/Physical.h"
-#include <Urho3D/UI/Text.h>
-#include <Urho3D/UI/ProgressBar.h>
 #include "hud/MySprite.h"
+#include "objects/Physical.h"
+#include <Urho3D/UI/Button.h>
+#include <Urho3D/UI/ProgressBar.h>
+#include <Urho3D/UI/Text.h>
+
 
 #define MAX_SELECTED_IN_BUTTON 4
 
@@ -20,7 +21,7 @@ public:
 	void setText(const String& msg);
 	void hideText();
 	void setTexture(Texture2D* texture);
-	void add(std::vector<Physical*> *physicals, int start, int end);
+	void add(std::vector<Physical*> &physicals, int start, int end);
 	std::vector<Physical*>* getSelected();
 private:
 	Urho3D::Button* button;

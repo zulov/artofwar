@@ -1,7 +1,7 @@
 #pragma once
-#include <Urho3D/Scene/Component.h>
-#include "Entity.h"
 #include "Physical.h"
+#include <Urho3D/Scene/Component.h>
+
 
 class LinkComponent :public Urho3D::Component
 {

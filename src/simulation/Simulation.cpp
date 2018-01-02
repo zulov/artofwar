@@ -1,16 +1,16 @@
 #include "Simulation.h"
-#include <ctime>
 #include "Game.h"
-#include "scene/load/SceneLoader.h"
-#include "commands/creation/CreationCommandList.h"
 #include "commands/creation/CreationCommand.h"
+#include "commands/creation/CreationCommandList.h"
+#include "scene/load/SceneLoader.h"
+#include <ctime>
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _simCommandList) {
 	enviroment = _enviroment;
 	simObjectManager = _simCommandList->getManager();
 	simCommandList = _simCommandList;
-	
+
 	srand(time(NULL));
 	animate = true;
 
@@ -31,6 +31,7 @@ Simulation::~Simulation() {
 	delete aimContainer;
 	delete simulationInfo;
 	delete actionCommandList;
+	Game::get()->setActionCommmandList(nullptr);
 }
 
 void Simulation::tryToAttack(vector<Unit*>::value_type unit) {
@@ -72,8 +73,8 @@ void Simulation::selfAI() {
 	}
 }
 
-void Simulation::loadEntities(SceneLoader* loader) {
-	dbload_container* data = loader->getData();
+void Simulation::loadEntities(SceneLoader& loader) {
+	dbload_container* data = loader.getData();
 	for (auto unit : *data->units) {
 		simObjectManager->load(unit);
 	}
@@ -103,7 +104,7 @@ void Simulation::countFrame() {
 void Simulation::applyForce() {
 	for (auto unit : (*units)) {
 		unit->applyForce(maxTimeFrame);
-		Vector3* pos = unit->getPosition();//TODO to przeniesc do mova? to moze byc [rpblem gdy jest przesuwanie poza klatk¹
+		Vector3* pos = unit->getPosition(); //TODO to przeniesc do mova? to moze byc [rpblem gdy jest przesuwanie poza klatk¹
 		double y = enviroment->getGroundHeightAt(pos->x_, pos->z_);
 		unit->updateHeight(y, maxTimeFrame);
 	}
@@ -114,7 +115,8 @@ void Simulation::updateBuildingQueue() {
 		QueueElement* done = build->updateQueue(maxTimeFrame);
 		if (done) {
 			simCommandList->add(new CreationCommand(done->getType(), done->getAmount(), done->getSubtype(),
-			                                        new Vector3(*build->getTarget()), 0));
+			                                        new Vector3(build->getTarget()), 0));
+			delete done;
 		}
 	}
 }
@@ -131,10 +133,10 @@ void Simulation::dispose() {
 	simObjectManager->dispose();
 }
 
-void Simulation::save(SceneSaver* saver) {
-	saver->saveUnits(units);
-	saver->saveBuildings(buildings);
-	saver->saveResourceEntities(resources);
+void Simulation::save(SceneSaver& saver) {
+	saver.saveUnits(units);
+	saver.saveBuildings(buildings);
+	saver.saveResourceEntities(resources);
 }
 
 void Simulation::performAction() {
@@ -179,7 +181,7 @@ void Simulation::update(Input* input, float timeStep) {
 	}
 }
 
-void Simulation::initScene(SceneLoader* loader) {
+void Simulation::initScene(SceneLoader& loader) {
 	loadEntities(loader);
 	simCommandList->execute();
 }
@@ -210,10 +212,12 @@ void Simulation::calculateForces() {
 			(*sepPedestrian) += (*destForce);
 			unit->setAcceleration(sepPedestrian);
 
+			delete sepPedestrian;
 			delete destForce;
 		} else {
 			(*validPos) *= 20;
 			unit->setAcceleration(validPos);
+			delete validPos;
 		}
 	}
 }

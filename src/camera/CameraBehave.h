@@ -1,8 +1,9 @@
 #pragma once
-#include <Urho3D/Graphics/Camera.h>
 #include <Urho3D/Container/Ptr.h>
-#include <Urho3D/Scene/Node.h>
+#include <Urho3D/Graphics/Camera.h>
 #include <Urho3D/Input/Input.h>
+#include <Urho3D/Scene/Node.h>
+
 
 using namespace Urho3D;
 

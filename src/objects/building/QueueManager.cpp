@@ -5,19 +5,18 @@
 
 
 QueueManager::QueueManager(short _maxCapacity) {
-	queue = new std::vector<QueueElement*>();
-	queue->reserve(DEFAULT_VECTOR_SIZE);
+	queue.reserve(DEFAULT_VECTOR_SIZE);
 
 	maxCapacity = _maxCapacity;
 }
 
 
 QueueManager::~QueueManager() {
-	clear_and_delete_vector(queue);
+	clear_vector(queue);
 }
 
 void QueueManager::add(short value, ObjectType type, short id) {
-	for (auto & i : *queue) {
+	for (auto & i : queue) {
 		if (i->checkType(type, id)) {
 			value = i->add(value);
 		}
@@ -25,21 +24,21 @@ void QueueManager::add(short value, ObjectType type, short id) {
 	while (value > 0) {
 		QueueElement* element = new QueueElement(type, id, maxCapacity);
 		value = element->add(value);
-		queue->push_back(element);
+		queue.push_back(element);
 	}
 }
 
 QueueElement* QueueManager::update(float time) {
-	for (int i = 0; i < queue->size(); ++i) {
-		if (queue->at(i)->getAmount() <= 0) {
-			queue->erase(queue->begin() + i);
+	for (int i = 0; i < queue.size(); ++i) {
+		if (queue.at(i)->getAmount() <= 0) {
+			queue.erase(queue.begin() + i);
 		}
 	}
-	if (!queue->empty()) {
-		QueueElement* element = queue->at(0);
+	if (!queue.empty()) {
+		QueueElement* element = queue.at(0);
 
 		if (element->update(time)) {//TODO memoryleak
-			queue->erase(queue->begin());
+			queue.erase(queue.begin());
 			return element;
 		}
 
@@ -48,9 +47,9 @@ QueueElement* QueueManager::update(float time) {
 }
 
 short QueueManager::getSize() {
-	return queue->size();
+	return queue.size();
 }
 
 QueueElement* QueueManager::getAt(short i) {
-	return queue->at(i);
+	return queue.at(i);
 }

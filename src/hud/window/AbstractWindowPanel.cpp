@@ -18,9 +18,8 @@ Urho3D::String& AbstractWindowPanel::getStyleName() {
 }
 
 Urho3D::Window* AbstractWindowPanel::createWindow() {
-	window = new Urho3D::Window(Game::get()->getContext());
-	window->SetStyle(getStyleName(), style);
-	Game::get()->getUI()->GetRoot()->AddChild(window);
+	window = Game::get()->getUI()->GetRoot()->CreateChild<Urho3D::Window>();
+	window->SetStyle(getStyleName(), style);	
 
 	createBody();
 	

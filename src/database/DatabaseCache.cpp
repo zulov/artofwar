@@ -114,7 +114,7 @@ int static loadOrders(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static loadOrdersToUnit(void* data, int argc, char** argv, char** azColName) {
-	db_container* xyz = (db_container *)data;
+	db_container* xyz = static_cast<db_container *>(data);
 	const int orderId = atoi(argv[2]);
 	const int unitId = atoi(argv[1]);
 	db_order* dbOrder = xyz->orders[orderId];

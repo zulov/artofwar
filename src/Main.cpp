@@ -19,7 +19,7 @@
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
-Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE) {
+Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100){
 	gameState = GameState::STARTING;
 	context->RegisterFactory<LinkComponent>();
 	MySprite::RegisterObject(context);
@@ -45,9 +45,6 @@ void Main::Setup() {
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
 
-	saver = new SceneSaver(100);
-	loader = new SceneLoader();
-
 	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
 	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
 	loadingState.reset(4);
@@ -60,11 +57,11 @@ void Main::load() {
 		Game::get()->setCameraManager(new CameraManager());
 		cameraManager = Game::get()->getCameraManager();
 		controls = new Controls(GetSubsystem<Input>());
-		loader->createLoad("quicksave");
+		loader.createLoad("quicksave");
 		levelBuilder = new LevelBuilder();
 		SetupViewport();
 		Game::get()->setPlayersManager(new PlayersManager());
-		Game::get()->getPlayersManager()->load(loader->loadPlayers(), loader->loadResources());
+		Game::get()->getPlayersManager()->load(loader.loadPlayers(), loader.loadResources());
 
 		hud->createMyPanels();
 		subscribeToUIEvents();
@@ -77,26 +74,25 @@ void Main::load() {
 		{
 		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
 		Game::get()->setEnviroment(enviroment);
-		loadingState.sth = enviroment;
 		break;
 		}
 	case 2:
 		{
-		Enviroment* enviroment = static_cast<Enviroment*>(loadingState.sth);
-		//enviroment->prepareGridToFind();
+		
+		//Game::get()->getEnviroment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
 		}
 	case 3:
 		Game::get()->setCreationCommandList(new CreationCommandList());
-		simulation = new Simulation(static_cast<Enviroment*>(loadingState.sth), Game::get()->getCreationCommandList());
+		simulation = new Simulation(Game::get()->getEnviroment(), Game::get()->getCreationCommandList());
 		break;
 	case 4:
 		simulation->initScene(loader);
 		break;
 	case 5:
 		gameState = GameState::RUNNING;
-		loader->end();
+		loader.end();
 		hud->endLoading();
 		break;
 	}
@@ -123,8 +119,7 @@ void Main::Start() {
 
 void Main::Stop() {
 	disposeScene();
-	delete loader;
-	delete saver;
+
 	delete benchmark;
 	delete hud;
 	Game::dispose();
@@ -246,11 +241,11 @@ void Main::InitLocalizationSystem() {
 }
 
 void Main::save(String name) {
-	saver->createSave(name);
-	saver->saveConfig();
+	saver.createSave(name);
+	saver.saveConfig();
 	simulation->save(saver);
 	Game::get()->getPlayersManager()->save(saver);
-	saver->close();
+	saver.close();
 }
 
 void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
@@ -304,8 +299,8 @@ void Main::HandleUnitButton(StringHash eventType, VariantMap& eventData) {
 }
 
 void Main::HandleOrdersButton(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
 
 	controls->order(hudElement->getId());
 }
@@ -332,16 +327,16 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 }
 
 void Main::loadSave(const String& name) {
-	loader->createLoad(name);
+	loader.createLoad(name);
 	//loader->load();
-	std::vector<dbload_player*>* players = loader->loadPlayers();
-	std::vector<dbload_resource*>* resources = loader->loadResources();
+	std::vector<dbload_player*>* players = loader.loadPlayers();
+	std::vector<dbload_resource*>* resources = loader.loadResources();
 
-	std::vector<dbload_unit*>* units = loader->loadUnits();
-	std::vector<dbload_building*>* buildings = loader->loadBuildings();
-	std::vector<dbload_resource_entities*>* resources_entities = loader->loadResourcesEntities();
+	std::vector<dbload_unit*>* units = loader.loadUnits();
+	std::vector<dbload_building*>* buildings = loader.loadBuildings();
+	std::vector<dbload_resource_entities*>* resources_entities = loader.loadResourcesEntities();
 
-	loader->end();
+	loader.end();
 }
 
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {
@@ -369,8 +364,8 @@ void Main::HandleUIButtonHoverOn(StringHash /*eventType*/, VariantMap& eventData
 }
 
 void Main::HandleUIButtonHoverOff(StringHash /*eventType*/, VariantMap& eventData) {
-	UIElement* element = (UIElement*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
 	hud->hoverOffIcon(hudElement);
 }
 
@@ -390,43 +385,42 @@ void Main::SetupViewport() {
 }
 
 void Main::disposeScene() {
-	loading* loading2 = new loading();
+	loading loading2;
 	Game::get()->getScene()->SetUpdateEnabled(false);
 
-	loading2->reset(4, "dispose simulation");
+	loading2.reset(4, "dispose simulation");
 	delete simulation;
 	simulation = nullptr;
 
-	loading2->inc("dispose cameras");
+	loading2.inc("dispose cameras");
 	delete cameraManager;
 	cameraManager = nullptr;
 	Game::get()->setCameraManager(nullptr);
 
-	loading2->inc("dispose creationList");
+	loading2.inc("dispose creationList");
 	delete Game::get()->getCreationCommandList();
 	Game::get()->setCreationCommandList(nullptr);
 
-	loading2->inc("dispose enviroment");
+	loading2.inc("dispose enviroment");
 	delete Game::get()->getEnviroment();
 	Game::get()->setEnviroment(nullptr);
 
-	loading2->inc("dispose playerManager");
+	loading2.inc("dispose playerManager");
 	delete Game::get()->getPlayersManager();
 	Game::get()->setPlayersManager(nullptr);
 
-	loading2->inc("dispose controls");
+	loading2.inc("dispose controls");
 	delete controls;
 	controls = nullptr;
 
-	loading2->inc("dispose hud");
+	loading2.inc("dispose hud");
 	hud->clear();
 
-	loading2->inc("dispose levelBuilder");
+	loading2.inc("dispose levelBuilder");
 	delete levelBuilder;
 	levelBuilder = nullptr;
 
 	loadingState.reset(4);
-	delete loading2;
 }
 
 void Main::control(const float timeStep) const {

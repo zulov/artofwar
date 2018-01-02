@@ -1,11 +1,12 @@
 #pragma once
-#include <Urho3D/UI/Button.h>
-#include "ObjectEnums.h"
-#include "Game.h"
-#include "control/SelectedInfo.h"
-#include <Urho3D/UI/Text.h>
-#include "SelectedHudElement.h"
 #include "../AbstractWindowPanel.h"
+#include "Game.h"
+#include "ObjectEnums.h"
+#include "SelectedHudElement.h"
+#include "control/SelectedInfo.h"
+#include <Urho3D/UI/Button.h>
+#include <Urho3D/UI/Text.h>
+
 
 class SelectedHudPanel :public AbstractWindowPanel
 {

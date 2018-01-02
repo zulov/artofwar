@@ -13,9 +13,9 @@ struct content_info
 	void reset() {
 		allyNumber = 0;
 		enemiesNumber = 0;
-		std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
 		allyBuilding = 0;
 		enemyBuilding = 0;
+		std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
 		std::fill_n(buildingNumberPerPlayer, MAX_PLAYERS, 0);
 		std::fill_n(resourceNumber, RESOURCE_NUMBER_DB, 0);
 

@@ -1,11 +1,12 @@
 #pragma once
 
-#include <vector>
-#include "state/UnitStateType.h"
 #include "objects/Physical.h"
-#include "state/StateManager.h"
 #include "objects/resource/ResourceEntity.h"
 #include "scene/load/dbload_container.h"
+#include "state/StateManager.h"
+#include "state/UnitStateType.h"
+#include <vector>
+
 
 class State;
 
@@ -34,7 +35,7 @@ public:
 	void setAcceleration(Vector3* _acceleration);
 	float getMaxSeparationDistance();
 	Vector3* getDestination(double boostCoef, double aimCoef);
-	Vector3* getVelocity();
+
 	float getUnitRadius();
 	float getMinimalDistance();
 
@@ -50,7 +51,7 @@ public:
 
 	void updateHeight(double y, double timeStep);
 	String& toMultiLineString() override;
-	void action(short id, ActionParameter* parameter) override;
+	void action(short id, ActionParameter& parameter) override;
 	std::string getValues(int precision) override;
 
 	UnitStateType getState();
@@ -64,7 +65,7 @@ public:
 
 	static std::string getColumns();
 protected:
-	Vector3* acceleration;
+	Vector3 acceleration;
 	Vector3* velocity;
 	Aims* aims;
 	float mass;
@@ -73,7 +74,7 @@ protected:
 	float minSpeed;
 	short aimIndex = 0;
 private:
-	void addAim(ActionParameter* actionParameter);
+	void addAim(ActionParameter& actionParameter);
 	void removeAim();
 	void attackIfCloseEnough(double& distance, Unit* closest);
 	void collectIfCloseEnough(double distance, ResourceEntity* closest);

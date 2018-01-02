@@ -17,7 +17,7 @@ Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
 	debugEnabled = _debugEnabled;
 
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
-		levelsCache[i] = getEnvIndexs((((double)MAX_SEP_DIST) / RES_SEP_DIST) * i);
+		levelsCache[i] = getEnvIndexs((double)MAX_SEP_DIST / RES_SEP_DIST * i);
 	}
 
 	for (auto & iterator : iterators) {
@@ -28,10 +28,10 @@ Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
 }
 
 Grid::~Grid() {
-	for (auto iterator : iterators) {
+	for (auto &iterator : iterators) {
 		delete iterator;
 	}
-	for (auto cache : levelsCache)  {
+	for (auto &cache : levelsCache)  {
 		delete cache;
 	}
 
@@ -59,7 +59,7 @@ std::vector<short>* Grid::getEnvIndexsFromCache(double dist) {
 	return levelsCache[index];
 }
 
-short Grid::getIndex(double value) {
+short Grid::getIndex(double value) const {
 	if (value < 0) {
 		short index = (short)(value * invFieldSize) + halfResolution - 1;
 		if (index >= 0) {
@@ -108,9 +108,9 @@ int& Grid::getSizeAt(int index) {
 	return buckets[index].getSize();
 }
 
-std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>* pair) {
-	Vector3* begin = pair->first;
-	Vector3* end = pair->second;
+std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>& pair) {
+	Vector3* begin = pair.first;
+	Vector3* end = pair.second;
 	tempSelected->clear();
 
 	const short posBeginX = getIndex(begin->x_);
@@ -139,7 +139,7 @@ bool Grid::fieldInCircle(short i, short j, double radius) {
 }
 
 std::vector<short>* Grid::getEnvIndexs(double radius) {
-	std::vector<short>* indexes = new std::vector<short>();
+	auto indexes = new std::vector<short>();
 	for (short i = 0; i < RES_SEP_DIST; ++i) {
 		for (short j = 0; j < RES_SEP_DIST; ++j) {
 			if (fieldInCircle(i, j, radius)) {

@@ -19,7 +19,7 @@ void AttackState::onStart(Unit* unit) {
 	*unit->velocity = Urho3D::Vector3::ZERO;
 }
 
-void AttackState::onStart(Unit* unit, ActionParameter* parameter) {
+void AttackState::onStart(Unit* unit, ActionParameter& parameter) {
 }
 
 void AttackState::onEnd(Unit* unit) {

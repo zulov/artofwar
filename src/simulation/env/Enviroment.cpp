@@ -3,33 +3,23 @@
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
 
-Enviroment::Enviroment(Terrain* _terrian) {
-	empty = new std::vector<Unit *>();
+Enviroment::Enviroment(Terrain* _terrian):
+	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, false),
+	obstacleGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD),
+	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE),
+	teamUnitGrid{
+		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY}, {BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY}
+	} {
 	neights = new std::vector<Unit *>();
 	neights2 = new std::vector<Unit *>();
 	neights->reserve(DEFAULT_VECTOR_SIZE * 2);
 	neights2->reserve(DEFAULT_VECTOR_SIZE * 2);
 
-	mainGrid = new MainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, false);
-
-	for (auto & grid : teamUnitGrid) {
-		grid = new Grid(BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY);
-	}
-
-	obstacleGrid = new Grid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD);
-	resourceGrid = new Grid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE);
 	terrian = _terrian;
 }
 
 
 Enviroment::~Enviroment() {
-	delete obstacleGrid;
-	delete resourceGrid;
-	delete mainGrid;
-	for (auto unitGrid : teamUnitGrid) {
-		delete unitGrid;
-	}
-	delete empty;
 	delete neights;
 	delete neights2;
 }
@@ -54,17 +44,16 @@ std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, const double r
 		}
 		return neights2;
 		}
-	default:
-		return empty;
+
 	}
 }
 
-std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid* bucketGrid, double radius) const {
+std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, double radius) {
 	neights->clear();
 
 	double sqSeparationDistance = radius * radius;
 	Vector3* unitPosition = unit->getPosition();
-	BucketIterator* bucketIterator = bucketGrid->getArrayNeight(unit, radius, 0);
+	BucketIterator* bucketIterator = bucketGrid.getArrayNeight(unit, radius, 0);
 	while (Unit* neight = bucketIterator->next()) {
 		if (unit == neight) { continue; }
 
@@ -84,33 +73,33 @@ std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid* bucketGrid, dou
 
 void Enviroment::update(std::vector<Unit*>* units) {
 	for (auto unit : (*units)) {
-		mainGrid->updateGrid(unit, -1);
-		teamUnitGrid[unit->getTeam()]->updateGrid(unit, unit->getTeam());
+		mainGrid.updateGrid(unit, -1);
+		teamUnitGrid[unit->getTeam()].updateGrid(unit, unit->getTeam());
 	}
 }
 
-void Enviroment::update(std::vector<Building*>* buildings) const {
+void Enviroment::update(std::vector<Building*>* buildings) {
 	for (auto building : (*buildings)) {
-		mainGrid->addStatic(building);
+		mainGrid.addStatic(building);
 	}
 }
 
-void Enviroment::update(std::vector<ResourceEntity*>* resources) const {
+void Enviroment::update(std::vector<ResourceEntity*>* resources) {
 	for (auto resource : (*resources)) {
-		mainGrid->addStatic(resource);
+		mainGrid.addStatic(resource);
 	}
 }
 
-Vector3* Enviroment::validatePosition(Vector3* position) const {
-	return mainGrid->getDirectionFrom(position);
+Vector3* Enviroment::validatePosition(Vector3* position) {
+	return mainGrid.getDirectionFrom(position);
 }
 
-std::vector<Physical*>* Enviroment::getNeighbours(std::pair<Vector3*, Vector3*>* pair) const {
-	return mainGrid->getArrayNeight(pair);
+std::vector<Physical*>* Enviroment::getNeighbours(std::pair<Vector3*, Vector3*>& pair) {
+	return mainGrid.getArrayNeight(pair);
 }
 
-std::vector<Physical*>* Enviroment::getBuildings(std::pair<Vector3*, Vector3*>* pair) {
-	return obstacleGrid->getArrayNeight(pair);
+std::vector<Physical*>* Enviroment::getBuildings(std::pair<Vector3*, Vector3*>& pair) {
+	return obstacleGrid.getArrayNeight(pair);
 }
 
 float Enviroment::getGroundHeightAt(float x, float z) {
@@ -135,44 +124,44 @@ Vector3 Enviroment::getValidPosForCamera(float percentX, float percentY, const V
 	return a;
 }
 
-bool Enviroment::validateStatic(const IntVector2& size, Vector3* pos) {
-	return mainGrid->validateAdd(size, pos);
+bool Enviroment::validateStatic(const IntVector2& size, Vector3& pos) {
+	return mainGrid.validateAdd(size, pos);
 }
 
 Vector3* Enviroment::getValidPosition(const IntVector2& size, const IntVector2& bucketCords) {
-	const Vector2 center = mainGrid->getCenterAt(bucketCords);
+	const Vector2 center = mainGrid.getCenterAt(bucketCords);
 	return getValidPosition(size, new Vector3(center.x_, 0, center.y_));
 }
 
 Vector3* Enviroment::getValidPosition(const IntVector2& size, Vector3* pos) {
-	Vector3* pos2 = mainGrid->getValidPosition(size, pos);
+	Vector3* pos2 = mainGrid.getValidPosition(size, pos);
 	pos2->y_ = getGroundHeightAt(pos2->x_, pos2->z_);
 	return pos2;
 }
 
-IntVector2 Enviroment::getBucketCords(const IntVector2& size, Vector3* pos) const {
-	return mainGrid->getBucketCords(size, pos);
+IntVector2 Enviroment::getBucketCords(const IntVector2& size, Vector3* pos) {
+	return mainGrid.getBucketCords(size, pos);
 }
 
 void Enviroment::testFind(IntVector2& startV, IntVector2& goalV) {
 	auto start = std::chrono::system_clock::now();
 
-	mainGrid->findPath(startV, goalV);
+	mainGrid.findPath(startV, goalV);
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
 	std::cout << duration.count() << std::endl;
 }
 
-void Enviroment::prepareGridToFind() const {
-	mainGrid->prepareGridToFind();
+void Enviroment::prepareGridToFind() {
+	mainGrid.prepareGridToFind();
 }
 
-content_info* Enviroment::getContentInfo(Vector2& from, Vector2& to, bool checks[], int activePlayer) const {
+content_info* Enviroment::getContentInfo(Vector2 from, Vector2 to, bool checks[], int activePlayer) {
 	from.x_ = from.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
 	from.y_ = from.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
 
 	to.x_ = to.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
 	to.y_ = to.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
 	//std::cout << xFrom << "-" << xTo << "$" << yFrom << "-" << yTo << std::endl;
-	return mainGrid->getContentInfo(from, to, checks, activePlayer);
+	return mainGrid.getContentInfo(from, to, checks, activePlayer);
 
 }

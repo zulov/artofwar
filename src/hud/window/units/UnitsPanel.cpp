@@ -1,14 +1,15 @@
 #include "UnitsPanel.h"
 #include "Game.h"
-#include <Urho3D/UI/ListView.h>
-#include "hud/MySprite.h"
+#include "database/DatabaseCache.h"
 #include "hud/ButtonUtils.h"
 #include "hud/HudElement.h"
+#include "hud/MySprite.h"
+#include "utils.h"
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/UI/ListView.h>
 #include <algorithm>
 #include <unordered_set>
-#include <Urho3D/Resource/ResourceCache.h>
-#include "database/DatabaseCache.h"
-#include "utils.h"
+
 
 
 UnitsPanel::UnitsPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {
@@ -28,13 +29,13 @@ std::vector<HudElement*>* UnitsPanel::getButtons() {
 
 void UnitsPanel::show(SelectedInfo* selectedInfo) {
 	setVisible(true);
-	vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+	vector<SelectedInfoType*> infoTypes = selectedInfo->getSelecteType();
 
 	unordered_set<int> common = {0,1,2,3,4,5,6,7,8,9,10};
 
-	for (int i = 0; i < infoTypes->size(); ++i) {
-		std::vector<Physical*>* data = infoTypes->at(i)->getData();
-		if (!data->empty()) {
+	for (int i = 0; i < infoTypes.size(); ++i) {
+		std::vector<Physical*>& data = infoTypes.at(i)->getData();
+		if (!data.empty()) {
 			std::vector<db_unit*>* units = Game::get()->getDatabaseCache()->getUnitsForBuilding(i);
 			unordered_set<int> common2;
 			for (auto & unit : *units) {

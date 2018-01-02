@@ -28,14 +28,14 @@ public:
 	void setPlayer(unsigned char player);
 	unsigned char getPlayer();
 	virtual String& toMultiLineString();
-	virtual void action(short id, ActionParameter* parameter);
+	virtual void action(short id, ActionParameter& parameter);
 	static std::string getColumns();
 	std::string getValues(int precision) override;
 	bool hasEnemy();
 	virtual void clean();
 protected:
 	Vector3* position = nullptr;
-	Vector3* rotation = nullptr;
+	Vector3 rotation;
 	String menuString = "";
 
 	Physical* enemyToAttack = nullptr;

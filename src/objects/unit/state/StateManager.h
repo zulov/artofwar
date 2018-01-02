@@ -10,7 +10,7 @@ public:
 
 	void changeState(Unit* unit, UnitStateType stateTo);
 	bool validateState(int id, UnitStateType stateTo);
-	void changeState(Unit* unit, UnitStateType stateTo, ActionParameter* actionParameter);
+	void changeState(Unit* unit, UnitStateType stateTo, ActionParameter& actionParameter);
 	bool checkChangeState(Unit* unit, UnitStateType stateTo);
 	void execute(Unit* unit);
 	static StateManager* get();

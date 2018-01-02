@@ -8,8 +8,9 @@
 static Urho3D::Button* simpleButton(MySprite* sprite, Urho3D::XMLFile* style, const String& styleName) {
 	Urho3D::Button* button = new Urho3D::Button(Game::get()->getContext());
 	button->SetStyle(styleName, style);
-
-	button->AddChild(sprite);
+	if (sprite) {
+		button->AddChild(sprite);
+	}
 	return button;
 }
 
@@ -26,8 +27,8 @@ static void setTextureToSprite(MySprite* sprite, Texture2D* texture) {
 	const int textureHeight = texture->GetHeight();
 	//IntVector2 size = sprite->GetSize();
 	IntVector2 size = sprite->getMySize();
-	const float scaleX = (size.x_) / (float)textureWidth;
-	const float scaleY = (size.y_) / (float)textureHeight;
+	const float scaleX = size.x_ / (float)textureWidth;
+	const float scaleY = size.y_ / (float)textureHeight;
 	sprite->SetScale(1);
 	if (scaleX < scaleY) {
 		sprite->SetScale(scaleX);
@@ -37,7 +38,7 @@ static void setTextureToSprite(MySprite* sprite, Texture2D* texture) {
 
 	sprite->SetSize(textureWidth, textureHeight);
 	Vector2 perHotSpot = sprite->getPercentHotSpot();
-	
+
 	sprite->SetHotSpot(textureWidth * perHotSpot.x_, textureHeight * perHotSpot.y_);
 }
 

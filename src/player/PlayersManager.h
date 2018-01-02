@@ -16,7 +16,7 @@ public:
 	Player* getPlayer(short i);
 	std::vector<Player*>& getTeam(short i);
 	void changeActive(short i);
-	void save(SceneSaver* saver);
+	void save(SceneSaver& saver);
 	static std::string getColumns();
 private:
 	Player* activePlayer;

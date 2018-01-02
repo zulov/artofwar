@@ -6,16 +6,15 @@
 SelectedInfo::SelectedInfo() {
 	allNumber = 0;
 	allSubTypeNumber = 0;
-	selectedByType = new vector<SelectedInfoType*>();
-	selectedByType->reserve(MAX_SIZE_TYPES);
+	selectedByType.reserve(MAX_SIZE_TYPES);
 
 	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
-		selectedByType->push_back(new SelectedInfoType());
+		selectedByType.push_back(new SelectedInfoType());
 	}
 }
 
 SelectedInfo::~SelectedInfo() {
-	clear_and_delete_vector(selectedByType);
+	clear_vector(selectedByType);
 }
 
 bool SelectedInfo::hasChanged() {
@@ -44,19 +43,19 @@ void SelectedInfo::reset() {
 	changed = true;
 	allNumber = 0;
 	allSubTypeNumber = 0;
-	for (auto & element : *selectedByType) {
+	for (auto & element : selectedByType) {
 		element->clear();
 	}
 }
 
-vector<SelectedInfoType*>* SelectedInfo::getSelecteType() {
+vector<SelectedInfoType*>& SelectedInfo::getSelecteType() {
 	return selectedByType;
 }
 
 void SelectedInfo::select(Physical* entity) {
 	if (entity->getDbID() >= 0) {
-		selectedByType->at(entity->getDbID())->add(entity);
-		if (selectedByType->at(entity->getDbID())->getData()->size() == 1) {
+		selectedByType.at(entity->getDbID())->add(entity);
+		if (selectedByType.at(entity->getDbID())->getData().size() == 1) {
 			++allSubTypeNumber;
 		}
 	}

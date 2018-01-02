@@ -1,24 +1,23 @@
 #include "Building.h"
-#include "ObjectEnums.h"
-#include "database/db_strcut.h"
 #include "Game.h"
-#include <Urho3D/Graphics/Model.h>
-#include <Urho3D/Graphics/Material.h>
-#include <Urho3D/Graphics/StaticModel.h>
-#include "player/Resources.h"
-#include "player/PlayersManager.h"
+#include "ObjectEnums.h"
 #include "database/DatabaseCache.h"
+#include "database/db_strcut.h"
+#include "player/PlayersManager.h"
+#include "player/Resources.h"
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
 
 double Building::hbMaxSize = 5.0;
 
-Building::Building(Vector3* _position, int id, int player) : Static(_position, BUILDING) {
+Building::Building(Vector3* _position, int id, int player):target(*_position) , Static(_position, BUILDING) {
 	hbMaxSize = 5.0;
 
-	target = new Vector3(*_position);
-	target->x_ += 5;
-	target->z_ += 5;
+	target.x_ += 5;
+	target.z_ += 5;
 
 	db_building* dbBuilding = Game::get()->getDatabaseCache()->getBuilding(id);
 	std::vector<db_unit*>* dbUnits = Game::get()->getDatabaseCache()->getUnitsForBuilding(id);
@@ -38,11 +37,10 @@ Building::Building(Vector3* _position, int id, int player) : Static(_position, B
 
 Building::~Building() {
 	delete queue;
-	delete target;
 }
 
 float Building::getHealthBarSize() {
-	double healthBarSize = (hbMaxSize);
+	double healthBarSize = hbMaxSize;
 	if (healthBarSize <= 0) { healthBarSize = 0; }
 	return healthBarSize;
 }
@@ -69,7 +67,7 @@ String& Building::toMultiLineString() {
 	return menuString;
 }
 
-void Building::action(short id, ActionParameter* parameter) {
+void Building::action(short id, ActionParameter& parameter) {
 	Resources* resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 	std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
 
@@ -85,8 +83,8 @@ std::string Building::getColumns() {
 }
 
 std::string Building::getValues(int precision) {
-	int target_x = target->x_ * precision;
-	int target_z = target->z_ * precision;
+	int target_x = target.x_ * precision;
+	int target_z = target.z_ * precision;
 	return Static::getValues(precision)
 		+ to_string(target_x) + ","
 		+ to_string(target_z);
@@ -96,7 +94,7 @@ QueueElement* Building::updateQueue(float time) {
 	return queue->update(time);
 }
 
-Vector3* Building::getTarget() {
+Vector3& Building::getTarget() {
 	return target;//TODO target to nie to samo co gdzie sie maja pojawiac!
 }
 

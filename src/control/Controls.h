@@ -3,17 +3,17 @@
 
 #include <Urho3D/Graphics/Renderer.h>
 #include <vector>
-
-#include "ObjectEnums.h"
-#include <Urho3D/Input/Input.h>
 #include "ControlsState.h"
+#include "ObjectEnums.h"
+#include "OrderType.h"
+#include "SelectedInfo.h"
 #include "commands/creation/CreationCommand.h"
 #include "hud/HudElement.h"
-#include "SelectedInfo.h"
-#include "OrderType.h"
+#include <Urho3D/Input/Input.h>
 #include "MouseButton.h"
 
 
+struct MouseButton;
 class SimulationInfo;
 struct hit_data;
 using namespace Urho3D;
@@ -45,7 +45,7 @@ private:
 	void orderUnit(short id);
 	void orderBuilding(short id);
 
-	void createBuilding(Vector3* pos);
+	void createBuilding(Vector3& pos);
 	void refreshSelected();
 	bool raycast(hit_data& hitData, Camera* camera);
 
@@ -55,8 +55,8 @@ private:
 	void leftClickBuild(Physical* clicked, Vector3& hitPos);
 	void rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftPressed);
 
-	void leftHold(std::pair<Vector3*, Vector3*>* held);
-	void rightHold(std::pair<Vector3*, Vector3*>* held);
+	void leftHold(std::pair<Vector3*, Vector3*>& held);
+	void rightHold(std::pair<Vector3*, Vector3*>& held);
 
 	void releaseRight();
 	bool orderAction(bool shiftPressed);

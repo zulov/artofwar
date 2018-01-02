@@ -4,14 +4,13 @@
 
 
 SceneObjectManager::SceneObjectManager() {
-	entities = new std::vector<Entity*>();
 }
 
 
 SceneObjectManager::~SceneObjectManager() {
-	clear_and_delete_vector(entities);
+	clear_vector(entities);
 }
 
 void SceneObjectManager::add(Entity* entity) {
-	entities->push_back(entity);
+	entities.push_back(entity);
 }

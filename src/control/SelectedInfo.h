@@ -16,7 +16,7 @@ public:
 	ObjectType getSelectedType();
 	int getAllNumber();
 	void reset();
-	std::vector<SelectedInfoType*>* getSelecteType();
+	std::vector<SelectedInfoType*>& getSelecteType();
 	void select(Physical* entity);
 	int getSelectedSubTypeNumber();
 	void hasBeedUpdatedDrawn();
@@ -27,6 +27,6 @@ private:
 	int allNumber;
 	int allSubTypeNumber;
 	ObjectType selectedType;
-	std::vector<SelectedInfoType*>* selectedByType;
+	std::vector<SelectedInfoType*> selectedByType;
 	String message = "";
 };

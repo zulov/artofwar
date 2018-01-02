@@ -8,10 +8,10 @@ public:
 	~SelectedInfoType();
 	void clear();
 	void add(Physical* physical);
-	std::vector<Physical*>* getData();
+	std::vector<Physical*>& getData();
 	int getId();
 private:
 	int id;
-	std::vector<Physical*>* data;
+	std::vector<Physical*> data;
 };
 

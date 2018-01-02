@@ -1,13 +1,14 @@
 #include "OrdersPanel.h"
-#include "Game.h"
-#include <Urho3D/UI/ListView.h>
-#include "../../MySprite.h"
-#include <Urho3D/UI/Button.h>
 #include "../../ButtonUtils.h"
-#include <unordered_set>
+#include "../../MySprite.h"
+#include "Game.h"
 #include "database/DatabaseCache.h"
-#include <Urho3D/Resource/ResourceCache.h>
 #include "utils.h"
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/UI/Button.h>
+#include <Urho3D/UI/ListView.h>
+#include <unordered_set>
+
 
 
 OrdersPanel::OrdersPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
@@ -22,13 +23,13 @@ OrdersPanel::~OrdersPanel() {
 
 void OrdersPanel::show(SelectedInfo* selectedInfo) {
 	setVisible(true);
-	std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+	std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelecteType();
 
 	std::unordered_set<int> common = {0,1,2,3,4,5,6,7,8,9,10};
 
-	for (int i = 0; i < infoTypes->size(); ++i) {
-		std::vector<Physical*>* data = infoTypes->at(i)->getData();
-		if (!data->empty()) {
+	for (int i = 0; i < infoTypes.size(); ++i) {
+		std::vector<Physical*>& data = infoTypes.at(i)->getData();
+		if (!data.empty()) {
 			std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
 			std::unordered_set<int> common2;
 			for (auto & order : *orders) {

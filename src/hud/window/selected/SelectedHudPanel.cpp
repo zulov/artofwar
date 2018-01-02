@@ -1,7 +1,8 @@
 #include "SelectedHudPanel.h"
-#include <Urho3D/Resource/ResourceCache.h>
 #include "database/DatabaseCache.h"
 #include <Urho3D/Graphics/Texture2D.h>
+#include <Urho3D/Resource/ResourceCache.h>
+
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "SelectedInfoWindow";
@@ -94,19 +95,19 @@ String SelectedHudPanel::getIconName(ObjectType index, int i) {
 
 void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 	ObjectType type = selectedInfo->getSelectedType();
-	std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+	std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelecteType();
 
 	int all = selectedInfo->getAllNumber();
 	int selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
 	int ratio = all / (LINES_IN_SELECTION * maxInRow - selectedSubTypeNumber + 2) + 1;
 	int k = 0;
-	for (auto & infoType : *infoTypes) {
-		std::vector<Physical*>* data = infoType->getData();
-		if (data->empty()) { continue; }
+	for (auto & infoType : infoTypes) {
+		std::vector<Physical*>& data = infoType->getData();
+		if (data.empty()) { continue; }
 		String name = getIconName(type, infoType->getId());
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
-		for (int j = 0; j < data->size(); j += ratio) {
-			int max = Min(data->size(), j + ratio);
+		for (int j = 0; j < data.size(); j += ratio) {
+			int max = Min(data.size(), j + ratio);
 			int diff = max - j;
 
 			elements[k]->add(data, j, max);

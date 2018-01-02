@@ -14,7 +14,7 @@ PatrolState::~PatrolState() = default;
 
 void PatrolState::onStart(Unit* unit) {
 }
-void PatrolState::onStart(Unit* unit, ActionParameter* parameter) {
+void PatrolState::onStart(Unit* unit, ActionParameter& parameter) {
 	unit->addAim(parameter);
 }
 

@@ -1,17 +1,18 @@
 #include "LevelBuilder.h"
-#include "objects/Physical.h"
-#include <Urho3D/Graphics/Terrain.h>
-#include <Urho3D/Graphics/Octree.h>
-#include <Urho3D/Graphics/Model.h>
-#include <Urho3D/Graphics/Material.h>
 #include "Game.h"
 #include "Urho3D/Resource/Image.h"
-#include <Urho3D/Resource/ResourceCache.h>
 #include "database/DatabaseCache.h"
+#include "objects/Physical.h"
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/Octree.h>
+#include <Urho3D/Graphics/Terrain.h>
+#include <Urho3D/Graphics/Zone.h>
+#include <Urho3D/Resource/ResourceCache.h>
+
 
 
 LevelBuilder::LevelBuilder() {
-	objectManager = new SceneObjectManager();
 	scene = new Scene(Game::get()->getContext());
 
 	scene->CreateComponent<Octree>();
@@ -19,23 +20,23 @@ LevelBuilder::LevelBuilder() {
 }
 
 LevelBuilder::~LevelBuilder() {
-	delete objectManager;
 	scene->Clear();
 	scene->Remove();
+	Game::get()->setScene(nullptr);
 }
 
-void LevelBuilder::createScene(SceneLoader* loader) {
-	loader->load();
-	dbload_container* data = loader->getData();
+void LevelBuilder::createScene(SceneLoader& loader) {
+	loader.load();
+	dbload_container* data = loader.getData();
 
 	db_map* map = Game::get()->getDatabaseCache()->getMap(data->config->map);
 	Entity* zone = createZone();
 	Entity* light = createLight(Vector3(0.6f, -1.0f, 0.8f), Color(0.7f, 0.6f, 0.6f), LIGHT_DIRECTIONAL);
 	Entity* ground = createGround(map->height_map, map->texture, map->scale_hor, map->scale_ver);
 
-	objectManager->add(zone);
-	objectManager->add(light);
-	objectManager->add(ground);
+	objectManager.add(zone);
+	objectManager.add(light);
+	objectManager.add(ground);
 }
 
 Terrain* LevelBuilder::getTerrian() {
@@ -55,7 +56,7 @@ Entity* LevelBuilder::createZone() {
 	return entity;
 }
 
-Entity* LevelBuilder::createLight(Vector3& direction, Color& color, LightType lightType) {
+Entity* LevelBuilder::createLight(Vector3 direction, Color color, LightType lightType) {
 	Entity* entity = new Entity(ENTITY);
 	Node* lightNode = entity->getNode();
 	lightNode->SetDirection(direction);

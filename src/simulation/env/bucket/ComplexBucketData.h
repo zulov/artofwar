@@ -1,10 +1,10 @@
 #pragma once
 #include "ObjectEnums.h"
+#include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Math/Vector3.h>
 #include <Urho3D/Scene/Node.h>
-#include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
-#include "simulation/env/ContentInfo.h"
+
 
 class Static;
 

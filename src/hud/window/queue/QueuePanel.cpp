@@ -63,11 +63,11 @@ void QueuePanel::update(SelectedInfo* selectedInfo) {
 	//TODO wykonuje sie nawet jeœli sie nic nie zmieni³o
 	short j = 0;
 	if (window->IsVisible()) {
-		std::vector<SelectedInfoType*>* infoTypes = selectedInfo->getSelecteType();
+		std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelecteType();
 
-		for (auto & infoType : *infoTypes) {
-			std::vector<Physical*>* data = infoType->getData();
-			for (Physical* physical : (*data)) {
+		for (auto & infoType : infoTypes) {
+			std::vector<Physical*>& data = infoType->getData();
+			for (Physical* physical : data) {
 				//TODO przeniesc kolejke do Physical
 				Building* building = dynamic_cast<Building*>(physical);
 				update(building->getQueue(), j);
