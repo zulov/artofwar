@@ -25,11 +25,11 @@ void CollectState::onEnd(Unit* unit) {
 }
 
 void CollectState::execute(Unit* unit) {
-	Resources* resources = Game::get()->getPlayersManager()->getPlayer(unit->player)->getResources();
+	Resources& resources = Game::get()->getPlayersManager()->getPlayer(unit->player)->getResources();
 
 	if (unit->resource) {
 		const double value = unit->resource->collect(unit->collectSpeed);
-		resources->add(unit->resource->getDbID(), value);
+		resources.add(unit->resource->getDbID(), value);
 		*unit->toResource = *unit->resource->getPosition() - *unit->position;
 	}
 

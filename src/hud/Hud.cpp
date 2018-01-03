@@ -12,6 +12,7 @@
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <iostream>
+#include <Urho3D/UI/UIEvents.h>
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {
@@ -136,7 +137,27 @@ void Hud::preapreUrho() {
 	createCursor();
 }
 
-Hud::Hud() {
+void Hud::subscribeToUIEvents() {
+	for (auto hudElement : getButtonsBuildToSubscribe()) {
+		UIElement* element = hudElement->getUIElement();
+		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Hud, HandleUIButtonHoverOn));
+		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Hud, HandleUIButtonHoverOff));
+	}
+
+	for (auto hudElement : getButtonsUnitsToSubscribe()) {
+		UIElement* element = hudElement->getUIElement();
+		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Hud, HandleUIButtonHoverOn));
+		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Hud, HandleUIButtonHoverOff));
+	}
+
+	for (auto hudElement : getButtonsOrdersToSubscribe()) {
+		UIElement* element = hudElement->getUIElement();
+		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Hud, HandleUIButtonHoverOn));
+		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Hud, HandleUIButtonHoverOff));
+	}
+}
+
+Hud::Hud() : Object(Game::get()->getContext()) {
 	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
 
 	prepareStyle();
@@ -186,11 +207,11 @@ void Hud::createMiniMap() {
 	miniMapPanel->createEmpty(160);
 }
 
-std::vector<HudElement*>* Hud::getButtonsBuildToSubscribe() {
+std::vector<HudElement*>& Hud::getButtonsBuildToSubscribe() {
 	return buildPanel->getButtons();
 }
 
-std::vector<HudElement*>* Hud::getButtonsUnitsToSubscribe() {
+std::vector<HudElement*>& Hud::getButtonsUnitsToSubscribe() {
 	return unitsPanel->getButtons();
 }
 
@@ -254,7 +275,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 	}
 }
 
-std::vector<Button*>* Hud::getButtonsSelectedToSubscribe() {
+std::vector<Button*>& Hud::getButtonsSelectedToSubscribe() {
 	return selectedHudPanel->getButtonsSelectedToSubscribe();
 }
 
@@ -266,6 +287,18 @@ void Hud::hoverOffIcon(HudElement* hudElement) {
 	menuPanel->removeInfo();
 }
 
-std::vector<HudElement*>* Hud::getButtonsOrdersToSubscribe() {
+std::vector<HudElement*>& Hud::getButtonsOrdersToSubscribe() {
 	return ordersPanel->getButtons();
+}
+
+void Hud::HandleUIButtonHoverOn(StringHash /*eventType*/, VariantMap& eventData) {
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
+	hoverOnIcon(hudElement);
+}
+
+void Hud::HandleUIButtonHoverOff(StringHash /*eventType*/, VariantMap& eventData) {
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
+	hoverOffIcon(hudElement);
 }

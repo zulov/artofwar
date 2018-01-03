@@ -68,10 +68,10 @@ String& Building::toMultiLineString() {
 }
 
 void Building::action(short id, ActionParameter& parameter) {
-	Resources* resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
+	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 	std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
 
-	if (resources->reduce(costs)) {
+	if (resources.reduce(costs)) {
 		queue->add(1, UNIT, id);
 	}
 }

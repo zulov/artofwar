@@ -13,12 +13,11 @@
 
 OrdersPanel::OrdersPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "OrdersWindow";
-	buttons = new std::vector<HudElement*>();
 }
 
 
 OrdersPanel::~OrdersPanel() {
-	clear_and_delete_vector(buttons);
+	clear_vector(buttons);
 }
 
 void OrdersPanel::show(SelectedInfo* selectedInfo) {
@@ -45,23 +44,23 @@ void OrdersPanel::show(SelectedInfo* selectedInfo) {
 		}
 	}
 
-	for (int i = 0; i < buttons->size(); ++i) {
+	for (int i = 0; i < buttons.size(); ++i) {
 		if (common.find(i) != common.end()) {
-			buttons->at(i)->getUIElement()->SetVisible(true);
+			buttons.at(i)->getUIElement()->SetVisible(true);
 		} else {
-			buttons->at(i)->getUIElement()->SetVisible(false);
+			buttons.at(i)->getUIElement()->SetVisible(false);
 		}
 	}
 }
 
-std::vector<HudElement*>* OrdersPanel::getButtons() {
+std::vector<HudElement*>& OrdersPanel::getButtons() {
 	return buttons;
 }
 
 void OrdersPanel::createBody() {
 	int size = Game::get()->getDatabaseCache()->getOrdersSize();
 
-	buttons->reserve(size);
+	buttons.reserve(size);
 	ListView* panel = window->CreateChild<ListView>();
 	panel->SetStyle("MyListView", style);
 
@@ -77,7 +76,7 @@ void OrdersPanel::createBody() {
 		hudElement->setId(i, ObjectType::ENTITY);
 
 		button->SetVar("HudElement", hudElement);
-		buttons->push_back(hudElement);
+		buttons.push_back(hudElement);
 		panel->AddItem(button);
 	}
 }

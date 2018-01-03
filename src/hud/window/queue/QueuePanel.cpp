@@ -84,7 +84,6 @@ void QueuePanel::hideElements(int from) {
 }
 
 void QueuePanel::createBody() {
-
 	buttons->reserve(MAX_ICON_SELECTION);
 	for (int i = 0; i < MAX_ICON_SELECTION; ++i) {
 		elements[i] = new QueueHudElement(style);

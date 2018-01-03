@@ -15,7 +15,7 @@ public:
 	~SelectedHudPanel();	
 	void update(SelectedInfo* selectedInfo);
 	
-	std::vector<Button*>* getButtonsSelectedToSubscribe();
+	std::vector<Button*>& getButtonsSelectedToSubscribe();
 	int iconSize();
 	void createRows();
 
@@ -25,7 +25,7 @@ private:
 	short maxInRow = 31;
 	short LINES_IN_SELECTION = 4;
 	static String getIconName(ObjectType index, int i);
-	std::vector<Button*>* buttons;
+	std::vector<Button*> buttons;
 	SelectedHudElement** elements;
 	UIElement **rows;
 };

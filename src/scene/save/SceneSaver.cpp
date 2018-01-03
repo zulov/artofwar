@@ -137,8 +137,8 @@ void SceneSaver::saveResources(const std::vector<Player*>& players) {
 	if (players.empty()) { return; }
 	std::string sql = "INSERT INTO resources VALUES ";
 	for (auto player : players) {
-		Resources* resources = player->getResources();
-		sql += resources->getValues(precision, player->getId());
+		Resources& resources = player->getResources();
+		sql += resources.getValues(precision, player->getId());
 	}
 	executeInsert(sql);
 }

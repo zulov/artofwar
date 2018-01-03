@@ -10,11 +10,11 @@ public:
 	int getNation();
 	int getTeam();
 	int getId();
-	Resources* getResources();
+	Resources& getResources();
 	std::string getValues(int precision);
 	void setResourceAmount(int resource, float amount);
 private:
-	Resources* resources;
+	Resources resources;
 	db_nation* dbNation;
 	int team;
 	int id;

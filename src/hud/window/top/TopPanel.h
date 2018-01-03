@@ -14,7 +14,7 @@ public:
 	~TopPanel();
 	std::vector<Button*>* getButtonsSelectedToSubscribe();
 	void update(int value);
-	void update(Resources* resources);
+	void update(Resources& resources);
 private:
 	
 	void createBody() override;

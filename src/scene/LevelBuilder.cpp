@@ -20,6 +20,7 @@ LevelBuilder::LevelBuilder() {
 }
 
 LevelBuilder::~LevelBuilder() {
+	scene->RemoveAllChildren();
 	scene->Clear();
 	scene->Remove();
 	Game::get()->setScene(nullptr);

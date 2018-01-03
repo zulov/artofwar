@@ -5,15 +5,15 @@
 
 class SelectedInfo;
 
-class BuildPanel :public AbstractWindowPanel
+class BuildPanel : public AbstractWindowPanel
 {
 public:
 	BuildPanel(Urho3D::XMLFile* _style, int _nation);
 	~BuildPanel();
-	std::vector<HudElement*>*getButtons();
+	std::vector<HudElement*>& getButtons();
 	void show();
 private:
 	void createBody() override;
-	std::vector<HudElement*>* buttons;
+	std::vector<HudElement*> buttons;
 	int nation;
 };

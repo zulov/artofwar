@@ -52,8 +52,6 @@ private:
 	void loadSave(const String& name);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
 
-	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
-	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
 	void HandleSaveScene(StringHash, VariantMap& eventData);
 
 	void HandleMiniMapClick(StringHash eventType, VariantMap& eventData);

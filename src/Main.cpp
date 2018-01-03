@@ -127,28 +127,22 @@ void Main::Stop() {
 }
 
 void Main::subscribeToUIEvents() {
-	for (auto hudElement : *hud->getButtonsBuildToSubscribe()) {
+	for (auto hudElement : hud->getButtonsBuildToSubscribe()) {
 		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleBuildButton));
-		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleUIButtonHoverOn));
-		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Main, HandleUIButtonHoverOff));
 	}
 
-	for (auto hudElement : *hud->getButtonsUnitsToSubscribe()) {
+	for (auto hudElement : hud->getButtonsUnitsToSubscribe()) {
 		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleUnitButton));
-		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleUIButtonHoverOn));
-		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Main, HandleUIButtonHoverOff));
 	}
 
-	for (auto hudElement : *hud->getButtonsOrdersToSubscribe()) {
+	for (auto hudElement : hud->getButtonsOrdersToSubscribe()) {
 		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleOrdersButton));
-		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Main, HandleUIButtonHoverOn));
-		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Main, HandleUIButtonHoverOff));
 	}
 
-	for (auto buttton : *hud->getButtonsSelectedToSubscribe()) {
+	for (auto buttton : hud->getButtonsSelectedToSubscribe()) {
 		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButton));
 	}
 
@@ -156,6 +150,8 @@ void Main::subscribeToUIEvents() {
 
 	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
 	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));
+
+	hud->subscribeToUIEvents();
 }
 
 void Main::subscribeToEvents() {
@@ -355,18 +351,6 @@ void Main::HandleMouseModeChange(StringHash /*eventType*/, VariantMap& eventData
 	Input* input = GetSubsystem<Input>();
 	bool mouseLocked = eventData[MouseModeChanged::P_MOUSELOCKED].GetBool();
 	input->SetMouseVisible(!mouseLocked);
-}
-
-void Main::HandleUIButtonHoverOn(StringHash /*eventType*/, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
-	hud->hoverOnIcon(hudElement);
-}
-
-void Main::HandleUIButtonHoverOff(StringHash /*eventType*/, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
-	hud->hoverOffIcon(hudElement);
 }
 
 void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {

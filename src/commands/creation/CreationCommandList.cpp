@@ -21,12 +21,12 @@ bool CreationCommandList::addUnits(int _number, int id, Vector3& _position, int 
 }
 
 bool CreationCommandList::addBuilding(int id, Vector3& _position, int _player) {
-	Resources* resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
+	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 	std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForBuilding(id);
 	Enviroment* env = Game::get()->getEnviroment();
 	db_building* db_building = Game::get()->getDatabaseCache()->getBuilding(id);
 
-	if (env->validateStatic(db_building->size, _position) && resources->reduce(costs)) {
+	if (env->validateStatic(db_building->size, _position) && resources.reduce(costs)) {
 		Vector3 * pos = new Vector3(_position);
 		IntVector2 bucketCords = env->getBucketCords(db_building->size, pos);
 		pos = env->getValidPosition(db_building->size, pos);

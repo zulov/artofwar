@@ -50,14 +50,14 @@ void TopPanel::update(int value) {
 	unitsNumber->SetText(String(value));
 }
 
-void TopPanel::update(Resources* resources) {
-	if (resources->hasChanged()) {
+void TopPanel::update(Resources& resources) {
+	if (resources.hasChanged()) {
 
-		short size = resources->getSize();
-		double* values = resources->getValues();
+		short size = resources.getSize();
+		double* values = resources.getValues();
 		for (int i = 0; i < size; ++i) {
 			elements[i]->setText(String((int)values[i]));
 		}
-		resources->hasBeedUpdatedDrawn();
+		resources.hasBeedUpdatedDrawn();
 	}
 }

@@ -23,9 +23,12 @@
 
 using namespace Urho3D;
 
-class Hud
+class Hud :public Urho3D::Object
 {
 public:
+
+	URHO3D_OBJECT(Hud, Object)
+
 	Hud();
 	void clear();
 	~Hud();
@@ -38,10 +41,12 @@ public:
 	void hoverOnIcon(HudElement* hudElement);
 	void hoverOffIcon(HudElement* hudElement);
 
-	std::vector<Button*>* getButtonsSelectedToSubscribe();
-	std::vector<HudElement*>* getButtonsOrdersToSubscribe();
-	std::vector<HudElement*>* getButtonsBuildToSubscribe();
-	std::vector<HudElement*>* getButtonsUnitsToSubscribe();
+	std::vector<Button*>& getButtonsSelectedToSubscribe();
+	std::vector<HudElement*>& getButtonsOrdersToSubscribe();
+	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
+	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
+	std::vector<HudElement*>& getButtonsBuildToSubscribe();
+	std::vector<HudElement*>& getButtonsUnitsToSubscribe();
 	std::vector<Window*>* getWindows();
 	void resetLoading();
 	void endLoading();
@@ -51,8 +56,9 @@ public:
 	void createMyPanels();
 	void prepareStyle();
 	void preapreUrho();
+	void subscribeToUIEvents();
 private:
-	void  replaceVariables(std::string &xml, int hudSizeId);
+	void replaceVariables(std::string& xml, int hudSizeId);
 	void createDebugHud();
 	void createConsole();
 	void createCursor();
@@ -68,12 +74,11 @@ private:
 	OrdersPanel* ordersPanel;
 	QueuePanel* queuePanel;
 	LoadingPanel* loadingPanel;
-	InGameMenuPanel * inGameMenuPanel;
+	InGameMenuPanel* inGameMenuPanel;
 
 	std::vector<AbstractWindowPanel*> panels;
 
 	std::vector<Window*>* windows;
 	db_graph_settings* graphSettings;
 	XMLFile* style;
-
 };

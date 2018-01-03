@@ -13,12 +13,11 @@
 
 InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "InGameMenuWindow";
-	buttons = new std::vector<HudElement*>();
 }
 
 InGameMenuPanel::~InGameMenuPanel() {
 	toggleButton->Remove();
-	clear_and_delete_vector(buttons);
+	clear_vector(buttons);
 
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		delete addionalPanels[i];
@@ -79,7 +78,7 @@ void InGameMenuPanel::createBody() {
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setId(i, ObjectType::ENTITY);
-		buttons->push_back(hudElement);
+		buttons.push_back(hudElement);
 
 		button->SetVar("HudElement", hudElement);
 		window->AddChild(button);

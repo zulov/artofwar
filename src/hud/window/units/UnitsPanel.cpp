@@ -15,15 +15,14 @@
 UnitsPanel::UnitsPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {
 	nation = _nation;
 	styleName = "UnitsWindow";
-	buttons = new std::vector<HudElement*>();
 }
 
 
 UnitsPanel::~UnitsPanel() {
-	clear_and_delete_vector(buttons);
+	clear_vector(buttons);
 }
 
-std::vector<HudElement*>* UnitsPanel::getButtons() {
+std::vector<HudElement*>& UnitsPanel::getButtons() {
 	return buttons;
 }
 
@@ -51,11 +50,11 @@ void UnitsPanel::show(SelectedInfo* selectedInfo) {
 		}
 	}
 
-	for (int i = 0; i < buttons->size(); ++i) {
+	for (int i = 0; i < buttons.size(); ++i) {
 		if (common.find(i) != common.end()) {
-			buttons->at(i)->getUIElement()->SetVisible(true);
+			buttons.at(i)->getUIElement()->SetVisible(true);
 		} else {
-			buttons->at(i)->getUIElement()->SetVisible(false);
+			buttons.at(i)->getUIElement()->SetVisible(false);
 		}
 	}
 }
@@ -63,7 +62,7 @@ void UnitsPanel::show(SelectedInfo* selectedInfo) {
 void UnitsPanel::createBody() {
 	int size = Game::get()->getDatabaseCache()->getUnitSize();
 
-	buttons->reserve(size);
+	buttons.reserve(size);
 	ListView* panel = window->CreateChild<ListView>();
 	panel->SetStyle("MyListView", style);
 
@@ -79,7 +78,7 @@ void UnitsPanel::createBody() {
 		hudElement->setId(i, ObjectType::UNIT);
 
 		button->SetVar("HudElement", hudElement);
-		buttons->push_back(hudElement);
+		buttons.push_back(hudElement);
 		panel->AddItem(button);
 	}
 }

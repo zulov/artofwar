@@ -23,6 +23,6 @@ private:
 	void HandleToggle(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	bool menuVisibility = false;
 	Urho3D::Button* toggleButton;
-	std::vector<HudElement*>* buttons;
+	std::vector<HudElement*> buttons;
 	AbstractMiddlePanel** addionalPanels;
 };
