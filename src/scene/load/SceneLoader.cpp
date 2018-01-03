@@ -93,6 +93,7 @@ int static load_resources_entities(void* data, int argc, char** argv, char** azC
 }
 
 void SceneLoader::reset() {
+	database = nullptr;
 	if (dbLoad) {
 		delete dbLoad;
 	}

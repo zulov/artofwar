@@ -11,12 +11,10 @@ TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	const int size = Game::get()->getDatabaseCache()->getResourceSize();
 
 	elements = new TopHudElement*[size];
-	buttons = new std::vector<Button*>();
 }
 
 
 TopPanel::~TopPanel() {
-	delete buttons;
 	const int size = Game::get()->getDatabaseCache()->getResourceSize();
 	for (int i = 0; i < size; ++i) {
 		delete elements[i];
@@ -31,19 +29,13 @@ void TopPanel::createBody() {
 
 	const int size = Game::get()->getDatabaseCache()->getResourceSize();
 
-	buttons->reserve(size);
 	for (int i = 0; i < size; ++i) {
 		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + resource->icon);
 
 		elements[i] = new TopHudElement(style, texture);
 		window->AddChild(elements[i]->getButton());
-		buttons->push_back(elements[i]->getButton());
 	}
-}
-
-std::vector<Button*>* TopPanel::getButtonsSelectedToSubscribe() {
-	return buttons;
 }
 
 void TopPanel::update(int value) {

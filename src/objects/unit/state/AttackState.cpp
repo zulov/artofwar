@@ -27,6 +27,6 @@ void AttackState::onEnd(Unit* unit) {
 }
 
 void AttackState::execute(Unit* unit) {
-	(*unit->velocity) = Urho3D::Vector3::ZERO;
+	*unit->velocity = Urho3D::Vector3::ZERO;
 	unit->enemyToAttack->absorbAttack(unit->attackCoef);
 }

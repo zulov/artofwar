@@ -4,7 +4,6 @@
 #include <vector>
 
 
-
 class Bucket
 {
 public:

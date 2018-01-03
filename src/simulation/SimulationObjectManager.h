@@ -58,7 +58,7 @@ private:
 	vector<Unit*>* units;
 	vector<Building*>* buildings;
 	vector<ResourceEntity*>* resources;
-	vector<Physical*>* toDispose;
+	vector<Physical*> toDispose;
 
 	vector<Building*>* buildingsToAdd;
 	vector<ResourceEntity*>* resourcesToAdd;

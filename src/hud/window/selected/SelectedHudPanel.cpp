@@ -10,7 +10,6 @@ SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel
 }
 
 SelectedHudPanel::~SelectedHudPanel() {
-
 	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
 		delete elements[i];
 	}

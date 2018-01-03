@@ -22,6 +22,5 @@ private:
 	void HandleReduce(StringHash eventType, VariantMap& eventData);
 	short MAX_ICON_SELECTION = 31;
 
-	std::vector<Button*>* buttons;
 	QueueHudElement** elements;
 };

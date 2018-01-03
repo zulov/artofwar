@@ -12,10 +12,9 @@ MainGrid::MainGrid(const short _resolution, const double _size, const bool _debu
 	short posX = 0;
 	short posZ = 0;
 
-	const int miniRes = resolution / 16;
 	tempNeighbour = new std::vector<std::pair<int, float>>();
 	tempNeighbour->reserve(10);
-	const double coef = (miniRes * fieldSize);
+	const double coef = (resolution / 16) * fieldSize;
 
 	complexData = new ComplexBucketData[resolution * resolution];
 	for (int i = 0; i < resolution * resolution; ++i) {

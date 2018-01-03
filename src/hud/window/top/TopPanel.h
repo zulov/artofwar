@@ -12,13 +12,11 @@ class TopPanel :public AbstractWindowPanel
 public:
 	TopPanel(Urho3D::XMLFile* _style);
 	~TopPanel();
-	std::vector<Button*>* getButtonsSelectedToSubscribe();
 	void update(int value);
 	void update(Resources& resources);
 private:
 	
 	void createBody() override;
-	std::vector<Button*>* buttons;
 	TopHudElement** elements;
 	Text * unitsNumber;
 };

@@ -75,6 +75,6 @@ private:
 	LevelBuilder* levelBuilder;
 	SceneSaver saver;
 	SceneLoader loader;
-	loading loadingState;
+	loading loadingProgress;
 	GameState gameState;
 };

@@ -16,7 +16,7 @@ Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
 
 	node->SetPosition(*position);
 
-	for (int & bucket : bucketIndex) {
+	for (int& bucket : bucketIndex) {
 		bucket = INT_MIN;
 	}
 	bucketIndexShift = bucketIndex + 1;
@@ -27,39 +27,48 @@ Physical::~Physical() {
 }
 
 
+void Physical::createBillboardBar(Vector3& boundingBox) {
+	barNode = node->CreateChild();
+
+	billboardSetBar = barNode->CreateComponent<BillboardSet>();
+	billboardSetBar->SetNumBillboards(1);
+	billboardSetBar->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
+	billboardSetBar->SetSorted(true);
+
+	billboardBar = billboardSetBar->GetBillboard(0);
+	billboardBar->size_ = Vector2(2, 0.1);
+	billboardBar->position_ = Vector3(0, boundingBox.y_ * 1.3f, 0);
+	billboardBar->enabled_ = false;
+
+	billboardSetBar->Commit();
+}
+
+void Physical::createBillboardShadow(Vector3& boundingBox) {
+	billboardNode = node->CreateChild();
+	billboardNode->Pitch(90);
+	billboardSetShadow = billboardNode->CreateComponent<BillboardSet>();
+	billboardSetShadow->SetNumBillboards(1);
+	billboardSetShadow->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/select.xml"));
+	billboardSetShadow->SetSorted(true);
+	billboardSetShadow->SetFaceCameraMode(FaceCameraMode::FC_NONE);
+
+	billboardShadow = billboardSetShadow->GetBillboard(0);
+	billboardShadow->size_ = Vector2(boundingBox.x_ * 1.3f, boundingBox.z_ * 1.3f);
+	billboardShadow->position_ = Vector3(0, 0, -0.3);
+	billboardShadow->enabled_ = false;
+
+	billboardSetShadow->Commit();
+}
+
 void Physical::initBillbords() {
 	StaticModel* model = node->GetComponent<StaticModel>();
-	if (model) {
-		billboardNode = node->CreateChild();
-		billboardNode->Pitch(90);
-		barNode = node->CreateChild();
-		Model* model3d = model->GetModel();//TODO razy scale?
-		const Vector3 boundingBox = model3d->GetBoundingBox().Size();
 
-		billboardSetBar = barNode->CreateComponent<BillboardSet>();
-		billboardSetBar->SetNumBillboards(1);
-		billboardSetBar->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
-		billboardSetBar->SetSorted(true);
+	Vector3 boundingBox = model->GetModel()->GetBoundingBox().Size(); //TODO razy scale?
 
-		billboardBar = billboardSetBar->GetBillboard(0);
-		billboardBar->size_ = Vector2(2, 0.1);
-		billboardBar->position_ = Vector3(0, boundingBox.y_ * 1.3f, 0);
-		billboardBar->enabled_ = false;
+	createBillboardBar(boundingBox);
 
-		billboardSetShadow = billboardNode->CreateComponent<BillboardSet>();
-		billboardSetShadow->SetNumBillboards(1);
-		billboardSetShadow->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/select.xml"));
-		billboardSetShadow->SetSorted(true);
-		billboardSetShadow->SetFaceCameraMode(FaceCameraMode::FC_NONE);
+	createBillboardShadow(boundingBox);
 
-		billboardShadow = billboardSetShadow->GetBillboard(0);
-		billboardShadow->size_ = Vector2(boundingBox.x_ * 1.3f, boundingBox.z_ * 1.3f);
-		billboardShadow->position_ = Vector3(0, 0, -0.3);
-		billboardShadow->enabled_ = false;
-
-		billboardSetBar->Commit();
-		billboardSetShadow->Commit();
-	}
 }
 
 void Physical::updateHealthBar() {
@@ -113,16 +122,16 @@ void Physical::action(short id, ActionParameter& parameter) {
 }
 
 std::string Physical::getColumns() {
-	return Entity::getColumns() 
-	+ "hp_coef		INT     NOT NULL,"
-	+ "player		INT     NOT NULL,";
+	return Entity::getColumns()
+		+ "hp_coef		INT     NOT NULL,"
+		+ "player		INT     NOT NULL,";
 }
 
 std::string Physical::getValues(int precision) {
 	int hp_coef = getHealthPercent() * precision;
-	return Entity::getValues(precision) 
-	+ std::to_string(hp_coef) + ","
-	+ std::to_string(player) + ",";
+	return Entity::getValues(precision)
+		+ std::to_string(hp_coef) + ","
+		+ std::to_string(player) + ",";
 }
 
 bool Physical::hasEnemy() {

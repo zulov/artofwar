@@ -10,11 +10,9 @@
 QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "QueueWindow";
 	elements = new QueueHudElement*[MAX_ICON_SELECTION];
-	buttons = new std::vector<Button*>();
 }
 
 QueuePanel::~QueuePanel() {
-	delete buttons;
 	for (int i = 0; i < MAX_ICON_SELECTION; ++i) {
 		delete elements[i];
 	}
@@ -84,11 +82,9 @@ void QueuePanel::hideElements(int from) {
 }
 
 void QueuePanel::createBody() {
-	buttons->reserve(MAX_ICON_SELECTION);
 	for (int i = 0; i < MAX_ICON_SELECTION; ++i) {
 		elements[i] = new QueueHudElement(style);
 		window->AddChild(elements[i]->getButton());
-		buttons->push_back(elements[i]->getButton());
 		SubscribeToEvent(elements[i]->getButton(), E_CLICK, URHO3D_HANDLER(QueuePanel, HandleReduce));
 	}
 }

@@ -43,11 +43,11 @@ public:
 
 	std::vector<Button*>& getButtonsSelectedToSubscribe();
 	std::vector<HudElement*>& getButtonsOrdersToSubscribe();
-	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
-	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
+
 	std::vector<HudElement*>& getButtonsBuildToSubscribe();
 	std::vector<HudElement*>& getButtonsUnitsToSubscribe();
-	std::vector<Window*>* getWindows();
+	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
+	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
 	void resetLoading();
 	void endLoading();
 	void updateLoading(float progress);
@@ -63,7 +63,6 @@ private:
 	void createConsole();
 	void createCursor();
 
-
 	SelectedHudPanel* selectedHudPanel;
 	BuildPanel* buildPanel;
 	UnitsPanel* unitsPanel;
@@ -78,7 +77,6 @@ private:
 
 	std::vector<AbstractWindowPanel*> panels;
 
-	std::vector<Window*>* windows;
 	db_graph_settings* graphSettings;
 	XMLFile* style;
 };

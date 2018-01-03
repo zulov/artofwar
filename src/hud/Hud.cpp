@@ -77,19 +77,17 @@ void Hud::createMyPanels() {
 	panels.push_back(loadingPanel = new LoadingPanel(style));
 	panels.push_back(inGameMenuPanel = new InGameMenuPanel(style));
 
-	windows = new std::vector<Window*>();
-
-	windows->push_back(menuPanel->createWindow());
-	windows->push_back(buildPanel->createWindow());
-	windows->push_back(unitsPanel->createWindow());
-	windows->push_back(miniMapPanel->createWindow());
-	windows->push_back(debugPanel->createWindow());
-	windows->push_back(topPanel->createWindow());
-	windows->push_back(selectedHudPanel->createWindow());
-	windows->push_back(ordersPanel->createWindow());
-	windows->push_back(queuePanel->createWindow());
-	windows->push_back(loadingPanel->createWindow());
-	windows->push_back(inGameMenuPanel->createWindow());
+	menuPanel->createWindow();
+	buildPanel->createWindow();
+	unitsPanel->createWindow();
+	miniMapPanel->createWindow();
+	debugPanel->createWindow();
+	topPanel->createWindow();
+	selectedHudPanel->createWindow();
+	ordersPanel->createWindow();
+	queuePanel->createWindow();
+	loadingPanel->createWindow();
+	inGameMenuPanel->createWindow();
 
 	for (auto panel : panels) {
 		panel->setVisible(false);
@@ -167,9 +165,6 @@ Hud::Hud() : Object(Game::get()->getContext()) {
 void Hud::clear() {
 	clear_vector(panels);
 
-	delete windows;
-
-	windows = nullptr;
 	Game::get()->getUI()->GetRoot()->RemoveAllChildren();
 }
 
@@ -213,10 +208,6 @@ std::vector<HudElement*>& Hud::getButtonsBuildToSubscribe() {
 
 std::vector<HudElement*>& Hud::getButtonsUnitsToSubscribe() {
 	return unitsPanel->getButtons();
-}
-
-std::vector<Window*>* Hud::getWindows() {
-	return windows;
 }
 
 void Hud::resetLoading() {

@@ -30,9 +30,11 @@ Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
 Grid::~Grid() {
 	for (auto &iterator : iterators) {
 		delete iterator;
+		iterator = nullptr;
 	}
 	for (auto &cache : levelsCache)  {
 		delete cache;
+		cache = nullptr;
 	}
 
 	delete[] buckets;

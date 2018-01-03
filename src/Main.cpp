@@ -47,11 +47,11 @@ void Main::Setup() {
 
 	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
 	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
-	loadingState.reset(4);
+	loadingProgress.reset(4);
 }
 
 void Main::load() {
-	switch (loadingState.currentStage) {
+	switch (loadingProgress.currentStage) {
 	case 0:
 		{
 		Game::get()->setCameraManager(new CameraManager());
@@ -96,8 +96,8 @@ void Main::load() {
 		hud->endLoading();
 		break;
 	}
-	loadingState.inc();
-	hud->updateLoading(loadingState.getProgres());
+	loadingProgress.inc();
+	hud->updateLoading(loadingProgress.getProgres());
 
 }
 
@@ -404,7 +404,7 @@ void Main::disposeScene() {
 	delete levelBuilder;
 	levelBuilder = nullptr;
 
-	loadingState.reset(4);
+	loadingProgress.reset(4);
 }
 
 void Main::control(const float timeStep) const {

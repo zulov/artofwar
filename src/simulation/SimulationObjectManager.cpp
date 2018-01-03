@@ -8,7 +8,6 @@ SimulationObjectManager::SimulationObjectManager() {
 	units = new std::vector<Unit*>();
 	buildings = new std::vector<Building*>();
 	resources = new std::vector<ResourceEntity*>();
-	toDispose = new std::vector<Physical*>();
 
 	buildingsToAdd = new std::vector<Building*>();
 	resourcesToAdd = new std::vector<ResourceEntity*>();
@@ -16,7 +15,7 @@ SimulationObjectManager::SimulationObjectManager() {
 	units->reserve(10000);
 	buildings->reserve(1000);
 	resources->reserve(1000);
-	toDispose->reserve(1000);
+	toDispose.reserve(200);
 
 	simulationInfo = new SimulationInfo();
 }
@@ -26,7 +25,6 @@ SimulationObjectManager::~SimulationObjectManager() {
 	clear_and_delete_vector(units);
 	clear_and_delete_vector(buildings);
 	clear_and_delete_vector(resources);
-	delete toDispose;
 
 	delete buildingsToAdd;
 	delete resourcesToAdd;
@@ -149,7 +147,7 @@ void SimulationObjectManager::updateResource() {
 
 bool SimulationObjectManager::shouldDelete(Physical* physical) {
 	if (!physical->isAlive()) {
-		toDispose->push_back(physical);
+		toDispose.push_back(physical);
 		return true;
 	}
 	physical->clean();
@@ -162,7 +160,7 @@ void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
 }
 
 void SimulationObjectManager::dispose() {
-	if (!toDispose->empty()) {
+	if (!toDispose.empty()) {
 		clear_vector(toDispose);
 	}
 	simulationInfo->reset();
