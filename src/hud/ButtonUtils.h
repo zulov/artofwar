@@ -38,7 +38,18 @@ static void setTextureToSprite(MySprite* sprite, Texture2D* texture) {
 
 	sprite->SetSize(textureWidth, textureHeight);
 	Vector2 perHotSpot = sprite->getPercentHotSpot();
+	sprite->SetFullImageRect();
+	sprite->SetHotSpot(textureWidth * perHotSpot.x_, textureHeight * perHotSpot.y_);
+}
 
+static void setExactTextureToSprite(MySprite* sprite, Texture2D* texture) {
+	sprite->SetTexture(texture);
+	const int textureWidth = texture->GetWidth();
+	const int textureHeight = texture->GetHeight();
+	
+	sprite->SetSize(textureWidth, textureHeight);
+	Vector2 perHotSpot = sprite->getPercentHotSpot();
+	sprite->SetFullImageRect();
 	sprite->SetHotSpot(textureWidth * perHotSpot.x_, textureHeight * perHotSpot.y_);
 }
 

@@ -2,6 +2,8 @@
 #include "database/DatabaseCache.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include "hud/ButtonUtils.h"
+#include <Urho3D/Resource/Image.h>
 
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
@@ -27,6 +29,34 @@ std::vector<Button*>& SelectedHudPanel::getButtonsSelectedToSubscribe() {
 	return buttons;
 }
 
+void SelectedHudPanel::prepareTexture(int size, IntVector2 spriteSize, ObjectType type, std::vector<Texture2D*>& vector) {
+	vector.reserve(size);
+	for (int i = 0; i < size; ++i) {
+		String name = getIconName(type, i);
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
+		Image* image = Game::get()->getCache()->GetResource<Image>("textures/hud/icon/" + name);
+
+		const int textureWidth = texture->GetWidth();
+		const int textureHeight = texture->GetHeight();
+
+		const float scaleX = spriteSize.x_ / (float)textureWidth;
+		const float scaleY = spriteSize.y_ / (float)textureHeight;
+
+		float scale;
+		if (scaleX < scaleY) {
+			scale = scaleX;
+		} else {
+			scale = scaleY;
+		}
+		
+		image->Resize(textureWidth * scale, textureHeight * scale);
+		Texture2D* newTexture = new Texture2D(context_);
+		newTexture->SetData(image);
+
+		vector.push_back(newTexture);
+	}
+}
+
 void SelectedHudPanel::createBody() {
 	createRows();
 
@@ -34,10 +64,15 @@ void SelectedHudPanel::createBody() {
 		window->
 		GetLayoutBorder().right_;
 	int space = window->GetSize().x_ - border;
+	DatabaseCache* cache = Game::get()->getDatabaseCache();
 
-	int size = iconSize();
+	MySprite* temp = createEmptySprite(style, "SmallSprite");
+	IntVector2 spriteSize = temp->getMySize();
 
-	maxInRow = space / size;
+	prepareTexture(cache->getUnitSize(), spriteSize, UNIT, texturesUnits);
+	prepareTexture(cache->getBuildingSize(), spriteSize, BUILDING, texturesBuildings);
+	prepareTexture(cache->getResourceSize(), spriteSize, RESOURCE, texturesResources);
+	maxInRow = space / iconSize();
 
 	elements = new SelectedHudElement*[LINES_IN_SELECTION * maxInRow];
 
@@ -55,6 +90,7 @@ void SelectedHudPanel::createBody() {
 	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
 		buttons.push_back(elements[i]->getButton());
 	}
+	temp->Remove();
 }
 
 int SelectedHudPanel::iconSize() {
@@ -99,17 +135,19 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 	int selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
 	int ratio = all / (LINES_IN_SELECTION * maxInRow - selectedSubTypeNumber + 2) + 1;
 	int k = 0;
-	for (auto & infoType : infoTypes) {
+	for (auto& infoType : infoTypes) {
 		std::vector<Physical*>& data = infoType->getData();
 		if (data.empty()) { continue; }
 		String name = getIconName(type, infoType->getId());
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
+		
 		for (int j = 0; j < data.size(); j += ratio) {
 			int max = Min(data.size(), j + ratio);
 			int diff = max - j;
 
 			elements[k]->add(data, j, max);
 			elements[k]->show();
+			//elements[k]->setTexture(texturesUnits.at(infoType->getId()));
 			elements[k]->setTexture(texture);
 
 			if (diff > 1) {
