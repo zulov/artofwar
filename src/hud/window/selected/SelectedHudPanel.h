@@ -27,9 +27,6 @@ private:
 	short LINES_IN_SELECTION = 4;
 	static String getIconName(ObjectType index, int i);
 	std::vector<Button*> buttons;
-	std::vector<Texture2D*> texturesUnits;
-	std::vector<Texture2D*> texturesBuildings;
-	std::vector<Texture2D*> texturesResources;
 	SelectedHudElement** elements;
 	UIElement **rows;
 };

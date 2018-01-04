@@ -64,14 +64,7 @@ void SelectedHudPanel::createBody() {
 		window->
 		GetLayoutBorder().right_;
 	int space = window->GetSize().x_ - border;
-	DatabaseCache* cache = Game::get()->getDatabaseCache();
 
-	MySprite* temp = createEmptySprite(style, "SmallSprite");
-	IntVector2 spriteSize = temp->getMySize();
-
-	prepareTexture(cache->getUnitSize(), spriteSize, UNIT, texturesUnits);
-	prepareTexture(cache->getBuildingSize(), spriteSize, BUILDING, texturesBuildings);
-	prepareTexture(cache->getResourceSize(), spriteSize, RESOURCE, texturesResources);
 	maxInRow = space / iconSize();
 
 	elements = new SelectedHudElement*[LINES_IN_SELECTION * maxInRow];
@@ -90,7 +83,6 @@ void SelectedHudPanel::createBody() {
 	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
 		buttons.push_back(elements[i]->getButton());
 	}
-	temp->Remove();
 }
 
 int SelectedHudPanel::iconSize() {
@@ -147,7 +139,6 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 
 			elements[k]->add(data, j, max);
 			elements[k]->show();
-			//elements[k]->setTexture(texturesUnits.at(infoType->getId()));
 			elements[k]->setTexture(texture);
 
 			if (diff > 1) {
