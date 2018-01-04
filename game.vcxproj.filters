@@ -210,6 +210,8 @@
     <ClCompile Include="src\objects\Physical.cpp">
       <Filter>objects</Filter>
     </ClCompile>
+    <ClCompile Include="src\hud\window\main_menu\MainMenuPanel.cpp" />
+    <ClCompile Include="src\hud\window\main_menu\MainMenuDetailsPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -463,6 +465,8 @@
     <ClInclude Include="src\commands\action\ActionCommandList.h">
       <Filter>command\list</Filter>
     </ClInclude>
+    <ClInclude Include="src\hud\window\main_menu\MainMenuPanel.h" />
+    <ClInclude Include="src\hud\window\main_menu\MainMenuDetailsPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

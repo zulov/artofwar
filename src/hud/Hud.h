@@ -21,6 +21,7 @@
 #include "window/in_game_menu/InGameMenuPanel.h"
 #include "xml/rapidxml_print.hpp"
 
+class MainMenuPanel;
 using namespace Urho3D;
 
 class Hud :public Urho3D::Object
@@ -74,6 +75,7 @@ private:
 	QueuePanel* queuePanel;
 	LoadingPanel* loadingPanel;
 	InGameMenuPanel* inGameMenuPanel;
+	MainMenuPanel* mainMenuPanel;
 
 	std::vector<AbstractWindowPanel*> panels;
 

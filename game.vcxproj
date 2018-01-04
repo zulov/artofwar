@@ -187,6 +187,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\hud\window\main_menu\MainMenuDetailsPanel.cpp" />
+    <ClCompile Include="src\hud\window\main_menu\MainMenuPanel.cpp" />
     <ClCompile Include="src\camera\TopCameraBehave.cpp" />
     <ClCompile Include="src\hud\window\middle\AbstractMiddlePanel.cpp" />
     <ClCompile Include="src\hud\window\in_game_menu\InGameMenuPanel.cpp" />
@@ -278,6 +280,8 @@
     <ClCompile Include="src\hud\window\units\UnitsPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\hud\window\main_menu\MainMenuDetailsPanel.h" />
+    <ClInclude Include="src\hud\window\main_menu\MainMenuPanel.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\camera\TopCameraBehave.h" />
     <ClInclude Include="src\commands\AbstractCommand.h" />

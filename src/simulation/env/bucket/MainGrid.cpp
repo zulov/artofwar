@@ -149,7 +149,7 @@ IntVector2 MainGrid::calculateSize(int size) {
 void MainGrid::addStatic(Static* object) {
 	if (validateAdd(object)) {
 		IntVector2 size = object->getGridSize();
-		//Vector3* pos = object->getPosition();
+
 		IntVector2 bucketPos = object->getBucketPosition();
 		short iX = bucketPos.x_;
 		short iZ = bucketPos.y_;
@@ -158,7 +158,6 @@ void MainGrid::addStatic(Static* object) {
 
 		IntVector2 sizeX = calculateSize(size.x_);
 		IntVector2 sizeZ = calculateSize(size.y_);
-
 
 		for (int i = iX + sizeX.x_; i < iX + sizeX.y_; ++i) {
 			for (int j = iZ + sizeZ.x_; j < iZ + sizeZ.y_; ++j) {

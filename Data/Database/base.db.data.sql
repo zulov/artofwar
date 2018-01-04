@@ -110,7 +110,8 @@ top.xml
 loading.xml
 selected.xml
 queue.xml
-left.xml',0,140.0,1.0);
+left.xml
+main_menu.xml',0,140.0,1.0);
 INSERT INTO `cost_unit` (id,resource,value,unit) VALUES (0,0,90,3),
  (1,1,120,0),
  (2,0,80,1),

@@ -13,6 +13,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <iostream>
 #include <Urho3D/UI/UIEvents.h>
+#include "window/main_menu/MainMenuPanel.h"
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {
@@ -76,6 +77,7 @@ void Hud::createMyPanels() {
 	panels.push_back(queuePanel = new QueuePanel(style));
 	panels.push_back(loadingPanel = new LoadingPanel(style));
 	panels.push_back(inGameMenuPanel = new InGameMenuPanel(style));
+	panels.push_back(mainMenuPanel = new MainMenuPanel(style));
 
 	menuPanel->createWindow();
 	buildPanel->createWindow();
@@ -88,6 +90,7 @@ void Hud::createMyPanels() {
 	queuePanel->createWindow();
 	loadingPanel->createWindow();
 	inGameMenuPanel->createWindow();
+	mainMenuPanel->createWindow();
 
 	for (auto panel : panels) {
 		panel->setVisible(false);
