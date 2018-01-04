@@ -11,8 +11,8 @@
 #include <Urho3D/Resource/ResourceCache.h>
 
 
-
 LevelBuilder::LevelBuilder() {
+	objectManager = new SceneObjectManager();
 	scene = new Scene(Game::get()->getContext());
 
 	scene->CreateComponent<Octree>();
@@ -20,6 +20,7 @@ LevelBuilder::LevelBuilder() {
 }
 
 LevelBuilder::~LevelBuilder() {
+	delete objectManager;
 	scene->RemoveAllChildren();
 	scene->Clear();
 	scene->Remove();
@@ -35,9 +36,9 @@ void LevelBuilder::createScene(SceneLoader& loader) {
 	Entity* light = createLight(Vector3(0.6f, -1.0f, 0.8f), Color(0.7f, 0.6f, 0.6f), LIGHT_DIRECTIONAL);
 	Entity* ground = createGround(map->height_map, map->texture, map->scale_hor, map->scale_ver);
 
-	objectManager.add(zone);
-	objectManager.add(light);
-	objectManager.add(ground);
+	objectManager->add(zone);
+	objectManager->add(light);
+	objectManager->add(ground);
 }
 
 Terrain* LevelBuilder::getTerrian() {

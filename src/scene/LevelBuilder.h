@@ -25,6 +25,6 @@ private:
 	Entity* createLight(Vector3 direction, Color color, LightType lightType);
 	Entity* createGround(String heightMap, String texture, float horScale, float verScale);
 
-	SceneObjectManager objectManager;
+	SceneObjectManager *objectManager;
 	Terrain* terrain;
 };

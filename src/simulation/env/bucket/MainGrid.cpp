@@ -163,10 +163,11 @@ void MainGrid::addStatic(Static* object) {
 		for (int i = iX + sizeX.x_; i < iX + sizeX.y_; ++i) {
 			for (int j = iZ + sizeZ.x_; j < iZ + sizeZ.y_; ++j) {
 				const int index = getIndex(i, j);
+				std::cout << index << ";";
 				complexData[index].setStatic(object);
 			}
 		}
-
+		std::cout << std::endl;
 		for (int i = iX + sizeX.x_ - 1; i < iX + sizeX.y_ + 1; ++i) {
 			for (int j = iZ + sizeZ.x_ - 1; j < iZ + sizeZ.y_ + 1; ++j) {
 				const int index = getIndex(i, j);

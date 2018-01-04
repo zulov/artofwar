@@ -16,6 +16,10 @@ ComplexBucketData::ComplexBucketData() {
 	neighbour.reserve(8);
 }
 
+ComplexBucketData::ComplexBucketData(const ComplexBucketData& obj) {
+	int a = 5;
+}
+
 
 ComplexBucketData::~ComplexBucketData() {
 	if (box) {

@@ -44,8 +44,8 @@ public:
 	Vector3* getValidPosition(const IntVector2& size, const IntVector2& bucketCords);
 private:
 	MainGrid mainGrid;
-	Grid obstacleGrid;
 	Grid resourceGrid;
+	Grid obstacleGrid;
 	Grid teamUnitGrid[MAX_PLAYERS];
 
 	Terrain* terrian;

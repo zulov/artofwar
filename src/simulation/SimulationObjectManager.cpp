@@ -129,7 +129,7 @@ void SimulationObjectManager::updateUnits() {
 void SimulationObjectManager::updateBuilding() {
 	addAll(buildingsTemp);
 	if (!buildingsTemp->empty()) {
-		simulationInfo->setAmountBuildingChanged();
+		
 		Game::get()->getEnviroment()->update(buildingsToAdd);
 		buildingsToAdd->clear();
 		simulationInfo->setAmountBuildingChanged();
