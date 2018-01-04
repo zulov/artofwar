@@ -370,7 +370,6 @@
     <ClInclude Include="src\simulation\env\bucket\MainGrid.h" />
     <ClInclude Include="src\simulation\env\ContentInfo.h" />
     <ClInclude Include="src\simulation\SimulationInfo.h" />
-    <ClInclude Include="src\SpacingType.h" />
     <ClInclude Include="src\objects\unit\state\State.h" />
     <ClInclude Include="src\objects\unit\state\StateManager.h" />
     <ClInclude Include="src\objects\unit\state\StopState.h" />

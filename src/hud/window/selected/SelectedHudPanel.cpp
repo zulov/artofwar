@@ -29,34 +29,6 @@ std::vector<Button*>& SelectedHudPanel::getButtonsSelectedToSubscribe() {
 	return buttons;
 }
 
-void SelectedHudPanel::prepareTexture(int size, IntVector2 spriteSize, ObjectType type, std::vector<Texture2D*>& vector) {
-	vector.reserve(size);
-	for (int i = 0; i < size; ++i) {
-		String name = getIconName(type, i);
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
-		Image* image = Game::get()->getCache()->GetResource<Image>("textures/hud/icon/" + name);
-
-		const int textureWidth = texture->GetWidth();
-		const int textureHeight = texture->GetHeight();
-
-		const float scaleX = spriteSize.x_ / (float)textureWidth;
-		const float scaleY = spriteSize.y_ / (float)textureHeight;
-
-		float scale;
-		if (scaleX < scaleY) {
-			scale = scaleX;
-		} else {
-			scale = scaleY;
-		}
-		
-		image->Resize(textureWidth * scale, textureHeight * scale);
-		Texture2D* newTexture = new Texture2D(context_);
-		newTexture->SetData(image);
-
-		vector.push_back(newTexture);
-	}
-}
-
 void SelectedHudPanel::createBody() {
 	createRows();
 

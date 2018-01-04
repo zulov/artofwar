@@ -25,9 +25,6 @@ Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _simCommand
 }
 
 Simulation::~Simulation() {
-	std::cout << accumulateTime << endl;
-	std::cout << currentFrameNumber << endl;
-
 	delete aimContainer;
 	delete simulationInfo;
 	delete actionCommandList;
