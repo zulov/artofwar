@@ -1,7 +1,7 @@
 #pragma once
 #include "hud/HudElement.h"
 #include "hud/window/AbstractWindowPanel.h"
-#include "hud/window/middle/AbstractMiddlePanel.h"
+#include "middle/AbstractMiddlePanel.h"
 #include <Urho3D/UI/Button.h>
 #include <vector>
 

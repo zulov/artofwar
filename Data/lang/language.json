@@ -20,5 +20,21 @@
 	},
 	"save":{
 		"pl":"Zapisz"
+	},
+	"menu_0":{
+		"pl":"Nowa Gra"
+	},
+	"menu_1":{
+		"pl":"Wczytaj"
+	},
+	"menu_2":{
+		"pl":"Ustawienia"
+	},
+	"menu_3":{
+		"pl":"Pomoc"
+	},
+	"menu_4":{
+		"pl":"Wyjście"
 	}
+	
 }

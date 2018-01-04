@@ -5,7 +5,7 @@
 #include "hud/ButtonUtils.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/Text.h>
-#include "hud/window/middle/FilePanel.h"
+#include "middle/FilePanel.h"
 #include <Urho3D/UI/UIEvents.h>
 #include "utils.h"
 
@@ -63,7 +63,6 @@ void InGameMenuPanel::createBody() {
 	toggleButton = simpleButton(sprite, style, "InGameToggledButton");
 	Game::get()->getUI()->GetRoot()->AddChild(toggleButton);
 	SubscribeToEvent(toggleButton, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleToggle));
-
 
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		Texture2D* texture2 = Game::get()->getCache()->GetResource<Texture2D

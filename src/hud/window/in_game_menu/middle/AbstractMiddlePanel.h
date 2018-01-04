@@ -1,7 +1,7 @@
 #pragma once
-#include "../AbstractWindowPanel.h"
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/Text.h>
+#include "hud/window/AbstractWindowPanel.h"
 
 #define MIDDLE_LIST_ROW_NUMBER 3
 

@@ -14,8 +14,8 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/IO/FileSystem.h>
 #include <Urho3D/Resource/Localization.h>
-#include "hud/window/middle/FileFormData.h"
 #include "commands/creation/CreationCommandList.h"
+#include "hud/window/in_game_menu/middle/FileFormData.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
