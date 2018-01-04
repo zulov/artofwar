@@ -30,6 +30,9 @@ Building::Building(Vector3* _position, int id, int player):target(*_position) , 
 	staticModel->SetModel(model);
 	staticModel->SetMaterial(material);
 
+	setPlayer(player);
+	setTeam(player);
+
 	initBillbords();
 
 }
