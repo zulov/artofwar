@@ -3,6 +3,7 @@
 
 MainMenuDetailsPanel::MainMenuDetailsPanel(Urho3D::XMLFile* _style, Urho3D::String _title): AbstractWindowPanel(_style) {
 	styleName = "MainMenuDetailsWindow";
+	bodyStyle = "MainMenuMock";
 	msg = _title;
 }
 
@@ -15,5 +16,5 @@ void MainMenuDetailsPanel::createBody() {
 	title->SetText(msg);
 
 	body = window->CreateChild<Urho3D::UIElement>();
-	body->SetStyle("MainMenuMock", style);
+	body->SetStyle(bodyStyle, style);
 }

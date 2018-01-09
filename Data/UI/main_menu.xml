@@ -58,4 +58,43 @@
 		<attribute name="Layout Spacing" value="{spaceY}" />
 	</element>
 	
+	<element type="MainMenuHelpMock" style="MainMenuMock">
+		<attribute name="Layout Mode" value="Horizontal" />
+	</element>
+	
+	<element type="HelpList" style="ListView" >
+	
+		<attribute name="Min Size" value="{iconX*4} {bigY/2}" />
+        <attribute name="Max Size" value="{iconX*4} {bigY-iconY*4}" />
+
+		<attribute name="Horiz Alignment" value="Left" />
+		<attribute name="Vert Alignment" value="Center" />
+		<attribute name="Position" value="{iconX} 0"/>
+	</element>
+	
+	<element type="HelpContent" style="ScrollView" >
+		<attribute name="Min Size" value="{bigX-iconX*4} {bigY-iconY*4}" />
+        <attribute name="Max Size" value="{bigX-iconX*4} {bigY-iconY*4}" />
+		<attribute name="Horiz Alignment" value="Right" />
+		<attribute name="Vert Alignment" value="Center" />
+		<attribute name="Position" value="{-iconX} 0"/>
+	</element>
+	
+	<element type="HelpContentText" style="MyText" >
+		<attribute name="Word Wrap" value="true" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Vert Alignment" value="Center" />
+	</element>
+	
+	<element type="HelpListButton" style="Button" >
+		<attribute name="Min Size" value="{iconX*2} {iconY*2/3}"/>
+		<attribute name="Max Size" value="{iconX*4} {iconY*2/3}"/>
+	</element>
+	
+	<element type="HelpListText" style="MyText" >
+		<attribute name="Font Size" value="{fontSize}" />
+		<attribute name="Vert Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Center" />
+	</element>
+	
 </elements>

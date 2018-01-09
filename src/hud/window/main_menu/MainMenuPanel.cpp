@@ -1,9 +1,11 @@
 #include "MainMenuPanel.h"
 #include "hud/MySprite.h"
 #include "hud/ButtonUtils.h"
+#include "help/MainMenuHelpPanel.h"
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
+
 
 
 MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
@@ -47,7 +49,7 @@ void MainMenuPanel::createBody() {
 	detailsPanels[0] = new MainMenuDetailsPanel(style, l10n->Get("menu_0"));
 	detailsPanels[1] = new MainMenuDetailsPanel(style, l10n->Get("menu_1"));
 	detailsPanels[2] = new MainMenuDetailsPanel(style, l10n->Get("menu_2"));
-	detailsPanels[3] = new MainMenuDetailsPanel(style, l10n->Get("menu_3"));
+	detailsPanels[3] = new MainMenuHelpPanel(style, l10n->Get("menu_3"));
 	detailsPanels[4] = new MainMenuDetailsPanel(style, l10n->Get("menu_4"));
 	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {	
 		detailsPanels[i]->createWindow();

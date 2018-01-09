@@ -18,6 +18,7 @@ protected:
 	Urho3D::XMLFile* style;
 	Urho3D::Window * window;
 	Urho3D::String styleName;
+	Urho3D::String bodyStyle;
 private:
 	virtual void createBody()=0;
 };

@@ -187,6 +187,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\hud\window\main_menu\help\MainMenuHelpPanel.cpp" />
     <ClCompile Include="src\hud\window\main_menu\MainMenuDetailsPanel.cpp" />
     <ClCompile Include="src\hud\window\main_menu\MainMenuPanel.cpp" />
     <ClCompile Include="src\camera\TopCameraBehave.cpp" />
@@ -280,6 +281,7 @@
     <ClCompile Include="src\hud\window\units\UnitsPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\hud\window\main_menu\help\MainMenuHelpPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\MainMenuDetailsPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\MainMenuPanel.h" />
     <ClInclude Include="resource.h" />

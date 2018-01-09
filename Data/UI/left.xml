@@ -1,7 +1,5 @@
 <elements>
 
-
-	
 	<element type="LeftWindow" style="MyWindow">
 		<attribute name="Vert Alignment" value="Bottom" />
 		<attribute name="Horiz Alignment" value="Left" />

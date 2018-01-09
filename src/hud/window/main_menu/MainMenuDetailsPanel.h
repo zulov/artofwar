@@ -10,8 +10,8 @@ public:
 protected:
 	Urho3D::UIElement * body;
 
-private:
 	void createBody() override;
+private:
 	Urho3D::Text* title;
 	Urho3D::String msg;
 };
