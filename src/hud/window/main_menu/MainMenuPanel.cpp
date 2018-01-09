@@ -12,17 +12,48 @@ MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_styl
 
 
 MainMenuPanel::~MainMenuPanel() {
-	delete detailsPanel;
+	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {
+		delete detailsPanels[i];
+	}
+	delete[] detailsPanels;
+}
+
+void MainMenuPanel::action(short id) {
+	close();
+
+	detailsPanels[id]->setVisible(true);
+}
+
+void MainMenuPanel::close() {
+	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {
+		detailsPanels[i]->setVisible(false);
+	}
 }
 
 void MainMenuPanel::setVisible(bool enable) {
 	AbstractWindowPanel::setVisible(enable);
-	detailsPanel->setVisible(enable);
+}
+
+void MainMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventData) {
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
+
+	action(hudElement->getId());
 }
 
 void MainMenuPanel::createBody() {
-	detailsPanel = new MainMenuDetailsPanel(style);
-	detailsPanel->createWindow();
+	detailsPanels = new MainMenuDetailsPanel*[MAIN_MENU_BUTTON_NUMBER];
+	Localization* l10n = Game::get()->getLocalization();
+	detailsPanels[0] = new MainMenuDetailsPanel(style, l10n->Get("menu_0"));
+	detailsPanels[1] = new MainMenuDetailsPanel(style, l10n->Get("menu_1"));
+	detailsPanels[2] = new MainMenuDetailsPanel(style, l10n->Get("menu_2"));
+	detailsPanels[3] = new MainMenuDetailsPanel(style, l10n->Get("menu_3"));
+	detailsPanels[4] = new MainMenuDetailsPanel(style, l10n->Get("menu_4"));
+	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {	
+		detailsPanels[i]->createWindow();
+		detailsPanels[i]->setVisible(false);
+	}
+
 
 	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {
 		Texture2D* texture2 = Game::get()->getCache()->GetResource<Texture2D
@@ -31,7 +62,7 @@ void MainMenuPanel::createBody() {
 		MySprite* sprite2 = createSprite(texture2, style, "MainMenuSprite");
 		Button* button = simpleButton(sprite2, style, "MainMenuButton");
 		Text* text = button->CreateChild<Text>();
-		String msg = Game::get()->getLocalization()->Get("menu_" + String(i));
+		String msg = l10n->Get("menu_" + String(i));
 		text->SetText(msg);
 		text->SetStyle("MainMenuText", style);
 
@@ -41,6 +72,6 @@ void MainMenuPanel::createBody() {
 
 		button->SetVar("HudElement", hudElement);
 		window->AddChild(button);
-		//SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleButtonClick));
+		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(MainMenuPanel, HandleButtonClick));
 	}
 }
