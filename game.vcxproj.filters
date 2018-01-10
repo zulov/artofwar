@@ -213,6 +213,7 @@
     <ClCompile Include="src\hud\window\in_game_menu\middle\AbstractMiddlePanel.cpp" />
     <ClCompile Include="src\hud\window\in_game_menu\middle\FilePanel.cpp" />
     <ClCompile Include="src\hud\window\main_menu\help\MainMenuHelpPanel.cpp" />
+    <ClCompile Include="src\hud\window\main_menu\new_game\MainMenuNewGamePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -469,6 +470,7 @@
     <ClInclude Include="src\hud\window\in_game_menu\middle\FileFormData.h" />
     <ClInclude Include="src\hud\window\in_game_menu\middle\FilePanel.h" />
     <ClInclude Include="src\hud\window\main_menu\help\MainMenuHelpPanel.h" />
+    <ClInclude Include="src\hud\window\main_menu\new_game\MainMenuNewGamePanel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

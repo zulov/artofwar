@@ -2,10 +2,10 @@
 #include "hud/MySprite.h"
 #include "hud/ButtonUtils.h"
 #include "help/MainMenuHelpPanel.h"
+#include "new_game/MainMenuNewGamePanel.h"
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
-
 
 
 MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
@@ -46,7 +46,7 @@ void MainMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventDat
 void MainMenuPanel::createBody() {
 	detailsPanels = new MainMenuDetailsPanel*[MAIN_MENU_BUTTON_NUMBER];
 	Localization* l10n = Game::get()->getLocalization();
-	detailsPanels[0] = new MainMenuDetailsPanel(style, l10n->Get("menu_0"));
+	detailsPanels[0] = new MainMenuNewGamePanel(style, l10n->Get("menu_0"));
 	detailsPanels[1] = new MainMenuDetailsPanel(style, l10n->Get("menu_1"));
 	detailsPanels[2] = new MainMenuDetailsPanel(style, l10n->Get("menu_2"));
 	detailsPanels[3] = new MainMenuHelpPanel(style, l10n->Get("menu_3"));

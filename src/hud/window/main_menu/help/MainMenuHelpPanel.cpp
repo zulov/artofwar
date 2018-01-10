@@ -19,7 +19,8 @@ void MainMenuHelpPanel::createBody() {
 	for (int i = 0; i < HELP_ITEMS; ++i) {
 
 		Button* button = simpleButton(nullptr, style, "HelpListButton");
-		Urho3D::Text* element = new Urho3D::Text(Game::get()->getContext());
+		Urho3D::Text* element = button->CreateChild<Text>();
+
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setId(i, ENTITY);
 		element->SetText(Game::get()->getLocalization()->Get("help_key_" + String(i)));

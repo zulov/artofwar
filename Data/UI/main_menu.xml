@@ -61,6 +61,7 @@
 	<element type="MainMenuHelpMock" style="MainMenuMock">
 		<attribute name="Layout Mode" value="Horizontal" />
 	</element>
+
 	
 	<element type="HelpList" style="ListView" >
 	
@@ -96,5 +97,19 @@
 		<attribute name="Vert Alignment" value="Center" />
 		<attribute name="Horiz Alignment" value="Center" />
 	</element>
+	
+	<element type="MainMenuNewGameMock" style="MainMenuMock">
+		<attribute name="Layout Mode" value="Vertical" />
+	</element>
+	
+	<element type="MainMenuNewGameRow" style="BorderImage" >
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Min Size" value="{bigX/2} {iconY/2}"/>
+		<attribute name="Max Size" value="{bigX/2} {iconY}"/>
+		<attribute name="Image Rect" value="48 0 64 16" />
+		<attribute name="Border" value="4 4 4 4" />
+        <attribute name="Resize Border" value="4 4 4 4" />
+	</element>
+	
 	
 </elements>
