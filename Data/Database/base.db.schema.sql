@@ -1,6 +1,6 @@
 BEGIN TRANSACTION;
-CREATE TABLE "units" (
-	`id`	INTEGER, 
+CREATE TABLE IF NOT EXISTS `units` (
+	`id`	INTEGER,
 	`name`	TEXT,
 	`minDist`	REAL,
 	`maxSep`	REAL,
@@ -16,15 +16,15 @@ CREATE TABLE "units" (
 	`icon`	TEXT,
 	`actionState`	INTEGER,
 	PRIMARY KEY(`id`),
-	FOREIGN KEY(`type`) REFERENCES `unit_type`(`id`),
-	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)
+	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`),
+	FOREIGN KEY(`type`) REFERENCES `unit_type`(`id`)
 );
-CREATE TABLE "unit_type" (
+CREATE TABLE IF NOT EXISTS `unit_type` (
 	`id`	INTEGER,
 	`name`	TEXT,
 	PRIMARY KEY(`id`)
 );
-CREATE TABLE "resource" (
+CREATE TABLE IF NOT EXISTS `resource` (
 	`id`	INTEGER,
 	`name`	TEXT,
 	`icon`	TEXT,
@@ -34,34 +34,36 @@ CREATE TABLE "resource" (
 	`scale`	REAL,
 	`sizeX`	INTEGER,
 	`sizeZ`	INTEGER,
-	`maxUsers`	INTEGER, mini_map_color INTEGER,
+	`maxUsers`	INTEGER,
+	`mini_map_color`	INTEGER,
 	PRIMARY KEY(`id`)
 );
-CREATE TABLE `player_colors` (
+CREATE TABLE IF NOT EXISTS `player_colors` (
 	`id`	INTEGER,
 	`unit`	INTEGER,
 	`building`	INTEGER,
+	`name`	text,
 	PRIMARY KEY(`id`)
 );
-CREATE TABLE `orders_to_unit` (
+CREATE TABLE IF NOT EXISTS `orders_to_unit` (
 	`id`	INTEGER,
 	`unit`	INTEGER,
 	`order`	INTEGER,
-	PRIMARY KEY(`id`),
 	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
-	FOREIGN KEY(`order`) REFERENCES `orders`(`id`)
+	FOREIGN KEY(`order`) REFERENCES `orders`(`id`),
+	PRIMARY KEY(`id`)
 );
-CREATE TABLE `orders` (
+CREATE TABLE IF NOT EXISTS `orders` (
 	`id`	INTEGER,
 	`icon`	TEXT,
 	PRIMARY KEY(`id`)
 );
-CREATE TABLE `nation` (
+CREATE TABLE IF NOT EXISTS `nation` (
 	`id`	INTEGER,
 	`name`	TEXT,
 	PRIMARY KEY(`id`)
 );
-CREATE TABLE `map` (
+CREATE TABLE IF NOT EXISTS `map` (
 	`id`	INTEGER,
 	`height_map`	TEXT,
 	`texture`	TEXT,
@@ -69,19 +71,19 @@ CREATE TABLE `map` (
 	`scale_ver`	REAL,
 	PRIMARY KEY(`id`)
 );
-CREATE TABLE "hud_size_vars" (
+CREATE TABLE IF NOT EXISTS `hud_size_vars` (
 	`id`	INTEGER,
 	`hud_size`	INTEGER,
 	`name`	TEXT,
 	`value`	REAL,
 	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`)
 );
-CREATE TABLE "hud_size" (
+CREATE TABLE IF NOT EXISTS `hud_size` (
 	`id`	INTEGER,
 	`name`	TEXT,
 	PRIMARY KEY(`id`)
 );
-CREATE TABLE "graph_settings" (
+CREATE TABLE IF NOT EXISTS `graph_settings` (
 	`id`	INTEGER,
 	`hud_size`	INTEGER,
 	`res_x`	INTEGER,
@@ -90,10 +92,10 @@ CREATE TABLE "graph_settings" (
 	`fullscreen`	INTEGER,
 	`max_fps`	REAL,
 	`min_fps`	REAL,
-	PRIMARY KEY(`id`),
-	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`)
+	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`),
+	PRIMARY KEY(`id`)
 );
-CREATE TABLE "cost_unit" (
+CREATE TABLE IF NOT EXISTS `cost_unit` (
 	`id`	INTEGER,
 	`resource`	INTEGER,
 	`value`	INTEGER,
@@ -102,29 +104,29 @@ CREATE TABLE "cost_unit" (
 	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
 	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
 );
-CREATE TABLE `cost_building` (
+CREATE TABLE IF NOT EXISTS `cost_building` (
 	`id`	INTEGER,
 	`resource`	INTEGER,
 	`value`	INTEGER,
 	`building`	INTEGER,
+	FOREIGN KEY(`building`) REFERENCES `building`(`id`),
 	PRIMARY KEY(`id`),
-	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
-	FOREIGN KEY(`building`) REFERENCES `building`(`id`)
+	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`)
 );
-CREATE TABLE `building_type` (
+CREATE TABLE IF NOT EXISTS `building_type` (
 	`id`	INTEGER,
 	`name`	TEXT,
 	PRIMARY KEY(`id`)
 );
-CREATE TABLE `building_to_unit` (
+CREATE TABLE IF NOT EXISTS `building_to_unit` (
 	`id`	INTEGER,
 	`building`	INTEGER,
 	`unit`	INTEGER,
-	PRIMARY KEY(`id`),
 	FOREIGN KEY(`building`) REFERENCES `building`(`id`),
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
+	PRIMARY KEY(`id`)
 );
-CREATE TABLE "building" (
+CREATE TABLE IF NOT EXISTS `building` (
 	`id`	INTEGER,
 	`name`	TEXT,
 	`sizeX`	INTEGER,
@@ -136,7 +138,7 @@ CREATE TABLE "building" (
 	`scale`	REAL,
 	`texture_temp`	TEXT,
 	`nation`	INTEGER,
-	`icon`	TEXT, 
+	`icon`	TEXT,
 	`queue_max_capacity`	INTEGER,
 	PRIMARY KEY(`id`),
 	FOREIGN KEY(`type`) REFERENCES `building_type`(`id`),

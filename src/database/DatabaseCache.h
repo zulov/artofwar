@@ -33,6 +33,7 @@ public:
 	int getOrdersSize();
 	int getMapSize();
 	int getPlayerColorsSize();
+	int getNationSize();
 
 
 private:

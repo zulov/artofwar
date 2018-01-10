@@ -104,6 +104,8 @@
 	
 	<element type="MainMenuNewGameRow" style="BorderImage" >
 		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Layout Mode" value="Horizontal" />
+        <attribute name="Layout Spacing" value="{spaceX}" />
 		<attribute name="Min Size" value="{bigX/2} {iconY/2}"/>
 		<attribute name="Max Size" value="{bigX/2} {iconY}"/>
 		<attribute name="Image Rect" value="48 0 64 16" />
@@ -111,5 +113,15 @@
         <attribute name="Resize Border" value="4 4 4 4" />
 	</element>
 	
+	<element type="MainMenuNewGameDropDownList" style="DropDownList" >
+		<attribute name="Resize Popup" value="true" />
+		<attribute name="Min Size" value="{iconX*2} {iconY/2}"/>
+		<attribute name="Max Size" value="{iconX*2} {iconY/2}"/>
+	</element>
+	
+	<element type="MainMenuNewGameButton" style="Button">
+        <attribute name="Min Size" value="{iconX*3} {iconY}" />
+        <attribute name="Max Size" value="{iconX*3} {iconY}" />
+    </element>
 	
 </elements>

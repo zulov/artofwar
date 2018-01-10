@@ -135,7 +135,7 @@ int static loadMap(void* data, int argc, char** argv, char** azColName) {
 int static loadPlayerColors(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
-	xyz->playerColors[id] = new db_player_colors(id, fromHex(argv, 1), fromHex(argv, 2));
+	xyz->playerColors[id] = new db_player_colors(id, fromHex(argv, 1), fromHex(argv, 2), argv[3]);
 	xyz->player_colors_size++;
 	return 0;
 }
@@ -246,6 +246,10 @@ int DatabaseCache::getMapSize() {
 
 int DatabaseCache::getPlayerColorsSize() {
 	return dbContainer->player_colors_size;
+}
+
+int DatabaseCache::getNationSize() {
+	return dbContainer->nation_size;
 }
 
 std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) {

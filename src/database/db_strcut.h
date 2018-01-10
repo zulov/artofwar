@@ -36,7 +36,7 @@ struct db_unit
 	int actionState;
 
 	db_unit(int id, char* name, float minDist, float maxSep, char* model, char* texture, char* font,
-		float mass, float maxSpeed, float scale, int rotatable, int nation, char* icon, int actionState)
+	        float mass, float maxSpeed, float scale, int rotatable, int nation, char* icon, int actionState)
 		: id(id),
 		name(name),
 		minDist(minDist),
@@ -154,7 +154,7 @@ struct db_resource
 		scale(scale),
 		size(Urho3D::IntVector2(sizeX, sizeZ)),
 		maxUsers(maxUsers),
-		mini_map_color(mini_map_color){
+		mini_map_color(mini_map_color) {
 	}
 };
 
@@ -224,31 +224,32 @@ struct db_player_colors
 	int id;
 	unsigned unit;
 	unsigned building;
+	Urho3D::String name;
 
-
-	db_player_colors(int id, unsigned unit, unsigned building)
+	db_player_colors(int id, unsigned unit, unsigned building, char* name)
 		: id(id),
 		unit(unit),
-		building(building) {
+		building(building),
+		name(name) {
 	}
 };
 
 struct db_container
 {
-	db_unit* units[UNITS_NUMBER_DB] = { nullptr };
-	db_building* buildings[BULDINGS_NUMBER_DB] = { nullptr };
-	db_hud_size* hudSizes[HUD_SIZES_NUMBER_DB] = { nullptr };
-	db_graph_settings* graphSettings[GRAPH_SETTINGS_NUMBER_DB] = { nullptr };
-	db_nation* nations[NATION_NUMBER_DB] = { nullptr };
-	db_resource* resources[RESOURCE_NUMBER_DB] = { nullptr };
-	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB] = { nullptr };
+	db_unit* units[UNITS_NUMBER_DB] = {nullptr};
+	db_building* buildings[BULDINGS_NUMBER_DB] = {nullptr};
+	db_hud_size* hudSizes[HUD_SIZES_NUMBER_DB] = {nullptr};
+	db_graph_settings* graphSettings[GRAPH_SETTINGS_NUMBER_DB] = {nullptr};
+	db_nation* nations[NATION_NUMBER_DB] = {nullptr};
+	db_resource* resources[RESOURCE_NUMBER_DB] = {nullptr};
+	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB] = {nullptr};
 	std::vector<db_unit*>* unitsForBuilding[BULDINGS_NUMBER_DB]{};
 	std::vector<db_cost*>* costForBuilding[BULDINGS_NUMBER_DB]{};
 	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB]{};
 	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB]{};
-	db_order* orders[ORDERS_NUMBER_DB] = { nullptr };
-	db_map* maps[MAP_NUMBER_DB] = { nullptr };
-	db_player_colors* playerColors[PLAYER_COLORS_NUMBER_DB] = { nullptr };
+	db_order* orders[ORDERS_NUMBER_DB] = {nullptr};
+	db_map* maps[MAP_NUMBER_DB] = {nullptr};
+	db_player_colors* playerColors[PLAYER_COLORS_NUMBER_DB] = {nullptr};
 
 	int units_size = 0;
 	int hud_size_size = 0;
@@ -277,6 +278,6 @@ struct db_container
 			ordersToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 		}
 	}
-	~db_container() = default;
 
+	~db_container() = default;
 };

@@ -16,8 +16,8 @@ INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,sizeX,sizeZ
 tree1.xml','tree.mdl',1.0,3,3,3,'0xFF00B600'),
  (2,'food','food.png',100,'food.xml',NULL,0.5,2,2,3,'0xFF9000A7'),
  (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.5,2,2,4,'0xFF808080');
-INSERT INTO `player_colors` (id,unit,building) VALUES (0,'0xFFCF0000','0xFF900000'),
- (1,'0xFF0000CF','0xFF000090');
+INSERT INTO `player_colors` (id,unit,building,name) VALUES (0,'0xFFCF0000','0xFF900000','blue'),
+ (1,'0xFF0000CF','0xFF000090','red');
 INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
  (1,0,1),
  (2,0,3),
