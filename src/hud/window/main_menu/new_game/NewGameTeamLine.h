@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include <Urho3D/UI/Text.h>
+#include <Urho3D/Resource/ResourceCache.h>
 
 struct NewGameTeamLine
 {
@@ -41,6 +42,10 @@ struct NewGameTeamLine
 	void populateTeams(Urho3D::BorderImage* row) {
 		lineEdit = row->CreateChild<Urho3D::LineEdit>();
 		lineEdit->SetStyle("LineEdit", style);
+
+		Urho3D::JSONFile* names = Game::get()->getCache()->GetResource<Urho3D::JSONFile>("lang/names.json");
+		Urho3D::JSONArray namesArray = names->GetRoot().Get("player_names").GetArray();
+		lineEdit->SetText(namesArray.At(rand() % namesArray.Size()).GetCString());
 
 		team = createDropDownList(row);
 		addTextItem(team, "1");
