@@ -9,9 +9,10 @@ class MainMenuNewGamePanel:public MainMenuDetailsPanel
 {
 public:
 	MainMenuNewGamePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
-	void populateTeams(Urho3D::Localization* l10n, int index, Urho3D::String name);
 	~MainMenuNewGamePanel();
 private:
+	void populateTeams(Urho3D::Localization* l10n, int index);
+	void populateLabels(Urho3D::Localization* localization, int i, Urho3D::String name);
 	void createBody() override;
 
 	Urho3D::BorderImage * rows[NEW_GAME_ROWS_NUMBER];

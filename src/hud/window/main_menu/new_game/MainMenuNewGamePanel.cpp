@@ -2,6 +2,7 @@
 #include "Game.h"
 #include <Urho3D/UI/DropDownList.h>
 #include "database/DatabaseCache.h"
+#include <Urho3D/UI/LineEdit.h>
 
 
 MainMenuNewGamePanel::
@@ -17,21 +18,26 @@ void MainMenuNewGamePanel::createBody() {
 	}
 	Urho3D::Localization* l10n = Game::get()->getLocalization();
 
-	populateTeams(l10n, 0, "player");
-	populateTeams(l10n, 1, "enemy");
+
+	populateLabels(l10n, 0, "player");
+	populateLabels(l10n, 1, "enemy");
+	populateLabels(l10n, 2, "map_name");
+
+	populateTeams(l10n, 0);
+	populateTeams(l10n, 1);
 
 	proceed = body->CreateChild<Urho3D::Button>();
 	proceed->SetStyle("MainMenuNewGameButton");
 	Urho3D::Text* text = proceed->CreateChild<Urho3D::Text>();
-	text->SetStyle("MyText", style);
+	text->SetStyle("MainMenuNewGameButtonText", style);
 	text->SetText(l10n->Get("start"));
 }
 
 
-void MainMenuNewGamePanel::populateTeams(Urho3D::Localization* l10n, int index, Urho3D::String name) {
-	Urho3D::Text* text = rows[index]->CreateChild<Urho3D::Text>();
-	text->SetStyle("MyText", style);
-	text->SetText(l10n->Get(name));
+void MainMenuNewGamePanel::populateTeams(Urho3D::Localization* l10n, int index) {
+
+	Urho3D::LineEdit* lineEdit = rows[index]->CreateChild<Urho3D::LineEdit>();
+	lineEdit->SetStyle("LineEdit",style);
 
 	Urho3D::DropDownList* nation = rows[index]->CreateChild<Urho3D::DropDownList>();
 	nation->SetStyle("MainMenuNewGameDropDownList", style);
@@ -58,6 +64,12 @@ void MainMenuNewGamePanel::populateTeams(Urho3D::Localization* l10n, int index, 
 
 		color->AddItem(item);
 	}
+}
+
+void MainMenuNewGamePanel::populateLabels(Urho3D::Localization* l10n, int index, Urho3D::String name) {
+	Urho3D::Text* text = rows[index]->CreateChild<Urho3D::Text>();
+	text->SetStyle("MainMenuNewGameButtonLabel", style);
+	text->SetText(l10n->Get(name));
 }
 
 

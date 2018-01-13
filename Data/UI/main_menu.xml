@@ -123,5 +123,13 @@
         <attribute name="Min Size" value="{iconX*3} {iconY}" />
         <attribute name="Max Size" value="{iconX*3} {iconY}" />
     </element>
+	<element type="MainMenuNewGameButtonText" style="MyText">
+        <attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Vert Alignment" value="Center" />
+    </element>
+	
+	<element type="MainMenuNewGameButtonLabel" style="MyText">
+        <attribute name="Max Size" value="{iconX*3} {iconY}" />
+    </element>
 	
 </elements>
