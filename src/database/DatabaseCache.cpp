@@ -16,8 +16,8 @@ static unsigned fromHex(char** argv, int index) {
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
-	xyz->units[id] = new db_unit(id, argv[1], atof(argv[2]), atof(argv[3]), argv[5], argv[6], argv[7],
-	                             atof(argv[8]), atof(argv[9]), atof(argv[10]), atoi(argv[11]), atoi(argv[12]), argv[13],
+	xyz->units[id] = new db_unit(id, argv[1], atof(argv[2]), atof(argv[3]), argv[5], argv[6], atof(argv[8]),
+	                             atof(argv[9]), atof(argv[10]), atoi(argv[11]), atoi(argv[12]), argv[13],
 	                             atoi(argv[14]));
 	xyz->units_size++;
 	return 0;
@@ -44,7 +44,7 @@ int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
 	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), argv[5], argv[6],
-	                                     argv[7], atof(argv[8]), argv[9], atoi(argv[10]), argv[11], atoi(argv[12]));
+	                                     atof(argv[8]), argv[9], atoi(argv[10]), argv[11], atoi(argv[12]));
 	xyz->building_size++;
 	return 0;
 }

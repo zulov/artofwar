@@ -438,6 +438,7 @@
 		<attribute name="Font Size" value="{fontSize}" />
 		<attribute name="Color" value="0.85 0.85 0.85" />
 		<attribute name="Text Alignment" value="Left" />
+		<attribute name="Vert Alignment" value="Center" />
 	</element>
 	
 	<element type="MiniProgressBar" style="ProgressBar">

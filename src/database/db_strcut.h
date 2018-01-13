@@ -26,7 +26,6 @@ struct db_unit
 	float maxSep;
 	Urho3D::String model;
 	Urho3D::String texture;
-	Urho3D::String font;
 	float mass;
 	float maxSpeed;
 	float scale;
@@ -35,15 +34,14 @@ struct db_unit
 	Urho3D::String icon;
 	int actionState;
 
-	db_unit(int id, char* name, float minDist, float maxSep, char* model, char* texture, char* font,
-	        float mass, float maxSpeed, float scale, int rotatable, int nation, char* icon, int actionState)
+	db_unit(int id, char* name, float minDist, float maxSep, char* model, char* texture, 
+		float mass, float maxSpeed, float scale, int rotatable, int nation, char* icon, int actionState)
 		: id(id),
 		name(name),
 		minDist(minDist),
 		maxSep(maxSep),
 		model(model),
 		texture(texture),
-		font(font),
 		mass(mass),
 		maxSpeed(maxSpeed),
 		scale(scale),
@@ -62,21 +60,19 @@ struct db_building
 	int sizeZ;
 	Urho3D::String model;
 	Urho3D::String texture;
-	Urho3D::String font;
 	float scale;
 	Urho3D::String texture_temp;
 	int nation;
 	Urho3D::String icon;
 	short queueMaxCapacity;
 
-	db_building(int id, char* name, int sizeX, int sizeZ, char* model, char* texture, char* font, float scale,
+	db_building(int id, char* name, int sizeX, int sizeZ, char* model, char* texture, float scale,
 	            char* texture_temp, int nation, char* icon, int queueMaxCapacity)
 		: id(id),
 		name(name),
 		size(Urho3D::IntVector2(sizeX, sizeZ)),
 		model(model),
 		texture(texture),
-		font(font),
 		scale(scale),
 		texture_temp(texture_temp),
 		nation(nation),

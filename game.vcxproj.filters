@@ -471,6 +471,7 @@
     <ClInclude Include="src\hud\window\in_game_menu\middle\FilePanel.h" />
     <ClInclude Include="src\hud\window\main_menu\help\MainMenuHelpPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\new_game\MainMenuNewGamePanel.h" />
+    <ClInclude Include="src\hud\window\main_menu\new_game\NewGameTeamLine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
