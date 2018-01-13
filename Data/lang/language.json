@@ -92,6 +92,12 @@
 	},
 	"map_name":{
 		"pl":"Nazwa mapy:"
+	},
+	"difficulty":{
+		"pl":"Poziom trudności:"
+	},
+	"game_speed":{
+		"pl":"Prędkość gry:"
 	}
 	
 }

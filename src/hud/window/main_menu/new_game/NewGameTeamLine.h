@@ -12,36 +12,50 @@ struct NewGameTeamLine
 	Urho3D::LineEdit* lineEdit;
 	Urho3D::DropDownList* nation;
 	Urho3D::DropDownList* color;
+	Urho3D::DropDownList* team;
 
-	void populateTeams(Urho3D::Localization* l10n, Urho3D::BorderImage* row, Urho3D::XMLFile* style) {
+	Urho3D::XMLFile* style;
+	Urho3D::Localization* l10n;
 
+
+	NewGameTeamLine() = default;
+
+	void init(Urho3D::XMLFile* style, Urho3D::Localization* l10n) {
+		this->style = style;
+		this->l10n = l10n;
+	}
+
+	void addTextItem(Urho3D::DropDownList* cob, Urho3D::String str) {
+		Urho3D::Text* item = new Urho3D::Text(Game::get()->getContext());
+		item->SetStyle("MyText", style);
+		item->SetText(l10n->Get(str));
+		cob->AddItem(item);
+	}
+
+	Urho3D::DropDownList* createDropDownList(Urho3D::BorderImage* row) {
+		Urho3D::DropDownList* cob = row->CreateChild<Urho3D::DropDownList>();
+		cob->SetStyle("MainMenuNewGameDropDownList", style);
+		return cob;
+	}
+
+	void populateTeams(Urho3D::BorderImage* row) {
 		lineEdit = row->CreateChild<Urho3D::LineEdit>();
 		lineEdit->SetStyle("LineEdit", style);
 
-		nation = row->CreateChild<Urho3D::DropDownList>();
-		nation->SetStyle("MainMenuNewGameDropDownList", style);
+		team = createDropDownList(row);
+		addTextItem(team, "1");
+		addTextItem(team, "2");
+
+		nation = createDropDownList(row);
 		int size = Game::get()->getDatabaseCache()->getNationSize();
 		for (int i = 0; i < size; ++i) {
-			Urho3D::Text* item = new Urho3D::Text(Game::get()->getContext());
-			item->SetStyle("MyText", style);
-			item->SetText(
-			              l10n->Get(
-			                        "nation_" + Game::get()->getDatabaseCache()->getNation(i)->name
-			                       ));
-			nation->AddItem(item);
+			addTextItem(nation, "nation_" + Game::get()->getDatabaseCache()->getNation(i)->name);
 		}
-		color = row->CreateChild<Urho3D::DropDownList>();
-		color->SetStyle("MainMenuNewGameDropDownList", style);
+
+		color = createDropDownList(row);
 		int sizeColor = Game::get()->getDatabaseCache()->getPlayerColorsSize();
 		for (int i = 0; i < sizeColor; ++i) {
-			Urho3D::Text* item = new Urho3D::Text(Game::get()->getContext());
-			item->SetStyle("MyText", style);
-			item->SetText(
-			              l10n->Get(
-			                        "color_" + Game::get()->getDatabaseCache()->getPlayerColor(i)->name
-			                       ));
-
-			color->AddItem(item);
+			addTextItem(color, "color_" + Game::get()->getDatabaseCache()->getPlayerColor(i)->name);
 		}
 	}
 };

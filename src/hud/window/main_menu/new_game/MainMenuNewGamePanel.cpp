@@ -1,8 +1,7 @@
 #include "MainMenuNewGamePanel.h"
 #include "Game.h"
-#include <Urho3D/UI/DropDownList.h>
 #include "database/DatabaseCache.h"
-#include <Urho3D/UI/LineEdit.h>
+#include <Urho3D/UI/DropDownList.h>
 
 
 MainMenuNewGamePanel::
@@ -17,14 +16,17 @@ void MainMenuNewGamePanel::createBody() {
 		rows[i]->SetStyle("MainMenuNewGameRow");
 	}
 	Urho3D::Localization* l10n = Game::get()->getLocalization();
-
+	myLine.init(style, l10n);
+	enemyLine.init(style, l10n);
 
 	populateLabels(l10n, 0, "player");
 	populateLabels(l10n, 1, "enemy");
 	populateLabels(l10n, 2, "map_name");
+	populateLabels(l10n, 3, "difficulty");
+	populateLabels(l10n, 4, "game_speed");
 
-	myLine.populateTeams(l10n, rows[0], style);
-	enemyLine.populateTeams(l10n, rows[1], style);
+	myLine.populateTeams(rows[0]);
+	enemyLine.populateTeams(rows[1]);
 
 	proceed = body->CreateChild<Urho3D::Button>();
 	proceed->SetStyle("MainMenuNewGameButton");
