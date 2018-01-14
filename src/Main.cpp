@@ -48,62 +48,12 @@ void Main::Setup() {
 
 	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
 	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
-	loadingProgress.reset(4);
-}
-
-void Main::load() {
-	switch (loadingProgress.currentStage) {
-	case 0:
-		{
-		Game::get()->setCameraManager(new CameraManager());
-		cameraManager = Game::get()->getCameraManager();
-		controls = new Controls(GetSubsystem<Input>());
-		loader.createLoad(saveToLoad);
-		levelBuilder = new LevelBuilder();
-		SetupViewport();
-		Game::get()->setPlayersManager(new PlayersManager());
-		Game::get()->getPlayersManager()->load(loader.loadPlayers(), loader.loadResources());
-
-		hud->createMyPanels();
-		subscribeToUIEvents();
-		hud->resetLoading();
-
-		levelBuilder->createScene(loader);
-		}
-		break;
-	case 1:
-		{
-		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
-		Game::get()->setEnviroment(enviroment);
-		break;
-		}
-	case 2:
-		{
-		//Game::get()->getEnviroment()->prepareGridToFind();
-		hud->createMiniMap();
-		break;
-		}
-	case 3:
-		Game::get()->setCreationCommandList(new CreationCommandList());
-		simulation = new Simulation(Game::get()->getEnviroment(), Game::get()->getCreationCommandList());
-		break;
-	case 4:
-		simulation->initScene(loader);
-		break;
-	case 5:
-		gameState = GameState::RUNNING;
-		loader.end();
-		hud->endLoading();
-		break;
-	}
-	loadingProgress.inc();
-	hud->updateLoading(loadingProgress.getProgres());
-
+	loadingProgress.reset(loadStages);
+	newGameProgress.reset(newGamesStages);
 }
 
 void Main::Start() {
-	Game* game = Game::get();
-	game->setGraphics(GetSubsystem<Graphics>());
+	Game::get()->setGraphics(GetSubsystem<Graphics>());
 
 	SetWindowTitleAndIcon();
 	InitLocalizationSystem();
@@ -177,7 +127,7 @@ void Main::running(VariantMap& eventData) {
 		hud->update(simulation->getUnitsNumber());
 	}
 
-	hud->update(benchmark, cameraManager);
+	hud->update(benchmark, Game::get()->getCameraManager());
 
 	selectedInfo->hasBeedUpdatedDrawn();
 
@@ -200,8 +150,10 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		disposeScene();
 		gameState = GameState::MENU;
 		break;
+	case GameState::NEW_GAME:
+		newGame();
+		break;
 	}
-
 }
 
 void Main::InitMouseMode(MouseMode mode) {
@@ -225,9 +177,9 @@ void Main::SetWindowTitleAndIcon() {
 }
 
 void Main::changeCamera(int type) {
-	cameraManager->setCameraBehave(type);
+	Game::get()->getCameraManager()->setCameraBehave(type);
 	SetupViewport();
-	InitMouseMode(cameraManager->getMouseMode());
+	InitMouseMode(Game::get()->getCameraManager()->getMouseMode());
 }
 
 void Main::InitLocalizationSystem() {
@@ -243,6 +195,105 @@ void Main::save(String name) {
 	simulation->save(saver);
 	Game::get()->getPlayersManager()->save(saver);
 	saver.close();
+}
+
+void Main::load() {
+	switch (loadingProgress.currentStage) {
+	case 0:
+		{
+		Game::get()->setCameraManager(new CameraManager());
+
+		controls = new Controls(GetSubsystem<Input>());
+		loader.createLoad(saveToLoad);
+		levelBuilder = new LevelBuilder();
+		SetupViewport();
+		Game::get()->setPlayersManager(new PlayersManager());
+		Game::get()->getPlayersManager()->load(loader.loadPlayers(), loader.loadResources());
+
+		hud->createMyPanels();
+		subscribeToUIEvents();
+		hud->resetLoading();
+
+		levelBuilder->createScene(loader);
+		}
+		break;
+	case 1:
+		{
+		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
+		Game::get()->setEnviroment(enviroment);
+		break;
+		}
+	case 2:
+		{
+		//Game::get()->getEnviroment()->prepareGridToFind();
+		hud->createMiniMap();
+		break;
+		}
+	case 3:
+		Game::get()->setCreationCommandList(new CreationCommandList());
+		simulation = new Simulation(Game::get()->getEnviroment(), Game::get()->getCreationCommandList());
+		break;
+	case 4:
+		simulation->initScene(loader);
+		break;
+	case 5:
+		gameState = GameState::RUNNING;
+		loader.end();
+		hud->endLoading();
+		break;
+	}
+	loadingProgress.inc();
+	hud->updateLoading(loadingProgress.getProgres());
+
+}
+
+void Main::newGame(NewGameForm * form) {
+	switch (newGameProgress.currentStage) {
+	case 0:
+		{
+		Game::get()->setCameraManager(new CameraManager());
+
+		controls = new Controls(GetSubsystem<Input>());
+		
+		levelBuilder = new LevelBuilder();
+		SetupViewport();
+		Game::get()->setPlayersManager(new PlayersManager());
+		Game::get()->getPlayersManager()->load(form);
+
+		hud->createMyPanels();
+		subscribeToUIEvents();
+		hud->resetLoading();
+
+		levelBuilder->createScene(loader);
+		}
+		break;
+	case 1:
+		{
+		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
+		Game::get()->setEnviroment(enviroment);
+		break;
+		}
+	case 2:
+		{
+		//Game::get()->getEnviroment()->prepareGridToFind();
+		hud->createMiniMap();
+		break;
+		}
+	case 3:
+		Game::get()->setCreationCommandList(new CreationCommandList());
+		simulation = new Simulation(Game::get()->getEnviroment(), Game::get()->getCreationCommandList());
+		break;
+	case 4:
+		simulation->initScene(loader);
+		break;
+	case 5:
+		gameState = GameState::RUNNING;
+		loader.end();
+		hud->endLoading();
+		break;
+	}
+	newGameProgress.inc();
+	hud->updateLoading(newGameProgress.getProgres());
 }
 
 void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
@@ -264,9 +315,6 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	} else if (key == KEY_F5) {
 		String name = "test" + String(rand());
 		save(name);
-	} else if (key == KEY_F6) {
-		String name = "quicksave";
-		loadSave(name);
 	} else if (key == KEY_F9) {
 		saveToLoad = "quicksave";
 		gameState = GameState::CLOSING;
@@ -288,7 +336,7 @@ void Main::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {
 	float x = eventData[Urho3D::Click::P_X].GetInt() - begin.x_;
 	float y = size.y_ - (eventData[Urho3D::Click::P_Y].GetInt() - begin.y_);
 
-	cameraManager->changePosition(x / size.x_, y / size.y_);
+	Game::get()->getCameraManager()->changePosition(x / size.x_, y / size.y_);
 }
 
 void Main::HandleBuildButton(StringHash eventType, VariantMap& eventData) {
@@ -333,19 +381,6 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 
 }
 
-void Main::loadSave(const String& name) {
-	loader.createLoad(name);
-	//loader->load();
-	std::vector<dbload_player*>* players = loader.loadPlayers();
-	std::vector<dbload_resource*>* resources = loader.loadResources();
-
-	std::vector<dbload_unit*>* units = loader.loadUnits();
-	std::vector<dbload_building*>* buildings = loader.loadBuildings();
-	std::vector<dbload_resource_entities*>* resources_entities = loader.loadResourcesEntities();
-
-	loader.end();
-}
-
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {
 	Console* console = GetSubsystem<Console>();
 	if (console && console->IsVisible()) { return; }
@@ -371,9 +406,6 @@ void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 }
 
 void Main::SetupViewport() {
-	//	if (!GetSubsystem<Renderer>()->GetViewport(0)) {
-	//		delete GetSubsystem<Renderer>()->GetViewport(0);
-	//	}
 	SharedPtr<Viewport> viewport(new Viewport(context_, Game::get()->getScene(),
 	                                          Game::get()->getCameraManager()->getComponent()));
 	GetSubsystem<Renderer>()->SetViewport(0, viewport);
@@ -388,8 +420,7 @@ void Main::disposeScene() {
 	simulation = nullptr;
 
 	loading2.inc("dispose cameras");
-	delete cameraManager;
-	cameraManager = nullptr;
+	delete Game::get()->getCameraManager();
 	Game::get()->setCameraManager(nullptr);
 
 	loading2.inc("dispose creationList");
@@ -415,7 +446,8 @@ void Main::disposeScene() {
 	delete levelBuilder;
 	levelBuilder = nullptr;
 
-	loadingProgress.reset(4);
+	loadingProgress.reset(loadStages);
+	newGameProgress.reset(newGamesStages);
 }
 
 void Main::control(const float timeStep) const {
@@ -431,6 +463,6 @@ void Main::control(const float timeStep) const {
 
 	Input* input = GetSubsystem<Input>();
 
-	cameraManager->translate(cursorPos, input, timeStep);
-	cameraManager->rotate(input->GetMouseMove());
+	Game::get()->getCameraManager()->translate(cursorPos, input, timeStep);
+	Game::get()->getCameraManager()->rotate(input->GetMouseMove());
 }

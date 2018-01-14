@@ -43,44 +43,48 @@ protected:
 	void SetupViewport();
 
 private:
-	void subscribeToUIEvents();
+
 	void disposeScene();
-	void subscribeToEvents();
+
 	void running(VariantMap& eventData);
 	void SetWindowTitleAndIcon();
+
+	void subscribeToUIEvents();
+	void subscribeToEvents();
 	void HandleMouseModeRequest(StringHash eventType, VariantMap& eventData);
 	void HandleMouseModeChange(StringHash eventType, VariantMap& eventData);
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
-	void loadSave(const String& name);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
 	void HandleNewGame(StringHash eventType, VariantMap& eventData);
-
 	void HandleSaveScene(StringHash, VariantMap& eventData);
-
 	void HandleMiniMapClick(StringHash eventType, VariantMap& eventData);
 	void HandleBuildButton(StringHash eventType, VariantMap& eventData);
 	void HandleUnitButton(StringHash eventType, VariantMap& eventData);
 	void HandleOrdersButton(StringHash eventType, VariantMap& eventData);
 	void HandleSelectedButton(StringHash eventType, VariantMap& eventData);
 
+	void InitLocalizationSystem();
+
 	void control(float timeStep) const;
 	void changeCamera(int type);
-	void InitLocalizationSystem();
 	void load();
 	void save(String name);
+	void newGame(NewGameForm * form);
 
 	MouseMode useMouseMode_;
 	Simulation* simulation;
 	Benchmark* benchmark;
-	CameraManager* cameraManager;
 	Hud* hud;
 	Controls* controls;
 	LevelBuilder* levelBuilder;
 	SceneSaver saver;
 	SceneLoader loader;
 	loading loadingProgress;
+	loading newGameProgress;
 	GameState gameState;
 
 	NewGameForm* newGameForm;
 	String saveToLoad = "quicksave";
+	int loadStages = 6;
+	int newGamesStages = 6;
 };
