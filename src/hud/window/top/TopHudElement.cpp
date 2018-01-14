@@ -1,5 +1,5 @@
 #include "TopHudElement.h"
-#include "../../ButtonUtils.h"
+#include "../../UiUtils.h"
 
 TopHudElement::TopHudElement(Urho3D::XMLFile* style, Texture2D* texture) {
 	icon = createSprite(texture, style, "SpriteLeft");

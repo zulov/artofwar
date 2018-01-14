@@ -49,9 +49,9 @@ CREATE TABLE IF NOT EXISTS `orders_to_unit` (
 	`id`	INTEGER,
 	`unit`	INTEGER,
 	`order`	INTEGER,
+	PRIMARY KEY(`id`),
 	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
-	FOREIGN KEY(`order`) REFERENCES `orders`(`id`),
-	PRIMARY KEY(`id`)
+	FOREIGN KEY(`order`) REFERENCES `orders`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `orders` (
 	`id`	INTEGER,
@@ -69,6 +69,7 @@ CREATE TABLE IF NOT EXISTS `map` (
 	`texture`	TEXT,
 	`scale_hor`	REAL,
 	`scale_ver`	REAL,
+	`name`	TEXT,
 	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `hud_size_vars` (
@@ -92,26 +93,26 @@ CREATE TABLE IF NOT EXISTS `graph_settings` (
 	`fullscreen`	INTEGER,
 	`max_fps`	REAL,
 	`min_fps`	REAL,
-	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`),
-	PRIMARY KEY(`id`)
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_unit` (
 	`id`	INTEGER,
 	`resource`	INTEGER,
 	`value`	INTEGER,
 	`unit`	INTEGER,
-	PRIMARY KEY(`id`),
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
 	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
+	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_building` (
 	`id`	INTEGER,
 	`resource`	INTEGER,
 	`value`	INTEGER,
 	`building`	INTEGER,
-	FOREIGN KEY(`building`) REFERENCES `building`(`id`),
+	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
 	PRIMARY KEY(`id`),
-	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`)
+	FOREIGN KEY(`building`) REFERENCES `building`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `building_type` (
 	`id`	INTEGER,

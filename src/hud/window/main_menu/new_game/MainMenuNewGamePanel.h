@@ -1,8 +1,9 @@
 #pragma once
+#include "NewGameTeamLine.h"
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/UI/Button.h>
-#include "NewGameTeamLine.h"
+
 
 #define NEW_GAME_ROWS_NUMBER 5
 

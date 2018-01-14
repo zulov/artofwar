@@ -341,9 +341,6 @@
     <ClInclude Include="src\objects\unit\UnitType.h">
       <Filter>objects\unit</Filter>
     </ClInclude>
-    <ClInclude Include="src\hud\ButtonUtils.h">
-      <Filter>hud</Filter>
-    </ClInclude>
     <ClInclude Include="src\objects\unit\ActionParameter.h">
       <Filter>command\action</Filter>
     </ClInclude>
@@ -472,6 +469,9 @@
     <ClInclude Include="src\hud\window\main_menu\help\MainMenuHelpPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\new_game\MainMenuNewGamePanel.h" />
     <ClInclude Include="src\hud\window\main_menu\new_game\NewGameTeamLine.h" />
+    <ClInclude Include="src\hud\UiUtils.h">
+      <Filter>hud</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

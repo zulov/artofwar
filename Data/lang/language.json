@@ -97,7 +97,25 @@
 		"pl":"Poziom trudności:"
 	},
 	"game_speed":{
-		"pl":"Prędkość gry:"
+		"pl":"Szybkość:"
+	},
+	"easy":{
+		"pl":"Łatwy:"
+	},
+	"normal":{
+		"pl":"Normanlny"
+	},
+	"hard":{
+		"pl":"Trudny"
+	},
+	"slow":{
+		"pl":"Wolny:"
+	},
+	"normal":{
+		"pl":"Normanlny"
+	},
+	"fast":{
+		"pl":"Szybki"
 	}
 	
 }

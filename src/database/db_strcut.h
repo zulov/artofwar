@@ -34,8 +34,8 @@ struct db_unit
 	Urho3D::String icon;
 	int actionState;
 
-	db_unit(int id, char* name, float minDist, float maxSep, char* model, char* texture, 
-		float mass, float maxSpeed, float scale, int rotatable, int nation, char* icon, int actionState)
+	db_unit(int id, char* name, float minDist, float maxSep, char* model, char* texture,
+	        float mass, float maxSpeed, float scale, int rotatable, int nation, char* icon, int actionState)
 		: id(id),
 		name(name),
 		minDist(minDist),
@@ -204,14 +204,15 @@ struct db_map
 	Urho3D::String texture;
 	float scale_hor;
 	float scale_ver;
+	Urho3D::String name;
 
-
-	db_map(int id, char* heightMap, char* texture, float scaleHor, float scaleVer)
+	db_map(int id, char* heightMap, char* texture, float scaleHor, float scaleVer, char* name)
 		: id(id),
 		height_map(heightMap),
 		texture(texture),
 		scale_hor(scaleHor),
-		scale_ver(scaleVer) {
+		scale_ver(scaleVer),
+		name(name) {
 	}
 };
 

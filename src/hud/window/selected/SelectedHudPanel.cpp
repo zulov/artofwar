@@ -2,7 +2,7 @@
 #include "database/DatabaseCache.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include "hud/ButtonUtils.h"
+#include "hud/UiUtils.h"
 #include <Urho3D/Resource/Image.h>
 
 

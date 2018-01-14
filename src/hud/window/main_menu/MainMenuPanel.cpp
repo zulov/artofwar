@@ -1,6 +1,6 @@
 #include "MainMenuPanel.h"
 #include "hud/MySprite.h"
-#include "hud/ButtonUtils.h"
+#include "hud/UiUtils.h"
 #include "help/MainMenuHelpPanel.h"
 #include "new_game/MainMenuNewGamePanel.h"
 #include <Urho3D/UI/Text.h>

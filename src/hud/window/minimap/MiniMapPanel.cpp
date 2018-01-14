@@ -4,7 +4,7 @@
 #include <Urho3D/Graphics/Texture2D.h>
 #include "simulation/env/Enviroment.h"
 #include "simulation/env/ContentInfo.h"
-#include "hud/ButtonUtils.h"
+#include "hud/UiUtils.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <LinearMath/btVector3.h>
 #include "database/DatabaseCache.h"

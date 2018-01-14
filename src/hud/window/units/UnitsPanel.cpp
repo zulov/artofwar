@@ -1,7 +1,7 @@
 #include "UnitsPanel.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
-#include "hud/ButtonUtils.h"
+#include "hud/UiUtils.h"
 #include "hud/HudElement.h"
 #include "hud/MySprite.h"
 #include "utils.h"

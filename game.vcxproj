@@ -334,7 +334,7 @@
     <ClInclude Include="src\objects\building\BuildingFactory.h" />
     <ClInclude Include="src\objects\building\BuildingType.h" />
     <ClInclude Include="src\hud\window\building\BuildPanel.h" />
-    <ClInclude Include="src\hud\ButtonUtils.h" />
+    <ClInclude Include="src\hud\UiUtils.h" />
     <ClInclude Include="src\camera\CameraBehave.h" />
     <ClInclude Include="src\camera\CameraEnums.h" />
     <ClInclude Include="src\camera\CameraManager.h" />

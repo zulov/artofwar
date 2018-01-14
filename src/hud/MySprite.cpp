@@ -1,6 +1,5 @@
 #include "MySprite.h"
 #include <Urho3D/Graphics/Technique.h>
-
 #include <Urho3D/Core/Context.h>
 #include <Urho3D/Graphics/Texture2D.h>
 

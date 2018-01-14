@@ -2,7 +2,7 @@
 #include "Game.h"
 #include <Urho3D/UI/UI.h>
 #include "hud/MySprite.h"
-#include "hud/ButtonUtils.h"
+#include "hud/UiUtils.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/Text.h>
 #include "middle/FilePanel.h"

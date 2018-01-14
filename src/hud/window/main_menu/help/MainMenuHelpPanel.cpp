@@ -1,7 +1,7 @@
 #include "MainMenuHelpPanel.h"
 #include "Game.h"
 #include "utils.h"
-#include "hud/ButtonUtils.h"
+#include "hud/UiUtils.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UIEvents.h>
 

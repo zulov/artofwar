@@ -1,7 +1,6 @@
 #include "MainMenuNewGamePanel.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
-#include <Urho3D/UI/DropDownList.h>
 
 
 MainMenuNewGamePanel::
@@ -27,6 +26,22 @@ void MainMenuNewGamePanel::createBody() {
 
 	myLine.populateTeams(rows[0]);
 	enemyLine.populateTeams(rows[1]);
+
+	Urho3D::DropDownList* map = createDropDownList(rows[2], "MainMenuNewGameDropDownList", style);
+	int mapsSize = Game::get()->getDatabaseCache()->getMapSize();
+	for (int i = 0; i < mapsSize; ++i) {
+		addTextItem(map, Game::get()->getDatabaseCache()->getMap(i)->name, style);
+	}
+
+	Urho3D::DropDownList* difficulty = createDropDownList(rows[3], "MainMenuNewGameDropDownList", style);
+	addTextItem(difficulty, l10n->Get("easy"), style);
+	addTextItem(difficulty, l10n->Get("normal"), style);
+	addTextItem(difficulty, l10n->Get("hard"), style);
+
+	Urho3D::DropDownList* gameSpeed = createDropDownList(rows[4], "MainMenuNewGameDropDownList", style);
+	addTextItem(gameSpeed, l10n->Get("slow"), style);
+	addTextItem(gameSpeed, l10n->Get("normal"), style);
+	addTextItem(gameSpeed, l10n->Get("fast"), style);
 
 	proceed = body->CreateChild<Urho3D::Button>();
 	proceed->SetStyle("MainMenuNewGameButton");

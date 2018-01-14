@@ -127,7 +127,7 @@ int static loadMap(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
 
-	xyz->maps[id] = new db_map(id, argv[1], argv[2], atof(argv[3]), atof(argv[4]));
+	xyz->maps[id] = new db_map(id, argv[1], argv[2], atof(argv[3]), atof(argv[4]), argv[5]);
 	xyz->maps_size++;
 	return 0;
 }
