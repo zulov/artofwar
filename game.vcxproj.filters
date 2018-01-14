@@ -472,6 +472,8 @@
     <ClInclude Include="src\hud\UiUtils.h">
       <Filter>hud</Filter>
     </ClInclude>
+    <ClInclude Include="src\hud\window\main_menu\new_game\NewGameForm.h" />
+    <ClInclude Include="src\hud\window\main_menu\new_game\NewGamePlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

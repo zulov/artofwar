@@ -70,8 +70,15 @@ inline void addTextItem(Urho3D::DropDownList* cob, Urho3D::String str, Urho3D::X
 	cob->AddItem(item);
 }
 
-inline Urho3D::DropDownList* createDropDownList(Urho3D::UIElement* uiElement, String styleName, Urho3D::XMLFile* style) {
+inline Urho3D::DropDownList*
+createDropDownList(Urho3D::UIElement* uiElement, String styleName, Urho3D::XMLFile* style) {
 	Urho3D::DropDownList* cob = uiElement->CreateChild<Urho3D::DropDownList>();
 	cob->SetStyle(styleName, style);
 	return cob;
+}
+
+inline void addChildText(UIElement* element, String styleName, String value, Urho3D::XMLFile* style) {
+	Urho3D::Text* text = element->CreateChild<Urho3D::Text>();
+	text->SetStyle(styleName, style);
+	text->SetText(value);
 }

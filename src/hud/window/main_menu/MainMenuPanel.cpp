@@ -36,6 +36,10 @@ void MainMenuPanel::setVisible(bool enable) {
 	AbstractWindowPanel::setVisible(enable);
 }
 
+Urho3D::Button* MainMenuPanel::getNewGameProceed() {
+	return static_cast<MainMenuNewGamePanel*>(detailsPanels[0])->getProceed();
+}
+
 void MainMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
@@ -51,7 +55,7 @@ void MainMenuPanel::createBody() {
 	detailsPanels[2] = new MainMenuDetailsPanel(style, l10n->Get("menu_2"));
 	detailsPanels[3] = new MainMenuHelpPanel(style, l10n->Get("menu_3"));
 	detailsPanels[4] = new MainMenuDetailsPanel(style, l10n->Get("menu_4"));
-	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {	
+	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {
 		detailsPanels[i]->createWindow();
 		detailsPanels[i]->setVisible(false);
 	}

@@ -24,11 +24,11 @@
 class MainMenuPanel;
 using namespace Urho3D;
 
-class Hud :public Urho3D::Object
+class Hud : public Urho3D::Object
 {
 public:
 
-	URHO3D_OBJECT(Hud, Object)
+URHO3D_OBJECT(Hud, Object)
 
 	Hud();
 	void clear();
@@ -54,6 +54,8 @@ public:
 	void updateLoading(float progress);
 	Sprite* getSpriteMiniMapToSubscribe();
 	Button* getSaveButton();
+	Button* getNewGameProceed();
+
 	void createMyPanels();
 	void prepareStyle();
 	void preapreUrho();

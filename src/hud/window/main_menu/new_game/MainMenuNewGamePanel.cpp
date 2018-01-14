@@ -1,11 +1,16 @@
 #include "MainMenuNewGamePanel.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
+#include <ctime>
+#include <Urho3D/UI/UIEvents.h>
+#include "hud/HudElement.h"
+#include "NewGameForm.h"
 
 
 MainMenuNewGamePanel::
 MainMenuNewGamePanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDetailsPanel(_style, _title) {
 	bodyStyle = "MainMenuNewGameMock";
+	srand(time(NULL));
 }
 
 void MainMenuNewGamePanel::createBody() {
@@ -27,27 +32,32 @@ void MainMenuNewGamePanel::createBody() {
 	myLine.populateTeams(rows[0]);
 	enemyLine.populateTeams(rows[1]);
 
-	Urho3D::DropDownList* map = createDropDownList(rows[2], "MainMenuNewGameDropDownList", style);
+	map = createDropDownList(rows[2], "MainMenuNewGameDropDownList", style);
 	int mapsSize = Game::get()->getDatabaseCache()->getMapSize();
 	for (int i = 0; i < mapsSize; ++i) {
 		addTextItem(map, Game::get()->getDatabaseCache()->getMap(i)->name, style);
 	}
 
-	Urho3D::DropDownList* difficulty = createDropDownList(rows[3], "MainMenuNewGameDropDownList", style);
+	difficulty = createDropDownList(rows[3], "MainMenuNewGameDropDownList", style);
 	addTextItem(difficulty, l10n->Get("easy"), style);
 	addTextItem(difficulty, l10n->Get("normal"), style);
 	addTextItem(difficulty, l10n->Get("hard"), style);
 
-	Urho3D::DropDownList* gameSpeed = createDropDownList(rows[4], "MainMenuNewGameDropDownList", style);
+	gameSpeed = createDropDownList(rows[4], "MainMenuNewGameDropDownList", style);
 	addTextItem(gameSpeed, l10n->Get("slow"), style);
 	addTextItem(gameSpeed, l10n->Get("normal"), style);
 	addTextItem(gameSpeed, l10n->Get("fast"), style);
 
 	proceed = body->CreateChild<Urho3D::Button>();
 	proceed->SetStyle("MainMenuNewGameButton");
-	Urho3D::Text* text = proceed->CreateChild<Urho3D::Text>();
-	text->SetStyle("MainMenuNewGameButtonText", style);
-	text->SetText(l10n->Get("start"));
+	data = new NewGameForm();
+	proceed->SetVar("NewGameForm", data);
+
+	addChildText(proceed, "MainMenuNewGameButtonText", l10n->Get("start"), style);
+}
+
+Button* MainMenuNewGamePanel::getProceed() {
+	return proceed;
 }
 
 void MainMenuNewGamePanel::populateLabels(Urho3D::Localization* l10n, int index, Urho3D::String name) {
@@ -58,4 +68,5 @@ void MainMenuNewGamePanel::populateLabels(Urho3D::Localization* l10n, int index,
 
 
 MainMenuNewGamePanel::~MainMenuNewGamePanel() {
+	delete data;
 }

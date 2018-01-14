@@ -16,6 +16,7 @@
 #include <Urho3D/Resource/Localization.h>
 #include "commands/creation/CreationCommandList.h"
 #include "hud/window/in_game_menu/middle/FileFormData.h"
+#include "hud/window/main_menu/new_game/NewGameForm.h"
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
@@ -147,6 +148,7 @@ void Main::subscribeToUIEvents() {
 	}
 
 	SubscribeToEvent(hud->getSaveButton(), E_CLICK, URHO3D_HANDLER(Main, HandleSaveScene));
+	SubscribeToEvent(hud->getNewGameProceed(), E_CLICK, URHO3D_HANDLER(Main, HandleNewGame));
 
 	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
 	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));
@@ -269,6 +271,12 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	} else if (key == KEY_F9) {
 		gameState = GameState::CLOSING;
 	}
+}
+
+void Main::HandleNewGame(StringHash eventType, VariantMap& eventData) {
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	NewGameForm* form = static_cast<NewGameForm *>(element->GetVar("NewGameForm").GetVoidPtr());
+
 }
 
 void Main::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {

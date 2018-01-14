@@ -51,6 +51,7 @@ private:
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 	void loadSave(const String& name);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
+	void HandleNewGame(StringHash eventType, VariantMap& eventData);
 
 	void HandleSaveScene(StringHash, VariantMap& eventData);
 

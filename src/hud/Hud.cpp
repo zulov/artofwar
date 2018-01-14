@@ -239,6 +239,10 @@ Button* Hud::getSaveButton() {
 	return inGameMenuPanel->getSaveButton();
 }
 
+Button* Hud::getNewGameProceed() {
+	return mainMenuPanel->getNewGameProceed();
+}
+
 void Hud::updateSelected(SelectedInfo* selectedInfo) {
 	//TODO raz stworzyc a sterowac widzialnsocia
 	if (selectedInfo->hasChanged()) {

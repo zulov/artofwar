@@ -3,6 +3,7 @@
 #include "MainMenuDetailsPanel.h"
 #include <vector>
 #include "hud/HudElement.h"
+#include <Urho3D/UI/Button.h>
 
 #define MAIN_MENU_BUTTON_NUMBER 5
 
@@ -14,6 +15,7 @@ public:
 	void action(short id);
 	void close();
 	void setVisible(bool enable) override;
+	Urho3D::Button * getNewGameProceed();
 	void HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 private:
 	void createBody() override;
