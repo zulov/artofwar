@@ -7,6 +7,7 @@
 #include <Urho3D/UI/BorderImage.h>
 #include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/UI/LineEdit.h>
+#include "NewGamePlayer.h"
 
 
 struct NewGameTeamLine
@@ -48,5 +49,14 @@ struct NewGameTeamLine
 		for (int i = 0; i < sizeColor; ++i) {
 			addTextItem(color, l10n->Get("color_" + Game::get()->getDatabaseCache()->getPlayerColor(i)->name), style);
 		}
+	}
+
+	NewGamePlayer getNewGamePlayer() {
+		NewGamePlayer player;
+		player.name = lineEdit->GetText();
+		player.color = color->GetSelection();
+		player.nation = nation->GetSelection();
+		player.team = team->GetSelection();
+		return player;
 	}
 };

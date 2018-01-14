@@ -20,7 +20,7 @@
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
-Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100){
+Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100) {
 	gameState = GameState::STARTING;
 	context->RegisterFactory<LinkComponent>();
 	MySprite::RegisterObject(context);
@@ -58,7 +58,7 @@ void Main::load() {
 		Game::get()->setCameraManager(new CameraManager());
 		cameraManager = Game::get()->getCameraManager();
 		controls = new Controls(GetSubsystem<Input>());
-		loader.createLoad("quicksave");
+		loader.createLoad(saveToLoad);
 		levelBuilder = new LevelBuilder();
 		SetupViewport();
 		Game::get()->setPlayersManager(new PlayersManager());
@@ -79,7 +79,6 @@ void Main::load() {
 		}
 	case 2:
 		{
-		
 		//Game::get()->getEnviroment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
@@ -269,6 +268,7 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 		String name = "quicksave";
 		loadSave(name);
 	} else if (key == KEY_F9) {
+		saveToLoad = "quicksave";
 		gameState = GameState::CLOSING;
 	}
 }
@@ -276,6 +276,8 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 void Main::HandleNewGame(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	NewGameForm* form = static_cast<NewGameForm *>(element->GetVar("NewGameForm").GetVoidPtr());
+	gameState = GameState::NEW_GAME;
+	newGameForm = form;
 
 }
 
@@ -311,7 +313,8 @@ void Main::HandleOrdersButton(StringHash eventType, VariantMap& eventData) {
 
 void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	SelectedHudElement* sHudElement = static_cast<SelectedHudElement *>(element->GetVar("SelectedHudElement").GetVoidPtr());
+	SelectedHudElement* sHudElement = static_cast<SelectedHudElement *>(element->GetVar("SelectedHudElement").GetVoidPtr()
+	);
 	std::vector<Physical*>* selected = sHudElement->getSelected();
 	controls->unSelectAll();
 	for (auto physical : (*selected)) {

@@ -18,6 +18,8 @@
 #include "scene/save/SceneSaver.h"
 #include "scene/load/SceneLoader.h"
 
+struct NewGameForm;
+
 namespace Urho3D {
 	class Node;
 	class Scene;
@@ -78,4 +80,7 @@ private:
 	SceneLoader loader;
 	loading loadingProgress;
 	GameState gameState;
+
+	NewGameForm* newGameForm;
+	String saveToLoad = "quicksave";
 };

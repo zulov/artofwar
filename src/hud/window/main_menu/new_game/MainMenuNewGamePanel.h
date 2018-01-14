@@ -13,6 +13,7 @@ class MainMenuNewGamePanel : public MainMenuDetailsPanel
 public:
 	MainMenuNewGamePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
 	Button* getProceed();
+	void HandleNewGame(StringHash eventType, VariantMap& eventData);
 	~MainMenuNewGamePanel();
 private:
 	void populateLabels(Urho3D::Localization* localization, int i, Urho3D::String name);

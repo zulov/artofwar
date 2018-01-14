@@ -7,5 +7,5 @@ struct NewGameForm
 	NewGamePlayer enemy;
 	int map;
 	int difficulty;
-
+	int gameSpeed;
 };

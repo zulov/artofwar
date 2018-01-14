@@ -53,11 +53,22 @@ void MainMenuNewGamePanel::createBody() {
 	data = new NewGameForm();
 	proceed->SetVar("NewGameForm", data);
 
+	SubscribeToEvent(proceed, E_CLICK, URHO3D_HANDLER(MainMenuNewGamePanel, HandleNewGame));
+
 	addChildText(proceed, "MainMenuNewGameButtonText", l10n->Get("start"), style);
 }
 
 Button* MainMenuNewGamePanel::getProceed() {
 	return proceed;
+}
+
+void MainMenuNewGamePanel::HandleNewGame(StringHash eventType, VariantMap& eventData) {
+	data->map=map->GetSelection();
+	data->difficulty=difficulty->GetSelection();
+	data->gameSpeed=gameSpeed->GetSelection();
+	data->playerOne = myLine.getNewGamePlayer();
+	data->enemy = enemyLine.getNewGamePlayer();
+
 }
 
 void MainMenuNewGamePanel::populateLabels(Urho3D::Localization* l10n, int index, Urho3D::String name) {
