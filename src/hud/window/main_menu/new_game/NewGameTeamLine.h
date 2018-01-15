@@ -8,6 +8,7 @@
 #include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/UI/LineEdit.h>
 #include "NewGamePlayer.h"
+#include <Urho3D/UI/CheckBox.h>
 
 
 struct NewGameTeamLine
@@ -16,6 +17,7 @@ struct NewGameTeamLine
 	Urho3D::DropDownList* nation;
 	Urho3D::DropDownList* color;
 	Urho3D::DropDownList* team;
+	Urho3D::CheckBox* chk;
 
 	Urho3D::XMLFile* style;
 	Urho3D::Localization* l10n;
@@ -50,6 +52,8 @@ struct NewGameTeamLine
 		for (int i = 0; i < sizeColor; ++i) {
 			addTextItem(color, l10n->Get("color_" + Game::get()->getDatabaseCache()->getPlayerColor(i)->name), style);
 		}
+		chk = row->CreateChild<CheckBox>();
+		chk->SetStyle("CheckBox", style);
 	}
 
 	NewGamePlayer getNewGamePlayer() {
@@ -59,6 +63,7 @@ struct NewGameTeamLine
 		player.nation = nation->GetSelection();
 		player.team = team->GetSelection();
 		player.id = id;
+		player.active = chk->IsChecked();
 		return player;
 	}
 };

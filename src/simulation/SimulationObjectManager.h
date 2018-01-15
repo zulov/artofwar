@@ -8,6 +8,7 @@
 #include "objects/resource/ResourceFactory.h"
 #include "SimulationInfo.h"
 #include "scene/load/dbload_container.h"
+#include "hud/window/main_menu/new_game/NewGamePlayer.h"
 
 using namespace std;
 

@@ -20,8 +20,8 @@ void MainMenuNewGamePanel::createBody() {
 		rows[i]->SetStyle("MainMenuNewGameRow");
 	}
 	Urho3D::Localization* l10n = Game::get()->getLocalization();
-	myLine.init(style, l10n);
-	enemyLine.init(style, l10n);
+	myLine.init(style, l10n, 0);
+	enemyLine.init(style, l10n, 1);
 
 	populateLabels(l10n, 0, "player");
 	populateLabels(l10n, 1, "enemy");
@@ -63,11 +63,11 @@ Button* MainMenuNewGamePanel::getProceed() {
 }
 
 void MainMenuNewGamePanel::HandleNewGame(StringHash eventType, VariantMap& eventData) {
-	data->map=map->GetSelection();
-	data->difficulty=difficulty->GetSelection();
-	data->gameSpeed=gameSpeed->GetSelection();
-	data->playerOne = myLine.getNewGamePlayer();
-	data->enemy = enemyLine.getNewGamePlayer();
+	data->map = map->GetSelection();
+	data->difficulty = difficulty->GetSelection();
+	data->gameSpeed = gameSpeed->GetSelection();
+	data->players.push_back(myLine.getNewGamePlayer());
+	data->players.push_back(enemyLine.getNewGamePlayer());
 }
 
 void MainMenuNewGamePanel::populateLabels(Urho3D::Localization* l10n, int index, Urho3D::String name) {

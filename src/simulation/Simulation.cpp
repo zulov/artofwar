@@ -84,7 +84,9 @@ void Simulation::loadEntities(SceneLoader& loader) {
 }
 
 void Simulation::loadEntities(NewGameForm* form) {
-
+	for (auto player : form->players) {
+		simObjectManager->addUnits(10, 1, new Vector3(), player.id);
+	}
 }
 
 float Simulation::updateTime(float timeStep) {
@@ -188,7 +190,7 @@ void Simulation::initScene(SceneLoader& loader) {
 }
 
 void Simulation::initScene(NewGameForm* form) {
-	loadEntities1(form);
+	loadEntities(form);
 	simCommandList->execute();
 }
 

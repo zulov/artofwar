@@ -39,8 +39,9 @@ void PlayersManager::addPlayer(NewGamePlayer playerOne) {
 }
 
 void PlayersManager::load(NewGameForm* form) {
-	addPlayer(form->playerOne);
-	addPlayer(form->enemy);
+	for (const auto& player : form->players) {
+		addPlayer(player);
+	}
 }
 
 Player* PlayersManager::getActivePlayer() {
@@ -68,6 +69,6 @@ std::string PlayersManager::getColumns() {
 	return "id		INT     NOT NULL,"
 		"is_active		INT     NOT NULL,"
 		"team		INT     NOT NULL,"
-		"nation		INT     NOT NULL,";
-	"name		TEXT     NOT NULL";
+		"nation		INT     NOT NULL,"
+		"name		TEXT     NOT NULL";
 }

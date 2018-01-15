@@ -3,7 +3,7 @@
 
 struct NewGameForm
 {
-	vector<NewGamePlayer> players;
+	std::vector<NewGamePlayer> players;
 	int map;
 	int difficulty;
 	int gameSpeed;

@@ -88,7 +88,7 @@ struct dbload_player
 	bool is_active;
 	int team;
 	int nation;
-	String name;
+	Urho3D::String name;
 
 	dbload_player(int id, bool isActive, int team, int nation, char* name)
 		: id(id),
