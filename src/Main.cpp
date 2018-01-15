@@ -151,7 +151,11 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		gameState = GameState::MENU;
 		break;
 	case GameState::NEW_GAME:
+		disposeScene();
 		newGame(newGameForm);
+		delete newGameForm;
+		newGameForm = nullptr;
+		gameState = GameState::RUNNING;
 		break;
 	}
 }
@@ -247,14 +251,14 @@ void Main::load() {
 
 }
 
-void Main::newGame(NewGameForm * form) {
+void Main::newGame(NewGameForm* form) {
 	switch (newGameProgress.currentStage) {
 	case 0:
 		{
 		Game::get()->setCameraManager(new CameraManager());
 
 		controls = new Controls(GetSubsystem<Input>());
-		
+
 		levelBuilder = new LevelBuilder();
 		SetupViewport();
 		Game::get()->setPlayersManager(new PlayersManager());
@@ -288,7 +292,7 @@ void Main::newGame(NewGameForm * form) {
 		break;
 	case 5:
 		gameState = GameState::RUNNING;
-		
+
 		hud->endLoading();
 		break;
 	}
@@ -325,7 +329,7 @@ void Main::HandleNewGame(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	NewGameForm* form = static_cast<NewGameForm *>(element->GetVar("NewGameForm").GetVoidPtr());
 	gameState = GameState::NEW_GAME;
-	newGameForm = form;
+	newGameForm = new NewGameForm(*form);
 
 }
 
