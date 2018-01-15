@@ -83,6 +83,10 @@ void Simulation::loadEntities(SceneLoader& loader) {
 	}
 }
 
+void Simulation::loadEntities(NewGameForm* form) {
+
+}
+
 float Simulation::updateTime(float timeStep) {
 	if (timeStep > maxTimeFrame) {
 		timeStep = maxTimeFrame;
@@ -180,6 +184,11 @@ void Simulation::update(Input* input, float timeStep) {
 
 void Simulation::initScene(SceneLoader& loader) {
 	loadEntities(loader);
+	simCommandList->execute();
+}
+
+void Simulation::initScene(NewGameForm* form) {
+	loadEntities1(form);
 	simCommandList->execute();
 }
 

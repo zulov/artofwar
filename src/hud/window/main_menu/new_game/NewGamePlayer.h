@@ -7,4 +7,6 @@ struct NewGamePlayer
 	int nation;
 	int team;
 	int color;
+	int id;
+	bool active;
 };

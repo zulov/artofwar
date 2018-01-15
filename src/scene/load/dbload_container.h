@@ -88,12 +88,14 @@ struct dbload_player
 	bool is_active;
 	int team;
 	int nation;
+	String name;
 
-	dbload_player(int id, bool isActive, int team, int nation)
+	dbload_player(int id, bool isActive, int team, int nation, char* name)
 		: id(id),
 		is_active(isActive),
 		team(team),
-		nation(nation) {
+		nation(nation),
+		name(name) {
 	}
 };
 

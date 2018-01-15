@@ -6,7 +6,7 @@
 #include <Urho3D/Graphics/Light.h>
 #include <Urho3D/Graphics/Terrain.h>
 #include <Urho3D/Scene/Scene.h>
-
+#include "hud/window/main_menu/new_game/NewGameForm.h"
 
 
 using namespace Urho3D;
@@ -17,6 +17,8 @@ public:
 	LevelBuilder();
 	~LevelBuilder();
 	void createScene(SceneLoader& loader);
+	void createMap(int mapId);
+	void createScene(NewGameForm* form);
 	Terrain* getTerrian();
 private:
 	SharedPtr<Urho3D::Scene> scene;

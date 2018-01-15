@@ -19,11 +19,12 @@ struct NewGameTeamLine
 
 	Urho3D::XMLFile* style;
 	Urho3D::Localization* l10n;
+	int id;
 
-
-	void init(Urho3D::XMLFile* style, Urho3D::Localization* l10n) {
+	void init(Urho3D::XMLFile* style, Urho3D::Localization* l10n, int _id) {
 		this->style = style;
 		this->l10n = l10n;
+		id = id;
 	}
 
 	void populateTeams(Urho3D::BorderImage* row) {
@@ -57,6 +58,7 @@ struct NewGameTeamLine
 		player.color = color->GetSelection();
 		player.nation = nation->GetSelection();
 		player.team = team->GetSelection();
+		player.id = id;
 		return player;
 	}
 };

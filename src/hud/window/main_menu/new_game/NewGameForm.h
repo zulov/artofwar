@@ -3,8 +3,7 @@
 
 struct NewGameForm
 {
-	NewGamePlayer playerOne;
-	NewGamePlayer enemy;
+	vector<NewGamePlayer> players;
 	int map;
 	int difficulty;
 	int gameSpeed;

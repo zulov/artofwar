@@ -68,7 +68,6 @@ void MainMenuNewGamePanel::HandleNewGame(StringHash eventType, VariantMap& event
 	data->gameSpeed=gameSpeed->GetSelection();
 	data->playerOne = myLine.getNewGamePlayer();
 	data->enemy = enemyLine.getNewGamePlayer();
-
 }
 
 void MainMenuNewGamePanel::populateLabels(Urho3D::Localization* l10n, int index, Urho3D::String name) {

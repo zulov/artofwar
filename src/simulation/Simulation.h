@@ -9,7 +9,7 @@
 #include "simulation/force/Force.h"
 #include <Urho3D/Input/Input.h>
 #include <vector>
-
+#include "hud/window/main_menu/new_game/NewGameForm.h"
 
 
 class SceneLoader;
@@ -27,6 +27,7 @@ public:
 	~Simulation();
 	void update(Input* input, float timeStep);
 	void initScene(SceneLoader& loader);
+	void initScene(NewGameForm* form);
 	int getUnitsNumber();
 	SimulationInfo* getInfo();
 	void dispose();
@@ -39,6 +40,7 @@ private:
 	void performAction();
 	float updateTime(float timeStep);
 
+	void loadEntities(NewGameForm* form);
 	void loadEntities(SceneLoader& loader);
 	void countFrame();
 	void applyForce();

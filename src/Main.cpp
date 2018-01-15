@@ -151,7 +151,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		gameState = GameState::MENU;
 		break;
 	case GameState::NEW_GAME:
-		newGame();
+		newGame(newGameForm);
 		break;
 	}
 }
@@ -264,7 +264,7 @@ void Main::newGame(NewGameForm * form) {
 		subscribeToUIEvents();
 		hud->resetLoading();
 
-		levelBuilder->createScene(loader);
+		levelBuilder->createScene(form);
 		}
 		break;
 	case 1:
@@ -284,11 +284,11 @@ void Main::newGame(NewGameForm * form) {
 		simulation = new Simulation(Game::get()->getEnviroment(), Game::get()->getCreationCommandList());
 		break;
 	case 4:
-		simulation->initScene(loader);
+		simulation->initScene(form);
 		break;
 	case 5:
 		gameState = GameState::RUNNING;
-		loader.end();
+		
 		hud->endLoading();
 		break;
 	}
