@@ -26,7 +26,7 @@ struct NewGameTeamLine
 	void init(Urho3D::XMLFile* style, Urho3D::Localization* l10n, int _id) {
 		this->style = style;
 		this->l10n = l10n;
-		id = id;
+		id = _id;
 	}
 
 	void populateTeams(Urho3D::BorderImage* row) {

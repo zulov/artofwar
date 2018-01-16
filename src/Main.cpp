@@ -254,9 +254,6 @@ void Main::newGame(NewGameForm* form) {
 	case 0:
 		{
 		disposeScene();
-		}
-	case 1:
-		{
 		Game::get()->setCameraManager(new CameraManager());
 
 		controls = new Controls(GetSubsystem<Input>());
@@ -273,26 +270,26 @@ void Main::newGame(NewGameForm* form) {
 		levelBuilder->createScene(form);
 		}
 		break;
-	case 2:
+	case 1:
 		{
 		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
 		Game::get()->setEnviroment(enviroment);
 		break;
 		}
-	case 3:
+	case 2:
 		{
 		//Game::get()->getEnviroment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
 		}
-	case 4:
+	case 3:
 		Game::get()->setCreationCommandList(new CreationCommandList());
 		simulation = new Simulation(Game::get()->getEnviroment(), Game::get()->getCreationCommandList());
 		break;
-	case 5:
+	case 4:
 		simulation->initScene(form);
 		break;
-	case 6:
+	case 5:
 
 		hud->endLoading();
 		delete form; //TODO trzeba ustawic na null

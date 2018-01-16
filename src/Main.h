@@ -86,5 +86,5 @@ private:
 	NewGameForm* newGameForm;
 	String saveToLoad = "quicksave";
 	int loadStages = 6;
-	int newGamesStages = 7;
+	int newGamesStages = 6;
 };
