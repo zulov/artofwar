@@ -151,11 +151,9 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		gameState = GameState::MENU;
 		break;
 	case GameState::NEW_GAME:
-		disposeScene();
+
 		newGame(newGameForm);
-		delete newGameForm;
-		newGameForm = nullptr;
-		gameState = GameState::RUNNING;
+
 		break;
 	}
 }
@@ -255,6 +253,10 @@ void Main::newGame(NewGameForm* form) {
 	switch (newGameProgress.currentStage) {
 	case 0:
 		{
+		disposeScene();
+		}
+	case 1:
+		{
 		Game::get()->setCameraManager(new CameraManager());
 
 		controls = new Controls(GetSubsystem<Input>());
@@ -271,29 +273,31 @@ void Main::newGame(NewGameForm* form) {
 		levelBuilder->createScene(form);
 		}
 		break;
-	case 1:
+	case 2:
 		{
 		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
 		Game::get()->setEnviroment(enviroment);
 		break;
 		}
-	case 2:
+	case 3:
 		{
 		//Game::get()->getEnviroment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
 		}
-	case 3:
+	case 4:
 		Game::get()->setCreationCommandList(new CreationCommandList());
 		simulation = new Simulation(Game::get()->getEnviroment(), Game::get()->getCreationCommandList());
 		break;
-	case 4:
+	case 5:
 		simulation->initScene(form);
 		break;
-	case 5:
-		gameState = GameState::RUNNING;
+	case 6:
 
 		hud->endLoading();
+		delete form; //TODO trzeba ustawic na null
+
+		gameState = GameState::RUNNING;
 		break;
 	}
 	newGameProgress.inc();
