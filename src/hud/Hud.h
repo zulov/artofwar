@@ -51,7 +51,7 @@ URHO3D_OBJECT(Hud, Object)
 	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
 	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
 	void resetLoading();
-	void endLoading();
+
 	void updateLoading(float progress);
 	Sprite* getSpriteMiniMapToSubscribe();
 	Button* getSaveButton();

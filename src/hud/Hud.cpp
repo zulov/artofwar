@@ -214,17 +214,7 @@ std::vector<HudElement*>& Hud::getButtonsUnitsToSubscribe() {
 }
 
 void Hud::resetLoading() {
-	for (auto panel : panels) {
-		panel->setVisible(false);
-	}
 	loadingPanel->show();
-}
-
-void Hud::endLoading() {
-	for (auto panel : panels) {
-		panel->setVisible(true);
-	}
-	loadingPanel->end();
 }
 
 void Hud::updateLoading(float progress) {

@@ -242,7 +242,7 @@ void Main::load() {
 
 		changeState(GameState::RUNNING);
 		loader.end();
-		hud->endLoading();
+
 		break;
 	}
 	loadingProgress.inc();
@@ -292,7 +292,6 @@ void Main::newGame(NewGameForm* form) {
 		break;
 	case 5:
 
-		hud->endLoading();
 		delete form; //TODO trzeba ustawic na null
 
 		changeState(GameState::RUNNING);
