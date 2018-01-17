@@ -31,6 +31,7 @@ void MainMenuNewGamePanel::createBody() {
 
 	myLine.populateTeams(rows[0]);
 	enemyLine.populateTeams(rows[1]);
+	myLine.setCheck(true);
 
 	map = createDropDownList(rows[2], "MainMenuNewGameDropDownList", style);
 	int mapsSize = Game::get()->getDatabaseCache()->getMapSize();
@@ -54,12 +55,22 @@ void MainMenuNewGamePanel::createBody() {
 	proceed->SetVar("NewGameForm", data);
 
 	SubscribeToEvent(proceed, E_CLICK, URHO3D_HANDLER(MainMenuNewGamePanel, HandleNewGame));
+	SubscribeToEvent(myLine.getCheckBox(), E_CLICK, URHO3D_HANDLER(MainMenuNewGamePanel, HandleCheck));
+	SubscribeToEvent(enemyLine.getCheckBox(), E_CLICK, URHO3D_HANDLER(MainMenuNewGamePanel, HandleCheck));
 
 	addChildText(proceed, "MainMenuNewGameButtonText", l10n->Get("start"), style);
 }
 
 Button* MainMenuNewGamePanel::getProceed() {
 	return proceed;
+}
+
+void MainMenuNewGamePanel::HandleCheck(StringHash eventType, VariantMap& eventData) {
+	myLine.setCheck(false);
+	enemyLine.setCheck(false);
+
+	CheckBox* element = static_cast<CheckBox*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	element->SetChecked(true);
 }
 
 void MainMenuNewGamePanel::HandleNewGame(StringHash eventType, VariantMap& eventData) {

@@ -66,4 +66,12 @@ struct NewGameTeamLine
 		player.active = chk->IsChecked();
 		return player;
 	}
+
+	CheckBox* getCheckBox() {
+		return chk;
+	}
+
+	void setCheck(bool check) {
+		chk->SetChecked(check);
+	}
 };
