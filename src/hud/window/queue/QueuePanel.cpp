@@ -6,10 +6,14 @@
 #include "Urho3D/Graphics/Texture2D.h"
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/Input/InputEvents.h>
+#include "GameState.h"
+
 
 QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "QueueWindow";
 	elements = new QueueHudElement*[MAX_ICON_SELECTION];
+	visibleAt.insert(GameState::RUNNING);
+	visibleAt.insert(GameState::PAUSE);
 }
 
 QueuePanel::~QueuePanel() {

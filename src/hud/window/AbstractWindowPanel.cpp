@@ -19,10 +19,10 @@ Urho3D::String& AbstractWindowPanel::getStyleName() {
 
 Urho3D::Window* AbstractWindowPanel::createWindow() {
 	window = Game::get()->getUI()->GetRoot()->CreateChild<Urho3D::Window>();
-	window->SetStyle(getStyleName(), style);	
+	window->SetStyle(getStyleName(), style);
 
 	createBody();
-	
+
 	return window;
 }
 
@@ -30,3 +30,6 @@ void AbstractWindowPanel::setVisible(bool enable) {
 	window->SetVisible(enable);
 }
 
+void AbstractWindowPanel::updateStateVisibilty(GameState state) {
+	setVisible(visibleAt.find(state) != visibleAt.end());
+}

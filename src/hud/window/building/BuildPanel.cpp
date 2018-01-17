@@ -6,11 +6,15 @@
 #include "database/DatabaseCache.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include "utils.h"
+#include "GameState.h"
 
 
 BuildPanel::BuildPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {
 	nation = _nation;
 	styleName = "BuildWindow";
+
+	visibleAt.insert(GameState::RUNNING);
+	visibleAt.insert(GameState::PAUSE);
 }
 
 

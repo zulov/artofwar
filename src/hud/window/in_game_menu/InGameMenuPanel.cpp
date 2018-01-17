@@ -8,11 +8,15 @@
 #include "middle/FilePanel.h"
 #include <Urho3D/UI/UIEvents.h>
 #include "utils.h"
+#include "GameState.h"
 
 #define IN_GAME_MENU_BUTTON_NUMBER 5
 
 InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "InGameMenuWindow";
+
+	visibleAt.insert(GameState::RUNNING);
+	visibleAt.insert(GameState::PAUSE);
 }
 
 InGameMenuPanel::~InGameMenuPanel() {

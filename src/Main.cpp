@@ -64,7 +64,7 @@ void Main::Start() {
 	hud = new Hud();
 	hud->preapreUrho();
 	InitMouseMode(MM_RELATIVE);
-	gameState = GameState::MENU;
+	gameState = GameState::MENU_MAIN;
 }
 
 void Main::Stop() {
@@ -136,8 +136,8 @@ void Main::running(VariantMap& eventData) {
 
 void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	switch (gameState) {
-	case GameState::MENU:
-		gameState = GameState::LOADING;
+	case GameState::MENU_MAIN:
+		changeState(GameState::LOADING);
 		break;
 	case GameState::LOADING:
 		load();
@@ -148,7 +148,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	case GameState::PAUSE: break;
 	case GameState::CLOSING:
 		disposeScene();
-		gameState = GameState::MENU;
+		changeState(GameState::MENU_MAIN);
 		break;
 	case GameState::NEW_GAME:
 
@@ -239,7 +239,8 @@ void Main::load() {
 		simulation->initScene(loader);
 		break;
 	case 5:
-		gameState = GameState::RUNNING;
+
+		changeState(GameState::RUNNING);
 		loader.end();
 		hud->endLoading();
 		break;
@@ -294,11 +295,16 @@ void Main::newGame(NewGameForm* form) {
 		hud->endLoading();
 		delete form; //TODO trzeba ustawic na null
 
-		gameState = GameState::RUNNING;
+		changeState(GameState::RUNNING);
 		break;
 	}
 	newGameProgress.inc();
 	hud->updateLoading(newGameProgress.getProgres());
+}
+
+void Main::changeState(GameState newState) {
+	gameState = newState;
+	hud->updateStateVisibilty(newState);
 }
 
 void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
@@ -322,16 +328,17 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 		save(name);
 	} else if (key == KEY_F9) {
 		saveToLoad = "quicksave";
-		gameState = GameState::CLOSING;
+
+		changeState(GameState::CLOSING);
 	}
 }
 
 void Main::HandleNewGame(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	NewGameForm* form = static_cast<NewGameForm *>(element->GetVar("NewGameForm").GetVoidPtr());
-	gameState = GameState::NEW_GAME;
-	newGameForm = new NewGameForm(*form);
 
+	changeState(GameState::NEW_GAME);
+	newGameForm = new NewGameForm(*form);
 }
 
 void Main::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {

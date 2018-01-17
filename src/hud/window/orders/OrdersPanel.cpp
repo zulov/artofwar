@@ -8,13 +8,14 @@
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/ListView.h>
 #include <unordered_set>
-
+#include "GameState.h"
 
 
 OrdersPanel::OrdersPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "OrdersWindow";
+	visibleAt.insert(GameState::RUNNING);
+	visibleAt.insert(GameState::PAUSE);
 }
-
 
 OrdersPanel::~OrdersPanel() {
 	clear_vector(buttons);

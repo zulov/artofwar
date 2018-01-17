@@ -9,12 +9,16 @@
 #include <Urho3D/UI/ListView.h>
 #include <algorithm>
 #include <unordered_set>
+#include "GameState.h"
 
 
 
 UnitsPanel::UnitsPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {
 	nation = _nation;
 	styleName = "UnitsWindow";
+
+	visibleAt.insert(GameState::RUNNING);
+	visibleAt.insert(GameState::PAUSE);
 }
 
 

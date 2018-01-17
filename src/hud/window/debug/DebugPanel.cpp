@@ -1,8 +1,12 @@
 #include "DebugPanel.h"
+#include "GameState.h"
 
 
 DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "MyDebugHudWindow";
+
+	visibleAt.insert(GameState::RUNNING);
+	visibleAt.insert(GameState::PAUSE);
 }
 
 

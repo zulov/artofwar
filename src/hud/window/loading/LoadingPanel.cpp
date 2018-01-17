@@ -1,9 +1,13 @@
 #include "LoadingPanel.h"
 #include <Urho3D/UI/UI.h>
+#include "GameState.h"
 
 
 LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "LoadingWindow";
+	
+	visibleAt.insert(GameState::LOADING);
+	visibleAt.insert(GameState::NEW_GAME);
 }
 
 

@@ -1,10 +1,13 @@
 #include "MenuPanel.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
+#include "GameState.h"
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "MenuWindow";
+	visibleAt.insert(GameState::RUNNING);
+	visibleAt.insert(GameState::PAUSE);
 }
 
 

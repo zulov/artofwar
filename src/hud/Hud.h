@@ -20,6 +20,7 @@
 #include "window/loading/LoadingPanel.h"
 #include "window/in_game_menu/InGameMenuPanel.h"
 #include "xml/rapidxml_print.hpp"
+#include "GameState.h"
 
 class MainMenuPanel;
 using namespace Urho3D;
@@ -55,6 +56,8 @@ URHO3D_OBJECT(Hud, Object)
 	Sprite* getSpriteMiniMapToSubscribe();
 	Button* getSaveButton();
 	Button* getNewGameProceed();
+
+	void updateStateVisibilty(GameState state);
 
 	void createMyPanels();
 	void prepareStyle();

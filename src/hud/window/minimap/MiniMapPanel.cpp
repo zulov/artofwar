@@ -11,6 +11,7 @@
 #include <Urho3D/UI/CheckBox.h>
 #include "player/PlayersManager.h"
 #include <Urho3D/UI/UIEvents.h>
+#include "GameState.h"
 
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -44,6 +45,9 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 	}
 
 	std::fill_n(checks, MINI_MAP_BUTTON_NUMBER, true);
+
+	visibleAt.insert(GameState::RUNNING);
+	visibleAt.insert(GameState::PAUSE);
 }
 
 

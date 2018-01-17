@@ -4,6 +4,7 @@
 #include "database/DatabaseCache.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include "GameState.h"
 
 
 TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -11,6 +12,8 @@ TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	const int size = Game::get()->getDatabaseCache()->getResourceSize();
 
 	elements = new TopHudElement*[size];
+	visibleAt.insert(GameState::RUNNING);
+	visibleAt.insert(GameState::PAUSE);
 }
 
 

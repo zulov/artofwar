@@ -173,7 +173,7 @@ void Hud::clear() {
 
 Hud::~Hud() {
 	clear();
-	
+
 	Game::get()->getUI()->GetCursor()->Remove();
 	//Game::get()->getUI()->GetRoot()->Remove();
 }
@@ -241,6 +241,12 @@ Button* Hud::getSaveButton() {
 
 Button* Hud::getNewGameProceed() {
 	return mainMenuPanel->getNewGameProceed();
+}
+
+void Hud::updateStateVisibilty(GameState state) {
+	for (auto panel : panels) {
+		panel->updateStateVisibilty(state);
+	}
 }
 
 void Hud::updateSelected(SelectedInfo* selectedInfo) {

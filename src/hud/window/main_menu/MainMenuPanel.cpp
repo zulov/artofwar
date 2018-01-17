@@ -6,10 +6,11 @@
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
-
+#include "GameState.h"
 
 MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "MainMenuWindow";
+	visibleAt.insert(GameState::MENU_MAIN);
 }
 
 
