@@ -5,11 +5,12 @@
 class Player
 {
 public:
-	Player(int nationId, int team, int _id, Urho3D::String _name);
+	Player(int nationId, int team, int _id, int _color, Urho3D::String _name);
 	~Player();
 	int getNation();
 	int getTeam();
 	int getId();
+	int getColor();
 	Resources& getResources();
 	std::string getValues(int precision);
 	void setResourceAmount(int resource, float amount);
@@ -20,4 +21,5 @@ private:
 	Urho3D::String name;
 	int team;
 	int id;
+	int color;
 };

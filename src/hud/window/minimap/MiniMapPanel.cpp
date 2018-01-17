@@ -17,15 +17,20 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 	styleName = "MiniMapWindow";
 
 	for (int i = 0; i < PLAYER_COLORS_NUMBER_DB; ++i) {
-		db_player_colors* col = Game::get()->getDatabaseCache()->getPlayerColor(i);
+		unitsColors[i] = 0xFF505050;
+		buildingColors[i] = 0xFF505050;
+	}
+
+	PlayersManager* playerManager = Game::get()->getPlayersManager();
+	for (auto player : playerManager->getAllPlayers()) {
+		db_player_colors* col = Game::get()->getDatabaseCache()->getPlayerColor(player->getColor());
+
 		if (col) {
-			unitsColors[i] = col->unit;
-			buildingColors[i] = col->building;
-		} else {
-			unitsColors[i] = 0xFF505050;
-			buildingColors[i] = 0xFF505050;
+			unitsColors[player->getId()] = col->unit;
+			buildingColors[player->getId()] = col->building;
 		}
 	}
+
 
 	int size = Game::get()->getDatabaseCache()->getResourceSize();
 

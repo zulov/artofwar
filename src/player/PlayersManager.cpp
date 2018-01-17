@@ -10,7 +10,7 @@ PlayersManager::~PlayersManager() {
 
 void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dbload_resource*>* resources) {
 	for (auto player : *players) {
-		Player* newPlayer = new Player(player->nation, player->team, player->id, player->name);
+		Player* newPlayer = new Player(player->nation, player->team, player->id, player->color, player->name);
 		if (player->is_active) {
 			activePlayer = newPlayer;
 		}
@@ -28,13 +28,13 @@ void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dblo
 
 }
 
-void PlayersManager::addPlayer(NewGamePlayer playerOne) {
-	Player* newPlayer = new Player(playerOne.nation, playerOne.team, playerOne.id, playerOne.name);
-	if (playerOne.active) {
+void PlayersManager::addPlayer(NewGamePlayer player) {
+	Player* newPlayer = new Player(player.nation, player.team, player.id, player.color, player.name);
+	if (player.active) {
 		activePlayer = newPlayer;
 	}
 	allPlayers.push_back(newPlayer);
-	teams[playerOne.team].push_back(newPlayer);
+	teams[player.team].push_back(newPlayer);
 	newPlayer->setResourceAmount(10000);
 }
 
@@ -70,5 +70,10 @@ std::string PlayersManager::getColumns() {
 		"is_active		INT     NOT NULL,"
 		"team		INT     NOT NULL,"
 		"nation		INT     NOT NULL,"
-		"name		TEXT     NOT NULL";
+		"name		TEXT     NOT NULL,"
+		"color		INT     NOT NULL";
+}
+
+std::vector<Player*>& PlayersManager::getAllPlayers() {
+	return allPlayers;
 }

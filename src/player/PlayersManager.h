@@ -21,6 +21,7 @@ public:
 	void changeActive(short i);
 	void save(SceneSaver& saver);
 	static std::string getColumns();
+	std::vector<Player*>& getAllPlayers();
 private:
 	Player* activePlayer;
 	std::vector<Player*> allPlayers;
