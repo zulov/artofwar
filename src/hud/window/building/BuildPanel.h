@@ -8,12 +8,11 @@ class SelectedInfo;
 class BuildPanel : public AbstractWindowPanel
 {
 public:
-	BuildPanel(Urho3D::XMLFile* _style, int _nation);
+	BuildPanel(Urho3D::XMLFile* _style);
 	~BuildPanel();
 	std::vector<HudElement*>& getButtons();
 	void show();
 private:
 	void createBody() override;
 	std::vector<HudElement*> buttons;
-	int nation;
 };

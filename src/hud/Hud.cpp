@@ -64,20 +64,19 @@ void Hud::createCursor() {
 }
 
 void Hud::createMyPanels() {
-	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
 
 	panels.push_back(selectedHudPanel = new SelectedHudPanel(style));
-	panels.push_back(buildPanel = new BuildPanel(style, nation));
-	panels.push_back(unitsPanel = new UnitsPanel(style, nation));
+	panels.push_back(buildPanel = new BuildPanel(style));
+	panels.push_back(unitsPanel = new UnitsPanel(style));
 	panels.push_back(debugPanel = new DebugPanel(style));
 	panels.push_back(topPanel = new TopPanel(style));
-	panels.push_back(miniMapPanel = new MiniMapPanel(style));
 	panels.push_back(menuPanel = new MenuPanel(style));
 	panels.push_back(ordersPanel = new OrdersPanel(style));
 	panels.push_back(queuePanel = new QueuePanel(style));
 	panels.push_back(loadingPanel = new LoadingPanel(style));
 	panels.push_back(inGameMenuPanel = new InGameMenuPanel(style));
 	panels.push_back(mainMenuPanel = new MainMenuPanel(style));
+	panels.push_back(miniMapPanel = new MiniMapPanel(style));
 
 	menuPanel->createWindow();
 	buildPanel->createWindow();
@@ -189,8 +188,8 @@ void Hud::createConsole() {
 	console->GetBackground()->SetOpacity(0.8f);
 }
 
-void Hud::update(Benchmark* benchmark, CameraManager* cameraManager) {
-	debugPanel->setText(benchmark->getLastFPS(), benchmark->getAverageFPS(), benchmark->getLoops(),
+void Hud::update(Benchmark& benchmark, CameraManager* cameraManager) {
+	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
 	                    cameraManager->getInfo());
 
 	topPanel->update(Game::get()->getPlayersManager()->getActivePlayer()->getResources());

@@ -35,9 +35,10 @@ URHO3D_OBJECT(Hud, Object)
 	void clear();
 	~Hud();
 
-	void update(Benchmark* benchmark, CameraManager* cameraManager);
+	void update(Benchmark& benchmark, CameraManager* cameraManager);
 	void update(int unitsNumber);
 	void createMiniMap();
+
 	void updateSelected(SelectedInfo* selectedInfo);
 
 	void hoverOnIcon(HudElement* hudElement);

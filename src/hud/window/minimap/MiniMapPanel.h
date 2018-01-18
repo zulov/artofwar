@@ -14,6 +14,7 @@
 class MiniMapPanel : public AbstractWindowPanel
 {
 public:
+	void initColors();
 	MiniMapPanel(Urho3D::XMLFile* _style);
 	~MiniMapPanel();
 	void createEmpty(int parts);

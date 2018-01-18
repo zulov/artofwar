@@ -7,10 +7,10 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include "utils.h"
 #include "GameState.h"
+#include "player/PlayersManager.h"
 
 
-BuildPanel::BuildPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {
-	nation = _nation;
+BuildPanel::BuildPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "BuildWindow";
 
 	visibleAt.insert(GameState::RUNNING);
@@ -28,6 +28,16 @@ std::vector<HudElement*>& BuildPanel::getButtons() {
 
 void BuildPanel::show() {
 	setVisible(true);
+	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
+	for (auto button : buttons) {
+
+		db_building* building = Game::get()->getDatabaseCache()->getBuilding(button->getId());
+		if (building->nation == nation) {
+			button->getUIElement()->SetVisible(true);
+		} else {
+			button->getUIElement()->SetVisible(false);
+		}
+	}
 }
 
 void BuildPanel::createBody() {
@@ -39,18 +49,19 @@ void BuildPanel::createBody() {
 
 	for (int i = 0; i < size; ++i) {
 		db_building* building = Game::get()->getDatabaseCache()->getBuilding(i);
-		if (building == nullptr || building->nation != nation) { continue; }
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + building->icon);
+		if (building) {
+			Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + building->icon);
 
-		MySprite* sprite = createSprite(texture, style, "Sprite");
-		Button* button = simpleButton(sprite, style, "Icon");
+			MySprite* sprite = createSprite(texture, style, "Sprite");
+			Button* button = simpleButton(sprite, style, "Icon");
 
-		HudElement* hudElement = new HudElement(button);
-		hudElement->setId(i, ObjectType::BUILDING);
+			HudElement* hudElement = new HudElement(button);
+			hudElement->setId(i, ObjectType::BUILDING);
 
-		button->SetVar("HudElement", hudElement);
-		buttons.push_back(hudElement);
-		panel->AddItem(button);
+			button->SetVar("HudElement", hudElement);
+			buttons.push_back(hudElement);
+			panel->AddItem(button);
+		}
 	}
 	BorderImage* element = panel->CreateChild<BorderImage>();
 	element->SetStyle("EditorDivider", style);

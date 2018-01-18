@@ -22,17 +22,6 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 		buildingColors[i] = 0xFF505050;
 	}
 
-	PlayersManager* playerManager = Game::get()->getPlayersManager();
-	for (auto player : playerManager->getAllPlayers()) {
-		db_player_colors* col = Game::get()->getDatabaseCache()->getPlayerColor(player->getColor());
-
-		if (col) {
-			unitsColors[player->getId()] = col->unit;
-			buildingColors[player->getId()] = col->building;
-		}
-	}
-
-
 	int size = Game::get()->getDatabaseCache()->getResourceSize();
 
 	for (int i = 0; i < size; ++i) {
@@ -58,7 +47,25 @@ MiniMapPanel::~MiniMapPanel() {
 	clear_vector(hudElements);
 }
 
+void MiniMapPanel::initColors() {
+	for (int i = 0; i < PLAYER_COLORS_NUMBER_DB; ++i) {
+		unitsColors[i] = 0xFF505050;
+		buildingColors[i] = 0xFF505050;
+	}
+
+	PlayersManager* playerManager = Game::get()->getPlayersManager();
+	for (auto player : playerManager->getAllPlayers()) {
+		db_player_colors* col = Game::get()->getDatabaseCache()->getPlayerColor(player->getColor());
+
+		if (col) {
+			unitsColors[player->getId()] = col->unit;
+			buildingColors[player->getId()] = col->building;
+		}
+	}
+}
+
 void MiniMapPanel::createEmpty(int parts) {
+	initColors();
 	IntVector2 size = spr->GetSize();
 	Enviroment* env = Game::get()->getEnviroment();
 	uint32_t* data = (uint32_t*)minimap->GetData();

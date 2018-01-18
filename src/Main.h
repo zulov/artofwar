@@ -74,7 +74,7 @@ private:
 
 	MouseMode useMouseMode_;
 	Simulation* simulation;
-	Benchmark* benchmark;
+	Benchmark benchmark;
 	Hud* hud;
 	Controls* controls;
 	LevelBuilder* levelBuilder;
@@ -88,4 +88,6 @@ private:
 	String saveToLoad = "quicksave";
 	int loadStages = 6;
 	int newGamesStages = 6;
+
+	bool inited = false;
 };

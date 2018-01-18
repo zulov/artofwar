@@ -35,6 +35,7 @@ void MainMenuPanel::close() {
 
 void MainMenuPanel::setVisible(bool enable) {
 	AbstractWindowPanel::setVisible(enable);
+	close();
 }
 
 Urho3D::Button* MainMenuPanel::getNewGameProceed() {

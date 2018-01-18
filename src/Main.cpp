@@ -57,20 +57,21 @@ void Main::Start() {
 
 	SetWindowTitleAndIcon();
 	InitLocalizationSystem();
-	benchmark = new Benchmark();
 
 	subscribeToEvents();
 
 	hud = new Hud();
 	hud->preapreUrho();
+	hud->createMyPanels();
+	subscribeToUIEvents();
 	InitMouseMode(MM_RELATIVE);
-	gameState = GameState::MENU_MAIN;
+	changeState(GameState::MENU_MAIN);
 }
 
 void Main::Stop() {
 	disposeScene();
 
-	delete benchmark;
+	hud->clear();
 	delete hud;
 	Game::dispose();
 	engine_->DumpResources(true);
@@ -113,7 +114,7 @@ void Main::subscribeToEvents() {
 
 void Main::running(VariantMap& eventData) {
 	const double timeStep = eventData[SceneUpdate::P_TIMESTEP].GetDouble();
-	benchmark->add(1.0 / timeStep);
+	benchmark.add(1.0 / timeStep);
 
 	simulation->update(GetSubsystem<Input>(), timeStep);
 	SimulationInfo* simulationInfo = simulation->getInfo();
@@ -137,7 +138,7 @@ void Main::running(VariantMap& eventData) {
 void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	switch (gameState) {
 	case GameState::MENU_MAIN:
-		changeState(GameState::LOADING);
+		//changeState(GameState::LOADING);
 		break;
 	case GameState::LOADING:
 		load();
@@ -151,9 +152,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		changeState(GameState::MENU_MAIN);
 		break;
 	case GameState::NEW_GAME:
-
 		newGame(newGameForm);
-
 		break;
 	}
 }
@@ -212,7 +211,6 @@ void Main::load() {
 		Game::get()->setPlayersManager(new PlayersManager());
 		Game::get()->getPlayersManager()->load(loader.loadPlayers(), loader.loadResources());
 
-		hud->createMyPanels();
 		subscribeToUIEvents();
 		hud->resetLoading();
 
@@ -242,7 +240,7 @@ void Main::load() {
 
 		changeState(GameState::RUNNING);
 		loader.end();
-
+		inited = true;
 		break;
 	}
 	loadingProgress.inc();
@@ -264,8 +262,7 @@ void Main::newGame(NewGameForm* form) {
 		Game::get()->setPlayersManager(new PlayersManager());
 		Game::get()->getPlayersManager()->load(form);
 
-		hud->createMyPanels();
-		subscribeToUIEvents();
+
 		hud->resetLoading();
 
 		levelBuilder->createScene(form);
@@ -295,6 +292,7 @@ void Main::newGame(NewGameForm* form) {
 		delete form; //TODO trzeba ustawic na null
 
 		changeState(GameState::RUNNING);
+		inited = true;
 		break;
 	}
 	newGameProgress.inc();
@@ -423,40 +421,39 @@ void Main::SetupViewport() {
 }
 
 void Main::disposeScene() {
-	loading loading2;
-	Game::get()->getScene()->SetUpdateEnabled(false);
+	if (inited) {
+		loading loading2;
+		Game::get()->getScene()->SetUpdateEnabled(false);
 
-	loading2.reset(4, "dispose simulation");
-	delete simulation;
-	simulation = nullptr;
+		loading2.reset(4, "dispose simulation");
+		delete simulation;
+		simulation = nullptr;
 
-	loading2.inc("dispose cameras");
-	delete Game::get()->getCameraManager();
-	Game::get()->setCameraManager(nullptr);
+		loading2.inc("dispose cameras");
+		delete Game::get()->getCameraManager();
+		Game::get()->setCameraManager(nullptr);
 
-	loading2.inc("dispose creationList");
-	delete Game::get()->getCreationCommandList();
-	Game::get()->setCreationCommandList(nullptr);
+		loading2.inc("dispose creationList");
+		delete Game::get()->getCreationCommandList();
+		Game::get()->setCreationCommandList(nullptr);
 
-	loading2.inc("dispose enviroment");
-	delete Game::get()->getEnviroment();
-	Game::get()->setEnviroment(nullptr);
+		loading2.inc("dispose enviroment");
+		delete Game::get()->getEnviroment();
+		Game::get()->setEnviroment(nullptr);
 
-	loading2.inc("dispose playerManager");
-	delete Game::get()->getPlayersManager();
-	Game::get()->setPlayersManager(nullptr);
+		loading2.inc("dispose playerManager");
+		delete Game::get()->getPlayersManager();
+		Game::get()->setPlayersManager(nullptr);
 
-	loading2.inc("dispose controls");
-	delete controls;
-	controls = nullptr;
+		loading2.inc("dispose controls");
+		delete controls;
+		controls = nullptr;
 
-	loading2.inc("dispose hud");
-	hud->clear();
-
-	loading2.inc("dispose levelBuilder");
-	delete levelBuilder;
-	levelBuilder = nullptr;
-
+		loading2.inc("dispose levelBuilder");
+		delete levelBuilder;
+		levelBuilder = nullptr;
+	}
+	inited = false;
 	loadingProgress.reset(loadStages);
 	newGameProgress.reset(newGamesStages);
 }

@@ -10,11 +10,10 @@
 #include <algorithm>
 #include <unordered_set>
 #include "GameState.h"
+#include "player/PlayersManager.h"
 
 
-
-UnitsPanel::UnitsPanel(Urho3D::XMLFile* _style, int _nation): AbstractWindowPanel(_style) {
-	nation = _nation;
+UnitsPanel::UnitsPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "UnitsWindow";
 
 	visibleAt.insert(GameState::RUNNING);
@@ -34,16 +33,18 @@ void UnitsPanel::show(SelectedInfo* selectedInfo) {
 	setVisible(true);
 	vector<SelectedInfoType*> infoTypes = selectedInfo->getSelecteType();
 
-	unordered_set<int> common = {0,1,2,3,4,5,6,7,8,9,10};
-
+	unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		std::vector<Physical*>& data = infoTypes.at(i)->getData();
 		if (!data.empty()) {
 			std::vector<db_unit*>* units = Game::get()->getDatabaseCache()->getUnitsForBuilding(i);
 			unordered_set<int> common2;
-			for (auto & unit : *units) {
+			for (auto& unit : *units) {
 				//todo to zrobic raz i pobierac
-				common2.insert(unit->id);
+				if (unit->nation == nation) {
+					common2.insert(unit->id);
+				}
 			}
 			unordered_set<int> temp(common);
 			for (const auto& id : temp) {
@@ -72,17 +73,18 @@ void UnitsPanel::createBody() {
 
 	for (int i = 0; i < size; ++i) {
 		db_unit* unit = Game::get()->getDatabaseCache()->getUnit(i);
-		if (unit == nullptr || unit->nation != nation) { continue; }
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
+		if (unit) {
+			Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
-		MySprite* sprite = createSprite(texture, style, "Sprite");
-		Button* button = simpleButton(sprite, style, "Icon");
+			MySprite* sprite = createSprite(texture, style, "Sprite");
+			Button* button = simpleButton(sprite, style, "Icon");
 
-		HudElement* hudElement = new HudElement(button);
-		hudElement->setId(i, ObjectType::UNIT);
+			HudElement* hudElement = new HudElement(button);
+			hudElement->setId(i, ObjectType::UNIT);
 
-		button->SetVar("HudElement", hudElement);
-		buttons.push_back(hudElement);
-		panel->AddItem(button);
+			button->SetVar("HudElement", hudElement);
+			buttons.push_back(hudElement);
+			panel->AddItem(button);
+		}
 	}
 }
