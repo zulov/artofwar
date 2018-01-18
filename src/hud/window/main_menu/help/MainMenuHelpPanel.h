@@ -7,7 +7,7 @@
 
 
 #define HELP_ITEMS 5
-class MainMenuHelpPanel :public MainMenuDetailsPanel
+class MainMenuHelpPanel : public MainMenuDetailsPanel
 {
 public:
 	MainMenuHelpPanel(Urho3D::XMLFile* _style, Urho3D::String _title);

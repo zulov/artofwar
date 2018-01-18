@@ -116,6 +116,9 @@
 	},
 	"fast":{
 		"pl":"Szybki"
+	},
+	"load":{
+		"pl":"Wczytaj"
 	}
 	
 }

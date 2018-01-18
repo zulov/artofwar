@@ -62,7 +62,6 @@
 		<attribute name="Layout Mode" value="Horizontal" />
 	</element>
 
-	
 	<element type="HelpList" style="ListView" >
 	
 		<attribute name="Min Size" value="{iconX*4} {bigY/2}" />
@@ -123,6 +122,7 @@
         <attribute name="Min Size" value="{iconX*3} {iconY}" />
         <attribute name="Max Size" value="{iconX*3} {iconY}" />
     </element>
+	
 	<element type="MainMenuNewGameButtonText" style="MyText">
         <attribute name="Horiz Alignment" value="Center" />
 		<attribute name="Vert Alignment" value="Center" />
@@ -131,5 +131,59 @@
 	<element type="MainMenuNewGameButtonLabel" style="MyText">
         <attribute name="Max Size" value="{iconX*3} {iconY}" />
     </element>
+	
+	<element type="MainMenuLoadMock" style="MainMenuMock">
+		<attribute name="Layout Mode" value="Vertical" />
+	</element>
+	
+	<element type="LoadList" style="ListView" >
+		<attribute name="Min Size" value="{iconX*5} {bigY/2}" />
+        <attribute name="Max Size" value="{iconX*5} {bigY-iconY*4}" />
+
+		<attribute name="Horiz Alignment" value="Center" />
+	</element>
+	
+	<element type="LoadContent" style="ScrollView" >
+		<attribute name="Min Size" value="{bigX/2} {bigY-iconY*4}" />
+        <attribute name="Max Size" value="{bigX/2} {bigY-iconY*4}" />
+		<attribute name="Horiz Alignment" value="Right" />
+		<attribute name="Vert Alignment" value="Center" />
+		<attribute name="Position" value="{-iconX} 0"/>
+	</element>
+	
+	<element type="LoadListButton" style="Button" >
+		<attribute name="Min Size" value="{iconX*2} {iconY*2/3}"/>
+		<attribute name="Max Size" value="{iconX*5} {iconY*2/3}"/>
+	</element>
+	
+	<element type="LoadListText" style="MyText" >
+		<attribute name="Font Size" value="{fontSize}" />
+		<attribute name="Vert Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Center" />
+	</element>
+	
+	<element type="LoadButton" style="Button">
+        <attribute name="Min Size" value="{iconX*3} {iconY}" />
+        <attribute name="Max Size" value="{iconX*4} {iconY}" />
+		<attribute name="Horiz Alignment" value="Center" />
+    </element>
+	
+	<element type="LoadButtonText" style="MyText" >
+		<attribute name="Font Size" value="{fontSize*1.2}" />
+		<attribute name="Vert Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Center" />
+	</element>
+	
+	<element type="LoadLeftMock">
+		<attribute name="Min Size" value="{iconX*5} {bigY/2}" />
+        <attribute name="Max Size" value="{iconX*5} {bigY-iconY*4}" />
+
+		<attribute name="Horiz Alignment" value="Left" />
+		<attribute name="Vert Alignment" value="Center" />
+		<attribute name="Position" value="{iconX} 0"/>
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Layout Spacing" value="{iconY/2}" />
+	</element>
+	
 	
 </elements>

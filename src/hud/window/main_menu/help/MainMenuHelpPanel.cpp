@@ -32,7 +32,6 @@ void MainMenuHelpPanel::createBody() {
 		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(MainMenuHelpPanel, HandleButtonClick));
 	}
 
-
 	content = window->CreateChild<Urho3D::ScrollView>();
 	content->SetStyle("HelpContent", style);
 
