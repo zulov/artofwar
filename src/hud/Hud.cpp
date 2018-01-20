@@ -236,6 +236,10 @@ Button* Hud::getLoadButton() {
 	return mainMenuPanel->getLoadButton();
 }
 
+Button* Hud::getCloseButton() {
+	return mainMenuPanel->getCloseButton();
+}
+
 void Hud::updateStateVisibilty(GameState state) {
 	for (auto panel : panels) {
 		panel->updateStateVisibilty(state);

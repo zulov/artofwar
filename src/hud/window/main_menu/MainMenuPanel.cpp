@@ -49,6 +49,10 @@ Urho3D::Button* MainMenuPanel::getLoadButton() {
 	return static_cast<MainMenuLoadPanel*>(detailsPanels[1])->getLoadButton();
 }
 
+Urho3D::Button* MainMenuPanel::getCloseButton() {
+	return static_cast<MainMenuClosePanel*>(detailsPanels[4])->getCloseButton();
+}
+
 void MainMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());

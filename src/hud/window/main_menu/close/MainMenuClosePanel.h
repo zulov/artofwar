@@ -1,5 +1,6 @@
 #pragma once
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
+#include <Urho3D/UI/Button.h>
 
 namespace Urho3D {
 	class Button;
@@ -10,8 +11,10 @@ class MainMenuClosePanel : public MainMenuDetailsPanel
 public:
 	MainMenuClosePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
 	~MainMenuClosePanel();
+	Urho3D::Button * getCloseButton();
 private:
 	void createBody() override;
+	void HandleCancelClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
 
 	Urho3D::Window * miniWindow; 

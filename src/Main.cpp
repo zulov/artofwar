@@ -100,6 +100,7 @@ void Main::subscribeToUIEvents() {
 	SubscribeToEvent(hud->getSaveButton(), E_CLICK, URHO3D_HANDLER(Main, HandleSaveScene));
 	SubscribeToEvent(hud->getNewGameProceed(), E_CLICK, URHO3D_HANDLER(Main, HandleNewGame));
 	SubscribeToEvent(hud->getLoadButton(), E_CLICK, URHO3D_HANDLER(Main, HandleLoadGame));
+	SubscribeToEvent(hud->getCloseButton(), E_CLICK, URHO3D_HANDLER(Main, HandleCloseGame));
 
 	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
 	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));
@@ -346,6 +347,10 @@ void Main::HandleLoadGame(StringHash eventType, VariantMap& eventData) {
 	changeState(GameState::LOADING);
 
 	saveToLoad = String(fileName);
+}
+
+void Main::HandleCloseGame(StringHash eventType, VariantMap& eventData) {
+	engine_->Exit();
 }
 
 void Main::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {

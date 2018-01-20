@@ -58,6 +58,7 @@ URHO3D_OBJECT(Hud, Object)
 	Button* getSaveButton();
 	Button* getNewGameProceed();
 	Button* getLoadButton();
+	Button* getCloseButton();
 
 	void updateStateVisibilty(GameState state);
 
