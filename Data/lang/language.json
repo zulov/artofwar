@@ -119,6 +119,21 @@
 	},
 	"load":{
 		"pl":"Wczytaj"
+	},
+	"yes":{
+		"pl":"Tak"
+	},
+	"no":{
+		"pl":"Nie"
+	},
+	"if_close":{
+		"pl":"Czy chcesz wyjść z gry"
+	},
+	"quit":{
+		"pl":"Wyjdź"
+	},
+	"cancel":{
+		"pl":"Anuluj"
 	}
 	
 }

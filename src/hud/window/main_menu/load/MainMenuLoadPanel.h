@@ -2,7 +2,6 @@
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 #include <Urho3D/UI/ListView.h>
 #include "hud/HudElement.h"
-#include <vector>
 #include <Urho3D/UI/Button.h>
 
 class MainMenuLoadPanel : public MainMenuDetailsPanel
@@ -19,6 +18,5 @@ private:
 	Urho3D::ListView * list;
 	Urho3D::ScrollView* content;
 
-	std::vector<HudElement*> listElements;
 	Urho3D::Button* loadButton;
 };

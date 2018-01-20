@@ -28,19 +28,14 @@ void MainMenuLoadPanel::createBody() {
 	fileSystem->ScanDir(files, "saves", "*.db", SCAN_FILES, false);
 
 	for (auto name : files) {
-
-
 		Urho3D::Button* button = simpleButton(nullptr, style, "LoadListButton");
 		Urho3D::Text* element = button->CreateChild<Text>();
-
-		HudElement* hudElement = new HudElement(button);
-		hudElement->setId(1, ENTITY);
+		
 		element->SetText(name);
 		element->SetStyle("LoadListText");
 		button->AddChild(element);
 		list->AddItem(button);
-		listElements.push_back(hudElement);
-		button->SetVar("HudElement", hudElement);
+
 		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(MainMenuLoadPanel, HandleLoadClick));
 	}
 

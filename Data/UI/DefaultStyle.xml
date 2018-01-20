@@ -464,5 +464,16 @@
 		<attribute name="Min Size" value="{iconX*3/4} {0}" />
         <attribute name="Max Size" value="{iconX*3/4} {iconY*3/4}" />
 	</element>
+	
+	<element type="MsgButton" style="Button">
+        <attribute name="Min Size" value="{iconX*2} {iconY*3/4}" />
+        <attribute name="Max Size" value="{iconX*2} {iconY*3/4}" />
+    </element>
+	
+	<element type="MsgTextButton" style="MyText" >
+		<attribute name="Font Size" value="{fontSize}" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Vert Alignment" value="Center" />
+	</element>
 		
 </elements>
