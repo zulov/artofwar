@@ -11,9 +11,10 @@ public:
 	MainMenuLoadPanel(Urho3D::XMLFile* _style, Urho3D::String _title);
 	~MainMenuLoadPanel();
 	void HandleLoadClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	Urho3D::Button * getLoadButton();
 private:
 	void createBody() override;
-	void action(short id);
+	void action(Urho3D::String saveName);
 	Urho3D::UIElement* leftMock;
 	Urho3D::ListView * list;
 	Urho3D::ScrollView* content;

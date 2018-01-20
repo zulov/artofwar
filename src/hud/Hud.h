@@ -57,6 +57,7 @@ URHO3D_OBJECT(Hud, Object)
 	Sprite* getSpriteMiniMapToSubscribe();
 	Button* getSaveButton();
 	Button* getNewGameProceed();
+	Button* getLoadButton();
 
 	void updateStateVisibilty(GameState state);
 

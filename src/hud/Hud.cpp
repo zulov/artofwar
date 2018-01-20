@@ -232,6 +232,10 @@ Button* Hud::getNewGameProceed() {
 	return mainMenuPanel->getNewGameProceed();
 }
 
+Button* Hud::getLoadButton() {
+	return mainMenuPanel->getLoadButton();
+}
+
 void Hud::updateStateVisibilty(GameState state) {
 	for (auto panel : panels) {
 		panel->updateStateVisibilty(state);

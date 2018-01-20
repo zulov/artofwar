@@ -99,6 +99,7 @@ void Main::subscribeToUIEvents() {
 
 	SubscribeToEvent(hud->getSaveButton(), E_CLICK, URHO3D_HANDLER(Main, HandleSaveScene));
 	SubscribeToEvent(hud->getNewGameProceed(), E_CLICK, URHO3D_HANDLER(Main, HandleNewGame));
+	SubscribeToEvent(hud->getLoadButton(), E_CLICK, URHO3D_HANDLER(Main, HandleLoadGame));
 
 	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
 	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));
@@ -324,7 +325,7 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 		String name = "test" + String(rand());
 		save(name);
 	} else if (key == KEY_F9) {
-		saveToLoad = "quicksave";
+		saveToLoad = "quicksave.db";
 
 		changeState(GameState::CLOSING);
 	}
@@ -336,6 +337,15 @@ void Main::HandleNewGame(StringHash eventType, VariantMap& eventData) {
 
 	changeState(GameState::NEW_GAME);
 	newGameForm = new NewGameForm(*form);
+}
+
+void Main::HandleLoadGame(StringHash eventType, VariantMap& eventData) {
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	String fileName = element->GetVar("LoadFileName").GetString();
+	
+	changeState(GameState::LOADING);
+
+	saveToLoad = String(fileName);
 }
 
 void Main::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {

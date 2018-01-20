@@ -16,6 +16,7 @@ public:
 	void close();
 	void setVisible(bool enable) override;
 	Urho3D::Button * getNewGameProceed();
+	Urho3D::Button * getLoadButton();
 	void HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 private:
 	void createBody() override;

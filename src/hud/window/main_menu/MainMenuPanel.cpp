@@ -45,6 +45,10 @@ Urho3D::Button* MainMenuPanel::getNewGameProceed() {
 	return static_cast<MainMenuNewGamePanel*>(detailsPanels[0])->getProceed();
 }
 
+Urho3D::Button* MainMenuPanel::getLoadButton() {
+	return static_cast<MainMenuLoadPanel*>(detailsPanels[1])->getLoadButton();
+}
+
 void MainMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());

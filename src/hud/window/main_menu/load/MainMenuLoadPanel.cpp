@@ -1,6 +1,9 @@
 #include "MainMenuLoadPanel.h"
 #include "hud/UiUtils.h"
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/IO/FileSystem.h>
+#include <iostream>
 
 
 namespace Urho3D {
@@ -18,15 +21,21 @@ void MainMenuLoadPanel::createBody() {
 	leftMock->SetStyle("LoadLeftMock", style);
 	list = leftMock->CreateChild<Urho3D::ListView>();
 	list->SetStyle("LoadList", style);
-	int savesNumber = 5;
-	for (int i = 0; i < savesNumber; ++i) {
+
+	FileSystem* fileSystem = GetSubsystem<FileSystem>();
+
+	Vector<String> files;
+	fileSystem->ScanDir(files, "saves", "*.db", SCAN_FILES, false);
+
+	for (auto name : files) {
+
 
 		Urho3D::Button* button = simpleButton(nullptr, style, "LoadListButton");
 		Urho3D::Text* element = button->CreateChild<Text>();
 
 		HudElement* hudElement = new HudElement(button);
-		hudElement->setId(i, ENTITY);
-		element->SetText(Game::get()->getLocalization()->Get("help_key_" + String(i)));
+		hudElement->setId(1, ENTITY);
+		element->SetText(name);
 		element->SetStyle("LoadListText");
 		button->AddChild(element);
 		list->AddItem(button);
@@ -42,7 +51,7 @@ void MainMenuLoadPanel::createBody() {
 	addChildText(loadButton, "LoadButtonText", Game::get()->getLocalization()->Get("load"), style);
 }
 
-void MainMenuLoadPanel::action(short id) {
+void MainMenuLoadPanel::action(String saveName) {
 }
 
 
@@ -50,8 +59,13 @@ MainMenuLoadPanel::~MainMenuLoadPanel() {
 }
 
 void MainMenuLoadPanel::HandleLoadClick(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
+	Button* element = static_cast<Button*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	Text* text = static_cast<Text*>(element->GetChild(0));
+	std::cout<<text->GetText().CString();
+	loadButton->SetVar("LoadFileName", text->GetText());
+	action(text->GetText());
+}
 
-	action(hudElement->getId());
+Urho3D::Button* MainMenuLoadPanel::getLoadButton() {
+	return loadButton;
 }

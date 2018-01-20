@@ -56,6 +56,7 @@ private:
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
 	void HandleNewGame(StringHash eventType, VariantMap& eventData);
+	void HandleLoadGame(StringHash eventType, VariantMap& eventData);
 	void HandleSaveScene(StringHash, VariantMap& eventData);
 	void HandleMiniMapClick(StringHash eventType, VariantMap& eventData);
 	void HandleBuildButton(StringHash eventType, VariantMap& eventData);
