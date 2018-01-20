@@ -158,6 +158,9 @@
 	},
 	"mmsp_shadow":{
 		"pl":"Cienie"
+	},
+	"mmsp_save":{
+		"pl":"Zapisz ustawienia"
 	}
 	
 }

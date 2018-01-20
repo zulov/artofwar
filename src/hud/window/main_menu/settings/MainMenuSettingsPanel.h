@@ -1,6 +1,7 @@
 #pragma once
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 #include <Urho3D/Resource/Localization.h>
+#include <Urho3D/UI/Button.h>
 
 #define SETTINGS_ROWS_NUMBER 8
 
@@ -14,4 +15,5 @@ private:
 	void populateLabels(int index, Urho3D::String name);
 
 	Urho3D::BorderImage* rows[SETTINGS_ROWS_NUMBER];
+	Urho3D::Button* save;
 };

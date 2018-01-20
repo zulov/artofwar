@@ -233,8 +233,24 @@
         <attribute name="Resize Border" value="4 4 4 4" />
 	</element>
 	
+	<element type="MainMenuSettingsMock" style="MainMenuMock">
+		<attribute name="Layout Mode" value="Vertical" />
+	</element>
+	
 	<element type="MainMenuSettingsLabel" style="MyText">
         <attribute name="Max Size" value="{iconX*3} {iconY}" />
     </element>
+	
+	<element type="MainMenuSettingsButton" style="Button">
+        <attribute name="Min Size" value="{iconX*3} {iconY}" />
+        <attribute name="Max Size" value="{iconX*4} {iconY}" />
+		<attribute name="Horiz Alignment" value="Center" />
+    </element>
+	
+	<element type="MainMenuSettingsButtonText" style="MyText" >
+		<attribute name="Font Size" value="{fontSize*1.2}" />
+		<attribute name="Vert Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Center" />
+	</element>
 	
 </elements>

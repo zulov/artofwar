@@ -1,10 +1,12 @@
 #include "MainMenuSettingsPanel.h"
 #include <Urho3D/Resource/Localization.h>
 #include "Game.h"
+#include "hud/UiUtils.h"
 
 
 MainMenuSettingsPanel::
 MainMenuSettingsPanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDetailsPanel(_style, _title) {
+	bodyStyle = "MainMenuSettingsMock";
 }
 
 MainMenuSettingsPanel::~MainMenuSettingsPanel() {
@@ -16,7 +18,7 @@ void MainMenuSettingsPanel::createBody() {
 		rows[i] = body->CreateChild<Urho3D::BorderImage>();
 		rows[i]->SetStyle("MainMenuSettingsRow");
 	}
-	
+
 
 	populateLabels(0, "mmsp_settings");
 	populateLabels(1, "mmsp_resolution");
@@ -26,6 +28,12 @@ void MainMenuSettingsPanel::createBody() {
 	populateLabels(5, "mmsp_vSync");
 	populateLabels(6, "mmsp_texture_quality");
 	populateLabels(7, "mmsp_shadow");
+
+	Urho3D::Localization* l10n = Game::get()->getLocalization();
+
+	save = body->CreateChild<Urho3D::Button>();
+	save->SetStyle("MainMenuSettingsButton", style);
+	addChildText(save, "MainMenuSettingsButtonText", l10n->Get("mmsp_save"), style);
 }
 
 void MainMenuSettingsPanel::populateLabels(int index, Urho3D::String name) {
