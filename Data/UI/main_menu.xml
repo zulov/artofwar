@@ -213,4 +213,13 @@
 		<attribute name="Max Size" value="{iconX*4} {iconY}"/>
 	</element>
 	
+	<element type="MainMenuBackground" >
+        <attribute name="Texture" value="Texture2D;Textures/hud/background.png" />
+        <attribute name="Blend Mode" value="alpha" />
+		<attribute name="Size" value="{resX} {resY}" />
+		<attribute name="Vert Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Tiled" value="false" />	
+    </element>
+	
 </elements>

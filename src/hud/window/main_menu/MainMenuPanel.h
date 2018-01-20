@@ -15,12 +15,13 @@ public:
 	void action(short id);
 	void close();
 	void setVisible(bool enable) override;
-	Urho3D::Button * getNewGameProceed();
-	Urho3D::Button * getLoadButton();
-	Urho3D::Button * getCloseButton();
+	Urho3D::Button* getNewGameProceed();
+	Urho3D::Button* getLoadButton();
+	Urho3D::Button* getCloseButton();
 	void HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 private:
 	void createBody() override;
 	std::vector<HudElement*> buttons;
 	MainMenuDetailsPanel** detailsPanels;
+	Urho3D::BorderImage* background;
 };

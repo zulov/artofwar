@@ -5,6 +5,7 @@
 #include <Urho3D/UI/UIEvents.h>
 #include "hud/HudElement.h"
 #include "NewGameForm.h"
+#include <Urho3D/UI/UI.h>
 
 
 MainMenuNewGamePanel::
@@ -15,6 +16,7 @@ MainMenuNewGamePanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDe
 
 void MainMenuNewGamePanel::createBody() {
 	MainMenuDetailsPanel::createBody();
+
 	for (int i = 0; i < NEW_GAME_ROWS_NUMBER; ++i) {
 		rows[i] = body->CreateChild<Urho3D::BorderImage>();
 		rows[i]->SetStyle("MainMenuNewGameRow");

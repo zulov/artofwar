@@ -9,6 +9,7 @@
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include "GameState.h"
+#include <Urho3D/UI/UI.h>
 
 
 MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
@@ -39,6 +40,7 @@ void MainMenuPanel::close() {
 void MainMenuPanel::setVisible(bool enable) {
 	AbstractWindowPanel::setVisible(enable);
 	close();
+	background->SetVisible(enable);
 }
 
 Urho3D::Button* MainMenuPanel::getNewGameProceed() {
@@ -61,6 +63,12 @@ void MainMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventDat
 }
 
 void MainMenuPanel::createBody() {
+	background = Game::get()->getUI()->GetRoot()->CreateChild<Urho3D::BorderImage>();
+	background->SetStyle("MainMenuBackground", style);
+	background->SetBringToBack(true);
+	background->SetPriority(-1);
+	window->SetPriority(1);
+
 	detailsPanels = new MainMenuDetailsPanel*[MAIN_MENU_BUTTON_NUMBER];
 	Localization* l10n = Game::get()->getLocalization();
 	detailsPanels[0] = new MainMenuNewGamePanel(style, l10n->Get("menu_0"));
