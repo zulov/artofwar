@@ -134,6 +134,30 @@
 	},
 	"cancel":{
 		"pl":"Anuluj"
+	},
+	"mmsp_settings":{
+		"pl":"Zestaw ustawień"
+	},
+	"mmsp_resolution":{
+		"pl":"Rozdzielczość"
+	},
+	"mmsp_fullscreen":{
+		"pl":"Pełny ekran"
+	},
+	"mmsp_max_fps":{
+		"pl":"Maksymalny fps"
+	},
+	"mmsp_min_fps":{
+		"pl":"minimaly fps"
+	},
+	"mmsp_vSync":{
+		"pl":"vSync"
+	},
+	"mmsp_texture_quality":{
+		"pl":"Jakość tekstur"
+	},
+	"mmsp_shadow":{
+		"pl":"Cienie"
 	}
 	
 }

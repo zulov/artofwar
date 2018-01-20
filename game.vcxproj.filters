@@ -216,6 +216,7 @@
     <ClCompile Include="src\hud\window\main_menu\new_game\MainMenuNewGamePanel.cpp" />
     <ClCompile Include="src\hud\window\main_menu\load\MainMenuLoadPanel.cpp" />
     <ClCompile Include="src\hud\window\main_menu\close\MainMenuClosePanel.cpp" />
+    <ClCompile Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -478,6 +479,7 @@
     <ClInclude Include="src\hud\window\main_menu\new_game\NewGamePlayer.h" />
     <ClInclude Include="src\hud\window\main_menu\load\MainMenuLoadPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\close\MainMenuClosePanel.h" />
+    <ClInclude Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

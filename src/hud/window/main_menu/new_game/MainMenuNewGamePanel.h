@@ -12,12 +12,13 @@ class MainMenuNewGamePanel : public MainMenuDetailsPanel
 {
 public:
 	MainMenuNewGamePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
-	Button* getProceed();
-	void HandleCheck(StringHash eventType, VariantMap& eventData);
-	void HandleNewGame(StringHash eventType, VariantMap& eventData);
 	~MainMenuNewGamePanel();
+	Button* getProceed();
+
 private:
 	void populateLabels(Urho3D::Localization* localization, int i, Urho3D::String name);
+	void HandleCheck(StringHash eventType, VariantMap& eventData);
+	void HandleNewGame(StringHash eventType, VariantMap& eventData);
 
 	void createBody() override;
 

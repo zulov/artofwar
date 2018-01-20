@@ -5,7 +5,6 @@
 #include <Urho3D/UI/UIEvents.h>
 #include "hud/HudElement.h"
 #include "NewGameForm.h"
-#include <Urho3D/UI/UI.h>
 
 
 MainMenuNewGamePanel::

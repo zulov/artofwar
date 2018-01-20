@@ -5,6 +5,7 @@
 #include "load/MainMenuLoadPanel.h"
 #include "new_game/MainMenuNewGamePanel.h"
 #include "close//MainMenuClosePanel.h"
+#include "settings/MainMenuSettingsPanel.h"
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
@@ -73,7 +74,7 @@ void MainMenuPanel::createBody() {
 	Localization* l10n = Game::get()->getLocalization();
 	detailsPanels[0] = new MainMenuNewGamePanel(style, l10n->Get("menu_0"));
 	detailsPanels[1] = new MainMenuLoadPanel(style, l10n->Get("menu_1"));
-	detailsPanels[2] = new MainMenuDetailsPanel(style, l10n->Get("menu_2"));
+	detailsPanels[2] = new MainMenuSettingsPanel(style, l10n->Get("menu_2"));
 	detailsPanels[3] = new MainMenuHelpPanel(style, l10n->Get("menu_3"));
 	detailsPanels[4] = new MainMenuClosePanel(style, l10n->Get("menu_4"));
 	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {

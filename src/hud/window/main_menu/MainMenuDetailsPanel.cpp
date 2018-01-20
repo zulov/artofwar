@@ -17,4 +17,5 @@ void MainMenuDetailsPanel::createBody() {
 
 	body = window->CreateChild<Urho3D::UIElement>();
 	body->SetStyle(bodyStyle, style);
+	window->SetPriority(2);
 }

@@ -187,6 +187,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.cpp" />
     <ClCompile Include="src\hud\window\main_menu\close\MainMenuClosePanel.cpp" />
     <ClCompile Include="src\hud\window\main_menu\load\MainMenuLoadPanel.cpp" />
     <ClCompile Include="src\hud\window\main_menu\new_game\MainMenuNewGamePanel.cpp" />
@@ -284,6 +285,7 @@
     <ClCompile Include="src\hud\window\units\UnitsPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\close\MainMenuClosePanel.h" />
     <ClInclude Include="src\hud\window\main_menu\load\MainMenuLoadPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\new_game\MainMenuNewGamePanel.h" />
