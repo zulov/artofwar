@@ -11,7 +11,7 @@
 #include "GameState.h"
 
 
-OrdersPanel::OrdersPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
+OrdersPanel::OrdersPanel(): AbstractWindowPanel() {
 	styleName = "OrdersWindow";
 	visibleAt.insert(GameState::RUNNING);
 	visibleAt.insert(GameState::PAUSE);
@@ -63,15 +63,15 @@ void OrdersPanel::createBody() {
 
 	buttons.reserve(size);
 	ListView* panel = window->CreateChild<ListView>();
-	panel->SetStyle("MyListView", style);
+	panel->SetStyle("MyListView");
 
 	for (int i = 0; i < size; ++i) {
 		db_order* order = Game::get()->getDatabaseCache()->getOrder(i);
 		if (order == nullptr) { continue; }
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/orders/" + order->icon);
 
-		MySprite* sprite = createSprite(texture, style, "Sprite");
-		Button* button = simpleButton(sprite, style, "Icon");
+		MySprite* sprite = createSprite(texture, "Sprite");
+		Button* button = simpleButton(sprite, "Icon");
 
 		HudElement* hudElement = new HudElement(button);//TODO inny obiekt
 		hudElement->setId(i, ObjectType::ENTITY);

@@ -7,7 +7,7 @@
 class FilePanel : public AbstractMiddlePanel
 {
 public:
-	FilePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
+	FilePanel(Urho3D::String _title);
 	~FilePanel();
 	void createBody() override;
 	Urho3D::Button* getMainButton() override;

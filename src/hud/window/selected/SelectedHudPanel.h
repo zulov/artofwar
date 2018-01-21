@@ -11,7 +11,7 @@
 class SelectedHudPanel :public AbstractWindowPanel
 {
 public:
-	SelectedHudPanel(Urho3D::XMLFile* _style);
+	SelectedHudPanel();
 	~SelectedHudPanel();	
 	void update(SelectedInfo* selectedInfo);
 	

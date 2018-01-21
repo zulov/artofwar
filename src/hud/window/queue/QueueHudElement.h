@@ -10,7 +10,7 @@
 class QueueHudElement
 {
 public:
-	QueueHudElement(Urho3D::XMLFile* style);
+	QueueHudElement();
 	~QueueHudElement();
 	Urho3D::Button* getButton();
 	void hide();

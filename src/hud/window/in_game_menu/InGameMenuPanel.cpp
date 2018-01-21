@@ -12,7 +12,7 @@
 
 #define IN_GAME_MENU_BUTTON_NUMBER 5
 
-InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
+InGameMenuPanel::InGameMenuPanel(): AbstractWindowPanel() {
 	styleName = "InGameMenuWindow";
 
 	visibleAt.insert(GameState::RUNNING);
@@ -26,7 +26,7 @@ InGameMenuPanel::~InGameMenuPanel() {
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		delete addionalPanels[i];
 	}
-	
+
 	delete[]addionalPanels;
 }
 
@@ -63,8 +63,8 @@ void InGameMenuPanel::close() {
 void InGameMenuPanel::createBody() {
 	Urho3D::Texture2D* texture = Game::get()->getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/igm/menu.png");
 
-	MySprite* sprite = createSprite(texture, style, "InGameToggledSprite");
-	toggleButton = simpleButton(sprite, style, "InGameToggledButton");
+	MySprite* sprite = createSprite(texture, "InGameToggledSprite");
+	toggleButton = simpleButton(sprite, "InGameToggledButton");
 	Game::get()->getUI()->GetRoot()->AddChild(toggleButton);
 	SubscribeToEvent(toggleButton, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleToggle));
 
@@ -72,12 +72,12 @@ void InGameMenuPanel::createBody() {
 		Texture2D* texture2 = Game::get()->getCache()->GetResource<Texture2D
 		>("textures/hud/icon/igm/igm_" + String(i) + ".png");
 
-		MySprite* sprite2 = createSprite(texture2, style, "InGameSprite");
-		Button* button = simpleButton(sprite2, style, "InGameButton");
+		MySprite* sprite2 = createSprite(texture2, "InGameSprite");
+		Button* button = simpleButton(sprite2, "InGameButton");
 		Text* text = button->CreateChild<Text>();
 		String msg = Game::get()->getLocalization()->Get("igm_" + String(i));
 		text->SetText(msg);
-		text->SetStyle("InGameText", style);
+		text->SetStyle("InGameText");
 
 		HudElement* hudElement = new HudElement(button);
 		hudElement->setId(i, ObjectType::ENTITY);
@@ -90,11 +90,11 @@ void InGameMenuPanel::createBody() {
 
 	Localization* l10n = Game::get()->getLocalization();
 	addionalPanels = new AbstractMiddlePanel*[IN_GAME_MENU_BUTTON_NUMBER];
-	addionalPanels[0] = new FilePanel(style, l10n->Get("igm_0"));
-	addionalPanels[1] = new FilePanel(style, l10n->Get("igm_1"));
-	addionalPanels[2] = new AbstractMiddlePanel(style, l10n->Get("igm_2"));
-	addionalPanels[3] = new AbstractMiddlePanel(style, l10n->Get("igm_3"));
-	addionalPanels[4] = new AbstractMiddlePanel(style, l10n->Get("igm_4"));
+	addionalPanels[0] = new FilePanel(l10n->Get("igm_0"));
+	addionalPanels[1] = new FilePanel(l10n->Get("igm_1"));
+	addionalPanels[2] = new AbstractMiddlePanel(l10n->Get("igm_2"));
+	addionalPanels[3] = new AbstractMiddlePanel(l10n->Get("igm_3"));
+	addionalPanels[4] = new AbstractMiddlePanel(l10n->Get("igm_4"));
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		addionalPanels[i]->createWindow();
 	}

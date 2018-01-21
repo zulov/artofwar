@@ -9,17 +9,17 @@ namespace Urho3D {
 class MainMenuClosePanel : public MainMenuDetailsPanel
 {
 public:
-	MainMenuClosePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
+	MainMenuClosePanel(Urho3D::String _title);
 	~MainMenuClosePanel();
-	Urho3D::Button * getCloseButton();
+	Urho3D::Button* getCloseButton();
 private:
 	void createBody() override;
 	void HandleCancelClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
 
-	Urho3D::Window * miniWindow; 
-	Urho3D::Text * text;
-	Urho3D::UIElement* row;	
-	Urho3D::Button * yes;
-	Urho3D::Button * no;
+	Urho3D::Window* miniWindow;
+	Urho3D::Text* text;
+	Urho3D::UIElement* row;
+	Urho3D::Button* yes;
+	Urho3D::Button* no;
 };

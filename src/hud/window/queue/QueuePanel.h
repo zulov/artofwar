@@ -9,7 +9,7 @@
 class QueuePanel :public AbstractWindowPanel//TODO moze zrobic multilina
 {
 public:
-	QueuePanel(Urho3D::XMLFile* _style);
+	QueuePanel();
 	~QueuePanel();
 
 	static String getIconName(ObjectType index, int id);

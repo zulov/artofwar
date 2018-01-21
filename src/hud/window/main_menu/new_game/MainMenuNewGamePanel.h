@@ -11,7 +11,7 @@
 class MainMenuNewGamePanel : public MainMenuDetailsPanel
 {
 public:
-	MainMenuNewGamePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
+	MainMenuNewGamePanel( Urho3D::String _title);
 	~MainMenuNewGamePanel();
 	Button* getProceed();
 

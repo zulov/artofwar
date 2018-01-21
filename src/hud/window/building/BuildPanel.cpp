@@ -10,7 +10,7 @@
 #include "player/PlayersManager.h"
 
 
-BuildPanel::BuildPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
+BuildPanel::BuildPanel(): AbstractWindowPanel() {
 	styleName = "BuildWindow";
 
 	visibleAt.insert(GameState::RUNNING);
@@ -45,15 +45,15 @@ void BuildPanel::createBody() {
 
 	buttons.reserve(size);
 	ListView* panel = window->CreateChild<ListView>();
-	panel->SetStyle("MyListView", style);
+	panel->SetStyle("MyListView");
 
 	for (int i = 0; i < size; ++i) {
 		db_building* building = Game::get()->getDatabaseCache()->getBuilding(i);
 		if (building) {
 			Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + building->icon);
 
-			MySprite* sprite = createSprite(texture, style, "Sprite");
-			Button* button = simpleButton(sprite, style, "Icon");
+			MySprite* sprite = createSprite(texture, "Sprite");
+			Button* button = simpleButton(sprite, "Icon");
 
 			HudElement* hudElement = new HudElement(button);
 			hudElement->setId(i, ObjectType::BUILDING);
@@ -64,7 +64,7 @@ void BuildPanel::createBody() {
 		}
 	}
 	BorderImage* element = panel->CreateChild<BorderImage>();
-	element->SetStyle("EditorDivider", style);
+	element->SetStyle("EditorDivider");
 	panel->AddItem(element);
 
 }

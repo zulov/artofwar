@@ -4,8 +4,7 @@
 #include <Urho3D/UI/UI.h>
 
 
-AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style): Object(Game::get()->getContext()) {
-	style = _style;
+AbstractWindowPanel::AbstractWindowPanel(): Object(Game::get()->getContext()) {
 }
 
 
@@ -19,7 +18,7 @@ Urho3D::String& AbstractWindowPanel::getStyleName() {
 
 Urho3D::Window* AbstractWindowPanel::createWindow() {
 	window = Game::get()->getUI()->GetRoot()->CreateChild<Urho3D::Window>();
-	window->SetStyle(getStyleName(), style);
+	window->SetStyle(getStyleName());
 
 	createBody();
 

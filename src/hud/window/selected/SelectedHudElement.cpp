@@ -4,19 +4,19 @@
 
 
 
-SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* style) {
+SelectedHudElement::SelectedHudElement() {
 	selected = new std::vector<Physical*>();
 	selected->reserve(MAX_SELECTED_IN_BUTTON);
 
-	button = simpleButton(nullptr, style, "SmallIcon");
+	button = simpleButton(nullptr, "SmallIcon");
 	button->SetVisible(false);
 	text = button->CreateChild<Text>();
-	text->SetStyle("MyText", style);
-	icon = createEmptySprite(style, "SmallSprite");
+	text->SetStyle("MyText");
+	icon = createEmptySprite("SmallSprite");
 	button->AddChild(icon);
 	button->SetVar("SelectedHudElement", this);
 	mock = button->CreateChild<UIElement>();
-	mock->SetStyle("mock", style);
+	mock->SetStyle("mock");
 
 	bars = new ProgressBar*[MAX_SELECTED_IN_BUTTON];
 	for (int i = 0; i < MAX_SELECTED_IN_BUTTON; ++i) {

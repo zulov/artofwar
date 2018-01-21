@@ -7,18 +7,18 @@
 
 
 MainMenuHelpPanel::
-MainMenuHelpPanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDetailsPanel(_style, _title) {
+MainMenuHelpPanel( Urho3D::String _title): MainMenuDetailsPanel( _title) {
 	bodyStyle = "MainMenuHelpMock";
 }
 
 void MainMenuHelpPanel::createBody() {
 	MainMenuDetailsPanel::createBody();
 	list = window->CreateChild<Urho3D::ListView>();
-	list->SetStyle("HelpList", style);
+	list->SetStyle("HelpList");
 
 	for (int i = 0; i < HELP_ITEMS; ++i) {
 
-		Button* button = simpleButton(nullptr, style, "HelpListButton");
+		Button* button = simpleButton(nullptr, "HelpListButton");
 		Urho3D::Text* element = button->CreateChild<Text>();
 
 		HudElement* hudElement = new HudElement(button);
@@ -33,10 +33,10 @@ void MainMenuHelpPanel::createBody() {
 	}
 
 	content = window->CreateChild<Urho3D::ScrollView>();
-	content->SetStyle("HelpContent", style);
+	content->SetStyle("HelpContent");
 
 	contentText = content->CreateChild<Urho3D::Text>();
-	contentText->SetStyle("HelpContentText", style);
+	contentText->SetStyle("HelpContentText");
 	contentText->SetText(Game::get()->getLocalization()->Get("mock"));
 
 	contentText->SetWidth(content->GetWidth() * 0.9);

@@ -9,7 +9,7 @@ namespace Urho3D {
 class DebugPanel : public AbstractWindowPanel
 {
 public:
-	DebugPanel(Urho3D::XMLFile* _style);
+	DebugPanel();
 	~DebugPanel();
 	void setText(double getLastFps, double getAverageFps, long getLoops, Urho3D::String* string);
 

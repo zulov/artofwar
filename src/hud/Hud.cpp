@@ -65,18 +65,18 @@ void Hud::createCursor() {
 
 void Hud::createMyPanels() {
 
-	panels.push_back(selectedHudPanel = new SelectedHudPanel(style));
-	panels.push_back(buildPanel = new BuildPanel(style));
-	panels.push_back(unitsPanel = new UnitsPanel(style));
-	panels.push_back(debugPanel = new DebugPanel(style));
-	panels.push_back(topPanel = new TopPanel(style));
-	panels.push_back(menuPanel = new MenuPanel(style));
-	panels.push_back(ordersPanel = new OrdersPanel(style));
-	panels.push_back(queuePanel = new QueuePanel(style));
-	panels.push_back(loadingPanel = new LoadingPanel(style));
-	panels.push_back(inGameMenuPanel = new InGameMenuPanel(style));
-	panels.push_back(mainMenuPanel = new MainMenuPanel(style));
-	panels.push_back(miniMapPanel = new MiniMapPanel(style));
+	panels.push_back(selectedHudPanel = new SelectedHudPanel());
+	panels.push_back(buildPanel = new BuildPanel());
+	panels.push_back(unitsPanel = new UnitsPanel());
+	panels.push_back(debugPanel = new DebugPanel());
+	panels.push_back(topPanel = new TopPanel());
+	panels.push_back(menuPanel = new MenuPanel());
+	panels.push_back(ordersPanel = new OrdersPanel());
+	panels.push_back(queuePanel = new QueuePanel());
+	panels.push_back(loadingPanel = new LoadingPanel());
+	panels.push_back(inGameMenuPanel = new InGameMenuPanel());
+	panels.push_back(mainMenuPanel = new MainMenuPanel());
+	panels.push_back(miniMapPanel = new MiniMapPanel());
 
 	menuPanel->createWindow();
 	buildPanel->createWindow();

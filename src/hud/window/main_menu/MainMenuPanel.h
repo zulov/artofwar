@@ -10,7 +10,7 @@
 class MainMenuPanel : public AbstractWindowPanel
 {
 public:
-	MainMenuPanel(Urho3D::XMLFile* _style);
+	MainMenuPanel();
 	~MainMenuPanel();
 	void action(short id);
 	void close();

@@ -5,12 +5,11 @@
 
 
 MainMenuSettingsPanel::
-MainMenuSettingsPanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDetailsPanel(_style, _title) {
+MainMenuSettingsPanel( Urho3D::String _title): MainMenuDetailsPanel( _title) {
 	bodyStyle = "MainMenuSettingsMock";
 }
 
-MainMenuSettingsPanel::~MainMenuSettingsPanel() {
-}
+MainMenuSettingsPanel::~MainMenuSettingsPanel() = default;
 
 void MainMenuSettingsPanel::createBody() {
 	MainMenuDetailsPanel::createBody();
@@ -18,7 +17,6 @@ void MainMenuSettingsPanel::createBody() {
 		rows[i] = body->CreateChild<Urho3D::BorderImage>();
 		rows[i]->SetStyle("MainMenuSettingsRow");
 	}
-
 
 	populateLabels(0, "mmsp_settings");
 	populateLabels(1, "mmsp_resolution");
@@ -29,16 +27,27 @@ void MainMenuSettingsPanel::createBody() {
 	populateLabels(6, "mmsp_texture_quality");
 	populateLabels(7, "mmsp_shadow");
 
+	settings = createDropDownList(rows[0], "MainMenuNewGameDropDownList");
+	//addTextItems(gameSpeed, {l10n->Get("slow"), l10n->Get("normal"), l10n->Get("fast")}, style);
+	resolution = createDropDownList(rows[1], "MainMenuNewGameDropDownList");
+	
+
+	maxFps = createDropDownList(rows[3], "MainMenuNewGameDropDownList");
+	minFps = createDropDownList(rows[4], "MainMenuNewGameDropDownList");
+
+	textureQuality = createDropDownList(rows[6], "MainMenuNewGameDropDownList");
+	shadow = createDropDownList(rows[7], "MainMenuNewGameDropDownList");
+
 	Urho3D::Localization* l10n = Game::get()->getLocalization();
 
 	save = body->CreateChild<Urho3D::Button>();
-	save->SetStyle("MainMenuSettingsButton", style);
-	addChildText(save, "MainMenuSettingsButtonText", l10n->Get("mmsp_save"), style);
+	save->SetStyle("MainMenuSettingsButton");
+	addChildText(save, "MainMenuSettingsButtonText", l10n->Get("mmsp_save"));
 }
 
 void MainMenuSettingsPanel::populateLabels(int index, Urho3D::String name) {
 	Urho3D::Localization* l10n = Game::get()->getLocalization();
 	Urho3D::Text* text = rows[index]->CreateChild<Urho3D::Text>();
-	text->SetStyle("MainMenuSettingsLabel", style);
+	text->SetStyle("MainMenuSettingsLabel");
 	text->SetText(l10n->Get(name));
 }

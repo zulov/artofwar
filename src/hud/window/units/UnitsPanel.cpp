@@ -13,7 +13,7 @@
 #include "player/PlayersManager.h"
 
 
-UnitsPanel::UnitsPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
+UnitsPanel::UnitsPanel(): AbstractWindowPanel() {
 	styleName = "UnitsWindow";
 
 	visibleAt.insert(GameState::RUNNING);
@@ -69,15 +69,15 @@ void UnitsPanel::createBody() {
 
 	buttons.reserve(size);
 	ListView* panel = window->CreateChild<ListView>();
-	panel->SetStyle("MyListView", style);
+	panel->SetStyle("MyListView");
 
 	for (int i = 0; i < size; ++i) {
 		db_unit* unit = Game::get()->getDatabaseCache()->getUnit(i);
 		if (unit) {
 			Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + unit->icon);
 
-			MySprite* sprite = createSprite(texture, style, "Sprite");
-			Button* button = simpleButton(sprite, style, "Icon");
+			MySprite* sprite = createSprite(texture, "Sprite");
+			Button* button = simpleButton(sprite, "Icon");
 
 			HudElement* hudElement = new HudElement(button);
 			hudElement->setId(i, ObjectType::UNIT);

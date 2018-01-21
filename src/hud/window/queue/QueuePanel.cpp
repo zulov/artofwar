@@ -9,7 +9,7 @@
 #include "GameState.h"
 
 
-QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
+QueuePanel::QueuePanel() : AbstractWindowPanel() {
 	styleName = "QueueWindow";
 	elements = new QueueHudElement*[MAX_ICON_SELECTION];
 	visibleAt.insert(GameState::RUNNING);
@@ -87,7 +87,7 @@ void QueuePanel::hideElements(int from) {
 
 void QueuePanel::createBody() {
 	for (int i = 0; i < MAX_ICON_SELECTION; ++i) {
-		elements[i] = new QueueHudElement(style);
+		elements[i] = new QueueHudElement();
 		window->AddChild(elements[i]->getButton());
 		SubscribeToEvent(elements[i]->getButton(), E_CLICK, URHO3D_HANDLER(QueuePanel, HandleReduce));
 	}

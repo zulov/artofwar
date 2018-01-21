@@ -11,16 +11,16 @@ namespace Urho3D {
 }
 
 MainMenuLoadPanel::
-MainMenuLoadPanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDetailsPanel(_style, _title) {
+MainMenuLoadPanel( Urho3D::String _title): MainMenuDetailsPanel( _title) {
 	bodyStyle = "MainMenuLoadMock";
 }
 
 void MainMenuLoadPanel::createBody() {
 	MainMenuDetailsPanel::createBody();
 	leftMock = window->CreateChild<Urho3D::UIElement>();
-	leftMock->SetStyle("LoadLeftMock", style);
+	leftMock->SetStyle("LoadLeftMock");
 	list = leftMock->CreateChild<Urho3D::ListView>();
-	list->SetStyle("LoadList", style);
+	list->SetStyle("LoadList");
 
 	FileSystem* fileSystem = GetSubsystem<FileSystem>();
 
@@ -28,7 +28,7 @@ void MainMenuLoadPanel::createBody() {
 	fileSystem->ScanDir(files, "saves", "*.db", SCAN_FILES, false);
 
 	for (auto name : files) {
-		Urho3D::Button* button = simpleButton(nullptr, style, "LoadListButton");
+		Urho3D::Button* button = simpleButton(nullptr, "LoadListButton");
 		Urho3D::Text* element = button->CreateChild<Text>();
 		
 		element->SetText(name);
@@ -40,10 +40,10 @@ void MainMenuLoadPanel::createBody() {
 	}
 
 	content = window->CreateChild<Urho3D::ScrollView>();
-	content->SetStyle("LoadContent", style);
+	content->SetStyle("LoadContent");
 	loadButton = leftMock->CreateChild<Urho3D::Button>();
-	loadButton->SetStyle("LoadButton", style);
-	addChildText(loadButton, "LoadButtonText", Game::get()->getLocalization()->Get("load"), style);
+	loadButton->SetStyle("LoadButton");
+	addChildText(loadButton, "LoadButtonText", Game::get()->getLocalization()->Get("load"));
 }
 
 void MainMenuLoadPanel::action(String saveName) {
