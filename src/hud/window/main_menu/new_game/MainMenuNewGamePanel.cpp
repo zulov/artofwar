@@ -8,7 +8,7 @@
 
 
 MainMenuNewGamePanel::
-MainMenuNewGamePanel( Urho3D::String _title): MainMenuDetailsPanel( _title) {
+MainMenuNewGamePanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDetailsPanel(_style, _title) {
 	bodyStyle = "MainMenuNewGameMock";
 	srand(time(NULL));
 }
@@ -21,8 +21,8 @@ void MainMenuNewGamePanel::createBody() {
 		rows[i]->SetStyle("MainMenuNewGameRow");
 	}
 	Urho3D::Localization* l10n = Game::get()->getLocalization();
-	myLine.init(l10n, 0);
-	enemyLine.init(l10n, 1);
+	myLine.init(style, l10n, 0);
+	enemyLine.init(style, l10n, 1);
 
 	populateLabels(l10n, 0, "player");
 	populateLabels(l10n, 1, "enemy");
@@ -34,17 +34,18 @@ void MainMenuNewGamePanel::createBody() {
 	enemyLine.populateTeams(rows[1]);
 	myLine.setCheck(true);
 
-	map = createDropDownList(rows[2], "MainMenuNewGameDropDownList");
+	map = createDropDownList(rows[2], "MainMenuNewGameDropDownList", style);
 	int mapsSize = Game::get()->getDatabaseCache()->getMapSize();
 	for (int i = 0; i < mapsSize; ++i) {
-		addTextItem(map, Game::get()->getDatabaseCache()->getMap(i)->name);
+		addTextItem(map, Game::get()->getDatabaseCache()->getMap(i)->name, style);
 	}
 
-	difficulty = createDropDownList(rows[3], "MainMenuNewGameDropDownList");
-	addTextItems(difficulty, {l10n->Get("easy"), l10n->Get("normal"), l10n->Get("hard")});
+	difficulty = createDropDownList(rows[3], "MainMenuNewGameDropDownList", style);
+	addChildTexts(difficulty, {l10n->Get("easy"), l10n->Get("normal"), l10n->Get("hard")}, style);
 
-	gameSpeed = createDropDownList(rows[4], "MainMenuNewGameDropDownList");
-	addTextItems(gameSpeed, {l10n->Get("slow"), l10n->Get("normal"), l10n->Get("fast")});
+
+	gameSpeed = createDropDownList(rows[4], "MainMenuNewGameDropDownList", style);
+	addChildTexts(gameSpeed, {l10n->Get("slow"), l10n->Get("normal"), l10n->Get("fast")}, style);
 
 	proceed = body->CreateChild<Urho3D::Button>();
 	proceed->SetStyle("MainMenuNewGameButton");
@@ -55,7 +56,7 @@ void MainMenuNewGamePanel::createBody() {
 	SubscribeToEvent(myLine.getCheckBox(), E_CLICK, URHO3D_HANDLER(MainMenuNewGamePanel, HandleCheck));
 	SubscribeToEvent(enemyLine.getCheckBox(), E_CLICK, URHO3D_HANDLER(MainMenuNewGamePanel, HandleCheck));
 
-	addChildText(proceed, "MainMenuNewGameButtonText", l10n->Get("start"));
+	addChildText(proceed, "MainMenuNewGameButtonText", l10n->Get("start"), style);
 }
 
 Button* MainMenuNewGamePanel::getProceed() {
@@ -80,7 +81,7 @@ void MainMenuNewGamePanel::HandleNewGame(StringHash eventType, VariantMap& event
 
 void MainMenuNewGamePanel::populateLabels(Urho3D::Localization* l10n, int index, Urho3D::String name) {
 	Urho3D::Text* text = rows[index]->CreateChild<Urho3D::Text>();
-	text->SetStyle("MainMenuNewGameButtonLabel");
+	text->SetStyle("MainMenuNewGameButtonLabel", style);
 	text->SetText(l10n->Get(name));
 }
 

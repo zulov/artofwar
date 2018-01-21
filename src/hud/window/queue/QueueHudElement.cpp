@@ -2,21 +2,21 @@
 #include "../../UiUtils.h"
 
 
-QueueHudElement::QueueHudElement() {
-	button = simpleButton(nullptr, "SmallIcon");
+QueueHudElement::QueueHudElement(Urho3D::XMLFile* style) {
+	button = simpleButton(nullptr, style, "SmallIcon");
 	button->SetVisible(false);
 
 	text = button->CreateChild<Text>();
-	text->SetStyle("MiniText");
+	text->SetStyle("MiniText", style);
 
-	icon = createEmptySprite("SmallSprite");
+	icon = createEmptySprite(style, "SmallSprite");
 	button->AddChild(icon);
 	button->SetVar("QueueHudElement", this);
 	mock = button->CreateChild<UIElement>();
-	mock->SetStyle("mock");
+	mock->SetStyle("mock", style);
 
 	bar = mock->CreateChild<ProgressBar>();
-	bar->SetStyle("MiniProgressBar");
+	bar->SetStyle("MiniProgressBar", style);
 	bar->SetRange(1);
 	bar->SetValue(0.5);
 	bar->SetVisible(true);

@@ -7,7 +7,7 @@
 class OrdersPanel :public AbstractWindowPanel
 {
 public:
-	OrdersPanel();
+	OrdersPanel(Urho3D::XMLFile* _style);
 	~OrdersPanel();
 	void show(SelectedInfo* selectedInfo);
 	std::vector<HudElement*>& getButtons();

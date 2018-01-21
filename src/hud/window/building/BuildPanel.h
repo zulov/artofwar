@@ -8,7 +8,7 @@ class SelectedInfo;
 class BuildPanel : public AbstractWindowPanel
 {
 public:
-	BuildPanel();
+	BuildPanel(Urho3D::XMLFile* _style);
 	~BuildPanel();
 	std::vector<HudElement*>& getButtons();
 	void show();

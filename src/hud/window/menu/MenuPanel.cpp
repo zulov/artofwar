@@ -4,7 +4,7 @@
 #include "GameState.h"
 
 
-MenuPanel::MenuPanel() : AbstractWindowPanel() {
+MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "MenuWindow";
 	visibleAt.insert(GameState::RUNNING);
 	visibleAt.insert(GameState::PAUSE);
@@ -84,10 +84,10 @@ void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
 
 void MenuPanel::createBody() {
 	text = window->CreateChild<Urho3D::Text>();
-	text->SetStyle("MyText");
+	text->SetStyle("MyText", style);
 	text->SetText("");
 
 	text2 = window->CreateChild<Urho3D::Text>();
-	text2->SetStyle("MyText");
+	text2->SetStyle("MyText", style);
 	text2->SetText("");
 }

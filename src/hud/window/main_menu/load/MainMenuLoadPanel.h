@@ -7,7 +7,7 @@
 class MainMenuLoadPanel : public MainMenuDetailsPanel
 {
 public:
-	MainMenuLoadPanel( Urho3D::String _title);
+	MainMenuLoadPanel(Urho3D::XMLFile* _style, Urho3D::String _title);
 	~MainMenuLoadPanel();
 	void HandleLoadClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	Urho3D::Button * getLoadButton();

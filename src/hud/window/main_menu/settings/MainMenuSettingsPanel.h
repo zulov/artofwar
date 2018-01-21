@@ -10,7 +10,7 @@
 class MainMenuSettingsPanel : public MainMenuDetailsPanel
 {
 public:
-	MainMenuSettingsPanel( Urho3D::String _title);
+	MainMenuSettingsPanel(Urho3D::XMLFile* _style, Urho3D::String _title);
 	~MainMenuSettingsPanel();
 private:
 	void createBody() override;

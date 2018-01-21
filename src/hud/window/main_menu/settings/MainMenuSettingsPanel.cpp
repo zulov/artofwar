@@ -5,7 +5,7 @@
 
 
 MainMenuSettingsPanel::
-MainMenuSettingsPanel( Urho3D::String _title): MainMenuDetailsPanel( _title) {
+MainMenuSettingsPanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDetailsPanel(_style, _title) {
 	bodyStyle = "MainMenuSettingsMock";
 }
 
@@ -27,22 +27,22 @@ void MainMenuSettingsPanel::createBody() {
 	populateLabels(6, "mmsp_texture_quality");
 	populateLabels(7, "mmsp_shadow");
 
-	settings = createDropDownList(rows[0], "MainMenuNewGameDropDownList");
+	settings = createDropDownList(rows[0], "MainMenuNewGameDropDownList", style);
 	//addTextItems(gameSpeed, {l10n->Get("slow"), l10n->Get("normal"), l10n->Get("fast")}, style);
-	resolution = createDropDownList(rows[1], "MainMenuNewGameDropDownList");
-	
+	resolution = createDropDownList(rows[1], "MainMenuNewGameDropDownList", style);
 
-	maxFps = createDropDownList(rows[3], "MainMenuNewGameDropDownList");
-	minFps = createDropDownList(rows[4], "MainMenuNewGameDropDownList");
 
-	textureQuality = createDropDownList(rows[6], "MainMenuNewGameDropDownList");
-	shadow = createDropDownList(rows[7], "MainMenuNewGameDropDownList");
+	maxFps = createDropDownList(rows[3], "MainMenuNewGameDropDownList", style);
+	minFps = createDropDownList(rows[4], "MainMenuNewGameDropDownList", style);
+
+	textureQuality = createDropDownList(rows[6], "MainMenuNewGameDropDownList", style);
+	shadow = createDropDownList(rows[7], "MainMenuNewGameDropDownList", style);
 
 	Urho3D::Localization* l10n = Game::get()->getLocalization();
 
 	save = body->CreateChild<Urho3D::Button>();
-	save->SetStyle("MainMenuSettingsButton");
-	addChildText(save, "MainMenuSettingsButtonText", l10n->Get("mmsp_save"));
+	save->SetStyle("MainMenuSettingsButton", style);
+	addChildText(save, "MainMenuSettingsButtonText", l10n->Get("mmsp_save"), style);
 }
 
 void MainMenuSettingsPanel::populateLabels(int index, Urho3D::String name) {

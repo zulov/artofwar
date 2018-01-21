@@ -9,7 +9,7 @@
 class MenuPanel :public AbstractWindowPanel
 {
 public:
-	MenuPanel();
+	MenuPanel(Urho3D::XMLFile* _style);
 	~MenuPanel();
 	void removeInfo();
 	static Urho3D::String stringFrom(db_unit* dbUnit, std::vector<db_cost*>* costs);

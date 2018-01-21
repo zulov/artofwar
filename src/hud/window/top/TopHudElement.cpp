@@ -1,15 +1,15 @@
 #include "TopHudElement.h"
 #include "../../UiUtils.h"
 
-TopHudElement::TopHudElement(Texture2D* texture) {
-	icon = createSprite(texture, "SpriteLeft");
-	button = simpleButton(icon, "TopButtons");
+TopHudElement::TopHudElement(Urho3D::XMLFile* style, Texture2D* texture) {
+	icon = createSprite(texture, style, "SpriteLeft");
+	button = simpleButton(icon, style, "TopButtons");
 
 	mock = button->CreateChild<UIElement>();
-	mock->SetStyle("mockCenter");
+	mock->SetStyle("mockCenter", style);
 
 	value = mock->CreateChild<Text>();
-	value->SetStyle("TopText");
+	value->SetStyle("TopText", style);
 
 	button->SetVar("TopHudElement", this);
 }

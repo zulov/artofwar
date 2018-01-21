@@ -13,14 +13,14 @@ class AbstractWindowPanel :public Urho3D::Object
 {
 	URHO3D_OBJECT(AbstractWindowPanel, Object)
 
-	AbstractWindowPanel();
+	AbstractWindowPanel(Urho3D::XMLFile* _style);
 	virtual ~AbstractWindowPanel();
 	Urho3D::String& getStyleName();
 	Urho3D::Window * createWindow();
 	virtual void setVisible(bool enable);
 	void updateStateVisibilty(GameState state);
 protected:
-
+	Urho3D::XMLFile* style;
 	Urho3D::Window * window;
 	Urho3D::String styleName;
 	Urho3D::String bodyStyle;

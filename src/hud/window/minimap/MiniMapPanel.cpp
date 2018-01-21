@@ -14,7 +14,7 @@
 #include "GameState.h"
 
 
-MiniMapPanel::MiniMapPanel() : AbstractWindowPanel() {
+MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "MiniMapWindow";
 
 	for (int i = 0; i < PLAYER_COLORS_NUMBER_DB; ++i) {
@@ -159,7 +159,7 @@ void MiniMapPanel::createBody() {
 	spr = window->CreateChild<Sprite>();
 	spr->SetEnabled(true);
 	UIElement* row = window->CreateChild<UIElement>();
-	row->SetStyle("MiniMapListRow");
+	row->SetStyle("MiniMapListRow", style);
 
 	elements.reserve(MINI_MAP_BUTTON_NUMBER);
 	hudElements.reserve(MINI_MAP_BUTTON_NUMBER);
@@ -168,9 +168,9 @@ void MiniMapPanel::createBody() {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
 		>("textures/hud/icon/mm/minimap" + String(i) + ".png");
 
-		MySprite* sprite = createSprite(texture, "MiniMapSprite");
+		MySprite* sprite = createSprite(texture, style, "MiniMapSprite");
 		CheckBox* box = row->CreateChild<CheckBox>();
-		box->SetStyle("MiniMapCheckBox");
+		box->SetStyle("MiniMapCheckBox", style);
 		elements.push_back(box);
 		box->AddChild(sprite);
 		HudElement* hudElement = new HudElement(elements.at(i));

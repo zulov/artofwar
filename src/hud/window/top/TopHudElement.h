@@ -7,7 +7,7 @@
 class TopHudElement
 {
 public:
-	TopHudElement(Texture2D* texture);
+	TopHudElement(Urho3D::XMLFile* style, Texture2D* texture);
 	~TopHudElement();
 	Urho3D::Button* getButton();
 	void hide();

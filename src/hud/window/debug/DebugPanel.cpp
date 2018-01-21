@@ -2,7 +2,7 @@
 #include "GameState.h"
 
 
-DebugPanel::DebugPanel() : AbstractWindowPanel() {
+DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "MyDebugHudWindow";
 
 	visibleAt.insert(GameState::RUNNING);
@@ -24,5 +24,5 @@ void DebugPanel::setText(double getLastFps, double getAverageFps, long getLoops,
 
 void DebugPanel::createBody() {
 	fpsText = window->CreateChild<Urho3D::Text>();
-	fpsText->SetStyle("MyText");
+	fpsText->SetStyle("MyText", style);
 }

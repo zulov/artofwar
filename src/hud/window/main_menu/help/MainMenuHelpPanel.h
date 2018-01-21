@@ -10,7 +10,7 @@
 class MainMenuHelpPanel : public MainMenuDetailsPanel
 {
 public:
-	MainMenuHelpPanel( Urho3D::String _title);
+	MainMenuHelpPanel(Urho3D::XMLFile* _style, Urho3D::String _title);
 	~MainMenuHelpPanel();
 	void action(short id);
 	void HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);

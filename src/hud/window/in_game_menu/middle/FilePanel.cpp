@@ -5,7 +5,7 @@
 #include "hud/HudElement.h"
 
 
-FilePanel::FilePanel(Urho3D::String _title): AbstractMiddlePanel(_title) {
+FilePanel::FilePanel(Urho3D::XMLFile* _style, Urho3D::String _title): AbstractMiddlePanel(_style, _title) {
 	data = nullptr;
 }
 
@@ -18,17 +18,17 @@ void FilePanel::createBody() {
 	AbstractMiddlePanel::createBody();
 	const Urho3D::String name = Game::get()->getLocalization()->Get("save");
 	lineEdit = body->CreateChild<Urho3D::LineEdit>();
-	lineEdit->SetStyle("FileNameLineEdit");
+	lineEdit->SetStyle("FileNameLineEdit", style);
 
 	SubscribeToEvent(lineEdit, Urho3D::E_DEFOCUSED, URHO3D_HANDLER(FilePanel, HandleValueChange));
 
 	action = body->CreateChild<Urho3D::Button>();
-	action->SetStyle("FileConfirmButton");
+	action->SetStyle("FileConfirmButton", style);
 	data = new FileFormData();
 	action->SetVar("file_data", data);
 	
 	Urho3D::Text* textInButton = action->CreateChild<Urho3D::Text>();
-	textInButton->SetStyle("MiddleText");
+	textInButton->SetStyle("MiddleText", style);
 	textInButton->SetText(name);
 
 	//	list = body->CreateChild<Urho3D::DropDownList>();

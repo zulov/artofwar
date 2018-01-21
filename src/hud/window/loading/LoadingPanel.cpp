@@ -3,7 +3,7 @@
 #include "GameState.h"
 
 
-LoadingPanel::LoadingPanel() : AbstractWindowPanel() {
+LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "LoadingWindow";
 	
 	visibleAt.insert(GameState::LOADING);
@@ -25,11 +25,11 @@ void LoadingPanel::end() {
 
 void LoadingPanel::createBody() {
 	background = window->CreateChild<Urho3D::BorderImage>();
-	background->SetStyle("Background");
+	background->SetStyle("Background", style);
 	background->SetVisible(true);
 
 	bar = background->CreateChild<Urho3D::ProgressBar>();
-	bar->SetStyle("LargeProgressBar");
+	bar->SetStyle("LargeProgressBar", style);
 	bar->SetRange(1);
 	bar->SetValue(0);
 	bar->SetVisible(true);

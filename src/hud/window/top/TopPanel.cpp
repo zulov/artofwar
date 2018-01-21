@@ -7,7 +7,7 @@
 #include "GameState.h"
 
 
-TopPanel::TopPanel() : AbstractWindowPanel() {
+TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "TopWindow";
 	const int size = Game::get()->getDatabaseCache()->getResourceSize();
 
@@ -27,7 +27,7 @@ TopPanel::~TopPanel() {
 
 void TopPanel::createBody() {
 	unitsNumber = window->CreateChild<Text>();
-	unitsNumber->SetStyle("TopText");
+	unitsNumber->SetStyle("TopText", style);
 	unitsNumber->SetText("Test");
 
 	const int size = Game::get()->getDatabaseCache()->getResourceSize();
@@ -36,7 +36,7 @@ void TopPanel::createBody() {
 		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + resource->icon);
 
-		elements[i] = new TopHudElement(texture);
+		elements[i] = new TopHudElement(style, texture);
 		window->AddChild(elements[i]->getButton());
 	}
 }

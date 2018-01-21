@@ -7,7 +7,7 @@
 #include "GameState.h"
 
 
-SelectedHudPanel::SelectedHudPanel(): AbstractWindowPanel() {
+SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "SelectedInfoWindow";
 	visibleAt.insert(GameState::RUNNING);
 	visibleAt.insert(GameState::PAUSE);
@@ -44,7 +44,7 @@ void SelectedHudPanel::createBody() {
 	elements = new SelectedHudElement*[LINES_IN_SELECTION * maxInRow];
 
 	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
-		elements[i] = new SelectedHudElement();
+		elements[i] = new SelectedHudElement(style);
 	}
 
 	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
@@ -61,7 +61,7 @@ void SelectedHudPanel::createBody() {
 
 int SelectedHudPanel::iconSize() {
 	UIElement* test = new UIElement(Game::get()->getContext());
-	test->SetStyle("SmallIcon");
+	test->SetStyle("SmallIcon", style);
 
 	int size = test->GetSize().x_ + rows[0]->GetLayoutSpacing();
 	test->Remove();
@@ -73,7 +73,7 @@ void SelectedHudPanel::createRows() {
 	rows = new UIElement*[LINES_IN_SELECTION];
 	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
 		rows[i] = window->CreateChild<UIElement>();
-		rows[i]->SetStyle("MyListRow");
+		rows[i]->SetStyle("MyListRow", style);
 	}
 }
 

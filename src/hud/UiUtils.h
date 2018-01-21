@@ -7,21 +7,20 @@
 #include <Urho3D/UI/Sprite.h>
 #include <Urho3D/UI/Text.h>
 #include <vector>
-#include <Urho3D/UI/UI.h>
 
-static Urho3D::Button* simpleButton(MySprite* sprite, const String& styleName) {
+static Urho3D::Button* simpleButton(MySprite* sprite, Urho3D::XMLFile* style, const String& styleName) {
 	Urho3D::Button* button = new Urho3D::Button(Game::get()->getContext());
-	button->SetStyle(styleName, Game::get()->getUI()->GetRoot()->GetDefaultStyle());
+	button->SetStyle(styleName, style);
 	if (sprite) {
 		button->AddChild(sprite);
 	}
 	return button;
 }
 
-static MySprite* createEmptySprite(const String& styleName) {
+static MySprite* createEmptySprite(Urho3D::XMLFile* style, const String& styleName) {
 	MySprite* sprite = new MySprite(Game::get()->getContext());
 
-	sprite->SetStyle(styleName, Game::get()->getUI()->GetRoot()->GetDefaultStyle());
+	sprite->SetStyle(styleName, style);
 	return sprite;
 }
 
@@ -58,35 +57,36 @@ static void setExactTextureToSprite(MySprite* sprite, Texture2D* texture) {
 }
 
 
-static MySprite* createSprite(Texture2D* texture, const String& styleName) {
-	MySprite* sprite = createEmptySprite(styleName);
+static MySprite* createSprite(Texture2D* texture, Urho3D::XMLFile* style, const String& styleName) {
+	MySprite* sprite = createEmptySprite(style, styleName);
 	setTextureToSprite(sprite, texture);
 
 	return sprite;
 }
 
-inline void addTextItem(Urho3D::DropDownList* cob, Urho3D::String str) {
+inline void addTextItem(Urho3D::DropDownList* cob, Urho3D::String str, Urho3D::XMLFile* style) {
 	Urho3D::Text* item = new Urho3D::Text(Game::get()->getContext());
-	item->SetStyle("MyText", Game::get()->getUI()->GetRoot()->GetDefaultStyle());
+	item->SetStyle("MyText", style);
 	item->SetText(str);
 	cob->AddItem(item);
 }
 
-inline void addTextItems(Urho3D::DropDownList* cob, std::vector<String> names) {
-	for (const auto name : names) {
-		addTextItem(cob, name);
-	}
-}
 
 inline Urho3D::DropDownList*
-createDropDownList(Urho3D::UIElement* uiElement, String styleName) {
+createDropDownList(Urho3D::UIElement* uiElement, String styleName, Urho3D::XMLFile* style) {
 	Urho3D::DropDownList* cob = uiElement->CreateChild<Urho3D::DropDownList>();
-	cob->SetStyle(styleName);
+	cob->SetStyle(styleName, style);
 	return cob;
 }
 
-inline void addChildText(UIElement* element, String styleName, String value) {
+inline void addChildText(UIElement* element, String styleName, String value, Urho3D::XMLFile* style) {
 	Urho3D::Text* text = element->CreateChild<Urho3D::Text>();
-	text->SetStyle(styleName);
+	text->SetStyle(styleName, style);
 	text->SetText(value);
+}
+
+inline void addChildTexts(Urho3D::DropDownList* cob, std::vector<String> names, Urho3D::XMLFile* style) {
+	for (auto name : names) {
+		addTextItem(cob, name, style);
+	}
 }

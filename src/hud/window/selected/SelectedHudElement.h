@@ -11,7 +11,7 @@
 class SelectedHudElement
 {
 public:
-	SelectedHudElement();
+	SelectedHudElement(Urho3D::XMLFile* style);
 	~SelectedHudElement();
 	void unSelect();
 	Button* getButton();
