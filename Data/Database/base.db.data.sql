@@ -103,7 +103,7 @@ INSERT INTO `hud_size` (id,name) VALUES (0,'s'),
  (1,'m'),
  (2,'l'),
  (3,'xl');
-INSERT INTO `graph_settings` (id,hud_size,res_x,res_y,style,fullscreen,max_fps,min_fps) VALUES (0,0,1600,900,'DefaultStyle.xml
+INSERT INTO `graph_settings` (id,hud_size,res_x,res_y,style,fullscreen,max_fps,min_fps,name) VALUES (0,0,1600,900,'DefaultStyle.xml
 in_game.xml
 mini_map.xml
 top.xml
@@ -111,7 +111,16 @@ loading.xml
 selected.xml
 queue.xml
 left.xml
-main_menu.xml',0,140.0,1.0);
+main_menu.xml',0,140.0,1.0,'custom'),
+ (1,1,1920,1080,'DefaultStyle.xml
+in_game.xml
+mini_map.xml
+top.xml
+loading.xml
+selected.xml
+queue.xml
+left.xml
+main_menu.xml',1,120.0,1.0,'high');
 INSERT INTO `cost_unit` (id,resource,value,unit) VALUES (0,0,90,3),
  (1,1,120,0),
  (2,0,80,1),

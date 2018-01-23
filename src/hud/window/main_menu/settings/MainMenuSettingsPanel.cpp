@@ -10,7 +10,9 @@ MainMenuSettingsPanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuD
 	bodyStyle = "MainMenuSettingsMock";
 }
 
-MainMenuSettingsPanel::~MainMenuSettingsPanel() = default;
+MainMenuSettingsPanel::~MainMenuSettingsPanel() {
+	delete data;
+};
 
 void MainMenuSettingsPanel::createBody() {
 	MainMenuDetailsPanel::createBody();
@@ -75,6 +77,8 @@ void MainMenuSettingsPanel::createBody() {
 	save = body->CreateChild<Urho3D::Button>();
 	save->SetStyle("MainMenuSettingsButton", style);
 	addChildText(save, "MainMenuSettingsButtonText", l10n->Get("mmsp_save"), style);
+	data = new SettingsForm();
+	save->SetVar("SettingsForm", data);
 }
 
 void MainMenuSettingsPanel::populateLabels(int index, Urho3D::String name) {

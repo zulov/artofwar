@@ -480,6 +480,7 @@
     <ClInclude Include="src\hud\window\main_menu\load\MainMenuLoadPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\close\MainMenuClosePanel.h" />
     <ClInclude Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.h" />
+    <ClInclude Include="src\hud\window\main_menu\settings\SettingsForm.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

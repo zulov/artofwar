@@ -4,6 +4,7 @@
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/UI/CheckBox.h>
+#include "SettingsForm.h"
 
 #define SETTINGS_ROWS_NUMBER 9
 
@@ -28,4 +29,6 @@ private:
 	Urho3D::DropDownList* textureQuality;
 	Urho3D::CheckBox* shadow;
 	Urho3D::DropDownList* hudSize;
+
+	SettingsForm * data;
 };

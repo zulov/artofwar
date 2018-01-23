@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS `units` (
 	`icon`	TEXT,
 	`actionState`	INTEGER,
 	PRIMARY KEY(`id`),
-	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`),
-	FOREIGN KEY(`type`) REFERENCES `unit_type`(`id`)
+	FOREIGN KEY(`type`) REFERENCES `unit_type`(`id`),
+	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `unit_type` (
 	`id`	INTEGER,
@@ -49,9 +49,9 @@ CREATE TABLE IF NOT EXISTS `orders_to_unit` (
 	`id`	INTEGER,
 	`unit`	INTEGER,
 	`order`	INTEGER,
-	PRIMARY KEY(`id`),
 	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
-	FOREIGN KEY(`order`) REFERENCES `orders`(`id`)
+	FOREIGN KEY(`order`) REFERENCES `orders`(`id`),
+	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `orders` (
 	`id`	INTEGER,
@@ -93,6 +93,7 @@ CREATE TABLE IF NOT EXISTS `graph_settings` (
 	`fullscreen`	INTEGER,
 	`max_fps`	REAL,
 	`min_fps`	REAL,
+	`name`	TEXT,
 	PRIMARY KEY(`id`),
 	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`)
 );
@@ -110,8 +111,8 @@ CREATE TABLE IF NOT EXISTS `cost_building` (
 	`resource`	INTEGER,
 	`value`	INTEGER,
 	`building`	INTEGER,
-	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
 	PRIMARY KEY(`id`),
+	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
 	FOREIGN KEY(`building`) REFERENCES `building`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `building_type` (
@@ -123,9 +124,9 @@ CREATE TABLE IF NOT EXISTS `building_to_unit` (
 	`id`	INTEGER,
 	`building`	INTEGER,
 	`unit`	INTEGER,
+	PRIMARY KEY(`id`),
 	FOREIGN KEY(`building`) REFERENCES `building`(`id`),
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
-	PRIMARY KEY(`id`)
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `building` (
 	`id`	INTEGER,

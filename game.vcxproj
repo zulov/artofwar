@@ -310,6 +310,7 @@
     <ClInclude Include="src\hud\window\main_menu\new_game\NewGameForm.h" />
     <ClInclude Include="src\hud\window\main_menu\new_game\NewGamePlayer.h" />
     <ClInclude Include="src\hud\window\main_menu\new_game\NewGameTeamLine.h" />
+    <ClInclude Include="src\hud\window\main_menu\settings\SettingsForm.h" />
     <ClInclude Include="src\Loading.h" />
     <ClInclude Include="src\objects\Static.h" />
     <ClInclude Include="src\objects\unit\ActionParameter.h" />
