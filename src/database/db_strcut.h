@@ -102,8 +102,10 @@ struct db_graph_settings
 	bool fullscreen;
 	float max_fps;
 	float min_fps;
+	Urho3D::String name;
 
-	db_graph_settings(int id, int hudSize, int resX, int resY, char* styles, int fullscreen, float maxFps, float minFps)
+	db_graph_settings(int id, int hudSize, int resX, int resY, char* styles, int fullscreen, float maxFps, float minFps,
+	                  char* name)
 		: id(id),
 		hud_size(hudSize),
 		res_x(resX),
@@ -111,7 +113,8 @@ struct db_graph_settings
 		styles(Urho3D::String(styles).Split(SPLIT_SIGN)),
 		fullscreen(fullscreen),
 		max_fps(maxFps),
-		min_fps(minFps) {
+		min_fps(minFps),
+		name(name) {
 	}
 };
 

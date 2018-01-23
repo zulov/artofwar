@@ -34,6 +34,8 @@ public:
 	int getMapSize();
 	int getPlayerColorsSize();
 	int getNationSize();
+	int getHudSizeSize();
+	int getGraphSettingsSize();
 
 
 private:

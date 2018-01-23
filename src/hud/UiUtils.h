@@ -90,3 +90,19 @@ inline void addChildTexts(Urho3D::DropDownList* cob, std::vector<String> names, 
 		addTextItem(cob, name, style);
 	}
 }
+
+inline void addTextItem(DropDownList* cob, String name, XMLFile* style, Variant var, const String& varName) {
+	Urho3D::Text* item = new Urho3D::Text(Game::get()->getContext());
+	item->SetStyle("MyText", style);
+	item->SetText(name);
+	cob->AddItem(item);
+	item->SetVar(varName, var);
+}
+
+inline void addChildTexts(Urho3D::DropDownList* cob, std::vector<String> names, Urho3D::XMLFile* style,
+                          std::vector<Variant> vars, String varsName) {
+	for (int i = 0; i < names.size(); ++i) {
+		addTextItem(cob, names.at(i), style, vars.at(i), varsName);
+
+	}
+}

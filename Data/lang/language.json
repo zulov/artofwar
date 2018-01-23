@@ -148,7 +148,7 @@
 		"pl":"Maksymalny fps"
 	},
 	"mmsp_min_fps":{
-		"pl":"minimaly fps"
+		"pl":"Minimaly fps"
 	},
 	"mmsp_vSync":{
 		"pl":"vSync"
@@ -161,6 +161,18 @@
 	},
 	"mmsp_save":{
 		"pl":"Zapisz ustawienia"
+	},
+	"mmsp_hud_size":{
+		"pl":"Rozmiar huda"
+	},
+	"low":{
+		"pl":"Niski"
+	},
+	"high":{
+		"pl":"Wysoki"
+	},
+	"custom":{
+		"pl":"Własne"
 	}
 	
 }

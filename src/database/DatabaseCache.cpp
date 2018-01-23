@@ -35,7 +35,7 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
 	xyz->graphSettings[id] = new db_graph_settings(id, atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4], atoi(argv[5]),
-	                                               atof(argv[6]), atof(argv[7]));
+	                                               atof(argv[6]), atof(argv[7]), argv[8]);
 	xyz->graph_settings_size++;
 	return 0;
 }
@@ -250,6 +250,14 @@ int DatabaseCache::getPlayerColorsSize() {
 
 int DatabaseCache::getNationSize() {
 	return dbContainer->nation_size;
+}
+
+int DatabaseCache::getHudSizeSize() {
+	return dbContainer->hud_size_size;
+}
+
+int DatabaseCache::getGraphSettingsSize() {
+	return dbContainer->graph_settings_size;
 }
 
 std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) {

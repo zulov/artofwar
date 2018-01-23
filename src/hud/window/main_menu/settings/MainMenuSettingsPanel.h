@@ -5,7 +5,7 @@
 #include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/UI/CheckBox.h>
 
-#define SETTINGS_ROWS_NUMBER 8
+#define SETTINGS_ROWS_NUMBER 9
 
 class MainMenuSettingsPanel : public MainMenuDetailsPanel
 {
@@ -26,5 +26,6 @@ private:
 	Urho3D::DropDownList* minFps;
 	Urho3D::CheckBox* vSync;
 	Urho3D::DropDownList* textureQuality;
-	Urho3D::DropDownList* shadow;
+	Urho3D::CheckBox* shadow;
+	Urho3D::DropDownList* hudSize;
 };
