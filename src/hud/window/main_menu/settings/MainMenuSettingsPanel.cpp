@@ -31,9 +31,7 @@ void MainMenuSettingsPanel::createBody() {
 	populateLabels(7, "mmsp_shadow");
 	populateLabels(8, "mmsp_hud_size");
 
-
 	Urho3D::Localization* l10n = Game::get()->getLocalization();
-
 
 	settings = createDropDownList(rows[0], "MainMenuNewGameDropDownList", style);
 	std::vector<String> settingsNames;
@@ -44,9 +42,12 @@ void MainMenuSettingsPanel::createBody() {
 	addChildTexts(settings, settingsNames, style);
 
 	resolution = createDropDownList(rows[1], "MainMenuNewGameDropDownList", style);
-	addChildTexts(resolution, {"1366x768", "1600x900", "1920x1080", "2560x1440", "4096x2160"}, style);
-	
-	//TODO zrobic z tym tabelke
+	std::vector<String> resNames;
+	for (int i = 0; i < Game::get()->getDatabaseCache()->getResourceSize(); ++i) {
+		db_resolution* res = Game::get()->getDatabaseCache()->getResolution(i);
+		resNames.push_back(String(res->x) + "x" + String(res->y));
+	}
+	addChildTexts(resolution, resNames, style);
 
 	fullScreen = rows[2]->CreateChild<CheckBox>();
 	fullScreen->SetStyle("CheckBox", style);
@@ -80,6 +81,17 @@ void MainMenuSettingsPanel::createBody() {
 	addChildText(save, "MainMenuSettingsButtonText", l10n->Get("mmsp_save"), style);
 	data = new SettingsForm();
 	save->SetVar("SettingsForm", data);
+
+	db_settings* set = Game::get()->getDatabaseCache()->getSettings();
+	db_graph_settings* graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(set->graph);
+	resolution->SetSelection(set->resolution);
+	settings->SetSelection(set->graph);
+
+	fullScreen->SetChecked(graphSettings->fullscreen);
+//	vSync->SetChecked(graphSettings->vSync);
+//	textureQuality->SetSelection(graphSettings->texture_quality);
+//	shadow->SetChecked(graphSettings->shadow);
+	hudSize->SetSelection(graphSettings->hud_size);
 }
 
 void MainMenuSettingsPanel::populateLabels(int index, Urho3D::String name) {
