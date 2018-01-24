@@ -88,5 +88,6 @@ private:
 	std::vector<AbstractWindowPanel*> panels;
 
 	db_graph_settings* graphSettings;
+	db_resolution* resolution;
 	XMLFile* style;
 };

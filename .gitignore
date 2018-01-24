@@ -15,3 +15,4 @@ include
 /Data/Database/base.db
 /CoreData
 saves
+/Data/Database/base.old.db

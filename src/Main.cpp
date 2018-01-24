@@ -31,17 +31,17 @@ void Main::Setup() {
 	Game* game = Game::get();
 
 	game->setDatabaseCache(new DatabaseCache());
-
-	db_graph_settings* graphSettings = game->getDatabaseCache()->getGraphSettings(0);
-
+	db_settings* settings = game->getDatabaseCache()->getSettings();
+	db_graph_settings* graphSettings = game->getDatabaseCache()->getGraphSettings(settings->graph);
+	db_resolution* resolution = game->getDatabaseCache()->getResolution(settings->resolution);
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
 	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName() +
 		".log";
 	engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
 	engineParameters_[EP_HEADLESS] = false;
 	engineParameters_[EP_SOUND] = false;
-	engineParameters_[EP_WINDOW_HEIGHT] = graphSettings->res_y;
-	engineParameters_[EP_WINDOW_WIDTH] = graphSettings->res_x;
+	engineParameters_[EP_WINDOW_WIDTH] = resolution->x;
+	engineParameters_[EP_WINDOW_HEIGHT] = resolution->y;
 
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
@@ -343,7 +343,7 @@ void Main::HandleNewGame(StringHash eventType, VariantMap& eventData) {
 void Main::HandleLoadGame(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	String fileName = element->GetVar("LoadFileName").GetString();
-	
+
 	changeState(GameState::LOADING);
 
 	saveToLoad = String(fileName);

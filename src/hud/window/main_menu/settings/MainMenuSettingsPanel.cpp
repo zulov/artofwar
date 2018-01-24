@@ -45,6 +45,7 @@ void MainMenuSettingsPanel::createBody() {
 
 	resolution = createDropDownList(rows[1], "MainMenuNewGameDropDownList", style);
 	addChildTexts(resolution, {"1366x768", "1600x900", "1920x1080", "2560x1440", "4096x2160"}, style);
+	
 	//TODO zrobic z tym tabelke
 
 	fullScreen = rows[2]->CreateChild<CheckBox>();

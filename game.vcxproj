@@ -297,7 +297,7 @@
     <ClInclude Include="src\commands\AbstractCommand.h" />
     <ClInclude Include="src\control\HitData.h" />
     <ClInclude Include="src\control\MouseButton.h" />
-    <ClInclude Include="src\database\db_units.h" />
+    <ClInclude Include="src\database\db_utils.h" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\hud\window\in_game_menu\middle\AbstractMiddlePanel.h" />
     <ClInclude Include="src\hud\window\AbstractWindowPanel.h" />

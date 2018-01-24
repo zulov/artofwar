@@ -3,7 +3,7 @@
 #include "db_strcut.h"
 #include <iostream>
 #include <sstream>
-#include "db_units.h"
+#include "db_utils.h"
 
 static unsigned fromHex(char** argv, int index) {
 	unsigned x;
@@ -16,9 +16,9 @@ static unsigned fromHex(char** argv, int index) {
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
-	xyz->units[id] = new db_unit(id, argv[1], atof(argv[2]), atof(argv[3]), argv[5], argv[6], atof(argv[8]),
-	                             atof(argv[9]), atof(argv[10]), atoi(argv[11]), atoi(argv[12]), argv[13],
-	                             atoi(argv[14]));
+	xyz->units[id] = new db_unit(id, argv[1], atof(argv[2]), atof(argv[3]), argv[4], argv[5], atof(argv[6]),
+	                             atof(argv[7]), atof(argv[8]), atoi(argv[9]), atoi(argv[10]), argv[11],
+	                             atoi(argv[12]));
 	xyz->units_size++;
 	return 0;
 }
@@ -34,8 +34,8 @@ int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 int static loadGraphSettings(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
-	xyz->graphSettings[id] = new db_graph_settings(id, atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4], atoi(argv[5]),
-	                                               atof(argv[6]), atof(argv[7]), argv[8]);
+	xyz->graphSettings[id] = new db_graph_settings(id, atoi(argv[1]), argv[2], atoi(argv[3]),
+	                                               atof(argv[4]), atof(argv[5]), argv[6]);
 	xyz->graph_settings_size++;
 	return 0;
 }
@@ -43,8 +43,8 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
-	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), argv[5], argv[6],
-	                                     atof(argv[8]), argv[9], atoi(argv[10]), argv[11], atoi(argv[12]));
+	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), argv[4], argv[5],
+	                                     atof(argv[6]), atoi(argv[7]), argv[8], atoi(argv[9]));
 	xyz->building_size++;
 	return 0;
 }
@@ -140,6 +140,22 @@ int static loadPlayerColors(void* data, int argc, char** argv, char** azColName)
 	return 0;
 }
 
+int static loadResolution(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = static_cast<db_container *>(data);
+	const int id = atoi(argv[0]);
+	xyz->resolutions[id] = new db_resolution(id, atoi(argv[1]), atoi(argv[2]));
+	xyz->resolutions_size++;
+	return 0;
+}
+
+int static loadSettings(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = static_cast<db_container *>(data);
+
+	xyz->settings[0] = new db_settings(atoi(argv[0]), atoi(argv[1]));
+
+	return 0;
+}
+
 void DatabaseCache::execute(const char* sql, int (*load)(void*, int, char**, char**)) {
 	char* error;
 	const int rc = sqlite3_exec(database, sql, load, dbContainer, &error);
@@ -170,6 +186,8 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from orders_to_unit", loadOrdersToUnit);
 	execute("SELECT * from map", loadMap);
 	execute("SELECT * from player_colors", loadPlayerColors);
+	execute("SELECT * from resolution", loadResolution);
+	execute("SELECT * from settings", loadSettings);
 
 
 	sqlite3_close(database);
@@ -220,6 +238,10 @@ db_player_colors* DatabaseCache::getPlayerColor(int i) {
 	return dbContainer->playerColors[i];
 }
 
+db_settings* DatabaseCache::getSettings() {
+	return dbContainer->settings[0];
+}
+
 int DatabaseCache::getResourceSize() {
 	return dbContainer->resource_size;
 }
@@ -258,6 +280,14 @@ int DatabaseCache::getHudSizeSize() {
 
 int DatabaseCache::getGraphSettingsSize() {
 	return dbContainer->graph_settings_size;
+}
+
+int DatabaseCache::getResolutionSize() {
+	return dbContainer->resolutions_size;
+}
+
+db_resolution* DatabaseCache::getResolution(int id) {
+	return dbContainer->resolutions[id];
 }
 
 std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) {

@@ -20,6 +20,8 @@ public:
 	db_order* getOrder(int i);
 	db_map* getMap(int i);
 	db_player_colors* getPlayerColor(int i);
+	db_settings* getSettings();
+	db_resolution* getResolution(int id);
 
 	std::vector<db_unit*>* getUnitsForBuilding(int id);
 	std::vector<db_cost*>* getCostForUnit(int id);
@@ -36,7 +38,7 @@ public:
 	int getNationSize();
 	int getHudSizeSize();
 	int getGraphSettingsSize();
-
+	int getResolutionSize();
 
 private:
 	db_container* dbContainer;

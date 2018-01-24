@@ -26,8 +26,8 @@ void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 			symbol_table.add_variable(var->name.CString(), var->value);
 		}
 	}
-	float resX = (float)graphSettings->res_x;
-	float resY = (float)graphSettings->res_y;
+	float resX = resolution->x;
+	float resY = resolution->y;
 	symbol_table.add_variable("resX", resX);
 	symbol_table.add_variable("resY", resY);
 
@@ -158,7 +158,9 @@ void Hud::subscribeToUIEvents() {
 }
 
 Hud::Hud() : Object(Game::get()->getContext()) {
-	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(0);
+	db_settings* settings = Game::get()->getDatabaseCache()->getSettings();
+	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(settings->graph);
+	resolution = Game::get()->getDatabaseCache()->getResolution(settings->resolution);
 
 	prepareStyle();
 }

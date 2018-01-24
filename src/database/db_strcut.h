@@ -10,13 +10,16 @@
 #define ORDERS_NUMBER_DB 20
 #define MAP_NUMBER_DB 10
 #define PLAYER_COLORS_NUMBER_DB 10
+#define RESOLUTIONS_NUMBER_DB 6
+#define SETTINGS_NUMBER_DB 1
 
 #define SPLIT_SIGN '\n'
 
-#include <Urho3D/Container/Str.h>
-#include <vector>
 #include "defines.h"
+#include <Urho3D/Container/Str.h>
 #include <Urho3D/Math/Vector2.h>
+#include <vector>
+
 
 struct db_unit
 {
@@ -61,20 +64,19 @@ struct db_building
 	Urho3D::String model;
 	Urho3D::String texture;
 	float scale;
-	Urho3D::String texture_temp;
+
 	int nation;
 	Urho3D::String icon;
 	short queueMaxCapacity;
 
 	db_building(int id, char* name, int sizeX, int sizeZ, char* model, char* texture, float scale,
-	            char* texture_temp, int nation, char* icon, int queueMaxCapacity)
+	            int nation, char* icon, int queueMaxCapacity)
 		: id(id),
 		name(name),
 		size(Urho3D::IntVector2(sizeX, sizeZ)),
 		model(model),
 		texture(texture),
 		scale(scale),
-		texture_temp(texture_temp),
 		nation(nation),
 		icon(icon),
 		queueMaxCapacity(queueMaxCapacity) {
@@ -92,24 +94,44 @@ struct db_hud_size
 	}
 };
 
+struct db_settings
+{
+	int graph;
+	int resolution;
+
+	db_settings(int graph, int resolution)
+		: graph(graph),
+		resolution(resolution) {
+	}
+};
+
+struct db_resolution
+{
+	int id;
+	int x;
+	int y;
+
+	db_resolution(int id, int x, int y)
+		: id(id),
+		x(x),
+		y(y) {
+	}
+};
+
 struct db_graph_settings
 {
 	int id;
 	int hud_size;
-	int res_x;
-	int res_y;
 	Urho3D::Vector<Urho3D::String> styles;
 	bool fullscreen;
 	float max_fps;
 	float min_fps;
 	Urho3D::String name;
 
-	db_graph_settings(int id, int hudSize, int resX, int resY, char* styles, int fullscreen, float maxFps, float minFps,
+	db_graph_settings(int id, int hudSize, char* styles, int fullscreen, float maxFps, float minFps,
 	                  char* name)
 		: id(id),
 		hud_size(hudSize),
-		res_x(resX),
-		res_y(resY),
 		styles(Urho3D::String(styles).Split(SPLIT_SIGN)),
 		fullscreen(fullscreen),
 		max_fps(maxFps),
@@ -250,6 +272,8 @@ struct db_container
 	db_order* orders[ORDERS_NUMBER_DB] = {nullptr};
 	db_map* maps[MAP_NUMBER_DB] = {nullptr};
 	db_player_colors* playerColors[PLAYER_COLORS_NUMBER_DB] = {nullptr};
+	db_resolution* resolutions[RESOLUTIONS_NUMBER_DB] = {nullptr};
+	db_settings* settings[SETTINGS_NUMBER_DB] = {nullptr};
 
 	int units_size = 0;
 	int hud_size_size = 0;
@@ -262,6 +286,7 @@ struct db_container
 	int orders_size = 0;
 	int maps_size = 0;
 	int player_colors_size = 0;
+	int resolutions_size = 0;
 
 
 	explicit db_container() {
