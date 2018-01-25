@@ -12,14 +12,14 @@ INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,sizeX,sizeZ
 tree1.xml','tree.mdl',1.0,3,3,3,'0xFF00B600'),
  (2,'food','food.png',100,'food.xml',NULL,0.5,2,2,3,'0xFF9000A7'),
  (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.5,2,2,4,'0xFF808080');
-INSERT INTO `resolution` (id,x,y) VALUES (0,NULL,NULL),
+INSERT INTO `resolution` (id,x,y) VALUES (0,1366,768),
  (1,1600,900),
  (2,1920,1080),
  (3,2560,1440),
  (4,4096,2160);
 INSERT INTO `player_colors` (id,unit,building,name) VALUES (0,'0xFFCF0000','0xFF900000','blue'),
  (1,'0xFF0000CF','0xFF000090','red');
-INSERT INTO `orders_to_unit` (id,unit,'order') VALUES (0,0,0),
+INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
  (1,0,1),
  (2,0,3),
  (3,0,4),
@@ -104,7 +104,7 @@ INSERT INTO `hud_size` (id,name) VALUES (0,'s'),
  (1,'m'),
  (2,'l'),
  (3,'xl');
-INSERT INTO `graph_settings` (id,hud_size,style,fullscreen,max_fps,min_fps,name) VALUES (0,0,'DefaultStyle.xml
+INSERT INTO `graph_settings` (id,hud_size,style,fullscreen,max_fps,min_fps,name,v_sync,shadow,texture_quality) VALUES (0,0,'DefaultStyle.xml
 in_game.xml
 mini_map.xml
 top.xml
@@ -112,7 +112,7 @@ loading.xml
 selected.xml
 queue.xml
 left.xml
-main_menu.xml',0,140.0,1.0,'custom'),
+main_menu.xml',0,140.0,1.0,'custom',0,1,2),
  (1,1,'DefaultStyle.xml
 in_game.xml
 mini_map.xml
@@ -121,7 +121,7 @@ loading.xml
 selected.xml
 queue.xml
 left.xml
-main_menu.xml',1,120.0,1.0,'high');
+main_menu.xml',1,120.0,1.0,'high',0,1,2);
 INSERT INTO `cost_unit` (id,resource,value,unit) VALUES (0,0,90,3),
  (1,1,120,0),
  (2,0,80,1),

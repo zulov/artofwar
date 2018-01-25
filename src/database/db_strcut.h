@@ -127,16 +127,22 @@ struct db_graph_settings
 	float max_fps;
 	float min_fps;
 	Urho3D::String name;
+	bool v_sync;
+	bool shadow;
+	int texture_quality;
 
 	db_graph_settings(int id, int hudSize, char* styles, int fullscreen, float maxFps, float minFps,
-	                  char* name)
+	                  char* name, bool v_sync, bool shadow, int texture_quality)
 		: id(id),
 		hud_size(hudSize),
 		styles(Urho3D::String(styles).Split(SPLIT_SIGN)),
 		fullscreen(fullscreen),
 		max_fps(maxFps),
 		min_fps(minFps),
-		name(name) {
+		name(name),
+		v_sync(v_sync),
+		shadow(shadow),
+		texture_quality(texture_quality) {
 	}
 };
 

@@ -88,9 +88,9 @@ void MainMenuSettingsPanel::createBody() {
 	settings->SetSelection(set->graph);
 
 	fullScreen->SetChecked(graphSettings->fullscreen);
-//	vSync->SetChecked(graphSettings->vSync);
-//	textureQuality->SetSelection(graphSettings->texture_quality);
-//	shadow->SetChecked(graphSettings->shadow);
+	vSync->SetChecked(graphSettings->v_sync);
+	textureQuality->SetSelection(graphSettings->texture_quality);
+	shadow->SetChecked(graphSettings->shadow);
 	hudSize->SetSelection(graphSettings->hud_size);
 }
 

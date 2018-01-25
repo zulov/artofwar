@@ -35,7 +35,8 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
 	xyz->graphSettings[id] = new db_graph_settings(id, atoi(argv[1]), argv[2], atoi(argv[3]),
-	                                               atof(argv[4]), atof(argv[5]), argv[6]);
+	                                               atof(argv[4]), atof(argv[5]), argv[6],
+	                                               atoi(argv[7]), atoi(argv[8]), atoi(argv[9]));
 	xyz->graph_settings_size++;
 	return 0;
 }
