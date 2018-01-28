@@ -39,6 +39,9 @@ public:
 	int getHudSizeSize();
 	int getGraphSettingsSize();
 	int getResolutionSize();
+	void executeSingle(const char* sql);
+	void setGraphSettings(int i, db_graph_settings* graphSettings);
+	void setSettings(int i, db_settings* settings);
 
 private:
 	db_container* dbContainer;

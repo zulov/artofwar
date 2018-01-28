@@ -157,6 +157,10 @@ int static loadSettings(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+static int callback(void* data, int argc, char** argv, char** azColName) {
+	return 0;
+}
+
 void DatabaseCache::execute(const char* sql, int (*load)(void*, int, char**, char**)) {
 	char* error;
 	const int rc = sqlite3_exec(database, sql, load, dbContainer, &error);
@@ -285,6 +289,48 @@ int DatabaseCache::getGraphSettingsSize() {
 
 int DatabaseCache::getResolutionSize() {
 	return dbContainer->resolutions_size;
+}
+
+void DatabaseCache::executeSingle(const char* sql) {
+	const int rc = sqlite3_open("Data/Database/base.db", &database);
+	if (rc) {
+		cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << endl << endl;
+		sqlite3_close(database);
+		return;
+	}
+	execute(sql, callback);
+	sqlite3_close(database);
+}
+
+void DatabaseCache::setGraphSettings(int i, db_graph_settings* graphSettings) {
+	graphSettings->name = dbContainer->graphSettings[i]->name;
+	graphSettings->styles = dbContainer->graphSettings[i]->styles;
+	delete dbContainer->graphSettings[i];
+	dbContainer->graphSettings[i] = graphSettings;
+	Urho3D::String sql = "UPDATE graph_settings";
+	sql.Append(" SET hud_size = ").Append(Urho3D::String(graphSettings->hud_size));
+	//sql.Append("SET style =").Append(Urho3D::String(graphSettings->hud_size));
+	sql.Append(", fullscreen = ").Append(Urho3D::String((int)graphSettings->fullscreen));
+	sql.Append(", max_fps =").Append(Urho3D::String(graphSettings->max_fps));
+	sql.Append(", min_fps =").Append(Urho3D::String(graphSettings->min_fps));
+	sql.Append(", name = ").Append("'"+Urho3D::String(graphSettings->name)+"'");
+	sql.Append(", v_sync = ").Append(Urho3D::String((int)graphSettings->v_sync));
+	sql.Append(", shadow = ").Append(Urho3D::String((int)graphSettings->shadow));
+	sql.Append(", texture_quality =").Append(Urho3D::String(graphSettings->texture_quality));
+	sql.Append(" WHERE id =").Append(Urho3D::String(i));
+
+	executeSingle(sql.CString());
+}
+
+void DatabaseCache::setSettings(int i, db_settings* settings) {
+	settings->graph=0;
+	delete dbContainer->settings[0];
+	dbContainer->settings[0] = settings;
+	Urho3D::String sql = "UPDATE settings";
+	sql.Append(" SET graph = ").Append(Urho3D::String(settings->graph));
+	sql.Append(", resolution = ").Append(Urho3D::String(settings->resolution));
+
+	executeSingle(sql.CString());
 }
 
 db_resolution* DatabaseCache::getResolution(int id) {

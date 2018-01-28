@@ -16,6 +16,8 @@ public:
 private:
 	void createBody() override;
 	void populateLabels(int index, Urho3D::String name);
+	void popualateForm(SettingsForm* form);
+	void HandleSaveSettings(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
 	Urho3D::BorderImage* rows[SETTINGS_ROWS_NUMBER];
 	Urho3D::Button* save;

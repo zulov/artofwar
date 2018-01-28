@@ -16,3 +16,4 @@ include
 /CoreData
 saves
 /Data/Database/base.old.db
+/Data/Database/base — kopia.db

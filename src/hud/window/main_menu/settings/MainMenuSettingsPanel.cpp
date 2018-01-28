@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "hud/UiUtils.h"
 #include "database/DatabaseCache.h"
+#include <Urho3D/UI/UIEvents.h>
 
 
 MainMenuSettingsPanel::
@@ -81,6 +82,7 @@ void MainMenuSettingsPanel::createBody() {
 	addChildText(save, "MainMenuSettingsButtonText", l10n->Get("mmsp_save"), style);
 	data = new SettingsForm();
 	save->SetVar("SettingsForm", data);
+	SubscribeToEvent(save, E_CLICK, URHO3D_HANDLER(MainMenuSettingsPanel, HandleSaveSettings));
 
 	db_settings* set = Game::get()->getDatabaseCache()->getSettings();
 	db_graph_settings* graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(set->graph);
@@ -99,4 +101,30 @@ void MainMenuSettingsPanel::populateLabels(int index, Urho3D::String name) {
 	Urho3D::Text* text = rows[index]->CreateChild<Urho3D::Text>();
 	text->SetStyle("MainMenuSettingsLabel");
 	text->SetText(l10n->Get(name));
+}
+
+void MainMenuSettingsPanel::popualateForm(SettingsForm* form) {
+	form->resolution = resolution->GetSelection();
+	form->fullScreen = fullScreen->IsChecked();
+	form->maxFps = maxFps->GetSelectedItem()->GetVar("IntValue").GetInt();
+	form->minFps = minFps->GetSelectedItem()->GetVar("IntValue").GetInt();
+	form->vSync = vSync->IsChecked();
+	form->textureQuality = textureQuality->GetSelection();
+	form->shadow=shadow->IsChecked();
+	form->hudSize=hudSize->GetSelection();
+}
+
+void MainMenuSettingsPanel::HandleSaveSettings(StringHash eventType, VariantMap& eventData) {
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	SettingsForm* form = static_cast<SettingsForm *>(element->GetVar("SettingsForm").GetVoidPtr());
+
+	popualateForm(form);
+
+	db_graph_settings* graphSettings = new db_graph_settings(0, form->hudSize, nullptr, form->fullScreen, form->maxFps,
+	                                                         form->minFps, nullptr, form->vSync, form->shadow,
+	                                                         form->textureQuality);
+	Game::get()->getDatabaseCache()->setGraphSettings(0, graphSettings);
+	db_settings* settings = new db_settings(0, form->resolution);
+	Game::get()->getDatabaseCache()->setSettings(0, settings);
+	
 }
