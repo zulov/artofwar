@@ -83,6 +83,12 @@ void Simulation::loadEntities(SceneLoader& loader) {
 	}
 }
 
+void Simulation::addTestEntities() {
+	if(UNITS_NUMBER>0) {
+		simObjectManager->addUnits(UNITS_NUMBER, 0, new Vector3(), 0);
+	}
+}
+
 void Simulation::loadEntities(NewGameForm* form) {
 	for (auto player : form->players) {
 		simObjectManager->addUnits(10, 1, new Vector3(), player.id);
@@ -186,11 +192,13 @@ void Simulation::update(Input* input, float timeStep) {
 
 void Simulation::initScene(SceneLoader& loader) {
 	loadEntities(loader);
+	addTestEntities();
 	simCommandList->execute();
 }
 
 void Simulation::initScene(NewGameForm* form) {
 	loadEntities(form);
+	addTestEntities();
 	simCommandList->execute();
 }
 

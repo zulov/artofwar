@@ -1,6 +1,6 @@
 #pragma once
 
-#define UNITS_NUMBER 200
+#define UNITS_NUMBER 0
 
 #define BUCKET_GRID_RESOLUTION 512
 #define BUCKET_GRID_SIZE 1024

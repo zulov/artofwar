@@ -200,6 +200,11 @@ void Main::save(String name) {
 	saver.close();
 }
 
+void Main::createSimulation() {
+	Game::get()->setCreationCommandList(new CreationCommandList());
+	simulation = new Simulation(Game::get()->getEnviroment(), Game::get()->getCreationCommandList());
+}
+
 void Main::load() {
 	switch (loadingProgress.currentStage) {
 	case 0:
@@ -221,8 +226,7 @@ void Main::load() {
 		break;
 	case 1:
 		{
-		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
-		Game::get()->setEnviroment(enviroment);
+		Game::get()->setEnviroment(new Enviroment(levelBuilder->getTerrian()));
 		break;
 		}
 	case 2:
@@ -232,8 +236,7 @@ void Main::load() {
 		break;
 		}
 	case 3:
-		Game::get()->setCreationCommandList(new CreationCommandList());
-		simulation = new Simulation(Game::get()->getEnviroment(), Game::get()->getCreationCommandList());
+		createSimulation();
 		break;
 	case 4:
 		simulation->initScene(loader);
@@ -264,7 +267,6 @@ void Main::newGame(NewGameForm* form) {
 		Game::get()->setPlayersManager(new PlayersManager());
 		Game::get()->getPlayersManager()->load(form);
 
-
 		hud->resetLoading();
 
 		levelBuilder->createScene(form);
@@ -272,8 +274,7 @@ void Main::newGame(NewGameForm* form) {
 		break;
 	case 1:
 		{
-		Enviroment* enviroment = new Enviroment(levelBuilder->getTerrian());
-		Game::get()->setEnviroment(enviroment);
+		Game::get()->setEnviroment(new Enviroment(levelBuilder->getTerrian()));
 		break;
 		}
 	case 2:
@@ -283,8 +284,7 @@ void Main::newGame(NewGameForm* form) {
 		break;
 		}
 	case 3:
-		Game::get()->setCreationCommandList(new CreationCommandList());
-		simulation = new Simulation(Game::get()->getEnviroment(), Game::get()->getCreationCommandList());
+		createSimulation();
 		break;
 	case 4:
 		simulation->initScene(form);

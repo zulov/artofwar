@@ -71,6 +71,7 @@ private:
 	void changeCamera(int type);
 	void load();
 	void save(String name);
+	void createSimulation();
 	void newGame(NewGameForm* form);
 	void changeState(GameState newState);
 

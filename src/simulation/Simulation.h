@@ -42,6 +42,7 @@ private:
 
 	void loadEntities(NewGameForm* form);
 	void loadEntities(SceneLoader& loader);
+	void addTestEntities();
 	void countFrame();
 	void applyForce();
 	void updateBuildingQueue();
@@ -56,7 +57,7 @@ private:
 	int framesPeriod = 20;
 	int currentFrameNumber = 0;
 	Force force;
-	
+
 	vector<Unit*>* units;
 	vector<Building*>* buildings;
 	vector<ResourceEntity*>* resources;
