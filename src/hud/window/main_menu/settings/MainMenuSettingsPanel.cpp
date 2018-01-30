@@ -15,6 +15,16 @@ MainMenuSettingsPanel::~MainMenuSettingsPanel() {
 	delete data;
 };
 
+void MainMenuSettingsPanel::setValues(int graphID) {
+	db_graph_settings* graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(graphID);
+
+	fullScreen->SetChecked(graphSettings->fullscreen);
+	vSync->SetChecked(graphSettings->v_sync);
+	textureQuality->SetSelection(graphSettings->texture_quality);
+	shadow->SetChecked(graphSettings->shadow);
+	hudSize->SetSelection(graphSettings->hud_size);
+}
+
 void MainMenuSettingsPanel::createBody() {
 	MainMenuDetailsPanel::createBody();
 	for (int i = 0; i < SETTINGS_ROWS_NUMBER; ++i) {
@@ -40,6 +50,8 @@ void MainMenuSettingsPanel::createBody() {
 		db_graph_settings* settings = Game::get()->getDatabaseCache()->getGraphSettings(i);
 		settingsNames.push_back(l10n->Get(settings->name));
 	}
+	SubscribeToEvent(settings, E_ITEMSELECTED, URHO3D_HANDLER(MainMenuSettingsPanel, HandleChangeSettings));
+
 	addChildTexts(settings, settingsNames, style);
 
 	resolution = createDropDownList(rows[1], "MainMenuNewGameDropDownList", style);
@@ -85,15 +97,10 @@ void MainMenuSettingsPanel::createBody() {
 	SubscribeToEvent(save, E_CLICK, URHO3D_HANDLER(MainMenuSettingsPanel, HandleSaveSettings));
 
 	db_settings* set = Game::get()->getDatabaseCache()->getSettings();
-	db_graph_settings* graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(set->graph);
-	resolution->SetSelection(set->resolution);
 	settings->SetSelection(set->graph);
-
-	fullScreen->SetChecked(graphSettings->fullscreen);
-	vSync->SetChecked(graphSettings->v_sync);
-	textureQuality->SetSelection(graphSettings->texture_quality);
-	shadow->SetChecked(graphSettings->shadow);
-	hudSize->SetSelection(graphSettings->hud_size);
+	resolution->SetSelection(set->resolution);
+	int graphID = set->graph;
+	setValues(graphID);
 }
 
 void MainMenuSettingsPanel::populateLabels(int index, Urho3D::String name) {
@@ -110,8 +117,16 @@ void MainMenuSettingsPanel::popualateForm(SettingsForm* form) {
 	form->minFps = minFps->GetSelectedItem()->GetVar("IntValue").GetInt();
 	form->vSync = vSync->IsChecked();
 	form->textureQuality = textureQuality->GetSelection();
-	form->shadow=shadow->IsChecked();
-	form->hudSize=hudSize->GetSelection();
+	form->shadow = shadow->IsChecked();
+	form->hudSize = hudSize->GetSelection();
+}
+
+void MainMenuSettingsPanel::HandleChangeSettings(StringHash eventType, VariantMap& eventData) {
+	DropDownList* element = static_cast<DropDownList*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	unsigned index = element->GetSelection();
+	if (index > 0) {
+		setValues(index);
+	}
 }
 
 void MainMenuSettingsPanel::HandleSaveSettings(StringHash eventType, VariantMap& eventData) {
@@ -126,5 +141,4 @@ void MainMenuSettingsPanel::HandleSaveSettings(StringHash eventType, VariantMap&
 	Game::get()->getDatabaseCache()->setGraphSettings(0, graphSettings);
 	db_settings* settings = new db_settings(0, form->resolution);
 	Game::get()->getDatabaseCache()->setSettings(0, settings);
-	
 }

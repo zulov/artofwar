@@ -313,7 +313,7 @@ void DatabaseCache::setGraphSettings(int i, db_graph_settings* graphSettings) {
 	sql.Append(", fullscreen = ").Append(Urho3D::String((int)graphSettings->fullscreen));
 	sql.Append(", max_fps =").Append(Urho3D::String(graphSettings->max_fps));
 	sql.Append(", min_fps =").Append(Urho3D::String(graphSettings->min_fps));
-	sql.Append(", name = ").Append("'"+Urho3D::String(graphSettings->name)+"'");
+	sql.Append(", name = ").Append("'" + Urho3D::String(graphSettings->name) + "'");
 	sql.Append(", v_sync = ").Append(Urho3D::String((int)graphSettings->v_sync));
 	sql.Append(", shadow = ").Append(Urho3D::String((int)graphSettings->shadow));
 	sql.Append(", texture_quality =").Append(Urho3D::String(graphSettings->texture_quality));
@@ -323,7 +323,7 @@ void DatabaseCache::setGraphSettings(int i, db_graph_settings* graphSettings) {
 }
 
 void DatabaseCache::setSettings(int i, db_settings* settings) {
-	settings->graph=0;
+	settings->graph = 0;
 	delete dbContainer->settings[0];
 	dbContainer->settings[0] = settings;
 	Urho3D::String sql = "UPDATE settings";

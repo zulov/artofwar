@@ -13,10 +13,12 @@ class MainMenuSettingsPanel : public MainMenuDetailsPanel
 public:
 	MainMenuSettingsPanel(Urho3D::XMLFile* _style, Urho3D::String _title);
 	~MainMenuSettingsPanel();
+	void setValues(int graphID);
 private:
 	void createBody() override;
 	void populateLabels(int index, Urho3D::String name);
 	void popualateForm(SettingsForm* form);
+	void HandleChangeSettings(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	void HandleSaveSettings(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
 	Urho3D::BorderImage* rows[SETTINGS_ROWS_NUMBER];
