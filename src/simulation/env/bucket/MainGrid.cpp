@@ -232,7 +232,7 @@ std::vector<std::pair<int, float>>* MainGrid::neighbors(const int current) {
 					const int index = getIndex(cords.x_ + i, cords.y_ + j);
 					if (complexData[index].isUnit()) {
 						double costD = cost(current, index);
-						//tempNeighbour->push_back(std::pair<int, float>(index, costD));
+						tempNeighbour->push_back(std::pair<int, float>(index, costD));
 					}
 				}
 			}

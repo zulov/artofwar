@@ -231,7 +231,7 @@ void Main::load() {
 		}
 	case 2:
 		{
-		//Game::get()->getEnviroment()->prepareGridToFind();
+		Game::get()->getEnviroment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
 		}
@@ -279,7 +279,7 @@ void Main::newGame(NewGameForm* form) {
 		}
 	case 2:
 		{
-		//Game::get()->getEnviroment()->prepareGridToFind();
+		Game::get()->getEnviroment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
 		}
