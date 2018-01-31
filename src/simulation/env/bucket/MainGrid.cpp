@@ -14,6 +14,8 @@ MainGrid::MainGrid(const short _resolution, const double _size, const bool _debu
 
 	tempNeighbour = new std::vector<std::pair<int, float>>();
 	tempNeighbour->reserve(10);
+	tempNeighbour2 = new std::vector<std::pair<int, float>>();
+	tempNeighbour2->reserve(10);
 	const double coef = (resolution / 16) * fieldSize;
 
 	complexData = new ComplexBucketData[resolution * resolution];
@@ -39,6 +41,7 @@ MainGrid::MainGrid(const short _resolution, const double _size, const bool _debu
 MainGrid::~MainGrid() {
 	delete[] complexData;
 	delete tempNeighbour;
+	delete tempNeighbour2;
 	delete ci;
 	if (pathInited) {
 		delete[]came_from;
@@ -46,10 +49,11 @@ MainGrid::~MainGrid() {
 	}
 }
 
-void MainGrid::prepareGridToFind()  {
+void MainGrid::prepareGridToFind() {
 	for (int i = 0; i < resolution * resolution; ++i) {
-		tempNeighbour = neighbors(i);
-		complexData[i].setNeightbours(tempNeighbour);
+		updateNeighbors(i);
+
+
 	}
 	tempNeighbour->clear();
 	came_from = new int[resolution * resolution];
@@ -169,8 +173,7 @@ void MainGrid::addStatic(Static* object) {
 		for (int i = iX + sizeX.x_ - 1; i < iX + sizeX.y_ + 1; ++i) {
 			for (int j = iZ + sizeZ.x_ - 1; j < iZ + sizeZ.y_ + 1; ++j) {
 				const int index = getIndex(i, j);
-				tempNeighbour = neighbors(index);
-				complexData[index].setNeightbours(tempNeighbour);
+				updateNeighbors(index);
 			}
 		}
 	}
@@ -187,8 +190,23 @@ Vector3* MainGrid::getDirectionFrom(Vector3* position) {
 	const short posZ = getIndex(position->z_);
 	const int index = getIndex(posX, posZ);
 	if (!complexData[index].isUnit()) {
+		int escapeBucket;
+		auto neights = complexData[index].getNeightbours();
+		if (!neights.empty()) {
+			float dist = (complexData[neights.at(0).first].getCenter() - complexData[index].getCenter()).LengthSquared();
+			escapeBucket = neights.at(0).first;
 
-		Vector3* direction = complexData[index].getDirectrionFrom(position);
+			for (int i = 1; i < neights.size(); ++i) {
+				float newDist = (complexData[neights.at(i).first].getCenter() - complexData[index].getCenter()).LengthSquared();
+				if (newDist < dist) {
+					escapeBucket = neights.at(i).first;
+				}
+			}
+		} else {
+			escapeBucket = complexData[index].getEscapeBucket();
+		}
+
+		Vector3* direction = complexData[index].getDirectrionFrom(position, complexData[escapeBucket]);
 
 		direction->Normalize();
 		return direction;
@@ -222,8 +240,9 @@ IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector3* pos) const 
 	return IntVector2(getIndex(pos->x_), getIndex(pos->z_));
 }
 
-std::vector<std::pair<int, float>>* MainGrid::neighbors(const int current) {
+void MainGrid::updateNeighbors(const int current) {
 	tempNeighbour->clear();
+	tempNeighbour2->clear();
 	IntVector2 cords = getCords(current);
 	for (int i = -1; i <= 1; ++i) {
 		for (int j = -1; j <= 1; ++j) {
@@ -233,12 +252,16 @@ std::vector<std::pair<int, float>>* MainGrid::neighbors(const int current) {
 					if (complexData[index].isUnit()) {
 						double costD = cost(current, index);
 						tempNeighbour->push_back(std::pair<int, float>(index, costD));
+					} else if (!complexData[current].isUnit()) {
+						double costD = cost(current, index);
+						tempNeighbour2->push_back(std::pair<int, float>(index, costD));
 					}
 				}
 			}
 		}
 	}
-	return tempNeighbour;
+	complexData[current].setNeightbours(tempNeighbour);
+	complexData[current].setOccupiedNeightbours(tempNeighbour2);
 }
 
 double MainGrid::cost(const int current, const int next) {
@@ -273,10 +296,9 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
 	double min = cost(start, goal);
-	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma byćtylko prosta odległość
+	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma być tylko prosta odległość
 
-	//frontier.clear();
-	frontier.init(750 + min, min); //TODO ustawić lepsze minimum
+	frontier.init(750 + min, min);
 	frontier.put(start, 0);
 
 	came_from[start] = start;
@@ -295,8 +317,47 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 				const float new_cost = cost_so_far[current] + neight.second;
 				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
 					cost_so_far[next] = new_cost;
-					const float priority = new_cost + heuristic(next, goal);
-					frontier.put(next, priority); //TODO a co sie stanie jesliwstawi sie kilka razytego samego noda?
+
+					frontier.put(next, new_cost + heuristic(next, goal));
+					came_from[next] = current;
+				}
+			}
+		}
+	}
+
+	//debug(startV, goalV);
+}
+
+void MainGrid::findWayout(IntVector2& startV) {
+	std::fill_n(came_from, resolution * resolution, -1);
+	std::fill_n(cost_so_far, resolution * resolution, -1);
+
+	int start = getIndex(startV.x_, startV.y_);
+
+	double min = 0;
+	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma być tylko prosta odległość
+
+	frontier.init(750 + min, min);
+	frontier.put(start, 0);
+
+	came_from[start] = start;
+	cost_so_far[start] = 0;
+
+	while (!frontier.empty()) {
+		const auto current = frontier.get();
+
+		if (complexData[current].isUnit()) {
+			break;
+		}
+		auto& neights = complexData[current].getNeightbours();
+		for (auto& neight : neights) {
+			int next = neight.first;
+			if (came_from[current] != next) {
+				const float new_cost = cost_so_far[current] + neight.second;
+				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
+					cost_so_far[next] = new_cost;
+
+					frontier.put(next, new_cost);
 					came_from[next] = current;
 				}
 			}

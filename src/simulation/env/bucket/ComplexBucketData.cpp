@@ -13,7 +13,7 @@ ComplexBucketData::ComplexBucketData() {
 	box = nullptr;
 	model = nullptr;
 	removeStatic();
-	neighbour.reserve(8);
+	neighbours.reserve(8);
 }
 
 ComplexBucketData::~ComplexBucketData() {
@@ -69,13 +69,13 @@ Urho3D::Vector2& ComplexBucketData::getCenter() {
 	return center;
 }
 
-void ComplexBucketData::setNeightbours(std::vector<std::pair<int, float>>* tempNeightbours) {
-	neighbour.clear();
-	neighbour.insert(neighbour.end(), tempNeightbours->begin(), tempNeightbours->end());
+void ComplexBucketData::setNeightbours(std::vector<std::pair<int, float>>* _neightbours) {
+	neighbours.clear();
+	neighbours.insert(neighbours.end(), _neightbours->begin(), _neightbours->end());
 }
 
 std::vector<std::pair<int, float>>& ComplexBucketData::getNeightbours() {
-	return neighbour;
+	return neighbours;
 }
 
 char ComplexBucketData::getAdditonalInfo() {
@@ -84,4 +84,22 @@ char ComplexBucketData::getAdditonalInfo() {
 
 bool ComplexBucketData::isUnit() {
 	return type == UNIT;
+}
+
+void ComplexBucketData::setOccupiedNeightbours(std::vector<std::pair<int, float>>* _occupiedNeightbours) {
+	occupiedNeightbours.clear();
+	occupiedNeightbours.insert(occupiedNeightbours.end(), _occupiedNeightbours->begin(), _occupiedNeightbours->end());
+}
+
+void ComplexBucketData::setEscapeThrought(int val) {//TODO uzyc tego
+	escapeBucketIndex = val;
+}
+
+Urho3D::Vector3* ComplexBucketData::
+getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket) {
+	return new Vector3(escapeBucket.getCenter().x_ - position->x_, 0, escapeBucket.getCenter().y_ - position->z_);
+}
+
+int ComplexBucketData::getEscapeBucket() {
+	return escapeBucketIndex;
 }

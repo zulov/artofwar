@@ -21,10 +21,15 @@ public:
 	Urho3D::Vector3* getDirectrionFrom(Urho3D::Vector3* position);
 	void setCenter(double _centerX, double _centerY);
 	Urho3D::Vector2& getCenter();
-	void setNeightbours(std::vector<std::pair<int, float>>* tempNeightbours);
+	void setNeightbours(std::vector<std::pair<int, float>>* _neightbours);
 	std::vector<std::pair<int, float>>& getNeightbours();
 	char getAdditonalInfo();
 	bool isUnit();
+	void setOccupiedNeightbours(std::vector<std::pair<int, float>>* _occupiedNeightbours);
+	void setEscapeThrought(int val);
+	Urho3D::Vector3* getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket);
+	int getEscapeBucket();
+
 private:
 	ObjectType type;
 	Urho3D::Vector2 center;
@@ -32,6 +37,8 @@ private:
 	Urho3D::StaticModel* model;
 	Static* object{};
 	short additonalInfo{};
-	std::vector<std::pair<int, float>> neighbour;
+	std::vector<std::pair<int, float>> neighbours;
+	std::vector<std::pair<int, float>> occupiedNeightbours;
 	float cost{};
+	int escapeBucketIndex = -1;
 };

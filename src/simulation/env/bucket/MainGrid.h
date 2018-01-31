@@ -28,10 +28,11 @@ public:
 
 	std::vector<int> reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]);
 	bool inSide(int x, int z);
-	std::vector<std::pair<int, float>>* neighbors(int current);
+	void updateNeighbors(int current);
 	double cost(int current, int next);
 	void debug(IntVector2& startV, IntVector2& goalV);
 	void findPath(IntVector2& startV, IntVector2& goalV);
+	void findWayout(IntVector2& startV);
 	void draw_grid_from(int* cameFrom, Image* image);
 	void draw_grid_cost(const float* costSoFar, Image* image);
 	void draw_grid_path(std::vector<int>* path, Image* image);
@@ -42,6 +43,7 @@ private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
 	static IntVector2 calculateSize(int size);
 	std::vector<std::pair<int, float>>* tempNeighbour;
+	std::vector<std::pair<int, float>>* tempNeighbour2;
 
 	int staticCounter = 0;
 	content_info* ci;
