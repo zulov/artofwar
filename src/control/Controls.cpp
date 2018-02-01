@@ -12,7 +12,10 @@
 #include <Urho3D/UI/UI.h>
 #include <algorithm>
 #include "commands/action/ActionCommandList.h"
-
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/StaticModel.h>
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Physical*>();
@@ -20,12 +23,20 @@ Controls::Controls(Input* _input) {
 
 	input = _input;
 	selectedInfo = new SelectedInfo();
+	selectionNode = Game::get()->getScene()->CreateChild();
+	selectionNode->SetPosition(Vector3(0, 8, 0));
+	selectionNode->Scale(10);
+	selectionModel = selectionNode->CreateComponent<StaticModel>();
+	selectionModel->SetModel(Game::get()->getCache()->GetResource<Model>("Models/plane.mdl"));
+	selectionModel->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/green_alpha.xml"));
+	selectionNode->SetEnabled(true);
 }
 
 
 Controls::~Controls() {
 	delete selectedInfo;
 	delete selected;
+	selectionNode->Remove();
 }
 
 bool Controls::raycast(hit_data& hitData, Camera* camera) {
@@ -35,7 +46,7 @@ bool Controls::raycast(hit_data& hitData, Camera* camera) {
 	}
 
 	const Ray cameraRay = camera->GetScreenRay((float)pos.x_ / Game::get()->getGraphics()->GetWidth(),
-	                                     (float)pos.y_ / Game::get()->getGraphics()->GetHeight());
+	                                           (float)pos.y_ / Game::get()->getGraphics()->GetHeight());
 
 	PODVector<RayQueryResult> results;
 	RayOctreeQuery query(results, cameraRay, RAY_TRIANGLE, maxDistance, DRAWABLE_GEOMETRY);
@@ -72,7 +83,7 @@ bool Controls::raycast(hit_data& hitData, Camera* camera) {
 }
 
 void Controls::unSelectAll() {
-	for (auto & phy : *selected) {
+	for (auto& phy : *selected) {
 		phy->unSelect();
 	}
 	selected->clear();
@@ -143,7 +154,7 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>& held) {
 	for (auto entity : (*entities)) {
 		select(entity); //TODO zastapic wrzuceniem na raz
 	}
-
+	selectionNode->SetEnabled(false);
 }
 
 void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
@@ -242,6 +253,12 @@ void Controls::clickDown(MouseButton& var) {
 
 	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
 		var.setFirst(hitData.position);
+		selectionNode->SetEnabled(true);
+		selectionNode->SetScale(1);
+		int y = selectionNode->GetPosition().y_;
+		Vector3 newPos = hitData.position;
+		newPos.y_ = y;
+		selectionNode->SetPosition(newPos);
 	}
 }
 
@@ -285,8 +302,8 @@ void Controls::orderUnit(short id) {
 	case OrderType::STOP:
 	case OrderType::DEFEND:
 	case OrderType::DEAD:
-		for (auto & phy : *selected) {
-			phy->action(id, ActionParameter());//TODO przemyslec to
+		for (auto& phy : *selected) {
+			phy->action(id, ActionParameter()); //TODO przemyslec to
 		}
 		break;
 	default: ;
@@ -294,8 +311,8 @@ void Controls::orderUnit(short id) {
 }
 
 void Controls::orderBuilding(short id) {
-	for (auto & phy : *selected) {
-		phy->action(id, ActionParameter());//TODO przemyslec to
+	for (auto& phy : *selected) {
+		phy->action(id, ActionParameter()); //TODO przemyslec to
 	}
 }
 
@@ -355,6 +372,22 @@ void Controls::clean(SimulationInfo* simulationInfo) {
 	resetState();
 }
 
+void Controls::updateSelection() {
+	hit_data hitData;
+
+	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+		float xScale = left.held.first->x_ - hitData.position.x_;
+		float zScale = left.held.first->z_ - hitData.position.z_;
+
+		Vector3 center = ((*left.held.first) + hitData.position) / 2;
+		selectionNode->SetScale(xScale);
+		int y = selectionNode->GetPosition().y_;
+
+		center.y_ = y;
+		selectionNode->SetPosition(center);
+	}
+}
+
 void Controls::toDefault() {
 	state = DEFAULT;
 	left.clean();
@@ -366,6 +399,8 @@ void Controls::defaultControl() {
 	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
 		if (!left.isHeld) {
 			clickDown(left);
+		} else {
+			updateSelection();
 		}
 	} else if (left.isHeld) {
 		releaseLeft();

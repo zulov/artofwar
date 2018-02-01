@@ -11,6 +11,7 @@
 #include "hud/HudElement.h"
 #include <Urho3D/Input/Input.h>
 #include "MouseButton.h"
+#include <Urho3D/Graphics/StaticModel.h>
 
 
 struct MouseButton;
@@ -35,6 +36,7 @@ public:
 
 	void order(short id);
 	void clean(SimulationInfo* simulationInfo);
+	void updateSelection();
 	void defaultControl();
 	void buildControl();
 
@@ -45,11 +47,11 @@ private:
 	void orderUnit(short id);
 	void orderBuilding(short id);
 
-	void createBuilding(Vector3& pos);
 	void refreshSelected();
 	bool raycast(hit_data& hitData, Camera* camera);
 
 	void clickDown(MouseButton &var);
+	void createBuilding(Vector3& pos);
 
 	void leftClick(Physical* clicked, Vector3& hitPos);
 	void leftClickBuild(Physical* clicked, Vector3& hitPos);
@@ -78,6 +80,10 @@ private:
 	OrderType orderType = OrderType::GO;
 	ObjectType typeToCreate;
 	SelectedInfo* selectedInfo;
+
+	Urho3D::Node* selectionNode;
+	Urho3D::StaticModel* selectionModel;
+
 	short idToCreate = -1;
 	double clickDistance = 2 * 2;
 	bool active = true;

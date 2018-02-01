@@ -211,9 +211,9 @@ void Main::load() {
 		{
 		Game::get()->setCameraManager(new CameraManager());
 
-		controls = new Controls(GetSubsystem<Input>());
 		loader.createLoad(saveToLoad);
 		levelBuilder = new LevelBuilder();
+		controls = new Controls(GetSubsystem<Input>());
 		SetupViewport();
 		Game::get()->setPlayersManager(new PlayersManager());
 		Game::get()->getPlayersManager()->load(loader.loadPlayers(), loader.loadResources());
@@ -260,9 +260,8 @@ void Main::newGame(NewGameForm* form) {
 		disposeScene();
 		Game::get()->setCameraManager(new CameraManager());
 
-		controls = new Controls(GetSubsystem<Input>());
-
 		levelBuilder = new LevelBuilder();
+		controls = new Controls(GetSubsystem<Input>());
 		SetupViewport();
 		Game::get()->setPlayersManager(new PlayersManager());
 		Game::get()->getPlayersManager()->load(form);

@@ -4,7 +4,7 @@
 #include <simulation/env/bucket/BucketIterator.h>
 
 Enviroment::Enviroment(Terrain* _terrian):
-	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, true),
+	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, false),
 	obstacleGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD),
 	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE),
 	teamUnitGrid{
