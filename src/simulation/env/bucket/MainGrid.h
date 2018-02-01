@@ -27,12 +27,13 @@ public:
 	IntVector2 getCords(int index);
 
 	std::vector<int> reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]);
+	std::vector<int> reconstruct_path(int start, int goal, const int came_from[]);
 	bool inSide(int x, int z);
 	void updateNeighbors(int current);
 	double cost(int current, int next);
 	void debug(IntVector2& startV, IntVector2& goalV);
 	void findPath(IntVector2& startV, IntVector2& goalV);
-	void findWayout(IntVector2& startV);
+	void findWayout(int startIndex);
 	void draw_grid_from(int* cameFrom, Image* image);
 	void draw_grid_cost(const float* costSoFar, Image* image);
 	void draw_grid_path(std::vector<int>* path, Image* image);

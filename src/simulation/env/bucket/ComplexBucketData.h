@@ -22,10 +22,11 @@ public:
 	void setCenter(double _centerX, double _centerY);
 	Urho3D::Vector2& getCenter();
 	void setNeightbours(std::vector<std::pair<int, float>>* _neightbours);
+	void setOccupiedNeightbours(std::vector<std::pair<int, float>>* _occupiedNeightbours);
 	std::vector<std::pair<int, float>>& getNeightbours();
+	std::vector<std::pair<int, float>>& getOccupiedNeightbours();
 	char getAdditonalInfo();
 	bool isUnit();
-	void setOccupiedNeightbours(std::vector<std::pair<int, float>>* _occupiedNeightbours);
 	void setEscapeThrought(int val);
 	Urho3D::Vector3* getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket);
 	int getEscapeBucket();

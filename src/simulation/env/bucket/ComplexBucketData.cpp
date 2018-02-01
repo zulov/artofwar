@@ -78,6 +78,10 @@ std::vector<std::pair<int, float>>& ComplexBucketData::getNeightbours() {
 	return neighbours;
 }
 
+std::vector<std::pair<int, float>>& ComplexBucketData::getOccupiedNeightbours() {
+	return occupiedNeightbours;
+}
+
 char ComplexBucketData::getAdditonalInfo() {
 	return additonalInfo;
 }

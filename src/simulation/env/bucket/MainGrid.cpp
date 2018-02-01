@@ -174,6 +174,9 @@ void MainGrid::addStatic(Static* object) {
 			for (int j = iZ + sizeZ.x_ - 1; j < iZ + sizeZ.y_ + 1; ++j) {
 				const int index = getIndex(i, j);
 				updateNeighbors(index);
+				if (!complexData[index].isUnit() && complexData[index].getNeightbours().empty()) {
+					findWayout(index);
+				}
 			}
 		}
 	}
@@ -205,7 +208,9 @@ Vector3* MainGrid::getDirectionFrom(Vector3* position) {
 		} else {
 			escapeBucket = complexData[index].getEscapeBucket();
 		}
-
+		if (escapeBucket == -1) {
+			return nullptr;
+		}
 		Vector3* direction = complexData[index].getDirectrionFrom(position, complexData[escapeBucket]);
 
 		direction->Normalize();
@@ -328,28 +333,29 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	//debug(startV, goalV);
 }
 
-void MainGrid::findWayout(IntVector2& startV) {
+void MainGrid::findWayout(int startIndex) {
 	std::fill_n(came_from, resolution * resolution, -1);
 	std::fill_n(cost_so_far, resolution * resolution, -1);
-
-	int start = getIndex(startV.x_, startV.y_);
 
 	double min = 0;
 	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma być tylko prosta odległość
 
 	frontier.init(750 + min, min);
-	frontier.put(start, 0);
+	frontier.put(startIndex, 0);
 
-	came_from[start] = start;
-	cost_so_far[start] = 0;
-
+	came_from[startIndex] = startIndex;
+	cost_so_far[startIndex] = 0;
+	int end = startIndex;
 	while (!frontier.empty()) {
 		const auto current = frontier.get();
 
-		if (complexData[current].isUnit()) {
+		if (!complexData[current].getNeightbours().empty()) {
+			IntVector2 cur = getCords(current);
+			IntVector2 start = getCords(startIndex);
+			end = current;
 			break;
 		}
-		auto& neights = complexData[current].getNeightbours();
+		auto& neights = complexData[current].getOccupiedNeightbours();
 		for (auto& neight : neights) {
 			int next = neight.first;
 			if (came_from[current] != next) {
@@ -363,7 +369,13 @@ void MainGrid::findWayout(IntVector2& startV) {
 			}
 		}
 	}
-
+	std::vector<int> path = reconstruct_path(startIndex, end, came_from);
+	
+	if (path.size()>=2) {
+		complexData[startIndex].setEscapeThrought(path[2]);
+	} else {
+		complexData[startIndex].setEscapeThrought(-1);
+	}
 	//debug(startV, goalV);
 }
 
@@ -444,6 +456,10 @@ IntVector2 MainGrid::getCords(const int index) {
 std::vector<int> MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
+	return reconstruct_path(start, goal, came_from);
+}
+
+std::vector<int> MainGrid::reconstruct_path(int start, int goal, const int came_from[]) {
 	std::vector<int> path;
 	int current = goal;
 	path.push_back(current);
