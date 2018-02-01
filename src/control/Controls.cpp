@@ -380,7 +380,7 @@ void Controls::updateSelection() {
 		float zScale = left.held.first->z_ - hitData.position.z_;
 
 		Vector3 center = ((*left.held.first) + hitData.position) / 2;
-		selectionNode->SetScale(xScale);
+		selectionNode->SetScale(Vector3(abs(xScale), 1, abs(zScale)));
 		int y = selectionNode->GetPosition().y_;
 
 		center.y_ = y;
