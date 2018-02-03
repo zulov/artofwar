@@ -24,18 +24,9 @@ Controls::Controls(Input* _input) {
 
 	input = _input;
 	selectedInfo = new SelectedInfo();
-	selectionNode = Game::get()->getScene()->CreateChild();
 
-	Urho3D::StaticModel* selectionModel = selectionNode->CreateComponent<StaticModel>();
-	selectionModel->SetModel(Game::get()->getCache()->GetResource<Model>("Models/box.mdl"));
-	selectionModel->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/green_alpha.xml"));
-	selectionNode->SetEnabled(false);
-
-	arrowNode = Game::get()->getScene()->CreateChild();
-	Urho3D::StaticModel* arrrowModel = arrowNode->CreateComponent<StaticModel>();
-	arrrowModel->SetModel(Game::get()->getCache()->GetResource<Model>("Models/box.mdl"));
-	arrrowModel->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red_alpha.xml"));
-	arrowNode->SetEnabled(false);
+	createNode("Models/box.mdl", "Materials/green_alpha.xml", &selectionNode);
+	createNode("Models/arrow2.mdl", "Materials/dark_red_alpha.xml", &arrowNode);
 }
 
 
@@ -44,6 +35,14 @@ Controls::~Controls() {
 	delete selected;
 	selectionNode->Remove();
 	arrowNode->Remove();
+}
+
+void Controls::createNode(String model, String texture, Urho3D::Node** node) {
+	(*node) = Game::get()->getScene()->CreateChild();
+	Urho3D::StaticModel* selectionModel = (*node)->CreateComponent<StaticModel>();
+	selectionModel->SetModel(Game::get()->getCache()->GetResource<Model>(model));
+	selectionModel->SetMaterial(Game::get()->getCache()->GetResource<Material>(texture));
+	(*node)->SetEnabled(false);
 }
 
 bool Controls::raycast(hit_data& hitData, Camera* camera) {
@@ -430,14 +429,17 @@ void Controls::updateArrow() {
 	hit_data hitData;
 
 	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
-		float xScale = right.held.first->x_ - hitData.position.x_;
-		float zScale = right.held.first->z_ - hitData.position.z_;
+		float heighA = Game::get()->getEnviroment()->getGroundHeightAt(right.held.first->x_, right.held.first->z_) + 1;
+		float heighB = Game::get()->getEnviroment()->getGroundHeightAt(hitData.position.x_, hitData.position.z_) + 1;
 
-		Vector3 center = ((*right.held.first) + hitData.position) / 2;
-		arrowNode->SetScale(Vector3(sqrt(xScale * xScale + zScale * zScale), 1, 1));
-		arrowNode->SetDirection(Vector3(-zScale, 1, xScale));
-		center.y_ += 1;
-		arrowNode->SetPosition(center);
+		Vector3 dir = (*right.held.first) - hitData.position;
+
+		Vector3 pos = *right.held.first;
+		float length = dir.Length();
+		arrowNode->SetScale(Vector3(length, 1, length / 3));
+		arrowNode->SetDirection(Vector3(-dir.z_, (heighB - heighA), dir.x_));
+		pos.y_ = heighA;
+		arrowNode->SetPosition(pos);
 	}
 }
 

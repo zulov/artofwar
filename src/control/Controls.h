@@ -22,6 +22,7 @@ using namespace Urho3D;
 class Controls
 {
 public:
+	void createNode(String model, String texture, Urho3D::Node** node);
 	Controls(Input* _input);
 	~Controls();
 	
