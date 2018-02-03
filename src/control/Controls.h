@@ -29,8 +29,7 @@ public:
 	void unSelectAll();
 
 	void hudAction(HudElement* hud);
-	void startSelectionNode(hit_data hitData);
-	
+
 	bool clickDown(MouseButton& var, hit_data hitData);
 	SelectedInfo* getInfo();
 	void cleanMouse();
@@ -41,6 +40,8 @@ public:
 	void order(short id);
 	void clean(SimulationInfo* simulationInfo);
 	void updateSelection();
+	void updateArrow();
+
 	void defaultControl();
 	void buildControl();
 
@@ -54,6 +55,9 @@ private:
 	void refreshSelected();
 	bool raycast(hit_data& hitData, Camera* camera);
 
+	void startArrowNode(const hit_data& hitData);
+	void startSelectionNode(hit_data hitData);
+	
 	void clickDownLeft();
 	void clickDownRight();
 	void createBuilding(Vector3& pos);
@@ -86,8 +90,8 @@ private:
 	ObjectType typeToCreate;
 	SelectedInfo* selectedInfo;
 
-	Urho3D::Node* selectionNode;
-	Urho3D::StaticModel* selectionModel;
+	Urho3D::Node* selectionNode;	
+	Urho3D::Node* arrowNode;
 
 	short idToCreate = -1;
 	double clickDistance = 2 * 2;

@@ -4,18 +4,19 @@
 #include "camera/CameraManager.h"
 #include "commands/CommandList.h"
 #include "commands/action/ActionCommand.h"
+#include "commands/action/ActionCommandList.h"
 #include "commands/creation/CreationCommandList.h"
 #include "simulation/env/Enviroment.h"
 #include <Urho3D/Graphics/Graphics.h>
-#include <Urho3D/Graphics/Octree.h>
-#include <Urho3D/Graphics/OctreeQuery.h>
-#include <Urho3D/UI/UI.h>
-#include <algorithm>
-#include "commands/action/ActionCommandList.h"
-#include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/Octree.h>
+#include <Urho3D/Graphics/OctreeQuery.h>
 #include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/UI/UI.h>
+#include <algorithm>
+
 
 Controls::Controls(Input* _input) {
 	selected = new std::vector<Physical*>();
@@ -25,10 +26,16 @@ Controls::Controls(Input* _input) {
 	selectedInfo = new SelectedInfo();
 	selectionNode = Game::get()->getScene()->CreateChild();
 
-	selectionModel = selectionNode->CreateComponent<StaticModel>();
+	Urho3D::StaticModel* selectionModel = selectionNode->CreateComponent<StaticModel>();
 	selectionModel->SetModel(Game::get()->getCache()->GetResource<Model>("Models/box.mdl"));
 	selectionModel->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/green_alpha.xml"));
 	selectionNode->SetEnabled(false);
+
+	arrowNode = Game::get()->getScene()->CreateChild();
+	Urho3D::StaticModel* arrrowModel = arrowNode->CreateComponent<StaticModel>();
+	arrrowModel->SetModel(Game::get()->getCache()->GetResource<Model>("Models/box.mdl"));
+	arrrowModel->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red_alpha.xml"));
+	arrowNode->SetEnabled(false);
 }
 
 
@@ -36,6 +43,7 @@ Controls::~Controls() {
 	delete selectedInfo;
 	delete selected;
 	selectionNode->Remove();
+	arrowNode->Remove();
 }
 
 bool Controls::raycast(hit_data& hitData, Camera* camera) {
@@ -80,6 +88,7 @@ bool Controls::raycast(hit_data& hitData, Camera* camera) {
 
 	return false;
 }
+
 
 void Controls::unSelectAll() {
 	for (auto& phy : *selected) {
@@ -171,6 +180,7 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
 	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1],
 	                                                           new Vector3(*held.second - *held.first)));
 	//TODO czy ta para jest usuwana
+	selectionNode->SetEnabled(false);
 }
 
 
@@ -256,6 +266,15 @@ void Controls::startSelectionNode(hit_data hitData) {
 	selectionNode->SetPosition(newPos);
 }
 
+void Controls::startArrowNode(const hit_data& hitData) {
+	arrowNode->SetEnabled(true);
+	arrowNode->SetScale(1);
+	int y = arrowNode->GetPosition().y_;
+	Vector3 newPos = hitData.position;
+	newPos.y_ = y;
+	arrowNode->SetPosition(newPos);
+}
+
 bool Controls::clickDown(MouseButton& var, hit_data hitData) {
 	bool clicked = raycast(hitData, Game::get()->getCameraManager()->getComponent());
 	if (clicked) {
@@ -276,7 +295,7 @@ void Controls::clickDownRight() {
 	hit_data hitData;
 	bool clicked = clickDown(right, hitData);
 	if (clicked) {
-		//startArrowNode(hitData);
+		startArrowNode(hitData);
 	}
 }
 
@@ -407,6 +426,21 @@ void Controls::updateSelection() {
 	}
 }
 
+void Controls::updateArrow() {
+	hit_data hitData;
+
+	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+		float xScale = right.held.first->x_ - hitData.position.x_;
+		float zScale = right.held.first->z_ - hitData.position.z_;
+
+		Vector3 center = ((*right.held.first) + hitData.position) / 2;
+		arrowNode->SetScale(Vector3(sqrt(xScale * xScale + zScale * zScale), 1, 1));
+		arrowNode->SetDirection(Vector3(-zScale, 1, xScale));
+		center.y_ += 1;
+		arrowNode->SetPosition(center);
+	}
+}
+
 void Controls::toDefault() {
 	state = DEFAULT;
 	left.clean();
@@ -428,6 +462,8 @@ void Controls::defaultControl() {
 	if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
 		if (!right.isHeld) {
 			clickDownRight();
+		} else {
+			updateArrow();
 		}
 	} else if (right.isHeld) {
 		releaseRight();
