@@ -247,7 +247,7 @@ void Controls::hudAction(HudElement* hud) {
 	idToCreate = hud->getId();
 }
 
-void Controls::updateSelectionNode(hit_data hitData) {
+void Controls::startSelectionNode(hit_data hitData) {
 	selectionNode->SetEnabled(true);
 	selectionNode->SetScale(1);
 	int y = selectionNode->GetPosition().y_;
@@ -256,12 +256,27 @@ void Controls::updateSelectionNode(hit_data hitData) {
 	selectionNode->SetPosition(newPos);
 }
 
-void Controls::clickDown(MouseButton& var) {
-	hit_data hitData;
-
-	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+bool Controls::clickDown(MouseButton& var, hit_data hitData) {
+	bool clicked = raycast(hitData, Game::get()->getCameraManager()->getComponent());
+	if (clicked) {
 		var.setFirst(hitData.position);
-		updateSelectionNode(hitData);
+	}
+	return clicked;
+}
+
+void Controls::clickDownLeft() {
+	hit_data hitData;
+	bool clicked = clickDown(left, hitData);
+	if (clicked) {
+		startSelectionNode(hitData);
+	}
+}
+
+void Controls::clickDownRight() {
+	hit_data hitData;
+	bool clicked = clickDown(right, hitData);
+	if (clicked) {
+		//startArrowNode(hitData);
 	}
 }
 
@@ -402,7 +417,7 @@ void Controls::toDefault() {
 void Controls::defaultControl() {
 	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
 		if (!left.isHeld) {
-			clickDown(left);
+			clickDownLeft();
 		} else {
 			updateSelection();
 		}
@@ -412,7 +427,7 @@ void Controls::defaultControl() {
 
 	if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
 		if (!right.isHeld) {
-			clickDown(right);
+			clickDownRight();
 		}
 	} else if (right.isHeld) {
 		releaseRight();

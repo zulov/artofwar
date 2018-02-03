@@ -29,7 +29,9 @@ public:
 	void unSelectAll();
 
 	void hudAction(HudElement* hud);
-	void updateSelectionNode(hit_data hitData);
+	void startSelectionNode(hit_data hitData);
+	
+	bool clickDown(MouseButton& var, hit_data hitData);
 	SelectedInfo* getInfo();
 	void cleanMouse();
 
@@ -52,7 +54,8 @@ private:
 	void refreshSelected();
 	bool raycast(hit_data& hitData, Camera* camera);
 
-	void clickDown(MouseButton &var);
+	void clickDownLeft();
+	void clickDownRight();
 	void createBuilding(Vector3& pos);
 
 	void leftClick(Physical* clicked, Vector3& hitPos);
