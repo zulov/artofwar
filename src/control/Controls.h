@@ -29,7 +29,9 @@ public:
 	void unSelectAll();
 
 	void hudAction(HudElement* hud);
+	void updateSelectionNode(hit_data hitData);
 	SelectedInfo* getInfo();
+	void cleanMouse();
 
 	void deactivate();
 	void activate();

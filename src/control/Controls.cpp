@@ -24,12 +24,11 @@ Controls::Controls(Input* _input) {
 	input = _input;
 	selectedInfo = new SelectedInfo();
 	selectionNode = Game::get()->getScene()->CreateChild();
-	selectionNode->SetPosition(Vector3(0, 8, 0));
-	selectionNode->Scale(10);
+
 	selectionModel = selectionNode->CreateComponent<StaticModel>();
-	selectionModel->SetModel(Game::get()->getCache()->GetResource<Model>("Models/plane.mdl"));
+	selectionModel->SetModel(Game::get()->getCache()->GetResource<Model>("Models/box.mdl"));
 	selectionModel->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/green_alpha.xml"));
-	selectionNode->SetEnabled(true);
+	selectionNode->SetEnabled(false);
 }
 
 
@@ -248,17 +247,21 @@ void Controls::hudAction(HudElement* hud) {
 	idToCreate = hud->getId();
 }
 
+void Controls::updateSelectionNode(hit_data hitData) {
+	selectionNode->SetEnabled(true);
+	selectionNode->SetScale(1);
+	int y = selectionNode->GetPosition().y_;
+	Vector3 newPos = hitData.position;
+	newPos.y_ = y;
+	selectionNode->SetPosition(newPos);
+}
+
 void Controls::clickDown(MouseButton& var) {
 	hit_data hitData;
 
 	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
 		var.setFirst(hitData.position);
-		selectionNode->SetEnabled(true);
-		selectionNode->SetScale(1);
-		int y = selectionNode->GetPosition().y_;
-		Vector3 newPos = hitData.position;
-		newPos.y_ = y;
-		selectionNode->SetPosition(newPos);
+		updateSelectionNode(hitData);
 	}
 }
 
@@ -272,19 +275,22 @@ SelectedInfo* Controls::getInfo() {
 	return selectedInfo;
 }
 
+void Controls::cleanMouse() {
+	left.clean();
+	right.clean();
+}
+
 void Controls::deactivate() {
 	if (active) {
 		active = true;
-		left.clean();
-		right.clean();
+		cleanMouse();
 	}
 }
 
 void Controls::activate() {
 	if (!active) {
 		active = true;
-		left.clean();
-		right.clean();
+		cleanMouse();
 	}
 }
 
@@ -380,10 +386,8 @@ void Controls::updateSelection() {
 		float zScale = left.held.first->z_ - hitData.position.z_;
 
 		Vector3 center = ((*left.held.first) + hitData.position) / 2;
-		selectionNode->SetScale(Vector3(abs(xScale), 1, abs(zScale)));
-		int y = selectionNode->GetPosition().y_;
-
-		center.y_ = y;
+		selectionNode->SetScale(Vector3(abs(xScale), 0.5, abs(zScale)));
+		center.y_ += 1;
 		selectionNode->SetPosition(center);
 	}
 }
