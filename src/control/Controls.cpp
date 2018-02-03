@@ -161,7 +161,6 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>& held) {
 	for (auto entity : (*entities)) {
 		select(entity); //TODO zastapic wrzuceniem na raz
 	}
-	selectionNode->SetEnabled(false);
 }
 
 void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
@@ -179,7 +178,6 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
 	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1],
 	                                                           new Vector3(*held.second - *held.first)));
 	//TODO czy ta para jest usuwana
-	selectionNode->SetEnabled(false);
 }
 
 
@@ -197,6 +195,7 @@ void Controls::releaseLeft() {
 				leftClick(lc->getPhysical(), hitData.position);
 			}
 		}
+		selectionNode->SetEnabled(false);
 		left.clean();
 	}
 }
@@ -226,6 +225,7 @@ void Controls::releaseRight() {
 				rightClickDefault(lc->getPhysical(), hitData.position, input->GetKeyDown(KEY_SHIFT));
 			}
 		}
+		arrowNode->SetEnabled(false);
 		right.clean();
 	}
 }
@@ -311,6 +311,8 @@ SelectedInfo* Controls::getInfo() {
 void Controls::cleanMouse() {
 	left.clean();
 	right.clean();
+	selectionNode->SetEnabled(false);
+	arrowNode->SetEnabled(false);
 }
 
 void Controls::deactivate() {
@@ -429,24 +431,20 @@ void Controls::updateArrow() {
 	hit_data hitData;
 
 	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
-		float heighA = Game::get()->getEnviroment()->getGroundHeightAt(right.held.first->x_, right.held.first->z_) + 1;
-		float heighB = Game::get()->getEnviroment()->getGroundHeightAt(hitData.position.x_, hitData.position.z_) + 1;
-
 		Vector3 dir = (*right.held.first) - hitData.position;
 
 		Vector3 pos = *right.held.first;
 		float length = dir.Length();
 		arrowNode->SetScale(Vector3(length, 1, length / 3));
-		arrowNode->SetDirection(Vector3(-dir.z_, (heighB - heighA), dir.x_));
-		pos.y_ = heighA;
+		arrowNode->SetDirection(Vector3(-dir.z_, 0, dir.x_));
+		pos.y_ += 1;
 		arrowNode->SetPosition(pos);
 	}
 }
 
 void Controls::toDefault() {
 	state = DEFAULT;
-	left.clean();
-	right.clean();
+	cleanMouse();
 	idToCreate = -1;
 }
 
