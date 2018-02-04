@@ -308,6 +308,10 @@ SelectedInfo* Controls::getInfo() {
 	return selectedInfo;
 }
 
+ControlsState Controls::getState() {
+	return state;
+}
+
 void Controls::cleanMouse() {
 	left.clean();
 	right.clean();

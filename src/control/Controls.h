@@ -33,6 +33,7 @@ public:
 
 	bool clickDown(MouseButton& var, hit_data hitData);
 	SelectedInfo* getInfo();
+	ControlsState getState();
 	void cleanMouse();
 
 	void deactivate();

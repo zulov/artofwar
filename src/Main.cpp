@@ -315,19 +315,22 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 		} else {
 			engine_->Exit();
 		}
-	} else if (key == KEY_1) {
-		changeCamera(CameraBehaviorType::FREE);
-	} else if (key == KEY_2) {
-		changeCamera(CameraBehaviorType::RTS);
-	} else if (key == KEY_3) {
-		changeCamera(CameraBehaviorType::TOP);
-	} else if (key == KEY_F5) {
-		String name = "test" + String(rand());
-		save(name);
-	} else if (key == KEY_F9) {
-		saveToLoad = "quicksave.db";
+	}
+	if (gameState == GameState::RUNNING || gameState == GameState::PAUSE) {
+		if (key == KEY_1) {
+			changeCamera(CameraBehaviorType::FREE);
+		} else if (key == KEY_2) {
+			changeCamera(CameraBehaviorType::RTS);
+		} else if (key == KEY_3) {
+			changeCamera(CameraBehaviorType::TOP);
+		} else if (key == KEY_F5) {
+			String name = "test" + String(rand());
+			save(name);
+		} else if (key == KEY_F9) {
+			saveToLoad = "quicksave.db";
 
-		changeState(GameState::CLOSING);
+			changeState(GameState::CLOSING);
+		}
 	}
 }
 
