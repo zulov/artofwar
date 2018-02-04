@@ -32,7 +32,7 @@ Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT), 
 	model->SetMaterial(material);
 
 	setPlayer(player);
-	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam()); 
+	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam());
 
 	initBillbords();
 }
@@ -136,6 +136,9 @@ void Unit::absorbAttack(double attackCoef) {
 	hpCoef -= attackCoef * (1 - defenseCoef);
 	if (billboardBar->enabled_) {
 		updateHealthBar();
+	}
+	if (hpCoef < 0) {
+		alive = false;
 	}
 }
 
