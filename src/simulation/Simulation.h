@@ -25,11 +25,10 @@ class Simulation
 public:
 	Simulation(Enviroment* _enviroment, CreationCommandList* _simCommandList);
 	~Simulation();
-	void update(Input* input, float timeStep);
+	SimulationInfo* update(float timeStep);
 	void initScene(SceneLoader& loader);
 	void initScene(NewGameForm* form);
-	int getUnitsNumber();
-	SimulationInfo* getInfo();
+
 	void dispose();
 	void save(SceneSaver& saver);
 
@@ -51,7 +50,6 @@ private:
 	void tryToAttack(vector<Unit*>::value_type unit);
 	void tryToCollect(Unit* unit);
 
-	bool animate;
 	float accumulateTime = 0;
 	float maxTimeFrame = 0.05f;
 	int framesPeriod = 20;

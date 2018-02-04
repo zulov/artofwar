@@ -18,6 +18,7 @@ public:
 	void setResourceDied();
 	void setAmountResourceChanged();
 	void set(SimulationInfo* simulationInfo);
+	void setUnitsNumber(int _untisNumber);
 
 	bool ifUnitDied() const;
 	bool ifAmountUnitChanged() const;
@@ -25,16 +26,19 @@ public:
 	bool ifAmountBuildingChanged() const;
 	bool ifResourceDied() const;
 	bool ifAmountResourceChanged() const;
+
+	int getUnitsNumber();
 private:
 	bool flags[SIMULATION_INFO_SIZE];
 
-	bool *unitDied;
-	bool *amountUnitChanged;
+	bool* unitDied;
+	bool* amountUnitChanged;
 
-	bool *buildingDied;
-	bool *amountBuildingChanged;
+	bool* buildingDied;
+	bool* amountBuildingChanged;
 
-	bool *resourceDied;
-	bool *amountResourceChanged;
+	bool* resourceDied;
+	bool* amountResourceChanged;
+
+	int unitsNumber;
 };
-

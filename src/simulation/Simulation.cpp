@@ -12,7 +12,6 @@ Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _simCommand
 	simCommandList = _simCommandList;
 
 	srand(time(NULL));
-	animate = true;
 
 	aimContainer = new AimContainer();
 	simulationInfo = new SimulationInfo();
@@ -84,7 +83,7 @@ void Simulation::loadEntities(SceneLoader& loader) {
 }
 
 void Simulation::addTestEntities() {
-	if(UNITS_NUMBER>0) {
+	if (UNITS_NUMBER > 0) {
 		simObjectManager->addUnits(UNITS_NUMBER, 0, new Vector3(), 0);
 	}
 }
@@ -130,14 +129,6 @@ void Simulation::updateBuildingQueue() {
 	}
 }
 
-int Simulation::getUnitsNumber() {
-	return units->size();
-}
-
-SimulationInfo* Simulation::getInfo() {
-	return simulationInfo;
-}
-
 void Simulation::dispose() {
 	simObjectManager->dispose();
 }
@@ -154,40 +145,37 @@ void Simulation::performAction() {
 	}
 }
 
-void Simulation::update(Input* input, float timeStep) {
-	if (input->GetKeyPress(KEY_SPACE)) {
-		animate = !animate;
-	}
+SimulationInfo* Simulation::update(float timeStep) {
 
-	if (animate) {
-		simulationInfo->reset();
-		timeStep = updateTime(timeStep);
-		if (accumulateTime >= maxTimeFrame) {
-			countFrame();
+	simulationInfo->reset();
+	timeStep = updateTime(timeStep);
+	if (accumulateTime >= maxTimeFrame) {
+		countFrame();
 
-			moveUnits(maxTimeFrame - (accumulateTime - timeStep));
-			accumulateTime -= maxTimeFrame;
-			if (currentFrameNumber % 3 == 0) {
-				simCommandList->execute();
-				selfAI();
-				actionCommandList->execute();
-			}
-			enviroment->update(units);
-			simObjectManager->clean();
-			simObjectManager->updateInfo(simulationInfo);
-
-			calculateForces();
-			applyForce();
-
-			moveUnitsAndCheck(accumulateTime);
-
-			performAction();
-			updateBuildingQueue();
-
-		} else {
-			moveUnits(timeStep);
+		moveUnits(maxTimeFrame - (accumulateTime - timeStep));
+		accumulateTime -= maxTimeFrame;
+		if (currentFrameNumber % 3 == 0) {
+			simCommandList->execute();
+			selfAI();
+			actionCommandList->execute();
 		}
+		enviroment->update(units);
+		simObjectManager->clean();
+		simObjectManager->updateInfo(simulationInfo);
+
+		calculateForces();
+		applyForce();
+
+		moveUnitsAndCheck(accumulateTime);
+
+		performAction();
+		updateBuildingQueue();
+
+		simulationInfo->setUnitsNumber(units->size());
+	} else {
+		moveUnits(timeStep);
 	}
+	return simulationInfo;
 }
 
 void Simulation::initScene(SceneLoader& loader) {

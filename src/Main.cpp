@@ -114,23 +114,14 @@ void Main::subscribeToEvents() {
 	SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Main, HandleUpdate));
 }
 
-void Main::running(VariantMap& eventData) {
-	const double timeStep = eventData[SceneUpdate::P_TIMESTEP].GetDouble();
+void Main::running(const double timeStep) {
 	benchmark.add(1.0 / timeStep);
 
-	simulation->update(GetSubsystem<Input>(), timeStep);
-	SimulationInfo* simulationInfo = simulation->getInfo();
-	control(timeStep);
-	controls->clean(simulationInfo);
+	SimulationInfo* simulationInfo = simulation->update(timeStep);
 
-	SelectedInfo* selectedInfo = controls->getInfo();
+	SelectedInfo* selectedInfo = control(timeStep, simulationInfo);
 
-	hud->updateSelected(selectedInfo);
-	if (simulationInfo->ifAmountUnitChanged()) {
-		hud->update(simulation->getUnitsNumber());
-	}
-
-	hud->update(benchmark, Game::get()->getCameraManager());
+	hud->update(benchmark, Game::get()->getCameraManager(),selectedInfo, simulationInfo);
 
 	selectedInfo->hasBeedUpdatedDrawn();
 
@@ -146,7 +137,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		load();
 		break;
 	case GameState::RUNNING:
-		running(eventData);
+		running(eventData[SceneUpdate::P_TIMESTEP].GetDouble());
 		break;
 	case GameState::PAUSE: break;
 	case GameState::CLOSING:
@@ -475,7 +466,7 @@ void Main::disposeScene() {
 	newGameProgress.reset(newGamesStages);
 }
 
-void Main::control(const float timeStep) const {
+SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo) const {
 	const IntVector2 cursorPos = Game::get()->getUI()->GetCursorPosition();
 	UIElement* element = Game::get()->getUI()->GetElementAt(cursorPos, false);
 
@@ -490,4 +481,7 @@ void Main::control(const float timeStep) const {
 
 	Game::get()->getCameraManager()->translate(cursorPos, input, timeStep);
 	Game::get()->getCameraManager()->rotate(input->GetMouseMove());
+
+	controls->clean(simulationInfo);
+	return controls->getInfo();
 }

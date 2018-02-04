@@ -67,4 +67,7 @@ private:
 	vector<Unit*>* unitsTemp;
 	vector<Building*>* buildingsTemp;
 	vector<ResourceEntity*>* resourcesTemp;
+
+	std::function<bool(Physical*)> functionShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this, placeholders::_1);
+
 };

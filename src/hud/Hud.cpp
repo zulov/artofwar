@@ -14,6 +14,7 @@
 #include <iostream>
 #include <Urho3D/UI/UIEvents.h>
 #include "window/main_menu/MainMenuPanel.h"
+#include "simulation/SimulationInfo.h"
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {
@@ -190,7 +191,13 @@ void Hud::createConsole() {
 	console->GetBackground()->SetOpacity(0.8f);
 }
 
-void Hud::update(Benchmark& benchmark, CameraManager* cameraManager) {
+void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
+                 SimulationInfo* simulationInfo) {
+	updateSelected(selectedInfo);
+	if (simulationInfo->ifAmountUnitChanged()) {
+		update(simulationInfo->getUnitsNumber());
+	}
+
 	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
 	                    cameraManager->getInfo());
 

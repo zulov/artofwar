@@ -91,12 +91,11 @@ void SimulationObjectManager::addResources(int id, Vector3* center, IntVector2 _
 void SimulationObjectManager::clean() {
 	//if (simulationInfo->ifUnitDied()) {//TODO przemyslec to
 	int prevSize = units->size();
-	std::function<bool(Physical*)> function = std::bind(&SimulationObjectManager::shouldDelete, this, placeholders::_1);
 
 	units->erase(
 	             std::remove_if(
 	                            units->begin(), units->end(),
-	                            function
+	                            functionShouldDelete
 	                           ),
 	             units->end());
 	if (units->size() != prevSize) {

@@ -68,6 +68,10 @@ void SimulationInfo::set(SimulationInfo* simulationInfo) {
 	}
 }
 
+void SimulationInfo::setUnitsNumber(int _untisNumber) {
+	unitsNumber = _untisNumber;
+}
+
 bool SimulationInfo::ifUnitDied() const {
 	return *unitDied;
 }
@@ -90,4 +94,8 @@ bool SimulationInfo::ifResourceDied() const {
 
 bool SimulationInfo::ifAmountResourceChanged() const {
 	return *amountResourceChanged;
+}
+
+int SimulationInfo::getUnitsNumber() {
+	return unitsNumber;
 }

@@ -22,6 +22,7 @@
 #include "xml/rapidxml_print.hpp"
 #include "GameState.h"
 
+class SimulationInfo;
 class MainMenuPanel;
 using namespace Urho3D;
 
@@ -35,7 +36,8 @@ URHO3D_OBJECT(Hud, Object)
 	void clear();
 	~Hud();
 
-	void update(Benchmark& benchmark, CameraManager* cameraManager);
+	void update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
+                 SimulationInfo* simulationInfo);
 	void update(int unitsNumber);
 	void createMiniMap();
 

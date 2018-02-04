@@ -46,7 +46,7 @@ private:
 
 	void disposeScene();
 
-	void running(VariantMap& eventData);
+	void running(const double timeStep);
 	void SetWindowTitleAndIcon();
 
 	void subscribeToUIEvents();
@@ -67,7 +67,7 @@ private:
 
 	void InitLocalizationSystem();
 
-	void control(float timeStep) const;
+	SelectedInfo* control(float timeStep, SimulationInfo* simulationInfo) const;
 	void changeCamera(int type);
 	void load();
 	void save(String name);
