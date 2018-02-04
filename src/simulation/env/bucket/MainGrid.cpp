@@ -177,11 +177,7 @@ void MainGrid::addStatic(Static* object) {
 				const int index = getIndex(i, j);
 				updateNeighbors(index);
 				if (!complexData[index].isUnit()) {
-					if (complexData[index].getNeightbours().empty()) {
-						toRefresh.push_back(index);
-					} else {
-						complexData[index].setEscapeThrought(-1);
-					}
+					toRefresh.push_back(index);
 				} else {
 					complexData[index].setEscapeThrought(-1);
 				}
@@ -354,6 +350,7 @@ void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 			continue;
 		}
 
+
 		frontier.init(750, 0);
 		frontier.put(startIndex, 0);
 
@@ -365,10 +362,15 @@ void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 
 			if (!complexData[current].getNeightbours().empty()) {
 				end = current;
+				complexData[current].setEscapeThrought(-1);
 				break;
 			}
 			auto& neights = complexData[current].getOccupiedNeightbours();
 			for (auto& neight : neights) {
+				if (!complexData[neight.first].getNeightbours().empty() && refreshed.find(neight.first) == refreshed.end()) {
+					//TODO to chyba glupi warunek
+					toRefresh.push_back(neight.first);
+				}
 				int next = neight.first;
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + neight.second;
