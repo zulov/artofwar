@@ -33,7 +33,7 @@ public:
 	double cost(int current, int next);
 	void debug(IntVector2& startV, IntVector2& goalV);
 	void findPath(IntVector2& startV, IntVector2& goalV);
-	void findWayout(int startIndex);
+	void refreshWayOut(std::vector<int>& toRefresh);
 	void draw_grid_from(int* cameFrom, Image* image);
 	void draw_grid_cost(const float* costSoFar, Image* image);
 	void draw_grid_path(std::vector<int>* path, Image* image);

@@ -170,15 +170,24 @@ void MainGrid::addStatic(Static* object) {
 			}
 		}
 
+		std::vector<int> toRefresh;
+
 		for (int i = iX + sizeX.x_ - 1; i < iX + sizeX.y_ + 1; ++i) {
 			for (int j = iZ + sizeZ.x_ - 1; j < iZ + sizeZ.y_ + 1; ++j) {
 				const int index = getIndex(i, j);
 				updateNeighbors(index);
-				if (!complexData[index].isUnit() && complexData[index].getNeightbours().empty()) {
-					findWayout(index);
+				if (!complexData[index].isUnit()) {
+					if (complexData[index].getNeightbours().empty()) {
+						toRefresh.push_back(index);
+					} else {
+						complexData[index].setEscapeThrought(-1);
+					}
+				} else {
+					complexData[index].setEscapeThrought(-1);
 				}
 			}
 		}
+		refreshWayOut(toRefresh);
 	}
 }
 
@@ -333,50 +342,59 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	//debug(startV, goalV);
 }
 
-void MainGrid::findWayout(int startIndex) {
+void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
+
+	std::set<int> refreshed;
 	std::fill_n(came_from, resolution * resolution, -1);
 	std::fill_n(cost_so_far, resolution * resolution, -1);
-
-	double min = 0;
-	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma być tylko prosta odległość
-
-	frontier.init(750 + min, min);
-	frontier.put(startIndex, 0);
-
-	came_from[startIndex] = startIndex;
-	cost_so_far[startIndex] = 0;
-	int end = startIndex;
-	while (!frontier.empty()) {
-		const auto current = frontier.get();
-
-		if (!complexData[current].getNeightbours().empty()) {
-			IntVector2 cur = getCords(current);
-			IntVector2 start = getCords(startIndex);
-			end = current;
-			break;
+	while (!toRefresh.empty()) {
+		int startIndex = toRefresh.back();
+		toRefresh.pop_back();
+		if (refreshed.find(startIndex) != refreshed.end()) {
+			continue;
 		}
-		auto& neights = complexData[current].getOccupiedNeightbours();
-		for (auto& neight : neights) {
-			int next = neight.first;
-			if (came_from[current] != next) {
-				const float new_cost = cost_so_far[current] + neight.second;
-				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
-					cost_so_far[next] = new_cost;
 
-					frontier.put(next, new_cost);
-					came_from[next] = current;
+		frontier.init(750, 0);
+		frontier.put(startIndex, 0);
+
+		came_from[startIndex] = startIndex;
+		cost_so_far[startIndex] = 0;
+		int end = startIndex;
+		while (!frontier.empty()) {
+			const auto current = frontier.get();
+
+			if (!complexData[current].getNeightbours().empty()) {
+				end = current;
+				break;
+			}
+			auto& neights = complexData[current].getOccupiedNeightbours();
+			for (auto& neight : neights) {
+				int next = neight.first;
+				if (came_from[current] != next) {
+					const float new_cost = cost_so_far[current] + neight.second;
+					if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
+						cost_so_far[next] = new_cost;
+
+						frontier.put(next, new_cost);
+						came_from[next] = current;
+					}
 				}
 			}
 		}
+		std::vector<int> path = reconstruct_path(startIndex, end, came_from);
+		if (path.size() >= 1) {
+			int current2 = startIndex;
+			for (int i = 1; i < path.size(); ++i) {
+				complexData[current2].setEscapeThrought(path[i]);
+				refreshed.insert(current2);
+				current2 = path[i];
+			}
+		} else {
+			refreshed.insert(startIndex);
+			complexData[startIndex].setEscapeThrought(-1);
+		}
 	}
-	std::vector<int> path = reconstruct_path(startIndex, end, came_from);
-	
-	if (path.size()>=2) {
-		complexData[startIndex].setEscapeThrought(path[2]);
-	} else {
-		complexData[startIndex].setEscapeThrought(-1);
-	}
-	//debug(startV, goalV);
+
 }
 
 void MainGrid::draw_grid_from(int* cameFrom, Image* image) {
@@ -467,7 +485,7 @@ std::vector<int> MainGrid::reconstruct_path(int start, int goal, const int came_
 		current = came_from[current];
 		path.push_back(current);
 	}
-	path.push_back(start); // optional
+	//path.push_back(start); // optional
 	std::reverse(path.begin(), path.end());
 	return path;
 }
