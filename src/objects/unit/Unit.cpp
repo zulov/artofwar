@@ -9,6 +9,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
+#include "player/PlayersManager.h"
 
 
 float Unit::hbMaxSize = 0.7f;
@@ -31,7 +32,7 @@ Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT), 
 	model->SetMaterial(material);
 
 	setPlayer(player);
-	setTeam(player); //TODO ustawic team
+	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam()); 
 
 	initBillbords();
 }
@@ -163,10 +164,12 @@ void Unit::toAttack(std::vector<Unit*>* enemies) {
 	double minDistance = 9999;
 	Unit* entityClosest = nullptr;
 	for (auto entity : (*enemies)) {
-		double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
-		if (distance <= minDistance) {
-			minDistance = distance;
-			entityClosest = entity;
+		if (entity->isAlive()) {
+			double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
+			if (distance <= minDistance) {
+				minDistance = distance;
+				entityClosest = entity;
+			}
 		}
 	}
 	attackIfCloseEnough(minDistance, entityClosest);
@@ -315,7 +318,7 @@ bool Unit::hasResource() {
 }
 
 void Unit::load(dbload_unit* unit) {
-	unitState = UnitStateType(unit->state);//TODO nie wiem czy nie przepisaæpoprzez przejscie?
+	unitState = UnitStateType(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
 	//aimIndex =unit->aim_i;
 	velocity->x_ = unit->vel_x;
 	velocity->z_ = unit->vel_z;
@@ -328,7 +331,7 @@ std::string Unit::getColumns() {
 		"position_x		INT     NOT NULL,"
 		"position_z		INT     NOT NULL,"
 		"state			INT     NOT NULL,"
-		"velocity_x		INT     NOT NULL,"//TODO czy dodac y?
+		"velocity_x		INT     NOT NULL," //TODO czy dodac y?
 		"velocity_z		INT     NOT NULL,"
 		"aim_i		INT     NOT NULL";
 }
@@ -339,7 +342,7 @@ void Unit::applyForce(double timeStep) {
 		return;
 	}
 
-	(*velocity) *= 0.95f;//TODO to dac jaki wspolczynnik tarcia terenu
+	(*velocity) *= 0.95f; //TODO to dac jaki wspolczynnik tarcia terenu
 	(*velocity) += acceleration * (timeStep / mass);
 	double velLenght = velocity->LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {

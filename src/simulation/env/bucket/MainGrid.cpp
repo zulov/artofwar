@@ -339,17 +339,15 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 }
 
 void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
-
 	std::set<int> refreshed;
-	std::fill_n(came_from, resolution * resolution, -1);
-	std::fill_n(cost_so_far, resolution * resolution, -1);
 	while (!toRefresh.empty()) {
 		int startIndex = toRefresh.back();
 		toRefresh.pop_back();
 		if (refreshed.find(startIndex) != refreshed.end()) {
 			continue;
 		}
-
+		std::fill_n(came_from, resolution * resolution, -1);
+		std::fill_n(cost_so_far, resolution * resolution, -1);
 
 		frontier.init(750, 0);
 		frontier.put(startIndex, 0);

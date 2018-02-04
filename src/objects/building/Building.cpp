@@ -31,7 +31,7 @@ Building::Building(Vector3* _position, int id, int player):target(*_position) , 
 	staticModel->SetMaterial(material);
 
 	setPlayer(player);
-	setTeam(player);
+	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam()); 
 
 	initBillbords();
 
