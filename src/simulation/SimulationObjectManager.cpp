@@ -15,7 +15,9 @@ SimulationObjectManager::SimulationObjectManager() {
 	units->reserve(10000);
 	buildings->reserve(1000);
 	resources->reserve(1000);
-	toDispose.reserve(200);
+	toDisposeUnit.reserve(100);
+	toDisposeBuilding.reserve(100);
+	toDisposeResource.reserve(100);
 
 	simulationInfo = new SimulationInfo();
 }
@@ -128,7 +130,7 @@ void SimulationObjectManager::updateUnits() {
 void SimulationObjectManager::updateBuilding() {
 	addAll(buildingsTemp);
 	if (!buildingsTemp->empty()) {
-		
+
 		Game::get()->getEnviroment()->update(buildingsToAdd);
 		buildingsToAdd->clear();
 		simulationInfo->setAmountBuildingChanged();
@@ -144,12 +146,12 @@ void SimulationObjectManager::updateResource() {
 	}
 }
 
-bool SimulationObjectManager::shouldDelete(Physical* physical) {
-	if (!physical->isAlive()) {
-		toDispose.push_back(physical);
+bool SimulationObjectManager::shouldDelete(Unit* unit) {
+	if (!unit->isAlive()) {
+		toDisposeUnit.push_back(unit);
 		return true;
 	}
-	physical->clean();
+	unit->clean();
 	return false;
 }
 
@@ -159,8 +161,8 @@ void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
 }
 
 void SimulationObjectManager::dispose() {
-	if (!toDispose.empty()) {
-		clear_vector(toDispose);
+	if (!toDisposeUnit.empty()) {
+		clear_vector(toDisposeUnit);
 	}
 	simulationInfo->reset();
 }

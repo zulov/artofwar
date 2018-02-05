@@ -160,6 +160,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 			actionCommandList->execute();
 		}
 		enviroment->update(units);
+		
 		simObjectManager->clean();
 		simObjectManager->updateInfo(simulationInfo);
 

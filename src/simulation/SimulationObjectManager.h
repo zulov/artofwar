@@ -40,7 +40,7 @@ private:
 	void updateBuilding();
 	void updateResource();
 
-	bool shouldDelete(Physical* physical);
+	bool shouldDelete(Unit* unit);
 
 	void add(Unit* unit);
 	void add(Building* building);
@@ -59,7 +59,10 @@ private:
 	vector<Unit*>* units;
 	vector<Building*>* buildings;
 	vector<ResourceEntity*>* resources;
-	vector<Physical*> toDispose;
+
+	vector<Unit*> toDisposeUnit;
+	vector<Building*> toDisposeBuilding;
+	vector<ResourceEntity*> toDisposeResource;
 
 	vector<Building*>* buildingsToAdd;
 	vector<ResourceEntity*>* resourcesToAdd;
@@ -68,6 +71,6 @@ private:
 	vector<Building*>* buildingsTemp;
 	vector<ResourceEntity*>* resourcesTemp;
 
-	std::function<bool(Physical*)> functionShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this, placeholders::_1);
+	std::function<bool(Unit*)> functionShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this, placeholders::_1);
 
 };

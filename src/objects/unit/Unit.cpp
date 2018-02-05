@@ -138,7 +138,7 @@ void Unit::absorbAttack(double attackCoef) {
 		updateHealthBar();
 	}
 	if (hpCoef < 0) {
-		alive = false;
+		StateManager::get()->changeState(this, UnitStateType::DEAD);
 	}
 }
 

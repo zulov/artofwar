@@ -121,9 +121,7 @@ void Main::running(const double timeStep) {
 
 	SelectedInfo* selectedInfo = control(timeStep, simulationInfo);
 
-	hud->update(benchmark, Game::get()->getCameraManager(),selectedInfo, simulationInfo);
-
-	selectedInfo->hasBeedUpdatedDrawn();
+	hud->update(benchmark, Game::get()->getCameraManager(), selectedInfo, simulationInfo);
 
 	simulation->dispose();
 }
