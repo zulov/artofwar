@@ -25,7 +25,9 @@ void StopState::onStart(Unit* unit, ActionParameter& parameter) {
 }
 
 void StopState::onEnd(Unit* unit) {
+	State::onEnd(unit);
 }
 
 void StopState::execute(Unit* unit) {
+	State::execute(unit);
 }

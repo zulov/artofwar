@@ -21,7 +21,7 @@
 #define MAX_PLAYERS 2
 #define BUCKET_SET_NUMBER 4
 
-#define STATE_SIZE 10
+#define STATE_SIZE 11
 
 #define MAX_THREADS 4
 

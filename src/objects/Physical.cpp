@@ -135,7 +135,7 @@ std::string Physical::getValues(int precision) {
 }
 
 bool Physical::hasEnemy() {
-	if (enemyToAttack != nullptr) {
+	if (enemyToAttack != nullptr && enemyToAttack->isAlive()) {
 		if ((*this->getPosition() - *enemyToAttack->getPosition()).LengthSquared() < attackRange * attackRange) {
 			return true;
 		}

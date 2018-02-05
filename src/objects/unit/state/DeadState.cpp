@@ -2,7 +2,9 @@
 #include "../Unit.h"
 
 
-DeadState::DeadState() = default;
+DeadState::DeadState() {
+	transitions.insert(UnitStateType::DISPOSE);
+}
 
 
 DeadState::~DeadState() = default;
@@ -14,11 +16,11 @@ void DeadState::onStart(Unit* unit) {
 void DeadState::onStart(Unit* unit, ActionParameter& parameter) {
 }
 
-
 void DeadState::onEnd(Unit* unit) {
+	State::onEnd(unit);
 }
 
 void DeadState::execute(Unit* unit) {
-
-	unit->alive = false;
+	State::execute(unit);
+	StateManager::get()->changeState(unit, UnitStateType::DISPOSE);
 }

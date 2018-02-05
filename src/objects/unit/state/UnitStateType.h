@@ -10,5 +10,6 @@ enum class UnitStateType :short
 	DEFEND,
 	FOLLOW,//porusza sie
 	COLLECT,
-	MOVE//TODO nie ma takiego orderu musi byæ rêcznie dodany?
+	MOVE,//TODO nie ma takiego orderu musi byæ rêcznie dodany?
+	DISPOSE
 };

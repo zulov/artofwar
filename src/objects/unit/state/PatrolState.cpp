@@ -14,13 +14,16 @@ PatrolState::~PatrolState() = default;
 
 void PatrolState::onStart(Unit* unit) {
 }
+
 void PatrolState::onStart(Unit* unit, ActionParameter& parameter) {
 	unit->addAim(parameter);
 }
 
 
 void PatrolState::onEnd(Unit* unit) {
+	State::onEnd(unit);
 }
 
 void PatrolState::execute(Unit* unit) {
+	State::execute(unit);
 }

@@ -26,7 +26,7 @@ public:
 	void addBuildings(int id, Vector3* center, int player, IntVector2 _bucketCords);
 	void addResources(int id, Vector3* center, IntVector2 _bucketCords);
 
-	void clean();
+	void prepareToDispose();
 	void updateInfo(SimulationInfo* simulationInfo);
 	void dispose();
 

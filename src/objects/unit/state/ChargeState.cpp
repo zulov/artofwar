@@ -24,8 +24,10 @@ void ChargeState::onStart(Unit* unit, ActionParameter& parameter) {
 }
 
 void ChargeState::onEnd(Unit* unit) {
+	State::onEnd(unit);
 	unit->maxSpeed = unit->dbUnit->maxSpeed;
 }
 
 void ChargeState::execute(Unit* unit) {
+	State::execute(unit);
 }

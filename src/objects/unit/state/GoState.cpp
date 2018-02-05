@@ -24,7 +24,9 @@ void GoState::onStart(Unit* unit, ActionParameter& parameter) {
 
 
 void GoState::onEnd(Unit* unit) {
+	State::onEnd(unit);
 }
 
 void GoState::execute(Unit* unit) {
+	State::execute(unit);
 }

@@ -90,7 +90,7 @@ void SimulationObjectManager::addResources(int id, Vector3* center, IntVector2 _
 	updateResource();
 }
 
-void SimulationObjectManager::clean() {
+void SimulationObjectManager::prepareToDispose() {
 	//if (simulationInfo->ifUnitDied()) {//TODO przemyslec to
 	int prevSize = units->size();
 
@@ -147,7 +147,7 @@ void SimulationObjectManager::updateResource() {
 }
 
 bool SimulationObjectManager::shouldDelete(Unit* unit) {
-	if (!unit->isAlive()) {
+	if (unit->isToDispose()) {
 		toDisposeUnit.push_back(unit);
 		return true;
 	}

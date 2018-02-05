@@ -18,12 +18,15 @@ MoveState::~MoveState() = default;
 
 void MoveState::onStart(Unit* unit) {
 }
-void MoveState::onStart(Unit* unit, ActionParameter&parameter) {
+
+void MoveState::onStart(Unit* unit, ActionParameter& parameter) {
 }
 
 
 void MoveState::onEnd(Unit* unit) {
+	State::onEnd(unit);
 }
 
 void MoveState::execute(Unit* unit) {
+	State::execute(unit);
 }

@@ -23,11 +23,13 @@ void AttackState::onStart(Unit* unit, ActionParameter& parameter) {
 }
 
 void AttackState::onEnd(Unit* unit) {
+	State::onEnd(unit);
 	unit->enemyToAttack = nullptr;
 }
 
 void AttackState::execute(Unit* unit) {
-	if (unit->enemyToAttack->isAlive()) {
+	State::execute(unit);
+	if (unit->enemyToAttack != nullptr && unit->enemyToAttack->isAlive()) {
 		*unit->velocity = Urho3D::Vector3::ZERO;
 		unit->enemyToAttack->absorbAttack(unit->attackCoef);
 	} else {

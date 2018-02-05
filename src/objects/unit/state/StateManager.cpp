@@ -11,6 +11,7 @@
 #include "MoveState.h"
 #include "PatrolState.h"
 #include "StopState.h"
+#include "DisposeState.h"
 #include "UnitStateType.h"
 #include "database/DatabaseCache.h"
 
@@ -28,6 +29,7 @@ StateManager::StateManager() {
 	states[static_cast<int>(UnitStateType::FOLLOW)] = new FollowState();
 	states[static_cast<int>(UnitStateType::COLLECT)] = new CollectState();
 	states[static_cast<int>(UnitStateType::MOVE)] = new MoveState();
+	states[static_cast<int>(UnitStateType::DISPOSE)] = new DisposeState();
 	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
 		std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
 		for (auto order : *orders) {

@@ -22,9 +22,12 @@ class Unit : public Physical
 	friend class AttackState;
 	friend class ChargeState;
 	friend class CollectState;
+	friend class DisposeState;
 public:
 	Unit(Vector3* _position, int id, int player);
 	~Unit();
+
+	bool isAlive() override;
 	float getHealthBarSize() override;
 	float getHealthPercent() override;
 	void populate(db_unit* _dbUnit);
@@ -57,11 +60,12 @@ public:
 	UnitStateType getState();
 	UnitStateType getActionState();
 	void clean() override;
-	void setState(UnitStateType state);
+	void setState(UnitStateType _state);
 	bool checkTransition(UnitStateType state);
 	void executeState();
 	bool hasResource();
 	void load(dbload_unit* unit);
+	bool isToDispose();
 
 	static std::string getColumns();
 protected:
@@ -82,7 +86,7 @@ private:
 	Vector3* toResource;
 	db_unit* dbUnit;
 
-	UnitStateType unitState;
+	UnitStateType state;
 	UnitStateType actionState;
 
 	float minimalDistance;
@@ -91,4 +95,6 @@ private:
 	float attackIntrest = 10;
 	float collectSpeed = 2;
 	static float hbMaxSize;
+
+	bool atState=false;
 };

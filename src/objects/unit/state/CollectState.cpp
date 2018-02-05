@@ -19,12 +19,14 @@ void CollectState::onStart(Unit* unit, ActionParameter& parameter) {
 }
 
 void CollectState::onEnd(Unit* unit) {
+	State::onEnd(unit);
 	unit->resource->reduce();
 	unit->resource = nullptr;
 	*unit->toResource = Vector3();
 }
 
 void CollectState::execute(Unit* unit) {
+	State::execute(unit);
 	Resources& resources = Game::get()->getPlayersManager()->getPlayer(unit->player)->getResources();
 
 	if (unit->resource) {

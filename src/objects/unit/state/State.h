@@ -1,7 +1,7 @@
 #pragma once
 #include "UnitStateType.h"
-#include <set>
 #include "objects/unit/ActionParameter.h"
+#include <set>
 
 class Unit;
 
@@ -12,8 +12,9 @@ public:
 	virtual ~State();
 	virtual void onStart(Unit* unit) =0;
 	virtual void onStart(Unit* unit, ActionParameter& parameter) =0;
-	virtual void onEnd(Unit* unit) =0;
-	virtual void execute(Unit* unit) =0;
+	virtual void onEnd(Unit* unit);
+	virtual void execute(Unit* unit);
+
 	bool validateTransition(UnitStateType stateTo);
 protected:
 	std::set<UnitStateType> transitions;

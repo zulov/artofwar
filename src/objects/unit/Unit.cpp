@@ -20,7 +20,7 @@ Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT), 
 	aims = nullptr;
 	resource = nullptr;
 
-	unitState = UnitStateType::STOP;
+	state = UnitStateType::STOP;
 
 	populate(Game::get()->getDatabaseCache()->getUnit(id));
 	Model* model3d = Game::get()->getCache()->GetResource<Model>("Models/" + dbUnit->model);
@@ -43,6 +43,10 @@ Unit::~Unit() {
 	if (aims) {
 		aims->reduce();
 	}
+}
+
+bool Unit::isAlive() {
+	return state != UnitStateType::DEAD && state != UnitStateType::DISPOSE;
 }
 
 float Unit::getHealthBarSize() {
@@ -85,7 +89,7 @@ float Unit::getMinimalDistance() {
 }
 
 void Unit::move(double timeStep) {
-	if (unitState != UnitStateType::STOP) {
+	if (state != UnitStateType::STOP) {
 		(*position) += (*velocity) * timeStep;
 		node->SetPosition((*position));
 		//node->Translate((*velocity) * timeStep, TS_WORLD);
@@ -276,7 +280,7 @@ void Unit::action(short id, ActionParameter& parameter) {
 std::string Unit::getValues(int precision) {
 	const int position_x = position->x_ * precision;
 	const int position_z = position->z_ * precision;
-	const int state = static_cast<int>(unitState);
+	const int state = static_cast<int>(state);
 	const int velocity_x = velocity->x_ * precision;
 	const int velocity_z = velocity->z_ * precision;
 	return Physical::getValues(precision)
@@ -290,7 +294,7 @@ std::string Unit::getValues(int precision) {
 }
 
 UnitStateType Unit::getState() {
-	return unitState;
+	return state;
 }
 
 UnitStateType Unit::getActionState() {
@@ -304,8 +308,8 @@ void Unit::clean() {
 	Physical::clean();
 }
 
-void Unit::setState(UnitStateType state) {
-	unitState = state;
+void Unit::setState(UnitStateType _state) {
+	state = _state;
 }
 
 bool Unit::checkTransition(UnitStateType state) {
@@ -321,12 +325,16 @@ bool Unit::hasResource() {
 }
 
 void Unit::load(dbload_unit* unit) {
-	unitState = UnitStateType(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
+	state = UnitStateType(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
 	//aimIndex =unit->aim_i;
 	velocity->x_ = unit->vel_x;
 	velocity->z_ = unit->vel_z;
 	alive = unit->alive;
 	hpCoef = maxHpCoef * unit->hp_coef;
+}
+
+bool Unit::isToDispose() {
+	return state == UnitStateType::DISPOSE && atState;
 }
 
 std::string Unit::getColumns() {
@@ -340,7 +348,7 @@ std::string Unit::getColumns() {
 }
 
 void Unit::applyForce(double timeStep) {
-	if (unitState == UnitStateType::ATTACK) {
+	if (state == UnitStateType::ATTACK) {
 		(*velocity) = Vector3::ZERO;
 		return;
 	}

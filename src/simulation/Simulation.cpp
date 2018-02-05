@@ -159,10 +159,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 			selfAI();
 			actionCommandList->execute();
 		}
-		enviroment->update(units);
-		
-		simObjectManager->clean();
-		simObjectManager->updateInfo(simulationInfo);
+		enviroment->update(units);		
 
 		calculateForces();
 		applyForce();
@@ -171,6 +168,9 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		performAction();
 		updateBuildingQueue();
+
+		simObjectManager->prepareToDispose();
+		simObjectManager->updateInfo(simulationInfo);
 
 		simulationInfo->setUnitsNumber(units->size());
 	} else {
