@@ -329,7 +329,7 @@ void Unit::load(dbload_unit* unit) {
 	//aimIndex =unit->aim_i;
 	velocity->x_ = unit->vel_x;
 	velocity->z_ = unit->vel_z;
-	alive = unit->alive;
+	//alive = unit->alive;
 	hpCoef = maxHpCoef * unit->hp_coef;
 }
 

@@ -21,6 +21,5 @@ public:
 protected:
 	Urho3D::Node* node;
 	ObjectType type;
-	bool alive;	
 
 };

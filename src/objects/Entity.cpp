@@ -7,7 +7,6 @@
 
 Entity::Entity(ObjectType _type) {
 	node = Game::get()->getScene()->CreateChild();
-	alive = true;
 	type = _type;
 }
 
@@ -20,7 +19,7 @@ Urho3D::Node* Entity::getNode() {
 }
 
 bool Entity::isAlive() {
-	return alive;
+	return true;
 }
 
 ObjectType Entity::getType() {
@@ -33,7 +32,7 @@ int Entity::getDbID() {
 
 std::string Entity::getValues(int precision) {
 	return std::to_string(getDbID()) + ","
-		+ std::to_string((int)alive) + ",";//TODO to pewnie nie potrzebne
+		+ std::to_string((int)isAlive()) + ",";//TODO to pewnie nie potrzebne
 }
 
 std::string Entity::getColumns() {
