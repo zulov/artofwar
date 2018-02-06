@@ -6,7 +6,6 @@
 #include "objects/unit/aim/TargetAim.h"
 
 
-
 ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector3* parameter) {
 	this->entities = entities;
 	this->action = action;
@@ -32,9 +31,7 @@ ActionCommand::ActionCommand(Physical* entity, OrderType action, Physical* parem
 }
 
 ActionCommand::~ActionCommand() {
-	if (this->vector) {
-		delete vector;
-	}
+	delete vector;
 }
 
 
@@ -82,7 +79,6 @@ void ActionCommand::execute() {
 		ActionParameter localParameter;
 		localParameter.setAims(aims);
 		applyAction(localParameter);
-		
 		}
 		break;
 	default: ;

@@ -19,15 +19,16 @@ public:
 	void setAimConteiner(AimContainer* _aimContainer);
 private:
 	void applyAction(ActionParameter& parameter);
+	void applyAim(Aims* aims);
+	
 	std::vector<Physical*>* entities;
 	Physical* entity;
+
 	OrderType action;
-
-	AimContainer* aimContainer;
 	Vector3* vector;
-
 	Physical* toFollow;
 
-	void applyAim(Aims* aims);
+	AimContainer* aimContainer;
+
 
 };

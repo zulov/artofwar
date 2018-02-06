@@ -2,7 +2,6 @@
 
 #include "aim/Aims.h"
 
-class Physical;
 
 class ActionParameter
 {
