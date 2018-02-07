@@ -12,5 +12,5 @@ public:
 	bool expired() override;
 private:
 	Physical* physical;
-	double radius;
+	double radiusSq;
 };

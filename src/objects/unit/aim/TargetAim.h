@@ -1,6 +1,7 @@
 #pragma once
 #include "Aim.h"
 #include <Urho3D/Scene/Node.h>
+#include <vector>
 
 class TargetAim : public Aim
 {
@@ -11,7 +12,8 @@ public:
 	bool ifReach(Unit* unit) override;
 	bool expired() override;
 private:
-	Urho3D::Vector3 position;
-	double radius;
-	Urho3D::Node* node;
+	double radiusSq;
+
+	std::vector<int> path;
+	short current;
 };

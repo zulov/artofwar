@@ -11,15 +11,11 @@ class Aims
 public:
 	Aims();
 	~Aims();
-	Urho3D::Vector3* getDirection(Unit* unit, short index);
+	Urho3D::Vector3* getDirection(Unit* unit);
 	void clearAims();
-	bool ifReach(Unit* unit, int index);
+	bool ifReach(Unit* unit);
 	void add(Aim* aim);
-	bool check(int aimIndex);
-	int getReferences();
-	void reduce();
-	void up();
 private:
 	std::vector<Aim*> aims;
-	short int references;
+	int current;
 };

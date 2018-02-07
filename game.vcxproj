@@ -214,9 +214,7 @@
     <ClCompile Include="src\hud\window\AbstractWindowPanel.cpp" />
     <ClCompile Include="src\commands\action\ActionCommand.cpp" />
     <ClCompile Include="src\commands\action\ActionCommandList.cpp" />
-    <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
     <ClCompile Include="src\objects\unit\aim\Aim.cpp" />
-    <ClCompile Include="src\objects\unit\aim\AimContainer.cpp" />
     <ClCompile Include="src\objects\unit\aim\Aims.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\objects\unit\state\AttackState.cpp" />
@@ -318,7 +316,6 @@
     <ClInclude Include="src\objects\unit\ActionParameter.h" />
     <ClInclude Include="src\ActionType.h" />
     <ClInclude Include="src\objects\unit\aim\Aim.h" />
-    <ClInclude Include="src\objects\unit\aim\AimContainer.h" />
     <ClInclude Include="src\objects\unit\aim\Aims.h" />
     <ClInclude Include="src\Benchmark.h" />
     <ClInclude Include="src\objects\unit\aim\ChargeAim.h" />

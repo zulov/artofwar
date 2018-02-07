@@ -68,16 +68,15 @@ public:
 	bool isToDispose();
 
 	static std::string getColumns();
-protected:
+private:
 	Vector3 acceleration;
 	Vector3* velocity;
-	Aims* aims;
+	Aims aims;
 	float mass;
 	float maxSpeed;
 	float maxSeparationDistance;
 	float minSpeed;
-	short aimIndex = 0;
-private:
+
 	void addAim(ActionParameter& actionParameter);
 	void removeAim();
 	void attackIfCloseEnough(double& distance, Unit* closest);
@@ -89,7 +88,6 @@ private:
 	UnitStateType state;
 	UnitStateType actionState;
 
-	std::vector<int> path;
 	float minimalDistance;
 	bool rotatable;
 	float unitRadius = 2;

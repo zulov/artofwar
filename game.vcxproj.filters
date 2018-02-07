@@ -75,9 +75,6 @@
     <ClCompile Include="src\simulation\SimulationObjectManager.cpp">
       <Filter>objects\collection\manager</Filter>
     </ClCompile>
-    <ClCompile Include="src\objects\unit\aim\AimContainer.cpp">
-      <Filter>aim</Filter>
-    </ClCompile>
     <ClCompile Include="src\objects\unit\aim\Aims.cpp">
       <Filter>aim</Filter>
     </ClCompile>
@@ -92,9 +89,6 @@
     </ClCompile>
     <ClCompile Include="src\control\SelectedInfoType.cpp">
       <Filter>control</Filter>
-    </ClCompile>
-    <ClCompile Include="src\objects\unit\ActionParameter.cpp">
-      <Filter>command\action</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\SceneObjectManager.cpp">
       <Filter>objects\collection\manager</Filter>
@@ -328,9 +322,6 @@
       <Filter>objects\collection\manager</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\unit\aim\Aim.h">
-      <Filter>aim</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objects\unit\aim\AimContainer.h">
       <Filter>aim</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\unit\aim\Aims.h">

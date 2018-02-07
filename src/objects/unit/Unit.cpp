@@ -17,7 +17,6 @@ float Unit::hbMaxSize = 0.7f;
 Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT), dbUnit(nullptr) {
 	velocity = new Vector3();
 	toResource = new Vector3();
-	aims = nullptr;
 	resource = nullptr;
 
 	state = UnitStateType::STOP;
@@ -35,16 +34,11 @@ Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT), 
 	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam());
 
 	initBillbords();
-
-	path.reserve(10);
 }
 
 Unit::~Unit() {
 	delete velocity;
 	delete toResource;
-	if (aims) {
-		aims->reduce();
-	}
 }
 
 bool Unit::isAlive() {
@@ -74,14 +68,8 @@ void Unit::populate(db_unit* _dbUnit) {
 }
 
 void Unit::checkAim() {
-	if (aims) {
-		if (aims->ifReach(this, aimIndex)) {
-			++aimIndex;
-			if (aims->check(aimIndex)) {
-				aims = nullptr;
-				StateManager::get()->changeState(this, UnitStateType::MOVE);
-			}
-		}
+	if (aims.ifReach(this)) {
+		StateManager::get()->changeState(this, UnitStateType::MOVE);
 	}
 }
 
@@ -109,7 +97,7 @@ float Unit::getMaxSeparationDistance() {
 
 Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
 	if (aims) {
-		auto dir = aims->getDirection(this, aimIndex);
+		auto dir = aims.getDirection(this);
 		Vector3* force = nullptr;
 		if (dir == nullptr) {
 			if (!toResource) {
@@ -224,19 +212,15 @@ void Unit::updateHeight(double y, double timeStep) {
 }
 
 void Unit::addAim(ActionParameter& actionParameter) {
-	if (actionParameter.getAims() != aims) {
+	if (actionParameter.aims != aims) {
 		removeAim();
-		aims = actionParameter.getAims();
+		aims = actionParameter.aims;
 		aims->up();
 	}
 }
 
 void Unit::removeAim() {
-	if (aims != nullptr) {
-		aims->reduce();
-		aims = nullptr;
-	}
-	aimIndex = 0;
+	aims.clearAims();
 }
 
 String& Unit::toMultiLineString() {
@@ -289,7 +273,7 @@ std::string Unit::getValues(int precision) {
 		to_string(state) + "," +
 		to_string(velocity_x) + "," +
 		to_string(velocity_z) + "," +
-		to_string(aimIndex);
+		to_string(-1);
 
 }
 

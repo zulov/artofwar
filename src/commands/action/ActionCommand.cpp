@@ -1,6 +1,5 @@
 #include "ActionCommand.h"
 #include "objects/unit/ActionParameter.h"
-#include "objects/unit/aim/AimContainer.h"
 #include "objects/unit/aim/ChargeAim.h"
 #include "objects/unit/aim/FollowAim.h"
 #include "objects/unit/aim/TargetAim.h"
@@ -54,7 +53,7 @@ void ActionCommand::applyAction(ActionParameter& parameter) {
 void ActionCommand::applyAim(Aims* aims) {
 	aims->add(new TargetAim(vector));
 	ActionParameter localParameter;
-	localParameter.setAims(aims);
+	localParameter.aims = aims;
 	applyAction(localParameter);
 }
 
@@ -64,7 +63,7 @@ void ActionCommand::execute() {
 		applyAim(aimContainer->getNext());
 		break;
 	case OrderType::PATROL:
-		applyAim(aimContainer->getCurrent());//TODO to jest zle tu trzeba wziac z unita jego cel
+		applyAim(aimContainer->getCurrent()); //TODO to jest zle tu trzeba wziac z unita jego cel
 		break;
 	case OrderType::FOLLOW:
 		{
@@ -72,7 +71,7 @@ void ActionCommand::execute() {
 			Aims* aims = aimContainer->getNext();
 			aims->add(new FollowAim(toFollow));
 			ActionParameter localParameter;
-			localParameter.setAims(aims);
+			localParameter.aims = aims;
 			applyAction(localParameter);
 		}
 		}
@@ -82,7 +81,7 @@ void ActionCommand::execute() {
 		Aims* aims = aimContainer->getNext();
 		aims->add(new ChargeAim(vector));
 		ActionParameter localParameter;
-		localParameter.setAims(aims);
+		localParameter.aims = aims;
 		applyAction(localParameter);
 		}
 		break;

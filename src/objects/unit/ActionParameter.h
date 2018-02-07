@@ -3,14 +3,9 @@
 #include "aim/Aims.h"
 
 
-class ActionParameter
+struct ActionParameter
 {
-public:
-	ActionParameter();
-	~ActionParameter();
-	Aims* getAims();
-	void setAims(Aims* _aims);
-private:
 	Aims * aims;
+	std::vector<int> *path;
 };
 

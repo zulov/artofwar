@@ -5,9 +5,8 @@
 
 FollowAim::FollowAim(Physical* _physical) {
 	physical = _physical;
-	radius = 3;
+	radiusSq = 3 * 3;
 }
-
 
 FollowAim::~FollowAim() = default;
 
@@ -17,7 +16,7 @@ Urho3D::Vector3* FollowAim::getDirection(Unit* unit) {
 
 bool FollowAim::ifReach(Unit* unit) {
 	const float dist = ((*unit->getPosition()) - (*physical->getPosition())).LengthSquared();
-	return dist < radius * radius;
+	return dist < radiusSq;
 }
 
 bool FollowAim::expired() {
