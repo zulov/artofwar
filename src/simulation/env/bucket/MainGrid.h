@@ -32,14 +32,19 @@ public:
 	void updateNeighbors(int current);
 	double cost(int current, int next);
 	void debug(IntVector2& startV, IntVector2& goalV);
-	void findPath(IntVector2& startV, IntVector2& goalV);
+
+	std::vector<int> findPath(IntVector2& startV, IntVector2& goalV);
+	std::vector<int> findPath(int startIdx, int endIdx);
+	std::vector<int> findPath(int startIdx, const Vector3& aim);
+
 	void refreshWayOut(std::vector<int>& toRefresh);
 	void draw_grid_from(int* cameFrom, Image* image);
 	void draw_grid_cost(const float* costSoFar, Image* image);
 	void draw_grid_path(std::vector<int>* path, Image* image);
 	void drawMap(Image* image);
 	content_info* getContentInfo(const Vector2& from, const Vector2& to, bool checks[], int activePlayer);
-	Vector2 & getCenterAt(const IntVector2& cords);
+	Vector2& getCenterAt(const IntVector2& cords);
+
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
 	static IntVector2 calculateSize(int size);
@@ -54,5 +59,5 @@ private:
 	BucketQueue frontier;
 	bool pathInited = false;
 
-	ComplexBucketData *complexData;
+	ComplexBucketData* complexData;
 };

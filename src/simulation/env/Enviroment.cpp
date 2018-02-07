@@ -143,6 +143,15 @@ IntVector2 Enviroment::getBucketCords(const IntVector2& size, Vector3* pos) {
 	return mainGrid.getBucketCords(size, pos);
 }
 
+void Enviroment::findPath(int startIdx, Vector3 & aim) {
+	auto start = std::chrono::system_clock::now();
+
+	mainGrid.findPath(startIdx, aim);
+
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
+	std::cout << duration.count() << std::endl;
+}
+
 void Enviroment::testFind(IntVector2& startV, IntVector2& goalV) {
 	auto start = std::chrono::system_clock::now();
 

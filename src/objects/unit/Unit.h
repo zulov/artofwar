@@ -89,6 +89,7 @@ private:
 	UnitStateType state;
 	UnitStateType actionState;
 
+	std::vector<int> path;
 	float minimalDistance;
 	bool rotatable;
 	float unitRadius = 2;

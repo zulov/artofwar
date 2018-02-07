@@ -35,6 +35,8 @@ Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT), 
 	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam());
 
 	initBillbords();
+
+	path.reserve(10);
 }
 
 Unit::~Unit() {

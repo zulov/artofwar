@@ -4,6 +4,8 @@
 #include "objects/unit/aim/ChargeAim.h"
 #include "objects/unit/aim/FollowAim.h"
 #include "objects/unit/aim/TargetAim.h"
+#include "Game.h"
+#include "simulation/env/Enviroment.h"
 
 
 ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector3* parameter) {
@@ -38,6 +40,9 @@ ActionCommand::~ActionCommand() {
 void ActionCommand::applyAction(ActionParameter& parameter) {
 	short id = static_cast<short>(action);
 	if (entity) {
+		int bucketInx = entity->getBucketIndex(0);
+
+		//Game::get()->getEnviroment()->testFind(bucketInx,IntVector2()) 
 		entity->action(id, parameter);
 	} else {
 		for (Physical* physical : (*entities)) {
@@ -59,7 +64,7 @@ void ActionCommand::execute() {
 		applyAim(aimContainer->getNext());
 		break;
 	case OrderType::PATROL:
-		applyAim(aimContainer->getCurrent());
+		applyAim(aimContainer->getCurrent());//TODO to jest zle tu trzeba wziac z unita jego cel
 		break;
 	case OrderType::FOLLOW:
 		{

@@ -299,25 +299,29 @@ void MainGrid::debug(IntVector2& startV, IntVector2& goalV) {
 	staticCounter++;
 }
 
-void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
+std::vector<int> MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
+	int start = getIndex(startV.x_, startV.y_);
+	int goal = getIndex(goalV.x_, goalV.y_);
+	return findPath(start, goal);
+}
+
+std::vector<int> MainGrid::findPath(int startIdx, int endIdx) {
+	double min = cost(startIdx, endIdx);
+	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma być tylko prosta odległość
+
 	std::fill_n(came_from, resolution * resolution, -1);
 	std::fill_n(cost_so_far, resolution * resolution, -1);
 
-	int start = getIndex(startV.x_, startV.y_);
-	int goal = getIndex(goalV.x_, goalV.y_);
-	double min = cost(start, goal);
-	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma być tylko prosta odległość
-
 	frontier.init(750 + min, min);
-	frontier.put(start, 0);
+	frontier.put(startIdx, 0);
 
-	came_from[start] = start;
-	cost_so_far[start] = 0;
+	came_from[startIdx] = startIdx;
+	cost_so_far[startIdx] = 0;
 
 	while (!frontier.empty()) {
 		const auto current = frontier.get();
 
-		if (current == goal) {
+		if (current == endIdx) {
 			break;
 		}
 		auto& neights = complexData[current].getNeightbours();
@@ -328,14 +332,21 @@ void MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
 					cost_so_far[next] = new_cost;
 
-					frontier.put(next, new_cost + heuristic(next, goal));
+					frontier.put(next, new_cost + heuristic(next, endIdx));
 					came_from[next] = current;
 				}
 			}
 		}
 	}
-
 	//debug(startV, goalV);
+	return reconstruct_path(startIdx, endIdx, came_from);
+}
+
+std::vector<int> MainGrid::findPath(int startIdx, const Vector3& aim) {
+	const short posX = getIndex(aim.x_);
+	const short posZ = getIndex(aim.z_);
+	const int end = getIndex(posX, posZ);
+	return findPath(startIdx, end);
 }
 
 void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
