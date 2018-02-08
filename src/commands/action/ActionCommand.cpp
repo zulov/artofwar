@@ -36,7 +36,7 @@ ActionCommand::~ActionCommand() {
 }
 
 
-void ActionCommand::applyAction(ActionParameter& parameter) {
+void ActionCommand::applyAim() {
 	short id = static_cast<short>(action);
 	if (entity) {
 		int bucketInx = entity->getBucketIndex(0);
@@ -50,20 +50,16 @@ void ActionCommand::applyAction(ActionParameter& parameter) {
 	}
 }
 
-void ActionCommand::applyAim(Aims* aims) {
-	aims->add(new TargetAim(vector));
-	ActionParameter localParameter;
-	localParameter.aims = aims;
-	applyAction(localParameter);
+void ActionCommand::appendAim() {
 }
 
 void ActionCommand::execute() {
 	switch (action) {
 	case OrderType::GO:
-		applyAim(aimContainer->getNext());
+		applyAim();
 		break;
 	case OrderType::PATROL:
-		applyAim(aimContainer->getCurrent()); //TODO to jest zle tu trzeba wziac z unita jego cel
+		appendAim(); //TODO to jest zle tu trzeba wziac z unita jego cel
 		break;
 	case OrderType::FOLLOW:
 		{

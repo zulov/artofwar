@@ -44,6 +44,10 @@ bool Aims::ifReach(Unit* unit) {
 	return false;
 }
 
+bool Aims::hasAim() {
+	return current < aims.size();
+}
+
 void Aims::add(Aim* aim) {
 	aims.push_back(aim);
 }

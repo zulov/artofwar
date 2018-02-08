@@ -96,7 +96,7 @@ float Unit::getMaxSeparationDistance() {
 }
 
 Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
-	if (aims) {
+	if (aims.hasAim()) {
 		auto dir = aims.getDirection(this);
 		Vector3* force = nullptr;
 		if (dir == nullptr) {
@@ -108,7 +108,6 @@ Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
 		}
 
 		if (force) {
-
 			force->Normalize();
 			(*force) *= boostCoef;
 			(*force) -= (*velocity);
@@ -211,12 +210,13 @@ void Unit::updateHeight(double y, double timeStep) {
 	position->y_ = y;
 }
 
-void Unit::addAim(ActionParameter& actionParameter) {
-	if (actionParameter.aims != aims) {
-		removeAim();
-		aims = actionParameter.aims;
-		aims->up();
-	}
+void Unit::addAim(Aim* aim) {
+	removeAim();
+	aims.add(aim);
+}
+
+void Unit::appendAim(Aim* aim) {
+	aims.add(aim);
 }
 
 void Unit::removeAim() {
@@ -264,7 +264,7 @@ void Unit::action(short id, ActionParameter& parameter) {
 std::string Unit::getValues(int precision) {
 	const int position_x = position->x_ * precision;
 	const int position_z = position->z_ * precision;
-	const int state = static_cast<int>(state);
+	const int state = static_cast<int>(this->state);
 	const int velocity_x = velocity->x_ * precision;
 	const int velocity_z = velocity->z_ * precision;
 	return Physical::getValues(precision)

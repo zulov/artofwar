@@ -14,6 +14,7 @@ public:
 	Urho3D::Vector3* getDirection(Unit* unit);
 	void clearAims();
 	bool ifReach(Unit* unit);
+	bool hasAim();
 	void add(Aim* aim);
 private:
 	std::vector<Aim*> aims;

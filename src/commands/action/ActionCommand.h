@@ -18,8 +18,8 @@ public:
 	void execute() override;
 	void setAimConteiner(AimContainer* _aimContainer);
 private:
-	void applyAction(ActionParameter& parameter);
-	void applyAim(Aims* aims);
+	void applyAim();
+	void appendAim();
 	
 	std::vector<Physical*>* entities;
 	Physical* entity;
