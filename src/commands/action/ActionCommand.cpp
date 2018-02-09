@@ -41,11 +41,13 @@ void ActionCommand::applyAim() {
 	if (entity) {
 		int bucketInx = entity->getBucketIndex(0);
 
-		//Game::get()->getEnviroment()->testFind(bucketInx,IntVector2()) 
-		entity->action(id, parameter);
+		std::vector<int> path = Game::get()->getEnviroment()->findPath(bucketInx, *vector);
+		entity->action(id, new TargetAim(path));
 	} else {
 		for (Physical* physical : (*entities)) {
-			physical->action(id, parameter);
+			int bucketInx = entity->getBucketIndex(0);
+			std::vector<int> path = Game::get()->getEnviroment()->findPath(bucketInx, *vector);
+			physical->action(id, new TargetAim(path));
 		}
 	}
 }
