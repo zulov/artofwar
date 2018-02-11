@@ -6,7 +6,7 @@
 class TargetAim : public Aim
 {
 public:
-	TargetAim(Urho3D::Vector3* _position);
+	TargetAim(std::vector<int> &_path);
 	~TargetAim();
 	Urho3D::Vector3* getDirection(Unit* unit) override;
 	bool ifReach(Unit* unit) override;

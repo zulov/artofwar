@@ -133,6 +133,10 @@ Vector3* Enviroment::getValidPosition(const IntVector2& size, const IntVector2& 
 	return getValidPosition(size, new Vector3(center.x_, 0, center.y_));
 }
 
+Vector2 Enviroment::getCenter(int index) {
+	return mainGrid.getCenter(index);
+}
+
 Vector3* Enviroment::getValidPosition(const IntVector2& size, Vector3* pos) {
 	Vector3* pos2 = mainGrid.getValidPosition(size, pos);
 	pos2->y_ = getGroundHeightAt(pos2->x_, pos2->z_);

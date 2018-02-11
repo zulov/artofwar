@@ -44,6 +44,7 @@ public:
 	void drawMap(Image* image);
 	content_info* getContentInfo(const Vector2& from, const Vector2& to, bool checks[], int activePlayer);
 	Vector2& getCenterAt(const IntVector2& cords);
+	Vector2 getCenter(int index);
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);

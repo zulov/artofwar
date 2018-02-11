@@ -114,6 +114,10 @@ Vector2& MainGrid::getCenterAt(const IntVector2& cords) {
 	return complexData[index].getCenter();
 }
 
+Vector2 MainGrid::getCenter(int index) {
+	return complexData[index].getCenter();
+}
+
 void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {
 	switch (complexData[index].getType()) {
 	case UNIT:

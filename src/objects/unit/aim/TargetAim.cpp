@@ -1,29 +1,38 @@
 #include "TargetAim.h"
-#include "Game.h"
 #include "../Unit.h"
+#include "Game.h"
 #include "simulation/env/Enviroment.h"
 
 
-TargetAim::TargetAim(Urho3D::Vector3* _position) {
-	radiusSq = 3*3;
-	path.reserve(100);
+TargetAim::TargetAim(std::vector<int> &_path) {
+	radiusSq = 3 * 3;
+	path = _path;
 	current = 0;
 }
 
 
-TargetAim::~TargetAim() {
-}
+TargetAim::~TargetAim() = default;
 
 Urho3D::Vector3* TargetAim::getDirection(Unit* unit) {
-	Vector3 position = Game::get()->getEnviroment()->getCenter(path[current]);
+	Vector2 position = Game::get()->getEnviroment()->getCenter(path[current]);
 	//TODO storzyc currentPosition i zmienaic przy przejsciu
-	return new Vector3((position) - (*unit->getPosition()));
+	Vector3* dir = new Vector3(
+	                           position.x_ - unit->getPosition()->x_,
+	                           0,
+	                           position.y_ - unit->getPosition()->z_
+	                          );
+
+	return dir;
 }
 
 bool TargetAim::ifReach(Unit* unit) {
-	Vector3 position = Game::get()->getEnviroment()->getCenter(path[current]);
-	//TODO storzyc currentPosition i zmienaic przy przejsciu
-	float dist = ((*unit->getPosition()) - position).LengthSquared();
+	Vector2 position = Game::get()->getEnviroment()->getCenter(path[current]);
+	Vector3 dir = Vector3(
+	                      position.x_ - unit->getPosition()->x_,
+	                      0,
+	                      position.y_ - unit->getPosition()->z_
+	                     );
+	float dist = dir.LengthSquared();
 	bool reach = dist < radiusSq;
 	if (reach) {
 		++current;

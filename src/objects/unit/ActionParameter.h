@@ -5,7 +5,6 @@
 
 struct ActionParameter
 {
-	Aims * aims;
-	std::vector<int> *path;
+	Aim * aim;
 };
 
