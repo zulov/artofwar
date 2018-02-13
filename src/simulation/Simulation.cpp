@@ -13,9 +13,9 @@ Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _simCommand
 
 	srand(time(NULL));
 
-	aimContainer = new AimContainer();
+
 	simulationInfo = new SimulationInfo();
-	actionCommandList = new ActionCommandList(aimContainer);
+	actionCommandList = new ActionCommandList();
 	Game::get()->setActionCommmandList(actionCommandList);
 
 	units = simObjectManager->getUnits();
@@ -24,7 +24,6 @@ Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _simCommand
 }
 
 Simulation::~Simulation() {
-	delete aimContainer;
 	delete simulationInfo;
 	delete actionCommandList;
 	Game::get()->setActionCommmandList(nullptr);
@@ -202,7 +201,6 @@ void Simulation::moveUnitsAndCheck(float timeStep) {
 		unit->move(timeStep);
 		unit->checkAim();
 	}
-	aimContainer->clean();
 }
 
 void Simulation::calculateForces() {

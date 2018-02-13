@@ -3,7 +3,6 @@
 #include "SimulationObjectManager.h"
 #include "commands/action/ActionCommandList.h"
 #include "objects/unit/Unit.h"
-#include "objects/unit/aim/AimContainer.h"
 #include "scene/save/SceneSaver.h"
 #include "simulation/env/Enviroment.h"
 #include "simulation/force/Force.h"
@@ -60,7 +59,6 @@ private:
 	vector<Building*>* buildings;
 	vector<ResourceEntity*>* resources;
 
-	AimContainer* aimContainer;
 	SimulationInfo* simulationInfo;
 	Enviroment* enviroment;
 	SimulationObjectManager* simObjectManager;

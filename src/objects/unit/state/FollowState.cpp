@@ -17,7 +17,7 @@ void FollowState::onStart(Unit* unit) {
 
 void FollowState::onStart(Unit* unit, ActionParameter& parameter) {
 	unit->removeAim();
-	unit->addAim(parameter);
+	unit->addAim(parameter.aim);
 }
 
 
