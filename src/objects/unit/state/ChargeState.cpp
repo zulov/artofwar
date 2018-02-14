@@ -19,7 +19,7 @@ void ChargeState::onStart(Unit* unit) {
 }
 
 void ChargeState::onStart(Unit* unit, ActionParameter& parameter) {
-	unit->addAim(parameter.aim);
+	unit->addAim(parameter.aim, parameter.aimAppend);
 	unit->maxSpeed = unit->dbUnit->maxSpeed * 2;
 }
 

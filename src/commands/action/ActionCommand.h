@@ -14,17 +14,17 @@ public:
 	ActionCommand(std::vector<Physical*>* entities, OrderType action, Physical* paremeter);
 	ActionCommand(Physical* entity, OrderType action, Physical* paremeter);
 	~ActionCommand();
-	ActionParameter getTargetAim(Physical * physical);
-	ActionParameter getFollowAim(Physical* toFollow);
-	ActionParameter getChargeAim(Vector3* charge);
+	ActionParameter getTargetAim(Physical * physical, Vector3 *to, bool append);
+	ActionParameter getFollowAim(Physical* toFollow, bool append);
+	ActionParameter getChargeAim(Vector3* charge, bool append);
 	void createTargetAim(int bucketInx, ActionParameter& parameter);
 
 	void execute() override;
 	void setAimConteiner(AimContainer* _aimContainer);
 private:
-	void addTargetAim();
-	void addFollowAim(Physical* toFollow);
-	void addChargeAim(Vector3* charge);
+	void addTargetAim(Vector3 * to, bool append);
+	void addFollowAim(Physical* toFollow, bool append);
+	void addChargeAim(Vector3* charge, bool append);
 	void appendAim();
 	
 	std::vector<Physical*>* entities;

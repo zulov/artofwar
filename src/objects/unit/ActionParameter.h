@@ -5,6 +5,11 @@
 
 struct ActionParameter
 {
-	Aim * aim;
-};
+	ActionParameter(Aim* aim = nullptr, bool aimAppend = false)
+		: aim(aim),
+		aimAppend(aimAppend) {
+	}
 
+	Aim* aim;
+	bool aimAppend;
+};

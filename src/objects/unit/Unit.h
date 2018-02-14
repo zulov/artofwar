@@ -77,8 +77,7 @@ private:
 	float maxSeparationDistance;
 	float minSpeed;
 
-	void addAim(Aim * aim);
-	void appendAim(Aim * aim);
+	void addAim(Aim * aim, bool append);
 	void removeAim();
 	void attackIfCloseEnough(double& distance, Unit* closest);
 	void collectIfCloseEnough(double distance, ResourceEntity* closest);

@@ -211,12 +211,10 @@ void Unit::updateHeight(double y, double timeStep) {
 	position->y_ = y;
 }
 
-void Unit::addAim(Aim* aim) {
-	removeAim();
-	aims.add(aim);
-}
-
-void Unit::appendAim(Aim* aim) {
+void Unit::addAim(Aim* aim, bool append) {
+	if (!append) {
+		removeAim();
+	}
 	aims.add(aim);
 }
 

@@ -36,59 +36,56 @@ ActionCommand::~ActionCommand() {
 }
 
 
-ActionParameter ActionCommand::getTargetAim(Physical * physical) {
-	ActionParameter parameter;
-	std::vector<int> path = Game::get()->getEnviroment()->findPath(physical->getBucketIndex(-1), *vector);
-	parameter.aim = new TargetAim(path);
+ActionParameter ActionCommand::getTargetAim(Physical* physical, Vector3* to, bool append) {
+	std::vector<int> path = Game::get()->getEnviroment()->findPath(physical->getBucketIndex(-1), *to);
+	ActionParameter parameter(new TargetAim(path), append);
 	return parameter;
 }
 
-ActionParameter ActionCommand::getFollowAim(Physical* toFollow) {
-	ActionParameter parameter;
-	parameter.aim = new FollowAim(toFollow);
+ActionParameter ActionCommand::getFollowAim(Physical* toFollow, bool append) {
+	ActionParameter parameter(new FollowAim(toFollow), append);
 	return parameter;
 }
 
-ActionParameter ActionCommand::getChargeAim(Vector3* charge) {
-	ActionParameter parameter;
-	parameter.aim = new ChargeAim(vector);
+ActionParameter ActionCommand::getChargeAim(Vector3* charge, bool append) {
+	ActionParameter parameter(new ChargeAim(vector), append);
 	return parameter;
 }
 
-void ActionCommand::addTargetAim() {
+void ActionCommand::addTargetAim(Vector3* to, bool append) {
 	short id = static_cast<short>(action);
 	if (entity) {
-		ActionParameter parameter = getTargetAim(entity);
+		ActionParameter parameter = getTargetAim(entity, to, append);
 		entity->action(id, parameter);
 	} else {
 		for (Physical* physical : (*entities)) {
-			ActionParameter parameter = getTargetAim(physical);
+			ActionParameter parameter = getTargetAim(physical, to, append);
 			physical->action(id, parameter);
 		}
 	}
 }
 
-void ActionCommand::addFollowAim(Physical* toFollow) {
+void ActionCommand::addFollowAim(Physical* toFollow, bool append) {
 	short id = static_cast<short>(action);
 	if (entity) {
-		ActionParameter parameter = getFollowAim(toFollow);
+		ActionParameter parameter = getFollowAim(toFollow, append);
 		entity->action(id, parameter);
 	} else {
 		for (Physical* physical : (*entities)) {
-			ActionParameter parameter = getFollowAim(toFollow);
+			ActionParameter parameter = getFollowAim(toFollow, append);
 			physical->action(id, parameter);
 		}
 	}
 }
 
-void ActionCommand::addChargeAim(Vector3* charge) {
+void ActionCommand::addChargeAim(Vector3* charge, bool append) {
 	short id = static_cast<short>(action);
 	if (entity) {
-		ActionParameter parameter = getChargeAim(charge);
+		ActionParameter parameter = getChargeAim(charge, append);
 		entity->action(id, parameter);
 	} else {
 		for (Physical* physical : (*entities)) {
-			ActionParameter parameter = getChargeAim(charge);
+			ActionParameter parameter = getChargeAim(charge, append);
 			physical->action(id, parameter);
 		}
 	}
@@ -100,21 +97,21 @@ void ActionCommand::appendAim() {
 void ActionCommand::execute() {
 	switch (action) {
 	case OrderType::GO:
-		addTargetAim();
+		addTargetAim(vector, false);
 		break;
 	case OrderType::PATROL:
-		appendAim(); //TODO to jest zle tu trzeba wziac z unita jego cel
+		addTargetAim(vector, true);
 		break;
 	case OrderType::FOLLOW:
 		{
 		if (toFollow != nullptr && toFollow->isAlive()) {
-			addFollowAim(toFollow);
+			addFollowAim(toFollow, false);
 		}
 		}
 		break;
 	case OrderType::CHARGE:
 		{
-		addChargeAim(vector);
+		addChargeAim(vector, false);
 		}
 		break;
 	default: ;
