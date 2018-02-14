@@ -17,7 +17,7 @@ Urho3D::Vector3* Aims::getDirection(Unit* unit) {
 	return aims[current]->getDirection(unit);
 }
 
-void Aims::clearAims() {
+void Aims::clearAimsIfExpired() {
 	for (int i = 0; i < aims.size(); ++i) {
 		Aim* aim = aims[i];
 		if (aim->expired()) {
@@ -25,7 +25,6 @@ void Aims::clearAims() {
 			aims[i] = new DummyAim();
 		}
 	}
-	current = 0;
 }
 
 bool Aims::ifReach(Unit* unit) {
@@ -36,8 +35,7 @@ bool Aims::ifReach(Unit* unit) {
 	if (aim->ifReach(unit)) {
 		++current;
 		if (current >= aims.size()) {
-			clear_vector(aims);
-			current = 0;
+			clear();
 			return true;
 		}
 	}
@@ -50,4 +48,9 @@ bool Aims::hasAim() {
 
 void Aims::add(Aim* aim) {
 	aims.push_back(aim);
+}
+
+void Aims::clear() {
+	clear_vector(aims);
+	current = 0;
 }

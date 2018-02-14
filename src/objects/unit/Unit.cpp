@@ -97,6 +97,7 @@ float Unit::getMaxSeparationDistance() {
 
 Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
 	if (aims.hasAim()) {
+		aims.clearAimsIfExpired();
 		auto dir = aims.getDirection(this);
 		Vector3* force = nullptr;
 		if (dir == nullptr) {
@@ -220,7 +221,7 @@ void Unit::appendAim(Aim* aim) {
 }
 
 void Unit::removeAim() {
-	aims.clearAims();
+	aims.clear();
 }
 
 String& Unit::toMultiLineString() {

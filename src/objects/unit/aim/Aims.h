@@ -12,10 +12,11 @@ public:
 	Aims();
 	~Aims();
 	Urho3D::Vector3* getDirection(Unit* unit);
-	void clearAims();
+	void clearAimsIfExpired();
 	bool ifReach(Unit* unit);
 	bool hasAim();
 	void add(Aim* aim);
+	void clear();
 private:
 	std::vector<Aim*> aims;
 	int current;
