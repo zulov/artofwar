@@ -136,17 +136,17 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 		} else {
 			type = OrderType::GO;
 		}
-		Game::get()->getActionCommandList()->add(new ActionCommand(selected, type, new Vector3(hitPos)));
+		Game::get()->getActionCommandList()->add(new ActionCommand(selected, type, new Vector3(hitPos), shiftPressed));
 		break;
 		}
 	case UNIT:
 		{
-		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked));
+		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked, shiftPressed));
 		//unSelectAll();
 		break;
 		}
 	case BUILDING:
-		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked));
+		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked, shiftPressed));
 		break;
 	case RESOURCE: break;
 	default: ;

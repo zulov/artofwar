@@ -7,28 +7,31 @@
 #include "simulation/env/Enviroment.h"
 
 
-ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector3* parameter) {
+ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector3* parameter, bool append) {
 	this->entities = entities;
 	this->action = action;
 	this->vector = parameter;
 	this->entity = nullptr;
-	this->toFollow = nullptr;
+	this->toFollow = nullptr;	
+	this->append = append;
 }
 
-ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Physical* paremeter) {
+ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Physical* paremeter, bool append) {
 	this->entities = entities;
 	this->action = action;
 	this->toFollow = paremeter;
 	this->entity = nullptr;
-	this->vector = nullptr;
+	this->vector = nullptr;	
+	this->append = append;
 }
 
-ActionCommand::ActionCommand(Physical* entity, OrderType action, Physical* paremeter) {
+ActionCommand::ActionCommand(Physical* entity, OrderType action, Physical* paremeter, bool append) {
 	this->entity = entity;
 	this->action = action;
 	this->toFollow = paremeter;
 	this->entities = nullptr;
 	this->vector = nullptr;
+	this->append = append;
 }
 
 ActionCommand::~ActionCommand() {
@@ -97,27 +100,23 @@ void ActionCommand::appendAim() {
 void ActionCommand::execute() {
 	switch (action) {
 	case OrderType::GO:
-		addTargetAim(vector, false);
+		addTargetAim(vector, append);
 		break;
 	case OrderType::PATROL:
-		addTargetAim(vector, true);
+		addTargetAim(vector, append);
 		break;
 	case OrderType::FOLLOW:
 		{
 		if (toFollow != nullptr && toFollow->isAlive()) {
-			addFollowAim(toFollow, false);
+			addFollowAim(toFollow, append);
 		}
 		}
 		break;
 	case OrderType::CHARGE:
 		{
-		addChargeAim(vector, false);
+		addChargeAim(vector, append);
 		}
 		break;
 	default: ;
 	}
-}
-
-void ActionCommand::setAimConteiner(AimContainer* _aimContainer) {
-	aimContainer = _aimContainer;
 }
