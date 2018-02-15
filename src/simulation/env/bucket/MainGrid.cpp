@@ -167,11 +167,8 @@ void MainGrid::updateCost(int idx, float x) {
 }
 
 void MainGrid::resetCost() {
-	
-	if(max_cost_to_ref + 1 - min_cost_to_ref<1) {
-		std::cout<<max_cost_to_ref<<std::endl;
-	}
 	std::fill_n(cost_so_far + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1);
+	std::fill_n(came_from + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1);
 	min_cost_to_ref = resolution * resolution - 1;
 	max_cost_to_ref = 0;
 }
@@ -333,9 +330,9 @@ std::vector<int>* MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 }
 
 std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, double min) {
-	std::fill_n(came_from, resolution * resolution, -1);
-	std::fill_n(cost_so_far, resolution * resolution, -1);
-	//resetCost();
+	//std::fill_n(came_from, resolution * resolution, -1);
+	//std::fill_n(cost_so_far, resolution * resolution, -1);
+	resetCost();
 	frontier.init(750 + min, min);
 	frontier.put(startIdx, 0);
 
@@ -370,7 +367,8 @@ std::vector<int>* MainGrid::findPath(int startIdx, const Vector3& aim) {
 	const short posX = getIndex(aim.x_);
 	const short posZ = getIndex(aim.z_);
 	const int end = getIndex(posX, posZ);
-	return findPath(startIdx, end, 0);
+	double min = cost(startIdx, end);
+	return findPath(startIdx, end, min);
 }
 
 void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
