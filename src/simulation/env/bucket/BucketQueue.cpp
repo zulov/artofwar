@@ -55,7 +55,7 @@ void BucketQueue::updateCurrentIndex() {
 	for (int i = currentIndex + 1; i < QUEUE_BUCKETS_SIZE; ++i) {
 		if (!buckets[i].empty()) {
 			currentIndex = i;
-			break;
+			return;
 		}
 	}
 	currentIndex = QUEUE_BUCKETS_SIZE - 1;

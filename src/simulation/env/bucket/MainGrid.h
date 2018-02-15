@@ -57,7 +57,10 @@ private:
 
 	int* came_from;
 	float* cost_so_far;
-
+	int min_cost_to_ref;
+	int max_cost_to_ref;
+	void updateCost(int startIdx, float x);
+	void resetCost();
 	BucketQueue frontier;
 	bool pathInited = false;
 

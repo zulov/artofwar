@@ -58,7 +58,8 @@ void MainGrid::prepareGridToFind() {
 	tempNeighbour->clear();
 	came_from = new int[resolution * resolution];
 	cost_so_far = new float[resolution * resolution];
-
+	std::fill_n(came_from, resolution * resolution, -1);
+	std::fill_n(cost_so_far, resolution * resolution, -1);
 	pathInited = true;
 }
 
@@ -153,6 +154,26 @@ IntVector2 MainGrid::calculateSize(int size) {
 	int first = -((size - 1) / 2);
 	int second = size + first;
 	return IntVector2(first, second);
+}
+
+void MainGrid::updateCost(int idx, float x) {
+	cost_so_far[idx] = x;
+	if (idx < min_cost_to_ref) {
+		min_cost_to_ref = idx;
+	}
+	if (idx > max_cost_to_ref) {
+		max_cost_to_ref = idx;
+	}
+}
+
+void MainGrid::resetCost() {
+	
+	if(max_cost_to_ref + 1 - min_cost_to_ref<1) {
+		std::cout<<max_cost_to_ref<<std::endl;
+	}
+	std::fill_n(cost_so_far + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1);
+	min_cost_to_ref = resolution * resolution - 1;
+	max_cost_to_ref = 0;
 }
 
 void MainGrid::addStatic(Static* object) {
@@ -314,13 +335,13 @@ std::vector<int>* MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, double min) {
 	std::fill_n(came_from, resolution * resolution, -1);
 	std::fill_n(cost_so_far, resolution * resolution, -1);
-
+	//resetCost();
 	frontier.init(750 + min, min);
 	frontier.put(startIdx, 0);
 
 	came_from[startIdx] = startIdx;
-	cost_so_far[startIdx] = 0;
-
+	//cost_so_far[startIdx] = 0;
+	updateCost(startIdx, 0.0f);
 	while (!frontier.empty()) {
 		const auto current = frontier.get();
 
@@ -333,8 +354,8 @@ std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, double min) {
 			if (came_from[current] != next) {
 				const float new_cost = cost_so_far[current] + neight.second;
 				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
-					cost_so_far[next] = new_cost;
-
+					//cost_so_far[next] = new_cost;
+					updateCost(next, new_cost);
 					frontier.put(next, new_cost + heuristic(next, endIdx));
 					came_from[next] = current;
 				}
