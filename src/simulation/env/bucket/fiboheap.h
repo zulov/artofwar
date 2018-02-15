@@ -91,10 +91,6 @@ public:
 		std::fill_n(temp.begin(), temp.size(), nullptr);
 	}
 
-	FibNode* minimum() const {
-		return minNode;
-	}
-
 	FibNode* extract_min() {
 		FibNode* z = minNode;
 		if (z != nullptr) {
@@ -231,7 +227,7 @@ public:
 	}
 
 	int get() {
-		const int toReturn = minimum()->payload;
+		const int toReturn = minNode->payload;
 		pop();
 		return toReturn;
 	}

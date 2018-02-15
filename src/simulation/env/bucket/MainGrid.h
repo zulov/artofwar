@@ -31,7 +31,7 @@ public:
 	bool inSide(int x, int z);
 	void updateNeighbors(int current);
 	double cost(int current, int next);
-	void debug(IntVector2& startV, IntVector2& goalV);
+	void debug(int start, int end);
 
 	std::vector<int>* findPath(IntVector2& startV, IntVector2& goalV);
 	std::vector<int>* findPath(int startIdx, int endIdx, double min);
@@ -57,6 +57,7 @@ private:
 
 	int* came_from;
 	float* cost_so_far;
+
 	BucketQueue frontier;
 	bool pathInited = false;
 

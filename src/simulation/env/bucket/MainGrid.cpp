@@ -58,6 +58,7 @@ void MainGrid::prepareGridToFind() {
 	tempNeighbour->clear();
 	came_from = new int[resolution * resolution];
 	cost_so_far = new float[resolution * resolution];
+
 	pathInited = true;
 }
 
@@ -282,7 +283,7 @@ double MainGrid::cost(const int current, const int next) {
 	return (complexData[current].getCenter() - complexData[next].getCenter()).Length();
 }
 
-void MainGrid::debug(IntVector2& startV, IntVector2& goalV) {
+void MainGrid::debug(int start, int end) {
 	Image* image = new Image(Game::get()->getContext());
 	image->SetSize(resolution, resolution, 4);
 
@@ -294,7 +295,7 @@ void MainGrid::debug(IntVector2& startV, IntVector2& goalV) {
 	draw_grid_cost(cost_so_far, image);
 	image->SaveBMP("result/images/" + prefix + "3_grid_cost.bmp");
 
-	std::vector<int>* path = reconstruct_path(startV, goalV, came_from);
+	std::vector<int>* path = reconstruct_path(start, end, came_from);
 	draw_grid_path(path, image);
 
 	image->SaveBMP("result/images/" + prefix + "4_grid_path.bmp");
@@ -340,7 +341,7 @@ std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, double min) {
 			}
 		}
 	}
-	//debug(startV, goalV);
+	//debug(startIdx, endIdx);
 	return reconstruct_path(startIdx, endIdx, came_from);
 }
 
