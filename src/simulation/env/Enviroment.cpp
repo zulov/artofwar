@@ -147,20 +147,21 @@ IntVector2 Enviroment::getBucketCords(const IntVector2& size, Vector3* pos) {
 	return mainGrid.getBucketCords(size, pos);
 }
 
-std::vector<int> Enviroment::findPath(int startIdx, Vector3 & aim) {
-	auto start = std::chrono::system_clock::now();
+std::vector<int>* Enviroment::findPath(int startIdx, Vector3 & aim) {
+	//auto start = std::chrono::system_clock::now();
 
-	std::vector<int> result = mainGrid.findPath(startIdx, aim);
+	std::vector<int>* result = mainGrid.findPath(startIdx, aim);
 
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
-	std::cout << duration.count() << std::endl;
+	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
+	//std::cout << duration.count() << std::endl;
 	return result;
 }
 
 void Enviroment::testFind(IntVector2& startV, IntVector2& goalV) {
 	auto start = std::chrono::system_clock::now();
 
-	mainGrid.findPath(startV, goalV);
+	std::vector<int>* path = mainGrid.findPath(startV, goalV);
+	delete path;
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
 	std::cout << duration.count() << std::endl;
 }

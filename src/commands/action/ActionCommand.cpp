@@ -5,6 +5,7 @@
 #include "objects/unit/aim/TargetAim.h"
 #include "Game.h"
 #include "simulation/env/Enviroment.h"
+#include <chrono>
 
 
 ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector3* parameter, bool append) {
@@ -12,7 +13,7 @@ ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action,
 	this->action = action;
 	this->vector = parameter;
 	this->entity = nullptr;
-	this->toFollow = nullptr;	
+	this->toFollow = nullptr;
 	this->append = append;
 }
 
@@ -21,7 +22,7 @@ ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action,
 	this->action = action;
 	this->toFollow = paremeter;
 	this->entity = nullptr;
-	this->vector = nullptr;	
+	this->vector = nullptr;
 	this->append = append;
 }
 
@@ -40,8 +41,9 @@ ActionCommand::~ActionCommand() {
 
 
 ActionParameter ActionCommand::getTargetAim(Physical* physical, Vector3* to, bool append) {
-	std::vector<int> path = Game::get()->getEnviroment()->findPath(physical->getBucketIndex(-1), *to);
-	ActionParameter parameter(new TargetAim(path), append);
+	std::vector<int>* path = Game::get()->getEnviroment()->findPath(physical->getBucketIndex(-1), *to);
+	ActionParameter parameter(new TargetAim(*path), append);
+	delete path;
 	return parameter;
 }
 
@@ -56,6 +58,7 @@ ActionParameter ActionCommand::getChargeAim(Vector3* charge, bool append) {
 }
 
 void ActionCommand::addTargetAim(Vector3* to, bool append) {
+	auto start = std::chrono::system_clock::now();
 	short id = static_cast<short>(action);
 	if (entity) {
 		ActionParameter parameter = getTargetAim(entity, to, append);
@@ -66,6 +69,8 @@ void ActionCommand::addTargetAim(Vector3* to, bool append) {
 			physical->action(id, parameter);
 		}
 	}
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
+	std::cout << "sum " << duration.count() << std::endl;
 }
 
 void ActionCommand::addFollowAim(Physical* toFollow, bool append) {

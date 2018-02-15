@@ -294,8 +294,8 @@ void MainGrid::debug(IntVector2& startV, IntVector2& goalV) {
 	draw_grid_cost(cost_so_far, image);
 	image->SaveBMP("result/images/" + prefix + "3_grid_cost.bmp");
 
-	std::vector<int> path = reconstruct_path(startV, goalV, came_from);
-	draw_grid_path(&path, image);
+	std::vector<int>* path = reconstruct_path(startV, goalV, came_from);
+	draw_grid_path(path, image);
 
 	image->SaveBMP("result/images/" + prefix + "4_grid_path.bmp");
 
@@ -303,16 +303,14 @@ void MainGrid::debug(IntVector2& startV, IntVector2& goalV) {
 	staticCounter++;
 }
 
-std::vector<int> MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
+std::vector<int>* MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
-	return findPath(start, goal);
+	double min = cost(start, goal);
+	return findPath(start, goal, min);
 }
 
-std::vector<int> MainGrid::findPath(int startIdx, int endIdx) {
-	double min = cost(startIdx, endIdx);
-	//TODO jak zmieni sie koszt na bardziej skomplikowany to może sie zepsuć a tu ma być tylko prosta odległość
-
+std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, double min) {
 	std::fill_n(came_from, resolution * resolution, -1);
 	std::fill_n(cost_so_far, resolution * resolution, -1);
 
@@ -346,11 +344,11 @@ std::vector<int> MainGrid::findPath(int startIdx, int endIdx) {
 	return reconstruct_path(startIdx, endIdx, came_from);
 }
 
-std::vector<int> MainGrid::findPath(int startIdx, const Vector3& aim) {
+std::vector<int>* MainGrid::findPath(int startIdx, const Vector3& aim) {
 	const short posX = getIndex(aim.x_);
 	const short posZ = getIndex(aim.z_);
 	const int end = getIndex(posX, posZ);
-	return findPath(startIdx, end);
+	return findPath(startIdx, end, 0);
 }
 
 void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
@@ -396,18 +394,19 @@ void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 				}
 			}
 		}
-		std::vector<int> path = reconstruct_path(startIndex, end, came_from);
-		if (path.size() >= 1) {
+		std::vector<int>* path = reconstruct_path(startIndex, end, came_from);
+		if (path->size() >= 1) {
 			int current2 = startIndex;
-			for (int i = 1; i < path.size(); ++i) {
-				complexData[current2].setEscapeThrought(path[i]);
+			for (int i = 1; i < path->size(); ++i) {
+				complexData[current2].setEscapeThrought(path->at(i));
 				refreshed.insert(current2);
-				current2 = path[i];
+				current2 = path->at(i);
 			}
 		} else {
 			refreshed.insert(startIndex);
 			complexData[startIndex].setEscapeThrought(-1);
 		}
+		delete path;
 	}
 
 }
@@ -486,22 +485,22 @@ IntVector2 MainGrid::getCords(const int index) {
 	return IntVector2(index / resolution, index % resolution);
 }
 
-std::vector<int> MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]) {
+std::vector<int>* MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
 	return reconstruct_path(start, goal, came_from);
 }
 
-std::vector<int> MainGrid::reconstruct_path(int start, int goal, const int came_from[]) {
-	std::vector<int> path;
+std::vector<int>* MainGrid::reconstruct_path(int start, int goal, const int came_from[]) {
+	std::vector<int>* path = new std::vector<int>();
 	int current = goal;
-	path.push_back(current);
+	path->push_back(current);
 	while (current != start) {
 		current = came_from[current];
-		path.push_back(current);
+		path->push_back(current);
 	}
 	//path.push_back(start); // optional
-	std::reverse(path.begin(), path.end());
+	std::reverse(path->begin(), path->end());
 	return path;
 }
 

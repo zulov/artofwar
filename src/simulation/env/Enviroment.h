@@ -37,7 +37,7 @@ public:
 	bool validateStatic(const IntVector2& size, Vector3& pos);
 	Vector3* getValidPosition(const IntVector2& size, Vector3* pos);
 	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos);
-	std::vector<int> findPath(int startIdx, Vector3& aim);
+	std::vector<int>* findPath(int startIdx, Vector3& aim);
 	void testFind(IntVector2& startV, IntVector2& goalV);
 	void prepareGridToFind();
 	content_info* getContentInfo(Vector2 from, Vector2 to, bool checks[], int activePlayer);
