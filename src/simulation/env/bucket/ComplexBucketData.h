@@ -17,9 +17,9 @@ public:
 	ObjectType getType() const { return type; }
 	void setStatic(Static* _object);
 	void removeStatic();
-	void createBox(double bucketSize);
+	void createBox(float bucketSize);
 	Urho3D::Vector3* getDirectrionFrom(Urho3D::Vector3* position);
-	void setCenter(double _centerX, double _centerY);
+	void setCenter(float _centerX, float _centerY);
 	Urho3D::Vector2& getCenter();
 	void setNeightbours(std::vector<std::pair<int, float>>* _neightbours);
 	void setOccupiedNeightbours(std::vector<std::pair<int, float>>* _occupiedNeightbours);

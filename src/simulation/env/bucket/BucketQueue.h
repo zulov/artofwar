@@ -10,15 +10,15 @@ public:
 	BucketQueue();
 	~BucketQueue();
 	bool empty();
-	void put(int item, double priority);
+	void put(int item, float priority);
 	int get();
-	void init(double _max, double _min);
+	void init(float _max, float _min);
 private:
-	int getIndex(double priority);
+	int getIndex(float priority);
 	void updateCurrentIndex();
-	double max;
-	double min;
-	double perBucket;
+	float max;
+	float min;
+	float perBucket;
 	int size;
 	int currentIndex;
 

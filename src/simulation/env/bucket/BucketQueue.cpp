@@ -5,7 +5,7 @@ BucketQueue::BucketQueue() = default;
 
 BucketQueue::~BucketQueue() = default;
 
-void BucketQueue::init(double _max, double _min) {
+void BucketQueue::init(float _max, float _min) {
 	max = _max;
 	min = _min;
 	size = 0;
@@ -18,13 +18,11 @@ void BucketQueue::init(double _max, double _min) {
 
 bool BucketQueue::empty() { return size == 0; }
 
-void BucketQueue::put(int item, double priority) {
+void BucketQueue::put(int item, float priority) {
 	const int index = getIndex(priority);
+
 	buckets[index].put(item, priority);
 
-	//		if (histogram[index] < buckets[index].size()) {
-	//			histogram[index] = buckets[index].size();
-	//		}
 	if (index < currentIndex) {
 		currentIndex = index;
 	}
@@ -41,7 +39,7 @@ int BucketQueue::get() {
 	return best_item;
 }
 
-int BucketQueue::getIndex(double priority) {
+int BucketQueue::getIndex(float priority) {
 	if (priority >= max) {
 		return QUEUE_BUCKETS_SIZE - 1;
 	}

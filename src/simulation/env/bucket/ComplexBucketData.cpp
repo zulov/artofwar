@@ -46,7 +46,7 @@ void ComplexBucketData::removeStatic() {
 }
 
 
-void ComplexBucketData::createBox(double bucketSize) {
+void ComplexBucketData::createBox(float bucketSize) {
 	box = Game::get()->getScene()->CreateChild();
 	box->SetPosition(Vector3(center.x_, 8, center.y_));
 	box->Scale(Vector3(bucketSize * 0.8, 1, bucketSize * 0.8));
@@ -61,7 +61,7 @@ Vector3* ComplexBucketData::getDirectrionFrom(Vector3* position) {
 	return new Vector3(position->x_ - center.x_, 0, position->z_ - center.y_);
 }
 
-void ComplexBucketData::setCenter(double _centerX, double _centerY) {
+void ComplexBucketData::setCenter(float _centerX, float _centerY) {
 	center = Vector2(_centerX, _centerY);
 }
 

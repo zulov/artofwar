@@ -8,7 +8,7 @@ class BucketIterator;
 class Grid
 {
 public:
-	Grid(short _resolution, double _size, bool _debugEnabled = false);
+	Grid(short _resolution, float _size, bool _debugEnabled = false);
 	~Grid();
 
 	void updateGrid(Unit* entity, char team);
@@ -22,11 +22,11 @@ protected:
 	short getIndex(double value) const;
 	bool inRange(int index);
 	short resolution;
-	double fieldSize;
+	float fieldSize;
 	bool debugEnabled;
 	short halfResolution;
-	double size;
-	double invFieldSize;
+	float size;
+	float invFieldSize;
 
 	Bucket* buckets;
 

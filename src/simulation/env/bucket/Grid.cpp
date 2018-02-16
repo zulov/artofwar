@@ -8,7 +8,7 @@
 #include <ostream>
 
 
-Grid::Grid(short _resolution, double _size, bool _debugEnabled) {
+Grid::Grid(short _resolution, float _size, bool _debugEnabled) {
 	resolution = _resolution;
 	halfResolution = resolution / 2;
 	size = _size;

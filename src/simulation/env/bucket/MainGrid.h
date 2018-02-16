@@ -23,7 +23,7 @@ public:
 	Vector3* getDirectionFrom(Vector3* position);
 	Vector3* getValidPosition(const IntVector2& size, Vector3* pos);
 	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos) const;
-	inline double heuristic(int from, int to);
+	inline float heuristic(int from, int to);
 	IntVector2 getCords(int index);
 
 	std::vector<int>* reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]);
@@ -34,7 +34,7 @@ public:
 	void debug(int start, int end);
 
 	std::vector<int>* findPath(IntVector2& startV, IntVector2& goalV);
-	std::vector<int>* findPath(int startIdx, int endIdx, double min);
+	std::vector<int>* findPath(int startIdx, int endIdx, double min, double max);
 	std::vector<int>* findPath(int startIdx, const Vector3& aim);
 
 	void refreshWayOut(std::vector<int>& toRefresh);
@@ -60,7 +60,7 @@ private:
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref = resolution * resolution - 1;
 	void updateCost(int startIdx, float x);
-	void resetCost();
+	void resetPathArrays();
 	BucketQueue frontier;
 	bool pathInited = false;
 

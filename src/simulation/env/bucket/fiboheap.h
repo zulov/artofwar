@@ -13,7 +13,7 @@ public:
 	class FibNode
 	{
 	public:
-		FibNode(const double k, const int pl): key(k), left(nullptr), right(nullptr), child(nullptr), degree(-1),
+		FibNode(const float k, const int pl): key(k), left(nullptr), right(nullptr), child(nullptr), degree(-1),
 			payload(pl) {
 		}
 
@@ -32,7 +32,7 @@ public:
 			payload = -1;
 		}
 
-		double key;
+		float key;
 		FibNode* left;
 		FibNode* right;
 		FibNode* child;
@@ -42,7 +42,7 @@ public:
 	};
 
 	FibHeap(): coef(
-	                      1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)) {
+	                1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)) {
 		temp.resize(15, nullptr);
 		pool.resize(400, nullptr);
 		for (int i = 0; i < 400; ++i) {
@@ -55,12 +55,15 @@ public:
 		clear_vector(pool);
 	}
 
-	FibNode* getNode(const int pl, const double k) {
+	FibNode* getNode(const int pl, const float k) {
 		for (int i = lowestFree; i < pool.size(); ++i) {
 			const auto fibNode = pool[i];
 			if (fibNode->isEmpty()) {
 				fibNode->payload = pl;
 				fibNode->key = k;
+				if (i > highestUsed) {
+					highestUsed = i;
+				}
 				lowestFree = i + 1;
 				return fibNode;
 			}
@@ -71,6 +74,9 @@ public:
 		newNode->id = pool.size() - 1;
 		pool.push_back(newNode);
 		lowestFree = pool.size() - 1;
+		if (lowestFree > highestUsed) {
+			highestUsed = lowestFree;
+		}
 		return newNode;
 	}
 
@@ -82,10 +88,12 @@ public:
 	}
 
 	void clear() {
-		for (auto fibNode : pool) {
-			fibNode->reset();
+		for (int i = 0; i <= highestUsed; ++i) {
+			pool[i]->reset();
 		}
+
 		lowestFree = 0;
+		highestUsed = 0;
 		n = 0;
 		minNode = nullptr;
 		std::fill_n(temp.begin(), temp.size(), nullptr);
@@ -232,14 +240,13 @@ public:
 		return toReturn;
 	}
 
-	void put(const int pl, const double k) {
+	void put(const int pl, const float k) {
 		FibNode* x = getNode(pl, k);
 		x->degree = 0;
 		//x->child = nullptr;
 		if (minNode == nullptr) {
 			minNode = x->left = x->right = x;
-		}
-		else {
+		} else {
 			minNode->left->right = x;
 			x->left = minNode->left;
 			minNode->left = x;
@@ -261,4 +268,5 @@ public:
 	std::vector<FibNode*> temp;
 	std::vector<FibNode*> pool;
 	int lowestFree = 0;
+	int highestUsed = 399;
 };

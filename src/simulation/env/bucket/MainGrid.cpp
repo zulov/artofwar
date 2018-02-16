@@ -16,12 +16,12 @@ MainGrid::MainGrid(const short _resolution, const double _size, const bool _debu
 	tempNeighbour->reserve(10);
 	tempNeighbour2 = new std::vector<std::pair<int, float>>();
 	tempNeighbour2->reserve(10);
-	const double coef = (resolution / 16) * fieldSize;
+	const float coef = (resolution / 16) * fieldSize;
 
 	complexData = new ComplexBucketData[resolution * resolution];
 	for (int i = 0; i < resolution * resolution; ++i) {
-		const double cX = (posX + 0.5) * fieldSize - size / 2;
-		const double cZ = (posZ + 0.5) * fieldSize - size / 2;
+		const float cX = (posX + 0.5) * fieldSize - size / 2;
+		const float cZ = (posZ + 0.5) * fieldSize - size / 2;
 		complexData[i].setCenter(cX, cZ);
 		if (debugEnabled &&
 			(cX > -coef && cX < coef) &&
@@ -166,9 +166,15 @@ void MainGrid::updateCost(int idx, float x) {
 	}
 }
 
-void MainGrid::resetCost() {
+void MainGrid::resetPathArrays() {
 	std::fill_n(cost_so_far + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1);
-	std::fill_n(came_from + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1);
+	//std::fill_n(came_from + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1);
+	int x = -1;
+	int y = -1;
+	long long val = ((long long)x) << 32 | y;
+
+	memset(came_from + min_cost_to_ref / 2, val, (max_cost_to_ref + 1 - min_cost_to_ref) / 2);
+
 	min_cost_to_ref = resolution * resolution - 1;
 	max_cost_to_ref = 0;
 }
@@ -326,14 +332,14 @@ std::vector<int>* MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
 	double min = cost(start, goal);
-	return findPath(start, goal, min);
+	return findPath(start, goal, min, min * 2);
 }
 
-std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, double min) {
+std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, double min, double max) {
 	//std::fill_n(came_from, resolution * resolution, -1);
 	//std::fill_n(cost_so_far, resolution * resolution, -1);
-	resetCost();
-	frontier.init(750 + min, min);
+	resetPathArrays();
+	frontier.init(max, min);
 	frontier.put(startIdx, 0);
 
 	came_from[startIdx] = startIdx;
@@ -368,7 +374,7 @@ std::vector<int>* MainGrid::findPath(int startIdx, const Vector3& aim) {
 	const short posZ = getIndex(aim.z_);
 	const int end = getIndex(posX, posZ);
 	double min = cost(startIdx, end);
-	return findPath(startIdx, end, min);
+	return findPath(startIdx, end, min, min * 2);
 }
 
 void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
@@ -470,7 +476,7 @@ void MainGrid::draw_grid_cost(const float* costSoFar, Image* image) {
 
 }
 
-inline double MainGrid::heuristic(int from, int to) {
+inline float MainGrid::heuristic(int from, int to) {
 	IntVector2 a = getCords(from);
 	IntVector2 b = getCords(to);
 
