@@ -68,9 +68,7 @@ public:
 				return fibNode;
 			}
 		}
-		FibNode* newNode = new FibNode(-1, -1);
-		newNode->payload = pl;
-		newNode->key = k;
+		FibNode* newNode = new FibNode(k, pl);
 		newNode->id = pool.size() - 1;
 		pool.push_back(newNode);
 		lowestFree = pool.size() - 1;
@@ -139,7 +137,7 @@ public:
 	}
 
 	void consolidate() {
-		const int max_degree = static_cast<int>(floor(log(static_cast<double>(n)) * coef)) + 2;
+		int max_degree = static_cast<int>(floor(log(static_cast<double>(n)) * coef)) + 2;
 		// plus two both for indexing to max degree and so A[max_degree+1] == NIL
 
 		if (temp.size() < max_degree) {
@@ -256,10 +254,6 @@ public:
 			}
 		}
 		++n;
-	}
-
-	unsigned int size() {
-		return static_cast<unsigned int>(n);
 	}
 
 	int n{0};

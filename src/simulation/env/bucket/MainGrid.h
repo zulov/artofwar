@@ -51,7 +51,7 @@ private:
 	static IntVector2 calculateSize(int size);
 	std::vector<std::pair<int, float>>* tempNeighbour;
 	std::vector<std::pair<int, float>>* tempNeighbour2;
-
+	std::vector<int>* tempPath;
 	int staticCounter = 0;
 	content_info* ci;
 

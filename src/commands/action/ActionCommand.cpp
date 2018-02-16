@@ -43,7 +43,6 @@ ActionCommand::~ActionCommand() {
 ActionParameter ActionCommand::getTargetAim(Physical* physical, Vector3* to, bool append) {
 	std::vector<int>* path = Game::get()->getEnviroment()->findPath(physical->getBucketIndex(-1), *to);
 	ActionParameter parameter(new TargetAim(*path), append);
-	delete path;
 	return parameter;
 }
 
