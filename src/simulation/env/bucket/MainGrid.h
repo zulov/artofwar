@@ -28,6 +28,7 @@ public:
 
 	std::vector<int>* reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]);
 	std::vector<int>* reconstruct_path(int start, int goal, const int came_from[]);
+	std::vector<int>* reconstruct_simplify_path(int start, int goal, const int came_from[]);
 	bool inSide(int x, int z);
 	void updateNeighbors(int current);
 	double cost(int current, int next);

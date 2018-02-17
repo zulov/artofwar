@@ -171,7 +171,7 @@ void MainGrid::updateCost(int idx, float x) {
 
 void MainGrid::resetPathArrays() {
 	std::fill_n(cost_so_far + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1);
-	//std::fill_n(came_from + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1);
+
 	int x = -1;
 	int y = -1;
 	long long val = ((long long)x) << 32 | y;
@@ -367,7 +367,7 @@ std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, double min, doubl
 		}
 	}
 	//debug(startIdx, endIdx);
-	return reconstruct_path(startIdx, endIdx, came_from);
+	return reconstruct_simplify_path(startIdx, endIdx, came_from);
 }
 
 std::vector<int>* MainGrid::findPath(int startIdx, const Vector3& aim) {
@@ -433,7 +433,7 @@ void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 			refreshed.insert(startIndex);
 			complexData[startIndex].setEscapeThrought(-1);
 		}
-		
+
 	}
 
 }
@@ -521,14 +521,36 @@ std::vector<int>* MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goa
 std::vector<int>* MainGrid::reconstruct_path(int start, int goal, const int came_from[]) {
 	tempPath->clear();
 	int current = goal;
-	
+
 	while (current != start) {
 		current = came_from[current];
 		tempPath->emplace_back(current);
 	}
-	//path.push_back(start); // optional
+
 	std::reverse(tempPath->begin(), tempPath->end());
 	tempPath->emplace_back(goal);
+	return tempPath;
+}
+
+std::vector<int>* MainGrid::reconstruct_simplify_path(int start, int goal, const int came_from[]) {
+	tempPath->clear();
+
+	tempPath->emplace_back(goal);
+	int current = goal;
+
+	int lastDirection = 0;
+	while (current != start) {
+
+		int currentDirection = current - came_from[current];
+		if (currentDirection != lastDirection) {
+			tempPath->emplace_back(current);
+			lastDirection = currentDirection;
+		}
+		current = came_from[current];
+	}
+
+	std::reverse(tempPath->begin(), tempPath->end());
+	tempPath->pop_back();
 	return tempPath;
 }
 
