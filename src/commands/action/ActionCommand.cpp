@@ -40,8 +40,8 @@ ActionCommand::~ActionCommand() {
 }
 
 
-ActionParameter ActionCommand::getTargetAim(Physical* physical, Vector3* to, bool append) {
-	std::vector<int>* path = Game::get()->getEnviroment()->findPath(physical->getBucketIndex(-1), *to);
+ActionParameter ActionCommand::getTargetAim(Physical* physical, Vector3& to, bool append) {
+	std::vector<int>* path = Game::get()->getEnviroment()->findPath(physical->getBucketIndex(-1), to);
 	ActionParameter parameter(new TargetAim(*path), append);
 	return parameter;
 }
@@ -60,11 +60,17 @@ void ActionCommand::addTargetAim(Vector3* to, bool append) {
 	auto start = std::chrono::system_clock::now();
 	short id = static_cast<short>(action);
 	if (entity) {
-		ActionParameter parameter = getTargetAim(entity, to, append);
+		ActionParameter parameter = getTargetAim(entity, *to, append);
 		entity->action(id, parameter);
 	} else {
+		Vector3* center = new Vector3();
 		for (Physical* physical : (*entities)) {
-			ActionParameter parameter = getTargetAim(physical, to, append);
+			(*center) += (*physical->getPosition());
+		}
+		(*center) /= entities->size();
+		for (Physical* physical : (*entities)) {
+			Vector3 pos =(*physical->getPosition())-(*center)+(*to);
+			ActionParameter parameter = getTargetAim(physical, pos, append);
 			physical->action(id, parameter);
 		}
 	}

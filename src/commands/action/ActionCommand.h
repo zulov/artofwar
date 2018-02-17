@@ -14,7 +14,7 @@ public:
 	ActionCommand(std::vector<Physical*>* entities, OrderType action, Physical* paremeter, bool append = false);
 	ActionCommand(Physical* entity, OrderType action, Physical* paremeter, bool append = false);
 	~ActionCommand();
-	ActionParameter getTargetAim(Physical* physical, Vector3* to, bool append);
+	ActionParameter getTargetAim(Physical* physical, Vector3& to, bool append);
 	ActionParameter getFollowAim(Physical* toFollow, bool append);
 	ActionParameter getChargeAim(Vector3* charge, bool append);
 
