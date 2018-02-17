@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 
+	static int degree_cache[1000];
 
 class FibHeap
 {
@@ -41,19 +42,20 @@ public:
 		int id;
 	};
 
-	FibHeap(): coef(
-	                1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2)) {
+	FibHeap() {
 		temp.resize(15, nullptr);
 		pool.resize(400, nullptr);
 		for (int i = 0; i < 400; ++i) {
 			pool[i] = new FibNode(-1, -1);
 			pool[i]->id = i;
 		}
+
 	}
 
 	~FibHeap() {
 		clear_vector(pool);
 	}
+
 
 	FibNode* getNode(const int pl, const float k) {
 		for (int i = lowestFree; i < pool.size(); ++i) {
@@ -137,8 +139,7 @@ public:
 	}
 
 	void consolidate() {
-		int max_degree = static_cast<int>(floor(log(static_cast<double>(n)) * coef)) + 2;
-		// plus two both for indexing to max degree and so A[max_degree+1] == NIL
+		int max_degree = degree_cache[n];
 
 		if (temp.size() < max_degree) {
 			temp.resize(max_degree);
@@ -257,10 +258,18 @@ public:
 	}
 
 	int n{0};
-	double coef;
 	FibNode* minNode{nullptr};
 	std::vector<FibNode*> temp;
 	std::vector<FibNode*> pool;
+
 	int lowestFree = 0;
 	int highestUsed = 399;
+
+	static void initCache() {
+		double coef = 1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2);
+		for (int i = 0; i < 1000; ++i) {
+			degree_cache[i] = static_cast<int>(floor(log(static_cast<double>(i)) * coef)) + 2;
+			// plus two both for indexing to max degree and so A[max_degree+1] == NIL 
+		}
+	}
 };

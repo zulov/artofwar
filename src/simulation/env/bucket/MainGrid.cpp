@@ -521,13 +521,14 @@ std::vector<int>* MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goa
 std::vector<int>* MainGrid::reconstruct_path(int start, int goal, const int came_from[]) {
 	tempPath->clear();
 	int current = goal;
-	tempPath->emplace_back(current);
+	
 	while (current != start) {
 		current = came_from[current];
 		tempPath->emplace_back(current);
 	}
 	//path.push_back(start); // optional
 	std::reverse(tempPath->begin(), tempPath->end());
+	tempPath->emplace_back(goal);
 	return tempPath;
 }
 
