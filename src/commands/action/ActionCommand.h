@@ -17,6 +17,7 @@ public:
 	ActionParameter getTargetAim(Physical* physical, Vector3& to, bool append);
 	ActionParameter getFollowAim(Physical* toFollow, bool append);
 	ActionParameter getChargeAim(Vector3* charge, bool append);
+	Vector3* calculateCenter();
 
 	void execute() override;
 private:

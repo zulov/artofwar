@@ -371,9 +371,16 @@ std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, double min, doubl
 }
 
 std::vector<int>* MainGrid::findPath(int startIdx, const Vector3& aim) {
-	const short posX = getIndex(aim.x_);
-	const short posZ = getIndex(aim.z_);
-	const int end = getIndex(posX, posZ);
+	int end = getIndex(getIndex(aim.x_), getIndex(aim.z_));
+	while (!complexData[end].isUnit()) {
+s		if (complexData[end].getNeightbours().empty()) {
+			end = complexData[end].getEscapeBucket();
+		} else {
+			end = complexData[end].getNeightbours()[0].first;//TODO obliczyc lepszy
+		}
+		
+	}
+
 	double min = cost(startIdx, end);
 	return findPath(startIdx, end, min, min * 2);
 }

@@ -1,9 +1,9 @@
 #include "ActionCommand.h"
+#include "Game.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/aim/ChargeAim.h"
 #include "objects/unit/aim/FollowAim.h"
 #include "objects/unit/aim/TargetAim.h"
-#include "Game.h"
 #include "simulation/env/Enviroment.h"
 #include <chrono>
 
@@ -56,6 +56,14 @@ ActionParameter ActionCommand::getChargeAim(Vector3* charge, bool append) {
 	return parameter;
 }
 
+Vector3* ActionCommand::calculateCenter() {
+	Vector3* center = new Vector3();
+	for (Physical* physical : (*entities)) {
+		(*center) += (*physical->getPosition());
+	}
+	return center;
+}
+
 void ActionCommand::addTargetAim(Vector3* to, bool append) {
 	auto start = std::chrono::system_clock::now();
 	short id = static_cast<short>(action);
@@ -63,16 +71,14 @@ void ActionCommand::addTargetAim(Vector3* to, bool append) {
 		ActionParameter parameter = getTargetAim(entity, *to, append);
 		entity->action(id, parameter);
 	} else {
-		Vector3* center = new Vector3();
-		for (Physical* physical : (*entities)) {
-			(*center) += (*physical->getPosition());
-		}
+		Vector3* center = calculateCenter();
 		(*center) /= entities->size();
 		for (Physical* physical : (*entities)) {
-			Vector3 pos =(*physical->getPosition())-(*center)+(*to);
+			Vector3 pos = (*physical->getPosition()) - (*center) + (*to);
 			ActionParameter parameter = getTargetAim(physical, pos, append);
 			physical->action(id, parameter);
 		}
+		delete center;
 	}
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
 	std::cout << "sum " << duration.count() << std::endl;
