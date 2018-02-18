@@ -69,18 +69,15 @@ public:
 
 	static std::string getColumns();
 private:
-	Vector3 acceleration;
-	Vector3* velocity;
-	Aims aims;
-	float mass;
-	float maxSpeed;
-	float maxSeparationDistance;
-	float minSpeed;
-
-	void addAim(Aim * aim, bool append);
+	void addAim(Aim* aim, bool append);
 	void removeAim();
 	void attackIfCloseEnough(double& distance, Unit* closest);
 	void collectIfCloseEnough(double distance, ResourceEntity* closest);
+
+	Vector3 acceleration;
+	Vector3* velocity;
+	Aims aims;
+
 	ResourceEntity* resource;
 	Vector3* toResource;
 	db_unit* dbUnit;
@@ -93,7 +90,12 @@ private:
 	float unitRadius = 2;
 	float attackIntrest = 10;
 	float collectSpeed = 2;
+	float mass;
+	float maxSpeed;
+	float minSpeed;
+	float maxSeparationDistance;
+
 	static float hbMaxSize;
 
-	bool atState=false;
+	bool atState = false;
 };
