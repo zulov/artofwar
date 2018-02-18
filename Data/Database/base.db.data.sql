@@ -1,10 +1,22 @@
 BEGIN TRANSACTION;
-INSERT INTO `units` (id,name,minDist,maxSep,model,texture,mass,maxSpeed,scale,rotatable,nation,icon,actionState) VALUES (0,'warrior',0.5,2.0,'Cube.mdl','grey.xml',1.0,5.0,0.5,1,0,'warrior.png',3),
- (1,'archer',0.4,2.0,'Hedra.mdl','darkgrey.xml',0.8,6.0,0.4,1,0,'archer.png',3),
- (2,'pikeman',0.4,2.0,'Pyramid.mdl','red.xml',0.9,3.0,0.4,1,0,'pikeman.png',6),
- (3,'cavalry',0.6,2.0,'horse.mdl','horse.xml',2.0,12.0,0.6,1,0,'cavalry.png',3),
- (4,'worker',0.3,2.0,'Sphere.mdl','red.xml',0.5,3.0,0.3,0,0,'worker.png',9),
- (5,'general',0.5,2.0,'general.mdl','general.xml',1.0,7.0,0.5,1,0,'general.png',1);
+INSERT INTO `units` (id,name,rotatable,nation,icon,actionState) VALUES (0,'warrior',1,0,'warrior.png',3),
+ (1,'archer',1,0,'archer.png',3),
+ (2,'pikeman',1,0,'pikeman.png',6),
+ (3,'cavalry',1,0,'cavalry.png',3),
+ (4,'worker',0,0,'worker.png',9),
+ (5,'general',1,0,'general.png',1);
+INSERT INTO `unit_level` (level,unit,name,minDist,maxSep,model,texture,mass,scale,attack,attackSpeed,attackRange,defense,maxHp,maxSpeed,minSpeed,collectSpeed) VALUES (0,0,'base',0.5,2.0,'Cube.mdl','grey.xml',1.0,0.5,2.0,2,10.0,2.0,100,5.0,1.0,0.0),
+ (1,0,'better',0.5,2.0,'Cube.mdl','grey.xml',1.0,0.5,3.0,2,10.0,3.0,150,5.5,1.0,0.0),
+ (0,1,'base',0.4,2.0,'Hedra.mdl','darkgrey.xml',0.8,0.4,3.0,5,30.0,1.0,80,6.0,1.0,0.0),
+ (1,1,'better',0.4,2.0,'Hedra.mdl','darkgrey.xml',0.8,0.4,4.0,5,30.0,1.5,100,7.0,1.0,0.0),
+ (0,2,'base',0.4,2.0,'Pyramid.mdl','red.xml',1.2,0.4,1.0,3,12.0,4.0,150,4.0,2.0,0.0),
+ (1,2,'better',0.4,2.0,'Pyramid.mdl','red.xml',1.2,0.4,1.0,3,12.0,5.0,180,4.2,1.7,0.0),
+ (0,3,'base',0.6,2.0,'horse.mdl','horse.xml',4.0,0.6,5.0,4,10.0,3.0,250,12.0,2.0,0.0),
+ (1,3,'better',0.6,2.0,'horse.mdl','horse.xml',4.0,0.6,6.0,4,10.0,4.0,300,13.0,2.0,0.0),
+ (0,4,'base',0.3,2.0,'Sphere.mdl','red.xml',0.5,0.3,0.2,1,2.0,0.5,50,3.0,1.0,5.0),
+ (1,4,'better',0.3,2.0,'Sphere.mdl','red.xml',0.5,0.3,0.2,1,2.0,0.5,60,4.0,1.0,6.0),
+ (0,5,'base',0.5,2.0,'genereal.mdl','general.xml',0.5,0.5,0.5,1,2.0,0.5,70,5.0,1.0,0.0),
+ (1,5,'better',0.5,2.0,'genereal.mdl','general.xml',0.5,0.5,0.6,1,2.0,0.6,80,5.0,1.0,0.0);
 INSERT INTO `settings` (graph,resolution) VALUES (0,1);
 INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,sizeX,sizeZ,maxUsers,mini_map_color) VALUES (0,'gold','gold.png',1000,'gold.xml
 ','rock.mdl',0.5,2,2,4,'0xFF00D0FF'),
@@ -112,7 +124,7 @@ loading.xml
 selected.xml
 queue.xml
 left.xml
-main_menu.xml',0,140.0,1.0,'custom',0,1,2),
+main_menu.xml',0,120.0,1.0,'custom',0,1,2),
  (1,1,'DefaultStyle.xml
 in_game.xml
 mini_map.xml

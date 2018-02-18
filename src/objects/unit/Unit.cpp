@@ -122,10 +122,6 @@ Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
 	return new Vector3();
 }
 
-float Unit::getUnitRadius() {
-	return unitRadius;
-}
-
 void Unit::absorbAttack(double attackCoef) {
 	hpCoef -= attackCoef * (1 - defenseCoef);
 	if (billboardBar->enabled_) {

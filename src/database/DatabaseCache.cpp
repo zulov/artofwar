@@ -16,8 +16,7 @@ static unsigned fromHex(char** argv, int index) {
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
-	xyz->units[id] = new db_unit(id, argv[1], atof(argv[2]), atof(argv[3]), argv[4], argv[5], atof(argv[6]),
-	                             atof(argv[7]), atof(argv[8]), atoi(argv[9]), atoi(argv[10]), argv[11],
+	xyz->units[id] = new db_unit(id, argv[1], atoi(argv[9]), atoi(argv[10]), argv[11],
 	                             atoi(argv[12]));
 	xyz->units_size++;
 	return 0;
@@ -193,6 +192,7 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from player_colors", loadPlayerColors);
 	execute("SELECT * from resolution", loadResolution);
 	execute("SELECT * from settings", loadSettings);
+	execute("SELECT * from unit_level", loadUnitLevels);
 
 
 	sqlite3_close(database);

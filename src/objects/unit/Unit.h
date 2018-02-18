@@ -39,7 +39,6 @@ public:
 	float getMaxSeparationDistance();
 	Vector3* getDestination(double boostCoef, double aimCoef);
 
-	float getUnitRadius();
 	float getMinimalDistance();
 
 	void absorbAttack(double attackCoef) override;
@@ -85,9 +84,8 @@ private:
 	UnitStateType state;
 	UnitStateType actionState;
 
-	float minimalDistance;
 	bool rotatable;
-	float unitRadius = 2;
+	float minimalDistance;
 	float attackIntrest = 10;
 	float collectSpeed = 2;
 	float mass;

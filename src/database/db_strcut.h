@@ -25,33 +25,62 @@ struct db_unit
 {
 	int id;
 	Urho3D::String name;
-	float minDist;
-	float maxSep;
-	Urho3D::String model;
-	Urho3D::String texture;
-	float mass;
-	float maxSpeed;
-	float scale;
 	bool rotatable;
 	int nation;
 	Urho3D::String icon;
 	int actionState;
 
-	db_unit(int id, char* name, float minDist, float maxSep, char* model, char* texture,
-	        float mass, float maxSpeed, float scale, int rotatable, int nation, char* icon, int actionState)
+	db_unit(int id, char* name, int rotatable, int nation, char* icon, int actionState)
 		: id(id),
+		name(name),
+		rotatable(rotatable),
+		nation(nation),
+		icon(icon),
+		actionState(actionState) {
+	}
+};
+
+struct db_unit_level
+{
+	int level;
+	int unit;
+	Urho3D::String name;
+	float minDist;
+	float maxSep;
+	Urho3D::String model;
+	Urho3D::String texture;
+	float mass;
+	float scale;
+	float attack;
+	int attackSpeed;
+	float attackRange;
+	float defense;
+	int maxHp;
+	float maxSpeed;
+	float minSpeed;
+	float collectSpeed;
+
+
+	db_unit_level(int level, int unit, char* name, float minDist, float maxSep, char* model, char* texture,
+				float mass, float scale, float attack, int attackSpeed, float attackRange, float defense,
+				int maxHp, float maxSpeed, float minSpeed, float collectSpeed)
+		: level(level),
+		unit(unit),
 		name(name),
 		minDist(minDist),
 		maxSep(maxSep),
 		model(model),
 		texture(texture),
 		mass(mass),
-		maxSpeed(maxSpeed),
 		scale(scale),
-		rotatable(rotatable),
-		nation(nation),
-		icon(icon),
-		actionState(actionState) {
+		attack(attack),
+		attackSpeed(attackSpeed),
+		attackRange(attackRange),
+		defense(defense),
+		maxHp(maxHp),
+		maxSpeed(maxSpeed),
+		minSpeed(minSpeed),
+		collectSpeed(collectSpeed) {
 	}
 };
 
@@ -271,15 +300,17 @@ struct db_container
 	db_nation* nations[NATION_NUMBER_DB] = {nullptr};
 	db_resource* resources[RESOURCE_NUMBER_DB] = {nullptr};
 	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB] = {nullptr};
-	std::vector<db_unit*>* unitsForBuilding[BULDINGS_NUMBER_DB]{};
-	std::vector<db_cost*>* costForBuilding[BULDINGS_NUMBER_DB]{};
-	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB]{};
-	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB]{};
 	db_order* orders[ORDERS_NUMBER_DB] = {nullptr};
 	db_map* maps[MAP_NUMBER_DB] = {nullptr};
 	db_player_colors* playerColors[PLAYER_COLORS_NUMBER_DB] = {nullptr};
 	db_resolution* resolutions[RESOLUTIONS_NUMBER_DB] = {nullptr};
 	db_settings* settings[SETTINGS_NUMBER_DB] = {nullptr};
+
+	std::vector<db_unit*>* unitsForBuilding[BULDINGS_NUMBER_DB]{};
+	std::vector<db_cost*>* costForBuilding[BULDINGS_NUMBER_DB]{};
+	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB]{};
+	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB]{};
+	std::vector<db_order*>* levelsToUnit[UNITS_NUMBER_DB]{};
 
 	int units_size = 0;
 	int hud_size_size = 0;
@@ -307,6 +338,8 @@ struct db_container
 			costForUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 			ordersToUnit[i] = new std::vector<db_order*>();
 			ordersToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
+			levelsToUnit[i] = new std::vector<db_order*>();
+			levelsToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 		}
 	}
 
