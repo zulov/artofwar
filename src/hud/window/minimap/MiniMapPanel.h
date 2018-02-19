@@ -28,7 +28,7 @@ private:
 	Urho3D::Sprite* spr;
 	Urho3D::Image* minimap;
 	Urho3D::Texture2D* text;
-	std::vector<Urho3D::UIElement*> elements;
+	std::vector<Urho3D::UIElement*> checksElements;
 	std::vector<HudElement*> hudElements;
 	unsigned* heightMap;
 	int indexUpdate = 0;

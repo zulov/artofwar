@@ -1,11 +1,15 @@
 #include "MenuPanel.h"
 #include "Game.h"
-#include "database/DatabaseCache.h"
 #include "GameState.h"
+#include "database/DatabaseCache.h"
+#include <Urho3D/Resource/ResourceCache.h>
+#include "hud/MySprite.h"
+#include "hud/UiUtils.h"
+#include <Urho3D/UI/CheckBox.h>
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
-	styleName = "MenuWindow";
+	styleName = "LeftMenuWindow";
 	visibleAt.insert(GameState::RUNNING);
 	visibleAt.insert(GameState::PAUSE);
 }
@@ -62,10 +66,10 @@ void MenuPanel::setInfo(HudElement* hudElement) {
 }
 
 void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
-	if(selectedInfo->getAllNumber()==1) {
+	if (selectedInfo->getAllNumber() == 1) {
 		text->SetVisible(true);
 		std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelecteType();
-		for (auto & infoType : infoTypes) {
+		for (auto& infoType : infoTypes) {
 			std::vector<Physical*>& data = infoType->getData();
 			if (!data.empty()) {
 				Physical* physical = data.at(0);
@@ -74,7 +78,7 @@ void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
 				break;
 			}
 		}
-	}else {
+	} else {
 		text->SetVisible(false);
 	}
 
@@ -83,6 +87,31 @@ void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
 }
 
 void MenuPanel::createBody() {
+	mock = window->CreateChild<UIElement>();
+	mock->SetStyle("mock", style);
+
+	for (int i = 0; i < LEFT_MENU_ROWS_NUMBER; ++i) {
+		rows[i] = mock->CreateChild<UIElement>();
+		rows[i]->SetStyle("LeftMenuListRow", style);
+	}
+	for (int i = 0; i < LEFT_MENU_CHECKS_NUMBER; ++i) {
+		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
+		>("textures/hud/icon/lm/lm" + String(i) + ".png");
+
+		MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
+		checks[i] = rows[0]->CreateChild<CheckBox>();
+		checks[i]->SetStyle("LeftMenuCheckBox", style);
+
+		checks[i]->AddChild(sprite);
+	}
+	Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
+	>("textures/hud/icon/lm/lm3.png");
+	MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
+	nextButton = rows[0]->CreateChild<Button>();
+	nextButton->SetStyle("LeftMenuIcon", style);
+
+	nextButton->AddChild(sprite);
+
 	text = window->CreateChild<Urho3D::Text>();
 	text->SetStyle("MyText", style);
 	text->SetText("");

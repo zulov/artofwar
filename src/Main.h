@@ -88,7 +88,7 @@ private:
 	GameState gameState;
 
 	NewGameForm* newGameForm;
-	String saveToLoad = "quicksave";
+	String saveToLoad = "quicksave.db";
 	int loadStages = 6;
 	int newGamesStages = 6;
 

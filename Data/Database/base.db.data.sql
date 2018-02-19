@@ -124,7 +124,8 @@ loading.xml
 selected.xml
 queue.xml
 left.xml
-main_menu.xml',0,120.0,1.0,'custom',0,1,2),
+main_menu.xml
+left_menu.xml',0,120.0,1.0,'custom',0,1,2),
  (1,1,'DefaultStyle.xml
 in_game.xml
 mini_map.xml
@@ -133,7 +134,8 @@ loading.xml
 selected.xml
 queue.xml
 left.xml
-main_menu.xml',1,120.0,1.0,'high',0,1,2);
+main_menu.xml
+left_menu.xml',1,120.0,1.0,'high',0,1,2);
 INSERT INTO `cost_unit` (id,resource,value,unit) VALUES (0,0,90,3),
  (1,1,120,0),
  (2,0,80,1),

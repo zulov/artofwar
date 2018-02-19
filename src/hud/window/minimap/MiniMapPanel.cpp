@@ -161,7 +161,7 @@ void MiniMapPanel::createBody() {
 	UIElement* row = window->CreateChild<UIElement>();
 	row->SetStyle("MiniMapListRow", style);
 
-	elements.reserve(MINI_MAP_BUTTON_NUMBER);
+	checksElements.reserve(MINI_MAP_BUTTON_NUMBER);
 	hudElements.reserve(MINI_MAP_BUTTON_NUMBER);
 
 	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
@@ -171,12 +171,12 @@ void MiniMapPanel::createBody() {
 		MySprite* sprite = createSprite(texture, style, "MiniMapSprite");
 		CheckBox* box = row->CreateChild<CheckBox>();
 		box->SetStyle("MiniMapCheckBox", style);
-		elements.push_back(box);
+		checksElements.push_back(box);
 		box->AddChild(sprite);
-		HudElement* hudElement = new HudElement(elements.at(i));
+		HudElement* hudElement = new HudElement(checksElements.at(i));
 		hudElement->setId(i, ObjectType::ENTITY);
 		hudElements.push_back(hudElement);
-		elements.at(i)->SetVar("HudElement", hudElement);
+		checksElements.at(i)->SetVar("HudElement", hudElement);
 
 		SubscribeToEvent(box, E_CLICK, URHO3D_HANDLER(MiniMapPanel, HandleButton));
 	}

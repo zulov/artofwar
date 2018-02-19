@@ -65,7 +65,7 @@ void Main::Start() {
 	hud->createMyPanels();
 	subscribeToUIEvents();
 	InitMouseMode(MM_RELATIVE);
-	changeState(GameState::MENU_MAIN);
+	changeState(GameState::LOADING);
 }
 
 void Main::Stop() {
