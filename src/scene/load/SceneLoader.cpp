@@ -63,7 +63,7 @@ int static load_units(void* data, int argc, char** argv, char** azColName) {
 	                                      atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
 	                                      atoi(argv[3]), atof(argv[4]) / p, atof(argv[5]) / p,
 	                                      atoi(argv[6]), atof(argv[7]) / p, atof(argv[8]) / p,
-	                                      atoi(argv[9])
+	                                      atoi(argv[9]), atoi(argv[10])
 	                                     ));
 
 	return 0;

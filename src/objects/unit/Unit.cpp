@@ -4,28 +4,29 @@
 #include "commands/action/ActionCommand.h"
 #include "commands/action/ActionCommandList.h"
 #include "database/DatabaseCache.h"
+#include "player/PlayersManager.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
-#include "player/PlayersManager.h"
 
 
 float Unit::hbMaxSize = 0.7f;
 
-Unit::Unit(Vector3* _position, int id, int player) : Physical(_position, UNIT), dbUnit(nullptr) {
+Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, UNIT), dbUnit(nullptr) {
 	velocity = new Vector3();
 	toResource = new Vector3();
 	resource = nullptr;
 
 	state = UnitStateType::STOP;
+	dbUnit = Game::get()->getDatabaseCache()->getUnit(id);
+	dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level);
+	populate();
+	Model* model3d = Game::get()->getCache()->GetResource<Model>("Models/" + dbLevel->model);
+	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture);
 
-	populate(Game::get()->getDatabaseCache()->getUnit(id));
-	Model* model3d = Game::get()->getCache()->GetResource<Model>("Models/" + dbUnit->model);
-	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbUnit->texture);
-
-	node->Scale(dbUnit->scale);
+	node->Scale(dbLevel->scale);
 	StaticModel* model = node->CreateComponent<StaticModel>();
 	model->SetModel(model3d);
 	model->SetMaterial(material);
@@ -55,16 +56,25 @@ float Unit::getHealthPercent() {
 	return (hpCoef / maxHpCoef);
 }
 
-void Unit::populate(db_unit* _dbUnit) {
-	maxSeparationDistance = _dbUnit->maxSep;
-	mass = _dbUnit->mass;
-	maxSpeed = _dbUnit->maxSpeed;
-	minSpeed = maxSpeed * 0.2f;
-	minimalDistance = _dbUnit->minDist;
-	attackRange = minimalDistance + 5;
-	rotatable = _dbUnit->rotatable;
-	actionState = UnitStateType(_dbUnit->actionState);
-	dbUnit = _dbUnit;
+void Unit::populate() {
+	maxSeparationDistance = dbLevel->maxSep;
+	mass = dbLevel->mass;
+	maxSpeed = dbLevel->maxSpeed;
+	minSpeed = dbLevel->minDist;
+	minimalDistance = dbLevel->minDist;
+	attackRange = dbLevel->attackRange;
+	rotatable = dbUnit->rotatable;
+	actionState = UnitStateType(dbUnit->actionState);
+
+	attackIntrest = 10;
+	collectSpeed = dbLevel->collectSpeed;
+
+	hpCoef = dbLevel->maxHp;
+	maxHpCoef = dbLevel->maxHp;
+	attackCoef = dbLevel->attack;
+	attackRange = dbLevel->attackRange;
+	defenseCoef = dbLevel->defense;
+	attackSpeed = dbLevel->attackSpeed;
 }
 
 void Unit::checkAim() {
@@ -268,7 +278,8 @@ std::string Unit::getValues(int precision) {
 		to_string(state) + "," +
 		to_string(velocity_x) + "," +
 		to_string(velocity_z) + "," +
-		to_string(-1);
+		to_string(-1) + "," +
+		to_string(dbLevel->level);
 
 }
 
@@ -323,7 +334,8 @@ std::string Unit::getColumns() {
 		"state			INT     NOT NULL,"
 		"velocity_x		INT     NOT NULL," //TODO czy dodac y?
 		"velocity_z		INT     NOT NULL,"
-		"aim_i		INT     NOT NULL";
+		"aim_i		INT     NOT NULL,"
+		"level		INT     NOT NULL";
 }
 
 void Unit::applyForce(double timeStep) {

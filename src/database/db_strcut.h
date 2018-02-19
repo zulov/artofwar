@@ -310,7 +310,7 @@ struct db_container
 	std::vector<db_cost*>* costForBuilding[BULDINGS_NUMBER_DB]{};
 	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB]{};
 	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB]{};
-	std::vector<db_order*>* levelsToUnit[UNITS_NUMBER_DB]{};
+	std::vector<db_unit_level*>* levelsToUnit[UNITS_NUMBER_DB]{};
 
 	int units_size = 0;
 	int hud_size_size = 0;
@@ -338,7 +338,7 @@ struct db_container
 			costForUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 			ordersToUnit[i] = new std::vector<db_order*>();
 			ordersToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
-			levelsToUnit[i] = new std::vector<db_order*>();
+			levelsToUnit[i] = new std::vector<db_unit_level*>();
 			levelsToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 		}
 	}

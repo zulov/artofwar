@@ -15,8 +15,8 @@ INSERT INTO `unit_level` (level,unit,name,minDist,maxSep,model,texture,mass,scal
  (1,3,'better',0.6,2.0,'horse.mdl','horse.xml',4.0,0.6,6.0,4,10.0,4.0,300,13.0,2.0,0.0),
  (0,4,'base',0.3,2.0,'Sphere.mdl','red.xml',0.5,0.3,0.2,1,2.0,0.5,50,3.0,1.0,5.0),
  (1,4,'better',0.3,2.0,'Sphere.mdl','red.xml',0.5,0.3,0.2,1,2.0,0.5,60,4.0,1.0,6.0),
- (0,5,'base',0.5,2.0,'genereal.mdl','general.xml',0.5,0.5,0.5,1,2.0,0.5,70,5.0,1.0,0.0),
- (1,5,'better',0.5,2.0,'genereal.mdl','general.xml',0.5,0.5,0.6,1,2.0,0.6,80,5.0,1.0,0.0);
+ (0,5,'base',0.5,2.0,'general.mdl','general.xml',0.5,0.5,0.5,1,2.0,0.5,70,5.0,1.0,0.0),
+ (1,5,'better',0.5,2.0,'general.mdl','general.xml',0.5,0.5,0.6,1,2.0,0.6,80,5.0,1.0,0.0);
 INSERT INTO `settings` (graph,resolution) VALUES (0,1);
 INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,sizeX,sizeZ,maxUsers,mini_map_color) VALUES (0,'gold','gold.png',1000,'gold.xml
 ','rock.mdl',0.5,2,2,4,'0xFF00D0FF'),

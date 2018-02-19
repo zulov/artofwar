@@ -73,8 +73,8 @@ std::vector<ResourceEntity*>* SimulationObjectManager::getResources() {
 }
 
 void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* center,
-                                       int player) {
-	unitsTemp = unitFactory.create(number, id, center, player);
+                                       int player, int level) {
+	unitsTemp = unitFactory.create(number, id, center, player, level);
 	updateUnits();
 }
 

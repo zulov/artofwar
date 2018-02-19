@@ -300,7 +300,7 @@ void Controls::clickDownRight() {
 
 void Controls::createBuilding(Vector3& pos) {
 	if (idToCreate >= 0) {
-		Game::get()->getCreationCommandList()->addBuilding(idToCreate, pos, 0);
+		Game::get()->getCreationCommandList()->addBuilding(idToCreate, pos, 0, 0);
 	}
 }
 

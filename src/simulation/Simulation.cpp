@@ -83,13 +83,13 @@ void Simulation::loadEntities(SceneLoader& loader) {
 
 void Simulation::addTestEntities() {
 	if (UNITS_NUMBER > 0) {
-		simObjectManager->addUnits(UNITS_NUMBER, 0, new Vector3(), 0);
+		simObjectManager->addUnits(UNITS_NUMBER, 0, new Vector3(), 0, 0);
 	}
 }
 
 void Simulation::loadEntities(NewGameForm* form) {
 	for (auto player : form->players) {
-		simObjectManager->addUnits(10, 1, new Vector3(), player.id);
+		simObjectManager->addUnits(10, 1, new Vector3(), player.id, 0);
 	}
 }
 
@@ -122,7 +122,7 @@ void Simulation::updateBuildingQueue() {
 		QueueElement* done = build->updateQueue(maxTimeFrame);
 		if (done) {
 			simCommandList->add(new CreationCommand(done->getType(), done->getAmount(), done->getSubtype(),
-			                                        new Vector3(build->getTarget()), 0));
+			                                        new Vector3(build->getTarget()), 0, 0));
 			delete done;
 		}
 	}
@@ -158,7 +158,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 			selfAI();
 			actionCommandList->execute();
 		}
-		enviroment->update(units);		
+		enviroment->update(units);
 
 		calculateForces();
 		applyForce();

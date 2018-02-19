@@ -9,9 +9,9 @@ class CreationCommandList : public CommandList
 public:
 	CreationCommandList();
 	virtual ~CreationCommandList();
-	bool addUnits(int _number, int id, Vector3& _position, int _player);
-	bool addBuilding(int id, Vector3& _position, int _player);
-	bool addResource(int id, Vector3& _position);
+	bool addUnits(int _number, int id, Vector3& _position, int _player, int level);
+	bool addBuilding(int id, Vector3& _position, int _player, int level);
+	bool addResource(int id, Vector3& _position, int level);
 	SimulationObjectManager* getManager();
 
 protected:

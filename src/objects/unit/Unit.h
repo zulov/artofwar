@@ -24,13 +24,13 @@ class Unit : public Physical
 	friend class CollectState;
 	friend class DisposeState;
 public:
-	Unit(Vector3* _position, int id, int player);
+	Unit(Vector3* _position, int id, int player, int level);
 	~Unit();
 
 	bool isAlive() override;
 	float getHealthBarSize() override;
 	float getHealthPercent() override;
-	void populate(db_unit* _dbUnit);
+	void populate();
 	void checkAim();
 	void move(double timeStep);
 	void applyForce(double timeStep);
@@ -80,6 +80,7 @@ private:
 	ResourceEntity* resource;
 	Vector3* toResource;
 	db_unit* dbUnit;
+	db_unit_level* dbLevel;
 
 	UnitStateType state;
 	UnitStateType actionState;

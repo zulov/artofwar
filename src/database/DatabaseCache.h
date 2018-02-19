@@ -2,6 +2,7 @@
 #include "sqlite3/sqlite3.h"
 #include "db_strcut.h"
 #include <vector>
+#include "commands/action/ActionCommand.h"
 using namespace std;
 
 class DatabaseCache
@@ -22,6 +23,7 @@ public:
 	db_player_colors* getPlayerColor(int i);
 	db_settings* getSettings();
 	db_resolution* getResolution(int id);
+	db_unit_level* getUnitLevel(int id, int level);
 
 	std::vector<db_unit*>* getUnitsForBuilding(int id);
 	std::vector<db_cost*>* getCostForUnit(int id);

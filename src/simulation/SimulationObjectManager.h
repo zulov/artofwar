@@ -22,7 +22,7 @@ public:
 	vector<Building*>* getBuildings();
 	vector<ResourceEntity*>* getResources();
 
-	void addUnits(unsigned number, int id, Vector3* center, int player);
+	void addUnits(unsigned number, int id, Vector3* center, int player, int level);
 	void addBuildings(int id, Vector3* center, int player, IntVector2 _bucketCords);
 	void addResources(int id, Vector3* center, IntVector2 _bucketCords);
 

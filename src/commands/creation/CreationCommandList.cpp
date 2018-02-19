@@ -15,12 +15,12 @@ CreationCommandList::~CreationCommandList() {
 	delete simulationObjectManager;
 }
 
-bool CreationCommandList::addUnits(int _number, int id, Vector3& _position, int _player) {
-	add(new CreationCommand(UNIT, _number, id, new Vector3(_position), _player));
+bool CreationCommandList::addUnits(int _number, int id, Vector3& _position, int _player, int level) {
+	add(new CreationCommand(UNIT, _number, id, new Vector3(_position), _player, level));
 	return true;
 }
 
-bool CreationCommandList::addBuilding(int id, Vector3& _position, int _player) {
+bool CreationCommandList::addBuilding(int id, Vector3& _position, int _player, int level) {
 	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 	std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForBuilding(id);
 	Enviroment* env = Game::get()->getEnviroment();
@@ -31,13 +31,13 @@ bool CreationCommandList::addBuilding(int id, Vector3& _position, int _player) {
 		IntVector2 bucketCords = env->getBucketCords(db_building->size, pos);
 		pos = env->getValidPosition(db_building->size, pos);
 
-		add(new CreationCommand(BUILDING, id, pos, _player, bucketCords));
+		add(new CreationCommand(BUILDING, id, pos, _player, bucketCords, level));
 		return true;
 	}
 	return false;
 }
 
-bool CreationCommandList::addResource(int id, Vector3& _position) {
+bool CreationCommandList::addResource(int id, Vector3& _position, int level) {
 	Enviroment* env = Game::get()->getEnviroment();
 	db_resource* db_resource = Game::get()->getDatabaseCache()->getResource(id);
 
@@ -46,7 +46,7 @@ bool CreationCommandList::addResource(int id, Vector3& _position) {
 		IntVector2 bucketCords = env->getBucketCords(db_resource->size, pos);
 		pos = env->getValidPosition(db_resource->size, pos);
 
-		add(new CreationCommand(RESOURCE, id, pos, -1, bucketCords));
+		add(new CreationCommand(RESOURCE, id, pos, -1, bucketCords, level));
 		return true;
 	}
 	return false;

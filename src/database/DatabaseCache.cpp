@@ -1,9 +1,10 @@
 #include "DatabaseCache.h"
-#include <sqlite3/sqlite3.h>
 #include "db_strcut.h"
-#include <iostream>
-#include <sstream>
 #include "db_utils.h"
+#include <iostream>
+#include <sqlite3/sqlite3.h>
+#include <sstream>
+
 
 static unsigned fromHex(char** argv, int index) {
 	unsigned x;
@@ -16,8 +17,8 @@ static unsigned fromHex(char** argv, int index) {
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
-	xyz->units[id] = new db_unit(id, argv[1], atoi(argv[9]), atoi(argv[10]), argv[11],
-	                             atoi(argv[12]));
+	xyz->units[id] = new db_unit(id, argv[1], atoi(argv[2]), atoi(argv[3]), argv[4],
+	                             atoi(argv[5]));
 	xyz->units_size++;
 	return 0;
 }
@@ -156,6 +157,21 @@ int static loadSettings(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = static_cast<db_container *>(data);
+	int unitId = atoi(argv[1]);
+	xyz->levelsToUnit[unitId]->push_back(
+	                                     new db_unit_level(
+	                                                       atoi(argv[0]), atoi(argv[1]), argv[2], atof(argv[3]),
+	                                                       atof(argv[4]), argv[5], argv[6], atof(argv[7]), atof(argv[8]),
+	                                                       atof(argv[9]), atoi(argv[10]), atof(argv[11]), atof(argv[12]),
+	                                                       atoi(argv[13]), atof(argv[14]), atof(argv[15]), atof(argv[16])
+	                                                      )
+	                                    );
+
+	return 0;
+}
+
 static int callback(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
@@ -192,7 +208,7 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from player_colors", loadPlayerColors);
 	execute("SELECT * from resolution", loadResolution);
 	execute("SELECT * from settings", loadSettings);
-	execute("SELECT * from unit_level", loadUnitLevels);
+	execute("SELECT * from unit_level order by level", loadUnitLevels);
 
 
 	sqlite3_close(database);
@@ -335,6 +351,10 @@ void DatabaseCache::setSettings(int i, db_settings* settings) {
 
 db_resolution* DatabaseCache::getResolution(int id) {
 	return dbContainer->resolutions[id];
+}
+
+db_unit_level* DatabaseCache::getUnitLevel(int id, int level) {
+	return dbContainer->levelsToUnit[id]->at(level);
 }
 
 std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) {

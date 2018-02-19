@@ -1,20 +1,23 @@
 #include "CreationCommand.h"
 
 
-CreationCommand::CreationCommand(ObjectType type, int id, Vector3* _position, int _player, IntVector2 _bucketCords) {
+CreationCommand::CreationCommand(ObjectType type, int id, Vector3* _position, int _player, IntVector2 _bucketCords,
+                                 int level) {
 	position = _position;
 	player = _player;
 	this->id = id;
 	objectType = type;
 	bucketCords = _bucketCords;
+	this->level = level;
 }
 
-CreationCommand::CreationCommand(ObjectType type, int _number, int id, Vector3* _position, int _player) {
+CreationCommand::CreationCommand(ObjectType type, int _number, int id, Vector3* _position, int _player, int level) {
 	number = _number;
 	position = _position;
 	player = _player;
 	this->id = id;
 	objectType = type;
+	this->level = level;
 }
 
 CreationCommand::~CreationCommand() {
@@ -24,7 +27,7 @@ CreationCommand::~CreationCommand() {
 void CreationCommand::execute() {
 	switch (objectType) {
 	case UNIT:
-		simulationObjectManager->addUnits(number, id, position, player);
+		simulationObjectManager->addUnits(number, id, position, player, level);
 		break;
 	case BUILDING:
 		simulationObjectManager->addBuildings(id, position, player, bucketCords);

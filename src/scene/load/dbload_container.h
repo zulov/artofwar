@@ -45,17 +45,19 @@ struct dbload_unit : dbload_physical
 	float vel_x;
 	float vel_z;
 	int aim_i;
+	int level;
 
 
 	dbload_unit(int idDb, bool alive, float hpCoef, int player, float posX, float posZ, int state, float velX, float velZ,
-	            int aimI)
+	            int aimI, int level)
 		: dbload_physical(idDb, alive, hpCoef, player),
 		pos_x(posX),
 		pos_z(posZ),
 		state(state),
 		vel_x(velX),
 		vel_z(velZ),
-		aim_i(aimI) {
+		aim_i(aimI),
+		level(level) {
 	}
 };
 
