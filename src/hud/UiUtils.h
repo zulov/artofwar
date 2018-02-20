@@ -37,7 +37,7 @@ static MySprite* createEmptySprite(Urho3D::XMLFile* style, const String& styleNa
 
 static void setTextureToSprite(MySprite* sprite, Texture2D* texture) {
 	if (texture) {
-		sprite->SetEnabled(true);
+		sprite->SetVisible(true);
 		sprite->SetTexture(texture);
 		const int textureWidth = texture->GetWidth();
 		const int textureHeight = texture->GetHeight();
@@ -57,7 +57,7 @@ static void setTextureToSprite(MySprite* sprite, Texture2D* texture) {
 		sprite->SetFullImageRect();
 		sprite->SetHotSpot(textureWidth * perHotSpot.x_, textureHeight * perHotSpot.y_);
 	} else {
-		sprite->SetEnabled(false);
+		sprite->SetVisible(false);
 	
 	}
 }
