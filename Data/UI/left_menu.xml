@@ -13,8 +13,7 @@
 		<attribute name="Vert Alignment" value="Bottom" />
 		<attribute name="Horiz Alignment" value="Left" />
 		<attribute name="Layout Mode" value="Vertical" />
-		<attribute name="Position" value="0 {-(4*iconY+3*spaceY)}"/>
-		
+		<attribute name="Position" value="0 {-(4*iconY+3*spaceY)}"/>	
 		<attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
 	</element>
 	

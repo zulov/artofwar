@@ -15,6 +15,7 @@
 #include <Urho3D/UI/UIEvents.h>
 #include "window/main_menu/MainMenuPanel.h"
 #include "simulation/SimulationInfo.h"
+#include "window/menu/LeftMenuModes.h"
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {
@@ -265,6 +266,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 
 		case UNIT:
 			ordersPanel->show(selectedInfo);
+			menuPanel->refresh(LeftMenuMode::ORDER, selectedInfo);
 			buildPanel->setVisible(false);
 			unitsPanel->setVisible(false);
 			queuePanel->setVisible(false);
@@ -272,12 +274,14 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 		case BUILDING:
 			ordersPanel->setVisible(false);
 			buildPanel->setVisible(false);
+			menuPanel->refresh(LeftMenuMode::UNIT, selectedInfo);
 			unitsPanel->show(selectedInfo);
 			queuePanel->show(selectedInfo);
 			break;
 		default:
 			ordersPanel->setVisible(false);
 			buildPanel->show();
+			menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
 			unitsPanel->setVisible(false);
 			queuePanel->setVisible(false);
 		}

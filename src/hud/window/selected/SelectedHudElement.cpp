@@ -34,9 +34,6 @@ SelectedHudElement::~SelectedHudElement() {
 	delete[] bars;
 }
 
-void SelectedHudElement::unSelect() {
-}
-
 Button* SelectedHudElement::getButton() {
 	return button;
 }

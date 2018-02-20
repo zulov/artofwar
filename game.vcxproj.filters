@@ -476,6 +476,7 @@
     <ClInclude Include="src\database\db_utils.h" />
     <ClInclude Include="src\objects\unit\state\DisposeState.h" />
     <ClInclude Include="src\hud\window\menu\info\LeftMenuInfoPanel.h" />
+    <ClInclude Include="src\hud\window\menu\LeftMenuModes.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

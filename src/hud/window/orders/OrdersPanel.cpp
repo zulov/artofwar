@@ -25,14 +25,14 @@ void OrdersPanel::show(SelectedInfo* selectedInfo) {
 	setVisible(true);
 	std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelecteType();
 
-	std::unordered_set<int> common = {0,1,2,3,4,5,6,7,8,9,10};
+	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		std::vector<Physical*>& data = infoTypes.at(i)->getData();
 		if (!data.empty()) {
 			std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
 			std::unordered_set<int> common2;
-			for (auto & order : *orders) {
+			for (auto& order : *orders) {
 				//todo to zrobic raz i pobierac
 				common2.insert(order->id);
 			}
@@ -73,7 +73,7 @@ void OrdersPanel::createBody() {
 		MySprite* sprite = createSprite(texture, style, "Sprite");
 		Button* button = simpleButton(sprite, style, "Icon");
 
-		HudElement* hudElement = new HudElement(button);//TODO inny obiekt
+		HudElement* hudElement = new HudElement(button); //TODO inny obiekt
 		hudElement->setId(i, ObjectType::ENTITY);
 
 		button->SetVar("HudElement", hudElement);

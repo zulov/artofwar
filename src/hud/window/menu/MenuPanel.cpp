@@ -8,6 +8,8 @@
 #include "info/LeftMenuInfoPanel.h"
 #include <Urho3D/UI/CheckBox.h>
 #include "hud/window/in_game_menu/middle/AbstractMiddlePanel.h"
+#include "player/PlayersManager.h"
+#include <unordered_set>
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -17,10 +19,20 @@ MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 }
 
 
-MenuPanel::~MenuPanel() = default;
+MenuPanel::~MenuPanel() {
+	delete infoPanel;
+}
 
 void MenuPanel::removeInfo() {
 	infoPanel->setVisible(false);
+}
+
+void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {
+	if (mode != _mode) {
+		mode = _mode;
+		subMode = BASIC;
+	}
+	updateButtons(selectedInfo);
 }
 
 void MenuPanel::setInfo(HudElement* hudElement) {
@@ -69,11 +81,108 @@ void MenuPanel::createBody() {
 	int k = 0;
 	for (int i = 0; i < LEFT_MENU_ROWS_NUMBER - 1; ++i) {
 		for (int j = 0; j < LEFT_MENU_BUTTON_PER_ROW; ++j) {
-
-			buttons[k] = rows[i]->CreateChild<Button>();
-			buttons[k]->SetStyle("LeftMenuBigIcon", style);
+			sprites[k] = createEmptySprite(style, "LeftMenuSprite");
+			buttons[k] = simpleButton(rows[i], sprites[k], style, "LeftMenuBigIcon");
 			k++;
 		}
 	}
 
+}
+
+void MenuPanel::basicBuilding() {
+	int size = Game::get()->getDatabaseCache()->getBuildingSize();
+	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
+	int k = 0;
+	for (int i = 0; i < size; ++i) {
+		db_building* building = Game::get()->getDatabaseCache()->getBuilding(i);
+		if (building) {
+			if (building->nation == nation) {
+				Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
+				>("textures/hud/icon/building/" + building->icon);
+				setTextureToSprite(sprites[k], texture);
+				k++;
+			}
+		}
+	}
+	resetButtons(k);
+}
+
+void MenuPanel::basicUnit() {
+	int size = Game::get()->getDatabaseCache()->getUnitSize();
+	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
+	int k = 0;
+	for (int i = 0; i < size; ++i) {
+		db_unit* unit = Game::get()->getDatabaseCache()->getUnit(i);
+		if (unit) {
+			if (unit->nation == nation) {
+				Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
+				>("textures/hud/icon/unit/" + unit->icon);
+				setTextureToSprite(sprites[k], texture);
+				k++;
+			}
+		}
+	}
+	resetButtons(k);
+}
+
+void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
+	std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelecteType();
+
+	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+	for (int i = 0; i < infoTypes.size(); ++i) {
+		std::vector<Physical*>& data = infoTypes.at(i)->getData();
+		if (!data.empty()) {
+			std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
+			unordered_set<int> common2;
+			for (auto& order : *orders) {
+				//todo to zrobic raz i pobierac
+				common2.insert(order->id);
+			}
+			std::unordered_set<int> temp(common);
+			for (const auto& id : temp) {
+				if (common2.find(id) == common2.end()) {
+					common.erase(id);
+				}
+			}
+		}
+	}
+
+	int size = Game::get()->getDatabaseCache()->getOrdersSize();
+
+	int k = 0;
+	for (int i = 0; i < size; ++i) {
+		if (common.find(i) != common.end()) {
+			db_order* order = Game::get()->getDatabaseCache()->getOrder(i);
+			if (order) {
+				Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
+				>("textures/hud/icon/orders/" + order->icon);
+				setTextureToSprite(sprites[k], texture);
+				k++;
+			}
+		}
+	}
+	resetButtons(k);
+}
+
+void MenuPanel::resetButtons(int from) {
+	for (int i = from; i < LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1); ++i) {
+		setTextureToSprite(sprites[i], nullptr);
+	}
+}
+
+void MenuPanel::updateButtons(SelectedInfo* selectedInfo) {
+	switch (mode) {
+
+	case LeftMenuMode::BUILDING:
+		basicBuilding();
+		break;
+	case LeftMenuMode::UNIT:
+		basicUnit();
+		break;
+	case LeftMenuMode::ORDER:
+		basicOrder(selectedInfo);
+		break;
+	default: ;
+	}
 }
