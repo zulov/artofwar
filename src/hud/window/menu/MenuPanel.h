@@ -10,8 +10,9 @@
 
 #define LEFT_MENU_ROWS_NUMBER 4
 #define LEFT_MENU_CHECKS_NUMBER 3
+#define LEFT_MENU_BUTTON_PER_ROW 4
 
-class MenuPanel :public AbstractWindowPanel
+class MenuPanel : public AbstractWindowPanel
 {
 public:
 	MenuPanel(Urho3D::XMLFile* _style);
@@ -27,8 +28,8 @@ private:
 	Urho3D::Text* text;
 	Urho3D::Text* text2;
 	UIElement* rows[LEFT_MENU_ROWS_NUMBER];
-	Button *nextButton;
+	Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
+	Button* nextButton;
 	Urho3D::CheckBox* checks[LEFT_MENU_CHECKS_NUMBER];
 	UIElement* mock;
 };
-

@@ -88,7 +88,7 @@ void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
 
 void MenuPanel::createBody() {
 	mock = window->CreateChild<UIElement>();
-	mock->SetStyle("mock", style);
+	mock->SetStyle("LeftMenuMock", style);
 
 	for (int i = 0; i < LEFT_MENU_ROWS_NUMBER; ++i) {
 		rows[i] = mock->CreateChild<UIElement>();
@@ -99,7 +99,7 @@ void MenuPanel::createBody() {
 		>("textures/hud/icon/lm/lm" + String(i) + ".png");
 
 		MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
-		checks[i] = rows[0]->CreateChild<CheckBox>();
+		checks[i] = rows[LEFT_MENU_ROWS_NUMBER-1]->CreateChild<CheckBox>();
 		checks[i]->SetStyle("LeftMenuCheckBox", style);
 
 		checks[i]->AddChild(sprite);
@@ -107,10 +107,20 @@ void MenuPanel::createBody() {
 	Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
 	>("textures/hud/icon/lm/lm3.png");
 	MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
-	nextButton = rows[0]->CreateChild<Button>();
+	nextButton = rows[LEFT_MENU_ROWS_NUMBER-1]->CreateChild<Button>();
 	nextButton->SetStyle("LeftMenuIcon", style);
 
 	nextButton->AddChild(sprite);
+
+	int k=0;
+	for (int i = 0; i < LEFT_MENU_ROWS_NUMBER-1; ++i) {
+		for (int j = 0; j < LEFT_MENU_BUTTON_PER_ROW; ++j) {
+
+			buttons[k] = rows[i]->CreateChild<Button>();
+			buttons[k]->SetStyle("LeftMenuBigIcon", style);
+			k++;
+		}
+	}
 
 	text = window->CreateChild<Urho3D::Text>();
 	text->SetStyle("MyText", style);
