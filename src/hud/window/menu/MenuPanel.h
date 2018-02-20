@@ -12,6 +12,8 @@
 #define LEFT_MENU_CHECKS_NUMBER 3
 #define LEFT_MENU_BUTTON_PER_ROW 4
 
+class LeftMenuInfoPanel;
+
 class MenuPanel : public AbstractWindowPanel
 {
 public:
@@ -22,14 +24,14 @@ public:
 	static Urho3D::String stringFrom(db_building* dbBuilding, std::vector<db_cost*>* costs);
 	void setInfo(HudElement* hudElement);
 	void updateSelected(SelectedInfo* selectedInfo);
-
+	void setVisible(bool enable) override;
 private:
 	void createBody() override;
-	Urho3D::Text* text;
-	Urho3D::Text* text2;
+
 	UIElement* rows[LEFT_MENU_ROWS_NUMBER];
 	Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
 	Button* nextButton;
 	Urho3D::CheckBox* checks[LEFT_MENU_CHECKS_NUMBER];
 	UIElement* mock;
+	LeftMenuInfoPanel * infoPanel;
 };

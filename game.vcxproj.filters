@@ -212,6 +212,7 @@
     <ClCompile Include="src\hud\window\main_menu\close\MainMenuClosePanel.cpp" />
     <ClCompile Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.cpp" />
     <ClCompile Include="src\objects\unit\state\DisposeState.cpp" />
+    <ClCompile Include="src\hud\window\menu\info\LeftMenuInfoPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -474,6 +475,7 @@
     <ClInclude Include="src\hud\window\main_menu\settings\SettingsForm.h" />
     <ClInclude Include="src\database\db_utils.h" />
     <ClInclude Include="src\objects\unit\state\DisposeState.h" />
+    <ClInclude Include="src\hud\window\menu\info\LeftMenuInfoPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -5,6 +5,17 @@
 		<attribute name="Max Size" value="{4*iconX+5*spaceX} {4*iconY+3*spaceY}"/>
 		<attribute name="Vert Alignment" value="Bottom" />
 		<attribute name="Horiz Alignment" value="Left" />
+	</element>	
+	
+	<element type="LeftMenuInfoPanel" style="MyWindow">	
+		<attribute name="Min Size" value="{3*iconX} {1*iconY+2*spaceY}"/>
+		<attribute name="Max Size" value="{4*iconX+5*spaceX} {2*iconY+2*spaceY}"/>
+		<attribute name="Vert Alignment" value="Bottom" />
+		<attribute name="Horiz Alignment" value="Left" />
+		<attribute name="Layout Mode" value="Vertical" />
+		<attribute name="Position" value="0 {-(4*iconY+3*spaceY)}"/>
+		
+		<attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
 	</element>
 	
 	<element type="LeftMenuBigIcon" style="Button">
@@ -25,7 +36,7 @@
 	</element>
 	
 	<element type="LeftMenuListRow" style="ListRow" >
-		<attribute name="Layout Spacing" value="{spaceX/2}" />
+		<attribute name="Layout Spacing" value="{spaceX}" />
 		<attribute name="Min Size" value="100 {iconY/2+spaceY}" />
 		<attribute name="Max Size" value="10000 {iconY+spaceY}" />
 	</element>

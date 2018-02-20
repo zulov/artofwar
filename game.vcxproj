@@ -188,6 +188,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\hud\window\menu\info\LeftMenuInfoPanel.cpp" />
     <ClCompile Include="src\objects\unit\state\DisposeState.cpp" />
     <ClCompile Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.cpp" />
     <ClCompile Include="src\hud\window\main_menu\close\MainMenuClosePanel.cpp" />
@@ -285,6 +286,7 @@
     <ClCompile Include="src\hud\window\units\UnitsPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\hud\window\menu\info\LeftMenuInfoPanel.h" />
     <ClInclude Include="src\objects\unit\state\DisposeState.h" />
     <ClInclude Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\close\MainMenuClosePanel.h" />

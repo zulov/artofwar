@@ -2,9 +2,7 @@
 
 #include "../AbstractWindowPanel.h"
 #include "TopHudElement.h"
-#include <vector>
 #include "player/Resources.h"
-#include <Urho3D/UI/DropDownList.h>
 
 
 class TopPanel :public AbstractWindowPanel
