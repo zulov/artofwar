@@ -16,8 +16,16 @@ void HudElement::setId(short id, ObjectType _type) {
 	type = _type;
 }
 
+void HudElement::setSubType(short _subType) {
+	subType = _subType;
+}
+
 short HudElement::getId() {
 	return objectId;
+}
+
+short HudElement::getSubType() {
+	return subType;
 }
 
 ObjectType HudElement::getType() {

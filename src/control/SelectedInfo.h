@@ -23,7 +23,7 @@ public:
 	String& getMessage();
 	void setMessage(String& s);
 private:
-	bool changed = false;
+	bool changed = true;
 	int allNumber;
 	int allSubTypeNumber;
 	ObjectType selectedType;

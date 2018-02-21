@@ -27,6 +27,7 @@ public:
 	void setInfo(HudElement* hudElement);
 	void updateSelected(SelectedInfo* selectedInfo);
 	void setVisible(bool enable) override;
+	std::vector<HudElement*>& getButtons();
 private:
 	void createBody() override;
 	void setChecks(int val);
@@ -42,12 +43,13 @@ private:
 
 	UIElement* rows[LEFT_MENU_ROWS_NUMBER];
 	Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
+	std::vector<HudElement*> hudElements;
 	MySprite* sprites[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
 	Button* nextButton;
 	Urho3D::CheckBox* checks[LEFT_MENU_CHECKS_NUMBER];
 	UIElement* mock;
 	LeftMenuInfoPanel* infoPanel;
-	LeftMenuMode mode = LeftMenuMode::BUILDING;
+	LeftMenuMode mode = LeftMenuMode::UNIT;
 	LeftMenuSubMode subMode = LeftMenuSubMode::BASIC;
 	int page = 0;
 

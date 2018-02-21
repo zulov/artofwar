@@ -61,6 +61,7 @@ private:
 	void HandleSaveScene(StringHash, VariantMap& eventData);
 	void HandleMiniMapClick(StringHash eventType, VariantMap& eventData);
 	void HandleBuildButton(StringHash eventType, VariantMap& eventData);
+	void HandleLeftMenuButton(StringHash eventType, VariantMap& eventData);
 	void HandleUnitButton(StringHash eventType, VariantMap& eventData);
 	void HandleOrdersButton(StringHash eventType, VariantMap& eventData);
 	void HandleSelectedButton(StringHash eventType, VariantMap& eventData);

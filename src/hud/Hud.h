@@ -49,6 +49,7 @@ URHO3D_OBJECT(Hud, Object)
 	std::vector<Button*>& getButtonsSelectedToSubscribe();
 	std::vector<HudElement*>& getButtonsOrdersToSubscribe();
 
+	std::vector<HudElement*>& getButtonsLeftMenuToSubscribe();
 	std::vector<HudElement*>& getButtonsBuildToSubscribe();
 	std::vector<HudElement*>& getButtonsUnitsToSubscribe();
 	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);

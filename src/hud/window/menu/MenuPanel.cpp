@@ -22,6 +22,9 @@ MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 
 MenuPanel::~MenuPanel() {
 	delete infoPanel;
+	for (auto element : hudElements) {
+		delete element;
+	}
 }
 
 void MenuPanel::removeInfo() {
@@ -50,6 +53,10 @@ void MenuPanel::setVisible(bool enable) {
 	if (!enable) {
 		infoPanel->setVisible(false);
 	}
+}
+
+std::vector<HudElement*>& MenuPanel::getButtons() {
+	return hudElements;
 }
 
 void MenuPanel::createBody() {
@@ -86,6 +93,10 @@ void MenuPanel::createBody() {
 		for (int j = 0; j < LEFT_MENU_BUTTON_PER_ROW; ++j) {
 			sprites[k] = createEmptySprite(style, "LeftMenuSprite");
 			buttons[k] = simpleButton(rows[i], sprites[k], style, "LeftMenuBigIcon");
+			hudElements.push_back(new HudElement(buttons[k]));
+			hudElements[k]->setId(-1, ENTITY);
+			hudElements[k]->setSubType(-1);
+			buttons[k]->SetVar("HudElement", hudElements[k]);
 			k++;
 		}
 	}
@@ -120,6 +131,9 @@ void MenuPanel::basicBuilding() {
 				Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
 				>("textures/hud/icon/building/" + building->icon);
 				setTextureToSprite(sprites[k], texture);
+
+				hudElements[k]->setId(building->id, BUILDING);
+				hudElements[k]->setSubType(subMode);
 				k++;
 			}
 		}
@@ -138,6 +152,9 @@ void MenuPanel::basicUnit() {
 				Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
 				>("textures/hud/icon/unit/" + unit->icon);
 				setTextureToSprite(sprites[k], texture);
+
+				hudElements[k]->setId(unit->id, UNIT);
+				hudElements[k]->setSubType(subMode);
 				k++;
 			}
 		}
@@ -178,6 +195,10 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 				Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
 				>("textures/hud/icon/orders/" + order->icon);
 				setTextureToSprite(sprites[k], texture);
+				buttons[k]->SetVar("Num", order->id);
+
+				hudElements[k]->setId(order->id, ENTITY);
+				hudElements[k]->setSubType(subMode);
 				k++;
 			}
 		}
@@ -188,6 +209,7 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 void MenuPanel::resetButtons(int from) {
 	for (int i = from; i < LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1); ++i) {
 		setTextureToSprite(sprites[i], nullptr);
+		buttons[i]->SetVar("Num", -1);
 	}
 }
 

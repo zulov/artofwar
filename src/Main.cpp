@@ -78,6 +78,11 @@ void Main::Stop() {
 }
 
 void Main::subscribeToUIEvents() {
+	for (auto hudElement : hud->getButtonsLeftMenuToSubscribe()) {
+		UIElement* element = hudElement->getUIElement();
+		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleLeftMenuButton));
+	}
+
 	for (auto hudElement : hud->getButtonsBuildToSubscribe()) {
 		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleBuildButton));
@@ -96,6 +101,8 @@ void Main::subscribeToUIEvents() {
 	for (auto buttton : hud->getButtonsSelectedToSubscribe()) {
 		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButton));
 	}
+
+
 
 	SubscribeToEvent(hud->getSaveButton(), E_CLICK, URHO3D_HANDLER(Main, HandleSaveScene));
 	SubscribeToEvent(hud->getNewGameProceed(), E_CLICK, URHO3D_HANDLER(Main, HandleNewGame));
@@ -352,6 +359,12 @@ void Main::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {
 	float y = size.y_ - (eventData[Urho3D::Click::P_Y].GetInt() - begin.y_);
 
 	Game::get()->getCameraManager()->changePosition(x / size.x_, y / size.y_);
+}
+
+void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
+	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
+	controls->hudAction(hudElement);
 }
 
 void Main::HandleBuildButton(StringHash eventType, VariantMap& eventData) {
