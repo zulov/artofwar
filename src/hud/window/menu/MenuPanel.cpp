@@ -22,9 +22,7 @@ MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 
 MenuPanel::~MenuPanel() {
 	delete infoPanel;
-	for (auto element : hudElements) {
-		delete element;
-	}
+	clear_vector(hudElements);
 }
 
 void MenuPanel::removeInfo() {
@@ -141,21 +139,47 @@ void MenuPanel::basicBuilding() {
 	resetButtons(k);
 }
 
-void MenuPanel::basicUnit() {
-	int size = Game::get()->getDatabaseCache()->getUnitSize();
+void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
+	vector<SelectedInfoType*> infoTypes = selectedInfo->getSelecteType();
+
+	unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
+	for (int i = 0; i < infoTypes.size(); ++i) {
+		std::vector<Physical*>& data = infoTypes.at(i)->getData();
+		if (!data.empty()) {
+			std::vector<db_unit*>* units = Game::get()->getDatabaseCache()->getUnitsForBuilding(i);
+			unordered_set<int> common2;
+			for (auto& unit : *units) {
+				//todo to zrobic raz i pobierac
+				if (unit->nation == nation) {
+					common2.insert(unit->id);
+				}
+			}
+			unordered_set<int> temp(common);
+			for (const auto& id : temp) {
+				if (common2.find(id) == common2.end()) {
+					common.erase(id);
+				}
+			}
+		}
+	}
+
+	int size = Game::get()->getDatabaseCache()->getUnitSize();
+	
 	int k = 0;
 	for (int i = 0; i < size; ++i) {
-		db_unit* unit = Game::get()->getDatabaseCache()->getUnit(i);
-		if (unit) {
-			if (unit->nation == nation) {
-				Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
-				>("textures/hud/icon/unit/" + unit->icon);
-				setTextureToSprite(sprites[k], texture);
+		if (common.find(i) != common.end()) {
+			db_unit* unit = Game::get()->getDatabaseCache()->getUnit(i);
+			if (unit) {
+				if (unit->nation == nation) {
+					Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
+					>("textures/hud/icon/unit/" + unit->icon);
+					setTextureToSprite(sprites[k], texture);
 
-				hudElements[k]->setId(unit->id, UNIT);
-				hudElements[k]->setSubType(subMode);
-				k++;
+					hudElements[k]->setId(unit->id, UNIT);
+					hudElements[k]->setSubType(subMode);
+					k++;
+				}
 			}
 		}
 	}
@@ -221,7 +245,7 @@ void MenuPanel::updateButtons(SelectedInfo* selectedInfo) {
 		basicBuilding();
 		break;
 	case LeftMenuMode::UNIT:
-		basicUnit();
+		basicUnit(selectedInfo);
 		break;
 	case LeftMenuMode::ORDER:
 		basicOrder(selectedInfo);

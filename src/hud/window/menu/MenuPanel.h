@@ -33,7 +33,7 @@ private:
 	void setChecks(int val);
 	void ChengeModeButton(StringHash eventType, VariantMap& eventData);
 	void basicBuilding();
-	void basicUnit();
+	void basicUnit(SelectedInfo* selectedInfo);
 	void basicOrder(SelectedInfo* selectedInfo);
 	void resetButtons(int from);
 	void updateButtons(SelectedInfo* selectedInfo);

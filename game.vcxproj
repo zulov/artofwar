@@ -230,7 +230,6 @@
     <ClCompile Include="src\simulation\env\bucket\BucketIterator.cpp" />
     <ClCompile Include="src\objects\building\Building.cpp" />
     <ClCompile Include="src\objects\building\BuildingFactory.cpp" />
-    <ClCompile Include="src\hud\window\building\BuildPanel.cpp" />
     <ClCompile Include="src\camera\CameraBehave.cpp" />
     <ClCompile Include="src\camera\CameraManager.cpp" />
     <ClCompile Include="src\database\DatabaseCache.cpp" />
@@ -241,7 +240,6 @@
     <ClCompile Include="src\hud\window\minimap\MiniMapPanel.cpp" />
     <ClCompile Include="src\hud\MySprite.cpp" />
     <ClCompile Include="src\OperatorType.h" />
-    <ClCompile Include="src\hud\window\orders\OrdersPanel.cpp" />
     <ClCompile Include="src\objects\Physical.cpp" />
     <ClCompile Include="src\objects\Player.cpp" />
     <ClCompile Include="src\player\PlayersManager.cpp" />
@@ -283,7 +281,6 @@
     <ClCompile Include="src\objects\unit\Unit.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\simulation\Simulation.cpp" />
-    <ClCompile Include="src\hud\window\units\UnitsPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\hud\window\menu\info\LeftMenuInfoPanel.h" />
@@ -345,7 +342,6 @@
     <ClInclude Include="src\objects\building\Building.h" />
     <ClInclude Include="src\objects\building\BuildingFactory.h" />
     <ClInclude Include="src\objects\building\BuildingType.h" />
-    <ClInclude Include="src\hud\window\building\BuildPanel.h" />
     <ClInclude Include="src\hud\UiUtils.h" />
     <ClInclude Include="src\camera\CameraBehave.h" />
     <ClInclude Include="src\camera\CameraEnums.h" />
@@ -358,7 +354,6 @@
     <ClInclude Include="src\hud\window\menu\MenuPanel.h" />
     <ClInclude Include="src\hud\window\minimap\MiniMapPanel.h" />
     <ClInclude Include="src\hud\MySprite.h" />
-    <ClInclude Include="src\hud\window\orders\OrdersPanel.h" />
     <ClInclude Include="src\OrderType.h" />
     <ClInclude Include="src\objects\Physical.h" />
     <ClInclude Include="src\player\Player.h" />
@@ -406,7 +401,6 @@
     <ClInclude Include="src\objects\unit\Unit.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\simulation\Simulation.h" />
-    <ClInclude Include="src\hud\window\units\UnitsPanel.h" />
     <ClInclude Include="src\objects\unit\state\UnitStateType.h" />
     <ClInclude Include="src\objects\unit\UnitType.h" />
     <ClInclude Include="src\utils.h" />

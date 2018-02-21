@@ -133,16 +133,7 @@
     <ClCompile Include="src\hud\window\minimap\MiniMapPanel.cpp">
       <Filter>hud\windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\hud\window\units\UnitsPanel.cpp">
-      <Filter>hud\windows</Filter>
-    </ClCompile>
     <ClCompile Include="src\hud\window\debug\DebugPanel.cpp">
-      <Filter>hud\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="src\hud\window\building\BuildPanel.cpp">
-      <Filter>hud\windows</Filter>
-    </ClCompile>
-    <ClCompile Include="src\hud\window\orders\OrdersPanel.cpp">
       <Filter>hud\windows</Filter>
     </ClCompile>
     <ClCompile Include="src\objects\unit\state\FollowState.cpp">
@@ -380,16 +371,7 @@
     <ClInclude Include="src\hud\window\minimap\MiniMapPanel.h">
       <Filter>hud\windows</Filter>
     </ClInclude>
-    <ClInclude Include="src\hud\window\units\UnitsPanel.h">
-      <Filter>hud\windows</Filter>
-    </ClInclude>
     <ClInclude Include="src\hud\window\debug\DebugPanel.h">
-      <Filter>hud\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="src\hud\window\building\BuildPanel.h">
-      <Filter>hud\windows</Filter>
-    </ClInclude>
-    <ClInclude Include="src\hud\window\orders\OrdersPanel.h">
       <Filter>hud\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\unit\state\FollowState.h">

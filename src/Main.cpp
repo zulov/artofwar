@@ -83,21 +83,6 @@ void Main::subscribeToUIEvents() {
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleLeftMenuButton));
 	}
 
-	for (auto hudElement : hud->getButtonsBuildToSubscribe()) {
-		UIElement* element = hudElement->getUIElement();
-		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleBuildButton));
-	}
-
-	for (auto hudElement : hud->getButtonsUnitsToSubscribe()) {
-		UIElement* element = hudElement->getUIElement();
-		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleUnitButton));
-	}
-
-	for (auto hudElement : hud->getButtonsOrdersToSubscribe()) {
-		UIElement* element = hudElement->getUIElement();
-		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleOrdersButton));
-	}
-
 	for (auto buttton : hud->getButtonsSelectedToSubscribe()) {
 		SubscribeToEvent(buttton, E_CLICK, URHO3D_HANDLER(Main, HandleSelectedButton));
 	}

@@ -9,13 +9,10 @@
 #include "database/db_strcut.h"
 #include "control/SelectedInfo.h"
 #include "window/selected/SelectedHudPanel.h"
-#include "window/building/BuildPanel.h"
-#include "window/units/UnitsPanel.h"
 #include "window/debug/DebugPanel.h"
 #include "window/menu/MenuPanel.h"
 #include "window/top/TopPanel.h"
 #include "window/minimap/MiniMapPanel.h"
-#include "window/orders/OrdersPanel.h"
 #include "window/queue/QueuePanel.h"
 #include "window/loading/LoadingPanel.h"
 #include "window/in_game_menu/InGameMenuPanel.h"
@@ -47,11 +44,8 @@ URHO3D_OBJECT(Hud, Object)
 	void hoverOffIcon(HudElement* hudElement);
 
 	std::vector<Button*>& getButtonsSelectedToSubscribe();
-	std::vector<HudElement*>& getButtonsOrdersToSubscribe();
-
 	std::vector<HudElement*>& getButtonsLeftMenuToSubscribe();
-	std::vector<HudElement*>& getButtonsBuildToSubscribe();
-	std::vector<HudElement*>& getButtonsUnitsToSubscribe();
+
 	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
 	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
 	void resetLoading();
@@ -76,13 +70,10 @@ private:
 	void createCursor();
 
 	SelectedHudPanel* selectedHudPanel;
-	BuildPanel* buildPanel;
-	UnitsPanel* unitsPanel;
 	DebugPanel* debugPanel;
 	TopPanel* topPanel;
 	MiniMapPanel* miniMapPanel;
 	MenuPanel* menuPanel;
-	OrdersPanel* ordersPanel;
 	QueuePanel* queuePanel;
 	LoadingPanel* loadingPanel;
 	InGameMenuPanel* inGameMenuPanel;

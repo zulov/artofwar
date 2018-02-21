@@ -68,32 +68,17 @@ void Hud::createCursor() {
 void Hud::createMyPanels() {
 
 	panels.push_back(selectedHudPanel = new SelectedHudPanel(style));
-	panels.push_back(buildPanel = new BuildPanel(style));
-	panels.push_back(unitsPanel = new UnitsPanel(style));
 	panels.push_back(debugPanel = new DebugPanel(style));
 	panels.push_back(topPanel = new TopPanel(style));
 	panels.push_back(menuPanel = new MenuPanel(style));
-	panels.push_back(ordersPanel = new OrdersPanel(style));
 	panels.push_back(queuePanel = new QueuePanel(style));
 	panels.push_back(loadingPanel = new LoadingPanel(style));
 	panels.push_back(inGameMenuPanel = new InGameMenuPanel(style));
 	panels.push_back(mainMenuPanel = new MainMenuPanel(style));
 	panels.push_back(miniMapPanel = new MiniMapPanel(style));
 
-	menuPanel->createWindow();
-	buildPanel->createWindow();
-	unitsPanel->createWindow();
-	miniMapPanel->createWindow();
-	debugPanel->createWindow();
-	topPanel->createWindow();
-	selectedHudPanel->createWindow();
-	ordersPanel->createWindow();
-	queuePanel->createWindow();
-	loadingPanel->createWindow();
-	inGameMenuPanel->createWindow();
-	mainMenuPanel->createWindow();
-
 	for (auto panel : panels) {
+		panel->createWindow();
 		panel->setVisible(false);
 	}
 }
@@ -141,24 +126,6 @@ void Hud::preapreUrho() {
 
 void Hud::subscribeToUIEvents() {
 	for (auto hudElement : getButtonsLeftMenuToSubscribe()) {
-		UIElement* element = hudElement->getUIElement();
-		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Hud, HandleUIButtonHoverOn));
-		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Hud, HandleUIButtonHoverOff));
-	}
-
-	for (auto hudElement : getButtonsBuildToSubscribe()) {
-		UIElement* element = hudElement->getUIElement();
-		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Hud, HandleUIButtonHoverOn));
-		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Hud, HandleUIButtonHoverOff));
-	}
-
-	for (auto hudElement : getButtonsUnitsToSubscribe()) {
-		UIElement* element = hudElement->getUIElement();
-		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Hud, HandleUIButtonHoverOn));
-		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Hud, HandleUIButtonHoverOff));
-	}
-
-	for (auto hudElement : getButtonsOrdersToSubscribe()) {
 		UIElement* element = hudElement->getUIElement();
 		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Hud, HandleUIButtonHoverOn));
 		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Hud, HandleUIButtonHoverOff));
@@ -221,14 +188,6 @@ void Hud::createMiniMap() {
 	miniMapPanel->createEmpty(160);
 }
 
-std::vector<HudElement*>& Hud::getButtonsBuildToSubscribe() {
-	return buildPanel->getButtons();
-}
-
-std::vector<HudElement*>& Hud::getButtonsUnitsToSubscribe() {
-	return unitsPanel->getButtons();
-}
-
 void Hud::resetLoading() {
 	loadingPanel->show();
 }
@@ -271,24 +230,15 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 		switch (selectedInfo->getSelectedType()) {
 
 		case UNIT:
-			ordersPanel->show(selectedInfo);
 			menuPanel->refresh(LeftMenuMode::ORDER, selectedInfo);
-			buildPanel->setVisible(false);
-			unitsPanel->setVisible(false);
 			queuePanel->setVisible(false);
 			break;
 		case BUILDING:
-			ordersPanel->setVisible(false);
-			buildPanel->setVisible(false);
 			menuPanel->refresh(LeftMenuMode::UNIT, selectedInfo);
-			unitsPanel->show(selectedInfo);
 			queuePanel->show(selectedInfo);
 			break;
 		default:
-			ordersPanel->setVisible(false);
-			buildPanel->show();
 			menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
-			unitsPanel->setVisible(false);
 			queuePanel->setVisible(false);
 		}
 	} else {
@@ -306,10 +256,6 @@ void Hud::hoverOnIcon(HudElement* hudElement) {
 
 void Hud::hoverOffIcon(HudElement* hudElement) {
 	menuPanel->removeInfo();
-}
-
-std::vector<HudElement*>& Hud::getButtonsOrdersToSubscribe() {
-	return ordersPanel->getButtons();
 }
 
 std::vector<HudElement*>& Hud::getButtonsLeftMenuToSubscribe() {
