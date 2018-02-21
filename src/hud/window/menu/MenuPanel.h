@@ -29,6 +29,8 @@ public:
 	void setVisible(bool enable) override;
 private:
 	void createBody() override;
+	void setChecks(int val);
+	void ChengeModeButton(StringHash eventType, VariantMap& eventData);
 	void basicBuilding();
 	void basicUnit();
 	void basicOrder(SelectedInfo* selectedInfo);
@@ -48,4 +50,6 @@ private:
 	LeftMenuMode mode = LeftMenuMode::BUILDING;
 	LeftMenuSubMode subMode = LeftMenuSubMode::BASIC;
 	int page = 0;
+
+	SelectedInfo* lastSelectedInfo = nullptr;
 };

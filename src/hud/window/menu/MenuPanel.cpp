@@ -10,6 +10,7 @@
 #include "hud/window/in_game_menu/middle/AbstractMiddlePanel.h"
 #include "player/PlayersManager.h"
 #include <unordered_set>
+#include <Urho3D/UI/UIEvents.h>
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -28,11 +29,12 @@ void MenuPanel::removeInfo() {
 }
 
 void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {
+	lastSelectedInfo = selectedInfo;
 	if (mode != _mode) {
 		mode = _mode;
 		subMode = BASIC;
 	}
-	updateButtons(selectedInfo);
+	updateButtons(lastSelectedInfo);
 }
 
 void MenuPanel::setInfo(HudElement* hudElement) {
@@ -68,8 +70,9 @@ void MenuPanel::createBody() {
 		MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
 		checks[i] = rows[LEFT_MENU_ROWS_NUMBER - 1]->CreateChild<CheckBox>();
 		checks[i]->SetStyle("LeftMenuCheckBox", style);
-
+		checks[i]->SetVar("Num", i);
 		checks[i]->AddChild(sprite);
+		SubscribeToEvent(checks[i], E_CLICK, URHO3D_HANDLER(MenuPanel, ChengeModeButton));
 	}
 	Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
 	>("textures/hud/icon/lm/lm3.png");
@@ -87,6 +90,23 @@ void MenuPanel::createBody() {
 		}
 	}
 
+}
+
+void MenuPanel::setChecks(int val) {
+	for (auto check : checks) {
+		check->SetChecked(false);
+	}
+	checks[val]->SetChecked(true);
+}
+
+void MenuPanel::ChengeModeButton(StringHash eventType, VariantMap& eventData) {
+	CheckBox* element = (CheckBox*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
+	int val = element->GetVar("Num").GetInt();
+	LeftMenuSubMode newSubMode = static_cast<LeftMenuSubMode>(val);
+	if (newSubMode != subMode) {
+		subMode = newSubMode;
+		updateButtons(lastSelectedInfo);
+	}
 }
 
 void MenuPanel::basicBuilding() {
@@ -172,6 +192,7 @@ void MenuPanel::resetButtons(int from) {
 }
 
 void MenuPanel::updateButtons(SelectedInfo* selectedInfo) {
+	setChecks(subMode);
 	switch (mode) {
 
 	case LeftMenuMode::BUILDING:

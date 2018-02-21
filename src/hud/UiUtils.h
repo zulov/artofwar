@@ -57,8 +57,7 @@ static void setTextureToSprite(MySprite* sprite, Texture2D* texture) {
 		sprite->SetFullImageRect();
 		sprite->SetHotSpot(textureWidth * perHotSpot.x_, textureHeight * perHotSpot.y_);
 	} else {
-		sprite->SetVisible(false);
-	
+		sprite->SetVisible(false);	
 	}
 }
 

@@ -23,13 +23,13 @@
     </element>
 	
 	<element type="LeftMenuIcon" style="Button">
-        <attribute name="Min Size" value="{iconX-2*spaceX} {iconY/2}" />
-        <attribute name="Max Size" value="{iconX-2*spaceX} {iconY/2}" />
+        <attribute name="Min Size" value="{iconX-4*spaceX} {iconY/2+spaceY}" />
+        <attribute name="Max Size" value="{iconX-4*spaceX} {iconY/2+spaceY}" />
     </element>
 	
 	<element type="LeftMenuCheckBox" style="CheckBox" >
-		<attribute name="Min Size" value="{iconX+spaceX} {iconY/2}" />
-        <attribute name="Max Size" value="{iconX+spaceX} {iconY/2}" />
+		<attribute name="Min Size" value="{iconX+spaceX} {iconY/2+spaceY}" />
+        <attribute name="Max Size" value="{iconX+spaceX} {iconY/2+spaceY}" />
 		<attribute name="Image Rect" value="192 80 208 96" />
 		<attribute name="Is Checked" value="false" />
 	</element>
@@ -43,7 +43,7 @@
 	<element type="LeftMenuSmallSprite">
         <attribute name="Vert Alignment" value="Center" />
 		<attribute name="Horiz Alignment" value="Center" />
-		<attribute name="My Size" value="{iconX+spaceX} {iconY/2}" />
+		<attribute name="My Size" value="{iconX+spaceX} {iconY/2+spaceY}" />
 		<attribute name="Percent HotSpot" value="0.5 0.5" />
 		<attribute name="Opacity" value="0.8" />
     </element>
