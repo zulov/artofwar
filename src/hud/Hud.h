@@ -33,8 +33,8 @@ public:
 URHO3D_OBJECT(Hud, Object)
 
 	Hud();
-	void clear();
 	~Hud();
+	void clear();
 
 	void update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
                  SimulationInfo* simulationInfo);
