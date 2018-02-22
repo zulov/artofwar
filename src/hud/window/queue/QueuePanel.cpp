@@ -39,17 +39,17 @@ void QueuePanel::update(QueueManager* queue, short& j) {
 	}
 }
 
-String QueuePanel::getIconName(ObjectType index, int id) {
+String QueuePanel::getIconName(ObjectType index, int i) {
 	DatabaseCache* dbCache = Game::get()->getDatabaseCache();
 	switch (index) {
 	case ENTITY:
 		return "mock.png";
 	case UNIT:
-		return dbCache->getUnit(id)->icon;
+		return "unit/" + dbCache->getUnit(i)->icon;
 	case BUILDING:
-		return dbCache->getBuilding(id)->icon;
+		return "building/" + dbCache->getBuilding(i)->icon;
 	case RESOURCE:
-		return dbCache->getResource(id)->icon;
+		return "resource/" + dbCache->getResource(i)->icon;
 	default:
 		return "mock.png";
 	}

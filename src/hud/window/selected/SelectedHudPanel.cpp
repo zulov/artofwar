@@ -83,11 +83,11 @@ String SelectedHudPanel::getIconName(ObjectType index, int i) {
 	case ENTITY:
 		return "mock.png";
 	case UNIT:
-		return dbCache->getUnit(i)->icon;
+		return "unit/" + dbCache->getUnit(i)->icon;
 	case BUILDING:
-		return dbCache->getBuilding(i)->icon;
+		return "building/" + dbCache->getBuilding(i)->icon;
 	case RESOURCE:
-		return dbCache->getResource(i)->icon;
+		return "resource/" + dbCache->getResource(i)->icon;
 	default:
 		return "mock.png";
 	}
@@ -106,7 +106,7 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 		if (data.empty()) { continue; }
 		String name = getIconName(type, infoType->getId());
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
-		
+
 		for (int j = 0; j < data.size(); j += ratio) {
 			int max = Min(data.size(), j + ratio);
 			int diff = max - j;
