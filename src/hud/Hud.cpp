@@ -1,21 +1,21 @@
 #include "Hud.h"
 #include "Game.h"
-#include <regex>
-#include <exprtk/exprtk.hpp>
 #include "UiUtils.h"
-#include "player/PlayersManager.h"
 #include "database/DatabaseCache.h"
-#include <Urho3D/UI/UI.h>
-#include <Urho3D/Graphics/Graphics.h>
-#include <Urho3D/Resource/XMLFile.h>
+#include "player/PlayersManager.h"
+#include "simulation/SimulationInfo.h"
+#include "window/main_menu/MainMenuPanel.h"
+#include "window/menu/LeftMenuModes.h"
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
+#include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include <iostream>
+#include <Urho3D/Resource/XMLFile.h>
+#include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "window/main_menu/MainMenuPanel.h"
-#include "simulation/SimulationInfo.h"
-#include "window/menu/LeftMenuModes.h"
+#include <exprtk/exprtk.hpp>
+#include <iostream>
+#include <regex>
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {

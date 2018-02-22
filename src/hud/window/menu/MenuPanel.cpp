@@ -60,6 +60,7 @@ std::vector<HudElement*>& MenuPanel::getButtons() {
 void MenuPanel::createBody() {
 	infoPanel = new LeftMenuInfoPanel(style);
 	infoPanel->createWindow();
+	infoPanel->setVisible(false);
 
 	mock = window->CreateChild<UIElement>();
 	mock->SetStyle("LeftMenuMock", style);
@@ -165,7 +166,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 	}
 
 	int size = Game::get()->getDatabaseCache()->getUnitSize();
-	
+
 	int k = 0;
 	for (int i = 0; i < size; ++i) {
 		if (common.find(i) != common.end()) {

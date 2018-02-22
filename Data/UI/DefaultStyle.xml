@@ -465,5 +465,13 @@
 		<attribute name="Horiz Alignment" value="Center" />
 		<attribute name="Vert Alignment" value="Center" />
 	</element>
+	
+	<element type="Sprite">
+        <attribute name="Vert Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="My Size" value="{iconX-spaceX} {iconY-spaceY}" />
+		<attribute name="Percent HotSpot" value="0.5 0.5" />
+		<attribute name="Opacity" value="0.8" />
+    </element>
 		
 </elements>
