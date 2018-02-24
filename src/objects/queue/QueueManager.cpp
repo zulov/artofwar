@@ -15,7 +15,7 @@ QueueManager::~QueueManager() {
 	clear_vector(queue);
 }
 
-void QueueManager::add(short value, ObjectType type, short id) {
+void QueueManager::add(short value, QueueType type, short id) {
 	for (auto & i : queue) {
 		if (i->checkType(type, id)) {
 			value = i->add(value);

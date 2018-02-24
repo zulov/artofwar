@@ -1,6 +1,7 @@
 #pragma once
 #include "Resources.h"
 #include "database/db_strcut.h"
+#include <list>
 
 class Player
 {
@@ -15,6 +16,7 @@ public:
 	std::string getValues(int precision);
 	void setResourceAmount(int resource, float amount);
 	void setResourceAmount(float amount);
+	int getLevelForUnit(int id);
 private:
 	Resources resources;
 	db_nation* dbNation;

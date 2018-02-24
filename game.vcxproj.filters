@@ -53,9 +53,6 @@
     <ClCompile Include="src\objects\Player.cpp">
       <Filter>player</Filter>
     </ClCompile>
-    <ClCompile Include="src\objects\building\QueueManager.cpp">
-      <Filter>objects\building</Filter>
-    </ClCompile>
     <ClCompile Include="src\objects\resource\ResourceEntity.cpp">
       <Filter>objects\resource</Filter>
     </ClCompile>
@@ -105,9 +102,6 @@
     </ClCompile>
     <ClCompile Include="src\objects\unit\aim\Aim.cpp">
       <Filter>aim</Filter>
-    </ClCompile>
-    <ClCompile Include="src\objects\building\QueueElement.cpp">
-      <Filter>objects\building</Filter>
     </ClCompile>
     <ClCompile Include="src\hud\window\top\TopPanel.cpp">
       <Filter>hud\windows\top</Filter>
@@ -204,6 +198,12 @@
     <ClCompile Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.cpp" />
     <ClCompile Include="src\objects\unit\state\DisposeState.cpp" />
     <ClCompile Include="src\hud\window\menu\info\LeftMenuInfoPanel.cpp" />
+    <ClCompile Include="src\objects\queue\QueueElement.cpp">
+      <Filter>objects\building</Filter>
+    </ClCompile>
+    <ClCompile Include="src\objects\queue\QueueManager.cpp">
+      <Filter>objects\building</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -291,9 +291,6 @@
     <ClInclude Include="src\player\Player.h">
       <Filter>player</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\building\QueueManager.h">
-      <Filter>objects\building</Filter>
-    </ClInclude>
     <ClInclude Include="src\objects\resource\ResourceEntity.h">
       <Filter>objects\resource</Filter>
     </ClInclude>
@@ -344,9 +341,6 @@
       <Filter>objects\resource</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\LevelBuilder.h" />
-    <ClInclude Include="src\objects\building\QueueElement.h">
-      <Filter>objects\building</Filter>
-    </ClInclude>
     <ClInclude Include="src\hud\window\top\TopPanel.h">
       <Filter>hud\windows\top</Filter>
     </ClInclude>
@@ -460,6 +454,13 @@
     <ClInclude Include="src\hud\window\menu\info\LeftMenuInfoPanel.h" />
     <ClInclude Include="src\hud\window\menu\LeftMenuModes.h" />
     <ClInclude Include="src\objects\building\BuildingUtils.h" />
+    <ClInclude Include="src\objects\queue\QueueType.h" />
+    <ClInclude Include="src\objects\queue\QueueManager.h">
+      <Filter>objects\building</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\queue\QueueElement.h">
+      <Filter>objects\building</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

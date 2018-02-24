@@ -1,9 +1,9 @@
 #pragma once
 #include "objects/Entity.h"
 #include "database/db_strcut.h"
-#include "QueueElement.h"
-#include "QueueManager.h"
 #include "objects/Static.h"
+#include "objects/queue/QueueElement.h"
+#include "objects/queue/QueueManager.h"
 
 struct db_building;
 

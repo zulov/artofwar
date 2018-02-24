@@ -75,7 +75,7 @@ void Building::action(short id, ActionParameter& parameter) {
 	std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
 
 	if (resources.reduce(costs)) {
-		queue->add(1, UNIT, id);
+		queue->add(1, QueueType::UNIT, id);
 	}
 }
 

@@ -1,9 +1,7 @@
 #pragma once
 #include "../AbstractWindowPanel.h"
-#include <Urho3D/UI/Button.h>
-#include <vector>
 #include "QueueHudElement.h"
-#include "objects/building/QueueManager.h"
+#include "objects/queue/QueueManager.h"
 #include "control/SelectedInfo.h"
 
 class QueuePanel :public AbstractWindowPanel//TODO moze zrobic multilina
@@ -11,12 +9,12 @@ class QueuePanel :public AbstractWindowPanel//TODO moze zrobic multilina
 public:
 	QueuePanel(Urho3D::XMLFile* _style);
 	~QueuePanel();
+	void update(QueueManager* queue, short& j);
 
 	static String getIconName(ObjectType index, int id);
 	void show(SelectedInfo* selectedInfo);
 	void update(SelectedInfo* selectedInfo);
 private:
-	void update(QueueManager* queue, short& j);
 	void hideElements(int from);
 	void createBody() override;
 	void HandleReduce(StringHash eventType, VariantMap& eventData);
