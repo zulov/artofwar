@@ -47,3 +47,7 @@ void Player::setResourceAmount(int resource, float amount) {
 void Player::setResourceAmount(float amount) {
 	resources.init(amount);
 }
+
+int Player::getLevelForUnit(int id) {
+	return 0;
+}

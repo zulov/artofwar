@@ -35,10 +35,11 @@ private:
 	void resetChecks();
 	void ChengeModeButton(StringHash eventType, VariantMap& eventData);
 	void basicBuilding();
-	std::unordered_set<int> getUnitInBuilding(std::vector<SelectedInfoType*> infoTypes);
+	std::unordered_set<int> getUnitInBuilding(std::vector<SelectedInfoType*>& infoTypes);
 
 	void basicUnit(SelectedInfo* selectedInfo);
 	void levelUnit(SelectedInfo* selectedInfo);
+	std::unordered_set<int>  getOrderForUnit(std::vector<SelectedInfoType*>& infoTypes);
 
 	void basicOrder(SelectedInfo* selectedInfo);
 	
