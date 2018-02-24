@@ -48,7 +48,7 @@ void SelectedInfo::reset() {
 	}
 }
 
-vector<SelectedInfoType*>& SelectedInfo::getSelecteType() {
+vector<SelectedInfoType*>& SelectedInfo::getSelectedTypes() {
 	return selectedByType;
 }
 

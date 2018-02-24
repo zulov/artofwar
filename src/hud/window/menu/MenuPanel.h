@@ -9,6 +9,7 @@
 #include <Urho3D/UI/Button.h>
 #include "LeftMenuModes.h"
 #include "hud/MySprite.h"
+#include <unordered_set>
 
 #define LEFT_MENU_ROWS_NUMBER 4
 #define LEFT_MENU_CHECKS_NUMBER 3
@@ -31,10 +32,16 @@ public:
 private:
 	void createBody() override;
 	void setChecks(int val);
+	void resetChecks();
 	void ChengeModeButton(StringHash eventType, VariantMap& eventData);
 	void basicBuilding();
+	std::unordered_set<int> getUnitInBuilding(std::vector<SelectedInfoType*> infoTypes);
+
 	void basicUnit(SelectedInfo* selectedInfo);
+	void levelUnit(SelectedInfo* selectedInfo);
+
 	void basicOrder(SelectedInfo* selectedInfo);
+	
 	void resetButtons(int from);
 	void updateButtons(SelectedInfo* selectedInfo);
 

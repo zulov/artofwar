@@ -11,6 +11,7 @@
 #include "player/PlayersManager.h"
 #include <unordered_set>
 #include <Urho3D/UI/UIEvents.h>
+#include "objects/building/BuildingUtils.h"
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -105,8 +106,18 @@ void MenuPanel::createBody() {
 void MenuPanel::setChecks(int val) {
 	for (auto check : checks) {
 		check->SetChecked(false);
+		check->SetVisible(true);
 	}
 	checks[val]->SetChecked(true);
+}
+
+void MenuPanel::resetChecks() {
+	for (auto check : checks) {
+		check->SetChecked(false);
+		check->SetVisible(false);
+	}
+	checks[0]->SetChecked(true);
+	checks[0]->SetVisible(true);
 }
 
 void MenuPanel::ChengeModeButton(StringHash eventType, VariantMap& eventData) {
@@ -140,55 +151,52 @@ void MenuPanel::basicBuilding() {
 	resetButtons(k);
 }
 
-void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
-	vector<SelectedInfoType*> infoTypes = selectedInfo->getSelecteType();
 
+unordered_set<int> MenuPanel::getUnitInBuilding(vector<SelectedInfoType*> infoTypes) {
 	unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		std::vector<Physical*>& data = infoTypes.at(i)->getData();
 		if (!data.empty()) {
-			std::vector<db_unit*>* units = Game::get()->getDatabaseCache()->getUnitsForBuilding(i);
-			unordered_set<int> common2;
-			for (auto& unit : *units) {
-				//todo to zrobic raz i pobierac
-				if (unit->nation == nation) {
-					common2.insert(unit->id);
-				}
-			}
+			unordered_set<int> possibleUntis = unitsIdsForBuildingNation(nation, i);
 			unordered_set<int> temp(common);
 			for (const auto& id : temp) {
-				if (common2.find(id) == common2.end()) {
+				if (possibleUntis.find(id) == possibleUntis.end()) {
 					common.erase(id);
 				}
 			}
 		}
 	}
 
-	int size = Game::get()->getDatabaseCache()->getUnitSize();
+	return common;
+}
 
+void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
+	unordered_set<int> toShow = getUnitInBuilding(selectedInfo->getSelectedTypes());
 	int k = 0;
-	for (int i = 0; i < size; ++i) {
-		if (common.find(i) != common.end()) {
-			db_unit* unit = Game::get()->getDatabaseCache()->getUnit(i);
-			if (unit) {
-				if (unit->nation == nation) {
-					Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
-					>("textures/hud/icon/unit/" + unit->icon);
-					setTextureToSprite(sprites[k], texture);
 
-					hudElements[k]->setId(unit->id, UNIT);
-					hudElements[k]->setSubType(subMode);
-					k++;
-				}
-			}
+	for (auto id : toShow) {
+		db_unit* unit = Game::get()->getDatabaseCache()->getUnit(id);
+		if (unit) {
+			Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
+			>("textures/hud/icon/unit/" + unit->icon);
+			setTextureToSprite(sprites[k], texture);
+
+			hudElements[k]->setId(unit->id, UNIT);
+			hudElements[k]->setSubType(subMode);
+			k++;
 		}
 	}
 	resetButtons(k);
 }
 
+void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
+	vector<SelectedInfoType*> infoTypes = selectedInfo->getSelectedTypes();
+
+}
+
 void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
-	std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelecteType();
+	std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelectedTypes();
 
 	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
@@ -239,16 +247,29 @@ void MenuPanel::resetButtons(int from) {
 }
 
 void MenuPanel::updateButtons(SelectedInfo* selectedInfo) {
-	setChecks(subMode);
+	
 	switch (mode) {
 
 	case LeftMenuMode::BUILDING:
+		resetChecks();
 		basicBuilding();
 		break;
 	case LeftMenuMode::UNIT:
-		basicUnit(selectedInfo);
+		setChecks(subMode);
+
+		switch (subMode) {
+		case BASIC:
+			basicUnit(selectedInfo);
+			break;
+		case LEVEL:
+			levelUnit(selectedInfo);
+			break;
+		case UPGRADE: break;
+		default: ;
+		}
 		break;
 	case LeftMenuMode::ORDER:
+		resetChecks();
 		basicOrder(selectedInfo);
 		break;
 	default: ;

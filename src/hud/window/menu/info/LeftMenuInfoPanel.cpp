@@ -28,7 +28,7 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 	setVisible(true);
 	if (selectedInfo->getAllNumber() == 1) {
 		text->SetVisible(true);
-		std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelecteType();
+		std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelectedTypes();
 		for (auto& infoType : infoTypes) {
 			std::vector<Physical*>& data = infoType->getData();
 			if (!data.empty()) {

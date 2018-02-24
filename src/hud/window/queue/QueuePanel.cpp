@@ -65,7 +65,7 @@ void QueuePanel::update(SelectedInfo* selectedInfo) {
 	//TODO wykonuje sie nawet jeœli sie nic nie zmieni³o
 	short j = 0;
 	if (window->IsVisible()) {
-		std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelecteType();
+		std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelectedTypes();
 
 		for (auto & infoType : infoTypes) {
 			std::vector<Physical*>& data = infoType->getData();

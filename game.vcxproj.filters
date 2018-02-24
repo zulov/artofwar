@@ -459,6 +459,7 @@
     <ClInclude Include="src\objects\unit\state\DisposeState.h" />
     <ClInclude Include="src\hud\window\menu\info\LeftMenuInfoPanel.h" />
     <ClInclude Include="src\hud\window\menu\LeftMenuModes.h" />
+    <ClInclude Include="src\objects\building\BuildingUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

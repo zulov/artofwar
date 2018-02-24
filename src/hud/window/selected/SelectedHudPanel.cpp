@@ -95,7 +95,7 @@ String SelectedHudPanel::getIconName(ObjectType index, int i) {
 
 void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 	ObjectType type = selectedInfo->getSelectedType();
-	std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelecteType();
+	std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelectedTypes();
 
 	int all = selectedInfo->getAllNumber();
 	int selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
