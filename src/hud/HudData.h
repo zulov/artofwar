@@ -1,7 +1,8 @@
 #pragma once
-#include <Urho3D/UI/UIElement.h>
 #include "ObjectEnums.h"
 #include "objects/queue/QueueType.h"
+#include <Urho3D/UI/UIElement.h>
+
 
 class HudData
 {

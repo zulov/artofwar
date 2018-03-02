@@ -14,6 +14,7 @@ Urho3D::UIElement* HudData::getUIElement() {
 void HudData::setId(short id, ObjectType _type) {
 	objectId = id;
 	type = _type;
+	queueType =QueueType::NONE;
 }
 
 void HudData::setId(short id, ObjectType _type, QueueType _queueType) {

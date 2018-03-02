@@ -1,7 +1,8 @@
 #pragma once
 enum class QueueType
 {
-	UNIT =0,
+	NONE=0,
+	UNIT,
 	BUILDING,
 	UNIT_LEVEL,
 	BUILDING_LEVEL

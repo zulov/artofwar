@@ -181,8 +181,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 			>("textures/hud/icon/unit/" + unit->icon);
 			setTextureToSprite(sprites[k], texture);
 
-			hudElements[k]->setId(unit->id, ObjectType::UNIT);
-			//hudElements[k]->setSubType(subMode);
+			hudElements[k]->setId(unit->id, ObjectType::UNIT, QueueType::UNIT);
 			k++;
 		}
 	}
