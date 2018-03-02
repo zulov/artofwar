@@ -20,16 +20,16 @@ inline Urho3D::String getIconName(ObjectType type, int i) {
 	}
 }
 
-inline Urho3D::String getIconName(QueueType type, int i) {
+inline Urho3D::String getIconName(QueueType type, int level, int i) {
 	DatabaseCache* dbCache = Game::get()->getDatabaseCache();
 	switch (type) {
-	case QueueType::UNIT: 
+	case QueueType::UNIT:
 		return "unit/" + dbCache->getUnit(i)->icon;
-	case QueueType::UNIT_LEVEL: 
-		return "unit/level/" + dbCache->getUnit(i)->icon;
-	case QueueType::BUILDING_LEVEL: 
-		return "building/level/" + dbCache->getBuilding(i)->icon;
-	default: 
+	case QueueType::UNIT_LEVEL:
+		return "unit/levels/"+String(level)+"/" + dbCache->getUnit(i)->icon;
+	case QueueType::BUILDING_LEVEL:
+		return "building/levels/"+String(level)+"/" + dbCache->getBuilding(i)->icon;
+	default:
 		return "mock.png";
 	}
 }

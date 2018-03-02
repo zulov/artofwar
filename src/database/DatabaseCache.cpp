@@ -165,7 +165,8 @@ int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 	                                                       atoi(argv[0]), atoi(argv[1]), argv[2], atof(argv[3]),
 	                                                       atof(argv[4]), argv[5], argv[6], atof(argv[7]), atof(argv[8]),
 	                                                       atof(argv[9]), atoi(argv[10]), atof(argv[11]), atof(argv[12]),
-	                                                       atoi(argv[13]), atof(argv[14]), atof(argv[15]), atof(argv[16])
+	                                                       atoi(argv[13]), atof(argv[14]), atof(argv[15]), atof(argv[16]),
+	                                                       atof(argv[17])
 	                                                      )
 	                                    );
 
@@ -353,8 +354,15 @@ db_resolution* DatabaseCache::getResolution(int id) {
 	return dbContainer->resolutions[id];
 }
 
-db_unit_level* DatabaseCache::getUnitLevel(int id, int level) {
-	return dbContainer->levelsToUnit[id]->at(level);
+std::optional<db_unit_level*> DatabaseCache::getUnitLevel(int id, int level) {
+	if (dbContainer->levelsToUnit[id]->size() > level) {
+		return std::optional<db_unit_level*>{dbContainer->levelsToUnit[id]->at(level)};
+	}
+	return std::nullopt;
+}
+
+std::vector<db_unit_level*>* DatabaseCache::getUnitLevels(int id) {
+	return dbContainer->levelsToUnit[id];
 }
 
 std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) {

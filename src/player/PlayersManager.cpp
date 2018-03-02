@@ -25,7 +25,6 @@ void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dblo
 			}
 		}
 	}
-
 }
 
 void PlayersManager::addPlayer(NewGamePlayer player) {

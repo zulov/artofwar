@@ -1,12 +1,12 @@
 #include "objects/Physical.h"
 #include "Game.h"
-
-#include <Urho3D/Graphics/Model.h>
-#include <Urho3D/Graphics/Material.h>
 #include "objects/LinkComponent.h"
-#include <string>
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include <string>
+
 
 Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
 	LinkComponent* lc = node->CreateComponent<LinkComponent>();

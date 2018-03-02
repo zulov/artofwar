@@ -91,9 +91,6 @@
       <Filter>objects\collection\manager</Filter>
     </ClCompile>
     <ClCompile Include="src\scene\LevelBuilder.cpp" />
-    <ClCompile Include="src\hud\HudElement.cpp">
-      <Filter>hud</Filter>
-    </ClCompile>
     <ClCompile Include="src\hud\Hud.cpp">
       <Filter>hud</Filter>
     </ClCompile>
@@ -204,6 +201,10 @@
     <ClCompile Include="src\objects\queue\QueueManager.cpp">
       <Filter>objects\building</Filter>
     </ClCompile>
+    <ClCompile Include="src\commands\upgrade\UpgradeCommand.cpp" />
+    <ClCompile Include="src\hud\HudData.cpp">
+      <Filter>hud</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -274,9 +275,6 @@
       <Filter>objects</Filter>
     </ClInclude>
     <ClInclude Include="src\hud\Hud.h">
-      <Filter>hud</Filter>
-    </ClInclude>
-    <ClInclude Include="src\hud\HudElement.h">
       <Filter>hud</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\LinkComponent.h">
@@ -462,6 +460,10 @@
       <Filter>objects\building</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\NamesCache.h" />
+    <ClInclude Include="src\commands\upgrade\UpgradeCommand.h" />
+    <ClInclude Include="src\hud\HudData.h">
+      <Filter>hud</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

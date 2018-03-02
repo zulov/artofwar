@@ -173,7 +173,7 @@ void MiniMapPanel::createBody() {
 		box->SetStyle("MiniMapCheckBox", style);
 		checksElements.push_back(box);
 		box->AddChild(sprite);
-		HudElement* hudElement = new HudElement(checksElements.at(i));
+		HudData* hudElement = new HudData(checksElements.at(i));
 		hudElement->setId(i, ObjectType::ENTITY);
 		hudElements.push_back(hudElement);
 		checksElements.at(i)->SetVar("HudElement", hudElement);
@@ -197,7 +197,7 @@ void MiniMapPanel::createBody() {
 
 void MiniMapPanel::HandleButton(StringHash eventType, VariantMap& eventData) {
 	CheckBox* element = (CheckBox*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	HudElement* hudElement = (HudElement *)element->GetVar("HudElement").GetVoidPtr();
+	HudData* hudElement = (HudData *)element->GetVar("HudElement").GetVoidPtr();
 
 	changeMiniMapType(hudElement->getId(), element->IsChecked());
 }

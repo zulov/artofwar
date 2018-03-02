@@ -250,10 +250,30 @@ void Controls::resetState() {
 	}
 }
 
-void Controls::hudAction(HudElement* hud) {
-	typeToCreate = hud->getType();
+void Controls::hudAction(HudData* hud) {
 	state = BUILD;
+	typeToCreate = hud->getType();
 	idToCreate = hud->getId();
+}
+
+void Controls::order(short id, ActionParameter& parameter) {
+	switch (selectedType) {
+
+	case ObjectType::UNIT:
+		orderUnit(id);
+		break;
+	case ObjectType::BUILDING:
+		orderBuilding(id, parameter);
+		break;
+	case ObjectType::RESOURCE: break;
+	default: ;
+	}
+}
+
+void Controls::orderBuilding(short id, ActionParameter& parameter) {
+	for (auto& phy : *selected) {
+		phy->action(id, parameter);
+	}
 }
 
 void Controls::startSelectionNode(hit_data hitData) {
@@ -353,27 +373,6 @@ void Controls::orderUnit(short id) {
 		break;
 	default: ;
 	}
-}
-
-void Controls::orderBuilding(short id) {
-	for (auto& phy : *selected) {
-		phy->action(id, ActionParameter()); //TODO przemyslec to
-	}
-}
-
-void Controls::order(short id) {
-	switch (selectedType) {
-
-	case ObjectType::UNIT:
-		orderUnit(id);
-		break;
-	case ObjectType::BUILDING:
-		orderBuilding(id);
-		break;
-	case ObjectType::RESOURCE: break;
-	default: ;
-	}
-
 }
 
 void Controls::refreshSelected() {

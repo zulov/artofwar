@@ -39,7 +39,7 @@ void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {
 	updateButtons(lastSelectedInfo);
 }
 
-void MenuPanel::setInfo(HudElement* hudElement) {
+void MenuPanel::setInfo(HudData* hudElement) {
 	infoPanel->setInfo(hudElement);
 }
 
@@ -54,7 +54,7 @@ void MenuPanel::setVisible(bool enable) {
 	}
 }
 
-std::vector<HudElement*>& MenuPanel::getButtons() {
+std::vector<HudData*>& MenuPanel::getButtons() {
 	return hudElements;
 }
 
@@ -93,9 +93,9 @@ void MenuPanel::createBody() {
 		for (int j = 0; j < LEFT_MENU_BUTTON_PER_ROW; ++j) {
 			sprites[k] = createEmptySprite(style, "LeftMenuSprite");
 			buttons[k] = simpleButton(rows[i], sprites[k], style, "LeftMenuBigIcon");
-			hudElements.push_back(new HudElement(buttons[k]));
+			hudElements.push_back(new HudData(buttons[k]));
 			hudElements[k]->setId(-1, ObjectType::ENTITY);
-			hudElements[k]->setSubType(-1);
+
 			buttons[k]->SetVar("HudElement", hudElements[k]);
 			k++;
 		}
@@ -142,8 +142,7 @@ void MenuPanel::basicBuilding() {
 				>("textures/hud/icon/building/" + building->icon);
 				setTextureToSprite(sprites[k], texture);
 
-				hudElements[k]->setId(building->id, ObjectType::BUILDING);
-				hudElements[k]->setSubType(subMode);
+				hudElements[k]->setId(building->id, ObjectType::BUILDING, QueueType::UNIT);
 				k++;
 			}
 		}
@@ -183,7 +182,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 			setTextureToSprite(sprites[k], texture);
 
 			hudElements[k]->setId(unit->id, ObjectType::UNIT);
-			hudElements[k]->setSubType(subMode);
+			//hudElements[k]->setSubType(subMode);
 			k++;
 		}
 	}
@@ -197,17 +196,17 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	for (auto id : toShow) {
 		db_unit* unit = Game::get()->getDatabaseCache()->getUnit(id);
 		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
-		db_unit_level* dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level);
-		if (dbLevel) {
+		auto opt = Game::get()->getDatabaseCache()->getUnitLevel(id, level);
+		if (opt.has_value()) {
 			Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
 			>("textures/hud/icon/unit/levels/" + String(level) + "/" + unit->icon);
 			setTextureToSprite(sprites[k], texture);
 
-			hudElements[k]->setId(unit->id, ObjectType::UNIT);
-			hudElements[k]->setSubType(subMode);
+			hudElements[k]->setId(unit->id, ObjectType::UNIT, QueueType::UNIT_LEVEL);
 			k++;
 		}
 	}
+	resetButtons(k);
 }
 
 std::unordered_set<int> MenuPanel::getOrderForUnit(std::vector<SelectedInfoType*>& infoTypes) {
@@ -246,7 +245,6 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 			buttons[k]->SetVar("Num", order->id);
 
 			hudElements[k]->setId(order->id, ObjectType::ENTITY);
-			hudElements[k]->setSubType(subMode);
 			k++;
 		}
 	}

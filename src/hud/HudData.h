@@ -1,23 +1,25 @@
 #pragma once
 #include <Urho3D/UI/UIElement.h>
 #include "ObjectEnums.h"
+#include "objects/queue/QueueType.h"
 
-class HudElement
+class HudData
 {
 public:
-	HudElement(Urho3D::UIElement * _uiElement);
-	~HudElement();
+	HudData(Urho3D::UIElement * _uiElement);
+	~HudData();
 	Urho3D::UIElement * getUIElement();
 
 	void setId(short id, ObjectType _type);
-	void setSubType(short _subType);
+	void setId(short id, ObjectType _type, QueueType _queueType);
 	short getId();
-	short getSubType();
 	ObjectType getType();
+	QueueType getQueueType();
 private:
 	Urho3D::UIElement * uiElement;
 	ObjectType type;
-	short subType;
+	QueueType queueType;
+	
 	short objectId;
 
 };

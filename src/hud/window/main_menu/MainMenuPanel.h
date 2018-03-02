@@ -2,7 +2,7 @@
 #include "hud/window/AbstractWindowPanel.h"
 #include "MainMenuDetailsPanel.h"
 #include <vector>
-#include "hud/HudElement.h"
+#include "hud/HudData.h"
 #include <Urho3D/UI/Button.h>
 
 #define MAIN_MENU_BUTTON_NUMBER 5
@@ -21,7 +21,7 @@ public:
 	void HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 private:
 	void createBody() override;
-	std::vector<HudElement*> buttons;
+	std::vector<HudData*> buttons;
 	MainMenuDetailsPanel** detailsPanels;
 	Urho3D::BorderImage* background;
 };

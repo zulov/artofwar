@@ -1,7 +1,5 @@
 #pragma once
 
-
-#include "camera/CameraManager.h"
 #include "hud/Hud.h"
 #include "Benchmark.h"
 #include "control/Controls.h"
@@ -12,7 +10,6 @@
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/Input/InputEvents.h>
-#include <Urho3D/Resource/ResourceCache.h>
 #include "GameState.h"
 #include "Loading.h"
 #include "scene/save/SceneSaver.h"
@@ -32,7 +29,7 @@ class Main : public Application
 {
 URHO3D_OBJECT(Main, Application)
 
-	Main(Context* context);
+	explicit Main(Context* context);
 	void Setup() override;
 	void Start() override;
 	void Stop() override;
@@ -46,7 +43,7 @@ private:
 
 	void disposeScene();
 
-	void running(const double timeStep);
+	void running(double timeStep);
 	void SetWindowTitleAndIcon();
 
 	void subscribeToUIEvents();
@@ -60,10 +57,7 @@ private:
 	void HandleCloseGame(StringHash eventType, VariantMap& eventData);
 	void HandleSaveScene(StringHash, VariantMap& eventData);
 	void HandleMiniMapClick(StringHash eventType, VariantMap& eventData);
-	void HandleBuildButton(StringHash eventType, VariantMap& eventData);
 	void HandleLeftMenuButton(StringHash eventType, VariantMap& eventData);
-	void HandleUnitButton(StringHash eventType, VariantMap& eventData);
-	void HandleOrdersButton(StringHash eventType, VariantMap& eventData);
 	void HandleSelectedButton(StringHash eventType, VariantMap& eventData);
 
 	void InitLocalizationSystem();

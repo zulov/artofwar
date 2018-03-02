@@ -2,14 +2,17 @@
 #include "Game.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/creation/CreationCommandList.h"
+#include "commands/upgrade/UpgradeCommand.h"
 #include "scene/load/SceneLoader.h"
 #include <ctime>
+#include "player/PlayersManager.h"
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _simCommandList) {
 	enviroment = _enviroment;
 	simObjectManager = _simCommandList->getManager();
-	simCommandList = _simCommandList;
+	creationCommandList = _simCommandList;
+	levelsCommandList = new CommandList();
 
 	srand(time(NULL));
 
@@ -25,6 +28,7 @@ Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _simCommand
 Simulation::~Simulation() {
 	delete simulationInfo;
 	delete actionCommandList;
+	delete levelsCommandList;
 	Game::get()->setActionCommmandList(nullptr);
 }
 
@@ -120,9 +124,30 @@ void Simulation::updateBuildingQueue() {
 	for (Building* build : (*buildings)) {
 		QueueElement* done = build->updateQueue(maxTimeFrame);
 		if (done) {
-			if (done->getType() == QueueType::UNIT) {
-				simCommandList->add(new CreationCommand(ObjectType::UNIT, done->getAmount(), done->getSubtype(),
-				                                        new Vector3(build->getTarget()), 0, 0));
+			switch (done->getType()) {
+			case QueueType::UNIT:
+				creationCommandList->add(new CreationCommand(
+				                                             ObjectType::UNIT,
+				                                             done->getAmount(),
+				                                             done->getId(),
+				                                             new Vector3(build->getTarget()), 0, 0
+				                                            ));
+				break;
+			case QueueType::UNIT_LEVEL:
+				levelsCommandList->add(new UpgradeCommand(
+				                                            Game::get()->getPlayersManager()->getActivePlayer()->getId(),
+				                                            done->getId(),
+				                                            done->getType()
+				                                           ));
+				break;
+			case QueueType::BUILDING_LEVEL:
+				levelsCommandList->add(new UpgradeCommand(
+				                                            Game::get()->getPlayersManager()->getActivePlayer()->getId(),
+				                                            done->getId(),
+				                                            done->getType()
+				                                           ));
+				break;
+			default: ;
 			}
 
 			delete done;
@@ -156,7 +181,8 @@ SimulationInfo* Simulation::update(float timeStep) {
 		moveUnits(maxTimeFrame - (accumulateTime - timeStep));
 		accumulateTime -= maxTimeFrame;
 		if (currentFrameNumber % 3 == 0) {
-			simCommandList->execute();
+			levelsCommandList->execute();
+			creationCommandList->execute();
 			selfAI();
 			actionCommandList->execute();
 		}
@@ -183,13 +209,15 @@ SimulationInfo* Simulation::update(float timeStep) {
 void Simulation::initScene(SceneLoader& loader) {
 	loadEntities(loader);
 	addTestEntities();
-	simCommandList->execute();
+	levelsCommandList->execute();
+	creationCommandList->execute();
 }
 
 void Simulation::initScene(NewGameForm* form) {
 	loadEntities(form);
 	addTestEntities();
-	simCommandList->execute();
+	levelsCommandList->execute();
+	creationCommandList->execute();
 }
 
 void Simulation::moveUnits(float timeStep) {

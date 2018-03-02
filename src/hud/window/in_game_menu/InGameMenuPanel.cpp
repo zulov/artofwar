@@ -79,7 +79,7 @@ void InGameMenuPanel::createBody() {
 		text->SetText(msg);
 		text->SetStyle("InGameText", style);
 
-		HudElement* hudElement = new HudElement(button);
+		HudData* hudElement = new HudData(button);
 		hudElement->setId(i, ObjectType::ENTITY);
 		buttons.push_back(hudElement);
 
@@ -102,7 +102,7 @@ void InGameMenuPanel::createBody() {
 
 void InGameMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
+	HudData* hudElement = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
 
 	action(hudElement->getId());
 }

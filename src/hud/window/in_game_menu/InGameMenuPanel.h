@@ -1,5 +1,5 @@
 #pragma once
-#include "hud/HudElement.h"
+#include "hud/HudData.h"
 #include "hud/window/AbstractWindowPanel.h"
 #include "middle/AbstractMiddlePanel.h"
 #include <Urho3D/UI/Button.h>
@@ -23,6 +23,6 @@ private:
 	void HandleToggle(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	bool menuVisibility = false;
 	Urho3D::Button* toggleButton;
-	std::vector<HudElement*> buttons;
+	std::vector<HudData*> buttons;
 	AbstractMiddlePanel** addionalPanels;
 };

@@ -13,7 +13,8 @@
 
 double Building::hbMaxSize = 5.0;
 
-Building::Building(Vector3* _position, int id, int player):target(*_position) , Static(_position, ObjectType::BUILDING) {
+Building::Building(Vector3* _position, int id, int player): target(*_position),
+	Static(_position, ObjectType::BUILDING) {
 	hbMaxSize = 5.0;
 
 	target.x_ += 5;
@@ -31,7 +32,7 @@ Building::Building(Vector3* _position, int id, int player):target(*_position) , 
 	staticModel->SetMaterial(material);
 
 	setPlayer(player);
-	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam()); 
+	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam());
 
 	initBillbords();
 
@@ -73,10 +74,23 @@ String& Building::toMultiLineString() {
 void Building::action(short id, ActionParameter& parameter) {
 	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 	std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
+	switch (parameter.type) {
+	case QueueType::UNIT:
+		if (resources.reduce(costs)) {
+			queue->add(1, parameter.type, id, 30);
+		}
+		break;
+	case QueueType::UNIT_LEVEL:
+		if (resources.reduce(costs)) {
+			queue->add(1, parameter.type, id, 1);
+		}
+		break;
+	case QueueType::BUILDING_LEVEL:
 
-	if (resources.reduce(costs)) {
-		queue->add(1, QueueType::UNIT, id);
+		break;
+	default: ;
 	}
+
 }
 
 std::string Building::getColumns() {
@@ -98,7 +112,7 @@ QueueElement* Building::updateQueue(float time) {
 }
 
 Vector3& Building::getTarget() {
-	return target;//TODO target to nie to samo co gdzie sie maja pojawiac!
+	return target; //TODO target to nie to samo co gdzie sie maja pojawiac!
 }
 
 QueueManager* Building::getQueue() {

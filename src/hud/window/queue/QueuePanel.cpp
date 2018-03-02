@@ -29,9 +29,13 @@ void QueuePanel::update(QueueManager* queue, short& j) {
 	for (int i = 0; i < size; ++i) {
 		QueueElement* element = queue->getAt(i);
 		elements[j]->show();
-		String name = getIconName(element->getType(), element->getSubtype());
+		String name = getIconName(element->getType(), element->getAmount(), element->getId());
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
-		elements[j]->setText(String(element->getAmount()) + "/" + String(element->getMaxCapacity()));
+		if (element->getMaxCapacity() > 1) {
+			elements[j]->setText(String(element->getAmount()) + "/" + String(element->getMaxCapacity()));
+		} else {
+			elements[j]->hideText();
+		}
 		elements[j]->setTexture(texture);
 		elements[j]->setProgress(element->getProgress());
 		elements[j]->setData(element);
@@ -52,7 +56,7 @@ void QueuePanel::update(SelectedInfo* selectedInfo) {
 	if (window->IsVisible()) {
 		std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelectedTypes();
 
-		for (auto & infoType : infoTypes) {
+		for (auto& infoType : infoTypes) {
 			std::vector<Physical*>& data = infoType->getData();
 			for (Physical* physical : data) {
 				//TODO przeniesc kolejke do Physical

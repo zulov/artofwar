@@ -1,23 +1,22 @@
 #pragma once
-#include <Urho3D/UI/Button.h>
-#include <Urho3D/UI/Text.h>
-#include <Urho3D/UI/Window.h>
-#include <Urho3D/UI/Sprite.h>
-#include "camera/CameraManager.h"
 #include "Benchmark.h"
-#include "HudElement.h"
-#include "database/db_strcut.h"
+#include "GameState.h"
+#include "camera/CameraManager.h"
 #include "control/SelectedInfo.h"
-#include "window/selected/SelectedHudPanel.h"
+#include "database/db_strcut.h"
 #include "window/debug/DebugPanel.h"
+#include "window/in_game_menu/InGameMenuPanel.h"
+#include "window/loading/LoadingPanel.h"
 #include "window/menu/MenuPanel.h"
-#include "window/top/TopPanel.h"
 #include "window/minimap/MiniMapPanel.h"
 #include "window/queue/QueuePanel.h"
-#include "window/loading/LoadingPanel.h"
-#include "window/in_game_menu/InGameMenuPanel.h"
+#include "window/selected/SelectedHudPanel.h"
+#include "window/top/TopPanel.h"
 #include "xml/rapidxml_print.hpp"
-#include "GameState.h"
+#include <Urho3D/UI/Button.h>
+#include <Urho3D/UI/Sprite.h>
+#include <Urho3D/UI/Text.h>
+
 
 class SimulationInfo;
 class MainMenuPanel;
@@ -40,11 +39,11 @@ URHO3D_OBJECT(Hud, Object)
 
 	void updateSelected(SelectedInfo* selectedInfo);
 
-	void hoverOnIcon(HudElement* hudElement);
-	void hoverOffIcon(HudElement* hudElement);
+	void hoverOnIcon(HudData* hudElement);
+	void hoverOffIcon(HudData* hudElement);
 
 	std::vector<Button*>& getButtonsSelectedToSubscribe();
-	std::vector<HudElement*>& getButtonsLeftMenuToSubscribe();
+	std::vector<HudData*>& getButtonsLeftMenuToSubscribe();
 
 	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
 	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);

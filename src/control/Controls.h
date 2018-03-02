@@ -8,7 +8,7 @@
 #include "OrderType.h"
 #include "SelectedInfo.h"
 #include "commands/creation/CreationCommand.h"
-#include "hud/HudElement.h"
+#include "hud/HudData.h"
 #include <Urho3D/Input/Input.h>
 #include "MouseButton.h"
 #include <Urho3D/Graphics/StaticModel.h>
@@ -29,7 +29,7 @@ public:
 	void select(Physical* entity);
 	void unSelectAll();
 
-	void hudAction(HudElement* hud);
+	void hudAction(HudData* hud);
 
 	bool clickDown(MouseButton& var, hit_data hitData);
 	SelectedInfo* getInfo();
@@ -39,7 +39,7 @@ public:
 	void deactivate();
 	void activate();
 
-	void order(short id);
+	void order(short id, ActionParameter& parameter);
 	void clean(SimulationInfo* simulationInfo);
 	void updateSelection();
 	void updateArrow();
@@ -52,7 +52,7 @@ public:
 
 private:
 	void orderUnit(short id);
-	void orderBuilding(short id);
+	void orderBuilding(short id, ActionParameter& parameter);
 
 	void refreshSelected();
 	bool raycast(hit_data& hitData, Camera* camera);

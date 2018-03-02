@@ -62,6 +62,7 @@ private:
 	SimulationInfo* simulationInfo;
 	Enviroment* enviroment;
 	SimulationObjectManager* simObjectManager;
-	CreationCommandList* simCommandList;
+	CreationCommandList* creationCommandList;
+	CommandList* levelsCommandList;
 	ActionCommandList* actionCommandList;
 };

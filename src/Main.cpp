@@ -1,22 +1,25 @@
-#include <Main.h>
-#include "simulation/SimulationInfo.h"
-#include "database/DatabaseCache.h"
-#include "player/PlayersManager.h"
 #include "Urho3D/Resource/Image.h"
 #include "camera/CameraEnums.h"
-#include "objects/LinkComponent.h"
-#include <Urho3D/Scene/SceneEvents.h>
-#include <Urho3D/Core/CoreEvents.h>
-#include <Urho3D/Engine/EngineDefs.h>
-#include <Urho3D/UI/UIEvents.h>
-#include <Urho3D/Engine/Console.h>
-#include <Urho3D/Engine/DebugHud.h>
-#include <Urho3D/UI/UI.h>
-#include <Urho3D/IO/FileSystem.h>
-#include <Urho3D/Resource/Localization.h>
 #include "commands/creation/CreationCommandList.h"
+#include "database/DatabaseCache.h"
 #include "hud/window/in_game_menu/middle/FileFormData.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
+#include "objects/LinkComponent.h"
+#include "player/PlayersManager.h"
+#include "simulation/SimulationInfo.h"
+#include <Main.h>
+#include <Urho3D/Core/CoreEvents.h>
+#include <Urho3D/Engine/Console.h>
+#include <Urho3D/Engine/DebugHud.h>
+#include <Urho3D/Engine/EngineDefs.h>
+#include <Urho3D/IO/FileSystem.h>
+#include <Urho3D/Resource/Localization.h>
+#include <Urho3D/Scene/SceneEvents.h>
+#include <Urho3D/UI/UI.h>
+#include <Urho3D/UI/UIEvents.h>
+#include "hud/HudData.h"
+#include <Urho3D/Resource/ResourceCache.h>
+
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
@@ -344,43 +347,22 @@ void Main::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {
 	Game::get()->getCameraManager()->changePosition(x / size.x_, y / size.y_);
 }
 
-void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {//TODO need refactor
+void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
+	//TODO need refactor
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
-	switch (hudElement->getType()) {
+	HudData* hudData = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
+	switch (hudData->getType()) {
 
-	case ObjectType::ENTITY: 
-		controls->order(hudElement->getId());
+	case ObjectType::ENTITY:
+	case ObjectType::UNIT:
+		controls->order(hudData->getId(), ActionParameter(hudData->getQueueType()));
 		break;
-	case ObjectType::UNIT: 
-		controls->order(hudElement->getId());
-		break;
-	case ObjectType::BUILDING: 
-		controls->hudAction(hudElement);
+	case ObjectType::BUILDING:
+		controls->hudAction(hudData);
 		break;
 	default: ;
 	}
-	
-}
 
-void Main::HandleBuildButton(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
-	controls->hudAction(hudElement);
-}
-
-void Main::HandleUnitButton(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
-
-	controls->order(hudElement->getId());
-}
-
-void Main::HandleOrdersButton(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
-
-	controls->order(hudElement->getId());
 }
 
 void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {

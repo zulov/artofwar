@@ -2,6 +2,8 @@
 #include "Resources.h"
 #include "database/db_strcut.h"
 #include <list>
+#include "ObjectEnums.h"
+#include "objects/queue/QueueType.h"
 
 class Player
 {
@@ -16,7 +18,10 @@ public:
 	std::string getValues(int precision);
 	void setResourceAmount(int resource, float amount);
 	void setResourceAmount(float amount);
+
 	int getLevelForUnit(int id);
+	int getLevelForBuilding(int id);
+	void upgradeLevel(QueueType type, int id);
 private:
 	Resources resources;
 	db_nation* dbNation;
@@ -24,4 +29,6 @@ private:
 	int team;
 	int id;
 	int color;
+	char unitLevels[UNITS_NUMBER_DB];
+	char buildingLevels[BUILDINGS_NUMBER_DB];
 };

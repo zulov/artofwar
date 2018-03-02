@@ -2,6 +2,9 @@
 #include "defines.h"
 #include <iostream>
 #include "utils.h"
+#include <algorithm>
+#include "Game.h"
+#include "database/DatabaseCache.h"
 
 
 QueueManager::QueueManager(short _maxCapacity) {
@@ -15,14 +18,17 @@ QueueManager::~QueueManager() {
 	clear_vector(queue);
 }
 
-void QueueManager::add(short value, QueueType type, short id) {
-	for (auto & i : queue) {
+void QueueManager::add(short value, QueueType type, short id, short localMaxCapacity) {
+	for (auto& i : queue) {
 		if (i->checkType(type, id)) {
 			value = i->add(value);
 		}
 	}
 	while (value > 0) {
-		QueueElement* element = new QueueElement(type, id, maxCapacity);
+		float secToInstance = getSecPerInstance(type, id, 0);
+		float initialSecondsToComplete = getSecToComplete(type, id, 0);
+		QueueElement* element = new QueueElement(type, id, std::min(maxCapacity, localMaxCapacity), initialSecondsToComplete,
+		                                         secToInstance);
 		value = element->add(value);
 		queue.push_back(element);
 	}
@@ -37,7 +43,8 @@ QueueElement* QueueManager::update(float time) {
 	if (!queue.empty()) {
 		QueueElement* element = queue.at(0);
 
-		if (element->update(time)) {//TODO memoryleak
+		if (element->update(time)) {
+			//TODO memoryleak
 			queue.erase(queue.begin());
 			return element;
 		}
@@ -52,4 +59,37 @@ short QueueManager::getSize() {
 
 QueueElement* QueueManager::getAt(short i) {
 	return queue.at(i);
+}
+
+float QueueManager::getSecToComplete(QueueType type, short id, int level) {
+	switch (type) {
+	case QueueType::UNIT:
+		return 5;
+	case QueueType::BUILDING:
+		return 10;
+	case QueueType::UNIT_LEVEL:
+		{
+		auto dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
+		return dbLevel->upgradeSpeed;
+		}
+	case QueueType::BUILDING_LEVEL:
+		return 10;
+	default:
+		return 1;
+	}
+}
+
+float QueueManager::getSecPerInstance(QueueType type, short id, int level) {
+	switch (type) {
+	case QueueType::UNIT:
+		return 0.5;
+	case QueueType::BUILDING:
+		return 0;
+	case QueueType::UNIT_LEVEL:
+		return 0;
+	case QueueType::BUILDING_LEVEL:
+		return 0;
+	default:
+		return 0;
+	}
 }

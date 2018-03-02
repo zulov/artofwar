@@ -1,18 +1,21 @@
 #include "QueueElement.h"
 
-QueueElement::QueueElement(QueueType _type, short _subType, short _maxCapacity) {
+QueueElement::QueueElement(QueueType _type, short _subType, short _maxCapacity, float _initialSecondsToComplete,
+                           float _secondsToCompletePerInstance) {
 	elapsedSeconds = 0;
 	amount = 0;
+	initialSecondsToComplete = _initialSecondsToComplete;
+	secondsToCompletePerInstance = _secondsToCompletePerInstance;
 	secondsToComplete = initialSecondsToComplete;
 	type = _type;
-	subType = _subType;
+	id = _subType;
 	maxCapacity = _maxCapacity;
 }
 
 QueueElement::~QueueElement() = default;
 
 bool QueueElement::checkType(QueueType _type, short _subType) {
-	return type == _type && subType == _subType;
+	return type == _type && id == _subType;
 }
 
 short QueueElement::add(short value) {
@@ -41,8 +44,8 @@ QueueType QueueElement::getType() {
 	return type;
 }
 
-short QueueElement::getSubtype() {
-	return subType;
+short QueueElement::getId() {
+	return id;
 }
 
 short QueueElement::getAmount() {

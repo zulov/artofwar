@@ -1,8 +1,8 @@
 #pragma once
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
-#include <Urho3D/UI/ListView.h>
-#include "hud/HudElement.h"
 #include <Urho3D/UI/Button.h>
+#include <Urho3D/UI/ListView.h>
+
 
 class MainMenuLoadPanel : public MainMenuDetailsPanel
 {

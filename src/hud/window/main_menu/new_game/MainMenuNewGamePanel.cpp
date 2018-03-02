@@ -3,7 +3,7 @@
 #include "database/DatabaseCache.h"
 #include <ctime>
 #include <Urho3D/UI/UIEvents.h>
-#include "hud/HudElement.h"
+#include "hud/HudData.h"
 #include "NewGameForm.h"
 
 

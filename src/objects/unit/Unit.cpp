@@ -21,7 +21,7 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 
 	state = UnitStateType::STOP;
 	dbUnit = Game::get()->getDatabaseCache()->getUnit(id);
-	dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level);
+	dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
 	populate();
 	Model* model3d = Game::get()->getCache()->GetResource<Model>("Models/" + dbLevel->model);
 	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture);

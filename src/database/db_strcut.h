@@ -1,6 +1,6 @@
 ﻿#pragma once
 #define UNITS_NUMBER_DB 50
-#define BULDINGS_NUMBER_DB 50
+#define BUILDINGS_NUMBER_DB 50
 #define HUD_SIZES_NUMBER_DB 4
 #define GRAPH_SETTINGS_NUMBER_DB 4
 #define TYPE_NUMBER_DB 50
@@ -59,11 +59,12 @@ struct db_unit_level
 	float maxSpeed;
 	float minSpeed;
 	float collectSpeed;
+	float upgradeSpeed;
 
 
 	db_unit_level(int level, int unit, char* name, float minDist, float maxSep, char* model, char* texture,
-				float mass, float scale, float attack, int attackSpeed, float attackRange, float defense,
-				int maxHp, float maxSpeed, float minSpeed, float collectSpeed)
+	              float mass, float scale, float attack, int attackSpeed, float attackRange, float defense,
+	              int maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed)
 		: level(level),
 		unit(unit),
 		name(name),
@@ -80,7 +81,8 @@ struct db_unit_level
 		maxHp(maxHp),
 		maxSpeed(maxSpeed),
 		minSpeed(minSpeed),
-		collectSpeed(collectSpeed) {
+		collectSpeed(collectSpeed),
+		upgradeSpeed(upgradeSpeed) {
 	}
 };
 
@@ -294,7 +296,7 @@ struct db_player_colors
 struct db_container
 {
 	db_unit* units[UNITS_NUMBER_DB] = {nullptr};
-	db_building* buildings[BULDINGS_NUMBER_DB] = {nullptr};
+	db_building* buildings[BUILDINGS_NUMBER_DB] = {nullptr};
 	db_hud_size* hudSizes[HUD_SIZES_NUMBER_DB] = {nullptr};
 	db_graph_settings* graphSettings[GRAPH_SETTINGS_NUMBER_DB] = {nullptr};
 	db_nation* nations[NATION_NUMBER_DB] = {nullptr};
@@ -306,8 +308,8 @@ struct db_container
 	db_resolution* resolutions[RESOLUTIONS_NUMBER_DB] = {nullptr};
 	db_settings* settings[SETTINGS_NUMBER_DB] = {nullptr};
 
-	std::vector<db_unit*>* unitsForBuilding[BULDINGS_NUMBER_DB]{};
-	std::vector<db_cost*>* costForBuilding[BULDINGS_NUMBER_DB]{};
+	std::vector<db_unit*>* unitsForBuilding[BUILDINGS_NUMBER_DB]{};
+	std::vector<db_cost*>* costForBuilding[BUILDINGS_NUMBER_DB]{};
 	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB]{};
 	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB]{};
 	std::vector<db_unit_level*>* levelsToUnit[UNITS_NUMBER_DB]{};
@@ -327,7 +329,7 @@ struct db_container
 
 
 	explicit db_container() {
-		for (int i = 0; i < BULDINGS_NUMBER_DB; ++i) {
+		for (int i = 0; i < BUILDINGS_NUMBER_DB; ++i) {
 			unitsForBuilding[i] = new std::vector<db_unit*>();
 			unitsForBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
 			costForBuilding[i] = new std::vector<db_cost*>();

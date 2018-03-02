@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "FileFormData.h"
 #include <Urho3D/UI/UIEvents.h>
-#include "hud/HudElement.h"
+#include "hud/HudData.h"
 
 
 FilePanel::FilePanel(Urho3D::XMLFile* _style, Urho3D::String _title): AbstractMiddlePanel(_style, _title) {

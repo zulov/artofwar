@@ -2,7 +2,7 @@
 #include "../AbstractWindowPanel.h"
 #include <Urho3D/UI/Text.h>
 #include <vector>
-#include "hud/HudElement.h"
+#include "hud/HudData.h"
 #include "database/db_strcut.h"
 #include "control/SelectedInfo.h"
 #include <Urho3D/UI/CheckBox.h>
@@ -25,10 +25,10 @@ public:
 	void removeInfo();
 	void refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo);
 
-	void setInfo(HudElement* hudElement);
+	void setInfo(HudData* hudElement);
 	void updateSelected(SelectedInfo* selectedInfo);
 	void setVisible(bool enable) override;
-	std::vector<HudElement*>& getButtons();
+	std::vector<HudData*>& getButtons();
 private:
 	void createBody() override;
 	void setChecks(int val);
@@ -51,7 +51,7 @@ private:
 
 	UIElement* rows[LEFT_MENU_ROWS_NUMBER];
 	Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
-	std::vector<HudElement*> hudElements;
+	std::vector<HudData*> hudElements;
 	MySprite* sprites[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
 	Button* nextButton;
 	Urho3D::CheckBox* checks[LEFT_MENU_CHECKS_NUMBER];
