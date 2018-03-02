@@ -17,7 +17,7 @@ QueueHudElement::QueueHudElement(Urho3D::XMLFile* style) {
 	mock->SetStyle("mock", style);
 
 	bar = mock->CreateChild<ProgressBar>();
-	bar->SetStyle("MiniProgressBar", style);
+	bar->SetStyle("QueueProgressBar", style);
 	bar->SetRange(1);
 	bar->SetValue(0.5);
 	bar->SetVisible(true);
