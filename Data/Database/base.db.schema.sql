@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS `units` (
 	`nation`	INTEGER,
 	`icon`	TEXT,
 	`actionState`	INTEGER,
-	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`),
-	PRIMARY KEY(`id`)
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `unit_level` (
 	`level`	INTEGER,
@@ -27,13 +27,14 @@ CREATE TABLE IF NOT EXISTS `unit_level` (
 	`maxSpeed`	REAL,
 	`minSpeed`	REAL,
 	`collectSpeed`	REAL,
+	`upgrade_speed`	real,
 	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `settings` (
 	`graph`	INTEGER,
 	`resolution`	INTEGER,
-	FOREIGN KEY(`resolution`) REFERENCES `resolution`(`id`),
-	FOREIGN KEY(`graph`) REFERENCES `graph_settings`(`id`)
+	FOREIGN KEY(`graph`) REFERENCES `graph_settings`(`id`),
+	FOREIGN KEY(`resolution`) REFERENCES `resolution`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `resource` (
 	`id`	INTEGER,
@@ -66,8 +67,8 @@ CREATE TABLE IF NOT EXISTS `orders_to_unit` (
 	`id`	INTEGER,
 	`unit`	INTEGER,
 	`order`	INTEGER,
-	PRIMARY KEY(`id`),
 	FOREIGN KEY(`order`) REFERENCES `orders`(`id`),
+	PRIMARY KEY(`id`),
 	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `orders` (
@@ -112,8 +113,8 @@ CREATE TABLE IF NOT EXISTS `graph_settings` (
 	`v_sync`	INT,
 	`shadow`	INT,
 	`texture_quality`	INT,
-	PRIMARY KEY(`id`),
-	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`)
+	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`),
+	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_unit` (
 	`id`	INTEGER,
@@ -121,8 +122,8 @@ CREATE TABLE IF NOT EXISTS `cost_unit` (
 	`value`	INTEGER,
 	`unit`	INTEGER,
 	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
-	PRIMARY KEY(`id`)
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_building` (
 	`id`	INTEGER,
@@ -137,9 +138,9 @@ CREATE TABLE IF NOT EXISTS `building_to_unit` (
 	`id`	INTEGER,
 	`building`	INTEGER,
 	`unit`	INTEGER,
-	FOREIGN KEY(`building`) REFERENCES `building`(`id`),
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
 	PRIMARY KEY(`id`),
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
+	FOREIGN KEY(`building`) REFERENCES `building`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `building` (
 	`id`	INTEGER,
@@ -152,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `building` (
 	`nation`	INTEGER,
 	`icon`	TEXT,
 	`queue_max_capacity`	INTEGER,
-	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`),
-	PRIMARY KEY(`id`)
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)
 );
 COMMIT;
