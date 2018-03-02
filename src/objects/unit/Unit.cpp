@@ -14,7 +14,7 @@
 
 float Unit::hbMaxSize = 0.7f;
 
-Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, UNIT), dbUnit(nullptr) {
+Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr) {
 	velocity = new Vector3();
 	toResource = new Vector3();
 	resource = nullptr;

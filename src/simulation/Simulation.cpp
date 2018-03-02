@@ -13,7 +13,6 @@ Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _simCommand
 
 	srand(time(NULL));
 
-
 	simulationInfo = new SimulationInfo();
 	actionCommandList = new ActionCommandList();
 	Game::get()->setActionCommmandList(actionCommandList);
@@ -121,8 +120,11 @@ void Simulation::updateBuildingQueue() {
 	for (Building* build : (*buildings)) {
 		QueueElement* done = build->updateQueue(maxTimeFrame);
 		if (done) {
-			simCommandList->add(new CreationCommand(done->getType(), done->getAmount(), done->getSubtype(),
-			                                        new Vector3(build->getTarget()), 0, 0));
+			if (done->getType() == QueueType::UNIT) {
+				simCommandList->add(new CreationCommand(ObjectType::UNIT, done->getAmount(), done->getSubtype(),
+				                                        new Vector3(build->getTarget()), 0, 0));
+			}
+
 			delete done;
 		}
 	}

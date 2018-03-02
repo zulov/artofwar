@@ -94,7 +94,7 @@ void MenuPanel::createBody() {
 			sprites[k] = createEmptySprite(style, "LeftMenuSprite");
 			buttons[k] = simpleButton(rows[i], sprites[k], style, "LeftMenuBigIcon");
 			hudElements.push_back(new HudElement(buttons[k]));
-			hudElements[k]->setId(-1, ENTITY);
+			hudElements[k]->setId(-1, ObjectType::ENTITY);
 			hudElements[k]->setSubType(-1);
 			buttons[k]->SetVar("HudElement", hudElements[k]);
 			k++;
@@ -142,7 +142,7 @@ void MenuPanel::basicBuilding() {
 				>("textures/hud/icon/building/" + building->icon);
 				setTextureToSprite(sprites[k], texture);
 
-				hudElements[k]->setId(building->id, BUILDING);
+				hudElements[k]->setId(building->id, ObjectType::BUILDING);
 				hudElements[k]->setSubType(subMode);
 				k++;
 			}
@@ -182,7 +182,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 			>("textures/hud/icon/unit/" + unit->icon);
 			setTextureToSprite(sprites[k], texture);
 
-			hudElements[k]->setId(unit->id, UNIT);
+			hudElements[k]->setId(unit->id, ObjectType::UNIT);
 			hudElements[k]->setSubType(subMode);
 			k++;
 		}
@@ -203,7 +203,7 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 			>("textures/hud/icon/unit/levels/" + String(level) + "/" + unit->icon);
 			setTextureToSprite(sprites[k], texture);
 
-			hudElements[k]->setId(unit->id, UNIT);
+			hudElements[k]->setId(unit->id, ObjectType::UNIT);
 			hudElements[k]->setSubType(subMode);
 			k++;
 		}
@@ -245,7 +245,7 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 			setTextureToSprite(sprites[k], texture);
 			buttons[k]->SetVar("Num", order->id);
 
-			hudElements[k]->setId(order->id, ENTITY);
+			hudElements[k]->setId(order->id, ObjectType::ENTITY);
 			hudElements[k]->setSubType(subMode);
 			k++;
 		}

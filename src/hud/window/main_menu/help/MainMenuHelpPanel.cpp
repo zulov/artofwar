@@ -22,7 +22,7 @@ void MainMenuHelpPanel::createBody() {
 		Urho3D::Text* element = button->CreateChild<Text>();
 
 		HudElement* hudElement = new HudElement(button);
-		hudElement->setId(i, ENTITY);
+		hudElement->setId(i, ObjectType::ENTITY);
 		element->SetText(Game::get()->getLocalization()->Get("help_key_" + String(i)));
 		element->SetStyle("HelpListText");
 		button->AddChild(element);

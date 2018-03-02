@@ -1,10 +1,10 @@
 #include "CreationCommandList.h"
-#include "simulation/env/Enviroment.h"
-#include "database/DatabaseCache.h"
-#include "player/Resources.h"
-#include "player/PlayersManager.h"
-#include "Game.h"
 #include "CreationCommand.h"
+#include "Game.h"
+#include "database/DatabaseCache.h"
+#include "player/PlayersManager.h"
+#include "player/Resources.h"
+#include "simulation/env/Enviroment.h"
 
 
 CreationCommandList::CreationCommandList() {
@@ -16,7 +16,7 @@ CreationCommandList::~CreationCommandList() {
 }
 
 bool CreationCommandList::addUnits(int _number, int id, Vector3& _position, int _player, int level) {
-	add(new CreationCommand(UNIT, _number, id, new Vector3(_position), _player, level));
+	add(new CreationCommand(ObjectType::UNIT, _number, id, new Vector3(_position), _player, level));
 	return true;
 }
 
@@ -31,7 +31,7 @@ bool CreationCommandList::addBuilding(int id, Vector3& _position, int _player, i
 		IntVector2 bucketCords = env->getBucketCords(db_building->size, pos);
 		pos = env->getValidPosition(db_building->size, pos);
 
-		add(new CreationCommand(BUILDING, id, pos, _player, bucketCords, level));
+		add(new CreationCommand(ObjectType::BUILDING, id, pos, _player, bucketCords, level));
 		return true;
 	}
 	return false;
@@ -46,7 +46,7 @@ bool CreationCommandList::addResource(int id, Vector3& _position, int level) {
 		IntVector2 bucketCords = env->getBucketCords(db_resource->size, pos);
 		pos = env->getValidPosition(db_resource->size, pos);
 
-		add(new CreationCommand(RESOURCE, id, pos, -1, bucketCords, level));
+		add(new CreationCommand(ObjectType::RESOURCE, id, pos, -1, bucketCords, level));
 		return true;
 	}
 	return false;

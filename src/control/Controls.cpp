@@ -128,7 +128,7 @@ void Controls::leftClickBuild(Physical* clicked, Vector3& hitPos) {
 
 void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftPressed) {
 	switch (clicked->getType()) {
-	case PHISICAL:
+	case ObjectType::PHISICAL:
 		{
 		OrderType type;
 		if (shiftPressed) {
@@ -139,16 +139,16 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 		Game::get()->getActionCommandList()->add(new ActionCommand(selected, type, new Vector3(hitPos), shiftPressed));
 		break;
 		}
-	case UNIT:
+	case ObjectType::UNIT:
 		{
 		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked, shiftPressed));
 		//unSelectAll();
 		break;
 		}
-	case BUILDING:
+	case ObjectType::BUILDING:
 		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked, shiftPressed));
 		break;
-	case RESOURCE: break;
+	case ObjectType::RESOURCE: break;
 	default: ;
 	}
 }
@@ -364,13 +364,13 @@ void Controls::orderBuilding(short id) {
 void Controls::order(short id) {
 	switch (selectedType) {
 
-	case UNIT:
+	case ObjectType::UNIT:
 		orderUnit(id);
 		break;
-	case BUILDING:
+	case ObjectType::BUILDING:
 		orderBuilding(id);
 		break;
-	case RESOURCE: break;
+	case ObjectType::RESOURCE: break;
 	default: ;
 	}
 
@@ -398,13 +398,13 @@ void Controls::clean(SimulationInfo* simulationInfo) {
 	bool condition;
 	switch (selectedType) {
 
-	case UNIT:
+	case ObjectType::UNIT:
 		condition = simulationInfo->ifUnitDied();
 		break;
-	case BUILDING:
+	case ObjectType::BUILDING:
 		condition = simulationInfo->ifBuildingDied();
 		break;
-	case RESOURCE:
+	case ObjectType::RESOURCE:
 		condition = simulationInfo->ifResourceDied();
 		break;
 	default:

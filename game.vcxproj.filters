@@ -461,6 +461,7 @@
     <ClInclude Include="src\objects\queue\QueueElement.h">
       <Filter>objects\building</Filter>
     </ClInclude>
+    <ClInclude Include="src\objects\NamesCache.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

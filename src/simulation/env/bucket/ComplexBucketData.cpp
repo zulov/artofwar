@@ -29,7 +29,7 @@ void ComplexBucketData::setStatic(Static* _object) {
 	if (box) {
 		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red_alpha.xml"));
 	}
-	if (_object->getType() == BUILDING) {
+	if (_object->getType() == ObjectType::BUILDING) {
 		additonalInfo = _object->getPlayer();
 	} else {
 		additonalInfo = _object->getDbID();
@@ -87,7 +87,7 @@ char ComplexBucketData::getAdditonalInfo() {
 }
 
 bool ComplexBucketData::isUnit() {
-	return type == UNIT;
+	return type == ObjectType::UNIT;
 }
 
 void ComplexBucketData::setOccupiedNeightbours(std::vector<std::pair<int, float>>* _occupiedNeightbours) {

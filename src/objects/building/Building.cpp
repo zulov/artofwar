@@ -13,7 +13,7 @@
 
 double Building::hbMaxSize = 5.0;
 
-Building::Building(Vector3* _position, int id, int player):target(*_position) , Static(_position, BUILDING) {
+Building::Building(Vector3* _position, int id, int player):target(*_position) , Static(_position, ObjectType::BUILDING) {
 	hbMaxSize = 5.0;
 
 	target.x_ += 5;

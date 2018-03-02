@@ -26,13 +26,13 @@ CreationCommand::~CreationCommand() {
 
 void CreationCommand::execute() {
 	switch (objectType) {
-	case UNIT:
+	case ObjectType::UNIT:
 		simulationObjectManager->addUnits(number, id, position, player, level);
 		break;
-	case BUILDING:
+	case ObjectType::BUILDING:
 		simulationObjectManager->addBuildings(id, position, player, bucketCords);
 		break;
-	case RESOURCE:
+	case ObjectType::RESOURCE:
 		simulationObjectManager->addResources(id, position, bucketCords);
 		break;
 	}

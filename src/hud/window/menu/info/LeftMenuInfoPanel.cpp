@@ -52,14 +52,14 @@ void LeftMenuInfoPanel::setInfo(HudElement* hudElement) {
 	const short id = hudElement->getId();
 	switch (type) {
 
-	case UNIT:
+	case ObjectType::UNIT:
 		{
 		db_unit* dbUnit = Game::get()->getDatabaseCache()->getUnit(id);
 		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
 		s = stringFrom(dbUnit, costs);
 		}
 		break;
-	case BUILDING:
+	case ObjectType::BUILDING:
 		{
 		db_building* dbBuilding = Game::get()->getDatabaseCache()->getBuilding(id);
 		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForBuilding(id);

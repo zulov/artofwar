@@ -7,6 +7,7 @@
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/Input/InputEvents.h>
 #include "GameState.h"
+#include "objects/NamesCache.h"
 
 
 QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -36,22 +37,6 @@ void QueuePanel::update(QueueManager* queue, short& j) {
 		elements[j]->setData(element);
 
 		++j;
-	}
-}
-
-String QueuePanel::getIconName(ObjectType index, int i) {
-	DatabaseCache* dbCache = Game::get()->getDatabaseCache();
-	switch (index) {
-	case ENTITY:
-		return "mock.png";
-	case UNIT:
-		return "unit/" + dbCache->getUnit(i)->icon;
-	case BUILDING:
-		return "building/" + dbCache->getBuilding(i)->icon;
-	case RESOURCE:
-		return "resource/" + dbCache->getResource(i)->icon;
-	default:
-		return "mock.png";
 	}
 }
 

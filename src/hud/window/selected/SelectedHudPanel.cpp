@@ -5,6 +5,7 @@
 #include "hud/UiUtils.h"
 #include <Urho3D/Resource/Image.h>
 #include "GameState.h"
+#include "objects/NamesCache.h"
 
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
@@ -74,22 +75,6 @@ void SelectedHudPanel::createRows() {
 	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
 		rows[i] = window->CreateChild<UIElement>();
 		rows[i]->SetStyle("MyListRow", style);
-	}
-}
-
-String SelectedHudPanel::getIconName(ObjectType index, int i) {
-	DatabaseCache* dbCache = Game::get()->getDatabaseCache();
-	switch (index) {
-	case ENTITY:
-		return "mock.png";
-	case UNIT:
-		return "unit/" + dbCache->getUnit(i)->icon;
-	case BUILDING:
-		return "building/" + dbCache->getBuilding(i)->icon;
-	case RESOURCE:
-		return "resource/" + dbCache->getResource(i)->icon;
-	default:
-		return "mock.png";
 	}
 }
 

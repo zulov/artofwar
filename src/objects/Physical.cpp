@@ -164,14 +164,14 @@ Urho3D::Vector3* Physical::getPosition() {
 
 
 void Physical::select() {
-	if (type == PHISICAL) { return; }
+	if (type == ObjectType::PHISICAL) { return; }
 	billboardBar->enabled_ = true;
 	billboardShadow->enabled_ = true;
 	updateHealthBar();
 }
 
 void Physical::unSelect() {
-	if (type == PHISICAL) { return; }
+	if (type == ObjectType::PHISICAL) { return; }
 	billboardBar->enabled_ = false;
 	billboardShadow->enabled_ = false;
 

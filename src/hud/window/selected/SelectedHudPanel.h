@@ -24,7 +24,6 @@ private:
 	void createBody() override;
 	short maxInRow = 31;
 	short LINES_IN_SELECTION = 4;
-	static String getIconName(ObjectType index, int i);
 	std::vector<Button*> buttons;
 	SelectedHudElement** elements;
 	UIElement **rows;

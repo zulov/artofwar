@@ -54,7 +54,7 @@ Terrain* LevelBuilder::getTerrian() {
 }
 
 Entity* LevelBuilder::createZone() {
-	Entity* entity = new Entity(ENTITY);
+	Entity* entity = new Entity(ObjectType::ENTITY);
 
 	Node* zoneNode = entity->getNode();
 	Zone* zone = zoneNode->CreateComponent<Zone>();
@@ -67,7 +67,7 @@ Entity* LevelBuilder::createZone() {
 }
 
 Entity* LevelBuilder::createLight(Vector3 direction, Color color, LightType lightType) {
-	Entity* entity = new Entity(ENTITY);
+	Entity* entity = new Entity(ObjectType::ENTITY);
 	Node* lightNode = entity->getNode();
 	lightNode->SetDirection(direction);
 	Light* light = lightNode->CreateComponent<Light>();
@@ -79,7 +79,7 @@ Entity* LevelBuilder::createLight(Vector3 direction, Color color, LightType ligh
 }
 
 Entity* LevelBuilder::createGround(String heightMap, String texture, float horScale, float verScale) {
-	Entity* entity = new Physical(new Vector3, PHISICAL);
+	Entity* entity = new Physical(new Vector3, ObjectType::PHISICAL);
 
 	Node* node = entity->getNode();
 

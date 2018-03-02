@@ -349,13 +349,13 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {//
 	HudElement* hudElement = static_cast<HudElement *>(element->GetVar("HudElement").GetVoidPtr());
 	switch (hudElement->getType()) {
 
-	case ENTITY: 
+	case ObjectType::ENTITY: 
 		controls->order(hudElement->getId());
 		break;
-	case UNIT: 
+	case ObjectType::UNIT: 
 		controls->order(hudElement->getId());
 		break;
-	case BUILDING: 
+	case ObjectType::BUILDING: 
 		controls->hudAction(hudElement);
 		break;
 	default: ;

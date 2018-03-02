@@ -1,8 +1,9 @@
 #pragma once
 #include "../AbstractWindowPanel.h"
 #include "QueueHudElement.h"
-#include "objects/queue/QueueManager.h"
 #include "control/SelectedInfo.h"
+#include "objects/queue/QueueManager.h"
+
 
 class QueuePanel :public AbstractWindowPanel//TODO moze zrobic multilina
 {
@@ -11,7 +12,6 @@ public:
 	~QueuePanel();
 	void update(QueueManager* queue, short& j);
 
-	static String getIconName(ObjectType index, int id);
 	void show(SelectedInfo* selectedInfo);
 	void update(SelectedInfo* selectedInfo);
 private:

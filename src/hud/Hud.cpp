@@ -229,11 +229,11 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 		menuPanel->updateSelected(selectedInfo);
 		switch (selectedInfo->getSelectedType()) {
 
-		case UNIT:
+		case ObjectType::UNIT:
 			menuPanel->refresh(LeftMenuMode::ORDER, selectedInfo);
 			queuePanel->setVisible(false);
 			break;
-		case BUILDING:
+		case ObjectType::BUILDING:
 			menuPanel->refresh(LeftMenuMode::UNIT, selectedInfo);
 			queuePanel->show(selectedInfo);
 			break;

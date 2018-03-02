@@ -125,7 +125,7 @@ Vector2 MainGrid::getCenter(int index) {
 
 void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {
 	switch (complexData[index].getType()) {
-	case UNIT:
+	case ObjectType::UNIT:
 		{
 		if (checks[3] || checks[4]) {
 			const bool hasInc = buckets[index].incUnitsPerPlayer(ci, activePlayer, checks);
@@ -135,13 +135,13 @@ void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activeP
 		}
 		}
 		break;
-	case RESOURCE:
+	case ObjectType::RESOURCE:
 		if (checks[1]) {
 			ci->hasResource = true;
 			ci->resourceNumber[complexData[index].getAdditonalInfo()]++;
 		}
 		break;
-	case BUILDING:
+	case ObjectType::BUILDING:
 		if (checks[2]) {
 			ci->hasBuilding = true;
 			ci->buildingNumberPerPlayer[complexData[index].getAdditonalInfo()]++;
