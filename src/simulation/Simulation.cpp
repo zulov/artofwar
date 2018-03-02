@@ -130,22 +130,25 @@ void Simulation::updateBuildingQueue() {
 				                                             ObjectType::UNIT,
 				                                             done->getAmount(),
 				                                             done->getId(),
-				                                             new Vector3(build->getTarget()), 0, 0
+				                                             new Vector3(build->getTarget()),
+				                                             build->getPlayer(),
+				                                             Game::get()->getPlayersManager()->getPlayer(build->getPlayer())->
+				                                                          getLevelForUnit(done->getId())
 				                                            ));
 				break;
 			case QueueType::UNIT_LEVEL:
 				levelsCommandList->add(new UpgradeCommand(
-				                                            Game::get()->getPlayersManager()->getActivePlayer()->getId(),
-				                                            done->getId(),
-				                                            done->getType()
-				                                           ));
+				                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
+				                                          done->getId(),
+				                                          done->getType()
+				                                         ));
 				break;
 			case QueueType::BUILDING_LEVEL:
 				levelsCommandList->add(new UpgradeCommand(
-				                                            Game::get()->getPlayersManager()->getActivePlayer()->getId(),
-				                                            done->getId(),
-				                                            done->getType()
-				                                           ));
+				                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
+				                                          done->getId(),
+				                                          done->getType()
+				                                         ));
 				break;
 			default: ;
 			}

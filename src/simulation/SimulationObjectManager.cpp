@@ -78,14 +78,14 @@ void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* cen
 	updateUnits();
 }
 
-void SimulationObjectManager::addBuildings(int id, Vector3* center,
+void SimulationObjectManager::addBuilding(int id, Vector3* center,
                                            int player, IntVector2 _bucketCords) {
 	buildingsTemp = buildingFactory.create(id, center, player, _bucketCords);
 	updateBuilding();
 }
 
 
-void SimulationObjectManager::addResources(int id, Vector3* center, IntVector2 _bucketCords) {
+void SimulationObjectManager::addResource(int id, Vector3* center, IntVector2 _bucketCords) {
 	resourcesTemp = resourceFactory.create(id, center, _bucketCords);
 	updateResource();
 }
