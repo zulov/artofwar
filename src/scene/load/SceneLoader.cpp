@@ -61,9 +61,9 @@ int static load_units(void* data, int argc, char** argv, char** azColName) {
 	int p = xyz->precision;
 	xyz->units->push_back(new dbload_unit(
 	                                      atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
-	                                      atoi(argv[3]), atof(argv[4]) / p, atof(argv[5]) / p,
-	                                      atoi(argv[6]), atof(argv[7]) / p, atof(argv[8]) / p,
-	                                      atoi(argv[9]), atoi(argv[10])
+	                                      atoi(argv[3]), atoi(argv[4]), atof(argv[5]) / p,
+	                                      atof(argv[6]) / p, atoi(argv[7]), atof(argv[8]) / p,
+	                                      atof(argv[9]) / p, atoi(argv[10])
 	                                     ));
 
 	return 0;
@@ -75,7 +75,7 @@ int static load_buildings(void* data, int argc, char** argv, char** azColName) {
 	xyz->buildings->push_back(new dbload_building(
 	                                              atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
 	                                              atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
-	                                              atof(argv[6]) / p, atof(argv[7]) / p
+	                                              atoi(argv[6]), atof(argv[7]) / p, atof(argv[8]) / p
 	                                             ));
 
 	return 0;
@@ -87,7 +87,7 @@ int static load_resources_entities(void* data, int argc, char** argv, char** azC
 	xyz->resource_entities->push_back(new dbload_resource_entities(
 	                                                               atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
 	                                                               atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
-	                                                               atof(argv[6]) / p
+	                                                               atoi(argv[6]), atof(argv[7]) / p
 	                                                              ));
 
 	return 0;

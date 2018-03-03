@@ -125,14 +125,20 @@ void Physical::action(short id, ActionParameter& parameter) {
 std::string Physical::getColumns() {
 	return Entity::getColumns()
 		+ "hp_coef		INT     NOT NULL,"
-		+ "player		INT     NOT NULL,";
+		+ "player		INT     NOT NULL,"
+		+ "level		INT     NOT NULL,";
+}
+
+int Physical::getLevel() {
+	return -1;
 }
 
 std::string Physical::getValues(int precision) {
 	int hp_coef = getHealthPercent() * precision;
 	return Entity::getValues(precision)
 		+ std::to_string(hp_coef) + ","
-		+ std::to_string(player) + ",";
+		+ std::to_string(player) + ","
+		+ std::to_string(getLevel()) + ",";
 }
 
 bool Physical::hasEnemy() {

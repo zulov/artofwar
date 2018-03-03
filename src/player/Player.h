@@ -8,7 +8,7 @@
 class Player
 {
 public:
-	Player(int nationId, int team, int _id, int _color, Urho3D::String _name);
+	Player(int nationId, int team, int _id, int _color, Urho3D::String _name, bool _active);
 	~Player();
 	int getNation();
 	int getTeam();
@@ -29,6 +29,7 @@ private:
 	int team;
 	int id;
 	int color;
+	bool active;
 	char unitLevels[UNITS_NUMBER_DB];
 	char buildingLevels[BUILDINGS_NUMBER_DB];
 };

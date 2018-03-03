@@ -1,11 +1,12 @@
 #include "SceneSaver.h"
-#include <sqlite3/sqlite3.h>
-#include <ostream>
-#include <iostream>
-#include <string>
-#include "player/PlayersManager.h"
-#include "database/db_utils.h"
 #include "Loading.h"
+#include "database/db_utils.h"
+#include "player/PlayersManager.h"
+#include <iostream>
+#include <ostream>
+#include <sqlite3/sqlite3.h>
+#include <string>
+
 
 SceneSaver::SceneSaver(int _precision) {
 	//TODO zapisywanie powinno byc tylko miedzy klatkami
@@ -88,9 +89,12 @@ void SceneSaver::createSave(Urho3D::String fileName) {
 void SceneSaver::executeInsert(std::string sqlstatement) {
 	sqlstatement[sqlstatement.size() - 1] = ';';
 	sqlite3_stmt* stmt;
-	sqlite3_prepare(database, sqlstatement.c_str(), -1, &stmt, NULL);
-	sqlite3_step(stmt);
-	sqlite3_finalize(stmt);
+	const int rc = sqlite3_prepare(database, sqlstatement.c_str(), -1, &stmt, NULL);
+	ifError(rc, NULL);
+	const int rc1 = sqlite3_step(stmt);
+	ifError(rc1, NULL);
+	const int rc2 = sqlite3_finalize(stmt);
+	ifError(rc2, NULL);
 }
 
 void SceneSaver::saveUnits(std::vector<Unit*>* units) {

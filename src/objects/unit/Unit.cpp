@@ -278,8 +278,7 @@ std::string Unit::getValues(int precision) {
 		to_string(state) + "," +
 		to_string(velocity_x) + "," +
 		to_string(velocity_z) + "," +
-		to_string(-1) + "," +
-		to_string(dbLevel->level);
+		to_string(-1);
 
 }
 
@@ -327,6 +326,10 @@ bool Unit::isToDispose() {
 	return state == UnitStateType::DISPOSE && atState;
 }
 
+int Unit::getLevel() {
+	return dbLevel->level;
+}
+
 std::string Unit::getColumns() {
 	return Physical::getColumns() +
 		"position_x		INT     NOT NULL,"
@@ -334,8 +337,7 @@ std::string Unit::getColumns() {
 		"state			INT     NOT NULL,"
 		"velocity_x		INT     NOT NULL," //TODO czy dodac y?
 		"velocity_z		INT     NOT NULL,"
-		"aim_i		INT     NOT NULL,"
-		"level		INT     NOT NULL";
+		"aim_i		INT     NOT NULL";
 }
 
 void Unit::applyForce(double timeStep) {

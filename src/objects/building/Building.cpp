@@ -107,6 +107,10 @@ std::string Building::getValues(int precision) {
 		+ to_string(target_z);
 }
 
+int Building::getLevel() {
+	return dbLevel->level;
+}
+
 QueueElement* Building::updateQueue(float time) {
 	return queue->update(time);
 }

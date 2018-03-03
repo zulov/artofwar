@@ -9,7 +9,7 @@
 
 float ResourceEntity::hbMaxSize = 3.0f;
 
-ResourceEntity::ResourceEntity(Vector3* _position, int id) : Static(_position, ObjectType::RESOURCE) {
+ResourceEntity::ResourceEntity(Vector3* _position, int id, int level) : Static(_position, ObjectType::RESOURCE) {
 	hbMaxSize = 3.0;
 	db_resource* dbResource = Game::get()->getDatabaseCache()->getResource(id);
 	const String modelName = "Models/" + dbResource->model;

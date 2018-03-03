@@ -1,7 +1,7 @@
 #include "SimulationObjectManager.h"
+#include "Game.h"
 #include <algorithm>
 #include <simulation/env/Enviroment.h>
-#include "Game.h"
 
 
 SimulationObjectManager::SimulationObjectManager() {
@@ -13,7 +13,7 @@ SimulationObjectManager::SimulationObjectManager() {
 	resourcesToAdd = new std::vector<ResourceEntity*>();
 
 	units->reserve(10000);
-	buildings->reserve(1000);
+	buildings->reserve(100);
 	resources->reserve(1000);
 	toDisposeUnit.reserve(100);
 	toDisposeBuilding.reserve(100);
@@ -79,14 +79,14 @@ void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* cen
 }
 
 void SimulationObjectManager::addBuilding(int id, Vector3* center,
-                                           int player, IntVector2 _bucketCords) {
-	buildingsTemp = buildingFactory.create(id, center, player, _bucketCords);
+                                          int player, IntVector2 _bucketCords, int level) {
+	buildingsTemp = buildingFactory.create(id, center, player, _bucketCords, level);
 	updateBuilding();
 }
 
 
-void SimulationObjectManager::addResource(int id, Vector3* center, IntVector2 _bucketCords) {
-	resourcesTemp = resourceFactory.create(id, center, _bucketCords);
+void SimulationObjectManager::addResource(int id, Vector3* center, IntVector2 _bucketCords, int level) {
+	resourcesTemp = resourceFactory.create(id, center, _bucketCords, level);
 	updateResource();
 }
 

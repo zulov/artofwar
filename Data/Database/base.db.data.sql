@@ -18,10 +18,10 @@ INSERT INTO `unit_level` (level,unit,name,minDist,maxSep,model,texture,mass,scal
  (0,5,'base',0.5,2.0,'general.mdl','general.xml',0.5,0.5,0.5,1,2.0,0.5,70,5.0,1.0,0.0,3.0),
  (1,5,'better',0.5,2.0,'general.mdl','general.xml',0.5,0.5,0.6,1,2.0,0.6,80,5.0,1.0,0.0,3.0);
 INSERT INTO `settings` (graph,resolution) VALUES (0,1);
-INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,sizeX,sizeZ,maxUsers,mini_map_color) VALUES (0,'gold','gold.png',1000,'gold.xml
-','rock.mdl',0.5,2,2,4,'0xFF00D0FF'),
+INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,sizeX,sizeZ,maxUsers,mini_map_color) VALUES (0,'gold','gold.png',1000,'gold.xml','rock.mdl',0.5,2,2,4,'0xFF00D0FF'),
  (1,'wood','wood.png',100,'tree2b.xml
-tree2a.xml','tree2.mdl',10.0,3,3,3,'0xFF00B600'),
+tree2a.xml
+','tree2.mdl',10.0,3,3,3,'0xFF00B600'),
  (2,'food','food.png',100,'food.xml',NULL,0.5,2,2,3,'0xFF9000A7'),
  (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.5,2,2,4,'0xFF808080');
 INSERT INTO `resolution` (id,x,y) VALUES (0,1366,768),
@@ -31,7 +31,7 @@ INSERT INTO `resolution` (id,x,y) VALUES (0,1366,768),
  (4,4096,2160);
 INSERT INTO `player_colors` (id,unit,building,name) VALUES (0,'0xFFCF0000','0xFF900000','blue'),
  (1,'0xFF0000CF','0xFF000090','red');
-INSERT INTO `orders_to_unit` (id,unit,`order`) VALUES (0,0,0),
+INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
  (1,0,1),
  (2,0,3),
  (3,0,4),
@@ -124,7 +124,8 @@ loading.xml
 selected.xml
 queue.xml
 main_menu.xml
-left_menu.xml',0,120.0,1.0,'custom',0,1,2),
+left_menu.xml
+',0,120.0,1.0,'custom',0,1,2),
  (1,1,'DefaultStyle.xml
 in_game.xml
 mini_map.xml
@@ -133,7 +134,8 @@ loading.xml
 selected.xml
 queue.xml
 main_menu.xml
-left_menu.xml',1,120.0,1.0,'high',0,1,2);
+left_menu.xml
+',1,120.0,1.0,'high',0,1,2);
 INSERT INTO `cost_unit` (id,resource,value,unit) VALUES (0,0,90,3),
  (1,1,120,0),
  (2,0,80,1),
@@ -179,8 +181,7 @@ INSERT INTO `building_level` (level,building,name,model,texture,scale,queue_max_
  (1,4,'better','cube.mdl','transparent.xml',5.0,25),
  (0,5,'base','cube.mdl','transparent.xml',2.5,20),
  (1,5,'better','cube.mdl','transparent.xml',2.5,25);
-INSERT INTO `building` (id,name,sizeX,sizeZ,nation,icon) VALUES 
- (0,'house',1,1,0,'house.png'),
+INSERT INTO `building` (id,name,sizeX,sizeZ,nation,icon) VALUES (0,'house',1,1,0,'house.png'),
  (1,'tower',1,1,0,'tower.png'),
  (2,'barracks',2,2,0,'barracks.png'),
  (3,'archery_range',2,2,0,'archery_range.png'),

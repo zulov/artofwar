@@ -1,4 +1,6 @@
 #include "UnitFactory.h"
+#include "Game.h"
+#include "simulation/env/Enviroment.h"
 
 
 UnitFactory::UnitFactory() {
@@ -36,7 +38,10 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector3* center
 std::vector<Unit*>* UnitFactory::load(dbload_unit* unit) {
 	units->clear();
 
-	Vector3* position = new Vector3(unit->pos_x, 0, unit->pos_z);
+	float y = Game::get()->getEnviroment()->getGroundHeightAt(unit->pos_x,unit->pos_z);
+
+	Vector3* position = new Vector3(unit->pos_x, y, unit->pos_z);
+
 	Unit* newUnit = new Unit(position, unit->id_db, unit->player, unit->level);
 	newUnit->load(unit);
 

@@ -23,8 +23,8 @@ public:
 	vector<ResourceEntity*>* getResources();
 
 	void addUnits(unsigned number, int id, Vector3* center, int player, int level);
-	void addBuilding(int id, Vector3* center, int player, IntVector2 _bucketCords);
-	void addResource(int id, Vector3* center, IntVector2 _bucketCords);
+	void addBuilding(int id, Vector3* center, int player, IntVector2 _bucketCords, int level);
+	void addResource(int id, Vector3* center, IntVector2 _bucketCords, int level);
 
 	void prepareToDispose();
 	void updateInfo(SimulationInfo* simulationInfo);

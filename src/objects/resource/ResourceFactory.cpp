@@ -14,12 +14,12 @@ ResourceFactory::~ResourceFactory() {
 	delete resources;
 }
 
-std::vector<ResourceEntity*>* ResourceFactory::create(int id, Vector3* center, IntVector2 _bucketCords) {
+std::vector<ResourceEntity*>* ResourceFactory::create(int id, Vector3* center, IntVector2 _bucketCords, int level) {
 	resources->clear();
 
 	Vector3* position = new Vector3(center->x_, center->y_, center->z_);
 
-	ResourceEntity* entity = new ResourceEntity(position, id);
+	ResourceEntity* entity = new ResourceEntity(position, id, level);
 	entity->setBucketPosition(_bucketCords);
 	resources->push_back(entity);
 
@@ -36,7 +36,7 @@ std::vector<ResourceEntity*>* ResourceFactory::load(dbload_resource_entities* re
 
 	Vector3* position = env->getValidPosition(db_resource->size, bucketCords);
 
-	ResourceEntity* entity = new ResourceEntity(position, resource->id_db);
+	ResourceEntity* entity = new ResourceEntity(position, resource->id_db, resource->level);
 	entity->setBucketPosition(bucketCords);
 	resources->push_back(entity);
 

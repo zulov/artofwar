@@ -375,8 +375,19 @@ std::optional<db_unit_level*> DatabaseCache::getUnitLevel(int id, int level) {
 	return std::nullopt;
 }
 
+std::optional<db_building_level*> DatabaseCache::getBuildingLevel(int id, int level) {
+	if (dbContainer->levelsToBuilding[id]->size() > level) {
+		return std::optional<db_building_level*>{dbContainer->levelsToBuilding[id]->at(level)};
+	}
+	return std::nullopt;
+}
+
 std::vector<db_unit_level*>* DatabaseCache::getUnitLevels(int id) {
 	return dbContainer->levelsToUnit[id];
+}
+
+std::vector<db_building_level*>* DatabaseCache::getBuildingLevels(int id) {
+	return dbContainer->levelsToBuilding[id];
 }
 
 std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) {

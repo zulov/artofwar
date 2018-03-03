@@ -54,7 +54,7 @@ public:
 	void updateHeight(double y, double timeStep);
 	String& toMultiLineString() override;
 	void action(short id, ActionParameter& parameter) override;
-	std::string getValues(int precision) override;
+	
 
 	UnitStateType getState();
 	UnitStateType getActionState();
@@ -66,7 +66,9 @@ public:
 	void load(dbload_unit* unit);
 	bool isToDispose();
 
+	int getLevel() override;
 	static std::string getColumns();
+	std::string getValues(int precision) override;
 private:
 	void addAim(Aim* aim, bool append);
 	void removeAim();

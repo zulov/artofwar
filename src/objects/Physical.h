@@ -32,6 +32,7 @@ public:
 	virtual String& toMultiLineString();
 	virtual void action(short id, ActionParameter& parameter);
 	static std::string getColumns();
+	virtual int getLevel();
 	std::string getValues(int precision) override;
 	bool hasEnemy();
 	virtual void clean();

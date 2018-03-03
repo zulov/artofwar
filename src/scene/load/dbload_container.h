@@ -14,13 +14,14 @@ struct dbload_physical
 	bool alive;
 	float hp_coef;
 	int player;
+	int level;
 
-
-	dbload_physical(int idDb, bool alive, float hpCoef, int player)
+	dbload_physical(int idDb, bool alive, float hpCoef, int player, int level)
 		: id_db(idDb),
 		alive(alive),
 		hp_coef(hpCoef),
-		player(player) {
+		player(player),
+		level(level) {
 	}
 };
 
@@ -29,9 +30,8 @@ struct dbload_static : dbload_physical
 	int buc_x;
 	int buc_y;
 
-
-	dbload_static(int idDb, bool alive, float hpCoef, int player, int bucX, int bucY)
-		: dbload_physical(idDb, alive, hpCoef, player),
+	dbload_static(int idDb, bool alive, float hpCoef, int player, int bucX, int bucY, int level)
+		: dbload_physical(idDb, alive, hpCoef, player, level),
 		buc_x(bucX),
 		buc_y(bucY) {
 	}
@@ -45,19 +45,17 @@ struct dbload_unit : dbload_physical
 	float vel_x;
 	float vel_z;
 	int aim_i;
-	int level;
 
-
-	dbload_unit(int idDb, bool alive, float hpCoef, int player, float posX, float posZ, int state, float velX, float velZ,
-	            int aimI, int level)
-		: dbload_physical(idDb, alive, hpCoef, player),
+	dbload_unit(int idDb, bool alive, float hpCoef, int player, int level, float posX, float posZ, int state, float velX,
+	            float velZ,
+	            int aimI)
+		: dbload_physical(idDb, alive, hpCoef, player, level),
 		pos_x(posX),
 		pos_z(posZ),
 		state(state),
 		vel_x(velX),
 		vel_z(velZ),
-		aim_i(aimI),
-		level(level) {
+		aim_i(aimI) {
 	}
 };
 
@@ -65,14 +63,12 @@ struct dbload_building : dbload_static
 {
 	float target_x;
 	float target_z;
-	int level;
 
-	dbload_building(int idDb, bool alive, float hpCoef, int player, int bucX, int bucY, float targetX, float targetZ,
-	                int level)
-		: dbload_static(idDb, alive, hpCoef, player, bucX, bucY),
+	dbload_building(int idDb, bool alive, float hpCoef, int player, int level, int bucX, int bucY, float targetX,
+	                float targetZ)
+		: dbload_static(idDb, alive, hpCoef, player, bucX, bucY, level),
 		target_x(targetX),
-		target_z(targetZ),
-		level(level) {
+		target_z(targetZ) {
 	}
 };
 
@@ -80,8 +76,8 @@ struct dbload_resource_entities : dbload_static
 {
 	float amount;
 
-	dbload_resource_entities(int idDb, bool alive, float hpCoef, int player, int bucX, int bucY, float amount)
-		: dbload_static(idDb, alive, hpCoef, player, bucX, bucY),
+	dbload_resource_entities(int idDb, bool alive, float hpCoef, int player, int level, int bucX, int bucY, float amount)
+		: dbload_static(idDb, alive, hpCoef, player, bucX, bucY, level),
 		amount(amount) {
 	}
 };
