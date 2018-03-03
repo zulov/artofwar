@@ -10,12 +10,12 @@ struct db_building;
 class Building : public Static
 {
 public:
-	Building(Vector3* _position, int id, int player);
+	Building(Vector3* _position, int id, int player, int level);
 	~Building();
 
 	float getHealthBarSize() override;
 	int getDbID() override;
-	void populate(db_building* _dbBuilding, std::vector<db_unit*>* _units);
+	void populate();
 	void absorbAttack(double attackCoef) override;
 
 	String& toMultiLineString() override;
@@ -28,9 +28,10 @@ public:
 private:
 	Vector3 target;
 	db_building* dbBuilding;
+	db_building_level* dbLevel;
+
 	std::vector<db_unit*>* units;
 	QueueManager* queue;
-
 
 	static double hbMaxSize;
 };

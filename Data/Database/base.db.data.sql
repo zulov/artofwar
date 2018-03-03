@@ -6,9 +6,9 @@ INSERT INTO `units` (id,name,rotatable,nation,icon,actionState) VALUES (0,'warri
  (4,'worker',0,0,'worker.png',9),
  (5,'general',1,0,'general.png',1);
 INSERT INTO `unit_level` (level,unit,name,minDist,maxSep,model,texture,mass,scale,attack,attackSpeed,attackRange,defense,maxHp,maxSpeed,minSpeed,collectSpeed,upgrade_speed) VALUES (0,0,'base',0.5,2.0,'Cube.mdl','grey.xml',1.0,0.5,2.0,2,10.0,2.0,100,5.0,1.0,0.0,2.0),
- (1,0,'better',0.5,2.0,'Cube.mdl','grey.xml',1.0,0.5,3.0,2,10.0,3.0,150,5.5,1.0,0.0,2.0),
+ (1,0,'better',0.5,2.0,'Cube.mdl','grey.xml',1.0,0.6,3.0,2,10.0,3.0,150,5.5,1.0,0.0,2.0),
  (0,1,'base',0.4,2.0,'Hedra.mdl','darkgrey.xml',0.8,0.4,3.0,5,30.0,1.0,80,6.0,1.0,0.0,2.0),
- (1,1,'better',0.4,2.0,'Hedra.mdl','darkgrey.xml',0.8,0.4,4.0,5,30.0,1.5,100,7.0,1.0,0.0,3.0),
+ (1,1,'better',0.4,2.0,'Hedra.mdl','darkgrey.xml',0.8,0.5,4.0,5,30.0,1.5,100,7.0,1.0,0.0,3.0),
  (0,2,'base',0.4,2.0,'Pyramid.mdl','red.xml',1.2,0.4,1.0,3,12.0,4.0,150,4.0,2.0,0.0,2.0),
  (1,2,'better',0.4,2.0,'Pyramid.mdl','red.xml',1.2,0.4,1.0,3,12.0,5.0,180,4.2,1.7,0.0,3.0),
  (0,3,'base',0.6,2.0,'horse.mdl','horse.xml',4.0,0.6,5.0,4,10.0,3.0,250,12.0,2.0,0.0,2.0),
@@ -31,7 +31,7 @@ INSERT INTO `resolution` (id,x,y) VALUES (0,1366,768),
  (4,4096,2160);
 INSERT INTO `player_colors` (id,unit,building,name) VALUES (0,'0xFFCF0000','0xFF900000','blue'),
  (1,'0xFF0000CF','0xFF000090','red');
-INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
+INSERT INTO `orders_to_unit` (id,unit,`order`) VALUES (0,0,0),
  (1,0,1),
  (2,0,3),
  (3,0,4),
@@ -167,10 +167,23 @@ INSERT INTO `building_to_unit` (id,building,unit) VALUES (0,4,0),
  (12,0,4),
  (13,4,5),
  (14,5,5);
-INSERT INTO `building` (id,name,sizeX,sizeZ,model,texture,scale,nation,icon,queue_max_capacity) VALUES (0,'house',1,1,'House2.mdl','house2.xml',2.5,0,'house.png',5),
- (1,'tower',1,1,'Tower.mdl','tower.xml',0.5,0,'tower.png',5),
- (2,'barracks',2,2,'Barracks.mdl','barracks.xml',0.5,0,'barracks.png',10),
- (3,'archery_range',2,2,'Barracks.mdl','barracks.xml',0.5,0,'archery_range.png',10),
- (4,'mock',3,3,'cube.mdl','transparent.xml',5.0,0,'mock.png',20),
- (5,'mock_enemy',3,3,'cube.mdl','transparent.xml',2.5,1,'mock2.png',20);
+INSERT INTO `building_level` (level,building,name,model,texture,scale,queue_max_capacity) VALUES (0,0,'base','House2.mdl','house2.xml',2.5,5),
+ (1,0,'better','House2.mdl','house2.xml',2.5,7),
+ (0,1,'base','Tower.mdl','tower.xml',0.5,5),
+ (1,1,'better','Tower.mdl','tower.xml',0.5,7),
+ (0,2,'base','Barracks.mdl','barracks.xml',0.5,10),
+ (1,2,'better','Barracks.mdl','barracks.xml',0.5,12),
+ (0,3,'base','Barracks.mdl','barracks.xml',0.5,10),
+ (1,3,'better','Barracks.mdl','barracks.xml',0.5,12),
+ (0,4,'base','cube.mdl','transparent.xml',5.0,20),
+ (1,4,'better','cube.mdl','transparent.xml',5.0,25),
+ (0,5,'base','cube.mdl','transparent.xml',2.5,20),
+ (1,5,'better','cube.mdl','transparent.xml',2.5,25);
+INSERT INTO `building` (id,name,sizeX,sizeZ,nation,icon) VALUES 
+ (0,'house',1,1,0,'house.png'),
+ (1,'tower',1,1,0,'tower.png'),
+ (2,'barracks',2,2,0,'barracks.png'),
+ (3,'archery_range',2,2,0,'archery_range.png'),
+ (4,'mock',3,3,0,'mock.png'),
+ (5,'mock_enemy',3,3,1,'mock2.png');
 COMMIT;

@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS `units` (
 	`nation`	INTEGER,
 	`icon`	TEXT,
 	`actionState`	INTEGER,
-	PRIMARY KEY(`id`),
-	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)
+	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`),
+	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `unit_level` (
 	`level`	INTEGER,
@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS `unit_level` (
 CREATE TABLE IF NOT EXISTS `settings` (
 	`graph`	INTEGER,
 	`resolution`	INTEGER,
-	FOREIGN KEY(`graph`) REFERENCES `graph_settings`(`id`),
-	FOREIGN KEY(`resolution`) REFERENCES `resolution`(`id`)
+	FOREIGN KEY(`resolution`) REFERENCES `resolution`(`id`),
+	FOREIGN KEY(`graph`) REFERENCES `graph_settings`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `resource` (
 	`id`	INTEGER,
@@ -67,9 +67,9 @@ CREATE TABLE IF NOT EXISTS `orders_to_unit` (
 	`id`	INTEGER,
 	`unit`	INTEGER,
 	`order`	INTEGER,
-	FOREIGN KEY(`order`) REFERENCES `orders`(`id`),
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
 	PRIMARY KEY(`id`),
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
+	FOREIGN KEY(`order`) REFERENCES `orders`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `orders` (
 	`id`	INTEGER,
@@ -113,16 +113,16 @@ CREATE TABLE IF NOT EXISTS `graph_settings` (
 	`v_sync`	INT,
 	`shadow`	INT,
 	`texture_quality`	INT,
-	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`),
-	PRIMARY KEY(`id`)
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_unit` (
 	`id`	INTEGER,
 	`resource`	INTEGER,
 	`value`	INTEGER,
 	`unit`	INTEGER,
-	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
 	PRIMARY KEY(`id`),
+	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
 	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_building` (
@@ -138,8 +138,18 @@ CREATE TABLE IF NOT EXISTS `building_to_unit` (
 	`id`	INTEGER,
 	`building`	INTEGER,
 	`unit`	INTEGER,
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
+	FOREIGN KEY(`building`) REFERENCES `building`(`id`),
 	PRIMARY KEY(`id`),
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
+);
+CREATE TABLE IF NOT EXISTS `building_level` (
+	`level`	INTEGER,
+	`building`	INTEGER,
+	`name`	TEXT,
+	`model`	TEXT,
+	`texture`	TEXT,
+	`scale`	REAL,
+	`queue_max_capacity`	INTEGER,
 	FOREIGN KEY(`building`) REFERENCES `building`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `building` (
@@ -147,12 +157,8 @@ CREATE TABLE IF NOT EXISTS `building` (
 	`name`	TEXT,
 	`sizeX`	INTEGER,
 	`sizeZ`	INTEGER,
-	`model`	TEXT,
-	`texture`	TEXT,
-	`scale`	REAL,
 	`nation`	INTEGER,
 	`icon`	TEXT,
-	`queue_max_capacity`	INTEGER,
 	PRIMARY KEY(`id`),
 	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)
 );

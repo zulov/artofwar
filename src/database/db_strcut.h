@@ -91,25 +91,37 @@ struct db_building
 	int id;
 	Urho3D::String name;
 	Urho3D::IntVector2 size;
-	int sizeZ;
-	Urho3D::String model;
-	Urho3D::String texture;
-	float scale;
-
 	int nation;
 	Urho3D::String icon;
-	short queueMaxCapacity;
 
-	db_building(int id, char* name, int sizeX, int sizeZ, char* model, char* texture, float scale,
-	            int nation, char* icon, int queueMaxCapacity)
+	db_building(int id, char* name, int sizeX, int sizeZ, int nation, char* icon)
 		: id(id),
 		name(name),
 		size(Urho3D::IntVector2(sizeX, sizeZ)),
+		nation(nation),
+		icon(icon) {
+	}
+};
+
+struct db_building_level
+{
+	int level;
+	int unit;
+	Urho3D::String name;
+	Urho3D::String model;
+	Urho3D::String texture;
+	float scale;
+	short queueMaxCapacity;
+
+
+	db_building_level(int level, int unit, char* name, char* model, char* texture, float scale,
+		short queueMaxCapacity)
+		: level(level),
+		unit(unit),
+		name(name),
 		model(model),
 		texture(texture),
 		scale(scale),
-		nation(nation),
-		icon(icon),
 		queueMaxCapacity(queueMaxCapacity) {
 	}
 };
@@ -313,6 +325,7 @@ struct db_container
 	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB]{};
 	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB]{};
 	std::vector<db_unit_level*>* levelsToUnit[UNITS_NUMBER_DB]{};
+	std::vector<db_building_level*>* levelsToBuilding[BUILDINGS_NUMBER_DB]{};
 
 	int units_size = 0;
 	int hud_size_size = 0;
@@ -341,7 +354,9 @@ struct db_container
 			ordersToUnit[i] = new std::vector<db_order*>();
 			ordersToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 			levelsToUnit[i] = new std::vector<db_unit_level*>();
-			levelsToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
+			levelsToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);	
+			levelsToBuilding[i] = new std::vector<db_building_level*>();
+			levelsToBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
 		}
 	}
 

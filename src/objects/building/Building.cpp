@@ -13,20 +13,22 @@
 
 double Building::hbMaxSize = 5.0;
 
-Building::Building(Vector3* _position, int id, int player): target(*_position),
+Building::Building(Vector3* _position, int id, int player, int level): target(*_position),
 	Static(_position, ObjectType::BUILDING) {
 	hbMaxSize = 5.0;
 
 	target.x_ += 5;
 	target.z_ += 5;
 
-	db_building* dbBuilding = Game::get()->getDatabaseCache()->getBuilding(id);
-	std::vector<db_unit*>* dbUnits = Game::get()->getDatabaseCache()->getUnitsForBuilding(id);
-	populate(dbBuilding, dbUnits);
-	Model* model = Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbBuilding->model);
-	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbBuilding->texture);
+	dbBuilding = Game::get()->getDatabaseCache()->getBuilding(id);
+	units = Game::get()->getDatabaseCache()->getUnitsForBuilding(id);
+	dbLevel = Game::get()->getDatabaseCache()->getBuildingLevel(id, level).value();
 
-	node->SetScale(dbBuilding->scale);
+	populate();
+	Model* model = Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model);
+	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture);
+
+	node->SetScale(dbLevel->scale);
 	Urho3D::StaticModel* staticModel = node->CreateComponent<Urho3D::StaticModel>();
 	staticModel->SetModel(model);
 	staticModel->SetMaterial(material);
@@ -53,11 +55,9 @@ int Building::getDbID() {
 	return dbBuilding->id;
 }
 
-void Building::populate(db_building* _dbBuilding, std::vector<db_unit*>* _units) {
-	gridSize = _dbBuilding->size;
-	dbBuilding = _dbBuilding;
-	units = _units;
-	queue = new QueueManager(_dbBuilding->queueMaxCapacity);
+void Building::populate() {
+	gridSize = dbBuilding->size;
+	queue = new QueueManager(dbLevel->queueMaxCapacity);
 }
 
 void Building::absorbAttack(double attackCoef) {

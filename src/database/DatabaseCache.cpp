@@ -44,8 +44,7 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
-	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), argv[4], argv[5],
-	                                     atof(argv[6]), atoi(argv[7]), argv[8], atoi(argv[9]));
+	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), argv[5]);
 	xyz->building_size++;
 	return 0;
 }
@@ -157,6 +156,20 @@ int static loadSettings(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+int static loadBuildingLevels(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = static_cast<db_container *>(data);
+	int unitId = atoi(argv[1]);
+
+	xyz->levelsToBuilding[unitId]->push_back(
+	                                         new db_building_level(
+	                                                               atoi(argv[0]), atoi(argv[1]), argv[2], argv[3], argv[4],
+	                                                               atof(argv[5]), atoi(argv[6])
+	                                                              )
+	                                        );
+
+	return 0;
+}
+
 int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	int unitId = atoi(argv[1]);
@@ -210,6 +223,7 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from resolution", loadResolution);
 	execute("SELECT * from settings", loadSettings);
 	execute("SELECT * from unit_level order by level", loadUnitLevels);
+	execute("SELECT * from building_level order by level", loadBuildingLevels);
 
 
 	sqlite3_close(database);

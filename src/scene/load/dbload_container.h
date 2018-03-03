@@ -65,12 +65,14 @@ struct dbload_building : dbload_static
 {
 	float target_x;
 	float target_z;
+	int level;
 
-
-	dbload_building(int idDb, bool alive, float hpCoef, int player, int bucX, int bucY, float targetX, float targetZ)
+	dbload_building(int idDb, bool alive, float hpCoef, int player, int bucX, int bucY, float targetX, float targetZ,
+	                int level)
 		: dbload_static(idDb, alive, hpCoef, player, bucX, bucY),
 		target_x(targetX),
-		target_z(targetZ) {
+		target_z(targetZ),
+		level(level) {
 	}
 };
 
