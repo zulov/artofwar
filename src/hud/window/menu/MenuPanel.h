@@ -36,6 +36,7 @@ private:
 	void ChengeModeButton(StringHash eventType, VariantMap& eventData);
 	void basicBuilding();
 	std::unordered_set<int> getUnitInBuilding(std::vector<SelectedInfoType*>& infoTypes);
+	void setTexture(int k, String textureName);
 
 	void basicUnit(SelectedInfo* selectedInfo);
 	void levelUnit(SelectedInfo* selectedInfo);

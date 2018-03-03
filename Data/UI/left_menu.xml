@@ -36,7 +36,7 @@
 	
 	<element type="LeftMenuListRow" style="ListRow" >
 		<attribute name="Layout Spacing" value="{spaceX}" />
-		<attribute name="Min Size" value="100 {iconY/2+spaceY}" />
+		<attribute name="Min Size" value="100 {iconY+spaceY}" />
 		<attribute name="Max Size" value="10000 {iconY+spaceY}" />
 	</element>
 	
