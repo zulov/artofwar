@@ -111,15 +111,6 @@ void MenuPanel::setChecks(int val) {
 	checks[val]->SetChecked(true);
 }
 
-void MenuPanel::resetChecks() {
-	for (auto check : checks) {
-		check->SetChecked(false);
-		check->SetVisible(false);
-	}
-	checks[0]->SetChecked(true);
-	checks[0]->SetVisible(true);
-}
-
 void MenuPanel::ChengeModeButton(StringHash eventType, VariantMap& eventData) {
 	CheckBox* element = static_cast<CheckBox*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	int val = element->GetVar("Num").GetInt();
@@ -141,6 +132,26 @@ void MenuPanel::basicBuilding() {
 				setTexture(k, "textures/hud/icon/building/" + building->icon);
 
 				hudElements[k]->setId(building->id, ObjectType::BUILDING, QueueType::UNIT);
+				k++;
+			}
+		}
+	}
+	resetButtons(k);
+}
+
+void MenuPanel::levelBuilding() {
+	int size = Game::get()->getDatabaseCache()->getBuildingSize();
+	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
+	int k = 0;
+	for (int i = 0; i < size; ++i) {
+		db_building* building = Game::get()->getDatabaseCache()->getBuilding(i);
+		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForBuilding(i) + 1;
+		auto opt = Game::get()->getDatabaseCache()->getBuildingLevel(i, level);
+		if (opt.has_value()) {
+			if (building->nation == nation) {
+				setTexture(k, "textures/hud/icon/building/levels/" + String(level) + "/" + building->icon);
+
+				hudElements[k]->setId(building->id, ObjectType::BUILDING, QueueType::BUILDING_LEVEL);
 				k++;
 			}
 		}
@@ -247,6 +258,9 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 	resetButtons(k);
 }
 
+void MenuPanel::formationOrder() {
+}
+
 void MenuPanel::resetButtons(int from) {
 	for (int i = from; i < LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1); ++i) {
 		setTextureToSprite(sprites[i], nullptr);
@@ -255,31 +269,58 @@ void MenuPanel::resetButtons(int from) {
 }
 
 void MenuPanel::updateButtons(SelectedInfo* selectedInfo) {
-
+	setChecks(subMode);
 	switch (mode) {
 
 	case LeftMenuMode::BUILDING:
-		resetChecks();
-		basicBuilding();
+		buildingMenu();
 		break;
 	case LeftMenuMode::UNIT:
-		setChecks(subMode);
-
-		switch (subMode) {
-		case BASIC:
-			basicUnit(selectedInfo);
-			break;
-		case LEVEL:
-			levelUnit(selectedInfo);
-			break;
-		case UPGRADE: break;
-		default: ;
-		}
+		unitMenu(selectedInfo);
 		break;
 	case LeftMenuMode::ORDER:
-		resetChecks();
+		orderMenu(selectedInfo);
+		break;
+	default: ;
+	}
+}
+
+void MenuPanel::unitMenu(SelectedInfo* selectedInfo) {
+	switch (subMode) {
+	case BASIC:
+		basicUnit(selectedInfo);
+		break;
+	case LEVEL:
+		levelUnit(selectedInfo);
+		break;
+	case UPGRADE: break;
+	default: ;
+	}
+}
+
+void MenuPanel::buildingMenu() {
+	switch (subMode) {
+	case BASIC:
+		basicBuilding();
+		break;
+	case LEVEL:
+		levelBuilding();
+		break;
+	case UPGRADE: break;
+	default: ;
+	}
+}
+
+void MenuPanel::orderMenu(SelectedInfo* selectedInfo) {
+	switch (subMode) {
+	case BASIC:
+
 		basicOrder(selectedInfo);
 		break;
+	case LEVEL:
+		formationOrder();
+		break;
+	case UPGRADE: break;
 	default: ;
 	}
 }
