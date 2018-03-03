@@ -21,7 +21,6 @@ InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_
 
 InGameMenuPanel::~InGameMenuPanel() {
 	toggleButton->Remove();
-	clear_vector(buttons);
 
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		delete addionalPanels[i];
@@ -79,11 +78,7 @@ void InGameMenuPanel::createBody() {
 		text->SetText(msg);
 		text->SetStyle("InGameText", style);
 
-		HudData* hudElement = new HudData(button);
-		hudElement->setId(i, ObjectType::ENTITY);
-		buttons.push_back(hudElement);
-
-		button->SetVar("HudElement", hudElement);
+		button->SetVar("Num", i);
 		window->AddChild(button);
 		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleButtonClick));
 	}
@@ -102,9 +97,9 @@ void InGameMenuPanel::createBody() {
 
 void InGameMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudData* hudElement = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
+	int id = element->GetVar("HudElement").GetInt();
 
-	action(hudElement->getId());
+	action(id);
 }
 
 void InGameMenuPanel::HandleToggle(StringHash eventType, VariantMap& eventData) {

@@ -6,7 +6,6 @@
 #include "simulation/env/ContentInfo.h"
 #include "hud/UiUtils.h"
 #include <Urho3D/Resource/ResourceCache.h>
-#include <LinearMath/btVector3.h>
 #include "database/DatabaseCache.h"
 #include <Urho3D/UI/CheckBox.h>
 #include "player/PlayersManager.h"
@@ -44,7 +43,6 @@ MiniMapPanel::~MiniMapPanel() {
 	delete[] heightMap;
 	delete minimap;
 	text->Release();
-	clear_vector(hudElements);
 }
 
 void MiniMapPanel::initColors() {
@@ -162,7 +160,6 @@ void MiniMapPanel::createBody() {
 	row->SetStyle("MiniMapListRow", style);
 
 	checksElements.reserve(MINI_MAP_BUTTON_NUMBER);
-	hudElements.reserve(MINI_MAP_BUTTON_NUMBER);
 
 	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
 		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
@@ -173,10 +170,8 @@ void MiniMapPanel::createBody() {
 		box->SetStyle("MiniMapCheckBox", style);
 		checksElements.push_back(box);
 		box->AddChild(sprite);
-		HudData* hudElement = new HudData(checksElements.at(i));
-		hudElement->setId(i, ObjectType::ENTITY);
-		hudElements.push_back(hudElement);
-		checksElements.at(i)->SetVar("HudElement", hudElement);
+
+		checksElements.at(i)->SetVar("Num", i);
 
 		SubscribeToEvent(box, E_CLICK, URHO3D_HANDLER(MiniMapPanel, HandleButton));
 	}
@@ -197,7 +192,7 @@ void MiniMapPanel::createBody() {
 
 void MiniMapPanel::HandleButton(StringHash eventType, VariantMap& eventData) {
 	CheckBox* element = (CheckBox*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	HudData* hudElement = (HudData *)element->GetVar("HudElement").GetVoidPtr();
+	int id = element->GetVar("Num").GetInt();
 
-	changeMiniMapType(hudElement->getId(), element->IsChecked());
+	changeMiniMapType(id, element->IsChecked());
 }

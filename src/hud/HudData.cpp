@@ -1,36 +1,30 @@
 #include "HudData.h"
 
 
-HudData::HudData(Urho3D::UIElement* _uiElement) {
-	uiElement = _uiElement;
+HudData::HudData(Urho3D::UIElement* _uiParent) {
+	parent = _uiParent;
 }
 
 HudData::~HudData() = default;
 
-Urho3D::UIElement* HudData::getUIElement() {
-	return uiElement;
+Urho3D::UIElement* HudData::getUIParent() {
+	return parent;
 }
 
-void HudData::setId(short id, ObjectType _type) {
-	objectId = id;
-	type = _type;
-	queueType =QueueType::NONE;
+void HudData::setId(short _id) {
+	id = _id;
 }
 
-void HudData::setId(short id, ObjectType _type, QueueType _queueType) {
-	objectId = id;
+void HudData::setId(short _id, LeftMenuAction _type) {
+	id = _id;
 	type = _type;
-	queueType = _queueType;
 }
 
 short HudData::getId() {
-	return objectId;
+	return id;
 }
 
-ObjectType HudData::getType() {
+LeftMenuAction HudData::getType() {
 	return type;
 }
 
-QueueType HudData::getQueueType() {
-	return queueType;
-}

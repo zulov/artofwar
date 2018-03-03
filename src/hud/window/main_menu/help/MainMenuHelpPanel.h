@@ -2,8 +2,6 @@
 
 #include <Urho3D/UI/ListView.h>
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
-#include <vector>
-#include "hud/HudData.h"
 
 
 #define HELP_ITEMS 5
@@ -20,6 +18,5 @@ private:
 	Urho3D::ListView * list;
 	Urho3D::ScrollView* content;
 	Urho3D::Text* contentText;
-	std::vector<HudData*> listElements;
 };
 

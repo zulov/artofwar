@@ -1,27 +1,23 @@
 #pragma once
-#include "ObjectEnums.h"
-#include "objects/queue/QueueType.h"
+#include "hud/window/menu/LeftMenuAction.h"
 #include <Urho3D/UI/UIElement.h>
 
 
 class HudData
 {
 public:
-	HudData(Urho3D::UIElement * _uiElement);
+	HudData(Urho3D::UIElement * _uiParent);
 	~HudData();
-	Urho3D::UIElement * getUIElement();
+	Urho3D::UIElement * getUIParent();
 
-	void setId(short id, ObjectType _type);
-	void setId(short id, ObjectType _type, QueueType _queueType);
+	void setId(short _id);
+	void setId(short _id, LeftMenuAction _type);
 	short getId();
-	ObjectType getType();
-	QueueType getQueueType();
+	LeftMenuAction getType();
 private:
-	Urho3D::UIElement * uiElement;
-	ObjectType type;
-	QueueType queueType;
-	
-	short objectId;
+	Urho3D::UIElement * parent;
+	LeftMenuAction type;
+	short id;
 
 };
 

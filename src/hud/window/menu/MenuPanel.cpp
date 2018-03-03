@@ -94,7 +94,7 @@ void MenuPanel::createBody() {
 			sprites[k] = createEmptySprite(style, "LeftMenuSprite");
 			buttons[k] = simpleButton(rows[i], sprites[k], style, "LeftMenuBigIcon");
 			hudElements.push_back(new HudData(buttons[k]));
-			hudElements[k]->setId(-1, ObjectType::ENTITY);
+			hudElements[k]->setId(-1, LeftMenuAction::NONE);
 
 			buttons[k]->SetVar("HudElement", hudElements[k]);
 			k++;
@@ -131,7 +131,7 @@ void MenuPanel::basicBuilding() {
 			if (building->nation == nation) {
 				setTexture(k, "textures/hud/icon/building/" + building->icon);
 
-				hudElements[k]->setId(building->id, ObjectType::BUILDING, QueueType::UNIT);
+				hudElements[k]->setId(building->id, LeftMenuAction::BUILDING);
 				k++;
 			}
 		}
@@ -151,7 +151,7 @@ void MenuPanel::levelBuilding() {
 			if (building->nation == nation) {
 				setTexture(k, "textures/hud/icon/building/levels/" + String(level) + "/" + building->icon);
 
-				hudElements[k]->setId(building->id, ObjectType::BUILDING, QueueType::BUILDING_LEVEL);
+				hudElements[k]->setId(building->id, LeftMenuAction::BUILDING_LEVEL);
 				k++;
 			}
 		}
@@ -187,7 +187,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 		if (unit) {
 			setTexture(k, "textures/hud/icon/unit/" + unit->icon);
 
-			hudElements[k]->setId(unit->id, ObjectType::UNIT, QueueType::UNIT);
+			hudElements[k]->setId(unit->id, LeftMenuAction::UNIT);
 			k++;
 		}
 	}
@@ -205,7 +205,7 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 		if (opt.has_value()) {
 			setTexture(k, "textures/hud/icon/unit/levels/" + String(level) + "/" + unit->icon);
 
-			hudElements[k]->setId(unit->id, ObjectType::UNIT, QueueType::UNIT_LEVEL);
+			hudElements[k]->setId(unit->id, LeftMenuAction::UNIT_LEVEL);
 			k++;
 		}
 	}
@@ -251,7 +251,7 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 		if (order) {
 			setTexture(k, "textures/hud/icon/orders/" + order->icon);
 
-			hudElements[k]->setId(order->id, ObjectType::ENTITY);
+			hudElements[k]->setId(order->id, LeftMenuAction::ORDER);
 			k++;
 		}
 	}

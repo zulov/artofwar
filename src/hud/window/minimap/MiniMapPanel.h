@@ -4,7 +4,6 @@
 #include <Urho3D/UI/Sprite.h>
 #include <Urho3D/UI/Button.h>
 #include <vector>
-#include "hud/HudData.h"
 #include "defines.h"
 #include "database/db_strcut.h"
 
@@ -29,7 +28,6 @@ private:
 	Urho3D::Image* minimap;
 	Urho3D::Texture2D* text;
 	std::vector<Urho3D::UIElement*> checksElements;
-	std::vector<HudData*> hudElements;
 	unsigned* heightMap;
 	int indexUpdate = 0;
 	int indexPerUpdate;

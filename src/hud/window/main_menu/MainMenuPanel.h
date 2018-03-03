@@ -21,7 +21,6 @@ public:
 	void HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 private:
 	void createBody() override;
-	std::vector<HudData*> buttons;
 	MainMenuDetailsPanel** detailsPanels;
 	Urho3D::BorderImage* background;
 };

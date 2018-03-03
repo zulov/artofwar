@@ -82,7 +82,7 @@ void Main::Stop() {
 
 void Main::subscribeToUIEvents() {
 	for (auto hudElement : hud->getButtonsLeftMenuToSubscribe()) {
-		UIElement* element = hudElement->getUIElement();
+		UIElement* element = hudElement->getUIParent();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleLeftMenuButton));
 	}
 
@@ -352,13 +352,33 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	HudData* hudData = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
 	switch (hudData->getType()) {
+	case LeftMenuAction::NONE: break;
+	case LeftMenuAction::UNIT:
+		controls->order(hudData->getId(), ActionParameter(QueueType::UNIT));
+		break;
+	case LeftMenuAction::UNIT_LEVEL:
+		controls->order(hudData->getId(), ActionParameter(QueueType::UNIT_LEVEL));
+		break;
+	case LeftMenuAction::UNIT_UPGRADE: break;
+	case LeftMenuAction::BUILDING:
+		controls->hudAction(hudData);
+		break;
+	case LeftMenuAction::BUILDING_LEVEL: break;
+	case LeftMenuAction::BUILDING_UPGRADE: break;
+	case LeftMenuAction::ORDER:
+		controls->order(hudData->getId(), ActionParameter(QueueType::NONE));
+		break;
+	case LeftMenuAction::FORMATION: break;
+	default: ;
+	}
+	switch (hudData->getType()) {
 
 	case ObjectType::ENTITY:
 	case ObjectType::UNIT:
-		controls->order(hudData->getId(), ActionParameter(hudData->getQueueType()));
+
 		break;
 	case ObjectType::BUILDING:
-		controls->hudAction(hudData);
+
 		break;
 	default: ;
 	}

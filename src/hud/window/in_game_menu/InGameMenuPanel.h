@@ -1,9 +1,7 @@
 #pragma once
-#include "hud/HudData.h"
 #include "hud/window/AbstractWindowPanel.h"
 #include "middle/AbstractMiddlePanel.h"
 #include <Urho3D/UI/Button.h>
-#include <vector>
 
 
 class InGameMenuPanel : public AbstractWindowPanel
@@ -23,6 +21,5 @@ private:
 	void HandleToggle(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	bool menuVisibility = false;
 	Urho3D::Button* toggleButton;
-	std::vector<HudData*> buttons;
 	AbstractMiddlePanel** addionalPanels;
 };

@@ -464,6 +464,7 @@
     <ClInclude Include="src\hud\HudData.h">
       <Filter>hud</Filter>
     </ClInclude>
+    <ClInclude Include="src\hud\window\menu\LeftMenuAction.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

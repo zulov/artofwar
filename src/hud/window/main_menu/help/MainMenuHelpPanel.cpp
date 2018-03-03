@@ -21,14 +21,12 @@ void MainMenuHelpPanel::createBody() {
 		Button* button = simpleButton(nullptr, style, "HelpListButton");
 		Urho3D::Text* element = button->CreateChild<Text>();
 
-		HudData* hudElement = new HudData(button);
-		hudElement->setId(i, ObjectType::ENTITY);
 		element->SetText(Game::get()->getLocalization()->Get("help_key_" + String(i)));
 		element->SetStyle("HelpListText");
 		button->AddChild(element);
 		list->AddItem(button);
-		listElements.push_back(hudElement);
-		button->SetVar("HudElement", hudElement);
+
+		button->SetVar("Num", i);
 		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(MainMenuHelpPanel, HandleButtonClick));
 	}
 
@@ -46,7 +44,6 @@ void MainMenuHelpPanel::createBody() {
 
 
 MainMenuHelpPanel::~MainMenuHelpPanel() {
-	clear_vector(listElements);
 }
 
 void MainMenuHelpPanel::action(short id) {
@@ -56,7 +53,7 @@ void MainMenuHelpPanel::action(short id) {
 
 void MainMenuHelpPanel::HandleButtonClick(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudData* hudElement = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
+	int id = element->GetVar("Num").GetInt();
 
-	action(hudElement->getId());
+	action(id);
 }

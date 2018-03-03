@@ -126,7 +126,7 @@ void Hud::preapreUrho() {
 
 void Hud::subscribeToUIEvents() {
 	for (auto hudElement : getButtonsLeftMenuToSubscribe()) {
-		UIElement* element = hudElement->getUIElement();
+		UIElement* element = hudElement->getUIParent();
 		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Hud, HandleUIButtonHoverOn));
 		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Hud, HandleUIButtonHoverOff));
 	}

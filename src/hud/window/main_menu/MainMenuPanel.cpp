@@ -58,9 +58,9 @@ Urho3D::Button* MainMenuPanel::getCloseButton() {
 
 void MainMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudData* hudElement = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
+	int id = element->GetVar("Num").GetInt();
 
-	action(hudElement->getId());
+	action(id);
 }
 
 void MainMenuPanel::createBody() {
@@ -93,11 +93,7 @@ void MainMenuPanel::createBody() {
 		text->SetText(msg);
 		text->SetStyle("MainMenuText", style);
 
-		HudData* hudElement = new HudData(button);
-		hudElement->setId(i, ObjectType::ENTITY);
-		buttons.push_back(hudElement);
-
-		button->SetVar("HudElement", hudElement);
+		button->SetVar("Num", i);
 		window->AddChild(button);
 		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(MainMenuPanel, HandleButtonClick));
 	}

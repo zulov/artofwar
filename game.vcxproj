@@ -287,6 +287,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\hud\window\menu\info\LeftMenuInfoPanel.h" />
+    <ClInclude Include="src\hud\window\menu\LeftMenuAction.h" />
     <ClInclude Include="src\hud\window\menu\LeftMenuModes.h" />
     <ClInclude Include="src\objects\building\BuildingUtils.h" />
     <ClInclude Include="src\objects\NamesCache.h" />

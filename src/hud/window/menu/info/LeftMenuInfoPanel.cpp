@@ -46,31 +46,63 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 	text2->SetVisible(true);
 }
 
-void LeftMenuInfoPanel::setInfo(HudData* hudElement) {
+void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 	String s = "";
-	ObjectType type = hudElement->getType();
-	const short id = hudElement->getId();
+	const short id = hudData->getId();
+	LeftMenuAction type = hudData->getType();
+
 	switch (type) {
 
-	case ObjectType::UNIT:
+	case LeftMenuAction::UNIT:
 		{
 		db_unit* dbUnit = Game::get()->getDatabaseCache()->getUnit(id);
 		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
 		s = stringFrom(dbUnit, costs);
 		}
 		break;
-	case ObjectType::BUILDING:
+	case LeftMenuAction::UNIT_LEVEL:
+		s = "TODO";
+		break;
+	case LeftMenuAction::UNIT_UPGRADE:
+		s = "TODO";
+		break;
+	case LeftMenuAction::BUILDING:
 		{
 		db_building* dbBuilding = Game::get()->getDatabaseCache()->getBuilding(id);
 		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForBuilding(id);
 		s = stringFrom(dbBuilding, costs);
 		}
 		break;
+	case LeftMenuAction::BUILDING_LEVEL:
+	case LeftMenuAction::BUILDING_UPGRADE:
+	case LeftMenuAction::ORDER:
+	case LeftMenuAction::FORMATION:
+		s = "TODO";
+		break;
 	default: ;
 	}
-	text->SetVisible(true);
-	text->SetText(s);
-	setVisible(true);
+
+
+	switch (type) {
+
+	case ObjectType::UNIT:
+		{
+		}
+		break;
+	case ObjectType::BUILDING:
+		{
+		}
+		break;
+	default: ;
+	}
+	if (s.Length() > 0) {
+		text->SetVisible(true);
+		text->SetText(s);
+		setVisible(true);
+	} else {
+		setVisible(false);
+	}
+
 }
 
 Urho3D::String LeftMenuInfoPanel::stringFrom(db_unit* dbUnit, std::vector<db_cost*>* costs) {
