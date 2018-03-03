@@ -52,10 +52,11 @@ void Physical::createBillboardShadow(Vector3& boundingBox) {
 	billboardSetShadow->SetSorted(true);
 	billboardSetShadow->SetFaceCameraMode(FaceCameraMode::FC_NONE);
 
+
 	billboardShadow = billboardSetShadow->GetBillboard(0);
-	float boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.3f;
+	billboardShadow->position_ = Vector3(0, 0, -0.3 / node->GetScale().x_);
+	float boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.3f ;
 	billboardShadow->size_ = Vector2(boudingSize, boudingSize);
-	billboardShadow->position_ = Vector3(0, 0, -0.3);
 	billboardShadow->enabled_ = false;
 
 	billboardSetShadow->Commit();

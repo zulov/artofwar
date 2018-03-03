@@ -1,9 +1,9 @@
 #include "ResourceEntity.h"
 #include "Game.h"
-#include <Urho3D/Graphics/Model.h>
-#include <Urho3D/Graphics/Material.h>
-#include <Urho3D/Graphics/StaticModel.h>
 #include "database/DatabaseCache.h"
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
 
@@ -11,12 +11,15 @@ float ResourceEntity::hbMaxSize = 3.0f;
 
 ResourceEntity::ResourceEntity(Vector3* _position, int id, int level) : Static(_position, ObjectType::RESOURCE) {
 	hbMaxSize = 3.0;
-	db_resource* dbResource = Game::get()->getDatabaseCache()->getResource(id);
-	const String modelName = "Models/" + dbResource->model;
-	populate(dbResource);
-	node->Scale(dbResource->scale);
+	dbResource = Game::get()->getDatabaseCache()->getResource(id);
+
+	populate();
+
 	StaticModel* model = node->CreateComponent<StaticModel>();
-	model->SetModel(Game::get()->getCache()->GetResource<Model>(modelName));
+	model->SetModel(Game::get()->getCache()->GetResource<Model>("Models/" + dbResource->model));
+
+	node->Scale(dbResource->scale);
+
 	for (int i = 0; i < dbResource->texture.Size(); ++i) {
 		model->SetMaterial(i, Game::get()->getCache()->GetResource<Material>("Materials/" + dbResource->texture[i]));
 	}
@@ -29,12 +32,11 @@ int ResourceEntity::getDbID() {
 	return dbResource->id;
 }
 
-void ResourceEntity::populate(db_resource* _dbResource) {
-	type = _dbResource->id;
-	gridSize = _dbResource->size;
-	amonut = _dbResource->maxCapacity;
-	maxUsers = _dbResource->maxUsers;
-	dbResource = _dbResource;
+void ResourceEntity::populate() {
+	type = dbResource->id;
+	gridSize = dbResource->size;
+	amonut = dbResource->maxCapacity;
+	maxUsers = dbResource->maxUsers;
 }
 
 float ResourceEntity::getHealthBarSize() {

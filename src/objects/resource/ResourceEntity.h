@@ -10,7 +10,7 @@ public:
 	ResourceEntity(Vector3* _position, int id, int level);
 	virtual ~ResourceEntity();
 	int getDbID() override;
-	void populate(db_resource* _dbResource);
+	void populate();
 
 	float getHealthBarSize() override;
 	String& toMultiLineString() override;
