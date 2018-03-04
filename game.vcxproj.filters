@@ -205,6 +205,7 @@
     <ClCompile Include="src\hud\HudData.cpp">
       <Filter>hud</Filter>
     </ClCompile>
+    <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -465,6 +466,7 @@
       <Filter>hud</Filter>
     </ClInclude>
     <ClInclude Include="src\hud\window\menu\LeftMenuAction.h" />
+    <ClInclude Include="src\commands\upgrade\UpgradeCommandList.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -284,6 +284,7 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\simulation\Simulation.cpp" />
     <ClCompile Include="src\commands\upgrade\UpgradeCommand.cpp" />
+    <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\hud\window\menu\info\LeftMenuInfoPanel.h" />
@@ -412,6 +413,7 @@
     <ClInclude Include="src\objects\unit\UnitType.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommand.h" />
+    <ClInclude Include="src\commands\upgrade\UpgradeCommandList.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

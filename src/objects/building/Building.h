@@ -20,6 +20,7 @@ public:
 
 	String& toMultiLineString() override;
 	void action(short id, ActionParameter& parameter) override;
+	void upgrade(char level);
 
 	static std::string getColumns();
 	std::string getValues(int precision) override;

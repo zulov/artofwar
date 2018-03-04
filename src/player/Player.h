@@ -21,7 +21,7 @@ public:
 
 	int getLevelForUnit(int id);
 	int getLevelForBuilding(int id);
-	void upgradeLevel(QueueType type, int id);
+	char upgradeLevel(QueueType type, int id);
 private:
 	Resources resources;
 	db_nation* dbNation;

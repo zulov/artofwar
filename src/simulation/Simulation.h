@@ -9,6 +9,7 @@
 #include <Urho3D/Input/Input.h>
 #include <vector>
 #include "hud/window/main_menu/new_game/NewGameForm.h"
+#include "commands/upgrade/UpgradeCommandList.h"
 
 
 class SceneLoader;
@@ -22,7 +23,7 @@ namespace Urho3D {
 class Simulation
 {
 public:
-	Simulation(Enviroment* _enviroment, CreationCommandList* _simCommandList);
+	Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList);
 	~Simulation();
 	SimulationInfo* update(float timeStep);
 	void initScene(SceneLoader& loader);
@@ -64,6 +65,6 @@ private:
 	Enviroment* enviroment;
 	SimulationObjectManager* simObjectManager;
 	CreationCommandList* creationCommandList;
-	CommandList* levelsCommandList;
+	UpgradeCommandList* levelsCommandList;
 	ActionCommandList* actionCommandList;
 };

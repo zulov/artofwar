@@ -60,13 +60,14 @@ int Player::getLevelForBuilding(int id) {
 	return buildingLevels[id];
 }
 
-void Player::upgradeLevel(QueueType type, int id) {
+char Player::upgradeLevel(QueueType type, int id) {
 	switch (type) {
 	case QueueType::UNIT_LEVEL:
 		{
 		int maxLevels = Game::get()->getDatabaseCache()->getUnitLevels(id)->size() - 1;
 		if (maxLevels > unitLevels[id]) {
 			unitLevels[id]++;
+			return unitLevels[id];
 		}
 		}
 		break;
@@ -75,9 +76,11 @@ void Player::upgradeLevel(QueueType type, int id) {
 		int maxLevels = Game::get()->getDatabaseCache()->getBuildingLevels(id)->size() - 1;
 		if (maxLevels > buildingLevels[id]) {
 			buildingLevels[id]++;
+			return buildingLevels[id];
 		}
 		}
 		break;
 	default: ;
 	}
+	return -1;
 }

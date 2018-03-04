@@ -8,11 +8,11 @@
 #include "player/PlayersManager.h"
 
 
-Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _simCommandList) {
+Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {
 	enviroment = _enviroment;
-	simObjectManager = _simCommandList->getManager();
-	creationCommandList = _simCommandList;
-	levelsCommandList = new CommandList();
+	simObjectManager = _creationCommandList->getManager();
+	creationCommandList = _creationCommandList;
+	levelsCommandList = new UpgradeCommandList(simObjectManager);
 
 	srand(time(NULL));
 

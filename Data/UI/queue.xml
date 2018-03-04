@@ -2,17 +2,20 @@
 
 	<element type="MiniText" style="MyText" >
 		<attribute name="Font Size" value="{fontSize*8/10}" />
+		<attribute name="Vert Alignment" value="Top" />
+		<attribute name="Horiz Alignment" value="Center" />
 	</element>
 
 	<element type="QueueWindow" style="MyWindow">
 		<attribute name="Vert Alignment" value="Bottom" />
-		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Left" />
 		<attribute name="Layout Mode" value="Horizontal" />
 		<attribute name="Layout Spacing" value="{spaceX}" />
         <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
-		<attribute name="Min Size" value="{resX -(4*iconX+4*spaceX) -(4*iconX+2*spaceX)} {iconY}"/>
-		<attribute name="Opacity" value="0.4" />
-		<attribute name="Position" value="{spaceX} -{3*iconY+3*spaceY}"/>
+		<attribute name="Min Size" value="{iconX*3/4+2*spaceX} {iconY}"/>
+		<attribute name="Max Size" value="{resX -(4*iconX+4*spaceX) -(4*iconX+2*spaceX)} {iconY}"/>
+		<attribute name="Opacity" value="0.5" />
+		<attribute name="Position" value="{4*iconX+5*spaceX} -{3*iconY+3*spaceY}"/>
 	</element>
 	
 	<element type="QueueProgressBar" style="ProgressBar">
