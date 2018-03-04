@@ -196,10 +196,6 @@ void Hud::updateLoading(float progress) {
 	loadingPanel->update(progress);
 }
 
-Sprite* Hud::getSpriteMiniMapToSubscribe() {
-	return miniMapPanel->getSpriteToSubscribe();
-}
-
 Button* Hud::getSaveButton() {
 	return inGameMenuPanel->getSaveButton();
 }

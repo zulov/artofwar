@@ -1,19 +1,20 @@
 #pragma once
 
-#include "hud/Hud.h"
 #include "Benchmark.h"
+#include "GameState.h"
+#include "Loading.h"
 #include "control/Controls.h"
-#include "simulation/Simulation.h"
+#include "hud/Hud.h"
 #include "scene/LevelBuilder.h"
+#include "scene/load/SceneLoader.h"
+#include "scene/save/SceneSaver.h"
+#include "simulation/Simulation.h"
 #include <Urho3D/Engine/Application.h>
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/Input/InputEvents.h>
-#include "GameState.h"
-#include "Loading.h"
-#include "scene/save/SceneSaver.h"
-#include "scene/load/SceneLoader.h"
+
 
 struct NewGameForm;
 
@@ -23,7 +24,6 @@ namespace Urho3D {
 	class Sprite;
 }
 
-using namespace Urho3D;
 
 class Main : public Application
 {
@@ -48,15 +48,18 @@ private:
 
 	void subscribeToUIEvents();
 	void subscribeToEvents();
+
 	void HandleMouseModeRequest(StringHash eventType, VariantMap& eventData);
 	void HandleMouseModeChange(StringHash eventType, VariantMap& eventData);
+
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
+
 	void HandleNewGame(StringHash eventType, VariantMap& eventData);
 	void HandleLoadGame(StringHash eventType, VariantMap& eventData);
 	void HandleCloseGame(StringHash eventType, VariantMap& eventData);
 	void HandleSaveScene(StringHash, VariantMap& eventData);
-	void HandleMiniMapClick(StringHash eventType, VariantMap& eventData);
+
 	void HandleLeftMenuButton(StringHash eventType, VariantMap& eventData);
 	void HandleSelectedButton(StringHash eventType, VariantMap& eventData);
 

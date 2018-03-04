@@ -2,6 +2,7 @@
 #include "camera/CameraEnums.h"
 #include "commands/creation/CreationCommandList.h"
 #include "database/DatabaseCache.h"
+#include "hud/HudData.h"
 #include "hud/window/in_game_menu/middle/FileFormData.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "objects/LinkComponent.h"
@@ -14,11 +15,10 @@
 #include <Urho3D/Engine/EngineDefs.h>
 #include <Urho3D/IO/FileSystem.h>
 #include <Urho3D/Resource/Localization.h>
+#include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "hud/HudData.h"
-#include <Urho3D/Resource/ResourceCache.h>
 
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
@@ -95,9 +95,6 @@ void Main::subscribeToUIEvents() {
 	SubscribeToEvent(hud->getLoadButton(), E_CLICK, URHO3D_HANDLER(Main, HandleLoadGame));
 	SubscribeToEvent(hud->getCloseButton(), E_CLICK, URHO3D_HANDLER(Main, HandleCloseGame));
 
-	Sprite* minimap = hud->getSpriteMiniMapToSubscribe();
-	SubscribeToEvent(minimap, E_CLICK, URHO3D_HANDLER(Main, HandleMiniMapClick));
-
 	hud->subscribeToUIEvents();
 }
 
@@ -138,6 +135,8 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	case GameState::NEW_GAME:
 		newGame(newGameForm);
 		break;
+	case GameState::STARTING: break;
+	default: ;
 	}
 }
 
@@ -337,16 +336,6 @@ void Main::HandleCloseGame(StringHash eventType, VariantMap& eventData) {
 	engine_->Exit();
 }
 
-void Main::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {
-	Sprite* element = static_cast<Sprite*>(eventData[Urho3D::Click::P_ELEMENT].GetVoidPtr());
-	IntVector2 begin = element->GetScreenPosition();
-	IntVector2 size = element->GetSize();
-	float x = eventData[Urho3D::Click::P_X].GetInt() - begin.x_;
-	float y = size.y_ - (eventData[Urho3D::Click::P_Y].GetInt() - begin.y_);
-
-	Game::get()->getCameraManager()->changePosition(x / size.x_, y / size.y_);
-}
-
 void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	//TODO need refactor
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
@@ -371,18 +360,6 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	case LeftMenuAction::FORMATION: break;
 	default: ;
 	}
-	switch (hudData->getType()) {
-
-	case ObjectType::ENTITY:
-	case ObjectType::UNIT:
-
-		break;
-	case ObjectType::BUILDING:
-
-		break;
-	default: ;
-	}
-
 }
 
 void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
@@ -391,7 +368,7 @@ void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	);
 	std::vector<Physical*>* selected = sHudElement->getSelected();
 	controls->unSelectAll();
-	for (auto physical : (*selected)) {
+	for (auto physical : *selected) {
 		controls->select(physical);
 	}
 }

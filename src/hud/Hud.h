@@ -50,7 +50,7 @@ URHO3D_OBJECT(Hud, Object)
 	void resetLoading();
 
 	void updateLoading(float progress);
-	Sprite* getSpriteMiniMapToSubscribe();
+
 	Button* getSaveButton();
 	Button* getNewGameProceed();
 	Button* getLoadButton();

@@ -11,6 +11,7 @@
 #include "player/PlayersManager.h"
 #include <Urho3D/UI/UIEvents.h>
 #include "GameState.h"
+#include "camera/CameraManager.h"
 
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -145,10 +146,6 @@ void MiniMapPanel::update() {
 
 }
 
-Urho3D::Sprite* MiniMapPanel::getSpriteToSubscribe() {
-	return spr;
-}
-
 void MiniMapPanel::changeMiniMapType(short id, bool val) {
 	checks[id] = val;
 }
@@ -188,6 +185,7 @@ void MiniMapPanel::createBody() {
 
 	spr->SetTexture(text);
 	heightMap = new unsigned[size.x_ * size.y_];
+	SubscribeToEvent(spr, E_CLICK, URHO3D_HANDLER(MiniMapPanel, HandleMiniMapClick));
 }
 
 void MiniMapPanel::HandleButton(StringHash eventType, VariantMap& eventData) {
@@ -195,4 +193,14 @@ void MiniMapPanel::HandleButton(StringHash eventType, VariantMap& eventData) {
 	int id = element->GetVar("Num").GetInt();
 
 	changeMiniMapType(id, element->IsChecked());
+}
+
+void MiniMapPanel::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {
+	Sprite* element = static_cast<Sprite*>(eventData[Urho3D::Click::P_ELEMENT].GetVoidPtr());
+	IntVector2 begin = element->GetScreenPosition();
+	IntVector2 size = element->GetSize();
+	float x = eventData[Urho3D::Click::P_X].GetInt() - begin.x_;
+	float y = size.y_ - (eventData[Urho3D::Click::P_Y].GetInt() - begin.y_);
+
+	Game::get()->getCameraManager()->changePosition(x / size.x_, y / size.y_);
 }
