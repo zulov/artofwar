@@ -63,6 +63,7 @@ void Unit::populate() {
 	minSpeed = dbLevel->minDist;
 	minimalDistance = dbLevel->minDist;
 	attackRange = dbLevel->attackRange;
+	attackIntrest = dbLevel->attackRange * 10;
 	rotatable = dbUnit->rotatable;
 	actionState = UnitStateType(dbUnit->actionState);
 
