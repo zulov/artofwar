@@ -173,6 +173,33 @@
 	},
 	"custom":{
 		"pl":"Własne"
+	},
+	"ord_go":{
+		"pl":"Idź"
+	},
+	"ord_stop":{
+		"pl":"Zatrzymaj"
+	},
+	"ord_charge":{
+		"pl":"Szarżuj"
+	},
+	"ord_attack":{
+		"pl":"Atakuj"
+	},
+	"ord_patrol":{
+		"pl":"Patroluj"
+	},
+	"ord_dead":{
+		"pl":"Giń"
+	},
+	"ord_defend":{
+		"pl":"Broń"
+	},
+	"ord_follow":{
+		"pl":"Podążaj"
+	},
+	"ord_collect":{
+		"pl":"Zbieraj"
 	}
 	
 }

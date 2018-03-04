@@ -120,9 +120,9 @@ void Simulation::applyForce() {
 	}
 }
 
-void Simulation::updateBuildingQueue() {
+void Simulation::updateBuildingQueues(float time) {
 	for (Building* build : (*buildings)) {
-		QueueElement* done = build->updateQueue(maxTimeFrame);
+		QueueElement* done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {
 			case QueueType::UNIT:
@@ -155,6 +155,23 @@ void Simulation::updateBuildingQueue() {
 
 			delete done;
 		}
+	}
+}
+
+void Simulation::updateQueues() {
+	updateBuildingQueues(maxTimeFrame);
+	QueueElement* done = Game::get()->getQueueManager()->update(maxTimeFrame);
+	if (done) {
+		switch (done->getType()) {
+		case QueueType::BUILDING_LEVEL:
+			levelsCommandList->add(new UpgradeCommand(
+			                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
+			                                          done->getId(),
+			                                          done->getType()
+			                                         ));
+			break;
+		}
+		delete done;
 	}
 }
 
@@ -197,7 +214,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 		moveUnitsAndCheck(accumulateTime);
 
 		performAction();
-		updateBuildingQueue();
+		updateQueues();
 
 		simObjectManager->prepareToDispose();
 		simObjectManager->updateInfo(simulationInfo);

@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS `unit_level` (
 CREATE TABLE IF NOT EXISTS `settings` (
 	`graph`	INTEGER,
 	`resolution`	INTEGER,
-	FOREIGN KEY(`graph`) REFERENCES `graph_settings`(`id`),
-	FOREIGN KEY(`resolution`) REFERENCES `resolution`(`id`)
+	FOREIGN KEY(`resolution`) REFERENCES `resolution`(`id`),
+	FOREIGN KEY(`graph`) REFERENCES `graph_settings`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `resource` (
 	`id`	INTEGER,
@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS `orders_to_unit` (
 CREATE TABLE IF NOT EXISTS `orders` (
 	`id`	INTEGER,
 	`icon`	TEXT,
+	`name`	text,
 	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `nation` (
@@ -121,9 +122,9 @@ CREATE TABLE IF NOT EXISTS `cost_unit_level` (
 	`level`	INTEGER,
 	`resource`	INTEGER,
 	`value`	INTEGER,
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
 	FOREIGN KEY(`level`) REFERENCES `unit_level`(`level`),
-	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
+	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_unit` (
 	`id`	INTEGER,
@@ -155,9 +156,9 @@ CREATE TABLE IF NOT EXISTS `building_to_unit` (
 	`id`	INTEGER,
 	`building`	INTEGER,
 	`unit`	INTEGER,
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
 	FOREIGN KEY(`building`) REFERENCES `building`(`id`),
-	PRIMARY KEY(`id`),
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
+	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `building_level` (
 	`level`	INTEGER,

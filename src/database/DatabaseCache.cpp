@@ -133,8 +133,9 @@ int static loadCostBuilding(void* data, int argc, char** argv, char** azColName)
 int static loadOrders(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
-	xyz->orders[id] = new db_order(id, argv[1]);
+	xyz->orders[id] = new db_order(id, argv[1], argv[2]);
 	xyz->orders_size++;
+
 	return 0;
 }
 

@@ -266,10 +266,12 @@ struct db_order
 {
 	int id;
 	Urho3D::String icon;
+	Urho3D::String name;
 
-	db_order(int id, char* icon)
+	db_order(int id, char* icon, char* name)
 		: id(id),
-		icon(icon) {
+		icon(icon),
+		name(name) {
 	}
 };
 

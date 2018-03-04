@@ -39,6 +39,10 @@ Urho3D::Localization* Game::getLocalization() const {
 	return localization;
 }
 
+QueueManager* Game::getQueueManager() const {
+	return queue;
+}
+
 CreationCommandList* Game::getCreationCommandList() const {
 	return creationCommandList;
 }
@@ -147,5 +151,10 @@ Game* Game::setPlayersManager(PlayersManager* _playersManager) {
 
 Game* Game::setEnviroment(Enviroment* _enviroment) {
 	enviroment = _enviroment;
+	return this;
+}
+
+Game* Game::setQueueManager(QueueManager* _queueManager) {
+	queue = _queueManager;
 	return this;
 }

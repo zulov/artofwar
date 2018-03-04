@@ -43,7 +43,8 @@ private:
 	void addTestEntities();
 	void countFrame();
 	void applyForce();
-	void updateBuildingQueue();
+	void updateBuildingQueues(float time);
+	void updateQueues();
 	void selfAI();
 
 	void tryToAttack(vector<Unit*>::value_type unit);

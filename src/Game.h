@@ -21,6 +21,7 @@ class Enviroment;
 class DatabaseCache;
 class CameraManager;
 class PlayersManager;
+class QueueManager;
 
 class Game
 {
@@ -43,6 +44,7 @@ public:
 	Game* setDatabaseCache(DatabaseCache* _databaseCache);
 	Game* setPlayersManager(PlayersManager* _playersManager);
 	Game* setEnviroment(Enviroment* _enviroment);
+	Game* setQueueManager(QueueManager* _queueManager);
 
 
 	Urho3D::ResourceCache* getCache() const;
@@ -53,6 +55,7 @@ public:
 	Urho3D::SharedPtr<Urho3D::Engine> getEngine() const;
 	Urho3D::Console* getConsole() const;
 	Urho3D::Localization* getLocalization() const;
+	QueueManager* getQueueManager() const;
 
 	CameraManager* getCameraManager() const;
 	ActionCommandList* getActionCommandList() const;
@@ -76,9 +79,9 @@ private:
 
 	CameraManager* cameraManager;
 	ActionCommandList* actionCommandList;
-	CreationCommandList * creationCommandList;
-	DatabaseCache * databaseCache;
-	PlayersManager * playersManager;
-	Enviroment * enviroment;
-
+	CreationCommandList* creationCommandList;
+	DatabaseCache* databaseCache;
+	PlayersManager* playersManager;
+	Enviroment* enviroment;
+	QueueManager* queue;
 };

@@ -25,7 +25,7 @@ public:
 	void removeInfo();
 	void refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo);
 
-	void setInfo(HudData* hudElement);
+	void setInfo(HudData* hudData);
 	void updateSelected(SelectedInfo* selectedInfo);
 	void setVisible(bool enable) override;
 	std::vector<HudData*>& getButtons();

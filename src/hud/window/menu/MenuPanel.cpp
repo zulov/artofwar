@@ -39,8 +39,8 @@ void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {
 	updateButtons(lastSelectedInfo);
 }
 
-void MenuPanel::setInfo(HudData* hudElement) {
-	infoPanel->setInfo(hudElement);
+void MenuPanel::setInfo(HudData* hudData) {
+	infoPanel->setInfo(hudData);
 }
 
 void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {

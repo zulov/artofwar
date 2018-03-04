@@ -294,7 +294,7 @@ void Controls::orderPhysical(short id, ActionParameter& parameter) {
 		if (opt.has_value()) {
 			auto costs = opt.value();
 			if (resources.reduce(costs)) {
-				//queue->add(1, parameter.type, id, 1);
+				Game::get()->getQueueManager()->add(1, parameter.type, id, 1);
 			}
 		}
 		break;
@@ -347,7 +347,12 @@ void Controls::clickDownRight() {
 
 void Controls::createBuilding(Vector3& pos) {
 	if (idToCreate >= 0) {
-		Game::get()->getCreationCommandList()->addBuilding(idToCreate, pos, 0, 0);
+		Game::get()->getCreationCommandList()->addBuilding(
+		                                                   idToCreate, pos,
+		                                                   Game::get()->getPlayersManager()->getActivePlayer()->getId(),
+		                                                   Game::get()->getPlayersManager()->getActivePlayer()->
+		                                                                getLevelForBuilding(idToCreate)
+		                                                  );
 	}
 }
 

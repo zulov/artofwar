@@ -191,6 +191,7 @@ void Main::load() {
 	case 0:
 		{
 		Game::get()->setCameraManager(new CameraManager());
+		Game::get()->setQueueManager(new QueueManager(1));
 
 		loader.createLoad(saveToLoad);
 		levelBuilder = new LevelBuilder();
@@ -240,6 +241,7 @@ void Main::newGame(NewGameForm* form) {
 		{
 		disposeScene();
 		Game::get()->setCameraManager(new CameraManager());
+		Game::get()->setQueueManager(new QueueManager(1));
 
 		levelBuilder = new LevelBuilder();
 		controls = new Controls(GetSubsystem<Input>());
@@ -425,9 +427,12 @@ void Main::disposeScene() {
 		delete simulation;
 		simulation = nullptr;
 
-		loading2.inc("dispose cameras");
+		loading2.inc("dispose cameras and queue");
 		delete Game::get()->getCameraManager();
 		Game::get()->setCameraManager(nullptr);
+
+		delete Game::get()->getQueueManager();
+		Game::get()->setQueueManager(nullptr);
 
 		loading2.inc("dispose creationList");
 		delete Game::get()->getCreationCommandList();

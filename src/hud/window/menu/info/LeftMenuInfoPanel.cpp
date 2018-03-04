@@ -4,6 +4,7 @@
 #include "database/db_strcut.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
+#include "player/PlayersManager.h"
 
 
 LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -47,7 +48,7 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 }
 
 void LeftMenuInfoPanel::setInfo(HudData* hudData) {
-	String s = "";
+	String message = "";
 	const short id = hudData->getId();
 	LeftMenuAction type = hudData->getType();
 
@@ -57,47 +58,59 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 		{
 		db_unit* dbUnit = Game::get()->getDatabaseCache()->getUnit(id);
 		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
-		s = stringFrom(dbUnit, costs);
+		message = stringFrom(dbUnit->name, costs);
 		}
 		break;
 	case LeftMenuAction::UNIT_LEVEL:
-		s = "TODO";
+		{
+		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
+		db_unit_level* dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
+		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForUnitLevel(id, level);
+		auto costs = opt.value();
+		message = stringFrom(dbLevel->name, costs);
+		}
 		break;
 	case LeftMenuAction::UNIT_UPGRADE:
-		s = "TODO";
+		{
+		message = "TODO";
+		}
 		break;
 	case LeftMenuAction::BUILDING:
 		{
 		db_building* dbBuilding = Game::get()->getDatabaseCache()->getBuilding(id);
 		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForBuilding(id);
-		s = stringFrom(dbBuilding, costs);
+		message = stringFrom(dbBuilding->name, costs);
 		}
 		break;
 	case LeftMenuAction::BUILDING_LEVEL:
+		{
+		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
+		db_building_level* dbLevel = Game::get()->getDatabaseCache()->getBuildingLevel(id, level).value();
+		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForUnitLevel(id, level);
+		auto costs = opt.value();
+		message = stringFrom(dbLevel->name, costs);
+		}
+		break;
 	case LeftMenuAction::BUILDING_UPGRADE:
+		{
+		message = "TODO";
+		}
+		break;
 	case LeftMenuAction::ORDER:
+		{
+		db_order* dbOrder = Game::get()->getDatabaseCache()->getOrder(id);
+		message = Game::get()->getLocalization()->Get(dbOrder->name);
+		}
+		break;
 	case LeftMenuAction::FORMATION:
-		s = "TODO";
+		message = "TODO";
 		break;
 	default: ;
 	}
 
-
-	switch (type) {
-
-	case ObjectType::UNIT:
-		{
-		}
-		break;
-	case ObjectType::BUILDING:
-		{
-		}
-		break;
-	default: ;
-	}
-	if (s.Length() > 0) {
+	if (message.Length() > 0) {
 		text->SetVisible(true);
-		text->SetText(s);
+		text->SetText(message);
 		setVisible(true);
 	} else {
 		setVisible(false);
@@ -105,16 +118,8 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 
 }
 
-Urho3D::String LeftMenuInfoPanel::stringFrom(db_unit* dbUnit, std::vector<db_cost*>* costs) {
-	String msg = dbUnit->name + "\n";
-	for (db_cost* cost : (*costs)) {
-		msg += cost->resourceName + " - " + String(cost->value) + "\n";
-	}
-	return msg;
-}
-
-Urho3D::String LeftMenuInfoPanel::stringFrom(db_building* dbBuilding, std::vector<db_cost*>* costs) {
-	String msg = dbBuilding->name + "\n";
+Urho3D::String LeftMenuInfoPanel::stringFrom(String& name, std::vector<db_cost*>* costs) {
+	String msg = name + "\n";
 	for (db_cost* cost : (*costs)) {
 		msg += cost->resourceName + " - " + String(cost->value) + "\n";
 	}
