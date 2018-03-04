@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS `units` (
 	`nation`	INTEGER,
 	`icon`	TEXT,
 	`actionState`	INTEGER,
-	PRIMARY KEY(`id`),
-	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)
+	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`),
+	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `unit_level` (
 	`level`	INTEGER,
@@ -67,9 +67,9 @@ CREATE TABLE IF NOT EXISTS `orders_to_unit` (
 	`id`	INTEGER,
 	`unit`	INTEGER,
 	`order`	INTEGER,
-	PRIMARY KEY(`id`),
 	FOREIGN KEY(`order`) REFERENCES `orders`(`id`),
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
+	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `orders` (
 	`id`	INTEGER,
@@ -113,26 +113,34 @@ CREATE TABLE IF NOT EXISTS `graph_settings` (
 	`v_sync`	INT,
 	`shadow`	INT,
 	`texture_quality`	INT,
-	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`),
-	PRIMARY KEY(`id`)
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_unit_level` (
 	`unit`	INTEGER,
 	`level`	INTEGER,
 	`resource`	INTEGER,
 	`value`	INTEGER,
+	FOREIGN KEY(`level`) REFERENCES `unit_level`(`level`),
 	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
-	FOREIGN KEY(`level`) REFERENCES `unit_level`(`level`)
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_unit` (
 	`id`	INTEGER,
 	`resource`	INTEGER,
 	`value`	INTEGER,
 	`unit`	INTEGER,
+	PRIMARY KEY(`id`),
 	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
+	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`)
+);
+CREATE TABLE IF NOT EXISTS `cost_building_level` (
+	`building`	INTEGER,
+	`level`	INTEGER,
+	`resource`	INTEGER,
+	`value`	INTEGER,
 	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
-	PRIMARY KEY(`id`)
+	FOREIGN KEY(`building`) REFERENCES `building`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_building` (
 	`id`	INTEGER,
@@ -140,8 +148,8 @@ CREATE TABLE IF NOT EXISTS `cost_building` (
 	`value`	INTEGER,
 	`building`	INTEGER,
 	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
-	FOREIGN KEY(`building`) REFERENCES `building`(`id`),
-	PRIMARY KEY(`id`)
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`building`) REFERENCES `building`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `building_to_unit` (
 	`id`	INTEGER,

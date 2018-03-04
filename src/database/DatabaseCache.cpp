@@ -106,6 +106,19 @@ int static loadCostUnitLevel(void* data, int argc, char** argv, char** azColName
 	return 0;
 }
 
+int static loadCostBuildingLevel(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = static_cast<db_container *>(data);
+	const int building = atoi(argv[0]);
+	const int level = atoi(argv[1]);
+	const int resourceId = atoi(argv[2]);
+	db_resource* dbResource = xyz->resources[resourceId];
+
+	xyz->costForBuildingLevel[building]->at(level)->push_back(new db_cost(-1, resourceId, atoi(argv[3]), dbResource->name,
+	                                                                      building));
+
+	return 0;
+}
+
 int static loadCostBuilding(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int buildingId = atoi(argv[3]);
@@ -237,6 +250,7 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from unit_level order by level", loadUnitLevels);
 	execute("SELECT * from building_level order by level", loadBuildingLevels);
 	execute("SELECT * from cost_unit_level order by level,unit", loadCostUnitLevel);
+	execute("SELECT * from cost_building_level order by level,building", loadCostBuildingLevel);
 
 
 	sqlite3_close(database);
@@ -403,7 +417,8 @@ optional<vector<db_cost*>*> DatabaseCache::getCostForUnitLevel(short id, int lev
 }
 
 optional<vector<db_cost*>*> DatabaseCache::getCostForBuildingLevel(short id, int level) {
-	if (dbContainer->costForBuildingLevel[id]->size() > level && dbContainer->costForBuildingLevel[id]->at(level)->size() > 0) {
+	if (dbContainer->costForBuildingLevel[id]->size() > level && dbContainer->costForBuildingLevel[id]->at(level)->size() >
+		0) {
 		return std::optional<vector<db_cost*>*>{dbContainer->costForBuildingLevel[id]->at(level)};
 	}
 	return std::nullopt;

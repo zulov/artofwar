@@ -30,6 +30,7 @@ Controls::Controls(Input* _input) {
 
 	createNode("Models/box.mdl", "Materials/green_alpha.xml", &selectionNode);
 	createNode("Models/arrow2.mdl", "Materials/dark_red_alpha.xml", &arrowNode);
+	selectedType = ObjectType::PHISICAL;
 }
 
 
@@ -282,19 +283,20 @@ void Controls::orderBuilding(short id, ActionParameter& parameter) {
 }
 
 void Controls::orderPhysical(short id, ActionParameter& parameter) {
-	int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
+	int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
 
 	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
-	
+
 	switch (parameter.type) {
 	case QueueType::BUILDING_LEVEL:
 		{
-//		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForBuildingLevel(id, level);
-//		if (opt.has_value()) {
-//		if (resources.reduce(costs)) {
-//			queue->add(1, parameter.type, id, 1);
-//		}	
-//		}
+		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForBuildingLevel(id, level);
+		if (opt.has_value()) {
+			auto costs = opt.value();
+			if (resources.reduce(costs)) {
+				//queue->add(1, parameter.type, id, 1);
+			}
+		}
 		break;
 		}
 	}
