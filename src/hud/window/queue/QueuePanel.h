@@ -13,7 +13,9 @@ public:
 	void update(QueueManager* queue, short& j);
 
 	void show(SelectedInfo* selectedInfo);
+	void show(QueueManager* queue);
 	void update(SelectedInfo* selectedInfo);
+	void update(QueueManager* queue);
 private:
 	void hideElements(int from);
 	void createBody() override;

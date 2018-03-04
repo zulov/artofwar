@@ -50,6 +50,17 @@ void QueuePanel::show(SelectedInfo* selectedInfo) {
 	update(selectedInfo);
 }
 
+void QueuePanel::update(QueueManager* queue) {
+	short j = 0;
+	update(queue, j);
+	hideElements(j);
+}
+
+void QueuePanel::show(QueueManager* queue) {
+	setVisible(true);
+	update(queue);
+}
+
 void QueuePanel::update(SelectedInfo* selectedInfo) {
 	//TODO wykonuje sie nawet jeœli sie nic nie zmieni³o
 	short j = 0;
