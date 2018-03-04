@@ -16,6 +16,9 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UI.h>
 #include <algorithm>
+#include "player/PlayersManager.h"
+#include <queue>
+#include "database/DatabaseCache.h"
 
 
 Controls::Controls(Input* _input) {
@@ -258,7 +261,9 @@ void Controls::hudAction(HudData* hud) {
 
 void Controls::order(short id, ActionParameter& parameter) {
 	switch (selectedType) {
-
+	case ObjectType::PHISICAL:
+		orderPhysical(id, parameter);
+		break;
 	case ObjectType::UNIT:
 		orderUnit(id);
 		break;
@@ -274,6 +279,26 @@ void Controls::orderBuilding(short id, ActionParameter& parameter) {
 	for (auto& phy : *selected) {
 		phy->action(id, parameter);
 	}
+}
+
+void Controls::orderPhysical(short id, ActionParameter& parameter) {
+	int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
+
+	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
+	
+	switch (parameter.type) {
+	case QueueType::BUILDING_LEVEL:
+		{
+//		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForBuildingLevel(id, level);
+//		if (opt.has_value()) {
+//		if (resources.reduce(costs)) {
+//			queue->add(1, parameter.type, id, 1);
+//		}	
+//		}
+		break;
+		}
+	}
+
 }
 
 void Controls::startSelectionNode(hit_data hitData) {
@@ -480,7 +505,6 @@ void Controls::defaultControl() {
 	}
 }
 
-
 void Controls::buildControl() {
 	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
 		if (!left.isHeld) {
@@ -496,7 +520,6 @@ void Controls::buildControl() {
 }
 
 void Controls::orderControl() {
-
 	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
 		if (!left.isHeld) {
 			left.markHeld();

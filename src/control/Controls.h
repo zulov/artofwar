@@ -32,13 +32,14 @@ public:
 	void hudAction(HudData* hud);
 
 	bool clickDown(MouseButton& var, hit_data hitData);
+	void cleanMouse();
 	SelectedInfo* getInfo();
 	ControlsState getState();
-	void cleanMouse();
 
 	void deactivate();
 	void activate();
 
+	void orderPhysical(short id, ActionParameter& parameter);
 	void order(short id, ActionParameter& parameter);
 	void clean(SimulationInfo* simulationInfo);
 	void updateSelection();

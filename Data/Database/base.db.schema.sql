@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS `units` (
 	`nation`	INTEGER,
 	`icon`	TEXT,
 	`actionState`	INTEGER,
-	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`),
-	PRIMARY KEY(`id`)
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `unit_level` (
 	`level`	INTEGER,
@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS `unit_level` (
 CREATE TABLE IF NOT EXISTS `settings` (
 	`graph`	INTEGER,
 	`resolution`	INTEGER,
-	FOREIGN KEY(`resolution`) REFERENCES `resolution`(`id`),
-	FOREIGN KEY(`graph`) REFERENCES `graph_settings`(`id`)
+	FOREIGN KEY(`graph`) REFERENCES `graph_settings`(`id`),
+	FOREIGN KEY(`resolution`) REFERENCES `resolution`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `resource` (
 	`id`	INTEGER,
@@ -67,9 +67,9 @@ CREATE TABLE IF NOT EXISTS `orders_to_unit` (
 	`id`	INTEGER,
 	`unit`	INTEGER,
 	`order`	INTEGER,
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
 	PRIMARY KEY(`id`),
-	FOREIGN KEY(`order`) REFERENCES `orders`(`id`)
+	FOREIGN KEY(`order`) REFERENCES `orders`(`id`),
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `orders` (
 	`id`	INTEGER,
@@ -113,17 +113,26 @@ CREATE TABLE IF NOT EXISTS `graph_settings` (
 	`v_sync`	INT,
 	`shadow`	INT,
 	`texture_quality`	INT,
-	PRIMARY KEY(`id`),
-	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`)
+	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`),
+	PRIMARY KEY(`id`)
+);
+CREATE TABLE IF NOT EXISTS `cost_unit_level` (
+	`unit`	INTEGER,
+	`level`	INTEGER,
+	`resource`	INTEGER,
+	`value`	INTEGER,
+	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
+	FOREIGN KEY(`level`) REFERENCES `unit_level`(`level`)
 );
 CREATE TABLE IF NOT EXISTS `cost_unit` (
 	`id`	INTEGER,
 	`resource`	INTEGER,
 	`value`	INTEGER,
 	`unit`	INTEGER,
-	PRIMARY KEY(`id`),
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
 	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
-	FOREIGN KEY(`unit`) REFERENCES `units`(`id`)
+	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_building` (
 	`id`	INTEGER,
@@ -159,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `building` (
 	`sizeZ`	INTEGER,
 	`nation`	INTEGER,
 	`icon`	TEXT,
-	PRIMARY KEY(`id`),
-	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)
+	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`),
+	PRIMARY KEY(`id`)
 );
 COMMIT;

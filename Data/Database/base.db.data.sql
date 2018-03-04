@@ -136,6 +136,14 @@ queue.xml
 main_menu.xml
 left_menu.xml
 ',1,120.0,1.0,'high',0,1,2);
+INSERT INTO `cost_unit_level` (unit,level,resource,value) VALUES (0,1,1,1000),
+ (0,1,2,500),
+ (1,1,0,500),
+ (1,1,1,500),
+ (2,1,2,2000),
+ (3,1,1,2000),
+ (4,1,2,3000),
+ (5,1,2,2500);
 INSERT INTO `cost_unit` (id,resource,value,unit) VALUES (0,0,90,3),
  (1,1,120,0),
  (2,0,80,1),

@@ -94,6 +94,18 @@ int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+int static loadCostUnitLevel(void* data, int argc, char** argv, char** azColName) {
+	db_container* xyz = static_cast<db_container *>(data);
+	const int unit = atoi(argv[0]);
+	const int level = atoi(argv[1]);
+	const int resourceId = atoi(argv[2]);
+	db_resource* dbResource = xyz->resources[resourceId];
+
+	xyz->costForUnitLevel[unit]->at(level)->push_back(new db_cost(-1, resourceId, atoi(argv[3]), dbResource->name, unit));
+
+	return 0;
+}
+
 int static loadCostBuilding(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	const int buildingId = atoi(argv[3]);
@@ -224,6 +236,7 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from settings", loadSettings);
 	execute("SELECT * from unit_level order by level", loadUnitLevels);
 	execute("SELECT * from building_level order by level", loadBuildingLevels);
+	execute("SELECT * from cost_unit_level order by level,unit", loadCostUnitLevel);
 
 
 	sqlite3_close(database);
@@ -378,6 +391,20 @@ std::optional<db_unit_level*> DatabaseCache::getUnitLevel(int id, int level) {
 std::optional<db_building_level*> DatabaseCache::getBuildingLevel(int id, int level) {
 	if (dbContainer->levelsToBuilding[id]->size() > level) {
 		return std::optional<db_building_level*>{dbContainer->levelsToBuilding[id]->at(level)};
+	}
+	return std::nullopt;
+}
+
+optional<vector<db_cost*>*> DatabaseCache::getCostForUnitLevel(short id, int level) {
+	if (dbContainer->costForUnitLevel[id]->size() > level && dbContainer->costForUnitLevel[id]->at(level)->size() > 0) {
+		return std::optional<vector<db_cost*>*>{dbContainer->costForUnitLevel[id]->at(level)};
+	}
+	return std::nullopt;
+}
+
+optional<vector<db_cost*>*> DatabaseCache::getCostForBuildingLevel(short id, int level) {
+	if (dbContainer->costForBuildingLevel[id]->size() > level && dbContainer->costForBuildingLevel[id]->at(level)->size() > 0) {
+		return std::optional<vector<db_cost*>*>{dbContainer->costForBuildingLevel[id]->at(level)};
 	}
 	return std::nullopt;
 }

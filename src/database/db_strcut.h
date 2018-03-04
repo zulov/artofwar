@@ -12,6 +12,8 @@
 #define PLAYER_COLORS_NUMBER_DB 10
 #define RESOLUTIONS_NUMBER_DB 6
 #define SETTINGS_NUMBER_DB 1
+#define MAX_UNIT_LEVEL_NUMBER_DB 6
+#define MAX_BUILDING_LEVEL_NUMBER_DB 6
 
 #define SPLIT_SIGN '\n'
 
@@ -115,7 +117,7 @@ struct db_building_level
 
 
 	db_building_level(int level, int unit, char* name, char* model, char* texture, float scale,
-		short queueMaxCapacity)
+	                  short queueMaxCapacity)
 		: level(level),
 		unit(unit),
 		name(name),
@@ -321,9 +323,14 @@ struct db_container
 	db_settings* settings[SETTINGS_NUMBER_DB] = {nullptr};
 
 	std::vector<db_unit*>* unitsForBuilding[BUILDINGS_NUMBER_DB]{};
+
 	std::vector<db_cost*>* costForBuilding[BUILDINGS_NUMBER_DB]{};
 	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB]{};
+	std::vector<std::vector<db_cost*>*>* costForBuildingLevel[BUILDINGS_NUMBER_DB]{};
+	std::vector<std::vector<db_cost*>*>* costForUnitLevel[UNITS_NUMBER_DB]{};
+
 	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB]{};
+
 	std::vector<db_unit_level*>* levelsToUnit[UNITS_NUMBER_DB]{};
 	std::vector<db_building_level*>* levelsToBuilding[BUILDINGS_NUMBER_DB]{};
 
@@ -347,6 +354,13 @@ struct db_container
 			unitsForBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
 			costForBuilding[i] = new std::vector<db_cost*>();
 			costForBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
+			levelsToBuilding[i] = new std::vector<db_building_level*>();
+			levelsToBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
+			costForBuildingLevel[i] = new std::vector<std::vector<db_cost*>*>();
+			costForBuildingLevel[i]->reserve(MAX_BUILDING_LEVEL_NUMBER_DB);
+			for (int j = 0; j < MAX_BUILDING_LEVEL_NUMBER_DB; ++j) {
+				costForBuildingLevel[i]->push_back(new std::vector<db_cost*>);
+			}
 		}
 		for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
 			costForUnit[i] = new std::vector<db_cost*>();
@@ -354,9 +368,13 @@ struct db_container
 			ordersToUnit[i] = new std::vector<db_order*>();
 			ordersToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 			levelsToUnit[i] = new std::vector<db_unit_level*>();
-			levelsToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);	
-			levelsToBuilding[i] = new std::vector<db_building_level*>();
-			levelsToBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
+			levelsToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
+
+			costForUnitLevel[i] = new std::vector<std::vector<db_cost*>*>();
+			costForUnitLevel[i]->reserve(MAX_UNIT_LEVEL_NUMBER_DB);
+			for (int j = 0; j < MAX_UNIT_LEVEL_NUMBER_DB; ++j) {
+				costForUnitLevel[i]->push_back(new std::vector<db_cost*>);
+			}
 		}
 	}
 

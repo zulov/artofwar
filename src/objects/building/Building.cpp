@@ -64,7 +64,7 @@ void Building::absorbAttack(double attackCoef) {
 }
 
 String& Building::toMultiLineString() {
-	menuString = dbBuilding->name;
+	menuString = dbBuilding->name + " " + dbLevel->name;
 	menuString += "\nAtak: " + String(attackCoef);
 	menuString += "\nObrona: " + String(defenseCoef);
 	menuString += "\nZdrowie: " + String(hpCoef) + "/" + String(maxHpCoef);
@@ -73,22 +73,28 @@ String& Building::toMultiLineString() {
 
 void Building::action(short id, ActionParameter& parameter) {
 	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
-	std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
+
 	switch (parameter.type) {
 	case QueueType::UNIT:
+		{
+		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
 		if (resources.reduce(costs)) {
 			queue->add(1, parameter.type, id, 30);
 		}
-		break;
-	case QueueType::UNIT_LEVEL:
-		if (resources.reduce(costs)) {
-			queue->add(1, parameter.type, id, 1);
 		}
 		break;
-	case QueueType::BUILDING_LEVEL:
-
+	case QueueType::UNIT_LEVEL:
+		{
+		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
+		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForUnitLevel(id, level);
+		if (opt.has_value()) {
+			const auto costs = opt.value();
+			if (resources.reduce(costs)) {
+				queue->add(1, parameter.type, id, 1);
+			}
+		}
 		break;
-	default: ;
+		}
 	}
 
 }

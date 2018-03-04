@@ -230,7 +230,7 @@ void Unit::removeAim() {
 }
 
 String& Unit::toMultiLineString() {
-	menuString = dbUnit->name;
+	menuString = dbUnit->name + " " + dbLevel->name;;
 	menuString.Append("\nAtak: ").Append(String(attackCoef));
 	menuString.Append("\nObrona: ").Append(String(defenseCoef));
 	menuString.Append("\nZdrowie: ").Append(String(hpCoef)).Append("/").Append(String(maxHpCoef));

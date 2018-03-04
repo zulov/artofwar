@@ -23,16 +23,18 @@ public:
 	db_player_colors* getPlayerColor(int i);
 	db_settings* getSettings();
 	db_resolution* getResolution(int id);
-	std::optional<db_unit_level*> getUnitLevel(int id, int level);
-	std::optional<db_building_level*> getBuildingLevel(int id, int level);
+	optional<db_unit_level*> getUnitLevel(int id, int level);
+	optional<db_building_level*> getBuildingLevel(int id, int level);
+	optional<vector<db_cost*>*> getCostForUnitLevel(short id, int level);
+	optional<vector<db_cost*>*> getCostForBuildingLevel(short id, int level);
 
 
-	std::vector<db_unit_level*>* getUnitLevels(int id);
-	std::vector<db_building_level*>* getBuildingLevels(int id);
-	std::vector<db_unit*>* getUnitsForBuilding(int id);
-	std::vector<db_cost*>* getCostForUnit(int id);
-	std::vector<db_cost*>* getCostForBuilding(int id);
-	std::vector<db_order*>* getOrdersForUnit(int id);
+	vector<db_unit_level*>* getUnitLevels(int id);
+	vector<db_building_level*>* getBuildingLevels(int id);
+	vector<db_unit*>* getUnitsForBuilding(int id);
+	vector<db_cost*>* getCostForUnit(int id);
+	vector<db_cost*>* getCostForBuilding(int id);
+	vector<db_order*>* getOrdersForUnit(int id);
 
 	int getResourceSize();
 	int getHudVarsSize();
