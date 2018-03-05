@@ -5,6 +5,20 @@ INSERT INTO `units` (id,name,rotatable,nation,icon,actionState) VALUES (0,'warri
  (3,'cavalry',1,0,'cavalry.png',3),
  (4,'worker',0,0,'worker.png',9),
  (5,'general',1,0,'general.png',1);
+INSERT INTO `unit_upgrade_path` (id,name) VALUES (0,NULL),
+ (1,'up_pth_attack');
+INSERT INTO `unit_upgrade_cost` (upgrade,resource,value) VALUES (0,0,1000),
+ (0,1,1000),
+ (1,2,500),
+ (1,3,1500),
+ (2,0,2500);
+INSERT INTO `unit_upgrade` (id,path,level,name,attack,attackSpeed,attackRange,defense,maxHp,maxSpeed,minSpeed,collectSpeed,upgradeSpeed) VALUES (0,0,0,'up_attack_0',1.2,1.0,1.0,1.0,1.0,1.0,1.0,1.0,10.0),
+ (1,1,0,'up_hp_0',1.0,1.0,1.0,1.0,1.25,1.0,1.0,1.0,5.0),
+ (2,0,1,'up_attack_0',1.3,1.0,1.0,1.0,1.0,1.0,1.0,1.0,15.0);
+INSERT INTO `unit_to_unit_upgrade` (upgrade,unit) VALUES (0,0),
+ (0,1),
+ (1,1),
+ (1,2);
 INSERT INTO `unit_level` (level,unit,name,minDist,maxSep,model,texture,mass,scale,attack,attackSpeed,attackRange,defense,maxHp,maxSpeed,minSpeed,collectSpeed,upgrade_speed) VALUES (0,0,'base',0.5,2.0,'Cube.mdl','grey.xml',1.0,0.5,2.0,2,1.0,0.2,100,5.0,1.0,0.0,2.0),
  (1,0,'better',0.5,2.0,'Cube.mdl','grey.xml',1.0,0.6,3.0,2,1.0,0.3,150,5.5,1.0,0.0,2.0),
  (0,1,'base',0.4,2.0,'Hedra.mdl','darkgrey.xml',0.8,0.4,3.0,5,3.0,0.1,80,6.0,1.0,0.0,2.0),

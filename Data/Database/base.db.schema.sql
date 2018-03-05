@@ -6,8 +6,42 @@ CREATE TABLE IF NOT EXISTS `units` (
 	`nation`	INTEGER,
 	`icon`	TEXT,
 	`actionState`	INTEGER,
-	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`),
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)
+);
+CREATE TABLE IF NOT EXISTS `unit_upgrade_path` (
+	`id`	INTEGER,
+	`name`	TEXT,
 	PRIMARY KEY(`id`)
+);
+CREATE TABLE IF NOT EXISTS `unit_upgrade_cost` (
+	`upgrade`	INTEGER,
+	`resource`	INTEGER,
+	`value`	INTEGER,
+	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
+	FOREIGN KEY(`upgrade`) REFERENCES `unit_upgrade`(`id`)
+);
+CREATE TABLE IF NOT EXISTS `unit_upgrade` (
+	`id`	INTEGER,
+	`path`	INTEGER,
+	`level`	INTEGER,
+	`name`	TEXT,
+	`attack`	REAL,
+	`attackSpeed`	REAL,
+	`attackRange`	REAL,
+	`defense`	REAL,
+	`maxHp`	REAL,
+	`maxSpeed`	REAL,
+	`minSpeed`	REAL,
+	`collectSpeed`	REAL,
+	`upgradeSpeed`	REAL,
+	PRIMARY KEY(`id`)
+);
+CREATE TABLE IF NOT EXISTS `unit_to_unit_upgrade` (
+	`upgrade`	INTEGER,
+	`unit`	INTEGER,
+	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
+	FOREIGN KEY(`upgrade`) REFERENCES `unit_upgrade`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `unit_level` (
 	`level`	INTEGER,
@@ -33,8 +67,8 @@ CREATE TABLE IF NOT EXISTS `unit_level` (
 CREATE TABLE IF NOT EXISTS `settings` (
 	`graph`	INTEGER,
 	`resolution`	INTEGER,
-	FOREIGN KEY(`resolution`) REFERENCES `resolution`(`id`),
-	FOREIGN KEY(`graph`) REFERENCES `graph_settings`(`id`)
+	FOREIGN KEY(`graph`) REFERENCES `graph_settings`(`id`),
+	FOREIGN KEY(`resolution`) REFERENCES `resolution`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `resource` (
 	`id`	INTEGER,
@@ -67,8 +101,8 @@ CREATE TABLE IF NOT EXISTS `orders_to_unit` (
 	`id`	INTEGER,
 	`unit`	INTEGER,
 	`order`	INTEGER,
-	FOREIGN KEY(`order`) REFERENCES `orders`(`id`),
 	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
+	FOREIGN KEY(`order`) REFERENCES `orders`(`id`),
 	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `orders` (
@@ -114,8 +148,8 @@ CREATE TABLE IF NOT EXISTS `graph_settings` (
 	`v_sync`	INT,
 	`shadow`	INT,
 	`texture_quality`	INT,
-	PRIMARY KEY(`id`),
-	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`)
+	FOREIGN KEY(`hud_size`) REFERENCES `hud_size`(`id`),
+	PRIMARY KEY(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_unit_level` (
 	`unit`	INTEGER,
@@ -131,8 +165,8 @@ CREATE TABLE IF NOT EXISTS `cost_unit` (
 	`resource`	INTEGER,
 	`value`	INTEGER,
 	`unit`	INTEGER,
-	PRIMARY KEY(`id`),
 	FOREIGN KEY(`unit`) REFERENCES `units`(`id`),
+	PRIMARY KEY(`id`),
 	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `cost_building_level` (
@@ -148,8 +182,8 @@ CREATE TABLE IF NOT EXISTS `cost_building` (
 	`resource`	INTEGER,
 	`value`	INTEGER,
 	`building`	INTEGER,
-	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
 	PRIMARY KEY(`id`),
+	FOREIGN KEY(`resource`) REFERENCES `resource`(`id`),
 	FOREIGN KEY(`building`) REFERENCES `building`(`id`)
 );
 CREATE TABLE IF NOT EXISTS `building_to_unit` (
@@ -177,7 +211,7 @@ CREATE TABLE IF NOT EXISTS `building` (
 	`sizeZ`	INTEGER,
 	`nation`	INTEGER,
 	`icon`	TEXT,
-	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`),
-	PRIMARY KEY(`id`)
+	PRIMARY KEY(`id`),
+	FOREIGN KEY(`nation`) REFERENCES `nation`(`id`)
 );
 COMMIT;
