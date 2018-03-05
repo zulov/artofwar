@@ -11,8 +11,10 @@ class Physical :
 public:
 	Physical(Vector3* _position, ObjectType _type);
 	virtual ~Physical();
-	void createBillboardBar(Vector3 &boundingBox);
-	void createBillboardShadow(Vector3 &boundingBox);
+	void createBillboardBar();
+	void updateBillboardBar(Vector3 &boundingBox);
+	void createBillboardShadow();
+	void updateBillboardShadow(Vector3 &boundingBox);
 	void updateHealthBar();
 	virtual float getHealthBarSize();
 	virtual float getHealthPercent();
@@ -24,6 +26,7 @@ public:
 	virtual void select();
 	virtual void unSelect();
 	Vector3* getPosition();
+	void updateBillbords();
 	void initBillbords();
 
 	void setTeam(unsigned char _team);

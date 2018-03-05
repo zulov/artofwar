@@ -10,6 +10,9 @@
 float ResourceEntity::hbMaxSize = 3.0f;
 
 ResourceEntity::ResourceEntity(Vector3* _position, int id, int level) : Static(_position, ObjectType::RESOURCE) {
+	
+	initBillbords();
+
 	hbMaxSize = 3.0;
 	dbResource = Game::get()->getDatabaseCache()->getResource(id);
 
@@ -23,7 +26,7 @@ ResourceEntity::ResourceEntity(Vector3* _position, int id, int level) : Static(_
 	for (int i = 0; i < dbResource->texture.Size(); ++i) {
 		model->SetMaterial(i, Game::get()->getCache()->GetResource<Material>("Materials/" + dbResource->texture[i]));
 	}
-	initBillbords();
+	updateBillbords();
 }
 
 ResourceEntity::~ResourceEntity() = default;

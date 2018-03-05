@@ -27,7 +27,7 @@ Physical::~Physical() {
 }
 
 
-void Physical::createBillboardBar(Vector3& boundingBox) {
+void Physical::createBillboardBar() {
 	barNode = node->CreateChild();
 
 	billboardSetBar = barNode->CreateComponent<BillboardSet>();
@@ -36,6 +36,9 @@ void Physical::createBillboardBar(Vector3& boundingBox) {
 	billboardSetBar->SetSorted(true);
 
 	billboardBar = billboardSetBar->GetBillboard(0);
+}
+
+void Physical::updateBillboardBar(Vector3& boundingBox) {
 	billboardBar->size_ = Vector2(2, 0.1);
 	billboardBar->position_ = Vector3(0, boundingBox.y_ * 1.3f, 0);
 	billboardBar->enabled_ = false;
@@ -43,7 +46,7 @@ void Physical::createBillboardBar(Vector3& boundingBox) {
 	billboardSetBar->Commit();
 }
 
-void Physical::createBillboardShadow(Vector3& boundingBox) {
+void Physical::createBillboardShadow() {
 	billboardNode = node->CreateChild();
 	billboardNode->Pitch(90);
 	billboardSetShadow = billboardNode->CreateComponent<BillboardSet>();
@@ -54,6 +57,9 @@ void Physical::createBillboardShadow(Vector3& boundingBox) {
 
 
 	billboardShadow = billboardSetShadow->GetBillboard(0);
+}
+
+void Physical::updateBillboardShadow(Vector3& boundingBox) {
 	billboardShadow->position_ = Vector3(0, 0, -0.3 / node->GetScale().x_);
 	float boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.3f ;
 	billboardShadow->size_ = Vector2(boudingSize, boudingSize);
@@ -62,15 +68,17 @@ void Physical::createBillboardShadow(Vector3& boundingBox) {
 	billboardSetShadow->Commit();
 }
 
-void Physical::initBillbords() {
+void Physical::updateBillbords() {
 	StaticModel* model = node->GetComponent<StaticModel>();
+	Vector3 boundingBox = model->GetModel()->GetBoundingBox().Size();
 
-	Vector3 boundingBox = model->GetModel()->GetBoundingBox().Size(); //TODO razy scale?
+	updateBillboardBar(boundingBox);
+	updateBillboardShadow(boundingBox);
+}
 
-	createBillboardBar(boundingBox);
-
-	createBillboardShadow(boundingBox);
-
+void Physical::initBillbords() {
+	createBillboardBar();
+	createBillboardShadow();
 }
 
 void Physical::updateHealthBar() {

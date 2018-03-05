@@ -1,5 +1,4 @@
 #pragma once
-#include "objects/Entity.h"
 #include "database/db_strcut.h"
 #include "objects/Static.h"
 #include "objects/queue/QueueElement.h"
@@ -10,6 +9,7 @@ struct db_building;
 class Building : public Static
 {
 public:
+
 	Building(Vector3* _position, int id, int player, int level);
 	~Building();
 

@@ -15,29 +15,20 @@ double Building::hbMaxSize = 5.0;
 
 Building::Building(Vector3* _position, int id, int player, int level): target(*_position),
 	Static(_position, ObjectType::BUILDING) {
-	hbMaxSize = 5.0;
 
+	initBillbords();
+	hbMaxSize = 5.0;
 	target.x_ += 5;
 	target.z_ += 5;
 
 	dbBuilding = Game::get()->getDatabaseCache()->getBuilding(id);
 	units = Game::get()->getDatabaseCache()->getUnitsForBuilding(id);
-	dbLevel = Game::get()->getDatabaseCache()->getBuildingLevel(id, level).value();
-
-	populate();
-	Model* model = Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model);
-	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture);
-
-	node->SetScale(dbLevel->scale);
-	Urho3D::StaticModel* staticModel = node->CreateComponent<Urho3D::StaticModel>();
-	staticModel->SetModel(model);
-	staticModel->SetMaterial(material);
 
 	setPlayer(player);
 	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam());
 
-	initBillbords();
-
+	Urho3D::StaticModel* staticModel = node->CreateComponent<Urho3D::StaticModel>();
+	upgrade(level);
 }
 
 
@@ -97,6 +88,20 @@ void Building::action(short id, ActionParameter& parameter) {
 		}
 	}
 
+}
+
+void Building::upgrade(char level) {
+	StaticModel* staticModel = node->GetComponent<StaticModel>();
+	dbLevel = Game::get()->getDatabaseCache()->getBuildingLevel(dbBuilding->id, level).value();
+
+	populate();
+
+	node->SetScale(dbLevel->scale);
+	Model* model = Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model);
+	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture);
+	staticModel->SetModel(model);
+	staticModel->SetMaterial(material);
+	updateBillbords();
 }
 
 std::string Building::getColumns() {

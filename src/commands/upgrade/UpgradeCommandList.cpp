@@ -1,5 +1,5 @@
 #include "UpgradeCommandList.h"
-#include "commands/creation/CreationCommand.h"
+#include "UpgradeCommand.h"
 
 
 UpgradeCommandList::UpgradeCommandList(SimulationObjectManager* _simulationObjectManager) {
@@ -10,6 +10,6 @@ UpgradeCommandList::UpgradeCommandList(SimulationObjectManager* _simulationObjec
 UpgradeCommandList::~UpgradeCommandList() = default;
 
 void UpgradeCommandList::setParemeters(AbstractCommand* command) {
-	CreationCommand* m = dynamic_cast<CreationCommand *>(command);
+	UpgradeCommand* m = dynamic_cast<UpgradeCommand *>(command);
 	m->setSimulationObjectManager(simulationObjectManager);
 }
