@@ -213,7 +213,23 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 }
 
 void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
-	
+	//unordered_set<int> toShow = getUpgradePathInBuilding(selectedInfo->getSelectedTypes());
+	unordered_set<int> toShow = {0,1};
+	int k = 0;
+
+	for (auto id : toShow) {
+		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1;
+		optional<db_unit_upgrade*> opt = Game::get()->getDatabaseCache()->getUnitUpgrade(id, level);
+
+		if (opt.has_value()) {
+			auto upgrade = opt.value();
+			setTexture(k, "textures/hud/icon/unit/upgrades/" + upgrade->pathName + "/" + upgrade->name + ".png");
+
+			hudElements[k]->setId(id, LeftMenuAction::UNIT_UPGRADE);
+			k++;
+		}
+	}
+	resetButtons(k);
 }
 
 void MenuPanel::setTexture(int k, String textureName) {

@@ -3,6 +3,7 @@
 #include "db_strcut.h"
 #include <vector>
 #include <optional>
+#include <list>
 using namespace std;
 
 class DatabaseCache
@@ -25,6 +26,7 @@ public:
 	db_resolution* getResolution(int id);
 	optional<db_unit_level*> getUnitLevel(int id, int level);
 	optional<db_building_level*> getBuildingLevel(int id, int level);
+	optional<db_unit_upgrade*> getUnitUpgrade(int id, int level);
 	optional<vector<db_cost*>*> getCostForUnitLevel(short id, int level);
 	optional<vector<db_cost*>*> getCostForBuildingLevel(short id, int level);
 

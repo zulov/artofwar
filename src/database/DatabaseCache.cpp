@@ -257,9 +257,9 @@ int static loadUnitUpgradeCost(void* data, int argc, char** argv, char** azColNa
 int static loadBuildingToUnitUpgradePath(void* data, int argc, char** argv, char** azColName) {
 	db_container* xyz = static_cast<db_container *>(data);
 	int buildingId = atoi(argv[0]);
-	int resourceId = atoi(argv[1]);
-	db_resource* dbResource = xyz->resources[resourceId];
-	xyz->b[upgradeId]->push_back(new db_cost(-1, resourceId, atoi(argv[2]), dbResource->name, upgradeId));
+	int pathId = atoi(argv[1]);
+
+	xyz->buildings[buildingId]->unitUpgradePath.push_back(pathId);
 
 	return 0;
 }
@@ -305,7 +305,7 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from cost_unit_level order by level,unit", loadCostUnitLevel);
 	execute("SELECT * from cost_building_level order by level,building", loadCostBuildingLevel);
 	execute("SELECT * from unit_upgrade order by level", loadUnitUpgrade);
-	execute("SELECT * from db_unit_upgrade_path", loadUnitUpgradePath);
+	execute("SELECT * from unit_upgrade_path", loadUnitUpgradePath);
 	execute("SELECT * from unit_to_unit_upgrade", loadUnitToUnitUpgrade);
 	execute("SELECT * from unit_upgrade_cost order by level", loadUnitUpgradeCost);
 	execute("SELECT * from building_to_unit_upgrade_path", loadBuildingToUnitUpgradePath);
@@ -462,6 +462,13 @@ std::optional<db_unit_level*> DatabaseCache::getUnitLevel(int id, int level) {
 std::optional<db_building_level*> DatabaseCache::getBuildingLevel(int id, int level) {
 	if (dbContainer->levelsToBuilding[id]->size() > level) {
 		return std::optional<db_building_level*>{dbContainer->levelsToBuilding[id]->at(level)};
+	}
+	return std::nullopt;
+}
+
+optional<db_unit_upgrade*> DatabaseCache::getUnitUpgrade(int id, int level) {
+	if (dbContainer->unitUpgrades[id]->size() > level) {
+		return std::optional<db_unit_upgrade*>{dbContainer->unitUpgrades[id]->at(level)};
 	}
 	return std::nullopt;
 }

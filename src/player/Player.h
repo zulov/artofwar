@@ -22,6 +22,7 @@ public:
 	int getLevelForUnit(int id);
 	int getLevelForBuilding(int id);
 	char upgradeLevel(QueueType type, int id);
+	int getLevelForUnitUpgrade(int id);
 private:
 	Resources resources;
 	db_nation* dbNation;
@@ -32,4 +33,5 @@ private:
 	bool active;
 	char unitLevels[UNITS_NUMBER_DB];
 	char buildingLevels[BUILDINGS_NUMBER_DB];
+	char unitUpgradeLevels[PATH_UPGRADES_NUMBER_DB];
 };

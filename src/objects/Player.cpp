@@ -14,6 +14,7 @@ Player::Player(int nationId, int team, int _id, int _color, Urho3D::String _name
 
 	fill_n(unitLevels, UNITS_NUMBER_DB, 0);
 	fill_n(buildingLevels, BUILDINGS_NUMBER_DB, 0);
+	fill_n(unitUpgradeLevels, PATH_UPGRADES_NUMBER_DB, -1);
 }
 
 Player::~Player() {
@@ -58,6 +59,10 @@ int Player::getLevelForUnit(int id) {
 
 int Player::getLevelForBuilding(int id) {
 	return buildingLevels[id];
+}
+
+int Player::getLevelForUnitUpgrade(int id) {
+	return unitUpgradeLevels[id];
 }
 
 char Player::upgradeLevel(QueueType type, int id) {
