@@ -5,15 +5,15 @@ INSERT INTO `units` (id,name,rotatable,nation,icon,actionState) VALUES (0,'warri
  (3,'cavalry',1,0,'cavalry.png',3),
  (4,'worker',0,0,'worker.png',9),
  (5,'general',1,0,'general.png',1);
-INSERT INTO `unit_upgrade_path` (id,name) VALUES (0,NULL),
- (1,'up_pth_attack');
+INSERT INTO `unit_upgrade_path` (id,name) VALUES (0,'up_pth_attack'),
+ (1,'up_pth_defense');
 INSERT INTO `unit_upgrade_cost` (upgrade,resource,value) VALUES (0,0,1000),
  (0,1,1000),
  (1,2,500),
  (1,3,1500),
  (2,0,2500);
 INSERT INTO `unit_upgrade` (id,path,level,name,attack,attackSpeed,attackRange,defense,maxHp,maxSpeed,minSpeed,collectSpeed,upgradeSpeed) VALUES (0,0,0,'up_attack_0',1.2,1.0,1.0,1.0,1.0,1.0,1.0,1.0,10.0),
- (1,1,0,'up_hp_0',1.0,1.0,1.0,1.0,1.25,1.0,1.0,1.0,5.0),
+ (1,1,0,'up_defense_0',1.0,1.0,1.0,1.2,1.25,1.0,1.0,1.0,5.0),
  (2,0,1,'up_attack_0',1.3,1.0,1.0,1.0,1.0,1.0,1.0,1.0,15.0);
 INSERT INTO `unit_to_unit_upgrade` (upgrade,unit) VALUES (0,0),
  (0,1),
@@ -185,6 +185,11 @@ INSERT INTO `cost_building` (id,resource,value,building) VALUES (0,3,100,0),
  (8,3,100,4),
  (9,0,100,4),
  (10,0,300,5);
+INSERT INTO `building_to_unit_upgrade_path` (building,path) VALUES (0,0),
+ (0,1),
+ (1,0),
+ (2,1),
+ (3,1);
 INSERT INTO `building_to_unit` (id,building,unit) VALUES (0,4,0),
  (1,2,0),
  (2,2,2),

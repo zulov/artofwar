@@ -14,6 +14,7 @@
 #define SETTINGS_NUMBER_DB 1
 #define MAX_UNIT_LEVEL_NUMBER_DB 6
 #define MAX_BUILDING_LEVEL_NUMBER_DB 6
+#define PATH_UPGRADES_NUMBER_DB 30
 
 #define SPLIT_SIGN '\n'
 
@@ -88,6 +89,54 @@ struct db_unit_level
 	}
 };
 
+struct db_unit_to_upgrade
+{
+	int upgrade;
+	int unit;
+
+	db_unit_to_upgrade(int upgrade, int unit)
+		: upgrade(upgrade),
+		unit(unit) {
+	}
+};
+
+struct db_unit_upgrade
+{
+	int id;
+	int path;
+	int level;
+	Urho3D::String name;
+	float attack;
+	float attackSpeed;
+	float attackRange;
+	float defense;
+	float maxHp;
+	float maxSpeed;
+	float minSpeed;
+	float collectSpeed;
+	float upgradeSpeed;
+
+	Urho3D::String pathName;
+	std::vector<db_unit*> units;
+
+	db_unit_upgrade(int id, int path, int level, char* name, float attack, float attackSpeed, float attackRange,
+	                float defense, float maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed)
+		: id(id),
+		path(path),
+		level(level),
+		name(name),
+		attack(attack),
+		attackSpeed(attackSpeed),
+		attackRange(attackRange),
+		defense(defense),
+		maxHp(maxHp),
+		maxSpeed(maxSpeed),
+		minSpeed(minSpeed),
+		collectSpeed(collectSpeed),
+		upgradeSpeed(upgradeSpeed) {
+	}
+};
+
 struct db_building
 {
 	int id;
@@ -95,6 +144,8 @@ struct db_building
 	Urho3D::IntVector2 size;
 	int nation;
 	Urho3D::String icon;
+
+	std::vector<int> unitUpgradePath;
 
 	db_building(int id, char* name, int sizeX, int sizeZ, int nation, char* icon)
 		: id(id),
@@ -323,6 +374,9 @@ struct db_container
 	db_player_colors* playerColors[PLAYER_COLORS_NUMBER_DB] = {nullptr};
 	db_resolution* resolutions[RESOLUTIONS_NUMBER_DB] = {nullptr};
 	db_settings* settings[SETTINGS_NUMBER_DB] = {nullptr};
+	std::vector<db_unit_upgrade*>* unitUpgrades[PATH_UPGRADES_NUMBER_DB] = {nullptr};
+	db_unit_upgrade* unitUpgradesPerId[PATH_UPGRADES_NUMBER_DB * 10] = {nullptr};
+	std::vector<db_cost*>* unitUpgradesCosts[PATH_UPGRADES_NUMBER_DB * 10] = {nullptr};
 
 	std::vector<db_unit*>* unitsForBuilding[BUILDINGS_NUMBER_DB]{};
 
@@ -377,6 +431,14 @@ struct db_container
 			for (int j = 0; j < MAX_UNIT_LEVEL_NUMBER_DB; ++j) {
 				costForUnitLevel[i]->push_back(new std::vector<db_cost*>);
 			}
+		}
+
+		for (int i = 0; i < PATH_UPGRADES_NUMBER_DB; ++i) {
+			unitUpgrades[i] = new std::vector<db_unit_upgrade*>();
+		}
+
+		for (int i = 0; i < PATH_UPGRADES_NUMBER_DB * 10; ++i) {
+			unitUpgradesCosts[i] = new std::vector<db_cost*>();
 		}
 	}
 

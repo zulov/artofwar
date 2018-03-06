@@ -212,6 +212,10 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	resetButtons(k);
 }
 
+void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
+	
+}
+
 void MenuPanel::setTexture(int k, String textureName) {
 	Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>(textureName);
 	setTextureToSprite(sprites[k], texture);
@@ -293,7 +297,9 @@ void MenuPanel::unitMenu(SelectedInfo* selectedInfo) {
 	case LEVEL:
 		levelUnit(selectedInfo);
 		break;
-	case UPGRADE: break;
+	case UPGRADE:
+		upgradeUnit(selectedInfo);
+		break;
 	default: ;
 	}
 }

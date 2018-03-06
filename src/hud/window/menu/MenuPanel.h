@@ -38,6 +38,7 @@ private:
 
 	void basicUnit(SelectedInfo* selectedInfo);
 	void levelUnit(SelectedInfo* selectedInfo);
+	void upgradeUnit(SelectedInfo* selectedInfo);
 	
 	void basicBuilding();
 	void levelBuilding();
@@ -45,7 +46,7 @@ private:
 	void basicOrder(SelectedInfo* selectedInfo);
 	void formationOrder();
 
-	
+
 	void unitMenu(SelectedInfo* selectedInfo);
 	void buildingMenu();
 	void orderMenu(SelectedInfo* selectedInfo);
@@ -55,8 +56,6 @@ private:
 
 	std::unordered_set<int> getUnitInBuilding(std::vector<SelectedInfoType*>& infoTypes);
 	std::unordered_set<int>  getOrderForUnit(std::vector<SelectedInfoType*>& infoTypes);
-	static Urho3D::String stringFrom(db_unit* dbUnit, std::vector<db_cost*>* costs);
-	static Urho3D::String stringFrom(db_building* dbBuilding, std::vector<db_cost*>* costs);
 
 	UIElement* rows[LEFT_MENU_ROWS_NUMBER];
 	Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
