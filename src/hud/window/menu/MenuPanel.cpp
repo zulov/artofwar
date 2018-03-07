@@ -159,6 +159,25 @@ void MenuPanel::levelBuilding() {
 	resetButtons(k);
 }
 
+
+std::unordered_set<int> MenuPanel::getUpgradePathInBuilding(std::vector<SelectedInfoType*>& infoTypes) {
+	unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	for (int i = 0; i < infoTypes.size(); ++i) {
+		std::vector<Physical*>& data = infoTypes.at(i)->getData();
+		if (!data.empty()) {
+			unordered_set<int> possiblePaths = pathsIdsInbuilding(i);
+			unordered_set<int> temp(common);
+			for (const auto& id : temp) {
+				if (possiblePaths.find(id) == possiblePaths.end()) {
+					common.erase(id);
+				}
+			}
+		}
+	}
+
+	return common;
+}
+
 unordered_set<int> MenuPanel::getUnitInBuilding(vector<SelectedInfoType*>& infoTypes) {
 	unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
@@ -213,8 +232,8 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 }
 
 void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
-	//unordered_set<int> toShow = getUpgradePathInBuilding(selectedInfo->getSelectedTypes());
-	unordered_set<int> toShow = {0,1};
+	unordered_set<int> toShow = getUpgradePathInBuilding(selectedInfo->getSelectedTypes());
+	//unordered_set<int> toShow = {0,1};
 	int k = 0;
 
 	for (auto id : toShow) {

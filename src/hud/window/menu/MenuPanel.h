@@ -55,6 +55,7 @@ private:
 	void updateButtons(SelectedInfo* selectedInfo);
 
 	std::unordered_set<int> getUnitInBuilding(std::vector<SelectedInfoType*>& infoTypes);
+	std::unordered_set<int> getUpgradePathInBuilding(std::vector<SelectedInfoType*>& infoTypes);
 	std::unordered_set<int>  getOrderForUnit(std::vector<SelectedInfoType*>& infoTypes);
 
 	UIElement* rows[LEFT_MENU_ROWS_NUMBER];
