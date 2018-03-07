@@ -15,7 +15,7 @@
 float Unit::hbMaxSize = 0.7f;
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr) {
-	
+
 	initBillbords();
 
 	velocity = new Vector3();
@@ -284,6 +284,16 @@ std::string Unit::getValues(int precision) {
 		to_string(velocity_z) + "," +
 		to_string(-1);
 
+}
+
+void Unit::addUpgrade(db_unit_upgrade* upgrade) {
+	for (int i = 0; i < upgrades.size(); ++i) {
+		if (upgrades[i]->path == upgrade->path) {
+			upgrades[i] = upgrade;
+			return;
+		}
+	}
+	upgrades.push_back(upgrade);
 }
 
 UnitStateType Unit::getState() {

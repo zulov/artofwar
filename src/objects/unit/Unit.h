@@ -69,6 +69,7 @@ public:
 	int getLevel() override;
 	static std::string getColumns();
 	std::string getValues(int precision) override;
+	void addUpgrade(db_unit_upgrade* upgrade);
 private:
 	void addAim(Aim* aim, bool append);
 	void removeAim();
@@ -87,6 +88,8 @@ private:
 	UnitStateType state;
 	UnitStateType actionState;
 
+	std::vector<db_unit_upgrade*> upgrades;
+	
 	bool rotatable;
 	float minimalDistance;
 	float attackIntrest = 10;
@@ -99,4 +102,5 @@ private:
 	static float hbMaxSize;
 
 	bool atState = false;
+
 };
