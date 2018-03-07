@@ -233,7 +233,6 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 
 void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 	unordered_set<int> toShow = getUpgradePathInBuilding(selectedInfo->getSelectedTypes());
-	//unordered_set<int> toShow = {0,1};
 	int k = 0;
 
 	for (auto id : toShow) {

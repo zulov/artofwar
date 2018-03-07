@@ -26,9 +26,17 @@ inline Urho3D::String getIconName(QueueType type, int level, int i) {
 	case QueueType::UNIT:
 		return "unit/" + dbCache->getUnit(i)->icon;
 	case QueueType::UNIT_LEVEL:
-		return "unit/levels/"+String(level)+"/" + dbCache->getUnit(i)->icon;
+		return "unit/levels/" + String(level) + "/" + dbCache->getUnit(i)->icon;
 	case QueueType::BUILDING_LEVEL:
-		return "building/levels/"+String(level)+"/" + dbCache->getBuilding(i)->icon;
+		return "building/levels/" + String(level) + "/" + dbCache->getBuilding(i)->icon;
+	case QueueType::UNIT_UPGRADE:
+		{
+		optional<db_unit_upgrade*> opt = dbCache->getUnitUpgrade(i, level);
+		if (opt.has_value()) {
+			auto upgrade = opt.value();
+			return "unit/upgrades/" + upgrade->pathName + "/" + upgrade->name + ".png";
+		}
+		}
 	default:
 		return "mock.png";
 	}

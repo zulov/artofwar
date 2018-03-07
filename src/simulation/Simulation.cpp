@@ -150,6 +150,13 @@ void Simulation::updateBuildingQueues(float time) {
 				                                          done->getType()
 				                                         ));
 				break;
+			case QueueType::UNIT_UPGRADE:
+				levelsCommandList->add(new UpgradeCommand(
+				                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
+				                                          done->getId(),
+				                                          done->getType()
+				                                         ));
+				break;
 			default: ;
 			}
 

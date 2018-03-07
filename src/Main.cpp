@@ -350,7 +350,9 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	case LeftMenuAction::UNIT_LEVEL:
 		controls->order(hudData->getId(), ActionParameter(QueueType::UNIT_LEVEL));
 		break;
-	case LeftMenuAction::UNIT_UPGRADE: break;
+	case LeftMenuAction::UNIT_UPGRADE: 
+		controls->order(hudData->getId(), ActionParameter(QueueType::UNIT_UPGRADE));
+		break;
 	case LeftMenuAction::BUILDING:
 		controls->hudAction(hudData);
 		break;

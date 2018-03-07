@@ -84,10 +84,22 @@ void Building::action(short id, ActionParameter& parameter) {
 				queue->add(1, parameter.type, id, 1);
 			}
 		}
-		break;
 		}
+			break;
+	case QueueType::UNIT_UPGRADE:
+		{
+		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
+		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForUnitUpgrade(id, level);
+		if (opt.has_value()) {
+			const auto costs = opt.value();
+			if (resources.reduce(costs)) {
+				queue->add(1, parameter.type, id, 1);
+			}
+		}
+		}
+		break;
+		
 	}
-
 }
 
 void Building::upgrade(char level) {

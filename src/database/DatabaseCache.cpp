@@ -307,7 +307,7 @@ DatabaseCache::DatabaseCache() {
 	execute("SELECT * from unit_upgrade order by level", loadUnitUpgrade);
 	execute("SELECT * from unit_upgrade_path", loadUnitUpgradePath);
 	execute("SELECT * from unit_to_unit_upgrade", loadUnitToUnitUpgrade);
-	execute("SELECT * from unit_upgrade_cost order by level", loadUnitUpgradeCost);
+	execute("SELECT * from unit_upgrade_cost", loadUnitUpgradeCost);
 	execute("SELECT * from building_to_unit_upgrade_path", loadBuildingToUnitUpgradePath);
 
 	sqlite3_close(database);
@@ -488,12 +488,25 @@ optional<vector<db_cost*>*> DatabaseCache::getCostForBuildingLevel(short id, int
 	return std::nullopt;
 }
 
+optional<vector<db_cost*>*> DatabaseCache::getCostForUnitUpgrade(short id, int level) {
+	auto upgrade = dbContainer->unitUpgrades[id]->at(level);
+
+	if (dbContainer->unitUpgradesCosts[upgrade->id]->size() > 0) {
+		return std::optional<vector<db_cost*>*>{dbContainer->unitUpgradesCosts[upgrade->id]};
+	}
+	return std::nullopt;
+}
+
 std::vector<db_unit_level*>* DatabaseCache::getUnitLevels(int id) {
 	return dbContainer->levelsToUnit[id];
 }
 
 std::vector<db_building_level*>* DatabaseCache::getBuildingLevels(int id) {
 	return dbContainer->levelsToBuilding[id];
+}
+
+vector<db_unit_upgrade*>* DatabaseCache::getUnitUpgrades(int id) {
+	return dbContainer->unitUpgrades[id];
 }
 
 std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) {

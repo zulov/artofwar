@@ -21,6 +21,7 @@ public:
 
 	int getLevelForUnit(int id);
 	int getLevelForBuilding(int id);
+	int getLevelForUnitUpgradePath(short id);
 	char upgradeLevel(QueueType type, int id);
 	int getLevelForUnitUpgrade(int id);
 private:

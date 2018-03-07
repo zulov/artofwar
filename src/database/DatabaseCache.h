@@ -29,10 +29,12 @@ public:
 	optional<db_unit_upgrade*> getUnitUpgrade(int id, int level);
 	optional<vector<db_cost*>*> getCostForUnitLevel(short id, int level);
 	optional<vector<db_cost*>*> getCostForBuildingLevel(short id, int level);
+	optional<vector<db_cost*>*> getCostForUnitUpgrade(short id, int level);
 
 
 	vector<db_unit_level*>* getUnitLevels(int id);
 	vector<db_building_level*>* getBuildingLevels(int id);
+	vector<db_unit_upgrade*>*  getUnitUpgrades(int id);
 	vector<db_unit*>* getUnitsForBuilding(int id);
 	vector<db_cost*>* getCostForUnit(int id);
 	vector<db_cost*>* getCostForBuilding(int id);
