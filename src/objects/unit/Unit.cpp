@@ -63,7 +63,7 @@ void Unit::populate() {
 	maxSeparationDistance = dbLevel->maxSep;
 	mass = dbLevel->mass;
 	maxSpeed = dbLevel->maxSpeed;
-	minSpeed = dbLevel->minDist;
+	minSpeed = dbLevel->minSpeed;
 	minimalDistance = dbLevel->minDist;
 	attackRange = dbLevel->attackRange;
 	attackIntrest = dbLevel->attackRange * 10;
@@ -86,7 +86,6 @@ void Unit::checkAim() {
 		StateManager::get()->changeState(this, UnitStateType::MOVE);
 	}
 }
-
 
 float Unit::getMinimalDistance() {
 	return minimalDistance;

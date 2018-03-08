@@ -30,11 +30,11 @@ Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 		}
 		const float distance = sqrt(sqDistance);
 
-		diff /= distance;
 		const float minimalDistance = unit->getMinimalDistance() + neight->getMinimalDistance();
 		const float coef = calculateCoef(distance, minimalDistance);
 
-		diff *= coef;
+		diff *= coef / distance;
+
 		*force += diff;
 	}
 
@@ -47,9 +47,5 @@ Vector3* Force::destination(Unit* unit) {
 }
 
 float Force::calculateCoef(double distance, double minDist) {
-	double parameter = distance - minDist / 2;
-	if (parameter <= 0.05) {
-		parameter = 0.05;
-	}
-	return exp(minDist / (distance + 0.05)) + exp(1 / parameter) - 2;
+	return exp(minDist / (distance + 0.05)) - 1;
 }
