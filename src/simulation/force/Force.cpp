@@ -5,14 +5,14 @@ Force::Force() = default;
 
 Force::~Force() = default;
 
-Urho3D::Vector3* Force::separationObstacle(Unit* unit, Vector2& repulse) {
+Vector3* Force::separationObstacle(Unit* unit, Vector2& repulse) {
 	Vector3* force = new Vector3(repulse.x_, 0, repulse.y_);
 
 	*force *= coef * boostCoef * sepCoef;
 	return force;
 }
 
-Urho3D::Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
+Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 	Vector3* force = new Vector3();
 
 	for (auto neight : *units) {
@@ -25,7 +25,7 @@ Urho3D::Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 		if (sqDistance == 0) {
 			force->x_ = (static_cast<double>(rand()) / (RAND_MAX)) * coef - (coef / 2);
 			force->z_ = (static_cast<double>(rand()) / (RAND_MAX)) * coef - (coef / 2);
-			(*force) *= boostCoef * sepCoef;
+			*force *= boostCoef * sepCoef;
 			return force;
 		}
 		const float distance = sqrt(sqDistance);
@@ -35,14 +35,14 @@ Urho3D::Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 		const float coef = calculateCoef(distance, minimalDistance);
 
 		diff *= coef;
-		(*force) += diff;
+		*force += diff;
 	}
 
-	(*force) *= boostCoef * sepCoef;
+	*force *= boostCoef * sepCoef;
 	return force;
 }
 
-Urho3D::Vector3* Force::destination(Unit* unit) {
+Vector3* Force::destination(Unit* unit) {
 	return unit->getDestination(boostCoef, aimCoef);
 }
 

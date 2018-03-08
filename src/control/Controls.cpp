@@ -414,15 +414,14 @@ void Controls::refreshSelected() {
 	                               selected->begin(), selected->end(),
 	                               [](Physical* physical)
 	                               {
-		                               return !physical->isAlive();
+		                               if (!physical->isAlive()) {
+			                               physical->unSelect();
+			                               return true;
+		                               } else {
+			                               return false;
+		                               }
 	                               }),
 	                selected->end());
-	if (selected->size() != preSize) {
-		unSelectAll();
-		for (auto physical : (*selected)) {
-			select(physical);
-		}
-	}
 }
 
 void Controls::clean(SimulationInfo* simulationInfo) {

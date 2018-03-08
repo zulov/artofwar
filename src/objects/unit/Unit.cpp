@@ -27,7 +27,7 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
 	populate();
 	Model* model3d = Game::get()->getCache()->GetResource<Model>("Models/" + dbLevel->model);
-	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture);
+	Material* material = Game::get()->getCache()->GetResource<Material>("Materials/" + dbLevel->texture);
 
 	node->Scale(dbLevel->scale);
 	StaticModel* model = node->CreateComponent<StaticModel>();
@@ -56,7 +56,7 @@ float Unit::getHealthBarSize() {
 }
 
 float Unit::getHealthPercent() {
-	return (hpCoef / maxHpCoef);
+	return hpCoef / maxHpCoef;
 }
 
 void Unit::populate() {
@@ -94,8 +94,8 @@ float Unit::getMinimalDistance() {
 
 void Unit::move(double timeStep) {
 	if (state != UnitStateType::STOP) {
-		(*position) += (*velocity) * timeStep;
-		node->SetPosition((*position));
+		*position += *velocity * timeStep;
+		node->SetPosition(*position);
 		//node->Translate((*velocity) * timeStep, TS_WORLD);
 	}
 }
@@ -124,11 +124,11 @@ Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
 
 		if (force) {
 			force->Normalize();
-			(*force) *= boostCoef;
-			(*force) -= (*velocity);
-			(*force) /= 0.5;
-			(*force) *= mass;
-			(*force) *= aimCoef;
+			*force *= boostCoef;
+			*force -= (*velocity);
+			*force /= 0.5;
+			*force *= mass;
+			*force *= aimCoef;
 			return force;
 		}
 	}
@@ -170,7 +170,7 @@ void Unit::collectIfCloseEnough(double distance, ResourceEntity* closest) {
 void Unit::toAttack(std::vector<Unit*>* enemies) {
 	double minDistance = 9999;
 	Unit* entityClosest = nullptr;
-	for (auto entity : (*enemies)) {
+	for (auto entity : *enemies) {
 		if (entity->isAlive()) {
 			double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
 			if (distance <= minDistance) {
@@ -194,7 +194,7 @@ void Unit::toAttack() {
 void Unit::toCollect(std::vector<Physical*>* enemies) {
 	double minDistance = 9999;
 	ResourceEntity* entityClosest = nullptr;
-	for (auto entity : (*enemies)) {
+	for (auto entity : *enemies) {
 		ResourceEntity* resource = dynamic_cast<ResourceEntity*>(entity);
 		if (resource->belowLimit()) {
 			const double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
@@ -217,7 +217,7 @@ void Unit::toCollect(ResourceEntity* _resource) {
 }
 
 void Unit::updateHeight(double y, double timeStep) {
-	(*velocity) *= 1 + (position->y_ - y) * mass * timeStep;
+	*velocity *= 1 + (position->y_ - y) * mass * timeStep;
 	position->y_ = y;
 }
 
@@ -233,7 +233,7 @@ void Unit::removeAim() {
 }
 
 String& Unit::toMultiLineString() {
-	menuString = dbUnit->name + " " + dbLevel->name;;
+	menuString = dbUnit->name + " " + dbLevel->name;
 	menuString.Append("\nAtak: ").Append(String(attackCoef));
 	menuString.Append("\nObrona: ").Append(String(defenseCoef));
 	menuString.Append("\nZdrowie: ").Append(String(hpCoef)).Append("/").Append(String(maxHpCoef));
@@ -287,9 +287,9 @@ std::string Unit::getValues(int precision) {
 }
 
 void Unit::addUpgrade(db_unit_upgrade* upgrade) {
-	for (int i = 0; i < upgrades.size(); ++i) {
-		if (upgrades[i]->path == upgrade->path) {
-			upgrades[i] = upgrade;
+	for (auto& i : upgrades) {
+		if (i->path == upgrade->path) {
+			i = upgrade;
 			return;
 		}
 	}
@@ -349,26 +349,26 @@ std::string Unit::getColumns() {
 		"position_x		INT     NOT NULL,"
 		"position_z		INT     NOT NULL,"
 		"state			INT     NOT NULL,"
-		"velocity_x		INT     NOT NULL," //TODO czy dodac y?
+		"velocity_x		INT     NOT NULL,"
 		"velocity_z		INT     NOT NULL,"
 		"aim_i		INT     NOT NULL";
 }
 
 void Unit::applyForce(double timeStep) {
 	if (state == UnitStateType::ATTACK) {
-		(*velocity) = Vector3::ZERO;
+		*velocity = Vector3::ZERO;
 		return;
 	}
 
-	(*velocity) *= 0.95f; //TODO to dac jaki wspolczynnik tarcia terenu
-	(*velocity) += acceleration * (timeStep / mass);
+	*velocity *= 0.95f; //TODO to dac jaki wspolczynnik tarcia terenu
+	*velocity += acceleration * (timeStep / mass);
 	double velLenght = velocity->LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
 		StateManager::get()->changeState(this, UnitStateType::STOP);
 	} else {
 		if (velLenght > maxSpeed * maxSpeed) {
 			velocity->Normalize();
-			(*velocity) *= maxSpeed;
+			*velocity *= maxSpeed;
 		}
 		StateManager::get()->changeState(this, UnitStateType::MOVE);
 		if (rotatable) {
