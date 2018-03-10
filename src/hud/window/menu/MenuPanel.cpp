@@ -297,6 +297,16 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 }
 
 void MenuPanel::formationOrder() {
+	int k = 0;
+	setTexture(k, "textures/hud/icon/formation/none.png");
+
+	hudElements[k]->setId(0, LeftMenuAction::FORMATION);
+	k++;
+	setTexture(k, "textures/hud/icon/formation/square.png");
+
+	hudElements[k]->setId(1, LeftMenuAction::FORMATION);
+	k++;
+	resetButtons(k);
 }
 
 void MenuPanel::resetButtons(int from) {

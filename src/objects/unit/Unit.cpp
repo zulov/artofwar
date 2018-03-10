@@ -347,6 +347,14 @@ int Unit::getLevel() {
 	return dbLevel->level;
 }
 
+short Unit::getFormation() {
+	return formation;
+}
+
+void Unit::setFormation(short _formation) {
+	formation = _formation;
+}
+
 std::string Unit::getColumns() {
 	return Physical::getColumns() +
 		"position_x		INT     NOT NULL,"

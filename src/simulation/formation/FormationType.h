@@ -1,6 +1,7 @@
 #pragma once
 
-struct FormationType
+enum class FormationType
 {
-
+	NONE=0,
+	SQUERE
 };

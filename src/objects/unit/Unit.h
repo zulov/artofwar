@@ -28,19 +28,21 @@ public:
 	~Unit();
 
 	bool isAlive() override;
-	float getHealthBarSize() override;
-	float getHealthPercent() override;
+
 	void populate();
 	void checkAim();
 	void move(double timeStep);
 	void applyForce(double timeStep);
-	int getDbID() override;
 	void setAcceleration(Vector3* _acceleration);
+	int getDbID() override;
+	int getLevel() override;
+	float getHealthBarSize() override;
+	float getHealthPercent() override;
 	float getMaxSeparationDistance();
+	float getMinimalDistance();
 	Vector3* getVelocity();
 	Vector3* getDestination(double boostCoef, double aimCoef);
 
-	float getMinimalDistance();
 
 	void absorbAttack(double attackCoef) override;
 
@@ -56,7 +58,6 @@ public:
 	String& toMultiLineString() override;
 	void action(short id, ActionParameter& parameter) override;
 
-
 	UnitStateType getState();
 	UnitStateType getActionState();
 	void clean() override;
@@ -67,7 +68,8 @@ public:
 	void load(dbload_unit* unit);
 	bool isToDispose();
 
-	int getLevel() override;
+	short getFormation();
+	void setFormation(short _formation);
 
 	static std::string getColumns();
 	std::string getValues(int precision) override;
@@ -104,4 +106,6 @@ private:
 	static float hbMaxSize;
 
 	bool atState = false;
+
+	short formation = -1;
 };
