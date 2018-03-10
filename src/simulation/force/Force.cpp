@@ -5,15 +5,18 @@ Force::Force() = default;
 
 Force::~Force() = default;
 
-Vector3* Force::separationObstacle(Unit* unit, Vector2& repulse) {
+Vector3* Force::separationObstacle(Unit* unit, const Vector2& repulse) {
 	Vector3* force = new Vector3(repulse.x_, 0, repulse.y_);
 
-	*force *= coef * boostCoef * sepCoef;
+	*force *= boostCoef * sepCoef;
 	return force;
 }
 
 Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 	Vector3* force = new Vector3();
+	if (units->empty()) {
+		return force;
+	}
 
 	for (auto neight : *units) {
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
@@ -23,8 +26,8 @@ Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 		const float sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist) { continue; }
 		if (sqDistance == 0) {
-			force->x_ = (static_cast<double>(rand()) / (RAND_MAX)) * coef - (coef / 2);
-			force->z_ = (static_cast<double>(rand()) / (RAND_MAX)) * coef - (coef / 2);
+			force->x_ = static_cast<double>(rand()) / RAND_MAX - 0.5;
+			force->z_ = static_cast<double>(rand()) / RAND_MAX - 0.5;
 			*force *= boostCoef * sepCoef;
 			return force;
 		}
@@ -44,6 +47,23 @@ Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 
 Vector3* Force::destination(Unit* unit) {
 	return unit->getDestination(boostCoef, aimCoef);
+}
+
+Vector3* Force::cohesion(Unit* unit, std::vector<Unit*>* units) {
+	Vector3* force = new Vector3();
+	if (units->empty()) {
+		return force;
+	}
+
+	for (auto neight : *units) {
+		*force += *neight->getPosition();
+	}
+	
+	*force /= units->size();
+	*force -= *unit->getPosition();
+
+	*force *= boostCoef * cohCoef;
+	return force;
 }
 
 float Force::calculateCoef(double distance, double minDist) {

@@ -267,9 +267,10 @@ void Simulation::calculateForces() {
 			std::vector<Unit*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
 			Vector3* sepPedestrian = force.separationUnits(unit, neighbours);
+			Vector3* cohesion = force.cohesion(unit, neighbours);
 			Vector3* destForce = force.destination(unit);
 
-			(*sepPedestrian) += (*destForce);
+			(*sepPedestrian) += (*destForce) += (*cohesion);
 			unit->setAcceleration(sepPedestrian);
 
 			delete sepPedestrian;
