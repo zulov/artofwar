@@ -37,6 +37,7 @@ public:
 	std::vector<int>* findPath(IntVector2& startV, IntVector2& goalV);
 	std::vector<int>* findPath(int startIdx, int endIdx, double min, double max);
 	std::vector<int>* findPath(int startIdx, const Vector3& aim);
+	bool ifInCache(int startIdx, int end);
 
 	void refreshWayOut(std::vector<int>& toRefresh);
 	void draw_grid_from(int* cameFrom, Image* image);
@@ -47,12 +48,18 @@ public:
 	Vector2& getCenterAt(const IntVector2& cords);
 	Vector2 getCenter(int index);
 
+	void invalidateCache();
+
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
 	static IntVector2 calculateSize(int size);
 	std::vector<std::pair<int, float>>* tempNeighbour;
 	std::vector<std::pair<int, float>>* tempNeighbour2;
 	std::vector<int>* tempPath;
+
+	int lastStartIdx = -1;
+	int lastEndIdx = -1;
+
 	int staticCounter = 0;
 	content_info* ci;
 

@@ -71,7 +71,8 @@ std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, dou
 //	return getNeighbours(unit, resourceGrid, radius);
 //}
 
-void Enviroment::update(std::vector<Unit*>* units) {//TODO to mozna rodzielic na dodawanei u usywanie
+void Enviroment::update(std::vector<Unit*>* units) {
+	//TODO to mozna rodzielic na dodawanei u usywanie
 	for (auto unit : (*units)) {
 		mainGrid.updateGrid(unit, -1);
 		teamUnitGrid[unit->getTeam()].updateGrid(unit, unit->getTeam());
@@ -137,6 +138,10 @@ Vector2 Enviroment::getCenter(int index) {
 	return mainGrid.getCenter(index);
 }
 
+void Enviroment::invalidateCache() {
+	mainGrid.invalidateCache();
+}
+
 Vector3* Enviroment::getValidPosition(const IntVector2& size, Vector3* pos) {
 	Vector3* pos2 = mainGrid.getValidPosition(size, pos);
 	pos2->y_ = getGroundHeightAt(pos2->x_, pos2->z_);
@@ -147,7 +152,7 @@ IntVector2 Enviroment::getBucketCords(const IntVector2& size, Vector3* pos) {
 	return mainGrid.getBucketCords(size, pos);
 }
 
-std::vector<int>* Enviroment::findPath(int startIdx, Vector3 & aim) {
+std::vector<int>* Enviroment::findPath(int startIdx, Vector3& aim) {
 	return mainGrid.findPath(startIdx, aim);
 }
 

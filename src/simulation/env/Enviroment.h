@@ -38,12 +38,13 @@ public:
 	Vector3* getValidPosition(const IntVector2& size, Vector3* pos);
 	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos);
 	std::vector<int>* findPath(int startIdx, Vector3& aim);
-	void testFind(IntVector2& startV, IntVector2& goalV);
+
 	void prepareGridToFind();
 	content_info* getContentInfo(Vector2 from, Vector2 to, bool checks[], int activePlayer);
 	Vector3 getValidPosForCamera(float percentX, float percentY, const Vector3& pos, float min);
 	Vector3* getValidPosition(const IntVector2& size, const IntVector2& bucketCords);
 	Vector2 getCenter(int index);
+	void invalidateCache();
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid;

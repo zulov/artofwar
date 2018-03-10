@@ -2,11 +2,11 @@
 #include "Game.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/aim/ChargeAim.h"
+#include "objects/unit/aim/DummyAim.h"
 #include "objects/unit/aim/FollowAim.h"
 #include "objects/unit/aim/TargetAim.h"
 #include "simulation/env/Enviroment.h"
 #include <chrono>
-#include "objects/unit/aim/DummyAim.h"
 
 
 ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector3* parameter, bool append) {
@@ -42,14 +42,16 @@ ActionCommand::~ActionCommand() {
 
 
 ActionParameter ActionCommand::getTargetAim(int startInx, Vector3& to, bool append) {
-	std::vector<int>* path = Game::get()->getEnviroment()->findPath(startInx, to);
+	auto path = Game::get()->getEnviroment()->findPath(startInx, to);
+	Aim* aim;
 	if (!path->empty()) {
-		ActionParameter parameter(new TargetAim(*path), append);
-		return parameter;
+		aim = new TargetAim(*path);
 	} else {
-		ActionParameter parameter(new DummyAim(), append);
-		return parameter;
+		aim = new DummyAim();
 	}
+
+	ActionParameter parameter(aim, append);
+	return parameter;
 }
 
 ActionParameter ActionCommand::getFollowAim(Physical* toFollow, bool append) {
@@ -64,8 +66,8 @@ ActionParameter ActionCommand::getChargeAim(Vector3* charge, bool append) {
 
 Vector3* ActionCommand::calculateCenter() {
 	Vector3* center = new Vector3();
-	for (Physical* physical : (*entities)) {
-		(*center) += (*physical->getPosition());
+	for (Physical* physical : *entities) {
+		*center += *physical->getPosition();
 	}
 	return center;
 }
@@ -78,14 +80,16 @@ void ActionCommand::addTargetAim(Vector3* to, bool append) {
 		entity->action(id, parameter);
 	} else {
 		Vector3* center = calculateCenter();
-		(*center) /= entities->size();
-		for (Physical* physical : (*entities)) {
-			Vector3 pos = (*physical->getPosition()) - (*center) + (*to);
+		*center /= entities->size();
+		for (Physical* physical : *entities) {
+			Vector3 pos = *physical->getPosition() - *center + *to;
+
 			ActionParameter parameter = getTargetAim(physical->getBucketIndex(-1), pos, append);
 			physical->action(id, parameter);
 		}
 		delete center;
 	}
+	Game::get()->getEnviroment()->invalidateCache();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
 	std::cout << "sum " << duration.count() << std::endl;
 }
@@ -96,7 +100,7 @@ void ActionCommand::addFollowAim(Physical* toFollow, bool append) {
 		ActionParameter parameter = getFollowAim(toFollow, append);
 		entity->action(id, parameter);
 	} else {
-		for (Physical* physical : (*entities)) {
+		for (Physical* physical : *entities) {
 			ActionParameter parameter = getFollowAim(toFollow, append);
 			physical->action(id, parameter);
 		}
@@ -109,7 +113,7 @@ void ActionCommand::addChargeAim(Vector3* charge, bool append) {
 		ActionParameter parameter = getChargeAim(charge, append);
 		entity->action(id, parameter);
 	} else {
-		for (Physical* physical : (*entities)) {
+		for (Physical* physical : *entities) {
 			ActionParameter parameter = getChargeAim(charge, append);
 			physical->action(id, parameter);
 		}
