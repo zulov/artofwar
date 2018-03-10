@@ -58,8 +58,8 @@ Vector3* Force::cohesion(Unit* unit, std::vector<Unit*>* units) {
 		const float sqDistance = diff.LengthSquared();
 		const float minimalDistance = unit->getMinimalDistance() + neight->getMinimalDistance();
 
-		const float weight = getWeight(unit, neight);
 		if (sqDistance > minimalDistance * minimalDistance) {
+			const float weight = getWeight(unit, neight);
 			*force += *neight->getPosition() * weight;
 			k += weight;
 		}
@@ -73,11 +73,29 @@ Vector3* Force::cohesion(Unit* unit, std::vector<Unit*>* units) {
 	return force;
 }
 
+Vector3* Force::aligment(Unit* unit, std::vector<Unit*>* units) {
+	Vector3* force = new Vector3();
+
+	float k = 0;
+	for (auto neight : *units) {
+		const float weight = 1;
+		*force += *neight->getVelocity() * weight;
+		k += weight;
+	}
+	if (k > 0) {
+		*force /= k;
+		*force -= *unit->getVelocity();
+
+		*force *= boostCoef * aligmentCoef;
+	}
+	return force;
+}
+
 float Force::getWeight(Unit* unit, Unit* neight) {
 	if (unit->getDbID() == neight->getDbID()) {
 		return 1;
 	} else {
-		return 0.3;
+		return 0.5;
 	}
 }
 

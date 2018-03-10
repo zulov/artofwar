@@ -37,6 +37,7 @@ public:
 	int getDbID() override;
 	void setAcceleration(Vector3* _acceleration);
 	float getMaxSeparationDistance();
+	Vector3* getVelocity();
 	Vector3* getDestination(double boostCoef, double aimCoef);
 
 	float getMinimalDistance();
@@ -54,7 +55,7 @@ public:
 	void updateHeight(double y, double timeStep);
 	String& toMultiLineString() override;
 	void action(short id, ActionParameter& parameter) override;
-	
+
 
 	UnitStateType getState();
 	UnitStateType getActionState();
@@ -67,6 +68,7 @@ public:
 	bool isToDispose();
 
 	int getLevel() override;
+
 	static std::string getColumns();
 	std::string getValues(int precision) override;
 	void addUpgrade(db_unit_upgrade* upgrade);
@@ -89,7 +91,7 @@ private:
 	UnitStateType actionState;
 
 	std::vector<db_unit_upgrade*> upgrades;
-	
+
 	bool rotatable;
 	float minimalDistance;
 	float attackIntrest = 10;
@@ -102,5 +104,4 @@ private:
 	static float hbMaxSize;
 
 	bool atState = false;
-
 };

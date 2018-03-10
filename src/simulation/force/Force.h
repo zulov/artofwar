@@ -13,6 +13,7 @@ public:
 	Vector3* separationUnits(Unit* unit, std::vector<Unit *>* units);
 	Vector3* destination(Unit* unit);
 	Vector3* cohesion(Unit* unit, std::vector<Unit*>* units);
+	Vector3* aligment(Unit* unit, std::vector<Unit*>* units);
 
 	float getWeight(Unit* unit, Unit* neight);
 private:
@@ -21,4 +22,5 @@ private:
 	float sepCoef = 0.15;
 	float aimCoef = 2;
 	float cohCoef = 1;
+	float aligmentCoef = 1;
 };

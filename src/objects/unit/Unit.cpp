@@ -108,6 +108,10 @@ float Unit::getMaxSeparationDistance() {
 	return maxSeparationDistance;
 }
 
+Vector3* Unit::getVelocity() {
+	return velocity;
+}
+
 Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
 	if (aims.hasAim()) {
 		aims.clearAimsIfExpired();
