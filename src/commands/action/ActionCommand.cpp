@@ -6,6 +6,7 @@
 #include "objects/unit/aim/TargetAim.h"
 #include "simulation/env/Enviroment.h"
 #include <chrono>
+#include "objects/unit/aim/DummyAim.h"
 
 
 ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector3* parameter, bool append) {
@@ -40,10 +41,15 @@ ActionCommand::~ActionCommand() {
 }
 
 
-ActionParameter ActionCommand::getTargetAim(Physical* physical, Vector3& to, bool append) {
-	std::vector<int>* path = Game::get()->getEnviroment()->findPath(physical->getBucketIndex(-1), to);
-	ActionParameter parameter(new TargetAim(*path), append);
-	return parameter;
+ActionParameter ActionCommand::getTargetAim(int startInx, Vector3& to, bool append) {
+	std::vector<int>* path = Game::get()->getEnviroment()->findPath(startInx, to);
+	if (!path->empty()) {
+		ActionParameter parameter(new TargetAim(*path), append);
+		return parameter;
+	} else {
+		ActionParameter parameter(new DummyAim(), append);
+		return parameter;
+	}
 }
 
 ActionParameter ActionCommand::getFollowAim(Physical* toFollow, bool append) {
@@ -52,7 +58,7 @@ ActionParameter ActionCommand::getFollowAim(Physical* toFollow, bool append) {
 }
 
 ActionParameter ActionCommand::getChargeAim(Vector3* charge, bool append) {
-	ActionParameter parameter(new ChargeAim(vector), append);
+	ActionParameter parameter(new ChargeAim(charge), append);
 	return parameter;
 }
 
@@ -68,14 +74,14 @@ void ActionCommand::addTargetAim(Vector3* to, bool append) {
 	auto start = std::chrono::system_clock::now();
 	short id = static_cast<short>(action);
 	if (entity) {
-		ActionParameter parameter = getTargetAim(entity, *to, append);
+		ActionParameter parameter = getTargetAim(entity->getBucketIndex(-1), *to, append);
 		entity->action(id, parameter);
 	} else {
 		Vector3* center = calculateCenter();
 		(*center) /= entities->size();
 		for (Physical* physical : (*entities)) {
 			Vector3 pos = (*physical->getPosition()) - (*center) + (*to);
-			ActionParameter parameter = getTargetAim(physical, pos, append);
+			ActionParameter parameter = getTargetAim(physical->getBucketIndex(-1), pos, append);
 			physical->action(id, parameter);
 		}
 		delete center;

@@ -14,10 +14,11 @@ public:
 	Vector3* destination(Unit* unit);
 	Vector3* cohesion(Unit* unit, std::vector<Unit*>* units);
 
+	float getWeight(Unit* unit, Unit* neight);
 private:
 	float calculateCoef(double distance, double minDist);
 	float boostCoef = 10;
-	float sepCoef = 0.5;
+	float sepCoef = 0.15;
 	float aimCoef = 2;
 	float cohCoef = 1;
 };

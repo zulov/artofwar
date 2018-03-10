@@ -51,19 +51,34 @@ Vector3* Force::destination(Unit* unit) {
 
 Vector3* Force::cohesion(Unit* unit, std::vector<Unit*>* units) {
 	Vector3* force = new Vector3();
-	if (units->empty()) {
-		return force;
-	}
 
+	float k = 0;
 	for (auto neight : *units) {
-		*force += *neight->getPosition();
-	}
-	
-	*force /= units->size();
-	*force -= *unit->getPosition();
+		Vector3 diff = *unit->getPosition() - *neight->getPosition();
+		const float sqDistance = diff.LengthSquared();
+		const float minimalDistance = unit->getMinimalDistance() + neight->getMinimalDistance();
 
-	*force *= boostCoef * cohCoef;
+		const float weight = getWeight(unit, neight);
+		if (sqDistance > minimalDistance * minimalDistance) {
+			*force += *neight->getPosition() * weight;
+			k += weight;
+		}
+	}
+	if (k > 0) {
+		*force /= k;
+		*force -= *unit->getPosition();
+
+		*force *= boostCoef * cohCoef;
+	}
 	return force;
+}
+
+float Force::getWeight(Unit* unit, Unit* neight) {
+	if (unit->getDbID() == neight->getDbID()) {
+		return 1;
+	} else {
+		return 0.3;
+	}
 }
 
 float Force::calculateCoef(double distance, double minDist) {
