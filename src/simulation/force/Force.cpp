@@ -69,6 +69,7 @@ Vector3* Force::cohesion(Unit* unit, std::vector<Unit*>* units) {
 		*force -= *unit->getPosition();
 
 		*force *= boostCoef * cohCoef;
+		force->Normalize();
 	}
 	return force;
 }

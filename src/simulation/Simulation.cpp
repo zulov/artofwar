@@ -53,7 +53,7 @@ void Simulation::tryToCollect(Unit* unit) {
 }
 
 void Simulation::selfAI() {
-	for (auto unit : (*units)) {
+	for (auto unit : *units) {
 		if (unit->getState() == UnitStateType::STOP || unit->getState() == UnitStateType::MOVE) {
 			if (unit->checkTransition(unit->getActionState())) {
 				switch (unit->getActionState()) {
@@ -112,7 +112,7 @@ void Simulation::countFrame() {
 }
 
 void Simulation::applyForce() {
-	for (auto unit : (*units)) {
+	for (auto unit : *units) {
 		unit->applyForce(maxTimeFrame);
 		Vector3* pos = unit->getPosition(); //TODO to przeniesc do mova? to moze byc [rpblem gdy jest przesuwanie poza klatk¹
 		double y = enviroment->getGroundHeightAt(pos->x_, pos->z_);
@@ -121,7 +121,7 @@ void Simulation::applyForce() {
 }
 
 void Simulation::updateBuildingQueues(float time) {
-	for (Building* build : (*buildings)) {
+	for (Building* build : *buildings) {
 		QueueElement* done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {
@@ -193,7 +193,7 @@ void Simulation::save(SceneSaver& saver) {
 }
 
 void Simulation::performAction() {
-	for (auto unit : (*units)) {
+	for (auto unit : *units) {
 		unit->executeState();
 	}
 }
@@ -248,38 +248,42 @@ void Simulation::initScene(NewGameForm* form) {
 }
 
 void Simulation::moveUnits(float timeStep) {
-	for (auto unit : (*units)) {
+	for (auto unit : *units) {
 		unit->move(timeStep);
 	}
 }
 
 void Simulation::moveUnitsAndCheck(float timeStep) {
-	for (auto unit : (*units)) {
+	for (auto unit : *units) {
 		unit->move(timeStep);
 		unit->checkAim();
 	}
 }
 
 void Simulation::calculateForces() {
-	for (auto unit : (*units)) {
+	for (auto unit : *units) {
 		Vector3* validPos = enviroment->validatePosition(unit->getPosition());
 		if (!validPos) {
 			std::vector<Unit*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
 			Vector3* sepPedestrian = force.separationUnits(unit, neighbours);
-			Vector3* cohesion = force.cohesion(unit, neighbours);
+			//Vector3* cohesion = force.cohesion(unit, neighbours);
 			Vector3* aligment = force.aligment(unit, neighbours);
 			Vector3* destForce = force.destination(unit);
 
-			*sepPedestrian += *destForce += *cohesion+= *aligment;
+			*sepPedestrian 
+			+= *destForce 
+			//+= *cohesion
+			+= *aligment;
+
 			unit->setAcceleration(sepPedestrian);
 
 			delete sepPedestrian;
 			delete destForce;
-			delete cohesion;
+			//delete cohesion;
 			delete aligment;
 		} else {
-			(*validPos) *= 20;
+			*validPos *= 20;
 			unit->setAcceleration(validPos);
 			delete validPos;
 		}

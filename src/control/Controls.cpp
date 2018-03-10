@@ -6,6 +6,8 @@
 #include "commands/action/ActionCommand.h"
 #include "commands/action/ActionCommandList.h"
 #include "commands/creation/CreationCommandList.h"
+#include "database/DatabaseCache.h"
+#include "player/PlayersManager.h"
 #include "simulation/env/Enviroment.h"
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Graphics/Material.h>
@@ -16,9 +18,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UI.h>
 #include <algorithm>
-#include "player/PlayersManager.h"
 #include <queue>
-#include "database/DatabaseCache.h"
 
 
 Controls::Controls(Input* _input) {
@@ -41,9 +41,9 @@ Controls::~Controls() {
 	arrowNode->Remove();
 }
 
-void Controls::createNode(String model, String texture, Urho3D::Node** node) {
-	(*node) = Game::get()->getScene()->CreateChild();
-	Urho3D::StaticModel* selectionModel = (*node)->CreateComponent<StaticModel>();
+void Controls::createNode(String model, String texture, Node** node) {
+	*node = Game::get()->getScene()->CreateChild();
+	StaticModel* selectionModel = (*node)->CreateComponent<StaticModel>();
 	selectionModel->SetModel(Game::get()->getCache()->GetResource<Model>(model));
 	selectionModel->SetMaterial(Game::get()->getCache()->GetResource<Material>(texture));
 	(*node)->SetEnabled(false);
@@ -162,7 +162,7 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>& held) {
 		unSelectAll();
 	}
 	std::vector<Physical*>* entities = Game::get()->getEnviroment()->getNeighbours(held);
-	for (auto entity : (*entities)) {
+	for (auto entity : *entities) {
 		select(entity); //TODO zastapic wrzuceniem na raz
 	}
 }
@@ -190,7 +190,7 @@ void Controls::releaseLeft() {
 
 	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
 		left.setSecond(hitData.position);
-		const double dist = (*(left.held.first) - *(left.held.second)).LengthSquared();
+		const double dist = (*left.held.first - *left.held.second).LengthSquared();
 		if (dist > clickDistance) {
 			leftHold(left.held);
 		} else {
@@ -220,7 +220,7 @@ void Controls::releaseRight() {
 
 	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
 		right.setSecond(hitData.position);
-		double dist = (*(right.held.first) - *(right.held.second)).LengthSquared();
+		double dist = (*right.held.first - *right.held.second).LengthSquared();
 		if (dist > clickDistance) {
 			rightHold(right.held);
 		} else {
@@ -393,7 +393,7 @@ void Controls::orderUnit(short id) {
 	case OrderType::ATTACK:
 	case OrderType::PATROL:
 	case OrderType::FOLLOW:
-		state = ControlsState::ORDER;
+		state = ORDER;
 		orderType = type;
 		break;
 	case OrderType::STOP:
@@ -408,7 +408,6 @@ void Controls::orderUnit(short id) {
 }
 
 void Controls::refreshSelected() {
-	int preSize = selected->size();
 	selected->erase(
 	                std::remove_if(
 	                               selected->begin(), selected->end(),
@@ -454,7 +453,7 @@ void Controls::updateSelection() {
 		float xScale = left.held.first->x_ - hitData.position.x_;
 		float zScale = left.held.first->z_ - hitData.position.z_;
 
-		Vector3 center = ((*left.held.first) + hitData.position) / 2;
+		Vector3 center = (*left.held.first + hitData.position) / 2;
 		selectionNode->SetScale(Vector3(abs(xScale), 0.5, abs(zScale)));
 		center.y_ += 1;
 		selectionNode->SetPosition(center);
@@ -465,7 +464,7 @@ void Controls::updateArrow() {
 	hit_data hitData;
 
 	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
-		Vector3 dir = (*right.held.first) - hitData.position;
+		Vector3 dir = *right.held.first - hitData.position;
 
 		Vector3 pos = *right.held.first;
 		float length = dir.Length();
