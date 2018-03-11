@@ -297,7 +297,7 @@
     <ClInclude Include="src\hud\window\menu\LeftMenuModes.h" />
     <ClInclude Include="src\objects\building\BuildingUtils.h" />
     <ClInclude Include="src\objects\NamesCache.h" />
-    <ClInclude Include="src\objects\queue\QueueType.h" />
+    <ClInclude Include="src\objects\ActionType.h" />
     <ClInclude Include="src\objects\unit\state\DisposeState.h" />
     <ClInclude Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\close\MainMenuClosePanel.h" />
@@ -328,7 +328,6 @@
     <ClInclude Include="src\Loading.h" />
     <ClInclude Include="src\objects\Static.h" />
     <ClInclude Include="src\objects\unit\ActionParameter.h" />
-    <ClInclude Include="src\ActionType.h" />
     <ClInclude Include="src\objects\unit\aim\Aim.h" />
     <ClInclude Include="src\objects\unit\aim\Aims.h" />
     <ClInclude Include="src\Benchmark.h" />

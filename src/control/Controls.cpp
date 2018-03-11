@@ -266,7 +266,7 @@ void Controls::order(short id, ActionParameter& parameter) {
 		orderPhysical(id, parameter);
 		break;
 	case ObjectType::UNIT:
-		orderUnit(id);
+		actionUnit(id, parameter);
 		break;
 	case ObjectType::BUILDING:
 		orderBuilding(id, parameter);
@@ -288,7 +288,7 @@ void Controls::orderPhysical(short id, ActionParameter& parameter) {
 	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 
 	switch (parameter.type) {
-	case QueueType::BUILDING_LEVEL:
+	case ActionType::BUILDING_LEVEL:
 		{
 		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForBuildingLevel(id, level);
 		if (opt.has_value()) {
@@ -385,7 +385,7 @@ void Controls::activate() {
 	}
 }
 
-void Controls::orderUnit(short id) {
+void Controls::unitOrder(short id) {
 	OrderType type = OrderType(id);
 	switch (type) {
 	case OrderType::GO:
@@ -400,11 +400,27 @@ void Controls::orderUnit(short id) {
 	case OrderType::DEFEND:
 	case OrderType::DEAD:
 		for (auto& phy : *selected) {
-			phy->action(id, ActionParameter()); //TODO przemyslec to
+			ActionParameter empty;
+			phy->action(id, empty); //TODO przemyslec to
 		}
 		break;
 	default: ;
 	}
+}
+
+void Controls::actionUnit(short id, ActionParameter& parameter) {
+
+	switch (parameter.type) {
+
+	case ActionType::ORDER:
+		unitOrder(id);
+		break;
+	case ActionType::FORMATION:
+		unitFormation(id);
+		break;
+	default: ;
+	}
+
 }
 
 void Controls::refreshSelected() {
@@ -570,4 +586,9 @@ void Controls::control() {
 		orderControl();
 		break;
 	}
+}
+
+void Controls::unitFormation(short id) {
+	FormationType type = FormationType(id);
+	Game::get()->getFormationManager()->createFormation(selected, type);
 }

@@ -351,8 +351,16 @@ short Unit::getFormation() {
 	return formation;
 }
 
+short Unit::getPositionInFormation() {
+	return posInFormation;
+}
+
 void Unit::setFormation(short _formation) {
 	formation = _formation;
+}
+
+void Unit::setPositionInFormation(short _pos) {
+	posInFormation = _pos;
 }
 
 std::string Unit::getColumns() {

@@ -69,9 +69,9 @@ int Player::getLevelForUnitUpgrade(int id) {
 	return unitUpgradeLevels[id];
 }
 
-char Player::upgradeLevel(QueueType type, int id) {
+char Player::upgradeLevel(ActionType type, int id) {
 	switch (type) {
-	case QueueType::UNIT_LEVEL:
+	case ActionType::UNIT_LEVEL:
 		{
 		int maxLevels = Game::get()->getDatabaseCache()->getUnitLevels(id)->size() - 1;
 		if (maxLevels > unitLevels[id]) {
@@ -80,7 +80,7 @@ char Player::upgradeLevel(QueueType type, int id) {
 		}
 		}
 		break;
-	case QueueType::BUILDING_LEVEL:
+	case ActionType::BUILDING_LEVEL:
 		{
 		int maxLevels = Game::get()->getDatabaseCache()->getBuildingLevels(id)->size() - 1;
 		if (maxLevels > buildingLevels[id]) {
@@ -89,7 +89,7 @@ char Player::upgradeLevel(QueueType type, int id) {
 		}
 		}
 		break;
-	case QueueType::UNIT_UPGRADE:
+	case ActionType::UNIT_UPGRADE:
 		{
 		int maxLevels = Game::get()->getDatabaseCache()->getUnitUpgrades(id)->size() - 1;
 		if (maxLevels > unitUpgradeLevels[id]) {

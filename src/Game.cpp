@@ -59,6 +59,10 @@ Enviroment* Game::getEnviroment() const {
 	return enviroment;
 }
 
+FormationManager* Game::getFormationManager() const {
+	return formationManager;
+}
+
 Game::Game() {
 }
 
@@ -156,5 +160,10 @@ Game* Game::setEnviroment(Enviroment* _enviroment) {
 
 Game* Game::setQueueManager(QueueManager* _queueManager) {
 	queue = _queueManager;
+	return this;
+}
+
+Game* Game::setFormationManager(FormationManager* _formationManager) {
+	formationManager = _formationManager;
 	return this;
 }

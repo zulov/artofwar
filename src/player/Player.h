@@ -1,9 +1,8 @@
 #pragma once
 #include "Resources.h"
 #include "database/db_strcut.h"
+#include "objects/ActionType.h"
 #include <list>
-#include "ObjectEnums.h"
-#include "objects/queue/QueueType.h"
 
 class Player
 {
@@ -22,7 +21,7 @@ public:
 	int getLevelForUnit(int id);
 	int getLevelForBuilding(int id);
 	int getLevelForUnitUpgradePath(short id);
-	char upgradeLevel(QueueType type, int id);
+	char upgradeLevel(ActionType type, int id);
 	int getLevelForUnitUpgrade(int id);
 private:
 	Resources resources;

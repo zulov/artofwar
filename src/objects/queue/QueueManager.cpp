@@ -18,7 +18,7 @@ QueueManager::~QueueManager() {
 	clear_vector(queue);
 }
 
-void QueueManager::add(short value, QueueType type, short id, short localMaxCapacity) {
+void QueueManager::add(short value, ActionType type, short id, short localMaxCapacity) {
 	for (auto& i : queue) {
 		if (i->checkType(type, id)) {
 			value = i->add(value);
@@ -61,33 +61,33 @@ QueueElement* QueueManager::getAt(short i) {
 	return queue.at(i);
 }
 
-float QueueManager::getSecToComplete(QueueType type, short id, int level) {
+float QueueManager::getSecToComplete(ActionType type, short id, int level) {
 	switch (type) {
-	case QueueType::UNIT:
+	case ActionType::UNIT:
 		return 5;
-	case QueueType::BUILDING:
+	case ActionType::BUILDING:
 		return 10;
-	case QueueType::UNIT_LEVEL:
+	case ActionType::UNIT_LEVEL:
 		{
 		auto dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
 		return dbLevel->upgradeSpeed;
 		}
-	case QueueType::BUILDING_LEVEL:
+	case ActionType::BUILDING_LEVEL:
 		return 10;
 	default:
 		return 1;
 	}
 }
 
-float QueueManager::getSecPerInstance(QueueType type, short id, int level) {
+float QueueManager::getSecPerInstance(ActionType type, short id, int level) {
 	switch (type) {
-	case QueueType::UNIT:
+	case ActionType::UNIT:
 		return 0.5;
-	case QueueType::BUILDING:
+	case ActionType::BUILDING:
 		return 0;
-	case QueueType::UNIT_LEVEL:
+	case ActionType::UNIT_LEVEL:
 		return 0;
-	case QueueType::BUILDING_LEVEL:
+	case ActionType::BUILDING_LEVEL:
 		return 0;
 	default:
 		return 0;

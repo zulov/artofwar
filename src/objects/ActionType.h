@@ -1,10 +1,12 @@
 #pragma once
-enum class QueueType
+enum class ActionType
 {
 	NONE=0,
 	UNIT,
 	BUILDING,
 	UNIT_LEVEL,
 	BUILDING_LEVEL,
-	UNIT_UPGRADE
+	UNIT_UPGRADE,
+	ORDER,
+	FORMATION
 };

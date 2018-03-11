@@ -192,6 +192,7 @@ void Main::load() {
 		{
 		Game::get()->setCameraManager(new CameraManager());
 		Game::get()->setQueueManager(new QueueManager(1));
+		Game::get()->setFormationManager(new FormationManager());
 
 		loader.createLoad(saveToLoad);
 		levelBuilder = new LevelBuilder();
@@ -345,25 +346,27 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	switch (hudData->getType()) {
 	case LeftMenuAction::NONE: break;
 	case LeftMenuAction::UNIT:
-		controls->order(hudData->getId(), ActionParameter(QueueType::UNIT));
+		controls->order(hudData->getId(), ActionParameter(ActionType::UNIT));
 		break;
 	case LeftMenuAction::UNIT_LEVEL:
-		controls->order(hudData->getId(), ActionParameter(QueueType::UNIT_LEVEL));
+		controls->order(hudData->getId(), ActionParameter(ActionType::UNIT_LEVEL));
 		break;
-	case LeftMenuAction::UNIT_UPGRADE: 
-		controls->order(hudData->getId(), ActionParameter(QueueType::UNIT_UPGRADE));
+	case LeftMenuAction::UNIT_UPGRADE:
+		controls->order(hudData->getId(), ActionParameter(ActionType::UNIT_UPGRADE));
 		break;
 	case LeftMenuAction::BUILDING:
 		controls->hudAction(hudData);
 		break;
-	case LeftMenuAction::BUILDING_LEVEL: 
-		controls->order(hudData->getId(), ActionParameter(QueueType::BUILDING_LEVEL));
+	case LeftMenuAction::BUILDING_LEVEL:
+		controls->order(hudData->getId(), ActionParameter(ActionType::BUILDING_LEVEL));
 		break;
 	case LeftMenuAction::BUILDING_UPGRADE: break;
 	case LeftMenuAction::ORDER:
-		controls->order(hudData->getId(), ActionParameter(QueueType::NONE));
+		controls->order(hudData->getId(), ActionParameter(ActionType::NONE));
 		break;
-	case LeftMenuAction::FORMATION: break;
+	case LeftMenuAction::FORMATION: 
+		controls->order(hudData->getId(), ActionParameter(ActionType::NONE));
+		break;
 	default: ;
 	}
 }
@@ -429,12 +432,15 @@ void Main::disposeScene() {
 		delete simulation;
 		simulation = nullptr;
 
-		loading2.inc("dispose cameras and queue");
+		loading2.inc("dispose managers");
 		delete Game::get()->getCameraManager();
 		Game::get()->setCameraManager(nullptr);
 
 		delete Game::get()->getQueueManager();
 		Game::get()->setQueueManager(nullptr);
+
+		delete Game::get()->getFormationManager();
+		Game::get()->setFormationManager(nullptr);
 
 		loading2.inc("dispose creationList");
 		delete Game::get()->getCreationCommandList();

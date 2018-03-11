@@ -1,23 +1,22 @@
 #pragma once
-#include "ObjectEnums.h"
-#include "QueueType.h"
+#include "objects/ActionType.h"
 
 class QueueElement
 {
 public:
-	QueueElement(QueueType _type, short _id, short _maxCapacity, float _initialSecondsToComplete, float _secondsToCompletePerInstance);
+	QueueElement(ActionType _type, short _id, short _maxCapacity, float _initialSecondsToComplete, float _secondsToCompletePerInstance);
 	~QueueElement();
-	bool checkType(QueueType _type, short _id);
+	bool checkType(ActionType _type, short _id);
 	short add(short value);
 	void reduce(short value);
 	bool update(float time);
-	QueueType getType();
+	ActionType getType();
 	short getId();
 	short getAmount();
 	short getMaxCapacity();
 	float getProgress();
 private:
-	QueueType type;
+	ActionType type;
 	short id;
 
 	short maxCapacity;

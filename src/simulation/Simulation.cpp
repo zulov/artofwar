@@ -125,7 +125,7 @@ void Simulation::updateBuildingQueues(float time) {
 		QueueElement* done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {
-			case QueueType::UNIT:
+			case ActionType::UNIT:
 				creationCommandList->add(new CreationCommand(
 				                                             ObjectType::UNIT,
 				                                             done->getAmount(),
@@ -136,21 +136,21 @@ void Simulation::updateBuildingQueues(float time) {
 				                                                          getLevelForUnit(done->getId())
 				                                            ));
 				break;
-			case QueueType::UNIT_LEVEL:
+			case ActionType::UNIT_LEVEL:
 				levelsCommandList->add(new UpgradeCommand(
 				                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
 				                                          done->getId(),
 				                                          done->getType()
 				                                         ));
 				break;
-			case QueueType::BUILDING_LEVEL:
+			case ActionType::BUILDING_LEVEL:
 				levelsCommandList->add(new UpgradeCommand(
 				                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
 				                                          done->getId(),
 				                                          done->getType()
 				                                         ));
 				break;
-			case QueueType::UNIT_UPGRADE:
+			case ActionType::UNIT_UPGRADE:
 				levelsCommandList->add(new UpgradeCommand(
 				                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
 				                                          done->getId(),
@@ -170,7 +170,7 @@ void Simulation::updateQueues() {
 	QueueElement* done = Game::get()->getQueueManager()->update(maxTimeFrame);
 	if (done) {
 		switch (done->getType()) {
-		case QueueType::BUILDING_LEVEL:
+		case ActionType::BUILDING_LEVEL:
 			levelsCommandList->add(new UpgradeCommand(
 			                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
 			                                          done->getId(),
@@ -227,6 +227,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 		simObjectManager->updateInfo(simulationInfo);
 
 		simulationInfo->setUnitsNumber(units->size());
+		Game::get()->getFormationManager()->update();
 	} else {
 		moveUnits(timeStep);
 	}
@@ -271,10 +272,10 @@ void Simulation::calculateForces() {
 			Vector3* aligment = force.aligment(unit, neighbours);
 			Vector3* destForce = force.destination(unit);
 
-			*sepPedestrian 
-			+= *destForce 
-			//+= *cohesion
-			+= *aligment;
+			*sepPedestrian
+				+= *destForce
+				//+= *cohesion
+				+= *aligment;
 
 			unit->setAcceleration(sepPedestrian);
 

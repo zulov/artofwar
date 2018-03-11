@@ -215,7 +215,6 @@
     <ClInclude Include="src\ObjectEnums.h">
       <Filter>objects</Filter>
     </ClInclude>
-    <ClInclude Include="src\ActionType.h" />
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\Game.h" />
@@ -455,7 +454,6 @@
     <ClInclude Include="src\hud\window\menu\info\LeftMenuInfoPanel.h" />
     <ClInclude Include="src\hud\window\menu\LeftMenuModes.h" />
     <ClInclude Include="src\objects\building\BuildingUtils.h" />
-    <ClInclude Include="src\objects\queue\QueueType.h" />
     <ClInclude Include="src\objects\queue\QueueManager.h">
       <Filter>objects\building</Filter>
     </ClInclude>
@@ -472,6 +470,7 @@
     <ClInclude Include="src\simulation\formation\Formation.h" />
     <ClInclude Include="src\simulation\formation\FormationManager.h" />
     <ClInclude Include="src\simulation\formation\FormationType.h" />
+    <ClInclude Include="src\objects\ActionType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

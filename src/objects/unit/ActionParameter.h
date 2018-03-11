@@ -1,8 +1,7 @@
 #pragma once
 
-#include "aim/Aims.h"
-#include "objects/queue/QueueType.h"
-
+#include "aim/Aim.h"
+#include "objects/ActionType.h"
 
 struct ActionParameter
 {
@@ -11,10 +10,11 @@ struct ActionParameter
 		aimAppend(aimAppend) {
 	}
 
-	ActionParameter(QueueType _type) : type(_type) {
+	ActionParameter(ActionType _type) : type(_type) {
 	}
 
 	Aim* aim;
 	bool aimAppend;
-	QueueType type;
+	ActionType type;
+
 };

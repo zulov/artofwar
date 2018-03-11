@@ -69,7 +69,9 @@ public:
 	bool isToDispose();
 
 	short getFormation();
+	short getPositionInFormation();
 	void setFormation(short _formation);
+	void setPositionInFormation(short _pos);
 
 	static std::string getColumns();
 	std::string getValues(int precision) override;
@@ -95,6 +97,7 @@ private:
 	std::vector<db_unit_upgrade*> upgrades;
 
 	bool rotatable;
+	bool atState = false;
 	float minimalDistance;
 	float attackIntrest = 10;
 	float collectSpeed = 2;
@@ -103,9 +106,9 @@ private:
 	float minSpeed;
 	float maxSeparationDistance;
 
+	short posInFormation = -1;
+	short formation = -1;
+
 	static float hbMaxSize;
 
-	bool atState = false;
-
-	short formation = -1;
 };

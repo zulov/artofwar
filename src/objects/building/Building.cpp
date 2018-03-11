@@ -66,7 +66,7 @@ void Building::action(short id, ActionParameter& parameter) {
 	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 
 	switch (parameter.type) {
-	case QueueType::UNIT:
+	case ActionType::UNIT:
 		{
 		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
 		if (resources.reduce(costs)) {
@@ -74,7 +74,7 @@ void Building::action(short id, ActionParameter& parameter) {
 		}
 		}
 		break;
-	case QueueType::UNIT_LEVEL:
+	case ActionType::UNIT_LEVEL:
 		{
 		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
 		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForUnitLevel(id, level);
@@ -86,7 +86,7 @@ void Building::action(short id, ActionParameter& parameter) {
 		}
 		}
 			break;
-	case QueueType::UNIT_UPGRADE:
+	case ActionType::UNIT_UPGRADE:
 		{
 		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
 		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForUnitUpgrade(id, level);

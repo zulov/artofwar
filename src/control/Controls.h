@@ -25,7 +25,7 @@ public:
 	void createNode(String model, String texture, Urho3D::Node** node);
 	Controls(Input* _input);
 	~Controls();
-	
+
 	void select(Physical* entity);
 	void unSelectAll();
 
@@ -38,6 +38,7 @@ public:
 
 	void deactivate();
 	void activate();
+	void unitOrder(short id);
 
 	void orderPhysical(short id, ActionParameter& parameter);
 	void order(short id, ActionParameter& parameter);
@@ -52,7 +53,8 @@ public:
 	void control();
 
 private:
-	void orderUnit(short id);
+	void unitFormation(short id);
+	void actionUnit(short id, ActionParameter& parameter);
 	void orderBuilding(short id, ActionParameter& parameter);
 
 	void refreshSelected();
@@ -60,7 +62,7 @@ private:
 
 	void startArrowNode(const hit_data& hitData);
 	void startSelectionNode(hit_data hitData);
-	
+
 	void clickDownLeft();
 	void clickDownRight();
 	void createBuilding(Vector3& pos);
@@ -76,10 +78,10 @@ private:
 	bool orderAction(bool shiftPressed);
 	void releaseLeft();
 	void releaseBuildLeft();
-	void resetState();	
+	void resetState();
 	void toDefault();
 
-	std::vector<Physical*>* selected;//TODO to powinien byæ set
+	std::vector<Physical*>* selected; //TODO to powinien byæ set
 
 	float maxDistance = 300;
 
@@ -93,11 +95,10 @@ private:
 	ObjectType typeToCreate;
 	SelectedInfo* selectedInfo;
 
-	Urho3D::Node* selectionNode;	
+	Urho3D::Node* selectionNode;
 	Urho3D::Node* arrowNode;
 
 	short idToCreate = -1;
 	double clickDistance = 2 * 2;
 	bool active = true;
-
 };
