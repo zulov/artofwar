@@ -81,6 +81,7 @@ void ActionCommand::addTargetAim(Vector3* to, bool append) {
 	} else {
 		Vector3* center = calculateCenter();
 		*center /= entities->size();
+		Game::get()->getFormationManager()->createFormation(entities);//TODO tu sterowac ca³¹ grup¹
 		for (Physical* physical : *entities) {
 			Vector3 pos = *physical->getPosition() - *center + *to;
 

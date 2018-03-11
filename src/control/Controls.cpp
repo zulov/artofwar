@@ -409,9 +409,7 @@ void Controls::unitOrder(short id) {
 }
 
 void Controls::actionUnit(short id, ActionParameter& parameter) {
-
 	switch (parameter.type) {
-
 	case ActionType::ORDER:
 		unitOrder(id);
 		break;
@@ -420,7 +418,6 @@ void Controls::actionUnit(short id, ActionParameter& parameter) {
 		break;
 	default: ;
 	}
-
 }
 
 void Controls::refreshSelected() {

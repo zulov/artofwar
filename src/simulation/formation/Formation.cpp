@@ -21,6 +21,7 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 		unit->setFormation(id);
 		unit->setPositionInFormation(k++);
 	}
+	updateCenter();
 }
 
 
@@ -57,7 +58,9 @@ void Formation::updateUnits() {
 void Formation::updateCenter() {
 	center = Vector3::ZERO;
 	for (auto unit : units) {
-		center += *unit->getPosition();
+		if (unit->getPositionInFormation() < sideA * sideB) {
+			center += *unit->getPosition();
+		}
 	}
 	center /= units.size();
 }
