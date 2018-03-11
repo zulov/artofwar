@@ -1,7 +1,8 @@
 #pragma once
 #include "FormationType.h"
-#include <vector>
 #include "objects/Physical.h"
+#include <vector>
+
 
 class Formation
 {
@@ -9,8 +10,8 @@ public:
 	Formation(short _id, std::vector<Physical*>* _units, FormationType _type);
 	~Formation();
 
-	void update();
-	Vector3 getPositionFor(short id);
+	bool update();
+	Vector3 getPositionFor(short id) const;
 private:
 	void updateUnits();
 	void updateCenter();
@@ -18,8 +19,10 @@ private:
 	short id;
 	short sideA;
 	short sideB;
-	float sparsity = 1;
+	float sparsity = 2;
 	std::vector<Unit*> units;
 	FormationType type;
 	Vector3 center;
+	float sizeA;
+	float sizeB;
 };

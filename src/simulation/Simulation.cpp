@@ -269,20 +269,24 @@ void Simulation::calculateForces() {
 
 			Vector3* sepPedestrian = force.separationUnits(unit, neighbours);
 			//Vector3* cohesion = force.cohesion(unit, neighbours);
-			Vector3* aligment = force.aligment(unit, neighbours);
+			//Vector3* aligment = force.aligment(unit, neighbours);
 			Vector3* destForce = force.destination(unit);
+			Vector3* formation = force.formation(unit);
 
 			*sepPedestrian
 				+= *destForce
+				+= *formation
 				//+= *cohesion
-				+= *aligment;
+				//+= *aligment
+			;
 
 			unit->setAcceleration(sepPedestrian);
 
 			delete sepPedestrian;
 			delete destForce;
+			delete formation;
 			//delete cohesion;
-			delete aligment;
+			//delete aligment;
 		} else {
 			*validPos *= 20;
 			unit->setAcceleration(validPos);

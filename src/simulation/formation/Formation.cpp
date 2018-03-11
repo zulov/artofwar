@@ -1,6 +1,8 @@
 #include "Formation.h"
-#include <algorithm>
 #include "objects/unit/Unit.h"
+#include <algorithm>
+#include <iostream>
+
 
 Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type) {
 	id = _id;
@@ -10,6 +12,10 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 	type = _type;
 	sideA = sqrt(units.size());
 	sideB = units.size() / sideA;
+
+	sizeA = (sideA - 1) * sparsity;
+	sizeB = (sideB - 1) * sparsity;
+
 	short k = 0;
 	for (auto unit : units) {
 		unit->setFormation(id);
@@ -21,15 +27,20 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 Formation::~Formation() {
 }
 
-void Formation::update() {
+bool Formation::update() {
 	updateUnits();
-	updateCenter();
+	if (!units.empty()) {
+		updateCenter();
+		return true;
+	}
+	return false;
 }
 
-Vector3 Formation::getPositionFor(short id) {
+Vector3 Formation::getPositionFor(short id) const {
 	int column = id % sideA;
 	int row = id / sideA;
-	return center - Vector3(column * sparsity, 0, row * sparsity);
+
+	return center - Vector3(column * sparsity - sizeA / 2, 0, row * sparsity - sizeB / 2);
 }
 
 void Formation::updateUnits() {

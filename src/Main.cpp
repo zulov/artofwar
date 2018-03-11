@@ -362,10 +362,10 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 		break;
 	case LeftMenuAction::BUILDING_UPGRADE: break;
 	case LeftMenuAction::ORDER:
-		controls->order(hudData->getId(), ActionParameter(ActionType::NONE));
+		controls->order(hudData->getId(), ActionParameter(ActionType::ORDER));
 		break;
-	case LeftMenuAction::FORMATION: 
-		controls->order(hudData->getId(), ActionParameter(ActionType::NONE));
+	case LeftMenuAction::FORMATION:
+		controls->order(hudData->getId(), ActionParameter(ActionType::FORMATION));
 		break;
 	default: ;
 	}

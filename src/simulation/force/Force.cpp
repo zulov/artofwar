@@ -1,4 +1,5 @@
 #include "Force.h"
+#include "Game.h"
 
 Force::Force() = default;
 
@@ -47,6 +48,16 @@ Vector3* Force::separationUnits(Unit* unit, std::vector<Unit*>* units) {
 
 Vector3* Force::destination(Unit* unit) {
 	return unit->getDestination(boostCoef, aimCoef);
+}
+
+Vector3* Force::formation(Unit* unit) {
+	auto opt = Game::get()->getFormationManager()->getPositionFor(unit);
+	if (opt.has_value()) {
+		auto force = new Vector3(opt.value() - *unit->getPosition());
+		*force *= formationCoef * boostCoef;
+		return force;
+	}
+	return new Vector3();
 }
 
 Vector3* Force::cohesion(Unit* unit, std::vector<Unit*>* units) {
