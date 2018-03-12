@@ -1,6 +1,6 @@
 #pragma once
-#include <Urho3D/UI/ProgressBar.h>
 #include "hud/window/AbstractWindowPanel.h"
+#include <Urho3D/UI/ProgressBar.h>
 
 class LoadingPanel : public AbstractWindowPanel
 {

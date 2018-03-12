@@ -1,9 +1,10 @@
 #pragma once
+#include "control/SelectedInfo.h"
+#include "database/db_strcut.h"
+#include "hud/HudData.h"
 #include "hud/window/AbstractWindowPanel.h"
 #include <Urho3D/UI/Text.h>
-#include "control/SelectedInfo.h"
-#include "hud/HudData.h"
-#include "database/db_strcut.h"
+
 
 class LeftMenuInfoPanel : public AbstractWindowPanel
 {

@@ -14,7 +14,6 @@
 #include "window/top/TopPanel.h"
 #include "xml/rapidxml_print.hpp"
 #include <Urho3D/UI/Button.h>
-#include <Urho3D/UI/Sprite.h>
 #include <Urho3D/UI/Text.h>
 
 

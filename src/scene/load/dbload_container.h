@@ -1,6 +1,7 @@
 #pragma once
-#include <vector>
 #include "utils.h"
+#include <vector>
+#include <Urho3D/Container/Str.h>
 
 struct dbload_config
 {

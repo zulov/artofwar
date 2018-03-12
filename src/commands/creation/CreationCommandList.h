@@ -1,6 +1,7 @@
 #pragma once
-#include "simulation/SimulationObjectManager.h"
 #include "commands/CommandList.h"
+#include "simulation/SimulationObjectManager.h"
+
 
 class SimulationObjectManager;
 

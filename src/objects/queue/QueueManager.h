@@ -5,7 +5,7 @@
 class QueueManager
 {
 public:
-	QueueManager(short _maxCapacity);
+	explicit QueueManager(short _maxCapacity);
 	~QueueManager();
 
 	void add(short value, ActionType type, short id, short localMaxCapacity);

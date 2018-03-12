@@ -1,10 +1,9 @@
 #include "QueueManager.h"
-#include "defines.h"
-#include <iostream>
-#include "utils.h"
-#include <algorithm>
 #include "Game.h"
 #include "database/DatabaseCache.h"
+#include "defines.h"
+#include "utils.h"
+#include <algorithm>
 
 
 QueueManager::QueueManager(short _maxCapacity) {

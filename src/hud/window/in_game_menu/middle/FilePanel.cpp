@@ -1,8 +1,8 @@
 #include "FilePanel.h"
-#include "Game.h"
 #include "FileFormData.h"
-#include <Urho3D/UI/UIEvents.h>
+#include "Game.h"
 #include "hud/HudData.h"
+#include <Urho3D/UI/UIEvents.h>
 
 
 FilePanel::FilePanel(Urho3D::XMLFile* _style, Urho3D::String _title): AbstractMiddlePanel(_style, _title) {

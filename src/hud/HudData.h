@@ -6,7 +6,7 @@
 class HudData
 {
 public:
-	HudData(Urho3D::UIElement * _uiParent);
+	explicit HudData(Urho3D::UIElement * _uiParent);
 	~HudData();
 	Urho3D::UIElement * getUIParent();
 

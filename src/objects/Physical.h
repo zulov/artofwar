@@ -4,7 +4,7 @@
 #include <Urho3D/Graphics/BillboardSet.h>
 
 
-class ActionParameter;
+struct ActionParameter;
 
 class Physical :
 	public Entity

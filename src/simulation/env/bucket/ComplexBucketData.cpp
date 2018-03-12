@@ -1,7 +1,6 @@
 #include "ComplexBucketData.h"
 #include "Game.h"
 #include "objects/Static.h"
-#include "utils.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>

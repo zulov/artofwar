@@ -50,8 +50,7 @@ void MainMenuLoadPanel::action(String saveName) {
 }
 
 
-MainMenuLoadPanel::~MainMenuLoadPanel() {
-}
+MainMenuLoadPanel::~MainMenuLoadPanel() = default;
 
 void MainMenuLoadPanel::HandleLoadClick(StringHash eventType, VariantMap& eventData) {
 	Button* element = static_cast<Button*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());

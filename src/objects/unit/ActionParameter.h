@@ -5,7 +5,7 @@
 
 struct ActionParameter
 {
-	ActionParameter(Aim* aim = nullptr, bool aimAppend = false)
+	explicit ActionParameter(Aim* aim = nullptr, bool aimAppend = false)
 		: aim(aim),
 		aimAppend(aimAppend) {
 	}

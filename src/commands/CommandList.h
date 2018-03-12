@@ -1,6 +1,6 @@
 #pragma once
-#include <vector>
 #include "AbstractCommand.h"
+#include <vector>
 
 class CommandList
 {

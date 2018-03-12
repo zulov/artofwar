@@ -11,8 +11,7 @@ LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPa
 	styleName = "LeftMenuInfoPanel";
 }
 
-LeftMenuInfoPanel::~LeftMenuInfoPanel() {
-}
+LeftMenuInfoPanel::~LeftMenuInfoPanel() = default;
 
 
 void LeftMenuInfoPanel::createBody() {

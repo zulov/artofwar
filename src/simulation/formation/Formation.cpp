@@ -25,8 +25,7 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 }
 
 
-Formation::~Formation() {
-}
+Formation::~Formation() = default;
 
 bool Formation::update() {
 	updateUnits();

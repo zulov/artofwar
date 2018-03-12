@@ -6,7 +6,6 @@
 #include "scene/save/SceneSaver.h"
 #include "simulation/env/Enviroment.h"
 #include "simulation/force/Force.h"
-#include <Urho3D/Input/Input.h>
 #include <vector>
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "commands/upgrade/UpgradeCommandList.h"

@@ -1,5 +1,6 @@
 #pragma once
 #include "NewGamePlayer.h"
+#include <vector>
 
 struct NewGameForm
 {

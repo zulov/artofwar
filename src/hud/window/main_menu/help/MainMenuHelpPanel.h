@@ -1,7 +1,6 @@
 #pragma once
-
-#include <Urho3D/UI/ListView.h>
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
+#include <Urho3D/UI/ListView.h>
 
 
 #define HELP_ITEMS 5

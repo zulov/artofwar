@@ -17,8 +17,7 @@ Player::Player(int nationId, int team, int _id, int _color, Urho3D::String _name
 	fill_n(unitUpgradeLevels, PATH_UPGRADES_NUMBER_DB, -1);
 }
 
-Player::~Player() {
-}
+Player::~Player() = default;
 
 int Player::getNation() {
 	return dbNation->id;

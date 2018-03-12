@@ -1,10 +1,11 @@
 #pragma once
+#include "SettingsForm.h"
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/UI/Button.h>
-#include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/UI/CheckBox.h>
-#include "SettingsForm.h"
+#include <Urho3D/UI/DropDownList.h>
+
 
 #define SETTINGS_ROWS_NUMBER 9
 

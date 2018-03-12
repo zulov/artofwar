@@ -3,8 +3,7 @@
 #include "objects/Entity.h"
 
 
-SceneObjectManager::SceneObjectManager() {
-}
+SceneObjectManager::SceneObjectManager() = default;
 
 
 SceneObjectManager::~SceneObjectManager() {

@@ -1,7 +1,6 @@
 #pragma once
-
-#include <fstream>
 #include "defines.h"
+#include <fstream>
 
 class Benchmark {
 public:

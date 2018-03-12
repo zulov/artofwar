@@ -43,8 +43,7 @@ void MainMenuHelpPanel::createBody() {
 }
 
 
-MainMenuHelpPanel::~MainMenuHelpPanel() {
-}
+MainMenuHelpPanel::~MainMenuHelpPanel() = default;
 
 void MainMenuHelpPanel::action(short id) {
 	contentText->SetText(Game::get()->getLocalization()->Get("help_value_" + String(id)));

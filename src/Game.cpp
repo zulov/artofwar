@@ -63,8 +63,7 @@ FormationManager* Game::getFormationManager() const {
 	return formationManager;
 }
 
-Game::Game() {
-}
+Game::Game() = default;
 
 
 Game* Game::get() {
@@ -81,8 +80,7 @@ void Game::dispose() {
 	delete instance;
 }
 
-Game::~Game() {
-}
+Game::~Game() = default;
 
 Game* Game::setCache(Urho3D::ResourceCache* _cache) {
 	cache = _cache;

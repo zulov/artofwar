@@ -10,8 +10,7 @@ UpgradeCommand::UpgradeCommand(int _player, int _id, ActionType _type) {
 	type = _type;
 }
 
-UpgradeCommand::~UpgradeCommand() {
-}
+UpgradeCommand::~UpgradeCommand() = default;
 
 void UpgradeCommand::execute() {
 	char level = Game::get()->getPlayersManager()->getPlayer(player)->upgradeLevel(type, id);

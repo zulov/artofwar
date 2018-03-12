@@ -7,8 +7,7 @@ SelectedInfoType::SelectedInfoType() {
 }
 
 
-SelectedInfoType::~SelectedInfoType() {
-}
+SelectedInfoType::~SelectedInfoType() = default;
 
 void SelectedInfoType::clear() {
 	data.clear();

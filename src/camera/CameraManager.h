@@ -1,6 +1,6 @@
 #pragma once
-#include <vector>
 #include "CameraBehave.h"
+#include <vector>
 
 using namespace Urho3D;
 

@@ -1,6 +1,6 @@
 #pragma once
-#include <Urho3D/Graphics/Drawable.h>
 #include "objects/LinkComponent.h"
+#include <Urho3D/Graphics/Drawable.h>
 
 
 struct hit_data

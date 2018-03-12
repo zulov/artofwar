@@ -2,8 +2,7 @@
 #include "ActionCommand.h"
 
 
-ActionCommandList::ActionCommandList() {
-}
+ActionCommandList::ActionCommandList() = default;
 
 ActionCommandList::~ActionCommandList() = default;
 

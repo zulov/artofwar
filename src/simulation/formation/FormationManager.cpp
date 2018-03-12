@@ -4,8 +4,7 @@
 #include <optional>
 
 
-FormationManager::FormationManager() {
-}
+FormationManager::FormationManager() = default;
 
 
 FormationManager::~FormationManager() {

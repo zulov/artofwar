@@ -1,5 +1,4 @@
 #include "Enviroment.h"
-#include <iostream>
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
 

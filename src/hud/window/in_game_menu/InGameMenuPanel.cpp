@@ -7,7 +7,6 @@
 #include <Urho3D/UI/Text.h>
 #include "middle/FilePanel.h"
 #include <Urho3D/UI/UIEvents.h>
-#include "utils.h"
 #include "GameState.h"
 
 #define IN_GAME_MENU_BUTTON_NUMBER 5
