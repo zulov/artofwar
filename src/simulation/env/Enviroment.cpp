@@ -5,8 +5,8 @@
 
 Enviroment::Enviroment(Terrain* _terrian):
 	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, false),
-	obstacleGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD),
 	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE),
+	obstacleGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD),
 	teamUnitGrid{
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY}, {BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY}
 	} {
@@ -57,7 +57,7 @@ std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, dou
 	while (Unit* neight = bucketIterator->next()) {
 		if (unit == neight) { continue; }
 
-		const double sqDistance = ((*unitPosition) - (*neight->getPosition())).LengthSquared();
+		const double sqDistance = (*unitPosition - *neight->getPosition()).LengthSquared();
 
 		if (sqDistance < sqSeparationDistance) {
 			neights->push_back(neight);
@@ -73,14 +73,14 @@ std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, dou
 
 void Enviroment::update(std::vector<Unit*>* units) {
 	//TODO to mozna rodzielic na dodawanei u usywanie
-	for (auto unit : (*units)) {
+	for (auto unit : *units) {
 		mainGrid.updateGrid(unit, -1);
 		teamUnitGrid[unit->getTeam()].updateGrid(unit, unit->getTeam());
 	}
 }
 
 void Enviroment::update(std::vector<Building*>* buildings) {
-	for (auto building : (*buildings)) {
+	for (auto building : *buildings) {
 		mainGrid.addStatic(building);
 	}
 }

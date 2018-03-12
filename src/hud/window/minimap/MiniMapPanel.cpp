@@ -106,8 +106,8 @@ void MiniMapPanel::update() {
 	Enviroment* env = Game::get()->getEnviroment();
 	uint32_t* data = (uint32_t*)minimap->GetData();
 
-	float xinc = 1.0f / (size.x_);
-	float yinc = 1.0f / (size.y_);
+	float xinc = 1.0f / size.x_;
+	float yinc = 1.0f / size.y_;
 
 	int partIndex = 0;
 	bool changed = false;

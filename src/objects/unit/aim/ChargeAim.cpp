@@ -6,14 +6,14 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/Scene.h>
 
-ChargeAim::ChargeAim(Urho3D::Vector3* begin, Urho3D::Vector3* end) :direction((*end) - (*begin)){
+ChargeAim::ChargeAim(Urho3D::Vector3* begin, Urho3D::Vector3* end) :direction(*end - *begin){
 
 	direction.y_ = 0;
 	direction.Normalize();
 
 	Game* game = Game::get();
 	node = game->getScene()->CreateChild();
-	node->SetPosition(((*end) + (*begin)) / 2);
+	node->SetPosition((*end + *begin) / 2);
 	//node->SetRotation(Urho3D::Quaternion(0, 0, 180));
 
 	Urho3D::StaticModel* model = node->CreateComponent<Urho3D::StaticModel>();

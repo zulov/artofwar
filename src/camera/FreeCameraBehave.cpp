@@ -40,7 +40,7 @@ void FreeCameraBehave::setRotation(const Urho3D::Quaternion& rotation) {
 
 Urho3D::String* FreeCameraBehave::getInfo() {
 	if (changed) {
-		(*info) = name + " \t" + cameraNode->GetPosition().ToString();
+		*info = name + " \t" + cameraNode->GetPosition().ToString();
 		changed = false;
 	}
 	return info;

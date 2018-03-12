@@ -433,12 +433,12 @@ struct db_container
 			}
 		}
 
-		for (int i = 0; i < PATH_UPGRADES_NUMBER_DB; ++i) {
-			unitUpgrades[i] = new std::vector<db_unit_upgrade*>();
+		for (auto& unitUpgrade : unitUpgrades) {
+			unitUpgrade = new std::vector<db_unit_upgrade*>();
 		}
 
-		for (int i = 0; i < PATH_UPGRADES_NUMBER_DB * 10; ++i) {
-			unitUpgradesCosts[i] = new std::vector<db_cost*>();
+		for (auto& unitUpgradesCost : unitUpgradesCosts) {
+			unitUpgradesCost = new std::vector<db_cost*>();
 		}
 	}
 

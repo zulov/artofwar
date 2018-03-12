@@ -13,7 +13,7 @@ MainMenuSettingsPanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuD
 
 MainMenuSettingsPanel::~MainMenuSettingsPanel() {
 	delete data;
-};
+}
 
 void MainMenuSettingsPanel::setValues(int graphID) {
 	db_graph_settings* graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(graphID);

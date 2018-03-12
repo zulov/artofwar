@@ -13,9 +13,7 @@ SceneLoader::SceneLoader() {
 
 
 SceneLoader::~SceneLoader() {
-	if (dbLoad) {
-		delete dbLoad;
-	}
+	delete dbLoad;
 }
 
 void SceneLoader::load() {
@@ -95,9 +93,7 @@ int static load_resources_entities(void* data, int argc, char** argv, char** azC
 
 void SceneLoader::reset() {
 	database = nullptr;
-	if (dbLoad) {
-		delete dbLoad;
-	}
+	delete dbLoad;
 	dbLoad = new dbload_container();
 	loadingState.reset(3, "start loading");
 }

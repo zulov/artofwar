@@ -18,11 +18,10 @@ Urho3D::Vector3* Aims::getDirection(Unit* unit) {
 }
 
 void Aims::clearAimsIfExpired() {
-	for (int i = 0; i < aims.size(); ++i) {
-		Aim* aim = aims[i];
+	for (auto& aim : aims) {
 		if (aim->expired()) {
 			delete aim;
-			aims[i] = new DummyAim();
+			aim = new DummyAim();
 		}
 	}
 }

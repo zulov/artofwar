@@ -128,7 +128,7 @@ Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
 		if (force) {
 			force->Normalize();
 			*force *= boostCoef;
-			*force -= (*velocity);
+			*force -= *velocity;
 			*force /= 0.5;
 			*force *= mass;
 			*force *= aimCoef;

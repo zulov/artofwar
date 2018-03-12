@@ -13,7 +13,7 @@ public:
 	PlayersManager();
 	~PlayersManager();
 	void load(std::vector<dbload_player*>* players, std::vector<dbload_resource*>* resources);
-	void addPlayer(NewGamePlayer playerOne);
+	void addPlayer(NewGamePlayer player);
 	void load(NewGameForm* form);
 	Player* getActivePlayer();
 	Player* getPlayer(short i);

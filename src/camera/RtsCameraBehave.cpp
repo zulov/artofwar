@@ -69,7 +69,7 @@ void RtsCameraBehave::setRotation(const Urho3D::Quaternion& rotation) {
 
 Urho3D::String* RtsCameraBehave::getInfo() {
 	if (changed) {
-		(*info) = name + " \t" + cameraNode->GetPosition().ToString() + "\n" + cameraNode->GetRotation().ToString();
+		*info = name + " \t" + cameraNode->GetPosition().ToString() + "\n" + cameraNode->GetRotation().ToString();
 		changed = false;
 	}
 	return info;
