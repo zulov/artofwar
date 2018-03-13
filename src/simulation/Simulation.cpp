@@ -3,9 +3,9 @@
 #include "commands/creation/CreationCommand.h"
 #include "commands/creation/CreationCommandList.h"
 #include "commands/upgrade/UpgradeCommand.h"
+#include "player/PlayersManager.h"
 #include "scene/load/SceneLoader.h"
 #include <ctime>
-#include "player/PlayersManager.h"
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {
@@ -71,7 +71,7 @@ void Simulation::selfAI() {
 	}
 }
 
-void Simulation::loadEntities(SceneLoader& loader) {
+void Simulation::loadEntities(SceneLoader& loader) const {
 	dbload_container* data = loader.getData();
 	for (auto unit : *data->units) {
 		simObjectManager->load(unit);
@@ -115,12 +115,12 @@ void Simulation::applyForce() {
 	for (auto unit : *units) {
 		unit->applyForce(maxTimeFrame);
 		Vector3* pos = unit->getPosition(); //TODO to przeniesc do mova? to moze byc [rpblem gdy jest przesuwanie poza klatk¹
-		double y = enviroment->getGroundHeightAt(pos->x_, pos->z_);
+		const double y = enviroment->getGroundHeightAt(pos->x_, pos->z_);
 		unit->updateHeight(y, maxTimeFrame);
 	}
 }
 
-void Simulation::updateBuildingQueues(float time) {
+void Simulation::updateBuildingQueues(const float time) {
 	for (Building* build : *buildings) {
 		QueueElement* done = build->updateQueue(time);
 		if (done) {
@@ -192,21 +192,24 @@ void Simulation::save(SceneSaver& saver) {
 	saver.saveResourceEntities(resources);
 }
 
-void Simulation::performAction() {
+void Simulation::performStateAction() {
 	for (auto unit : *units) {
 		unit->executeState();
 	}
 }
 
-SimulationInfo* Simulation::update(float timeStep) {
+void Simulation::handleTimeInFrame(float timeStep) {
+	countFrame();
 
+	moveUnits(maxTimeFrame - (accumulateTime - timeStep));
+	accumulateTime -= maxTimeFrame;
+}
+
+SimulationInfo* Simulation::update(float timeStep) {
 	simulationInfo->reset();
 	timeStep = updateTime(timeStep);
 	if (accumulateTime >= maxTimeFrame) {
-		countFrame();
-
-		moveUnits(maxTimeFrame - (accumulateTime - timeStep));
-		accumulateTime -= maxTimeFrame;
+		handleTimeInFrame(timeStep);
 		if (currentFrameNumber % 3 == 0) {
 			levelsCommandList->execute();
 			creationCommandList->execute();
@@ -220,13 +223,12 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		moveUnitsAndCheck(accumulateTime);
 
-		performAction();
+		performStateAction();
 		updateQueues();
 
 		simObjectManager->prepareToDispose();
 		simObjectManager->updateInfo(simulationInfo);
 
-		simulationInfo->setUnitsNumber(units->size());
 		Game::get()->getFormationManager()->update();
 	} else {
 		moveUnits(timeStep);
@@ -248,13 +250,13 @@ void Simulation::initScene(NewGameForm* form) {
 	creationCommandList->execute();
 }
 
-void Simulation::moveUnits(float timeStep) {
+void Simulation::moveUnits(const float timeStep) {
 	for (auto unit : *units) {
 		unit->move(timeStep);
 	}
 }
 
-void Simulation::moveUnitsAndCheck(float timeStep) {
+void Simulation::moveUnitsAndCheck(const float timeStep) {
 	for (auto unit : *units) {
 		unit->move(timeStep);
 		unit->checkAim();
@@ -263,34 +265,24 @@ void Simulation::moveUnitsAndCheck(float timeStep) {
 
 void Simulation::calculateForces() {
 	for (auto unit : *units) {
-		Vector3* validPos = enviroment->validatePosition(unit->getPosition());
-		if (!validPos) {
-			std::vector<Unit*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
+		std::vector<Unit*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
-			Vector3* sepPedestrian = force.separationUnits(unit, neighbours);
-			//Vector3* cohesion = force.cohesion(unit, neighbours);
-			//Vector3* aligment = force.aligment(unit, neighbours);
-			Vector3* destForce = force.destination(unit);
-			Vector3* formation = force.formation(unit);
+		Vector3* sepPedestrian = force.separationUnits(unit, neighbours);
+		Vector3* destForce = force.destination(unit);
+		Vector3* formation = force.formation(unit);
+		Vector3* toValidDirection = force.escapeFromInvalidPosition(enviroment->validatePosition(unit->getPosition()));
 
-			*sepPedestrian
-				+= *destForce
-				+= *formation
-				//+= *cohesion
-				//+= *aligment
-			;
+		*sepPedestrian
+			+= *destForce
+			+= *formation
+			+= *toValidDirection
+		;
 
-			unit->setAcceleration(sepPedestrian);
+		unit->setAcceleration(sepPedestrian);
 
-			delete sepPedestrian;
-			delete destForce;
-			delete formation;
-			//delete cohesion;
-			//delete aligment;
-		} else {
-			*validPos *= 20;
-			unit->setAcceleration(validPos);
-			delete validPos;
-		}
+		delete sepPedestrian;
+		delete destForce;
+		delete formation;
+		delete toValidDirection;
 	}
 }

@@ -2,13 +2,13 @@
 #include "SimulationInfo.h"
 #include "SimulationObjectManager.h"
 #include "commands/action/ActionCommandList.h"
+#include "commands/upgrade/UpgradeCommandList.h"
+#include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "objects/unit/Unit.h"
 #include "scene/save/SceneSaver.h"
 #include "simulation/env/Enviroment.h"
 #include "simulation/force/Force.h"
 #include <vector>
-#include "hud/window/main_menu/new_game/NewGameForm.h"
-#include "commands/upgrade/UpgradeCommandList.h"
 
 
 class SceneLoader;
@@ -35,17 +35,18 @@ private:
 	void moveUnits(float timeStep);
 	void moveUnitsAndCheck(float timeStep);
 	void calculateForces();
-	void performAction();
+	void performStateAction();
+	void handleTimeInFrame(float timeStep);
 	float updateTime(float timeStep);
 
 	void loadEntities(NewGameForm* form);
-	void loadEntities(SceneLoader& loader);
-	void addTestEntities();
+	void loadEntities(SceneLoader& loader) const;
 	void countFrame();
 	void applyForce();
 	void updateBuildingQueues(float time);
 	void updateQueues();
 	void selfAI();
+	void addTestEntities();
 
 	void tryToAttack(vector<Unit*>::value_type unit);
 	void tryToCollect(Unit* unit);

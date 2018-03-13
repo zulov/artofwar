@@ -157,6 +157,7 @@ bool SimulationObjectManager::shouldDelete(Unit* unit) {
 
 void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
 	simulationInfo->set(this->simulationInfo);
+	simulationInfo->setUnitsNumber(units->size());
 	this->simulationInfo->reset();
 }
 

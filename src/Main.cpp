@@ -81,8 +81,8 @@ void Main::Stop() {
 }
 
 void Main::subscribeToUIEvents() {
-	for (auto hudElement : hud->getButtonsLeftMenuToSubscribe()) {
-		UIElement* element = hudElement->getUIParent();
+	for (auto hudData : hud->getButtonsLeftMenuToSubscribe()) {
+		UIElement* element = hudData->getUIParent();
 		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleLeftMenuButton));
 	}
 
@@ -122,7 +122,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		//changeState(GameState::LOADING);
 		break;
 	case GameState::LOADING:
-		load();
+		load(saveToLoad, loadingProgress);
 		break;
 	case GameState::RUNNING:
 		running(eventData[SceneUpdate::P_TIMESTEP].GetDouble());
@@ -133,7 +133,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 		changeState(GameState::MENU_MAIN);
 		break;
 	case GameState::NEW_GAME:
-		newGame(newGameForm);
+		newGame(newGameForm, newGameProgress);
 		break;
 	case GameState::STARTING: break;
 	default: ;
@@ -186,19 +186,29 @@ void Main::createSimulation() {
 	simulation = new Simulation(Game::get()->getEnviroment(), Game::get()->getCreationCommandList());
 }
 
-void Main::load() {
-	switch (loadingProgress.currentStage) {
+void Main::setSimpleManagers() {
+	Game::get()->setCameraManager(new CameraManager());
+	Game::get()->setQueueManager(new QueueManager(1));
+	Game::get()->setFormationManager(new FormationManager());
+	Game::get()->setPlayersManager(new PlayersManager());
+}
+
+void Main::updateProgres(loading& progres) {
+	progres.inc();
+	hud->updateLoading(progres.getProgres());
+}
+
+void Main::load(String saveName, loading& progres) {
+	switch (progres.currentStage) {
 	case 0:
 		{
-		Game::get()->setCameraManager(new CameraManager());
-		Game::get()->setQueueManager(new QueueManager(1));
-		Game::get()->setFormationManager(new FormationManager());
+		setSimpleManagers();
 
-		loader.createLoad(saveToLoad);
+		loader.createLoad(saveName);
 		levelBuilder = new LevelBuilder();
 		controls = new Controls(GetSubsystem<Input>());
 		SetupViewport();
-		Game::get()->setPlayersManager(new PlayersManager());
+
 		Game::get()->getPlayersManager()->load(loader.loadPlayers(), loader.loadResources());
 
 		subscribeToUIEvents();
@@ -231,23 +241,20 @@ void Main::load() {
 		inited = true;
 		break;
 	}
-	loadingProgress.inc();
-	hud->updateLoading(loadingProgress.getProgres());
-
+	updateProgres(progres);
 }
 
-void Main::newGame(NewGameForm* form) {
-	switch (newGameProgress.currentStage) {
+void Main::newGame(NewGameForm* form, loading& progres) {
+	switch (progres.currentStage) {
 	case 0:
 		{
 		disposeScene();
-		Game::get()->setCameraManager(new CameraManager());
-		Game::get()->setQueueManager(new QueueManager(1));
+		setSimpleManagers();
 
 		levelBuilder = new LevelBuilder();
 		controls = new Controls(GetSubsystem<Input>());
 		SetupViewport();
-		Game::get()->setPlayersManager(new PlayersManager());
+
 		Game::get()->getPlayersManager()->load(form);
 
 		hud->resetLoading();
@@ -280,8 +287,7 @@ void Main::newGame(NewGameForm* form) {
 		inited = true;
 		break;
 	}
-	newGameProgress.inc();
-	hud->updateLoading(newGameProgress.getProgres());
+	updateProgres(progres);
 }
 
 void Main::changeState(GameState newState) {
@@ -340,7 +346,6 @@ void Main::HandleCloseGame(StringHash eventType, VariantMap& eventData) {
 }
 
 void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
-	//TODO need refactor
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	HudData* hudData = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
 	switch (hudData->getType()) {

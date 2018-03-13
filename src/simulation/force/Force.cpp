@@ -60,55 +60,9 @@ Vector3* Force::formation(Unit* unit) {
 	return new Vector3();
 }
 
-Vector3* Force::cohesion(Unit* unit, std::vector<Unit*>* units) {
-	Vector3* force = new Vector3();
-
-	float k = 0;
-	for (auto neight : *units) {
-		Vector3 diff = *unit->getPosition() - *neight->getPosition();
-		const float sqDistance = diff.LengthSquared();
-		const float minimalDistance = unit->getMinimalDistance() + neight->getMinimalDistance();
-
-		if (sqDistance > minimalDistance * minimalDistance) {
-			const float weight = getWeight(unit, neight);
-			*force += *neight->getPosition() * weight;
-			k += weight;
-		}
-	}
-	if (k > 0) {
-		*force /= k;
-		*force -= *unit->getPosition();
-
-		*force *= boostCoef * cohCoef;
-		force->Normalize();
-	}
-	return force;
-}
-
-Vector3* Force::aligment(Unit* unit, std::vector<Unit*>* units) {
-	Vector3* force = new Vector3();
-
-	float k = 0;
-	for (auto neight : *units) {
-		const float weight = 1;
-		*force += *neight->getVelocity() * weight;
-		k += weight;
-	}
-	if (k > 0) {
-		*force /= k;
-		*force -= *unit->getVelocity();
-
-		*force *= boostCoef * aligmentCoef;
-	}
-	return force;
-}
-
-float Force::getWeight(Unit* unit, Unit* neight) {
-	if (unit->getDbID() == neight->getDbID()) {
-		return 1;
-	} else {
-		return 0.5;
-	}
+Vector3* Force::escapeFromInvalidPosition(Vector3* dir) {
+	*dir *= escapeCoef;
+	return dir;
 }
 
 float Force::calculateCoef(double distance, double minDist) {

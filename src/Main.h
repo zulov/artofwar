@@ -18,12 +18,6 @@
 
 struct NewGameForm;
 
-namespace Urho3D {
-	class Node;
-	class Scene;
-	class Sprite;
-}
-
 
 class Main : public Application
 {
@@ -43,7 +37,6 @@ private:
 
 	void disposeScene();
 
-	void running(double timeStep);
 	void SetWindowTitleAndIcon();
 
 	void subscribeToUIEvents();
@@ -67,10 +60,13 @@ private:
 
 	SelectedInfo* control(float timeStep, SimulationInfo* simulationInfo) const;
 	void changeCamera(int type);
-	void load();
+	void load(String saveName, loading& progres);
 	void save(String name);
+	void running(double timeStep);
 	void createSimulation();
-	void newGame(NewGameForm* form);
+	void setSimpleManagers();
+	void updateProgres(loading& progres);
+	void newGame(NewGameForm* form, loading& progres);
 	void changeState(GameState newState);
 
 	MouseMode useMouseMode_;

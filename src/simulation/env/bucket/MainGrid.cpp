@@ -251,14 +251,14 @@ Vector3* MainGrid::getDirectionFrom(Vector3* position) {
 			escapeBucket = complexData[index].getEscapeBucket();
 		}
 		if (escapeBucket == -1) {
-			return nullptr;
+			return new Vector3;
 		}
 		Vector3* direction = complexData[index].getDirectrionFrom(position, complexData[escapeBucket]);
 
 		direction->Normalize();
 		return direction;
 	}
-	return nullptr;
+	return new Vector3;
 }
 
 Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector3* pos) {
