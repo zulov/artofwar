@@ -120,8 +120,16 @@ void Simulation::applyForce() {
 	}
 }
 
+void Simulation::levelUp(QueueElement* done) {
+	levelsCommandList->add(new UpgradeCommand(
+	                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
+	                                          done->getId(),
+	                                          done->getType()
+	                                         ));
+}
+
 void Simulation::updateBuildingQueues(const float time) {
-	for (Building* build : *buildings) {
+	for (auto build : *buildings) {
 		QueueElement* done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {
@@ -137,27 +145,10 @@ void Simulation::updateBuildingQueues(const float time) {
 				                                            ));
 				break;
 			case ActionType::UNIT_LEVEL:
-				levelsCommandList->add(new UpgradeCommand(
-				                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
-				                                          done->getId(),
-				                                          done->getType()
-				                                         ));
-				break;
 			case ActionType::BUILDING_LEVEL:
-				levelsCommandList->add(new UpgradeCommand(
-				                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
-				                                          done->getId(),
-				                                          done->getType()
-				                                         ));
-				break;
 			case ActionType::UNIT_UPGRADE:
-				levelsCommandList->add(new UpgradeCommand(
-				                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
-				                                          done->getId(),
-				                                          done->getType()
-				                                         ));
+				levelUp(done);
 				break;
-			default: ;
 			}
 
 			delete done;
@@ -171,11 +162,7 @@ void Simulation::updateQueues() {
 	if (done) {
 		switch (done->getType()) {
 		case ActionType::BUILDING_LEVEL:
-			levelsCommandList->add(new UpgradeCommand(
-			                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
-			                                          done->getId(),
-			                                          done->getType()
-			                                         ));
+			levelUp(done);
 			break;
 		}
 		delete done;
@@ -200,7 +187,6 @@ void Simulation::performStateAction() {
 
 void Simulation::handleTimeInFrame(float timeStep) {
 	countFrame();
-
 	moveUnits(maxTimeFrame - (accumulateTime - timeStep));
 	accumulateTime -= maxTimeFrame;
 }
@@ -211,8 +197,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 	if (accumulateTime >= maxTimeFrame) {
 		handleTimeInFrame(timeStep);
 		if (currentFrameNumber % 3 == 0) {
-			levelsCommandList->execute();
-			creationCommandList->execute();
+			executeLists();
 			selfAI();
 			actionCommandList->execute();
 		}
@@ -236,18 +221,21 @@ SimulationInfo* Simulation::update(float timeStep) {
 	return simulationInfo;
 }
 
+void Simulation::executeLists() {
+	levelsCommandList->execute();
+	creationCommandList->execute();
+}
+
 void Simulation::initScene(SceneLoader& loader) {
 	loadEntities(loader);
 	addTestEntities();
-	levelsCommandList->execute();
-	creationCommandList->execute();
+	executeLists();
 }
 
 void Simulation::initScene(NewGameForm* form) {
 	loadEntities(form);
 	addTestEntities();
-	levelsCommandList->execute();
-	creationCommandList->execute();
+	executeLists();
 }
 
 void Simulation::moveUnits(const float timeStep) {

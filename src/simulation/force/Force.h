@@ -18,9 +18,9 @@ public:
 private:
 	float calculateCoef(double distance, double minDist);
 	float boostCoef = 10;
+
 	float sepCoef = 0.15;
 	float aimCoef = 2;
 	float escapeCoef = 200;
-
 	float formationCoef = 1;
 };

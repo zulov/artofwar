@@ -25,6 +25,7 @@ public:
 	Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList);
 	~Simulation();
 	SimulationInfo* update(float timeStep);
+	void executeLists();
 	void initScene(SceneLoader& loader);
 	void initScene(NewGameForm* form);
 
@@ -43,6 +44,7 @@ private:
 	void loadEntities(SceneLoader& loader) const;
 	void countFrame();
 	void applyForce();
+	void levelUp(QueueElement* done);
 	void updateBuildingQueues(float time);
 	void updateQueues();
 	void selfAI();
