@@ -53,8 +53,9 @@ Vector3* Force::destination(Unit* unit) {
 Vector3* Force::formation(Unit* unit) {
 	auto opt = Game::get()->getFormationManager()->getPositionFor(unit);
 	if (opt.has_value()) {
+		float wellFormed = Game::get()->getFormationManager()->getWellFormed(unit);
 		auto force = new Vector3(opt.value() - *unit->getPosition());
-		*force *= formationCoef * boostCoef;
+		*force *= formationCoef * boostCoef * (1 - wellFormed);
 		return force;
 	}
 	return new Vector3();

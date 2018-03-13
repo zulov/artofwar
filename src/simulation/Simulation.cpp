@@ -263,8 +263,7 @@ void Simulation::calculateForces() {
 		*sepPedestrian
 			+= *destForce
 			+= *formation
-			+= *toValidDirection
-		;
+			+= *toValidDirection;
 
 		unit->setAcceleration(sepPedestrian);
 

@@ -40,6 +40,14 @@ void FormationManager::update() {
 	}
 }
 
+float FormationManager::getWellFormed(Unit* unit) {
+	const short formation = unit->getFormation();
+	if (formation >= 0) {
+		return formations[formation]->getWellFormed();
+	}
+	return 1.0;
+}
+
 std::optional<Vector3> FormationManager::getPositionFor(Unit* unit) {
 	const short formation = unit->getFormation();
 	if (formation >= 0) {

@@ -12,6 +12,7 @@ public:
 
 	bool update();
 	Vector3 getPositionFor(short id) const;
+	float getWellFormed() const;
 private:
 	void updateUnits();
 	void updateCenter();
@@ -25,4 +26,5 @@ private:
 	Vector3 center;
 	float sizeA;
 	float sizeB;
+	float notWellformed = 0;
 };
