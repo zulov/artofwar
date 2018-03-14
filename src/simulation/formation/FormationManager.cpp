@@ -12,17 +12,25 @@ FormationManager::~FormationManager() {
 }
 
 void FormationManager::createFormation(std::vector<Physical*>* _units, FormationType _type) {
-	for (; currentlyFree < formations.size(); ++currentlyFree) {
-		if (formations[currentlyFree] == nullptr) {
-			break;
+	if (_type == FormationType::NONE) {
+		for (auto unit : *_units) {
+			static_cast<Unit*>(unit)->setFormation(-1);
+			static_cast<Unit*>(unit)->setPositionInFormation(-11);
 		}
-	}
+	} else {
 
-	if (currentlyFree == formations.size()) {
-		formations.push_back(nullptr);
+		for (; currentlyFree < formations.size(); ++currentlyFree) {
+			if (formations[currentlyFree] == nullptr) {
+				break;
+			}
+		}
+
+		if (currentlyFree == formations.size()) {
+			formations.push_back(nullptr);
+		}
+		formations[currentlyFree] = new Formation(currentlyFree, _units, _type);
+		currentlyFree++;
 	}
-	formations[currentlyFree] = new Formation(currentlyFree, _units, _type);
-	currentlyFree++;
 }
 
 void FormationManager::update() {

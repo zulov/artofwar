@@ -69,11 +69,8 @@ void Formation::updateCenter() {
 			temp += *unit->getPosition();
 		}
 		Vector3 pos = getPositionFor(unit->getPositionInFormation());
-		float sth = (pos - *unit->getPosition()).Length() / 2;
-		std::cout << sth << " ";
-		if (sth > 1) {
-			sth = 1;
-		}
+		float sth = (pos - *unit->getPosition()).LengthSquared();
+
 		notWellformed += sth;
 	}
 	notWellformed /= units.size();
