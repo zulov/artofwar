@@ -90,6 +90,10 @@ void Enviroment::update(std::vector<ResourceEntity*>* resources) {
 	}
 }
 
+Vector2 Enviroment::repulseObstacle(Unit* unit) {
+	return mainGrid.repulseObstacle(unit);
+}
+
 Vector3* Enviroment::validatePosition(Vector3* position) {
 	return mainGrid.getDirectionFrom(position);
 }

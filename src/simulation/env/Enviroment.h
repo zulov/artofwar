@@ -28,6 +28,7 @@ public:
 	void update(std::vector<Building*>* buildings);
 	void update(std::vector<ResourceEntity*>* resources);
 
+	Vector2 repulseObstacle(Unit* unit);
 	Vector3* validatePosition(Vector3* position);
 
 	std::vector<Physical *>* getNeighbours(std::pair<Vector3*, Vector3*>& pair);

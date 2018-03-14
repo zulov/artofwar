@@ -18,7 +18,6 @@ void FormationManager::createFormation(std::vector<Physical*>* _units, Formation
 			static_cast<Unit*>(unit)->setPositionInFormation(-11);
 		}
 	} else {
-
 		for (; currentlyFree < formations.size(); ++currentlyFree) {
 			if (formations[currentlyFree] == nullptr) {
 				break;

@@ -123,6 +123,21 @@ Vector2 MainGrid::getCenter(int index) {
 	return complexData[index].getCenter();
 }
 
+Vector2 MainGrid::repulseObstacle(Unit* unit) {
+	auto index = indexFromPosition(unit->getPosition());
+	Vector2 sum;
+	if (complexData[index].getType() == ObjectType::UNIT
+		&& !(complexData[index].getOccupiedNeightbours().empty())) {
+		for (auto neightbour : complexData[index].getOccupiedNeightbours()) {
+			sum += complexData[neightbour.first].getCenter();
+		}
+		sum /= complexData[index].getOccupiedNeightbours().size();
+		sum -= Vector2(unit->getPosition()->x_, unit->getPosition()->z_);
+
+	}
+	return -sum;
+}
+
 void MainGrid::invalidateCache() {
 	lastStartIdx = -1;
 	lastEndIdx = -1;
@@ -230,10 +245,14 @@ void MainGrid::removeStatic(Static* object) {
 	complexData[index].removeStatic();
 }
 
-Vector3* MainGrid::getDirectionFrom(Vector3* position) {
+int MainGrid::indexFromPosition(Vector3* position) {
 	const short posX = getIndex(position->x_);
 	const short posZ = getIndex(position->z_);
-	const int index = getIndex(posX, posZ);
+	return getIndex(posX, posZ);
+}
+
+Vector3* MainGrid::getDirectionFrom(Vector3* position) {
+	int index = indexFromPosition(position);
 	if (!complexData[index].isUnit()) {
 		int escapeBucket;
 		auto neights = complexData[index].getNeightbours();

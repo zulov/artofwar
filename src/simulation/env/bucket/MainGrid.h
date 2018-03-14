@@ -20,6 +20,7 @@ public:
 	bool validateAdd(const IntVector2& size, Vector3& pos);
 	void addStatic(Static* object);
 	void removeStatic(Static* object);
+	int indexFromPosition(Vector3* position);
 	Vector3* getDirectionFrom(Vector3* position);
 	Vector3* getValidPosition(const IntVector2& size, Vector3* pos);
 	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos) const;
@@ -47,6 +48,7 @@ public:
 	content_info* getContentInfo(const Vector2& from, const Vector2& to, bool checks[], int activePlayer);
 	Vector2& getCenterAt(const IntVector2& cords);
 	Vector2 getCenter(int index);
+	Vector2 repulseObstacle(Unit* unit);
 
 	void invalidateCache();
 
