@@ -12,10 +12,11 @@ FormationManager::~FormationManager() {
 }
 
 void FormationManager::createFormation(std::vector<Physical*>* _units, FormationType _type) {
+	if (_units->empty()) { return; }
 	if (_type == FormationType::NONE) {
 		for (auto unit : *_units) {
 			static_cast<Unit*>(unit)->setFormation(-1);
-			static_cast<Unit*>(unit)->setPositionInFormation(-11);
+			static_cast<Unit*>(unit)->setPositionInFormation(-1);
 		}
 	} else {
 		for (; currentlyFree < formations.size(); ++currentlyFree) {

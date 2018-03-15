@@ -40,9 +40,6 @@ public:
 	bool ifInCache(int startIdx, int end);
 
 	void refreshWayOut(std::vector<int>& toRefresh);
-	void draw_grid_from(int* cameFrom, Image* image);
-	void draw_grid_cost(const float* costSoFar, Image* image);
-	void draw_grid_path(std::vector<int>* path, Image* image);
 	void drawMap(Image* image);
 	content_info* getContentInfo(const Vector2& from, const Vector2& to, bool checks[], int activePlayer);
 	Vector2& getCenterAt(const IntVector2& cords);

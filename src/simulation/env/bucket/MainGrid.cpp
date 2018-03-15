@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <queue>
+#include "DrawGridUtils.h"
 
 
 MainGrid::MainGrid(const short _resolution, const double _size, const bool _debugEnabled): Grid(_resolution, _size,
@@ -338,11 +339,11 @@ void MainGrid::debug(int start, int end) {
 	image->SaveBMP("result/images/" + prefix + "1_grid_map.bmp");
 	//draw_grid_from(came_from, image);
 	//image->SaveBMP("result/images/" + prefix + "2_grid_from.bmp");
-	draw_grid_cost(cost_so_far, image);
+	draw_grid_cost(cost_so_far, image, resolution);
 	image->SaveBMP("result/images/" + prefix + "3_grid_cost.bmp");
 
 	std::vector<int>* path = reconstruct_path(start, end, came_from);
-	draw_grid_path(path, image);
+	draw_grid_path(path, image, resolution);
 
 	image->SaveBMP("result/images/" + prefix + "4_grid_path.bmp");
 
@@ -402,7 +403,6 @@ std::vector<int>* MainGrid::findPath(int startIdx, const Vector3& aim) {
 		} else {
 			end = complexData[end].getNeightbours()[0].first; //TODO obliczyc lepszy
 		}
-
 	}
 
 	lastStartIdx = startIdx;
@@ -476,59 +476,11 @@ void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 
 }
 
-void MainGrid::draw_grid_from(int* cameFrom, Image* image) {
-	uint32_t* data = (uint32_t*)image->GetData();
-	for (int y = 0; y != resolution; ++y) {
-		for (int x = 0; x != resolution; ++x) {
-			int id = getIndex(x, y);
-			if (cameFrom[id] != -1) {
-				IntVector2 cords2 = getCords(cameFrom[id]);
-				int x2 = cords2.x_;
-				int y2 = cords2.y_;
-				int idR = getIndex(resolution - y - 1, x);
-				if (x2 == x + 1) {
-					*(data + idR) -= 0x00003F00;
-				} else if (x2 == x - 1) {
-					*(data + idR) -= 0x00007F00;
-				} else if (y2 == y + 1) {
-					*(data + idR) -= 0x0000BF00;
-				} else if (y2 == y - 1) {
-					*(data + idR) -= 0x0000FF00;
-				}
-			}
-		}
-	}
-}
-
-void MainGrid::draw_grid_cost(const float* costSoFar, Image* image) {
-	uint32_t* data = (uint32_t*)image->GetData();
-
-	for (short y = 0; y != resolution; ++y) {
-		for (short x = 0; x != resolution; ++x) {
-			int id = getIndex(x, y);
-			if (costSoFar[id] != -1) {
-				int idR = getIndex(resolution - y - 1, x);
-				*(data + idR) -= 0x0000007F;
-			}
-		}
-	}
-
-}
-
 inline float MainGrid::heuristic(int from, int to) {
 	IntVector2 a = getCords(from);
 	IntVector2 b = getCords(to);
 
 	return (abs(a.x_ - b.x_) + abs(a.y_ - b.y_)) * fieldSize;
-}
-
-void MainGrid::draw_grid_path(std::vector<int>* path, Image* image) {
-	uint32_t* data = (uint32_t*)image->GetData();
-	for (auto value : *path) {
-		IntVector2 a = getCords(value);
-		int idR = getIndex(resolution - a.y_ - 1, a.x_);
-		*(data + idR) -= 0x0000007F;
-	}
 }
 
 void MainGrid::drawMap(Image* image) {

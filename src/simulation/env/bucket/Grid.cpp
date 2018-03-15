@@ -44,7 +44,7 @@ Grid::~Grid() {
 void Grid::updateGrid(Unit* entity, const char team) {
 	const int index = indexFromPosition(entity->getPosition());
 
-	if (entity->isAlive()) {
+	if (!entity->isAlive()) {
 		removeAt(entity->getBucketIndex(team), entity);
 	} else if (entity->bucketHasChanged(index, team)) {
 		removeAt(entity->getBucketIndex(team), entity);
@@ -119,7 +119,7 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>& pair
 
 	for (short i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
 		for (short j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
-			const int index = i * resolution + j;
+			const int index = getIndex(i, j);
 			std::vector<Unit *>& content = getContentAt(index); //TODO czy tu ampersentma byc?
 			tempSelected->insert(tempSelected->end(), content.begin(), content.end());
 		}
