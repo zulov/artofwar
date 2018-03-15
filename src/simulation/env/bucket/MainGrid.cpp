@@ -56,10 +56,9 @@ MainGrid::~MainGrid() {
 void MainGrid::prepareGridToFind() {
 	for (int i = 0; i < resolution * resolution; ++i) {
 		updateNeighbors(i);
-
-
 	}
 	tempNeighbour->clear();
+	tempNeighbour2->clear();
 	came_from = new int[resolution * resolution];
 	cost_so_far = new float[resolution * resolution];
 	std::fill_n(came_from, resolution * resolution, -1);
@@ -314,7 +313,7 @@ void MainGrid::updateNeighbors(const int current) {
 					if (complexData[index].isUnit()) {
 						double costD = cost(current, index);
 						tempNeighbour->push_back(std::pair<int, float>(index, costD));
-					} else if (!complexData[current].isUnit()) {
+					} else if (!complexData[index].isUnit()) {
 						double costD = cost(current, index);
 						tempNeighbour2->push_back(std::pair<int, float>(index, costD));
 					}

@@ -91,10 +91,14 @@ bool ComplexBucketData::isUnit() {
 
 void ComplexBucketData::setOccupiedNeightbours(std::vector<std::pair<int, float>>* _occupiedNeightbours) {
 	occupiedNeightbours.clear();
+	if (_occupiedNeightbours->size() > 0) {
+		std::cout << (int)type << std::endl;;
+	}
 	occupiedNeightbours.insert(occupiedNeightbours.end(), _occupiedNeightbours->begin(), _occupiedNeightbours->end());
 }
 
-void ComplexBucketData::setEscapeThrought(int val) {//TODO uzyc tego
+void ComplexBucketData::setEscapeThrought(int val) {
+	//TODO uzyc tego
 	escapeBucketIndex = val;
 }
 
