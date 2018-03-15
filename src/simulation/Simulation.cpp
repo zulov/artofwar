@@ -271,6 +271,7 @@ void Simulation::calculateForces() {
 		unit->setAcceleration(sepPedestrian);
 
 		delete sepPedestrian;
+		delete sepObstacle;
 		delete destForce;
 		delete formation;
 		delete toValidDirection;

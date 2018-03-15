@@ -119,15 +119,16 @@ Vector2& MainGrid::getCenterAt(const IntVector2& cords) {
 	return complexData[index].getCenter();
 }
 
-Vector2 MainGrid::getCenter(int index) {
+Vector2& MainGrid::getCenter(int index) {
 	return complexData[index].getCenter();
 }
 
 Vector2 MainGrid::repulseObstacle(Unit* unit) {
 	auto index = indexFromPosition(unit->getPosition());
+
 	Vector2 sum;
 	if (complexData[index].getType() == ObjectType::UNIT
-		&& !(complexData[index].getOccupiedNeightbours().empty())) {
+		&& !complexData[index].getOccupiedNeightbours().empty()) {
 		for (auto neightbour : complexData[index].getOccupiedNeightbours()) {
 			sum += complexData[neightbour.first].getCenter();
 		}
@@ -243,12 +244,6 @@ void MainGrid::removeStatic(Static* object) {
 	//TODO poprawic
 	int index = object->getBucketIndex(0);
 	complexData[index].removeStatic();
-}
-
-int MainGrid::indexFromPosition(Vector3* position) {
-	const short posX = getIndex(position->x_);
-	const short posZ = getIndex(position->z_);
-	return getIndex(posX, posZ);
 }
 
 Vector3* MainGrid::getDirectionFrom(Vector3* position) {

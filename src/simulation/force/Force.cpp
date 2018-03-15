@@ -8,7 +8,7 @@ Force::~Force() = default;
 
 Vector3* Force::separationObstacle(Unit* unit, const Vector2& repulse) {
 	Vector3* force = new Vector3(repulse.x_, 0, repulse.y_);
-
+	
 	*force *= boostCoef * sepCoef;
 	return force;
 }

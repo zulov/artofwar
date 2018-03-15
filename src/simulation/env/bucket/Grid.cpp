@@ -20,7 +20,7 @@ Grid::Grid(short _resolution, float _size, bool _debugEnabled) {
 		levelsCache[i] = getEnvIndexs((double)MAX_SEP_DIST / RES_SEP_DIST * i);
 	}
 
-	for (auto & iterator : iterators) {
+	for (auto& iterator : iterators) {
 		iterator = new BucketIterator();
 	}
 	buckets = new Bucket[resolution * resolution];
@@ -28,11 +28,11 @@ Grid::Grid(short _resolution, float _size, bool _debugEnabled) {
 }
 
 Grid::~Grid() {
-	for (auto &iterator : iterators) {
+	for (auto& iterator : iterators) {
 		delete iterator;
 		iterator = nullptr;
 	}
-	for (auto &cache : levelsCache)  {
+	for (auto& cache : levelsCache) {
 		delete cache;
 		cache = nullptr;
 	}
@@ -42,11 +42,9 @@ Grid::~Grid() {
 }
 
 void Grid::updateGrid(Unit* entity, const char team) {
-	Vector3* pos = entity->getPosition();
-	const short posX = getIndex(pos->x_);
-	const short posZ = getIndex(pos->z_);
-	const int index = getIndex(posX, posZ);
-	if (!entity->isAlive()) {
+	const int index = indexFromPosition(entity->getPosition());
+
+	if (entity->isAlive()) {
 		removeAt(entity->getBucketIndex(team), entity);
 	} else if (entity->bucketHasChanged(index, team)) {
 		removeAt(entity->getBucketIndex(team), entity);
@@ -61,7 +59,7 @@ std::vector<short>* Grid::getEnvIndexsFromCache(double dist) {
 	return levelsCache[index];
 }
 
-short Grid::getIndex(double value) const {
+short Grid::getIndex(float value) const {
 	if (value < 0) {
 		short index = (short)(value * invFieldSize) + halfResolution - 1;
 		if (index >= 0) {
@@ -73,12 +71,11 @@ short Grid::getIndex(double value) const {
 	if (index < resolution) {
 		return index;
 	}
-	return resolution - 1;//TODO czy aby napewno?
+	return resolution - 1; //TODO czy aby napewno?
 }
 
 BucketIterator* Grid::getArrayNeight(Unit* entity, double radius, short thread) {
-	Vector3* pos = entity->getPosition();
-	int index = getIndex(getIndex(pos->x_), getIndex(pos->z_));
+	const int index = indexFromPosition(entity->getPosition());
 
 	BucketIterator* bucketIterator = iterators[thread];
 	bucketIterator->init(getEnvIndexsFromCache(radius), index, this);
@@ -123,7 +120,7 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>& pair
 	for (short i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
 		for (short j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
 			const int index = i * resolution + j;
-			std::vector<Unit *>& content = getContentAt(index);//TODO czy tu ampersentma byc?
+			std::vector<Unit *>& content = getContentAt(index); //TODO czy tu ampersentma byc?
 			tempSelected->insert(tempSelected->end(), content.begin(), content.end());
 		}
 	}
@@ -132,6 +129,12 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>& pair
 
 int Grid::getIndex(short posX, short posZ) {
 	return posX * resolution + posZ;
+}
+
+int Grid::indexFromPosition(Vector3* position) {
+	const short posX = getIndex(position->x_);
+	const short posZ = getIndex(position->z_);
+	return getIndex(posX, posZ);
 }
 
 bool Grid::fieldInCircle(short i, short j, double radius) {

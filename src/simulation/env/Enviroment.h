@@ -44,7 +44,7 @@ public:
 	content_info* getContentInfo(Vector2 from, Vector2 to, bool checks[], int activePlayer);
 	Vector3 getValidPosForCamera(float percentX, float percentY, const Vector3& pos, float min);
 	Vector3* getValidPosition(const IntVector2& size, const IntVector2& bucketCords);
-	Vector2 getCenter(int index);
+	Vector2& getCenter(int index);
 	void invalidateCache();
 private:
 	MainGrid mainGrid;

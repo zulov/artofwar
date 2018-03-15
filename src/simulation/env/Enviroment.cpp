@@ -137,7 +137,7 @@ Vector3* Enviroment::getValidPosition(const IntVector2& size, const IntVector2& 
 	return getValidPosition(size, new Vector3(center.x_, 0, center.y_));
 }
 
-Vector2 Enviroment::getCenter(int index) {
+Vector2& Enviroment::getCenter(int index) {
 	return mainGrid.getCenter(index);
 }
 

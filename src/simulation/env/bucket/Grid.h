@@ -13,13 +13,14 @@ public:
 
 	void updateGrid(Unit* entity, char team);
 	std::vector<Unit*>& getContentAt(int index);
-	int &getSizeAt(int index);
+	int& getSizeAt(int index);
 	std::vector<short>* getEnvIndexsFromCache(double dist);
 	std::vector<Physical *>* getArrayNeight(std::pair<Vector3*, Vector3*>& pair);
 	BucketIterator* getArrayNeight(Unit* entity, double radius, short thread);
 	int getIndex(short posX, short posZ);
 protected:
-	short getIndex(double value) const;
+	int indexFromPosition(Vector3* position);
+	short getIndex(float value) const;
 	bool inRange(int index);
 	short resolution;
 	float fieldSize;
