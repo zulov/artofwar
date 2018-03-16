@@ -55,7 +55,7 @@ MainMenuLoadPanel::~MainMenuLoadPanel() = default;
 void MainMenuLoadPanel::HandleLoadClick(StringHash eventType, VariantMap& eventData) {
 	Button* element = static_cast<Button*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	Text* text = static_cast<Text*>(element->GetChild(0));
-	std::cout<<text->GetText().CString();
+
 	loadButton->SetVar("LoadFileName", text->GetText());
 	action(text->GetText());
 }

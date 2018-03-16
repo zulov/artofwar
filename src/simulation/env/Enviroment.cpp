@@ -169,7 +169,7 @@ content_info* Enviroment::getContentInfo(Vector2 from, Vector2 to, bool checks[]
 
 	to.x_ = to.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
 	to.y_ = to.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE / 2;
-	//std::cout << xFrom << "-" << xTo << "$" << yFrom << "-" << yTo << std::endl;
+
 	return mainGrid.getContentInfo(from, to, checks, activePlayer);
 
 }

@@ -8,7 +8,15 @@ Force::~Force() = default;
 
 Vector3* Force::separationObstacle(Unit* unit, const Vector2& repulse) {
 	Vector3* force = new Vector3(repulse.x_, 0, repulse.y_);
-	
+	if (repulse == Vector2::ZERO) {
+		return force;
+	}
+	const float sqDistance = force->LengthSquared();
+	const float distance = sqrt(sqDistance);
+	const float minimalDistance = unit->getMinimalDistance()*2;
+	const float coef = calculateCoef(distance, minimalDistance);
+
+	*force *= coef / distance;
 	*force *= boostCoef * sepCoef;
 	return force;
 }
