@@ -6,8 +6,8 @@ DummyAim::DummyAim() = default;
 
 DummyAim::~DummyAim() = default;
 
-Urho3D::Vector3* DummyAim::getDirection(Unit* unit) {
-	return new Urho3D::Vector3();
+Urho3D::Vector2 DummyAim::getDirection(Unit* unit) {
+	return Urho3D::Vector2();
 }
 
 bool DummyAim::ifReach(Unit* unit) {

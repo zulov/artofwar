@@ -13,16 +13,13 @@ TargetAim::TargetAim(std::vector<int>& _path) {
 
 TargetAim::~TargetAim() = default;
 
-Urho3D::Vector3* TargetAim::getDirection(Unit* unit) {
+Urho3D::Vector2 TargetAim::getDirection(Unit* unit) {
 	Vector2 position = Game::get()->getEnviroment()->getCenter(path[current]);
 	//TODO storzyc currentPosition i zmienaic przy przejsciu
-	Vector3* dir = new Vector3(
-	                           position.x_ - unit->getPosition()->x_,
-	                           0,
-	                           position.y_ - unit->getPosition()->z_
-	                          );
-
-	return dir;
+	return Vector2(
+	               position.x_ - unit->getPosition()->x_,
+	               position.y_ - unit->getPosition()->z_
+	              );
 }
 
 bool TargetAim::ifReach(Unit* unit) {

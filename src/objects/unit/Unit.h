@@ -40,8 +40,8 @@ public:
 	float getHealthPercent() override;
 	float getMaxSeparationDistance();
 	float getMinimalDistance();
-	Vector3* getVelocity();
-	Vector3* getDestination(double boostCoef, double aimCoef);
+	Vector2 forceGo(double boostCoef, double aimCoef, Vector2& force);
+	Vector2 getDestination(double boostCoef, double aimCoef);
 
 
 	void absorbAttack(double attackCoef) override;
@@ -82,8 +82,8 @@ private:
 	void attackIfCloseEnough(double& distance, Unit* closest);
 	void collectIfCloseEnough(double distance, ResourceEntity* closest);
 
-	Vector3 acceleration;
-	Vector3* velocity;
+	Vector2 acceleration;
+	Vector2 velocity;
 	Aims aims;
 
 	ResourceEntity* resource;

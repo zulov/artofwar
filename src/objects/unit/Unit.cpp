@@ -18,7 +18,6 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 
 	initBillbords();
 
-	velocity = new Vector3();
 	toResource = new Vector3();
 	resource = nullptr;
 
@@ -41,7 +40,6 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 }
 
 Unit::~Unit() {
-	delete velocity;
 	delete toResource;
 }
 
@@ -93,50 +91,54 @@ float Unit::getMinimalDistance() {
 
 void Unit::move(double timeStep) {
 	if (state != UnitStateType::STOP) {
-		*position += *velocity * timeStep;
+		position->x_ += velocity.x_ * timeStep;
+		position->z_ += velocity.y_ * timeStep;
 		node->SetPosition(*position);
 		//node->Translate((*velocity) * timeStep, TS_WORLD);
 	}
 }
 
 void Unit::setAcceleration(Vector2& _acceleration) {
-	acceleration.x_ = _acceleration.x_;
-	acceleration.z_ = _acceleration.y_;
+	acceleration = _acceleration;
+	if (_acceleration.LengthSquared() > 10000) {
+		acceleration.Normalize();
+		acceleration *= 100;
+	}
 }
 
 float Unit::getMaxSeparationDistance() {
 	return maxSeparationDistance;
 }
 
-Vector3* Unit::getVelocity() {
-	return velocity;
+
+Vector2 Unit::forceGo(double boostCoef, double aimCoef, Vector2& force) {
+	force.Normalize();
+	force *= boostCoef;
+	force -= velocity;
+	force /= 0.5;
+	force *= mass;
+	force *= aimCoef;
+	return force;
 }
 
-Vector3* Unit::getDestination(double boostCoef, double aimCoef) {
+Vector2 Unit::getDestination(double boostCoef, double aimCoef) {
+	Vector2 force;
 	if (aims.hasAim()) {
 		aims.clearAimsIfExpired();
-		auto dir = aims.getDirection(this);
-		Vector3* force = nullptr;
-		if (dir == nullptr) {
-			if (!toResource) {
-				force = new Vector3(*toResource);
-			}
-		} else {
-			force = dir;
-		}
-
-		if (force) {
-			force->Normalize();
-			*force *= boostCoef;
-			*force -= *velocity;
-			*force /= 0.5;
-			*force *= mass;
-			*force *= aimCoef;
-			return force;
+		auto dirOpt = aims.getDirection(this);
+		if (dirOpt.has_value()) {
+			force = dirOpt.value();
+			forceGo(boostCoef, aimCoef, force);
+		} else if (toResource) {
+			force = Vector2(
+			                toResource->x_,
+			                toResource->z_
+			               );
+			forceGo(boostCoef, aimCoef, force);
 		}
 	}
 
-	return new Vector3();
+	return force;
 }
 
 void Unit::absorbAttack(double attackCoef) {
@@ -220,7 +222,7 @@ void Unit::toCollect(ResourceEntity* _resource) {
 }
 
 void Unit::updateHeight(double y, double timeStep) {
-	*velocity *= 1 + (position->y_ - y) * mass * timeStep;
+	velocity *= 1 + (position->y_ - y) * mass * timeStep;
 	position->y_ = y;
 }
 
@@ -277,8 +279,8 @@ std::string Unit::getValues(int precision) {
 	const int position_x = position->x_ * precision;
 	const int position_z = position->z_ * precision;
 	const int state = static_cast<int>(this->state);
-	const int velocity_x = velocity->x_ * precision;
-	const int velocity_z = velocity->z_ * precision;
+	const int velocity_x = velocity.x_ * precision;
+	const int velocity_z = velocity.y_ * precision;
 	return Physical::getValues(precision)
 		+ to_string(position_x) + "," +
 		to_string(position_z) + "," +
@@ -333,8 +335,7 @@ bool Unit::hasResource() {
 void Unit::load(dbload_unit* unit) {
 	state = UnitStateType(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
 	//aimIndex =unit->aim_i;
-	velocity->x_ = unit->vel_x;
-	velocity->z_ = unit->vel_z;
+	velocity = Vector2(unit->vel_x, unit->vel_z);
 	//alive = unit->alive;
 	hpCoef = maxHpCoef * unit->hp_coef;
 }
@@ -375,24 +376,24 @@ std::string Unit::getColumns() {
 
 void Unit::applyForce(double timeStep) {
 	if (state == UnitStateType::ATTACK) {
-		*velocity = Vector3::ZERO;
+		velocity = Vector2::ZERO;
 		return;
 	}
 
-	*velocity *= 0.95f; //TODO to dac jaki wspolczynnik tarcia terenu
-	*velocity += acceleration * (timeStep / mass);
-	double velLenght = velocity->LengthSquared();
+	velocity *= 0.95f; //TODO to dac jaki wspolczynnik tarcia terenu
+	velocity += acceleration * (timeStep / mass);
+	double velLenght = velocity.LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
 		StateManager::get()->changeState(this, UnitStateType::STOP);
 	} else {
 		if (velLenght > maxSpeed * maxSpeed) {
-			velocity->Normalize();
-			*velocity *= maxSpeed;
+			velocity.Normalize();
+			velocity *= maxSpeed;
 		}
 		StateManager::get()->changeState(this, UnitStateType::MOVE);
 		if (rotatable) {
-			rotation.x_ = velocity->x_;
-			rotation.z_ = velocity->z_;
+			rotation.x_ = velocity.x_;
+			rotation.z_ = velocity.y_;
 			node->SetDirection(rotation);
 		}
 	}

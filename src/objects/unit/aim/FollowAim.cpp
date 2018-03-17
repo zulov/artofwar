@@ -9,8 +9,11 @@ FollowAim::FollowAim(Physical* _physical) {
 
 FollowAim::~FollowAim() = default;
 
-Urho3D::Vector3* FollowAim::getDirection(Unit* unit) {
-	return new Vector3(*physical->getPosition() - *unit->getPosition());
+Urho3D::Vector2 FollowAim::getDirection(Unit* unit) {
+	return Vector2(
+	               physical->getPosition()->x_ - unit->getPosition()->x_,
+	               physical->getPosition()->z_ - unit->getPosition()->z_
+	              );
 }
 
 bool FollowAim::ifReach(Unit* unit) {

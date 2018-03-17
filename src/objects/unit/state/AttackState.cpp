@@ -16,7 +16,7 @@ AttackState::AttackState() {
 AttackState::~AttackState() = default;
 
 void AttackState::onStart(Unit* unit) {
-	*unit->velocity = Urho3D::Vector3::ZERO;
+	unit->velocity = Urho3D::Vector2::ZERO;
 }
 
 void AttackState::onStart(Unit* unit, ActionParameter& parameter) {
@@ -30,7 +30,7 @@ void AttackState::onEnd(Unit* unit) {
 void AttackState::execute(Unit* unit) {
 	State::execute(unit);
 	if (unit->enemyToAttack != nullptr && unit->enemyToAttack->isAlive()) {
-		*unit->velocity = Urho3D::Vector3::ZERO;
+		unit->velocity = Urho3D::Vector2::ZERO;
 		unit->enemyToAttack->absorbAttack(unit->attackCoef);
 	} else {
 		unit->enemyToAttack = nullptr;

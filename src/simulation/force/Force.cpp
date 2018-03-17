@@ -56,9 +56,7 @@ void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* u
 
 void Force::destination(Vector2& newForce, Unit* unit) const {
 	const auto force = unit->getDestination(boostCoef, aimCoef);
-	newForce.x_ += force->x_;
-	newForce.y_ += force->z_;
-	delete force;
+	newForce+=force;
 }
 
 void Force::formation(Vector2& newForce, Unit* unit) const {

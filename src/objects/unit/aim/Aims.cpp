@@ -2,6 +2,7 @@
 #include "DummyAim.h"
 #include "TargetAim.h"
 #include "utils.h"
+#include <optional>
 
 
 Aims::Aims() {
@@ -12,8 +13,8 @@ Aims::~Aims() {
 	clear_vector(aims);
 }
 
-Urho3D::Vector3* Aims::getDirection(Unit* unit) {
-	if (current >= aims.size()) { return nullptr; }
+std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) {
+	if (current >= aims.size()) { return std::nullopt; }
 	return aims[current]->getDirection(unit);
 }
 

@@ -2,6 +2,7 @@
 #include "Aim.h"
 #include <Urho3D/Math/Vector3.h>
 #include <vector>
+#include <optional>
 
 
 class Entity;
@@ -11,7 +12,7 @@ class Aims
 public:
 	Aims();
 	~Aims();
-	Urho3D::Vector3* getDirection(Unit* unit);
+	std::optional<Urho3D::Vector2> getDirection(Unit* unit);
 	void clearAimsIfExpired();
 	bool ifReach(Unit* unit);
 	bool hasAim();
