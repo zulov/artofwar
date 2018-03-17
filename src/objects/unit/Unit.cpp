@@ -99,9 +99,9 @@ void Unit::move(double timeStep) {
 	}
 }
 
-void Unit::setAcceleration(Vector3* _acceleration) {
-	acceleration.x_ = _acceleration->x_;
-	acceleration.z_ = _acceleration->z_;
+void Unit::setAcceleration(Vector2& _acceleration) {
+	acceleration.x_ = _acceleration.x_;
+	acceleration.z_ = _acceleration.y_;
 }
 
 float Unit::getMaxSeparationDistance() {

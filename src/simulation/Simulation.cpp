@@ -253,27 +253,17 @@ void Simulation::moveUnitsAndCheck(const float timeStep) {
 
 void Simulation::calculateForces() {
 	for (auto unit : *units) {
+		Vector2 newForce;
+		
 		std::vector<Unit*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 		Vector2 repulse = enviroment->repulseObstacle(unit);
 
-		Vector3* sepPedestrian = force.separationUnits(unit, neighbours);
-		Vector3* sepObstacle = force.separationObstacle(unit, repulse);
-		Vector3* destForce = force.destination(unit);
-		Vector3* formation = force.formation(unit);
-		Vector3* toValidDirection = force.escapeFromInvalidPosition(enviroment->validatePosition(unit->getPosition()));
+		force.separationUnits(newForce, unit, neighbours);
+		force.separationObstacle(newForce, unit, repulse);
+		force.destination(newForce, unit);
+		force.formation(newForce, unit);
+		force.escapeFromInvalidPosition(newForce, enviroment->validatePosition(unit->getPosition()));
 
-		*sepPedestrian
-			+= *sepObstacle
-			+= *destForce
-			+= *formation
-			+= *toValidDirection;
-
-		unit->setAcceleration(sepPedestrian);
-
-		delete sepPedestrian;
-		delete sepObstacle;
-		delete destForce;
-		delete formation;
-		delete toValidDirection;
+		unit->setAcceleration(newForce);
 	}
 }

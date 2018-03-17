@@ -33,7 +33,7 @@ public:
 	void checkAim();
 	void move(double timeStep);
 	void applyForce(double timeStep);
-	void setAcceleration(Vector3* _acceleration);
+	void setAcceleration(Vector2& _acceleration);
 	int getDbID() override;
 	int getLevel() override;
 	float getHealthBarSize() override;

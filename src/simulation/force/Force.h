@@ -9,11 +9,11 @@ public:
 	Force();
 	~Force();
 
-	Vector3* separationObstacle(Unit* unit, const Vector2& repulse);
-	Vector3* separationUnits(Unit* unit, std::vector<Unit *>* units);
-	Vector3* destination(Unit* unit);
-	Vector3* formation(Unit* unit);
-	Vector3* escapeFromInvalidPosition(Vector3* dir);
+	void separationObstacle(Vector2& newForce, Unit* unit, const Vector2& repulse);
+	void separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit *>* units);
+	void destination(Vector2& newForce, Unit* unit);
+	void formation(Vector2& newForce, Unit* unit);
+	void escapeFromInvalidPosition(Vector2& newForce, Vector3* dir);
 
 private:
 	float calculateCoef(double distance, double minDist);
