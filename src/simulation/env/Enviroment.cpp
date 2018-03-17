@@ -23,11 +23,11 @@ Enviroment::~Enviroment() {
 	delete neights2;
 }
 
-std::vector<Unit*>* Enviroment::getNeighbours(Unit* unit, const double radius) {
+std::vector<Unit*>* Enviroment::getNeighbours(Unit* unit, const float radius) {
 	return getNeighbours(unit, mainGrid, radius);
 }
 
-std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, const double radius, const int team,
+std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, const float radius, const int team,
                                                       const OperatorType operatorType) {
 	switch (operatorType) {
 	case EQUAL:
@@ -47,16 +47,16 @@ std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, const double r
 	}
 }
 
-std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, double radius) {
+std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, float radius) {
 	neights->clear();
 
-	double sqSeparationDistance = radius * radius;
+	float sqSeparationDistance = radius * radius;
 	Vector3* unitPosition = unit->getPosition();
 	BucketIterator* bucketIterator = bucketGrid.getArrayNeight(unit, radius, 0);
 	while (Unit* neight = bucketIterator->next()) {
 		if (unit == neight) { continue; }
 
-		const double sqDistance = (*unitPosition - *neight->getPosition()).LengthSquared();
+		const float sqDistance = (*unitPosition - *neight->getPosition()).LengthSquared();
 
 		if (sqDistance < sqSeparationDistance) {
 			neights->push_back(neight);

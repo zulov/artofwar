@@ -12,7 +12,7 @@ public:
 	void createFormation(std::vector<Physical*>* _units, FormationType _type = FormationType::SQUERE);
 	void update();
 	float getWellFormed(Unit* unit);
-	std::optional<Vector3> getPositionFor(Unit* unit);
+	std::optional<Vector2> getPositionFor(Unit* unit);
 private:
 	std::vector<Formation*> formations;
 	int currentlyFree = 0;

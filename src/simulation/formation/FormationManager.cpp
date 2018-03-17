@@ -56,7 +56,7 @@ float FormationManager::getWellFormed(Unit* unit) {
 	return 1.0;
 }
 
-std::optional<Vector3> FormationManager::getPositionFor(Unit* unit) {
+std::optional<Vector2> FormationManager::getPositionFor(Unit* unit) {
 	const short formation = unit->getFormation();
 	if (formation >= 0) {
 		return formations[formation]->getPositionFor(unit->getPositionInFormation());

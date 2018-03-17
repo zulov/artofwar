@@ -11,7 +11,7 @@ public:
 	~Formation();
 
 	bool update();
-	Vector3 getPositionFor(short id) const;
+	Vector2 getPositionFor(short id) const;
 	float getWellFormed() const;
 private:
 	void updateUnits();
@@ -23,7 +23,7 @@ private:
 	float sparsity = 2;
 	std::vector<Unit*> units;
 	FormationType type;
-	Vector3 center;
+	Vector2 center;
 	float sizeA;
 	float sizeB;
 	float notWellformed = 0;

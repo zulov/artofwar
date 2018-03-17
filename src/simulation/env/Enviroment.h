@@ -19,10 +19,10 @@ public:
 	Enviroment(Terrain* _terrian);
 	~Enviroment();
 
-	std::vector<Unit *>* getNeighbours(Unit* unit, double radius);
-	std::vector<Unit *>* getNeighboursFromTeam(Unit* unit, double radius, int team, OperatorType operatorType);
+	std::vector<Unit *>* getNeighbours(Unit* unit, float radius);
+	std::vector<Unit *>* getNeighboursFromTeam(Unit* unit, float radius, int team, OperatorType operatorType);
 
-	std::vector<Unit *>* getNeighbours(Unit* unit, Grid& grid, double radius);
+	std::vector<Unit *>* getNeighbours(Unit* unit, Grid& grid, float radius);
 
 	void update(std::vector<Unit*>* units);
 	void update(std::vector<Building*>* buildings);

@@ -21,7 +21,7 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 		unit->setFormation(id);
 		unit->setPositionInFormation(k++);
 	}
-	center = Vector3::ZERO;
+	center = Vector2::ZERO;
 	updateCenter();
 }
 
@@ -37,11 +37,11 @@ bool Formation::update() {
 	return false;
 }
 
-Vector3 Formation::getPositionFor(short id) const {
+Vector2 Formation::getPositionFor(short id) const {
 	int column = id % sideA;
 	int row = id / sideA;
 
-	return center - Vector3(column * sparsity - sizeA / 2, 0, row * sparsity - sizeB / 2);
+	return center - Vector2(column * sparsity - sizeA / 2, row * sparsity - sizeB / 2);
 }
 
 float Formation::getWellFormed() const {
@@ -61,12 +61,13 @@ void Formation::updateUnits() {
 
 void Formation::updateCenter() {
 	//TODO need optimzation
-	Vector3 temp = Vector3::ZERO;
+	Vector2 temp = Vector2::ZERO;
 
 	notWellformed = 0;
 	for (auto unit : units) {
 		if (unit->getPositionInFormation() < sideA * sideB) {
-			temp += *unit->getPosition();
+			temp.x_ += unit->getPosition()->x_;
+			temp.y_ += unit->getPosition()->z_;
 		}
 		Vector3 pos = getPositionFor(unit->getPositionInFormation());
 		float sth = (pos - *unit->getPosition()).LengthSquared();

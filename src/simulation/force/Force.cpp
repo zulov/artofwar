@@ -30,7 +30,10 @@ void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* u
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
-		Vector3 diff = *unit->getPosition() - *neight->getPosition();
+		Vector2 diff(
+		             unit->getPosition()->x_ - neight->getPosition()->x_,
+		             unit->getPosition()->z_ - neight->getPosition()->z_
+		            );
 		const float sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist) { continue; }
 		if (sqDistance == 0) {
@@ -46,8 +49,7 @@ void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* u
 		const float coef = calculateCoef(distance, minimalDistance);
 
 		diff *= coef / distance;
-		force.x_ = diff.x_;
-		force.y_ = diff.z_;
+		force = diff;
 	}
 
 	force *= boostCoef * sepCoef;
@@ -56,16 +58,19 @@ void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* u
 
 void Force::destination(Vector2& newForce, Unit* unit) const {
 	const auto force = unit->getDestination(boostCoef, aimCoef);
-	newForce+=force;
+	newForce += force;
 }
 
 void Force::formation(Vector2& newForce, Unit* unit) const {
 	auto opt = Game::get()->getFormationManager()->getPositionFor(unit);
 	if (opt.has_value()) {
 		const float wellFormed = Game::get()->getFormationManager()->getWellFormed(unit);
-		const auto force = Vector3(opt.value() - *unit->getPosition()) * formationCoef * boostCoef * (1 - wellFormed);
-		newForce.x_ += force.x_;
-		newForce.y_ += force.z_;
+		auto force = Vector2(
+		                     opt.value().x_ - unit->getPosition()->x_,
+		                     opt.value().y_ - unit->getPosition()->z_
+		                    );
+		force *= formationCoef * boostCoef * (1 - wellFormed);
+		newForce += force;
 	}
 }
 
