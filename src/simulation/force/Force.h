@@ -11,12 +11,12 @@ public:
 
 	void separationObstacle(Vector2& newForce, Unit* unit, const Vector2& repulse);
 	void separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit *>* units);
-	void destination(Vector2& newForce, Unit* unit);
-	void formation(Vector2& newForce, Unit* unit);
-	void escapeFromInvalidPosition(Vector2& newForce, Vector3* dir);
+	void destination(Vector2& newForce, Unit* unit) const;
+	void formation(Vector2& newForce, Unit* unit) const;
+	void escapeFromInvalidPosition(Vector2& newForce, Vector3* dir) const;
 
 private:
-	float calculateCoef(double distance, double minDist);
+	float calculateCoef(float distance, float minDist) const;
 	float boostCoef = 10;
 
 	float sepCoef = 0.15;

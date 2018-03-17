@@ -74,6 +74,7 @@ void Formation::updateCenter() {
 		notWellformed += sth;
 	}
 	notWellformed /= units.size();
+
 	temp /= Min(units.size(), sideA * sideB);
 	center = temp;
 }
