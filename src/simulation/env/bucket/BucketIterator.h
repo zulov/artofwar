@@ -3,7 +3,6 @@
 #include <vector>
 
 
-
 class Grid;
 
 class BucketIterator
@@ -11,8 +10,9 @@ class BucketIterator
 public:
 	BucketIterator();
 	~BucketIterator();
+	BucketIterator( const BucketIterator & fOsoba );
 	Unit* next();
-	void init(std::vector<short>* _levels, int _center, Grid * _bucketGrid);
+	void init(std::vector<short>* _levels, int _center, Grid* _bucketGrid);
 private:
 	short index = 0;
 	short secondIndex = 0;
@@ -22,6 +22,5 @@ private:
 	int center;
 
 	std::vector<Unit *>* currentContent{};
-	Grid * bucketGrid;
-
+	Grid* bucketGrid;
 };

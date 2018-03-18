@@ -17,12 +17,12 @@ public:
 
 	void prepareGridToFind();
 	bool validateAdd(Static* object);
-	bool validateAdd(const IntVector2& size, Vector3& pos);
+	bool validateAdd(const IntVector2& size, Vector2& pos);
 	void addStatic(Static* object);
 	void removeStatic(Static* object);
 	Vector3* getDirectionFrom(Vector3* position);
-	Vector3* getValidPosition(const IntVector2& size, Vector3* pos);
-	IntVector2 getBucketCords(const IntVector2& size, Vector3* pos) const;
+	Vector3* getValidPosition(const IntVector2& size, Vector2& pos);
+	IntVector2 getBucketCords(const IntVector2& size, Vector2& pos) const;
 	inline float heuristic(int from, int to);
 	IntVector2 getCords(int index);
 
@@ -36,7 +36,7 @@ public:
 
 	std::vector<int>* findPath(IntVector2& startV, IntVector2& goalV);
 	std::vector<int>* findPath(int startIdx, int endIdx, double min, double max);
-	std::vector<int>* findPath(int startIdx, const Vector3& aim);
+	std::vector<int>* findPath(int startIdx, const Vector2& aim);
 	bool ifInCache(int startIdx, int end);
 
 	void refreshWayOut(std::vector<int>& toRefresh);

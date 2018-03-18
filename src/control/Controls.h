@@ -65,7 +65,7 @@ private:
 
 	void clickDownLeft();
 	void clickDownRight();
-	void createBuilding(Vector3& pos);
+	void createBuilding(Vector2& pos);
 
 	void leftClick(Physical* clicked, Vector3& hitPos);
 	void leftClickBuild(Physical* clicked, Vector3& hitPos);

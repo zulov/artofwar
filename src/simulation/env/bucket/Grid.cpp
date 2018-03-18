@@ -8,30 +8,19 @@
 #include <ostream>
 
 
-Grid::Grid(short _resolution, float _size, bool _debugEnabled) {
-	resolution = _resolution;
-	halfResolution = resolution / 2;
-	size = _size;
-	fieldSize = size / resolution;
-	invFieldSize = resolution / size;
-	debugEnabled = _debugEnabled;
+Grid::Grid(short _resolution, float _size, bool _debugEnabled): resolution(_resolution),
+	size(_size), fieldSize(_size / _resolution), debugEnabled(_debugEnabled), halfResolution(_resolution / 2),
+	invFieldSize(_resolution / _size) {
 
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((double)MAX_SEP_DIST / RES_SEP_DIST * i);
 	}
 
-	for (auto& iterator : iterators) {
-		iterator = new BucketIterator();
-	}
 	buckets = new Bucket[resolution * resolution];
 	tempSelected = new std::vector<Physical*>();
 }
 
 Grid::~Grid() {
-	for (auto& iterator : iterators) {
-		delete iterator;
-		iterator = nullptr;
-	}
 	for (auto& cache : levelsCache) {
 		delete cache;
 		cache = nullptr;
@@ -54,7 +43,7 @@ void Grid::updateGrid(Unit* entity, const char team) {
 }
 
 
-std::vector<short>* Grid::getEnvIndexsFromCache(double dist) {
+std::vector<short>* Grid::getEnvIndexsFromCache(float dist) {
 	const int index = dist / diff;
 	return levelsCache[index];
 }
@@ -74,11 +63,11 @@ short Grid::getIndex(float value) const {
 	return resolution - 1; //TODO czy aby napewno?
 }
 
-BucketIterator* Grid::getArrayNeight(Unit* entity, double radius, short thread) {
+BucketIterator& Grid::getArrayNeight(Unit* entity, float radius, short thread) {
 	const int index = indexFromPosition(entity->getPosition());
 
-	BucketIterator* bucketIterator = iterators[thread];
-	bucketIterator->init(getEnvIndexsFromCache(radius), index, this);
+	BucketIterator& bucketIterator = iterators[thread];
+	bucketIterator.init(getEnvIndexsFromCache(radius), index, this);
 	return bucketIterator;
 }
 

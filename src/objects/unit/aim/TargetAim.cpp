@@ -4,10 +4,9 @@
 #include "simulation/env/Enviroment.h"
 
 
-TargetAim::TargetAim(std::vector<int>& _path) {
-	radiusSq = 3 * 3;
-	path = _path;
-	current = 0;
+TargetAim::TargetAim(std::vector<int>& _path) :
+	radiusSq(3 * 3), path(_path), current(0) {
+
 }
 
 

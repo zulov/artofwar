@@ -127,7 +127,7 @@ void Controls::leftClick(Physical* clicked, Vector3& hitPos) {
 
 void Controls::leftClickBuild(Physical* clicked, Vector3& hitPos) {
 	unSelectAll();
-	createBuilding(hitPos);
+	createBuilding(Vector2(hitPos.x_, hitPos.z_));
 }
 
 void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftPressed) {
@@ -140,7 +140,11 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 		} else {
 			type = OrderType::GO;
 		}
-		Game::get()->getActionCommandList()->add(new ActionCommand(selected, type, new Vector3(hitPos), shiftPressed));
+		Vector2* newPos = new Vector2(
+		                              hitPos.x_,
+		                              hitPos.z_
+		                             );
+		Game::get()->getActionCommandList()->add(new ActionCommand(selected, type, newPos, shiftPressed));
 		break;
 		}
 	case ObjectType::UNIT:
@@ -177,10 +181,17 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
 		type[0] = OrderType::GO;
 		type[1] = OrderType::CHARGE;
 	}
+	Vector2* newPos = new Vector2(
+	                              held.first->x_,
+	                              held.first->z_
+	                             );
+	Vector2* charge = new Vector2(
+	                              held.second->x_ - held.first->x_,
+	                              held.second->z_ - held.first->z_
+	                             );
 
-	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[0], new Vector3(*held.first)));
-	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1],
-	                                                           new Vector3(*held.second - *held.first)));
+	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[0], newPos));
+	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1], charge));
 	//TODO czy ta para jest usuwana
 }
 
@@ -345,7 +356,7 @@ void Controls::clickDownRight() {
 	}
 }
 
-void Controls::createBuilding(Vector3& pos) {
+void Controls::createBuilding(Vector2& pos) {
 	if (idToCreate >= 0) {
 		Game::get()->getCreationCommandList()->addBuilding(
 		                                                   idToCreate, pos,

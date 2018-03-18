@@ -9,7 +9,7 @@
 #include <chrono>
 
 
-ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector3* parameter, bool append) {
+ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector2* parameter, bool append) {
 	this->entities = entities;
 	this->action = action;
 	this->vector = parameter;
@@ -41,7 +41,7 @@ ActionCommand::~ActionCommand() {
 }
 
 
-ActionParameter ActionCommand::getTargetAim(int startInx, Vector3& to, bool append) {
+ActionParameter ActionCommand::getTargetAim(int startInx, Vector2& to, bool append) {
 	auto path = Game::get()->getEnviroment()->findPath(startInx, to);
 	Aim* aim;
 	if (!path->empty()) {
@@ -59,36 +59,40 @@ ActionParameter ActionCommand::getFollowAim(Physical* toFollow, bool append) {
 	return parameter;
 }
 
-ActionParameter ActionCommand::getChargeAim(Vector3* charge, bool append) {
+ActionParameter ActionCommand::getChargeAim(Vector2* charge, bool append) {
 	ActionParameter parameter(new ChargeAim(charge), append);
 	return parameter;
 }
 
-Vector3* ActionCommand::calculateCenter() {
-	Vector3* center = new Vector3();
+void ActionCommand::calculateCenter(Vector2& center) {
 	for (Physical* physical : *entities) {
-		*center += *physical->getPosition();
+		center.x_ += physical->getPosition()->x_;
+		center.y_ += physical->getPosition()->z_;
 	}
-	return center;
+	center /= entities->size();
 }
 
-void ActionCommand::addTargetAim(Vector3* to, bool append) {
+void ActionCommand::addTargetAim(Vector2* to, bool append) {
 	auto start = std::chrono::system_clock::now();
 	short id = static_cast<short>(action);
 	if (entity) {
 		ActionParameter parameter = getTargetAim(entity->getBucketIndex(-1), *to, append);
 		entity->action(id, parameter);
 	} else {
-		Vector3* center = calculateCenter();
-		*center /= entities->size();
-		Game::get()->getFormationManager()->createFormation(entities);//TODO tu sterowac ca³¹ grup¹
+		Vector2 center;
+		calculateCenter(center);
+
+		Game::get()->getFormationManager()->createFormation(entities); //TODO tu sterowac ca³¹ grup¹
 		for (Physical* physical : *entities) {
-			Vector3 pos = *physical->getPosition() - *center + *to;
+			Vector2 pos(
+			            physical->getPosition()->x_,
+			            physical->getPosition()->z_
+			           );
+			pos -= center + *to;
 
 			ActionParameter parameter = getTargetAim(physical->getBucketIndex(-1), pos, append);
 			physical->action(id, parameter);
 		}
-		delete center;
 	}
 	Game::get()->getEnviroment()->invalidateCache();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
@@ -108,7 +112,7 @@ void ActionCommand::addFollowAim(Physical* toFollow, bool append) {
 	}
 }
 
-void ActionCommand::addChargeAim(Vector3* charge, bool append) {
+void ActionCommand::addChargeAim(Vector2* charge, bool append) {
 	short id = static_cast<short>(action);
 	if (entity) {
 		ActionParameter parameter = getChargeAim(charge, append);

@@ -70,12 +70,12 @@ void MainGrid::prepareGridToFind() {
 bool MainGrid::validateAdd(Static* object) {
 	IntVector2 size = object->getGridSize();
 	Vector3* pos = object->getPosition();
-	return validateAdd(size, *pos);
+	return validateAdd(size, Vector2(pos->x_, pos->z_));
 }
 
-bool MainGrid::validateAdd(const IntVector2& size, Vector3& pos) {
+bool MainGrid::validateAdd(const IntVector2& size, Vector2& pos) {
 	short iX = getIndex(pos.x_);
-	short iZ = getIndex(pos.z_);
+	short iZ = getIndex(pos.y_);
 
 	IntVector2 sizeX = calculateSize(size.x_);
 	IntVector2 sizeZ = calculateSize(size.y_);
@@ -275,10 +275,10 @@ Vector3* MainGrid::getDirectionFrom(Vector3* position) {
 	return new Vector3;
 }
 
-Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector3* pos) {
+Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector2& pos) {
 	//TODO tu mozna to sporo zoptymalizowac ale pewnie nie ma potrzeby
-	const short posX = getIndex(pos->x_);
-	const short posZ = getIndex(pos->z_);
+	const short posX = getIndex(pos.x_);
+	const short posZ = getIndex(pos.y_);
 
 	const IntVector2 sizeX = calculateSize(size.x_);
 	const IntVector2 sizeZ = calculateSize(size.y_);
@@ -292,13 +292,12 @@ Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector3* pos) {
 	const Vector2 center1 = complexData[index1].getCenter();
 	const Vector2 center2 = complexData[index2].getCenter();
 	const Vector2 newCenter = (center1 + center2) / 2;
-	pos->x_ = newCenter.x_;
-	pos->z_ = newCenter.y_;
-	return pos;
+
+	return new Vector3(newCenter.x_, 0, newCenter.y_);
 }
 
-IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector3* pos) const {
-	return IntVector2(getIndex(pos->x_), getIndex(pos->z_));
+IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector2& pos) const {
+	return IntVector2(getIndex(pos.x_), getIndex(pos.y_));
 }
 
 void MainGrid::updateNeighbors(const int current) {
@@ -389,8 +388,8 @@ std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, double min, doubl
 	return reconstruct_simplify_path(startIdx, endIdx, came_from);
 }
 
-std::vector<int>* MainGrid::findPath(int startIdx, const Vector3& aim) {
-	int end = getIndex(getIndex(aim.x_), getIndex(aim.z_));
+std::vector<int>* MainGrid::findPath(int startIdx, const Vector2& aim) {
+	int end = getIndex(getIndex(aim.x_), getIndex(aim.y_));
 
 	if (ifInCache(startIdx, end)) {
 		return tempPath;

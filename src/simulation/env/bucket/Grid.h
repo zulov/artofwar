@@ -1,9 +1,10 @@
 #pragma once
 #include "Bucket.h"
+#include "BucketIterator.h"
 
 #define MAX_SEP_DIST 16
 #define RES_SEP_DIST 80
-class BucketIterator;
+
 
 class Grid
 {
@@ -14,19 +15,19 @@ public:
 	void updateGrid(Unit* entity, char team);
 	std::vector<Unit*>& getContentAt(int index);
 	int& getSizeAt(int index);
-	std::vector<short>* getEnvIndexsFromCache(double dist);
+	std::vector<short>* getEnvIndexsFromCache(float dist);
 	std::vector<Physical *>* getArrayNeight(std::pair<Vector3*, Vector3*>& pair);
-	BucketIterator* getArrayNeight(Unit* entity, double radius, short thread);
+	BucketIterator& getArrayNeight(Unit* entity, float radius, short thread);
 	int getIndex(short posX, short posZ);
 protected:
 	int indexFromPosition(Vector3* position);
 	short getIndex(float value) const;
 	bool inRange(int index);
 	short resolution;
+	float size;
 	float fieldSize;
 	bool debugEnabled;
 	short halfResolution;
-	float size;
 	float invFieldSize;
 
 	Bucket* buckets;
@@ -37,9 +38,9 @@ private:
 	void addAt(int index, Unit* entity);
 	void removeAt(int index, Unit* entity);
 
-	double diff = ((double)MAX_SEP_DIST) / RES_SEP_DIST;
+	float diff = ((float)MAX_SEP_DIST) / RES_SEP_DIST;
 
-	BucketIterator* iterators[MAX_THREADS];
+	BucketIterator iterators[MAX_THREADS];
 	std::vector<short>* levelsCache[RES_SEP_DIST];
 	std::vector<Unit*> empty;
 

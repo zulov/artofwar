@@ -20,16 +20,16 @@ bool CreationCommandList::addUnits(int _number, int id, Vector3& _position, int 
 	return true;
 }
 
-bool CreationCommandList::addBuilding(int id, Vector3& _position, int _player, int level) {
+bool CreationCommandList::addBuilding(int id, Vector2& _position, int _player, int level) {
 	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 	std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForBuilding(id);
 	Enviroment* env = Game::get()->getEnviroment();
 	db_building* db_building = Game::get()->getDatabaseCache()->getBuilding(id);
 
 	if (env->validateStatic(db_building->size, _position) && resources.reduce(costs)) {
-		Vector3 * pos = new Vector3(_position);
-		IntVector2 bucketCords = env->getBucketCords(db_building->size, pos);
-		pos = env->getValidPosition(db_building->size, pos);
+		
+		IntVector2 bucketCords = env->getBucketCords(db_building->size, _position);
+		Vector3 * pos = env->getValidPosition(db_building->size, _position);
 
 		add(new CreationCommand(ObjectType::BUILDING, id, pos, _player, bucketCords, level));
 		return true;
@@ -37,14 +37,13 @@ bool CreationCommandList::addBuilding(int id, Vector3& _position, int _player, i
 	return false;
 }
 
-bool CreationCommandList::addResource(int id, Vector3& _position, int level) {
+bool CreationCommandList::addResource(int id, Vector2& _position, int level) {
 	Enviroment* env = Game::get()->getEnviroment();
 	db_resource* db_resource = Game::get()->getDatabaseCache()->getResource(id);
 
 	if (env->validateStatic(db_resource->size, _position)) {
-		Vector3 * pos = new Vector3(_position);
-		IntVector2 bucketCords = env->getBucketCords(db_resource->size, pos);
-		pos = env->getValidPosition(db_resource->size, pos);
+		IntVector2 bucketCords = env->getBucketCords(db_resource->size, _position);
+		Vector3 * pos = env->getValidPosition(db_resource->size, _position);
 
 		add(new CreationCommand(ObjectType::RESOURCE, id, pos, -1, bucketCords, level));
 		return true;

@@ -43,22 +43,21 @@ std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, const float ra
 		}
 		return neights2;
 		}
-
 	}
 }
 
 std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, float radius) {
 	neights->clear();
 
-	float sqSeparationDistance = radius * radius;
+	const float sqSepDistance = radius * radius;
 	Vector3* unitPosition = unit->getPosition();
-	BucketIterator* bucketIterator = bucketGrid.getArrayNeight(unit, radius, 0);
-	while (Unit* neight = bucketIterator->next()) {
+	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(unit, radius, 0);
+	while (Unit* neight = bucketIterator.next()) {
 		if (unit == neight) { continue; }
 
 		const float sqDistance = (*unitPosition - *neight->getPosition()).LengthSquared();
 
-		if (sqDistance < sqSeparationDistance) {
+		if (sqDistance < sqSepDistance) {
 			neights->push_back(neight);
 		}
 	}
@@ -128,13 +127,13 @@ Vector3 Enviroment::getValidPosForCamera(float percentX, float percentY, const V
 	return a;
 }
 
-bool Enviroment::validateStatic(const IntVector2& size, Vector3& pos) {
+bool Enviroment::validateStatic(const IntVector2& size, Vector2& pos) {
 	return mainGrid.validateAdd(size, pos);
 }
 
 Vector3* Enviroment::getValidPosition(const IntVector2& size, const IntVector2& bucketCords) {
 	const Vector2 center = mainGrid.getCenterAt(bucketCords);
-	return getValidPosition(size, new Vector3(center.x_, 0, center.y_));
+	return getValidPosition(size, Vector2(center.x_, center.y_));
 }
 
 Vector2& Enviroment::getCenter(int index) {
@@ -145,17 +144,17 @@ void Enviroment::invalidateCache() {
 	mainGrid.invalidateCache();
 }
 
-Vector3* Enviroment::getValidPosition(const IntVector2& size, Vector3* pos) {
+Vector3* Enviroment::getValidPosition(const IntVector2& size, Vector2& pos) {
 	Vector3* pos2 = mainGrid.getValidPosition(size, pos);
 	pos2->y_ = getGroundHeightAt(pos2->x_, pos2->z_);
 	return pos2;
 }
 
-IntVector2 Enviroment::getBucketCords(const IntVector2& size, Vector3* pos) {
+IntVector2 Enviroment::getBucketCords(const IntVector2& size, Vector2& pos) {
 	return mainGrid.getBucketCords(size, pos);
 }
 
-std::vector<int>* Enviroment::findPath(int startIdx, Vector3& aim) {
+std::vector<int>* Enviroment::findPath(int startIdx, Vector2& aim) {
 	return mainGrid.findPath(startIdx, aim);
 }
 

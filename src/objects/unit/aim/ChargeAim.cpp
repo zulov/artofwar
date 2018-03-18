@@ -3,20 +3,15 @@
 #include <Urho3D/Scene/Scene.h>
 
 
-ChargeAim::ChargeAim(Urho3D::Vector3* _direction): direction(*_direction) {
-	direction.y_ = 0;
+ChargeAim::ChargeAim(Urho3D::Vector2* _direction): direction(*_direction), distance(50) {
 	direction.Normalize();
-	distance = 50;
 }
 
 
 ChargeAim::~ChargeAim() = default;
 
 Vector2 ChargeAim::getDirection(Unit* unit) {
-	return Urho3D::Vector2(
-	                       direction.x_,
-	                       direction.z_
-	                      );
+	return direction;
 }
 
 bool ChargeAim::ifReach(Unit* unit) {
