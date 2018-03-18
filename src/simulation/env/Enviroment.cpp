@@ -52,10 +52,13 @@ std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, flo
 	const float sqSepDistance = radius * radius;
 	Vector3* unitPosition = unit->getPosition();
 	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(unit, radius, 0);
+
 	while (Unit* neight = bucketIterator.next()) {
 		if (unit == neight) { continue; }
+		const float xDiff = unitPosition->x_ - neight->getPosition()->x_;
+		const float zDiff = unitPosition->z_ - neight->getPosition()->z_;
 
-		const float sqDistance = (*unitPosition - *neight->getPosition()).LengthSquared();
+		const float sqDistance = xDiff * xDiff + zDiff * zDiff;
 
 		if (sqDistance < sqSepDistance) {
 			neights->push_back(neight);
@@ -64,10 +67,6 @@ std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, flo
 
 	return neights;
 }
-
-//std::vector<Physical*>* EnviromentStrategy::getResources(Unit* unit, double radius) {
-//	return getNeighbours(unit, resourceGrid, radius);
-//}
 
 void Enviroment::update(std::vector<Unit*>* units) {
 	//TODO to mozna rodzielic na dodawanei u usywanie
@@ -84,7 +83,7 @@ void Enviroment::update(std::vector<Building*>* buildings) {
 }
 
 void Enviroment::update(std::vector<ResourceEntity*>* resources) {
-	for (auto resource : (*resources)) {
+	for (auto resource : *resources) {
 		mainGrid.addStatic(resource);
 	}
 }

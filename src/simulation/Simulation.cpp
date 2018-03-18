@@ -86,7 +86,7 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() {
 	if (UNITS_NUMBER > 0) {
-		simObjectManager->addUnits(UNITS_NUMBER, 0, new Vector3(), 0, 0);
+		simObjectManager->addUnits(UNITS_NUMBER, 0, new Vector3(-200, 0, 0), 0, 0);
 	}
 }
 
@@ -254,7 +254,7 @@ void Simulation::moveUnitsAndCheck(const float timeStep) {
 void Simulation::calculateForces() {
 	for (auto unit : *units) {
 		Vector2 newForce;
-		
+
 		std::vector<Unit*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 		Vector2 repulse = enviroment->repulseObstacle(unit);
 

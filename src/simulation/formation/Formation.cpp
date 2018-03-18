@@ -69,8 +69,11 @@ void Formation::updateCenter() {
 			temp.x_ += unit->getPosition()->x_;
 			temp.y_ += unit->getPosition()->z_;
 		}
-		Vector3 pos = getPositionFor(unit->getPositionInFormation());
-		float sth = (pos - *unit->getPosition()).LengthSquared();
+		Vector2 pos = getPositionFor(unit->getPositionInFormation());
+		float sth = Vector2(
+		                    pos.x_ - unit->getPosition()->x_,
+		                    pos.y_ - unit->getPosition()->z_
+		                   ).LengthSquared();
 
 		notWellformed += sth;
 	}
