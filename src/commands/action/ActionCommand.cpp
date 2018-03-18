@@ -88,7 +88,7 @@ void ActionCommand::addTargetAim(Vector2* to, bool append) {
 			            physical->getPosition()->x_,
 			            physical->getPosition()->z_
 			           );
-			pos -= center + *to;
+			pos -= center - *to;
 
 			ActionParameter parameter = getTargetAim(physical->getBucketIndex(-1), pos, append);
 			physical->action(id, parameter);

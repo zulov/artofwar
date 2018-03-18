@@ -44,7 +44,7 @@ void Grid::updateGrid(Unit* entity, const char team) {
 
 
 std::vector<short>* Grid::getEnvIndexsFromCache(float dist) {
-	const int index = dist / diff;
+	const int index = dist * invDiff;
 	return levelsCache[index];
 }
 

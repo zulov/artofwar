@@ -38,7 +38,7 @@ private:
 	void addAt(int index, Unit* entity);
 	void removeAt(int index, Unit* entity);
 
-	float diff = ((float)MAX_SEP_DIST) / RES_SEP_DIST;
+	float invDiff = RES_SEP_DIST / (float)MAX_SEP_DIST;
 
 	BucketIterator iterators[MAX_THREADS];
 	std::vector<short>* levelsCache[RES_SEP_DIST];
