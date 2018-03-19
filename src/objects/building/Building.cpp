@@ -13,13 +13,13 @@
 
 double Building::hbMaxSize = 5.0;
 
-Building::Building(Vector3* _position, int id, int player, int level): target(*_position),
+Building::Building(Vector3* _position, int id, int player, int level): target(_position->x_, _position->z_),
 	Static(_position, ObjectType::BUILDING) {
 
 	initBillbords();
 	hbMaxSize = 5.0;
 	target.x_ += 5;
-	target.z_ += 5;
+	target.y_ += 5;
 
 	dbBuilding = Game::get()->getDatabaseCache()->getBuilding(id);
 	units = Game::get()->getDatabaseCache()->getUnitsForBuilding(id);
@@ -85,7 +85,7 @@ void Building::action(short id, ActionParameter& parameter) {
 			}
 		}
 		}
-			break;
+		break;
 	case ActionType::UNIT_UPGRADE:
 		{
 		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
@@ -98,7 +98,7 @@ void Building::action(short id, ActionParameter& parameter) {
 		}
 		}
 		break;
-		
+
 	}
 }
 
@@ -124,7 +124,7 @@ std::string Building::getColumns() {
 
 std::string Building::getValues(int precision) {
 	int target_x = target.x_ * precision;
-	int target_z = target.z_ * precision;
+	int target_z = target.y_ * precision;
 	return Static::getValues(precision)
 		+ to_string(target_x) + ","
 		+ to_string(target_z);
@@ -138,7 +138,7 @@ QueueElement* Building::updateQueue(float time) {
 	return queue->update(time);
 }
 
-Vector3& Building::getTarget() {
+Vector2& Building::getTarget() {
 	return target; //TODO target to nie to samo co gdzie sie maja pojawiac!
 }
 

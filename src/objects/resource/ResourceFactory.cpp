@@ -14,10 +14,10 @@ ResourceFactory::~ResourceFactory() {
 	delete resources;
 }
 
-std::vector<ResourceEntity*>* ResourceFactory::create(int id, Vector3* center, IntVector2 _bucketCords, int level) {
+std::vector<ResourceEntity*>* ResourceFactory::create(int id, Vector2& center, IntVector2 _bucketCords, int level) {
 	resources->clear();
-
-	Vector3* position = new Vector3(center->x_, center->y_, center->z_);
+	float y = Game::get()->getEnviroment()->getGroundHeightAt(center.x_, center.y_);
+	Vector3* position = new Vector3(center.x_, y, center.y_);
 
 	ResourceEntity* entity = new ResourceEntity(position, id, level);
 	entity->setBucketPosition(_bucketCords);
@@ -34,7 +34,10 @@ std::vector<ResourceEntity*>* ResourceFactory::load(dbload_resource_entities* re
 	IntVector2 bucketCords(resource->buc_x, resource->buc_y);
 	db_resource* db_resource = Game::get()->getDatabaseCache()->getResource(resource->id_db);
 
-	Vector3* position = env->getValidPosition(db_resource->size, bucketCords);
+	Vector2 center = env->getValidPosition(db_resource->size, bucketCords);
+
+	float y = Game::get()->getEnviroment()->getGroundHeightAt(center.x_, center.y_);
+	Vector3* position = new Vector3(center.x_, y, center.y_);
 
 	ResourceEntity* entity = new ResourceEntity(position, resource->id_db, resource->level);
 	entity->setBucketPosition(bucketCords);

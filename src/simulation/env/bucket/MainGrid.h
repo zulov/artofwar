@@ -21,7 +21,7 @@ public:
 	void addStatic(Static* object);
 	void removeStatic(Static* object);
 	Vector3* getDirectionFrom(Vector3* position);
-	Vector3* getValidPosition(const IntVector2& size, Vector2& pos);
+	Vector2 getValidPosition(const IntVector2& size, Vector2& pos);
 	IntVector2 getBucketCords(const IntVector2& size, Vector2& pos) const;
 	inline float heuristic(int from, int to);
 	IntVector2 getCords(int index);

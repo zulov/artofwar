@@ -27,10 +27,10 @@ public:
 	int getLevel() override;
 
 	QueueElement* updateQueue(float time);
-	Vector3& getTarget();
+	Vector2& getTarget();
 	QueueManager* getQueue();
 private:
-	Vector3 target;
+	Vector2 target;
 	db_building* dbBuilding;
 	db_building_level* dbLevel;
 

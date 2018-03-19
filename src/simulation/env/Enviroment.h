@@ -36,14 +36,14 @@ public:
 	float getGroundHeightAt(float x, float z);
 	float getGroundHeightPercent(float y, float x, float div);
 	bool validateStatic(const IntVector2& size, Vector2& pos);
-	Vector3* getValidPosition(const IntVector2& size, Vector2& pos);
+	Vector2 getValidPosition(const IntVector2& size, Vector2& pos);
 	IntVector2 getBucketCords(const IntVector2& size, Vector2& pos);
 	std::vector<int>* findPath(int startIdx, Vector2& aim);
 
 	void prepareGridToFind();
 	content_info* getContentInfo(Vector2 from, Vector2 to, bool checks[], int activePlayer);
 	Vector3 getValidPosForCamera(float percentX, float percentY, const Vector3& pos, float min);
-	Vector3* getValidPosition(const IntVector2& size, const IntVector2& bucketCords);
+	Vector2 getValidPosition(const IntVector2& size, const IntVector2& bucketCords);
 	Vector2& getCenter(int index);
 	void invalidateCache();
 private:

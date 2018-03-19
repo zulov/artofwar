@@ -275,7 +275,7 @@ Vector3* MainGrid::getDirectionFrom(Vector3* position) {
 	return new Vector3;
 }
 
-Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector2& pos) {
+Vector2 MainGrid::getValidPosition(const IntVector2& size, Vector2& pos) {
 	//TODO tu mozna to sporo zoptymalizowac ale pewnie nie ma potrzeby
 	const short posX = getIndex(pos.x_);
 	const short posZ = getIndex(pos.y_);
@@ -293,7 +293,7 @@ Vector3* MainGrid::getValidPosition(const IntVector2& size, Vector2& pos) {
 	const Vector2 center2 = complexData[index2].getCenter();
 	const Vector2 newCenter = (center1 + center2) / 2;
 
-	return new Vector3(newCenter.x_, 0, newCenter.y_);
+	return newCenter;
 }
 
 IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector2& pos) const {

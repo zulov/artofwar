@@ -15,8 +15,8 @@ CreationCommandList::~CreationCommandList() {
 	delete simulationObjectManager;
 }
 
-bool CreationCommandList::addUnits(int _number, int id, Vector3& _position, int _player, int level) {
-	add(new CreationCommand(ObjectType::UNIT, _number, id, new Vector3(_position), _player, level));
+bool CreationCommandList::addUnits(int _number, int id, Vector2& _position, int _player, int level) {
+	add(new CreationCommand(ObjectType::UNIT, _number, id, _position, _player, level));
 	return true;
 }
 
@@ -29,7 +29,7 @@ bool CreationCommandList::addBuilding(int id, Vector2& _position, int _player, i
 	if (env->validateStatic(db_building->size, _position) && resources.reduce(costs)) {
 		
 		IntVector2 bucketCords = env->getBucketCords(db_building->size, _position);
-		Vector3 * pos = env->getValidPosition(db_building->size, _position);
+		Vector2 pos = env->getValidPosition(db_building->size, _position);
 
 		add(new CreationCommand(ObjectType::BUILDING, id, pos, _player, bucketCords, level));
 		return true;
@@ -43,7 +43,7 @@ bool CreationCommandList::addResource(int id, Vector2& _position, int level) {
 
 	if (env->validateStatic(db_resource->size, _position)) {
 		IntVector2 bucketCords = env->getBucketCords(db_resource->size, _position);
-		Vector3 * pos = env->getValidPosition(db_resource->size, _position);
+		const Vector2 pos = env->getValidPosition(db_resource->size, _position);
 
 		add(new CreationCommand(ObjectType::RESOURCE, id, pos, -1, bucketCords, level));
 		return true;

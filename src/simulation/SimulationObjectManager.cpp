@@ -72,20 +72,20 @@ std::vector<ResourceEntity*>* SimulationObjectManager::getResources() {
 	return resources;
 }
 
-void SimulationObjectManager::addUnits(unsigned int number, int id, Vector3* center,
+void SimulationObjectManager::addUnits(unsigned int number, int id, Vector2& center,
                                        int player, int level) {
 	unitsTemp = unitFactory.create(number, id, center, player, level);
 	updateUnits();
 }
 
-void SimulationObjectManager::addBuilding(int id, Vector3* center,
+void SimulationObjectManager::addBuilding(int id, Vector2& center,
                                           int player, IntVector2 _bucketCords, int level) {
 	buildingsTemp = buildingFactory.create(id, center, player, _bucketCords, level);
 	updateBuilding();
 }
 
 
-void SimulationObjectManager::addResource(int id, Vector3* center, IntVector2 _bucketCords, int level) {
+void SimulationObjectManager::addResource(int id, Vector2& center, IntVector2 _bucketCords, int level) {
 	resourcesTemp = resourceFactory.create(id, center, _bucketCords, level);
 	updateResource();
 }

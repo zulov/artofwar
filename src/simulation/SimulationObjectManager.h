@@ -22,9 +22,9 @@ public:
 	vector<Building*>* getBuildings();
 	vector<ResourceEntity*>* getResources();
 
-	void addUnits(unsigned number, int id, Vector3* center, int player, int level);
-	void addBuilding(int id, Vector3* center, int player, IntVector2 _bucketCords, int level);
-	void addResource(int id, Vector3* center, IntVector2 _bucketCords, int level);
+	void addUnits(unsigned number, int id, Vector2& center, int player, int level);
+	void addBuilding(int id, Vector2& center, int player, IntVector2 _bucketCords, int level);
+	void addResource(int id, Vector2& center, IntVector2 _bucketCords, int level);
 
 	void prepareToDispose();
 	void updateInfo(SimulationInfo* simulationInfo);
@@ -71,6 +71,6 @@ private:
 	vector<Building*>* buildingsTemp;
 	vector<ResourceEntity*>* resourcesTemp;
 
-	std::function<bool(Unit*)> functionShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this, placeholders::_1);
-
+	std::function<bool(Unit*)> functionShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this,
+	                                                            placeholders::_1);
 };

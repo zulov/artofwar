@@ -130,9 +130,9 @@ bool Enviroment::validateStatic(const IntVector2& size, Vector2& pos) {
 	return mainGrid.validateAdd(size, pos);
 }
 
-Vector3* Enviroment::getValidPosition(const IntVector2& size, const IntVector2& bucketCords) {
+Vector2 Enviroment::getValidPosition(const IntVector2& size, const IntVector2& bucketCords) {
 	const Vector2 center = mainGrid.getCenterAt(bucketCords);
-	return getValidPosition(size, Vector2(center.x_, center.y_));
+	return getValidPosition(size, Vector2(center));
 }
 
 Vector2& Enviroment::getCenter(int index) {
@@ -143,10 +143,8 @@ void Enviroment::invalidateCache() {
 	mainGrid.invalidateCache();
 }
 
-Vector3* Enviroment::getValidPosition(const IntVector2& size, Vector2& pos) {
-	Vector3* pos2 = mainGrid.getValidPosition(size, pos);
-	pos2->y_ = getGroundHeightAt(pos2->x_, pos2->z_);
-	return pos2;
+Vector2 Enviroment::getValidPosition(const IntVector2& size, Vector2& pos) {
+	return mainGrid.getValidPosition(size, pos);
 }
 
 IntVector2 Enviroment::getBucketCords(const IntVector2& size, Vector2& pos) {

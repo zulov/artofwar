@@ -81,5 +81,17 @@ void Force::escapeFromInvalidPosition(Vector2& newForce, Vector3* dir) const {
 }
 
 float Force::calculateCoef(const float distance, const float minDist) const {
-	return exp(minDist / (distance + 0.05)) - 1;
+	return 1 / (distance + 0.05);
 }
+
+//float Force::calculateCoef(const float distance, const float minDist) const {
+//	return exp(minDist / (distance + 0.05)) - 1;
+//}
+
+//float Force::calculateCoef(const float distance, const float minDist) const {
+//	double parameter = distance - minDist/2;
+//	if (parameter <= 0.05) {
+//		parameter = 0.05;
+//	}
+//	return exp(1 / parameter) - 1;
+//}

@@ -86,13 +86,13 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() {
 	if (UNITS_NUMBER > 0) {
-		simObjectManager->addUnits(UNITS_NUMBER, 0, new Vector3(-200, 0, 0), 0, 0);
+		simObjectManager->addUnits(UNITS_NUMBER, 0, Vector2(200, 0), 0, 0);
 	}
 }
 
 void Simulation::loadEntities(NewGameForm* form) {
 	for (auto player : form->players) {
-		simObjectManager->addUnits(10, 1, new Vector3(), player.id, 0);
+		simObjectManager->addUnits(10, 1, Vector2(), player.id, 0);
 	}
 }
 
@@ -138,7 +138,7 @@ void Simulation::updateBuildingQueues(const float time) {
 				                                             ObjectType::UNIT,
 				                                             done->getAmount(),
 				                                             done->getId(),
-				                                             new Vector3(build->getTarget()),
+				                                             build->getTarget(),
 				                                             build->getPlayer(),
 				                                             Game::get()->getPlayersManager()->getPlayer(build->getPlayer())->
 				                                                          getLevelForUnit(done->getId())
