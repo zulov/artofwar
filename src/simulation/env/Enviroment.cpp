@@ -92,7 +92,7 @@ Vector2 Enviroment::repulseObstacle(Unit* unit) {
 	return mainGrid.repulseObstacle(unit);
 }
 
-Vector3* Enviroment::validatePosition(Vector3* position) {
+Vector2* Enviroment::validatePosition(Vector3* position) {
 	return mainGrid.getDirectionFrom(position);
 }
 

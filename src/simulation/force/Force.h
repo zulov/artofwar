@@ -13,7 +13,7 @@ public:
 	void separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit *>* units);
 	void destination(Vector2& newForce, Unit* unit) const;
 	void formation(Vector2& newForce, Unit* unit) const;
-	void escapeFromInvalidPosition(Vector2& newForce, Vector3* dir) const;
+	void escapeFromInvalidPosition(Vector2& newForce, Vector2* dir) const;
 
 private:
 	float calculateCoef(float distance, float minDist) const;

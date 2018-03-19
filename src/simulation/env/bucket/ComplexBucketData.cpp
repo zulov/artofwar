@@ -98,9 +98,9 @@ void ComplexBucketData::setEscapeThrought(int val) {
 	escapeBucketIndex = val;
 }
 
-Urho3D::Vector3* ComplexBucketData::
+Urho3D::Vector2* ComplexBucketData::
 getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket) {
-	return new Vector3(escapeBucket.getCenter().x_ - position->x_, 0, escapeBucket.getCenter().y_ - position->z_);
+	return new Vector2(escapeBucket.getCenter().x_ - position->x_, escapeBucket.getCenter().y_ - position->z_);
 }
 
 int ComplexBucketData::getEscapeBucket() {

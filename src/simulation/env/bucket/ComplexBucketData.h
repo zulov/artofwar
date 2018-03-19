@@ -28,7 +28,7 @@ public:
 	char getAdditonalInfo();
 	bool isUnit();
 	void setEscapeThrought(int val);
-	Urho3D::Vector3* getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket);
+	Urho3D::Vector2* getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket);
 	int getEscapeBucket();
 
 private:

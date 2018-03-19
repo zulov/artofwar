@@ -20,7 +20,7 @@ public:
 	bool validateAdd(const IntVector2& size, Vector2& pos);
 	void addStatic(Static* object);
 	void removeStatic(Static* object);
-	Vector3* getDirectionFrom(Vector3* position);
+	Vector2* getDirectionFrom(Vector3* position);
 	Vector2 getValidPosition(const IntVector2& size, Vector2& pos);
 	IntVector2 getBucketCords(const IntVector2& size, Vector2& pos) const;
 	inline float heuristic(int from, int to);

@@ -246,7 +246,7 @@ void MainGrid::removeStatic(Static* object) {
 	complexData[index].removeStatic();
 }
 
-Vector3* MainGrid::getDirectionFrom(Vector3* position) {
+Vector2* MainGrid::getDirectionFrom(Vector3* position) {
 	int index = indexFromPosition(position);
 	if (!complexData[index].isUnit()) {
 		int escapeBucket;
@@ -265,14 +265,14 @@ Vector3* MainGrid::getDirectionFrom(Vector3* position) {
 			escapeBucket = complexData[index].getEscapeBucket();
 		}
 		if (escapeBucket == -1) {
-			return new Vector3;
+			return new Vector2;
 		}
-		Vector3* direction = complexData[index].getDirectrionFrom(position, complexData[escapeBucket]);
+		Vector2* direction = complexData[index].getDirectrionFrom(position, complexData[escapeBucket]);
 
 		direction->Normalize();
 		return direction;
 	}
-	return new Vector3;
+	return new Vector2;
 }
 
 Vector2 MainGrid::getValidPosition(const IntVector2& size, Vector2& pos) {
