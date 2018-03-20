@@ -22,7 +22,7 @@ void CollectState::onEnd(Unit* unit) {
 	State::onEnd(unit);
 	unit->resource->reduce();
 	unit->resource = nullptr;
-	*unit->toResource = Vector3();
+	*unit->toResource = Vector2();
 }
 
 void CollectState::execute(Unit* unit) {
@@ -32,7 +32,8 @@ void CollectState::execute(Unit* unit) {
 	if (unit->resource) {
 		const double value = unit->resource->collect(unit->collectSpeed);
 		resources.add(unit->resource->getDbID(), value);
-		*unit->toResource = *unit->resource->getPosition() - *unit->position;
+		Vector3 a = *unit->resource->getPosition() - *unit->position;
+		* unit->toResource = Vector2(a.x_, a.z_);
 	}
 
 }

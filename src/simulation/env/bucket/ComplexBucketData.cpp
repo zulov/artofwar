@@ -56,10 +56,6 @@ void ComplexBucketData::createBox(float bucketSize) {
 	box->SetEnabled(true);
 }
 
-Vector3* ComplexBucketData::getDirectrionFrom(Vector3* position) {
-	return new Vector3(position->x_ - center.x_, 0, position->z_ - center.y_);
-}
-
 void ComplexBucketData::setCenter(float _centerX, float _centerY) {
 	center = Vector2(_centerX, _centerY);
 }

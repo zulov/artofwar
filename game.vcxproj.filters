@@ -258,9 +258,6 @@
     <ClInclude Include="src\objects\building\BuildingFactory.h">
       <Filter>objects\collection\factory</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\building\BuildingType.h">
-      <Filter>objects\building</Filter>
-    </ClInclude>
     <ClInclude Include="src\control\Controls.h">
       <Filter>control</Filter>
     </ClInclude>

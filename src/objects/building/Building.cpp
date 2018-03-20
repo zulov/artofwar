@@ -124,10 +124,10 @@ std::string Building::getColumns() {
 
 std::string Building::getValues(int precision) {
 	int target_x = target.x_ * precision;
-	int target_z = target.y_ * precision;
+	int target_y = target.y_ * precision;
 	return Static::getValues(precision)
 		+ to_string(target_x) + ","
-		+ to_string(target_z);
+		+ to_string(target_y);
 }
 
 int Building::getLevel() {

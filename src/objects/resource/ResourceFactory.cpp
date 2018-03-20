@@ -16,6 +16,7 @@ ResourceFactory::~ResourceFactory() {
 
 std::vector<ResourceEntity*>* ResourceFactory::create(int id, Vector2& center, IntVector2 _bucketCords, int level) {
 	resources->clear();
+
 	float y = Game::get()->getEnviroment()->getGroundHeightAt(center.x_, center.y_);
 	Vector3* position = new Vector3(center.x_, y, center.y_);
 

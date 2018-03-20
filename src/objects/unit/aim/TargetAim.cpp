@@ -22,9 +22,8 @@ Urho3D::Vector2 TargetAim::getDirection(Unit* unit) {
 
 bool TargetAim::ifReach(Unit* unit) {
 	Vector2 position = Game::get()->getEnviroment()->getCenter(path[current]);
-	float dist = Vector3(
+	float dist = Vector2(
 	                     position.x_ - unit->getPosition()->x_,
-	                     0,
 	                     position.y_ - unit->getPosition()->z_
 	                    ).LengthSquared();
 	if (dist < radiusSq) {

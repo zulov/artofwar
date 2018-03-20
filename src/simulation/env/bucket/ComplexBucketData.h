@@ -1,7 +1,7 @@
 #pragma once
 #include "ObjectEnums.h"
 #include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Math/Vector3.h>
+#include <Urho3D/Math/Vector2.h>
 #include <Urho3D/Scene/Node.h>
 #include <vector>
 
@@ -18,7 +18,6 @@ public:
 	void setStatic(Static* _object);
 	void removeStatic();
 	void createBox(float bucketSize);
-	Urho3D::Vector3* getDirectrionFrom(Urho3D::Vector3* position);
 	void setCenter(float _centerX, float _centerY);
 	Urho3D::Vector2& getCenter();
 	void setNeightbours(std::vector<std::pair<int, float>>* _neightbours);

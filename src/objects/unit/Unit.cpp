@@ -18,7 +18,7 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 
 	initBillbords();
 
-	toResource = new Vector3();
+	toResource = new Vector2();
 	resource = nullptr;
 
 	state = UnitStateType::STOP;
@@ -132,7 +132,7 @@ Vector2 Unit::getDestination(double boostCoef, double aimCoef) {
 		} else if (toResource) {
 			force = Vector2(
 			                toResource->x_,
-			                toResource->z_
+			                toResource->y_
 			               );
 			forceGo(boostCoef, aimCoef, force);
 		}

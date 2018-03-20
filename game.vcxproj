@@ -354,7 +354,6 @@
     <ClInclude Include="src\simulation\env\bucket\BucketIterator.h" />
     <ClInclude Include="src\objects\building\Building.h" />
     <ClInclude Include="src\objects\building\BuildingFactory.h" />
-    <ClInclude Include="src\objects\building\BuildingType.h" />
     <ClInclude Include="src\hud\UiUtils.h" />
     <ClInclude Include="src\camera\CameraBehave.h" />
     <ClInclude Include="src\camera\CameraEnums.h" />

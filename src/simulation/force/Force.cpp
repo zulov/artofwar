@@ -37,8 +37,8 @@ void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* u
 		const float sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist) { continue; }
 		if (sqDistance == 0) {
-			force.x_ = static_cast<double>(rand()) / RAND_MAX - 0.5;
-			force.y_ = static_cast<double>(rand()) / RAND_MAX - 0.5;
+			force.x_ = static_cast<float>(rand()) / RAND_MAX - 0.5;
+			force.y_ = static_cast<float>(rand()) / RAND_MAX - 0.5;
 			force *= boostCoef * sepCoef;
 			newForce += force;
 			return;
@@ -49,7 +49,7 @@ void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* u
 		const float coef = calculateCoef(distance, minimalDistance);
 
 		diff *= coef / distance;
-		force = diff;
+		force += diff;
 	}
 
 	force *= boostCoef * sepCoef;

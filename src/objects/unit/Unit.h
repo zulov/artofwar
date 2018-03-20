@@ -87,7 +87,7 @@ private:
 	Aims aims;
 
 	ResourceEntity* resource;
-	Vector3* toResource;
+	Vector2* toResource;
 	db_unit* dbUnit;
 	db_unit_level* dbLevel;
 
