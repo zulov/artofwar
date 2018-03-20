@@ -85,10 +85,6 @@ void Unit::checkAim() {
 	}
 }
 
-float Unit::getMinimalDistance() {
-	return minimalDistance;
-}
-
 void Unit::move(double timeStep) {
 	if (state != UnitStateType::STOP) {
 		position->x_ += velocity.x_ * timeStep;
@@ -105,11 +101,6 @@ void Unit::setAcceleration(Vector2& _acceleration) {
 		acceleration *= 100;
 	}
 }
-
-float Unit::getMaxSeparationDistance() {
-	return maxSeparationDistance;
-}
-
 
 Vector2 Unit::forceGo(double boostCoef, double aimCoef, Vector2& force) {
 	force.Normalize();
@@ -299,10 +290,6 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 		}
 	}
 	upgrades.push_back(upgrade);
-}
-
-UnitStateType Unit::getState() {
-	return state;
 }
 
 UnitStateType Unit::getActionState() {

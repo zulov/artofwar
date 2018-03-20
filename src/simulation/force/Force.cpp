@@ -75,18 +75,23 @@ void Force::formation(Vector2& newForce, Unit* unit) const {
 }
 
 void Force::escapeFromInvalidPosition(Vector2& newForce, Vector2* dir) const {
-	newForce.x_ += dir->x_ * escapeCoef;
-	newForce.y_ += dir->y_ * escapeCoef;
-	delete dir;
+	if (dir) {
+		newForce += *dir * escapeCoef;
+		delete dir;
+	}
+}
+
+float Force::calculateCoef(const float distance, const float minDist) const {
+	float parameter = distance - minDist / 2;
+	if (parameter <= 0.05) {
+		parameter = 0.05;
+	}
+	return 1 / (parameter);
 }
 
 //float Force::calculateCoef(const float distance, const float minDist) const {
-//	return 1 / (distance + 0.05);
+//	return exp(minDist / (distance + 0.05)) - 1;
 //}
-
-float Force::calculateCoef(const float distance, const float minDist) const {
-	return exp(minDist / (distance + 0.05)) - 1;
-}
 
 //float Force::calculateCoef(const float distance, const float minDist) const {
 //	double parameter = distance - minDist/2;

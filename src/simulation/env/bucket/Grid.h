@@ -14,7 +14,7 @@ public:
 
 	void updateGrid(Unit* entity, char team);
 	std::vector<Unit*>& getContentAt(int index);
-	int& getSizeAt(int index);
+	
 	std::vector<short>* getEnvIndexsFromCache(float dist);
 	std::vector<Physical *>* getArrayNeight(std::pair<Vector3*, Vector3*>& pair);
 	BucketIterator& getArrayNeight(Unit* entity, float radius, short thread);

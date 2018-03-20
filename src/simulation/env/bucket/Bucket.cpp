@@ -9,10 +9,6 @@ Bucket::Bucket() {
 	std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
 }
 
-std::vector<Unit *>& Bucket::getContent() {
-	return content;
-}
-
 void Bucket::add(Unit* entity) {
 	content.push_back(entity);
 	++size;
@@ -33,10 +29,6 @@ void Bucket::remove(Unit* entity) {
 		--unitsNumberPerPlayer[entity->getPlayer()];
 	}
 
-}
-
-int& Bucket::getSize() {
-	return size;
 }
 
 bool Bucket::incUnitsPerPlayer(content_info* ci, int activePlayer, const bool checks[]) {

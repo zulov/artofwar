@@ -272,7 +272,7 @@ Vector2* MainGrid::getDirectionFrom(Vector3* position) {
 		direction->Normalize();
 		return direction;
 	}
-	return new Vector2;
+	return nullptr;
 }
 
 Vector2 MainGrid::getValidPosition(const IntVector2& size, Vector2& pos) {

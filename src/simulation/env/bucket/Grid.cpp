@@ -92,10 +92,6 @@ std::vector<Unit*>& Grid::getContentAt(int index) {
 	return empty;
 }
 
-int& Grid::getSizeAt(int index) {
-	return buckets[index].getSize();
-}
-
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>& pair) {
 	Vector3* begin = pair.first;
 	Vector3* end = pair.second;

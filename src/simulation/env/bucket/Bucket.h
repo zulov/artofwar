@@ -10,11 +10,10 @@ public:
 	Bucket();
 	~Bucket();
 
-	std::vector<Unit*>& getContent();
+	std::vector<Unit*>& getContent() { return content; }
 	void add(Unit* entity);
 	void remove(Unit* entity);
 
-	int& getSize();
 	bool incUnitsPerPlayer(content_info* ci, int activePlayer, const bool checks[]);
 private:
 	int size;

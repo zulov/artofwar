@@ -174,11 +174,6 @@ void Physical::absorbAttack(double attackCoef) {
 
 }
 
-Urho3D::Vector3* Physical::getPosition() {
-	return position;
-}
-
-
 void Physical::select() {
 	if (type == ObjectType::PHISICAL) { return; }
 	billboardBar->enabled_ = true;

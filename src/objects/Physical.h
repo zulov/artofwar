@@ -13,9 +13,9 @@ public:
 	Physical(Vector3* _position, ObjectType _type);
 	virtual ~Physical();
 	void createBillboardBar();
-	void updateBillboardBar(Vector3 &boundingBox);
+	void updateBillboardBar(Vector3& boundingBox);
 	void createBillboardShadow();
-	void updateBillboardShadow(Vector3 &boundingBox);
+	void updateBillboardShadow(Vector3& boundingBox);
 	void updateHealthBar();
 	virtual float getHealthBarSize();
 	virtual float getHealthPercent();
@@ -26,7 +26,7 @@ public:
 	virtual void absorbAttack(double attackCoef);
 	virtual void select();
 	virtual void unSelect();
-	Vector3* getPosition();
+	Vector3* getPosition() { return position; }
 	void updateBillbords();
 	void initBillbords();
 

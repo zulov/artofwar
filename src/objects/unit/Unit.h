@@ -38,8 +38,8 @@ public:
 	int getLevel() override;
 	float getHealthBarSize() override;
 	float getHealthPercent() override;
-	float getMaxSeparationDistance();
-	float getMinimalDistance();
+	float getMaxSeparationDistance() const { return maxSeparationDistance; }
+	float getMinimalDistance() const { return minimalDistance; }
 	Vector2 forceGo(double boostCoef, double aimCoef, Vector2& force);
 	Vector2 getDestination(double boostCoef, double aimCoef);
 
@@ -58,7 +58,7 @@ public:
 	String& toMultiLineString() override;
 	void action(short id, ActionParameter& parameter) override;
 
-	UnitStateType getState();
+	UnitStateType getState() { return state; }
 	UnitStateType getActionState();
 	void clean() override;
 	void setState(UnitStateType _state);
@@ -110,5 +110,4 @@ private:
 	short formation = -1;
 
 	static float hbMaxSize;
-
 };
