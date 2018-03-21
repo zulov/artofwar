@@ -48,6 +48,9 @@ float Formation::getWellFormed() const {
 	return 1 - notWellformed;
 }
 
+float Formation::isReady() {
+}
+
 void Formation::updateUnits() {
 	units.erase(
 	            std::remove_if(

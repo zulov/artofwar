@@ -24,6 +24,7 @@ protected:
 	short getIndex(float value) const;
 	bool inRange(int index);
 	short resolution;
+	int sqResolution;
 	float size;
 	float fieldSize;
 	bool debugEnabled;

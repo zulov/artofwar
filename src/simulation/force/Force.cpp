@@ -86,7 +86,7 @@ float Force::calculateCoef(const float distance, const float minDist) const {
 	if (parameter <= 0.05) {
 		parameter = 0.05;
 	}
-	return 1 / (parameter);
+	return 1 / parameter;
 }
 
 //float Force::calculateCoef(const float distance, const float minDist) const {

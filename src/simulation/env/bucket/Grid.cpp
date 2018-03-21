@@ -9,6 +9,7 @@
 
 
 Grid::Grid(short _resolution, float _size, bool _debugEnabled): resolution(_resolution),
+	sqResolution(_resolution * _resolution),
 	size(_size), fieldSize(_size / _resolution), debugEnabled(_debugEnabled), halfResolution(_resolution / 2),
 	invFieldSize(_resolution / _size) {
 
@@ -16,7 +17,7 @@ Grid::Grid(short _resolution, float _size, bool _debugEnabled): resolution(_reso
 		levelsCache[i] = getEnvIndexs((double)MAX_SEP_DIST / RES_SEP_DIST * i);
 	}
 
-	buckets = new Bucket[resolution * resolution];
+	buckets = new Bucket[sqResolution];
 	tempSelected = new std::vector<Physical*>();
 }
 
@@ -82,7 +83,7 @@ void Grid::addAt(int index, Unit* entity) {
 }
 
 bool Grid::inRange(int index) {
-	return index >= 0 && index < resolution * resolution;
+	return index >= 0 && index < sqResolution;
 }
 
 std::vector<Unit*>& Grid::getContentAt(int index) {

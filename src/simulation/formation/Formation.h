@@ -13,6 +13,7 @@ public:
 	bool update();
 	Vector2 getPositionFor(short id) const;
 	float getWellFormed() const;
+	float isReady();
 private:
 	void updateUnits();
 	void updateCenter();

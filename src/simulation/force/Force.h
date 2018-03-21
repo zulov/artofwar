@@ -17,10 +17,10 @@ public:
 
 private:
 	float calculateCoef(float distance, float minDist) const;
-	float boostCoef = 10;
+	float boostCoef = 100;
 
 	float sepCoef = 0.5;
 	float aimCoef = 2;
-	float escapeCoef = 200;
+	float escapeCoef = 20;
 	float formationCoef = 1;
 };

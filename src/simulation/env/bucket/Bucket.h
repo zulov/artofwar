@@ -16,7 +16,6 @@ public:
 
 	bool incUnitsPerPlayer(content_info* ci, int activePlayer, const bool checks[]);
 private:
-	int size;
-	int unitsNumberPerPlayer[MAX_PLAYERS];
+	char unitsNumberPerPlayer[MAX_PLAYERS];
 	std::vector<Unit*> content;
 };

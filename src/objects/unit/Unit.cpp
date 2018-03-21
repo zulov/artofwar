@@ -96,9 +96,9 @@ void Unit::move(double timeStep) {
 
 void Unit::setAcceleration(Vector2& _acceleration) {
 	acceleration = _acceleration;
-	if (_acceleration.LengthSquared() > 10000) {
+	if (_acceleration.LengthSquared() > 1000000) {
 		acceleration.Normalize();
-		acceleration *= 100;
+		acceleration *= 1000;
 	}
 }
 
