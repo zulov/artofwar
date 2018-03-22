@@ -12,7 +12,7 @@ namespace Urho3D {
 class MainGrid : public Grid
 {
 public:
-	MainGrid(short _resolution, double _size, bool _debugEnabled = false);
+	MainGrid(short _resolution, float _size, bool _debugEnabled = false);
 	~MainGrid();
 
 	void prepareGridToFind();
@@ -31,11 +31,11 @@ public:
 	std::vector<int>* reconstruct_simplify_path(int start, int goal, const int came_from[]);
 	bool inSide(int x, int z);
 	void updateNeighbors(int current);
-	double cost(int current, int next);
+	float cost(int current, int next);
 	void debug(int start, int end);
 
 	std::vector<int>* findPath(IntVector2& startV, IntVector2& goalV);
-	std::vector<int>* findPath(int startIdx, int endIdx, double min, double max);
+	std::vector<int>* findPath(int startIdx, int endIdx, float min, float max);
 	std::vector<int>* findPath(int startIdx, const Vector2& aim);
 	bool ifInCache(int startIdx, int end);
 

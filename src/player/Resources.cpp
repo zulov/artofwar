@@ -8,7 +8,7 @@ Resources::Resources() {
 	init(0);
 }
 
-void Resources::init(double valueForAll) {
+void Resources::init(float valueForAll) {
 	size = Game::get()->getDatabaseCache()->getResourceSize();
 	int i = 0;
 	for (; i < size; ++i) {	
@@ -20,7 +20,7 @@ void Resources::init(double valueForAll) {
 	changed = true;
 }
 
-Resources::Resources(double valueForAll) {
+Resources::Resources(float valueForAll) {
 	init(valueForAll);
 }
 
@@ -40,7 +40,7 @@ bool Resources::reduce(std::vector<db_cost*>* costs) {
 	return true;
 }
 
-void Resources::add(int id, double value) {
+void Resources::add(int id, float value) {
 	values[id] += value;
 	changed = true;
 }
@@ -53,7 +53,7 @@ short Resources::getSize() {
 	return size;
 }
 
-double* Resources::getValues() {
+float* Resources::getValues() {
 	return values;
 }
 

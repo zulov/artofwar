@@ -12,7 +12,7 @@ public:
 	bool ifReach(Unit* unit) override;
 	bool expired() override;
 private:
-	double radiusSq;
+	float radiusSq;
 
 	std::vector<int> path;
 	short current;

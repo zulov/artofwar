@@ -23,7 +23,7 @@ public:
 	bool bucketHasChanged(int _bucketIndex, char param);
 	void setBucket(int _bucketIndex, char param);
 	signed char getTeam();
-	virtual void absorbAttack(double attackCoef);
+	virtual void absorbAttack(float attackCoef);
 	virtual void select();
 	virtual void unSelect();
 	Vector3* getPosition() { return position; }

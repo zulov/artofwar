@@ -11,7 +11,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
 
-double Building::hbMaxSize = 5.0;
+float Building::hbMaxSize = 5.0;
 
 Building::Building(Vector3* _position, int id, int player, int level): target(_position->x_, _position->z_),
 	Static(_position, ObjectType::BUILDING) {
@@ -37,7 +37,7 @@ Building::~Building() {
 }
 
 float Building::getHealthBarSize() {
-	double healthBarSize = hbMaxSize;
+	float healthBarSize = hbMaxSize;
 	if (healthBarSize <= 0) { healthBarSize = 0; }
 	return healthBarSize;
 }
@@ -51,7 +51,7 @@ void Building::populate() {
 	queue = new QueueManager(dbLevel->queueMaxCapacity);
 }
 
-void Building::absorbAttack(double attackCoef) {
+void Building::absorbAttack(float attackCoef) {
 }
 
 String& Building::toMultiLineString() {

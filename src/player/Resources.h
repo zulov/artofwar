@@ -5,14 +5,14 @@ class Resources
 {
 public:
 	Resources();
-	void init(double valueForAll);
-	Resources(double valueForAll);
+	void init(float valueForAll);
+	Resources(float valueForAll);
 	~Resources();
 	bool reduce(std::vector<db_cost*>* costs);
-	void add(int id, double value);
+	void add(int id, float value);
 	bool hasChanged();
 	short getSize();
-	double *getValues();
+	float *getValues();
 	void hasBeedUpdatedDrawn();
 	std::string getValues(int precision, int player);
 	void setValue(int id, float amount);
@@ -20,6 +20,6 @@ public:
 private:
 	bool changed;
 	void revert(int end, std::vector<db_cost*>* costs);
-	double values[RESOURCE_NUMBER_DB];
+	float values[RESOURCE_NUMBER_DB];
 	int size;
 };

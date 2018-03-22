@@ -49,7 +49,7 @@ void TopPanel::update(Resources& resources) {
 	if (resources.hasChanged()) {
 
 		short size = resources.getSize();
-		double* values = resources.getValues();
+		float* values = resources.getValues();
 		for (int i = 0; i < size; ++i) {
 			elements[i]->setText(String((int)values[i]));
 		}

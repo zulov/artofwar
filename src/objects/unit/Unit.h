@@ -40,11 +40,11 @@ public:
 	float getHealthPercent() override;
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
 	float getMinimalDistance() const { return minimalDistance; }
-	Vector2 forceGo(double boostCoef, double aimCoef, Vector2& force);
-	Vector2 getDestination(double boostCoef, double aimCoef);
+	Vector2 forceGo(float boostCoef, float aimCoef, Vector2& force);
+	Vector2 getDestination(float boostCoef, float aimCoef);
 
 
-	void absorbAttack(double attackCoef) override;
+	void absorbAttack(float attackCoef) override;
 
 	void toAttack(std::vector<Unit*>* enemies);
 	void toAttack(Physical* enemy);
@@ -54,7 +54,7 @@ public:
 	void toCollect(ResourceEntity* _resource);
 	void toCollect();
 
-	void updateHeight(double y, double timeStep);
+	void updateHeight(float y, double timeStep);
 	String& toMultiLineString() override;
 	void action(short id, ActionParameter& parameter) override;
 
@@ -79,8 +79,8 @@ public:
 private:
 	void addAim(Aim* aim, bool append);
 	void removeAim();
-	void attackIfCloseEnough(double& distance, Unit* closest);
-	void collectIfCloseEnough(double distance, ResourceEntity* closest);
+	void attackIfCloseEnough(float& distance, Unit* closest);
+	void collectIfCloseEnough(float distance, ResourceEntity* closest);
 
 	Vector2 acceleration;
 	Vector2 velocity;

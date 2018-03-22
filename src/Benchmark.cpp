@@ -24,15 +24,15 @@ Benchmark::~Benchmark() {
 	}
 }
 
-double Benchmark::getAverageFPS() const {
+float Benchmark::getAverageFPS() const {
 	return avg;
 }
 
-double Benchmark::getLastFPS() {
+float Benchmark::getLastFPS() {
 	return data[index];
 }
 
-void Benchmark::add(double fps) {
+void Benchmark::add(float fps) {
 	++index;
 	if (index >= BENCH_LENGTH) {
 		avg = sum / BENCH_LENGTH;
@@ -54,6 +54,6 @@ void Benchmark::save() {
 	}
 }
 
-long Benchmark::getLoops() const {
+int Benchmark::getLoops() const {
 	return loops;
 }

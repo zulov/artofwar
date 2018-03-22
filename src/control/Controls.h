@@ -99,6 +99,6 @@ private:
 	Urho3D::Node* arrowNode;
 
 	short idToCreate = -1;
-	double clickDistance = 2 * 2;
+	float clickDistance = 2 * 2;
 	bool active = true;
 };

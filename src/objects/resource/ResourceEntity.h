@@ -18,7 +18,7 @@ public:
 	std::string getValues(int precision) override;
 	static std::string getColumns();
 
-	double collect(double collectSpeed);
+	float collect(float collectSpeed);
 	bool belowLimit();
 	void up();
 	void reduce();

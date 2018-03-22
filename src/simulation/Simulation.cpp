@@ -118,7 +118,7 @@ void Simulation::applyForce() {
 	for (auto unit : *units) {
 		unit->applyForce(maxTimeFrame);
 		Vector3* pos = unit->getPosition(); //TODO to przeniesc do mova? to moze byc [rpblem gdy jest przesuwanie poza klatk¹
-		const double y = enviroment->getGroundHeightAt(pos->x_, pos->z_);
+		const float y = enviroment->getGroundHeightAt(pos->x_, pos->z_);
 		unit->updateHeight(y, maxTimeFrame);
 	}
 }

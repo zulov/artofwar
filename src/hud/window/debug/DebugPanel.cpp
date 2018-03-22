@@ -12,7 +12,7 @@ DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 
 DebugPanel::~DebugPanel() = default;
 
-void DebugPanel::setText(double getLastFps, double getAverageFps, long getLoops, Urho3D::String* string) {
+void DebugPanel::setText(float getLastFps, float getAverageFps, int getLoops, Urho3D::String* string) {
 	msg.Clear();
 	msg.Append("FPS: ").Append(Urho3D::String(getLastFps))
 		.Append("\navg FPS: ").Append(Urho3D::String(getAverageFps))

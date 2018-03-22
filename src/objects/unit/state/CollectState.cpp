@@ -30,7 +30,7 @@ void CollectState::execute(Unit* unit) {
 	Resources& resources = Game::get()->getPlayersManager()->getPlayer(unit->player)->getResources();
 
 	if (unit->resource) {
-		const double value = unit->resource->collect(unit->collectSpeed);
+		const float value = unit->resource->collect(unit->collectSpeed);
 		resources.add(unit->resource->getDbID(), value);
 		Vector3 a = *unit->resource->getPosition() - *unit->position;
 		* unit->toResource = Vector2(a.x_, a.z_);

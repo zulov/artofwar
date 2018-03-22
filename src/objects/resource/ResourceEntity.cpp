@@ -63,12 +63,12 @@ std::string ResourceEntity::getColumns() {
 		"amount		INT     NOT NULL";
 }
 
-double ResourceEntity::collect(double collectSpeed) {
+float ResourceEntity::collect(float collectSpeed) {
 	if (amonut - collectSpeed >= 0) {
 		amonut -= collectSpeed;
 		return collectSpeed;
 	}
-	const double toReturn = amonut;
+	const float toReturn = amonut;
 	amonut = 0;
 	return toReturn;
 }

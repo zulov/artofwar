@@ -123,13 +123,13 @@ int Grid::indexFromPosition(Vector3* position) {
 	return getIndex(posX, posZ);
 }
 
-bool Grid::fieldInCircle(short i, short j, double radius) {
+bool Grid::fieldInCircle(short i, short j, float radius) {
 	short x = i * fieldSize;
 	short y = j * fieldSize;
 	return x * x + y * y < radius * radius;
 }
 
-std::vector<short>* Grid::getEnvIndexs(double radius) {
+std::vector<short>* Grid::getEnvIndexs(float radius) {
 	auto indexes = new std::vector<short>();
 	for (short i = 0; i < RES_SEP_DIST; ++i) {
 		for (short j = 0; j < RES_SEP_DIST; ++j) {

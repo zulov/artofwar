@@ -170,7 +170,7 @@ signed char Physical::getTeam() {
 	return team;
 }
 
-void Physical::absorbAttack(double attackCoef) {
+void Physical::absorbAttack(float attackCoef) {
 
 }
 

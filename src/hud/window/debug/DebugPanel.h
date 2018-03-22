@@ -11,7 +11,7 @@ class DebugPanel : public AbstractWindowPanel
 public:
 	DebugPanel(Urho3D::XMLFile* _style);
 	~DebugPanel();
-	void setText(double getLastFps, double getAverageFps, long getLoops, Urho3D::String* string);
+	void setText(float getLastFps, float getAverageFps, int getLoops, Urho3D::String* string);
 
 private:
 	void createBody() override;

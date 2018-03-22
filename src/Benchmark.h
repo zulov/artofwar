@@ -6,17 +6,17 @@ class Benchmark {
 public:
 	Benchmark();
 	~Benchmark();
-	double getAverageFPS() const;
-	double getLastFPS();
-	void add(double fps);
+	float getAverageFPS() const;
+	float getLastFPS();
+	void add(float fps);
 	void save();
-	long getLoops() const;
+	int getLoops() const;
 private:
-	double data[BENCH_LENGTH]{};
+	float data[BENCH_LENGTH]{};
 	int index;
-	double sum;
-	double avg;
+	float sum;
+	float avg;
 	std::ofstream output;
-	long loops = 0;
+	int loops = 0;
 };
 

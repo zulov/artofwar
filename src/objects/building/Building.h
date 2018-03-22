@@ -16,7 +16,7 @@ public:
 	float getHealthBarSize() override;
 	int getDbID() override;
 	void populate();
-	void absorbAttack(double attackCoef) override;
+	void absorbAttack(float attackCoef) override;
 
 	String& toMultiLineString() override;
 	void action(short id, ActionParameter& parameter) override;
@@ -37,5 +37,5 @@ private:
 	std::vector<db_unit*>* units;
 	QueueManager* queue;
 
-	static double hbMaxSize;
+	static float hbMaxSize;
 };

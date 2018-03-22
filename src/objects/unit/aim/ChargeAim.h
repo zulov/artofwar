@@ -12,6 +12,6 @@ public:
 	bool expired() override;
 private:
 	Urho3D::Vector2 direction;
-	double distance;
+	float distance;
 };
 

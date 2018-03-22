@@ -8,7 +8,7 @@
 #include "DrawGridUtils.h"
 
 
-MainGrid::MainGrid(const short _resolution, const double _size, const bool _debugEnabled): Grid(_resolution, _size,
+MainGrid::MainGrid(const short _resolution, const float _size, const bool _debugEnabled): Grid(_resolution, _size,
                                                                                                 _debugEnabled) {
 	short posX = 0;
 	short posZ = 0;
@@ -310,10 +310,10 @@ void MainGrid::updateNeighbors(const int current) {
 				if (inSide(cords.x_ + i, cords.y_ + j)) {
 					const int index = getIndex(cords.x_ + i, cords.y_ + j);
 					if (complexData[index].isUnit()) {
-						double costD = cost(current, index);
+						float costD = cost(current, index);
 						tempNeighbour->push_back(std::pair<int, float>(index, costD));
 					} else if (!complexData[index].isUnit()) {
-						double costD = cost(current, index);
+						float costD = cost(current, index);
 						tempNeighbour2->push_back(std::pair<int, float>(index, costD));
 					}
 				}
@@ -324,7 +324,7 @@ void MainGrid::updateNeighbors(const int current) {
 	complexData[current].setOccupiedNeightbours(tempNeighbour2);
 }
 
-double MainGrid::cost(const int current, const int next) {
+float MainGrid::cost(const int current, const int next) {
 	return (complexData[current].getCenter() - complexData[next].getCenter()).Length();
 }
 
@@ -352,11 +352,11 @@ void MainGrid::debug(int start, int end) {
 std::vector<int>* MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
-	double min = cost(start, goal);
+	float min = cost(start, goal);
 	return findPath(start, goal, min, min * 2);
 }
 
-std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, double min, double max) {
+std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, float min, float max) {
 	resetPathArrays();
 	frontier.init(max, min);
 	frontier.put(startIdx, 0);
@@ -406,7 +406,7 @@ std::vector<int>* MainGrid::findPath(int startIdx, const Vector2& aim) {
 	lastStartIdx = startIdx;
 	lastEndIdx = end;
 
-	double min = cost(startIdx, end);
+	float min = cost(startIdx, end);
 	return findPath(startIdx, end, min, min * 2);
 }
 

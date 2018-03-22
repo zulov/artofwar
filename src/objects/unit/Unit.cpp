@@ -48,7 +48,7 @@ bool Unit::isAlive() {
 }
 
 float Unit::getHealthBarSize() {
-	double healthBarSize = hbMaxSize * (hpCoef / maxHpCoef);
+	float healthBarSize = hbMaxSize * (hpCoef / maxHpCoef);
 	if (healthBarSize <= 0) { healthBarSize = 0; }
 	return healthBarSize;
 }
@@ -102,7 +102,7 @@ void Unit::setAcceleration(Vector2& _acceleration) {
 	}
 }
 
-Vector2 Unit::forceGo(double boostCoef, double aimCoef, Vector2& force) {
+Vector2 Unit::forceGo(float boostCoef, float aimCoef, Vector2& force) {
 	force.Normalize();
 	force *= boostCoef;
 	force -= velocity;
@@ -112,7 +112,7 @@ Vector2 Unit::forceGo(double boostCoef, double aimCoef, Vector2& force) {
 	return force;
 }
 
-Vector2 Unit::getDestination(double boostCoef, double aimCoef) {
+Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 	Vector2 force;
 	if (aims.hasAim()) {
 		aims.clearAimsIfExpired();
@@ -132,7 +132,7 @@ Vector2 Unit::getDestination(double boostCoef, double aimCoef) {
 	return force;
 }
 
-void Unit::absorbAttack(double attackCoef) {
+void Unit::absorbAttack(float attackCoef) {
 	hpCoef -= attackCoef * (1 - defenseCoef);
 	if (billboardBar->enabled_) {
 		updateHealthBar();
@@ -142,7 +142,7 @@ void Unit::absorbAttack(double attackCoef) {
 	}
 }
 
-void Unit::attackIfCloseEnough(double& distance, Unit* closest) {
+void Unit::attackIfCloseEnough(float& distance, Unit* closest) {
 	if (closest) {
 		if (distance < attackRange * attackRange) {
 			toAttack(closest);
@@ -153,7 +153,7 @@ void Unit::attackIfCloseEnough(double& distance, Unit* closest) {
 	}
 }
 
-void Unit::collectIfCloseEnough(double distance, ResourceEntity* closest) {
+void Unit::collectIfCloseEnough(float distance, ResourceEntity* closest) {
 	if (closest) {
 		if (distance < attackRange * attackRange) {
 			toCollect(closest);
@@ -164,11 +164,11 @@ void Unit::collectIfCloseEnough(double distance, ResourceEntity* closest) {
 }
 
 void Unit::toAttack(std::vector<Unit*>* enemies) {
-	double minDistance = 9999;
+	float minDistance = 9999;
 	Unit* entityClosest = nullptr;
 	for (auto entity : *enemies) {
 		if (entity->isAlive()) {
-			double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
+			float distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
 			if (distance <= minDistance) {
 				minDistance = distance;
 				entityClosest = entity;
@@ -188,12 +188,12 @@ void Unit::toAttack() {
 }
 
 void Unit::toCollect(std::vector<Physical*>* enemies) {
-	double minDistance = 9999;
+	float minDistance = 9999;
 	ResourceEntity* entityClosest = nullptr;
 	for (auto entity : *enemies) {
 		ResourceEntity* resource = dynamic_cast<ResourceEntity*>(entity);
 		if (resource->belowLimit()) {
-			const double distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
+			const float distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
 			if (distance <= minDistance) {
 				minDistance = distance;
 				entityClosest = resource;
@@ -212,7 +212,7 @@ void Unit::toCollect(ResourceEntity* _resource) {
 	resource = _resource;
 }
 
-void Unit::updateHeight(double y, double timeStep) {
+void Unit::updateHeight(float y, double timeStep) {
 	velocity *= 1 + (position->y_ - y) * mass * timeStep;
 	position->y_ = y;
 }
@@ -369,7 +369,7 @@ void Unit::applyForce(double timeStep) {
 
 	velocity *= 0.95f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep / mass);
-	double velLenght = velocity.LengthSquared();
+	float velLenght = velocity.LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
 		StateManager::get()->changeState(this, UnitStateType::STOP);
 	} else {

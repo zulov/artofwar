@@ -34,8 +34,8 @@ protected:
 	Bucket* buckets;
 
 private:
-	bool fieldInCircle(short i, short j, double radius);
-	std::vector<short>* getEnvIndexs(double radius);
+	bool fieldInCircle(short i, short j, float radius);
+	std::vector<short>* getEnvIndexs(float radius);
 	void addAt(int index, Unit* entity);
 	void removeAt(int index, Unit* entity);
 
