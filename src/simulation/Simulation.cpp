@@ -86,10 +86,7 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() {
 	if (UNITS_NUMBER > 0) {
-		simObjectManager->addUnits(UNITS_NUMBER, 0, Vector2(200, 0), 0, 0);
-		simObjectManager->addUnits(UNITS_NUMBER, 0, Vector2(-200, 0), 0, 0);
-		simObjectManager->addUnits(UNITS_NUMBER, 0, Vector2(0, -200), 0, 0);
-		simObjectManager->addUnits(UNITS_NUMBER, 0, Vector2(0, 200), 0, 0);
+		simObjectManager->addUnits(UNITS_NUMBER, 0, Vector2(0, 0), 0, 0);
 	}
 }
 

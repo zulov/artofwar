@@ -21,7 +21,7 @@ private:
 	short id;
 	short sideA;
 	short sideB;
-	float sparsity = 2;
+	float sparsity = 1;
 	std::vector<Unit*> units;
 	FormationType type;
 	Vector2 center;

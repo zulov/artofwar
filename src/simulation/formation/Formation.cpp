@@ -49,6 +49,7 @@ float Formation::getWellFormed() const {
 }
 
 float Formation::isReady() {
+	return 0;
 }
 
 void Formation::updateUnits() {
@@ -67,6 +68,7 @@ void Formation::updateCenter() {
 	Vector2 temp = Vector2::ZERO;
 
 	notWellformed = 0;
+	float biggest = 0;
 	for (auto unit : units) {
 		if (unit->getPositionInFormation() < sideA * sideB) {
 			temp.x_ += unit->getPosition()->x_;
@@ -77,9 +79,12 @@ void Formation::updateCenter() {
 		                    pos.x_ - unit->getPosition()->x_,
 		                    pos.y_ - unit->getPosition()->z_
 		                   ).LengthSquared();
-
+		if (sth > biggest) {
+			biggest = sth;
+		}
 		notWellformed += sth;
 	}
+	biggest = sqrt(biggest);
 	notWellformed /= units.size();
 
 	temp /= Min(units.size(), sideA * sideB);
