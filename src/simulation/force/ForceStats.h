@@ -1,6 +1,8 @@
 #pragma once
-#define FORCE_STATS_SIZE 10000
 #include <iostream>
+#include <Urho3D/Math/Vector2.h>
+
+#define FORCE_STATS_SIZE 10000
 
 struct ForceStats
 {
@@ -17,23 +19,23 @@ struct ForceStats
 		std::fill_n(stats, 5, 0);
 	}
 
-	void addSepObst(Vector2& force) {
+	void addSepObst(Urho3D::Vector2& force) {
 		sepObstStat += force.Length();
 	}
 
-	void addSepUnit(Vector2& force) {
+	void addSepUnit(Urho3D::Vector2& force) {
 		sepUnitStat += force.Length();
 	}
 
-	void addDest(Vector2& force) {
+	void addDest(Urho3D::Vector2& force) {
 		destStat += force.Length();
 	}
 
-	void addForm(Vector2& force) {
+	void addForm(Urho3D::Vector2& force) {
 		formStat += force.Length();
 	}
 
-	void addEscp(Vector2& force) {
+	void addEscp(Urho3D::Vector2& force) {
 		escaStat += force.Length();
 	}
 
@@ -50,6 +52,7 @@ struct ForceStats
 				stats[0] << "\t" << stats[1] << "\t" <<
 				stats[2] << "\t" << stats[3] << "\t" <<
 				stats[4] << std::endl;
+			reset();
 		}
 		return stats;
 	}

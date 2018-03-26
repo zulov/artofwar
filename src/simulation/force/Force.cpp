@@ -32,7 +32,7 @@ void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* u
 	Vector2 force;
 
 	for (auto neight : *units) {
-		float sqSepDist = 1 + neight->getMinimalDistance();
+		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
 		Vector2 diff(
@@ -57,9 +57,10 @@ void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* u
 		force += diff;
 	}
 
+	force *= boostCoef * sepCoef;
+
 	forceStats.addSepUnit(force);
 
-	force *= boostCoef * sepCoef;
 	newForce += force;
 }
 

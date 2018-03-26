@@ -367,7 +367,7 @@ void Unit::applyForce(double timeStep) {
 		return;
 	}
 
-	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
+	velocity *= 0.95f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep / mass);
 	float velLenght = velocity.LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {

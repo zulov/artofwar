@@ -1,8 +1,8 @@
 #pragma once
 
+#include "ForceStats.h"
 #include "objects/unit/Unit.h"
 #include <vector>
-#include "ForceStats.h"
 
 
 class Force
