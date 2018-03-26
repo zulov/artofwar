@@ -264,6 +264,8 @@ void Simulation::calculateForces() {
 		force.formation(newForce, unit);
 		force.escapeFromInvalidPosition(newForce, enviroment->validatePosition(unit->getPosition()));
 
+		float* stats = force.stats();
+
 		unit->setAcceleration(newForce);
 	}
 }

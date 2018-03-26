@@ -469,6 +469,7 @@
     <ClInclude Include="src\simulation\formation\FormationType.h" />
     <ClInclude Include="src\objects\ActionType.h" />
     <ClInclude Include="src\simulation\env\bucket\DrawGridUtils.h" />
+    <ClInclude Include="src\simulation\force\ForceStats.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -96,9 +96,9 @@ void Unit::move(double timeStep) {
 
 void Unit::setAcceleration(Vector2& _acceleration) {
 	acceleration = _acceleration;
-	if (_acceleration.LengthSquared() > 1000000) {
+	if (_acceleration.LengthSquared() > 100000000) {
 		acceleration.Normalize();
-		acceleration *= 1000;
+		acceleration *= 10000;
 	}
 }
 
@@ -367,7 +367,7 @@ void Unit::applyForce(double timeStep) {
 		return;
 	}
 
-	velocity *= 0.95f; //TODO to dac jaki wspolczynnik tarcia terenu
+	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep / mass);
 	float velLenght = velocity.LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {

@@ -1,7 +1,9 @@
 #include "Force.h"
 #include "Game.h"
+#include <algorithm>
 
-Force::Force() = default;
+Force::Force() {
+}
 
 
 Force::~Force() = default;
@@ -17,6 +19,9 @@ void Force::separationObstacle(Vector2& newForce, Unit* unit, const Vector2& rep
 
 	force *= coef / distance;
 	force *= boostCoef * sepCoef;
+
+	forceStats.addSepObst(force);
+
 	newForce += force;
 }
 
@@ -52,16 +57,21 @@ void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* u
 		force += diff;
 	}
 
+	forceStats.addSepUnit(force);
+
 	force *= boostCoef * sepCoef;
 	newForce += force;
 }
 
-void Force::destination(Vector2& newForce, Unit* unit) const {
-	const auto force = unit->getDestination(boostCoef, aimCoef);
+void Force::destination(Vector2& newForce, Unit* unit) {
+	auto force = unit->getDestination(boostCoef, aimCoef);
+
+	forceStats.addDest(force);
+
 	newForce += force;
 }
 
-void Force::formation(Vector2& newForce, Unit* unit) const {
+void Force::formation(Vector2& newForce, Unit* unit) {
 	auto opt = Game::get()->getFormationManager()->getPositionFor(unit);
 	if (opt.has_value()) {
 		const float wellFormed = Game::get()->getFormationManager()->getWellFormed(unit);
@@ -70,15 +80,26 @@ void Force::formation(Vector2& newForce, Unit* unit) const {
 		                     opt.value().y_ - unit->getPosition()->z_
 		                    );
 		force *= formationCoef * boostCoef * (1 - wellFormed);
+
+		forceStats.addForm(force);
+
 		newForce += force;
 	}
 }
 
-void Force::escapeFromInvalidPosition(Vector2& newForce, Vector2* dir) const {
+void Force::escapeFromInvalidPosition(Vector2& newForce, Vector2* dir) {
 	if (dir) {
-		newForce += *dir * escapeCoef;
+		auto force = *dir * escapeCoef * boostCoef;
+
+		forceStats.addEscp(force);
+
+		newForce += force;
 		delete dir;
 	}
+}
+
+float* Force::stats() {
+	return forceStats.result();
 }
 
 float Force::calculateCoef(const float distance, const float minDist) const {
