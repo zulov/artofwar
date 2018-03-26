@@ -27,7 +27,7 @@ void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* u
 	Vector2 force;
 
 	for (auto neight : *units) {
-		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
+		float sqSepDist = 1 + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
 		Vector2 diff(
@@ -83,10 +83,16 @@ void Force::escapeFromInvalidPosition(Vector2& newForce, Vector2* dir) const {
 
 float Force::calculateCoef(const float distance, const float minDist) const {
 	float parameter = distance - minDist / 2;
+	float coef;
+	if (distance < minDist) {
+		coef = -10 * distance + 25;
+	} else {
+		coef = 0;
+	}
 	if (parameter <= 0.05) {
 		parameter = 0.05;
 	}
-	return 1 / parameter;
+	return 1 / parameter + coef;
 }
 
 //float Force::calculateCoef(const float distance, const float minDist) const {
