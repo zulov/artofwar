@@ -17,6 +17,7 @@ public:
 	void formation(Vector2& newForce, Unit* unit);
 	void escapeFromInvalidPosition(Vector2& newForce, Vector2* dir);
 	float* stats();
+	void changeCoef(int i, int wheel);
 
 private:
 	float calculateCoef(float distance, float minDist) const;

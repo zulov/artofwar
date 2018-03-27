@@ -179,6 +179,10 @@ void Simulation::save(SceneSaver& saver) {
 	saver.saveResourceEntities(resources);
 }
 
+void Simulation::changeCoef(int i, int wheel) {
+	force.changeCoef(i, wheel);
+}
+
 void Simulation::performStateAction() {
 	for (auto unit : *units) {
 		unit->executeState();

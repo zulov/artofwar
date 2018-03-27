@@ -103,6 +103,25 @@ float* Force::stats() {
 	return forceStats.result();
 }
 
+void Force::changeCoef(int i, int wheel) {
+	switch (i) {
+	case 0: sepCoef += wheel * 0.2;
+		std::cout << "Sep" << sepCoef << std::endl;
+		break;
+	case 1: aimCoef += wheel * 0.2;
+		std::cout << "Aim " << aimCoef << std::endl;
+		break;
+	case 2: formationCoef += wheel * 0.2;
+		std::cout << "Form " << formationCoef << std::endl;
+		break;
+	case 3: escapeCoef += wheel * 0.2;
+		std::cout << "Esc " << escapeCoef << std::endl;
+		break;
+	default:
+		break;
+	}
+}
+
 float Force::calculateCoef(const float distance, const float minDist) const {
 	float parameter = distance - minDist / 2;
 	float coef;

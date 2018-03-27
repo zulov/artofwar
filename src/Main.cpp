@@ -316,9 +316,8 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 		} else if (key == KEY_F5) {
 			String name = "test" + String(rand());
 			save(name);
-		} else if (key == KEY_F9) {
+		} else if (key == KEY_F6) {
 			saveToLoad = "quicksave.db";
-
 			changeState(GameState::CLOSING);
 		}
 	}
@@ -394,6 +393,22 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 		GetSubsystem<Console>()->Toggle();
 	} else if (key == KEY_F2) {
 		GetSubsystem<DebugHud>()->ToggleAll();
+	}
+
+	if (key == KEY_F9) {
+		coefToEdit = 0;
+	} else if (key == KEY_F10) {
+		coefToEdit = 1;
+	} else if (key == KEY_F11) {
+		coefToEdit = 2;
+	} else if (key == KEY_F12) {
+		coefToEdit = 3;
+	}
+
+	if (key == KEY_KP_PLUS) {
+		simulation->changeCoef(coefToEdit, 1);
+	} else if (key == KEY_KP_MINUS) {
+		simulation->changeCoef(coefToEdit, -1);
 	}
 
 }

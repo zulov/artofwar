@@ -1,11 +1,11 @@
 ﻿#include "MainGrid.h"
 #include "BucketQueue.h"
+#include "DrawGridUtils.h"
 #include "Game.h"
 #include "Urho3D/Resource/Image.h"
 #include <algorithm>
 #include <iomanip>
 #include <queue>
-#include "DrawGridUtils.h"
 
 
 MainGrid::MainGrid(const short _resolution, const float _size, const bool _debugEnabled): Grid(_resolution, _size,

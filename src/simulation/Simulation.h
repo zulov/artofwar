@@ -31,6 +31,7 @@ public:
 
 	void dispose();
 	void save(SceneSaver& saver);
+	void changeCoef(int i, int wheel);
 
 private:
 	void moveUnits(float timeStep);

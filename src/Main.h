@@ -87,4 +87,6 @@ private:
 	int newGamesStages = 6;
 
 	bool inited = false;
+
+	short coefToEdit = 0;
 };
