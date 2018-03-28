@@ -26,17 +26,19 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
 	populate();
 	Model* model3d = Game::get()->getCache()->GetResource<Model>("Models/" + dbLevel->model);
-	Material* material = Game::get()->getCache()->GetResource<Material>("Materials/" + dbLevel->texture);
+	basic = Game::get()->getCache()->GetResource<Material>("Materials/" + dbLevel->texture);
 
 	node->Scale(dbLevel->scale);
-	StaticModel* model = node->CreateComponent<StaticModel>();
+	model = node->CreateComponent<StaticModel>();
 	model->SetModel(model3d);
-	model->SetMaterial(material);
+	model->SetMaterial(basic);
 
 	setPlayer(player);
 	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam());
 
 	updateBillbords();
+
+	color = new Material(Game::get()->getContext());
 }
 
 Unit::~Unit() {
@@ -292,6 +294,15 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 	upgrades.push_back(upgrade);
 }
 
+void Unit::changeColor(int param, float value) {
+	color->SetShaderParameter("MatDiffColor", Color(value, 0, 0));
+	model->SetMaterial(color);
+}
+
+void Unit::restoreMaterial() {
+	model->SetMaterial(basic);
+}
+
 UnitStateType Unit::getActionState() {
 	return actionState;
 }
@@ -372,10 +383,13 @@ void Unit::applyForce(double timeStep) {
 	float velLenght = velocity.LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
 		StateManager::get()->changeState(this, UnitStateType::STOP);
+		changeColor(0, 0.2);
 	} else {
+		changeColor(0, 0.5);
 		if (velLenght > maxSpeed * maxSpeed) {
 			velocity.Normalize();
 			velocity *= maxSpeed;
+			changeColor(0, 1);
 		}
 		StateManager::get()->changeState(this, UnitStateType::MOVE);
 		if (rotatable) {

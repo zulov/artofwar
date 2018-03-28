@@ -6,6 +6,7 @@
 #include "state/StateManager.h"
 #include "state/UnitStateType.h"
 #include <vector>
+#include <Urho3D/Graphics/StaticModel.h>
 
 
 class State;
@@ -76,6 +77,9 @@ public:
 	static std::string getColumns();
 	std::string getValues(int precision) override;
 	void addUpgrade(db_unit_upgrade* upgrade);
+
+	void changeColor(int param, float value);
+	void restoreMaterial();
 private:
 	void addAim(Aim* aim, bool append);
 	void removeAim();
@@ -93,6 +97,10 @@ private:
 
 	UnitStateType state;
 	UnitStateType actionState;
+
+	StaticModel* model;
+	Material * basic;//TODO leak?
+	Material * color;//TODO leak?
 
 	std::vector<db_unit_upgrade*> upgrades;
 
