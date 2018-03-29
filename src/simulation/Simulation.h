@@ -32,6 +32,7 @@ public:
 	void dispose();
 	void save(SceneSaver& saver);
 	void changeCoef(int i, int wheel);
+	void changeColorMode(ColorMode _colorMode);
 
 private:
 	void moveUnits(float timeStep);

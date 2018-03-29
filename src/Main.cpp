@@ -395,16 +395,6 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 		GetSubsystem<DebugHud>()->ToggleAll();
 	}
 
-	if (key == KEY_F9) {
-		coefToEdit = 0;
-	} else if (key == KEY_F10) {
-		coefToEdit = 1;
-	} else if (key == KEY_F11) {
-		coefToEdit = 2;
-	} else if (key == KEY_F12) {
-		coefToEdit = 3;
-	}
-
 	if (key == KEY_KP_PLUS) {
 		simulation->changeCoef(coefToEdit, 1);
 	} else if (key == KEY_KP_MINUS) {
@@ -487,7 +477,7 @@ void Main::disposeScene() {
 	newGameProgress.reset(newGamesStages);
 }
 
-SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo) const {
+SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo) {
 	const IntVector2 cursorPos = Game::get()->getUI()->GetCursorPosition();
 	UIElement* element = Game::get()->getUI()->GetElementAt(cursorPos, false);
 
@@ -499,6 +489,19 @@ SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo
 	}
 
 	Input* input = GetSubsystem<Input>();
+
+	if (input->GetKeyPress(KEY_F8)) {
+		simulation->changeColorMode(ColorMode::BASIC);
+	} else if (input->GetKeyPress(KEY_F9)) {
+		coefToEdit = 0;
+		simulation->changeColorMode(ColorMode::VELOCITY);
+	} else if (input->GetKeyPress(KEY_F10)) {
+		coefToEdit = 1;
+	} else if (input->GetKeyPress(KEY_F11)) {
+		coefToEdit = 2;
+	} else if (input->GetKeyPress(KEY_F12)) {
+		coefToEdit = 3;
+	}
 
 	Game::get()->getCameraManager()->translate(cursorPos, input, timeStep);
 	Game::get()->getCameraManager()->rotate(input->GetMouseMove());

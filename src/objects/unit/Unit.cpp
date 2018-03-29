@@ -295,6 +295,9 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 }
 
 void Unit::changeColor(float value) {
+	if (value < 0) {
+		value = 0;
+	}
 	color->SetShaderParameter("MatDiffColor", Color(value, 0, 0));
 	model->SetMaterial(color);
 }
@@ -303,7 +306,7 @@ void Unit::changeColor(ColorMode mode) {
 	switch (mode) {
 
 	case ColorMode::BASIC:
-
+		model->SetMaterial(basic);
 		break;
 	case ColorMode::VELOCITY:
 		{

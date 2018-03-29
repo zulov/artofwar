@@ -181,7 +181,9 @@ void Simulation::save(SceneSaver& saver) {
 
 void Simulation::changeCoef(int i, int wheel) {
 	force.changeCoef(i, wheel);
-	currentColor = ColorMode(i);
+}
+void Simulation::changeColorMode(ColorMode _colorMode) {
+	currentColor = _colorMode;
 }
 
 void Simulation::performStateAction() {

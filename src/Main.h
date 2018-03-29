@@ -58,7 +58,7 @@ private:
 
 	void InitLocalizationSystem();
 
-	SelectedInfo* control(float timeStep, SimulationInfo* simulationInfo) const;
+	SelectedInfo* control(float timeStep, SimulationInfo* simulationInfo);
 	void changeCamera(int type);
 	void load(String saveName, loading& progres);
 	void save(String name);
