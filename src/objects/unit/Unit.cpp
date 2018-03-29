@@ -294,9 +294,25 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 	upgrades.push_back(upgrade);
 }
 
-void Unit::changeColor(int param, float value) {
+void Unit::changeColor(float value) {
 	color->SetShaderParameter("MatDiffColor", Color(value, 0, 0));
 	model->SetMaterial(color);
+}
+
+void Unit::changeColor(ColorMode mode) {
+	switch (mode) {
+
+	case ColorMode::BASIC:
+
+		break;
+	case ColorMode::VELOCITY:
+		{
+		float value = velocity.LengthSquared() / (maxSpeed * maxSpeed);
+		changeColor(value);
+		}
+		break;
+	default: ;
+	}
 }
 
 void Unit::restoreMaterial() {
@@ -383,13 +399,10 @@ void Unit::applyForce(double timeStep) {
 	float velLenght = velocity.LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
 		StateManager::get()->changeState(this, UnitStateType::STOP);
-		changeColor(0, 0.2);
 	} else {
-		changeColor(0, 0.5);
 		if (velLenght > maxSpeed * maxSpeed) {
 			velocity.Normalize();
 			velocity *= maxSpeed;
-			changeColor(0, 1);
 		}
 		StateManager::get()->changeState(this, UnitStateType::MOVE);
 		if (rotatable) {

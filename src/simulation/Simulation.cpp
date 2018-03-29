@@ -181,6 +181,7 @@ void Simulation::save(SceneSaver& saver) {
 
 void Simulation::changeCoef(int i, int wheel) {
 	force.changeCoef(i, wheel);
+	currentColor = ColorMode(i);
 }
 
 void Simulation::performStateAction() {
@@ -252,6 +253,7 @@ void Simulation::moveUnitsAndCheck(const float timeStep) {
 	for (auto unit : *units) {
 		unit->move(timeStep);
 		unit->checkAim();
+		unit->changeColor(currentColor);
 	}
 }
 

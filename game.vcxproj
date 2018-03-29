@@ -290,6 +290,7 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\objects\unit\ColorMode.h" />
     <ClInclude Include="src\simulation\env\bucket\DrawGridUtils.h" />
     <ClInclude Include="src\simulation\force\ForceStats.h" />
     <ClInclude Include="src\simulation\formation\Formation.h" />

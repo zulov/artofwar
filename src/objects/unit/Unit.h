@@ -5,6 +5,7 @@
 #include "scene/load/dbload_container.h"
 #include "state/StateManager.h"
 #include "state/UnitStateType.h"
+#include "ColorMode.h"
 #include <vector>
 #include <Urho3D/Graphics/StaticModel.h>
 
@@ -78,7 +79,8 @@ public:
 	std::string getValues(int precision) override;
 	void addUpgrade(db_unit_upgrade* upgrade);
 
-	void changeColor(int param, float value);
+	void changeColor(float value);
+	void changeColor(ColorMode mode);
 	void restoreMaterial();
 private:
 	void addAim(Aim* aim, bool append);

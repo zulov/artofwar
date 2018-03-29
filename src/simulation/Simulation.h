@@ -58,6 +58,7 @@ private:
 	float maxTimeFrame = 0.05f;
 	int framesPeriod = 20;
 	int currentFrameNumber = 0;
+	ColorMode currentColor = ColorMode::BASIC;
 	Force force;
 
 	vector<Unit*>* units;
