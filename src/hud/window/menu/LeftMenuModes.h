@@ -1,13 +1,13 @@
 #pragma once
 
-enum class LeftMenuMode
+enum class LeftMenuMode : char
 {
 	BUILDING=0,
 	UNIT,
 	ORDER
 };
 
-enum LeftMenuSubMode
+enum LeftMenuSubMode : char
 {
 	BASIC=0,
 	LEVEL,

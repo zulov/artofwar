@@ -1,6 +1,6 @@
 #pragma once
 
-enum class FormationType
+enum class FormationType : char
 {
 	NONE=0,
 	SQUERE

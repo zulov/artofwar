@@ -1,5 +1,5 @@
 #pragma once
-enum class LeftMenuAction
+enum class LeftMenuAction :char
 {
 	NONE =0,
 	

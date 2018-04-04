@@ -1,5 +1,5 @@
 #pragma once
-enum class GameState
+enum class GameState : char
 {
 	STARTING=0,
 	NEW_GAME,
