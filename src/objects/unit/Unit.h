@@ -79,7 +79,7 @@ public:
 	std::string getValues(int precision) override;
 	void addUpgrade(db_unit_upgrade* upgrade);
 
-	void changeColor(float value);
+	void changeColor(float value, float maxValue);
 	void changeColor(ColorMode mode);
 	void restoreMaterial();
 private:
@@ -102,7 +102,6 @@ private:
 
 	StaticModel* model;
 	Material * basic;
-	Material * color;
 
 	std::vector<db_unit_upgrade*> upgrades;
 

@@ -39,7 +39,6 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 
 	updateBillbords();
 
-	color = new Material(Game::get()->getContext());
 }
 
 Unit::~Unit() {
@@ -295,13 +294,12 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 	upgrades.push_back(upgrade);
 }
 
-void Unit::changeColor(float value) {
-	Material* material = Game::get()->getColorPeletteRepo()->getColor(ColorPallet::RED, value, 1);
-	if (material != color) {
-		color = material;
-		model->SetMaterial(color);
-	} else {
-		int a = 5;
+void Unit::changeColor(float value, float maxValue) {
+	Material* newMaterial = Game::get()->getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue);
+	Material* current = model->GetMaterial(0);
+
+	if (newMaterial != current) {
+		model->SetMaterial(newMaterial);
 	}
 }
 
@@ -309,12 +307,16 @@ void Unit::changeColor(ColorMode mode) {
 	switch (mode) {
 
 	case ColorMode::BASIC:
-		model->SetMaterial(basic);
+		{
+		Material* current = model->GetMaterial(0);
+		if (current != basic) {
+			model->SetMaterial(basic);
+		}
+		}
 		break;
 	case ColorMode::VELOCITY:
 		{
-		float value = velocity.LengthSquared() / (maxSpeed * maxSpeed);
-		changeColor(value);
+		changeColor(velocity.LengthSquared(), maxSpeed * maxSpeed);
 		}
 		break;
 	default: ;
