@@ -63,6 +63,10 @@ FormationManager* Game::getFormationManager() const {
 	return formationManager;
 }
 
+ColorPeletteRepo* Game::getColorPeletteRepo() const {
+	return colorPeletteRepo;
+}
+
 Game::Game() = default;
 
 
@@ -163,5 +167,10 @@ Game* Game::setQueueManager(QueueManager* _queueManager) {
 
 Game* Game::setFormationManager(FormationManager* _formationManager) {
 	formationManager = _formationManager;
+	return this;
+}
+
+Game* Game::setColorPeletteRepo(ColorPeletteRepo* _colorPeletteRepo) {
+	colorPeletteRepo = _colorPeletteRepo;
 	return this;
 }

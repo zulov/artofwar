@@ -4,6 +4,7 @@
 #include "commands/action/ActionCommand.h"
 #include "commands/action/ActionCommandList.h"
 #include "database/DatabaseCache.h"
+#include "colors/ColorPeletteRepo.h"
 #include "player/PlayersManager.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
@@ -295,11 +296,13 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 }
 
 void Unit::changeColor(float value) {
-	if (value < 0) {
-		value = 0;
+	Material* material = Game::get()->getColorPeletteRepo()->getColor(ColorPallet::RED, value, 1);
+	if (material != color) {
+		color = material;
+		model->SetMaterial(color);
+	} else {
+		int a = 5;
 	}
-	color->SetShaderParameter("MatDiffColor", Color(value, 0, 0));
-	model->SetMaterial(color);
 }
 
 void Unit::changeColor(ColorMode mode) {

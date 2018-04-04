@@ -101,8 +101,8 @@ private:
 	UnitStateType actionState;
 
 	StaticModel* model;
-	Material * basic;//TODO leak?
-	Material * color;//TODO leak?
+	Material * basic;
+	Material * color;
 
 	std::vector<db_unit_upgrade*> upgrades;
 

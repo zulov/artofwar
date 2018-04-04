@@ -8,6 +8,7 @@
 #include "objects/LinkComponent.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimulationInfo.h"
+#include "colors/ColorPeletteRepo.h"
 #include <Main.h>
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Engine/Console.h>
@@ -187,10 +188,11 @@ void Main::createSimulation() {
 }
 
 void Main::setSimpleManagers() {
-	Game::get()->setCameraManager(new CameraManager());
-	Game::get()->setQueueManager(new QueueManager(1));
-	Game::get()->setFormationManager(new FormationManager());
-	Game::get()->setPlayersManager(new PlayersManager());
+	Game::get()->setCameraManager(new CameraManager())
+	           ->setQueueManager(new QueueManager(1))
+	           ->setFormationManager(new FormationManager())
+	           ->setPlayersManager(new PlayersManager())
+	           ->setColorPeletteRepo(new ColorPeletteRepo());
 }
 
 void Main::updateProgres(loading& progres) {
@@ -451,6 +453,9 @@ void Main::disposeScene() {
 
 		delete Game::get()->getFormationManager();
 		Game::get()->setFormationManager(nullptr);
+
+		delete Game::get()->getColorPeletteRepo();
+		Game::get()->setColorPeletteRepo(nullptr);
 
 		loading2.inc("dispose creationList");
 		delete Game::get()->getCreationCommandList();

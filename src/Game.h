@@ -23,6 +23,7 @@ class DatabaseCache;
 class CameraManager;
 class PlayersManager;
 class QueueManager;
+class ColorPeletteRepo;
 
 class Game
 {
@@ -47,6 +48,7 @@ public:
 	Game* setEnviroment(Enviroment* _enviroment);
 	Game* setQueueManager(QueueManager* _queueManager);
 	Game* setFormationManager(FormationManager* _formationManager);
+	Game* setColorPeletteRepo(ColorPeletteRepo* _colorPeletteRepo);
 
 
 	ResourceCache* getCache() const;
@@ -66,6 +68,7 @@ public:
 	PlayersManager* getPlayersManager() const;
 	Enviroment* getEnviroment() const;
 	FormationManager* getFormationManager() const;
+	ColorPeletteRepo* getColorPeletteRepo() const;
 
 private:
 	Game();
@@ -88,4 +91,5 @@ private:
 	Enviroment* enviroment;
 	QueueManager* queue;
 	FormationManager* formationManager;
+	ColorPeletteRepo* colorPeletteRepo;
 };

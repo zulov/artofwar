@@ -208,6 +208,7 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
     <ClCompile Include="src\simulation\formation\Formation.cpp" />
     <ClCompile Include="src\simulation\formation\FormationManager.cpp" />
+    <ClCompile Include="src\colors\ColorPeletteRepo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -471,6 +472,8 @@
     <ClInclude Include="src\simulation\env\bucket\DrawGridUtils.h" />
     <ClInclude Include="src\simulation\force\ForceStats.h" />
     <ClInclude Include="src\objects\unit\ColorMode.h" />
+    <ClInclude Include="src\colors\ColorPallet.h" />
+    <ClInclude Include="src\colors\ColorPeletteRepo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
