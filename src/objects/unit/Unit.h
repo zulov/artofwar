@@ -81,7 +81,6 @@ public:
 
 	void changeColor(float value, float maxValue);
 	void changeColor(ColorMode mode);
-	void restoreMaterial();
 private:
 	void addAim(Aim* aim, bool append);
 	void removeAim();

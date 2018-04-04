@@ -3,11 +3,11 @@
 
 
 FollowState::FollowState() {
-	transitions.insert(UnitStateType::STOP);
-	transitions.insert(UnitStateType::DEFEND);
-	transitions.insert(UnitStateType::DEAD);
-	transitions.insert(UnitStateType::GO);
-	transitions.insert(UnitStateType::PATROL);
+	transitions[static_cast<char>(UnitStateType::STOP)] = true;
+	transitions[static_cast<char>(UnitStateType::DEFEND)] = true;
+	transitions[static_cast<char>(UnitStateType::DEAD)] = true;
+	transitions[static_cast<char>(UnitStateType::GO)] = true;
+	transitions[static_cast<char>(UnitStateType::PATROL)] = true;
 }
 
 FollowState::~FollowState() = default;

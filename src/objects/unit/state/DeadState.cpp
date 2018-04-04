@@ -3,7 +3,7 @@
 
 
 DeadState::DeadState() {
-	transitions.insert(UnitStateType::DISPOSE);
+	transitions[static_cast<char>(UnitStateType::DISPOSE)] = true;
 }
 
 

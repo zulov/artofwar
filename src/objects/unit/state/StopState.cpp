@@ -3,15 +3,15 @@
 
 
 StopState::StopState() {
-	transitions.insert(UnitStateType::DEFEND);
-	transitions.insert(UnitStateType::DEAD);
-	transitions.insert(UnitStateType::GO);
-	transitions.insert(UnitStateType::PATROL);
-	transitions.insert(UnitStateType::FOLLOW);
-	transitions.insert(UnitStateType::ATTACK);
-	transitions.insert(UnitStateType::MOVE);
-	transitions.insert(UnitStateType::CHARAGE);
-	transitions.insert(UnitStateType::COLLECT);
+	transitions[static_cast<char>(UnitStateType::DEFEND)] = true;
+	transitions[static_cast<char>(UnitStateType::DEAD)] = true;
+	transitions[static_cast<char>(UnitStateType::GO)] = true;
+	transitions[static_cast<char>(UnitStateType::PATROL)] = true;
+	transitions[static_cast<char>(UnitStateType::FOLLOW)] = true;
+	transitions[static_cast<char>(UnitStateType::ATTACK)] = true;
+	transitions[static_cast<char>(UnitStateType::MOVE)] = true;
+	transitions[static_cast<char>(UnitStateType::CHARAGE)] = true;
+	transitions[static_cast<char>(UnitStateType::COLLECT)] = true;
 }
 
 StopState::~StopState() = default;

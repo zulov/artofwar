@@ -5,7 +5,9 @@
 #include "Game.h"
 
 
-CollectState::CollectState() = default;
+CollectState::CollectState() {
+	//TODO
+}
 
 
 CollectState::~CollectState() = default;

@@ -1,7 +1,9 @@
 #include "State.h"
 #include "../Unit.h"
 
-State::State() = default;
+State::State() {
+	std::fill_n(transitions, STATE_SIZE, false);
+}
 
 State::~State() = default;
 
@@ -14,5 +16,5 @@ void State::execute(Unit* unit) {
 }
 
 bool State::validateTransition(UnitStateType stateTo) {
-	return transitions.find(stateTo) != transitions.end();
+	return transitions[static_cast<char>(stateTo)];
 }

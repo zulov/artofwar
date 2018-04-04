@@ -1,7 +1,8 @@
 #pragma once
 #include "UnitStateType.h"
+#include "database/db_strcut.h"
 #include "objects/unit/ActionParameter.h"
-#include <set>
+
 
 class Unit;
 
@@ -17,5 +18,5 @@ public:
 
 	bool validateTransition(UnitStateType stateTo);
 protected:
-	std::set<UnitStateType> transitions;
+	bool transitions[STATE_SIZE];
 };

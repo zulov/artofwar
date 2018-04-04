@@ -323,10 +323,6 @@ void Unit::changeColor(ColorMode mode) {
 	}
 }
 
-void Unit::restoreMaterial() {
-	model->SetMaterial(basic);
-}
-
 UnitStateType Unit::getActionState() {
 	return actionState;
 }

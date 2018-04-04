@@ -1,5 +1,5 @@
 #pragma once
-enum class ActionType
+enum class ActionType : char
 {
 	NONE=0,
 	UNIT,

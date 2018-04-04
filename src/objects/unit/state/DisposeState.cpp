@@ -2,7 +2,7 @@
 #include "../Unit.h"
 
 
-DisposeState::DisposeState()= default;
+DisposeState::DisposeState() = default;
 
 
 DisposeState::~DisposeState() = default;
