@@ -78,6 +78,7 @@ void Force::formation(Vector2& newForce, Unit* unit) {
 		                     opt.value().x_ - unit->getPosition()->x_,
 		                     opt.value().y_ - unit->getPosition()->z_
 		                    );
+
 		force *= formationCoef * boostCoef * (1 - wellFormed);
 
 		forceStats.addForm(force);
@@ -122,16 +123,10 @@ void Force::changeCoef(int i, int wheel) {
 
 float Force::calculateCoef(const float distance, const float minDist) const {
 	float parameter = distance - minDist / 2;
-	float coef;
-	if (distance < minDist) {
-		coef = -10 * distance + 25;
-	} else {
-		coef = 0;
+	if (parameter <= 0.00005) {
+		parameter = 0.00005;
 	}
-	if (parameter <= 0.05) {
-		parameter = 0.05;
-	}
-	return 1 / parameter + coef;
+	return 1 / parameter;
 }
 
 //float Force::calculateCoef(const float distance, const float minDist) const {
