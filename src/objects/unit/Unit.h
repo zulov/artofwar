@@ -1,14 +1,16 @@
 #pragma once
 
+#include "ColorMode.h"
 #include "objects/Physical.h"
 #include "objects/resource/ResourceEntity.h"
 #include "scene/load/dbload_container.h"
 #include "state/StateManager.h"
 #include "state/UnitStateType.h"
-#include "ColorMode.h"
-#include <vector>
 #include <Urho3D/Graphics/StaticModel.h>
+#include <vector>
 
+
+#define MAX_ACCEL 5000
 
 class State;
 
@@ -100,7 +102,7 @@ private:
 	UnitStateType actionState;
 
 	StaticModel* model;
-	Material * basic;
+	Material* basic;
 
 	std::vector<db_unit_upgrade*> upgrades;
 

@@ -36,7 +36,7 @@ private:
 	Urho3D::Node* box;
 	Urho3D::StaticModel* model;
 	Static* object{};
-	short additonalInfo{};
+	char additonalInfo{};
 	std::vector<std::pair<int, float>> neighbours;
 	std::vector<std::pair<int, float>> occupiedNeightbours;
 	float cost{};

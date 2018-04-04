@@ -84,9 +84,9 @@ void Formation::updateCenter() {
 		}
 		notWellformed += sth;
 	}
-	biggest = sqrt(biggest);
-	notWellformed /= units.size();
-
+	//biggest = sqrt(biggest);
+	notWellformed = biggest+1;
+	notWellformed = Max(notWellformed, biggest);
 	temp /= Min(units.size(), sideA * sideB);
 	center = temp;
 }

@@ -27,7 +27,7 @@ private:
 	float sepCoef = 1;
 	float aimCoef = 2;
 	float escapeCoef = 20;
-	float formationCoef = 1;
+	float formationCoef = 50;
 
 	ForceStats forceStats;
 };

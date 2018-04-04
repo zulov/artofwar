@@ -1,9 +1,7 @@
 #include "Force.h"
 #include "Game.h"
-#include <algorithm>
 
-Force::Force() {
-}
+Force::Force() = default;
 
 
 Force::~Force() = default;
