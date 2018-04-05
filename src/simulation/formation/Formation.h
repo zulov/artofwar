@@ -2,12 +2,13 @@
 #include "FormationType.h"
 #include "objects/Physical.h"
 #include <vector>
+#include "FormationState.h"
 
 
 class Formation
 {
 public:
-	Formation(short _id, std::vector<Physical*>* _units, FormationType _type);
+	Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction);
 	~Formation();
 
 	bool update();
@@ -28,4 +29,8 @@ private:
 	float sizeA;
 	float sizeB;
 	float notWellformed = 0;
+
+	Vector2 direction;
+	int leaderId;
+	FormationState state;
 };

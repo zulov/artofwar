@@ -28,7 +28,7 @@ void FormationManager::createFormation(std::vector<Physical*>* _units, Formation
 		if (currentlyFree == formations.size()) {
 			formations.push_back(nullptr);
 		}
-		formations[currentlyFree] = new Formation(currentlyFree, _units, _type);
+		formations[currentlyFree] = new Formation(currentlyFree, _units, _type, Vector2(1, 1));
 		currentlyFree++;
 	}
 }

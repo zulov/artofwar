@@ -49,9 +49,9 @@ std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, const float ra
 std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, float radius) {
 	neights->clear();
 
-	const float sqSepDistance = radius * radius;
 	Vector3* unitPosition = unit->getPosition();
 	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(unit, radius, 0);
+	const float sqSepDistance = radius * radius;
 
 	while (Unit* neight = bucketIterator.next()) {
 		if (unit == neight) { continue; }

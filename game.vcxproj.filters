@@ -474,6 +474,7 @@
     <ClInclude Include="src\objects\unit\ColorMode.h" />
     <ClInclude Include="src\colors\ColorPallet.h" />
     <ClInclude Include="src\colors\ColorPeletteRepo.h" />
+    <ClInclude Include="src\simulation\formation\FormationState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

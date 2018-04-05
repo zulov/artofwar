@@ -402,6 +402,7 @@
     <ClInclude Include="src\simulation\env\bucket\ComplexBucketData.h" />
     <ClInclude Include="src\simulation\env\bucket\MainGrid.h" />
     <ClInclude Include="src\simulation\env\ContentInfo.h" />
+    <ClInclude Include="src\simulation\formation\FormationState.h" />
     <ClInclude Include="src\simulation\formation\FormationType.h" />
     <ClInclude Include="src\simulation\SimulationInfo.h" />
     <ClInclude Include="src\objects\unit\state\State.h" />

@@ -4,7 +4,8 @@
 #include <iostream>
 
 
-Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type) {
+Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction) : id(_id),
+	type(_type), direction(_direction), state(FormationState::FORMING) {
 	id = _id;
 	for (auto value : *_units) {
 		units.push_back(dynamic_cast<Unit*>(value));
@@ -85,7 +86,7 @@ void Formation::updateCenter() {
 		notWellformed += sth;
 	}
 	//biggest = sqrt(biggest);
-	notWellformed = biggest+1;
+	notWellformed = biggest + 1;
 	notWellformed = Max(notWellformed, biggest);
 	temp /= Min(units.size(), sideA * sideB);
 	center = temp;
