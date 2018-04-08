@@ -73,13 +73,13 @@ void Force::destination(Vector2& newForce, Unit* unit) {
 void Force::formation(Vector2& newForce, Unit* unit) {
 	auto opt = Game::get()->getFormationManager()->getPositionFor(unit);
 	if (opt.has_value()) {
-		const float wellFormed = Game::get()->getFormationManager()->getWellFormed(unit);
+		const float priority = Game::get()->getFormationManager()->getPriority(unit);
 		auto force = Vector2(
 		                     opt.value().x_ - unit->getPosition()->x_,
 		                     opt.value().y_ - unit->getPosition()->z_
 		                    );
 
-		force *= formationCoef * boostCoef * (1 - wellFormed);
+		force *= formationCoef * boostCoef * priority;
 
 		forceStats.addForm(force);
 

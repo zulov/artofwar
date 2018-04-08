@@ -45,8 +45,8 @@ Vector2 Formation::getPositionFor(short id) const {
 	return center - Vector2(column * sparsity - sizeA / 2, row * sparsity - sizeB / 2);
 }
 
-float Formation::getWellFormed() const {
-	return 1 - notWellformed;
+float Formation::getPriority(int id) const {
+	return notWellformed*;
 }
 
 float Formation::isReady() {

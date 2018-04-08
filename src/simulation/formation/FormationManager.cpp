@@ -48,12 +48,12 @@ void FormationManager::update() {
 	}
 }
 
-float FormationManager::getWellFormed(Unit* unit) {
+float FormationManager::getPriority(Unit* unit) {
 	const short formation = unit->getFormation();
 	if (formation >= 0) {
-		return formations[formation]->getWellFormed();
+		return formations[formation]->getPriority(unit->getPositionInFormation());
 	}
-	return 1.0;
+	return 0.0;
 }
 
 std::optional<Vector2> FormationManager::getPositionFor(Unit* unit) {

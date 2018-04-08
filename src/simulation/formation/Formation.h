@@ -1,8 +1,8 @@
 #pragma once
 #include "FormationType.h"
+#include "FormationState.h"
 #include "objects/Physical.h"
 #include <vector>
-#include "FormationState.h"
 
 
 class Formation
@@ -13,7 +13,7 @@ public:
 
 	bool update();
 	Vector2 getPositionFor(short id) const;
-	float getWellFormed() const;
+	float getPriority(int id) const;
 	float isReady();
 private:
 	void updateUnits();
