@@ -8,6 +8,7 @@
 class Formation
 {
 public:
+	void updateIds();
 	Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction);
 	~Formation();
 
@@ -28,7 +29,7 @@ private:
 	Vector2 center;
 	float sizeA;
 	float sizeB;
-	float notWellformed = 0;
+
 
 	Vector2 direction;
 	int leaderId;

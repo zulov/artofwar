@@ -4,9 +4,18 @@
 #include <iostream>
 
 
+void Formation::updateIds() {
+	short k = 0;
+	for (auto unit : units) {
+		unit->setFormation(id);
+		unit->setPositionInFormation(k++);
+	}
+	leaderId = units.size() / 2;
+}
+
 Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction) : id(_id),
 	type(_type), direction(_direction), state(FormationState::FORMING) {
-	id = _id;
+
 	for (auto value : *_units) {
 		units.push_back(dynamic_cast<Unit*>(value));
 	}
@@ -17,12 +26,7 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 	sizeA = (sideA - 1) * sparsity;
 	sizeB = (sideB - 1) * sparsity;
 
-	short k = 0;
-	for (auto unit : units) {
-		unit->setFormation(id);
-		unit->setPositionInFormation(k++);
-	}
-	center = Vector2::ZERO;
+	updateIds();
 	updateCenter();
 }
 
@@ -41,12 +45,14 @@ bool Formation::update() {
 Vector2 Formation::getPositionFor(short id) const {
 	int column = id % sideA;
 	int row = id / sideA;
-
-	return center - Vector2(column * sparsity - sizeA / 2, row * sparsity - sizeB / 2);
+	if (id != leaderId) {
+		return center - Vector2(column * sparsity - sizeA / 2, row * sparsity - sizeB / 2);
+	}
+	return center;
 }
 
 float Formation::getPriority(int id) const {
-	return notWellformed*;
+	return 1;
 }
 
 float Formation::isReady() {
@@ -62,32 +68,14 @@ void Formation::updateUnits() {
 		                           return !unit->isAlive() || unit->getFormation() != id;
 	                           }),
 	            units.end());
+	updateIds();
 }
 
 void Formation::updateCenter() {
-	//TODO need optimzation
-	Vector2 temp = Vector2::ZERO;
 
-	notWellformed = 0;
-	float biggest = 0;
-	for (auto unit : units) {
-		if (unit->getPositionInFormation() < sideA * sideB) {
-			temp.x_ += unit->getPosition()->x_;
-			temp.y_ += unit->getPosition()->z_;
-		}
-		Vector2 pos = getPositionFor(unit->getPositionInFormation());
-		float sth = Vector2(
-		                    pos.x_ - unit->getPosition()->x_,
-		                    pos.y_ - unit->getPosition()->z_
-		                   ).LengthSquared();
-		if (sth > biggest) {
-			biggest = sth;
-		}
-		notWellformed += sth;
-	}
-	//biggest = sqrt(biggest);
-	notWellformed = biggest + 1;
-	notWellformed = Max(notWellformed, biggest);
-	temp /= Min(units.size(), sideA * sideB);
-	center = temp;
+	Vector3* leaderPos = units[leaderId]->getPosition();
+	center = Vector2(
+	                 leaderPos->x_,
+	                 leaderPos->z_
+	                );
 }
