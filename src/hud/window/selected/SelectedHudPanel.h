@@ -14,10 +14,10 @@ public:
 	void update(SelectedInfo* selectedInfo);
 	
 	std::vector<Button*>& getButtonsSelectedToSubscribe();
-	int iconSize();
 	void createRows();
 
 private:
+	int iconSize();
 	void hide(int i);
 	void createBody() override;
 	short maxInRow = 31;

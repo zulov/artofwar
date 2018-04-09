@@ -106,6 +106,9 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 				elements[k]->hideText();
 			}
 			++k;
+			if (k >= LINES_IN_SELECTION * maxInRow) {
+				break;
+			}
 		}
 	}
 	hide(k);

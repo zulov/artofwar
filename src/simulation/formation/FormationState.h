@@ -3,5 +3,6 @@ enum class FormationState : char
 {
 	FORMING=0,
 	MOVING,
-	REACHED
+	REACHED,
+	EMPTY
 };

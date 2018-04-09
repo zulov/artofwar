@@ -36,8 +36,8 @@ void FormationManager::createFormation(std::vector<Physical*>* _units, Formation
 void FormationManager::update() {
 	for (int i = 0; i < formations.size(); ++i) {
 		if (formations[i]) {
-			bool stilExists = formations[i]->update();
-			if (!stilExists) {
+			formations[i]->update();
+			if (formations[i]->getState() == FormationState::EMPTY) {
 				delete formations[i];
 				formations[i] = nullptr;
 				if (i < currentlyFree) {
