@@ -28,10 +28,8 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 		units.push_back(dynamic_cast<Unit*>(value));
 	}
 	type = _type;
-	updateSizes();
-
 	updateIds();
-	updateCenter();
+	update();
 }
 
 
@@ -42,8 +40,11 @@ void Formation::update() {
 	case FormationState::FORMING:
 	case FormationState::MOVING:
 		updateUnits();
+
 		if (!units.empty()) {
+			updateIds();
 			updateCenter();
+			updateSizes();
 		} else {
 			changeState(FormationState::EMPTY);
 		}
@@ -56,8 +57,6 @@ void Formation::update() {
 		units.clear();
 		break;
 	}
-
-
 }
 
 void Formation::changeState(FormationState newState) {
@@ -77,10 +76,6 @@ float Formation::getPriority(int id) const {
 	return 1;
 }
 
-float Formation::isReady() {
-	return 0;
-}
-
 void Formation::updateUnits() {
 	units.erase(
 	            std::remove_if(
@@ -90,8 +85,6 @@ void Formation::updateUnits() {
 		                           return !unit->isAlive() || unit->getFormation() != id;
 	                           }),
 	            units.end());
-	updateSizes();
-	updateIds();
 }
 
 void Formation::updateCenter() {
