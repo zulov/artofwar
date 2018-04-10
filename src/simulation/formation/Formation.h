@@ -36,4 +36,7 @@ private:
 	Vector2 direction;
 	int leaderId;
 	FormationState state;
+	Aims aims;
+	float theresholed = 0.1;
+	float wellFormed;
 };

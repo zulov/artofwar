@@ -14,13 +14,13 @@ public:
 	ActionCommand(std::vector<Physical*>* entities, OrderType action, Physical* paremeter, bool append = false);
 	ActionCommand(Physical* entity, OrderType action, Physical* paremeter, bool append = false);
 	~ActionCommand();
-	ActionParameter getTargetAim(int startIdx, Vector2& to, bool append);
-	ActionParameter getFollowAim(Physical* toFollow, bool append);
-	ActionParameter getChargeAim(Vector2* charge, bool append);
 	void calculateCenter(Vector2& center);
 
 	void execute() override;
 private:
+	ActionParameter getTargetAim(int startIdx, Vector2& to, bool append);
+	ActionParameter getFollowAim(Physical* toFollow, bool append);
+	ActionParameter getChargeAim(Vector2* charge, bool append);
 	void addTargetAim(Vector2* to, bool append);
 	void addFollowAim(Physical* toFollow, bool append);
 	void addChargeAim(Vector2* charge, bool append);

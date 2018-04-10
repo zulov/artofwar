@@ -4,6 +4,19 @@
 #include <iostream>
 
 
+Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction) : id(_id),
+	type(_type), direction(_direction), state(FormationState::FORMING) {
+
+	for (auto value : *_units) {
+		units.push_back(dynamic_cast<Unit*>(value));
+	}
+	type = _type;
+	updateIds();
+	update();
+}
+
+Formation::~Formation() = default;
+
 void Formation::updateIds() {
 	short k = 0;
 	for (auto unit : units) {
@@ -21,23 +34,13 @@ void Formation::updateSizes() {
 	sizeB = (sideB - 1) * sparsity;
 }
 
-Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction) : id(_id),
-	type(_type), direction(_direction), state(FormationState::FORMING) {
-
-	for (auto value : *_units) {
-		units.push_back(dynamic_cast<Unit*>(value));
-	}
-	type = _type;
-	updateIds();
-	update();
-}
-
-
-Formation::~Formation() = default;
-
 void Formation::update() {
 	switch (state) {
 	case FormationState::FORMING:
+		if (wellFormed < theresholed) {
+			changeState(FormationState::MOVING);
+
+		}
 	case FormationState::MOVING:
 		updateUnits();
 
