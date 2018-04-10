@@ -9,7 +9,7 @@ class FormationManager
 public:
 	FormationManager();
 	~FormationManager();
-	void createFormation(std::vector<Physical*>* _units, FormationType _type = FormationType::SQUERE);
+	Formation* createFormation(std::vector<Physical*>* _units, FormationType _type = FormationType::SQUERE);
 	void update();
 	float getPriority(Unit* unit);
 	std::optional<Vector2> getPositionFor(Unit* unit);

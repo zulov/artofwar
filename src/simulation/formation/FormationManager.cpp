@@ -11,8 +11,8 @@ FormationManager::~FormationManager() {
 	clear_vector(formations);
 }
 
-void FormationManager::createFormation(std::vector<Physical*>* _units, FormationType _type) {
-	if (_units->empty()) { return; }
+Formation* FormationManager::createFormation(std::vector<Physical*>* _units, FormationType _type) {
+	if (_units->empty()) { return nullptr; }
 	if (_type == FormationType::NONE) {
 		for (auto unit : *_units) {
 			static_cast<Unit*>(unit)->setFormation(-1);
@@ -28,9 +28,11 @@ void FormationManager::createFormation(std::vector<Physical*>* _units, Formation
 		if (currentlyFree == formations.size()) {
 			formations.push_back(nullptr);
 		}
-		formations[currentlyFree] = new Formation(currentlyFree, _units, _type, Vector2(1, 1));
+		Formation* returnFormation = formations[currentlyFree] = new Formation(currentlyFree, _units, _type, Vector2(1, 1));
 		currentlyFree++;
+		return returnFormation;
 	}
+	return nullptr;
 }
 
 void FormationManager::update() {

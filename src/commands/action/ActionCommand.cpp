@@ -15,6 +15,7 @@ ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action,
 	this->vector = parameter;
 	this->entity = nullptr;
 	this->toFollow = nullptr;
+	this->formation = nullptr;
 	this->append = append;
 }
 
@@ -24,6 +25,7 @@ ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action,
 	this->toFollow = paremeter;
 	this->entity = nullptr;
 	this->vector = nullptr;
+	this->formation = nullptr;
 	this->append = append;
 }
 
@@ -33,6 +35,17 @@ ActionCommand::ActionCommand(Physical* entity, OrderType action, Physical* parem
 	this->toFollow = paremeter;
 	this->entities = nullptr;
 	this->vector = nullptr;
+	this->formation = nullptr;
+	this->append = append;
+}
+
+ActionCommand::ActionCommand(Formation* formation, OrderType action, Vector2* parameter, bool append) {
+	this->entity = nullptr;
+	this->action = action;
+	this->toFollow = nullptr;
+	this->entities = nullptr;
+	this->vector = parameter;
+	this->formation = formation;
 	this->append = append;
 }
 
@@ -78,21 +91,15 @@ void ActionCommand::addTargetAim(Vector2* to, bool append) {
 	if (entity) {
 		ActionParameter parameter = getTargetAim(entity->getBucketIndex(-1), *to, append);
 		entity->action(id, parameter);
+	} else if (entities) {
+		Formation* formation = Game::get()->getFormationManager()->createFormation(entities);
+
+		formation->setFutureTarget(*to, action);
+
 	} else {
-		Vector2 center;
-		calculateCenter(center);
-
-		Game::get()->getFormationManager()->createFormation(entities); //TODO tu sterowac ca³¹ grup¹
-		for (Physical* physical : *entities) {
-			Vector2 pos(
-			            physical->getPosition()->x_,
-			            physical->getPosition()->z_
-			           );
-			pos -= center - *to;
-
-			ActionParameter parameter = getTargetAim(physical->getBucketIndex(-1), pos, append);
-			physical->action(id, parameter);
-		}
+		Physical* physical = formation->getLeader();
+		ActionParameter parameter = getTargetAim(physical->getBucketIndex(-1), *to, append);
+		physical->action(id, parameter);
 	}
 	Game::get()->getEnviroment()->invalidateCache();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);

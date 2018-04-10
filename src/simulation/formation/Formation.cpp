@@ -2,6 +2,9 @@
 #include "objects/unit/Unit.h"
 #include <algorithm>
 #include <iostream>
+#include "Game.h"
+#include "commands/action/ActionCommandList.h"
+#include "commands/action/ActionCommand.h"
 
 
 Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction) : id(_id),
@@ -12,7 +15,15 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 	}
 	type = _type;
 	updateIds();
-	update();
+	updateUnits();
+
+	if (!units.empty()) {
+		updateIds();
+		updateCenter();
+		updateSizes();
+	} else {
+		changeState(FormationState::EMPTY);
+	}
 }
 
 Formation::~Formation() = default;
@@ -39,7 +50,7 @@ void Formation::update() {
 	case FormationState::FORMING:
 		if (wellFormed < theresholed) {
 			changeState(FormationState::MOVING);
-
+			Game::get()->getActionCommandList()->add(new ActionCommand(this, action, new Vector2(futureTarget)));
 		}
 	case FormationState::MOVING:
 		updateUnits();
@@ -77,6 +88,15 @@ Vector2 Formation::getPositionFor(short id) const {
 
 float Formation::getPriority(int id) const {
 	return 1;
+}
+
+Physical* Formation::getLeader() {
+	return units[leaderId];
+}
+
+void Formation::setFutureTarget(const Vector2& _futureTarget, OrderType _action) {
+	futureTarget = _futureTarget;
+	action = _action;
 }
 
 void Formation::updateUnits() {

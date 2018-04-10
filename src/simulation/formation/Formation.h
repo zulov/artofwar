@@ -3,6 +3,7 @@
 #include "FormationType.h"
 #include "objects/Physical.h"
 #include <vector>
+#include "OrderType.h"
 
 
 class Formation
@@ -14,7 +15,9 @@ public:
 	void update();
 	Vector2 getPositionFor(short id) const;
 	float getPriority(int id) const;
-	FormationState getState() const { return state; };
+	FormationState getState() const { return state; }
+	Physical* getLeader();
+	void setFutureTarget(const Vector2& _futureTarget, OrderType _action);
 private:
 	void updateUnits();
 	void updateCenter();
@@ -36,7 +39,11 @@ private:
 	Vector2 direction;
 	int leaderId;
 	FormationState state;
+
 	Aims aims;
+	Vector2 futureTarget;
+	OrderType action;
+
 	float theresholed = 0.1;
-	float wellFormed;
+	float wellFormed=0.05;
 };
