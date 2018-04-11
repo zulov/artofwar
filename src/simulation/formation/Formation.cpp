@@ -16,6 +16,7 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 	type = _type;
 	updateIds();
 	updateUnits();
+	calculateNotWellFormed();
 
 	if (!units.empty()) {
 		updateIds();
@@ -39,16 +40,31 @@ void Formation::updateIds() {
 
 void Formation::updateSizes() {
 	sideA = sqrt(units.size());
-	sideB = units.size() / sideA;
+	const short sideB = units.size() / sideA;
 
 	sizeA = (sideA - 1) * sparsity;
 	sizeB = (sideB - 1) * sparsity;
 }
 
+void Formation::calculateNotWellFormed() {
+	notWellFormed = 0;
+	for (auto unit : units) {
+		auto pos = unit->getPosition();
+
+		auto currentPos = Vector2(pos->x_, pos->z_);
+		auto desiredPos = getPositionFor(unit->getPositionInFormation());
+		auto sqDist = (currentPos - desiredPos).LengthSquared();
+		if (sqDist > 3 * 3) {
+			notWellFormed += 1;
+		}
+	}
+	notWellFormed /= units.size();
+}
+
 void Formation::update() {
 	switch (state) {
 	case FormationState::FORMING:
-		if (wellFormed < theresholed) {
+		if (notWellFormed < theresholed) {
 			changeState(FormationState::MOVING);
 			Game::get()->getActionCommandList()->add(new ActionCommand(this, action, new Vector2(futureTarget)));
 		}
@@ -59,6 +75,7 @@ void Formation::update() {
 			updateIds();
 			updateCenter();
 			updateSizes();
+			calculateNotWellFormed();
 		} else {
 			changeState(FormationState::EMPTY);
 		}
@@ -112,8 +129,5 @@ void Formation::updateUnits() {
 
 void Formation::updateCenter() {
 	Vector3* leaderPos = units[leaderId]->getPosition();
-	center = Vector2(
-	                 leaderPos->x_,
-	                 leaderPos->z_
-	                );
+	center = Vector2(leaderPos->x_, leaderPos->z_);
 }

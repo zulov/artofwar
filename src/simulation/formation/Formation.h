@@ -23,11 +23,11 @@ private:
 	void updateCenter();
 	void updateIds();
 	void updateSizes();
+	void calculateNotWellFormed();
 
 	void changeState(FormationState newState);
 	short id;
 	short sideA;
-	short sideB;
 	float sparsity = 1;
 	std::vector<Unit*> units;
 	FormationType type;
@@ -45,5 +45,5 @@ private:
 	OrderType action;
 
 	float theresholed = 0.1;
-	float wellFormed=0.05;
+	float notWellFormed = 1.0;
 };
