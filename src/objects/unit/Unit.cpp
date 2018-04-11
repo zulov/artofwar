@@ -1,10 +1,10 @@
 #include "Unit.h"
 #include "Game.h"
 #include "OrderType.h"
+#include "colors/ColorPeletteRepo.h"
 #include "commands/action/ActionCommand.h"
 #include "commands/action/ActionCommandList.h"
 #include "database/DatabaseCache.h"
-#include "colors/ColorPeletteRepo.h"
 #include "player/PlayersManager.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
@@ -12,8 +12,6 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
 
-
-float Unit::hbMaxSize = 0.7f;
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr) {
 
@@ -47,16 +45,6 @@ Unit::~Unit() {
 
 bool Unit::isAlive() {
 	return state != UnitStateType::DEAD && state != UnitStateType::DISPOSE;
-}
-
-float Unit::getHealthBarSize() {
-	float healthBarSize = hbMaxSize * (hpCoef / maxHpCoef);
-	if (healthBarSize <= 0) { healthBarSize = 0; }
-	return healthBarSize;
-}
-
-float Unit::getHealthPercent() {
-	return hpCoef / maxHpCoef;
 }
 
 void Unit::populate() {
@@ -98,7 +86,7 @@ void Unit::move(double timeStep) {
 
 void Unit::setAcceleration(Vector2& _acceleration) {
 	acceleration = _acceleration;
-	if (_acceleration.LengthSquared() > MAX_ACCEL*MAX_ACCEL) {
+	if (_acceleration.LengthSquared() > MAX_ACCEL * MAX_ACCEL) {
 		acceleration.Normalize();
 		acceleration *= MAX_ACCEL;
 	}
@@ -364,6 +352,10 @@ bool Unit::isToDispose() {
 
 int Unit::getLevel() {
 	return dbLevel->level;
+}
+
+float Unit::getMaxHpBarSize() {
+	return 0.4f;
 }
 
 short Unit::getFormation() {

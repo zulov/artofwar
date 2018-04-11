@@ -12,7 +12,7 @@ public:
 	int getDbID() override;
 	void populate();
 
-	float getHealthBarSize() override;
+	float getMaxHpBarSize() override;
 	String& toMultiLineString() override;
 
 	std::string getValues(int precision) override;
@@ -27,7 +27,6 @@ private:
 	int type;
 	float amonut;
 
-	static float hbMaxSize;
 	int maxUsers;
 	int users = 0;
 };

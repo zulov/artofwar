@@ -13,7 +13,7 @@ public:
 	Building(Vector3* _position, int id, int player, int level);
 	~Building();
 
-	float getHealthBarSize() override;
+	float getMaxHpBarSize() override;
 	int getDbID() override;
 	void populate();
 	void absorbAttack(float attackCoef) override;
@@ -37,5 +37,4 @@ private:
 	std::vector<db_unit*>* units;
 	QueueManager* queue;
 
-	static float hbMaxSize;
 };

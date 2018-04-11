@@ -11,13 +11,11 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
 
-float Building::hbMaxSize = 5.0;
 
-Building::Building(Vector3* _position, int id, int player, int level): target(_position->x_, _position->z_),
-	Static(_position, ObjectType::BUILDING) {
+Building::Building(Vector3* _position, int id, int player, int level): Static(_position, ObjectType::BUILDING),
+	target(_position->x_, _position->z_) {
 
 	initBillbords();
-	hbMaxSize = 5.0;
 	target.x_ += 5;
 	target.y_ += 5;
 
@@ -36,10 +34,8 @@ Building::~Building() {
 	delete queue;
 }
 
-float Building::getHealthBarSize() {
-	float healthBarSize = hbMaxSize;
-	if (healthBarSize <= 0) { healthBarSize = 0; }
-	return healthBarSize;
+float Building::getMaxHpBarSize() {
+	return 2.0f;
 }
 
 int Building::getDbID() {

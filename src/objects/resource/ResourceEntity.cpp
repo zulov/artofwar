@@ -7,13 +7,11 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
 
-float ResourceEntity::hbMaxSize = 3.0f;
 
 ResourceEntity::ResourceEntity(Vector3* _position, int id, int level) : Static(_position, ObjectType::RESOURCE) {
 	
 	initBillbords();
 
-	hbMaxSize = 3.0;
 	dbResource = Game::get()->getDatabaseCache()->getResource(id);
 
 	populate();
@@ -42,8 +40,8 @@ void ResourceEntity::populate() {
 	maxUsers = dbResource->maxUsers;
 }
 
-float ResourceEntity::getHealthBarSize() {
-	return hbMaxSize;
+float ResourceEntity::getMaxHpBarSize() {
+	return 3.0;
 }
 
 String& ResourceEntity::toMultiLineString() {

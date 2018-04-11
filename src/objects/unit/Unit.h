@@ -40,8 +40,7 @@ public:
 	void setAcceleration(Vector2& _acceleration);
 	int getDbID() override;
 	int getLevel() override;
-	float getHealthBarSize() override;
-	float getHealthPercent() override;
+	float getMaxHpBarSize() override;
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
 	float getMinimalDistance() const { return minimalDistance; }
 	Vector2 forceGo(float boostCoef, float aimCoef, Vector2& force);
@@ -118,6 +117,4 @@ private:
 
 	short posInFormation = -1;
 	short formation = -1;
-
-	static float hbMaxSize;
 };

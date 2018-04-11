@@ -88,12 +88,14 @@ void Physical::updateHealthBar() {
 	billboardSetBar->Commit();
 }
 
-float Physical::getHealthBarSize() {
-	return 1;
+float Physical::getHealthPercent() {
+	return hpCoef / maxHpCoef;;
 }
 
-float Physical::getHealthPercent() {
-	return 1.0;
+float Physical::getHealthBarSize() {
+	float healthBarSize = getMaxHpBarSize() * getHealthPercent();
+	if (healthBarSize <= 0) { healthBarSize = 0; }
+	return healthBarSize;
 }
 
 int Physical::getBucketIndex(char param) {
