@@ -17,7 +17,7 @@ public:
 	void createBillboardShadow();
 	void updateBillboardShadow(Vector3& boundingBox);
 	void updateHealthBar();
-	virtual float getMaxHpBarSize() =0;
+	virtual float getMaxHpBarSize();
 	virtual float getHealthPercent();
 	float getHealthBarSize();
 	int getBucketIndex(char param);

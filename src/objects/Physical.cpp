@@ -61,7 +61,7 @@ void Physical::createBillboardShadow() {
 
 void Physical::updateBillboardShadow(Vector3& boundingBox) {
 	billboardShadow->position_ = Vector3(0, 0, -0.3 / node->GetScale().x_);
-	float boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.3f ;
+	float boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.3f;
 	billboardShadow->size_ = Vector2(boudingSize, boudingSize);
 	billboardShadow->enabled_ = false;
 
@@ -86,6 +86,10 @@ void Physical::updateHealthBar() {
 
 	billboardBar->size_ = Vector2(healthBarSize, 0.1) / node->GetScale2D();
 	billboardSetBar->Commit();
+}
+
+float Physical::getMaxHpBarSize() {
+	return 0;
 }
 
 float Physical::getHealthPercent() {
@@ -130,7 +134,6 @@ String& Physical::toMultiLineString() {
 }
 
 void Physical::action(short id, ActionParameter& parameter) {
-
 }
 
 std::string Physical::getColumns() {

@@ -1,10 +1,10 @@
 #include "Formation.h"
+#include "Game.h"
+#include "commands/action/ActionCommand.h"
+#include "commands/action/ActionCommandList.h"
 #include "objects/unit/Unit.h"
 #include <algorithm>
 #include <iostream>
-#include "Game.h"
-#include "commands/action/ActionCommandList.h"
-#include "commands/action/ActionCommand.h"
 
 
 Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction) : id(_id),

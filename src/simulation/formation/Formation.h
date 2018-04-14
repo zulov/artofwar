@@ -1,9 +1,9 @@
 #pragma once
 #include "FormationState.h"
 #include "FormationType.h"
+#include "OrderType.h"
 #include "objects/Physical.h"
 #include <vector>
-#include "OrderType.h"
 
 
 class Formation

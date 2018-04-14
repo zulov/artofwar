@@ -65,3 +65,11 @@ std::optional<Vector2> FormationManager::getPositionFor(Unit* unit) {
 	}
 	return std::nullopt;
 }
+
+int FormationManager::isLeaderFor(Unit* unit) {
+	const short formation = unit->getFormation();
+	if (formation >= 0 && formations[formation]->getLeader() == unit) {
+		return formation;
+	}
+	return -1;
+}

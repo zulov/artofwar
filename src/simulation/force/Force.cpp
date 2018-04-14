@@ -28,6 +28,7 @@ void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* u
 		return;
 	}
 	Vector2 force;
+	int isLeaderFor = Game::get()->getFormationManager()->isLeaderFor(unit);
 
 	for (auto neight : *units) {
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
@@ -39,6 +40,7 @@ void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* u
 		            );
 		const float sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist) { continue; }
+		if (isLeaderFor == neight->getFormation()) { continue; }
 		if (sqDistance == 0) {
 			force.x_ = static_cast<float>(rand()) / RAND_MAX - 0.5;
 			force.y_ = static_cast<float>(rand()) / RAND_MAX - 0.5;

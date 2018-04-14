@@ -13,6 +13,7 @@ public:
 	void update();
 	float getPriority(Unit* unit);
 	std::optional<Vector2> getPositionFor(Unit* unit);
+	int isLeaderFor(Unit* unit);
 private:
 	std::vector<Formation*> formations;
 	int currentlyFree = 0;
