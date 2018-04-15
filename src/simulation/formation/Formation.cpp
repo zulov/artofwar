@@ -14,19 +14,14 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 		units.push_back(dynamic_cast<Unit*>(value));
 	}
 	type = _type;
-	updateSizes();
-	updateIds();
-	updateUnits();
-	calculateNotWellFormed();
 
-	if (sideA * sideB != units.size()) {
-		int a = 5;
-	}
+	//updateIds();
+
+	calculateNotWellFormed();
 
 	if (!units.empty()) {
 		updateIds();
 		updateCenter();
-		updateSizes();
 	} else {
 		changeState(FormationState::EMPTY);
 	}
@@ -65,9 +60,9 @@ void Formation::updateIds() {
 			unit->setPositionInFormation(k++);
 		}
 		electLeader();
+		updateSizes();
 		changed = false;
 	}
-	//leaderId = units.size() / 2;
 }
 
 void Formation::updateSizes() {
@@ -106,7 +101,6 @@ void Formation::update() {
 		if (!units.empty()) {
 			updateIds();
 			updateCenter();
-			updateSizes();
 			calculateNotWellFormed();
 		} else {
 			changeState(FormationState::EMPTY);
@@ -142,12 +136,6 @@ Vector2 Formation::getPositionFor(short id) const {
 	return center;
 }
 
-Vector2 Formation::getPositionInPattern(short id) const {
-	int column = id % sideA;
-	int row = id / sideA;
-	return Vector2(column * sparsity - sizeA / 2, row * sparsity - sizeB / 2);
-}
-
 float Formation::getPriority(int id) const {
 	return 1;
 }
@@ -169,6 +157,8 @@ void Formation::updateUnits() {
 	                           {
 		                           bool ifErase = !unit->isAlive() || unit->getFormation() != id;
 		                           if (ifErase) {
+			                           unit->setFormation(-1);
+			                           unit->setPositionInFormation(-1);
 			                           changed = true;
 		                           }
 		                           return ifErase;

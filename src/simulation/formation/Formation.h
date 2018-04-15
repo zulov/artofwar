@@ -25,7 +25,6 @@ private:
 	void updateIds();
 	void updateSizes();
 	void calculateNotWellFormed();
-	Vector2 getPositionInPattern(short id) const;
 
 	void changeState(FormationState newState);
 	short id;
