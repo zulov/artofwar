@@ -11,6 +11,7 @@ class Formation
 public:
 	Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction);
 	~Formation();
+	void electLeader();
 
 	void update();
 	Vector2 getPositionFor(short id) const;
@@ -24,17 +25,23 @@ private:
 	void updateIds();
 	void updateSizes();
 	void calculateNotWellFormed();
+	Vector2 getPositionInPattern(short id) const;
 
 	void changeState(FormationState newState);
 	short id;
 	short sideA;
+	short sideB;
 	float sparsity = 1;
+
 	std::vector<Unit*> units;
+	//std::vector<Vector2> patternPos;
+
 	FormationType type;
 	Vector2 center;
 	float sizeA;
 	float sizeB;
 
+	bool changed = true;
 
 	Vector2 direction;
 	int leaderId;

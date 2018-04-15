@@ -14,9 +14,14 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 		units.push_back(dynamic_cast<Unit*>(value));
 	}
 	type = _type;
+	updateSizes();
 	updateIds();
 	updateUnits();
 	calculateNotWellFormed();
+
+	if (sideA * sideB != units.size()) {
+		int a = 5;
+	}
 
 	if (!units.empty()) {
 		updateIds();
@@ -29,18 +34,45 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 
 Formation::~Formation() = default;
 
-void Formation::updateIds() {
-	short k = 0;
+void Formation::electLeader() {
+	Vector2 localCenter = Vector2::ZERO;
 	for (auto unit : units) {
-		unit->setFormation(id);
-		unit->setPositionInFormation(k++);
+		auto pos = unit->getPosition();
+		localCenter.x_ += pos->x_;
+		localCenter.y_ += pos->z_;
 	}
-	leaderId = units.size() / 2;
+	localCenter /= units.size();
+	int maxDist = 9999999;
+	leaderId = 0;
+	for (int i = 0; i < units.size(); ++i) {
+		auto pos = units[i]->getPosition();
+		auto currentPos = Vector2(pos->x_, pos->z_);
+
+		auto sqDist = (currentPos - localCenter).LengthSquared();
+		if (sqDist < maxDist) {
+			leaderId = i;
+			maxDist = sqDist;
+		}
+	}
+	std::cout << localCenter.x_ << "#" << localCenter.y_ << "|" << leaderId << " " << maxDist << std::endl;
+}
+
+void Formation::updateIds() {
+	if (changed) {
+		short k = 0;
+		for (auto unit : units) {
+			unit->setFormation(id);
+			unit->setPositionInFormation(k++);
+		}
+		electLeader();
+		changed = false;
+	}
+	//leaderId = units.size() / 2;
 }
 
 void Formation::updateSizes() {
 	sideA = sqrt(units.size());
-	const short sideB = units.size() / sideA;
+	sideB = units.size() / sideA;
 
 	sizeA = (sideA - 1) * sparsity;
 	sizeB = (sideB - 1) * sparsity;
@@ -95,12 +127,25 @@ void Formation::changeState(FormationState newState) {
 }
 
 Vector2 Formation::getPositionFor(short id) const {
-	int column = id % sideA;
-	int row = id / sideA;
 	if (id != leaderId) {
-		return center - Vector2(column * sparsity - sizeA / 2, row * sparsity - sizeB / 2);
+		int columnThis = id % sideA;
+		int rowThis = id / sideA;
+
+		int columnLeader = leaderId % sideA;
+		int rowLeader = leaderId / sideA;
+
+		int column = columnThis - columnLeader;
+		int row = rowThis - rowLeader;
+
+		return center - Vector2(column * sparsity, row * sparsity);
 	}
 	return center;
+}
+
+Vector2 Formation::getPositionInPattern(short id) const {
+	int column = id % sideA;
+	int row = id / sideA;
+	return Vector2(column * sparsity - sizeA / 2, row * sparsity - sizeB / 2);
 }
 
 float Formation::getPriority(int id) const {
@@ -122,7 +167,11 @@ void Formation::updateUnits() {
 	                           units.begin(), units.end(),
 	                           [this](Unit* unit)
 	                           {
-		                           return !unit->isAlive() || unit->getFormation() != id;
+		                           bool ifErase = !unit->isAlive() || unit->getFormation() != id;
+		                           if (ifErase) {
+			                           changed = true;
+		                           }
+		                           return ifErase;
 	                           }),
 	            units.end());
 }
