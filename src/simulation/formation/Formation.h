@@ -19,6 +19,8 @@ public:
 	FormationState getState() const { return state; }
 	Physical* getLeader();
 	void setFutureTarget(const Vector2& _futureTarget, OrderType _action);
+	size_t getSize();
+	void semiReset();
 private:
 	void updateUnits();
 	void updateCenter();

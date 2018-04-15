@@ -92,10 +92,10 @@ void ActionCommand::addTargetAim(Vector2* to, bool append) {
 		ActionParameter parameter = getTargetAim(entity->getBucketIndex(-1), *to, append);
 		entity->action(id, parameter);
 	} else if (entities) {
-		Formation* formation = Game::get()->getFormationManager()->createFormation(entities);
-
-		formation->setFutureTarget(*to, action);
-
+		auto opt = Game::get()->getFormationManager()->createFormation(entities);
+		if (opt.has_value()) {
+			opt.value()->setFutureTarget(*to, action);
+		}
 	} else {
 		Physical* physical = formation->getLeader();
 		ActionParameter parameter = getTargetAim(physical->getBucketIndex(-1), *to, append);

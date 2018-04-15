@@ -11,28 +11,47 @@ FormationManager::~FormationManager() {
 	clear_vector(formations);
 }
 
-Formation* FormationManager::createFormation(std::vector<Physical*>* _units, FormationType _type) {
-	if (_units->empty()) { return nullptr; }
+std::optional<Formation*> FormationManager::createFormation(std::vector<Physical*>* _units, FormationType _type) {
+	if (_units->empty()) { return std::nullopt; }
 	if (_type == FormationType::NONE) {
 		for (auto unit : *_units) {
 			static_cast<Unit*>(unit)->setFormation(-1);
 			static_cast<Unit*>(unit)->setPositionInFormation(-1);
 		}
 	} else {
-		for (; currentlyFree < formations.size(); ++currentlyFree) {
-			if (formations[currentlyFree] == nullptr) {
-				break;
+		short formationInFirst = static_cast<Unit*>(_units->at(0))->getFormation();
+		bool allIn = true;
+		if (formationInFirst >= 0
+			&& formations[formationInFirst] != nullptr
+			&& formations[formationInFirst]->getSize() == _units->size()) {
+			for (auto unit : *_units) {
+				if (static_cast<Unit*>(unit)->getFormation() != formationInFirst) {
+					allIn = false;
+					break;
+				}
+			}
+			if (allIn) {
+				formations[formationInFirst]->semiReset();
+				return formations[formationInFirst];//TODO czy tu reset formacji?
 			}
 		}
 
-		if (currentlyFree == formations.size()) {
-			formations.push_back(nullptr);
+		for (auto unit : *_units) {
+			for (; currentlyFree < formations.size(); ++currentlyFree) {
+				if (formations[currentlyFree] == nullptr) {
+					break;
+				}
+			}
+
+			if (currentlyFree == formations.size()) {
+				formations.push_back(nullptr);
+			}
+			Formation* returnFormation = formations[currentlyFree] = new Formation(currentlyFree, _units, _type, Vector2(1, 1));
+			currentlyFree++;
+			return returnFormation;
 		}
-		Formation* returnFormation = formations[currentlyFree] = new Formation(currentlyFree, _units, _type, Vector2(1, 1));
-		currentlyFree++;
-		return returnFormation;
 	}
-	return nullptr;
+	return std::nullopt;
 }
 
 void FormationManager::update() {

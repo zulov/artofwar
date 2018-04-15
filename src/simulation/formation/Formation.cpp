@@ -13,11 +13,6 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 	for (auto value : *_units) {
 		units.push_back(dynamic_cast<Unit*>(value));
 	}
-	type = _type;
-
-	//updateIds();
-
-	calculateNotWellFormed();
 
 	if (!units.empty()) {
 		updateIds();
@@ -149,6 +144,16 @@ void Formation::setFutureTarget(const Vector2& _futureTarget, OrderType _action)
 	action = _action;
 }
 
+size_t Formation::getSize() {
+	return units.size();
+}
+
+void Formation::semiReset() {
+	notWellFormed = 1;
+	changed = true;
+	changeState(FormationState::FORMING);
+}
+
 void Formation::updateUnits() {
 	units.erase(
 	            std::remove_if(
@@ -157,8 +162,10 @@ void Formation::updateUnits() {
 	                           {
 		                           bool ifErase = !unit->isAlive() || unit->getFormation() != id;
 		                           if (ifErase) {
-			                           unit->setFormation(-1);
-			                           unit->setPositionInFormation(-1);
+			                           if (unit->getFormation() == id) {
+				                           unit->setFormation(-1);
+				                           unit->setPositionInFormation(-1);
+			                           }
 			                           changed = true;
 		                           }
 		                           return ifErase;
