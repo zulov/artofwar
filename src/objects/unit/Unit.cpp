@@ -291,6 +291,19 @@ void Unit::changeColor(float value, float maxValue) {
 	}
 }
 
+void Unit::changeColor(Material* newMaterial) {
+	Material* current = model->GetMaterial(0);
+
+	if (newMaterial != current) {
+		model->SetMaterial(newMaterial);
+	}
+}
+
+void Unit::changeColor(UnitStateType state) {
+	Material* newMaterial = Game::get()->getColorPeletteRepo()->getColor(state);
+	changeColor(newMaterial);
+}
+
 void Unit::changeColor(ColorMode mode) {
 	switch (mode) {
 
@@ -305,6 +318,11 @@ void Unit::changeColor(ColorMode mode) {
 	case ColorMode::VELOCITY:
 		{
 		changeColor(velocity.LengthSquared(), maxSpeed * maxSpeed);
+		}
+		break;
+		case ColorMode::STATE:
+		{
+		changeColor(state);
 		}
 		break;
 	default: ;

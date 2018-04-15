@@ -79,14 +79,17 @@ public:
 	static std::string getColumns();
 	std::string getValues(int precision) override;
 	void addUpgrade(db_unit_upgrade* upgrade);
-
-	void changeColor(float value, float maxValue);
 	void changeColor(ColorMode mode);
 private:
 	void addAim(Aim* aim, bool append);
 	void removeAim();
 	void attackIfCloseEnough(float& distance, Unit* closest);
 	void collectIfCloseEnough(float distance, ResourceEntity* closest);
+
+	void changeColor(float value, float maxValue);
+	void changeColor(Material* newMaterial);
+	void changeColor(UnitStateType state);
+
 
 	Vector2 acceleration;
 	Vector2 velocity;

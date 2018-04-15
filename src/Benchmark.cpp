@@ -28,7 +28,7 @@ float Benchmark::getAverageFPS() const {
 	return avg;
 }
 
-float Benchmark::getLastFPS() {
+float Benchmark::getLastFPS() const {
 	return data[index];
 }
 
