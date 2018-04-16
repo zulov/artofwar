@@ -32,7 +32,7 @@ std::optional<Formation*> FormationManager::createFormation(std::vector<Physical
 			}
 			if (allIn) {
 				formations[formationInFirst]->semiReset();
-				return formations[formationInFirst];//TODO czy tu reset formacji?
+				return formations[formationInFirst]; //TODO czy tu reset formacji?
 			}
 		}
 
@@ -87,7 +87,9 @@ std::optional<Vector2> FormationManager::getPositionFor(Unit* unit) {
 
 int FormationManager::isLeaderFor(Unit* unit) {
 	const short formation = unit->getFormation();
-	if (formation >= 0 && formations[formation]->getLeader() == unit) {
+	if (formation >= 0
+		&& formations[formation]->getLeader().has_value()
+		&& formations[formation]->getLeader().value() == unit) {
 		return formation;
 	}
 	return -1;

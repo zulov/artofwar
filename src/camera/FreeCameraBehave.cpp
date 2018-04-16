@@ -2,7 +2,7 @@
 #include "Game.h"
 
 
-FreeCameraBehave::FreeCameraBehave(): CameraBehave(3, "FreeCam") {
+FreeCameraBehave::FreeCameraBehave(): CameraBehave(Vector3(0.0f, 50.0f, -50.0f), 3, "FreeCam") {
 }
 
 

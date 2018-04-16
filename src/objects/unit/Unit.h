@@ -75,6 +75,7 @@ public:
 	short getPositionInFormation();
 	void setFormation(short _formation);
 	void setPositionInFormation(short _pos);
+	bool hasAim();
 
 	static std::string getColumns();
 	std::string getValues(int precision) override;

@@ -1,7 +1,7 @@
 #include "RtsCameraBehave.h"
 #include "Game.h"
 
-RtsCameraBehave::RtsCameraBehave():CameraBehave(3,"RTSCam") {
+RtsCameraBehave::RtsCameraBehave():CameraBehave(Vector3(0.0f, 50.0f, -50.0f), 3,"RTSCam") {
 	const double diff = sqrt(50.0f - minY) + 1;
 	const double a = 10;
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * a);

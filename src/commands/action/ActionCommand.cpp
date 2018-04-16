@@ -97,9 +97,13 @@ void ActionCommand::addTargetAim(Vector2* to, bool append) {
 			opt.value()->setFutureTarget(*to, action);
 		}
 	} else {
-		Physical* physical = formation->getLeader();
-		ActionParameter parameter = getTargetAim(physical->getBucketIndex(-1), *to, append);
-		physical->action(id, parameter);
+		auto opt = formation->getLeader();
+		if (opt.has_value()) {
+			auto physical = opt.value();
+
+			ActionParameter parameter = getTargetAim(physical->getBucketIndex(-1), *to, append);
+			physical->action(id, parameter);
+		}
 	}
 	Game::get()->getEnviroment()->invalidateCache();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);

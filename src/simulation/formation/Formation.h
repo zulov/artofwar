@@ -14,10 +14,10 @@ public:
 	void electLeader();
 
 	void update();
-	Vector2 getPositionFor(short id) const;
+	Vector2 getPositionFor(short id);
 	float getPriority(int id) const;
 	FormationState getState() const { return state; }
-	Physical* getLeader();
+	std::optional<Physical*> getLeader();
 	void setFutureTarget(const Vector2& _futureTarget, OrderType _action);
 	size_t getSize();
 	void semiReset();
@@ -50,7 +50,9 @@ private:
 	Aims aims;
 	Vector2 futureTarget;
 	OrderType action;
+	bool hasOrder = false;
 
-	float theresholed = 0.1;
+	float theresholedMin = 0.1;
+	float theresholedMax = 0.5;
 	float notWellFormed = 1.0;
 };

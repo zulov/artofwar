@@ -10,7 +10,7 @@ using namespace Urho3D;
 class CameraBehave
 {
 public:
-	CameraBehave(float _minY, String _name);
+	CameraBehave(Vector3 _pos, float _minY, String _name);
 	virtual ~CameraBehave();
 
 	virtual void translate(bool cameraKeys[], int wheel, float timeStep, float min) = 0;

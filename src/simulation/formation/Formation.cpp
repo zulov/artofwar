@@ -76,7 +76,7 @@ void Formation::calculateNotWellFormed() {
 		auto currentPos = Vector2(pos->x_, pos->z_);
 		auto desiredPos = getPositionFor(unit->getPositionInFormation());
 		auto sqDist = (currentPos - desiredPos).LengthSquared();
-		if (sqDist > 3 * 3) {
+		if (sqDist > 2 * 2) {
 			notWellFormed += 1;
 		}
 	}
@@ -86,19 +86,29 @@ void Formation::calculateNotWellFormed() {
 void Formation::update() {
 	switch (state) {
 	case FormationState::FORMING:
-		if (notWellFormed < theresholed) {
+		if (notWellFormed < theresholedMin) {
 			changeState(FormationState::MOVING);
 			Game::get()->getActionCommandList()->add(new ActionCommand(this, action, new Vector2(futureTarget)));
+			hasOrder = false;
 		}
 	case FormationState::MOVING:
-		updateUnits();
+		if (notWellFormed > theresholedMax) {
+			//TODO ??
+		}
+		if (notWellFormed > 0 || units[leaderId]->hasAim() || hasOrder) {
+			//TODO zle sie ustawia flaga nie mozna ponowic :(
 
-		if (!units.empty()) {
-			updateIds();
-			updateCenter();
-			calculateNotWellFormed();
+			updateUnits();
+
+			if (!units.empty()) {
+				updateIds();
+				updateCenter();
+				calculateNotWellFormed();
+			} else {
+				changeState(FormationState::EMPTY);
+			}
 		} else {
-			changeState(FormationState::EMPTY);
+			changeState(FormationState::REACHED);
 		}
 		break;
 	case FormationState::REACHED:
@@ -115,7 +125,7 @@ void Formation::changeState(FormationState newState) {
 	state = newState;
 }
 
-Vector2 Formation::getPositionFor(short id) const {
+Vector2 Formation::getPositionFor(short id) {
 	if (id != leaderId) {
 		int columnThis = id % sideA;
 		int rowThis = id / sideA;
@@ -135,13 +145,17 @@ float Formation::getPriority(int id) const {
 	return 1;
 }
 
-Physical* Formation::getLeader() {
-	return units[leaderId];
+std::optional<Physical*> Formation::getLeader() {
+	if (state != FormationState::REACHED && units.size() > leaderId) {
+		return units[leaderId];
+	}
+	return std::nullopt;
 }
 
 void Formation::setFutureTarget(const Vector2& _futureTarget, OrderType _action) {
 	futureTarget = _futureTarget;
 	action = _action;
+	hasOrder = true;
 }
 
 size_t Formation::getSize() {
@@ -151,6 +165,7 @@ size_t Formation::getSize() {
 void Formation::semiReset() {
 	notWellFormed = 1;
 	changed = true;
+	hasOrder = false;
 	changeState(FormationState::FORMING);
 }
 

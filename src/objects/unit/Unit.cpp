@@ -392,6 +392,10 @@ void Unit::setPositionInFormation(short _pos) {
 	posInFormation = _pos;
 }
 
+bool Unit::hasAim() {
+	return aims.hasAim();
+}
+
 std::string Unit::getColumns() {
 	return Physical::getColumns() +
 		"position_x		INT     NOT NULL,"

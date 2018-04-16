@@ -2,7 +2,7 @@
 #include "Game.h"
 
 
-TopCameraBehave::TopCameraBehave():CameraBehave(20, "TopCam") {
+TopCameraBehave::TopCameraBehave(): CameraBehave(Vector3(0, 50, 0), 20, "TopCam") {
 	const auto diff = sqrt(50.0f - minY) + 1;
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff);
 	camera->SetOrthographic(true);
@@ -39,7 +39,7 @@ void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 			orthoSize = maxY;
 		}
 		camera->SetOrthoSize(orthoSize);
-		
+
 		changed = true;
 	}
 }
