@@ -320,7 +320,7 @@ void Unit::changeColor(ColorMode mode) {
 		changeColor(velocity.LengthSquared(), maxSpeed * maxSpeed);
 		}
 		break;
-		case ColorMode::STATE:
+	case ColorMode::STATE:
 		{
 		changeColor(state);
 		}
@@ -420,9 +420,7 @@ void Unit::applyForce(double timeStep) {
 		}
 		StateManager::get()->changeState(this, UnitStateType::MOVE);
 		if (rotatable) {
-			rotation.x_ = velocity.x_;
-			rotation.z_ = velocity.y_;
-			node->SetDirection(rotation);
+			node->SetDirection(Vector3(velocity.x_, 0, velocity.y_));
 		}
 	}
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "Entity.h"
-#include "defines.h"
 #include <Urho3D/Graphics/BillboardSet.h>
+#include "defines.h"
 
 
 struct ActionParameter;
@@ -12,10 +12,7 @@ class Physical :
 public:
 	Physical(Vector3* _position, ObjectType _type);
 	virtual ~Physical();
-	void createBillboardBar();
-	void updateBillboardBar(Vector3& boundingBox);
-	void createBillboardShadow();
-	void updateBillboardShadow(Vector3& boundingBox);
+
 	void updateHealthBar();
 	virtual float getMaxHpBarSize();
 	virtual float getHealthPercent();
@@ -43,7 +40,6 @@ public:
 	virtual void clean();
 protected:
 	Vector3* position = nullptr;
-	Vector3 rotation;
 	String menuString = "";
 
 	Physical* enemyToAttack = nullptr;
@@ -66,6 +62,10 @@ protected:
 	BillboardSet* billboardSetShadow = nullptr;
 
 private:
+	void createBillboardBar();
+	void updateBillboardBar(Vector3& boundingBox);
+	void createBillboardShadow();
+	void updateBillboardShadow(Vector3& boundingBox);
 
 	int bucketIndex[BUCKET_SET_NUMBER];
 	int* bucketIndexShift;

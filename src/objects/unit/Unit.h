@@ -90,7 +90,6 @@ private:
 	void changeColor(Material* newMaterial);
 	void changeColor(UnitStateType state);
 
-
 	Vector2 acceleration;
 	Vector2 velocity;
 	Aims aims;

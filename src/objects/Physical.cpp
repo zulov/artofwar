@@ -13,7 +13,6 @@ Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
 	lc->bound(this);
 
 	position = _position;
-
 	node->SetPosition(*position);
 
 	for (int& bucket : bucketIndex) {

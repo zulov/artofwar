@@ -35,7 +35,6 @@ private:
 	float sparsity = 1;
 
 	std::vector<Unit*> units;
-	//std::vector<Vector2> patternPos;
 
 	FormationType type;
 	Vector2 center;

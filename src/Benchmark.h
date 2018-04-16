@@ -1,6 +1,10 @@
 #pragma once
-#include "defines.h"
+
 #include <fstream>
+
+#define BENCH_LENGTH 200
+#define BENCH_SKIP 2
+#define BENCH_ENABLE false
 
 class Benchmark {
 public:

@@ -61,7 +61,7 @@ void Formation::updateIds() {
 }
 
 void Formation::updateSizes() {
-	sideA = sqrt(units.size());
+	sideA = sqrt(units.size()) + 0.5;
 	sideB = units.size() / sideA;
 
 	sizeA = (sideA - 1) * sparsity;
