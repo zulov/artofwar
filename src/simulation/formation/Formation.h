@@ -45,7 +45,8 @@ private:
 	bool changed = true;
 
 	Vector2 direction;
-	short leaderId = 0;
+	Unit* leader = nullptr;
+	Unit* oldLeader = nullptr;
 	FormationState state;
 
 	Aims aims;

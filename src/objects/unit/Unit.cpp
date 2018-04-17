@@ -209,12 +209,12 @@ void Unit::updateHeight(float y, double timeStep) {
 
 void Unit::addAim(Aim* aim, bool append) {
 	if (!append) {
-		removeAim();
+		clearAims();
 	}
 	aims.add(aim);
 }
 
-void Unit::removeAim() {
+void Unit::clearAims() {
 	aims.clear();
 }
 
@@ -400,6 +400,8 @@ void Unit::setPositionInFormation(short _pos) {
 bool Unit::hasAim() {
 	return aims.hasAim();
 }
+
+
 
 std::string Unit::getColumns() {
 	return Physical::getColumns() +

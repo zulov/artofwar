@@ -77,6 +77,7 @@ public:
 	void resetFormation();
 	void setPositionInFormation(short _pos);
 	bool hasAim();
+	void clearAims();
 
 	static std::string getColumns();
 	std::string getValues(int precision) override;
@@ -84,7 +85,6 @@ public:
 	void changeColor(ColorMode mode);
 private:
 	void addAim(Aim* aim, bool append);
-	void removeAim();
 	void attackIfCloseEnough(float& distance, Unit* closest);
 	void collectIfCloseEnough(float distance, ResourceEntity* closest);
 

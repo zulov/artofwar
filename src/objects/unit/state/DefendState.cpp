@@ -11,7 +11,7 @@ DefendState::DefendState() {
 DefendState::~DefendState() = default;
 
 void DefendState::onStart(Unit* unit) {
-	unit->removeAim();
+	unit->clearAims();
 }
 
 void DefendState::onStart(Unit* unit, ActionParameter& parameter) {

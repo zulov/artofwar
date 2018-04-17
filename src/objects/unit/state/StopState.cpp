@@ -17,7 +17,7 @@ StopState::StopState() {
 StopState::~StopState() = default;
 
 void StopState::onStart(Unit* unit) {
-	unit->removeAim();
+	unit->clearAims();
 }
 
 void StopState::onStart(Unit* unit, ActionParameter& parameter) {
