@@ -70,6 +70,7 @@ void Formation::updateSizes() {
 
 void Formation::calculateNotWellFormed() {
 	notWellFormed = 0;
+	notWellFormedExact = 0;
 	for (auto unit : units) {
 		auto pos = unit->getPosition();
 
@@ -79,35 +80,45 @@ void Formation::calculateNotWellFormed() {
 		if (sqDist > 2 * 2) {
 			notWellFormed += 1;
 		}
+		if (sqDist > 1) {
+			notWellFormedExact += 1;
+		}
 	}
 	notWellFormed /= units.size();
+	notWellFormedExact /= units.size();
+}
+
+void Formation::innerUpdate() {
+	updateUnits();
+
+	if (!units.empty()) {
+		updateIds();
+		updateCenter();
+		calculateNotWellFormed();
+	} else {
+		changeState(FormationState::EMPTY);
+	}
 }
 
 void Formation::update() {
 	switch (state) {
 	case FormationState::FORMING:
+		innerUpdate();
 		if (notWellFormed < theresholedMin) {
 			changeState(FormationState::MOVING);
-			Game::get()->getActionCommandList()->add(new ActionCommand(this, action, new Vector2(futureTarget)));
-			hasOrder = false;
-		}
-	case FormationState::MOVING:
-		if (notWellFormed > theresholedMax) {
-			//TODO ??
-		}
-		if (notWellFormed > 0 || units[leaderId]->hasAim() || hasOrder) {
-			//TODO zle sie ustawia flaga nie mozna ponowic :(
-
-			updateUnits();
-
-			if (!units.empty()) {
-				updateIds();
-				updateCenter();
-				calculateNotWellFormed();
-			} else {
-				changeState(FormationState::EMPTY);
+			if (hasFutureOrder) {
+				Game::get()->getActionCommandList()->add(new ActionCommand(this, action, new Vector2(futureTarget)));
+				hasFutureOrder = false;
 			}
-		} else {
+		}
+		break;
+	case FormationState::MOVING:
+		innerUpdate();
+		if (notWellFormed > theresholedMax) {
+			changeState(FormationState::FORMING);
+		} else if (notWellFormedExact == 0
+			&& !units[leaderId]->hasAim()
+			&& !hasFutureOrder) {
 			changeState(FormationState::REACHED);
 		}
 		break;
@@ -127,14 +138,14 @@ void Formation::changeState(FormationState newState) {
 
 Vector2 Formation::getPositionFor(short id) {
 	if (id != leaderId) {
-		int columnThis = id % sideA;
-		int rowThis = id / sideA;
+		const int columnThis = id % sideA;
+		const int rowThis = id / sideA;
 
-		int columnLeader = leaderId % sideA;
-		int rowLeader = leaderId / sideA;
+		const int columnLeader = leaderId % sideA;
+		const int rowLeader = leaderId / sideA;
 
-		int column = columnThis - columnLeader;
-		int row = rowThis - rowLeader;
+		const int column = columnThis - columnLeader;
+		const int row = rowThis - rowLeader;
 
 		return center - Vector2(column * sparsity, row * sparsity);
 	}
@@ -155,7 +166,7 @@ std::optional<Physical*> Formation::getLeader() {
 void Formation::setFutureTarget(const Vector2& _futureTarget, OrderType _action) {
 	futureTarget = _futureTarget;
 	action = _action;
-	hasOrder = true;
+	hasFutureOrder = true;
 }
 
 size_t Formation::getSize() {
@@ -164,8 +175,9 @@ size_t Formation::getSize() {
 
 void Formation::semiReset() {
 	notWellFormed = 1;
+	notWellFormedExact = 1;
 	changed = true;
-	hasOrder = false;
+	hasFutureOrder = false;
 	changeState(FormationState::FORMING);
 }
 

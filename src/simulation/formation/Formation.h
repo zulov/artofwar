@@ -27,6 +27,7 @@ private:
 	void updateIds();
 	void updateSizes();
 	void calculateNotWellFormed();
+	void innerUpdate();
 
 	void changeState(FormationState newState);
 	short id;
@@ -50,9 +51,10 @@ private:
 	Aims aims;
 	Vector2 futureTarget;
 	OrderType action;
-	bool hasOrder = false;
+	bool hasFutureOrder = false;
 
 	float theresholedMin = 0.1;
 	float theresholedMax = 0.5;
 	float notWellFormed = 1.0;
+	float notWellFormedExact = 1.0;
 };

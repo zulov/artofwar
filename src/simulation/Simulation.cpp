@@ -182,6 +182,7 @@ void Simulation::save(SceneSaver& saver) {
 void Simulation::changeCoef(int i, int wheel) {
 	force.changeCoef(i, wheel);
 }
+
 void Simulation::changeColorMode(ColorMode _colorMode) {
 	currentColor = _colorMode;
 }
@@ -206,8 +207,8 @@ SimulationInfo* Simulation::update(float timeStep) {
 		if (currentFrameNumber % 3 == 0) {
 			executeLists();
 			selfAI();
-			actionCommandList->execute();
 		}
+		actionCommandList->execute();
 		enviroment->update(units);
 
 		calculateForces();
