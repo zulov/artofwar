@@ -91,6 +91,7 @@ void ActionCommand::addTargetAim(Vector2* to, bool append) {
 	if (entity) {
 		ActionParameter parameter = getTargetAim(entity->getBucketIndex(-1), *to, append);
 		entity->action(id, parameter);
+		static_cast<Unit*>(entity)->resetFormation();
 	} else if (entities) {
 		auto opt = Game::get()->getFormationManager()->createFormation(entities);
 		if (opt.has_value()) {

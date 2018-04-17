@@ -388,6 +388,11 @@ void Unit::setFormation(short _formation) {
 	formation = _formation;
 }
 
+void Unit::resetFormation() {
+	formation=-1;
+	posInFormation=-1;
+}
+
 void Unit::setPositionInFormation(short _pos) {
 	posInFormation = _pos;
 }

@@ -11,7 +11,6 @@ class Formation
 public:
 	Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction);
 	~Formation();
-	void electLeader();
 
 	void update();
 	Vector2 getPositionFor(short id);
@@ -28,6 +27,7 @@ private:
 	void updateSizes();
 	void calculateNotWellFormed();
 	void innerUpdate();
+	void electLeader();
 
 	void changeState(FormationState newState);
 	short id;
@@ -45,7 +45,7 @@ private:
 	bool changed = true;
 
 	Vector2 direction;
-	int leaderId;
+	short leaderId = 0;
 	FormationState state;
 
 	Aims aims;

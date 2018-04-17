@@ -74,6 +74,7 @@ public:
 	short getFormation();
 	short getPositionInFormation();
 	void setFormation(short _formation);
+	void resetFormation();
 	void setPositionInFormation(short _pos);
 	bool hasAim();
 

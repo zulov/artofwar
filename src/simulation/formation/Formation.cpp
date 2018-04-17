@@ -25,6 +25,7 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 Formation::~Formation() = default;
 
 void Formation::electLeader() {
+	const short oldLeader = leaderId;
 	Vector2 localCenter = Vector2::ZERO;
 	for (auto unit : units) {
 		auto pos = unit->getPosition();
@@ -44,7 +45,9 @@ void Formation::electLeader() {
 			maxDist = sqDist;
 		}
 	}
-	std::cout << localCenter.x_ << "#" << localCenter.y_ << "|" << leaderId << " " << maxDist << std::endl;
+	if (leaderId != oldLeader && hasFutureOrder) {
+		changeState(FormationState::FORMING);
+	}
 }
 
 void Formation::updateIds() {
@@ -108,7 +111,6 @@ void Formation::update() {
 			changeState(FormationState::MOVING);
 			if (hasFutureOrder) {
 				Game::get()->getActionCommandList()->add(new ActionCommand(this, action, new Vector2(futureTarget)));
-				hasFutureOrder = false;
 			}
 		}
 		break;
@@ -117,15 +119,14 @@ void Formation::update() {
 		if (notWellFormed > theresholedMax) {
 			changeState(FormationState::FORMING);
 		} else if (notWellFormedExact == 0
-			&& !units[leaderId]->hasAim()
-			&& !hasFutureOrder) {
+			&& !units[leaderId]->hasAim()) {
 			changeState(FormationState::REACHED);
+			hasFutureOrder = false;
 		}
 		break;
 	case FormationState::REACHED:
 		for (auto unit : units) {
-			unit->setFormation(-1);
-			unit->setPositionInFormation(-1);
+			unit->resetFormation();
 		}
 		units.clear();
 		break;
@@ -190,8 +191,7 @@ void Formation::updateUnits() {
 		                           bool ifErase = !unit->isAlive() || unit->getFormation() != id;
 		                           if (ifErase) {
 			                           if (unit->getFormation() == id) {
-				                           unit->setFormation(-1);
-				                           unit->setPositionInFormation(-1);
+				                           unit->resetFormation();
 			                           }
 			                           changed = true;
 		                           }

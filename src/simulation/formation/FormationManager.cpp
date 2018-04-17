@@ -36,20 +36,19 @@ std::optional<Formation*> FormationManager::createFormation(std::vector<Physical
 			}
 		}
 
-		for (auto unit : *_units) {
-			for (; currentlyFree < formations.size(); ++currentlyFree) {
-				if (formations[currentlyFree] == nullptr) {
-					break;
-				}
+		for (; currentlyFree < formations.size(); ++currentlyFree) {
+			if (formations[currentlyFree] == nullptr) {
+				break;
 			}
-
-			if (currentlyFree == formations.size()) {
-				formations.push_back(nullptr);
-			}
-			Formation* returnFormation = formations[currentlyFree] = new Formation(currentlyFree, _units, _type, Vector2(1, 1));
-			currentlyFree++;
-			return returnFormation;
 		}
+
+		if (currentlyFree == formations.size()) {
+			formations.push_back(nullptr);
+		}
+		Formation* returnFormation = formations[currentlyFree] = new Formation(currentlyFree, _units, _type, Vector2(1, 1));
+		currentlyFree++;
+		return returnFormation;
+
 	}
 	return std::nullopt;
 }
