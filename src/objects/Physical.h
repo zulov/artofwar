@@ -1,8 +1,8 @@
 #pragma once
 #include "Entity.h"
 #include <Urho3D/Graphics/BillboardSet.h>
-#include "defines.h"
 
+#define BUCKET_SET_NUMBER 4
 
 struct ActionParameter;
 

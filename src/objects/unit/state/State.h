@@ -1,6 +1,6 @@
 #pragma once
 #include "UnitStateType.h"
-#include "database/db_strcut.h"
+#include "defines.h"
 #include "objects/unit/ActionParameter.h"
 
 

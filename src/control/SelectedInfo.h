@@ -4,6 +4,7 @@
 #include "SelectedInfoType.h"
 
 #define MAX_SELECTEDIN_TYPE 330
+#define MAX_SIZE_TYPES 8
 
 class SelectedInfo
 {
