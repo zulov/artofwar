@@ -53,6 +53,7 @@ protected:
 	float attackRange;
 	float defenseCoef = 0.3f;
 	float attackSpeed = 1;
+	float attackProccess = 0;
 
 	Node* billboardNode = nullptr;
 	Node* barNode = nullptr;

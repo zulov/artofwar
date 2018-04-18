@@ -175,7 +175,6 @@ signed char Physical::getTeam() {
 }
 
 void Physical::absorbAttack(float attackCoef) {
-
 }
 
 void Physical::select() {

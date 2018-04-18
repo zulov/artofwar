@@ -415,7 +415,6 @@ std::string Unit::getColumns() {
 
 void Unit::applyForce(double timeStep) {
 	if (state == UnitStateType::ATTACK) {
-		velocity = Vector2::ZERO;
 		return;
 	}
 

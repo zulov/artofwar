@@ -3,15 +3,15 @@
 
 
 StopState::StopState() {
-	transitions[static_cast<char>(UnitStateType::DEFEND)] = true;
-	transitions[static_cast<char>(UnitStateType::DEAD)] = true;
-	transitions[static_cast<char>(UnitStateType::GO)] = true;
-	transitions[static_cast<char>(UnitStateType::PATROL)] = true;
-	transitions[static_cast<char>(UnitStateType::FOLLOW)] = true;
-	transitions[static_cast<char>(UnitStateType::ATTACK)] = true;
-	transitions[static_cast<char>(UnitStateType::MOVE)] = true;
-	transitions[static_cast<char>(UnitStateType::CHARAGE)] = true;
-	transitions[static_cast<char>(UnitStateType::COLLECT)] = true;
+	nextStates[static_cast<char>(UnitStateType::DEFEND)] = true;
+	nextStates[static_cast<char>(UnitStateType::DEAD)] = true;
+	nextStates[static_cast<char>(UnitStateType::GO)] = true;
+	nextStates[static_cast<char>(UnitStateType::PATROL)] = true;
+	nextStates[static_cast<char>(UnitStateType::FOLLOW)] = true;
+	nextStates[static_cast<char>(UnitStateType::ATTACK)] = true;
+	nextStates[static_cast<char>(UnitStateType::MOVE)] = true;
+	nextStates[static_cast<char>(UnitStateType::CHARAGE)] = true;
+	nextStates[static_cast<char>(UnitStateType::COLLECT)] = true;
 }
 
 StopState::~StopState() = default;

@@ -18,5 +18,5 @@ public:
 
 	bool validateTransition(UnitStateType stateTo);
 protected:
-	bool transitions[STATE_SIZE];
+	bool nextStates[STATE_SIZE];
 };

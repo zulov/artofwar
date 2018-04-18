@@ -46,7 +46,6 @@ public:
 	Vector2 forceGo(float boostCoef, float aimCoef, Vector2& force);
 	Vector2 getDestination(float boostCoef, float aimCoef);
 
-
 	void absorbAttack(float attackCoef) override;
 
 	void toAttack(std::vector<Unit*>* enemies);

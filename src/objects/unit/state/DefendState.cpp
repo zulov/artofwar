@@ -3,8 +3,8 @@
 
 
 DefendState::DefendState() {
-	transitions[static_cast<char>(UnitStateType::STOP)] = true;
-	transitions[static_cast<char>(UnitStateType::DEAD)] = true;
+	nextStates[static_cast<char>(UnitStateType::STOP)] = true;
+	nextStates[static_cast<char>(UnitStateType::DEAD)] = true;
 }
 
 
