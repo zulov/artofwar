@@ -120,4 +120,6 @@ private:
 
 	short posInFormation = -1;
 	short formation = -1;
+
+	int currentFrameState = 0;
 };

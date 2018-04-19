@@ -36,7 +36,6 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam());
 
 	updateBillbords();
-
 }
 
 Unit::~Unit() {
@@ -66,7 +65,7 @@ void Unit::populate() {
 	attackCoef = dbLevel->attack;
 	attackRange = dbLevel->attackRange;
 	defenseCoef = dbLevel->defense;
-	attackSpeed = dbLevel->attackSpeed;
+	attackSpeed = dbLevel->attackSpeed / 100.f;
 }
 
 void Unit::checkAim() {
@@ -389,8 +388,8 @@ void Unit::setFormation(short _formation) {
 }
 
 void Unit::resetFormation() {
-	formation=-1;
-	posInFormation=-1;
+	formation = -1;
+	posInFormation = -1;
 }
 
 void Unit::setPositionInFormation(short _pos) {
@@ -400,7 +399,6 @@ void Unit::setPositionInFormation(short _pos) {
 bool Unit::hasAim() {
 	return aims.hasAim();
 }
-
 
 
 std::string Unit::getColumns() {

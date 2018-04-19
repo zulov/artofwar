@@ -24,7 +24,7 @@ private:
 
 	float boostCoef = 100;
 
-	float sepCoef = 1;
+	float sepCoef = 10;
 	float aimCoef = 2;
 	float escapeCoef = 20;
 	float formationCoef = 50;
