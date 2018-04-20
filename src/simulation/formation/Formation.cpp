@@ -27,7 +27,6 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 Formation::~Formation() = default;
 
 void Formation::electLeader() {
-
 	Vector2 localCenter = Vector2::ZERO;
 	for (auto unit : units) {
 		auto pos = unit->getPosition();

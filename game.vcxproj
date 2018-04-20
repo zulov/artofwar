@@ -191,6 +191,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\commands\action\GroupAction.cpp" />
+    <ClCompile Include="src\commands\action\IndividualAction.cpp" />
+    <ClCompile Include="src\commands\action\FormationAction.cpp" />
     <ClCompile Include="src\colors\ColorPeletteRepo.cpp" />
     <ClCompile Include="src\simulation\formation\Formation.cpp" />
     <ClCompile Include="src\simulation\formation\FormationManager.cpp" />
@@ -290,6 +293,9 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\commands\action\GroupAction.h" />
+    <ClInclude Include="src\commands\action\IndividualAction.h" />
+    <ClInclude Include="src\commands\action\FormationAction.h" />
     <ClInclude Include="src\colors\ColorPeletteRepo.h" />
     <ClInclude Include="src\colors\ColorPallet.h" />
     <ClInclude Include="src\objects\unit\ColorMode.h" />

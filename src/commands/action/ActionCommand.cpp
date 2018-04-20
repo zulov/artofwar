@@ -9,43 +9,10 @@
 #include <chrono>
 
 
-ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Vector2* parameter, bool append) {
-	this->entities = entities;
+ActionCommand::ActionCommand(OrderType action, Physical* physical, Vector2* vector, bool append) {
 	this->action = action;
-	this->vector = parameter;
-	this->entity = nullptr;
-	this->toFollow = nullptr;
-	this->formation = nullptr;
-	this->append = append;
-}
-
-ActionCommand::ActionCommand(std::vector<Physical*>* entities, OrderType action, Physical* paremeter, bool append) {
-	this->entities = entities;
-	this->action = action;
-	this->toFollow = paremeter;
-	this->entity = nullptr;
-	this->vector = nullptr;
-	this->formation = nullptr;
-	this->append = append;
-}
-
-ActionCommand::ActionCommand(Physical* entity, OrderType action, Physical* paremeter, bool append) {
-	this->entity = entity;
-	this->action = action;
-	this->toFollow = paremeter;
-	this->entities = nullptr;
-	this->vector = nullptr;
-	this->formation = nullptr;
-	this->append = append;
-}
-
-ActionCommand::ActionCommand(Formation* formation, OrderType action, Vector2* parameter, bool append) {
-	this->entity = nullptr;
-	this->action = action;
-	this->toFollow = nullptr;
-	this->entities = nullptr;
-	this->vector = parameter;
-	this->formation = formation;
+	this->toFollow = physical;
+	this->vector = vector;
 	this->append = append;
 }
 
