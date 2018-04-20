@@ -14,7 +14,6 @@ namespace Urho3D {
 	class UI;
 }
 
-class ActionCommandList;
 class CommandList;
 
 class CreationCommandList;
@@ -41,7 +40,7 @@ public:
 	Game* setConsole(Console* _console);
 	Game* setLocalization(Localization* _localization);
 	Game* setCameraManager(CameraManager* cameraManager);
-	Game* setActionCommmandList(ActionCommandList* _actionCommmandList);
+	Game* setActionCommmandList(CommandList* _actionCommmandList);
 	Game* setCreationCommandList(CreationCommandList* _simCommandList);
 	Game* setDatabaseCache(DatabaseCache* _databaseCache);
 	Game* setPlayersManager(PlayersManager* _playersManager);
@@ -62,7 +61,7 @@ public:
 
 	QueueManager* getQueueManager() const;
 	CameraManager* getCameraManager() const;
-	ActionCommandList* getActionCommandList() const;
+	CommandList* getActionCommandList() const;
 	CreationCommandList* getCreationCommandList() const;
 	DatabaseCache* getDatabaseCache() const;
 	PlayersManager* getPlayersManager() const;
@@ -84,7 +83,7 @@ private:
 	Localization* localization;
 
 	CameraManager* cameraManager;
-	ActionCommandList* actionCommandList;
+	CommandList* actionCommandList;
 	CreationCommandList* creationCommandList;
 	DatabaseCache* databaseCache;
 	PlayersManager* playersManager;

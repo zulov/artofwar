@@ -3,7 +3,6 @@
 #include "OrderType.h"
 #include "colors/ColorPeletteRepo.h"
 #include "commands/action/ActionCommand.h"
-#include "commands/action/ActionCommandList.h"
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
 #include <Urho3D/Graphics/Material.h>
@@ -11,6 +10,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
+#include "commands/CommandList.h"
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr) {

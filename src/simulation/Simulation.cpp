@@ -17,7 +17,7 @@ Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCo
 	srand(time(NULL));
 
 	simulationInfo = new SimulationInfo();
-	actionCommandList = new ActionCommandList();
+	actionCommandList = new CommandList();
 	Game::get()->setActionCommmandList(actionCommandList);
 
 	units = simObjectManager->getUnits();

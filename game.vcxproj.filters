@@ -178,9 +178,6 @@
     <ClCompile Include="src\commands\action\ActionCommand.cpp">
       <Filter>command\action</Filter>
     </ClCompile>
-    <ClCompile Include="src\commands\action\ActionCommandList.cpp">
-      <Filter>command\list</Filter>
-    </ClCompile>
     <ClCompile Include="src\objects\Physical.cpp">
       <Filter>objects</Filter>
     </ClCompile>
@@ -426,9 +423,6 @@
     </ClInclude>
     <ClInclude Include="src\commands\action\ActionCommand.h">
       <Filter>command\action</Filter>
-    </ClInclude>
-    <ClInclude Include="src\commands\action\ActionCommandList.h">
-      <Filter>command\list</Filter>
     </ClInclude>
     <ClInclude Include="src\hud\window\main_menu\MainMenuPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\MainMenuDetailsPanel.h" />

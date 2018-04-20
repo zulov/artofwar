@@ -1,7 +1,7 @@
 #include "Formation.h"
 #include "Game.h"
+#include "commands/CommandList.h"
 #include "commands/action/ActionCommand.h"
-#include "commands/action/ActionCommandList.h"
 #include "objects/unit/Unit.h"
 #include <algorithm>
 #include <iostream>

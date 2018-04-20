@@ -1,7 +1,6 @@
 #pragma once
 #include "SimulationInfo.h"
 #include "SimulationObjectManager.h"
-#include "commands/action/ActionCommandList.h"
 #include "commands/upgrade/UpgradeCommandList.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "objects/unit/Unit.h"
@@ -71,5 +70,5 @@ private:
 	SimulationObjectManager* simObjectManager;
 	CreationCommandList* creationCommandList;
 	UpgradeCommandList* levelsCommandList;
-	ActionCommandList* actionCommandList;
+	CommandList* actionCommandList;
 };
