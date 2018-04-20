@@ -5,6 +5,7 @@
 #include "objects/unit/Unit.h"
 #include <algorithm>
 #include <iostream>
+#include "commands/action/FormationAction.h"
 
 
 Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction) : id(_id),
@@ -118,7 +119,7 @@ void Formation::update() {
 		if (notWellFormed < theresholedMin) {
 			changeState(FormationState::MOVING);
 			if (hasFutureOrder) {
-				Game::get()->getActionCommandList()->add(new ActionCommand(this, action, new Vector2(futureTarget)));
+				Game::get()->getActionCommandList()->add(new FormationAction(this, action, new Vector2(futureTarget)));
 			}
 		}
 		break;

@@ -18,6 +18,7 @@
 #include <Urho3D/UI/UI.h>
 #include <algorithm>
 #include <queue>
+#include "commands/action/GroupAction.h"
 
 
 Controls::Controls(Input* _input) {
@@ -143,17 +144,17 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 		                              hitPos.x_,
 		                              hitPos.z_
 		                             );
-		Game::get()->getActionCommandList()->add(new ActionCommand(selected, type, newPos, shiftPressed));
+		Game::get()->getActionCommandList()->add(new GroupAction(selected, type, newPos, shiftPressed));
 		break;
 		}
 	case ObjectType::UNIT:
 		{
-		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked, shiftPressed));
+		Game::get()->getActionCommandList()->add(new GroupAction(selected, OrderType::FOLLOW, clicked, shiftPressed));
 		//unSelectAll();
 		break;
 		}
 	case ObjectType::BUILDING:
-		Game::get()->getActionCommandList()->add(new ActionCommand(selected, OrderType::FOLLOW, clicked, shiftPressed));
+		Game::get()->getActionCommandList()->add(new GroupAction(selected, OrderType::FOLLOW, clicked, shiftPressed));
 		break;
 	case ObjectType::RESOURCE: break;
 	default: ;
@@ -189,8 +190,8 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
 	                              held.second->z_ - held.first->z_
 	                             );
 
-	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[0], newPos));
-	Game::get()->getActionCommandList()->add(new ActionCommand(selected, type[1], charge));
+	Game::get()->getActionCommandList()->add(new GroupAction(selected, type[0], newPos));
+	Game::get()->getActionCommandList()->add(new GroupAction(selected, type[1], charge));
 	//TODO czy ta para jest usuwana
 }
 

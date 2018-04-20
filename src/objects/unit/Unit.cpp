@@ -11,6 +11,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
 #include "commands/CommandList.h"
+#include "commands/action/IndividualAction.h"
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr) {
@@ -137,7 +138,7 @@ void Unit::attackIfCloseEnough(float& distance, Unit* closest) {
 			toAttack(closest);
 			//attackRange();
 		} else if (distance < attackIntrest * attackIntrest) {
-			Game::get()->getActionCommandList()->add(new ActionCommand(this, OrderType::FOLLOW, closest));
+			Game::get()->getActionCommandList()->add(new IndividualAction(this, OrderType::FOLLOW, closest));
 		}
 	}
 }
@@ -147,7 +148,7 @@ void Unit::collectIfCloseEnough(float distance, ResourceEntity* closest) {
 		if (distance < attackRange * attackRange) {
 			toCollect(closest);
 		} else if (distance < attackIntrest * attackIntrest) {
-			Game::get()->getActionCommandList()->add(new ActionCommand(this, OrderType::FOLLOW, closest));
+			Game::get()->getActionCommandList()->add(new IndividualAction(this, OrderType::FOLLOW, closest));
 		}
 	}
 }
