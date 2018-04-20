@@ -15,11 +15,10 @@ protected:
 	ActionParameter getTargetAim(int startIdx, Vector2& to, bool append);
 	ActionParameter getFollowAim(Physical* toFollow, bool append);
 	ActionParameter getChargeAim(Vector2* charge, bool append);
-	void addTargetAim(Vector2* to, bool append);
-	void addFollowAim(Physical* toFollow, bool append);
-	void addChargeAim(Vector2* charge, bool append);
-	void calculateCenter(Vector2& center);
-	void appendAim();
+	
+	virtual void addTargetAim(Vector2* to, bool append) =0;
+	virtual void addFollowAim(Physical* toFollow, bool append) =0;
+	virtual void addChargeAim(Vector2* charge, bool append) =0;
 
 	OrderType action;
 	Vector2* vector;
