@@ -69,11 +69,6 @@ ColorPeletteRepo* Game::getColorPeletteRepo() const {
 
 Game::Game() = default;
 
-
-Game* Game::get() {
-	return instance;
-}
-
 void Game::init() {
 	if (instance == nullptr) {
 		instance = new Game();

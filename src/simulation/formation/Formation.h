@@ -6,6 +6,8 @@
 #include <vector>
 
 
+struct FutureAims;
+
 class Formation
 {
 public:
@@ -17,7 +19,8 @@ public:
 	float getPriority(int id) const;
 	FormationState getState() const { return state; }
 	std::optional<Physical*> getLeader();
-	void setFutureTarget(const Vector2& _futureTarget, OrderType _action);
+	void appendFutureTarget(const Vector2& _futureTarget, OrderType _action);
+	void addFutureTarget(const Vector2& _futureTarget, OrderType _action);
 	size_t getSize();
 	void semiReset();
 private:
@@ -49,13 +52,23 @@ private:
 	Unit* oldLeader = nullptr;
 	FormationState state;
 
-	Aims aims;
-	Vector2 futureTarget;
-	OrderType action;
-	bool hasFutureOrder = false;
+	// Aims aims;
+	std::vector<FutureAims> futureOrders;
+	//bool hasFutureOrder = false;
 
 	float theresholedMin = 0.1;
 	float theresholedMax = 0.5;
 	float notWellFormed = 1.0;
 	float notWellFormedExact = 1.0;
+};
+
+struct FutureAims
+{
+	const Vector2 parameter;
+	const OrderType action;
+
+	FutureAims(Vector2 futureTarget, OrderType action)
+		: parameter(futureTarget),
+		action(action) {
+	}
 };

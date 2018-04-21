@@ -24,7 +24,7 @@ public:
 	void setOccupiedNeightbours(std::vector<std::pair<int, float>>* _occupiedNeightbours);
 	std::vector<std::pair<int, float>>& getNeightbours();
 	std::vector<std::pair<int, float>>& getOccupiedNeightbours();
-	char getAdditonalInfo();
+	char getAdditonalInfo() { return additonalInfo; }
 	bool isUnit();
 	void setEscapeThrought(int val);
 	Urho3D::Vector2* getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket);

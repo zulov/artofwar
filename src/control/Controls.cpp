@@ -1,4 +1,5 @@
 #include "Controls.h"
+#include "ControlsUtils.h"
 #include "Game.h"
 #include "HitData.h"
 #include "camera/CameraManager.h"
@@ -9,11 +10,8 @@
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/Enviroment.h"
-#include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
-#include <Urho3D/Graphics/Octree.h>
-#include <Urho3D/Graphics/OctreeQuery.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UI.h>
@@ -43,55 +41,11 @@ Controls::~Controls() {
 
 void Controls::createNode(String model, String texture, Node** node) {
 	*node = Game::get()->getScene()->CreateChild();
-	StaticModel* selectionModel = (*node)->CreateComponent<StaticModel>();
+	auto selectionModel = (*node)->CreateComponent<StaticModel>();
 	selectionModel->SetModel(Game::get()->getCache()->GetResource<Model>(model));
 	selectionModel->SetMaterial(Game::get()->getCache()->GetResource<Material>(texture));
 	(*node)->SetEnabled(false);
 }
-
-bool Controls::raycast(hit_data& hitData, Camera* camera) const {
-	const IntVector2 pos = Game::get()->getUI()->GetCursorPosition();
-	if (!Game::get()->getUI()->GetCursor()->IsVisible() || Game::get()->getUI()->GetElementAt(pos, true)) {
-		return false;
-	}
-
-	const Ray cameraRay = camera->GetScreenRay((float)pos.x_ / Game::get()->getGraphics()->GetWidth(),
-	                                           (float)pos.y_ / Game::get()->getGraphics()->GetHeight());
-
-	PODVector<RayQueryResult> results;
-	RayOctreeQuery query(results, cameraRay, RAY_TRIANGLE, maxDistance, DRAWABLE_GEOMETRY);
-	Game::get()->getScene()->GetComponent<Octree>()->Raycast(query);
-	int i = 0;
-	while (i < results.Size()) {
-		RayQueryResult& result = results[i];
-
-		Node* node = result.node_;
-
-		LinkComponent* lc = node->GetComponent<LinkComponent>();
-		if (lc == nullptr) {
-			Node* parent = node->GetParent();
-			lc = parent->GetComponent<LinkComponent>();
-			if (lc == nullptr) {
-				++i;
-			} else {
-				hitData.position = result.position_;
-				hitData.drawable = result.drawable_;
-				hitData.link = lc;
-				return true;
-			}
-		} else {
-			hitData.position = result.position_;
-			hitData.drawable = result.drawable_;
-			hitData.link = lc;
-			return true;
-		}
-	}
-	hitData.drawable = nullptr;
-	hitData.link = nullptr;
-
-	return false;
-}
-
 
 void Controls::unSelectAll() {
 	for (auto& phy : *selected) {
@@ -140,7 +94,7 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 		} else {
 			type = OrderType::GO;
 		}
-		Vector2* newPos = new Vector2(hitPos.x_, hitPos.z_);
+		auto newPos = new Vector2(hitPos.x_, hitPos.z_);
 		Game::get()->getActionCommandList()->add(new GroupAction(selected, type, newPos, shiftPressed));
 		break;
 		}
@@ -188,7 +142,7 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
 void Controls::releaseLeft() {
 	hit_data hitData;
 
-	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+	if (raycast(hitData)) {
 		left.setSecond(hitData.position);
 		const float dist = (*left.held.first - *left.held.second).LengthSquared();
 		if (dist > clickDistance) {
@@ -207,7 +161,7 @@ void Controls::releaseLeft() {
 void Controls::releaseBuildLeft() {
 	hit_data hitData;
 
-	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+	if (raycast(hitData)) {
 		LinkComponent* lc = hitData.link;
 		if (lc) {
 			leftClickBuild(lc->getPhysical(), hitData.position);
@@ -218,7 +172,7 @@ void Controls::releaseBuildLeft() {
 void Controls::releaseRight() {
 	hit_data hitData;
 
-	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+	if (raycast(hitData)) {
 		right.setSecond(hitData.position);
 		float dist = (*right.held.first - *right.held.second).LengthSquared();
 		if (dist > clickDistance) {
@@ -237,7 +191,7 @@ void Controls::releaseRight() {
 bool Controls::orderAction(bool shiftPressed) {
 	hit_data hitData;
 
-	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+	if (raycast(hitData)) {
 		LinkComponent* lc = hitData.link;
 		if (lc) {
 			rightClickDefault(lc->getPhysical(), hitData.position, shiftPressed);
@@ -322,7 +276,7 @@ void Controls::startArrowNode(const hit_data& hitData) {
 }
 
 bool Controls::clickDown(MouseButton& var, hit_data hitData) {
-	bool clicked = raycast(hitData, Game::get()->getCameraManager()->getComponent());
+	bool clicked = raycast(hitData);
 	if (clicked) {
 		var.setFirst(hitData.position);
 	}
@@ -387,7 +341,7 @@ void Controls::activate() {
 }
 
 void Controls::unitOrder(short id) {
-	OrderType type = OrderType(id);
+	auto type = OrderType(id);
 	switch (type) {
 	case OrderType::GO:
 	case OrderType::CHARGE:
@@ -462,7 +416,7 @@ void Controls::clean(SimulationInfo* simulationInfo) {
 void Controls::updateSelection() {
 	hit_data hitData;
 
-	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+	if (raycast(hitData)) {
 		float xScale = left.held.first->x_ - hitData.position.x_;
 		float zScale = left.held.first->z_ - hitData.position.z_;
 
@@ -476,7 +430,7 @@ void Controls::updateSelection() {
 void Controls::updateArrow() {
 	hit_data hitData;
 
-	if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+	if (raycast(hitData)) {
 		Vector3 dir = *right.held.first - hitData.position;
 
 		Vector3 pos = *right.held.first;
@@ -517,7 +471,7 @@ void Controls::defaultControl() {
 	if (input->GetMouseButtonDown(MOUSEB_MIDDLE)) {
 		hit_data hitData;
 
-		if (raycast(hitData, Game::get()->getCameraManager()->getComponent())) {
+		if (raycast(hitData)) {
 			selectedInfo->setMessage(hitData.position.ToString());
 		}
 	}
@@ -586,6 +540,5 @@ void Controls::control() {
 }
 
 void Controls::unitFormation(short id) {
-	FormationType type = FormationType(id);
-	Game::get()->getFormationManager()->createFormation(selected, type);
+	Game::get()->getFormationManager()->createFormation(selected, FormationType(id));
 }

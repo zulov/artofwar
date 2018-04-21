@@ -27,7 +27,7 @@ class ColorPeletteRepo;
 class Game
 {
 public:
-	static Game* get();
+	static Game* get() { return instance; }
 	static void init();
 	static void dispose();
 	~Game();

@@ -485,8 +485,8 @@ void MainGrid::drawMap(Image* image) {
 	uint32_t* data = (uint32_t*)image->GetData();
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
-			int index = getIndex(x, y);
-			int idR = getIndex(resolution - y - 1, x);
+			const int index = getIndex(x, y);
+			const int idR = getIndex(resolution - y - 1, x);
 			if (complexData[index].isUnit()) {
 				*(data + idR) = 0xFFFFFFFF;
 			} else {

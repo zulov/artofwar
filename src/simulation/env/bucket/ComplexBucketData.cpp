@@ -77,10 +77,6 @@ std::vector<std::pair<int, float>>& ComplexBucketData::getOccupiedNeightbours() 
 	return occupiedNeightbours;
 }
 
-char ComplexBucketData::getAdditonalInfo() {
-	return additonalInfo;
-}
-
 bool ComplexBucketData::isUnit() {
 	return type == ObjectType::UNIT;
 }

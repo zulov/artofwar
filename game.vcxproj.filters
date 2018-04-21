@@ -475,6 +475,7 @@
     <ClInclude Include="src\commands\action\FormationAction.h" />
     <ClInclude Include="src\commands\action\IndividualAction.h" />
     <ClInclude Include="src\commands\action\GroupAction.h" />
+    <ClInclude Include="src\control\ControlsUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

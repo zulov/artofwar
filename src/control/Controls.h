@@ -22,9 +22,10 @@ using namespace Urho3D;
 class Controls
 {
 public:
-	void createNode(String model, String texture, Urho3D::Node** node);
 	Controls(Input* _input);
 	~Controls();
+
+	void createNode(String model, String texture, Urho3D::Node** node);
 
 	void select(Physical* entity);
 	void unSelectAll();
@@ -58,7 +59,6 @@ private:
 	void orderBuilding(short id, ActionParameter& parameter);
 
 	void refreshSelected();
-	bool raycast(hit_data& hitData, Camera* camera) const;
 
 	void startArrowNode(const hit_data& hitData);
 	void startSelectionNode(hit_data hitData);
@@ -82,8 +82,6 @@ private:
 	void toDefault();
 
 	std::vector<Physical*>* selected; //TODO to powinien byæ set
-
-	float maxDistance = 300;
 
 	MouseButton left;
 	MouseButton right;

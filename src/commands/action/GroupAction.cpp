@@ -17,7 +17,7 @@ GroupAction::~GroupAction() = default;
 void GroupAction::addTargetAim(Vector2* to, bool append) {
 	auto opt = Game::get()->getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
-		opt.value()->setFutureTarget(*to, action);
+		opt.value()->appendFutureTarget(*to, action);
 	}
 }
 

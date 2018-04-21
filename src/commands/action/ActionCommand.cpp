@@ -43,9 +43,6 @@ void ActionCommand::execute() {
 	case OrderType::GO:
 		addTargetAim(vector, append);
 		break;
-	case OrderType::PATROL:
-		addTargetAim(vector, append);
-		break;
 	case OrderType::FOLLOW:
 		{
 		if (toFollow != nullptr && toFollow->isAlive()) {
@@ -53,10 +50,8 @@ void ActionCommand::execute() {
 		}
 		}
 		break;
-	case OrderType::CHARGE:
-		{
-		addChargeAim(vector, append);
-		}
+	case OrderType::CHARGE:		
+		addChargeAim(vector, append);	
 		break;
 	default: ;
 	}

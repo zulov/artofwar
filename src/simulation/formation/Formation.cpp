@@ -49,7 +49,7 @@ void Formation::electLeader() {
 	}
 	if (oldLeader != nullptr
 		&& leader != oldLeader
-		&& hasFutureOrder) {
+		&& !futureOrders.empty()) {
 
 		if (oldLeader->getFormation() == id) {
 			oldLeader->clearAims();
@@ -118,8 +118,9 @@ void Formation::update() {
 		innerUpdate();
 		if (notWellFormed < theresholedMin) {
 			changeState(FormationState::MOVING);
-			if (hasFutureOrder) {
-				Game::get()->getActionCommandList()->add(new FormationAction(this, action, new Vector2(futureTarget)));
+			if (!futureOrders.empty()) {
+				Game::get()->getActionCommandList()->add(new FormationAction(this, futureOrders[0].action,
+				                                                             new Vector2(futureOrders[0].parameter)));
 			}
 		}
 		break;
@@ -130,7 +131,7 @@ void Formation::update() {
 		} else if (notWellFormedExact == 0
 			&& !leader->hasAim()) {
 			changeState(FormationState::REACHED);
-			hasFutureOrder = false;
+			futureOrders.clear();
 		}
 		break;
 	case FormationState::REACHED:
@@ -172,10 +173,13 @@ std::optional<Physical*> Formation::getLeader() {
 	return std::nullopt;
 }
 
-void Formation::setFutureTarget(const Vector2& _futureTarget, OrderType _action) {
-	futureTarget = _futureTarget;
-	action = _action;
-	hasFutureOrder = true;
+void Formation::appendFutureTarget(const Vector2& _futureTarget, OrderType _action) {
+	futureOrders.emplace_back(_futureTarget, _action);
+}
+
+void Formation::addFutureTarget(const Vector2& _futureTarget, OrderType _action) {
+	futureOrders.clear();
+	futureOrders.emplace_back(_futureTarget, _action);
 }
 
 size_t Formation::getSize() {
@@ -186,7 +190,7 @@ void Formation::semiReset() {
 	notWellFormed = 1;
 	notWellFormedExact = 1;
 	changed = true;
-	hasFutureOrder = false;
+	futureOrders.clear();
 	changeState(FormationState::FORMING);
 }
 
