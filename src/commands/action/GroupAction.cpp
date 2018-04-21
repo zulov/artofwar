@@ -1,7 +1,5 @@
 #include "GroupAction.h"
 #include "Game.h"
-#include <chrono>
-#include <iostream>
 #include "simulation/env/Enviroment.h"
 
 GroupAction::GroupAction(std::vector<Physical*>* entities, OrderType action, Vector2* parameter, bool append)
@@ -19,16 +17,10 @@ GroupAction::~GroupAction() {
 }
 
 void GroupAction::addTargetAim(Vector2* to, bool append) {
-	auto start = std::chrono::system_clock::now();
-
 	auto opt = Game::get()->getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
 		opt.value()->setFutureTarget(*to, action);
 	}
-
-	Game::get()->getEnviroment()->invalidateCache();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
-	std::cout << "sum " << duration.count() << std::endl;
 }
 
 void GroupAction::addChargeAim(Vector2* charge, bool append) {
