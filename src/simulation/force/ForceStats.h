@@ -1,8 +1,9 @@
 #pragma once
-#include <iostream>
 #include <Urho3D/Math/Vector2.h>
+#include <iostream>
 
 #define FORCE_STATS_SIZE 10000
+#define FORCE_STATS_ENABLE false
 
 struct ForceStats
 {
@@ -20,39 +21,43 @@ struct ForceStats
 	}
 
 	void addSepObst(Urho3D::Vector2& force) {
-		sepObstStat += force.Length();
+		if constexpr (FORCE_STATS_ENABLE) {
+			sepObstStat += force.Length();
+		}
 	}
 
 	void addSepUnit(Urho3D::Vector2& force) {
-		sepUnitStat += force.Length();
+		if constexpr (FORCE_STATS_ENABLE) { sepUnitStat += force.Length(); }
 	}
 
 	void addDest(Urho3D::Vector2& force) {
-		destStat += force.Length();
+		if constexpr (FORCE_STATS_ENABLE) { destStat += force.Length(); }
 	}
 
 	void addForm(Urho3D::Vector2& force) {
-		formStat += force.Length();
+		if constexpr (FORCE_STATS_ENABLE) { formStat += force.Length(); }
 	}
 
 	void addEscp(Urho3D::Vector2& force) {
-		escaStat += force.Length();
+		if constexpr (FORCE_STATS_ENABLE) { escaStat += force.Length(); }
 	}
 
 	float* result() {
-		++statIndex;
-		if (statIndex >= FORCE_STATS_SIZE) {
-			stats[0] = sepObstStat / FORCE_STATS_SIZE;
-			stats[1] = sepUnitStat / FORCE_STATS_SIZE;
-			stats[2] = destStat / FORCE_STATS_SIZE;
-			stats[3] = formStat / FORCE_STATS_SIZE;
-			stats[4] = escaStat / FORCE_STATS_SIZE;
-			statIndex = 0;
-			std::cout <<
-				stats[0] << "\t" << stats[1] << "\t" <<
-				stats[2] << "\t" << stats[3] << "\t" <<
-				stats[4] << std::endl;
-			reset();
+		if constexpr (FORCE_STATS_ENABLE) {
+			++statIndex;
+			if (statIndex >= FORCE_STATS_SIZE) {
+				stats[0] = sepObstStat / FORCE_STATS_SIZE;
+				stats[1] = sepUnitStat / FORCE_STATS_SIZE;
+				stats[2] = destStat / FORCE_STATS_SIZE;
+				stats[3] = formStat / FORCE_STATS_SIZE;
+				stats[4] = escaStat / FORCE_STATS_SIZE;
+				statIndex = 0;
+				std::cout <<
+					stats[0] << "\t" << stats[1] << "\t" <<
+					stats[2] << "\t" << stats[3] << "\t" <<
+					stats[4] << std::endl;
+				reset();
+			}
 		}
 		return stats;
 	}

@@ -58,7 +58,7 @@ private:
 	void orderBuilding(short id, ActionParameter& parameter);
 
 	void refreshSelected();
-	bool raycast(hit_data& hitData, Camera* camera);
+	bool raycast(hit_data& hitData, Camera* camera) const;
 
 	void startArrowNode(const hit_data& hitData);
 	void startSelectionNode(hit_data hitData);
@@ -95,8 +95,8 @@ private:
 	ObjectType typeToCreate;
 	SelectedInfo* selectedInfo;
 
-	Urho3D::Node* selectionNode;
-	Urho3D::Node* arrowNode;
+	Urho3D::Node* selectionNode{};
+	Urho3D::Node* arrowNode{};
 
 	short idToCreate = -1;
 	float clickDistance = 2 * 2;

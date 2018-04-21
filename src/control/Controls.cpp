@@ -4,6 +4,7 @@
 #include "camera/CameraManager.h"
 #include "commands/CommandList.h"
 #include "commands/action/ActionCommand.h"
+#include "commands/action/GroupAction.h"
 #include "commands/creation/CreationCommandList.h"
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
@@ -18,7 +19,6 @@
 #include <Urho3D/UI/UI.h>
 #include <algorithm>
 #include <queue>
-#include "commands/action/GroupAction.h"
 
 
 Controls::Controls(Input* _input) {
@@ -49,7 +49,7 @@ void Controls::createNode(String model, String texture, Node** node) {
 	(*node)->SetEnabled(false);
 }
 
-bool Controls::raycast(hit_data& hitData, Camera* camera) {
+bool Controls::raycast(hit_data& hitData, Camera* camera) const {
 	const IntVector2 pos = Game::get()->getUI()->GetCursorPosition();
 	if (!Game::get()->getUI()->GetCursor()->IsVisible() || Game::get()->getUI()->GetElementAt(pos, true)) {
 		return false;
@@ -104,7 +104,7 @@ void Controls::unSelectAll() {
 }
 
 void Controls::select(Physical* entity) {
-	ObjectType entityType = entity->getType();
+	const ObjectType entityType = entity->getType();
 	if (entityType != selectedType) {
 		unSelectAll();
 	}
@@ -140,10 +140,7 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 		} else {
 			type = OrderType::GO;
 		}
-		Vector2* newPos = new Vector2(
-		                              hitPos.x_,
-		                              hitPos.z_
-		                             );
+		Vector2* newPos = new Vector2(hitPos.x_, hitPos.z_);
 		Game::get()->getActionCommandList()->add(new GroupAction(selected, type, newPos, shiftPressed));
 		break;
 		}
@@ -172,27 +169,19 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>& held) {
 }
 
 void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
-	OrderType type[2];
+	auto actions = Game::get()->getActionCommandList();
 
+	auto first = new Vector2(held.first->x_, held.first->z_);
 	if (input->GetKeyDown(KEY_SHIFT)) {
-		type[0] = OrderType::PATROL;
-		type[1] = OrderType::PATROL;
+		const auto second = new Vector2(held.second->x_, held.second->z_);
+		actions->add(new GroupAction(selected, OrderType::PATROL, first));
+		actions->add(new GroupAction(selected, OrderType::PATROL, second, true));
 	} else {
-		type[0] = OrderType::GO;
-		type[1] = OrderType::CHARGE;
-	}
-	Vector2* newPos = new Vector2(
-	                              held.first->x_,
-	                              held.first->z_
-	                             );
-	Vector2* charge = new Vector2(
-	                              held.second->x_ - held.first->x_,
-	                              held.second->z_ - held.first->z_
-	                             );
+		const auto charge = new Vector2(held.second->x_ - held.first->x_, held.second->z_ - held.first->z_);
 
-	Game::get()->getActionCommandList()->add(new GroupAction(selected, type[0], newPos));
-	Game::get()->getActionCommandList()->add(new GroupAction(selected, type[1], charge));
-	//TODO czy ta para jest usuwana
+		actions->add(new GroupAction(selected, OrderType::GO, first));
+		actions->add(new GroupAction(selected, OrderType::CHARGE, charge, true));
+	}
 }
 
 
@@ -294,7 +283,7 @@ void Controls::orderBuilding(short id, ActionParameter& parameter) {
 }
 
 void Controls::orderPhysical(short id, ActionParameter& parameter) {
-	int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
+	const int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
 
 	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 
@@ -358,11 +347,12 @@ void Controls::clickDownRight() {
 
 void Controls::createBuilding(Vector2& pos) {
 	if (idToCreate >= 0) {
+		auto player = Game::get()->getPlayersManager()->getActivePlayer();
+
 		Game::get()->getCreationCommandList()->addBuilding(
 		                                                   idToCreate, pos,
-		                                                   Game::get()->getPlayersManager()->getActivePlayer()->getId(),
-		                                                   Game::get()->getPlayersManager()->getActivePlayer()->
-		                                                                getLevelForBuilding(idToCreate)
+		                                                   player->getId(),
+		                                                   player->getLevelForBuilding(idToCreate)
 		                                                  );
 	}
 }
@@ -440,9 +430,8 @@ void Controls::refreshSelected() {
 		                               if (!physical->isAlive()) {
 			                               physical->unSelect();
 			                               return true;
-		                               } else {
-			                               return false;
 		                               }
+		                               return false;
 	                               }),
 	                selected->end());
 }

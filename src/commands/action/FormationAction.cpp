@@ -8,8 +8,7 @@ FormationAction::FormationAction(Formation* formation, OrderType action, Vector2
 	this->formation = formation;
 }
 
-FormationAction::~FormationAction() {
-}
+FormationAction::~FormationAction() = default;
 
 void FormationAction::addTargetAim(Vector2* to, bool append) {
 	auto opt = formation->getLeader();
@@ -19,14 +18,15 @@ void FormationAction::addTargetAim(Vector2* to, bool append) {
 		ActionParameter parameter = getTargetAim(physical->getBucketIndex(-1), *to, append);
 		short id = static_cast<short>(action);
 		physical->action(id, parameter);
+		Game::get()->getEnviroment()->invalidateCache();
 	}
 
-	Game::get()->getEnviroment()->invalidateCache();
 }
 
 void FormationAction::addChargeAim(Vector2* charge, bool append) {
+	int a = 5;
 }
 
 void FormationAction::addFollowAim(Physical* toFollow, bool append) {
-
+	int a = 5;
 }

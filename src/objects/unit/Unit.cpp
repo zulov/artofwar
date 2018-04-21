@@ -428,7 +428,7 @@ void Unit::applyForce(double timeStep) {
 			velocity *= maxSpeed;
 		}
 		StateManager::get()->changeState(this, UnitStateType::MOVE);
-		if (rotatable) {
+		if (rotatable && velLenght > 2 * minSpeed * minSpeed) {
 			node->SetDirection(Vector3(velocity.x_, 0, velocity.y_));
 		}
 	}

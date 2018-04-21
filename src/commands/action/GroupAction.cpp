@@ -5,7 +5,6 @@
 GroupAction::GroupAction(std::vector<Physical*>* entities, OrderType action, Vector2* parameter, bool append)
 	: ActionCommand(action, nullptr, parameter, append) {
 	this->entities = entities;
-
 }
 
 GroupAction::GroupAction(std::vector<Physical*>* entities, OrderType action, Physical* paremeter, bool append)
@@ -13,8 +12,7 @@ GroupAction::GroupAction(std::vector<Physical*>* entities, OrderType action, Phy
 	this->entities = entities;
 }
 
-GroupAction::~GroupAction() {
-}
+GroupAction::~GroupAction() = default;
 
 void GroupAction::addTargetAim(Vector2* to, bool append) {
 	auto opt = Game::get()->getFormationManager()->createFormation(entities);

@@ -3,8 +3,7 @@
 #include <fstream>
 
 #define BENCH_LENGTH 200
-#define BENCH_SKIP 2
-#define BENCH_ENABLE false
+#define BENCH_SAVE false
 
 class Benchmark {
 public:

@@ -12,14 +12,14 @@ Benchmark::Benchmark() {
 	std::string name = "result/" + std::to_string(1900 + ltm->tm_year) + "" + std::to_string(1 + ltm->tm_mon) + "" +
 		std::to_string(ltm->tm_mday) + "" + std::to_string(1 + ltm->tm_hour) + "" +
 		std::to_string(1 + ltm->tm_min) + "" + std::to_string(+ ltm->tm_sec) + "performance.txt";
-	if (BENCH_ENABLE) {
+	if constexpr (BENCH_SAVE) {
 		output.open(name);
 	}
 }
 
 
 Benchmark::~Benchmark() {
-	if (BENCH_ENABLE) {
+	if constexpr (BENCH_SAVE) {
 		output.close();
 	}
 }
@@ -47,8 +47,8 @@ void Benchmark::add(float fps) {
 }
 
 void Benchmark::save() {
-	if (BENCH_ENABLE) {
-		for (int count = BENCH_SKIP; count < BENCH_LENGTH; count++) {
+	if constexpr (BENCH_SAVE) {
+		for (int count = 0; count < BENCH_LENGTH; count++) {
 			output << data[count] << std::endl;
 		}
 	}

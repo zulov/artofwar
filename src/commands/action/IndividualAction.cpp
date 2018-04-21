@@ -1,7 +1,5 @@
 #include "IndividualAction.h"
 #include "Game.h"
-#include <chrono>
-#include <iostream>
 #include "objects/unit/ActionParameter.h"
 #include "simulation/env/Enviroment.h"
 
@@ -11,11 +9,9 @@ IndividualAction::IndividualAction(Physical* entity, OrderType action, Physical*
 	this->entity = entity;
 }
 
-IndividualAction::~IndividualAction() {
-}
+IndividualAction::~IndividualAction() = default;
 
 void IndividualAction::addTargetAim(Vector2* to, bool append) {
-	auto start = std::chrono::system_clock::now();
 	short id = static_cast<short>(action);
 
 	ActionParameter parameter = getTargetAim(entity->getBucketIndex(-1), *to, append);
@@ -23,8 +19,6 @@ void IndividualAction::addTargetAim(Vector2* to, bool append) {
 	static_cast<Unit*>(entity)->resetFormation();
 
 	Game::get()->getEnviroment()->invalidateCache();
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
-	std::cout << "sum " << duration.count() << std::endl;
 }
 
 void IndividualAction::addChargeAim(Vector2* charge, bool append) {
