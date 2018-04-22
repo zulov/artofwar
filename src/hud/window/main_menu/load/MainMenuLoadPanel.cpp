@@ -27,7 +27,7 @@ void MainMenuLoadPanel::createBody() {
 	Vector<String> files;
 	fileSystem->ScanDir(files, "saves", "*.db", SCAN_FILES, false);
 
-	for (auto name : files) {
+	for (const auto& name : files) {
 		Urho3D::Button* button = simpleButton(nullptr, style, "LoadListButton");
 		Urho3D::Text* element = button->CreateChild<Text>();
 		

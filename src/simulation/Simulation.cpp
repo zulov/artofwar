@@ -92,7 +92,7 @@ void Simulation::addTestEntities() {
 }
 
 void Simulation::loadEntities(NewGameForm* form) {
-	for (auto player : form->players) {
+	for (const auto& player : form->players) {
 		simObjectManager->addUnits(10, 1, Vector2(), player.id, 0);
 	}
 }

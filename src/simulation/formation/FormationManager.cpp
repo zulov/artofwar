@@ -31,8 +31,7 @@ std::optional<Formation*> FormationManager::createFormation(std::vector<Physical
 				}
 			}
 			if (allIn) {
-				formations[formationInFirst]->semiReset();
-				return formations[formationInFirst]; //TODO czy tu reset formacji?
+				return formations[formationInFirst]; 
 			}
 		}
 

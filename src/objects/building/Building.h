@@ -19,7 +19,7 @@ public:
 	void absorbAttack(float attackCoef) override;
 
 	String& toMultiLineString() override;
-	void action(short id, ActionParameter& parameter) override;
+	void action(char id, ActionParameter& parameter) override;
 	void upgrade(char level);
 
 	static std::string getColumns();

@@ -4,11 +4,12 @@
 #include "commands/action/ActionCommand.h"
 #include "commands/action/FormationAction.h"
 #include "objects/unit/Unit.h"
+#include "objects/unit/aim/FutureAims.h"
 #include <algorithm>
 #include <iostream>
 
 
-Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction) : id(_id),
+Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2& _direction) : id(_id),
 	type(_type), direction(_direction), state(FormationState::FORMING) {
 
 	for (auto value : *_units) {
@@ -119,8 +120,10 @@ void Formation::update() {
 		if (notWellFormed < theresholedMin) {
 			changeState(FormationState::MOVING);
 			if (!futureOrders.empty()) {
-				Game::get()->getActionCommandList()->add(new FormationAction(this, futureOrders[0].action,
-				                                                             new Vector2(futureOrders[0].parameter)));
+				for (const auto& futureOrder : futureOrders) {
+					Game::get()->getActionCommandList()->add(new FormationAction(this, futureOrder.action,
+					                                                             new Vector2(futureOrder.vector)));
+				}
 			}
 		}
 		break;
@@ -173,13 +176,13 @@ std::optional<Physical*> Formation::getLeader() {
 	return std::nullopt;
 }
 
-void Formation::appendFutureTarget(const Vector2& _futureTarget, OrderType _action) {
-	futureOrders.emplace_back(_futureTarget, _action);
+void Formation::appendFutureTarget(const Vector2& _futureTarget, const Physical* _physical, OrderType _action) {
+	futureOrders.emplace_back(_futureTarget, _physical, _action);
 }
 
-void Formation::addFutureTarget(const Vector2& _futureTarget, OrderType _action) {
+void Formation::addFutureTarget(const Vector2& _futureTarget, const Physical* _physical, OrderType _action) {
 	futureOrders.clear();
-	futureOrders.emplace_back(_futureTarget, _action);
+	futureOrders.emplace_back(_futureTarget, _physical, _action);
 }
 
 size_t Formation::getSize() {

@@ -3,7 +3,7 @@
 #include <Urho3D/Scene/Scene.h>
 
 
-ChargeAim::ChargeAim(Urho3D::Vector2* _direction): direction(*_direction), distance(50) {
+ChargeAim::ChargeAim(Urho3D::Vector2* _direction): direction(*_direction), chargeEnergy(50) {
 	direction.Normalize();
 }
 

@@ -1,14 +1,14 @@
 #pragma once
 #include "Game.h"
+#include "NewGamePlayer.h"
 #include "database/DatabaseCache.h"
 #include "hud/UiUtils.h"
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/BorderImage.h>
+#include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/UI/LineEdit.h>
-#include "NewGamePlayer.h"
-#include <Urho3D/UI/CheckBox.h>
 
 
 struct NewGameTeamLine

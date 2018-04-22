@@ -3,47 +3,65 @@
 #include "TargetAim.h"
 #include "utils.h"
 #include <optional>
+#include <algorithm>
+#include "Game.h"
+#include "commands/CommandList.h"
+#include "commands/action/IndividualAction.h"
 
 
 Aims::Aims() {
-	current = 0;
+	current = nullptr;
 }
 
 Aims::~Aims() {
-	clear_vector(aims);
+	delete current;
 }
 
 std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) {
-	if (current >= aims.size()) { return std::nullopt; }
-	return aims[current]->getDirection(unit);
+	return current->getDirection(unit);
 }
 
-void Aims::clearAimsIfExpired() {
-	for (auto& aim : aims) {
-		if (aim->expired()) {
-			delete aim;
-			aim = new DummyAim();
-		}
+void Aims::clearExpired() {
+
+	nextAims.erase(std::remove_if(nextAims.begin(),
+	                              nextAims.end(),
+	                              [](FutureAims fa) { return fa.expired(); }),
+	               nextAims.end());
+	if (current->expired()) {
+		delete current;
+		current = nullptr;
 	}
 }
 
 bool Aims::ifReach(Unit* unit) {
-	if (current >= aims.size()) { return false; }
-	Aim* aim = aims[current];
-	if (aim == nullptr) { return false; }
+	if (current == nullptr) { return false; }
 
-	if (aim->ifReach(unit)) {
-		++current;
-		if (current >= aims.size()) {
+	if (current->ifReach(unit)) {
+
+		if (nextAims.empty()) {
 			clear();
 			return true;
+		} else {
+			if (nextAims[0].physical != nullptr) {
+
+				Game::get()->getActionCommandList()->add(new IndividualAction(unit,//TODO a moze formation, skad to wiedziec :(
+				                                                              nextAims[0].action,
+				                                                              nextAims[0].physical,
+				                                                              true));
+			}else {
+				Game::get()->getActionCommandList()->add(new IndividualAction(unit,
+				                                                              nextAims[0].action,
+				                                                              nextAims[0].vector,
+				                                                              true));
+			}
+			nextAims.erase(nextAims.begin());
 		}
 	}
 	return false;
 }
 
 bool Aims::hasAim() {
-	return current < aims.size();
+	return current != nullptr || !nextAims.empty();
 }
 
 void Aims::add(Aim* aim) {
@@ -51,6 +69,6 @@ void Aims::add(Aim* aim) {
 }
 
 void Aims::clear() {
-	clear_vector(aims);
-	current = 0;
+	nextAims.clear();
+	current = nullptr;
 }

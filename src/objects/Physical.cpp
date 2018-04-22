@@ -132,7 +132,7 @@ String& Physical::toMultiLineString() {
 	return menuString;
 }
 
-void Physical::action(short id, ActionParameter& parameter) {
+void Physical::action(char id, ActionParameter& parameter) {
 }
 
 std::string Physical::getColumns() {

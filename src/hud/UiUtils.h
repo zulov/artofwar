@@ -102,7 +102,7 @@ inline void addChildText(UIElement* element, String styleName, String value, Urh
 }
 
 inline void addChildTexts(Urho3D::DropDownList* cob, std::vector<String> names, Urho3D::XMLFile* style) {
-	for (auto name : names) {
+	for (const auto& name : names) {
 		addTextItem(cob, name, style);
 	}
 }

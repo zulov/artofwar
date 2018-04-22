@@ -32,7 +32,7 @@ public:
 	void setPlayer(unsigned char player);
 	unsigned char getPlayer();
 	virtual String& toMultiLineString();
-	virtual void action(short id, ActionParameter& parameter);
+	virtual void action(char id, ActionParameter& parameter);
 	static std::string getColumns();
 	virtual int getLevel();
 	std::string getValues(int precision) override;

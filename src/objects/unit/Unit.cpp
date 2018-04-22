@@ -2,7 +2,9 @@
 #include "Game.h"
 #include "OrderType.h"
 #include "colors/ColorPeletteRepo.h"
+#include "commands/CommandList.h"
 #include "commands/action/ActionCommand.h"
+#include "commands/action/IndividualAction.h"
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
 #include <Urho3D/Graphics/Material.h>
@@ -10,8 +12,6 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
-#include "commands/CommandList.h"
-#include "commands/action/IndividualAction.h"
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr) {
@@ -105,7 +105,7 @@ Vector2 Unit::forceGo(float boostCoef, float aimCoef, Vector2& force) {
 Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 	Vector2 force;
 	if (aims.hasAim()) {
-		aims.clearAimsIfExpired();
+		aims.clearExpired();
 		auto dirOpt = aims.getDirection(this);
 		if (dirOpt.has_value()) {
 			force = dirOpt.value();
@@ -226,8 +226,8 @@ String& Unit::toMultiLineString() {
 	return menuString;
 }
 
-void Unit::action(short id, ActionParameter& parameter) {
-	OrderType type = OrderType(id);
+void Unit::action(char id, ActionParameter& parameter) {
+	const OrderType type = OrderType(id);
 
 	switch (type) {
 	case OrderType::GO:

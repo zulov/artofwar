@@ -11,7 +11,7 @@ struct FutureAims;
 class Formation
 {
 public:
-	Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2 _direction);
+	Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2& _direction);
 	~Formation();
 
 	void update();
@@ -19,8 +19,8 @@ public:
 	float getPriority(int id) const;
 	FormationState getState() const { return state; }
 	std::optional<Physical*> getLeader();
-	void appendFutureTarget(const Vector2& _futureTarget, OrderType _action);
-	void addFutureTarget(const Vector2& _futureTarget, OrderType _action);
+	void appendFutureTarget(const Vector2& _futureTarget, const Physical* _physical, OrderType _action);
+	void addFutureTarget(const Vector2& _futureTarget, const Physical* _physical, OrderType _action);
 	size_t getSize();
 	void semiReset();
 private:
@@ -60,15 +60,4 @@ private:
 	float theresholedMax = 0.5;
 	float notWellFormed = 1.0;
 	float notWellFormedExact = 1.0;
-};
-
-struct FutureAims
-{
-	const Vector2 parameter;
-	const OrderType action;
-
-	FutureAims(Vector2 futureTarget, OrderType action)
-		: parameter(futureTarget),
-		action(action) {
-	}
 };

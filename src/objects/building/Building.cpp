@@ -58,7 +58,7 @@ String& Building::toMultiLineString() {
 	return menuString;
 }
 
-void Building::action(short id, ActionParameter& parameter) {
+void Building::action(char id, ActionParameter& parameter) {
 	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 
 	switch (parameter.type) {

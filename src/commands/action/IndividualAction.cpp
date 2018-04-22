@@ -12,7 +12,7 @@ IndividualAction::IndividualAction(Physical* entity, OrderType action, Physical*
 IndividualAction::~IndividualAction() = default;
 
 void IndividualAction::addTargetAim(Vector2* to, bool append) {
-	short id = static_cast<short>(action);
+	short id = static_cast<char>(action);
 
 	ActionParameter parameter = getTargetAim(entity->getBucketIndex(-1), *to, append);
 	entity->action(id, parameter);
@@ -22,14 +22,14 @@ void IndividualAction::addTargetAim(Vector2* to, bool append) {
 }
 
 void IndividualAction::addChargeAim(Vector2* charge, bool append) {
-	short id = static_cast<short>(action);
+	short id = static_cast<char>(action);
 
 	ActionParameter parameter = getChargeAim(charge, append);
 	entity->action(id, parameter);
 }
 
 void IndividualAction::addFollowAim(Physical* toFollow, bool append) {
-	short id = static_cast<short>(action);
+	short id = static_cast<char>(action);
 
 	ActionParameter parameter = getFollowAim(toFollow, append);
 	entity->action(id, parameter);

@@ -72,9 +72,6 @@
     <ClCompile Include="src\simulation\SimulationObjectManager.cpp">
       <Filter>objects\collection\manager</Filter>
     </ClCompile>
-    <ClCompile Include="src\objects\unit\aim\Aims.cpp">
-      <Filter>aim</Filter>
-    </ClCompile>
     <ClCompile Include="src\objects\unit\UnitFactory.cpp">
       <Filter>objects\collection\factory</Filter>
     </ClCompile>
@@ -209,6 +206,9 @@
     <ClCompile Include="src\commands\action\FormationAction.cpp" />
     <ClCompile Include="src\commands\action\GroupAction.cpp" />
     <ClCompile Include="src\commands\action\IndividualAction.cpp" />
+    <ClCompile Include="src\objects\unit\aim\Aims.cpp">
+      <Filter>aim</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -309,9 +309,6 @@
       <Filter>objects\collection\manager</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\unit\aim\Aim.h">
-      <Filter>aim</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objects\unit\aim\Aims.h">
       <Filter>aim</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\unit\UnitFactory.h">
@@ -476,6 +473,10 @@
     <ClInclude Include="src\commands\action\IndividualAction.h" />
     <ClInclude Include="src\commands\action\GroupAction.h" />
     <ClInclude Include="src\control\ControlsUtils.h" />
+    <ClInclude Include="src\objects\unit\aim\Aims.h">
+      <Filter>aim</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\aim\FutureAims.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

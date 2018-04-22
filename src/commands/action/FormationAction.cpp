@@ -12,21 +12,32 @@ FormationAction::~FormationAction() = default;
 
 void FormationAction::addTargetAim(Vector2* to, bool append) {
 	auto opt = formation->getLeader();
-	if (opt.has_value()) {
-		auto physical = opt.value();
+	if (opt.has_value()) {	
+		ActionParameter parameter = getTargetAim(opt.value()->getBucketIndex(-1), *to, append);
 
-		ActionParameter parameter = getTargetAim(physical->getBucketIndex(-1), *to, append);
-		short id = static_cast<short>(action);
-		physical->action(id, parameter);
+		const char id = static_cast<char>(action);
+		opt.value()->action(id, parameter);
 		Game::get()->getEnviroment()->invalidateCache();
 	}
 
 }
 
 void FormationAction::addChargeAim(Vector2* charge, bool append) {
-	int a = 5;
+	auto opt = formation->getLeader();
+	if (opt.has_value()) {
+		const char id = static_cast<char>(action);
+
+		ActionParameter parameter = getChargeAim(charge, append);
+		opt.value()->action(id, parameter);
+	}
 }
 
 void FormationAction::addFollowAim(Physical* toFollow, bool append) {
-	int a = 5;
+	auto opt = formation->getLeader();
+	if (opt.has_value()) {
+		const char id = static_cast<char>(action);
+
+		ActionParameter parameter = getFollowAim(toFollow, append);
+		opt.value()->action(id, parameter);
+	}
 }

@@ -58,7 +58,7 @@ public:
 
 	void updateHeight(float y, double timeStep);
 	String& toMultiLineString() override;
-	void action(short id, ActionParameter& parameter) override;
+	void action(char id, ActionParameter& parameter) override;
 
 	UnitStateType getState() { return state; }
 	UnitStateType getActionState();

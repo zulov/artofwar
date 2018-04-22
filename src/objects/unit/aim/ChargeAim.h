@@ -2,7 +2,7 @@
 #include "Aim.h"
 #include <Urho3D/Scene/Node.h>
 
-class ChargeAim: public Aim
+class ChargeAim : public Aim
 {
 public:
 	ChargeAim(Urho3D::Vector2* _direction);
@@ -12,6 +12,5 @@ public:
 	bool expired() override;
 private:
 	Urho3D::Vector2 direction;
-	float distance;
+	float chargeEnergy = 20 * 10;
 };
-
