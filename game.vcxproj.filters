@@ -476,7 +476,7 @@
     <ClInclude Include="src\objects\unit\aim\Aims.h">
       <Filter>aim</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\unit\aim\FutureAims.h" />
+    <ClInclude Include="src\objects\unit\aim\FutureAim.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

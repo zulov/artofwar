@@ -6,7 +6,7 @@
 #include <vector>
 
 
-struct FutureAims;
+struct FutureAim;
 
 class Formation
 {
@@ -53,7 +53,7 @@ private:
 	FormationState state;
 
 	// Aims aims;
-	std::vector<FutureAims> futureOrders;
+	std::vector<FutureAim> futureOrders;
 	//bool hasFutureOrder = false;
 
 	float theresholedMin = 0.1;

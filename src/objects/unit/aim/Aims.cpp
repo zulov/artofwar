@@ -1,12 +1,12 @@
 #include "Aims.h"
 #include "DummyAim.h"
 #include "TargetAim.h"
-#include "utils.h"
 #include <optional>
 #include <algorithm>
 #include "Game.h"
 #include "commands/CommandList.h"
 #include "commands/action/IndividualAction.h"
+#include "objects/unit/aim/FutureAim.h"
 
 
 Aims::Aims() {
@@ -25,7 +25,7 @@ void Aims::clearExpired() {
 
 	nextAims.erase(std::remove_if(nextAims.begin(),
 	                              nextAims.end(),
-	                              [](FutureAims fa) { return fa.expired(); }),
+	                              [](FutureAim fa) { return fa.expired(); }),
 	               nextAims.end());
 	if (current->expired()) {
 		delete current;
@@ -64,8 +64,8 @@ bool Aims::hasAim() {
 	return current != nullptr || !nextAims.empty();
 }
 
-void Aims::add(Aim* aim) {
-	aims.push_back(aim);
+void Aims::add(FutureAim &aim) {
+	nextAims.push_back(aim);
 }
 
 void Aims::clear() {

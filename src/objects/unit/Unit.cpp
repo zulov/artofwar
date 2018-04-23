@@ -207,7 +207,7 @@ void Unit::updateHeight(float y, double timeStep) {
 	position->y_ = y;
 }
 
-void Unit::addAim(Aim* aim, bool append) {
+void Unit::addAim(FutureAim* aim, bool append) {
 	if (!append) {
 		clearAims();
 	}

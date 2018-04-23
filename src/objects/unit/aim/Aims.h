@@ -1,12 +1,12 @@
 #pragma once
 #include "Aim.h"
-#include "FutureAims.h"
 #include <Urho3D/Math/Vector2.h>
 #include <optional>
 #include <vector>
 
 
 class Entity;
+struct FutureAim;
 
 class Aims
 {
@@ -17,9 +17,9 @@ public:
 	void clearExpired();
 	bool ifReach(Unit* unit);
 	bool hasAim();
-	void add(Aim* aim);
+	void add(FutureAim & aim);
 	void clear();
 private:
-	std::vector<FutureAims> nextAims;
+	std::vector<FutureAim> nextAims;
 	Aim* current;
 };
