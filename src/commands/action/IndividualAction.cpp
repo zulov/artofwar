@@ -4,8 +4,13 @@
 #include "simulation/env/Enviroment.h"
 
 
-IndividualAction::IndividualAction(Physical* entity, OrderType action, Physical* paremeter, bool append)
+IndividualAction::IndividualAction(Physical* entity, OrderType action, const Physical* paremeter, bool append)
 	: ActionCommand(action, paremeter, nullptr, append) {
+	this->entity = entity;
+}
+
+IndividualAction::IndividualAction(Physical* entity, OrderType action, const Vector2& vector, bool append) :
+	ActionCommand(action, nullptr, new Vector2(vector), append) {
 	this->entity = entity;
 }
 
@@ -28,7 +33,7 @@ void IndividualAction::addChargeAim(Vector2* charge, bool append) {
 	entity->action(id, parameter);
 }
 
-void IndividualAction::addFollowAim(Physical* toFollow, bool append) {
+void IndividualAction::addFollowAim(const Physical* toFollow, bool append) {
 	short id = static_cast<char>(action);
 
 	ActionParameter parameter = getFollowAim(toFollow, append);

@@ -16,7 +16,8 @@ void PatrolState::onStart(Unit* unit) {
 }
 
 void PatrolState::onStart(Unit* unit, ActionParameter& parameter) {
-	unit->addAim(parameter.aim, parameter.aimAppend);
+	//unit->addAim(parameter.aim, parameter.aimAppend);
+	//TODO aim?
 }
 
 

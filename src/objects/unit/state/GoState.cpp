@@ -19,7 +19,8 @@ void GoState::onStart(Unit* unit) {
 }
 
 void GoState::onStart(Unit* unit, ActionParameter& parameter) {
-	unit->addAim(parameter.aim, parameter.aimAppend);
+	//unit->addAim(parameter.aim, parameter.aimAppend);
+	//TODO aim?
 }
 
 

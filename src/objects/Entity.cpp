@@ -18,7 +18,7 @@ Urho3D::Node* Entity::getNode() {
 	return node;
 }
 
-bool Entity::isAlive() {
+bool Entity::isAlive() const{
 	return true;
 }
 

@@ -17,35 +17,29 @@ GroupAction::~GroupAction() = default;
 void GroupAction::addTargetAim(Vector2* to, bool append) {
 	auto opt = Game::get()->getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
-		if (append) {
-			opt.value()->appendFutureTarget(*to, nullptr, action);
-		} else {
+		if (!append) {
 			opt.value()->semiReset();
-			opt.value()->addFutureTarget(*to, nullptr, action);
 		}
+		opt.value()->addFutureTarget(*to, nullptr, action, append);
 	}
 }
 
 void GroupAction::addChargeAim(Vector2* charge, bool append) {
 	auto opt = Game::get()->getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
-		if (append) {
-			opt.value()->appendFutureTarget(*charge, nullptr, action);
-		} else {
+		if (!append) {
 			opt.value()->semiReset();
-			opt.value()->addFutureTarget(*charge, nullptr, action);
 		}
+		opt.value()->addFutureTarget(*charge, nullptr, action, append);
 	}
 }
 
-void GroupAction::addFollowAim(Physical* toFollow, bool append) {
+void GroupAction::addFollowAim(const Physical* toFollow, bool append) {
 	auto opt = Game::get()->getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
-		if (append) {
-			opt.value()->appendFutureTarget(*(Vector2*)0, toFollow, action);
-		} else {
+		if (!append) {
 			opt.value()->semiReset();
-			opt.value()->addFutureTarget(*(Vector2*)0, toFollow, action);
 		}
+		opt.value()->addFutureTarget(*(Vector2*)0, toFollow, action, append);
 	}
 }

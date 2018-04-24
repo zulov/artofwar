@@ -19,8 +19,8 @@ public:
 	float getPriority(int id) const;
 	FormationState getState() const { return state; }
 	std::optional<Physical*> getLeader();
-	void appendFutureTarget(const Vector2& _futureTarget, const Physical* _physical, OrderType _action);
-	void addFutureTarget(const Vector2& _futureTarget, const Physical* _physical, OrderType _action);
+
+	void addFutureTarget(const Vector2& _futureTarget, const Physical* _physical, OrderType _action, bool append);
 	size_t getSize();
 	void semiReset();
 private:
@@ -52,7 +52,7 @@ private:
 	Unit* oldLeader = nullptr;
 	FormationState state;
 
-	// Aims aims;
+	//Aims aims;
 	std::vector<FutureAim> futureOrders;
 	//bool hasFutureOrder = false;
 

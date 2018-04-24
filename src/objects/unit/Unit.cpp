@@ -12,6 +12,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
+#include "aim/FutureAim.h"
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr) {
@@ -43,7 +44,7 @@ Unit::~Unit() {
 	delete toResource;
 }
 
-bool Unit::isAlive() {
+bool Unit::isAlive() const{
 	return state != UnitStateType::DEAD && state != UnitStateType::DISPOSE;
 }
 
@@ -138,7 +139,8 @@ void Unit::attackIfCloseEnough(float& distance, Unit* closest) {
 			toAttack(closest);
 			//attackRange();
 		} else if (distance < attackIntrest * attackIntrest) {
-			Game::get()->getActionCommandList()->add(new IndividualAction(this, OrderType::FOLLOW, closest));
+			addAim(FutureAim(closest, OrderType::FOLLOW));
+			//Game::get()->getActionCommandList()->add(new IndividualAction(this, OrderType::FOLLOW, closest));
 		}
 	}
 }
@@ -148,7 +150,8 @@ void Unit::collectIfCloseEnough(float distance, ResourceEntity* closest) {
 		if (distance < attackRange * attackRange) {
 			toCollect(closest);
 		} else if (distance < attackIntrest * attackIntrest) {
-			Game::get()->getActionCommandList()->add(new IndividualAction(this, OrderType::FOLLOW, closest));
+			addAim(FutureAim(closest, OrderType::FOLLOW));
+			//Game::get()->getActionCommandList()->add(new IndividualAction(this, OrderType::FOLLOW, closest));
 		}
 	}
 }
@@ -207,7 +210,7 @@ void Unit::updateHeight(float y, double timeStep) {
 	position->y_ = y;
 }
 
-void Unit::addAim(FutureAim* aim, bool append) {
+void Unit::addAim(FutureAim& aim, bool append) {
 	if (!append) {
 		clearAims();
 	}

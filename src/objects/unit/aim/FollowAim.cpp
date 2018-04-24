@@ -2,8 +2,7 @@
 #include "../Unit.h"
 
 
-FollowAim::FollowAim(Physical* _physical) {
-	physical = _physical;
+FollowAim::FollowAim(const Physical* _physical): physical(_physical) {
 	radiusSq = 3 * 3;
 }
 

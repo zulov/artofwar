@@ -7,6 +7,7 @@
 #include "commands/CommandList.h"
 #include "commands/action/IndividualAction.h"
 #include "objects/unit/aim/FutureAim.h"
+#include "objects/unit/Unit.h"
 
 
 Aims::Aims() {
@@ -49,6 +50,7 @@ bool Aims::ifReach(Unit* unit) {
 				                                                              nextAims[0].physical,
 				                                                              true));
 			}else {
+				
 				Game::get()->getActionCommandList()->add(new IndividualAction(unit,
 				                                                              nextAims[0].action,
 				                                                              nextAims[0].vector,

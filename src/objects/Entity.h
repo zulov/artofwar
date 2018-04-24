@@ -13,7 +13,7 @@ public:
 	virtual ~Entity();
 
 	Urho3D::Node* getNode();
-	virtual bool isAlive();
+	virtual bool isAlive() const;
 	ObjectType getType();
 	virtual int getDbID();
 	virtual std::string getValues(int precision);

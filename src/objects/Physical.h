@@ -24,7 +24,7 @@ public:
 	virtual void absorbAttack(float attackCoef);
 	virtual void select();
 	virtual void unSelect();
-	Vector3* getPosition() { return position; }
+	Vector3* getPosition() const { return position; }
 	void updateBillbords();
 	void initBillbords();
 

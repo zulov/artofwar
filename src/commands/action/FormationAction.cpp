@@ -32,7 +32,7 @@ void FormationAction::addChargeAim(Vector2* charge, bool append) {
 	}
 }
 
-void FormationAction::addFollowAim(Physical* toFollow, bool append) {
+void FormationAction::addFollowAim(const Physical* toFollow, bool append) {
 	auto opt = formation->getLeader();
 	if (opt.has_value()) {
 		const char id = static_cast<char>(action);

@@ -5,13 +5,23 @@
 struct FutureAim
 {
 	Urho3D::Vector2 vector;
-	Physical* physical;
+	const Physical* physical;
 	OrderType action;
 
 
-	FutureAim(Vector2& vector, Physical* physical, OrderType action)
+	FutureAim(Urho3D::Vector2 vector, const Physical* physical, OrderType action)
 		: vector(vector),
 		physical(physical),
+		action(action) {
+	}
+
+	FutureAim(Urho3D::Vector2 vector, OrderType action)
+		: vector(vector),
+		action(action) {
+	}
+
+	FutureAim(Physical* physical, OrderType action)
+		: physical(physical),
 		action(action) {
 	}
 

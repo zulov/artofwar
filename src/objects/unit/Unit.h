@@ -31,7 +31,7 @@ public:
 	Unit(Vector3* _position, int id, int player, int level);
 	~Unit();
 
-	bool isAlive() override;
+	bool isAlive() const override;
 
 	void populate();
 	void checkAim();
@@ -82,8 +82,10 @@ public:
 	std::string getValues(int precision) override;
 	void addUpgrade(db_unit_upgrade* upgrade);
 	void changeColor(ColorMode mode);
+	void addAim(FutureAim& aim, bool append = false);
 private:
-	void addAim(Aim* aim, bool append);
+	//void addAim(Aim* aim);
+
 	void attackIfCloseEnough(float& distance, Unit* closest);
 	void collectIfCloseEnough(float distance, ResourceEntity* closest);
 

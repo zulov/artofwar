@@ -9,7 +9,7 @@
 #include <chrono>
 
 
-ActionCommand::ActionCommand(OrderType action, Physical* physical, Vector2* vector, bool append) {
+ActionCommand::ActionCommand(OrderType action, const Physical* physical, Vector2* vector, bool append) {
 	this->action = action;
 	this->toFollow = physical;
 	this->vector = vector;
@@ -29,7 +29,7 @@ ActionParameter ActionCommand::getTargetAim(int startInx, Vector2& to, bool appe
 	return ActionParameter(new DummyAim(), append);
 }
 
-ActionParameter ActionCommand::getFollowAim(Physical* toFollow, bool append) {
+ActionParameter ActionCommand::getFollowAim(const Physical* toFollow, bool append) {
 	return ActionParameter(new FollowAim(toFollow), append);
 }
 

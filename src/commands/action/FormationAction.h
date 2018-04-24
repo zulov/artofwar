@@ -11,6 +11,6 @@ public:
 private:
 	void addTargetAim(Vector2* to, bool append) override;
 	void addChargeAim(Vector2* charge, bool append) override;
-	void addFollowAim(Physical* toFollow, bool append) override;
+	void addFollowAim(const Physical* toFollow, bool append) override;
 	Formation* formation;
 };

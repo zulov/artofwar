@@ -1,5 +1,6 @@
 #include "ChargeState.h"
 #include "../Unit.h"
+#include "objects/unit/aim/FutureAim.h"
 
 
 ChargeState::ChargeState() {
@@ -19,7 +20,8 @@ void ChargeState::onStart(Unit* unit) {
 }
 
 void ChargeState::onStart(Unit* unit, ActionParameter& parameter) {
-	unit->addAim(parameter.aim, parameter.aimAppend);
+	//unit->addAim(FutureAim(parameter.aim., OrderType::CHARGE), parameter.aimAppend);
+	//TODO aim?
 	unit->maxSpeed = unit->dbLevel->maxSpeed * 2;
 }
 
