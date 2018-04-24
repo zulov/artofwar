@@ -17,7 +17,7 @@ void FollowState::onStart(Unit* unit) {
 
 void FollowState::onStart(Unit* unit, ActionParameter& parameter) {
 	unit->clearAims();
-	//unit->addAim(parameter.aim, parameter.aimAppend);
+	unit->addAim(parameter.aim);
 	//TODO aim?
 }
 

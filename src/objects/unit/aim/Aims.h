@@ -17,6 +17,7 @@ public:
 	void clearExpired();
 	bool ifReach(Unit* unit);
 	bool hasAim();
+	void add(Aim* aim);
 	void add(FutureAim & aim);
 	void clear();
 private:

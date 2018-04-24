@@ -57,6 +57,7 @@ public:
 	void toCollect();
 
 	void updateHeight(float y, double timeStep);
+	void addAim(Aim* aim);
 	String& toMultiLineString() override;
 	void action(char id, ActionParameter& parameter) override;
 

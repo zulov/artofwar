@@ -44,7 +44,7 @@ Unit::~Unit() {
 	delete toResource;
 }
 
-bool Unit::isAlive() const{
+bool Unit::isAlive() const {
 	return state != UnitStateType::DEAD && state != UnitStateType::DISPOSE;
 }
 
@@ -208,6 +208,10 @@ void Unit::toCollect(ResourceEntity* _resource) {
 void Unit::updateHeight(float y, double timeStep) {
 	velocity *= 1 + (position->y_ - y) * mass * timeStep;
 	position->y_ = y;
+}
+
+void Unit::addAim(Aim* aim) {
+	aims.add(aim);
 }
 
 void Unit::addAim(FutureAim& aim, bool append) {
