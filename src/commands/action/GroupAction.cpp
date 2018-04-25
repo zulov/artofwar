@@ -20,7 +20,7 @@ void GroupAction::addTargetAim(Vector2* to, bool append) {
 		if (!append) {
 			opt.value()->semiReset();
 		}
-		opt.value()->addFutureTarget(*to, nullptr, action, append);
+		opt.value()->addAim(*to, nullptr, action, append);
 	}
 }
 
@@ -30,7 +30,7 @@ void GroupAction::addChargeAim(Vector2* charge, bool append) {
 		if (!append) {
 			opt.value()->semiReset();
 		}
-		opt.value()->addFutureTarget(*charge, nullptr, action, append);
+		opt.value()->addAim(*charge, nullptr, action, append);
 	}
 }
 
@@ -40,6 +40,6 @@ void GroupAction::addFollowAim(const Physical* toFollow, bool append) {
 		if (!append) {
 			opt.value()->semiReset();
 		}
-		opt.value()->addFutureTarget(*(Vector2*)0, toFollow, action, append);
+		opt.value()->addAim(*(Vector2*)0, toFollow, action, append);
 	}
 }

@@ -40,6 +40,7 @@ ActionParameter ActionCommand::getChargeAim(Vector2* charge, bool append) {
 
 void ActionCommand::execute() {
 	switch (action) {
+	case OrderType::PATROL:
 	case OrderType::GO:
 		addTargetAim(vector, append);
 		break;

@@ -125,7 +125,7 @@ void Formation::update() {
 				                                                             futureOrder.action,
 				                                                             new Vector2(futureOrder.vector)
 				                                                            ));
-				futureOrders.erase(futureOrders.begin());//TODO to zachowaæ
+				futureOrders.erase(futureOrders.begin()); //TODO to zachowaæ
 
 			}
 		}
@@ -136,8 +136,12 @@ void Formation::update() {
 			changeState(FormationState::FORMING);
 		} else if (notWellFormedExact == 0
 			&& !leader->hasAim()) {
-			changeState(FormationState::REACHED);
-			futureOrders.clear();
+			if (futureOrders.empty()) {
+				changeState(FormationState::REACHED);
+			} else {
+				changeState(FormationState::FORMING);
+			}
+			//futureOrders.clear();
 		}
 		break;
 	case FormationState::REACHED:
@@ -179,12 +183,12 @@ std::optional<Physical*> Formation::getLeader() {
 	return std::nullopt;
 }
 
-void Formation::addFutureTarget(const Vector2& _futureTarget, const Physical* _physical, OrderType _action,
-                                bool append) {
+void Formation::addAim(const Vector2& _vector, const Physical* _physical,
+                       OrderType _action, bool append) {
 	if (!append) {
 		futureOrders.clear();
 	}
-	futureOrders.emplace_back(_futureTarget, _physical, _action);
+	futureOrders.emplace_back(_vector, _physical, _action);
 }
 
 size_t Formation::getSize() {

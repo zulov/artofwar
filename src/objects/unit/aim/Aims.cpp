@@ -1,13 +1,13 @@
 #include "Aims.h"
 #include "DummyAim.h"
-#include "TargetAim.h"
-#include <optional>
-#include <algorithm>
 #include "Game.h"
+#include "TargetAim.h"
 #include "commands/CommandList.h"
 #include "commands/action/IndividualAction.h"
-#include "objects/unit/aim/FutureAim.h"
 #include "objects/unit/Unit.h"
+#include "objects/unit/aim/FutureAim.h"
+#include <algorithm>
+#include <optional>
 
 
 Aims::Aims() {
@@ -19,7 +19,10 @@ Aims::~Aims() {
 }
 
 std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) {
-	return current->getDirection(unit);
+	if (current) {
+		return current->getDirection(unit);
+	}
+	return std::nullopt;
 }
 
 void Aims::clearExpired() {

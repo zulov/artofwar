@@ -20,7 +20,7 @@ public:
 	FormationState getState() const { return state; }
 	std::optional<Physical*> getLeader();
 
-	void addFutureTarget(const Vector2& _futureTarget, const Physical* _physical, OrderType _action, bool append);
+	void addAim(const Vector2& _futureTarget, const Physical* _physical, OrderType _action, bool append);
 	size_t getSize();
 	void semiReset();
 private:

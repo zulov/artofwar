@@ -2,9 +2,7 @@
 #include "Game.h"
 #include "OrderType.h"
 #include "colors/ColorPeletteRepo.h"
-#include "commands/CommandList.h"
 #include "commands/action/ActionCommand.h"
-#include "commands/action/IndividualAction.h"
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
 #include <Urho3D/Graphics/Material.h>
@@ -105,8 +103,8 @@ Vector2 Unit::forceGo(float boostCoef, float aimCoef, Vector2& force) {
 
 Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 	Vector2 force;
+	aims.clearExpired();
 	if (aims.hasAim()) {
-		aims.clearExpired();
 		auto dirOpt = aims.getDirection(this);
 		if (dirOpt.has_value()) {
 			force = dirOpt.value();
