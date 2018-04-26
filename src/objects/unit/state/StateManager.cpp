@@ -32,10 +32,12 @@ StateManager::StateManager() {
 	states[static_cast<int>(UnitStateType::DISPOSE)] = new DisposeState();
 	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
 		std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
+		fill_n(ordersToUnit[i],STATE_SIZE, false);
 		for (auto order : *orders) {
-			ordersToUnit[i].insert(UnitStateType(order->id));
+			ordersToUnit[i][order->id] = true;
 		}
-		ordersToUnit[i].insert(UnitStateType::MOVE);//TODO nie³¹dny hardcode bo stanie nie sa 1:1 z orderami
+		ordersToUnit[i][static_cast<char>(UnitStateType::MOVE)] = true;
+		//TODO nie³¹dny hardcode bo stanie nie sa 1:1 z orderami
 	}
 }
 
@@ -56,7 +58,7 @@ void StateManager::changeState(Unit* unit, UnitStateType stateTo) {
 }
 
 bool StateManager::validateState(int id, UnitStateType stateTo) {
-	return ordersToUnit[id].find(stateTo) != ordersToUnit[id].end();
+	return ordersToUnit[id][static_cast<char>(stateTo)];
 }
 
 void StateManager::changeState(Unit* unit, UnitStateType stateTo, ActionParameter& actionParameter) {
