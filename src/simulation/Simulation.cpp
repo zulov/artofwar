@@ -54,7 +54,9 @@ void Simulation::tryToCollect(Unit* unit) {
 
 void Simulation::selfAI() {
 	for (auto unit : *units) {
-		if (unit->getState() == UnitStateType::STOP || unit->getState() == UnitStateType::MOVE) {
+		if ((unit->getState() == UnitStateType::STOP 
+			|| unit->getState() == UnitStateType::MOVE) 
+			&& unit->getFormation()==-1) {
 			if (unit->checkTransition(unit->getActionState())) {
 				switch (unit->getActionState()) {
 				case UnitStateType::ATTACK:

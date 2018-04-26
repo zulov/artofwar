@@ -37,29 +37,27 @@ void Aims::clearExpired() {
 }
 
 bool Aims::ifReach(Unit* unit) {
-	if (current == nullptr) { return false; }
-
-	if (current->ifReach(unit)) {
-
-		if (nextAims.empty()) {
+	if (current == nullptr && nextAims.empty()) { return false; }
+	if (current) {
+		if (current->ifReach(unit) && nextAims.empty()) {
 			clear();
 			return true;
-		} else {
-			if (nextAims[0].physical != nullptr) {
-
-				Game::get()->getActionCommandList()->add(new IndividualAction(unit, //TODO a moze formation, skad to wiedziec :(
-				                                                              nextAims[0].action,
-				                                                              nextAims[0].physical,
-				                                                              true));
-			} else {
-				Game::get()->getActionCommandList()->add(new IndividualAction(unit,
-				                                                              nextAims[0].action,
-				                                                              nextAims[0].vector,
-				                                                              true));
-			}
-			nextAims.erase(nextAims.begin());
 		}
+	} else if (!nextAims.empty()) {
+		if (nextAims[0].physical != nullptr) {
+			Game::get()->getActionCommandList()->add(new IndividualAction(unit, //TODO a moze formation, skad to wiedziec :(
+			                                                              nextAims[0].action,
+			                                                              nextAims[0].physical,
+			                                                              true));
+		} else {
+			Game::get()->getActionCommandList()->add(new IndividualAction(unit,
+			                                                              nextAims[0].action,
+			                                                              nextAims[0].vector,
+			                                                              true));
+		}
+		nextAims.erase(nextAims.begin());
 	}
+
 	return false;
 }
 
