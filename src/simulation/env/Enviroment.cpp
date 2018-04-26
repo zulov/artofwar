@@ -143,6 +143,10 @@ void Enviroment::invalidateCache() {
 	mainGrid.invalidateCache();
 }
 
+int Enviroment::getIndex(Vector2& pos) {
+	return mainGrid.indexFromPosition(pos);
+}
+
 Vector2 Enviroment::getValidPosition(const IntVector2& size, Vector2& pos) {
 	return mainGrid.getValidPosition(size, pos);
 }

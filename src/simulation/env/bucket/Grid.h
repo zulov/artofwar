@@ -19,8 +19,9 @@ public:
 	std::vector<Physical *>* getArrayNeight(std::pair<Vector3*, Vector3*>& pair);
 	BucketIterator& getArrayNeight(Unit* entity, float radius, short thread);
 	int getIndex(short posX, short posZ);
-protected:
 	int indexFromPosition(Vector3* position);
+	int indexFromPosition(Vector2& position);
+protected:
 	short getIndex(float value) const;
 	bool inRange(int index);
 	short resolution;

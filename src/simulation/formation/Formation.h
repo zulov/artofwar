@@ -24,6 +24,8 @@ public:
 	size_t getSize();
 	void semiReset();
 private:
+	Vector2 computeLocalCenter();
+	void setNewLeader(Vector2& localCenter);
 	void updateUnits();
 	void updateCenter();
 	void updateIds();

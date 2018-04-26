@@ -123,6 +123,12 @@ int Grid::indexFromPosition(Vector3* position) {
 	return getIndex(posX, posZ);
 }
 
+int Grid::indexFromPosition(Vector2& position) {
+	const short posX = getIndex(position.x_);
+	const short posZ = getIndex(position.y_);
+	return getIndex(posX, posZ);
+}
+
 bool Grid::fieldInCircle(short i, short j, float radius) {
 	short x = i * fieldSize;
 	short y = j * fieldSize;

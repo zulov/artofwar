@@ -46,6 +46,8 @@ public:
 	Vector2 getValidPosition(const IntVector2& size, const IntVector2& bucketCords);
 	Vector2& getCenter(int index);
 	void invalidateCache();
+
+	int getIndex(Vector2& pos);
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid;

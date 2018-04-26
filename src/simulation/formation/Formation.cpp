@@ -4,10 +4,12 @@
 #include "commands/action/ActionCommand.h"
 #include "commands/action/FormationAction.h"
 #include "objects/unit/Unit.h"
+#include "objects/unit/aim/FutureAim.h"
 #include <algorithm>
 #include <iostream>
-#include "objects/unit/aim/FutureAim.h"
-
+#include "simulation/env/Enviroment.h"
+#include <unordered_set>
+#include <numeric>
 
 Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2& _direction) : id(_id),
 	type(_type), direction(_direction), state(FormationState::FORMING) {
@@ -28,26 +30,35 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 
 Formation::~Formation() = default;
 
-void Formation::electLeader() {
+Vector2 Formation::computeLocalCenter() {
 	Vector2 localCenter = Vector2::ZERO;
 	for (auto unit : units) {
-		auto pos = unit->getPosition();
+		const auto pos = unit->getPosition();
 		localCenter.x_ += pos->x_;
 		localCenter.y_ += pos->z_;
 	}
 	localCenter /= units.size();
+	return localCenter;
+}
+
+void Formation::setNewLeader(Vector2& localCenter) {
 	int maxDist = 9999999;
 	leader = nullptr;
-	for (int i = 0; i < units.size(); ++i) {
-		auto pos = units[i]->getPosition();
-		auto currentPos = Vector2(pos->x_, pos->z_);
+	for (auto& unit : units) {
+		const auto pos = unit->getPosition();
+		const auto currentPos = Vector2(pos->x_, pos->z_);
 
-		auto sqDist = (currentPos - localCenter).LengthSquared();
+		const auto sqDist = (currentPos - localCenter).LengthSquared();
 		if (sqDist < maxDist) {
-			leader = units[i];
+			leader = unit;
 			maxDist = sqDist;
 		}
 	}
+}
+
+void Formation::electLeader() {
+	Vector2 localCenter = computeLocalCenter();
+	setNewLeader(localCenter);
 	if (oldLeader != nullptr
 		&& leader != oldLeader
 		&& !futureOrders.empty()) {
@@ -62,12 +73,68 @@ void Formation::electLeader() {
 
 void Formation::updateIds() {
 	if (changed) {
-		short k = 0;
+		//electLeader(); //TODO pierwsze ustawic id normlanie wybradc lidera, reszte Id skasowac i dopiero pozniej reszta
+		oldLeader = leader = units[0];//TODO co tu zrobic trzeba jakiegos lidera wybrac
+		leader->setPositionInFormation(0);
+
+		updateCenter();
 		for (auto unit : units) {
 			unit->setFormation(id);
-			unit->setPositionInFormation(k++);
+			//auto index = unit->getBucketIndex(-1);
+
+			unit->setPositionInFormation(-1);
 		}
-		electLeader();
+
+		auto env = Game::get()->getEnviroment();
+		std::unordered_map<int, std::vector<short>> bucketToIds;
+		for (int i = 0; i < units.size(); ++i) {
+			auto pos = getPositionFor(i);
+			int bucketForI = env->getIndex(pos);
+			std::cout << bucketForI << std::endl;
+			auto it = bucketToIds.find(bucketForI);
+			if (it != bucketToIds.end()) {
+				bucketToIds.at(bucketForI).push_back(i);
+			} else {
+				bucketToIds.emplace(bucketForI, std::vector<short>());
+				bucketToIds.at(bucketForI).push_back(i);
+			}
+		}
+
+		std::set<short> v;
+		{
+			std::vector<short> vec(units.size());
+			std::iota(vec.begin(), vec.end(), 0);
+			v.insert(vec.begin(), vec.end());
+		}
+		//std::iota(v.begin(), v.end(), 0);
+
+		for (auto unit : units) {
+			int bucketId = unit->getBucketIndex(-1);
+			std::cout << "#" << bucketId << std::endl;
+			auto it = bucketToIds.find(bucketId);
+			if (it != bucketToIds.end()) {
+
+				for (auto id : bucketToIds.at(bucketId)) {
+					auto it2 = v.find(id);
+					if (it2 != v.end()) {
+						bucketToIds.erase(it);
+						v.erase(it2);
+						unit->setPositionInFormation(id);
+						//std::cout << id << std::endl;
+					}
+				}
+			}
+			//unit->setPositionInFormation(k++);
+		}
+		auto itr = v.begin();
+		for (auto unit : units) {
+			if (unit->getPositionInFormation() == -1) {
+				unit->setPositionInFormation(*itr);
+				//std::cout << *itr << std::endl;
+				++itr;
+			}
+		}
+
 		updateSizes();
 		changed = false;
 	}
