@@ -5,7 +5,7 @@
 #include "Urho3D/Resource/Image.h"
 #include <algorithm>
 #include <iomanip>
-#include <queue>
+#include <unordered_set>
 
 
 MainGrid::MainGrid(const short _resolution, const float _size, const bool _debugEnabled): Grid(_resolution, _size,
@@ -415,7 +415,7 @@ bool MainGrid::ifInCache(int startIdx, int end) {
 }
 
 void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
-	std::set<int> refreshed;
+	std::unordered_set<int> refreshed;
 	while (!toRefresh.empty()) {
 		int startIndex = toRefresh.back();
 		toRefresh.pop_back();

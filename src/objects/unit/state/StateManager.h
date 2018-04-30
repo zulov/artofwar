@@ -2,7 +2,6 @@
 #include "State.h"
 #include "database/db_strcut.h"
 #include "objects/unit/ActionParameter.h"
-#include <set>
 
 class StateManager
 {
@@ -21,7 +20,6 @@ private:
 	StateManager();
 	~StateManager();
 	State* states[STATE_SIZE]{};
-	//std::set<UnitStateType> ordersToUnit[UNITS_NUMBER_DB];//TODO change to bool array
 	bool ordersToUnit[UNITS_NUMBER_DB][STATE_SIZE];
 
 	static StateManager* instance;
