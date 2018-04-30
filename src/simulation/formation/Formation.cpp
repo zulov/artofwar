@@ -107,12 +107,12 @@ void Formation::updateIds() {
 
 	std::vector<short> tempVec(units.size());
 	std::iota(tempVec.begin(), tempVec.end(), 0);
-	std::set<short> v(tempVec.begin(), tempVec.end());
+	std::set<short> idsToAssign(tempVec.begin(), tempVec.end());
 
 	short leaderID = leader->getPositionInFormation();
-	auto test = v.find(leaderID);
-	if (test != v.end()) {
-		v.erase(test); // remove leaderID
+	auto idToRemove = idsToAssign.find(leaderID);
+	if (idToRemove != idsToAssign.end()) {
+		idsToAssign.erase(idToRemove); 
 	}
 
 	for (auto unit : units) {
@@ -123,18 +123,18 @@ void Formation::updateIds() {
 
 		auto it = bucketToIds.find(bucketId);
 		if (it != bucketToIds.end()) {
-			for (auto id : bucketToIds.at(bucketId)) {
-				auto it2 = v.find(id);
-				if (it2 != v.end()) {
+			for (auto id : it->second) {
+				auto it2 = idsToAssign.find(id);
+				if (it2 != idsToAssign.end()) {
 					//bucketToIds.erase(it);
-					v.erase(it2);
+					idsToAssign.erase(it2);
 					unit->setPositionInFormation(id);
 					break;
 				}
 			}
 		}
 	}
-	std::vector<short> output(v.begin(), v.end());
+	std::vector<short> output(idsToAssign.begin(), idsToAssign.end());
 	int i = 0;
 	for (auto unit : units) {
 		if (unit->getPositionInFormation() == -1) {
