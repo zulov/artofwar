@@ -10,6 +10,7 @@
 #include "simulation/env/Enviroment.h"
 #include <unordered_set>
 #include <numeric>
+#include <chrono>
 
 Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2& _direction) : id(_id),
 	type(_type), direction(_direction), state(FormationState::FORMING) {
@@ -72,72 +73,82 @@ void Formation::electLeader() {
 }
 
 void Formation::updateIds() {
-	if (changed) {
-		//electLeader(); //TODO pierwsze ustawic id normlanie wybradc lidera, reszte Id skasowac i dopiero pozniej reszta
-		oldLeader = leader = units[0];//TODO co tu zrobic trzeba jakiegos lidera wybrac
-		leader->setPositionInFormation(0);
+	//if (changed) {
+	auto start = std::chrono::system_clock::now();
+	updateSizes();
+	electLeader(); //TODO pierwsze ustawic id normlanie wybradc lidera, reszte Id skasowac i dopiero pozniej reszta
 
-		updateCenter();
-		for (auto unit : units) {
-			unit->setFormation(id);
-			//auto index = unit->getBucketIndex(-1);
-
+	updateCenter();
+	short k = 0;
+	for (auto unit : units) {
+		unit->setFormation(id);
+		if (unit != leader) {
 			unit->setPositionInFormation(-1);
+		} else {
+			unit->setPositionInFormation(k);
 		}
+		++k;
+	}
 
-		auto env = Game::get()->getEnviroment();
-		std::unordered_map<int, std::vector<short>> bucketToIds;
-		for (int i = 0; i < units.size(); ++i) {
-			auto pos = getPositionFor(i);
-			int bucketForI = env->getIndex(pos);
-			std::cout << bucketForI << std::endl;
-			auto it = bucketToIds.find(bucketForI);
-			if (it != bucketToIds.end()) {
-				bucketToIds.at(bucketForI).push_back(i);
-			} else {
-				bucketToIds.emplace(bucketForI, std::vector<short>());
-				bucketToIds.at(bucketForI).push_back(i);
-			}
+	auto env = Game::get()->getEnviroment();
+	std::unordered_map<int, std::vector<short>> bucketToIds;
+	for (int i = 0; i < units.size(); ++i) {
+		auto pos = getPositionFor(i);
+		int bucketForI = env->getIndex(pos);
+
+		auto it = bucketToIds.find(bucketForI);
+		if (it != bucketToIds.end()) {
+			it->second.push_back(i);
+		} else {
+			bucketToIds.emplace(bucketForI, std::vector<short>(4));
+			bucketToIds.at(bucketForI).push_back(i);
 		}
+	}
 
-		std::set<short> v;
-		{
-			std::vector<short> vec(units.size());
-			std::iota(vec.begin(), vec.end(), 0);
-			v.insert(vec.begin(), vec.end());
+	std::vector<short> tempVec(units.size());
+	std::iota(tempVec.begin(), tempVec.end(), 0);
+	std::set<short> v(tempVec.begin(), tempVec.end());
+
+	short leaderID = leader->getPositionInFormation();
+	auto test = v.find(leaderID);
+	if (test != v.end()) {
+		v.erase(test); // remove leaderID
+	}
+
+	for (auto unit : units) {
+		if (leader == unit) {
+			continue;
 		}
-		//std::iota(v.begin(), v.end(), 0);
+		int bucketId = unit->getBucketIndex(-1);
 
-		for (auto unit : units) {
-			int bucketId = unit->getBucketIndex(-1);
-			std::cout << "#" << bucketId << std::endl;
-			auto it = bucketToIds.find(bucketId);
-			if (it != bucketToIds.end()) {
-
-				for (auto id : bucketToIds.at(bucketId)) {
-					auto it2 = v.find(id);
-					if (it2 != v.end()) {
-						bucketToIds.erase(it);
-						v.erase(it2);
-						unit->setPositionInFormation(id);
-						//std::cout << id << std::endl;
-					}
+		auto it = bucketToIds.find(bucketId);
+		if (it != bucketToIds.end()) {
+			for (auto id : bucketToIds.at(bucketId)) {
+				auto it2 = v.find(id);
+				if (it2 != v.end()) {
+					//bucketToIds.erase(it);
+					v.erase(it2);
+					unit->setPositionInFormation(id);
+					break;
 				}
 			}
-			//unit->setPositionInFormation(k++);
 		}
-		auto itr = v.begin();
-		for (auto unit : units) {
-			if (unit->getPositionInFormation() == -1) {
-				unit->setPositionInFormation(*itr);
-				//std::cout << *itr << std::endl;
-				++itr;
-			}
-		}
-
-		updateSizes();
-		changed = false;
 	}
+	std::vector<short> output(v.begin(), v.end());
+	int i = 0;
+	for (auto unit : units) {
+		if (unit->getPositionInFormation() == -1) {
+			unit->setPositionInFormation(output[i]);
+			++i;
+			//	std::cout << "####" << unit->getPositionInFormation() << std::endl;
+		}
+	}
+
+
+	changed = false;
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - start);
+	//std::cout << "Update ids complated at " << duration.count() << " micros" << std::endl;
+	//}
 }
 
 void Formation::updateSizes() {
@@ -201,14 +212,13 @@ void Formation::update() {
 		innerUpdate();
 		if (notWellFormed > theresholedMax) {
 			changeState(FormationState::FORMING);
-		} else if (notWellFormedExact == 0
+		} else if (notWellFormedExact < theresholedMin
 			&& !leader->hasAim()) {
 			if (futureOrders.empty()) {
 				changeState(FormationState::REACHED);
 			} else {
 				changeState(FormationState::FORMING);
 			}
-			//futureOrders.clear();
 		}
 		break;
 	case FormationState::REACHED:
