@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ColorMode.h"
+#include "aim/Aims.h"
 #include "objects/Physical.h"
 #include "objects/resource/ResourceEntity.h"
 #include "scene/load/dbload_container.h"
@@ -8,7 +9,6 @@
 #include "state/UnitStateType.h"
 #include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
-#include "aim/Aims.h"
 
 
 #define MAX_ACCEL 5000

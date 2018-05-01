@@ -60,6 +60,7 @@ void Formation::setNewLeader(Vector2& localCenter) {
 void Formation::electLeader() {
 	Vector2 localCenter = computeLocalCenter();
 	setNewLeader(localCenter);
+
 	if (oldLeader != nullptr
 		&& leader != oldLeader
 		&& !futureOrders.empty()) {
@@ -78,20 +79,19 @@ void Formation::updateIds() {
 		electLeader();
 
 		updateCenter();
-		short k = 0;
 		for (auto unit : units) {
 			unit->setFormation(id);
-			if (unit != leader) {
-				unit->setPositionInFormation(-1);
-			} else {
-				unit->setPositionInFormation(k);
-			}
-			++k;
+			unit->setPositionInFormation(-1);
 		}
+
+		leader->setPositionInFormation(sideA * sideB / 2);
 
 		auto env = Game::get()->getEnviroment();
 		std::unordered_map<int, std::vector<short>> bucketToIds;
 		for (int i = 0; i < units.size(); ++i) {
+			if (leader->getPositionInFormation() == i) {
+				continue;
+			}
 			auto pos = getPositionFor(i);
 			int bucketForI = env->getIndex(pos);
 
@@ -230,7 +230,7 @@ void Formation::changeState(FormationState newState) {
 Vector2 Formation::getPositionFor(short id) {
 	const int columnThis = id % sideA;
 	const int rowThis = id / sideA;
-
+	//std::cout << id << "|" << columnThis << "|" << rowThis << std::endl;
 	short leaderID = leader->getPositionInFormation();
 
 	const int columnLeader = leaderID % sideA;
