@@ -8,10 +8,12 @@
 #include "state/UnitStateType.h"
 #include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
+#include "aim/Aims.h"
 
 
 #define MAX_ACCEL 5000
 
+struct FutureAim;
 class State;
 
 class Unit : public Physical

@@ -1,6 +1,6 @@
 #include "SceneObjectManager.h"
-#include "utils.h"
 #include "objects/Entity.h"
+#include "utils.h"
 
 
 SceneObjectManager::SceneObjectManager() = default;

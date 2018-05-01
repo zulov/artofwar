@@ -1,12 +1,12 @@
 #pragma once
 #include "SceneObjectManager.h"
+#include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "load/SceneLoader.h"
 #include "objects/Entity.h"
 #include <Urho3D/Container/Ptr.h>
 #include <Urho3D/Graphics/Light.h>
 #include <Urho3D/Graphics/Terrain.h>
 #include <Urho3D/Scene/Scene.h>
-#include "hud/window/main_menu/new_game/NewGameForm.h"
 
 
 using namespace Urho3D;

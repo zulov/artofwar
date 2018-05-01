@@ -1,6 +1,5 @@
 #pragma once
 #include "ObjectEnums.h"
-#include "unit/aim/Aims.h"
 #include <Urho3D/Scene/Node.h>
 
 

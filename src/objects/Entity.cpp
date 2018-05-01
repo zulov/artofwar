@@ -1,6 +1,5 @@
 #include "Entity.h"
 #include "Game.h"
-#include "ObjectEnums.h"
 #include <Urho3D/Scene/Scene.h>
 #include <string>
 
