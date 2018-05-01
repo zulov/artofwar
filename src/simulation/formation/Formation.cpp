@@ -5,12 +5,13 @@
 #include "commands/action/FormationAction.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/aim/FutureAim.h"
-#include <algorithm>
-#include <iostream>
 #include "simulation/env/Enviroment.h"
-#include <unordered_set>
-#include <numeric>
+#include <algorithm>
 #include <chrono>
+#include <iostream>
+#include <numeric>
+#include <unordered_set>
+
 
 Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2& _direction) : id(_id),
 	type(_type), direction(_direction), state(FormationState::FORMING) {
@@ -83,8 +84,12 @@ void Formation::updateIds() {
 			unit->setFormation(id);
 			unit->setPositionInFormation(-1);
 		}
-
-		leader->setPositionInFormation(sideA * sideB / 2);
+		short a = sideA / 2.0 * (1 + sideB);
+		short id = (sideB / 2.0 + 0.5) * sideA + sideB / 2.0 + 0.5;
+		if (id >= units.size()) {
+			id = units.size();
+		}
+		leader->setPositionInFormation(id);
 
 		auto env = Game::get()->getEnviroment();
 		std::unordered_map<int, std::vector<short>> bucketToIds;
@@ -147,6 +152,15 @@ void Formation::updateIds() {
 void Formation::updateSizes() {
 	sideA = sqrt(units.size()) + 0.5;
 	sideB = units.size() / sideA;
+	if (sideB < sideA) {
+		if ((sideB + 1) * sideA < units.size()) {
+			++sideB;
+		}
+	} else {
+		if ((sideA + 1) * sideB < units.size()) {
+			++sideA;
+		}
+	}
 
 	sizeA = (sideA - 1) * sparsity;
 	sizeB = (sideB - 1) * sparsity;
