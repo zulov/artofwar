@@ -20,15 +20,14 @@ public:
 	void createBox(float bucketSize);
 	void setCenter(float _centerX, float _centerY);
 	Urho3D::Vector2& getCenter();
-	void setNeightbours(std::vector<std::pair<int, float>>* _neightbours);
-	void setOccupiedNeightbours(std::vector<std::pair<int, float>>* _occupiedNeightbours);
+
 	std::vector<std::pair<int, float>>& getNeightbours();
 	std::vector<std::pair<int, float>>& getOccupiedNeightbours();
-	char getAdditonalInfo() { return additonalInfo; }
+	char getAdditonalInfo() const { return additonalInfo; }
 	bool isUnit();
 	void setEscapeThrought(int val);
 	Urho3D::Vector2* getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket);
-	int getEscapeBucket();
+	int getEscapeBucket() const { return escapeBucketIndex; }
 
 private:
 	ObjectType type;

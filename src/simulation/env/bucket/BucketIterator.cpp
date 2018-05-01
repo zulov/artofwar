@@ -6,17 +6,16 @@ BucketIterator::BucketIterator() = default;
 BucketIterator::~BucketIterator() = default;
 
 Unit* BucketIterator::next() {
-	while (secondIndex == sizeContent) {
+	while (currentIterator == currentEnd) {
 		++index;
 		if (index >= levelSize) { return nullptr; }
 
-		currentContent = &bucketGrid->getContentAt((*levels)[index] + center);
-		sizeContent = currentContent->size();
-		secondIndex = 0;
+		currentIterator = bucketGrid->getContentAt((*levels)[index] + center).begin();
+		currentEnd = bucketGrid->getContentAt((*levels)[index] + center).end();
 	}
 
-	Unit* entity = (*currentContent)[secondIndex];
-	++secondIndex;
+	Unit* entity = *currentIterator;
+	++currentIterator;
 	return entity;
 }
 
@@ -24,9 +23,9 @@ void BucketIterator::init(std::vector<short>* _levels, int _center, Grid* _bucke
 	levels = _levels;
 	center = _center;
 	index = 0;
-	secondIndex = 0;
 	bucketGrid = _bucketGrid;
-	currentContent = &bucketGrid->getContentAt((*levels)[index] + center);
-	sizeContent = currentContent->size();
+	currentIterator = bucketGrid->getContentAt((*levels)[index] + center).begin();
+	currentEnd = bucketGrid->getContentAt((*levels)[index] + center).end();
+
 	levelSize = levels->size();
 }

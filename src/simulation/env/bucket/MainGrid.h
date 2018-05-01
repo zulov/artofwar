@@ -51,8 +51,6 @@ public:
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
 	static IntVector2 calculateSize(int size);
-	std::vector<std::pair<int, float>>* tempNeighbour;
-	std::vector<std::pair<int, float>>* tempNeighbour2;
 	std::vector<int>* tempPath;
 
 	int lastStartIdx = -1;

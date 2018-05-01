@@ -58,9 +58,7 @@ std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, flo
 		const float xDiff = unitPosition->x_ - neight->getPosition()->x_;
 		const float zDiff = unitPosition->z_ - neight->getPosition()->z_;
 
-		const float sqDistance = xDiff * xDiff + zDiff * zDiff;
-
-		if (sqDistance < sqSepDistance) {
+		if (xDiff * xDiff + zDiff * zDiff < sqSepDistance) {
 			neights->push_back(neight);
 		}
 	}

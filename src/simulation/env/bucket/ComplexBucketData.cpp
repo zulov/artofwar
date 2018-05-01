@@ -64,11 +64,6 @@ Urho3D::Vector2& ComplexBucketData::getCenter() {
 	return center;
 }
 
-void ComplexBucketData::setNeightbours(std::vector<std::pair<int, float>>* _neightbours) {
-	neighbours.clear();
-	neighbours.insert(neighbours.end(), _neightbours->begin(), _neightbours->end());
-}
-
 std::vector<std::pair<int, float>>& ComplexBucketData::getNeightbours() {
 	return neighbours;
 }
@@ -81,11 +76,6 @@ bool ComplexBucketData::isUnit() {
 	return type == ObjectType::UNIT;
 }
 
-void ComplexBucketData::setOccupiedNeightbours(std::vector<std::pair<int, float>>* _occupiedNeightbours) {
-	occupiedNeightbours.clear();
-	occupiedNeightbours.insert(occupiedNeightbours.end(), _occupiedNeightbours->begin(), _occupiedNeightbours->end());
-}
-
 void ComplexBucketData::setEscapeThrought(int val) {
 	escapeBucketIndex = val;
 }
@@ -93,8 +83,4 @@ void ComplexBucketData::setEscapeThrought(int val) {
 Urho3D::Vector2* ComplexBucketData::
 getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket) {
 	return new Vector2(escapeBucket.getCenter().x_ - position->x_, escapeBucket.getCenter().y_ - position->z_);
-}
-
-int ComplexBucketData::getEscapeBucket() {
-	return escapeBucketIndex;
 }

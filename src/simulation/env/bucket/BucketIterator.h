@@ -10,17 +10,17 @@ class BucketIterator
 public:
 	BucketIterator();
 	~BucketIterator();
-	BucketIterator( const BucketIterator & fOsoba );
 	Unit* next();
 	void init(std::vector<short>* _levels, int _center, Grid* _bucketGrid);
 private:
 	short index = 0;
-	short secondIndex = 0;
+	//short secondIndex = 0;
 	short sizeContent;
 	short levelSize;
 	std::vector<short>* levels;
 	int center;
-
-	std::vector<Unit *>* currentContent{};
+	std::vector<Unit *>::iterator currentIterator;
+	std::vector<Unit *>::iterator currentEnd;
+	//std::vector<Unit *>* currentContent{};
 	Grid* bucketGrid;
 };

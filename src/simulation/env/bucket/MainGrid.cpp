@@ -9,14 +9,10 @@
 
 
 MainGrid::MainGrid(const short _resolution, const float _size, const bool _debugEnabled): Grid(_resolution, _size,
-                                                                                                _debugEnabled) {
+                                                                                               _debugEnabled) {
 	short posX = 0;
 	short posZ = 0;
 
-	tempNeighbour = new std::vector<std::pair<int, float>>();
-	tempNeighbour->reserve(DEFAULT_VECTOR_SIZE);
-	tempNeighbour2 = new std::vector<std::pair<int, float>>();
-	tempNeighbour2->reserve(DEFAULT_VECTOR_SIZE);
 	tempPath = new std::vector<int>();
 	tempPath->reserve(DEFAULT_VECTOR_SIZE);
 	const float coef = (resolution / 16) * fieldSize;
@@ -43,8 +39,6 @@ MainGrid::MainGrid(const short _resolution, const float _size, const bool _debug
 
 MainGrid::~MainGrid() {
 	delete[] complexData;
-	delete tempNeighbour;
-	delete tempNeighbour2;
 	delete tempPath;
 	delete ci;
 	if (pathInited) {
@@ -57,8 +51,7 @@ void MainGrid::prepareGridToFind() {
 	for (int i = 0; i < resolution * resolution; ++i) {
 		updateNeighbors(i);
 	}
-	tempNeighbour->clear();
-	tempNeighbour2->clear();
+
 	came_from = new int[resolution * resolution];
 	cost_so_far = new float[resolution * resolution];
 	std::fill_n(came_from, resolution * resolution, -1);
@@ -129,7 +122,7 @@ Vector2 MainGrid::repulseObstacle(Unit* unit) {
 	Vector2 sum;
 	if (complexData[index].getType() == ObjectType::UNIT
 		&& !complexData[index].getOccupiedNeightbours().empty()) {
-		for (auto neightbour : complexData[index].getOccupiedNeightbours()) {
+		for (const auto neightbour : complexData[index].getOccupiedNeightbours()) {
 			sum += complexData[neightbour.first].getCenter();
 		}
 		sum /= complexData[index].getOccupiedNeightbours().size();
@@ -250,7 +243,7 @@ Vector2* MainGrid::getDirectionFrom(Vector3* position) {
 	int index = indexFromPosition(position);
 	if (!complexData[index].isUnit()) {
 		int escapeBucket;
-		auto neights = complexData[index].getNeightbours();
+		auto& neights = complexData[index].getNeightbours();
 		if (!neights.empty()) {
 			float dist = (complexData[neights.at(0).first].getCenter() - complexData[index].getCenter()).LengthSquared();
 			escapeBucket = neights.at(0).first;
@@ -301,8 +294,11 @@ IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector2& pos) const 
 }
 
 void MainGrid::updateNeighbors(const int current) {
-	tempNeighbour->clear();
-	tempNeighbour2->clear();
+	auto& neigths = complexData[current].getNeightbours();
+	neigths.clear();
+	auto& ocupNeigths = complexData[current].getOccupiedNeightbours();
+	ocupNeigths.clear();
+
 	IntVector2 cords = getCords(current);
 	for (int i = -1; i <= 1; ++i) {
 		for (int j = -1; j <= 1; ++j) {
@@ -310,18 +306,14 @@ void MainGrid::updateNeighbors(const int current) {
 				if (inSide(cords.x_ + i, cords.y_ + j)) {
 					const int index = getIndex(cords.x_ + i, cords.y_ + j);
 					if (complexData[index].isUnit()) {
-						float costD = cost(current, index);
-						tempNeighbour->push_back(std::pair<int, float>(index, costD));
+						neigths.emplace_back(index, cost(current, index));
 					} else if (!complexData[index].isUnit()) {
-						float costD = cost(current, index);
-						tempNeighbour2->push_back(std::pair<int, float>(index, costD));
+						ocupNeigths.emplace_back(index, cost(current, index));
 					}
 				}
 			}
 		}
 	}
-	complexData[current].setNeightbours(tempNeighbour);
-	complexData[current].setOccupiedNeightbours(tempNeighbour2);
 }
 
 float MainGrid::cost(const int current, const int next) {

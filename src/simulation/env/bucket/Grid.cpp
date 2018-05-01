@@ -130,8 +130,8 @@ int Grid::indexFromPosition(Vector2& position) {
 }
 
 bool Grid::fieldInCircle(short i, short j, float radius) {
-	short x = i * fieldSize;
-	short y = j * fieldSize;
+	const short x = i * fieldSize;
+	const short y = j * fieldSize;
 	return x * x + y * y < radius * radius;
 }
 
@@ -140,8 +140,8 @@ std::vector<short>* Grid::getEnvIndexs(float radius) {
 	for (short i = 0; i < RES_SEP_DIST; ++i) {
 		for (short j = 0; j < RES_SEP_DIST; ++j) {
 			if (fieldInCircle(i, j, radius)) {
-				short x = i + 1;
-				short y = j + 1;
+				const short x = i + 1;
+				const short y = j + 1;
 				indexes->push_back(getIndex(x, y));
 				indexes->push_back(getIndex(x, -y));
 				indexes->push_back(getIndex(-x, y));
@@ -151,7 +151,7 @@ std::vector<short>* Grid::getEnvIndexs(float radius) {
 			}
 		}
 		if (fieldInCircle(i, 0, radius)) {
-			short x = i + 1;
+			const short x = i + 1;
 			indexes->push_back(getIndex(x, 0));
 			indexes->push_back(getIndex(0, x));
 			indexes->push_back(getIndex(-x, 0));
