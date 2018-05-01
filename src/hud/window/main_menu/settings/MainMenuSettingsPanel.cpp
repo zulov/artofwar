@@ -27,9 +27,9 @@ void MainMenuSettingsPanel::setValues(int graphID) {
 
 void MainMenuSettingsPanel::createBody() {
 	MainMenuDetailsPanel::createBody();
-	for (int i = 0; i < SETTINGS_ROWS_NUMBER; ++i) {
-		rows[i] = body->CreateChild<Urho3D::BorderImage>();
-		rows[i]->SetStyle("MainMenuSettingsRow");
+	for (auto& row : rows) {
+		row = body->CreateChild<Urho3D::BorderImage>();
+		row->SetStyle("MainMenuSettingsRow");
 	}
 
 	populateLabels(0, "mmsp_settings");

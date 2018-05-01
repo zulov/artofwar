@@ -66,7 +66,7 @@ Entity* LevelBuilder::createZone() {
 	return entity;
 }
 
-Entity* LevelBuilder::createLight(Vector3 direction, Color color, LightType lightType) {
+Entity* LevelBuilder::createLight(const Vector3& direction, const Color& color, LightType lightType) {
 	Entity* entity = new Entity(ObjectType::ENTITY);
 	Node* lightNode = entity->getNode();
 	lightNode->SetDirection(direction);
@@ -78,7 +78,7 @@ Entity* LevelBuilder::createLight(Vector3 direction, Color color, LightType ligh
 	return entity;
 }
 
-Entity* LevelBuilder::createGround(String heightMap, String texture, float horScale, float verScale) {
+Entity* LevelBuilder::createGround(const String& heightMap, const String& texture, float horScale, float verScale) {
 	Entity* entity = new Physical(new Vector3, ObjectType::PHISICAL);
 
 	Node* node = entity->getNode();

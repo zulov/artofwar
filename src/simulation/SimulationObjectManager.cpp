@@ -79,13 +79,13 @@ void SimulationObjectManager::addUnits(unsigned int number, int id, Vector2& cen
 }
 
 void SimulationObjectManager::addBuilding(int id, Vector2& center,
-                                          int player, IntVector2 _bucketCords, int level) {
+                                          int player, const IntVector2& _bucketCords, int level) {
 	buildingsTemp = buildingFactory.create(id, center, player, _bucketCords, level);
 	updateBuilding();
 }
 
 
-void SimulationObjectManager::addResource(int id, Vector2& center, IntVector2 _bucketCords, int level) {
+void SimulationObjectManager::addResource(int id, Vector2& center, const IntVector2& _bucketCords, int level) {
 	resourcesTemp = resourceFactory.create(id, center, _bucketCords, level);
 	updateResource();
 }

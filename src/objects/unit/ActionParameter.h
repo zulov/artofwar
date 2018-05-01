@@ -6,16 +6,12 @@
 struct ActionParameter
 {
 	explicit ActionParameter(Aim* aim = nullptr, bool aimAppend = false)
-		: aim(aim)
-		//aimAppend(aimAppend) 
-	{
+		: aim(aim) {
 	}
 
 	ActionParameter(ActionType _type) : type(_type) {
 	}
 
 	Aim* aim;
-	//bool aimAppend;
 	ActionType type;
-
 };

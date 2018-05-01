@@ -1,8 +1,7 @@
 #include "HudData.h"
 
 
-HudData::HudData(Urho3D::UIElement* _uiParent) {
-	parent = _uiParent;
+HudData::HudData(Urho3D::UIElement* _uiParent) :parent(_uiParent){
 }
 
 HudData::~HudData() = default;

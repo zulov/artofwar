@@ -48,8 +48,8 @@ void Benchmark::add(float fps) {
 
 void Benchmark::save() {
 	if constexpr (BENCH_SAVE) {
-		for (int count = 0; count < BENCH_LENGTH; count++) {
-			output << data[count] << std::endl;
+		for (float count : data) {
+			output << count << std::endl;
 		}
 	}
 }

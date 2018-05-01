@@ -1,5 +1,4 @@
 #pragma once
-#include <Urho3D/Container/Ptr.h>
 #include <Urho3D/Graphics/Camera.h>
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/Scene/Node.h>
@@ -10,7 +9,7 @@ using namespace Urho3D;
 class CameraBehave
 {
 public:
-	CameraBehave(Vector3 _pos, float _minY, String _name);
+	CameraBehave(const Vector3& _pos, float _minY, const String& _name);
 	virtual ~CameraBehave();
 
 	virtual void translate(bool cameraKeys[], int wheel, float timeStep, float min) = 0;

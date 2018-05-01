@@ -10,6 +10,6 @@ UpgradeCommandList::UpgradeCommandList(SimulationObjectManager* _simulationObjec
 UpgradeCommandList::~UpgradeCommandList() = default;
 
 void UpgradeCommandList::setParemeters(AbstractCommand* command) {
-	UpgradeCommand* m = dynamic_cast<UpgradeCommand *>(command);
+	auto* m = dynamic_cast<UpgradeCommand *>(command);
 	m->setSimulationObjectManager(simulationObjectManager);
 }

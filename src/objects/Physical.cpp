@@ -9,8 +9,7 @@
 
 
 Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
-	LinkComponent* lc = node->CreateComponent<LinkComponent>();
-	lc->bound(this);
+	node->CreateComponent<LinkComponent>()->bound(this);
 
 	position = _position;
 	node->SetPosition(*position);
@@ -92,7 +91,7 @@ float Physical::getMaxHpBarSize() {
 }
 
 float Physical::getHealthPercent() {
-	return hpCoef / maxHpCoef;;
+	return hpCoef / maxHpCoef;
 }
 
 float Physical::getHealthBarSize() {

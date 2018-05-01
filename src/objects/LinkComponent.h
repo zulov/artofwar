@@ -6,7 +6,7 @@
 class LinkComponent :public Urho3D::Component
 {
 public:
-	LinkComponent(Context* context);
+	explicit LinkComponent(Context* context);
 	~LinkComponent();
 
 	void bound(Physical* _physical);

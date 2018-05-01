@@ -7,8 +7,8 @@
 class CreationCommand : public AbstractCommand
 {
 public:
-	CreationCommand(ObjectType type, int id, Vector2 _position, int _player, IntVector2 _bucketCords, int level);
-	CreationCommand(ObjectType type, int _number, int id, Vector2 _position, int _player, int level);
+	CreationCommand(ObjectType type, int id, const Vector2& _position, int _player, const IntVector2& _bucketCords, int level);
+	CreationCommand(ObjectType type, int _number, int id, const Vector2& _position, int _player, int level);
 	virtual ~CreationCommand();
 	void execute() override;
 	void setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager);

@@ -11,7 +11,7 @@ IntVector2& Static::getBucketPosition() {
 	return bucketPosition;
 }
 
-void Static::setBucketPosition(IntVector2 _bucketPosition) {
+void Static::setBucketPosition(const IntVector2& _bucketPosition) {
 	bucketPosition = _bucketPosition;
 }
 

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "ControlsState.h"
 #include "MouseButton.h"
 #include "ObjectEnums.h"
@@ -9,7 +8,6 @@
 #include "commands/creation/CreationCommand.h"
 #include "hud/HudData.h"
 #include <Urho3D/Graphics/Renderer.h>
-#include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Input/Input.h>
 #include <vector>
 
@@ -25,7 +23,7 @@ public:
 	Controls(Input* _input);
 	~Controls();
 
-	void createNode(String model, String texture, Urho3D::Node** node);
+	void createNode(const String& model, const String& texture, Urho3D::Node** node);
 
 	void select(Physical* entity);
 	void unSelectAll();

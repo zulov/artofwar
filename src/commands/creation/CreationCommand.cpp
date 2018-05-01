@@ -1,7 +1,8 @@
 #include "CreationCommand.h"
 
 
-CreationCommand::CreationCommand(ObjectType type, int id, Vector2 _position, int _player, IntVector2 _bucketCords,
+CreationCommand::CreationCommand(ObjectType type, int id, const Vector2& _position, int _player, const IntVector2&
+                                 _bucketCords,
                                  int level) {
 	position = _position;
 	player = _player;
@@ -11,7 +12,8 @@ CreationCommand::CreationCommand(ObjectType type, int id, Vector2 _position, int
 	this->level = level;
 }
 
-CreationCommand::CreationCommand(ObjectType type, int _number, int id, Vector2 _position, int _player, int level) {
+CreationCommand::CreationCommand(ObjectType type, int _number, int id, const Vector2& _position, int _player,
+                                 int level) {
 	number = _number;
 	position = _position;
 	player = _player;
@@ -20,8 +22,7 @@ CreationCommand::CreationCommand(ObjectType type, int _number, int id, Vector2 _
 	this->level = level;
 }
 
-CreationCommand::~CreationCommand() {
-}
+CreationCommand::~CreationCommand() = default;
 
 void CreationCommand::execute() {
 	switch (objectType) {

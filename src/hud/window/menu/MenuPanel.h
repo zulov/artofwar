@@ -1,15 +1,14 @@
 #pragma once
 #include "../AbstractWindowPanel.h"
-#include <Urho3D/UI/Text.h>
-#include <vector>
-#include "hud/HudData.h"
-#include "database/db_strcut.h"
-#include "control/SelectedInfo.h"
-#include <Urho3D/UI/CheckBox.h>
-#include <Urho3D/UI/Button.h>
 #include "LeftMenuModes.h"
+#include "control/SelectedInfo.h"
+#include "hud/HudData.h"
 #include "hud/MySprite.h"
+#include <Urho3D/UI/Button.h>
+#include <Urho3D/UI/CheckBox.h>
 #include <unordered_set>
+#include <vector>
+
 
 #define LEFT_MENU_ROWS_NUMBER 4
 #define LEFT_MENU_CHECKS_NUMBER 3

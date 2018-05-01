@@ -1,7 +1,7 @@
 #pragma once
 #include "Aim.h"
 
-class DummyAim : public Aim//TODO zrobic z tego singleton
+class DummyAim : public Aim
 {
 public:
 	DummyAim();

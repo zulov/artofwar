@@ -1,6 +1,5 @@
 #include "ChargeState.h"
 #include "../Unit.h"
-#include "objects/unit/aim/FutureAim.h"
 
 
 ChargeState::ChargeState() {

@@ -15,7 +15,7 @@ void FormationAction::addTargetAim(Vector2* to, bool append) {
 	if (opt.has_value()) {	
 		ActionParameter parameter = getTargetAim(opt.value()->getBucketIndex(-1), *to, append);
 
-		const char id = static_cast<char>(action);
+		const auto id = static_cast<char>(action);
 		opt.value()->action(id, parameter);
 		Game::get()->getEnviroment()->invalidateCache();
 	}

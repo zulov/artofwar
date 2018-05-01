@@ -1,14 +1,14 @@
 #pragma once
 
-#include <vector>
-#include "objects/unit/Unit.h"
+#include "SimulationInfo.h"
 #include "objects/building/Building.h"
 #include "objects/building/BuildingFactory.h"
-#include "objects/unit/UnitFactory.h"
 #include "objects/resource/ResourceFactory.h"
-#include "SimulationInfo.h"
+#include "objects/unit/Unit.h"
+#include "objects/unit/UnitFactory.h"
 #include "scene/load/dbload_container.h"
-#include "hud/window/main_menu/new_game/NewGamePlayer.h"
+#include <vector>
+
 
 using namespace std;
 
@@ -23,8 +23,8 @@ public:
 	vector<ResourceEntity*>* getResources();
 
 	void addUnits(unsigned number, int id, Vector2& center, int player, int level);
-	void addBuilding(int id, Vector2& center, int player, IntVector2 _bucketCords, int level);
-	void addResource(int id, Vector2& center, IntVector2 _bucketCords, int level);
+	void addBuilding(int id, Vector2& center, int player, const IntVector2& _bucketCords, int level);
+	void addResource(int id, Vector2& center, const IntVector2& _bucketCords, int level);
 
 	void prepareToDispose();
 	void updateInfo(SimulationInfo* simulationInfo);

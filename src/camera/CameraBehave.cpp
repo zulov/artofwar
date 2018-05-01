@@ -3,7 +3,7 @@
 #include "simulation/env/Enviroment.h"
 
 
-CameraBehave::CameraBehave(Vector3 _pos, float _minY, String _name) {
+CameraBehave::CameraBehave(const Vector3& _pos, float _minY, const String& _name) {
 	minY = _minY;
 	name = _name;
 	info = new String();

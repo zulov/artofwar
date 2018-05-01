@@ -2,11 +2,11 @@
 #include <vector>
 #include <Urho3D/Resource/Image.h>
 
-int getIndex(const short posX, const short posZ, const short resolution) {
+inline int getIndex(const short posX, const short posZ, const short resolution) {
 	return posX * resolution + posZ;
 }
 
-Urho3D::IntVector2 getCords(const int index, const short resolution) {
+inline Urho3D::IntVector2 getCords(const int index, const short resolution) {
 	return Urho3D::IntVector2(index / resolution, index % resolution);
 }
 

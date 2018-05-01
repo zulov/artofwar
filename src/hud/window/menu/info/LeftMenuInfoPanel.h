@@ -12,7 +12,7 @@ public:
 	LeftMenuInfoPanel(Urho3D::XMLFile* _style);
 	~LeftMenuInfoPanel();
 	void updateSelected(SelectedInfo* selectedInfo);
-	void setInfo(HudData* hudElement);
+	void setInfo(HudData* hudData);
 	Urho3D::String stringFrom(String &name, std::vector<db_cost*>* costs);
 private:
 	void createBody() override;

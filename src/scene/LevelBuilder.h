@@ -24,8 +24,8 @@ private:
 	SharedPtr<Urho3D::Scene> scene;
 
 	Entity* createZone();
-	Entity* createLight(Vector3 direction, Color color, LightType lightType);
-	Entity* createGround(String heightMap, String texture, float horScale, float verScale);
+	Entity* createLight(const Vector3& direction, const Color& color, LightType lightType);
+	Entity* createGround(const String& heightMap, const String& texture, float horScale, float verScale);
 
 	SceneObjectManager *objectManager;
 	Terrain* terrain;

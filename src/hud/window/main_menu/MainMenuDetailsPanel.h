@@ -5,7 +5,7 @@
 class MainMenuDetailsPanel :public AbstractWindowPanel
 {
 public:
-	MainMenuDetailsPanel(Urho3D::XMLFile* _style, Urho3D::String _title);
+	MainMenuDetailsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~MainMenuDetailsPanel();
 protected:
 	Urho3D::UIElement * body;

@@ -39,7 +39,7 @@ Controls::~Controls() {
 	arrowNode->Remove();
 }
 
-void Controls::createNode(String model, String texture, Node** node) {
+void Controls::createNode(const String& model, const String& texture, Node** node) {
 	*node = Game::get()->getScene()->CreateChild();
 	auto selectionModel = (*node)->CreateComponent<StaticModel>();
 	selectionModel->SetModel(Game::get()->getCache()->GetResource<Model>(model));
@@ -285,7 +285,7 @@ bool Controls::clickDown(MouseButton& var, hit_data hitData) {
 
 void Controls::clickDownLeft() {
 	hit_data hitData;
-	bool clicked = clickDown(left, hitData);
+	const bool clicked = clickDown(left, hitData);
 	if (clicked) {
 		startSelectionNode(hitData);
 	}

@@ -14,7 +14,6 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <exprtk/exprtk.hpp>
-#include <iostream>
 #include <regex>
 
 
