@@ -46,8 +46,6 @@ private:
 
 	FormationType type;
 	Vector2 center;
-	float sizeA;
-	float sizeB;
 
 	bool changed = true;
 
@@ -60,7 +58,7 @@ private:
 	std::vector<FutureAim> futureOrders;
 	//bool hasFutureOrder = false;
 
-	float theresholedMin = 0.1;
+	float theresholedMin = 0.01;
 	float theresholedMax = 0.5;
 	float notWellFormed = 1.0;
 	float notWellFormedExact = 1.0;

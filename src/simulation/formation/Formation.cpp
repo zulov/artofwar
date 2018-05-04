@@ -84,12 +84,12 @@ void Formation::updateIds() {
 			unit->setFormation(id);
 			unit->setPositionInFormation(-1);
 		}
-		short a = sideA / 2.0 * (1 + sideB);
-		short id = (sideB / 2.0 + 0.5) * sideA + sideB / 2.0 + 0.5;
-		if (id >= units.size()) {
-			id = units.size();
+
+		short cc = (short)((sideB - 1) / 2) * sideA + (short)(sideA / 2.0 + 0.5);
+		if (cc >= units.size()) {
+			cc = units.size() - 1;
 		}
-		leader->setPositionInFormation(id);
+		leader->setPositionInFormation(cc);
 
 		auto env = Game::get()->getEnviroment();
 		std::unordered_map<int, std::vector<short>> bucketToIds;
@@ -152,18 +152,6 @@ void Formation::updateIds() {
 void Formation::updateSizes() {
 	sideA = sqrt(units.size()) + 0.5;
 	sideB = units.size() / sideA;
-	if (sideB < sideA) {
-		if ((sideB + 1) * sideA < units.size()) {
-			++sideB;
-		}
-	} else {
-		if ((sideA + 1) * sideB < units.size()) {
-			++sideA;
-		}
-	}
-
-	sizeA = (sideA - 1) * sparsity;
-	sizeB = (sideB - 1) * sparsity;
 }
 
 void Formation::calculateNotWellFormed() {
@@ -178,7 +166,7 @@ void Formation::calculateNotWellFormed() {
 		if (sqDist > 2 * 2) {
 			notWellFormed += 1;
 		}
-		if (sqDist > 1) {
+		if (sqDist > 0.5) {
 			notWellFormedExact += 1;
 		}
 	}
@@ -233,6 +221,7 @@ void Formation::update() {
 			unit->resetFormation();
 		}
 		units.clear();
+		changeState(FormationState::EMPTY);
 		break;
 	}
 }
@@ -253,7 +242,9 @@ Vector2 Formation::getPositionFor(short id) {
 	const int column = columnThis - columnLeader;
 	const int row = rowThis - rowLeader;
 
-	return center - Vector2(column * sparsity, row * sparsity);
+	auto result = center - Vector2(column * sparsity, row * sparsity);
+	//std::cout << id << "|" << result.x_ << "|" << result.y_ << std::endl;
+	return result;
 }
 
 float Formation::getPriority(int id) const {
