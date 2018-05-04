@@ -3,6 +3,6 @@ enum class ColorMode : char
 {
 	BASIC=-1,
 	VELOCITY,
-	STATE
-
+	STATE,
+	FORMATION
 };

@@ -43,7 +43,7 @@ private:
 	float sparsity = 1;
 
 	std::vector<Unit*> units;
-
+	char *rechnessLevel;
 	FormationType type;
 	Vector2 center;
 

@@ -28,6 +28,8 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 	} else {
 		changeState(FormationState::EMPTY);
 	}
+	rechnessLevel = new char[units.size()];
+	std::fill_n(rechnessLevel, units.size(), 0);
 }
 
 Formation::~Formation() = default;
@@ -163,12 +165,19 @@ void Formation::calculateNotWellFormed() {
 		auto currentPos = Vector2(pos->x_, pos->z_);
 		auto desiredPos = getPositionFor(unit->getPositionInFormation());
 		auto sqDist = (currentPos - desiredPos).LengthSquared();
-		if (sqDist > 2 * 2) {
-			notWellFormed += 1;
-		}
-		if (sqDist > 0.5) {
+
+		if (sqDist < 0.5) {
+			rechnessLevel[unit->getPositionInFormation()] = 0;
+		} else if (sqDist < 2 * 2) {
 			notWellFormedExact += 1;
+			rechnessLevel[unit->getPositionInFormation()] = 1;
+		} else {
+			notWellFormed += 1;
+			notWellFormedExact += 1;
+			rechnessLevel[unit->getPositionInFormation()] = 2;
 		}
+
+
 	}
 	notWellFormed /= units.size();
 	notWellFormedExact /= units.size();
@@ -233,7 +242,6 @@ void Formation::changeState(FormationState newState) {
 Vector2 Formation::getPositionFor(short id) {
 	const int columnThis = id % sideA;
 	const int rowThis = id / sideA;
-	//std::cout << id << "|" << columnThis << "|" << rowThis << std::endl;
 	short leaderID = leader->getPositionInFormation();
 
 	const int columnLeader = leaderID % sideA;
@@ -243,12 +251,11 @@ Vector2 Formation::getPositionFor(short id) {
 	const int row = rowThis - rowLeader;
 
 	auto result = center - Vector2(column * sparsity, row * sparsity);
-	//std::cout << id << "|" << result.x_ << "|" << result.y_ << std::endl;
 	return result;
 }
 
 float Formation::getPriority(int id) const {
-	return 1;
+	return rechnessLevel[id];
 }
 
 std::optional<Physical*> Formation::getLeader() {

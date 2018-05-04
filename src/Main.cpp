@@ -505,6 +505,7 @@ SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo
 		simulation->changeColorMode(ColorMode::STATE);
 	} else if (input->GetKeyPress(KEY_F11)) {
 		coefToEdit = 2;
+		simulation->changeColorMode(ColorMode::FORMATION);
 	} else if (input->GetKeyPress(KEY_F12)) {
 		coefToEdit = 3;
 	}

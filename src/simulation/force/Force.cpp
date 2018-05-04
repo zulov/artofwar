@@ -76,16 +76,21 @@ void Force::formation(Vector2& newForce, Unit* unit) {
 	auto opt = Game::get()->getFormationManager()->getPositionFor(unit);
 	if (opt.has_value()) {
 		const float priority = Game::get()->getFormationManager()->getPriority(unit);
-		auto force = Vector2(
-		                     opt.value().x_ - unit->getPosition()->x_,
-		                     opt.value().y_ - unit->getPosition()->z_
-		                    );
+		if (priority > 0) {
 
-		force *= formationCoef * boostCoef * priority;
+			auto force = Vector2(
+			                     opt.value().x_ - unit->getPosition()->x_,
+			                     opt.value().y_ - unit->getPosition()->z_
+			                    );
 
-		forceStats.addForm(force);
+			force *= formationCoef * boostCoef * priority;
 
-		newForce += force;
+			forceStats.addForm(force);
+
+			newForce += force;
+		} else {
+			int a = 6;
+		}
 	}
 }
 

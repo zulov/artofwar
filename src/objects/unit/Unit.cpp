@@ -330,6 +330,15 @@ void Unit::changeColor(ColorMode mode) {
 		changeColor(state);
 		}
 		break;
+	case ColorMode::FORMATION:
+		{
+		if (formation != -1) {
+			auto prioryty = Game::get()->getFormationManager()->getPriority(this);
+
+			changeColor(prioryty, 3.0f);
+		}
+		}
+		break;
 	default: ;
 	}
 }
