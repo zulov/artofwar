@@ -123,16 +123,30 @@ void Formation::updateIds() {
 				continue;
 			}
 			int bucketId = unit->getBucketIndex(-1);
+			const auto pos = unit->getPosition();
+			const auto currentPos = Vector2(pos->x_, pos->z_);
+
 
 			auto it = bucketToIds.find(bucketId);
 			if (it != bucketToIds.end()) {
-				for (auto id : it->second) {
-					if (tempVec[id] != -1) {
-						tempVec[id] = -1;
-						--sizeToAssign;
-						unit->setPositionInFormation(id);
-						break;
+				short best = -1;
+				float bestSize = 99999;
+				for (int i = 0; i < it->second.size(); ++i) {
+					auto id = it->second[i];
+					if (tempVec[id] != -1) {					
+						auto newPos = getPositionFor(id);
+						const auto sqDist = (currentPos - newPos).LengthSquared();
+						if (sqDist < bestSize) {
+							bestSize = sqDist;
+							best = id;
+						}
 					}
+				}
+
+				if (best > 0) {
+					--sizeToAssign;
+					tempVec[best] = -1;
+					unit->setPositionInFormation(best);
 				}
 			}
 		}
@@ -162,9 +176,9 @@ void Formation::calculateNotWellFormed() {
 	for (auto unit : units) {
 		auto pos = unit->getPosition();
 
-		auto currentPos = Vector2(pos->x_, pos->z_);
-		auto desiredPos = getPositionFor(unit->getPositionInFormation());
-		auto sqDist = (currentPos - desiredPos).LengthSquared();
+		const auto currentPos = Vector2(pos->x_, pos->z_);
+		const auto desiredPos = getPositionFor(unit->getPositionInFormation());
+		const auto sqDist = (currentPos - desiredPos).LengthSquared();
 
 		if (sqDist < 0.5) {
 			rechnessLevel[unit->getPositionInFormation()] = 0;
@@ -176,8 +190,6 @@ void Formation::calculateNotWellFormed() {
 			notWellFormedExact += 1;
 			rechnessLevel[unit->getPositionInFormation()] = 2;
 		}
-
-
 	}
 	notWellFormed /= units.size();
 	notWellFormedExact /= units.size();
@@ -242,7 +254,7 @@ void Formation::changeState(FormationState newState) {
 Vector2 Formation::getPositionFor(short id) {
 	const int columnThis = id % sideA;
 	const int rowThis = id / sideA;
-	short leaderID = leader->getPositionInFormation();
+	const short leaderID = leader->getPositionInFormation();
 
 	const int columnLeader = leaderID % sideA;
 	const int rowLeader = leaderID / sideA;
@@ -250,8 +262,7 @@ Vector2 Formation::getPositionFor(short id) {
 	const int column = columnThis - columnLeader;
 	const int row = rowThis - rowLeader;
 
-	auto result = center - Vector2(column * sparsity, row * sparsity);
-	return result;
+	return center - Vector2(column * sparsity, row * sparsity);
 }
 
 float Formation::getPriority(int id) const {

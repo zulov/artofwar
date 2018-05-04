@@ -88,8 +88,6 @@ void Force::formation(Vector2& newForce, Unit* unit) {
 			forceStats.addForm(force);
 
 			newForce += force;
-		} else {
-			int a = 6;
 		}
 	}
 }
