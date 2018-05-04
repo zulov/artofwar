@@ -129,24 +129,24 @@ void Formation::updateIds() {
 
 			auto it = bucketToIds.find(bucketId);
 			if (it != bucketToIds.end()) {
-				short best = -1;
+				short bestId = -1;
 				float bestSize = 99999;
 				for (int i = 0; i < it->second.size(); ++i) {
 					auto id = it->second[i];
-					if (tempVec[id] != -1) {					
-						auto newPos = getPositionFor(id);
-						const auto sqDist = (currentPos - newPos).LengthSquared();
+					if (tempVec[id] != -1) {
+						const auto sqDist = (currentPos - getPositionFor(id)).LengthSquared();
 						if (sqDist < bestSize) {
 							bestSize = sqDist;
-							best = id;
+							bestId = i;
 						}
 					}
 				}
 
-				if (best > 0) {
+				if (bestId >= 0) {
 					--sizeToAssign;
-					tempVec[best] = -1;
-					unit->setPositionInFormation(best);
+					tempVec[it->second[bestId]] = -1;
+					unit->setPositionInFormation(it->second[bestId]);
+					it->second.erase(it->second.begin() + bestId);
 				}
 			}
 		}
