@@ -174,7 +174,7 @@ void Formation::calculateNotWellFormed() {
 	notWellFormed = 0;
 	notWellFormedExact = 0;
 	for (auto unit : units) {
-		auto pos = unit->getPosition();
+		const auto pos = unit->getPosition();
 
 		const auto currentPos = Vector2(pos->x_, pos->z_);
 		const auto desiredPos = getPositionFor(unit->getPositionInFormation());
@@ -217,10 +217,10 @@ void Formation::update() {
 				const auto& futureOrder = futureOrders[0];
 				Game::get()->getActionCommandList()->add(new FormationAction(this,
 				                                                             futureOrder.action,
+				                                                             futureOrder.physical,
 				                                                             new Vector2(futureOrder.vector)
 				                                                            ));
 				futureOrders.erase(futureOrders.begin()); //TODO to zachowaæ
-
 			}
 		}
 		break;

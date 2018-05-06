@@ -40,6 +40,6 @@ void GroupAction::addFollowAim(const Physical* toFollow, bool append) {
 		if (!append) {
 			opt.value()->semiReset();
 		}
-		opt.value()->addAim(*(Vector2*)0, toFollow, action, append);
+		opt.value()->addAim(Vector2::ZERO, toFollow, action, append);
 	}
 }

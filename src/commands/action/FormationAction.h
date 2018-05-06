@@ -5,8 +5,7 @@
 class FormationAction : public ActionCommand
 {
 public:
-
-	FormationAction(Formation* formation, OrderType action, Vector2* parameter, bool append = false);
+	FormationAction(Formation* formation, OrderType action, const Physical* physical, Vector2* vector, bool append = false);
 	~FormationAction();
 private:
 	void addTargetAim(Vector2* to, bool append) override;
