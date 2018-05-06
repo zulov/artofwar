@@ -17,9 +17,8 @@ std::vector<Building*>* BuildingFactory::
 create(int id, Vector2& center, int player, const IntVector2& _bucketCords, int level) {
 	buildings->clear();
 	float y = Game::get()->getEnviroment()->getGroundHeightAt(center.x_, center.y_);
-	Vector3* position = new Vector3(center.x_, y, center.y_);
 
-	Building* building = new Building(position, id, player, level);
+	Building* building = new Building(new Vector3(center.x_, y, center.y_), id, player, level);
 	building->setBucketPosition(_bucketCords);
 	buildings->push_back(building);
 

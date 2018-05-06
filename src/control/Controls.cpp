@@ -10,10 +10,8 @@
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/Enviroment.h"
-#include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UI.h>
 #include <algorithm>
 #include <queue>
@@ -28,6 +26,11 @@ Controls::Controls(Input* _input) {
 
 	createNode("Models/box.mdl", "Materials/green_alpha.xml", &selectionNode);
 	createNode("Models/arrow2.mdl", "Materials/dark_red_alpha.xml", &arrowNode);
+
+	tempBuildingNode = Game::get()->getScene()->CreateChild();
+	tempBuildingModel = tempBuildingNode->CreateComponent<StaticModel>();
+	tempBuildingNode->SetEnabled(false);
+
 	selectedType = ObjectType::PHISICAL;
 }
 
@@ -37,14 +40,6 @@ Controls::~Controls() {
 	delete selected;
 	selectionNode->Remove();
 	arrowNode->Remove();
-}
-
-void Controls::createNode(const String& model, const String& texture, Node** node) {
-	*node = Game::get()->getScene()->CreateChild();
-	auto selectionModel = (*node)->CreateComponent<StaticModel>();
-	selectionModel->SetModel(Game::get()->getCache()->GetResource<Model>(model));
-	selectionModel->SetMaterial(Game::get()->getCache()->GetResource<Material>(texture));
-	(*node)->SetEnabled(false);
 }
 
 void Controls::unSelectAll() {
@@ -94,8 +89,9 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 		} else {
 			type = OrderType::GO;
 		}
-		auto newPos = new Vector2(hitPos.x_, hitPos.z_);
-		Game::get()->getActionCommandList()->add(new GroupAction(selected, type, newPos, shiftPressed));
+
+		Game::get()->getActionCommandList()->add(new GroupAction(selected, type, new Vector2(hitPos.x_, hitPos.z_),
+		                                                         shiftPressed));
 		break;
 		}
 	case ObjectType::UNIT:
@@ -478,6 +474,29 @@ void Controls::defaultControl() {
 }
 
 void Controls::buildControl() {
+	if (!input->GetMouseButtonDown(MOUSEB_LEFT) && !input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+		hit_data hitData;
+
+		if (raycast(hitData)) {
+
+			auto dbBuilding = Game::get()->getDatabaseCache()->getBuilding(idToCreate);
+			auto dbLevel = Game::get()->getDatabaseCache()->getBuildingLevel(dbBuilding->id, 0).value();
+			Vector2 post3 = Vector2(hitData.position.x_, hitData.position.z_);
+			IntVector2 bucketCords = Game::get()->getEnviroment()->getBucketCords(dbBuilding->size,post3 );
+			Vector2 pos = Game::get()->getEnviroment()->getValidPosition(dbBuilding->size, post3);
+			Vector3 pos2 = Vector3(pos.x_, 10, pos.y_);
+			tempBuildingNode->SetPosition(pos2);
+			if (!tempBuildingNode->IsEnabled()) {
+				tempBuildingNode->SetScale(dbLevel->scale);
+
+				tempBuildingModel->SetModel(Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
+				tempBuildingModel->
+					SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture));
+				tempBuildingNode->SetEnabled(true);
+			}
+		}
+	}
+
 	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
 		if (!left.isHeld) {
 			left.markHeld();
@@ -489,6 +508,7 @@ void Controls::buildControl() {
 	if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
 		toDefault();
 	}
+
 }
 
 void Controls::orderControl() {

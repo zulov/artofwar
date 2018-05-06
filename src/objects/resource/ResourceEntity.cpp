@@ -9,7 +9,6 @@
 
 
 ResourceEntity::ResourceEntity(Vector3* _position, int id, int level) : Static(_position, ObjectType::RESOURCE) {
-	
 	initBillbords();
 
 	dbResource = Game::get()->getDatabaseCache()->getResource(id);

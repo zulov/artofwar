@@ -99,16 +99,15 @@ void Building::action(char id, ActionParameter& parameter) {
 }
 
 void Building::upgrade(char level) {
-	StaticModel* staticModel = node->GetComponent<StaticModel>();
+	auto staticModel = node->GetComponent<StaticModel>();
 	dbLevel = Game::get()->getDatabaseCache()->getBuildingLevel(dbBuilding->id, level).value();
 
 	populate();
 
 	node->SetScale(dbLevel->scale);
-	Model* model = Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model);
-	Material* material = Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture);
-	staticModel->SetModel(model);
-	staticModel->SetMaterial(material);
+
+	staticModel->SetModel(Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
+	staticModel->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture));
 	updateBillbords();
 }
 

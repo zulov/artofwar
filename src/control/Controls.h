@@ -23,8 +23,6 @@ public:
 	Controls(Input* _input);
 	~Controls();
 
-	void createNode(const String& model, const String& texture, Urho3D::Node** node);
-
 	void select(Physical* entity);
 	void unSelectAll();
 
@@ -93,6 +91,8 @@ private:
 
 	Urho3D::Node* selectionNode{};
 	Urho3D::Node* arrowNode{};
+	Urho3D::Node* tempBuildingNode{};
+	Urho3D::StaticModel *tempBuildingModel;
 
 	short idToCreate = -1;
 	float clickDistance = 2 * 2;

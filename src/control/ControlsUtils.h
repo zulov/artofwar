@@ -7,6 +7,7 @@
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Graphics/OctreeQuery.h>
 #include <Urho3D/Math/Ray.h>
+#include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UI.h>
 
 
@@ -51,4 +52,13 @@ bool raycast(hit_data& hitData) {
 	hitData.link = nullptr;
 
 	return false;
+}
+
+
+void createNode(const String& model, const String& texture, Node** node) {
+	*node = Game::get()->getScene()->CreateChild();
+	auto selectionModel = (*node)->CreateComponent<StaticModel>();
+	selectionModel->SetModel(Game::get()->getCache()->GetResource<Model>(model));
+	selectionModel->SetMaterial(Game::get()->getCache()->GetResource<Material>(texture));
+	(*node)->SetEnabled(false);
 }
