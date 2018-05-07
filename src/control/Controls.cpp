@@ -53,7 +53,7 @@ void Controls::unSelectAll() {
 }
 
 void Controls::select(Physical* entity) {
-	const ObjectType entityType = entity->getType();
+	const auto entityType = entity->getType();
 	if (entityType != selectedType) {
 		unSelectAll();
 	}
@@ -112,7 +112,7 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>& held) {
 	if (!input->GetKeyDown(KEY_CTRL)) {
 		unSelectAll();
 	}
-	std::vector<Physical*>* entities = Game::get()->getEnviroment()->getNeighbours(held);
+	auto entities = Game::get()->getEnviroment()->getNeighbours(held);
 	for (auto entity : *entities) {
 		select(entity); //TODO zastapic wrzuceniem na raz
 	}
@@ -121,7 +121,7 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>& held) {
 void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
 	auto actions = Game::get()->getActionCommandList();
 
-	auto first = new Vector2(held.first->x_, held.first->z_);
+	const auto first = new Vector2(held.first->x_, held.first->z_);
 	if (input->GetKeyDown(KEY_SHIFT)) {
 		const auto second = new Vector2(held.second->x_, held.second->z_);
 		actions->add(new GroupAction(selected, OrderType::PATROL, first));
@@ -144,7 +144,7 @@ void Controls::releaseLeft() {
 		if (dist > clickDistance) {
 			leftHold(left.held);
 		} else {
-			LinkComponent* lc = hitData.link;
+			auto lc = hitData.link;
 			if (lc) {
 				leftClick(lc->getPhysical(), hitData.position);
 			}
@@ -477,31 +477,29 @@ void Controls::buildControl() {
 	if (!input->GetMouseButtonDown(MOUSEB_LEFT) && !input->GetMouseButtonDown(MOUSEB_RIGHT)) {
 		hit_data hitData;
 
-		if (raycast(hitData)) {
+		if (raycast(hitData)) {//TODO OPTM nie robic tego co klatkê
 			auto env = Game::get()->getEnviroment();
 
 			auto dbBuilding = Game::get()->getDatabaseCache()->getBuilding(idToCreate);
 			auto dbLevel = Game::get()->getDatabaseCache()->getBuildingLevel(dbBuilding->id, 0).value();
-			Vector2 post3 = Vector2(hitData.position.x_, hitData.position.z_);
-			bool ifPosible = env->validateStatic(dbBuilding->size, post3);
+			Vector2 hitPos = Vector2(hitData.position.x_, hitData.position.z_);
 
-			Vector2 pos = env->getValidPosition(dbBuilding->size, post3);
-			float y = env->getGroundHeightAt(pos.x_, pos.y_);
+			Vector2 validPos = env->getValidPosition(dbBuilding->size, hitPos);
+			float height = env->getGroundHeightAt(validPos.x_, validPos.y_);
 
-			Vector3 pos2 = Vector3(pos.x_, y, pos.y_);
-			tempBuildingNode->SetPosition(pos2);
+			tempBuildingNode->SetPosition(Vector3(validPos.x_, height, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
 				tempBuildingNode->SetScale(dbLevel->scale);
 
-				tempBuildingModel->SetModel(Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
+				tempBuildingModel->SetModel(Game::get()->getCache()->GetResource<Model>("Models/" + dbLevel->model));
 				tempBuildingNode->SetEnabled(true);
 			}
-			if (ifPosible) {
+			if (env->validateStatic(dbBuilding->size, hitPos)) {//TODO OPTM nie ustawiac jesli sie nie zmienilo
 				tempBuildingModel->
-					SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green_alpha.xml"));
+					SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/green_alpha.xml"));
 			} else {
 				tempBuildingModel->
-					SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/dark_red_alpha.xml"));
+					SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/dark_red_alpha.xml"));
 			}
 
 		}
