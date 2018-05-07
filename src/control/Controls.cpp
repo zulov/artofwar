@@ -250,7 +250,6 @@ void Controls::orderPhysical(short id, ActionParameter& parameter) {
 		break;
 		}
 	}
-
 }
 
 void Controls::startSelectionNode(hit_data hitData) {
@@ -442,6 +441,7 @@ void Controls::toDefault() {
 	state = DEFAULT;
 	cleanMouse();
 	idToCreate = -1;
+	tempBuildingNode->SetEnabled(false);
 }
 
 void Controls::defaultControl() {
@@ -478,22 +478,32 @@ void Controls::buildControl() {
 		hit_data hitData;
 
 		if (raycast(hitData)) {
+			auto env = Game::get()->getEnviroment();
 
 			auto dbBuilding = Game::get()->getDatabaseCache()->getBuilding(idToCreate);
 			auto dbLevel = Game::get()->getDatabaseCache()->getBuildingLevel(dbBuilding->id, 0).value();
 			Vector2 post3 = Vector2(hitData.position.x_, hitData.position.z_);
-			IntVector2 bucketCords = Game::get()->getEnviroment()->getBucketCords(dbBuilding->size,post3 );
-			Vector2 pos = Game::get()->getEnviroment()->getValidPosition(dbBuilding->size, post3);
-			Vector3 pos2 = Vector3(pos.x_, 10, pos.y_);
+			bool ifPosible = env->validateStatic(dbBuilding->size, post3);
+
+			Vector2 pos = env->getValidPosition(dbBuilding->size, post3);
+			float y = env->getGroundHeightAt(pos.x_, pos.y_);
+
+			Vector3 pos2 = Vector3(pos.x_, y, pos.y_);
 			tempBuildingNode->SetPosition(pos2);
 			if (!tempBuildingNode->IsEnabled()) {
 				tempBuildingNode->SetScale(dbLevel->scale);
 
 				tempBuildingModel->SetModel(Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
-				tempBuildingModel->
-					SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture));
 				tempBuildingNode->SetEnabled(true);
 			}
+			if (ifPosible) {
+				tempBuildingModel->
+					SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/green_alpha.xml"));
+			} else {
+				tempBuildingModel->
+					SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/dark_red_alpha.xml"));
+			}
+
 		}
 	}
 
