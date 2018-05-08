@@ -1,17 +1,17 @@
 #include "MiniMapPanel.h"
 #include "Game.h"
-#include "hud/MySprite.h"
-#include <Urho3D/Graphics/Texture2D.h>
-#include "simulation/env/Enviroment.h"
-#include "simulation/env/ContentInfo.h"
-#include "hud/UiUtils.h"
-#include <Urho3D/Resource/ResourceCache.h>
-#include "database/DatabaseCache.h"
-#include <Urho3D/UI/CheckBox.h>
-#include "player/PlayersManager.h"
-#include <Urho3D/UI/UIEvents.h>
 #include "GameState.h"
 #include "camera/CameraManager.h"
+#include "database/DatabaseCache.h"
+#include "hud/MySprite.h"
+#include "hud/UiUtils.h"
+#include "player/PlayersManager.h"
+#include "simulation/env/ContentInfo.h"
+#include "simulation/env/Enviroment.h"
+#include <Urho3D/Graphics/Texture2D.h>
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/UI/CheckBox.h>
+#include <Urho3D/UI/UIEvents.h>
 
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -25,7 +25,7 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 	int size = Game::get()->getDatabaseCache()->getResourceSize();
 
 	for (int i = 0; i < size; ++i) {
-		db_resource* res = Game::get()->getDatabaseCache()->getResource(i);
+		const auto res = Game::get()->getDatabaseCache()->getResource(i);
 		if (res) {
 			resourceColors[i] = res->mini_map_color;
 		} else {

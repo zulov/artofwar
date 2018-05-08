@@ -208,6 +208,7 @@ void Controls::hudAction(HudData* hud) {
 	state = BUILD;
 	typeToCreate = ObjectType::BUILDING;
 	idToCreate = hud->getId();
+	tempBuildingNode->SetEnabled(false);
 }
 
 void Controls::order(short id, ActionParameter& parameter) {
@@ -477,7 +478,8 @@ void Controls::buildControl() {
 	if (!input->GetMouseButtonDown(MOUSEB_LEFT) && !input->GetMouseButtonDown(MOUSEB_RIGHT)) {
 		hit_data hitData;
 
-		if (raycast(hitData)) {//TODO OPTM nie robic tego co klatkê
+		if (raycast(hitData)) {
+			//TODO OPTM nie robic tego co klatkê
 			auto env = Game::get()->getEnviroment();
 
 			auto dbBuilding = Game::get()->getDatabaseCache()->getBuilding(idToCreate);
@@ -494,7 +496,8 @@ void Controls::buildControl() {
 				tempBuildingModel->SetModel(Game::get()->getCache()->GetResource<Model>("Models/" + dbLevel->model));
 				tempBuildingNode->SetEnabled(true);
 			}
-			if (env->validateStatic(dbBuilding->size, hitPos)) {//TODO OPTM nie ustawiac jesli sie nie zmienilo
+			if (env->validateStatic(dbBuilding->size, hitPos)) {
+				//TODO OPTM nie ustawiac jesli sie nie zmienilo
 				tempBuildingModel->
 					SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/green_alpha.xml"));
 			} else {
