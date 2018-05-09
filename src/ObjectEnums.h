@@ -3,7 +3,7 @@
 enum class ObjectType : char
 {
 	ENTITY = 0,
-	PHISICAL,
+	PHYSICAL,
 	UNIT,
 	BUILDING,
 	RESOURCE,

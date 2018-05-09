@@ -25,20 +25,19 @@ void AttackState::onStart(Unit* unit, ActionParameter& parameter) {
 
 void AttackState::onEnd(Unit* unit) {
 	State::onEnd(unit);
-	unit->enemyToAttack = nullptr;
+	unit->thingsToInteract.clear();
 }
 
 void AttackState::execute(Unit* unit) {
 	State::execute(unit);
-	if (unit->enemyToAttack != nullptr && unit->enemyToAttack->isAlive()) {
+	if (unit->isFirstThingAlive()) {
 		unit->velocity = Urho3D::Vector2::ZERO;
 		if (fmod(unit->currentFrameState, 1 / unit->attackSpeed) < 1) {
-			unit->enemyToAttack->absorbAttack(unit->attackCoef);
+			unit->thingsToInteract[0]->absorbAttack(unit->attackCoef);
 		}
-
 		++unit->currentFrameState;
 	} else {
-		unit->enemyToAttack = nullptr;
+		unit->thingsToInteract.clear();
 		StateManager::get()->changeState(unit, UnitStateType::STOP);
 	}
 }

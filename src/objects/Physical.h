@@ -36,13 +36,14 @@ public:
 	static std::string getColumns();
 	virtual int getLevel();
 	std::string getValues(int precision) override;
+	bool isFirstThingAlive();
 	bool hasEnemy();
 	virtual void clean();
 protected:
 	Vector3* position = nullptr;
 	String menuString = "";
 
-	Physical* enemyToAttack = nullptr;
+	std::vector<Physical*> thingsToInteract;
 
 	unsigned char team;
 	unsigned char player;

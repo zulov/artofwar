@@ -32,7 +32,7 @@ Controls::Controls(Input* _input) {
 	tempBuildingModel = tempBuildingNode->CreateComponent<StaticModel>();
 	tempBuildingNode->SetEnabled(false);
 
-	selectedType = ObjectType::PHISICAL;
+	selectedType = ObjectType::PHYSICAL;
 }
 
 
@@ -82,7 +82,7 @@ void Controls::leftClickBuild(Physical* clicked, Vector3& hitPos) {
 
 void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftPressed) {
 	switch (clicked->getType()) {
-	case ObjectType::PHISICAL:
+	case ObjectType::PHYSICAL:
 		{
 		OrderType type;
 		if (shiftPressed) {
@@ -214,7 +214,7 @@ void Controls::hudAction(HudData* hud) {
 
 void Controls::order(short id, ActionParameter& parameter) {
 	switch (selectedType) {
-	case ObjectType::PHISICAL:
+	case ObjectType::PHYSICAL:
 		orderPhysical(id, parameter);
 		break;
 	case ObjectType::UNIT:

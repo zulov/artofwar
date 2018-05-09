@@ -79,7 +79,7 @@ Entity* LevelBuilder::createLight(const Vector3& direction, const Color& color, 
 }
 
 Entity* LevelBuilder::createGround(const String& heightMap, const String& texture, float horScale, float verScale) {
-	Entity* entity = new Physical(new Vector3, ObjectType::PHISICAL);
+	Entity* entity = new Physical(new Vector3, ObjectType::PHYSICAL);
 
 	Node* node = entity->getNode();
 

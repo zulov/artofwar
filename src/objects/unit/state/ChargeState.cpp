@@ -22,6 +22,7 @@ void ChargeState::onStart(Unit* unit, ActionParameter& parameter) {
 	unit->addAim(parameter.aim);
 	//TODO aim?
 	unit->maxSpeed = unit->dbLevel->maxSpeed * 2;
+	unit->currentFrameState = 0;
 }
 
 void ChargeState::onEnd(Unit* unit) {
@@ -31,4 +32,6 @@ void ChargeState::onEnd(Unit* unit) {
 
 void ChargeState::execute(Unit* unit) {
 	State::execute(unit);
+	++unit->currentFrameState;
+	//if(unit->currentFrameState<unit->)
 }

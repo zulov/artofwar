@@ -223,7 +223,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 		selectedHudPanel->update(selectedInfo);
 		menuPanel->updateSelected(selectedInfo);
 		switch (selectedInfo->getSelectedType()) {
-		case ObjectType::PHISICAL:
+		case ObjectType::PHYSICAL:
 			menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
 			queuePanel->show(Game::get()->getQueueManager());
 			break;
@@ -242,7 +242,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 	} else {
 		switch (selectedInfo->getSelectedType()) {
 
-		case ObjectType::PHISICAL:
+		case ObjectType::PHYSICAL:
 			queuePanel->update(Game::get()->getQueueManager());
 			break;
 		case ObjectType::BUILDING:

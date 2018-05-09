@@ -171,12 +171,13 @@ void Unit::toAttack(std::vector<Unit*>* enemies) {
 }
 
 void Unit::toAttack(Physical* enemy) {
-	StateManager::get()->changeState(this, UnitStateType::ATTACK);
-	enemyToAttack = enemy;
+	
+	thingsToInteract.clear();
+	thingsToInteract.push_back(enemy);
 }
 
 void Unit::toAttack() {
-	toAttack(enemyToAttack);
+	StateManager::get()->changeState(this, UnitStateType::ATTACK);
 }
 
 void Unit::toCollect(std::vector<Physical*>* enemies) {

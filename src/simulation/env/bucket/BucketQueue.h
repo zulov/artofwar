@@ -20,7 +20,7 @@ private:
 	float min;
 	float perBucket;
 	int size;
-	int currentIndex;
+	char currentIndex;
 
 	FibHeap buckets[QUEUE_BUCKETS_SIZE];
 };

@@ -6,6 +6,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
+#include <algorithm>
 
 
 Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
@@ -153,20 +154,31 @@ std::string Physical::getValues(int precision) {
 		+ std::to_string(getLevel()) + ",";
 }
 
+bool Physical::isFirstThingAlive() {
+	return !thingsToInteract.empty()
+		&& thingsToInteract[0] != nullptr
+		&& thingsToInteract[0]->isAlive();
+}
+
 bool Physical::hasEnemy() {
-	if (enemyToAttack != nullptr && enemyToAttack->isAlive()) {
-		if ((*this->getPosition() - *enemyToAttack->getPosition()).LengthSquared() < attackRange * attackRange) {
+	if (isFirstThingAlive()) {
+		if ((*this->getPosition() - *thingsToInteract[0]->getPosition()).LengthSquared() < attackRange * attackRange) {
 			return true;
 		}
 	}
-	enemyToAttack = nullptr;
+	thingsToInteract.clear();
 	return false;
 }
 
 void Physical::clean() {
-	if (enemyToAttack != nullptr && !enemyToAttack->isAlive()) {
-		enemyToAttack = nullptr;
-	}
+	thingsToInteract.erase(
+	                       std::remove_if(
+	                                      thingsToInteract.begin(), thingsToInteract.end(),
+	                                      [](Physical* physical)
+	                                      {
+		                                      return physical == nullptr || !physical->isAlive();
+	                                      }),
+	                       thingsToInteract.end());
 }
 
 signed char Physical::getTeam() {
@@ -177,14 +189,14 @@ void Physical::absorbAttack(float attackCoef) {
 }
 
 void Physical::select() {
-	if (type == ObjectType::PHISICAL) { return; }
+	if (type == ObjectType::PHYSICAL) { return; }
 	billboardBar->enabled_ = true;
 	billboardShadow->enabled_ = true;
 	updateHealthBar();
 }
 
 void Physical::unSelect() {
-	if (type == ObjectType::PHISICAL) { return; }
+	if (type == ObjectType::PHYSICAL) { return; }
 	billboardBar->enabled_ = false;
 	billboardShadow->enabled_ = false;
 
