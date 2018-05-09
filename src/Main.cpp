@@ -20,6 +20,7 @@
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
+#include "simulation/formation/FormationManager.h"
 
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)

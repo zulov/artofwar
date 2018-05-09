@@ -3,7 +3,6 @@
 #include "GameState.h"
 #include "camera/CameraManager.h"
 #include "control/SelectedInfo.h"
-#include "database/db_strcut.h"
 #include "window/debug/DebugPanel.h"
 #include "window/in_game_menu/InGameMenuPanel.h"
 #include "window/loading/LoadingPanel.h"

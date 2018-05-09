@@ -1,9 +1,9 @@
 #include "LeftMenuInfoPanel.h"
-#include "control/SelectedInfo.h"
-#include "hud/HudData.h"
-#include "database/db_strcut.h"
 #include "Game.h"
+#include "control/SelectedInfo.h"
 #include "database/DatabaseCache.h"
+#include "database/db_strcut.h"
+#include "hud/HudData.h"
 #include "player/PlayersManager.h"
 
 

@@ -2,6 +2,17 @@
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
 
+#define BUCKET_GRID_RESOLUTION 512
+#define BUCKET_GRID_SIZE 1024
+
+#define BUCKET_GRID_RESOLUTION_BUILD 128
+#define BUCKET_GRID_RESOLUTION_ENEMY 64
+#define BUCKET_GRID_RESOLUTION_RESOURCE 128
+									
+#define BUCKET_GRID_SIZE_BUILD 1024
+#define BUCKET_GRID_SIZE_ENEMY 1024
+#define BUCKET_GRID_SIZE_RESOURCE 1024
+
 Enviroment::Enviroment(Terrain* _terrian):
 	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, false),
 	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE),

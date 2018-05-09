@@ -1,8 +1,6 @@
 #pragma once
 #include "Resources.h"
-#include "database/db_strcut.h"
 #include "objects/ActionType.h"
-#include <list>
 
 class Player
 {

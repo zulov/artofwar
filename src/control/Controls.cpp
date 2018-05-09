@@ -15,6 +15,7 @@
 #include <Urho3D/UI/UI.h>
 #include <algorithm>
 #include <queue>
+#include "simulation/formation/FormationManager.h"
 
 
 Controls::Controls(Input* _input) {

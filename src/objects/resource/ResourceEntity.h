@@ -1,7 +1,7 @@
 #pragma once
-#include "database/db_strcut.h"
-#include "objects/Entity.h"
 #include "objects/Static.h"
+
+struct db_resource;
 
 class ResourceEntity :
 	public Static

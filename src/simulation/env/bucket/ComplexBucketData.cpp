@@ -8,9 +8,7 @@
 #include <iostream>
 
 
-ComplexBucketData::ComplexBucketData() {
-	box = nullptr;
-	model = nullptr;
+ComplexBucketData::ComplexBucketData(): box(nullptr) {
 	removeStatic();
 	neighbours.reserve(8);
 }
@@ -26,6 +24,7 @@ void ComplexBucketData::setStatic(Static* _object) {
 	type = object->getType();
 
 	if (box) {
+		Urho3D::StaticModel* model = box->GetComponent<StaticModel>();
 		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red_alpha.xml"));
 	}
 	if (_object->getType() == ObjectType::BUILDING) {
@@ -39,6 +38,7 @@ void ComplexBucketData::removeStatic() {
 	object = nullptr;
 	type = ObjectType::UNIT;
 	if (box) {
+		Urho3D::StaticModel* model = box->GetComponent<StaticModel>();
 		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue_alpha.xml"));
 	}
 	additonalInfo = -1;
@@ -50,7 +50,7 @@ void ComplexBucketData::createBox(float bucketSize) {
 	box->SetPosition(Vector3(center.x_, 8, center.y_));
 	box->Scale(Vector3(bucketSize * 0.8, 1, bucketSize * 0.8));
 	box->Translate(Vector3::UP * 10, TS_PARENT);
-	model = box->CreateComponent<StaticModel>();
+	Urho3D::StaticModel* model = box->CreateComponent<StaticModel>();
 	model->SetModel(Game::get()->getCache()->GetResource<Model>("Models/plane.mdl"));
 	model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue_alpha.xml"));
 	box->SetEnabled(true);

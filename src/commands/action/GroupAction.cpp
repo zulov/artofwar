@@ -1,6 +1,7 @@
 #include "GroupAction.h"
 #include "Game.h"
 #include "simulation/env/Enviroment.h"
+#include "simulation/formation/FormationManager.h"
 
 GroupAction::GroupAction(std::vector<Physical*>* entities, OrderType action, Vector2* parameter, bool append)
 	: ActionCommand(action, nullptr, parameter, append) {

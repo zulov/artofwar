@@ -2,7 +2,6 @@
 #include "Game.h"
 #include "ObjectEnums.h"
 #include "database/DatabaseCache.h"
-#include "database/db_strcut.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include <Urho3D/Graphics/Material.h>

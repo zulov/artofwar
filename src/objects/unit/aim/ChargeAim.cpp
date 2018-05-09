@@ -8,7 +8,7 @@ ChargeAim::ChargeAim(Urho3D::Vector2* _direction): direction(*_direction), charg
 
 ChargeAim::~ChargeAim() = default;
 
-Vector2 ChargeAim::getDirection(Unit* unit) {
+Urho3D::Vector2 ChargeAim::getDirection(Unit* unit) {
 	return direction;
 }
 

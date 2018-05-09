@@ -33,7 +33,7 @@ private:
 	ObjectType type;
 	Urho3D::Vector2 center;
 	Urho3D::Node* box;
-	Urho3D::StaticModel* model;
+	
 	Static* object{};
 	char additonalInfo{};
 	std::vector<std::pair<int, float>> neighbours;

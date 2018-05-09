@@ -8,7 +8,6 @@
 
 
 CameraManager::CameraManager() {
-
 	cameraBehaves.push_back(new FreeCameraBehave());
 	cameraBehaves.push_back(new RtsCameraBehave());
 	cameraBehaves.push_back(new TopCameraBehave());

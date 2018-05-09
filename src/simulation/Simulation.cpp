@@ -5,6 +5,7 @@
 #include "commands/upgrade/UpgradeCommand.h"
 #include "player/PlayersManager.h"
 #include "scene/load/SceneLoader.h"
+#include "simulation/formation/FormationManager.h"
 #include <ctime>
 
 

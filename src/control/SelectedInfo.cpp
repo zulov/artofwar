@@ -62,7 +62,7 @@ void SelectedInfo::select(Physical* entity) {
 	changed = true;
 }
 
-int SelectedInfo::getSelectedSubTypeNumber() {
+char SelectedInfo::getSelectedSubTypeNumber() {
 	return allSubTypeNumber;
 }
 

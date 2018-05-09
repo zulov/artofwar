@@ -1,5 +1,4 @@
 #pragma once
-#include "simulation/formation/FormationManager.h"
 #include <Urho3D/Container/Ptr.h>
 #include <Urho3D/Engine/Engine.h>
 #include <Urho3D/Resource/Localization.h>
@@ -15,7 +14,6 @@ namespace Urho3D {
 }
 
 class CommandList;
-
 class CreationCommandList;
 class Enviroment;
 class DatabaseCache;
@@ -23,6 +21,7 @@ class CameraManager;
 class PlayersManager;
 class QueueManager;
 class ColorPeletteRepo;
+class FormationManager;
 
 class Game
 {
@@ -31,14 +30,14 @@ public:
 	static void init();
 	static void dispose();
 	~Game();
-	Game* setCache(ResourceCache* _cache);
-	Game* setContext(Context* _context);
-	Game* setUI(UI* _ui);
-	Game* setGraphics(Graphics* _graphics);
-	Game* setScene(const SharedPtr<Scene>& scene);
-	Game* setEngine(const SharedPtr<Engine>& _engine);
-	Game* setConsole(Console* _console);
-	Game* setLocalization(Localization* _localization);
+	Game* setCache(Urho3D::ResourceCache* _cache);
+	Game* setContext(Urho3D::Context* _context);
+	Game* setUI(Urho3D::UI* _ui);
+	Game* setGraphics(Urho3D::Graphics* _graphics);
+	Game* setScene(const Urho3D::SharedPtr<Urho3D::Scene>& scene);
+	Game* setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine);
+	Game* setConsole(Urho3D::Console* _console);
+	Game* setLocalization(Urho3D::Localization* _localization);
 	Game* setCameraManager(CameraManager* cameraManager);
 	Game* setActionCommmandList(CommandList* _actionCommmandList);
 	Game* setCreationCommandList(CreationCommandList* _simCommandList);
@@ -50,14 +49,14 @@ public:
 	Game* setColorPeletteRepo(ColorPeletteRepo* _colorPeletteRepo);
 
 
-	ResourceCache* getCache() const;
-	SharedPtr<Scene> getScene() const;
-	Context* getContext() const;
-	UI* getUI() const;
-	Graphics* getGraphics() const;
-	SharedPtr<Engine> getEngine() const;
-	Console* getConsole() const;
-	Localization* getLocalization() const;
+	Urho3D::ResourceCache* getCache() const;
+	Urho3D::SharedPtr<Urho3D::Scene> getScene() const;
+	Urho3D::Context* getContext() const;
+	Urho3D::UI* getUI() const;
+	Urho3D::Graphics* getGraphics() const;
+	Urho3D::SharedPtr<Urho3D::Engine> getEngine() const;
+	Urho3D::Console* getConsole() const;
+	Urho3D::Localization* getLocalization() const;
 
 	QueueManager* getQueueManager() const;
 	CameraManager* getCameraManager() const;
@@ -73,14 +72,14 @@ private:
 	Game();
 	static Game* instance;
 
-	ResourceCache* cache;
-	SharedPtr<Scene> scene;
-	Context* context;
-	UI* ui;
-	Graphics* graphics;
-	SharedPtr<Engine> engine;
-	Console* console;
-	Localization* localization;
+	Urho3D::ResourceCache* cache;
+	Urho3D::SharedPtr<Urho3D::Scene> scene;
+	Urho3D::Context* context;
+	Urho3D::UI* ui;
+	Urho3D::Graphics* graphics;
+	Urho3D::SharedPtr<Urho3D::Engine> engine;
+	Urho3D::Console* console;
+	Urho3D::Localization* localization;
 
 	CameraManager* cameraManager;
 	CommandList* actionCommandList;

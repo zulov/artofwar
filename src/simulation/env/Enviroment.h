@@ -1,16 +1,16 @@
 #pragma once
 
-#include <vector>
-#include "simulation/env/bucket/Grid.h"
-#include "objects/building/Building.h"
-#include "defines.h"
+#include "ContentInfo.h"
 #include "OperatorType.h"
+#include "bucket/MainGrid.h"
+#include "defines.h"
+#include "objects/Physical.h"
+#include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
-#include "objects/Physical.h"
-#include "bucket/MainGrid.h"
+#include "simulation/env/bucket/Grid.h"
 #include <Urho3D/Graphics/Terrain.h>
-#include "ContentInfo.h"
+#include <vector>
 
 
 class Enviroment
