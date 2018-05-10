@@ -2,8 +2,8 @@
 #include <Urho3D/Math/Vector2.h>
 #include <iostream>
 
-#define FORCE_STATS_SIZE 10000
-#define FORCE_STATS_ENABLE false
+#define FORCE_STATS_SIZE 1000
+#define FORCE_STATS_ENABLE true
 
 struct ForceStats
 {
@@ -53,8 +53,8 @@ struct ForceStats
 				stats[4] = escaStat / FORCE_STATS_SIZE;
 				statIndex = 0;
 				std::cout <<
-					stats[0] << "\t" << stats[1] << "\t" <<
-					stats[2] << "\t" << stats[3] << "\t" <<
+					"sepObs-" << stats[0] << "\tsepUnit-" << stats[1] << "\tdestStat-" <<
+					stats[2] << "\tformStat-" << stats[3] << "\tescaStat-" <<
 					stats[4] << std::endl;
 				reset();
 			}

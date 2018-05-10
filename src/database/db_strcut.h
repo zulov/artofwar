@@ -26,12 +26,12 @@
 
 struct db_unit
 {
-	int id;
-	Urho3D::String name;
-	bool rotatable;
-	int nation;
-	Urho3D::String icon;
-	int actionState;
+	const int id;
+	const Urho3D::String name;
+	const bool rotatable;
+	const int nation;
+	const Urho3D::String icon;
+	const int actionState;
 
 	db_unit(int id, char* name, int rotatable, int nation, char* icon, int actionState)
 		: id(id),
@@ -45,29 +45,30 @@ struct db_unit
 
 struct db_unit_level
 {
-	int level;
-	int unit;
-	Urho3D::String name;
-	float minDist;
-	float maxSep;
-	Urho3D::String model;
-	Urho3D::String texture;
-	float mass;
-	float scale;
-	float attack;
-	int attackSpeed;
-	float attackRange;
-	float defense;
-	int maxHp;
-	float maxSpeed;
-	float minSpeed;
-	float collectSpeed;
-	float upgradeSpeed;
+	const int level;
+	const int unit;
+	const Urho3D::String name;
+	const float minDist;
+	const float maxSep;
+	const Urho3D::String model;
+	const Urho3D::String texture;
+	const float mass;
+	const float scale;
+	const float attack;
+	const int attackSpeed;
+	const float attackRange;
+	const float defense;
+	const int maxHp;
+	const float maxSpeed;
+	const float minSpeed;
+	const float collectSpeed;
+	const float upgradeSpeed;
+	const float maxForce;
 
 
 	db_unit_level(int level, int unit, char* name, float minDist, float maxSep, char* model, char* texture,
 	              float mass, float scale, float attack, int attackSpeed, float attackRange, float defense,
-	              int maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed)
+	              int maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed, float maxForce)
 		: level(level),
 		unit(unit),
 		name(name),
@@ -85,14 +86,15 @@ struct db_unit_level
 		maxSpeed(maxSpeed),
 		minSpeed(minSpeed),
 		collectSpeed(collectSpeed),
-		upgradeSpeed(upgradeSpeed) {
+		upgradeSpeed(upgradeSpeed),
+		maxForce(maxForce) {
 	}
 };
 
 struct db_unit_to_upgrade
 {
-	int upgrade;
-	int unit;
+	const int upgrade;
+	const int unit;
 
 	db_unit_to_upgrade(int upgrade, int unit)
 		: upgrade(upgrade),
@@ -102,20 +104,19 @@ struct db_unit_to_upgrade
 
 struct db_unit_upgrade
 {
-	int id;
-	int path;
-	int level;
-	Urho3D::String name;
-	float attack;
-	float attackSpeed;
-	float attackRange;
-	float defense;
-	float maxHp;
-	float maxSpeed;
-	float minSpeed;
-	float collectSpeed;
-	float upgradeSpeed;
-
+	const int id;
+	const int path;
+	const int level;
+	const Urho3D::String name;
+	const float attack;
+	const float attackSpeed;
+	const float attackRange;
+	const float defense;
+	const float maxHp;
+	const float maxSpeed;
+	const float minSpeed;
+	const float collectSpeed;
+	const float upgradeSpeed;
 	Urho3D::String pathName;
 	std::vector<db_unit*> units;
 
@@ -139,11 +140,11 @@ struct db_unit_upgrade
 
 struct db_building
 {
-	int id;
-	Urho3D::String name;
-	Urho3D::IntVector2 size;
-	int nation;
-	Urho3D::String icon;
+	const int id;
+	const Urho3D::String name;
+	const Urho3D::IntVector2 size;
+	const int nation;
+	const Urho3D::String icon;
 
 	std::vector<int> unitUpgradePath;
 
@@ -158,13 +159,13 @@ struct db_building
 
 struct db_building_level
 {
-	int level;
-	int unit;
-	Urho3D::String name;
-	Urho3D::String model;
-	Urho3D::String texture;
-	float scale;
-	short queueMaxCapacity;
+	const int level;
+	const int unit;
+	const Urho3D::String name;
+	const Urho3D::String model;
+	const Urho3D::String texture;
+	const float scale;
+	const short queueMaxCapacity;
 
 
 	db_building_level(int level, int unit, char* name, char* model, char* texture, float scale,
@@ -181,8 +182,8 @@ struct db_building_level
 
 struct db_hud_size
 {
-	int id;
-	Urho3D::String name;
+	const int id;
+	const Urho3D::String name;
 
 	db_hud_size(int id, char* name)
 		: id(id),
@@ -203,9 +204,9 @@ struct db_settings
 
 struct db_resolution
 {
-	int id;
-	int x;
-	int y;
+	const int id;
+	const int x;
+	const int y;
 
 	db_resolution(int id, int x, int y)
 		: id(id),
@@ -244,8 +245,8 @@ struct db_graph_settings
 
 struct db_nation
 {
-	int id;
-	Urho3D::String name;
+	const int id;
+	const Urho3D::String name;
 
 	db_nation(int id, char* name)
 		: id(id),
@@ -255,16 +256,16 @@ struct db_nation
 
 struct db_resource
 {
-	int id;
-	Urho3D::String name;
-	Urho3D::String icon;
-	int maxCapacity;
-	Urho3D::Vector<Urho3D::String> texture;
-	Urho3D::String model;
-	float scale;
-	Urho3D::IntVector2 size;
-	int maxUsers;
-	unsigned mini_map_color;
+	const int id;
+	const Urho3D::String name;
+	const Urho3D::String icon;
+	const int maxCapacity;
+	const Urho3D::Vector<Urho3D::String> texture;
+	const Urho3D::String model;
+	const float scale;
+	const Urho3D::IntVector2 size;
+	const int maxUsers;
+	const unsigned mini_map_color;
 
 	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, float scale, int sizeX,
 	            int sizeZ, int maxUsers, unsigned mini_map_color)
@@ -283,9 +284,9 @@ struct db_resource
 
 struct db_hud_vars
 {
-	int id;
-	int hud_size;
-	Urho3D::String name;
+	const int id;
+	const int hud_size;
+	const Urho3D::String name;
 	float value;
 
 	db_hud_vars(int id, int hudSize, char* name, float value)
@@ -298,11 +299,11 @@ struct db_hud_vars
 
 struct db_cost
 {
-	int id;
-	int resource;
-	int value;
-	Urho3D::String resourceName;
-	int thing;
+	const int id;
+	const int resource;
+	const int value;
+	const Urho3D::String resourceName;
+	const int thing;
 
 	db_cost(int id, int resource, int value, Urho3D::String resourceName, int thing)
 		: id(id),
@@ -315,9 +316,9 @@ struct db_cost
 
 struct db_order
 {
-	int id;
-	Urho3D::String icon;
-	Urho3D::String name;
+	const int id;
+	const Urho3D::String icon;
+	const Urho3D::String name;
 
 	db_order(int id, char* icon, char* name)
 		: id(id),
@@ -328,12 +329,12 @@ struct db_order
 
 struct db_map
 {
-	int id;
-	Urho3D::String height_map;
-	Urho3D::String texture;
-	float scale_hor;
-	float scale_ver;
-	Urho3D::String name;
+	const int id;
+	const Urho3D::String height_map;
+	const Urho3D::String texture;
+	const float scale_hor;
+	const float scale_ver;
+	const Urho3D::String name;
 
 	db_map(int id, char* heightMap, char* texture, float scaleHor, float scaleVer, char* name)
 		: id(id),
@@ -347,10 +348,10 @@ struct db_map
 
 struct db_player_colors
 {
-	int id;
-	unsigned unit;
-	unsigned building;
-	Urho3D::String name;
+	const int id;
+	const unsigned unit;
+	const unsigned building;
+	const Urho3D::String name;
 
 	db_player_colors(int id, unsigned unit, unsigned building, char* name)
 		: id(id),

@@ -205,8 +205,7 @@ int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 	                                                       atof(argv[4]), argv[5], argv[6], atof(argv[7]), atof(argv[8]),
 	                                                       atof(argv[9]), atoi(argv[10]), atof(argv[11]), atof(argv[12]),
 	                                                       atoi(argv[13]), atof(argv[14]), atof(argv[15]), atof(argv[16]),
-	                                                       atof(argv[17])
-	                                                      )
+	                                                       atof(argv[17]), atof(argv[18]))
 	                                    );
 
 	return 0;

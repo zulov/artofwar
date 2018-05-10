@@ -2,6 +2,7 @@
 
 #include "ColorMode.h"
 #include "aim/Aims.h"
+#include "database/db_strcut.h"
 #include "objects/Physical.h"
 #include "objects/resource/ResourceEntity.h"
 #include "scene/load/dbload_container.h"

@@ -117,7 +117,7 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 
 }
 
-Urho3D::String LeftMenuInfoPanel::stringFrom(String& name, std::vector<db_cost*>* costs) {
+Urho3D::String LeftMenuInfoPanel::stringFrom(const String& name, std::vector<db_cost*>* costs) {
 	String msg = name + "\n";
 	for (db_cost* cost : *costs) {
 		msg += cost->resourceName + " - " + String(cost->value) + "\n";

@@ -10,7 +10,7 @@
 #include <Urho3D/Graphics/Model.h><Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h><Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h><Urho3D/Resource/ResourceCache.h>
-#include <string><string>
+#include <string>
 #include "simulation/formation/FormationManager.h"
 
 
@@ -86,9 +86,9 @@ void Unit::move(double timeStep) {
 
 void Unit::setAcceleration(Vector2& _acceleration) {
 	acceleration = _acceleration;
-	if (_acceleration.LengthSquared() > MAX_ACCEL * MAX_ACCEL) {
+	if (acceleration.LengthSquared() > dbLevel->maxForce * dbLevel->maxForce) {
 		acceleration.Normalize();
-		acceleration *= MAX_ACCEL;
+		acceleration *= dbLevel->maxForce;
 	}
 }
 
