@@ -31,7 +31,7 @@ void Physical::createBillboardBar() {
 
 	billboardSetBar = barNode->CreateComponent<BillboardSet>();
 	billboardSetBar->SetNumBillboards(1);
-	billboardSetBar->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red.xml"));
+	billboardSetBar->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red_overlay.xml"));
 	billboardSetBar->SetSorted(true);
 
 	billboardBar = billboardSetBar->GetBillboard(0);
@@ -59,7 +59,6 @@ void Physical::createBillboardShadow() {
 }
 
 void Physical::updateBillboardShadow(Vector3& boundingBox) {
-	billboardShadow->position_ = Vector3(0, 0, -0.3 / node->GetScale().x_);
 	float boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.3f;
 	billboardShadow->size_ = Vector2(boudingSize, boudingSize);
 	billboardShadow->enabled_ = false;

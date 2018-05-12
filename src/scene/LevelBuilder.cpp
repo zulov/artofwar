@@ -9,6 +9,7 @@
 #include <Urho3D/Graphics/Terrain.h>
 #include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/Graphics/Technique.h>
 
 
 LevelBuilder::LevelBuilder() {
@@ -89,7 +90,16 @@ Entity* LevelBuilder::createGround(const String& heightMap, const String& textur
 	terrain->SetSmoothing(false);
 	terrain->SetOccluder(true);
 	terrain->SetHeightMap(Game::get()->getCache()->GetResource<Image>(heightMap));
-	terrain->SetMaterial(Game::get()->getCache()->GetResource<Material>(texture));
-
+	auto mat = Game::get()->getCache()->GetResource<Material>(texture)->Clone();
+	mat->SetRenderOrder(100); // Lower render order to render first
+	auto tecs = mat->GetTechniques();
+	for (size_t i = 0; i < tecs.Size(); ++i) {
+		auto tec = mat->GetTechnique(i)->Clone();
+		auto passes = tec->GetPasses();
+		for (auto pass : passes)
+			pass->SetDepthWrite(false);
+		mat->SetTechnique(i, tec);
+	}
+	terrain->SetMaterial(mat);
 	return entity;
 }
