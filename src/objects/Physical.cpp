@@ -101,10 +101,6 @@ float Physical::getHealthBarSize() {
 	return healthBarSize;
 }
 
-int Physical::getBucketIndex(char param) {
-	return bucketIndexShift[param];
-}
-
 bool Physical::bucketHasChanged(int _bucketIndex, char param) {
 	if (bucketIndexShift[param] == _bucketIndex) {
 		return false;
@@ -122,10 +118,6 @@ void Physical::setTeam(unsigned char _team) {
 
 void Physical::setPlayer(unsigned char player) {
 	this->player = player;
-}
-
-unsigned char Physical::getPlayer() {
-	return player;
 }
 
 String& Physical::toMultiLineString() {
@@ -179,10 +171,6 @@ void Physical::clean() {
 		                                      return physical == nullptr || !physical->isAlive();
 	                                      }),
 	                       thingsToInteract.end());
-}
-
-signed char Physical::getTeam() {
-	return team;
 }
 
 void Physical::absorbAttack(float attackCoef) {

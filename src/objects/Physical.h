@@ -17,10 +17,10 @@ public:
 	virtual float getMaxHpBarSize();
 	virtual float getHealthPercent();
 	float getHealthBarSize();
-	int getBucketIndex(char param);
+	int getBucketIndex(char param) const { return bucketIndexShift[param]; }
 	bool bucketHasChanged(int _bucketIndex, char param);
 	void setBucket(int _bucketIndex, char param);
-	signed char getTeam();
+	signed char getTeam() const { return team; }
 	virtual void absorbAttack(float attackCoef);
 	virtual void select();
 	virtual void unSelect();
@@ -30,7 +30,7 @@ public:
 
 	void setTeam(unsigned char _team);
 	void setPlayer(unsigned char player);
-	unsigned char getPlayer();
+	unsigned char getPlayer() const { return player; }
 	virtual String& toMultiLineString();
 	virtual void action(char id, ActionParameter& parameter);
 	static std::string getColumns();
