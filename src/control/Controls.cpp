@@ -25,8 +25,8 @@ Controls::Controls(Input* _input) {
 	input = _input;
 	selectedInfo = new SelectedInfo();
 
-	createNode("Models/box.mdl", "Materials/green_alpha.xml", &selectionNode);
-	createNode("Models/arrow2.mdl", "Materials/dark_red_alpha.xml", &arrowNode);
+	createNode("Models/box.mdl", "Materials/green_overlay.xml", &selectionNode);
+	createNode("Models/arrow2.mdl", "Materials/red_overlay.xml", &arrowNode);
 
 	tempBuildingNode = Game::get()->getScene()->CreateChild();
 	tempBuildingModel = tempBuildingNode->CreateComponent<StaticModel>();
@@ -257,19 +257,15 @@ void Controls::orderPhysical(short id, ActionParameter& parameter) {
 void Controls::startSelectionNode(hit_data hitData) {
 	selectionNode->SetEnabled(true);
 	selectionNode->SetScale(1);
-	int y = selectionNode->GetPosition().y_;
-	Vector3 newPos = hitData.position;
-	newPos.y_ = y;
-	selectionNode->SetPosition(newPos);
+
+	selectionNode->SetPosition(hitData.position);
 }
 
 void Controls::startArrowNode(const hit_data& hitData) {
 	arrowNode->SetEnabled(true);
 	arrowNode->SetScale(1);
-	int y = arrowNode->GetPosition().y_;
-	Vector3 newPos = hitData.position;
-	newPos.y_ = y;
-	arrowNode->SetPosition(newPos);
+
+	arrowNode->SetPosition(hitData.position);
 }
 
 bool Controls::clickDown(MouseButton& var, hit_data hitData) {
@@ -417,9 +413,9 @@ void Controls::updateSelection() {
 		float xScale = left.held.first->x_ - hitData.position.x_;
 		float zScale = left.held.first->z_ - hitData.position.z_;
 
-		selectionNode->SetScale(Vector3(abs(xScale), 0.5, abs(zScale)));
+		selectionNode->SetScale(Vector3(abs(xScale), 0.1, abs(zScale)));
 		Vector3 center = (*left.held.first + hitData.position) / 2;
-		center.y_ += 1;
+
 		selectionNode->SetPosition(center);
 	}
 }
@@ -434,7 +430,7 @@ void Controls::updateArrow() {
 		float length = dir.Length();
 		arrowNode->SetScale(Vector3(length, 1, length / 3));
 		arrowNode->SetDirection(Vector3(-dir.z_, 0, dir.x_));
-		pos.y_ += 1;
+
 		arrowNode->SetPosition(pos);
 	}
 }
