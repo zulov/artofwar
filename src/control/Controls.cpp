@@ -479,7 +479,7 @@ void Controls::buildControl() {
 	if (!input->GetMouseButtonDown(MOUSEB_LEFT) && !input->GetMouseButtonDown(MOUSEB_RIGHT)) {
 		hit_data hitData;
 
-		if (raycast(hitData)) {
+		if (raycast(hitData, ObjectType::PHYSICAL)) {
 			//TODO OPTM nie robic tego co klatkê
 			auto env = Game::get()->getEnviroment();
 
@@ -500,10 +500,10 @@ void Controls::buildControl() {
 			if (env->validateStatic(dbBuilding->size, hitPos)) {
 				//TODO OPTM nie ustawiac jesli sie nie zmienilo
 				tempBuildingModel->
-					SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/green_alpha.xml"));
+					SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/green_overlay.xml"));
 			} else {
 				tempBuildingModel->
-					SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/dark_red_alpha.xml"));
+					SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red_overlay.xml"));
 			}
 
 		}
