@@ -64,7 +64,7 @@ public:
 	String& toMultiLineString() override;
 	void action(char id, ActionParameter& parameter) override;
 
-	UnitStateType getState() { return state; }
+	UnitStateType getState() const { return state; }
 	UnitStateType getActionState();
 	void clean() override;
 	void setState(UnitStateType _state);
@@ -72,14 +72,14 @@ public:
 	void executeState();
 	bool hasResource();
 	void load(dbload_unit* unit);
-	bool isToDispose();
+	bool isToDispose() const { return state == UnitStateType::DISPOSE && atState; }
 
-	short getFormation();
-	short getPositionInFormation();
+	short getFormation() const { return formation; }
+	short getPositionInFormation() const { return posInFormation; }
 	void setFormation(short _formation);
 	void resetFormation();
 	void setPositionInFormation(short _pos);
-	bool hasAim();
+	bool hasAim() { return aims.hasAim(); }
 	void clearAims();
 
 	static std::string getColumns();

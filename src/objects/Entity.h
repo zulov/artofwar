@@ -11,9 +11,9 @@ public:
 	Entity(ObjectType _type);
 	virtual ~Entity();
 
-	Urho3D::Node* getNode();
 	virtual bool isAlive() const;
-	ObjectType getType();
+	Urho3D::Node* getNode() const { return node; }
+	ObjectType getType() const { return type; }
 	virtual int getDbID();
 	virtual std::string getValues(int precision);
 	static std::string getColumns();
@@ -21,5 +21,4 @@ public:
 protected:
 	Urho3D::Node* node;
 	ObjectType type;
-
 };

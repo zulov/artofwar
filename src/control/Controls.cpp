@@ -409,29 +409,25 @@ void Controls::clean(SimulationInfo* simulationInfo) {
 void Controls::updateSelection() {
 	hit_data hitData;
 
-	if (raycast(hitData)) {
-		float xScale = left.held.first->x_ - hitData.position.x_;
-		float zScale = left.held.first->z_ - hitData.position.z_;
+	if (raycast(hitData, ObjectType::PHYSICAL)) {
+		const float xScale = left.held.first->x_ - hitData.position.x_;
+		const float zScale = left.held.first->z_ - hitData.position.z_;
 
 		selectionNode->SetScale(Vector3(abs(xScale), 0.1, abs(zScale)));
-		Vector3 center = (*left.held.first + hitData.position) / 2;
-
-		selectionNode->SetPosition(center);
+		selectionNode->SetPosition((*left.held.first + hitData.position) / 2);
 	}
 }
 
 void Controls::updateArrow() {
 	hit_data hitData;
 
-	if (raycast(hitData)) {
+	if (raycast(hitData, ObjectType::PHYSICAL)) {
 		Vector3 dir = *right.held.first - hitData.position;
 
-		Vector3 pos = *right.held.first;
-		float length = dir.Length();
+		const float length = dir.Length();
 		arrowNode->SetScale(Vector3(length, 1, length / 3));
 		arrowNode->SetDirection(Vector3(-dir.z_, 0, dir.x_));
-
-		arrowNode->SetPosition(pos);
+		arrowNode->SetPosition(*right.held.first);
 	}
 }
 

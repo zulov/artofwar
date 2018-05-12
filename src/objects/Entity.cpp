@@ -13,16 +13,8 @@ Entity::~Entity() {
 	node->Remove();
 }
 
-Urho3D::Node* Entity::getNode() {
-	return node;
-}
-
 bool Entity::isAlive() const{
 	return true;
-}
-
-ObjectType Entity::getType() {
-	return type;
 }
 
 int Entity::getDbID() {

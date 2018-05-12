@@ -25,12 +25,11 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	dbUnit = Game::get()->getDatabaseCache()->getUnit(id);
 	dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
 	populate();
-	Model* model3d = Game::get()->getCache()->GetResource<Model>("Models/" + dbLevel->model);
-	basic = Game::get()->getCache()->GetResource<Material>("Materials/" + dbLevel->texture);
 
 	node->Scale(dbLevel->scale);
 	model = node->CreateComponent<StaticModel>();
-	model->SetModel(model3d);
+	model->SetModel(Game::get()->getCache()->GetResource<Model>("Models/" + dbLevel->model));
+	basic = Game::get()->getCache()->GetResource<Material>("Materials/" + dbLevel->texture);
 	model->SetMaterial(basic);
 
 	setPlayer(player);
@@ -171,7 +170,6 @@ void Unit::toAttack(std::vector<Unit*>* enemies) {
 }
 
 void Unit::toAttack(Physical* enemy) {
-	
 	thingsToInteract.clear();
 	thingsToInteract.push_back(enemy);
 }
@@ -380,24 +378,12 @@ void Unit::load(dbload_unit* unit) {
 	hpCoef = maxHpCoef * unit->hp_coef;
 }
 
-bool Unit::isToDispose() {
-	return state == UnitStateType::DISPOSE && atState;
-}
-
 int Unit::getLevel() {
 	return dbLevel->level;
 }
 
 float Unit::getMaxHpBarSize() {
 	return 0.4f;
-}
-
-short Unit::getFormation() {
-	return formation;
-}
-
-short Unit::getPositionInFormation() {
-	return posInFormation;
 }
 
 void Unit::setFormation(short _formation) {
@@ -412,11 +398,6 @@ void Unit::resetFormation() {
 void Unit::setPositionInFormation(short _pos) {
 	posInFormation = _pos;
 }
-
-bool Unit::hasAim() {
-	return aims.hasAim();
-}
-
 
 std::string Unit::getColumns() {
 	return Physical::getColumns() +
