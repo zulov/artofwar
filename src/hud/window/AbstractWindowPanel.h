@@ -15,10 +15,11 @@ URHO3D_OBJECT(AbstractWindowPanel, Object)
 
 	AbstractWindowPanel(Urho3D::XMLFile* _style);
 	virtual ~AbstractWindowPanel();
-	Urho3D::String& getStyleName();
 	Urho3D::Window* createWindow();
-	virtual void setVisible(bool enable);
 	void updateStateVisibilty(GameState state);
+
+	Urho3D::String& getStyleName() { return styleName; }
+	virtual void setVisible(bool enable) { window->SetVisible(enable); }
 protected:
 	Urho3D::XMLFile* style;
 	Urho3D::Window* window;

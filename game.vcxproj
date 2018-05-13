@@ -268,7 +268,6 @@
     <ClCompile Include="src\objects\Entity.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\scene\LevelBuilder.cpp" />
-    <ClCompile Include="src\objects\LinkComponent.cpp" />
     <ClCompile Include="src\scene\SceneObjectManager.cpp" />
     <ClCompile Include="src\commands\creation\CreationCommandList.cpp" />
     <ClCompile Include="src\simulation\env\bucket\ComplexBucketData.cpp" />

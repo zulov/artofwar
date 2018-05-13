@@ -17,10 +17,6 @@ SelectedInfo::~SelectedInfo() {
 	clear_vector(selectedByType);
 }
 
-bool SelectedInfo::hasChanged() {
-	return changed;
-}
-
 void SelectedInfo::setAllNumber(int allNumber) {
 	this->allNumber = allNumber;
 	changed = true;
@@ -31,14 +27,6 @@ void SelectedInfo::setSelectedType(ObjectType selectedType) {
 	changed = true;
 }
 
-ObjectType SelectedInfo::getSelectedType() {
-	return selectedType;
-}
-
-int SelectedInfo::getAllNumber() {
-	return allNumber;
-}
-
 void SelectedInfo::reset() {
 	changed = true;
 	allNumber = 0;
@@ -46,10 +34,6 @@ void SelectedInfo::reset() {
 	for (auto & element : selectedByType) {
 		element->clear();
 	}
-}
-
-vector<SelectedInfoType*>& SelectedInfo::getSelectedTypes() {
-	return selectedByType;
 }
 
 void SelectedInfo::select(Physical* entity) {
@@ -62,16 +46,8 @@ void SelectedInfo::select(Physical* entity) {
 	changed = true;
 }
 
-char SelectedInfo::getSelectedSubTypeNumber() {
-	return allSubTypeNumber;
-}
-
 void SelectedInfo::hasBeedUpdatedDrawn() {
 	changed = false;
-}
-
-String& SelectedInfo::getMessage() {
-	return message;
 }
 
 void SelectedInfo::setMessage(String& s) {

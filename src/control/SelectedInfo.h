@@ -11,18 +11,19 @@ class SelectedInfo
 public:
 	SelectedInfo();
 	~SelectedInfo();
-	bool hasChanged();
 	void setAllNumber(int allNumber);
 	void setSelectedType(ObjectType selectedType);
-	ObjectType getSelectedType();
-	int getAllNumber();
 	void reset();
-	std::vector<SelectedInfoType*>& getSelectedTypes();
 	void select(Physical* entity);
-	char getSelectedSubTypeNumber();
 	void hasBeedUpdatedDrawn();
-	String& getMessage();
 	void setMessage(String& s);
+
+	std::vector<SelectedInfoType*>& getSelectedTypes() { return selectedByType; }
+	ObjectType getSelectedType() const {return selectedType;}
+	String& getMessage() { return message; }
+	char getSelectedSubTypeNumber() const { return allSubTypeNumber; }
+	int getAllNumber() const { return allNumber; }
+	bool hasChanged() const { return changed; }
 private:
 	bool changed = true;
 	int allNumber;

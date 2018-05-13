@@ -61,9 +61,8 @@ void MainGrid::prepareGridToFind() {
 
 
 bool MainGrid::validateAdd(Static* object) {
-	IntVector2 size = object->getGridSize();
 	Vector3* pos = object->getPosition();
-	return validateAdd(size, Vector2(pos->x_, pos->z_));
+	return validateAdd(object->getGridSize(), Vector2(pos->x_, pos->z_));
 }
 
 bool MainGrid::validateAdd(const IntVector2& size, Vector2& pos) {
@@ -86,15 +85,15 @@ bool MainGrid::validateAdd(const IntVector2& size, Vector2& pos) {
 }
 
 content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to, bool checks[], int activePlayer) {
-	const short posBeginX = getIndex(from.x_);
-	const short posBeginZ = getIndex(from.y_);
-	const short posEndX = getIndex(to.x_);
-	const short posEndZ = getIndex(to.y_);
+	const auto posBeginX = getIndex(from.x_);
+	const auto posBeginZ = getIndex(from.y_);
+	const auto posEndX = getIndex(to.x_);
+	const auto posEndZ = getIndex(to.y_);
 
-	const short iMin = Min(posBeginX, posEndX);
-	const short iMax = Max(posBeginX, posEndX);
-	const short jMin = Min(posBeginZ, posEndZ);
-	const short jMax = Max(posBeginZ, posEndZ);
+	const auto iMin = Min(posBeginX, posEndX);
+	const auto iMax = Max(posBeginX, posEndX);
+	const auto jMin = Min(posBeginZ, posEndZ);
+	const auto jMax = Max(posBeginZ, posEndZ);
 
 	ci->reset();
 
@@ -105,15 +104,6 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to, b
 		}
 	}
 	return ci;
-}
-
-Vector2& MainGrid::getCenterAt(const IntVector2& cords) {
-	const int index = getIndex(cords.x_, cords.y_);
-	return complexData[index].getCenter();
-}
-
-Vector2& MainGrid::getCenter(int index) {
-	return complexData[index].getCenter();
 }
 
 Vector2 MainGrid::repulseObstacle(Unit* unit) {
@@ -168,8 +158,8 @@ void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activeP
 }
 
 IntVector2 MainGrid::calculateSize(int size) {
-	int first = -((size - 1) / 2);
-	int second = size + first;
+	const int first = -((size - 1) / 2);
+	const int second = size + first;
 	return IntVector2(first, second);
 }
 
@@ -316,7 +306,7 @@ void MainGrid::updateNeighbors(const int current) {
 	}
 }
 
-float MainGrid::cost(const int current, const int next) {
+float MainGrid::cost(const int current, const int next) const {
 	return (complexData[current].getCenter() - complexData[next].getCenter()).Length();
 }
 
@@ -402,10 +392,6 @@ std::vector<int>* MainGrid::findPath(int startIdx, const Vector2& aim) {
 	return findPath(startIdx, end, min, min * 2);
 }
 
-bool MainGrid::ifInCache(int startIdx, int end) {
-	return lastStartIdx == startIdx && lastEndIdx == end;
-}
-
 void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 	std::unordered_set<int> refreshed;
 	while (!toRefresh.empty()) {
@@ -488,10 +474,6 @@ void MainGrid::drawMap(Image* image) {
 	}
 }
 
-IntVector2 MainGrid::getCords(const int index) {
-	return IntVector2(index / resolution, index % resolution);
-}
-
 std::vector<int>* MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
@@ -521,7 +503,7 @@ std::vector<int>* MainGrid::reconstruct_simplify_path(int start, int goal, const
 	int lastDirection = 0;
 	while (current != start) {
 
-		int currentDirection = current - came_from[current];
+		const int currentDirection = current - came_from[current];
 		if (currentDirection != lastDirection) {
 			tempPath->emplace_back(current);
 			lastDirection = currentDirection;
@@ -532,8 +514,4 @@ std::vector<int>* MainGrid::reconstruct_simplify_path(int start, int goal, const
 	std::reverse(tempPath->begin(), tempPath->end());
 	tempPath->pop_back();
 	return tempPath;
-}
-
-bool MainGrid::inSide(int x, int z) {
-	return !(x < 0 || x >= resolution || z < 0 || z >= resolution);
 }

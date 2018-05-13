@@ -146,10 +146,6 @@ void MiniMapPanel::update() {
 
 }
 
-void MiniMapPanel::changeMiniMapType(short id, bool val) {
-	checks[id] = val;
-}
-
 void MiniMapPanel::createBody() {
 	spr = window->CreateChild<Sprite>();
 	spr->SetEnabled(true);
@@ -192,7 +188,7 @@ void MiniMapPanel::HandleButton(StringHash eventType, VariantMap& eventData) {
 	CheckBox* element = (CheckBox*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	int id = element->GetVar("Num").GetInt();
 
-	changeMiniMapType(id, element->IsChecked());
+	checks[id] = element->IsChecked();
 }
 
 void MiniMapPanel::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {

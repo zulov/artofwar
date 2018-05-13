@@ -49,7 +49,7 @@ std::optional<Formation*> FormationManager::createFormation(std::vector<Physical
 		return returnFormation;
 
 	}
-	return std::nullopt;
+	return {};
 }
 
 void FormationManager::update() {
@@ -80,7 +80,7 @@ std::optional<Vector2> FormationManager::getPositionFor(Unit* unit) {
 	if (formation >= 0) {
 		return formations[formation]->getPositionFor(unit->getPositionInFormation());
 	}
-	return std::nullopt;
+	return {};
 }
 
 int FormationManager::isLeaderFor(Unit* unit) {

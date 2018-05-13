@@ -34,18 +34,6 @@ SimulationObjectManager::~SimulationObjectManager() {
 	delete simulationInfo;
 }
 
-void SimulationObjectManager::add(Unit* unit) {
-	units->push_back(unit);
-}
-
-void SimulationObjectManager::add(Building* building) {
-	buildings->push_back(building);
-}
-
-void SimulationObjectManager::add(ResourceEntity* resourceEntity) {
-	resources->push_back(resourceEntity);
-}
-
 void SimulationObjectManager::addAll(std::vector<Unit*>* _units) {
 	units->insert(units->end(), _units->begin(), _units->end());
 }
@@ -58,18 +46,6 @@ void SimulationObjectManager::addAll(std::vector<Building*>* _buildings) {
 void SimulationObjectManager::addAll(std::vector<ResourceEntity*>* _resources) {
 	resources->insert(resources->end(), _resources->begin(), _resources->end());
 	resourcesToAdd->insert(resourcesToAdd->end(), _resources->begin(), _resources->end());
-}
-
-std::vector<Unit*>* SimulationObjectManager::getUnits() {
-	return units;
-}
-
-std::vector<Building*>* SimulationObjectManager::getBuildings() {
-	return buildings;
-}
-
-std::vector<ResourceEntity*>* SimulationObjectManager::getResources() {
-	return resources;
 }
 
 void SimulationObjectManager::addUnits(unsigned int number, int id, Vector2& center,
@@ -155,7 +131,7 @@ bool SimulationObjectManager::shouldDelete(Unit* unit) {
 	return false;
 }
 
-void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
+void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) const {
 	simulationInfo->set(this->simulationInfo);
 	simulationInfo->setUnitsNumber(units->size());
 	this->simulationInfo->reset();

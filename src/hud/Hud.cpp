@@ -150,7 +150,6 @@ Hud::~Hud() {
 	clear();
 
 	Game::get()->getUI()->GetCursor()->Remove();
-	//Game::get()->getUI()->GetRoot()->Remove();
 }
 
 void Hud::createDebugHud() {
@@ -195,22 +194,6 @@ void Hud::updateLoading(float progress) {
 	loadingPanel->update(progress);
 }
 
-Button* Hud::getSaveButton() {
-	return inGameMenuPanel->getSaveButton();
-}
-
-Button* Hud::getNewGameProceed() {
-	return mainMenuPanel->getNewGameProceed();
-}
-
-Button* Hud::getLoadButton() {
-	return mainMenuPanel->getLoadButton();
-}
-
-Button* Hud::getCloseButton() {
-	return mainMenuPanel->getCloseButton();
-}
-
 void Hud::updateStateVisibilty(GameState state) {
 	for (auto panel : panels) {
 		panel->updateStateVisibilty(state);
@@ -250,22 +233,6 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 			break;
 		}
 	}
-}
-
-std::vector<Button*>& Hud::getButtonsSelectedToSubscribe() {
-	return selectedHudPanel->getButtonsSelectedToSubscribe();
-}
-
-void Hud::hoverOnIcon(HudData* hudElement) {
-	menuPanel->setInfo(hudElement);
-}
-
-void Hud::hoverOffIcon(HudData* hudElement) {
-	menuPanel->removeInfo();
-}
-
-std::vector<HudData*>& Hud::getButtonsLeftMenuToSubscribe() {
-	return menuPanel->getButtons();
 }
 
 void Hud::HandleUIButtonHoverOn(StringHash /*eventType*/, VariantMap& eventData) {

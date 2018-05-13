@@ -19,10 +19,3 @@ void SelectedInfoType::add(Physical* physical) {
 	id = physical->getDbID();
 }
 
-std::vector<Physical*>& SelectedInfoType::getData() {
-	return data;
-}
-
-int SelectedInfoType::getId() {
-	return id;
-}

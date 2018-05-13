@@ -19,7 +19,6 @@ public:
 	void changeValue(uint32_t* data, bool& changed, unsigned val);
 	void update();
 
-	void changeMiniMapType(short id, bool val);
 private:
 	void createBody() override;
 	void HandleButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);

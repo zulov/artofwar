@@ -317,93 +317,6 @@ DatabaseCache::~DatabaseCache() {
 	delete dbContainer;
 }
 
-db_unit* DatabaseCache::getUnit(int i) const {
-	return dbContainer->units[i];
-}
-
-db_hud_size* DatabaseCache::getHudSize(int i) const {
-	return dbContainer->hudSizes[i];
-}
-
-db_graph_settings* DatabaseCache::getGraphSettings(int i) const {
-	return dbContainer->graphSettings[i];
-}
-
-db_building* DatabaseCache::getBuilding(int i) const {
-	return dbContainer->buildings[i];
-}
-
-db_nation* DatabaseCache::getNation(int i) const {
-	return dbContainer->nations[i];
-}
-
-db_resource* DatabaseCache::getResource(int i) const {
-	return dbContainer->resources[i];
-}
-
-db_hud_vars* DatabaseCache::getHudVar(int i) const {
-	return dbContainer->hudVars[i];
-}
-
-db_order* DatabaseCache::getOrder(int i) const {
-	return dbContainer->orders[i];
-}
-
-db_map* DatabaseCache::getMap(int i) const {
-	return dbContainer->maps[i];
-}
-
-db_player_colors* DatabaseCache::getPlayerColor(int i) const {
-	return dbContainer->playerColors[i];
-}
-
-db_settings* DatabaseCache::getSettings() const {
-	return dbContainer->settings[0];
-}
-
-int DatabaseCache::getResourceSize() const {
-	return dbContainer->resource_size;
-}
-
-int DatabaseCache::getHudVarsSize() const {
-	return dbContainer->hud_vars_size;
-}
-
-int DatabaseCache::getBuildingSize() const {
-	return dbContainer->building_size;
-}
-
-int DatabaseCache::getUnitSize() const {
-	return dbContainer->units_size;
-}
-
-int DatabaseCache::getOrdersSize() const {
-	return dbContainer->orders_size;
-}
-
-int DatabaseCache::getMapSize() const {
-	return dbContainer->maps_size;
-}
-
-int DatabaseCache::getPlayerColorsSize() const {
-	return dbContainer->player_colors_size;
-}
-
-int DatabaseCache::getNationSize() const {
-	return dbContainer->nation_size;
-}
-
-int DatabaseCache::getHudSizeSize() const {
-	return dbContainer->hud_size_size;
-}
-
-int DatabaseCache::getGraphSettingsSize() const {
-	return dbContainer->graph_settings_size;
-}
-
-int DatabaseCache::getResolutionSize() const {
-	return dbContainer->resolutions_size;
-}
 
 void DatabaseCache::executeSingle(const char* sql) {
 	const int rc = sqlite3_open("Data/Database/base.db", &database);
@@ -447,79 +360,48 @@ void DatabaseCache::setSettings(int i, db_settings* settings) {
 	executeSingle(sql.CString());
 }
 
-db_resolution* DatabaseCache::getResolution(int id) const {
-	return dbContainer->resolutions[id];
-}
-
 std::optional<db_unit_level*> DatabaseCache::getUnitLevel(int id, int level) const {
 	if (dbContainer->levelsToUnit[id]->size() > level) {
 		return std::optional<db_unit_level*>{dbContainer->levelsToUnit[id]->at(level)};
 	}
-	return std::nullopt;
+	return {};
 }
 
 std::optional<db_building_level*> DatabaseCache::getBuildingLevel(int id, int level) const {
 	if (dbContainer->levelsToBuilding[id]->size() > level) {
 		return std::optional<db_building_level*>{dbContainer->levelsToBuilding[id]->at(level)};
 	}
-	return std::nullopt;
+	return {};
 }
 
 optional<db_unit_upgrade*> DatabaseCache::getUnitUpgrade(int id, int level) const {
 	if (dbContainer->unitUpgrades[id]->size() > level) {
 		return std::optional<db_unit_upgrade*>{dbContainer->unitUpgrades[id]->at(level)};
 	}
-	return std::nullopt;
+	return {};
 }
 
 optional<vector<db_cost*>*> DatabaseCache::getCostForUnitLevel(short id, int level) const {
-	if (dbContainer->costForUnitLevel[id]->size() > level && dbContainer->costForUnitLevel[id]->at(level)->size() > 0) {
+	if (dbContainer->costForUnitLevel[id]->size() > level
+		&& !dbContainer->costForUnitLevel[id]->at(level)->empty()) {
 		return std::optional<vector<db_cost*>*>{dbContainer->costForUnitLevel[id]->at(level)};
 	}
-	return std::nullopt;
+	return {};
 }
 
 optional<vector<db_cost*>*> DatabaseCache::getCostForBuildingLevel(short id, int level) const {
-	if (dbContainer->costForBuildingLevel[id]->size() > level && dbContainer->costForBuildingLevel[id]->at(level)->size() >
-		0) {
+	if (dbContainer->costForBuildingLevel[id]->size() > level
+		&& !dbContainer->costForBuildingLevel[id]->at(level)->empty()) {
 		return std::optional<vector<db_cost*>*>{dbContainer->costForBuildingLevel[id]->at(level)};
 	}
-	return std::nullopt;
+	return {};
 }
 
 optional<vector<db_cost*>*> DatabaseCache::getCostForUnitUpgrade(short id, int level) const {
 	auto upgrade = dbContainer->unitUpgrades[id]->at(level);
 
-	if (dbContainer->unitUpgradesCosts[upgrade->id]->size() > 0) {
+	if (!dbContainer->unitUpgradesCosts[upgrade->id]->empty()) {
 		return std::optional<vector<db_cost*>*>{dbContainer->unitUpgradesCosts[upgrade->id]};
 	}
-	return std::nullopt;
-}
-
-std::vector<db_unit_level*>* DatabaseCache::getUnitLevels(int id) const {
-	return dbContainer->levelsToUnit[id];
-}
-
-std::vector<db_building_level*>* DatabaseCache::getBuildingLevels(int id) const {
-	return dbContainer->levelsToBuilding[id];
-}
-
-vector<db_unit_upgrade*>* DatabaseCache::getUnitUpgrades(int id) const {
-	return dbContainer->unitUpgrades[id];
-}
-
-std::vector<db_unit*>* DatabaseCache::getUnitsForBuilding(int id) const {
-	return dbContainer->unitsForBuilding[id];
-}
-
-std::vector<db_cost*>* DatabaseCache::getCostForUnit(int id) const {
-	return dbContainer->costForUnit[id];
-}
-
-std::vector<db_cost*>* DatabaseCache::getCostForBuilding(int id) const {
-	return dbContainer->costForBuilding[id];
-}
-
-std::vector<db_order*>* DatabaseCache::getOrdersForUnit(int id) const {
-	return dbContainer->ordersToUnit[id];
+	return {};
 }

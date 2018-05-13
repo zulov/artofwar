@@ -18,16 +18,16 @@ public:
 	SimulationObjectManager();
 	~SimulationObjectManager();
 
-	vector<Unit*>* getUnits();
-	vector<Building*>* getBuildings();
-	vector<ResourceEntity*>* getResources();
+	vector<Unit*>* getUnits() const { return units; }
+	vector<Building*>* getBuildings() const { return buildings; }
+	vector<ResourceEntity*>* getResources() const { return resources; }
 
 	void addUnits(unsigned number, int id, Vector2& center, int player, int level);
 	void addBuilding(int id, Vector2& center, int player, const IntVector2& _bucketCords, int level);
 	void addResource(int id, Vector2& center, const IntVector2& _bucketCords, int level);
 
 	void prepareToDispose();
-	void updateInfo(SimulationInfo* simulationInfo);
+	void updateInfo(SimulationInfo* simulationInfo) const;
 	void dispose();
 
 	void load(dbload_unit* unit);
@@ -42,9 +42,9 @@ private:
 
 	bool shouldDelete(Unit* unit);
 
-	void add(Unit* unit);
-	void add(Building* building);
-	void add(ResourceEntity* resourceEntity);
+	void add(Unit* unit) const { units->push_back(unit); }
+	void add(Building* building) const { buildings->push_back(building); }
+	void add(ResourceEntity* resourceEntity) const { resources->push_back(resourceEntity); }
 
 	void addAll(vector<Unit*>* _units);
 	void addAll(vector<Building*>* _buildings);

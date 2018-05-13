@@ -273,7 +273,7 @@ std::optional<Physical*> Formation::getLeader() {
 	if (state != FormationState::REACHED && units.size() > leader->getPositionInFormation()) {
 		return leader;
 	}
-	return std::nullopt;
+	return {};
 }
 
 void Formation::addAim(const Vector2& _vector, const Physical* _physical,

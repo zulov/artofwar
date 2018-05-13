@@ -7,20 +7,21 @@ class Player
 public:
 	Player(int nationId, int team, int _id, int _color, Urho3D::String _name, bool _active);
 	~Player();
-	int getNation();
-	int getTeam();
-	int getId();
-	int getColor();
-	Resources& getResources();
+
 	std::string getValues(int precision);
 	void setResourceAmount(int resource, float amount);
 	void setResourceAmount(float amount);
-
-	int getLevelForUnit(int id);
-	int getLevelForBuilding(int id);
-	int getLevelForUnitUpgradePath(short id);
 	char upgradeLevel(ActionType type, int id);
-	int getLevelForUnitUpgrade(int id);
+
+	Resources& getResources() { return resources; }
+	int getNation() const { return dbNation->id; }
+	int getTeam() const { return team; }
+	int getId() const { return id; }
+	int getColor() const { return color; }
+	char getLevelForUnit(int id) { return unitLevels[id]; }
+	char getLevelForBuilding(int id) { return buildingLevels[id]; }
+	char getLevelForUnitUpgradePath(short id) { return unitUpgradeLevels[id]; }
+	char getLevelForUnitUpgrade(int id) { return unitUpgradeLevels[id]; }
 private:
 	Resources resources;
 	db_nation* dbNation;

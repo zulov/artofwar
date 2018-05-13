@@ -19,26 +19,6 @@ Player::Player(int nationId, int team, int _id, int _color, Urho3D::String _name
 
 Player::~Player() = default;
 
-int Player::getNation() {
-	return dbNation->id;
-}
-
-int Player::getTeam() {
-	return team;
-}
-
-int Player::getId() {
-	return id;
-}
-
-int Player::getColor() {
-	return color;
-}
-
-Resources& Player::getResources() {
-	return resources;
-}
-
 std::string Player::getValues(int precision) {
 	return to_string(id) + "," + to_string(active) + "," + to_string(team) + "," + to_string(dbNation->id) + ",'" + name.
 		CString() + "','" + to_string(color) + "'";
@@ -50,22 +30,6 @@ void Player::setResourceAmount(int resource, float amount) {
 
 void Player::setResourceAmount(float amount) {
 	resources.init(amount);
-}
-
-int Player::getLevelForUnit(int id) {
-	return unitLevels[id];
-}
-
-int Player::getLevelForBuilding(int id) {
-	return buildingLevels[id];
-}
-
-int Player::getLevelForUnitUpgradePath(short id) {
-	return unitUpgradeLevels[id];
-}
-
-int Player::getLevelForUnitUpgrade(int id) {
-	return unitUpgradeLevels[id];
 }
 
 char Player::upgradeLevel(ActionType type, int id) {

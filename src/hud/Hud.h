@@ -14,6 +14,7 @@
 #include "xml/rapidxml_print.hpp"
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/Text.h>
+#include "window/main_menu/MainMenuPanel.h"
 
 
 class SimulationInfo;
@@ -31,17 +32,14 @@ URHO3D_OBJECT(Hud, Object)
 	void clear();
 
 	void update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
-                 SimulationInfo* simulationInfo);
+	            SimulationInfo* simulationInfo);
 	void update(int unitsNumber);
 	void createMiniMap();
 
 	void updateSelected(SelectedInfo* selectedInfo);
 
-	void hoverOnIcon(HudData* hudElement);
-	void hoverOffIcon(HudData* hudElement);
-
-	std::vector<Button*>& getButtonsSelectedToSubscribe();
-	std::vector<HudData*>& getButtonsLeftMenuToSubscribe();
+	void hoverOnIcon(HudData* hudElement) const { menuPanel->setInfo(hudElement); }
+	void hoverOffIcon(HudData* hudElement) const { menuPanel->removeInfo(); }
 
 	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
 	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
@@ -49,17 +47,23 @@ URHO3D_OBJECT(Hud, Object)
 
 	void updateLoading(float progress);
 
-	Button* getSaveButton();
-	Button* getNewGameProceed();
-	Button* getLoadButton();
-	Button* getCloseButton();
-
 	void updateStateVisibilty(GameState state);
 
 	void createMyPanels();
 	void prepareStyle();
 	void preapreUrho();
 	void subscribeToUIEvents();
+
+	std::vector<Button*>& getButtonsSelectedToSubscribe() const {
+		return selectedHudPanel->getButtonsSelectedToSubscribe();
+	}
+
+	std::vector<HudData*>& getButtonsLeftMenuToSubscribe() const { return menuPanel->getButtons(); }
+
+	Button* getSaveButton() const { return inGameMenuPanel->getSaveButton(); }
+	Button* getNewGameProceed() const { return mainMenuPanel->getNewGameProceed(); }
+	Button* getLoadButton() const { return mainMenuPanel->getLoadButton(); }
+	Button* getCloseButton() const { return mainMenuPanel->getCloseButton(); }
 private:
 	void replaceVariables(std::string& xml, int hudSizeId);
 	void createDebugHud();
