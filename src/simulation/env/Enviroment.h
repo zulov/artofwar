@@ -22,7 +22,7 @@ public:
 	std::vector<Unit *>* getNeighbours(Unit* unit, float radius);
 	std::vector<Unit *>* getNeighboursFromTeam(Unit* unit, float radius, int team, OperatorType operatorType);
 
-	std::vector<Unit *>* getNeighbours(Unit* unit, Grid& grid, float radius);
+	std::vector<Unit *>* getNeighbours(Unit* unit, Grid& bucketGrid, float radius);
 
 	void update(std::vector<Unit*>* units);
 	void update(std::vector<Building*>* buildings);

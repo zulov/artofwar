@@ -9,19 +9,20 @@ class ResourceEntity :
 public:
 	ResourceEntity(Vector3* _position, int id, int level);
 	virtual ~ResourceEntity();
-	int getDbID() override;
 	void populate();
 
-	float getMaxHpBarSize() override;
-	String& toMultiLineString() override;
+	float collect(float collectSpeed);
 
-	std::string getValues(int precision) override;
+	bool belowLimit() const { return users < maxUsers; }
+	void up() { ++users; }
+	void reduce() { --users; }
+
 	static std::string getColumns();
 
-	float collect(float collectSpeed);
-	bool belowLimit();
-	void up();
-	void reduce();
+	int getDbID() override;
+	float getMaxHpBarSize() override;
+	String& toMultiLineString() override;
+	std::string getValues(int precision) override;
 private:
 	db_resource* dbResource;
 	int type;

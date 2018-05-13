@@ -14,22 +14,21 @@ public:
 	Building(Vector3* _position, int id, int player, int level);
 	~Building();
 
-	float getMaxHpBarSize() override;
-	int getDbID() override;
 	void populate();
-	void absorbAttack(float attackCoef) override;
+	void upgrade(char level);
+	static std::string getColumns();
+
+	QueueElement* updateQueue(float time) const { return queue->update(time); }
+	Vector2& getTarget() { return target; } //TODO target to nie to samo co gdzie sie maja pojawiac!
+	QueueManager* getQueue() const { return queue; }
 
 	String& toMultiLineString() override;
+	void absorbAttack(float attackCoef) override;
 	void action(char id, ActionParameter& parameter) override;
-	void upgrade(char level);
-
-	static std::string getColumns();
 	std::string getValues(int precision) override;
+	float getMaxHpBarSize() override;
+	int getDbID() override;
 	int getLevel() override;
-
-	QueueElement* updateQueue(float time);
-	Vector2& getTarget();
-	QueueManager* getQueue();
 private:
 	Vector2 target;
 	db_building* dbBuilding;
@@ -37,5 +36,4 @@ private:
 
 	std::vector<db_unit*>* units;
 	QueueManager* queue;
-
 };

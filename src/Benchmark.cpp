@@ -24,14 +24,6 @@ Benchmark::~Benchmark() {
 	}
 }
 
-float Benchmark::getAverageFPS() const {
-	return avg;
-}
-
-float Benchmark::getLastFPS() const {
-	return data[index];
-}
-
 void Benchmark::add(float fps) {
 	++index;
 	if (index >= BENCH_LENGTH) {
@@ -52,8 +44,4 @@ void Benchmark::save() {
 			output << count << std::endl;
 		}
 	}
-}
-
-int Benchmark::getLoops() const {
-	return loops;
 }

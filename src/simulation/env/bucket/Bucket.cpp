@@ -1,12 +1,13 @@
 #include "Bucket.h"
 #include "ComplexBucketData.h"
 
-Bucket::~Bucket() = default;
 
 Bucket::Bucket() {
 	content.reserve(DEFAULT_VECTOR_SIZE / 3);
 	std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
 }
+
+Bucket::~Bucket() = default;
 
 void Bucket::add(Unit* entity) {
 	content.push_back(entity);

@@ -69,15 +69,3 @@ float ResourceEntity::collect(float collectSpeed) {
 	amonut = 0;
 	return toReturn;
 }
-
-bool ResourceEntity::belowLimit() {
-	return users < maxUsers;
-}
-
-void ResourceEntity::up() {
-	++users;
-}
-
-void ResourceEntity::reduce() {
-	--users;
-}

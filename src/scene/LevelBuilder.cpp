@@ -6,10 +6,10 @@
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Octree.h>
+#include <Urho3D/Graphics/Technique.h>
 #include <Urho3D/Graphics/Terrain.h>
 #include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Graphics/Technique.h>
 
 
 LevelBuilder::LevelBuilder() {

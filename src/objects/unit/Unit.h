@@ -34,18 +34,12 @@ public:
 	Unit(Vector3* _position, int id, int player, int level);
 	~Unit();
 
-	bool isAlive() const override;
-
 	void populate();
 	void checkAim();
 	void move(double timeStep);
 	void applyForce(double timeStep);
 	void setAcceleration(Vector2& _acceleration);
-	int getDbID() override;
-	int getLevel() override;
-	float getMaxHpBarSize() override;
-	float getMaxSeparationDistance() const { return maxSeparationDistance; }
-	float getMinimalDistance() const { return minimalDistance; }
+
 	Vector2 forceGo(float boostCoef, float aimCoef, Vector2& force);
 	Vector2 getDestination(float boostCoef, float aimCoef);
 
@@ -61,32 +55,42 @@ public:
 
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
-	String& toMultiLineString() override;
-	void action(char id, ActionParameter& parameter) override;
 
-	UnitStateType getState() const { return state; }
-	UnitStateType getActionState();
-	void clean() override;
+
 	void setState(UnitStateType _state);
 	bool checkTransition(UnitStateType state);
 	void executeState();
 	bool hasResource();
 	void load(dbload_unit* unit);
-	bool isToDispose() const { return state == UnitStateType::DISPOSE && atState; }
 
-	short getFormation() const { return formation; }
-	short getPositionInFormation() const { return posInFormation; }
+
 	void setFormation(short _formation);
 	void resetFormation();
 	void setPositionInFormation(short _pos);
-	bool hasAim() { return aims.hasAim(); }
 	void clearAims();
 
 	static std::string getColumns();
-	std::string getValues(int precision) override;
 	void addUpgrade(db_unit_upgrade* upgrade);
 	void changeColor(ColorMode mode);
 	void addAim(FutureAim& aim, bool append = false);
+
+	float getMaxSeparationDistance() const { return maxSeparationDistance; }
+	UnitStateType getActionState() const { return actionState; }
+	short getPositionInFormation() const { return posInFormation; }
+	float getMinimalDistance() const { return minimalDistance; }
+	UnitStateType getState() const { return state; }
+	short getFormation() const { return formation; }
+	bool isToDispose() const { return state == UnitStateType::DISPOSE && atState; }
+	bool hasAim() { return aims.hasAim(); }
+
+	void action(char id, ActionParameter& parameter) override;
+	std::string getValues(int precision) override;
+	String& toMultiLineString() override;
+	float getMaxHpBarSize() override;
+	bool isAlive() const override;
+	int getLevel() override;
+	int getDbID() override;
+	void clean() override;
 private:
 	//void addAim(Aim* aim);
 

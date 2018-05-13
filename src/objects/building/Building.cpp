@@ -127,15 +127,3 @@ std::string Building::getValues(int precision) {
 int Building::getLevel() {
 	return dbLevel->level;
 }
-
-QueueElement* Building::updateQueue(float time) {
-	return queue->update(time);
-}
-
-Vector2& Building::getTarget() {
-	return target; //TODO target to nie to samo co gdzie sie maja pojawiac!
-}
-
-QueueManager* Building::getQueue() {
-	return queue;
-}

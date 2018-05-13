@@ -14,30 +14,32 @@ public:
 	virtual ~Physical();
 
 	void updateHealthBar();
-	virtual float getMaxHpBarSize();
-	virtual float getHealthPercent();
 	float getHealthBarSize();
-	int getBucketIndex(char param) const { return bucketIndexShift[param]; }
 	bool bucketHasChanged(int _bucketIndex, char param);
 	void setBucket(int _bucketIndex, char param);
-	signed char getTeam() const { return team; }
-	virtual void absorbAttack(float attackCoef);
-	virtual void select();
-	virtual void unSelect();
-	Vector3* getPosition() const { return position; }
-	void updateBillbords();
+	void updateBillbords() const;
 	void initBillbords();
 
 	void setTeam(unsigned char _team);
 	void setPlayer(unsigned char player);
-	unsigned char getPlayer() const { return player; }
-	virtual String& toMultiLineString();
-	virtual void action(char id, ActionParameter& parameter);
 	static std::string getColumns();
-	virtual int getLevel();
 	std::string getValues(int precision) override;
 	bool isFirstThingAlive();
 	bool hasEnemy();
+
+	float getHealthPercent() const { return hpCoef / maxHpCoef; }
+	signed char getTeam() const { return team; }
+	Vector3* getPosition() const { return position; }
+	unsigned char getPlayer() const { return player; }
+	int getBucketIndex(char param) const { return bucketIndexShift[param]; }
+
+	virtual float getMaxHpBarSize();
+	virtual void absorbAttack(float attackCoef);
+	virtual void select();
+	virtual void unSelect();
+	virtual String& toMultiLineString();
+	virtual void action(char id, ActionParameter& parameter);
+	virtual int getLevel();
 	virtual void clean();
 protected:
 	Vector3* position = nullptr;
@@ -65,9 +67,9 @@ protected:
 
 private:
 	void createBillboardBar();
-	void updateBillboardBar(Vector3& boundingBox);
+	void updateBillboardBar(Vector3& boundingBox) const;
 	void createBillboardShadow();
-	void updateBillboardShadow(Vector3& boundingBox);
+	void updateBillboardShadow(Vector3& boundingBox) const;
 
 	int bucketIndex[BUCKET_SET_NUMBER];
 	int* bucketIndexShift;

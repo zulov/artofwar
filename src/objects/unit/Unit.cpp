@@ -14,14 +14,10 @@
 #include "simulation/formation/FormationManager.h"
 
 
-Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr) {
-
+Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr),
+	resource(nullptr), state(UnitStateType::STOP), toResource(new Vector2()) {
 	initBillbords();
 
-	toResource = new Vector2();
-	resource = nullptr;
-
-	state = UnitStateType::STOP;
 	dbUnit = Game::get()->getDatabaseCache()->getUnit(id);
 	dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
 	populate();
@@ -341,10 +337,6 @@ void Unit::changeColor(ColorMode mode) {
 		break;
 	default: ;
 	}
-}
-
-UnitStateType Unit::getActionState() {
-	return actionState;
 }
 
 void Unit::clean() {

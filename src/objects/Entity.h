@@ -11,13 +11,14 @@ public:
 	Entity(ObjectType _type);
 	virtual ~Entity();
 
-	virtual bool isAlive() const;
-	Urho3D::Node* getNode() const { return node; }
-	ObjectType getType() const { return type; }
-	virtual int getDbID();
-	virtual std::string getValues(int precision);
 	static std::string getColumns();
 
+	Urho3D::Node* getNode() const { return node; }
+	ObjectType getType() const { return type; }
+
+	virtual bool isAlive() const;
+	virtual int getDbID();
+	virtual std::string getValues(int precision);
 protected:
 	Urho3D::Node* node;
 	ObjectType type;

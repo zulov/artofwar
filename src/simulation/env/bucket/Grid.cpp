@@ -31,7 +31,7 @@ Grid::~Grid() {
 	delete tempSelected;
 }
 
-void Grid::updateGrid(Unit* entity, const char team) {
+void Grid::updateGrid(Unit* entity, const char team) const {
 	const int index = indexFromPosition(entity->getPosition());
 
 	if (!entity->isAlive()) {
@@ -72,18 +72,14 @@ BucketIterator& Grid::getArrayNeight(Unit* entity, float radius, short thread) {
 	return bucketIterator;
 }
 
-void Grid::removeAt(int index, Unit* entity) {
+void Grid::removeAt(int index, Unit* entity) const {
 	if (inRange(index)) {
 		buckets[index].remove(entity);
 	}
 }
 
-void Grid::addAt(int index, Unit* entity) {
+void Grid::addAt(int index, Unit* entity) const {
 	buckets[index].add(entity);
-}
-
-bool Grid::inRange(int index) {
-	return index >= 0 && index < sqResolution;
 }
 
 std::vector<Unit*>& Grid::getContentAt(int index) {
@@ -98,10 +94,10 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>& pair
 	Vector3* end = pair.second;
 	tempSelected->clear();
 
-	const short posBeginX = getIndex(begin->x_);
-	const short posBeginZ = getIndex(begin->z_);
-	const short posEndX = getIndex(end->x_);
-	const short posEndZ = getIndex(end->z_);
+	const auto posBeginX = getIndex(begin->x_);
+	const auto posBeginZ = getIndex(begin->z_);
+	const auto posEndX = getIndex(end->x_);
+	const auto posEndZ = getIndex(end->z_);
 
 	for (short i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
 		for (short j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
@@ -113,29 +109,25 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>& pair
 	return tempSelected;
 }
 
-int Grid::getIndex(short posX, short posZ) {
-	return posX * resolution + posZ;
-}
-
-int Grid::indexFromPosition(Vector3* position) {
-	const short posX = getIndex(position->x_);
-	const short posZ = getIndex(position->z_);
+int Grid::indexFromPosition(Vector3* position) const {
+	const auto posX = getIndex(position->x_);
+	const auto posZ = getIndex(position->z_);
 	return getIndex(posX, posZ);
 }
 
-int Grid::indexFromPosition(Vector2& position) {
-	const short posX = getIndex(position.x_);
-	const short posZ = getIndex(position.y_);
+int Grid::indexFromPosition(Vector2& position) const {
+	const auto posX = getIndex(position.x_);
+	const auto posZ = getIndex(position.y_);
 	return getIndex(posX, posZ);
 }
 
-bool Grid::fieldInCircle(short i, short j, float radius) {
+bool Grid::fieldInCircle(short i, short j, float radius) const {
 	const short x = i * fieldSize;
 	const short y = j * fieldSize;
 	return x * x + y * y < radius * radius;
 }
 
-std::vector<short>* Grid::getEnvIndexs(float radius) {
+std::vector<short>* Grid::getEnvIndexs(float radius) const {
 	auto indexes = new std::vector<short>();
 	for (short i = 0; i < RES_SEP_DIST; ++i) {
 		for (short j = 0; j < RES_SEP_DIST; ++j) {

@@ -5,8 +5,8 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include <string>
 #include <algorithm>
+#include <string>
 
 
 Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
@@ -37,7 +37,7 @@ void Physical::createBillboardBar() {
 	billboardBar = billboardSetBar->GetBillboard(0);
 }
 
-void Physical::updateBillboardBar(Vector3& boundingBox) {
+void Physical::updateBillboardBar(Vector3& boundingBox) const {
 	billboardBar->size_ = Vector2(2, 0.1);
 	billboardBar->position_ = Vector3(0, boundingBox.y_ * 1.3f, 0);
 	billboardBar->enabled_ = false;
@@ -54,21 +54,19 @@ void Physical::createBillboardShadow() {
 	billboardSetShadow->SetSorted(true);
 	billboardSetShadow->SetFaceCameraMode(FaceCameraMode::FC_NONE);
 
-
 	billboardShadow = billboardSetShadow->GetBillboard(0);
 }
 
-void Physical::updateBillboardShadow(Vector3& boundingBox) {
-	float boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.3f;
+void Physical::updateBillboardShadow(Vector3& boundingBox) const {
+	const float boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.3f;
 	billboardShadow->size_ = Vector2(boudingSize, boudingSize);
 	billboardShadow->enabled_ = false;
 
 	billboardSetShadow->Commit();
 }
 
-void Physical::updateBillbords() {
-	StaticModel* model = node->GetComponent<StaticModel>();
-	Vector3 boundingBox = model->GetModel()->GetBoundingBox().Size();
+void Physical::updateBillbords() const {
+	Vector3 boundingBox = node->GetComponent<StaticModel>()->GetModel()->GetBoundingBox().Size();
 
 	updateBillboardBar(boundingBox);
 	updateBillboardShadow(boundingBox);
@@ -80,7 +78,7 @@ void Physical::initBillbords() {
 }
 
 void Physical::updateHealthBar() {
-	float healthBarSize = getHealthBarSize();
+	const float healthBarSize = getHealthBarSize();
 
 	billboardBar->size_ = Vector2(healthBarSize, 0.1) / node->GetScale2D();
 	billboardSetBar->Commit();
@@ -88,10 +86,6 @@ void Physical::updateHealthBar() {
 
 float Physical::getMaxHpBarSize() {
 	return 0;
-}
-
-float Physical::getHealthPercent() {
-	return hpCoef / maxHpCoef;
 }
 
 float Physical::getHealthBarSize() {

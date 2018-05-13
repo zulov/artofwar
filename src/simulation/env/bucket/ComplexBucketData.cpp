@@ -38,7 +38,7 @@ void ComplexBucketData::removeStatic() {
 	object = nullptr;
 	type = ObjectType::UNIT;
 	if (box) {
-		Urho3D::StaticModel* model = box->GetComponent<StaticModel>();
+		auto model = box->GetComponent<StaticModel>();
 		model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue_alpha.xml"));
 	}
 	additonalInfo = -1;
@@ -50,7 +50,7 @@ void ComplexBucketData::createBox(float bucketSize) {
 	box->SetPosition(Vector3(center.x_, 8, center.y_));
 	box->Scale(Vector3(bucketSize * 0.8, 1, bucketSize * 0.8));
 	box->Translate(Vector3::UP * 10, TS_PARENT);
-	Urho3D::StaticModel* model = box->CreateComponent<StaticModel>();
+	auto model = box->CreateComponent<StaticModel>();
 	model->SetModel(Game::get()->getCache()->GetResource<Model>("Models/plane.mdl"));
 	model->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/blue_alpha.xml"));
 	box->SetEnabled(true);
@@ -58,22 +58,6 @@ void ComplexBucketData::createBox(float bucketSize) {
 
 void ComplexBucketData::setCenter(float _centerX, float _centerY) {
 	center = Vector2(_centerX, _centerY);
-}
-
-Urho3D::Vector2& ComplexBucketData::getCenter() {
-	return center;
-}
-
-std::vector<std::pair<int, float>>& ComplexBucketData::getNeightbours() {
-	return neighbours;
-}
-
-std::vector<std::pair<int, float>>& ComplexBucketData::getOccupiedNeightbours() {
-	return occupiedNeightbours;
-}
-
-bool ComplexBucketData::isUnit() {
-	return type == ObjectType::UNIT;
 }
 
 void ComplexBucketData::setEscapeThrought(int val) {
