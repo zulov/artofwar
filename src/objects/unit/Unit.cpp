@@ -200,7 +200,7 @@ void Unit::toCollect(ResourceEntity* _resource) {
 }
 
 void Unit::updateHeight(float y, double timeStep) {
-	velocity *= 1 + (position->y_ - y) * mass * timeStep;
+	velocity *= 1 + (position->y_ - y) * 0.1 * mass * timeStep;
 	position->y_ = y;
 }
 
