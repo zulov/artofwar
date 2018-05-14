@@ -2,70 +2,6 @@
 
 Game* Game::instance = nullptr;
 
-Urho3D::ResourceCache* Game::getCache() const {
-	return cache;
-}
-
-Urho3D::SharedPtr<Urho3D::Scene> Game::getScene() const {
-	return scene;
-}
-
-Urho3D::Context* Game::getContext() const {
-	return context;
-}
-
-Urho3D::UI* Game::getUI() const {
-	return ui;
-}
-
-Urho3D::Graphics* Game::getGraphics() const {
-	return graphics;
-}
-
-Urho3D::SharedPtr<Urho3D::Engine> Game::getEngine() const {
-	return engine;
-}
-
-CommandList* Game::getActionCommandList() const {
-	return actionCommandList;
-}
-
-Urho3D::Console* Game::getConsole() const {
-	return console;
-}
-
-Urho3D::Localization* Game::getLocalization() const {
-	return localization;
-}
-
-QueueManager* Game::getQueueManager() const {
-	return queue;
-}
-
-CreationCommandList* Game::getCreationCommandList() const {
-	return creationCommandList;
-}
-
-DatabaseCache* Game::getDatabaseCache() const {
-	return databaseCache;
-}
-
-PlayersManager* Game::getPlayersManager() const {
-	return playersManager;
-}
-
-Enviroment* Game::getEnviroment() const {
-	return enviroment;
-}
-
-FormationManager* Game::getFormationManager() const {
-	return formationManager;
-}
-
-ColorPeletteRepo* Game::getColorPeletteRepo() const {
-	return colorPeletteRepo;
-}
-
 Game::Game() = default;
 
 void Game::init() {
@@ -108,10 +44,6 @@ Game* Game::setScene(const Urho3D::SharedPtr<Urho3D::Scene>& scene) {
 Game* Game::setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine) {
 	engine = _engine;
 	return this;
-}
-
-CameraManager* Game::getCameraManager() const {
-	return cameraManager;
 }
 
 Game* Game::setCameraManager(CameraManager* cameraManager) {

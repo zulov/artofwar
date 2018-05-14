@@ -48,25 +48,23 @@ public:
 	Game* setFormationManager(FormationManager* _formationManager);
 	Game* setColorPeletteRepo(ColorPeletteRepo* _colorPeletteRepo);
 
-
-	Urho3D::ResourceCache* getCache() const;
-	Urho3D::SharedPtr<Urho3D::Scene> getScene() const;
-	Urho3D::Context* getContext() const;
-	Urho3D::UI* getUI() const;
-	Urho3D::Graphics* getGraphics() const;
-	Urho3D::SharedPtr<Urho3D::Engine> getEngine() const;
-	Urho3D::Console* getConsole() const;
-	Urho3D::Localization* getLocalization() const;
-
-	QueueManager* getQueueManager() const;
-	CameraManager* getCameraManager() const;
-	CommandList* getActionCommandList() const;
-	CreationCommandList* getCreationCommandList() const;
-	DatabaseCache* getDatabaseCache() const;
-	PlayersManager* getPlayersManager() const;
-	Enviroment* getEnviroment() const;
-	FormationManager* getFormationManager() const;
-	ColorPeletteRepo* getColorPeletteRepo() const;
+	Urho3D::ResourceCache* getCache() const { return cache; }
+	Urho3D::SharedPtr<Urho3D::Scene> getScene() const { return scene; }
+	Urho3D::Context* getContext() const { return context; }
+	Urho3D::UI* getUI() const { return ui; }
+	Urho3D::Graphics* getGraphics() const { return graphics; }
+	Urho3D::SharedPtr<Urho3D::Engine> getEngine() const { return engine; }
+	CommandList* getActionCommandList() const { return actionCommandList; }
+	Urho3D::Console* getConsole() const { return console; }
+	Urho3D::Localization* getLocalization() const { return localization; }
+	QueueManager* getQueueManager() const { return queue; }
+	CreationCommandList* getCreationCommandList() const { return creationCommandList; }
+	DatabaseCache* getDatabaseCache() const { return databaseCache; }
+	PlayersManager* getPlayersManager() const { return playersManager; }
+	Enviroment* getEnviroment() const { return enviroment; }
+	FormationManager* getFormationManager() const { return formationManager; }
+	ColorPeletteRepo* getColorPeletteRepo() const { return colorPeletteRepo; }
+	CameraManager* getCameraManager() const { return cameraManager; }
 
 private:
 	Game();

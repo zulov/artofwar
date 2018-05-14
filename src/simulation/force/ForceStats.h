@@ -3,7 +3,7 @@
 #include <iostream>
 
 #define FORCE_STATS_SIZE 1000
-#define FORCE_STATS_ENABLE true
+#define FORCE_STATS_ENABLE false
 
 struct ForceStats
 {
