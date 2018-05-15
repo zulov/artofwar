@@ -57,7 +57,7 @@ std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, const float ra
 	}
 }
 
-std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, float radius) {
+std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, float radius) const {
 	neights->clear();
 
 	Vector3* unitPosition = unit->getPosition();

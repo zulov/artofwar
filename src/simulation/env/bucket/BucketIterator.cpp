@@ -10,8 +10,7 @@ Unit* BucketIterator::next() {
 		++index;
 		if (index >= levelSize) { return nullptr; }
 
-		currentIterator = bucketGrid->getContentAt((*levels)[index] + center).begin();
-		currentEnd = bucketGrid->getContentAt((*levels)[index] + center).end();
+		setRange();
 	}
 
 	Unit* entity = *currentIterator;
@@ -24,8 +23,15 @@ void BucketIterator::init(std::vector<short>* _levels, int _center, Grid* _bucke
 	center = _center;
 	index = 0;
 	bucketGrid = _bucketGrid;
-	currentIterator = bucketGrid->getContentAt((*levels)[index] + center).begin();
-	currentEnd = bucketGrid->getContentAt((*levels)[index] + center).end();
+
+	setRange();
 
 	levelSize = levels->size();
+}
+
+void BucketIterator::setRange() {
+	auto& content = bucketGrid->getContentAt((*levels)[index] + center);
+
+	currentIterator = content.begin();
+	currentEnd = content.end();
 }
