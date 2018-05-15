@@ -24,7 +24,7 @@ public:
 
 	std::vector<Unit *>* getNeighbours(Unit* unit, Grid& bucketGrid, float radius) const;
 
-	void update(std::vector<Unit*>* units);
+	void update(std::vector<Unit*>* units) const;
 	void update(std::vector<Building*>* buildings);
 	void update(std::vector<ResourceEntity*>* resources);
 
@@ -33,21 +33,21 @@ public:
 
 	std::vector<Physical *>* getNeighbours(std::pair<Vector3*, Vector3*>& pair);
 	std::vector<Physical *>* getBuildings(std::pair<Vector3*, Vector3*>& pair);
-	float getGroundHeightAt(float x, float z);
-	float getGroundHeightPercent(float y, float x, float div);
+	float getGroundHeightAt(float x, float z) const;
+	float getGroundHeightPercent(float y, float x, float div) const;
 	bool validateStatic(const IntVector2& size, Vector2& pos);
-	Vector2 getValidPosition(const IntVector2& size, Vector2& pos);
-	IntVector2 getBucketCords(const IntVector2& size, Vector2& pos);
+	Vector2 getValidPosition(const IntVector2& size, const Vector2& pos);
+	IntVector2 getBucketCords(const IntVector2& size, const Vector2& pos) const;
 	std::vector<int>* findPath(int startIdx, Vector2& aim);
 
 	void prepareGridToFind();
 	content_info* getContentInfo(Vector2 from, Vector2 to, bool checks[], int activePlayer);
-	Vector3 getValidPosForCamera(float percentX, float percentY, const Vector3& pos, float min);
+	Vector3 getValidPosForCamera(float percentX, float percentY, const Vector3& pos, float min) const;
 	Vector2 getValidPosition(const IntVector2& size, const IntVector2& bucketCords);
-	Vector2& getCenter(int index);
+	Vector2& getCenter(int index) const;
 	void invalidateCache();
 
-	int getIndex(Vector2& pos);
+	int getIndex(Vector2& pos) const;
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid;

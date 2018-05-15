@@ -258,7 +258,7 @@ Vector2* MainGrid::getDirectionFrom(Vector3* position) {
 	return nullptr;
 }
 
-Vector2 MainGrid::getValidPosition(const IntVector2& size, Vector2& pos) {
+Vector2 MainGrid::getValidPosition(const IntVector2& size, const Vector2& pos) {
 	//TODO tu mozna to sporo zoptymalizowac ale pewnie nie ma potrzeby
 	const short posX = getIndex(pos.x_);
 	const short posZ = getIndex(pos.y_);
@@ -279,11 +279,11 @@ Vector2 MainGrid::getValidPosition(const IntVector2& size, Vector2& pos) {
 	return newCenter;
 }
 
-IntVector2 MainGrid::getBucketCords(const IntVector2& size, Vector2& pos) const {
+IntVector2 MainGrid::getBucketCords(const IntVector2& size, const Vector2& pos) const {
 	return IntVector2(getIndex(pos.x_), getIndex(pos.y_));
 }
 
-void MainGrid::updateNeighbors(const int current) {
+void MainGrid::updateNeighbors(const int current) const {
 	auto& neigths = complexData[current].getNeightbours();
 	neigths.clear();
 	auto& ocupNeigths = complexData[current].getOccupiedNeightbours();

@@ -23,9 +23,7 @@ void BucketIterator::init(std::vector<short>* _levels, int _center, Grid* _bucke
 	center = _center;
 	index = 0;
 	bucketGrid = _bucketGrid;
-
 	setRange();
-
 	levelSize = levels->size();
 }
 

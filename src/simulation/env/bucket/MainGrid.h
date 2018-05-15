@@ -21,14 +21,14 @@ public:
 	void addStatic(Static* object);
 	void removeStatic(Static* object);
 	Vector2* getDirectionFrom(Vector3* position);
-	Vector2 getValidPosition(const IntVector2& size, Vector2& pos);
-	IntVector2 getBucketCords(const IntVector2& size, Vector2& pos) const;
+	Vector2 getValidPosition(const IntVector2& size, const Vector2& pos);
+	IntVector2 getBucketCords(const IntVector2& size, const Vector2& pos) const;
 	inline float heuristic(int from, int to);
 
 	std::vector<int>* reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]);
 	std::vector<int>* reconstruct_path(int start, int goal, const int came_from[]);
 	std::vector<int>* reconstruct_simplify_path(int start, int goal, const int came_from[]);
-	void updateNeighbors(int current);
+	void updateNeighbors(int current) const;
 	float cost(int current, int next) const;
 	void debug(int start, int end);
 
