@@ -55,10 +55,17 @@ void Simulation::tryToCollect(Unit* unit) {
 
 void Simulation::selfAI() {
 	for (auto unit : *units) {
-		if ((unit->getState() == UnitStateType::STOP
-				|| unit->getState() == UnitStateType::MOVE)
-			&& unit->getFormation() == -1) {
-			if (unit->checkTransition(unit->getActionState())) {
+		switch (unit->getState()) {
+		case UnitStateType::CHARAGE:
+			{
+			std::vector<Unit*>* enemies = enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
+			unit->toCharge(enemies);
+			}
+			break;
+
+		case UnitStateType::STOP:
+		case UnitStateType::MOVE:
+			if (currentFrameNumber % 3 == 0 && unit->getFormation() == -1 && unit->checkTransition(unit->getActionState())) {
 				switch (unit->getActionState()) {
 				case UnitStateType::ATTACK:
 					tryToAttack(unit);
@@ -66,9 +73,9 @@ void Simulation::selfAI() {
 				case UnitStateType::COLLECT:
 					tryToCollect(unit);
 					break;
-				default: ;
 				}
 			}
+			break;
 		}
 
 	}
@@ -87,14 +94,14 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 	}
 }
 
-void Simulation::addTestEntities() {
+void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		//simObjectManager->addUnits(UNITS_NUMBER, 0, Vector2(-20, 0), 0, 0);
+		simObjectManager->addUnits(UNITS_NUMBER, 0, Vector2(-20, 0), 0, 0);
 		simObjectManager->addUnits(UNITS_NUMBER, 3, Vector2(20, 0), 1, 0);
 	}
 }
 
-void Simulation::loadEntities(NewGameForm* form) {
+void Simulation::loadEntities(NewGameForm* form) const {
 	for (const auto& player : form->players) {
 		simObjectManager->addUnits(10, 1, Vector2(), player.id, 0);
 	}
@@ -124,7 +131,7 @@ void Simulation::applyForce() {
 	}
 }
 
-void Simulation::levelUp(QueueElement* done) {
+void Simulation::levelUp(QueueElement* done) const {
 	levelsCommandList->add(new UpgradeCommand(
 	                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
 	                                          done->getId(),
@@ -208,10 +215,10 @@ SimulationInfo* Simulation::update(float timeStep) {
 	timeStep = updateTime(timeStep);
 	if (accumulateTime >= maxTimeFrame) {
 		handleTimeInFrame(timeStep);
-		if (currentFrameNumber % 3 == 0) {
-			executeLists();
-			selfAI();
-		}
+
+		executeLists();
+		selfAI();
+
 		actionCommandList->execute();
 		enviroment->update(units);
 
@@ -233,7 +240,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 	return simulationInfo;
 }
 
-void Simulation::executeLists() {
+void Simulation::executeLists() const {
 	levelsCommandList->execute();
 	creationCommandList->execute();
 }

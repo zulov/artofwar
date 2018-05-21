@@ -53,16 +53,16 @@ public:
 	void toCollect(ResourceEntity* _resource);
 	void toCollect();
 
+	void toCharge(std::vector<Unit*>* enemies);
+
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
-
 
 	void setState(UnitStateType _state);
 	bool checkTransition(UnitStateType state);
 	void executeState();
 	bool hasResource();
 	void load(dbload_unit* unit);
-
 
 	void setFormation(short _formation);
 	void resetFormation();
@@ -72,7 +72,7 @@ public:
 	static std::string getColumns();
 	void addUpgrade(db_unit_upgrade* upgrade);
 	void changeColor(ColorMode mode);
-	void addAim(FutureAim& aim, bool append = false);
+	void addAim(const FutureAim& aim, bool append = false);
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
 	UnitStateType getActionState() const { return actionState; }
@@ -127,6 +127,8 @@ private:
 	float maxSpeed;
 	float minSpeed;
 	float maxSeparationDistance;
+	float chargeEnergy = 500;
+	float chargeDistAttack = 2;
 
 	short posInFormation = -1;
 	short formation = -1;

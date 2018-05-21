@@ -134,7 +134,6 @@ void Unit::attackIfCloseEnough(float& distance, Unit* closest) {
 			//attackRange();
 		} else if (distance < attackIntrest * attackIntrest) {
 			addAim(FutureAim(closest, OrderType::FOLLOW));
-			//Game::get()->getActionCommandList()->add(new IndividualAction(this, OrderType::FOLLOW, closest));
 		}
 	}
 }
@@ -145,17 +144,16 @@ void Unit::collectIfCloseEnough(float distance, ResourceEntity* closest) {
 			toCollect(closest);
 		} else if (distance < attackIntrest * attackIntrest) {
 			addAim(FutureAim(closest, OrderType::FOLLOW));
-			//Game::get()->getActionCommandList()->add(new IndividualAction(this, OrderType::FOLLOW, closest));
 		}
 	}
 }
 
 void Unit::toAttack(std::vector<Unit*>* enemies) {
-	float minDistance = 9999;
+	float minDistance = 99999;
 	Unit* entityClosest = nullptr;
 	for (auto entity : *enemies) {
 		if (entity->isAlive()) {
-			float distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
+			const float distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
 			if (distance <= minDistance) {
 				minDistance = distance;
 				entityClosest = entity;
@@ -178,7 +176,7 @@ void Unit::toCollect(std::vector<Physical*>* enemies) {
 	float minDistance = 9999;
 	ResourceEntity* entityClosest = nullptr;
 	for (auto entity : *enemies) {
-		ResourceEntity* resource = dynamic_cast<ResourceEntity*>(entity);
+		const auto resource = dynamic_cast<ResourceEntity*>(entity);
 		if (resource->belowLimit()) {
 			const float distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
 			if (distance <= minDistance) {
@@ -192,6 +190,18 @@ void Unit::toCollect(std::vector<Physical*>* enemies) {
 
 void Unit::toCollect() {
 	return toCollect(resource);
+}
+
+void Unit::toCharge(std::vector<Unit*>* enemies) {
+	thingsToInteract.clear();
+	for (auto entity : *enemies) {
+		if (entity->isAlive()) {
+			const float distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
+			if (distance <= chargeDistAttack*chargeDistAttack) {
+				thingsToInteract.push_back(entity);
+			}
+		}
+	}
 }
 
 void Unit::toCollect(ResourceEntity* _resource) {
@@ -208,7 +218,7 @@ void Unit::addAim(Aim* aim) {
 	aims.add(aim);
 }
 
-void Unit::addAim(FutureAim& aim, bool append) {
+void Unit::addAim(const FutureAim& aim, bool append) {
 	if (!append) {
 		clearAims();
 	}

@@ -9,14 +9,14 @@ public:
 	CameraManager();
 	~CameraManager();
 	void setCameraBehave(int _type);
-	Camera *getComponent();
-	void translate(const IntVector2& cursorPos, Input* input, float timeStep);
-	String *getInfo();
-	MouseMode getMouseMode();
-	void rotate(const IntVector2& mouse_move);
-	void changePosition(float x, float y);
+	Camera *getComponent() const;
+	void translate(const IntVector2& cursorPos, Input* input, float timeStep) const;
+	String *getInfo() const;
+	MouseMode getMouseMode() const;
+	void rotate(const IntVector2& mouse_move) const;
+	void changePosition(float x, float y) const;
 private:
-	void createCameraKeys(Input* input, bool cameraKeys[4], const IntVector2& cursorPos);
+	void createCameraKeys(Input* input, bool cameraKeys[4], const IntVector2& cursorPos) const;
 
 	const double MOUSE_SENSITIVITY = 0.1f;
 	std::vector<CameraBehave*> cameraBehaves;

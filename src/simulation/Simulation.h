@@ -24,7 +24,7 @@ public:
 	Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList);
 	~Simulation();
 	SimulationInfo* update(float timeStep);
-	void executeLists();
+	void executeLists() const;
 	void initScene(SceneLoader& loader);
 	void initScene(NewGameForm* form);
 
@@ -41,15 +41,15 @@ private:
 	void handleTimeInFrame(float timeStep);
 	float updateTime(float timeStep);
 
-	void loadEntities(NewGameForm* form);
+	void loadEntities(NewGameForm* form) const;
 	void loadEntities(SceneLoader& loader) const;
 	void countFrame();
 	void applyForce();
-	void levelUp(QueueElement* done);
+	void levelUp(QueueElement* done) const;
 	void updateBuildingQueues(float time);
 	void updateQueues();
 	void selfAI();
-	void addTestEntities();
+	void addTestEntities() const;
 
 	void tryToAttack(vector<Unit*>::value_type unit);
 	void tryToCollect(Unit* unit);

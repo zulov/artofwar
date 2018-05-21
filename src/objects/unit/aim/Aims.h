@@ -18,7 +18,7 @@ public:
 	bool ifReach(Unit* unit);
 	bool hasAim();
 	void add(Aim* aim);
-	void add(FutureAim & aim);
+	void add(const FutureAim & aim);
 	void clear();
 private:
 	std::vector<FutureAim> nextAims;

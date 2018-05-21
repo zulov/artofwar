@@ -1,10 +1,10 @@
 #include "TopPanel.h"
 #include "../../UiUtils.h"
 #include "Game.h"
+#include "GameState.h"
 #include "database/DatabaseCache.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include "GameState.h"
 
 
 TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -41,11 +41,11 @@ void TopPanel::createBody() {
 	}
 }
 
-void TopPanel::update(int value) {
+void TopPanel::update(int value) const {
 	unitsNumber->SetText(String(value));
 }
 
-void TopPanel::update(Resources& resources) {
+void TopPanel::update(Resources& resources) const {
 	if (resources.hasChanged()) {
 
 		short size = resources.getSize();

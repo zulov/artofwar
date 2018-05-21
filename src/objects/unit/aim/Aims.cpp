@@ -70,7 +70,7 @@ void Aims::add(Aim* aim) {
 	current = aim;
 }
 
-void Aims::add(FutureAim& aim) {
+void Aims::add(const FutureAim& aim) {
 	nextAims.push_back(aim);
 }
 

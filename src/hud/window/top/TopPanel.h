@@ -10,8 +10,8 @@ class TopPanel :public AbstractWindowPanel
 public:
 	TopPanel(Urho3D::XMLFile* _style);
 	~TopPanel();
-	void update(int value);
-	void update(Resources& resources);
+	void update(int value) const;
+	void update(Resources& resources) const;
 private:
 	
 	void createBody() override;

@@ -33,5 +33,15 @@ void ChargeState::onEnd(Unit* unit) {
 void ChargeState::execute(Unit* unit) {
 	State::execute(unit);
 	++unit->currentFrameState;
-	//if(unit->currentFrameState<unit->)
+	if (unit->currentFrameState < unit->chargeEnergy) {
+		for (auto physical : unit->thingsToInteract) {
+			if (unit->getTeam() != physical->getTeam()) {
+				physical->absorbAttack(10);
+			}
+		}
+	} else {
+		unit->currentFrameState = 0;
+		StateManager::get()->changeState(unit, UnitStateType::MOVE);
+	}
+
 }
