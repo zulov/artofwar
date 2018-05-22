@@ -299,6 +299,7 @@
     <ClInclude Include="src\colors\ColorPallet.h" />
     <ClInclude Include="src\control\ControlsUtils.h" />
     <ClInclude Include="src\objects\unit\aim\FutureAim.h" />
+    <ClInclude Include="src\objects\unit\ChargeData.h" />
     <ClInclude Include="src\objects\unit\ColorMode.h" />
     <ClInclude Include="src\simulation\env\bucket\DrawGridUtils.h" />
     <ClInclude Include="src\simulation\force\ForceStats.h" />

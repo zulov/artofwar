@@ -25,6 +25,7 @@ public:
 	void addAim(const Vector2& _futureTarget, const Physical* _physical, OrderType _action, bool append);
 	size_t getSize();
 	void semiReset();
+	std::vector<Unit*>& getUnits() { return units; }
 private:
 	Vector2 computeLocalCenter();
 	void setNewLeader(Vector2& localCenter);
@@ -43,7 +44,7 @@ private:
 	float sparsity = 1;
 
 	std::vector<Unit*> units;
-	char *rechnessLevel;
+	char* rechnessLevel;
 	FormationType type;
 	Vector2 center;
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ChargeData.h"
 #include "ColorMode.h"
 #include "aim/Aims.h"
 #include "database/db_strcut.h"
@@ -11,8 +12,6 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
 
-
-#define MAX_ACCEL 5000
 
 struct FutureAim;
 class State;
@@ -97,7 +96,7 @@ private:
 	void attackIfCloseEnough(float& distance, Unit* closest);
 	void collectIfCloseEnough(float distance, ResourceEntity* closest);
 
-	void changeColor(float value, float maxValue);
+	void changeColor(float value, float maxValue) const;
 	void changeColor(Material* newMaterial);
 	void changeColor(UnitStateType state);
 
@@ -116,6 +115,8 @@ private:
 	StaticModel* model;
 	Material* basic;
 
+	ChargeData* chargeData{};
+
 	std::vector<db_unit_upgrade*> upgrades;
 
 	bool rotatable;
@@ -127,8 +128,6 @@ private:
 	float maxSpeed;
 	float minSpeed;
 	float maxSeparationDistance;
-	float chargeEnergy = 500;
-	float chargeDistAttack = 2;
 
 	short posInFormation = -1;
 	short formation = -1;

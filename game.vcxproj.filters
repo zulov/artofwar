@@ -474,6 +474,7 @@
       <Filter>aim</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\unit\aim\FutureAim.h" />
+    <ClInclude Include="src\objects\unit\ChargeData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

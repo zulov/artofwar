@@ -10,6 +10,7 @@ ChargeState::ChargeState() {
 	nextStates[static_cast<char>(UnitStateType::PATROL)] = true;
 	nextStates[static_cast<char>(UnitStateType::FOLLOW)] = true;
 	nextStates[static_cast<char>(UnitStateType::CHARAGE)] = true;
+	nextStates[static_cast<char>(UnitStateType::MOVE)] = true;
 }
 
 
@@ -22,7 +23,7 @@ void ChargeState::onStart(Unit* unit, ActionParameter& parameter) {
 	unit->addAim(parameter.aim);
 	//TODO aim?
 	unit->maxSpeed = unit->dbLevel->maxSpeed * 2;
-	unit->currentFrameState = 0;
+	unit->chargeData->reset();
 }
 
 void ChargeState::onEnd(Unit* unit) {
@@ -33,14 +34,19 @@ void ChargeState::onEnd(Unit* unit) {
 void ChargeState::execute(Unit* unit) {
 	State::execute(unit);
 	++unit->currentFrameState;
-	if (unit->currentFrameState < unit->chargeEnergy) {
+	if (unit->chargeData->updateFrame()) {
 		for (auto physical : unit->thingsToInteract) {
 			if (unit->getTeam() != physical->getTeam()) {
+				auto before = physical->getHealthPercent();
 				physical->absorbAttack(10);
+				auto after = physical->getHealthPercent();
+				if (!unit->chargeData->updateHit(before, after)) {
+					StateManager::get()->changeState(unit, UnitStateType::MOVE);
+					break;
+				}
 			}
 		}
 	} else {
-		unit->currentFrameState = 0;
 		StateManager::get()->changeState(unit, UnitStateType::MOVE);
 	}
 

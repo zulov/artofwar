@@ -3,15 +3,14 @@
 #include "OrderType.h"
 #include "aim/FutureAim.h"
 #include "colors/ColorPeletteRepo.h"
-#include "commands/action/ActionCommand.h"
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
+#include "simulation/formation/FormationManager.h"
 #include <Urho3D/Graphics/Material.h><Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h><Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h><Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h><Urho3D/Resource/ResourceCache.h>
 #include <string>
-#include "simulation/formation/FormationManager.h"
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr),
@@ -21,6 +20,9 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	dbUnit = Game::get()->getDatabaseCache()->getUnit(id);
 	dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
 	populate();
+	if (StateManager::get()->validateState(getDbID(), UnitStateType::CHARAGE)) {
+		chargeData = new ChargeData(300, 2);
+	}
 
 	node->Scale(dbLevel->scale);
 	model = node->CreateComponent<StaticModel>();
@@ -36,6 +38,7 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 
 Unit::~Unit() {
 	delete toResource;
+	delete chargeData;
 }
 
 bool Unit::isAlive() const {
@@ -197,7 +200,7 @@ void Unit::toCharge(std::vector<Unit*>* enemies) {
 	for (auto entity : *enemies) {
 		if (entity->isAlive()) {
 			const float distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
-			if (distance <= chargeDistAttack*chargeDistAttack) {
+			if (distance <= chargeData->attackRange * chargeData->attackRange) {
 				thingsToInteract.push_back(entity);
 			}
 		}
@@ -293,7 +296,7 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 	upgrades.push_back(upgrade);
 }
 
-void Unit::changeColor(float value, float maxValue) {
+void Unit::changeColor(float value, float maxValue) const {
 	Material* newMaterial = Game::get()->getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue);
 	Material* current = model->GetMaterial(0);
 

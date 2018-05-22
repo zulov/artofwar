@@ -24,11 +24,10 @@ void FormationAction::addTargetAim(Vector2* to, bool append) {
 
 void FormationAction::addChargeAim(Vector2* charge, bool append) {
 	auto opt = formation->getLeader();
-	if (opt.has_value()) {
+	for (auto unit : formation->getUnits()) {
 		const char id = static_cast<char>(action);
-
 		ActionParameter parameter = getChargeAim(charge, append);
-		opt.value()->action(id, parameter);
+		unit->action(id, parameter);	
 	}
 }
 
