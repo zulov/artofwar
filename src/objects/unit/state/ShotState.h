@@ -13,11 +13,11 @@ public:
 	void onStart(Unit* unit, ActionParameter& parameter) override {
 	}
 
-	void onEnd(Unit* unit) {
+	void onEnd(Unit* unit) override {
 		State::onEnd(unit);
 	}
 
-	void execute(Unit* unit) {
+	void execute(Unit* unit) override {
 		State::execute(unit);
 	}
 };

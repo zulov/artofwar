@@ -195,10 +195,10 @@
     <ClCompile Include="src\commands\action\IndividualAction.cpp" />
     <ClCompile Include="src\commands\action\FormationAction.cpp" />
     <ClCompile Include="src\colors\ColorPeletteRepo.cpp" />
+    <ClCompile Include="src\objects\unit\state\State.cpp" />
     <ClCompile Include="src\simulation\formation\Formation.cpp" />
     <ClCompile Include="src\simulation\formation\FormationManager.cpp" />
     <ClCompile Include="src\hud\window\menu\info\LeftMenuInfoPanel.cpp" />
-    <ClCompile Include="src\objects\unit\state\DisposeState.cpp" />
     <ClCompile Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.cpp" />
     <ClCompile Include="src\hud\window\main_menu\close\MainMenuClosePanel.cpp" />
     <ClCompile Include="src\hud\window\main_menu\load\MainMenuLoadPanel.cpp" />
@@ -216,11 +216,6 @@
     <ClCompile Include="src\objects\unit\aim\DummyAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\TargetAim.cpp" />
-    <ClCompile Include="src\objects\unit\state\ChargeState.cpp" />
-    <ClCompile Include="src\objects\unit\state\CollectState.cpp" />
-    <ClCompile Include="src\objects\unit\state\DeadState.cpp" />
-    <ClCompile Include="src\objects\unit\state\DefendState.cpp" />
-    <ClCompile Include="src\objects\unit\state\GoState.cpp" />
     <ClCompile Include="src\commands\AbstractCommand.cpp" />
     <ClCompile Include="src\hud\window\AbstractWindowPanel.cpp" />
     <ClCompile Include="src\commands\action\ActionCommand.cpp" />
@@ -228,8 +223,6 @@
     <ClCompile Include="src\objects\unit\aim\Aims.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\objects\unit\state\AttackState.cpp" />
-    <ClCompile Include="src\objects\unit\state\MoveState.cpp" />
-    <ClCompile Include="src\objects\unit\state\PatrolState.cpp" />
     <ClCompile Include="src\scene\load\SceneLoader.cpp" />
     <ClCompile Include="src\scene\save\SceneSaver.cpp" />
     <ClCompile Include="src\simulation\env\bucket\Bucket.cpp" />
@@ -242,7 +235,6 @@
     <ClCompile Include="src\camera\CameraManager.cpp" />
     <ClCompile Include="src\database\DatabaseCache.cpp" />
     <ClCompile Include="src\hud\window\debug\DebugPanel.cpp" />
-    <ClCompile Include="src\objects\unit\state\FollowState.cpp" />
     <ClCompile Include="src\hud\HudData.cpp" />
     <ClCompile Include="src\hud\window\menu\MenuPanel.cpp" />
     <ClCompile Include="src\hud\window\minimap\MiniMapPanel.cpp" />
@@ -273,9 +265,7 @@
     <ClCompile Include="src\simulation\env\bucket\ComplexBucketData.cpp" />
     <ClCompile Include="src\simulation\env\bucket\MainGrid.cpp" />
     <ClCompile Include="src\simulation\SimulationInfo.cpp" />
-    <ClCompile Include="src\objects\unit\state\State.cpp" />
     <ClCompile Include="src\objects\unit\state\StateManager.cpp" />
-    <ClCompile Include="src\objects\unit\state\StopState.cpp" />
     <ClCompile Include="src\hud\window\top\TopHudElement.cpp" />
     <ClCompile Include="src\hud\window\top\TopPanel.cpp" />
     <ClCompile Include="src\objects\unit\UnitFactory.cpp" />
