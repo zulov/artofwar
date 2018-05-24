@@ -14,5 +14,6 @@ enum class UnitStateType : char
 	COLLECT,
 	MOVE,
 	//TODO nie ma takiego orderu musi byæ rêcznie dodany?
-	DISPOSE
+	DISPOSE,
+	SHOT
 };

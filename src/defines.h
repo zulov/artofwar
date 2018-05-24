@@ -8,4 +8,4 @@
 
 #define DEFAULT_VECTOR_SIZE 10
 
-#define STATE_SIZE 11
+#define STATE_SIZE 12

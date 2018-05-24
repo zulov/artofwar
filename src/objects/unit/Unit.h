@@ -11,6 +11,7 @@
 #include "state/UnitStateType.h"
 #include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
+#include "MissleData.h"
 
 
 struct FutureAim;
@@ -91,9 +92,8 @@ public:
 	int getDbID() override;
 	void clean() override;
 private:
-	//void addAim(Aim* aim);
 
-	void attackIfCloseEnough(float& distance, Unit* closest);
+	void attackIfCloseEnough(float distance, Unit* closest);
 	void collectIfCloseEnough(float distance, ResourceEntity* closest);
 
 	void changeColor(float value, float maxValue) const;
@@ -116,6 +116,7 @@ private:
 	Material* basic;
 
 	ChargeData* chargeData{};
+	MissleData* missleData{};
 
 	std::vector<db_unit_upgrade*> upgrades;
 

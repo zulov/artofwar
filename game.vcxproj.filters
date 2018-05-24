@@ -475,6 +475,9 @@
     </ClInclude>
     <ClInclude Include="src\objects\unit\aim\FutureAim.h" />
     <ClInclude Include="src\objects\unit\ChargeData.h" />
+    <ClInclude Include="src\objects\unit\MissleData.h" />
+    <ClInclude Include="src\objects\NodeUtils.h" />
+    <ClInclude Include="src\objects\unit\state\ShotState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -89,11 +89,3 @@ bool raycast(hit_data& hitData, ObjectType type) {
 
 	return false;
 }
-
-inline void createNode(const String& model, const String& texture, Node** node) {
-	*node = Game::get()->getScene()->CreateChild();
-	auto selectionModel = (*node)->CreateComponent<StaticModel>();
-	selectionModel->SetModel(Game::get()->getCache()->GetResource<Model>(model));
-	selectionModel->SetMaterial(Game::get()->getCache()->GetResource<Material>(texture));
-	(*node)->SetEnabled(false);
-}

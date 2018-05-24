@@ -23,6 +23,10 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	if (StateManager::get()->validateState(getDbID(), UnitStateType::CHARAGE)) {
 		chargeData = new ChargeData(150, 2);
 	}
+	
+	if (StateManager::get()->validateState(getDbID(), UnitStateType::SHOT)) {
+		missleData = new MissleData(150, 2);
+	}
 
 	node->Scale(dbLevel->scale);
 	model = node->CreateComponent<StaticModel>();
@@ -127,7 +131,7 @@ void Unit::absorbAttack(float attackCoef) {
 	}
 }
 
-void Unit::attackIfCloseEnough(float& distance, Unit* closest) {
+void Unit::attackIfCloseEnough(float distance, Unit* closest) {
 	if (closest) {
 		if (distance < attackRange * attackRange) {
 			toAttack(closest);
