@@ -33,7 +33,7 @@ Simulation::~Simulation() {
 	Game::get()->setActionCommmandList(nullptr);
 }
 
-void Simulation::tryToAttack(vector<Unit*>::value_type unit) {
+void Simulation::tryToAttack(Unit* unit) {
 	if (unit->hasEnemy()) {
 		unit->toAttack();
 	} else {

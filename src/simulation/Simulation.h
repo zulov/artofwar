@@ -51,7 +51,7 @@ private:
 	void selfAI();
 	void addTestEntities() const;
 
-	void tryToAttack(vector<Unit*>::value_type unit);
+	void tryToAttack(Unit* unit);
 	void tryToCollect(Unit* unit);
 
 	float accumulateTime = 0;

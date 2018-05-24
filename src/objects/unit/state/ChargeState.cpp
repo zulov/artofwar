@@ -33,12 +33,12 @@ void ChargeState::onEnd(Unit* unit) {
 
 void ChargeState::execute(Unit* unit) {
 	State::execute(unit);
-	++unit->currentFrameState;
+	
 	if (unit->chargeData->updateFrame()) {
 		for (auto physical : unit->thingsToInteract) {
 			if (unit->getTeam() != physical->getTeam()) {
 				auto before = physical->getHealthPercent();
-				physical->absorbAttack(10);
+				physical->absorbAttack(unit->attackCoef);
 				auto after = physical->getHealthPercent();
 				if (!unit->chargeData->updateHit(before, after)) {
 					StateManager::get()->changeState(unit, UnitStateType::MOVE);

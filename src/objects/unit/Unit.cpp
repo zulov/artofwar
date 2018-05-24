@@ -21,7 +21,7 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
 	populate();
 	if (StateManager::get()->validateState(getDbID(), UnitStateType::CHARAGE)) {
-		chargeData = new ChargeData(300, 2);
+		chargeData = new ChargeData(150, 2);
 	}
 
 	node->Scale(dbLevel->scale);
@@ -169,6 +169,7 @@ void Unit::toAttack(std::vector<Unit*>* enemies) {
 void Unit::toAttack(Physical* enemy) {
 	thingsToInteract.clear();
 	thingsToInteract.push_back(enemy);
+	toAttack();
 }
 
 void Unit::toAttack() {
@@ -423,13 +424,17 @@ void Unit::applyForce(double timeStep) {
 	velocity += acceleration * (timeStep / mass);
 	float velLenght = velocity.LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
-		StateManager::get()->changeState(this, UnitStateType::STOP);
+		if (state == UnitStateType::MOVE) {
+			StateManager::get()->changeState(this, UnitStateType::STOP);
+		}
 	} else {
 		if (velLenght > maxSpeed * maxSpeed) {
 			velocity.Normalize();
 			velocity *= maxSpeed;
 		}
-		StateManager::get()->changeState(this, UnitStateType::MOVE);
+		if (state == UnitStateType::STOP) {
+			StateManager::get()->changeState(this, UnitStateType::MOVE);
+		}
 		if (rotatable && velLenght > 2 * minSpeed * minSpeed) {
 			node->SetDirection(Vector3(velocity.x_, 0, velocity.y_));
 		}

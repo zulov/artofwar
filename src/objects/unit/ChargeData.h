@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+
 struct ChargeData
 {
 	float energy;
@@ -25,7 +27,7 @@ struct ChargeData
 		if (after < 0.1 && before - after > 0.1) {
 			++energy;
 		} else {
-			energy -= 2;
+			energy -= 5;
 		}
 		return energy > 0;
 	}
