@@ -8,6 +8,7 @@ FollowState::FollowState() {
 	nextStates[static_cast<char>(UnitStateType::DEAD)] = true;
 	nextStates[static_cast<char>(UnitStateType::GO)] = true;
 	nextStates[static_cast<char>(UnitStateType::PATROL)] = true;
+	nextStates[static_cast<char>(UnitStateType::MOVE)] = true;
 }
 
 FollowState::~FollowState() = default;

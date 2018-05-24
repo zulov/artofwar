@@ -109,10 +109,7 @@ Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 			force = dirOpt.value();
 			forceGo(boostCoef, aimCoef, force);
 		} else if (toResource) {
-			force = Vector2(
-			                toResource->x_,
-			                toResource->y_
-			               );
+			force = Vector2(toResource->x_, toResource->y_);
 			forceGo(boostCoef, aimCoef, force);
 		}
 	}
@@ -162,6 +159,9 @@ void Unit::toAttack(std::vector<Unit*>* enemies) {
 				entityClosest = entity;
 			}
 		}
+	}
+	if (minDistance != 99999) {
+		cout << minDistance << endl;
 	}
 	attackIfCloseEnough(minDistance, entityClosest);
 }
