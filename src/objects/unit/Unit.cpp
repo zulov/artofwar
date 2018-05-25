@@ -23,8 +23,14 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	if (StateManager::get()->validateState(getDbID(), UnitStateType::CHARAGE)) {
 		chargeData = new ChargeData(150, 2);
 	}
-	
-	if (StateManager::get()->validateState(getDbID(), UnitStateType::SHOT)) {
+
+	if (id == 1) {
+		defaultAttackState = UnitStateType::SHOT;
+	} else {
+		defaultAttackState = UnitStateType::ATTACK;
+	}
+
+	if (defaultAttackState == UnitStateType::SHOT) {
 		missleData = new MissleData(150, 2);
 	}
 

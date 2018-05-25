@@ -11,6 +11,7 @@
 #include "GoState.h"
 #include "MoveState.h"
 #include "PatrolState.h"
+#include "ShotState.h"
 #include "StopState.h"
 #include "UnitStateType.h"
 #include "database/DatabaseCache.h"
@@ -30,9 +31,10 @@ StateManager::StateManager() {
 	states[static_cast<int>(UnitStateType::COLLECT)] = new CollectState();
 	states[static_cast<int>(UnitStateType::MOVE)] = new MoveState();
 	states[static_cast<int>(UnitStateType::DISPOSE)] = new DisposeState();
+	states[static_cast<int>(UnitStateType::SHOT)] = new ShotState();
 	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
 		std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
-		fill_n(ordersToUnit[i],STATE_SIZE, false);
+		fill_n(ordersToUnit[i], STATE_SIZE, false);
 		for (auto order : *orders) {
 			ordersToUnit[i][order->id] = true;
 		}

@@ -124,7 +124,6 @@
     <ClCompile Include="src\objects\unit\state\StateManager.cpp">
       <Filter>objects\state</Filter>
     </ClCompile>
-    <ClCompile Include="src\objects\unit\state\AttackState.cpp" />
     <ClCompile Include="src\objects\unit\aim\TargetAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />

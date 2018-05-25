@@ -2,6 +2,7 @@
 
 #include "ChargeData.h"
 #include "ColorMode.h"
+#include "MissleData.h"
 #include "aim/Aims.h"
 #include "database/db_strcut.h"
 #include "objects/Physical.h"
@@ -11,7 +12,6 @@
 #include "state/UnitStateType.h"
 #include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
-#include "MissleData.h"
 
 
 struct FutureAim;
@@ -30,6 +30,7 @@ class Unit : public Physical
 	friend class ChargeState;
 	friend class CollectState;
 	friend class DisposeState;
+	friend class ShotState;
 public:
 	Unit(Vector3* _position, int id, int player, int level);
 	~Unit();
@@ -111,6 +112,8 @@ private:
 
 	UnitStateType state;
 	UnitStateType actionState;
+
+	UnitStateType defaultAttackState;
 
 	StaticModel* model;
 	Material* basic;

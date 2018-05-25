@@ -222,7 +222,6 @@
     <ClCompile Include="src\objects\unit\aim\Aim.cpp" />
     <ClCompile Include="src\objects\unit\aim\Aims.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
-    <ClCompile Include="src\objects\unit\state\AttackState.cpp" />
     <ClCompile Include="src\scene\load\SceneLoader.cpp" />
     <ClCompile Include="src\scene\save\SceneSaver.cpp" />
     <ClCompile Include="src\simulation\env\bucket\Bucket.cpp" />
