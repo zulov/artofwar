@@ -358,7 +358,6 @@
     <ClInclude Include="src\objects\unit\state\GoState.h" />
     <ClInclude Include="src\objects\unit\state\AttackState.h" />
     <ClInclude Include="src\objects\unit\state\ChargeState.h" />
-    <ClInclude Include="src\objects\unit\state\PatrolState.h" />
     <ClInclude Include="src\objects\unit\state\DefendState.h" />
     <ClInclude Include="src\objects\unit\state\DeadState.h" />
     <ClInclude Include="src\objects\unit\state\UnitStateType.h">

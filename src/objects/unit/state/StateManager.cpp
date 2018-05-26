@@ -10,7 +10,6 @@
 #include "Game.h"
 #include "GoState.h"
 #include "MoveState.h"
-#include "PatrolState.h"
 #include "ShotState.h"
 #include "StopState.h"
 #include "UnitStateType.h"
@@ -24,7 +23,6 @@ StateManager::StateManager() {
 	states[static_cast<int>(UnitStateType::STOP)] = new StopState();
 	states[static_cast<int>(UnitStateType::CHARAGE)] = new ChargeState();
 	states[static_cast<int>(UnitStateType::ATTACK)] = new AttackState();
-	states[static_cast<int>(UnitStateType::PATROL)] = new PatrolState();
 	states[static_cast<int>(UnitStateType::DEAD)] = new DeadState();
 	states[static_cast<int>(UnitStateType::DEFEND)] = new DefendState();
 	states[static_cast<int>(UnitStateType::FOLLOW)] = new FollowState();

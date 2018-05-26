@@ -5,7 +5,6 @@ enum class OrderType : char
 	STOP,
 	CHARGE,
 	ATTACK,
-	PATROL,
 	DEAD,
 	DEFEND,
 	FOLLOW

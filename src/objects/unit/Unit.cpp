@@ -174,9 +174,6 @@ void Unit::toAttack(std::vector<Unit*>* enemies) {
 			}
 		}
 	}
-	if (minDistance != 99999) {
-		cout << minDistance << endl;
-	}
 	attackIfCloseEnough(minDistance, entityClosest);
 }
 
@@ -269,9 +266,6 @@ void Unit::action(char id, ActionParameter& parameter) {
 		StateManager::get()->changeState(this, UnitStateType::CHARAGE, parameter);
 		break;
 	case OrderType::ATTACK: break;
-	case OrderType::PATROL:
-		StateManager::get()->changeState(this, UnitStateType::PATROL, parameter);
-		break;
 	case OrderType::DEAD:
 		StateManager::get()->changeState(this, UnitStateType::DEAD);
 		break;

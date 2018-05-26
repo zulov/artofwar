@@ -346,7 +346,6 @@
     <ClInclude Include="src\objects\unit\state\DefendState.h" />
     <ClInclude Include="src\objects\unit\state\GoState.h" />
     <ClInclude Include="src\objects\unit\state\MoveState.h" />
-    <ClInclude Include="src\objects\unit\state\PatrolState.h" />
     <ClInclude Include="src\scene\load\dbload_container.h" />
     <ClInclude Include="src\scene\load\SceneLoader.h" />
     <ClInclude Include="src\scene\save\SceneSaver.h" />

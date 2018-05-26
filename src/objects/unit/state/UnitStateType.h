@@ -1,5 +1,5 @@
 #pragma once
-#define STATE_SIZE 12
+#define STATE_SIZE 11
 
 enum class UnitStateType : char
 {
@@ -8,7 +8,6 @@ enum class UnitStateType : char
 	STOP,
 	CHARAGE,
 	ATTACK,
-	PATROL,
 	DEAD,
 	DEFEND,
 	FOLLOW,

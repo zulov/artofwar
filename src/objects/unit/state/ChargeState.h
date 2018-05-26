@@ -13,7 +13,6 @@ public:
 		nextStates[static_cast<char>(UnitStateType::DEFEND)] = true;
 		nextStates[static_cast<char>(UnitStateType::DEAD)] = true;
 		nextStates[static_cast<char>(UnitStateType::GO)] = true;
-		nextStates[static_cast<char>(UnitStateType::PATROL)] = true;
 		nextStates[static_cast<char>(UnitStateType::FOLLOW)] = true;
 		nextStates[static_cast<char>(UnitStateType::CHARAGE)] = true;
 		nextStates[static_cast<char>(UnitStateType::MOVE)] = true;

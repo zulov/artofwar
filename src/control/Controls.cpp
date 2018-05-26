@@ -86,14 +86,7 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 	switch (clicked->getType()) {
 	case ObjectType::PHYSICAL:
 		{
-		OrderType type;
-		if (shiftPressed) {
-			type = OrderType::PATROL;
-		} else {
-			type = OrderType::GO;
-		}
-
-		Game::get()->getActionCommandList()->add(new GroupAction(selected, type, new Vector2(hitPos.x_, hitPos.z_),
+		Game::get()->getActionCommandList()->add(new GroupAction(selected, OrderType::GO, new Vector2(hitPos.x_, hitPos.z_),
 		                                                         shiftPressed));
 		break;
 		}
@@ -127,8 +120,8 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
 	const auto first = new Vector2(held.first->x_, held.first->z_);
 	if (input->GetKeyDown(KEY_SHIFT)) {
 		const auto second = new Vector2(held.second->x_, held.second->z_);
-		actions->add(new GroupAction(selected, OrderType::PATROL, first));
-		actions->add(new GroupAction(selected, OrderType::PATROL, second, true));
+		actions->add(new GroupAction(selected, OrderType::GO, first));
+		actions->add(new GroupAction(selected, OrderType::GO, second, true));
 	} else {
 		const auto charge = new Vector2(held.second->x_ - held.first->x_, held.second->z_ - held.first->z_);
 
@@ -341,7 +334,6 @@ void Controls::unitOrder(short id) {
 	case OrderType::GO:
 	case OrderType::CHARGE:
 	case OrderType::ATTACK:
-	case OrderType::PATROL:
 	case OrderType::FOLLOW:
 		state = ORDER;
 		orderType = type;
@@ -531,11 +523,7 @@ void Controls::orderControl() {
 				toDefault();
 			}
 			break;
-		case OrderType::PATROL:
-			orderAction(true);
-			break;
 		case OrderType::CHARGE:
-
 			break;
 		default: ;
 		}
