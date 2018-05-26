@@ -1,5 +1,4 @@
 #pragma once
-#include "Physical.h"
 #include <Urho3D/Scene/Component.h>
 
 

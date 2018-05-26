@@ -7,5 +7,3 @@
 #define MAX_THREADS 4
 
 #define DEFAULT_VECTOR_SIZE 10
-
-#define STATE_SIZE 12

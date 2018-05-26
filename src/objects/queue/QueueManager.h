@@ -1,6 +1,8 @@
 #pragma once
-#include "QueueElement.h"
 #include <vector>
+#include "QueueElement.h"
+
+enum class ActionType : char;
 
 class QueueManager
 {

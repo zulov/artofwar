@@ -1,7 +1,6 @@
 #pragma once
 
 #include "SimulationInfo.h"
-#include "objects/building/Building.h"
 #include "objects/building/BuildingFactory.h"
 #include "objects/resource/ResourceFactory.h"
 #include "objects/unit/Unit.h"

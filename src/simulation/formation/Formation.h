@@ -2,7 +2,6 @@
 #include "FormationState.h"
 #include "FormationType.h"
 #include "OrderType.h"
-#include "objects/Physical.h"
 #include "objects/unit/Unit.h"
 #include <optional>
 #include <vector>

@@ -9,6 +9,7 @@
 #include <Urho3D/Math/Ray.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UI.h>
+#include "objects/Physical.h"
 
 
 inline void resultQuery(const Ray& cameraRay, PODVector<RayQueryResult>& results) {

@@ -1,4 +1,5 @@
 #include "SelectedInfoType.h"
+#include "objects/Physical.h"
 
 
 SelectedInfoType::SelectedInfoType() {

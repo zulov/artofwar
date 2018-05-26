@@ -1,7 +1,9 @@
 #pragma once
+#include "Game.h"
 #include "State.h"
-#include "player/PlayersManager.h"
+#include "objects/resource/ResourceEntity.h"
 #include "player/Resources.h"
+#include <player/PlayersManager.h>
 
 
 class CollectState : public State

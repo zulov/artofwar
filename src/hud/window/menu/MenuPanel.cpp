@@ -1,5 +1,4 @@
 #include "MenuPanel.h"
-#include "Game.h"
 #include "GameState.h"
 #include "database/DatabaseCache.h"
 #include "hud/MySprite.h"

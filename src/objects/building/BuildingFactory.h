@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Building.h"
 #include <vector>
+#include "Building.h"
 
 
 struct dbload_building;

@@ -1,7 +1,8 @@
 #include "ResourceFactory.h"
+#include "ResourceEntity.h"
 #include "Game.h"
-#include "scene/load/dbload_container.h"
 #include "database/DatabaseCache.h"
+#include "scene/load/dbload_container.h"
 #include "simulation/env/Enviroment.h"
 
 ResourceFactory::ResourceFactory() {

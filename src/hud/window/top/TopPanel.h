@@ -2,8 +2,8 @@
 
 #include "../AbstractWindowPanel.h"
 #include "TopHudElement.h"
-#include "player/Resources.h"
 
+class Resources;
 
 class TopPanel :public AbstractWindowPanel
 {

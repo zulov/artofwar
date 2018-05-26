@@ -6,12 +6,14 @@
 #include "OrderType.h"
 #include "SelectedInfo.h"
 #include "commands/creation/CreationCommand.h"
-#include "hud/HudData.h"
 #include <Urho3D/Graphics/Renderer.h>
 #include <Urho3D/Input/Input.h>
 #include <vector>
+#include <Urho3D/Graphics/StaticModel.h>
 
 
+struct ActionParameter;
+class HudData;
 struct MouseButton;
 class SimulationInfo;
 struct hit_data;

@@ -1,4 +1,6 @@
 #pragma once
+#define STATE_SIZE 12
+
 enum class UnitStateType : char
 {
 	GO = 0,

@@ -1,8 +1,8 @@
 #include "TopPanel.h"
 #include "../../UiUtils.h"
-#include "Game.h"
 #include "GameState.h"
 #include "database/DatabaseCache.h"
+#include "player/Resources.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
 

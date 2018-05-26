@@ -3,11 +3,8 @@
 #include "ContentInfo.h"
 #include "OperatorType.h"
 #include "bucket/MainGrid.h"
-#include "defines.h"
-#include "objects/Physical.h"
-#include "objects/building/Building.h"
-#include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
+#include "objects/building/Building.h"
 #include "simulation/env/bucket/Grid.h"
 #include <Urho3D/Graphics/Terrain.h>
 #include <vector>

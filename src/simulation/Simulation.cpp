@@ -7,6 +7,8 @@
 #include "scene/load/SceneLoader.h"
 #include "simulation/formation/FormationManager.h"
 #include <ctime>
+#include "OperatorType.h"
+#include "env/Enviroment.h"
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {

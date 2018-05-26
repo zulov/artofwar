@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include "simulation/env/Enviroment.h"
+#include "scene/load/dbload_container.h"
 
 
 BuildingFactory::BuildingFactory() {

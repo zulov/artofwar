@@ -1,6 +1,6 @@
 #pragma once
 #include <Urho3D/UI/Window.h>
-#include <set>
+#include <unordered_set>
 
 
 enum class GameState : char;
@@ -26,7 +26,7 @@ protected:
 	Urho3D::String styleName;
 	Urho3D::String bodyStyle;
 
-	std::set<GameState> visibleAt;
+	std::unordered_set<GameState> visibleAt;
 private:
 	virtual void createBody() =0;
 };

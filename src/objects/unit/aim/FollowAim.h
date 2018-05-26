@@ -1,6 +1,7 @@
 #pragma once
 #include "Aim.h"
-#include "objects/Physical.h"
+
+class Physical;
 
 class FollowAim : public Aim
 {

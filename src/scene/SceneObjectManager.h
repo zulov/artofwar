@@ -1,7 +1,8 @@
 #pragma once
-#include "objects/Entity.h"
 #include <vector>
 
+
+class Entity;
 
 class SceneObjectManager
 {

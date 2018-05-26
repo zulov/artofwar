@@ -1,14 +1,21 @@
 #pragma once
 #include "ObjectEnums.h"
 #include "commands/AbstractCommand.h"
-#include "simulation/SimulationObjectManager.h"
+#include <Urho3D/Math/Vector2.h>
 
+
+class SimulationObjectManager;
+
+namespace Urho3D {
+	class IntVector2;
+	class Vector2;
+}
 
 class CreationCommand : public AbstractCommand
 {
 public:
-	CreationCommand(ObjectType type, int id, const Vector2& _position, int _player, const IntVector2& _bucketCords, int level);
-	CreationCommand(ObjectType type, int _number, int id, const Vector2& _position, int _player, int level);
+	CreationCommand(ObjectType type, int id, const Urho3D::Vector2& _position, int _player, const Urho3D::IntVector2& _bucketCords, int level);
+	CreationCommand(ObjectType type, int _number, int id, const Urho3D::Vector2& _position, int _player, int level);
 	virtual ~CreationCommand();
 	void execute() override;
 	void setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager);
@@ -18,7 +25,7 @@ private:
 	int number;
 	int player;
 	int level;
-	Vector2 position;
+	Urho3D::Vector2 position;
 	ObjectType objectType;
-	IntVector2 bucketCords;
+	Urho3D::IntVector2 bucketCords;
 };

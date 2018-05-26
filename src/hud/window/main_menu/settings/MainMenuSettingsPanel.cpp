@@ -1,8 +1,7 @@
 #include "MainMenuSettingsPanel.h"
-#include <Urho3D/Resource/Localization.h>
-#include "Game.h"
-#include "hud/UiUtils.h"
 #include "database/DatabaseCache.h"
+#include "hud/UiUtils.h"
+#include <Urho3D/Resource/Localization.h>
 #include <Urho3D/UI/UIEvents.h>
 
 

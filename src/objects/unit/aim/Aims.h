@@ -1,10 +1,11 @@
 #pragma once
-#include "Aim.h"
 #include <Urho3D/Math/Vector2.h>
 #include <optional>
 #include <vector>
 
 
+class Aim;
+class Unit;
 class Entity;
 struct FutureAim;
 

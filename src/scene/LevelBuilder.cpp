@@ -2,7 +2,6 @@
 #include "Game.h"
 #include "Urho3D/Resource/Image.h"
 #include "database/DatabaseCache.h"
-#include "objects/Physical.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Octree.h>
@@ -10,6 +9,9 @@
 #include <Urho3D/Graphics/Terrain.h>
 #include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include "objects/Physical.h"
+#include "load/SceneLoader.h"
+#include "hud/window/main_menu/new_game/NewGameForm.h"
 
 
 LevelBuilder::LevelBuilder() {

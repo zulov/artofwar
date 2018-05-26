@@ -1,8 +1,10 @@
 ﻿#include "MainGrid.h"
 #include "BucketQueue.h"
-#include "DrawGridUtils.h"
 #include "Game.h"
+#include "DrawGridUtils.h"
 #include "Urho3D/Resource/Image.h"
+#include "objects/Static.h"
+#include "Bucket.h"
 #include <algorithm>
 #include <iomanip>
 #include <unordered_set>

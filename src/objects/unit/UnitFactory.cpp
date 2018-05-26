@@ -1,6 +1,8 @@
 #include "UnitFactory.h"
 #include "Game.h"
 #include "simulation/env/Enviroment.h"
+#include "state/StateManager.h"
+#include "scene/load/dbload_container.h"
 
 
 UnitFactory::UnitFactory() {

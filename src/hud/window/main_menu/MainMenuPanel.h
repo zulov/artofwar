@@ -1,8 +1,8 @@
 #pragma once
 #include "MainMenuDetailsPanel.h"
-#include "hud/HudData.h"
 #include "hud/window/AbstractWindowPanel.h"
 #include <Urho3D/UI/Button.h>
+
 
 #define MAIN_MENU_BUTTON_NUMBER 5
 

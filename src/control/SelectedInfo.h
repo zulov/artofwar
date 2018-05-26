@@ -16,11 +16,11 @@ public:
 	void reset();
 	void select(Physical* entity);
 	void hasBeedUpdatedDrawn();
-	void setMessage(String& s);
+	void setMessage(Urho3D::String& s);
 
 	std::vector<SelectedInfoType*>& getSelectedTypes() { return selectedByType; }
 	ObjectType getSelectedType() const {return selectedType;}
-	String& getMessage() { return message; }
+	Urho3D::String& getMessage() { return message; }
 	char getSelectedSubTypeNumber() const { return allSubTypeNumber; }
 	int getAllNumber() const { return allNumber; }
 	bool hasChanged() const { return changed; }
@@ -30,5 +30,5 @@ private:
 	char allSubTypeNumber;
 	ObjectType selectedType;
 	std::vector<SelectedInfoType*> selectedByType;
-	String message = "";
+	Urho3D::String message = "";
 };

@@ -1,6 +1,5 @@
 #pragma once
 #include "UnitStateType.h"
-#include "defines.h"
 #include "objects/unit/ActionParameter.h"
 
 

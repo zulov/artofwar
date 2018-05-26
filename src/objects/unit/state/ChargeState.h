@@ -2,6 +2,7 @@
 #include "../Unit.h"
 #include "State.h"
 #include "player/Resources.h"
+#include "objects/unit/ChargeData.h"
 
 
 class ChargeState : public State

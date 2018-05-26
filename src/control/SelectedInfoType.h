@@ -1,5 +1,7 @@
 #pragma once
-#include "objects/Physical.h"
+#include <vector>
+
+class Physical;
 
 class SelectedInfoType
 {

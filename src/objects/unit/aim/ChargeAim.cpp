@@ -1,5 +1,4 @@
 #include "ChargeAim.h"
-#include "Game.h"
 
 ChargeAim::ChargeAim(Urho3D::Vector2* _direction): direction(*_direction), chargeEnergy(50) {
 	direction.Normalize();

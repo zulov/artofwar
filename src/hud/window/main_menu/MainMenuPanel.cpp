@@ -1,16 +1,16 @@
 #include "MainMenuPanel.h"
+#include "GameState.h"
+#include "close//MainMenuClosePanel.h"
+#include "help/MainMenuHelpPanel.h"
 #include "hud/MySprite.h"
 #include "hud/UiUtils.h"
-#include "help/MainMenuHelpPanel.h"
 #include "load/MainMenuLoadPanel.h"
 #include "new_game/MainMenuNewGamePanel.h"
-#include "close//MainMenuClosePanel.h"
 #include "settings/MainMenuSettingsPanel.h"
-#include <Urho3D/UI/Text.h>
-#include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include "GameState.h"
+#include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/UI.h>
+#include <Urho3D/UI/UIEvents.h>
 
 
 MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {

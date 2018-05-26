@@ -1,5 +1,4 @@
 #include "InGameMenuPanel.h"
-#include "Game.h"
 #include <Urho3D/UI/UI.h>
 #include "hud/MySprite.h"
 #include "hud/UiUtils.h"

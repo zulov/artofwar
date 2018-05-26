@@ -1,5 +1,4 @@
 #include "MiniMapPanel.h"
-#include "Game.h"
 #include "GameState.h"
 #include "camera/CameraManager.h"
 #include "database/DatabaseCache.h"

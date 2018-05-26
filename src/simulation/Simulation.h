@@ -1,15 +1,18 @@
 #pragma once
+#include <vector>
 #include "SimulationInfo.h"
+#include "force/Force.h"
+#include "objects/building/Building.h"
 #include "SimulationObjectManager.h"
 #include "commands/upgrade/UpgradeCommandList.h"
-#include "hud/window/main_menu/new_game/NewGameForm.h"
-#include "objects/unit/Unit.h"
-#include "scene/save/SceneSaver.h"
-#include "simulation/env/Enviroment.h"
-#include "simulation/force/Force.h"
-#include <vector>
 
 
+class Unit;
+class QueueElement;
+enum class ColorMode : char;
+struct NewGameForm;
+class Enviroment;
+class SceneSaver;
 class SceneLoader;
 class CreationCommandList;
 
@@ -61,9 +64,9 @@ private:
 	ColorMode currentColor = ColorMode::BASIC;
 	Force force;
 
-	vector<Unit*>* units;
-	vector<Building*>* buildings;
-	vector<ResourceEntity*>* resources;
+	std::vector<Unit*>* units;
+	std::vector<Building*>* buildings;
+	std::vector<ResourceEntity*>* resources;
 
 	SimulationInfo* simulationInfo;
 	Enviroment* enviroment;

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "objects/unit/Unit.h"
-#include "objects/building/Building.h"
 #include "player/Player.h"
 #include <sqlite3/sqlite3.h>
 #include "Loading.h"
+#include "objects/building/Building.h"
 
 struct loading;
 

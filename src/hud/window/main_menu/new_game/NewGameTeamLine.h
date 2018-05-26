@@ -1,5 +1,4 @@
 #pragma once
-#include "Game.h"
 #include "NewGamePlayer.h"
 #include "database/DatabaseCache.h"
 #include "hud/UiUtils.h"

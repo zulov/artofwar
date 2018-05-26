@@ -4,7 +4,11 @@
 #include "aim/FutureAim.h"
 #include "colors/ColorPeletteRepo.h"
 #include "database/DatabaseCache.h"
+#include "objects/unit/MissleData.h"
+#include "objects/unit/ChargeData.h"
+#include "objects/resource/ResourceEntity.h"
 #include "player/PlayersManager.h"
+#include "state/StateManager.h"
 #include "simulation/formation/FormationManager.h"
 #include <Urho3D/Graphics/Material.h><Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h><Urho3D/Graphics/Model.h>

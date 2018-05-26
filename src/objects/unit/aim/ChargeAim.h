@@ -1,6 +1,5 @@
 #pragma once
 #include "Aim.h"
-#include <Urho3D/Scene/Node.h>
 
 class ChargeAim : public Aim
 {

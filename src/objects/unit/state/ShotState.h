@@ -4,8 +4,8 @@
 class ShotState : public State
 {
 public:
-	ShotState();
-	~ShotState();
+	ShotState(){}
+	~ShotState()=default;
 
 	void onStart(Unit* unit) override {}
 

@@ -1,21 +1,23 @@
 #pragma once
 
-#include "ChargeData.h"
 #include "ColorMode.h"
-#include "MissleData.h"
-#include "aim/Aims.h"
-#include "database/db_strcut.h"
 #include "objects/Physical.h"
-#include "objects/resource/ResourceEntity.h"
-#include "scene/load/dbload_container.h"
-#include "state/StateManager.h"
 #include "state/UnitStateType.h"
 #include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
+#include "aim/Aims.h"
 
 
+class Aim;
+struct db_unit_upgrade;
+struct db_unit_level;
+struct db_unit;
+struct dbload_unit;
 struct FutureAim;
 class State;
+class ResourceEntity;
+class MissleData;
+class ChargeData;
 
 class Unit : public Physical
 {

@@ -4,8 +4,9 @@
 #include <Urho3D/UI/ProgressBar.h>
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/UIElement.h>
-#include "objects/queue/QueueElement.h"
 
+
+class QueueElement;
 
 class QueueHudElement
 {

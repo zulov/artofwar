@@ -1,6 +1,5 @@
 #pragma once
 #include "ColorPallet.h"
-#include "defines.h"
 #include "objects/unit/state/UnitStateType.h"
 #include <Urho3D/Graphics/Material.h>
 

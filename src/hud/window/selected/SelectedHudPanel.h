@@ -1,6 +1,5 @@
 #pragma once
 #include "../AbstractWindowPanel.h"
-#include "Game.h"
 #include "SelectedHudElement.h"
 #include "control/SelectedInfo.h"
 #include <Urho3D/UI/Button.h>

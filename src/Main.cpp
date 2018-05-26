@@ -1,5 +1,6 @@
 #include "Urho3D/Resource/Image.h"
 #include "camera/CameraEnums.h"
+#include "colors/ColorPeletteRepo.h"
 #include "commands/creation/CreationCommandList.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
@@ -8,7 +9,9 @@
 #include "objects/LinkComponent.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimulationInfo.h"
-#include "colors/ColorPeletteRepo.h"
+#include "Game.h"
+#include "simulation/env/Enviroment.h"
+#include "simulation/formation/FormationManager.h"
 #include <Main.h>
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Engine/Console.h>
@@ -20,7 +23,7 @@
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "simulation/formation/FormationManager.h"
+#include "objects/unit/ActionParameter.h"
 
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)

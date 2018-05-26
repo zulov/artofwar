@@ -13,7 +13,7 @@ public:
 	~LeftMenuInfoPanel();
 	void updateSelected(SelectedInfo* selectedInfo);
 	void setInfo(HudData* hudData);
-	Urho3D::String stringFrom(const String &name, std::vector<db_cost*>* costs);
+	Urho3D::String stringFrom(const Urho3D::String &name, std::vector<db_cost*>* costs);
 private:
 	void createBody() override;
 

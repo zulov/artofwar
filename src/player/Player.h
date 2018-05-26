@@ -1,6 +1,7 @@
 #pragma once
 #include "Resources.h"
-#include "objects/ActionType.h"
+
+enum class ActionType : char;
 
 class Player
 {

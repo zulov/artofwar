@@ -1,7 +1,8 @@
 #include "CreationCommand.h"
+#include "simulation/SimulationObjectManager.h"
 
 
-CreationCommand::CreationCommand(ObjectType type, int id, const Vector2& _position, int _player, const IntVector2&
+CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::Vector2& _position, int _player, const Urho3D::IntVector2&
                                  _bucketCords,
                                  int level) {
 	position = _position;
@@ -12,7 +13,7 @@ CreationCommand::CreationCommand(ObjectType type, int id, const Vector2& _positi
 	this->level = level;
 }
 
-CreationCommand::CreationCommand(ObjectType type, int _number, int id, const Vector2& _position, int _player,
+CreationCommand::CreationCommand(ObjectType type, int _number, int id, const Urho3D::Vector2& _position, int _player,
                                  int level) {
 	number = _number;
 	position = _position;

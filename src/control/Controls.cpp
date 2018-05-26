@@ -2,6 +2,7 @@
 #include "ControlsUtils.h"
 #include "Game.h"
 #include "HitData.h"
+#include "hud/HudData.h"
 #include "camera/CameraManager.h"
 #include "commands/CommandList.h"
 #include "commands/action/ActionCommand.h"

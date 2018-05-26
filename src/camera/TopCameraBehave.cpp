@@ -1,6 +1,4 @@
 #include "TopCameraBehave.h"
-#include "Game.h"
-
 
 TopCameraBehave::TopCameraBehave(): CameraBehave(Vector3(0, 50, 0), 20, "TopCam") {
 	const auto diff = sqrt(50.0f - minY) + 1;

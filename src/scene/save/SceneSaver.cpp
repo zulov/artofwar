@@ -2,6 +2,7 @@
 #include "Loading.h"
 #include "database/db_utils.h"
 #include "player/PlayersManager.h"
+#include "objects/resource/ResourceEntity.h"
 #include <iostream>
 #include <ostream>
 #include <sqlite3/sqlite3.h>

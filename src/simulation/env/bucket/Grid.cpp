@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <iostream>
 #include <ostream>
+#include "Bucket.h"
 
 
 Grid::Grid(short _resolution, float _size, bool _debugEnabled): resolution(_resolution),

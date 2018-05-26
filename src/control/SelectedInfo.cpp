@@ -2,6 +2,7 @@
 #include "Controls.h"
 #include "SelectedInfoType.h"
 #include "utils.h"
+#include "objects/Physical.h"
 
 SelectedInfo::SelectedInfo() {
 	allNumber = 0;

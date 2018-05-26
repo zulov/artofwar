@@ -1,10 +1,11 @@
 #pragma once
-#include "Bucket.h"
 #include "BucketIterator.h"
+#include "defines.h"
 
 #define MAX_SEP_DIST 16
 #define RES_SEP_DIST 80
 
+class Bucket;
 
 class Grid
 {

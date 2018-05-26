@@ -1,9 +1,10 @@
 #pragma once
 
 #include "ForceStats.h"
-#include "objects/unit/Unit.h"
 #include <vector>
 
+
+class Unit;
 
 class Force
 {
@@ -11,11 +12,11 @@ public:
 	Force();
 	~Force();
 
-	void separationObstacle(Vector2& newForce, Unit* unit, const Vector2& repulse);
-	void separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit *>* units);
-	void destination(Vector2& newForce, Unit* unit);
-	void formation(Vector2& newForce, Unit* unit);
-	void escapeFromInvalidPosition(Vector2& newForce, Vector2* dir);
+	void separationObstacle(Urho3D::Vector2& newForce, Unit* unit, const Urho3D::Vector2& repulse);
+	void separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Unit *>* units);
+	void destination(Urho3D::Vector2& newForce, Unit* unit);
+	void formation(Urho3D::Vector2& newForce, Unit* unit);
+	void escapeFromInvalidPosition(Urho3D::Vector2& newForce, Urho3D::Vector2* dir);
 	float* stats();
 	void changeCoef(int i, int wheel);
 
