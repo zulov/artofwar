@@ -1,8 +1,10 @@
 #pragma once
 #include "objects/unit/Unit.h"
-#include "simulation/env/ContentInfo.h"
 #include <vector>
+#include "defines.h"
 
+
+struct content_info;
 
 class Bucket
 {

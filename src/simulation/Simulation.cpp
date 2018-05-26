@@ -9,6 +9,7 @@
 #include <ctime>
 #include "OperatorType.h"
 #include "env/Enviroment.h"
+#include "scene/save/SceneSaver.h"
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {

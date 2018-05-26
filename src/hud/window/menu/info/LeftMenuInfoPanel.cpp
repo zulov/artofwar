@@ -5,6 +5,7 @@
 #include "database/db_strcut.h"
 #include "hud/HudData.h"
 #include "player/PlayersManager.h"
+#include "objects/Physical.h"
 
 
 LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
@@ -47,7 +48,7 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 }
 
 void LeftMenuInfoPanel::setInfo(HudData* hudData) {
-	String message = "";
+	Urho3D::String message = "";
 	const short id = hudData->getId();
 	LeftMenuAction type = hudData->getType();
 
@@ -117,10 +118,10 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 
 }
 
-Urho3D::String LeftMenuInfoPanel::stringFrom(const String& name, std::vector<db_cost*>* costs) {
-	String msg = name + "\n";
+Urho3D::String LeftMenuInfoPanel::stringFrom(const Urho3D::String& name, std::vector<db_cost*>* costs) {
+	Urho3D::String msg = name + "\n";
 	for (db_cost* cost : *costs) {
-		msg += cost->resourceName + " - " + String(cost->value) + "\n";
+		msg += cost->resourceName + " - " + Urho3D::String(cost->value) + "\n";
 	}
 	return msg;
 }

@@ -1,5 +1,6 @@
 #include "Bucket.h"
 #include "ComplexBucketData.h"
+#include "simulation/env/ContentInfo.h"
 
 
 Bucket::Bucket() {

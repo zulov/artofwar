@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ContentInfo.h"
 #include "OperatorType.h"
 #include "bucket/MainGrid.h"
 #include "objects/unit/Unit.h"
