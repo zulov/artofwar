@@ -1,8 +1,8 @@
 #pragma once
 #include "../Unit.h"
 #include "State.h"
-#include "player/Resources.h"
 #include "objects/unit/ChargeData.h"
+#include "player/Resources.h"
 
 
 class ChargeState : public State

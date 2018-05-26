@@ -1,6 +1,7 @@
 #pragma once
-#include "State.h"
 #include "../Unit.h"
+#include "State.h"
+
 
 class GoState : public State
 {

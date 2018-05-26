@@ -11,8 +11,6 @@ class CollectState : public State
 public:
 
 	CollectState() {}
-
-
 	~CollectState() = default;
 
 	void onStart(Unit* unit) override {}
