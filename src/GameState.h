@@ -1,4 +1,5 @@
 #pragma once
+#define GAME_STATE_SIZE 7
 enum class GameState : char
 {
 	STARTING=0,

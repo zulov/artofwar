@@ -34,8 +34,8 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 
 	std::fill_n(checks, MINI_MAP_BUTTON_NUMBER, true);
 
-	visibleAt.insert(GameState::RUNNING);
-	visibleAt.insert(GameState::PAUSE);
+	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
+	visibleAt[static_cast<char>(GameState::PAUSE)] = true;
 }
 
 

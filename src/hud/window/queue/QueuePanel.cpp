@@ -12,8 +12,8 @@
 QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "QueueWindow";
 	elements = new QueueHudElement*[MAX_ICON_SELECTION];
-	visibleAt.insert(GameState::RUNNING);
-	visibleAt.insert(GameState::PAUSE);
+		visibleAt[static_cast<char>(GameState::RUNNING)] = true;
+	visibleAt[static_cast<char>(GameState::PAUSE)] = true;
 }
 
 QueuePanel::~QueuePanel() {

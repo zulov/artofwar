@@ -6,6 +6,7 @@
 
 AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style): Object(Game::get()->getContext()) {
 	style = _style;
+	std::fill_n(visibleAt, GAME_STATE_SIZE, false);
 }
 
 
@@ -23,5 +24,5 @@ Urho3D::Window* AbstractWindowPanel::createWindow() {
 }
 
 void AbstractWindowPanel::updateStateVisibilty(GameState state) {
-	setVisible(visibleAt.find(state) != visibleAt.end());
+	setVisible(visibleAt[static_cast<char>(state)]);
 }

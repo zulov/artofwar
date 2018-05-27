@@ -5,8 +5,8 @@
 LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "LoadingWindow";
 	
-	visibleAt.insert(GameState::LOADING);
-	visibleAt.insert(GameState::NEW_GAME);
+	visibleAt[static_cast<char>(GameState::LOADING)] = true;
+	visibleAt[static_cast<char>(GameState::NEW_GAME)] = true;
 }
 
 

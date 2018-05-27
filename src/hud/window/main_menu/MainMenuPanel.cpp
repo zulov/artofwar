@@ -15,7 +15,7 @@
 
 MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
 	styleName = "MainMenuWindow";
-	visibleAt.insert(GameState::MENU_MAIN);
+	visibleAt[static_cast<char>(GameState::MENU_MAIN)] = true;
 }
 
 

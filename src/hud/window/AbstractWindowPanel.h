@@ -1,9 +1,7 @@
 #pragma once
+#include "GameState.h"
 #include <Urho3D/UI/Window.h>
-#include <unordered_set>
 
-
-enum class GameState : char;
 
 namespace Urho3D {
 	class String;
@@ -11,7 +9,7 @@ namespace Urho3D {
 
 class AbstractWindowPanel : public Urho3D::Object
 {
-URHO3D_OBJECT(AbstractWindowPanel, Object)
+	URHO3D_OBJECT(AbstractWindowPanel, Object)
 
 	AbstractWindowPanel(Urho3D::XMLFile* _style);
 	virtual ~AbstractWindowPanel();
@@ -26,7 +24,7 @@ protected:
 	Urho3D::String styleName;
 	Urho3D::String bodyStyle;
 
-	std::unordered_set<GameState> visibleAt;
+	bool visibleAt[GAME_STATE_SIZE];
 private:
 	virtual void createBody() =0;
 };
