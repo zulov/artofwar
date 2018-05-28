@@ -223,10 +223,14 @@ void Controls::order(short id, ActionParameter& parameter) {
 	}
 }
 
-void Controls::orderBuilding(short id, ActionParameter& parameter) {
+void Controls::executeOnAll(short id, ActionParameter& parameter) {
 	for (auto& phy : *selected) {
 		phy->action(id, parameter);
 	}
+}
+
+void Controls::orderBuilding(short id, ActionParameter& parameter) {
+	executeOnAll(id, parameter);
 }
 
 void Controls::orderPhysical(short id, ActionParameter& parameter) {
@@ -329,7 +333,7 @@ void Controls::activate() {
 }
 
 void Controls::unitOrder(short id) {
-	auto type = UnitOrder(id);
+	const auto type = UnitOrder(id);
 	switch (type) {
 	case UnitOrder::GO:
 	case UnitOrder::CHARGE:
@@ -341,10 +345,7 @@ void Controls::unitOrder(short id) {
 	case UnitOrder::STOP:
 	case UnitOrder::DEFEND:
 	case UnitOrder::DEAD:
-		for (auto& phy : *selected) {
-			ActionParameter empty;
-			phy->action(id, empty); //TODO przemyslec to
-		}
+		executeOnAll(id, ActionParameter());
 		break;
 	default: ;
 	}
