@@ -7,10 +7,10 @@ class StateManager
 {
 public:
 
-	void changeState(Unit* unit, UnitStateType stateTo);
-	bool validateState(int id, UnitStateType stateTo);
-	void changeState(Unit* unit, UnitStateType stateTo, ActionParameter& actionParameter);
-	bool checkChangeState(Unit* unit, UnitStateType stateTo);
+	void changeState(Unit* unit, UnitState stateTo);
+	bool validateState(int id, UnitState stateTo);
+	void changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter);
+	bool checkChangeState(Unit* unit, UnitState stateTo);
 	void execute(Unit* unit);
 	static StateManager* get();
 

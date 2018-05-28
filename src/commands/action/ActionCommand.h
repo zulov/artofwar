@@ -1,5 +1,5 @@
 #pragma once
-#include "OrderType.h"
+#include "UnitOrder.h"
 #include "commands/AbstractCommand.h"
 #include "objects/unit/ActionParameter.h"
 
@@ -13,7 +13,7 @@ class Physical;
 class ActionCommand : public AbstractCommand
 {
 public:
-	ActionCommand(OrderType action, const Physical* physical, Urho3D::Vector2* vector, bool append);
+	ActionCommand(UnitOrder action, const Physical* physical, Urho3D::Vector2* vector, bool append);
 	virtual ~ActionCommand();
 
 	void execute() override;
@@ -26,7 +26,7 @@ protected:
 	virtual void addFollowAim(const Physical* toFollow, bool append) =0;
 	virtual void addChargeAim(Urho3D::Vector2* charge, bool append) =0;
 
-	OrderType action;
+	UnitOrder action;
 	Urho3D::Vector2* vector;
 	const Physical* toFollow;
 

@@ -302,7 +302,7 @@
     <ClInclude Include="src\hud\window\menu\LeftMenuModes.h" />
     <ClInclude Include="src\objects\building\BuildingUtils.h" />
     <ClInclude Include="src\objects\NamesCache.h" />
-    <ClInclude Include="src\objects\ActionType.h" />
+    <ClInclude Include="src\objects\MenuAction.h" />
     <ClInclude Include="src\objects\unit\state\DisposeState.h" />
     <ClInclude Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\close\MainMenuClosePanel.h" />
@@ -368,7 +368,7 @@
     <ClInclude Include="src\hud\window\menu\MenuPanel.h" />
     <ClInclude Include="src\hud\window\minimap\MiniMapPanel.h" />
     <ClInclude Include="src\hud\MySprite.h" />
-    <ClInclude Include="src\OrderType.h" />
+    <ClInclude Include="src\UnitOrder.h" />
     <ClInclude Include="src\objects\Physical.h" />
     <ClInclude Include="src\player\Player.h" />
     <ClInclude Include="src\player\PlayersManager.h" />
@@ -417,7 +417,7 @@
     <ClInclude Include="src\objects\unit\Unit.h" />
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\simulation\Simulation.h" />
-    <ClInclude Include="src\objects\unit\state\UnitStateType.h" />
+    <ClInclude Include="src\objects\unit\state\UnitState.h" />
     <ClInclude Include="src\objects\unit\UnitType.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommand.h" />

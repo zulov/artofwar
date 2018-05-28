@@ -200,9 +200,6 @@
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="src\OrderType.h">
-      <Filter>objects\unit</Filter>
-    </ClInclude>
     <ClInclude Include="src\camera\CameraEnums.h">
       <Filter>camera</Filter>
     </ClInclude>
@@ -360,9 +357,6 @@
     <ClInclude Include="src\objects\unit\state\ChargeState.h" />
     <ClInclude Include="src\objects\unit\state\DefendState.h" />
     <ClInclude Include="src\objects\unit\state\DeadState.h" />
-    <ClInclude Include="src\objects\unit\state\UnitStateType.h">
-      <Filter>objects\state</Filter>
-    </ClInclude>
     <ClInclude Include="src\objects\unit\state\MoveState.h" />
     <ClInclude Include="src\control\MouseButton.h" />
     <ClInclude Include="src\objects\unit\aim\TargetAim.h" />
@@ -441,7 +435,6 @@
     <ClInclude Include="src\simulation\formation\Formation.h" />
     <ClInclude Include="src\simulation\formation\FormationManager.h" />
     <ClInclude Include="src\simulation\formation\FormationType.h" />
-    <ClInclude Include="src\objects\ActionType.h" />
     <ClInclude Include="src\simulation\env\bucket\DrawGridUtils.h" />
     <ClInclude Include="src\simulation\force\ForceStats.h" />
     <ClInclude Include="src\objects\unit\ColorMode.h" />
@@ -460,6 +453,13 @@
     <ClInclude Include="src\objects\unit\MissleData.h" />
     <ClInclude Include="src\objects\NodeUtils.h" />
     <ClInclude Include="src\objects\unit\state\ShotState.h" />
+    <ClInclude Include="src\objects\MenuAction.h" />
+    <ClInclude Include="src\objects\unit\state\UnitState.h">
+      <Filter>objects\state</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnitOrder.h">
+      <Filter>objects\unit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

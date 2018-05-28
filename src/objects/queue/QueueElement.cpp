@@ -1,6 +1,6 @@
 #include "QueueElement.h"
 
-QueueElement::QueueElement(ActionType _type, short _id, short _maxCapacity, float _initialSecondsToComplete,
+QueueElement::QueueElement(MenuAction _type, short _id, short _maxCapacity, float _initialSecondsToComplete,
                            float _secondsToCompletePerInstance) {
 	elapsedSeconds = 0;
 	amount = 0;
@@ -14,7 +14,7 @@ QueueElement::QueueElement(ActionType _type, short _id, short _maxCapacity, floa
 
 QueueElement::~QueueElement() = default;
 
-bool QueueElement::checkType(ActionType _type, short _id) {
+bool QueueElement::checkType(MenuAction _type, short _id) {
 	return type == _type && id == _id;
 }
 
@@ -40,7 +40,7 @@ bool QueueElement::update(float time) {
 	return elapsedSeconds >= secondsToComplete;
 }
 
-ActionType QueueElement::getType() {
+MenuAction QueueElement::getType() {
 	return type;
 }
 

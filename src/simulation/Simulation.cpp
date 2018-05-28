@@ -59,21 +59,21 @@ void Simulation::tryToCollect(Unit* unit) {
 void Simulation::selfAI() {
 	for (auto unit : *units) {
 		switch (unit->getState()) {
-		case UnitStateType::CHARAGE:
+		case UnitState::CHARAGE:
 			{
 			std::vector<Unit*>* enemies = enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
 			unit->toCharge(enemies);
 			}
 			break;
 
-		case UnitStateType::STOP:
-		case UnitStateType::MOVE:
+		case UnitState::STOP:
+		case UnitState::MOVE:
 			if (currentFrameNumber % 3 == 0 && unit->getFormation() == -1 && unit->checkTransition(unit->getActionState())) {
 				switch (unit->getActionState()) {
-				case UnitStateType::ATTACK:
+				case UnitState::ATTACK:
 					tryToAttack(unit);
 					break;
-				case UnitStateType::COLLECT:
+				case UnitState::COLLECT:
 					tryToCollect(unit);
 					break;
 				}
@@ -147,7 +147,7 @@ void Simulation::updateBuildingQueues(const float time) {
 		QueueElement* done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {
-			case ActionType::UNIT:
+			case MenuAction::UNIT:
 				creationCommandList->add(new CreationCommand(
 				                                             ObjectType::UNIT,
 				                                             done->getAmount(),
@@ -158,9 +158,9 @@ void Simulation::updateBuildingQueues(const float time) {
 				                                                          getLevelForUnit(done->getId())
 				                                            ));
 				break;
-			case ActionType::UNIT_LEVEL:
-			case ActionType::BUILDING_LEVEL:
-			case ActionType::UNIT_UPGRADE:
+			case MenuAction::UNIT_LEVEL:
+			case MenuAction::BUILDING_LEVEL:
+			case MenuAction::UNIT_UPGRADE:
 				levelUp(done);
 				break;
 			}
@@ -175,7 +175,7 @@ void Simulation::updateQueues() {
 	QueueElement* done = Game::get()->getQueueManager()->update(maxTimeFrame);
 	if (done) {
 		switch (done->getType()) {
-		case ActionType::BUILDING_LEVEL:
+		case MenuAction::BUILDING_LEVEL:
 			levelUp(done);
 			break;
 		}

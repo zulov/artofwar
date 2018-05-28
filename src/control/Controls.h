@@ -3,7 +3,7 @@
 #include "ControlsState.h"
 #include "MouseButton.h"
 #include "ObjectEnums.h"
-#include "OrderType.h"
+#include "UnitOrder.h"
 #include "SelectedInfo.h"
 #include "commands/creation/CreationCommand.h"
 #include <Urho3D/Graphics/Renderer.h>
@@ -87,7 +87,7 @@ private:
 	Input* input;
 	ObjectType selectedType;
 	ControlsState state = DEFAULT;
-	OrderType orderType = OrderType::GO;
+	UnitOrder unitOrderType = UnitOrder::GO;
 	ObjectType typeToCreate;
 	SelectedInfo* selectedInfo;
 

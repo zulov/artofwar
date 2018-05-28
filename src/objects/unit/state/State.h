@@ -1,5 +1,5 @@
 #pragma once
-#include "UnitStateType.h"
+#include "UnitState.h"
 #include "objects/unit/ActionParameter.h"
 
 
@@ -15,7 +15,7 @@ public:
 	virtual void onEnd(Unit* unit);
 	virtual void execute(Unit* unit);
 
-	bool validateTransition(UnitStateType stateTo);
+	bool validateTransition(UnitState stateTo);
 protected:
 	bool nextStates[STATE_SIZE];
 };

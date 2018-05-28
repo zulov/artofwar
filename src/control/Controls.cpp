@@ -86,18 +86,18 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 	switch (clicked->getType()) {
 	case ObjectType::PHYSICAL:
 		{
-		Game::get()->getActionCommandList()->add(new GroupAction(selected, OrderType::GO, new Vector2(hitPos.x_, hitPos.z_),
+		Game::get()->getActionCommandList()->add(new GroupAction(selected, UnitOrder::GO, new Vector2(hitPos.x_, hitPos.z_),
 		                                                         shiftPressed));
 		break;
 		}
 	case ObjectType::UNIT:
 		{
-		Game::get()->getActionCommandList()->add(new GroupAction(selected, OrderType::FOLLOW, clicked, shiftPressed));
+		Game::get()->getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, clicked, shiftPressed));
 		//unSelectAll();
 		break;
 		}
 	case ObjectType::BUILDING:
-		Game::get()->getActionCommandList()->add(new GroupAction(selected, OrderType::FOLLOW, clicked, shiftPressed));
+		Game::get()->getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, clicked, shiftPressed));
 		break;
 	case ObjectType::RESOURCE: break;
 	default: ;
@@ -120,13 +120,13 @@ void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
 	const auto first = new Vector2(held.first->x_, held.first->z_);
 	if (input->GetKeyDown(KEY_SHIFT)) {
 		const auto second = new Vector2(held.second->x_, held.second->z_);
-		actions->add(new GroupAction(selected, OrderType::GO, first));
-		actions->add(new GroupAction(selected, OrderType::GO, second, true));
+		actions->add(new GroupAction(selected, UnitOrder::GO, first));
+		actions->add(new GroupAction(selected, UnitOrder::GO, second, true));
 	} else {
 		const auto charge = new Vector2(held.second->x_ - held.first->x_, held.second->z_ - held.first->z_);
 
-		actions->add(new GroupAction(selected, OrderType::GO, first));
-		actions->add(new GroupAction(selected, OrderType::CHARGE, charge, true));
+		actions->add(new GroupAction(selected, UnitOrder::GO, first));
+		actions->add(new GroupAction(selected, UnitOrder::CHARGE, charge, true));
 	}
 }
 
@@ -235,7 +235,7 @@ void Controls::orderPhysical(short id, ActionParameter& parameter) {
 	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
 
 	switch (parameter.type) {
-	case ActionType::BUILDING_LEVEL:
+	case MenuAction::BUILDING_LEVEL:
 		{
 		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForBuildingLevel(id, level);
 		if (opt.has_value()) {
@@ -329,18 +329,18 @@ void Controls::activate() {
 }
 
 void Controls::unitOrder(short id) {
-	auto type = OrderType(id);
+	auto type = UnitOrder(id);
 	switch (type) {
-	case OrderType::GO:
-	case OrderType::CHARGE:
-	case OrderType::ATTACK:
-	case OrderType::FOLLOW:
+	case UnitOrder::GO:
+	case UnitOrder::CHARGE:
+	case UnitOrder::ATTACK:
+	case UnitOrder::FOLLOW:
 		state = ORDER;
-		orderType = type;
+		unitOrderType = type;
 		break;
-	case OrderType::STOP:
-	case OrderType::DEFEND:
-	case OrderType::DEAD:
+	case UnitOrder::STOP:
+	case UnitOrder::DEFEND:
+	case UnitOrder::DEAD:
 		for (auto& phy : *selected) {
 			ActionParameter empty;
 			phy->action(id, empty); //TODO przemyslec to
@@ -352,10 +352,10 @@ void Controls::unitOrder(short id) {
 
 void Controls::actionUnit(short id, ActionParameter& parameter) {
 	switch (parameter.type) {
-	case ActionType::ORDER:
+	case MenuAction::ORDER:
 		unitOrder(id);
 		break;
-	case ActionType::FORMATION:
+	case MenuAction::FORMATION:
 		unitFormation(id);
 		break;
 	default: ;
@@ -515,15 +515,15 @@ void Controls::orderControl() {
 			left.markHeld();
 		}
 	} else if (left.isHeld) {
-		switch (orderType) {
-		case OrderType::GO:
-		case OrderType::ATTACK:
-		case OrderType::FOLLOW:
+		switch (unitOrderType) {
+		case UnitOrder::GO:
+		case UnitOrder::ATTACK:
+		case UnitOrder::FOLLOW:
 			if (orderAction(false)) {
 				toDefault();
 			}
 			break;
-		case OrderType::CHARGE:
+		case UnitOrder::CHARGE:
 			break;
 		default: ;
 		}

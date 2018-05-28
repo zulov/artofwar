@@ -15,6 +15,6 @@ void State::execute(Unit* unit) {
 	unit->atState = true;
 }
 
-bool State::validateTransition(UnitStateType stateTo) {
+bool State::validateTransition(UnitState stateTo) {
 	return nextStates[static_cast<char>(stateTo)];
 }

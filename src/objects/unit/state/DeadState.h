@@ -6,7 +6,7 @@ class DeadState : public State
 {
 public:
 	DeadState() {
-		nextStates[static_cast<char>(UnitStateType::DISPOSE)] = true;
+		nextStates[static_cast<char>(UnitState::DISPOSE)] = true;
 	}
 
 	~DeadState() = default;
@@ -21,6 +21,6 @@ public:
 
 	void execute(Unit* unit) {
 		State::execute(unit);
-		StateManager::get()->changeState(unit, UnitStateType::DISPOSE);
+		StateManager::get()->changeState(unit, UnitState::DISPOSE);
 	}
 };

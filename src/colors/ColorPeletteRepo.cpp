@@ -40,6 +40,6 @@ Urho3D::Material* ColorPeletteRepo::getColor(ColorPallet colorPallet, float valu
 	return nullptr;
 }
 
-Urho3D::Material* ColorPeletteRepo::getColor(UnitStateType state) {
+Urho3D::Material* ColorPeletteRepo::getColor(UnitState state) {
 	return statePallet[static_cast<char>(state)];
 }

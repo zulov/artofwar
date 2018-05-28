@@ -9,13 +9,13 @@ class ChargeState : public State
 {
 public:
 	ChargeState() {
-		nextStates[static_cast<char>(UnitStateType::STOP)] = true;
-		nextStates[static_cast<char>(UnitStateType::DEFEND)] = true;
-		nextStates[static_cast<char>(UnitStateType::DEAD)] = true;
-		nextStates[static_cast<char>(UnitStateType::GO)] = true;
-		nextStates[static_cast<char>(UnitStateType::FOLLOW)] = true;
-		nextStates[static_cast<char>(UnitStateType::CHARAGE)] = true;
-		nextStates[static_cast<char>(UnitStateType::MOVE)] = true;
+		nextStates[static_cast<char>(UnitState::STOP)] = true;
+		nextStates[static_cast<char>(UnitState::DEFEND)] = true;
+		nextStates[static_cast<char>(UnitState::DEAD)] = true;
+		nextStates[static_cast<char>(UnitState::GO)] = true;
+		nextStates[static_cast<char>(UnitState::FOLLOW)] = true;
+		nextStates[static_cast<char>(UnitState::CHARAGE)] = true;
+		nextStates[static_cast<char>(UnitState::MOVE)] = true;
 	}
 
 	~ChargeState() = default;
@@ -44,13 +44,13 @@ public:
 					physical->absorbAttack(unit->attackCoef);
 					auto after = physical->getHealthPercent();
 					if (!unit->chargeData->updateHit(before, after)) {
-						StateManager::get()->changeState(unit, UnitStateType::MOVE);
+						StateManager::get()->changeState(unit, UnitState::MOVE);
 						break;
 					}
 				}
 			}
 		} else {
-			StateManager::get()->changeState(unit, UnitStateType::MOVE);
+			StateManager::get()->changeState(unit, UnitState::MOVE);
 		}
 
 	}

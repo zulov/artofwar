@@ -1,7 +1,7 @@
 #pragma once
 
 #include "aim/Aim.h"
-#include "objects/ActionType.h"
+#include "objects/MenuAction.h"
 
 struct ActionParameter
 {
@@ -9,9 +9,9 @@ struct ActionParameter
 		: aim(aim) {
 	}
 
-	ActionParameter(ActionType _type) : type(_type) {
+	ActionParameter(MenuAction _type) : type(_type) {
 	}
 
 	Aim* aim;
-	ActionType type;
+	MenuAction type;
 };

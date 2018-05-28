@@ -1,7 +1,7 @@
 #pragma once
 #include "FormationState.h"
 #include "FormationType.h"
-#include "OrderType.h"
+#include "UnitOrder.h"
 #include "objects/unit/Unit.h"
 #include <optional>
 #include <vector>
@@ -21,7 +21,7 @@ public:
 	FormationState getState() const { return state; }
 	std::optional<Physical*> getLeader();
 
-	void addAim(const Vector2& _futureTarget, const Physical* _physical, OrderType _action, bool append);
+	void addAim(const Vector2& _futureTarget, const Physical* _physical, UnitOrder _action, bool append);
 	size_t getSize();
 	void semiReset();
 	std::vector<Unit*>& getUnits() { return units; }

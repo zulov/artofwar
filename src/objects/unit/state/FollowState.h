@@ -8,11 +8,11 @@ class FollowState : public State
 {
 public:
 	FollowState() {
-		nextStates[static_cast<char>(UnitStateType::STOP)] = true;
-		nextStates[static_cast<char>(UnitStateType::DEFEND)] = true;
-		nextStates[static_cast<char>(UnitStateType::DEAD)] = true;
-		nextStates[static_cast<char>(UnitStateType::GO)] = true;
-		nextStates[static_cast<char>(UnitStateType::MOVE)] = true;
+		nextStates[static_cast<char>(UnitState::STOP)] = true;
+		nextStates[static_cast<char>(UnitState::DEFEND)] = true;
+		nextStates[static_cast<char>(UnitState::DEAD)] = true;
+		nextStates[static_cast<char>(UnitState::GO)] = true;
+		nextStates[static_cast<char>(UnitState::MOVE)] = true;
 	}
 
 	~FollowState() = default;

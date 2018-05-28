@@ -9,7 +9,7 @@
 #include <chrono>
 
 
-ActionCommand::ActionCommand(OrderType action, const Physical* physical, Vector2* vector, bool append) {
+ActionCommand::ActionCommand(UnitOrder action, const Physical* physical, Vector2* vector, bool append) {
 	this->action = action;
 	this->toFollow = physical;
 	this->vector = vector;
@@ -40,17 +40,17 @@ ActionParameter ActionCommand::getChargeAim(Vector2* charge, bool append) {
 
 void ActionCommand::execute() {
 	switch (action) {
-	case OrderType::GO:
+	case UnitOrder::GO:
 		addTargetAim(vector, append);
 		break;
-	case OrderType::FOLLOW:
+	case UnitOrder::FOLLOW:
 		{
 		if (toFollow != nullptr && toFollow->isAlive()) {
 			addFollowAim(toFollow, append);
 		}
 		}
 		break;
-	case OrderType::CHARGE:		
+	case UnitOrder::CHARGE:		
 		addChargeAim(vector, append);	
 		break;
 	default: ;

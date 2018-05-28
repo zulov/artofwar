@@ -1,22 +1,22 @@
 #pragma once
-#include "objects/ActionType.h"
+#include "objects/MenuAction.h"
 
 class QueueElement
 {
 public:
-	QueueElement(ActionType _type, short _id, short _maxCapacity, float _initialSecondsToComplete, float _secondsToCompletePerInstance);
+	QueueElement(MenuAction _type, short _id, short _maxCapacity, float _initialSecondsToComplete, float _secondsToCompletePerInstance);
 	~QueueElement();
-	bool checkType(ActionType _type, short _id);
+	bool checkType(MenuAction _type, short _id);
 	short add(short value);
 	void reduce(short value);
 	bool update(float time);
-	ActionType getType();
+	MenuAction getType();
 	short getId();
 	short getAmount();
 	short getMaxCapacity();
 	float getProgress();
 private:
-	ActionType type;
+	MenuAction type;
 	short id;
 
 	short maxCapacity;

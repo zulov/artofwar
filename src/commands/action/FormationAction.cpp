@@ -3,7 +3,7 @@
 #include "simulation/env/Enviroment.h"
 
 
-FormationAction::FormationAction(Formation* formation, OrderType action, const Physical* physical, Vector2* vector,
+FormationAction::FormationAction(Formation* formation, UnitOrder action, const Physical* physical, Vector2* vector,
                                  bool append)
 	: ActionCommand(action, physical, vector, append) {
 	this->formation = formation;

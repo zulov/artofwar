@@ -277,7 +277,7 @@ std::optional<Physical*> Formation::getLeader() {
 }
 
 void Formation::addAim(const Vector2& _vector, const Physical* _physical,
-                       OrderType _action, bool append) {
+                       UnitOrder _action, bool append) {
 	if (!append) {
 		futureOrders.clear();
 	}

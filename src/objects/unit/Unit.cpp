@@ -1,6 +1,6 @@
 #include "Unit.h"
 #include "Game.h"
-#include "OrderType.h"
+#include "UnitOrder.h"
 #include "aim/FutureAim.h"
 #include "colors/ColorPeletteRepo.h"
 #include "database/DatabaseCache.h"
@@ -18,23 +18,23 @@
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr),
-	resource(nullptr), state(UnitStateType::STOP), toResource(new Vector2()) {
+	resource(nullptr), state(UnitState::STOP), toResource(new Vector2()) {
 	initBillbords();
 
 	dbUnit = Game::get()->getDatabaseCache()->getUnit(id);
 	dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
 	populate();
-	if (StateManager::get()->validateState(getDbID(), UnitStateType::CHARAGE)) {
+	if (StateManager::get()->validateState(getDbID(), UnitState::CHARAGE)) {
 		chargeData = new ChargeData(150, 2);
 	}
 
 	if (id == 1) {
-		defaultAttackState = UnitStateType::SHOT;
+		defaultAttackState = UnitState::SHOT;
 	} else {
-		defaultAttackState = UnitStateType::ATTACK;
+		defaultAttackState = UnitState::ATTACK;
 	}
 
-	if (defaultAttackState == UnitStateType::SHOT) {
+	if (defaultAttackState == UnitState::SHOT) {
 		missleData = new MissleData(150, 2);
 	}
 
@@ -56,7 +56,7 @@ Unit::~Unit() {
 }
 
 bool Unit::isAlive() const {
-	return state != UnitStateType::DEAD && state != UnitStateType::DISPOSE;
+	return state != UnitState::DEAD && state != UnitState::DISPOSE;
 }
 
 void Unit::populate() {
@@ -68,7 +68,7 @@ void Unit::populate() {
 	attackRange = dbLevel->attackRange;
 	attackIntrest = dbLevel->attackRange * 10;
 	rotatable = dbUnit->rotatable;
-	actionState = UnitStateType(dbUnit->actionState);
+	actionState = UnitState(dbUnit->actionState);
 
 	attackIntrest = 10;
 	collectSpeed = dbLevel->collectSpeed;
@@ -83,12 +83,12 @@ void Unit::populate() {
 
 void Unit::checkAim() {
 	if (aims.ifReach(this)) {
-		StateManager::get()->changeState(this, UnitStateType::MOVE);
+		StateManager::get()->changeState(this, UnitState::MOVE);
 	}
 }
 
 void Unit::move(double timeStep) {
-	if (state != UnitStateType::STOP) {
+	if (state != UnitState::STOP) {
 		position->x_ += velocity.x_ * timeStep;
 		position->z_ += velocity.y_ * timeStep;
 		node->SetPosition(*position);
@@ -137,7 +137,7 @@ void Unit::absorbAttack(float attackCoef) {
 		updateHealthBar();
 	}
 	if (hpCoef < 0) {
-		StateManager::get()->changeState(this, UnitStateType::DEAD);
+		StateManager::get()->changeState(this, UnitState::DEAD);
 	}
 }
 
@@ -147,7 +147,7 @@ void Unit::attackIfCloseEnough(float distance, Unit* closest) {
 			toAttack(closest);
 			//attackRange();
 		} else if (distance < attackIntrest * attackIntrest) {
-			addAim(FutureAim(closest, OrderType::FOLLOW));
+			addAim(FutureAim(closest, UnitOrder::FOLLOW));
 		}
 	}
 }
@@ -157,7 +157,7 @@ void Unit::collectIfCloseEnough(float distance, ResourceEntity* closest) {
 		if (distance < attackRange * attackRange) {
 			toCollect(closest);
 		} else if (distance < attackIntrest * attackIntrest) {
-			addAim(FutureAim(closest, OrderType::FOLLOW));
+			addAim(FutureAim(closest, UnitOrder::FOLLOW));
 		}
 	}
 }
@@ -184,7 +184,7 @@ void Unit::toAttack(Physical* enemy) {
 }
 
 void Unit::toAttack() {
-	StateManager::get()->changeState(this, UnitStateType::ATTACK);
+	StateManager::get()->changeState(this, UnitState::ATTACK);
 }
 
 void Unit::toCollect(std::vector<Physical*>* enemies) {
@@ -220,7 +220,7 @@ void Unit::toCharge(std::vector<Unit*>* enemies) {
 }
 
 void Unit::toCollect(ResourceEntity* _resource) {
-	StateManager::get()->changeState(this, UnitStateType::COLLECT);
+	StateManager::get()->changeState(this, UnitState::COLLECT);
 	resource = _resource;
 }
 
@@ -253,27 +253,27 @@ String& Unit::toMultiLineString() {
 }
 
 void Unit::action(char id, ActionParameter& parameter) {
-	const OrderType type = OrderType(id);
+	const UnitOrder type = UnitOrder(id);
 
 	switch (type) {
-	case OrderType::GO:
-		StateManager::get()->changeState(this, UnitStateType::GO, parameter);
+	case UnitOrder::GO:
+		StateManager::get()->changeState(this, UnitState::GO, parameter);
 		break;
-	case OrderType::STOP:
-		StateManager::get()->changeState(this, UnitStateType::STOP);
+	case UnitOrder::STOP:
+		StateManager::get()->changeState(this, UnitState::STOP);
 		break;
-	case OrderType::CHARGE:
-		StateManager::get()->changeState(this, UnitStateType::CHARAGE, parameter);
+	case UnitOrder::CHARGE:
+		StateManager::get()->changeState(this, UnitState::CHARAGE, parameter);
 		break;
-	case OrderType::ATTACK: break;
-	case OrderType::DEAD:
-		StateManager::get()->changeState(this, UnitStateType::DEAD);
+	case UnitOrder::ATTACK: break;
+	case UnitOrder::DEAD:
+		StateManager::get()->changeState(this, UnitState::DEAD);
 		break;
-	case OrderType::DEFEND:
-		StateManager::get()->changeState(this, UnitStateType::DEFEND);
+	case UnitOrder::DEFEND:
+		StateManager::get()->changeState(this, UnitState::DEFEND);
 		break;
-	case OrderType::FOLLOW:
-		StateManager::get()->changeState(this, UnitStateType::FOLLOW, parameter);
+	case UnitOrder::FOLLOW:
+		StateManager::get()->changeState(this, UnitState::FOLLOW, parameter);
 		break;
 	default: ;
 	}
@@ -322,7 +322,7 @@ void Unit::changeColor(Material* newMaterial) {
 	}
 }
 
-void Unit::changeColor(UnitStateType state) {
+void Unit::changeColor(UnitState state) {
 	Material* newMaterial = Game::get()->getColorPeletteRepo()->getColor(state);
 	changeColor(newMaterial);
 }
@@ -368,11 +368,11 @@ void Unit::clean() {
 	Physical::clean();
 }
 
-void Unit::setState(UnitStateType _state) {
+void Unit::setState(UnitState _state) {
 	state = _state;
 }
 
-bool Unit::checkTransition(UnitStateType state) {
+bool Unit::checkTransition(UnitState state) {
 	return StateManager::get()->checkChangeState(this, state);
 }
 
@@ -385,7 +385,7 @@ bool Unit::hasResource() {
 }
 
 void Unit::load(dbload_unit* unit) {
-	state = UnitStateType(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
+	state = UnitState(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
 	//aimIndex =unit->aim_i;
 	velocity = Vector2(unit->vel_x, unit->vel_z);
 	//alive = unit->alive;
@@ -424,7 +424,7 @@ std::string Unit::getColumns() {
 }
 
 void Unit::applyForce(double timeStep) {
-	if (state == UnitStateType::ATTACK) {
+	if (state == UnitState::ATTACK) {
 		return;
 	}
 
@@ -432,16 +432,16 @@ void Unit::applyForce(double timeStep) {
 	velocity += acceleration * (timeStep / mass);
 	float velLenght = velocity.LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
-		if (state == UnitStateType::MOVE) {
-			StateManager::get()->changeState(this, UnitStateType::STOP);
+		if (state == UnitState::MOVE) {
+			StateManager::get()->changeState(this, UnitState::STOP);
 		}
 	} else {
 		if (velLenght > maxSpeed * maxSpeed) {
 			velocity.Normalize();
 			velocity *= maxSpeed;
 		}
-		if (state == UnitStateType::STOP) {
-			StateManager::get()->changeState(this, UnitStateType::MOVE);
+		if (state == UnitState::STOP) {
+			StateManager::get()->changeState(this, UnitState::MOVE);
 		}
 		if (rotatable && velLenght > 2 * minSpeed * minSpeed) {
 			node->SetDirection(Vector3(velocity.x_, 0, velocity.y_));

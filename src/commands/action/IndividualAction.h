@@ -4,8 +4,8 @@
 class IndividualAction : public ActionCommand
 {
 public:
-	IndividualAction(Physical* entity, OrderType action, const Physical* paremeter, bool append = false);
-	IndividualAction(Physical* entity, OrderType action, const Urho3D::Vector2& vector, bool append = false);
+	IndividualAction(Physical* entity, UnitOrder action, const Physical* paremeter, bool append = false);
+	IndividualAction(Physical* entity, UnitOrder action, const Urho3D::Vector2& vector, bool append = false);
 	~IndividualAction();
 private:
 	void addTargetAim(Urho3D::Vector2* to, bool append) override;

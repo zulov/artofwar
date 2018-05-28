@@ -1,7 +1,7 @@
 #include "player/Player.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
-#include "ActionType.h"
+#include "MenuAction.h"
 #include <string>
 
 
@@ -33,9 +33,9 @@ void Player::setResourceAmount(float amount) {
 	resources.init(amount);
 }
 
-char Player::upgradeLevel(ActionType type, int id) {
+char Player::upgradeLevel(MenuAction type, int id) {
 	switch (type) {
-	case ActionType::UNIT_LEVEL:
+	case MenuAction::UNIT_LEVEL:
 		{
 		int maxLevels = Game::get()->getDatabaseCache()->getUnitLevels(id)->size() - 1;
 		if (maxLevels > unitLevels[id]) {
@@ -44,7 +44,7 @@ char Player::upgradeLevel(ActionType type, int id) {
 		}
 		}
 		break;
-	case ActionType::BUILDING_LEVEL:
+	case MenuAction::BUILDING_LEVEL:
 		{
 		int maxLevels = Game::get()->getDatabaseCache()->getBuildingLevels(id)->size() - 1;
 		if (maxLevels > buildingLevels[id]) {
@@ -53,7 +53,7 @@ char Player::upgradeLevel(ActionType type, int id) {
 		}
 		}
 		break;
-	case ActionType::UNIT_UPGRADE:
+	case MenuAction::UNIT_UPGRADE:
 		{
 		int maxLevels = Game::get()->getDatabaseCache()->getUnitUpgrades(id)->size() - 1;
 		if (maxLevels > unitUpgradeLevels[id]) {

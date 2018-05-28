@@ -356,26 +356,26 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	switch (hudData->getType()) {
 	case LeftMenuAction::NONE: break;
 	case LeftMenuAction::UNIT:
-		controls->order(hudData->getId(), ActionParameter(ActionType::UNIT));
+		controls->order(hudData->getId(), ActionParameter(MenuAction::UNIT));
 		break;
 	case LeftMenuAction::UNIT_LEVEL:
-		controls->order(hudData->getId(), ActionParameter(ActionType::UNIT_LEVEL));
+		controls->order(hudData->getId(), ActionParameter(MenuAction::UNIT_LEVEL));
 		break;
 	case LeftMenuAction::UNIT_UPGRADE:
-		controls->order(hudData->getId(), ActionParameter(ActionType::UNIT_UPGRADE));
+		controls->order(hudData->getId(), ActionParameter(MenuAction::UNIT_UPGRADE));
 		break;
 	case LeftMenuAction::BUILDING:
 		controls->hudAction(hudData);
 		break;
 	case LeftMenuAction::BUILDING_LEVEL:
-		controls->order(hudData->getId(), ActionParameter(ActionType::BUILDING_LEVEL));
+		controls->order(hudData->getId(), ActionParameter(MenuAction::BUILDING_LEVEL));
 		break;
 	case LeftMenuAction::BUILDING_UPGRADE: break;
 	case LeftMenuAction::ORDER:
-		controls->order(hudData->getId(), ActionParameter(ActionType::ORDER));
+		controls->order(hudData->getId(), ActionParameter(MenuAction::ORDER));
 		break;
 	case LeftMenuAction::FORMATION:
-		controls->order(hudData->getId(), ActionParameter(ActionType::FORMATION));
+		controls->order(hudData->getId(), ActionParameter(MenuAction::FORMATION));
 		break;
 	default: ;
 	}

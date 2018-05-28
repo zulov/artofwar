@@ -5,8 +5,8 @@
 class GroupAction : public ActionCommand
 {
 public:
-	GroupAction(std::vector<Physical*>* entities, OrderType action, Urho3D::Vector2* parameter, bool append = false);
-	GroupAction(std::vector<Physical*>* entities, OrderType action, Physical* paremeter, bool append = false);
+	GroupAction(std::vector<Physical*>* entities, UnitOrder action, Urho3D::Vector2* parameter, bool append = false);
+	GroupAction(std::vector<Physical*>* entities, UnitOrder action, Physical* paremeter, bool append = false);
 	~GroupAction();
 private:
 	void addTargetAim(Urho3D::Vector2* to, bool append) override;

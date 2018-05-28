@@ -1,6 +1,6 @@
 #pragma once
 #include "ColorPallet.h"
-#include "objects/unit/state/UnitStateType.h"
+#include "objects/unit/state/UnitState.h"
 #include <Urho3D/Graphics/Material.h>
 
 
@@ -13,7 +13,7 @@ public:
 	ColorPeletteRepo();
 	~ColorPeletteRepo();
 	Urho3D::Material* getColor(ColorPallet colorPallet, float value, float maxValue);
-	Urho3D::Material* getColor(UnitStateType state);
+	Urho3D::Material* getColor(UnitState state);
 private:
 	Urho3D::Material* redPallet[PALLET_RESOLUTION + 1];
 	Urho3D::Material* statePallet[STATE_SIZE];

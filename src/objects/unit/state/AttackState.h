@@ -7,12 +7,12 @@ class AttackState : public State
 {
 public:
 	AttackState() {
-		nextStates[static_cast<char>(UnitStateType::STOP)] = true;
-		nextStates[static_cast<char>(UnitStateType::DEFEND)] = true;
-		nextStates[static_cast<char>(UnitStateType::DEAD)] = true;
-		nextStates[static_cast<char>(UnitStateType::GO)] = true;
-		nextStates[static_cast<char>(UnitStateType::FOLLOW)] = true;
-		nextStates[static_cast<char>(UnitStateType::CHARAGE)] = true;
+		nextStates[static_cast<char>(UnitState::STOP)] = true;
+		nextStates[static_cast<char>(UnitState::DEFEND)] = true;
+		nextStates[static_cast<char>(UnitState::DEAD)] = true;
+		nextStates[static_cast<char>(UnitState::GO)] = true;
+		nextStates[static_cast<char>(UnitState::FOLLOW)] = true;
+		nextStates[static_cast<char>(UnitState::CHARAGE)] = true;
 	}
 
 
@@ -40,7 +40,7 @@ public:
 			++unit->currentFrameState;
 		} else {
 			unit->thingsToInteract.clear();
-			StateManager::get()->changeState(unit, UnitStateType::STOP);
+			StateManager::get()->changeState(unit, UnitState::STOP);
 		}
 	}
 };

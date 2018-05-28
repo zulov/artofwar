@@ -2,7 +2,7 @@
 #include <vector>
 #include "QueueElement.h"
 
-enum class ActionType : char;
+enum class MenuAction : char;
 
 class QueueManager
 {
@@ -10,13 +10,13 @@ public:
 	explicit QueueManager(short _maxCapacity);
 	~QueueManager();
 
-	void add(short value, ActionType type, short id, short localMaxCapacity);
+	void add(short value, MenuAction type, short id, short localMaxCapacity);
 	QueueElement* update(float time);
 	short getSize();
 	QueueElement* getAt(short i);
 private:
-	float getSecToComplete(ActionType type, short id, int level);
-	float getSecPerInstance(ActionType type, short id, int level);
+	float getSecToComplete(MenuAction type, short id, int level);
+	float getSecPerInstance(MenuAction type, short id, int level);
 
 	std::vector<QueueElement*> queue;
 

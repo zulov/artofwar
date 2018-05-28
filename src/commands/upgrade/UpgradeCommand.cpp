@@ -4,7 +4,7 @@
 #include "simulation/SimulationObjectManager.h"
 
 
-UpgradeCommand::UpgradeCommand(int _player, int _id, ActionType _type) {
+UpgradeCommand::UpgradeCommand(int _player, int _id, MenuAction _type) {
 	player = _player;
 	id = _id;
 	type = _type;
@@ -14,7 +14,7 @@ UpgradeCommand::~UpgradeCommand() = default;
 
 void UpgradeCommand::execute() {
 	char level = Game::get()->getPlayersManager()->getPlayer(player)->upgradeLevel(type, id);
-	if (type == ActionType::BUILDING_LEVEL) {
+	if (type == MenuAction::BUILDING_LEVEL) {
 		if (level>0) {
 			for (auto building : *simulationObjectManager->getBuildings()) {
 				if (building->getPlayer() == player && building->getDbID() == id) {

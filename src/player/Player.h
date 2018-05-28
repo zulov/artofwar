@@ -1,7 +1,7 @@
 #pragma once
 #include "Resources.h"
 
-enum class ActionType : char;
+enum class MenuAction : char;
 
 class Player
 {
@@ -12,7 +12,7 @@ public:
 	std::string getValues(int precision);
 	void setResourceAmount(int resource, float amount);
 	void setResourceAmount(float amount);
-	char upgradeLevel(ActionType type, int id);
+	char upgradeLevel(MenuAction type, int id);
 
 	Resources& getResources() { return resources; }
 	int getNation() const { return dbNation->id; }

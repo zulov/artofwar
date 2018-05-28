@@ -1,5 +1,5 @@
 #pragma once
-#include "ActionType.h"
+#include "MenuAction.h"
 #include "Game.h"
 #include "ObjectEnums.h"
 #include "database/DatabaseCache.h"
@@ -20,16 +20,16 @@ inline Urho3D::String getIconName(ObjectType type, int i) {
 	}
 }
 
-inline Urho3D::String getIconName(ActionType type, int level, int i) {
+inline Urho3D::String getIconName(MenuAction type, int level, int i) {
 	DatabaseCache* dbCache = Game::get()->getDatabaseCache();
 	switch (type) {
-	case ActionType::UNIT:
+	case MenuAction::UNIT:
 		return "unit/" + dbCache->getUnit(i)->icon;
-	case ActionType::UNIT_LEVEL:
+	case MenuAction::UNIT_LEVEL:
 		return "unit/levels/" + String(level) + "/" + dbCache->getUnit(i)->icon;
-	case ActionType::BUILDING_LEVEL:
+	case MenuAction::BUILDING_LEVEL:
 		return "building/levels/" + String(level) + "/" + dbCache->getBuilding(i)->icon;
-	case ActionType::UNIT_UPGRADE:
+	case MenuAction::UNIT_UPGRADE:
 		{
 		optional<db_unit_upgrade*> opt = dbCache->getUnitUpgrade(i, level);
 		if (opt.has_value()) {

@@ -1,6 +1,6 @@
 #pragma once
 #include "commands/AbstractCommand.h"
-#include "objects/ActionType.h"
+#include "objects/MenuAction.h"
 
 
 class SimulationObjectManager;
@@ -9,7 +9,7 @@ class UpgradeCommand :
 	public AbstractCommand
 {
 public:
-	UpgradeCommand(int _player, int _id, ActionType _type);
+	UpgradeCommand(int _player, int _id, MenuAction _type);
 	~UpgradeCommand() override;
 	void execute() override;
 	void setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager);
@@ -18,6 +18,6 @@ private:
 
 	int player;
 	int id;
-	ActionType type;
+	MenuAction type;
 
 };

@@ -4,12 +4,12 @@
 #include "simulation/env/Enviroment.h"
 
 
-IndividualAction::IndividualAction(Physical* entity, OrderType action, const Physical* paremeter, bool append)
+IndividualAction::IndividualAction(Physical* entity, UnitOrder action, const Physical* paremeter, bool append)
 	: ActionCommand(action, paremeter, nullptr, append) {
 	this->entity = entity;
 }
 
-IndividualAction::IndividualAction(Physical* entity, OrderType action, const Vector2& vector, bool append) :
+IndividualAction::IndividualAction(Physical* entity, UnitOrder action, const Vector2& vector, bool append) :
 	ActionCommand(action, nullptr, new Vector2(vector), append) {
 	this->entity = entity;
 }

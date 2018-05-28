@@ -2,7 +2,7 @@
 
 #include "ColorMode.h"
 #include "objects/Physical.h"
-#include "state/UnitStateType.h"
+#include "state/UnitState.h"
 #include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
 #include "aim/Aims.h"
@@ -61,8 +61,8 @@ public:
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
 
-	void setState(UnitStateType _state);
-	bool checkTransition(UnitStateType state);
+	void setState(UnitState _state);
+	bool checkTransition(UnitState state);
 	void executeState();
 	bool hasResource();
 	void load(dbload_unit* unit);
@@ -78,12 +78,12 @@ public:
 	void addAim(const FutureAim& aim, bool append = false);
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
-	UnitStateType getActionState() const { return actionState; }
+	UnitState getActionState() const { return actionState; }
 	short getPositionInFormation() const { return posInFormation; }
 	float getMinimalDistance() const { return minimalDistance; }
-	UnitStateType getState() const { return state; }
+	UnitState getState() const { return state; }
 	short getFormation() const { return formation; }
-	bool isToDispose() const { return state == UnitStateType::DISPOSE && atState; }
+	bool isToDispose() const { return state == UnitState::DISPOSE && atState; }
 	bool hasAim() { return aims.hasAim(); }
 
 	void action(char id, ActionParameter& parameter) override;
@@ -101,7 +101,7 @@ private:
 
 	void changeColor(float value, float maxValue) const;
 	void changeColor(Material* newMaterial);
-	void changeColor(UnitStateType state);
+	void changeColor(UnitState state);
 
 	Vector2 acceleration;
 	Vector2 velocity;
@@ -112,10 +112,10 @@ private:
 	db_unit* dbUnit;
 	db_unit_level* dbLevel;
 
-	UnitStateType state;
-	UnitStateType actionState;
+	UnitState state;
+	UnitState actionState;
 
-	UnitStateType defaultAttackState;
+	UnitState defaultAttackState;
 
 	StaticModel* model;
 	Material* basic;
