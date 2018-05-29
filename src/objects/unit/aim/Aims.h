@@ -21,6 +21,7 @@ public:
 	void add(Aim* aim);
 	void add(const FutureAim & aim);
 	void clear();
+	void removeCurrentAim();
 private:
 	std::vector<FutureAim> nextAims;
 	Aim* current;

@@ -71,6 +71,7 @@ public:
 	void resetFormation();
 	void setPositionInFormation(short _pos);
 	void clearAims();
+	void removeCurrentAim();
 
 	static std::string getColumns();
 	void addUpgrade(db_unit_upgrade* upgrade);

@@ -244,6 +244,10 @@ void Unit::clearAims() {
 	aims.clear();
 }
 
+void Unit::removeCurrentAim() {
+	aims.removeCurrentAim();
+}
+
 String& Unit::toMultiLineString() {
 	menuString = dbUnit->name + " " + dbLevel->name;
 	menuString.Append("\nAtak: ").Append(String(attackCoef));

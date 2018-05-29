@@ -78,3 +78,8 @@ void Aims::clear() {
 	nextAims.clear();
 	current = nullptr;
 }
+
+void Aims::removeCurrentAim() {
+	delete current;
+	current = nullptr;
+}

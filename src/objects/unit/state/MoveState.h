@@ -19,7 +19,9 @@ public:
 
 	~MoveState() = default;
 
-	void onStart(Unit* unit, ActionParameter& parameter) {}
+	void onStart(Unit* unit, ActionParameter& parameter) {
+		unit->removeCurrentAim();
+	}
 
 	void onEnd(Unit* unit) {
 		State::onEnd(unit);
