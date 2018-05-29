@@ -10,7 +10,7 @@ public:
 		nextStates[static_cast<char>(UnitState::STOP)] = true;
 		nextStates[static_cast<char>(UnitState::DEFEND)] = true;
 		nextStates[static_cast<char>(UnitState::DEAD)] = true;
-		nextStates[static_cast<char>(UnitState::GO)] = true;
+		nextStates[static_cast<char>(UnitState::GO_TO)] = true;
 		nextStates[static_cast<char>(UnitState::FOLLOW)] = true;
 		nextStates[static_cast<char>(UnitState::CHARGE)] = true;
 	}
@@ -18,12 +18,10 @@ public:
 
 	~AttackState() = default;
 
-	void onStart(Unit* unit) override {
+	void onStart(Unit* unit, ActionParameter& parameter) override {
 		unit->velocity = Urho3D::Vector2::ZERO;
 		unit->currentFrameState = 0;
 	}
-
-	void onStart(Unit* unit, ActionParameter& parameter) override {}
 
 	void onEnd(Unit* unit) override {
 		State::onEnd(unit);

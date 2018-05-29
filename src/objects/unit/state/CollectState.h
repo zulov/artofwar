@@ -13,8 +13,6 @@ public:
 	CollectState() {}
 	~CollectState() = default;
 
-	void onStart(Unit* unit) override {}
-
 	void onStart(Unit* unit, ActionParameter& parameter) override {
 		//unit->resource = ...;
 		unit->resource->up();

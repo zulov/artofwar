@@ -10,7 +10,7 @@ public:
 	StopState() {
 		nextStates[static_cast<char>(UnitState::DEFEND)] = true;
 		nextStates[static_cast<char>(UnitState::DEAD)] = true;
-		nextStates[static_cast<char>(UnitState::GO)] = true;
+		nextStates[static_cast<char>(UnitState::GO_TO)] = true;
 		nextStates[static_cast<char>(UnitState::FOLLOW)] = true;
 		nextStates[static_cast<char>(UnitState::ATTACK)] = true;
 		nextStates[static_cast<char>(UnitState::MOVE)] = true;
@@ -20,11 +20,9 @@ public:
 
 	~StopState() = default;
 
-	void onStart(Unit* unit) override {
+	void onStart(Unit* unit, ActionParameter& parameter) override {
 		unit->clearAims();
 	}
-
-	void onStart(Unit* unit, ActionParameter& parameter) override {}
 
 	void onEnd(Unit* unit) override {
 		State::onEnd(unit);

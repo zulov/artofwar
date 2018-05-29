@@ -257,7 +257,7 @@ void Unit::action(char id, ActionParameter& parameter) {
 
 	switch (type) {
 	case UnitOrder::GO:
-		StateManager::get()->changeState(this, UnitState::GO, parameter);
+		StateManager::get()->changeState(this, UnitState::GO_TO, parameter);
 		break;
 	case UnitOrder::STOP:
 		StateManager::get()->changeState(this, UnitState::STOP);

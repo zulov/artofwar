@@ -20,7 +20,7 @@
 StateManager* StateManager::instance = nullptr;
 
 StateManager::StateManager() {
-	states[static_cast<char>(UnitState::GO)] = new GoState();
+	states[static_cast<char>(UnitState::GO_TO)] = new GoState();
 	states[static_cast<char>(UnitState::STOP)] = new StopState();
 	states[static_cast<char>(UnitState::CHARGE)] = new ChargeState();
 	states[static_cast<char>(UnitState::ATTACK)] = new AttackState();
@@ -33,12 +33,16 @@ StateManager::StateManager() {
 	states[static_cast<char>(UnitState::DISPOSE)] = new DisposeState();
 
 	orderToState[static_cast<char>(UnitOrder::GO)] =
-		{static_cast<char>(UnitState::GO), static_cast<char>(UnitState::MOVE)};
+	{
+		static_cast<char>(UnitState::GO_TO),
+		static_cast<char>(UnitState::MOVE)
+	};
+	orderToState[static_cast<char>(UnitOrder::ATTACK)] = {
+		static_cast<char>(UnitState::ATTACK),
+		static_cast<char>(UnitState::SHOT)
+	};
 	orderToState[static_cast<char>(UnitOrder::STOP)] = {static_cast<char>(UnitState::STOP)};
 	orderToState[static_cast<char>(UnitOrder::CHARGE)] = {static_cast<char>(UnitState::CHARGE)};
-	orderToState[static_cast<char>(UnitOrder::ATTACK)] = {
-		static_cast<char>(UnitState::ATTACK), static_cast<char>(UnitState::SHOT)
-	};
 	orderToState[static_cast<char>(UnitOrder::DEAD)] = {static_cast<char>(UnitState::DEAD)};
 	orderToState[static_cast<char>(UnitOrder::DEFEND)] = {static_cast<char>(UnitState::DEFEND)};
 	orderToState[static_cast<char>(UnitOrder::FOLLOW)] = {static_cast<char>(UnitState::FOLLOW)};
@@ -59,15 +63,6 @@ StateManager::StateManager() {
 StateManager::~StateManager() {
 	for (auto state : states) {
 		delete state;
-	}
-}
-
-void StateManager::changeState(Unit* unit, UnitState stateTo) {
-	State* stateFrom = states[static_cast<int>(unit->getState())];
-	if (stateFrom->validateTransition(stateTo)) {
-		stateFrom->onEnd(unit);
-		unit->setState(stateTo);
-		states[static_cast<int>(stateTo)]->onStart(unit);
 	}
 }
 

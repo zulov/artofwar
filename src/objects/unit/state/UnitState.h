@@ -3,18 +3,15 @@
 
 enum class UnitState : char
 {
-	GO = 0,
-	//do celu
-	STOP,
+	STOP=0,
+	MOVE,
+	GO_TO,
+	DEAD,
 	CHARGE,
 	ATTACK,
-	DEAD,
+	SHOT,
 	DEFEND,
 	FOLLOW,
 	COLLECT,
-	MOVE,
-	//porusza sie
-	//TODO nie ma takiego orderu musi byæ rêcznie dodany?
-	DISPOSE,
-	SHOT
+	DISPOSE
 };

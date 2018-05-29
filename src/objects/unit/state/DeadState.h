@@ -11,8 +11,6 @@ public:
 
 	~DeadState() = default;
 
-	void onStart(Unit* unit) {}
-
 	void onStart(Unit* unit, ActionParameter& parameter) {}
 
 	void onEnd(Unit* unit) {
