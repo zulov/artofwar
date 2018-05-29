@@ -2,20 +2,19 @@
 #include "ControlsUtils.h"
 #include "Game.h"
 #include "HitData.h"
-#include "hud/HudData.h"
 #include "camera/CameraManager.h"
 #include "commands/CommandList.h"
 #include "commands/action/ActionCommand.h"
 #include "commands/action/GroupAction.h"
 #include "commands/creation/CreationCommandList.h"
 #include "database/DatabaseCache.h"
+#include "hud/HudData.h"
 #include "objects/NodeUtils.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/Enviroment.h"
 #include "simulation/formation/FormationManager.h"
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/UI/UI.h>
 #include <algorithm>
 #include <queue>
 

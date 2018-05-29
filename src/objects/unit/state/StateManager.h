@@ -2,6 +2,8 @@
 #include "State.h"
 #include "database/db_strcut.h"
 #include "objects/unit/ActionParameter.h"
+#include "UnitOrder.h"
+#include <array>
 
 class StateManager
 {
@@ -23,4 +25,6 @@ private:
 	bool ordersToUnit[UNITS_NUMBER_DB][STATE_SIZE];
 
 	static StateManager* instance;
+
+	std::vector<char> orderToState[UNIT_ORDER_SIZE];
 };

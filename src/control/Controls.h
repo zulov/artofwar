@@ -41,6 +41,7 @@ public:
 
 	void orderPhysical(short id, ActionParameter& parameter);
 	void order(short id, ActionParameter& parameter);
+	void executeOnAll(short id, ActionParameter& parameter);
 	void clean(SimulationInfo* simulationInfo);
 	void updateSelection();
 	void updateArrow();

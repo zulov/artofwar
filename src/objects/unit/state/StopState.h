@@ -14,7 +14,7 @@ public:
 		nextStates[static_cast<char>(UnitState::FOLLOW)] = true;
 		nextStates[static_cast<char>(UnitState::ATTACK)] = true;
 		nextStates[static_cast<char>(UnitState::MOVE)] = true;
-		nextStates[static_cast<char>(UnitState::CHARAGE)] = true;
+		nextStates[static_cast<char>(UnitState::CHARGE)] = true;
 		nextStates[static_cast<char>(UnitState::COLLECT)] = true;
 	}
 

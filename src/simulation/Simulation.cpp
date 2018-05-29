@@ -59,13 +59,12 @@ void Simulation::tryToCollect(Unit* unit) {
 void Simulation::selfAI() {
 	for (auto unit : *units) {
 		switch (unit->getState()) {
-		case UnitState::CHARAGE:
+		case UnitState::CHARGE:
 			{
 			std::vector<Unit*>* enemies = enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
 			unit->toCharge(enemies);
 			}
 			break;
-
 		case UnitState::STOP:
 		case UnitState::MOVE:
 			if (currentFrameNumber % 3 == 0 && unit->getFormation() == -1 && unit->checkTransition(unit->getActionState())) {

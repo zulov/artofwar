@@ -12,7 +12,7 @@ public:
 		nextStates[static_cast<char>(UnitState::DEAD)] = true;
 		nextStates[static_cast<char>(UnitState::GO)] = true;
 		nextStates[static_cast<char>(UnitState::FOLLOW)] = true;
-		nextStates[static_cast<char>(UnitState::CHARAGE)] = true;
+		nextStates[static_cast<char>(UnitState::CHARGE)] = true;
 	}
 
 

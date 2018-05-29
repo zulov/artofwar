@@ -24,7 +24,7 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	dbUnit = Game::get()->getDatabaseCache()->getUnit(id);
 	dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
 	populate();
-	if (StateManager::get()->validateState(getDbID(), UnitState::CHARAGE)) {
+	if (StateManager::get()->validateState(getDbID(), UnitState::CHARGE)) {
 		chargeData = new ChargeData(150, 2);
 	}
 
@@ -263,7 +263,7 @@ void Unit::action(char id, ActionParameter& parameter) {
 		StateManager::get()->changeState(this, UnitState::STOP);
 		break;
 	case UnitOrder::CHARGE:
-		StateManager::get()->changeState(this, UnitState::CHARAGE, parameter);
+		StateManager::get()->changeState(this, UnitState::CHARGE, parameter);
 		break;
 	case UnitOrder::ATTACK: break;
 	case UnitOrder::DEAD:

@@ -6,7 +6,7 @@ enum class UnitState : char
 	GO = 0,
 	//do celu
 	STOP,
-	CHARAGE,
+	CHARGE,
 	ATTACK,
 	DEAD,
 	DEFEND,
