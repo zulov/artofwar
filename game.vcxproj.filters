@@ -91,9 +91,6 @@
     <ClCompile Include="src\commands\CommandList.cpp">
       <Filter>command\list</Filter>
     </ClCompile>
-    <ClCompile Include="src\objects\unit\aim\Aim.cpp">
-      <Filter>aim</Filter>
-    </ClCompile>
     <ClCompile Include="src\hud\window\top\TopPanel.cpp">
       <Filter>hud\windows\top</Filter>
     </ClCompile>
@@ -127,7 +124,6 @@
     <ClCompile Include="src\objects\unit\aim\TargetAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
-    <ClCompile Include="src\objects\unit\aim\DummyAim.cpp" />
     <ClCompile Include="src\objects\Static.cpp" />
     <ClCompile Include="src\camera\TopCameraBehave.cpp" />
     <ClCompile Include="src\simulation\env\Enviroment.cpp">

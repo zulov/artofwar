@@ -213,13 +213,11 @@
     <ClCompile Include="src\hud\window\in_game_menu\middle\FilePanel.cpp" />
     <ClCompile Include="src\objects\Static.cpp" />
     <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
-    <ClCompile Include="src\objects\unit\aim\DummyAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\TargetAim.cpp" />
     <ClCompile Include="src\commands\AbstractCommand.cpp" />
     <ClCompile Include="src\hud\window\AbstractWindowPanel.cpp" />
     <ClCompile Include="src\commands\action\ActionCommand.cpp" />
-    <ClCompile Include="src\objects\unit\aim\Aim.cpp" />
     <ClCompile Include="src\objects\unit\aim\Aims.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\scene\load\SceneLoader.cpp" />

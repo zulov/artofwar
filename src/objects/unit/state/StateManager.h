@@ -13,10 +13,10 @@ public:
 	void changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter = ActionParameter());
 	bool checkChangeState(Unit* unit, UnitState stateTo);
 	void execute(Unit* unit);
-	static StateManager* get();
 
 	static void init();
 	static void dispose();
+	static StateManager* get(){return instance;}
 private:
 	StateManager();
 	~StateManager();

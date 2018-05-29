@@ -89,10 +89,6 @@ void StateManager::execute(Unit* unit) {
 	state->execute(unit);
 }
 
-StateManager* StateManager::get() {
-	return instance;
-}
-
 void StateManager::init() {
 	if (instance == nullptr) {
 		instance = new StateManager();
