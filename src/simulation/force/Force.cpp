@@ -1,17 +1,18 @@
 #include "Force.h"
 #include "Game.h"
 #include "simulation/formation/FormationManager.h"
+#include "objects/unit/Unit.h"
 
 Force::Force() = default;
 
 
 Force::~Force() = default;
 
-void Force::separationObstacle(Vector2& newForce, Unit* unit, const Vector2& repulse) {
-	if (repulse == Vector2::ZERO) {
+void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit, const Urho3D::Vector2& repulse) {
+	if (repulse == Urho3D::Vector2::ZERO) {
 		return;
 	}
-	Vector2 force(repulse.x_, repulse.y_);
+	Urho3D::Vector2 force(repulse.x_, repulse.y_);
 	const auto distance = force.Length();
 	const auto minimalDistance = unit->getMinimalDistance() * 3;
 	const auto coef = calculateCoef(distance, minimalDistance);
@@ -24,18 +25,18 @@ void Force::separationObstacle(Vector2& newForce, Unit* unit, const Vector2& rep
 	newForce += force;
 }
 
-void Force::separationUnits(Vector2& newForce, Unit* unit, std::vector<Unit*>* units) {
+void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Unit*>* units) {
 	if (units->empty()) {
 		return;
 	}
-	Vector2 force;
+	Urho3D::Vector2 force;
 	int isLeaderFor = Game::get()->getFormationManager()->isLeaderFor(unit);
 
 	for (auto neight : *units) {
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
-		Vector2 diff(
+		Urho3D::Vector2 diff(
 		             unit->getPosition()->x_ - neight->getPosition()->x_,
 		             unit->getPosition()->z_ - neight->getPosition()->z_
 		            );

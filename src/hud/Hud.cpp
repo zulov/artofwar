@@ -15,6 +15,7 @@
 #include <Urho3D/UI/UIEvents.h>
 #include <exprtk/exprtk.hpp>
 #include <regex>
+#include "camera/CameraManager.h"
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {

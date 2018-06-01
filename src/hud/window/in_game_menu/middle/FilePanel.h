@@ -1,8 +1,7 @@
 #pragma once
 #include "AbstractMiddlePanel.h"
-#include <Urho3D/UI/LineEdit.h>
-#include <Urho3D/UI/DropDownList.h>
 #include "FileFormData.h"
+#include <Urho3D/UI/LineEdit.h>
 
 class FilePanel : public AbstractMiddlePanel
 {

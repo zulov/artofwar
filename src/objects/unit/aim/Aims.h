@@ -14,14 +14,14 @@ class Aims
 public:
 	Aims();
 	~Aims();
-	std::optional<Urho3D::Vector2> getDirection(Unit* unit);
+	std::optional<Urho3D::Vector2> getDirection(Unit* unit) const;
 	void clearExpired();
 	bool ifReach(Unit* unit);
-	bool hasAim();
 	void add(Aim* aim);
-	void add(const FutureAim & aim);
+	void add(const FutureAim& aim);
 	void clear();
 	void removeCurrentAim();
+	bool hasAim() const { return current != nullptr || !nextAims.empty(); }
 private:
 	std::vector<FutureAim> nextAims;
 	Aim* current;

@@ -1,6 +1,7 @@
 #include "FormationAction.h"
 #include "Game.h"
 #include "simulation/env/Enviroment.h"
+#include "objects/unit/Unit.h"
 
 
 FormationAction::FormationAction(Formation* formation, UnitOrder action, const Physical* physical, Vector2* vector,

@@ -18,7 +18,7 @@ Aims::~Aims() {
 	delete current;
 }
 
-std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) {
+std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) const {
 	if (current) {
 		return current->getDirection(unit);
 	}
@@ -45,24 +45,16 @@ bool Aims::ifReach(Unit* unit) {
 		}
 	} else if (!nextAims.empty()) {
 		if (nextAims[0].physical != nullptr) {
-			Game::get()->getActionCommandList()->add(new IndividualAction(unit, //TODO a moze formation, skad to wiedziec :(
-			                                                              nextAims[0].action,
-			                                                              nextAims[0].physical,
-			                                                              true));
+			Game::get()->getActionCommandList()->add(new IndividualAction(unit, nextAims[0].action,
+			                                                              nextAims[0].physical, true));
 		} else {
-			Game::get()->getActionCommandList()->add(new IndividualAction(unit,
-			                                                              nextAims[0].action,
-			                                                              nextAims[0].vector,
-			                                                              true));
+			Game::get()->getActionCommandList()->add(new IndividualAction(unit, nextAims[0].action,
+			                                                              nextAims[0].vector, true));
 		}
 		nextAims.erase(nextAims.begin());
 	}
 
 	return false;
-}
-
-bool Aims::hasAim() {
-	return current != nullptr || !nextAims.empty();
 }
 
 void Aims::add(Aim* aim) {

@@ -1,11 +1,11 @@
 #pragma once
 #include "objects/Static.h"
-#include "objects/queue/QueueElement.h"
 #include "objects/queue/QueueManager.h"
 
 struct db_building;
 struct db_building_level;
 struct db_unit;
+class QueueElement;
 
 class Building : public Static
 {

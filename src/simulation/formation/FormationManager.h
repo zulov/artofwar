@@ -12,7 +12,7 @@ public:
 	std::optional<Formation*> createFormation(std::vector<Physical*>* _units, FormationType _type = FormationType::SQUERE);
 	void update();
 	float getPriority(Unit* unit);
-	std::optional<Vector2> getPositionFor(Unit* unit);
+	std::optional<Urho3D::Vector2> getPositionFor(Unit* unit);
 	int isLeaderFor(Unit* unit);
 private:
 	std::vector<Formation*> formations;

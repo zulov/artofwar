@@ -1,6 +1,7 @@
 #include "UpgradeCommand.h"
 #include "Game.h"
 #include "player/PlayersManager.h"
+#include "objects/building/Building.h"
 #include "simulation/SimulationObjectManager.h"
 
 

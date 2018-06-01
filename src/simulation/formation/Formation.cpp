@@ -7,6 +7,7 @@
 #include "objects/unit/aim/FutureAim.h"
 #include "simulation/env/Enviroment.h"
 #include <algorithm>
+#include <Urho3D/Math/Vector2.h>
 #include <chrono>
 #include <iostream>
 #include <numeric>

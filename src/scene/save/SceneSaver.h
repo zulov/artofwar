@@ -1,19 +1,21 @@
 #pragma once
 
-#include "objects/unit/Unit.h"
-#include "player/Player.h"
-#include <sqlite3/sqlite3.h>
 #include "Loading.h"
 #include "objects/building/Building.h"
+#include "player/Player.h"
+#include <sqlite3/sqlite3.h>
+
 
 struct loading;
+class Unit;
+class ResourceEntity;
 
 class SceneSaver
 {
 public:
 	SceneSaver(int _precision);
 	~SceneSaver();
-	
+
 	void createTables();
 	void createDatabase(const Urho3D::String& fileName);
 	void createSave(Urho3D::String fileName);
@@ -40,4 +42,3 @@ private:
 
 	loading loadingState;
 };
-

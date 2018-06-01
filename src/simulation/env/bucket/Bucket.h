@@ -1,10 +1,10 @@
 #pragma once
-#include "objects/unit/Unit.h"
-#include <vector>
 #include "defines.h"
+#include <vector>
 
 
 struct content_info;
+class Unit;
 
 class Bucket
 {

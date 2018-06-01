@@ -1,7 +1,6 @@
 #pragma once
 #include "Benchmark.h"
 #include "GameState.h"
-#include "camera/CameraManager.h"
 #include "control/SelectedInfo.h"
 #include "window/debug/DebugPanel.h"
 #include "window/in_game_menu/InGameMenuPanel.h"
@@ -12,11 +11,12 @@
 #include "window/selected/SelectedHudPanel.h"
 #include "window/top/TopPanel.h"
 #include "xml/rapidxml_print.hpp"
+#include "window/main_menu/MainMenuPanel.h"
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/Text.h>
-#include "window/main_menu/MainMenuPanel.h"
 
 
+class CameraManager;
 class SimulationInfo;
 class MainMenuPanel;
 using namespace Urho3D;

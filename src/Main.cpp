@@ -24,6 +24,7 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
 #include "objects/unit/ActionParameter.h"
+#include "camera/CameraManager.h"
 
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)

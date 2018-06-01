@@ -1,11 +1,13 @@
 #pragma once
 #include "BucketIterator.h"
 #include "defines.h"
+#include <Urho3D/Math/Vector3.h>
 
 #define MAX_SEP_DIST 16
 #define RES_SEP_DIST 80
 
 class Bucket;
+class Physical;
 
 class Grid
 {
@@ -17,10 +19,10 @@ public:
 	std::vector<Unit*>& getContentAt(int index);
 
 	std::vector<short>* getEnvIndexsFromCache(float dist);
-	std::vector<Physical *>* getArrayNeight(std::pair<Vector3*, Vector3*>& pair);
+	std::vector<Physical *>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);
 	BucketIterator& getArrayNeight(Unit* entity, float radius, short thread);
-	int indexFromPosition(Vector3* position) const;
-	int indexFromPosition(Vector2& position) const;
+	int indexFromPosition(Urho3D::Vector3* position) const;
+	int indexFromPosition(Urho3D::Vector2& position) const;
 
 	int getIndex(short posX, short posZ) const { return posX * resolution + posZ; }
 protected:

@@ -1,6 +1,7 @@
 #include "IndividualAction.h"
 #include "Game.h"
 #include "objects/unit/ActionParameter.h"
+#include "objects/unit/Unit.h"
 #include "simulation/env/Enviroment.h"
 
 

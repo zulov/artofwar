@@ -1,6 +1,7 @@
 #include "Enviroment.h"
 #include "objects/resource/ResourceEntity.h"
 #include <chrono>
+#include "objects/unit/Unit.h"
 #include <simulation/env/bucket/BucketIterator.h>
 
 #define BUCKET_GRID_RESOLUTION 512
@@ -181,5 +182,4 @@ content_info* Enviroment::getContentInfo(Vector2 from, Vector2 to, bool checks[]
 	to.y_ = to.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
 
 	return mainGrid.getContentInfo(from, to, checks, activePlayer);
-
 }

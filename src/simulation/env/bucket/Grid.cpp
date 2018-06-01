@@ -1,12 +1,14 @@
 #include "Grid.h"
+#include "Bucket.h"
 #include "BucketIterator.h"
+#include "objects/Physical.h"
+#include "objects/unit/Unit.h"
 #include "simulation/env/ContentInfo.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <algorithm>
 #include <iostream>
 #include <ostream>
-#include "Bucket.h"
 
 
 Grid::Grid(short _resolution, float _size, bool _debugEnabled): resolution(_resolution),

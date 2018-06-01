@@ -3,9 +3,9 @@
 #include "ColorMode.h"
 #include "objects/Physical.h"
 #include "state/UnitState.h"
+#include "aim/Aims.h"
 #include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
-#include "aim/Aims.h"
 
 
 class Aim;

@@ -1,9 +1,9 @@
 #pragma once
-#include "objects/unit/Unit.h"
 #include <vector>
 
 
 class Grid;
+class Unit;
 
 class BucketIterator
 {
