@@ -10,7 +10,6 @@ class QueueElement;
 class Building : public Static
 {
 public:
-
 	Building(Vector3* _position, int id, int player, int level);
 	~Building();
 

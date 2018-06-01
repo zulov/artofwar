@@ -56,6 +56,7 @@ private:
 
 	void tryToAttack(Unit* unit);
 	void tryToCollect(Unit* unit);
+	void tryToShot(Unit* unit);
 
 	float accumulateTime = 0;
 	float maxTimeFrame = 0.05f;

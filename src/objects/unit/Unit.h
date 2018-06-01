@@ -6,7 +6,7 @@
 #include "aim/Aims.h"
 #include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
-
+#include <tuple>
 
 class Aim;
 struct db_unit_upgrade;
@@ -56,6 +56,11 @@ public:
 	void toCollect(ResourceEntity* _resource);
 	void toCollect();
 
+	void toShot(std::vector<Unit*>* enemies);
+	void oneToInteract(Physical* enemy);
+	void toShot(Physical* enemy);
+	void toShot();
+
 	void toCharge(std::vector<Unit*>* enemies);
 
 	void updateHeight(float y, double timeStep);
@@ -99,6 +104,9 @@ private:
 
 	void attackIfCloseEnough(float distance, Unit* closest);
 	void collectIfCloseEnough(float distance, ResourceEntity* closest);
+	void shotIfCloseEnough(float distance, Unit* closest);
+
+	std::tuple<Unit*, float> closestEntity(std::vector<Unit*>* enemies);
 
 	void changeColor(float value, float maxValue) const;
 	void changeColor(Material* newMaterial);

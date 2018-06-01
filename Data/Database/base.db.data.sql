@@ -1,8 +1,8 @@
 BEGIN TRANSACTION;
-INSERT INTO `units` (id,name,rotatable,nation,icon,actionState) VALUES (0,'warrior',1,0,'warrior.png',3),
- (1,'archer',1,0,'archer.png',3),
- (2,'pikeman',1,0,'pikeman.png',6),
- (3,'cavalry',1,0,'cavalry.png',3),
+INSERT INTO `units` (id,name,rotatable,nation,icon,actionState) VALUES (0,'warrior',1,0,'warrior.png',5),
+ (1,'archer',1,0,'archer.png',6),
+ (2,'pikeman',1,0,'pikeman.png',5),
+ (3,'cavalry',1,0,'cavalry.png',5),
  (4,'worker',0,0,'worker.png',9),
  (5,'general',1,0,'general.png',1);
 INSERT INTO `unit_upgrade_path` (id,name) VALUES (0,'up_pth_attack'),

@@ -41,9 +41,12 @@ StateManager::StateManager() {
 		static_cast<char>(UnitState::ATTACK),
 		static_cast<char>(UnitState::SHOT)
 	};
+	orderToState[static_cast<char>(UnitOrder::DEAD)] = {
+		static_cast<char>(UnitState::DEAD), 
+		static_cast<char>(UnitState::DISPOSE)
+	};
 	orderToState[static_cast<char>(UnitOrder::STOP)] = {static_cast<char>(UnitState::STOP)};
 	orderToState[static_cast<char>(UnitOrder::CHARGE)] = {static_cast<char>(UnitState::CHARGE)};
-	orderToState[static_cast<char>(UnitOrder::DEAD)] = {static_cast<char>(UnitState::DEAD)};
 	orderToState[static_cast<char>(UnitOrder::DEFEND)] = {static_cast<char>(UnitState::DEFEND)};
 	orderToState[static_cast<char>(UnitOrder::FOLLOW)] = {static_cast<char>(UnitState::FOLLOW)};
 	orderToState[static_cast<char>(UnitOrder::COLLECT)] = {static_cast<char>(UnitState::COLLECT)};

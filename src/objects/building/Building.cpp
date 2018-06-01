@@ -94,7 +94,6 @@ void Building::action(char id, ActionParameter& parameter) {
 		}
 		}
 		break;
-
 	}
 }
 

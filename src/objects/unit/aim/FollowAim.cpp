@@ -1,5 +1,6 @@
 #include "FollowAim.h"
 #include "../Unit.h"
+#include "MathUtils.h"
 
 
 FollowAim::FollowAim(const Physical* _physical): physical(_physical) {
@@ -16,8 +17,8 @@ Urho3D::Vector2 FollowAim::getDirection(Unit* unit) {
 }
 
 bool FollowAim::ifReach(Unit* unit) {
-	const float dist = (*unit->getPosition() - *physical->getPosition()).LengthSquared();
-	return dist < radiusSq;
+	const float distance = sqDist(unit, physical);
+	return distance < radiusSq;
 }
 
 bool FollowAim::expired() {

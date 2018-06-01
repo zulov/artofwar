@@ -7,6 +7,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <algorithm>
 #include <string>
+#include "MathUtils.h"
 
 
 Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
@@ -147,7 +148,7 @@ bool Physical::isFirstThingAlive() {
 
 bool Physical::hasEnemy() {
 	if (isFirstThingAlive()) {
-		if ((*this->getPosition() - *thingsToInteract[0]->getPosition()).LengthSquared() < attackRange * attackRange) {
+		if (sqDist(this, thingsToInteract[0]) < attackRange * attackRange) {
 			return true;
 		}
 	}

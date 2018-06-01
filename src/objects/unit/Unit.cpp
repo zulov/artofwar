@@ -15,6 +15,7 @@
 #include <Urho3D/Graphics/StaticModel.h><Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h><Urho3D/Resource/ResourceCache.h>
 #include <string>
+#include "MathUtils.h"
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr),
@@ -145,7 +146,6 @@ void Unit::attackIfCloseEnough(float distance, Unit* closest) {
 	if (closest) {
 		if (distance < attackRange * attackRange) {
 			toAttack(closest);
-			//attackRange();
 		} else if (distance < attackIntrest * attackIntrest) {
 			addAim(FutureAim(closest, UnitOrder::FOLLOW));
 		}
@@ -162,29 +162,63 @@ void Unit::collectIfCloseEnough(float distance, ResourceEntity* closest) {
 	}
 }
 
-void Unit::toAttack(std::vector<Unit*>* enemies) {
+void Unit::shotIfCloseEnough(float distance, Unit* closest) {
+	if (closest) {
+		if (distance < attackRange * attackRange) {
+			toShot(closest);
+		}
+	}
+}
+
+std::tuple<Unit*, float> Unit::closestEntity(std::vector<Unit*>* enemies) {
 	float minDistance = 99999;
 	Unit* entityClosest = nullptr;
 	for (auto entity : *enemies) {
 		if (entity->isAlive()) {
-			const float distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
+			const float distance = sqDist(this, entity);
 			if (distance <= minDistance) {
 				minDistance = distance;
 				entityClosest = entity;
 			}
 		}
 	}
-	attackIfCloseEnough(minDistance, entityClosest);
+	return {entityClosest, minDistance};
+}
+
+
+void Unit::toAttack(std::vector<Unit*>* enemies) {
+	auto [closest,minDistance] = closestEntity(enemies);
+
+	attackIfCloseEnough(minDistance, closest);
 }
 
 void Unit::toAttack(Physical* enemy) {
-	thingsToInteract.clear();
-	thingsToInteract.push_back(enemy);
+	oneToInteract(enemy);
 	toAttack();
 }
 
 void Unit::toAttack() {
 	StateManager::get()->changeState(this, UnitState::ATTACK);
+}
+
+void Unit::toShot(std::vector<Unit*>* enemies) {
+	auto [closest,minDistance] = closestEntity(enemies);
+
+	shotIfCloseEnough(minDistance, closest);
+}
+
+void Unit::oneToInteract(Physical* enemy) {
+	thingsToInteract.clear();
+	thingsToInteract.push_back(enemy);
+}
+
+void Unit::toShot(Physical* enemy) {
+	oneToInteract(enemy);
+	toShot();
+}
+
+void Unit::toShot() {
+	StateManager::get()->changeState(this, UnitState::SHOT);
 }
 
 void Unit::toCollect(std::vector<Physical*>* enemies) {
@@ -193,7 +227,7 @@ void Unit::toCollect(std::vector<Physical*>* enemies) {
 	for (auto entity : *enemies) {
 		const auto resource = dynamic_cast<ResourceEntity*>(entity);
 		if (resource->belowLimit()) {
-			const float distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
+			const float distance = sqDist(this, entity);
 			if (distance <= minDistance) {
 				minDistance = distance;
 				entityClosest = resource;
@@ -211,7 +245,7 @@ void Unit::toCharge(std::vector<Unit*>* enemies) {
 	thingsToInteract.clear();
 	for (auto entity : *enemies) {
 		if (entity->isAlive()) {
-			const float distance = (*this->getPosition() - *entity->getPosition()).LengthSquared();
+			const float distance = sqDist(this, entity);
 			if (distance <= chargeData->attackRange * chargeData->attackRange) {
 				thingsToInteract.push_back(entity);
 			}
