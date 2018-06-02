@@ -74,7 +74,7 @@ protected:
 	BillboardSet* billboardSetShadow = nullptr;
 
 	unsigned char maxCloseUsers = 4; //TODO default values
-	unsigned char maxRangeUsers = 6;
+	unsigned char maxRangeUsers = 2;
 
 	unsigned char closeUsers = 0;
 	unsigned char rangeUsers = 0;

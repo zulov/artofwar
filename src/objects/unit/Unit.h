@@ -53,7 +53,7 @@ public:
 	void toAttack(Physical* enemy);
 	void toAttack();
 
-	void toCollect(std::vector<Physical*>* enemies);
+	void toCollect(std::vector<Physical*>* entities);
 	void toCollect(Physical* _resource);
 	void toCollect();
 

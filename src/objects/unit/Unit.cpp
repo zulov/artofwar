@@ -218,10 +218,10 @@ void Unit::toShot() {
 	StateManager::get()->changeState(this, UnitState::SHOT);
 }
 
-void Unit::toCollect(std::vector<Physical*>* enemies) {
+void Unit::toCollect(std::vector<Physical*>* entities) {
 	float minDistance = 9999;
 	Physical* entityClosest = nullptr;
-	for (auto physical : *enemies) {
+	for (auto physical : *entities) {
 		if (physical->belowCloseLimit()) {
 			const float distance = sqDist(this, physical);
 			if (distance <= minDistance) {
