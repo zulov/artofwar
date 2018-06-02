@@ -8,15 +8,16 @@
 #include <vector>
 #include <tuple>
 
-class Aim;
 struct db_unit_upgrade;
 struct db_unit_level;
 struct db_unit;
 struct dbload_unit;
 struct FutureAim;
+struct MissleData;
+
+class Aim;
 class State;
 class ResourceEntity;
-class MissleData;
 class ChargeData;
 
 class Unit : public Physical

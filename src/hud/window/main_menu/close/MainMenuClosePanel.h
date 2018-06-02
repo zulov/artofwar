@@ -9,7 +9,7 @@ namespace Urho3D {
 class MainMenuClosePanel : public MainMenuDetailsPanel
 {
 public:
-	MainMenuClosePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
+	MainMenuClosePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~MainMenuClosePanel();
 	Urho3D::Button * getCloseButton();
 private:

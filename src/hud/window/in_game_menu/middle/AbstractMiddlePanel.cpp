@@ -2,7 +2,7 @@
 #include <Urho3D/UI/UIEvents.h>
 
 
-AbstractMiddlePanel::AbstractMiddlePanel(Urho3D::XMLFile* _style, Urho3D::String _title): AbstractWindowPanel(_style) {
+AbstractMiddlePanel::AbstractMiddlePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): AbstractWindowPanel(_style) {
 	styleName = "AdditionalInGameWindow";
 	msg = _title;
 }

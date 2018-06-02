@@ -21,8 +21,12 @@ Player::Player(int nationId, int team, int _id, int _color, Urho3D::String _name
 Player::~Player() = default;
 
 std::string Player::getValues(int precision) {
-	return to_string(id) + "," + to_string(active) + "," + to_string(team) + "," + to_string(dbNation->id) + ",'" + name.
-		CString() + "','" + to_string(color) + "'";
+	return to_string(id) + ","
+		+ to_string(active) + ","
+		+ to_string(team) + ","
+		+ to_string(dbNation->id) + ",'"
+		+ name.CString() + "','"
+		+ to_string(color) + "'";
 }
 
 void Player::setResourceAmount(int resource, float amount) {

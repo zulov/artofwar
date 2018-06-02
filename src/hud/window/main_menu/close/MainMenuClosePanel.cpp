@@ -5,7 +5,7 @@
 
 
 MainMenuClosePanel::
-MainMenuClosePanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDetailsPanel(_style, _title) {
+MainMenuClosePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(_style, _title) {
 	bodyStyle = "MainMenuCloseMock";
 }
 
