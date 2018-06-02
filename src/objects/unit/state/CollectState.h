@@ -15,12 +15,12 @@ public:
 
 	void onStart(Unit* unit, ActionParameter& parameter) override {
 		//unit->resource = ...;
-		unit->resource->up();
+		unit->resource->upClose();
 	}
 
 	void onEnd(Unit* unit) override {
 		State::onEnd(unit);
-		unit->resource->reduce();
+		unit->resource->reduceClose();
 		unit->resource = nullptr;
 		*unit->toResource = Urho3D::Vector2();
 	}

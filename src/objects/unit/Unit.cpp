@@ -16,6 +16,7 @@
 #include <Urho3D/Graphics/StaticModel.h><Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h><Urho3D/Resource/ResourceCache.h>
 #include <string>
+#include "objects/PhysicalUtils.h"
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr),
@@ -149,7 +150,7 @@ void Unit::attackIfCloseEnough(float distance, Unit* closest) {
 	}
 }
 
-void Unit::collectIfCloseEnough(float distance, ResourceEntity* closest) {
+void Unit::collectIfCloseEnough(float distance, Physical* closest) {
 	if (closest) {
 		if (distance < attackRange * attackRange) {
 			toCollect(closest);
@@ -167,11 +168,11 @@ void Unit::shotIfCloseEnough(float distance, Unit* closest) {
 	}
 }
 
-std::tuple<Unit*, float> Unit::closestEntity(std::vector<Unit*>* enemies) {
+std::tuple<Unit*, float> Unit::closestEntity(std::vector<Unit*>* enemies, std::function<bool(Physical*)> func) {
 	float minDistance = 99999;
 	Unit* entityClosest = nullptr;
 	for (auto entity : *enemies) {
-		if (entity->isAlive()) {
+		if (entity->isAlive() && func(entity)) {
 			const float distance = sqDist(this, entity);
 			if (distance <= minDistance) {
 				minDistance = distance;
@@ -182,9 +183,8 @@ std::tuple<Unit*, float> Unit::closestEntity(std::vector<Unit*>* enemies) {
 	return {entityClosest, minDistance};
 }
 
-
 void Unit::toAttack(std::vector<Unit*>* enemies) {
-	auto [closest,minDistance] = closestEntity(enemies);
+	auto [closest,minDistance] = closestEntity(enemies, belowClose);
 
 	attackIfCloseEnough(minDistance, closest);
 }
@@ -199,7 +199,7 @@ void Unit::toAttack() {
 }
 
 void Unit::toShot(std::vector<Unit*>* enemies) {
-	auto [closest,minDistance] = closestEntity(enemies);
+	auto [closest,minDistance] = closestEntity(enemies, belowRange);
 
 	shotIfCloseEnough(minDistance, closest);
 }
@@ -220,14 +220,13 @@ void Unit::toShot() {
 
 void Unit::toCollect(std::vector<Physical*>* enemies) {
 	float minDistance = 9999;
-	ResourceEntity* entityClosest = nullptr;
-	for (auto entity : *enemies) {
-		const auto resource = dynamic_cast<ResourceEntity*>(entity);
-		if (resource->belowLimit()) {
-			const float distance = sqDist(this, entity);
+	Physical* entityClosest = nullptr;
+	for (auto physical : *enemies) {
+		if (physical->belowCloseLimit()) {
+			const float distance = sqDist(this, physical);
 			if (distance <= minDistance) {
 				minDistance = distance;
-				entityClosest = resource;
+				entityClosest = physical;
 			}
 		}
 	}
@@ -250,9 +249,9 @@ void Unit::toCharge(std::vector<Unit*>* enemies) {
 	}
 }
 
-void Unit::toCollect(ResourceEntity* _resource) {
+void Unit::toCollect(Physical* _resource) {
 	StateManager::get()->changeState(this, UnitState::COLLECT);
-	resource = _resource;
+	resource = dynamic_cast<ResourceEntity*>(_resource);
 }
 
 void Unit::updateHeight(float y, double timeStep) {

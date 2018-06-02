@@ -21,10 +21,16 @@ public:
 	void onStart(Unit* unit, ActionParameter& parameter) override {
 		unit->velocity = Urho3D::Vector2::ZERO;
 		unit->currentFrameState = 0;
+		if (unit->isFirstThingAlive()) {
+			unit->thingsToInteract[0]->upClose();
+		}
 	}
 
 	void onEnd(Unit* unit) override {
 		State::onEnd(unit);
+		if (unit->isFirstThingAlive()) {
+			unit->thingsToInteract[0]->reduceClose();
+		}
 		unit->thingsToInteract.clear();
 	}
 

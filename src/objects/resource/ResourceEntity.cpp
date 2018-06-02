@@ -36,7 +36,7 @@ void ResourceEntity::populate() {
 	type = dbResource->id;
 	gridSize = dbResource->size;
 	amonut = dbResource->maxCapacity;
-	maxUsers = dbResource->maxUsers;
+	maxCloseUsers = dbResource->maxUsers;
 }
 
 float ResourceEntity::getMaxHpBarSize() {

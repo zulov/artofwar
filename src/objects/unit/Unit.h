@@ -54,7 +54,7 @@ public:
 	void toAttack();
 
 	void toCollect(std::vector<Physical*>* enemies);
-	void toCollect(ResourceEntity* _resource);
+	void toCollect(Physical* _resource);
 	void toCollect();
 
 	void toShot(std::vector<Unit*>* enemies);
@@ -104,10 +104,10 @@ public:
 private:
 
 	void attackIfCloseEnough(float distance, Unit* closest);
-	void collectIfCloseEnough(float distance, ResourceEntity* closest);
+	void collectIfCloseEnough(float distance, Physical* closest);
 	void shotIfCloseEnough(float distance, Unit* closest);
 
-	std::tuple<Unit*, float> closestEntity(std::vector<Unit*>* enemies);
+	std::tuple<Unit*, float> closestEntity(std::vector<Unit*>* enemies, std::function<bool(Physical*)> func);
 
 	void changeColor(float value, float maxValue) const;
 	void changeColor(Material* newMaterial);

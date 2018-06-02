@@ -13,10 +13,6 @@ public:
 
 	float collect(float collectSpeed);
 
-	bool belowLimit() const { return users < maxUsers; }
-	void up() { ++users; }
-	void reduce() { --users; }
-
 	static std::string getColumns();
 
 	int getDbID() override;
@@ -27,7 +23,4 @@ private:
 	db_resource* dbResource;
 	int type;
 	float amonut;
-
-	int maxUsers;
-	int users = 0;
 };

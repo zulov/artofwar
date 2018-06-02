@@ -27,6 +27,14 @@ public:
 	bool isFirstThingAlive();
 	bool hasEnemy();
 
+	bool belowCloseLimit() const { return closeUsers < maxCloseUsers; }
+	void reduceClose() { --closeUsers; }
+	void upClose() { ++closeUsers; }
+
+	bool belowRangeLimit() const { return rangeUsers < maxRangeUsers; }
+	void reduceRange() { --rangeUsers; }
+	void upRange() { ++rangeUsers; }
+
 	float getHealthPercent() const { return hpCoef / maxHpCoef; }
 	signed char getTeam() const { return team; }
 	Vector3* getPosition() const { return position; }
@@ -65,6 +73,11 @@ protected:
 	BillboardSet* billboardSetBar = nullptr;
 	BillboardSet* billboardSetShadow = nullptr;
 
+	unsigned char maxCloseUsers = 4; //TODO default values
+	unsigned char maxRangeUsers = 6;
+
+	unsigned char closeUsers = 0;
+	unsigned char rangeUsers = 0;
 private:
 	void createBillboardBar();
 	void updateBillboardBar(Vector3& boundingBox) const;

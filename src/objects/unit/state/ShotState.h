@@ -22,10 +22,16 @@ public:
 		unit->missleData->init(*unit->getPosition(),
 		                       *unit->thingsToInteract[0]->getPosition(),
 		                       unit->thingsToInteract[0]);
+		if (unit->isFirstThingAlive()) {
+			unit->thingsToInteract[0]->upRange();
+		}
 	}
 
 	void onEnd(Unit* unit) override {
 		State::onEnd(unit);
+		if (unit->isFirstThingAlive()) {
+			unit->thingsToInteract[0]->reduceRange();
+		}
 	}
 
 	void execute(Unit* unit) override {

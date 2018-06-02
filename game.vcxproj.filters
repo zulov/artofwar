@@ -457,6 +457,7 @@
       <Filter>objects\unit</Filter>
     </ClInclude>
     <ClInclude Include="src\MathUtils.h" />
+    <ClInclude Include="src\objects\PhysicalUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
