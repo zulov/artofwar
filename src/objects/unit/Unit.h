@@ -124,8 +124,6 @@ private:
 	UnitState state;
 	UnitState actionState;
 
-	UnitState defaultAttackState;
-
 	StaticModel* model;
 	Material* basic;
 

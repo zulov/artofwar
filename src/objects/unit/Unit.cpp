@@ -10,12 +10,12 @@
 #include "player/PlayersManager.h"
 #include "state/StateManager.h"
 #include "simulation/formation/FormationManager.h"
+#include "MathUtils.h"
 #include <Urho3D/Graphics/Material.h><Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h><Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h><Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h><Urho3D/Resource/ResourceCache.h>
 #include <string>
-#include "MathUtils.h"
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr),
@@ -29,13 +29,7 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 		chargeData = new ChargeData(150, 2);
 	}
 
-	if (id == 1) {
-		defaultAttackState = UnitState::SHOT;
-	} else {
-		defaultAttackState = UnitState::ATTACK;
-	}
-
-	if (defaultAttackState == UnitState::SHOT) {
+	if (StateManager::get()->validateState(getDbID(), UnitState::SHOT)) {
 		missleData = new MissleData(150, 2);
 	}
 
@@ -94,6 +88,9 @@ void Unit::move(double timeStep) {
 		position->z_ += velocity.y_ * timeStep;
 		node->SetPosition(*position);
 		//node->Translate((*velocity) * timeStep, TS_WORLD);
+	}
+	if (missleData && missleData->isUp()) {
+		missleData->update(timeStep);
 	}
 }
 
