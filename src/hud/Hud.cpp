@@ -16,6 +16,7 @@
 #include <exprtk/exprtk.hpp>
 #include <regex>
 #include "camera/CameraManager.h"
+#include "window/minimap/MiniMapPanel.h"
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {

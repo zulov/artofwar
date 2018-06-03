@@ -6,7 +6,6 @@
 #include "window/in_game_menu/InGameMenuPanel.h"
 #include "window/loading/LoadingPanel.h"
 #include "window/menu/MenuPanel.h"
-#include "window/minimap/MiniMapPanel.h"
 #include "window/queue/QueuePanel.h"
 #include "window/selected/SelectedHudPanel.h"
 #include "window/top/TopPanel.h"
@@ -19,6 +18,9 @@
 class CameraManager;
 class SimulationInfo;
 class MainMenuPanel;
+class MiniMapPanel;
+struct  db_graph_settings;
+struct  db_resolution;
 using namespace Urho3D;
 
 class Hud : public Urho3D::Object
