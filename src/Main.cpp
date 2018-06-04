@@ -12,7 +12,9 @@
 #include "Game.h"
 #include "simulation/env/Enviroment.h"
 #include "simulation/formation/FormationManager.h"
-#include <Main.h>
+#include "objects/unit/ActionParameter.h"
+#include "camera/CameraManager.h"
+#include "Main.h"
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
@@ -23,8 +25,7 @@
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "objects/unit/ActionParameter.h"
-#include "camera/CameraManager.h"
+
 
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)

@@ -91,7 +91,7 @@ void Unit::move(double timeStep) {
 		//node->Translate((*velocity) * timeStep, TS_WORLD);
 	}
 	if (missleData && missleData->isUp()) {
-		missleData->update(timeStep);
+		missleData->update(timeStep, attackCoef);
 	}
 }
 

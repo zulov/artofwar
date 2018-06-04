@@ -3,6 +3,7 @@
 #include "objects/NodeUtils.h"
 #include <Urho3D/Math/Vector3.h>
 #include <iostream>
+#include "MathUtils.h"
 
 struct MissleData
 {
@@ -31,7 +32,7 @@ struct MissleData
 		node->SetScale(Vector3(0.1, 0.1, 0.3));
 	}
 
-	void init(Vector3& _start, Vector3& _end, Physical* _aim, float _speed = 5) {
+	void init(Vector3& _start, Vector3& _end, Physical* _aim, float _speed = 7) {
 		start = _start;
 		end = _end;
 		aim = _aim;
@@ -42,7 +43,7 @@ struct MissleData
 		direction.Normalize();
 		direction *= speed;
 
-		peakHeight = distance / 2;
+		peakHeight = distance / 3;
 
 		distanceSoFar = 0;
 
@@ -50,24 +51,26 @@ struct MissleData
 		node->SetPosition(start);
 	}
 
-	void createObject(String& modelName, String& textureName) {
-		createNode(textureName, modelName, &node);
-	}
-
-	bool update(float timeStep) {
-		auto pos = node->GetPosition();
+	void update(float timeStep, float attackCoef) {
 		distanceSoFar += speed * timeStep;
+		auto pos = node->GetPosition();
 		pos += direction * timeStep; //TODO uwzglednic tylko 2 wymiary
 		pos.y_ = sin(distanceSoFar * M_PI / distance) * peakHeight + start.y_;
 		node->SetDirection(pos - node->GetPosition());
 		node->SetPosition(pos);
-		return false;
-	}
 
+		if (finished()) {
+			if (aim && aim->isAlive()
+				&& sqDist(*aim->getPosition(), getPosition()) < 3 * 3) {
+				aim->absorbAttack(attackCoef);
+			}
+			reset();
+		}
+
+	}
 
 	void reset() {
 		node->SetEnabled(false);
-		aim = nullptr;
 	}
 
 	bool isUp() const {
@@ -75,7 +78,7 @@ struct MissleData
 	}
 
 	bool finished() {
-		return distanceSoFar >= distance;
+		return distanceSoFar >= distance && node->IsEnabled();
 	}
 
 	const Vector3& getPosition() const {

@@ -18,42 +18,47 @@ public:
 
 	~ShotState() = default;
 
-	void onStart(Unit* unit, ActionParameter& parameter) override {
+	void shot(Unit* unit) {
+		unit->missleData->reset();
 		unit->missleData->init(*unit->getPosition(),
 		                       *unit->thingsToInteract[0]->getPosition(),
 		                       unit->thingsToInteract[0]);
-		if (unit->isFirstThingAlive()) {
-			unit->thingsToInteract[0]->upRange();
-		}
+	}
+
+	void onStart(Unit* unit, ActionParameter& parameter) override {
+		shot(unit);
+		unit->thingsToInteract[0]->upRange();
+		unit->currentFrameState = 0;
 	}
 
 	void onEnd(Unit* unit) override {
 		State::onEnd(unit);
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceRange();
+			unit->thingsToInteract.clear();
 		}
+		unit->currentFrameState = 0;
+	}
+
+	bool closeEnough(Unit* unit) {
+		return sqDist(unit, unit->missleData->aim) < unit->attackRange * unit->attackRange;
 	}
 
 	void execute(Unit* unit) override {
 		State::execute(unit);
 		unit->velocity = Urho3D::Vector2::ZERO;
-		//if aim is but no misle then shot again
-		if (unit->missleData->finished()) {
-			//TODO to nie powinno byc tu tylko w missle, atu tylko strzelanie
-			if (unit->missleData->aim && unit->missleData->aim->isAlive()) {
-				auto distAttack = sqDist(*unit->missleData->aim->getPosition(), unit->missleData->getPosition());
-				if (distAttack < 3 * 3) {
-					unit->missleData->aim->absorbAttack(unit->attackCoef);
-				}
-			}
-			unit->missleData->reset();
-			StateManager::get()->changeState(unit, UnitState::STOP);
-			return;
-		}
+		++unit->currentFrameState;
 
 		if (!unit->missleData->aim || !unit->missleData->aim->isAlive()) {
 			unit->missleData->reset();
 			StateManager::get()->changeState(unit, UnitState::STOP);
+		} else if (!unit->missleData->isUp() && fmod(unit->currentFrameState, 1 / unit->attackSpeed) < 1) {
+			if (closeEnough(unit)) {
+				shot(unit);
+			} else {
+				unit->missleData->reset();
+				StateManager::get()->changeState(unit, UnitState::STOP);
+			}
 		}
 	}
 };
