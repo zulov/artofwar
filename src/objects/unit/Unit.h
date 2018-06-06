@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ColorMode.h"
 #include "objects/Physical.h"
 #include "state/UnitState.h"
 #include "aim/Aims.h"
@@ -8,6 +7,7 @@
 #include <vector>
 #include <tuple>
 
+enum class ColorMode : char;
 struct db_unit_upgrade;
 struct db_unit_level;
 struct db_unit;

@@ -3,7 +3,6 @@
 #include "ForceStats.h"
 #include <vector>
 
-
 class Unit;
 
 class Force

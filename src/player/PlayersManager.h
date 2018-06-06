@@ -1,6 +1,5 @@
 #pragma once
 #include "Player.h"
-#include "scene/load/dbload_container.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include <string>
 #include <vector>
@@ -9,6 +8,8 @@
 
 
 class SceneSaver;
+struct dbload_player;
+struct dbload_resource;
 
 class PlayersManager
 {

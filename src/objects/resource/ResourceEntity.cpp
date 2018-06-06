@@ -1,6 +1,7 @@
 #include "ResourceEntity.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
+#include "ObjectEnums.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>

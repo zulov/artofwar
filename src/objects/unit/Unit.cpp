@@ -1,22 +1,26 @@
 #include "Unit.h"
 #include "Game.h"
 #include "UnitOrder.h"
+#include "ObjectEnums.h"
 #include "aim/FutureAim.h"
 #include "colors/ColorPeletteRepo.h"
 #include "database/DatabaseCache.h"
 #include "objects/unit/MissleData.h"
 #include "objects/unit/ChargeData.h"
+#include "objects/unit/ColorMode.h"
 #include "objects/resource/ResourceEntity.h"
 #include "player/PlayersManager.h"
 #include "state/StateManager.h"
 #include "simulation/formation/FormationManager.h"
 #include "MathUtils.h"
+#include "objects/PhysicalUtils.h"
+#include "scene/load/dbload_container.h"
 #include <Urho3D/Graphics/Material.h><Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h><Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h><Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h><Urho3D/Resource/ResourceCache.h>
 #include <string>
-#include "objects/PhysicalUtils.h"
+
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr),

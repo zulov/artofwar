@@ -1,10 +1,10 @@
 #pragma once
-#include <vector>
 #include "SimulationInfo.h"
 #include "force/Force.h"
 #include "objects/building/Building.h"
 #include "SimulationObjectManager.h"
 #include "commands/upgrade/UpgradeCommandList.h"
+#include <vector>
 
 
 class Unit;
@@ -62,7 +62,7 @@ private:
 	float maxTimeFrame = 0.05f;
 	int framesPeriod = 20;
 	int currentFrameNumber = 0;
-	ColorMode currentColor = ColorMode::BASIC;
+	ColorMode currentColor;
 	Force force;
 
 	std::vector<Unit*>* units;

@@ -1,9 +1,10 @@
 #pragma once
-#include "ObjectEnums.h"
+
 #include "commands/AbstractCommand.h"
 #include <Urho3D/Math/Vector2.h>
 
 
+enum class ObjectType : char;
 class SimulationObjectManager;
 
 namespace Urho3D {

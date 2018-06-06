@@ -1,15 +1,20 @@
 #include "Simulation.h"
 #include "Game.h"
+#include "objects/unit/ColorMode.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/creation/CreationCommandList.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "player/PlayersManager.h"
 #include "scene/load/SceneLoader.h"
 #include "simulation/formation/FormationManager.h"
-#include <ctime>
 #include "OperatorType.h"
 #include "env/Enviroment.h"
 #include "scene/save/SceneSaver.h"
+#include "objects/queue/QueueElement.h"
+#include "objects/unit/state/UnitState.h"
+#include "objects/unit/Unit.h"
+#include "objects/MenuAction.h"
+#include <ctime>
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {
@@ -17,6 +22,8 @@ Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCo
 	simObjectManager = _creationCommandList->getManager();
 	creationCommandList = _creationCommandList;
 	levelsCommandList = new UpgradeCommandList(simObjectManager);
+	currentColor = ColorMode::BASIC;
+
 
 	srand(time(NULL));
 

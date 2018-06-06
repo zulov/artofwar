@@ -5,6 +5,7 @@
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include "objects/unit/ActionParameter.h"
+#include "objects/MenuAction.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>

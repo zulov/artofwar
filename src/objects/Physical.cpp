@@ -1,13 +1,14 @@
 #include "objects/Physical.h"
 #include "Game.h"
 #include "objects/LinkComponent.h"
+#include "MathUtils.h"
+#include "ObjectEnums.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <algorithm>
 #include <string>
-#include "MathUtils.h"
 
 
 Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {

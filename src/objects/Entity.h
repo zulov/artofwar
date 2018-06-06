@@ -1,8 +1,7 @@
 #pragma once
-#include "ObjectEnums.h"
 #include <Urho3D/Scene/Node.h>
 
-
+enum class ObjectType : char;
 using namespace Urho3D;
 
 class Entity

@@ -15,6 +15,8 @@
 #include "objects/unit/ActionParameter.h"
 #include "camera/CameraManager.h"
 #include "Main.h"
+#include "objects/unit/ColorMode.h"
+#include "objects/MenuAction.h"
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>

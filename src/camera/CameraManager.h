@@ -4,6 +4,8 @@
 
 using namespace Urho3D;
 
+class CameraBehave;
+
 class CameraManager {
 public:
 	CameraManager();

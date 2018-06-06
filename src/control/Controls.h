@@ -2,7 +2,6 @@
 
 #include "ControlsState.h"
 #include "MouseButton.h"
-#include "ObjectEnums.h"
 #include "UnitOrder.h"
 #include "SelectedInfo.h"
 #include "commands/creation/CreationCommand.h"

@@ -3,7 +3,7 @@
 #include "player/PlayersManager.h"
 #include "objects/building/Building.h"
 #include "simulation/SimulationObjectManager.h"
-
+#include "objects/MenuAction.h"
 
 UpgradeCommand::UpgradeCommand(int _player, int _id, MenuAction _type) {
 	player = _player;

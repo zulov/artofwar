@@ -1,6 +1,6 @@
 #include "CreationCommand.h"
 #include "simulation/SimulationObjectManager.h"
-
+#include "ObjectEnums.h"
 
 CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::Vector2& _position, int _player, const Urho3D::IntVector2&
                                  _bucketCords,

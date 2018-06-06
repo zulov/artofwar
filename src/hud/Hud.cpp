@@ -1,6 +1,7 @@
 #include "Hud.h"
 #include "Game.h"
 #include "UiUtils.h"
+#include "ObjectEnums.h"
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimulationInfo.h"
@@ -17,6 +18,7 @@
 #include <regex>
 #include "camera/CameraManager.h"
 #include "window/minimap/MiniMapPanel.h"
+#include "utils.h"
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {

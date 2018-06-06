@@ -2,6 +2,8 @@
 #include "Game.h"
 #include <algorithm>
 #include <simulation/env/Enviroment.h>
+#include "SimulationInfo.h"
+#include "objects/unit/Unit.h"
 
 
 SimulationObjectManager::SimulationObjectManager() {

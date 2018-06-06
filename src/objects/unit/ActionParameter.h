@@ -1,7 +1,7 @@
 #pragma once
 
 #include "aim/Aim.h"
-#include "objects/MenuAction.h"
+enum class MenuAction : char;
 
 struct ActionParameter
 {

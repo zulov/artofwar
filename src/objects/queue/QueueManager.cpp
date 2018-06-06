@@ -3,6 +3,8 @@
 #include "database/DatabaseCache.h"
 #include "defines.h"
 #include "utils.h"
+#include "QueueElement.h"
+#include "objects/MenuAction.h"
 #include <algorithm>
 
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "Loading.h"
 #include "dbload_container.h"
-#include <Urho3D/Container/Str.h>
 #include <sqlite3/sqlite3.h>
 
 

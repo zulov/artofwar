@@ -11,6 +11,7 @@
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <unordered_set>
+#include "utils.h"
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {

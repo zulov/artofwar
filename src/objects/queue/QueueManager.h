@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
-#include "QueueElement.h"
 
 enum class MenuAction : char;
+class QueueElement;
 
 class QueueManager
 {

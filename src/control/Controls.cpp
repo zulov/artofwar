@@ -13,6 +13,8 @@
 #include "player/PlayersManager.h"
 #include "simulation/env/Enviroment.h"
 #include "simulation/formation/FormationManager.h"
+#include "objects/MenuAction.h"
+#include "simulation/SimulationInfo.h"
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <algorithm>

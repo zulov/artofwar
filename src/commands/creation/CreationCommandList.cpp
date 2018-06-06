@@ -5,6 +5,7 @@
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include "simulation/env/Enviroment.h"
+#include "simulation/SimulationObjectManager.h"
 
 
 CreationCommandList::CreationCommandList() {

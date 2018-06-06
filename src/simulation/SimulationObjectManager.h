@@ -1,14 +1,13 @@
 #pragma once
 
-#include "SimulationInfo.h"
 #include "objects/building/BuildingFactory.h"
 #include "objects/resource/ResourceFactory.h"
-#include "objects/unit/Unit.h"
 #include "objects/unit/UnitFactory.h"
-#include "scene/load/dbload_container.h"
 #include <vector>
+#include <functional>
 
 
+class SimulationInfo;
 using namespace std;
 
 class SimulationObjectManager
@@ -21,9 +20,9 @@ public:
 	vector<Building*>* getBuildings() const { return buildings; }
 	vector<ResourceEntity*>* getResources() const { return resources; }
 
-	void addUnits(unsigned number, int id, Vector2& center, int player, int level);
-	void addBuilding(int id, Vector2& center, int player, const IntVector2& _bucketCords, int level);
-	void addResource(int id, Vector2& center, const IntVector2& _bucketCords, int level);
+	void addUnits(unsigned number, int id, Urho3D::Vector2& center, int player, int level);
+	void addBuilding(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level);
+	void addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level);
 
 	void prepareToDispose();
 	void updateInfo(SimulationInfo* simulationInfo) const;
@@ -70,6 +69,6 @@ private:
 	vector<Building*>* buildingsTemp;
 	vector<ResourceEntity*>* resourcesTemp;
 
-	std::function<bool(Unit*)> functionShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this,
+	function<bool(Unit*)> functionShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this,
 	                                                            placeholders::_1);
 };

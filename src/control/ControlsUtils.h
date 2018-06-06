@@ -2,14 +2,13 @@
 #include "Game.h"
 #include "HitData.h"
 #include "camera/CameraManager.h"
+#include "objects/Physical.h"
 #include <Urho3D/Graphics/Camera.h>
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Graphics/OctreeQuery.h>
 #include <Urho3D/Math/Ray.h>
-#include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UI.h>
-#include "objects/Physical.h"
 
 
 inline void resultQuery(const Ray& cameraRay, PODVector<RayQueryResult>& results) {

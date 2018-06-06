@@ -1,8 +1,8 @@
 #pragma once
 #include "commands/AbstractCommand.h"
-#include "objects/MenuAction.h"
 
 
+enum class MenuAction : char;
 class SimulationObjectManager;
 
 class UpgradeCommand :

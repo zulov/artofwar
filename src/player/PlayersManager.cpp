@@ -1,6 +1,7 @@
 #include "PlayersManager.h"
 #include "utils.h"
 #include "scene/save/SceneSaver.h"
+#include "scene/load/dbload_container.h"
 
 PlayersManager::PlayersManager() = default;
 
@@ -11,7 +12,8 @@ PlayersManager::~PlayersManager() {
 
 void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dbload_resource*>* resources) {
 	for (auto player : *players) {
-		Player* newPlayer = new Player(player->nation, player->team, player->id, player->color, player->name,player->is_active);
+		Player* newPlayer = new Player(player->nation, player->team, player->id, player->color, player->name,
+		                               player->is_active);
 		if (player->is_active) {
 			activePlayer = newPlayer;
 		}

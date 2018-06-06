@@ -1,6 +1,7 @@
 #pragma once
 #include "commands/CommandList.h"
-#include "simulation/SimulationObjectManager.h"
+
+class SimulationObjectManager;
 
 class UpgradeCommandList :
 	public CommandList
