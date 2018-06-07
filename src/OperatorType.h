@@ -1,5 +1,5 @@
 #pragma once
-enum OperatorType
+enum class OperatorType: char
 {
 	EQUAL = 0,
 	NOT_EQUAL

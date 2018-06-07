@@ -1,16 +1,16 @@
 #pragma once
 
-#include "OperatorType.h"
+#include "ContentInfo.h"
+#include "bucket/MainGrid.h"
 #include "defines.h"
 #include "objects/building/Building.h"
-#include "bucket/MainGrid.h"
-#include "ContentInfo.h"
 #include <Urho3D/Graphics/Terrain.h>
 #include <vector>
 
 
 class ResourceEntity;
 class Unit;
+enum class OperatorType : char;
 
 class Enviroment
 {
@@ -20,8 +20,10 @@ public:
 
 	std::vector<Unit *>* getNeighbours(Unit* unit, float radius);
 	std::vector<Unit *>* getNeighboursFromTeam(Unit* unit, float radius, int team, OperatorType operatorType);
-
 	std::vector<Unit *>* getNeighbours(Unit* unit, Grid& bucketGrid, float radius) const;
+
+
+	std::vector<Physical*>* getResources(Unit* unit, float radius);
 
 	void update(std::vector<Unit*>* units) const;
 	void update(std::vector<Building*>* buildings);
@@ -57,4 +59,6 @@ private:
 
 	std::vector<Unit*>* neights; //TODO tu bedzie trzeba tablica jesli beda watki
 	std::vector<Unit*>* neights2;
+
+	std::vector<ResourceEntity*>* resourceNeight;
 };

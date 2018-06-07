@@ -2,6 +2,7 @@
 
 #include "commands/AbstractCommand.h"
 #include <Urho3D/Math/Vector2.h>
+#include "database/db_strcut.h"
 
 
 enum class ObjectType : char;
@@ -15,7 +16,8 @@ namespace Urho3D {
 class CreationCommand : public AbstractCommand
 {
 public:
-	CreationCommand(ObjectType type, int id, const Urho3D::Vector2& _position, int _player, const Urho3D::IntVector2& _bucketCords, int level);
+	CreationCommand(ObjectType type, int id, const Urho3D::Vector2& _position, int _player,
+	                const Urho3D::IntVector2& _bucketCords, int level);
 	CreationCommand(ObjectType type, int _number, int id, const Urho3D::Vector2& _position, int _player, int level);
 	virtual ~CreationCommand();
 	void execute() override;

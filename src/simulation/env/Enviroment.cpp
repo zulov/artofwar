@@ -1,7 +1,8 @@
 #include "Enviroment.h"
 #include "objects/resource/ResourceEntity.h"
-#include <chrono>
 #include "objects/unit/Unit.h"
+#include "OperatorType.h"
+#include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
 
 #define BUCKET_GRID_RESOLUTION 512
@@ -24,8 +25,10 @@ Enviroment::Enviroment(Terrain* _terrian):
 	} {
 	neights = new std::vector<Unit *>();
 	neights2 = new std::vector<Unit *>();
+	resourceNeight = new std::vector<ResourceEntity *>();
 	neights->reserve(DEFAULT_VECTOR_SIZE * 2);
 	neights2->reserve(DEFAULT_VECTOR_SIZE * 2);
+	resourceNeight->reserve(DEFAULT_VECTOR_SIZE * 2);
 
 	terrian = _terrian;
 }
@@ -34,6 +37,7 @@ Enviroment::Enviroment(Terrain* _terrian):
 Enviroment::~Enviroment() {
 	delete neights;
 	delete neights2;
+	delete resourceNeight;
 }
 
 std::vector<Unit*>* Enviroment::getNeighbours(Unit* unit, const float radius) {
@@ -43,9 +47,9 @@ std::vector<Unit*>* Enviroment::getNeighbours(Unit* unit, const float radius) {
 std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, const float radius, const int team,
                                                       const OperatorType operatorType) {
 	switch (operatorType) {
-	case EQUAL:
+	case OperatorType::EQUAL:
 		return getNeighbours(unit, teamUnitGrid[team], radius);
-	case NOT_EQUAL:
+	case OperatorType::NOT_EQUAL:
 		{
 		neights2->clear();
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
@@ -77,6 +81,10 @@ std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, flo
 	}
 
 	return neights;
+}
+
+std::vector<Physical*>* Enviroment::getResources(Unit* unit, float radius) {
+	resourceGrid.
 }
 
 void Enviroment::update(std::vector<Unit*>* units) const {

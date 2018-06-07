@@ -47,7 +47,7 @@ void Simulation::tryToAttack(Unit* unit) {
 	if (unit->hasEnemy()) {
 		unit->toAttack();
 	} else {
-		unit->toAttack(enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL));
+		unit->toAttack(enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), OperatorType::NOT_EQUAL));
 	}
 }
 
@@ -55,9 +55,9 @@ void Simulation::tryToCollect(Unit* unit) {
 	if (unit->hasResource()) {
 		unit->toCollect();
 	} else {
-		//		std::vector<Physical*>* resources = envStrategy->getResources(unit, 12);
-		//
-		//		unit->toCollect(resources);
+		std::vector<Physical*>* resources = enviroment->getResources(unit, 12);
+
+		unit->toCollect(resources);
 	}
 }
 
@@ -65,7 +65,7 @@ void Simulation::tryToShot(Unit* unit) {
 	if (unit->hasEnemy()) {
 		unit->toShot();
 	} else {
-		unit->toShot(enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL));
+		unit->toShot(enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), OperatorType::NOT_EQUAL));
 	}
 }
 
@@ -74,7 +74,7 @@ void Simulation::selfAI() {
 		switch (unit->getState()) {
 		case UnitState::CHARGE:
 			{
-			std::vector<Unit*>* enemies = enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), NOT_EQUAL);
+			std::vector<Unit*>* enemies = enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), OperatorType::NOT_EQUAL);
 			unit->toCharge(enemies);
 			}
 			break;
@@ -114,8 +114,8 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		simObjectManager->addUnits(UNITS_NUMBER, 0, Vector2(-20, 0), 0, 0);
-		simObjectManager->addUnits(UNITS_NUMBER, 1, Vector2(20, 0), 1, 0);
+		creationCommandList->addUnits(UNITS_NUMBER, 4, Vector2(20, 0), 0, 0);
+		creationCommandList->addResource(0, Vector2(0, 0), 0);
 	}
 }
 
