@@ -18,12 +18,12 @@ public:
 	Enviroment(Terrain* _terrian);
 	~Enviroment();
 
-	std::vector<Unit *>* getNeighbours(Unit* unit, float radius);
-	std::vector<Unit *>* getNeighboursFromTeam(Unit* unit, float radius, int team, OperatorType operatorType);
-	std::vector<Unit *>* getNeighbours(Unit* unit, Grid& bucketGrid, float radius) const;
+	std::vector<Physical *>* getNeighbours(Physical* physical, float radius);
+	std::vector<Physical *>* getNeighboursFromTeam(Physical* physical, float radius, int team,
+	                                               OperatorType operatorType);
+	std::vector<Physical *>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 
-
-	std::vector<Physical*>* getResources(Unit* unit, float radius);
+	std::vector<Physical*>* getResources(Physical* physical, float radius);
 
 	void update(std::vector<Unit*>* units) const;
 	void update(std::vector<Building*>* buildings);
@@ -34,6 +34,7 @@ public:
 
 	std::vector<Physical *>* getNeighbours(std::pair<Vector3*, Vector3*>& pair);
 	std::vector<Physical *>* getBuildings(std::pair<Vector3*, Vector3*>& pair);
+
 	float getGroundHeightAt(float x, float z) const;
 	float getGroundHeightPercent(float y, float x, float div) const;
 	bool validateStatic(const IntVector2& size, Vector2& pos);
@@ -52,13 +53,11 @@ public:
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid;
-	Grid obstacleGrid;
+	Grid buildingGrid;
 	Grid teamUnitGrid[MAX_PLAYERS];
 
 	Terrain* terrian;
 
-	std::vector<Unit*>* neights; //TODO tu bedzie trzeba tablica jesli beda watki
-	std::vector<Unit*>* neights2;
-
-	std::vector<ResourceEntity*>* resourceNeight;
+	std::vector<Physical*>* neights; //TODO tu bedzie trzeba tablica jesli beda watki
+	std::vector<Physical*>* neights2;
 };

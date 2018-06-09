@@ -2,7 +2,6 @@
 #include "Bucket.h"
 #include "BucketIterator.h"
 #include "objects/Physical.h"
-#include "objects/unit/Unit.h"
 #include "simulation/env/ContentInfo.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
@@ -34,7 +33,7 @@ Grid::~Grid() {
 	delete tempSelected;
 }
 
-void Grid::updateGrid(Unit* entity, const char team) const {
+void Grid::update(Physical* entity, const char team) const {
 	const int index = indexFromPosition(entity->getPosition());
 
 	if (!entity->isAlive()) {
@@ -67,7 +66,7 @@ short Grid::getIndex(float value) const {
 	return resolution - 1; //TODO czy aby napewno?
 }
 
-BucketIterator& Grid::getArrayNeight(Unit* entity, float radius, short thread) {
+BucketIterator& Grid::getArrayNeight(Physical* entity, float radius, short thread) {
 	const int index = indexFromPosition(entity->getPosition());
 
 	BucketIterator& bucketIterator = iterators[thread];
@@ -75,17 +74,17 @@ BucketIterator& Grid::getArrayNeight(Unit* entity, float radius, short thread) {
 	return bucketIterator;
 }
 
-void Grid::removeAt(int index, Unit* entity) const {
+void Grid::removeAt(int index, Physical* entity) const {
 	if (inRange(index)) {
 		buckets[index].remove(entity);
 	}
 }
 
-void Grid::addAt(int index, Unit* entity) const {
+void Grid::addAt(int index, Physical* entity) const {
 	buckets[index].add(entity);
 }
 
-std::vector<Unit*>& Grid::getContentAt(int index) {
+std::vector<Physical*>& Grid::getContentAt(int index) {
 	if (inRange(index)) {
 		return buckets[index].getContent();
 	}
@@ -105,7 +104,7 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>& pair
 	for (short i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
 		for (short j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
 			const int index = getIndex(i, j);
-			std::vector<Unit *>& content = getContentAt(index); //TODO czy tu ampersentma byc?
+			std::vector<Physical *>& content = getContentAt(index); //TODO czy tu ampersentma byc?
 			tempSelected->insert(tempSelected->end(), content.begin(), content.end());
 		}
 	}

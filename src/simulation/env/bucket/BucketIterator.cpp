@@ -5,7 +5,7 @@ BucketIterator::BucketIterator() = default;
 
 BucketIterator::~BucketIterator() = default;
 
-Unit* BucketIterator::next() {
+Physical* BucketIterator::next() {
 	while (currentIterator == currentEnd) {
 		++index;
 		if (index >= levelSize) { return nullptr; }
@@ -13,7 +13,7 @@ Unit* BucketIterator::next() {
 		setRange();
 	}
 
-	Unit* entity = *currentIterator;
+	Physical* entity = *currentIterator;
 	++currentIterator;
 	return entity;
 }

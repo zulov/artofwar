@@ -4,6 +4,8 @@
 #include "Grid.h"
 
 
+class Unit;
+
 namespace Urho3D {
 	class Image;
 }

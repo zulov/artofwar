@@ -4,6 +4,7 @@
 #include <vector>
 
 class Unit;
+class Physical;
 
 class Force
 {
@@ -12,7 +13,7 @@ public:
 	~Force();
 
 	void separationObstacle(Urho3D::Vector2& newForce, Unit* unit, const Urho3D::Vector2& repulse);
-	void separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Unit *>* units);
+	void separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical *>* units);
 	void destination(Urho3D::Vector2& newForce, Unit* unit);
 	void formation(Urho3D::Vector2& newForce, Unit* unit);
 	void escapeFromInvalidPosition(Urho3D::Vector2& newForce, Urho3D::Vector2* dir);

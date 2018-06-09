@@ -49,7 +49,7 @@ public:
 
 	void absorbAttack(float attackCoef) override;
 
-	void toAttack(std::vector<Unit*>* enemies);
+	void toAttack(std::vector<Physical*>* enemies);
 	void toAttack(Physical* enemy);
 	void toAttack();
 
@@ -57,12 +57,12 @@ public:
 	void toCollect(Physical* _resource);
 	void toCollect();
 
-	void toShot(std::vector<Unit*>* enemies);
+	void toShot(std::vector<Physical*>* enemies);
 	void oneToInteract(Physical* enemy);
 	void toShot(Physical* enemy);
 	void toShot();
 
-	void toCharge(std::vector<Unit*>* enemies);
+	void toCharge(std::vector<Physical*>* enemies);
 
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
@@ -103,11 +103,11 @@ public:
 	void clean() override;
 private:
 
-	void attackIfCloseEnough(float distance, Unit* closest);
+	void attackIfCloseEnough(float distance, Physical* closest);
 	void collectIfCloseEnough(float distance, Physical* closest);
-	void shotIfCloseEnough(float distance, Unit* closest);
+	void shotIfCloseEnough(float distance, Physical* closest);
 
-	std::tuple<Unit*, float> closestEntity(std::vector<Unit*>* enemies, std::function<bool(Physical*)> func);
+	std::tuple<Physical*, float> closestEntity(std::vector<Physical*>* enemies, std::function<bool(Physical*)> func);
 
 	void changeColor(float value, float maxValue) const;
 	void changeColor(Material* newMaterial);

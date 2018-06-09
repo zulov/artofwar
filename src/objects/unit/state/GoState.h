@@ -8,6 +8,7 @@ class GoState : public State
 public:
 	GoState() {
 		nextStates[static_cast<char>(UnitState::STOP)] = true;
+		nextStates[static_cast<char>(UnitState::MOVE)] = true;
 		nextStates[static_cast<char>(UnitState::DEFEND)] = true;
 		nextStates[static_cast<char>(UnitState::DEAD)] = true;
 		nextStates[static_cast<char>(UnitState::GO_TO)] = true;

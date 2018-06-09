@@ -2,7 +2,6 @@
 
 #include "commands/AbstractCommand.h"
 #include <Urho3D/Math/Vector2.h>
-#include "database/db_strcut.h"
 
 
 enum class ObjectType : char;

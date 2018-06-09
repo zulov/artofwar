@@ -144,7 +144,7 @@ void Unit::absorbAttack(float attackCoef) {
 	}
 }
 
-void Unit::attackIfCloseEnough(float distance, Unit* closest) {
+void Unit::attackIfCloseEnough(float distance, Physical* closest) {
 	if (closest) {
 		if (distance < attackRange * attackRange) {
 			toAttack(closest);
@@ -164,7 +164,7 @@ void Unit::collectIfCloseEnough(float distance, Physical* closest) {
 	}
 }
 
-void Unit::shotIfCloseEnough(float distance, Unit* closest) {
+void Unit::shotIfCloseEnough(float distance, Physical* closest) {
 	if (closest) {
 		if (distance < attackRange * attackRange) {
 			toShot(closest);
@@ -172,9 +172,9 @@ void Unit::shotIfCloseEnough(float distance, Unit* closest) {
 	}
 }
 
-std::tuple<Unit*, float> Unit::closestEntity(std::vector<Unit*>* enemies, std::function<bool(Physical*)> func) {
+std::tuple<Physical*, float> Unit::closestEntity(std::vector<Physical*>* enemies, std::function<bool(Physical*)> func) {
 	float minDistance = 99999;
-	Unit* entityClosest = nullptr;
+	Physical* entityClosest = nullptr;
 	for (auto entity : *enemies) {
 		if (entity->isAlive() && func(entity)) {
 			const float distance = sqDist(this, entity);
@@ -187,7 +187,7 @@ std::tuple<Unit*, float> Unit::closestEntity(std::vector<Unit*>* enemies, std::f
 	return {entityClosest, minDistance};
 }
 
-void Unit::toAttack(std::vector<Unit*>* enemies) {
+void Unit::toAttack(std::vector<Physical*>* enemies) {
 	auto [closest,minDistance] = closestEntity(enemies, belowClose);
 
 	attackIfCloseEnough(minDistance, closest);
@@ -202,7 +202,7 @@ void Unit::toAttack() {
 	StateManager::get()->changeState(this, UnitState::ATTACK);
 }
 
-void Unit::toShot(std::vector<Unit*>* enemies) {
+void Unit::toShot(std::vector<Physical*>* enemies) {
 	auto [closest,minDistance] = closestEntity(enemies, belowRange);
 
 	shotIfCloseEnough(minDistance, closest);
@@ -241,7 +241,7 @@ void Unit::toCollect() {
 	return toCollect(resource);
 }
 
-void Unit::toCharge(std::vector<Unit*>* enemies) {
+void Unit::toCharge(std::vector<Physical*>* enemies) {
 	thingsToInteract.clear();
 	for (auto entity : *enemies) {
 		if (entity->isAlive()) {

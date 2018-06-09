@@ -1,7 +1,8 @@
 #include "Bucket.h"
 #include "ComplexBucketData.h"
+#include "objects/Physical.h"
 #include "simulation/env/ContentInfo.h"
-#include "objects/unit/Unit.h"
+
 
 Bucket::Bucket() {
 	content.reserve(DEFAULT_VECTOR_SIZE / 3);
@@ -10,12 +11,12 @@ Bucket::Bucket() {
 
 Bucket::~Bucket() = default;
 
-void Bucket::add(Unit* entity) {
+void Bucket::add(Physical* entity) {
 	content.push_back(entity);
 	++unitsNumberPerPlayer[entity->getPlayer()];
 }
 
-void Bucket::remove(Unit* entity) {
+void Bucket::remove(Physical* entity) {
 	ptrdiff_t pos = std::find(content.begin(), content.end(), entity) - content.begin();
 	//	if (pos < content->size()) {
 	//		std::iter_swap(content->begin() + pos, content->end()-1);

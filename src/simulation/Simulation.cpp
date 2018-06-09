@@ -55,9 +55,7 @@ void Simulation::tryToCollect(Unit* unit) {
 	if (unit->hasResource()) {
 		unit->toCollect();
 	} else {
-		std::vector<Physical*>* resources = enviroment->getResources(unit, 12);
-
-		unit->toCollect(resources);
+		unit->toCollect(enviroment->getResources(unit, 12));
 	}
 }
 
@@ -73,14 +71,12 @@ void Simulation::selfAI() {
 	for (auto unit : *units) {
 		switch (unit->getState()) {
 		case UnitState::CHARGE:
-			{
-			std::vector<Unit*>* enemies = enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), OperatorType::NOT_EQUAL);
-			unit->toCharge(enemies);
-			}
+			unit->toCharge(enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), OperatorType::NOT_EQUAL));
 			break;
 		case UnitState::STOP:
 		case UnitState::MOVE:
-			if (currentFrameNumber % 3 == 0 && unit->getFormation() == -1 && unit->checkTransition(unit->getActionState())) {
+			if (currentFrameNumber % 3 == 0 && unit->getFormation() == -1
+				&& unit->checkTransition(unit->getActionState())) {
 				switch (unit->getActionState()) {
 				case UnitState::ATTACK:
 					tryToAttack(unit);
@@ -143,7 +139,8 @@ void Simulation::countFrame() {
 void Simulation::applyForce() {
 	for (auto unit : *units) {
 		unit->applyForce(maxTimeFrame);
-		Vector3* pos = unit->getPosition(); //TODO to przeniesc do mova? to moze byc [rpblem gdy jest przesuwanie poza klatk¹
+		Vector3* pos = unit->getPosition();
+		//TODO to przeniesc do mova? to moze byc [rpblem gdy jest przesuwanie poza klatk¹
 		const float y = enviroment->getGroundHeightAt(pos->x_, pos->z_);
 		unit->updateHeight(y, maxTimeFrame);
 	}
@@ -169,7 +166,8 @@ void Simulation::updateBuildingQueues(const float time) {
 				                                             done->getId(),
 				                                             build->getTarget(),
 				                                             build->getPlayer(),
-				                                             Game::get()->getPlayersManager()->getPlayer(build->getPlayer())->
+				                                             Game::get()->getPlayersManager()->
+				                                                          getPlayer(build->getPlayer())->
 				                                                          getLevelForUnit(done->getId())
 				                                            ));
 				break;
@@ -293,11 +291,10 @@ void Simulation::calculateForces() {
 	for (auto unit : *units) {
 		Vector2 newForce;
 
-		std::vector<Unit*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
-		Vector2 repulse = enviroment->repulseObstacle(unit);
+		std::vector<Physical*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
 		force.separationUnits(newForce, unit, neighbours);
-		force.separationObstacle(newForce, unit, repulse);
+		force.separationObstacle(newForce, unit, enviroment->repulseObstacle(unit));
 		force.destination(newForce, unit);
 		force.formation(newForce, unit);
 		force.escapeFromInvalidPosition(newForce, enviroment->validatePosition(unit->getPosition()));

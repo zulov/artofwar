@@ -1,7 +1,7 @@
 #include "Enviroment.h"
+#include "OperatorType.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
-#include "OperatorType.h"
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
 
@@ -19,16 +19,14 @@
 Enviroment::Enviroment(Terrain* _terrian):
 	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, false),
 	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE),
-	obstacleGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD),
+	buildingGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD),
 	teamUnitGrid{
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY}, {BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY}
 	} {
-	neights = new std::vector<Unit *>();
-	neights2 = new std::vector<Unit *>();
-	resourceNeight = new std::vector<ResourceEntity *>();
+	neights = new std::vector<Physical *>();
+	neights2 = new std::vector<Physical *>();
 	neights->reserve(DEFAULT_VECTOR_SIZE * 2);
 	neights2->reserve(DEFAULT_VECTOR_SIZE * 2);
-	resourceNeight->reserve(DEFAULT_VECTOR_SIZE * 2);
 
 	terrian = _terrian;
 }
@@ -37,24 +35,23 @@ Enviroment::Enviroment(Terrain* _terrian):
 Enviroment::~Enviroment() {
 	delete neights;
 	delete neights2;
-	delete resourceNeight;
 }
 
-std::vector<Unit*>* Enviroment::getNeighbours(Unit* unit, const float radius) {
-	return getNeighbours(unit, mainGrid, radius);
+std::vector<Physical*>* Enviroment::getNeighbours(Physical* physical, const float radius) {
+	return getNeighbours(physical, mainGrid, radius);
 }
 
-std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, const float radius, const int team,
-                                                      const OperatorType operatorType) {
+std::vector<Physical*>* Enviroment::getNeighboursFromTeam(Physical* physical, const float radius, const int team,
+                                                          const OperatorType operatorType) {
 	switch (operatorType) {
 	case OperatorType::EQUAL:
-		return getNeighbours(unit, teamUnitGrid[team], radius);
+		return getNeighbours(physical, teamUnitGrid[team], radius);
 	case OperatorType::NOT_EQUAL:
 		{
 		neights2->clear();
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
 			if (team != i) {
-				std::vector<Unit*>* neightLocal = getNeighbours(unit, teamUnitGrid[i], radius);
+				std::vector<Physical*>* neightLocal = getNeighbours(physical, teamUnitGrid[i], radius);
 				neights2->insert(neights2->end(), neightLocal->begin(), neightLocal->end());
 			}
 		}
@@ -63,17 +60,17 @@ std::vector<Unit*>* Enviroment::getNeighboursFromTeam(Unit* unit, const float ra
 	}
 }
 
-std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, float radius) const {
+std::vector<Physical *>* Enviroment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
 	neights->clear();
 
-	Vector3* unitPosition = unit->getPosition();
-	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(unit, radius, 0);
+	Vector3* center = physical->getPosition();
+	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical, radius, 0);
 	const float sqSepDistance = radius * radius;
 
-	while (Unit* neight = bucketIterator.next()) {
-		if (unit == neight) { continue; }
-		const float xDiff = unitPosition->x_ - neight->getPosition()->x_;
-		const float zDiff = unitPosition->z_ - neight->getPosition()->z_;
+	while (Physical* neight = bucketIterator.next()) {
+		if (physical == neight) { continue; }
+		const float xDiff = center->x_ - neight->getPosition()->x_;
+		const float zDiff = center->z_ - neight->getPosition()->z_;
 
 		if (xDiff * xDiff + zDiff * zDiff < sqSepDistance) {
 			neights->push_back(neight);
@@ -83,27 +80,29 @@ std::vector<Unit *>* Enviroment::getNeighbours(Unit* unit, Grid& bucketGrid, flo
 	return neights;
 }
 
-std::vector<Physical*>* Enviroment::getResources(Unit* unit, float radius) {
-	resourceGrid.
+std::vector<Physical*>* Enviroment::getResources(Physical* physical, float radius) {
+	return getNeighbours(physical, resourceGrid, radius);
 }
 
 void Enviroment::update(std::vector<Unit*>* units) const {
 	//TODO to mozna rodzielic na dodawanei u usywanie
 	for (auto unit : *units) {
-		mainGrid.updateGrid(unit, -1);
-		teamUnitGrid[unit->getTeam()].updateGrid(unit, unit->getTeam());
+		mainGrid.update(unit, -1);
+		teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
 	}
 }
 
 void Enviroment::update(std::vector<Building*>* buildings) {
 	for (auto building : *buildings) {
 		mainGrid.addStatic(building);
+		buildingGrid.update(building, -1);
 	}
 }
 
 void Enviroment::update(std::vector<ResourceEntity*>* resources) {
 	for (auto resource : *resources) {
 		mainGrid.addStatic(resource);
+		resourceGrid.update(resource, -1);
 	}
 }
 
@@ -120,7 +119,7 @@ std::vector<Physical*>* Enviroment::getNeighbours(std::pair<Vector3*, Vector3*>&
 }
 
 std::vector<Physical*>* Enviroment::getBuildings(std::pair<Vector3*, Vector3*>& pair) {
-	return obstacleGrid.getArrayNeight(pair);
+	return buildingGrid.getArrayNeight(pair);
 }
 
 float Enviroment::getGroundHeightAt(float x, float z) const {

@@ -11,10 +11,10 @@ public:
 		nextStates[static_cast<char>(UnitState::DEAD)] = true;
 		nextStates[static_cast<char>(UnitState::GO_TO)] = true;
 		nextStates[static_cast<char>(UnitState::ATTACK)] = true;
+		nextStates[static_cast<char>(UnitState::COLLECT)] = true;
 		nextStates[static_cast<char>(UnitState::SHOT)] = true;
 		nextStates[static_cast<char>(UnitState::FOLLOW)] = true;
 		nextStates[static_cast<char>(UnitState::CHARGE)] = true;
-		nextStates[static_cast<char>(UnitState::COLLECT)] = true;
 	}
 
 

@@ -25,21 +25,22 @@ void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit, const Urho
 	newForce += force;
 }
 
-void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Unit*>* units) {
+void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical*>* units) {
 	if (units->empty()) {
 		return;
 	}
 	Urho3D::Vector2 force;
-	int isLeaderFor = Game::get()->getFormationManager()->isLeaderFor(unit);
+	const int isLeaderFor = Game::get()->getFormationManager()->isLeaderFor(unit);
 
-	for (auto neight : *units) {
+	for (auto physical : *units) {
+		Unit* neight = static_cast<Unit*>(physical);
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
 		Urho3D::Vector2 diff(
-		             unit->getPosition()->x_ - neight->getPosition()->x_,
-		             unit->getPosition()->z_ - neight->getPosition()->z_
-		            );
+		                     unit->getPosition()->x_ - neight->getPosition()->x_,
+		                     unit->getPosition()->z_ - neight->getPosition()->z_
+		                    );
 		const float sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist) { continue; }
 		if (isLeaderFor != -1 && isLeaderFor == neight->getFormation()) { continue; }

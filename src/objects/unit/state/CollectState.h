@@ -10,7 +10,15 @@ class CollectState : public State
 {
 public:
 
-	CollectState() {}
+	CollectState() {
+		nextStates[static_cast<char>(UnitState::STOP)] = true;
+		nextStates[static_cast<char>(UnitState::DEFEND)] = true;
+		nextStates[static_cast<char>(UnitState::DEAD)] = true;
+		nextStates[static_cast<char>(UnitState::GO_TO)] = true;
+		nextStates[static_cast<char>(UnitState::FOLLOW)] = true;
+		nextStates[static_cast<char>(UnitState::CHARGE)] = true;
+	}
+
 	~CollectState() = default;
 
 	void onStart(Unit* unit, ActionParameter& parameter) override {
@@ -33,8 +41,7 @@ public:
 			const float value = unit->resource->collect(unit->collectSpeed);
 			resources.add(unit->resource->getDbID(), value);
 			Vector3 a = *unit->resource->getPosition() - *unit->position;
-			* unit->toResource = Vector2(a.x_, a.z_);
+			*unit->toResource = Vector2(a.x_, a.z_);
 		}
-
 	}
 };

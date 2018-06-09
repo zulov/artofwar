@@ -3,14 +3,14 @@
 
 
 class Grid;
-class Unit;
+class Physical;
 
 class BucketIterator
 {
 public:
 	BucketIterator();
 	~BucketIterator();
-	Unit* next();
+	Physical* next();
 	void setRange();
 	void init(std::vector<short>* _levels, int _center, Grid* _bucketGrid);
 private:
@@ -19,7 +19,7 @@ private:
 	short levelSize;
 	std::vector<short>* levels;
 	int center;
-	std::vector<Unit *>::iterator currentIterator;
-	std::vector<Unit *>::iterator currentEnd;
+	std::vector<Physical *>::iterator currentIterator;
+	std::vector<Physical *>::iterator currentEnd;
 	Grid* bucketGrid;
 };
