@@ -130,9 +130,9 @@ Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 
 void Unit::absorbAttack(float attackCoef) {
 	hpCoef -= attackCoef * (1 - defenseCoef);
-	if (billboardBar->enabled_) {
-		updateHealthBar();
-	}
+	
+	updateHealthBar();
+	
 	if (hpCoef < 0) {
 		StateManager::changeState(this, UnitState::DEAD);
 	}

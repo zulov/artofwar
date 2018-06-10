@@ -80,7 +80,7 @@ void Physical::initBillbords() {
 }
 
 void Physical::updateHealthBar() {
-	if (billboardSetBar->IsEnabled()) {
+	if (billboardBar->enabled_) {
 		const float healthBarSize = getHealthBarSize();
 
 		billboardBar->size_ = Vector2(healthBarSize, 0.1) / node->GetScale2D();
