@@ -27,8 +27,8 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	resource(nullptr), state(UnitState::STOP), toResource(new Vector2()) {
 	initBillbords();
 
-	dbUnit = Game::get()->getDatabaseCache()->getUnit(id);
-	dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
+	dbUnit = Game::getDatabaseCache()->getUnit(id);
+	dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
 	populate();
 	if (StateManager::get()->validateState(getDbID(), UnitState::CHARGE)) {
 		chargeData = new ChargeData(150, 2);
@@ -40,12 +40,12 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 
 	node->Scale(dbLevel->scale);
 	model = node->CreateComponent<StaticModel>();
-	model->SetModel(Game::get()->getCache()->GetResource<Model>("Models/" + dbLevel->model));
-	basic = Game::get()->getCache()->GetResource<Material>("Materials/" + dbLevel->texture);
+	model->SetModel(Game::getCache()->GetResource<Model>("Models/" + dbLevel->model));
+	basic = Game::getCache()->GetResource<Material>("Materials/" + dbLevel->texture);
 	model->SetMaterial(basic);
 
 	setPlayer(player);
-	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam());
+	setTeam(Game::getPlayersManager()->getPlayer(player)->getTeam());
 
 	updateBillbords();
 }
@@ -344,7 +344,7 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 }
 
 void Unit::changeColor(float value, float maxValue) const {
-	Material* newMaterial = Game::get()->getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue);
+	Material* newMaterial = Game::getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue);
 	Material* current = model->GetMaterial(0);
 
 	if (newMaterial != current) {
@@ -361,7 +361,7 @@ void Unit::changeColor(Material* newMaterial) {
 }
 
 void Unit::changeColor(UnitState state) {
-	Material* newMaterial = Game::get()->getColorPeletteRepo()->getColor(state);
+	Material* newMaterial = Game::getColorPeletteRepo()->getColor(state);
 	changeColor(newMaterial);
 }
 
@@ -389,7 +389,7 @@ void Unit::changeColor(ColorMode mode) {
 	case ColorMode::FORMATION:
 		{
 		if (formation != -1) {
-			auto prioryty = Game::get()->getFormationManager()->getPriority(this);
+			auto prioryty = Game::getFormationManager()->getPriority(this);
 
 			changeColor(prioryty, 3.0f);
 		}

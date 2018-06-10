@@ -29,7 +29,7 @@ Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCo
 
 	simulationInfo = new SimulationInfo();
 	actionCommandList = new CommandList();
-	Game::get()->setActionCommmandList(actionCommandList);
+	Game::setActionCommmandList(actionCommandList);
 
 	units = simObjectManager->getUnits();
 	buildings = simObjectManager->getBuildings();
@@ -40,7 +40,7 @@ Simulation::~Simulation() {
 	delete simulationInfo;
 	delete actionCommandList;
 	delete levelsCommandList;
-	Game::get()->setActionCommmandList(nullptr);
+	Game::setActionCommmandList(nullptr);
 }
 
 void Simulation::tryToAttack(Unit* unit) {
@@ -148,7 +148,7 @@ void Simulation::applyForce() {
 
 void Simulation::levelUp(QueueElement* done) const {
 	levelsCommandList->add(new UpgradeCommand(
-	                                          Game::get()->getPlayersManager()->getActivePlayer()->getId(),
+	                                          Game::getPlayersManager()->getActivePlayer()->getId(),
 	                                          done->getId(),
 	                                          done->getType()
 	                                         ));
@@ -166,7 +166,7 @@ void Simulation::updateBuildingQueues(const float time) {
 				                                             done->getId(),
 				                                             build->getTarget(),
 				                                             build->getPlayer(),
-				                                             Game::get()->getPlayersManager()->
+				                                             Game::getPlayersManager()->
 				                                                          getPlayer(build->getPlayer())->
 				                                                          getLevelForUnit(done->getId())
 				                                            ));
@@ -185,7 +185,7 @@ void Simulation::updateBuildingQueues(const float time) {
 
 void Simulation::updateQueues() {
 	updateBuildingQueues(maxTimeFrame);
-	QueueElement* done = Game::get()->getQueueManager()->update(maxTimeFrame);
+	QueueElement* done = Game::getQueueManager()->update(maxTimeFrame);
 	if (done) {
 		switch (done->getType()) {
 		case MenuAction::BUILDING_LEVEL:
@@ -249,7 +249,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 		simObjectManager->prepareToDispose();
 		simObjectManager->updateInfo(simulationInfo);
 
-		Game::get()->getFormationManager()->update();
+		Game::getFormationManager()->update();
 	} else {
 		moveUnits(timeStep);
 	}

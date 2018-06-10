@@ -16,7 +16,7 @@ GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, Phy
 GroupAction::~GroupAction() = default;
 
 void GroupAction::addTargetAim(Vector2* to, bool append) {
-	auto opt = Game::get()->getFormationManager()->createFormation(entities);
+	auto opt = Game::getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
 		if (!append) {
 			opt.value()->semiReset();
@@ -26,7 +26,7 @@ void GroupAction::addTargetAim(Vector2* to, bool append) {
 }
 
 void GroupAction::addChargeAim(Vector2* charge, bool append) {
-	auto opt = Game::get()->getFormationManager()->createFormation(entities);
+	auto opt = Game::getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
 		if (!append) {
 			opt.value()->semiReset();
@@ -36,7 +36,7 @@ void GroupAction::addChargeAim(Vector2* charge, bool append) {
 }
 
 void GroupAction::addFollowAim(const Physical* toFollow, bool append) {
-	auto opt = Game::get()->getFormationManager()->createFormation(entities);
+	auto opt = Game::getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
 		if (!append) {
 			opt.value()->semiReset();

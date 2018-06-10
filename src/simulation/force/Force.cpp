@@ -30,7 +30,7 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 		return;
 	}
 	Urho3D::Vector2 force;
-	const int isLeaderFor = Game::get()->getFormationManager()->isLeaderFor(unit);
+	const int isLeaderFor = Game::getFormationManager()->isLeaderFor(unit);
 
 	for (auto physical : *units) {
 		Unit* neight = static_cast<Unit*>(physical);
@@ -76,9 +76,9 @@ void Force::destination(Vector2& newForce, Unit* unit) {
 }
 
 void Force::formation(Vector2& newForce, Unit* unit) {
-	auto opt = Game::get()->getFormationManager()->getPositionFor(unit);
+	auto opt = Game::getFormationManager()->getPositionFor(unit);
 	if (opt.has_value()) {
-		const float priority = Game::get()->getFormationManager()->getPriority(unit);
+		const float priority = Game::getFormationManager()->getPriority(unit);
 		if (priority > 0) {
 
 			auto force = Vector2(

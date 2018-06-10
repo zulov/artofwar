@@ -12,17 +12,17 @@
 ResourceEntity::ResourceEntity(Vector3* _position, int id, int level) : Static(_position, ObjectType::RESOURCE) {
 	initBillbords();
 
-	dbResource = Game::get()->getDatabaseCache()->getResource(id);
+	dbResource = Game::getDatabaseCache()->getResource(id);
 
 	populate();
 
 	StaticModel* model = node->CreateComponent<StaticModel>();
-	model->SetModel(Game::get()->getCache()->GetResource<Model>("Models/" + dbResource->model));
+	model->SetModel(Game::getCache()->GetResource<Model>("Models/" + dbResource->model));
 
 	node->Scale(dbResource->scale);
 
 	for (int i = 0; i < dbResource->texture.Size(); ++i) {
-		model->SetMaterial(i, Game::get()->getCache()->GetResource<Material>("Materials/" + dbResource->texture[i]));
+		model->SetMaterial(i, Game::getCache()->GetResource<Material>("Materials/" + dbResource->texture[i]));
 	}
 	updateBillbords();
 }

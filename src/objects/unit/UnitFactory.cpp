@@ -28,7 +28,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector2& center
 		for (int x = 0; x < xMax; ++x) {
 			Vector3* position = new Vector3(x + center.x_ - sideSize, 0, y + center.y_ - sideSize);
 
-			position->y_ = Game::get()->getEnviroment()->getGroundHeightAt(position->x_, position->z_);
+			position->y_ = Game::getEnviroment()->getGroundHeightAt(position->x_, position->z_);
 
 			Unit* newUnit = new Unit(position, id, player, level);
 
@@ -43,7 +43,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector2& center
 std::vector<Unit*>* UnitFactory::load(dbload_unit* unit) {
 	units->clear();
 
-	float y = Game::get()->getEnviroment()->getGroundHeightAt(unit->pos_x, unit->pos_z);
+	float y = Game::getEnviroment()->getGroundHeightAt(unit->pos_x, unit->pos_z);
 
 	Vector3* position = new Vector3(unit->pos_x, y, unit->pos_z);
 

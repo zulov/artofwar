@@ -52,7 +52,7 @@ StateManager::StateManager() {
 	orderToState[static_cast<char>(UnitOrder::COLLECT)] = {static_cast<char>(UnitState::COLLECT)};
 
 	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
-		std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
+		std::vector<db_order*>* orders = Game::getDatabaseCache()->getOrdersForUnit(i);
 		fill_n(ordersToUnit[i], STATE_SIZE, false);
 		for (auto order : *orders) {
 			for (auto state : orderToState[order->id]) {

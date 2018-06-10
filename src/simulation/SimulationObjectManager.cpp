@@ -109,7 +109,7 @@ void SimulationObjectManager::updateBuilding() {
 	addAll(buildingsTemp);
 	if (!buildingsTemp->empty()) {
 
-		Game::get()->getEnviroment()->update(buildingsToAdd);
+		Game::getEnviroment()->update(buildingsToAdd);
 		buildingsToAdd->clear();
 		simulationInfo->setAmountBuildingChanged();
 	}
@@ -118,7 +118,7 @@ void SimulationObjectManager::updateBuilding() {
 void SimulationObjectManager::updateResource() {
 	addAll(resourcesTemp);
 	if (!resourcesTemp->empty()) {
-		Game::get()->getEnviroment()->update(resourcesToAdd);
+		Game::getEnviroment()->update(resourcesToAdd);
 		resourcesToAdd->clear();
 		simulationInfo->setAmountResourceChanged();
 	}

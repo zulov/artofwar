@@ -26,45 +26,44 @@ class FormationManager;
 class Game
 {
 public:
-	static Game* get() { return instance; }
 	static void init();
 	static void dispose();
 	~Game();
-	Game* setCache(Urho3D::ResourceCache* _cache);
-	Game* setContext(Urho3D::Context* _context);
-	Game* setUI(Urho3D::UI* _ui);
-	Game* setGraphics(Urho3D::Graphics* _graphics);
-	Game* setScene(const Urho3D::SharedPtr<Urho3D::Scene>& scene);
-	Game* setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine);
-	Game* setConsole(Urho3D::Console* _console);
-	Game* setLocalization(Urho3D::Localization* _localization);
-	Game* setCameraManager(CameraManager* cameraManager);
-	Game* setActionCommmandList(CommandList* _actionCommmandList);
-	Game* setCreationCommandList(CreationCommandList* _simCommandList);
-	Game* setDatabaseCache(DatabaseCache* _databaseCache);
-	Game* setPlayersManager(PlayersManager* _playersManager);
-	Game* setEnviroment(Enviroment* _enviroment);
-	Game* setQueueManager(QueueManager* _queueManager);
-	Game* setFormationManager(FormationManager* _formationManager);
-	Game* setColorPeletteRepo(ColorPeletteRepo* _colorPeletteRepo);
+	static Game* setCache(Urho3D::ResourceCache* _cache);
+	static Game* setContext(Urho3D::Context* _context);
+	static Game* setUI(Urho3D::UI* _ui);
+	static Game* setGraphics(Urho3D::Graphics* _graphics);
+	static Game* setScene(const Urho3D::SharedPtr<Urho3D::Scene>& scene);
+	static Game* setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine);
+	static Game* setConsole(Urho3D::Console* _console);
+	static Game* setLocalization(Urho3D::Localization* _localization);
+	static Game* setCameraManager(CameraManager* cameraManager);
+	static Game* setActionCommmandList(CommandList* _actionCommmandList);
+	static Game* setCreationCommandList(CreationCommandList* _simCommandList);
+	static Game* setDatabaseCache(DatabaseCache* _databaseCache);
+	static Game* setPlayersManager(PlayersManager* _playersManager);
+	static Game* setEnviroment(Enviroment* _enviroment);
+	static Game* setQueueManager(QueueManager* _queueManager);
+	static Game* setFormationManager(FormationManager* _formationManager);
+	static Game* setColorPeletteRepo(ColorPeletteRepo* _colorPeletteRepo);
 
-	Urho3D::ResourceCache* getCache() const { return cache; }
-	Urho3D::SharedPtr<Urho3D::Scene> getScene() const { return scene; }
-	Urho3D::Context* getContext() const { return context; }
-	Urho3D::UI* getUI() const { return ui; }
-	Urho3D::Graphics* getGraphics() const { return graphics; }
-	Urho3D::SharedPtr<Urho3D::Engine> getEngine() const { return engine; }
-	CommandList* getActionCommandList() const { return actionCommandList; }
-	Urho3D::Console* getConsole() const { return console; }
-	Urho3D::Localization* getLocalization() const { return localization; }
-	QueueManager* getQueueManager() const { return queue; }
-	CreationCommandList* getCreationCommandList() const { return creationCommandList; }
-	DatabaseCache* getDatabaseCache() const { return databaseCache; }
-	PlayersManager* getPlayersManager() const { return playersManager; }
-	Enviroment* getEnviroment() const { return enviroment; }
-	FormationManager* getFormationManager() const { return formationManager; }
-	ColorPeletteRepo* getColorPeletteRepo() const { return colorPeletteRepo; }
-	CameraManager* getCameraManager() const { return cameraManager; }
+	static Urho3D::ResourceCache* getCache() { return instance->cache; }
+	static Urho3D::SharedPtr<Urho3D::Scene> getScene() { return instance->scene; }
+	static Urho3D::Context* getContext() { return instance->context; }
+	static Urho3D::UI* getUI() { return instance->ui; }
+	static Urho3D::Graphics* getGraphics() { return instance->graphics; }
+	static Urho3D::SharedPtr<Urho3D::Engine> getEngine() { return instance->engine; }
+	static Urho3D::Console* getConsole() { return instance->console; }
+	static Urho3D::Localization* getLocalization() { return instance->localization; }
+	static CommandList* getActionCommandList() { return instance->actionCommandList; }
+	static QueueManager* getQueueManager() { return instance->queue; }
+	static CreationCommandList* getCreationCommandList() { return instance->creationCommandList; }
+	static DatabaseCache* getDatabaseCache() { return instance->databaseCache; }
+	static PlayersManager* getPlayersManager() { return instance->playersManager; }
+	static Enviroment* getEnviroment() { return instance->enviroment; }
+	static FormationManager* getFormationManager() { return instance->formationManager; }
+	static ColorPeletteRepo* getColorPeletteRepo() { return instance->colorPeletteRepo; }
+	static CameraManager* getCameraManager() { return instance->cameraManager; }
 
 private:
 	Game();

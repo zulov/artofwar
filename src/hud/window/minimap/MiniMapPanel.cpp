@@ -21,10 +21,10 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 		buildingColors[i] = 0xFF505050;
 	}
 
-	int size = Game::get()->getDatabaseCache()->getResourceSize();
+	int size = Game::getDatabaseCache()->getResourceSize();
 
 	for (int i = 0; i < size; ++i) {
-		const auto res = Game::get()->getDatabaseCache()->getResource(i);
+		const auto res = Game::getDatabaseCache()->getResource(i);
 		if (res) {
 			resourceColors[i] = res->mini_map_color;
 		} else {
@@ -51,9 +51,9 @@ void MiniMapPanel::initColors() {
 		buildingColors[i] = 0xFF505050;
 	}
 
-	PlayersManager* playerManager = Game::get()->getPlayersManager();
+	PlayersManager* playerManager = Game::getPlayersManager();
 	for (auto player : playerManager->getAllPlayers()) {
-		db_player_colors* col = Game::get()->getDatabaseCache()->getPlayerColor(player->getColor());
+		db_player_colors* col = Game::getDatabaseCache()->getPlayerColor(player->getColor());
 
 		if (col) {
 			unitsColors[player->getId()] = col->unit;
@@ -65,7 +65,7 @@ void MiniMapPanel::initColors() {
 void MiniMapPanel::createEmpty(int parts) {
 	initColors();
 	IntVector2 size = spr->GetSize();
-	Enviroment* env = Game::get()->getEnviroment();
+	Enviroment* env = Game::getEnviroment();
 	uint32_t* data = (uint32_t*)minimap->GetData();
 
 	int idR = 0;
@@ -102,7 +102,7 @@ void MiniMapPanel::changeValue(uint32_t* data, bool& changed, unsigned val) {
 
 void MiniMapPanel::update() {
 	IntVector2 size = spr->GetSize();
-	Enviroment* env = Game::get()->getEnviroment();
+	Enviroment* env = Game::getEnviroment();
 	auto* data = (uint32_t*)minimap->GetData();
 
 	float xinc = 1.0f / size.x_;
@@ -113,7 +113,7 @@ void MiniMapPanel::update() {
 	for (; partIndex < indexPerUpdate && indexUpdate < size.y_ * size.x_; ++partIndex, ++indexUpdate) {
 		const float yVal = 1 - yinc * (indexUpdate / size.x_);
 		const float xVal = 0 + xinc * (indexUpdate % size.x_);
-		int activePlayer = Game::get()->getPlayersManager()->getActivePlayer()->getId();
+		int activePlayer = Game::getPlayersManager()->getActivePlayer()->getId();
 
 		content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc), checks, activePlayer);
 
@@ -154,7 +154,7 @@ void MiniMapPanel::createBody() {
 	checksElements.reserve(MINI_MAP_BUTTON_NUMBER);
 
 	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
+		Texture2D* texture = Game::getCache()->GetResource<Texture2D
 		>("textures/hud/icon/mm/minimap" + String(i) + ".png");
 
 		MySprite* sprite = createSprite(texture, style, "MiniMapSprite");
@@ -171,11 +171,11 @@ void MiniMapPanel::createBody() {
 	IntVector2 size = spr->GetSize();
 
 	spr->SetMaxSize(size);
-	minimap = new Image(Game::get()->getContext());
+	minimap = new Image(Game::getContext());
 
 	minimap->SetSize(size.x_, size.y_, 4);
 
-	text = new Texture2D(Game::get()->getContext());
+	text = new Texture2D(Game::getContext());
 	text->SetData(minimap);
 
 	spr->SetTexture(text);
@@ -197,5 +197,5 @@ void MiniMapPanel::HandleMiniMapClick(StringHash eventType, VariantMap& eventDat
 	float x = eventData[Urho3D::Click::P_X].GetInt() - begin.x_;
 	float y = size.y_ - (eventData[Urho3D::Click::P_Y].GetInt() - begin.y_);
 
-	Game::get()->getCameraManager()->changePosition(x / size.x_, y / size.y_);
+	Game::getCameraManager()->changePosition(x / size.x_, y / size.y_);
 }

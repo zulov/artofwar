@@ -40,12 +40,10 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE),
 }
 
 void Main::Setup() {
-	Game* game = Game::get();
-
-	game->setDatabaseCache(new DatabaseCache());
-	db_settings* settings = game->getDatabaseCache()->getSettings();
-	db_graph_settings* graphSettings = game->getDatabaseCache()->getGraphSettings(settings->graph);
-	db_resolution* resolution = game->getDatabaseCache()->getResolution(settings->resolution);
+	Game::setDatabaseCache(new DatabaseCache());
+	db_settings* settings = Game::getDatabaseCache()->getSettings();
+	db_graph_settings* graphSettings = Game::getDatabaseCache()->getGraphSettings(settings->graph);
+	db_resolution* resolution = Game::getDatabaseCache()->getResolution(settings->resolution);
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
 	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName() +
 		".log";
@@ -58,14 +56,14 @@ void Main::Setup() {
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
 
-	game->setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
+	Game::setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
 	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
 	loadingProgress.reset(loadStages);
 	newGameProgress.reset(newGamesStages);
 }
 
 void Main::Start() {
-	Game::get()->setGraphics(GetSubsystem<Graphics>());
+	Game::setGraphics(GetSubsystem<Graphics>());
 
 	SetWindowTitleAndIcon();
 	InitLocalizationSystem();
@@ -120,7 +118,7 @@ void Main::running(const double timeStep) {
 
 	SelectedInfo* selectedInfo = control(timeStep, simulationInfo);
 
-	hud->update(benchmark, Game::get()->getCameraManager(), selectedInfo, simulationInfo);
+	hud->update(benchmark, Game::getCameraManager(), selectedInfo, simulationInfo);
 
 	simulation->dispose();
 }
@@ -153,7 +151,7 @@ void Main::InitMouseMode(MouseMode mode) {
 	useMouseMode_ = mode;
 	Input* input = GetSubsystem<Input>();
 
-	Console* console = Game::get()->getConsole();
+	Console* console = Game::getConsole();
 	if (useMouseMode_ != MM_ABSOLUTE) {
 		input->SetMouseMode(useMouseMode_);
 		if (console && console->IsVisible()) {
@@ -163,40 +161,40 @@ void Main::InitMouseMode(MouseMode mode) {
 }
 
 void Main::SetWindowTitleAndIcon() {
-	Graphics* graphics = Game::get()->getGraphics();
-	Image* icon = Game::get()->getCache()->GetResource<Image>("textures/UrhoIcon.png");
+	Graphics* graphics = Game::getGraphics();
+	Image* icon = Game::getCache()->GetResource<Image>("textures/UrhoIcon.png");
 	graphics->SetWindowIcon(icon);
 	graphics->SetWindowTitle("Art of War 2017");
 }
 
 void Main::changeCamera(int type) {
-	Game::get()->getCameraManager()->setCameraBehave(type);
+	Game::getCameraManager()->setCameraBehave(type);
 	SetupViewport();
-	InitMouseMode(Game::get()->getCameraManager()->getMouseMode());
+	InitMouseMode(Game::getCameraManager()->getMouseMode());
 }
 
 void Main::InitLocalizationSystem() {
 	Localization* l10n = GetSubsystem<Localization>();
 
 	l10n->LoadJSONFile("lang/language.json");
-	Game::get()->setLocalization(l10n);
+	Game::setLocalization(l10n);
 }
 
 void Main::save(String name) {
 	saver.createSave(name);
 	saver.saveConfig();
 	simulation->save(saver);
-	Game::get()->getPlayersManager()->save(saver);
+	Game::getPlayersManager()->save(saver);
 	saver.close();
 }
 
 void Main::createSimulation() {
-	Game::get()->setCreationCommandList(new CreationCommandList());
-	simulation = new Simulation(Game::get()->getEnviroment(), Game::get()->getCreationCommandList());
+	Game::setCreationCommandList(new CreationCommandList());
+	simulation = new Simulation(Game::getEnviroment(), Game::getCreationCommandList());
 }
 
 void Main::setSimpleManagers() {
-	Game::get()->setCameraManager(new CameraManager())
+	Game::setCameraManager(new CameraManager())
 	           ->setQueueManager(new QueueManager(1))
 	           ->setFormationManager(new FormationManager())
 	           ->setPlayersManager(new PlayersManager())
@@ -219,7 +217,7 @@ void Main::load(String saveName, loading& progres) {
 		controls = new Controls(GetSubsystem<Input>());
 		SetupViewport();
 
-		Game::get()->getPlayersManager()->load(loader.loadPlayers(), loader.loadResources());
+		Game::getPlayersManager()->load(loader.loadPlayers(), loader.loadResources());
 
 		subscribeToUIEvents();
 		hud->resetLoading();
@@ -229,12 +227,12 @@ void Main::load(String saveName, loading& progres) {
 		break;
 	case 1:
 		{
-		Game::get()->setEnviroment(new Enviroment(levelBuilder->getTerrian()));
+		Game::setEnviroment(new Enviroment(levelBuilder->getTerrian()));
 		break;
 		}
 	case 2:
 		{
-		Game::get()->getEnviroment()->prepareGridToFind();
+		Game::getEnviroment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
 		}
@@ -265,7 +263,7 @@ void Main::newGame(NewGameForm* form, loading& progres) {
 		controls = new Controls(GetSubsystem<Input>());
 		SetupViewport();
 
-		Game::get()->getPlayersManager()->load(form);
+		Game::getPlayersManager()->load(form);
 
 		hud->resetLoading();
 
@@ -274,12 +272,12 @@ void Main::newGame(NewGameForm* form, loading& progres) {
 		break;
 	case 1:
 		{
-		Game::get()->setEnviroment(new Enviroment(levelBuilder->getTerrian()));
+		Game::setEnviroment(new Enviroment(levelBuilder->getTerrian()));
 		break;
 		}
 	case 2:
 		{
-		Game::get()->getEnviroment()->prepareGridToFind();
+		Game::getEnviroment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
 		}
@@ -438,44 +436,44 @@ void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 }
 
 void Main::SetupViewport() {
-	SharedPtr<Viewport> viewport(new Viewport(context_, Game::get()->getScene(),
-	                                          Game::get()->getCameraManager()->getComponent()));
+	SharedPtr<Viewport> viewport(new Viewport(context_, Game::getScene(),
+	                                          Game::getCameraManager()->getComponent()));
 	GetSubsystem<Renderer>()->SetViewport(0, viewport);
 }
 
 void Main::disposeScene() {
 	if (inited) {
 		loading loading2;
-		Game::get()->getScene()->SetUpdateEnabled(false);
+		Game::getScene()->SetUpdateEnabled(false);
 
 		loading2.reset(4, "dispose simulation");
 		delete simulation;
 		simulation = nullptr;
 
 		loading2.inc("dispose managers");
-		delete Game::get()->getCameraManager();
-		Game::get()->setCameraManager(nullptr);
+		delete Game::getCameraManager();
+		Game::setCameraManager(nullptr);
 
-		delete Game::get()->getQueueManager();
-		Game::get()->setQueueManager(nullptr);
+		delete Game::getQueueManager();
+		Game::setQueueManager(nullptr);
 
-		delete Game::get()->getFormationManager();
-		Game::get()->setFormationManager(nullptr);
+		delete Game::getFormationManager();
+		Game::setFormationManager(nullptr);
 
-		delete Game::get()->getColorPeletteRepo();
-		Game::get()->setColorPeletteRepo(nullptr);
+		delete Game::getColorPeletteRepo();
+		Game::setColorPeletteRepo(nullptr);
 
 		loading2.inc("dispose creationList");
-		delete Game::get()->getCreationCommandList();
-		Game::get()->setCreationCommandList(nullptr);
+		delete Game::getCreationCommandList();
+		Game::setCreationCommandList(nullptr);
 
 		loading2.inc("dispose enviroment");
-		delete Game::get()->getEnviroment();
-		Game::get()->setEnviroment(nullptr);
+		delete Game::getEnviroment();
+		Game::setEnviroment(nullptr);
 
 		loading2.inc("dispose playerManager");
-		delete Game::get()->getPlayersManager();
-		Game::get()->setPlayersManager(nullptr);
+		delete Game::getPlayersManager();
+		Game::setPlayersManager(nullptr);
 
 		loading2.inc("dispose controls");
 		delete controls;
@@ -491,8 +489,8 @@ void Main::disposeScene() {
 }
 
 SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo) {
-	const IntVector2 cursorPos = Game::get()->getUI()->GetCursorPosition();
-	UIElement* element = Game::get()->getUI()->GetElementAt(cursorPos, false);
+	const IntVector2 cursorPos = Game::getUI()->GetCursorPosition();
+	UIElement* element = Game::getUI()->GetElementAt(cursorPos, false);
 
 	if (element) {
 		controls->deactivate();
@@ -518,8 +516,8 @@ SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo
 		coefToEdit = 3;
 	}
 
-	Game::get()->getCameraManager()->translate(cursorPos, input, timeStep);
-	Game::get()->getCameraManager()->rotate(input->GetMouseMove());
+	Game::getCameraManager()->translate(cursorPos, input, timeStep);
+	Game::getCameraManager()->rotate(input->GetMouseMove());
 
 	controls->clean(simulationInfo);
 	return controls->getInfo();

@@ -303,7 +303,7 @@ float MainGrid::cost(const int current, const int next) const {
 }
 
 void MainGrid::debug(int start, int end) {
-	Image* image = new Image(Game::get()->getContext());
+	Image* image = new Image(Game::getContext());
 	image->SetSize(resolution, resolution, 4);
 
 	String prefix = String(staticCounter) + "_";

@@ -13,19 +13,19 @@
 
 inline void resultQuery(const Ray& cameraRay, PODVector<RayQueryResult>& results) {
 	RayOctreeQuery query(results, cameraRay, RAY_TRIANGLE, 300, DRAWABLE_GEOMETRY);
-	Game::get()->getScene()->Node::GetComponent<Octree>()->Raycast(query);
+	Game::getScene()->Node::GetComponent<Octree>()->Raycast(query);
 }
 
 bool raycast(hit_data& hitData) {
-	const IntVector2 pos = Game::get()->getUI()->GetCursorPosition();
-	if (!Game::get()->getUI()->GetCursor()->IsVisible() || Game::get()->getUI()->GetElementAt(pos, true)) {
+	const IntVector2 pos = Game::getUI()->GetCursorPosition();
+	if (!Game::getUI()->GetCursor()->IsVisible() || Game::getUI()->GetElementAt(pos, true)) {
 		return false;
 	}
 
-	const Ray cameraRay = Game::get()->getCameraManager()
+	const Ray cameraRay = Game::getCameraManager()
 	                                 ->getComponent()
-	                                 ->GetScreenRay((float)pos.x_ / Game::get()->getGraphics()->GetWidth(),
-	                                                (float)pos.y_ / Game::get()->getGraphics()->GetHeight());
+	                                 ->GetScreenRay((float)pos.x_ / Game::getGraphics()->GetWidth(),
+	                                                (float)pos.y_ / Game::getGraphics()->GetHeight());
 
 	PODVector<RayQueryResult> results;
 	resultQuery(cameraRay, results);
@@ -54,15 +54,15 @@ bool raycast(hit_data& hitData) {
 }
 
 bool raycast(hit_data& hitData, ObjectType type) {
-	const IntVector2 pos = Game::get()->getUI()->GetCursorPosition();
-	if (!Game::get()->getUI()->GetCursor()->IsVisible() || Game::get()->getUI()->GetElementAt(pos, true)) {
+	const IntVector2 pos = Game::getUI()->GetCursorPosition();
+	if (!Game::getUI()->GetCursor()->IsVisible() || Game::getUI()->GetElementAt(pos, true)) {
 		return false;
 	}
 
-	const Ray cameraRay = Game::get()->getCameraManager()
+	const Ray cameraRay = Game::getCameraManager()
 	                                 ->getComponent()
-	                                 ->GetScreenRay((float)pos.x_ / Game::get()->getGraphics()->GetWidth(),
-	                                                (float)pos.y_ / Game::get()->getGraphics()->GetHeight());
+	                                 ->GetScreenRay((float)pos.x_ / Game::getGraphics()->GetWidth(),
+	                                                (float)pos.y_ / Game::getGraphics()->GetHeight());
 
 	PODVector<RayQueryResult> results;
 	resultQuery(cameraRay, results);

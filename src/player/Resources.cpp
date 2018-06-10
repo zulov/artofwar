@@ -9,7 +9,7 @@ Resources::Resources() {
 }
 
 void Resources::init(float valueForAll) {
-	size = Game::get()->getDatabaseCache()->getResourceSize();
+	size = Game::getDatabaseCache()->getResourceSize();
 	int i = 0;
 	for (; i < size; ++i) {	
 		values[i] = valueForAll;

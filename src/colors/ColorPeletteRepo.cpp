@@ -7,18 +7,18 @@
 
 ColorPeletteRepo::ColorPeletteRepo() {
 	for (int i = 0; i < PALLET_RESOLUTION; ++i) {
-		redPallet[i] = new Urho3D::Material(Game::get()->getContext());
+		redPallet[i] = new Urho3D::Material(Game::getContext());
 		redPallet[i]->SetShaderParameter("MatDiffColor", Urho3D::Color(i * (1.0 / PALLET_RESOLUTION), 0, 0));
 		redPallet[i]->SetName("PaletteRed_" + Urho3D::String(i));
-		Game::get()->getCache()->AddManualResource(redPallet[i]);
+		Game::getCache()->AddManualResource(redPallet[i]);
 	}
 	redPallet[PALLET_RESOLUTION] = redPallet[PALLET_RESOLUTION - 1];
 
 	for (int i = 0; i < STATE_SIZE; ++i) {
-		statePallet[i] = new Urho3D::Material(Game::get()->getContext());
+		statePallet[i] = new Urho3D::Material(Game::getContext());
 		statePallet[i]->SetShaderParameter("MatDiffColor", Urho3D::Color(i * (1.0 / STATE_SIZE), 0, 0));
 		statePallet[i]->SetName("StatePallet_" + Urho3D::String(i));
-		Game::get()->getCache()->AddManualResource(statePallet[i]);
+		Game::getCache()->AddManualResource(statePallet[i]);
 	}
 }
 

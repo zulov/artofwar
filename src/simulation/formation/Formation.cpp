@@ -94,7 +94,7 @@ void Formation::updateIds() {
 		}
 		leader->setPositionInFormation(cc);
 
-		auto env = Game::get()->getEnviroment();
+		auto env = Game::getEnviroment();
 		std::unordered_map<int, std::vector<short>> bucketToIds;
 		for (int i = 0; i < units.size(); ++i) {
 			if (leader->getPositionInFormation() == i) {
@@ -216,7 +216,7 @@ void Formation::update() {
 			changeState(FormationState::MOVING);
 			if (!futureOrders.empty()) {
 				const auto& futureOrder = futureOrders[0];
-				Game::get()->getActionCommandList()->add(new FormationAction(this,
+				Game::getActionCommandList()->add(new FormationAction(this,
 				                                                             futureOrder.action,
 				                                                             futureOrder.physical,
 				                                                             new Vector2(futureOrder.vector)

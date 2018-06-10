@@ -43,7 +43,7 @@ void MainMenuLoadPanel::createBody() {
 	content->SetStyle("LoadContent", style);
 	loadButton = leftMock->CreateChild<Urho3D::Button>();
 	loadButton->SetStyle("LoadButton", style);
-	addChildText(loadButton, "LoadButtonText", Game::get()->getLocalization()->Get("load"), style);
+	addChildText(loadButton, "LoadButtonText", Game::getLocalization()->Get("load"), style);
 }
 
 void MainMenuLoadPanel::action(String saveName) {

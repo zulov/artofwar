@@ -19,7 +19,7 @@ void FormationAction::addTargetAim(Vector2* to, bool append) {
 
 		const auto id = static_cast<char>(action);
 		opt.value()->action(id, parameter);
-		Game::get()->getEnviroment()->invalidateCache();
+		Game::getEnviroment()->invalidateCache();
 	}
 }
 

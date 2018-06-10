@@ -19,7 +19,7 @@ void MainMenuHelpPanel::createBody() {
 		Button* button = simpleButton(nullptr, style, "HelpListButton");
 		Urho3D::Text* element = button->CreateChild<Text>();
 
-		element->SetText(Game::get()->getLocalization()->Get("help_key_" + String(i)));
+		element->SetText(Game::getLocalization()->Get("help_key_" + String(i)));
 		element->SetStyle("HelpListText");
 		button->AddChild(element);
 		list->AddItem(button);
@@ -33,7 +33,7 @@ void MainMenuHelpPanel::createBody() {
 
 	contentText = content->CreateChild<Urho3D::Text>();
 	contentText->SetStyle("HelpContentText", style);
-	contentText->SetText(Game::get()->getLocalization()->Get("mock"));
+	contentText->SetText(Game::getLocalization()->Get("mock"));
 
 	contentText->SetWidth(content->GetWidth() * 0.9);
 	content->AddChild(contentText);
@@ -44,7 +44,7 @@ void MainMenuHelpPanel::createBody() {
 MainMenuHelpPanel::~MainMenuHelpPanel() = default;
 
 void MainMenuHelpPanel::action(short id) {
-	contentText->SetText(Game::get()->getLocalization()->Get("help_value_" + String(id)));
+	contentText->SetText(Game::getLocalization()->Get("help_value_" + String(id)));
 	contentText->SetWidth(content->GetWidth() * 0.9);
 }
 

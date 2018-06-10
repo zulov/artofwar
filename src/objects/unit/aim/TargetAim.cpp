@@ -12,7 +12,7 @@ TargetAim::TargetAim(std::vector<int>& _path) :
 TargetAim::~TargetAim() = default;
 
 Urho3D::Vector2 TargetAim::getDirection(Unit* unit) {
-	Vector2 position = Game::get()->getEnviroment()->getCenter(path[current]);
+	Vector2 position = Game::getEnviroment()->getCenter(path[current]);
 	//TODO storzyc currentPosition i zmienaic przy przejsciu
 	return Vector2(
 	               position.x_ - unit->getPosition()->x_,
@@ -21,7 +21,7 @@ Urho3D::Vector2 TargetAim::getDirection(Unit* unit) {
 }
 
 bool TargetAim::ifReach(Unit* unit) {
-	Vector2 position = Game::get()->getEnviroment()->getCenter(path[current]);
+	Vector2 position = Game::getEnviroment()->getCenter(path[current]);
 	float dist = Vector2(
 	                     position.x_ - unit->getPosition()->x_,
 	                     position.y_ - unit->getPosition()->z_

@@ -22,7 +22,7 @@ ActionCommand::~ActionCommand() {
 
 
 ActionParameter ActionCommand::getTargetAim(int startInx, Vector2& to, bool append) {
-	auto path = Game::get()->getEnviroment()->findPath(startInx, to);
+	auto path = Game::getEnviroment()->findPath(startInx, to);
 	if (!path->empty()) {
 		return ActionParameter(new TargetAim(*path), append);
 	}

@@ -45,10 +45,10 @@ bool Aims::ifReach(Unit* unit) {
 		}
 	} else if (!nextAims.empty()) {
 		if (nextAims[0].physical != nullptr) {
-			Game::get()->getActionCommandList()->add(new IndividualAction(unit, nextAims[0].action,
+			Game::getActionCommandList()->add(new IndividualAction(unit, nextAims[0].action,
 			                                                              nextAims[0].physical, true));
 		} else {
-			Game::get()->getActionCommandList()->add(new IndividualAction(unit, nextAims[0].action,
+			Game::getActionCommandList()->add(new IndividualAction(unit, nextAims[0].action,
 			                                                              nextAims[0].vector, true));
 		}
 		nextAims.erase(nextAims.begin());

@@ -61,7 +61,7 @@ void SelectedHudPanel::createBody() {
 }
 
 int SelectedHudPanel::iconSize() {
-	UIElement* test = new UIElement(Game::get()->getContext());
+	UIElement* test = new UIElement(Game::getContext());
 	test->SetStyle("SmallIcon", style);
 
 	int size = test->GetSize().x_ + rows[0]->GetLayoutSpacing();
@@ -90,7 +90,7 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 		std::vector<Physical*>& data = infoType->getData();
 		if (data.empty()) { continue; }
 		String name = getIconName(type, infoType->getId());
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
+		Texture2D* texture = Game::getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
 
 		for (int j = 0; j < data.size(); j += ratio) {
 			int max = Min(data.size(), j + ratio);

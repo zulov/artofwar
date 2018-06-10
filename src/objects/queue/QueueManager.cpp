@@ -70,7 +70,7 @@ float QueueManager::getSecToComplete(MenuAction type, short id, int level) {
 		return 10;
 	case MenuAction::UNIT_LEVEL:
 		{
-		auto dbLevel = Game::get()->getDatabaseCache()->getUnitLevel(id, level).value();
+		auto dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
 		return dbLevel->upgradeSpeed;
 		}
 	case MenuAction::BUILDING_LEVEL:

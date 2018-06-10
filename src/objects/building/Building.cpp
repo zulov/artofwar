@@ -20,11 +20,11 @@ Building::Building(Vector3* _position, int id, int player, int level): Static(_p
 	target.x_ += 5;
 	target.y_ += 5;
 
-	dbBuilding = Game::get()->getDatabaseCache()->getBuilding(id);
-	units = Game::get()->getDatabaseCache()->getUnitsForBuilding(id);
+	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
+	units = Game::getDatabaseCache()->getUnitsForBuilding(id);
 
 	setPlayer(player);
-	setTeam(Game::get()->getPlayersManager()->getPlayer(player)->getTeam());
+	setTeam(Game::getPlayersManager()->getPlayer(player)->getTeam());
 
 	node->CreateComponent<Urho3D::StaticModel>();
 	upgrade(level);
@@ -60,12 +60,12 @@ String& Building::toMultiLineString() {
 }
 
 void Building::action(char id, ActionParameter& parameter) {
-	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
+	Resources& resources = Game::getPlayersManager()->getActivePlayer()->getResources();
 
 	switch (parameter.type) {
 	case MenuAction::UNIT:
 		{
-		std::vector<db_cost*>* costs = Game::get()->getDatabaseCache()->getCostForUnit(id);
+		std::vector<db_cost*>* costs = Game::getDatabaseCache()->getCostForUnit(id);
 		if (resources.reduce(costs)) {
 			queue->add(1, parameter.type, id, 30);
 		}
@@ -73,8 +73,8 @@ void Building::action(char id, ActionParameter& parameter) {
 		break;
 	case MenuAction::UNIT_LEVEL:
 		{
-		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
-		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForUnitLevel(id, level);
+		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
+		optional<std::vector<db_cost*>*> opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
 		if (opt.has_value()) {
 			const auto costs = opt.value();
 			if (resources.reduce(costs)) {
@@ -85,8 +85,8 @@ void Building::action(char id, ActionParameter& parameter) {
 		break;
 	case MenuAction::UNIT_UPGRADE:
 		{
-		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
-		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForUnitUpgrade(id, level);
+		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
+		optional<std::vector<db_cost*>*> opt = Game::getDatabaseCache()->getCostForUnitUpgrade(id, level);
 		if (opt.has_value()) {
 			const auto costs = opt.value();
 			if (resources.reduce(costs)) {
@@ -100,14 +100,14 @@ void Building::action(char id, ActionParameter& parameter) {
 
 void Building::upgrade(char level) {
 	auto staticModel = node->GetComponent<StaticModel>();
-	dbLevel = Game::get()->getDatabaseCache()->getBuildingLevel(dbBuilding->id, level).value();
+	dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, level).value();
 
 	populate();
 
 	node->SetScale(dbLevel->scale);
 
-	staticModel->SetModel(Game::get()->getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
-	staticModel->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture));
+	staticModel->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
+	staticModel->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture));
 	updateBillbords();
 }
 

@@ -33,7 +33,7 @@ void Physical::createBillboardBar() {
 
 	billboardSetBar = barNode->CreateComponent<BillboardSet>();
 	billboardSetBar->SetNumBillboards(1);
-	billboardSetBar->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red_overlay.xml"));
+	billboardSetBar->SetMaterial(Game::getCache()->GetResource<Material>("Materials/red_overlay.xml"));
 	billboardSetBar->SetSorted(true);
 
 	billboardBar = billboardSetBar->GetBillboard(0);
@@ -52,7 +52,7 @@ void Physical::createBillboardShadow() {
 	billboardNode->Pitch(90);
 	billboardSetShadow = billboardNode->CreateComponent<BillboardSet>();
 	billboardSetShadow->SetNumBillboards(1);
-	billboardSetShadow->SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/select.xml"));
+	billboardSetShadow->SetMaterial(Game::getCache()->GetResource<Material>("Materials/select.xml"));
 	billboardSetShadow->SetSorted(true);
 	billboardSetShadow->SetFaceCameraMode(FaceCameraMode::FC_NONE);
 

@@ -20,7 +20,7 @@ void MainMenuNewGamePanel::createBody() {
 		row = body->CreateChild<Urho3D::BorderImage>();
 		row->SetStyle("MainMenuNewGameRow");
 	}
-	Urho3D::Localization* l10n = Game::get()->getLocalization();
+	Urho3D::Localization* l10n = Game::getLocalization();
 	myLine.init(style, l10n, 0);
 	enemyLine.init(style, l10n, 1);
 
@@ -35,9 +35,9 @@ void MainMenuNewGamePanel::createBody() {
 	myLine.setCheck(true);
 
 	map = createDropDownList(rows[2], "MainMenuNewGameDropDownList", style);
-	int mapsSize = Game::get()->getDatabaseCache()->getMapSize();
+	int mapsSize = Game::getDatabaseCache()->getMapSize();
 	for (int i = 0; i < mapsSize; ++i) {
-		addTextItem(map, Game::get()->getDatabaseCache()->getMap(i)->name, style);
+		addTextItem(map, Game::getDatabaseCache()->getMap(i)->name, style);
 	}
 
 	difficulty = createDropDownList(rows[3], "MainMenuNewGameDropDownList", style);

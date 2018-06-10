@@ -23,10 +23,10 @@
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 	exprtk::symbol_table<float> symbol_table;
-	int varsSize = Game::get()->getDatabaseCache()->getHudVarsSize();
+	int varsSize = Game::getDatabaseCache()->getHudVarsSize();
 	for (int i = 0; i < varsSize; ++i) {
 		//TODO to lepiej zrobiczapytaniem?
-		db_hud_vars* var = Game::get()->getDatabaseCache()->getHudVar(i);
+		db_hud_vars* var = Game::getDatabaseCache()->getHudVar(i);
 		if (var != nullptr && var->hud_size == hudSizeId) {
 			symbol_table.add_variable(var->name.CString(), var->value);
 		}
@@ -62,10 +62,10 @@ void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 }
 
 void Hud::createCursor() {
-	SharedPtr<Cursor> cursor(new Cursor(Game::get()->getContext()));
+	SharedPtr<Cursor> cursor(new Cursor(Game::getContext()));
 	cursor->SetStyleAuto(style);
-	Game::get()->getUI()->SetCursor(cursor);
-	cursor->SetPosition(Game::get()->getGraphics()->GetWidth() / 2, Game::get()->getGraphics()->GetHeight() / 2);
+	Game::getUI()->SetCursor(cursor);
+	cursor->SetPosition(Game::getGraphics()->GetWidth() / 2, Game::getGraphics()->GetHeight() / 2);
 }
 
 void Hud::createMyPanels() {
@@ -93,7 +93,7 @@ void Hud::prepareStyle() {
 	baseXML.append_node(a);
 
 	for (int i = 0; i < graphSettings->styles.Size(); ++i) {
-		XMLFile* style2 = Game::get()->getCache()->GetResource<XMLFile>("UI/" + graphSettings->styles[i]);
+		XMLFile* style2 = Game::getCache()->GetResource<XMLFile>("UI/" + graphSettings->styles[i]);
 		rapidxml::xml_document<> additionalXML;
 		auto chs = _strdup(style2->ToString().CString());
 		sth.push_back(chs);
@@ -115,10 +115,10 @@ void Hud::prepareStyle() {
 	}
 
 	replaceVariables(result_xml, graphSettings->hud_size);
-	style = new XMLFile(Game::get()->getContext());
+	style = new XMLFile(Game::getContext());
 
 	style->FromString(result_xml.c_str()); //TODO moze problem z pamiecia
-	Game::get()->getUI()->GetRoot()->SetDefaultStyle(style);
+	Game::getUI()->GetRoot()->SetDefaultStyle(style);
 }
 
 void Hud::preapreUrho() {
@@ -135,10 +135,10 @@ void Hud::subscribeToUIEvents() {
 	}
 }
 
-Hud::Hud() : Object(Game::get()->getContext()) {
-	db_settings* settings = Game::get()->getDatabaseCache()->getSettings();
-	graphSettings = Game::get()->getDatabaseCache()->getGraphSettings(settings->graph);
-	resolution = Game::get()->getDatabaseCache()->getResolution(settings->resolution);
+Hud::Hud() : Object(Game::getContext()) {
+	db_settings* settings = Game::getDatabaseCache()->getSettings();
+	graphSettings = Game::getDatabaseCache()->getGraphSettings(settings->graph);
+	resolution = Game::getDatabaseCache()->getResolution(settings->resolution);
 
 	prepareStyle();
 }
@@ -147,22 +147,22 @@ Hud::Hud() : Object(Game::get()->getContext()) {
 void Hud::clear() {
 	clear_vector(panels);
 
-	Game::get()->getUI()->GetRoot()->RemoveAllChildren();
+	Game::getUI()->GetRoot()->RemoveAllChildren();
 }
 
 Hud::~Hud() {
 	clear();
 
-	Game::get()->getUI()->GetCursor()->Remove();
+	Game::getUI()->GetCursor()->Remove();
 }
 
 void Hud::createDebugHud() {
-	DebugHud* debugHud = Game::get()->getEngine()->CreateDebugHud();
+	DebugHud* debugHud = Game::getEngine()->CreateDebugHud();
 	debugHud->SetDefaultStyle(style);
 }
 
 void Hud::createConsole() {
-	Console* console = Game::get()->getEngine()->CreateConsole();
+	Console* console = Game::getEngine()->CreateConsole();
 	console->SetDefaultStyle(style);
 	console->GetBackground()->SetOpacity(0.8f);
 }
@@ -177,7 +177,7 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
 	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
 	                    cameraManager->getInfo());
 
-	topPanel->update(Game::get()->getPlayersManager()->getActivePlayer()->getResources());
+	topPanel->update(Game::getPlayersManager()->getActivePlayer()->getResources());
 	topPanel->update(simulationInfo->getUnitsNumber());
 	miniMapPanel->update();
 	selectedInfo->hasBeedUpdatedDrawn();
@@ -213,7 +213,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 		switch (selectedInfo->getSelectedType()) {
 		case ObjectType::PHYSICAL:
 			menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
-			queuePanel->show(Game::get()->getQueueManager());
+			queuePanel->show(Game::getQueueManager());
 			break;
 		case ObjectType::UNIT:
 			menuPanel->refresh(LeftMenuMode::ORDER, selectedInfo);
@@ -231,7 +231,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 		switch (selectedInfo->getSelectedType()) {
 
 		case ObjectType::PHYSICAL:
-			queuePanel->update(Game::get()->getQueueManager());
+			queuePanel->update(Game::getQueueManager());
 			break;
 		case ObjectType::BUILDING:
 			queuePanel->update(selectedInfo);

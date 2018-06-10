@@ -5,7 +5,7 @@
 
 
 Entity::Entity(ObjectType _type) {
-	node = Game::get()->getScene()->CreateChild();
+	node = Game::getScene()->CreateChild();
 	type = _type;
 }
 

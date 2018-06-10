@@ -64,14 +64,14 @@ void MainMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventDat
 }
 
 void MainMenuPanel::createBody() {
-	background = Game::get()->getUI()->GetRoot()->CreateChild<Urho3D::BorderImage>();
+	background = Game::getUI()->GetRoot()->CreateChild<Urho3D::BorderImage>();
 	background->SetStyle("MainMenuBackground", style);
 	background->SetBringToBack(true);
 	background->SetPriority(-1);
 	window->SetPriority(1);
 
 	detailsPanels = new MainMenuDetailsPanel*[MAIN_MENU_BUTTON_NUMBER];
-	Localization* l10n = Game::get()->getLocalization();
+	Localization* l10n = Game::getLocalization();
 	detailsPanels[0] = new MainMenuNewGamePanel(style, l10n->Get("menu_0"));
 	detailsPanels[1] = new MainMenuLoadPanel(style, l10n->Get("menu_1"));
 	detailsPanels[2] = new MainMenuSettingsPanel(style, l10n->Get("menu_2"));
@@ -83,7 +83,7 @@ void MainMenuPanel::createBody() {
 	}
 
 	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {
-		Texture2D* texture2 = Game::get()->getCache()->GetResource<Texture2D
+		Texture2D* texture2 = Game::getCache()->GetResource<Texture2D
 		>("textures/hud/icon/menu/menu_" + Urho3D::String(i) + ".png");
 
 		MySprite* sprite2 = createSprite(texture2, style, "MainMenuSprite");

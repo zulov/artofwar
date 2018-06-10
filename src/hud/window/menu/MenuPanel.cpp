@@ -71,7 +71,7 @@ void MenuPanel::createBody() {
 		row->SetStyle("LeftMenuListRow", style);
 	}
 	for (int i = 0; i < LEFT_MENU_CHECKS_NUMBER; ++i) {
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
+		Texture2D* texture = Game::getCache()->GetResource<Texture2D
 		>("textures/hud/icon/lm/lm" + String(i) + ".png");
 
 		MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
@@ -81,7 +81,7 @@ void MenuPanel::createBody() {
 		checks[i]->AddChild(sprite);
 		SubscribeToEvent(checks[i], E_CLICK, URHO3D_HANDLER(MenuPanel, ChengeModeButton));
 	}
-	Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D
+	Texture2D* texture = Game::getCache()->GetResource<Texture2D
 	>("textures/hud/icon/lm/lm3.png");
 	MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
 	nextButton = rows[LEFT_MENU_ROWS_NUMBER - 1]->CreateChild<Button>();
@@ -122,11 +122,11 @@ void MenuPanel::ChengeModeButton(StringHash eventType, VariantMap& eventData) {
 }
 
 void MenuPanel::basicBuilding() {
-	int size = Game::get()->getDatabaseCache()->getBuildingSize();
-	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
+	int size = Game::getDatabaseCache()->getBuildingSize();
+	int nation = Game::getPlayersManager()->getActivePlayer()->getNation();
 	int k = 0;
 	for (int i = 0; i < size; ++i) {
-		db_building* building = Game::get()->getDatabaseCache()->getBuilding(i);
+		db_building* building = Game::getDatabaseCache()->getBuilding(i);
 		if (building) {
 			if (building->nation == nation) {
 				setTexture(k, "textures/hud/icon/building/" + building->icon);
@@ -140,13 +140,13 @@ void MenuPanel::basicBuilding() {
 }
 
 void MenuPanel::levelBuilding() {
-	int size = Game::get()->getDatabaseCache()->getBuildingSize();
-	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
+	int size = Game::getDatabaseCache()->getBuildingSize();
+	int nation = Game::getPlayersManager()->getActivePlayer()->getNation();
 	int k = 0;
 	for (int i = 0; i < size; ++i) {
-		db_building* building = Game::get()->getDatabaseCache()->getBuilding(i);
-		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForBuilding(i) + 1;
-		auto opt = Game::get()->getDatabaseCache()->getBuildingLevel(i, level);
+		db_building* building = Game::getDatabaseCache()->getBuilding(i);
+		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForBuilding(i) + 1;
+		auto opt = Game::getDatabaseCache()->getBuildingLevel(i, level);
 		if (opt.has_value()) {
 			if (building->nation == nation) {
 				setTexture(k, "textures/hud/icon/building/levels/" + String(level) + "/" + building->icon);
@@ -180,7 +180,7 @@ std::unordered_set<int> MenuPanel::getUpgradePathInBuilding(std::vector<Selected
 
 unordered_set<int> MenuPanel::getUnitInBuilding(vector<SelectedInfoType*>& infoTypes) {
 	unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-	int nation = Game::get()->getPlayersManager()->getActivePlayer()->getNation();
+	int nation = Game::getPlayersManager()->getActivePlayer()->getNation();
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		std::vector<Physical*>& data = infoTypes.at(i)->getData();
 		if (!data.empty()) {
@@ -202,7 +202,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
 
 	for (auto id : toShow) {
-		db_unit* unit = Game::get()->getDatabaseCache()->getUnit(id);
+		db_unit* unit = Game::getDatabaseCache()->getUnit(id);
 		if (unit) {
 			setTexture(k, "textures/hud/icon/unit/" + unit->icon);
 
@@ -218,9 +218,9 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
 
 	for (auto id : toShow) {
-		db_unit* unit = Game::get()->getDatabaseCache()->getUnit(id);
-		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
-		auto opt = Game::get()->getDatabaseCache()->getUnitLevel(id, level);
+		db_unit* unit = Game::getDatabaseCache()->getUnit(id);
+		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
+		auto opt = Game::getDatabaseCache()->getUnitLevel(id, level);
 		if (opt.has_value()) {
 			setTexture(k, "textures/hud/icon/unit/levels/" + String(level) + "/" + unit->icon);
 
@@ -236,8 +236,8 @@ void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
 
 	for (auto id : toShow) {
-		int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1;
-		optional<db_unit_upgrade*> opt = Game::get()->getDatabaseCache()->getUnitUpgrade(id, level);
+		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1;
+		optional<db_unit_upgrade*> opt = Game::getDatabaseCache()->getUnitUpgrade(id, level);
 
 		if (opt.has_value()) {
 			auto upgrade = opt.value();
@@ -251,7 +251,7 @@ void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 }
 
 void MenuPanel::setTexture(int k, String textureName) {
-	Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>(textureName);
+	Texture2D* texture = Game::getCache()->GetResource<Texture2D>(textureName);
 	setTextureToSprite(sprites[k], texture);
 
 	buttons[k]->SetVisible(true);
@@ -263,7 +263,7 @@ std::unordered_set<int> MenuPanel::getOrderForUnit(std::vector<SelectedInfoType*
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		std::vector<Physical*>& data = infoTypes.at(i)->getData();
 		if (!data.empty()) {
-			std::vector<db_order*>* orders = Game::get()->getDatabaseCache()->getOrdersForUnit(i);
+			std::vector<db_order*>* orders = Game::getDatabaseCache()->getOrdersForUnit(i);
 			unordered_set<int> common2;
 			for (auto& order : *orders) {
 				//todo to zrobic raz i pobierac
@@ -285,7 +285,7 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 
 	int k = 0;
 	for (auto id : toShow) {
-		db_order* order = Game::get()->getDatabaseCache()->getOrder(id);
+		db_order* order = Game::getDatabaseCache()->getOrder(id);
 		if (order) {
 			setTexture(k, "textures/hud/icon/orders/" + order->icon);
 

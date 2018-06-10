@@ -30,7 +30,7 @@ void QueuePanel::update(QueueManager* queue, short& j) {
 		QueueElement* element = queue->getAt(i);
 		elements[j]->show();
 		String name = getIconName(element->getType(), element->getAmount(), element->getId());
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
+		Texture2D* texture = Game::getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
 		if (element->getMaxCapacity() > 1) {
 			elements[j]->setText(String(element->getAmount()) + "/" + String(element->getMaxCapacity()));
 		} else {

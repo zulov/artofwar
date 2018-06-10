@@ -16,10 +16,10 @@
 
 LevelBuilder::LevelBuilder() {
 	objectManager = new SceneObjectManager();
-	scene = new Scene(Game::get()->getContext());
+	scene = new Scene(Game::getContext());
 
 	scene->CreateComponent<Octree>();
-	Game::get()->setScene(scene);
+	Game::setScene(scene);
 }
 
 LevelBuilder::~LevelBuilder() {
@@ -27,7 +27,7 @@ LevelBuilder::~LevelBuilder() {
 	scene->RemoveAllChildren();
 	scene->Clear();
 	scene->Remove();
-	Game::get()->setScene(nullptr);
+	Game::setScene(nullptr);
 }
 
 void LevelBuilder::createScene(SceneLoader& loader) {
@@ -38,7 +38,7 @@ void LevelBuilder::createScene(SceneLoader& loader) {
 }
 
 void LevelBuilder::createMap(int mapId) {
-	db_map* map = Game::get()->getDatabaseCache()->getMap(mapId);
+	db_map* map = Game::getDatabaseCache()->getMap(mapId);
 	Entity* zone = createZone();
 	Entity* light = createLight(Vector3(0.6f, -1.0f, 0.8f), Color(0.7f, 0.6f, 0.6f), LIGHT_DIRECTIONAL);
 	Entity* ground = createGround(map->height_map, map->texture, map->scale_hor, map->scale_ver);
@@ -91,8 +91,8 @@ Entity* LevelBuilder::createGround(const String& heightMap, const String& textur
 	terrain->SetSpacing(Vector3(horScale, verScale, horScale));
 	terrain->SetSmoothing(false);
 	terrain->SetOccluder(true);
-	terrain->SetHeightMap(Game::get()->getCache()->GetResource<Image>(heightMap));
-	auto mat = Game::get()->getCache()->GetResource<Material>(texture)->Clone();
+	terrain->SetHeightMap(Game::getCache()->GetResource<Image>(heightMap));
+	auto mat = Game::getCache()->GetResource<Material>(texture)->Clone();
 	mat->SetRenderOrder(100); // Lower render order to render first
 	auto tecs = mat->GetTechniques();
 	for (size_t i = 0; i < tecs.Size(); ++i) {

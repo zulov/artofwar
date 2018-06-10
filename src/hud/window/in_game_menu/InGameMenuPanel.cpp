@@ -58,21 +58,21 @@ void InGameMenuPanel::close() {
 }
 
 void InGameMenuPanel::createBody() {
-	Urho3D::Texture2D* texture = Game::get()->getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/igm/menu.png");
+	Urho3D::Texture2D* texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/igm/menu.png");
 
 	MySprite* sprite = createSprite(texture, style, "InGameToggledSprite");
 	toggleButton = simpleButton(sprite, style, "InGameToggledButton");
-	Game::get()->getUI()->GetRoot()->AddChild(toggleButton);
+	Game::getUI()->GetRoot()->AddChild(toggleButton);
 	SubscribeToEvent(toggleButton, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleToggle));
 
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
-		Texture2D* texture2 = Game::get()->getCache()->GetResource<Texture2D
+		Texture2D* texture2 = Game::getCache()->GetResource<Texture2D
 		>("textures/hud/icon/igm/igm_" + String(i) + ".png");
 
 		MySprite* sprite2 = createSprite(texture2, style, "InGameSprite");
 		Button* button = simpleButton(sprite2, style, "InGameButton");
 		Text* text = button->CreateChild<Text>();
-		String msg = Game::get()->getLocalization()->Get("igm_" + String(i));
+		String msg = Game::getLocalization()->Get("igm_" + String(i));
 		text->SetText(msg);
 		text->SetStyle("InGameText", style);
 
@@ -81,7 +81,7 @@ void InGameMenuPanel::createBody() {
 		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleButtonClick));
 	}
 
-	Localization* l10n = Game::get()->getLocalization();
+	Localization* l10n = Game::getLocalization();
 	addionalPanels = new AbstractMiddlePanel*[IN_GAME_MENU_BUTTON_NUMBER];
 	addionalPanels[0] = new FilePanel(style, l10n->Get("igm_0"));
 	addionalPanels[1] = new FilePanel(style, l10n->Get("igm_1"));

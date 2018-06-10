@@ -18,7 +18,7 @@ static Urho3D::Button* setStyle(MySprite* sprite, Urho3D::XMLFile* style, const 
 }
 
 static Urho3D::Button* simpleButton(MySprite* sprite, Urho3D::XMLFile* style, const String& styleName) {
-	Urho3D::Button* button = new Urho3D::Button(Game::get()->getContext());
+	Urho3D::Button* button = new Urho3D::Button(Game::getContext());
 	return setStyle(sprite, style, styleName, button);
 }
 
@@ -29,7 +29,7 @@ static Urho3D::Button* simpleButton(UIElement* parent, MySprite* sprite, Urho3D:
 }
 
 static MySprite* createEmptySprite(Urho3D::XMLFile* style, const String& styleName) {
-	MySprite* sprite = new MySprite(Game::get()->getContext());
+	MySprite* sprite = new MySprite(Game::getContext());
 
 	sprite->SetStyle(styleName, style);
 	return sprite;
@@ -81,7 +81,7 @@ static MySprite* createSprite(Texture2D* texture, Urho3D::XMLFile* style, const 
 }
 
 inline void addTextItem(Urho3D::DropDownList* cob, Urho3D::String str, Urho3D::XMLFile* style) {
-	Urho3D::Text* item = new Urho3D::Text(Game::get()->getContext());
+	Urho3D::Text* item = new Urho3D::Text(Game::getContext());
 	item->SetStyle("MyText", style);
 	item->SetText(str);
 	cob->AddItem(item);
@@ -108,7 +108,7 @@ inline void addChildTexts(Urho3D::DropDownList* cob, std::vector<String> names, 
 }
 
 inline void addTextItem(DropDownList* cob, String name, XMLFile* style, Variant var, const String& varName) {
-	Urho3D::Text* item = new Urho3D::Text(Game::get()->getContext());
+	Urho3D::Text* item = new Urho3D::Text(Game::getContext());
 	item->SetStyle("MyText", style);
 	item->SetText(name);
 	cob->AddItem(item);

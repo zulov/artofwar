@@ -14,7 +14,7 @@ UpgradeCommand::UpgradeCommand(int _player, int _id, MenuAction _type) {
 UpgradeCommand::~UpgradeCommand() = default;
 
 void UpgradeCommand::execute() {
-	char level = Game::get()->getPlayersManager()->getPlayer(player)->upgradeLevel(type, id);
+	char level = Game::getPlayersManager()->getPlayer(player)->upgradeLevel(type, id);
 	if (type == MenuAction::BUILDING_LEVEL && level > 0) {
 		for (auto building : *simulationObjectManager->getBuildings()) {
 			if (building->getPlayer() == player && building->getDbID() == id) {

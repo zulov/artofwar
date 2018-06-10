@@ -17,86 +17,86 @@ void Game::dispose() {
 Game::~Game() = default;
 
 Game* Game::setCache(Urho3D::ResourceCache* _cache) {
-	cache = _cache;
-	return this;
+	instance->cache = _cache;
+	return instance;
 }
 
 Game* Game::setContext(Urho3D::Context* _context) {
-	context = _context;
-	return this;
+	instance->context = _context;
+	return instance;
 }
 
 Game* Game::setUI(Urho3D::UI* _ui) {
-	ui = _ui;
-	return this;
+	instance->ui = _ui;
+	return instance;
 }
 
 Game* Game::setGraphics(Urho3D::Graphics* _graphics) {
-	graphics = _graphics;
-	return this;
+	instance->graphics = _graphics;
+	return instance;
 }
 
 Game* Game::setScene(const Urho3D::SharedPtr<Urho3D::Scene>& scene) {
-	this->scene = scene;
-	return this;
+	instance->scene = scene;
+	return instance;
 }
 
 Game* Game::setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine) {
-	engine = _engine;
-	return this;
+	instance->engine = _engine;
+	return instance;
 }
 
 Game* Game::setCameraManager(CameraManager* cameraManager) {
-	this->cameraManager = cameraManager;
-	return this;
+	instance->cameraManager = cameraManager;
+	return instance;
 }
 
 Game* Game::setActionCommmandList(CommandList* _actionCommmandList) {
-	actionCommandList = _actionCommmandList;
-	return this;
+	instance->actionCommandList = _actionCommmandList;
+	return instance;
 }
 
 Game* Game::setConsole(Urho3D::Console* _console) {
-	console = _console;
-	return this;
+	instance->console = _console;
+	return instance;
 }
 
 Game* Game::setLocalization(Urho3D::Localization* _localization) {
-	localization = _localization;
-	return this;
+	instance->localization = _localization;
+	return instance;
 }
 
 Game* Game::setCreationCommandList(CreationCommandList* _simCommandList) {
-	creationCommandList = _simCommandList;
-	return this;
+	instance->creationCommandList = _simCommandList;
+	return instance;
 }
 
 Game* Game::setDatabaseCache(DatabaseCache* _databaseCache) {
-	databaseCache = _databaseCache;
-	return this;
+	instance->databaseCache = _databaseCache;
+	return instance;
 }
 
 Game* Game::setPlayersManager(PlayersManager* _playersManager) {
-	playersManager = _playersManager;
-	return this;
+	instance->playersManager = _playersManager;
+	return instance;
 }
 
 Game* Game::setEnviroment(Enviroment* _enviroment) {
-	enviroment = _enviroment;
-	return this;
+	instance->enviroment = _enviroment;
+	return instance;
 }
 
 Game* Game::setQueueManager(QueueManager* _queueManager) {
-	queue = _queueManager;
-	return this;
+	instance->queue = _queueManager;
+	return instance;
 }
 
 Game* Game::setFormationManager(FormationManager* _formationManager) {
-	formationManager = _formationManager;
-	return this;
+	instance->formationManager = _formationManager;
+	return instance;
 }
 
 Game* Game::setColorPeletteRepo(ColorPeletteRepo* _colorPeletteRepo) {
-	colorPeletteRepo = _colorPeletteRepo;
-	return this;
+	instance->colorPeletteRepo = _colorPeletteRepo;
+	return instance;
 }

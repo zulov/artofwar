@@ -9,7 +9,7 @@
 
 TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "TopWindow";
-	const int size = Game::get()->getDatabaseCache()->getResourceSize();
+	const int size = Game::getDatabaseCache()->getResourceSize();
 
 	elements = new TopHudElement*[size];
 	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
@@ -18,7 +18,7 @@ TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 
 
 TopPanel::~TopPanel() {
-	const int size = Game::get()->getDatabaseCache()->getResourceSize();
+	const int size = Game::getDatabaseCache()->getResourceSize();
 	for (int i = 0; i < size; ++i) {
 		delete elements[i];
 	}
@@ -30,11 +30,11 @@ void TopPanel::createBody() {
 	unitsNumber->SetStyle("TopText", style);
 	unitsNumber->SetText("Test");
 
-	const int size = Game::get()->getDatabaseCache()->getResourceSize();
+	const int size = Game::getDatabaseCache()->getResourceSize();
 
 	for (int i = 0; i < size; ++i) {
-		db_resource* resource = Game::get()->getDatabaseCache()->getResource(i);
-		Texture2D* texture = Game::get()->getCache()->GetResource<Texture2D>("textures/hud/icon/resource/" + resource->icon);
+		db_resource* resource = Game::getDatabaseCache()->getResource(i);
+		Texture2D* texture = Game::getCache()->GetResource<Texture2D>("textures/hud/icon/resource/" + resource->icon);
 
 		elements[i] = new TopHudElement(style, texture);
 		window->AddChild(elements[i]->getButton());

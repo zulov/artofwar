@@ -31,7 +31,7 @@ Controls::Controls(Input* _input) {
 	createNode("Models/box.mdl", "Materials/green_overlay.xml", &selectionNode);
 	createNode("Models/arrow2.mdl", "Materials/red_overlay.xml", &arrowNode);
 
-	tempBuildingNode = Game::get()->getScene()->CreateChild();
+	tempBuildingNode = Game::getScene()->CreateChild();
 	tempBuildingModel = tempBuildingNode->CreateComponent<StaticModel>();
 	tempBuildingNode->SetEnabled(false);
 
@@ -87,18 +87,18 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 	switch (clicked->getType()) {
 	case ObjectType::PHYSICAL:
 		{
-		Game::get()->getActionCommandList()->add(new GroupAction(selected, UnitOrder::GO, new Vector2(hitPos.x_, hitPos.z_),
+		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::GO, new Vector2(hitPos.x_, hitPos.z_),
 		                                                         shiftPressed));
 		break;
 		}
 	case ObjectType::UNIT:
 		{
-		Game::get()->getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, clicked, shiftPressed));
+		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, clicked, shiftPressed));
 		//unSelectAll();
 		break;
 		}
 	case ObjectType::BUILDING:
-		Game::get()->getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, clicked, shiftPressed));
+		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, clicked, shiftPressed));
 		break;
 	case ObjectType::RESOURCE: break;
 	default: ;
@@ -109,14 +109,14 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>& held) {
 	if (!input->GetKeyDown(KEY_CTRL)) {
 		unSelectAll();
 	}
-	auto entities = Game::get()->getEnviroment()->getNeighbours(held);
+	auto entities = Game::getEnviroment()->getNeighbours(held);
 	for (auto entity : *entities) {
 		select(entity); //TODO zastapic wrzuceniem na raz
 	}
 }
 
 void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
-	auto actions = Game::get()->getActionCommandList();
+	auto actions = Game::getActionCommandList();
 
 	const auto first = new Vector2(held.first->x_, held.first->z_);
 	if (input->GetKeyDown(KEY_SHIFT)) {
@@ -235,18 +235,18 @@ void Controls::orderBuilding(short id, ActionParameter& parameter) {
 }
 
 void Controls::orderPhysical(short id, ActionParameter& parameter) {
-	const int level = Game::get()->getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
+	const int level = Game::getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
 
-	Resources& resources = Game::get()->getPlayersManager()->getActivePlayer()->getResources();
+	Resources& resources = Game::getPlayersManager()->getActivePlayer()->getResources();
 
 	switch (parameter.type) {
 	case MenuAction::BUILDING_LEVEL:
 		{
-		optional<std::vector<db_cost*>*> opt = Game::get()->getDatabaseCache()->getCostForBuildingLevel(id, level);
+		optional<std::vector<db_cost*>*> opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
 		if (opt.has_value()) {
 			auto costs = opt.value();
 			if (resources.reduce(costs)) {
-				Game::get()->getQueueManager()->add(1, parameter.type, id, 1);
+				Game::getQueueManager()->add(1, parameter.type, id, 1);
 			}
 		}
 		break;
@@ -294,9 +294,9 @@ void Controls::clickDownRight() {
 
 void Controls::createBuilding(Vector2& pos) {
 	if (idToCreate >= 0) {
-		auto player = Game::get()->getPlayersManager()->getActivePlayer();
+		auto player = Game::getPlayersManager()->getActivePlayer();
 
-		Game::get()->getCreationCommandList()->addBuilding(
+		Game::getCreationCommandList()->addBuilding(
 		                                                   idToCreate, pos,
 		                                                   player->getId(),
 		                                                   player->getLevelForBuilding(idToCreate)
@@ -469,10 +469,10 @@ void Controls::buildControl() {
 
 		if (raycast(hitData, ObjectType::PHYSICAL)) {
 			//TODO OPTM nie robic tego co klatkê
-			auto env = Game::get()->getEnviroment();
+			auto env = Game::getEnviroment();
 
-			auto dbBuilding = Game::get()->getDatabaseCache()->getBuilding(idToCreate);
-			auto dbLevel = Game::get()->getDatabaseCache()->getBuildingLevel(dbBuilding->id, 0).value();
+			auto dbBuilding = Game::getDatabaseCache()->getBuilding(idToCreate);
+			auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, 0).value();
 			Vector2 hitPos = Vector2(hitData.position.x_, hitData.position.z_);
 
 			Vector2 validPos = env->getValidPosition(dbBuilding->size, hitPos);
@@ -482,16 +482,16 @@ void Controls::buildControl() {
 			if (!tempBuildingNode->IsEnabled()) {
 				tempBuildingNode->SetScale(dbLevel->scale);
 
-				tempBuildingModel->SetModel(Game::get()->getCache()->GetResource<Model>("Models/" + dbLevel->model));
+				tempBuildingModel->SetModel(Game::getCache()->GetResource<Model>("Models/" + dbLevel->model));
 				tempBuildingNode->SetEnabled(true);
 			}
 			if (env->validateStatic(dbBuilding->size, hitPos)) {
 				//TODO OPTM nie ustawiac jesli sie nie zmienilo
 				tempBuildingModel->
-					SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/green_overlay.xml"));
+					SetMaterial(Game::getCache()->GetResource<Material>("Materials/green_overlay.xml"));
 			} else {
 				tempBuildingModel->
-					SetMaterial(Game::get()->getCache()->GetResource<Material>("Materials/red_overlay.xml"));
+					SetMaterial(Game::getCache()->GetResource<Material>("Materials/red_overlay.xml"));
 			}
 
 		}
@@ -556,5 +556,5 @@ void Controls::control() {
 }
 
 void Controls::unitFormation(short id) {
-	Game::get()->getFormationManager()->createFormation(selected, FormationType(id));
+	Game::getFormationManager()->createFormation(selected, FormationType(id));
 }

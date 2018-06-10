@@ -24,7 +24,7 @@ void IndividualAction::addTargetAim(Vector2* to, bool append) {
 	entity->action(id, parameter);
 	static_cast<Unit*>(entity)->resetFormation();
 
-	Game::get()->getEnviroment()->invalidateCache();
+	Game::getEnviroment()->invalidateCache();
 }
 
 void IndividualAction::addChargeAim(Vector2* charge, bool append) {

@@ -6,9 +6,9 @@
 #include <Urho3D/Resource/ResourceCache.h>
 
 inline void createNode(const Urho3D::String& model, const Urho3D::String& texture, Urho3D::Node** node) {
-	*node = Game::get()->getScene()->CreateChild();
+	*node = Game::getScene()->CreateChild();
 	auto selectionModel = (*node)->CreateComponent<Urho3D::StaticModel>();
-	selectionModel->SetModel(Game::get()->getCache()->GetResource<Urho3D::Model>(model));
-	selectionModel->SetMaterial(Game::get()->getCache()->GetResource<Urho3D::Material>(texture));
+	selectionModel->SetModel(Game::getCache()->GetResource<Urho3D::Model>(model));
+	selectionModel->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(texture));
 	(*node)->SetEnabled(false);
 }

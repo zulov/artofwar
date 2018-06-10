@@ -35,7 +35,7 @@ public:
 
 	void execute(Unit* unit) override {
 		State::execute(unit);
-		Resources& resources = Game::get()->getPlayersManager()->getPlayer(unit->player)->getResources();
+		Resources& resources = Game::getPlayersManager()->getPlayer(unit->player)->getResources();
 
 		if (unit->resource) {
 			const float value = unit->resource->collect(unit->collectSpeed);
