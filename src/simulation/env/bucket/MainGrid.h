@@ -41,19 +41,24 @@ public:
 
 	void refreshWayOut(std::vector<int>& toRefresh);
 	void drawMap(Urho3D::Image* image);
-	content_info* getContentInfo(const Urho3D::Vector2& from, const Urho3D::Vector2& to, bool checks[], int activePlayer);
+	content_info* getContentInfo(const Urho3D::Vector2& from, const Urho3D::Vector2& to, bool checks[],
+	                             int activePlayer);
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
 	void invalidateCache();
 
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
-	Urho3D::Vector2& getCenterAt(const Urho3D::IntVector2& cords) const { return complexData[getIndex(cords.x_, cords.y_)].getCenter(); }
+
+	Urho3D::Vector2& getCenterAt(const Urho3D::IntVector2& cords) const {
+		return complexData[getIndex(cords.x_, cords.y_)].getCenter();
+	}
+
 	Urho3D::Vector2& getCenter(int index) const { return complexData[index].getCenter(); }
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
 	bool inSide(int x, int z) const { return !(x < 0 || x >= resolution || z < 0 || z >= resolution); }
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
-	static Urho3D::IntVector2 calculateSize(int size);
+
 	std::vector<int>* tempPath;
 
 	int lastStartIdx = -1;

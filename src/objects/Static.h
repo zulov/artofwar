@@ -12,6 +12,7 @@ public:
 
 	IntVector2& getBucketPosition() { return bucketPosition; }
 	IntVector2& getGridSize() { return gridSize; }
+	Vector3 getClosestCellPos(Vector3* pos);
 
 	std::string getValues(int precision) override;
 protected:

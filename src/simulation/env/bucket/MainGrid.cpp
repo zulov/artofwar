@@ -10,6 +10,7 @@
 #include <iomanip>
 #include <unordered_set>
 #include "simulation/env/ContentInfo.h"
+#include "MathUtils.h"
 
 
 MainGrid::MainGrid(const short _resolution, const float _size, const bool _debugEnabled): Grid(_resolution, _size,
@@ -70,14 +71,11 @@ bool MainGrid::validateAdd(Static* object) {
 }
 
 bool MainGrid::validateAdd(const IntVector2& size, Vector2& pos) {
-	short iX = getIndex(pos.x_);
-	short iZ = getIndex(pos.y_);
+	const IntVector2 sizeX = calculateSize(size.x_, getIndex(pos.x_));
+	const IntVector2 sizeZ = calculateSize(size.y_, getIndex(pos.y_));
 
-	IntVector2 sizeX = calculateSize(size.x_);
-	IntVector2 sizeZ = calculateSize(size.y_);
-
-	for (int i = iX + sizeX.x_; i < iX + sizeX.y_; ++i) {
-		for (int j = iZ + sizeZ.x_; j < iZ + sizeZ.y_; ++j) {
+	for (int i = sizeX.x_; i < sizeX.y_; ++i) {
+		for (int j = sizeZ.x_; j < sizeZ.y_; ++j) {
 			const int index = getIndex(i, j);
 			if (!(inRange(index) && complexData[index].isUnit())) {
 				return false;
@@ -157,14 +155,6 @@ void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activeP
 		break;
 	default: ;
 	}
-
-
-}
-
-IntVector2 MainGrid::calculateSize(int size) {
-	const int first = -((size - 1) / 2);
-	const int second = size + first;
-	return IntVector2(first, second);
 }
 
 void MainGrid::updateCost(int idx, float x) {
@@ -200,11 +190,11 @@ void MainGrid::addStatic(Static* object) {
 
 		object->setBucket(getIndex(iX, iZ), 0);
 
-		IntVector2 sizeX = calculateSize(size.x_);
-		IntVector2 sizeZ = calculateSize(size.y_);
+		const IntVector2 sizeX = calculateSize(size.x_, iX);
+		const IntVector2 sizeZ = calculateSize(size.y_, iZ);
 
-		for (int i = iX + sizeX.x_; i < iX + sizeX.y_; ++i) {
-			for (int j = iZ + sizeZ.x_; j < iZ + sizeZ.y_; ++j) {
+		for (int i = sizeX.x_; i < sizeX.y_; ++i) {
+			for (int j = sizeZ.x_; j < sizeZ.y_; ++j) {
 				const int index = getIndex(i, j);
 				complexData[index].setStatic(object);
 			}
@@ -212,8 +202,8 @@ void MainGrid::addStatic(Static* object) {
 
 		std::vector<int> toRefresh;
 
-		for (int i = iX + sizeX.x_ - 1; i < iX + sizeX.y_ + 1; ++i) {
-			for (int j = iZ + sizeZ.x_ - 1; j < iZ + sizeZ.y_ + 1; ++j) {
+		for (int i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
+			for (int j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {
 				const int index = getIndex(i, j);
 				updateNeighbors(index);
 				if (!complexData[index].isUnit()) {
@@ -239,11 +229,13 @@ Vector2* MainGrid::getDirectionFrom(Vector3* position) {
 		int escapeBucket;
 		auto& neights = complexData[index].getNeightbours();
 		if (!neights.empty()) {
-			float dist = (complexData[neights.at(0).first].getCenter() - complexData[index].getCenter()).LengthSquared();
+			float dist = (complexData[neights.at(0).first].getCenter() - complexData[index].getCenter()).
+				LengthSquared();
 			escapeBucket = neights.at(0).first;
 
 			for (int i = 1; i < neights.size(); ++i) {
-				float newDist = (complexData[neights.at(i).first].getCenter() - complexData[index].getCenter()).LengthSquared();
+				float newDist = (complexData[neights.at(i).first].getCenter() - complexData[index].getCenter()).
+					LengthSquared();
 				if (newDist < dist) {
 					escapeBucket = neights.at(i).first;
 				}
@@ -267,15 +259,11 @@ Vector2 MainGrid::getValidPosition(const IntVector2& size, const Vector2& pos) {
 	const short posX = getIndex(pos.x_);
 	const short posZ = getIndex(pos.y_);
 
-	const IntVector2 sizeX = calculateSize(size.x_);
-	const IntVector2 sizeZ = calculateSize(size.y_);
+	const IntVector2 sizeX = calculateSize(size.x_, posX);
+	const IntVector2 sizeZ = calculateSize(size.y_, posZ);
 
-	const short left = posX + sizeX.x_;
-	const short right = posX + sizeX.y_ - 1;
-	const short top = posZ + sizeZ.x_;
-	const short bottom = posZ + sizeZ.y_ - 1;
-	const int index1 = getIndex(left, top);
-	const int index2 = getIndex(right, bottom);
+	const int index1 = getIndex(sizeX.x_, sizeZ.x_);
+	const int index2 = getIndex(sizeX.y_ - 1, sizeZ.y_ - 1);
 	const Vector2 center1 = complexData[index1].getCenter();
 	const Vector2 center2 = complexData[index2].getCenter();
 	const Vector2 newCenter = (center1 + center2) / 2;
@@ -423,7 +411,8 @@ void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 			}
 			auto& neights = complexData[current].getOccupiedNeightbours();
 			for (auto& neight : neights) {
-				if (!complexData[neight.first].getNeightbours().empty() && refreshed.find(neight.first) == refreshed.end()) {
+				if (!complexData[neight.first].getNeightbours().empty() && refreshed.find(neight.first) == refreshed.
+					end()) {
 					//TODO to chyba glupi warunek
 					toRefresh.push_back(neight.first);
 				}
@@ -479,9 +468,9 @@ void MainGrid::drawMap(Image* image) {
 }
 
 std::vector<int>* MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]) {
-	int start = getIndex(startV.x_, startV.y_);
-	int goal = getIndex(goalV.x_, goalV.y_);
-	return reconstruct_path(start, goal, came_from);
+	return reconstruct_path(getIndex(startV.x_, startV.y_),
+	                        getIndex(goalV.x_, goalV.y_),
+	                        came_from);
 }
 
 std::vector<int>* MainGrid::reconstruct_path(int start, int goal, const int came_from[]) {
