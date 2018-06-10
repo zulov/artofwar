@@ -117,8 +117,6 @@ private:
 	Vector2 velocity;
 	Aims aims;
 
-	//ResourceEntity* resource;
-	//Vector2* toResource;
 	db_unit* dbUnit;
 	db_unit_level* dbLevel;
 

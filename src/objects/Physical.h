@@ -35,7 +35,7 @@ public:
 	void reduceRange() { --rangeUsers; }
 	void upRange() { ++rangeUsers; }
 
-	float getHealthPercent() const { return hpCoef / maxHpCoef; }
+	virtual float getHealthPercent() const { return hpCoef / maxHpCoef; }
 	signed char getTeam() const { return team; }
 	Vector3* getPosition() const { return position; }
 	unsigned char getPlayer() const { return player; }

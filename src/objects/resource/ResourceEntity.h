@@ -16,7 +16,9 @@ public:
 	static std::string getColumns();
 
 	int getDbID() override;
+	bool isAlive() const override;
 	float getMaxHpBarSize() override;
+	float getHealthPercent() const override;
 	String& toMultiLineString() override;
 	std::string getValues(int precision) override;
 private:

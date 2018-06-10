@@ -33,6 +33,10 @@ int ResourceEntity::getDbID() {
 	return dbResource->id;
 }
 
+bool ResourceEntity::isAlive() const {
+	return amonut > 0;
+}
+
 void ResourceEntity::populate() {
 	type = dbResource->id;
 	gridSize = dbResource->size;
@@ -42,6 +46,10 @@ void ResourceEntity::populate() {
 
 float ResourceEntity::getMaxHpBarSize() {
 	return 3.0;
+}
+
+float ResourceEntity::getHealthPercent() const {
+	return amonut / dbResource->maxCapacity;
 }
 
 String& ResourceEntity::toMultiLineString() {
@@ -64,6 +72,7 @@ std::string ResourceEntity::getColumns() {
 float ResourceEntity::collect(float collectSpeed) {
 	if (amonut - collectSpeed >= 0) {
 		amonut -= collectSpeed;
+		updateHealthBar();
 		return collectSpeed;
 	}
 	const float toReturn = amonut;
