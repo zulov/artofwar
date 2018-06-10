@@ -15,8 +15,8 @@ public:
 
 	void updateHealthBar();
 	float getHealthBarSize();
-	bool bucketHasChanged(int _bucketIndex, char param);
-	void setBucket(int _bucketIndex, char param);
+	bool bucketHasChanged(int _bucketIndex, char param) const;
+	void setBucket(int _bucketIndex, char param) const;
 	void updateBillbords() const;
 	void initBillbords();
 
@@ -41,6 +41,7 @@ public:
 	unsigned char getPlayer() const { return player; }
 	int getBucketIndex(char param) const { return bucketIndexShift[param]; }
 
+	virtual Vector2 getPosToDist(Vector3* center) const;
 	virtual float getMaxHpBarSize();
 	virtual void absorbAttack(float attackCoef);
 	virtual void select();

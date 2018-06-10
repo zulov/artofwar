@@ -70,25 +70,25 @@ StateManager::~StateManager() {
 }
 
 bool StateManager::validateState(int id, UnitState stateTo) {
-	return ordersToUnit[id][static_cast<char>(stateTo)];
+	return instance->ordersToUnit[id][static_cast<char>(stateTo)];
 }
 
 void StateManager::changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter) {
-	State* stateFrom = states[static_cast<int>(unit->getState())];
+	State* stateFrom = instance->states[static_cast<int>(unit->getState())];
 	if (stateFrom->validateTransition(stateTo) && validateState(unit->getDbID(), stateTo)) {
 		stateFrom->onEnd(unit);
 		unit->setState(stateTo);
-		states[static_cast<int>(stateTo)]->onStart(unit, actionParameter);
+		instance->states[static_cast<int>(stateTo)]->onStart(unit, actionParameter);
 	}
 }
 
 bool StateManager::checkChangeState(Unit* unit, UnitState stateTo) {
-	State* stateFrom = states[static_cast<int>(unit->getState())];
+	State* stateFrom = instance->states[static_cast<int>(unit->getState())];
 	return stateFrom->validateTransition(stateTo);
 }
 
 void StateManager::execute(Unit* unit) {
-	State* state = states[static_cast<int>(unit->getState())];
+	State* state = instance->states[static_cast<int>(unit->getState())];
 	state->execute(unit);
 }
 

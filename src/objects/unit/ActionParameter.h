@@ -1,15 +1,16 @@
 #pragma once
 
 #include "aim/Aim.h"
+
 enum class MenuAction : char;
 
 struct ActionParameter
 {
-	explicit ActionParameter(Aim* aim = nullptr, bool aimAppend = false)
+	explicit ActionParameter(Aim* aim = nullptr)
 		: aim(aim) {
 	}
 
-	ActionParameter(MenuAction _type) : type(_type) {
+	explicit ActionParameter(MenuAction _type) : type(_type) {
 	}
 
 	Aim* aim;

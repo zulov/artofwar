@@ -22,7 +22,6 @@
 #include <string>
 
 
-
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr),
 	resource(nullptr), state(UnitState::STOP), toResource(new Vector2()) {
 	initBillbords();
@@ -30,11 +29,11 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	dbUnit = Game::getDatabaseCache()->getUnit(id);
 	dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
 	populate();
-	if (StateManager::get()->validateState(getDbID(), UnitState::CHARGE)) {
+	if (StateManager::validateState(getDbID(), UnitState::CHARGE)) {
 		chargeData = new ChargeData(150, 2);
 	}
 
-	if (StateManager::get()->validateState(getDbID(), UnitState::SHOT)) {
+	if (StateManager::validateState(getDbID(), UnitState::SHOT)) {
 		missleData = new MissleData(150, 2);
 	}
 
@@ -83,7 +82,7 @@ void Unit::populate() {
 
 void Unit::checkAim() {
 	if (aims.ifReach(this)) {
-		StateManager::get()->changeState(this, UnitState::MOVE);
+		StateManager::changeState(this, UnitState::MOVE);
 	}
 }
 
@@ -140,7 +139,7 @@ void Unit::absorbAttack(float attackCoef) {
 		updateHealthBar();
 	}
 	if (hpCoef < 0) {
-		StateManager::get()->changeState(this, UnitState::DEAD);
+		StateManager::changeState(this, UnitState::DEAD);
 	}
 }
 
@@ -199,7 +198,7 @@ void Unit::toAttack(Physical* enemy) {
 }
 
 void Unit::toAttack() {
-	StateManager::get()->changeState(this, UnitState::ATTACK);
+	StateManager::changeState(this, UnitState::ATTACK);
 }
 
 void Unit::toShot(std::vector<Physical*>* enemies) {
@@ -219,22 +218,23 @@ void Unit::toShot(Physical* enemy) {
 }
 
 void Unit::toShot() {
-	StateManager::get()->changeState(this, UnitState::SHOT);
+	StateManager::changeState(this, UnitState::SHOT);
 }
 
 void Unit::toCollect(std::vector<Physical*>* entities) {
-	float minDistance = 9999;
-	Physical* entityClosest = nullptr;
+	float minDistance = 99999;
+	Physical* closest = nullptr;
 	for (auto physical : *entities) {
 		if (physical->belowCloseLimit()) {
-			const float distance = sqDist(this, physical);
+			auto pos = physical->getPosToDist(position);
+			const float distance = sqDist(*position, pos);
 			if (distance <= minDistance) {
 				minDistance = distance;
-				entityClosest = physical;
+				closest = physical;
 			}
 		}
 	}
-	collectIfCloseEnough(minDistance, entityClosest);
+	collectIfCloseEnough(minDistance, closest);
 }
 
 void Unit::toCollect() {
@@ -254,8 +254,7 @@ void Unit::toCharge(std::vector<Physical*>* enemies) {
 }
 
 void Unit::toCollect(Physical* _resource) {
-	StateManager::get()->changeState(this, UnitState::COLLECT);
-	resource = dynamic_cast<ResourceEntity*>(_resource);
+	StateManager::changeState(this, UnitState::COLLECT);
 }
 
 void Unit::updateHeight(float y, double timeStep) {
@@ -295,23 +294,23 @@ void Unit::action(char id, ActionParameter& parameter) {
 
 	switch (type) {
 	case UnitOrder::GO:
-		StateManager::get()->changeState(this, UnitState::GO_TO, parameter);
+		StateManager::changeState(this, UnitState::GO_TO, parameter);
 		break;
 	case UnitOrder::STOP:
-		StateManager::get()->changeState(this, UnitState::STOP);
+		StateManager::changeState(this, UnitState::STOP);
 		break;
 	case UnitOrder::CHARGE:
-		StateManager::get()->changeState(this, UnitState::CHARGE, parameter);
+		StateManager::changeState(this, UnitState::CHARGE, parameter);
 		break;
 	case UnitOrder::ATTACK: break;
 	case UnitOrder::DEAD:
-		StateManager::get()->changeState(this, UnitState::DEAD);
+		StateManager::changeState(this, UnitState::DEAD);
 		break;
 	case UnitOrder::DEFEND:
-		StateManager::get()->changeState(this, UnitState::DEFEND);
+		StateManager::changeState(this, UnitState::DEFEND);
 		break;
 	case UnitOrder::FOLLOW:
-		StateManager::get()->changeState(this, UnitState::FOLLOW, parameter);
+		StateManager::changeState(this, UnitState::FOLLOW, parameter);
 		break;
 	default: ;
 	}
@@ -411,11 +410,11 @@ void Unit::setState(UnitState _state) {
 }
 
 bool Unit::checkTransition(UnitState state) {
-	return StateManager::get()->checkChangeState(this, state);
+	return StateManager::checkChangeState(this, state);
 }
 
 void Unit::executeState() {
-	StateManager::get()->execute(this);
+	StateManager::execute(this);
 }
 
 bool Unit::hasResource() {
@@ -471,7 +470,7 @@ void Unit::applyForce(double timeStep) {
 	float velLenght = velocity.LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
 		if (state == UnitState::MOVE) {
-			StateManager::get()->changeState(this, UnitState::STOP);
+			StateManager::changeState(this, UnitState::STOP);
 		}
 	} else {
 		if (velLenght > maxSpeed * maxSpeed) {
@@ -479,7 +478,7 @@ void Unit::applyForce(double timeStep) {
 			velocity *= maxSpeed;
 		}
 		if (state == UnitState::STOP) {
-			StateManager::get()->changeState(this, UnitState::MOVE);
+			StateManager::changeState(this, UnitState::MOVE);
 		}
 		if (rotatable && velLenght > 2 * minSpeed * minSpeed) {
 			node->SetDirection(Vector3(velocity.x_, 0, velocity.y_));

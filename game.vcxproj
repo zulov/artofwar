@@ -191,7 +191,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\objects\unit\aim\FollowStaticAim.cpp" />
     <ClCompile Include="src\commands\action\GroupAction.cpp" />
     <ClCompile Include="src\commands\action\IndividualAction.cpp" />
     <ClCompile Include="src\commands\action\FormationAction.cpp" />
@@ -280,7 +279,6 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\objects\unit\aim\FollowStaticAim.h" />
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
     <ClInclude Include="src\objects\unit\state\ShotState.h" />

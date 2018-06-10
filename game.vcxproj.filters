@@ -185,7 +185,6 @@
       <Filter>aim</Filter>
     </ClCompile>
     <ClCompile Include="src\objects\unit\state\State.cpp" />
-    <ClCompile Include="src\objects\unit\aim\FollowStaticAim.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -459,7 +458,6 @@
     </ClInclude>
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
-    <ClInclude Include="src\objects\unit\aim\FollowStaticAim.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

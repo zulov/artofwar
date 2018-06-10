@@ -19,6 +19,6 @@ public:
 
 	void execute(Unit* unit) {
 		State::execute(unit);
-		StateManager::get()->changeState(unit, UnitState::DISPOSE);
+		StateManager::changeState(unit, UnitState::DISPOSE);
 	}
 };

@@ -44,7 +44,7 @@ public:
 			++unit->currentFrameState;
 		} else {
 			unit->thingsToInteract.clear();
-			StateManager::get()->changeState(unit, UnitState::STOP);
+			StateManager::changeState(unit, UnitState::STOP);
 		}
 	}
 };

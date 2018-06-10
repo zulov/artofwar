@@ -86,6 +86,10 @@ void Physical::updateHealthBar() {
 	billboardSetBar->Commit();
 }
 
+Vector2 Physical::getPosToDist(Vector3* center) const {
+	return Vector2(position->x_, position->z_);
+}
+
 float Physical::getMaxHpBarSize() {
 	return 0;
 }
@@ -96,14 +100,14 @@ float Physical::getHealthBarSize() {
 	return healthBarSize;
 }
 
-bool Physical::bucketHasChanged(int _bucketIndex, char param) {
+bool Physical::bucketHasChanged(int _bucketIndex, char param) const {
 	if (bucketIndexShift[param] == _bucketIndex) {
 		return false;
 	}
 	return true;
 }
 
-void Physical::setBucket(int _bucketIndex, char param) {
+void Physical::setBucket(int _bucketIndex, char param) const {
 	bucketIndexShift[param] = _bucketIndex;
 }
 

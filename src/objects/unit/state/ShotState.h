@@ -51,13 +51,13 @@ public:
 
 		if (!unit->missleData->aim || !unit->missleData->aim->isAlive()) {
 			unit->missleData->reset();
-			StateManager::get()->changeState(unit, UnitState::STOP);
+			StateManager::changeState(unit, UnitState::STOP);
 		} else if (!unit->missleData->isUp() && fmod(unit->currentFrameState, 1 / unit->attackSpeed) < 1) {
 			if (closeEnough(unit)) {
 				shot(unit);
 			} else {
 				unit->missleData->reset();
-				StateManager::get()->changeState(unit, UnitState::STOP);
+				StateManager::changeState(unit, UnitState::STOP);
 			}
 		}
 	}

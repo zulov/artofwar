@@ -1,6 +1,6 @@
 #include "Static.h"
-#include "MathUtils.h"
 #include "Game.h"
+#include "MathUtils.h"
 #include "simulation/env/Enviroment.h"
 #include <string>
 
@@ -20,7 +20,7 @@ std::string Static::getColumns() {
 		+ "bucket_y		INT     NOT NULL,";
 }
 
-Vector3 Static::getClosestCellPos(Vector3* pos) {
+Vector2 Static::getClosestCellPos(Vector3* pos) const {
 	const IntVector2 sizeX = calculateSize(gridSize.x_, bucketPosition.x_);
 	const IntVector2 sizeZ = calculateSize(gridSize.y_, bucketPosition.y_);
 	auto env = Game::getEnviroment();
@@ -33,11 +33,15 @@ Vector3 Static::getClosestCellPos(Vector3* pos) {
 			float dist = sqDist(vec, *pos);
 			if (dist < closestDist) {
 				closestDist = dist;
-				closest = closest;
+				closest = vec;
 			}
 		}
 	}
-	return {};
+	return closest;
+}
+
+Vector2 Static::getPosToDist(Vector3* center) const {
+	return getClosestCellPos(center);
 }
 
 std::string Static::getValues(int precision) {

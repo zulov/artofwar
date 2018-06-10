@@ -24,17 +24,17 @@ ActionCommand::~ActionCommand() {
 ActionParameter ActionCommand::getTargetAim(int startInx, Vector2& to, bool append) {
 	auto path = Game::getEnviroment()->findPath(startInx, to);
 	if (!path->empty()) {
-		return ActionParameter(new TargetAim(*path), append);
+		return ActionParameter(new TargetAim(*path));
 	}
-	return ActionParameter(new DummyAim(), append);
+	return ActionParameter(new DummyAim());
 }
 
 ActionParameter ActionCommand::getFollowAim(const Physical* toFollow, bool append) {
-	return ActionParameter(new FollowAim(toFollow), append);
+	return ActionParameter(new FollowAim(toFollow));
 }
 
 ActionParameter ActionCommand::getChargeAim(Vector2* charge, bool append) {
-	return ActionParameter(new ChargeAim(charge), append);
+	return ActionParameter(new ChargeAim(charge));
 }
 
 
@@ -50,8 +50,8 @@ void ActionCommand::execute() {
 		}
 		}
 		break;
-	case UnitOrder::CHARGE:		
-		addChargeAim(vector, append);	
+	case UnitOrder::CHARGE:
+		addChargeAim(vector, append);
 		break;
 	default: ;
 	}

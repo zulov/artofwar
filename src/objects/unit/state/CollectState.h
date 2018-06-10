@@ -22,8 +22,11 @@ public:
 	~CollectState() = default;
 
 	void onStart(Unit* unit, ActionParameter& parameter) override {
-		//unit->resource = ...;
-		unit->resource->upClose();
+		unit->velocity = Urho3D::Vector2::ZERO;
+		unit->currentFrameState = 0;
+		if (unit->isFirstThingAlive()) {
+			unit->thingsToInteract[0]->upClose();
+		}
 	}
 
 	void onEnd(Unit* unit) override {
@@ -37,11 +40,13 @@ public:
 		State::execute(unit);
 		Resources& resources = Game::getPlayersManager()->getPlayer(unit->player)->getResources();
 
-		if (unit->resource) {
+		if (unit->resource && unit->resource->isAlive()) {
 			const float value = unit->resource->collect(unit->collectSpeed);
 			resources.add(unit->resource->getDbID(), value);
 			Vector3 a = *unit->resource->getPosition() - *unit->position;
 			*unit->toResource = Vector2(a.x_, a.z_);
+		} else {
+			StateManager::changeState(unit, UnitState::STOP);
 		}
 	}
 };

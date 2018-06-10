@@ -42,13 +42,13 @@ public:
 					physical->absorbAttack(unit->attackCoef);
 					auto after = physical->getHealthPercent();
 					if (!unit->chargeData->updateHit(before, after)) {
-						StateManager::get()->changeState(unit, UnitState::MOVE);
+						StateManager::changeState(unit, UnitState::MOVE);
 						break;
 					}
 				}
 			}
 		} else {
-			StateManager::get()->changeState(unit, UnitState::MOVE);
+			StateManager::changeState(unit, UnitState::MOVE);
 		}
 
 	}

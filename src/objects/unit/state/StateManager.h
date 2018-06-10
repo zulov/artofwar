@@ -9,14 +9,13 @@ class StateManager
 {
 public:
 
-	bool validateState(int id, UnitState stateTo);
-	void changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter = ActionParameter());
-	bool checkChangeState(Unit* unit, UnitState stateTo);
-	void execute(Unit* unit);
+	static bool validateState(int id, UnitState stateTo);
+	static void changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter = ActionParameter());
+	static bool checkChangeState(Unit* unit, UnitState stateTo);
+	static void execute(Unit* unit);
 
 	static void init();
 	static void dispose();
-	static StateManager* get(){return instance;}
 private:
 	StateManager();
 	~StateManager();
