@@ -69,7 +69,7 @@ public:
 
 	void setState(UnitState _state);
 	bool checkTransition(UnitState state);
-	void executeState();
+
 	bool hasResource();
 	void load(dbload_unit* unit);
 
@@ -117,8 +117,8 @@ private:
 	Vector2 velocity;
 	Aims aims;
 
-	ResourceEntity* resource;
-	Vector2* toResource;
+	//ResourceEntity* resource;
+	//Vector2* toResource;
 	db_unit* dbUnit;
 	db_unit_level* dbLevel;
 

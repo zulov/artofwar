@@ -31,21 +31,21 @@ public:
 
 	void onEnd(Unit* unit) override {
 		State::onEnd(unit);
-		unit->resource->reduceClose();
-		unit->resource = nullptr;
-		*unit->toResource = Urho3D::Vector2();
+		if (unit->isFirstThingAlive()) {
+			unit->thingsToInteract[0]->reduceClose();
+		}
+		unit->thingsToInteract.clear();
 	}
 
 	void execute(Unit* unit) override {
 		State::execute(unit);
 		Resources& resources = Game::getPlayersManager()->getPlayer(unit->player)->getResources();
-
-		if (unit->resource && unit->resource->isAlive()) {
-			const float value = unit->resource->collect(unit->collectSpeed);
-			resources.add(unit->resource->getDbID(), value);
-			Vector3 a = *unit->resource->getPosition() - *unit->position;
-			*unit->toResource = Vector2(a.x_, a.z_);
+		if (unit->isFirstThingAlive()) {
+			ResourceEntity * resource = static_cast<ResourceEntity*>(unit->thingsToInteract[0]);
+			const float value = resource->collect(unit->collectSpeed);
+			resources.add(resource->getDbID(), value);
 		} else {
+			unit->thingsToInteract.clear();
 			StateManager::changeState(unit, UnitState::STOP);
 		}
 	}

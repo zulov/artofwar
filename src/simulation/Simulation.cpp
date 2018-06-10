@@ -15,6 +15,7 @@
 #include "objects/unit/Unit.h"
 #include "objects/MenuAction.h"
 #include <ctime>
+#include "objects/unit/state/StateManager.h"
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {
@@ -216,7 +217,7 @@ void Simulation::changeColorMode(ColorMode _colorMode) {
 
 void Simulation::performStateAction() {
 	for (auto unit : *units) {
-		unit->executeState();
+		StateManager::execute(unit);
 	}
 }
 

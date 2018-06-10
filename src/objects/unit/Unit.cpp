@@ -1,20 +1,19 @@
 #include "Unit.h"
 #include "Game.h"
-#include "UnitOrder.h"
+#include "MathUtils.h"
 #include "ObjectEnums.h"
+#include "UnitOrder.h"
 #include "aim/FutureAim.h"
 #include "colors/ColorPeletteRepo.h"
 #include "database/DatabaseCache.h"
-#include "objects/unit/MissleData.h"
+#include "objects/PhysicalUtils.h"
 #include "objects/unit/ChargeData.h"
 #include "objects/unit/ColorMode.h"
-#include "objects/resource/ResourceEntity.h"
+#include "objects/unit/MissleData.h"
 #include "player/PlayersManager.h"
-#include "state/StateManager.h"
-#include "simulation/formation/FormationManager.h"
-#include "MathUtils.h"
-#include "objects/PhysicalUtils.h"
 #include "scene/load/dbload_container.h"
+#include "simulation/formation/FormationManager.h"
+#include "state/StateManager.h"
 #include <Urho3D/Graphics/Material.h><Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h><Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h><Urho3D/Graphics/StaticModel.h>
@@ -22,8 +21,8 @@
 #include <string>
 
 
-Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT), dbUnit(nullptr),
-	resource(nullptr), state(UnitState::STOP), toResource(new Vector2()) {
+Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
+	state(UnitState::STOP) {
 	initBillbords();
 
 	dbUnit = Game::getDatabaseCache()->getUnit(id);
@@ -50,7 +49,6 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 }
 
 Unit::~Unit() {
-	delete toResource;
 	delete chargeData;
 }
 
@@ -123,9 +121,6 @@ Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 		auto dirOpt = aims.getDirection(this);
 		if (dirOpt.has_value()) {
 			force = dirOpt.value();
-			forceGo(boostCoef, aimCoef, force);
-		} else if (toResource) {
-			force = Vector2(toResource->x_, toResource->y_);
 			forceGo(boostCoef, aimCoef, force);
 		}
 	}
@@ -238,7 +233,7 @@ void Unit::toCollect(std::vector<Physical*>* entities) {
 }
 
 void Unit::toCollect() {
-	return toCollect(resource);
+	StateManager::changeState(this, UnitState::COLLECT);
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {
@@ -254,6 +249,7 @@ void Unit::toCharge(std::vector<Physical*>* enemies) {
 }
 
 void Unit::toCollect(Physical* _resource) {
+	oneToInteract(_resource);
 	StateManager::changeState(this, UnitState::COLLECT);
 }
 
@@ -360,8 +356,7 @@ void Unit::changeColor(Material* newMaterial) {
 }
 
 void Unit::changeColor(UnitState state) {
-	Material* newMaterial = Game::getColorPeletteRepo()->getColor(state);
-	changeColor(newMaterial);
+	changeColor(Game::getColorPeletteRepo()->getColor(state));
 }
 
 void Unit::changeColor(ColorMode mode) {
@@ -399,9 +394,6 @@ void Unit::changeColor(ColorMode mode) {
 }
 
 void Unit::clean() {
-	if (resource != nullptr && !resource->isAlive()) {
-		resource = nullptr;
-	}
 	Physical::clean();
 }
 
@@ -413,12 +405,8 @@ bool Unit::checkTransition(UnitState state) {
 	return StateManager::checkChangeState(this, state);
 }
 
-void Unit::executeState() {
-	StateManager::execute(this);
-}
-
 bool Unit::hasResource() {
-	return resource;
+	return isFirstThingAlive();
 }
 
 void Unit::load(dbload_unit* unit) {
