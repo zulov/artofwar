@@ -52,6 +52,7 @@ public:
 		return complexData[getIndex(cords.x_, cords.y_)].getCenter();
 	}
 
+	Urho3D::Vector2& getCenter(short x, short z) { return getCenter(getIndex(x, z)); }
 	Urho3D::Vector2& getCenter(int index) const { return complexData[index].getCenter(); }
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
 	bool inSide(int x, int z) const { return !(x < 0 || x >= resolution || z < 0 || z >= resolution); }

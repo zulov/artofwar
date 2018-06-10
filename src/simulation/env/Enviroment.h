@@ -47,6 +47,7 @@ public:
 	Vector3 getValidPosForCamera(float percentX, float percentY, const Vector3& pos, float min) const;
 	Vector2 getValidPosition(const IntVector2& size, const IntVector2& bucketCords);
 	Vector2& getCenter(int index) const;
+	Vector2& getCenter(short x, short z);
 	void invalidateCache();
 
 	int getIndex(Vector2& pos) const;

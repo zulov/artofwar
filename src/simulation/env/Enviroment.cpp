@@ -157,6 +157,10 @@ Vector2& Enviroment::getCenter(int index) const {
 	return mainGrid.getCenter(index);
 }
 
+Vector2& Enviroment::getCenter(short x, short z) {
+	return mainGrid.getCenter(x, z);
+}
+
 void Enviroment::invalidateCache() {
 	mainGrid.invalidateCache();
 }
