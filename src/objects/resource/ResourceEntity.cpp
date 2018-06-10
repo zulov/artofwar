@@ -38,7 +38,6 @@ bool ResourceEntity::isAlive() const {
 }
 
 void ResourceEntity::populate() {
-	type = dbResource->id;
 	gridSize = dbResource->size;
 	amonut = dbResource->maxCapacity;
 	maxCloseUsers = dbResource->maxUsers;

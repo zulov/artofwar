@@ -80,10 +80,12 @@ void Physical::initBillbords() {
 }
 
 void Physical::updateHealthBar() {
-	const float healthBarSize = getHealthBarSize();
+	if (billboardSetBar->IsEnabled()) {
+		const float healthBarSize = getHealthBarSize();
 
-	billboardBar->size_ = Vector2(healthBarSize, 0.1) / node->GetScale2D();
-	billboardSetBar->Commit();
+		billboardBar->size_ = Vector2(healthBarSize, 0.1) / node->GetScale2D();
+		billboardSetBar->Commit();
+	}
 }
 
 Vector2 Physical::getPosToDist(Vector3* center) const {

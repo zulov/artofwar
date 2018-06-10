@@ -23,6 +23,5 @@ public:
 	std::string getValues(int precision) override;
 private:
 	db_resource* dbResource;
-	int type;
 	float amonut;
 };
