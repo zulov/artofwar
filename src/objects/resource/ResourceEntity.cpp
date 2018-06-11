@@ -40,7 +40,8 @@ bool ResourceEntity::isAlive() const {
 }
 
 void ResourceEntity::populate() {
-	gridSize = dbResource->size;
+	Static::populate(dbResource->size);
+
 	amonut = dbResource->maxCapacity;
 	maxCloseUsers = dbResource->maxUsers;
 }
@@ -66,8 +67,8 @@ std::string ResourceEntity::getValues(int precision) {
 }
 
 bool ResourceEntity::hasFreeSpace() const {
-	const IntVector2 sizeX = calculateSize(gridSize.x_, bucketPosition.x_);
-	const IntVector2 sizeZ = calculateSize(gridSize.y_, bucketPosition.y_);
+	const IntVector2 sizeX = calculateSize(gridSize.x_, mainCell.x_);
+	const IntVector2 sizeZ = calculateSize(gridSize.y_, mainCell.y_);
 	auto env = Game::getEnviroment();
 
 	for (short i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {

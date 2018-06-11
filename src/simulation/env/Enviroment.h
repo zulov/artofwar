@@ -51,6 +51,7 @@ public:
 	void invalidateCache();
 
 	int getIndex(Vector2& pos) const;
+	int getIndex1(short x, short z) const;
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid;

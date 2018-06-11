@@ -44,7 +44,7 @@ int Building::getDbID() {
 }
 
 void Building::populate() {
-	gridSize = dbBuilding->size;
+	Static::populate(dbBuilding->size);
 	queue = new QueueManager(dbLevel->queueMaxCapacity);
 }
 

@@ -169,6 +169,10 @@ int Enviroment::getIndex(Vector2& pos) const {
 	return mainGrid.indexFromPosition(pos);
 }
 
+int Enviroment::getIndex(short x, short z) const {
+	return mainGrid.getIndex(x, z);
+}
+
 Vector2 Enviroment::getValidPosition(const IntVector2& size, const Vector2& pos) {
 	return mainGrid.getValidPosition(size, pos);
 }

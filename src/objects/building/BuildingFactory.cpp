@@ -20,20 +20,17 @@ create(int id, Vector2& center, int player, const IntVector2& _bucketCords, int 
 	float y = Game::getEnviroment()->getGroundHeightAt(center.x_, center.y_);
 
 	Building* building = new Building(new Vector3(center.x_, y, center.y_), id, player, level);
-	building->setBucketPosition(_bucketCords);
+	building->setMainCell(_bucketCords);
 	buildings->push_back(building);
 
 	return buildings;
 }
 
 std::vector<Building*>* BuildingFactory::load(dbload_building* building) {
-	buildings->clear();
-	Enviroment* env = Game::getEnviroment();
-
 	IntVector2 bucketCords(building->buc_x, building->buc_y);
 	db_building* db_building = Game::getDatabaseCache()->getBuilding(building->id_db);
 
-	Vector2 center = env->getValidPosition(db_building->size, bucketCords);
+	Vector2 center = Game::getEnviroment()->getValidPosition(db_building->size, bucketCords);
 
-	return create(building->id_db,center, building->player,bucketCords,building->level);
+	return create(building->id_db,center, building->player,{1,2},building->level);
 }

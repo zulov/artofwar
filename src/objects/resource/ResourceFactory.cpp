@@ -1,6 +1,6 @@
 #include "ResourceFactory.h"
-#include "ResourceEntity.h"
 #include "Game.h"
+#include "ResourceEntity.h"
 #include "database/DatabaseCache.h"
 #include "scene/load/dbload_container.h"
 #include "simulation/env/Enviroment.h"
@@ -19,10 +19,9 @@ std::vector<ResourceEntity*>* ResourceFactory::create(int id, Vector2& center, I
 	resources->clear();
 
 	float y = Game::getEnviroment()->getGroundHeightAt(center.x_, center.y_);
-	Vector3* position = new Vector3(center.x_, y, center.y_);
 
-	ResourceEntity* entity = new ResourceEntity(position, id, level);
-	entity->setBucketPosition(_bucketCords);
+	ResourceEntity* entity = new ResourceEntity(new Vector3(center.x_, y, center.y_), id, level);
+	entity->setMainCell(_bucketCords);
 	resources->push_back(entity);
 
 	return resources;
