@@ -7,6 +7,8 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
+#include "MathUtils.h"
+#include "simulation/env/Enviroment.h"
 
 
 ResourceEntity::ResourceEntity(Vector3* _position, int id, int level) : Static(_position, ObjectType::RESOURCE) {
@@ -63,9 +65,26 @@ std::string ResourceEntity::getValues(int precision) {
 		+ to_string(amountI);
 }
 
+bool ResourceEntity::hasFreeSpace() const {
+	const IntVector2 sizeX = calculateSize(gridSize.x_, bucketPosition.x_);
+	const IntVector2 sizeZ = calculateSize(gridSize.y_, bucketPosition.y_);
+	auto env = Game::getEnviroment();
+
+	for (short i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
+		for (short j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {
+			env->get
+		}
+	}
+}
+
 std::string ResourceEntity::getColumns() {
 	return Static::getColumns() +
 		"amount		INT     NOT NULL";
+}
+
+bool ResourceEntity::belowCloseLimit() const {
+	return Physical::belowCloseLimit()
+		&& hasFreeSpace();
 }
 
 float ResourceEntity::collect(float collectSpeed) {

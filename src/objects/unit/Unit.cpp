@@ -221,7 +221,7 @@ void Unit::toCollect(std::vector<Physical*>* entities) {
 	Physical* closest = nullptr;
 	for (auto physical : *entities) {
 		if (physical->belowCloseLimit()) {
-			auto pos = physical->getPosToDist(position);
+			auto pos = physical->getPosToFollow(position);
 			const float distance = sqDist(*position, pos);
 			if (distance <= minDistance) {
 				minDistance = distance;

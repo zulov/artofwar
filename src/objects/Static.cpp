@@ -5,7 +5,6 @@
 #include <string>
 
 Static::Static(Vector3* _position, ObjectType _type) : Physical(_position, _type) {
-
 }
 
 Static::~Static() = default;
@@ -40,7 +39,7 @@ Vector2 Static::getClosestCellPos(Vector3* pos) const {
 	return closest;
 }
 
-Vector2 Static::getPosToDist(Vector3* center) const {
+Vector2 Static::getPosToFollow(Vector3* center) const {
 	return getClosestCellPos(center);
 }
 

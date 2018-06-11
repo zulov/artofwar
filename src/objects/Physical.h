@@ -27,7 +27,7 @@ public:
 	bool isFirstThingAlive();
 	bool hasEnemy();
 
-	bool belowCloseLimit() const { return closeUsers < maxCloseUsers; }
+	virtual bool belowCloseLimit() const { return closeUsers < maxCloseUsers; }
 	void reduceClose() { --closeUsers; }
 	void upClose() { ++closeUsers; }
 
@@ -41,7 +41,7 @@ public:
 	unsigned char getPlayer() const { return player; }
 	int getBucketIndex(char param) const { return bucketIndexShift[param]; }
 
-	virtual Vector2 getPosToDist(Vector3* center) const;
+	virtual Vector2 getPosToFollow(Vector3* center) const;
 	virtual float getMaxHpBarSize();
 	virtual void absorbAttack(float attackCoef);
 	virtual void select();

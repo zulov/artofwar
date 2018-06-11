@@ -88,7 +88,7 @@ void Physical::updateHealthBar() {
 	}
 }
 
-Vector2 Physical::getPosToDist(Vector3* center) const {
+Vector2 Physical::getPosToFollow(Vector3* center) const {
 	return Vector2(position->x_, position->z_);
 }
 

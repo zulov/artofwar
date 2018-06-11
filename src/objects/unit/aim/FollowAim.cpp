@@ -10,7 +10,7 @@ FollowAim::FollowAim(const Physical* _physical): physical(_physical) {
 FollowAim::~FollowAim() = default;
 
 Urho3D::Vector2 FollowAim::getDirection(Unit* unit) {
-	Vector2 pos = physical->getPosToDist(unit->getPosition());
+	Vector2 pos = physical->getPosToFollow(unit->getPosition());
 
 	return Vector2(
 	               pos.x_ - unit->getPosition()->x_,
@@ -19,7 +19,7 @@ Urho3D::Vector2 FollowAim::getDirection(Unit* unit) {
 }
 
 bool FollowAim::ifReach(Unit* unit) {
-	Vector2 pos = physical->getPosToDist(unit->getPosition());
+	Vector2 pos = physical->getPosToFollow(unit->getPosition());
 	const float distance = sqDist(*unit->getPosition(), pos);
 	return distance < radiusSq;
 }

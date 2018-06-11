@@ -281,6 +281,7 @@
   <ItemGroup>
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
+    <ClInclude Include="src\objects\SurroundState.h" />
     <ClInclude Include="src\objects\unit\state\ShotState.h" />
     <ClInclude Include="src\commands\action\GroupAction.h" />
     <ClInclude Include="src\commands\action\IndividualAction.h" />

@@ -34,12 +34,6 @@ std::vector<Building*>* BuildingFactory::load(dbload_building* building) {
 	db_building* db_building = Game::getDatabaseCache()->getBuilding(building->id_db);
 
 	Vector2 center = env->getValidPosition(db_building->size, bucketCords);
-	float y = Game::getEnviroment()->getGroundHeightAt(center.x_, center.y_);
-	Vector3* position = new Vector3(center.x_, y, center.y_);
 
-	Building* newBuilding = new Building(position, building->id_db, building->player, building->level);
-	newBuilding->setBucketPosition(bucketCords);
-	buildings->push_back(newBuilding);
-
-	return buildings;
+	return create(building->id_db,center, building->player,bucketCords,building->level);
 }
