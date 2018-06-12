@@ -15,7 +15,7 @@ ResourceFactory::~ResourceFactory() {
 	delete resources;
 }
 
-std::vector<ResourceEntity*>* ResourceFactory::create(int id, Vector2& center, IntVector2 _bucketCords, int level) {
+std::vector<ResourceEntity*>* ResourceFactory::create(int id, Vector2& center, IntVector2 _bucketCords, int level) const {
 	resources->clear();
 
 	float y = Game::getEnviroment()->getGroundHeightAt(center.x_, center.y_);
@@ -27,7 +27,7 @@ std::vector<ResourceEntity*>* ResourceFactory::create(int id, Vector2& center, I
 	return resources;
 }
 
-std::vector<ResourceEntity*>* ResourceFactory::load(dbload_resource_entities* resource) {
+std::vector<ResourceEntity*>* ResourceFactory::load(dbload_resource_entities* resource) const {
 	IntVector2 bucketCords(resource->buc_x, resource->buc_y);
 	db_resource* db_resource = Game::getDatabaseCache()->getResource(resource->id_db);
 

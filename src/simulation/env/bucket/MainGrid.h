@@ -2,6 +2,7 @@
 #include "BucketQueue.h"
 #include "ComplexBucketData.h"
 #include "Grid.h"
+#include "objects/resource/ResourceEntity.h"
 
 
 class Unit;
@@ -45,6 +46,7 @@ public:
 	                             int activePlayer);
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
 	void invalidateCache();
+	void updateSurround(ResourceEntity* resource);
 
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 

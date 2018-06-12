@@ -4,6 +4,7 @@
 #include "objects/unit/Unit.h"
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
+#include <unordered_set>
 
 #define BUCKET_GRID_RESOLUTION 512
 #define BUCKET_GRID_SIZE 1024
@@ -103,6 +104,7 @@ void Enviroment::update(std::vector<ResourceEntity*>* resources) {
 	for (auto resource : *resources) {
 		mainGrid.addStatic(resource);
 		resourceGrid.update(resource, -1);
+		mainGrid.updateSurround(resource);
 	}
 }
 

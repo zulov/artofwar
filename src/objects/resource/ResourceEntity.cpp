@@ -67,15 +67,20 @@ std::string ResourceEntity::getValues(int precision) {
 }
 
 bool ResourceEntity::hasFreeSpace() const {
-	const IntVector2 sizeX = calculateSize(gridSize.x_, mainCell.x_);
-	const IntVector2 sizeZ = calculateSize(gridSize.y_, mainCell.y_);
-	auto env = Game::getEnviroment();
+	
+	for (auto surroundCell : surroundCells) {
+		auto a =get<0>(surroundCell);
 
-	for (short i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
-		for (short j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {
-			env->get
-		}
 	}
+	// const IntVector2 sizeX = calculateSize(gridSize.x_, mainCell.x_);
+	// const IntVector2 sizeZ = calculateSize(gridSize.y_, mainCell.y_);
+	// auto env = Game::getEnviroment();
+ //
+	// for (short i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
+	// 	for (short j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {
+	// 		env->get
+	// 	}
+	// }
 }
 
 std::string ResourceEntity::getColumns() {

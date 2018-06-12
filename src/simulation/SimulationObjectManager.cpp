@@ -1,9 +1,9 @@
 #include "SimulationObjectManager.h"
 #include "Game.h"
-#include <algorithm>
-#include <simulation/env/Enviroment.h>
 #include "SimulationInfo.h"
 #include "objects/unit/Unit.h"
+#include <algorithm>
+#include <simulation/env/Enviroment.h>
 
 
 SimulationObjectManager::SimulationObjectManager() {
@@ -56,8 +56,8 @@ void SimulationObjectManager::addUnits(unsigned int number, int id, Vector2& cen
 	updateUnits();
 }
 
-void SimulationObjectManager::addBuilding(int id, Vector2& center,
-                                          int player, const IntVector2& _bucketCords, int level) {
+void SimulationObjectManager::addBuilding(int id, Vector2& center, int player,
+                                          const IntVector2& _bucketCords, int level) {
 	buildingsTemp = buildingFactory.create(id, center, player, _bucketCords, level);
 	updateBuilding();
 }
@@ -101,6 +101,7 @@ void SimulationObjectManager::load(dbload_resource_entities* resource) {
 void SimulationObjectManager::updateUnits() {
 	addAll(unitsTemp);
 	if (!unitsTemp->empty()) {
+		unitsTemp->clear();
 		simulationInfo->setAmountUnitChanged();
 	}
 }

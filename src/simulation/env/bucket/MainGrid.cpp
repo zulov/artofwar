@@ -129,6 +129,13 @@ void MainGrid::invalidateCache() {
 	lastEndIdx = -1;
 }
 
+void MainGrid::updateSurround(ResourceEntity* resource) {
+	std::unordered_set<int> indexes;
+	for (auto index : resource->getOcupiedCells()) {
+		f
+	}
+}
+
 void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {
 	switch (complexData[index].getType()) {
 	case ObjectType::UNIT:
