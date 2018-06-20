@@ -10,7 +10,7 @@ class QueueElement;
 class Building : public Static
 {
 public:
-	Building(Vector3* _position, int id, int player, int level);
+	Building(Vector3* _position, int id, int player, int level, const IntVector2& _bucketCords);
 	~Building();
 
 	void populate();

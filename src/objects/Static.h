@@ -4,6 +4,12 @@
 
 struct SurroundCell
 {
+	SurroundCell(int index, SurroundState state, char size)
+		: index(index),
+		state(state),
+		size(size) {
+	}
+
 	int index;
 	SurroundState state;
 	char size;

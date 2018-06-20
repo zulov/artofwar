@@ -11,6 +11,7 @@
 #include <unordered_set>
 #include "simulation/env/ContentInfo.h"
 #include "MathUtils.h"
+#include <array>
 
 
 MainGrid::MainGrid(const short _resolution, const float _size, const bool _debugEnabled): Grid(_resolution, _size,
@@ -131,9 +132,32 @@ void MainGrid::invalidateCache() {
 
 void MainGrid::updateSurround(ResourceEntity* resource) {
 	std::unordered_set<int> indexes;
+	std::array<short, 8> closeIndex = {-513, -512, -511, -1, 1, 511, 512, 513};
 	for (auto index : resource->getOcupiedCells()) {
-		f
+		for (auto inIndex : closeIndex) {
+			auto newIndex = index + inIndex;
+			indexes.emplace(newIndex);
+		}
 	}
+	for (auto index : resource->getOcupiedCells()) {
+		indexes.erase(index);
+	}
+	auto& cells = resource->getSurroundCells();
+	for (auto index : indexes) {
+		switch (complexData[index].getType()) {
+
+		case ObjectType::UNIT:
+			cells.emplace_back(index, SurroundState::EMPTY, 0);
+			break;
+		case ObjectType::BUILDING:
+		case ObjectType::RESOURCE:
+			cells.emplace_back(index, SurroundState::OCCUPIED, 0);
+			break;
+		default: ;
+		}
+
+	}
+	int a = 5;
 }
 
 void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {

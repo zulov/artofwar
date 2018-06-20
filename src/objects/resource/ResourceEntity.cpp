@@ -11,11 +11,11 @@
 #include "simulation/env/Enviroment.h"
 
 
-ResourceEntity::ResourceEntity(Vector3* _position, int id, int level) : Static(_position, ObjectType::RESOURCE) {
+ResourceEntity::ResourceEntity(Vector3* _position, int id, int level, IntVector2& _bucketCords) : Static(_position, ObjectType::RESOURCE) {
 	initBillbords();
 
 	dbResource = Game::getDatabaseCache()->getResource(id);
-
+	setMainCell(_bucketCords);
 	populate();
 
 	StaticModel* model = node->CreateComponent<StaticModel>();
@@ -69,7 +69,7 @@ std::string ResourceEntity::getValues(int precision) {
 bool ResourceEntity::hasFreeSpace() const {
 	
 	for (auto surroundCell : surroundCells) {
-		auto a =get<0>(surroundCell);
+	//	auto a =get<0>(surroundCell);
 
 	}
 	// const IntVector2 sizeX = calculateSize(gridSize.x_, mainCell.x_);
@@ -81,6 +81,7 @@ bool ResourceEntity::hasFreeSpace() const {
 	// 		env->get
 	// 	}
 	// }
+	return false;
 }
 
 std::string ResourceEntity::getColumns() {

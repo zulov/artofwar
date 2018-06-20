@@ -7,7 +7,7 @@ class ResourceEntity :
 	public Static
 {
 public:
-	ResourceEntity(Vector3* _position, int id, int level);
+	ResourceEntity(Vector3* _position, int id, int level, IntVector2& _bucketCords);
 	virtual ~ResourceEntity();
 	void populate();
 

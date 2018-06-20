@@ -13,13 +13,13 @@
 #include <string>
 
 
-Building::Building(Vector3* _position, int id, int player, int level): Static(_position, ObjectType::BUILDING),
+Building::Building(Vector3* _position, int id, int player, int level, const IntVector2& _bucketCords): Static(_position, ObjectType::BUILDING),
 	target(_position->x_, _position->z_) {
 
 	initBillbords();
 	target.x_ += 5;
 	target.y_ += 5;
-
+	setMainCell(_bucketCords);
 	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 	units = Game::getDatabaseCache()->getUnitsForBuilding(id);
 
