@@ -21,7 +21,11 @@ ComplexBucketData::~ComplexBucketData() {
 
 void ComplexBucketData::setStatic(Static* _object) {
 	object = _object;
-	type = object->getType();
+	if (object->getType() == ObjectType::BUILDING) {
+		type = CellState::BUILDING;
+	} else {
+		type = CellState::RESOURCE;
+	}
 
 	if (box) {
 		Urho3D::StaticModel* model = box->GetComponent<StaticModel>();
@@ -36,7 +40,7 @@ void ComplexBucketData::setStatic(Static* _object) {
 
 void ComplexBucketData::removeStatic() {
 	object = nullptr;
-	type = ObjectType::UNIT;
+	type = CellState::EMPTY;
 	if (box) {
 		auto model = box->GetComponent<StaticModel>();
 		model->SetMaterial(Game::getCache()->GetResource<Material>("Materials/blue_alpha.xml"));

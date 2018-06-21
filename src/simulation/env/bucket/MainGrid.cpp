@@ -113,7 +113,7 @@ Vector2 MainGrid::repulseObstacle(Unit* unit) {
 	auto index = indexFromPosition(unit->getPosition());
 
 	Vector2 sum;
-	if (complexData[index].getType() == ObjectType::UNIT
+	if (complexData[index].isUnit()
 		&& !complexData[index].getOccupiedNeightbours().empty()) {
 		for (const auto neightbour : complexData[index].getOccupiedNeightbours()) {
 			sum += complexData[neightbour.first].getCenter();
@@ -143,21 +143,9 @@ void MainGrid::updateSurround(ResourceEntity* resource) {
 		indexes.erase(index);
 	}
 	auto& cells = resource->getSurroundCells();
-	for (auto index : indexes) {
-		switch (complexData[index].getType()) {
-
-		case ObjectType::UNIT:
-			cells.emplace_back(index, SurroundState::EMPTY, 0);
-			break;
-		case ObjectType::BUILDING:
-		case ObjectType::RESOURCE:
-			cells.emplace_back(index, SurroundState::OCCUPIED, 0);
-			break;
-		default: ;
-		}
-
+	for (auto index : indexes) {//TODO dodac na raz
+		cells.emplace_back(index);
 	}
-	int a = 5;
 }
 
 void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {

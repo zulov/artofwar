@@ -4,6 +4,7 @@
 #include <Urho3D/Math/Vector2.h>
 #include <Urho3D/Scene/Node.h>
 #include <vector>
+#include "objects/CellState.h"
 
 
 class Static;
@@ -27,11 +28,11 @@ public:
 	Urho3D::Vector2& getCenter() { return center; }
 	char getAdditonalInfo() const { return additonalInfo; }
 	int getEscapeBucket() const { return escapeBucketIndex; }
-	bool isUnit() const { return type == ObjectType::UNIT; }
-	ObjectType getType() const { return type; }
+	bool isUnit() const { return type < CellState::NONE; }
+	CellState getType() const { return type; }
 
 private:
-	ObjectType type;
+	CellState type;
 	Urho3D::Vector2 center;
 	Urho3D::Node* box;
 

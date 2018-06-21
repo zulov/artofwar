@@ -458,7 +458,7 @@
     </ClInclude>
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
-    <ClInclude Include="src\objects\SurroundState.h" />
+    <ClInclude Include="src\objects\CellState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
