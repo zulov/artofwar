@@ -46,7 +46,7 @@ public:
 	                             int activePlayer);
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
 	void invalidateCache();
-	void updateSurround(ResourceEntity* resource);
+	void updateSurround(Static* object);
 
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 

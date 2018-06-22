@@ -131,22 +131,20 @@ void MainGrid::invalidateCache() {
 	lastEndIdx = -1;
 }
 
-void MainGrid::updateSurround(ResourceEntity* resource) {
+void MainGrid::updateSurround(Static* object) {
 	std::unordered_set<int> indexes;
 	std::array<short, 8> closeIndex = {-513, -512, -511, -1, 1, 511, 512, 513};
-	for (auto index : resource->getOcupiedCells()) {
+	for (auto index : object->getOcupiedCells()) {
 		for (auto inIndex : closeIndex) {
 			auto newIndex = index + inIndex;
 			indexes.emplace(newIndex);
 		}
 	}
-	for (auto index : resource->getOcupiedCells()) {
+	for (auto index : object->getOcupiedCells()) {
 		indexes.erase(index);
 	}
-	auto& cells = resource->getSurroundCells();
-	for (auto index : indexes) {//TODO dodac na raz
-		cells.emplace_back(index);
-	}
+	auto& cells = object->getSurroundCells();
+	cells.insert(cells.begin(), indexes.begin(), indexes.end());
 }
 
 void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {
