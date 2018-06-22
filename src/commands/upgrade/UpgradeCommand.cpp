@@ -4,6 +4,7 @@
 #include "objects/building/Building.h"
 #include "simulation/SimulationObjectManager.h"
 #include "objects/MenuAction.h"
+#include "player/Player.h"
 
 UpgradeCommand::UpgradeCommand(int _player, int _id, MenuAction _type) {
 	player = _player;

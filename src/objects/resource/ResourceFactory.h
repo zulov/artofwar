@@ -1,6 +1,10 @@
 #pragma once
-#include "simulation/force/Force.h"
+#include <vector>
 
+namespace Urho3D {
+	class IntVector2;
+	class Vector2;
+}
 
 struct dbload_resource_entities;
 class ResourceEntity;

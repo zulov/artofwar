@@ -2,10 +2,12 @@
 #include "Game.h"
 #include "control/SelectedInfo.h"
 #include "database/DatabaseCache.h"
+#include "control/SelectedInfoType.h"
 #include "database/db_strcut.h"
 #include "hud/HudData.h"
 #include "player/PlayersManager.h"
 #include "objects/Physical.h"
+#include "player/Player.h"
 
 
 LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {

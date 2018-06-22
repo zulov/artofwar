@@ -3,13 +3,13 @@
 #include "ContentInfo.h"
 #include "bucket/MainGrid.h"
 #include "defines.h"
-#include "objects/building/Building.h"
 #include <Urho3D/Graphics/Terrain.h>
 #include <vector>
 
 
 class ResourceEntity;
 class Unit;
+class Building;
 enum class OperatorType : char;
 
 class Enviroment

@@ -4,10 +4,11 @@
 #include "database/DatabaseCache.h"
 #include "objects/NamesCache.h"
 #include "objects/building/Building.h"
+#include "control/SelectedInfoType.h"
+#include "objects/queue/QueueElement.h"
 #include <Urho3D/Input/InputEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "objects/queue/QueueElement.h"
 
 
 QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {

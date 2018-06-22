@@ -7,12 +7,13 @@
 #include "info/LeftMenuInfoPanel.h"
 #include "objects/building/BuildingUtils.h"
 #include "player/PlayersManager.h"
+#include "control/SelectedInfoType.h"
+#include "utils.h"
+#include "player/Player.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <unordered_set>
-#include "utils.h"
-
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "LeftMenuWindow";

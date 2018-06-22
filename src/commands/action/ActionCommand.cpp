@@ -1,5 +1,6 @@
 #include "ActionCommand.h"
 #include "Game.h"
+#include "UnitOrder.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/aim/ChargeAim.h"
 #include "objects/unit/aim/DummyAim.h"

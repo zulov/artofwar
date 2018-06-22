@@ -3,7 +3,6 @@
 #include "LeftMenuModes.h"
 #include "control/SelectedInfo.h"
 #include "hud/HudData.h"
-#include "hud/MySprite.h"
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <unordered_set>
@@ -15,6 +14,7 @@
 #define LEFT_MENU_BUTTON_PER_ROW 4
 
 class LeftMenuInfoPanel;
+class MySprite;
 
 class MenuPanel : public AbstractWindowPanel
 {
@@ -32,8 +32,8 @@ private:
 	void createBody() override;
 	void setChecks(int val);
 
-	void ChengeModeButton(StringHash eventType, VariantMap& eventData);
-	void setTexture(int k, String textureName);
+	void ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void setTexture(int k, Urho3D::String textureName);
 
 	void basicUnit(SelectedInfo* selectedInfo);
 	void levelUnit(SelectedInfo* selectedInfo);
@@ -57,13 +57,13 @@ private:
 	std::unordered_set<int> getUpgradePathInBuilding(std::vector<SelectedInfoType*>& infoTypes);
 	std::unordered_set<int>  getOrderForUnit(std::vector<SelectedInfoType*>& infoTypes);
 
-	UIElement* rows[LEFT_MENU_ROWS_NUMBER];
-	Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
+	Urho3D::UIElement* rows[LEFT_MENU_ROWS_NUMBER];
+	Urho3D::Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
 	std::vector<HudData*> hudElements;
 	MySprite* sprites[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
-	Button* nextButton;
+	Urho3D::Button* nextButton;
 	Urho3D::CheckBox* checks[LEFT_MENU_CHECKS_NUMBER];
-	UIElement* mock;
+	Urho3D::UIElement* mock;
 	LeftMenuInfoPanel* infoPanel;
 	LeftMenuMode mode = LeftMenuMode::UNIT;
 	LeftMenuSubMode subMode = LeftMenuSubMode::BASIC;

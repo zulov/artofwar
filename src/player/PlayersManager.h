@@ -1,5 +1,5 @@
 #pragma once
-#include "Player.h"
+
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include <string>
 #include <vector>
@@ -8,6 +8,7 @@
 
 
 class SceneSaver;
+class Player;
 struct dbload_player;
 struct dbload_resource;
 

@@ -2,6 +2,7 @@
 #include "ControlsUtils.h"
 #include "Game.h"
 #include "HitData.h"
+#include "ObjectEnums.h"
 #include "camera/CameraManager.h"
 #include "commands/CommandList.h"
 #include "commands/action/ActionCommand.h"
@@ -9,16 +10,19 @@
 #include "commands/creation/CreationCommandList.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
+#include "objects/MenuAction.h"
+#include "objects/queue/QueueManager.h"
 #include "objects/NodeUtils.h"
 #include "player/PlayersManager.h"
+#include "simulation/SimulationInfo.h"
 #include "simulation/env/Enviroment.h"
 #include "simulation/formation/FormationManager.h"
-#include "objects/MenuAction.h"
-#include "simulation/SimulationInfo.h"
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <algorithm>
 #include <queue>
+#include "player/Resources.h"
+#include "player/Player.h"
 
 
 Controls::Controls(Input* _input) {

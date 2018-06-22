@@ -4,6 +4,7 @@
 #include "objects/resource/ResourceEntity.h"
 #include "player/Resources.h"
 #include <player/PlayersManager.h>
+#include "player/Player.h"
 
 
 class CollectState : public State

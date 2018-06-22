@@ -11,6 +11,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
+#include "player/Player.h"
 
 
 Building::Building(Vector3* _position, int id, int player, int level, const IntVector2& _bucketCords): Static(_position, ObjectType::BUILDING),

@@ -2,6 +2,7 @@
 #include "OperatorType.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
+#include "objects/building/Building.h"
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
 #include <unordered_set>

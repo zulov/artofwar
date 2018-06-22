@@ -19,6 +19,7 @@
 #include "camera/CameraManager.h"
 #include "window/minimap/MiniMapPanel.h"
 #include "utils.h"
+#include "player/Player.h"
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {

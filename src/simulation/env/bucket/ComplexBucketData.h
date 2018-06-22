@@ -1,10 +1,9 @@
 #pragma once
-#include "ObjectEnums.h"
+#include "objects/CellState.h"
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Math/Vector2.h>
 #include <Urho3D/Scene/Node.h>
 #include <vector>
-#include "objects/CellState.h"
 
 
 class Static;

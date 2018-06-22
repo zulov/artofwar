@@ -2,7 +2,6 @@
 
 #include <vector>
 
-
 namespace Urho3D {
 	class IntVector2;
 	class Vector2;

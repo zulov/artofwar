@@ -3,7 +3,6 @@
 #include <Urho3D/UI/Text.h>
 
 
-
 SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* style) {
 	selected = new std::vector<Physical*>();
 	selected->reserve(MAX_SELECTED_IN_BUTTON);

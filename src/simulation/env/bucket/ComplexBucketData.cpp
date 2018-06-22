@@ -1,5 +1,6 @@
 #include "ComplexBucketData.h"
 #include "Game.h"
+#include "ObjectEnums.h"
 #include "objects/Static.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
@@ -28,7 +29,7 @@ void ComplexBucketData::setStatic(Static* _object) {
 	}
 
 	if (box) {
-		Urho3D::StaticModel* model = box->GetComponent<StaticModel>();
+		auto model = box->GetComponent<StaticModel>();
 		model->SetMaterial(Game::getCache()->GetResource<Material>("Materials/red_alpha.xml"));
 	}
 	if (_object->getType() == ObjectType::BUILDING) {

@@ -1,17 +1,18 @@
 ﻿#include "MainGrid.h"
+#include "Bucket.h"
 #include "BucketQueue.h"
-#include "Game.h"
 #include "DrawGridUtils.h"
+#include "Game.h"
+#include "MathUtils.h"
+#include "ObjectEnums.h"
 #include "Urho3D/Resource/Image.h"
 #include "objects/Static.h"
 #include "objects/unit/Unit.h"
-#include "Bucket.h"
+#include "simulation/env/ContentInfo.h"
 #include <algorithm>
+#include <array>
 #include <iomanip>
 #include <unordered_set>
-#include "simulation/env/ContentInfo.h"
-#include "MathUtils.h"
-#include <array>
 
 
 MainGrid::MainGrid(const short _resolution, const float _size, const bool _debugEnabled): Grid(_resolution, _size,

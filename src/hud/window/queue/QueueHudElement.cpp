@@ -1,4 +1,5 @@
 #include "QueueHudElement.h"
+#include <Urho3D/UI/ProgressBar.h>
 #include "../../UiUtils.h"
 #include "objects/queue/QueueElement.h"
 
@@ -16,7 +17,7 @@ QueueHudElement::QueueHudElement(Urho3D::XMLFile* style) {
 	mock = button->CreateChild<UIElement>();
 	mock->SetStyle("mock", style);
 
-	bar = mock->CreateChild<ProgressBar>();
+	bar = mock->CreateChild<Urho3D::ProgressBar>();
 	bar->SetStyle("QueueProgressBar", style);
 	bar->SetRange(1);
 	bar->SetValue(0.5);

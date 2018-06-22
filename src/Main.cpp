@@ -4,6 +4,7 @@
 #include "commands/creation/CreationCommandList.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
+#include "hud/MySprite.h"
 #include "hud/window/in_game_menu/middle/FileFormData.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "objects/LinkComponent.h"

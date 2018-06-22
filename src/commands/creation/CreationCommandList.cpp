@@ -1,11 +1,13 @@
 #include "CreationCommandList.h"
 #include "CreationCommand.h"
 #include "Game.h"
+#include "ObjectEnums.h"
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
-#include "simulation/env/Enviroment.h"
 #include "simulation/SimulationObjectManager.h"
+#include "simulation/env/Enviroment.h"
+#include "player/Player.h"
 
 
 CreationCommandList::CreationCommandList() {

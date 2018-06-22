@@ -19,8 +19,8 @@ public:
 private:
 	void hideElements(int from);
 	void createBody() override;
-	void HandleReduce(StringHash eventType, VariantMap& eventData);
-	short MAX_ICON_SELECTION = 31;
+	void HandleReduce(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	char MAX_ICON_SELECTION = 31;
 
 	QueueHudElement** elements;
 };

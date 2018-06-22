@@ -1,8 +1,9 @@
 #include "BuildingFactory.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
-#include "simulation/env/Enviroment.h"
 #include "scene/load/dbload_container.h"
+#include "objects/building/Building.h"
+#include "simulation/env/Enviroment.h"
 
 
 BuildingFactory::BuildingFactory() {

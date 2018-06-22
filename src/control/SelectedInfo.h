@@ -1,12 +1,14 @@
 #pragma once
 
-#include "SelectedInfoType.h"
 #include <Urho3D/Container/Str.h>
+#include <vector>
 
 #define MAX_SELECTEDIN_TYPE 330
 #define MAX_SIZE_TYPES 8
 
+class Physical;
 enum class ObjectType : char;
+class SelectedInfoType;
 
 class SelectedInfo
 {

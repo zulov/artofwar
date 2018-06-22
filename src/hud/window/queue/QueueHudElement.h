@@ -1,5 +1,5 @@
 #pragma once
-#include "hud/MySprite.h"
+
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/ProgressBar.h>
 #include <Urho3D/UI/Text.h>
@@ -7,6 +7,8 @@
 
 
 class QueueElement;
+class Urho3D::ProgressBar;
+class MySprite;
 
 class QueueHudElement
 {
@@ -27,7 +29,7 @@ private:
 	Urho3D::Button* button;
 
 	MySprite* icon;
-	ProgressBar* bar;
+	Urho3D::ProgressBar* bar;
 	Urho3D::Text* text;
 	Urho3D::UIElement* mock;
 

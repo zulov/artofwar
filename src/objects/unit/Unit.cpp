@@ -19,6 +19,7 @@
 #include <Urho3D/Graphics/StaticModel.h><Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h><Urho3D/Resource/ResourceCache.h>
 #include <string>
+#include "player/Player.h"
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),

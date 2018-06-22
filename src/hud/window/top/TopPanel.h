@@ -16,6 +16,6 @@ private:
 	
 	void createBody() override;
 	TopHudElement** elements;
-	Text * unitsNumber;
+	Urho3D::Text * unitsNumber;
 };
 

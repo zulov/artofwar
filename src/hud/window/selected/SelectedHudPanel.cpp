@@ -1,11 +1,11 @@
 #include "SelectedHudPanel.h"
+#include "GameState.h"
 #include "database/DatabaseCache.h"
+#include "hud/UiUtils.h"
+#include "objects/NamesCache.h"
+#include "control/SelectedInfoType.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include "hud/UiUtils.h"
-#include <Urho3D/Resource/Image.h>
-#include "GameState.h"
-#include "objects/NamesCache.h"
 
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
