@@ -50,25 +50,17 @@ public:
 	void absorbAttack(float attackCoef) override;
 
 	void toAttack(std::vector<Physical*>* enemies);
-	void toAttack(Physical* enemy);
-	void toAttack();
-
 	void toCollect(std::vector<Physical*>* entities);
-	void toCollect(Physical* _resource);
-	void toCollect();
-
 	void toShot(std::vector<Physical*>* enemies);
-	void oneToInteract(Physical* enemy);
-	void toShot(Physical* enemy);
-	void toShot();
 
 	void toCharge(std::vector<Physical*>* enemies);
+
+	void oneToInteract(Physical* enemy, UnitState action);
 
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
 
 	void setState(UnitState _state);
-	bool checkTransition(UnitState state);
 
 	bool hasResource();
 	void load(dbload_unit* unit);

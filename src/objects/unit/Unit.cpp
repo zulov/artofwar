@@ -10,6 +10,7 @@
 #include "objects/unit/ChargeData.h"
 #include "objects/unit/ColorMode.h"
 #include "objects/unit/MissleData.h"
+#include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
 #include "simulation/formation/FormationManager.h"
@@ -19,7 +20,6 @@
 #include <Urho3D/Graphics/StaticModel.h><Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h><Urho3D/Resource/ResourceCache.h>
 #include <string>
-#include "player/Player.h"
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
@@ -131,9 +131,9 @@ Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 
 void Unit::absorbAttack(float attackCoef) {
 	hpCoef -= attackCoef * (1 - defenseCoef);
-	
+
 	updateHealthBar();
-	
+
 	if (hpCoef < 0) {
 		StateManager::changeState(this, UnitState::DEAD);
 	}
@@ -142,7 +142,7 @@ void Unit::absorbAttack(float attackCoef) {
 void Unit::attackIfCloseEnough(float distance, Physical* closest) {
 	if (closest) {
 		if (distance < attackRange * attackRange) {
-			toAttack(closest);
+			oneToInteract(closest, UnitState::ATTACK);
 		} else if (distance < attackIntrest * attackIntrest) {
 			addAim(FutureAim(closest, UnitOrder::FOLLOW));
 		}
@@ -152,7 +152,7 @@ void Unit::attackIfCloseEnough(float distance, Physical* closest) {
 void Unit::collectIfCloseEnough(float distance, Physical* closest) {
 	if (closest) {
 		if (distance < attackRange * attackRange) {
-			toCollect(closest);
+			oneToInteract(closest, UnitState::COLLECT);
 		} else if (distance < attackIntrest * attackIntrest) {
 			addAim(FutureAim(closest, UnitOrder::FOLLOW));
 		}
@@ -162,12 +162,13 @@ void Unit::collectIfCloseEnough(float distance, Physical* closest) {
 void Unit::shotIfCloseEnough(float distance, Physical* closest) {
 	if (closest) {
 		if (distance < attackRange * attackRange) {
-			toShot(closest);
+			oneToInteract(closest, UnitState::SHOT);
 		}
 	}
 }
 
-std::tuple<Physical*, float> Unit::closestEntity(std::vector<Physical*>* enemies, std::function<bool(Physical*)> func) {
+std::tuple<Physical*, float> Unit::closestEntity(std::vector<Physical*>* enemies, const std::function<bool(Physical*)>&
+                                                 func) {
 	float minDistance = 99999;
 	Physical* entityClosest = nullptr;
 	for (auto entity : *enemies) {
@@ -188,33 +189,16 @@ void Unit::toAttack(std::vector<Physical*>* enemies) {
 	attackIfCloseEnough(minDistance, closest);
 }
 
-void Unit::toAttack(Physical* enemy) {
-	oneToInteract(enemy);
-	toAttack();
-}
-
-void Unit::toAttack() {
-	StateManager::changeState(this, UnitState::ATTACK);
-}
-
 void Unit::toShot(std::vector<Physical*>* enemies) {
 	auto [closest,minDistance] = closestEntity(enemies, belowRange);
 
 	shotIfCloseEnough(minDistance, closest);
 }
 
-void Unit::oneToInteract(Physical* enemy) {
+void Unit::oneToInteract(Physical* enemy, UnitState action) {
 	thingsToInteract.clear();
 	thingsToInteract.push_back(enemy);
-}
-
-void Unit::toShot(Physical* enemy) {
-	oneToInteract(enemy);
-	toShot();
-}
-
-void Unit::toShot() {
-	StateManager::changeState(this, UnitState::SHOT);
+	StateManager::changeState(this, action);
 }
 
 void Unit::toCollect(std::vector<Physical*>* entities) {
@@ -233,10 +217,6 @@ void Unit::toCollect(std::vector<Physical*>* entities) {
 	collectIfCloseEnough(minDistance, closest);
 }
 
-void Unit::toCollect() {
-	StateManager::changeState(this, UnitState::COLLECT);
-}
-
 void Unit::toCharge(std::vector<Physical*>* enemies) {
 	thingsToInteract.clear();
 	for (auto entity : *enemies) {
@@ -247,11 +227,6 @@ void Unit::toCharge(std::vector<Physical*>* enemies) {
 			}
 		}
 	}
-}
-
-void Unit::toCollect(Physical* _resource) {
-	oneToInteract(_resource);
-	StateManager::changeState(this, UnitState::COLLECT);
 }
 
 void Unit::updateHeight(float y, double timeStep) {
@@ -400,10 +375,6 @@ void Unit::clean() {
 
 void Unit::setState(UnitState _state) {
 	state = _state;
-}
-
-bool Unit::checkTransition(UnitState state) {
-	return StateManager::checkChangeState(this, state);
 }
 
 bool Unit::hasResource() {

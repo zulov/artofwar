@@ -47,7 +47,7 @@ Simulation::~Simulation() {
 
 void Simulation::tryToAttack(Unit* unit) {
 	if (unit->hasEnemy()) {
-		unit->toAttack();
+		StateManager::changeState(unit, UnitState::ATTACK);
 	} else {
 		unit->toAttack(enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), OperatorType::NOT_EQUAL));
 	}
@@ -55,7 +55,7 @@ void Simulation::tryToAttack(Unit* unit) {
 
 void Simulation::tryToCollect(Unit* unit) {
 	if (unit->hasResource()) {
-		unit->toCollect();
+		StateManager::changeState(unit, UnitState::COLLECT);
 	} else {
 		unit->toCollect(enviroment->getResources(unit, 12));
 	}
@@ -63,7 +63,7 @@ void Simulation::tryToCollect(Unit* unit) {
 
 void Simulation::tryToShot(Unit* unit) {
 	if (unit->hasEnemy()) {
-		unit->toShot();
+		StateManager::changeState(unit, UnitState::SHOT);
 	} else {
 		unit->toShot(enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), OperatorType::NOT_EQUAL));
 	}
@@ -78,7 +78,7 @@ void Simulation::selfAI() {
 		case UnitState::STOP:
 		case UnitState::MOVE:
 			if (currentFrameNumber % 3 == 0 && unit->getFormation() == -1
-				&& unit->checkTransition(unit->getActionState())) {
+				&& StateManager::checkChangeState(unit, unit->getActionState())) {
 				switch (unit->getActionState()) {
 				case UnitState::ATTACK:
 					tryToAttack(unit);
@@ -169,8 +169,8 @@ void Simulation::updateBuildingQueues(const float time) {
 				                                             build->getTarget(),
 				                                             build->getPlayer(),
 				                                             Game::getPlayersManager()->
-				                                                          getPlayer(build->getPlayer())->
-				                                                          getLevelForUnit(done->getId())
+				                                             getPlayer(build->getPlayer())->
+				                                             getLevelForUnit(done->getId())
 				                                            ));
 				break;
 			case MenuAction::UNIT_LEVEL:

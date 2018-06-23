@@ -1,14 +1,16 @@
 #pragma once
 
-#include "hud/window/main_menu/new_game/NewGameForm.h"
+
 #include <string>
 #include <vector>
 
 #define TEAMS_NUMBER 5
 
 
+struct NewGameForm;
 class SceneSaver;
 class Player;
+struct NewGamePlayer;
 struct dbload_player;
 struct dbload_resource;
 
@@ -18,7 +20,7 @@ public:
 	PlayersManager();
 	~PlayersManager();
 	void load(std::vector<dbload_player*>* players, std::vector<dbload_resource*>* resources);
-	void addPlayer(NewGamePlayer player);
+	void addPlayer(NewGamePlayer& player);
 	void load(NewGameForm* form);
 	Player* getActivePlayer();
 	Player* getPlayer(short i);

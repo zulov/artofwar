@@ -3,8 +3,8 @@
 #include "State.h"
 #include "objects/resource/ResourceEntity.h"
 #include "player/Resources.h"
-#include <player/PlayersManager.h>
 #include "player/Player.h"
+#include <player/PlayersManager.h>
 
 
 class CollectState : public State
