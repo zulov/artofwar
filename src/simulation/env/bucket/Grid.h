@@ -12,7 +12,7 @@ class Physical;
 class Grid
 {
 public:
-	Grid(short _resolution, float _size, bool _debugEnabled = false);
+	Grid(short _resolution, float _size);
 	~Grid();
 
 	void update(Physical* entity, char team) const;
@@ -33,7 +33,6 @@ protected:
 	int sqResolution;
 	float size;
 	float fieldSize;
-	bool debugEnabled;
 	short halfResolution;
 	float invFieldSize;
 

@@ -2,23 +2,15 @@
 #include "Game.h"
 #include "ObjectEnums.h"
 #include "objects/Static.h"
-#include <Urho3D/Graphics/Material.h>
-#include <Urho3D/Graphics/Model.h>
-#include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Resource/ResourceCache.h>
 #include <iostream>
 
 
-ComplexBucketData::ComplexBucketData(): box(nullptr) {
+ComplexBucketData::ComplexBucketData() {
 	removeStatic();
 	neighbours.reserve(8);
 }
 
-ComplexBucketData::~ComplexBucketData() {
-	if (box) {
-		box->Remove();
-	}
-}
+ComplexBucketData::~ComplexBucketData() = default;
 
 void ComplexBucketData::setStatic(Static* _object) {
 	object = _object;
@@ -28,10 +20,6 @@ void ComplexBucketData::setStatic(Static* _object) {
 		type = CellState::RESOURCE;
 	}
 
-	if (box) {
-		auto model = box->GetComponent<StaticModel>();
-		model->SetMaterial(Game::getCache()->GetResource<Material>("Materials/red_alpha.xml"));
-	}
 	if (_object->getType() == ObjectType::BUILDING) {
 		additonalInfo = _object->getPlayer();
 	} else {
@@ -42,23 +30,7 @@ void ComplexBucketData::setStatic(Static* _object) {
 void ComplexBucketData::removeStatic() {
 	object = nullptr;
 	type = CellState::EMPTY;
-	if (box) {
-		auto model = box->GetComponent<StaticModel>();
-		model->SetMaterial(Game::getCache()->GetResource<Material>("Materials/blue_alpha.xml"));
-	}
 	additonalInfo = -1;
-}
-
-
-void ComplexBucketData::createBox(float bucketSize) {
-	box = Game::getScene()->CreateChild();
-	box->SetPosition(Vector3(center.x_, 8, center.y_));
-	box->Scale(Vector3(bucketSize * 0.8, 1, bucketSize * 0.8));
-	box->Translate(Vector3::UP * 10, TS_PARENT);
-	auto model = box->CreateComponent<StaticModel>();
-	model->SetModel(Game::getCache()->GetResource<Model>("Models/plane.mdl"));
-	model->SetMaterial(Game::getCache()->GetResource<Material>("Materials/blue_alpha.xml"));
-	box->SetEnabled(true);
 }
 
 void ComplexBucketData::setCenter(float _centerX, float _centerY) {

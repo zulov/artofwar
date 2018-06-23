@@ -1,8 +1,8 @@
 #include "Enviroment.h"
 #include "OperatorType.h"
+#include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
-#include "objects/building/Building.h"
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
 #include <unordered_set>
@@ -19,11 +19,12 @@
 #define BUCKET_GRID_SIZE_RESOURCE 1024
 
 Enviroment::Enviroment(Terrain* _terrian):
-	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, false),
+	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE),
 	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE),
 	buildingGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD),
 	teamUnitGrid{
-		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY}, {BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY}
+		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY},
+		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY}
 	} {
 	neights = new std::vector<Physical *>();
 	neights2 = new std::vector<Physical *>();

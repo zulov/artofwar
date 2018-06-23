@@ -16,7 +16,7 @@ class content_info;
 class MainGrid : public Grid
 {
 public:
-	MainGrid(short _resolution, float _size, bool _debugEnabled = false);
+	MainGrid(short _resolution, float _size);
 	~MainGrid();
 
 	void prepareGridToFind();

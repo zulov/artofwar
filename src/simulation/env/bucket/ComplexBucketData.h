@@ -16,7 +16,7 @@ public:
 
 	void setStatic(Static* _object);
 	void removeStatic();
-	void createBox(float bucketSize);
+
 	void setCenter(float _centerX, float _centerY);
 
 	void setEscapeThrought(int val);
@@ -33,7 +33,6 @@ public:
 private:
 	CellState type;
 	Urho3D::Vector2 center;
-	Urho3D::Node* box;
 
 	Static* object{};
 	char additonalInfo{};

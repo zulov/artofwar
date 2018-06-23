@@ -15,25 +15,19 @@
 #include <unordered_set>
 
 
-MainGrid::MainGrid(const short _resolution, const float _size, const bool _debugEnabled): Grid(_resolution, _size,
-                                                                                               _debugEnabled) {
+MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size ) {
 	short posX = 0;
 	short posZ = 0;
 
 	tempPath = new std::vector<int>();
 	tempPath->reserve(DEFAULT_VECTOR_SIZE);
-	const float coef = (resolution / 16) * fieldSize;
 
 	complexData = new ComplexBucketData[resolution * resolution];
 	for (int i = 0; i < resolution * resolution; ++i) {
 		const float cX = (posX + 0.5) * fieldSize - size / 2;
 		const float cZ = (posZ + 0.5) * fieldSize - size / 2;
 		complexData[i].setCenter(cX, cZ);
-		if (debugEnabled &&
-			(cX > -coef && cX < coef) &&
-			(cZ > -coef && cZ < coef)) {
-			complexData[i].createBox(fieldSize);
-		}
+
 		++posZ;
 		if (posZ >= resolution) {
 			++posX;
