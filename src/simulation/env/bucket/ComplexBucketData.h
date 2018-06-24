@@ -29,9 +29,11 @@ public:
 	int getEscapeBucket() const { return escapeBucketIndex; }
 	bool isUnit() const { return type < CellState::NONE; }
 	CellState getType() const { return type; }
+	char getSize() { return size; }
 
 private:
 	CellState type;
+	char size;
 	Urho3D::Vector2 center;
 
 	Static* object{};

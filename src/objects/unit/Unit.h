@@ -44,7 +44,7 @@ public:
 	void applyForce(double timeStep);
 	void setAcceleration(Vector2& _acceleration);
 
-	Vector2 forceGo(float boostCoef, float aimCoef, Vector2& force);
+	Vector2 forceGo(float boostCoef, float aimCoef, Vector2& force) const;
 	Vector2 getDestination(float boostCoef, float aimCoef);
 
 	void absorbAttack(float attackCoef) override;
@@ -83,7 +83,7 @@ public:
 	UnitState getState() const { return state; }
 	short getFormation() const { return formation; }
 	bool isToDispose() const { return state == UnitState::DISPOSE && atState; }
-	bool hasAim() { return aims.hasAim(); }
+	bool hasAim() const { return aims.hasAim(); }
 
 	void action(char id, ActionParameter& parameter) override;
 	std::string getValues(int precision) override;
@@ -99,11 +99,12 @@ private:
 	void collectIfCloseEnough(float distance, Physical* closest);
 	void shotIfCloseEnough(float distance, Physical* closest);
 
-	std::tuple<Physical*, float> closestEntity(std::vector<Physical*>* enemies, std::function<bool(Physical*)> func);
+	std::tuple<Physical*, float> Unit::closestPhysical(std::vector<Physical*>* things,
+	                                                   const std::function<bool(Physical*)>& condition,
+	                                                   const std::function<Vector2(Physical*, Vector3*)>& position) const;
 
 	void changeColor(float value, float maxValue) const;
-	void changeColor(Material* newMaterial);
-	void changeColor(UnitState state);
+	void changeColor(Material* newMaterial) const;
 
 	Vector2 acceleration;
 	Vector2 velocity;

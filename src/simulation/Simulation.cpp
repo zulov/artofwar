@@ -17,6 +17,7 @@
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
 #include <ctime>
+#include "hud/window/main_menu/new_game/NewGameForm.h"
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {
@@ -24,8 +25,7 @@ Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCo
 	simObjectManager = _creationCommandList->getManager();
 	creationCommandList = _creationCommandList;
 	levelsCommandList = new UpgradeCommandList(simObjectManager);
-	currentColor = ColorMode::BASIC;
-
+	colorScheme = ColorMode::BASIC;
 
 	srand(time(NULL));
 
@@ -98,14 +98,13 @@ void Simulation::selfAI() {
 }
 
 void Simulation::loadEntities(SceneLoader& loader) const {
-	dbload_container* data = loader.getData();
-	for (auto unit : *data->units) {
+	for (auto unit : *loader.getData()->units) {
 		simObjectManager->load(unit);
 	}
-	for (auto resource : *data->resource_entities) {
+	for (auto resource : *loader.getData()->resource_entities) {
 		simObjectManager->load(resource);
 	}
-	for (auto building : *data->buildings) {
+	for (auto building : *loader.getData()->buildings) {
 		simObjectManager->load(building);
 	}
 }
@@ -213,7 +212,7 @@ void Simulation::changeCoef(int i, int wheel) {
 }
 
 void Simulation::changeColorMode(ColorMode _colorMode) {
-	currentColor = _colorMode;
+	colorScheme = _colorMode;
 }
 
 void Simulation::performStateAction() {
@@ -285,7 +284,7 @@ void Simulation::moveUnitsAndCheck(const float timeStep) {
 	for (auto unit : *units) {
 		unit->move(timeStep);
 		unit->checkAim();
-		unit->changeColor(currentColor);
+		unit->changeColor(colorScheme);
 	}
 }
 

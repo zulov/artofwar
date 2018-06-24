@@ -52,6 +52,8 @@ public:
 
 	int getIndex(Vector2& pos) const;
 	int getIndex(short x, short z) const;
+	CellState getType(int index) const { return mainGrid.getType(index); }
+	char getCurrentSize(int index) const { return mainGrid.getCurrentSize(index); }
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid;

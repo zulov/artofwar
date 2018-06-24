@@ -8,6 +8,7 @@
 ComplexBucketData::ComplexBucketData() {
 	removeStatic();
 	neighbours.reserve(8);
+	size = 0;
 }
 
 ComplexBucketData::~ComplexBucketData() = default;
@@ -25,6 +26,7 @@ void ComplexBucketData::setStatic(Static* _object) {
 	} else {
 		additonalInfo = _object->getDbID();
 	}
+	size = 0;
 }
 
 void ComplexBucketData::removeStatic() {

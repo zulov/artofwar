@@ -62,7 +62,7 @@ private:
 	float maxTimeFrame = 0.05f;
 	int framesPeriod = 20;
 	int currentFrameNumber = 0;
-	ColorMode currentColor;
+	ColorMode colorScheme;
 	Force force;
 
 	std::vector<Unit*>* units;

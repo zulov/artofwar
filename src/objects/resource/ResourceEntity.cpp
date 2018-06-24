@@ -11,7 +11,9 @@
 #include "simulation/env/Enviroment.h"
 
 
-ResourceEntity::ResourceEntity(Vector3* _position, int id, int level, IntVector2& _bucketCords) : Static(_position, ObjectType::RESOURCE) {
+ResourceEntity::
+ResourceEntity(Vector3* _position, int id, int level, IntVector2& _bucketCords) : Static(_position,
+                                                                                         ObjectType::RESOURCE) {
 	initBillbords();
 
 	dbResource = Game::getDatabaseCache()->getResource(id);
@@ -67,20 +69,16 @@ std::string ResourceEntity::getValues(int precision) {
 }
 
 bool ResourceEntity::hasFreeSpace() const {
-	
-	for (auto surroundCell : surroundCells) {
-	//	auto a =get<0>(surroundCell);
+	auto env = Game::getEnviroment();
+	for (auto index : surroundCells) {
+		auto type = env->getType(index);
+		if (type == CellState::EMPTY || type == CellState::COLLECT) {
+			if (env->getCurrentSize(index) <= userPerCell) {//TODO zmianiac siza
+				return true;
+			}
+		}
 
 	}
-	// const IntVector2 sizeX = calculateSize(gridSize.x_, mainCell.x_);
-	// const IntVector2 sizeZ = calculateSize(gridSize.y_, mainCell.y_);
-	// auto env = Game::getEnviroment();
- //
-	// for (short i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
-	// 	for (short j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {
-	// 		env->get
-	// 	}
-	// }
 	return false;
 }
 

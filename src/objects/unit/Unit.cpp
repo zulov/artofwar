@@ -105,7 +105,7 @@ void Unit::setAcceleration(Vector2& _acceleration) {
 	}
 }
 
-Vector2 Unit::forceGo(float boostCoef, float aimCoef, Vector2& force) {
+Vector2 Unit::forceGo(float boostCoef, float aimCoef, Vector2& force) const {
 	force.Normalize();
 	force *= boostCoef;
 	force -= velocity;
@@ -167,30 +167,31 @@ void Unit::shotIfCloseEnough(float distance, Physical* closest) {
 	}
 }
 
-std::tuple<Physical*, float> Unit::closestEntity(std::vector<Physical*>* enemies, const std::function<bool(Physical*)>&
-                                                 func) {
+std::tuple<Physical*, float> Unit::closestPhysical(std::vector<Physical*>* things,
+                                                   const std::function<bool(Physical*)>& condition,
+                                                   const std::function<Vector2(Physical*, Vector3*)>& position) const {
 	float minDistance = 99999;
-	Physical* entityClosest = nullptr;
-	for (auto entity : *enemies) {
-		if (entity->isAlive() && func(entity)) {
-			const float distance = sqDist(this, entity);
+	Physical* closest = nullptr;
+	for (auto entity : *things) {
+		if (entity->isAlive() && condition(entity)) {
+			const float distance = sqDist(position(entity, this->getPosition()), *this->getPosition());
 			if (distance <= minDistance) {
 				minDistance = distance;
-				entityClosest = entity;
+				closest = entity;
 			}
 		}
 	}
-	return {entityClosest, minDistance};
+	return {closest, minDistance};
 }
 
 void Unit::toAttack(std::vector<Physical*>* enemies) {
-	auto [closest,minDistance] = closestEntity(enemies, belowClose);
+	auto [closest,minDistance] = closestPhysical(enemies, belowClose, exactPos);
 
 	attackIfCloseEnough(minDistance, closest);
 }
 
 void Unit::toShot(std::vector<Physical*>* enemies) {
-	auto [closest,minDistance] = closestEntity(enemies, belowRange);
+	auto [closest,minDistance] = closestPhysical(enemies, belowRange, exactPos);
 
 	shotIfCloseEnough(minDistance, closest);
 }
@@ -198,22 +199,13 @@ void Unit::toShot(std::vector<Physical*>* enemies) {
 void Unit::oneToInteract(Physical* enemy, UnitState action) {
 	thingsToInteract.clear();
 	thingsToInteract.push_back(enemy);
+	//gridIndexToInteract
 	StateManager::changeState(this, action);
 }
 
-void Unit::toCollect(std::vector<Physical*>* entities) {
-	float minDistance = 99999;
-	Physical* closest = nullptr;
-	for (auto physical : *entities) {
-		if (physical->belowCloseLimit()) {
-			auto pos = physical->getPosToFollow(position);
-			const float distance = sqDist(*position, pos);
-			if (distance <= minDistance) {
-				minDistance = distance;
-				closest = physical;
-			}
-		}
-	}
+void Unit::toCollect(std::vector<Physical*>* resources) {
+	auto [closest,minDistance] = closestPhysical(resources, belowClose, posToFollow);
+
 	collectIfCloseEnough(minDistance, closest);
 }
 
@@ -262,9 +254,7 @@ String& Unit::toMultiLineString() {
 }
 
 void Unit::action(char id, ActionParameter& parameter) {
-	const UnitOrder type = UnitOrder(id);
-
-	switch (type) {
+	switch (id) {
 	case UnitOrder::GO:
 		StateManager::changeState(this, UnitState::GO_TO, parameter);
 		break;
@@ -316,23 +306,13 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 
 void Unit::changeColor(float value, float maxValue) const {
 	Material* newMaterial = Game::getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue);
-	Material* current = model->GetMaterial(0);
-
-	if (newMaterial != current) {
-		model->SetMaterial(newMaterial);
-	}
+	changeColor(newMaterial);
 }
 
-void Unit::changeColor(Material* newMaterial) {
-	Material* current = model->GetMaterial(0);
-
-	if (newMaterial != current) {
+void Unit::changeColor(Material* newMaterial) const {
+	if (newMaterial != model->GetMaterial(0)) {
 		model->SetMaterial(newMaterial);
 	}
-}
-
-void Unit::changeColor(UnitState state) {
-	changeColor(Game::getColorPeletteRepo()->getColor(state));
 }
 
 void Unit::changeColor(ColorMode mode) {
@@ -353,7 +333,7 @@ void Unit::changeColor(ColorMode mode) {
 		break;
 	case ColorMode::STATE:
 		{
-		changeColor(state);
+		changeColor(Game::getColorPeletteRepo()->getColor(state));
 		}
 		break;
 	case ColorMode::FORMATION:

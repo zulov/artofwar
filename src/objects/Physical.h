@@ -55,6 +55,7 @@ protected:
 	String menuString = "";
 
 	std::vector<Physical*> thingsToInteract;
+	int gridIndexToInteract = -1;
 
 	unsigned char team;
 	unsigned char player;
