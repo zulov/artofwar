@@ -49,7 +49,7 @@ Vector2 Formation::computeLocalCenter() {
 void Formation::setNewLeader(Vector2& localCenter) {
 	int maxDist = 9999999;
 	leader = nullptr;
-	for (auto& unit : units) {
+	for (auto& unit : units) {//TODO do szastapienia tymz unit
 		const auto pos = unit->getPosition();
 		const auto currentPos = Vector2(pos->x_, pos->z_);
 
@@ -131,7 +131,7 @@ void Formation::updateIds() {
 			auto it = bucketToIds.find(bucketId);
 			if (it != bucketToIds.end()) {
 				short bestId = -1;
-				float bestSize = 99999;
+				float bestSize = 99999;//TODO do zast¹pienia tym z unit
 				for (int i = 0; i < it->second.size(); ++i) {
 					auto id = it->second[i];
 					if (tempVec[id] != -1) {

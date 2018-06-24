@@ -38,7 +38,7 @@ Vector2 Static::getClosestCellPos(Vector3* pos) const {
 	const IntVector2 sizeZ = calculateSize(gridSize.y_, mainCell.y_);
 	auto env = Game::getEnviroment();
 
-	float closestDist = 999999;
+	float closestDist = 999999;//TODO do zastapienia tym z unita
 	Vector2 closest;
 	for (auto index : ocupiedCells) {
 		Vector2 vec = env->getCenter(index);

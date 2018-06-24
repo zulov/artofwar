@@ -305,8 +305,7 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 }
 
 void Unit::changeColor(float value, float maxValue) const {
-	Material* newMaterial = Game::getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue);
-	changeColor(newMaterial);
+	changeColor(Game::getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue));
 }
 
 void Unit::changeColor(Material* newMaterial) const {
@@ -319,30 +318,17 @@ void Unit::changeColor(ColorMode mode) {
 	switch (mode) {
 
 	case ColorMode::BASIC:
-		{
-		Material* current = model->GetMaterial(0);
-		if (current != basic) {
-			model->SetMaterial(basic);
-		}
-		}
+		changeColor(basic);
 		break;
 	case ColorMode::VELOCITY:
-		{
 		changeColor(velocity.LengthSquared(), maxSpeed * maxSpeed);
-		}
 		break;
 	case ColorMode::STATE:
-		{
 		changeColor(Game::getColorPeletteRepo()->getColor(state));
-		}
 		break;
 	case ColorMode::FORMATION:
-		{
 		if (formation != -1) {
-			auto prioryty = Game::getFormationManager()->getPriority(this);
-
-			changeColor(prioryty, 3.0f);
-		}
+			changeColor(Game::getFormationManager()->getPriority(this), 3.0f);
 		}
 		break;
 	default: ;
