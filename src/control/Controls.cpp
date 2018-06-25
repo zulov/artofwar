@@ -23,6 +23,7 @@
 #include <queue>
 #include "player/Resources.h"
 #include "player/Player.h"
+#include "MathUtils.h"
 
 
 Controls::Controls(Input* _input) {
@@ -92,7 +93,7 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 	case ObjectType::PHYSICAL:
 		{
 		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::GO, new Vector2(hitPos.x_, hitPos.z_),
-		                                                         shiftPressed));
+		                                                  shiftPressed));
 		break;
 		}
 	case ObjectType::UNIT:
@@ -141,7 +142,7 @@ void Controls::releaseLeft() {
 
 	if (raycast(hitData)) {
 		left.setSecond(hitData.position);
-		const float dist = (*left.held.first - *left.held.second).LengthSquared();
+		const float dist = sqDist(left.held.first, left.held.second);
 		if (dist > clickDistance) {
 			leftHold(left.held);
 		} else {
@@ -171,7 +172,7 @@ void Controls::releaseRight() {
 
 	if (raycast(hitData)) {
 		right.setSecond(hitData.position);
-		float dist = (*right.held.first - *right.held.second).LengthSquared();
+		float dist = sqDist(right.held.first, right.held.second);
 		if (dist > clickDistance) {
 			rightHold(right.held);
 		} else {
@@ -301,10 +302,10 @@ void Controls::createBuilding(Vector2& pos) {
 		auto player = Game::getPlayersManager()->getActivePlayer();
 
 		Game::getCreationCommandList()->addBuilding(
-		                                                   idToCreate, pos,
-		                                                   player->getId(),
-		                                                   player->getLevelForBuilding(idToCreate)
-		                                                  );
+		                                            idToCreate, pos,
+		                                            player->getId(),
+		                                            player->getLevelForBuilding(idToCreate)
+		                                           );
 	}
 }
 

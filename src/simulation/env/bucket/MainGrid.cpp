@@ -15,7 +15,7 @@
 #include <unordered_set>
 
 
-MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size ) {
+MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size) {
 	short posX = 0;
 	short posZ = 0;
 
@@ -241,13 +241,11 @@ Vector2* MainGrid::getDirectionFrom(Vector3* position) {
 		int escapeBucket;
 		auto& neights = complexData[index].getNeightbours();
 		if (!neights.empty()) {
-			float dist = (complexData[neights.at(0).first].getCenter() - complexData[index].getCenter()).
-				LengthSquared();
+			float dist = sqDist(complexData[neights.at(0).first].getCenter(), complexData[index].getCenter());
 			escapeBucket = neights.at(0).first;
 
 			for (int i = 1; i < neights.size(); ++i) {
-				float newDist = (complexData[neights.at(i).first].getCenter() - complexData[index].getCenter()).
-					LengthSquared();
+				float newDist = sqDist(complexData[neights.at(i).first].getCenter(), complexData[index].getCenter());
 				if (newDist < dist) {
 					escapeBucket = neights.at(i).first;
 				}

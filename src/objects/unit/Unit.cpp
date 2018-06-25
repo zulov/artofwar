@@ -139,46 +139,27 @@ void Unit::absorbAttack(float attackCoef) {
 	}
 }
 
-void Unit::attackIfCloseEnough(float distance, Physical* closest) {
+void Unit::actionIfCloseEnough(UnitState action, Physical* closest, float sqDistance,
+                               float closeRange, float intrestRange) {
 	if (closest) {
-		if (distance < attackRange * attackRange) {
-			oneToInteract(closest, UnitState::ATTACK);
-		} else if (distance < attackIntrest * attackIntrest) {
+		if (sqDistance < closeRange * closeRange) {
+			oneToInteract(closest, action);
+		} else if (sqDistance < intrestRange * intrestRange) {
 			addAim(FutureAim(closest, UnitOrder::FOLLOW));
 		}
 	}
 }
-
-void Unit::collectIfCloseEnough(float distance, Physical* closest) {
-	if (closest) {
-		if (distance < attackRange * attackRange) {
-			oneToInteract(closest, UnitState::COLLECT);
-		} else if (distance < attackIntrest * attackIntrest) {
-			addAim(FutureAim(closest, UnitOrder::FOLLOW));
-		}
-	}
-}
-
-void Unit::shotIfCloseEnough(float distance, Physical* closest) {
-	if (closest) {
-		if (distance < attackRange * attackRange) {
-			oneToInteract(closest, UnitState::SHOT);
-		}
-	}
-}
-
-
 
 void Unit::toAttack(std::vector<Physical*>* enemies) {
-	auto [closest,minDistance] = closestPhysical(this, enemies, belowClose, exactPos);
+	auto [closest, minDistance] = closestPhysical(this, enemies, belowClose, exactPos);
 
-	attackIfCloseEnough(minDistance, closest);
+	actionIfCloseEnough(UnitState::ATTACK, closest, minDistance, attackRange, attackIntrest);
 }
 
 void Unit::toShot(std::vector<Physical*>* enemies) {
-	auto [closest,minDistance] = closestPhysical(this, enemies, belowRange, exactPos);
+	auto [closest, minDistance] = closestPhysical(this, enemies, belowRange, exactPos);
 
-	shotIfCloseEnough(minDistance, closest);
+	actionIfCloseEnough(UnitState::SHOT, closest, minDistance, attackRange, attackIntrest);
 }
 
 void Unit::oneToInteract(Physical* enemy, UnitState action) {
@@ -189,9 +170,9 @@ void Unit::oneToInteract(Physical* enemy, UnitState action) {
 }
 
 void Unit::toCollect(std::vector<Physical*>* resources) {
-	auto [closest,minDistance] = closestPhysical(this, resources, belowClose, posToFollow);
+	auto [closest, minDistance] = closestPhysical(this, resources, belowClose, posToFollow);
 
-	collectIfCloseEnough(minDistance, closest);
+	actionIfCloseEnough(UnitState::COLLECT, closest, minDistance, attackRange, attackIntrest);
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {

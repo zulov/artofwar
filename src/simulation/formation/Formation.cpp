@@ -174,11 +174,11 @@ void Formation::calculateNotWellFormed() {
 
 		const auto currentPos = Vector2(pos->x_, pos->z_);
 		const auto desiredPos = getPositionFor(unit->getPositionInFormation());
-		const auto sqDist = (currentPos - desiredPos).LengthSquared();
+		const auto dist = sqDist(currentPos, desiredPos);
 
-		if (sqDist < 0.5) {
+		if (dist < 0.5) {
 			rechnessLevel[unit->getPositionInFormation()] = 0;
-		} else if (sqDist < 2 * 2) {
+		} else if (dist < 2 * 2) {
 			notWellFormedExact += 1;
 			rechnessLevel[unit->getPositionInFormation()] = 1;
 		} else {

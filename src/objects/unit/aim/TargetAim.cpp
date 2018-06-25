@@ -2,6 +2,7 @@
 #include "../Unit.h"
 #include "Game.h"
 #include "simulation/env/Enviroment.h"
+#include "MathUtils.h"
 
 
 TargetAim::TargetAim(std::vector<int>& _path) :
@@ -22,10 +23,8 @@ Urho3D::Vector2 TargetAim::getDirection(Unit* unit) {
 
 bool TargetAim::ifReach(Unit* unit) {
 	Vector2 position = Game::getEnviroment()->getCenter(path[current]);
-	float dist = Vector2(
-	                     position.x_ - unit->getPosition()->x_,
-	                     position.y_ - unit->getPosition()->z_
-	                    ).LengthSquared();
+	float dist = sqDist(position, *unit->getPosition());
+
 	if (dist < radiusSq) {
 		++current;
 		if (current >= path.size()) {

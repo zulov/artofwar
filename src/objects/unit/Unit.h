@@ -94,9 +94,7 @@ public:
 	int getDbID() override;
 	void clean() override;
 private:
-
-	void attackIfCloseEnough(float distance, Physical* closest);
-	void collectIfCloseEnough(float distance, Physical* closest);
+	void actionIfCloseEnough(UnitState action, Physical* closest, float distance, float closeRange, float intrestRange);
 	void shotIfCloseEnough(float distance, Physical* closest);
 
 	void changeColor(float value, float maxValue) const;
