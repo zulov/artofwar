@@ -167,31 +167,16 @@ void Unit::shotIfCloseEnough(float distance, Physical* closest) {
 	}
 }
 
-std::tuple<Physical*, float> Unit::closestPhysical(std::vector<Physical*>* things,
-                                                   const std::function<bool(Physical*)>& condition,
-                                                   const std::function<Vector2(Physical*, Vector3*)>& position) const {
-	float minDistance = 99999;
-	Physical* closest = nullptr;
-	for (auto entity : *things) {
-		if (entity->isAlive() && condition(entity)) {
-			const float distance = sqDist(position(entity, this->getPosition()), *this->getPosition());
-			if (distance <= minDistance) {
-				minDistance = distance;
-				closest = entity;
-			}
-		}
-	}
-	return {closest, minDistance};
-}
+
 
 void Unit::toAttack(std::vector<Physical*>* enemies) {
-	auto [closest,minDistance] = closestPhysical(enemies, belowClose, exactPos);
+	auto [closest,minDistance] = closestPhysical(this, enemies, belowClose, exactPos);
 
 	attackIfCloseEnough(minDistance, closest);
 }
 
 void Unit::toShot(std::vector<Physical*>* enemies) {
-	auto [closest,minDistance] = closestPhysical(enemies, belowRange, exactPos);
+	auto [closest,minDistance] = closestPhysical(this, enemies, belowRange, exactPos);
 
 	shotIfCloseEnough(minDistance, closest);
 }
@@ -204,7 +189,7 @@ void Unit::oneToInteract(Physical* enemy, UnitState action) {
 }
 
 void Unit::toCollect(std::vector<Physical*>* resources) {
-	auto [closest,minDistance] = closestPhysical(resources, belowClose, posToFollow);
+	auto [closest,minDistance] = closestPhysical(this, resources, belowClose, posToFollow);
 
 	collectIfCloseEnough(minDistance, closest);
 }
@@ -316,7 +301,6 @@ void Unit::changeColor(Material* newMaterial) const {
 
 void Unit::changeColor(ColorMode mode) {
 	switch (mode) {
-
 	case ColorMode::BASIC:
 		changeColor(basic);
 		break;

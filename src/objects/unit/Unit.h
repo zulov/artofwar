@@ -99,10 +99,6 @@ private:
 	void collectIfCloseEnough(float distance, Physical* closest);
 	void shotIfCloseEnough(float distance, Physical* closest);
 
-	std::tuple<Physical*, float> Unit::closestPhysical(std::vector<Physical*>* things,
-	                                                   const std::function<bool(Physical*)>& condition,
-	                                                   const std::function<Vector2(Physical*, Vector3*)>& position) const;
-
 	void changeColor(float value, float maxValue) const;
 	void changeColor(Material* newMaterial) const;
 

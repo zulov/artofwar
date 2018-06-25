@@ -9,6 +9,10 @@ inline float sqDist(const Vector3* one, const Vector3* two) {
 	return (*one - *two).LengthSquared();
 }
 
+inline float sqDist(const Vector2& one, const Vector2& two) {
+	return (one - two).LengthSquared();
+}
+
 inline float sqDist(const Vector3& one, const Vector3& two) {
 	return (one - two).LengthSquared();
 }
@@ -20,7 +24,6 @@ inline float sqDist(const Vector2& one, const Vector3& two) {
 inline float sqDist(const Vector3& one, const Vector2& two) {
 	return Vector2(one.x_ - two.x_, one.z_ - two.y_).LengthSquared();
 }
-
 
 inline IntVector2 calculateSize(int size, int central) {
 	const int first = -((size - 1) / 2);

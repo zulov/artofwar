@@ -1,7 +1,6 @@
 #include "Formation.h"
 #include "Game.h"
 #include "commands/CommandList.h"
-#include "commands/action/ActionCommand.h"
 #include "commands/action/FormationAction.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/aim/FutureAim.h"
@@ -9,9 +8,9 @@
 #include <algorithm>
 #include <Urho3D/Math/Vector2.h>
 #include <chrono>
-#include <iostream>
 #include <numeric>
 #include <unordered_set>
+#include "MathUtils.h"
 
 
 Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2& _direction) : id(_id),
@@ -47,16 +46,13 @@ Vector2 Formation::computeLocalCenter() {
 }
 
 void Formation::setNewLeader(Vector2& localCenter) {
-	int maxDist = 9999999;
+	int maxDist = 99999;
 	leader = nullptr;
-	for (auto& unit : units) {//TODO do szastapienia tymz unit
-		const auto pos = unit->getPosition();
-		const auto currentPos = Vector2(pos->x_, pos->z_);
-
-		const auto sqDist = (currentPos - localCenter).LengthSquared();
-		if (sqDist < maxDist) {
+	for (auto& unit : units) {
+		const auto dist = sqDist(localCenter, *unit->getPosition());
+		if (dist < maxDist) {
 			leader = unit;
-			maxDist = sqDist;
+			maxDist = dist;
 		}
 	}
 }
@@ -127,17 +123,16 @@ void Formation::updateIds() {
 			const auto pos = unit->getPosition();
 			const auto currentPos = Vector2(pos->x_, pos->z_);
 
-
 			auto it = bucketToIds.find(bucketId);
 			if (it != bucketToIds.end()) {
 				short bestId = -1;
-				float bestSize = 99999;//TODO do zast¹pienia tym z unit
+				float bestSize = 99999; //TODO do zast¹pienia tym z unit
 				for (int i = 0; i < it->second.size(); ++i) {
 					auto id = it->second[i];
 					if (tempVec[id] != -1) {
-						const auto sqDist = (currentPos - getPositionFor(id)).LengthSquared();
-						if (sqDist < bestSize) {
-							bestSize = sqDist;
+						const auto dist = sqDist(currentPos, getPositionFor(id));
+						if (dist < bestSize) {
+							bestSize = dist;
 							bestId = i;
 						}
 					}
@@ -217,10 +212,10 @@ void Formation::update() {
 			if (!futureOrders.empty()) {
 				const auto& futureOrder = futureOrders[0];
 				Game::getActionCommandList()->add(new FormationAction(this,
-				                                                             futureOrder.action,
-				                                                             futureOrder.physical,
-				                                                             new Vector2(futureOrder.vector)
-				                                                            ));
+				                                                      futureOrder.action,
+				                                                      futureOrder.physical,
+				                                                      new Vector2(futureOrder.vector)
+				                                                     ));
 				futureOrders.erase(futureOrders.begin()); //TODO to zachowaæ
 			}
 		}
