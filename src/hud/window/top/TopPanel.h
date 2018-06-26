@@ -1,9 +1,10 @@
 #pragma once
 
 #include "../AbstractWindowPanel.h"
-#include "TopHudElement.h"
+#include <Urho3D/UI/Text.h>
 
 class Resources;
+class TopHudElement;
 
 class TopPanel :public AbstractWindowPanel
 {

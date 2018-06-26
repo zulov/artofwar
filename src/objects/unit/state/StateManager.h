@@ -3,7 +3,6 @@
 #include "UnitOrder.h"
 #include "database/db_strcut.h"
 #include "objects/unit/ActionParameter.h"
-#include <array>
 
 class StateManager
 {

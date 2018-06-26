@@ -2,11 +2,6 @@
 #include "GameState.h"
 #include <Urho3D/UI/Window.h>
 
-
-namespace Urho3D {
-	class String;
-}
-
 class AbstractWindowPanel : public Urho3D::Object
 {
 	URHO3D_OBJECT(AbstractWindowPanel, Object)

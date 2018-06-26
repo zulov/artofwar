@@ -3,6 +3,7 @@
 #include "scene/save/SceneSaver.h"
 #include "scene/load/dbload_container.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
+#include "Player.h"
 
 PlayersManager::PlayersManager() = default;
 

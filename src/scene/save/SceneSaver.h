@@ -1,14 +1,19 @@
 #pragma once
 
 #include "Loading.h"
-#include "objects/building/Building.h"
-#include "player/Player.h"
 #include <sqlite3/sqlite3.h>
+#include <vector>
 
 
-struct loading;
+namespace Urho3D {
+	class String;
+}
+
+
 class Unit;
 class ResourceEntity;
+class Building;
+class Player;
 
 class SceneSaver
 {

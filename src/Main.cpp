@@ -28,7 +28,8 @@
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
-
+#include "hud/window/selected/SelectedHudElement.h"
+#include "objects/queue/QueueManager.h"
 
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)

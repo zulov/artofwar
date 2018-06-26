@@ -5,8 +5,14 @@
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimulationInfo.h"
-#include "window/main_menu/MainMenuPanel.h"
-#include "window/menu/LeftMenuModes.h"
+#include "window/top/TopPanel.h"
+#include "camera/CameraManager.h"
+#include "window/minimap/MiniMapPanel.h"
+#include "utils.h"
+#include "player/Player.h"
+#include "window/debug/DebugPanel.h"
+#include "window/loading/LoadingPanel.h"
+#include "window/queue/QueuePanel.h"
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Graphics/Graphics.h>
@@ -16,10 +22,7 @@
 #include <Urho3D/UI/UIEvents.h>
 #include <exprtk/exprtk.hpp>
 #include <regex>
-#include "camera/CameraManager.h"
-#include "window/minimap/MiniMapPanel.h"
-#include "utils.h"
-#include "player/Player.h"
+#include "HudData.h"
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {

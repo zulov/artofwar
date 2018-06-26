@@ -2,23 +2,24 @@
 #include "Benchmark.h"
 #include "GameState.h"
 #include "control/SelectedInfo.h"
-#include "window/debug/DebugPanel.h"
-#include "window/in_game_menu/InGameMenuPanel.h"
-#include "window/loading/LoadingPanel.h"
-#include "window/menu/MenuPanel.h"
-#include "window/queue/QueuePanel.h"
-#include "window/selected/SelectedHudPanel.h"
-#include "window/top/TopPanel.h"
-#include "xml/rapidxml_print.hpp"
 #include "window/main_menu/MainMenuPanel.h"
+#include "window/menu/MenuPanel.h"
+#include "window/in_game_menu/InGameMenuPanel.h"
+#include "window/selected/SelectedHudPanel.h"
+#include "xml/rapidxml_print.hpp"
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/Text.h>
-
 
 class CameraManager;
 class SimulationInfo;
 class MainMenuPanel;
 class MiniMapPanel;
+class TopPanel;
+class HudData;
+class DebugPanel;
+class QueuePanel;
+class LoadingPanel;
+
 struct  db_graph_settings;
 struct  db_resolution;
 using namespace Urho3D;

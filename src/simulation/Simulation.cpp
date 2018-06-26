@@ -16,8 +16,13 @@
 #include "scene/load/SceneLoader.h"
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
-#include <ctime>
 #include "hud/window/main_menu/new_game/NewGameForm.h"
+#include <ctime>
+#include "SimulationObjectManager.h"
+#include "commands/upgrade/UpgradeCommandList.h"
+#include "SimulationInfo.h"
+#include "objects/building/Building.h"
+#include "player/Player.h"
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {

@@ -1,8 +1,8 @@
 #pragma once
 #include "hud/window/AbstractWindowPanel.h"
-#include "middle/AbstractMiddlePanel.h"
 #include <Urho3D/UI/Button.h>
 
+class AbstractMiddlePanel;
 
 class InGameMenuPanel : public AbstractWindowPanel
 {

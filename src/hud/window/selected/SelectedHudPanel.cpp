@@ -6,6 +6,8 @@
 #include "control/SelectedInfoType.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include "SelectedHudElement.h"
+#include "control/SelectedInfo.h"
 
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {

@@ -4,11 +4,14 @@
 #include "player/PlayersManager.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
+#include "objects/building/Building.h"
+#include "player/Resources.h"
+#include "player/Player.h"
+#include "Loading.h"
 #include <iostream>
 #include <ostream>
 #include <sqlite3/sqlite3.h>
 #include <string>
-
 
 SceneSaver::SceneSaver(int _precision) {
 	//TODO zapisywanie powinno byc tylko miedzy klatkami

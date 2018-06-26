@@ -1,8 +1,6 @@
 #pragma once
 #include "../AbstractWindowPanel.h"
 #include "LeftMenuModes.h"
-#include "control/SelectedInfo.h"
-#include "hud/HudData.h"
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <unordered_set>
@@ -13,8 +11,11 @@
 #define LEFT_MENU_CHECKS_NUMBER 3
 #define LEFT_MENU_BUTTON_PER_ROW 4
 
+class SelectedInfo;
+class HudData;
 class LeftMenuInfoPanel;
 class MySprite;
+class SelectedInfoType;
 
 class MenuPanel : public AbstractWindowPanel
 {

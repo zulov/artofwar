@@ -162,17 +162,20 @@ void Unit::toShot(std::vector<Physical*>* enemies) {
 	actionIfCloseEnough(UnitState::SHOT, closest, minDistance, attackRange, attackIntrest);
 }
 
-void Unit::oneToInteract(Physical* enemy, UnitState action) {
-	thingsToInteract.clear();
-	thingsToInteract.push_back(enemy);
-	//gridIndexToInteract
-	StateManager::changeState(this, action);
-}
-
 void Unit::toCollect(std::vector<Physical*>* resources) {
 	auto [closest, minDistance] = closestPhysical(this, resources, belowClose, posToFollow);
 
-	actionIfCloseEnough(UnitState::COLLECT, closest, minDistance, attackRange, attackIntrest);
+	bool success = actionIfCloseEnough(UnitState::COLLECT, closest, minDistance, attackRange, attackIntrest);
+	if (success) {
+		closest.occupied(getBucketIndex(-1)); //TODO pamietac zeby zwolnic
+	}
+}
+
+void Unit::oneToInteract(Physical* thing, UnitState action) {
+	thingsToInteract.clear();
+	thingsToInteract.push_back(thing);
+	//gridIndexToInteract
+	StateManager::changeState(this, action);
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {

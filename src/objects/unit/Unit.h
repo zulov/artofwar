@@ -95,7 +95,6 @@ public:
 	void clean() override;
 private:
 	void actionIfCloseEnough(UnitState action, Physical* closest, float distance, float closeRange, float intrestRange);
-	void shotIfCloseEnough(float distance, Physical* closest);
 
 	void changeColor(float value, float maxValue) const;
 	void changeColor(Material* newMaterial) const;

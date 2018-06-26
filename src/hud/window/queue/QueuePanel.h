@@ -1,9 +1,9 @@
 #pragma once
 #include "../AbstractWindowPanel.h"
-#include "QueueHudElement.h"
-#include "control/SelectedInfo.h"
-#include "objects/queue/QueueManager.h"
 
+class SelectedInfo;
+class QueueManager;
+class QueueHudElement;
 
 class QueuePanel :public AbstractWindowPanel//TODO moze zrobic multilina
 {

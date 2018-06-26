@@ -1,13 +1,12 @@
 #pragma once
-#include "SimulationInfo.h"
+
 #include "force/Force.h"
-#include "objects/building/Building.h"
-#include "SimulationObjectManager.h"
-#include "commands/upgrade/UpgradeCommandList.h"
 #include <vector>
 
 
 class Unit;
+class ResourceEntity;
+class Building;
 class QueueElement;
 enum class ColorMode : char;
 struct NewGameForm;
@@ -15,6 +14,11 @@ class Enviroment;
 class SceneSaver;
 class SceneLoader;
 class CreationCommandList;
+class SimulationInfo;
+class CreationCommandList;
+class SimulationObjectManager;
+class UpgradeCommandList;
+class CommandList;
 
 namespace Urho3D {
 	class Node;

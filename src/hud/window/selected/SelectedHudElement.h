@@ -1,13 +1,13 @@
 #pragma once
-#include "objects/Physical.h"
+
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/ProgressBar.h>
 #include <Urho3D/UI/Text.h>
 
-
 #define MAX_SELECTED_IN_BUTTON 4
 
 class MySprite;
+class Physical;
 
 class SelectedHudElement
 {
@@ -15,13 +15,13 @@ public:
 	SelectedHudElement(Urho3D::XMLFile* style);
 	~SelectedHudElement();
 
-	Button* getButton();
+	Urho3D::Button* getButton();
 	void hide();
 	void show();
 
-	void setText(const String& msg);
+	void setText(const Urho3D::String& msg);
 	void hideText();
-	void setTexture(Texture2D* texture);
+	void setTexture(Urho3D::Texture2D* texture);
 	void add(std::vector<Physical*>& physicals, int start, int end);
 	std::vector<Physical*>* getSelected();
 private:
@@ -29,7 +29,7 @@ private:
 	std::vector<Physical*>* selected;
 
 	MySprite* icon;
-	ProgressBar** bars;
-	Text* text;
-	UIElement* mock;
+	Urho3D::ProgressBar** bars;
+	Urho3D::Text* text;
+	Urho3D::UIElement* mock;
 };

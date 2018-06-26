@@ -9,6 +9,8 @@
 #include <Urho3D/Input/InputEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UIEvents.h>
+#include "QueueHudElement.h"
+#include "control/SelectedInfo.h"
 
 
 QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {

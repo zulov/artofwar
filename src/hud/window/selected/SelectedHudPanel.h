@@ -1,9 +1,10 @@
 #pragma once
 #include "../AbstractWindowPanel.h"
-#include "SelectedHudElement.h"
-#include "control/SelectedInfo.h"
 #include <Urho3D/UI/Button.h>
 
+
+class SelectedInfo;
+class SelectedHudElement;
 
 class SelectedHudPanel :public AbstractWindowPanel
 {
@@ -12,7 +13,7 @@ public:
 	~SelectedHudPanel();	
 	void update(SelectedInfo* selectedInfo);
 	
-	std::vector<Button*>& getButtonsSelectedToSubscribe();
+	std::vector<Urho3D::Button*>& getButtonsSelectedToSubscribe();
 	void createRows();
 
 private:
@@ -21,8 +22,8 @@ private:
 	void createBody() override;
 	short maxInRow = 31;
 	short LINES_IN_SELECTION = 4;
-	std::vector<Button*> buttons;
+	std::vector<Urho3D::Button*> buttons;
 	SelectedHudElement** elements;
-	UIElement **rows;
+	Urho3D::UIElement **rows;
 };
 
