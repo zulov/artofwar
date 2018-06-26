@@ -44,7 +44,7 @@ public:
 	void applyForce(double timeStep);
 	void setAcceleration(Vector2& _acceleration);
 
-	Vector2 forceGo(float boostCoef, float aimCoef, Vector2& force) const;
+	void forceGo(float boostCoef, float aimCoef, Vector2& force) const;
 	Vector2 getDestination(float boostCoef, float aimCoef);
 
 	void absorbAttack(float attackCoef) override;
@@ -52,10 +52,9 @@ public:
 	void toAttack(std::vector<Physical*>* enemies);
 	void toCollect(std::vector<Physical*>* entities);
 	void toShot(std::vector<Physical*>* enemies);
-
 	void toCharge(std::vector<Physical*>* enemies);
 
-	void oneToInteract(Physical* enemy, UnitState action);
+	bool interactWithOne(Physical* enemy, UnitState action);
 
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
@@ -94,7 +93,7 @@ public:
 	int getDbID() override;
 	void clean() override;
 private:
-	void actionIfCloseEnough(UnitState action, Physical* closest, float distance, float closeRange, float intrestRange);
+	bool actionIfCloseEnough(UnitState action, Physical* closest, float distance, float closeRange, float intrestRange);
 
 	void changeColor(float value, float maxValue) const;
 	void changeColor(Material* newMaterial) const;

@@ -15,10 +15,10 @@
 #include "scene/load/dbload_container.h"
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
-#include <Urho3D/Graphics/Material.h><Urho3D/Graphics/Material.h>
-#include <Urho3D/Graphics/Model.h><Urho3D/Graphics/Model.h>
-#include <Urho3D/Graphics/StaticModel.h><Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Resource/ResourceCache.h><Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Resource/ResourceCache.h>
 #include <string>
 
 
@@ -105,14 +105,13 @@ void Unit::setAcceleration(Vector2& _acceleration) {
 	}
 }
 
-Vector2 Unit::forceGo(float boostCoef, float aimCoef, Vector2& force) const {
+void Unit::forceGo(float boostCoef, float aimCoef, Vector2& force) const {
 	force.Normalize();
 	force *= boostCoef;
 	force -= velocity;
 	force /= 0.5;
 	force *= mass;
 	force *= aimCoef;
-	return force;
 }
 
 Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
@@ -139,15 +138,17 @@ void Unit::absorbAttack(float attackCoef) {
 	}
 }
 
-void Unit::actionIfCloseEnough(UnitState action, Physical* closest, float sqDistance,
+bool Unit::actionIfCloseEnough(UnitState action, Physical* closest, float sqDistance,
                                float closeRange, float intrestRange) {
 	if (closest) {
 		if (sqDistance < closeRange * closeRange) {
-			oneToInteract(closest, action);
-		} else if (sqDistance < intrestRange * intrestRange) {
+			return interactWithOne(closest, action);
+		}
+		if (sqDistance < intrestRange * intrestRange) {
 			addAim(FutureAim(closest, UnitOrder::FOLLOW));
 		}
 	}
+	return false;
 }
 
 void Unit::toAttack(std::vector<Physical*>* enemies) {
@@ -171,11 +172,15 @@ void Unit::toCollect(std::vector<Physical*>* resources) {
 	}
 }
 
-void Unit::oneToInteract(Physical* thing, UnitState action) {
+bool Unit::interactWithOne(Physical* thing, UnitState action) {
 	thingsToInteract.clear();
 	thingsToInteract.push_back(thing);
 	//gridIndexToInteract
-	StateManager::changeState(this, action);
+	bool success = StateManager::changeState(this, action);
+	if (!success) {
+		thingsToInteract.clear();
+	}
+	return success;
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {

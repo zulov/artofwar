@@ -9,7 +9,7 @@ class StateManager
 public:
 
 	static bool validateState(int id, UnitState stateTo);
-	static void changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter = ActionParameter());
+	static bool changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter = ActionParameter());
 	static bool checkChangeState(Unit* unit, UnitState stateTo);
 	static void execute(Unit* unit);
 
@@ -18,6 +18,8 @@ public:
 private:
 	StateManager();
 	~StateManager();
+	static State* getState(Unit* unit);
+
 	State* states[STATE_SIZE]{};
 	bool ordersToUnit[UNITS_NUMBER_DB][STATE_SIZE];
 	static StateManager* instance;

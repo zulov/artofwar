@@ -42,7 +42,7 @@ StateManager::StateManager() {
 		static_cast<char>(UnitState::SHOT)
 	};
 	orderToState[static_cast<char>(UnitOrder::DEAD)] = {
-		static_cast<char>(UnitState::DEAD), 
+		static_cast<char>(UnitState::DEAD),
 		static_cast<char>(UnitState::DISPOSE)
 	};
 	orderToState[static_cast<char>(UnitOrder::STOP)] = {static_cast<char>(UnitState::STOP)};
@@ -73,7 +73,7 @@ bool StateManager::validateState(int id, UnitState stateTo) {
 	return instance->ordersToUnit[id][static_cast<char>(stateTo)];
 }
 
-void StateManager::changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter) {
+bool StateManager::changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter) {
 	State* stateFrom = instance->states[static_cast<int>(unit->getState())];
 	if (stateFrom->validateTransition(stateTo) && validateState(unit->getDbID(), stateTo)) {
 		stateFrom->onEnd(unit);
@@ -83,13 +83,15 @@ void StateManager::changeState(Unit* unit, UnitState stateTo, ActionParameter& a
 }
 
 bool StateManager::checkChangeState(Unit* unit, UnitState stateTo) {
-	State* stateFrom = instance->states[static_cast<int>(unit->getState())];
-	return stateFrom->validateTransition(stateTo);
+	return getState(unit)->validateTransition(stateTo);
+}
+
+State* StateManager::getState(Unit* unit) {
+	return instance->states[static_cast<int>(unit->getState())];
 }
 
 void StateManager::execute(Unit* unit) {
-	State* state = instance->states[static_cast<int>(unit->getState())];
-	state->execute(unit);
+	getState(unit)->execute(unit);
 }
 
 void StateManager::init() {
