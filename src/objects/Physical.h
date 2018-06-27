@@ -22,6 +22,7 @@ public:
 
 	void setTeam(unsigned char _team);
 	void setPlayer(unsigned char player);
+
 	static std::string getColumns();
 	std::string getValues(int precision) override;
 	bool isFirstThingAlive();
@@ -54,8 +55,8 @@ protected:
 	Vector3* position = nullptr;
 	String menuString = "";
 
-	std::vector<Physical*> thingsToInteract;
-	int gridIndexToInteract = -1;
+	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
+	int gridIndexToInteract = -1; //TODO to gdzies ustawic
 
 	unsigned char team;
 	unsigned char player;

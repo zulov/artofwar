@@ -138,17 +138,16 @@ void Unit::absorbAttack(float attackCoef) {
 	}
 }
 
-bool Unit::actionIfCloseEnough(UnitState action, Physical* closest, float sqDistance,
+void Unit::actionIfCloseEnough(UnitState action, Physical* closest, float sqDistance,
                                float closeRange, float intrestRange) {
 	if (closest) {
 		if (sqDistance < closeRange * closeRange) {
-			return interactWithOne(closest, action);
+			interactWithOne(closest, action);
 		}
 		if (sqDistance < intrestRange * intrestRange) {
 			addAim(FutureAim(closest, UnitOrder::FOLLOW));
 		}
 	}
-	return false;
 }
 
 void Unit::toAttack(std::vector<Physical*>* enemies) {
@@ -164,15 +163,12 @@ void Unit::toShot(std::vector<Physical*>* enemies) {
 }
 
 void Unit::toCollect(std::vector<Physical*>* resources) {
-	auto [closest, minDistance] = closestPhysical(this, resources, belowClose, posToFollow);
-
-	bool success = actionIfCloseEnough(UnitState::COLLECT, closest, minDistance, attackRange, attackIntrest);
-	if (success) {
-		closest.occupied(getBucketIndex(-1)); //TODO pamietac zeby zwolnic
-	}
+	auto [closest, minDistance] = closestPhysical(this, resources, belowCloseAndFreeBucket, posToFollow);//TODO dodatkwoy warunek czy wolny , dystans 0 jesli w odpowiednim bykecie
+	gridIndexToInteract??
+	actionIfCloseEnough(UnitState::COLLECT, closest, minDistance, attackRange, attackIntrest);
 }
 
-bool Unit::interactWithOne(Physical* thing, UnitState action) {
+void Unit::interactWithOne(Physical* thing, UnitState action) {
 	thingsToInteract.clear();
 	thingsToInteract.push_back(thing);
 	//gridIndexToInteract
@@ -180,7 +176,6 @@ bool Unit::interactWithOne(Physical* thing, UnitState action) {
 	if (!success) {
 		thingsToInteract.clear();
 	}
-	return success;
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {

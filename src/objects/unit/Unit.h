@@ -50,11 +50,11 @@ public:
 	void absorbAttack(float attackCoef) override;
 
 	void toAttack(std::vector<Physical*>* enemies);
-	void toCollect(std::vector<Physical*>* entities);
+	void toCollect(std::vector<Physical*>* resources);
 	void toShot(std::vector<Physical*>* enemies);
 	void toCharge(std::vector<Physical*>* enemies);
 
-	bool interactWithOne(Physical* enemy, UnitState action);
+	void interactWithOne(Physical* enemy, UnitState action);
 
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
@@ -93,7 +93,7 @@ public:
 	int getDbID() override;
 	void clean() override;
 private:
-	bool actionIfCloseEnough(UnitState action, Physical* closest, float distance, float closeRange, float intrestRange);
+	void actionIfCloseEnough(UnitState action, Physical* closest, float distance, float closeRange, float intrestRange);
 
 	void changeColor(float value, float maxValue) const;
 	void changeColor(Material* newMaterial) const;

@@ -177,6 +177,18 @@ int Enviroment::getIndex(short x, short z) const {
 	return mainGrid.getIndex(x, z);
 }
 
+bool Enviroment::cellInState(int index, CellState cellState) const {
+	return mainGrid.cellInState(index, cellState);
+}
+
+void Enviroment::updateCell(int index, char val) {
+	mainGrid.updateCell(index, val);
+}
+
+bool Enviroment::belowCellLimit(int index) {
+	return mainGrid.belowCellLimit(index);
+}
+
 Vector2 Enviroment::getValidPosition(const IntVector2& size, const Vector2& pos) {
 	return mainGrid.getValidPosition(size, pos);
 }

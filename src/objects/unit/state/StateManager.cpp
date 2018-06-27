@@ -79,7 +79,9 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, ActionParameter& a
 		stateFrom->onEnd(unit);
 		unit->setState(stateTo);
 		instance->states[static_cast<int>(stateTo)]->onStart(unit, actionParameter);
+		return true;
 	}
+	return false;
 }
 
 bool StateManager::checkChangeState(Unit* unit, UnitState stateTo) {

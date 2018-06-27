@@ -1,20 +1,5 @@
 #pragma once
 #include "Physical.h"
-#include "CellState.h"
-
-struct SurroundCell
-{
-	SurroundCell(int index, CellState state, char size)
-		: index(index),
-		state(state),
-		size(size) {
-	}
-
-	int index;
-	CellState state;
-	char size;
-};
-
 
 class Static : public Physical
 {

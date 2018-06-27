@@ -54,6 +54,9 @@ public:
 	int getIndex(short x, short z) const;
 	CellState getType(int index) const { return mainGrid.getType(index); }
 	char getCurrentSize(int index) const { return mainGrid.getCurrentSize(index); }
+	bool cellInState(int index, CellState cellState) const;
+	void updateCell(int index, char val);
+	bool belowCellLimit(int index);
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid;

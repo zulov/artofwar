@@ -30,6 +30,8 @@ public:
 	bool isUnit() const { return type < CellState::NONE; }
 	CellState getType() const { return type; }
 	char getSize() { return size; }
+	void updateSize(char val);
+	bool belowCellLimit();
 
 private:
 	CellState type;

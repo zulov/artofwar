@@ -60,6 +60,9 @@ public:
 	bool inSide(int x, int z) const { return !(x < 0 || x >= resolution || z < 0 || z >= resolution); }
 	CellState getType(int index) const { return complexData[index].getType(); }
 	char getCurrentSize(int index) const { return complexData[index].getSize(); }
+	bool cellInState(int index, CellState cellState) const;
+	void updateCell(int index, char val);
+	bool belowCellLimit(int index);
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);

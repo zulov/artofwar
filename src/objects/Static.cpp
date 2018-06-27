@@ -18,30 +18,24 @@ void Static::populate(const IntVector2& size) {
 	const IntVector2 sizeX = calculateSize(gridSize.x_, mainCell.x_);
 	const IntVector2 sizeZ = calculateSize(gridSize.y_, mainCell.y_);
 
-	auto env = Game::getEnviroment();
-
 	for (short i = sizeX.x_; i < sizeX.y_; ++i) {
 		for (short j = sizeZ.x_; j < sizeZ.y_; ++j) {
-			ocupiedCells.push_back(env->getIndex(i, j));
+			ocupiedCells.push_back(Game::getEnviroment()->getIndex(i, j));
 		}
 	}
 }
 
 std::string Static::getColumns() {
 	return Physical::getColumns() +
-		+"bucket_x		INT     NOT NULL,"
+		+ "bucket_x		INT     NOT NULL,"
 		+ "bucket_y		INT     NOT NULL,";
 }
 
 Vector2 Static::getClosestCellPos(Vector3* pos) const {
-	const IntVector2 sizeX = calculateSize(gridSize.x_, mainCell.x_);
-	const IntVector2 sizeZ = calculateSize(gridSize.y_, mainCell.y_);
-	auto env = Game::getEnviroment();
-
-	float closestDist = 999999;//TODO do zastapienia tym z unita
+	float closestDist = 999999; //TODO do zastapienia tym z unita
 	Vector2 closest;
 	for (auto index : ocupiedCells) {
-		Vector2 vec = env->getCenter(index);
+		Vector2 vec = Game::getEnviroment()->getCenter(index);
 		float dist = sqDist(vec, *pos);
 		if (dist < closestDist) {
 			closestDist = dist;

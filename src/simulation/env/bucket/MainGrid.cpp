@@ -141,6 +141,18 @@ void MainGrid::updateSurround(Static* object) {
 	cells.insert(cells.begin(), indexes.begin(), indexes.end());
 }
 
+bool MainGrid::cellInState(int index, CellState cellState) const {
+	return complexData[index].getType() == cellState;
+}
+
+void MainGrid::updateCell(int index, char val) {
+	complexData[index].updateSize(val);
+}
+
+bool MainGrid::belowCellLimit(int index) {
+	return complexData[index].belowCellLimit();
+}
+
 void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {
 	switch (complexData[index].getType()) {
 	case ObjectType::UNIT:
