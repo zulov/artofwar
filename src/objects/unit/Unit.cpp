@@ -163,7 +163,7 @@ void Unit::toShot(std::vector<Physical*>* enemies) {
 }
 
 void Unit::toCollect(std::vector<Physical*>* resources) {
-	auto [closest, minDistance] = closestPhysical(this, resources, belowCloseAndFreeBucket, posToFollow);//TODO dodatkwoy warunek czy wolny , dystans 0 jesli w odpowiednim bykecie
+	auto [closest, minDistance] = closestPhysical(this, resources, belowClose, posToFollow);//TODO dystans 0 jesli w odpowiednim bykecie
 	gridIndexToInteract??
 	actionIfCloseEnough(UnitState::COLLECT, closest, minDistance, attackRange, attackIntrest);
 }

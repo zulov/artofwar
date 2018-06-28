@@ -31,15 +31,40 @@ std::string Static::getColumns() {
 		+ "bucket_y		INT     NOT NULL,";
 }
 
+bool Static::belowCloseLimit() {
+	return Physical::belowCloseLimit() && hasFreeSpace();
+
+}
+
+bool Static::hasFreeSpace() const {
+	auto env = Game::getEnviroment();
+	for (auto index : surroundCells) {
+		auto type = env->getType(index);
+		if (canCollect(env, index, type)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Static::canCollect(Enviroment* env, int index, CellState type) const {
+	return (type == CellState::EMPTY || type == CellState::COLLECT)//TODO collect or attack
+		&& env->getCurrentSize(index) <= 2;
+}
+
 Vector2 Static::getClosestCellPos(Vector3* pos) const {
-	float closestDist = 999999; //TODO do zastapienia tym z unita
+	float closestDist = 999999;
 	Vector2 closest;
-	for (auto index : ocupiedCells) {
-		Vector2 vec = Game::getEnviroment()->getCenter(index);
-		float dist = sqDist(vec, *pos);
-		if (dist < closestDist) {
-			closestDist = dist;
-			closest = vec;
+	auto env = Game::getEnviroment();
+	for (auto index : surroundCells) {
+		auto type = env->getType(index);
+		if (canCollect(env, index, type)) {
+			Vector2 vec = Game::getEnviroment()->getCenter(index);
+			float dist = sqDist(vec, *pos);
+			if (dist < closestDist) {
+				closestDist = dist;
+				closest = vec;
+			}
 		}
 	}
 	return closest;

@@ -15,8 +15,6 @@ public:
 
 	static std::string getColumns();
 
-
-	bool belowCloseLimit() const override;
 	int getDbID() override;
 	bool isAlive() const override;
 	float getMaxHpBarSize() override;
@@ -24,9 +22,7 @@ public:
 	String& toMultiLineString() override;
 	std::string getValues(int precision) override;
 private:
-	bool hasFreeSpace() const;
 
 	db_resource* dbResource;
 	float amonut;
-	unsigned char userPerCell = 1;
 };

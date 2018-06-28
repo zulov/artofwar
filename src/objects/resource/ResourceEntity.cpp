@@ -68,28 +68,9 @@ std::string ResourceEntity::getValues(int precision) {
 		+ to_string(amountI);
 }
 
-bool ResourceEntity::hasFreeSpace() const {
-	auto env = Game::getEnviroment();
-	for (auto index : surroundCells) {
-		auto type = env->getType(index);
-		if (type == CellState::EMPTY || type == CellState::COLLECT) {
-			if (env->getCurrentSize(index) <= userPerCell) {//TODO zmianiac siza
-				return true;
-			}
-		}
-
-	}
-	return false;
-}
-
 std::string ResourceEntity::getColumns() {
 	return Static::getColumns() +
 		"amount		INT     NOT NULL";
-}
-
-bool ResourceEntity::belowCloseLimit() const {
-	return Physical::belowCloseLimit()
-		&& hasFreeSpace();
 }
 
 float ResourceEntity::collect(float collectSpeed) {
