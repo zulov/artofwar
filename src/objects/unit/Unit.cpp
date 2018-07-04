@@ -18,6 +18,7 @@
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Graphics/Technique.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
 
@@ -90,6 +91,7 @@ void Unit::move(double timeStep) {
 		position->x_ += velocity.x_ * timeStep;
 		position->z_ += velocity.y_ * timeStep;
 		node->SetPosition(*position);
+		debug();
 		//node->Translate((*velocity) * timeStep, TS_WORLD);
 	}
 	if (missleData && missleData->isUp()) {
@@ -163,8 +165,9 @@ void Unit::toShot(std::vector<Physical*>* enemies) {
 }
 
 void Unit::toCollect(std::vector<Physical*>* resources) {
-	auto [closest, minDistance] = closestPhysical(this, resources, belowClose, posToFollow);//TODO dystans 0 jesli w odpowiednim bykecie
-	gridIndexToInteract??
+	auto [closest, minDistance] = closestPhysical(this, resources, belowClose, posToFollow);
+	//TODO dystans 0 jesli w odpowiednim bykecie
+	//gridIndexToInteract??
 	actionIfCloseEnough(UnitState::COLLECT, closest, minDistance, attackRange, attackIntrest);
 }
 
@@ -204,6 +207,34 @@ void Unit::addAim(const FutureAim& aim, bool append) {
 		clearAims();
 	}
 	aims.add(aim);
+}
+
+void Unit::debug() {
+	line = node->GetOrCreateComponent<CustomGeometry>();
+	// line->Clear();
+	// line->SetNumGeometries(1);
+	// line->BeginGeometry(0, PrimitiveType::LINE_LIST);
+	// //cg->DefineGeometry(0, PrimitiveType::POINT_LIST, 3, false,true, false, false);
+	// line->DefineVertex(Vector3(0, 2, 0));
+	// Vector3 end(velocity.x_, 2, velocity.y_);
+	// line->DefineVertex(end);
+	//
+	// line->SetMaterial(Game::getCache()->GetResource<Material>("Materials/red_overlay.xml"));
+	// line->Commit();
+
+	line->Clear();
+	line->SetNumGeometries(1);
+	line->BeginGeometry(0, PrimitiveType::TRIANGLE_LIST);
+	line->DefineVertex(Vector3(10, 0, 0));
+	line->DefineVertex(Vector3(0, -10, 0));
+	line->DefineVertex(Vector3(-10, 0, 0));
+	line->DefineColor(Color::WHITE);
+	auto mat = new Material(Game::getContext());
+	auto teq = Game::getCache()->GetResource<Technique>("Techniques/NoTextureUnlitVCol.xml");
+	mat->SetTechnique(0, teq);
+	mat->SetFillMode(FillMode::FILL_SOLID);
+	line->SetMaterial(mat);
+	line->Commit();
 }
 
 void Unit::clearAims() {

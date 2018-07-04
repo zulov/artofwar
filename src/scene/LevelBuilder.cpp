@@ -12,6 +12,7 @@
 #include <Urho3D/Graphics/Technique.h>
 #include <Urho3D/Graphics/Terrain.h>
 #include <Urho3D/Graphics/Zone.h>
+#include <Urho3D/Graphics/CustomGeometry.h>
 #include <Urho3D/Resource/ResourceCache.h>
 
 LevelBuilder::LevelBuilder() {
@@ -19,6 +20,7 @@ LevelBuilder::LevelBuilder() {
 	scene = new Scene(Game::getContext());
 
 	scene->CreateComponent<Octree>();
+
 	Game::setScene(scene);
 }
 

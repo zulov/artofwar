@@ -28,7 +28,7 @@ public:
 	bool isFirstThingAlive();
 	bool hasEnemy();
 
-	virtual bool belowCloseLimit() { return closeUsers < maxCloseUsers; }
+	virtual bool belowCloseLimit();
 	void reduceClose() { --closeUsers; }
 	void upClose() { ++closeUsers; }
 

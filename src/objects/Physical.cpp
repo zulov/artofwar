@@ -153,6 +153,8 @@ bool Physical::isFirstThingAlive() {
 		&& thingsToInteract[0]->isAlive();
 }
 
+bool Physical::belowCloseLimit() { return closeUsers < maxCloseUsers; }
+
 bool Physical::hasEnemy() {
 	if (isFirstThingAlive()) {
 		if (sqDist(this, thingsToInteract[0]) < attackRange * attackRange) {

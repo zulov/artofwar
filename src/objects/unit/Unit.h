@@ -6,6 +6,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
 #include <tuple>
+#include <Urho3D/Graphics/CustomGeometry.h>
 
 enum class ColorMode : char;
 struct db_unit_upgrade;
@@ -54,7 +55,7 @@ public:
 	void toShot(std::vector<Physical*>* enemies);
 	void toCharge(std::vector<Physical*>* enemies);
 
-	void interactWithOne(Physical* enemy, UnitState action);
+	void interactWithOne(Physical* thing, UnitState action);
 
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
@@ -74,6 +75,8 @@ public:
 	void addUpgrade(db_unit_upgrade* upgrade);
 	void changeColor(ColorMode mode);
 	void addAim(const FutureAim& aim, bool append = false);
+
+	void debug();
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
 	UnitState getActionState() const { return actionState; }
@@ -130,4 +133,6 @@ private:
 	short formation = -1;
 
 	unsigned short currentFrameState = 0;
+
+	CustomGeometry* line;
 };

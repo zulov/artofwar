@@ -1,6 +1,7 @@
 #pragma once
 #include "Physical.h"
-#include "simulation/env/Enviroment.h"
+
+enum class CellState : char;
 
 class Static : public Physical
 {
@@ -13,8 +14,7 @@ public:
 
 	bool belowCloseLimit() override;
 	bool hasFreeSpace() const;
-	bool canCollect(Enviroment* env, int index, CellState type) const;
-	bool hasFreeSpace();
+	bool canCollect(int index, CellState type) const;
 
 	Vector2 getClosestCellPos(Vector3* pos) const;
 

@@ -89,4 +89,5 @@ private:
 	bool inited = false;
 
 	short coefToEdit = 0;
+
 };
