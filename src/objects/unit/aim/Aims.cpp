@@ -75,3 +75,7 @@ void Aims::removeCurrentAim() {
 	delete current;
 	current = nullptr;
 }
+
+std::vector<Urho3D::Vector3> Aims::getDebugLines(Urho3D::Vector3* position) {
+	return current->getDebugLines(position);
+}

@@ -2,6 +2,9 @@
 #include <Urho3D/Math/Vector2.h>
 #include <optional>
 #include <vector>
+#include <algorithm>
+#include <Urho3D/Math/Vector3.h>
+#include <vector>
 
 
 class Aim;
@@ -22,6 +25,7 @@ public:
 	void clear();
 	void removeCurrentAim();
 	bool hasAim() const { return current != nullptr || !nextAims.empty(); }
+	std::vector<Urho3D::Vector3> getDebugLines(Urho3D::Vector3* position);
 private:
 	std::vector<FutureAim> nextAims;
 	Aim* current;

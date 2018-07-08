@@ -12,6 +12,8 @@ enum class DebugUnitType : char
 	FORMATION,
 	ESCAPE,
 
-	ALL_FORCE
+	ALL_FORCE,
+
+	AIM
 
 };

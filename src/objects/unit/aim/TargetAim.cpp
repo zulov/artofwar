@@ -1,8 +1,8 @@
 #include "TargetAim.h"
 #include "../Unit.h"
 #include "Game.h"
-#include "simulation/env/Enviroment.h"
 #include "MathUtils.h"
+#include "simulation/env/Enviroment.h"
 
 
 TargetAim::TargetAim(std::vector<int>& _path) :
@@ -11,6 +11,18 @@ TargetAim::TargetAim(std::vector<int>& _path) :
 
 
 TargetAim::~TargetAim() = default;
+
+std::vector<Urho3D::Vector3> TargetAim::getDebugLines(Urho3D::Vector3* position) {
+	std::vector<Urho3D::Vector3> points;
+	points.emplace_back(0, 2, 0);
+	for (short i = current; i < path.size(); ++i) {
+		auto center = Game::getEnviroment()->getCenter(path[i]);
+		points.emplace_back(center.x_ - position->x_, 2, center.y_ - position->z_);
+		points.emplace_back(center.x_ - position->x_, 2, center.y_ - position->z_);
+	}
+	points.pop_back();
+	return points;
+}
 
 Urho3D::Vector2 TargetAim::getDirection(Unit* unit) {
 	Vector2 position = Game::getEnviroment()->getCenter(path[current]);

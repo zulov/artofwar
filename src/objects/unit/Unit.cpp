@@ -50,6 +50,7 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	setTeam(Game::getPlayersManager()->getPlayer(player)->getTeam());
 
 	updateBillbords();
+	line = node->GetOrCreateComponent<CustomGeometry>();
 }
 
 Unit::~Unit() {
@@ -220,7 +221,7 @@ void Unit::drawLine(CustomGeometry* line, const Vector3& first, const Vector3& s
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
 	if constexpr (UNIT_DEBUG_ENABLED) {
 		if (billboardBar->enabled_) {
-			line = node->GetOrCreateComponent<CustomGeometry>();
+
 			line->Clear();
 			line->SetNumGeometries(1);
 			line->BeginGeometry(0, PrimitiveType::LINE_LIST);
@@ -257,6 +258,14 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				drawLine(line, Vector3(0, 2, 0), Vector3(stats.formLast.x_, 2, stats.formLast.y_), Color::YELLOW);
 				drawLine(line, Vector3(0, 2, 0), Vector3(stats.escaLast.x_, 2, stats.escaLast.y_), Color::CYAN);
 				break;
+			case DebugUnitType::AIM:
+				if (aims.hasAim()) {
+					vector<Vector3> lines = aims.getDebugLines(position);
+					for (int i = 0; i < lines.size() - 1; ++i) {
+						drawLine(line, lines[i], lines[i + 1], Color::WHITE);
+					}
+				}
+				break;
 			default: ;
 			}
 
@@ -267,8 +276,8 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 			mat->SetFillMode(FillMode::FILL_SOLID);
 			line->SetMaterial(mat);
 			line->Commit();
-		}else {
-			line->Clear();//TODO moze to zrobic tylko raz przy deslekcie
+		} else {
+			line->Clear(); //TODO moze to zrobic tylko raz przy deslekcie
 			line->Commit();
 		}
 	}

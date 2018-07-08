@@ -18,4 +18,8 @@ public:
 	bool expired() override {
 		return false;
 	}
+
+	std::vector<Urho3D::Vector3> getDebugLines(Urho3D::Vector3* position) override {
+		return {};
+	}
 };
