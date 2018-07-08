@@ -17,12 +17,13 @@
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
-#include <ctime>
 #include "SimulationObjectManager.h"
 #include "commands/upgrade/UpgradeCommandList.h"
 #include "SimulationInfo.h"
 #include "objects/building/Building.h"
 #include "player/Player.h"
+#include "DebugUnitType.h"
+#include <ctime>
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {
@@ -202,11 +203,11 @@ void Simulation::updateQueues() {
 	}
 }
 
-void Simulation::dispose() {
+void Simulation::dispose() const {
 	simObjectManager->dispose();
 }
 
-void Simulation::save(SceneSaver& saver) {
+void Simulation::save(SceneSaver& saver) const {
 	saver.saveUnits(units);
 	saver.saveBuildings(buildings);
 	saver.saveResourceEntities(resources);
@@ -220,7 +221,7 @@ void Simulation::changeColorMode(ColorMode _colorMode) {
 	colorScheme = _colorMode;
 }
 
-void Simulation::performStateAction() {
+void Simulation::performStateAction() const {
 	for (auto unit : *units) {
 		StateManager::execute(unit);
 	}
@@ -267,25 +268,25 @@ void Simulation::executeLists() const {
 	creationCommandList->execute();
 }
 
-void Simulation::initScene(SceneLoader& loader) {
+void Simulation::initScene(SceneLoader& loader) const {
 	//loadEntities(loader);
 	addTestEntities();
 	executeLists();
 }
 
-void Simulation::initScene(NewGameForm* form) {
+void Simulation::initScene(NewGameForm* form) const {
 	loadEntities(form);
 	addTestEntities();
 	executeLists();
 }
 
-void Simulation::moveUnits(const float timeStep) {
+void Simulation::moveUnits(const float timeStep) const {
 	for (auto unit : *units) {
 		unit->move(timeStep);
 	}
 }
 
-void Simulation::moveUnitsAndCheck(const float timeStep) {
+void Simulation::moveUnitsAndCheck(const float timeStep) const {
 	for (auto unit : *units) {
 		unit->move(timeStep);
 		unit->checkAim();
@@ -305,8 +306,10 @@ void Simulation::calculateForces() {
 		force.formation(newForce, unit);
 		force.escapeFromInvalidPosition(newForce, enviroment->validatePosition(unit->getPosition()));
 
-		float* stats = force.stats();
+		auto stats = force.stats();
+		stats.result();
 
+		unit->debug(DebugUnitType::ALL_FORCE, stats);
 		unit->setAcceleration(newForce);
 	}
 }

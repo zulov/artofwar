@@ -106,8 +106,8 @@ void Force::escapeFromInvalidPosition(Vector2& newForce, Vector2* dir) {
 	}
 }
 
-float* Force::stats() {
-	return forceStats.result();
+ForceStats& Force::stats() {
+	return forceStats;
 }
 
 void Force::changeCoef(int i, int wheel) {

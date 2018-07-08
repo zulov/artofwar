@@ -32,19 +32,19 @@ public:
 	~Simulation();
 	SimulationInfo* update(float timeStep);
 	void executeLists() const;
-	void initScene(SceneLoader& loader);
-	void initScene(NewGameForm* form);
+	void initScene(SceneLoader& loader) const;
+	void initScene(NewGameForm* form) const;
 
-	void dispose();
-	void save(SceneSaver& saver);
+	void dispose() const;
+	void save(SceneSaver& saver) const;
 	void changeCoef(int i, int wheel);
 	void changeColorMode(ColorMode _colorMode);
 
 private:
-	void moveUnits(float timeStep);
-	void moveUnitsAndCheck(float timeStep);
+	void moveUnits(float timeStep) const;
+	void moveUnitsAndCheck(float timeStep) const;
 	void calculateForces();
-	void performStateAction();
+	void performStateAction() const;
 	void handleTimeInFrame(float timeStep);
 	float updateTime(float timeStep);
 

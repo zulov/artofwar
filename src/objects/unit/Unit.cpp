@@ -21,6 +21,8 @@
 #include <Urho3D/Graphics/Technique.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
+#include "DebugUnitType.h"
+#include "simulation/force/ForceStats.h"
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
@@ -91,7 +93,6 @@ void Unit::move(double timeStep) {
 		position->x_ += velocity.x_ * timeStep;
 		position->z_ += velocity.y_ * timeStep;
 		node->SetPosition(*position);
-		debug();
 		//node->Translate((*velocity) * timeStep, TS_WORLD);
 	}
 	if (missleData && missleData->isUp()) {
@@ -209,32 +210,68 @@ void Unit::addAim(const FutureAim& aim, bool append) {
 	aims.add(aim);
 }
 
-void Unit::debug() {
-	line = node->GetOrCreateComponent<CustomGeometry>();
-	// line->Clear();
-	// line->SetNumGeometries(1);
-	// line->BeginGeometry(0, PrimitiveType::LINE_LIST);
-	// //cg->DefineGeometry(0, PrimitiveType::POINT_LIST, 3, false,true, false, false);
-	// line->DefineVertex(Vector3(0, 2, 0));
-	// Vector3 end(velocity.x_, 2, velocity.y_);
-	// line->DefineVertex(end);
-	//
-	// line->SetMaterial(Game::getCache()->GetResource<Material>("Materials/red_overlay.xml"));
-	// line->Commit();
+void Unit::drawLine(CustomGeometry* line, const Vector3& first, const Vector3& second, const Color& color) {
+	line->DefineVertex(first);
+	line->DefineColor(color);
+	line->DefineVertex(second);
+	line->DefineColor(color);
+}
 
-	line->Clear();
-	line->SetNumGeometries(1);
-	line->BeginGeometry(0, PrimitiveType::TRIANGLE_LIST);
-	line->DefineVertex(Vector3(10, 0, 0));
-	line->DefineVertex(Vector3(0, -10, 0));
-	line->DefineVertex(Vector3(-10, 0, 0));
-	line->DefineColor(Color::WHITE);
-	auto mat = new Material(Game::getContext());
-	auto teq = Game::getCache()->GetResource<Technique>("Techniques/NoTextureUnlitVCol.xml");
-	mat->SetTechnique(0, teq);
-	mat->SetFillMode(FillMode::FILL_SOLID);
-	line->SetMaterial(mat);
-	line->Commit();
+void Unit::debug(DebugUnitType type, ForceStats& stats) {
+	if constexpr (UNIT_DEBUG_ENABLED) {
+		if (billboardBar->enabled_) {
+			line = node->GetOrCreateComponent<CustomGeometry>();
+			line->Clear();
+			line->SetNumGeometries(1);
+			line->BeginGeometry(0, PrimitiveType::LINE_LIST);
+
+			switch (type) {
+			case DebugUnitType::NONE:
+				break;
+			case DebugUnitType::VELOCITY:
+				drawLine(line, Vector3(0, 2, 0), Vector3(velocity.x_, 2, velocity.y_), Color::WHITE);
+				break;
+			case DebugUnitType::ACCELERATION:
+				drawLine(line, Vector3(0, 2, 0), Vector3(acceleration.x_, 2, acceleration.y_), Color::WHITE);
+				break;
+			case DebugUnitType::SEPARATION_UNITS:
+				drawLine(line, Vector3(0, 2, 0), Vector3(stats.sepUnitLast.x_, 2, stats.sepUnitLast.y_), Color::WHITE);
+				break;
+			case DebugUnitType::SEPARATION_OBSTACLE:
+				drawLine(line, Vector3(0, 2, 0), Vector3(stats.sepObstLast.x_, 2, stats.sepObstLast.y_), Color::WHITE);
+				break;
+			case DebugUnitType::DESTINATION:
+				drawLine(line, Vector3(0, 2, 0), Vector3(stats.destLast.x_, 2, stats.destLast.y_), Color::WHITE);
+				break;
+			case DebugUnitType::FORMATION:
+				drawLine(line, Vector3(0, 2, 0), Vector3(stats.formLast.x_, 2, stats.formLast.y_), Color::WHITE);
+				break;
+			case DebugUnitType::ESCAPE:
+				drawLine(line, Vector3(0, 2, 0), Vector3(stats.escaLast.x_, 2, stats.escaLast.y_), Color::WHITE);
+				break;
+			case DebugUnitType::ALL_FORCE:
+				drawLine(line, Vector3(0, 2, 0), Vector3(velocity.x_, 2, velocity.y_), Color::WHITE);
+				drawLine(line, Vector3(0, 2, 0), Vector3(stats.sepUnitLast.x_, 2, stats.sepUnitLast.y_), Color::RED);
+				drawLine(line, Vector3(0, 2, 0), Vector3(stats.sepObstLast.x_, 2, stats.sepObstLast.y_), Color::GREEN);
+				drawLine(line, Vector3(0, 2, 0), Vector3(stats.destLast.x_, 2, stats.destLast.y_), Color::BLUE);
+				drawLine(line, Vector3(0, 2, 0), Vector3(stats.formLast.x_, 2, stats.formLast.y_), Color::YELLOW);
+				drawLine(line, Vector3(0, 2, 0), Vector3(stats.escaLast.x_, 2, stats.escaLast.y_), Color::CYAN);
+				break;
+			default: ;
+			}
+
+
+			auto mat = new Material(Game::getContext());
+			auto teq = Game::getCache()->GetResource<Technique>("Techniques/NoTextureUnlitVCol.xml");
+			mat->SetTechnique(0, teq);
+			mat->SetFillMode(FillMode::FILL_SOLID);
+			line->SetMaterial(mat);
+			line->Commit();
+		}else {
+			line->Clear();//TODO moze to zrobic tylko raz przy deslekcie
+			line->Commit();
+		}
+	}
 }
 
 void Unit::clearAims() {

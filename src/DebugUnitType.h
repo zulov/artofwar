@@ -1,0 +1,17 @@
+#pragma once
+enum class DebugUnitType : char
+{
+	NONE=0,
+
+	VELOCITY,
+	ACCELERATION,
+
+	SEPARATION_UNITS,
+	SEPARATION_OBSTACLE,
+	DESTINATION,
+	FORMATION,
+	ESCAPE,
+
+	ALL_FORCE
+
+};

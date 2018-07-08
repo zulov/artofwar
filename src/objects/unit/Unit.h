@@ -8,6 +8,8 @@
 #include <tuple>
 #include <Urho3D/Graphics/CustomGeometry.h>
 
+struct ForceStats;
+enum class DebugUnitType : char;
 enum class ColorMode : char;
 struct db_unit_upgrade;
 struct db_unit_level;
@@ -76,7 +78,8 @@ public:
 	void changeColor(ColorMode mode);
 	void addAim(const FutureAim& aim, bool append = false);
 
-	void debug();
+	void drawLine(CustomGeometry* line, const Vector3& first, const Vector3& second, const Color& color);
+	void debug(DebugUnitType type, ForceStats& stats);
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
 	UnitState getActionState() const { return actionState; }

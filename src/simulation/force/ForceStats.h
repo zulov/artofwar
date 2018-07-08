@@ -1,6 +1,7 @@
 #pragma once
 #include <Urho3D/Math/Vector2.h>
 #include <iostream>
+#include "defines.h"
 
 #define FORCE_STATS_SIZE 1000
 #define FORCE_STATS_ENABLE false
@@ -24,22 +25,42 @@ struct ForceStats
 		if constexpr (FORCE_STATS_ENABLE) {
 			sepObstStat += force.Length();
 		}
+		if constexpr (UNIT_DEBUG_ENABLED) {
+			sepObstLast = force;
+			sepObstLast.Normalize();
+		}
 	}
 
 	void addSepUnit(Urho3D::Vector2& force) {
 		if constexpr (FORCE_STATS_ENABLE) { sepUnitStat += force.Length(); }
+		if constexpr (UNIT_DEBUG_ENABLED) {
+			sepUnitLast = force;
+			sepUnitLast.Normalize();
+		}
 	}
 
 	void addDest(Urho3D::Vector2& force) {
 		if constexpr (FORCE_STATS_ENABLE) { destStat += force.Length(); }
+		if constexpr (UNIT_DEBUG_ENABLED) {
+			destLast = force;
+			destLast.Normalize();
+		}
 	}
 
 	void addForm(Urho3D::Vector2& force) {
 		if constexpr (FORCE_STATS_ENABLE) { formStat += force.Length(); }
+		if constexpr (UNIT_DEBUG_ENABLED) {
+			formLast = force;
+			formLast.Normalize();
+		}
 	}
 
 	void addEscp(Urho3D::Vector2& force) {
 		if constexpr (FORCE_STATS_ENABLE) { escaStat += force.Length(); }
+		if constexpr (UNIT_DEBUG_ENABLED) {
+			escaLast = force;
+			escaLast.Normalize();
+		}
 	}
 
 	float* result() {
@@ -59,14 +80,24 @@ struct ForceStats
 				reset();
 			}
 		}
+		longestLast = 0;
 		return stats;
 	}
+
+	Urho3D::Vector2 sepObstLast;
+	Urho3D::Vector2 sepUnitLast;
+	Urho3D::Vector2 destLast;
+	Urho3D::Vector2 formLast;
+	Urho3D::Vector2 escaLast;
+
+	float longestLast = 0;
 
 	float sepObstStat;
 	float sepUnitStat;
 	float destStat;
 	float formStat;
 	float escaStat;
+
 	float stats[5];
 
 	short statIndex = 0;
