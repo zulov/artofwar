@@ -213,9 +213,9 @@ void Unit::addAim(const FutureAim& aim, bool append) {
 
 void Unit::drawLine(CustomGeometry* line, const Vector3& first, const Vector3& second,
                     const Color& color = Color::WHITE) {
-	line->DefineVertex(first);
+	line->DefineVertex(first / dbLevel->scale);
 	line->DefineColor(color);
-	line->DefineVertex(second);
+	line->DefineVertex(second / dbLevel->scale);
 	line->DefineColor(color);
 }
 
@@ -226,44 +226,44 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 			line->Clear();
 			line->SetNumGeometries(1);
 			line->BeginGeometry(0, PrimitiveType::LINE_LIST);
-
 			switch (type) {
 			case DebugUnitType::NONE:
 				break;
 			case DebugUnitType::VELOCITY:
-				drawLine(line, Vector3(0, 2, 0), Vector3(velocity.x_, 2, velocity.y_));
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(velocity.x_, 0.5, velocity.y_));
 				break;
 			case DebugUnitType::ACCELERATION:
-				drawLine(line, Vector3(0, 2, 0), Vector3(acceleration.x_, 2, acceleration.y_));
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(acceleration.x_, 0.5, acceleration.y_));
 				break;
 			case DebugUnitType::SEPARATION_UNITS:
-				drawLine(line, Vector3(0, 2, 0), Vector3(stats.sepUnitLast.x_, 2, stats.sepUnitLast.y_));
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_));
 				break;
 			case DebugUnitType::SEPARATION_OBSTACLE:
-				drawLine(line, Vector3(0, 2, 0), Vector3(stats.sepObstLast.x_, 2, stats.sepObstLast.y_));
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_));
 				break;
 			case DebugUnitType::DESTINATION:
-				drawLine(line, Vector3(0, 2, 0), Vector3(stats.destLast.x_, 2, stats.destLast.y_));
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.destLast.x_, 0.5, stats.destLast.y_));
 				break;
 			case DebugUnitType::FORMATION:
-				drawLine(line, Vector3(0, 2, 0), Vector3(stats.formLast.x_, 2, stats.formLast.y_));
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.formLast.x_, 0.5, stats.formLast.y_));
 				break;
 			case DebugUnitType::ESCAPE:
-				drawLine(line, Vector3(0, 2, 0), Vector3(stats.escaLast.x_, 2, stats.escaLast.y_));
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_));
 				break;
 			case DebugUnitType::ALL_FORCE:
-				drawLine(line, Vector3(0, 2, 0), Vector3(velocity.x_, 2, velocity.y_));
-				drawLine(line, Vector3(0, 2, 0), Vector3(stats.sepUnitLast.x_, 2, stats.sepUnitLast.y_), Color::RED);
-				drawLine(line, Vector3(0, 2, 0), Vector3(stats.sepObstLast.x_, 2, stats.sepObstLast.y_), Color::GREEN);
-				drawLine(line, Vector3(0, 2, 0), Vector3(stats.destLast.x_, 2, stats.destLast.y_), Color::BLUE);
-				drawLine(line, Vector3(0, 2, 0), Vector3(stats.formLast.x_, 2, stats.formLast.y_), Color::YELLOW);
-				drawLine(line, Vector3(0, 2, 0), Vector3(stats.escaLast.x_, 2, stats.escaLast.y_), Color::CYAN);
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(velocity.x_,0.5, velocity.y_));
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_), Color::RED);
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_), Color::GREEN);
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.destLast.x_, 0.5, stats.destLast.y_), Color::BLUE);
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.formLast.x_, 0.5, stats.formLast.y_), Color::YELLOW);
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_), Color::CYAN);
 				break;
 			case DebugUnitType::AIM:
 				if (aims.hasAim()) {
+
 					vector<Vector3> lines = aims.getDebugLines(position);
 					for (int i = 0; i < lines.size() - 1; ++i) {
-						drawLine(line, lines[i], lines[i + 1], Color::WHITE);
+						drawLine(line, lines[i], lines[i + 1]);
 					}
 				}
 				break;

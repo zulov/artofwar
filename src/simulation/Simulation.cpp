@@ -309,7 +309,7 @@ void Simulation::calculateForces() {
 		auto stats = force.stats();
 		stats.result();
 
-		unit->debug(DebugUnitType::AIM, stats);
 		unit->setAcceleration(newForce);
+		unit->debug(DebugUnitType::AIM, stats);
 	}
 }
