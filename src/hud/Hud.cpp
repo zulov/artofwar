@@ -30,7 +30,6 @@ void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 	exprtk::symbol_table<float> symbol_table;
 	int varsSize = Game::getDatabaseCache()->getHudVarsSize();
 	for (int i = 0; i < varsSize; ++i) {
-		//TODO to lepiej zrobiczapytaniem?
 		db_hud_vars* var = Game::getDatabaseCache()->getHudVar(i);
 		if (var != nullptr && var->hud_size == hudSizeId) {
 			symbol_table.add_variable(var->name.CString(), var->value);
@@ -73,7 +72,6 @@ void Hud::createCursor() {
 }
 
 void Hud::createMyPanels() {
-
 	panels.push_back(selectedHudPanel = new SelectedHudPanel(style));
 	panels.push_back(debugPanel = new DebugPanel(style));
 	panels.push_back(topPanel = new TopPanel(style));
