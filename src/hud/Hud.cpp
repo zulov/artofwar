@@ -23,7 +23,55 @@
 #include <exprtk/exprtk.hpp>
 #include <regex>
 #include "HudData.h"
+#include <iostream>
+#include "Loading.h"
 
+namespace std {
+
+	template <class BidirIt, class Traits, class CharT>
+	std::basic_string<CharT> regex_replace(BidirIt first, BidirIt last,
+	                                       const std::basic_regex<CharT, Traits>& re, vector<int>& values) {
+		std::basic_string<CharT> s;
+
+		typename std::match_results<BidirIt>::difference_type
+			positionOfLastMatch = 0;
+		auto endOfLastMatch = first;
+
+		int i = 0;
+		auto callback = [&](const std::match_results<BidirIt>& match)
+		{
+			auto positionOfThisMatch = match.position(0);
+			auto diff = positionOfThisMatch - positionOfLastMatch;
+
+			auto startOfThisMatch = endOfLastMatch;
+			std::advance(startOfThisMatch, diff);
+
+			s.append(endOfLastMatch, startOfThisMatch);
+			s.append(std::to_string(values[i++]));
+
+			auto lengthOfMatch = match.length(0);
+
+			positionOfLastMatch = positionOfThisMatch + lengthOfMatch;
+
+			endOfLastMatch = startOfThisMatch;
+			std::advance(endOfLastMatch, lengthOfMatch);
+		};
+
+		std::regex_iterator<BidirIt> begin(first, last, re), end;
+		std::for_each(begin, end, callback);
+
+		s.append(endOfLastMatch, last);
+
+		return s;
+	}
+
+	template <class Traits, class CharT>
+	std::string regex_replace(const std::string& s,
+	                          const std::basic_regex<CharT, Traits>& re, vector<int>& values) {
+		return regex_replace(s.cbegin(), s.cend(), re, values);
+	}
+
+}
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 	exprtk::symbol_table<float> symbol_table;
@@ -49,20 +97,18 @@ void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 
 	std::regex_iterator<std::string::iterator> iterator(xml.begin(), xml.end(), reg);
 	std::regex_iterator<std::string::iterator> rend;
-	std::vector<double> values;
+	std::vector<int> values;
 
 	while (iterator != rend) {
 		std::string expression_string = iterator->str().substr(1, iterator->str().length() - 2);
 		parser_t parser;
 		parser.compile(expression_string, expression);
 		double y = expression.value();
-		values.push_back(y);
+		values.push_back((int)y);
 		++iterator;
 	}
 
-	for (auto var : values) {
-		xml = std::regex_replace(xml, reg, std::to_string((int)var), regex_constants::format_first_only);
-	}
+	xml = regex_replace(xml, reg, values);
 }
 
 void Hud::createCursor() {
