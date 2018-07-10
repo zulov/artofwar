@@ -460,6 +460,7 @@
     <ClInclude Include="src\objects\PhysicalUtils.h" />
     <ClInclude Include="src\objects\CellState.h" />
     <ClInclude Include="src\DebugUnitType.h" />
+    <ClInclude Include="src\replace_utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
