@@ -20,6 +20,7 @@ ColorPeletteRepo::ColorPeletteRepo() {
 		statePallet[i]->SetName("StatePallet_" + Urho3D::String(i));
 		Game::getCache()->AddManualResource(statePallet[i]);
 	}
+	lineMaterial = Game::getCache()->GetResource<Urho3D::Material>("Materials/line.xml");
 }
 
 
@@ -42,4 +43,8 @@ Urho3D::Material* ColorPeletteRepo::getColor(ColorPallet colorPallet, float valu
 
 Urho3D::Material* ColorPeletteRepo::getColor(UnitState state) {
 	return statePallet[static_cast<char>(state)];
+}
+
+Urho3D::Material* ColorPeletteRepo::getLineMaterial() const {
+	return lineMaterial;
 }

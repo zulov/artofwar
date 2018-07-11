@@ -14,7 +14,9 @@ public:
 	~ColorPeletteRepo();
 	Urho3D::Material* getColor(ColorPallet colorPallet, float value, float maxValue);
 	Urho3D::Material* getColor(UnitState state);
+	Urho3D::Material* getLineMaterial() const;
 private:
 	Urho3D::Material* redPallet[PALLET_RESOLUTION + 1];
 	Urho3D::Material* statePallet[STATE_SIZE];
+	Urho3D::Material* lineMaterial;
 };

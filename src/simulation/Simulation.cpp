@@ -310,6 +310,6 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);
-		unit->debug(DebugUnitType::AIM, stats);
+		unit->debug(DebugUnitType::ALL_FORCE, stats);
 	}
 }

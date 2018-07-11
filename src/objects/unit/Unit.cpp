@@ -50,7 +50,9 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	setTeam(Game::getPlayersManager()->getPlayer(player)->getTeam());
 
 	updateBillbords();
-	line = node->GetOrCreateComponent<CustomGeometry>();
+	if constexpr (UNIT_DEBUG_ENABLED) {
+		line = node->GetOrCreateComponent<CustomGeometry>();
+	}
 }
 
 Unit::~Unit() {
@@ -251,16 +253,17 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_));
 				break;
 			case DebugUnitType::ALL_FORCE:
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(velocity.x_,0.5, velocity.y_));
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_), Color::RED);
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_), Color::GREEN);
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(velocity.x_, 0.5, velocity.y_));
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_),
+				         Color::RED);
+				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_),
+				         Color::GREEN);
 				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.destLast.x_, 0.5, stats.destLast.y_), Color::BLUE);
 				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.formLast.x_, 0.5, stats.formLast.y_), Color::YELLOW);
 				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_), Color::CYAN);
 				break;
 			case DebugUnitType::AIM:
 				if (aims.hasAim()) {
-
 					vector<Vector3> lines = aims.getDebugLines(position);
 					for (int i = 0; i < lines.size() - 1; ++i) {
 						drawLine(line, lines[i], lines[i + 1]);
@@ -269,13 +272,7 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				break;
 			default: ;
 			}
-
-
-			auto mat = new Material(Game::getContext());
-			auto teq = Game::getCache()->GetResource<Technique>("Techniques/NoTextureUnlitVCol.xml");
-			mat->SetTechnique(0, teq);
-			mat->SetFillMode(FillMode::FILL_SOLID);
-			line->SetMaterial(mat);
+			line->SetMaterial(Game::getColorPeletteRepo()->getLineMaterial());
 			line->Commit();
 		} else {
 			line->Clear(); //TODO moze to zrobic tylko raz przy deslekcie
