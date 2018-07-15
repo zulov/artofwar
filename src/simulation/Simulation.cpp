@@ -298,7 +298,7 @@ void Simulation::calculateForces() {
 	for (auto unit : *units) {
 		Vector2 newForce;
 
-		std::vector<Physical*>* neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
+		const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
 		force.separationUnits(newForce, unit, neighbours);
 		force.separationObstacle(newForce, unit, enviroment->repulseObstacle(unit));
@@ -310,6 +310,6 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);
-		unit->debug(DebugUnitType::ALL_FORCE, stats);
+		unit->debug(DebugUnitType::AIM, stats);
 	}
 }

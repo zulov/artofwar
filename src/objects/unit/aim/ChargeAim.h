@@ -6,6 +6,8 @@ class ChargeAim : public Aim
 public:
 	ChargeAim(Urho3D::Vector2* _direction);
 	~ChargeAim();
+
+	std::vector<Urho3D::Vector3> getDebugLines(Urho3D::Vector3* position) override;
 	Urho3D::Vector2 getDirection(Unit* unit) override;
 	bool ifReach(Unit* unit) override;
 	bool expired() override;

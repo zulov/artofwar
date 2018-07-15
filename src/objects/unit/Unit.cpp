@@ -1,4 +1,5 @@
 #include "Unit.h"
+#include "DebugUnitType.h"
 #include "Game.h"
 #include "MathUtils.h"
 #include "ObjectEnums.h"
@@ -13,6 +14,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
+#include "simulation/force/ForceStats.h"
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
 #include <Urho3D/Graphics/Material.h>
@@ -21,8 +23,7 @@
 #include <Urho3D/Graphics/Technique.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
-#include "DebugUnitType.h"
-#include "simulation/force/ForceStats.h"
+
 
 
 Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
@@ -263,7 +264,7 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_), Color::CYAN);
 				break;
 			case DebugUnitType::AIM:
-				if (aims.hasAim()) {
+				if (aims.hasCurrent()) {
 					vector<Vector3> lines = aims.getDebugLines(position);
 					for (int i = 0; i < lines.size() - 1; ++i) {
 						drawLine(line, lines[i], lines[i + 1]);
