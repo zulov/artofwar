@@ -4,7 +4,7 @@
 
 
 FollowAim::FollowAim(const Physical* _physical): physical(_physical) {
-	radiusSq = 3 * 3;
+	radiusSq = 1 * 1;
 }
 
 FollowAim::~FollowAim() = default;

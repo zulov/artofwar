@@ -50,6 +50,9 @@ getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket) {
 
 void ComplexBucketData::updateSize(char val) {
 	size += val;
+	if (size <= 0) {
+		type = CellState::EMPTY;
+	}
 }
 
 bool ComplexBucketData::belowCellLimit() {

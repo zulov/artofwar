@@ -177,8 +177,8 @@ int Enviroment::getIndex(short x, short z) const {
 	return mainGrid.getIndex(x, z);
 }
 
-bool Enviroment::cellInState(int index, CellState cellState) const {
-	return mainGrid.cellInState(index, cellState);
+bool Enviroment::cellInState(int index, std::vector<CellState> cellStates) const {
+	return mainGrid.cellInStates(index, cellStates);
 }
 
 void Enviroment::updateCell(int index, char val) {

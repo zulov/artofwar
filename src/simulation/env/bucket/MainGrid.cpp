@@ -141,8 +141,13 @@ void MainGrid::updateSurround(Static* object) {
 	cells.insert(cells.begin(), indexes.begin(), indexes.end());
 }
 
-bool MainGrid::cellInState(int index, CellState cellState) const {
-	return complexData[index].getType() == cellState;
+bool MainGrid::cellInStates(int index, std::vector<CellState>& cellStates) const {
+	for (auto cellState : cellStates) {
+		if (complexData[index].getType() == cellState) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void MainGrid::updateCell(int index, char val) {
