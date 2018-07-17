@@ -48,10 +48,12 @@ getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket) {
 	return new Vector2(escapeBucket.getCenter().x_ - position->x_, escapeBucket.getCenter().y_ - position->z_);
 }
 
-void ComplexBucketData::updateSize(char val) {
+void ComplexBucketData::updateSize(char val, CellState cellState) {
 	size += val;
 	if (size <= 0) {
 		type = CellState::EMPTY;
+	}else {
+		type = cellState;
 	}
 }
 

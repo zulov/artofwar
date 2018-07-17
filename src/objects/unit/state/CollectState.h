@@ -33,7 +33,6 @@ public:
 
 			Game::getEnviroment()->updateCell(unit->getBucketIndex(-1), 1, CellState::RESOURCE);
 		} else {
-			unit->thingsToInteract.clear();
 			StateManager::changeState(unit, UnitState::STOP);
 		}
 	}
@@ -42,7 +41,7 @@ public:
 		State::onEnd(unit);
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceClose();
-			Game::getEnviroment()->updateCell(unit->getBucketIndex(-1), -1);
+			Game::getEnviroment()->updateCell(unit->getBucketIndex(-1), -1, CellState::EMPTY);
 		}
 		unit->thingsToInteract.clear();
 	}
@@ -50,13 +49,12 @@ public:
 	void execute(Unit* unit) override {
 		State::execute(unit);
 		if (unit->isFirstThingAlive()
-			&& Game::getEnviroment()->cellInState(unit->getBucketIndex(-1), {CellState::RESOURCE})) {
+			&& Game::getEnviroment()->cellInState(unit->getBucketIndex(-1), {CellState::RESOURCE})) {//TODO musi byc dokladnie w dobry mbuckecie
 			auto& resources = Game::getPlayersManager()->getPlayer(unit->player)->getResources();
 			auto resource = static_cast<ResourceEntity*>(unit->thingsToInteract[0]);
 			const float value = resource->collect(unit->collectSpeed);
 			resources.add(resource->getDbID(), value);
 		} else {
-			unit->thingsToInteract.clear();
 			StateManager::changeState(unit, UnitState::STOP);
 		}
 	}

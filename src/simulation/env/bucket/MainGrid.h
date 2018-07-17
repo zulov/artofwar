@@ -61,7 +61,7 @@ public:
 	CellState getType(int index) const { return complexData[index].getType(); }
 	char getCurrentSize(int index) const { return complexData[index].getSize(); }
 	bool cellInStates(int index, std::vector<CellState>& cellStates) const;
-	void updateCell(int index, char val);
+	void updateCell(int index, char val, CellState cellState);
 	bool belowCellLimit(int index);
 
 private:

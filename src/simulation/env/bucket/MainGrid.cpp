@@ -150,8 +150,8 @@ bool MainGrid::cellInStates(int index, std::vector<CellState>& cellStates) const
 	return false;
 }
 
-void MainGrid::updateCell(int index, char val) {
-	complexData[index].updateSize(val);
+void MainGrid::updateCell(int index, char val, CellState cellState) {
+	complexData[index].updateSize(val,cellState);
 }
 
 bool MainGrid::belowCellLimit(int index) {

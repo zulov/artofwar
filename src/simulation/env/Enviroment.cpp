@@ -181,8 +181,8 @@ bool Enviroment::cellInState(int index, std::vector<CellState> cellStates) const
 	return mainGrid.cellInStates(index, cellStates);
 }
 
-void Enviroment::updateCell(int index, char val) {
-	mainGrid.updateCell(index, val);
+void Enviroment::updateCell(int index, char val, CellState cellState) {
+	mainGrid.updateCell(index, val, cellState);
 }
 
 bool Enviroment::belowCellLimit(int index) {

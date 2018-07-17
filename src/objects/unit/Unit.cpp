@@ -150,8 +150,7 @@ void Unit::actionIfCloseEnough(UnitState action, Physical* closest, float sqDist
 	if (closest) {
 		if (sqDistance < closeRange * closeRange) {
 			interactWithOne(closest, action);
-		}
-		if (sqDistance < intrestRange * intrestRange) {
+		} else if (sqDistance < intrestRange * intrestRange) {
 			addAim(FutureAim(closest, UnitOrder::FOLLOW));
 		}
 	}
