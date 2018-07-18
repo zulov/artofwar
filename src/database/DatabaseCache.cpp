@@ -214,7 +214,7 @@ int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 int static loadUnitUpgrade(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container *>(data);
 	int pathId = atoi(argv[1]);
-	db_unit_upgrade* unitUpgrade = new db_unit_upgrade(
+	auto unitUpgrade = new db_unit_upgrade(
 	                                                   atoi(argv[0]), pathId, atoi(argv[2]), argv[3],
 	                                                   atof(argv[4]), atof(argv[5]), atof(argv[6]), atof(argv[7]),
 	                                                   atof(argv[8]), atof(argv[9]), atof(argv[10]), atof(argv[11]),

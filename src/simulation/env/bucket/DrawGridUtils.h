@@ -20,7 +20,7 @@ void draw_grid_path(std::vector<int>* path, Urho3D::Image* image, short resoluti
 }
 
 void draw_grid_from(int* cameFrom, Urho3D::Image* image, short resolution) {
-	uint32_t* data = (uint32_t*)image->GetData();
+	auto data = (uint32_t*)image->GetData();
 	for (int y = 0; y != resolution; ++y) {
 		for (int x = 0; x != resolution; ++x) {
 			int id = getIndex(x, y, resolution);

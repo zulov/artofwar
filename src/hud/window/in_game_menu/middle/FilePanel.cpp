@@ -5,7 +5,7 @@
 #include <Urho3D/UI/UIEvents.h>
 
 
-FilePanel::FilePanel(Urho3D::XMLFile* _style, Urho3D::String _title): AbstractMiddlePanel(_style, _title) {
+FilePanel::FilePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): AbstractMiddlePanel(_style, _title) {
 	data = nullptr;
 }
 
@@ -42,6 +42,6 @@ Urho3D::Button* FilePanel::getMainButton() {
 	return action;
 }
 
-void FilePanel::HandleValueChange(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+void FilePanel::HandleValueChange(const Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	data->fileName = Urho3D::String(lineEdit->GetText());
 }

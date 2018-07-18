@@ -421,7 +421,7 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {
 	Console* console = GetSubsystem<Console>();
 	if (console && console->IsVisible()) { return; }
-	Input* input = GetSubsystem<Input>();
+	auto input = GetSubsystem<Input>();
 	if (useMouseMode_ == MM_ABSOLUTE) {
 		input->SetMouseVisible(false);
 	} else if (useMouseMode_ == MM_FREE) {

@@ -5,7 +5,7 @@
 #include <string>
 
 
-Player::Player(int nationId, int team, int _id, int _color, Urho3D::String _name, bool _active) {
+Player::Player(int nationId, int team, int _id, int _color, const Urho3D::String _name, bool _active) {
 	dbNation = Game::getDatabaseCache()->getNation(nationId);
 	id = _id;
 	this->team = team;

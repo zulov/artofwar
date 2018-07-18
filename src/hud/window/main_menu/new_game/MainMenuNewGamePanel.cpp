@@ -79,7 +79,7 @@ void MainMenuNewGamePanel::HandleNewGame(Urho3D::StringHash eventType, Urho3D::V
 }
 
 void MainMenuNewGamePanel::populateLabels(Urho3D::Localization* l10n, int index, Urho3D::String name) {
-	Urho3D::Text* text = rows[index]->CreateChild<Urho3D::Text>();
+	auto text = rows[index]->CreateChild<Urho3D::Text>();
 	text->SetStyle("MainMenuNewGameButtonLabel", style);
 	text->SetText(l10n->Get(name));
 }
