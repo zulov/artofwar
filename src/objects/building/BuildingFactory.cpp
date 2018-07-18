@@ -20,8 +20,7 @@ create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _b
 	buildings->clear();
 	float y = Game::getEnviroment()->getGroundHeightAt(center.x_, center.y_);
 
-	Building* building = new Building(new Urho3D::Vector3(center.x_, y, center.y_), id, player, level, _bucketCords);
-	buildings->push_back(building);
+	buildings->push_back(new Building(new Urho3D::Vector3(center.x_, y, center.y_), id, player, level, _bucketCords));
 
 	return buildings;
 }

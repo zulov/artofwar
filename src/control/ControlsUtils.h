@@ -11,29 +11,29 @@
 #include <Urho3D/UI/UI.h>
 
 
-inline void resultQuery(const Ray& cameraRay, PODVector<RayQueryResult>& results) {
-	RayOctreeQuery query(results, cameraRay, RAY_TRIANGLE, 300, DRAWABLE_GEOMETRY);
-	Game::getScene()->Node::GetComponent<Octree>()->Raycast(query);
+inline void resultQuery(const Urho3D::Ray& cameraRay, Urho3D::PODVector<Urho3D::RayQueryResult>& results) {
+	Urho3D::RayOctreeQuery query(results, cameraRay, Urho3D::RAY_TRIANGLE, 300, Urho3D::DRAWABLE_GEOMETRY);
+	Game::getScene()->Node::GetComponent<Urho3D::Octree>()->Raycast(query);
 }
 
 bool raycast(hit_data& hitData) {
-	const IntVector2 pos = Game::getUI()->GetCursorPosition();
+	const auto pos = Game::getUI()->GetCursorPosition();
 	if (!Game::getUI()->GetCursor()->IsVisible() || Game::getUI()->GetElementAt(pos, true)) {
 		return false;
 	}
 
-	const Ray cameraRay = Game::getCameraManager()
+	const auto cameraRay = Game::getCameraManager()
 	                                 ->getComponent()
 	                                 ->GetScreenRay((float)pos.x_ / Game::getGraphics()->GetWidth(),
 	                                                (float)pos.y_ / Game::getGraphics()->GetHeight());
 
-	PODVector<RayQueryResult> results;
+	Urho3D::PODVector<Urho3D::RayQueryResult> results;
 	resultQuery(cameraRay, results);
 	int i = 0;
 	while (i < results.Size()) {
-		RayQueryResult& result = results[i];
+		Urho3D::RayQueryResult& result = results[i];
 
-		Node* node = result.node_;
+		auto node = result.node_;
 
 		auto lc = node->GetComponent<LinkComponent>();
 		if (lc) {
@@ -54,23 +54,23 @@ bool raycast(hit_data& hitData) {
 }
 
 bool raycast(hit_data& hitData, ObjectType type) {
-	const IntVector2 pos = Game::getUI()->GetCursorPosition();
+	const auto pos = Game::getUI()->GetCursorPosition();
 	if (!Game::getUI()->GetCursor()->IsVisible() || Game::getUI()->GetElementAt(pos, true)) {
 		return false;
 	}
 
-	const Ray cameraRay = Game::getCameraManager()
+	const auto cameraRay = Game::getCameraManager()
 	                                 ->getComponent()
 	                                 ->GetScreenRay((float)pos.x_ / Game::getGraphics()->GetWidth(),
 	                                                (float)pos.y_ / Game::getGraphics()->GetHeight());
 
-	PODVector<RayQueryResult> results;
+	Urho3D::PODVector<Urho3D::RayQueryResult> results;
 	resultQuery(cameraRay, results);
 	int i = 0;
 	while (i < results.Size()) {
-		RayQueryResult& result = results[i];
+		Urho3D::RayQueryResult& result = results[i];
 
-		Node* node = result.node_;
+		auto node = result.node_;
 
 		auto lc = node->GetComponent<LinkComponent>();
 		if (lc && lc->getPhysical()->getType() == type) {

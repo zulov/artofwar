@@ -34,6 +34,8 @@
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
+using namespace Urho3D;
+
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100) {
 	gameState = GameState::STARTING;
 	context->RegisterFactory<LinkComponent>();
@@ -47,7 +49,8 @@ void Main::Setup() {
 	db_graph_settings* graphSettings = Game::getDatabaseCache()->getGraphSettings(settings->graph);
 	db_resolution* resolution = Game::getDatabaseCache()->getResolution(settings->resolution);
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
-	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName() +
+	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName()
+		+
 		".log";
 	engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
 	engineParameters_[EP_HEADLESS] = false;
@@ -59,7 +62,8 @@ void Main::Setup() {
 	engine_->SetMinFps(graphSettings->min_fps);
 
 	Game::setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
-	      setConsole(GetSubsystem<Console>())->setContext(context_)->setEngine(engine_);
+	                                               setConsole(GetSubsystem<Console>())->setContext(context_)->
+	                                               setEngine(engine_);
 	loadingProgress.reset(loadStages);
 	newGameProgress.reset(newGamesStages);
 }
@@ -197,10 +201,10 @@ void Main::createSimulation() {
 
 void Main::setSimpleManagers() {
 	Game::setCameraManager(new CameraManager())
-	           ->setQueueManager(new QueueManager(1))
-	           ->setFormationManager(new FormationManager())
-	           ->setPlayersManager(new PlayersManager())
-	           ->setColorPeletteRepo(new ColorPeletteRepo());
+		->setQueueManager(new QueueManager(1))
+		->setFormationManager(new FormationManager())
+		->setPlayersManager(new PlayersManager())
+		->setColorPeletteRepo(new ColorPeletteRepo());
 }
 
 void Main::updateProgres(loading& progres) {
@@ -387,7 +391,8 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 
 void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	SelectedHudElement* sHudElement = static_cast<SelectedHudElement *>(element->GetVar("SelectedHudElement").GetVoidPtr()
+	SelectedHudElement* sHudElement = static_cast<SelectedHudElement *>(element
+	                                                                    ->GetVar("SelectedHudElement").GetVoidPtr()
 	);
 	std::vector<Physical*>* selected = sHudElement->getSelected();
 	controls->unSelectAll();

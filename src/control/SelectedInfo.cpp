@@ -51,7 +51,7 @@ void SelectedInfo::hasBeedUpdatedDrawn() {
 	changed = false;
 }
 
-void SelectedInfo::setMessage(String& s) {
-	message = String(s);
+void SelectedInfo::setMessage(Urho3D::String& s) {
+	message = Urho3D::String(s);
 	changed = true;
 }

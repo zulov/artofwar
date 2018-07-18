@@ -65,7 +65,7 @@ void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 }
 
 void Hud::createCursor() {
-	SharedPtr<Cursor> cursor(new Cursor(Game::getContext()));
+	Urho3D::SharedPtr<Urho3D::Cursor> cursor(new Urho3D::Cursor(Game::getContext()));
 	cursor->SetStyleAuto(style);
 	Game::getUI()->SetCursor(cursor);
 	cursor->SetPosition(Game::getGraphics()->GetWidth() / 2, Game::getGraphics()->GetHeight() / 2);
@@ -95,7 +95,7 @@ void Hud::prepareStyle() {
 	baseXML.append_node(a);
 
 	for (int i = 0; i < graphSettings->styles.Size(); ++i) {
-		XMLFile* style2 = Game::getCache()->GetResource<XMLFile>("UI/" + graphSettings->styles[i]);
+		auto style2 = Game::getCache()->GetResource<Urho3D::XMLFile>("UI/" + graphSettings->styles[i]);
 		rapidxml::xml_document<> additionalXML;
 		auto chs = _strdup(style2->ToString().CString());
 		sth.push_back(chs);
@@ -117,7 +117,7 @@ void Hud::prepareStyle() {
 	}
 
 	replaceVariables(result_xml, graphSettings->hud_size);
-	style = new XMLFile(Game::getContext());
+	style = new Urho3D::XMLFile(Game::getContext());
 
 	style->FromString(result_xml.c_str()); //TODO moze problem z pamiecia
 	Game::getUI()->GetRoot()->SetDefaultStyle(style);
@@ -131,9 +131,9 @@ void Hud::preapreUrho() {
 
 void Hud::subscribeToUIEvents() {
 	for (auto hudElement : getButtonsLeftMenuToSubscribe()) {
-		UIElement* element = hudElement->getUIParent();
-		SubscribeToEvent(element, E_HOVERBEGIN, URHO3D_HANDLER(Hud, HandleUIButtonHoverOn));
-		SubscribeToEvent(element, E_HOVEREND, URHO3D_HANDLER(Hud, HandleUIButtonHoverOff));
+		auto element = hudElement->getUIParent();
+		SubscribeToEvent(element, Urho3D::E_HOVERBEGIN, URHO3D_HANDLER(Hud, HandleUIButtonHoverOn));
+		SubscribeToEvent(element, Urho3D::E_HOVEREND, URHO3D_HANDLER(Hud, HandleUIButtonHoverOff));
 	}
 }
 
@@ -159,12 +159,12 @@ Hud::~Hud() {
 }
 
 void Hud::createDebugHud() {
-	DebugHud* debugHud = Game::getEngine()->CreateDebugHud();
+	auto debugHud = Game::getEngine()->CreateDebugHud();
 	debugHud->SetDefaultStyle(style);
 }
 
 void Hud::createConsole() {
-	Console* console = Game::getEngine()->CreateConsole();
+	auto console = Game::getEngine()->CreateConsole();
 	console->SetDefaultStyle(style);
 	console->GetBackground()->SetOpacity(0.8f);
 }
@@ -242,14 +242,14 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 	}
 }
 
-void Hud::HandleUIButtonHoverOn(StringHash /*eventType*/, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+void Hud::HandleUIButtonHoverOn(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
+	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	HudData* hudElement = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
 	hoverOnIcon(hudElement);
 }
 
-void Hud::HandleUIButtonHoverOff(StringHash /*eventType*/, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+void Hud::HandleUIButtonHoverOff(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
+	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	HudData* hudElement = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
 	hoverOffIcon(hudElement);
 }

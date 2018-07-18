@@ -30,9 +30,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Urho3D::Vector2
 
 			position->y_ = Game::getEnviroment()->getGroundHeightAt(position->x_, position->z_);
 
-			Unit* newUnit = new Unit(position, id, player, level);
-
-			units->push_back(newUnit);
+			units->push_back(new Unit(position, id, player, level));
 			if (units->size() >= number) { break; }
 		}
 		++y;

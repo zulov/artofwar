@@ -26,8 +26,8 @@ void FilePanel::createBody() {
 	action->SetStyle("FileConfirmButton", style);
 	data = new FileFormData();
 	action->SetVar("file_data", data);
-	
-	Urho3D::Text* textInButton = action->CreateChild<Urho3D::Text>();
+
+	auto textInButton = action->CreateChild<Urho3D::Text>();
 	textInButton->SetStyle("MiddleText", style);
 	textInButton->SetText(name);
 

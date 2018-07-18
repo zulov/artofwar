@@ -8,7 +8,6 @@
 
 class SceneLoader;
 struct NewGameForm;
-using namespace Urho3D;
 
 class LevelBuilder
 {
@@ -18,14 +17,14 @@ public:
 	void createScene(SceneLoader& loader);
 	void createMap(int mapId);
 	void createScene(NewGameForm* form);
-	Terrain* getTerrian();
+	Urho3D::Terrain* getTerrian();
 private:
-	SharedPtr<Urho3D::Scene> scene;
+	Urho3D::SharedPtr<Urho3D::Scene> scene;
 
 	Entity* createZone();
-	Entity* createLight(const Vector3& direction, const Color& color, LightType lightType);
-	Entity* createGround(const String& heightMap, const String& texture, float horScale, float verScale);
+	Entity* createLight(const Urho3D::Vector3& direction, const Urho3D::Color& color, Urho3D::LightType lightType);
+	Entity* createGround(const Urho3D::String& heightMap, const Urho3D::String& texture, float horScale, float verScale);
 
 	SceneObjectManager *objectManager;
-	Terrain* terrain;
+	Urho3D::Terrain* terrain;
 };

@@ -16,12 +16,11 @@ class HudData;
 struct MouseButton;
 class SimulationInfo;
 struct hit_data;
-using namespace Urho3D;
 
 class Controls
 {
 public:
-	explicit Controls(Input* _input);
+	explicit Controls(Urho3D::Input* _input);
 	~Controls();
 
 	void select(Physical* entity);
@@ -63,14 +62,14 @@ private:
 
 	void clickDownLeft();
 	void clickDownRight();
-	void createBuilding(Vector2& pos);
+	void createBuilding(Urho3D::Vector2& pos);
 
-	void leftClick(Physical* clicked, Vector3& hitPos);
-	void leftClickBuild(Physical* clicked, Vector3& hitPos);
-	void rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftPressed);
+	void leftClick(Physical* clicked, Urho3D::Vector3& hitPos);
+	void leftClickBuild(Physical* clicked, Urho3D::Vector3& hitPos);
+	void rightClickDefault(Physical* clicked, Urho3D::Vector3& hitPos, bool shiftPressed);
 
-	void leftHold(std::pair<Vector3*, Vector3*>& held);
-	void rightHold(std::pair<Vector3*, Vector3*>& held);
+	void leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);
+	void rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);
 
 	void releaseRight();
 	bool orderAction(bool shiftPressed);
@@ -84,7 +83,7 @@ private:
 	MouseButton left;
 	MouseButton right;
 
-	Input* input;
+	Urho3D::Input* input;
 	ObjectType selectedType;
 	ControlsState state = DEFAULT;
 	UnitOrder unitOrderType = UnitOrder::GO;

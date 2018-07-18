@@ -10,7 +10,7 @@ struct hit_data
 	Urho3D::Drawable* drawable;
 	LinkComponent* link;
 
-	void set(const RayQueryResult& result, LinkComponent* lc) {
+	void set(const Urho3D::RayQueryResult& result, LinkComponent* lc) {
 		position = result.position_;
 		drawable = result.drawable_;
 		link = lc;

@@ -20,8 +20,7 @@ std::vector<ResourceEntity*>* ResourceFactory::create(int id, Urho3D::Vector2& c
 
 	float y = Game::getEnviroment()->getGroundHeightAt(center.x_, center.y_);
 
-	ResourceEntity* entity = new ResourceEntity(new Urho3D::Vector3(center.x_, y, center.y_), id, level, _bucketCords);
-	resources->push_back(entity);
+	resources->push_back(new ResourceEntity(new Urho3D::Vector3(center.x_, y, center.y_), id, level, _bucketCords));
 
 	return resources;
 }

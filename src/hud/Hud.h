@@ -22,7 +22,6 @@ class LoadingPanel;
 
 struct  db_graph_settings;
 struct  db_resolution;
-using namespace Urho3D;
 
 class Hud : public Urho3D::Object
 {
@@ -44,8 +43,8 @@ URHO3D_OBJECT(Hud, Object)
 	void hoverOnIcon(HudData* hudElement) const { menuPanel->setInfo(hudElement); }
 	void hoverOffIcon(HudData* hudElement) const { menuPanel->removeInfo(); }
 
-	void HandleUIButtonHoverOn(StringHash, VariantMap& eventData);
-	void HandleUIButtonHoverOff(StringHash, VariantMap& eventData);
+	void HandleUIButtonHoverOn(Urho3D::StringHash, Urho3D::VariantMap& eventData);
+	void HandleUIButtonHoverOff(Urho3D::StringHash, Urho3D::VariantMap& eventData);
 	void resetLoading();
 
 	void updateLoading(float progress);
@@ -57,16 +56,16 @@ URHO3D_OBJECT(Hud, Object)
 	void preapreUrho();
 	void subscribeToUIEvents();
 
-	std::vector<Button*>& getButtonsSelectedToSubscribe() const {
+	std::vector<Urho3D::Button*>& getButtonsSelectedToSubscribe() const {
 		return selectedHudPanel->getButtonsSelectedToSubscribe();
 	}
 
 	std::vector<HudData*>& getButtonsLeftMenuToSubscribe() const { return menuPanel->getButtons(); }
 
-	Button* getSaveButton() const { return inGameMenuPanel->getSaveButton(); }
-	Button* getNewGameProceed() const { return mainMenuPanel->getNewGameProceed(); }
-	Button* getLoadButton() const { return mainMenuPanel->getLoadButton(); }
-	Button* getCloseButton() const { return mainMenuPanel->getCloseButton(); }
+	Urho3D::Button* getSaveButton() const { return inGameMenuPanel->getSaveButton(); }
+	Urho3D::Button* getNewGameProceed() const { return mainMenuPanel->getNewGameProceed(); }
+	Urho3D::Button* getLoadButton() const { return mainMenuPanel->getLoadButton(); }
+	Urho3D::Button* getCloseButton() const { return mainMenuPanel->getCloseButton(); }
 private:
 	void replaceVariables(std::string& xml, int hudSizeId);
 	void createDebugHud();
@@ -87,5 +86,5 @@ private:
 
 	db_graph_settings* graphSettings;
 	db_resolution* resolution;
-	XMLFile* style;
+	Urho3D::XMLFile* style;
 };

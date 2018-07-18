@@ -18,18 +18,18 @@
 struct NewGameForm;
 
 
-class Main : public Application
+class Main : public Urho3D::Application
 {
 URHO3D_OBJECT(Main, Application)
 
-	explicit Main(Context* context);
+	explicit Main(Urho3D::Context* context);
 	void Setup() override;
 	void Start() override;
 	void Stop() override;
-	void HandleUpdate(StringHash eventType, VariantMap& eventData);
+	void HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
 protected:
-	void InitMouseMode(MouseMode mode);
+	void InitMouseMode(Urho3D::MouseMode mode);
 	void SetupViewport();
 
 private:
@@ -41,26 +41,26 @@ private:
 	void subscribeToUIEvents();
 	void subscribeToEvents();
 
-	void HandleMouseModeRequest(StringHash eventType, VariantMap& eventData);
-	void HandleMouseModeChange(StringHash eventType, VariantMap& eventData);
+	void HandleMouseModeRequest(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void HandleMouseModeChange(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
-	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
-	void HandleKeyUp(StringHash eventType, VariantMap& eventData);
+	void HandleKeyDown(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void HandleKeyUp(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
-	void HandleNewGame(StringHash eventType, VariantMap& eventData);
-	void HandleLoadGame(StringHash eventType, VariantMap& eventData);
-	void HandleCloseGame(StringHash eventType, VariantMap& eventData);
-	void HandleSaveScene(StringHash, VariantMap& eventData);
+	void HandleNewGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void HandleLoadGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void HandleCloseGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void HandleSaveScene(Urho3D::StringHash, Urho3D::VariantMap& eventData);
 
-	void HandleLeftMenuButton(StringHash eventType, VariantMap& eventData);
-	void HandleSelectedButton(StringHash eventType, VariantMap& eventData);
+	void HandleLeftMenuButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void HandleSelectedButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
 	void InitLocalizationSystem();
 
 	SelectedInfo* control(float timeStep, SimulationInfo* simulationInfo);
 	void changeCamera(int type);
-	void load(String saveName, loading& progres);
-	void save(String name);
+	void load(Urho3D::String saveName, loading& progres);
+	void save(Urho3D::String name);
 	void running(double timeStep);
 	void createSimulation();
 	void setSimpleManagers();
@@ -68,7 +68,7 @@ private:
 	void newGame(NewGameForm* form, loading& progres);
 	void changeState(GameState newState);
 
-	MouseMode useMouseMode_;
+	Urho3D::MouseMode useMouseMode_;
 	Simulation* simulation;
 	Benchmark benchmark;
 	Hud* hud;
@@ -81,7 +81,7 @@ private:
 	GameState gameState;
 
 	NewGameForm* newGameForm;
-	String saveToLoad = "quicksave.db";
+	Urho3D::String saveToLoad = "quicksave.db";
 	int loadStages = 6;
 	int newGamesStages = 6;
 

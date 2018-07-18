@@ -16,11 +16,11 @@ struct db_unit;
 struct dbload_unit;
 struct FutureAim;
 struct MissleData;
+struct ChargeData;
 
 class Aim;
 class State;
 class ResourceEntity;
-class ChargeData;
 
 class Unit : public Physical
 {

@@ -26,7 +26,7 @@
 #include "MathUtils.h"
 
 
-Controls::Controls(Input* _input) {
+Controls::Controls(Urho3D::Input* _input) {
 	selected = new std::vector<Physical*>();
 	selected->reserve(5000);
 
@@ -37,7 +37,7 @@ Controls::Controls(Input* _input) {
 	createNode("Models/arrow2.mdl", "Materials/red_overlay.xml", &arrowNode);
 
 	tempBuildingNode = Game::getScene()->CreateChild();
-	tempBuildingModel = tempBuildingNode->CreateComponent<StaticModel>();
+	tempBuildingModel = tempBuildingNode->CreateComponent<Urho3D::StaticModel>();
 	tempBuildingNode->SetEnabled(false);
 
 	selectedType = ObjectType::PHYSICAL;
@@ -76,23 +76,23 @@ void Controls::select(Physical* entity) {
 	selectedInfo->select(entity);
 }
 
-void Controls::leftClick(Physical* clicked, Vector3& hitPos) {
-	if (!input->GetKeyDown(KEY_CTRL)) {
+void Controls::leftClick(Physical* clicked, Urho3D::Vector3& hitPos) {
+	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
 	select(clicked);
 }
 
-void Controls::leftClickBuild(Physical* clicked, Vector3& hitPos) {
+void Controls::leftClickBuild(Physical* clicked, Urho3D::Vector3& hitPos) {
 	unSelectAll();
-	createBuilding(Vector2(hitPos.x_, hitPos.z_));
+	createBuilding(Urho3D::Vector2(hitPos.x_, hitPos.z_));
 }
 
-void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftPressed) {
+void Controls::rightClickDefault(Physical* clicked, Urho3D::Vector3& hitPos, bool shiftPressed) {
 	switch (clicked->getType()) {
 	case ObjectType::PHYSICAL:
 		{
-		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::GO, new Vector2(hitPos.x_, hitPos.z_),
+		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::GO, new Urho3D::Vector2(hitPos.x_, hitPos.z_),
 		                                                  shiftPressed));
 		break;
 		}
@@ -110,8 +110,8 @@ void Controls::rightClickDefault(Physical* clicked, Vector3& hitPos, bool shiftP
 	}
 }
 
-void Controls::leftHold(std::pair<Vector3*, Vector3*>& held) {
-	if (!input->GetKeyDown(KEY_CTRL)) {
+void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
+	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
 	auto entities = Game::getEnviroment()->getNeighbours(held);
@@ -120,16 +120,16 @@ void Controls::leftHold(std::pair<Vector3*, Vector3*>& held) {
 	}
 }
 
-void Controls::rightHold(std::pair<Vector3*, Vector3*>& held) {
+void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
 	auto actions = Game::getActionCommandList();
 
-	const auto first = new Vector2(held.first->x_, held.first->z_);
-	if (input->GetKeyDown(KEY_SHIFT)) {
-		const auto second = new Vector2(held.second->x_, held.second->z_);
+	const auto first = new Urho3D::Vector2(held.first->x_, held.first->z_);
+	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
+		const auto second = new Urho3D::Vector2(held.second->x_, held.second->z_);
 		actions->add(new GroupAction(selected, UnitOrder::GO, first));
 		actions->add(new GroupAction(selected, UnitOrder::GO, second, true));
 	} else {
-		const auto charge = new Vector2(held.second->x_ - held.first->x_, held.second->z_ - held.first->z_);
+		const auto charge = new Urho3D::Vector2(held.second->x_ - held.first->x_, held.second->z_ - held.first->z_);
 
 		actions->add(new GroupAction(selected, UnitOrder::GO, first));
 		actions->add(new GroupAction(selected, UnitOrder::CHARGE, charge, true));
@@ -178,7 +178,7 @@ void Controls::releaseRight() {
 		} else {
 			LinkComponent* lc = hitData.link;
 			if (lc) {
-				rightClickDefault(lc->getPhysical(), hitData.position, input->GetKeyDown(KEY_SHIFT));
+				rightClickDefault(lc->getPhysical(), hitData.position, input->GetKeyDown(Urho3D::KEY_SHIFT));
 			}
 		}
 		arrowNode->SetEnabled(false);
@@ -291,13 +291,12 @@ void Controls::clickDownLeft() {
 
 void Controls::clickDownRight() {
 	hit_data hitData;
-	bool clicked = clickDown(right, hitData);
-	if (clicked) {
+	if (clickDown(right, hitData)) {
 		startArrowNode(hitData);
 	}
 }
 
-void Controls::createBuilding(Vector2& pos) {
+void Controls::createBuilding(Urho3D::Vector2& pos) {
 	if (idToCreate >= 0) {
 		auto player = Game::getPlayersManager()->getActivePlayer();
 
@@ -414,7 +413,7 @@ void Controls::updateSelection() {
 		const float xScale = left.held.first->x_ - hitData.position.x_;
 		const float zScale = left.held.first->z_ - hitData.position.z_;
 
-		selectionNode->SetScale(Vector3(abs(xScale), 0.1, abs(zScale)));
+		selectionNode->SetScale(Urho3D::Vector3(abs(xScale), 0.1, abs(zScale)));
 		selectionNode->SetPosition((*left.held.first + hitData.position) / 2);
 	}
 }
@@ -423,11 +422,11 @@ void Controls::updateArrow() {
 	hit_data hitData;
 
 	if (raycast(hitData, ObjectType::PHYSICAL)) {
-		Vector3 dir = *right.held.first - hitData.position;
+		auto dir = *right.held.first - hitData.position;
 
 		const float length = dir.Length();
-		arrowNode->SetScale(Vector3(length, 1, length / 3));
-		arrowNode->SetDirection(Vector3(-dir.z_, 0, dir.x_));
+		arrowNode->SetScale(Urho3D::Vector3(length, 1, length / 3));
+		arrowNode->SetDirection(Urho3D::Vector3(-dir.z_, 0, dir.x_));
 		arrowNode->SetPosition(*right.held.first);
 	}
 }
@@ -440,7 +439,7 @@ void Controls::toDefault() {
 }
 
 void Controls::defaultControl() {
-	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
 		if (!left.isHeld) {
 			clickDownLeft();
 		} else {
@@ -450,7 +449,7 @@ void Controls::defaultControl() {
 		releaseLeft();
 	}
 
-	if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
 		if (!right.isHeld) {
 			clickDownRight();
 		} else {
@@ -459,7 +458,7 @@ void Controls::defaultControl() {
 	} else if (right.isHeld) {
 		releaseRight();
 	}
-	if (input->GetMouseButtonDown(MOUSEB_MIDDLE)) {
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_MIDDLE)) {
 		hit_data hitData;
 
 		if (raycast(hitData)) {
@@ -469,7 +468,7 @@ void Controls::defaultControl() {
 }
 
 void Controls::buildControl() {
-	if (!input->GetMouseButtonDown(MOUSEB_LEFT) && !input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+	if (!input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT) && !input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
 		hit_data hitData;
 
 		if (raycast(hitData, ObjectType::PHYSICAL)) {
@@ -478,31 +477,31 @@ void Controls::buildControl() {
 
 			auto dbBuilding = Game::getDatabaseCache()->getBuilding(idToCreate);
 			auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, 0).value();
-			Vector2 hitPos = Vector2(hitData.position.x_, hitData.position.z_);
+			auto hitPos = Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
 
-			Vector2 validPos = env->getValidPosition(dbBuilding->size, hitPos);
+			Urho3D::Vector2 validPos = env->getValidPosition(dbBuilding->size, hitPos);
 			float height = env->getGroundHeightAt(validPos.x_, validPos.y_);
 
-			tempBuildingNode->SetPosition(Vector3(validPos.x_, height, validPos.y_));
+			tempBuildingNode->SetPosition(Urho3D::Vector3(validPos.x_, height, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
 				tempBuildingNode->SetScale(dbLevel->scale);
 
-				tempBuildingModel->SetModel(Game::getCache()->GetResource<Model>("Models/" + dbLevel->model));
+				tempBuildingModel->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
 				tempBuildingNode->SetEnabled(true);
 			}
 			if (env->validateStatic(dbBuilding->size, hitPos)) {
 				//TODO OPTM nie ustawiac jesli sie nie zmienilo
 				tempBuildingModel->
-					SetMaterial(Game::getCache()->GetResource<Material>("Materials/green_overlay.xml"));
+					SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/green_overlay.xml"));
 			} else {
 				tempBuildingModel->
-					SetMaterial(Game::getCache()->GetResource<Material>("Materials/red_overlay.xml"));
+					SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/red_overlay.xml"));
 			}
 
 		}
 	}
 
-	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
 		if (!left.isHeld) {
 			left.markHeld();
 		}
@@ -510,14 +509,14 @@ void Controls::buildControl() {
 		releaseBuildLeft();
 	}
 
-	if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
 		toDefault();
 	}
 
 }
 
 void Controls::orderControl() {
-	if (input->GetMouseButtonDown(MOUSEB_LEFT)) {
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
 		if (!left.isHeld) {
 			left.markHeld();
 		}
@@ -537,7 +536,7 @@ void Controls::orderControl() {
 		left.clean();
 	}
 
-	if (input->GetMouseButtonDown(MOUSEB_RIGHT)) {
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
 		if (!right.isHeld) {
 			right.markHeld();
 		}

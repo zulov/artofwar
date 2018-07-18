@@ -28,7 +28,7 @@ void QueueManager::add(short value, MenuAction type, short id, short localMaxCap
 	while (value > 0) {
 		float secToInstance = getSecPerInstance(type, id, 0);
 		float initialSecondsToComplete = getSecToComplete(type, id, 0);
-		QueueElement* element = new QueueElement(type, id, std::min(maxCapacity, localMaxCapacity), initialSecondsToComplete,
+		auto element = new QueueElement(type, id, std::min(maxCapacity, localMaxCapacity), initialSecondsToComplete,
 		                                         secToInstance);
 		value = element->add(value);
 		queue.push_back(element);
