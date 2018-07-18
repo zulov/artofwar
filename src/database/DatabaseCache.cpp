@@ -276,7 +276,7 @@ void DatabaseCache::execute(const char* sql, int (*load)(void*, int, char**, cha
 DatabaseCache::DatabaseCache() {
 	const int rc = sqlite3_open("Data/Database/base.db", &database);
 	if (rc) {
-		cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << endl << endl;
+		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
 		sqlite3_close(database);
 		return;
 	}
@@ -321,7 +321,7 @@ DatabaseCache::~DatabaseCache() {
 void DatabaseCache::executeSingle(const char* sql) {
 	const int rc = sqlite3_open("Data/Database/base.db", &database);
 	if (rc) {
-		cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << endl << endl;
+		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
 		sqlite3_close(database);
 		return;
 	}
@@ -374,34 +374,34 @@ std::optional<db_building_level*> DatabaseCache::getBuildingLevel(int id, int le
 	return {};
 }
 
-optional<db_unit_upgrade*> DatabaseCache::getUnitUpgrade(int id, int level) const {
+std::optional<db_unit_upgrade*> DatabaseCache::getUnitUpgrade(int id, int level) const {
 	if (dbContainer->unitUpgrades[id]->size() > level) {
 		return std::optional<db_unit_upgrade*>{dbContainer->unitUpgrades[id]->at(level)};
 	}
 	return {};
 }
 
-optional<vector<db_cost*>*> DatabaseCache::getCostForUnitLevel(short id, int level) const {
+std::optional<std::vector<db_cost*>*> DatabaseCache::getCostForUnitLevel(short id, int level) const {
 	if (dbContainer->costForUnitLevel[id]->size() > level
 		&& !dbContainer->costForUnitLevel[id]->at(level)->empty()) {
-		return std::optional<vector<db_cost*>*>{dbContainer->costForUnitLevel[id]->at(level)};
+		return dbContainer->costForUnitLevel[id]->at(level);
 	}
 	return {};
 }
 
-optional<vector<db_cost*>*> DatabaseCache::getCostForBuildingLevel(short id, int level) const {
+std::optional<std::vector<db_cost*>*> DatabaseCache::getCostForBuildingLevel(short id, int level) const {
 	if (dbContainer->costForBuildingLevel[id]->size() > level
 		&& !dbContainer->costForBuildingLevel[id]->at(level)->empty()) {
-		return std::optional<vector<db_cost*>*>{dbContainer->costForBuildingLevel[id]->at(level)};
+		return dbContainer->costForBuildingLevel[id]->at(level);
 	}
 	return {};
 }
 
-optional<vector<db_cost*>*> DatabaseCache::getCostForUnitUpgrade(short id, int level) const {
+std::optional<std::vector<db_cost*>*> DatabaseCache::getCostForUnitUpgrade(short id, int level) const {
 	auto upgrade = dbContainer->unitUpgrades[id]->at(level);
 
 	if (!dbContainer->unitUpgradesCosts[upgrade->id]->empty()) {
-		return std::optional<vector<db_cost*>*>{dbContainer->unitUpgradesCosts[upgrade->id]};
+		return dbContainer->unitUpgradesCosts[upgrade->id];
 	}
 	return {};
 }

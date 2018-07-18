@@ -5,28 +5,28 @@ inline float sqDist(const Physical* one, const Physical* two) {
 	return (*one->getPosition() - *two->getPosition()).LengthSquared();
 }
 
-inline float sqDist(const Vector3* one, const Vector3* two) {
+inline float sqDist(const Urho3D::Vector3* one, const Urho3D::Vector3* two) {
 	return (*one - *two).LengthSquared();
 }
 
-inline float sqDist(const Vector2& one, const Vector2& two) {
+inline float sqDist(const Urho3D::Vector2& one, const Urho3D::Vector2& two) {
 	return (one - two).LengthSquared();
 }
 
-inline float sqDist(const Vector3& one, const Vector3& two) {
+inline float sqDist(const Urho3D::Vector3& one, const Urho3D::Vector3& two) {
 	return (one - two).LengthSquared();
 }
 
-inline float sqDist(const Vector2& one, const Vector3& two) {
-	return Vector2(one.x_ - two.x_, one.y_ - two.z_).LengthSquared();
+inline float sqDist(const Urho3D::Vector2& one, const Urho3D::Vector3& two) {
+	return Urho3D::Vector2(one.x_ - two.x_, one.y_ - two.z_).LengthSquared();
 }
 
-inline float sqDist(const Vector3& one, const Vector2& two) {
-	return Vector2(one.x_ - two.x_, one.z_ - two.y_).LengthSquared();
+inline float sqDist(const Urho3D::Vector3& one, const Urho3D::Vector2& two) {
+	return Urho3D::Vector2(one.x_ - two.x_, one.z_ - two.y_).LengthSquared();
 }
 
-inline IntVector2 calculateSize(int size, int central) {
+inline Urho3D::IntVector2 calculateSize(int size, int central) {
 	const int first = -((size - 1) / 2);
 	const int second = size + first;
-	return IntVector2(first + central, second + central);
+	return Urho3D::IntVector2(first + central, second + central);
 }

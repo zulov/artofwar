@@ -13,7 +13,6 @@
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Input/Input.h>
-#include <Urho3D/Input/InputEvents.h>
 
 
 struct NewGameForm;

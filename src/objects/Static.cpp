@@ -4,19 +4,19 @@
 #include "simulation/env/Enviroment.h"
 #include <string>
 
-Static::Static(Vector3* _position, ObjectType _type) : Physical(_position, _type) {
+Static::Static(Urho3D::Vector3* _position, ObjectType _type) : Physical(_position, _type) {
 }
 
 Static::~Static() = default;
 
-void Static::setMainCell(const IntVector2& _mainCell) {
+void Static::setMainCell(const Urho3D::IntVector2& _mainCell) {
 	mainCell = _mainCell;
 }
 
-void Static::populate(const IntVector2& size) {
+void Static::populate(const Urho3D::IntVector2& size) {
 	gridSize = size;
-	const IntVector2 sizeX = calculateSize(gridSize.x_, mainCell.x_);
-	const IntVector2 sizeZ = calculateSize(gridSize.y_, mainCell.y_);
+	const auto sizeX = calculateSize(gridSize.x_, mainCell.x_);
+	const auto sizeZ = calculateSize(gridSize.y_, mainCell.y_);
 
 	for (short i = sizeX.x_; i < sizeX.y_; ++i) {
 		for (short j = sizeZ.x_; j < sizeZ.y_; ++j) {
@@ -51,14 +51,14 @@ bool Static::canCollect(int index, CellState type) const {
 		&& Game::getEnviroment()->getCurrentSize(index) <= 2;
 }
 
-Vector2 Static::getClosestCellPos(Vector3* pos) const {
+Urho3D::Vector2 Static::getClosestCellPos(Urho3D::Vector3* pos) const {
 	float closestDist = 999999;
-	Vector2 closest;
+	Urho3D::Vector2 closest;
 	for (auto index : surroundCells) {
 		auto type = Game::getEnviroment()->getType(index);
 		if (canCollect(index, type)) {
-			Vector2 vec = Game::getEnviroment()->getCenter(index);
-			float dist = sqDist(vec, *pos);
+			const auto vec = Game::getEnviroment()->getCenter(index);
+			const float dist = sqDist(vec, *pos);
 			if (dist < closestDist) {
 				closestDist = dist;
 				closest = vec;
@@ -68,7 +68,7 @@ Vector2 Static::getClosestCellPos(Vector3* pos) const {
 	return closest;
 }
 
-Vector2 Static::getPosToFollow(Vector3* center) const {
+Urho3D::Vector2 Static::getPosToFollow(Urho3D::Vector3* center) const {
 	return getClosestCellPos(center);
 }
 

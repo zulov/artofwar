@@ -20,7 +20,7 @@ class SelectedInfoType;
 class MenuPanel : public AbstractWindowPanel
 {
 public:
-	MenuPanel(Urho3D::XMLFile* _style);
+	explicit MenuPanel(Urho3D::XMLFile* _style);
 	~MenuPanel();
 	void removeInfo();
 	void refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo);

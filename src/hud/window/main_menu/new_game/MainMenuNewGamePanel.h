@@ -4,6 +4,7 @@
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/UI/Button.h>
+#include <Urho3D/UI/DropDownList.h>
 
 
 #define NEW_GAME_ROWS_NUMBER 5
@@ -13,12 +14,12 @@ class MainMenuNewGamePanel : public MainMenuDetailsPanel
 public:
 	MainMenuNewGamePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
 	~MainMenuNewGamePanel();
-	Button* getProceed();
+	Urho3D::Button* getProceed();
 
 private:
 	void populateLabels(Urho3D::Localization* localization, int i, Urho3D::String name);
-	void HandleCheck(StringHash eventType, VariantMap& eventData);
-	void HandleNewGame(StringHash eventType, VariantMap& eventData);
+	void HandleCheck(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void HandleNewGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
 	void createBody() override;
 

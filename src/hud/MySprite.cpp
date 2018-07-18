@@ -34,17 +34,17 @@ const char* verticalAlignments[] =
 	0
 };
 
-MySprite::MySprite(Context* context) :
+MySprite::MySprite(Urho3D::Context* context) :
 	Sprite(context) {
 }
 
 
 MySprite::~MySprite() = default;
 
-void MySprite::RegisterObject(Context* context) {
+void MySprite::RegisterObject(Urho3D::Context* context) {
 	context->RegisterFactory<MySprite>();
-
-	URHO3D_ATTRIBUTE("Percent HotSpot", Vector2, percentHotspot, Vector2(0.5, 0.5), AM_DEFAULT);
+	using namespace Urho3D;
+	URHO3D_ATTRIBUTE("Percent HotSpot", Vector2, percentHotspot, Vector2(0.5, 0.5), Urho3D::AM_DEFAULT);
 	URHO3D_ATTRIBUTE("My Size", IntVector2, mySize, IntVector2::ZERO, AM_DEFAULT);
 	URHO3D_ACCESSOR_ATTRIBUTE("Name", GetName, SetName, String, String::EMPTY, AM_FILE);
 	URHO3D_ACCESSOR_ATTRIBUTE("Position", GetPosition, SetPosition, Vector2, Vector2::ZERO, AM_FILE);
@@ -73,10 +73,10 @@ void MySprite::RegisterObject(Context* context) {
 	//URHO3D_ATTRIBUTE("Variables", VariantMap, vars_, Variant::emptyVariantMap, AM_FILE);
 }
 
-const Vector2& MySprite::getPercentHotSpot() const {
+const Urho3D::Vector2& MySprite::getPercentHotSpot() const {
 	return percentHotspot;
 }
 
-const IntVector2& MySprite::getMySize() const {
+const Urho3D::IntVector2& MySprite::getMySize() const {
 	return mySize;
 }

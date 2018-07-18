@@ -6,31 +6,31 @@ enum class CellState : char;
 class Static : public Physical
 {
 public:
-	Static(Vector3* _position, ObjectType _type);
+	Static(Urho3D::Vector3* _position, ObjectType _type);
 	virtual ~Static();
 
-	void setMainCell(const IntVector2& _mainCell);
+	void setMainCell(const Urho3D::IntVector2& _mainCell);
 	static std::string getColumns();
 
 	bool belowCloseLimit() override;
 	bool hasFreeSpace() const;
 	bool canCollect(int index, CellState type) const;
 
-	Vector2 getClosestCellPos(Vector3* pos) const;
+	Urho3D::Vector2 getClosestCellPos(Urho3D::Vector3* pos) const;
 
-	IntVector2& getBucketPosition() { return mainCell; }
-	IntVector2& getGridSize() { return gridSize; }
+	Urho3D::IntVector2& getBucketPosition() { return mainCell; }
+	Urho3D::IntVector2& getGridSize() { return gridSize; }
 	std::vector<int>& getOcupiedCells() { return ocupiedCells; }
 	std::vector<int>& getSurroundCells() { return surroundCells; }
 
-	Vector2 getPosToFollow(Vector3* center) const override;
+	Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const override;
 	std::string getValues(int precision) override;
 protected:
-	void populate(const IntVector2& size);
+	void populate(const Urho3D::IntVector2& size);
 
 	std::vector<int> ocupiedCells;
 	std::vector<int> surroundCells;
 
-	IntVector2 gridSize;
-	IntVector2 mainCell;
+	Urho3D::IntVector2 gridSize;
+	Urho3D::IntVector2 mainCell;
 };

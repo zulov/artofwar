@@ -67,7 +67,7 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 		{
 		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
 		db_unit_level* dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
-		optional<std::vector<db_cost*>*> opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
+		std::optional<std::vector<db_cost*>*> opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
 		auto costs = opt.value();
 		message = stringFrom(dbLevel->name, costs);
 		}
@@ -88,7 +88,7 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 		{
 		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
 		db_building_level* dbLevel = Game::getDatabaseCache()->getBuildingLevel(id, level).value();
-		optional<std::vector<db_cost*>*> opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
+		std::optional<std::vector<db_cost*>*> opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
 		auto costs = opt.value();
 		message = stringFrom(dbLevel->name, costs);
 		}

@@ -4,7 +4,7 @@
 
 struct FutureAim
 {
-	Vector2 vector;
+	Urho3D::Vector2 vector;
 	const Physical* physical;
 	UnitOrder action;
 

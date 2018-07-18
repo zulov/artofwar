@@ -6,7 +6,7 @@ class Resources
 public:
 	Resources();
 	void init(float valueForAll);
-	Resources(float valueForAll);
+	explicit Resources(float valueForAll);
 	~Resources();
 	bool reduce(std::vector<db_cost*>* costs);
 	void add(int id, float value);

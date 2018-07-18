@@ -18,7 +18,7 @@ class Player;
 class SceneSaver
 {
 public:
-	SceneSaver(int _precision);
+	explicit SceneSaver(int _precision);
 	~SceneSaver();
 
 	void createTables();

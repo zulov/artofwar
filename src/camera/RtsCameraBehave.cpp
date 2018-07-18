@@ -1,7 +1,7 @@
 #include "RtsCameraBehave.h"
 #include "Game.h"
 
-RtsCameraBehave::RtsCameraBehave():CameraBehave(Vector3(0.0f, 50.0f, -50.0f), 3,"RTSCam") {
+RtsCameraBehave::RtsCameraBehave():CameraBehave(Urho3D::Vector3(0.0f, 50.0f, -50.0f), 3,"RTSCam") {
 	const double diff = sqrt(50.0f - minY) + 1;
 	const double a = 10;
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * a);
@@ -45,7 +45,7 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 		}
 		double diff = sqrt(pos2.y_ - localMin) + 1;
 
-		pos2 += Vector3::DOWN * wheel * diff * 1.5;
+		pos2 += Urho3D::Vector3::DOWN * wheel * diff * 1.5;
 
 		if (pos2.y_ < localMin) {
 			pos2.y_ = localMin;
@@ -61,7 +61,7 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 
 }
 
-void RtsCameraBehave::rotate(const IntVector2& mouseMove, const double mouse_sensitivity) {
+void RtsCameraBehave::rotate(const Urho3D::IntVector2& mouseMove, const double mouse_sensitivity) {
 }
 
 void RtsCameraBehave::setRotation(const Urho3D::Quaternion& rotation) {
@@ -76,5 +76,5 @@ Urho3D::String* RtsCameraBehave::getInfo() {
 }
 
 Urho3D::MouseMode RtsCameraBehave::getMouseMode() {
-	return MM_RELATIVE;
+	return Urho3D::MM_RELATIVE;
 }

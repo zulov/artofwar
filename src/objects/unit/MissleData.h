@@ -17,7 +17,7 @@ struct MissleData
 	Physical* aim;
 	float peakHeight;
 	float speed;
-	Node* node;
+	Urho3D::Node* node;
 
 	~MissleData() {
 		node->Remove();
@@ -29,10 +29,10 @@ struct MissleData
 		speed(speed) {
 		createNode("Models/Prism.mdl", "Materials/brown.xml", &node);
 		node->SetEnabled(false);
-		node->SetScale(Vector3(0.1, 0.1, 0.3));
+		node->SetScale(Urho3D::Vector3(0.1, 0.1, 0.3));
 	}
 
-	void init(Vector3& _start, Vector3& _end, Physical* _aim, float _speed = 7) {
+	void init(Urho3D::Vector3& _start, Urho3D::Vector3& _end, Physical* _aim, float _speed = 7) {
 		start = _start;
 		end = _end;
 		aim = _aim;
@@ -55,7 +55,7 @@ struct MissleData
 		distanceSoFar += speed * timeStep;
 		auto pos = node->GetPosition();
 		pos += direction * timeStep; //TODO uwzglednic tylko 2 wymiary
-		pos.y_ = sin(distanceSoFar * M_PI / distance) * peakHeight + start.y_;
+		pos.y_ = sin(distanceSoFar * Urho3D::M_PI / distance) * peakHeight + start.y_;
 		node->SetDirection(pos - node->GetPosition());
 		node->SetPosition(pos);
 
@@ -81,7 +81,7 @@ struct MissleData
 		return distanceSoFar >= distance && node->IsEnabled();
 	}
 
-	const Vector3& getPosition() const {
+	const Urho3D::Vector3& getPosition() const {
 		return node->GetPosition();
 	}
 };

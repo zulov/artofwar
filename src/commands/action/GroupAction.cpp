@@ -3,7 +3,7 @@
 #include "simulation/env/Enviroment.h"
 #include "simulation/formation/FormationManager.h"
 
-GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, Vector2* parameter, bool append)
+GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, Urho3D::Vector2* parameter, bool append)
 	: ActionCommand(action, nullptr, parameter, append) {
 	this->entities = entities;
 }
@@ -15,7 +15,7 @@ GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, Phy
 
 GroupAction::~GroupAction() = default;
 
-void GroupAction::addTargetAim(Vector2* to, bool append) {
+void GroupAction::addTargetAim(Urho3D::Vector2* to, bool append) {
 	auto opt = Game::getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
 		if (!append) {
@@ -25,7 +25,7 @@ void GroupAction::addTargetAim(Vector2* to, bool append) {
 	}
 }
 
-void GroupAction::addChargeAim(Vector2* charge, bool append) {
+void GroupAction::addChargeAim(Urho3D::Vector2* charge, bool append) {
 	auto opt = Game::getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
 		if (!append) {
@@ -41,6 +41,6 @@ void GroupAction::addFollowAim(const Physical* toFollow, bool append) {
 		if (!append) {
 			opt.value()->semiReset();
 		}
-		opt.value()->addAim(Vector2::ZERO, toFollow, action, append);
+		opt.value()->addAim(Urho3D::Vector2::ZERO, toFollow, action, append);
 	}
 }

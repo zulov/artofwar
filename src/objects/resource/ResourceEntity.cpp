@@ -1,18 +1,18 @@
 #include "ResourceEntity.h"
 #include "Game.h"
-#include "database/DatabaseCache.h"
+#include "MathUtils.h"
 #include "ObjectEnums.h"
+#include "database/DatabaseCache.h"
+#include "simulation/env/Enviroment.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
-#include "MathUtils.h"
-#include "simulation/env/Enviroment.h"
 
 
 ResourceEntity::
-ResourceEntity(Vector3* _position, int id, int level, IntVector2& _bucketCords) : Static(_position,
+ResourceEntity(Urho3D::Vector3* _position, int id, int level, Urho3D::IntVector2& _bucketCords) : Static(_position,
                                                                                          ObjectType::RESOURCE) {
 	initBillbords();
 
@@ -20,13 +20,13 @@ ResourceEntity(Vector3* _position, int id, int level, IntVector2& _bucketCords) 
 	setMainCell(_bucketCords);
 	populate();
 
-	StaticModel* model = node->CreateComponent<StaticModel>();
-	model->SetModel(Game::getCache()->GetResource<Model>("Models/" + dbResource->model));
+	auto model = node->CreateComponent<Urho3D::StaticModel>();
+	model->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbResource->model));
 
 	node->Scale(dbResource->scale);
 
 	for (int i = 0; i < dbResource->texture.Size(); ++i) {
-		model->SetMaterial(i, Game::getCache()->GetResource<Material>("Materials/" + dbResource->texture[i]));
+		model->SetMaterial(i, Game::getCache()->GetResource<Urho3D::Material>("Materials/" + dbResource->texture[i]));
 	}
 	updateBillbords();
 }
@@ -56,16 +56,16 @@ float ResourceEntity::getHealthPercent() const {
 	return amonut / dbResource->maxCapacity;
 }
 
-String& ResourceEntity::toMultiLineString() {
+Urho3D::String& ResourceEntity::toMultiLineString() {
 	menuString = dbResource->name;
-	menuString += "\nZasobów: " + String(amonut);
+	menuString += "\nZasobów: " + Urho3D::String(amonut);
 	return menuString;
 }
 
 std::string ResourceEntity::getValues(int precision) {
 	int amountI = amonut * precision;
 	return Static::getValues(precision)
-		+ to_string(amountI);
+		+ std::to_string(amountI);
 }
 
 std::string ResourceEntity::getColumns() {

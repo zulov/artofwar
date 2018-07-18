@@ -2,8 +2,6 @@
 #include "CameraBehave.h"
 #include <vector>
 
-using namespace Urho3D;
-
 class CameraBehave;
 
 class CameraManager {
@@ -11,14 +9,14 @@ public:
 	CameraManager();
 	~CameraManager();
 	void setCameraBehave(int _type);
-	Camera *getComponent() const;
-	void translate(const IntVector2& cursorPos, Input* input, float timeStep) const;
-	String *getInfo() const;
-	MouseMode getMouseMode() const;
-	void rotate(const IntVector2& mouse_move) const;
+	Urho3D::Camera *getComponent() const;
+	void translate(const Urho3D::IntVector2& cursorPos, Urho3D::Input* input, float timeStep) const;
+	Urho3D::String *getInfo() const;
+	Urho3D::MouseMode getMouseMode() const;
+	void rotate(const Urho3D::IntVector2& mouse_move) const;
 	void changePosition(float x, float y) const;
 private:
-	void createCameraKeys(Input* input, bool cameraKeys[4], const IntVector2& cursorPos) const;
+	void createCameraKeys(Urho3D::Input* input, bool cameraKeys[4], const Urho3D::IntVector2& cursorPos) const;
 
 	const double MOUSE_SENSITIVITY = 0.1f;
 	std::vector<CameraBehave*> cameraBehaves;

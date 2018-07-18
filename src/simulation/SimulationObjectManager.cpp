@@ -50,20 +50,20 @@ void SimulationObjectManager::addAll(std::vector<ResourceEntity*>* _resources) {
 	resourcesToAdd->insert(resourcesToAdd->end(), _resources->begin(), _resources->end());
 }
 
-void SimulationObjectManager::addUnits(unsigned int number, int id, Vector2& center,
+void SimulationObjectManager::addUnits(unsigned int number, int id, Urho3D::Vector2& center,
                                        int player, int level) {
 	unitsTemp = unitFactory.create(number, id, center, player, level);
 	updateUnits();
 }
 
-void SimulationObjectManager::addBuilding(int id, Vector2& center, int player,
-                                          const IntVector2& _bucketCords, int level) {
+void SimulationObjectManager::addBuilding(int id, Urho3D::Vector2& center, int player,
+                                          const Urho3D::IntVector2& _bucketCords, int level) {
 	buildingsTemp = buildingFactory.create(id, center, player, _bucketCords, level);
 	updateBuilding();
 }
 
 
-void SimulationObjectManager::addResource(int id, Vector2& center, const IntVector2& _bucketCords, int level) {
+void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level) {
 	resourcesTemp = resourceFactory.create(id, center, _bucketCords, level);
 	updateResource();
 }

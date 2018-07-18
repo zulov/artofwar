@@ -15,7 +15,7 @@ enum class OperatorType : char;
 class Enviroment
 {
 public:
-	Enviroment(Terrain* _terrian);
+	explicit Enviroment(Urho3D::Terrain* _terrian);
 	~Enviroment();
 
 	std::vector<Physical *>* getNeighbours(Physical* physical, float radius);
@@ -29,28 +29,28 @@ public:
 	void update(std::vector<Building*>* buildings);
 	void update(std::vector<ResourceEntity*>* resources);
 
-	Vector2 repulseObstacle(Unit* unit);
-	Vector2* validatePosition(Vector3* position);
+	Urho3D::Vector2 repulseObstacle(Unit* unit);
+	Urho3D::Vector2* validatePosition(Urho3D::Vector3* position);
 
-	std::vector<Physical *>* getNeighbours(std::pair<Vector3*, Vector3*>& pair);
-	std::vector<Physical *>* getBuildings(std::pair<Vector3*, Vector3*>& pair);
+	std::vector<Physical *>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);
+	std::vector<Physical *>* getBuildings(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);
 
 	float getGroundHeightAt(float x, float z) const;
 	float getGroundHeightPercent(float y, float x, float div) const;
-	bool validateStatic(const IntVector2& size, Vector2& pos);
-	Vector2 getValidPosition(const IntVector2& size, const Vector2& pos);
-	IntVector2 getBucketCords(const IntVector2& size, const Vector2& pos) const;
-	std::vector<int>* findPath(int startIdx, Vector2& aim);
+	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos);
+	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos);
+	Urho3D::IntVector2 getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
+	std::vector<int>* findPath(int startIdx, Urho3D::Vector2& aim);
 
 	void prepareGridToFind();
-	content_info* getContentInfo(Vector2 from, Vector2 to, bool checks[], int activePlayer);
-	Vector3 getValidPosForCamera(float percentX, float percentY, const Vector3& pos, float min) const;
-	Vector2 getValidPosition(const IntVector2& size, const IntVector2& bucketCords);
-	Vector2& getCenter(int index) const;
-	Vector2& getCenter(short x, short z);
+	content_info* getContentInfo(Urho3D::Vector2 from, Urho3D::Vector2 to, bool checks[], int activePlayer);
+	Urho3D::Vector3 getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos, float min) const;
+	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords);
+	Urho3D::Vector2& getCenter(int index) const;
+	Urho3D::Vector2& getCenter(short x, short z);
 	void invalidateCache();
 
-	int getIndex(Vector2& pos) const;
+	int getIndex(Urho3D::Vector2& pos) const;
 	int getIndex(short x, short z) const;
 	CellState getType(int index) const { return mainGrid.getType(index); }
 	char getCurrentSize(int index) const { return mainGrid.getCurrentSize(index); }
@@ -63,7 +63,7 @@ private:
 	Grid buildingGrid;
 	Grid teamUnitGrid[MAX_PLAYERS];
 
-	Terrain* terrian;
+	Urho3D::Terrain* terrian;
 
 	std::vector<Physical*>* neights; //TODO tu bedzie trzeba tablica jesli beda watki
 	std::vector<Physical*>* neights2;

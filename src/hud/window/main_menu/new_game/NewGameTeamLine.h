@@ -1,5 +1,4 @@
 #pragma once
-#include "NewGamePlayer.h"
 #include "database/DatabaseCache.h"
 #include "hud/UiUtils.h"
 #include <Urho3D/Resource/Localization.h>
@@ -50,7 +49,7 @@ struct NewGameTeamLine
 		for (int i = 0; i < sizeColor; ++i) {
 			addTextItem(color, l10n->Get("color_" + Game::getDatabaseCache()->getPlayerColor(i)->name), style);
 		}
-		chk = row->CreateChild<CheckBox>();
+		chk = row->CreateChild<Urho3D::CheckBox>();
 		chk->SetStyle("CheckBox", style);
 	}
 
@@ -65,7 +64,7 @@ struct NewGameTeamLine
 		return player;
 	}
 
-	CheckBox* getCheckBox() {
+	Urho3D::CheckBox* getCheckBox() {
 		return chk;
 	}
 

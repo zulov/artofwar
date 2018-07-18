@@ -22,21 +22,21 @@ void MainMenuLoadPanel::createBody() {
 	list = leftMock->CreateChild<Urho3D::ListView>();
 	list->SetStyle("LoadList", style);
 
-	FileSystem* fileSystem = GetSubsystem<FileSystem>();
+	auto fileSystem = GetSubsystem<Urho3D::FileSystem>();
 
-	Vector<String> files;
-	fileSystem->ScanDir(files, "saves", "*.db", SCAN_FILES, false);
+	Urho3D::Vector<Urho3D::String> files;
+	fileSystem->ScanDir(files, "saves", "*.db", Urho3D::SCAN_FILES, false);
 
 	for (const auto& name : files) {
-		Urho3D::Button* button = simpleButton(nullptr, style, "LoadListButton");
-		Urho3D::Text* element = button->CreateChild<Text>();
+		auto button = simpleButton(nullptr, style, "LoadListButton");
+		auto element = button->CreateChild<Urho3D::Text>();
 		
 		element->SetText(name);
 		element->SetStyle("LoadListText");
 		button->AddChild(element);
 		list->AddItem(button);
 
-		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(MainMenuLoadPanel, HandleLoadClick));
+		SubscribeToEvent(button, Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuLoadPanel, HandleLoadClick));
 	}
 
 	content = window->CreateChild<Urho3D::ScrollView>();
@@ -46,15 +46,15 @@ void MainMenuLoadPanel::createBody() {
 	addChildText(loadButton, "LoadButtonText", Game::getLocalization()->Get("load"), style);
 }
 
-void MainMenuLoadPanel::action(String saveName) {
+void MainMenuLoadPanel::action(Urho3D::String saveName) {
 }
 
 
 MainMenuLoadPanel::~MainMenuLoadPanel() = default;
 
-void MainMenuLoadPanel::HandleLoadClick(StringHash eventType, VariantMap& eventData) {
-	Button* element = static_cast<Button*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	Text* text = static_cast<Text*>(element->GetChild(0));
+void MainMenuLoadPanel::HandleLoadClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	const auto element = static_cast<Urho3D::Button*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	const auto text = static_cast<Urho3D::Text*>(element->GetChild(0));
 
 	loadButton->SetVar("LoadFileName", text->GetText());
 	action(text->GetText());

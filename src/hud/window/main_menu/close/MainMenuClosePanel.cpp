@@ -38,9 +38,9 @@ void MainMenuClosePanel::createBody() {
 	no->SetStyle("MsgButton", style);
 	addChildText(no, "MsgTextButton", l10n->Get("cancel"), style);
 
-	SubscribeToEvent(no, E_CLICK, URHO3D_HANDLER(MainMenuClosePanel, HandleCancelClick));
+	SubscribeToEvent(no, Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuClosePanel, HandleCancelClick));
 }
 
-void MainMenuClosePanel::HandleCancelClick(StringHash eventType, VariantMap& eventData) {
+void MainMenuClosePanel::HandleCancelClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	setVisible(false);
 }

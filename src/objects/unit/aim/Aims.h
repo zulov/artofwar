@@ -2,7 +2,6 @@
 #include <Urho3D/Math/Vector2.h>
 #include <optional>
 #include <vector>
-#include <algorithm>
 #include <Urho3D/Math/Vector3.h>
 #include <vector>
 

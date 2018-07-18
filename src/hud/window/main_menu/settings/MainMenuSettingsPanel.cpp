@@ -1,6 +1,7 @@
 #include "MainMenuSettingsPanel.h"
-#include "database/DatabaseCache.h"
 #include "hud/UiUtils.h"
+#include "SettingsForm.h"
+#include "database/DatabaseCache.h"
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/UI/UIEvents.h>
 
@@ -44,24 +45,24 @@ void MainMenuSettingsPanel::createBody() {
 	Urho3D::Localization* l10n = Game::getLocalization();
 
 	settings = createDropDownList(rows[0], "MainMenuNewGameDropDownList", style);
-	std::vector<String> settingsNames;
+	std::vector<Urho3D::String> settingsNames;
 	for (int i = 0; i < Game::getDatabaseCache()->getGraphSettingsSize(); ++i) {
 		db_graph_settings* settings = Game::getDatabaseCache()->getGraphSettings(i);
 		settingsNames.push_back(l10n->Get(settings->name));
 	}
-	SubscribeToEvent(settings, E_ITEMSELECTED, URHO3D_HANDLER(MainMenuSettingsPanel, HandleChangeSettings));
+	SubscribeToEvent(settings, Urho3D::E_ITEMSELECTED, URHO3D_HANDLER(MainMenuSettingsPanel, HandleChangeSettings));
 
 	addChildTexts(settings, settingsNames, style);
 
 	resolution = createDropDownList(rows[1], "MainMenuNewGameDropDownList", style);
-	std::vector<String> resNames;
+	std::vector<Urho3D::String> resNames;
 	for (int i = 0; i < Game::getDatabaseCache()->getResourceSize(); ++i) {
 		db_resolution* res = Game::getDatabaseCache()->getResolution(i);
-		resNames.push_back(String(res->x) + "x" + String(res->y));
+		resNames.push_back(Urho3D::String(res->x) + "x" + Urho3D::String(res->y));
 	}
 	addChildTexts(resolution, resNames, style);
 
-	fullScreen = rows[2]->CreateChild<CheckBox>();
+	fullScreen = rows[2]->CreateChild<Urho3D::CheckBox>();
 	fullScreen->SetStyle("CheckBox", style);
 
 	maxFps = createDropDownList(rows[3], "MainMenuNewGameDropDownList", style);
@@ -70,18 +71,18 @@ void MainMenuSettingsPanel::createBody() {
 	minFps = createDropDownList(rows[4], "MainMenuNewGameDropDownList", style);
 	addChildTexts(minFps, {"1", "5", "10"}, style, {1, 5, 10}, "IntValue");
 
-	vSync = rows[5]->CreateChild<CheckBox>();
+	vSync = rows[5]->CreateChild<Urho3D::CheckBox>();
 	vSync->SetStyle("CheckBox", style);
 
 	textureQuality = createDropDownList(rows[6], "MainMenuNewGameDropDownList", style);
 	addChildTexts(textureQuality, {l10n->Get("low"), l10n->Get("normal"), l10n->Get("high")}, style);
 
-	shadow = rows[7]->CreateChild<CheckBox>();
+	shadow = rows[7]->CreateChild<Urho3D::CheckBox>();
 	shadow->SetStyle("CheckBox", style);
 
 	hudSize = createDropDownList(rows[8], "MainMenuNewGameDropDownList", style);
 
-	std::vector<String> hudNames;
+	std::vector<Urho3D::String> hudNames;
 	for (int i = 0; i < Game::getDatabaseCache()->getHudSizeSize(); ++i) {
 		db_hud_size* hudSize = Game::getDatabaseCache()->getHudSize(i);
 		hudNames.push_back(hudSize->name);
@@ -93,7 +94,7 @@ void MainMenuSettingsPanel::createBody() {
 	addChildText(save, "MainMenuSettingsButtonText", l10n->Get("mmsp_save"), style);
 	data = new SettingsForm();
 	save->SetVar("SettingsForm", data);
-	SubscribeToEvent(save, E_CLICK, URHO3D_HANDLER(MainMenuSettingsPanel, HandleSaveSettings));
+	SubscribeToEvent(save, Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuSettingsPanel, HandleSaveSettings));
 
 	db_settings* set = Game::getDatabaseCache()->getSettings();
 	settings->SetSelection(set->graph);
@@ -120,17 +121,17 @@ void MainMenuSettingsPanel::popualateForm(SettingsForm* form) {
 	form->hudSize = hudSize->GetSelection();
 }
 
-void MainMenuSettingsPanel::HandleChangeSettings(StringHash eventType, VariantMap& eventData) {
-	DropDownList* element = static_cast<DropDownList*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+void MainMenuSettingsPanel::HandleChangeSettings(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	auto element = static_cast<Urho3D::DropDownList*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	unsigned index = element->GetSelection();
 	if (index > 0) {
 		setValues(index);
 	}
 }
 
-void MainMenuSettingsPanel::HandleSaveSettings(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	SettingsForm* form = static_cast<SettingsForm *>(element->GetVar("SettingsForm").GetVoidPtr());
+void MainMenuSettingsPanel::HandleSaveSettings(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	auto form = static_cast<SettingsForm *>(element->GetVar("SettingsForm").GetVoidPtr());
 
 	popualateForm(form);
 

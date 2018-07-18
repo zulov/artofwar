@@ -8,7 +8,7 @@ class QueueHudElement;
 class QueuePanel :public AbstractWindowPanel//TODO moze zrobic multilina
 {
 public:
-	QueuePanel(Urho3D::XMLFile* _style);
+	explicit QueuePanel(Urho3D::XMLFile* _style);
 	~QueuePanel();
 	void update(QueueManager* queue, short& j);
 

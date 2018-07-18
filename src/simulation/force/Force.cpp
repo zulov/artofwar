@@ -67,7 +67,7 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 	newForce += force;
 }
 
-void Force::destination(Vector2& newForce, Unit* unit) {
+void Force::destination(Urho3D::Vector2& newForce, Unit* unit) {
 	auto force = unit->getDestination(boostCoef, aimCoef);
 
 	forceStats.addDest(force);
@@ -75,13 +75,13 @@ void Force::destination(Vector2& newForce, Unit* unit) {
 	newForce += force;
 }
 
-void Force::formation(Vector2& newForce, Unit* unit) {
+void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 	auto opt = Game::getFormationManager()->getPositionFor(unit);
 	if (opt.has_value()) {
 		const float priority = Game::getFormationManager()->getPriority(unit);
 		if (priority > 0) {
 
-			auto force = Vector2(
+			auto force = Urho3D::Vector2(
 			                     opt.value().x_ - unit->getPosition()->x_,
 			                     opt.value().y_ - unit->getPosition()->z_
 			                    );
@@ -95,7 +95,7 @@ void Force::formation(Vector2& newForce, Unit* unit) {
 	}
 }
 
-void Force::escapeFromInvalidPosition(Vector2& newForce, Vector2* dir) {
+void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Urho3D::Vector2* dir) {
 	if (dir) {
 		auto force = *dir * escapeCoef * boostCoef;
 

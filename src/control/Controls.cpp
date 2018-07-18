@@ -247,7 +247,7 @@ void Controls::orderPhysical(short id, ActionParameter& parameter) {
 	switch (parameter.type) {
 	case MenuAction::BUILDING_LEVEL:
 		{
-		optional<std::vector<db_cost*>*> opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
+		std::optional<std::vector<db_cost*>*> opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
 		if (opt.has_value()) {
 			auto costs = opt.value();
 			if (resources.reduce(costs)) {

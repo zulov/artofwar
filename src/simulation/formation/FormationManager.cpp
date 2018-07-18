@@ -44,7 +44,7 @@ std::optional<Formation*> FormationManager::createFormation(std::vector<Physical
 		if (currentlyFree == formations.size()) {
 			formations.push_back(nullptr);
 		}
-		Formation* returnFormation = formations[currentlyFree] = new Formation(currentlyFree, _units, _type, Vector2(1, 1));
+		Formation* returnFormation = formations[currentlyFree] = new Formation(currentlyFree, _units, _type, Urho3D::Vector2(1, 1));
 		currentlyFree++;
 		return returnFormation;
 
@@ -75,7 +75,7 @@ float FormationManager::getPriority(Unit* unit) {
 	return 0.0;
 }
 
-std::optional<Vector2> FormationManager::getPositionFor(Unit* unit) {
+std::optional<Urho3D::Vector2> FormationManager::getPositionFor(Unit* unit) {
 	const short formation = unit->getFormation();
 	if (formation >= 0) {
 		return formations[formation]->getPositionFor(unit->getPositionInFormation());

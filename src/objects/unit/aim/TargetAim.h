@@ -6,7 +6,7 @@
 class TargetAim : public Aim
 {
 public:
-	TargetAim(std::vector<int>& _path);
+	explicit TargetAim(std::vector<int>& _path);
 	~TargetAim();
 
 	std::vector<Urho3D::Vector3> getDebugLines(Urho3D::Vector3* position) override;

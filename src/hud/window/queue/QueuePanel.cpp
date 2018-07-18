@@ -32,10 +32,10 @@ void QueuePanel::update(QueueManager* queue, short& j) {
 	for (int i = 0; i < size; ++i) {
 		QueueElement* element = queue->getAt(i);
 		elements[j]->show();
-		String name = getIconName(element->getType(), element->getAmount(), element->getId());
-		Texture2D* texture = Game::getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
+		auto name = getIconName(element->getType(), element->getAmount(), element->getId());
+		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/" + name);
 		if (element->getMaxCapacity() > 1) {
-			elements[j]->setText(String(element->getAmount()) + "/" + String(element->getMaxCapacity()));
+			elements[j]->setText(Urho3D::String(element->getAmount()) + "/" + Urho3D::String(element->getMaxCapacity()));
 		} else {
 			elements[j]->hideText();
 		}
@@ -92,16 +92,15 @@ void QueuePanel::createBody() {
 	for (int i = 0; i < MAX_ICON_SELECTION; ++i) {
 		elements[i] = new QueueHudElement(style);
 		window->AddChild(elements[i]->getButton());
-		SubscribeToEvent(elements[i]->getButton(), E_CLICK, URHO3D_HANDLER(QueuePanel, HandleReduce));
+		SubscribeToEvent(elements[i]->getButton(), Urho3D::E_CLICK, URHO3D_HANDLER(QueuePanel, HandleReduce));
 	}
 }
 
-void QueuePanel::HandleReduce(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+void QueuePanel::HandleReduce(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	QueueHudElement* qHudElement = static_cast<QueueHudElement *>(element->GetVar("QueueHudElement").GetVoidPtr());
 
-	int button = eventData[UIMouseClick::P_BUTTON].GetInt();
-	if (button == MOUSEB_LEFT) {
+	if (eventData[Urho3D::UIMouseClick::P_BUTTON].GetInt() == Urho3D::MOUSEB_LEFT) {
 		qHudElement->reduce(1);
 	} else {
 		qHudElement->reduce(10);

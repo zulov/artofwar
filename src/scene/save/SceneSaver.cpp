@@ -7,7 +7,6 @@
 #include "objects/building/Building.h"
 #include "player/Resources.h"
 #include "player/Player.h"
-#include "Loading.h"
 #include <iostream>
 #include <ostream>
 #include <sqlite3/sqlite3.h>

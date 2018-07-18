@@ -10,7 +10,7 @@
 #include <chrono>
 
 
-ActionCommand::ActionCommand(UnitOrder action, const Physical* physical, Vector2* vector, bool append) {
+ActionCommand::ActionCommand(UnitOrder action, const Physical* physical, Urho3D::Vector2* vector, bool append) {
 	this->action = action;
 	this->toFollow = physical;
 	this->vector = vector;
@@ -22,7 +22,7 @@ ActionCommand::~ActionCommand() {
 }
 
 
-ActionParameter ActionCommand::getTargetAim(int startInx, Vector2& to, bool append) {
+ActionParameter ActionCommand::getTargetAim(int startInx, Urho3D::Vector2& to, bool append) {
 	auto path = Game::getEnviroment()->findPath(startInx, to);
 	if (!path->empty()) {
 		return ActionParameter(new TargetAim(*path));
@@ -34,7 +34,7 @@ ActionParameter ActionCommand::getFollowAim(const Physical* toFollow, bool appen
 	return ActionParameter(new FollowAim(toFollow));
 }
 
-ActionParameter ActionCommand::getChargeAim(Vector2* charge, bool append) {
+ActionParameter ActionCommand::getChargeAim(Urho3D::Vector2* charge, bool append) {
 	return ActionParameter(new ChargeAim(charge));
 }
 

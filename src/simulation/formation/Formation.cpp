@@ -13,7 +13,7 @@
 #include "MathUtils.h"
 
 
-Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Vector2& _direction) : id(_id),
+Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Urho3D::Vector2& _direction) : id(_id),
 	type(_type), direction(_direction), state(FormationState::FORMING) {
 
 	for (auto value : *_units) {
@@ -34,8 +34,8 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 
 Formation::~Formation() = default;
 
-Vector2 Formation::computeLocalCenter() {
-	Vector2 localCenter = Vector2::ZERO;
+Urho3D::Vector2 Formation::computeLocalCenter() {
+	auto localCenter = Urho3D::Vector2::ZERO;
 	for (auto unit : units) {
 		const auto pos = unit->getPosition();
 		localCenter.x_ += pos->x_;
@@ -45,7 +45,7 @@ Vector2 Formation::computeLocalCenter() {
 	return localCenter;
 }
 
-void Formation::setNewLeader(Vector2& localCenter) {
+void Formation::setNewLeader(Urho3D::Vector2& localCenter) {
 	int maxDist = 99999;
 	leader = nullptr;
 	for (auto& unit : units) {
@@ -58,8 +58,7 @@ void Formation::setNewLeader(Vector2& localCenter) {
 }
 
 void Formation::electLeader() {
-	Vector2 localCenter = computeLocalCenter();
-	setNewLeader(localCenter);
+	setNewLeader(computeLocalCenter());
 
 	if (oldLeader != nullptr
 		&& leader != oldLeader
@@ -121,7 +120,7 @@ void Formation::updateIds() {
 			}
 			int bucketId = unit->getBucketIndex(-1);
 			const auto pos = unit->getPosition();
-			const auto currentPos = Vector2(pos->x_, pos->z_);
+			const auto currentPos = Urho3D::Vector2(pos->x_, pos->z_);
 
 			auto it = bucketToIds.find(bucketId);
 			if (it != bucketToIds.end()) {
@@ -172,7 +171,7 @@ void Formation::calculateNotWellFormed() {
 	for (auto unit : units) {
 		const auto pos = unit->getPosition();
 
-		const auto currentPos = Vector2(pos->x_, pos->z_);
+		const auto currentPos = Urho3D::Vector2(pos->x_, pos->z_);
 		const auto desiredPos = getPositionFor(unit->getPositionInFormation());
 		const auto dist = sqDist(currentPos, desiredPos);
 
@@ -214,7 +213,7 @@ void Formation::update() {
 				Game::getActionCommandList()->add(new FormationAction(this,
 				                                                      futureOrder.action,
 				                                                      futureOrder.physical,
-				                                                      new Vector2(futureOrder.vector)
+				                                                      new Urho3D::Vector2(futureOrder.vector)
 				                                                     ));
 				futureOrders.erase(futureOrders.begin()); //TODO to zachowaæ
 			}
@@ -247,7 +246,7 @@ void Formation::changeState(FormationState newState) {
 	state = newState;
 }
 
-Vector2 Formation::getPositionFor(short id) {
+Urho3D::Vector2 Formation::getPositionFor(short id) {
 	const int columnThis = id % sideA;
 	const int rowThis = id / sideA;
 	const short leaderID = leader->getPositionInFormation();
@@ -258,7 +257,7 @@ Vector2 Formation::getPositionFor(short id) {
 	const int column = columnThis - columnLeader;
 	const int row = rowThis - rowLeader;
 
-	return center - Vector2(column * sparsity, row * sparsity);
+	return center - Urho3D::Vector2(column * sparsity, row * sparsity);
 }
 
 float Formation::getPriority(int id) const {
@@ -272,7 +271,7 @@ std::optional<Physical*> Formation::getLeader() {
 	return {};
 }
 
-void Formation::addAim(const Vector2& _vector, const Physical* _physical,
+void Formation::addAim(const Urho3D::Vector2& _vector, const Physical* _physical,
                        UnitOrder _action, bool append) {
 	if (!append) {
 		futureOrders.clear();
@@ -311,6 +310,6 @@ void Formation::updateUnits() {
 }
 
 void Formation::updateCenter() {
-	Vector3* leaderPos = leader->getPosition();
-	center = Vector2(leaderPos->x_, leaderPos->z_);
+	auto leaderPos = leader->getPosition();
+	center = Urho3D::Vector2(leaderPos->x_, leaderPos->z_);
 }

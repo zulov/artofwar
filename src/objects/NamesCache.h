@@ -31,7 +31,7 @@ inline Urho3D::String getIconName(MenuAction type, int level, int i) {
 		return "building/levels/" + Urho3D::String(level) + "/" + dbCache->getBuilding(i)->icon;
 	case MenuAction::UNIT_UPGRADE:
 		{
-		optional<db_unit_upgrade*> opt = dbCache->getUnitUpgrade(i, level);
+		auto opt = dbCache->getUnitUpgrade(i, level);
 		if (opt.has_value()) {
 			auto upgrade = opt.value();
 			return "unit/upgrades/" + upgrade->pathName + "/" + upgrade->name + ".png";

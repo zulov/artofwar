@@ -21,7 +21,7 @@ using namespace Urho3D;
 class Controls
 {
 public:
-	Controls(Input* _input);
+	explicit Controls(Input* _input);
 	~Controls();
 
 	void select(Physical* entity);

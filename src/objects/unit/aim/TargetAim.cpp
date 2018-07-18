@@ -24,7 +24,7 @@ std::vector<Urho3D::Vector3> TargetAim::getDebugLines(Urho3D::Vector3* position)
 }
 
 Urho3D::Vector2 TargetAim::getDirection(Unit* unit) {
-	return Vector2(currentTarget.x_ - unit->getPosition()->x_,
+	return Urho3D::Vector2(currentTarget.x_ - unit->getPosition()->x_,
 	               currentTarget.y_ - unit->getPosition()->z_);
 }
 

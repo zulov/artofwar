@@ -53,7 +53,7 @@ StateManager::StateManager() {
 
 	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
 		std::vector<db_order*>* orders = Game::getDatabaseCache()->getOrdersForUnit(i);
-		fill_n(ordersToUnit[i], STATE_SIZE, false);
+		std::fill_n(ordersToUnit[i], STATE_SIZE, false);
 		for (auto order : *orders) {
 			for (auto state : orderToState[order->id]) {
 				ordersToUnit[i][state] = true;

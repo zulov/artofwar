@@ -4,7 +4,6 @@
 #include <vector>
 #include <optional>
 
-using namespace std;
 
 class DatabaseCache
 {
@@ -25,21 +24,21 @@ public:
 	db_settings* getSettings() const { return dbContainer->settings[0]; }
 	db_resolution* getResolution(int id) const { return dbContainer->resolutions[id]; }
 
-	optional<db_unit_level*> getUnitLevel(int id, int level) const;
-	optional<db_building_level*> getBuildingLevel(int id, int level) const;
-	optional<db_unit_upgrade*> getUnitUpgrade(int id, int level) const;
-	optional<vector<db_cost*>*> getCostForUnitLevel(short id, int level) const;
-	optional<vector<db_cost*>*> getCostForBuildingLevel(short id, int level) const;
-	optional<vector<db_cost*>*> getCostForUnitUpgrade(short id, int level) const;
+	std::optional<db_unit_level*> getUnitLevel(int id, int level) const;
+	std::optional<db_building_level*> getBuildingLevel(int id, int level) const;
+	std::optional<db_unit_upgrade*> getUnitUpgrade(int id, int level) const;
+	std::optional<std::vector<db_cost*>*> getCostForUnitLevel(short id, int level) const;
+	std::optional<std::vector<db_cost*>*> getCostForBuildingLevel(short id, int level) const;
+	std::optional<std::vector<db_cost*>*> getCostForUnitUpgrade(short id, int level) const;
 
 
-	vector<db_unit_level*>* getUnitLevels(int id) const { return dbContainer->levelsToUnit[id]; }
-	vector<db_building_level*>* getBuildingLevels(int id) const { return dbContainer->levelsToBuilding[id]; }
-	vector<db_unit_upgrade*>* getUnitUpgrades(int id) const { return dbContainer->unitUpgrades[id]; }
-	vector<db_unit*>* getUnitsForBuilding(int id) const { return dbContainer->unitsForBuilding[id]; }
-	vector<db_cost*>* getCostForUnit(int id) const { return dbContainer->costForUnit[id]; }
-	vector<db_cost*>* getCostForBuilding(int id) const { return dbContainer->costForBuilding[id]; }
-	vector<db_order*>* getOrdersForUnit(int id) const { return dbContainer->ordersToUnit[id]; }
+	std::vector<db_unit_level*>* getUnitLevels(int id) const { return dbContainer->levelsToUnit[id]; }
+	std::vector<db_building_level*>* getBuildingLevels(int id) const { return dbContainer->levelsToBuilding[id]; }
+	std::vector<db_unit_upgrade*>* getUnitUpgrades(int id) const { return dbContainer->unitUpgrades[id]; }
+	std::vector<db_unit*>* getUnitsForBuilding(int id) const { return dbContainer->unitsForBuilding[id]; }
+	std::vector<db_cost*>* getCostForUnit(int id) const { return dbContainer->costForUnit[id]; }
+	std::vector<db_cost*>* getCostForBuilding(int id) const { return dbContainer->costForBuilding[id]; }
+	std::vector<db_order*>* getOrdersForUnit(int id) const { return dbContainer->ordersToUnit[id]; }
 
 	int getResourceSize() const { return dbContainer->resource_size; }
 	int getHudVarsSize() const { return dbContainer->hud_vars_size; }

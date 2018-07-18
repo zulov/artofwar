@@ -1,5 +1,5 @@
 #pragma once
-#include "SettingsForm.h"
+
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/UI/Button.h>
@@ -8,6 +8,8 @@
 
 
 #define SETTINGS_ROWS_NUMBER 9
+
+struct SettingsForm;
 
 class MainMenuSettingsPanel : public MainMenuDetailsPanel
 {

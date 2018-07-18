@@ -91,9 +91,9 @@ std::vector<Physical*>& Grid::getContentAt(int index) {
 	return empty;
 }
 
-std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>& pair) {
-	Vector3* begin = pair.first;
-	Vector3* end = pair.second;
+std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
+	auto begin = pair.first;
+	auto end = pair.second;
 	tempSelected->clear();
 
 	const auto posBeginX = getIndex(begin->x_);
@@ -101,8 +101,8 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>& pair
 	const auto posEndX = getIndex(end->x_);
 	const auto posEndZ = getIndex(end->z_);
 
-	for (short i = Min(posBeginX, posEndX); i <= Max(posBeginX, posEndX); ++i) {
-		for (short j = Min(posBeginZ, posEndZ); j <= Max(posBeginZ, posEndZ); ++j) {
+	for (short i = Urho3D::Min(posBeginX, posEndX); i <= Urho3D::Max(posBeginX, posEndX); ++i) {
+		for (short j = Urho3D::Min(posBeginZ, posEndZ); j <= Urho3D::Max(posBeginZ, posEndZ); ++j) {
 			const int index = getIndex(i, j);
 			std::vector<Physical *>& content = getContentAt(index); //TODO czy tu ampersentma byc?
 			tempSelected->insert(tempSelected->end(), content.begin(), content.end());
@@ -111,13 +111,13 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Vector3*, Vector3*>& pair
 	return tempSelected;
 }
 
-int Grid::indexFromPosition(Vector3* position) const {
+int Grid::indexFromPosition(Urho3D::Vector3* position) const {
 	const auto posX = getIndex(position->x_);
 	const auto posZ = getIndex(position->z_);
 	return getIndex(posX, posZ);
 }
 
-int Grid::indexFromPosition(Vector2& position) const {
+int Grid::indexFromPosition(Urho3D::Vector2& position) const {
 	const auto posX = getIndex(position.x_);
 	const auto posZ = getIndex(position.y_);
 	return getIndex(posX, posZ);

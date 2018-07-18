@@ -10,14 +10,14 @@ IndividualAction::IndividualAction(Physical* entity, UnitOrder action, const Phy
 	this->entity = entity;
 }
 
-IndividualAction::IndividualAction(Physical* entity, UnitOrder action, const Vector2& vector, bool append) :
-	ActionCommand(action, nullptr, new Vector2(vector), append) {
+IndividualAction::IndividualAction(Physical* entity, UnitOrder action, const Urho3D::Vector2& vector, bool append) :
+	ActionCommand(action, nullptr, new Urho3D::Vector2(vector), append) {
 	this->entity = entity;
 }
 
 IndividualAction::~IndividualAction() = default;
 
-void IndividualAction::addTargetAim(Vector2* to, bool append) {
+void IndividualAction::addTargetAim(Urho3D::Vector2* to, bool append) {
 	short id = static_cast<char>(action);
 
 	ActionParameter parameter = getTargetAim(entity->getBucketIndex(-1), *to, append);
@@ -27,7 +27,7 @@ void IndividualAction::addTargetAim(Vector2* to, bool append) {
 	Game::getEnviroment()->invalidateCache();
 }
 
-void IndividualAction::addChargeAim(Vector2* charge, bool append) {
+void IndividualAction::addChargeAim(Urho3D::Vector2* charge, bool append) {
 	short id = static_cast<char>(action);
 
 	ActionParameter parameter = getChargeAim(charge, append);

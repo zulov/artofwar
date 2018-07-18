@@ -7,13 +7,12 @@
 
 
 class QueueElement;
-class Urho3D::ProgressBar;
 class MySprite;
 
 class QueueHudElement
 {
 public:
-	QueueHudElement(Urho3D::XMLFile* style);
+	explicit QueueHudElement(Urho3D::XMLFile* style);
 	~QueueHudElement();
 	Urho3D::Button* getButton();
 	void hide();

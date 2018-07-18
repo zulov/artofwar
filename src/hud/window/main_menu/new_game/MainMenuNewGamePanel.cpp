@@ -20,7 +20,7 @@ void MainMenuNewGamePanel::createBody() {
 		row = body->CreateChild<Urho3D::BorderImage>();
 		row->SetStyle("MainMenuNewGameRow");
 	}
-	Urho3D::Localization* l10n = Game::getLocalization();
+	auto l10n = Game::getLocalization();
 	myLine.init(style, l10n, 0);
 	enemyLine.init(style, l10n, 1);
 
@@ -43,7 +43,6 @@ void MainMenuNewGamePanel::createBody() {
 	difficulty = createDropDownList(rows[3], "MainMenuNewGameDropDownList", style);
 	addChildTexts(difficulty, {l10n->Get("easy"), l10n->Get("normal"), l10n->Get("hard")}, style);
 
-
 	gameSpeed = createDropDownList(rows[4], "MainMenuNewGameDropDownList", style);
 	addChildTexts(gameSpeed, {l10n->Get("slow"), l10n->Get("normal"), l10n->Get("fast")}, style);
 
@@ -52,26 +51,26 @@ void MainMenuNewGamePanel::createBody() {
 	data = new NewGameForm();
 	proceed->SetVar("NewGameForm", data);
 
-	SubscribeToEvent(proceed, E_CLICK, URHO3D_HANDLER(MainMenuNewGamePanel, HandleNewGame));
-	SubscribeToEvent(myLine.getCheckBox(), E_CLICK, URHO3D_HANDLER(MainMenuNewGamePanel, HandleCheck));
-	SubscribeToEvent(enemyLine.getCheckBox(), E_CLICK, URHO3D_HANDLER(MainMenuNewGamePanel, HandleCheck));
+	SubscribeToEvent(proceed, Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuNewGamePanel, HandleNewGame));
+	SubscribeToEvent(myLine.getCheckBox(), Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuNewGamePanel, HandleCheck));
+	SubscribeToEvent(enemyLine.getCheckBox(), Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuNewGamePanel, HandleCheck));
 
 	addChildText(proceed, "MainMenuNewGameButtonText", l10n->Get("start"), style);
 }
 
-Button* MainMenuNewGamePanel::getProceed() {
+Urho3D::Button* MainMenuNewGamePanel::getProceed() {
 	return proceed;
 }
 
-void MainMenuNewGamePanel::HandleCheck(StringHash eventType, VariantMap& eventData) {
+void MainMenuNewGamePanel::HandleCheck(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	myLine.setCheck(false);
 	enemyLine.setCheck(false);
 
-	CheckBox* element = static_cast<CheckBox*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	auto element = static_cast<Urho3D::CheckBox*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	element->SetChecked(true);
 }
 
-void MainMenuNewGamePanel::HandleNewGame(StringHash eventType, VariantMap& eventData) {
+void MainMenuNewGamePanel::HandleNewGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	data->map = map->GetSelection();
 	data->difficulty = difficulty->GetSelection();
 	data->gameSpeed = gameSpeed->GetSelection();

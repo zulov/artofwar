@@ -1,6 +1,6 @@
 #include "TopCameraBehave.h"
 
-TopCameraBehave::TopCameraBehave(): CameraBehave(Vector3(0, 50, 0), 20, "TopCam") {
+TopCameraBehave::TopCameraBehave(): CameraBehave(Urho3D::Vector3(0, 50, 0), 20, "TopCam") {
 	const auto diff = sqrt(50.0f - minY) + 1;
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff);
 	camera->SetOrthographic(true);
@@ -42,7 +42,7 @@ void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 	}
 }
 
-void TopCameraBehave::rotate(const IntVector2& mouseMove, const double mouse_sensitivity) {
+void TopCameraBehave::rotate(const Urho3D::IntVector2& mouseMove, const double mouse_sensitivity) {
 
 }
 
@@ -58,6 +58,6 @@ Urho3D::String* TopCameraBehave::getInfo() {
 	return info;
 }
 
-MouseMode TopCameraBehave::getMouseMode() {
-	return MM_RELATIVE;
+Urho3D::MouseMode TopCameraBehave::getMouseMode() {
+	return Urho3D::MM_RELATIVE;
 }

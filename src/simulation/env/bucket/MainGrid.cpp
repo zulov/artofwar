@@ -62,13 +62,13 @@ void MainGrid::prepareGridToFind() {
 
 
 bool MainGrid::validateAdd(Static* object) {
-	Vector3* pos = object->getPosition();
-	return validateAdd(object->getGridSize(), Vector2(pos->x_, pos->z_));
+	const auto pos = object->getPosition();
+	return validateAdd(object->getGridSize(), Urho3D::Vector2(pos->x_, pos->z_));
 }
 
-bool MainGrid::validateAdd(const IntVector2& size, Vector2& pos) {
-	const IntVector2 sizeX = calculateSize(size.x_, getIndex(pos.x_));
-	const IntVector2 sizeZ = calculateSize(size.y_, getIndex(pos.y_));
+bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) {
+	const auto sizeX = calculateSize(size.x_, getIndex(pos.x_));
+	const auto sizeZ = calculateSize(size.y_, getIndex(pos.y_));
 
 	for (int i = sizeX.x_; i < sizeX.y_; ++i) {
 		for (int j = sizeZ.x_; j < sizeZ.y_; ++j) {
@@ -82,16 +82,16 @@ bool MainGrid::validateAdd(const IntVector2& size, Vector2& pos) {
 	return true;
 }
 
-content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to, bool checks[], int activePlayer) {
+content_info* MainGrid::getContentInfo(const Urho3D::Vector2& from, const Urho3D::Vector2& to, bool checks[], int activePlayer) {
 	const auto posBeginX = getIndex(from.x_);
 	const auto posBeginZ = getIndex(from.y_);
 	const auto posEndX = getIndex(to.x_);
 	const auto posEndZ = getIndex(to.y_);
 
-	const auto iMin = Min(posBeginX, posEndX);
-	const auto iMax = Max(posBeginX, posEndX);
-	const auto jMin = Min(posBeginZ, posEndZ);
-	const auto jMax = Max(posBeginZ, posEndZ);
+	const auto iMin = Urho3D::Min(posBeginX, posEndX);
+	const auto iMax = Urho3D::Max(posBeginX, posEndX);
+	const auto jMin = Urho3D::Min(posBeginZ, posEndZ);
+	const auto jMax = Urho3D::Max(posBeginZ, posEndZ);
 
 	ci->reset();
 
@@ -104,17 +104,17 @@ content_info* MainGrid::getContentInfo(const Vector2& from, const Vector2& to, b
 	return ci;
 }
 
-Vector2 MainGrid::repulseObstacle(Unit* unit) {
+Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 	auto index = indexFromPosition(unit->getPosition());
 
-	Vector2 sum;
+	Urho3D::Vector2 sum;
 	if (complexData[index].isUnit()
 		&& !complexData[index].getOccupiedNeightbours().empty()) {
 		for (const auto neightbour : complexData[index].getOccupiedNeightbours()) {
 			sum += complexData[neightbour.first].getCenter();
 		}
 		sum /= complexData[index].getOccupiedNeightbours().size();
-		sum -= Vector2(unit->getPosition()->x_, unit->getPosition()->z_);
+		sum -= Urho3D::Vector2(unit->getPosition()->x_, unit->getPosition()->z_);
 
 	}
 	return -sum;
@@ -160,7 +160,10 @@ bool MainGrid::belowCellLimit(int index) {
 
 void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {
 	switch (complexData[index].getType()) {
-	case ObjectType::UNIT:
+	case CellState::NONE:
+	case CellState::COLLECT:
+	case CellState::EMPTY:
+	case CellState::ATTACK:
 		{
 		if (checks[3] || checks[4]) {
 			const bool hasInc = buckets[index].incUnitsPerPlayer(ci, activePlayer, checks);
@@ -170,13 +173,13 @@ void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activeP
 		}
 		}
 		break;
-	case ObjectType::RESOURCE:
+	case CellState::RESOURCE:
 		if (checks[1]) {
 			ci->hasResource = true;
 			ci->resourceNumber[complexData[index].getAdditonalInfo()]++;
 		}
 		break;
-	case ObjectType::BUILDING:
+	case CellState::BUILDING:
 		if (checks[2]) {
 			ci->hasBuilding = true;
 			ci->buildingNumberPerPlayer[complexData[index].getAdditonalInfo()]++;
@@ -211,16 +214,16 @@ void MainGrid::resetPathArrays() {
 
 void MainGrid::addStatic(Static* object) {
 	if (validateAdd(object)) {
-		IntVector2 size = object->getGridSize();
+		auto size = object->getGridSize();
 
-		IntVector2 bucketPos = object->getBucketPosition();
+		auto bucketPos = object->getBucketPosition();
 		short iX = bucketPos.x_;
 		short iZ = bucketPos.y_;
 
 		object->setBucket(getIndex(iX, iZ), 0);
 
-		const IntVector2 sizeX = calculateSize(size.x_, iX);
-		const IntVector2 sizeZ = calculateSize(size.y_, iZ);
+		const auto sizeX = calculateSize(size.x_, iX);
+		const auto sizeZ = calculateSize(size.y_, iZ);
 
 		for (int i = sizeX.x_; i < sizeX.y_; ++i) {
 			for (int j = sizeZ.x_; j < sizeZ.y_; ++j) {
@@ -252,7 +255,7 @@ void MainGrid::removeStatic(Static* object) {
 	complexData[index].removeStatic();
 }
 
-Vector2* MainGrid::getDirectionFrom(Vector3* position) {
+Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3* position) {
 	int index = indexFromPosition(position);
 	if (!complexData[index].isUnit()) {
 		int escapeBucket;
@@ -271,9 +274,9 @@ Vector2* MainGrid::getDirectionFrom(Vector3* position) {
 			escapeBucket = complexData[index].getEscapeBucket();
 		}
 		if (escapeBucket == -1) {
-			return new Vector2;
+			return new Urho3D::Vector2;
 		}
-		Vector2* direction = complexData[index].getDirectrionFrom(position, complexData[escapeBucket]);
+		Urho3D::Vector2* direction = complexData[index].getDirectrionFrom(position, complexData[escapeBucket]);
 
 		direction->Normalize();
 		return direction;
@@ -281,25 +284,25 @@ Vector2* MainGrid::getDirectionFrom(Vector3* position) {
 	return nullptr;
 }
 
-Vector2 MainGrid::getValidPosition(const IntVector2& size, const Vector2& pos) {
+Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {
 	//TODO tu mozna to sporo zoptymalizowac ale pewnie nie ma potrzeby
 	const short posX = getIndex(pos.x_);
 	const short posZ = getIndex(pos.y_);
 
-	const IntVector2 sizeX = calculateSize(size.x_, posX);
-	const IntVector2 sizeZ = calculateSize(size.y_, posZ);
+	const auto sizeX = calculateSize(size.x_, posX);
+	const auto sizeZ = calculateSize(size.y_, posZ);
 
 	const int index1 = getIndex(sizeX.x_, sizeZ.x_);
 	const int index2 = getIndex(sizeX.y_ - 1, sizeZ.y_ - 1);
-	const Vector2 center1 = complexData[index1].getCenter();
-	const Vector2 center2 = complexData[index2].getCenter();
-	const Vector2 newCenter = (center1 + center2) / 2;
+	const auto center1 = complexData[index1].getCenter();
+	const auto center2 = complexData[index2].getCenter();
+	const auto newCenter = (center1 + center2) / 2;
 
 	return newCenter;
 }
 
-IntVector2 MainGrid::getBucketCords(const IntVector2& size, const Vector2& pos) const {
-	return IntVector2(getIndex(pos.x_), getIndex(pos.y_));
+Urho3D::IntVector2 MainGrid::getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
+	return Urho3D::IntVector2(getIndex(pos.x_), getIndex(pos.y_));
 }
 
 void MainGrid::updateNeighbors(const int current) const {
@@ -308,7 +311,7 @@ void MainGrid::updateNeighbors(const int current) const {
 	auto& ocupNeigths = complexData[current].getOccupiedNeightbours();
 	ocupNeigths.clear();
 
-	IntVector2 cords = getCords(current);
+	const auto cords = getCords(current);
 	for (int i = -1; i <= 1; ++i) {
 		for (int j = -1; j <= 1; ++j) {
 			if (!(i == 0 && j == 0)) {
@@ -330,10 +333,10 @@ float MainGrid::cost(const int current, const int next) const {
 }
 
 void MainGrid::debug(int start, int end) {
-	Image* image = new Image(Game::getContext());
+	Urho3D::Image* image = new Urho3D::Image(Game::getContext());
 	image->SetSize(resolution, resolution, 4);
 
-	String prefix = String(staticCounter) + "_";
+	Urho3D::String prefix = Urho3D::String(staticCounter) + "_";
 	drawMap(image);
 	image->SaveBMP("result/images/" + prefix + "1_grid_map.bmp");
 	//draw_grid_from(came_from, image);
@@ -350,7 +353,7 @@ void MainGrid::debug(int start, int end) {
 	staticCounter++;
 }
 
-std::vector<int>* MainGrid::findPath(IntVector2& startV, IntVector2& goalV) {
+std::vector<int>* MainGrid::findPath(Urho3D::IntVector2& startV, Urho3D::IntVector2& goalV) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);
 	float min = cost(start, goal);
@@ -389,7 +392,7 @@ std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, float min, float 
 	return reconstruct_simplify_path(startIdx, endIdx, came_from);
 }
 
-std::vector<int>* MainGrid::findPath(int startIdx, const Vector2& aim) {
+std::vector<int>* MainGrid::findPath(int startIdx, const Urho3D::Vector2& aim) {
 	int end = getIndex(getIndex(aim.x_), getIndex(aim.y_));
 
 	if (ifInCache(startIdx, end)) {
@@ -473,13 +476,13 @@ void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 }
 
 inline float MainGrid::heuristic(int from, int to) {
-	IntVector2 a = getCords(from);
-	IntVector2 b = getCords(to);
+	auto a = getCords(from);
+	auto b = getCords(to);
 
 	return (abs(a.x_ - b.x_) + abs(a.y_ - b.y_)) * fieldSize;
 }
 
-void MainGrid::drawMap(Image* image) {
+void MainGrid::drawMap(Urho3D::Image* image) {
 	uint32_t* data = (uint32_t*)image->GetData();
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
@@ -494,7 +497,7 @@ void MainGrid::drawMap(Image* image) {
 	}
 }
 
-std::vector<int>* MainGrid::reconstruct_path(IntVector2& startV, IntVector2& goalV, const int came_from[]) {
+std::vector<int>* MainGrid::reconstruct_path(Urho3D::IntVector2& startV, Urho3D::IntVector2& goalV, const int came_from[]) {
 	return reconstruct_path(getIndex(startV.x_, startV.y_),
 	                        getIndex(goalV.x_, goalV.y_),
 	                        came_from);

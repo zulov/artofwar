@@ -5,7 +5,6 @@
 #include "aim/Aims.h"
 #include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
-#include <tuple>
 #include <Urho3D/Graphics/CustomGeometry.h>
 
 struct ForceStats;
@@ -38,17 +37,17 @@ class Unit : public Physical
 	friend class DisposeState;
 	friend class ShotState;
 public:
-	Unit(Vector3* _position, int id, int player, int level);
+	Unit(Urho3D::Vector3* _position, int id, int player, int level);
 	~Unit();
 
 	void populate();
 	void checkAim();
 	void move(double timeStep);
 	void applyForce(double timeStep);
-	void setAcceleration(Vector2& _acceleration);
+	void setAcceleration(Urho3D::Vector2& _acceleration);
 
-	void forceGo(float boostCoef, float aimCoef, Vector2& force) const;
-	Vector2 getDestination(float boostCoef, float aimCoef);
+	void forceGo(float boostCoef, float aimCoef, Urho3D::Vector2& force) const;
+	Urho3D::Vector2 getDestination(float boostCoef, float aimCoef);
 
 	void absorbAttack(float attackCoef) override;
 
@@ -78,7 +77,7 @@ public:
 	void changeColor(ColorMode mode);
 	void addAim(const FutureAim& aim, bool append = false);
 
-	void drawLine(CustomGeometry* line, const Vector3& first, const Vector3& second, const Color& color);
+	void drawLine(Urho3D::CustomGeometry* line, const Urho3D::Vector3& first, const Urho3D::Vector3& second, const Urho3D::Color& color);
 	void debug(DebugUnitType type, ForceStats& stats);
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
@@ -92,7 +91,7 @@ public:
 
 	void action(char id, ActionParameter& parameter) override;
 	std::string getValues(int precision) override;
-	String& toMultiLineString() override;
+	Urho3D::String& toMultiLineString() override;
 	float getMaxHpBarSize() override;
 	bool isAlive() const override;
 	int getLevel() override;
@@ -102,10 +101,10 @@ private:
 	void actionIfCloseEnough(UnitState action, Physical* closest, float distance, float closeRange, float intrestRange);
 
 	void changeColor(float value, float maxValue) const;
-	void changeColor(Material* newMaterial) const;
+	void changeColor(Urho3D::Material* newMaterial) const;
 
-	Vector2 acceleration;
-	Vector2 velocity;
+	Urho3D::Vector2 acceleration;
+	Urho3D::Vector2 velocity;
 	Aims aims;
 
 	db_unit* dbUnit;
@@ -114,8 +113,8 @@ private:
 	UnitState state;
 	UnitState actionState;
 
-	StaticModel* model;
-	Material* basic;
+	Urho3D::StaticModel* model;
+	Urho3D::Material* basic;
 
 	ChargeData* chargeData{};
 	MissleData* missleData{};
@@ -137,5 +136,5 @@ private:
 
 	unsigned short currentFrameState = 0;
 
-	CustomGeometry* line;
+	Urho3D::CustomGeometry* line;
 };

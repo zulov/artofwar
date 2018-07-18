@@ -10,17 +10,17 @@ SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* style) {
 
 	button = simpleButton(nullptr, style, "SmallIcon");
 	button->SetVisible(false);
-	text = button->CreateChild<Text>();
+	text = button->CreateChild<Urho3D::Text>();
 	text->SetStyle("MyText", style);
 	icon = createEmptySprite(style, "SmallSprite");
 	button->AddChild(icon);
 	button->SetVar("SelectedHudElement", this);
-	mock = button->CreateChild<UIElement>();
+	mock = button->CreateChild<Urho3D::UIElement>();
 	mock->SetStyle("mock", style);
 
-	bars = new ProgressBar*[MAX_SELECTED_IN_BUTTON];
+	bars = new Urho3D::ProgressBar*[MAX_SELECTED_IN_BUTTON];
 	for (int i = 0; i < MAX_SELECTED_IN_BUTTON; ++i) {
-		bars[i] = mock->CreateChild<ProgressBar>();
+		bars[i] = mock->CreateChild<Urho3D::ProgressBar>();
 		bars[i]->SetStyle("MiniProgressBar");
 		bars[i]->SetRange(1);
 		bars[i]->SetValue(0.5);
@@ -34,7 +34,7 @@ SelectedHudElement::~SelectedHudElement() {
 	delete[] bars;
 }
 
-Button* SelectedHudElement::getButton() {
+Urho3D::Button* SelectedHudElement::getButton() {
 	return button;
 }
 
@@ -46,7 +46,7 @@ void SelectedHudElement::show() {
 	button->SetVisible(true);
 }
 
-void SelectedHudElement::setText(const String& msg) {
+void SelectedHudElement::setText(const Urho3D::String& msg) {
 	text->SetVisible(true);
 	text->SetText(msg);
 }
@@ -55,7 +55,7 @@ void SelectedHudElement::hideText() {
 	text->SetVisible(false);
 }
 
-void SelectedHudElement::setTexture(Texture2D* texture) {
+void SelectedHudElement::setTexture(Urho3D::Texture2D* texture) {
 	setTextureToSprite(icon, texture);
 }
 

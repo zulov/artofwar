@@ -7,7 +7,7 @@ class ResourceEntity :
 	public Static
 {
 public:
-	ResourceEntity(Vector3* _position, int id, int level, IntVector2& _bucketCords);
+	ResourceEntity(Urho3D::Vector3* _position, int id, int level, Urho3D::IntVector2& _bucketCords);
 	virtual ~ResourceEntity();
 	void populate();
 
@@ -19,7 +19,7 @@ public:
 	bool isAlive() const override;
 	float getMaxHpBarSize() override;
 	float getHealthPercent() const override;
-	String& toMultiLineString() override;
+	Urho3D::String& toMultiLineString() override;
 	std::string getValues(int precision) override;
 private:
 

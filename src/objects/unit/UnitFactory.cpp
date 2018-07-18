@@ -1,9 +1,9 @@
 #include "UnitFactory.h"
 #include "Game.h"
+#include "Unit.h"
+#include "scene/load/dbload_container.h"
 #include "simulation/env/Enviroment.h"
 #include "state/StateManager.h"
-#include "scene/load/dbload_container.h"
-#include "Unit.h"
 
 
 UnitFactory::UnitFactory() {
@@ -17,7 +17,7 @@ UnitFactory::~UnitFactory() {
 	StateManager::dispose();
 }
 
-std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector2& center, int player, int level) {
+std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Urho3D::Vector2& center, int player, int level) {
 	units->clear();
 
 	int y = 0;
@@ -26,7 +26,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Vector2& center
 
 	while (units->size() < number) {
 		for (int x = 0; x < xMax; ++x) {
-			Vector3* position = new Vector3(x + center.x_ - sideSize, 0, y + center.y_ - sideSize);
+			auto position = new Urho3D::Vector3(x + center.x_ - sideSize, 0, y + center.y_ - sideSize);
 
 			position->y_ = Game::getEnviroment()->getGroundHeightAt(position->x_, position->z_);
 
@@ -45,7 +45,7 @@ std::vector<Unit*>* UnitFactory::load(dbload_unit* unit) {
 
 	float y = Game::getEnviroment()->getGroundHeightAt(unit->pos_x, unit->pos_z);
 
-	Vector3* position = new Vector3(unit->pos_x, y, unit->pos_z);
+	auto position = new Urho3D::Vector3(unit->pos_x, y, unit->pos_z);
 
 	Unit* newUnit = new Unit(position, unit->id_db, unit->player, unit->level);
 	newUnit->load(unit);

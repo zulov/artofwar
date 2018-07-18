@@ -117,14 +117,14 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		creationCommandList->addUnits(UNITS_NUMBER, 4, Vector2(20, 0), 0, 0);
-		creationCommandList->addResource(0, Vector2(0, 0), 0);
+		creationCommandList->addUnits(UNITS_NUMBER, 4, Urho3D::Vector2(20, 0), 0, 0);
+		creationCommandList->addResource(0, Urho3D::Vector2(0, 0), 0);
 	}
 }
 
 void Simulation::loadEntities(NewGameForm* form) const {
 	for (const auto& player : form->players) {
-		simObjectManager->addUnits(10, 1, Vector2(), player.id, 0);
+		simObjectManager->addUnits(10, 1, Urho3D::Vector2(), player.id, 0);
 	}
 }
 
@@ -146,7 +146,7 @@ void Simulation::countFrame() {
 void Simulation::applyForce() {
 	for (auto unit : *units) {
 		unit->applyForce(maxTimeFrame);
-		Vector3* pos = unit->getPosition();
+		auto pos = unit->getPosition();
 		//TODO to przeniesc do mova? to moze byc [rpblem gdy jest przesuwanie poza klatk¹
 		const float y = enviroment->getGroundHeightAt(pos->x_, pos->z_);
 		unit->updateHeight(y, maxTimeFrame);
@@ -296,7 +296,7 @@ void Simulation::moveUnitsAndCheck(const float timeStep) const {
 
 void Simulation::calculateForces() {
 	for (auto unit : *units) {
-		Vector2 newForce;
+		Urho3D::Vector2 newForce;
 
 		const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 

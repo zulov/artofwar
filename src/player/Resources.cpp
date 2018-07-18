@@ -62,9 +62,9 @@ void Resources::hasBeedUpdatedDrawn() {
 }
 
 std::string Resources::getValues(int precision, int player) {
-	string str;
+	std::string str;
 	for (int i = 0; i < RESOURCE_NUMBER_DB; ++i) {
-		str += "(" + to_string(player) + "," + to_string(i) + "," + to_string((int)(values[i] * precision)) + "),";
+		str += "(" + std::to_string(player) + "," + std::to_string(i) + "," + std::to_string((int)(values[i] * precision)) + "),";
 	}
 	return str;
 }

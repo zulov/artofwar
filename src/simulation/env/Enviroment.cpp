@@ -18,7 +18,7 @@
 #define BUCKET_GRID_SIZE_ENEMY 1024
 #define BUCKET_GRID_SIZE_RESOURCE 1024
 
-Enviroment::Enviroment(Terrain* _terrian):
+Enviroment::Enviroment(Urho3D::Terrain* _terrian):
 	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE),
 	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE),
 	buildingGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD),
@@ -66,7 +66,7 @@ std::vector<Physical*>* Enviroment::getNeighboursFromTeam(Physical* physical, co
 std::vector<Physical *>* Enviroment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
 	neights->clear();
 
-	Vector3* center = physical->getPosition();
+	auto center = physical->getPosition();
 	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical, radius, 0);
 	const float sqSepDistance = radius * radius;
 
@@ -110,36 +110,36 @@ void Enviroment::update(std::vector<ResourceEntity*>* resources) {
 	}
 }
 
-Vector2 Enviroment::repulseObstacle(Unit* unit) {
+Urho3D::Vector2 Enviroment::repulseObstacle(Unit* unit) {
 	return mainGrid.repulseObstacle(unit);
 }
 
-Vector2* Enviroment::validatePosition(Vector3* position) {
+Urho3D::Vector2* Enviroment::validatePosition(Urho3D::Vector3* position) {
 	return mainGrid.getDirectionFrom(position);
 }
 
-std::vector<Physical*>* Enviroment::getNeighbours(std::pair<Vector3*, Vector3*>& pair) {
+std::vector<Physical*>* Enviroment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
 	return mainGrid.getArrayNeight(pair);
 }
 
-std::vector<Physical*>* Enviroment::getBuildings(std::pair<Vector3*, Vector3*>& pair) {
+std::vector<Physical*>* Enviroment::getBuildings(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
 	return buildingGrid.getArrayNeight(pair);
 }
 
 float Enviroment::getGroundHeightAt(float x, float z) const {
-	return terrian->GetHeight(Vector3(x, 0, z));
+	return terrian->GetHeight(Urho3D::Vector3(x, 0, z));
 }
 
 float Enviroment::getGroundHeightPercent(float y, float x, float div) const {
 	const float scale = terrian->GetSpacing().y_;
-	Vector3 a = Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, 0,
+	auto a = Urho3D::Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, 0,
 	                    y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
 
 	return terrian->GetHeight(a) / scale / div;
 }
 
-Vector3 Enviroment::getValidPosForCamera(float percentX, float percentY, const Vector3& pos, float min) const {
-	Vector3 a = Vector3(percentX * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, pos.y_,
+Urho3D::Vector3 Enviroment::getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos, float min) const {
+	auto  a = Urho3D::Vector3(percentX * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, pos.y_,
 	                    percentY * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
 	const float h = terrian->GetHeight(a);
 	if (h + min > pos.y_) {
@@ -148,20 +148,20 @@ Vector3 Enviroment::getValidPosForCamera(float percentX, float percentY, const V
 	return a;
 }
 
-bool Enviroment::validateStatic(const IntVector2& size, Vector2& pos) {
+bool Enviroment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) {
 	return mainGrid.validateAdd(size, pos);
 }
 
-Vector2 Enviroment::getValidPosition(const IntVector2& size, const IntVector2& bucketCords) {
-	const Vector2 center = mainGrid.getCenterAt(bucketCords);
+Urho3D::Vector2 Enviroment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) {
+	const Urho3D::Vector2 center = mainGrid.getCenterAt(bucketCords);
 	return getValidPosition(size, center);
 }
 
-Vector2& Enviroment::getCenter(int index) const {
+Urho3D::Vector2& Enviroment::getCenter(int index) const {
 	return mainGrid.getCenter(index);
 }
 
-Vector2& Enviroment::getCenter(short x, short z) {
+Urho3D::Vector2& Enviroment::getCenter(short x, short z) {
 	return mainGrid.getCenter(x, z);
 }
 
@@ -169,7 +169,7 @@ void Enviroment::invalidateCache() {
 	mainGrid.invalidateCache();
 }
 
-int Enviroment::getIndex(Vector2& pos) const {
+int Enviroment::getIndex(Urho3D::Vector2& pos) const {
 	return mainGrid.indexFromPosition(pos);
 }
 
@@ -189,15 +189,15 @@ bool Enviroment::belowCellLimit(int index) {
 	return mainGrid.belowCellLimit(index);
 }
 
-Vector2 Enviroment::getValidPosition(const IntVector2& size, const Vector2& pos) {
+Urho3D::Vector2 Enviroment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {
 	return mainGrid.getValidPosition(size, pos);
 }
 
-IntVector2 Enviroment::getBucketCords(const IntVector2& size, const Vector2& pos) const {
+Urho3D::IntVector2 Enviroment::getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
 	return mainGrid.getBucketCords(size, pos);
 }
 
-std::vector<int>* Enviroment::findPath(int startIdx, Vector2& aim) {
+std::vector<int>* Enviroment::findPath(int startIdx, Urho3D::Vector2& aim) {
 	return mainGrid.findPath(startIdx, aim);
 }
 
@@ -205,7 +205,7 @@ void Enviroment::prepareGridToFind() {
 	mainGrid.prepareGridToFind();
 }
 
-content_info* Enviroment::getContentInfo(Vector2 from, Vector2 to, bool checks[], int activePlayer) {
+content_info* Enviroment::getContentInfo(Urho3D::Vector2 from, Urho3D::Vector2 to, bool checks[], int activePlayer) {
 	from.x_ = from.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
 	from.y_ = from.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
 

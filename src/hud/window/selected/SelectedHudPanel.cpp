@@ -30,7 +30,7 @@ void SelectedHudPanel::hide(int i) {
 	}
 }
 
-std::vector<Button*>& SelectedHudPanel::getButtonsSelectedToSubscribe() {
+std::vector<Urho3D::Button*>& SelectedHudPanel::getButtonsSelectedToSubscribe() {
 	return buttons;
 }
 
@@ -63,7 +63,7 @@ void SelectedHudPanel::createBody() {
 }
 
 int SelectedHudPanel::iconSize() {
-	UIElement* test = new UIElement(Game::getContext());
+	auto test = new Urho3D::UIElement(Game::getContext());
 	test->SetStyle("SmallIcon", style);
 
 	int size = test->GetSize().x_ + rows[0]->GetLayoutSpacing();
@@ -73,9 +73,9 @@ int SelectedHudPanel::iconSize() {
 }
 
 void SelectedHudPanel::createRows() {
-	rows = new UIElement*[LINES_IN_SELECTION];
+	rows = new Urho3D::UIElement*[LINES_IN_SELECTION];
 	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
-		rows[i] = window->CreateChild<UIElement>();
+		rows[i] = window->CreateChild<Urho3D::UIElement>();
 		rows[i]->SetStyle("MyListRow", style);
 	}
 }
@@ -91,11 +91,11 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 	for (auto& infoType : infoTypes) {
 		std::vector<Physical*>& data = infoType->getData();
 		if (data.empty()) { continue; }
-		String name = getIconName(type, infoType->getId());
-		Texture2D* texture = Game::getCache()->GetResource<Texture2D>("textures/hud/icon/" + name);
+		auto name = getIconName(type, infoType->getId());
+		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/" + name);
 
 		for (int j = 0; j < data.size(); j += ratio) {
-			int max = Min(data.size(), j + ratio);
+			int max = Urho3D::Min(data.size(), j + ratio);
 			int diff = max - j;
 
 			elements[k]->add(data, j, max);
@@ -103,7 +103,7 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 			elements[k]->setTexture(texture);
 
 			if (diff > 1) {
-				elements[k]->setText(String(diff));
+				elements[k]->setText(Urho3D::String(diff));
 			} else {
 				elements[k]->hideText();
 			}

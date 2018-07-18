@@ -8,7 +8,6 @@
 
 
 class SimulationInfo;
-using namespace std;
 
 class SimulationObjectManager
 {
@@ -16,9 +15,9 @@ public:
 	SimulationObjectManager();
 	~SimulationObjectManager();
 
-	vector<Unit*>* getUnits() const { return units; }
-	vector<Building*>* getBuildings() const { return buildings; }
-	vector<ResourceEntity*>* getResources() const { return resources; }
+	std::vector<Unit*>* getUnits() const { return units; }
+	std::vector<Building*>* getBuildings() const { return buildings; }
+	std::vector<ResourceEntity*>* getResources() const { return resources; }
 
 	void addUnits(unsigned number, int id, Urho3D::Vector2& center, int player, int level);
 	void addBuilding(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level);
@@ -44,9 +43,9 @@ private:
 	void add(Building* building) const { buildings->push_back(building); }
 	void add(ResourceEntity* resourceEntity) const { resources->push_back(resourceEntity); }
 
-	void addAll(vector<Unit*>* _units);
-	void addAll(vector<Building*>* _buildings);
-	void addAll(vector<ResourceEntity*>* _resources);
+	void addAll(std::vector<Unit*>* _units);
+	void addAll(std::vector<Building*>* _buildings);
+	void addAll(std::vector<ResourceEntity*>* _resources);
 
 	UnitFactory unitFactory;
 	BuildingFactory buildingFactory;
@@ -54,21 +53,21 @@ private:
 
 	SimulationInfo* simulationInfo;
 
-	vector<Unit*>* units;
-	vector<Building*>* buildings;
-	vector<ResourceEntity*>* resources;
+	std::vector<Unit*>* units;
+	std::vector<Building*>* buildings;
+	std::vector<ResourceEntity*>* resources;
 
-	vector<Unit*> toDisposeUnit;
-	vector<Building*> toDisposeBuilding;
-	vector<ResourceEntity*> toDisposeResource;
+	std::vector<Unit*> toDisposeUnit;
+	std::vector<Building*> toDisposeBuilding;
+	std::vector<ResourceEntity*> toDisposeResource;
 
-	vector<Building*>* buildingsToAdd;
-	vector<ResourceEntity*>* resourcesToAdd;
+	std::vector<Building*>* buildingsToAdd;
+	std::vector<ResourceEntity*>* resourcesToAdd;
 
-	vector<Unit*>* unitsTemp;
-	vector<Building*>* buildingsTemp;
-	vector<ResourceEntity*>* resourcesTemp;
+	std::vector<Unit*>* unitsTemp;
+	std::vector<Building*>* buildingsTemp;
+	std::vector<ResourceEntity*>* resourcesTemp;
 
-	function<bool(Unit*)> functionShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this,
-	                                                            placeholders::_1);
+	std::function<bool(Unit*)> functionShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this,
+	                                                            std::placeholders::_1);
 };

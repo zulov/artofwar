@@ -26,7 +26,7 @@ TopPanel::~TopPanel() {
 }
 
 void TopPanel::createBody() {
-	unitsNumber = window->CreateChild<Text>();
+	unitsNumber = window->CreateChild<Urho3D::Text>();
 	unitsNumber->SetStyle("TopText", style);
 	unitsNumber->SetText("Test");
 
@@ -34,7 +34,7 @@ void TopPanel::createBody() {
 
 	for (int i = 0; i < size; ++i) {
 		db_resource* resource = Game::getDatabaseCache()->getResource(i);
-		Texture2D* texture = Game::getCache()->GetResource<Texture2D>("textures/hud/icon/resource/" + resource->icon);
+		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/resource/" + resource->icon);
 
 		elements[i] = new TopHudElement(style, texture);
 		window->AddChild(elements[i]->getButton());
@@ -42,7 +42,7 @@ void TopPanel::createBody() {
 }
 
 void TopPanel::update(int value) const {
-	unitsNumber->SetText(String(value));
+	unitsNumber->SetText(Urho3D::String(value));
 }
 
 void TopPanel::update(Resources& resources) const {
@@ -51,7 +51,7 @@ void TopPanel::update(Resources& resources) const {
 		short size = resources.getSize();
 		float* values = resources.getValues();
 		for (int i = 0; i < size; ++i) {
-			elements[i]->setText(String((int)values[i]));
+			elements[i]->setText(Urho3D::String((int)values[i]));
 		}
 		resources.hasBeedUpdatedDrawn();
 	}

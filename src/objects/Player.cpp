@@ -1,7 +1,7 @@
 #include "player/Player.h"
 #include "Game.h"
-#include "database/DatabaseCache.h"
 #include "MenuAction.h"
+#include "database/DatabaseCache.h"
 #include <string>
 
 
@@ -13,20 +13,20 @@ Player::Player(int nationId, int team, int _id, int _color, Urho3D::String _name
 	color = _color;
 	active = _active;
 
-	fill_n(unitLevels, UNITS_NUMBER_DB, 0);
-	fill_n(buildingLevels, BUILDINGS_NUMBER_DB, 0);
-	fill_n(unitUpgradeLevels, PATH_UPGRADES_NUMBER_DB, -1);
+	std::fill_n(unitLevels, UNITS_NUMBER_DB, 0);
+	std::fill_n(buildingLevels, BUILDINGS_NUMBER_DB, 0);
+	std::fill_n(unitUpgradeLevels, PATH_UPGRADES_NUMBER_DB, -1);
 }
 
 Player::~Player() = default;
 
 std::string Player::getValues(int precision) {
-	return to_string(id) + ","
-		+ to_string(active) + ","
-		+ to_string(team) + ","
-		+ to_string(dbNation->id) + ",'"
+	return std::to_string(id) + ","
+		+ std::to_string(active) + ","
+		+ std::to_string(team) + ","
+		+ std::to_string(dbNation->id) + ",'"
 		+ name.CString() + "','"
-		+ to_string(color) + "'";
+		+ std::to_string(color) + "'";
 }
 
 void Player::setResourceAmount(int resource, float amount) {

@@ -65,7 +65,7 @@ void MiniMapPanel::initColors() {
 
 void MiniMapPanel::createEmpty(int parts) {
 	initColors();
-	IntVector2 size = spr->GetSize();
+	auto size = spr->GetSize();
 	Enviroment* env = Game::getEnviroment();
 	uint32_t* data = (uint32_t*)minimap->GetData();
 
@@ -102,7 +102,7 @@ void MiniMapPanel::changeValue(uint32_t* data, bool& changed, unsigned val) {
 }
 
 void MiniMapPanel::update() {
-	IntVector2 size = spr->GetSize();
+	auto size = spr->GetSize();
 	Enviroment* env = Game::getEnviroment();
 	auto* data = (uint32_t*)minimap->GetData();
 
@@ -116,7 +116,7 @@ void MiniMapPanel::update() {
 		const float xVal = 0 + xinc * (indexUpdate % size.x_);
 		int activePlayer = Game::getPlayersManager()->getActivePlayer()->getId();
 
-		content_info* ci = env->getContentInfo(Vector2(xVal, yVal), Vector2(xVal + xinc, yVal - yinc), checks, activePlayer);
+		content_info* ci = env->getContentInfo(Urho3D::Vector2(xVal, yVal), Urho3D::Vector2(xVal + xinc, yVal - yinc), checks, activePlayer);
 
 		if (checks[2] && ci->hasBuilding) {
 			unsigned char player = ci->biggestBuilding();
@@ -147,54 +147,54 @@ void MiniMapPanel::update() {
 }
 
 void MiniMapPanel::createBody() {
-	spr = window->CreateChild<Sprite>();
+	spr = window->CreateChild<Urho3D::Sprite>();
 	spr->SetEnabled(true);
-	UIElement* row = window->CreateChild<UIElement>();
+	auto row = window->CreateChild<Urho3D::UIElement>();
 	row->SetStyle("MiniMapListRow", style);
 
 	checksElements.reserve(MINI_MAP_BUTTON_NUMBER);
 
 	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
-		Texture2D* texture = Game::getCache()->GetResource<Texture2D
-		>("textures/hud/icon/mm/minimap" + String(i) + ".png");
+		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
+		>("textures/hud/icon/mm/minimap" + Urho3D::String(i) + ".png");
 
-		MySprite* sprite = createSprite(texture, style, "MiniMapSprite");
-		CheckBox* box = row->CreateChild<CheckBox>();
+		auto sprite = createSprite(texture, style, "MiniMapSprite");
+		auto box = row->CreateChild<Urho3D::CheckBox>();
 		box->SetStyle("MiniMapCheckBox", style);
 		checksElements.push_back(box);
 		box->AddChild(sprite);
 
 		checksElements.at(i)->SetVar("Num", i);
 
-		SubscribeToEvent(box, E_CLICK, URHO3D_HANDLER(MiniMapPanel, HandleButton));
+		SubscribeToEvent(box, Urho3D::E_CLICK, URHO3D_HANDLER(MiniMapPanel, HandleButton));
 	}
 
-	IntVector2 size = spr->GetSize();
+	auto size = spr->GetSize();
 
 	spr->SetMaxSize(size);
-	minimap = new Image(Game::getContext());
+	minimap = new Urho3D::Image(Game::getContext());
 
 	minimap->SetSize(size.x_, size.y_, 4);
 
-	text = new Texture2D(Game::getContext());
+	text = new Urho3D::Texture2D(Game::getContext());
 	text->SetData(minimap);
 
 	spr->SetTexture(text);
 	heightMap = new unsigned[size.x_ * size.y_];
-	SubscribeToEvent(spr, E_CLICK, URHO3D_HANDLER(MiniMapPanel, HandleMiniMapClick));
+	SubscribeToEvent(spr, Urho3D::E_CLICK, URHO3D_HANDLER(MiniMapPanel, HandleMiniMapClick));
 }
 
-void MiniMapPanel::HandleButton(StringHash eventType, VariantMap& eventData) {
-	CheckBox* element = (CheckBox*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
+void MiniMapPanel::HandleButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	auto element = (Urho3D::CheckBox*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
 	int id = element->GetVar("Num").GetInt();
 
 	checks[id] = element->IsChecked();
 }
 
-void MiniMapPanel::HandleMiniMapClick(StringHash eventType, VariantMap& eventData) {
-	Sprite* element = static_cast<Sprite*>(eventData[Urho3D::Click::P_ELEMENT].GetVoidPtr());
-	IntVector2 begin = element->GetScreenPosition();
-	IntVector2 size = element->GetSize();
+void MiniMapPanel::HandleMiniMapClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	auto element = static_cast<Urho3D::Sprite*>(eventData[Urho3D::Click::P_ELEMENT].GetVoidPtr());
+	auto begin = element->GetScreenPosition();
+	auto size = element->GetSize();
 	float x = eventData[Urho3D::Click::P_X].GetInt() - begin.x_;
 	float y = size.y_ - (eventData[Urho3D::Click::P_Y].GetInt() - begin.y_);
 

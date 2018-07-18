@@ -59,30 +59,30 @@ void InGameMenuPanel::close() {
 }
 
 void InGameMenuPanel::createBody() {
-	Urho3D::Texture2D* texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/igm/menu.png");
+	auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/igm/menu.png");
 
 	MySprite* sprite = createSprite(texture, style, "InGameToggledSprite");
 	toggleButton = simpleButton(sprite, style, "InGameToggledButton");
 	Game::getUI()->GetRoot()->AddChild(toggleButton);
-	SubscribeToEvent(toggleButton, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleToggle));
+	SubscribeToEvent(toggleButton, Urho3D::E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleToggle));
 
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
-		Texture2D* texture2 = Game::getCache()->GetResource<Texture2D
-		>("textures/hud/icon/igm/igm_" + String(i) + ".png");
+		auto texture2 = Game::getCache()->GetResource<Urho3D::Texture2D
+		>("textures/hud/icon/igm/igm_" + Urho3D::String(i) + ".png");
 
-		MySprite* sprite2 = createSprite(texture2, style, "InGameSprite");
-		Button* button = simpleButton(sprite2, style, "InGameButton");
-		Text* text = button->CreateChild<Text>();
-		String msg = Game::getLocalization()->Get("igm_" + String(i));
+		auto sprite2 = createSprite(texture2, style, "InGameSprite");
+		auto button = simpleButton(sprite2, style, "InGameButton");
+		auto text = button->CreateChild<Urho3D::Text>();
+		auto msg = Game::getLocalization()->Get("igm_" + Urho3D::String(i));
 		text->SetText(msg);
 		text->SetStyle("InGameText", style);
 
 		button->SetVar("Num", i);
 		window->AddChild(button);
-		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleButtonClick));
+		SubscribeToEvent(button, Urho3D::E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleButtonClick));
 	}
 
-	Localization* l10n = Game::getLocalization();
+	auto l10n = Game::getLocalization();
 	addionalPanels = new AbstractMiddlePanel*[IN_GAME_MENU_BUTTON_NUMBER];
 	addionalPanels[0] = new FilePanel(style, l10n->Get("igm_0"));
 	addionalPanels[1] = new FilePanel(style, l10n->Get("igm_1"));
@@ -94,13 +94,13 @@ void InGameMenuPanel::createBody() {
 	}
 }
 
-void InGameMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+void InGameMenuPanel::HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	int id = element->GetVar("HudElement").GetInt();
 
 	action(id);
 }
 
-void InGameMenuPanel::HandleToggle(StringHash eventType, VariantMap& eventData) {
+void InGameMenuPanel::HandleToggle(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	toggle();
 }

@@ -16,16 +16,16 @@ void MainMenuHelpPanel::createBody() {
 
 	for (int i = 0; i < HELP_ITEMS; ++i) {
 
-		Button* button = simpleButton(nullptr, style, "HelpListButton");
-		Urho3D::Text* element = button->CreateChild<Text>();
+		auto button = simpleButton(nullptr, style, "HelpListButton");
+		Urho3D::Text* element = button->CreateChild<Urho3D::Text>();
 
-		element->SetText(Game::getLocalization()->Get("help_key_" + String(i)));
+		element->SetText(Game::getLocalization()->Get("help_key_" + Urho3D::String(i)));
 		element->SetStyle("HelpListText");
 		button->AddChild(element);
 		list->AddItem(button);
 
 		button->SetVar("Num", i);
-		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(MainMenuHelpPanel, HandleButtonClick));
+		SubscribeToEvent(button, Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuHelpPanel, HandleButtonClick));
 	}
 
 	content = window->CreateChild<Urho3D::ScrollView>();
@@ -44,12 +44,12 @@ void MainMenuHelpPanel::createBody() {
 MainMenuHelpPanel::~MainMenuHelpPanel() = default;
 
 void MainMenuHelpPanel::action(short id) {
-	contentText->SetText(Game::getLocalization()->Get("help_value_" + String(id)));
+	contentText->SetText(Game::getLocalization()->Get("help_value_" + Urho3D::String(id)));
 	contentText->SetWidth(content->GetWidth() * 0.9);
 }
 
-void MainMenuHelpPanel::HandleButtonClick(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+void MainMenuHelpPanel::HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	int id = element->GetVar("Num").GetInt();
 
 	action(id);

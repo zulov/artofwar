@@ -7,7 +7,7 @@ class AbstractMiddlePanel;
 class InGameMenuPanel : public AbstractWindowPanel
 {
 public:
-	InGameMenuPanel(Urho3D::XMLFile* _style);
+	explicit InGameMenuPanel(Urho3D::XMLFile* _style);
 	~InGameMenuPanel();
 	void setVisible(bool enable) override;
 	Urho3D::Button* getSaveButton();

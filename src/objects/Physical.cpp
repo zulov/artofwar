@@ -11,7 +11,7 @@
 #include <string>
 
 
-Physical::Physical(Vector3* _position, ObjectType _type): Entity(_type) {
+Physical::Physical(Urho3D::Vector3* _position, ObjectType _type): Entity(_type) {
 	node->CreateComponent<LinkComponent>()->bound(this);
 
 	position = _position;
@@ -31,17 +31,17 @@ Physical::~Physical() {
 void Physical::createBillboardBar() {
 	barNode = node->CreateChild();
 
-	billboardSetBar = barNode->CreateComponent<BillboardSet>();
+	billboardSetBar = barNode->CreateComponent<Urho3D::BillboardSet>();
 	billboardSetBar->SetNumBillboards(1);
-	billboardSetBar->SetMaterial(Game::getCache()->GetResource<Material>("Materials/red_overlay.xml"));
+	billboardSetBar->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/red_overlay.xml"));
 	billboardSetBar->SetSorted(true);
 
 	billboardBar = billboardSetBar->GetBillboard(0);
 }
 
-void Physical::updateBillboardBar(Vector3& boundingBox) const {
-	billboardBar->size_ = Vector2(2, 0.1);
-	billboardBar->position_ = Vector3(0, boundingBox.y_ * 1.3f, 0);
+void Physical::updateBillboardBar(Urho3D::Vector3& boundingBox) const {
+	billboardBar->size_ = Urho3D::Vector2(2, 0.1);
+	billboardBar->position_ = Urho3D::Vector3(0, boundingBox.y_ * 1.3f, 0);
 	billboardBar->enabled_ = false;
 
 	billboardSetBar->Commit();
@@ -50,25 +50,25 @@ void Physical::updateBillboardBar(Vector3& boundingBox) const {
 void Physical::createBillboardShadow() {
 	billboardNode = node->CreateChild();
 	billboardNode->Pitch(90);
-	billboardSetShadow = billboardNode->CreateComponent<BillboardSet>();
+	billboardSetShadow = billboardNode->CreateComponent<Urho3D::BillboardSet>();
 	billboardSetShadow->SetNumBillboards(1);
-	billboardSetShadow->SetMaterial(Game::getCache()->GetResource<Material>("Materials/select.xml"));
+	billboardSetShadow->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/select.xml"));
 	billboardSetShadow->SetSorted(true);
-	billboardSetShadow->SetFaceCameraMode(FaceCameraMode::FC_NONE);
+	billboardSetShadow->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 
 	billboardShadow = billboardSetShadow->GetBillboard(0);
 }
 
-void Physical::updateBillboardShadow(Vector3& boundingBox) const {
+void Physical::updateBillboardShadow(Urho3D::Vector3& boundingBox) const {
 	const float boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.3f;
-	billboardShadow->size_ = Vector2(boudingSize, boudingSize);
+	billboardShadow->size_ = Urho3D::Vector2(boudingSize, boudingSize);
 	billboardShadow->enabled_ = false;
 
 	billboardSetShadow->Commit();
 }
 
 void Physical::updateBillbords() const {
-	Vector3 boundingBox = node->GetComponent<StaticModel>()->GetModel()->GetBoundingBox().Size();
+	Urho3D::Vector3 boundingBox = node->GetComponent<Urho3D::StaticModel>()->GetModel()->GetBoundingBox().Size();
 
 	updateBillboardBar(boundingBox);
 	updateBillboardShadow(boundingBox);
@@ -83,13 +83,13 @@ void Physical::updateHealthBar() {
 	if (billboardBar->enabled_) {
 		const float healthBarSize = getHealthBarSize();
 
-		billboardBar->size_ = Vector2(healthBarSize, 0.1) / node->GetScale2D();
+		billboardBar->size_ = Urho3D::Vector2(healthBarSize, 0.1) / node->GetScale2D();
 		billboardSetBar->Commit();
 	}
 }
 
-Vector2 Physical::getPosToFollow(Vector3* center) const {
-	return Vector2(position->x_, position->z_);
+Urho3D::Vector2 Physical::getPosToFollow(Urho3D::Vector3* center) const {
+	return Urho3D::Vector2(position->x_, position->z_);
 }
 
 float Physical::getMaxHpBarSize() {
@@ -121,7 +121,7 @@ void Physical::setPlayer(unsigned char player) {
 	this->player = player;
 }
 
-String& Physical::toMultiLineString() {
+Urho3D::String& Physical::toMultiLineString() {
 	return menuString;
 }
 

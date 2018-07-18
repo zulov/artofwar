@@ -89,7 +89,7 @@ void Hud::createMyPanels() {
 }
 
 void Hud::prepareStyle() {
-	vector<char *> sth;
+	std::vector<char *> sth;
 	rapidxml::xml_document<> baseXML;
 	rapidxml::xml_node<>* a = baseXML.allocate_node(rapidxml::node_element, "elements");
 	baseXML.append_node(a);

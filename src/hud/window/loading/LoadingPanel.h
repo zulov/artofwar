@@ -5,7 +5,7 @@
 class LoadingPanel : public AbstractWindowPanel
 {
 public:
-	LoadingPanel(Urho3D::XMLFile* _style);
+	explicit LoadingPanel(Urho3D::XMLFile* _style);
 	~LoadingPanel();
 	void show();
 	void update(float progres);

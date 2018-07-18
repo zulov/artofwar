@@ -56,8 +56,8 @@ Urho3D::Button* MainMenuPanel::getCloseButton() {
 	return static_cast<MainMenuClosePanel*>(detailsPanels[4])->getCloseButton();
 }
 
-void MainMenuPanel::HandleButtonClick(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+void MainMenuPanel::HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	int id = element->GetVar("Num").GetInt();
 
 	action(id);
@@ -71,7 +71,7 @@ void MainMenuPanel::createBody() {
 	window->SetPriority(1);
 
 	detailsPanels = new MainMenuDetailsPanel*[MAIN_MENU_BUTTON_NUMBER];
-	Localization* l10n = Game::getLocalization();
+	auto l10n = Game::getLocalization();
 	detailsPanels[0] = new MainMenuNewGamePanel(style, l10n->Get("menu_0"));
 	detailsPanels[1] = new MainMenuLoadPanel(style, l10n->Get("menu_1"));
 	detailsPanels[2] = new MainMenuSettingsPanel(style, l10n->Get("menu_2"));
@@ -83,18 +83,18 @@ void MainMenuPanel::createBody() {
 	}
 
 	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {
-		Texture2D* texture2 = Game::getCache()->GetResource<Texture2D
+		auto texture2 = Game::getCache()->GetResource<Urho3D::Texture2D
 		>("textures/hud/icon/menu/menu_" + Urho3D::String(i) + ".png");
 
-		MySprite* sprite2 = createSprite(texture2, style, "MainMenuSprite");
-		Button* button = simpleButton(sprite2, style, "MainMenuButton");
-		Text* text = button->CreateChild<Text>();
-		String msg = l10n->Get("menu_" + String(i));
+		auto sprite2 = createSprite(texture2, style, "MainMenuSprite");
+		auto button = simpleButton(sprite2, style, "MainMenuButton");
+		auto text = button->CreateChild<Urho3D::Text>();
+		auto msg = l10n->Get("menu_" + Urho3D::String(i));
 		text->SetText(msg);
 		text->SetStyle("MainMenuText", style);
 
 		button->SetVar("Num", i);
 		window->AddChild(button);
-		SubscribeToEvent(button, E_CLICK, URHO3D_HANDLER(MainMenuPanel, HandleButtonClick));
+		SubscribeToEvent(button, Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuPanel, HandleButtonClick));
 	}
 }

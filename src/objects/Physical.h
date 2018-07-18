@@ -10,7 +10,7 @@ class Physical :
 	public Entity
 {
 public:
-	Physical(Vector3* _position, ObjectType _type);
+	Physical(Urho3D::Vector3* _position, ObjectType _type);
 	virtual ~Physical();
 
 	void updateHealthBar();
@@ -38,22 +38,22 @@ public:
 
 	virtual float getHealthPercent() const { return hpCoef / maxHpCoef; }
 	signed char getTeam() const { return team; }
-	Vector3* getPosition() const { return position; }
+	Urho3D::Vector3* getPosition() const { return position; }
 	unsigned char getPlayer() const { return player; }
 	int getBucketIndex(char param) const { return bucketIndexShift[param]; }
 
-	virtual Vector2 getPosToFollow(Vector3* center) const;
+	virtual Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const;
 	virtual float getMaxHpBarSize();
 	virtual void absorbAttack(float attackCoef);
 	virtual void select();
 	virtual void unSelect();
-	virtual String& toMultiLineString();
+	virtual Urho3D::String& toMultiLineString();
 	virtual void action(char id, ActionParameter& parameter);
 	virtual int getLevel();
 	virtual void clean();
 protected:
-	Vector3* position = nullptr;
-	String menuString = "";
+	Urho3D::Vector3* position = nullptr;
+	Urho3D::String menuString = "";
 
 	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
 	int gridIndexToInteract = -1; //TODO to gdzies ustawic
@@ -69,12 +69,12 @@ protected:
 	float attackSpeed = 1;
 	float attackProccess = 0;
 
-	Node* billboardNode = nullptr;
-	Node* barNode = nullptr;
-	Billboard* billboardBar = nullptr;
-	Billboard* billboardShadow = nullptr;
-	BillboardSet* billboardSetBar = nullptr;
-	BillboardSet* billboardSetShadow = nullptr;
+	Urho3D::Node* billboardNode = nullptr;
+	Urho3D::Node* barNode = nullptr;
+	Urho3D::Billboard* billboardBar = nullptr;
+	Urho3D::Billboard* billboardShadow = nullptr;
+	Urho3D::BillboardSet* billboardSetBar = nullptr;
+	Urho3D::BillboardSet* billboardSetShadow = nullptr;
 
 	unsigned char maxCloseUsers = 4; //TODO default values
 	unsigned char maxRangeUsers = 2;
@@ -83,9 +83,9 @@ protected:
 	unsigned char rangeUsers = 0;
 private:
 	void createBillboardBar();
-	void updateBillboardBar(Vector3& boundingBox) const;
+	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
 	void createBillboardShadow();
-	void updateBillboardShadow(Vector3& boundingBox) const;
+	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;
 
 	int bucketIndex[BUCKET_SET_NUMBER];
 	int* bucketIndexShift;

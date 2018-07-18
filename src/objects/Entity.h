@@ -2,12 +2,11 @@
 #include <Urho3D/Scene/Node.h>
 
 enum class ObjectType : char;
-using namespace Urho3D;
 
 class Entity
 {
 public:
-	Entity(ObjectType _type);
+	explicit Entity(ObjectType _type);
 	virtual ~Entity();
 
 	static std::string getColumns();

@@ -14,6 +14,9 @@
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <unordered_set>
+#include "LeftMenuAction.h"
+#include "hud/HudData.h"
+#include "control/SelectedInfo.h"
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
 	styleName = "LeftMenuWindow";
@@ -64,28 +67,28 @@ void MenuPanel::createBody() {
 	infoPanel->createWindow();
 	infoPanel->setVisible(false);
 
-	mock = window->CreateChild<UIElement>();
+	mock = window->CreateChild<Urho3D::UIElement>();
 	mock->SetStyle("LeftMenuMock", style);
 
 	for (auto& row : rows) {
-		row = mock->CreateChild<UIElement>();
+		row = mock->CreateChild<Urho3D::UIElement>();
 		row->SetStyle("LeftMenuListRow", style);
 	}
 	for (int i = 0; i < LEFT_MENU_CHECKS_NUMBER; ++i) {
-		Texture2D* texture = Game::getCache()->GetResource<Texture2D
-		>("textures/hud/icon/lm/lm" + String(i) + ".png");
+		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
+		>("textures/hud/icon/lm/lm" + Urho3D::String(i) + ".png");
 
 		MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
-		checks[i] = rows[LEFT_MENU_ROWS_NUMBER - 1]->CreateChild<CheckBox>();
+		checks[i] = rows[LEFT_MENU_ROWS_NUMBER - 1]->CreateChild<Urho3D::CheckBox>();
 		checks[i]->SetStyle("LeftMenuCheckBox", style);
 		checks[i]->SetVar("Num", i);
 		checks[i]->AddChild(sprite);
-		SubscribeToEvent(checks[i], E_CLICK, URHO3D_HANDLER(MenuPanel, ChengeModeButton));
+		SubscribeToEvent(checks[i], Urho3D::E_CLICK, URHO3D_HANDLER(MenuPanel, ChengeModeButton));
 	}
-	Texture2D* texture = Game::getCache()->GetResource<Texture2D
+	auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
 	>("textures/hud/icon/lm/lm3.png");
 	MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
-	nextButton = rows[LEFT_MENU_ROWS_NUMBER - 1]->CreateChild<Button>();
+	nextButton = rows[LEFT_MENU_ROWS_NUMBER - 1]->CreateChild<Urho3D::Button>();
 	nextButton->SetStyle("LeftMenuIcon", style);
 	nextButton->AddChild(sprite);
 
@@ -112,8 +115,8 @@ void MenuPanel::setChecks(int val) {
 	checks[val]->SetChecked(true);
 }
 
-void MenuPanel::ChengeModeButton(StringHash eventType, VariantMap& eventData) {
-	CheckBox* element = static_cast<CheckBox*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+void MenuPanel::ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+	auto element = static_cast<Urho3D::CheckBox*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	int val = element->GetVar("Num").GetInt();
 	LeftMenuSubMode newSubMode = static_cast<LeftMenuSubMode>(val);
 	if (newSubMode != subMode) {
@@ -150,7 +153,7 @@ void MenuPanel::levelBuilding() {
 		auto opt = Game::getDatabaseCache()->getBuildingLevel(i, level);
 		if (opt.has_value()) {
 			if (building->nation == nation) {
-				setTexture(k, "textures/hud/icon/building/levels/" + String(level) + "/" + building->icon);
+				setTexture(k, "textures/hud/icon/building/levels/" + Urho3D::String(level) + "/" + building->icon);
 
 				hudElements[k]->setId(building->id, LeftMenuAction::BUILDING_LEVEL);
 				k++;
@@ -162,12 +165,12 @@ void MenuPanel::levelBuilding() {
 
 
 std::unordered_set<int> MenuPanel::getUpgradePathInBuilding(std::vector<SelectedInfoType*>& infoTypes) {
-	unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		std::vector<Physical*>& data = infoTypes.at(i)->getData();
 		if (!data.empty()) {
-			unordered_set<int> possiblePaths = pathsIdsInbuilding(i);
-			unordered_set<int> temp(common);
+			auto possiblePaths = pathsIdsInbuilding(i);
+			std::unordered_set<int> temp(common);
 			for (const auto& id : temp) {
 				if (possiblePaths.find(id) == possiblePaths.end()) {
 					common.erase(id);
@@ -179,14 +182,14 @@ std::unordered_set<int> MenuPanel::getUpgradePathInBuilding(std::vector<Selected
 	return common;
 }
 
-unordered_set<int> MenuPanel::getUnitInBuilding(vector<SelectedInfoType*>& infoTypes) {
-	unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+std::unordered_set<int> MenuPanel::getUnitInBuilding(std::vector<SelectedInfoType*>& infoTypes) {
+	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	int nation = Game::getPlayersManager()->getActivePlayer()->getNation();
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		std::vector<Physical*>& data = infoTypes.at(i)->getData();
 		if (!data.empty()) {
-			unordered_set<int> possibleUntis = unitsIdsForBuildingNation(nation, i);
-			unordered_set<int> temp(common);
+			auto possibleUntis = unitsIdsForBuildingNation(nation, i);
+			std::unordered_set<int> temp(common);
 			for (const auto& id : temp) {
 				if (possibleUntis.find(id) == possibleUntis.end()) {
 					common.erase(id);
@@ -199,7 +202,7 @@ unordered_set<int> MenuPanel::getUnitInBuilding(vector<SelectedInfoType*>& infoT
 }
 
 void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
-	unordered_set<int> toShow = getUnitInBuilding(selectedInfo->getSelectedTypes());
+	auto toShow = getUnitInBuilding(selectedInfo->getSelectedTypes());
 	int k = 0;
 
 	for (auto id : toShow) {
@@ -215,7 +218,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 }
 
 void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
-	unordered_set<int> toShow = getUnitInBuilding(selectedInfo->getSelectedTypes());
+	auto toShow = getUnitInBuilding(selectedInfo->getSelectedTypes());
 	int k = 0;
 
 	for (auto id : toShow) {
@@ -223,7 +226,7 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
 		auto opt = Game::getDatabaseCache()->getUnitLevel(id, level);
 		if (opt.has_value()) {
-			setTexture(k, "textures/hud/icon/unit/levels/" + String(level) + "/" + unit->icon);
+			setTexture(k, "textures/hud/icon/unit/levels/" + Urho3D::String(level) + "/" + unit->icon);
 
 			hudElements[k]->setId(unit->id, LeftMenuAction::UNIT_LEVEL);
 			k++;
@@ -233,12 +236,12 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 }
 
 void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
-	unordered_set<int> toShow = getUpgradePathInBuilding(selectedInfo->getSelectedTypes());
+	auto toShow = getUpgradePathInBuilding(selectedInfo->getSelectedTypes());
 	int k = 0;
 
 	for (auto id : toShow) {
 		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1;
-		optional<db_unit_upgrade*> opt = Game::getDatabaseCache()->getUnitUpgrade(id, level);
+		auto opt = Game::getDatabaseCache()->getUnitUpgrade(id, level);
 
 		if (opt.has_value()) {
 			auto upgrade = opt.value();
@@ -251,8 +254,8 @@ void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 	resetButtons(k);
 }
 
-void MenuPanel::setTexture(int k, String textureName) {
-	Texture2D* texture = Game::getCache()->GetResource<Texture2D>(textureName);
+void MenuPanel::setTexture(int k, Urho3D::String textureName) {
+	auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>(textureName);
 	setTextureToSprite(sprites[k], texture);
 
 	buttons[k]->SetVisible(true);
@@ -264,8 +267,8 @@ std::unordered_set<int> MenuPanel::getOrderForUnit(std::vector<SelectedInfoType*
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		std::vector<Physical*>& data = infoTypes.at(i)->getData();
 		if (!data.empty()) {
-			std::vector<db_order*>* orders = Game::getDatabaseCache()->getOrdersForUnit(i);
-			unordered_set<int> common2;
+			auto orders = Game::getDatabaseCache()->getOrdersForUnit(i);
+			std::unordered_set<int> common2;
 			for (auto& order : *orders) {
 				//todo to zrobic raz i pobierac
 				common2.insert(order->id);

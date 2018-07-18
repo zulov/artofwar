@@ -26,7 +26,7 @@
 
 
 
-Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
+Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
 	state(UnitState::STOP) {
 	initBillbords();
 
@@ -42,9 +42,9 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 	}
 
 	node->Scale(dbLevel->scale);
-	model = node->CreateComponent<StaticModel>();
-	model->SetModel(Game::getCache()->GetResource<Model>("Models/" + dbLevel->model));
-	basic = Game::getCache()->GetResource<Material>("Materials/" + dbLevel->texture);
+	model = node->CreateComponent<Urho3D::StaticModel>();
+	model->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
+	basic = Game::getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture);
 	model->SetMaterial(basic);
 
 	setPlayer(player);
@@ -52,7 +52,7 @@ Unit::Unit(Vector3* _position, int id, int player, int level) : Physical(_positi
 
 	updateBillbords();
 	if constexpr (UNIT_DEBUG_ENABLED) {
-		line = node->GetOrCreateComponent<CustomGeometry>();
+		line = node->GetOrCreateComponent<Urho3D::CustomGeometry>();
 	}
 }
 
@@ -104,7 +104,7 @@ void Unit::move(double timeStep) {
 	}
 }
 
-void Unit::setAcceleration(Vector2& _acceleration) {
+void Unit::setAcceleration(Urho3D::Vector2& _acceleration) {
 	acceleration = _acceleration;
 	if (acceleration.LengthSquared() > dbLevel->maxForce * dbLevel->maxForce) {
 		acceleration.Normalize();
@@ -112,7 +112,7 @@ void Unit::setAcceleration(Vector2& _acceleration) {
 	}
 }
 
-void Unit::forceGo(float boostCoef, float aimCoef, Vector2& force) const {
+void Unit::forceGo(float boostCoef, float aimCoef, Urho3D::Vector2& force) const {
 	force.Normalize();
 	force *= boostCoef;
 	force -= velocity;
@@ -121,8 +121,8 @@ void Unit::forceGo(float boostCoef, float aimCoef, Vector2& force) const {
 	force *= aimCoef;
 }
 
-Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
-	Vector2 force;
+Urho3D::Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
+	Urho3D::Vector2 force;
 	aims.clearExpired();
 	if (aims.hasAim()) {
 		auto dirOpt = aims.getDirection(this);
@@ -213,8 +213,8 @@ void Unit::addAim(const FutureAim& aim, bool append) {
 	aims.add(aim);
 }
 
-void Unit::drawLine(CustomGeometry* line, const Vector3& first, const Vector3& second,
-                    const Color& color = Color::WHITE) {
+void Unit::drawLine(Urho3D::CustomGeometry* line, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
+                    const Urho3D::Color& color = Urho3D::Color::WHITE) {
 	line->DefineVertex(first / dbLevel->scale);
 	line->DefineColor(color);
 	line->DefineVertex(second / dbLevel->scale);
@@ -227,44 +227,44 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 
 			line->Clear();
 			line->SetNumGeometries(1);
-			line->BeginGeometry(0, PrimitiveType::LINE_LIST);
+			line->BeginGeometry(0, Urho3D::PrimitiveType::LINE_LIST);
 			switch (type) {
 			case DebugUnitType::NONE:
 				break;
 			case DebugUnitType::VELOCITY:
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(velocity.x_, 0.5, velocity.y_));
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(velocity.x_, 0.5, velocity.y_));
 				break;
 			case DebugUnitType::ACCELERATION:
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(acceleration.x_, 0.5, acceleration.y_));
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(acceleration.x_, 0.5, acceleration.y_));
 				break;
 			case DebugUnitType::SEPARATION_UNITS:
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_));
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_));
 				break;
 			case DebugUnitType::SEPARATION_OBSTACLE:
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_));
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_));
 				break;
 			case DebugUnitType::DESTINATION:
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.destLast.x_, 0.5, stats.destLast.y_));
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.destLast.x_, 0.5, stats.destLast.y_));
 				break;
 			case DebugUnitType::FORMATION:
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.formLast.x_, 0.5, stats.formLast.y_));
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.formLast.x_, 0.5, stats.formLast.y_));
 				break;
 			case DebugUnitType::ESCAPE:
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_));
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_));
 				break;
 			case DebugUnitType::ALL_FORCE:
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(velocity.x_, 0.5, velocity.y_));
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_),
-				         Color::RED);
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_),
-				         Color::GREEN);
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.destLast.x_, 0.5, stats.destLast.y_), Color::BLUE);
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.formLast.x_, 0.5, stats.formLast.y_), Color::YELLOW);
-				drawLine(line, Vector3(0, 0.5, 0), Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_), Color::CYAN);
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(velocity.x_, 0.5, velocity.y_));
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_),
+				         Urho3D::Color::RED);
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_),
+				         Urho3D::Color::GREEN);
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.destLast.x_, 0.5, stats.destLast.y_), Urho3D::Color::BLUE);
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.formLast.x_, 0.5, stats.formLast.y_), Urho3D::Color::YELLOW);
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_), Urho3D::Color::CYAN);
 				break;
 			case DebugUnitType::AIM:
 				if (aims.hasCurrent()) {
-					vector<Vector3> lines = aims.getDebugLines(position);
+					auto lines = aims.getDebugLines(position);
 					for (int i = 0; i < lines.size() - 1; ++i) {
 						drawLine(line, lines[i], lines[i + 1]);
 					}
@@ -289,11 +289,11 @@ void Unit::removeCurrentAim() {
 	aims.removeCurrentAim();
 }
 
-String& Unit::toMultiLineString() {
+Urho3D::String& Unit::toMultiLineString() {
 	menuString = dbUnit->name + " " + dbLevel->name;
-	menuString.Append("\nAtak: ").Append(String(attackCoef));
-	menuString.Append("\nObrona: ").Append(String(defenseCoef));
-	menuString.Append("\nZdrowie: ").Append(String(hpCoef)).Append("/").Append(String(maxHpCoef));
+	menuString.Append("\nAtak: ").Append(Urho3D::String(attackCoef))
+	.Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
+	.Append("\nZdrowie: ").Append(Urho3D::String(hpCoef)).Append("/").Append(Urho3D::String(maxHpCoef));
 	return menuString;
 }
 
@@ -329,12 +329,12 @@ std::string Unit::getValues(int precision) {
 	const int velocity_x = velocity.x_ * precision;
 	const int velocity_z = velocity.y_ * precision;
 	return Physical::getValues(precision)
-		+ to_string(position_x) + "," +
-		to_string(position_z) + "," +
-		to_string(state) + "," +
-		to_string(velocity_x) + "," +
-		to_string(velocity_z) + "," +
-		to_string(-1);
+		+ std::to_string(position_x) + "," +
+		std::to_string(position_z) + "," +
+		std::to_string(state) + "," +
+		std::to_string(velocity_x) + "," +
+		std::to_string(velocity_z) + "," +
+		std::to_string(-1);
 
 }
 
@@ -352,7 +352,7 @@ void Unit::changeColor(float value, float maxValue) const {
 	changeColor(Game::getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue));
 }
 
-void Unit::changeColor(Material* newMaterial) const {
+void Unit::changeColor(Urho3D::Material* newMaterial) const {
 	if (newMaterial != model->GetMaterial(0)) {
 		model->SetMaterial(newMaterial);
 	}
@@ -393,7 +393,7 @@ bool Unit::hasResource() {
 void Unit::load(dbload_unit* unit) {
 	state = UnitState(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
 	//aimIndex =unit->aim_i;
-	velocity = Vector2(unit->vel_x, unit->vel_z);
+	velocity = Urho3D::Vector2(unit->vel_x, unit->vel_z);
 	//alive = unit->alive;
 	hpCoef = maxHpCoef * unit->hp_coef;
 }
@@ -450,7 +450,7 @@ void Unit::applyForce(double timeStep) {
 			StateManager::changeState(this, UnitState::MOVE);
 		}
 		if (rotatable && velLenght > 2 * minSpeed * minSpeed) {
-			node->SetDirection(Vector3(velocity.x_, 0, velocity.y_));
+			node->SetDirection(Urho3D::Vector3(velocity.x_, 0, velocity.y_));
 		}
 	}
 }
