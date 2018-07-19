@@ -6,7 +6,7 @@
 
 
 TargetAim::TargetAim(std::vector<int>& _path) :
-	radiusSq(3 * 3), path(_path), current(0) {
+	radiusSq(1 * 1), path(_path), current(0) {
 	currentTarget = Game::getEnviroment()->getCenter(path[current]);
 }
 

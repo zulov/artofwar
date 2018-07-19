@@ -175,11 +175,11 @@ void Unit::toCollect(std::vector<Physical*>* resources) {
 	actionIfCloseEnough(UnitState::COLLECT, closest, minDistance, attackRange, attackIntrest);
 }
 
-void Unit::interactWithOne(Physical* thing, UnitState action) {
+void Unit::interactWithOne(Physical* thing, UnitState action, ActionParameter parameter) {
 	thingsToInteract.clear();
 	thingsToInteract.push_back(thing);
 	//gridIndexToInteract
-	bool success = StateManager::changeState(this, action);
+	bool success = StateManager::changeState(this, action, parameter);
 	if (!success) {
 		thingsToInteract.clear();
 	}

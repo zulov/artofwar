@@ -13,7 +13,8 @@
 
 ResourceEntity::
 ResourceEntity(Urho3D::Vector3* _position, int id, int level, Urho3D::IntVector2& _bucketCords) : Static(_position,
-                                                                                         ObjectType::RESOURCE) {
+                                                                                                         ObjectType::
+                                                                                                         RESOURCE) {
 	initBillbords();
 
 	dbResource = Game::getDatabaseCache()->getResource(id);
@@ -58,7 +59,9 @@ float ResourceEntity::getHealthPercent() const {
 
 Urho3D::String& ResourceEntity::toMultiLineString() {
 	menuString = dbResource->name;
-	menuString += "\nZasobów: " + Urho3D::String(amonut);
+	menuString += "\nZasobów: " + Urho3D::String(amonut)
+		+ "\nU¿ytkowników: " + Urho3D::String((int)closeUsers)
+		+ "/" + Urho3D::String((int)maxCloseUsers);
 	return menuString;
 }
 

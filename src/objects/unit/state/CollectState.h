@@ -25,6 +25,7 @@ public:
 
 	void onStart(Unit* unit, ActionParameter& parameter) override {
 		unit->velocity = Urho3D::Vector2::ZERO;
+		unit->indexToInteract = parameter.index;
 		unit->currentFrameState = 0;
 		if (unit->isFirstThingAlive()
 			&& Game::getEnviroment()->cellInState(unit->getBucketIndex(-1), {CellState::RESOURCE, CellState::EMPTY})
@@ -43,13 +44,15 @@ public:
 			unit->thingsToInteract[0]->reduceClose();
 			Game::getEnviroment()->updateCell(unit->getBucketIndex(-1), -1, CellState::EMPTY);
 		}
-		unit->thingsToInteract.clear();
+		unit->indexToInteract = -1;
+		unit->thingsToInteract.clear(); //TODO tu niekoniecznie clear. bo czysci do nastêpnego celu
 	}
 
 	void execute(Unit* unit) override {
 		State::execute(unit);
 		if (unit->isFirstThingAlive()
-			&& Game::getEnviroment()->cellInState(unit->getBucketIndex(-1), {CellState::RESOURCE})) {//TODO musi byc dokladnie w dobry mbuckecie
+			&& Game::getEnviroment()->cellInState(unit->getBucketIndex(-1), {CellState::RESOURCE})) {
+			//TODO musi byc dokladnie w dobry mbuckecie
 			auto& resources = Game::getPlayersManager()->getPlayer(unit->player)->getResources();
 			auto resource = static_cast<ResourceEntity*>(unit->thingsToInteract[0]);
 			const float value = resource->collect(unit->collectSpeed);

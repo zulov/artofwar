@@ -61,7 +61,7 @@ void Simulation::tryToAttack(Unit* unit) {
 
 void Simulation::tryToCollect(Unit* unit) {
 	if (unit->hasResource()) {
-		StateManager::changeState(unit, UnitState::COLLECT);
+		StateManager::changeState(unit, UnitState::COLLECT, ActionParameter(-1));
 	} else {
 		unit->toCollect(enviroment->getResources(unit, 12));
 	}

@@ -1,7 +1,8 @@
 #pragma once
 #include "AbstractMiddlePanel.h"
-#include "FileFormData.h"
 #include <Urho3D/UI/LineEdit.h>
+
+struct FileFormData;
 
 class FilePanel : public AbstractMiddlePanel
 {

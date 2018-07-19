@@ -56,7 +56,7 @@ public:
 	void toShot(std::vector<Physical*>* enemies);
 	void toCharge(std::vector<Physical*>* enemies);
 
-	void interactWithOne(Physical* thing, UnitState action);
+	void interactWithOne(Physical* thing, UnitState action, ActionParameter parameter);
 
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
@@ -77,7 +77,8 @@ public:
 	void changeColor(ColorMode mode);
 	void addAim(const FutureAim& aim, bool append = false);
 
-	void drawLine(Urho3D::CustomGeometry* line, const Urho3D::Vector3& first, const Urho3D::Vector3& second, const Urho3D::Color& color);
+	void drawLine(Urho3D::CustomGeometry* line, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
+	              const Urho3D::Color& color);
 	void debug(DebugUnitType type, ForceStats& stats);
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
@@ -133,6 +134,8 @@ private:
 
 	short posInFormation = -1;
 	short formation = -1;
+
+	int indexToInteract = -1;
 
 	unsigned short currentFrameState = 0;
 

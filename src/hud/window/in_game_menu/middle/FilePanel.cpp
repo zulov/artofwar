@@ -16,7 +16,7 @@ FilePanel::~FilePanel() {
 
 void FilePanel::createBody() {
 	AbstractMiddlePanel::createBody();
-	const Urho3D::String name = Game::getLocalization()->Get("save");
+	const auto name = Game::getLocalization()->Get("save");
 	lineEdit = body->CreateChild<Urho3D::LineEdit>();
 	lineEdit->SetStyle("FileNameLineEdit", style);
 
@@ -35,7 +35,6 @@ void FilePanel::createBody() {
 	//	list->SetStyle("DropDownList", style);
 	//	list->SetSize(128, 32);
 	//	list->SetPosition(0, 128);
-
 }
 
 Urho3D::Button* FilePanel::getMainButton() {

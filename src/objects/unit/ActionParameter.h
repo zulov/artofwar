@@ -1,8 +1,7 @@
 #pragma once
 
-#include "aim/Aim.h"
-
 enum class MenuAction : char;
+class Aim;
 
 struct ActionParameter
 {
@@ -10,9 +9,13 @@ struct ActionParameter
 		: aim(aim) {
 	}
 
-	explicit ActionParameter(MenuAction _type) : type(_type) {
+	explicit ActionParameter(MenuAction type) : type(type) {
+	}
+
+	explicit ActionParameter(int index) : index(index) {
 	}
 
 	Aim* aim;
 	MenuAction type;
+	int index = -1;
 };
