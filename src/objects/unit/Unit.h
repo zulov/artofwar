@@ -56,7 +56,7 @@ public:
 	void toShot(std::vector<Physical*>* enemies);
 	void toCharge(std::vector<Physical*>* enemies);
 
-	void interactWithOne(Physical* thing, UnitState action, ActionParameter parameter);
+	void interactWithOne(Physical* thing, UnitState action);
 
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
@@ -71,6 +71,8 @@ public:
 	void setPositionInFormation(short _pos);
 	void clearAims();
 	void removeCurrentAim();
+	void setIndexToInteract(int index);
+	int getIndexToInteract();
 
 	static std::string getColumns();
 	void addUpgrade(db_unit_upgrade* upgrade);
@@ -99,7 +101,8 @@ public:
 	int getDbID() override;
 	void clean() override;
 private:
-	void actionIfCloseEnough(UnitState action, Physical* closest, float distance, float closeRange, float intrestRange);
+	void actionIfCloseEnough(UnitState action, Physical* closest, float distance,
+	                         float closeRange, float intrestRange);
 
 	void changeColor(float value, float maxValue) const;
 	void changeColor(Urho3D::Material* newMaterial) const;

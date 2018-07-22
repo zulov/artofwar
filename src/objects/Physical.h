@@ -56,7 +56,6 @@ protected:
 	Urho3D::String menuString = "";
 
 	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
-	int gridIndexToInteract = -1; //TODO to gdzies ustawic
 
 	unsigned char team;
 	unsigned char player;

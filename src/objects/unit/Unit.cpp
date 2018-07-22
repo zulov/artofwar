@@ -25,7 +25,6 @@
 #include <string>
 
 
-
 Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
 	state(UnitState::STOP) {
 	initBillbords();
@@ -171,15 +170,14 @@ void Unit::toShot(std::vector<Physical*>* enemies) {
 void Unit::toCollect(std::vector<Physical*>* resources) {
 	auto [closest, minDistance] = closestPhysical(this, resources, belowClose, posToFollow);
 	//TODO dystans 0 jesli w odpowiednim bykecie
-	//gridIndexToInteract??
 	actionIfCloseEnough(UnitState::COLLECT, closest, minDistance, attackRange, attackIntrest);
 }
 
-void Unit::interactWithOne(Physical* thing, UnitState action, ActionParameter parameter) {
+void Unit::interactWithOne(Physical* thing, UnitState action) {
 	thingsToInteract.clear();
 	thingsToInteract.push_back(thing);
 	//gridIndexToInteract
-	bool success = StateManager::changeState(this, action, parameter);
+	bool success = StateManager::changeState(this, action);
 	if (!success) {
 		thingsToInteract.clear();
 	}
@@ -238,10 +236,12 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(acceleration.x_, 0.5, acceleration.y_));
 				break;
 			case DebugUnitType::SEPARATION_UNITS:
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_));
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0),
+				         Urho3D::Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_));
 				break;
 			case DebugUnitType::SEPARATION_OBSTACLE:
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_));
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0),
+				         Urho3D::Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_));
 				break;
 			case DebugUnitType::DESTINATION:
 				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.destLast.x_, 0.5, stats.destLast.y_));
@@ -254,13 +254,18 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				break;
 			case DebugUnitType::ALL_FORCE:
 				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(velocity.x_, 0.5, velocity.y_));
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_),
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0),
+				         Urho3D::Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_),
 				         Urho3D::Color::RED);
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_),
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0),
+				         Urho3D::Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_),
 				         Urho3D::Color::GREEN);
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.destLast.x_, 0.5, stats.destLast.y_), Urho3D::Color::BLUE);
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.formLast.x_, 0.5, stats.formLast.y_), Urho3D::Color::YELLOW);
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_), Urho3D::Color::CYAN);
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.destLast.x_, 0.5, stats.destLast.y_),
+				         Urho3D::Color::BLUE);
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.formLast.x_, 0.5, stats.formLast.y_),
+				         Urho3D::Color::YELLOW);
+				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_),
+				         Urho3D::Color::CYAN);
 				break;
 			case DebugUnitType::AIM:
 				if (aims.hasCurrent()) {
@@ -289,11 +294,19 @@ void Unit::removeCurrentAim() {
 	aims.removeCurrentAim();
 }
 
+void Unit::setIndexToInteract(int index) {
+	indexToInteract = index;
+}
+
+int Unit::getIndexToInteract() {
+	return indexToInteract;
+}
+
 Urho3D::String& Unit::toMultiLineString() {
 	menuString = dbUnit->name + " " + dbLevel->name;
 	menuString.Append("\nAtak: ").Append(Urho3D::String(attackCoef))
-	.Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
-	.Append("\nZdrowie: ").Append(Urho3D::String(hpCoef)).Append("/").Append(Urho3D::String(maxHpCoef));
+	          .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
+	          .Append("\nZdrowie: ").Append(Urho3D::String(hpCoef)).Append("/").Append(Urho3D::String(maxHpCoef));
 	return menuString;
 }
 

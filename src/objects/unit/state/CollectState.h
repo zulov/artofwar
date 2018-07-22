@@ -25,9 +25,9 @@ public:
 
 	void onStart(Unit* unit, ActionParameter& parameter) override {
 		unit->velocity = Urho3D::Vector2::ZERO;
-		unit->indexToInteract = parameter.index;
 		unit->currentFrameState = 0;
 		if (unit->isFirstThingAlive()
+			&& unit->getBucketIndex(-1) == unit->indexToInteract //TODO je¿eli jest inny to sprobowaæ podmienic
 			&& Game::getEnviroment()->cellInState(unit->getBucketIndex(-1), {CellState::RESOURCE, CellState::EMPTY})
 			&& Game::getEnviroment()->belowCellLimit(unit->getBucketIndex(-1))) {
 			unit->thingsToInteract[0]->upClose();
@@ -51,6 +51,7 @@ public:
 	void execute(Unit* unit) override {
 		State::execute(unit);
 		if (unit->isFirstThingAlive()
+			&& unit->getBucketIndex(-1) == unit->indexToInteract
 			&& Game::getEnviroment()->cellInState(unit->getBucketIndex(-1), {CellState::RESOURCE})) {
 			//TODO musi byc dokladnie w dobry mbuckecie
 			auto& resources = Game::getPlayersManager()->getPlayer(unit->player)->getResources();

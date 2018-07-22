@@ -16,8 +16,6 @@ public:
 	bool hasFreeSpace() const;
 	bool canCollect(int index, CellState type) const;
 
-	Urho3D::Vector2 getClosestCellPos(Urho3D::Vector3* pos) const;
-
 	Urho3D::IntVector2& getBucketPosition() { return mainCell; }
 	Urho3D::IntVector2& getGridSize() { return gridSize; }
 	std::vector<int>& getOcupiedCells() { return ocupiedCells; }

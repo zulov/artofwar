@@ -82,7 +82,8 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 	return true;
 }
 
-content_info* MainGrid::getContentInfo(const Urho3D::Vector2& from, const Urho3D::Vector2& to, bool checks[], int activePlayer) {
+content_info* MainGrid::getContentInfo(const Urho3D::Vector2& from, const Urho3D::Vector2& to, bool checks[],
+                                       int activePlayer) {
 	const auto posBeginX = getIndex(from.x_);
 	const auto posBeginZ = getIndex(from.y_);
 	const auto posEndX = getIndex(to.x_);
@@ -108,7 +109,8 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 	auto index = indexFromPosition(unit->getPosition());
 
 	Urho3D::Vector2 sum;
-	if (complexData[index].isUnit()
+	if (index != unit->getIndexToInteract()
+		&& complexData[index].isUnit()
 		&& !complexData[index].getOccupiedNeightbours().empty()) {
 		for (const auto neightbour : complexData[index].getOccupiedNeightbours()) {
 			sum += complexData[neightbour.first].getCenter();
@@ -151,7 +153,7 @@ bool MainGrid::cellInStates(int index, std::vector<CellState>& cellStates) const
 }
 
 void MainGrid::updateCell(int index, char val, CellState cellState) {
-	complexData[index].updateSize(val,cellState);
+	complexData[index].updateSize(val, cellState);
 }
 
 bool MainGrid::belowCellLimit(int index) {
@@ -497,7 +499,8 @@ void MainGrid::drawMap(Urho3D::Image* image) {
 	}
 }
 
-std::vector<int>* MainGrid::reconstruct_path(Urho3D::IntVector2& startV, Urho3D::IntVector2& goalV, const int came_from[]) {
+std::vector<int>* MainGrid::reconstruct_path(Urho3D::IntVector2& startV, Urho3D::IntVector2& goalV,
+                                             const int came_from[]) {
 	return reconstruct_path(getIndex(startV.x_, startV.y_),
 	                        getIndex(goalV.x_, goalV.y_),
 	                        came_from);

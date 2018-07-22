@@ -51,14 +51,15 @@ bool Static::canCollect(int index, CellState type) const {
 		&& Game::getEnviroment()->getCurrentSize(index) <= 2;
 }
 
-Urho3D::Vector2 Static::getClosestCellPos(Urho3D::Vector3* pos) const {
+
+Urho3D::Vector2 Static::getPosToFollow(Urho3D::Vector3* center) const {
 	float closestDist = 999999;
 	Urho3D::Vector2 closest;
 	for (auto index : surroundCells) {
 		auto type = Game::getEnviroment()->getType(index);
 		if (canCollect(index, type)) {
 			const auto vec = Game::getEnviroment()->getCenter(index);
-			const float dist = sqDist(vec, *pos);
+			const float dist = sqDist(vec, *center);
 			if (dist < closestDist) {
 				closestDist = dist;
 				closest = vec;
@@ -66,10 +67,6 @@ Urho3D::Vector2 Static::getClosestCellPos(Urho3D::Vector3* pos) const {
 		}
 	}
 	return closest;
-}
-
-Urho3D::Vector2 Static::getPosToFollow(Urho3D::Vector3* center) const {
-	return getClosestCellPos(center);
 }
 
 std::string Static::getValues(int precision) {

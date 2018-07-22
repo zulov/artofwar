@@ -22,9 +22,10 @@ inline Urho3D::Vector2 exactPos(Physical* physical, Urho3D::Vector3* center) {
 }
 
 std::tuple<Physical*, float> closestPhysical(Physical* physical,
-                                             std::vector<Physical*>* things,
-                                             const std::function<bool(Physical*)>& condition,
-                                             const std::function<Urho3D::Vector2(Physical*, Urho3D::Vector3*)>& position) {
+                                                  std::vector<Physical*>* things,
+                                                  const std::function<bool(Physical*)>& condition,
+                                                  const std::function<Urho3D::Vector2(Physical*, Urho3D::Vector3*)>&
+                                                  position) {
 	float minDistance = 99999;
 	Physical* closest = nullptr;
 	for (auto entity : *things) {
