@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "objects/unit/Unit.h"
 #include "simulation/formation/FormationManager.h"
+#include "simulation/env/Enviroment.h"
 
 
 Force::Force() = default;
@@ -9,7 +10,8 @@ Force::Force() = default;
 
 Force::~Force() = default;
 
-void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit, const Urho3D::Vector2& repulse) {
+void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit) {
+	auto repulse = Game::getEnviroment()->repulseObstacle(unit);
 	if (repulse == Urho3D::Vector2::ZERO) {
 		return;
 	}
@@ -83,9 +85,9 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 		if (priority > 0) {
 
 			auto force = Urho3D::Vector2(
-			                     opt.value().x_ - unit->getPosition()->x_,
-			                     opt.value().y_ - unit->getPosition()->z_
-			                    );
+			                             opt.value().x_ - unit->getPosition()->x_,
+			                             opt.value().y_ - unit->getPosition()->z_
+			                            );
 
 			force *= formationCoef * boostCoef * priority;
 
@@ -96,7 +98,8 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 	}
 }
 
-void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Urho3D::Vector2* dir) {
+void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
+	auto dir = Game::getEnviroment()->validatePosition(unit->getPosition());
 	if (dir) {
 		auto force = *dir * escapeCoef * boostCoef;
 

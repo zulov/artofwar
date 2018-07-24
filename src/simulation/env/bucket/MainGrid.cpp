@@ -4,7 +4,6 @@
 #include "DrawGridUtils.h"
 #include "Game.h"
 #include "MathUtils.h"
-#include "ObjectEnums.h"
 #include "Urho3D/Resource/Image.h"
 #include "objects/Static.h"
 #include "objects/unit/Unit.h"

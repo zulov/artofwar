@@ -301,10 +301,10 @@ void Simulation::calculateForces() {
 		const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
 		force.separationUnits(newForce, unit, neighbours);
-		force.separationObstacle(newForce, unit, enviroment->repulseObstacle(unit));//TODO mo¿ê to 
+		force.separationObstacle(newForce, unit);//TODO mo¿ê to 
 		force.destination(newForce, unit);
 		force.formation(newForce, unit);
-		force.escapeFromInvalidPosition(newForce, enviroment->validatePosition(unit->getPosition()));
+		force.escapeFromInvalidPosition(newForce, unit);
 
 		auto stats = force.stats();
 		stats.result();
