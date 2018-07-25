@@ -18,9 +18,6 @@ MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution
 	short posX = 0;
 	short posZ = 0;
 
-	tempPath = new std::vector<int>();
-	tempPath->reserve(DEFAULT_VECTOR_SIZE);
-
 	complexData = new ComplexBucketData[resolution * resolution];
 	for (int i = 0; i < resolution * resolution; ++i) {
 		const float cX = (posX + 0.5) * fieldSize - size / 2;
@@ -33,7 +30,19 @@ MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution
 			posZ = 0;
 		}
 	}
+	auto quater = fieldSize / 4;
+	posInBucket2 = {Urho3D::Vector2(quater, quater), Urho3D::Vector2(-quater, -quater)};
+	posInBucket3 = {
+		Urho3D::Vector2(quater, quater), Urho3D::Vector2(-quater, quater),
+		Urho3D::Vector2(-quater, 0)
+	};
+	posInBucket4 = {
+		Urho3D::Vector2(quater, quater), Urho3D::Vector2(-quater, quater),
+		Urho3D::Vector2(quater, -quater), Urho3D::Vector2(-quater, -quater)
+	};
 
+	tempPath = new std::vector<int>();
+	tempPath->reserve(DEFAULT_VECTOR_SIZE);
 	ci = new content_info();
 }
 
@@ -140,6 +149,21 @@ void MainGrid::updateSurround(Static* object) {
 	}
 	auto& cells = object->getSurroundCells();
 	cells.insert(cells.begin(), indexes.begin(), indexes.end());
+}
+
+Urho3D::Vector2 MainGrid::getPositionInBucket(int index, char max, char i) {
+	auto center = complexData[index].getCenter();
+	switch (max) {
+	case 1:
+		return center;
+	case 2:
+		return posInBucket2[i] + center;
+	case 3:
+		return posInBucket3[i] + center;
+	case 4:
+		return posInBucket4[i] + center;
+
+	}
 }
 
 bool MainGrid::cellInStates(int index, std::vector<CellState>& cellStates) const {

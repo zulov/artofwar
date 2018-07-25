@@ -48,6 +48,8 @@ public:
 	void invalidateCache();
 	void updateSurround(Static* object);
 
+	Urho3D::Vector2 getPositionInBucket(int index, char max, char i);
+
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 
 	Urho3D::Vector2& getCenterAt(const Urho3D::IntVector2& cords) const {
@@ -83,6 +85,9 @@ private:
 	void resetPathArrays();
 	BucketQueue frontier;
 	bool pathInited = false;
+	std::vector<Urho3D::Vector2> posInBucket2;
+	std::vector<Urho3D::Vector2> posInBucket3;
+	std::vector<Urho3D::Vector2> posInBucket4;
 
 	ComplexBucketData* complexData;
 };
