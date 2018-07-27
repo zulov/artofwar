@@ -48,6 +48,9 @@ public:
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords);
 	Urho3D::Vector2& getCenter(int index) const;
 	Urho3D::Vector2& getCenter(short x, short z);
+
+	Urho3D::Vector2 getPositionInBucket(int index, char max, char i);
+
 	void invalidateCache();
 
 	int getIndex(Urho3D::Vector2& pos) const;

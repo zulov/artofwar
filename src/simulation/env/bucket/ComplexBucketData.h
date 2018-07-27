@@ -8,6 +8,18 @@
 
 class Static;
 
+struct CostPair
+{
+	int index;
+	float cost;
+
+	CostPair(int index, float cost)
+		: index(index),
+		cost(cost) {
+	}
+};
+
+
 class ComplexBucketData
 {
 public:
@@ -22,8 +34,8 @@ public:
 	void setEscapeThrought(int val);
 	Urho3D::Vector2* getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket);
 
-	std::vector<std::pair<int, float>>& getNeightbours() { return neighbours; }
-	std::vector<std::pair<int, float>>& getOccupiedNeightbours() { return occupiedNeightbours; }
+	std::vector<CostPair>& getNeightbours() { return neighbours; }
+	std::vector<CostPair>& getOccupiedNeightbours() { return occupiedNeightbours; }
 	Urho3D::Vector2& getCenter() { return center; }
 	char getAdditonalInfo() const { return additonalInfo; }
 	int getEscapeBucket() const { return escapeBucketIndex; }
@@ -40,8 +52,9 @@ private:
 
 	Static* object{};
 	char additonalInfo{};
-	std::vector<std::pair<int, float>> neighbours;
-	std::vector<std::pair<int, float>> occupiedNeightbours;
+	std::vector<CostPair> neighbours;
+	std::vector<CostPair> occupiedNeightbours;
 	float cost{};
 	int escapeBucketIndex = -1;
 };
+

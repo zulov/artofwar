@@ -133,14 +133,15 @@ float Enviroment::getGroundHeightAt(float x, float z) const {
 float Enviroment::getGroundHeightPercent(float y, float x, float div) const {
 	const float scale = terrian->GetSpacing().y_;
 	auto a = Urho3D::Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, 0,
-	                    y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
+	                         y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
 
 	return terrian->GetHeight(a) / scale / div;
 }
 
-Urho3D::Vector3 Enviroment::getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos, float min) const {
-	auto  a = Urho3D::Vector3(percentX * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, pos.y_,
-	                    percentY * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
+Urho3D::Vector3 Enviroment::getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos,
+                                                 float min) const {
+	auto a = Urho3D::Vector3(percentX * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, pos.y_,
+	                         percentY * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
 	const float h = terrian->GetHeight(a);
 	if (h + min > pos.y_) {
 		a.y_ = h + min;
@@ -163,6 +164,10 @@ Urho3D::Vector2& Enviroment::getCenter(int index) const {
 
 Urho3D::Vector2& Enviroment::getCenter(short x, short z) {
 	return mainGrid.getCenter(x, z);
+}
+
+Urho3D::Vector2 Enviroment::getPositionInBucket(int index, char max, char i) {
+	return mainGrid.getPositionInBucket(index, max, i);
 }
 
 void Enviroment::invalidateCache() {

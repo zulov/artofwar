@@ -121,7 +121,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 		&& complexData[index].isUnit()
 		&& !complexData[index].getOccupiedNeightbours().empty()) {
 		for (const auto neightbour : complexData[index].getOccupiedNeightbours()) {
-			sum += complexData[neightbour.first].getCenter();
+			sum += complexData[neightbour.index].getCenter();
 		}
 		sum /= complexData[index].getOccupiedNeightbours().size();
 		sum -= Urho3D::Vector2(unit->getPosition()->x_, unit->getPosition()->z_);
@@ -286,13 +286,13 @@ Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3* position) {
 		int escapeBucket;
 		auto& neights = complexData[index].getNeightbours();
 		if (!neights.empty()) {
-			float dist = sqDist(complexData[neights.at(0).first].getCenter(), complexData[index].getCenter());
-			escapeBucket = neights.at(0).first;
+			float dist = sqDist(complexData[neights.at(0).index].getCenter(), complexData[index].getCenter());
+			escapeBucket = neights.at(0).index;
 
 			for (int i = 1; i < neights.size(); ++i) {
-				float newDist = sqDist(complexData[neights.at(i).first].getCenter(), complexData[index].getCenter());
+				float newDist = sqDist(complexData[neights.at(i).index].getCenter(), complexData[index].getCenter());
 				if (newDist < dist) {
-					escapeBucket = neights.at(i).first;
+					escapeBucket = neights.at(i).index;
 				}
 			}
 		} else {
@@ -401,9 +401,9 @@ std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, float min, float 
 		}
 		auto& neights = complexData[current].getNeightbours();
 		for (auto& neight : neights) {
-			int next = neight.first;
+			int next = neight.index;
 			if (came_from[current] != next) {
-				const float new_cost = cost_so_far[current] + neight.second;
+				const float new_cost = cost_so_far[current] + neight.cost;
 				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
 
 					updateCost(next, new_cost);
@@ -428,7 +428,7 @@ std::vector<int>* MainGrid::findPath(int startIdx, const Urho3D::Vector2& aim) {
 		if (complexData[end].getNeightbours().empty()) {
 			end = complexData[end].getEscapeBucket();
 		} else {
-			end = complexData[end].getNeightbours()[0].first; //TODO obliczyc lepszy
+			end = complexData[end].getNeightbours()[0].index; //TODO obliczyc lepszy
 		}
 	}
 
@@ -466,14 +466,14 @@ void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 			}
 			auto& neights = complexData[current].getOccupiedNeightbours();
 			for (auto& neight : neights) {
-				if (!complexData[neight.first].getNeightbours().empty() && refreshed.find(neight.first) == refreshed.
+				if (!complexData[neight.index].getNeightbours().empty() && refreshed.find(neight.index) == refreshed.
 					end()) {
 					//TODO to chyba glupi warunek
-					toRefresh.push_back(neight.first);
+					toRefresh.push_back(neight.index);
 				}
-				int next = neight.first;
+				int next = neight.index;
 				if (came_from[current] != next) {
-					const float new_cost = cost_so_far[current] + neight.second;
+					const float new_cost = cost_so_far[current] + neight.cost;
 					if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
 						cost_so_far[next] = new_cost;
 
