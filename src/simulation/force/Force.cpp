@@ -84,10 +84,8 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 		const float priority = Game::getFormationManager()->getPriority(unit);
 		if (priority > 0) {
 
-			auto force = Urho3D::Vector2(
-			                             opt.value().x_ - unit->getPosition()->x_,
-			                             opt.value().y_ - unit->getPosition()->z_
-			                            );
+			auto force = Urho3D::Vector2(opt.value().x_ - unit->getPosition()->x_,
+			                             opt.value().y_ - unit->getPosition()->z_);
 
 			force *= formationCoef * boostCoef * priority;
 
@@ -108,6 +106,15 @@ void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
 		newForce += force;
 		delete dir;
 	}
+}
+
+void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) {
+	auto aim = Game::getEnviroment()->getPositionInBucket(unit->getBucketIndex(-1), 2, 1);
+	auto force = Urho3D::Vector2(aim.x_ - unit->getPosition()->x_,
+	                             aim.y_ - unit->getPosition()->z_);
+
+	force *= inCellCoef * boostCoef;
+	newForce += force;
 }
 
 ForceStats& Force::stats() {

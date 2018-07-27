@@ -17,6 +17,8 @@ public:
 	void destination(Urho3D::Vector2& newForce, Unit* unit);
 	void formation(Urho3D::Vector2& newForce, Unit* unit);
 	void escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit);
+	void inCell(Urho3D::Vector2& newForce, Unit* unit);
+
 	ForceStats& stats();
 	void changeCoef(int i, int wheel);
 
@@ -29,6 +31,7 @@ private:
 	float aimCoef = 2;
 	float escapeCoef = 20;
 	float formationCoef = 50;
+	float inCellCoef = 1;
 
 	ForceStats forceStats;
 };

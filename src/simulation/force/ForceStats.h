@@ -1,7 +1,7 @@
 #pragma once
+#include "defines.h"
 #include <Urho3D/Math/Vector2.h>
 #include <iostream>
-#include "defines.h"
 
 #define FORCE_STATS_SIZE 1000
 #define FORCE_STATS_ENABLE false

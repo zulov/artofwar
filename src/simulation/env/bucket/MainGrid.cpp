@@ -18,8 +18,8 @@ MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution
 	short posX = 0;
 	short posZ = 0;
 
-	complexData = new ComplexBucketData[resolution * resolution];
-	for (int i = 0; i < resolution * resolution; ++i) {
+	complexData = new ComplexBucketData[sqResolution];
+	for (int i = 0; i < sqResolution; ++i) {
 		const float cX = (posX + 0.5) * fieldSize - size / 2;
 		const float cZ = (posZ + 0.5) * fieldSize - size / 2;
 		complexData[i].setCenter(cX, cZ);

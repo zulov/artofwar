@@ -298,14 +298,17 @@ void Simulation::calculateForces() {
 	for (auto unit : *units) {
 		Urho3D::Vector2 newForce;
 
-		const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
+		if (unit->getState() != UnitState::COLLECT) {
+			const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
-		force.separationUnits(newForce, unit, neighbours);
-		force.separationObstacle(newForce, unit);//TODO mo¿ê to 
-		force.destination(newForce, unit);
-		force.formation(newForce, unit);
-		force.escapeFromInvalidPosition(newForce, unit);
-
+			force.separationUnits(newForce, unit, neighbours);
+			force.separationObstacle(newForce, unit); //TODO mo¿ê to 
+			force.destination(newForce, unit);
+			force.formation(newForce, unit);
+			force.escapeFromInvalidPosition(newForce, unit);
+		} else {
+			force.inCell(newForce, unit);
+		}
 		auto stats = force.stats();
 		stats.result();
 
