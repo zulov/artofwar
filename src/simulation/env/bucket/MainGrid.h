@@ -3,6 +3,7 @@
 #include "ComplexBucketData.h"
 #include "Grid.h"
 #include "objects/resource/ResourceEntity.h"
+#include "objects/unit/state/UnitState.h"
 
 
 class Unit;
@@ -64,7 +65,9 @@ public:
 	char getCurrentSize(int index) const { return complexData[index].getSize(); }
 	bool cellInStates(int index, std::vector<CellState>& cellStates) const;
 	void updateCell(int index, char val, CellState cellState);
-	bool belowCellLimit(int index);
+	bool belowCellLimit(int index) const;
+	char getNumberInState(int index, UnitState state) const;
+	char getOrdinarInState(Unit* unit, UnitState state) const;
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);

@@ -97,7 +97,7 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
-	auto dir = Game::getEnviroment()->validatePosition(unit->getPosition());
+	const auto dir = Game::getEnviroment()->validatePosition(unit->getPosition());
 	if (dir) {
 		auto force = *dir * escapeCoef * boostCoef;
 
@@ -109,7 +109,10 @@ void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) {
-	auto aim = Game::getEnviroment()->getPositionInBucket(unit->getBucketIndex(-1), 2, 1);
+	char max = Game::getEnviroment()->getNumberInState(unit->getBucketIndex(-1), UnitState::COLLECT);
+	char i = Game::getEnviroment()->getOrdinarInState(unit, UnitState::COLLECT);
+
+	auto aim = Game::getEnviroment()->getPositionInBucket(unit->getBucketIndex(-1), max, i);
 	auto force = Urho3D::Vector2(aim.x_ - unit->getPosition()->x_,
 	                             aim.y_ - unit->getPosition()->z_);
 

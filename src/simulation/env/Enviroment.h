@@ -5,6 +5,7 @@
 #include "defines.h"
 #include <Urho3D/Graphics/Terrain.h>
 #include <vector>
+#include "objects/unit/state/UnitState.h"
 
 
 class ResourceEntity;
@@ -59,7 +60,9 @@ public:
 	char getCurrentSize(int index) const { return mainGrid.getCurrentSize(index); }
 	bool cellInState(int index, std::vector<CellState> cellStates) const;
 	void updateCell(int index, char val, CellState cellState);
-	bool belowCellLimit(int index);
+	bool belowCellLimit(int index) const;
+	char getNumberInState(int index, UnitState state) const;
+	char getOrdinarInState(Unit* unit, UnitState state) const;
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid;

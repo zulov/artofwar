@@ -179,8 +179,32 @@ void MainGrid::updateCell(int index, char val, CellState cellState) {
 	complexData[index].updateSize(val, cellState);
 }
 
-bool MainGrid::belowCellLimit(int index) {
+bool MainGrid::belowCellLimit(int index) const {
 	return complexData[index].belowCellLimit();
+}
+
+char MainGrid::getNumberInState(int index, UnitState state) const {
+	char num = 0;
+	for (auto&& physical : buckets[index].getContent()) {
+		if (static_cast<Unit*>(physical)->getState() == state) {
+			++num;
+		}
+	}
+	return num;
+}
+
+char MainGrid::getOrdinarInState(Unit* unit, UnitState state) const {
+	const auto index = unit->getBucketIndex(-1);
+	char ordinar = 0;
+	for (auto&& physical : buckets[index].getContent()) {
+		if (physical == unit) {
+			return ordinar;
+		}
+		if (static_cast<Unit*>(physical)->getState() == state) {
+			++ordinar;
+		}
+	}
+	return -1;
 }
 
 void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {

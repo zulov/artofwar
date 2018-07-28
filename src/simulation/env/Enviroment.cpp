@@ -190,8 +190,16 @@ void Enviroment::updateCell(int index, char val, CellState cellState) {
 	mainGrid.updateCell(index, val, cellState);
 }
 
-bool Enviroment::belowCellLimit(int index) {
+bool Enviroment::belowCellLimit(int index) const {
 	return mainGrid.belowCellLimit(index);
+}
+
+char Enviroment::getNumberInState(int index, UnitState state) const {
+	return mainGrid.getNumberInState(index, state);
+}
+
+char Enviroment::getOrdinarInState(Unit* unit, UnitState state) const {
+	return mainGrid.getOrdinarInState(unit, state);
 }
 
 Urho3D::Vector2 Enviroment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {
