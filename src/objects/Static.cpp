@@ -5,6 +5,7 @@
 #include <string>
 
 Static::Static(Urho3D::Vector3* _position, ObjectType _type) : Physical(_position, _type) {
+	state = StaticState::ALIVE;
 }
 
 Static::~Static() = default;
@@ -47,10 +48,14 @@ bool Static::hasFreeSpace() const {
 }
 
 bool Static::canCollect(int index, CellState type) const {
-	return (type == CellState::EMPTY || type == CellState::COLLECT)//TODO collect or attack
+	return (type == CellState::EMPTY || type == CellState::COLLECT) //TODO collect or attack
 		&& Game::getEnviroment()->getCurrentSize(index) <= 2;
 }
 
+
+bool Static::isToDispose() const {
+	return state == StaticState::DISPOSE;
+}
 
 Urho3D::Vector2 Static::getPosToFollow(Urho3D::Vector3* center) const {
 	float closestDist = 999999;

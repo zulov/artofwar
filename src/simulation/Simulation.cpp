@@ -297,8 +297,11 @@ void Simulation::moveUnitsAndCheck(const float timeStep) const {
 void Simulation::calculateForces() {
 	for (auto unit : *units) {
 		Urho3D::Vector2 newForce;
-
-		if (unit->getState() != UnitState::COLLECT) {
+		switch (unit->getState()) {
+		case UnitState::COLLECT:
+			force.inCell(newForce, unit);
+			break;
+		default:
 			const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);
@@ -306,9 +309,8 @@ void Simulation::calculateForces() {
 			force.destination(newForce, unit);
 			force.formation(newForce, unit);
 			force.escapeFromInvalidPosition(newForce, unit);
-		} else {
-			force.inCell(newForce, unit);
 		}
+
 		auto stats = force.stats();
 		stats.result();
 

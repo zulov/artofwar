@@ -52,7 +52,7 @@ void ComplexBucketData::updateSize(char val, CellState cellState) {
 	size += val;
 	if (size <= 0) {
 		type = CellState::EMPTY;
-	}else {
+	} else if (type != CellState::NONE) {
 		type = cellState;
 	}
 }

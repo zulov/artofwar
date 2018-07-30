@@ -42,6 +42,7 @@ public:
 	unsigned char getPlayer() const { return player; }
 	int getBucketIndex(char param) const { return bucketIndexShift[param]; }
 
+	virtual bool isToDispose() const;
 	virtual Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const;
 	virtual float getMaxHpBarSize();
 	virtual void absorbAttack(float attackCoef);

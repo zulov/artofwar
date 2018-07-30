@@ -17,9 +17,8 @@ SimulationObjectManager::SimulationObjectManager() {
 	units->reserve(10000);
 	buildings->reserve(100);
 	resources->reserve(1000);
-	toDisposeUnit.reserve(100);
-	toDisposeBuilding.reserve(100);
-	toDisposeResource.reserve(100);
+
+	toDisposePhysical.reserve(100);
 
 	simulationInfo = new SimulationInfo();
 }
@@ -63,24 +62,56 @@ void SimulationObjectManager::addBuilding(int id, Urho3D::Vector2& center, int p
 }
 
 
-void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level) {
+void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords,
+                                          int level) {
 	resourcesTemp = resourceFactory.create(id, center, _bucketCords, level);
 	updateResource();
 }
 
-void SimulationObjectManager::prepareToDispose() {
+void SimulationObjectManager::prepareUnitToDispose() const {
 	//if (simulationInfo->ifUnitDied()) {//TODO przemyslec to
 	int prevSize = units->size();
-
 	units->erase(
 	             std::remove_if(
 	                            units->begin(), units->end(),
-	                            functionShouldDelete
+	                            physicalShouldDelete
 	                           ),
 	             units->end());
 	if (units->size() != prevSize) {
 		simulationInfo->setUnitDied();
 	}
+}
+
+void SimulationObjectManager::prepareBuildingToDispose() const {
+	int prevSize = buildings->size();
+	buildings->erase(
+	                 std::remove_if(
+	                                buildings->begin(), buildings->end(),
+	                                physicalShouldDelete
+	                               ),
+	                 buildings->end());
+	if (buildings->size() != prevSize) {
+		simulationInfo->setBuildingDied();
+	}
+}
+
+void SimulationObjectManager::prepareResourceToDispose() const {
+	int prevSize = resources->size();
+	resources->erase(
+	                 std::remove_if(
+	                                resources->begin(), resources->end(),
+	                                physicalShouldDelete
+	                               ),
+	                 resources->end());
+	if (resources->size() != prevSize) {
+		simulationInfo->setResourceDied();
+	}
+}
+
+void SimulationObjectManager::prepareToDispose() const {
+	prepareUnitToDispose();
+	prepareBuildingToDispose();
+	prepareResourceToDispose();
 }
 
 void SimulationObjectManager::load(dbload_unit* unit) {
@@ -125,12 +156,12 @@ void SimulationObjectManager::updateResource() {
 	}
 }
 
-bool SimulationObjectManager::shouldDelete(Unit* unit) {
-	if (unit->isToDispose()) {
-		toDisposeUnit.push_back(unit);
+bool SimulationObjectManager::shouldDelete(Physical* physical) {
+	if (physical->isToDispose()) {
+		toDisposePhysical.push_back(physical);
 		return true;
 	}
-	unit->clean();
+	physical->clean();
 	return false;
 }
 
@@ -141,8 +172,8 @@ void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) const {
 }
 
 void SimulationObjectManager::dispose() {
-	if (!toDisposeUnit.empty()) {
-		clear_vector(toDisposeUnit);
+	if (!toDisposePhysical.empty()) {
+		clear_vector(toDisposePhysical);
 	}
 	simulationInfo->reset();
 }

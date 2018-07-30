@@ -5,6 +5,7 @@
 #include "objects/unit/UnitFactory.h"
 #include <vector>
 #include <functional>
+#include "objects/Physical.h"
 
 
 class SimulationInfo;
@@ -23,7 +24,7 @@ public:
 	void addBuilding(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level);
 	void addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level);
 
-	void prepareToDispose();
+	void prepareToDispose() const;
 	void updateInfo(SimulationInfo* simulationInfo) const;
 	void dispose();
 
@@ -37,7 +38,7 @@ private:
 	void updateBuilding();
 	void updateResource();
 
-	bool shouldDelete(Unit* unit);
+	bool shouldDelete(Physical* physical);
 
 	void add(Unit* unit) const { units->push_back(unit); }
 	void add(Building* building) const { buildings->push_back(building); }
@@ -46,6 +47,10 @@ private:
 	void addAll(std::vector<Unit*>* _units);
 	void addAll(std::vector<Building*>* _buildings);
 	void addAll(std::vector<ResourceEntity*>* _resources);
+
+	void prepareUnitToDispose() const;
+	void prepareBuildingToDispose() const;
+	void prepareResourceToDispose() const;
 
 	UnitFactory unitFactory;
 	BuildingFactory buildingFactory;
@@ -57,9 +62,12 @@ private:
 	std::vector<Building*>* buildings;
 	std::vector<ResourceEntity*>* resources;
 
-	std::vector<Unit*> toDisposeUnit;
-	std::vector<Building*> toDisposeBuilding;
-	std::vector<ResourceEntity*> toDisposeResource;
+	//std::vector<Unit*> toDisposeUnit;
+	//std::vector<Building*> toDisposeBuilding;
+	//std::vector<ResourceEntity*> toDisposeResource;
+	std::vector<Physical*> toDisposePhysical;
+
+
 
 	std::vector<Building*>* buildingsToAdd;
 	std::vector<ResourceEntity*>* resourcesToAdd;
@@ -68,6 +76,6 @@ private:
 	std::vector<Building*>* buildingsTemp;
 	std::vector<ResourceEntity*>* resourcesTemp;
 
-	std::function<bool(Unit*)> functionShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this,
+	std::function<bool(Physical*)> physicalShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this,
 	                                                            std::placeholders::_1);
 };

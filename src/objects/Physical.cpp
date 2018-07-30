@@ -88,6 +88,10 @@ void Physical::updateHealthBar() {
 	}
 }
 
+bool Physical::isToDispose() const {
+	return false;
+}
+
 Urho3D::Vector2 Physical::getPosToFollow(Urho3D::Vector3* center) const {
 	return Urho3D::Vector2(position->x_, position->z_);
 }

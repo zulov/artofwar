@@ -1,5 +1,6 @@
 #pragma once
 #include "Physical.h"
+#include "StaticState.h"
 
 enum class CellState : char;
 
@@ -21,6 +22,7 @@ public:
 	std::vector<int>& getOcupiedCells() { return ocupiedCells; }
 	std::vector<int>& getSurroundCells() { return surroundCells; }
 
+	bool isToDispose()  const override;
 	Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const override;
 	std::string getValues(int precision) override;
 protected:
@@ -31,4 +33,6 @@ protected:
 
 	Urho3D::IntVector2 gridSize;
 	Urho3D::IntVector2 mainCell;
+
+	StaticState state;
 };

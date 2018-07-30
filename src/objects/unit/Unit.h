@@ -89,7 +89,7 @@ public:
 	float getMinimalDistance() const { return minimalDistance; }
 	UnitState getState() const { return state; }
 	short getFormation() const { return formation; }
-	bool isToDispose() const { return state == UnitState::DISPOSE && atState; }
+	bool isToDispose() const override { return state == UnitState::DISPOSE && atState; } 
 	bool hasAim() const { return aims.hasAim(); }
 
 	void action(char id, ActionParameter& parameter) override;

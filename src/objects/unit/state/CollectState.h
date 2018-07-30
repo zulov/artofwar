@@ -42,7 +42,7 @@ public:
 		State::onEnd(unit);
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceClose();
-			Game::getEnviroment()->updateCell(unit->getBucketIndex(-1), -1, CellState::EMPTY);
+			Game::getEnviroment()->updateCell(unit->getBucketIndex(-1), -1, CellState::NONE);
 		}
 		unit->indexToInteract = -1;
 		unit->thingsToInteract.clear(); //TODO tu niekoniecznie clear. bo czysci do nastêpnego celu

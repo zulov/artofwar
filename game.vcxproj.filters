@@ -461,6 +461,7 @@
     <ClInclude Include="src\objects\CellState.h" />
     <ClInclude Include="src\DebugUnitType.h" />
     <ClInclude Include="src\replace_utils.h" />
+    <ClInclude Include="src\objects\StaticState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
