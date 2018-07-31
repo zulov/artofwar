@@ -48,10 +48,6 @@ private:
 	void addAll(std::vector<Building*>* _buildings);
 	void addAll(std::vector<ResourceEntity*>* _resources);
 
-	void prepareUnitToDispose() const;
-	void prepareBuildingToDispose() const;
-	void prepareResourceToDispose() const;
-
 	UnitFactory unitFactory;
 	BuildingFactory buildingFactory;
 	ResourceFactory resourceFactory;
@@ -75,5 +71,7 @@ private:
 	std::vector<ResourceEntity*>* resourcesTemp;
 
 	std::function<bool(Physical*)> physicalShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this,
-	                                                            std::placeholders::_1);
+	                                                                std::placeholders::_1);
+	template <class T>
+	void prepareToDispose(std::vector<T*> * objects) const;
 };

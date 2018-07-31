@@ -69,37 +69,20 @@ void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const
 	updateResource();
 }
 
-void SimulationObjectManager::prepareUnitToDispose() const {
-	units->erase( //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
-	             std::remove_if(
-	                            units->begin(), units->end(),
-	                            physicalShouldDelete
-	                           ),
-	             units->end());
-}
-
-void SimulationObjectManager::prepareBuildingToDispose() const {
-	buildings->erase(
+template <class T>
+void SimulationObjectManager::prepareToDispose(std::vector<T*> * objects) const {
+	objects->erase( //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
 	                 std::remove_if(
-	                                buildings->begin(), buildings->end(),
+	                                objects->begin(), objects->end(),
 	                                physicalShouldDelete
 	                               ),
-	                 buildings->end());
-}
-
-void SimulationObjectManager::prepareResourceToDispose() const {
-	resources->erase(
-	                 std::remove_if(
-	                                resources->begin(), resources->end(),
-	                                physicalShouldDelete
-	                               ),
-	                 resources->end());
+	                 objects->end());
 }
 
 void SimulationObjectManager::prepareToDispose() const {
-	prepareUnitToDispose();
-	prepareBuildingToDispose();
-	prepareResourceToDispose();
+	prepareToDispose(units);
+	prepareToDispose(buildings);
+	prepareToDispose(resources);
 }
 
 void SimulationObjectManager::load(dbload_unit* unit) {
