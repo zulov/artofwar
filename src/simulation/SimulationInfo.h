@@ -1,6 +1,7 @@
 #pragma once
 
 #define SIMULATION_INFO_SIZE 6
+#include "ObjectEnums.h"
 
 class SimulationInfo
 {
@@ -17,6 +18,9 @@ public:
 	void setAmountBuildingChanged();
 	void setResourceDied();
 	void setAmountResourceChanged();
+
+	void setSthDied(ObjectType type);
+
 	void set(SimulationInfo* simulationInfo);
 	void setUnitsNumber(int _untisNumber);
 

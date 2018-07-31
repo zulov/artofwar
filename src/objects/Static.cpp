@@ -52,7 +52,6 @@ bool Static::canCollect(int index, CellState type) const {
 		&& Game::getEnviroment()->getCurrentSize(index) <= 2;
 }
 
-
 bool Static::isToDispose() const {
 	return state == StaticState::DISPOSE;
 }

@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "SimulationInfo.h"
 #include "objects/unit/Unit.h"
+#include "objects/building/Building.h"
 #include <algorithm>
 #include <simulation/env/Enviroment.h>
 
@@ -69,43 +70,30 @@ void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const
 }
 
 void SimulationObjectManager::prepareUnitToDispose() const {
-	//if (simulationInfo->ifUnitDied()) {//TODO przemyslec to
-	int prevSize = units->size();
-	units->erase(
+	units->erase( //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
 	             std::remove_if(
 	                            units->begin(), units->end(),
 	                            physicalShouldDelete
 	                           ),
 	             units->end());
-	if (units->size() != prevSize) {
-		simulationInfo->setUnitDied();
-	}
 }
 
 void SimulationObjectManager::prepareBuildingToDispose() const {
-	int prevSize = buildings->size();
 	buildings->erase(
 	                 std::remove_if(
 	                                buildings->begin(), buildings->end(),
 	                                physicalShouldDelete
 	                               ),
 	                 buildings->end());
-	if (buildings->size() != prevSize) {
-		simulationInfo->setBuildingDied();
-	}
 }
 
 void SimulationObjectManager::prepareResourceToDispose() const {
-	int prevSize = resources->size();
 	resources->erase(
 	                 std::remove_if(
 	                                resources->begin(), resources->end(),
 	                                physicalShouldDelete
 	                               ),
 	                 resources->end());
-	if (resources->size() != prevSize) {
-		simulationInfo->setResourceDied();
-	}
 }
 
 void SimulationObjectManager::prepareToDispose() const {
@@ -159,6 +147,7 @@ void SimulationObjectManager::updateResource() {
 bool SimulationObjectManager::shouldDelete(Physical* physical) {
 	if (physical->isToDispose()) {
 		toDisposePhysical.push_back(physical);
+		simulationInfo->setSthDied(physical->getType());
 		return true;
 	}
 	physical->clean();

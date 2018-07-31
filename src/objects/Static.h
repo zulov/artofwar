@@ -22,7 +22,7 @@ public:
 	std::vector<int>& getOcupiedCells() { return ocupiedCells; }
 	std::vector<int>& getSurroundCells() { return surroundCells; }
 
-	bool isToDispose()  const override;
+	bool isToDispose() const override;
 	Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const override;
 	std::string getValues(int precision) override;
 protected:

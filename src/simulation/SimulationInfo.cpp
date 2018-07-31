@@ -60,6 +60,21 @@ void SimulationInfo::setAmountResourceChanged() {
 	*this->amountResourceChanged = true;
 }
 
+void SimulationInfo::setSthDied(ObjectType type) {
+	switch (type) {
+	case ObjectType::UNIT:
+		setUnitDied();
+		break;
+	case ObjectType::BUILDING:
+		setBuildingDied();
+		break;
+	case ObjectType::RESOURCE:
+		setResourceDied();
+		break;
+	default: ;
+	}
+}
+
 void SimulationInfo::set(SimulationInfo* simulationInfo) {
 	for (int i = 0; i < SIMULATION_INFO_SIZE; ++i) {
 		if (simulationInfo->flags[i]) {

@@ -3,11 +3,11 @@
 #include "objects/building/BuildingFactory.h"
 #include "objects/resource/ResourceFactory.h"
 #include "objects/unit/UnitFactory.h"
-#include <vector>
 #include <functional>
-#include "objects/Physical.h"
+#include <vector>
 
 
+class Physical;
 class SimulationInfo;
 
 class SimulationObjectManager
@@ -66,8 +66,6 @@ private:
 	//std::vector<Building*> toDisposeBuilding;
 	//std::vector<ResourceEntity*> toDisposeResource;
 	std::vector<Physical*> toDisposePhysical;
-
-
 
 	std::vector<Building*>* buildingsToAdd;
 	std::vector<ResourceEntity*>* resourcesToAdd;
