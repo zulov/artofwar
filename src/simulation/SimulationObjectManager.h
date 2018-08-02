@@ -34,9 +34,9 @@ public:
 
 private:
 
-	void updateUnits();
-	void updateBuilding();
-	void updateResource();
+	void updateUnits(std::vector<Unit*>* temp);
+	void updateBuilding(std::vector<Building*>* temp);
+	void updateResource(std::vector<ResourceEntity*>* temp);
 
 	bool shouldDelete(Physical* physical);
 
@@ -44,9 +44,9 @@ private:
 	void add(Building* building) const { buildings->push_back(building); }
 	void add(ResourceEntity* resourceEntity) const { resources->push_back(resourceEntity); }
 
-	void addAll(std::vector<Unit*>* _units);
-	void addAll(std::vector<Building*>* _buildings);
-	void addAll(std::vector<ResourceEntity*>* _resources);
+	void addAll(std::vector<Unit*>* _units) const;
+	void addAll(std::vector<Building*>* _buildings) const;
+	void addAll(std::vector<ResourceEntity*>* _resources) const;
 
 	UnitFactory unitFactory;
 	BuildingFactory buildingFactory;
@@ -65,10 +65,6 @@ private:
 
 	std::vector<Building*>* buildingsToAdd;
 	std::vector<ResourceEntity*>* resourcesToAdd;
-
-	std::vector<Unit*>* unitsTemp;
-	std::vector<Building*>* buildingsTemp;
-	std::vector<ResourceEntity*>* resourcesTemp;
 
 	std::function<bool(Physical*)> physicalShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this,
 	                                                                std::placeholders::_1);

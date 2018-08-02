@@ -1,8 +1,8 @@
 #include "SimulationObjectManager.h"
 #include "Game.h"
 #include "SimulationInfo.h"
-#include "objects/unit/Unit.h"
 #include "objects/building/Building.h"
+#include "objects/unit/Unit.h"
 #include <algorithm>
 #include <simulation/env/Enviroment.h>
 
@@ -36,47 +36,44 @@ SimulationObjectManager::~SimulationObjectManager() {
 	delete simulationInfo;
 }
 
-void SimulationObjectManager::addAll(std::vector<Unit*>* _units) {
+void SimulationObjectManager::addAll(std::vector<Unit*>* _units) const {
 	units->insert(units->end(), _units->begin(), _units->end());
 }
 
-void SimulationObjectManager::addAll(std::vector<Building*>* _buildings) {
+void SimulationObjectManager::addAll(std::vector<Building*>* _buildings) const {
 	buildings->insert(buildings->end(), _buildings->begin(), _buildings->end());
 	buildingsToAdd->insert(buildingsToAdd->end(), _buildings->begin(), _buildings->end());
 }
 
-void SimulationObjectManager::addAll(std::vector<ResourceEntity*>* _resources) {
+void SimulationObjectManager::addAll(std::vector<ResourceEntity*>* _resources) const {
 	resources->insert(resources->end(), _resources->begin(), _resources->end());
 	resourcesToAdd->insert(resourcesToAdd->end(), _resources->begin(), _resources->end());
 }
 
 void SimulationObjectManager::addUnits(unsigned int number, int id, Urho3D::Vector2& center,
                                        int player, int level) {
-	unitsTemp = unitFactory.create(number, id, center, player, level);
-	updateUnits();
+	updateUnits(unitFactory.create(number, id, center, player, level));
 }
 
 void SimulationObjectManager::addBuilding(int id, Urho3D::Vector2& center, int player,
                                           const Urho3D::IntVector2& _bucketCords, int level) {
-	buildingsTemp = buildingFactory.create(id, center, player, _bucketCords, level);
-	updateBuilding();
+	updateBuilding(buildingFactory.create(id, center, player, _bucketCords, level));
 }
 
 
 void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords,
                                           int level) {
-	resourcesTemp = resourceFactory.create(id, center, _bucketCords, level);
-	updateResource();
+	updateResource(resourceFactory.create(id, center, _bucketCords, level));
 }
 
 template <class T>
-void SimulationObjectManager::prepareToDispose(std::vector<T*> * objects) const {
+void SimulationObjectManager::prepareToDispose(std::vector<T*>* objects) const {
 	objects->erase( //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
-	                 std::remove_if(
-	                                objects->begin(), objects->end(),
-	                                physicalShouldDelete
-	                               ),
-	                 objects->end());
+	               std::remove_if(
+	                              objects->begin(), objects->end(),
+	                              physicalShouldDelete
+	                             ),
+	               objects->end());
 }
 
 void SimulationObjectManager::prepareToDispose() const {
@@ -86,41 +83,37 @@ void SimulationObjectManager::prepareToDispose() const {
 }
 
 void SimulationObjectManager::load(dbload_unit* unit) {
-	unitsTemp = unitFactory.load(unit);
-	updateUnits();
+	updateUnits(unitFactory.load(unit));
 }
 
 void SimulationObjectManager::load(dbload_building* building) {
-	buildingsTemp = buildingFactory.load(building);
-	updateBuilding();
+	updateBuilding(buildingFactory.load(building));
 }
 
 void SimulationObjectManager::load(dbload_resource_entities* resource) {
-	resourcesTemp = resourceFactory.load(resource);
-	updateResource();
+	updateResource(resourceFactory.load(resource));
 }
 
-void SimulationObjectManager::updateUnits() {
-	addAll(unitsTemp);
-	if (!unitsTemp->empty()) {
-		unitsTemp->clear();
+void SimulationObjectManager::updateUnits(std::vector<Unit*>* temp) {
+	addAll(temp);
+	if (!temp->empty()) {
+		temp->clear();
 		simulationInfo->setAmountUnitChanged();
 	}
 }
 
-void SimulationObjectManager::updateBuilding() {
-	addAll(buildingsTemp);
-	if (!buildingsTemp->empty()) {
-
+void SimulationObjectManager::updateBuilding(std::vector<Building*>* temp) {
+	addAll(temp);
+	if (!temp->empty()) {
 		Game::getEnviroment()->update(buildingsToAdd);
 		buildingsToAdd->clear();
 		simulationInfo->setAmountBuildingChanged();
 	}
 }
 
-void SimulationObjectManager::updateResource() {
-	addAll(resourcesTemp);
-	if (!resourcesTemp->empty()) {
+void SimulationObjectManager::updateResource(std::vector<ResourceEntity*>* temp) {
+	addAll(temp);
+	if (!temp->empty()) {
 		Game::getEnviroment()->update(resourcesToAdd);
 		resourcesToAdd->clear();
 		simulationInfo->setAmountResourceChanged();
