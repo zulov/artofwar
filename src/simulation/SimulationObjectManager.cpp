@@ -7,21 +7,16 @@
 #include <simulation/env/Enviroment.h>
 
 
-SimulationObjectManager::SimulationObjectManager() {
+SimulationObjectManager::SimulationObjectManager(){
 	units = new std::vector<Unit*>();
 	buildings = new std::vector<Building*>();
 	resources = new std::vector<ResourceEntity*>();
-
-	buildingsToAdd = new std::vector<Building*>();
-	resourcesToAdd = new std::vector<ResourceEntity*>();
 
 	units->reserve(10000);
 	buildings->reserve(100);
 	resources->reserve(1000);
 
 	toDisposePhysical.reserve(100);
-
-	simulationInfo = new SimulationInfo();
 }
 
 
@@ -29,25 +24,6 @@ SimulationObjectManager::~SimulationObjectManager() {
 	clear_and_delete_vector(units);
 	clear_and_delete_vector(buildings);
 	clear_and_delete_vector(resources);
-
-	delete buildingsToAdd;
-	delete resourcesToAdd;
-
-	delete simulationInfo;
-}
-
-void SimulationObjectManager::addAll(std::vector<Unit*>* _units) const {
-	units->insert(units->end(), _units->begin(), _units->end());
-}
-
-void SimulationObjectManager::addAll(std::vector<Building*>* _buildings) const {
-	buildings->insert(buildings->end(), _buildings->begin(), _buildings->end());
-	buildingsToAdd->insert(buildingsToAdd->end(), _buildings->begin(), _buildings->end());
-}
-
-void SimulationObjectManager::addAll(std::vector<ResourceEntity*>* _resources) const {
-	resources->insert(resources->end(), _resources->begin(), _resources->end());
-	resourcesToAdd->insert(resourcesToAdd->end(), _resources->begin(), _resources->end());
 }
 
 void SimulationObjectManager::addUnits(unsigned int number, int id, Urho3D::Vector2& center,
@@ -62,7 +38,7 @@ void SimulationObjectManager::addBuilding(int id, Urho3D::Vector2& center, int p
 
 
 void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords,
-                                          int level) {
+                                          int level) const {
 	updateResource(resourceFactory.create(id, center, _bucketCords, level));
 }
 
@@ -90,40 +66,37 @@ void SimulationObjectManager::load(dbload_building* building) {
 	updateBuilding(buildingFactory.load(building));
 }
 
-void SimulationObjectManager::load(dbload_resource_entities* resource) {
+void SimulationObjectManager::load(dbload_resource_entities* resource) const {
 	updateResource(resourceFactory.load(resource));
 }
 
-void SimulationObjectManager::updateUnits(std::vector<Unit*>* temp) {
-	addAll(temp);
+void SimulationObjectManager::updateUnits(std::vector<Unit*>* temp) const {
 	if (!temp->empty()) {
-		temp->clear();
-		simulationInfo->setAmountUnitChanged();
+		units->insert(units->end(), temp->begin(), temp->end());
+		simulationInfo.setAmountUnitChanged();
 	}
 }
 
-void SimulationObjectManager::updateBuilding(std::vector<Building*>* temp) {
-	addAll(temp);
+void SimulationObjectManager::updateBuilding(std::vector<Building*>* temp) const {
 	if (!temp->empty()) {
-		Game::getEnviroment()->update(buildingsToAdd);
-		buildingsToAdd->clear();
-		simulationInfo->setAmountBuildingChanged();
+		buildings->insert(buildings->end(), temp->begin(), temp->end());
+		Game::getEnviroment()->update(temp);
+		simulationInfo.setAmountBuildingChanged();
 	}
 }
 
-void SimulationObjectManager::updateResource(std::vector<ResourceEntity*>* temp) {
-	addAll(temp);
+void SimulationObjectManager::updateResource(std::vector<ResourceEntity*>* temp) const {
 	if (!temp->empty()) {
-		Game::getEnviroment()->update(resourcesToAdd);
-		resourcesToAdd->clear();
-		simulationInfo->setAmountResourceChanged();
+		resources->insert(resources->end(), temp->begin(), temp->end());
+		Game::getEnviroment()->update(temp);
+		simulationInfo.setAmountResourceChanged();
 	}
 }
 
 bool SimulationObjectManager::shouldDelete(Physical* physical) {
 	if (physical->isToDispose()) {
 		toDisposePhysical.push_back(physical);
-		simulationInfo->setSthDied(physical->getType());
+		simulationInfo.setSthDied(physical->getType());
 		return true;
 	}
 	physical->clean();
@@ -131,14 +104,15 @@ bool SimulationObjectManager::shouldDelete(Physical* physical) {
 }
 
 void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) const {
-	simulationInfo->set(this->simulationInfo);
+	auto a = this->simulationInfo;
+	simulationInfo->set(a);
 	simulationInfo->setUnitsNumber(units->size());
-	this->simulationInfo->reset();
+	this->simulationInfo.reset();
 }
 
 void SimulationObjectManager::dispose() {
 	if (!toDisposePhysical.empty()) {
 		clear_vector(toDisposePhysical);
 	}
-	simulationInfo->reset();
+	simulationInfo.reset();
 }

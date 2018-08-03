@@ -9,19 +9,19 @@ public:
 	SimulationInfo();
 	~SimulationInfo();
 	bool ifUnitDied();
-	bool ifUnitAmountChanged();
-	void reset();
+	bool ifUnitAmountChanged() const;
+	void reset() const;
 
-	void setUnitDied();
-	void setAmountUnitChanged();
-	void setBuildingDied();
-	void setAmountBuildingChanged();
-	void setResourceDied();
-	void setAmountResourceChanged();
+	void setUnitDied() const;
+	void setAmountUnitChanged() const;
+	void setBuildingDied() const;
+	void setAmountBuildingChanged() const;
+	void setResourceDied() const;
+	void setAmountResourceChanged() const;
 
-	void setSthDied(ObjectType type);
+	void setSthDied(ObjectType type) const;
 
-	void set(SimulationInfo* simulationInfo);
+	void set(SimulationInfo& simulationInfo);
 	void setUnitsNumber(int _untisNumber);
 
 	bool ifUnitDied() const;

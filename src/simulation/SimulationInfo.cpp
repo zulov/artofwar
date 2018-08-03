@@ -18,11 +18,11 @@ bool SimulationInfo::ifUnitDied() {
 	return *unitDied;
 }
 
-bool SimulationInfo::ifUnitAmountChanged() {
+bool SimulationInfo::ifUnitAmountChanged() const {
 	return *amountUnitChanged;
 }
 
-void SimulationInfo::reset() {
+void SimulationInfo::reset() const {
 	*unitDied = false;
 	*amountUnitChanged = false;
 
@@ -33,34 +33,34 @@ void SimulationInfo::reset() {
 	*amountResourceChanged = false;
 }
 
-void SimulationInfo::setUnitDied() {
+void SimulationInfo::setUnitDied() const {
 	*this->unitDied = true;
 	*this->amountUnitChanged = true;
 }
 
-void SimulationInfo::setAmountUnitChanged() {
+void SimulationInfo::setAmountUnitChanged() const {
 	*this->amountUnitChanged = true;
 }
 
-void SimulationInfo::setBuildingDied() {
+void SimulationInfo::setBuildingDied() const {
 	*this->buildingDied = true;
 	*this->amountBuildingChanged = true;
 }
 
-void SimulationInfo::setAmountBuildingChanged() {
+void SimulationInfo::setAmountBuildingChanged() const {
 	*this->amountBuildingChanged = true;
 }
 
-void SimulationInfo::setResourceDied() {
+void SimulationInfo::setResourceDied() const {
 	*this->resourceDied = true;
 	*this->amountResourceChanged = true;
 }
 
-void SimulationInfo::setAmountResourceChanged() {
+void SimulationInfo::setAmountResourceChanged() const {
 	*this->amountResourceChanged = true;
 }
 
-void SimulationInfo::setSthDied(ObjectType type) {
+void SimulationInfo::setSthDied(ObjectType type) const {
 	switch (type) {
 	case ObjectType::UNIT:
 		setUnitDied();
@@ -75,9 +75,9 @@ void SimulationInfo::setSthDied(ObjectType type) {
 	}
 }
 
-void SimulationInfo::set(SimulationInfo* simulationInfo) {
+void SimulationInfo::set(SimulationInfo& simulationInfo) {
 	for (int i = 0; i < SIMULATION_INFO_SIZE; ++i) {
-		if (simulationInfo->flags[i]) {
+		if (simulationInfo.flags[i]) {
 			this->flags[i] = true;
 		}
 	}
