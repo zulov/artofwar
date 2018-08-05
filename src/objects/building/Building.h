@@ -1,5 +1,5 @@
 #pragma once
-#include "objects/Static.h"
+#include "objects/static/Static.h"
 #include "objects/queue/QueueManager.h"
 
 struct db_building;

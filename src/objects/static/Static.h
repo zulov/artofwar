@@ -1,5 +1,5 @@
 #pragma once
-#include "Physical.h"
+#include "../Physical.h"
 #include "StaticState.h"
 
 enum class CellState : char;
@@ -11,12 +11,15 @@ public:
 	virtual ~Static();
 
 	void setMainCell(const Urho3D::IntVector2& _mainCell);
+	void setNextState(StaticState stateTo);
 	static std::string getColumns();
 
 	bool belowCloseLimit() override;
 	bool hasFreeSpace() const;
 	bool canCollect(int index, CellState type) const;
 
+	StaticState getNextState() const { return nextState; }
+	StaticState getState() const { return state; }
 	Urho3D::IntVector2& getBucketPosition() { return mainCell; }
 	Urho3D::IntVector2& getGridSize() { return gridSize; }
 	std::vector<int>& getOcupiedCells() { return ocupiedCells; }
@@ -25,6 +28,8 @@ public:
 	bool isToDispose() const override;
 	Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const override;
 	std::string getValues(int precision) override;
+
+	friend void startState(StaticState state, Static* obj);
 protected:
 	void populate(const Urho3D::IntVector2& size);
 
@@ -35,4 +40,5 @@ protected:
 	Urho3D::IntVector2 mainCell;
 
 	StaticState state;
+	StaticState nextState;
 };

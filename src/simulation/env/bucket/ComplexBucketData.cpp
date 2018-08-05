@@ -1,7 +1,7 @@
 #include "ComplexBucketData.h"
 #include "Game.h"
 #include "ObjectEnums.h"
-#include "objects/Static.h"
+#include "objects/static/Static.h"
 #include <iostream>
 
 

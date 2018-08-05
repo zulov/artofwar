@@ -14,6 +14,10 @@ void Static::setMainCell(const Urho3D::IntVector2& _mainCell) {
 	mainCell = _mainCell;
 }
 
+void Static::setNextState(StaticState stateTo) {
+	nextState = stateTo;
+}
+
 void Static::populate(const Urho3D::IntVector2& size) {
 	gridSize = size;
 	const auto sizeX = calculateSize(gridSize.x_, mainCell.x_);

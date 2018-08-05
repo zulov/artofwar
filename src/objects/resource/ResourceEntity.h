@@ -1,5 +1,5 @@
 #pragma once
-#include "objects/Static.h"
+#include "objects/static/Static.h"
 
 struct db_resource;
 

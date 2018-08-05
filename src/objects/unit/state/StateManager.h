@@ -3,6 +3,10 @@
 #include "UnitOrder.h"
 #include "database/db_strcut.h"
 #include "objects/unit/ActionParameter.h"
+#include "objects/building/Building.h"
+
+enum class StaticState : char;
+class Static;
 
 class StateManager
 {
@@ -12,6 +16,9 @@ public:
 	static bool changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter = ActionParameter());
 	static bool checkChangeState(Unit* unit, UnitState stateTo);
 	static void execute(Unit* unit);
+
+	static bool changeState(Static* obj, StaticState stateTo);
+	static void executeChange(Static* obj);
 
 	static void init();
 	static void dispose();

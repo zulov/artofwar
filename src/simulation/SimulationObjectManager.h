@@ -1,11 +1,11 @@
 #pragma once
 
+#include "SimulationInfo.h"
 #include "objects/building/BuildingFactory.h"
 #include "objects/resource/ResourceFactory.h"
 #include "objects/unit/UnitFactory.h"
 #include <functional>
 #include <vector>
-#include "SimulationInfo.h"
 
 
 class Physical;

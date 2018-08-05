@@ -16,7 +16,7 @@ SimulationObjectManager::SimulationObjectManager(){
 	buildings->reserve(100);
 	resources->reserve(1000);
 
-	toDisposePhysical.reserve(100);
+	toDisposePhysical.reserve(1000);
 }
 
 

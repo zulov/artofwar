@@ -124,7 +124,6 @@
     <ClCompile Include="src\objects\unit\aim\TargetAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
-    <ClCompile Include="src\objects\Static.cpp" />
     <ClCompile Include="src\camera\TopCameraBehave.cpp" />
     <ClCompile Include="src\simulation\env\Enviroment.cpp">
       <Filter>simulation\env</Filter>
@@ -185,6 +184,7 @@
       <Filter>aim</Filter>
     </ClCompile>
     <ClCompile Include="src\objects\unit\state\State.cpp" />
+    <ClCompile Include="src\objects\static\Static.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -360,7 +360,6 @@
     <ClInclude Include="src\objects\unit\aim\ChargeAim.h" />
     <ClInclude Include="src\objects\unit\aim\DummyAim.h" />
     <ClInclude Include="src\objects\unit\state\CollectState.h" />
-    <ClInclude Include="src\objects\Static.h" />
     <ClInclude Include="src\camera\TopCameraBehave.h" />
     <ClInclude Include="src\simulation\env\Enviroment.h">
       <Filter>simulation\env</Filter>
@@ -461,7 +460,9 @@
     <ClInclude Include="src\objects\CellState.h" />
     <ClInclude Include="src\DebugUnitType.h" />
     <ClInclude Include="src\replace_utils.h" />
-    <ClInclude Include="src\objects\StaticState.h" />
+    <ClInclude Include="src\objects\static\Static.h" />
+    <ClInclude Include="src\objects\static\StaticState.h" />
+    <ClInclude Include="src\objects\static\StaticStateUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

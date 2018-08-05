@@ -5,7 +5,7 @@
 #include "Game.h"
 #include "MathUtils.h"
 #include "Urho3D/Resource/Image.h"
-#include "objects/Static.h"
+#include "objects/static/Static.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/ContentInfo.h"
 #include <algorithm>

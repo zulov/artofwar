@@ -1,8 +1,8 @@
 #pragma once
 #include "UnitState.h"
-#include "objects/unit/ActionParameter.h"
 
 
+struct ActionParameter;
 class Unit;
 
 class State

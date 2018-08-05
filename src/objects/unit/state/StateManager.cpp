@@ -1,5 +1,6 @@
 #include "StateManager.h"
 #include "../Unit.h"
+#include "../../static/Static.h"
 #include "AttackState.h"
 #include "ChargeState.h"
 #include "CollectState.h"
@@ -15,6 +16,7 @@
 #include "UnitOrder.h"
 #include "UnitState.h"
 #include "database/DatabaseCache.h"
+#include "objects/static/StaticStateUtils.h"
 
 
 StateManager* StateManager::instance = nullptr;
@@ -94,6 +96,21 @@ State* StateManager::getState(Unit* unit) {
 
 void StateManager::execute(Unit* unit) {
 	getState(unit)->execute(unit);
+}
+
+bool StateManager::changeState(Static* obj, StaticState stateTo) {
+	if (obj->getState() != stateTo) {
+		obj->setNextState(stateTo);
+		return true;
+	}
+	return false;
+}
+
+void StateManager::executeChange(Static* obj) {
+	if (obj->getState() != obj->getNextState()) {
+		endState(obj->getState(), obj);
+		startState(obj->getNextState(), obj);
+	}
 }
 
 void StateManager::init() {

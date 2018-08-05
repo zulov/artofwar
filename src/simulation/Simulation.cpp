@@ -225,6 +225,13 @@ void Simulation::performStateAction() const {
 	for (auto unit : *units) {
 		StateManager::execute(unit);
 	}
+	for (auto building : *buildings) {
+		StateManager::executeChange(building);
+	}
+
+	for (auto resource : *resources) {
+		StateManager::executeChange(resource);
+	}
 }
 
 void Simulation::handleTimeInFrame(float timeStep) {
