@@ -9,6 +9,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
+#include "objects/unit/state/StateManager.h"
 
 
 ResourceEntity::
@@ -36,10 +37,6 @@ ResourceEntity::~ResourceEntity() = default;
 
 int ResourceEntity::getDbID() {
 	return dbResource->id;
-}
-
-bool ResourceEntity::isAlive() const {
-	return amonut > 0;
 }
 
 void ResourceEntity::populate() {
@@ -84,5 +81,6 @@ float ResourceEntity::collect(float collectSpeed) {
 	}
 	const float toReturn = amonut;
 	amonut = 0;
+	StateManager::changeState(this, StaticState::DEAD);
 	return toReturn;
 }

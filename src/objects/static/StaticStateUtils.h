@@ -1,12 +1,14 @@
 #pragma once
-#include "StaticState.h"
 #include "Static.h"
+#include "StaticState.h"
+
 
 void startState(StaticState state, Static* obj) {
+	obj->setState(state);
 	switch (state) {
 
 	case StaticState::DEAD:
-		obj->nextState = StaticState::DISPOSE;
+		StateManager::changeState(obj, StaticState::DISPOSE);
 		break;
 	case StaticState::DISPOSE: break;
 	default: ;

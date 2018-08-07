@@ -6,6 +6,7 @@
 
 Static::Static(Urho3D::Vector3* _position, ObjectType _type) : Physical(_position, _type) {
 	state = StaticState::ALIVE;
+	nextState = StaticState::ALIVE;
 }
 
 Static::~Static() = default;
@@ -16,6 +17,10 @@ void Static::setMainCell(const Urho3D::IntVector2& _mainCell) {
 
 void Static::setNextState(StaticState stateTo) {
 	nextState = stateTo;
+}
+
+void Static::setState(StaticState state) {
+	this->state = state;
 }
 
 void Static::populate(const Urho3D::IntVector2& size) {

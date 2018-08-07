@@ -12,6 +12,7 @@ public:
 
 	void setMainCell(const Urho3D::IntVector2& _mainCell);
 	void setNextState(StaticState stateTo);
+	void setState(StaticState state);
 	static std::string getColumns();
 
 	bool belowCloseLimit() override;
@@ -20,6 +21,7 @@ public:
 
 	StaticState getNextState() const { return nextState; }
 	StaticState getState() const { return state; }
+	bool isAlive() const override { return state == StaticState::ALIVE; }
 	Urho3D::IntVector2& getBucketPosition() { return mainCell; }
 	Urho3D::IntVector2& getGridSize() { return gridSize; }
 	std::vector<int>& getOcupiedCells() { return ocupiedCells; }
@@ -28,8 +30,6 @@ public:
 	bool isToDispose() const override;
 	Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const override;
 	std::string getValues(int precision) override;
-
-	friend void startState(StaticState state, Static* obj);
 protected:
 	void populate(const Urho3D::IntVector2& size);
 

@@ -16,7 +16,6 @@ public:
 	static std::string getColumns();
 
 	int getDbID() override;
-	bool isAlive() const override;
 	float getMaxHpBarSize() override;
 	float getHealthPercent() const override;
 	Urho3D::String& toMultiLineString() override;

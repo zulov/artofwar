@@ -12,9 +12,11 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
 #include "player/Player.h"
+#include "objects/unit/state/StateManager.h"
 
 
-Building::Building(Urho3D::Vector3* _position, int id, int player, int level, const Urho3D::IntVector2& _bucketCords): Static(_position, ObjectType::BUILDING),
+Building::Building(Urho3D::Vector3* _position, int id, int player, int level, const Urho3D::IntVector2& _bucketCords):
+	Static(_position, ObjectType::BUILDING),
 	target(_position->x_, _position->z_) {
 
 	initBillbords();
@@ -50,6 +52,13 @@ void Building::populate() {
 }
 
 void Building::absorbAttack(float attackCoef) {
+	hpCoef -= attackCoef * (1 - defenseCoef);
+
+	updateHealthBar();
+
+	if (hpCoef < 0) {
+		StateManager::changeState(this, StaticState::DEAD);
+	}
 }
 
 Urho3D::String& Building::toMultiLineString() {

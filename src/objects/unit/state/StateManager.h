@@ -2,8 +2,9 @@
 #include "State.h"
 #include "UnitOrder.h"
 #include "database/db_strcut.h"
-#include "objects/unit/ActionParameter.h"
 #include "objects/building/Building.h"
+#include "objects/unit/ActionParameter.h"
+
 
 enum class StaticState : char;
 class Static;
