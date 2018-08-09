@@ -7,7 +7,7 @@
 #include <simulation/env/Enviroment.h>
 
 
-SimulationObjectManager::SimulationObjectManager(){
+SimulationObjectManager::SimulationObjectManager() {
 	units = new std::vector<Unit*>();
 	buildings = new std::vector<Building*>();
 	resources = new std::vector<ResourceEntity*>();
@@ -68,6 +68,10 @@ void SimulationObjectManager::load(dbload_building* building) {
 
 void SimulationObjectManager::load(dbload_resource_entities* resource) const {
 	updateResource(resourceFactory.load(resource));
+}
+
+std::vector<Physical*>& SimulationObjectManager::getToDispose() {
+	return toDisposePhysical;
 }
 
 void SimulationObjectManager::updateUnits(std::vector<Unit*>* temp) const {

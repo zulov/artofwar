@@ -262,6 +262,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		simObjectManager->prepareToDispose();
 		simObjectManager->updateInfo(simulationInfo);
+		enviroment->removeFromGrids(simObjectManager->getToDispose());
 
 		Game::getFormationManager()->update();
 	} else {

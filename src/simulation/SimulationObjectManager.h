@@ -32,6 +32,7 @@ public:
 	void load(dbload_unit* unit);
 	void load(dbload_building* building);
 	void load(dbload_resource_entities* resource) const;
+	std::vector<Physical*>& getToDispose();
 
 private:
 

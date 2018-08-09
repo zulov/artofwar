@@ -3,6 +3,7 @@
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
+#include "ObjectEnums.h"
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
 #include <unordered_set>
@@ -99,6 +100,7 @@ void Enviroment::update(std::vector<Building*>* buildings) {
 	for (auto building : *buildings) {
 		mainGrid.addStatic(building);
 		buildingGrid.update(building, -1);
+		mainGrid.updateSurround(building);
 	}
 }
 
@@ -200,6 +202,26 @@ char Enviroment::getNumberInState(int index, UnitState state) const {
 
 char Enviroment::getOrdinarInState(Unit* unit, UnitState state) const {
 	return mainGrid.getOrdinarInState(unit, state);
+}
+
+void Enviroment::removeFromGrids(const std::vector<Physical*>& toDispose) {
+	for (auto dispose : toDispose) {
+		switch (dispose->getType()) {
+		case ObjectType::BUILDING:
+			const auto building = static_cast<Building*>(dispose);
+			mainGrid.removeStatic(building);
+			buildingGrid.update(dispose, -1);
+			mainGrid.updateSurround(building);
+			break;
+		case ObjectType::RESOURCE:
+			const auto resource = static_cast<ResourceEntity*>(dispose);
+			mainGrid.removeStatic(resource);
+			resourceGrid.update(resource, -1);
+			mainGrid.updateSurround(resource);
+			break;
+		default: ;
+		}
+	}
 }
 
 Urho3D::Vector2 Enviroment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {

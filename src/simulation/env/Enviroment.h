@@ -63,6 +63,7 @@ public:
 	bool belowCellLimit(int index) const;
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinarInState(Unit* unit, UnitState state) const;
+	void removeFromGrids(const std::vector<Physical*>& toDispose);
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid;

@@ -45,7 +45,6 @@ public:
 			Game::getEnviroment()->updateCell(unit->getBucketIndex(-1), -1, CellState::NONE);
 		}
 		unit->indexToInteract = -1;
-		unit->thingsToInteract.clear(); //TODO tu niekoniecznie clear. bo czysci do nastêpnego celu
 	}
 
 	void execute(Unit* unit) override {

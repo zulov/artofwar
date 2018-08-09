@@ -24,6 +24,7 @@ public:
 
 	void onStart(Unit* unit, ActionParameter& parameter) override {
 		unit->clearAims();
+		unit->thingsToInteract.clear();
 	}
 
 	void onEnd(Unit* unit) override {

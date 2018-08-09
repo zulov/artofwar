@@ -136,6 +136,8 @@ void MainGrid::invalidateCache() {
 }
 
 void MainGrid::updateSurround(Static* object) {
+	if (object->isAlive()) {
+		
 	std::unordered_set<int> indexes;
 	std::array<short, 8> closeIndex = {-513, -512, -511, -1, 1, 511, 512, 513};
 	for (auto index : object->getOcupiedCells()) {
@@ -149,6 +151,9 @@ void MainGrid::updateSurround(Static* object) {
 	}
 	auto& cells = object->getSurroundCells();
 	cells.insert(cells.begin(), indexes.begin(), indexes.end());
+	}else {
+		remove
+	}
 }
 
 Urho3D::Vector2 MainGrid::getPositionInBucket(int index, char max, char i) {
