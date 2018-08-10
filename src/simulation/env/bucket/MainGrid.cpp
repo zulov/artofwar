@@ -14,7 +14,8 @@
 #include <unordered_set>
 
 
-MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size) {
+MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size),
+	closeIndex({-resolution - 1, -resolution, -resolution + 1, -1, 0, 1, resolution - 1, resolution, resolution + 1}) {
 	short posX = 0;
 	short posZ = 0;
 
@@ -137,23 +138,19 @@ void MainGrid::invalidateCache() {
 
 void MainGrid::updateSurround(Static* object) {
 	if (object->isAlive()) {
-		
-	std::unordered_set<int> indexes;
-	std::array<short, 8> closeIndex = {-513, -512, -511, -1, 1, 511, 512, 513};
-	for (auto index : object->getOcupiedCells()) {
-		for (auto inIndex : closeIndex) {
-			auto newIndex = index + inIndex;
-			indexes.emplace(newIndex);
+		std::unordered_set<int> indexes;
+		for (auto index : object->getOcupiedCells()) {
+			for (auto inIndex : closeIndex) {
+				auto newIndex = index + inIndex;
+				indexes.emplace(newIndex);
+			}
 		}
-	}
-	for (auto index : object->getOcupiedCells()) {
-		indexes.erase(index);
-	}
-	auto& cells = object->getSurroundCells();
-	cells.insert(cells.begin(), indexes.begin(), indexes.end());
-	}else {
-		remove
-	}
+		for (auto index : object->getOcupiedCells()) {
+			indexes.erase(index);
+		}
+		auto& surroundCells = object->getSurroundCells();
+		surroundCells.insert(surroundCells.begin(), indexes.begin(), indexes.end());
+	} //TODO else czy cos trzeba usunac?
 }
 
 Urho3D::Vector2 MainGrid::getPositionInBucket(int index, char max, char i) {
@@ -271,19 +268,14 @@ void MainGrid::addStatic(Static* object) {
 		auto size = object->getGridSize();
 
 		auto bucketPos = object->getBucketPosition();
-		short iX = bucketPos.x_;
-		short iZ = bucketPos.y_;
 
-		object->setBucket(getIndex(iX, iZ), 0);
+		object->setBucket(getIndex(bucketPos.x_, bucketPos.y_), 0);
 
-		const auto sizeX = calculateSize(size.x_, iX);
-		const auto sizeZ = calculateSize(size.y_, iZ);
+		const auto sizeX = calculateSize(size.x_, bucketPos.x_);
+		const auto sizeZ = calculateSize(size.y_, bucketPos.y_);
 
-		for (int i = sizeX.x_; i < sizeX.y_; ++i) {
-			for (int j = sizeZ.x_; j < sizeZ.y_; ++j) {
-				const int index = getIndex(i, j);
-				complexData[index].setStatic(object);
-			}
+		for (auto index : object->getOcupiedCells()) {
+			complexData[index].setStatic(object);
 		}
 
 		std::vector<int> toRefresh;
@@ -305,8 +297,9 @@ void MainGrid::addStatic(Static* object) {
 
 void MainGrid::removeStatic(Static* object) {
 	//TODO poprawic
-	int index = object->getBucketIndex(0);
-	complexData[index].removeStatic();
+	for (auto index : object->getOcupiedCells()) {
+		complexData[index].removeStatic();
+	}
 }
 
 Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3* position) {

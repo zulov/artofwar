@@ -8,31 +8,28 @@
 ComplexBucketData::ComplexBucketData() {
 	removeStatic();
 	neighbours.reserve(8);
-	size = 0;
 }
 
 ComplexBucketData::~ComplexBucketData() = default;
 
 void ComplexBucketData::setStatic(Static* _object) {
 	object = _object;
+	size = 0;
+
 	if (object->getType() == ObjectType::BUILDING) {
 		type = CellState::BUILDING;
+		additonalInfo = object->getPlayer();
 	} else {
 		type = CellState::RESOURCE;
+		additonalInfo = object->getDbID();
 	}
-
-	if (_object->getType() == ObjectType::BUILDING) {
-		additonalInfo = _object->getPlayer();
-	} else {
-		additonalInfo = _object->getDbID();
-	}
-	size = 0;
 }
 
 void ComplexBucketData::removeStatic() {
 	object = nullptr;
 	type = CellState::EMPTY;
 	additonalInfo = -1;
+	size = 0;
 }
 
 void ComplexBucketData::setCenter(float _centerX, float _centerY) {

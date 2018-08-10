@@ -4,6 +4,7 @@
 #include "Grid.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/state/UnitState.h"
+#include <array>
 
 
 class Unit;
@@ -93,4 +94,6 @@ private:
 	std::vector<Urho3D::Vector2> posInBucket4;
 
 	ComplexBucketData* complexData;
+
+	std::vector<short> closeIndex;
 };

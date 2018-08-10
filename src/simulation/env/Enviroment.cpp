@@ -208,16 +208,20 @@ void Enviroment::removeFromGrids(const std::vector<Physical*>& toDispose) {
 	for (auto dispose : toDispose) {
 		switch (dispose->getType()) {
 		case ObjectType::BUILDING:
+			{
 			const auto building = static_cast<Building*>(dispose);
 			mainGrid.removeStatic(building);
 			buildingGrid.update(dispose, -1);
 			mainGrid.updateSurround(building);
+			}
 			break;
 		case ObjectType::RESOURCE:
+			{
 			const auto resource = static_cast<ResourceEntity*>(dispose);
 			mainGrid.removeStatic(resource);
 			resourceGrid.update(resource, -1);
 			mainGrid.updateSurround(resource);
+			}
 			break;
 		default: ;
 		}
