@@ -91,7 +91,7 @@ std::vector<Physical*>* Enviroment::getResources(Physical* physical, float radiu
 void Enviroment::update(std::vector<Unit*>* units) const {
 	//TODO to mozna rodzielic na dodawanei u usywanie
 	for (auto unit : *units) {
-		mainGrid.update(unit, -1);
+		mainGrid.update(unit);
 		teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
 	}
 }
@@ -99,7 +99,7 @@ void Enviroment::update(std::vector<Unit*>* units) const {
 void Enviroment::update(std::vector<Building*>* buildings) {
 	for (auto building : *buildings) {
 		mainGrid.addStatic(building);
-		buildingGrid.update(building, -1);
+		buildingGrid.update(building);
 		mainGrid.updateSurround(building);
 	}
 }
@@ -107,7 +107,7 @@ void Enviroment::update(std::vector<Building*>* buildings) {
 void Enviroment::update(std::vector<ResourceEntity*>* resources) {
 	for (auto resource : *resources) {
 		mainGrid.addStatic(resource);
-		resourceGrid.update(resource, -1);
+		resourceGrid.update(resource);
 		mainGrid.updateSurround(resource);
 	}
 }
@@ -211,7 +211,7 @@ void Enviroment::removeFromGrids(const std::vector<Physical*>& toDispose) {
 			{
 			const auto building = static_cast<Building*>(dispose);
 			mainGrid.removeStatic(building);
-			buildingGrid.update(dispose, -1);
+			buildingGrid.update(dispose);
 			mainGrid.updateSurround(building);
 			}
 			break;
@@ -219,7 +219,7 @@ void Enviroment::removeFromGrids(const std::vector<Physical*>& toDispose) {
 			{
 			const auto resource = static_cast<ResourceEntity*>(dispose);
 			mainGrid.removeStatic(resource);
-			resourceGrid.update(resource, -1);
+			resourceGrid.update(resource);
 			mainGrid.updateSurround(resource);
 			}
 			break;

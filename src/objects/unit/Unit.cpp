@@ -53,6 +53,9 @@ Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical
 	if constexpr (UNIT_DEBUG_ENABLED) {
 		line = node->GetOrCreateComponent<Urho3D::CustomGeometry>();
 	}
+	for (int& bucket : teamBucketIndex) {
+		bucket = INT_MIN;
+	}
 }
 
 Unit::~Unit() {
@@ -470,4 +473,12 @@ void Unit::applyForce(double timeStep) {
 
 int Unit::getDbID() {
 	return dbUnit->id;
+}
+
+bool Unit::bucketHasChanged(int _bucketIndex, char param) const {
+	return teamBucketIndex[param] != _bucketIndex;
+}
+
+void Unit::setBucket(int _bucketIndex, char param) {
+	teamBucketIndex[param] = _bucketIndex;
 }

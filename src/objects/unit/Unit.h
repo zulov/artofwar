@@ -7,9 +7,11 @@
 #include <vector>
 #include <Urho3D/Graphics/CustomGeometry.h>
 
-struct ForceStats;
+#define BUCKET_SET_NUMBER 4
+
 enum class DebugUnitType : char;
 enum class ColorMode : char;
+struct ForceStats;
 struct db_unit_upgrade;
 struct db_unit_level;
 struct db_unit;
@@ -92,6 +94,9 @@ public:
 	bool isToDispose() const override { return state == UnitState::DISPOSE && atState; } 
 	bool hasAim() const { return aims.hasAim(); }
 
+	bool bucketHasChanged(int _bucketIndex, char param) const;
+	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
+	void setBucket(int _bucketIndex, char param);
 	void action(char id, ActionParameter& parameter) override;
 	std::string getValues(int precision) override;
 	Urho3D::String& toMultiLineString() override;
@@ -101,7 +106,7 @@ public:
 	int getDbID() override;
 	void clean() override;
 private:
-	void actionIfCloseEnough(UnitState action, Physical* closest, float distance,
+	void actionIfCloseEnough(UnitState action, Physical* closest, float sqDistance,
 	                         float closeRange, float intrestRange);
 
 	void changeColor(float value, float maxValue) const;
@@ -137,6 +142,8 @@ private:
 
 	short posInFormation = -1;
 	short formation = -1;
+
+	int teamBucketIndex[BUCKET_SET_NUMBER];
 
 	int indexToInteract = -1;
 

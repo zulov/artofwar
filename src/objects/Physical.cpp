@@ -17,10 +17,7 @@ Physical::Physical(Urho3D::Vector3* _position, ObjectType _type): Entity(_type) 
 	position = _position;
 	node->SetPosition(*position);
 
-	for (int& bucket : bucketIndex) {
-		bucket = INT_MIN;
-	}
-	bucketIndexShift = bucketIndex + 1;
+	indexInGrid = INT_MIN;
 }
 
 Physical::~Physical() {
@@ -106,15 +103,12 @@ float Physical::getHealthBarSize() {
 	return healthBarSize;
 }
 
-bool Physical::bucketHasChanged(int _bucketIndex, char param) const {
-	if (bucketIndexShift[param] == _bucketIndex) {
-		return false;
-	}
-	return true;
+bool Physical::bucketHasChanged(int _bucketIndex) const {
+	return indexInGrid != _bucketIndex;
 }
 
-void Physical::setBucket(int _bucketIndex, char param) const {
-	bucketIndexShift[param] = _bucketIndex;
+void Physical::setBucket(int _bucketIndex) {
+	indexInGrid = _bucketIndex;
 }
 
 void Physical::setTeam(unsigned char _team) {

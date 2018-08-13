@@ -6,6 +6,7 @@
 #define MAX_SEP_DIST 16
 #define RES_SEP_DIST 80
 
+class Unit;
 class Bucket;
 class Physical;
 
@@ -15,7 +16,8 @@ public:
 	Grid(short _resolution, float _size);
 	~Grid();
 
-	void update(Physical* entity, char team) const;
+	void update(Unit* unit, char team) const;
+	void update(Physical* entity) const;
 	std::vector<Physical*>& getContentAt(int index);
 
 	std::vector<short>* getEnvIndexsFromCache(float dist);

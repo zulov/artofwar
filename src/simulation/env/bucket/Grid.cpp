@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iostream>
 #include <ostream>
+#include "objects/unit/Unit.h"
 
 
 Grid::Grid(short _resolution, float _size): resolution(_resolution),
@@ -33,18 +34,29 @@ Grid::~Grid() {
 	delete tempSelected;
 }
 
-void Grid::update(Physical* entity, const char team) const {
-	const int index = indexFromPosition(entity->getPosition());
+void Grid::update(Unit* unit, const char team) const {
+	const int index = indexFromPosition(unit->getPosition());
 
-	if (!entity->isAlive()) {
-		removeAt(entity->getBucketIndex(team), entity);
-	} else if (entity->bucketHasChanged(index, team)) {
-		removeAt(entity->getBucketIndex(team), entity);
-		addAt(index, entity);
-		entity->setBucket(index, team);
+	if (!unit->isAlive()) {
+		removeAt(unit->getBucketIndex(team), unit);
+	} else if (unit->bucketHasChanged(index, team)) {
+		removeAt(unit->getBucketIndex(team), unit);
+		addAt(index, unit);
+		unit->setBucket(index, team);
 	}
 }
 
+void Grid::update(Physical* entity) const {
+	const int index = indexFromPosition(entity->getPosition());
+
+	if (!entity->isAlive()) {
+		removeAt(entity->getBucketIndex(), entity);
+	} else if (entity->bucketHasChanged(index)) {
+		removeAt(entity->getBucketIndex(), entity);
+		addAt(index, entity);
+		entity->setBucket(index);
+	}
+}
 
 std::vector<short>* Grid::getEnvIndexsFromCache(float dist) {
 	const int index = dist * invDiff;

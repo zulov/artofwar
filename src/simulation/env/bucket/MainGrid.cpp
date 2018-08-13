@@ -269,7 +269,7 @@ void MainGrid::addStatic(Static* object) {
 
 		auto bucketPos = object->getBucketPosition();
 
-		object->setBucket(getIndex(bucketPos.x_, bucketPos.y_), 0);
+		//object->setBucket(getIndex(bucketPos.x_, bucketPos.y_), 0);
 
 		const auto sizeX = calculateSize(size.x_, bucketPos.x_);
 		const auto sizeZ = calculateSize(size.y_, bucketPos.y_);

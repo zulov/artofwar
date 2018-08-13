@@ -15,7 +15,7 @@ FormationAction::~FormationAction() = default;
 void FormationAction::addTargetAim(Urho3D::Vector2* to, bool append) {
 	auto opt = formation->getLeader();
 	if (opt.has_value()) {
-		ActionParameter parameter = getTargetAim(opt.value()->getBucketIndex(-1), *to, append);
+		ActionParameter parameter = getTargetAim(opt.value()->getBucketIndex(), *to, append);//TODO bug to jest zle dla staticów 
 
 		const auto id = static_cast<char>(action);
 		opt.value()->action(id, parameter);

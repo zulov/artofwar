@@ -2,8 +2,6 @@
 #include "Entity.h"
 #include <Urho3D/Graphics/BillboardSet.h>
 
-#define BUCKET_SET_NUMBER 4
-
 struct ActionParameter;
 
 class Physical :
@@ -15,8 +13,10 @@ public:
 
 	void updateHealthBar();
 	float getHealthBarSize();
-	bool bucketHasChanged(int _bucketIndex, char param) const;
-	void setBucket(int _bucketIndex, char param) const;
+
+	bool bucketHasChanged(int _bucketIndex) const;
+	void setBucket(int _bucketIndex);
+
 	void updateBillbords() const;
 	void initBillbords();
 
@@ -40,7 +40,7 @@ public:
 	signed char getTeam() const { return team; }
 	Urho3D::Vector3* getPosition() const { return position; }
 	unsigned char getPlayer() const { return player; }
-	int getBucketIndex(char param) const { return bucketIndexShift[param]; }
+	int getBucketIndex() const { return indexInGrid; }//TODO zrobic funkcje get index in mainGRID
 
 	virtual bool isToDispose() const;
 	virtual Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const;
@@ -87,6 +87,5 @@ private:
 	void createBillboardShadow();
 	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;
 
-	int bucketIndex[BUCKET_SET_NUMBER];
-	int* bucketIndexShift;
+	int indexInGrid;
 };
