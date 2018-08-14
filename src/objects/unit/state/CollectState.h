@@ -27,12 +27,12 @@ public:
 		unit->velocity = Urho3D::Vector2::ZERO;
 		unit->currentFrameState = 0;
 		if (unit->isFirstThingAlive()
-			&& unit->getBucketIndex(-1) == unit->indexToInteract //TODO je¿eli jest inny to sprobowaæ podmienic
-			&& Game::getEnviroment()->cellInState(unit->getBucketIndex(-1), {CellState::RESOURCE, CellState::EMPTY})
-			&& Game::getEnviroment()->belowCellLimit(unit->getBucketIndex(-1))) {
+			&& unit->getMainCell() == unit->indexToInteract //TODO je¿eli jest inny to sprobowaæ podmienic
+			&& Game::getEnviroment()->cellInState(unit->getMainCell(), {CellState::RESOURCE, CellState::EMPTY})
+			&& Game::getEnviroment()->belowCellLimit(unit->getMainCell())) {
 			unit->thingsToInteract[0]->upClose();
 
-			Game::getEnviroment()->updateCell(unit->getBucketIndex(-1), 1, CellState::RESOURCE);
+			Game::getEnviroment()->updateCell(unit->getMainCell(), 1, CellState::RESOURCE);
 		} else {
 			StateManager::changeState(unit, UnitState::STOP);
 		}
@@ -42,7 +42,7 @@ public:
 		State::onEnd(unit);
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceClose();
-			Game::getEnviroment()->updateCell(unit->getBucketIndex(-1), -1, CellState::NONE);
+			Game::getEnviroment()->updateCell(unit->getMainCell(), -1, CellState::NONE);
 		}
 		unit->indexToInteract = -1;
 	}
@@ -50,8 +50,8 @@ public:
 	void execute(Unit* unit) override {
 		State::execute(unit);
 		if (unit->isFirstThingAlive()
-			&& unit->getBucketIndex(-1) == unit->indexToInteract
-			&& Game::getEnviroment()->cellInState(unit->getBucketIndex(-1), {CellState::RESOURCE})) {
+			&& unit->getMainCell() == unit->indexToInteract
+			&& Game::getEnviroment()->cellInState(unit->getMainCell(), {CellState::RESOURCE})) {
 			//TODO musi byc dokladnie w dobry mbuckecie
 			auto& resources = Game::getPlayersManager()->getPlayer(unit->player)->getResources();
 			auto resource = static_cast<ResourceEntity*>(unit->thingsToInteract[0]);

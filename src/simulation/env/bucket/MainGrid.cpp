@@ -195,7 +195,7 @@ char MainGrid::getNumberInState(int index, UnitState state) const {
 }
 
 char MainGrid::getOrdinarInState(Unit* unit, UnitState state) const {
-	const auto index = unit->getBucketIndex(-1);
+	const auto index = unit->getMainCell();
 	char ordinar = 0;
 	for (auto&& physical : buckets[index].getContent()) {
 		if (physical == unit) {

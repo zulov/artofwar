@@ -40,7 +40,7 @@ public:
 	signed char getTeam() const { return team; }
 	Urho3D::Vector3* getPosition() const { return position; }
 	unsigned char getPlayer() const { return player; }
-	int getBucketIndex() const { return indexInGrid; }//TODO zrobic funkcje get index in mainGRID 
+	int getBucketIndex() const { return indexInGrid; }
 	virtual int getMainCell() const;
 
 	virtual bool isToDispose() const;

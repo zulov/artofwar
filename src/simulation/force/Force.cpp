@@ -109,10 +109,10 @@ void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) {
-	char max = Game::getEnviroment()->getNumberInState(unit->getBucketIndex(-1), UnitState::COLLECT);
+	char max = Game::getEnviroment()->getNumberInState(unit->getMainCell(), UnitState::COLLECT);
 	char i = Game::getEnviroment()->getOrdinarInState(unit, UnitState::COLLECT);
 
-	auto aim = Game::getEnviroment()->getPositionInBucket(unit->getBucketIndex(-1), max, i);
+	auto aim = Game::getEnviroment()->getPositionInBucket(unit->getMainCell(), max, i);
 	auto force = Urho3D::Vector2(aim.x_ - unit->getPosition()->x_,
 	                             aim.y_ - unit->getPosition()->z_);
 
