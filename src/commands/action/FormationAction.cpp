@@ -1,7 +1,7 @@
 #include "FormationAction.h"
 #include "Game.h"
-#include "simulation/env/Enviroment.h"
 #include "objects/unit/Unit.h"
+#include "simulation/env/Enviroment.h"
 
 
 FormationAction::FormationAction(Formation* formation, UnitOrder action, const Physical* physical, Urho3D::Vector2* vector,
@@ -15,7 +15,7 @@ FormationAction::~FormationAction() = default;
 void FormationAction::addTargetAim(Urho3D::Vector2* to, bool append) {
 	auto opt = formation->getLeader();
 	if (opt.has_value()) {
-		ActionParameter parameter = getTargetAim(opt.value()->getBucketIndex(), *to, append);//TODO bug to jest zle dla staticów 
+		ActionParameter parameter = getTargetAim(opt.value()->getMainCell(), *to, append); 
 
 		const auto id = static_cast<char>(action);
 		opt.value()->action(id, parameter);

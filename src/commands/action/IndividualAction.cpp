@@ -20,7 +20,7 @@ IndividualAction::~IndividualAction() = default;
 void IndividualAction::addTargetAim(Urho3D::Vector2* to, bool append) {
 	short id = static_cast<char>(action);
 
-	ActionParameter parameter = getTargetAim(entity->getBucketIndex(), *to, append);//TODO bug to jest dobrze tylko dla unit, a dla static juz nie
+	ActionParameter parameter = getTargetAim(entity->getMainCell(), *to, append);
 	entity->action(id, parameter);
 	static_cast<Unit*>(entity)->resetFormation();
 
