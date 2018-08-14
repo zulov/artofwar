@@ -1,5 +1,6 @@
 #pragma once
 #include "database/db_strcut.h"
+#include "defines.h"
 #include <algorithm>
 
 

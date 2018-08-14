@@ -18,7 +18,6 @@
 
 #define SPLIT_SIGN '\n'
 
-#include "defines.h"
 #include <Urho3D/Container/Str.h>
 #include <Urho3D/Math/Vector2.h>
 #include <vector>
@@ -408,11 +407,8 @@ struct db_container
 	explicit db_container() {
 		for (int i = 0; i < BUILDINGS_NUMBER_DB; ++i) {
 			unitsForBuilding[i] = new std::vector<db_unit*>();
-			unitsForBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
 			costForBuilding[i] = new std::vector<db_cost*>();
-			costForBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
 			levelsToBuilding[i] = new std::vector<db_building_level*>();
-			levelsToBuilding[i]->reserve(DEFAULT_VECTOR_SIZE);
 			costForBuildingLevel[i] = new std::vector<std::vector<db_cost*>*>();
 			costForBuildingLevel[i]->reserve(MAX_BUILDING_LEVEL_NUMBER_DB);
 			for (int j = 0; j < MAX_BUILDING_LEVEL_NUMBER_DB; ++j) {
@@ -421,11 +417,8 @@ struct db_container
 		}
 		for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
 			costForUnit[i] = new std::vector<db_cost*>();
-			costForUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 			ordersToUnit[i] = new std::vector<db_order*>();
-			ordersToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 			levelsToUnit[i] = new std::vector<db_unit_level*>();
-			levelsToUnit[i]->reserve(DEFAULT_VECTOR_SIZE);
 
 			costForUnitLevel[i] = new std::vector<std::vector<db_cost*>*>();
 			costForUnitLevel[i]->reserve(MAX_UNIT_LEVEL_NUMBER_DB);

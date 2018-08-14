@@ -1,11 +1,9 @@
 #include "Bucket.h"
-#include "ComplexBucketData.h"
 #include "objects/Physical.h"
 #include "simulation/env/ContentInfo.h"
 
 
 Bucket::Bucket() {
-	content.reserve(DEFAULT_VECTOR_SIZE / 3);
 	std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
 }
 
@@ -36,7 +34,6 @@ bool Bucket::incUnitsPerPlayer(content_info* ci, int activePlayer, const bool ch
 	if (!content.empty()) {
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
 			if ((checks[3] && i == activePlayer || checks[4] && i != activePlayer) && unitsNumberPerPlayer[i] > 0) {
-
 				ci->unitsNumberPerPlayer[i] += unitsNumberPerPlayer[i];
 				hasUnits = true;
 			}

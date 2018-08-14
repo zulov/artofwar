@@ -6,8 +6,6 @@
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <algorithm>
-#include <iostream>
-#include <ostream>
 #include "objects/unit/Unit.h"
 
 
