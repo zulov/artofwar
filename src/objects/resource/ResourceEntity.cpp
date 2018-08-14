@@ -4,22 +4,20 @@
 #include "ObjectEnums.h"
 #include "database/DatabaseCache.h"
 #include "simulation/env/Enviroment.h"
+#include "objects/unit/state/StateManager.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
-#include "objects/unit/state/StateManager.h"
 
 
 ResourceEntity::
-ResourceEntity(Urho3D::Vector3* _position, int id, int level, Urho3D::IntVector2& _bucketCords) : Static(_position,
-                                                                                                         ObjectType::
-                                                                                                         RESOURCE) {
+ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell)
+	: Static(_position, ObjectType::RESOURCE, mainCell) {
 	initBillbords();
 
 	dbResource = Game::getDatabaseCache()->getResource(id);
-	setMainCell(_bucketCords);
 	populate();
 
 	auto model = node->CreateComponent<Urho3D::StaticModel>();

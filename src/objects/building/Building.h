@@ -10,7 +10,7 @@ class QueueElement;
 class Building : public Static
 {
 public:
-	Building(Urho3D::Vector3* _position, int id, int player, int level, const Urho3D::IntVector2& _bucketCords);
+	Building(Urho3D::Vector3* _position, int id, int player, int level, int mainCell);
 	~Building();
 
 	void populate();

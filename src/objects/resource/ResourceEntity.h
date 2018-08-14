@@ -3,11 +3,10 @@
 
 struct db_resource;
 
-class ResourceEntity :
-	public Static
+class ResourceEntity : public Static
 {
 public:
-	ResourceEntity(Urho3D::Vector3* _position, int id, int level, Urho3D::IntVector2& _bucketCords);
+	ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell);
 	virtual ~ResourceEntity();
 	void populate();
 

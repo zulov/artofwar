@@ -54,8 +54,9 @@ public:
 
 	void invalidateCache();
 
-	int getIndex(Urho3D::Vector2& pos) const;
-	int getIndex(short x, short z) const;
+	int getIndex(Urho3D::Vector2& pos) const { return mainGrid.indexFromPosition(pos); }
+	int getIndex(short x, short z) const { return mainGrid.getIndex(x, z); }
+	Urho3D::IntVector2 getCords(int index) const { return mainGrid.getCords(index); }
 	CellState getType(int index) const { return mainGrid.getType(index); }
 	char getCurrentSize(int index) const { return mainGrid.getCurrentSize(index); }
 	bool cellInState(int index, std::vector<CellState> cellStates) const;

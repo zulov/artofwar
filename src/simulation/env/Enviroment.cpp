@@ -156,8 +156,7 @@ bool Enviroment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2&
 }
 
 Urho3D::Vector2 Enviroment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) {
-	const Urho3D::Vector2 center = mainGrid.getCenterAt(bucketCords);
-	return getValidPosition(size, center);
+	return getValidPosition(size, mainGrid.getCenterAt(bucketCords));
 }
 
 Urho3D::Vector2& Enviroment::getCenter(int index) const {
@@ -174,14 +173,6 @@ Urho3D::Vector2 Enviroment::getPositionInBucket(int index, char max, char i) {
 
 void Enviroment::invalidateCache() {
 	mainGrid.invalidateCache();
-}
-
-int Enviroment::getIndex(Urho3D::Vector2& pos) const {
-	return mainGrid.indexFromPosition(pos);
-}
-
-int Enviroment::getIndex(short x, short z) const {
-	return mainGrid.getIndex(x, z);
 }
 
 bool Enviroment::cellInState(int index, std::vector<CellState> cellStates) const {

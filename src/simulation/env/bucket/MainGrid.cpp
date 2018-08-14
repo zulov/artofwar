@@ -164,7 +164,6 @@ Urho3D::Vector2 MainGrid::getPositionInBucket(int index, char max, char i) {
 		return posInBucket3[i] + center;
 	case 4:
 		return posInBucket4[i] + center;
-
 	}
 }
 
@@ -177,7 +176,7 @@ bool MainGrid::cellInStates(int index, std::vector<CellState>& cellStates) const
 	return false;
 }
 
-void MainGrid::updateCell(int index, char val, CellState cellState) {
+void MainGrid::updateCell(int index, char val, CellState cellState) const {
 	complexData[index].updateSize(val, cellState);
 }
 
@@ -265,20 +264,19 @@ void MainGrid::resetPathArrays() {
 
 void MainGrid::addStatic(Static* object) {
 	if (validateAdd(object)) {
-		auto size = object->getGridSize();
+		const auto bucketPos = getCords(object->getMainCell());
 
-		auto bucketPos = object->getBucketPosition();
-
-		//object->setBucket(getIndex(bucketPos.x_, bucketPos.y_), 0);
-
-		const auto sizeX = calculateSize(size.x_, bucketPos.x_);
-		const auto sizeZ = calculateSize(size.y_, bucketPos.y_);
+		object->setMainCell(getIndex(bucketPos.x_, bucketPos.y_));
 
 		for (auto index : object->getOcupiedCells()) {
 			complexData[index].setStatic(object);
 		}
 
 		std::vector<int> toRefresh;
+
+		const auto size = object->getGridSize();
+		const auto sizeX = calculateSize(size.x_, bucketPos.x_);
+		const auto sizeZ = calculateSize(size.y_, bucketPos.y_);
 
 		for (int i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
 			for (int j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {

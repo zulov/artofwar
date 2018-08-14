@@ -4,14 +4,15 @@
 #include "simulation/env/Enviroment.h"
 #include <string>
 
-Static::Static(Urho3D::Vector3* _position, ObjectType _type) : Physical(_position, _type) {
+Static::Static(Urho3D::Vector3* _position, ObjectType _type, int mainCell) : Physical(_position, _type) {
 	state = StaticState::ALIVE;
 	nextState = StaticState::ALIVE;
+	setMainCell(mainCell);
 }
 
 Static::~Static() = default;
 
-void Static::setMainCell(const Urho3D::IntVector2& _mainCell) {
+void Static::setMainCell(int _mainCell) {
 	mainCell = _mainCell;
 }
 
@@ -25,8 +26,9 @@ void Static::setState(StaticState state) {
 
 void Static::populate(const Urho3D::IntVector2& size) {
 	gridSize = size;
-	const auto sizeX = calculateSize(gridSize.x_, mainCell.x_);
-	const auto sizeZ = calculateSize(gridSize.y_, mainCell.y_);
+	const auto cordsCell = Game::getEnviroment()->getCords(mainCell);
+	const auto sizeX = calculateSize(gridSize.x_, cordsCell.x_);
+	const auto sizeZ = calculateSize(gridSize.y_, cordsCell.y_);
 
 	for (short i = sizeX.x_; i < sizeX.y_; ++i) {
 		for (short j = sizeZ.x_; j < sizeZ.y_; ++j) {
@@ -83,7 +85,8 @@ Urho3D::Vector2 Static::getPosToFollow(Urho3D::Vector3* center) const {
 }
 
 std::string Static::getValues(int precision) {
+	const auto cordsCell = Game::getEnviroment()->getCords(mainCell);
 	return Physical::getValues(precision)
-		+ std::to_string(mainCell.x_) + ","
-		+ std::to_string(mainCell.y_) + ",";
+		+ std::to_string(cordsCell.x_) + ","
+		+ std::to_string(cordsCell.y_) + ",";
 }

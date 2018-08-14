@@ -6,23 +6,23 @@
 #include "objects/unit/ActionParameter.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
+#include "player/Player.h"
+#include "objects/unit/state/StateManager.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
-#include "player/Player.h"
-#include "objects/unit/state/StateManager.h"
 
 
-Building::Building(Urho3D::Vector3* _position, int id, int player, int level, const Urho3D::IntVector2& _bucketCords):
-	Static(_position, ObjectType::BUILDING),
+
+Building::Building(Urho3D::Vector3* _position, int id, int player, int level, int mainCell):
+	Static(_position, ObjectType::BUILDING, mainCell),
 	target(_position->x_, _position->z_) {
 
 	initBillbords();
 	target.x_ += 5;
 	target.y_ += 5;
-	setMainCell(_bucketCords);
 	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 	units = Game::getDatabaseCache()->getUnitsForBuilding(id);
 

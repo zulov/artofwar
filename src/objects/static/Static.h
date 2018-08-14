@@ -7,10 +7,10 @@ enum class CellState : char;
 class Static : public Physical
 {
 public:
-	Static(Urho3D::Vector3* _position, ObjectType _type);
+	Static(Urho3D::Vector3* _position, ObjectType _type, int mainCell);
 	virtual ~Static();
 
-	void setMainCell(const Urho3D::IntVector2& _mainCell);
+	void setMainCell(int _mainCell);
 	void setNextState(StaticState stateTo);
 	void setState(StaticState state);
 	static std::string getColumns();
@@ -22,7 +22,7 @@ public:
 	StaticState getNextState() const { return nextState; }
 	StaticState getState() const { return state; }
 	bool isAlive() const override { return state == StaticState::ALIVE; }
-	Urho3D::IntVector2& getBucketPosition() { return mainCell; }
+	int getMainCell() const override { return mainCell; }
 	Urho3D::IntVector2& getGridSize() { return gridSize; }
 	std::vector<int>& getOcupiedCells() { return ocupiedCells; }
 	std::vector<int>& getSurroundCells() { return surroundCells; }
@@ -37,7 +37,7 @@ protected:
 	std::vector<int> surroundCells;
 
 	Urho3D::IntVector2 gridSize;
-	Urho3D::IntVector2 mainCell;
+	int mainCell;
 
 	StaticState state;
 	StaticState nextState;

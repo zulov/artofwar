@@ -65,7 +65,7 @@ void Physical::updateBillboardShadow(Urho3D::Vector3& boundingBox) const {
 }
 
 void Physical::updateBillbords() const {
-	Urho3D::Vector3 boundingBox = node->GetComponent<Urho3D::StaticModel>()->GetModel()->GetBoundingBox().Size();
+	auto boundingBox = node->GetComponent<Urho3D::StaticModel>()->GetModel()->GetBoundingBox().Size();
 
 	updateBillboardBar(boundingBox);
 	updateBillboardShadow(boundingBox);
@@ -78,11 +78,13 @@ void Physical::initBillbords() {
 
 void Physical::updateHealthBar() {
 	if (billboardBar->enabled_) {
-		const float healthBarSize = getHealthBarSize();
-
-		billboardBar->size_ = Urho3D::Vector2(healthBarSize, 0.1) / node->GetScale2D();
+		billboardBar->size_ = Urho3D::Vector2(getHealthBarSize(), 0.1) / node->GetScale2D();
 		billboardSetBar->Commit();
 	}
+}
+
+int Physical::getMainCell() const {
+	return getBucketIndex();
 }
 
 bool Physical::isToDispose() const {

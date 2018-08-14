@@ -7,7 +7,6 @@
 
 ResourceFactory::ResourceFactory() {
 	resources = new std::vector<ResourceEntity *>();
-	resources->reserve(DEFAULT_VECTOR_SIZE);
 }
 
 
@@ -19,8 +18,8 @@ std::vector<ResourceEntity*>* ResourceFactory::create(int id, Urho3D::Vector2& c
 	resources->clear();
 
 	float y = Game::getEnviroment()->getGroundHeightAt(center.x_, center.y_);
-
-	resources->push_back(new ResourceEntity(new Urho3D::Vector3(center.x_, y, center.y_), id, level, _bucketCords));
+	auto mainCell = Game::getEnviroment()->getIndex(_bucketCords.x_, _bucketCords.y_);
+	resources->push_back(new ResourceEntity(new Urho3D::Vector3(center.x_, y, center.y_), id, level, mainCell));
 
 	return resources;
 }

@@ -1,14 +1,13 @@
 #include "BuildingFactory.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
-#include "scene/load/dbload_container.h"
 #include "objects/building/Building.h"
+#include "scene/load/dbload_container.h"
 #include "simulation/env/Enviroment.h"
 
 
 BuildingFactory::BuildingFactory() {
 	buildings = new std::vector<Building *>();
-	buildings->reserve(DEFAULT_VECTOR_SIZE);
 }
 
 BuildingFactory::~BuildingFactory() {
@@ -19,8 +18,9 @@ std::vector<Building*>* BuildingFactory::
 create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level) {
 	buildings->clear();
 	float y = Game::getEnviroment()->getGroundHeightAt(center.x_, center.y_);
+	auto mainCell = Game::getEnviroment()->getIndex(_bucketCords.x_, _bucketCords.y_);
 
-	buildings->push_back(new Building(new Urho3D::Vector3(center.x_, y, center.y_), id, player, level, _bucketCords));
+	buildings->push_back(new Building(new Urho3D::Vector3(center.x_, y, center.y_), id, player, level, mainCell));
 
 	return buildings;
 }
