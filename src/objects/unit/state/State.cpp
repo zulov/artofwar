@@ -7,6 +7,10 @@ State::State() {
 
 State::~State() = default;
 
+bool State::canStart(Unit* unit) {
+	return true;
+}
+
 void State::onEnd(Unit* unit) {
 	unit->atState = false;
 }

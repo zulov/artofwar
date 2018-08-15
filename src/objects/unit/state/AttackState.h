@@ -18,12 +18,14 @@ public:
 
 	~AttackState() = default;
 
+	bool canStart(Unit* unit) override {
+		return unit->isFirstThingAlive();
+	}
+
 	void onStart(Unit* unit, ActionParameter& parameter) override {
 		unit->velocity = Urho3D::Vector2::ZERO;
 		unit->currentFrameState = 0;
-		if (unit->isFirstThingAlive()) {
-			unit->thingsToInteract[0]->upClose();
-		}
+		unit->thingsToInteract[0]->upClose();
 	}
 
 	void onEnd(Unit* unit) override {

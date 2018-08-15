@@ -159,7 +159,7 @@ void Unit::actionIfCloseEnough(UnitState action, Physical* closest, float sqDist
 }
 
 void Unit::toAttack(std::vector<Physical*>* enemies) {
-	auto [closest, minDistance] = closestPhysical(this, enemies, belowClose, exactPos);
+	auto [closest, minDistance,indexToInteract] = closestPhysical(this, enemies, belowClose, exactPos);//TODO moze zwraca tez  indexToInteract?
 
 	actionIfCloseEnough(UnitState::ATTACK, closest, minDistance, attackRange, attackIntrest);
 }
@@ -179,7 +179,7 @@ void Unit::toCollect(std::vector<Physical*>* resources) {
 void Unit::interactWithOne(Physical* thing, UnitState action) {
 	thingsToInteract.clear();
 	thingsToInteract.push_back(thing);
-	//gridIndexToInteract
+
 	bool success = StateManager::changeState(this, action);
 	if (!success) {
 		thingsToInteract.clear();

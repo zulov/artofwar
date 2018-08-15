@@ -3,9 +3,9 @@
 #include "ContentInfo.h"
 #include "bucket/MainGrid.h"
 #include "defines.h"
+#include "objects/unit/state/UnitState.h"
 #include <Urho3D/Graphics/Terrain.h>
 #include <vector>
-#include "objects/unit/state/UnitState.h"
 
 
 class ResourceEntity;

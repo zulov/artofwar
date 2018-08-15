@@ -62,6 +62,7 @@ public:
 	Urho3D::Vector2& getCenter(int index) const { return complexData[index].getCenter(); }
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
 	bool inSide(int x, int z) const { return !(x < 0 || x >= resolution || z < 0 || z >= resolution); }
+	bool inSide(int index) const { return !((index < 0 || index > sqResolution)); }
 	CellState getType(int index) const { return complexData[index].getType(); }
 	char getCurrentSize(int index) const { return complexData[index].getSize(); }
 	bool cellInStates(int index, std::vector<CellState>& cellStates) const;

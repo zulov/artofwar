@@ -23,19 +23,20 @@ public:
 
 	~CollectState() = default;
 
+	bool canStart(Unit* unit) override{
+		return unit->isFirstThingAlive()
+			&& unit->getMainCell() == unit->indexToInteract //TODO je¿eli jest inny to sprobowaæ podmienic
+			&& Game::getEnviroment()->cellInState(unit->getMainCell(), {CellState::RESOURCE, CellState::EMPTY})
+			&& Game::getEnviroment()->belowCellLimit(unit->getMainCell());
+	}
+
 	void onStart(Unit* unit, ActionParameter& parameter) override {
 		unit->velocity = Urho3D::Vector2::ZERO;
 		unit->currentFrameState = 0;
-		if (unit->isFirstThingAlive()
-			&& unit->getMainCell() == unit->indexToInteract //TODO je¿eli jest inny to sprobowaæ podmienic
-			&& Game::getEnviroment()->cellInState(unit->getMainCell(), {CellState::RESOURCE, CellState::EMPTY})
-			&& Game::getEnviroment()->belowCellLimit(unit->getMainCell())) {
-			unit->thingsToInteract[0]->upClose();
 
-			Game::getEnviroment()->updateCell(unit->getMainCell(), 1, CellState::RESOURCE);
-		} else {
-			StateManager::changeState(unit, UnitState::STOP);
-		}
+		unit->thingsToInteract[0]->upClose();
+
+		Game::getEnviroment()->updateCell(unit->getMainCell(), 1, CellState::RESOURCE);
 	}
 
 	void onEnd(Unit* unit) override {

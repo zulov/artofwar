@@ -77,7 +77,9 @@ bool StateManager::validateState(int id, UnitState stateTo) {
 
 bool StateManager::changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter) {
 	State* stateFrom = instance->states[static_cast<int>(unit->getState())];
-	if (stateFrom->validateTransition(stateTo) && validateState(unit->getDbID(), stateTo)) {
+	if (stateFrom->validateTransition(stateTo) 
+		&& validateState(unit->getDbID(), stateTo)
+		&& instance->states[static_cast<int>(stateTo)]->canStart(unit) ) {
 		stateFrom->onEnd(unit);
 		unit->setState(stateTo);
 		instance->states[static_cast<int>(stateTo)]->onStart(unit, actionParameter);

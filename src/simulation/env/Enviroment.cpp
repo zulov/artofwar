@@ -1,9 +1,9 @@
 #include "Enviroment.h"
+#include "ObjectEnums.h"
 #include "OperatorType.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
-#include "ObjectEnums.h"
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
 #include <unordered_set>
@@ -55,7 +55,7 @@ std::vector<Physical*>* Enviroment::getNeighboursFromTeam(Physical* physical, co
 		neights2->clear();
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
 			if (team != i) {
-				std::vector<Physical*>* neightLocal = getNeighbours(physical, teamUnitGrid[i], radius);
+				auto neightLocal = getNeighbours(physical, teamUnitGrid[i], radius);
 				neights2->insert(neights2->end(), neightLocal->begin(), neightLocal->end());
 			}
 		}

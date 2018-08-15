@@ -394,7 +394,7 @@ void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	SelectedHudElement* sHudElement = static_cast<SelectedHudElement *>(element
 	                                                                    ->GetVar("SelectedHudElement").GetVoidPtr()
 	);
-	std::vector<Physical*>* selected = sHudElement->getSelected();
+	auto selected = sHudElement->getSelected();
 	controls->unSelectAll();
 	for (auto physical : *selected) {
 		controls->select(physical);

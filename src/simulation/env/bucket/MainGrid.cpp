@@ -295,8 +295,13 @@ void MainGrid::addStatic(Static* object) {
 
 void MainGrid::removeStatic(Static* object) {
 	//TODO poprawic
+	object->setMainCell(-1);
 	for (auto index : object->getOcupiedCells()) {
 		complexData[index].removeStatic();
+		updateNeighbors(index);
+	}
+	for (auto index : object->getSurroundCells()) {
+		updateNeighbors(index);
 	}
 }
 
@@ -356,18 +361,13 @@ void MainGrid::updateNeighbors(const int current) const {
 	auto& ocupNeigths = complexData[current].getOccupiedNeightbours();
 	ocupNeigths.clear();
 
-	const auto cords = getCords(current);
-	for (int i = -1; i <= 1; ++i) {
-		for (int j = -1; j <= 1; ++j) {
-			if (!(i == 0 && j == 0)) {
-				if (inSide(cords.x_ + i, cords.y_ + j)) {
-					const int index = getIndex(cords.x_ + i, cords.y_ + j);
-					if (complexData[index].isUnit()) {
-						neigths.emplace_back(index, cost(current, index));
-					} else if (!complexData[index].isUnit()) {
-						ocupNeigths.emplace_back(index, cost(current, index));
-					}
-				}
+	for (auto i : closeIndex) {
+		const int index = current + i; //TODO bug przy skrajach bedzie całkiem inne indexy updejtowac :O
+		if (inSide(index)) {
+			if (complexData[index].isUnit()) {
+				neigths.emplace_back(index, cost(current, index));
+			} else if (!complexData[index].isUnit()) {
+				ocupNeigths.emplace_back(index, cost(current, index));
 			}
 		}
 	}
@@ -389,7 +389,7 @@ void MainGrid::debug(int start, int end) {
 	draw_grid_cost(cost_so_far, image, resolution);
 	image->SaveBMP("result/images/" + prefix + "3_grid_cost.bmp");
 
-	std::vector<int>* path = reconstruct_path(start, end, came_from);
+	auto path = reconstruct_path(start, end, came_from);
 	draw_grid_path(path, image, resolution);
 
 	image->SaveBMP("result/images/" + prefix + "4_grid_path.bmp");
@@ -503,7 +503,7 @@ void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 				}
 			}
 		}
-		std::vector<int>* path = reconstruct_path(startIndex, end, came_from);
+		std::vector<int> * path = reconstruct_path(startIndex, end, came_from);
 		if (path->size() >= 1) {
 			int current2 = startIndex;
 			for (int i = 1; i < path->size(); ++i) {
