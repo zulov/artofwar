@@ -1,8 +1,11 @@
 #include "State.h"
 #include "../Unit.h"
 
-State::State() {
+State::State(std::initializer_list<UnitState> active) {
 	std::fill_n(nextStates, STATE_SIZE, false);
+	for (auto state : active) {
+		nextStates[static_cast<char>(state)] = true;
+	}
 }
 
 State::~State() = default;

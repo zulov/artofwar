@@ -159,7 +159,7 @@ void Unit::actionIfCloseEnough(UnitState action, Physical* closest, float sqDist
 }
 
 void Unit::toAttack(std::vector<Physical*>* enemies) {
-	auto [closest, minDistance,indexToInteract] = closestPhysical(this, enemies, belowClose, exactPos);//TODO moze zwraca tez  indexToInteract?
+	auto [closest, minDistance] = closestPhysical(this, enemies, belowClose, exactPos);//TODO moze zwraca tez  indexToInteract?
 
 	actionIfCloseEnough(UnitState::ATTACK, closest, minDistance, attackRange, attackIntrest);
 }

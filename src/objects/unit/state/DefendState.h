@@ -4,9 +4,7 @@
 class DefendState : public State
 {
 public:
-	DefendState() {
-		nextStates[static_cast<char>(UnitState::STOP)] = true;
-		nextStates[static_cast<char>(UnitState::DEAD)] = true;
+	DefendState() : State({UnitState::STOP, UnitState::DEAD}) {
 	}
 
 	~DefendState() = default;

@@ -1,5 +1,6 @@
 #pragma once
 #include "UnitState.h"
+#include <vector>
 
 
 struct ActionParameter;
@@ -8,7 +9,7 @@ class Unit;
 class State
 {
 public:
-	State();
+	State(std::initializer_list<UnitState> active);
 	virtual ~State();
 	virtual bool canStart(Unit* unit);
 

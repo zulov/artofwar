@@ -8,14 +8,10 @@
 class ChargeState : public State
 {
 public:
-	ChargeState() {
-		nextStates[static_cast<char>(UnitState::STOP)] = true;
-		nextStates[static_cast<char>(UnitState::DEFEND)] = true;
-		nextStates[static_cast<char>(UnitState::DEAD)] = true;
-		nextStates[static_cast<char>(UnitState::GO_TO)] = true;
-		nextStates[static_cast<char>(UnitState::FOLLOW)] = true;
-		nextStates[static_cast<char>(UnitState::CHARGE)] = true;
-		nextStates[static_cast<char>(UnitState::MOVE)] = true;
+	ChargeState(): State({
+		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO_TO, UnitState::FOLLOW, UnitState::CHARGE,
+		UnitState::MOVE
+	}) {
 	}
 
 	~ChargeState() = default;

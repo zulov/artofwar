@@ -5,16 +5,10 @@ class MoveState : public State
 {
 public:
 
-	MoveState() {
-		nextStates[static_cast<char>(UnitState::STOP)] = true;
-		nextStates[static_cast<char>(UnitState::DEFEND)] = true;
-		nextStates[static_cast<char>(UnitState::DEAD)] = true;
-		nextStates[static_cast<char>(UnitState::GO_TO)] = true;
-		nextStates[static_cast<char>(UnitState::ATTACK)] = true;
-		nextStates[static_cast<char>(UnitState::COLLECT)] = true;
-		nextStates[static_cast<char>(UnitState::SHOT)] = true;
-		nextStates[static_cast<char>(UnitState::FOLLOW)] = true;
-		nextStates[static_cast<char>(UnitState::CHARGE)] = true;
+	MoveState(): State({
+		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO_TO, UnitState::ATTACK, UnitState::COLLECT,
+		UnitState::SHOT, UnitState::FOLLOW, UnitState::CHARGE
+	}) {
 	}
 
 

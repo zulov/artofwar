@@ -5,13 +5,13 @@
 class DeadState : public State
 {
 public:
-	DeadState() {
-		nextStates[static_cast<char>(UnitState::DISPOSE)] = true;
+	DeadState() : State({UnitState::DISPOSE}) {
 	}
 
 	~DeadState() = default;
 
-	void onStart(Unit* unit, ActionParameter& parameter) {}
+	void onStart(Unit* unit, ActionParameter& parameter) {
+	}
 
 	void onEnd(Unit* unit) {
 		State::onEnd(unit);

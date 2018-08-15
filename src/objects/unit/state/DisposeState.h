@@ -4,11 +4,13 @@
 class DisposeState : public State
 {
 public:
-	DisposeState() = default;
+	DisposeState(): State({}) {
+	}
 
 	~DisposeState() = default;
 
-	void onStart(Unit* unit, ActionParameter& parameter) override {}
+	void onStart(Unit* unit, ActionParameter& parameter) override {
+	}
 
 	void onEnd(Unit* unit) override {
 		State::onEnd(unit);

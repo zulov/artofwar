@@ -3,16 +3,10 @@
 #include "../Unit.h"
 
 
-
 class FollowState : public State
 {
 public:
-	FollowState() {
-		nextStates[static_cast<char>(UnitState::STOP)] = true;
-		nextStates[static_cast<char>(UnitState::DEFEND)] = true;
-		nextStates[static_cast<char>(UnitState::DEAD)] = true;
-		nextStates[static_cast<char>(UnitState::GO_TO)] = true;
-		nextStates[static_cast<char>(UnitState::MOVE)] = true;
+	FollowState() : State({UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO_TO, UnitState::MOVE}) {
 	}
 
 	~FollowState() = default;
