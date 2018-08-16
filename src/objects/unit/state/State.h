@@ -1,6 +1,6 @@
 #pragma once
 #include "UnitState.h"
-#include <vector>
+#include <initializer_list>
 
 
 struct ActionParameter;

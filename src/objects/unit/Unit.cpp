@@ -1,13 +1,11 @@
 #include "Unit.h"
 #include "DebugUnitType.h"
 #include "Game.h"
-#include "MathUtils.h"
 #include "ObjectEnums.h"
 #include "UnitOrder.h"
 #include "aim/FutureAim.h"
 #include "colors/ColorPeletteRepo.h"
 #include "database/DatabaseCache.h"
-#include "objects/PhysicalUtils.h"
 #include "objects/unit/ChargeData.h"
 #include "objects/unit/ColorMode.h"
 #include "objects/unit/MissleData.h"
@@ -158,27 +156,15 @@ void Unit::actionIfCloseEnough(UnitState action, Physical* closest, float sqDist
 	}
 }
 
-void Unit::toAttack(std::vector<Physical*>* enemies) {
-	auto [closest, minDistance] = closestPhysical(this, enemies, belowClose, exactPos);//TODO moze zwraca tez  indexToInteract?
-
-	actionIfCloseEnough(UnitState::ATTACK, closest, minDistance, attackRange, attackIntrest);
-}
-
-void Unit::toShot(std::vector<Physical*>* enemies) {
-	auto [closest, minDistance] = closestPhysical(this, enemies, belowRange, exactPos);
-
-	actionIfCloseEnough(UnitState::SHOT, closest, minDistance, attackRange, attackIntrest);
-}
-
-void Unit::toCollect(std::vector<Physical*>* resources) {
-	auto [closest, minDistance] = closestPhysical(this, resources, belowClose, posToFollow);
-	//TODO dystans 0 jesli w odpowiednim bykecie
-	actionIfCloseEnough(UnitState::COLLECT, closest, minDistance, attackRange, attackIntrest);
+void Unit::toAction(Physical* closest, float minDistance, UnitState stateTo) {
+	actionIfCloseEnough(stateTo, closest, minDistance, attackRange, attackIntrest);
 }
 
 void Unit::interactWithOne(Physical* thing, UnitState action) {
 	thingsToInteract.clear();
 	thingsToInteract.push_back(thing);
+
+	//indexToInteract=
 
 	bool success = StateManager::changeState(this, action);
 	if (!success) {

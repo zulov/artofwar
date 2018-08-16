@@ -53,10 +53,9 @@ public:
 
 	void absorbAttack(float attackCoef) override;
 
-	void toAttack(std::vector<Physical*>* enemies);
-	void toCollect(std::vector<Physical*>* resources);
-	void toShot(std::vector<Physical*>* enemies);
 	void toCharge(std::vector<Physical*>* enemies);
+
+	void toAction(Physical* closest, float minDistance, UnitState stateTo);
 
 	void interactWithOne(Physical* thing, UnitState action);
 
@@ -91,7 +90,7 @@ public:
 	float getMinimalDistance() const { return minimalDistance; }
 	UnitState getState() const { return state; }
 	short getFormation() const { return formation; }
-	bool isToDispose() const override { return state == UnitState::DISPOSE && atState; } 
+	bool isToDispose() const override { return state == UnitState::DISPOSE && atState; }
 	bool hasAim() const { return aims.hasAim(); }
 
 	bool bucketHasChanged(int _bucketIndex, char param) const;

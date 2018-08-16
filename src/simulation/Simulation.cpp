@@ -23,6 +23,7 @@
 #include "objects/building/Building.h"
 #include "player/Player.h"
 #include "DebugUnitType.h"
+#include "objects/PhysicalUtils.h"
 #include <ctime>
 
 
@@ -55,7 +56,11 @@ void Simulation::tryToAttack(Unit* unit) {
 	if (unit->hasEnemy()) {
 		StateManager::changeState(unit, UnitState::ATTACK);
 	} else {
-		unit->toAttack(enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), OperatorType::NOT_EQUAL));
+		auto [closest, minDistance] = closestPhysical(unit, enviroment->
+		                                              getNeighboursFromTeam(unit, 12, unit->getTeam(),
+		                                                                    OperatorType::NOT_EQUAL), belowClose,
+		                                              exactPos);
+		unit->toAction(closest, minDistance, UnitState::ATTACK);
 	}
 }
 
@@ -63,7 +68,9 @@ void Simulation::tryToCollect(Unit* unit) {
 	if (unit->hasResource()) {
 		StateManager::changeState(unit, UnitState::COLLECT, ActionParameter(-1));
 	} else {
-		unit->toCollect(enviroment->getResources(unit, 12));
+		auto [closest, minDistance] =
+			closestPhysical(unit, enviroment->getResources(unit, 12), belowClose, posToFollow);
+		unit->toAction(closest, minDistance, UnitState::COLLECT);
 	}
 }
 
@@ -71,7 +78,11 @@ void Simulation::tryToShot(Unit* unit) {
 	if (unit->hasEnemy()) {
 		StateManager::changeState(unit, UnitState::SHOT);
 	} else {
-		unit->toShot(enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), OperatorType::NOT_EQUAL));
+		auto [closest, minDistance] = closestPhysical(unit, enviroment->
+		                                              getNeighboursFromTeam(unit, 12, unit->getTeam(),
+		                                                                    OperatorType::NOT_EQUAL), belowRange,
+		                                              exactPos);
+		unit->toAction(closest, minDistance, UnitState::SHOT);
 	}
 }
 
