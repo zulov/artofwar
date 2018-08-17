@@ -145,26 +145,26 @@ void Unit::absorbAttack(float attackCoef) {
 	}
 }
 
-void Unit::actionIfCloseEnough(UnitState action, Physical* closest, float sqDistance,
-                               float closeRange, float intrestRange) {
+void Unit::actionIfCloseEnough(UnitState action, Physical* closest, int indexToInteract,
+                               float sqDistance, float closeRange, float intrestRange) {
 	if (closest) {
 		if (sqDistance < closeRange * closeRange) {
-			interactWithOne(closest, action);
+			interactWithOne(closest, indexToInteract, action);
 		} else if (sqDistance < intrestRange * intrestRange) {
 			addAim(FutureAim(closest, UnitOrder::FOLLOW));
 		}
 	}
 }
 
-void Unit::toAction(Physical* closest, float minDistance, UnitState stateTo) {
-	actionIfCloseEnough(stateTo, closest, minDistance, attackRange, attackIntrest);
+void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo) {
+	actionIfCloseEnough(stateTo, closest, minDistance, indexToInteract, attackRange, attackIntrest);
 }
 
-void Unit::interactWithOne(Physical* thing, UnitState action) {
+void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitState action) {
 	thingsToInteract.clear();
 	thingsToInteract.push_back(thing);
 
-	//indexToInteract=
+	this->indexToInteract = indexToInteract;
 
 	bool success = StateManager::changeState(this, action);
 	if (!success) {

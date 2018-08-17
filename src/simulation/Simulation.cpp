@@ -56,11 +56,12 @@ void Simulation::tryToAttack(Unit* unit) {
 	if (unit->hasEnemy()) {
 		StateManager::changeState(unit, UnitState::ATTACK);
 	} else {
-		auto [closest, minDistance] = closestPhysical(unit, enviroment->
-		                                              getNeighboursFromTeam(unit, 12, unit->getTeam(),
-		                                                                    OperatorType::NOT_EQUAL), belowClose,
-		                                              exactPos);
-		unit->toAction(closest, minDistance, UnitState::ATTACK);
+		auto [closest, minDistance, indexToInterect] = closestPhysical(unit, enviroment->
+		                                                               getNeighboursFromTeam(unit, 12, unit->getTeam(),
+		                                                                                     OperatorType::NOT_EQUAL),
+		                                                               belowClose,
+		                                                               exactPos);
+		unit->toAction(closest, minDistance, indexToInterect, UnitState::ATTACK);
 	}
 }
 
@@ -68,9 +69,9 @@ void Simulation::tryToCollect(Unit* unit) {
 	if (unit->hasResource()) {
 		StateManager::changeState(unit, UnitState::COLLECT, ActionParameter(-1));
 	} else {
-		auto [closest, minDistance] =
+		auto [closest, minDistance, indexToInterect] =
 			closestPhysical(unit, enviroment->getResources(unit, 12), belowClose, posToFollow);
-		unit->toAction(closest, minDistance, UnitState::COLLECT);
+		unit->toAction(closest, minDistance, indexToInterect, UnitState::COLLECT);
 	}
 }
 
@@ -78,11 +79,12 @@ void Simulation::tryToShot(Unit* unit) {
 	if (unit->hasEnemy()) {
 		StateManager::changeState(unit, UnitState::SHOT);
 	} else {
-		auto [closest, minDistance] = closestPhysical(unit, enviroment->
-		                                              getNeighboursFromTeam(unit, 12, unit->getTeam(),
-		                                                                    OperatorType::NOT_EQUAL), belowRange,
-		                                              exactPos);
-		unit->toAction(closest, minDistance, UnitState::SHOT);
+		auto [closest, minDistance, indexToInterect] = closestPhysical(unit, enviroment->
+		                                                               getNeighboursFromTeam(unit, 12, unit->getTeam(),
+		                                                                                     OperatorType::NOT_EQUAL),
+		                                                               belowRange,
+		                                                               exactPos);
+		unit->toAction(closest, minDistance, indexToInterect, UnitState::SHOT);
 	}
 }
 

@@ -55,9 +55,9 @@ public:
 
 	void toCharge(std::vector<Physical*>* enemies);
 
-	void toAction(Physical* closest, float minDistance, UnitState stateTo);
+	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo);
 
-	void interactWithOne(Physical* thing, UnitState action);
+	void interactWithOne(Physical* thing, int indexToInteract, UnitState action);
 
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
@@ -105,8 +105,8 @@ public:
 	int getDbID() override;
 	void clean() override;
 private:
-	void actionIfCloseEnough(UnitState action, Physical* closest, float sqDistance,
-	                         float closeRange, float intrestRange);
+	void actionIfCloseEnough(UnitState action, Physical* closest, int indexToInteract,
+	                         float sqDistance, float closeRange, float intrestRange);
 
 	void changeColor(float value, float maxValue) const;
 	void changeColor(Urho3D::Material* newMaterial) const;

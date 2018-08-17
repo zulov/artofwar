@@ -13,29 +13,35 @@ inline bool alwaysTrue(Physical* physical) {
 	return true;
 }
 
-inline Urho3D::Vector2 posToFollow(Physical* physical, Urho3D::Vector3* center) {
-	return physical->getPosToFollow(center);
+inline std::tuple<Urho3D::Vector2, int> posToFollow(Physical* physical, Urho3D::Vector3* center) {
+	auto pos = physical->getPosToFollow(center);
+	return {pos, -1};
 }
 
-inline Urho3D::Vector2 exactPos(Physical* physical, Urho3D::Vector3* center) {
-	return Urho3D::Vector2(physical->getPosition()->x_, physical->getPosition()->z_);
+inline std::tuple<Urho3D::Vector2, int> exactPos(Physical* physical, Urho3D::Vector3* center) {
+	return {Urho3D::Vector2(physical->getPosition()->x_, physical->getPosition()->z_), -1};
 }
 
-std::tuple<Physical*, float> closestPhysical(Physical* physical,
+std::tuple<Physical*, float, int> closestPhysical(Physical* physical,
                                                   std::vector<Physical*>* things,
                                                   const std::function<bool(Physical*)>& condition,
-                                                  const std::function<Urho3D::Vector2(Physical*, Urho3D::Vector3*)>&
-                                                  position) {
+                                                  const std::function<
+	                                                  std::tuple<Urho3D::Vector2, int>(
+	                                                                                   Physical * ,
+	                                                                                   Urho3D::Vector3 * )>& position) {
 	float minDistance = 99999;
 	Physical* closest = nullptr;
+	int bestIndex = -1;
 	for (auto entity : *things) {
 		if (entity->isAlive() && condition(entity)) {
-			const float distance = sqDist(position(entity, physical->getPosition()), *physical->getPosition());
+			auto [pos,indexOfPos] = position(entity, physical->getPosition());
+			const float distance = sqDist(pos, *physical->getPosition());
 			if (distance <= minDistance) {
 				minDistance = distance;
 				closest = entity;
+				bestIndex = indexOfPos;
 			}
 		}
 	}
-	return {closest, minDistance};
+	return std::tuple<Physical*, float, int>(closest, minDistance, bestIndex);
 }
