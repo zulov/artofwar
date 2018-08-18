@@ -351,25 +351,19 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 }
 
 void Unit::changeColor(float value, float maxValue) const {
-	changeColor(Game::getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue));
-}
-
-void Unit::changeColor(Urho3D::Material* newMaterial) const {
-	if (newMaterial != model->GetMaterial(0)) {
-		model->SetMaterial(newMaterial);
-	}
+	changeMaterial(Game::getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue));
 }
 
 void Unit::changeColor(ColorMode mode) {
 	switch (mode) {
 	case ColorMode::BASIC:
-		changeColor(basic);
+		changeMaterial(basic);
 		break;
 	case ColorMode::VELOCITY:
 		changeColor(velocity.LengthSquared(), maxSpeed * maxSpeed);
 		break;
 	case ColorMode::STATE:
-		changeColor(Game::getColorPeletteRepo()->getColor(state));
+		changeMaterial(Game::getColorPeletteRepo()->getColor(state));
 		break;
 	case ColorMode::FORMATION:
 		if (formation != -1) {

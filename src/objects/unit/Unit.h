@@ -109,7 +109,6 @@ private:
 	                         float sqDistance, float closeRange, float intrestRange);
 
 	void changeColor(float value, float maxValue) const;
-	void changeColor(Urho3D::Material* newMaterial) const;
 
 	Urho3D::Vector2 acceleration;
 	Urho3D::Vector2 velocity;
@@ -121,7 +120,6 @@ private:
 	UnitState state;
 	UnitState actionState;
 
-	Urho3D::StaticModel* model;
 	Urho3D::Material* basic;
 
 	ChargeData* chargeData{};

@@ -3,8 +3,8 @@
 #include "MathUtils.h"
 #include "ObjectEnums.h"
 #include "database/DatabaseCache.h"
-#include "simulation/env/Enviroment.h"
 #include "objects/unit/state/StateManager.h"
+#include "simulation/env/Enviroment.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
@@ -20,7 +20,7 @@ ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell)
 	dbResource = Game::getDatabaseCache()->getResource(id);
 	populate();
 
-	auto model = node->CreateComponent<Urho3D::StaticModel>();
+	model = node->CreateComponent<Urho3D::StaticModel>();
 	model->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbResource->model));
 
 	node->Scale(dbResource->scale);

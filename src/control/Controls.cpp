@@ -512,7 +512,6 @@ void Controls::buildControl() {
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
 		toDefault();
 	}
-
 }
 
 void Controls::orderControl() {

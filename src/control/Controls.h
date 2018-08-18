@@ -46,8 +46,8 @@ public:
 
 	void defaultControl();
 	void buildControl();
-
 	void orderControl();
+
 	void control();
 
 private:

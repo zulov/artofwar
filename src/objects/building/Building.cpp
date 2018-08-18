@@ -29,7 +29,7 @@ Building::Building(Urho3D::Vector3* _position, int id, int player, int level, in
 	setPlayer(player);
 	setTeam(Game::getPlayersManager()->getPlayer(player)->getTeam());
 
-	node->CreateComponent<Urho3D::StaticModel>();
+	model = node->CreateComponent<Urho3D::StaticModel>();
 	upgrade(level);
 }
 

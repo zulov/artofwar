@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include <Urho3D/Graphics/BillboardSet.h>
+#include <Urho3D/Graphics/StaticModel.h>
 
 struct ActionParameter;
 
@@ -41,6 +42,7 @@ public:
 	Urho3D::Vector3* getPosition() const { return position; }
 	unsigned char getPlayer() const { return player; }
 	int getBucketIndex() const { return indexInGrid; }
+
 	virtual int getMainCell() const;
 
 	virtual bool isToDispose() const;
@@ -54,7 +56,9 @@ public:
 	virtual void action(char id, ActionParameter& parameter);
 	virtual int getLevel();
 	virtual void clean();
+	void changeMaterial(Urho3D::Material* newMaterial) const;
 protected:
+
 	Urho3D::Vector3* position = nullptr;
 	Urho3D::String menuString = "";
 
@@ -70,6 +74,8 @@ protected:
 	float defenseCoef = 0.3f;
 	float attackSpeed = 1;
 	float attackProccess = 0;
+
+	Urho3D::StaticModel* model;
 
 	Urho3D::Node* billboardNode = nullptr;
 	Urho3D::Node* barNode = nullptr;

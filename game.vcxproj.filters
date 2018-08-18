@@ -359,7 +359,6 @@
     <ClInclude Include="src\objects\unit\aim\FollowAim.h" />
     <ClInclude Include="src\objects\unit\aim\ChargeAim.h" />
     <ClInclude Include="src\objects\unit\aim\DummyAim.h" />
-    <ClInclude Include="src\objects\unit\state\CollectState.h" />
     <ClInclude Include="src\camera\TopCameraBehave.h" />
     <ClInclude Include="src\simulation\env\Enviroment.h">
       <Filter>simulation\env</Filter>
@@ -463,6 +462,7 @@
     <ClInclude Include="src\objects\static\Static.h" />
     <ClInclude Include="src\objects\static\StaticState.h" />
     <ClInclude Include="src\objects\static\StaticStateUtils.h" />
+    <ClInclude Include="src\objects\unit\state\CollectState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
