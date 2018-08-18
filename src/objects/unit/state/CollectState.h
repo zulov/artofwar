@@ -45,15 +45,15 @@ public:
 		unit->indexToInteract = -1;
 	}
 
-	void execute(Unit* unit) override {
-		State::execute(unit);
+	void execute(Unit* unit, float timeStep) override {
+		State::execute(unit, timeStep);
 		if (unit->isFirstThingAlive()
 			&& unit->getMainCell() == unit->indexToInteract
 			&& Game::getEnviroment()->cellInState(unit->getMainCell(), {CellState::RESOURCE})) {
 			//TODO musi byc dokladnie w dobry mbuckecie
 			auto& resources = Game::getPlayersManager()->getPlayer(unit->player)->getResources();
 			auto resource = static_cast<ResourceEntity*>(unit->thingsToInteract[0]);
-			const float value = resource->collect(unit->collectSpeed);
+			const float value = resource->collect(unit->collectSpeed * timeStep);
 			resources.add(resource->getDbID(), value);
 		} else {
 			StateManager::changeState(unit, UnitState::STOP);

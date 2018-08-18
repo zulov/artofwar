@@ -234,9 +234,9 @@ void Simulation::changeColorMode(ColorMode _colorMode) {
 	colorScheme = _colorMode;
 }
 
-void Simulation::performStateAction() const {
+void Simulation::performStateAction(float timeStep) const {
 	for (auto unit : *units) {
-		StateManager::execute(unit);
+		StateManager::execute(unit, timeStep);
 	}
 	for (auto building : *buildings) {
 		StateManager::executeChange(building);
@@ -270,7 +270,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		moveUnitsAndCheck(accumulateTime);
 
-		performStateAction();
+		performStateAction(timeStep);
 		updateQueues();
 
 		simObjectManager->prepareToDispose();

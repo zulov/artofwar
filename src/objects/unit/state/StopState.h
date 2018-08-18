@@ -24,7 +24,7 @@ public:
 		State::onEnd(unit);
 	}
 
-	void execute(Unit* unit) override {
-		State::execute(unit);
+	void execute(Unit* unit, float timeStep) override {
+		State::execute(unit, timeStep);
 	}
 };

@@ -18,7 +18,7 @@ void State::onEnd(Unit* unit) {
 	unit->atState = false;
 }
 
-void State::execute(Unit* unit) {
+void State::execute(Unit* unit, float timeStep) {
 	unit->atState = true;
 }
 

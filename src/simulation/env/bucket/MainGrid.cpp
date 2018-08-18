@@ -294,7 +294,7 @@ void MainGrid::addStatic(Static* object) {
 }
 
 void MainGrid::removeStatic(Static* object) {
-	//TODO poprawic
+	//TODO bug poprawic dziwne zygzagki sie robia gdy przechodzi przez// moze invalidate cache?
 	object->setMainCell(-1);
 	for (auto index : object->getOcupiedCells()) {
 		complexData[index].removeStatic();

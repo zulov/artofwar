@@ -17,8 +17,8 @@ public:
 		State::onEnd(unit);
 	}
 
-	void execute(Unit* unit) {
-		State::execute(unit);
+	void execute(Unit* unit, float timeStep) {
+		State::execute(unit, timeStep);
 		StateManager::changeState(unit, UnitState::DISPOSE);
 	}
 };

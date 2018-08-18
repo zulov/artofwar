@@ -14,7 +14,7 @@ public:
 	virtual bool canStart(Unit* unit);
 
 	virtual void onStart(Unit* unit, ActionParameter& parameter) =0;
-	virtual void execute(Unit* unit);
+	virtual void execute(Unit* unit, float timeStep);
 	virtual void onEnd(Unit* unit);
 
 	bool validateTransition(UnitState stateTo);

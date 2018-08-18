@@ -44,7 +44,7 @@ private:
 	void moveUnits(float timeStep) const;
 	void moveUnitsAndCheck(float timeStep) const;
 	void calculateForces();
-	void performStateAction() const;
+	void performStateAction(float timeStep) const;
 	void handleTimeInFrame(float timeStep);
 	float updateTime(float timeStep);
 

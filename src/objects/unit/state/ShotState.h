@@ -40,8 +40,8 @@ public:
 		return sqDist(unit, unit->missleData->aim) < unit->attackRange * unit->attackRange;
 	}
 
-	void execute(Unit* unit) override {
-		State::execute(unit);
+	void execute(Unit* unit, float timeStep) override {
+		State::execute(unit, timeStep);
 		unit->velocity = Urho3D::Vector2::ZERO;
 		++unit->currentFrameState;
 

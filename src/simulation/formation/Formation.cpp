@@ -1,16 +1,14 @@
 #include "Formation.h"
 #include "Game.h"
+#include "MathUtils.h"
 #include "commands/CommandList.h"
 #include "commands/action/FormationAction.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/aim/FutureAim.h"
 #include "simulation/env/Enviroment.h"
-#include <algorithm>
-#include <Urho3D/Math/Vector2.h>
-#include <chrono>
+#include <Urho3D/Math/Vector2.h><algorithm>
 #include <numeric>
 #include <unordered_set>
-#include "MathUtils.h"
 
 
 Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Urho3D::Vector2& _direction) : id(_id),

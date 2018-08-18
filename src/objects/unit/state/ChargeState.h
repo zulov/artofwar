@@ -28,8 +28,8 @@ public:
 		unit->maxSpeed = unit->dbLevel->maxSpeed;
 	}
 
-	void execute(Unit* unit) override {
-		State::execute(unit);
+	void execute(Unit* unit, float timeStep) override {
+		State::execute(unit, timeStep);
 
 		if (unit->chargeData->updateFrame()) {
 			for (auto physical : unit->thingsToInteract) {
