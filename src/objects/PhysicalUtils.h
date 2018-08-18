@@ -14,8 +14,7 @@ inline bool alwaysTrue(Physical* physical) {
 }
 
 inline std::tuple<Urho3D::Vector2, int> posToFollow(Physical* physical, Urho3D::Vector3* center) {
-	auto pos = physical->getPosToFollow(center);
-	return {pos, -1};
+	return physical->getPosToFollowWithIndex(center);
 }
 
 inline std::tuple<Urho3D::Vector2, int> exactPos(Physical* physical, Urho3D::Vector3* center) {

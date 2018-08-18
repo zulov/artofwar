@@ -28,6 +28,7 @@ public:
 	std::vector<int>& getSurroundCells() { return surroundCells; }
 
 	bool isToDispose() const override;
+	std::tuple<Urho3D::Vector2, int> getPosToFollowWithIndex(Urho3D::Vector3* center) const override;
 	Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const override;
 	std::string getValues(int precision) override;
 protected:

@@ -44,6 +44,7 @@ public:
 	virtual int getMainCell() const;
 
 	virtual bool isToDispose() const;
+	virtual std::tuple<Urho3D::Vector2, int> getPosToFollowWithIndex(Urho3D::Vector3* center) const;
 	virtual Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const;
 	virtual float getMaxHpBarSize();
 	virtual void absorbAttack(float attackCoef);

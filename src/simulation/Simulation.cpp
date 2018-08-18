@@ -69,8 +69,8 @@ void Simulation::tryToCollect(Unit* unit) {
 	if (unit->hasResource()) {
 		StateManager::changeState(unit, UnitState::COLLECT, ActionParameter(-1));
 	} else {
-		auto [closest, minDistance, indexToInterect] =
-			closestPhysical(unit, enviroment->getResources(unit, 12), belowClose, posToFollow);
+		auto [closest, minDistance, indexToInterect] = closestPhysical(unit, enviroment->getResources(unit, 12),
+		                                                               belowClose, posToFollow);
 		unit->toAction(closest, minDistance, indexToInterect, UnitState::COLLECT);
 	}
 }

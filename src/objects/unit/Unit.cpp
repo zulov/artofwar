@@ -157,7 +157,7 @@ void Unit::actionIfCloseEnough(UnitState action, Physical* closest, int indexToI
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo) {
-	actionIfCloseEnough(stateTo, closest, minDistance, indexToInteract, attackRange, attackIntrest);
+	actionIfCloseEnough(stateTo, closest, indexToInteract, minDistance, attackRange, attackIntrest);
 }
 
 void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitState action) {

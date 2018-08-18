@@ -84,6 +84,25 @@ Urho3D::Vector2 Static::getPosToFollow(Urho3D::Vector3* center) const {
 	return closest;
 }
 
+std::tuple<Urho3D::Vector2, int> Static::getPosToFollowWithIndex(Urho3D::Vector3* center) const {
+	float closestDist = 999999;
+	Urho3D::Vector2 closest;
+	int closestIndex = -1;
+	for (auto index : surroundCells) {
+		auto type = Game::getEnviroment()->getType(index);
+		if (canCollect(index, type)) {
+			const auto vec = Game::getEnviroment()->getCenter(index);
+			const float dist = sqDist(vec, *center);
+			if (dist < closestDist) {
+				closestDist = dist;
+				closest = vec;
+				closestIndex = index;
+			}
+		}
+	}
+	return {closest, closestIndex};
+}
+
 std::string Static::getValues(int precision) {
 	const auto cordsCell = Game::getEnviroment()->getCords(mainCell);
 	return Physical::getValues(precision)
