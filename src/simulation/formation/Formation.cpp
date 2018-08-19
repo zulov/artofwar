@@ -9,9 +9,11 @@
 #include <Urho3D/Math/Vector2.h><algorithm>
 #include <numeric>
 #include <unordered_set>
+#include "objects/unit/state/StateManager.h"
 
 
-Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Urho3D::Vector2& _direction) : id(_id),
+Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Urho3D::Vector2& _direction) :
+	id(_id),
 	type(_type), direction(_direction), state(FormationState::FORMING) {
 
 	for (auto value : *_units) {
@@ -213,6 +215,11 @@ void Formation::update() {
 				                                                      futureOrder.physical,
 				                                                      new Urho3D::Vector2(futureOrder.vector)
 				                                                     ));
+				for (auto unit : units) {
+					if (unit != leader) {
+						StateManager::changeState(unit, UnitState::STOP);
+					}
+				}
 				futureOrders.erase(futureOrders.begin()); //TODO to zachowaæ
 			}
 		}
@@ -286,6 +293,7 @@ void Formation::semiReset() {
 	notWellFormedExact = 1;
 	changed = true;
 	futureOrders.clear();
+	std::fill_n(rechnessLevel, units.size(), 0);
 	changeState(FormationState::FORMING);
 }
 
@@ -308,6 +316,6 @@ void Formation::updateUnits() {
 }
 
 void Formation::updateCenter() {
-	auto leaderPos = leader->getPosition();
+	const auto leaderPos = leader->getPosition();
 	center = Urho3D::Vector2(leaderPos->x_, leaderPos->z_);
 }

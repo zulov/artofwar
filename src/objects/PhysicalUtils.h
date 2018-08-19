@@ -21,7 +21,7 @@ inline std::tuple<Urho3D::Vector2, int> exactPos(Physical* physical, Urho3D::Vec
 	return {Urho3D::Vector2(physical->getPosition()->x_, physical->getPosition()->z_), -1};
 }
 
-std::tuple<Physical*, float, int> closestPhysical(Physical* physical,
+std::tuple<Physical*, float, int> closestPhysical(Urho3D::Vector3* mainPos,
                                                   std::vector<Physical*>* things,
                                                   const std::function<bool(Physical*)>& condition,
                                                   const std::function<
@@ -33,8 +33,8 @@ std::tuple<Physical*, float, int> closestPhysical(Physical* physical,
 	int bestIndex = -1;
 	for (auto entity : *things) {
 		if (entity->isAlive() && condition(entity)) {
-			auto [pos,indexOfPos] = position(entity, physical->getPosition());
-			const float distance = sqDist(pos, *physical->getPosition());
+			auto [pos, indexOfPos] = position(entity, mainPos);
+			const float distance = sqDist(pos, *mainPos);
 			if (distance <= minDistance) {
 				minDistance = distance;
 				closest = entity;
