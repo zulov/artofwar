@@ -2,6 +2,7 @@
 #include "ControlsUtils.h"
 #include "Game.h"
 #include "HitData.h"
+#include "MathUtils.h"
 #include "ObjectEnums.h"
 #include "camera/CameraManager.h"
 #include "commands/CommandList.h"
@@ -11,9 +12,11 @@
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
 #include "objects/MenuAction.h"
-#include "objects/queue/QueueManager.h"
 #include "objects/NodeUtils.h"
+#include "objects/queue/QueueManager.h"
+#include "player/Player.h"
 #include "player/PlayersManager.h"
+#include "player/Resources.h"
 #include "simulation/SimulationInfo.h"
 #include "simulation/env/Enviroment.h"
 #include "simulation/formation/FormationManager.h"
@@ -21,9 +24,6 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <algorithm>
 #include <queue>
-#include "player/Resources.h"
-#include "player/Player.h"
-#include "MathUtils.h"
 
 
 Controls::Controls(Urho3D::Input* _input) {
@@ -92,7 +92,8 @@ void Controls::rightClickDefault(Physical* clicked, Urho3D::Vector3& hitPos, boo
 	switch (clicked->getType()) {
 	case ObjectType::PHYSICAL:
 		{
-		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::GO, new Urho3D::Vector2(hitPos.x_, hitPos.z_),
+		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::GO,
+		                                                  new Urho3D::Vector2(hitPos.x_, hitPos.z_),
 		                                                  shiftPressed));
 		break;
 		}
@@ -475,12 +476,12 @@ void Controls::buildControl() {
 			//TODO OPTM nie robic tego co klatkê
 			auto env = Game::getEnviroment();
 
-			auto dbBuilding = Game::getDatabaseCache()->getBuilding(idToCreate);
+			const auto dbBuilding = Game::getDatabaseCache()->getBuilding(idToCreate);
 			auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, 0).value();
 			auto hitPos = Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
 
-			Urho3D::Vector2 validPos = env->getValidPosition(dbBuilding->size, hitPos);
-			float height = env->getGroundHeightAt(validPos.x_, validPos.y_);
+			const auto validPos = env->getValidPosition(dbBuilding->size, hitPos);
+			const float height = env->getGroundHeightAt(validPos.x_, validPos.y_);
 
 			tempBuildingNode->SetPosition(Urho3D::Vector3(validPos.x_, height, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
@@ -490,12 +491,11 @@ void Controls::buildControl() {
 				tempBuildingNode->SetEnabled(true);
 			}
 			if (env->validateStatic(dbBuilding->size, hitPos)) {
-				//TODO OPTM nie ustawiac jesli sie nie zmienilo
-				tempBuildingModel->
-					SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/green_overlay.xml"));
+				changeMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/green_overlay.xml"),
+				               tempBuildingModel);
 			} else {
-				tempBuildingModel->
-					SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/red_overlay.xml"));
+				changeMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/red_overlay.xml"),
+				               tempBuildingModel);
 			}
 
 		}

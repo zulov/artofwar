@@ -56,7 +56,6 @@ public:
 	virtual void action(char id, ActionParameter& parameter);
 	virtual int getLevel();
 	virtual void clean();
-	void changeMaterial(Urho3D::Material* newMaterial) const;
 protected:
 
 	Urho3D::Vector3* position = nullptr;

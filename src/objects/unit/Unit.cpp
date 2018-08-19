@@ -242,7 +242,7 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_));
 				break;
 			case DebugUnitType::ALL_FORCE:
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(velocity.x_, 0.5, velocity.y_));
+				drawLine(line, {0, 0.5, 0}, Urho3D::Vector3(velocity.x_, 0.5, velocity.y_));
 				drawLine(line, Urho3D::Vector3(0, 0.5, 0),
 				         Urho3D::Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_),
 				         Urho3D::Color::RED);
@@ -351,19 +351,19 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 }
 
 void Unit::changeColor(float value, float maxValue) const {
-	changeMaterial(Game::getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue));
+	changeMaterial(Game::getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue), model);
 }
 
 void Unit::changeColor(ColorMode mode) {
 	switch (mode) {
 	case ColorMode::BASIC:
-		changeMaterial(basic);
+		changeMaterial(basic, model);
 		break;
 	case ColorMode::VELOCITY:
 		changeColor(velocity.LengthSquared(), maxSpeed * maxSpeed);
 		break;
 	case ColorMode::STATE:
-		changeMaterial(Game::getColorPeletteRepo()->getColor(state));
+		changeMaterial(Game::getColorPeletteRepo()->getColor(state), model);
 		break;
 	case ColorMode::FORMATION:
 		if (formation != -1) {

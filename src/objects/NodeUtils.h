@@ -12,3 +12,9 @@ inline void createNode(const Urho3D::String& model, const Urho3D::String& textur
 	selectionModel->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(texture));
 	(*node)->SetEnabled(false);
 }
+
+inline void changeMaterial(Urho3D::Material* newMaterial, Urho3D::StaticModel* model) {
+	if (newMaterial != model->GetMaterial(0)) {
+		model->SetMaterial(newMaterial);
+	}
+}

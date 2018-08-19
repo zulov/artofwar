@@ -83,12 +83,6 @@ void Physical::updateHealthBar() {
 	}
 }
 
-void Physical::changeMaterial(Urho3D::Material* newMaterial, Urho3D::StaticModel* model) const {
-	if (newMaterial != model->GetMaterial(0)) {
-		model->SetMaterial(newMaterial);
-	}
-}
-
 int Physical::getMainCell() const {
 	return getBucketIndex();
 }
