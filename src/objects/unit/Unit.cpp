@@ -200,6 +200,11 @@ void Unit::addAim(const FutureAim& aim, bool append) {
 	aims.add(aim);
 }
 
+void Unit::drawLineTo(Urho3D::CustomGeometry* line, const Urho3D::Vector3& second,
+                      const Urho3D::Color& color = Urho3D::Color::WHITE) {
+	drawLine(line, {0, 0.5, 0}, second, color);
+}
+
 void Unit::drawLine(Urho3D::CustomGeometry* line, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
                     const Urho3D::Color& color = Urho3D::Color::WHITE) {
 	line->DefineVertex(first / dbLevel->scale);
@@ -219,42 +224,33 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 			case DebugUnitType::NONE:
 				break;
 			case DebugUnitType::VELOCITY:
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(velocity.x_, 0.5, velocity.y_));
+				drawLineTo(line, {velocity.x_, 0.5, velocity.y_});
 				break;
 			case DebugUnitType::ACCELERATION:
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(acceleration.x_, 0.5, acceleration.y_));
+				drawLineTo(line, {acceleration.x_, 0.5, acceleration.y_});
 				break;
 			case DebugUnitType::SEPARATION_UNITS:
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0),
-				         Urho3D::Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_));
+				drawLineTo(line, {stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_});
 				break;
 			case DebugUnitType::SEPARATION_OBSTACLE:
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0),
-				         Urho3D::Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_));
+				drawLineTo(line, {stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_});
 				break;
 			case DebugUnitType::DESTINATION:
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.destLast.x_, 0.5, stats.destLast.y_));
+				drawLineTo(line, {stats.destLast.x_, 0.5, stats.destLast.y_});
 				break;
 			case DebugUnitType::FORMATION:
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.formLast.x_, 0.5, stats.formLast.y_));
+				drawLineTo(line, {stats.formLast.x_, 0.5, stats.formLast.y_});
 				break;
 			case DebugUnitType::ESCAPE:
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_));
+				drawLineTo(line, {stats.escaLast.x_, 0.5, stats.escaLast.y_});
 				break;
 			case DebugUnitType::ALL_FORCE:
-				drawLine(line, {0, 0.5, 0}, Urho3D::Vector3(velocity.x_, 0.5, velocity.y_));
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0),
-				         Urho3D::Vector3(stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_),
-				         Urho3D::Color::RED);
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0),
-				         Urho3D::Vector3(stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_),
-				         Urho3D::Color::GREEN);
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.destLast.x_, 0.5, stats.destLast.y_),
-				         Urho3D::Color::BLUE);
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.formLast.x_, 0.5, stats.formLast.y_),
-				         Urho3D::Color::YELLOW);
-				drawLine(line, Urho3D::Vector3(0, 0.5, 0), Urho3D::Vector3(stats.escaLast.x_, 0.5, stats.escaLast.y_),
-				         Urho3D::Color::CYAN);
+				drawLineTo(line, {velocity.x_, 0.5, velocity.y_});
+				drawLineTo(line, {stats.sepUnitLast.x_, 0.5, stats.sepUnitLast.y_}, Urho3D::Color::RED);
+				drawLineTo(line, {stats.sepObstLast.x_, 0.5, stats.sepObstLast.y_}, Urho3D::Color::GREEN);
+				drawLineTo(line, {stats.destLast.x_, 0.5, stats.destLast.y_}, Urho3D::Color::BLUE);
+				drawLineTo(line, {stats.formLast.x_, 0.5, stats.formLast.y_}, Urho3D::Color::YELLOW);
+				drawLineTo(line, {stats.escaLast.x_, 0.5, stats.escaLast.y_}, Urho3D::Color::CYAN);
 				break;
 			case DebugUnitType::AIM:
 				if (aims.hasCurrent()) {
