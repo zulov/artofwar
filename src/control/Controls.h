@@ -2,13 +2,13 @@
 
 #include "ControlsState.h"
 #include "MouseButton.h"
-#include "UnitOrder.h"
 #include "SelectedInfo.h"
+#include "UnitOrder.h"
 #include "commands/creation/CreationCommand.h"
 #include <Urho3D/Graphics/Renderer.h>
+#include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Input/Input.h>
 #include <vector>
-#include <Urho3D/Graphics/StaticModel.h>
 
 
 struct ActionParameter;
@@ -59,14 +59,10 @@ private:
 
 	void refreshSelected();
 
-	void startArrowNode(const hit_data& hitData) const;
-	void startSelectionNode(const hit_data& hitData) const;
+	void clickDown(MouseButton& var, Urho3D::Node* node);
+	void createBuilding(Urho3D::Vector2 pos);
 
-	void clickDownLeft();
-	void clickDownRight();
-	void createBuilding(Urho3D::Vector2& pos);
-
-	void leftClick(Physical* clicked, Urho3D::Vector3& hitPos);
+	void leftClick(hit_data &hitData);
 	void leftClickBuild(hit_data &hitData);
 	void rightClickDefault(hit_data &hitData, bool shiftPressed);
 
