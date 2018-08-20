@@ -98,18 +98,10 @@ void Controls::rightClickDefault(hit_data& hitData, bool shiftPressed) {
 		break;
 		}
 	case ObjectType::UNIT:
-		{
-		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.link->getPhysical(),
-		                                                  shiftPressed));
-		//unSelectAll();
-		break;
-		}
 	case ObjectType::BUILDING:
+	case ObjectType::RESOURCE: 
 		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.link->getPhysical(),
 		                                                  shiftPressed));
-		break;
-	case ObjectType::RESOURCE: 
-		
 		break;
 	default: ;
 	}
