@@ -58,6 +58,7 @@ private:
 	void orderBuilding(short id, ActionParameter& parameter);
 
 	void refreshSelected();
+	bool conditionToClean(SimulationInfo* simulationInfo);
 
 	void clickDown(MouseButton& var, Urho3D::Node* node);
 	void createBuilding(Urho3D::Vector2 pos);
@@ -82,7 +83,7 @@ private:
 	MouseButton right;
 
 	Urho3D::Input* input;
-	ObjectType selectedType;
+
 	ControlsState state = DEFAULT;
 	UnitOrder unitOrderType = UnitOrder::GO;
 	ObjectType typeToCreate;

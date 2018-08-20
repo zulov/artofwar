@@ -40,7 +40,7 @@ Controls::Controls(Urho3D::Input* _input) {
 	tempBuildingModel = tempBuildingNode->CreateComponent<Urho3D::StaticModel>();
 	tempBuildingNode->SetEnabled(false);
 
-	selectedType = ObjectType::PHYSICAL;
+	selectedInfo->setSelectedType(ObjectType::PHYSICAL);
 }
 
 
@@ -56,22 +56,20 @@ void Controls::unSelectAll() {
 		phy->unSelect();
 	}
 	selected->clear();
-	selectedType = ObjectType::ENTITY;
-	selectedInfo->setSelectedType(selectedType);
+	selectedInfo->setSelectedType(ObjectType::ENTITY);
 	selectedInfo->reset();
 }
 
 void Controls::select(Physical* entity) {
 	const auto entityType = entity->getType();
-	if (entityType != selectedType) {
+	if (entityType != selectedInfo->getSelectedType()) {
 		unSelectAll();
 	}
 
 	entity->select();
 	selected->push_back(entity);
 
-	selectedType = entityType;
-	selectedInfo->setSelectedType(selectedType);
+	selectedInfo->setSelectedType(entityType);
 	selectedInfo->setAllNumber(selected->size());
 	selectedInfo->select(entity);
 }
@@ -99,7 +97,7 @@ void Controls::rightClickDefault(hit_data& hitData, bool shiftPressed) {
 		}
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
-	case ObjectType::RESOURCE: 
+	case ObjectType::RESOURCE:
 		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.link->getPhysical(),
 		                                                  shiftPressed));
 		break;
@@ -113,7 +111,7 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
 	}
 	auto entities = Game::getEnviroment()->getNeighbours(held);
 	for (auto entity : *entities) {
-		select(entity); //TODO zastapic wrzuceniem na raz
+		select(entity); //TODO perf zastapic wrzuceniem na raz
 	}
 }
 
@@ -142,10 +140,8 @@ void Controls::releaseLeft() {
 		const float dist = sqDist(left.held.first, left.held.second);
 		if (dist > clickDistance) {
 			leftHold(left.held);
-		} else {
-			if (hitData.link) {
-				leftClick(hitData);
-			}
+		} else if (hitData.link) {
+			leftClick(hitData);
 		}
 		selectionNode->SetEnabled(false);
 		left.clean();
@@ -155,10 +151,8 @@ void Controls::releaseLeft() {
 void Controls::releaseBuildLeft() {
 	hit_data hitData;
 
-	if (raycast(hitData)) {
-		if (hitData.link) {
-			leftClickBuild(hitData);
-		}
+	if (raycast(hitData) && hitData.link) {
+		leftClickBuild(hitData);
 	}
 }
 
@@ -204,7 +198,7 @@ void Controls::hudAction(HudData* hud) {
 }
 
 void Controls::order(short id, ActionParameter& parameter) {
-	switch (selectedType) {
+	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::PHYSICAL:
 		orderPhysical(id, parameter);
 		break;
@@ -295,7 +289,7 @@ void Controls::cleanMouse() {
 
 void Controls::deactivate() {
 	if (active) {
-		active = true;
+		active = false;
 		cleanMouse();
 	}
 }
@@ -353,24 +347,25 @@ void Controls::refreshSelected() {
 	                selected->end());
 }
 
-void Controls::clean(SimulationInfo* simulationInfo) {
-	bool condition;
-	switch (selectedType) {
+bool Controls::conditionToClean(SimulationInfo* simulationInfo) {
+	switch (selectedInfo->getSelectedType()) {
 
 	case ObjectType::UNIT:
-		condition = simulationInfo->ifUnitDied();
+		return simulationInfo->ifUnitDied();
 		break;
 	case ObjectType::BUILDING:
-		condition = simulationInfo->ifBuildingDied();
+		return simulationInfo->ifBuildingDied();
 		break;
 	case ObjectType::RESOURCE:
-		condition = simulationInfo->ifResourceDied();
+		return simulationInfo->ifResourceDied();
 		break;
 	default:
-		condition = false;
+		return false;
 	}
+}
 
-	if (condition) {
+void Controls::clean(SimulationInfo* simulationInfo) {
+	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
 	}
 	resetState();
@@ -383,7 +378,7 @@ void Controls::updateSelection() {
 		const float xScale = left.held.first->x_ - hitData.position.x_;
 		const float zScale = left.held.first->z_ - hitData.position.z_;
 
-		selectionNode->SetScale(Urho3D::Vector3(abs(xScale), 0.1, abs(zScale)));
+		selectionNode->SetScale({abs(xScale), 0.1, abs(zScale)});
 		selectionNode->SetPosition((*left.held.first + hitData.position) / 2);
 	}
 }
@@ -395,8 +390,8 @@ void Controls::updateArrow() {
 		auto dir = *right.held.first - hitData.position;
 
 		const float length = dir.Length();
-		arrowNode->SetScale(Urho3D::Vector3(length, 1, length / 3));
-		arrowNode->SetDirection(Urho3D::Vector3(-dir.z_, 0, dir.x_));
+		arrowNode->SetScale({length, 1, length / 3});
+		arrowNode->SetDirection({-dir.z_, 0, dir.x_});
 		arrowNode->SetPosition(*right.held.first);
 	}
 }
@@ -442,7 +437,7 @@ void Controls::buildControl() {
 		hit_data hitData;
 
 		if (raycast(hitData, ObjectType::PHYSICAL)) {
-			//TODO OPTM nie robic tego co klatkê
+			//TODO perf nie robic tego co klatkê
 			auto env = Game::getEnviroment();
 
 			const auto dbBuilding = Game::getDatabaseCache()->getBuilding(idToCreate);
@@ -510,7 +505,7 @@ void Controls::orderControl() {
 void Controls::control() {
 	switch (state) {
 	case DEFAULT:
-		defaultControl();
+		defaultControl();//TODO bug gdy zaznaczony jest resource to probuje storzyc formacje przy chargfe
 		break;
 	case BUILD:
 		buildControl();
