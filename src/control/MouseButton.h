@@ -44,6 +44,12 @@ struct MouseButton
 		isHeld = true;
 	}
 
+	void markIfNotHeld() {
+		if (!isHeld) {
+			isHeld = true;
+		}
+	}
+
 
 	bool isHeld = false;
 	std::pair<Urho3D::Vector3*, Urho3D::Vector3*> held;

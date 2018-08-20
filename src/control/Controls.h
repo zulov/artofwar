@@ -28,7 +28,7 @@ public:
 
 	void hudAction(HudData* hud);
 
-	bool clickDown(MouseButton& var, hit_data hitData);
+	bool clickDown(MouseButton& var, hit_data& hitData);
 	void cleanMouse();
 	SelectedInfo* getInfo();
 	ControlsState getState();
@@ -51,22 +51,24 @@ public:
 	void control();
 
 private:
+
+	void showNode(Urho3D::Node* node, const hit_data& hitData) const;
 	void unitFormation(short id);
 	void actionUnit(short id, ActionParameter& parameter);
 	void orderBuilding(short id, ActionParameter& parameter);
 
 	void refreshSelected();
 
-	void startArrowNode(const hit_data& hitData);
-	void startSelectionNode(hit_data hitData);
+	void startArrowNode(const hit_data& hitData) const;
+	void startSelectionNode(const hit_data& hitData) const;
 
 	void clickDownLeft();
 	void clickDownRight();
 	void createBuilding(Urho3D::Vector2& pos);
 
 	void leftClick(Physical* clicked, Urho3D::Vector3& hitPos);
-	void leftClickBuild(Physical* clicked, Urho3D::Vector3& hitPos);
-	void rightClickDefault(Physical* clicked, Urho3D::Vector3& hitPos, bool shiftPressed);
+	void leftClickBuild(hit_data &hitData);
+	void rightClickDefault(hit_data &hitData, bool shiftPressed);
 
 	void leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);
 	void rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);

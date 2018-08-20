@@ -83,28 +83,31 @@ void Controls::leftClick(Physical* clicked, Urho3D::Vector3& hitPos) {
 	select(clicked);
 }
 
-void Controls::leftClickBuild(Physical* clicked, Urho3D::Vector3& hitPos) {
+void Controls::leftClickBuild(hit_data& hitData) {
 	unSelectAll();
-	createBuilding(Urho3D::Vector2(hitPos.x_, hitPos.z_));
+	createBuilding(Urho3D::Vector2(hitData.position.x_, hitData.position.z_));
 }
 
-void Controls::rightClickDefault(Physical* clicked, Urho3D::Vector3& hitPos, bool shiftPressed) {
-	switch (clicked->getType()) {
+void Controls::rightClickDefault(hit_data& hitData, bool shiftPressed) {
+	//Physical* clicked, Urho3D::Vector3& hitPos
+	switch (hitData.link->getPhysical()->getType()) {
 	case ObjectType::PHYSICAL:
 		{
 		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::GO,
-		                                                  new Urho3D::Vector2(hitPos.x_, hitPos.z_),
+		                                                  new Urho3D::Vector2(hitData.position.x_, hitData.position.z_),
 		                                                  shiftPressed));
 		break;
 		}
 	case ObjectType::UNIT:
 		{
-		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, clicked, shiftPressed));
+		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.link->getPhysical(),
+		                                                  shiftPressed));
 		//unSelectAll();
 		break;
 		}
 	case ObjectType::BUILDING:
-		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, clicked, shiftPressed));
+		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.link->getPhysical(),
+		                                                  shiftPressed));
 		break;
 	case ObjectType::RESOURCE: break;
 	default: ;
@@ -161,9 +164,8 @@ void Controls::releaseBuildLeft() {
 	hit_data hitData;
 
 	if (raycast(hitData)) {
-		LinkComponent* lc = hitData.link;
-		if (lc) {
-			leftClickBuild(lc->getPhysical(), hitData.position);
+		if (hitData.link) {
+			leftClickBuild(hitData);
 		}
 	}
 }
@@ -173,13 +175,11 @@ void Controls::releaseRight() {
 
 	if (raycast(hitData)) {
 		right.setSecond(hitData.position);
-		float dist = sqDist(right.held.first, right.held.second);
-		if (dist > clickDistance) {
+		if (sqDist(right.held.first, right.held.second) > clickDistance) {
 			rightHold(right.held);
 		} else {
-			LinkComponent* lc = hitData.link;
-			if (lc) {
-				rightClickDefault(lc->getPhysical(), hitData.position, input->GetKeyDown(Urho3D::KEY_SHIFT));
+			if (hitData.link) {
+				rightClickDefault(hitData, input->GetKeyDown(Urho3D::KEY_SHIFT));
 			}
 		}
 		arrowNode->SetEnabled(false);
@@ -190,12 +190,9 @@ void Controls::releaseRight() {
 bool Controls::orderAction(bool shiftPressed) {
 	hit_data hitData;
 
-	if (raycast(hitData)) {
-		LinkComponent* lc = hitData.link;
-		if (lc) {
-			rightClickDefault(lc->getPhysical(), hitData.position, shiftPressed);
-			return true;
-		}
+	if (raycast(hitData) && hitData.link) {
+		rightClickDefault(hitData, shiftPressed);
+		return true;
 	}
 	return false;
 }
@@ -241,17 +238,14 @@ void Controls::orderBuilding(short id, ActionParameter& parameter) {
 }
 
 void Controls::orderPhysical(short id, ActionParameter& parameter) {
-	const int level = Game::getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
-
-	Resources& resources = Game::getPlayersManager()->getActivePlayer()->getResources();
-
 	switch (parameter.type) {
 	case MenuAction::BUILDING_LEVEL:
 		{
-		std::optional<std::vector<db_cost*>*> opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
+		const auto level = Game::getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
+		auto opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
 		if (opt.has_value()) {
-			auto costs = opt.value();
-			if (resources.reduce(costs)) {
+			auto& resources = Game::getPlayersManager()->getActivePlayer()->getResources();
+			if (resources.reduce(opt.value())) {
 				Game::getQueueManager()->add(1, parameter.type, id, 1);
 			}
 		}
@@ -260,32 +254,31 @@ void Controls::orderPhysical(short id, ActionParameter& parameter) {
 	}
 }
 
-void Controls::startSelectionNode(hit_data hitData) {
-	selectionNode->SetEnabled(true);
-	selectionNode->SetScale(1);
-
-	selectionNode->SetPosition(hitData.position);
+void Controls::showNode(Urho3D::Node* node, const hit_data& hitData) const {
+	node->SetEnabled(true);
+	node->SetScale(1);
+	node->SetPosition(hitData.position);
 }
 
-void Controls::startArrowNode(const hit_data& hitData) {
-	arrowNode->SetEnabled(true);
-	arrowNode->SetScale(1);
-
-	arrowNode->SetPosition(hitData.position);
+void Controls::startSelectionNode(const hit_data& hitData) const {
+	showNode(selectionNode, hitData);
 }
 
-bool Controls::clickDown(MouseButton& var, hit_data hitData) {
-	bool clicked = raycast(hitData);
-	if (clicked) {
+void Controls::startArrowNode(const hit_data& hitData) const {
+	showNode(arrowNode, hitData);
+}
+
+bool Controls::clickDown(MouseButton& var, hit_data& hitData) {
+	if (raycast(hitData)) {
 		var.setFirst(hitData.position);
+		return true;
 	}
-	return clicked;
+	return false;
 }
 
 void Controls::clickDownLeft() {
 	hit_data hitData;
-	const bool clicked = clickDown(left, hitData);
-	if (clicked) {
+	if (clickDown(left, hitData)) {
 		startSelectionNode(hitData);
 	}
 }
@@ -481,7 +474,7 @@ void Controls::buildControl() {
 			auto hitPos = Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
 
 			const auto validPos = env->getValidPosition(dbBuilding->size, hitPos);
-			const float height = env->getGroundHeightAt(validPos.x_, validPos.y_);
+			const auto height = env->getGroundHeightAt(validPos.x_, validPos.y_);
 
 			tempBuildingNode->SetPosition(Urho3D::Vector3(validPos.x_, height, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
@@ -502,9 +495,7 @@ void Controls::buildControl() {
 	}
 
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
-		if (!left.isHeld) {
-			left.markHeld();
-		}
+		left.markIfNotHeld();
 	} else if (left.isHeld) {
 		releaseBuildLeft();
 	}
@@ -516,9 +507,7 @@ void Controls::buildControl() {
 
 void Controls::orderControl() {
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
-		if (!left.isHeld) {
-			left.markHeld();
-		}
+		left.markIfNotHeld();
 	} else if (left.isHeld) {
 		switch (unitOrderType) {
 		case UnitOrder::GO:
@@ -536,9 +525,7 @@ void Controls::orderControl() {
 	}
 
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
-		if (!right.isHeld) {
-			right.markHeld();
-		}
+		right.markIfNotHeld();
 	} else if (right.isHeld) {
 		toDefault();
 	}
