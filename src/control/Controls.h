@@ -30,8 +30,6 @@ public:
 
 	bool clickDown(MouseButton& var, hit_data& hitData);
 	void cleanMouse();
-	SelectedInfo* getInfo();
-	ControlsState getState();
 
 	void deactivate();
 	void activate();
@@ -41,6 +39,7 @@ public:
 	void order(short id, ActionParameter& parameter);
 	void executeOnAll(short id, ActionParameter& parameter);
 	void clean(SimulationInfo* simulationInfo);
+
 	void updateSelection();
 	void updateArrow();
 
@@ -50,9 +49,9 @@ public:
 
 	void control();
 
+	SelectedInfo* getInfo() const { return selectedInfo; }
 private:
 
-	void showNode(Urho3D::Node* node, const hit_data& hitData) const;
 	void unitFormation(short id);
 	void actionUnit(short id, ActionParameter& parameter);
 	void orderBuilding(short id, ActionParameter& parameter);
@@ -63,9 +62,9 @@ private:
 	void clickDown(MouseButton& var, Urho3D::Node* node);
 	void createBuilding(Urho3D::Vector2 pos);
 
-	void leftClick(hit_data &hitData);
-	void leftClickBuild(hit_data &hitData);
-	void rightClickDefault(hit_data &hitData, bool shiftPressed);
+	void leftClick(hit_data& hitData);
+	void leftClickBuild(hit_data& hitData);
+	void rightClickDefault(hit_data& hitData, bool shiftPressed);
 
 	void leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);
 	void rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);
@@ -84,7 +83,7 @@ private:
 
 	Urho3D::Input* input;
 
-	ControlsState state = DEFAULT;
+	ControlsState state = ControlsState::DEFAULT;
 	UnitOrder unitOrderType = UnitOrder::GO;
 	ObjectType typeToCreate;
 	SelectedInfo* selectedInfo;
@@ -92,7 +91,7 @@ private:
 	Urho3D::Node* selectionNode{};
 	Urho3D::Node* arrowNode{};
 	Urho3D::Node* tempBuildingNode{};
-	Urho3D::StaticModel *tempBuildingModel;
+	Urho3D::StaticModel* tempBuildingModel;
 
 	short idToCreate = -1;
 	float clickDistance = 2 * 2;

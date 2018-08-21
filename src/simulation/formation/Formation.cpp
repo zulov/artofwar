@@ -210,7 +210,7 @@ void Formation::update() {
 			changeState(FormationState::MOVING);
 			if (!futureOrders.empty()) {
 				const auto& futureOrder = futureOrders[0];
-				Game::getActionCommandList()->add(new FormationAction(this,
+				Game::getActionList()->add(new FormationAction(this,
 				                                                      futureOrder.action,
 				                                                      futureOrder.physical,
 				                                                      new Urho3D::Vector2(futureOrder.vector)

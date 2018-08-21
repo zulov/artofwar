@@ -55,9 +55,9 @@ public:
 	static Urho3D::SharedPtr<Urho3D::Engine> getEngine() { return instance->engine; }
 	static Urho3D::Console* getConsole() { return instance->console; }
 	static Urho3D::Localization* getLocalization() { return instance->localization; }
-	static CommandList* getActionCommandList() { return instance->actionCommandList; }
+	static CommandList* getActionList() { return instance->actionCommandList; }
 	static QueueManager* getQueueManager() { return instance->queue; }
-	static CreationCommandList* getCreationCommandList() { return instance->creationCommandList; }
+	static CreationCommandList* getCreationList() { return instance->creationCommandList; }
 	static DatabaseCache* getDatabaseCache() { return instance->databaseCache; }
 	static PlayersManager* getPlayersManager() { return instance->playersManager; }
 	static Enviroment* getEnviroment() { return instance->enviroment; }

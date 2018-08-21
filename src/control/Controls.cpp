@@ -90,16 +90,16 @@ void Controls::rightClickDefault(hit_data& hitData, bool shiftPressed) {
 	switch (hitData.link->getPhysical()->getType()) {
 	case ObjectType::PHYSICAL:
 		{
-		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::GO,
-		                                                  new Urho3D::Vector2(hitData.position.x_, hitData.position.z_),
-		                                                  shiftPressed));
+		Game::getActionList()->add(new GroupAction(selected, UnitOrder::GO,
+		                                           new Urho3D::Vector2(hitData.position.x_, hitData.position.z_),
+		                                           shiftPressed));
 		break;
 		}
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
 	case ObjectType::RESOURCE:
-		Game::getActionCommandList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.link->getPhysical(),
-		                                                  shiftPressed));
+		Game::getActionList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.link->getPhysical(),
+		                                           shiftPressed));
 		break;
 	default: ;
 	}
@@ -116,7 +116,7 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
 }
 
 void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
-	auto actions = Game::getActionCommandList();
+	auto actions = Game::getActionList();
 
 	const auto first = new Urho3D::Vector2(held.first->x_, held.first->z_);
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
@@ -191,7 +191,7 @@ void Controls::resetState() {
 }
 
 void Controls::hudAction(HudData* hud) {
-	state = BUILD;
+	state = ControlsState::BUILD;
 	typeToCreate = ObjectType::BUILDING;
 	idToCreate = hud->getId();
 	tempBuildingNode->SetEnabled(false);
@@ -208,7 +208,9 @@ void Controls::order(short id, ActionParameter& parameter) {
 	case ObjectType::BUILDING:
 		orderBuilding(id, parameter);
 		break;
-	case ObjectType::RESOURCE: break;
+	case ObjectType::RESOURCE:
+		orderResource(id, parameter);
+		break;
 	default: ;
 	}
 }
@@ -240,12 +242,6 @@ void Controls::orderPhysical(short id, ActionParameter& parameter) {
 	}
 }
 
-void Controls::showNode(Urho3D::Node* node, const hit_data& hitData) const {
-	node->SetEnabled(true);
-	node->SetScale(1);
-	node->SetPosition(hitData.position);
-}
-
 bool Controls::clickDown(MouseButton& var, hit_data& hitData) {
 	if (raycast(hitData)) {
 		var.setFirst(hitData.position);
@@ -257,7 +253,7 @@ bool Controls::clickDown(MouseButton& var, hit_data& hitData) {
 void Controls::clickDown(MouseButton& var, Urho3D::Node* node) {
 	hit_data hitData;
 	if (clickDown(var, hitData)) {
-		showNode(node, hitData);
+		showNode(node, hitData.position);
 	}
 }
 
@@ -265,19 +261,10 @@ void Controls::createBuilding(Urho3D::Vector2 pos) {
 	if (idToCreate >= 0) {
 		auto player = Game::getPlayersManager()->getActivePlayer();
 
-		Game::getCreationCommandList()->addBuilding(idToCreate, pos,
-		                                            player->getId(),
-		                                            player->getLevelForBuilding(idToCreate)
-		                                           );
+		Game::getCreationList()->addBuilding(idToCreate, pos,
+		                                     player->getId(),
+		                                     player->getLevelForBuilding(idToCreate));
 	}
-}
-
-SelectedInfo* Controls::getInfo() {
-	return selectedInfo;
-}
-
-ControlsState Controls::getState() {
-	return state;
 }
 
 void Controls::cleanMouse() {
@@ -308,7 +295,7 @@ void Controls::unitOrder(short id) {
 	case UnitOrder::CHARGE:
 	case UnitOrder::ATTACK:
 	case UnitOrder::FOLLOW:
-		state = ORDER;
+		state = ControlsState::ORDER;
 		unitOrderType = type;
 		break;
 	case UnitOrder::STOP:
@@ -349,19 +336,14 @@ void Controls::refreshSelected() {
 
 bool Controls::conditionToClean(SimulationInfo* simulationInfo) {
 	switch (selectedInfo->getSelectedType()) {
-
 	case ObjectType::UNIT:
 		return simulationInfo->ifUnitDied();
-		break;
 	case ObjectType::BUILDING:
 		return simulationInfo->ifBuildingDied();
-		break;
 	case ObjectType::RESOURCE:
 		return simulationInfo->ifResourceDied();
-		break;
-	default:
-		return false;
 	}
+	return false;
 }
 
 void Controls::clean(SimulationInfo* simulationInfo) {
@@ -397,10 +379,28 @@ void Controls::updateArrow() {
 }
 
 void Controls::toDefault() {
-	state = DEFAULT;
+	state = ControlsState::DEFAULT;
 	cleanMouse();
 	idToCreate = -1;
 	tempBuildingNode->SetEnabled(false);
+}
+
+void Controls::unitFormation(short id) {
+	Game::getFormationManager()->createFormation(selected, FormationType(id));
+}
+
+
+void Controls::control() {
+	switch (state) {
+	case ControlsState::DEFAULT:
+		return defaultControl(); //TODO bug gdy zaznaczony jest resource to probuje storzyc formacje przy chargfe
+	case ControlsState::BUILD:
+		return buildControl();
+	case ControlsState::ORDER:
+		return orderControl();
+	case ControlsState::RESOURCE:
+		return resourceControl();
+	}
 }
 
 void Controls::defaultControl() {
@@ -500,22 +500,4 @@ void Controls::orderControl() {
 	} else if (right.isHeld) {
 		toDefault();
 	}
-}
-
-void Controls::control() {
-	switch (state) {
-	case DEFAULT:
-		defaultControl();//TODO bug gdy zaznaczony jest resource to probuje storzyc formacje przy chargfe
-		break;
-	case BUILD:
-		buildControl();
-		break;
-	case ORDER:
-		orderControl();
-		break;
-	}
-}
-
-void Controls::unitFormation(short id) {
-	Game::getFormationManager()->createFormation(selected, FormationType(id));
 }

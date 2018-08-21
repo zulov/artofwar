@@ -1,8 +1,9 @@
 #pragma once
 
-enum ControlsState
+enum class ControlsState : char
 {
 	DEFAULT = 0,
 	BUILD,
-	ORDER
+	ORDER,
+	RESOURCE
 };
