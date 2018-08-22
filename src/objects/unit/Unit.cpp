@@ -295,7 +295,7 @@ Urho3D::String& Unit::toMultiLineString() {
 	return menuString;
 }
 
-void Unit::action(char id, ActionParameter& parameter) {
+void Unit::action(char id, const ActionParameter& parameter) {
 	switch (id) {
 	case UnitOrder::GO:
 		StateManager::changeState(this, UnitState::GO_TO, parameter);

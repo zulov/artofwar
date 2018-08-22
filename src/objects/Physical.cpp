@@ -129,7 +129,7 @@ Urho3D::String& Physical::toMultiLineString() {
 	return menuString;
 }
 
-void Physical::action(char id, ActionParameter& parameter) {
+void Physical::action(char id, const ActionParameter& parameter) {
 }
 
 std::string Physical::getColumns() {

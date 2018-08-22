@@ -31,9 +31,9 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 	setVisible(true);
 	if (selectedInfo->getAllNumber() == 1) {
 		text->SetVisible(true);
-		std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelectedTypes();
+		auto& infoTypes = selectedInfo->getSelectedTypes();
 		for (auto& infoType : infoTypes) {
-			std::vector<Physical*>& data = infoType->getData();
+			auto& data = infoType->getData();
 			if (!data.empty()) {
 				Physical* physical = data.at(0);
 
@@ -59,7 +59,7 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 	case LeftMenuAction::UNIT:
 		{
 		db_unit* dbUnit = Game::getDatabaseCache()->getUnit(id);
-		std::vector<db_cost*>* costs = Game::getDatabaseCache()->getCostForUnit(id);
+		auto costs = Game::getDatabaseCache()->getCostForUnit(id);
 		message = stringFrom(dbUnit->name, costs);
 		}
 		break;
@@ -67,7 +67,7 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 		{
 		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
 		db_unit_level* dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
-		std::optional<std::vector<db_cost*>*> opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
+		auto opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
 		auto costs = opt.value();
 		message = stringFrom(dbLevel->name, costs);
 		}
@@ -80,15 +80,15 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 	case LeftMenuAction::BUILDING:
 		{
 		db_building* dbBuilding = Game::getDatabaseCache()->getBuilding(id);
-		std::vector<db_cost*>* costs = Game::getDatabaseCache()->getCostForBuilding(id);
+		auto costs = Game::getDatabaseCache()->getCostForBuilding(id);
 		message = stringFrom(dbBuilding->name, costs);
 		}
 		break;
 	case LeftMenuAction::BUILDING_LEVEL:
 		{
 		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
-		db_building_level* dbLevel = Game::getDatabaseCache()->getBuildingLevel(id, level).value();
-		std::optional<std::vector<db_cost*>*> opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
+		auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(id, level).value();
+		auto opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
 		auto costs = opt.value();
 		message = stringFrom(dbLevel->name, costs);
 		}

@@ -19,7 +19,7 @@ inline void changeMaterial(Urho3D::Material* newMaterial, Urho3D::StaticModel* m
 	}
 }
 
-inline void showNode(Urho3D::Node* node, Urho3D::Vector3& pos) const {
+inline void showNode(Urho3D::Node* node, Urho3D::Vector3& pos) {
 	node->SetEnabled(true);
 	node->SetScale(1);
 	node->SetPosition(pos);

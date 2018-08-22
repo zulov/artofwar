@@ -14,7 +14,7 @@ public:
 
 	~MoveState() = default;
 
-	void onStart(Unit* unit, ActionParameter& parameter) {
+	void onStart(Unit* unit, const ActionParameter& parameter) {
 		unit->removeCurrentAim();
 	}
 

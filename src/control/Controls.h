@@ -28,6 +28,8 @@ public:
 
 	void hudAction(HudData* hud);
 
+	void order(short id, const ActionParameter& parameter);
+
 	bool clickDown(MouseButton& var, hit_data& hitData);
 	void cleanMouse();
 
@@ -35,9 +37,6 @@ public:
 	void activate();
 	void unitOrder(short id);
 
-	void orderPhysical(short id, ActionParameter& parameter);
-	void order(short id, ActionParameter& parameter);
-	void executeOnAll(short id, ActionParameter& parameter);
 	void clean(SimulationInfo* simulationInfo);
 
 	void updateSelection();
@@ -46,15 +45,20 @@ public:
 	void defaultControl();
 	void buildControl();
 	void orderControl();
+	void resourceControl();
 
 	void control();
 
 	SelectedInfo* getInfo() const { return selectedInfo; }
 private:
+	void orderPhysical(short id, const ActionParameter& parameter);
+	void orderResource(short id, const ActionParameter& parameter);
+
+	void executeOnAll(short id, const ActionParameter& parameter);
 
 	void unitFormation(short id);
-	void actionUnit(short id, ActionParameter& parameter);
-	void orderBuilding(short id, ActionParameter& parameter);
+	void actionUnit(short id, const ActionParameter& parameter);
+	void orderBuilding(short id, const ActionParameter& parameter);
 
 	void refreshSelected();
 	bool conditionToClean(SimulationInfo* simulationInfo);

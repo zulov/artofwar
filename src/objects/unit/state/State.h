@@ -13,7 +13,7 @@ public:
 	virtual ~State();
 	virtual bool canStart(Unit* unit);
 
-	virtual void onStart(Unit* unit, ActionParameter& parameter) =0;
+	virtual void onStart(Unit* unit, const ActionParameter& parameter) =0;
 	virtual void execute(Unit* unit, float timeStep);
 	virtual void onEnd(Unit* unit);
 

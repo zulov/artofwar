@@ -16,7 +16,7 @@ public:
 
 	~ChargeState() = default;
 
-	void onStart(Unit* unit, ActionParameter& parameter) override {
+	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->addAim(parameter.aim);
 		//TODO aim?
 		unit->maxSpeed = unit->dbLevel->maxSpeed * 2;

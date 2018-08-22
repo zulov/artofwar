@@ -53,7 +53,7 @@ public:
 	virtual void select();
 	virtual void unSelect();
 	virtual Urho3D::String& toMultiLineString();
-	virtual void action(char id, ActionParameter& parameter);
+	virtual void action(char id, const ActionParameter& parameter);
 	virtual int getLevel();
 	virtual void clean();
 protected:

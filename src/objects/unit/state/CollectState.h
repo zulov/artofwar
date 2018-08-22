@@ -27,7 +27,7 @@ public:
 			&& Game::getEnviroment()->belowCellLimit(unit->getMainCell());
 	}
 
-	void onStart(Unit* unit, ActionParameter& parameter) override {
+	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->velocity = Urho3D::Vector2::ZERO;
 		unit->currentFrameState = 0;
 

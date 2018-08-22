@@ -10,7 +10,7 @@ public:
 
 	~DeadState() = default;
 
-	void onStart(Unit* unit, ActionParameter& parameter) {
+	void onStart(Unit* unit, const ActionParameter& parameter) {
 	}
 
 	void onEnd(Unit* unit) {

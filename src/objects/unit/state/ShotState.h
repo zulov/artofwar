@@ -21,7 +21,7 @@ public:
 		                       unit->thingsToInteract[0]);
 	}
 
-	void onStart(Unit* unit, ActionParameter& parameter) override {
+	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		shot(unit);
 		unit->thingsToInteract[0]->upRange();
 		unit->currentFrameState = 0;

@@ -69,13 +69,13 @@ Urho3D::String& Building::toMultiLineString() {
 	return menuString;
 }
 
-void Building::action(char id, ActionParameter& parameter) {
+void Building::action(char id, const ActionParameter& parameter) {
 	Resources& resources = Game::getPlayersManager()->getActivePlayer()->getResources();
 
 	switch (parameter.type) {
 	case MenuAction::UNIT:
 		{
-		std::vector<db_cost*>* costs = Game::getDatabaseCache()->getCostForUnit(id);
+		auto costs = Game::getDatabaseCache()->getCostForUnit(id);
 		if (resources.reduce(costs)) {
 			queue->add(1, parameter.type, id, 30);
 		}

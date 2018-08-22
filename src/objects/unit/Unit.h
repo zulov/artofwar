@@ -96,7 +96,7 @@ public:
 	bool bucketHasChanged(int _bucketIndex, char param) const;
 	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
 	void setBucket(int _bucketIndex, char param);
-	void action(char id, ActionParameter& parameter) override;
+	void action(char id, const ActionParameter& parameter) override;
 	std::string getValues(int precision) override;
 	Urho3D::String& toMultiLineString() override;
 	float getMaxHpBarSize() override;

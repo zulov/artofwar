@@ -54,7 +54,7 @@ StateManager::StateManager() {
 	orderToState[static_cast<char>(UnitOrder::COLLECT)] = {static_cast<char>(UnitState::COLLECT)};
 
 	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
-		std::vector<db_order*> * orders = Game::getDatabaseCache()->getOrdersForUnit(i);
+		auto orders = Game::getDatabaseCache()->getOrdersForUnit(i);
 		std::fill_n(ordersToUnit[i], STATE_SIZE, false);
 		for (auto order : *orders) {
 			for (auto state : orderToState[order->id]) {
@@ -75,7 +75,7 @@ bool StateManager::validateState(int id, UnitState stateTo) {
 	return instance->ordersToUnit[id][static_cast<char>(stateTo)];
 }
 
-bool StateManager::changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter) {
+bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter) {
 	State* stateFrom = instance->states[static_cast<int>(unit->getState())];
 	if (stateFrom->validateTransition(stateTo)
 		&& validateState(unit->getDbID(), stateTo)

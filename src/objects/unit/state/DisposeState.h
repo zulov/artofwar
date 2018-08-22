@@ -9,7 +9,7 @@ public:
 
 	~DisposeState() = default;
 
-	void onStart(Unit* unit, ActionParameter& parameter) override {
+	void onStart(Unit* unit, const ActionParameter& parameter) override {
 	}
 
 	void onEnd(Unit* unit) override {

@@ -197,7 +197,7 @@ void Controls::hudAction(HudData* hud) {
 	tempBuildingNode->SetEnabled(false);
 }
 
-void Controls::order(short id, ActionParameter& parameter) {
+void Controls::order(short id, const ActionParameter& parameter) {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::PHYSICAL:
 		orderPhysical(id, parameter);
@@ -215,17 +215,17 @@ void Controls::order(short id, ActionParameter& parameter) {
 	}
 }
 
-void Controls::executeOnAll(short id, ActionParameter& parameter) {
+void Controls::executeOnAll(short id, const ActionParameter& parameter) {
 	for (auto& phy : *selected) {
 		phy->action(id, parameter);
 	}
 }
 
-void Controls::orderBuilding(short id, ActionParameter& parameter) {
+void Controls::orderBuilding(short id, const ActionParameter& parameter) {
 	executeOnAll(id, parameter);
 }
 
-void Controls::orderPhysical(short id, ActionParameter& parameter) {
+void Controls::orderPhysical(short id, const ActionParameter& parameter) {
 	switch (parameter.type) {
 	case MenuAction::BUILDING_LEVEL:
 		{
@@ -240,6 +240,10 @@ void Controls::orderPhysical(short id, ActionParameter& parameter) {
 		break;
 		}
 	}
+}
+
+void Controls::orderResource(short id, const ActionParameter& parameter) {
+	executeOnAll(id, parameter);
 }
 
 bool Controls::clickDown(MouseButton& var, hit_data& hitData) {
@@ -307,7 +311,7 @@ void Controls::unitOrder(short id) {
 	}
 }
 
-void Controls::actionUnit(short id, ActionParameter& parameter) {
+void Controls::actionUnit(short id, const ActionParameter& parameter) {
 	switch (parameter.type) {
 	case MenuAction::ORDER:
 		unitOrder(id);
@@ -500,4 +504,7 @@ void Controls::orderControl() {
 	} else if (right.isHeld) {
 		toDefault();
 	}
+}
+
+void Controls::resourceControl() {
 }

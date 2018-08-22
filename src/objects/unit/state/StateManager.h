@@ -14,7 +14,7 @@ class StateManager
 public:
 
 	static bool validateState(int id, UnitState stateTo);
-	static bool changeState(Unit* unit, UnitState stateTo, ActionParameter& actionParameter = ActionParameter());
+	static bool changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter = ActionParameter());
 	static bool checkChangeState(Unit* unit, UnitState stateTo);
 	static void execute(Unit* unit, float timeStamp);
 
