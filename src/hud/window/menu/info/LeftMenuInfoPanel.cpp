@@ -1,10 +1,11 @@
 #include "LeftMenuInfoPanel.h"
 #include "Game.h"
 #include "control/SelectedInfo.h"
-#include "control/SelectedInfoType.h"
 #include "database/DatabaseCache.h"
 #include "database/db_strcut.h"
+#include "control/SelectedInfoType.h"
 #include "hud/HudData.h"
+#include "objects/MenuAction.h"
 #include "objects/Physical.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
@@ -52,18 +53,18 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 	Urho3D::String message = "";
 	const short id = hudData->getId();
-	LeftMenuAction type = hudData->getType();
+	MenuAction type = hudData->getType();
 
 	switch (type) {
 
-	case LeftMenuAction::UNIT:
+	case MenuAction::UNIT:
 		{
 		db_unit* dbUnit = Game::getDatabaseCache()->getUnit(id);
 		auto costs = Game::getDatabaseCache()->getCostForUnit(id);
 		message = stringFrom(dbUnit->name, costs);
 		}
 		break;
-	case LeftMenuAction::UNIT_LEVEL:
+	case MenuAction::UNIT_LEVEL:
 		{
 		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
 		db_unit_level* dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
@@ -72,19 +73,19 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 		message = stringFrom(dbLevel->name, costs);
 		}
 		break;
-	case LeftMenuAction::UNIT_UPGRADE:
+	case MenuAction::UNIT_UPGRADE:
 		{
 		message = "TODO";
 		}
 		break;
-	case LeftMenuAction::BUILDING:
+	case MenuAction::BUILDING:
 		{
 		db_building* dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 		auto costs = Game::getDatabaseCache()->getCostForBuilding(id);
 		message = stringFrom(dbBuilding->name, costs);
 		}
 		break;
-	case LeftMenuAction::BUILDING_LEVEL:
+	case MenuAction::BUILDING_LEVEL:
 		{
 		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
 		auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(id, level).value();
@@ -93,18 +94,16 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 		message = stringFrom(dbLevel->name, costs);
 		}
 		break;
-	case LeftMenuAction::BUILDING_UPGRADE:
-		{
-		message = "TODO";
-		}
-		break;
-	case LeftMenuAction::ORDER:
+	case MenuAction::ORDER:
 		{
 		db_order* dbOrder = Game::getDatabaseCache()->getOrder(id);
 		message = Game::getLocalization()->Get(dbOrder->name);
 		}
 		break;
-	case LeftMenuAction::FORMATION:
+	case MenuAction::FORMATION:
+		message = "TODO";
+		break;
+	case MenuAction::RESOURCE_COLLECT:
 		message = "TODO";
 		break;
 	default: ;

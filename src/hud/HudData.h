@@ -1,23 +1,21 @@
 #pragma once
-#include "hud/window/menu/LeftMenuAction.h"
 #include <Urho3D/UI/UIElement.h>
 
+enum class MenuAction : char;
 
 class HudData
 {
 public:
-	explicit HudData(Urho3D::UIElement * _uiParent);
+	explicit HudData(Urho3D::UIElement* _uiParent);
 	~HudData();
-	Urho3D::UIElement * getUIParent();
 
 	void setId(short _id);
-	void setId(short _id, LeftMenuAction _type);
-	short getId();
-	LeftMenuAction getType();
+	void setId(short _id, MenuAction _type);
+	MenuAction getType() const;
+	short getId() const { return id; }
+	Urho3D::UIElement* getUIParent() const { return parent; }
 private:
-	Urho3D::UIElement * parent;
-	LeftMenuAction type;
+	Urho3D::UIElement* parent;
+	MenuAction type;
 	short id;
-
 };
-

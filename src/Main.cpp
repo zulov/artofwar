@@ -362,28 +362,18 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	HudData* hudData = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
 	switch (hudData->getType()) {
-	case LeftMenuAction::NONE: break;
-	case LeftMenuAction::UNIT:
-		controls->order(hudData->getId(), ActionParameter(MenuAction::UNIT));
-		break;
-	case LeftMenuAction::UNIT_LEVEL:
-		controls->order(hudData->getId(), ActionParameter(MenuAction::UNIT_LEVEL));
-		break;
-	case LeftMenuAction::UNIT_UPGRADE:
-		controls->order(hudData->getId(), ActionParameter(MenuAction::UNIT_UPGRADE));
-		break;
-	case LeftMenuAction::BUILDING:
+
+	case MenuAction::BUILDING:
 		controls->hudAction(hudData);
 		break;
-	case LeftMenuAction::BUILDING_LEVEL:
-		controls->order(hudData->getId(), ActionParameter(MenuAction::BUILDING_LEVEL));
-		break;
-	case LeftMenuAction::BUILDING_UPGRADE: break;
-	case LeftMenuAction::ORDER:
-		controls->order(hudData->getId(), ActionParameter(MenuAction::ORDER));
-		break;
-	case LeftMenuAction::FORMATION:
-		controls->order(hudData->getId(), ActionParameter(MenuAction::FORMATION));
+	case MenuAction::UNIT:
+	case MenuAction::UNIT_LEVEL:
+	case MenuAction::UNIT_UPGRADE:
+	case MenuAction::BUILDING_LEVEL:
+	case MenuAction::ORDER:
+	case MenuAction::FORMATION:
+	case MenuAction::RESOURCE_COLLECT:
+		controls->order(hudData->getId(), ActionParameter(hudData->getType()));
 		break;
 	default: ;
 	}

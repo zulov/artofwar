@@ -51,7 +51,7 @@ public:
 
 	SelectedInfo* getInfo() const { return selectedInfo; }
 private:
-	void orderPhysical(short id, const ActionParameter& parameter);
+	void orderPhysical(short id, const ActionParameter& parameter) const;
 	void orderResource(short id, const ActionParameter& parameter);
 
 	void executeOnAll(short id, const ActionParameter& parameter);

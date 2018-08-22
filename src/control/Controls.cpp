@@ -225,7 +225,7 @@ void Controls::orderBuilding(short id, const ActionParameter& parameter) {
 	executeOnAll(id, parameter);
 }
 
-void Controls::orderPhysical(short id, const ActionParameter& parameter) {
+void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 	switch (parameter.type) {
 	case MenuAction::BUILDING_LEVEL:
 		{
