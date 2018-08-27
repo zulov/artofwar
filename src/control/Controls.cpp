@@ -206,7 +206,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 		actionUnit(id, parameter);
 		break;
 	case ObjectType::BUILDING:
-		orderBuilding(id, parameter);
+		executeOnAll(id, parameter);
 		break;
 	case ObjectType::RESOURCE:
 		orderResource(id, parameter);
@@ -219,10 +219,6 @@ void Controls::executeOnAll(short id, const ActionParameter& parameter) {
 	for (auto& phy : *selected) {
 		phy->action(id, parameter);
 	}
-}
-
-void Controls::orderBuilding(short id, const ActionParameter& parameter) {
-	executeOnAll(id, parameter);
 }
 
 void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
@@ -243,6 +239,11 @@ void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 }
 
 void Controls::orderResource(short id, const ActionParameter& parameter) {
+	switch (parameter.type) {
+	case MenuAction::RESOURCE_COLLECT:
+		
+		break;
+	}
 	executeOnAll(id, parameter);
 }
 

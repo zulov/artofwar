@@ -4,7 +4,8 @@ enum class LeftMenuMode : char
 {
 	BUILDING=0,
 	UNIT,
-	ORDER
+	ORDER,
+	RESOURCE
 };
 
 enum LeftMenuSubMode : char

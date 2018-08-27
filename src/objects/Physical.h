@@ -91,6 +91,7 @@ protected:
 private:
 	void createBillboardBar();
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
+	void createBillboardSet(Urho3D::Node* node, Urho3D::BillboardSet*& billbordSet, Urho3D::String material);
 	void createBillboardShadow();
 	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;
 

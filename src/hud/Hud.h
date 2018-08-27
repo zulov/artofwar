@@ -20,8 +20,8 @@ class DebugPanel;
 class QueuePanel;
 class LoadingPanel;
 
-struct  db_graph_settings;
-struct  db_resolution;
+struct db_graph_settings;
+struct db_resolution;
 
 class Hud : public Urho3D::Object
 {
@@ -67,6 +67,8 @@ URHO3D_OBJECT(Hud, Object)
 	Urho3D::Button* getLoadButton() const { return mainMenuPanel->getLoadButton(); }
 	Urho3D::Button* getCloseButton() const { return mainMenuPanel->getCloseButton(); }
 private:
+
+	static HudData* getElement(Urho3D::VariantMap& eventData);
 	void replaceVariables(std::string& xml, int hudSizeId);
 	void createDebugHud();
 	void createConsole();

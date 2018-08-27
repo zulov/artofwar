@@ -52,10 +52,10 @@ void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 	std::vector<int> values;
 
 	parser_t parser;
-	
+
 	while (iterator != rend) {
 		std::string expression_string = iterator->str().substr(1, iterator->str().length() - 2);
-		
+
 		parser.compile(expression_string, expression);
 		values.push_back((int)expression.value());
 		++iterator;
@@ -225,13 +225,16 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 			menuPanel->refresh(LeftMenuMode::UNIT, selectedInfo);
 			queuePanel->show(selectedInfo);
 			break;
+		case ObjectType::RESOURCE:
+			menuPanel->refresh(LeftMenuMode::RESOURCE, selectedInfo);
+			queuePanel->setVisible(false);
+			break;
 		default:
 			menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
 			queuePanel->setVisible(false);
 		}
 	} else {
 		switch (selectedInfo->getSelectedType()) {
-
 		case ObjectType::PHYSICAL:
 			queuePanel->update(Game::getQueueManager());
 			break;
@@ -242,14 +245,15 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 	}
 }
 
+HudData* Hud::getElement(Urho3D::VariantMap& eventData) {
+	const auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	return static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
+}
+
 void Hud::HandleUIButtonHoverOn(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
-	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudData* hudElement = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
-	hoverOnIcon(hudElement);
+	hoverOnIcon(getElement(eventData));
 }
 
 void Hud::HandleUIButtonHoverOff(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
-	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudData* hudElement = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
-	hoverOffIcon(hudElement);
+	hoverOffIcon(getElement(eventData));
 }

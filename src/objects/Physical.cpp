@@ -27,11 +27,7 @@ Physical::~Physical() {
 
 void Physical::createBillboardBar() {
 	barNode = node->CreateChild();
-
-	billboardSetBar = barNode->CreateComponent<Urho3D::BillboardSet>();
-	billboardSetBar->SetNumBillboards(1);
-	billboardSetBar->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/red_overlay.xml"));
-	billboardSetBar->SetSorted(true);
+	createBillboardSet(barNode, billboardSetBar, "Materials/red_overlay.xml");
 
 	billboardBar = billboardSetBar->GetBillboard(0);
 }
@@ -44,13 +40,17 @@ void Physical::updateBillboardBar(Urho3D::Vector3& boundingBox) const {
 	billboardSetBar->Commit();
 }
 
+void Physical::createBillboardSet(Urho3D::Node* node, Urho3D::BillboardSet*& billbordSet, Urho3D::String material) {
+	billbordSet = node->CreateComponent<Urho3D::BillboardSet>();
+	billbordSet->SetNumBillboards(1);
+	billbordSet->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(material));
+	billbordSet->SetSorted(true);
+}
+
 void Physical::createBillboardShadow() {
 	billboardNode = node->CreateChild();
 	billboardNode->Pitch(90);
-	billboardSetShadow = billboardNode->CreateComponent<Urho3D::BillboardSet>();
-	billboardSetShadow->SetNumBillboards(1);
-	billboardSetShadow->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/select.xml"));
-	billboardSetShadow->SetSorted(true);
+	createBillboardSet(billboardNode, billboardSetShadow, "Materials/select.xml");
 	billboardSetShadow->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 
 	billboardShadow = billboardSetShadow->GetBillboard(0);

@@ -304,13 +304,13 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 void MenuPanel::formationOrder() {
 	int k = 0;
 	setTexture(k, "textures/hud/icon/formation/none.png");
-
 	hudElements[k]->setId(0, MenuAction::FORMATION);
 	k++;
-	setTexture(k, "textures/hud/icon/formation/square.png");
 
+	setTexture(k, "textures/hud/icon/formation/square.png");
 	hudElements[k]->setId(1, MenuAction::FORMATION);
 	k++;
+
 	resetButtons(k);
 }
 
@@ -324,16 +324,14 @@ void MenuPanel::resetButtons(int from) {
 void MenuPanel::updateButtons(SelectedInfo* selectedInfo) {
 	setChecks(subMode);
 	switch (mode) {
-
 	case LeftMenuMode::BUILDING:
-		buildingMenu();
-		break;
+		return buildingMenu();
 	case LeftMenuMode::UNIT:
-		unitMenu(selectedInfo);
-		break;
+		return unitMenu(selectedInfo);
 	case LeftMenuMode::ORDER:
-		orderMenu(selectedInfo);
-		break;
+		return orderMenu(selectedInfo);
+	case LeftMenuMode::RESOURCE:
+		return resourceMenu(selectedInfo);
 	default: ;
 	}
 }
@@ -361,7 +359,6 @@ void MenuPanel::buildingMenu() {
 	case LEVEL:
 		levelBuilding();
 		break;
-	case UPGRADE: break;
 	default: ;
 	}
 }
@@ -369,13 +366,30 @@ void MenuPanel::buildingMenu() {
 void MenuPanel::orderMenu(SelectedInfo* selectedInfo) {
 	switch (subMode) {
 	case BASIC:
-
 		basicOrder(selectedInfo);
 		break;
 	case LEVEL:
 		formationOrder();
 		break;
-	case UPGRADE: break;
+	default: ;
+	}
+}
+
+void MenuPanel::basicResource(SelectedInfo* selectedInfo) {
+	int k = 0;
+	setTexture(k, "textures/hud/icon/resource_action/get_worker.png");
+	hudElements[k]->setId(0, MenuAction::FORMATION);
+	k++;
+
+	resetButtons(k);
+}
+
+void MenuPanel::resourceMenu(SelectedInfo* selectedInfo) {
+	switch (subMode) {
+
+	case BASIC: 
+		basicResource(selectedInfo);
+		break;
 	default: ;
 	}
 }

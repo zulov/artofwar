@@ -47,12 +47,15 @@ private:
 	void formationOrder();
 
 
-	void unitMenu(SelectedInfo* selectedInfo);
 	void buildingMenu();
+
+	void unitMenu(SelectedInfo* selectedInfo);
 	void orderMenu(SelectedInfo* selectedInfo);
+	void basicResource(SelectedInfo* selectedInfo);
+	void resourceMenu(SelectedInfo* selectedInfo);
+	void updateButtons(SelectedInfo* selectedInfo);
 	
 	void resetButtons(int from);
-	void updateButtons(SelectedInfo* selectedInfo);
 
 	std::unordered_set<int> getUnitInBuilding(std::vector<SelectedInfoType*>& infoTypes);
 	std::unordered_set<int> getUpgradePathInBuilding(std::vector<SelectedInfoType*>& infoTypes);
