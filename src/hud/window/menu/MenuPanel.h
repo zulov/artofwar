@@ -11,6 +11,7 @@
 #define LEFT_MENU_CHECKS_NUMBER 3
 #define LEFT_MENU_BUTTON_PER_ROW 4
 
+enum class MenuAction : char;
 class SelectedInfo;
 class HudData;
 class LeftMenuInfoPanel;
@@ -34,6 +35,7 @@ private:
 	void setChecks(int val);
 
 	void ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void setNextElement(int& k,Urho3D::String texture, int id, MenuAction menuAction);
 	void setTexture(int k, Urho3D::String textureName);
 
 	void basicUnit(SelectedInfo* selectedInfo);
