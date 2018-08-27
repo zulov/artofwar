@@ -45,15 +45,17 @@ public:
 
 	virtual int getMainCell() const;
 
-	virtual bool isToDispose() const;
+	virtual bool isToDispose() const { return false; }
 	virtual std::tuple<Urho3D::Vector2, int> getPosToFollowWithIndex(Urho3D::Vector3* center) const;
-	virtual Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const;
-	virtual float getMaxHpBarSize();
-	virtual void absorbAttack(float attackCoef);
+
+	virtual Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const { return {position->x_, position->z_}; }
+
+	virtual float getMaxHpBarSize() { return 0; }
+	virtual void absorbAttack(float attackCoef){};
 	virtual void select();
 	virtual void unSelect();
 	virtual Urho3D::String& toMultiLineString();
-	virtual void action(char id, const ActionParameter& parameter);
+	virtual void action(char id, const ActionParameter& parameter){}
 	virtual int getLevel();
 	virtual void clean();
 protected:
@@ -91,7 +93,8 @@ protected:
 private:
 	void createBillboardBar();
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
-	void createBillboardSet(Urho3D::Node* node, Urho3D::BillboardSet*& billbordSet, Urho3D::String material);
+	Urho3D::Billboard* createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet, const Urho3D::String&
+	                                      material) const;
 	void createBillboardShadow();
 	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;
 

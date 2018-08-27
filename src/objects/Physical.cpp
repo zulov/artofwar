@@ -1,8 +1,8 @@
 #include "objects/Physical.h"
 #include "Game.h"
-#include "objects/LinkComponent.h"
 #include "MathUtils.h"
 #include "ObjectEnums.h"
+#include "objects/LinkComponent.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
@@ -11,10 +11,9 @@
 #include <string>
 
 
-Physical::Physical(Urho3D::Vector3* _position, ObjectType _type): Entity(_type) {
+Physical::Physical(Urho3D::Vector3* _position, ObjectType _type): Entity(_type), position(_position) {
 	node->CreateComponent<LinkComponent>()->bound(this);
 
-	position = _position;
 	node->SetPosition(*position);
 
 	indexInGrid = INT_MIN;
@@ -26,42 +25,38 @@ Physical::~Physical() {
 
 
 void Physical::createBillboardBar() {
-	barNode = node->CreateChild();
-	createBillboardSet(barNode, billboardSetBar, "Materials/red_overlay.xml");
-
-	billboardBar = billboardSetBar->GetBillboard(0);
+	billboardBar = createBillboardSet(barNode, billboardSetBar, "Materials/red_overlay.xml");
 }
 
-void Physical::updateBillboardBar(Urho3D::Vector3& boundingBox) const {
-	billboardBar->size_ = Urho3D::Vector2(2, 0.1);
-	billboardBar->position_ = Urho3D::Vector3(0, boundingBox.y_ * 1.3f, 0);
-	billboardBar->enabled_ = false;
-
-	billboardSetBar->Commit();
+void Physical::createBillboardShadow() {
+	billboardShadow = createBillboardSet(billboardNode, billboardSetShadow, "Materials/select.xml");
+	billboardNode->Pitch(90);
+	billboardSetShadow->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 }
 
-void Physical::createBillboardSet(Urho3D::Node* node, Urho3D::BillboardSet*& billbordSet, Urho3D::String material) {
+Urho3D::Billboard* Physical::createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet, const const Urho3D::String & material) const {
+	node = this->node->CreateChild();
 	billbordSet = node->CreateComponent<Urho3D::BillboardSet>();
 	billbordSet->SetNumBillboards(1);
 	billbordSet->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(material));
 	billbordSet->SetSorted(true);
-}
-
-void Physical::createBillboardShadow() {
-	billboardNode = node->CreateChild();
-	billboardNode->Pitch(90);
-	createBillboardSet(billboardNode, billboardSetShadow, "Materials/select.xml");
-	billboardSetShadow->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
-
-	billboardShadow = billboardSetShadow->GetBillboard(0);
+	return billbordSet->GetBillboard(0);
 }
 
 void Physical::updateBillboardShadow(Urho3D::Vector3& boundingBox) const {
-	const float boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.3f;
-	billboardShadow->size_ = Urho3D::Vector2(boudingSize, boudingSize);
+	const auto boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.3f;
+	billboardShadow->size_ = {boudingSize, boudingSize};
 	billboardShadow->enabled_ = false;
 
 	billboardSetShadow->Commit();
+}
+
+void Physical::updateBillboardBar(Urho3D::Vector3& boundingBox) const {
+	billboardBar->position_ = {0, boundingBox.y_ * 1.3f, 0};
+	billboardBar->size_ = {2, 0.1};
+	billboardBar->enabled_ = false;
+
+	billboardSetBar->Commit();
 }
 
 void Physical::updateBillbords() const {
@@ -87,24 +82,12 @@ int Physical::getMainCell() const {
 	return getBucketIndex();
 }
 
-bool Physical::isToDispose() const {
-	return false;
-}
-
 std::tuple<Urho3D::Vector2, int> Physical::getPosToFollowWithIndex(Urho3D::Vector3* center) const {
 	return {getPosToFollow(center), -1};
 }
 
-Urho3D::Vector2 Physical::getPosToFollow(Urho3D::Vector3* center) const {
-	return Urho3D::Vector2(position->x_, position->z_);
-}
-
-float Physical::getMaxHpBarSize() {
-	return 0;
-}
-
 float Physical::getHealthBarSize() {
-	float healthBarSize = getMaxHpBarSize() * getHealthPercent();
+	auto healthBarSize = getMaxHpBarSize() * getHealthPercent();
 	if (healthBarSize <= 0) { healthBarSize = 0; }
 	return healthBarSize;
 }
@@ -127,9 +110,6 @@ void Physical::setPlayer(unsigned char player) {
 
 Urho3D::String& Physical::toMultiLineString() {
 	return menuString;
-}
-
-void Physical::action(char id, const ActionParameter& parameter) {
 }
 
 std::string Physical::getColumns() {
@@ -178,9 +158,6 @@ void Physical::clean() {
 		                                      return physical == nullptr || !physical->isAlive();
 	                                      }),
 	                       thingsToInteract.end());
-}
-
-void Physical::absorbAttack(float attackCoef) {
 }
 
 void Physical::select() {
