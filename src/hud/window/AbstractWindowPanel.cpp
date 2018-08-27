@@ -4,8 +4,8 @@
 #include <Urho3D/UI/UI.h>
 
 
-AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style): Object(Game::getContext()) {
-	style = _style;
+AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style, Urho3D::String styleName): Object(Game::getContext()),
+	style(_style), styleName(styleName) {
 	std::fill_n(visibleAt, GAME_STATE_SIZE, false);
 }
 

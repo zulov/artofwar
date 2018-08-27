@@ -1,14 +1,14 @@
 #include "TopPanel.h"
 #include "../../UiUtils.h"
 #include "GameState.h"
+#include "TopHudElement.h"
 #include "database/DatabaseCache.h"
 #include "player/Resources.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include "TopHudElement.h"
 
-TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
-	styleName = "TopWindow";
+
+TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "TopWindow") {
 	const int size = Game::getDatabaseCache()->getResourceSize();
 
 	elements = new TopHudElement*[size];

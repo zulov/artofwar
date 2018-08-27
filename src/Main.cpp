@@ -87,7 +87,6 @@ void Main::Start() {
 void Main::Stop() {
 	disposeScene();
 
-	hud->clear();
 	delete hud;
 	Game::dispose();
 	engine_->DumpResources(true);
@@ -359,8 +358,8 @@ void Main::HandleCloseGame(StringHash eventType, VariantMap& eventData) {
 }
 
 void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	HudData* hudData = static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
+	auto hudData = getElement(eventData);
+	
 	switch (hudData->getType()) {
 
 	case MenuAction::BUILDING:
@@ -421,9 +420,8 @@ void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventDat
 }
 
 void Main::HandleMouseModeChange(StringHash /*eventType*/, VariantMap& eventData) {
-	Input* input = GetSubsystem<Input>();
 	bool mouseLocked = eventData[MouseModeChanged::P_MOUSELOCKED].GetBool();
-	input->SetMouseVisible(!mouseLocked);
+	GetSubsystem<Input>()->SetMouseVisible(!mouseLocked);
 }
 
 void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {

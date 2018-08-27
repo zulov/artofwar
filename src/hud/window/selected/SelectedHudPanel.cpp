@@ -1,17 +1,16 @@
 #include "SelectedHudPanel.h"
 #include "GameState.h"
+#include "SelectedHudElement.h"
+#include "control/SelectedInfo.h"
+#include "control/SelectedInfoType.h"
 #include "database/DatabaseCache.h"
 #include "hud/UiUtils.h"
 #include "objects/NamesCache.h"
-#include "control/SelectedInfoType.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include "SelectedHudElement.h"
-#include "control/SelectedInfo.h"
 
 
-SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
-	styleName = "SelectedInfoWindow";
+SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style,  "SelectedInfoWindow") {
 	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
 	visibleAt[static_cast<char>(GameState::PAUSE)] = true;
 }

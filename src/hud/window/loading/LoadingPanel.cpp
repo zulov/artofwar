@@ -2,9 +2,7 @@
 #include "GameState.h"
 
 
-LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
-	styleName = "LoadingWindow";
-	
+LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LoadingWindow") {
 	visibleAt[static_cast<char>(GameState::LOADING)] = true;
 	visibleAt[static_cast<char>(GameState::NEW_GAME)] = true;
 }

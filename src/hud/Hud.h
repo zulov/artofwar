@@ -68,7 +68,6 @@ URHO3D_OBJECT(Hud, Object)
 	Urho3D::Button* getCloseButton() const { return mainMenuPanel->getCloseButton(); }
 private:
 
-	static HudData* getElement(Urho3D::VariantMap& eventData);
 	void replaceVariables(std::string& xml, int hudSizeId);
 	void createDebugHud();
 	void createConsole();

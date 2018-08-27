@@ -4,6 +4,7 @@
 #include "database/DatabaseCache.h"
 #include "hud/MySprite.h"
 #include "hud/UiUtils.h"
+#include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/ContentInfo.h"
 #include "simulation/env/Enviroment.h"
@@ -11,12 +12,9 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "player/Player.h"
 
 
-MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
-	styleName = "MiniMapWindow";
-
+MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "MiniMapWindow") {
 	for (int i = 0; i < PLAYER_COLORS_NUMBER_DB; ++i) {
 		unitsColors[i] = 0xFF505050;
 		buildingColors[i] = 0xFF505050;

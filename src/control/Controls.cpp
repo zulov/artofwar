@@ -26,11 +26,10 @@
 #include <queue>
 
 
-Controls::Controls(Urho3D::Input* _input) {
+Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), input(_input) {
 	selected = new std::vector<Physical*>();
 	selected->reserve(5000);
 
-	input = _input;
 	selectedInfo = new SelectedInfo();
 
 	createNode("Models/box.mdl", "Materials/green_overlay.xml", &selectionNode);
@@ -43,13 +42,13 @@ Controls::Controls(Urho3D::Input* _input) {
 	selectedInfo->setSelectedType(ObjectType::PHYSICAL);
 }
 
-
 Controls::~Controls() {
 	delete selectedInfo;
 	delete selected;
 	selectionNode->Remove();
 	arrowNode->Remove();
 }
+
 
 void Controls::unSelectAll() {
 	for (auto& phy : *selected) {
@@ -241,7 +240,7 @@ void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 void Controls::orderResource(short id, const ActionParameter& parameter) {
 	switch (parameter.type) {
 	case MenuAction::RESOURCE_COLLECT:
-		
+
 		break;
 	}
 	executeOnAll(id, parameter);

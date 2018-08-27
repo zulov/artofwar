@@ -2,8 +2,7 @@
 #include "GameState.h"
 
 
-DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
-	styleName = "MyDebugHudWindow";
+DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "MyDebugHudWindow") {
 	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
 	visibleAt[static_cast<char>(GameState::PAUSE)] = true;
 }

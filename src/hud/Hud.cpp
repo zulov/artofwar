@@ -245,11 +245,6 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 	}
 }
 
-HudData* Hud::getElement(Urho3D::VariantMap& eventData) {
-	const auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	return static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
-}
-
 void Hud::HandleUIButtonHoverOn(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
 	hoverOnIcon(getElement(eventData));
 }

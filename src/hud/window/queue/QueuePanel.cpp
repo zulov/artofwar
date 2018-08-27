@@ -13,8 +13,7 @@
 #include "control/SelectedInfo.h"
 
 
-QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
-	styleName = "QueueWindow";
+QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "QueueWindow") {
 	elements = new QueueHudElement*[MAX_ICON_SELECTION];
 	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
 	visibleAt[static_cast<char>(GameState::PAUSE)] = true;

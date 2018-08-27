@@ -19,8 +19,7 @@
 #include <unordered_set>
 
 
-MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style) {
-	styleName = "LeftMenuWindow";
+MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow") {
 	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
 	visibleAt[static_cast<char>(GameState::PAUSE)] = true;
 }
@@ -119,7 +118,7 @@ void MenuPanel::setChecks(int val) {
 void MenuPanel::ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	auto element = static_cast<Urho3D::CheckBox*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 	int val = element->GetVar("Num").GetInt();
-	LeftMenuSubMode newSubMode = static_cast<LeftMenuSubMode>(val);
+	auto newSubMode = static_cast<LeftMenuSubMode>(val);
 	if (newSubMode != subMode) {
 		subMode = newSubMode;
 		updateButtons(lastSelectedInfo);

@@ -1,8 +1,9 @@
 #include "MainMenuDetailsPanel.h"
 
 
-MainMenuDetailsPanel::MainMenuDetailsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): AbstractWindowPanel(_style) {
-	styleName = "MainMenuDetailsWindow";
+MainMenuDetailsPanel::
+MainMenuDetailsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title):
+	AbstractWindowPanel(_style, "MainMenuDetailsWindow") {
 	bodyStyle = "MainMenuMock";
 	msg = _title;
 }

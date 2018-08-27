@@ -13,8 +13,7 @@
 #include <Urho3D/UI/UIEvents.h>
 
 
-MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style) {
-	styleName = "MainMenuWindow";
+MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "MainMenuWindow") {
 	visibleAt[static_cast<char>(GameState::MENU_MAIN)] = true;
 }
 
