@@ -94,11 +94,12 @@ createDropDownList(Urho3D::UIElement* uiElement, Urho3D::String styleName, Urho3
 	return cob;
 }
 
-inline void addChildText(Urho3D::UIElement* element, Urho3D::String styleName, Urho3D::String& value,
+inline Urho3D::Text* addChildText(Urho3D::UIElement* element, Urho3D::String styleName, Urho3D::String& value,
                          Urho3D::XMLFile* style) {
 	auto text = element->CreateChild<Urho3D::Text>();
 	text->SetStyle(styleName, style);
 	text->SetText(value);
+	return text;
 }
 
 inline void addChildTexts(Urho3D::DropDownList* cob, std::vector<Urho3D::String> names, Urho3D::XMLFile* style) {

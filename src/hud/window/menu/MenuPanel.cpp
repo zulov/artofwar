@@ -98,7 +98,7 @@ void MenuPanel::createBody() {
 			sprites[k] = createEmptySprite(style, "LeftMenuSprite");
 			buttons[k] = simpleButton(rows[i], sprites[k], style, "LeftMenuBigIcon");
 			hudElements.push_back(new HudData(buttons[k]));
-			hudElements[k]->setId(-1, MenuAction::NONE);
+			hudElements[k]->set(-1, MenuAction::NONE, "");
 
 			buttons[k]->SetVar("HudElement", hudElements[k]);
 			k++;
@@ -117,18 +117,18 @@ void MenuPanel::setChecks(int val) {
 
 void MenuPanel::ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	auto element = static_cast<Urho3D::CheckBox*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	int val = element->GetVar("Num").GetInt();
-	auto newSubMode = static_cast<LeftMenuSubMode>(val);
+
+	auto newSubMode = static_cast<LeftMenuSubMode>(element->GetVar("Num").GetInt());
 	if (newSubMode != subMode) {
 		subMode = newSubMode;
 		updateButtons(lastSelectedInfo);
 	}
 }
 
-void MenuPanel::setNextElement(int& k, Urho3D::String texture, int id, MenuAction menuAction) {
+void MenuPanel::setNextElement(int& k, Urho3D::String texture, int id, MenuAction menuAction, Urho3D::String text) {
 	setTexture(k, texture);
 
-	hudElements[k]->setId(id, menuAction);
+	hudElements[k]->set(id, menuAction, text);
 	k++;
 }
 
@@ -138,10 +138,8 @@ void MenuPanel::basicBuilding() {
 	int k = 0;
 	for (int i = 0; i < size; ++i) {
 		db_building* building = Game::getDatabaseCache()->getBuilding(i);
-		if (building) {
-			if (building->nation == nation) {
-				setNextElement(k, "textures/hud/icon/building/" + building->icon, building->id, MenuAction::BUILDING);
-			}
+		if (building && building->nation == nation) {
+			setNextElement(k, "textures/hud/icon/building/" + building->icon, building->id, MenuAction::BUILDING);
 		}
 	}
 	resetButtons(k);

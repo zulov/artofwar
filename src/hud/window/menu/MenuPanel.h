@@ -35,7 +35,7 @@ private:
 	void setChecks(int val);
 
 	void ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
-	void setNextElement(int& k,Urho3D::String texture, int id, MenuAction menuAction);
+	void setNextElement(int& k,Urho3D::String texture, int id, MenuAction menuAction, Urho3D::String text);
 	void setTexture(int k, Urho3D::String textureName);
 
 	void basicUnit(SelectedInfo* selectedInfo);
