@@ -4,9 +4,12 @@
 #include <Urho3D/UI/UI.h>
 
 
-AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style, Urho3D::String styleName): Object(Game::getContext()),
+AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style, Urho3D::String styleName, std::initializer_list<GameState> active): Object(Game::getContext()),
 	style(_style), styleName(styleName) {
 	std::fill_n(visibleAt, GAME_STATE_SIZE, false);
+	for (auto a : active) {
+		visibleAt[static_cast<char>(a)] = true;
+	}
 }
 
 

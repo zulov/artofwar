@@ -200,5 +200,17 @@
 	},
 	"ord_collect":{
 		"pl":"Zbieraj"
+	},
+	"res_act_get_worker":{
+		"pl":"Znajdź wolnego robotnika"
+	},
+	"res_act_cancel_worker":{
+		"pl":"Zwolnij robotnika"
+	},
+	"form_none":{
+		"pl":"Brak formacji"
+	},
+	"form_square":{
+		"pl":"Formuj kwadrat"
 	}
 }

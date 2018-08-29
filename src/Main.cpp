@@ -94,8 +94,7 @@ void Main::Stop() {
 
 void Main::subscribeToUIEvents() {
 	for (auto hudData : hud->getButtonsLeftMenuToSubscribe()) {
-		UIElement* element = hudData->getUIParent();
-		SubscribeToEvent(element, E_CLICK, URHO3D_HANDLER(Main, HandleLeftMenuButton));
+		SubscribeToEvent(hudData->getUIParent(), E_CLICK, URHO3D_HANDLER(Main, HandleLeftMenuButton));
 	}
 
 	for (auto buttton : hud->getButtonsSelectedToSubscribe()) {

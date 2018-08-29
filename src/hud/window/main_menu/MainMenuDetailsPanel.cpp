@@ -1,9 +1,11 @@
 #include "MainMenuDetailsPanel.h"
+#include "Game.h"
+#include "hud/UiUtils.h"
 
 
 MainMenuDetailsPanel::
 MainMenuDetailsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title):
-	AbstractWindowPanel(_style, "MainMenuDetailsWindow") {
+	AbstractWindowPanel(_style, "MainMenuDetailsWindow", {}) {
 	bodyStyle = "MainMenuMock";
 	msg = _title;
 }
@@ -12,9 +14,7 @@ MainMenuDetailsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title):
 MainMenuDetailsPanel::~MainMenuDetailsPanel() = default;
 
 void MainMenuDetailsPanel::createBody() {
-	title = window->CreateChild<Urho3D::Text>();
-	title->SetStyle("MainMenuTitle", style);
-	title->SetText(msg);
+	addChildText(window, "MainMenuTitle", msg, style);
 
 	body = window->CreateChild<Urho3D::UIElement>();
 	body->SetStyle(bodyStyle, style);

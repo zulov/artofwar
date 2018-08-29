@@ -23,9 +23,7 @@ void MainMenuClosePanel::createBody() {
 	miniWindow->SetStyle("MiniWindow", style);
 	miniWindow->SetVisible(true);
 
-	text = miniWindow->CreateChild<Urho3D::Text>();
-	text->SetStyle("CloseText", style);
-	text->SetText(l10n->Get("if_close"));
+	text = addChildText(miniWindow, "CloseText", l10n->Get("if_close"), style);
 
 	row = miniWindow->CreateChild<Urho3D::UIElement>();
 	row->SetStyle("MainMenuCloseRow", style);

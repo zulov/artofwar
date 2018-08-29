@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "hud/HudData.h"
 #include <Urho3D/UI/UIEvents.h>
+#include "hud/UiUtils.h"
 
 
 FilePanel::FilePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): AbstractMiddlePanel(_style, _title) {
@@ -27,9 +28,7 @@ void FilePanel::createBody() {
 	data = new FileFormData();
 	action->SetVar("file_data", data);
 
-	auto textInButton = action->CreateChild<Urho3D::Text>();
-	textInButton->SetStyle("MiddleText", style);
-	textInButton->SetText(name);
+	addChildText(action, "MiddleText", name, style);
 
 	//	list = body->CreateChild<Urho3D::DropDownList>();
 	//	list->SetStyle("DropDownList", style);

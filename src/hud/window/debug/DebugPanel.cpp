@@ -1,10 +1,10 @@
 #include "DebugPanel.h"
 #include "GameState.h"
+#include "hud/UiUtils.h"
 
 
-DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "MyDebugHudWindow") {
-	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
-	visibleAt[static_cast<char>(GameState::PAUSE)] = true;
+DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "MyDebugHudWindow",
+                                                                      {GameState::RUNNING, GameState::PAUSE}) {
 }
 
 
@@ -20,7 +20,6 @@ void DebugPanel::setText(float getLastFps, float getAverageFps, int getLoops, Ur
 	fpsText->SetText(msg);
 }
 
-void DebugPanel::createBody() {
-	fpsText = window->CreateChild<Urho3D::Text>();
-	fpsText->SetStyle("MyText", style);
+void DebugPanel::createBody() {	
+	fpsText = addChildText(window, "MyText", "", style);
 }

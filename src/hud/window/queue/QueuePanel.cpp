@@ -13,10 +13,9 @@
 #include "control/SelectedInfo.h"
 
 
-QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "QueueWindow") {
+QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "QueueWindow",
+                                                                      {GameState::RUNNING, GameState::PAUSE}) {
 	elements = new QueueHudElement*[MAX_ICON_SELECTION];
-	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
-	visibleAt[static_cast<char>(GameState::PAUSE)] = true;
 }
 
 QueuePanel::~QueuePanel() {
@@ -34,7 +33,8 @@ void QueuePanel::update(QueueManager* queue, short& j) {
 		auto name = getIconName(element->getType(), element->getAmount(), element->getId());
 		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/" + name);
 		if (element->getMaxCapacity() > 1) {
-			elements[j]->setText(Urho3D::String(element->getAmount()) + "/" + Urho3D::String(element->getMaxCapacity()));
+			elements[j]->
+				setText(Urho3D::String(element->getAmount()) + "/" + Urho3D::String(element->getMaxCapacity()));
 		} else {
 			elements[j]->hideText();
 		}
@@ -67,10 +67,10 @@ void QueuePanel::update(SelectedInfo* selectedInfo) {
 	//TODO wykonuje sie nawet jeœli sie nic nie zmieni³o
 	short j = 0;
 	if (window->IsVisible()) {
-		std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelectedTypes();
+		std::vector<SelectedInfoType*> & infoTypes = selectedInfo->getSelectedTypes();
 
 		for (auto& infoType : infoTypes) {
-			std::vector<Physical*>& data = infoType->getData();
+			std::vector<Physical*> & data = infoType->getData();
 			for (Physical* physical : data) {
 				//TODO przeniesc kolejke do Physical
 				Building* building = dynamic_cast<Building*>(physical);

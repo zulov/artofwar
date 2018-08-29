@@ -19,9 +19,8 @@
 #include <unordered_set>
 
 
-MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow") {
-	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
-	visibleAt[static_cast<char>(GameState::PAUSE)] = true;
+MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow",
+                                                                    {GameState::RUNNING, GameState::PAUSE}) {
 }
 
 
@@ -139,7 +138,7 @@ void MenuPanel::basicBuilding() {
 	for (int i = 0; i < size; ++i) {
 		db_building* building = Game::getDatabaseCache()->getBuilding(i);
 		if (building && building->nation == nation) {
-			setNextElement(k, "textures/hud/icon/building/" + building->icon, building->id, MenuAction::BUILDING);
+			setNextElement(k, "textures/hud/icon/building/" + building->icon, building->id, MenuAction::BUILDING, "");
 		}
 	}
 	resetButtons(k);
@@ -156,7 +155,7 @@ void MenuPanel::levelBuilding() {
 		if (opt.has_value()) {
 			if (building->nation == nation) {
 				setNextElement(k, "textures/hud/icon/building/levels/" + Urho3D::String(level) + "/" + building->icon,
-				               building->id, MenuAction::BUILDING_LEVEL);
+				               building->id, MenuAction::BUILDING_LEVEL, "");
 			}
 		}
 	}
@@ -208,7 +207,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 	for (auto id : toShow) {
 		db_unit* unit = Game::getDatabaseCache()->getUnit(id);
 		if (unit) {
-			setNextElement(k, "textures/hud/icon/unit/" + unit->icon, unit->id, MenuAction::UNIT);
+			setNextElement(k, "textures/hud/icon/unit/" + unit->icon, unit->id, MenuAction::UNIT, "");
 		}
 	}
 	resetButtons(k);
@@ -224,7 +223,7 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 		auto opt = Game::getDatabaseCache()->getUnitLevel(id, level);
 		if (opt.has_value()) {
 			setNextElement(k, "textures/hud/icon/unit/levels/" + Urho3D::String(level) + "/" + unit->icon, unit->id,
-			               MenuAction::UNIT_LEVEL);
+			               MenuAction::UNIT_LEVEL, "");
 		}
 	}
 	resetButtons(k);
@@ -241,7 +240,7 @@ void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 		if (opt.has_value()) {
 			auto upgrade = opt.value();
 			setNextElement(k, "textures/hud/icon/unit/upgrades/" + upgrade->pathName + "/" + upgrade->name + ".png", id,
-			               MenuAction::UNIT_UPGRADE);
+			               MenuAction::UNIT_UPGRADE, "");
 		}
 	}
 	resetButtons(k);
@@ -284,7 +283,7 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 	for (auto id : toShow) {
 		db_order* order = Game::getDatabaseCache()->getOrder(id);
 		if (order) {
-			setNextElement(k, "textures/hud/icon/orders/" + order->icon, order->id, MenuAction::ORDER);
+			setNextElement(k, "textures/hud/icon/orders/" + order->icon, order->id, MenuAction::ORDER, "");
 		}
 	}
 	resetButtons(k);
@@ -292,8 +291,9 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 
 void MenuPanel::formationOrder() {
 	int k = 0;
-	setNextElement(k, "textures/hud/icon/formation/none.png", 0, MenuAction::FORMATION);
-	setNextElement(k, "textures/hud/icon/formation/square.png", 1, MenuAction::FORMATION);
+	auto l10n = Game::getLocalization();
+	setNextElement(k, "textures/hud/icon/formation/none.png", 0, MenuAction::FORMATION, l10n->Get("form_none"));
+	setNextElement(k, "textures/hud/icon/formation/square.png", 1, MenuAction::FORMATION, l10n->Get("form_square"));
 
 	resetButtons(k);
 }
@@ -361,8 +361,12 @@ void MenuPanel::orderMenu(SelectedInfo* selectedInfo) {
 
 void MenuPanel::basicResource(SelectedInfo* selectedInfo) {
 	int k = 0;
-	setNextElement(k, "textures/hud/icon/resource_action/get_worker.png", 0, MenuAction::RESOURCE_COLLECT);
-	setNextElement(k, "textures/hud/icon/resource_action/remove_workers.png", 1, MenuAction::RESOURCE_COLLECT);
+	auto l10n = Game::getLocalization();
+
+	setNextElement(k, "textures/hud/icon/resource_action/get_worker.png", 0, MenuAction::RESOURCE_COLLECT,
+	               l10n->Get("res_act_get_worker"));
+	setNextElement(k, "textures/hud/icon/resource_action/remove_workers.png", 1, MenuAction::RESOURCE_COLLECT,
+	               l10n->Get("res_act_cancel_worker"));
 
 	resetButtons(k);
 }

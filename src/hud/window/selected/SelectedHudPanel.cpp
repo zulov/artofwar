@@ -10,9 +10,11 @@
 #include <Urho3D/Resource/ResourceCache.h>
 
 
-SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style,  "SelectedInfoWindow") {
-	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
-	visibleAt[static_cast<char>(GameState::PAUSE)] = true;
+SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "SelectedInfoWindow",
+                                                                                 {
+	                                                                                 GameState::RUNNING,
+	                                                                                 GameState::PAUSE
+                                                                                 }) {
 }
 
 SelectedHudPanel::~SelectedHudPanel() {
@@ -36,7 +38,8 @@ std::vector<Urho3D::Button*>& SelectedHudPanel::getButtonsSelectedToSubscribe() 
 void SelectedHudPanel::createBody() {
 	createRows();
 
-	int border = rows[0]->GetLayoutBorder().left_ + rows[0]->GetLayoutBorder().right_ + window->GetLayoutBorder().left_ +
+	int border = rows[0]->GetLayoutBorder().left_ + rows[0]->GetLayoutBorder().right_ + window->GetLayoutBorder().left_
+		+
 		window->
 		GetLayoutBorder().right_;
 	int space = window->GetSize().x_ - border;
@@ -81,14 +84,14 @@ void SelectedHudPanel::createRows() {
 
 void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 	ObjectType type = selectedInfo->getSelectedType();
-	std::vector<SelectedInfoType*>& infoTypes = selectedInfo->getSelectedTypes();
+	auto& infoTypes = selectedInfo->getSelectedTypes();
 
 	int all = selectedInfo->getAllNumber();
 	auto selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
 	int ratio = all / (LINES_IN_SELECTION * maxInRow - selectedSubTypeNumber + 2) + 1;
 	int k = 0;
 	for (auto& infoType : infoTypes) {
-		std::vector<Physical*>& data = infoType->getData();
+		auto& data = infoType->getData();
 		if (data.empty()) { continue; }
 		auto name = getIconName(type, infoType->getId());
 		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/" + name);

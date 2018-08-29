@@ -12,7 +12,7 @@
 #include "player/PlayersManager.h"
 
 
-LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuInfoPanel") {
+LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuInfoPanel", {}) {
 }
 
 LeftMenuInfoPanel::~LeftMenuInfoPanel() = default;

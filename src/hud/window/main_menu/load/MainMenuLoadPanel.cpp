@@ -29,11 +29,8 @@ void MainMenuLoadPanel::createBody() {
 
 	for (const auto& name : files) {
 		auto button = simpleButton(nullptr, style, "LoadListButton");
-		auto element = button->CreateChild<Urho3D::Text>();
+		addChildText(button, "LoadListText", name, style);
 		
-		element->SetText(name);
-		element->SetStyle("LoadListText");
-		button->AddChild(element);
 		list->AddItem(button);
 
 		SubscribeToEvent(button, Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuLoadPanel, HandleLoadClick));

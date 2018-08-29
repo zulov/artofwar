@@ -1,8 +1,9 @@
 #include "AbstractMiddlePanel.h"
 #include <Urho3D/UI/UIEvents.h>
+#include "hud/UiUtils.h"
 
 
-AbstractMiddlePanel::AbstractMiddlePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): AbstractWindowPanel(_style, "AdditionalInGameWindow") {
+AbstractMiddlePanel::AbstractMiddlePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): AbstractWindowPanel(_style, "AdditionalInGameWindow", {}) {
 	msg = _title;
 }
 
@@ -13,9 +14,7 @@ void AbstractMiddlePanel::createBody() {
 	buttonClose = window->CreateChild<Urho3D::Button>();
 	buttonClose->SetStyle("MyCloseButton", style);
 	SubscribeToEvent(buttonClose, Urho3D::E_CLICK, URHO3D_HANDLER(AbstractMiddlePanel, HandleClose));
-	title = window->CreateChild<Urho3D::Text>();
-	title->SetStyle("MiddleTitle", style);
-	title->SetText(msg);
+	title = addChildText(window, "MiddleTitle", msg, style);
 
 	body = window->CreateChild<Urho3D::UIElement>();
 	body->SetStyle("MiddleMock", style);

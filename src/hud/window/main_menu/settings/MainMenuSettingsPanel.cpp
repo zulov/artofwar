@@ -104,10 +104,7 @@ void MainMenuSettingsPanel::createBody() {
 }
 
 void MainMenuSettingsPanel::populateLabels(int index, Urho3D::String name) {
-	Urho3D::Localization* l10n = Game::getLocalization();
-	Urho3D::Text* text = rows[index]->CreateChild<Urho3D::Text>();
-	text->SetStyle("MainMenuSettingsLabel");
-	text->SetText(l10n->Get(name));
+	addChildText(rows[index], "MainMenuSettingsLabel", Game::getLocalization()->Get(name), style);
 }
 
 void MainMenuSettingsPanel::popualateForm(SettingsForm* form) {

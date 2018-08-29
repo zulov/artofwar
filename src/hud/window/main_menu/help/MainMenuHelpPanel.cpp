@@ -17,11 +17,8 @@ void MainMenuHelpPanel::createBody() {
 	for (int i = 0; i < HELP_ITEMS; ++i) {
 
 		auto button = simpleButton(nullptr, style, "HelpListButton");
-		Urho3D::Text* element = button->CreateChild<Urho3D::Text>();
+		addChildText(button, "HelpListText", Game::getLocalization()->Get("help_key_" + Urho3D::String(i)), style);
 
-		element->SetText(Game::getLocalization()->Get("help_key_" + Urho3D::String(i)));
-		element->SetStyle("HelpListText");
-		button->AddChild(element);
 		list->AddItem(button);
 
 		button->SetVar("Num", i);
@@ -31,13 +28,10 @@ void MainMenuHelpPanel::createBody() {
 	content = window->CreateChild<Urho3D::ScrollView>();
 	content->SetStyle("HelpContent", style);
 
-	contentText = content->CreateChild<Urho3D::Text>();
-	contentText->SetStyle("HelpContentText", style);
-	contentText->SetText(Game::getLocalization()->Get("mock"));
+	contentText = addChildText(content, "HelpContentText", Game::getLocalization()->Get("mock"), style);
 
 	contentText->SetWidth(content->GetWidth() * 0.9);
 	content->AddChild(contentText);
-
 }
 
 

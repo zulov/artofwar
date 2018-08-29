@@ -14,7 +14,8 @@
 #include <Urho3D/UI/UIEvents.h>
 
 
-MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "MiniMapWindow") {
+MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "MiniMapWindow",
+                                                                          {GameState::RUNNING, GameState::PAUSE}) {
 	for (int i = 0; i < PLAYER_COLORS_NUMBER_DB; ++i) {
 		unitsColors[i] = 0xFF505050;
 		buildingColors[i] = 0xFF505050;
@@ -32,9 +33,6 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 	}
 
 	std::fill_n(checks, MINI_MAP_BUTTON_NUMBER, true);
-
-	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
-	visibleAt[static_cast<char>(GameState::PAUSE)] = true;
 }
 
 
@@ -114,7 +112,8 @@ void MiniMapPanel::update() {
 		const float xVal = 0 + xinc * (indexUpdate % size.x_);
 		int activePlayer = Game::getPlayersManager()->getActivePlayer()->getId();
 
-		content_info* ci = env->getContentInfo(Urho3D::Vector2(xVal, yVal), Urho3D::Vector2(xVal + xinc, yVal - yinc), checks, activePlayer);
+		content_info* ci = env->getContentInfo(Urho3D::Vector2(xVal, yVal), Urho3D::Vector2(xVal + xinc, yVal - yinc),
+		                                       checks, activePlayer);
 
 		if (checks[2] && ci->hasBuilding) {
 			unsigned char player = ci->biggestBuilding();

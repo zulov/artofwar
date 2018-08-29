@@ -8,8 +8,7 @@ QueueHudElement::QueueHudElement(Urho3D::XMLFile* style) {
 	button = simpleButton(nullptr, style, "SmallIcon");
 	button->SetVisible(false);
 
-	text = button->CreateChild<Urho3D::Text>();
-	text->SetStyle("MiniText", style);
+	text = addChildText(button, "MiniText", "", style);
 
 	icon = createEmptySprite(style, "SmallSprite");
 	button->AddChild(icon);

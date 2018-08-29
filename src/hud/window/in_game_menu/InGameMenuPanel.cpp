@@ -11,9 +11,8 @@
 
 #define IN_GAME_MENU_BUTTON_NUMBER 5
 
-InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "InGameMenuWindow") {
-	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
-	visibleAt[static_cast<char>(GameState::PAUSE)] = true;
+InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "InGameMenuWindow",
+                                                                               {GameState::RUNNING, GameState::PAUSE}) {
 }
 
 InGameMenuPanel::~InGameMenuPanel() {
@@ -70,10 +69,8 @@ void InGameMenuPanel::createBody() {
 
 		auto sprite2 = createSprite(texture2, style, "InGameSprite");
 		auto button = simpleButton(sprite2, style, "InGameButton");
-		auto text = button->CreateChild<Urho3D::Text>();
 		auto msg = Game::getLocalization()->Get("igm_" + Urho3D::String(i));
-		text->SetText(msg);
-		text->SetStyle("InGameText", style);
+		addChildText(button, "InGameText", msg, style);
 
 		button->SetVar("Num", i);
 		window->AddChild(button);

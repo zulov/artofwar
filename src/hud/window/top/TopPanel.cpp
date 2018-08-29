@@ -8,12 +8,9 @@
 #include <Urho3D/Resource/ResourceCache.h>
 
 
-TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "TopWindow") {
-	const int size = Game::getDatabaseCache()->getResourceSize();
-
-	elements = new TopHudElement*[size];
-	visibleAt[static_cast<char>(GameState::RUNNING)] = true;
-	visibleAt[static_cast<char>(GameState::PAUSE)] = true;
+TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "TopWindow",
+                                                                  {GameState::RUNNING, GameState::PAUSE}) {
+	elements = new TopHudElement*[Game::getDatabaseCache()->getResourceSize()];
 }
 
 
@@ -26,9 +23,7 @@ TopPanel::~TopPanel() {
 }
 
 void TopPanel::createBody() {
-	unitsNumber = window->CreateChild<Urho3D::Text>();
-	unitsNumber->SetStyle("TopText", style);
-	unitsNumber->SetText("Test");
+	unitsNumber = addChildText(window, "TopText", "Test", style);
 
 	const int size = Game::getDatabaseCache()->getResourceSize();
 

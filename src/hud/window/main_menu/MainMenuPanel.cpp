@@ -13,8 +13,8 @@
 #include <Urho3D/UI/UIEvents.h>
 
 
-MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "MainMenuWindow") {
-	visibleAt[static_cast<char>(GameState::MENU_MAIN)] = true;
+MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "MainMenuWindow",
+                                                                           {GameState::MENU_MAIN}) {
 }
 
 
@@ -87,10 +87,8 @@ void MainMenuPanel::createBody() {
 
 		auto sprite2 = createSprite(texture2, style, "MainMenuSprite");
 		auto button = simpleButton(sprite2, style, "MainMenuButton");
-		auto text = button->CreateChild<Urho3D::Text>();
-		auto msg = l10n->Get("menu_" + Urho3D::String(i));
-		text->SetText(msg);
-		text->SetStyle("MainMenuText", style);
+
+		addChildText(button, "MainMenuText", l10n->Get("menu_" + Urho3D::String(i)), style);
 
 		button->SetVar("Num", i);
 		window->AddChild(button);
