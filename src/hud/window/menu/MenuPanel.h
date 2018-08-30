@@ -31,19 +31,21 @@ public:
 	void setVisible(bool enable) override;
 	std::vector<HudData*>& getButtons();
 private:
+	void setCheckVisibility(std::initializer_list<bool> active);
+	void updateMode(LeftMenuMode mode);
 	void createBody() override;
 	void setChecks(int val);
 
 	void ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
-	void setNextElement(int& k,Urho3D::String texture, int id, MenuAction menuAction, Urho3D::String text);
+	void setNextElement(int& k, Urho3D::String texture, int id, MenuAction menuAction, Urho3D::String text);
 
 	void basicUnit(SelectedInfo* selectedInfo);
 	void levelUnit(SelectedInfo* selectedInfo);
 	void upgradeUnit(SelectedInfo* selectedInfo);
-	
+
 	void basicBuilding();
 	void levelBuilding();
-	
+
 	void basicOrder(SelectedInfo* selectedInfo);
 	void formationOrder();
 
@@ -55,12 +57,12 @@ private:
 	void basicResource(SelectedInfo* selectedInfo);
 	void resourceMenu(SelectedInfo* selectedInfo);
 	void updateButtons(SelectedInfo* selectedInfo);
-	
+
 	void resetButtons(int from);
 
 	std::unordered_set<int> getUnitInBuilding(std::vector<SelectedInfoType*>& infoTypes);
 	std::unordered_set<int> getUpgradePathInBuilding(std::vector<SelectedInfoType*>& infoTypes);
-	std::unordered_set<int>  getOrderForUnit(std::vector<SelectedInfoType*>& infoTypes);
+	std::unordered_set<int> getOrderForUnit(std::vector<SelectedInfoType*>& infoTypes);
 
 	Urho3D::UIElement* rows[LEFT_MENU_ROWS_NUMBER];
 	Urho3D::Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];

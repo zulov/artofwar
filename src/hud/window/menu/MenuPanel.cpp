@@ -37,6 +37,7 @@ void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {
 	lastSelectedInfo = selectedInfo;
 	if (mode != _mode) {
 		mode = _mode;
+		updateMode(mode);
 		subMode = BASIC;
 	}
 	updateButtons(lastSelectedInfo);
@@ -59,6 +60,26 @@ void MenuPanel::setVisible(bool enable) {
 
 std::vector<HudData*>& MenuPanel::getButtons() {
 	return hudElements;
+}
+
+void MenuPanel::setCheckVisibility(std::initializer_list<bool> active) {
+	int k = 0;
+	for (auto a : active) {
+		checks[k++]->SetVisible(a);
+	}
+}
+
+void MenuPanel::updateMode(LeftMenuMode mode) {
+	switch (mode) {
+	case LeftMenuMode::BUILDING:
+		return setCheckVisibility({true, true, false});
+	case LeftMenuMode::UNIT: 
+		return setCheckVisibility({true, true, true});
+	case LeftMenuMode::ORDER: 
+		return setCheckVisibility({true, true, false});
+	case LeftMenuMode::RESOURCE: 
+		return setCheckVisibility({true, false, false});
+	}
 }
 
 void MenuPanel::createBody() {
@@ -109,7 +130,6 @@ void MenuPanel::createBody() {
 void MenuPanel::setChecks(int val) {
 	for (auto check : checks) {
 		check->SetChecked(false);
-		check->SetVisible(true);
 	}
 	checks[val]->SetChecked(true);
 }
@@ -338,6 +358,13 @@ void MenuPanel::orderMenu(SelectedInfo* selectedInfo) {
 	}
 }
 
+void MenuPanel::resourceMenu(SelectedInfo* selectedInfo) {
+	switch (subMode) {
+	case BASIC:
+		return basicResource(selectedInfo);
+	}
+}
+
 void MenuPanel::basicResource(SelectedInfo* selectedInfo) {
 	int k = 0;
 	auto l10n = Game::getLocalization();
@@ -348,11 +375,4 @@ void MenuPanel::basicResource(SelectedInfo* selectedInfo) {
 	               l10n->Get("res_act_cancel_worker"));
 
 	resetButtons(k);
-}
-
-void MenuPanel::resourceMenu(SelectedInfo* selectedInfo) {
-	switch (subMode) {
-	case BASIC:
-		return basicResource(selectedInfo);
-	}
 }
