@@ -125,7 +125,9 @@ void MenuPanel::ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMa
 }
 
 void MenuPanel::setNextElement(int& k, Urho3D::String texture, int id, MenuAction menuAction, Urho3D::String text) {
-	setTexture(k, texture);
+	setTextureToSprite(sprites[k], Game::getCache()->GetResource<Urho3D::Texture2D>(texture));
+
+	buttons[k]->SetVisible(true);
 
 	hudElements[k]->set(id, menuAction, text);
 	k++;
@@ -201,10 +203,9 @@ std::unordered_set<int> MenuPanel::getUnitInBuilding(std::vector<SelectedInfoTyp
 }
 
 void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
-	auto toShow = getUnitInBuilding(selectedInfo->getSelectedTypes());
 	int k = 0;
 
-	for (auto id : toShow) {
+	for (auto id : getUnitInBuilding(selectedInfo->getSelectedTypes())) {
 		db_unit* unit = Game::getDatabaseCache()->getUnit(id);
 		if (unit) {
 			setNextElement(k, "textures/hud/icon/unit/" + unit->icon, unit->id, MenuAction::UNIT, "");
@@ -214,14 +215,13 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 }
 
 void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
-	auto toShow = getUnitInBuilding(selectedInfo->getSelectedTypes());
 	int k = 0;
 
-	for (auto id : toShow) {
-		db_unit* unit = Game::getDatabaseCache()->getUnit(id);
+	for (auto id : getUnitInBuilding(selectedInfo->getSelectedTypes())) {
 		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
 		auto opt = Game::getDatabaseCache()->getUnitLevel(id, level);
 		if (opt.has_value()) {
+			db_unit* unit = Game::getDatabaseCache()->getUnit(id);
 			setNextElement(k, "textures/hud/icon/unit/levels/" + Urho3D::String(level) + "/" + unit->icon, unit->id,
 			               MenuAction::UNIT_LEVEL, "");
 		}
@@ -230,10 +230,9 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 }
 
 void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
-	auto toShow = getUpgradePathInBuilding(selectedInfo->getSelectedTypes());
 	int k = 0;
 
-	for (auto id : toShow) {
+	for (auto id : getUpgradePathInBuilding(selectedInfo->getSelectedTypes())) {
 		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1;
 		auto opt = Game::getDatabaseCache()->getUnitUpgrade(id, level);
 
@@ -246,19 +245,11 @@ void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 	resetButtons(k);
 }
 
-void MenuPanel::setTexture(int k, Urho3D::String textureName) {
-	auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>(textureName);
-	setTextureToSprite(sprites[k], texture);
-
-	buttons[k]->SetVisible(true);
-}
-
 std::unordered_set<int> MenuPanel::getOrderForUnit(std::vector<SelectedInfoType*>& infoTypes) {
 	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 	for (int i = 0; i < infoTypes.size(); ++i) {
-		auto& data = infoTypes.at(i)->getData();
-		if (!data.empty()) {
+		if (!infoTypes.at(i)->getData().empty()) {
 			auto orders = Game::getDatabaseCache()->getOrdersForUnit(i);
 			std::unordered_set<int> common2;
 			for (auto& order : *orders) {
@@ -277,10 +268,8 @@ std::unordered_set<int> MenuPanel::getOrderForUnit(std::vector<SelectedInfoType*
 }
 
 void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
-	std::unordered_set<int> toShow = getOrderForUnit(selectedInfo->getSelectedTypes());
-
 	int k = 0;
-	for (auto id : toShow) {
+	for (auto id : getOrderForUnit(selectedInfo->getSelectedTypes())) {
 		db_order* order = Game::getDatabaseCache()->getOrder(id);
 		if (order) {
 			setNextElement(k, "textures/hud/icon/orders/" + order->icon, order->id, MenuAction::ORDER, "");
@@ -323,39 +312,29 @@ void MenuPanel::updateButtons(SelectedInfo* selectedInfo) {
 void MenuPanel::unitMenu(SelectedInfo* selectedInfo) {
 	switch (subMode) {
 	case BASIC:
-		basicUnit(selectedInfo);
-		break;
+		return basicUnit(selectedInfo);
 	case LEVEL:
-		levelUnit(selectedInfo);
-		break;
+		return levelUnit(selectedInfo);
 	case UPGRADE:
-		upgradeUnit(selectedInfo);
-		break;
-	default: ;
+		return upgradeUnit(selectedInfo);
 	}
 }
 
 void MenuPanel::buildingMenu() {
 	switch (subMode) {
 	case BASIC:
-		basicBuilding();
-		break;
+		return basicBuilding();
 	case LEVEL:
-		levelBuilding();
-		break;
-	default: ;
+		return levelBuilding();
 	}
 }
 
 void MenuPanel::orderMenu(SelectedInfo* selectedInfo) {
 	switch (subMode) {
 	case BASIC:
-		basicOrder(selectedInfo);
-		break;
+		return basicOrder(selectedInfo);
 	case LEVEL:
-		formationOrder();
-		break;
-	default: ;
+		return formationOrder();
 	}
 }
 
@@ -373,10 +352,7 @@ void MenuPanel::basicResource(SelectedInfo* selectedInfo) {
 
 void MenuPanel::resourceMenu(SelectedInfo* selectedInfo) {
 	switch (subMode) {
-
 	case BASIC:
-		basicResource(selectedInfo);
-		break;
-	default: ;
+		return basicResource(selectedInfo);
 	}
 }

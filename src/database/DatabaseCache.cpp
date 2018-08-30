@@ -362,21 +362,21 @@ void DatabaseCache::setSettings(int i, db_settings* settings) {
 
 std::optional<db_unit_level*> DatabaseCache::getUnitLevel(int id, int level) const {
 	if (dbContainer->levelsToUnit[id]->size() > level) {
-		return std::optional<db_unit_level*>{dbContainer->levelsToUnit[id]->at(level)};
+		return dbContainer->levelsToUnit[id]->at(level);
 	}
 	return {};
 }
 
 std::optional<db_building_level*> DatabaseCache::getBuildingLevel(int id, int level) const {
 	if (dbContainer->levelsToBuilding[id]->size() > level) {
-		return std::optional<db_building_level*>{dbContainer->levelsToBuilding[id]->at(level)};
+		return dbContainer->levelsToBuilding[id]->at(level);
 	}
 	return {};
 }
 
 std::optional<db_unit_upgrade*> DatabaseCache::getUnitUpgrade(int id, int level) const {
 	if (dbContainer->unitUpgrades[id]->size() > level) {
-		return std::optional<db_unit_upgrade*>{dbContainer->unitUpgrades[id]->at(level)};
+		return dbContainer->unitUpgrades[id]->at(level);
 	}
 	return {};
 }
