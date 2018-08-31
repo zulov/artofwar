@@ -1,10 +1,10 @@
 #include "MainMenuNewGamePanel.h"
 #include "Game.h"
-#include "database/DatabaseCache.h"
-#include <ctime>
-#include <Urho3D/UI/UIEvents.h>
-#include "hud/HudData.h"
 #include "NewGameForm.h"
+#include "database/DatabaseCache.h"
+#include "hud/HudData.h"
+#include <Urho3D/UI/UIEvents.h>
+#include <ctime>
 
 
 MainMenuNewGamePanel::
@@ -17,8 +17,7 @@ void MainMenuNewGamePanel::createBody() {
 	MainMenuDetailsPanel::createBody();
 
 	for (auto& row : rows) {
-		row = body->CreateChild<Urho3D::BorderImage>();
-		row->SetStyle("MainMenuNewGameRow");
+		row = createElement<Urho3D::BorderImage>(body, style,"MainMenuNewGameRow");
 	}
 	auto l10n = Game::getLocalization();
 	myLine.init(style, l10n, 0);
@@ -34,20 +33,19 @@ void MainMenuNewGamePanel::createBody() {
 	enemyLine.populateTeams(rows[1]);
 	myLine.setCheck(true);
 
-	map = createDropDownList(rows[2], "MainMenuNewGameDropDownList", style);
+	map = createElement<Urho3D::DropDownList>(rows[2], style, "MainMenuNewGameDropDownList");
 	int mapsSize = Game::getDatabaseCache()->getMapSize();
 	for (int i = 0; i < mapsSize; ++i) {
 		addTextItem(map, Game::getDatabaseCache()->getMap(i)->name, style);
 	}
 
-	difficulty = createDropDownList(rows[3], "MainMenuNewGameDropDownList", style);
+	difficulty = createElement<Urho3D::DropDownList>(rows[3], style, "MainMenuNewGameDropDownList");
 	addChildTexts(difficulty, {l10n->Get("easy"), l10n->Get("normal"), l10n->Get("hard")}, style);
 
-	gameSpeed = createDropDownList(rows[4], "MainMenuNewGameDropDownList", style);
+	gameSpeed = createElement<Urho3D::DropDownList>(rows[4], style, "MainMenuNewGameDropDownList");
 	addChildTexts(gameSpeed, {l10n->Get("slow"), l10n->Get("normal"), l10n->Get("fast")}, style);
 
-	proceed = body->CreateChild<Urho3D::Button>();
-	proceed->SetStyle("MainMenuNewGameButton");
+	proceed = createElement<Urho3D::Button>(body, style,"MainMenuNewGameButton");
 	data = new NewGameForm();
 	proceed->SetVar("NewGameForm", data);
 

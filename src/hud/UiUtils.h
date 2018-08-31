@@ -72,9 +72,16 @@ static void setExactTextureToSprite(MySprite* sprite, Urho3D::Texture2D* texture
 	sprite->SetHotSpot(textureWidth * perHotSpot.x_, textureHeight * perHotSpot.y_);
 }
 
+template <class T>
+T* createElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style,
+                 const Urho3D::String& styleName) {
+	auto element = parent->CreateChild<T>();
+	element->SetStyle(styleName, style);
+	return element;
+}
 
 static MySprite* createSprite(Urho3D::Texture2D* texture, Urho3D::XMLFile* style, const Urho3D::String& styleName) {
-	auto sprite = createEmptySprite(style, styleName);
+	const auto sprite = createEmptySprite(style, styleName);
 	setTextureToSprite(sprite, texture);
 
 	return sprite;
@@ -87,17 +94,9 @@ inline void addTextItem(Urho3D::DropDownList* cob, Urho3D::String str, Urho3D::X
 	cob->AddItem(item);
 }
 
-inline Urho3D::DropDownList*
-createDropDownList(Urho3D::UIElement* uiElement, Urho3D::String styleName, Urho3D::XMLFile* style) {
-	auto cob = uiElement->CreateChild<Urho3D::DropDownList>();
-	cob->SetStyle(styleName, style);
-	return cob;
-}
-
 inline Urho3D::Text* addChildText(Urho3D::UIElement* element, Urho3D::String styleName, Urho3D::String value,
-                         Urho3D::XMLFile* style) {
-	auto text = element->CreateChild<Urho3D::Text>();
-	text->SetStyle(styleName, style);
+                                  Urho3D::XMLFile* style) {
+	auto text = createElement<Urho3D::Text>(element, style, styleName);
 	text->SetText(value);
 	return text;
 }

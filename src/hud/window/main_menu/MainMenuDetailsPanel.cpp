@@ -16,7 +16,6 @@ MainMenuDetailsPanel::~MainMenuDetailsPanel() = default;
 void MainMenuDetailsPanel::createBody() {
 	addChildText(window, "MainMenuTitle", msg, style);
 
-	body = window->CreateChild<Urho3D::UIElement>();
-	body->SetStyle(bodyStyle, style);
+	body = createElement<Urho3D::UIElement>(window, style, "bodyStyle");
 	window->SetPriority(2);
 }

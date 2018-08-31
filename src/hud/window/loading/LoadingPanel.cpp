@@ -1,5 +1,6 @@
 #include "LoadingPanel.h"
 #include "GameState.h"
+#include "hud/UiUtils.h"
 
 
 LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LoadingWindow",
@@ -20,12 +21,10 @@ void LoadingPanel::end() {
 }
 
 void LoadingPanel::createBody() {
-	background = window->CreateChild<Urho3D::BorderImage>();
-	background->SetStyle("Background", style);
+	background = createElement<Urho3D::BorderImage>(window, style, "Background");
 	background->SetVisible(true);
 
-	bar = background->CreateChild<Urho3D::ProgressBar>();
-	bar->SetStyle("LargeProgressBar", style);
+	bar = createElement<Urho3D::ProgressBar>(background, style, "LargeProgressBar");
 	bar->SetRange(1);
 	bar->SetValue(0);
 	bar->SetVisible(true);

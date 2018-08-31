@@ -1,7 +1,7 @@
 #include "MainMenuSettingsPanel.h"
-#include "hud/UiUtils.h"
 #include "SettingsForm.h"
 #include "database/DatabaseCache.h"
+#include "hud/UiUtils.h"
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/UI/UIEvents.h>
 
@@ -28,8 +28,7 @@ void MainMenuSettingsPanel::setValues(int graphID) {
 void MainMenuSettingsPanel::createBody() {
 	MainMenuDetailsPanel::createBody();
 	for (auto& row : rows) {
-		row = body->CreateChild<Urho3D::BorderImage>();
-		row->SetStyle("MainMenuSettingsRow");
+		row = createElement<Urho3D::BorderImage>(body, style,"MainMenuSettingsRow");
 	}
 
 	populateLabels(0, "mmsp_settings");
@@ -44,7 +43,7 @@ void MainMenuSettingsPanel::createBody() {
 
 	Urho3D::Localization* l10n = Game::getLocalization();
 
-	settings = createDropDownList(rows[0], "MainMenuNewGameDropDownList", style);
+	settings = createElement<Urho3D::DropDownList>(rows[0], style, "MainMenuNewGameDropDownList");
 	std::vector<Urho3D::String> settingsNames;
 	for (int i = 0; i < Game::getDatabaseCache()->getGraphSettingsSize(); ++i) {
 		db_graph_settings* settings = Game::getDatabaseCache()->getGraphSettings(i);
@@ -54,7 +53,7 @@ void MainMenuSettingsPanel::createBody() {
 
 	addChildTexts(settings, settingsNames, style);
 
-	resolution = createDropDownList(rows[1], "MainMenuNewGameDropDownList", style);
+	resolution =  createElement<Urho3D::DropDownList>(rows[1], style, "MainMenuNewGameDropDownList");
 	std::vector<Urho3D::String> resNames;
 	for (int i = 0; i < Game::getDatabaseCache()->getResourceSize(); ++i) {
 		db_resolution* res = Game::getDatabaseCache()->getResolution(i);
@@ -62,25 +61,22 @@ void MainMenuSettingsPanel::createBody() {
 	}
 	addChildTexts(resolution, resNames, style);
 
-	fullScreen = rows[2]->CreateChild<Urho3D::CheckBox>();
-	fullScreen->SetStyle("CheckBox", style);
+	fullScreen = createElement<Urho3D::CheckBox>(rows[2], style, "CheckBox");
 
-	maxFps = createDropDownList(rows[3], "MainMenuNewGameDropDownList", style);
+	maxFps = createElement<Urho3D::DropDownList>(rows[3], style, "MainMenuNewGameDropDownList");
 	addChildTexts(maxFps, {"30", "60", "120", "240"}, style, {30, 60, 120, 240}, "IntValue");
 
-	minFps = createDropDownList(rows[4], "MainMenuNewGameDropDownList", style);
+	minFps = createElement<Urho3D::DropDownList>(rows[4], style, "MainMenuNewGameDropDownList");
 	addChildTexts(minFps, {"1", "5", "10"}, style, {1, 5, 10}, "IntValue");
 
-	vSync = rows[5]->CreateChild<Urho3D::CheckBox>();
-	vSync->SetStyle("CheckBox", style);
+	vSync = createElement<Urho3D::CheckBox>(rows[5], style, "CheckBox");
 
-	textureQuality = createDropDownList(rows[6], "MainMenuNewGameDropDownList", style);
+	textureQuality = createElement<Urho3D::DropDownList>(rows[6], style, "MainMenuNewGameDropDownList");
 	addChildTexts(textureQuality, {l10n->Get("low"), l10n->Get("normal"), l10n->Get("high")}, style);
 
-	shadow = rows[7]->CreateChild<Urho3D::CheckBox>();
-	shadow->SetStyle("CheckBox", style);
+	shadow = createElement<Urho3D::CheckBox>(rows[7], style, "CheckBox");
 
-	hudSize = createDropDownList(rows[8], "MainMenuNewGameDropDownList", style);
+	hudSize = createElement<Urho3D::DropDownList>(rows[8], style, "MainMenuNewGameDropDownList");
 
 	std::vector<Urho3D::String> hudNames;
 	for (int i = 0; i < Game::getDatabaseCache()->getHudSizeSize(); ++i) {
@@ -89,8 +85,7 @@ void MainMenuSettingsPanel::createBody() {
 	}
 	addChildTexts(hudSize, hudNames, style);
 
-	save = body->CreateChild<Urho3D::Button>();
-	save->SetStyle("MainMenuSettingsButton", style);
+	save = createElement<Urho3D::Button>(body, style,"MainMenuSettingsButton");
 	addChildText(save, "MainMenuSettingsButtonText", l10n->Get("mmsp_save"), style);
 	data = new SettingsForm();
 	save->SetVar("SettingsForm", data);

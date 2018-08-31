@@ -77,8 +77,7 @@ int SelectedHudPanel::iconSize() {
 void SelectedHudPanel::createRows() {
 	rows = new Urho3D::UIElement*[LINES_IN_SELECTION];
 	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
-		rows[i] = window->CreateChild<Urho3D::UIElement>();
-		rows[i]->SetStyle("MyListRow", style);
+		rows[i] = createElement<Urho3D::UIElement>(window,  style, "MyListRow");
 	}
 }
 

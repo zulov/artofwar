@@ -11,8 +11,7 @@ MainMenuHelpPanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDetai
 
 void MainMenuHelpPanel::createBody() {
 	MainMenuDetailsPanel::createBody();
-	list = window->CreateChild<Urho3D::ListView>();
-	list->SetStyle("HelpList", style);
+	list = createElement<Urho3D::ListView>(window, style, "HelpList");
 
 	for (int i = 0; i < HELP_ITEMS; ++i) {
 
@@ -25,8 +24,7 @@ void MainMenuHelpPanel::createBody() {
 		SubscribeToEvent(button, Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuHelpPanel, HandleButtonClick));
 	}
 
-	content = window->CreateChild<Urho3D::ScrollView>();
-	content->SetStyle("HelpContent", style);
+	content = createElement<Urho3D::ScrollView>(window, style, "HelpContent");
 
 	contentText = addChildText(content, "HelpContentText", Game::getLocalization()->Get("mock"), style);
 

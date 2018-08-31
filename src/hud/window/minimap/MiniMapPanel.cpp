@@ -146,8 +146,7 @@ void MiniMapPanel::update() {
 void MiniMapPanel::createBody() {
 	spr = window->CreateChild<Urho3D::Sprite>();
 	spr->SetEnabled(true);
-	auto row = window->CreateChild<Urho3D::UIElement>();
-	row->SetStyle("MiniMapListRow", style);
+	auto row = createElement<Urho3D::UIElement>(window, style, "MiniMapListRow");
 
 	checksElements.reserve(MINI_MAP_BUTTON_NUMBER);
 
@@ -156,8 +155,7 @@ void MiniMapPanel::createBody() {
 		>("textures/hud/icon/mm/minimap" + Urho3D::String(i) + ".png");
 
 		auto sprite = createSprite(texture, style, "MiniMapSprite");
-		auto box = row->CreateChild<Urho3D::CheckBox>();
-		box->SetStyle("MiniMapCheckBox", style);
+		auto box = createElement<Urho3D::CheckBox>(row, style, "MiniMapCheckBox");
 		checksElements.push_back(box);
 		box->AddChild(sprite);
 

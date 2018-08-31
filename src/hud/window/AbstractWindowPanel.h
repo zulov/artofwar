@@ -4,11 +4,12 @@
 
 class AbstractWindowPanel : public Urho3D::Object
 {
-	URHO3D_OBJECT(AbstractWindowPanel, Object)
+URHO3D_OBJECT(AbstractWindowPanel, Object)
 
-	explicit AbstractWindowPanel(Urho3D::XMLFile* _style, Urho3D::String styleName, std::initializer_list<GameState> active);
+	explicit AbstractWindowPanel(Urho3D::XMLFile* _style, Urho3D::String styleName,
+	                             std::initializer_list<GameState> active);
 	virtual ~AbstractWindowPanel();
-	Urho3D::Window* createWindow();
+	void createWindow();
 	void updateStateVisibilty(GameState state);
 
 	Urho3D::String& getStyleName() { return styleName; }

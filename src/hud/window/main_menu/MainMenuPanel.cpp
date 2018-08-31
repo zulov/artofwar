@@ -63,8 +63,7 @@ void MainMenuPanel::HandleButtonClick(Urho3D::StringHash eventType, Urho3D::Vari
 }
 
 void MainMenuPanel::createBody() {
-	background = Game::getUI()->GetRoot()->CreateChild<Urho3D::BorderImage>();
-	background->SetStyle("MainMenuBackground", style);
+	background = createElement<Urho3D::BorderImage>(Game::getUI()->GetRoot(), style,"MainMenuBackground");
 	background->SetBringToBack(true);
 	background->SetPriority(-1);
 	window->SetPriority(1);

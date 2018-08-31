@@ -28,29 +28,27 @@ struct NewGameTeamLine
 	}
 
 	void populateTeams(Urho3D::BorderImage* row) {
-		lineEdit = row->CreateChild<Urho3D::LineEdit>();
-		lineEdit->SetStyle("LineEdit", style);
+		lineEdit = createElement<Urho3D::LineEdit>(row, style, "LineEdit");
 
 		Urho3D::JSONFile* names = Game::getCache()->GetResource<Urho3D::JSONFile>("lang/names.json");
 		Urho3D::JSONArray namesArray = names->GetRoot().Get("player_names").GetArray();
 		lineEdit->SetText(namesArray.At(rand() % namesArray.Size()).GetCString());
+		
+		team = createElement<Urho3D::DropDownList>(row, style, "MainMenuNewGameDropDownList");
+		addChildTexts(team, {l10n->Get("1"), l10n->Get("2")}, style);
 
-		team = createDropDownList(row, "MainMenuNewGameDropDownList", style);
-			addChildTexts(team, {l10n->Get("1"), l10n->Get("2")}, style);
+		nation = createElement<Urho3D::DropDownList>(row, style, "MainMenuNewGameDropDownList");
 
-		nation = createDropDownList(row, "MainMenuNewGameDropDownList", style);
-		int size = Game::getDatabaseCache()->getNationSize();
-		for (int i = 0; i < size; ++i) {
+		for (int i = 0; i < Game::getDatabaseCache()->getNationSize(); ++i) {
 			addTextItem(nation, l10n->Get("nation_" + Game::getDatabaseCache()->getNation(i)->name), style);
 		}
 
-		color = createDropDownList(row, "MainMenuNewGameDropDownList", style);
-		int sizeColor = Game::getDatabaseCache()->getPlayerColorsSize();
-		for (int i = 0; i < sizeColor; ++i) {
+		color = createElement<Urho3D::DropDownList>(row, style, "MainMenuNewGameDropDownList");
+
+		for (int i = 0; i < Game::getDatabaseCache()->getPlayerColorsSize(); ++i) {
 			addTextItem(color, l10n->Get("color_" + Game::getDatabaseCache()->getPlayerColor(i)->name), style);
 		}
-		chk = row->CreateChild<Urho3D::CheckBox>();
-		chk->SetStyle("CheckBox", style);
+		chk = createElement<Urho3D::CheckBox>(row, style, "CheckBox");
 	}
 
 	NewGamePlayer getNewGamePlayer() {

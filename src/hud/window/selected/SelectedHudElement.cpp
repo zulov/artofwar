@@ -15,13 +15,11 @@ SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* style) {
 	icon = createEmptySprite(style, "SmallSprite");
 	button->AddChild(icon);
 	button->SetVar("SelectedHudElement", this);
-	mock = button->CreateChild<Urho3D::UIElement>();
-	mock->SetStyle("mock", style);
+	mock = createElement<Urho3D::UIElement>(button, style, "mock");
 
 	bars = new Urho3D::ProgressBar*[MAX_SELECTED_IN_BUTTON];
 	for (int i = 0; i < MAX_SELECTED_IN_BUTTON; ++i) {
-		bars[i] = mock->CreateChild<Urho3D::ProgressBar>();
-		bars[i]->SetStyle("MiniProgressBar");
+		bars[i] = createElement<Urho3D::ProgressBar>(mock, style, "MiniProgressBar");
 		bars[i]->SetRange(1);
 		bars[i]->SetValue(0.5);
 		bars[i]->SetVisible(false);

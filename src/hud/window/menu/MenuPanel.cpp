@@ -87,20 +87,17 @@ void MenuPanel::createBody() {
 	infoPanel->createWindow();
 	infoPanel->setVisible(false);
 
-	mock = window->CreateChild<Urho3D::UIElement>();
-	mock->SetStyle("LeftMenuMock", style);
+	mock = createElement<Urho3D::UIElement>(window, style, "LeftMenuMock");
 
 	for (auto& row : rows) {
-		row = mock->CreateChild<Urho3D::UIElement>();
-		row->SetStyle("LeftMenuListRow", style);
+		row = createElement<Urho3D::UIElement>(mock, style, "LeftMenuListRow");
 	}
 	for (int i = 0; i < LEFT_MENU_CHECKS_NUMBER; ++i) {
 		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
 		>("textures/hud/icon/lm/lm" + Urho3D::String(i) + ".png");
 
 		MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
-		checks[i] = rows[LEFT_MENU_ROWS_NUMBER - 1]->CreateChild<Urho3D::CheckBox>();
-		checks[i]->SetStyle("LeftMenuCheckBox", style);
+		checks[i] = createElement<Urho3D::CheckBox>(rows[LEFT_MENU_ROWS_NUMBER - 1], style, "LeftMenuCheckBox");
 		checks[i]->SetVar("Num", i);
 		checks[i]->AddChild(sprite);
 		SubscribeToEvent(checks[i], Urho3D::E_CLICK, URHO3D_HANDLER(MenuPanel, ChengeModeButton));
@@ -108,8 +105,7 @@ void MenuPanel::createBody() {
 	auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
 	>("textures/hud/icon/lm/lm3.png");
 	MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
-	nextButton = rows[LEFT_MENU_ROWS_NUMBER - 1]->CreateChild<Urho3D::Button>();
-	nextButton->SetStyle("LeftMenuIcon", style);
+	nextButton = createElement<Urho3D::Button>(rows[LEFT_MENU_ROWS_NUMBER - 1], style,"LeftMenuIcon");
 	nextButton->AddChild(sprite);
 
 	int k = 0;

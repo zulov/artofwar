@@ -1,10 +1,12 @@
 #include "AbstractWindowPanel.h"
 #include "Game.h"
+#include "hud/UiUtils.h"
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/UI.h>
 
 
-AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style, Urho3D::String styleName, std::initializer_list<GameState> active): Object(Game::getContext()),
+AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style, Urho3D::String styleName,
+                                         std::initializer_list<GameState> active): Object(Game::getContext()),
 	style(_style), styleName(styleName) {
 	std::fill_n(visibleAt, GAME_STATE_SIZE, false);
 	for (auto a : active) {
@@ -17,13 +19,9 @@ AbstractWindowPanel::~AbstractWindowPanel() {
 	window->Remove();
 }
 
-Urho3D::Window* AbstractWindowPanel::createWindow() {
-	window = Game::getUI()->GetRoot()->CreateChild<Urho3D::Window>();
-	window->SetStyle(getStyleName(), style);
-
+void AbstractWindowPanel::createWindow() {
+	window = createElement<Urho3D::Window>(Game::getUI()->GetRoot(), style, getStyleName());
 	createBody();
-
-	return window;
 }
 
 void AbstractWindowPanel::updateStateVisibilty(GameState state) {

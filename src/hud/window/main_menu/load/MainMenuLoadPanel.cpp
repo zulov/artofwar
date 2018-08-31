@@ -17,10 +17,8 @@ MainMenuLoadPanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDetai
 
 void MainMenuLoadPanel::createBody() {
 	MainMenuDetailsPanel::createBody();
-	leftMock = window->CreateChild<Urho3D::UIElement>();
-	leftMock->SetStyle("LoadLeftMock", style);
-	list = leftMock->CreateChild<Urho3D::ListView>();
-	list->SetStyle("LoadList", style);
+	leftMock = createElement<Urho3D::UIElement>(window, style,"LoadLeftMock"); 
+	list = createElement<Urho3D::ListView>(window, style,"LoadList");
 
 	auto fileSystem = GetSubsystem<Urho3D::FileSystem>();
 
@@ -36,10 +34,9 @@ void MainMenuLoadPanel::createBody() {
 		SubscribeToEvent(button, Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuLoadPanel, HandleLoadClick));
 	}
 
-	content = window->CreateChild<Urho3D::ScrollView>();
-	content->SetStyle("LoadContent", style);
-	loadButton = leftMock->CreateChild<Urho3D::Button>();
-	loadButton->SetStyle("LoadButton", style);
+	content = createElement<Urho3D::ScrollView>(window, style,"LoadContent");
+	loadButton = createElement<Urho3D::Button>(leftMock, style,"LoadButton");
+
 	addChildText(loadButton, "LoadButtonText", Game::getLocalization()->Get("load"), style);
 }
 
