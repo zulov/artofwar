@@ -44,7 +44,7 @@ Urho3D::Billboard* Physical::createBillboardSet(Urho3D::Node*& node, Urho3D::Bil
 }
 
 void Physical::updateBillboardShadow(Urho3D::Vector3& boundingBox) const {
-	const auto boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.3f;
+	const auto boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.2f;
 	billboardShadow->size_ = {boudingSize, boudingSize};
 	billboardShadow->enabled_ = false;
 

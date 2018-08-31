@@ -29,7 +29,7 @@ void MainMenuClosePanel::createBody() {
 	yes = createElement<Urho3D::Button>(row, style, "MsgButton");
 	addChildText(yes, "MsgTextButton", l10n->Get("quit"), style);
 
-	no = createElement<Urho3D::Button>(row,style,"MsgButton");
+	no = createElement<Urho3D::Button>(row, style, "MsgButton");
 	addChildText(no, "MsgTextButton", l10n->Get("cancel"), style);
 
 	SubscribeToEvent(no, Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuClosePanel, HandleCancelClick));

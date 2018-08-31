@@ -16,7 +16,6 @@ private:
 	void createBody() override;
 	void HandleCancelClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
-
 	Urho3D::Window * miniWindow; 
 	Urho3D::Text * text;
 	Urho3D::UIElement* row;	

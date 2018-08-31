@@ -199,18 +199,13 @@ void Controls::hudAction(HudData* hud) {
 void Controls::order(short id, const ActionParameter& parameter) {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::PHYSICAL:
-		orderPhysical(id, parameter);
-		break;
+		return orderPhysical(id, parameter);
 	case ObjectType::UNIT:
-		actionUnit(id, parameter);
-		break;
+		return actionUnit(id, parameter);
 	case ObjectType::BUILDING:
-		executeOnAll(id, parameter);
-		break;
+		return executeOnAll(id, parameter);
 	case ObjectType::RESOURCE:
-		orderResource(id, parameter);
-		break;
-	default: ;
+		return orderResource(id, parameter);
 	}
 }
 
@@ -240,6 +235,9 @@ void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 void Controls::orderResource(short id, const ActionParameter& parameter) {
 	switch (parameter.type) {
 	case MenuAction::RESOURCE_COLLECT:
+
+		break;
+	case MenuAction::RESOURCE_COLLECT_CANCEL:
 
 		break;
 	}
@@ -314,12 +312,9 @@ void Controls::unitOrder(short id) {
 void Controls::actionUnit(short id, const ActionParameter& parameter) {
 	switch (parameter.type) {
 	case MenuAction::ORDER:
-		unitOrder(id);
-		break;
+		return unitOrder(id);
 	case MenuAction::FORMATION:
-		unitFormation(id);
-		break;
-	default: ;
+		return unitFormation(id);
 	}
 }
 
