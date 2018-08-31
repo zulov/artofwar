@@ -85,12 +85,11 @@ void MainMenuPanel::createBody() {
 		>("textures/hud/icon/menu/menu_" + Urho3D::String(i) + ".png");
 
 		auto sprite2 = createSprite(texture2, style, "MainMenuSprite");
-		auto button = simpleButton(sprite2, style, "MainMenuButton");
+		auto button = simpleButton(window, sprite2, style, "MainMenuButton");
 
 		addChildText(button, "MainMenuText", l10n->Get("menu_" + Urho3D::String(i)), style);
 
 		button->SetVar("Num", i);
-		window->AddChild(button);
 		SubscribeToEvent(button, Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuPanel, HandleButtonClick));
 	}
 }
