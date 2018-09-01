@@ -2,6 +2,7 @@
 #include <Urho3D/UI/ProgressBar.h>
 #include "../../UiUtils.h"
 #include "objects/queue/QueueElement.h"
+#include <Urho3D/UI/UIEvents.h>
 
 
 QueueHudElement::QueueHudElement(Urho3D::XMLFile* style) {
@@ -65,4 +66,9 @@ void QueueHudElement::setData(QueueElement* _element) {
 
 void QueueHudElement::reduce(short amount) {
 	element->reduce(amount);
+}
+
+QueueHudElement* QueueHudElement::getFromElement(Urho3D::VariantMap& eventData) {
+	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	return static_cast<QueueHudElement *>(element->GetVar("QueueHudElement").GetVoidPtr());
 }

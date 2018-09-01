@@ -246,9 +246,9 @@ void Hud::updateSelected(SelectedInfo* selectedInfo) {
 }
 
 void Hud::HandleUIButtonHoverOn(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
-	hoverOnIcon(getElement(eventData));
+	hoverOnIcon(HudData::getFromElement(eventData));
 }
 
 void Hud::HandleUIButtonHoverOff(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
-	hoverOffIcon(getElement(eventData));
+	hoverOffIcon(HudData::getFromElement(eventData));
 }

@@ -1,6 +1,5 @@
 #pragma once
 #include <Urho3D/UI/UIElement.h>
-#include <Urho3D/UI/UIEvents.h>
 
 enum class MenuAction : char;
 
@@ -11,6 +10,7 @@ public:
 	~HudData();
 
 	void set(short _id, MenuAction _type, Urho3D::String _text);
+	static HudData* getFromElement(Urho3D::VariantMap& eventData);
 
 	Urho3D::String& getText() { return text; }
 	Urho3D::UIElement* getUIParent() const { return parent; }
@@ -22,8 +22,3 @@ private:
 	MenuAction type;
 	short id;
 };
-
-static HudData* getElement(Urho3D::VariantMap& eventData) {
-	const auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	return static_cast<HudData *>(element->GetVar("HudElement").GetVoidPtr());
-}

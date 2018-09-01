@@ -189,7 +189,7 @@ void Controls::resetState() {
 	}
 }
 
-void Controls::hudAction(HudData* hud) {
+void Controls::toBuild(HudData* hud) {
 	state = ControlsState::BUILD;
 	typeToCreate = ObjectType::BUILDING;
 	idToCreate = hud->getId();

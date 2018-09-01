@@ -90,9 +90,8 @@ void InGameMenuPanel::createBody() {
 
 void InGameMenuPanel::HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	int id = element->GetVar("HudElement").GetInt();
 
-	action(id);
+	action(element->GetVar("HudElement").GetInt());
 }
 
 void InGameMenuPanel::HandleToggle(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {

@@ -26,7 +26,7 @@ public:
 	void select(Physical* entity);
 	void unSelectAll();
 
-	void hudAction(HudData* hud);
+	void toBuild(HudData* hud);
 
 	void order(short id, const ActionParameter& parameter);
 

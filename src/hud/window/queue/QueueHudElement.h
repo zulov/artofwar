@@ -24,6 +24,7 @@ public:
 	void setProgress(float progress);
 	void setData(QueueElement* _element);
 	void reduce(short amount);
+	static QueueHudElement* getFromElement(Urho3D::VariantMap& eventData);
 private:
 	Urho3D::Button* button;
 

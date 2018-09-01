@@ -367,7 +367,7 @@ void MenuPanel::basicResource(SelectedInfo* selectedInfo) {
 
 	setNextElement(k, "textures/hud/icon/resource_action/get_worker.png", 0, MenuAction::RESOURCE_COLLECT,
 	               l10n->Get("res_act_get_worker"));
-	setNextElement(k, "textures/hud/icon/resource_action/remove_workers.png", 1, MenuAction::RESOURCE_COLLECT,
+	setNextElement(k, "textures/hud/icon/resource_action/remove_workers.png", 1, MenuAction::RESOURCE_COLLECT_CANCEL,
 	               l10n->Get("res_act_cancel_worker"));
 
 	resetButtons(k);

@@ -93,6 +93,7 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 		break;
 	case MenuAction::FORMATION:
 	case MenuAction::RESOURCE_COLLECT:
+	case MenuAction::RESOURCE_COLLECT_CANCEL:
 		message = hudData->getText();
 		break;
 	default: ;

@@ -96,8 +96,7 @@ void QueuePanel::createBody() {
 }
 
 void QueuePanel::HandleReduce(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
-	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	QueueHudElement* qHudElement = static_cast<QueueHudElement *>(element->GetVar("QueueHudElement").GetVoidPtr());
+	auto qHudElement = QueueHudElement::getFromElement(eventData);
 
 	if (eventData[Urho3D::UIMouseClick::P_BUTTON].GetInt() == Urho3D::MOUSEB_LEFT) {
 		qHudElement->reduce(1);

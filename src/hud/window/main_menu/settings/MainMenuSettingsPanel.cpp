@@ -122,8 +122,7 @@ void MainMenuSettingsPanel::HandleChangeSettings(Urho3D::StringHash eventType, U
 }
 
 void MainMenuSettingsPanel::HandleSaveSettings(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
-	auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	auto form = static_cast<SettingsForm *>(element->GetVar("SettingsForm").GetVoidPtr());
+	auto form = SettingsForm::getFromElement(eventData);
 
 	popualateForm(form);
 

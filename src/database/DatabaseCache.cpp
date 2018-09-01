@@ -354,8 +354,8 @@ void DatabaseCache::setSettings(int i, db_settings* settings) {
 	delete dbContainer->settings[0];
 	dbContainer->settings[0] = settings;
 	Urho3D::String sql = "UPDATE settings";
-	sql.Append(" SET graph = ").Append(Urho3D::String(settings->graph));
-	sql.Append(", resolution = ").Append(Urho3D::String(settings->resolution));
+	sql.Append(" SET graph = ").Append(Urho3D::String(settings->graph))
+		.Append(", resolution = ").Append(Urho3D::String(settings->resolution));
 
 	executeSingle(sql.CString());
 }

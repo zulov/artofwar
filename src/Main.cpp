@@ -357,23 +357,13 @@ void Main::HandleCloseGame(StringHash eventType, VariantMap& eventData) {
 }
 
 void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
-	auto hudData = getElement(eventData);
+	const auto hudData = HudData::getFromElement(eventData);
 	
 	switch (hudData->getType()) {
-
 	case MenuAction::BUILDING:
-		controls->hudAction(hudData);
-		break;
-	case MenuAction::UNIT:
-	case MenuAction::UNIT_LEVEL:
-	case MenuAction::UNIT_UPGRADE:
-	case MenuAction::BUILDING_LEVEL:
-	case MenuAction::ORDER:
-	case MenuAction::FORMATION:
-	case MenuAction::RESOURCE_COLLECT:
-		controls->order(hudData->getId(), ActionParameter(hudData->getType()));
-		break;
+		return controls->toBuild(hudData);
 	default: ;
+		controls->order(hudData->getId(), ActionParameter(hudData->getType()));
 	}
 }
 
@@ -382,9 +372,8 @@ void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	SelectedHudElement* sHudElement = static_cast<SelectedHudElement *>(element
 	                                                                    ->GetVar("SelectedHudElement").GetVoidPtr()
 	);
-	auto selected = sHudElement->getSelected();
 	controls->unSelectAll();
-	for (auto physical : *selected) {
+	for (auto physical : *sHudElement->getSelected()) {
 		controls->select(physical);
 	}
 }
