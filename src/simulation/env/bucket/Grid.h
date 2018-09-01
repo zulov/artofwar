@@ -3,8 +3,8 @@
 #include "defines.h"
 #include <Urho3D/Math/Vector3.h>
 
-#define MAX_SEP_DIST 16
-#define RES_SEP_DIST 80
+#define MAX_SEP_DIST 24
+#define RES_SEP_DIST 120
 
 class Unit;
 class Bucket;
@@ -22,15 +22,15 @@ public:
 
 	std::vector<short>* getEnvIndexsFromCache(float dist);
 	std::vector<Physical *>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);
-	BucketIterator& getArrayNeight(Physical* entity, float radius, short thread);
-	
+	BucketIterator& getArrayNeight(Urho3D::Vector3* position, float radius, short thread);
+
 	int indexFromPosition(Urho3D::Vector3* position) const;
 	int indexFromPosition(Urho3D::Vector2& position) const;
 
 	int getIndex(short posX, short posZ) const { return posX * resolution + posZ; }
 protected:
 	short getIndex(float value) const;
-	bool inRange(int index) const {return index >= 0 && index < sqResolution;}
+	bool inRange(int index) const { return index >= 0 && index < sqResolution; }
 	short resolution;
 	int sqResolution;
 	float size;

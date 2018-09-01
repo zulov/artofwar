@@ -233,14 +233,6 @@ void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 }
 
 void Controls::orderResource(short id, const ActionParameter& parameter) {
-	switch (parameter.type) {
-	case MenuAction::RESOURCE_COLLECT:
-
-		break;
-	case MenuAction::RESOURCE_COLLECT_CANCEL:
-
-		break;
-	}
 	executeOnAll(id, parameter);
 }
 

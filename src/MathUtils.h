@@ -1,9 +1,4 @@
 #pragma once
-#include "objects/Physical.h"
-
-inline float sqDist(const Physical* one, const Physical* two) {
-	return (*one->getPosition() - *two->getPosition()).LengthSquared();
-}
 
 inline float sqDist(const Urho3D::Vector3* one, const Urho3D::Vector3* two) {
 	return (*one - *two).LengthSquared();

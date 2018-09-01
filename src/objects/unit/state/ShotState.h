@@ -37,7 +37,7 @@ public:
 	}
 
 	bool closeEnough(Unit* unit) {
-		return sqDist(unit, unit->missleData->aim) < unit->attackRange * unit->attackRange;
+		return sqDist(unit->getPosition(), unit->missleData->aim->getPosition()) < unit->attackRange * unit->attackRange;
 	}
 
 	void execute(Unit* unit, float timeStep) override {

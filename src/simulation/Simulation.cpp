@@ -23,8 +23,8 @@
 #include "objects/building/Building.h"
 #include "player/Player.h"
 #include "DebugUnitType.h"
-#include "objects/PhysicalUtils.h"
 #include <ctime>
+#include "objects/PhysicalUtils.h"
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {

@@ -141,7 +141,7 @@ bool Physical::belowCloseLimit() { return closeUsers < maxCloseUsers; }
 
 bool Physical::hasEnemy() {
 	if (isFirstThingAlive()) {
-		if (sqDist(this, thingsToInteract[0]) < attackRange * attackRange) {
+		if (sqDist(this->getPosition(), thingsToInteract[0]->getPosition()) < attackRange * attackRange) {
 			return true;
 		}
 	}

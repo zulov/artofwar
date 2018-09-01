@@ -1,5 +1,6 @@
 #pragma once
 #include "MathUtils.h"
+#include "Physical.h"
 
 inline bool belowClose(Physical* physical) {
 	return physical->belowCloseLimit();

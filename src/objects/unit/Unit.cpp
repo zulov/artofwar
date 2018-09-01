@@ -176,7 +176,7 @@ void Unit::toCharge(std::vector<Physical*>* enemies) {
 	thingsToInteract.clear();
 	for (auto entity : *enemies) {
 		if (entity->isAlive()) {
-			const float distance = sqDist(this, entity);
+			const float distance = sqDist(this->getPosition(), entity->getPosition());
 			if (distance <= chargeData->attackRange * chargeData->attackRange) {
 				thingsToInteract.push_back(entity);
 			}

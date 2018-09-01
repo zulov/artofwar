@@ -68,7 +68,7 @@ std::vector<Physical *>* Enviroment::getNeighbours(Physical* physical, Grid& buc
 	neights->clear();
 
 	auto center = physical->getPosition();
-	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical, radius, 0);
+	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius, 0);
 	const float sqSepDistance = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {

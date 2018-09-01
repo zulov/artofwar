@@ -2,15 +2,20 @@
 #include "Game.h"
 #include "MathUtils.h"
 #include "ObjectEnums.h"
+#include "OperatorType.h"
 #include "database/DatabaseCache.h"
+#include "objects/MenuAction.h"
+#include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
+#include "player/Player.h"
+#include "player/PlayersManager.h"
 #include "simulation/env/Enviroment.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
-
+#include "objects/PhysicalUtils.h"
 
 ResourceEntity::
 ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell)
@@ -64,6 +69,30 @@ std::string ResourceEntity::getValues(int precision) {
 	int amountI = amonut * precision;
 	return Static::getValues(precision)
 		+ std::to_string(amountI);
+}
+
+void ResourceEntity::action(char id, const ActionParameter& parameter) {
+	switch (parameter.type) {
+	case MenuAction::RESOURCE_COLLECT:
+		{
+		auto neights = Game::getEnviroment()->getNeighboursFromTeam(this, 24,
+		                                                            Game::getPlayersManager()
+		                                                            ->getActivePlayer()->getTeam(),
+		                                                            OperatorType::EQUAL);
+		for (auto neight : *neights) {
+			auto unit = static_cast<Unit*>(neight);
+			if (unit->getState() == UnitState::STOP && StateManager::checkChangeState(unit, UnitState::COLLECT)) {
+				auto [pos, indexOfPos] = posToFollow(this, unit->getPosition());//TODO dupicate physical utils
+				const float distance = sqDist(pos, *unit->getPosition());
+				unit->toAction(this, distance, indexOfPos, UnitState::COLLECT);
+			}
+		}
+		}
+		break;
+	case MenuAction::RESOURCE_COLLECT_CANCEL:
+
+		break;
+	}
 }
 
 std::string ResourceEntity::getColumns() {

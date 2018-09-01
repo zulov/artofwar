@@ -19,6 +19,7 @@ public:
 	float getHealthPercent() const override;
 	Urho3D::String& toMultiLineString() override;
 	std::string getValues(int precision) override;
+	void action(char id, const ActionParameter& parameter) override;
 private:
 
 	db_resource* dbResource;

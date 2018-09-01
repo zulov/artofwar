@@ -22,5 +22,4 @@ private:
 	Urho3D::Button* buttonClose;
 	Urho3D::Text* title;
 	Urho3D::String msg;
-
 };

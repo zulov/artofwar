@@ -58,7 +58,11 @@ void Grid::update(Physical* entity) const {
 
 std::vector<short>* Grid::getEnvIndexsFromCache(float dist) {
 	const int index = dist * invDiff;
-	return levelsCache[index];
+	if (index < RES_SEP_DIST) {
+		return levelsCache[index];
+	} else {
+		return levelsCache[RES_SEP_DIST - 1];
+	}
 }
 
 short Grid::getIndex(float value) const {
@@ -76,11 +80,9 @@ short Grid::getIndex(float value) const {
 	return resolution - 1; //TODO czy aby napewno?
 }
 
-BucketIterator& Grid::getArrayNeight(Physical* entity, float radius, short thread) {
-	const int index = indexFromPosition(entity->getPosition());
-
+BucketIterator& Grid::getArrayNeight(Urho3D::Vector3* position, float radius, short thread) {
 	BucketIterator& bucketIterator = iterators[thread];
-	bucketIterator.init(getEnvIndexsFromCache(radius), index, this);
+	bucketIterator.init(getEnvIndexsFromCache(radius), indexFromPosition(position), this);
 	return bucketIterator;
 }
 
@@ -114,7 +116,7 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
 	for (short i = Urho3D::Min(posBeginX, posEndX); i <= Urho3D::Max(posBeginX, posEndX); ++i) {
 		for (short j = Urho3D::Min(posBeginZ, posEndZ); j <= Urho3D::Max(posBeginZ, posEndZ); ++j) {
 			const int index = getIndex(i, j);
-			std::vector<Physical *>& content = getContentAt(index); //TODO czy tu ampersentma byc?
+			std::vector<Physical *> & content = getContentAt(index); //TODO czy tu ampersentma byc?
 			tempSelected->insert(tempSelected->end(), content.begin(), content.end());
 		}
 	}
