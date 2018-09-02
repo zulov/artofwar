@@ -29,6 +29,21 @@ public:
 	bool isFirstThingAlive();
 	bool hasEnemy();
 
+	std::tuple<Urho3D::Vector2, float, int> Physical::closest(Physical* physical, Urho3D::Vector3* mainPos,
+	                                                          const std::function<
+		                                                          std::tuple<Urho3D::Vector2, int>(
+		                                                                                           Physical * ,
+		                                                                                           Urho3D::Vector3 * )>&
+	                                                          position);
+
+	std::tuple<Physical*, float, int> Physical::closestPhysical(std::vector<Physical*>* things,
+	                                                            const std::function<bool(Physical*)>& condition,
+	                                                            const std::function<
+		                                                            std::tuple<Urho3D::Vector2, int>(
+		                                                                                             Physical * ,
+		                                                                                             Urho3D::Vector3 * )
+	                                                            >& positionFunc);
+
 	virtual bool belowCloseLimit();
 	void reduceClose() { --closeUsers; }
 	void upClose() { ++closeUsers; }
@@ -51,11 +66,16 @@ public:
 	virtual Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const { return {position->x_, position->z_}; }
 
 	virtual float getMaxHpBarSize() { return 0; }
-	virtual void absorbAttack(float attackCoef){};
+
+	virtual void absorbAttack(float attackCoef) {
+	};
 	virtual void select();
 	virtual void unSelect();
 	virtual Urho3D::String& toMultiLineString();
-	virtual void action(char id, const ActionParameter& parameter){}
+
+	virtual void action(char id, const ActionParameter& parameter) {
+	}
+
 	virtual int getLevel();
 	virtual void clean();
 protected:

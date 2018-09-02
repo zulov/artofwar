@@ -175,3 +175,36 @@ void Physical::unSelect() {
 	billboardSetBar->Commit();
 	billboardSetShadow->Commit();
 }
+
+
+std::tuple<Urho3D::Vector2, float, int> Physical::closest(Physical* physical, Urho3D::Vector3* mainPos, const std::function<
+	                                                std::tuple<Urho3D::Vector2, int>(
+	                                                                                 Physical * ,
+	                                                                                 Urho3D::Vector3 * )>& positionFunc) {
+	auto [pos, indexOfPos] = positionFunc(physical, mainPos);
+	const float distance = sqDist(pos, *mainPos);
+	return std::tuple<Urho3D::Vector2, float, int>(pos, distance, indexOfPos);
+}
+
+std::tuple<Physical*, float, int> Physical::closestPhysical(std::vector<Physical*>* things,
+                                                  const std::function<bool(Physical*)>& condition,
+                                                  const std::function<
+	                                                  std::tuple<Urho3D::Vector2, int>(
+	                                                                                   Physical * ,
+	                                                                                   Urho3D::Vector3 * )>& positionFunc) {
+	float minDistance = 99999;
+	Physical* closestPhy = nullptr;
+	int bestIndex = -1;
+	for (auto entity : *things) {
+		if (entity->isAlive() && condition(entity)) {
+			auto [pos, distance, indexOfPos] = closest(entity, position, positionFunc);
+
+			if (distance <= minDistance) {
+				minDistance = distance;
+				closestPhy = entity;
+				bestIndex = indexOfPos;
+			}
+		}
+	}
+	return std::tuple<Physical*, float, int>(closestPhy, minDistance, bestIndex);
+}

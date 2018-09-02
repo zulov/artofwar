@@ -6,10 +6,10 @@
 #include "objects/unit/Unit.h"
 #include "objects/unit/aim/FutureAim.h"
 #include "simulation/env/Enviroment.h"
-#include <Urho3D/Math/Vector2.h><algorithm>
+#include "objects/unit/state/StateManager.h"
+#include <Urho3D/Math/Vector2.h>
 #include <numeric>
 #include <unordered_set>
-#include "objects/unit/state/StateManager.h"
 
 
 Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Urho3D::Vector2& _direction) :

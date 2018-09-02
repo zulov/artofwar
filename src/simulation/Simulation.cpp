@@ -56,7 +56,7 @@ void Simulation::tryToAttack(Unit* unit) {
 	if (unit->hasEnemy()) {
 		StateManager::changeState(unit, UnitState::ATTACK);
 	} else {
-		auto [closest, minDistance, indexToInterect] = closestPhysical(unit->getPosition(), enviroment->
+		auto [closest, minDistance, indexToInterect] = unit->closestPhysical(enviroment->
 		                                                               getNeighboursFromTeam(unit, 12, unit->getTeam(),
 		                                                                                     OperatorType::NOT_EQUAL),
 		                                                               belowClose,
@@ -69,8 +69,8 @@ void Simulation::tryToCollect(Unit* unit) {
 	if (unit->hasResource()) {
 		StateManager::changeState(unit, UnitState::COLLECT);
 	} else {
-		auto [closest, minDistance, indexToInterect] = closestPhysical(unit->getPosition(), enviroment->getResources(unit, 12),
-		                                                               belowClose, posToFollow);
+		auto [closest, minDistance, indexToInterect] = unit->closestPhysical(enviroment->getResources(unit, 12),
+		                                                                     belowClose, posToFollow);
 		unit->toAction(closest, minDistance, indexToInterect, UnitState::COLLECT);
 	}
 }
@@ -79,7 +79,7 @@ void Simulation::tryToShot(Unit* unit) {
 	if (unit->hasEnemy()) {
 		StateManager::changeState(unit, UnitState::SHOT);
 	} else {
-		auto [closest, minDistance, indexToInterect] = closestPhysical(unit->getPosition(), enviroment->
+		auto [closest, minDistance, indexToInterect] = unit->closestPhysical(enviroment->
 		                                                               getNeighboursFromTeam(unit, 12, unit->getTeam(),
 		                                                                                     OperatorType::NOT_EQUAL),
 		                                                               belowRange,

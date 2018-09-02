@@ -13,6 +13,5 @@ enum class MenuAction : char
 	ORDER,
 	FORMATION,
 	
-	RESOURCE_COLLECT,
-	RESOURCE_COLLECT_CANCEL
+	RESOURCE
 };

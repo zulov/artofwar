@@ -63,6 +63,7 @@ private:
 	std::unordered_set<int> getUnitInBuilding(std::vector<SelectedInfoType*>& infoTypes);
 	std::unordered_set<int> getUpgradePathInBuilding(std::vector<SelectedInfoType*>& infoTypes);
 	std::unordered_set<int> getOrderForUnit(std::vector<SelectedInfoType*>& infoTypes);
+	static void removefromCommon(std::unordered_set<int>& common, std::unordered_set<int>& possibleUntis);
 
 	Urho3D::UIElement* rows[LEFT_MENU_ROWS_NUMBER];
 	Urho3D::Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];

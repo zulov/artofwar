@@ -17,6 +17,7 @@
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <unordered_set>
+#include "objects/resource/ResourceOrder.h"
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow",
@@ -180,19 +181,11 @@ void MenuPanel::levelBuilding() {
 	resetButtons(k);
 }
 
-
 std::unordered_set<int> MenuPanel::getUpgradePathInBuilding(std::vector<SelectedInfoType*>& infoTypes) {
 	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	for (int i = 0; i < infoTypes.size(); ++i) {
-		auto& data = infoTypes.at(i)->getData();
-		if (!data.empty()) {
-			auto possiblePaths = pathsIdsInbuilding(i);
-			std::unordered_set<int> temp(common);
-			for (const auto& id : temp) {
-				if (possiblePaths.find(id) == possiblePaths.end()) {
-					common.erase(id);
-				}
-			}
+		if (!infoTypes.at(i)->getData().empty()) {
+			removefromCommon(common, pathsIdsInbuilding(i));
 		}
 	}
 
@@ -203,24 +196,25 @@ std::unordered_set<int> MenuPanel::getUnitInBuilding(std::vector<SelectedInfoTyp
 	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	int nation = Game::getPlayersManager()->getActivePlayer()->getNation();
 	for (int i = 0; i < infoTypes.size(); ++i) {
-		auto& data = infoTypes.at(i)->getData();
-		if (!data.empty()) {
-			auto possibleUntis = unitsIdsForBuildingNation(nation, i);
-			std::unordered_set<int> temp(common);
-			for (const auto& id : temp) {
-				if (possibleUntis.find(id) == possibleUntis.end()) {
-					common.erase(id);
-				}
-			}
+		if (!infoTypes.at(i)->getData().empty()) {
+			removefromCommon(common, unitsIdsForBuildingNation(nation, i));
 		}
 	}
 
 	return common;
 }
 
+void MenuPanel::removefromCommon(std::unordered_set<int>& common, std::unordered_set<int>& set) {
+	std::unordered_set<int> temp(common);
+	for (const auto& id : temp) {
+		if (set.find(id) == set.end()) {
+			common.erase(id);
+		}
+	}
+}
+
 void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
-
 	for (auto id : getUnitInBuilding(selectedInfo->getSelectedTypes())) {
 		db_unit* unit = Game::getDatabaseCache()->getUnit(id);
 		if (unit) {
@@ -232,7 +226,6 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 
 void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
-
 	for (auto id : getUnitInBuilding(selectedInfo->getSelectedTypes())) {
 		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
 		auto opt = Game::getDatabaseCache()->getUnitLevel(id, level);
@@ -365,9 +358,9 @@ void MenuPanel::basicResource(SelectedInfo* selectedInfo) {
 	int k = 0;
 	auto l10n = Game::getLocalization();
 
-	setNextElement(k, "textures/hud/icon/resource_action/get_worker.png", 0, MenuAction::RESOURCE_COLLECT,
+	setNextElement(k, "textures/hud/icon/resource_action/get_worker.png", int(ResourceOrder::COLLECT), MenuAction::RESOURCE,
 	               l10n->Get("res_act_get_worker"));
-	setNextElement(k, "textures/hud/icon/resource_action/remove_workers.png", 1, MenuAction::RESOURCE_COLLECT_CANCEL,
+	setNextElement(k, "textures/hud/icon/resource_action/remove_workers.png", int(ResourceOrder::COLLECT_CANCEL), MenuAction::RESOURCE,
 	               l10n->Get("res_act_cancel_worker"));
 
 	resetButtons(k);

@@ -1,9 +1,9 @@
 #pragma once
 #include "objects/Physical.h"
 #include "objects/NodeUtils.h"
+#include "MathUtils.h"
 #include <Urho3D/Math/Vector3.h>
 #include <iostream>
-#include "MathUtils.h"
 
 struct MissleData
 {
