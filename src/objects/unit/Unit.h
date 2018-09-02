@@ -56,6 +56,7 @@ public:
 	void toCharge(std::vector<Physical*>* enemies);
 
 	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo);
+	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo, float attackIntrest);
 
 	void interactWithOne(Physical* thing, int indexToInteract, UnitState action);
 

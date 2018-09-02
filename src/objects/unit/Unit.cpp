@@ -160,6 +160,10 @@ void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, U
 	actionIfCloseEnough(stateTo, closest, indexToInteract, minDistance, attackRange, attackIntrest);
 }
 
+void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo, float attackIntrest) {
+	actionIfCloseEnough(stateTo, closest, indexToInteract, minDistance, attackRange, attackIntrest);
+}
+
 void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitState action) {
 	thingsToInteract.clear();
 	thingsToInteract.push_back(thing);

@@ -84,7 +84,7 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 			if (unit->getState() == UnitState::STOP && StateManager::checkChangeState(unit, UnitState::COLLECT)) {
 				auto [pos, distance, indexOfPos ] = closest(this, unit->getPosition(), posToFollow);
 				
-				unit->toAction(this, distance, indexOfPos, UnitState::COLLECT);
+				unit->toAction(this, distance, indexOfPos, UnitState::COLLECT, 24);
 			}
 		}
 		}

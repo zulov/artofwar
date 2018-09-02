@@ -60,9 +60,8 @@ std::vector<short>* Grid::getEnvIndexsFromCache(float dist) {
 	const int index = dist * invDiff;
 	if (index < RES_SEP_DIST) {
 		return levelsCache[index];
-	} else {
-		return levelsCache[RES_SEP_DIST - 1];
 	}
+	return levelsCache[RES_SEP_DIST - 1];
 }
 
 short Grid::getIndex(float value) const {
