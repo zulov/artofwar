@@ -75,16 +75,24 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 	switch (id) {
 	case ResourceOrder::COLLECT:
 		{
+		char limit = belowCloseLimit(); //TODO perf break jesli zero
+
 		auto neights = Game::getEnviroment()->getNeighboursFromTeam(this, 24,
 		                                                            Game::getPlayersManager()
 		                                                            ->getActivePlayer()->getTeam(),
 		                                                            OperatorType::EQUAL);
+		int k = 0;
 		for (auto neight : *neights) {
-			auto unit = static_cast<Unit*>(neight);
-			if (unit->getState() == UnitState::STOP && StateManager::checkChangeState(unit, UnitState::COLLECT)) {
-				auto [pos, distance, indexOfPos ] = closest(this, unit->getPosition(), posToFollow);
-				
-				unit->toAction(this, distance, indexOfPos, UnitState::COLLECT, 24);
+			if (k < limit) {
+				auto unit = static_cast<Unit*>(neight);
+				if (unit->getState() == UnitState::STOP && StateManager::checkChangeState(unit, UnitState::COLLECT)) {
+					auto [pos, distance, indexOfPos ] = closest(this, unit->getPosition(), posToFollow);
+
+					unit->toAction(this, distance, indexOfPos, UnitState::COLLECT, 24);
+					++k;
+				}
+			} else {
+				break;
 			}
 		}
 		}
@@ -93,6 +101,7 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 
 		break;
 	}
+
 }
 
 std::string ResourceEntity::getColumns() {

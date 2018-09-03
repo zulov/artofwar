@@ -43,19 +43,20 @@ std::string Static::getColumns() {
 		+ "bucket_y		INT     NOT NULL,";
 }
 
-bool Static::belowCloseLimit() {
-	return Physical::belowCloseLimit() && hasFreeSpace();
-
+unsigned char Static::belowCloseLimit() {
+	return Urho3D::Min(Physical::belowCloseLimit(), hasFreeSpace());
+	//TODO PERF liczy sie hasFreeSpace nawet jak close limit 0
 }
 
-bool Static::hasFreeSpace() const {
+unsigned char Static::hasFreeSpace() const {
 	auto env = Game::getEnviroment();
+	unsigned char freeSpaces = 0;
 	for (auto index : surroundCells) {
 		if (canCollect(index, env->getType(index))) {
-			return true;
+			++freeSpaces;
 		}
 	}
-	return false;
+	return freeSpaces;
 }
 
 bool Static::canCollect(int index, CellState type) const {

@@ -34,7 +34,8 @@ void Physical::createBillboardShadow() {
 	billboardSetShadow->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 }
 
-Urho3D::Billboard* Physical::createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet, const const Urho3D::String & material) const {
+Urho3D::Billboard* Physical::createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet,
+                                                const const Urho3D::String& material) const {
 	node = this->node->CreateChild();
 	billbordSet = node->CreateComponent<Urho3D::BillboardSet>();
 	billbordSet->SetNumBillboards(1);
@@ -137,7 +138,10 @@ bool Physical::isFirstThingAlive() {
 		&& thingsToInteract[0]->isAlive();
 }
 
-bool Physical::belowCloseLimit() { return closeUsers < maxCloseUsers; }
+unsigned char Physical::belowCloseLimit() {
+	auto diff = maxCloseUsers - closeUsers;
+	return diff > 0 ? diff : 0;
+}
 
 bool Physical::hasEnemy() {
 	if (isFirstThingAlive()) {
@@ -177,21 +181,24 @@ void Physical::unSelect() {
 }
 
 
-std::tuple<Urho3D::Vector2, float, int> Physical::closest(Physical* physical, Urho3D::Vector3* mainPos, const std::function<
-	                                                std::tuple<Urho3D::Vector2, int>(
-	                                                                                 Physical * ,
-	                                                                                 Urho3D::Vector3 * )>& positionFunc) {
+std::tuple<Urho3D::Vector2, float, int> Physical::closest(Physical* physical, Urho3D::Vector3* mainPos,
+                                                          const std::function<
+	                                                          std::tuple<Urho3D::Vector2, int>(
+	                                                                                           Physical * ,
+	                                                                                           Urho3D::Vector3 * )>&
+                                                          positionFunc) {
 	auto [pos, indexOfPos] = positionFunc(physical, mainPos);
 	const float distance = sqDist(pos, *mainPos);
 	return std::tuple<Urho3D::Vector2, float, int>(pos, distance, indexOfPos);
 }
 
 std::tuple<Physical*, float, int> Physical::closestPhysical(std::vector<Physical*>* things,
-                                                  const std::function<bool(Physical*)>& condition,
-                                                  const std::function<
-	                                                  std::tuple<Urho3D::Vector2, int>(
-	                                                                                   Physical * ,
-	                                                                                   Urho3D::Vector3 * )>& positionFunc) {
+                                                            const std::function<bool(Physical*)>& condition,
+                                                            const std::function<
+	                                                            std::tuple<Urho3D::Vector2, int>(
+	                                                                                             Physical * ,
+	                                                                                             Urho3D::Vector3 * )>&
+                                                            positionFunc) {
 	float minDistance = 99999;
 	Physical* closestPhy = nullptr;
 	int bestIndex = -1;
