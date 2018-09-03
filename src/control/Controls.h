@@ -11,10 +11,10 @@
 #include <vector>
 
 
-struct ActionParameter;
 class HudData;
-struct MouseButton;
 class SimulationInfo;
+struct ActionParameter;
+struct MouseButton;
 struct hit_data;
 
 class Controls
@@ -23,7 +23,8 @@ public:
 	explicit Controls(Urho3D::Input* _input);
 	~Controls();
 
-	void select(Physical* entity);
+	void select(std::vector<Physical*>* entities);
+	void select(Physical* physical);
 	void unSelectAll();
 
 	void toBuild(HudData* hud);
@@ -51,6 +52,8 @@ public:
 
 	SelectedInfo* getInfo() const { return selectedInfo; }
 private:
+	void selectOne(Physical* entity);
+
 	void orderPhysical(short id, const ActionParameter& parameter) const;
 	void orderResource(short id, const ActionParameter& parameter);
 
@@ -79,6 +82,7 @@ private:
 	void releaseBuildLeft();
 	void resetState();
 	void toDefault();
+	void toResource();
 
 	std::vector<Physical*>* selected; //TODO to powinien byæ set
 

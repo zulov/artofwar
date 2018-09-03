@@ -373,9 +373,10 @@ void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	                                                                    ->GetVar("SelectedHudElement").GetVoidPtr()
 	);
 	controls->unSelectAll();
-	for (auto physical : *sHudElement->getSelected()) {
-		controls->select(physical);
-	}
+	// for (auto physical : *sHudElement->getSelected()) {
+	// 	controls->select(physical);
+	// }
+		controls->select(sHudElement->getSelected());
 }
 
 void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {

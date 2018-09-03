@@ -59,7 +59,7 @@ void Controls::unSelectAll() {
 	selectedInfo->reset();
 }
 
-void Controls::select(Physical* entity) {
+void Controls::selectOne(Physical* entity) {
 	const auto entityType = entity->getType();
 	if (entityType != selectedInfo->getSelectedType()) {
 		unSelectAll();
@@ -71,6 +71,22 @@ void Controls::select(Physical* entity) {
 	selectedInfo->setSelectedType(entityType);
 	selectedInfo->setAllNumber(selected->size());
 	selectedInfo->select(entity);
+}
+
+void Controls::select(std::vector<Physical*>* entities) {
+	for (auto physical : *entities) {
+		selectOne(physical); //TODO perf zastapic wrzuceniem na raz
+	}
+	if (!selected->empty() && selectedInfo->getSelectedType() == ObjectType::RESOURCE) {
+		toResource();
+	}
+}
+
+void Controls::select(Physical* physical) {
+	selectOne(physical);
+	if (!selected->empty() && selectedInfo->getSelectedType() == ObjectType::RESOURCE) {
+		toResource();
+	}
 }
 
 void Controls::leftClick(hit_data& hitData) {
@@ -108,10 +124,7 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
-	auto entities = Game::getEnviroment()->getNeighbours(held);
-	for (auto entity : *entities) {
-		select(entity); //TODO perf zastapic wrzuceniem na raz
-	}
+	select(Game::getEnviroment()->getNeighbours(held));
 }
 
 void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
@@ -341,7 +354,7 @@ void Controls::clean(SimulationInfo* simulationInfo) {
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
 	}
-	resetState();
+	//resetState();
 }
 
 void Controls::updateSelection() {
@@ -371,6 +384,13 @@ void Controls::updateArrow() {
 
 void Controls::toDefault() {
 	state = ControlsState::DEFAULT;
+	cleanMouse();
+	idToCreate = -1;
+	tempBuildingNode->SetEnabled(false);
+}
+
+void Controls::toResource() {
+	state = ControlsState::RESOURCE;
 	cleanMouse();
 	idToCreate = -1;
 	tempBuildingNode->SetEnabled(false);
@@ -494,4 +514,17 @@ void Controls::orderControl() {
 }
 
 void Controls::resourceControl() {
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
+		if (!left.isHeld) {
+			toDefault();
+			clickDown(left, selectionNode);
+		}
+	} else if (left.isHeld) {
+		//releaseLeft();
+		toDefault();
+	}
+
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
+		toDefault();
+	}
 }
