@@ -98,7 +98,7 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 		}
 		break;
 	case ResourceOrder::COLLECT_CANCEL:
-
+		StateManager::changeState(this, StaticState::FREE);
 		break;
 	}
 

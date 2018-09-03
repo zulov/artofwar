@@ -64,10 +64,6 @@ bool Static::canCollect(int index, CellState type) const {
 		&& Game::getEnviroment()->getCurrentSize(index) <= 2;
 }
 
-bool Static::isToDispose() const {
-	return state == StaticState::DISPOSE;
-}
-
 Urho3D::Vector2 Static::getPosToFollow(Urho3D::Vector3* center) const {
 	float closestDist = 999999;
 	Urho3D::Vector2 closest;

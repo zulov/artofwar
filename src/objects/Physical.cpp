@@ -135,7 +135,7 @@ std::string Physical::getValues(int precision) {
 bool Physical::isFirstThingAlive() {
 	return !thingsToInteract.empty()
 		&& thingsToInteract[0] != nullptr
-		&& thingsToInteract[0]->isAlive();
+		&& thingsToInteract[0]->isUsable();
 }
 
 unsigned char Physical::belowCloseLimit() {

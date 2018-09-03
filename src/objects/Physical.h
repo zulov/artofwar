@@ -27,6 +27,7 @@ public:
 	static std::string getColumns();
 	std::string getValues(int precision) override;
 	bool isFirstThingAlive();
+	virtual bool isUsable() const { return isAlive(); }
 	bool hasEnemy();
 
 	std::tuple<Urho3D::Vector2, float, int> Physical::closest(Physical* physical, Urho3D::Vector3* mainPos,
