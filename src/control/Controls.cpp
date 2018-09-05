@@ -77,16 +77,10 @@ void Controls::select(std::vector<Physical*>* entities) {
 	for (auto physical : *entities) {
 		selectOne(physical); //TODO perf zastapic wrzuceniem na raz
 	}
-	if (!selected->empty() && selectedInfo->getSelectedType() == ObjectType::RESOURCE) {
-		toResource();
-	}
 }
 
 void Controls::select(Physical* physical) {
 	selectOne(physical);
-	if (!selected->empty() && selectedInfo->getSelectedType() == ObjectType::RESOURCE) {
-		toResource();
-	}
 }
 
 void Controls::leftClick(hit_data& hitData) {
@@ -165,13 +159,18 @@ void Controls::releaseBuildLeft() {
 
 	if (raycast(hitData) && hitData.link) {
 		leftClickBuild(hitData);
+		if (input->GetKeyDown(Urho3D::KEY_CTRL)) {
+			cleanMouse();
+		} else {
+			toDefault();
+		}
 	}
 }
 
 void Controls::releaseRight() {
 	hit_data hitData;
 
-	if (raycast(hitData)) {
+	if (selectedInfo->getSelectedType()==ObjectType::UNIT && raycast(hitData)) {
 		right.setSecond(hitData.position);
 		if (sqDist(right.held.first, right.held.second) > clickDistance) {
 			rightHold(right.held);
@@ -180,9 +179,10 @@ void Controls::releaseRight() {
 				rightClickDefault(hitData, input->GetKeyDown(Urho3D::KEY_SHIFT));
 			}
 		}
-		arrowNode->SetEnabled(false);
-		right.clean();
+
 	}
+	arrowNode->SetEnabled(false);
+	right.clean();
 }
 
 bool Controls::orderAction(bool shiftPressed) {
@@ -193,13 +193,6 @@ bool Controls::orderAction(bool shiftPressed) {
 		return true;
 	}
 	return false;
-}
-
-void Controls::resetState() {
-	if (selectedInfo->hasChanged()) {
-		//TODO to dziwny warunek
-		toDefault();
-	}
 }
 
 void Controls::toBuild(HudData* hud) {
@@ -249,19 +242,13 @@ void Controls::orderResource(short id, const ActionParameter& parameter) {
 	executeOnAll(id, parameter);
 }
 
-bool Controls::clickDown(MouseButton& var, hit_data& hitData) {
+bool Controls::clickDown(MouseButton& var) {
+	hit_data hitData;
 	if (raycast(hitData)) {
 		var.setFirst(hitData.position);
 		return true;
 	}
 	return false;
-}
-
-void Controls::clickDown(MouseButton& var, Urho3D::Node* node) {
-	hit_data hitData;
-	if (clickDown(var, hitData)) {
-		showNode(node, hitData.position);
-	}
 }
 
 void Controls::createBuilding(Urho3D::Vector2 pos) {
@@ -354,7 +341,11 @@ void Controls::clean(SimulationInfo* simulationInfo) {
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
 	}
-	//resetState();
+	if (selectedInfo->hasChanged()) {
+		//TODO to dziwny warunek
+		//toDefault();
+		int a = 5;
+	}
 }
 
 void Controls::updateSelection() {
@@ -363,34 +354,44 @@ void Controls::updateSelection() {
 	if (raycast(hitData, ObjectType::PHYSICAL)) {
 		const float xScale = left.held.first->x_ - hitData.position.x_;
 		const float zScale = left.held.first->z_ - hitData.position.z_;
-
-		selectionNode->SetScale({abs(xScale), 0.1, abs(zScale)});
-		selectionNode->SetPosition((*left.held.first + hitData.position) / 2);
+		if (xScale * xScale > clickDistance || zScale * zScale > clickDistance) {
+			if (!selectionNode->IsEnabled()) {
+				selectionNode->SetEnabled(true);
+			}
+			selectionNode->SetScale({abs(xScale), 0.1, abs(zScale)});
+			selectionNode->SetPosition((*left.held.first + hitData.position) / 2);
+		} else {
+			if (selectionNode->IsEnabled()) {
+				selectionNode->SetEnabled(false);
+			}
+		}
 	}
 }
 
 void Controls::updateArrow() {
 	hit_data hitData;
 
-	if (raycast(hitData, ObjectType::PHYSICAL)) {
+	if (selectedInfo->getSelectedType() == ObjectType::UNIT && raycast(hitData, ObjectType::PHYSICAL)) {
 		auto dir = *right.held.first - hitData.position;
 
 		const float length = dir.Length();
-		arrowNode->SetScale({length, 1, length / 3});
-		arrowNode->SetDirection({-dir.z_, 0, dir.x_});
-		arrowNode->SetPosition(*right.held.first);
+		if (length * length > clickDistance) {
+			if (!arrowNode->IsEnabled()) {
+				arrowNode->SetEnabled(true);
+			}
+			arrowNode->SetScale({length, 1, length / 3});
+			arrowNode->SetDirection({-dir.z_, 0, dir.x_});
+			arrowNode->SetPosition(*right.held.first);
+		} else if (arrowNode->IsEnabled()) {
+			arrowNode->SetEnabled(false);
+		}
+	} else if (arrowNode->IsEnabled()) {
+		arrowNode->SetEnabled(false);
 	}
 }
 
 void Controls::toDefault() {
 	state = ControlsState::DEFAULT;
-	cleanMouse();
-	idToCreate = -1;
-	tempBuildingNode->SetEnabled(false);
-}
-
-void Controls::toResource() {
-	state = ControlsState::RESOURCE;
 	cleanMouse();
 	idToCreate = -1;
 	tempBuildingNode->SetEnabled(false);
@@ -409,15 +410,13 @@ void Controls::control() {
 		return buildControl();
 	case ControlsState::ORDER:
 		return orderControl();
-	case ControlsState::RESOURCE:
-		return resourceControl();
 	}
 }
 
 void Controls::defaultControl() {
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
 		if (!left.isHeld) {
-			clickDown(left, selectionNode);
+			clickDown(left);
 		} else {
 			updateSelection();
 		}
@@ -427,13 +426,14 @@ void Controls::defaultControl() {
 
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
 		if (!right.isHeld) {
-			clickDown(right, arrowNode);
+			clickDown(right);
 		} else {
 			updateArrow();
 		}
 	} else if (right.isHeld) {
 		releaseRight();
 	}
+
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_MIDDLE)) {
 		hit_data hitData;
 
@@ -509,22 +509,6 @@ void Controls::orderControl() {
 	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
 		right.markIfNotHeld();
 	} else if (right.isHeld) {
-		toDefault();
-	}
-}
-
-void Controls::resourceControl() {
-	if (input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT)) {
-		if (!left.isHeld) {
-			toDefault();
-			clickDown(left, selectionNode);
-		}
-	} else if (left.isHeld) {
-		//releaseLeft();
-		toDefault();
-	}
-
-	if (input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
 		toDefault();
 	}
 }

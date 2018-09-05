@@ -46,7 +46,6 @@ public:
 	void defaultControl();
 	void buildControl();
 	void orderControl();
-	void resourceControl();
 
 	void control();
 
@@ -66,7 +65,7 @@ private:
 	void refreshSelected();
 	bool conditionToClean(SimulationInfo* simulationInfo);
 
-	void clickDown(MouseButton& var, Urho3D::Node* node);
+	bool clickDown(MouseButton& var);
 	void createBuilding(Urho3D::Vector2 pos);
 
 	void leftClick(hit_data& hitData);
@@ -80,9 +79,7 @@ private:
 	bool orderAction(bool shiftPressed);
 	void releaseLeft();
 	void releaseBuildLeft();
-	void resetState();
 	void toDefault();
-	void toResource();
 
 	std::vector<Physical*>* selected; //TODO to powinien byæ set
 
