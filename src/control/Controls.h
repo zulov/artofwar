@@ -70,13 +70,13 @@ private:
 
 	void leftClick(hit_data& hitData);
 	void leftClickBuild(hit_data& hitData);
-	void rightClickDefault(hit_data& hitData, bool shiftPressed);
+	void rightClickDefault(hit_data& hitData);
 
 	void leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);
 	void rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);
 
 	void releaseRight();
-	bool orderAction(bool shiftPressed);
+	bool orderAction();
 	void releaseLeft();
 	void releaseBuildLeft();
 	void toDefault();

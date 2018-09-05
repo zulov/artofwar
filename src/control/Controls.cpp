@@ -95,20 +95,20 @@ void Controls::leftClickBuild(hit_data& hitData) {
 	createBuilding({hitData.position.x_, hitData.position.z_});
 }
 
-void Controls::rightClickDefault(hit_data& hitData, bool shiftPressed) {
+void Controls::rightClickDefault(hit_data& hitData) {
 	switch (hitData.link->getPhysical()->getType()) {
 	case ObjectType::PHYSICAL:
 		{
 		Game::getActionList()->add(new GroupAction(selected, UnitOrder::GO,
 		                                           new Urho3D::Vector2(hitData.position.x_, hitData.position.z_),
-		                                           shiftPressed));
+		                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
 		break;
 		}
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
 	case ObjectType::RESOURCE:
 		Game::getActionList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.link->getPhysical(),
-		                                           shiftPressed));
+		                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
 		break;
 	default: ;
 	}
@@ -143,15 +143,29 @@ void Controls::releaseLeft() {
 
 	if (raycast(hitData)) {
 		left.setSecond(hitData.position);
-		const float dist = sqDist(left.held.first, left.held.second);
-		if (dist > clickDistance) {
+		if (sqDist(left.held.first, left.held.second) > clickDistance) {
 			leftHold(left.held);
 		} else if (hitData.link) {
 			leftClick(hitData);
 		}
-		selectionNode->SetEnabled(false);
-		left.clean();
 	}
+	selectionNode->SetEnabled(false);
+	left.clean();
+}
+
+void Controls::releaseRight() {
+	hit_data hitData;
+
+	if (selectedInfo->getSelectedType() == ObjectType::UNIT && raycast(hitData)) {
+		right.setSecond(hitData.position);
+		if (sqDist(right.held.first, right.held.second) > clickDistance) {
+			rightHold(right.held);
+		} else if (hitData.link) {
+			rightClickDefault(hitData);
+		}
+	}
+	arrowNode->SetEnabled(false);
+	right.clean();
 }
 
 void Controls::releaseBuildLeft() {
@@ -167,29 +181,11 @@ void Controls::releaseBuildLeft() {
 	}
 }
 
-void Controls::releaseRight() {
-	hit_data hitData;
-
-	if (selectedInfo->getSelectedType()==ObjectType::UNIT && raycast(hitData)) {
-		right.setSecond(hitData.position);
-		if (sqDist(right.held.first, right.held.second) > clickDistance) {
-			rightHold(right.held);
-		} else {
-			if (hitData.link) {
-				rightClickDefault(hitData, input->GetKeyDown(Urho3D::KEY_SHIFT));
-			}
-		}
-
-	}
-	arrowNode->SetEnabled(false);
-	right.clean();
-}
-
-bool Controls::orderAction(bool shiftPressed) {
+bool Controls::orderAction() {
 	hit_data hitData;
 
 	if (raycast(hitData) && hitData.link) {
-		rightClickDefault(hitData, shiftPressed);
+		rightClickDefault(hitData);
 		return true;
 	}
 	return false;
@@ -495,7 +491,7 @@ void Controls::orderControl() {
 		case UnitOrder::GO:
 		case UnitOrder::ATTACK:
 		case UnitOrder::FOLLOW:
-			if (orderAction(false)) {
+			if (orderAction()) {
 				toDefault();
 			}
 			break;
