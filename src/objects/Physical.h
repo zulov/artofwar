@@ -45,7 +45,7 @@ public:
 		                                                                                             Urho3D::Vector3 * )
 	                                                            >& positionFunc);
 
-	virtual unsigned char belowCloseLimit();
+	virtual int belowCloseLimit();
 	void reduceClose() { --closeUsers; }
 	void upClose() { ++closeUsers; }
 

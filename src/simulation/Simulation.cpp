@@ -59,7 +59,7 @@ void Simulation::tryToAttack(Unit* unit) {
 		auto [closest, minDistance, indexToInterect] = unit->closestPhysical(enviroment->
 		                                                               getNeighboursFromTeam(unit, 12, unit->getTeam(),
 		                                                                                     OperatorType::NOT_EQUAL),
-		                                                               belowClose,exactPos);
+		                                                               belowClose, exactPos);
 		unit->toAction(closest, minDistance, indexToInterect, UnitState::ATTACK);
 	}
 }

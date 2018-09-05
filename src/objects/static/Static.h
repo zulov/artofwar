@@ -15,8 +15,8 @@ public:
 	void setState(StaticState state);
 	static std::string getColumns();
 
-	unsigned char belowCloseLimit() override;
-	unsigned char hasFreeSpace() const;
+	int belowCloseLimit() override;
+	int hasFreeSpace() const;
 	bool canCollect(int index, CellState type) const;
 
 	StaticState getNextState() const { return nextState; }

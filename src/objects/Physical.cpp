@@ -138,7 +138,7 @@ bool Physical::isFirstThingAlive() {
 		&& thingsToInteract[0]->isUsable();
 }
 
-unsigned char Physical::belowCloseLimit() {
+int Physical::belowCloseLimit() {
 	auto diff = maxCloseUsers - closeUsers;
 	return diff > 0 ? diff : 0;
 }
