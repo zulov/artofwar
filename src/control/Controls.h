@@ -23,9 +23,9 @@ public:
 	explicit Controls(Urho3D::Input* _input);
 	~Controls();
 
-	void select(std::vector<Physical*>* entities);
-	void select(Physical* physical);
-	void unSelectAll();
+	void select(std::vector<Physical*>* entities) const;
+	void select(Physical* physical) const;
+	void unSelectAll() const;
 
 	void toBuild(HudData* hud);
 
@@ -51,7 +51,7 @@ public:
 
 	SelectedInfo* getInfo() const { return selectedInfo; }
 private:
-	void selectOne(Physical* entity);
+	void selectOne(Physical* entity) const;
 
 	void orderPhysical(short id, const ActionParameter& parameter) const;
 
@@ -66,12 +66,12 @@ private:
 	bool clickDown(MouseButton& var);
 	void createBuilding(Urho3D::Vector2 pos);
 
-	void leftClick(hit_data& hitData);
+	void leftClick(hit_data& hitData) const;
 	void leftClickBuild(hit_data& hitData);
-	void rightClickDefault(hit_data& hitData);
+	void rightClick(hit_data& hitData) const;
 
-	void leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);
-	void rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);
+	void leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const;
+	void rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const;
 
 	void releaseRight();
 	bool orderAction();

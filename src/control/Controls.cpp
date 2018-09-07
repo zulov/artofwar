@@ -50,7 +50,7 @@ Controls::~Controls() {
 }
 
 
-void Controls::unSelectAll() {
+void Controls::unSelectAll() const {
 	for (auto& phy : *selected) {
 		phy->unSelect();
 	}
@@ -59,7 +59,7 @@ void Controls::unSelectAll() {
 	selectedInfo->reset();
 }
 
-void Controls::selectOne(Physical* entity) {
+void Controls::selectOne(Physical* entity) const {
 	const auto entityType = entity->getType();
 	if (entityType != selectedInfo->getSelectedType()) {
 		unSelectAll();
@@ -74,17 +74,17 @@ void Controls::selectOne(Physical* entity) {
 	}
 }
 
-void Controls::select(std::vector<Physical*>* entities) {
+void Controls::select(std::vector<Physical*>* entities) const {
 	for (auto physical : *entities) {
 		selectOne(physical); //TODO perf zastapic wrzuceniem na raz
 	}
 }
 
-void Controls::select(Physical* physical) {
+void Controls::select(Physical* physical) const {
 	selectOne(physical);
 }
 
-void Controls::leftClick(hit_data& hitData) {
+void Controls::leftClick(hit_data& hitData) const {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
@@ -96,7 +96,7 @@ void Controls::leftClickBuild(hit_data& hitData) {
 	createBuilding({hitData.position.x_, hitData.position.z_});
 }
 
-void Controls::rightClickDefault(hit_data& hitData) {
+void Controls::rightClick(hit_data& hitData) const {
 	switch (hitData.link->getPhysical()->getType()) {
 	case ObjectType::PHYSICAL:
 		{
@@ -115,14 +115,14 @@ void Controls::rightClickDefault(hit_data& hitData) {
 	}
 }
 
-void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
+void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
 	select(Game::getEnviroment()->getNeighbours(held));
 }
 
-void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
+void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
 	auto actions = Game::getActionList();
 
 	const auto first = new Urho3D::Vector2(held.first->x_, held.first->z_);
@@ -161,7 +161,7 @@ void Controls::releaseRight() {
 		if (sqDist(right.held.first, right.held.second) > clickDistance) {
 			rightHold(right.held);
 		} else if (hitData.link) {
-			rightClickDefault(hitData);
+			rightClick(hitData);
 		}
 	}
 	arrowNode->SetEnabled(false);
@@ -185,7 +185,7 @@ bool Controls::orderAction() {
 	hit_data hitData;
 
 	if (raycast(hitData) && hitData.link) {
-		rightClickDefault(hitData);
+		rightClick(hitData);
 		return true;
 	}
 	return false;
