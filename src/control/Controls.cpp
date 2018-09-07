@@ -64,13 +64,14 @@ void Controls::selectOne(Physical* entity) {
 	if (entityType != selectedInfo->getSelectedType()) {
 		unSelectAll();
 	}
+	if (!entity->isSelected()) {
+		entity->select();
+		selected->push_back(entity);
 
-	entity->select();
-	selected->push_back(entity);
-
-	selectedInfo->setSelectedType(entityType);
-	selectedInfo->setAllNumber(selected->size());
-	selectedInfo->select(entity);
+		selectedInfo->setSelectedType(entityType);
+		selectedInfo->setAllNumber(selected->size());
+		selectedInfo->select(entity);
+	}
 }
 
 void Controls::select(std::vector<Physical*>* entities) {
@@ -136,7 +137,6 @@ void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
 		actions->add(new GroupAction(selected, UnitOrder::CHARGE, charge, true));
 	}
 }
-
 
 void Controls::releaseLeft() {
 	hit_data hitData;
@@ -207,7 +207,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 	case ObjectType::BUILDING:
 		return executeOnAll(id, parameter);
 	case ObjectType::RESOURCE:
-		return orderResource(id, parameter);
+		return executeOnAll(id, parameter);
 	}
 }
 
@@ -232,10 +232,6 @@ void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 		break;
 		}
 	}
-}
-
-void Controls::orderResource(short id, const ActionParameter& parameter) {
-	executeOnAll(id, parameter);
 }
 
 bool Controls::clickDown(MouseButton& var) {
@@ -336,11 +332,6 @@ bool Controls::conditionToClean(SimulationInfo* simulationInfo) {
 void Controls::clean(SimulationInfo* simulationInfo) {
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
-	}
-	if (selectedInfo->hasChanged()) {
-		//TODO to dziwny warunek
-		//toDefault();
-		int a = 5;
 	}
 }
 

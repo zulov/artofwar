@@ -54,13 +54,11 @@ private:
 	void selectOne(Physical* entity);
 
 	void orderPhysical(short id, const ActionParameter& parameter) const;
-	void orderResource(short id, const ActionParameter& parameter);
 
 	void executeOnAll(short id, const ActionParameter& parameter);
 
 	void unitFormation(short id);
 	void actionUnit(short id, const ActionParameter& parameter);
-	void orderBuilding(short id, const ActionParameter& parameter);
 
 	void refreshSelected();
 	bool conditionToClean(SimulationInfo* simulationInfo);

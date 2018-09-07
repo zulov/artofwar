@@ -23,6 +23,7 @@ public:
 
 	void setTeam(unsigned char _team);
 	void setPlayer(unsigned char player);
+	bool isSelected() const; 
 
 	static std::string getColumns();
 	std::string getValues(int precision) override;
@@ -33,16 +34,16 @@ public:
 	std::tuple<Urho3D::Vector2, float, int> Physical::closest(Physical* physical, Urho3D::Vector3* mainPos,
 	                                                          const std::function<
 		                                                          std::tuple<Urho3D::Vector2, int>(
-		                                                                                           Physical * ,
-		                                                                                           Urho3D::Vector3 * )>&
+			                                                          Physical*,
+			                                                          Urho3D::Vector3*)>&
 	                                                          position);
 
 	std::tuple<Physical*, float, int> Physical::closestPhysical(std::vector<Physical*>* things,
 	                                                            const std::function<bool(Physical*)>& condition,
 	                                                            const std::function<
 		                                                            std::tuple<Urho3D::Vector2, int>(
-		                                                                                             Physical * ,
-		                                                                                             Urho3D::Vector3 * )
+			                                                            Physical*,
+			                                                            Urho3D::Vector3*)
 	                                                            >& positionFunc);
 
 	virtual int belowCloseLimit();

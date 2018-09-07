@@ -109,6 +109,10 @@ void Physical::setPlayer(unsigned char player) {
 	this->player = player;
 }
 
+bool Physical::isSelected() const {
+	return type != ObjectType::PHYSICAL && billboardBar->enabled_;
+}
+
 Urho3D::String& Physical::toMultiLineString() {
 	return menuString;
 }
@@ -184,8 +188,8 @@ void Physical::unSelect() {
 std::tuple<Urho3D::Vector2, float, int> Physical::closest(Physical* physical, Urho3D::Vector3* mainPos,
                                                           const std::function<
 	                                                          std::tuple<Urho3D::Vector2, int>(
-	                                                                                           Physical * ,
-	                                                                                           Urho3D::Vector3 * )>&
+		                                                          Physical*,
+		                                                          Urho3D::Vector3*)>&
                                                           positionFunc) {
 	auto [pos, indexOfPos] = positionFunc(physical, mainPos);
 	const float distance = sqDist(pos, *mainPos);
@@ -196,8 +200,8 @@ std::tuple<Physical*, float, int> Physical::closestPhysical(std::vector<Physical
                                                             const std::function<bool(Physical*)>& condition,
                                                             const std::function<
 	                                                            std::tuple<Urho3D::Vector2, int>(
-	                                                                                             Physical * ,
-	                                                                                             Urho3D::Vector3 * )>&
+		                                                            Physical*,
+		                                                            Urho3D::Vector3*)>&
                                                             positionFunc) {
 	float minDistance = 99999;
 	Physical* closestPhy = nullptr;
