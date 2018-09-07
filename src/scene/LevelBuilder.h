@@ -17,7 +17,7 @@ public:
 	void createScene(SceneLoader& loader);
 	void createMap(int mapId);
 	void createScene(NewGameForm* form);
-	Urho3D::Terrain* getTerrian();
+	Urho3D::Terrain* getTerrian() const;
 private:
 	Urho3D::SharedPtr<Urho3D::Scene> scene;
 
