@@ -4,22 +4,23 @@
 #include "database/DatabaseCache.h"
 #include "objects/MenuAction.h"
 #include "objects/unit/ActionParameter.h"
+#include "objects/unit/state/StateManager.h"
+#include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
-#include "player/Player.h"
-#include "objects/unit/state/StateManager.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include <string>
+#include <iostream>
 
+#include <string>
 
 
 Building::Building(Urho3D::Vector3* _position, int id, int player, int level, int mainCell):
 	Static(_position, ObjectType::BUILDING, mainCell),
 	target(_position->x_, _position->z_) {
-
+	std::cout << _position->x_ << "-" << _position->z_ << std::endl;
 	initBillbords();
 	target.x_ += 5;
 	target.y_ += 5;

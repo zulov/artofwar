@@ -17,17 +17,18 @@ BuildingFactory::~BuildingFactory() {
 std::vector<Building*>* BuildingFactory::
 create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level) {
 	buildings->clear();
-	float y = Game::getEnviroment()->getGroundHeightAt(center.x_, center.y_);
-	auto mainCell = Game::getEnviroment()->getIndex(_bucketCords.x_, _bucketCords.y_);
+	const auto env = Game::getEnviroment();
 
-	buildings->push_back(new Building(new Urho3D::Vector3(center.x_, y, center.y_), id, player, level, mainCell));
+	buildings->push_back(new Building(
+		new Urho3D::Vector3(center.x_, env->getGroundHeightAt(center.x_, center.y_), center.y_),
+		id, player, level, env->getIndex(_bucketCords.x_, _bucketCords.y_)));
 
 	return buildings;
 }
 
 std::vector<Building*>* BuildingFactory::load(dbload_building* building) {
-	Urho3D::IntVector2 bucketCords(building->buc_x, building->buc_y);
-	db_building* db_building = Game::getDatabaseCache()->getBuilding(building->id_db);
+	const Urho3D::IntVector2 bucketCords(building->buc_x, building->buc_y);
+	const auto db_building = Game::getDatabaseCache()->getBuilding(building->id_db);
 
 	auto center = Game::getEnviroment()->getValidPosition(db_building->size, bucketCords);
 

@@ -80,16 +80,22 @@ Entity* LevelBuilder::createLight(const Urho3D::Vector3& direction, const Urho3D
 	return entity;
 }
 
-Entity* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho3D::String& texture, float horScale,
-                                   float verScale) {
+
+Entity* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho3D::String& texture,
+                                   float horScale, float verScale) {
 	const auto entity = new Physical(new Urho3D::Vector3, ObjectType::PHYSICAL);
 
 	terrain = entity->getNode()->CreateComponent<Urho3D::Terrain>();
+	terrain->SetHeightMap(Game::getCache()->GetResource<Urho3D::Image>(heightMap));
 	terrain->SetPatchSize(8);
 	terrain->SetSpacing({horScale, verScale, horScale});
 	terrain->SetSmoothing(false);
 	terrain->SetOccluder(true);
-	terrain->SetHeightMap(Game::getCache()->GetResource<Urho3D::Image>(heightMap));
+	setMaterial(texture);
+	return entity;
+}
+
+void LevelBuilder::setMaterial(const Urho3D::String& texture) const {
 	auto mat = Game::getCache()->GetResource<Urho3D::Material>(texture)->Clone();
 	mat->SetRenderOrder(100); // Lower render order to render first
 	auto tecs = mat->GetTechniques();
@@ -101,5 +107,4 @@ Entity* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho3D
 		mat->SetTechnique(i, tec);
 	}
 	terrain->SetMaterial(mat);
-	return entity;
 }

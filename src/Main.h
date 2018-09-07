@@ -60,6 +60,7 @@ private:
 	SelectedInfo* control(float timeStep, SimulationInfo* simulationInfo);
 	void changeCamera(int type);
 	void load(Urho3D::String saveName, loading& progres);
+	void createEnv();
 	void save(Urho3D::String name);
 	void running(double timeStep);
 	void createSimulation();

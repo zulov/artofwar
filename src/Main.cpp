@@ -231,7 +231,7 @@ void Main::load(String saveName, loading& progres) {
 		break;
 	case 1:
 		{
-		Game::setEnviroment(new Enviroment(levelBuilder->getTerrian()));
+		createEnv();
 		break;
 		}
 	case 2:
@@ -256,6 +256,10 @@ void Main::load(String saveName, loading& progres) {
 	updateProgres(progres);
 }
 
+void Main::createEnv() {
+	Game::setEnviroment(new Enviroment(levelBuilder->getTerrain()));
+}
+
 void Main::newGame(NewGameForm* form, loading& progres) {
 	switch (progres.currentStage) {
 	case 0:
@@ -276,7 +280,7 @@ void Main::newGame(NewGameForm* form, loading& progres) {
 		break;
 	case 1:
 		{
-		Game::setEnviroment(new Enviroment(levelBuilder->getTerrian()));
+		createEnv();
 		break;
 		}
 	case 2:

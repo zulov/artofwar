@@ -17,12 +17,13 @@ public:
 	void createScene(SceneLoader& loader);
 	void createMap(int mapId);
 	void createScene(NewGameForm* form);
-	Urho3D::Terrain* getTerrian() const;
+	Urho3D::Terrain* getTerrain() const;
 private:
 	Urho3D::SharedPtr<Urho3D::Scene> scene;
 
-	Entity* createZone();
-	Entity* createLight(const Urho3D::Vector3& direction, const Urho3D::Color& color, Urho3D::LightType lightType);
+	static Entity* createZone();
+	static Entity* createLight(const Urho3D::Vector3& direction, const Urho3D::Color& color, Urho3D::LightType lightType);
+	void setMaterial(const Urho3D::String& texture) const;
 	Entity* createGround(const Urho3D::String& heightMap, const Urho3D::String& texture, float horScale, float verScale);
 
 	SceneObjectManager *objectManager;
