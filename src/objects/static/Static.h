@@ -1,6 +1,7 @@
 #pragma once
 #include "../Physical.h"
 #include "StaticState.h"
+#include "scene/load/dbload_container.h"
 
 enum class CellState : char;
 
@@ -13,6 +14,7 @@ public:
 	void setMainCell(int _mainCell);
 	void setNextState(StaticState stateTo);
 	void setState(StaticState state);
+	void load(dbload_static* dbloadStatic);
 	static std::string getColumns();
 
 	int belowCloseLimit() override;

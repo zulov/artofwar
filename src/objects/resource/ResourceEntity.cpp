@@ -10,12 +10,12 @@
 #include "objects/PhysicalUtils.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/Enviroment.h"
+#include "ResourceOrder.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
-#include "ResourceOrder.h"
 
 ResourceEntity::
 ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell)
@@ -119,4 +119,9 @@ float ResourceEntity::collect(float collectSpeed) {
 	amonut = 0;
 	StateManager::changeState(this, StaticState::DEAD);
 	return toReturn;
+}
+
+void ResourceEntity::load(dbload_resource_entities* resource) {
+	Static::load(resource);
+	this->amonut = resource->amount;
 }

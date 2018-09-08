@@ -14,7 +14,8 @@ ResourceFactory::~ResourceFactory() {
 	delete resources;
 }
 
-std::vector<ResourceEntity*>* ResourceFactory::create(int id, Urho3D::Vector2& center, Urho3D::IntVector2 _bucketCords, int level) const {
+std::vector<ResourceEntity*>* ResourceFactory::create(int id, Urho3D::Vector2& center, Urho3D::IntVector2 _bucketCords,
+                                                      int level) const {
 	resources->clear();
 
 	float y = Game::getEnviroment()->getGroundHeightAt(center.x_, center.y_);
@@ -30,5 +31,9 @@ std::vector<ResourceEntity*>* ResourceFactory::load(dbload_resource_entities* re
 
 	auto center = Game::getEnviroment()->getValidPosition(db_resource->size, bucketCords);
 
-	return create(resource->id_db, center, bucketCords, resource->level);
+	auto ress = create(resource->id_db, center, bucketCords, resource->level);
+	for (auto res : *ress) {
+		res->load(resource);
+	}
+	return ress;
 }

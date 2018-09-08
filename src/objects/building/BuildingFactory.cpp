@@ -20,8 +20,9 @@ create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _b
 	const auto env = Game::getEnviroment();
 
 	buildings->push_back(new Building(
-		new Urho3D::Vector3(center.x_, env->getGroundHeightAt(center.x_, center.y_), center.y_),
-		id, player, level, env->getIndex(_bucketCords.x_, _bucketCords.y_)));
+	                                  new Urho3D::Vector3(center.x_, env->getGroundHeightAt(center.x_, center.y_),
+	                                                      center.y_),
+	                                  id, player, level, env->getIndex(_bucketCords.x_, _bucketCords.y_)));
 
 	return buildings;
 }
@@ -32,5 +33,10 @@ std::vector<Building*>* BuildingFactory::load(dbload_building* building) {
 
 	auto center = Game::getEnviroment()->getValidPosition(db_building->size, bucketCords);
 
-	return create(building->id_db, center, building->player, bucketCords, building->level);
+	auto builds = create(building->id_db, center, building->player, bucketCords, building->level);
+
+	for (auto build : *builds) {
+		build->load(building);
+	}
+	return builds;
 }

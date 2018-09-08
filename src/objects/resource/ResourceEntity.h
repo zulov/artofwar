@@ -1,5 +1,6 @@
 #pragma once
 #include "objects/static/Static.h"
+#include "scene/load/dbload_container.h"
 
 struct db_resource;
 
@@ -11,6 +12,7 @@ public:
 	void populate();
 
 	float collect(float collectSpeed);
+	void load(dbload_resource_entities* resource);
 
 	static std::string getColumns();
 

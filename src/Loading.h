@@ -13,7 +13,7 @@ struct loading
 
 	~loading() = default;
 
-	float getProgres() {
+	float getProgres() const {
 		return currentStage / stagesNumber;
 	}
 

@@ -15,6 +15,7 @@ public:
 
 	void populate();
 	void upgrade(char level);
+	void load(dbload_building* dbloadBuilding);
 	static std::string getColumns();
 
 	QueueElement* updateQueue(float time) const { return queue->update(time); }

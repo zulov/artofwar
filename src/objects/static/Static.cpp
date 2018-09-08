@@ -24,6 +24,10 @@ void Static::setState(StaticState state) {
 	this->state = state;
 }
 
+void Static::load(dbload_static* dbloadStatic) {
+	
+}
+
 void Static::populate(const Urho3D::IntVector2& size) {
 	gridSize = size;
 	const auto cordsCell = Game::getEnviroment()->getCords(mainCell);
