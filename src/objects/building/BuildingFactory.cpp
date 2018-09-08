@@ -32,5 +32,5 @@ std::vector<Building*>* BuildingFactory::load(dbload_building* building) {
 
 	auto center = Game::getEnviroment()->getValidPosition(db_building->size, bucketCords);
 
-	return create(building->id_db, center, building->player, {1, 2}, building->level);
+	return create(building->id_db, center, building->player, bucketCords, building->level);
 }

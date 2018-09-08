@@ -289,8 +289,8 @@ void Simulation::executeLists() const {
 }
 
 void Simulation::initScene(SceneLoader& loader) const {
-	//loadEntities(loader);
-	addTestEntities();
+	loadEntities(loader);
+	//addTestEntities();
 	executeLists();
 }
 

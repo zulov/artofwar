@@ -247,7 +247,6 @@ void Main::load(String saveName, loading& progres) {
 		simulation->initScene(loader);
 		break;
 	case 5:
-
 		changeState(GameState::RUNNING);
 		loader.end();
 		inited = true;

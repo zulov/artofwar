@@ -210,7 +210,7 @@ INSERT INTO `building_level` (level,building,name,model,texture,scale,queue_max_
  (1,4,'better','cube.mdl','transparent.xml',5.0,25),
  (0,5,'base','cube.mdl','transparent.xml',2.5,20),
  (1,5,'better','cube.mdl','transparent.xml',2.5,25);
-INSERT INTO `building` (id,name,sizeX,sizeZ,nation,icon) VALUES (0,'house',1,1,0,'house.png'),
+INSERT INTO `building` (id,name,sizeX,sizeZ,nation,icon) VALUES (0,'house',2,2,0,'house.png'),
  (1,'tower',1,1,0,'tower.png'),
  (2,'barracks',2,2,0,'barracks.png'),
  (3,'archery_range',2,2,0,'archery_range.png'),
