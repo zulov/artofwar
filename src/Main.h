@@ -59,14 +59,14 @@ private:
 
 	SelectedInfo* control(float timeStep, SimulationInfo* simulationInfo);
 	void changeCamera(int type);
-	void load(Urho3D::String saveName, loading& progres);
+	void load(Urho3D::String saveName, loading& progress);
 	void createEnv();
 	void save(Urho3D::String name);
 	void running(double timeStep);
 	void createSimulation();
 	void setSimpleManagers();
-	void updateProgres(loading& progres);
-	void newGame(NewGameForm* form, loading& progres);
+	void updateProgress(loading& progress, std::string msg) const;
+	void newGame(NewGameForm* form, loading& progress);
 	void changeState(GameState newState);
 
 	Urho3D::MouseMode useMouseMode_;

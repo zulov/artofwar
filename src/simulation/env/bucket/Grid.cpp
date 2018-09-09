@@ -3,10 +3,10 @@
 #include "BucketIterator.h"
 #include "objects/Physical.h"
 #include "simulation/env/ContentInfo.h"
-#include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <algorithm>
 #include "objects/unit/Unit.h"
+#include <iostream>
 
 
 Grid::Grid(short _resolution, float _size): resolution(_resolution),

@@ -113,6 +113,10 @@ bool Physical::isSelected() const {
 	return type != ObjectType::PHYSICAL && billboardBar->enabled_;
 }
 
+void Physical::load(dbload_physical* dbloadPhysical) {
+	hpCoef = maxHpCoef * dbloadPhysical->hp_coef;
+}
+
 Urho3D::String& Physical::toMultiLineString() {
 	return menuString;
 }

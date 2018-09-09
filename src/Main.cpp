@@ -205,13 +205,13 @@ void Main::setSimpleManagers() {
 		->setColorPeletteRepo(new ColorPeletteRepo());
 }
 
-void Main::updateProgres(loading& progres) {
-	progres.inc();
-	hud->updateLoading(progres.getProgres());
+void Main::updateProgress(loading& progress, std::string msg) const {
+	progress.inc(msg);
+	hud->updateLoading(progress.getProgres());
 }
 
-void Main::load(String saveName, loading& progres) {
-	switch (progres.currentStage) {
+void Main::load(String saveName, loading& progress) {
+	switch (progress.currentStage) {
 	case 0:
 		{
 		setSimpleManagers();
@@ -252,15 +252,15 @@ void Main::load(String saveName, loading& progres) {
 		inited = true;
 		break;
 	}
-	updateProgres(progres);
+	updateProgress(progress, Game::getLocalization()->Get("load_msg_" + String(progress.currentStage)).CString());
 }
 
 void Main::createEnv() {
 	Game::setEnviroment(new Enviroment(levelBuilder->getTerrain()));
 }
 
-void Main::newGame(NewGameForm* form, loading& progres) {
-	switch (progres.currentStage) {
+void Main::newGame(NewGameForm* form, loading& progress) {
+	switch (progress.currentStage) {
 	case 0:
 		{
 		disposeScene();
@@ -302,7 +302,7 @@ void Main::newGame(NewGameForm* form, loading& progres) {
 		inited = true;
 		break;
 	}
-	updateProgres(progres);
+	updateProgress(progress, Game::getLocalization()->Get("new_load_msg_" + String(progress.currentStage)).CString());
 }
 
 void Main::changeState(GameState newState) {
@@ -361,7 +361,7 @@ void Main::HandleCloseGame(StringHash eventType, VariantMap& eventData) {
 
 void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	const auto hudData = HudData::getFromElement(eventData);
-	
+
 	switch (hudData->getType()) {
 	case MenuAction::BUILDING:
 		return controls->toBuild(hudData);
@@ -379,7 +379,7 @@ void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	// for (auto physical : *sHudElement->getSelected()) {
 	// 	controls->select(physical);
 	// }
-		controls->select(sHudElement->getSelected());
+	controls->select(sHudElement->getSelected());
 }
 
 void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {

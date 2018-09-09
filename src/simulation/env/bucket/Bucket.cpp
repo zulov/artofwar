@@ -11,7 +11,9 @@ Bucket::~Bucket() = default;
 
 void Bucket::add(Physical* entity) {
 	content.push_back(entity);
-	++unitsNumberPerPlayer[entity->getPlayer()];
+	if (entity->getPlayer() >= 0) {
+		++unitsNumberPerPlayer[entity->getPlayer()];
+	}
 }
 
 void Bucket::remove(Physical* entity) {
@@ -24,7 +26,9 @@ void Bucket::remove(Physical* entity) {
 
 	if (pos < content.size()) {
 		content.erase(content.begin() + pos);
-		--unitsNumberPerPlayer[entity->getPlayer()];
+		if (entity->getPlayer() >= 0) {
+			--unitsNumberPerPlayer[entity->getPlayer()];
+		}
 	}
 
 }

@@ -16,6 +16,8 @@ public:
 
 	static std::string getColumns();
 
+	char getPlayer() const override { return -1; }
+
 	int getDbID() override;
 	float getMaxHpBarSize() override;
 	float getHealthPercent() const override;

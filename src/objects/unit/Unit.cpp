@@ -387,11 +387,10 @@ bool Unit::hasResource() {
 }
 
 void Unit::load(dbload_unit* unit) {
+	Physical::load(unit);
 	state = UnitState(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
 	//aimIndex =unit->aim_i;
 	velocity = Urho3D::Vector2(unit->vel_x, unit->vel_z);
-	//alive = unit->alive;
-	hpCoef = maxHpCoef * unit->hp_coef;
 }
 
 int Unit::getLevel() {

@@ -25,7 +25,7 @@ void Static::setState(StaticState state) {
 }
 
 void Static::load(dbload_static* dbloadStatic) {
-	
+	Physical::load(dbloadStatic);
 }
 
 void Static::populate(const Urho3D::IntVector2& size) {
@@ -36,7 +36,7 @@ void Static::populate(const Urho3D::IntVector2& size) {
 
 	for (short i = sizeX.x_; i < sizeX.y_; ++i) {
 		for (short j = sizeZ.x_; j < sizeZ.y_; ++j) {
-			ocupiedCells.push_back(Game::getEnviroment()->getIndex(i, j));
+			occupiedCells.push_back(Game::getEnviroment()->getIndex(i, j));
 		}
 	}
 }

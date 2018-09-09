@@ -28,7 +28,7 @@ public:
 	int getMainCell() const override { return mainCell; }
 	bool isToDispose() const override {return state == StaticState::DISPOSE;}
 	Urho3D::IntVector2& getGridSize() { return gridSize; }
-	std::vector<int>& getOcupiedCells() { return ocupiedCells; }
+	std::vector<int>& getOcupiedCells() { return occupiedCells; }
 	std::vector<int>& getSurroundCells() { return surroundCells; }
 
 	std::tuple<Urho3D::Vector2, int> getPosToFollowWithIndex(Urho3D::Vector3* center) const override;
@@ -37,7 +37,7 @@ public:
 protected:
 	void populate(const Urho3D::IntVector2& size);
 
-	std::vector<int> ocupiedCells;
+	std::vector<int> occupiedCells;
 	std::vector<int> surroundCells;
 
 	Urho3D::IntVector2 gridSize;

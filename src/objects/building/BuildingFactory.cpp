@@ -15,7 +15,7 @@ BuildingFactory::~BuildingFactory() {
 }
 
 std::vector<Building*>* BuildingFactory::
-create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level) {
+create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level) const {
 	buildings->clear();
 	const auto env = Game::getEnviroment();
 
@@ -27,13 +27,13 @@ create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _b
 	return buildings;
 }
 
-std::vector<Building*>* BuildingFactory::load(dbload_building* building) {
+std::vector<Building*>* BuildingFactory::load(dbload_building* building) const {
 	const Urho3D::IntVector2 bucketCords(building->buc_x, building->buc_y);
 	const auto db_building = Game::getDatabaseCache()->getBuilding(building->id_db);
 
 	auto center = Game::getEnviroment()->getValidPosition(db_building->size, bucketCords);
 
-	auto builds = create(building->id_db, center, building->player, bucketCords, building->level);
+	const auto builds = create(building->id_db, center, building->player, bucketCords, building->level);
 
 	for (auto build : *builds) {
 		build->load(building);

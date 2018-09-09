@@ -212,5 +212,41 @@
 	},
 	"form_square":{
 		"pl":"Formuj kwadrat"
+	},
+	"load_msg_0":{
+		"pl":"Ładowanie początkowe"
+	},
+	"load_msg_1":{
+		"pl":"Tworzenie środowiska"
+	},
+	"load_msg_2":{
+		"pl":"Tworzenie minimapy"
+	},
+	"load_msg_3":{
+		"pl":"Tworzenie symulacji"
+	},
+	"load_msg_4":{
+		"pl":"Inicjalizacja sceny"
+	},
+	"load_msg_5":{
+		"pl":"Kończenie ładowania"
+	},
+	"new_load_msg_0":{
+		"pl":"Ładowanie początkowe"
+	},
+	"new_load_msg_1":{
+		"pl":"Tworzenie środowiska"
+	},
+	"new_load_msg_2":{
+		"pl":"Tworzenie minimapy"
+	},
+	"new_load_msg_3":{
+		"pl":"Tworzenie symulacji"
+	},
+	"new_load_msg_4":{
+		"pl":"Inicjalizacja sceny"
+	},		
+	"new_load_msg_5":{
+		"pl":"Kończenie ładowania"
 	}
 }

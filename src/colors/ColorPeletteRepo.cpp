@@ -1,8 +1,8 @@
 #include "ColorPeletteRepo.h"
 #include "Game.h"
+#include "objects/unit/state/StateManager.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <iostream>
-#include "objects/unit/state/StateManager.h"
 
 
 ColorPeletteRepo::ColorPeletteRepo() {

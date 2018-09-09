@@ -2,6 +2,8 @@
 #include "Entity.h"
 #include <Urho3D/Graphics/BillboardSet.h>
 #include <Urho3D/Graphics/StaticModel.h>
+#include "scene/load/dbload_container.h"
+#include <iostream>
 
 struct ActionParameter;
 
@@ -23,7 +25,8 @@ public:
 
 	void setTeam(unsigned char _team);
 	void setPlayer(unsigned char player);
-	bool isSelected() const; 
+	bool isSelected() const;
+	void load(dbload_physical* dbloadPhysical);
 
 	static std::string getColumns();
 	std::string getValues(int precision) override;
@@ -57,7 +60,9 @@ public:
 	virtual float getHealthPercent() const { return hpCoef / maxHpCoef; }
 	signed char getTeam() const { return team; }
 	Urho3D::Vector3* getPosition() const { return position; }
-	unsigned char getPlayer() const { return player; }
+
+	virtual char getPlayer() const { return player; }
+
 	int getBucketIndex() const { return indexInGrid; }
 
 	virtual int getMainCell() const;
@@ -87,8 +92,8 @@ protected:
 
 	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
 
-	unsigned char team;
-	unsigned char player;
+	char team;
+	char player;
 
 	float hpCoef = 100;
 	float maxHpCoef = 100;
