@@ -296,7 +296,7 @@ void Simulation::initScene(SceneLoader& loader) const {
 
 void Simulation::initScene(NewGameForm* form) const {
 	loadEntities(form);
-	addTestEntities();
+	//addTestEntities();
 	executeLists();
 }
 

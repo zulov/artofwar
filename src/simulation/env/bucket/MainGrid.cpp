@@ -467,14 +467,13 @@ void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 		if (refreshed.find(startIndex) != refreshed.end()) {
 			continue;
 		}
-		std::fill_n(came_from, resolution * resolution, -1);
-		std::fill_n(cost_so_far, resolution * resolution, -1);
+		resetPathArrays();
 
 		frontier.init(750, 0);
 		frontier.put(startIndex, 0);
 
 		came_from[startIndex] = startIndex;
-		cost_so_far[startIndex] = 0;
+		updateCost(startIndex, 0);
 		int end = startIndex;
 		while (!frontier.empty()) {
 			const auto current = frontier.get();
@@ -495,7 +494,7 @@ void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + neight.cost;
 					if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
-						cost_so_far[next] = new_cost;
+						updateCost(next, new_cost);
 
 						frontier.put(next, new_cost);
 						came_from[next] = current;
