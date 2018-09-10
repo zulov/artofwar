@@ -31,7 +31,6 @@ public:
 
 	void order(short id, const ActionParameter& parameter);
 
-	bool clickDown(MouseButton& var, hit_data& hitData);
 	void cleanMouse();
 
 	void deactivate();

@@ -1,6 +1,4 @@
 #pragma once
-#include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Graphics/Material.h>
 #include <vector>
 
 template <typename T>

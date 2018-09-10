@@ -527,7 +527,7 @@ inline float MainGrid::heuristic(int from, int to) {
 }
 
 void MainGrid::drawMap(Urho3D::Image* image) {
-	uint32_t* data = (uint32_t*)image->GetData();
+	const auto data = (uint32_t*)image->GetData();
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = getIndex(x, y);

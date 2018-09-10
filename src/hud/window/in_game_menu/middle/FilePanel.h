@@ -11,7 +11,7 @@ public:
 	~FilePanel();
 	void createBody() override;
 	Urho3D::Button* getMainButton() override;
-	void HandleValueChange(const Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void HandleValueChange(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 private:
 	Urho3D::LineEdit* lineEdit;
 	Urho3D::Button* action;

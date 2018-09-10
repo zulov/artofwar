@@ -73,7 +73,7 @@ void QueuePanel::update(SelectedInfo* selectedInfo) {
 			std::vector<Physical*> & data = infoType->getData();
 			for (Physical* physical : data) {
 				//TODO przeniesc kolejke do Physical
-				Building* building = dynamic_cast<Building*>(physical);
+				const auto building = dynamic_cast<Building*>(physical);
 				update(building->getQueue(), j);
 			}
 		}

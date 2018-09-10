@@ -3,7 +3,6 @@
 #include "objects/Physical.h"
 #include "state/UnitState.h"
 #include "aim/Aims.h"
-#include <Urho3D/Graphics/StaticModel.h>
 #include <vector>
 #include <Urho3D/Graphics/CustomGeometry.h>
 

@@ -3,7 +3,6 @@
 #include "objects/NodeUtils.h"
 #include "MathUtils.h"
 #include <Urho3D/Math/Vector3.h>
-#include <iostream>
 
 struct MissleData
 {

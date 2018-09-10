@@ -35,7 +35,7 @@ void Physical::createBillboardShadow() {
 }
 
 Urho3D::Billboard* Physical::createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet,
-                                                const const Urho3D::String& material) const {
+                                                const Urho3D::String& material) const {
 	node = this->node->CreateChild();
 	billbordSet = node->CreateComponent<Urho3D::BillboardSet>();
 	billbordSet->SetNumBillboards(1);

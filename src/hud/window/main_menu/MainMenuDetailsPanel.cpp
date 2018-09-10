@@ -1,5 +1,4 @@
 #include "MainMenuDetailsPanel.h"
-#include "Game.h"
 #include "hud/UiUtils.h"
 
 

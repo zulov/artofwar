@@ -3,7 +3,6 @@
 #include "ObjectEnums.h"
 #include "OperatorType.h"
 #include "database/DatabaseCache.h"
-#include "objects/MenuAction.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"

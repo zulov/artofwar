@@ -8,7 +8,7 @@ enum class LeftMenuMode : char
 	RESOURCE
 };
 
-enum LeftMenuSubMode : char
+enum class LeftMenuSubMode : char
 {
 	BASIC=0,
 	LEVEL,

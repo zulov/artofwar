@@ -61,9 +61,12 @@ void Main::Setup() {
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
 
-	Game::setCache(GetSubsystem<ResourceCache>())->setUI(GetSubsystem<UI>())->
-	                                               setConsole(GetSubsystem<Console>())->setContext(context_)->
-	                                               setEngine(engine_);
+	Game::setCache(GetSubsystem<ResourceCache>())
+		->setUI(GetSubsystem<UI>())
+		->setConsole(GetSubsystem<Console>())
+		->setContext(context_)
+		->setEngine(engine_);
+
 	loadingProgress.reset(loadStages);
 	newGameProgress.reset(newGamesStages);
 }
@@ -153,7 +156,7 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 
 void Main::InitMouseMode(MouseMode mode) {
 	useMouseMode_ = mode;
-	Input* input = GetSubsystem<Input>();
+	auto input = GetSubsystem<Input>();
 
 	Console* console = Game::getConsole();
 	if (useMouseMode_ != MM_ABSOLUTE) {
@@ -166,7 +169,7 @@ void Main::InitMouseMode(MouseMode mode) {
 
 void Main::SetWindowTitleAndIcon() {
 	Graphics* graphics = Game::getGraphics();
-	Image* icon = Game::getCache()->GetResource<Image>("textures/UrhoIcon.png");
+	const auto icon = Game::getCache()->GetResource<Image>("textures/UrhoIcon.png");
 	graphics->SetWindowIcon(icon);
 	graphics->SetWindowTitle("Art of War 2017");
 }
@@ -178,7 +181,7 @@ void Main::changeCamera(int type) {
 }
 
 void Main::InitLocalizationSystem() {
-	Localization* l10n = GetSubsystem<Localization>();
+	auto l10n = GetSubsystem<Localization>();
 
 	l10n->LoadJSONFile("lang/language.json");
 	Game::setLocalization(l10n);
@@ -314,7 +317,7 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 	int key = eventData[KeyUp::P_KEY].GetInt();
 
 	if (key == KEY_ESCAPE) {
-		Console* console = GetSubsystem<Console>();
+		auto console = GetSubsystem<Console>();
 		if (console->IsVisible()) {
 			console->SetVisible(false);
 		} else {
@@ -339,16 +342,16 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 }
 
 void Main::HandleNewGame(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	NewGameForm* form = static_cast<NewGameForm *>(element->GetVar("NewGameForm").GetVoidPtr());
+	const auto element = static_cast<UIElement*>(eventData[UIMouseClick::P_ELEMENT].GetVoidPtr());
+	const auto form = static_cast<NewGameForm *>(element->GetVar("NewGameForm").GetVoidPtr());
 
 	changeState(GameState::NEW_GAME);
 	newGameForm = new NewGameForm(*form);
 }
 
 void Main::HandleLoadGame(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	String fileName = element->GetVar("LoadFileName").GetString();
+	const auto element = static_cast<UIElement*>(eventData[UIMouseClick::P_ELEMENT].GetVoidPtr());
+	const auto fileName = element->GetVar("LoadFileName").GetString();
 
 	changeState(GameState::LOADING);
 
@@ -371,14 +374,9 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 }
 
 void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	SelectedHudElement* sHudElement = static_cast<SelectedHudElement *>(element
-	                                                                    ->GetVar("SelectedHudElement").GetVoidPtr()
-	);
 	controls->unSelectAll();
-	// for (auto physical : *sHudElement->getSelected()) {
-	// 	controls->select(physical);
-	// }
+	const auto element = static_cast<UIElement*>(eventData[UIMouseClick::P_ELEMENT].GetVoidPtr());
+	auto sHudElement = static_cast<SelectedHudElement *>(element->GetVar("SelectedHudElement").GetVoidPtr());
 	controls->select(sHudElement->getSelected());
 }
 
@@ -400,7 +398,7 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 }
 
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {
-	Console* console = GetSubsystem<Console>();
+	const auto console = GetSubsystem<Console>();
 	if (console && console->IsVisible()) { return; }
 	auto input = GetSubsystem<Input>();
 	if (useMouseMode_ == MM_ABSOLUTE) {
@@ -417,8 +415,8 @@ void Main::HandleMouseModeChange(StringHash /*eventType*/, VariantMap& eventData
 }
 
 void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
-	UIElement* element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	FileFormData* data = static_cast<FileFormData *>(element->GetVar("file_data").GetVoidPtr());
+	const auto element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
+	const auto data = static_cast<FileFormData *>(element->GetVar("file_data").GetVoidPtr());
 	save(data->fileName);
 }
 
@@ -486,7 +484,7 @@ SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo
 		controls->control();
 	}
 
-	Input* input = GetSubsystem<Input>();
+	const auto input = GetSubsystem<Input>();
 
 	if (input->GetKeyPress(KEY_F8)) {
 		simulation->changeColorMode(ColorMode::BASIC);

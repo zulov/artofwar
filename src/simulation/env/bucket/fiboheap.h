@@ -2,7 +2,6 @@
 
 #include "utils.h"
 #include <cmath>
-#include <iostream>
 #include <vector>
 
 	static int degree_cache[1000];
@@ -70,7 +69,7 @@ public:
 				return fibNode;
 			}
 		}
-		FibNode* newNode = new FibNode(k, pl);
+		const auto newNode = new FibNode(k, pl);
 		newNode->id = pool.size() - 1;
 		pool.push_back(newNode);
 		lowestFree = pool.size() - 1;

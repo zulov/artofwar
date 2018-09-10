@@ -34,20 +34,20 @@ public:
 	virtual bool isUsable() const { return isAlive(); }
 	bool hasEnemy();
 
-	std::tuple<Urho3D::Vector2, float, int> Physical::closest(Physical* physical, Urho3D::Vector3* mainPos,
-	                                                          const std::function<
-		                                                          std::tuple<Urho3D::Vector2, int>(
-			                                                          Physical*,
-			                                                          Urho3D::Vector3*)>&
-	                                                          position);
+	std::tuple<Urho3D::Vector2, float, int> closest(Physical* physical, Urho3D::Vector3* mainPos,
+	                                                const std::function<
+		                                                std::tuple<Urho3D::Vector2, int>(
+			                                                Physical*,
+			                                                Urho3D::Vector3*)>&
+	                                                position);
 
-	std::tuple<Physical*, float, int> Physical::closestPhysical(std::vector<Physical*>* things,
-	                                                            const std::function<bool(Physical*)>& condition,
-	                                                            const std::function<
-		                                                            std::tuple<Urho3D::Vector2, int>(
-			                                                            Physical*,
-			                                                            Urho3D::Vector3*)
-	                                                            >& positionFunc);
+	std::tuple<Physical*, float, int> closestPhysical(std::vector<Physical*>* things,
+	                                                  const std::function<bool(Physical*)>& condition,
+	                                                  const std::function<
+		                                                  std::tuple<Urho3D::Vector2, int>(
+			                                                  Physical*,
+			                                                  Urho3D::Vector3*)
+	                                                  >& positionFunc);
 
 	virtual int belowCloseLimit();
 	void reduceClose() { --closeUsers; }
@@ -75,7 +75,8 @@ public:
 	virtual float getMaxHpBarSize() { return 0; }
 
 	virtual void absorbAttack(float attackCoef) {
-	};
+	}
+
 	virtual void select();
 	virtual void unSelect();
 	virtual Urho3D::String& toMultiLineString();

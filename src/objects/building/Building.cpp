@@ -12,8 +12,6 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include <iostream>
-
 #include <string>
 
 

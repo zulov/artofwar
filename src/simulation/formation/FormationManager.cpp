@@ -44,7 +44,7 @@ std::optional<Formation*> FormationManager::createFormation(std::vector<Physical
 		if (currentlyFree == formations.size()) {
 			formations.push_back(nullptr);
 		}
-		Formation* returnFormation = formations[currentlyFree] = new Formation(currentlyFree, _units, _type, Urho3D::Vector2(1, 1));
+		auto returnFormation = formations[currentlyFree] = new Formation(currentlyFree, _units, _type, Urho3D::Vector2(1, 1));
 		currentlyFree++;
 		return returnFormation;
 

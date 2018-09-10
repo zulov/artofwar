@@ -30,8 +30,8 @@ struct NewGameTeamLine
 	void populateTeams(Urho3D::BorderImage* row) {
 		lineEdit = createElement<Urho3D::LineEdit>(row, style, "LineEdit");
 
-		Urho3D::JSONFile* names = Game::getCache()->GetResource<Urho3D::JSONFile>("lang/names.json");
-		Urho3D::JSONArray namesArray = names->GetRoot().Get("player_names").GetArray();
+		auto names = Game::getCache()->GetResource<Urho3D::JSONFile>("lang/names.json");
+		auto namesArray = names->GetRoot().Get("player_names").GetArray();
 		lineEdit->SetText(namesArray.At(rand() % namesArray.Size()).GetCString());
 		
 		team = createElement<Urho3D::DropDownList>(row, style, "MainMenuNewGameDropDownList");

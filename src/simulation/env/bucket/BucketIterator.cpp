@@ -13,7 +13,7 @@ Physical* BucketIterator::next() {
 		setRange();
 	}
 
-	Physical* entity = *currentIterator;
+	const auto entity = *currentIterator;
 	++currentIterator;
 	return entity;
 }

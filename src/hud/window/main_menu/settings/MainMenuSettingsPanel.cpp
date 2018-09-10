@@ -126,10 +126,9 @@ void MainMenuSettingsPanel::HandleSaveSettings(Urho3D::StringHash eventType, Urh
 
 	popualateForm(form);
 
-	db_graph_settings* graphSettings = new db_graph_settings(0, form->hudSize, nullptr, form->fullScreen, form->maxFps,
+	auto graphSettings = new db_graph_settings(0, form->hudSize, nullptr, form->fullScreen, form->maxFps,
 	                                                         form->minFps, nullptr, form->vSync, form->shadow,
 	                                                         form->textureQuality);
 	Game::getDatabaseCache()->setGraphSettings(0, graphSettings);
-	db_settings* settings = new db_settings(0, form->resolution);
-	Game::getDatabaseCache()->setSettings(0, settings);
+	Game::getDatabaseCache()->setSettings(0, new db_settings(0, form->resolution));
 }

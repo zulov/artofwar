@@ -13,11 +13,11 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "utils.h"
+#include "objects/resource/ResourceOrder.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <unordered_set>
-#include "objects/resource/ResourceOrder.h"
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow",
@@ -39,7 +39,7 @@ void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {
 	if (mode != _mode) {
 		mode = _mode;
 		updateMode(mode);
-		subMode = BASIC;
+		subMode = LeftMenuSubMode::BASIC;
 	}
 	updateButtons(lastSelectedInfo);
 }
@@ -304,7 +304,7 @@ void MenuPanel::resetButtons(int from) {
 }
 
 void MenuPanel::updateButtons(SelectedInfo* selectedInfo) {
-	setChecks(subMode);
+	setChecks(static_cast<int>(subMode));
 	switch (mode) {
 	case LeftMenuMode::BUILDING:
 		return buildingMenu();
@@ -320,36 +320,36 @@ void MenuPanel::updateButtons(SelectedInfo* selectedInfo) {
 
 void MenuPanel::unitMenu(SelectedInfo* selectedInfo) {
 	switch (subMode) {
-	case BASIC:
+	case LeftMenuSubMode::BASIC:
 		return basicUnit(selectedInfo);
-	case LEVEL:
+	case LeftMenuSubMode::LEVEL:
 		return levelUnit(selectedInfo);
-	case UPGRADE:
+	case LeftMenuSubMode::UPGRADE:
 		return upgradeUnit(selectedInfo);
 	}
 }
 
 void MenuPanel::buildingMenu() {
 	switch (subMode) {
-	case BASIC:
+	case LeftMenuSubMode::BASIC:
 		return basicBuilding();
-	case LEVEL:
+	case LeftMenuSubMode::LEVEL:
 		return levelBuilding();
 	}
 }
 
 void MenuPanel::orderMenu(SelectedInfo* selectedInfo) {
 	switch (subMode) {
-	case BASIC:
+	case LeftMenuSubMode::BASIC:
 		return basicOrder(selectedInfo);
-	case LEVEL:
+	case LeftMenuSubMode::LEVEL:
 		return formationOrder();
 	}
 }
 
 void MenuPanel::resourceMenu(SelectedInfo* selectedInfo) {
 	switch (subMode) {
-	case BASIC:
+	case LeftMenuSubMode::BASIC:
 		return basicResource(selectedInfo);
 	}
 }

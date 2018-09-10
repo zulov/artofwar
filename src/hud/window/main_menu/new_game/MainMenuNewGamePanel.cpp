@@ -76,7 +76,7 @@ void MainMenuNewGamePanel::HandleNewGame(Urho3D::StringHash eventType, Urho3D::V
 	data->players.push_back(enemyLine.getNewGamePlayer());
 }
 
-void MainMenuNewGamePanel::populateLabels(Urho3D::Localization* l10n, int index, Urho3D::String name) {
+void MainMenuNewGamePanel::populateLabels(Urho3D::Localization* l10n, int index, const Urho3D::String name) {
 	addChildText(rows[index], "MainMenuNewGameButtonLabel", l10n->Get(name), style);
 }
 

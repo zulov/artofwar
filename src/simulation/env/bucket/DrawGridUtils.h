@@ -11,7 +11,7 @@ inline Urho3D::IntVector2 getCords(const int index, const short resolution) {
 }
 
 void draw_grid_path(std::vector<int>* path, Urho3D::Image* image, short resolution) {
-	uint32_t* data = (uint32_t*)image->GetData();
+	auto data = (uint32_t*)image->GetData();
 	for (auto value : *path) {
 		Urho3D::IntVector2 a = getCords(value, resolution);
 		int idR = getIndex(resolution - a.y_ - 1, a.x_, resolution);
@@ -44,7 +44,7 @@ void draw_grid_from(int* cameFrom, Urho3D::Image* image, short resolution) {
 }
 
 void draw_grid_cost(const float* costSoFar, Urho3D::Image* image, short resolution) {
-	uint32_t* data = (uint32_t*)image->GetData();
+	const auto data = (uint32_t*)image->GetData();
 
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {

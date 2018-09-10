@@ -90,8 +90,7 @@ std::tuple<Urho3D::Vector2, int> Static::getPosToFollowWithIndex(Urho3D::Vector3
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
 	for (auto index : surroundCells) {
-		auto type = Game::getEnviroment()->getType(index);
-		if (canCollect(index, type)) {
+		if (canCollect(index, Game::getEnviroment()->getType(index))) {
 			const auto vec = Game::getEnviroment()->getCenter(index);
 			const float dist = sqDist(vec, *center);
 			if (dist < closestDist) {

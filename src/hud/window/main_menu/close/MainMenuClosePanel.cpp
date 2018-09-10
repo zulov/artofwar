@@ -18,7 +18,7 @@ Urho3D::Button* MainMenuClosePanel::getCloseButton() {
 
 void MainMenuClosePanel::createBody() {
 	MainMenuDetailsPanel::createBody();
-	Urho3D::Localization* l10n = Game::getLocalization();
+	auto l10n = Game::getLocalization();
 	miniWindow = createElement<Urho3D::Window>(body, style, "MiniWindow");
 	miniWindow->SetVisible(true);
 

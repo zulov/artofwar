@@ -12,6 +12,7 @@
 #define LEFT_MENU_BUTTON_PER_ROW 4
 
 enum class MenuAction : char;
+enum class LeftMenuMode : char;
 class SelectedInfo;
 class HudData;
 class LeftMenuInfoPanel;
