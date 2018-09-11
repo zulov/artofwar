@@ -19,7 +19,7 @@ public:
 
 	int belowCloseLimit() override;
 	int hasFreeSpace() const;
-	bool canCollect(int index, CellState type) const;
+	bool canCollect(int index) const;
 
 	StaticState getNextState() const { return nextState; }
 	StaticState getState() const { return state; }

@@ -56,14 +56,15 @@ int Static::hasFreeSpace() const {
 	auto env = Game::getEnviroment();
 	int freeSpaces = 0;
 	for (auto index : surroundCells) {
-		if (canCollect(index, env->getType(index))) {
+		if (canCollect(index)) {
 			++freeSpaces;
 		}
 	}
 	return freeSpaces;
 }
 
-bool Static::canCollect(int index, CellState type) const {
+bool Static::canCollect(int index) const {
+	const CellState type= Game::getEnviroment()->getType(index);
 	return (type == CellState::EMPTY || type == CellState::COLLECT) //TODO collect or attack
 		&& Game::getEnviroment()->getCurrentSize(index) <= 2;
 }
@@ -72,8 +73,7 @@ Urho3D::Vector2 Static::getPosToFollow(Urho3D::Vector3* center) const {
 	float closestDist = 999999;
 	Urho3D::Vector2 closest;
 	for (auto index : surroundCells) {
-		auto type = Game::getEnviroment()->getType(index);
-		if (canCollect(index, type)) {
+		if (canCollect(index)) {
 			const auto vec = Game::getEnviroment()->getCenter(index);
 			const float dist = sqDist(vec, *center);
 			if (dist < closestDist) {
@@ -90,7 +90,7 @@ std::tuple<Urho3D::Vector2, int> Static::getPosToFollowWithIndex(Urho3D::Vector3
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
 	for (auto index : surroundCells) {
-		if (canCollect(index, Game::getEnviroment()->getType(index))) {
+		if (canCollect(index)) {
 			const auto vec = Game::getEnviroment()->getCenter(index);
 			const float dist = sqDist(vec, *center);
 			if (dist < closestDist) {
