@@ -26,6 +26,8 @@ void Static::setState(StaticState state) {
 
 void Static::load(dbload_static* dbloadStatic) {
 	Physical::load(dbloadStatic);
+	this->state = StaticState(dbloadStatic->state);
+	this->nextState = StaticState(dbloadStatic->nextState);
 }
 
 void Static::populate(const Urho3D::IntVector2& size) {
@@ -44,7 +46,9 @@ void Static::populate(const Urho3D::IntVector2& size) {
 std::string Static::getColumns() {
 	return Physical::getColumns() +
 		+ "bucket_x		INT     NOT NULL,"
-		+ "bucket_y		INT     NOT NULL,";
+		+ "bucket_y		INT     NOT NULL,"
+		+ "state		INT     NOT NULL,"
+		+ "next_state		INT     NOT NULL,";
 }
 
 int Static::belowCloseLimit() {
@@ -53,7 +57,6 @@ int Static::belowCloseLimit() {
 }
 
 int Static::hasFreeSpace() const {
-	auto env = Game::getEnviroment();
 	int freeSpaces = 0;
 	for (auto index : surroundCells) {
 		if (canCollect(index)) {
@@ -63,26 +66,15 @@ int Static::hasFreeSpace() const {
 	return freeSpaces;
 }
 
-bool Static::canCollect(int index) const {
-	const CellState type= Game::getEnviroment()->getType(index);
+bool Static::canCollect(int index) {
+	const auto type = Game::getEnviroment()->getType(index);
 	return (type == CellState::EMPTY || type == CellState::COLLECT) //TODO collect or attack
 		&& Game::getEnviroment()->getCurrentSize(index) <= 2;
 }
 
 Urho3D::Vector2 Static::getPosToFollow(Urho3D::Vector3* center) const {
-	float closestDist = 999999;
-	Urho3D::Vector2 closest;
-	for (auto index : surroundCells) {
-		if (canCollect(index)) {
-			const auto vec = Game::getEnviroment()->getCenter(index);
-			const float dist = sqDist(vec, *center);
-			if (dist < closestDist) {
-				closestDist = dist;
-				closest = vec;
-			}
-		}
-	}
-	return closest;
+	auto [vec, index] = getPosToFollowWithIndex(center);
+	return vec;
 }
 
 std::tuple<Urho3D::Vector2, int> Static::getPosToFollowWithIndex(Urho3D::Vector3* center) const {
@@ -107,5 +99,7 @@ std::string Static::getValues(int precision) {
 	const auto cordsCell = Game::getEnviroment()->getCords(mainCell);
 	return Physical::getValues(precision)
 		+ std::to_string(cordsCell.x_) + ","
-		+ std::to_string(cordsCell.y_) + ",";
+		+ std::to_string(cordsCell.y_) + ","
+		+ std::to_string(static_cast<char>(state)) + ","
+		+ std::to_string(static_cast<char>(nextState)) + ",";
 }

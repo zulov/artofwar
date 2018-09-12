@@ -420,8 +420,7 @@ std::string Unit::getColumns() {
 		"position_z		INT     NOT NULL,"
 		"state			INT     NOT NULL,"
 		"velocity_x		INT     NOT NULL,"
-		"velocity_z		INT     NOT NULL,"
-		"aim_i		INT     NOT NULL";
+		"velocity_z		INT     NOT NULL";
 }
 
 void Unit::applyForce(double timeStep) {

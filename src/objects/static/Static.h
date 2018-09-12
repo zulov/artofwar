@@ -19,7 +19,7 @@ public:
 
 	int belowCloseLimit() override;
 	int hasFreeSpace() const;
-	bool canCollect(int index) const;
+	static bool canCollect(int index);
 
 	StaticState getNextState() const { return nextState; }
 	StaticState getState() const { return state; }
@@ -41,7 +41,7 @@ protected:
 	std::vector<int> surroundCells;
 
 	Urho3D::IntVector2 gridSize;
-	int mainCell;
+	int mainCell{};
 
 	StaticState state;
 	StaticState nextState;

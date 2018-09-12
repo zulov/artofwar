@@ -73,7 +73,8 @@ int static load_buildings(void* data, int argc, char** argv, char** azColName) {
 	xyz->buildings->push_back(new dbload_building(
 	                                              atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
 	                                              atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
-	                                              atoi(argv[6]), atof(argv[7]) / p, atof(argv[8]) / p
+	                                              atoi(argv[6]), atoi(argv[7]), atoi(argv[8]),
+	                                              atof(argv[9]) / p, atof(argv[10]) / p
 	                                             ));
 
 	return 0;
@@ -85,7 +86,8 @@ int static load_resources_entities(void* data, int argc, char** argv, char** azC
 	xyz->resource_entities->push_back(new dbload_resource_entities(
 	                                                               atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p,
 	                                                               atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
-	                                                               atoi(argv[6]), atof(argv[7]) / p
+	                                                               atoi(argv[6]), atoi(argv[7]), atoi(argv[8]),
+	                                                               atof(argv[9]) / p
 	                                                              ));
 
 	return 0;

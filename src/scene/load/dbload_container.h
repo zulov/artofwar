@@ -30,11 +30,16 @@ struct dbload_static : dbload_physical
 {
 	int buc_x;
 	int buc_y;
+	char state;
+	char nextState;
 
-	dbload_static(int idDb, bool alive, float hpCoef, int player, int bucX, int bucY, int level)
+	dbload_static(int idDb, bool alive, float hpCoef, int player, int bucX, int bucY, int level, int state,
+	              int nextState)
 		: dbload_physical(idDb, alive, hpCoef, player, level),
 		buc_x(bucX),
-		buc_y(bucY) {
+		buc_y(bucY),
+		state(state),
+		nextState(nextState) {
 	}
 };
 
@@ -47,7 +52,8 @@ struct dbload_unit : dbload_physical
 	float vel_z;
 	int aim_i;
 
-	dbload_unit(int idDb, bool alive, float hpCoef, int player, int level, float posX, float posZ, int state, float velX,
+	dbload_unit(int idDb, bool alive, float hpCoef, int player, int level, float posX, float posZ, int state,
+	            float velX,
 	            float velZ,
 	            int aimI)
 		: dbload_physical(idDb, alive, hpCoef, player, level),
@@ -65,9 +71,9 @@ struct dbload_building : dbload_static
 	float target_x;
 	float target_z;
 
-	dbload_building(int idDb, bool alive, float hpCoef, int player, int level, int bucX, int bucY, float targetX,
+	dbload_building(int idDb, bool alive, float hpCoef, int player, int level, int bucX, int bucY, int state, int nextState, float targetX,
 	                float targetZ)
-		: dbload_static(idDb, alive, hpCoef, player, bucX, bucY, level),
+		: dbload_static(idDb, alive, hpCoef, player, bucX, bucY, level, state, nextState),
 		target_x(targetX),
 		target_z(targetZ) {
 	}
@@ -77,8 +83,9 @@ struct dbload_resource_entities : dbload_static
 {
 	float amount;
 
-	dbload_resource_entities(int idDb, bool alive, float hpCoef, int player, int level, int bucX, int bucY, float amount)
-		: dbload_static(idDb, alive, hpCoef, player, bucX, bucY, level),
+	dbload_resource_entities(int idDb, bool alive, float hpCoef, int player, int level, int bucX, int bucY
+	                         , int state, int nextState,float amount)
+		: dbload_static(idDb, alive, hpCoef, player, bucX, bucY, level, state, nextState),
 		amount(amount) {
 	}
 };
