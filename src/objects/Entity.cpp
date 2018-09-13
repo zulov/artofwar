@@ -22,11 +22,9 @@ int Entity::getDbID() {
 }
 
 std::string Entity::getValues(int precision) {
-	return std::to_string(getDbID()) + ","
-		+ std::to_string((int)isAlive()) + ","; //TODO to pewnie nie potrzebne
+	return std::to_string(getDbID()) + ","; //TODO to pewnie nie potrzebne
 }
 
 std::string Entity::getColumns() {
-	return "id_db		INT		NOT NULL,"
-		"alive			INT		NOT NULL,";
+	return "id_db		INT		NOT NULL,";
 }
