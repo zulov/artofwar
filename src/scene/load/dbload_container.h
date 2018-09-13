@@ -48,19 +48,15 @@ struct dbload_unit : dbload_physical
 	int state;
 	float vel_x;
 	float vel_z;
-	int aim_i;
 
 	dbload_unit(int idDb, float hpCoef, int player, int level, float posX, float posZ, int state,
-	            float velX,
-	            float velZ,
-	            int aimI)
+	            float velX, float velZ)
 		: dbload_physical(idDb, hpCoef, player, level),
 		pos_x(posX),
 		pos_z(posZ),
 		state(state),
 		vel_x(velX),
-		vel_z(velZ),
-		aim_i(aimI) {
+		vel_z(velZ) {
 	}
 };
 
@@ -69,7 +65,8 @@ struct dbload_building : dbload_static
 	float target_x;
 	float target_z;
 
-	dbload_building(int idDb, float hpCoef, int player, int level, int bucX, int bucY, int state, int nextState, float targetX,
+	dbload_building(int idDb, float hpCoef, int player, int level, int bucX, int bucY, int state, int nextState,
+	                float targetX,
 	                float targetZ)
 		: dbload_static(idDb, hpCoef, player, bucX, bucY, level, state, nextState),
 		target_x(targetX),
@@ -82,7 +79,7 @@ struct dbload_resource_entities : dbload_static
 	float amount;
 
 	dbload_resource_entities(int idDb, float hpCoef, int player, int level, int bucX, int bucY
-	                         , int state, int nextState,float amount)
+	                         , int state, int nextState, float amount)
 		: dbload_static(idDb, hpCoef, player, bucX, bucY, level, state, nextState),
 		amount(amount) {
 	}
