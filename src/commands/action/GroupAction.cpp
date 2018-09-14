@@ -41,6 +41,6 @@ void GroupAction::addFollowAim(const Physical* toFollow, bool append) {
 		if (!append) {
 			opt.value()->semiReset();
 		}
-		opt.value()->addAim(Urho3D::Vector2::ZERO, toFollow, action, append);
+		opt.value()->addAim({}, toFollow, action, append);
 	}
 }

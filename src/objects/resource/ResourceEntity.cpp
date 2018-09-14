@@ -33,7 +33,7 @@ ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell)
 		model->SetMaterial(i, Game::getCache()->GetResource<Urho3D::Material>("Materials/" + dbResource->texture[i]));
 	}
 	updateBillbords();
-	node->SetRotation(Urho3D::Quaternion(0, rand() / 360.0, 0.0f));
+	node->SetRotation(Urho3D::Quaternion(0, rand() % 360, 0.0f));
 }
 
 ResourceEntity::~ResourceEntity() = default;

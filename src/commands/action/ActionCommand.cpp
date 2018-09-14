@@ -10,11 +10,8 @@
 #include <chrono>
 
 
-ActionCommand::ActionCommand(UnitOrder action, const Physical* physical, Urho3D::Vector2* vector, bool append) {
-	this->action = action;
-	this->toFollow = physical;
-	this->vector = vector;
-	this->append = append;
+ActionCommand::ActionCommand(UnitOrder action, const Physical* physical, Urho3D::Vector2* vector, bool append):
+	action(action), vector(vector), toFollow(physical), append(append) {
 }
 
 ActionCommand::~ActionCommand() {
@@ -23,7 +20,7 @@ ActionCommand::~ActionCommand() {
 
 
 ActionParameter ActionCommand::getTargetAim(int startInx, Urho3D::Vector2& to, bool append) {
-	auto path = Game::getEnviroment()->findPath(startInx, to);
+	const auto path = Game::getEnviroment()->findPath(startInx, to);
 	if (!path->empty()) {
 		return ActionParameter(new TargetAim(*path));
 	}
@@ -42,18 +39,13 @@ ActionParameter ActionCommand::getChargeAim(Urho3D::Vector2* charge, bool append
 void ActionCommand::execute() {
 	switch (action) {
 	case UnitOrder::GO:
-		addTargetAim(vector, append);
-		break;
+		return addTargetAim(vector, append);
 	case UnitOrder::FOLLOW:
-		{
-		if (toFollow != nullptr && toFollow->isAlive()) {
+		if (toFollow && toFollow->isAlive()) {
 			addFollowAim(toFollow, append);
-		}
 		}
 		break;
 	case UnitOrder::CHARGE:
-		addChargeAim(vector, append);
-		break;
-	default: ;
+		return addChargeAim(vector, append);
 	}
 }
