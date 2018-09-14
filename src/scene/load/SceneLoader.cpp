@@ -36,10 +36,8 @@ int static load_config(void* data, int argc, char** argv, char** azColName) {
 
 int static load_players(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<dbload_container *>(data);
-	xyz->players->push_back(new dbload_player(
-	                                          atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), atoi(argv[3]), argv[4],
-	                                          atoi(argv[4])
-	                                         ));
+	xyz->players->push_back(new dbload_player(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]),
+	                                          atoi(argv[3]), argv[4], atoi(argv[4])));
 
 	return 0;
 }
@@ -47,9 +45,7 @@ int static load_players(void* data, int argc, char** argv, char** azColName) {
 int static load_resources(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<dbload_container *>(data);
 	int p = xyz->precision;
-	xyz->resources->push_back(new dbload_resource(
-	                                              atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p
-	                                             ));
+	xyz->resources->push_back(new dbload_resource(atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p));
 
 	return 0;
 }
@@ -57,11 +53,9 @@ int static load_resources(void* data, int argc, char** argv, char** azColName) {
 int static load_units(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<dbload_container *>(data);
 	int p = xyz->precision;
-	xyz->units->push_back(new dbload_unit(
-	                                      atoi(argv[0]), atof(argv[1]) / p,
-	                                      atoi(argv[2]), atoi(argv[3]), atof(argv[4]) / p,
-	                                      atof(argv[5]) / p, atoi(argv[6]), atof(argv[7]) / p,
-	                                      atof(argv[8]) / p));
+	xyz->units->push_back(new dbload_unit(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]),
+	                                      atoi(argv[3]), atof(argv[4]) / p, atof(argv[5]) / p,
+	                                      atoi(argv[6]), atof(argv[7]) / p, atof(argv[8]) / p));
 
 	return 0;
 }
@@ -69,12 +63,10 @@ int static load_units(void* data, int argc, char** argv, char** azColName) {
 int static load_buildings(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<dbload_container *>(data);
 	int p = xyz->precision;
-	xyz->buildings->push_back(new dbload_building(
-	                                              atoi(argv[0]), atof(argv[1]) / p,
-	                                              atoi(argv[2]), atoi(argv[3]), atoi(argv[4]),
-	                                              atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
-	                                              atof(argv[8]) / p, atof(argv[9]) / p
-	                                             ));
+	xyz->buildings->push_back(new dbload_building(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]),
+	                                              atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
+	                                              atoi(argv[6]), atoi(argv[7]), atof(argv[8]) / p,
+	                                              atof(argv[9]) / p));
 
 	return 0;
 }
@@ -82,12 +74,9 @@ int static load_buildings(void* data, int argc, char** argv, char** azColName) {
 int static load_resources_entities(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<dbload_container *>(data);
 	int p = xyz->precision;
-	xyz->resource_entities->push_back(new dbload_resource_entities(
-	                                                               atoi(argv[0]), atof(argv[1]) / p,
-	                                                               atoi(argv[2]), atoi(argv[3]), atoi(argv[4]),
-	                                                               atoi(argv[5]), atoi(argv[6]), atoi(argv[7]),
-	                                                               atof(argv[8]) / p
-	                                                              ));
+	xyz->resource_entities->push_back(new dbload_resource_entities(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]),
+	                                                               atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
+	                                                               atoi(argv[6]), atoi(argv[7]), atof(argv[8]) / p));
 
 	return 0;
 }
@@ -99,7 +88,7 @@ void SceneLoader::reset() {
 	loadingState.reset(3, "start loading");
 }
 
-dbload_container* SceneLoader::getData() {
+dbload_container* SceneLoader::getData() const {
 	return dbLoad;
 }
 
