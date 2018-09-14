@@ -51,7 +51,7 @@ Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical
 	if constexpr (UNIT_DEBUG_ENABLED) {
 		line = node->GetOrCreateComponent<Urho3D::CustomGeometry>();
 	}
-	for (int& bucket : teamBucketIndex) {
+	for (auto& bucket : teamBucketIndex) {
 		bucket = INT_MIN;
 	}
 }
@@ -92,7 +92,7 @@ void Unit::checkAim() {
 	}
 }
 
-void Unit::move(double timeStep) {
+void Unit::move(double timeStep) const {
 	if (state != UnitState::STOP) {
 		position->x_ += velocity.x_ * timeStep;
 		position->z_ += velocity.y_ * timeStep;
@@ -170,8 +170,7 @@ void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitState actio
 
 	this->indexToInteract = indexToInteract;
 
-	bool success = StateManager::changeState(this, action);
-	if (!success) {
+	if (!StateManager::changeState(this, action)) {
 		thingsToInteract.clear();
 	}
 }
@@ -179,11 +178,9 @@ void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitState actio
 void Unit::toCharge(std::vector<Physical*>* enemies) {
 	thingsToInteract.clear();
 	for (auto entity : *enemies) {
-		if (entity->isAlive()) {
-			const float distance = sqDist(this->getPosition(), entity->getPosition());
-			if (distance <= chargeData->attackRange * chargeData->attackRange) {
-				thingsToInteract.push_back(entity);
-			}
+		if (entity->isAlive() && sqDist(getPosition(), entity->getPosition()) <= chargeData->attackRange *
+			chargeData->attackRange) {
+			thingsToInteract.push_back(entity);
 		}
 	}
 }
@@ -205,12 +202,12 @@ void Unit::addAim(const FutureAim& aim, bool append) {
 }
 
 void Unit::drawLineTo(Urho3D::CustomGeometry* line, const Urho3D::Vector3& second,
-                      const Urho3D::Color& color = Urho3D::Color::WHITE) {
+                      const Urho3D::Color& color = Urho3D::Color::WHITE) const {
 	drawLine(line, {0, 0.5, 0}, second, color);
 }
 
 void Unit::drawLine(Urho3D::CustomGeometry* line, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-                    const Urho3D::Color& color = Urho3D::Color::WHITE) {
+                    const Urho3D::Color& color = Urho3D::Color::WHITE) const {
 	line->DefineVertex(first / dbLevel->scale);
 	line->DefineColor(color);
 	line->DefineVertex(second / dbLevel->scale);
@@ -287,15 +284,12 @@ void Unit::setIndexToInteract(int index) {
 	indexToInteract = index;
 }
 
-int Unit::getIndexToInteract() {
-	return indexToInteract;
-}
-
 Urho3D::String& Unit::toMultiLineString() {
 	menuString = dbUnit->name + " " + dbLevel->name;
 	menuString.Append("\nAtak: ").Append(Urho3D::String(attackCoef))
 	          .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
-	          .Append("\nZdrowie: ").Append(Urho3D::String(hpCoef)).Append("/").Append(Urho3D::String(maxHpCoef));
+	          .Append("\nZdrowie: ").Append(Urho3D::String(hpCoef))
+	          .Append("/").Append(Urho3D::String(maxHpCoef));
 	return menuString;
 }
 
@@ -357,20 +351,15 @@ void Unit::changeColor(float value, float maxValue) const {
 void Unit::changeColor(ColorMode mode) {
 	switch (mode) {
 	case ColorMode::BASIC:
-		changeMaterial(basic, model);
-		break;
+		return changeMaterial(basic, model);
 	case ColorMode::VELOCITY:
-		changeColor(velocity.LengthSquared(), maxSpeed * maxSpeed);
-		break;
+		return changeColor(velocity.LengthSquared(), maxSpeed * maxSpeed);
 	case ColorMode::STATE:
-		changeMaterial(Game::getColorPeletteRepo()->getColor(state), model);
-		break;
+		return changeMaterial(Game::getColorPeletteRepo()->getColor(state), model);
 	case ColorMode::FORMATION:
 		if (formation != -1) {
 			changeColor(Game::getFormationManager()->getPriority(this), 3.0f);
 		}
-		break;
-	default: ;
 	}
 }
 
@@ -389,7 +378,6 @@ bool Unit::hasResource() {
 void Unit::load(dbload_unit* unit) {
 	Physical::load(unit);
 	state = UnitState(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
-	//aimIndex =unit->aim_i;
 	velocity = Urho3D::Vector2(unit->vel_x, unit->vel_z);
 }
 
@@ -430,7 +418,7 @@ void Unit::applyForce(double timeStep) {
 
 	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep / mass);
-	float velLenght = velocity.LengthSquared();
+	const float velLenght = velocity.LengthSquared();
 	if (velLenght < minSpeed * minSpeed) {
 		if (state == UnitState::MOVE) {
 			StateManager::changeState(this, UnitState::STOP);

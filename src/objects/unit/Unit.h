@@ -43,7 +43,7 @@ public:
 
 	void populate();
 	void checkAim();
-	void move(double timeStep);
+	void move(double timeStep) const;
 	void applyForce(double timeStep);
 	void setAcceleration(Urho3D::Vector2& _acceleration);
 
@@ -73,15 +73,15 @@ public:
 	void clearAims();
 	void removeCurrentAim();
 	void setIndexToInteract(int index);
-	int getIndexToInteract();
+	int getIndexToInteract() { return indexToInteract; }
 
 	static std::string getColumns();
 	void addUpgrade(db_unit_upgrade* upgrade);
 	void changeColor(ColorMode mode);
 	void addAim(const FutureAim& aim, bool append = false);
-	void drawLineTo(Urho3D::CustomGeometry* line, const Urho3D::Vector3& second, const Urho3D::Color& color);
+	void drawLineTo(Urho3D::CustomGeometry* line, const Urho3D::Vector3& second, const Urho3D::Color& color) const;
 	void drawLine(Urho3D::CustomGeometry* line, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-	              const Urho3D::Color& color);
+	              const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }

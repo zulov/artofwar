@@ -13,7 +13,7 @@ std::vector<Urho3D::Vector3> ChargeAim::getDebugLines(Urho3D::Vector3* position)
 	points.emplace_back(0, 0.5, 0);
 	points.emplace_back(direction.x_, 0.5, direction.y_);
 
-	return points; //TODO performance std::move
+	return points; 
 }
 
 Urho3D::Vector2 ChargeAim::getDirection(Unit* unit) {

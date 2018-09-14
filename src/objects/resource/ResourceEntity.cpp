@@ -2,14 +2,14 @@
 #include "Game.h"
 #include "ObjectEnums.h"
 #include "OperatorType.h"
+#include "ResourceOrder.h"
 #include "database/DatabaseCache.h"
+#include "objects/PhysicalUtils.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
-#include "objects/PhysicalUtils.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/Enviroment.h"
-#include "ResourceOrder.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
@@ -33,6 +33,7 @@ ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell)
 		model->SetMaterial(i, Game::getCache()->GetResource<Urho3D::Material>("Materials/" + dbResource->texture[i]));
 	}
 	updateBillbords();
+	node->SetRotation(Urho3D::Quaternion(0, rand() / 360.0, 0.0f));
 }
 
 ResourceEntity::~ResourceEntity() = default;
