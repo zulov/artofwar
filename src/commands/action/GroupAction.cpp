@@ -4,13 +4,11 @@
 #include "simulation/formation/FormationManager.h"
 
 GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, Urho3D::Vector2* parameter, bool append)
-	: ActionCommand(action, nullptr, parameter, append) {
-	this->entities = entities;
+	: ActionCommand(action, nullptr, parameter, append), entities(entities) {
 }
 
 GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, Physical* paremeter, bool append)
-	: ActionCommand(action, paremeter, nullptr, append) {
-	this->entities = entities;
+	: ActionCommand(action, paremeter, nullptr, append), entities(entities) {
 }
 
 GroupAction::~GroupAction() = default;

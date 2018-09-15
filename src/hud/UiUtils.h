@@ -8,31 +8,10 @@
 #include <Urho3D/UI/Text.h>
 #include <vector>
 
-static Urho3D::Button* setStyle(MySprite* sprite, Urho3D::XMLFile* style, const Urho3D::String& styleName,
-                                Urho3D::Button* button) {
-	button->SetStyle(styleName, style);
-	if (sprite) {
-		button->AddChild(sprite);
-	}
-	return button;
-}
-
-static Urho3D::Button* simpleButton(MySprite* sprite, Urho3D::XMLFile* style, const Urho3D::String& styleName) {
+static Urho3D::Button* simpleButton(Urho3D::XMLFile* style, const Urho3D::String& styleName) {
 	auto button = new Urho3D::Button(Game::getContext());
-	return setStyle(sprite, style, styleName, button);
-}
-
-static Urho3D::Button* simpleButton(Urho3D::UIElement* parent, MySprite* sprite, Urho3D::XMLFile* style,
-                                    const Urho3D::String& styleName) {
-	auto button = parent->CreateChild<Urho3D::Button>();
-	return setStyle(sprite, style, styleName, button);
-}
-
-static MySprite* createEmptySprite(Urho3D::XMLFile* style, const Urho3D::String& styleName) {
-	auto sprite = new MySprite(Game::getContext());
-
-	sprite->SetStyle(styleName, style);
-	return sprite;
+	button->SetStyle(styleName, style);
+	return button;
 }
 
 static void setTextureToSprite(MySprite* sprite, Urho3D::Texture2D* texture) {
@@ -41,7 +20,7 @@ static void setTextureToSprite(MySprite* sprite, Urho3D::Texture2D* texture) {
 		sprite->SetTexture(texture);
 		const int textureWidth = texture->GetWidth();
 		const int textureHeight = texture->GetHeight();
-		//IntVector2 size = sprite->GetSize();
+
 		auto size = sprite->getMySize();
 		const float scaleX = size.x_ / (float)textureWidth;
 		const float scaleY = size.y_ / (float)textureHeight;
@@ -80,23 +59,25 @@ T* createElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style,
 	return element;
 }
 
-static MySprite* createSprite(Urho3D::Texture2D* texture, Urho3D::XMLFile* style, const Urho3D::String& styleName) {
-	const auto sprite = createEmptySprite(style, styleName);
+static MySprite* createSprite(Urho3D::UIElement* parent, Urho3D::Texture2D* texture, Urho3D::XMLFile* style,
+                              const Urho3D::String& styleName) {
+	const auto sprite = createElement<MySprite>(parent, style, styleName);
 	setTextureToSprite(sprite, texture);
 
 	return sprite;
 }
 
-inline void addTextItem(Urho3D::DropDownList* cob, Urho3D::String str, Urho3D::XMLFile* style) {
+inline Urho3D::Text* addTextItem(Urho3D::DropDownList* cob, Urho3D::String str, Urho3D::XMLFile* style) {
 	auto item = new Urho3D::Text(Game::getContext());
 	item->SetStyle("MyText", style);
 	item->SetText(str);
 	cob->AddItem(item);
+	return item;
 }
 
-inline Urho3D::Text* addChildText(Urho3D::UIElement* element, Urho3D::String styleName, Urho3D::String value,
+inline Urho3D::Text* addChildText(Urho3D::UIElement* parent, Urho3D::String styleName, Urho3D::String value,
                                   Urho3D::XMLFile* style) {
-	auto text = createElement<Urho3D::Text>(element, style, styleName);
+	auto text = createElement<Urho3D::Text>(parent, style, styleName);
 	text->SetText(value);
 	return text;
 }
@@ -109,11 +90,7 @@ inline void addChildTexts(Urho3D::DropDownList* cob, std::vector<Urho3D::String>
 
 inline void addTextItem(Urho3D::DropDownList* cob, Urho3D::String& name, Urho3D::XMLFile* style, Urho3D::Variant var,
                         const Urho3D::String& varName) {
-	auto item = new Urho3D::Text(Game::getContext());
-	item->SetStyle("MyText", style);
-	item->SetText(name);
-	cob->AddItem(item);
-	item->SetVar(varName, var);
+	addTextItem(cob, name, style)->SetVar(varName, var);
 }
 
 inline void addChildTexts(Urho3D::DropDownList* cob, std::vector<Urho3D::String> names, Urho3D::XMLFile* style,

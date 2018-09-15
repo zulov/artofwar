@@ -26,7 +26,7 @@ void MainMenuLoadPanel::createBody() {
 	fileSystem->ScanDir(files, "saves", "*.db", Urho3D::SCAN_FILES, false);
 
 	for (const auto& name : files) {
-		auto button = simpleButton(nullptr, style, "LoadListButton");
+		auto button = simpleButton(style, "LoadListButton");
 		addChildText(button, "LoadListText", name, style);
 		
 		list->AddItem(button);

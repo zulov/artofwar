@@ -38,23 +38,17 @@ std::vector<Urho3D::Button*>& SelectedHudPanel::getButtonsSelectedToSubscribe() 
 void SelectedHudPanel::createBody() {
 	createRows();
 
-	int border = rows[0]->GetLayoutBorder().left_ + rows[0]->GetLayoutBorder().right_ + window->GetLayoutBorder().left_
-		+
-		window->
-		GetLayoutBorder().right_;
+	int border = rows[0]->GetLayoutBorder().left_ + rows[0]->GetLayoutBorder().right_
+		+ window->GetLayoutBorder().left_ + window->GetLayoutBorder().right_;
 	int space = window->GetSize().x_ - border;
 
 	maxInRow = space / iconSize();
 
 	elements = new SelectedHudElement*[LINES_IN_SELECTION * maxInRow];
 
-	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
-		elements[i] = new SelectedHudElement(style);
-	}
-
 	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
 		for (int j = 0; j < maxInRow; ++j) {
-			rows[i]->AddChild(elements[i * maxInRow + j]->getButton());
+			elements[i * maxInRow + j] = new SelectedHudElement(rows[i], style);
 		}
 	}
 
@@ -77,7 +71,7 @@ int SelectedHudPanel::iconSize() {
 void SelectedHudPanel::createRows() {
 	rows = new Urho3D::UIElement*[LINES_IN_SELECTION];
 	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
-		rows[i] = createElement<Urho3D::UIElement>(window,  style, "MyListRow");
+		rows[i] = createElement<Urho3D::UIElement>(window, style, "MyListRow");
 	}
 }
 

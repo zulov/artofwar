@@ -139,13 +139,13 @@ void MainGrid::invalidateCache() {
 void MainGrid::updateSurround(Static* object) {
 	if (object->isAlive()) {
 		std::unordered_set<int> indexes;
-		for (auto index : object->getOcupiedCells()) {
+		for (auto index : object->getOccupiedCells()) {
 			for (auto inIndex : closeIndex) {
 				auto newIndex = index + inIndex;
 				indexes.emplace(newIndex);
 			}
 		}
-		for (auto index : object->getOcupiedCells()) {
+		for (auto index : object->getOccupiedCells()) {
 			indexes.erase(index);
 		}
 		auto& surroundCells = object->getSurroundCells();
@@ -268,7 +268,7 @@ void MainGrid::addStatic(Static* object) {
 
 		object->setMainCell(getIndex(bucketPos.x_, bucketPos.y_));
 
-		for (auto index : object->getOcupiedCells()) {
+		for (auto index : object->getOccupiedCells()) {
 			complexData[index].setStatic(object);
 		}
 
@@ -296,7 +296,7 @@ void MainGrid::addStatic(Static* object) {
 void MainGrid::removeStatic(Static* object) {
 	//TODO bug poprawic dziwne zygzagki sie robia gdy przechodzi przez// moze invalidate cache?
 	object->setMainCell(-1);
-	for (auto index : object->getOcupiedCells()) {
+	for (auto index : object->getOccupiedCells()) {
 		complexData[index].removeStatic();
 		updateNeighbors(index);
 	}

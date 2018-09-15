@@ -1,5 +1,6 @@
 #pragma once
 #include "Aim.h"
+#include "TargetAim.h"
 #include <vector>
 
 class Physical;
@@ -7,7 +8,7 @@ class Physical;
 class FollowAim : public Aim
 {
 public:
-	explicit FollowAim(const Physical* _physical);
+	explicit FollowAim(const Physical* physical,const TargetAim* subTarget);
 	~FollowAim();
 
 	std::vector<Urho3D::Vector3> getDebugLines(Urho3D::Vector3* position) override;
@@ -16,5 +17,6 @@ public:
 	bool expired() override;
 private:
 	const Physical* physical;
+	const TargetAim* subTarget;
 	float radiusSq;
 };

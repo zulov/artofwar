@@ -71,11 +71,11 @@ void Unit::populate() {
 	minSpeed = dbLevel->minSpeed;
 	minimalDistance = dbLevel->minDist;
 	attackRange = dbLevel->attackRange;
-	attackIntrest = dbLevel->attackRange * 10;
+	attackInterest = dbLevel->attackRange * 10;
 	rotatable = dbUnit->rotatable;
 	actionState = UnitState(dbUnit->actionState);
 
-	attackIntrest = 10;
+	attackInterest = 10;
 	collectSpeed = dbLevel->collectSpeed;
 
 	hpCoef = dbLevel->maxHp;
@@ -157,7 +157,7 @@ void Unit::actionIfCloseEnough(UnitState action, Physical* closest, int indexToI
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo) {
-	actionIfCloseEnough(stateTo, closest, indexToInteract, minDistance, attackRange, attackIntrest);
+	actionIfCloseEnough(stateTo, closest, indexToInteract, minDistance, attackRange, attackInterest);
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo, float attackIntrest) {

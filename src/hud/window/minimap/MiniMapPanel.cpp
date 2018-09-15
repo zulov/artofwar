@@ -151,13 +151,12 @@ void MiniMapPanel::createBody() {
 	checksElements.reserve(MINI_MAP_BUTTON_NUMBER);
 
 	for (int i = 0; i < MINI_MAP_BUTTON_NUMBER; ++i) {
-		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
+		const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
 		>("textures/hud/icon/mm/minimap" + Urho3D::String(i) + ".png");
 
-		auto sprite = createSprite(texture, style, "MiniMapSprite");
-		auto box = createElement<Urho3D::CheckBox>(row, style, "MiniMapCheckBox");
+		const auto box = createElement<Urho3D::CheckBox>(row, style, "MiniMapCheckBox");
+		createSprite(box, texture, style, "MiniMapSprite");
 		checksElements.push_back(box);
-		box->AddChild(sprite);
 
 		checksElements.at(i)->SetVar("Num", i);
 

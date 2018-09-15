@@ -8,7 +8,7 @@ public:
 	~DummyAim() override = default;
 
 	Urho3D::Vector2 getDirection(Unit* unit) override {
-		return Urho3D::Vector2();
+		return {};
 	}
 
 	bool ifReach(Unit* unit) override {

@@ -89,8 +89,7 @@ void QueuePanel::hideElements(int from) {
 
 void QueuePanel::createBody() {
 	for (int i = 0; i < MAX_ICON_SELECTION; ++i) {
-		elements[i] = new QueueHudElement(style);
-		window->AddChild(elements[i]->getButton());
+		elements[i] = new QueueHudElement(window, style);
 		SubscribeToEvent(elements[i]->getButton(), Urho3D::E_CLICK, URHO3D_HANDLER(QueuePanel, HandleReduce));
 	}
 }

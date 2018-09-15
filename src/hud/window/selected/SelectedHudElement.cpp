@@ -4,16 +4,15 @@
 #include <Urho3D/UI/Text.h>
 
 
-SelectedHudElement::SelectedHudElement(Urho3D::XMLFile* style) {
+SelectedHudElement::SelectedHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style) {
 	selected = new std::vector<Physical*>();
 	selected->reserve(MAX_SELECTED_IN_BUTTON);
 
-	button = simpleButton(nullptr, style, "SmallIcon");
+	button = createElement<Urho3D::Button>(parent,style, "SmallIcon");
 	button->SetVisible(false);
 	text = addChildText(button, "MyText", "", style);
 
-	icon = createEmptySprite(style, "SmallSprite");
-	button->AddChild(icon);
+	icon = createElement<MySprite>(button, style, "SmallSprite");
 	button->SetVar("SelectedHudElement", this);
 	mock = createElement<Urho3D::UIElement>(button, style, "mock");
 

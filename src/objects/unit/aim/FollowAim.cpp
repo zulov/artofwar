@@ -5,7 +5,7 @@
 #include "simulation/env/Enviroment.h"
 
 
-FollowAim::FollowAim(const Physical* _physical): physical(_physical) {
+FollowAim::FollowAim(const Physical* physical,const TargetAim* subTarget): physical(physical),subTarget(subTarget) {
 	radiusSq = 1 * 1;
 }
 

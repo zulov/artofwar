@@ -12,18 +12,18 @@ class MySprite;
 class QueueHudElement
 {
 public:
-	explicit QueueHudElement(Urho3D::XMLFile* style);
+	explicit QueueHudElement(Urho3D::UIElement *parent, Urho3D::XMLFile* style);
 	~QueueHudElement();
 	Urho3D::Button* getButton();
-	void hide();
-	void show();
+	void hide() const;
+	void show() const;
 
-	void setText(const Urho3D::String& msg);
-	void hideText();
-	void setTexture(Urho3D::Texture2D* texture);
-	void setProgress(float progress);
+	void setText(const Urho3D::String& msg) const;
+	void hideText() const;
+	void setTexture(Urho3D::Texture2D* texture) const;
+	void setProgress(float progress) const;
 	void setData(QueueElement* _element);
-	void reduce(short amount);
+	void reduce(short amount) const;
 	static QueueHudElement* getFromElement(Urho3D::VariantMap& eventData);
 private:
 	Urho3D::Button* button;

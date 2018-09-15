@@ -74,11 +74,11 @@ void MenuPanel::updateMode(LeftMenuMode mode) {
 	switch (mode) {
 	case LeftMenuMode::BUILDING:
 		return setCheckVisibility({true, true, false});
-	case LeftMenuMode::UNIT: 
+	case LeftMenuMode::UNIT:
 		return setCheckVisibility({true, true, true});
-	case LeftMenuMode::ORDER: 
+	case LeftMenuMode::ORDER:
 		return setCheckVisibility({true, true, false});
-	case LeftMenuMode::RESOURCE: 
+	case LeftMenuMode::RESOURCE:
 		return setCheckVisibility({true, false, false});
 	}
 }
@@ -97,23 +97,21 @@ void MenuPanel::createBody() {
 		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
 		>("textures/hud/icon/lm/lm" + Urho3D::String(i) + ".png");
 
-		MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
 		checks[i] = createElement<Urho3D::CheckBox>(rows[LEFT_MENU_ROWS_NUMBER - 1], style, "LeftMenuCheckBox");
 		checks[i]->SetVar("Num", i);
-		checks[i]->AddChild(sprite);
+		createSprite(checks[i], texture, style, "LeftMenuSmallSprite");
 		SubscribeToEvent(checks[i], Urho3D::E_CLICK, URHO3D_HANDLER(MenuPanel, ChengeModeButton));
 	}
-	auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
+	const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
 	>("textures/hud/icon/lm/lm3.png");
-	MySprite* sprite = createSprite(texture, style, "LeftMenuSmallSprite");
-	nextButton = createElement<Urho3D::Button>(rows[LEFT_MENU_ROWS_NUMBER - 1], style,"LeftMenuIcon");
-	nextButton->AddChild(sprite);
+	nextButton = createElement<Urho3D::Button>(rows[LEFT_MENU_ROWS_NUMBER - 1], style, "LeftMenuIcon");
+	createSprite(nextButton, texture, style, "LeftMenuSmallSprite");
 
 	int k = 0;
 	for (int i = 0; i < LEFT_MENU_ROWS_NUMBER - 1; ++i) {
 		for (int j = 0; j < LEFT_MENU_BUTTON_PER_ROW; ++j) {
-			sprites[k] = createEmptySprite(style, "LeftMenuSprite");
-			buttons[k] = simpleButton(rows[i], sprites[k], style, "LeftMenuBigIcon");
+			buttons[k] = createElement<Urho3D::Button>(rows[i], style, "LeftMenuBigIcon");
+			sprites[k] = createElement<MySprite>(buttons[k], style, "LeftMenuSprite");
 			hudElements.push_back(new HudData(buttons[k]));
 			hudElements[k]->set(-1, MenuAction::NONE, "");
 
@@ -358,9 +356,11 @@ void MenuPanel::basicResource(SelectedInfo* selectedInfo) {
 	int k = 0;
 	auto l10n = Game::getLocalization();
 
-	setNextElement(k, "textures/hud/icon/resource_action/get_worker.png", int(ResourceOrder::COLLECT), MenuAction::RESOURCE,
+	setNextElement(k, "textures/hud/icon/resource_action/get_worker.png", int(ResourceOrder::COLLECT),
+	               MenuAction::RESOURCE,
 	               l10n->Get("res_act_get_worker"));
-	setNextElement(k, "textures/hud/icon/resource_action/remove_workers.png", int(ResourceOrder::COLLECT_CANCEL), MenuAction::RESOURCE,
+	setNextElement(k, "textures/hud/icon/resource_action/remove_workers.png", int(ResourceOrder::COLLECT_CANCEL),
+	               MenuAction::RESOURCE,
 	               l10n->Get("res_act_cancel_worker"));
 
 	resetButtons(k);

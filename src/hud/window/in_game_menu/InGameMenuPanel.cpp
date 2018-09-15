@@ -56,9 +56,8 @@ void InGameMenuPanel::close() {
 
 void InGameMenuPanel::createBody() {
 	auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/igm/menu.png");
-
-	MySprite* sprite = createSprite(texture, style, "InGameToggledSprite");
-	toggleButton = simpleButton(Game::getUI()->GetRoot(), sprite, style, "InGameToggledButton");
+	toggleButton = createElement<Urho3D::Button>(Game::getUI()->GetRoot(), style, "InGameToggledButton");
+	createSprite(toggleButton, texture, style, "InGameToggledSprite");
 
 	SubscribeToEvent(toggleButton, Urho3D::E_CLICK, URHO3D_HANDLER(InGameMenuPanel, HandleToggle));
 
@@ -66,8 +65,8 @@ void InGameMenuPanel::createBody() {
 		auto texture2 = Game::getCache()->GetResource<Urho3D::Texture2D
 		>("textures/hud/icon/igm/igm_" + Urho3D::String(i) + ".png");
 
-		auto sprite2 = createSprite(texture2, style, "InGameSprite");
-		auto button = simpleButton(window, sprite2, style, "InGameButton");
+		auto button = createElement<Urho3D::Button>(window, style, "InGameButton");
+		createSprite(button, texture2, style, "InGameSprite");
 
 		addChildText(button, "InGameText", Game::getLocalization()->Get("igm_" + Urho3D::String(i)), style);
 

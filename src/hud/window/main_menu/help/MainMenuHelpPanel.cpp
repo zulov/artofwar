@@ -14,7 +14,7 @@ void MainMenuHelpPanel::createBody() {
 	list = createElement<Urho3D::ListView>(window, style, "HelpList");
 
 	for (int i = 0; i < HELP_ITEMS; ++i) {
-		auto button = simpleButton(nullptr, style, "HelpListButton");
+		auto button = simpleButton(style, "HelpListButton");
 		addChildText(button, "HelpListText", Game::getLocalization()->Get("help_key_" + Urho3D::String(i)), style);
 
 		list->AddItem(button);
@@ -28,7 +28,6 @@ void MainMenuHelpPanel::createBody() {
 	contentText = addChildText(content, "HelpContentText", Game::getLocalization()->Get("mock"), style);
 
 	contentText->SetWidth(content->GetWidth() * 0.9);
-	content->AddChild(contentText);
 }
 
 

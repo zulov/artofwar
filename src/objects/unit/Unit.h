@@ -1,10 +1,11 @@
 #pragma once
 
+#include "aim/Aims.h"
 #include "objects/Physical.h"
 #include "state/UnitState.h"
-#include "aim/Aims.h"
-#include <vector>
 #include <Urho3D/Graphics/CustomGeometry.h>
+#include <vector>
+
 
 #define BUCKET_SET_NUMBER 4
 
@@ -110,15 +111,13 @@ private:
 
 	void changeColor(float value, float maxValue) const;
 
-	Urho3D::Vector2 acceleration;
-	Urho3D::Vector2 velocity;
+	Urho3D::Vector2 velocity, acceleration;
 	Aims aims;
 
 	db_unit* dbUnit;
 	db_unit_level* dbLevel;
 
-	UnitState state;
-	UnitState actionState;
+	UnitState state, actionState;
 
 	Urho3D::Material* basic;
 
@@ -129,13 +128,11 @@ private:
 
 	bool rotatable;
 	bool atState = false;
-	float minimalDistance;
-	float attackIntrest = 10;
+	float minimalDistance, maxSeparationDistance;
+	float maxSpeed, minSpeed;
+	float attackInterest = 10;
 	float collectSpeed = 2;
 	float mass;
-	float maxSpeed;
-	float minSpeed;
-	float maxSeparationDistance;
 
 	short posInFormation = -1;
 	short formation = -1;

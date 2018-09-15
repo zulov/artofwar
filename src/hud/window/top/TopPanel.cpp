@@ -28,11 +28,10 @@ void TopPanel::createBody() {
 	const int size = Game::getDatabaseCache()->getResourceSize();
 
 	for (int i = 0; i < size; ++i) {
-		db_resource* resource = Game::getDatabaseCache()->getResource(i);
-		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/resource/" + resource->icon);
+		const auto resource = Game::getDatabaseCache()->getResource(i);
+		const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/resource/" + resource->icon);
 
-		elements[i] = new TopHudElement(style, texture);
-		window->AddChild(elements[i]->getButton());
+		elements[i] = new TopHudElement(window, style, texture);
 	}
 }
 

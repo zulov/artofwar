@@ -1,9 +1,9 @@
 #include "TopHudElement.h"
 #include "../../UiUtils.h"
 
-TopHudElement::TopHudElement(Urho3D::XMLFile* style, Urho3D::Texture2D* texture) {
-	icon = createSprite(texture, style, "SpriteLeft");
-	button = simpleButton(icon, style, "TopButtons");
+TopHudElement::TopHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style, Urho3D::Texture2D* texture) {
+	button = createElement<Urho3D::Button>(parent, style, "TopButtons" );
+	icon = createSprite(button, texture, style, "SpriteLeft");
 
 	mock = createElement<Urho3D::UIElement>(button,  style, "mockCenter");
 
@@ -15,18 +15,14 @@ TopHudElement::TopHudElement(Urho3D::XMLFile* style, Urho3D::Texture2D* texture)
 
 TopHudElement::~TopHudElement() = default;
 
-Urho3D::Button* TopHudElement::getButton() {
-	return button;
-}
-
-void TopHudElement::hide() {
+void TopHudElement::hide() const {
 	button->SetVisible(false);
 }
 
-void TopHudElement::show() {
+void TopHudElement::show() const {
 	button->SetVisible(true);
 }
 
-void TopHudElement::setText(const Urho3D::String& msg) {
+void TopHudElement::setText(const Urho3D::String& msg) const {
 	value->SetText(msg);
 }

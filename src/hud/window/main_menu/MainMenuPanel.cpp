@@ -83,8 +83,8 @@ void MainMenuPanel::createBody() {
 		auto texture2 = Game::getCache()->GetResource<Urho3D::Texture2D
 		>("textures/hud/icon/menu/menu_" + Urho3D::String(i) + ".png");
 
-		auto sprite2 = createSprite(texture2, style, "MainMenuSprite");
-		auto button = simpleButton(window, sprite2, style, "MainMenuButton");
+		auto button = createElement<Urho3D::Button>(window, style, "MainMenuButton");
+		createSprite(button, texture2, style, "MainMenuSprite");
 
 		addChildText(button, "MainMenuText", l10n->Get("menu_" + Urho3D::String(i)), style);
 

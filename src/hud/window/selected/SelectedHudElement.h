@@ -12,7 +12,7 @@ class Physical;
 class SelectedHudElement
 {
 public:
-	explicit SelectedHudElement(Urho3D::XMLFile* style);
+	explicit SelectedHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style);
 	~SelectedHudElement();
 
 	Urho3D::Button* getButton();
