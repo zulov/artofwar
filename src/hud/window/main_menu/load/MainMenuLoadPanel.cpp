@@ -20,10 +20,8 @@ void MainMenuLoadPanel::createBody() {
 	leftMock = createElement<Urho3D::UIElement>(window, style,"LoadLeftMock"); 
 	list = createElement<Urho3D::ListView>(window, style,"LoadList");
 
-	auto fileSystem = GetSubsystem<Urho3D::FileSystem>();
-
 	Urho3D::Vector<Urho3D::String> files;
-	fileSystem->ScanDir(files, "saves", "*.db", Urho3D::SCAN_FILES, false);
+	GetSubsystem<Urho3D::FileSystem>()->ScanDir(files, "saves", "*.db", Urho3D::SCAN_FILES, false);
 
 	for (const auto& name : files) {
 		auto button = simpleButton(style, "LoadListButton");

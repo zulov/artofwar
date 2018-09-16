@@ -30,7 +30,7 @@ private:
 	int indexUpdate = 0;
 	int indexPerUpdate;
 	bool checks[MINI_MAP_BUTTON_NUMBER];
-	unsigned unitsColors[PLAYER_COLORS_NUMBER_DB];
-	unsigned buildingColors[PLAYER_COLORS_NUMBER_DB];
-	unsigned resourceColors[RESOURCE_NUMBER_DB];
+	unsigned unitsColors[PLAYER_COLORS_NUMBER_DB],
+	         buildingColors[PLAYER_COLORS_NUMBER_DB],
+	         resourceColors[RESOURCE_NUMBER_DB];
 };

@@ -21,15 +21,11 @@ static void setTextureToSprite(MySprite* sprite, Urho3D::Texture2D* texture) {
 		const int textureWidth = texture->GetWidth();
 		const int textureHeight = texture->GetHeight();
 
-		auto size = sprite->getMySize();
+		const auto size = sprite->getMySize();
 		const float scaleX = size.x_ / (float)textureWidth;
 		const float scaleY = size.y_ / (float)textureHeight;
-		sprite->SetScale(1);
-		if (scaleX < scaleY) {
-			sprite->SetScale(scaleX);
-		} else {
-			sprite->SetScale(scaleY);
-		}
+
+		sprite->SetScale(Urho3D::Min(scaleX, scaleY));
 
 		sprite->SetSize(textureWidth, textureHeight);
 		const auto perHotSpot = sprite->getPercentHotSpot();
