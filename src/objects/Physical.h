@@ -1,8 +1,8 @@
 #pragma once
 #include "Entity.h"
+#include "scene/load/dbload_container.h"
 #include <Urho3D/Graphics/BillboardSet.h>
 #include <Urho3D/Graphics/StaticModel.h>
-#include "scene/load/dbload_container.h"
 #include <iostream>
 
 struct ActionParameter;
@@ -39,7 +39,7 @@ public:
 		                                                std::tuple<Urho3D::Vector2, int>(
 			                                                Physical*,
 			                                                Urho3D::Vector3*)>&
-	                                                position);
+	                                                positionFunc);
 
 	std::tuple<Physical*, float, int> closestPhysical(std::vector<Physical*>* things,
 	                                                  const std::function<bool(Physical*)>& condition,
@@ -106,12 +106,9 @@ protected:
 
 	Urho3D::StaticModel* model;
 
-	Urho3D::Node* billboardNode = nullptr;
-	Urho3D::Node* barNode = nullptr;
-	Urho3D::Billboard* billboardBar = nullptr;
-	Urho3D::Billboard* billboardShadow = nullptr;
-	Urho3D::BillboardSet* billboardSetBar = nullptr;
-	Urho3D::BillboardSet* billboardSetShadow = nullptr;
+	Urho3D::Node *billboardNode, *barNode;
+	Urho3D::Billboard *billboardBar, *billboardShadow;
+	Urho3D::BillboardSet *billboardSetBar, *billboardSetShadow;
 
 	unsigned char maxCloseUsers = 4; //TODO default values
 	unsigned char maxRangeUsers = 2;
