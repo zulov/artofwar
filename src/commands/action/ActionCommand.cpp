@@ -27,9 +27,10 @@ ActionParameter ActionCommand::getTargetAim(int startInx, Urho3D::Vector2& to) {
 	return ActionParameter(new DummyAim());
 }
 
-ActionParameter ActionCommand::getFollowAim(const Physical* toFollow) {
-	//getTargetAim(entity->getMainCell(), *to)
-	return ActionParameter(new FollowAim(toFollow,nullptr));
+ActionParameter ActionCommand::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow) {
+	auto const target = getTargetAim(startInx, toSoFar);
+
+	return ActionParameter(new FollowAim(toFollow, static_cast<const TargetAim*>(target.aim)));
 }
 
 ActionParameter ActionCommand::getChargeAim(Urho3D::Vector2* charge) {

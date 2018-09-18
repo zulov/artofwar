@@ -40,6 +40,9 @@ void FormationAction::addFollowAim(const Physical* toFollow, bool append) {
 				StateManager::changeState(unit, UnitState::STOP);
 			}
 		}
-		opt.value()->action(static_cast<char>(action), getFollowAim(toFollow));
+		opt.value()->action(static_cast<char>(action),
+		                    getFollowAim(opt.value()->getMainCell(),
+		                                 toFollow->getPosToFollow(opt.value()->getPosition()),
+		                                 toFollow));
 	}
 }

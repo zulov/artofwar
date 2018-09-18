@@ -19,7 +19,7 @@ public:
 	void execute() override;
 protected:
 	static ActionParameter getTargetAim(int startIdx, Urho3D::Vector2& to);
-	static ActionParameter getFollowAim(const Physical* toFollow);
+	static ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow);
 	static ActionParameter getChargeAim(Urho3D::Vector2* charge);
 
 	virtual void addTargetAim(Urho3D::Vector2* to, bool append) =0;

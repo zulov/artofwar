@@ -5,7 +5,7 @@
 #include "simulation/env/Enviroment.h"
 
 
-FollowAim::FollowAim(const Physical* physical,const TargetAim* subTarget): physical(physical),subTarget(subTarget) {
+FollowAim::FollowAim(const Physical* physical, const TargetAim* subTarget): physical(physical), subTarget(subTarget) {
 	radiusSq = 1 * 1;
 }
 
@@ -17,7 +17,7 @@ std::vector<Urho3D::Vector3> FollowAim::getDebugLines(Urho3D::Vector3* position)
 	points.emplace_back(0, 0.5, 0);
 	points.emplace_back(center.x_ - position->x_, 0.5, center.y_ - position->z_);
 
-	return points; 
+	return points;
 }
 
 Urho3D::Vector2 FollowAim::getDirection(Unit* unit) {
