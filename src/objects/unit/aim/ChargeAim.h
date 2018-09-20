@@ -7,7 +7,7 @@ public:
 	explicit ChargeAim(Urho3D::Vector2* _direction);
 	~ChargeAim();
 
-	std::vector<Urho3D::Vector3> getDebugLines(Urho3D::Vector3* position) override;
+	std::vector<Urho3D::Vector3> getDebugLines(Urho3D::Vector3* position) const override;
 	Urho3D::Vector2 getDirection(Unit* unit) override;
 	bool ifReach(Unit* unit) override;
 	bool expired() override;

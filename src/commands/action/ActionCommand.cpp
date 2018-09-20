@@ -30,7 +30,7 @@ ActionParameter ActionCommand::getTargetAim(int startInx, Urho3D::Vector2& to) {
 ActionParameter ActionCommand::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow) {
 	auto const target = getTargetAim(startInx, toSoFar);
 
-	return ActionParameter(new FollowAim(toFollow, static_cast<const TargetAim*>(target.aim)));
+	return ActionParameter(new FollowAim(toFollow, static_cast<TargetAim*>(target.aim)));
 }
 
 ActionParameter ActionCommand::getChargeAim(Urho3D::Vector2* charge) {

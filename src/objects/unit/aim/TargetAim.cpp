@@ -13,7 +13,7 @@ TargetAim::TargetAim(std::vector<int>& _path) :
 
 TargetAim::~TargetAim() = default;
 
-std::vector<Urho3D::Vector3> TargetAim::getDebugLines(Urho3D::Vector3* position) {
+std::vector<Urho3D::Vector3> TargetAim::getDebugLines(Urho3D::Vector3* position) const {
 	std::vector<Urho3D::Vector3> points;
 	points.emplace_back(0, 0.5, 0);
 	for (short i = current; i < path.size(); ++i) {
