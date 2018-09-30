@@ -16,26 +16,29 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Resource/XMLFile.h>
 #include <string>
+#include "objects/LinkComponent.h"
 
 ResourceEntity::
 ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell)
 	: Static(_position, ObjectType::RESOURCE, mainCell) {
-
+	
 	//node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/resources/" + dbResource->nodeName)->GetRoot());
 	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/resources/tree_2_test.xml")->GetRoot());
-	initBillbords();
+		node->CreateComponent<LinkComponent>()->bound(this);
 
+	initBillboards();
+	
 	dbResource = Game::getDatabaseCache()->getResource(id);
 	populate();
 	model = node->GetComponent<Urho3D::StaticModel>();
 	//model->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbResource->model));
 
-	//node->Scale(dbResource->scale);
+	node->Scale(dbResource->scale);
 
 	// for (int i = 0; i < dbResource->texture.Size(); ++i) {
 	// 	model->SetMaterial(i, Game::getCache()->GetResource<Urho3D::Material>("Materials/" + dbResource->texture[i]));
 	// }
-	updateBillbords();
+	updateBillboards();
 	node->SetRotation(Urho3D::Quaternion(0, rand() % 360, 0.0f));
 }
 

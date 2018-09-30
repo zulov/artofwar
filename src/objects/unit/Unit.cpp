@@ -25,7 +25,7 @@
 
 Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
 	state(UnitState::STOP) {
-	initBillbords();
+	initBillboards();
 
 	dbUnit = Game::getDatabaseCache()->getUnit(id);
 	dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
@@ -47,7 +47,7 @@ Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical
 	setPlayer(player);
 	setTeam(Game::getPlayersManager()->getPlayer(player)->getTeam());
 
-	updateBillbords();
+	updateBillboards();
 	if constexpr (UNIT_DEBUG_ENABLED) {
 		line = node->GetOrCreateComponent<Urho3D::CustomGeometry>();
 	}

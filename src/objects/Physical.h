@@ -20,8 +20,8 @@ public:
 	bool bucketHasChanged(int _bucketIndex) const;
 	void setBucket(int _bucketIndex);
 
-	void updateBillbords() const;
-	void initBillbords();
+	void updateBillboards() const;
+	void initBillboards();
 
 	void setTeam(unsigned char _team);
 	void setPlayer(unsigned char player);

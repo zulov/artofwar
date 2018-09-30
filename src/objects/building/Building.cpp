@@ -19,7 +19,7 @@ Building::Building(Urho3D::Vector3* _position, int id, int player, int level, in
 	Static(_position, ObjectType::BUILDING, mainCell),
 	target(_position->x_, _position->z_) {
 
-	initBillbords();
+	initBillboards();
 	target.x_ += 5;
 	target.y_ += 5;
 	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
@@ -117,7 +117,7 @@ void Building::upgrade(char level) {
 
 	staticModel->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
 	staticModel->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture));
-	updateBillbords();
+	updateBillboards();
 }
 
 void Building::load(dbload_building* dbloadBuilding) {

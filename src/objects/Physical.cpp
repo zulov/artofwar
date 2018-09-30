@@ -37,6 +37,8 @@ void Physical::createBillboardShadow() {
 Urho3D::Billboard* Physical::createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet,
                                                 const Urho3D::String& material) const {
 	node = this->node->CreateChild();
+	auto test = node->GetScale();
+
 	billbordSet = node->CreateComponent<Urho3D::BillboardSet>();
 	billbordSet->SetNumBillboards(1);
 	billbordSet->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(material));
@@ -60,14 +62,14 @@ void Physical::updateBillboardBar(Urho3D::Vector3& boundingBox) const {
 	billboardSetBar->Commit();
 }
 
-void Physical::updateBillbords() const {
+void Physical::updateBillboards() const {
 	auto boundingBox = node->GetComponent<Urho3D::StaticModel>()->GetModel()->GetBoundingBox().Size();
 
 	updateBillboardBar(boundingBox);
 	updateBillboardShadow(boundingBox);
 }
 
-void Physical::initBillbords() {
+void Physical::initBillboards() {
 	createBillboardBar();
 	createBillboardShadow();
 }
