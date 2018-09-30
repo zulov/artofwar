@@ -259,22 +259,18 @@ struct db_resource
 	const Urho3D::String name;
 	const Urho3D::String icon;
 	const int maxCapacity;
-	const Urho3D::Vector<Urho3D::String> texture;
-	const Urho3D::String model;
-	const float scale;
+	const Urho3D::String nodeName;
 	const Urho3D::IntVector2 size;
 	const int maxUsers;
 	const unsigned mini_map_color;
 
-	db_resource(int id, char* name, char* icon, int maxCapacity, char* texture, char* model, float scale, int sizeX,
+	db_resource(int id, char* name, char* icon, int maxCapacity, char* nodeName, int sizeX,
 	            int sizeZ, int maxUsers, unsigned mini_map_color)
 		: id(id),
 		name(name),
 		icon(icon),
 		maxCapacity(maxCapacity),
-		texture(Urho3D::String(texture).Split(SPLIT_SIGN)),
-		model(model),
-		scale(scale),
+		nodeName(nodeName),
 		size(Urho3D::IntVector2(sizeX, sizeZ)),
 		maxUsers(maxUsers),
 		mini_map_color(mini_map_color) {

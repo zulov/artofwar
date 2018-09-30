@@ -60,8 +60,8 @@ int static loadNation(void* data, int argc, char** argv, char** azColName) {
 int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
-	xyz->resources[id] = new db_resource(id, argv[1], argv[2], atoi(argv[3]), argv[4], argv[5], atof(argv[6]),
-	                                     atoi(argv[7]), atoi(argv[8]), atoi(argv[9]), fromHex(argv, 10));
+	xyz->resources[id] = new db_resource(id, argv[1], argv[2], atoi(argv[3]), argv[4], 
+	                                     atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), fromHex(argv, 8));
 	xyz->resource_size++;
 
 	return 0;

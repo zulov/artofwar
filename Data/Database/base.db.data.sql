@@ -21,8 +21,8 @@ INSERT INTO `unit_to_unit_upgrade` (upgrade,unit) VALUES (0,0),
  (1,2);
 INSERT INTO `unit_level` (level,unit,name,minDist,maxSep,model,texture,mass,scale,attack,attackSpeed,attackRange,defense,maxHp,maxSpeed,minSpeed,collectSpeed,upgrade_speed,max_force) VALUES (0,0,'base',0.25,1.0,'Cube.mdl','grey.xml',100.0,0.5,2.0,4,1.0,0.2,100,5.0,1.0,0.0,2.0,5000.0),
  (1,0,'better',0.25,1.0,'Cube.mdl','grey.xml',100.0,0.6,3.0,4,1.0,0.3,150,5.5,1.0,0.0,2.0,5000.0),
- (0,1,'base',0.2,1.0,'Hedra.mdl','darkgrey.xml',80.0,0.4,3.0,7,3.0,0.1,80,6.0,1.0,0.0,2.0,5000.0),
- (1,1,'better',0.2,1.0,'Hedra.mdl','darkgrey.xml',80.0,0.5,4.0,7,3.0,0.15,100,7.0,1.0,0.0,3.0,5000.0),
+ (0,1,'base',0.2,1.0,'Hedra.mdl','darkgrey.xml',80.0,0.4,3.0,7,10.0,0.1,80,6.0,1.0,0.0,2.0,5000.0),
+ (1,1,'better',0.2,1.0,'Hedra.mdl','darkgrey.xml',80.0,0.5,4.0,7,10.0,0.15,100,7.0,1.0,0.0,3.0,5000.0),
  (0,2,'base',0.2,1.0,'Pyramid.mdl','red.xml',120.0,0.4,1.0,5,1.5,0.4,150,4.0,2.0,0.0,2.0,5000.0),
  (1,2,'better',0.2,1.0,'Pyramid.mdl','red.xml',120.0,0.4,1.0,5,1.5,0.5,180,4.2,1.7,0.0,3.0,5000.0),
  (0,3,'base',0.3,1.0,'horse.mdl','horse.xml',400.0,0.6,5.0,10,2.0,0.3,250,12.0,1.0,0.0,2.0,20000.0),
@@ -32,13 +32,11 @@ INSERT INTO `unit_level` (level,unit,name,minDist,maxSep,model,texture,mass,scal
  (0,5,'base',0.25,1.0,'general.mdl','general.xml',50.0,0.5,0.5,3,1.0,0.05,70,5.0,1.0,0.0,3.0,5000.0),
  (1,5,'better',0.25,1.0,'general.mdl','general.xml',50.0,0.5,0.6,3,1.0,0.06,80,5.0,1.0,0.0,3.0,5000.0);
 INSERT INTO `settings` (graph,resolution) VALUES (0,1);
-INSERT INTO `resource` (id,name,icon,maxCapacity,texture,model,scale,sizeX,sizeZ,maxUsers,mini_map_color) VALUES 
-(0,'gold','gold.png',1000,'gold.xml','rock.mdl',0.5,2,2,4,'0xFF00D0FF'),
- (1,'wood','wood.png',100,'tree0.xml
-tree1.xml
-','tree2.mdl',1.0,2,2,3,'0xFF00B600'),
- (2,'food','food.png',100,'food.xml',NULL,0.5,2,2,3,'0xFF9000A7'),
- (3,'stone','stone.png',1000,'stone.xml','rock.mdl',0.5,2,2,4,'0xFF808080');
+INSERT INTO `resource` (id,name,icon,maxCapacity,nodeName,sizeX,sizeZ,maxUsers,mini_map_color) VALUES 
+(0,'gold','gold.png',1000,'gold.xml',2,2,4,'0xFF00D0FF'),
+ (1,'wood','wood.png',100,'tree_2.xml',2,2,3,'0xFF00B600'),
+ (2,'food','food.png',100,'food.xml',2,2,3,'0xFF9000A7'),
+ (3,'stone','stone.png',1000,'stone.xml',2,2,4,'0xFF808080');
 INSERT INTO `resolution` (id,x,y) VALUES (0,1366,768),
  (1,1600,900),
  (2,1920,1080),
@@ -46,7 +44,7 @@ INSERT INTO `resolution` (id,x,y) VALUES (0,1366,768),
  (4,4096,2160);
 INSERT INTO `player_colors` (id,unit,building,name) VALUES (0,'0xFFCF0000','0xFF900000','blue'),
  (1,'0xFF0000CF','0xFF000090','red');
-INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
+INSERT INTO `orders_to_unit` (id,unit,'order') VALUES (0,0,0),
  (1,0,1),
  (2,0,3),
  (4,0,4),

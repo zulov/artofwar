@@ -4,40 +4,33 @@
 #include "OperatorType.h"
 #include "ResourceOrder.h"
 #include "database/DatabaseCache.h"
+#include "objects/LinkComponent.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/Enviroment.h"
-#include <Urho3D/Graphics/Material.h>
-#include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Resource/XMLFile.h>
 #include <string>
-#include "objects/LinkComponent.h"
+
 
 ResourceEntity::
 ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell)
 	: Static(_position, ObjectType::RESOURCE, mainCell) {
-	
-	//node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/resources/" + dbResource->nodeName)->GetRoot());
-	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/resources/tree_2_test.xml")->GetRoot());
-		node->CreateComponent<LinkComponent>()->bound(this);
+	dbResource = Game::getDatabaseCache()->getResource(id);
+
+	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/resources/" + dbResource->nodeName)->
+	                                GetRoot());
+	node->CreateComponent<LinkComponent>()->bound(this);
 
 	initBillboards();
-	
-	dbResource = Game::getDatabaseCache()->getResource(id);
+
 	populate();
 	model = node->GetComponent<Urho3D::StaticModel>();
-	//model->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbResource->model));
 
-	node->Scale(dbResource->scale);
-
-	// for (int i = 0; i < dbResource->texture.Size(); ++i) {
-	// 	model->SetMaterial(i, Game::getCache()->GetResource<Urho3D::Material>("Materials/" + dbResource->texture[i]));
-	// }
 	updateBillboards();
 	node->SetRotation(Urho3D::Quaternion(0, rand() % 360, 0.0f));
 }

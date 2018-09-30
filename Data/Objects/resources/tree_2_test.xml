@@ -1,4 +1,5 @@
 <node>
+<attribute name="Scale" value="6 6 6" />
 <component type="StaticModel" >
 	<attribute name="Model" value="Model;Models/tree_2.mdl" />
 	<attribute name="Material" value="Material;Materials/tree_2a.xml;Materials/tree_2b.xml" />
