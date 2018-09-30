@@ -2,10 +2,10 @@
 #include "Bucket.h"
 #include "BucketIterator.h"
 #include "objects/Physical.h"
+#include "objects/unit/Unit.h"
 #include "simulation/env/ContentInfo.h"
 #include <Urho3D/Graphics/Model.h>
-#include <algorithm>
-#include "objects/unit/Unit.h"
+
 
 Grid::Grid(short _resolution, float _size): resolution(_resolution),
 	sqResolution(_resolution * _resolution),
@@ -78,9 +78,7 @@ short Grid::getIndex(float value) const {
 }
 
 BucketIterator& Grid::getArrayNeight(Urho3D::Vector3* position, float radius, short thread) {
-	BucketIterator& bucketIterator = iterators[thread];
-	bucketIterator.init(getEnvIndexsFromCache(radius), indexFromPosition(position), this);
-	return bucketIterator;
+	return *iterators[thread].init(getEnvIndexsFromCache(radius), indexFromPosition(position), this);
 }
 
 void Grid::removeAt(int index, Physical* entity) const {
@@ -100,36 +98,39 @@ std::vector<Physical*>& Grid::getContentAt(int index) {
 	return empty;
 }
 
+short Grid::diff(const short a, const short b) {
+	auto diff = Urho3D::Sign(b - a);
+	if (diff == 0) { return 1; }
+	return diff;
+}
+
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
-	auto begin = pair.first;
-	auto end = pair.second;
 	tempSelected->clear();
 
-	const auto posBeginX = getIndex(begin->x_);
-	const auto posBeginZ = getIndex(begin->z_);
-	const auto posEndX = getIndex(end->x_);
-	const auto posEndZ = getIndex(end->z_);
+	const auto posBeginX = getIndex(pair.first->x_);
+	const auto posBeginZ = getIndex(pair.first->z_);
+	const auto posEndX = getIndex(pair.second->x_);
+	const auto posEndZ = getIndex(pair.second->z_);
 
-	for (short i = Urho3D::Min(posBeginX, posEndX); i <= Urho3D::Max(posBeginX, posEndX); ++i) {
-		for (short j = Urho3D::Min(posBeginZ, posEndZ); j <= Urho3D::Max(posBeginZ, posEndZ); ++j) {
-			const int index = getIndex(i, j);
-			std::vector<Physical *> & content = getContentAt(index); //TODO czy tu ampersentma byc?
+	auto dX = diff(posBeginX, posEndX);
+	auto dZ = diff(posBeginZ, posEndZ);
+
+	for (short i = posBeginX; i != posEndX + dX; i += dX) {
+		for (short j = posBeginZ; j != posEndZ + dZ; j += dZ) {
+			auto& content = getContentAt(getIndex(i, j));
 			tempSelected->insert(tempSelected->end(), content.begin(), content.end());
 		}
 	}
+
 	return tempSelected;
 }
 
-int Grid::indexFromPosition(Urho3D::Vector3* position) const {
-	const auto posX = getIndex(position->x_);
-	const auto posZ = getIndex(position->z_);
-	return getIndex(posX, posZ);
+int Grid::indexFromPosition(Urho3D::Vector3* pos) const {
+	return getIndex(getIndex(pos->x_), getIndex(pos->z_));
 }
 
-int Grid::indexFromPosition(Urho3D::Vector2& position) const {
-	const auto posX = getIndex(position.x_);
-	const auto posZ = getIndex(position.y_);
-	return getIndex(posX, posZ);
+int Grid::indexFromPosition(Urho3D::Vector2& pos) const {
+	return getIndex(getIndex(pos.x_), getIndex(pos.y_));
 }
 
 bool Grid::fieldInCircle(short i, short j, float radius) const {

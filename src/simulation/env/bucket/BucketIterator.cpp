@@ -18,13 +18,14 @@ Physical* BucketIterator::next() {
 	return entity;
 }
 
-void BucketIterator::init(std::vector<short>* _levels, int _center, Grid* _bucketGrid) {
+BucketIterator* BucketIterator::init(std::vector<short>* _levels, int _center, Grid* _bucketGrid) {
 	levels = _levels;
 	center = _center;
 	index = 0;
 	bucketGrid = _bucketGrid;
 	setRange();
 	levelSize = levels->size();
+	return this;
 }
 
 void BucketIterator::setRange() {

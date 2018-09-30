@@ -1,8 +1,8 @@
 #include "Force.h"
 #include "Game.h"
 #include "objects/unit/Unit.h"
-#include "simulation/formation/FormationManager.h"
 #include "simulation/env/Enviroment.h"
+#include "simulation/formation/FormationManager.h"
 
 
 Force::Force() = default;

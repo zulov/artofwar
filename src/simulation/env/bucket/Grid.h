@@ -19,6 +19,7 @@ public:
 	void update(Unit* unit, char team) const;
 	void update(Physical* entity) const;
 	std::vector<Physical*>& getContentAt(int index);
+	static short diff(short posBeginX, short posEndX);
 
 	std::vector<short>* getEnvIndexsFromCache(float dist);
 	std::vector<Physical *>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);

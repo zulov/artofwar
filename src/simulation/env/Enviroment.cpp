@@ -40,6 +40,7 @@ Enviroment::Enviroment(Urho3D::Terrain* _terrian):
 Enviroment::~Enviroment() {
 	delete neights;
 	delete neights2;
+	delete empty;
 }
 
 std::vector<Physical*>* Enviroment::getNeighbours(Physical* physical, const float radius) {
@@ -124,16 +125,12 @@ Urho3D::Vector2* Enviroment::validatePosition(Urho3D::Vector3* position) {
 std::vector<Physical*>* Enviroment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
 	std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
 	for (auto grid : grids) {
-		auto result = grid->getArrayNeight(pair);
+		const auto result = grid->getArrayNeight(pair);
 		if (!result->empty()) {
 			return result;
 		}
 	}
 	return empty;
-}
-
-std::vector<Physical*>* Enviroment::getBuildings(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
-	return buildingGrid.getArrayNeight(pair);
 }
 
 float Enviroment::getGroundHeightAt(float x, float z) const {

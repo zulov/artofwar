@@ -4,8 +4,6 @@
 #include <sqlite3/sqlite3.h>
 
 
-struct loading;
-
 class SceneLoader
 {
 public:

@@ -9,7 +9,6 @@ namespace Urho3D {
 	class String;
 }
 
-
 class Unit;
 class ResourceEntity;
 class Building;

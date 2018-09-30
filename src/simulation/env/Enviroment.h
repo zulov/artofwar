@@ -34,7 +34,6 @@ public:
 	Urho3D::Vector2* validatePosition(Urho3D::Vector3* position);
 
 	std::vector<Physical *>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);
-	std::vector<Physical *>* getBuildings(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);
 
 	float getGroundHeightAt(float x, float z) const;
 	float getGroundHeightPercent(float y, float x, float div) const;

@@ -12,7 +12,7 @@ public:
 	~BucketIterator();
 	Physical* next();
 	void setRange();
-	void init(std::vector<short>* _levels, int _center, Grid* _bucketGrid);
+	BucketIterator* init(std::vector<short>* _levels, int _center, Grid* _bucketGrid);
 private:
 	short index = 0;
 
