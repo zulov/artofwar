@@ -67,12 +67,10 @@ public:
 	void removeFromGrids(const std::vector<Physical*>& toDispose);
 private:
 	MainGrid mainGrid;
-	Grid resourceGrid;
-	Grid buildingGrid;
+	Grid resourceGrid, buildingGrid;
 	Grid teamUnitGrid[MAX_PLAYERS];
 
 	Urho3D::Terrain* terrian;
 
-	std::vector<Physical*>* neights; //TODO tu bedzie trzeba tablica jesli beda watki
-	std::vector<Physical*>* neights2;
+	std::vector<Physical*> *neights, *neights2, *empty; //TODO tu bedzie trzeba tablica jesli beda watki
 };

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "ControlsState.h"
 #include "MouseButton.h"
 #include "SelectedInfo.h"

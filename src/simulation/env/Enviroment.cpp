@@ -29,6 +29,7 @@ Enviroment::Enviroment(Urho3D::Terrain* _terrian):
 	} {
 	neights = new std::vector<Physical *>();
 	neights2 = new std::vector<Physical *>();
+	empty = new std::vector<Physical *>();
 	neights->reserve(DEFAULT_VECTOR_SIZE * 2);
 	neights2->reserve(DEFAULT_VECTOR_SIZE * 2);
 
@@ -121,7 +122,14 @@ Urho3D::Vector2* Enviroment::validatePosition(Urho3D::Vector3* position) {
 }
 
 std::vector<Physical*>* Enviroment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
-	return mainGrid.getArrayNeight(pair);
+	std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
+	for (auto grid : grids) {
+		auto result = grid->getArrayNeight(pair);
+		if (!result->empty()) {
+			return result;
+		}
+	}
+	return empty;
 }
 
 std::vector<Physical*>* Enviroment::getBuildings(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {

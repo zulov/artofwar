@@ -11,13 +11,17 @@
 #include <Urho3D/UI/UI.h>
 
 
-inline void resultQuery(const Urho3D::Ray& cameraRay, Urho3D::PODVector<Urho3D::RayQueryResult>& results) {
-	Urho3D::RayOctreeQuery query(results, cameraRay, Urho3D::RAY_TRIANGLE, 300, Urho3D::DRAWABLE_GEOMETRY);
-	Game::getScene()->Node::GetComponent<Urho3D::Octree>()->Raycast(query);
+inline Physical* getLink(Urho3D::Node* node) {
+	return static_cast<Physical*>(node->GetVar("link").GetVoidPtr());
 }
 
-static Physical* getLink(Urho3D::Node* node) {
-	return static_cast<Physical*>(node->GetVar("link").GetVoidPtr());
+inline void resultQuery(const Urho3D::IntVector2& pos, Urho3D::PODVector<Urho3D::RayQueryResult>& results) {
+	const auto& cameraRay = Game::getCameraManager()->getComponent()
+	                                                ->GetScreenRay((float)pos.x_ / Game::getGraphics()->GetWidth(),
+	                                                               (float)pos.y_ / Game::getGraphics()->GetHeight());
+
+	Urho3D::RayOctreeQuery query(results, cameraRay, Urho3D::RAY_TRIANGLE, 300, Urho3D::DRAWABLE_GEOMETRY);
+	Game::getScene()->Node::GetComponent<Urho3D::Octree>()->Raycast(query);
 }
 
 bool raycast(hit_data& hitData) {
@@ -26,30 +30,16 @@ bool raycast(hit_data& hitData) {
 		return false;
 	}
 
-	const auto cameraRay = Game::getCameraManager()
-	                                 ->getComponent()
-	                                 ->GetScreenRay((float)pos.x_ / Game::getGraphics()->GetWidth(),
-	                                                (float)pos.y_ / Game::getGraphics()->GetHeight());
-
 	Urho3D::PODVector<Urho3D::RayQueryResult> results;
-	resultQuery(cameraRay, results);
-	int i = 0;
-	while (i < results.Size()) {
-		Urho3D::RayQueryResult& result = results[i];
+	resultQuery(pos, results);
 
-		auto node = result.node_;
-
-		auto lc = getLink(node);
-		if (lc) {
+	for (const auto result : results) {
+		const auto node = result.node_;
+		Physical* lc;
+		if ((lc = getLink(node)) || (lc = getLink(node->GetParent()))) {
 			hitData.set(result, lc);
 			return true;
 		}
-		lc = getLink(node);
-		if (lc) {
-			hitData.set(result, lc);
-			return true;
-		}
-		++i;
 	}
 	hitData.drawable = nullptr;
 	hitData.clicked = nullptr;
@@ -63,30 +53,16 @@ bool raycast(hit_data& hitData, ObjectType type) {
 		return false;
 	}
 
-	const auto cameraRay = Game::getCameraManager()
-	                                 ->getComponent()
-	                                 ->GetScreenRay((float)pos.x_ / Game::getGraphics()->GetWidth(),
-	                                                (float)pos.y_ / Game::getGraphics()->GetHeight());
-
 	Urho3D::PODVector<Urho3D::RayQueryResult> results;
-	resultQuery(cameraRay, results);
-	int i = 0;
-	while (i < results.Size()) {
-		Urho3D::RayQueryResult& result = results[i];
-
-		auto node = result.node_;
-
-		auto lc = getLink(node);
-		if (lc && lc->getType() == type) {
+	resultQuery(pos, results);
+	for (const auto result : results) {
+		const auto node = result.node_;
+		Physical* lc;
+		if ((lc = getLink(node)) && lc->getType() == type
+			|| (lc = getLink(node->GetParent())) && lc->getType() == type) {
 			hitData.set(result, lc);
 			return true;
 		}
-		lc = getLink(node->GetParent());
-		if (lc && lc->getType() == type) {
-			hitData.set(result, lc);
-			return true;
-		}
-		++i;
 	}
 	hitData.drawable = nullptr;
 	hitData.clicked = nullptr;
