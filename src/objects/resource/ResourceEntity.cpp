@@ -4,7 +4,6 @@
 #include "OperatorType.h"
 #include "ResourceOrder.h"
 #include "database/DatabaseCache.h"
-#include "objects/LinkComponent.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
@@ -24,8 +23,7 @@ ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell)
 
 	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/resources/" + dbResource->nodeName)->
 	                                GetRoot());
-	node->CreateComponent<LinkComponent>()->bound(this);
-
+	node->SetVar("link", this);
 	initBillboards();
 
 	populate();

@@ -7,7 +7,6 @@
 #include "hud/MySprite.h"
 #include "hud/window/in_game_menu/middle/FileFormData.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
-#include "objects/LinkComponent.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimulationInfo.h"
 #include "Game.h"
@@ -38,7 +37,6 @@ using namespace Urho3D;
 
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100) {
 	gameState = GameState::STARTING;
-	context->RegisterFactory<LinkComponent>();
 	MySprite::RegisterObject(context);
 	Game::init();
 }

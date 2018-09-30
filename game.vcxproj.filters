@@ -250,9 +250,6 @@
     <ClInclude Include="src\hud\Hud.h">
       <Filter>hud</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\LinkComponent.h">
-      <Filter>objects\collection\link</Filter>
-    </ClInclude>
     <ClInclude Include="src\hud\MySprite.h">
       <Filter>hud</Filter>
     </ClInclude>

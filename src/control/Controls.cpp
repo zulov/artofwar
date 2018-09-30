@@ -88,7 +88,7 @@ void Controls::leftClick(hit_data& hitData) const {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
-	select(hitData.link->getPhysical());
+	select(hitData.clicked);
 }
 
 void Controls::leftClickBuild(hit_data& hitData) {
@@ -97,7 +97,7 @@ void Controls::leftClickBuild(hit_data& hitData) {
 }
 
 void Controls::rightClick(hit_data& hitData) const {
-	switch (hitData.link->getPhysical()->getType()) {
+	switch (hitData.clicked->getType()) {
 	case ObjectType::PHYSICAL:
 		{
 		Game::getActionList()->add(new GroupAction(selected, UnitOrder::GO,
@@ -108,7 +108,7 @@ void Controls::rightClick(hit_data& hitData) const {
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
 	case ObjectType::RESOURCE:
-		Game::getActionList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.link->getPhysical(),
+		Game::getActionList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.clicked,
 		                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
 		break;
 	default: ;
@@ -145,7 +145,7 @@ void Controls::releaseLeft() {
 		left.setSecond(hitData.position);
 		if (sqDist(left.held.first, left.held.second) > clickDistance) {
 			leftHold(left.held);
-		} else if (hitData.link) {
+		} else if (hitData.clicked) {
 			leftClick(hitData);
 		}
 	}
@@ -160,7 +160,7 @@ void Controls::releaseRight() {
 		right.setSecond(hitData.position);
 		if (sqDist(right.held.first, right.held.second) > clickDistance) {
 			rightHold(right.held);
-		} else if (hitData.link) {
+		} else if (hitData.clicked) {
 			rightClick(hitData);
 		}
 	}
@@ -171,7 +171,7 @@ void Controls::releaseRight() {
 void Controls::releaseBuildLeft() {
 	hit_data hitData;
 
-	if (raycast(hitData) && hitData.link) {
+	if (raycast(hitData) && hitData.clicked) {
 		leftClickBuild(hitData);
 		if (input->GetKeyDown(Urho3D::KEY_CTRL)) {
 			cleanMouse();
@@ -184,7 +184,7 @@ void Controls::releaseBuildLeft() {
 bool Controls::orderAction() {
 	hit_data hitData;
 
-	if (raycast(hitData) && hitData.link) {
+	if (raycast(hitData) && hitData.clicked) {
 		rightClick(hitData);
 		return true;
 	}

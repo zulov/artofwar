@@ -16,6 +16,10 @@ inline void resultQuery(const Urho3D::Ray& cameraRay, Urho3D::PODVector<Urho3D::
 	Game::getScene()->Node::GetComponent<Urho3D::Octree>()->Raycast(query);
 }
 
+static Physical* getLink(Urho3D::Node* node) {
+	return static_cast<Physical*>(node->GetVar("link").GetVoidPtr());
+}
+
 bool raycast(hit_data& hitData) {
 	const auto pos = Game::getUI()->GetCursorPosition();
 	if (!Game::getUI()->GetCursor()->IsVisible() || Game::getUI()->GetElementAt(pos, true)) {
@@ -35,12 +39,12 @@ bool raycast(hit_data& hitData) {
 
 		auto node = result.node_;
 
-		auto lc = node->GetComponent<LinkComponent>();
+		auto lc = getLink(node);
 		if (lc) {
 			hitData.set(result, lc);
 			return true;
 		}
-		lc = node->GetParent()->GetComponent<LinkComponent>();
+		lc = getLink(node);
 		if (lc) {
 			hitData.set(result, lc);
 			return true;
@@ -48,7 +52,7 @@ bool raycast(hit_data& hitData) {
 		++i;
 	}
 	hitData.drawable = nullptr;
-	hitData.link = nullptr;
+	hitData.clicked = nullptr;
 
 	return false;
 }
@@ -72,20 +76,20 @@ bool raycast(hit_data& hitData, ObjectType type) {
 
 		auto node = result.node_;
 
-		auto lc = node->GetComponent<LinkComponent>();
-		if (lc && lc->getPhysical()->getType() == type) {
+		auto lc = getLink(node);
+		if (lc && lc->getType() == type) {
 			hitData.set(result, lc);
 			return true;
 		}
-		lc = node->GetParent()->GetComponent<LinkComponent>();
-		if (lc && lc->getPhysical()->getType() == type) {
+		lc = getLink(node->GetParent());
+		if (lc && lc->getType() == type) {
 			hitData.set(result, lc);
 			return true;
 		}
 		++i;
 	}
 	hitData.drawable = nullptr;
-	hitData.link = nullptr;
+	hitData.clicked = nullptr;
 
 	return false;
 }

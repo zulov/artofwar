@@ -397,7 +397,6 @@
     <ClInclude Include="src\objects\Entity.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\scene\LevelBuilder.h" />
-    <ClInclude Include="src\objects\LinkComponent.h" />
     <ClInclude Include="src\ObjectEnums.h" />
     <ClInclude Include="src\scene\SceneObjectManager.h" />
     <ClInclude Include="src\commands\creation\CreationCommandList.h" />

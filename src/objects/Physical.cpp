@@ -2,7 +2,6 @@
 #include "Game.h"
 #include "MathUtils.h"
 #include "ObjectEnums.h"
-#include "objects/LinkComponent.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
@@ -12,8 +11,7 @@
 
 
 Physical::Physical(Urho3D::Vector3* _position, ObjectType _type): Entity(_type), position(_position) {
-	node->CreateComponent<LinkComponent>()->bound(this);
-
+	node->SetVar("link", this);
 	node->SetPosition(*position);
 
 	indexInGrid = INT_MIN;
