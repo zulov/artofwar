@@ -60,7 +60,7 @@ void Physical::updateBillboardBar(Urho3D::Vector3& boundingBox) const {
 }
 
 void Physical::updateBillboards() const {
-	auto boundingBox = node->GetComponent<Urho3D::StaticModel>()->GetModel()->GetBoundingBox().Size();
+	auto boundingBox = model->GetModel()->GetBoundingBox().Size();
 
 	updateBillboardBar(boundingBox);
 	updateBillboardShadow(boundingBox);

@@ -17,6 +17,8 @@
 #include "Main.h"
 #include "objects/unit/ColorMode.h"
 #include "objects/MenuAction.h"
+#include "hud/window/selected/SelectedHudElement.h"
+#include "objects/queue/QueueManager.h"
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
@@ -27,16 +29,13 @@
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "hud/window/selected/SelectedHudElement.h"
-#include "objects/queue/QueueManager.h"
 
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
 using namespace Urho3D;
 
-Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100) {
-	gameState = GameState::STARTING;
+Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),gameState(GameState::STARTING) {
 	MySprite::RegisterObject(context);
 	Game::init();
 }

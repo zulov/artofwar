@@ -10,6 +10,7 @@
 #include "player/Resources.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Resource/XMLFile.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <string>
@@ -18,18 +19,26 @@
 Building::Building(Urho3D::Vector3* _position, int id, int player, int level, int mainCell):
 	Static(_position, ObjectType::BUILDING, mainCell),
 	target(_position->x_, _position->z_) {
+	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
+	dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, level).value();
 
+	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/buildings/house.xml")->
+	                                GetRoot());
+
+	model = node->GetComponent<Urho3D::StaticModel>();
+
+	node->SetVar("link", this);
 	initBillboards();
+
 	target.x_ += 5;
 	target.y_ += 5;
-	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 	units = Game::getDatabaseCache()->getUnitsForBuilding(id);
 
 	setPlayer(player);
 	setTeam(Game::getPlayersManager()->getPlayer(player)->getTeam());
 
-	model = node->CreateComponent<Urho3D::StaticModel>();
 	upgrade(level);
+	//model = node->CreateComponent<Urho3D::StaticModel>();
 }
 
 
@@ -108,15 +117,16 @@ void Building::action(char id, const ActionParameter& parameter) {
 }
 
 void Building::upgrade(char level) {
-	auto staticModel = node->GetComponent<Urho3D::StaticModel>();
 	dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, level).value();
+	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/buildings/house.xml")->
+	                                GetRoot());
 
 	populate();
 
-	node->SetScale(dbLevel->scale);
-
-	staticModel->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
-	staticModel->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture));
+	// node->SetScale(dbLevel->scale);
+	//
+	// model->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
+	// model->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture));
 	updateBillboards();
 }
 
