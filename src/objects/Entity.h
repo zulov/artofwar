@@ -6,7 +6,7 @@ enum class ObjectType : char;
 class Entity
 {
 public:
-	explicit Entity(ObjectType _type);
+	explicit Entity(ObjectType type);
 	virtual ~Entity();
 
 	static std::string getColumns();

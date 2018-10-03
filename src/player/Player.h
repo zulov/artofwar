@@ -6,7 +6,7 @@ enum class MenuAction : char;
 class Player
 {
 public:
-	Player(int nationId, int team, int _id, int _color, Urho3D::String _name, bool _active);
+	Player(int nationId, int team, int id, int color, const Urho3D::String name, bool active);
 	~Player();
 
 	std::string getValues(int precision);

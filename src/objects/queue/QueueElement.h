@@ -5,7 +5,8 @@ enum class MenuAction : char;
 class QueueElement
 {
 public:
-	QueueElement(MenuAction _type, short _id, short _maxCapacity, float _initialSecondsToComplete, float _secondsToCompletePerInstance);
+	QueueElement(MenuAction type, short id, short maxCapacity, float initialSecondsToComplete,
+	             float secondsToCompletePerInstance);
 	~QueueElement();
 	bool checkType(MenuAction _type, short _id);
 	short add(short value);

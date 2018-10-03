@@ -7,13 +7,11 @@ class UpgradeCommandList :
 	public CommandList
 {
 public:
-	explicit UpgradeCommandList(SimulationObjectManager* _simulationObjectManager);
+	explicit UpgradeCommandList(SimulationObjectManager* simulationObjectManager);
 	~UpgradeCommandList();
 
 protected:
 	void setParemeters(AbstractCommand* command) override;
 private:
 	SimulationObjectManager* simulationObjectManager;
-
 };
-

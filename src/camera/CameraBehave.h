@@ -7,7 +7,7 @@
 class CameraBehave
 {
 public:
-	CameraBehave(const Urho3D::Vector3& _pos, float _minY, const Urho3D::String& _name);
+	CameraBehave(const Urho3D::Vector3& pos, float minY, const Urho3D::String& name);
 	virtual ~CameraBehave();
 
 	virtual void translate(bool cameraKeys[], int wheel, float timeStep, float min) = 0;

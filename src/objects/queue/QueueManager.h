@@ -7,7 +7,7 @@ class QueueElement;
 class QueueManager
 {
 public:
-	explicit QueueManager(short _maxCapacity);
+	explicit QueueManager(short maxCapacity);
 	~QueueManager();
 
 	void add(short value, MenuAction type, short id, short localMaxCapacity);

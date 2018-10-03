@@ -9,7 +9,7 @@ class UpgradeCommand :
 	public AbstractCommand
 {
 public:
-	UpgradeCommand(int _player, int _id, MenuAction _type);
+	UpgradeCommand(int player, int id, MenuAction type);
 	~UpgradeCommand() override;
 	void execute() override;
 	void setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager);

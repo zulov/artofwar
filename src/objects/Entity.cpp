@@ -4,9 +4,8 @@
 #include <string>
 
 
-Entity::Entity(ObjectType _type) {
+Entity::Entity(ObjectType type): type(type) {
 	node = Game::getScene()->CreateChild();
-	type = _type;
 }
 
 Entity::~Entity() {

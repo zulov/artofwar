@@ -9,8 +9,7 @@
 #include <optional>
 
 
-Aims::Aims() {
-	current = nullptr;
+Aims::Aims(): current(nullptr) {
 }
 
 Aims::~Aims() {
@@ -45,10 +44,10 @@ bool Aims::ifReach(Unit* unit) {
 	} else if (!nextAims.empty()) {
 		if (nextAims[0].physical != nullptr) {
 			Game::getActionList()->add(new IndividualAction(unit, nextAims[0].action,
-			                                                              nextAims[0].physical, true));
+			                                                nextAims[0].physical, true));
 		} else {
 			Game::getActionList()->add(new IndividualAction(unit, nextAims[0].action,
-			                                                              nextAims[0].vector, true));
+			                                                nextAims[0].vector, true));
 		}
 		nextAims.erase(nextAims.begin());
 	}

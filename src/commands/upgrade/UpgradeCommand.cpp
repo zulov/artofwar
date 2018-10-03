@@ -1,15 +1,13 @@
 #include "UpgradeCommand.h"
 #include "Game.h"
-#include "player/PlayersManager.h"
-#include "objects/building/Building.h"
-#include "simulation/SimulationObjectManager.h"
 #include "objects/MenuAction.h"
+#include "objects/building/Building.h"
 #include "player/Player.h"
+#include "player/PlayersManager.h"
+#include "simulation/SimulationObjectManager.h"
 
-UpgradeCommand::UpgradeCommand(int _player, int _id, MenuAction _type) {
-	player = _player;
-	id = _id;
-	type = _type;
+
+UpgradeCommand::UpgradeCommand(int player, int id, MenuAction type): player(player), id(id), type(type) {
 }
 
 UpgradeCommand::~UpgradeCommand() = default;

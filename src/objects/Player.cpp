@@ -5,13 +5,9 @@
 #include <string>
 
 
-Player::Player(int nationId, int team, int _id, int _color, const Urho3D::String _name, bool _active) {
+Player::Player(int nationId, int team, int id, int color, const Urho3D::String name, bool active): team(team), id(id),
+	color(color), active(active), name(name) {
 	dbNation = Game::getDatabaseCache()->getNation(nationId);
-	id = _id;
-	this->team = team;
-	name = _name;
-	color = _color;
-	active = _active;
 
 	std::fill_n(unitLevels, UNITS_NUMBER_DB, 0);
 	std::fill_n(buildingLevels, BUILDINGS_NUMBER_DB, 0);
@@ -40,30 +36,21 @@ void Player::setResourceAmount(float amount) {
 char Player::upgradeLevel(MenuAction type, int id) {
 	switch (type) {
 	case MenuAction::UNIT_LEVEL:
-		{
-		int maxLevels = Game::getDatabaseCache()->getUnitLevels(id)->size() - 1;
-		if (maxLevels > unitLevels[id]) {
+		if (Game::getDatabaseCache()->getUnitLevels(id)->size() - 1 > unitLevels[id]) {
 			unitLevels[id]++;
 			return unitLevels[id];
 		}
-		}
 		break;
 	case MenuAction::BUILDING_LEVEL:
-		{
-		int maxLevels = Game::getDatabaseCache()->getBuildingLevels(id)->size() - 1;
-		if (maxLevels > buildingLevels[id]) {
+		if (Game::getDatabaseCache()->getBuildingLevels(id)->size() - 1 > buildingLevels[id]) {
 			buildingLevels[id]++;
 			return buildingLevels[id];
 		}
-		}
 		break;
 	case MenuAction::UNIT_UPGRADE:
-		{
-		int maxLevels = Game::getDatabaseCache()->getUnitUpgrades(id)->size() - 1;
-		if (maxLevels > unitUpgradeLevels[id]) {
+		if (Game::getDatabaseCache()->getUnitUpgrades(id)->size() - 1 > unitUpgradeLevels[id]) {
 			unitUpgradeLevels[id]++;
 			return unitUpgradeLevels[id];
-		}
 		}
 		break;
 	default: ;

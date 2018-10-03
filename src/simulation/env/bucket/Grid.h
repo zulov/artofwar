@@ -19,17 +19,17 @@ public:
 	void update(Unit* unit, char team) const;
 	void update(Physical* entity) const;
 	std::vector<Physical*>& getContentAt(int index);
-	static short diff(short posBeginX, short posEndX);
 
 	std::vector<short>* getEnvIndexsFromCache(float dist);
 	std::vector<Physical *>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);
 	BucketIterator& getArrayNeight(Urho3D::Vector3* position, float radius, short thread);
 
-	int indexFromPosition(Urho3D::Vector3* position) const;
-	int indexFromPosition(Urho3D::Vector2& position) const;
+	int indexFromPosition(Urho3D::Vector3* pos) const;
+	int indexFromPosition(Urho3D::Vector2& pos) const;
 
 	int getIndex(short posX, short posZ) const { return posX * resolution + posZ; }
 protected:
+	short diff(short a, short b);
 	short getIndex(float value) const;
 	bool inRange(int index) const { return index >= 0 && index < sqResolution; }
 	short resolution;

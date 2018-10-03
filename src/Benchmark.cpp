@@ -3,10 +3,7 @@
 #include <string>
 
 
-Benchmark::Benchmark() {
-	index = 0;
-	sum = 0;
-	avg = 0;
+Benchmark::Benchmark(): index(0), sum(0), avg(0) {
 	auto now = time(0);
 	auto ltm = localtime(&now);
 	std::string name = "result/" + std::to_string(1900 + ltm->tm_year) + "" + std::to_string(1 + ltm->tm_mon) + "" +

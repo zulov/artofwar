@@ -1,17 +1,15 @@
 #include "QueueManager.h"
 #include "Game.h"
+#include "QueueElement.h"
 #include "database/DatabaseCache.h"
 #include "defines.h"
-#include "utils.h"
-#include "QueueElement.h"
 #include "objects/MenuAction.h"
+#include "utils.h"
 #include <algorithm>
 
 
-QueueManager::QueueManager(short _maxCapacity) {
+QueueManager::QueueManager(short maxCapacity):maxCapacity(maxCapacity) {
 	queue.reserve(DEFAULT_VECTOR_SIZE);
-
-	maxCapacity = _maxCapacity;
 }
 
 

@@ -3,13 +3,13 @@
 #include "simulation/env/Enviroment.h"
 
 
-CameraBehave::CameraBehave(const Urho3D::Vector3& _pos, float _minY, const Urho3D::String& _name) {
-	minY = _minY;
-	name = _name;
+CameraBehave::CameraBehave(const Urho3D::Vector3& pos, float minY, const Urho3D::String& name): minY(minY), name(name),
+	changed(true) {
+
 	info = new Urho3D::String();
-	changed = true;
+
 	cameraNode = new Urho3D::Node(Game::getContext());
-	cameraNode->SetPosition(_pos);
+	cameraNode->SetPosition(pos);
 	camera = cameraNode->CreateComponent<Urho3D::Camera>();
 	camera->SetFarClip(300.0f);
 }
@@ -28,7 +28,8 @@ const Urho3D::Vector3& CameraBehave::getPosition() {
 }
 
 void CameraBehave::changePosition(float percentX, float percentY) {
-	const auto newPos = Game::getEnviroment()->getValidPosForCamera(percentX, percentY, cameraNode->GetPosition(), minY);
+	const auto newPos = Game::getEnviroment()->
+		getValidPosForCamera(percentX, percentY, cameraNode->GetPosition(), minY);
 
 	cameraNode->SetPosition(newPos);
 	changed = true;

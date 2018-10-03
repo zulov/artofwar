@@ -10,11 +10,10 @@
 #include <string>
 
 
-Physical::Physical(Urho3D::Vector3* _position, ObjectType _type): Entity(_type), position(_position) {
+Physical::Physical(Urho3D::Vector3* _position, ObjectType _type): Entity(_type), position(_position),
+	indexInGrid(INT_MIN) {
 	node->SetVar("link", this);
 	node->SetPosition(*position);
-
-	indexInGrid = INT_MIN;
 }
 
 Physical::~Physical() {

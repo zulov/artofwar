@@ -2,8 +2,7 @@
 #include "UpgradeCommand.h"
 
 
-UpgradeCommandList::UpgradeCommandList(SimulationObjectManager* _simulationObjectManager) {
-	simulationObjectManager = _simulationObjectManager;
+UpgradeCommandList::UpgradeCommandList(SimulationObjectManager* simulationObjectManager):simulationObjectManager(simulationObjectManager) {
 }
 
 

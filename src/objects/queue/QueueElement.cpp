@@ -1,15 +1,10 @@
 #include "QueueElement.h"
 
-QueueElement::QueueElement(MenuAction _type, short _id, short _maxCapacity, float _initialSecondsToComplete,
-                           float _secondsToCompletePerInstance) {
-	elapsedSeconds = 0;
-	amount = 0;
-	initialSecondsToComplete = _initialSecondsToComplete;
-	secondsToCompletePerInstance = _secondsToCompletePerInstance;
-	secondsToComplete = initialSecondsToComplete;
-	type = _type;
-	id = _id;
-	maxCapacity = _maxCapacity;
+QueueElement::QueueElement(MenuAction type, short id, short maxCapacity, float initialSecondsToComplete,
+                           float secondsToCompletePerInstance): elapsedSeconds(0), amount(0), type(type), id(id),
+	maxCapacity(maxCapacity), initialSecondsToComplete(initialSecondsToComplete),
+	secondsToCompletePerInstance(secondsToCompletePerInstance) {
+
 }
 
 QueueElement::~QueueElement() = default;
