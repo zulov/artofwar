@@ -10,20 +10,16 @@ FreeCameraBehave::~FreeCameraBehave() = default;
 
 void FreeCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
 	if (cameraKeys[0]) {
-		cameraNode->Translate(Urho3D::Vector3::FORWARD * timeStep * 5);
-		changed = true;
+		translateCam(timeStep, 5, Urho3D::Vector3::FORWARD);
 	}
 	if (cameraKeys[1]) {
-		cameraNode->Translate(Urho3D::Vector3::BACK * timeStep);
-		changed = true;
+		translateCam(timeStep, 1, Urho3D::Vector3::BACK);
 	}
 	if (cameraKeys[2]) {
-		cameraNode->Translate(Urho3D::Vector3::LEFT * timeStep * 3);
-		changed = true;
+		translateCam(timeStep, 3, Urho3D::Vector3::LEFT);
 	}
 	if (cameraKeys[3]) {
-		cameraNode->Translate(Urho3D::Vector3::RIGHT * timeStep * 3);
-		changed = true;
+		translateCam(timeStep, 3, Urho3D::Vector3::RIGHT);
 	}
 }
 

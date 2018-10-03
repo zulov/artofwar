@@ -19,6 +19,7 @@ public:
 	const Urho3D::Vector3& getPosition();
 	void changePosition(float percentX, float percentY);
 protected:
+	void translateCam(float timeStep, double diff, Urho3D::Vector3 dir);
 	Urho3D::Node* cameraNode;
 	Urho3D::String* info;
 	bool changed;

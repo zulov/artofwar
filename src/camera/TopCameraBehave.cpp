@@ -13,20 +13,16 @@ void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 	const auto diff = sqrt((orthoSize - minY) / 10) + 1;
 
 	if (cameraKeys[0]) {
-		cameraNode->Translate(diff * Urho3D::Vector3::FORWARD * timeStep, Urho3D::TS_WORLD);
-		changed = true;
+		translateCam(timeStep, diff, Urho3D::Vector3::FORWARD);
 	}
 	if (cameraKeys[1]) {
-		cameraNode->Translate(diff * Urho3D::Vector3::BACK * timeStep, Urho3D::TS_WORLD);
-		changed = true;
+		translateCam(timeStep, diff, Urho3D::Vector3::BACK);
 	}
 	if (cameraKeys[2]) {
-		cameraNode->Translate(diff * Urho3D::Vector3::LEFT * timeStep, Urho3D::TS_WORLD);
-		changed = true;
+		translateCam(timeStep, diff, Urho3D::Vector3::LEFT);
 	}
 	if (cameraKeys[3]) {
-		cameraNode->Translate(diff * Urho3D::Vector3::RIGHT * timeStep, Urho3D::TS_WORLD);
-		changed = true;
+		translateCam(timeStep, diff, Urho3D::Vector3::RIGHT);
 	}
 	if (wheel != 0) {
 		orthoSize -= wheel * (sqrt(orthoSize - minY) + 1) * 1.5f;

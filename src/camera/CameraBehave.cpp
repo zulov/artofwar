@@ -34,3 +34,8 @@ void CameraBehave::changePosition(float percentX, float percentY) {
 	cameraNode->SetPosition(newPos);
 	changed = true;
 }
+
+void CameraBehave::translateCam(float timeStep, double diff, Urho3D::Vector3 dir) {
+	cameraNode->Translate(diff * dir * timeStep, Urho3D::TS_WORLD);
+	changed = true;
+}
