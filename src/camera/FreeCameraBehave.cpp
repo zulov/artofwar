@@ -3,24 +3,17 @@
 
 
 FreeCameraBehave::FreeCameraBehave(): CameraBehave(Urho3D::Vector3(0.0f, 50.0f, -50.0f), 3, "FreeCam") {
+	coefs[0] = 4;
+	coefs[1] = 1;
+	coefs[2] = 3;
+	coefs[3] = 3;
 }
 
 
 FreeCameraBehave::~FreeCameraBehave() = default;
 
 void FreeCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
-	if (cameraKeys[0]) {
-		translateCam(timeStep, 5, Urho3D::Vector3::FORWARD);
-	}
-	if (cameraKeys[1]) {
-		translateCam(timeStep, 1, Urho3D::Vector3::BACK);
-	}
-	if (cameraKeys[2]) {
-		translateCam(timeStep, 3, Urho3D::Vector3::LEFT);
-	}
-	if (cameraKeys[3]) {
-		translateCam(timeStep, 3, Urho3D::Vector3::RIGHT);
-	}
+	translateInternal(cameraKeys, timeStep, 1);
 }
 
 void FreeCameraBehave::rotate(const Urho3D::IntVector2& mouseMove, const double mouse_sensitivity) {

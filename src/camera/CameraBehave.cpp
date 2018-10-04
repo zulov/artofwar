@@ -3,7 +3,8 @@
 #include "simulation/env/Enviroment.h"
 
 
-CameraBehave::CameraBehave(const Urho3D::Vector3& pos, float minY, const Urho3D::String& name): minY(minY), name(name),
+CameraBehave::CameraBehave(const Urho3D::Vector3& pos, float minY, const Urho3D::String& name):
+	minY(minY), name(name),
 	changed(true) {
 
 	info = new Urho3D::String();
@@ -12,6 +13,10 @@ CameraBehave::CameraBehave(const Urho3D::Vector3& pos, float minY, const Urho3D:
 	cameraNode->SetPosition(pos);
 	camera = cameraNode->CreateComponent<Urho3D::Camera>();
 	camera->SetFarClip(300.0f);
+	coefs[0] = 1;
+	coefs[1] = 1;
+	coefs[2] = 1;
+	coefs[3] = 1;
 }
 
 CameraBehave::~CameraBehave() {
@@ -38,4 +43,12 @@ void CameraBehave::changePosition(float percentX, float percentY) {
 void CameraBehave::translateCam(float timeStep, double diff, Urho3D::Vector3 dir) {
 	cameraNode->Translate(diff * dir * timeStep, Urho3D::TS_WORLD);
 	changed = true;
+}
+
+void CameraBehave::translateInternal(bool* cameraKeys, float timeStep, double diff) {
+	for (int i = 0; i < 4; ++i) {
+		if (cameraKeys[i]) {
+			translateCam(timeStep, coefs[i] * diff, dirs[i]);
+		}
+	}
 }

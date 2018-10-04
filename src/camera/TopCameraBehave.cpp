@@ -10,20 +10,7 @@ TopCameraBehave::TopCameraBehave(): CameraBehave(Urho3D::Vector3(0, 50, 0), 20, 
 TopCameraBehave::~TopCameraBehave() = default;
 
 void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
-	const auto diff = sqrt((orthoSize - minY) / 10) + 1;
-
-	if (cameraKeys[0]) {
-		translateCam(timeStep, diff, Urho3D::Vector3::FORWARD);
-	}
-	if (cameraKeys[1]) {
-		translateCam(timeStep, diff, Urho3D::Vector3::BACK);
-	}
-	if (cameraKeys[2]) {
-		translateCam(timeStep, diff, Urho3D::Vector3::LEFT);
-	}
-	if (cameraKeys[3]) {
-		translateCam(timeStep, diff, Urho3D::Vector3::RIGHT);
-	}
+	translateInternal(cameraKeys, timeStep, sqrt((orthoSize - minY) / 10) + 1);
 	if (wheel != 0) {
 		orthoSize -= wheel * (sqrt(orthoSize - minY) + 1) * 1.5f;
 

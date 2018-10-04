@@ -20,10 +20,15 @@ public:
 	void changePosition(float percentX, float percentY);
 protected:
 	void translateCam(float timeStep, double diff, Urho3D::Vector3 dir);
+	void translateInternal(bool* cameraKeys, float timeStep, double diff);
 	Urho3D::Node* cameraNode;
 	Urho3D::String* info;
 	bool changed;
 	Urho3D::Camera* camera;
 	float minY;
 	Urho3D::String name;
+	Urho3D::Vector3 dirs[4] = {
+		Urho3D::Vector3::FORWARD, Urho3D::Vector3::BACK, Urho3D::Vector3::LEFT, Urho3D::Vector3::RIGHT
+	};
+	float coefs[4];
 };

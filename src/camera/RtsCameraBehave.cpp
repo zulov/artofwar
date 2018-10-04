@@ -1,7 +1,7 @@
 #include "RtsCameraBehave.h"
 #include "Game.h"
 
-RtsCameraBehave::RtsCameraBehave():CameraBehave(Urho3D::Vector3(0.0f, 50.0f, -50.0f), 3,"RTSCam") {
+RtsCameraBehave::RtsCameraBehave(): CameraBehave(Urho3D::Vector3(0.0f, 50.0f, -50.0f), 3, "RTSCam") {
 	const double diff = sqrt(50.0f - minY) + 1;
 	const double a = 10;
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * a);
@@ -21,19 +21,8 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 	} else {
 		diff = sqrt((pos.y_ - localMin) / 10) + 1;
 	}
+	translateInternal(cameraKeys, timeStep, diff);
 
-	if (cameraKeys[0]) {
-		translateCam(timeStep, diff, Urho3D::Vector3::FORWARD);
-	}
-	if (cameraKeys[1]) {
-		translateCam(timeStep, diff, Urho3D::Vector3::BACK);
-	}
-	if (cameraKeys[2]) {
-		translateCam(timeStep, diff, Urho3D::Vector3::LEFT);
-	}
-	if (cameraKeys[3]) {
-		translateCam(timeStep, diff, Urho3D::Vector3::RIGHT);
-	}
 	if (wheel != 0 || pos.y_ < localMin) {
 		Urho3D::Vector3 pos2 = cameraNode->GetWorldPosition();
 		if (pos2.y_ < localMin) {
