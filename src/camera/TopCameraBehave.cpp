@@ -26,11 +26,9 @@ void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 }
 
 void TopCameraBehave::rotate(const Urho3D::IntVector2& mouseMove, const double mouse_sensitivity) {
-
 }
 
 void TopCameraBehave::setRotation(const Urho3D::Quaternion& rotation) {
-
 }
 
 Urho3D::String* TopCameraBehave::getInfo() {

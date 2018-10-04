@@ -118,15 +118,16 @@ void Building::action(char id, const ActionParameter& parameter) {
 
 void Building::upgrade(char level) {
 	dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, level).value();
+
+	node->RemoveAllChildren();
 	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/buildings/house.xml")->
 	                                GetRoot());
+	model = node->GetComponent<Urho3D::StaticModel>();
+
+	node->SetVar("link", this);
+	initBillboards();
 
 	populate();
-
-	// node->SetScale(dbLevel->scale);
-	//
-	// model->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
-	// model->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture));
 	updateBillboards();
 }
 

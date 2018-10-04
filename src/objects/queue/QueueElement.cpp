@@ -2,7 +2,8 @@
 
 QueueElement::QueueElement(MenuAction type, short id, short maxCapacity, float initialSecondsToComplete,
                            float secondsToCompletePerInstance): elapsedSeconds(0), amount(0), type(type), id(id),
-	maxCapacity(maxCapacity), initialSecondsToComplete(initialSecondsToComplete),
+	maxCapacity(maxCapacity), secondsToComplete(initialSecondsToComplete),
+	initialSecondsToComplete(initialSecondsToComplete),
 	secondsToCompletePerInstance(secondsToCompletePerInstance) {
 
 }

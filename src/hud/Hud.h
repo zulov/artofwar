@@ -53,7 +53,7 @@ URHO3D_OBJECT(Hud, Object)
 
 	void createMyPanels();
 	void prepareStyle();
-	void preapreUrho();
+	void prepreUrho();
 	void subscribeToUIEvents();
 
 	std::vector<Urho3D::Button*>& getButtonsSelectedToSubscribe() const {

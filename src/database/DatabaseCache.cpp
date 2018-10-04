@@ -335,16 +335,16 @@ void DatabaseCache::setGraphSettings(int i, db_graph_settings* graphSettings) {
 	delete dbContainer->graphSettings[i];
 	dbContainer->graphSettings[i] = graphSettings;
 	Urho3D::String sql = "UPDATE graph_settings";
-	sql.Append(" SET hud_size = ").Append(Urho3D::String(graphSettings->hud_size));
-	//sql.Append("SET style =").Append(Urho3D::String(graphSettings->hud_size));
-	sql.Append(", fullscreen = ").Append(Urho3D::String((int)graphSettings->fullscreen));
-	sql.Append(", max_fps =").Append(Urho3D::String(graphSettings->max_fps));
-	sql.Append(", min_fps =").Append(Urho3D::String(graphSettings->min_fps));
-	sql.Append(", name = ").Append("'" + Urho3D::String(graphSettings->name) + "'");
-	sql.Append(", v_sync = ").Append(Urho3D::String((int)graphSettings->v_sync));
-	sql.Append(", shadow = ").Append(Urho3D::String((int)graphSettings->shadow));
-	sql.Append(", texture_quality =").Append(Urho3D::String(graphSettings->texture_quality));
-	sql.Append(" WHERE id =").Append(Urho3D::String(i));
+	sql.Append(" SET hud_size = ").Append(Urho3D::String(graphSettings->hud_size))
+	//.Append("SET style =").Append(Urho3D::String(graphSettings->hud_size));
+	.Append(", fullscreen = ").Append(Urho3D::String((int)graphSettings->fullscreen))
+	.Append(", max_fps =").Append(Urho3D::String(graphSettings->max_fps))
+	.Append(", min_fps =").Append(Urho3D::String(graphSettings->min_fps))
+	.Append(", name = ").Append("'" + Urho3D::String(graphSettings->name) + "'")
+	.Append(", v_sync = ").Append(Urho3D::String((int)graphSettings->v_sync))
+	.Append(", shadow = ").Append(Urho3D::String((int)graphSettings->shadow))
+	.Append(", texture_quality =").Append(Urho3D::String(graphSettings->texture_quality))
+	.Append(" WHERE id =").Append(Urho3D::String(i));
 
 	executeSingle(sql.CString());
 }

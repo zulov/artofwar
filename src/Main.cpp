@@ -77,7 +77,7 @@ void Main::Start() {
 	subscribeToEvents();
 
 	hud = new Hud();
-	hud->preapreUrho();
+	hud->prepreUrho();
 	hud->createMyPanels();
 	subscribeToUIEvents();
 	InitMouseMode(MM_RELATIVE);
