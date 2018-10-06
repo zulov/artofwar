@@ -60,7 +60,7 @@ int static loadNation(void* data, int argc, char** argv, char** azColName) {
 int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
-	xyz->resources[id] = new db_resource(id, argv[1], argv[2], atoi(argv[3]), argv[4], 
+	xyz->resources[id] = new db_resource(id, argv[1], argv[2], atoi(argv[3]), argv[4],
 	                                     atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), fromHex(argv, 8));
 	xyz->resource_size++;
 
@@ -89,7 +89,8 @@ int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
 	const int unitId = atoi(argv[3]);
 	const int resourceId = atoi(argv[1]);
 	db_resource* dbResource = xyz->resources[resourceId];
-	xyz->costForUnit[unitId]->push_back(new db_cost(atoi(argv[0]), resourceId, atoi(argv[2]), dbResource->name, unitId));
+	xyz->costForUnit[unitId]->
+		push_back(new db_cost(atoi(argv[0]), resourceId, atoi(argv[2]), dbResource->name, unitId));
 
 	return 0;
 }
@@ -101,7 +102,8 @@ int static loadCostUnitLevel(void* data, int argc, char** argv, char** azColName
 	const int resourceId = atoi(argv[2]);
 	db_resource* dbResource = xyz->resources[resourceId];
 
-	xyz->costForUnitLevel[unit]->at(level)->push_back(new db_cost(-1, resourceId, atoi(argv[3]), dbResource->name, unit));
+	xyz->costForUnitLevel[unit]
+		->at(level)->push_back(new db_cost(-1, resourceId, atoi(argv[3]), dbResource->name, unit));
 
 	return 0;
 }
@@ -113,7 +115,8 @@ int static loadCostBuildingLevel(void* data, int argc, char** argv, char** azCol
 	const int resourceId = atoi(argv[2]);
 	db_resource* dbResource = xyz->resources[resourceId];
 
-	xyz->costForBuildingLevel[building]->at(level)->push_back(new db_cost(-1, resourceId, atoi(argv[3]), dbResource->name,
+	xyz->costForBuildingLevel[building]->at(level)->push_back(new db_cost(-1, resourceId, atoi(argv[3]),
+	                                                                      dbResource->name,
 	                                                                      building));
 
 	return 0;
@@ -187,10 +190,8 @@ int static loadBuildingLevels(void* data, int argc, char** argv, char** azColNam
 	int unitId = atoi(argv[1]);
 
 	xyz->levelsToBuilding[unitId]->push_back(
-	                                         new db_building_level(
-	                                                               atoi(argv[0]), atoi(argv[1]), argv[2], argv[3], argv[4],
-	                                                               atof(argv[5]), atoi(argv[6])
-	                                                              )
+	                                         new db_building_level(atoi(argv[0]), atoi(argv[1]), argv[2], argv[3],
+	                                                               atoi(argv[4]))
 	                                        );
 
 	return 0;
@@ -202,9 +203,12 @@ int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 	xyz->levelsToUnit[unitId]->push_back(
 	                                     new db_unit_level(
 	                                                       atoi(argv[0]), atoi(argv[1]), argv[2], atof(argv[3]),
-	                                                       atof(argv[4]), argv[5], argv[6], atof(argv[7]), atof(argv[8]),
-	                                                       atof(argv[9]), atoi(argv[10]), atof(argv[11]), atof(argv[12]),
-	                                                       atoi(argv[13]), atof(argv[14]), atof(argv[15]), atof(argv[16]),
+	                                                       atof(argv[4]), argv[5], argv[6], atof(argv[7]),
+	                                                       atof(argv[8]),
+	                                                       atof(argv[9]), atoi(argv[10]), atof(argv[11]),
+	                                                       atof(argv[12]),
+	                                                       atoi(argv[13]), atof(argv[14]), atof(argv[15]),
+	                                                       atof(argv[16]),
 	                                                       atof(argv[17]), atof(argv[18]))
 	                                    );
 
@@ -215,11 +219,11 @@ int static loadUnitUpgrade(void* data, int argc, char** argv, char** azColName) 
 	const auto xyz = static_cast<db_container *>(data);
 	int pathId = atoi(argv[1]);
 	auto unitUpgrade = new db_unit_upgrade(
-	                                                   atoi(argv[0]), pathId, atoi(argv[2]), argv[3],
-	                                                   atof(argv[4]), atof(argv[5]), atof(argv[6]), atof(argv[7]),
-	                                                   atof(argv[8]), atof(argv[9]), atof(argv[10]), atof(argv[11]),
-	                                                   atof(argv[12])
-	                                                  );
+	                                       atoi(argv[0]), pathId, atoi(argv[2]), argv[3],
+	                                       atof(argv[4]), atof(argv[5]), atof(argv[6]), atof(argv[7]),
+	                                       atof(argv[8]), atof(argv[9]), atof(argv[10]), atof(argv[11]),
+	                                       atof(argv[12])
+	                                      );
 	xyz->unitUpgrades[pathId]->push_back(unitUpgrade);
 	xyz->unitUpgradesPerId[atoi(argv[0])] = unitUpgrade;
 	return 0;
@@ -248,7 +252,8 @@ int static loadUnitUpgradeCost(void* data, int argc, char** argv, char** azColNa
 	int upgradeId = atoi(argv[0]);
 	const int resourceId = atoi(argv[1]);
 	db_resource* dbResource = xyz->resources[resourceId];
-	xyz->unitUpgradesCosts[upgradeId]->push_back(new db_cost(-1, resourceId, atoi(argv[2]), dbResource->name, upgradeId));
+	xyz->unitUpgradesCosts[upgradeId]->
+		push_back(new db_cost(-1, resourceId, atoi(argv[2]), dbResource->name, upgradeId));
 
 	return 0;
 }
@@ -336,15 +341,15 @@ void DatabaseCache::setGraphSettings(int i, db_graph_settings* graphSettings) {
 	dbContainer->graphSettings[i] = graphSettings;
 	Urho3D::String sql = "UPDATE graph_settings";
 	sql.Append(" SET hud_size = ").Append(Urho3D::String(graphSettings->hud_size))
-	//.Append("SET style =").Append(Urho3D::String(graphSettings->hud_size));
-	.Append(", fullscreen = ").Append(Urho3D::String((int)graphSettings->fullscreen))
-	.Append(", max_fps =").Append(Urho3D::String(graphSettings->max_fps))
-	.Append(", min_fps =").Append(Urho3D::String(graphSettings->min_fps))
-	.Append(", name = ").Append("'" + Urho3D::String(graphSettings->name) + "'")
-	.Append(", v_sync = ").Append(Urho3D::String((int)graphSettings->v_sync))
-	.Append(", shadow = ").Append(Urho3D::String((int)graphSettings->shadow))
-	.Append(", texture_quality =").Append(Urho3D::String(graphSettings->texture_quality))
-	.Append(" WHERE id =").Append(Urho3D::String(i));
+	   //.Append("SET style =").Append(Urho3D::String(graphSettings->hud_size));
+	   .Append(", fullscreen = ").Append(Urho3D::String((int)graphSettings->fullscreen))
+	   .Append(", max_fps =").Append(Urho3D::String(graphSettings->max_fps))
+	   .Append(", min_fps =").Append(Urho3D::String(graphSettings->min_fps))
+	   .Append(", name = ").Append("'" + Urho3D::String(graphSettings->name) + "'")
+	   .Append(", v_sync = ").Append(Urho3D::String((int)graphSettings->v_sync))
+	   .Append(", shadow = ").Append(Urho3D::String((int)graphSettings->shadow))
+	   .Append(", texture_quality =").Append(Urho3D::String(graphSettings->texture_quality))
+	   .Append(" WHERE id =").Append(Urho3D::String(i));
 
 	executeSingle(sql.CString());
 }
@@ -355,7 +360,7 @@ void DatabaseCache::setSettings(int i, db_settings* settings) {
 	dbContainer->settings[0] = settings;
 	Urho3D::String sql = "UPDATE settings";
 	sql.Append(" SET graph = ").Append(Urho3D::String(settings->graph))
-		.Append(", resolution = ").Append(Urho3D::String(settings->resolution));
+	   .Append(", resolution = ").Append(Urho3D::String(settings->resolution));
 
 	executeSingle(sql.CString());
 }

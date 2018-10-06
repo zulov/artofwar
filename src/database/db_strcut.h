@@ -161,20 +161,15 @@ struct db_building_level
 	const int level;
 	const int unit;
 	const Urho3D::String name;
-	const Urho3D::String model;
-	const Urho3D::String texture;
-	const float scale;
+	const Urho3D::String nodeName;
 	const short queueMaxCapacity;
 
 
-	db_building_level(int level, int unit, char* name, char* model, char* texture, float scale,
-	                  short queueMaxCapacity)
+	db_building_level(int level, int unit, char* name, char* nodeName, short queueMaxCapacity)
 		: level(level),
 		unit(unit),
 		name(name),
-		model(model),
-		texture(texture),
-		scale(scale),
+		nodeName(nodeName),
 		queueMaxCapacity(queueMaxCapacity) {
 	}
 };

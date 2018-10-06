@@ -203,9 +203,7 @@ CREATE TABLE IF NOT EXISTS `building_level` (
 	`level`	INTEGER,
 	`building`	INTEGER,
 	`name`	TEXT,
-	`model`	TEXT,
-	`texture`	TEXT,
-	`scale`	REAL,
+	`nodeName`	TEXT,
 	`queue_max_capacity`	INTEGER,
 	FOREIGN KEY(`building`) REFERENCES `building`(`id`)
 );

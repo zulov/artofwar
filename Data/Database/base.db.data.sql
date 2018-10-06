@@ -32,8 +32,7 @@ INSERT INTO `unit_level` (level,unit,name,minDist,maxSep,model,texture,mass,scal
  (0,5,'base',0.25,1.0,'general.mdl','general.xml',50.0,0.5,0.5,3,1.0,0.05,70,5.0,1.0,0.0,3.0,5000.0),
  (1,5,'better',0.25,1.0,'general.mdl','general.xml',50.0,0.5,0.6,3,1.0,0.06,80,5.0,1.0,0.0,3.0,5000.0);
 INSERT INTO `settings` (graph,resolution) VALUES (0,1);
-INSERT INTO `resource` (id,name,icon,maxCapacity,nodeName,sizeX,sizeZ,maxUsers,mini_map_color) VALUES 
-(0,'gold','gold.png',1000,'gold.xml',2,2,4,'0xFF00D0FF'),
+INSERT INTO `resource` (id,name,icon,maxCapacity,nodeName,sizeX,sizeZ,maxUsers,mini_map_color) VALUES (0,'gold','gold.png',1000,'gold.xml',2,2,4,'0xFF00D0FF'),
  (1,'wood','wood.png',100,'tree_2.xml',2,2,3,'0xFF00B600'),
  (2,'food','food.png',100,'food.xml',2,2,3,'0xFF9000A7'),
  (3,'stone','stone.png',1000,'stone.xml',2,2,4,'0xFF808080');
@@ -44,7 +43,7 @@ INSERT INTO `resolution` (id,x,y) VALUES (0,1366,768),
  (4,4096,2160);
 INSERT INTO `player_colors` (id,unit,building,name) VALUES (0,'0xFFCF0000','0xFF900000','blue'),
  (1,'0xFF0000CF','0xFF000090','red');
-INSERT INTO `orders_to_unit` (id,unit,'order') VALUES (0,0,0),
+INSERT INTO `orders_to_unit` (id,unit,order) VALUES (0,0,0),
  (1,0,1),
  (2,0,3),
  (4,0,4),
@@ -197,18 +196,18 @@ INSERT INTO `building_to_unit` (id,building,unit) VALUES (0,4,0),
  (12,0,4),
  (13,4,5),
  (14,5,5);
-INSERT INTO `building_level` (level,building,name,model,texture,scale,queue_max_capacity) VALUES (0,0,'base','House2.mdl','house2.xml',2.5,5),
- (1,0,'better','House2.mdl','house2.xml',2.5,7),
- (0,1,'base','Tower.mdl','tower.xml',0.5,5),
- (1,1,'better','Tower.mdl','tower.xml',0.5,7),
- (0,2,'base','Barracks.mdl','barracks.xml',0.5,10),
- (1,2,'better','Barracks.mdl','barracks.xml',0.5,12),
- (0,3,'base','Barracks.mdl','barracks.xml',0.5,10),
- (1,3,'better','Barracks.mdl','barracks.xml',0.5,12),
- (0,4,'base','cube.mdl','transparent.xml',5.0,20),
- (1,4,'better','cube.mdl','transparent.xml',5.0,25),
- (0,5,'base','cube.mdl','transparent.xml',2.5,20),
- (1,5,'better','cube.mdl','transparent.xml',2.5,25);
+INSERT INTO `building_level` (level,building,name,nodeName,queue_max_capacity) VALUES (0,0,'base','house2',5),
+ (1,0,'better','house2',7),
+ (0,1,'base','tower',5),
+ (1,1,'better','tower',7),
+ (0,2,'base','barracks',10),
+ (1,2,'better','barracks',12),
+ (0,3,'base','barracks',10),
+ (1,3,'better','barracks',12),
+ (0,4,'base','cube',20),
+ (1,4,'better','cube',25),
+ (0,5,'base','cube2',20),
+ (1,5,'better','cube2',25);
 INSERT INTO `building` (id,name,sizeX,sizeZ,nation,icon) VALUES (0,'house',2,2,0,'house.png'),
  (1,'tower',1,1,0,'tower.png'),
  (2,'barracks',2,2,0,'barracks.png'),

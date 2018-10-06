@@ -36,7 +36,6 @@ Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), inp
 	createNode("Models/arrow2.mdl", "Materials/red_overlay.xml", &arrowNode);
 
 	tempBuildingNode = Game::getScene()->CreateChild();
-	tempBuildingModel = tempBuildingNode->CreateComponent<Urho3D::StaticModel>();
 	tempBuildingNode->SetEnabled(false);
 
 	selectedInfo->setSelectedType(ObjectType::PHYSICAL);
@@ -447,9 +446,12 @@ void Controls::buildControl() {
 
 			tempBuildingNode->SetPosition(Urho3D::Vector3(validPos.x_, height, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
-				tempBuildingNode->SetScale(dbLevel->scale);
-
-				tempBuildingModel->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
+				tempBuildingNode->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile
+				                                          >("Objects/buildings/" + dbLevel->nodeName + "/" + Urho3D::
+				                                            String(1) + ".xml")
+				                                          ->
+				                                          GetRoot());
+				tempBuildingModel = tempBuildingNode->GetComponent<Urho3D::StaticModel>();
 				tempBuildingNode->SetEnabled(true);
 			}
 			if (env->validateStatic(dbBuilding->size, hitPos)) {
