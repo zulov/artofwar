@@ -1,6 +1,7 @@
 #pragma once
 #include "ActionCommand.h"
-#include "simulation/formation/Formation.h"
+
+class Formation;
 
 class FormationAction : public ActionCommand
 {

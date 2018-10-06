@@ -9,10 +9,9 @@
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include <Urho3D/Graphics/Material.h>
-#include <Urho3D/Graphics/Model.h>
-#include <Urho3D/Resource/XMLFile.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/Resource/XMLFile.h>
 #include <string>
 
 
@@ -20,15 +19,7 @@ Building::Building(Urho3D::Vector3* _position, int id, int player, int level, in
 	Static(_position, ObjectType::BUILDING, mainCell),
 	target(_position->x_, _position->z_) {
 	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
-	dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, level).value();
-
-	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/buildings/house.xml")->
-	                                GetRoot());
-
-	model = node->GetComponent<Urho3D::StaticModel>();
-
-	node->SetVar("link", this);
-	initBillboards();
+	upgrade(level);
 
 	target.x_ += 5;
 	target.y_ += 5;
@@ -37,7 +28,7 @@ Building::Building(Urho3D::Vector3* _position, int id, int player, int level, in
 	setPlayer(player);
 	setTeam(Game::getPlayersManager()->getPlayer(player)->getTeam());
 
-	upgrade(level);
+	//upgrade(level);
 	//model = node->CreateComponent<Urho3D::StaticModel>();
 }
 

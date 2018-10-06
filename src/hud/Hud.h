@@ -41,7 +41,7 @@ URHO3D_OBJECT(Hud, Object)
 	void updateSelected(SelectedInfo* selectedInfo);
 
 	void hoverOnIcon(HudData* hudElement) const { menuPanel->setInfo(hudElement); }
-	void hoverOffIcon(HudData* hudElement) const { menuPanel->removeInfo(); }
+	void hoverOffIcon() const { menuPanel->removeInfo(); }
 
 	void HandleUIButtonHoverOn(Urho3D::StringHash, Urho3D::VariantMap& eventData);
 	void HandleUIButtonHoverOff(Urho3D::StringHash, Urho3D::VariantMap& eventData);

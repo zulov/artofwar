@@ -250,5 +250,5 @@ void Hud::HandleUIButtonHoverOn(Urho3D::StringHash /*eventType*/, Urho3D::Varian
 }
 
 void Hud::HandleUIButtonHoverOff(Urho3D::StringHash /*eventType*/, Urho3D::VariantMap& eventData) {
-	hoverOffIcon(HudData::getFromElement(eventData));
+	hoverOffIcon();
 }

@@ -3,7 +3,7 @@
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "simulation/env/Enviroment.h"
-
+#include "simulation/formation/Formation.h"
 
 FormationAction::FormationAction(Formation* formation, UnitOrder action, const Physical* physical,
                                  Urho3D::Vector2* vector,

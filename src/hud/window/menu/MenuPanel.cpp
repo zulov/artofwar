@@ -8,12 +8,12 @@
 #include "hud/UiUtils.h"
 #include "hud/window/in_game_menu/middle/AbstractMiddlePanel.h"
 #include "info/LeftMenuInfoPanel.h"
-#include "objects/building/BuildingUtils.h"
 #include "objects/MenuAction.h"
+#include "objects/building/BuildingUtils.h"
+#include "objects/resource/ResourceOrder.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "utils.h"
-#include "objects/resource/ResourceOrder.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
@@ -55,7 +55,7 @@ void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
 void MenuPanel::setVisible(bool enable) {
 	AbstractWindowPanel::setVisible(enable);
 	if (!enable) {
-		infoPanel->setVisible(false);
+		removeInfo();
 	}
 }
 
@@ -86,7 +86,7 @@ void MenuPanel::updateMode(LeftMenuMode mode) {
 void MenuPanel::createBody() {
 	infoPanel = new LeftMenuInfoPanel(style);
 	infoPanel->createWindow();
-	infoPanel->setVisible(false);
+	removeInfo();
 
 	mock = createElement<Urho3D::UIElement>(window, style, "LeftMenuMock");
 
@@ -94,7 +94,7 @@ void MenuPanel::createBody() {
 		row = createElement<Urho3D::UIElement>(mock, style, "LeftMenuListRow");
 	}
 	for (int i = 0; i < LEFT_MENU_CHECKS_NUMBER; ++i) {
-		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
+		const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
 		>("textures/hud/icon/lm/lm" + Urho3D::String(i) + ".png");
 
 		checks[i] = createElement<Urho3D::CheckBox>(rows[LEFT_MENU_ROWS_NUMBER - 1], style, "LeftMenuCheckBox");
@@ -119,7 +119,6 @@ void MenuPanel::createBody() {
 			k++;
 		}
 	}
-
 }
 
 void MenuPanel::setChecks(int val) {
@@ -149,10 +148,9 @@ void MenuPanel::setNextElement(int& k, Urho3D::String texture, int id, MenuActio
 }
 
 void MenuPanel::basicBuilding() {
-	int size = Game::getDatabaseCache()->getBuildingSize();
 	int nation = Game::getPlayersManager()->getActivePlayer()->getNation();
 	int k = 0;
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < Game::getDatabaseCache()->getBuildingSize(); ++i) {
 		db_building* building = Game::getDatabaseCache()->getBuilding(i);
 		if (building && building->nation == nation) {
 			setNextElement(k, "textures/hud/icon/building/" + building->icon, building->id, MenuAction::BUILDING, "");
@@ -162,14 +160,13 @@ void MenuPanel::basicBuilding() {
 }
 
 void MenuPanel::levelBuilding() {
-	int size = Game::getDatabaseCache()->getBuildingSize();
 	int nation = Game::getPlayersManager()->getActivePlayer()->getNation();
 	int k = 0;
-	for (int i = 0; i < size; ++i) {
-		auto building = Game::getDatabaseCache()->getBuilding(i);
+	for (int i = 0; i < Game::getDatabaseCache()->getBuildingSize(); ++i) {
 		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForBuilding(i) + 1;
 		auto opt = Game::getDatabaseCache()->getBuildingLevel(i, level);
 		if (opt.has_value()) {
+			auto building = Game::getDatabaseCache()->getBuilding(i);
 			if (building->nation == nation) {
 				setNextElement(k, "textures/hud/icon/building/levels/" + Urho3D::String(level) + "/" + building->icon,
 				               building->id, MenuAction::BUILDING_LEVEL, "");
@@ -240,8 +237,8 @@ void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
 
 	for (auto id : getUpgradePathInBuilding(selectedInfo->getSelectedTypes())) {
-		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1;
-		auto opt = Game::getDatabaseCache()->getUnitUpgrade(id, level);
+		auto opt = Game::getDatabaseCache()->
+			getUnitUpgrade(id, Game::getPlayersManager()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1);
 
 		if (opt.has_value()) {
 			auto upgrade = opt.value();
