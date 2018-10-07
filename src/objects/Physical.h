@@ -87,7 +87,7 @@ public:
 	virtual int getLevel();
 	virtual void clean();
 protected:
-
+	virtual float getHealthBarThick() { return 0.15; }
 	Urho3D::Vector3* position = nullptr;
 	Urho3D::String menuString = "";
 

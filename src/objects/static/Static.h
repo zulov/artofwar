@@ -36,7 +36,7 @@ public:
 	std::string getValues(int precision) override;
 protected:
 	void populate(const Urho3D::IntVector2& size);
-
+	float getHealthBarThick() override { return 0.3; }
 	std::vector<int> occupiedCells, surroundCells;
 
 	Urho3D::IntVector2 gridSize;

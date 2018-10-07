@@ -8,7 +8,6 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
-#include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Resource/XMLFile.h>

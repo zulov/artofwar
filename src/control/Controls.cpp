@@ -438,7 +438,7 @@ void Controls::buildControl() {
 			auto env = Game::getEnviroment();
 
 			const auto dbBuilding = Game::getDatabaseCache()->getBuilding(idToCreate);
-			auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, 0).value();
+
 			auto hitPos = Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
 
 			const auto validPos = env->getValidPosition(dbBuilding->size, hitPos);
@@ -446,22 +446,22 @@ void Controls::buildControl() {
 
 			tempBuildingNode->SetPosition(Urho3D::Vector3(validPos.x_, height, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
+				auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, 0).value();
 				tempBuildingNode->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile
 				                                          >("Objects/buildings/" + dbLevel->nodeName + "/" + Urho3D::
 				                                            String(1) + ".xml")
-				                                          ->
-				                                          GetRoot());
+				                                          ->GetRoot());
 				tempBuildingModel = tempBuildingNode->GetComponent<Urho3D::StaticModel>();
 				tempBuildingNode->SetEnabled(true);
 			}
+			Urho3D::String textureName;
 			if (env->validateStatic(dbBuilding->size, hitPos)) {
-				changeMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/green_overlay.xml"),
-				               tempBuildingModel);
+				textureName = "Materials/green_overlay.xml";
 			} else {
-				changeMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/red_overlay.xml"),
-				               tempBuildingModel);
-			}
+				textureName = "Materials/red_overlay.xml";
 
+			}
+			changeMaterial(Game::getCache()->GetResource<Urho3D::Material>(textureName), tempBuildingModel);
 		}
 	}
 

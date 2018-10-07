@@ -72,7 +72,7 @@ void Physical::initBillboards() {
 
 void Physical::updateHealthBar() {
 	if (billboardBar->enabled_) {
-		billboardBar->size_ = Urho3D::Vector2(getHealthBarSize(), 0.1) / node->GetScale2D();
+		billboardBar->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick()) / node->GetScale2D();
 		billboardSetBar->Commit();
 	}
 }
