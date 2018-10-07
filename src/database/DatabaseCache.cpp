@@ -187,9 +187,8 @@ int static loadSettings(void* data, int argc, char** argv, char** azColName) {
 
 int static loadBuildingLevels(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container *>(data);
-	int unitId = atoi(argv[1]);
 
-	xyz->levelsToBuilding[unitId]->push_back(
+	xyz->levelsToBuilding[atoi(argv[1])]->push_back(
 	                                         new db_building_level(atoi(argv[0]), atoi(argv[1]), argv[2], argv[3],
 	                                                               atoi(argv[4]))
 	                                        );
@@ -203,13 +202,10 @@ int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 	xyz->levelsToUnit[unitId]->push_back(
 	                                     new db_unit_level(
 	                                                       atoi(argv[0]), atoi(argv[1]), argv[2], atof(argv[3]),
-	                                                       atof(argv[4]), argv[5], argv[6], atof(argv[7]),
-	                                                       atof(argv[8]),
-	                                                       atof(argv[9]), atoi(argv[10]), atof(argv[11]),
-	                                                       atof(argv[12]),
-	                                                       atoi(argv[13]), atof(argv[14]), atof(argv[15]),
-	                                                       atof(argv[16]),
-	                                                       atof(argv[17]), atof(argv[18]))
+	                                                       atof(argv[4]), argv[5], atof(argv[6]), atof(argv[7]),
+	                                                       atoi(argv[8]), atof(argv[9]), atof(argv[10]), atoi(argv[11]),
+	                                                       atof(argv[12]), atof(argv[13]), atof(argv[14]),
+	                                                       atof(argv[15]), atof(argv[16]))
 	                                    );
 
 	return 0;
@@ -231,8 +227,8 @@ int static loadUnitUpgrade(void* data, int argc, char** argv, char** azColName) 
 
 int static loadUnitUpgradePath(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container *>(data);
-	int pathId = atoi(argv[0]);
-	for (auto unitUpgrade : *xyz->unitUpgrades[pathId]) {
+
+	for (auto unitUpgrade : *xyz->unitUpgrades[atoi(argv[0])]) {
 		unitUpgrade->pathName = Urho3D::String(argv[1]);
 	}
 
@@ -260,10 +256,8 @@ int static loadUnitUpgradeCost(void* data, int argc, char** argv, char** azColNa
 
 int static loadBuildingToUnitUpgradePath(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container *>(data);
-	int buildingId = atoi(argv[0]);
-	int pathId = atoi(argv[1]);
 
-	xyz->buildings[buildingId]->unitUpgradePath.push_back(pathId);
+	xyz->buildings[atoi(argv[0])]->unitUpgradePath.push_back(atoi(argv[1]));
 
 	return 0;
 }

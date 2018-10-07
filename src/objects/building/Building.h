@@ -13,7 +13,7 @@ public:
 	Building(Urho3D::Vector3* _position, int id, int player, int level, int mainCell);
 	~Building();
 
-	void populate();
+	void populate() override;
 	void upgrade(char level);
 	void load(dbload_building* dbloadBuilding);
 	static std::string getColumns();

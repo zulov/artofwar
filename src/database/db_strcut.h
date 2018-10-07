@@ -49,10 +49,8 @@ struct db_unit_level
 	const Urho3D::String name;
 	const float minDist;
 	const float maxSep;
-	const Urho3D::String model;
-	const Urho3D::String texture;
+	const Urho3D::String nodeName;
 	const float mass;
-	const float scale;
 	const float attack;
 	const int attackSpeed;
 	const float attackRange;
@@ -65,18 +63,16 @@ struct db_unit_level
 	const float maxForce;
 
 
-	db_unit_level(int level, int unit, char* name, float minDist, float maxSep, char* model, char* texture,
-	              float mass, float scale, float attack, int attackSpeed, float attackRange, float defense,
+	db_unit_level(int level, int unit, char* name, float minDist, float maxSep, char* nodeName,
+		float mass, float attack, int attackSpeed, float attackRange, float defense,
 	              int maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed, float maxForce)
 		: level(level),
 		unit(unit),
 		name(name),
 		minDist(minDist),
 		maxSep(maxSep),
-		model(model),
-		texture(texture),
+		nodeName(nodeName),
 		mass(mass),
-		scale(scale),
 		attack(attack),
 		attackSpeed(attackSpeed),
 		attackRange(attackRange),

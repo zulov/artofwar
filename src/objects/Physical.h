@@ -65,6 +65,8 @@ public:
 
 	int getBucketIndex() const { return indexInGrid; }
 
+	virtual void populate() {
+	};
 	virtual int getMainCell() const;
 
 	virtual bool isToDispose() const { return false; }
@@ -87,6 +89,8 @@ public:
 	virtual int getLevel();
 	virtual void clean();
 protected:
+	void loadXml(Urho3D::String xmlName);
+	void setPlayerAndTeam(int player);
 	virtual float getHealthBarThick() { return 0.15; }
 	Urho3D::Vector3* position = nullptr;
 	Urho3D::String menuString = "";
@@ -102,7 +106,7 @@ protected:
 	float attackRange;
 	float defenseCoef = 0.3f;
 	float attackSpeed = 1;
-	float attackProccess = 0;
+	float attackProcess = 0;
 
 	Urho3D::StaticModel* model;
 

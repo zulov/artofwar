@@ -9,27 +9,23 @@
 #include "objects/unit/ChargeData.h"
 #include "objects/unit/ColorMode.h"
 #include "objects/unit/MissleData.h"
-#include "player/Player.h"
-#include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
 #include "simulation/force/ForceStats.h"
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
-#include <Urho3D/Graphics/Material.h>
-#include <Urho3D/Graphics/Model.h>
-#include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Graphics/Technique.h>
-#include <Urho3D/Resource/ResourceCache.h>
 #include <string>
 
 
 Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
 	state(UnitState::STOP) {
-	initBillboards();
 
 	dbUnit = Game::getDatabaseCache()->getUnit(id);
 	dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
-	populate();
+
+	loadXml("Objects/units/" + dbLevel->nodeName);
+
+	basic = model->GetMaterial(0);
 	if (StateManager::validateState(getDbID(), UnitState::CHARGE)) {
 		chargeData = new ChargeData(150, 2);
 	}
@@ -38,16 +34,8 @@ Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical
 		missleData = new MissleData(150, 2);
 	}
 
-	node->Scale(dbLevel->scale);
-	model = node->CreateComponent<Urho3D::StaticModel>();
-	model->SetModel(Game::getCache()->GetResource<Urho3D::Model>("Models/" + dbLevel->model));
-	basic = Game::getCache()->GetResource<Urho3D::Material>("Materials/" + dbLevel->texture);
-	model->SetMaterial(basic);
+	setPlayerAndTeam(player);
 
-	setPlayer(player);
-	setTeam(Game::getPlayersManager()->getPlayer(player)->getTeam());
-
-	updateBillboards();
 	if constexpr (UNIT_DEBUG_ENABLED) {
 		line = node->GetOrCreateComponent<Urho3D::CustomGeometry>();
 	}
@@ -208,9 +196,10 @@ void Unit::drawLineTo(Urho3D::CustomGeometry* line, const Urho3D::Vector3& secon
 
 void Unit::drawLine(Urho3D::CustomGeometry* line, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
                     const Urho3D::Color& color = Urho3D::Color::WHITE) const {
-	line->DefineVertex(first / dbLevel->scale);
+
+	line->DefineVertex(first / node->GetScale());
 	line->DefineColor(color);
-	line->DefineVertex(second / dbLevel->scale);
+	line->DefineVertex(second / node->GetScale());
 	line->DefineColor(color);
 }
 

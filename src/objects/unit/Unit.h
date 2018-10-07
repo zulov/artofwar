@@ -42,7 +42,7 @@ public:
 	Unit(Urho3D::Vector3* _position, int id, int player, int level);
 	~Unit();
 
-	void populate();
+	void populate() override;
 	void checkAim();
 	void move(double timeStep) const;
 	void applyForce(double timeStep);

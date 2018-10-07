@@ -8,6 +8,9 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <algorithm>
 #include <string>
+#include <Urho3D/Resource/XMLFile.h>
+#include "player/PlayersManager.h"
+#include "player/Player.h"
 
 
 Physical::Physical(Urho3D::Vector3* _position, ObjectType _type): Entity(_type), position(_position),
@@ -220,4 +223,23 @@ std::tuple<Physical*, float, int> Physical::closestPhysical(std::vector<Physical
 		}
 	}
 	return std::tuple<Physical*, float, int>(closestPhy, minDistance, bestIndex);
+}
+
+
+void Physical::loadXml(Urho3D::String xmlName) {
+	node->RemoveAllChildren();
+	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(xmlName)->GetRoot());
+
+	node->SetVar("link", this);
+	initBillboards();
+
+	model = node->GetComponent<Urho3D::StaticModel>();
+	populate();
+	updateBillboards();
+}
+
+
+void Physical::setPlayerAndTeam(int player) {
+	setPlayer(player);
+	setTeam(Game::getPlayersManager()->getPlayer(player)->getTeam());
 }

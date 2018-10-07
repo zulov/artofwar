@@ -8,9 +8,6 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
-#include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Resource/XMLFile.h>
 #include <string>
 
 
@@ -22,8 +19,7 @@ Building::Building(Urho3D::Vector3* _position, int id, int player, int level, in
 
 	units = Game::getDatabaseCache()->getUnitsForBuilding(id);
 
-	setPlayer(player);
-	setTeam(Game::getPlayersManager()->getPlayer(player)->getTeam());
+	setPlayerAndTeam(player);
 }
 
 
@@ -103,18 +99,7 @@ void Building::action(char id, const ActionParameter& parameter) {
 
 void Building::upgrade(char level) {
 	dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, level).value();
-
-	node->RemoveAllChildren();
-	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile
-	                              >("Objects/buildings/" + dbLevel->nodeName + "/" + Urho3D::String(level+1) + ".xml")
-	                              ->GetRoot());
-	model = node->GetComponent<Urho3D::StaticModel>();
-
-	node->SetVar("link", this);
-	initBillboards();
-
-	populate();
-	updateBillboards();
+	loadXml("Objects/buildings/" + dbLevel->nodeName);
 }
 
 void Building::load(dbload_building* dbloadBuilding) {

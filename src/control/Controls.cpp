@@ -447,10 +447,9 @@ void Controls::buildControl() {
 			tempBuildingNode->SetPosition(Urho3D::Vector3(validPos.x_, height, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
 				auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, 0).value();
-				tempBuildingNode->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile
-				                                          >("Objects/buildings/" + dbLevel->nodeName + "/" + Urho3D::
-				                                            String(1) + ".xml")
-				                                          ->GetRoot());
+				tempBuildingNode->LoadXML(Game::getCache()
+				                          ->GetResource<Urho3D::XMLFile>("Objects/buildings/" + dbLevel->nodeName)->
+				                          GetRoot());
 				tempBuildingModel = tempBuildingNode->GetComponent<Urho3D::StaticModel>();
 				tempBuildingNode->SetEnabled(true);
 			}

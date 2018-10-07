@@ -10,9 +10,6 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/Enviroment.h"
-#include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Resource/XMLFile.h>
 #include <string>
 
 
@@ -20,16 +17,8 @@ ResourceEntity::
 ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell)
 	: Static(_position, ObjectType::RESOURCE, mainCell) {
 	dbResource = Game::getDatabaseCache()->getResource(id);
+	loadXml("Objects/resources/" + dbResource->nodeName);
 
-	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/resources/" + dbResource->nodeName)->
-	                                GetRoot());
-	node->SetVar("link", this);
-	initBillboards();
-
-	populate();
-	model = node->GetComponent<Urho3D::StaticModel>();
-
-	updateBillboards();
 	node->SetRotation(Urho3D::Quaternion(0, rand() % 360, 0.0f));
 }
 

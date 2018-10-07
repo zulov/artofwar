@@ -1,0 +1,7 @@
+<node>
+<attribute name="Scale" value="0.3 0.3 0.3" />
+<component type="StaticModel">
+	<attribute name="Model" value="Model;Models/Sphere.mdl" />
+	<attribute name="Material" value="Material;Materials/red.xml" />
+</component>
+</node>
