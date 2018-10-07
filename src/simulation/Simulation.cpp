@@ -56,11 +56,11 @@ void Simulation::tryToAttack(Unit* unit) {
 	if (unit->hasEnemy()) {
 		StateManager::changeState(unit, UnitState::ATTACK);
 	} else {
-		auto [closest, minDistance, indexToInterect] = unit->closestPhysical(enviroment->
+		auto [closest, minDistance, indexToInteract] = unit->closestPhysical(enviroment->
 		                                                               getNeighboursFromTeam(unit, 12, unit->getTeam(),
 		                                                                                     OperatorType::NOT_EQUAL),
 		                                                               belowClose, exactPos);
-		unit->toAction(closest, minDistance, indexToInterect, UnitState::ATTACK);
+		unit->toAction(closest, minDistance, indexToInteract, UnitState::ATTACK);
 	}
 }
 
@@ -129,8 +129,9 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		creationCommandList->addUnits(UNITS_NUMBER, 4, Urho3D::Vector2(20, 0), 0, 0);
-		creationCommandList->addResource(0, Urho3D::Vector2(0, 0), 0);
+		//creationCommandList->addUnits(UNITS_NUMBER, 1, Urho3D::Vector2(20, -50), 0, 0);
+		creationCommandList->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-100, 0), 1, 0);
+		//creationCommandList->addResource(0, Urho3D::Vector2(0, 0), 0);
 	}
 }
 
@@ -290,7 +291,7 @@ void Simulation::executeLists() const {
 
 void Simulation::initScene(SceneLoader& loader) const {
 	loadEntities(loader);
-	//addTestEntities();
+	addTestEntities();
 	executeLists();
 }
 

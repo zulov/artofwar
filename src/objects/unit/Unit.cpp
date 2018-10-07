@@ -22,7 +22,6 @@ Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical
 
 	dbUnit = Game::getDatabaseCache()->getUnit(id);
 	dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
-
 	loadXml("Objects/units/" + dbLevel->nodeName);
 
 	basic = model->GetMaterial(0);
@@ -46,6 +45,7 @@ Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical
 
 Unit::~Unit() {
 	delete chargeData;
+	delete missleData;
 }
 
 bool Unit::isAlive() const {
@@ -196,7 +196,6 @@ void Unit::drawLineTo(const Urho3D::Vector3& second,
 
 void Unit::drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second,
                     const Urho3D::Color& color = Urho3D::Color::WHITE) const {
-
 	line->DefineVertex(first / node->GetScale());
 	line->DefineColor(color);
 	line->DefineVertex(second / node->GetScale());
