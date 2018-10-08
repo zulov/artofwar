@@ -5,8 +5,12 @@ class DebugLineRepo
 {
 public:
 	~DebugLineRepo();
+	static void commit();
+	static void beginGeometry();
+	static void clear(int size);
 
 	static Urho3D::CustomGeometry* geometry;
+	static int i;
 	static void init();
 private:
 	DebugLineRepo();

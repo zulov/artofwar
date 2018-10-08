@@ -323,12 +323,8 @@ void Simulation::moveUnitsAndCheck(const float timeStep) const {
 }
 
 void Simulation::calculateForces() {
-	int i = 0;
-	if constexpr (UNIT_DEBUG_ENABLED) {
+	DebugLineRepo::clear(units->size());
 
-		DebugLineRepo::geometry->Clear();
-		DebugLineRepo::geometry->SetNumGeometries(units->size());
-	}
 	for (auto unit : *units) {
 		Urho3D::Vector2 newForce;
 		switch (unit->getState()) {
@@ -348,14 +344,8 @@ void Simulation::calculateForces() {
 		auto stats = force.stats();
 		stats.result();
 
-		unit->setAcceleration(newForce);
-		if constexpr (UNIT_DEBUG_ENABLED) {
-			unit->debug(DebugUnitType::AIM, stats, i++);
-		}
+		unit->setAcceleration(newForce);		
+		unit->debug(DebugUnitType::AIM, stats);
 	}
-	if constexpr (UNIT_DEBUG_ENABLED) {
-		DebugLineRepo::geometry->SetMaterial(Game::getColorPeletteRepo()->getLineMaterial());
-		DebugLineRepo::geometry->Commit();
-
-	}
+	DebugLineRepo::commit();
 }
