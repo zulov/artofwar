@@ -83,7 +83,7 @@ public:
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
 	void drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second,
 	              const Urho3D::Color& color) const;
-	void debug(DebugUnitType type, ForceStats& stats);
+	void debug(DebugUnitType type, ForceStats& stats,int i );
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
 	UnitState getActionState() const { return actionState; }
@@ -143,5 +143,4 @@ private:
 
 	unsigned short currentFrameState = 0;
 
-	Urho3D::CustomGeometry* line;
 };

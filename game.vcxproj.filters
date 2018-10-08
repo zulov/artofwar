@@ -185,6 +185,7 @@
     </ClCompile>
     <ClCompile Include="src\objects\unit\state\State.cpp" />
     <ClCompile Include="src\objects\static\Static.cpp" />
+    <ClCompile Include="src\DebugLineRepo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -460,6 +461,7 @@
     <ClInclude Include="src\objects\static\StaticStateUtils.h" />
     <ClInclude Include="src\objects\unit\state\CollectState.h" />
     <ClInclude Include="src\objects\resource\ResourceOrder.h" />
+    <ClInclude Include="src\DebugLineRepo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

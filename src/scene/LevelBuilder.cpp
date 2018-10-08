@@ -19,7 +19,6 @@ LevelBuilder::LevelBuilder() {
 	scene = new Urho3D::Scene(Game::getContext());
 
 	scene->CreateComponent<Urho3D::Octree>();
-
 	Game::setScene(scene);
 }
 

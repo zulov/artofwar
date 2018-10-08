@@ -29,13 +29,15 @@
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
+#include "DebugLineRepo.h"
 
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
 
 using namespace Urho3D;
 
-Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),gameState(GameState::STARTING) {
+Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
+	gameState(GameState::STARTING) {
 	MySprite::RegisterObject(context);
 	Game::init();
 }

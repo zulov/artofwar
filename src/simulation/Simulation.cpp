@@ -25,6 +25,8 @@
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
 #include <ctime>
+#include "DebugLineRepo.h"
+#include "colors/ColorPeletteRepo.h"
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {
@@ -43,6 +45,7 @@ Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCo
 	units = simObjectManager->getUnits();
 	buildings = simObjectManager->getBuildings();
 	resources = simObjectManager->getResources();
+	DebugLineRepo::init();
 }
 
 Simulation::~Simulation() {
@@ -57,9 +60,11 @@ void Simulation::tryToAttack(Unit* unit) {
 		StateManager::changeState(unit, UnitState::ATTACK);
 	} else {
 		auto [closest, minDistance, indexToInteract] = unit->closestPhysical(enviroment->
-		                                                               getNeighboursFromTeam(unit, 12, unit->getTeam(),
-		                                                                                     OperatorType::NOT_EQUAL),
-		                                                               belowClose, exactPos);
+		                                                                     getNeighboursFromTeam(unit, 12,
+		                                                                                           unit->getTeam(),
+		                                                                                           OperatorType::
+		                                                                                           NOT_EQUAL),
+		                                                                     belowClose, exactPos);
 		unit->toAction(closest, minDistance, indexToInteract, UnitState::ATTACK);
 	}
 }
@@ -79,10 +84,12 @@ void Simulation::tryToShot(Unit* unit) {
 		StateManager::changeState(unit, UnitState::SHOT);
 	} else {
 		auto [closest, minDistance, indexToInterect] = unit->closestPhysical(enviroment->
-		                                                               getNeighboursFromTeam(unit, 12, unit->getTeam(),
-		                                                                                     OperatorType::NOT_EQUAL),
-		                                                               belowRange,
-		                                                               exactPos);
+		                                                                     getNeighboursFromTeam(unit, 12,
+		                                                                                           unit->getTeam(),
+		                                                                                           OperatorType::
+		                                                                                           NOT_EQUAL),
+		                                                                     belowRange,
+		                                                                     exactPos);
 		unit->toAction(closest, minDistance, indexToInterect, UnitState::SHOT);
 	}
 }
@@ -316,6 +323,12 @@ void Simulation::moveUnitsAndCheck(const float timeStep) const {
 }
 
 void Simulation::calculateForces() {
+	int i = 0;
+	if constexpr (UNIT_DEBUG_ENABLED) {
+
+		DebugLineRepo::geometry->Clear();
+		DebugLineRepo::geometry->SetNumGeometries(units->size());
+	}
 	for (auto unit : *units) {
 		Urho3D::Vector2 newForce;
 		switch (unit->getState()) {
@@ -336,6 +349,13 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);
-		unit->debug(DebugUnitType::AIM, stats);
+		if constexpr (UNIT_DEBUG_ENABLED) {
+			unit->debug(DebugUnitType::AIM, stats, i++);
+		}
+	}
+	if constexpr (UNIT_DEBUG_ENABLED) {
+		DebugLineRepo::geometry->SetMaterial(Game::getColorPeletteRepo()->getLineMaterial());
+		DebugLineRepo::geometry->Commit();
+
 	}
 }

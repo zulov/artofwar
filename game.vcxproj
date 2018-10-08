@@ -191,6 +191,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\DebugLineRepo.cpp" />
     <ClCompile Include="src\commands\action\GroupAction.cpp" />
     <ClCompile Include="src\commands\action\IndividualAction.cpp" />
     <ClCompile Include="src\commands\action\FormationAction.cpp" />
@@ -279,6 +280,7 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\DebugLineRepo.h" />
     <ClInclude Include="src\DebugUnitType.h" />
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
