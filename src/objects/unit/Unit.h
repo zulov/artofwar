@@ -81,8 +81,8 @@ public:
 	void changeColor(ColorMode mode);
 	void addAim(const FutureAim& aim, bool append = false);
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
-	void drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-	              const Urho3D::Color& color) const;
+	static void drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second,
+	              const Urho3D::Color& color);
 	void debug(DebugUnitType type, ForceStats& stats);
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }

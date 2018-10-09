@@ -187,11 +187,11 @@ void Unit::addAim(const FutureAim& aim, bool append) {
 
 void Unit::drawLineTo(const Urho3D::Vector3& second,
                       const Urho3D::Color& color = Urho3D::Color::WHITE) const {
-	drawLine(*position, second, color);
+	drawLine(*position, second + *position, color);
 }
 
 void Unit::drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-                    const Urho3D::Color& color = Urho3D::Color::WHITE) const {
+                    const Urho3D::Color& color = Urho3D::Color::WHITE) {
 	DebugLineRepo::geometry->DefineVertex(first);
 	DebugLineRepo::geometry->DefineColor(color);
 	DebugLineRepo::geometry->DefineVertex(second);
@@ -201,8 +201,6 @@ void Unit::drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second,
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
 	if constexpr (UNIT_DEBUG_ENABLED) {
 		if (billboardBar->enabled_) {
-
-			DebugLineRepo::beginGeometry();
 			switch (type) {
 			case DebugUnitType::NONE:
 				break;

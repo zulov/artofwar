@@ -16,8 +16,8 @@ std::vector<Urho3D::Vector3> FollowAim::getDebugLines(Urho3D::Vector3* position)
 	return subTarget->getDebugLines(position);
 	std::vector<Urho3D::Vector3> points;
 	auto center = physical->getPosToFollow(position);
-	points.emplace_back(0, 0.5, 0);
-	points.emplace_back(center.x_ - position->x_, 0.5, center.y_ - position->z_);
+	points.emplace_back(*position);
+	points.emplace_back(center.x_ , position->y_, center.y_);
 
 	return points;
 }

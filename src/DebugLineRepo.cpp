@@ -4,19 +4,16 @@
 #include "defines.h"
 
 Urho3D::CustomGeometry* DebugLineRepo::geometry = nullptr;
-int DebugLineRepo::i = 0;
 
 void DebugLineRepo::init() {
 	if constexpr (UNIT_DEBUG_ENABLED) {
 		if (geometry == nullptr) {
 			geometry = Game::getScene()->CreateChild()->GetOrCreateComponent<Urho3D::CustomGeometry>();
-			i = 0;
 		}
 	}
 }
 
-DebugLineRepo::DebugLineRepo() {
-}
+DebugLineRepo::DebugLineRepo() = default;
 
 
 DebugLineRepo::~DebugLineRepo() {
@@ -35,15 +32,13 @@ void DebugLineRepo::commit() {
 
 void DebugLineRepo::beginGeometry() {
 	if constexpr (UNIT_DEBUG_ENABLED) {
-		geometry->BeginGeometry(i, Urho3D::PrimitiveType::LINE_LIST);
-		i++;
+		geometry->BeginGeometry(0, Urho3D::PrimitiveType::LINE_LIST);
 	}
 }
 
-void DebugLineRepo::clear(int size) {
+void DebugLineRepo::clear() {
 	if constexpr (UNIT_DEBUG_ENABLED) {
 		geometry->Clear();
-		geometry->SetNumGeometries(size);
-		i = 0;
+		geometry->SetNumGeometries(1);
 	}
 }

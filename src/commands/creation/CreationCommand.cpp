@@ -4,15 +4,15 @@
 
 
 CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::Vector2& position, int player,
-                                 const Urho3D::IntVector2& bucketCords, int level): objectType(type), number(number),
-	id(id), position(position),
-	player(player), bucketCords(bucketCords), level(level) {
+                                 const Urho3D::IntVector2& bucketCords, int level): id(id), number(number),
+	player(player), level(level),
+	position(position), objectType(type), bucketCords(bucketCords) {
 
 }
 
 CreationCommand::CreationCommand(ObjectType type, int number, int id, const Urho3D::Vector2& position, int player,
-                                 int level): objectType(type), number(number), id(id), position(position),
-	player(player), level(level) {
+                                 int level): id(id), number(number), player(player), level(level),
+	position(position), objectType(type) {
 }
 
 CreationCommand::~CreationCommand() = default;

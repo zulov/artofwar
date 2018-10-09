@@ -1,4 +1,5 @@
 #include "Simulation.h"
+#include "DebugLineRepo.h"
 #include "DebugUnitType.h"
 #include "Game.h"
 #include "ObjectEnums.h"
@@ -25,8 +26,6 @@
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
 #include <ctime>
-#include "DebugLineRepo.h"
-#include "colors/ColorPeletteRepo.h"
 
 
 Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {
@@ -183,7 +182,7 @@ void Simulation::levelUp(QueueElement* done) const {
 
 void Simulation::updateBuildingQueues(const float time) {
 	for (auto build : *buildings) {
-		QueueElement* done = build->updateQueue(time);
+		auto done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {
 			case MenuAction::UNIT:
@@ -212,7 +211,7 @@ void Simulation::updateBuildingQueues(const float time) {
 
 void Simulation::updateQueues() {
 	updateBuildingQueues(maxTimeFrame);
-	QueueElement* done = Game::getQueueManager()->update(maxTimeFrame);
+	auto done = Game::getQueueManager()->update(maxTimeFrame);
 	if (done) {
 		switch (done->getType()) {
 		case MenuAction::BUILDING_LEVEL:
@@ -323,8 +322,8 @@ void Simulation::moveUnitsAndCheck(const float timeStep) const {
 }
 
 void Simulation::calculateForces() {
-	DebugLineRepo::clear(units->size());
-
+	DebugLineRepo::clear();
+	DebugLineRepo::beginGeometry();
 	for (auto unit : *units) {
 		Urho3D::Vector2 newForce;
 		switch (unit->getState()) {
@@ -345,7 +344,7 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);		
-		unit->debug(DebugUnitType::AIM, stats);
+		unit->debug(DebugUnitType::ALL_FORCE, stats);
 	}
 	DebugLineRepo::commit();
 }
