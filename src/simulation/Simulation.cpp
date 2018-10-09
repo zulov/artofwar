@@ -135,8 +135,8 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		//creationCommandList->addUnits(UNITS_NUMBER, 1, Urho3D::Vector2(20, -50), 0, 0);
-		creationCommandList->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-100, 0), 1, 0);
+		creationCommandList->addUnits(UNITS_NUMBER, 2, Urho3D::Vector2(20, -70), 0, 0);
+		creationCommandList->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(20, -50), 1, 0);
 		//creationCommandList->addResource(0, Urho3D::Vector2(0, 0), 0);
 	}
 }
@@ -344,7 +344,7 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);		
-		unit->debug(DebugUnitType::ALL_FORCE, stats);
+		unit->debug(DebugUnitType::INTERACT, stats);
 	}
 	DebugLineRepo::commit();
 }

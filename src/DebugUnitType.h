@@ -14,6 +14,7 @@ enum class DebugUnitType : char
 
 	ALL_FORCE,
 
-	AIM
+	AIM,
+	INTERACT
 
 };

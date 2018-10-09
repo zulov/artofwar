@@ -13,9 +13,8 @@
 #include "simulation/force/ForceStats.h"
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
-#include <Urho3D/Graphics/Technique.h>
-#include <string>
 #include "DebugLineRepo.h"
+#include <string>
 
 
 Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
@@ -144,8 +143,9 @@ void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, U
 	actionIfCloseEnough(stateTo, closest, indexToInteract, minDistance, attackRange, attackInterest);
 }
 
-void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo, float attackIntrest) {
-	actionIfCloseEnough(stateTo, closest, indexToInteract, minDistance, attackRange, attackIntrest);
+void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo,
+                    float attackInterest) {
+	actionIfCloseEnough(stateTo, closest, indexToInteract, minDistance, attackRange, attackInterest);
 }
 
 void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitState action) {
@@ -239,6 +239,11 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 					for (int i = 0; i < lines.size() - 1; ++i) {
 						drawLine(lines[i], lines[i + 1]);
 					}
+				}
+				break;
+			case DebugUnitType::INTERACT:
+				for (auto toInteract : thingsToInteract) {
+					drawLine(*position, *toInteract->getPosition());
 				}
 				break;
 			default: ;
