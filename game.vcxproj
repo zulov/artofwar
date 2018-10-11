@@ -280,6 +280,7 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\consts.h" />
     <ClInclude Include="src\DebugLineRepo.h" />
     <ClInclude Include="src\DebugUnitType.h" />
     <ClInclude Include="src\MathUtils.h" />

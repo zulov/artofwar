@@ -16,6 +16,7 @@
 #include "DebugLineRepo.h"
 #include <string>
 #include <algorithm>
+#include "consts.h"
 
 
 Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
@@ -432,37 +433,40 @@ void Unit::setBucket(int _bucketIndex, char param) {
 }
 
 Urho3D::Vector2 Unit::getPosToUse(Unit* follower) const {
-	for (auto useSocket : useSockets) {
-		if (useSocket) {
-			float dist = minimalDistance + follower->getMinimalDistance();
+	float minDistance = 99999;
+	Urho3D::Vector2 pos;
+	for (int i = 0; i < USE_SOCKETS_NUMBER; ++i) {
+		if (!useSockets[i]) {
+			auto vector = Consts::circleCords[i] * (minimalDistance + follower->getMinimalDistance());
+			auto vec = Urho3D::Vector2(position->x_ + vector.x_, position->z_ + vector.y_);
+			auto dist = sqDist(*follower->getPosition(), vec);
+			if (dist < minDistance) {
+				minDistance = dist;
+				pos = vec;
+			}
 		}
 	}
-	return {};
+	return pos;
 }
 
-std::tuple<Urho3D::Vector2, float, int> Unit::closest(Physical* toFollow, 
-                                                          const std::function<
-	                                                          std::tuple<Urho3D::Vector2, int>(
-		                                                          Physical*, Unit*)>&
-                                                          positionFunc) {
+std::tuple<Urho3D::Vector2, float, int> Unit::closest(Physical* toFollow, const std::function<
+	                                                      std::tuple<Urho3D::Vector2, int>(
+		                                                      Physical*, Unit*)>& positionFunc) {
 	auto [pos, indexOfPos] = positionFunc(toFollow, this);
 	const float distance = sqDist(pos, *this->getPosition());
 	return std::tuple<Urho3D::Vector2, float, int>(pos, distance, indexOfPos);
 }
 
 std::tuple<Physical*, float, int> Unit::closestPhysical(std::vector<Physical*>* things,
-                                                            const std::function<bool(Physical*)>& condition,
-                                                            const std::function<
-	                                                            std::tuple<Urho3D::Vector2, int>(
-		                                                            Physical*, Unit*)>&
-                                                            positionFunc) {
+                                                        const std::function<bool(Physical*)>& condition,
+                                                        const std::function<std::tuple<Urho3D::Vector2, int>(
+	                                                        Physical*, Unit*)>& positionFunc) {
 	float minDistance = 99999;
 	Physical* closestPhy = nullptr;
 	int bestIndex = -1;
 	for (auto entity : *things) {
 		if (entity->isAlive() && condition(entity)) {
 			auto [pos, distance, indexOfPos] = closest(entity, positionFunc);
-
 			if (distance <= minDistance) {
 				minDistance = distance;
 				closestPhy = entity;

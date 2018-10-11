@@ -86,19 +86,14 @@ public:
 	                     const Urho3D::Color& color);
 	void debug(DebugUnitType type, ForceStats& stats);
 
-
-	std::tuple<Urho3D::Vector2, float, int> closest(Physical* physical,
-	                                                const std::function<
+	std::tuple<Urho3D::Vector2, float, int> closest(Physical* toFollow, const std::function<
 		                                                std::tuple<Urho3D::Vector2, int>(
-			                                                Physical*, Unit*)>&
-	                                                positionFunc);
+			                                                Physical*, Unit*)>& positionFunc);
 
 	std::tuple<Physical*, float, int> closestPhysical(std::vector<Physical*>* things,
 	                                                  const std::function<bool(Physical*)>& condition,
-	                                                  const std::function<
-		                                                  std::tuple<Urho3D::Vector2, int>(
-			                                                  Physical*, Unit*)
-	                                                  >& positionFunc);
+	                                                  const std::function<std::tuple<Urho3D::Vector2, int>(
+		                                                  Physical*, Unit*)>& positionFunc);
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
 	UnitState getActionState() const { return actionState; }

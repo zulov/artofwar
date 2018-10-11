@@ -462,6 +462,7 @@
     <ClInclude Include="src\objects\unit\state\CollectState.h" />
     <ClInclude Include="src\objects\resource\ResourceOrder.h" />
     <ClInclude Include="src\DebugLineRepo.h" />
+    <ClInclude Include="src\consts.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
