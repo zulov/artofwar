@@ -1,4 +1,5 @@
 #include "ChargeAim.h"
+#include "../Unit.h"
 
 ChargeAim::ChargeAim(Urho3D::Vector2* _direction): direction(*_direction), chargeEnergy(50) {
 	direction.Normalize();
@@ -7,8 +8,9 @@ ChargeAim::ChargeAim(Urho3D::Vector2* _direction): direction(*_direction), charg
 
 ChargeAim::~ChargeAim() = default;
 
-std::vector<Urho3D::Vector3> ChargeAim::getDebugLines(Urho3D::Vector3* position) const {
+std::vector<Urho3D::Vector3> ChargeAim::getDebugLines(Unit* unit) const {
 	std::vector<Urho3D::Vector3> points;
+	auto position = unit->getPosition();
 
 	points.emplace_back(*position);
 	points.emplace_back(position->x_ + direction.x_ * 10, position->y_, position->z_ + direction.y_ * 10);

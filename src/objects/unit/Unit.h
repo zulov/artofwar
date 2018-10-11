@@ -8,6 +8,7 @@
 
 
 #define BUCKET_SET_NUMBER 4
+#define USE_SOCKETS_NUMBER 9
 
 enum class DebugUnitType : char;
 enum class ColorMode : char;
@@ -82,8 +83,22 @@ public:
 	void addAim(const FutureAim& aim, bool append = false);
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
 	static void drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-	              const Urho3D::Color& color);
+	                     const Urho3D::Color& color);
 	void debug(DebugUnitType type, ForceStats& stats);
+
+
+	std::tuple<Urho3D::Vector2, float, int> closest(Physical* physical,
+	                                                const std::function<
+		                                                std::tuple<Urho3D::Vector2, int>(
+			                                                Physical*, Unit*)>&
+	                                                positionFunc);
+
+	std::tuple<Physical*, float, int> closestPhysical(std::vector<Physical*>* things,
+	                                                  const std::function<bool(Physical*)>& condition,
+	                                                  const std::function<
+		                                                  std::tuple<Urho3D::Vector2, int>(
+			                                                  Physical*, Unit*)
+	                                                  >& positionFunc);
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
 	UnitState getActionState() const { return actionState; }
@@ -97,6 +112,8 @@ public:
 	bool bucketHasChanged(int _bucketIndex, char param) const;
 	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
 	void setBucket(int _bucketIndex, char param);
+
+	Urho3D::Vector2 getPosToUse(Unit* physical) const override;
 	void action(char id, const ActionParameter& parameter) override;
 	std::string getValues(int precision) override;
 	Urho3D::String& toMultiLineString() override;
@@ -143,4 +160,5 @@ private:
 
 	unsigned short currentFrameState = 0;
 
+	bool useSockets[USE_SOCKETS_NUMBER];
 };

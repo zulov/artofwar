@@ -11,5 +11,5 @@ private:
 	void addTargetAim(Urho3D::Vector2* to, bool append) override;
 	void addChargeAim(Urho3D::Vector2* charge, bool append) override;
 	void addFollowAim(const Physical* toFollow, bool append) override;
-	Physical* entity;
+	Physical* entity;//TODO czy to moze byc UNit?
 };

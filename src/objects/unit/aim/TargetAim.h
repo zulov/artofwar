@@ -9,7 +9,7 @@ public:
 	explicit TargetAim(std::vector<int>& _path);
 	~TargetAim();
 
-	std::vector<Urho3D::Vector3> getDebugLines(Urho3D::Vector3* position) const override;
+	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const override;
 	Urho3D::Vector2 getDirection(Unit* unit) override;
 	bool ifReach(Unit* unit) override;
 	bool expired() override;

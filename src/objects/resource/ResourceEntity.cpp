@@ -72,7 +72,7 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 			if (k < limit) {
 				auto unit = static_cast<Unit*>(neight);
 				if (unit->getState() == UnitState::STOP && StateManager::checkChangeState(unit, UnitState::COLLECT)) {
-					auto [pos, distance, indexOfPos ] = closest(this, unit->getPosition(), posToFollow);
+					auto [pos, distance, indexOfPos ] = unit->closest(this, posToFollow);
 
 					unit->toAction(this, distance, indexOfPos, UnitState::COLLECT, 24);
 					++k;

@@ -13,12 +13,12 @@ TargetAim::TargetAim(std::vector<int>& _path) :
 
 TargetAim::~TargetAim() = default;
 
-std::vector<Urho3D::Vector3> TargetAim::getDebugLines(Urho3D::Vector3* position) const {
+std::vector<Urho3D::Vector3> TargetAim::getDebugLines(Unit* unit) const {
 	std::vector<Urho3D::Vector3> points;
-	points.emplace_back(*position);
+	points.emplace_back(*unit->getPosition());
 	for (short i = current; i < path.size(); ++i) {
 		auto center = Game::getEnviroment()->getCenter(path[i]);
-		points.emplace_back(center.x_ , position->y_, center.y_);
+		points.emplace_back(center.x_ , unit->getPosition()->y_, center.y_);
 	}
 
 	return points;

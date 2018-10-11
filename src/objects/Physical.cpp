@@ -11,6 +11,7 @@
 #include <Urho3D/Resource/XMLFile.h>
 #include "player/PlayersManager.h"
 #include "player/Player.h"
+#include "unit/Unit.h"
 
 
 Physical::Physical(Urho3D::Vector3* _position, ObjectType _type): Entity(_type), position(_position),
@@ -84,8 +85,13 @@ int Physical::getMainCell() const {
 	return getBucketIndex();
 }
 
-std::tuple<Urho3D::Vector2, int> Physical::getPosToFollowWithIndex(Urho3D::Vector3* center) const {
-	return {getPosToFollow(center), -1};
+Urho3D::Vector2 Physical::getPosToUse(Unit* follower) const {
+	return {follower->getPosition()->x_, follower->getPosition()->z_};
+
+}
+
+std::tuple<Urho3D::Vector2, int> Physical::getPosToFollowWithIndex(Unit* follower) const {
+	return {getPosToUse(follower), -1};
 }
 
 float Physical::getHealthBarSize() {
@@ -188,43 +194,6 @@ void Physical::unSelect() {
 	billboardSetBar->Commit();
 	billboardSetShadow->Commit();
 }
-
-
-std::tuple<Urho3D::Vector2, float, int> Physical::closest(Physical* physical, Urho3D::Vector3* mainPos,
-                                                          const std::function<
-	                                                          std::tuple<Urho3D::Vector2, int>(
-		                                                          Physical*,
-		                                                          Urho3D::Vector3*)>&
-                                                          positionFunc) {
-	auto [pos, indexOfPos] = positionFunc(physical, mainPos);
-	const float distance = sqDist(pos, *mainPos);
-	return std::tuple<Urho3D::Vector2, float, int>(pos, distance, indexOfPos);
-}
-
-std::tuple<Physical*, float, int> Physical::closestPhysical(std::vector<Physical*>* things,
-                                                            const std::function<bool(Physical*)>& condition,
-                                                            const std::function<
-	                                                            std::tuple<Urho3D::Vector2, int>(
-		                                                            Physical*,
-		                                                            Urho3D::Vector3*)>&
-                                                            positionFunc) {
-	float minDistance = 99999;
-	Physical* closestPhy = nullptr;
-	int bestIndex = -1;
-	for (auto entity : *things) {
-		if (entity->isAlive() && condition(entity)) {
-			auto [pos, distance, indexOfPos] = closest(entity, position, positionFunc);
-
-			if (distance <= minDistance) {
-				minDistance = distance;
-				closestPhy = entity;
-				bestIndex = indexOfPos;
-			}
-		}
-	}
-	return std::tuple<Physical*, float, int>(closestPhy, minDistance, bestIndex);
-}
-
 
 void Physical::loadXml(Urho3D::String xmlName) {
 	node->RemoveAllChildren();

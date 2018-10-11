@@ -15,6 +15,7 @@
 #include "state/StateManager.h"
 #include "DebugLineRepo.h"
 #include <string>
+#include <algorithm>
 
 
 Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
@@ -38,6 +39,7 @@ Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical
 	for (auto& bucket : teamBucketIndex) {
 		bucket = INT_MIN;
 	}
+	std::fill_n(useSockets, USE_SOCKETS_NUMBER, false);
 }
 
 Unit::~Unit() {
@@ -235,7 +237,7 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				break;
 			case DebugUnitType::AIM:
 				if (aims.hasCurrent()) {
-					auto lines = aims.getDebugLines(position);
+					auto lines = aims.getDebugLines(this);
 					for (int i = 0; i < lines.size() - 1; ++i) {
 						drawLine(lines[i], lines[i + 1]);
 					}
@@ -358,7 +360,7 @@ bool Unit::hasResource() {
 void Unit::load(dbload_unit* unit) {
 	Physical::load(unit);
 	state = UnitState(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
-	velocity = Urho3D::Vector2(unit->vel_x, unit->vel_z);
+	velocity = {unit->vel_x, unit->vel_z};
 }
 
 int Unit::getLevel() {
@@ -398,20 +400,20 @@ void Unit::applyForce(double timeStep) {
 
 	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep / mass);
-	const float velLenght = velocity.LengthSquared();
-	if (velLenght < minSpeed * minSpeed) {
+	const float velLength = velocity.LengthSquared();
+	if (velLength < minSpeed * minSpeed) {
 		if (state == UnitState::MOVE) {
 			StateManager::changeState(this, UnitState::STOP);
 		}
 	} else {
-		if (velLenght > maxSpeed * maxSpeed) {
+		if (velLength > maxSpeed * maxSpeed) {
 			velocity.Normalize();
 			velocity *= maxSpeed;
 		}
 		if (state == UnitState::STOP) {
 			StateManager::changeState(this, UnitState::MOVE);
 		}
-		if (rotatable && velLenght > 2 * minSpeed * minSpeed) {
+		if (rotatable && velLength > 2 * minSpeed * minSpeed) {
 			node->SetDirection(Urho3D::Vector3(velocity.x_, 0, velocity.y_));
 		}
 	}
@@ -427,4 +429,46 @@ bool Unit::bucketHasChanged(int _bucketIndex, char param) const {
 
 void Unit::setBucket(int _bucketIndex, char param) {
 	teamBucketIndex[param] = _bucketIndex;
+}
+
+Urho3D::Vector2 Unit::getPosToUse(Unit* follower) const {
+	for (auto useSocket : useSockets) {
+		if (useSocket) {
+			float dist = minimalDistance + follower->getMinimalDistance();
+		}
+	}
+	return {};
+}
+
+std::tuple<Urho3D::Vector2, float, int> Unit::closest(Physical* toFollow, 
+                                                          const std::function<
+	                                                          std::tuple<Urho3D::Vector2, int>(
+		                                                          Physical*, Unit*)>&
+                                                          positionFunc) {
+	auto [pos, indexOfPos] = positionFunc(toFollow, this);
+	const float distance = sqDist(pos, *this->getPosition());
+	return std::tuple<Urho3D::Vector2, float, int>(pos, distance, indexOfPos);
+}
+
+std::tuple<Physical*, float, int> Unit::closestPhysical(std::vector<Physical*>* things,
+                                                            const std::function<bool(Physical*)>& condition,
+                                                            const std::function<
+	                                                            std::tuple<Urho3D::Vector2, int>(
+		                                                            Physical*, Unit*)>&
+                                                            positionFunc) {
+	float minDistance = 99999;
+	Physical* closestPhy = nullptr;
+	int bestIndex = -1;
+	for (auto entity : *things) {
+		if (entity->isAlive() && condition(entity)) {
+			auto [pos, distance, indexOfPos] = closest(entity, positionFunc);
+
+			if (distance <= minDistance) {
+				minDistance = distance;
+				closestPhy = entity;
+				bestIndex = indexOfPos;
+			}
+		}
+	}
+	return std::tuple<Physical*, float, int>(closestPhy, minDistance, bestIndex);
 }

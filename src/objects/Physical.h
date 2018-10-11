@@ -6,6 +6,7 @@
 #include <iostream>
 
 struct ActionParameter;
+class Unit;
 
 class Physical :
 	public Entity
@@ -34,21 +35,6 @@ public:
 	virtual bool isUsable() const { return isAlive(); }
 	bool hasEnemy();
 
-	std::tuple<Urho3D::Vector2, float, int> closest(Physical* physical, Urho3D::Vector3* mainPos,
-	                                                const std::function<
-		                                                std::tuple<Urho3D::Vector2, int>(
-			                                                Physical*,
-			                                                Urho3D::Vector3*)>&
-	                                                positionFunc);
-
-	std::tuple<Physical*, float, int> closestPhysical(std::vector<Physical*>* things,
-	                                                  const std::function<bool(Physical*)>& condition,
-	                                                  const std::function<
-		                                                  std::tuple<Urho3D::Vector2, int>(
-			                                                  Physical*,
-			                                                  Urho3D::Vector3*)
-	                                                  >& positionFunc);
-
 	virtual int belowCloseLimit();
 	void reduceClose() { --closeUsers; }
 	void upClose() { ++closeUsers; }
@@ -70,9 +56,9 @@ public:
 	virtual int getMainCell() const;
 
 	virtual bool isToDispose() const { return false; }
-	virtual std::tuple<Urho3D::Vector2, int> getPosToFollowWithIndex(Urho3D::Vector3* center) const;
+	virtual std::tuple<Urho3D::Vector2, int> getPosToFollowWithIndex(Unit* follower) const;
 
-	virtual Urho3D::Vector2 getPosToFollow(Urho3D::Vector3* center) const { return {position->x_, position->z_}; }
+	virtual Urho3D::Vector2 getPosToUse(Unit* follower) const;
 
 	virtual float getMaxHpBarSize() { return 0; }
 

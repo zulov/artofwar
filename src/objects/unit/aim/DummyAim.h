@@ -19,7 +19,7 @@ public:
 		return false;
 	}
 
-	std::vector<Urho3D::Vector3> getDebugLines(Urho3D::Vector3* position) const override {
+	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const override {
 		return {};
 	}
 };

@@ -1,6 +1,7 @@
 #include "Static.h"
 #include "Game.h"
 #include "MathUtils.h"
+#include "../unit/Unit.h"
 #include "simulation/env/Enviroment.h"
 #include <string>
 
@@ -72,19 +73,19 @@ bool Static::canCollect(int index) {
 		&& Game::getEnviroment()->getCurrentSize(index) <= 2;
 }
 
-Urho3D::Vector2 Static::getPosToFollow(Urho3D::Vector3* center) const {
-	auto [vec, index] = getPosToFollowWithIndex(center);
+Urho3D::Vector2 Static::getPosToUse(Unit* follower) const {
+	auto [vec, index] = getPosToFollowWithIndex(follower);
 	return vec;
 }
 
-std::tuple<Urho3D::Vector2, int> Static::getPosToFollowWithIndex(Urho3D::Vector3* center) const {
+std::tuple<Urho3D::Vector2, int> Static::getPosToFollowWithIndex(Unit* physical) const {
 	float closestDist = 999999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
 	for (auto index : surroundCells) {
 		if (canCollect(index)) {
 			const auto vec = Game::getEnviroment()->getCenter(index);
-			const float dist = sqDist(vec, *center);
+			const float dist = sqDist(vec, *physical->getPosition());
 			if (dist < closestDist) {
 				closestDist = dist;
 				closest = vec;
