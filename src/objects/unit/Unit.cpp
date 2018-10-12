@@ -347,10 +347,6 @@ void Unit::changeColor(ColorMode mode) {
 	}
 }
 
-void Unit::clean() {
-	Physical::clean();
-}
-
 void Unit::setState(UnitState _state) {
 	state = _state;
 }
@@ -481,4 +477,33 @@ std::tuple<Physical*, float, int> Unit::closestPhysical(std::vector<Physical*>* 
 		}
 	}
 	return std::tuple<Physical*, float, int>(closestPhy, minDistance, bestIndex);
+}
+
+
+bool Unit::isFirstThingAlive() {
+	return !thingsToInteract.empty()
+		&& thingsToInteract[0] != nullptr
+		&& thingsToInteract[0]->isUsable();
+}
+
+bool Unit::hasEnemy() {
+	if (isFirstThingAlive()) {
+		if (sqDist(this->getPosition(), thingsToInteract[0]->getPosition()) < attackRange * attackRange) {
+			return true;
+		}
+	}
+	thingsToInteract.clear();
+	return false;
+}
+
+void Unit::clean() {
+	Physical::clean();
+	thingsToInteract.erase(
+	                       std::remove_if(
+	                                      thingsToInteract.begin(), thingsToInteract.end(),
+	                                      [](Physical* physical)
+	                                      {
+		                                      return physical == nullptr || !physical->isAlive();
+	                                      }),
+	                       thingsToInteract.end());
 }

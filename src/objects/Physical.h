@@ -31,9 +31,7 @@ public:
 
 	static std::string getColumns();
 	std::string getValues(int precision) override;
-	bool isFirstThingAlive();
 	virtual bool isUsable() const { return isAlive(); }
-	bool hasEnemy();
 
 	virtual int belowCloseLimit();
 	void reduceClose() { --closeUsers; }
@@ -73,15 +71,13 @@ public:
 	}
 
 	virtual int getLevel();
-	virtual void clean();
+	virtual void clean(){}
 protected:
 	void loadXml(Urho3D::String xmlName);
 	void setPlayerAndTeam(int player);
 	virtual float getHealthBarThick() { return 0.15; }
 	Urho3D::Vector3* position = nullptr;
 	Urho3D::String menuString = "";
-
-	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
 
 	char team;
 	char player;

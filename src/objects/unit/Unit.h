@@ -85,6 +85,9 @@ public:
 	static void drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second,
 	                     const Urho3D::Color& color);
 	void debug(DebugUnitType type, ForceStats& stats);
+	bool isFirstThingAlive();
+	bool hasEnemy();
+
 
 	std::tuple<Urho3D::Vector2, float, int> closest(Physical* toFollow, const std::function<
 		                                                std::tuple<Urho3D::Vector2, int>(
@@ -153,6 +156,8 @@ private:
 
 	int indexToInteract = -1;
 	unsigned short currentFrameState = 0;
+
+	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
 
 	char interactWithSocket = -1;
 	bool useSockets[USE_SOCKETS_NUMBER];

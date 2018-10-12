@@ -147,36 +147,9 @@ std::string Physical::getValues(int precision) {
 		+ std::to_string(getLevel()) + ",";
 }
 
-bool Physical::isFirstThingAlive() {
-	return !thingsToInteract.empty()
-		&& thingsToInteract[0] != nullptr
-		&& thingsToInteract[0]->isUsable();
-}
-
 int Physical::belowCloseLimit() {
 	auto diff = maxCloseUsers - closeUsers;
 	return diff > 0 ? diff : 0;
-}
-
-bool Physical::hasEnemy() {
-	if (isFirstThingAlive()) {
-		if (sqDist(this->getPosition(), thingsToInteract[0]->getPosition()) < attackRange * attackRange) {
-			return true;
-		}
-	}
-	thingsToInteract.clear();
-	return false;
-}
-
-void Physical::clean() {
-	thingsToInteract.erase(
-	                       std::remove_if(
-	                                      thingsToInteract.begin(), thingsToInteract.end(),
-	                                      [](Physical* physical)
-	                                      {
-		                                      return physical == nullptr || !physical->isAlive();
-	                                      }),
-	                       thingsToInteract.end());
 }
 
 void Physical::select() {
