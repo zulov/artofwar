@@ -152,8 +152,8 @@ private:
 	int teamBucketIndex[BUCKET_SET_NUMBER];
 
 	int indexToInteract = -1;
-
 	unsigned short currentFrameState = 0;
 
+	char interactWithSocket = -1;
 	bool useSockets[USE_SOCKETS_NUMBER];
 };

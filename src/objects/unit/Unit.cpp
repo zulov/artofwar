@@ -17,6 +17,7 @@
 #include <string>
 #include <algorithm>
 #include "consts.h"
+#include "simulation/env/Enviroment.h"
 
 
 Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
@@ -434,19 +435,24 @@ void Unit::setBucket(int _bucketIndex, char param) {
 
 Urho3D::Vector2 Unit::getPosToUse(Unit* follower) const {
 	float minDistance = 99999;
-	Urho3D::Vector2 pos;
+	Urho3D::Vector2 closest;
 	for (int i = 0; i < USE_SOCKETS_NUMBER; ++i) {
 		if (!useSockets[i]) {
 			auto vector = Consts::circleCords[i] * (minimalDistance + follower->getMinimalDistance());
-			auto vec = Urho3D::Vector2(position->x_ + vector.x_, position->z_ + vector.y_);
-			auto dist = sqDist(*follower->getPosition(), vec);
-			if (dist < minDistance) {
-				minDistance = dist;
-				pos = vec;
+			auto pos = Urho3D::Vector2(position->x_ + vector.x_, position->z_ + vector.y_);
+			int index = Game::getEnviroment()->getIndex(pos);
+
+			if (Game::getEnviroment()->cellInState(index, {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
+				auto dist = sqDist(*follower->getPosition(), pos);
+
+				if (dist < minDistance) {
+					minDistance = dist;
+					closest = pos;
+				}
 			}
 		}
 	}
-	return pos;
+	return closest;
 }
 
 std::tuple<Urho3D::Vector2, float, int> Unit::closest(Physical* toFollow, const std::function<
