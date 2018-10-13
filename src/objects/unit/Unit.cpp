@@ -152,14 +152,12 @@ void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, U
 	actionIfCloseEnough(stateTo, closest, indexToInteract, minDistance, attackRange, attackInterest);
 }
 
-void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitState action) {
+void Unit::interactWithOne(Physical* thing, int _indexToInteract, UnitState action) {
 	thingsToInteract.clear();
-	thingsToInteract.push_back(thing);
 
-	this->indexToInteract = indexToInteract;
-
-	if (!StateManager::changeState(this, action)) {
-		thingsToInteract.clear();
+	if (StateManager::changeState(this, action)) {
+		thingsToInteract.push_back(thing);
+		indexToInteract = _indexToInteract;
 	}
 }
 
@@ -487,10 +485,9 @@ bool Unit::isFirstThingAlive() {
 }
 
 bool Unit::hasEnemy() {
-	if (isFirstThingAlive()) {
-		if (sqDist(this->getPosition(), thingsToInteract[0]->getPosition()) < attackRange * attackRange) {
-			return true;
-		}
+	if (isFirstThingAlive() && sqDist(this->getPosition(), thingsToInteract[0]->getPosition()) < attackRange *
+		attackRange) {
+		return true;
 	}
 	thingsToInteract.clear();
 	return false;

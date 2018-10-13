@@ -54,12 +54,12 @@ Simulation::~Simulation() {
 	Game::setActionCommmandList(nullptr);
 }
 
-void Simulation::tryToAttack(Unit* unit, float dist, UnitState state) {
+void Simulation::tryToAttack(Unit* unit, float dist, UnitState state, const std::function<bool(Physical*)>& condition) {
 	if (unit->hasEnemy()) {
 		StateManager::changeState(unit, state);
 	} else {
 		toAction(unit, enviroment->getNeighboursFromTeam(unit, dist, unit->getTeam(),
-		                                                 OperatorType::NOT_EQUAL), state);
+		                                                 OperatorType::NOT_EQUAL), state, condition);
 	}
 }
 
@@ -67,12 +67,13 @@ void Simulation::tryToCollect(Unit* unit) {
 	if (unit->hasResource()) {
 		StateManager::changeState(unit, UnitState::COLLECT);
 	} else {
-		toAction(unit, enviroment->getResources(unit, 12), UnitState::COLLECT);
+		toAction(unit, enviroment->getResources(unit, 12), UnitState::COLLECT, belowClose);
 	}
 }
 
-void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitState state) {
-	auto [closest, minDistance, indexToInteract] = unit->closestPhysical(list, belowClose, posToFollow);
+void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitState state,
+                          const std::function<bool(Physical*)>& condition) {
+	auto [closest, minDistance, indexToInteract] = unit->closestPhysical(list, condition, posToFollow);
 	unit->toAction(closest, minDistance, indexToInteract, state);
 }
 
@@ -87,12 +88,14 @@ void Simulation::selfAI() {
 			if (currentFrameNumber % 3 == 0 && unit->getFormation() == -1
 				&& StateManager::checkChangeState(unit, unit->getActionState())) {
 				switch (unit->getActionState()) {
+				case UnitState::ATTACK:
+					tryToAttack(unit, 12, unit->getActionState(), belowClose);
+					break ;
 				case UnitState::COLLECT:
 					tryToCollect(unit);
 					break;
 				case UnitState::SHOT:
-				case UnitState::ATTACK:
-					tryToAttack(unit, 12, unit->getActionState());
+					tryToAttack(unit, 12, unit->getActionState(), belowRange);
 					break;
 				}
 			}

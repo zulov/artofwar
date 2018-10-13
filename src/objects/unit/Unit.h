@@ -59,7 +59,7 @@ public:
 	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo);
 	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo, float attackIntrest);
 
-	void interactWithOne(Physical* thing, int indexToInteract, UnitState action);
+	void interactWithOne(Physical* thing, int _indexToInteract, UnitState action);
 
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
@@ -87,7 +87,6 @@ public:
 	void debug(DebugUnitType type, ForceStats& stats);
 	bool isFirstThingAlive();
 	bool hasEnemy();
-
 
 	std::tuple<Urho3D::Vector2, float, int> closest(Physical* toFollow, const std::function<
 		                                                std::tuple<Urho3D::Vector2, int>(

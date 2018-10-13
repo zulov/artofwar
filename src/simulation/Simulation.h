@@ -2,6 +2,7 @@
 
 #include "force/Force.h"
 #include <vector>
+#include <functional>
 
 enum class UnitState : char;
 class Unit;
@@ -58,8 +59,8 @@ private:
 	void selfAI();
 	void addTestEntities() const;
 
-	void tryToAttack(Unit* unit, float dist, UnitState state);
-	void toAction(Unit* unit, std::vector<Physical*>* list, UnitState state);
+	void tryToAttack(Unit* unit, float dist, UnitState state, const std::function<bool(Physical*)>& condition);
+	void toAction(Unit* unit, std::vector<Physical*>* list, UnitState state, const std::function<bool(Physical*)>& condition);
 	void tryToCollect(Unit* unit);
 
 	float accumulateTime = 0;
