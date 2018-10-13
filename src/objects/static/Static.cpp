@@ -73,19 +73,14 @@ bool Static::canCollect(int index) {
 		&& Game::getEnvironment()->getCurrentSize(index) <= 2;
 }
 
-Urho3D::Vector2 Static::getPosToUse(Unit* follower) const {
-	auto [vec, index] = getPosToUseWithIndex(follower);
-	return vec;
-}
-
-std::tuple<Urho3D::Vector2, int> Static::getPosToUseWithIndex(Unit* physical) const {
+std::tuple<Urho3D::Vector2, int> Static::getPosToUseWithIndex(Unit* unit) const {
 	float closestDist = 999999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
 	for (auto index : surroundCells) {
 		if (canCollect(index)) {
 			const auto vec = Game::getEnvironment()->getCenter(index);
-			const float dist = sqDist(vec, *physical->getPosition());
+			const float dist = sqDist(vec, *unit->getPosition());
 			if (dist < closestDist) {
 				closestDist = dist;
 				closest = vec;

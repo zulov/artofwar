@@ -53,9 +53,7 @@ private:
 
 	Static* object{};
 	char additonalInfo{};
-	std::vector<CostPair> neighbours;
-	std::vector<CostPair> occupiedNeightbours;
+	std::vector<CostPair> neighbours, occupiedNeightbours;
 	float cost{};
 	int escapeBucketIndex = -1;
 };
-

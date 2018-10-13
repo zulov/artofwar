@@ -184,7 +184,7 @@ bool Environment::cellInState(int index, std::vector<CellState> cellStates) cons
 	return mainGrid.cellInStates(index, cellStates);
 }
 
-void Environment::updateCell(int index, char val, CellState cellState) {
+void Environment::updateCell(int index, char val, CellState cellState) const {
 	mainGrid.updateCell(index, val, cellState);
 }
 

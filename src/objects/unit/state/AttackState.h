@@ -15,21 +15,24 @@ public:
 	~AttackState() = default;
 
 	bool canStart(Unit* unit) override {
-		return unit->isFirstThingAlive();
+		return unit->isFirstThingAlive() && unit->thingsToInteract[0]->isSlotOccupied(unit->indexToInteract);
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->velocity = Urho3D::Vector2::ZERO;
 		unit->currentFrameState = 0;
 		unit->thingsToInteract[0]->upClose();
+		unit->thingsToInteract[0]->occupiedSlot(unit->indexToInteract);
 	}
 
 	void onEnd(Unit* unit) override {
 		State::onEnd(unit);
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceClose();
+			unit->thingsToInteract[0]->unOccupiedSlot(unit->indexToInteract);
 		}
 		unit->thingsToInteract.clear();
+		unit->indexToInteract = -1;
 	}
 
 	void execute(Unit* unit, float timeStep) override {

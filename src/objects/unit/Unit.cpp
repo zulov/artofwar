@@ -152,13 +152,16 @@ void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, U
 	actionIfCloseEnough(stateTo, closest, indexToInteract, minDistance, attackRange, attackInterest);
 }
 
-void Unit::interactWithOne(Physical* thing, int _indexToInteract, UnitState action) {
+void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitState action) {
 	thingsToInteract.clear();
+	thingsToInteract.push_back(thing);
 
-	if (StateManager::changeState(this, action)) {
-		thingsToInteract.push_back(thing);
-		indexToInteract = _indexToInteract;
+	this->indexToInteract = indexToInteract;
+
+	if (!StateManager::changeState(this, action)) {
+		thingsToInteract.clear();
 	}
+	int a //to kiedy zakplepac miejsce
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {
@@ -427,28 +430,6 @@ void Unit::setBucket(int _bucketIndex, char param) {
 	teamBucketIndex[param] = _bucketIndex;
 }
 
-Urho3D::Vector2 Unit::getPosToUse(Unit* follower) const {
-	float minDistance = 99999;
-	Urho3D::Vector2 closest;
-	for (int i = 0; i < USE_SOCKETS_NUMBER; ++i) {
-		if (!useSockets[i]) {
-			auto vector = Consts::circleCords[i] * (minimalDistance + follower->getMinimalDistance());
-			auto pos = Urho3D::Vector2(position->x_ + vector.x_, position->z_ + vector.y_);
-			int index = Game::getEnvironment()->getIndex(pos);
-
-			if (Game::getEnvironment()->cellInState(index, {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
-				auto dist = sqDist(*follower->getPosition(), pos);
-
-				if (dist < minDistance) {
-					minDistance = dist;
-					closest = pos;
-				}
-			}
-		}
-	}
-	return closest;
-}
-
 std::tuple<Urho3D::Vector2, float, int> Unit::closest(Physical* toFollow, const std::function<
 	                                                      std::tuple<Urho3D::Vector2, int>(
 		                                                      Physical*, Unit*)>& positionFunc) {
@@ -503,4 +484,28 @@ void Unit::clean() {
 		                                      return physical == nullptr || !physical->isAlive();
 	                                      }),
 	                       thingsToInteract.end());
+}
+
+std::tuple<Urho3D::Vector2, int> Unit::getPosToUseWithIndex(Unit* unit) const {
+	float minDistance = 99999;
+	Urho3D::Vector2 closest;
+	int closestindex = -1;
+	for (int i = 0; i < USE_SOCKETS_NUMBER; ++i) {
+		if (!useSockets[i]) {
+			auto vector = Consts::circleCords[i] * (minimalDistance + unit->getMinimalDistance());
+			auto pos = Urho3D::Vector2(position->x_ + vector.x_, position->z_ + vector.y_);
+			int index = Game::getEnvironment()->getIndex(pos);
+
+			if (Game::getEnvironment()->cellInState(index, {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
+				auto dist = sqDist(*unit->getPosition(), pos);
+
+				if (dist < minDistance) {
+					minDistance = dist;
+					closest = pos;
+					closestindex = i;
+				}
+			}
+		}
+	}
+	return {closest, closestindex};
 }

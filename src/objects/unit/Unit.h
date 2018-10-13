@@ -59,7 +59,7 @@ public:
 	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo);
 	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo, float attackIntrest);
 
-	void interactWithOne(Physical* thing, int _indexToInteract, UnitState action);
+	void interactWithOne(Physical* thing, int indexToInteract, UnitState action);
 
 	void updateHeight(float y, double timeStep);
 	void addAim(Aim* aim);
@@ -110,7 +110,8 @@ public:
 	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
 	void setBucket(int _bucketIndex, char param);
 
-	Urho3D::Vector2 getPosToUse(Unit* physical) const override;
+	
+	std::tuple<Urho3D::Vector2, int> getPosToUseWithIndex(Unit* unit) const override;
 	void action(char id, const ActionParameter& parameter) override;
 	std::string getValues(int precision) override;
 	Urho3D::String& toMultiLineString() override;
