@@ -54,12 +54,12 @@ Simulation::~Simulation() {
 	Game::setActionCommmandList(nullptr);
 }
 
-void Simulation::tryToAttack(Unit* unit) {
+void Simulation::tryToAttack(Unit* unit, float dist, UnitState state) {
 	if (unit->hasEnemy()) {
-		StateManager::changeState(unit, UnitState::ATTACK);
+		StateManager::changeState(unit, state);
 	} else {
-		toAction(unit, enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(),
-		                                                 OperatorType::NOT_EQUAL), UnitState::ATTACK);
+		toAction(unit, enviroment->getNeighboursFromTeam(unit, dist, unit->getTeam(),
+		                                                 OperatorType::NOT_EQUAL), state);
 	}
 }
 
@@ -68,15 +68,6 @@ void Simulation::tryToCollect(Unit* unit) {
 		StateManager::changeState(unit, UnitState::COLLECT);
 	} else {
 		toAction(unit, enviroment->getResources(unit, 12), UnitState::COLLECT);
-	}
-}
-
-void Simulation::tryToShot(Unit* unit) {
-	if (unit->hasEnemy()) {
-		StateManager::changeState(unit, UnitState::SHOT);
-	} else {
-		toAction(unit, enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(),
-		                                                 OperatorType::NOT_EQUAL), UnitState::SHOT);
 	}
 }
 
@@ -96,14 +87,12 @@ void Simulation::selfAI() {
 			if (currentFrameNumber % 3 == 0 && unit->getFormation() == -1
 				&& StateManager::checkChangeState(unit, unit->getActionState())) {
 				switch (unit->getActionState()) {
-				case UnitState::ATTACK:
-					tryToAttack(unit);
-					break;
 				case UnitState::COLLECT:
 					tryToCollect(unit);
 					break;
 				case UnitState::SHOT:
-					tryToShot(unit);
+				case UnitState::ATTACK:
+					tryToAttack(unit, 12, unit->getActionState());
 					break;
 				}
 			}

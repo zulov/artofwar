@@ -58,10 +58,9 @@ private:
 	void selfAI();
 	void addTestEntities() const;
 
-	void tryToAttack(Unit* unit);
+	void tryToAttack(Unit* unit, float dist, UnitState state);
 	void toAction(Unit* unit, std::vector<Physical*>* list, UnitState state);
 	void tryToCollect(Unit* unit);
-	void tryToShot(Unit* unit);
 
 	float accumulateTime = 0;
 	float maxTimeFrame = 0.05f;
