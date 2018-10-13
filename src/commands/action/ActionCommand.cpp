@@ -6,7 +6,7 @@
 #include "objects/unit/aim/DummyAim.h"
 #include "objects/unit/aim/FollowAim.h"
 #include "objects/unit/aim/TargetAim.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 #include <chrono>
 
 
@@ -20,7 +20,7 @@ ActionCommand::~ActionCommand() {
 
 
 ActionParameter ActionCommand::getTargetAim(int startInx, Urho3D::Vector2& to) {
-	const auto path = Game::getEnviroment()->findPath(startInx, to);
+	const auto path = Game::getEnvironment()->findPath(startInx, to);
 	if (!path->empty()) {
 		return ActionParameter(new TargetAim(*path));
 	}

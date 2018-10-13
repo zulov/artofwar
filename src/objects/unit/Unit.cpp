@@ -17,7 +17,7 @@
 #include <string>
 #include <algorithm>
 #include "consts.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 
 
 Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
@@ -436,9 +436,9 @@ Urho3D::Vector2 Unit::getPosToUse(Unit* follower) const {
 		if (!useSockets[i]) {
 			auto vector = Consts::circleCords[i] * (minimalDistance + follower->getMinimalDistance());
 			auto pos = Urho3D::Vector2(position->x_ + vector.x_, position->z_ + vector.y_);
-			int index = Game::getEnviroment()->getIndex(pos);
+			int index = Game::getEnvironment()->getIndex(pos);
 
-			if (Game::getEnviroment()->cellInState(index, {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
+			if (Game::getEnvironment()->cellInState(index, {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
 				auto dist = sqDist(*follower->getPosition(), pos);
 
 				if (dist < minDistance) {

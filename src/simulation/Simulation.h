@@ -3,14 +3,14 @@
 #include "force/Force.h"
 #include <vector>
 
-
+enum class UnitState : char;
 class Unit;
 class ResourceEntity;
 class Building;
 class QueueElement;
 enum class ColorMode : char;
 struct NewGameForm;
-class Enviroment;
+class Environment;
 class SceneSaver;
 class SceneLoader;
 class CreationCommandList;
@@ -28,7 +28,7 @@ namespace Urho3D {
 class Simulation
 {
 public:
-	Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList);
+	Simulation(Environment* _enviroment, CreationCommandList* _creationCommandList);
 	~Simulation();
 	SimulationInfo* update(float timeStep);
 	void executeLists() const;
@@ -59,6 +59,7 @@ private:
 	void addTestEntities() const;
 
 	void tryToAttack(Unit* unit);
+	void toAction(Unit* unit, std::vector<Physical*>* list, UnitState state);
 	void tryToCollect(Unit* unit);
 	void tryToShot(Unit* unit);
 
@@ -74,7 +75,7 @@ private:
 	std::vector<ResourceEntity*>* resources;
 
 	SimulationInfo* simulationInfo;
-	Enviroment* enviroment;
+	Environment* enviroment;
 	SimulationObjectManager* simObjectManager;
 	CreationCommandList* creationCommandList;
 	UpgradeCommandList* levelsCommandList;

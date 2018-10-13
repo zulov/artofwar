@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "MathUtils.h"
 #include "TargetAim.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 
 
 FollowAim::FollowAim(const Physical* physical, TargetAim* subTarget): physical(physical), subTarget(subTarget) {
@@ -37,7 +37,7 @@ bool FollowAim::ifReach(Unit* unit) {
 	auto posToFollow = physical->getPosToUse(unit);
 	auto reach = sqDist(*unit->getPosition(), posToFollow) < radiusSq;
 	if (reach) {
-		unit->setIndexToInteract(Game::getEnviroment()->getIndex(posToFollow)); //TODO bug moze kiedys powstac
+		unit->setIndexToInteract(Game::getEnvironment()->getIndex(posToFollow)); //TODO bug moze kiedys powstac
 	}
 	return reach;
 }

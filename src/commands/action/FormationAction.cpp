@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 #include "simulation/formation/Formation.h"
 
 FormationAction::FormationAction(Formation* formation, UnitOrder action, const Physical* physical,
@@ -22,7 +22,7 @@ void FormationAction::addTargetAim(Urho3D::Vector2* to, bool append) {
 				StateManager::changeState(unit, UnitState::STOP);
 			}
 		}
-		Game::getEnviroment()->invalidateCache();
+		Game::getEnvironment()->invalidateCache();
 	}
 }
 

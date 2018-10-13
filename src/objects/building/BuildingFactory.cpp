@@ -3,7 +3,7 @@
 #include "database/DatabaseCache.h"
 #include "objects/building/Building.h"
 #include "scene/load/dbload_container.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 
 
 BuildingFactory::BuildingFactory() {
@@ -17,7 +17,7 @@ BuildingFactory::~BuildingFactory() {
 std::vector<Building*>* BuildingFactory::
 create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level) const {
 	buildings->clear();
-	const auto env = Game::getEnviroment();
+	const auto env = Game::getEnvironment();
 
 	buildings->push_back(new Building(
 	                                  new Urho3D::Vector3(center.x_, env->getGroundHeightAt(center.x_, center.y_),
@@ -31,7 +31,7 @@ std::vector<Building*>* BuildingFactory::load(dbload_building* building) const {
 	const Urho3D::IntVector2 bucketCords(building->buc_x, building->buc_y);
 	const auto db_building = Game::getDatabaseCache()->getBuilding(building->id_db);
 
-	auto center = Game::getEnviroment()->getValidPosition(db_building->size, bucketCords);
+	auto center = Game::getEnvironment()->getValidPosition(db_building->size, bucketCords);
 
 	const auto builds = create(building->id_db, center, building->player, bucketCords, building->level);
 

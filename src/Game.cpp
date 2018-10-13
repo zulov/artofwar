@@ -81,8 +81,8 @@ Game* Game::setPlayersManager(PlayersManager* _playersManager) {
 	return instance;
 }
 
-Game* Game::setEnviroment(Enviroment* _enviroment) {
-	instance->enviroment = _enviroment;
+Game* Game::setEnvironment(Environment* _environment) {
+	instance->environment = _environment;
 	return instance;
 }
 

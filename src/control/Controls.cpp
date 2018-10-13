@@ -18,7 +18,7 @@
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include "simulation/SimulationInfo.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
@@ -118,7 +118,7 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) con
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
-	select(Game::getEnviroment()->getNeighbours(held));
+	select(Game::getEnvironment()->getNeighbours(held));
 }
 
 void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
@@ -435,7 +435,7 @@ void Controls::buildControl() {
 
 		if (raycast(hitData, ObjectType::PHYSICAL)) {
 			//TODO perf nie robic tego co klatkê
-			auto env = Game::getEnviroment();
+			auto env = Game::getEnvironment();
 
 			const auto dbBuilding = Game::getDatabaseCache()->getBuilding(idToCreate);
 

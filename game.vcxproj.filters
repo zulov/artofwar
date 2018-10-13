@@ -125,9 +125,6 @@
     <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
     <ClCompile Include="src\camera\TopCameraBehave.cpp" />
-    <ClCompile Include="src\simulation\env\Enviroment.cpp">
-      <Filter>simulation\env</Filter>
-    </ClCompile>
     <ClCompile Include="src\simulation\force\Force.cpp">
       <Filter>simulation\force</Filter>
     </ClCompile>
@@ -186,6 +183,9 @@
     <ClCompile Include="src\objects\unit\state\State.cpp" />
     <ClCompile Include="src\objects\static\Static.cpp" />
     <ClCompile Include="src\DebugLineRepo.cpp" />
+    <ClCompile Include="src\simulation\env\Environment.cpp">
+      <Filter>simulation\env</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -358,9 +358,6 @@
     <ClInclude Include="src\objects\unit\aim\ChargeAim.h" />
     <ClInclude Include="src\objects\unit\aim\DummyAim.h" />
     <ClInclude Include="src\camera\TopCameraBehave.h" />
-    <ClInclude Include="src\simulation\env\Enviroment.h">
-      <Filter>simulation\env</Filter>
-    </ClInclude>
     <ClInclude Include="src\simulation\force\Force.h">
       <Filter>simulation\force</Filter>
     </ClInclude>
@@ -463,6 +460,9 @@
     <ClInclude Include="src\objects\resource\ResourceOrder.h" />
     <ClInclude Include="src\DebugLineRepo.h" />
     <ClInclude Include="src\consts.h" />
+    <ClInclude Include="src\simulation\env\Environment.h">
+      <Filter>simulation\env</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

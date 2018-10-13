@@ -1,6 +1,6 @@
 #include "GroupAction.h"
 #include "Game.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"
 
 GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, Urho3D::Vector2* parameter, bool append)

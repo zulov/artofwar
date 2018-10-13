@@ -9,7 +9,7 @@
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 #include <string>
 
 
@@ -63,7 +63,7 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 		{
 		char limit = belowCloseLimit(); //TODO perf break jesli zero
 
-		auto neights = Game::getEnviroment()->getNeighboursFromTeam(this, 24,
+		auto neights = Game::getEnvironment()->getNeighboursFromTeam(this, 24,
 		                                                            Game::getPlayersManager()
 		                                                            ->getActivePlayer()->getTeam(),
 		                                                            OperatorType::EQUAL);

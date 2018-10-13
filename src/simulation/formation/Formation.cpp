@@ -5,7 +5,7 @@
 #include "commands/action/FormationAction.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/aim/FutureAim.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 #include "objects/unit/state/StateManager.h"
 #include <Urho3D/Math/Vector2.h>
 #include <numeric>
@@ -89,7 +89,7 @@ void Formation::updateIds() {
 		}
 		leader->setPositionInFormation(cc);
 
-		auto env = Game::getEnviroment();
+		auto env = Game::getEnvironment();
 		std::unordered_map<int, std::vector<short>> bucketToIds;
 		for (int i = 0; i < units.size(); ++i) {
 			if (leader->getPositionInFormation() == i) {

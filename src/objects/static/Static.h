@@ -31,7 +31,7 @@ public:
 	std::vector<int>& getOccupiedCells() { return occupiedCells; }
 	std::vector<int>& getSurroundCells() { return surroundCells; }
 
-	std::tuple<Urho3D::Vector2, int> getPosToFollowWithIndex(Unit* physical) const override;
+	std::tuple<Urho3D::Vector2, int> getPosToUseWithIndex(Unit* physical) const override;
 	Urho3D::Vector2 getPosToUse(Unit* follower) const override;
 	std::string getValues(int precision) override;
 protected:

@@ -1,7 +1,7 @@
 #include "IndividualAction.h"
 #include "Game.h"
 #include "objects/unit/Unit.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 
 
 IndividualAction::IndividualAction(Physical* entity, UnitOrder action, const Physical* paremeter, bool append)
@@ -18,7 +18,7 @@ void IndividualAction::addTargetAim(Urho3D::Vector2* to, bool append) {
 	entity->action(static_cast<char>(action), getTargetAim(entity->getMainCell(), *to));
 	static_cast<Unit*>(entity)->resetFormation();
 
-	Game::getEnviroment()->invalidateCache();
+	Game::getEnvironment()->invalidateCache();
 }
 
 void IndividualAction::addChargeAim(Urho3D::Vector2* charge, bool append) {

@@ -10,7 +10,7 @@
 #include "player/PlayersManager.h"
 #include "simulation/SimulationInfo.h"
 #include "Game.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"
 #include "objects/unit/ActionParameter.h"
 #include "camera/CameraManager.h"
@@ -29,7 +29,6 @@
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "DebugLineRepo.h"
 
 
 URHO3D_DEFINE_APPLICATION_MAIN(Main)
@@ -196,7 +195,7 @@ void Main::save(String name) {
 
 void Main::createSimulation() {
 	Game::setCreationCommandList(new CreationCommandList());
-	simulation = new Simulation(Game::getEnviroment(), Game::getCreationList());
+	simulation = new Simulation(Game::getEnvironment(), Game::getCreationList());
 }
 
 void Main::setSimpleManagers() {
@@ -238,7 +237,7 @@ void Main::load(String saveName, loading& progress) {
 		}
 	case 2:
 		{
-		Game::getEnviroment()->prepareGridToFind();
+		Game::getEnvironment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
 		}
@@ -258,7 +257,7 @@ void Main::load(String saveName, loading& progress) {
 }
 
 void Main::createEnv() {
-	Game::setEnviroment(new Enviroment(levelBuilder->getTerrain()));
+	Game::setEnvironment(new Environment(levelBuilder->getTerrain()));
 }
 
 void Main::newGame(NewGameForm* form, loading& progress) {
@@ -286,7 +285,7 @@ void Main::newGame(NewGameForm* form, loading& progress) {
 		}
 	case 2:
 		{
-		Game::getEnviroment()->prepareGridToFind();
+		Game::getEnvironment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
 		}
@@ -452,8 +451,8 @@ void Main::disposeScene() {
 		Game::setCreationCommandList(nullptr);
 
 		loading2.inc("dispose enviroment");
-		delete Game::getEnviroment();
-		Game::setEnviroment(nullptr);
+		delete Game::getEnvironment();
+		Game::setEnvironment(nullptr);
 
 		loading2.inc("dispose playerManager");
 		delete Game::getPlayersManager();

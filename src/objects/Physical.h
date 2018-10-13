@@ -54,7 +54,7 @@ public:
 	virtual int getMainCell() const;
 
 	virtual bool isToDispose() const { return false; }
-	virtual std::tuple<Urho3D::Vector2, int> getPosToFollowWithIndex(Unit* follower) const;
+	virtual std::tuple<Urho3D::Vector2, int> getPosToUseWithIndex(Unit* follower) const;
 
 	virtual Urho3D::Vector2 getPosToUse(Unit* follower) const;
 

@@ -15,7 +15,7 @@ namespace Urho3D {
 
 class CommandList;
 class CreationCommandList;
-class Enviroment;
+class Environment;
 class DatabaseCache;
 class CameraManager;
 class PlayersManager;
@@ -42,7 +42,7 @@ public:
 	static Game* setCreationCommandList(CreationCommandList* _simCommandList);
 	static Game* setDatabaseCache(DatabaseCache* _databaseCache);
 	static Game* setPlayersManager(PlayersManager* _playersManager);
-	static Game* setEnviroment(Enviroment* _enviroment);
+	static Game* setEnvironment(Environment* _environment);
 	static Game* setQueueManager(QueueManager* _queueManager);
 	static Game* setFormationManager(FormationManager* _formationManager);
 	static Game* setColorPeletteRepo(ColorPeletteRepo* _colorPeletteRepo);
@@ -60,7 +60,7 @@ public:
 	static CreationCommandList* getCreationList() { return instance->creationCommandList; }
 	static DatabaseCache* getDatabaseCache() { return instance->databaseCache; }
 	static PlayersManager* getPlayersManager() { return instance->playersManager; }
-	static Enviroment* getEnviroment() { return instance->enviroment; }
+	static Environment* getEnvironment() { return instance->environment; }
 	static FormationManager* getFormationManager() { return instance->formationManager; }
 	static ColorPeletteRepo* getColorPeletteRepo() { return instance->colorPeletteRepo; }
 	static CameraManager* getCameraManager() { return instance->cameraManager; }
@@ -83,7 +83,7 @@ private:
 	CreationCommandList* creationCommandList;
 	DatabaseCache* databaseCache;
 	PlayersManager* playersManager;
-	Enviroment* enviroment;
+	Environment* environment;
 	QueueManager* queue;
 	FormationManager* formationManager;
 	ColorPeletteRepo* colorPeletteRepo;

@@ -4,7 +4,7 @@
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
 #include <algorithm>
-#include <simulation/env/Enviroment.h>
+#include <simulation/env/Environment.h>
 
 
 SimulationObjectManager::SimulationObjectManager() {
@@ -84,7 +84,7 @@ void SimulationObjectManager::updateUnits(std::vector<Unit*>* temp) const {
 void SimulationObjectManager::updateBuilding(std::vector<Building*>* temp) const {
 	if (!temp->empty()) {
 		buildings->insert(buildings->end(), temp->begin(), temp->end());
-		Game::getEnviroment()->update(temp);
+		Game::getEnvironment()->update(temp);
 		simulationInfo.setAmountBuildingChanged();
 	}
 }
@@ -92,7 +92,7 @@ void SimulationObjectManager::updateBuilding(std::vector<Building*>* temp) const
 void SimulationObjectManager::updateResource(std::vector<ResourceEntity*>* temp) const {
 	if (!temp->empty()) {
 		resources->insert(resources->end(), temp->begin(), temp->end());
-		Game::getEnviroment()->update(temp);
+		Game::getEnvironment()->update(temp);
 		simulationInfo.setAmountResourceChanged();
 	}
 }

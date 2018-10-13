@@ -10,7 +10,7 @@
 #include "commands/creation/CreationCommandList.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "commands/upgrade/UpgradeCommandList.h"
-#include "env/Enviroment.h"
+#include "env/Environment.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "objects/MenuAction.h"
 #include "objects/PhysicalUtils.h"
@@ -28,7 +28,7 @@
 #include <ctime>
 
 
-Simulation::Simulation(Enviroment* _enviroment, CreationCommandList* _creationCommandList) {
+Simulation::Simulation(Environment* _enviroment, CreationCommandList* _creationCommandList) {
 	enviroment = _enviroment;
 	simObjectManager = _creationCommandList->getManager();
 	creationCommandList = _creationCommandList;
@@ -58,13 +58,8 @@ void Simulation::tryToAttack(Unit* unit) {
 	if (unit->hasEnemy()) {
 		StateManager::changeState(unit, UnitState::ATTACK);
 	} else {
-		auto [closest, minDistance, indexToInteract] = unit->closestPhysical(enviroment->
-		                                                                     getNeighboursFromTeam(unit, 12,
-		                                                                                           unit->getTeam(),
-		                                                                                           OperatorType::
-		                                                                                           NOT_EQUAL),
-		                                                                     belowClose, exactPos);
-		unit->toAction(closest, minDistance, indexToInteract, UnitState::ATTACK);
+		toAction(unit, enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(),
+		                                                 OperatorType::NOT_EQUAL), UnitState::ATTACK);
 	}
 }
 
@@ -72,9 +67,7 @@ void Simulation::tryToCollect(Unit* unit) {
 	if (unit->hasResource()) {
 		StateManager::changeState(unit, UnitState::COLLECT);
 	} else {
-		auto [closest, minDistance, indexToInterect] = unit->closestPhysical(enviroment->getResources(unit, 12),
-		                                                                     belowClose, posToFollow);
-		unit->toAction(closest, minDistance, indexToInterect, UnitState::COLLECT);
+		toAction(unit, enviroment->getResources(unit, 12), UnitState::COLLECT);
 	}
 }
 
@@ -82,15 +75,14 @@ void Simulation::tryToShot(Unit* unit) {
 	if (unit->hasEnemy()) {
 		StateManager::changeState(unit, UnitState::SHOT);
 	} else {
-		auto [closest, minDistance, indexToInterect] = unit->closestPhysical(enviroment->
-		                                                                     getNeighboursFromTeam(unit, 12,
-		                                                                                           unit->getTeam(),
-		                                                                                           OperatorType::
-		                                                                                           NOT_EQUAL),
-		                                                                     belowRange,
-		                                                                     exactPos);
-		unit->toAction(closest, minDistance, indexToInterect, UnitState::SHOT);
+		toAction(unit, enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(),
+		                                                 OperatorType::NOT_EQUAL), UnitState::SHOT);
 	}
+}
+
+void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitState state) {
+	auto [closest, minDistance, indexToInteract] = unit->closestPhysical(list, belowClose, posToFollow);
+	unit->toAction(closest, minDistance, indexToInteract, state);
 }
 
 void Simulation::selfAI() {
@@ -343,7 +335,7 @@ void Simulation::calculateForces() {
 		auto stats = force.stats();
 		stats.result();
 
-		unit->setAcceleration(newForce);		
+		unit->setAcceleration(newForce);
 		unit->debug(DebugUnitType::INTERACT, stats);
 	}
 	DebugLineRepo::commit();

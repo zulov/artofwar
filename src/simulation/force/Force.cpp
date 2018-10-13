@@ -1,7 +1,7 @@
 #include "Force.h"
 #include "Game.h"
 #include "objects/unit/Unit.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"
 
 
@@ -11,7 +11,7 @@ Force::Force() = default;
 Force::~Force() = default;
 
 void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit) {
-	auto repulse = Game::getEnviroment()->repulseObstacle(unit);
+	auto repulse = Game::getEnvironment()->repulseObstacle(unit);
 	if (repulse == Urho3D::Vector2::ZERO) {
 		return;
 	}
@@ -97,7 +97,7 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
-	const auto dir = Game::getEnviroment()->validatePosition(unit->getPosition());
+	const auto dir = Game::getEnvironment()->validatePosition(unit->getPosition());
 	if (dir) {
 		auto force = *dir * escapeCoef * boostCoef;
 
@@ -109,10 +109,10 @@ void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) {
-	char max = Game::getEnviroment()->getNumberInState(unit->getMainCell(), UnitState::COLLECT);
-	char i = Game::getEnviroment()->getOrdinarInState(unit, UnitState::COLLECT);
+	char max = Game::getEnvironment()->getNumberInState(unit->getMainCell(), UnitState::COLLECT);
+	char i = Game::getEnvironment()->getOrdinarInState(unit, UnitState::COLLECT);
 
-	auto aim = Game::getEnviroment()->getPositionInBucket(unit->getMainCell(), max, i);
+	auto aim = Game::getEnvironment()->getPositionInBucket(unit->getMainCell(), max, i);
 	auto force = Urho3D::Vector2(aim.x_ - unit->getPosition()->x_,
 	                             aim.y_ - unit->getPosition()->z_);
 

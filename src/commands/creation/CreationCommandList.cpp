@@ -6,7 +6,7 @@
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include "simulation/SimulationObjectManager.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 #include "player/Player.h"
 
 
@@ -26,7 +26,7 @@ bool CreationCommandList::addUnits(int _number, int id, Urho3D::Vector2& _positi
 bool CreationCommandList::addBuilding(int id, Urho3D::Vector2& _position, int _player, int level) {
 	Resources& resources = Game::getPlayersManager()->getActivePlayer()->getResources();
 	auto costs = Game::getDatabaseCache()->getCostForBuilding(id);
-	Enviroment* env = Game::getEnviroment();
+	auto env = Game::getEnvironment();
 	db_building* db_building = Game::getDatabaseCache()->getBuilding(id);
 
 	if (env->validateStatic(db_building->size, _position) && resources.reduce(costs)) {
@@ -41,7 +41,7 @@ bool CreationCommandList::addBuilding(int id, Urho3D::Vector2& _position, int _p
 }
 
 bool CreationCommandList::addResource(int id, Urho3D::Vector2& _position, int level) {
-	Enviroment* env = Game::getEnviroment();
+	auto env = Game::getEnvironment();
 	db_resource* db_resource = Game::getDatabaseCache()->getResource(id);
 
 	if (env->validateStatic(db_resource->size, _position)) {

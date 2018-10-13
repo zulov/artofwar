@@ -5,7 +5,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 
 
 class CollectState : public State
@@ -23,8 +23,8 @@ public:
 		//TODO tutaj ustawic  unit->indexToInteract?
 		return unit->isFirstThingAlive()
 			&& unit->getMainCell() == unit->indexToInteract //TODO je¿eli jest inny to sprobowaæ podmienic
-			&& Game::getEnviroment()->cellInState(unit->getMainCell(), {CellState::RESOURCE, CellState::EMPTY})
-			&& Game::getEnviroment()->belowCellLimit(unit->getMainCell());
+			&& Game::getEnvironment()->cellInState(unit->getMainCell(), {CellState::RESOURCE, CellState::EMPTY})
+			&& Game::getEnvironment()->belowCellLimit(unit->getMainCell());
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
@@ -33,14 +33,14 @@ public:
 
 		unit->thingsToInteract[0]->upClose();
 
-		Game::getEnviroment()->updateCell(unit->getMainCell(), 1, CellState::RESOURCE);
+		Game::getEnvironment()->updateCell(unit->getMainCell(), 1, CellState::RESOURCE);
 	}
 
 	void onEnd(Unit* unit) override {
 		State::onEnd(unit);
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceClose();
-			Game::getEnviroment()->updateCell(unit->getMainCell(), -1, CellState::NONE);
+			Game::getEnvironment()->updateCell(unit->getMainCell(), -1, CellState::NONE);
 		}
 		unit->indexToInteract = -1;
 	}
@@ -49,7 +49,7 @@ public:
 		State::execute(unit, timeStep);
 		if (unit->isFirstThingAlive()
 			&& unit->getMainCell() == unit->indexToInteract
-			&& Game::getEnviroment()->cellInState(unit->getMainCell(), {CellState::RESOURCE})) {
+			&& Game::getEnvironment()->cellInState(unit->getMainCell(), {CellState::RESOURCE})) {
 			//TODO musi byc dokladnie w dobry mbuckecie
 			auto& resources = Game::getPlayersManager()->getPlayer(unit->player)->getResources();
 			auto resource = static_cast<ResourceEntity*>(unit->thingsToInteract[0]);

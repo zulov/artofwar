@@ -7,7 +7,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/ContentInfo.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
@@ -62,7 +62,7 @@ void MiniMapPanel::initColors() {
 void MiniMapPanel::createEmpty(int parts) {
 	initColors();
 	auto size = spr->GetSize();
-	const auto env = Game::getEnviroment();
+	const auto env = Game::getEnvironment();
 	const auto data = (uint32_t*)minimap->GetData();
 
 	int idR = 0;
@@ -99,7 +99,7 @@ void MiniMapPanel::changeValue(uint32_t* data, bool& changed, unsigned val) {
 
 void MiniMapPanel::update() {
 	auto size = spr->GetSize();
-	Enviroment* env = Game::getEnviroment();
+	auto env = Game::getEnvironment();
 	auto* data = (uint32_t*)minimap->GetData();
 
 	float xinc = 1.0f / size.x_;

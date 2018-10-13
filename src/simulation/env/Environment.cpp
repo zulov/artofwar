@@ -1,4 +1,4 @@
-#include "Enviroment.h"
+#include "Environment.h"
 #include "ObjectEnums.h"
 #include "OperatorType.h"
 #include "objects/building/Building.h"
@@ -19,7 +19,7 @@
 #define BUCKET_GRID_SIZE_ENEMY 1024
 #define BUCKET_GRID_SIZE_RESOURCE 1024
 
-Enviroment::Enviroment(Urho3D::Terrain* _terrian):
+Environment::Environment(Urho3D::Terrain* _terrian):
 	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE),
 	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE),
 	buildingGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD),
@@ -37,17 +37,17 @@ Enviroment::Enviroment(Urho3D::Terrain* _terrian):
 }
 
 
-Enviroment::~Enviroment() {
+Environment::~Environment() {
 	delete neights;
 	delete neights2;
 	delete empty;
 }
 
-std::vector<Physical*>* Enviroment::getNeighbours(Physical* physical, const float radius) {
+std::vector<Physical*>* Environment::getNeighbours(Physical* physical, const float radius) {
 	return getNeighbours(physical, mainGrid, radius);
 }
 
-std::vector<Physical*>* Enviroment::getNeighboursFromTeam(Physical* physical, const float radius, const int team,
+std::vector<Physical*>* Environment::getNeighboursFromTeam(Physical* physical, const float radius, const int team,
                                                           const OperatorType operatorType) {
 	switch (operatorType) {
 	case OperatorType::EQUAL:
@@ -66,7 +66,7 @@ std::vector<Physical*>* Enviroment::getNeighboursFromTeam(Physical* physical, co
 	}
 }
 
-std::vector<Physical *>* Enviroment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
+std::vector<Physical *>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
 	neights->clear();
 
 	auto center = physical->getPosition();
@@ -86,11 +86,11 @@ std::vector<Physical *>* Enviroment::getNeighbours(Physical* physical, Grid& buc
 	return neights;
 }
 
-std::vector<Physical*>* Enviroment::getResources(Physical* physical, float radius) {
+std::vector<Physical*>* Environment::getResources(Physical* physical, float radius) {
 	return getNeighbours(physical, resourceGrid, radius);
 }
 
-void Enviroment::update(std::vector<Unit*>* units) const {
+void Environment::update(std::vector<Unit*>* units) const {
 	//TODO to mozna rodzielic na dodawanei u usywanie
 	for (auto unit : *units) {
 		mainGrid.update(unit);
@@ -98,7 +98,7 @@ void Enviroment::update(std::vector<Unit*>* units) const {
 	}
 }
 
-void Enviroment::update(std::vector<Building*>* buildings) {
+void Environment::update(std::vector<Building*>* buildings) {
 	for (auto building : *buildings) {
 		mainGrid.addStatic(building);
 		buildingGrid.update(building);
@@ -106,7 +106,7 @@ void Enviroment::update(std::vector<Building*>* buildings) {
 	}
 }
 
-void Enviroment::update(std::vector<ResourceEntity*>* resources) {
+void Environment::update(std::vector<ResourceEntity*>* resources) {
 	for (auto resource : *resources) {
 		mainGrid.addStatic(resource);
 		resourceGrid.update(resource);
@@ -114,15 +114,15 @@ void Enviroment::update(std::vector<ResourceEntity*>* resources) {
 	}
 }
 
-Urho3D::Vector2 Enviroment::repulseObstacle(Unit* unit) {
+Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) {
 	return mainGrid.repulseObstacle(unit);
 }
 
-Urho3D::Vector2* Enviroment::validatePosition(Urho3D::Vector3* position) {
+Urho3D::Vector2* Environment::validatePosition(Urho3D::Vector3* position) {
 	return mainGrid.getDirectionFrom(position);
 }
 
-std::vector<Physical*>* Enviroment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
+std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
 	std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
 	for (auto grid : grids) {
 		const auto result = grid->getArrayNeight(pair);
@@ -133,11 +133,11 @@ std::vector<Physical*>* Enviroment::getNeighbours(std::pair<Urho3D::Vector3*, Ur
 	return empty;
 }
 
-float Enviroment::getGroundHeightAt(float x, float z) const {
+float Environment::getGroundHeightAt(float x, float z) const {
 	return terrian->GetHeight(Urho3D::Vector3(x, 0, z));
 }
 
-float Enviroment::getGroundHeightPercent(float y, float x, float div) const {
+float Environment::getGroundHeightPercent(float y, float x, float div) const {
 	const float scale = terrian->GetSpacing().y_;
 	auto a = Urho3D::Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, 0,
 	                         y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
@@ -145,7 +145,7 @@ float Enviroment::getGroundHeightPercent(float y, float x, float div) const {
 	return terrian->GetHeight(a) / scale / div;
 }
 
-Urho3D::Vector3 Enviroment::getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos,
+Urho3D::Vector3 Environment::getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos,
                                                  float min) const {
 	auto a = Urho3D::Vector3(percentX * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, pos.y_,
 	                         percentY * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
@@ -156,51 +156,51 @@ Urho3D::Vector3 Enviroment::getValidPosForCamera(float percentX, float percentY,
 	return a;
 }
 
-bool Enviroment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) {
+bool Environment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) {
 	return mainGrid.validateAdd(size, pos);
 }
 
-Urho3D::Vector2 Enviroment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) {
+Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) {
 	return getValidPosition(size, mainGrid.getCenterAt(bucketCords));
 }
 
-Urho3D::Vector2& Enviroment::getCenter(int index) const {
+Urho3D::Vector2& Environment::getCenter(int index) const {
 	return mainGrid.getCenter(index);
 }
 
-Urho3D::Vector2& Enviroment::getCenter(short x, short z) {
+Urho3D::Vector2& Environment::getCenter(short x, short z) {
 	return mainGrid.getCenter(x, z);
 }
 
-Urho3D::Vector2 Enviroment::getPositionInBucket(int index, char max, char i) {
+Urho3D::Vector2 Environment::getPositionInBucket(int index, char max, char i) {
 	return mainGrid.getPositionInBucket(index, max, i);
 }
 
-void Enviroment::invalidateCache() {
+void Environment::invalidateCache() {
 	mainGrid.invalidateCache();
 }
 
-bool Enviroment::cellInState(int index, std::vector<CellState> cellStates) const {
+bool Environment::cellInState(int index, std::vector<CellState> cellStates) const {
 	return mainGrid.cellInStates(index, cellStates);
 }
 
-void Enviroment::updateCell(int index, char val, CellState cellState) {
+void Environment::updateCell(int index, char val, CellState cellState) {
 	mainGrid.updateCell(index, val, cellState);
 }
 
-bool Enviroment::belowCellLimit(int index) const {
+bool Environment::belowCellLimit(int index) const {
 	return mainGrid.belowCellLimit(index);
 }
 
-char Enviroment::getNumberInState(int index, UnitState state) const {
+char Environment::getNumberInState(int index, UnitState state) const {
 	return mainGrid.getNumberInState(index, state);
 }
 
-char Enviroment::getOrdinarInState(Unit* unit, UnitState state) const {
+char Environment::getOrdinarInState(Unit* unit, UnitState state) const {
 	return mainGrid.getOrdinarInState(unit, state);
 }
 
-void Enviroment::removeFromGrids(const std::vector<Physical*>& toDispose) {
+void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) {
 	for (auto dispose : toDispose) {
 		switch (dispose->getType()) {
 		case ObjectType::BUILDING:
@@ -224,23 +224,23 @@ void Enviroment::removeFromGrids(const std::vector<Physical*>& toDispose) {
 	}
 }
 
-Urho3D::Vector2 Enviroment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {
+Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {
 	return mainGrid.getValidPosition(size, pos);
 }
 
-Urho3D::IntVector2 Enviroment::getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
+Urho3D::IntVector2 Environment::getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
 	return mainGrid.getBucketCords(size, pos);
 }
 
-std::vector<int>* Enviroment::findPath(int startIdx, Urho3D::Vector2& aim) {
+std::vector<int>* Environment::findPath(int startIdx, Urho3D::Vector2& aim) {
 	return mainGrid.findPath(startIdx, aim);
 }
 
-void Enviroment::prepareGridToFind() {
+void Environment::prepareGridToFind() {
 	mainGrid.prepareGridToFind();
 }
 
-content_info* Enviroment::getContentInfo(Urho3D::Vector2 from, Urho3D::Vector2 to, bool checks[], int activePlayer) {
+content_info* Environment::getContentInfo(Urho3D::Vector2 from, Urho3D::Vector2 to, bool checks[], int activePlayer) {
 	from.x_ = from.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
 	from.y_ = from.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
 

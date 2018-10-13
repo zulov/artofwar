@@ -13,11 +13,11 @@ class Unit;
 class Building;
 enum class OperatorType : char;
 
-class Enviroment
+class Environment
 {
 public:
-	explicit Enviroment(Urho3D::Terrain* _terrian);
-	~Enviroment();
+	explicit Environment(Urho3D::Terrain* _terrian);
+	~Environment();
 
 	std::vector<Physical *>* getNeighbours(Physical* physical, float radius);
 	std::vector<Physical *>* getNeighboursFromTeam(Physical* physical, float radius, int team,

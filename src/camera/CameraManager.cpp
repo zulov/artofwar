@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "RtsCameraBehave.h"
 #include "TopCameraBehave.h"
-#include "simulation/env/Enviroment.h"
+#include "simulation/env/Environment.h"
 #include <Urho3D/Graphics/Graphics.h>
 
 
@@ -59,7 +59,7 @@ void CameraManager::translate(const Urho3D::IntVector2& cursorPos, Urho3D::Input
 	createCameraKeys(input, cameraKeys, cursorPos);
 	const int wheel = input->GetMouseMoveWheel();
 	const Urho3D::Vector3 pos = activeBehave->getPosition();
-	const float min = Game::getEnviroment()->getGroundHeightAt(pos.x_, pos.z_);
+	const float min = Game::getEnvironment()->getGroundHeightAt(pos.x_, pos.z_);
 	activeBehave->translate(cameraKeys, wheel, timeStep * MOVE_SPEED, min);
 }
 
