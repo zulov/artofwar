@@ -4,7 +4,7 @@
 #include "MathUtils.h"
 #include <Urho3D/Math/Vector3.h>
 
-struct MissleData
+struct MissileData
 {
 	Urho3D::Vector3 start;
 	Urho3D::Vector3 end;
@@ -18,12 +18,12 @@ struct MissleData
 	float speed;
 	Urho3D::Node* node;
 
-	~MissleData() {
+	~MissileData() {
 		node->Remove();
 		node = nullptr;
 	}
 
-	MissleData(float peakHeight, float speed)
+	MissileData(float peakHeight, float speed)
 		: peakHeight(peakHeight),
 		speed(speed) {
 		createNode("Models/Prism.mdl", "Materials/brown.xml", &node);

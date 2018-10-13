@@ -1,6 +1,6 @@
 #pragma once
 #include "MathUtils.h"
-#include "objects/unit/MissleData.h"
+#include "objects/unit/MissileData.h"
 #include "objects/unit/state/State.h"
 
 
@@ -15,8 +15,8 @@ public:
 	~ShotState() = default;
 
 	void shot(Unit* unit) {
-		unit->missleData->reset();
-		unit->missleData->init(*unit->getPosition(),
+		unit->missileData->reset();
+		unit->missileData->init(*unit->getPosition(),
 		                       *unit->thingsToInteract[0]->getPosition(),
 		                       unit->thingsToInteract[0]);
 	}
@@ -37,7 +37,7 @@ public:
 	}
 
 	bool closeEnough(Unit* unit) {
-		return sqDist(unit->getPosition(), unit->missleData->aim->getPosition()) < unit->attackRange * unit->attackRange;
+		return sqDist(unit->getPosition(), unit->missileData->aim->getPosition()) < unit->attackRange * unit->attackRange;
 	}
 
 	void execute(Unit* unit, float timeStep) override {
@@ -45,14 +45,14 @@ public:
 		unit->velocity = Urho3D::Vector2::ZERO;
 		++unit->currentFrameState;
 
-		if (!unit->missleData->aim || !unit->missleData->aim->isAlive()) {
-			unit->missleData->reset();
+		if (!unit->missileData->aim || !unit->missileData->aim->isAlive()) {
+			unit->missileData->reset();
 			StateManager::changeState(unit, UnitState::STOP);
-		} else if (!unit->missleData->isUp() && fmod(unit->currentFrameState, 1 / unit->attackSpeed) < 1) {
+		} else if (!unit->missileData->isUp() && fmod(unit->currentFrameState, 1 / unit->attackSpeed) < 1) {
 			if (closeEnough(unit)) {
 				shot(unit);
 			} else {
-				unit->missleData->reset();
+				unit->missileData->reset();
 				StateManager::changeState(unit, UnitState::STOP);
 			}
 		}

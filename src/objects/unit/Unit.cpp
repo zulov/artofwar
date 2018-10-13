@@ -8,7 +8,7 @@
 #include "database/DatabaseCache.h"
 #include "objects/unit/ChargeData.h"
 #include "objects/unit/ColorMode.h"
-#include "objects/unit/MissleData.h"
+#include "objects/unit/MissileData.h"
 #include "scene/load/dbload_container.h"
 #include "simulation/force/ForceStats.h"
 #include "simulation/formation/FormationManager.h"
@@ -33,7 +33,7 @@ Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical
 	}
 
 	if (StateManager::validateState(getDbID(), UnitState::SHOT)) {
-		missleData = new MissleData(150, 2);
+		missileData = new MissileData(150, 2);
 	}
 
 	setPlayerAndTeam(player);
@@ -46,7 +46,7 @@ Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical
 
 Unit::~Unit() {
 	delete chargeData;
-	delete missleData;
+	delete missileData;
 }
 
 bool Unit::isAlive() const {
@@ -86,8 +86,8 @@ void Unit::move(double timeStep) const {
 		node->SetPosition(*position);
 		//node->Translate((*velocity) * timeStep, TS_WORLD);
 	}
-	if (missleData && missleData->isUp()) {
-		missleData->update(timeStep, attackCoef);
+	if (missileData && missileData->isUp()) {
+		missileData->update(timeStep, attackCoef);
 	}
 }
 

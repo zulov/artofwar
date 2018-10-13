@@ -438,7 +438,6 @@
     </ClInclude>
     <ClInclude Include="src\objects\unit\aim\FutureAim.h" />
     <ClInclude Include="src\objects\unit\ChargeData.h" />
-    <ClInclude Include="src\objects\unit\MissleData.h" />
     <ClInclude Include="src\objects\NodeUtils.h" />
     <ClInclude Include="src\objects\unit\state\ShotState.h" />
     <ClInclude Include="src\objects\MenuAction.h" />
@@ -463,6 +462,7 @@
     <ClInclude Include="src\simulation\env\Environment.h">
       <Filter>simulation\env</Filter>
     </ClInclude>
+    <ClInclude Include="src\objects\unit\MissileData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

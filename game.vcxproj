@@ -300,7 +300,7 @@
     <ClInclude Include="src\objects\unit\aim\FutureAim.h" />
     <ClInclude Include="src\objects\unit\ChargeData.h" />
     <ClInclude Include="src\objects\unit\ColorMode.h" />
-    <ClInclude Include="src\objects\unit\MissleData.h" />
+    <ClInclude Include="src\objects\unit\MissileData.h" />
     <ClInclude Include="src\replace_utils.h" />
     <ClInclude Include="src\simulation\env\bucket\DrawGridUtils.h" />
     <ClInclude Include="src\simulation\force\ForceStats.h" />

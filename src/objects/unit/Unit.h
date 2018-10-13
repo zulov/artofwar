@@ -18,7 +18,7 @@ struct db_unit_level;
 struct db_unit;
 struct dbload_unit;
 struct FutureAim;
-struct MissleData;
+struct MissileData;
 struct ChargeData;
 
 class Aim;
@@ -123,7 +123,6 @@ public:
 private:
 	void actionIfCloseEnough(UnitState action, Physical* closest, int indexToInteract,
 	                         float sqDistance, float closeRange, float intrestRange);
-
 	void changeColor(float value, float maxValue) const;
 
 	Urho3D::Vector2 velocity, acceleration;
@@ -137,20 +136,16 @@ private:
 	Urho3D::Material* basic;
 
 	ChargeData* chargeData{};
-	MissleData* missleData{};
+	MissileData* missileData{};
 
 	std::vector<db_unit_upgrade*> upgrades;
 
-	bool rotatable;
-	bool atState = false;
-	float minimalDistance, maxSeparationDistance;
-	float maxSpeed, minSpeed;
-	float attackInterest = 10;
-	float collectSpeed = 2;
-	float mass;
+	bool atState = false, rotatable;
+	float minimalDistance, maxSeparationDistance,
+	      maxSpeed, minSpeed, mass,
+	      attackInterest, collectSpeed;
 
-	short posInFormation = -1;
-	short formation = -1;
+	short posInFormation = -1, formation = -1;
 
 	int teamBucketIndex[BUCKET_SET_NUMBER];
 
@@ -159,6 +154,5 @@ private:
 
 	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
 
-	char interactWithSocket = -1;
 	bool useSockets[USE_SOCKETS_NUMBER];
 };
