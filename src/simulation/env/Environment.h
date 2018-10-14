@@ -59,7 +59,7 @@ public:
 	CellState getType(int index) const { return mainGrid.getType(index); }
 	char getCurrentSize(int index) const { return mainGrid.getCurrentSize(index); }
 	bool cellInState(int index, std::vector<CellState> cellStates) const;
-	void updateCell(int index, char val, CellState cellState);
+	void updateCell(int index, char val, CellState cellState) const;
 	bool belowCellLimit(int index) const;
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinarInState(Unit* unit, UnitState state) const;

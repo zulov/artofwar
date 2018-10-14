@@ -29,7 +29,7 @@ namespace Urho3D {
 class Simulation
 {
 public:
-	Simulation(Environment* _enviroment, CreationCommandList* _creationCommandList);
+	Simulation(Environment* enviroment, CreationCommandList* creationCommandList);
 	~Simulation();
 	SimulationInfo* update(float timeStep);
 	void executeLists() const;
@@ -52,10 +52,10 @@ private:
 	void loadEntities(NewGameForm* form) const;
 	void loadEntities(SceneLoader& loader) const;
 	void countFrame();
-	void applyForce();
+	void applyForce() const;
 	void levelUp(QueueElement* done) const;
-	void updateBuildingQueues(float time);
-	void updateQueues();
+	void updateBuildingQueues(float time) const;
+	void updateQueues() const;
 	void selfAI();
 	void addTestEntities() const;
 

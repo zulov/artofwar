@@ -46,7 +46,6 @@ public:
 	bool belowCellLimit();
 
 private:
-
 	CellState type;
 	char size;
 	Urho3D::Vector2 center;

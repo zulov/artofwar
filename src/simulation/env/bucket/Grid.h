@@ -32,11 +32,9 @@ protected:
 	short diff(short a, short b);
 	short getIndex(float value) const;
 	bool inRange(int index) const { return index >= 0 && index < sqResolution; }
-	short resolution;
+	short resolution, halfResolution;
 	int sqResolution;
-	float size;
-	float fieldSize;
-	short halfResolution;
+	float size, fieldSize;
 	float invFieldSize;
 
 	Bucket* buckets;

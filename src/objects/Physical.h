@@ -28,6 +28,8 @@ public:
 	void setPlayer(unsigned char player);
 	bool isSelected() const;
 	void load(dbload_physical* dbloadPhysical);
+	virtual bool isSlotOccupied(int indexToInteract) { return false; }
+	virtual void setOccupiedSlot(int indexToInteract, bool value){}
 
 	static std::string getColumns();
 	std::string getValues(int precision) override;
@@ -71,7 +73,10 @@ public:
 	}
 
 	virtual int getLevel();
-	virtual void clean(){}
+
+	virtual void clean() {
+	}
+
 protected:
 	void loadXml(Urho3D::String xmlName);
 	void setPlayerAndTeam(int player);

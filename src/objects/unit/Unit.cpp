@@ -161,7 +161,6 @@ void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitState actio
 	if (!StateManager::changeState(this, action)) {
 		thingsToInteract.clear();
 	}
-	int a //to kiedy zakplepac miejsce
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {
@@ -486,17 +485,22 @@ void Unit::clean() {
 	                       thingsToInteract.end());
 }
 
+Urho3D::Vector2 Unit::getSocketPos(Unit* unit, int i) const {
+	auto vector = Consts::circleCords[i] * (minimalDistance + unit->getMinimalDistance());
+	return Urho3D::Vector2(unit->getPosition()->x_ + vector.x_, unit->getPosition()->z_ + vector.y_);
+}
+
 std::tuple<Urho3D::Vector2, int> Unit::getPosToUseWithIndex(Unit* unit) const {
 	float minDistance = 99999;
 	Urho3D::Vector2 closest;
 	int closestindex = -1;
 	for (int i = 0; i < USE_SOCKETS_NUMBER; ++i) {
 		if (!useSockets[i]) {
-			auto vector = Consts::circleCords[i] * (minimalDistance + unit->getMinimalDistance());
-			auto pos = Urho3D::Vector2(position->x_ + vector.x_, position->z_ + vector.y_);
-			int index = Game::getEnvironment()->getIndex(pos);
 
-			if (Game::getEnvironment()->cellInState(index, {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
+			Urho3D::Vector2 pos = getSocketPos(unit, i);
+
+			if (Game::getEnvironment()->cellInState(Game::getEnvironment()->getIndex(pos),
+			                                        {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
 				auto dist = sqDist(*unit->getPosition(), pos);
 
 				if (dist < minDistance) {
@@ -508,4 +512,8 @@ std::tuple<Urho3D::Vector2, int> Unit::getPosToUseWithIndex(Unit* unit) const {
 		}
 	}
 	return {closest, closestindex};
+}
+
+Urho3D::Vector2 Unit::getPosToUse() const {
+	return getSocketPos(static_cast<Unit*>(thingsToInteract[0]), indexToInteract);
 }

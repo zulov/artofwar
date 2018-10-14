@@ -109,8 +109,10 @@ public:
 	bool bucketHasChanged(int _bucketIndex, char param) const;
 	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
 	void setBucket(int _bucketIndex, char param);
+	bool isSlotOccupied(int indexToInteract) override { return useSockets[indexToInteract]; }
+	void setOccupiedSlot(int indexToInteract, bool value) { useSockets[indexToInteract] = value; };
+	Urho3D::Vector2 getPosToUse() const;
 
-	
 	std::tuple<Urho3D::Vector2, int> getPosToUseWithIndex(Unit* unit) const override;
 	void action(char id, const ActionParameter& parameter) override;
 	std::string getValues(int precision) override;
@@ -120,6 +122,7 @@ public:
 	int getLevel() override;
 	int getDbID() override;
 	void clean() override;
+	Urho3D::Vector2 getSocketPos(Unit* unit, int i) const;
 private:
 	void actionIfCloseEnough(UnitState action, Physical* closest, int indexToInteract,
 	                         float sqDistance, float closeRange, float intrestRange);

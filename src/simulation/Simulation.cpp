@@ -28,10 +28,10 @@
 #include <ctime>
 
 
-Simulation::Simulation(Environment* _enviroment, CreationCommandList* _creationCommandList) {
-	enviroment = _enviroment;
-	simObjectManager = _creationCommandList->getManager();
-	creationCommandList = _creationCommandList;
+Simulation::Simulation(Environment* enviroment, CreationCommandList* creationCommandList): enviroment(enviroment),
+	creationCommandList(creationCommandList) {
+
+	simObjectManager = creationCommandList->getManager();
 	levelsCommandList = new UpgradeCommandList(simObjectManager);
 	colorScheme = ColorMode::BASIC;
 
@@ -52,6 +52,37 @@ Simulation::~Simulation() {
 	delete actionCommandList;
 	delete levelsCommandList;
 	Game::setActionCommmandList(nullptr);
+}
+
+SimulationInfo* Simulation::update(float timeStep) {
+	simulationInfo->reset();
+	timeStep = updateTime(timeStep);
+	if (accumulateTime >= maxTimeFrame) {
+		handleTimeInFrame(timeStep);
+
+		executeLists();
+		selfAI();
+
+		actionCommandList->execute();
+		enviroment->update(units);
+
+		calculateForces();
+		applyForce();
+
+		moveUnitsAndCheck(accumulateTime);
+
+		performStateAction(timeStep);
+		updateQueues();
+
+		simObjectManager->prepareToDispose();
+		simObjectManager->updateInfo(simulationInfo);
+		enviroment->removeFromGrids(simObjectManager->getToDispose());
+
+		Game::getFormationManager()->update();
+	} else {
+		moveUnits(timeStep);
+	}
+	return simulationInfo;
 }
 
 void Simulation::tryToAttack(Unit* unit, float dist, UnitState state, const std::function<bool(Physical*)>& condition) {
@@ -146,7 +177,7 @@ void Simulation::countFrame() {
 	}
 }
 
-void Simulation::applyForce() {
+void Simulation::applyForce() const {
 	for (auto unit : *units) {
 		unit->applyForce(maxTimeFrame);
 		auto pos = unit->getPosition();
@@ -164,17 +195,14 @@ void Simulation::levelUp(QueueElement* done) const {
 	                                         ));
 }
 
-void Simulation::updateBuildingQueues(const float time) {
+void Simulation::updateBuildingQueues(const float time) const {
 	for (auto build : *buildings) {
 		auto done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {
 			case MenuAction::UNIT:
-				creationCommandList->add(new CreationCommand(
-				                                             ObjectType::UNIT,
-				                                             done->getAmount(),
-				                                             done->getId(),
-				                                             build->getTarget(),
+				creationCommandList->add(new CreationCommand(ObjectType::UNIT, done->getAmount(),
+				                                             done->getId(), build->getTarget(),
 				                                             build->getPlayer(),
 				                                             Game::getPlayersManager()->
 				                                             getPlayer(build->getPlayer())->
@@ -187,13 +215,12 @@ void Simulation::updateBuildingQueues(const float time) {
 				levelUp(done);
 				break;
 			}
-
 			delete done;
 		}
 	}
 }
 
-void Simulation::updateQueues() {
+void Simulation::updateQueues() const {
 	updateBuildingQueues(maxTimeFrame);
 	auto done = Game::getQueueManager()->update(maxTimeFrame);
 	if (done) {
@@ -243,37 +270,6 @@ void Simulation::handleTimeInFrame(float timeStep) {
 	accumulateTime -= maxTimeFrame;
 }
 
-SimulationInfo* Simulation::update(float timeStep) {
-	simulationInfo->reset();
-	timeStep = updateTime(timeStep);
-	if (accumulateTime >= maxTimeFrame) {
-		handleTimeInFrame(timeStep);
-
-		executeLists();
-		selfAI();
-
-		actionCommandList->execute();
-		enviroment->update(units);
-
-		calculateForces();
-		applyForce();
-
-		moveUnitsAndCheck(accumulateTime);
-
-		performStateAction(timeStep);
-		updateQueues();
-
-		simObjectManager->prepareToDispose();
-		simObjectManager->updateInfo(simulationInfo);
-		enviroment->removeFromGrids(simObjectManager->getToDispose());
-
-		Game::getFormationManager()->update();
-	} else {
-		moveUnits(timeStep);
-	}
-	return simulationInfo;
-}
-
 void Simulation::executeLists() const {
 	levelsCommandList->execute();
 	creationCommandList->execute();
@@ -313,6 +309,9 @@ void Simulation::calculateForces() {
 		switch (unit->getState()) {
 		case UnitState::COLLECT:
 			force.inCell(newForce, unit);
+			break;
+		case UnitState::ATTACK:
+			force.inSocket(newForce, unit);
 			break;
 		default:
 			const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
