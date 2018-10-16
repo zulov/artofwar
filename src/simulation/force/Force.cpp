@@ -3,6 +3,7 @@
 #include "objects/unit/Unit.h"
 #include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"
+#include "MathUtils.h"
 
 
 Force::Force() = default;
@@ -83,9 +84,7 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 	if (opt.has_value()) {
 		const float priority = Game::getFormationManager()->getPriority(unit);
 		if (priority > 0) {
-
-			auto force = Urho3D::Vector2(opt.value().x_ - unit->getPosition()->x_,
-			                             opt.value().y_ - unit->getPosition()->z_);
+			auto force = dirTo(unit->getPosition(), opt.value());
 
 			force *= formationCoef * boostCoef * priority;
 
@@ -113,8 +112,7 @@ void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) {
 	char i = Game::getEnvironment()->getOrdinarInState(unit, UnitState::COLLECT);
 
 	auto aim = Game::getEnvironment()->getPositionInBucket(unit->getMainCell(), max, i);
-	auto force = Urho3D::Vector2(aim.x_ - unit->getPosition()->x_,
-	                             aim.y_ - unit->getPosition()->z_);
+	auto force = dirTo(unit->getPosition(), aim);
 
 	force *= inCellCoef * boostCoef;
 	newForce += force;
@@ -122,9 +120,7 @@ void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::inSocket(Urho3D::Vector2& newForce, Unit* unit) {
-	auto pos = unit->getPosToUse();
-	auto force = Urho3D::Vector2(pos.x_ - unit->getPosition()->x_,
-	                             pos.y_ - unit->getPosition()->z_);
+	auto force = dirTo(unit->getPosition(), unit->getPosToUse());
 	force *= inSocketCoef * boostCoef;
 	newForce += force;
 }

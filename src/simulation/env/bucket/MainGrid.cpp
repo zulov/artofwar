@@ -326,7 +326,8 @@ Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3* position) {
 		if (escapeBucket == -1) {
 			return new Urho3D::Vector2;
 		}
-		Urho3D::Vector2* direction = complexData[index].getDirectrionFrom(position, complexData[escapeBucket]);
+		Urho3D::Vector2* direction = complexData[index] //TODO Error'this' nie uzywany 
+			.getDirectrionFrom(position, complexData[escapeBucket]);
 
 		direction->Normalize();
 		return direction;
@@ -502,7 +503,7 @@ void MainGrid::refreshWayOut(std::vector<int>& toRefresh) {
 				}
 			}
 		}
-		std::vector<int> * path = reconstruct_path(startIndex, end, came_from);
+		std::vector<int>* path = reconstruct_path(startIndex, end, came_from);
 		if (path->size() >= 1) {
 			int current2 = startIndex;
 			for (int i = 1; i < path->size(); ++i) {

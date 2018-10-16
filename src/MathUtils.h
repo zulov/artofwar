@@ -25,3 +25,7 @@ inline Urho3D::IntVector2 calculateSize(int size, int central) {
 	const int second = size + first;
 	return Urho3D::IntVector2(first + central, second + central);
 }
+
+inline Urho3D::Vector2 dirTo(Urho3D::Vector3* b, Urho3D::Vector2& a) {
+	return {a.x_ - b->x_, a.y_ - b->z_};
+}

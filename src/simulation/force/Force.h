@@ -2,6 +2,7 @@
 
 #include "ForceStats.h"
 #include <vector>
+#include <Urho3D/Math/Vector3.h>
 
 class Unit;
 class Physical;

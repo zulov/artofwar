@@ -210,11 +210,10 @@ void Formation::update() {
 			changeState(FormationState::MOVING);
 			if (!futureOrders.empty()) {
 				const auto& futureOrder = futureOrders[0];
-				Game::getActionList()->add(new FormationAction(this,
-				                                                      futureOrder.action,
-				                                                      futureOrder.physical,
-				                                                      new Urho3D::Vector2(futureOrder.vector)
-				                                                     ));
+				Game::getActionList()->add(new FormationAction(this, futureOrder.action,
+				                                               futureOrder.physical,
+				                                               new Urho3D::Vector2(futureOrder.vector)
+				                                              ));
 				for (auto unit : units) {
 					if (unit != leader) {
 						StateManager::changeState(unit, UnitState::STOP);

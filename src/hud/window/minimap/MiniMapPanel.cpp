@@ -112,7 +112,7 @@ void MiniMapPanel::update() {
 		const float xVal = 0 + xinc * (indexUpdate % size.x_);
 		int activePlayer = Game::getPlayersManager()->getActivePlayer()->getId();
 
-		content_info* ci = env->getContentInfo(Urho3D::Vector2(xVal, yVal), Urho3D::Vector2(xVal + xinc, yVal - yinc),
+		content_info* ci = env->getContentInfo({xVal, yVal}, {xVal + xinc, yVal - yinc},
 		                                       checks, activePlayer);
 
 		if (checks[2] && ci->hasBuilding) {

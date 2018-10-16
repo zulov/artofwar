@@ -485,23 +485,22 @@ void Unit::clean() {
 	                       thingsToInteract.end());
 }
 
-Urho3D::Vector2 Unit::getSocketPos(Unit* unit, int i) const {
-	auto vector = Consts::circleCords[i] * (minimalDistance + unit->getMinimalDistance());
-	return Urho3D::Vector2(unit->getPosition()->x_ + vector.x_, unit->getPosition()->z_ + vector.y_);
+Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
+	auto vector = Consts::circleCords[i] * (minimalDistance + toFollow->getMinimalDistance());
+	return Urho3D::Vector2(toFollow->getPosition()->x_ + vector.x_, toFollow->getPosition()->z_ + vector.y_);
 }
 
-std::tuple<Urho3D::Vector2, int> Unit::getPosToUseWithIndex(Unit* unit) const {
+std::tuple<Urho3D::Vector2, int> Unit::getPosToUseWithIndex(Unit* toFollow) const {
 	float minDistance = 99999;
 	Urho3D::Vector2 closest;
 	int closestindex = -1;
 	for (int i = 0; i < USE_SOCKETS_NUMBER; ++i) {
 		if (!useSockets[i]) {
-
-			Urho3D::Vector2 pos = getSocketPos(unit, i);
+			Urho3D::Vector2 pos = getSocketPos(toFollow, i);
 
 			if (Game::getEnvironment()->cellInState(Game::getEnvironment()->getIndex(pos),
 			                                        {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
-				auto dist = sqDist(*unit->getPosition(), pos);
+				auto dist = sqDist(*toFollow->getPosition(), pos);
 
 				if (dist < minDistance) {
 					minDistance = dist;

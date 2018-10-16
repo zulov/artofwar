@@ -146,7 +146,7 @@ struct db_building
 	db_building(int id, char* name, int sizeX, int sizeZ, int nation, char* icon)
 		: id(id),
 		name(name),
-		size(Urho3D::IntVector2(sizeX, sizeZ)),
+		size({sizeX, sizeZ}),
 		nation(nation),
 		icon(icon) {
 	}

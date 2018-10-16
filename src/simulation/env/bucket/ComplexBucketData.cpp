@@ -33,7 +33,7 @@ void ComplexBucketData::removeStatic() {
 }
 
 void ComplexBucketData::setCenter(float _centerX, float _centerY) {
-	center = Urho3D::Vector2(_centerX, _centerY);
+	center = {_centerX, _centerY};
 }
 
 void ComplexBucketData::setEscapeThrought(int val) {
