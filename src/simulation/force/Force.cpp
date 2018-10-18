@@ -120,7 +120,8 @@ void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::inSocket(Urho3D::Vector2& newForce, Unit* unit) {
-	auto force = dirTo(unit->getPosition(), unit->getPosToUse());
+	auto pos = unit->getPosToUse();
+	auto force = dirTo(unit->getPosition(), pos);
 	force *= inSocketCoef * boostCoef;
 	newForce += force;
 }

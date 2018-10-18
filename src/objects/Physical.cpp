@@ -92,7 +92,7 @@ std::tuple<Urho3D::Vector2, float, int> Physical::getPosToUseWithIndex(Unit* use
 }
 
 Urho3D::Vector2 Physical::getPosToUse(Unit* follower) const {
-	auto [vec,dist, index] = getPosToUseWithIndex(follower);
+	auto [vec, dist, index] = getPosToUseWithIndex(follower);
 	return vec;
 }
 

@@ -44,9 +44,11 @@ void DebugLineRepo::clear() {
 }
 
 void DebugLineRepo::drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-                    const Urho3D::Color& color) {
-	geometry->DefineVertex(first);
-	geometry->DefineColor(color);
-	geometry->DefineVertex(second);
-	geometry->DefineColor(color);
+                             const Urho3D::Color& color) {
+	if constexpr (UNIT_DEBUG_ENABLED) {
+		geometry->DefineVertex(first);
+		geometry->DefineColor(color);
+		geometry->DefineVertex(second);
+		geometry->DefineColor(color);
+	}
 }

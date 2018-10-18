@@ -23,12 +23,12 @@ std::vector<Urho3D::Vector3> FollowAim::getDebugLines(Unit* unit) const {
 	return points;
 }
 
-Urho3D::Vector2 FollowAim::getDirection(Unit* unit) {
-	const auto pos = physical->getPosToUse(unit);
+Urho3D::Vector2 FollowAim::getDirection(Unit* follower) {
+	const auto pos = physical->getPosToUse(follower);
 
 	return {
-		pos.x_ - unit->getPosition()->x_,
-		pos.y_ - unit->getPosition()->z_
+		pos.x_ - follower->getPosition()->x_,
+		pos.y_ - follower->getPosition()->z_
 	};
 }
 
