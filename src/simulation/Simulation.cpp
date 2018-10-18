@@ -189,7 +189,7 @@ void Simulation::applyForce() const {
 
 void Simulation::levelUp(QueueElement* done) const {
 	levelsCommandList->add(new UpgradeCommand(
-	                                          Game::getPlayersManager()->getActivePlayer()->getId(),
+	                                          Game::getPlayersMan()->getActivePlayer()->getId(),
 	                                          done->getId(),
 	                                          done->getType()
 	                                         ));
@@ -204,7 +204,7 @@ void Simulation::updateBuildingQueues(const float time) const {
 				creationCommandList->add(new CreationCommand(ObjectType::UNIT, done->getAmount(),
 				                                             done->getId(), build->getTarget(),
 				                                             build->getPlayer(),
-				                                             Game::getPlayersManager()->
+				                                             Game::getPlayersMan()->
 				                                             getPlayer(build->getPlayer())->
 				                                             getLevelForUnit(done->getId())
 				                                            ));

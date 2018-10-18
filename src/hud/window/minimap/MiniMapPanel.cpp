@@ -48,7 +48,7 @@ void MiniMapPanel::initColors() {
 		buildingColors[i] = 0xFF505050;
 	}
 
-	PlayersManager* playerManager = Game::getPlayersManager();
+	PlayersManager* playerManager = Game::getPlayersMan();
 	for (auto player : playerManager->getAllPlayers()) {
 		db_player_colors* col = Game::getDatabaseCache()->getPlayerColor(player->getColor());
 
@@ -110,7 +110,7 @@ void MiniMapPanel::update() {
 	for (; partIndex < indexPerUpdate && indexUpdate < size.y_ * size.x_; ++partIndex, ++indexUpdate) {
 		const float yVal = 1 - yinc * (indexUpdate / size.x_);
 		const float xVal = 0 + xinc * (indexUpdate % size.x_);
-		int activePlayer = Game::getPlayersManager()->getActivePlayer()->getId();
+		int activePlayer = Game::getPlayersMan()->getActivePlayer()->getId();
 
 		content_info* ci = env->getContentInfo({xVal, yVal}, {xVal + xinc, yVal - yinc},
 		                                       checks, activePlayer);

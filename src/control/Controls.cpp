@@ -220,10 +220,10 @@ void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 	switch (parameter.type) {
 	case MenuAction::BUILDING_LEVEL:
 		{
-		const auto level = Game::getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
+		const auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
 		if (opt.has_value()) {
-			auto& resources = Game::getPlayersManager()->getActivePlayer()->getResources();
+			auto& resources = Game::getPlayersMan()->getActivePlayer()->getResources();
 			if (resources.reduce(opt.value())) {
 				Game::getQueueManager()->add(1, parameter.type, id, 1);
 			}
@@ -244,7 +244,7 @@ bool Controls::clickDown(MouseButton& var) {
 
 void Controls::createBuilding(Urho3D::Vector2 pos) {
 	if (idToCreate >= 0) {
-		auto player = Game::getPlayersManager()->getActivePlayer();
+		auto player = Game::getPlayersMan()->getActivePlayer();
 
 		Game::getCreationList()->addBuilding(idToCreate, pos,
 		                                     player->getId(),

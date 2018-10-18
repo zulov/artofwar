@@ -148,7 +148,7 @@ void MenuPanel::setNextElement(int& k, Urho3D::String texture, int id, MenuActio
 }
 
 void MenuPanel::basicBuilding() {
-	int nation = Game::getPlayersManager()->getActivePlayer()->getNation();
+	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	int k = 0;
 	for (int i = 0; i < Game::getDatabaseCache()->getBuildingSize(); ++i) {
 		db_building* building = Game::getDatabaseCache()->getBuilding(i);
@@ -160,10 +160,10 @@ void MenuPanel::basicBuilding() {
 }
 
 void MenuPanel::levelBuilding() {
-	int nation = Game::getPlayersManager()->getActivePlayer()->getNation();
+	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	int k = 0;
 	for (int i = 0; i < Game::getDatabaseCache()->getBuildingSize(); ++i) {
-		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForBuilding(i) + 1;
+		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i) + 1;
 		auto opt = Game::getDatabaseCache()->getBuildingLevel(i, level);
 		if (opt.has_value()) {
 			auto building = Game::getDatabaseCache()->getBuilding(i);
@@ -189,7 +189,7 @@ std::unordered_set<int> MenuPanel::getUpgradePathInBuilding(std::vector<Selected
 
 std::unordered_set<int> MenuPanel::getUnitInBuilding(std::vector<SelectedInfoType*>& infoTypes) {
 	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-	int nation = Game::getPlayersManager()->getActivePlayer()->getNation();
+	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
 			removefromCommon(common, unitsIdsForBuildingNation(nation, i));
@@ -222,7 +222,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
 	for (auto id : getUnitInBuilding(selectedInfo->getSelectedTypes())) {
-		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
+		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
 		auto opt = Game::getDatabaseCache()->getUnitLevel(id, level);
 		if (opt.has_value()) {
 			db_unit* unit = Game::getDatabaseCache()->getUnit(id);
@@ -238,7 +238,7 @@ void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 
 	for (auto id : getUpgradePathInBuilding(selectedInfo->getSelectedTypes())) {
 		auto opt = Game::getDatabaseCache()->
-			getUnitUpgrade(id, Game::getPlayersManager()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1);
+			getUnitUpgrade(id, Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1);
 
 		if (opt.has_value()) {
 			auto upgrade = opt.value();

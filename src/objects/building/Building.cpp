@@ -59,7 +59,7 @@ Urho3D::String& Building::toMultiLineString() {
 }
 
 void Building::action(char id, const ActionParameter& parameter) {
-	Resources& resources = Game::getPlayersManager()->getActivePlayer()->getResources();
+	Resources& resources = Game::getPlayersMan()->getActivePlayer()->getResources();
 
 	switch (parameter.type) {
 	case MenuAction::UNIT:
@@ -72,7 +72,7 @@ void Building::action(char id, const ActionParameter& parameter) {
 		break;
 	case MenuAction::UNIT_LEVEL:
 		{
-		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
+		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
 		if (opt.has_value()) {
 			const auto costs = opt.value();
@@ -84,7 +84,7 @@ void Building::action(char id, const ActionParameter& parameter) {
 		break;
 	case MenuAction::UNIT_UPGRADE:
 		{
-		int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
+		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForUnitUpgrade(id, level);
 		if (opt.has_value()) {
 			const auto costs = opt.value();

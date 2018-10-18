@@ -29,7 +29,9 @@ public:
 	bool isSelected() const;
 	void load(dbload_physical* dbloadPhysical);
 	virtual bool isSlotOccupied(int indexToInteract) { return false; }
-	virtual void setOccupiedSlot(int indexToInteract, bool value){}
+
+	virtual void setOccupiedSlot(int indexToInteract, bool value) {
+	}
 
 	static std::string getColumns();
 	std::string getValues(int precision) override;
@@ -56,7 +58,7 @@ public:
 	virtual int getMainCell() const;
 
 	virtual bool isToDispose() const { return false; }
-	virtual std::tuple<Urho3D::Vector2, int> getPosToUseWithIndex(Unit* follower) const;
+	virtual std::tuple<Urho3D::Vector2, float, int> getPosToUseWithIndex(Unit* follower) const;
 
 	virtual Urho3D::Vector2 getPosToUse(Unit* follower) const;
 

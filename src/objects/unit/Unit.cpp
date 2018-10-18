@@ -240,8 +240,10 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 			case DebugUnitType::AIM:
 				if (aims.hasCurrent()) {
 					auto lines = aims.getDebugLines(this);
-					for (int i = 0; i < lines.size() - 1; ++i) {
-						drawLine(lines[i], lines[i + 1]);
+					if (!lines.empty()) {
+						for (int i = 0; i < lines.size() - 1; ++i) {
+							drawLine(lines[i], lines[i + 1]);
+						}
 					}
 				}
 				break;
@@ -429,24 +431,16 @@ void Unit::setBucket(int _bucketIndex, char param) {
 	teamBucketIndex[param] = _bucketIndex;
 }
 
-std::tuple<Urho3D::Vector2, float, int> Unit::closest(Physical* toFollow, const std::function<
-	                                                      std::tuple<Urho3D::Vector2, int>(
-		                                                      Physical*, Unit*)>& positionFunc) {
-	auto [pos, indexOfPos] = positionFunc(toFollow, this);
-	const float distance = sqDist(pos, *this->getPosition());
-	return std::tuple<Urho3D::Vector2, float, int>(pos, distance, indexOfPos);
-}
-
 std::tuple<Physical*, float, int> Unit::closestPhysical(std::vector<Physical*>* things,
                                                         const std::function<bool(Physical*)>& condition,
-                                                        const std::function<std::tuple<Urho3D::Vector2, int>(
+                                                        const std::function<std::tuple<Urho3D::Vector2, float, int>(
 	                                                        Physical*, Unit*)>& positionFunc) {
 	float minDistance = 99999;
 	Physical* closestPhy = nullptr;
 	int bestIndex = -1;
 	for (auto entity : *things) {
 		if (entity->isAlive() && condition(entity)) {
-			auto [pos, distance, indexOfPos] = closest(entity, positionFunc);
+			auto [pos, distance, indexOfPos] = positionFunc(entity, this);
 			if (distance <= minDistance) {
 				minDistance = distance;
 				closestPhy = entity;
@@ -490,7 +484,7 @@ Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
 	return Urho3D::Vector2(toFollow->getPosition()->x_ + vector.x_, toFollow->getPosition()->z_ + vector.y_);
 }
 
-std::tuple<Urho3D::Vector2, int> Unit::getPosToUseWithIndex(Unit* toFollow) const {
+std::tuple<Urho3D::Vector2, float, int> Unit::getPosToUseWithIndex(Unit* toFollow) const {
 	float minDistance = 99999;
 	Urho3D::Vector2 closest;
 	int closestindex = -1;
@@ -500,7 +494,7 @@ std::tuple<Urho3D::Vector2, int> Unit::getPosToUseWithIndex(Unit* toFollow) cons
 
 			if (Game::getEnvironment()->cellInState(Game::getEnvironment()->getIndex(pos),
 			                                        {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
-				auto dist = sqDist(*toFollow->getPosition(), pos);
+				auto dist = sqDist(*position, pos);
 
 				if (dist < minDistance) {
 					minDistance = dist;
@@ -510,7 +504,7 @@ std::tuple<Urho3D::Vector2, int> Unit::getPosToUseWithIndex(Unit* toFollow) cons
 			}
 		}
 	}
-	return {closest, closestindex};
+	return {closest, minDistance, closestindex};
 }
 
 Urho3D::Vector2 Unit::getPosToUse() const {

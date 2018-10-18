@@ -58,7 +58,7 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 		break;
 	case MenuAction::UNIT_LEVEL:
 		{
-		const int level = Game::getPlayersManager()->getActivePlayer()->getLevelForUnit(id) + 1;
+		const int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
 		auto dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
 		auto opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
 
@@ -79,7 +79,7 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 		break;
 	case MenuAction::BUILDING_LEVEL:
 		{
-		auto level = Game::getPlayersManager()->getActivePlayer()->getLevelForBuilding(id) + 1;
+		auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;
 		auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(id, level).value();
 		auto opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
 		auto costs = opt.value();

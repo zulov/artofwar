@@ -24,7 +24,7 @@ bool CreationCommandList::addUnits(int _number, int id, Urho3D::Vector2& _positi
 }
 
 bool CreationCommandList::addBuilding(int id, Urho3D::Vector2& _position, int _player, int level) {
-	Resources& resources = Game::getPlayersManager()->getActivePlayer()->getResources();
+	Resources& resources = Game::getPlayersMan()->getActivePlayer()->getResources();
 	auto costs = Game::getDatabaseCache()->getCostForBuilding(id);
 	auto env = Game::getEnvironment();
 	db_building* db_building = Game::getDatabaseCache()->getBuilding(id);

@@ -12,6 +12,7 @@
 #include "player/PlayersManager.h"
 #include "player/Player.h"
 #include "unit/Unit.h"
+#include "PhysicalUtils.h"
 
 
 Physical::Physical(Urho3D::Vector3* _position, ObjectType _type): Entity(_type), position(_position),
@@ -85,12 +86,13 @@ int Physical::getMainCell() const {
 	return getBucketIndex();
 }
 
-std::tuple<Urho3D::Vector2, int> Physical::getPosToUseWithIndex(Unit* user) const {
-	return {{user->getPosition()->x_, user->getPosition()->z_}, -1};
+std::tuple<Urho3D::Vector2, float, int> Physical::getPosToUseWithIndex(Unit* user) const {
+	auto dist = sqDist(position, user->getPosition());
+	return {Urho3D::Vector2(position->x_, position->z_), dist, -1};
 }
 
 Urho3D::Vector2 Physical::getPosToUse(Unit* follower) const {
-	auto [vec, index] = getPosToUseWithIndex(follower);
+	auto [vec,dist, index] = getPosToUseWithIndex(follower);
 	return vec;
 }
 
@@ -183,5 +185,5 @@ void Physical::loadXml(Urho3D::String xmlName) {
 
 void Physical::setPlayerAndTeam(int player) {
 	setPlayer(player);
-	setTeam(Game::getPlayersManager()->getPlayer(player)->getTeam());
+	setTeam(Game::getPlayersMan()->getPlayer(player)->getTeam());
 }

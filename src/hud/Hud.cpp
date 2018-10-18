@@ -179,7 +179,7 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
 	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
 	                    cameraManager->getInfo());
 
-	topPanel->update(Game::getPlayersManager()->getActivePlayer()->getResources());
+	topPanel->update(Game::getPlayersMan()->getActivePlayer()->getResources());
 	topPanel->update(simulationInfo->getUnitsNumber());
 	miniMapPanel->update();
 	selectedInfo->hasBeedUpdatedDrawn();

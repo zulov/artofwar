@@ -59,7 +59,7 @@ public:
 	static QueueManager* getQueueManager() { return instance->queue; }
 	static CreationCommandList* getCreationList() { return instance->creationCommandList; }
 	static DatabaseCache* getDatabaseCache() { return instance->databaseCache; }
-	static PlayersManager* getPlayersManager() { return instance->playersManager; }
+	static PlayersManager* getPlayersMan() { return instance->playersManager; }
 	static Environment* getEnvironment() { return instance->environment; }
 	static FormationManager* getFormationManager() { return instance->formationManager; }
 	static ColorPeletteRepo* getColorPeletteRepo() { return instance->colorPeletteRepo; }

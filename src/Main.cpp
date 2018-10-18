@@ -189,7 +189,7 @@ void Main::save(String name) {
 	saver.createSave(name);
 	saver.saveConfig();
 	simulation->save(saver);
-	Game::getPlayersManager()->save(saver);
+	Game::getPlayersMan()->save(saver);
 	saver.close();
 }
 
@@ -222,7 +222,7 @@ void Main::load(String saveName, loading& progress) {
 		controls = new Controls(GetSubsystem<Input>());
 		SetupViewport();
 
-		Game::getPlayersManager()->load(loader.loadPlayers(), loader.loadResources());
+		Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
 
 		subscribeToUIEvents();
 		hud->resetLoading();
@@ -271,7 +271,7 @@ void Main::newGame(NewGameForm* form, loading& progress) {
 		controls = new Controls(GetSubsystem<Input>());
 		SetupViewport();
 
-		Game::getPlayersManager()->load(form);
+		Game::getPlayersMan()->load(form);
 
 		hud->resetLoading();
 
@@ -455,7 +455,7 @@ void Main::disposeScene() {
 		Game::setEnvironment(nullptr);
 
 		loading2.inc("dispose playerManager");
-		delete Game::getPlayersManager();
+		delete Game::getPlayersMan();
 		Game::setPlayersManager(nullptr);
 
 		loading2.inc("dispose controls");

@@ -88,13 +88,9 @@ public:
 	bool isFirstThingAlive();
 	bool hasEnemy();
 
-	std::tuple<Urho3D::Vector2, float, int> closest(Physical* toFollow, const std::function<
-		                                                std::tuple<Urho3D::Vector2, int>(
-			                                                Physical*, Unit*)>& positionFunc);
-
 	std::tuple<Physical*, float, int> closestPhysical(std::vector<Physical*>* things,
 	                                                  const std::function<bool(Physical*)>& condition,
-	                                                  const std::function<std::tuple<Urho3D::Vector2, int>(
+	                                                  const std::function<std::tuple<Urho3D::Vector2, float, int>(
 		                                                  Physical*, Unit*)>& positionFunc);
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
@@ -113,7 +109,7 @@ public:
 	void setOccupiedSlot(int indexToInteract, bool value) { useSockets[indexToInteract] = value; };
 	Urho3D::Vector2 getPosToUse() const;
 
-	std::tuple<Urho3D::Vector2, int> getPosToUseWithIndex(Unit* unit) const override;
+	std::tuple<Urho3D::Vector2, float, int> getPosToUseWithIndex(Unit* unit) const override;
 	void action(char id, const ActionParameter& parameter) override;
 	std::string getValues(int precision) override;
 	Urho3D::String& toMultiLineString() override;
