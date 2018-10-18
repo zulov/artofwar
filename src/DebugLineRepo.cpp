@@ -42,3 +42,11 @@ void DebugLineRepo::clear() {
 		geometry->SetNumGeometries(1);
 	}
 }
+
+void DebugLineRepo::drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second,
+                    const Urho3D::Color& color) {
+	geometry->DefineVertex(first);
+	geometry->DefineColor(color);
+	geometry->DefineVertex(second);
+	geometry->DefineColor(color);
+}

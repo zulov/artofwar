@@ -191,15 +191,7 @@ void Unit::addAim(const FutureAim& aim, bool append) {
 
 void Unit::drawLineTo(const Urho3D::Vector3& second,
                       const Urho3D::Color& color = Urho3D::Color::WHITE) const {
-	drawLine(*position, second + *position, color);
-}
-
-void Unit::drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-                    const Urho3D::Color& color = Urho3D::Color::WHITE) {
-	DebugLineRepo::geometry->DefineVertex(first);
-	DebugLineRepo::geometry->DefineColor(color);
-	DebugLineRepo::geometry->DefineVertex(second);
-	DebugLineRepo::geometry->DefineColor(color);
+	DebugLineRepo::drawLine(*position, second + *position, color);
 }
 
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
@@ -242,14 +234,14 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 					auto lines = aims.getDebugLines(this);
 					if (!lines.empty()) {
 						for (int i = 0; i < lines.size() - 1; ++i) {
-							drawLine(lines[i], lines[i + 1]);
+							DebugLineRepo::drawLine(lines[i], lines[i + 1]);
 						}
 					}
 				}
 				break;
 			case DebugUnitType::INTERACT:
 				for (auto toInteract : thingsToInteract) {
-					drawLine(*position, *toInteract->getPosition());
+					DebugLineRepo::drawLine(*position, *toInteract->getPosition());
 				}
 				break;
 			default: ;

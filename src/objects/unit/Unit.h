@@ -75,15 +75,13 @@ public:
 	void clearAims();
 	void removeCurrentAim();
 	void setIndexToInteract(int index);
-	int getIndexToInteract() { return indexToInteract; }
+	int getIndexToInteract() const { return indexToInteract; }
 
 	static std::string getColumns();
 	void addUpgrade(db_unit_upgrade* upgrade);
 	void changeColor(ColorMode mode);
 	void addAim(const FutureAim& aim, bool append = false);
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
-	static void drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-	                     const Urho3D::Color& color);
 	void debug(DebugUnitType type, ForceStats& stats);
 	bool isFirstThingAlive();
 	bool hasEnemy();
