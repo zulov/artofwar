@@ -60,7 +60,7 @@ public:
 	virtual bool isToDispose() const { return false; }
 	virtual std::tuple<Urho3D::Vector2, float, int> getPosToUseWithIndex(Unit* follower) const;
 
-	virtual Urho3D::Vector2 getPosToUse(Unit* follower) const;
+	virtual Urho3D::Vector2 getPosToUseBy(Unit* follower) const;
 
 	virtual float getMaxHpBarSize() { return 0; }
 

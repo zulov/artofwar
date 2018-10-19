@@ -91,9 +91,8 @@ std::tuple<Urho3D::Vector2, float, int> Physical::getPosToUseWithIndex(Unit* use
 	return {Urho3D::Vector2(position->x_, position->z_), dist, -1};
 }
 
-Urho3D::Vector2 Physical::getPosToUse(Unit* follower) const {
-	auto [vec, dist, index] = getPosToUseWithIndex(follower);
-	return vec;
+Urho3D::Vector2 Physical::getPosToUseBy(Unit* follower) const {
+	return std::get<0>(getPosToUseWithIndex(follower));
 }
 
 float Physical::getHealthBarSize() {

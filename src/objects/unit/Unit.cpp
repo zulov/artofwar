@@ -386,10 +386,6 @@ std::string Unit::getColumns() {
 }
 
 void Unit::applyForce(double timeStep) {
-	if (state == UnitState::ATTACK) {
-		return;
-	}
-
 	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep / mass);
 	const float velLength = velocity.LengthSquared();
@@ -471,26 +467,26 @@ void Unit::clean() {
 	                       thingsToInteract.end());
 }
 
-Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
+Urho3D::Vector2 Unit::getSocketPos(const Unit* toFollow, int i) const {
 	auto vector = Consts::circleCords[i] * (minimalDistance + toFollow->getMinimalDistance());
 	return Urho3D::Vector2(toFollow->getPosition()->x_ + vector.x_, toFollow->getPosition()->z_ + vector.y_);
 }
 
-std::tuple<Urho3D::Vector2, float, int> Unit::getPosToUseWithIndex(Unit* toFollow) const {
+std::tuple<Urho3D::Vector2, float, int> Unit::getPosToUseWithIndex(Unit* follower) const {
 	float minDistance = 99999;
 	Urho3D::Vector2 closest;
 	int closestindex = -1;
 	for (int i = 0; i < USE_SOCKETS_NUMBER; ++i) {
 		if (!useSockets[i]) {
-			Urho3D::Vector2 pos = getSocketPos(toFollow, i);
+			Urho3D::Vector2 posToFollow = getSocketPos(this, i);
 
-			if (Game::getEnvironment()->cellInState(Game::getEnvironment()->getIndex(pos),
+			if (Game::getEnvironment()->cellInState(Game::getEnvironment()->getIndex(posToFollow),
 			                                        {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
-				auto dist = sqDist(*position, pos);
+				auto dist = sqDist(*follower->getPosition(), posToFollow);
 
 				if (dist < minDistance) {
 					minDistance = dist;
-					closest = pos;
+					closest = posToFollow;
 					closestindex = i;
 				}
 			}

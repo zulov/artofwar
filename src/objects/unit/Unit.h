@@ -116,7 +116,7 @@ public:
 	int getLevel() override;
 	int getDbID() override;
 	void clean() override;
-	Urho3D::Vector2 getSocketPos(Unit* unit, int i) const;
+	Urho3D::Vector2 getSocketPos(const Unit* unit, int i) const;
 private:
 	void actionIfCloseEnough(UnitState action, Physical* closest, int indexToInteract,
 	                         float sqDistance, float closeRange, float intrestRange);

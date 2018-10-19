@@ -18,7 +18,6 @@ public:
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
-	//	unit->velocity = Urho3D::Vector2::ZERO;
 		unit->currentFrameState = 0;
 		unit->thingsToInteract[0]->upClose();
 		unit->thingsToInteract[0]->setOccupiedSlot(unit->indexToInteract, true);
@@ -37,7 +36,6 @@ public:
 	void execute(Unit* unit, float timeStep) override {
 		State::execute(unit, timeStep);
 		if (unit->isFirstThingAlive()) {
-		//	unit->velocity = Urho3D::Vector2::ZERO;
 			if (fmod(unit->currentFrameState, 1 / unit->attackSpeed) < 1) {
 				unit->thingsToInteract[0]->absorbAttack(unit->attackCoef);
 			}
