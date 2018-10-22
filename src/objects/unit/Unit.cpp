@@ -440,7 +440,7 @@ std::tuple<Physical*, float, int> Unit::closestPhysical(std::vector<Physical*>* 
 }
 
 
-bool Unit::isFirstThingAlive() {
+bool Unit::isFirstThingAlive() const {
 	return !thingsToInteract.empty()
 		&& thingsToInteract[0] != nullptr
 		&& thingsToInteract[0]->isUsable();
@@ -468,7 +468,7 @@ void Unit::clean() {
 }
 
 Urho3D::Vector2 Unit::getSocketPos(const Unit* toFollow, int i) const {
-	auto vector = Consts::circleCords[i] * (minimalDistance + toFollow->getMinimalDistance());
+	auto vector = Consts::circleCords[i] * (minimalDistance + toFollow->getMinimalDistance())*2;
 	return Urho3D::Vector2(toFollow->getPosition()->x_ + vector.x_, toFollow->getPosition()->z_ + vector.y_);
 }
 
@@ -496,5 +496,8 @@ std::tuple<Urho3D::Vector2, float, int> Unit::getPosToUseWithIndex(Unit* followe
 }
 
 Urho3D::Vector2 Unit::getPosToUse() const {
-	return getSocketPos(static_cast<Unit*>(thingsToInteract[0]), indexToInteract);
+	if (isFirstThingAlive() && indexToInteract != -1) {
+		return getSocketPos(static_cast<Unit*>(thingsToInteract[0]), indexToInteract);
+	}
+	return {position->x_, position->z_};
 }

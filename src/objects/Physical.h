@@ -103,7 +103,7 @@ protected:
 	Urho3D::Billboard *billboardBar, *billboardShadow;
 	Urho3D::BillboardSet *billboardSetBar, *billboardSetShadow;
 
-	unsigned char maxCloseUsers = 4; //TODO default values
+	unsigned char maxCloseUsers = 8; //TODO default values
 	unsigned char maxRangeUsers = 8;
 
 	unsigned char closeUsers = 0;

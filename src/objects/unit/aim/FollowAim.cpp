@@ -18,7 +18,7 @@ std::vector<Urho3D::Vector3> FollowAim::getDebugLines(Unit* unit) const {
 	std::vector<Urho3D::Vector3> points;
 	auto center = physical->getPosToUseBy(unit);
 	points.emplace_back(*position);
-	points.emplace_back(center.x_ , position->y_, center.y_);
+	points.emplace_back(center.x_, position->y_, center.y_);
 
 	return points;
 }
@@ -35,11 +35,7 @@ Urho3D::Vector2 FollowAim::getDirection(Unit* follower) {
 bool FollowAim::ifReach(Unit* unit) {
 	//subTarget->ifReach(unit);
 	auto posToFollow = physical->getPosToUseBy(unit);
-	auto reach = sqDist(*unit->getPosition(), posToFollow) < radiusSq;
-	if (reach) {
-		unit->setIndexToInteract(Game::getEnvironment()->getIndex(posToFollow)); //TODO bug moze kiedys powstac
-	}
-	return reach;
+	return sqDist(*unit->getPosition(), posToFollow) < radiusSq;
 }
 
 bool FollowAim::expired() {

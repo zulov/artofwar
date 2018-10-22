@@ -8,7 +8,7 @@
 
 
 #define BUCKET_SET_NUMBER 4
-#define USE_SOCKETS_NUMBER 9
+#define USE_SOCKETS_NUMBER 8
 
 enum class DebugUnitType : char;
 enum class ColorMode : char;
@@ -83,7 +83,7 @@ public:
 	void addAim(const FutureAim& aim, bool append = false);
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);
-	bool isFirstThingAlive();
+	bool isFirstThingAlive() const;
 	bool hasEnemy();
 
 	std::tuple<Physical*, float, int> closestPhysical(std::vector<Physical*>* things,
@@ -104,7 +104,7 @@ public:
 	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
 	void setBucket(int _bucketIndex, char param);
 	bool isSlotOccupied(int indexToInteract) override { return useSockets[indexToInteract]; }
-	void setOccupiedSlot(int indexToInteract, bool value) { useSockets[indexToInteract] = value; };
+	void setOccupiedSlot(int indexToInteract, bool value) { useSockets[indexToInteract] = value; }
 	Urho3D::Vector2 getPosToUse() const;
 
 	std::tuple<Urho3D::Vector2, float, int> getPosToUseWithIndex(Unit* unit) const override;

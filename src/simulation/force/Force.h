@@ -34,7 +34,7 @@ private:
 	float escapeCoef = 20;
 	float formationCoef = 50;
 	float inCellCoef = 1;
-	float inSocketCoef = 1;
+	float inSocketCoef = 10;
 
 	ForceStats forceStats;
 };
