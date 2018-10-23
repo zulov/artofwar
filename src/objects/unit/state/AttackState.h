@@ -35,7 +35,7 @@ public:
 
 	void execute(Unit* unit, float timeStep) override {
 		State::execute(unit, timeStep);
-		if (unit->isFirstThingAlive()) {
+		if (unit->isFirstThingAlive() && closeenough) {
 			if (fmod(unit->currentFrameState, 1 / unit->attackSpeed) < 1) {
 				unit->thingsToInteract[0]->absorbAttack(unit->attackCoef);
 			}

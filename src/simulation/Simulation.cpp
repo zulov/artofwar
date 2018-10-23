@@ -311,9 +311,15 @@ void Simulation::calculateForces() {
 			force.inCell(newForce, unit);
 			break;
 		case UnitState::ATTACK:
+			{
+			const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
+
+			force.separationUnits(newForce, unit, neighbours);
 			force.inSocket(newForce, unit);
+			}
 			break;
 		default:
+			{
 			const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);
@@ -321,6 +327,7 @@ void Simulation::calculateForces() {
 			force.destination(newForce, unit);
 			force.formation(newForce, unit);
 			force.escapeFromInvalidPosition(newForce, unit);
+			}
 		}
 
 		auto stats = force.stats();
