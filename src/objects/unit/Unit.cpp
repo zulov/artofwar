@@ -457,8 +457,7 @@ bool Unit::hasEnemy() {
 
 void Unit::clean() {
 	Physical::clean();
-	thingsToInteract.erase(
-	                       std::remove_if(
+	thingsToInteract.erase(std::remove_if(
 	                                      thingsToInteract.begin(), thingsToInteract.end(),
 	                                      [](Physical* physical)
 	                                      {
@@ -468,31 +467,25 @@ void Unit::clean() {
 }
 
 Urho3D::Vector2 Unit::getSocketPos(const Unit* toFollow, int i) const {
-	auto vector = Consts::circleCords[i] * (minimalDistance + toFollow->getMinimalDistance())*2;
+	auto vector = Consts::circleCords[i] * (minimalDistance + toFollow->getMinimalDistance()) * 2;
 	return Urho3D::Vector2(toFollow->getPosition()->x_ + vector.x_, toFollow->getPosition()->z_ + vector.y_);
 }
 
 std::tuple<Urho3D::Vector2, float, int> Unit::getPosToUseWithIndex(Unit* follower) const {
 	float minDistance = 99999;
 	Urho3D::Vector2 closest;
-	int closestindex = -1;
+	int closestIndex = -1;
 	for (int i = 0; i < USE_SOCKETS_NUMBER; ++i) {
 		if (!useSockets[i]) {
 			Urho3D::Vector2 posToFollow = getSocketPos(this, i);
 
 			if (Game::getEnvironment()->cellInState(Game::getEnvironment()->getIndex(posToFollow),
 			                                        {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
-				auto dist = sqDist(*follower->getPosition(), posToFollow);
-
-				if (dist < minDistance) {
-					minDistance = dist;
-					closest = posToFollow;
-					closestindex = i;
-				}
+				setClosest(minDistance, closest, closestIndex, i, posToFollow, follower->getPosition());
 			}
 		}
 	}
-	return {closest, minDistance, closestindex};
+	return {closest, minDistance, closestIndex};
 }
 
 Urho3D::Vector2 Unit::getPosToUse() const {

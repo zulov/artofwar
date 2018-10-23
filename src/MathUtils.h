@@ -29,3 +29,13 @@ inline Urho3D::IntVector2 calculateSize(int size, int central) {
 inline Urho3D::Vector2 dirTo(Urho3D::Vector3* a, Urho3D::Vector2& b) {
 	return {b.x_ - a->x_, b.y_ - a->z_};
 }
+
+inline void setClosest(float& minDistance, Urho3D::Vector2& closest, int& closestindex, int i, Urho3D::Vector2 posToFollow, Urho3D::Vector3* pos1) {
+	auto dist = sqDist(*pos1, posToFollow);
+
+	if (dist < minDistance) {
+		minDistance = dist;
+		closest = posToFollow;
+		closestindex = i;
+	}
+}
