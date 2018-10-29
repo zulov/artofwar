@@ -76,6 +76,7 @@ public:
 	void removeCurrentAim();
 	void setIndexToInteract(int index);
 	int getIndexToInteract() const { return indexToInteract; }
+	bool closeEnoughToAttack();
 
 	static std::string getColumns();
 	void addUpgrade(db_unit_upgrade* upgrade);

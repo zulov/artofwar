@@ -376,6 +376,14 @@ void Unit::setPositionInFormation(short _pos) {
 	posInFormation = _pos;
 }
 
+bool Unit::closeEnoughToAttack() {
+	auto pos = getPosToUse();
+	auto vec = dirTo(position, pos);
+	auto dist = vec.LengthSquared();
+
+	return dist < attackRange * attackRange;
+}
+
 std::string Unit::getColumns() {
 	return Physical::getColumns() +
 		"position_x		INT     NOT NULL,"

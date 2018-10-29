@@ -21,6 +21,7 @@ public:
 		unit->currentFrameState = 0;
 		unit->thingsToInteract[0]->upClose();
 		unit->thingsToInteract[0]->setOccupiedSlot(unit->indexToInteract, true);
+		unit->maxSpeed = unit->dbLevel->maxSpeed / 2;
 	}
 
 	void onEnd(Unit* unit) override {
@@ -29,13 +30,14 @@ public:
 			unit->thingsToInteract[0]->reduceClose();
 			unit->thingsToInteract[0]->setOccupiedSlot(unit->indexToInteract, false);
 		}
+		unit->maxSpeed = unit->dbLevel->maxSpeed;
 		unit->thingsToInteract.clear();
 		unit->indexToInteract = -1;
 	}
 
 	void execute(Unit* unit, float timeStep) override {
 		State::execute(unit, timeStep);
-		if (unit->isFirstThingAlive() && closeenough) {
+		if (unit->isFirstThingAlive() && unit->closeEnoughToAttack()) {
 			if (fmod(unit->currentFrameState, 1 / unit->attackSpeed) < 1) {
 				unit->thingsToInteract[0]->absorbAttack(unit->attackCoef);
 			}
