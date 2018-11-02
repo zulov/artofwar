@@ -24,6 +24,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <algorithm>
 #include <queue>
+#include "commands/action/IndividualAction.h"
 
 
 Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), input(_input) {
@@ -106,8 +107,18 @@ void Controls::rightClick(hit_data& hitData) const {
 		}
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
+		if (hitData.clicked->getTeam() == selected->at(0)->getTeam()) {
+			Game::getActionList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.clicked,
+			                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
+		} else {
+			Game::getActionList()->add(new GroupAction(selected, UnitOrder::ATTACK, hitData.clicked,
+			                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
+		}
+
+		break;
 	case ObjectType::RESOURCE:
-		Game::getActionList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.clicked,
+
+		Game::getActionList()->add(new GroupAction(selected, UnitOrder::COLLECT, hitData.clicked,
 		                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
 		break;
 	default: ;
@@ -212,7 +223,8 @@ void Controls::order(short id, const ActionParameter& parameter) {
 
 void Controls::executeOnAll(short id, const ActionParameter& parameter) {
 	for (auto& phy : *selected) {
-		phy->action(id, parameter);
+		Game::getActionList()->add(new IndividualAction(phy, UnitOrder(id), nullptr, false));
+		//phy->action(id, parameter);
 	}
 }
 

@@ -13,7 +13,7 @@ enum class UnitOrder : char;
 class ActionCommand : public AbstractCommand
 {
 public:
-	ActionCommand(UnitOrder action, const Physical* physical, Urho3D::Vector2* vector, bool append);
+	ActionCommand(UnitOrder action, const Physical* toFollow, Urho3D::Vector2* vector, bool append);
 	virtual ~ActionCommand();
 
 	void execute() override;
@@ -25,6 +25,9 @@ protected:
 	virtual void addTargetAim(Urho3D::Vector2* to, bool append) =0;
 	virtual void addFollowAim(const Physical* toFollow, bool append) =0;
 	virtual void addChargeAim(Urho3D::Vector2* charge, bool append) =0;
+	virtual void addDeadAim() =0;
+	void addAttackAim(const Physical* physical, bool append){};
+	void addDefendAim(){};
 
 	UnitOrder action;
 	Urho3D::Vector2* vector;

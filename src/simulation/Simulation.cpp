@@ -150,8 +150,8 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		creationCommandList->addUnits(UNITS_NUMBER, 2, Urho3D::Vector2(20, -70), 0, 0);
-		creationCommandList->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(20, -50), 1, 0);
+		//creationCommandList->addUnits(UNITS_NUMBER, 2, Urho3D::Vector2(20, -70), 0, 0);
+		creationCommandList->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-20, 10), 1, 0);
 		//creationCommandList->addResource(0, Urho3D::Vector2(0, 0), 0);
 	}
 }

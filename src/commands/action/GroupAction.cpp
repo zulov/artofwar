@@ -3,12 +3,12 @@
 #include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"
 
-GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, Urho3D::Vector2* parameter, bool append)
-	: ActionCommand(action, nullptr, parameter, append), entities(entities) {
+GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, Urho3D::Vector2* vector, bool append)
+	: ActionCommand(action, nullptr, vector, append), entities(entities) {
 }
 
-GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, Physical* paremeter, bool append)
-	: ActionCommand(action, paremeter, nullptr, append), entities(entities) {
+GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, Physical* thing, bool append)
+	: ActionCommand(action, thing, nullptr, append), entities(entities) {
 }
 
 GroupAction::~GroupAction() = default;
@@ -41,4 +41,8 @@ void GroupAction::addFollowAim(const Physical* toFollow, bool append) {
 		}
 		opt.value()->addAim({}, toFollow, action, append);
 	}
+}
+
+void GroupAction::addDeadAim() {
+	int a = 5;
 }

@@ -46,3 +46,7 @@ void FormationAction::addFollowAim(const Physical* toFollow, bool append) {
 		                                 toFollow));
 	}
 }
+
+void FormationAction::addDeadAim() {
+	int a = 5;
+}

@@ -30,5 +30,8 @@ void IndividualAction::addFollowAim(const Physical* toFollow, bool append) {
 		  getFollowAim(entity->getMainCell(),
 		                                 toFollow->getPosToUseBy(static_cast<Unit*>(entity)),
 		                                 toFollow));
+}
 
+void IndividualAction::addDeadAim() {
+	entity->action(static_cast<char>(action), ActionParameter());
 }

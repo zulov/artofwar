@@ -10,8 +10,8 @@
 #include <chrono>
 
 
-ActionCommand::ActionCommand(UnitOrder action, const Physical* physical, Urho3D::Vector2* vector, bool append):
-	action(action), vector(vector), toFollow(physical), append(append) {
+ActionCommand::ActionCommand(UnitOrder action, const Physical* toFollow, Urho3D::Vector2* vector, bool append):
+	action(action), vector(vector), toFollow(toFollow), append(append) {
 }
 
 ActionCommand::~ActionCommand() {
@@ -37,7 +37,6 @@ ActionParameter ActionCommand::getChargeAim(Urho3D::Vector2* charge) {
 	return ActionParameter(new ChargeAim(charge));
 }
 
-
 void ActionCommand::execute() {
 	switch (action) {
 	case UnitOrder::GO:
@@ -49,5 +48,11 @@ void ActionCommand::execute() {
 		break;
 	case UnitOrder::CHARGE:
 		return addChargeAim(vector, append);
+	case UnitOrder::ATTACK:
+		return addAttackAim(toFollow, append);
+	case UnitOrder::DEAD:
+		return addDeadAim();
+	case UnitOrder::DEFEND:
+		return addDefendAim();
 	}
 }
