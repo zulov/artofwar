@@ -334,7 +334,7 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);
-		unit->debug(DebugUnitType::INTERACT, stats);
+		unit->debug(DebugUnitType::ALL_FORCE, stats);
 	}
 	DebugLineRepo::commit();
 }

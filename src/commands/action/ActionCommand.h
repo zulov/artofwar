@@ -26,8 +26,10 @@ protected:
 	virtual void addFollowAim(const Physical* toFollow, bool append) =0;
 	virtual void addChargeAim(Urho3D::Vector2* charge, bool append) =0;
 	virtual void addDeadAim() =0;
-	void addAttackAim(const Physical* physical, bool append){};
-	void addDefendAim(){};
+
+	virtual void addAttackAim(const Physical* physical, bool append) {
+	};
+	virtual void addDefendAim() =0;
 
 	UnitOrder action;
 	Urho3D::Vector2* vector;

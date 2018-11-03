@@ -222,10 +222,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 }
 
 void Controls::executeOnAll(short id, const ActionParameter& parameter) {
-	for (auto& phy : *selected) {
-		Game::getActionList()->add(new IndividualAction(phy, UnitOrder(id), nullptr, false));
-		//phy->action(id, parameter);
-	}
+	Game::getActionList()->add(new GroupAction(selected, UnitOrder(id)));
 }
 
 void Controls::orderPhysical(short id, const ActionParameter& parameter) const {

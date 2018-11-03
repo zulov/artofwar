@@ -35,3 +35,7 @@ void IndividualAction::addFollowAim(const Physical* toFollow, bool append) {
 void IndividualAction::addDeadAim() {
 	entity->action(static_cast<char>(action), ActionParameter());
 }
+
+void IndividualAction::addDefendAim() {
+	entity->action(static_cast<char>(action), ActionParameter());
+}

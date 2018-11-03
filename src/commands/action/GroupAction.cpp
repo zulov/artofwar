@@ -11,6 +11,10 @@ GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, Phy
 	: ActionCommand(action, thing, nullptr, append), entities(entities) {
 }
 
+GroupAction::GroupAction(std::vector<Physical*>* entities, UnitOrder action, bool append)
+	: ActionCommand(action, nullptr, nullptr, append), entities(entities) {
+}
+
 GroupAction::~GroupAction() = default;
 
 void GroupAction::addTargetAim(Urho3D::Vector2* to, bool append) {
@@ -44,5 +48,13 @@ void GroupAction::addFollowAim(const Physical* toFollow, bool append) {
 }
 
 void GroupAction::addDeadAim() {
-	int a = 5;
+	for (auto entity : *entities) {
+		entity->action(static_cast<char>(action), ActionParameter());
+	}
+}
+
+void GroupAction::addDefendAim() {
+	for (auto entity : *entities) {
+		entity->action(static_cast<char>(action), ActionParameter());
+	}
 }

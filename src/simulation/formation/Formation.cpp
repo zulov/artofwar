@@ -169,11 +169,8 @@ void Formation::calculateNotWellFormed() {
 	notWellFormed = 0;
 	notWellFormedExact = 0;
 	for (auto unit : units) {
-		const auto pos = unit->getPosition();
-
-		const auto currentPos = Urho3D::Vector2(pos->x_, pos->z_);
 		const auto desiredPos = getPositionFor(unit->getPositionInFormation());
-		const auto dist = sqDist(currentPos, desiredPos);
+		const auto dist = sqDist(*unit->getPosition(), desiredPos);
 
 		if (dist < 0.5) {
 			rechnessLevel[unit->getPositionInFormation()] = 0;
@@ -260,7 +257,9 @@ Urho3D::Vector2 Formation::getPositionFor(short id) {
 
 	const int column = columnThis - columnLeader;
 	const int row = rowThis - rowLeader;
-
+	if(leaderID==id) {
+		int a =5;
+	}
 	return center - Urho3D::Vector2(column * sparsity, row * sparsity);
 }
 

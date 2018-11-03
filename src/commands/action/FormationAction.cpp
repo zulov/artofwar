@@ -48,5 +48,13 @@ void FormationAction::addFollowAim(const Physical* toFollow, bool append) {
 }
 
 void FormationAction::addDeadAim() {
-	int a = 5;
+	for (auto unit : formation->getUnits()) {
+		unit->action(static_cast<char>(action), ActionParameter());
+	}
+}
+
+void FormationAction::addDefendAim() {
+	for (auto unit : formation->getUnits()) {
+		unit->action(static_cast<char>(action), ActionParameter());
+	}
 }
