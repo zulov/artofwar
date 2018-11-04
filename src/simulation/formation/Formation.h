@@ -22,6 +22,7 @@ public:
 	~Formation();
 
 	void update();
+	void remove();
 	Urho3D::Vector2 getPositionFor(short id);
 	float getPriority(int id) const;
 	FormationState getState() const { return state; }

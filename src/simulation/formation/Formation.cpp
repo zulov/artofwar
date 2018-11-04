@@ -243,6 +243,10 @@ void Formation::update() {
 	}
 }
 
+void Formation::remove() {
+	changeState(FormationState::REACHED);
+}
+
 void Formation::changeState(FormationState newState) {
 	state = newState;
 }
@@ -257,9 +261,7 @@ Urho3D::Vector2 Formation::getPositionFor(short id) {
 
 	const int column = columnThis - columnLeader;
 	const int row = rowThis - rowLeader;
-	if(leaderID==id) {
-		int a =5;
-	}
+
 	return center - Urho3D::Vector2(column * sparsity, row * sparsity);
 }
 

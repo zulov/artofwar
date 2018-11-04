@@ -287,6 +287,7 @@ void Unit::action(char id, const ActionParameter& parameter) {
 		StateManager::changeState(this, UnitState::DEAD);
 		break;
 	case UnitOrder::DEFEND:
+		resetFormation();
 		StateManager::changeState(this, UnitState::DEFEND);
 		break;
 	case UnitOrder::FOLLOW:

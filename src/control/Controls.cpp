@@ -117,7 +117,6 @@ void Controls::rightClick(hit_data& hitData) const {
 
 		break;
 	case ObjectType::RESOURCE:
-
 		Game::getActionList()->add(new GroupAction(selected, UnitOrder::COLLECT, hitData.clicked,
 		                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
 		break;
