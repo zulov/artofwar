@@ -42,7 +42,7 @@ void FormationAction::addFollowAim(const Physical* toFollow, bool append) {
 		}
 		opt.value()->action(static_cast<char>(action),
 		                    getFollowAim(opt.value()->getMainCell(),
-		                                 toFollow->getPosToUseBy(static_cast<Unit*>(opt.value())),
+		                                 toFollow->getPosToUseBy(static_cast<Unit*>(opt.value())).value(),//TODO potencial bug (hasvalue)
 		                                 toFollow));
 	}
 }

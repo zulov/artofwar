@@ -1,6 +1,5 @@
 #include "FollowAim.h"
 #include "../Unit.h"
-#include "Game.h"
 #include "MathUtils.h"
 #include "TargetAim.h"
 #include "simulation/env/Environment.h"
@@ -12,30 +11,33 @@ FollowAim::FollowAim(const Physical* physical, TargetAim* subTarget): physical(p
 
 FollowAim::~FollowAim() = default;
 
-std::vector<Urho3D::Vector3> FollowAim::getDebugLines(Unit* unit) const {
-	return subTarget->getDebugLines(unit);
-	auto position = unit->getPosition();
+std::vector<Urho3D::Vector3> FollowAim::getDebugLines(Unit* follower) const {
+	return subTarget->getDebugLines(follower);
+	auto position = follower->getPosition();
 	std::vector<Urho3D::Vector3> points;
-	auto center = physical->getPosToUseBy(unit);
+	auto center = physical->getPosToUseBy(follower);
 	points.emplace_back(*position);
-	points.emplace_back(center.x_, position->y_, center.y_);
+	//points.emplace_back(center.x_, position->y_, center.y_);
 
 	return points;
 }
 
 Urho3D::Vector2 FollowAim::getDirection(Unit* follower) {
-	const auto pos = physical->getPosToUseBy(follower);
+	const auto opt = physical->getPosToUseBy(follower);
+	if (opt.has_value()) {
+		return dirTo(follower->getPosition(), opt.value());
+	}
+	return {};
 
-	return {
-		pos.x_ - follower->getPosition()->x_,
-		pos.y_ - follower->getPosition()->z_
-	};
 }
 
-bool FollowAim::ifReach(Unit* unit) {
+bool FollowAim::ifReach(Unit* follower) {
 	//subTarget->ifReach(unit);
-	auto posToFollow = physical->getPosToUseBy(unit);
-	return sqDist(*unit->getPosition(), posToFollow) < radiusSq;
+	auto opt = physical->getPosToUseBy(follower);
+	if (opt.has_value()) {
+		sqDist(*follower->getPosition(), opt.value()) < radiusSq;
+	}
+	return true;
 }
 
 bool FollowAim::expired() {

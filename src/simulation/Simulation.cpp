@@ -104,7 +104,7 @@ void Simulation::tryToCollect(Unit* unit) {
 
 void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitState state,
                           const std::function<bool(Physical*)>& condition) {
-	auto [closest, minDistance, indexToInteract] = unit->closestPhysical(list, condition, posToFollow);
+	auto [closest, minDistance, indexToInteract] = unit->closestPhysical(list, condition);
 	unit->toAction(closest, minDistance, indexToInteract, state);
 }
 

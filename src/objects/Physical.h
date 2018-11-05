@@ -4,6 +4,7 @@
 #include <Urho3D/Graphics/BillboardSet.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <iostream>
+#include <optional>
 
 struct ActionParameter;
 class Unit;
@@ -58,9 +59,9 @@ public:
 	virtual int getMainCell() const;
 
 	virtual bool isToDispose() const { return false; }
-	virtual std::tuple<Urho3D::Vector2, float, int> getPosToUseWithIndex(Unit* follower) const;
+	virtual std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* follower) const;
 
-	virtual Urho3D::Vector2 getPosToUseBy(Unit* follower) const;
+	virtual std::optional<Urho3D::Vector2> getPosToUseBy(Unit* follower) const;
 
 	virtual float getMaxHpBarSize() { return 0; }
 

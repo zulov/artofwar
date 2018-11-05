@@ -88,14 +88,12 @@ public:
 	bool hasEnemy();
 
 	std::tuple<Physical*, float, int> closestPhysical(std::vector<Physical*>* things,
-	                                                  const std::function<bool(Physical*)>& condition,
-	                                                  const std::function<std::tuple<Urho3D::Vector2, float, int>(
-		                                                  Physical*, Unit*)>& positionFunc);
+	                                                  const std::function<bool(Physical*)>& condition);
 
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
-	UnitState getActionState() const { return actionState; }
 	short getPositionInFormation() const { return posInFormation; }
 	float getMinimalDistance() const { return minimalDistance; }
+	UnitState getActionState() const { return actionState; }
 	UnitState getState() const { return state; }
 	short getFormation() const { return formation; }
 	bool isToDispose() const override { return state == UnitState::DISPOSE && atState; }
@@ -108,7 +106,7 @@ public:
 	void setOccupiedSlot(int indexToInteract, bool value) { useSockets[indexToInteract] = value; }
 	Urho3D::Vector2 getPosToUse() const;
 
-	std::tuple<Urho3D::Vector2, float, int> getPosToUseWithIndex(Unit* unit) const override;
+	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* unit) const override;
 	void action(char id, const ActionParameter& parameter) override;
 	std::string getValues(int precision) override;
 	Urho3D::String& toMultiLineString() override;

@@ -11,9 +11,9 @@ public:
 	explicit FollowAim(const Physical* physical, TargetAim* subTarget);
 	~FollowAim();
 
-	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const override;
+	std::vector<Urho3D::Vector3> getDebugLines(Unit* follower) const override;
 	Urho3D::Vector2 getDirection(Unit* follower) override;
-	bool ifReach(Unit* unit) override;
+	bool ifReach(Unit* follower) override;
 	bool expired() override;
 private:
 	const Physical* physical;

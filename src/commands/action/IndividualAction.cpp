@@ -26,10 +26,12 @@ void IndividualAction::addChargeAim(Urho3D::Vector2* charge, bool append) {
 }
 
 void IndividualAction::addFollowAim(const Physical* toFollow, bool append) {
-	entity->action(static_cast<char>(action), 
-		  getFollowAim(entity->getMainCell(),
-		                                 toFollow->getPosToUseBy(static_cast<Unit*>(entity)),
-		                                 toFollow));
+	auto opt = toFollow->getPosToUseBy(static_cast<Unit*>(entity));
+	if (opt.has_value()) {
+		entity->action(static_cast<char>(action),
+		               getFollowAim(entity->getMainCell(),
+		                            opt.value(), toFollow));
+	}
 }
 
 void IndividualAction::addDeadAim() {

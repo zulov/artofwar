@@ -86,13 +86,16 @@ int Physical::getMainCell() const {
 	return getBucketIndex();
 }
 
-std::tuple<Urho3D::Vector2, float, int> Physical::getPosToUseWithIndex(Unit* user) const {
-	auto dist = sqDist(position, user->getPosition());
-	return {Urho3D::Vector2(position->x_, position->z_), dist, -1};
+std::optional<std::tuple<Urho3D::Vector2, float, int>> Physical::getPosToUseWithIndex(Unit* user) const {
+	return {};
 }
 
-Urho3D::Vector2 Physical::getPosToUseBy(Unit* follower) const {
-	return std::get<0>(getPosToUseWithIndex(follower));
+std::optional<Urho3D::Vector2> Physical::getPosToUseBy(Unit* follower) const {
+	auto a = getPosToUseWithIndex(follower);
+	if (a.has_value()) {
+		return std::get<0>(a.value());
+	}
+	return {};
 }
 
 float Physical::getHealthBarSize() {

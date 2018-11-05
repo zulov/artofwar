@@ -73,7 +73,7 @@ bool Static::canCollect(int index) {
 		&& Game::getEnvironment()->getCurrentSize(index) <= 2;
 }
 
-std::tuple<Urho3D::Vector2, float, int> Static::getPosToUseWithIndex(Unit* unit) const {
+std::optional<std::tuple<Urho3D::Vector2, float, int>> Static::getPosToUseWithIndex(Unit* unit) const {
 	float minDistance = 999999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
@@ -83,7 +83,10 @@ std::tuple<Urho3D::Vector2, float, int> Static::getPosToUseWithIndex(Unit* unit)
 			setClosest(minDistance, closest, closestIndex, index, vec, unit->getPosition());
 		}
 	}
-	return {closest, minDistance, closestIndex};
+	if (closestIndex >= 0) {
+		return {{closest, minDistance, closestIndex}};
+	}
+	return {};
 }
 
 std::string Static::getValues(int precision) {
