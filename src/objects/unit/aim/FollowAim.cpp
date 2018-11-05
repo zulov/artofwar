@@ -35,7 +35,7 @@ bool FollowAim::ifReach(Unit* follower) {
 	//subTarget->ifReach(unit);
 	auto opt = physical->getPosToUseBy(follower);
 	if (opt.has_value()) {
-		sqDist(*follower->getPosition(), opt.value()) < radiusSq;
+		return sqDist(*follower->getPosition(), opt.value()) < radiusSq;
 	}
 	return true;
 }
