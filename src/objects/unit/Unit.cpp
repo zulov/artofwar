@@ -495,7 +495,10 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 			}
 		}
 	}
-	return {{closest, minDistance, closestIndex}};
+	if (closestIndex >= 0) {
+		return {{closest, minDistance, closestIndex}};
+	}
+	return {};
 }
 
 Urho3D::Vector2 Unit::getPosToUse() const {
