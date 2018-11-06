@@ -29,6 +29,7 @@ public:
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceClose();
 			unit->thingsToInteract[0]->setOccupiedSlot(unit->indexToInteract, false);
+			unit->thingsToInteract.clear();
 		}
 		unit->maxSpeed = unit->dbLevel->maxSpeed;
 		unit->thingsToInteract.clear();
@@ -43,7 +44,6 @@ public:
 			}
 			++unit->currentFrameState;
 		} else {
-			unit->thingsToInteract.clear();
 			StateManager::changeState(unit, UnitState::STOP);
 		}
 	}

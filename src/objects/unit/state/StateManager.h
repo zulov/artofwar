@@ -31,6 +31,4 @@ private:
 	State* states[STATE_SIZE]{};
 	bool ordersToUnit[UNITS_NUMBER_DB][STATE_SIZE];
 	static StateManager* instance;
-
-	std::vector<char> orderToState[UNIT_ORDER_SIZE];
 };
