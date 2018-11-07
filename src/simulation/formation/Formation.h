@@ -2,14 +2,10 @@
 #include "FormationState.h"
 #include "FormationType.h"
 #include "UnitOrder.h"
+#include <Urho3D/Math/Vector2.h>
 #include <optional>
 #include <vector>
-#include <Urho3D/Math/Vector2.h>
 
-
-namespace Urho3D {
-	class Vector2;
-}
 
 struct FutureAim;
 class Physical;
@@ -41,6 +37,7 @@ private:
 	void updateSizes();
 	void calculateNotWellFormed();
 	void innerUpdate();
+	void stopAllBesideLeader();
 	void electLeader();
 
 	void changeState(FormationState newState);
@@ -61,12 +58,10 @@ private:
 	Unit* oldLeader = nullptr;
 	FormationState state;
 
-	//Aims aims;
 	std::vector<FutureAim> futureOrders;
-	//bool hasFutureOrder = false;
 
-	float theresholedMin = 0.01;
-	float theresholedMax = 0.5;
+	float thresholdMin = 0.01;
+	float thresholdMax = 0.5;
 	float notWellFormed = 1.0;
 	float notWellFormedExact = 1.0;
 };

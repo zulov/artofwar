@@ -40,10 +40,25 @@ void FormationAction::addFollowAim(const Physical* toFollow, bool append) {
 				StateManager::changeState(unit, UnitState::STOP);
 			}
 		}
-		opt.value()->action(static_cast<char>(action),
-		                    getFollowAim(opt.value()->getMainCell(),
-		                                 toFollow->getPosToUseBy(static_cast<Unit*>(opt.value())).value(),//TODO potencial bug (hasvalue)
-		                                 toFollow));
+		auto posOpt = toFollow->getPosToUseBy(static_cast<Unit*>(opt.value()));
+		if (posOpt.has_value()) {
+			opt.value()->action(static_cast<char>(action),
+			                    getFollowAim(opt.value()->getMainCell(),
+			                                 posOpt.value(), toFollow));
+		}
+	}
+}
+
+void FormationAction::addAttackAim(const Physical* toAttack, bool append) {
+	auto opt = formation->getLeader();
+	if (opt.has_value()) {
+		auto posOpt = toAttack->getPosToUseWithIndex(static_cast<Unit*>(opt.value()));
+		if (posOpt.has_value()) {
+			auto pos = posOpt.value();
+			opt.value()->action(static_cast<char>(action),
+			                    getFollowAim(opt.value()->getMainCell(),
+			                                 pos, toAttack));
+		}
 	}
 }
 

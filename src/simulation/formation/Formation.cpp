@@ -199,32 +199,35 @@ void Formation::innerUpdate() {
 	}
 }
 
+void Formation::stopAllBesideLeader() {
+	for (auto unit : units) {
+		if (unit != leader) {
+			StateManager::changeState(unit, UnitState::STOP);
+		}
+	}
+}
+
 void Formation::update() {
 	switch (state) {
 	case FormationState::FORMING:
 		innerUpdate();
-		if (notWellFormed < theresholedMin) {
+		if (notWellFormed < thresholdMin) {
 			changeState(FormationState::MOVING);
 			if (!futureOrders.empty()) {
 				const auto& futureOrder = futureOrders[0];
 				Game::getActionList()->add(new FormationAction(this, futureOrder.action,
 				                                               futureOrder.physical,
-				                                               new Urho3D::Vector2(futureOrder.vector)
-				                                              ));
-				for (auto unit : units) {
-					if (unit != leader) {
-						StateManager::changeState(unit, UnitState::STOP);
-					}
-				}
+				                                               new Urho3D::Vector2(futureOrder.vector)));
+				stopAllBesideLeader();
 				futureOrders.erase(futureOrders.begin()); //TODO to zachowaæ
 			}
 		}
 		break;
 	case FormationState::MOVING:
 		innerUpdate();
-		if (notWellFormed > theresholedMax) {
+		if (notWellFormed > thresholdMax) {
 			changeState(FormationState::FORMING);
-		} else if (notWellFormedExact < theresholedMin
+		} else if (notWellFormedExact < thresholdMin
 			&& !leader->hasAim()) {
 			if (futureOrders.empty()) {
 				changeState(FormationState::REACHED);

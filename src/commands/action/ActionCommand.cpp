@@ -11,7 +11,7 @@
 
 
 ActionCommand::ActionCommand(UnitOrder action, const Physical* toFollow, Urho3D::Vector2* vector, bool append):
-	action(action), vector(vector), toFollow(toFollow), append(append) {
+	action(action), vector(vector), toUse(toFollow), append(append) {
 }
 
 ActionCommand::~ActionCommand() {
@@ -42,14 +42,14 @@ void ActionCommand::execute() {
 	case UnitOrder::GO:
 		return addTargetAim(vector, append);
 	case UnitOrder::FOLLOW:
-		if (toFollow && toFollow->isAlive()) {
-			addFollowAim(toFollow, append);
+		if (toUse && toUse->isAlive()) {
+			addFollowAim(toUse, append);
 		}
 		break;
 	case UnitOrder::CHARGE:
 		return addChargeAim(vector, append);
 	case UnitOrder::ATTACK:
-		return addAttackAim(toFollow, append);
+		return addAttackAim(toUse, append);
 	case UnitOrder::DEAD:
 		return addDeadAim();
 	case UnitOrder::DEFEND:

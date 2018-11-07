@@ -47,6 +47,16 @@ void GroupAction::addFollowAim(const Physical* toFollow, bool append) {
 	}
 }
 
+void GroupAction::addAttackAim(const Physical* toAttack, bool append) {
+	auto opt = Game::getFormationManager()->createFormation(entities);
+	if (opt.has_value()) {
+		if (!append) {
+			opt.value()->semiReset();
+		}
+		opt.value()->addAim({}, toAttack, action, append);
+	}
+}
+
 void GroupAction::addDeadAim() {
 	for (auto entity : *entities) {
 		entity->action(static_cast<char>(action), ActionParameter());
