@@ -4,6 +4,8 @@
 #include "objects/unit/state/StateManager.h"
 #include "simulation/env/Environment.h"
 #include "simulation/formation/Formation.h"
+#include "commands/CommandList.h"
+#include "IndividualAction.h"
 
 FormationAction::FormationAction(Formation* formation, UnitOrder action, const Physical* physical,
                                  Urho3D::Vector2* vector,
@@ -54,10 +56,25 @@ void FormationAction::addAttackAim(const Physical* toAttack, bool append) {
 	if (opt.has_value()) {
 		auto posOpt = toAttack->getPosToUseWithIndex(static_cast<Unit*>(opt.value()));
 		if (posOpt.has_value()) {
-			auto pos = posOpt.value();
-			opt.value()->action(static_cast<char>(action),
-			                    getFollowAim(opt.value()->getMainCell(),
-			                                 pos, toAttack));
+			auto res = posOpt.value();
+			auto dist = std::get<1>(res);
+			if (dist > 25) {
+				//TODO hardcode
+				auto pos = std::get<0>(res);
+				opt.value()->action(static_cast<char>(action),
+				                    getFollowAim(opt.value()->getMainCell(),
+				                                 pos, toAttack));
+				formation->addAim({}, toAttack, action, append); //Dodanie celu po dojsciu
+			} else {
+				for (auto unit : formation->getUnits()) {
+					unit->resetFormation();
+					Game::getActionList()->add(new IndividualAction(unit, UnitOrder::ATTACK, toAttack));//TODO to samo zrobic w innnych akcjach z atakiem
+					//TOAttack jak nie ten to zaatakowac blizeszego
+					//unit->action(UnitOrder::ATTACK)
+				}
+				formation->remove();
+			}
+
 		}
 	}
 }

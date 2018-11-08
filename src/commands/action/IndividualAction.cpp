@@ -34,6 +34,10 @@ void IndividualAction::addFollowAim(const Physical* toFollow, bool append) {
 	}
 }
 
+void IndividualAction::addAttackAim(const Physical* physical, bool append) {
+	int a = 5;
+}
+
 void IndividualAction::addDeadAim() {
 	entity->action(static_cast<char>(action), ActionParameter());
 }
