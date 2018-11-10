@@ -5,8 +5,8 @@
 #include "commands/action/FormationAction.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/aim/FutureAim.h"
-#include "simulation/env/Environment.h"
 #include "objects/unit/state/StateManager.h"
+#include "simulation/env/Environment.h"
 #include <Urho3D/Math/Vector2.h>
 #include <numeric>
 #include <unordered_set>

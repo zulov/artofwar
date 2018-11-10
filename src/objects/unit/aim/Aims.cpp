@@ -20,22 +20,20 @@ std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) const {
 	if (current) {
 		return current->getDirection(unit);
 	}
-	return std::nullopt;
+	return {};
 }
 
 void Aims::clearExpired() {
-	nextAims.erase(std::remove_if(nextAims.begin(),
-	                              nextAims.end(),
+	nextAims.erase(std::remove_if(nextAims.begin(), nextAims.end(),
 	                              [](FutureAim fa) { return fa.expired(); }),
 	               nextAims.end());
 	if (current != nullptr && current->expired()) {
-		delete current;
-		current = nullptr;
+		removeCurrentAim();
 	}
 }
 
 bool Aims::ifReach(Unit* unit) {
-	if (current == nullptr && nextAims.empty()) { return false; }
+	if (current == nullptr && nextAims.empty()) { return false; }//TODO bug true??
 	if (current) {
 		if (current->ifReach(unit) && nextAims.empty()) {
 			clear();
@@ -66,7 +64,7 @@ void Aims::add(const FutureAim& aim) {
 
 void Aims::clear() {
 	nextAims.clear();
-	current = nullptr;
+	removeCurrentAim();
 }
 
 void Aims::removeCurrentAim() {
@@ -74,6 +72,6 @@ void Aims::removeCurrentAim() {
 	current = nullptr;
 }
 
-std::vector<Urho3D::Vector3> Aims::getDebugLines(Unit* unit) {
+std::vector<Urho3D::Vector3> Aims::getDebugLines(Unit* unit) const {
 	return current->getDebugLines(unit);
 }

@@ -24,7 +24,7 @@ public:
 	void removeCurrentAim();
 	bool hasCurrent() const { return current != nullptr; }
 	bool hasAim() const { return hasCurrent() || !nextAims.empty(); }
-	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit);
+	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const;
 private:
 	std::vector<FutureAim> nextAims;
 	Aim* current;

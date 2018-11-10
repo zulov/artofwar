@@ -62,7 +62,7 @@ public:
 	void interactWithOne(Physical* thing, int indexToInteract, UnitState action);
 
 	void updateHeight(float y, double timeStep);
-	void addAim(Aim* aim);
+	//void addAim(Aim* aim);
 
 	void setState(UnitState _state);
 
@@ -76,12 +76,12 @@ public:
 	void removeCurrentAim();
 	void setIndexToInteract(int index);
 	int getIndexToInteract() const { return indexToInteract; }
-	bool closeEnoughToAttack();
+	bool closeEnoughToAttack() const;
 
 	static std::string getColumns();
 	void addUpgrade(db_unit_upgrade* upgrade);
 	void changeColor(ColorMode mode);
-	void addAim(const FutureAim& aim, bool append = false);
+	//void addAim(const FutureAim& aim, bool append = false);
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);
 	bool isFirstThingAlive() const;

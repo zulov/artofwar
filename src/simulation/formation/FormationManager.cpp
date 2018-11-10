@@ -12,7 +12,7 @@ FormationManager::~FormationManager() {
 }
 
 std::optional<Formation*> FormationManager::createFormation(std::vector<Physical*>* _units, FormationType _type) {
-	if (_units->empty()) { return std::nullopt; }
+	if (_units->empty()) { return {}; }
 	if (_type == FormationType::NONE) {
 		for (auto unit : *_units) {
 			static_cast<Unit*>(unit)->setFormation(-1);

@@ -179,16 +179,16 @@ void Unit::updateHeight(float y, double timeStep) {
 	position->y_ = y;
 }
 
-void Unit::addAim(Aim* aim) {
-	aims.add(aim);
-}
-
-void Unit::addAim(const FutureAim& aim, bool append) {
-	if (!append) {
-		clearAims();
-	}
-	aims.add(aim);
-}
+// void Unit::addAim(Aim* aim) {
+// 	aims.add(aim);
+// }
+//
+// void Unit::addAim(const FutureAim& aim, bool append) {
+// 	if (!append) {
+// 		clearAims();
+// 	}
+// 	aims.add(aim);
+// }
 
 void Unit::drawLineTo(const Urho3D::Vector3& second,
                       const Urho3D::Color& color = Urho3D::Color::WHITE) const {
@@ -378,11 +378,8 @@ void Unit::setPositionInFormation(short _pos) {
 	posInFormation = _pos;
 }
 
-bool Unit::closeEnoughToAttack() {
-	auto pos = getPosToUse();
-	auto vec = dirTo(position, pos);
-
-	return vec.LengthSquared() < attackRange * attackRange;
+bool Unit::closeEnoughToAttack() const {
+	return dirTo(position, getPosToUse()).LengthSquared() < attackRange * attackRange;
 }
 
 std::string Unit::getColumns() {

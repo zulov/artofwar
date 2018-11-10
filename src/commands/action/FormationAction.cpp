@@ -64,7 +64,7 @@ void FormationAction::addAttackAim(const Physical* toAttack, bool append) {
 				opt.value()->action(static_cast<char>(action),
 				                    getFollowAim(opt.value()->getMainCell(),
 				                                 pos, toAttack));
-				formation->addAim({}, toAttack, action, append); //Dodanie celu po dojsciu
+				formation->addAim({}, toAttack, action, true); //Dodanie celu po dojsciu
 			} else {
 				for (auto unit : formation->getUnits()) {
 					unit->resetFormation();
