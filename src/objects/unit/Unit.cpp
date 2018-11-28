@@ -18,7 +18,6 @@
 #include <algorithm>
 #include "consts.h"
 #include "simulation/env/Environment.h"
-#include "objects/PhysicalUtils.h"
 
 
 Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
@@ -182,13 +181,13 @@ void Unit::updateHeight(float y, double timeStep) {
 // void Unit::addAim(Aim* aim) {
 // 	aims.add(aim);
 // }
-//
-// void Unit::addAim(const FutureAim& aim, bool append) {
-// 	if (!append) {
-// 		clearAims();
-// 	}
-// 	aims.add(aim);
-// }
+
+void Unit::addAim(const FutureAim& aim, bool append) {
+	if (!append) {
+		clearAims();
+	}
+	aims.add(aim);
+}
 
 void Unit::drawLineTo(const Urho3D::Vector3& second,
                       const Urho3D::Color& color = Urho3D::Color::WHITE) const {
