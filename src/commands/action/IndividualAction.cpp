@@ -4,6 +4,7 @@
 #include "simulation/env/Environment.h"
 
 
+
 IndividualAction::IndividualAction(Physical* entity, UnitOrder action, const Physical* paremeter, bool append)
 	: ActionCommand(action, paremeter, nullptr, append), entity(entity) {
 }
@@ -13,6 +14,11 @@ IndividualAction::IndividualAction(Physical* entity, UnitOrder action, const Urh
 }
 
 IndividualAction::~IndividualAction() = default;
+
+Aim* IndividualAction::createAim(const FutureAim& nextAim) {
+	int a=5;
+	return nullptr;
+}
 
 void IndividualAction::addTargetAim(Urho3D::Vector2* to, bool append) {
 	entity->action(static_cast<char>(action), getTargetAim(entity->getMainCell(), *to));

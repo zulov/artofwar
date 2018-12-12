@@ -178,15 +178,8 @@ void Unit::updateHeight(float y, double timeStep) {
 	position->y_ = y;
 }
 
-// void Unit::addAim(Aim* aim) {
-// 	aims.add(aim);
-// }
-
 void Unit::addAim(const FutureAim& aim, bool append) {
-	if (!append) {
-		clearAims();
-	}
-	aims.add(aim);
+	aims.add(aim, append);
 }
 
 void Unit::drawLineTo(const Urho3D::Vector3& second,
@@ -250,10 +243,6 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 	}
 }
 
-void Unit::clearAims() {
-	aims.clear();
-}
-
 void Unit::removeCurrentAim() {
 	aims.removeCurrentAim();
 }
@@ -277,18 +266,18 @@ void Unit::action(char id, const ActionParameter& parameter) {
 		StateManager::changeState(this, UnitState::GO_TO, parameter);
 		break;
 	case UnitOrder::STOP:
-		StateManager::changeState(this, UnitState::STOP);
+		StateManager::changeState(this, UnitState::STOP, parameter);
 		break;
 	case UnitOrder::CHARGE:
 		StateManager::changeState(this, UnitState::CHARGE, parameter);
 		break;
 	case UnitOrder::ATTACK: break;
 	case UnitOrder::DEAD:
-		StateManager::changeState(this, UnitState::DEAD);
+		StateManager::changeState(this, UnitState::DEAD, parameter);
 		break;
 	case UnitOrder::DEFEND:
 		resetFormation();
-		StateManager::changeState(this, UnitState::DEFEND);
+		StateManager::changeState(this, UnitState::DEFEND, parameter);
 		break;
 	case UnitOrder::FOLLOW:
 		StateManager::changeState(this, UnitState::FOLLOW, parameter);
@@ -375,6 +364,10 @@ void Unit::resetFormation() {
 
 void Unit::setPositionInFormation(short _pos) {
 	posInFormation = _pos;
+}
+
+void Unit::clearAims() {
+	aims.clear();
 }
 
 bool Unit::closeEnoughToAttack() const {

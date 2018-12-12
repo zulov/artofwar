@@ -13,7 +13,7 @@ public:
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->clearAims();
-		unit->addAim(parameter.aim);
+//		unit->addAim(parameter.aim);
 		//TODO aim?
 	}
 

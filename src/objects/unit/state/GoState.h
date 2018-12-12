@@ -16,7 +16,7 @@ public:
 	~GoState() = default;
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
-		unit->addAim(parameter.aim);
+//		unit->addAim(parameter.aim);
 		//TODO aim?
 	}
 

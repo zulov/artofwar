@@ -22,22 +22,24 @@ ActionCommand::~ActionCommand() {
 ActionParameter ActionCommand::getTargetAim(int startInx, Urho3D::Vector2& to) {
 	const auto path = Game::getEnvironment()->findPath(startInx, to);
 	if (!path->empty()) {
-		return ActionParameter(new TargetAim(*path));
+		return ActionParameter();
 	}
-	return ActionParameter(new DummyAim());
+	return ActionParameter();
 }
 
 ActionParameter ActionCommand::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow) {
 	auto const target = getTargetAim(startInx, toSoFar);
 
-	return ActionParameter(new FollowAim(toFollow, static_cast<TargetAim*>(target.aim)));
+	return ActionParameter();
 }
 
 ActionParameter ActionCommand::getChargeAim(Urho3D::Vector2* charge) {
-	return ActionParameter(new ChargeAim(charge));
+	return ActionParameter();
 }
 
 void ActionCommand::execute() {
+
+
 	switch (action) {
 	case UnitOrder::GO:
 		return addTargetAim(vector, append);

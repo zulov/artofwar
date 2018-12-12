@@ -18,14 +18,14 @@ public:
 	std::optional<Urho3D::Vector2> getDirection(Unit* unit) const;
 	void clearExpired();
 	bool ifReach(Unit* unit);
-	void add(const FutureAim& aim);
+	void add(const FutureAim& aim, bool append);
 	void clear();
 	void removeCurrentAim();
 	bool hasCurrent() const { return current != nullptr; }
 	bool hasAim() const { return hasCurrent() || !nextAims.empty(); }
 	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const;
 private:
-	void add(Aim* aim);
+	void next();
 	std::vector<FutureAim> nextAims;
 	Aim* current;
 };

@@ -62,7 +62,6 @@ public:
 	void interactWithOne(Physical* thing, int indexToInteract, UnitState action);
 
 	void updateHeight(float y, double timeStep);
-	//void addAim(Aim* aim);
 
 	void setState(UnitState _state);
 

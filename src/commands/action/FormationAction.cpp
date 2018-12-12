@@ -6,6 +6,7 @@
 #include "simulation/formation/Formation.h"
 #include "commands/CommandList.h"
 #include "IndividualAction.h"
+#include "objects/unit/aim/FutureAim.h"
 
 FormationAction::FormationAction(Formation* formation, UnitOrder action, const Physical* physical,
                                  Urho3D::Vector2* vector,
@@ -68,9 +69,8 @@ void FormationAction::addAttackAim(const Physical* toAttack, bool append) {
 			} else {
 				for (auto unit : formation->getUnits()) {
 					unit->resetFormation();
-					Game::getActionList()->add(new IndividualAction(unit, UnitOrder::ATTACK, toAttack));//TODO to samo zrobic w innnych akcjach z atakiem
+					unit->addAim(FutureAim(toAttack,UnitOrder::ATTACK), false);//TODO to samo zrobic w innnych akcjach z atakiem
 					//TOAttack jak nie ten to zaatakowac blizeszego
-					//unit->action(UnitOrder::ATTACK)
 				}
 				formation->remove();
 			}

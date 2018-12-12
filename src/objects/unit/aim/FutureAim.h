@@ -8,7 +8,6 @@ struct FutureAim
 	const Physical* physical;
 	UnitOrder action;
 
-
 	FutureAim(const Urho3D::Vector2& vector, const Physical* physical, UnitOrder action)
 		: vector(vector),
 		physical(physical),
@@ -20,7 +19,7 @@ struct FutureAim
 		action(action) {
 	}
 
-	FutureAim(Physical* physical, UnitOrder action)
+	FutureAim(const Physical* physical, UnitOrder action)
 		: physical(physical),
 		action(action) {
 	}
