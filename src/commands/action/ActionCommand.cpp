@@ -22,7 +22,7 @@ ActionCommand::~ActionCommand() {
 ActionParameter ActionCommand::getTargetAim(int startInx, Urho3D::Vector2& to) {
 	const auto path = Game::getEnvironment()->findPath(startInx, to);
 	if (!path->empty()) {
-		return ActionParameter();
+		return ActionParameter(new TargetAim(*path));
 	}
 	return ActionParameter();
 }

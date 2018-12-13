@@ -178,8 +178,8 @@ void Unit::updateHeight(float y, double timeStep) {
 	position->y_ = y;
 }
 
-void Unit::addAim(const FutureAim& aim, bool append) {
-	aims.add(aim, append);
+void Unit::addAim(FutureAim& aim, bool append) {
+	aims.add(this, aim, append);
 }
 
 void Unit::drawLineTo(const Urho3D::Vector3& second,

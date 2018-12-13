@@ -39,7 +39,7 @@ bool Aims::ifReach(Unit* unit) {
 			return true;
 		}
 	} else if (!nextAims.empty()) {
-		current = IndividualAction::createAim(*nextAims.begin());
+		current = IndividualAction::createAim(unit, *nextAims.begin());
 		// if (nextAims[0].physical != nullptr) {
 		// 	
 		// 	Game::getActionList()->add(new IndividualAction(unit, nextAims[0].action,
@@ -54,10 +54,10 @@ bool Aims::ifReach(Unit* unit) {
 	return false;
 }
 
-void Aims::add(const FutureAim& aim, bool append) {
+void Aims::add(Unit* unit, FutureAim& aim, bool append) {
 	if (!append) {
 		clear();
-		current = IndividualAction::createAim(aim);
+		current = IndividualAction::createAim(unit, aim);
 	} else {
 		nextAims.push_back(aim);
 	}

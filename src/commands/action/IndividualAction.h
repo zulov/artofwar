@@ -1,6 +1,7 @@
 #pragma once
 #include "ActionCommand.h"
 #include "objects/unit/aim/Aims.h"
+#include "objects/unit/aim/FutureAim.h"
 
 struct FutureAim;
 
@@ -8,10 +9,10 @@ class IndividualAction : public ActionCommand
 {
 public:
 	IndividualAction(Physical* entity, FutureAim& futureAim, bool append = false);
-	static Aim* createAim(const FutureAim& nextAim);
+	static Aim* createAim(Unit *unit, FutureAim& nextAim);
 private:
-	IndividualAction(Physical* entity, UnitOrder action, const Physical* paremeter, bool append = false);
-	IndividualAction(Physical* entity, UnitOrder action, const Urho3D::Vector2& vector, bool append = false);
+	// IndividualAction(Physical* entity, UnitOrder action, const Physical* paremeter, bool append = false);
+	// IndividualAction(Physical* entity, UnitOrder action, const Urho3D::Vector2& vector, bool append = false);
 	~IndividualAction();
 private:
 	void addTargetAim(Urho3D::Vector2* to, bool append) override;
@@ -21,4 +22,5 @@ private:
 	void addDeadAim() override;	
 	void addDefendAim() override;
 	Physical* entity; //TODO czy to moze byc UNit?
+	FutureAim futureAim;
 };

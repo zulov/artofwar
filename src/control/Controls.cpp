@@ -8,6 +8,7 @@
 #include "commands/CommandList.h"
 #include "commands/action/ActionCommand.h"
 #include "commands/action/GroupAction.h"
+#include "commands/action/IndividualAction.h"
 #include "commands/creation/CreationCommandList.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
@@ -24,7 +25,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <algorithm>
 #include <queue>
-#include "commands/action/IndividualAction.h"
+#include "objects/unit/aim/FutureAim.h"
 
 
 Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), input(_input) {
@@ -100,9 +101,16 @@ void Controls::rightClick(hit_data& hitData) const {
 	switch (hitData.clicked->getType()) {
 	case ObjectType::PHYSICAL:
 		{
+		if(selected->size()==1) {
+			Game::getActionList()->add(new IndividualAction(selected->at(0), 
+				FutureAim({hitData.position.x_, hitData.position.z_}, UnitOrder::GO ),
+				input->GetKeyDown(Urho3D::KEY_SHIFT)));
+		}else {
+			
 		Game::getActionList()->add(new GroupAction(selected, UnitOrder::GO,
 		                                           new Urho3D::Vector2(hitData.position.x_, hitData.position.z_),
 		                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
+		}
 		break;
 		}
 	case ObjectType::UNIT:

@@ -1,12 +1,13 @@
 #include "FormationAction.h"
 #include "Game.h"
+#include "IndividualAction.h"
+#include "commands/CommandList.h"
 #include "objects/unit/Unit.h"
+#include "objects/unit/aim/FutureAim.h"
 #include "objects/unit/state/StateManager.h"
 #include "simulation/env/Environment.h"
 #include "simulation/formation/Formation.h"
-#include "commands/CommandList.h"
-#include "IndividualAction.h"
-#include "objects/unit/aim/FutureAim.h"
+
 
 FormationAction::FormationAction(Formation* formation, UnitOrder action, const Physical* physical,
                                  Urho3D::Vector2* vector,
@@ -18,7 +19,6 @@ FormationAction::~FormationAction() = default;
 void FormationAction::addTargetAim(Urho3D::Vector2* to, bool append) {
 	auto opt = formation->getLeader();
 	if (opt.has_value()) {
-
 		opt.value()->action(static_cast<char>(action), getTargetAim(opt.value()->getMainCell(), *to));
 		for (auto unit : formation->getUnits()) {
 			if (unit != opt.value()) {
