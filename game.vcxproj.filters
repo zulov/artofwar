@@ -186,6 +186,8 @@
     <ClCompile Include="src\simulation\env\Environment.cpp">
       <Filter>simulation\env</Filter>
     </ClCompile>
+    <ClCompile Include="src\objects\unit\aim\order\FutureOrder.cpp" />
+    <ClCompile Include="src\objects\unit\aim\order\IndividualOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -436,7 +438,6 @@
     <ClInclude Include="src\objects\unit\aim\Aims.h">
       <Filter>aim</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\unit\aim\FutureAim.h" />
     <ClInclude Include="src\objects\unit\ChargeData.h" />
     <ClInclude Include="src\objects\NodeUtils.h" />
     <ClInclude Include="src\objects\unit\state\ShotState.h" />
@@ -463,6 +464,8 @@
       <Filter>simulation\env</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\unit\MissileData.h" />
+    <ClInclude Include="src\objects\unit\aim\order\FutureOrder.h" />
+    <ClInclude Include="src\objects\unit\aim\order\IndividualOrder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

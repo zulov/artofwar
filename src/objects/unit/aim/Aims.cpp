@@ -3,7 +3,7 @@
 #include "TargetAim.h"
 #include "commands/action/IndividualAction.h"
 #include "objects/unit/Unit.h"
-#include "objects/unit/aim/FutureAim.h"
+#include "objects/unit/aim/order/FutureOrder.h"
 #include <algorithm>
 #include <optional>
 
@@ -24,7 +24,7 @@ std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) const {
 
 void Aims::clearExpired() {
 	nextAims.erase(std::remove_if(nextAims.begin(), nextAims.end(),
-	                              [](FutureAim fa) { return fa.expired(); }),
+	                              [](FutureOrder fa) { return fa.expired(); }),
 	               nextAims.end());
 	if (current != nullptr && current->expired()) {
 		removeCurrentAim();
@@ -54,7 +54,7 @@ bool Aims::ifReach(Unit* unit) {
 	return false;
 }
 
-void Aims::add(Unit* unit, FutureAim& aim, bool append) {
+void Aims::add(Unit* unit, FutureOrder& aim, bool append) {
 	if (!append) {
 		clear();
 		current = IndividualAction::createAim(unit, aim);

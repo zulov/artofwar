@@ -8,7 +8,7 @@
 class Aim;
 class Unit;
 class Entity;
-struct FutureAim;
+class FutureOrder;
 
 class Aims
 {
@@ -18,7 +18,7 @@ public:
 	std::optional<Urho3D::Vector2> getDirection(Unit* unit) const;
 	void clearExpired();
 	bool ifReach(Unit* unit);
-	void add(Unit* unit, FutureAim& aim, bool append);
+	void add(Unit* unit, FutureOrder& aim, bool append);
 	void clear();
 	void removeCurrentAim();
 	bool hasCurrent() const { return current != nullptr; }
@@ -26,6 +26,6 @@ public:
 	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const;
 private:
 	void next();
-	std::vector<FutureAim> nextAims;
+	std::vector<FutureOrder> nextAims;
 	Aim* current;
 };

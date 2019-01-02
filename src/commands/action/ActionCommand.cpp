@@ -10,14 +10,9 @@
 #include <chrono>
 
 
-ActionCommand::ActionCommand(UnitOrder action, const Physical* toFollow, Urho3D::Vector2* vector, bool append):
-	action(action), vector(vector), toUse(toFollow), append(append) {
+ActionCommand::ActionCommand(FutureOrder& futureAim, bool append): futureAim(futureAim),
+	append(append) {
 }
-
-ActionCommand::~ActionCommand() {
-	delete vector;
-}
-
 
 ActionParameter ActionCommand::getTargetAim(int startInx, Urho3D::Vector2& to) {
 	const auto path = Game::getEnvironment()->findPath(startInx, to);
@@ -38,23 +33,5 @@ ActionParameter ActionCommand::getChargeAim(Urho3D::Vector2* charge) {
 }
 
 void ActionCommand::execute() {
-
-
-	switch (action) {
-	case UnitOrder::GO:
-		return addTargetAim(vector, append);
-	case UnitOrder::FOLLOW:
-		if (toUse && toUse->isAlive()) {
-			addFollowAim(toUse, append);
-		}
-		break;
-	case UnitOrder::CHARGE:
-		return addChargeAim(vector, append);
-	case UnitOrder::ATTACK:
-		return addAttackAim(toUse, append);
-	case UnitOrder::DEAD:
-		return addDeadAim();
-	case UnitOrder::DEFEND:
-		return addDefendAim();
-	}
+	addAim();
 }

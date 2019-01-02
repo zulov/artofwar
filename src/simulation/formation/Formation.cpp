@@ -4,7 +4,7 @@
 #include "commands/CommandList.h"
 #include "commands/action/FormationAction.h"
 #include "objects/unit/Unit.h"
-#include "objects/unit/aim/FutureAim.h"
+#include "objects/unit/aim/order/FutureOrder.h"
 #include "objects/unit/state/StateManager.h"
 #include "simulation/env/Environment.h"
 #include <Urho3D/Math/Vector2.h>
@@ -215,9 +215,10 @@ void Formation::update() {
 			changeState(FormationState::MOVING);
 			if (!futureOrders.empty()) {
 				const auto& futureOrder = futureOrders[0];
-				Game::getActionList()->add(new FormationAction(this, futureOrder.action,
-				                                               futureOrder.physical,
-				                                               new Urho3D::Vector2(futureOrder.vector)));
+				//TODO poprostu akcja
+				FormationAction::
+				Game::getActionList()->add(new FormationAction(this, FutureOrder()
+					futureOrder, new Urho3D::Vector2(futureOrder.vector)));
 				stopAllBesideLeader();
 				futureOrders.erase(futureOrders.begin()); //TODO to zachowaæ
 			}
@@ -279,12 +280,11 @@ std::optional<Physical*> Formation::getLeader() {
 	return {};
 }
 
-void Formation::addAim(const Urho3D::Vector2& _vector, const Physical* _physical,
-                       UnitOrder _action, bool append) {
+void Formation::addAim(FutureOrder& aim, bool append) {
 	if (!append) {
 		futureOrders.clear();
 	}
-	futureOrders.emplace_back(_vector, _physical, _action);
+	futureOrders.emplace_back(aim);
 }
 
 size_t Formation::getSize() {

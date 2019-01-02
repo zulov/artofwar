@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "ObjectEnums.h"
 #include "UnitOrder.h"
-#include "aim/FutureAim.h"
+#include "aim/FutureOrder.h"
 #include "colors/ColorPeletteRepo.h"
 #include "database/DatabaseCache.h"
 #include "objects/unit/ChargeData.h"
@@ -138,7 +138,7 @@ void Unit::actionIfCloseEnough(UnitState action, Physical* closest, int indexToI
 		if (sqDistance < closeRange * closeRange) {
 			interactWithOne(closest, indexToInteract, action);
 		} else if (sqDistance < intrestRange * intrestRange) {
-			addAim(FutureAim(closest, UnitOrder::FOLLOW));
+			addAim(FutureOrder(closest, UnitOrder::FOLLOW));
 		}
 	}
 }
@@ -178,7 +178,7 @@ void Unit::updateHeight(float y, double timeStep) {
 	position->y_ = y;
 }
 
-void Unit::addAim(FutureAim& aim, bool append) {
+void Unit::addAim(FutureOrder& aim, bool append) {
 	aims.add(this, aim, append);
 }
 

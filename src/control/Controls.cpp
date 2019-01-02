@@ -25,7 +25,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <algorithm>
 #include <queue>
-#include "objects/unit/aim/FutureAim.h"
+#include "objects/unit/aim/order/FutureOrder.h"
 
 
 Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), input(_input) {
@@ -101,31 +101,28 @@ void Controls::rightClick(hit_data& hitData) const {
 	switch (hitData.clicked->getType()) {
 	case ObjectType::PHYSICAL:
 		{
-		if(selected->size()==1) {
-			Game::getActionList()->add(new IndividualAction(selected->at(0), 
-				FutureAim({hitData.position.x_, hitData.position.z_}, UnitOrder::GO ),
-				input->GetKeyDown(Urho3D::KEY_SHIFT)));
-		}else {
-			
-		Game::getActionList()->add(new GroupAction(selected, UnitOrder::GO,
-		                                           new Urho3D::Vector2(hitData.position.x_, hitData.position.z_),
-		                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
+		auto fa = FutureOrder({hitData.position.x_, hitData.position.z_}, UnitOrder::GO);
+		if (selected->size() == 1) {
+			Game::getActionList()->add(new IndividualAction(selected->at(0), fa,
+			                                                input->GetKeyDown(Urho3D::KEY_SHIFT)));
+		} else {
+			Game::getActionList()->add(new GroupAction(selected, fa,
+			                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
 		}
 		break;
 		}
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
 		if (hitData.clicked->getTeam() == selected->at(0)->getTeam()) {
-			Game::getActionList()->add(new GroupAction(selected, UnitOrder::FOLLOW, hitData.clicked,
+			Game::getActionList()->add(new GroupAction(selected, FutureOrder(hitData.clicked, UnitOrder::FOLLOW),
 			                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
 		} else {
-			Game::getActionList()->add(new GroupAction(selected, UnitOrder::ATTACK, hitData.clicked,
+			Game::getActionList()->add(new GroupAction(selected, FutureOrder(hitData.clicked, UnitOrder::ATTACK),
 			                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
 		}
-
 		break;
 	case ObjectType::RESOURCE:
-		Game::getActionList()->add(new GroupAction(selected, UnitOrder::COLLECT, hitData.clicked,
+		Game::getActionList()->add(new GroupAction(selected, FutureOrder(hitData.clicked, UnitOrder::COLLECT),
 		                                           input->GetKeyDown(Urho3D::KEY_SHIFT)));
 		break;
 	default: ;
@@ -142,16 +139,14 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) con
 void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
 	auto actions = Game::getActionList();
 
-	const auto first = new Urho3D::Vector2(held.first->x_, held.first->z_);
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
-		const auto second = new Urho3D::Vector2(held.second->x_, held.second->z_);
-		actions->add(new GroupAction(selected, UnitOrder::GO, first));
-		actions->add(new GroupAction(selected, UnitOrder::GO, second, true));
+		actions->add(new GroupAction(selected, FutureOrder({held.first->x_, held.first->z_}, UnitOrder::GO)));
+		actions->add(new GroupAction(selected, FutureOrder({held.second->x_, held.second->z_}, UnitOrder::GO), true));
 	} else {
-		const auto charge = new Urho3D::Vector2(held.second->x_ - held.first->x_, held.second->z_ - held.first->z_);
-
-		actions->add(new GroupAction(selected, UnitOrder::GO, first));
-		actions->add(new GroupAction(selected, UnitOrder::CHARGE, charge, true));
+		actions->add(new GroupAction(selected, FutureOrder({held.first->x_, held.first->z_}, UnitOrder::GO)));
+		actions->add(new GroupAction(selected, FutureOrder({
+			held.second->x_ - held.first->x_, held.second->z_ - held.first->z_
+		}, UnitOrder::CHARGE), true));
 	}
 }
 
@@ -229,7 +224,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 }
 
 void Controls::executeOnAll(short id, const ActionParameter& parameter) {
-	Game::getActionList()->add(new GroupAction(selected, UnitOrder(id)));
+	Game::getActionList()->add(new GroupAction(selected, FutureOrder(nullptr, UnitOrder(id))));
 }
 
 void Controls::orderPhysical(short id, const ActionParameter& parameter) const {

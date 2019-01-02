@@ -191,11 +191,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\objects\unit\aim\order\IndividualOrder.cpp" />
     <ClCompile Include="src\DebugLineRepo.cpp" />
     <ClCompile Include="src\commands\action\GroupAction.cpp" />
     <ClCompile Include="src\commands\action\IndividualAction.cpp" />
     <ClCompile Include="src\commands\action\FormationAction.cpp" />
     <ClCompile Include="src\colors\ColorPeletteRepo.cpp" />
+    <ClCompile Include="src\objects\unit\aim\order\FutureOrder.cpp" />
     <ClCompile Include="src\objects\unit\state\State.cpp" />
     <ClCompile Include="src\simulation\formation\Formation.cpp" />
     <ClCompile Include="src\simulation\formation\FormationManager.cpp" />
@@ -280,6 +282,7 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\objects\unit\aim\order\IndividualOrder.h" />
     <ClInclude Include="src\consts.h" />
     <ClInclude Include="src\DebugLineRepo.h" />
     <ClInclude Include="src\DebugUnitType.h" />
@@ -297,7 +300,7 @@
     <ClInclude Include="src\colors\ColorPallet.h" />
     <ClInclude Include="src\control\ControlsUtils.h" />
     <ClInclude Include="src\objects\NodeUtils.h" />
-    <ClInclude Include="src\objects\unit\aim\FutureAim.h" />
+    <ClInclude Include="src\objects\unit\aim\order\FutureOrder.h" />
     <ClInclude Include="src\objects\unit\ChargeData.h" />
     <ClInclude Include="src\objects\unit\ColorMode.h" />
     <ClInclude Include="src\objects\unit\MissileData.h" />
