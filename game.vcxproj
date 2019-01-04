@@ -191,11 +191,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\objects\unit\aim\order\FormationOrder.cpp" />
+    <ClCompile Include="src\objects\unit\aim\order\GroupOrder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\IndividualOrder.cpp" />
     <ClCompile Include="src\DebugLineRepo.cpp" />
-    <ClCompile Include="src\commands\action\GroupAction.cpp" />
     <ClCompile Include="src\commands\action\IndividualAction.cpp" />
-    <ClCompile Include="src\commands\action\FormationAction.cpp" />
     <ClCompile Include="src\colors\ColorPeletteRepo.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\FutureOrder.cpp" />
     <ClCompile Include="src\objects\unit\state\State.cpp" />
@@ -282,6 +282,8 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\objects\unit\aim\order\FormationOrder.h" />
+    <ClInclude Include="src\objects\unit\aim\order\GroupOrder.h" />
     <ClInclude Include="src\objects\unit\aim\order\IndividualOrder.h" />
     <ClInclude Include="src\consts.h" />
     <ClInclude Include="src\DebugLineRepo.h" />
@@ -293,9 +295,7 @@
     <ClInclude Include="src\objects\static\StaticStateUtils.h" />
     <ClInclude Include="src\objects\static\StaticState.h" />
     <ClInclude Include="src\objects\unit\state\ShotState.h" />
-    <ClInclude Include="src\commands\action\GroupAction.h" />
     <ClInclude Include="src\commands\action\IndividualAction.h" />
-    <ClInclude Include="src\commands\action\FormationAction.h" />
     <ClInclude Include="src\colors\ColorPeletteRepo.h" />
     <ClInclude Include="src\colors\ColorPallet.h" />
     <ClInclude Include="src\control\ControlsUtils.h" />

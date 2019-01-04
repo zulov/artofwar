@@ -1,23 +1,25 @@
-#include "GroupAction.h"
-#include "Game.h"
-#include "simulation/env/Environment.h"
-#include "simulation/formation/FormationManager.h"
+#include "GroupOrder.h"
 
-GroupAction::GroupAction(std::vector<Physical*>* entities, FutureOrder &futureAim, bool append)
-	: ActionCommand(futureAim, append), entities(entities) {
+
+GroupOrder::GroupOrder(std::vector<Physical*>* entities, const Urho3D::Vector2& vector, const Physical* physical,
+                       UnitOrder action): FutureOrder(vector, physical, action), entities(entities) {
 }
 
-void GroupAction::addAim() {
-	auto opt = Game::getFormationManager()->createFormation(entities);
-	if (opt.has_value()) {
-		// if (!append) {
-		// 	opt.value()->semiReset();
-		// }
-		opt.value()->addAim(futureAim, append);
-	}
-}
 
-GroupAction::~GroupAction() = default;
+GroupOrder::~GroupOrder() {
+}
+//
+// void GroupAction::addAim() {
+// 	auto opt = Game::getFormationManager()->createFormation(entities);
+// 	if (opt.has_value()) {
+// 		// if (!append) {
+// 		// 	opt.value()->semiReset();
+// 		// }
+// 		opt.value()->addAim(futureAim, append);
+// 	}
+// }
+//
+// GroupAction::~GroupAction() = default;
 
 // void GroupAction::addTargetAim(Urho3D::Vector2* to, bool append) {
 // 	auto opt = Game::getFormationManager()->createFormation(entities);

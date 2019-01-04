@@ -174,8 +174,6 @@
     <ClCompile Include="src\simulation\formation\Formation.cpp" />
     <ClCompile Include="src\simulation\formation\FormationManager.cpp" />
     <ClCompile Include="src\colors\ColorPeletteRepo.cpp" />
-    <ClCompile Include="src\commands\action\FormationAction.cpp" />
-    <ClCompile Include="src\commands\action\GroupAction.cpp" />
     <ClCompile Include="src\commands\action\IndividualAction.cpp" />
     <ClCompile Include="src\objects\unit\aim\Aims.cpp">
       <Filter>aim</Filter>
@@ -188,6 +186,8 @@
     </ClCompile>
     <ClCompile Include="src\objects\unit\aim\order\FutureOrder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\IndividualOrder.cpp" />
+    <ClCompile Include="src\objects\unit\aim\order\GroupOrder.cpp" />
+    <ClCompile Include="src\objects\unit\aim\order\FormationOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -431,9 +431,7 @@
     <ClInclude Include="src\colors\ColorPallet.h" />
     <ClInclude Include="src\colors\ColorPeletteRepo.h" />
     <ClInclude Include="src\simulation\formation\FormationState.h" />
-    <ClInclude Include="src\commands\action\FormationAction.h" />
     <ClInclude Include="src\commands\action\IndividualAction.h" />
-    <ClInclude Include="src\commands\action\GroupAction.h" />
     <ClInclude Include="src\control\ControlsUtils.h" />
     <ClInclude Include="src\objects\unit\aim\Aims.h">
       <Filter>aim</Filter>
@@ -466,6 +464,8 @@
     <ClInclude Include="src\objects\unit\MissileData.h" />
     <ClInclude Include="src\objects\unit\aim\order\FutureOrder.h" />
     <ClInclude Include="src\objects\unit\aim\order\IndividualOrder.h" />
+    <ClInclude Include="src\objects\unit\aim\order\GroupOrder.h" />
+    <ClInclude Include="src\objects\unit\aim\order\FormationOrder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

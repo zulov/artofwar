@@ -2,7 +2,6 @@
 #include "Game.h"
 #include "MathUtils.h"
 #include "commands/CommandList.h"
-#include "commands/action/FormationAction.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/aim/order/FutureOrder.h"
 #include "objects/unit/state/StateManager.h"
@@ -214,11 +213,9 @@ void Formation::update() {
 		if (notWellFormed < thresholdMin) {
 			changeState(FormationState::MOVING);
 			if (!futureOrders.empty()) {
-				const auto& futureOrder = futureOrders[0];
-				//TODO poprostu akcja
-				FormationAction::
-				Game::getActionList()->add(new FormationAction(this, FutureOrder()
-					futureOrder, new Urho3D::Vector2(futureOrder.vector)));
+				futureOrders[0].execute();
+				// Game::getActionList()->add(new FormationAction(this, FutureOrder()
+				// 	futureOrder, new Urho3D::Vector2(futureOrder.vector)));
 				stopAllBesideLeader();
 				futureOrders.erase(futureOrders.begin()); //TODO to zachowaæ
 			}

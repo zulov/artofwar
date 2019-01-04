@@ -1,24 +1,14 @@
-#include "FormationAction.h"
-#include "Game.h"
-#include "IndividualAction.h"
-#include "commands/CommandList.h"
-#include "objects/unit/Unit.h"
-#include "objects/unit/aim/order/FutureOrder.h"
-#include "objects/unit/state/StateManager.h"
-#include "simulation/env/Environment.h"
-#include "simulation/formation/Formation.h"
+#include "FormationOrder.h"
 
 
-FormationAction::
-FormationAction(Formation* formation, FutureOrder& futureAim, bool append): ActionCommand(futureAim, append),
-	formation(formation) {
+FormationOrder::FormationOrder(Formation* formation, const Urho3D::Vector2& vector, const Physical* physical,
+                               UnitOrder action): FutureOrder(vector, physical, action), formation(formation) {
 }
 
-Aim* FormationAction::createAim(Formation* formation, FutureOrder& nextAim) {
 
+FormationOrder::~FormationOrder() {
 }
 
-FormationAction::~FormationAction() = default;
 
 // void FormationAction::addTargetAim(Urho3D::Vector2* to, bool append) {
 // 	auto opt = formation->getLeader();

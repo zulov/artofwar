@@ -3,7 +3,7 @@
 #include "objects/unit/aim/Aims.h"
 
 
-class IndividualAction : public ActionCommand
+class IndividualAction 
 {
 public:
 	IndividualAction(Physical* entity, FutureOrder& futureAim, bool append = false);

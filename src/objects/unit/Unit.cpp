@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "ObjectEnums.h"
 #include "UnitOrder.h"
-#include "aim/FutureOrder.h"
+#include "aim/order/FutureOrder.h"
 #include "colors/ColorPeletteRepo.h"
 #include "database/DatabaseCache.h"
 #include "objects/unit/ChargeData.h"
