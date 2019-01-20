@@ -1,7 +1,5 @@
 #pragma once
 #include "commands/AbstractCommand.h"
-#include "objects/unit/ActionParameter.h"
-#include "objects/unit/aim/Aims.h"
 #include "objects/unit/aim/order/FutureOrder.h"
 
 
@@ -20,7 +18,7 @@ public:
 
 	void execute() override;
 protected:
-	void addAim();
+	//void addAim();
 
 	FutureOrder* futureAim;
 	bool append;

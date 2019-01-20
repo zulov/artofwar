@@ -213,7 +213,7 @@ void Formation::update() {
 		if (notWellFormed < thresholdMin) {
 			changeState(FormationState::MOVING);
 			if (!futureOrders.empty()) {
-				futureOrders[0].execute();
+				futureOrders[0]->execute();
 				// Game::getActionList()->add(new FormationAction(this, FutureOrder()
 				// 	futureOrder, new Urho3D::Vector2(futureOrder.vector)));
 				stopAllBesideLeader();
@@ -277,7 +277,7 @@ std::optional<Physical*> Formation::getLeader() {
 	return {};
 }
 
-void Formation::addAim(FutureOrder& aim, bool append) {
+void Formation::addAim(FutureOrder* aim, bool append) {
 	if (!append) {
 		futureOrders.clear();
 	}

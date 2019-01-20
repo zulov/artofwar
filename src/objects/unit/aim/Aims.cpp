@@ -1,7 +1,6 @@
 #include "Aims.h"
 #include "Game.h"
 #include "TargetAim.h"
-#include "commands/action/IndividualAction.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/aim/order/FutureOrder.h"
 #include <algorithm>
@@ -24,7 +23,7 @@ std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) const {
 
 void Aims::clearExpired() {
 	nextAims.erase(std::remove_if(nextAims.begin(), nextAims.end(),
-	                              [](FutureOrder fa) { return fa.expired(); }),
+	                              [](FutureOrder* fa) { return fa->expired(); }),
 	               nextAims.end());
 	if (current != nullptr && current->expired()) {
 		removeCurrentAim();
@@ -39,7 +38,8 @@ bool Aims::ifReach(Unit* unit) {
 			return true;
 		}
 	} else if (!nextAims.empty()) {
-		current = IndividualAction::createAim(unit, *nextAims.begin());
+		(*nextAims.begin())->execute();
+		//current = IndividualAction::createAim(unit, *nextAims.begin());
 		// if (nextAims[0].physical != nullptr) {
 		// 	
 		// 	Game::getActionList()->add(new IndividualAction(unit, nextAims[0].action,
@@ -54,13 +54,12 @@ bool Aims::ifReach(Unit* unit) {
 	return false;
 }
 
-void Aims::add(Unit* unit, FutureOrder& aim, bool append) {
+void Aims::add(Unit* unit, FutureOrder* aim, bool append) {
 	if (!append) {
 		clear();
-		current = IndividualAction::createAim(unit, aim);
-	} else {
-		nextAims.push_back(aim);
+		//current = IndividualAction::createAim(unit, aim);
 	}
+	nextAims.push_back(aim);
 }
 
 void Aims::clear() {

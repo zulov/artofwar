@@ -195,7 +195,6 @@
     <ClCompile Include="src\objects\unit\aim\order\GroupOrder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\IndividualOrder.cpp" />
     <ClCompile Include="src\DebugLineRepo.cpp" />
-    <ClCompile Include="src\commands\action\IndividualAction.cpp" />
     <ClCompile Include="src\colors\ColorPeletteRepo.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\FutureOrder.cpp" />
     <ClCompile Include="src\objects\unit\state\State.cpp" />
@@ -295,7 +294,6 @@
     <ClInclude Include="src\objects\static\StaticStateUtils.h" />
     <ClInclude Include="src\objects\static\StaticState.h" />
     <ClInclude Include="src\objects\unit\state\ShotState.h" />
-    <ClInclude Include="src\commands\action\IndividualAction.h" />
     <ClInclude Include="src\colors\ColorPeletteRepo.h" />
     <ClInclude Include="src\colors\ColorPallet.h" />
     <ClInclude Include="src\control\ControlsUtils.h" />

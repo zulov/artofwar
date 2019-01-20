@@ -24,7 +24,7 @@ public:
 	FormationState getState() const { return state; }
 	std::optional<Physical*> getLeader();
 
-	void addAim(FutureOrder& aim, bool append);
+	void addAim(FutureOrder* aim, bool append);
 	size_t getSize();
 	void semiReset();
 	std::vector<Unit*>& getUnits() { return units; }
@@ -58,7 +58,7 @@ private:
 	Unit* oldLeader = nullptr;
 	FormationState state;
 
-	std::vector<FutureOrder> futureOrders;
+	std::vector<FutureOrder*> futureOrders;
 
 	float thresholdMin = 0.01;
 	float thresholdMax = 0.5;

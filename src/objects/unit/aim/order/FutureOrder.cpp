@@ -4,9 +4,9 @@
 #include "simulation/env/Environment.h"
 #include "objects/unit/ActionParameter.h"
 
-FutureOrder::FutureOrder(const Urho3D::Vector2& vector, const Physical* physical, UnitOrder action)
+FutureOrder::FutureOrder(const Urho3D::Vector2& vector, const Physical* toUse, UnitOrder action)
 	: vector(vector),
-	physical(physical),
+	toUse(toUse),
 	action(action) {
 }
 
@@ -14,12 +14,12 @@ FutureOrder::FutureOrder(const Urho3D::Vector2& vector, UnitOrder action)
 	: vector(vector), action(action) {
 }
 
-FutureOrder::FutureOrder(const Physical* physical, UnitOrder action)
-	: physical(physical), action(action) {
+FutureOrder::FutureOrder(const Physical* toUse, UnitOrder action)
+	: toUse(toUse), action(action) {
 }
 
 bool FutureOrder::expired() const {
-	return physical != nullptr && !physical->isAlive();
+	return toUse != nullptr && !toUse->isAlive();
 }
 
 void FutureOrder::execute() {

@@ -18,6 +18,7 @@
 #include <algorithm>
 #include "consts.h"
 #include "simulation/env/Environment.h"
+#include "aim/order/IndividualOrder.h"
 
 
 Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
@@ -138,7 +139,7 @@ void Unit::actionIfCloseEnough(UnitState action, Physical* closest, int indexToI
 		if (sqDistance < closeRange * closeRange) {
 			interactWithOne(closest, indexToInteract, action);
 		} else if (sqDistance < intrestRange * intrestRange) {
-			addAim(FutureOrder(closest, UnitOrder::FOLLOW));
+			addAim(new IndividualOrder(this, {}, closest, UnitOrder::FOLLOW));
 		}
 	}
 }
@@ -178,7 +179,7 @@ void Unit::updateHeight(float y, double timeStep) {
 	position->y_ = y;
 }
 
-void Unit::addAim(FutureOrder& aim, bool append) {
+void Unit::addAim(FutureOrder* aim, bool append) {
 	aims.add(this, aim, append);
 }
 

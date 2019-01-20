@@ -174,7 +174,6 @@
     <ClCompile Include="src\simulation\formation\Formation.cpp" />
     <ClCompile Include="src\simulation\formation\FormationManager.cpp" />
     <ClCompile Include="src\colors\ColorPeletteRepo.cpp" />
-    <ClCompile Include="src\commands\action\IndividualAction.cpp" />
     <ClCompile Include="src\objects\unit\aim\Aims.cpp">
       <Filter>aim</Filter>
     </ClCompile>
@@ -431,7 +430,6 @@
     <ClInclude Include="src\colors\ColorPallet.h" />
     <ClInclude Include="src\colors\ColorPeletteRepo.h" />
     <ClInclude Include="src\simulation\formation\FormationState.h" />
-    <ClInclude Include="src\commands\action\IndividualAction.h" />
     <ClInclude Include="src\control\ControlsUtils.h" />
     <ClInclude Include="src\objects\unit\aim\Aims.h">
       <Filter>aim</Filter>

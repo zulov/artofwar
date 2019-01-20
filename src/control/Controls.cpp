@@ -7,7 +7,6 @@
 #include "camera/CameraManager.h"
 #include "commands/CommandList.h"
 #include "commands/action/ActionCommand.h"
-#include "commands/action/IndividualAction.h"
 #include "commands/creation/CreationCommandList.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
@@ -25,8 +24,10 @@
 #include <algorithm>
 #include <queue>
 #include "objects/unit/aim/order/FutureOrder.h"
+#include "objects/unit/Unit.h"
 #include "objects/unit/aim/order/GroupOrder.h"
 #include "objects/unit/aim/order/IndividualOrder.h"
+#include "objects/unit/ActionParameter.h"
 
 
 Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), input(_input) {

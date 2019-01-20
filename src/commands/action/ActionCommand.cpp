@@ -10,5 +10,5 @@ ActionCommand::~ActionCommand() {
 }
 
 void ActionCommand::execute() {
-	addAim();
+	//addAim();
 }

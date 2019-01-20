@@ -8,11 +8,11 @@ public:
 	~GroupOrder();
 private:
 	std::vector<Physical*>* entities;
-	void addTargetAim(Urho3D::Vector2* to) override;
-	void addFollowAim(const Physical* toFollow) override;
-	void addChargeAim(Urho3D::Vector2* charge) override;
-	void addDeadAim() override;
 
+	void addTargetAim(Urho3D::Vector2 to) override;
+	void addFollowAim(const Physical* toFollow) override;
+	void addChargeAim(Urho3D::Vector2 charge) override;
+	void addDeadAim() override;
 	void addAttackAim(const Physical* physical) override;
 	void addDefendAim() override;
 };
