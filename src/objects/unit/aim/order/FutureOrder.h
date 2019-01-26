@@ -5,23 +5,27 @@
 class FutureOrder
 {
 public:
-	FutureOrder(const Urho3D::Vector2& vector, const Physical* toUse, UnitOrder action);
-	FutureOrder(const Urho3D::Vector2& vector, UnitOrder action);
-	FutureOrder(const Physical* toUse, UnitOrder action);
+	FutureOrder(UnitOrder action, const Urho3D::Vector2& vector, const Physical* toUse);
+	FutureOrder(UnitOrder action, const Urho3D::Vector2& vector);
+	FutureOrder(UnitOrder action, const Physical* toUse);
+
+	virtual ~FutureOrder();
+
 	bool expired() const;
-	void execute();
+	virtual void add(bool append) =0;
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);
 	ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow);
 	ActionParameter getChargeAim(Urho3D::Vector2* charge);
+	void execute();
 protected:
 	Urho3D::Vector2 vector;
 	const Physical* toUse;
 	UnitOrder action;
 private:
-	virtual void addTargetAim(Urho3D::Vector2 to) =0;
-	virtual void addFollowAim(const Physical* toFollow) =0;
-	virtual void addChargeAim(Urho3D::Vector2 charge) =0;
-	virtual void addDeadAim() =0;
-	virtual void addAttackAim(const Physical* physical) =0;
+	virtual void addTargetAim() =0;
+	virtual void addFollowAim() =0;
+	virtual void addChargeAim() =0;
+	virtual void addAttackAim() =0;
 	virtual void addDefendAim() =0;
+	virtual void addDeadAim() =0;
 };

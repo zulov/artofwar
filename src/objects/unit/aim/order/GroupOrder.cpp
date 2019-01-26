@@ -2,33 +2,36 @@
 
 
 GroupOrder::GroupOrder(std::vector<Physical*>* entities, const Urho3D::Vector2& vector, const Physical* physical,
-                       UnitOrder action): FutureOrder(vector, physical, action), entities(entities) {
+                       UnitOrder action): FutureOrder(action, vector, physical), entities(entities) {
 }
 
 
-GroupOrder::~GroupOrder() {
+GroupOrder::~GroupOrder() = default;
+
+void GroupOrder::add(bool append) {
+	//TODO to implement
 }
 
-void GroupOrder::addTargetAim(Urho3D::Vector2 to) {	
+void GroupOrder::addTargetAim() {
 	// unit->action(static_cast<char>(action), getTargetAim(unit->getMainCell(), vector));//TODO execute i akajca
 	// static_cast<Unit*>(unit)->resetFormation();
 	//
 	// Game::getEnvironment()->invalidateCache();
 }
 
-void GroupOrder::addFollowAim(const Physical* toFollow) {
+void GroupOrder::addFollowAim() {
 }
 
-void GroupOrder::addChargeAim(Urho3D::Vector2 charge) {
+void GroupOrder::addChargeAim() {
 }
 
-void GroupOrder::addDeadAim() {
-}
-
-void GroupOrder::addAttackAim(const Physical* physical) {
+void GroupOrder::addAttackAim() {
 }
 
 void GroupOrder::addDefendAim() {
+}
+
+void GroupOrder::addDeadAim() {
 }
 
 //

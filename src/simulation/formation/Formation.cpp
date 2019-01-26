@@ -215,8 +215,9 @@ void Formation::update() {
 			if (!futureOrders.empty()) {
 				futureOrders[0]->execute();
 				// Game::getActionList()->add(new FormationAction(this, FutureOrder()
-				// 	futureOrder, new Urho3D::Vector2(futureOrder.vector)));
+				// 	futureOrder, newUrho3D::Vector2(futureOrder.vector)));
 				stopAllBesideLeader();
+				delete futureOrders[0];
 				futureOrders.erase(futureOrders.begin()); //TODO to zachowaæ
 			}
 		}

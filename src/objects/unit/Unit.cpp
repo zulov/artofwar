@@ -183,6 +183,10 @@ void Unit::addAim(FutureOrder* aim, bool append) {
 	aims.add(this, aim, append);
 }
 
+void Unit::addAim(Aim* aim) {
+	aims.set(aim);
+}
+
 void Unit::drawLineTo(const Urho3D::Vector3& second,
                       const Urho3D::Color& color = Urho3D::Color::WHITE) const {
 	DebugLineRepo::drawLine(*position, second + *position, color);

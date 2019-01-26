@@ -2,33 +2,36 @@
 
 
 FormationOrder::FormationOrder(Formation* formation, const Urho3D::Vector2& vector, const Physical* physical,
-                               UnitOrder action): FutureOrder(vector, physical, action), formation(formation) {
+                               UnitOrder action): FutureOrder(action, vector, physical), formation(formation) {
 }
 
 
-FormationOrder::~FormationOrder() {
+FormationOrder::~FormationOrder() = default;
+
+void FormationOrder::add(bool append) {
+	//TODO to implement
 }
 
-void FormationOrder::addTargetAim(Urho3D::Vector2 to) {	
+void FormationOrder::addTargetAim() {
 	// unit->action(static_cast<char>(action), getTargetAim(unit->getMainCell(), vector));//TODO execute i akajca
 	// static_cast<Unit*>(unit)->resetFormation();
 	//
 	// Game::getEnvironment()->invalidateCache();
 }
 
-void FormationOrder::addFollowAim(const Physical* toFollow) {
+void FormationOrder::addFollowAim() {
 }
 
-void FormationOrder::addChargeAim(Urho3D::Vector2 charge) {
+void FormationOrder::addChargeAim() {
 }
 
-void FormationOrder::addDeadAim() {
-}
-
-void FormationOrder::addAttackAim(const Physical* physical) {
+void FormationOrder::addAttackAim() {
 }
 
 void FormationOrder::addDefendAim() {
+}
+
+void FormationOrder::addDeadAim() {
 }
 
 

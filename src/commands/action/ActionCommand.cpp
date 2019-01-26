@@ -6,9 +6,8 @@ ActionCommand::ActionCommand(FutureOrder* futureAim, bool append): futureAim(fut
 }
 
 ActionCommand::~ActionCommand() {
-	delete futureAim;
 }
 
 void ActionCommand::execute() {
-	//addAim();
+	futureAim->add(append);
 }

@@ -24,6 +24,7 @@ public:
 	bool hasCurrent() const { return current != nullptr; }
 	bool hasAim() const { return hasCurrent() || !nextAims.empty(); }
 	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const;
+	void set(Aim* aim);
 private:
 	void next();
 	std::vector<FutureOrder*> nextAims;

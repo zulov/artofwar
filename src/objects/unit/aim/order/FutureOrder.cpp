@@ -4,42 +4,22 @@
 #include "simulation/env/Environment.h"
 #include "objects/unit/ActionParameter.h"
 
-FutureOrder::FutureOrder(const Urho3D::Vector2& vector, const Physical* toUse, UnitOrder action)
-	: vector(vector),
-	toUse(toUse),
-	action(action) {
+FutureOrder::FutureOrder(UnitOrder action, const Urho3D::Vector2& vector, const Physical* toUse)
+	: vector(vector), toUse(nullptr), action(action) {
 }
 
-FutureOrder::FutureOrder(const Urho3D::Vector2& vector, UnitOrder action)
-	: vector(vector), action(action) {
+FutureOrder::FutureOrder(UnitOrder action, const Urho3D::Vector2& vector)
+	: vector(vector), toUse(nullptr), action(action) {
 }
 
-FutureOrder::FutureOrder(const Physical* toUse, UnitOrder action)
+FutureOrder::FutureOrder(UnitOrder action, const Physical* toUse)
 	: toUse(toUse), action(action) {
 }
 
+FutureOrder::~FutureOrder() = default;
+
 bool FutureOrder::expired() const {
 	return toUse != nullptr && !toUse->isAlive();
-}
-
-void FutureOrder::execute() {
-	switch (action) {
-	case UnitOrder::GO:
-		return addTargetAim(vector);
-	case UnitOrder::FOLLOW:
-		if (toUse&& toUse->isAlive()){
-			addFollowAim(toUse);
-		}
-		break;
-	case UnitOrder::CHARGE:
-		return addChargeAim(vector);
-	case UnitOrder::ATTACK:
-		return addAttackAim(toUse);
-	case UnitOrder::DEAD:
-		return addDeadAim();
-	case UnitOrder::DEFEND:
-		return addDefendAim();
-	}
 }
 
 ActionParameter FutureOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
@@ -58,4 +38,24 @@ ActionParameter FutureOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar
 
 ActionParameter FutureOrder::getChargeAim(Urho3D::Vector2* charge) {
 	return ActionParameter();
+}
+
+void FutureOrder::execute() {
+	switch (action) {
+	case UnitOrder::GO:
+		return addTargetAim();
+	case UnitOrder::FOLLOW:
+		if (toUse&& toUse->isAlive()){
+			addFollowAim();
+		}
+		break;
+	case UnitOrder::CHARGE:
+		return addChargeAim();
+	case UnitOrder::ATTACK:
+		return addAttackAim();
+	case UnitOrder::DEAD:
+		return addDeadAim();
+	case UnitOrder::DEFEND:
+		return addDefendAim();
+	}
 }

@@ -23,7 +23,7 @@ std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) const {
 
 void Aims::clearExpired() {
 	nextAims.erase(std::remove_if(nextAims.begin(), nextAims.end(),
-	                              [](FutureOrder* fa) { return fa->expired(); }),
+	                              [](FutureOrder* fa) { return fa == nullptr || fa->expired(); }),
 	               nextAims.end());
 	if (current != nullptr && current->expired()) {
 		removeCurrentAim();
@@ -38,7 +38,7 @@ bool Aims::ifReach(Unit* unit) {
 			return true;
 		}
 	} else if (!nextAims.empty()) {
-		(*nextAims.begin())->execute();
+		nextAims[0]->execute();
 		//current = IndividualAction::createAim(unit, *nextAims.begin());
 		// if (nextAims[0].physical != nullptr) {
 		// 	
@@ -48,6 +48,7 @@ bool Aims::ifReach(Unit* unit) {
 		// 	Game::getActionList()->add(new IndividualAction(unit, nextAims[0].action,
 		// 	                                                nextAims[0].vector, true));
 		// }
+		delete nextAims[0];
 		nextAims.erase(nextAims.begin());
 	}
 
@@ -74,4 +75,8 @@ void Aims::removeCurrentAim() {
 
 std::vector<Urho3D::Vector3> Aims::getDebugLines(Unit* unit) const {
 	return current->getDebugLines(unit);
+}
+
+void Aims::set(Aim* aim) {
+	current = aim;
 }
