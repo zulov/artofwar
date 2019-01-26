@@ -6,7 +6,7 @@ class IndividualOrder : public FutureOrder
 public:
 	IndividualOrder(Unit* unit, const Urho3D::Vector2& vector, const Physical* toUse, UnitOrder action);
 	~IndividualOrder();
-	void add(bool append) override;
+	bool add(bool append) override;
 private:
 	void addTargetAim() override;
 	void addFollowAim() override;

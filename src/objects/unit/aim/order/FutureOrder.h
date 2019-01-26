@@ -12,7 +12,7 @@ public:
 	virtual ~FutureOrder();
 
 	bool expired() const;
-	virtual void add(bool append) =0;
+	virtual bool add(bool append) =0;
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);
 	ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow);
 	ActionParameter getChargeAim(Urho3D::Vector2* charge);

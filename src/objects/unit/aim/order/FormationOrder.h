@@ -8,7 +8,7 @@ class FormationOrder : public FutureOrder
 public:
 	FormationOrder(Formation* formation, const Urho3D::Vector2& vector, const Physical* physical, UnitOrder action);
 	~FormationOrder();
-	void add(bool append) override;
+	bool add(bool append) override;
 private:
 	void addTargetAim() override;
 	void addFollowAim() override;

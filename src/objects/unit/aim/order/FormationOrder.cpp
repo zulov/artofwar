@@ -8,8 +8,9 @@ FormationOrder::FormationOrder(Formation* formation, const Urho3D::Vector2& vect
 
 FormationOrder::~FormationOrder() = default;
 
-void FormationOrder::add(bool append) {
+bool FormationOrder::add(bool append) {
 	//TODO to implement
+	return false;
 }
 
 void FormationOrder::addTargetAim() {

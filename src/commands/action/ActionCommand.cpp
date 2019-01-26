@@ -9,5 +9,8 @@ ActionCommand::~ActionCommand() {
 }
 
 void ActionCommand::execute() {
-	futureAim->add(append);
+	bool ifRemove = futureAim->add(append);
+	if (ifRemove) {
+		delete futureAim;
+	}
 }

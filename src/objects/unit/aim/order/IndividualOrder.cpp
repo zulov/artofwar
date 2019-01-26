@@ -13,8 +13,9 @@ IndividualOrder::IndividualOrder(Unit* unit, const Urho3D::Vector2& vector,
 
 IndividualOrder::~IndividualOrder() = default;
 
-void IndividualOrder::add(bool append) {
+bool IndividualOrder::add(bool append) {
 	unit->addAim(this, append);
+	return false;
 }
 
 void IndividualOrder::addTargetAim() {

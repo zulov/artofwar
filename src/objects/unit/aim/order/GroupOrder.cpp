@@ -9,8 +9,9 @@ GroupOrder::GroupOrder(std::vector<Physical*>* entities, const Urho3D::Vector2& 
 
 GroupOrder::~GroupOrder() = default;
 
-void GroupOrder::add(bool append) {
+bool GroupOrder::add(bool append) {
 	execute();
+	return true;
 }
 
 void GroupOrder::addTargetAim() {
