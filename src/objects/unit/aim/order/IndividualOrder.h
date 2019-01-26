@@ -14,6 +14,7 @@ private:
 	void addAttackAim() override;
 	void addDefendAim() override;
 	void addDeadAim() override;
+	void simpleAction();
 
 	Unit* unit;
 };

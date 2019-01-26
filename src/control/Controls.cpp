@@ -233,7 +233,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 	}
 }
 
-void Controls::executeOnAll(short id, const ActionParameter& parameter) {
+void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
 	Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, {}, nullptr, UnitOrder(id))));
 }
 

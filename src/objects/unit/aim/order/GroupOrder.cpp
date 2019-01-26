@@ -1,4 +1,5 @@
 #include "GroupOrder.h"
+#include "objects/unit/ActionParameter.h"
 
 
 GroupOrder::GroupOrder(std::vector<Physical*>* entities, const Urho3D::Vector2& vector, const Physical* physical,
@@ -9,7 +10,7 @@ GroupOrder::GroupOrder(std::vector<Physical*>* entities, const Urho3D::Vector2& 
 GroupOrder::~GroupOrder() = default;
 
 void GroupOrder::add(bool append) {
-	//TODO to implement
+	execute();
 }
 
 void GroupOrder::addTargetAim() {
@@ -29,9 +30,17 @@ void GroupOrder::addAttackAim() {
 }
 
 void GroupOrder::addDefendAim() {
+	simpleAction();
 }
 
 void GroupOrder::addDeadAim() {
+	simpleAction();
+}
+
+void GroupOrder::simpleAction() {
+	for (auto entity : *entities) {
+		entity->action(static_cast<char>(FutureOrder::action), ActionParameter());
+	}
 }
 
 //

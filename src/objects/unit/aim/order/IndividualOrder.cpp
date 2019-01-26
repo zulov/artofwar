@@ -18,9 +18,7 @@ void IndividualOrder::add(bool append) {
 }
 
 void IndividualOrder::addTargetAim() {
-
-	ActionParameter ap = getTargetAim(unit->getMainCell(), vector);
-	unit->action(static_cast<char>(action), ap); //TODO execute i akajca
+	unit->action(static_cast<char>(action), getTargetAim(unit->getMainCell(), vector)); //TODO execute i akajca
 	static_cast<Unit*>(unit)->resetFormation();
 
 	Game::getEnvironment()->invalidateCache();
@@ -36,40 +34,16 @@ void IndividualOrder::addAttackAim() {
 }
 
 void IndividualOrder::addDefendAim() {
+	simpleAction();
 }
 
 void IndividualOrder::addDeadAim() {
+	simpleAction();
 }
 
-//Aim* IndividualAction::createAim(Unit* unit, FutureOrder& nextAim) {
-// switch (nextAim.action) { case UnitOrder::GO: break;
-// case UnitOrder::STOP: break;
-// case UnitOrder::CHARGE: break;
-// case UnitOrder::ATTACK: break;
-// case UnitOrder::DEAD: break;
-// case UnitOrder::DEFEND: break;
-// case UnitOrder::FOLLOW: break;
-// case UnitOrder::COLLECT: break;
-// default: ;
-// }
-
-
-// ActionParameter ap = getTargetAim(unit->getMainCell(), nextAim.vector);
-// //unit->action(static_cast<char>(nextAim.action), ap);
-// unit->action(static_cast<char>(nextAim.action), ActionParameter());//TODO execute i akajca
-// static_cast<Unit*>(unit)->resetFormation();
-//
-// Game::getEnvironment()->invalidateCache();
-// return ap.aim;
-//}
-
-//void IndividualAction::addAim() {
-//static_cast<Unit*>(entity)->addAim(futureAim, append);
-// entity->action(static_cast<char>(action), getTargetAim(entity->getMainCell(), *to));
-// static_cast<Unit*>(entity)->resetFormation();
-//
-// Game::getEnvironment()->invalidateCache();
-//}
+void IndividualOrder::simpleAction() {
+	unit->action(static_cast<char>(FutureOrder::action), ActionParameter());
+}
 
 // void IndividualAction::addChargeAim() {
 // 	entity->action(static_cast<char>(action), getChargeAim(charge));
@@ -86,12 +60,4 @@ void IndividualOrder::addDeadAim() {
 //
 // void IndividualAction::addAttackAim() {
 // 	int a = 5;
-// }
-//
-// void IndividualAction::addDeadAim() {
-// 	entity->action(static_cast<char>(action), ActionParameter());
-// }
-//
-// void IndividualAction::addDefendAim() {
-// 	entity->action(static_cast<char>(action), ActionParameter());
 // }

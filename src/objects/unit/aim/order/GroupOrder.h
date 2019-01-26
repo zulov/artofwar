@@ -8,7 +8,7 @@ public:
 	~GroupOrder();
 	void add(bool append) override;
 private:
-	std::vector<Physical*>* entities;
+	std::vector<Physical*>* entities;//TODO to trzeba kopiowac, ale wtedy trzeba sprawdzac przed wykonaniem czy cos sie nie zepsulo
 
 	void addTargetAim() override;
 	void addFollowAim() override;
@@ -16,4 +16,5 @@ private:
 	void addAttackAim() override;
 	void addDefendAim() override;
 	void addDeadAim() override;
+	void simpleAction();
 };

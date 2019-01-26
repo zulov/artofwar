@@ -53,7 +53,7 @@ private:
 
 	void orderPhysical(short id, const ActionParameter& parameter) const;
 
-	void executeOnAll(short id, const ActionParameter& parameter);
+	void executeOnAll(short id, const ActionParameter& parameter) const;
 
 	void unitFormation(short id);
 	void actionUnit(short id, const ActionParameter& parameter);
