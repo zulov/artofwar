@@ -1,5 +1,8 @@
 #include "GroupOrder.h"
 #include "objects/unit/ActionParameter.h"
+#include "Game.h"
+#include "simulation/formation/FormationManager.h"
+#include "FormationOrder.h"
 
 
 GroupOrder::GroupOrder(std::vector<Physical*>* entities, const Urho3D::Vector2& vector, const Physical* physical,
@@ -15,10 +18,15 @@ bool GroupOrder::add(bool append) {
 }
 
 void GroupOrder::addTargetAim() {
-	// unit->action(static_cast<char>(action), getTargetAim(unit->getMainCell(), vector));//TODO execute i akajca
-	// static_cast<Unit*>(unit)->resetFormation();
-	//
-	// Game::getEnvironment()->invalidateCache();
+	bool append = false;
+	auto opt = Game::getFormationManager()->createFormation(entities);
+	if (opt.has_value()) {
+		if (!append) {
+			opt.value()->semiReset();
+		}
+
+		opt.value()->addAim(new FormationOrder(opt.value(), action, vector, nullptr), append);
+	}
 }
 
 void GroupOrder::addFollowAim() {
@@ -44,7 +52,6 @@ void GroupOrder::simpleAction() {
 	}
 }
 
-//
 // void GroupAction::addAim() {
 // 	auto opt = Game::getFormationManager()->createFormation(entities);
 // 	if (opt.has_value()) {
@@ -54,18 +61,7 @@ void GroupOrder::simpleAction() {
 // 		opt.value()->addAim(futureAim, append);
 // 	}
 // }
-//
-// GroupAction::~GroupAction() = default;
 
-// void GroupAction::addTargetAim(Urho3D::Vector2* to, bool append) {
-// 	auto opt = Game::getFormationManager()->createFormation(entities);
-// 	if (opt.has_value()) {
-// 		if (!append) {
-// 			opt.value()->semiReset();
-// 		}
-// 		opt.value()->addAim(*to, nullptr, action, append);
-// 	}
-// }
 //
 // void GroupAction::addChargeAim(Urho3D::Vector2* charge, bool append) {
 // 	auto opt = Game::getFormationManager()->createFormation(entities);

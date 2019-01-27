@@ -1,8 +1,15 @@
 #include "FormationOrder.h"
+#include "Game.h"
+#include "objects/unit/state/UnitState.h"
+#include "objects/unit/Unit.h"
+#include "objects/unit/state/StateManager.h"
+#include "simulation/formation/Formation.h"
+#include "simulation/env/Environment.h"
 
 
-FormationOrder::FormationOrder(Formation* formation, const Urho3D::Vector2& vector, const Physical* physical,
-                               UnitOrder action): FutureOrder(action, vector, physical), formation(formation) {
+FormationOrder::FormationOrder(Formation* formation, UnitOrder action, const Urho3D::Vector2& vector,
+                               const Physical* physical):
+	FutureOrder(action, vector, physical), formation(formation) {
 }
 
 
@@ -14,10 +21,16 @@ bool FormationOrder::add(bool append) {
 }
 
 void FormationOrder::addTargetAim() {
-	// unit->action(static_cast<char>(action), getTargetAim(unit->getMainCell(), vector));//TODO execute i akajca
-	// static_cast<Unit*>(unit)->resetFormation();
-	//
-	// Game::getEnvironment()->invalidateCache();
+	auto opt = formation->getLeader();
+	if (opt.has_value()) {
+		opt.value()->action(static_cast<char>(action), getTargetAim(opt.value()->getMainCell(), vector));
+		for (auto unit : formation->getUnits()) {
+			if (unit != opt.value()) {
+				StateManager::changeState(unit, UnitState::STOP);
+			}
+		}
+		Game::getEnvironment()->invalidateCache();
+	}
 }
 
 void FormationOrder::addFollowAim() {
@@ -35,19 +48,6 @@ void FormationOrder::addDefendAim() {
 void FormationOrder::addDeadAim() {
 }
 
-
-// void FormationAction::addTargetAim(Urho3D::Vector2* to, bool append) {
-// 	auto opt = formation->getLeader();
-// 	if (opt.has_value()) {
-// 		opt.value()->action(static_cast<char>(action), getTargetAim(opt.value()->getMainCell(), *to));
-// 		for (auto unit : formation->getUnits()) {
-// 			if (unit != opt.value()) {
-// 				StateManager::changeState(unit, UnitState::STOP);
-// 			}
-// 		}
-// 		Game::getEnvironment()->invalidateCache();
-// 	}
-// }
 //
 // void FormationAction::addChargeAim(Urho3D::Vector2* charge, bool append) {
 // 	for (auto unit : formation->getUnits()) {

@@ -6,7 +6,7 @@ class Formation;
 class FormationOrder : public FutureOrder
 {
 public:
-	FormationOrder(Formation* formation, const Urho3D::Vector2& vector, const Physical* physical, UnitOrder action);
+	FormationOrder(Formation* formation, UnitOrder action, const Urho3D::Vector2& vector, const Physical* physical);
 	~FormationOrder();
 	bool add(bool append) override;
 private:
