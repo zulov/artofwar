@@ -33,21 +33,19 @@ void Aims::clearExpired() {
 bool Aims::ifReach(Unit* unit) {
 	if (current == nullptr && nextAims.empty()) { return false; } //TODO bug true??
 	if (current) {
-		if (current->ifReach(unit) && nextAims.empty()) {
+		if (current->ifReach(unit)) {
+			removeCurrentAim();
+			if (nextAims.empty()) { return true; }
+			return false;
+		}
+		if (nextAims.empty() && current->ifReach(unit)) {
 			clear();
 			return true;
+		} else if (current->ifReach(unit)) {
+
 		}
 	} else if (!nextAims.empty()) {
 		nextAims[0]->execute();
-		//current = IndividualAction::createAim(unit, *nextAims.begin());
-		// if (nextAims[0].physical != nullptr) {
-		// 	
-		// 	Game::getActionList()->add(new IndividualAction(unit, nextAims[0].action,
-		// 	                                                nextAims[0].physical, true));
-		// } else {
-		// 	Game::getActionList()->add(new IndividualAction(unit, nextAims[0].action,
-		// 	                                                nextAims[0].vector, true));
-		// }
 		delete nextAims[0];
 		nextAims.erase(nextAims.begin());
 	}
@@ -58,7 +56,6 @@ bool Aims::ifReach(Unit* unit) {
 void Aims::add(Unit* unit, FutureOrder* aim, bool append) {
 	if (!append) {
 		clear();
-		//current = IndividualAction::createAim(unit, aim);
 	}
 	nextAims.push_back(aim);
 }
