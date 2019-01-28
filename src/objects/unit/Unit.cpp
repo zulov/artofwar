@@ -139,7 +139,7 @@ void Unit::actionIfCloseEnough(UnitState action, Physical* closest, int indexToI
 		if (sqDistance < closeRange * closeRange) {
 			interactWithOne(closest, indexToInteract, action);
 		} else if (sqDistance < intrestRange * intrestRange) {
-			addAim(new IndividualOrder(this, UnitOrder::FOLLOW, {}, closest));
+			addOrder(new IndividualOrder(this, UnitOrder::FOLLOW, {}, closest));
 		}
 	}
 }
@@ -179,8 +179,8 @@ void Unit::updateHeight(float y, double timeStep) {
 	position->y_ = y;
 }
 
-void Unit::addAim(FutureOrder* aim, bool append) {
-	aims.add(this, aim, append);
+void Unit::addOrder(FutureOrder* aim, bool append) {
+	aims.add(aim, append);
 }
 
 void Unit::addAim(Aim* aim) {

@@ -31,18 +31,10 @@ void Aims::clearExpired() {
 }
 
 bool Aims::ifReach(Unit* unit) {
-	if (current == nullptr && nextAims.empty()) { return false; } //TODO bug true??
 	if (current) {
 		if (current->ifReach(unit)) {
 			removeCurrentAim();
-			if (nextAims.empty()) { return true; }
-			return false;
-		}
-		if (nextAims.empty() && current->ifReach(unit)) {
-			clear();
-			return true;
-		} else if (current->ifReach(unit)) {
-
+			return nextAims.empty();
 		}
 	} else if (!nextAims.empty()) {
 		nextAims[0]->execute();
@@ -53,7 +45,7 @@ bool Aims::ifReach(Unit* unit) {
 	return false;
 }
 
-void Aims::add(Unit* unit, FutureOrder* aim, bool append) {
+void Aims::add(FutureOrder* aim, bool append) {
 	if (!append) {
 		clear();
 	}
@@ -61,7 +53,7 @@ void Aims::add(Unit* unit, FutureOrder* aim, bool append) {
 }
 
 void Aims::clear() {
-	nextAims.clear();
+	clear_vector(&nextAims);
 	removeCurrentAim();
 }
 

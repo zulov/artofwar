@@ -14,7 +14,7 @@ IndividualOrder::IndividualOrder(Unit* unit, UnitOrder action, const Urho3D::Vec
 IndividualOrder::~IndividualOrder() = default;
 
 bool IndividualOrder::add() {
-	unit->addAim(this, append);
+	unit->addOrder(this, append);
 	return false;
 }
 

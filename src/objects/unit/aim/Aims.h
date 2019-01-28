@@ -18,7 +18,7 @@ public:
 	std::optional<Urho3D::Vector2> getDirection(Unit* unit) const;
 	void clearExpired();
 	bool ifReach(Unit* unit);
-	void add(Unit* unit, FutureOrder* aim, bool append);
+	void add(FutureOrder* aim, bool append);
 	void clear();
 	void removeCurrentAim();
 	bool hasCurrent() const { return current != nullptr; }
@@ -26,7 +26,6 @@ public:
 	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const;
 	void set(Aim* aim);
 private:
-	void next();
 	std::vector<FutureOrder*> nextAims;
 	Aim* current;
 };
