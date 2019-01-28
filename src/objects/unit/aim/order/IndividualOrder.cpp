@@ -5,15 +5,15 @@
 #include "simulation/env/Environment.h"
 
 
-IndividualOrder::IndividualOrder(Unit* unit, const Urho3D::Vector2& vector,
-                                 const Physical* toUse, UnitOrder action):
-	FutureOrder(action, vector, toUse), unit(unit) {
+IndividualOrder::IndividualOrder(Unit* unit, UnitOrder action, const Urho3D::Vector2& vector,
+                                 const Physical* toUse, bool append):
+	FutureOrder(action, append, vector, toUse), unit(unit) {
 }
 
 
 IndividualOrder::~IndividualOrder() = default;
 
-bool IndividualOrder::add(bool append) {
+bool IndividualOrder::add() {
 	unit->addAim(this, append);
 	return false;
 }
@@ -26,12 +26,20 @@ void IndividualOrder::addTargetAim() {
 }
 
 void IndividualOrder::addFollowAim() {
+	auto opt = toUse->getPosToUseBy(static_cast<Unit*>(unit));
+	if (opt.has_value()) {
+		unit->action(static_cast<char>(action),
+		             getFollowAim(unit->getMainCell(),
+		                          opt.value(), toUse));
+	}
 }
 
 void IndividualOrder::addChargeAim() {
+	unit->action(static_cast<char>(action), getChargeAim(vector));
 }
 
 void IndividualOrder::addAttackAim() {
+	int a = 5;
 }
 
 void IndividualOrder::addDefendAim() {
@@ -42,23 +50,6 @@ void IndividualOrder::addDeadAim() {
 	simpleAction();
 }
 
-void IndividualOrder::simpleAction() {
-	unit->action(static_cast<char>(FutureOrder::action), ActionParameter());
+void IndividualOrder::simpleAction() const {
+	unit->action(static_cast<char>(action), ActionParameter());
 }
-
-// void IndividualAction::addChargeAim() {
-// 	entity->action(static_cast<char>(action), getChargeAim(charge));
-// }
-//
-// void IndividualAction::addFollowAim() {
-// 	auto opt = toFollow->getPosToUseBy(static_cast<Unit*>(entity));
-// 	if (opt.has_value()) {
-// 		entity->action(static_cast<char>(action),
-// 		               getFollowAim(entity->getMainCell(),
-// 		                            opt.value(), toFollow));
-// 	}
-// }
-//
-// void IndividualAction::addAttackAim() {
-// 	int a = 5;
-// }

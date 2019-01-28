@@ -278,11 +278,12 @@ std::optional<Physical*> Formation::getLeader() {
 	return {};
 }
 
-void Formation::addAim(FutureOrder* aim, bool append) {
-	if (!append) {
+void Formation::addAim(FutureOrder* order) {
+	if (!order->getAppend()) {
+		semiReset();
 		futureOrders.clear();
 	}
-	futureOrders.emplace_back(aim);
+	futureOrders.emplace_back(order);
 }
 
 size_t Formation::getSize() {

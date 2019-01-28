@@ -4,16 +4,16 @@
 #include "simulation/env/Environment.h"
 #include "objects/unit/ActionParameter.h"
 
-FutureOrder::FutureOrder(UnitOrder action, const Urho3D::Vector2& vector, const Physical* toUse)
-	: vector(vector), toUse(nullptr), action(action) {
+FutureOrder::FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector, const Physical* toUse)
+	: vector(vector), toUse(toUse), action(action), append(append) {
 }
 
-FutureOrder::FutureOrder(UnitOrder action, const Urho3D::Vector2& vector)
-	: vector(vector), toUse(nullptr), action(action) {
+FutureOrder::FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector)
+	: vector(vector), toUse(nullptr), action(action), append(append) {
 }
 
-FutureOrder::FutureOrder(UnitOrder action, const Physical* toUse)
-	: toUse(toUse), action(action) {
+FutureOrder::FutureOrder(UnitOrder action, bool append, const Physical* toUse)
+	: toUse(toUse), action(action), append(append) {
 }
 
 FutureOrder::~FutureOrder() = default;
@@ -36,7 +36,7 @@ ActionParameter FutureOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar
 	return ActionParameter();
 }
 
-ActionParameter FutureOrder::getChargeAim(Urho3D::Vector2* charge) {
+ActionParameter FutureOrder::getChargeAim(Urho3D::Vector2& charge) {
 	return ActionParameter();
 }
 
@@ -45,7 +45,7 @@ void FutureOrder::execute() {
 	case UnitOrder::GO:
 		return addTargetAim();
 	case UnitOrder::FOLLOW:
-		if (toUse&& toUse->isAlive()){
+		if (toUse && toUse->isAlive()) {
 			addFollowAim();
 		}
 		break;

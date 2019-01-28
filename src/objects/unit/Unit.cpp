@@ -139,7 +139,7 @@ void Unit::actionIfCloseEnough(UnitState action, Physical* closest, int indexToI
 		if (sqDistance < closeRange * closeRange) {
 			interactWithOne(closest, indexToInteract, action);
 		} else if (sqDistance < intrestRange * intrestRange) {
-			addAim(new IndividualOrder(this, {}, closest, UnitOrder::FOLLOW));
+			addAim(new IndividualOrder(this, UnitOrder::FOLLOW, {}, closest));
 		}
 	}
 }

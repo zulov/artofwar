@@ -13,8 +13,13 @@ void CommandList::add(AbstractCommand* command) {
 	commands.push_back(command);
 }
 
+void CommandList::add(AbstractCommand* first, AbstractCommand* second) {
+	add(first);
+	add(second);
+}
+
 void CommandList::execute() {
-	for (auto & command : commands) {
+	for (auto& command : commands) {
 		setParemeters(command);
 		command->execute();
 		delete command;

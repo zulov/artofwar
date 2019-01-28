@@ -24,7 +24,7 @@ public:
 	FormationState getState() const { return state; }
 	std::optional<Physical*> getLeader();
 
-	void addAim(FutureOrder* aim, bool append);
+	void addAim(FutureOrder* order);
 	size_t getSize();
 	void semiReset();
 	std::vector<Unit*>& getUnits() { return units; }

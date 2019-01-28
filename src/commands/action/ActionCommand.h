@@ -13,13 +13,10 @@ enum class UnitOrder : char;
 class ActionCommand : public AbstractCommand
 {
 public:
-	ActionCommand(FutureOrder* futureAim, bool append = false);
+	ActionCommand(FutureOrder* futureAim);
 	~ActionCommand() override;
 
 	void execute() override;
 protected:
-	//void addAim();
-
 	FutureOrder* futureAim;
-	bool append;
 };

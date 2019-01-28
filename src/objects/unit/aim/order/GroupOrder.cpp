@@ -1,31 +1,26 @@
 #include "GroupOrder.h"
-#include "objects/unit/ActionParameter.h"
-#include "Game.h"
-#include "simulation/formation/FormationManager.h"
 #include "FormationOrder.h"
+#include "Game.h"
+#include "objects/unit/ActionParameter.h"
+#include "simulation/formation/FormationManager.h"
 
 
-GroupOrder::GroupOrder(std::vector<Physical*>* entities, const Urho3D::Vector2& vector, const Physical* physical,
-                       UnitOrder action): FutureOrder(action, vector, physical), entities(entities) {
+GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitOrder action, const Urho3D::Vector2& vector,
+                       const Physical* physical, bool append):
+	FutureOrder(action, append, vector, physical), entities(entities) {
 }
-
 
 GroupOrder::~GroupOrder() = default;
 
-bool GroupOrder::add(bool append) {
+bool GroupOrder::add() {
 	execute();
 	return true;
 }
 
 void GroupOrder::addTargetAim() {
-	bool append = false;
 	auto opt = Game::getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
-		if (!append) {
-			opt.value()->semiReset();
-		}
-
-		opt.value()->addAim(new FormationOrder(opt.value(), action, vector, nullptr), append);
+		opt.value()->addAim(new FormationOrder(opt.value(), action, vector, nullptr, append));
 	}
 }
 

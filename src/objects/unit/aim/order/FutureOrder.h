@@ -5,22 +5,24 @@
 class FutureOrder
 {
 public:
-	FutureOrder(UnitOrder action, const Urho3D::Vector2& vector, const Physical* toUse);
-	FutureOrder(UnitOrder action, const Urho3D::Vector2& vector);
-	FutureOrder(UnitOrder action, const Physical* toUse);
+	FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector, const Physical* toUse);
+	FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector);
+	FutureOrder(UnitOrder action, bool append, const Physical* toUse);
 
 	virtual ~FutureOrder();
 
 	bool expired() const;
-	virtual bool add(bool append) =0;
+	virtual bool add() =0;
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);
 	ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow);
-	ActionParameter getChargeAim(Urho3D::Vector2* charge);
+	ActionParameter getChargeAim(Urho3D::Vector2& charge);
 	void execute();
+	bool getAppend() const { return append; }
 protected:
 	Urho3D::Vector2 vector;
 	const Physical* toUse;
 	UnitOrder action;
+	const bool append;
 private:
 	virtual void addTargetAim() =0;
 	virtual void addFollowAim() =0;

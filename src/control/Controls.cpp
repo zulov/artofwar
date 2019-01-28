@@ -105,32 +105,34 @@ void Controls::rightClick(hit_data& hitData) const {
 		{
 		if (selected->size() == 1) {
 			Game::getActionList()->add(new ActionCommand(new IndividualOrder(static_cast<Unit*>(selected->at(0)),
+			                                                                 UnitOrder::GO,
 			                                                                 {hitData.position.x_, hitData.position.z_},
-			                                                                 nullptr, UnitOrder::GO),
-			                                             input->GetKeyDown(Urho3D::KEY_SHIFT)));
+			                                                                 nullptr,
+			                                                                 input->GetKeyDown(Urho3D::KEY_SHIFT))));
 		} else {
-			Game::getActionList()->add(new ActionCommand(new GroupOrder
-			                                             (selected, {hitData.position.x_, hitData.position.z_}, nullptr,
-			                                              UnitOrder::GO),
-			                                             input->GetKeyDown(Urho3D::KEY_SHIFT)));
+			Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
+			                                                            {hitData.position.x_, hitData.position.z_},
+			                                                            nullptr,
+			                                                            input->GetKeyDown(Urho3D::KEY_SHIFT))));
 		}
 		break;
 		}
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
-		if (hitData.clicked->getTeam() == selected->at(0)->getTeam()) {
-			Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, {}, hitData.clicked,
-			                                                            UnitOrder::FOLLOW),
-			                                             input->GetKeyDown(Urho3D::KEY_SHIFT)));
-		} else {
-			Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, {}, hitData.clicked,
-			                                                            UnitOrder::ATTACK),
-			                                             input->GetKeyDown(Urho3D::KEY_SHIFT)));
+		{
+		const UnitOrder order = hitData.clicked->getTeam() == selected->at(0)->getTeam()
+			                        ? UnitOrder::FOLLOW
+			                        : UnitOrder::ATTACK;
+
+		Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, order, {},
+		                                                            hitData.clicked,
+		                                                            input->GetKeyDown(Urho3D::KEY_SHIFT))));
 		}
 		break;
 	case ObjectType::RESOURCE:
-		Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, {}, hitData.clicked, UnitOrder::COLLECT),
-		                                             input->GetKeyDown(Urho3D::KEY_SHIFT)));
+		Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, UnitOrder::COLLECT, {},
+		                                                            hitData.clicked,
+		                                                            input->GetKeyDown(Urho3D::KEY_SHIFT))));
 		break;
 	default: ;
 	}
@@ -147,16 +149,18 @@ void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) co
 	auto actions = Game::getActionList();
 
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
-		actions->add(new ActionCommand(new GroupOrder(selected, {held.first->x_, held.first->z_}, nullptr,
-		                                              UnitOrder::GO)));
-		actions->add(new ActionCommand(new GroupOrder(selected, {held.second->x_, held.second->z_}, nullptr,
-		                                              UnitOrder::GO), true));
+		actions->add(
+		             new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
+		                                              {held.first->x_, held.first->z_}, nullptr)),
+		             new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
+		                                              {held.second->x_, held.second->z_},
+		                                              nullptr, true)));
 	} else {
-		actions->add(new ActionCommand(new GroupOrder(selected, {held.first->x_, held.first->z_}, nullptr,
-		                                              UnitOrder::GO)));
-		actions->add(new ActionCommand(new GroupOrder(selected, {
+		actions->add(new ActionCommand(new GroupOrder(selected, UnitOrder::GO, {held.first->x_, held.first->z_},
+		                                              nullptr)));
+		actions->add(new ActionCommand(new GroupOrder(selected, UnitOrder::CHARGE, {
 			held.second->x_ - held.first->x_, held.second->z_ - held.first->z_
-		}, nullptr, UnitOrder::CHARGE), true));
+		}, nullptr, true)));
 	}
 }
 
@@ -234,7 +238,8 @@ void Controls::order(short id, const ActionParameter& parameter) {
 }
 
 void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
-	Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, {}, nullptr, UnitOrder(id))));
+	//TODO a co z parameter
+	Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, UnitOrder(id), {}, nullptr)));
 }
 
 void Controls::orderPhysical(short id, const ActionParameter& parameter) const {

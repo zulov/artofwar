@@ -4,9 +4,10 @@
 class IndividualOrder : public FutureOrder
 {
 public:
-	IndividualOrder(Unit* unit, const Urho3D::Vector2& vector, const Physical* toUse, UnitOrder action);
+	IndividualOrder(Unit* unit, UnitOrder action, const Urho3D::Vector2& vector, const Physical* toUse,
+	                bool append = false);
 	~IndividualOrder();
-	bool add(bool append) override;
+	bool add() override;
 private:
 	void addTargetAim() override;
 	void addFollowAim() override;
@@ -14,7 +15,7 @@ private:
 	void addAttackAim() override;
 	void addDefendAim() override;
 	void addDeadAim() override;
-	void simpleAction();
+	void simpleAction() const;
 
 	Unit* unit;
 };
