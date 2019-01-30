@@ -28,6 +28,7 @@ public:
 	size_t getSize();
 	void semiReset();
 	std::vector<Unit*>& getUnits() { return units; }
+	void stopAllBesideLeader();
 private:
 	Urho3D::Vector2 computeLocalCenter();
 	void setNewLeader(Urho3D::Vector2& localCenter);
@@ -37,7 +38,7 @@ private:
 	void updateSizes();
 	void calculateNotWellFormed();
 	void innerUpdate();
-	void stopAllBesideLeader();
+
 	void electLeader();
 
 	void changeState(FormationState newState);

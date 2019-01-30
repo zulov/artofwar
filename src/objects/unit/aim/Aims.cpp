@@ -40,6 +40,7 @@ bool Aims::ifReach(Unit* unit) {
 		nextAims[0]->execute();
 		delete nextAims[0];
 		nextAims.erase(nextAims.begin());
+		return true;
 	}
 
 	return false;

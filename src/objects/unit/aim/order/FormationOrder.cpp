@@ -1,6 +1,5 @@
 #include "FormationOrder.h"
 #include "Game.h"
-#include "objects/unit/state/UnitState.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "simulation/formation/Formation.h"
@@ -23,11 +22,7 @@ void FormationOrder::addTargetAim() {
 	auto opt = formation->getLeader();
 	if (opt.has_value()) {
 		opt.value()->action(static_cast<char>(action), getTargetAim(opt.value()->getMainCell(), vector));
-		for (auto unit : formation->getUnits()) {
-			if (unit != opt.value()) {
-				StateManager::changeState(unit, UnitState::STOP);
-			}
-		}
+		formation->stopAllBesideLeader();
 		Game::getEnvironment()->invalidateCache();
 	}
 }
@@ -36,6 +31,9 @@ void FormationOrder::addFollowAim() {
 }
 
 void FormationOrder::addChargeAim() {
+	for (auto unit : formation->getUnits()) {
+		unit->action(static_cast<char>(action), getChargeAim(vector));
+	}
 }
 
 void FormationOrder::addAttackAim() {
@@ -47,13 +45,6 @@ void FormationOrder::addDefendAim() {
 void FormationOrder::addDeadAim() {
 }
 
-//
-// void FormationAction::addChargeAim(Urho3D::Vector2* charge, bool append) {
-// 	for (auto unit : formation->getUnits()) {
-// 		unit->action(static_cast<char>(action), getChargeAim(charge));
-// 	}
-// }
-//
 // void FormationAction::addFollowAim(const Physical* toFollow, bool append) {
 // 	auto opt = formation->getLeader();
 // 	if (opt.has_value()) {

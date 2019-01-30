@@ -5,7 +5,7 @@ class GroupOrder : public FutureOrder
 {
 public:
 	GroupOrder(std::vector<Physical*>* entities, UnitOrder action, const Urho3D::Vector2& vector,
-	           const Physical* physical, bool append=false);
+	           const Physical* physical, bool append = false);
 	~GroupOrder();
 	bool add() override;
 private:
@@ -18,5 +18,7 @@ private:
 	void addAttackAim() override;
 	void addDefendAim() override;
 	void addDeadAim() override;
+
 	void simpleAction();
+	void transformToFormationOrder() const;
 };
