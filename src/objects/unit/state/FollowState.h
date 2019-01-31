@@ -12,9 +12,7 @@ public:
 	~FollowState() = default;
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
-		unit->clearAims();
-//		unit->addAim(parameter.aim);
-		//TODO aim?
+		unit->setAim(parameter.aim);
 	}
 
 

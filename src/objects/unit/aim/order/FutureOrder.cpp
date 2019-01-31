@@ -3,6 +3,7 @@
 #include "objects/unit/aim/TargetAim.h"
 #include "simulation/env/Environment.h"
 #include "objects/unit/ActionParameter.h"
+#include "objects/unit/aim/FollowAim.h"
 
 FutureOrder::FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector, const Physical* toUse)
 	: vector(vector), toUse(toUse), action(action), append(append) {
@@ -33,7 +34,7 @@ ActionParameter FutureOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
 ActionParameter FutureOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow) {
 	auto const target = getTargetAim(startInx, toSoFar);
 
-	return ActionParameter();
+	return ActionParameter(new FollowAim(toFollow, static_cast<TargetAim*>(target.aim)));
 }
 
 ActionParameter FutureOrder::getChargeAim(Urho3D::Vector2& charge) {

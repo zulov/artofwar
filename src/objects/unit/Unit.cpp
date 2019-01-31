@@ -183,7 +183,7 @@ void Unit::addOrder(FutureOrder* aim, bool append) {
 	aims.add(aim, append);
 }
 
-void Unit::addAim(Aim* aim) {
+void Unit::setAim(Aim* aim) {
 	aims.set(aim);
 }
 

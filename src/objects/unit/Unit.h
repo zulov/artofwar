@@ -81,7 +81,7 @@ public:
 	void addUpgrade(db_unit_upgrade* upgrade);
 	void changeColor(ColorMode mode);
 	void addOrder(FutureOrder* aim, bool append = false);
-	void addAim(Aim* aim);
+
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);
 	bool isFirstThingAlive() const;
@@ -120,7 +120,7 @@ private:
 	void actionIfCloseEnough(UnitState action, Physical* closest, int indexToInteract,
 	                         float sqDistance, float closeRange, float intrestRange);
 	void changeColor(float value, float maxValue) const;
-
+	void setAim(Aim* aim);
 	Urho3D::Vector2 velocity, acceleration;
 	Aims aims;
 

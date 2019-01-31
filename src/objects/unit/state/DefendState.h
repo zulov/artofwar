@@ -10,7 +10,7 @@ public:
 	~DefendState() = default;
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
-		unit->clearAims();
+
 	}
 
 	void onEnd(Unit* unit) override {

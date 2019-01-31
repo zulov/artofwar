@@ -9,7 +9,9 @@ FollowAim::FollowAim(const Physical* physical, TargetAim* subTarget): physical(p
 	radiusSq = 1 * 1;
 }
 
-FollowAim::~FollowAim() = default;
+FollowAim::~FollowAim() {
+	delete subTarget;
+}
 
 std::vector<Urho3D::Vector3> FollowAim::getDebugLines(Unit* follower) const {
 	return subTarget->getDebugLines(follower);

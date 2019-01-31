@@ -37,10 +37,9 @@ bool Aims::ifReach(Unit* unit) {
 			return nextAims.empty();
 		}
 	} else if (!nextAims.empty()) {
-		nextAims[0]->execute();
+		nextAims[0]->execute();//TODO to czysci aimsy nie potrzebnie :O
 		delete nextAims[0];
 		nextAims.erase(nextAims.begin());
-		return true;
 	}
 
 	return false;
