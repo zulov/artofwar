@@ -4,6 +4,7 @@
 #include "objects/unit/state/StateManager.h"
 #include "simulation/formation/Formation.h"
 #include "simulation/env/Environment.h"
+#include "IndividualOrder.h"
 
 
 FormationOrder::FormationOrder(Formation* formation, UnitOrder action, const Urho3D::Vector2& vector,
@@ -28,6 +29,16 @@ void FormationOrder::addTargetAim() {
 }
 
 void FormationOrder::addFollowAim() {
+	auto opt = formation->getLeader();
+	if (opt.has_value()) {
+		formation->stopAllBesideLeader();
+		auto posOpt = toUse->getPosToUseBy(static_cast<Unit*>(opt.value()));
+		if (posOpt.has_value()) {
+			opt.value()->action(static_cast<char>(action),
+			                    getFollowAim(opt.value()->getMainCell(),
+			                                 posOpt.value(), toUse));
+		}
+	}
 }
 
 void FormationOrder::addChargeAim() {
@@ -37,67 +48,44 @@ void FormationOrder::addChargeAim() {
 }
 
 void FormationOrder::addAttackAim() {
+	auto optLeader = formation->getLeader();
+	if (optLeader.has_value()) {
+		auto posOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(optLeader.value()));
+		if (posOpt.has_value()) {
+			auto postToUse = posOpt.value();
+			auto dist = std::get<1>(postToUse);
+			if (dist > 25) {
+				//TODO hardcode
+				auto pos = std::get<0>(postToUse);
+				optLeader.value()->action(static_cast<char>(UnitOrder::FOLLOW),
+				                          getFollowAim(optLeader.value()->getMainCell(),
+				                                       pos, toUse));
+				//formation->addAim({}, toUse, action, true); //Dodanie celu po dojsciu
+			} else {
+				for (auto unit : formation->getUnits()) {
+					unit->resetFormation();
+					unit->addOrder(new IndividualOrder(unit, UnitOrder::ATTACK, {}, toUse, false));
+					//TODO to samo zrobic w innnych akcjach z atakiem
+					//TOAttack jak nie ten to zaatakowac blizeszego
+				}
+				formation->remove();
+			}
+
+		}
+	}
 }
 
 void FormationOrder::addDefendAim() {
+	simpleAction();
 }
+
 
 void FormationOrder::addDeadAim() {
+	simpleAction();
 }
 
-// void FormationAction::addFollowAim(const Physical* toFollow, bool append) {
-// 	auto opt = formation->getLeader();
-// 	if (opt.has_value()) {
-// 		for (auto unit : formation->getUnits()) {
-// 			if (unit != opt.value()) {
-// 				StateManager::changeState(unit, UnitState::STOP);
-// 			}
-// 		}
-// 		auto posOpt = toFollow->getPosToUseBy(static_cast<Unit*>(opt.value()));
-// 		if (posOpt.has_value()) {
-// 			opt.value()->action(static_cast<char>(action),
-// 			                    getFollowAim(opt.value()->getMainCell(),
-// 			                                 posOpt.value(), toFollow));
-// 		}
-// 	}
-// }
-//
-// void FormationAction::addAttackAim(const Physical* toAttack, bool append) {
-// 	auto opt = formation->getLeader();
-// 	if (opt.has_value()) {
-// 		auto posOpt = toAttack->getPosToUseWithIndex(static_cast<Unit*>(opt.value()));
-// 		if (posOpt.has_value()) {
-// 			auto res = posOpt.value();
-// 			auto dist = std::get<1>(res);
-// 			if (dist > 25) {
-// 				//TODO hardcode
-// 				auto pos = std::get<0>(res);
-// 				opt.value()->action(static_cast<char>(action),
-// 				                    getFollowAim(opt.value()->getMainCell(),
-// 				                                 pos, toAttack));
-// 				formation->addAim({}, toAttack, action, true); //Dodanie celu po dojsciu
-// 			} else {
-// 				for (auto unit : formation->getUnits()) {
-// 					unit->resetFormation();
-// 					unit->addAim(FutureAim(toAttack, UnitOrder::ATTACK), false);
-// 					//TODO to samo zrobic w innnych akcjach z atakiem
-// 					//TOAttack jak nie ten to zaatakowac blizeszego
-// 				}
-// 				formation->remove();
-// 			}
-//
-// 		}
-// 	}
-// }
-//
-// void FormationAction::addDeadAim() {
-// 	for (auto unit : formation->getUnits()) {
-// 		unit->action(static_cast<char>(action), ActionParameter());
-// 	}
-// }
-//
-// void FormationAction::addDefendAim() {
-// 	for (auto unit : formation->getUnits()) {
-// 		unit->action(static_cast<char>(action), ActionParameter());
-// 	}
-// }
+void FormationOrder::simpleAction() {
+	for (auto unit : formation->getUnits()) {
+		unit->action(static_cast<char>(action), ActionParameter());
+	}
+}

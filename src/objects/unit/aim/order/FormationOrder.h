@@ -16,6 +16,7 @@ private:
 	void addChargeAim() override;
 	void addAttackAim() override;
 	void addDefendAim() override;
+	void simpleAction();
 	void addDeadAim() override;
 	Formation* formation;
 };

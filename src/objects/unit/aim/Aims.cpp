@@ -23,7 +23,12 @@ std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) const {
 
 void Aims::clearExpired() {
 	nextAims.erase(std::remove_if(nextAims.begin(), nextAims.end(),
-	                              [](FutureOrder* fa) { return fa == nullptr || fa->expired(); }),
+	                              [](FutureOrder* fa)
+	                              {
+		                              const bool expired = fa->expired();
+		                              if (expired) { delete fa; }
+		                              return expired;
+	                              }),
 	               nextAims.end());
 	if (current != nullptr && current->expired()) {
 		removeCurrentAim();
@@ -37,7 +42,7 @@ bool Aims::ifReach(Unit* unit) {
 			return nextAims.empty();
 		}
 	} else if (!nextAims.empty()) {
-		nextAims[0]->execute();//TODO to czysci aimsy nie potrzebnie :O
+		nextAims[0]->execute(); //TODO to czysci aimsy nie potrzebnie :O
 		delete nextAims[0];
 		nextAims.erase(nextAims.begin());
 	}
