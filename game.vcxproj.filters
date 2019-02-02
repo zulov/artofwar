@@ -437,7 +437,6 @@
     <ClInclude Include="src\objects\unit\ChargeData.h" />
     <ClInclude Include="src\objects\NodeUtils.h" />
     <ClInclude Include="src\objects\unit\state\ShotState.h" />
-    <ClInclude Include="src\objects\MenuAction.h" />
     <ClInclude Include="src\objects\unit\state\UnitState.h">
       <Filter>objects\state</Filter>
     </ClInclude>
@@ -464,6 +463,7 @@
     <ClInclude Include="src\objects\unit\aim\order\IndividualOrder.h" />
     <ClInclude Include="src\objects\unit\aim\order\GroupOrder.h" />
     <ClInclude Include="src\objects\unit\aim\order\FormationOrder.h" />
+    <ClInclude Include="src\objects\ActionType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

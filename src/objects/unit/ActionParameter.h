@@ -1,6 +1,6 @@
 #pragma once
 
-#include  "objects/MenuAction.h"
+#include  "objects/ActionType.h"
 
 class Aim;
 
@@ -10,13 +10,13 @@ struct ActionParameter
 		: aim(aim) {
 	}
 
-	explicit ActionParameter(MenuAction type) : type(type) {
+	explicit ActionParameter(ActionType type) : type(type) {
 	}
 
 	explicit ActionParameter(int index) : index(index) {
 	}
 
 	Aim* aim;
-	MenuAction type = MenuAction::NONE;
+	ActionType type = ActionType::NONE;
 	int index = -1;
 };

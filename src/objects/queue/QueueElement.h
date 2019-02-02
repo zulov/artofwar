@@ -1,24 +1,24 @@
 #pragma once
 
-enum class MenuAction : char;
+enum class ActionType : char;
 
 class QueueElement
 {
 public:
-	QueueElement(MenuAction type, short id, short maxCapacity, float initialSecondsToComplete,
+	QueueElement(ActionType type, short id, short maxCapacity, float initialSecondsToComplete,
 	             float secondsToCompletePerInstance);
 	~QueueElement();
-	bool checkType(MenuAction _type, short _id);
+	bool checkType(ActionType _type, short _id);
 	short add(short value);
 	void reduce(short value);
 	bool update(float time);
-	MenuAction getType();
+	ActionType getType();
 	short getId();
 	short getAmount();
 	short getMaxCapacity();
 	float getProgress();
 private:
-	MenuAction type;
+	ActionType type;
 	short id;
 
 	short maxCapacity;

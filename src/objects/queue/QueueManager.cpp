@@ -3,7 +3,7 @@
 #include "QueueElement.h"
 #include "database/DatabaseCache.h"
 #include "defines.h"
-#include "objects/MenuAction.h"
+#include "objects/ActionType.h"
 #include "utils.h"
 #include <algorithm>
 
@@ -17,7 +17,7 @@ QueueManager::~QueueManager() {
 	clear_vector(queue);
 }
 
-void QueueManager::add(short value, MenuAction type, short id, short localMaxCapacity) {
+void QueueManager::add(short value, ActionType type, short id, short localMaxCapacity) {
 	for (auto& i : queue) {
 		if (i->checkType(type, id)) {
 			value = i->add(value);
@@ -60,33 +60,33 @@ QueueElement* QueueManager::getAt(short i) {
 	return queue.at(i);
 }
 
-float QueueManager::getSecToComplete(MenuAction type, short id, int level) {//TODO performance przerobic na tablice
+float QueueManager::getSecToComplete(ActionType type, short id, int level) {//TODO performance przerobic na tablice
 	switch (type) {
-	case MenuAction::UNIT_CREATE:
+	case ActionType::UNIT_CREATE:
 		return 5;
-	case MenuAction::BUILDING:
+	case ActionType::BUILDING:
 		return 10;
-	case MenuAction::UNIT_LEVEL:
+	case ActionType::UNIT_LEVEL:
 		{
 		auto dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
 		return dbLevel->upgradeSpeed;
 		}
-	case MenuAction::BUILDING_LEVEL:
+	case ActionType::BUILDING_LEVEL:
 		return 10;
 	default:
 		return 1;
 	}
 }
 
-float QueueManager::getSecPerInstance(MenuAction type, short id, int level) {//TODO performance przerobic na tablice
+float QueueManager::getSecPerInstance(ActionType type, short id, int level) {//TODO performance przerobic na tablice
 	switch (type) {
-	case MenuAction::UNIT_CREATE:
+	case ActionType::UNIT_CREATE:
 		return 0.5;
-	case MenuAction::BUILDING:
+	case ActionType::BUILDING:
 		return 0;
-	case MenuAction::UNIT_LEVEL:
+	case ActionType::UNIT_LEVEL:
 		return 0;
-	case MenuAction::BUILDING_LEVEL:
+	case ActionType::BUILDING_LEVEL:
 		return 0;
 	default:
 		return 0;

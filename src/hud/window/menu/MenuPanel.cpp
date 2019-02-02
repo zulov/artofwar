@@ -8,7 +8,7 @@
 #include "hud/UiUtils.h"
 #include "hud/window/in_game_menu/middle/AbstractMiddlePanel.h"
 #include "info/LeftMenuInfoPanel.h"
-#include "objects/MenuAction.h"
+#include "objects/ActionType.h"
 #include "objects/building/BuildingUtils.h"
 #include "objects/resource/ResourceOrder.h"
 #include "player/Player.h"
@@ -113,7 +113,7 @@ void MenuPanel::createBody() {
 			buttons[k] = createElement<Urho3D::Button>(rows[i], style, "LeftMenuBigIcon");
 			sprites[k] = createElement<MySprite>(buttons[k], style, "LeftMenuSprite");
 			hudElements.push_back(new HudData(buttons[k]));
-			hudElements[k]->set(-1, MenuAction::NONE, "");
+			hudElements[k]->set(-1, ActionType::NONE, "");
 
 			buttons[k]->SetVar("HudElement", hudElements[k]);
 			k++;
@@ -138,7 +138,7 @@ void MenuPanel::ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMa
 	}
 }
 
-void MenuPanel::setNextElement(int& k, Urho3D::String texture, int id, MenuAction menuAction, Urho3D::String text) {
+void MenuPanel::setNextElement(int& k, Urho3D::String texture, int id, ActionType menuAction, Urho3D::String text) {
 	setTextureToSprite(sprites[k], Game::getCache()->GetResource<Urho3D::Texture2D>(texture));
 
 	buttons[k]->SetVisible(true);
@@ -153,7 +153,7 @@ void MenuPanel::basicBuilding() {
 	for (int i = 0; i < Game::getDatabaseCache()->getBuildingSize(); ++i) {
 		db_building* building = Game::getDatabaseCache()->getBuilding(i);
 		if (building && building->nation == nation) {
-			setNextElement(k, "textures/hud/icon/building/" + building->icon, building->id, MenuAction::BUILDING, "");
+			setNextElement(k, "textures/hud/icon/building/" + building->icon, building->id, ActionType::BUILDING, "");
 		}
 	}
 	resetButtons(k);
@@ -169,7 +169,7 @@ void MenuPanel::levelBuilding() {
 			auto building = Game::getDatabaseCache()->getBuilding(i);
 			if (building->nation == nation) {
 				setNextElement(k, "textures/hud/icon/building/levels/" + Urho3D::String(level) + "/" + building->icon,
-				               building->id, MenuAction::BUILDING_LEVEL, "");
+				               building->id, ActionType::BUILDING_LEVEL, "");
 			}
 		}
 	}
@@ -213,7 +213,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 	for (auto id : getUnitInBuilding(selectedInfo->getSelectedTypes())) {
 		db_unit* unit = Game::getDatabaseCache()->getUnit(id);
 		if (unit) {
-			setNextElement(k, "textures/hud/icon/unit/" + unit->icon, unit->id, MenuAction::UNIT_CREATE, "");
+			setNextElement(k, "textures/hud/icon/unit/" + unit->icon, unit->id, ActionType::UNIT_CREATE, "");
 		}
 	}
 	resetButtons(k);
@@ -227,7 +227,7 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 		if (opt.has_value()) {
 			db_unit* unit = Game::getDatabaseCache()->getUnit(id);
 			setNextElement(k, "textures/hud/icon/unit/levels/" + Urho3D::String(level) + "/" + unit->icon, unit->id,
-			               MenuAction::UNIT_LEVEL, "");
+			               ActionType::UNIT_LEVEL, "");
 		}
 	}
 	resetButtons(k);
@@ -243,7 +243,7 @@ void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 		if (opt.has_value()) {
 			auto upgrade = opt.value();
 			setNextElement(k, "textures/hud/icon/unit/upgrades/" + upgrade->pathName + "/" + upgrade->name + ".png", id,
-			               MenuAction::UNIT_UPGRADE, "");
+			               ActionType::UNIT_UPGRADE, "");
 		}
 	}
 	resetButtons(k);
@@ -276,7 +276,7 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 	for (auto id : getOrderForUnit(selectedInfo->getSelectedTypes())) {
 		db_order* order = Game::getDatabaseCache()->getOrder(id);
 		if (order) {
-			setNextElement(k, "textures/hud/icon/orders/" + order->icon, order->id, MenuAction::ORDER, "");
+			setNextElement(k, "textures/hud/icon/orders/" + order->icon, order->id, ActionType::ORDER, "");
 		}
 	}
 	resetButtons(k);
@@ -285,8 +285,8 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 void MenuPanel::formationOrder() {
 	int k = 0;
 	auto l10n = Game::getLocalization();
-	setNextElement(k, "textures/hud/icon/formation/none.png", 0, MenuAction::FORMATION, l10n->Get("form_none"));
-	setNextElement(k, "textures/hud/icon/formation/square.png", 1, MenuAction::FORMATION, l10n->Get("form_square"));
+	setNextElement(k, "textures/hud/icon/formation/none.png", 0, ActionType::FORMATION, l10n->Get("form_none"));
+	setNextElement(k, "textures/hud/icon/formation/square.png", 1, ActionType::FORMATION, l10n->Get("form_square"));
 
 	resetButtons(k);
 }
@@ -354,10 +354,10 @@ void MenuPanel::basicResource(SelectedInfo* selectedInfo) {
 	auto l10n = Game::getLocalization();
 
 	setNextElement(k, "textures/hud/icon/resource_action/get_worker.png", int(ResourceOrder::COLLECT),
-	               MenuAction::RESOURCE,
+	               ActionType::RESOURCE,
 	               l10n->Get("res_act_get_worker"));
 	setNextElement(k, "textures/hud/icon/resource_action/remove_workers.png", int(ResourceOrder::COLLECT_CANCEL),
-	               MenuAction::RESOURCE,
+	               ActionType::RESOURCE,
 	               l10n->Get("res_act_cancel_worker"));
 
 	resetButtons(k);

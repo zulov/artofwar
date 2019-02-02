@@ -12,7 +12,7 @@
 #include "commands/upgrade/UpgradeCommandList.h"
 #include "env/Environment.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
-#include "objects/MenuAction.h"
+#include "objects/ActionType.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/building/Building.h"
 #include "objects/queue/QueueElement.h"
@@ -200,7 +200,7 @@ void Simulation::updateBuildingQueues(const float time) const {
 		auto done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {
-			case MenuAction::UNIT_CREATE:
+			case ActionType::UNIT_CREATE:
 				creationCommandList->add(new CreationCommand(ObjectType::UNIT, done->getAmount(),
 				                                             done->getId(), build->getTarget(),
 				                                             build->getPlayer(),
@@ -209,9 +209,9 @@ void Simulation::updateBuildingQueues(const float time) const {
 				                                             getLevelForUnit(done->getId())
 				                                            ));
 				break;
-			case MenuAction::UNIT_LEVEL:
-			case MenuAction::BUILDING_LEVEL:
-			case MenuAction::UNIT_UPGRADE:
+			case ActionType::UNIT_LEVEL:
+			case ActionType::BUILDING_LEVEL:
+			case ActionType::UNIT_UPGRADE:
 				levelUp(done);
 				break;
 			}
@@ -225,7 +225,7 @@ void Simulation::updateQueues() const {
 	auto done = Game::getQueueManager()->update(maxTimeFrame);
 	if (done) {
 		switch (done->getType()) {
-		case MenuAction::BUILDING_LEVEL:
+		case ActionType::BUILDING_LEVEL:
 			levelUp(done);
 			break;
 		}

@@ -1,5 +1,5 @@
 #pragma once
-enum class MenuAction : char
+enum class ActionType : char
 {
 	NONE=0,
 	

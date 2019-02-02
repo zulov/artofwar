@@ -6,7 +6,7 @@
 #include "database/db_strcut.h"
 #include "hud/HudData.h"
 #include "hud/UiUtils.h"
-#include "objects/MenuAction.h"
+#include "objects/ActionType.h"
 #include "objects/Physical.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
@@ -49,14 +49,14 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 	const auto id = hudData->getId();
 	switch (hudData->getType()) {
 
-	case MenuAction::UNIT_CREATE:
+	case ActionType::UNIT_CREATE:
 		{
 		auto dbUnit = Game::getDatabaseCache()->getUnit(id);
 		auto costs = Game::getDatabaseCache()->getCostForUnit(id);
 		message = stringFrom(dbUnit->name, costs);
 		}
 		break;
-	case MenuAction::UNIT_LEVEL:
+	case ActionType::UNIT_LEVEL:
 		{
 		const int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
 		auto dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
@@ -65,19 +65,19 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 		message = stringFrom(dbLevel->name, opt.value());
 		}
 		break;
-	case MenuAction::UNIT_UPGRADE:
+	case ActionType::UNIT_UPGRADE:
 		{
 		message = "TODO";
 		}
 		break;
-	case MenuAction::BUILDING:
+	case ActionType::BUILDING:
 		{
 		auto dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 		auto costs = Game::getDatabaseCache()->getCostForBuilding(id);
 		message = stringFrom(dbBuilding->name, costs);
 		}
 		break;
-	case MenuAction::BUILDING_LEVEL:
+	case ActionType::BUILDING_LEVEL:
 		{
 		auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;
 		auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(id, level).value();
@@ -86,13 +86,13 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 		message = stringFrom(dbLevel->name, costs);
 		}
 		break;
-	case MenuAction::ORDER:
+	case ActionType::ORDER:
 		{
 		message = Game::getLocalization()->Get(Game::getDatabaseCache()->getOrder(id)->name);
 		}
 		break;
-	case MenuAction::FORMATION:
-	case MenuAction::RESOURCE:
+	case ActionType::FORMATION:
+	case ActionType::RESOURCE:
 		message = hudData->getText();
 		break;
 	default: ;

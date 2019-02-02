@@ -10,7 +10,7 @@
 #include "commands/creation/CreationCommandList.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
-#include "objects/MenuAction.h"
+#include "objects/ActionType.h"
 #include "objects/NodeUtils.h"
 #include "objects/queue/QueueManager.h"
 #include "player/Player.h"
@@ -112,7 +112,7 @@ void Controls::rightClick(hit_data& hitData) const {
 		} else {
 			Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
 			                                                            {hitData.position.x_, hitData.position.z_},
-			                                                            nullptr, MenuAction::ORDER,
+			                                                            nullptr, ActionType::ORDER,
 			                                                            input->GetKeyDown(Urho3D::KEY_SHIFT))));
 		}
 		break;
@@ -125,13 +125,13 @@ void Controls::rightClick(hit_data& hitData) const {
 			                        : UnitOrder::ATTACK;
 
 		Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, order, {},
-		                                                            hitData.clicked, MenuAction::ORDER,
+		                                                            hitData.clicked, ActionType::ORDER,
 		                                                            input->GetKeyDown(Urho3D::KEY_SHIFT))));
 		}
 		break;
 	case ObjectType::RESOURCE:
 		Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, UnitOrder::COLLECT, {},
-		                                                            hitData.clicked, MenuAction::ORDER,
+		                                                            hitData.clicked, ActionType::ORDER,
 		                                                            input->GetKeyDown(Urho3D::KEY_SHIFT))));
 		break;
 	default: ;
@@ -151,16 +151,16 @@ void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) co
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
 		actions->add(
 		             new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
-		                                              {held.first->x_, held.first->z_}, nullptr, MenuAction::ORDER)),
+		                                              {held.first->x_, held.first->z_}, nullptr, ActionType::ORDER)),
 		             new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
 		                                              {held.second->x_, held.second->z_},
-		                                              nullptr, MenuAction::ORDER, true)));
+		                                              nullptr, ActionType::ORDER, true)));
 	} else {
 		actions->add(new ActionCommand(new GroupOrder(selected, UnitOrder::GO, {held.first->x_, held.first->z_},
-		                                              nullptr, MenuAction::ORDER)));
+		                                              nullptr, ActionType::ORDER)));
 		actions->add(new ActionCommand(new GroupOrder(selected, UnitOrder::CHARGE, {
 			held.second->x_ - held.first->x_, held.second->z_ - held.first->z_
-		}, nullptr, MenuAction::ORDER, true)));
+		}, nullptr, ActionType::ORDER, true)));
 	}
 }
 
@@ -244,7 +244,7 @@ void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
 
 void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 	switch (parameter.type) {
-	case MenuAction::BUILDING_LEVEL:
+	case ActionType::BUILDING_LEVEL:
 		{
 		const auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
@@ -320,9 +320,9 @@ void Controls::unitOrder(short id) {
 
 void Controls::actionUnit(short id, const ActionParameter& parameter) {
 	switch (parameter.type) {
-	case MenuAction::ORDER:
+	case ActionType::ORDER:
 		return unitOrder(id);
-	case MenuAction::FORMATION:
+	case ActionType::FORMATION:
 		return unitFormation(id);
 	}
 }

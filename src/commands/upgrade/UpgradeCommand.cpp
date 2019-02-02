@@ -1,20 +1,20 @@
 #include "UpgradeCommand.h"
 #include "Game.h"
-#include "objects/MenuAction.h"
+#include "objects/ActionType.h"
 #include "objects/building/Building.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimulationObjectManager.h"
 
 
-UpgradeCommand::UpgradeCommand(int player, int id, MenuAction type): player(player), id(id), type(type) {
+UpgradeCommand::UpgradeCommand(int player, int id, ActionType type): player(player), id(id), type(type) {
 }
 
 UpgradeCommand::~UpgradeCommand() = default;
 
 void UpgradeCommand::execute() {
 	char level = Game::getPlayersMan()->getPlayer(player)->upgradeLevel(type, id);
-	if (type == MenuAction::BUILDING_LEVEL && level > 0) {
+	if (type == ActionType::BUILDING_LEVEL && level > 0) {
 		for (auto building : *simulationObjectManager->getBuildings()) {
 			if (building->getPlayer() == player && building->getDbID() == id) {
 				building->upgrade(level);

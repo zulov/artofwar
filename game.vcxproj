@@ -311,7 +311,7 @@
     <ClInclude Include="src\hud\window\menu\LeftMenuModes.h" />
     <ClInclude Include="src\objects\building\BuildingUtils.h" />
     <ClInclude Include="src\objects\NamesCache.h" />
-    <ClInclude Include="src\objects\MenuAction.h" />
+    <ClInclude Include="src\objects\ActionType.h" />
     <ClInclude Include="src\objects\unit\state\DisposeState.h" />
     <ClInclude Include="src\hud\window\main_menu\settings\MainMenuSettingsPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\close\MainMenuClosePanel.h" />

@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "ObjectEnums.h"
 #include "database/DatabaseCache.h"
-#include "objects/MenuAction.h"
+#include "objects/ActionType.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
@@ -62,7 +62,7 @@ void Building::action(char id, const ActionParameter& parameter) {
 	Resources& resources = Game::getPlayersMan()->getActivePlayer()->getResources();
 
 	switch (parameter.type) {
-	case MenuAction::UNIT_CREATE:
+	case ActionType::UNIT_CREATE:
 		{
 		auto costs = Game::getDatabaseCache()->getCostForUnit(id);
 		if (resources.reduce(costs)) {
@@ -70,7 +70,7 @@ void Building::action(char id, const ActionParameter& parameter) {
 		}
 		}
 		break;
-	case MenuAction::UNIT_LEVEL:
+	case ActionType::UNIT_LEVEL:
 		{
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
@@ -82,7 +82,7 @@ void Building::action(char id, const ActionParameter& parameter) {
 		}
 		}
 		break;
-	case MenuAction::UNIT_UPGRADE:
+	case ActionType::UNIT_UPGRADE:
 		{
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForUnitUpgrade(id, level);

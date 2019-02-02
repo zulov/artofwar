@@ -16,7 +16,7 @@
 #include "camera/CameraManager.h"
 #include "Main.h"
 #include "objects/unit/ColorMode.h"
-#include "objects/MenuAction.h"
+#include "objects/ActionType.h"
 #include "hud/window/selected/SelectedHudElement.h"
 #include "objects/queue/QueueManager.h"
 #include <Urho3D/Core/CoreEvents.h>
@@ -364,7 +364,7 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	const auto hudData = HudData::getFromElement(eventData);
 
 	switch (hudData->getType()) {
-	case MenuAction::BUILDING:
+	case ActionType::BUILDING:
 		return controls->toBuild(hudData);
 	default: ;
 		controls->order(hudData->getId(), ActionParameter(hudData->getType()));

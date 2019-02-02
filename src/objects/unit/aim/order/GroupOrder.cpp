@@ -6,7 +6,7 @@
 
 
 GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitOrder action, const Urho3D::Vector2& vector,
-                       const Physical* physical, MenuAction menuAction, bool append):
+                       const Physical* physical, ActionType menuAction, bool append):
 	FutureOrder(action, append, vector, physical), entities(entities), menuAction(menuAction) {
 }
 
@@ -15,19 +15,19 @@ GroupOrder::~GroupOrder() = default;
 bool GroupOrder::add() {
 	switch (menuAction) {
 
-	case MenuAction::UNIT_CREATE:
+	case ActionType::UNIT_CREATE:
 		simpleAction(ActionParameter(menuAction));
 		break;
-	case MenuAction::ORDER:
+	case ActionType::ORDER:
 		execute();
 		break;
-	case MenuAction::NONE:
-	case MenuAction::UNIT_LEVEL:
-	case MenuAction::UNIT_UPGRADE:
-	case MenuAction::BUILDING:
-	case MenuAction::BUILDING_LEVEL:
-	case MenuAction::FORMATION:
-	case MenuAction::RESOURCE:
+	case ActionType::NONE:
+	case ActionType::UNIT_LEVEL:
+	case ActionType::UNIT_UPGRADE:
+	case ActionType::BUILDING:
+	case ActionType::BUILDING_LEVEL:
+	case ActionType::FORMATION:
+	case ActionType::RESOURCE:
 		{
 		int a = 5;
 		}
