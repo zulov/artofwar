@@ -14,27 +14,36 @@ FollowAim::~FollowAim() {
 }
 
 std::vector<Urho3D::Vector3> FollowAim::getDebugLines(Unit* follower) const {
-	return subTarget->getDebugLines(follower);
+	if (subTarget) {
+		return subTarget->getDebugLines(follower);
+	}
 	auto position = follower->getPosition();
 	std::vector<Urho3D::Vector3> points;
-	auto center = physical->getPosToUseBy(follower);
-	points.emplace_back(*position);
-	//points.emplace_back(center.x_, position->y_, center.y_);
+	auto optPos = physical->getPosToUseBy(follower);
+	if (optPos.has_value()) {
+		auto pos = optPos.value();
+		points.emplace_back(*position);
+		points.emplace_back(pos.x_, position->y_, pos.y_);
+	}
 
 	return points;
 }
 
 Urho3D::Vector2 FollowAim::getDirection(Unit* follower) {
+	if (subTarget) {
+		return subTarget->getDirection(follower);
+	}
 	const auto opt = physical->getPosToUseBy(follower);
 	if (opt.has_value()) {
 		return dirTo(follower->getPosition(), opt.value());
 	}
 	return {};
-
 }
 
 bool FollowAim::ifReach(Unit* follower) {
-	//subTarget->ifReach(unit);
+	if (subTarget) {
+		return subTarget->ifReach(follower);
+	}
 	auto opt = physical->getPosToUseBy(follower);
 	if (opt.has_value()) {
 		return sqDist(*follower->getPosition(), opt.value()) < radiusSq;
