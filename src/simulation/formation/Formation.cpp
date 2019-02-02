@@ -278,7 +278,7 @@ std::optional<Physical*> Formation::getLeader() {
 	return {};
 }
 
-void Formation::addAim(FutureOrder* order) {
+void Formation::addOrder(FutureOrder* order) {
 	if (!order->getAppend()) {
 		semiReset();
 		futureOrders.clear();

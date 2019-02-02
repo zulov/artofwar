@@ -20,7 +20,7 @@ bool GroupOrder::add() {
 void GroupOrder::addTargetAim() {
 	auto opt = Game::getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
-		opt.value()->addAim(new FormationOrder(opt.value(), action, vector, nullptr, append));
+		opt.value()->addOrder(new FormationOrder(opt.value(), action, vector, nullptr, append));
 	}
 }
 
@@ -53,6 +53,6 @@ void GroupOrder::simpleAction() {
 void GroupOrder::transformToFormationOrder() const {
 	auto opt = Game::getFormationManager()->createFormation(entities);
 	if (opt.has_value()) {
-		opt.value()->addAim(new FormationOrder(opt.value(), action, vector, toUse, append));
+		opt.value()->addOrder(new FormationOrder(opt.value(), action, vector, toUse, append));
 	}
 }

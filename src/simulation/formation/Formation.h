@@ -1,7 +1,6 @@
 #pragma once
 #include "FormationState.h"
 #include "FormationType.h"
-#include "UnitOrder.h"
 #include <Urho3D/Math/Vector2.h>
 #include <optional>
 #include <vector>
@@ -24,7 +23,7 @@ public:
 	FormationState getState() const { return state; }
 	std::optional<Physical*> getLeader();
 
-	void addAim(FutureOrder* order);
+	void addOrder(FutureOrder* order);
 	size_t getSize();
 	void semiReset();
 	std::vector<Unit*>& getUnits() { return units; }

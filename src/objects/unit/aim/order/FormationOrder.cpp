@@ -60,7 +60,7 @@ void FormationOrder::addAttackAim() {
 				optLeader.value()->action(static_cast<char>(UnitOrder::FOLLOW),
 				                          getFollowAim(optLeader.value()->getMainCell(),
 				                                       pos, toUse));
-				//formation->addAim({}, toUse, action, true); //Dodanie celu po dojsciu
+				formation->addOrder(new FormationOrder(formation, action, {}, toUse,  true)); //Dodanie celu po dojsciu
 			} else {
 				for (auto unit : formation->getUnits()) {
 					unit->resetFormation();
