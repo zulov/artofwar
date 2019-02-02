@@ -23,7 +23,7 @@ inline Urho3D::String getIconName(ObjectType type, int i) {
 inline Urho3D::String getIconName(MenuAction type, int level, int i) {
 	DatabaseCache* dbCache = Game::getDatabaseCache();
 	switch (type) {
-	case MenuAction::UNIT:
+	case MenuAction::UNIT_CREATE:
 		return "unit/" + dbCache->getUnit(i)->icon;
 	case MenuAction::UNIT_LEVEL:
 		return "unit/levels/" + Urho3D::String(level) + "/" + dbCache->getUnit(i)->icon;

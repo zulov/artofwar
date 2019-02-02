@@ -1,6 +1,7 @@
 #pragma once
 
-enum class MenuAction : char;
+#include  "objects/MenuAction.h"
+
 class Aim;
 
 struct ActionParameter
@@ -16,6 +17,6 @@ struct ActionParameter
 	}
 
 	Aim* aim;
-	MenuAction type;
+	MenuAction type = MenuAction::NONE;
 	int index = -1;
 };

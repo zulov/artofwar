@@ -49,7 +49,7 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 	const auto id = hudData->getId();
 	switch (hudData->getType()) {
 
-	case MenuAction::UNIT:
+	case MenuAction::UNIT_CREATE:
 		{
 		auto dbUnit = Game::getDatabaseCache()->getUnit(id);
 		auto costs = Game::getDatabaseCache()->getCostForUnit(id);

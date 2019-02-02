@@ -6,14 +6,35 @@
 
 
 GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitOrder action, const Urho3D::Vector2& vector,
-                       const Physical* physical, bool append):
-	FutureOrder(action, append, vector, physical), entities(entities) {
+                       const Physical* physical, MenuAction menuAction, bool append):
+	FutureOrder(action, append, vector, physical), entities(entities), menuAction(menuAction) {
 }
 
 GroupOrder::~GroupOrder() = default;
 
 bool GroupOrder::add() {
-	execute();
+	switch (menuAction) {
+
+	case MenuAction::UNIT_CREATE:
+		simpleAction(ActionParameter(menuAction));
+		break;
+	case MenuAction::ORDER:
+		execute();
+		break;
+	case MenuAction::NONE:
+	case MenuAction::UNIT_LEVEL:
+	case MenuAction::UNIT_UPGRADE:
+	case MenuAction::BUILDING:
+	case MenuAction::BUILDING_LEVEL:
+	case MenuAction::FORMATION:
+	case MenuAction::RESOURCE:
+		{
+		int a = 5;
+		}
+		break;
+	default: ;
+	}
+
 	return true;
 }
 
@@ -37,16 +58,16 @@ void GroupOrder::addAttackAim() {
 }
 
 void GroupOrder::addDefendAim() {
-	simpleAction();
+	simpleAction(ActionParameter());
 }
 
 void GroupOrder::addDeadAim() {
-	simpleAction();
+	simpleAction(ActionParameter());
 }
 
-void GroupOrder::simpleAction() {
+void GroupOrder::simpleAction(ActionParameter parameter) {
 	for (auto entity : *entities) {
-		entity->action(static_cast<char>(FutureOrder::action), ActionParameter());
+		entity->action(static_cast<char>(FutureOrder::action), parameter);
 	}
 }
 

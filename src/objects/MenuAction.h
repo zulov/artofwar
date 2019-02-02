@@ -3,7 +3,7 @@ enum class MenuAction : char
 {
 	NONE=0,
 	
-	UNIT,
+	UNIT_CREATE,
 	UNIT_LEVEL,
 	UNIT_UPGRADE,
 

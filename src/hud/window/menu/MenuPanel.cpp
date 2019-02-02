@@ -213,7 +213,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 	for (auto id : getUnitInBuilding(selectedInfo->getSelectedTypes())) {
 		db_unit* unit = Game::getDatabaseCache()->getUnit(id);
 		if (unit) {
-			setNextElement(k, "textures/hud/icon/unit/" + unit->icon, unit->id, MenuAction::UNIT, "");
+			setNextElement(k, "textures/hud/icon/unit/" + unit->icon, unit->id, MenuAction::UNIT_CREATE, "");
 		}
 	}
 	resetButtons(k);

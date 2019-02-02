@@ -200,7 +200,7 @@ void Simulation::updateBuildingQueues(const float time) const {
 		auto done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {
-			case MenuAction::UNIT:
+			case MenuAction::UNIT_CREATE:
 				creationCommandList->add(new CreationCommand(ObjectType::UNIT, done->getAmount(),
 				                                             done->getId(), build->getTarget(),
 				                                             build->getPlayer(),

@@ -62,7 +62,7 @@ QueueElement* QueueManager::getAt(short i) {
 
 float QueueManager::getSecToComplete(MenuAction type, short id, int level) {//TODO performance przerobic na tablice
 	switch (type) {
-	case MenuAction::UNIT:
+	case MenuAction::UNIT_CREATE:
 		return 5;
 	case MenuAction::BUILDING:
 		return 10;
@@ -80,7 +80,7 @@ float QueueManager::getSecToComplete(MenuAction type, short id, int level) {//TO
 
 float QueueManager::getSecPerInstance(MenuAction type, short id, int level) {//TODO performance przerobic na tablice
 	switch (type) {
-	case MenuAction::UNIT:
+	case MenuAction::UNIT_CREATE:
 		return 0.5;
 	case MenuAction::BUILDING:
 		return 0;

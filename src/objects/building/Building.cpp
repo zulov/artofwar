@@ -62,7 +62,7 @@ void Building::action(char id, const ActionParameter& parameter) {
 	Resources& resources = Game::getPlayersMan()->getActivePlayer()->getResources();
 
 	switch (parameter.type) {
-	case MenuAction::UNIT:
+	case MenuAction::UNIT_CREATE:
 		{
 		auto costs = Game::getDatabaseCache()->getCostForUnit(id);
 		if (resources.reduce(costs)) {

@@ -1,15 +1,17 @@
 #pragma once
 #include "FutureOrder.h"
+#include "objects/MenuAction.h"
 
 class GroupOrder : public FutureOrder
 {
 public:
 	GroupOrder(std::vector<Physical*>* entities, UnitOrder action, const Urho3D::Vector2& vector,
-	           const Physical* physical, bool append = false);
+	           const Physical* physical, MenuAction menuAction, bool append = false);
 	~GroupOrder();
 	bool add() override;
 private:
 	std::vector<Physical*>* entities;
+	const MenuAction menuAction;
 	//TODO to trzeba kopiowac, ale wtedy trzeba sprawdzac przed wykonaniem czy cos sie nie zepsulo
 
 	void addTargetAim() override;
@@ -19,6 +21,6 @@ private:
 	void addDefendAim() override;
 	void addDeadAim() override;
 
-	void simpleAction();
+	void simpleAction(ActionParameter parameter);
 	void transformToFormationOrder() const;
 };
