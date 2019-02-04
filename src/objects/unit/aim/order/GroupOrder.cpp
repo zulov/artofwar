@@ -6,15 +6,14 @@
 
 
 GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitOrder action, const Urho3D::Vector2& vector,
-                       const Physical* physical, ActionType menuAction, bool append):
-	FutureOrder(action, append, vector, physical), entities(entities), menuAction(menuAction) {
+                       const Physical* toUse, ActionType menuAction, bool append):
+	FutureOrder(action, append, vector, toUse), entities(entities), menuAction(menuAction) {
 }
 
 GroupOrder::~GroupOrder() = default;
 
 bool GroupOrder::add() {
 	switch (menuAction) {
-
 	case ActionType::UNIT_CREATE:
 		simpleAction(ActionParameter(menuAction));
 		break;

@@ -17,10 +17,10 @@ private:
 	void addTargetAim() override;
 	void addFollowAim() override;
 	void addChargeAim() override;
-	void followAndAct();
 	void addAttackAim() override;
 	void addDefendAim() override;
 	void addDeadAim() override;
 
 	void simpleAction();
+	void followAndAct();
 };

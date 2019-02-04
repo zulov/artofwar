@@ -6,7 +6,7 @@ class GroupOrder : public FutureOrder
 {
 public:
 	GroupOrder(std::vector<Physical*>* entities, UnitOrder action, const Urho3D::Vector2& vector,
-	           const Physical* physical, ActionType menuAction, bool append = false);
+	           const Physical* toUse, ActionType menuAction, bool append = false);
 	~GroupOrder();
 	bool add() override;
 private:

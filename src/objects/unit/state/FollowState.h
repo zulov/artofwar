@@ -6,7 +6,7 @@
 class FollowState : public State
 {
 public:
-	FollowState() : State({UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO_TO, UnitState::MOVE}) {
+	FollowState() : State({UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO_TO, UnitState::MOVE, UnitState::FOLLOW}) {
 	}
 
 	~FollowState() = default;

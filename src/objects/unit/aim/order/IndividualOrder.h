@@ -18,6 +18,8 @@ private:
 	void addDeadAim() override;
 
 	void simpleAction() const;
+	void followAndAct();
+
 
 	Unit* unit;
 };

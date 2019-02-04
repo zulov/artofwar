@@ -100,41 +100,39 @@ void Controls::leftClickBuild(hit_data& hitData) {
 }
 
 void Controls::rightClick(hit_data& hitData) const {
+	UnitOrder order;
+	Urho3D::Vector2 vector;
+	Physical* toUse;
 	switch (hitData.clicked->getType()) {
 	case ObjectType::PHYSICAL:
-		{
-		if (selected->size() == 1) {
-			Game::getActionList()->add(new ActionCommand(new IndividualOrder(static_cast<Unit*>(selected->at(0)),
-			                                                                 UnitOrder::GO,
-			                                                                 {hitData.position.x_, hitData.position.z_},
-			                                                                 nullptr,
-			                                                                 input->GetKeyDown(Urho3D::KEY_SHIFT))));
-		} else {
-			Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
-			                                                            {hitData.position.x_, hitData.position.z_},
-			                                                            nullptr, ActionType::ORDER,
-			                                                            input->GetKeyDown(Urho3D::KEY_SHIFT))));
-		}
+		order = UnitOrder::GO;
+		vector = {hitData.position.x_, hitData.position.z_};
+		toUse = nullptr;
 		break;
-		}
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
-		{
-		const UnitOrder order = hitData.clicked->getTeam() == selected->at(0)->getTeam()
-			                        ? UnitOrder::FOLLOW
-			                        : UnitOrder::ATTACK;
-
-		Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, order, {},
-		                                                            hitData.clicked, ActionType::ORDER,
-		                                                            input->GetKeyDown(Urho3D::KEY_SHIFT))));
-		}
+		order = hitData.clicked->getTeam() == selected->at(0)->getTeam()
+			        ? UnitOrder::FOLLOW
+			        : UnitOrder::ATTACK;
+		vector = {};
+		toUse = hitData.clicked;
 		break;
 	case ObjectType::RESOURCE:
-		Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, UnitOrder::COLLECT, {},
-		                                                            hitData.clicked, ActionType::ORDER,
-		                                                            input->GetKeyDown(Urho3D::KEY_SHIFT))));
+		order = UnitOrder::COLLECT;
+		vector = {};
+		toUse = hitData.clicked;
 		break;
 	default: ;
+	}
+
+	if (selected->size() == 1) {
+		Game::getActionList()->add(new ActionCommand(new IndividualOrder(static_cast<Unit*>(selected->at(0)),
+		                                                                 order, vector, toUse,
+		                                                                 input->GetKeyDown(Urho3D::KEY_SHIFT))));
+	} else {
+		Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, order, vector,
+		                                                            toUse, ActionType::ORDER,
+		                                                            input->GetKeyDown(Urho3D::KEY_SHIFT))));
 	}
 }
 
@@ -238,7 +236,8 @@ void Controls::order(short id, const ActionParameter& parameter) {
 }
 
 void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
-	Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, UnitOrder(id), {}, nullptr, parameter.type)));//TODO przyjrzec sie typowi
+	Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, UnitOrder(id), {}, nullptr, parameter.type)));
+	//TODO przyjrzec sie typowi
 }
 
 void Controls::orderPhysical(short id, const ActionParameter& parameter) const {

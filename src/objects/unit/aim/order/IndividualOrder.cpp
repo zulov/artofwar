@@ -19,7 +19,7 @@ bool IndividualOrder::add() {
 }
 
 void IndividualOrder::addCollectAim() {
-
+	followAndAct();
 }
 
 void IndividualOrder::addTargetAim() {
@@ -43,7 +43,7 @@ void IndividualOrder::addChargeAim() {
 }
 
 void IndividualOrder::addAttackAim() {
-	int a = 5;
+	followAndAct();
 }
 
 void IndividualOrder::addDefendAim() {
@@ -56,4 +56,24 @@ void IndividualOrder::addDeadAim() {
 
 void IndividualOrder::simpleAction() const {
 	unit->action(static_cast<char>(action), ActionParameter());
+}
+
+void IndividualOrder::followAndAct() {
+	auto posOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(unit));
+	if (posOpt.has_value()) {
+		auto postToUse = posOpt.value();
+		auto dist = std::get<1>(postToUse);
+		if (dist > 25) {
+			//TODO hardcode
+			auto pos = std::get<0>(postToUse);
+			unit->action(static_cast<char>(UnitOrder::FOLLOW),
+			             getFollowAim(unit->getMainCell(),
+			                          pos, toUse));
+			unit->addOrder(new IndividualOrder(unit, action, {}, toUse, true)); //Dodanie celu po dojsciu
+		} else {
+			unit->addOrder(new IndividualOrder(unit, action, {}, toUse, false));
+		}
+
+	}
+
 }
