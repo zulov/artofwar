@@ -364,7 +364,7 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	const auto hudData = HudData::getFromElement(eventData);
 
 	switch (hudData->getType()) {
-	case ActionType::BUILDING:
+	case ActionType::BUILDING_CREATE:
 		return controls->toBuild(hudData);
 	default: ;
 		controls->order(hudData->getId(), ActionParameter(hudData->getType()));

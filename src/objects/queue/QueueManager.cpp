@@ -64,7 +64,7 @@ float QueueManager::getSecToComplete(ActionType type, short id, int level) {//TO
 	switch (type) {
 	case ActionType::UNIT_CREATE:
 		return 5;
-	case ActionType::BUILDING:
+	case ActionType::BUILDING_CREATE:
 		return 10;
 	case ActionType::UNIT_LEVEL:
 		{
@@ -82,7 +82,7 @@ float QueueManager::getSecPerInstance(ActionType type, short id, int level) {//T
 	switch (type) {
 	case ActionType::UNIT_CREATE:
 		return 0.5;
-	case ActionType::BUILDING:
+	case ActionType::BUILDING_CREATE:
 		return 0;
 	case ActionType::UNIT_LEVEL:
 		return 0;

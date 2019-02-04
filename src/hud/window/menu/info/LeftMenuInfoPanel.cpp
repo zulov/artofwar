@@ -70,7 +70,7 @@ void LeftMenuInfoPanel::setInfo(HudData* hudData) {
 		message = "TODO";
 		}
 		break;
-	case ActionType::BUILDING:
+	case ActionType::BUILDING_CREATE:
 		{
 		auto dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 		auto costs = Game::getDatabaseCache()->getCostForBuilding(id);

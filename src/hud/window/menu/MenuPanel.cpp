@@ -153,7 +153,7 @@ void MenuPanel::basicBuilding() {
 	for (int i = 0; i < Game::getDatabaseCache()->getBuildingSize(); ++i) {
 		db_building* building = Game::getDatabaseCache()->getBuilding(i);
 		if (building && building->nation == nation) {
-			setNextElement(k, "textures/hud/icon/building/" + building->icon, building->id, ActionType::BUILDING, "");
+			setNextElement(k, "textures/hud/icon/building/" + building->icon, building->id, ActionType::BUILDING_CREATE, "");
 		}
 	}
 	resetButtons(k);

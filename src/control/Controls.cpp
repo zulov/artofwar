@@ -238,7 +238,6 @@ void Controls::order(short id, const ActionParameter& parameter) {
 }
 
 void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
-	//TODO a co z parameter
 	Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, UnitOrder(id), {}, nullptr, parameter.type)));//TODO przyjrzec sie typowi
 }
 
@@ -249,8 +248,8 @@ void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 		const auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
 		if (opt.has_value()) {
-			auto& resources = Game::getPlayersMan()->getActivePlayer()->getResources();
-			if (resources.reduce(opt.value())) {
+
+			if (Game::getPlayersMan()->getActivePlayer()->getResources().reduce(opt.value())) {
 				Game::getQueueManager()->add(1, parameter.type, id, 1);
 			}
 		}

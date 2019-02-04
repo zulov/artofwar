@@ -58,5 +58,7 @@ void FutureOrder::execute() {
 		return addDeadAim();
 	case UnitOrder::DEFEND:
 		return addDefendAim();
+	case UnitOrder::COLLECT:
+		return addCollectAim();
 	}
 }

@@ -14,6 +14,7 @@ private:
 	const ActionType menuAction;
 	//TODO to trzeba kopiowac, ale wtedy trzeba sprawdzac przed wykonaniem czy cos sie nie zepsulo
 
+	void addCollectAim() override;
 	void addTargetAim() override;
 	void addFollowAim() override;
 	void addChargeAim() override;

@@ -11,12 +11,16 @@ public:
 	~FormationOrder();
 	bool add() override;
 private:
+	Formation* formation;
+
+	void addCollectAim() override;
 	void addTargetAim() override;
 	void addFollowAim() override;
 	void addChargeAim() override;
+	void followAndAct();
 	void addAttackAim() override;
 	void addDefendAim() override;
-	void simpleAction();
 	void addDeadAim() override;
-	Formation* formation;
+
+	void simpleAction();
 };

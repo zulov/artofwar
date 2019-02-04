@@ -24,6 +24,7 @@ protected:
 	UnitOrder action;
 	const bool append;
 private:
+	virtual void addCollectAim() =0;
 	virtual void addTargetAim() =0;
 	virtual void addFollowAim() =0;
 	virtual void addChargeAim() =0;

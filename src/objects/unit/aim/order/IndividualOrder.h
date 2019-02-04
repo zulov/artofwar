@@ -9,12 +9,14 @@ public:
 	~IndividualOrder();
 	bool add() override;
 private:
+	void addCollectAim() override;
 	void addTargetAim() override;
 	void addFollowAim() override;
 	void addChargeAim() override;
 	void addAttackAim() override;
 	void addDefendAim() override;
 	void addDeadAim() override;
+
 	void simpleAction() const;
 
 	Unit* unit;

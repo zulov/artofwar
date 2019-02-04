@@ -19,6 +19,10 @@ bool FormationOrder::add() {
 	return false;
 }
 
+void FormationOrder::addCollectAim() {
+	followAndAct();
+}
+
 void FormationOrder::addTargetAim() {
 	auto opt = formation->getLeader();
 	if (opt.has_value()) {
@@ -47,7 +51,7 @@ void FormationOrder::addChargeAim() {
 	}
 }
 
-void FormationOrder::addAttackAim() {
+void FormationOrder::followAndAct() {
 	auto optLeader = formation->getLeader();
 	if (optLeader.has_value()) {
 		auto posOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(optLeader.value()));
@@ -60,11 +64,11 @@ void FormationOrder::addAttackAim() {
 				optLeader.value()->action(static_cast<char>(UnitOrder::FOLLOW),
 				                          getFollowAim(optLeader.value()->getMainCell(),
 				                                       pos, toUse));
-				formation->addOrder(new FormationOrder(formation, action, {}, toUse,  true)); //Dodanie celu po dojsciu
+				formation->addOrder(new FormationOrder(formation, action, {}, toUse, true)); //Dodanie celu po dojsciu
 			} else {
 				for (auto unit : formation->getUnits()) {
 					unit->resetFormation();
-					unit->addOrder(new IndividualOrder(unit, UnitOrder::ATTACK, {}, toUse, false));
+					unit->addOrder(new IndividualOrder(unit, action, {}, toUse, false));
 					//TODO to samo zrobic w innnych akcjach z atakiem
 					//TOAttack jak nie ten to zaatakowac blizeszego
 				}
@@ -73,6 +77,10 @@ void FormationOrder::addAttackAim() {
 
 		}
 	}
+}
+
+void FormationOrder::addAttackAim() {
+	followAndAct();
 }
 
 void FormationOrder::addDefendAim() {

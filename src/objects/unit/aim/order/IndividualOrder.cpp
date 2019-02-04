@@ -18,6 +18,10 @@ bool IndividualOrder::add() {
 	return false;
 }
 
+void IndividualOrder::addCollectAim() {
+
+}
+
 void IndividualOrder::addTargetAim() {
 	unit->action(static_cast<char>(action), getTargetAim(unit->getMainCell(), vector)); //TODO execute i akajca
 	static_cast<Unit*>(unit)->resetFormation();

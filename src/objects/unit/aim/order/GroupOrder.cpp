@@ -24,7 +24,7 @@ bool GroupOrder::add() {
 	case ActionType::NONE:
 	case ActionType::UNIT_LEVEL:
 	case ActionType::UNIT_UPGRADE:
-	case ActionType::BUILDING:
+	case ActionType::BUILDING_CREATE:
 	case ActionType::BUILDING_LEVEL:
 	case ActionType::FORMATION:
 	case ActionType::RESOURCE:
@@ -38,11 +38,12 @@ bool GroupOrder::add() {
 	return true;
 }
 
+void GroupOrder::addCollectAim() {
+	transformToFormationOrder();
+}
+
 void GroupOrder::addTargetAim() {
-	auto opt = Game::getFormationManager()->createFormation(entities);
-	if (opt.has_value()) {
-		opt.value()->addOrder(new FormationOrder(opt.value(), action, vector, nullptr, append));
-	}
+	transformToFormationOrder();
 }
 
 void GroupOrder::addFollowAim() {
