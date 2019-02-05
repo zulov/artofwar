@@ -118,7 +118,7 @@ public:
 	Urho3D::Vector2 getSocketPos(const Unit* unit, int i) const;
 private:
 	void actionIfCloseEnough(UnitState action, Physical* closest, int indexToInteract,
-	                         float sqDistance, float closeRange, float intrestRange);
+	                         float sqDistance, float closeRange, float interestRange);
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);
 	Urho3D::Vector2 velocity, acceleration;

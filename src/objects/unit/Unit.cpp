@@ -134,11 +134,11 @@ void Unit::absorbAttack(float attackCoef) {
 }
 
 void Unit::actionIfCloseEnough(UnitState action, Physical* closest, int indexToInteract,
-                               float sqDistance, float closeRange, float intrestRange) {
+                               float sqDistance, float closeRange, float interestRange) {
 	if (closest) {
 		if (sqDistance < closeRange * closeRange) {
 			interactWithOne(closest, indexToInteract, action);
-		} else if (sqDistance < intrestRange * intrestRange) {
+		} else if (sqDistance < interestRange * interestRange) {
 			addOrder(new IndividualOrder(this, UnitOrder::FOLLOW, {}, closest));
 		}
 	}

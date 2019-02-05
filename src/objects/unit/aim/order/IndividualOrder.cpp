@@ -72,6 +72,10 @@ void IndividualOrder::followAndAct() {
 			unit->addOrder(new IndividualOrder(unit, action, {}, toUse, true)); //Dodanie celu po dojsciu
 		} else {
 			unit->addOrder(new IndividualOrder(unit, action, {}, toUse, false));
+			unit->interactWithOne()
+			unit->action(static_cast<char>(action),
+			             getFollowAim(unit->getMainCell(),
+			                          pos, toUse));
 		}
 
 	}
