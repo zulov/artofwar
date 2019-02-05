@@ -50,8 +50,8 @@ bool Aims::ifReach(Unit* unit) {
 	return false;
 }
 
-void Aims::add(FutureOrder* aim, bool append) {
-	if (!append) {
+void Aims::add(FutureOrder* aim) {
+	if (!aim->getAppend()) {
 		clear();
 	}
 	nextAims.push_back(aim);

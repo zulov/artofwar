@@ -80,7 +80,7 @@ public:
 	static std::string getColumns();
 	void addUpgrade(db_unit_upgrade* upgrade);
 	void changeColor(ColorMode mode);
-	void addOrder(FutureOrder* aim, bool append = false);
+	void addOrder(FutureOrder* aim);
 
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);

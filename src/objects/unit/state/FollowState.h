@@ -1,12 +1,15 @@
 #pragma once
-#include "State.h"
 #include "../Unit.h"
+#include "State.h"
 
 
 class FollowState : public State
 {
 public:
-	FollowState() : State({UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO_TO, UnitState::MOVE, UnitState::FOLLOW}) {
+	FollowState() : State({
+		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
+		UnitState::GO_TO, UnitState::MOVE, UnitState::FOLLOW
+	}) {
 	}
 
 	~FollowState() = default;

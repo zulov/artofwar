@@ -179,8 +179,8 @@ void Unit::updateHeight(float y, double timeStep) {
 	position->y_ = y;
 }
 
-void Unit::addOrder(FutureOrder* aim, bool append) {
-	aims.add(aim, append);
+void Unit::addOrder(FutureOrder* aim) {
+	aims.add(aim);
 }
 
 void Unit::setAim(Aim* aim) {
