@@ -16,7 +16,12 @@ struct ActionParameter
 	explicit ActionParameter(int index) : index(index) {
 	}
 
+	explicit ActionParameter(std::vector<Physical*>& _thingsToInteract) {
+		thingsToInteract.insert(thingsToInteract.begin(), _thingsToInteract.begin(), _thingsToInteract.end());
+	}
+
 	Aim* aim;
 	ActionType type = ActionType::NONE;
 	int index = -1;
+	std::vector<Physical*> thingsToInteract;
 };

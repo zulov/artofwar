@@ -85,12 +85,12 @@ SimulationInfo* Simulation::update(float timeStep) {
 	return simulationInfo;
 }
 
-void Simulation::tryToAttack(Unit* unit, float dist, UnitState state, const std::function<bool(Physical*)>& condition) {
+void Simulation::tryToAttack(Unit* unit, float dist, UnitOrder order, const std::function<bool(Physical*)>& condition) {
 	if (unit->hasEnemy()) {
-		StateManager::changeState(unit, state);
+	//	StateManager::changeState(unit, state);
 	} else {
 		toAction(unit, enviroment->getNeighboursFromTeam(unit, dist, unit->getTeam(),
-		                                                 OperatorType::NOT_EQUAL), state, condition);
+		                                                 OperatorType::NOT_EQUAL), order, condition);
 	}
 }
 
@@ -98,14 +98,14 @@ void Simulation::tryToCollect(Unit* unit) {
 	if (unit->hasResource()) {
 		StateManager::changeState(unit, UnitState::COLLECT);
 	} else {
-		toAction(unit, enviroment->getResources(unit, 12), UnitState::COLLECT, belowClose);
+		toAction(unit, enviroment->getResources(unit, 12), UnitOrder::COLLECT, belowClose);
 	}
 }
 
-void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitState state,
+void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitOrder order,
                           const std::function<bool(Physical*)>& condition) {
 	auto [closest, minDistance, indexToInteract] = unit->closestPhysical(list, condition);
-	unit->toAction(closest, minDistance, indexToInteract, state);
+	unit->toAction(closest, minDistance, indexToInteract, order);
 }
 
 void Simulation::selfAI() {
@@ -120,13 +120,13 @@ void Simulation::selfAI() {
 				&& StateManager::checkChangeState(unit, unit->getActionState())) {
 				switch (unit->getActionState()) {
 				case UnitState::ATTACK:
-					tryToAttack(unit, 12, unit->getActionState(), belowClose);
+					tryToAttack(unit, 12, UnitOrder::ATTACK, belowClose);
 					break ;
 				case UnitState::COLLECT:
 					tryToCollect(unit);
 					break;
 				case UnitState::SHOT:
-					tryToAttack(unit, 12, unit->getActionState(), belowRange);
+					tryToAttack(unit, 12, UnitOrder::ATTACK, belowRange);
 					break;
 				}
 			}

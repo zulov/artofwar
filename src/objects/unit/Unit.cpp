@@ -133,7 +133,7 @@ void Unit::absorbAttack(float attackCoef) {
 	}
 }
 
-void Unit::actionIfCloseEnough(UnitState action, Physical* closest, int indexToInteract,
+void Unit::actionIfCloseEnough(UnitOrder order, Physical* closest, int indexToInteract,
                                float sqDistance, float closeRange, float interestRange) {
 	if (closest) {
 		if (sqDistance < closeRange * closeRange) {
@@ -144,21 +144,21 @@ void Unit::actionIfCloseEnough(UnitState action, Physical* closest, int indexToI
 	}
 }
 
-void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo) {
-	actionIfCloseEnough(stateTo, closest, indexToInteract, minDistance, attackRange, attackInterest);
+void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order) {
+	actionIfCloseEnough(order, closest, indexToInteract, minDistance, attackRange, attackInterest);
 }
 
-void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitState stateTo,
+void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order,
                     float attackInterest) {
-	actionIfCloseEnough(stateTo, closest, indexToInteract, minDistance, attackRange, attackInterest);
+	actionIfCloseEnough(order, closest, indexToInteract, minDistance, attackRange, attackInterest);
 }
 
-void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitState action) {
+void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitOrder order) {
 	thingsToInteract.clear();
 	thingsToInteract.push_back(thing);
 
-	this->indexToInteract = indexToInteract;
-
+	this->indexToInteract = indexToInteract; a co z tym
+	addOrder(new IndividualOrder(this, order,{}, thing));
 	if (!StateManager::changeState(this, action)) {
 		thingsToInteract.clear();
 	}
@@ -276,7 +276,10 @@ void Unit::action(char id, const ActionParameter& parameter) {
 	case UnitOrder::CHARGE:
 		StateManager::changeState(this, UnitState::CHARGE, parameter);
 		break;
-	case UnitOrder::ATTACK: break;
+	case UnitOrder::ATTACK: 
+		
+			interactWithOne(toUse, std::get<2>(postToUse), action);
+		break;
 	case UnitOrder::DEAD:
 		StateManager::changeState(this, UnitState::DEAD, parameter);
 		break;

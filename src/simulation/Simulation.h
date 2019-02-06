@@ -4,6 +4,7 @@
 #include <vector>
 #include <functional>
 
+enum class UnitOrder : char;
 enum class UnitState : char;
 class Unit;
 class ResourceEntity;
@@ -59,8 +60,8 @@ private:
 	void selfAI();
 	void addTestEntities() const;
 
-	void tryToAttack(Unit* unit, float dist, UnitState state, const std::function<bool(Physical*)>& condition);
-	void toAction(Unit* unit, std::vector<Physical*>* list, UnitState state, const std::function<bool(Physical*)>& condition);
+	void tryToAttack(Unit* unit, float dist, UnitOrder order, const std::function<bool(Physical*)>& condition);
+	void toAction(Unit* unit, std::vector<Physical*>* list,  UnitOrder order, const std::function<bool(Physical*)>& condition);
 	void tryToCollect(Unit* unit);
 
 	float accumulateTime = 0;
