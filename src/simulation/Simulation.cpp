@@ -86,20 +86,12 @@ SimulationInfo* Simulation::update(float timeStep) {
 }
 
 void Simulation::tryToAttack(Unit* unit, float dist, UnitOrder order, const std::function<bool(Physical*)>& condition) {
-	if (unit->hasEnemy()) {
-	//	StateManager::changeState(unit, state);
-	} else {
-		toAction(unit, enviroment->getNeighboursFromTeam(unit, dist, unit->getTeam(),
-		                                                 OperatorType::NOT_EQUAL), order, condition);
-	}
+	toAction(unit, enviroment->getNeighboursFromTeam(unit, dist, unit->getTeam(),
+	                                                 OperatorType::NOT_EQUAL), order, condition);
 }
 
 void Simulation::tryToCollect(Unit* unit) {
-	if (unit->hasResource()) {
-		StateManager::changeState(unit, UnitState::COLLECT);
-	} else {
-		toAction(unit, enviroment->getResources(unit, 12), UnitOrder::COLLECT, belowClose);
-	}
+	toAction(unit, enviroment->getResources(unit, 12), UnitOrder::COLLECT, belowClose);
 }
 
 void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitOrder order,

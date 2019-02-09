@@ -71,8 +71,8 @@ void IndividualOrder::followAndAct() {
 			                          pos, toUse));
 			unit->addOrder(new IndividualOrder(unit, action, {}, toUse, true)); //Dodanie celu po dojsciu
 		} else {
-
-			unit->interactWithOne(toUse, std::get<2>(postToUse), action);
+			unit->addOrder(new IndividualOrder(unit, action, {}, toUse, false));
+			//unit->interactWithOne(toUse, std::get<2>(postToUse), action);
 		}
 
 	}

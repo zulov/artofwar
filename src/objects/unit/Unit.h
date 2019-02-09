@@ -60,7 +60,7 @@ public:
 	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order);
 	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order, float attackIntrest);
 
-	void interactWithOne(Physical* thing, int indexToInteract, UnitState action);
+	void interactWithOne(Physical* thing, int indexToInteract, UnitOrder order);
 
 	void updateHeight(float y, double timeStep);
 

@@ -137,9 +137,11 @@ void Unit::actionIfCloseEnough(UnitOrder order, Physical* closest, int indexToIn
                                float sqDistance, float closeRange, float interestRange) {
 	if (closest) {
 		if (sqDistance < closeRange * closeRange) {
-			interactWithOne(closest, indexToInteract, action);
+			//interactWithOne(closest, indexToInteract, action);
+			addOrder(new IndividualOrder(this, order, {}, closest));
 		} else if (sqDistance < interestRange * interestRange) {
 			addOrder(new IndividualOrder(this, UnitOrder::FOLLOW, {}, closest));
+			addOrder(new IndividualOrder(this, order, {}, closest));
 		}
 	}
 }
@@ -157,11 +159,11 @@ void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitOrder order
 	thingsToInteract.clear();
 	thingsToInteract.push_back(thing);
 
-	this->indexToInteract = indexToInteract; a co z tym
+	this->indexToInteract = indexToInteract; 
 	addOrder(new IndividualOrder(this, order,{}, thing));
-	if (!StateManager::changeState(this, action)) {
-		thingsToInteract.clear();
-	}
+	// if (!StateManager::changeState(this, action)) {
+	// 	thingsToInteract.clear();
+	// }
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {
@@ -277,8 +279,7 @@ void Unit::action(char id, const ActionParameter& parameter) {
 		StateManager::changeState(this, UnitState::CHARGE, parameter);
 		break;
 	case UnitOrder::ATTACK: 
-		
-			interactWithOne(toUse, std::get<2>(postToUse), action);
+		StateManager::changeState(this, UnitState::ATTACK, parameter);
 		break;
 	case UnitOrder::DEAD:
 		StateManager::changeState(this, UnitState::DEAD, parameter);
