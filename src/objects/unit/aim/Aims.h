@@ -17,7 +17,7 @@ public:
 	std::optional<Urho3D::Vector2> getDirection(Unit* unit) const;
 	void clearExpired();
 	bool ifReach(Unit* unit);
-	void add(FutureOrder* aim);
+	void add(FutureOrder* order);
 	void clear();
 	void removeCurrentAim();
 	bool hasCurrent() const { return current != nullptr; }

@@ -159,8 +159,8 @@ void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitOrder order
 	thingsToInteract.clear();
 	thingsToInteract.push_back(thing);
 
-	this->indexToInteract = indexToInteract; 
-	addOrder(new IndividualOrder(this, order,{}, thing));
+	this->indexToInteract = indexToInteract;
+	addOrder(new IndividualOrder(this, order, {}, thing));
 	// if (!StateManager::changeState(this, action)) {
 	// 	thingsToInteract.clear();
 	// }
@@ -278,7 +278,7 @@ void Unit::action(char id, const ActionParameter& parameter) {
 	case UnitOrder::CHARGE:
 		StateManager::changeState(this, UnitState::CHARGE, parameter);
 		break;
-	case UnitOrder::ATTACK: 
+	case UnitOrder::ATTACK:
 		StateManager::changeState(this, UnitState::ATTACK, parameter);
 		break;
 	case UnitOrder::DEAD:
@@ -290,6 +290,9 @@ void Unit::action(char id, const ActionParameter& parameter) {
 		break;
 	case UnitOrder::FOLLOW:
 		StateManager::changeState(this, UnitState::FOLLOW, parameter);
+		break;
+	case UnitOrder::COLLECT:
+		StateManager::changeState(this, UnitState::COLLECT, parameter);
 		break;
 	default: ;
 	}

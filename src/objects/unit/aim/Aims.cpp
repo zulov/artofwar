@@ -1,5 +1,4 @@
 #include "Aims.h"
-#include "Game.h"
 #include "TargetAim.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/aim/order/FutureOrder.h"
@@ -12,6 +11,7 @@ Aims::Aims(): current(nullptr) {
 
 Aims::~Aims() {
 	delete current;
+	clear_vector(&nextAims);
 }
 
 std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) const {
@@ -42,19 +42,21 @@ bool Aims::ifReach(Unit* unit) {
 			return nextAims.empty();
 		}
 	} else if (!nextAims.empty()) {
-		nextAims[0]->execute(); //TODO to czysci aimsy nie potrzebnie :O
-		delete nextAims[0];
+		auto toExecute = nextAims[0];
 		nextAims.erase(nextAims.begin());
+		toExecute->execute(); 
+		delete toExecute;
+		
 	}
 
 	return false;
 }
 
-void Aims::add(FutureOrder* aim) {
-	if (!aim->getAppend()) {
+void Aims::add(FutureOrder* order) {
+	if (!order->getAppend()) {
 		clear();
 	}
-	nextAims.push_back(aim);
+	nextAims.push_back(order);
 }
 
 void Aims::clear() {
