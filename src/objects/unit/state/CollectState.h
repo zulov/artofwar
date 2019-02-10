@@ -19,10 +19,10 @@ public:
 
 	~CollectState() = default;
 
-	bool canStart(Unit* unit) override {
+	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		//TODO tutaj ustawic  unit->indexToInteract?
-		return unit->isFirstThingAlive()
-			&& unit->getMainCell() == unit->indexToInteract //TODO je¿eli jest inny to sprobowaæ podmienic
+		return parameter.isFirstThingAlive()
+			&& unit->getMainCell() == parameter.index //TODO je¿eli jest inny to sprobowaæ podmienic
 			&& Game::getEnvironment()->cellInState(unit->getMainCell(), {CellState::RESOURCE, CellState::EMPTY})
 			&& Game::getEnvironment()->belowCellLimit(unit->getMainCell());
 	}
@@ -30,6 +30,10 @@ public:
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->velocity = Urho3D::Vector2::ZERO;
 		unit->currentFrameState = 0;
+
+		unit->thingsToInteract.clear();
+		unit->thingsToInteract.push_back(parameter.thingsToInteract[0]);
+		unit->indexToInteract = parameter.index;
 
 		unit->thingsToInteract[0]->upClose();
 

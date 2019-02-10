@@ -13,12 +13,18 @@ public:
 
 	~AttackState() = default;
 
-	bool canStart(Unit* unit) override {
-		return unit->isFirstThingAlive() && !unit->thingsToInteract[0]->isSlotOccupied(unit->indexToInteract);
+	bool canStart(Unit* unit, const ActionParameter& parameter) override {
+		return parameter.isFirstThingAlive()
+			&& !parameter.thingsToInteract[0]->isSlotOccupied(parameter.index);
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->currentFrameState = 0;
+		
+		unit->thingsToInteract.clear();
+		unit->thingsToInteract.push_back(parameter.thingsToInteract[0]);
+		unit->indexToInteract = parameter.index;
+
 		unit->thingsToInteract[0]->upClose();
 		unit->thingsToInteract[0]->setOccupiedSlot(unit->indexToInteract, true);
 		unit->maxSpeed = unit->dbLevel->maxSpeed / 2;

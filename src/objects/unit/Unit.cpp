@@ -347,10 +347,6 @@ void Unit::setState(UnitState _state) {
 	state = _state;
 }
 
-bool Unit::hasResource() {
-	return isFirstThingAlive();
-}
-
 void Unit::load(dbload_unit* unit) {
 	Physical::load(unit);
 	state = UnitState(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
@@ -450,20 +446,10 @@ std::tuple<Physical*, float, int> Unit::closestPhysical(std::vector<Physical*>* 
 	return {closestPhy, minDistance, bestIndex};
 }
 
-
 bool Unit::isFirstThingAlive() const {
 	return !thingsToInteract.empty()
 		&& thingsToInteract[0] != nullptr
 		&& thingsToInteract[0]->isUsable();
-}
-
-bool Unit::hasEnemy() {
-	if (isFirstThingAlive() && sqDist(this->getPosition(), thingsToInteract[0]->getPosition()) < attackRange *
-		attackRange) {
-		return true;
-	}
-	thingsToInteract.clear();
-	return false;
 }
 
 void Unit::clean() {

@@ -5,9 +5,9 @@
 class FutureOrder
 {
 public:
-	FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector, const Physical* toUse);
+	FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector, Physical* toUse);
 	FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector);
-	FutureOrder(UnitOrder action, bool append, const Physical* toUse);
+	FutureOrder(UnitOrder action, bool append, Physical* toUse);
 
 	virtual ~FutureOrder();
 
@@ -20,7 +20,7 @@ public:
 	bool getAppend() const { return append; }
 protected:
 	Urho3D::Vector2 vector;
-	const Physical* toUse;
+	Physical* toUse;
 	UnitOrder action;
 	const bool append;
 private:

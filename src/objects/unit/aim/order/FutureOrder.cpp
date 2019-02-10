@@ -4,8 +4,9 @@
 #include "simulation/env/Environment.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/aim/FollowAim.h"
+#include "consts.h"
 
-FutureOrder::FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector, const Physical* toUse)
+FutureOrder::FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector, Physical* toUse)
 	: vector(vector), toUse(toUse), action(action), append(append) {
 }
 
@@ -13,7 +14,7 @@ FutureOrder::FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& v
 	: vector(vector), toUse(nullptr), action(action), append(append) {
 }
 
-FutureOrder::FutureOrder(UnitOrder action, bool append, const Physical* toUse)
+FutureOrder::FutureOrder(UnitOrder action, bool append, Physical* toUse)
 	: toUse(toUse), action(action), append(append) {
 }
 
@@ -26,19 +27,19 @@ bool FutureOrder::expired() const {
 ActionParameter FutureOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
 	const auto path = Game::getEnvironment()->findPath(startInx, to);
 	if (!path->empty()) {
-		return ActionParameter(new TargetAim(*path));
+		return ActionParameter::Builder().setAim(new TargetAim(*path)).build();
 	}
-	return ActionParameter();
+	return Consts::EMPTY_INSTANCE;
 }
 
 ActionParameter FutureOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow) {
 	auto const target = getTargetAim(startInx, toSoFar);
 	//jesli jest nulem to co?
-	return ActionParameter(new FollowAim(toFollow, static_cast<TargetAim*>(target.aim)));
+	return ActionParameter::Builder().setAim(new FollowAim(toFollow, static_cast<TargetAim*>(target.aim))).build();
 }
 
 ActionParameter FutureOrder::getChargeAim(Urho3D::Vector2& charge) {
-	return ActionParameter();
+	return Consts::EMPTY_INSTANCE;
 }
 
 void FutureOrder::execute() {

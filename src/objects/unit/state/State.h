@@ -11,7 +11,7 @@ class State
 public:
 	State(std::initializer_list<UnitState> active);
 	virtual ~State();
-	virtual bool canStart(Unit* unit);
+	virtual bool canStart(Unit* unit, const ActionParameter& parameter);
 
 	virtual void onStart(Unit* unit, const ActionParameter& parameter) =0;
 	virtual void execute(Unit* unit, float timeStep);

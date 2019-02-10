@@ -3,19 +3,20 @@
 #include "Game.h"
 #include "objects/unit/ActionParameter.h"
 #include "simulation/formation/FormationManager.h"
+#include "consts.h"
 
 
 GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitOrder action, const Urho3D::Vector2& vector,
-                       const Physical* toUse, ActionType menuAction, bool append):
-	FutureOrder(action, append, vector, toUse), entities(entities), menuAction(menuAction) {
+                       Physical* toUse, ActionType menuAction, bool append):
+	FutureOrder(action, append, vector, toUse), entities(entities), actionType(menuAction) {
 }
 
 GroupOrder::~GroupOrder() = default;
 
 bool GroupOrder::add() {
-	switch (menuAction) {
+	switch (actionType) {
 	case ActionType::UNIT_CREATE:
-		simpleAction(ActionParameter(menuAction));
+		simpleAction(ActionParameter::Builder().setType(actionType).build());
 		break;
 	case ActionType::ORDER:
 		execute();
@@ -58,11 +59,11 @@ void GroupOrder::addAttackAim() {
 }
 
 void GroupOrder::addDefendAim() {
-	simpleAction(ActionParameter());
+	simpleAction(Consts::EMPTY_INSTANCE);
 }
 
 void GroupOrder::addDeadAim() {
-	simpleAction(ActionParameter());
+	simpleAction(Consts::EMPTY_INSTANCE);
 }
 
 void GroupOrder::simpleAction(ActionParameter parameter) {

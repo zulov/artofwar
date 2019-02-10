@@ -367,7 +367,7 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	case ActionType::BUILDING_CREATE:
 		return controls->toBuild(hudData);
 	default: ;
-		controls->order(hudData->getId(), ActionParameter(hudData->getType()));
+		controls->order(hudData->getId(), ActionParameter::Builder().setType(hudData->getType()).build());
 	}
 }
 

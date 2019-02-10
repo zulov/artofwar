@@ -3,10 +3,11 @@
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/Environment.h"
+#include "consts.h"
 
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitOrder action, const Urho3D::Vector2& vector,
-                                 const Physical* toUse, bool append):
+                                 Physical* toUse, bool append):
 	FutureOrder(action, append, vector, toUse), unit(unit) {
 }
 
@@ -55,7 +56,7 @@ void IndividualOrder::addDeadAim() {
 }
 
 void IndividualOrder::simpleAction() const {
-	unit->action(static_cast<char>(action), ActionParameter());
+	unit->action(static_cast<char>(action), Consts::EMPTY_INSTANCE);
 }
 
 void IndividualOrder::followAndAct() {
@@ -71,8 +72,11 @@ void IndividualOrder::followAndAct() {
 			                          pos, toUse));
 			unit->addOrder(new IndividualOrder(unit, action, {}, toUse, true)); //Dodanie celu po dojsciu
 		} else {
-			unit->addOrder(new IndividualOrder(unit, action, {}, toUse, false));
-			//unit->interactWithOne(toUse, std::get<2>(postToUse), action);
+			unit->action(static_cast<char>(action),
+			             ActionParameter::Builder()
+			             .setIndex(std::get<2>(postToUse))
+			             .setThingsToInteract(toUse)
+			             .build());
 		}
 
 	}

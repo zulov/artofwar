@@ -40,6 +40,7 @@ class Unit : public Physical
 	friend class CollectState;
 	friend class DisposeState;
 	friend class ShotState;
+	friend class MoveState;
 public:
 	Unit(Urho3D::Vector3* _position, int id, int player, int level);
 	~Unit();
@@ -66,7 +67,6 @@ public:
 
 	void setState(UnitState _state);
 
-	bool hasResource();
 	void load(dbload_unit* unit);
 
 	void setFormation(short _formation);
@@ -86,7 +86,6 @@ public:
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);
 	bool isFirstThingAlive() const;
-	bool hasEnemy();
 
 	std::tuple<Physical*, float, int> closestPhysical(std::vector<Physical*>* things,
 	                                                  const std::function<bool(Physical*)>& condition);

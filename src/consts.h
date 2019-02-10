@@ -13,4 +13,5 @@ struct Consts
 		{-1, 0},
 		{-0.71, 0.71}
 	};
+	inline const static ActionParameter EMPTY_INSTANCE = ActionParameter::Builder().build();
 };

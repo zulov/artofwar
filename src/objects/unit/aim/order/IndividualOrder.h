@@ -4,7 +4,7 @@
 class IndividualOrder : public FutureOrder
 {
 public:
-	IndividualOrder(Unit* unit, UnitOrder action, const Urho3D::Vector2& vector, const Physical* toUse,
+	IndividualOrder(Unit* unit, UnitOrder action, const Urho3D::Vector2& vector, Physical* toUse,
 	                bool append = false);
 	~IndividualOrder();
 	bool add() override;

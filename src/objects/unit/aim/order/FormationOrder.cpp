@@ -8,7 +8,7 @@
 
 
 FormationOrder::FormationOrder(Formation* formation, UnitOrder action, const Urho3D::Vector2& vector,
-                               const Physical* physical, bool append):
+                               Physical* physical, bool append):
 	FutureOrder(action, append, vector, physical), formation(formation) {
 }
 
@@ -94,6 +94,6 @@ void FormationOrder::addDeadAim() {
 
 void FormationOrder::simpleAction() {
 	for (auto unit : formation->getUnits()) {
-		unit->action(static_cast<char>(action), ActionParameter());
+		unit->action(static_cast<char>(action), Consts::EMPTY_INSTANCE);
 	}
 }

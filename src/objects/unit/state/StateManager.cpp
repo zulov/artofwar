@@ -82,7 +82,7 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 	State* stateFrom = instance->states[static_cast<int>(unit->getState())];
 	if (stateFrom->validateTransition(stateTo)
 		&& validateState(unit->getDbID(), stateTo)
-		&& instance->states[static_cast<int>(stateTo)]->canStart(unit)) {
+		&& instance->states[static_cast<int>(stateTo)]->canStart(unit, actionParameter)) {
 		stateFrom->onEnd(unit);
 		unit->setState(stateTo);
 		instance->states[static_cast<int>(stateTo)]->onStart(unit, actionParameter);

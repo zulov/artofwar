@@ -10,7 +10,7 @@ State::State(std::initializer_list<UnitState> active) {
 
 State::~State() = default;
 
-bool State::canStart(Unit* unit) {
+bool State::canStart(Unit* unit, const ActionParameter& parameter) {
 	return true;
 }
 

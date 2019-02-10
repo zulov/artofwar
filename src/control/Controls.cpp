@@ -28,6 +28,7 @@
 #include "objects/unit/aim/order/GroupOrder.h"
 #include "objects/unit/aim/order/IndividualOrder.h"
 #include "objects/unit/ActionParameter.h"
+#include "consts.h"
 
 
 Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), input(_input) {
@@ -310,7 +311,7 @@ void Controls::unitOrder(short id) {
 	case UnitOrder::STOP:
 	case UnitOrder::DEFEND:
 	case UnitOrder::DEAD:
-		executeOnAll(id, ActionParameter());
+		executeOnAll(id, Consts::EMPTY_INSTANCE);
 		break;
 	default: ;
 	}
