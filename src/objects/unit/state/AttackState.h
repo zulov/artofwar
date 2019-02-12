@@ -2,6 +2,7 @@
 #include "State.h"
 #include "StateManager.h"
 #include "objects/unit/Unit.h"
+#include "objects/unit/ActionParameter.h"
 
 class AttackState : public State
 {

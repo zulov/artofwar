@@ -29,7 +29,7 @@ ActionParameter FutureOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
 	if (!path->empty()) {
 		return ActionParameter::Builder().setAim(new TargetAim(*path)).build();
 	}
-	return Consts::EMPTY_INSTANCE;
+	return Consts::EMPTY_ACTION_PARAMETER;
 }
 
 ActionParameter FutureOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow) {
@@ -39,7 +39,7 @@ ActionParameter FutureOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar
 }
 
 ActionParameter FutureOrder::getChargeAim(Urho3D::Vector2& charge) {
-	return Consts::EMPTY_INSTANCE;
+	return Consts::EMPTY_ACTION_PARAMETER;
 }
 
 void FutureOrder::execute() {

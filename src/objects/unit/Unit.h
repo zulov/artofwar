@@ -61,8 +61,6 @@ public:
 	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order);
 	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order, float attackIntrest);
 
-	void interactWithOne(Physical* thing, int indexToInteract, UnitOrder order);
-
 	void updateHeight(float y, double timeStep);
 
 	void setState(UnitState _state);
@@ -108,6 +106,7 @@ public:
 
 	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* unit) const override;
 	void action(char id, const ActionParameter& parameter) override;
+	void action(char id);
 	std::string getValues(int precision) override;
 	Urho3D::String& toMultiLineString() override;
 	float getMaxHpBarSize() override;

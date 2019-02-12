@@ -5,6 +5,7 @@
 #include "ResourceOrder.h"
 #include "database/DatabaseCache.h"
 #include "objects/PhysicalUtils.h"
+#include "UnitOrder.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"

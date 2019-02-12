@@ -25,6 +25,7 @@
 #include "scene/load/SceneLoader.h"
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
+#include "UnitOrder.h"
 #include <ctime>
 
 

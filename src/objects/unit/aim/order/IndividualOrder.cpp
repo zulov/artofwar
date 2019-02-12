@@ -1,9 +1,9 @@
 #include "IndividualOrder.h"
 #include "Game.h"
+#include "consts.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/Environment.h"
-#include "consts.h"
 
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitOrder action, const Urho3D::Vector2& vector,
@@ -56,7 +56,7 @@ void IndividualOrder::addDeadAim() {
 }
 
 void IndividualOrder::simpleAction() const {
-	unit->action(static_cast<char>(action), Consts::EMPTY_INSTANCE);
+	unit->action(static_cast<char>(action), Consts::EMPTY_ACTION_PARAMETER);
 }
 
 void IndividualOrder::followAndAct() {

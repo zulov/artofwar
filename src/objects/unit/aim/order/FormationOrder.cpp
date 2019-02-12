@@ -1,10 +1,11 @@
 #include "FormationOrder.h"
 #include "Game.h"
 #include "objects/unit/Unit.h"
-#include "objects/unit/state/StateManager.h"
+#include "objects/unit/ActionParameter.h"
 #include "simulation/formation/Formation.h"
 #include "simulation/env/Environment.h"
 #include "IndividualOrder.h"
+#include "consts.h"
 
 
 FormationOrder::FormationOrder(Formation* formation, UnitOrder action, const Urho3D::Vector2& vector,
@@ -94,6 +95,6 @@ void FormationOrder::addDeadAim() {
 
 void FormationOrder::simpleAction() {
 	for (auto unit : formation->getUnits()) {
-		unit->action(static_cast<char>(action), Consts::EMPTY_INSTANCE);
+		unit->action(static_cast<char>(action), Consts::EMPTY_ACTION_PARAMETER);
 	}
 }

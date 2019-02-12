@@ -59,11 +59,11 @@ void GroupOrder::addAttackAim() {
 }
 
 void GroupOrder::addDefendAim() {
-	simpleAction(Consts::EMPTY_INSTANCE);
+	simpleAction(Consts::EMPTY_ACTION_PARAMETER);
 }
 
 void GroupOrder::addDeadAim() {
-	simpleAction(Consts::EMPTY_INSTANCE);
+	simpleAction(Consts::EMPTY_ACTION_PARAMETER);
 }
 
 void GroupOrder::simpleAction(ActionParameter parameter) {

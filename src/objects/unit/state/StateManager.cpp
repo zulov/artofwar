@@ -17,6 +17,7 @@
 #include "UnitState.h"
 #include "database/DatabaseCache.h"
 #include "objects/static/StaticStateUtils.h"
+#include "consts.h"
 
 
 StateManager* StateManager::instance = nullptr;
@@ -78,6 +79,9 @@ bool StateManager::validateState(int id, UnitState stateTo) {
 	return instance->ordersToUnit[id][static_cast<char>(stateTo)];
 }
 
+bool StateManager::changeState(Unit* unit, UnitState stateTo) {
+	return changeState(unit, stateTo, Consts::EMPTY_ACTION_PARAMETER);
+}
 bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter) {
 	State* stateFrom = instance->states[static_cast<int>(unit->getState())];
 	if (stateFrom->validateTransition(stateTo)

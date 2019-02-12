@@ -137,7 +137,6 @@ void Unit::actionIfCloseEnough(UnitOrder order, Physical* closest, int indexToIn
                                float sqDistance, float closeRange, float interestRange) {
 	if (closest) {
 		if (sqDistance < closeRange * closeRange) {
-			//interactWithOne(closest, indexToInteract, action);
 			addOrder(new IndividualOrder(this, order, {}, closest));
 		} else if (sqDistance < interestRange * interestRange) {
 			addOrder(new IndividualOrder(this, UnitOrder::FOLLOW, {}, closest));
@@ -153,17 +152,6 @@ void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, U
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order,
                     float attackInterest) {
 	actionIfCloseEnough(order, closest, indexToInteract, minDistance, attackRange, attackInterest);
-}
-
-void Unit::interactWithOne(Physical* thing, int indexToInteract, UnitOrder order) {
-	thingsToInteract.clear();
-	thingsToInteract.push_back(thing);
-
-	this->indexToInteract = indexToInteract;
-	addOrder(new IndividualOrder(this, order, {}, thing));
-	// if (!StateManager::changeState(this, action)) {
-	// 	thingsToInteract.clear();
-	// }
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {
@@ -265,6 +253,10 @@ Urho3D::String& Unit::toMultiLineString() {
 	          .Append("\nZdrowie: ").Append(Urho3D::String(hpCoef))
 	          .Append("/").Append(Urho3D::String(maxHpCoef));
 	return menuString;
+}
+
+void Unit::action(char id) {
+	action(id, Consts::EMPTY_ACTION_PARAMETER);
 }
 
 void Unit::action(char id, const ActionParameter& parameter) {

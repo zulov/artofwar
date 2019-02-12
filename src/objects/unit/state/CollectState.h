@@ -24,7 +24,7 @@ public:
 		return parameter.isFirstThingAlive()
 			&& unit->getMainCell() == parameter.index //TODO je¿eli jest inny to sprobowaæ podmienic
 			&& Game::getEnvironment()->cellInState(unit->getMainCell(), {CellState::RESOURCE, CellState::EMPTY})
-			&& Game::getEnvironment()->belowCellLimit(unit->getMainCell());
+			&& Game::getEnvironment()->belowCellLimit(unit->getMainCell()) && false;
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {

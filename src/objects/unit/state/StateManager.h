@@ -1,10 +1,7 @@
 #pragma once
 #include "State.h"
-#include "UnitOrder.h"
 #include "database/db_strcut.h"
 #include "objects/building/Building.h"
-#include "objects/unit/ActionParameter.h"
-#include "consts.h"
 
 
 enum class StaticState : char;
@@ -15,7 +12,8 @@ class StateManager
 public:
 
 	static bool validateState(int id, UnitState stateTo);
-	static bool changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter = Consts::EMPTY_INSTANCE);
+	static bool changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter);
+	static bool changeState(Unit* unit, UnitState stateTo);
 	static bool checkChangeState(Unit* unit, UnitState stateTo);
 	static void execute(Unit* unit, float timeStamp);
 

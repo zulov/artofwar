@@ -311,7 +311,7 @@ void Controls::unitOrder(short id) {
 	case UnitOrder::STOP:
 	case UnitOrder::DEFEND:
 	case UnitOrder::DEAD:
-		executeOnAll(id, Consts::EMPTY_INSTANCE);
+		executeOnAll(id, Consts::EMPTY_ACTION_PARAMETER);
 		break;
 	default: ;
 	}

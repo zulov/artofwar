@@ -1,5 +1,5 @@
 #pragma once
-
+#include "objects/unit/ActionParameter.h"
 struct Consts
 {
 	inline static Urho3D::Vector2 circleCords[8] =
@@ -13,5 +13,5 @@ struct Consts
 		{-1, 0},
 		{-0.71, 0.71}
 	};
-	inline const static ActionParameter EMPTY_INSTANCE = ActionParameter::Builder().build();
+	inline const static ActionParameter EMPTY_ACTION_PARAMETER = ActionParameter::Builder().build();
 };
