@@ -20,11 +20,10 @@ public:
 	~CollectState() = default;
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
-		//TODO tutaj ustawic  unit->indexToInteract?
 		return parameter.isFirstThingAlive()
 			&& unit->getMainCell() == parameter.index //TODO je¿eli jest inny to sprobowaæ podmienic
 			&& Game::getEnvironment()->cellInState(unit->getMainCell(), {CellState::RESOURCE, CellState::EMPTY})
-			&& Game::getEnvironment()->belowCellLimit(unit->getMainCell()) && false;
+			&& Game::getEnvironment()->belowCellLimit(unit->getMainCell());
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
