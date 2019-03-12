@@ -3,6 +3,7 @@
 #include "ForceStats.h"
 #include <vector>
 
+enum class UnitState : char;
 class Unit;
 class Physical;
 

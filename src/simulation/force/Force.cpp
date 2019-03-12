@@ -1,13 +1,12 @@
 #include "Force.h"
 #include "Game.h"
+#include "MathUtils.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"
-#include "MathUtils.h"
 
 
 Force::Force() = default;
-
 
 Force::~Force() = default;
 
@@ -108,8 +107,8 @@ void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) {
-	char max = Game::getEnvironment()->getNumberInState(unit->getMainCell(), UnitState::COLLECT);
-	char i = Game::getEnvironment()->getOrdinarInState(unit, UnitState::COLLECT);
+	char max = Game::getEnvironment()->getNumberInState(unit->getMainCell(), unit->getState());
+	char i = Game::getEnvironment()->getOrdinalInState(unit, unit->getState());
 
 	auto aim = Game::getEnvironment()->getPositionInBucket(unit->getMainCell(), max, i);
 	auto force = dirTo(unit->getPosition(), aim);

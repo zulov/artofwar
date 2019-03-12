@@ -196,8 +196,8 @@ char Environment::getNumberInState(int index, UnitState state) const {
 	return mainGrid.getNumberInState(index, state);
 }
 
-char Environment::getOrdinarInState(Unit* unit, UnitState state) const {
-	return mainGrid.getOrdinarInState(unit, state);
+char Environment::getOrdinalInState(Unit* unit, UnitState state) const {
+	return mainGrid.getOrdinalInState(unit, state);
 }
 
 void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) {

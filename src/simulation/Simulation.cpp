@@ -308,7 +308,7 @@ void Simulation::calculateForces() {
 			const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);
-			force.inSocket(newForce, unit);
+			force.inCell(newForce, unit);
 			}
 			break;
 		default:

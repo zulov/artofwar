@@ -194,15 +194,15 @@ char MainGrid::getNumberInState(int index, UnitState state) const {
 	return num;
 }
 
-char MainGrid::getOrdinarInState(Unit* unit, UnitState state) const {
+char MainGrid::getOrdinalInState(Unit* unit, UnitState state) const {
 	const auto index = unit->getMainCell();
-	char ordinar = 0;
+	char ordinal = 0;
 	for (auto&& physical : buckets[index].getContent()) {
 		if (physical == unit) {
-			return ordinar;
+			return ordinal;
 		}
 		if (static_cast<Unit*>(physical)->getState() == state) {
-			++ordinar;
+			++ordinal;
 		}
 	}
 	return -1;

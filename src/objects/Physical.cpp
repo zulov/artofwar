@@ -83,7 +83,7 @@ void Physical::updateHealthBar() {
 }
 
 int Physical::getMainCell() const {
-	return getBucketIndex();
+	return getMainBucketIndex();
 }
 
 std::optional<std::tuple<Urho3D::Vector2, float, int>> Physical::getPosToUseWithIndex(Unit* user) const {

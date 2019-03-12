@@ -20,7 +20,7 @@ public:
 	float getHealthBarSize();
 
 	bool bucketHasChanged(int _bucketIndex) const;
-	void setBucket(int _bucketIndex);
+	virtual void setBucket(int _bucketIndex);
 
 	void updateBillboards() const;
 	void initBillboards();
@@ -30,6 +30,7 @@ public:
 	bool isSelected() const;
 	void load(dbload_physical* dbloadPhysical);
 	virtual bool isSlotOccupied(int indexToInteract) { return false; }
+	virtual bool isFirstThingInSameSocket() const { return true; }
 
 	virtual void setOccupiedSlot(int indexToInteract, bool value) {
 	}
@@ -52,7 +53,7 @@ public:
 
 	virtual char getPlayer() const { return player; }
 
-	int getBucketIndex() const { return indexInGrid; }
+	int getMainBucketIndex() const { return indexInGrid; }
 
 	virtual void populate() {
 	};
@@ -87,16 +88,12 @@ protected:
 	Urho3D::Vector3* position = nullptr;
 	Urho3D::String menuString = "";
 
-	char team;
-	char player;
+	char team, player;
 
-	float hpCoef = 100;
-	float maxHpCoef = 100;
-	float attackCoef = 10;
-	float attackRange;
+	float hpCoef = 100, maxHpCoef = 100;
+	float attackCoef = 10, attackRange;
+	float attackSpeed = 1, attackProcess = 0;
 	float defenseCoef = 0.3f;
-	float attackSpeed = 1;
-	float attackProcess = 0;
 
 	Urho3D::StaticModel* model;
 
@@ -112,8 +109,8 @@ protected:
 private:
 	void createBillboardBar();
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
-	Urho3D::Billboard* createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet, const Urho3D::String&
-	                                      material) const;
+	Urho3D::Billboard* createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet,
+	                                      const Urho3D::String& material) const;
 	void createBillboardShadow();
 	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;
 

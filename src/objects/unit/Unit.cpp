@@ -259,6 +259,10 @@ void Unit::action(char id) {
 	action(id, Consts::EMPTY_ACTION_PARAMETER);
 }
 
+bool Unit::isFirstThingInSameSocket() const {
+	return prevIndex == getMainBucketIndex();
+}
+
 void Unit::action(char id, const ActionParameter& parameter) {
 	switch (id) {
 	case UnitOrder::GO:
@@ -374,6 +378,10 @@ bool Unit::closeEnoughToAttack() const {
 	return dirTo(position, getPosToUse()).LengthSquared() < attackRange * attackRange;
 }
 
+bool Unit::isInRightSocket() const {
+	return indexToInteract == getMainBucketIndex();
+}
+
 std::string Unit::getColumns() {
 	return Physical::getColumns() +
 		"position_x		INT     NOT NULL,"
@@ -407,6 +415,11 @@ void Unit::applyForce(double timeStep) {
 
 int Unit::getDbID() {
 	return dbUnit->id;
+}
+
+void Unit::setBucket(int _bucketIndex) {
+	prevIndex = getMainBucketIndex();
+	Physical::setBucket(_bucketIndex);
 }
 
 bool Unit::bucketHasChanged(int _bucketIndex, char param) const {
@@ -457,7 +470,7 @@ void Unit::clean() {
 
 Urho3D::Vector2 Unit::getSocketPos(const Unit* toFollow, int i) const {
 	auto vector = Consts::circleCords[i] * (minimalDistance + toFollow->getMinimalDistance()) * 2;
-	return Urho3D::Vector2(toFollow->getPosition()->x_ + vector.x_, toFollow->getPosition()->z_ + vector.y_);
+	return {toFollow->getPosition()->x_ + vector.x_, toFollow->getPosition()->z_ + vector.y_};
 }
 
 std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithIndex(Unit* follower) const {

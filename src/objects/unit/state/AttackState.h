@@ -1,14 +1,16 @@
 #pragma once
 #include "State.h"
 #include "StateManager.h"
-#include "objects/unit/Unit.h"
 #include "objects/unit/ActionParameter.h"
+#include "objects/unit/Unit.h"
+
 
 class AttackState : public State
 {
 public:
 	AttackState(): State({
-		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO_TO, UnitState::FOLLOW, UnitState::CHARGE
+		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
+		UnitState::GO_TO, UnitState::FOLLOW, UnitState::CHARGE
 	}) {
 	}
 
@@ -16,12 +18,14 @@ public:
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		return parameter.isFirstThingAlive()
+			&& unit->getMainBucketIndex() == parameter.index
+			&& parameter.thingsToInteract[0]->isFirstThingInSameSocket()
 			&& !parameter.thingsToInteract[0]->isSlotOccupied(parameter.index);
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->currentFrameState = 0;
-		
+
 		unit->thingsToInteract.clear();
 		unit->thingsToInteract.push_back(parameter.thingsToInteract[0]);
 		unit->indexToInteract = parameter.index;
@@ -43,15 +47,21 @@ public:
 		unit->indexToInteract = -1;
 	}
 
+	bool isInRange(Unit* unit) {
+		return unit->isFirstThingAlive()
+			&& unit->isInRightSocket()
+			&& unit->thingsToInteract[0]->isFirstThingInSameSocket();
+	}
+
 	void execute(Unit* unit, float timeStep) override {
 		State::execute(unit, timeStep);
-		if (unit->isFirstThingAlive() && unit->closeEnoughToAttack()) {
+		if (isInRange(unit)) {
 			if (fmod(unit->currentFrameState, 1 / unit->attackSpeed) < 1) {
 				unit->thingsToInteract[0]->absorbAttack(unit->attackCoef);
 			}
 			++unit->currentFrameState;
 		} else {
-			StateManager::changeState(unit, UnitState::STOP);
+			//StateManager::changeState(unit, UnitState::STOP);
 		}
 	}
 };

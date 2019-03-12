@@ -18,7 +18,7 @@ private:
 	void addDeadAim() override;
 
 	void simpleAction() const;
-	void followAndAct();
+	void followAndAct(float distThreshold);
 
 
 	Unit* unit;

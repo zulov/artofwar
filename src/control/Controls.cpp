@@ -248,7 +248,6 @@ void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 		const auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
 		if (opt.has_value()) {
-
 			if (Game::getPlayersMan()->getActivePlayer()->getResources().reduce(opt.value())) {
 				Game::getQueueManager()->add(1, parameter.type, id, 1);
 			}

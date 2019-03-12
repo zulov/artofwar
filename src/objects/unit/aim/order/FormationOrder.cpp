@@ -21,7 +21,7 @@ bool FormationOrder::add() {
 }
 
 void FormationOrder::addCollectAim() {
-	followAndAct();
+	followAndAct(9);
 }
 
 void FormationOrder::addTargetAim() {
@@ -52,14 +52,14 @@ void FormationOrder::addChargeAim() {
 	}
 }
 
-void FormationOrder::followAndAct() {
+void FormationOrder::followAndAct(float distThreshold) {
 	auto optLeader = formation->getLeader();
 	if (optLeader.has_value()) {
 		auto posOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(optLeader.value()));
 		if (posOpt.has_value()) {
 			auto postToUse = posOpt.value();
 			auto dist = std::get<1>(postToUse);
-			if (dist > 25) {
+			if (dist > distThreshold) {
 				//TODO hardcode
 				auto pos = std::get<0>(postToUse);
 				optLeader.value()->action(static_cast<char>(UnitOrder::FOLLOW),
@@ -75,13 +75,15 @@ void FormationOrder::followAndAct() {
 				}
 				formation->remove();
 			}
-
 		}
 	}
 }
 
 void FormationOrder::addAttackAim() {
-	followAndAct();
+	auto optLeader = formation->getLeader();
+	if (optLeader.has_value()) {
+		followAndAct(static_cast<Unit*>(optLeader.value())->getAttackRange());
+	}
 }
 
 void FormationOrder::addDefendAim() {

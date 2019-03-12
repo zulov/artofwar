@@ -20,7 +20,7 @@ bool IndividualOrder::add() {
 }
 
 void IndividualOrder::addCollectAim() {
-	followAndAct();
+	followAndAct(9);
 }
 
 void IndividualOrder::addTargetAim() {
@@ -44,7 +44,7 @@ void IndividualOrder::addChargeAim() {
 }
 
 void IndividualOrder::addAttackAim() {
-	followAndAct();
+	followAndAct(unit->getAttackRange());
 }
 
 void IndividualOrder::addDefendAim() {
@@ -59,12 +59,12 @@ void IndividualOrder::simpleAction() const {
 	unit->action(static_cast<char>(action), Consts::EMPTY_ACTION_PARAMETER);
 }
 
-void IndividualOrder::followAndAct() {
+void IndividualOrder::followAndAct(float distThreshold) {
 	auto posOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(unit));
 	if (posOpt.has_value()) {
 		auto postToUse = posOpt.value();
 		auto dist = std::get<1>(postToUse);
-		if (dist > 25) {
+		if (dist > distThreshold) {
 			//TODO hardcode
 			auto pos = std::get<0>(postToUse);
 			unit->action(static_cast<char>(UnitOrder::FOLLOW),

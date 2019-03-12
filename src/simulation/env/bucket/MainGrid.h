@@ -69,7 +69,8 @@ public:
 	void updateCell(int index, char val, CellState cellState) const;
 	bool belowCellLimit(int index) const;
 	char getNumberInState(int index, UnitState state) const;
-	char getOrdinarInState(Unit* unit, UnitState state) const;
+	char getOrdinalInState(Unit* unit, UnitState state) const;
+	bool isInCell(int index, Urho3D::Vector3* const position);
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
