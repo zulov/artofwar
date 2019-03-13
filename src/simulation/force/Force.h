@@ -19,7 +19,6 @@ public:
 	void formation(Urho3D::Vector2& newForce, Unit* unit);
 	void escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit);
 	void inCell(Urho3D::Vector2& newForce, Unit* unit);
-	void inSocket(Urho3D::Vector2& newForce, Unit* unit);
 
 	ForceStats& stats();
 	void changeCoef(int i, int wheel);

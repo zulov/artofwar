@@ -15,3 +15,4 @@ enum class UnitState : char
 	COLLECT,
 	DISPOSE
 };
+

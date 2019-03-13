@@ -61,7 +61,7 @@ public:
 			}
 			++unit->currentFrameState;
 		} else {
-			//StateManager::changeState(unit, UnitState::STOP);
+			StateManager::changeState(unit, UnitState::STOP);
 		}
 	}
 };

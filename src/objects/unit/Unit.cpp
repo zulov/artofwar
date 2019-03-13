@@ -251,7 +251,8 @@ Urho3D::String& Unit::toMultiLineString() {
 	menuString.Append("\nAtak: ").Append(Urho3D::String(attackCoef))
 	          .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
 	          .Append("\nZdrowie: ").Append(Urho3D::String(hpCoef))
-	          .Append("/").Append(Urho3D::String(maxHpCoef));
+	          .Append("/").Append(Urho3D::String(maxHpCoef))
+	          .Append("\nStan:").Append(Urho3D::String(Consts::UnitStateNames[static_cast<char>(state)]));
 	return menuString;
 }
 
