@@ -75,6 +75,10 @@ void SelectedHudPanel::createRows() {
 	}
 }
 
+void SelectedHudPanel::clearSelected() {	
+	hide(0);
+}
+
 void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 	ObjectType type = selectedInfo->getSelectedType();
 	auto& infoTypes = selectedInfo->getSelectedTypes();

@@ -93,8 +93,8 @@ void Hud::prepareStyle() {
 	rapidxml::xml_document<> baseXML;
 	rapidxml::xml_node<>* a = baseXML.allocate_node(rapidxml::node_element, "elements");
 	baseXML.append_node(a);
-	
-	for(auto sett : graphSettings->styles) {
+
+	for (auto sett : graphSettings->styles) {
 		auto style2 = Game::getCache()->GetResource<Urho3D::XMLFile>("UI/" + sett);
 		rapidxml::xml_document<> additionalXML;
 		auto chs = _strdup(style2->ToString().CString());
@@ -171,7 +171,7 @@ void Hud::createConsole() {
 
 void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
                  SimulationInfo* simulationInfo) {
-	updateSelected(selectedInfo);
+	updateSelected(selectedInfo, simulationInfo->getCurrentFrame());
 	if (simulationInfo->ifAmountUnitChanged()) {
 		update(simulationInfo->getUnitsNumber());
 	}
@@ -182,7 +182,7 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
 	topPanel->update(Game::getPlayersMan()->getActivePlayer()->getResources());
 	topPanel->update(simulationInfo->getUnitsNumber());
 	miniMapPanel->update();
-	selectedInfo->hasBeedUpdatedDrawn();
+	selectedInfo->hasBeenUpdatedDrawn();
 }
 
 void Hud::update(int unitsNumber) {
@@ -207,41 +207,44 @@ void Hud::updateStateVisibilty(GameState state) {
 	}
 }
 
-void Hud::updateSelected(SelectedInfo* selectedInfo) {
-	//TODO raz stworzyc a sterowac widzialnsocia
-	if (selectedInfo->hasChanged()) {
-		selectedHudPanel->update(selectedInfo);
-		menuPanel->updateSelected(selectedInfo);
-		switch (selectedInfo->getSelectedType()) {
-		case ObjectType::PHYSICAL:
-			menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
-			queuePanel->show(Game::getQueueManager());
-			break;
-		case ObjectType::UNIT:
-			menuPanel->refresh(LeftMenuMode::ORDER, selectedInfo);
-			queuePanel->setVisible(false);
-			break;
-		case ObjectType::BUILDING:
-			menuPanel->refresh(LeftMenuMode::UNIT, selectedInfo);
-			queuePanel->show(selectedInfo);
-			break;
-		case ObjectType::RESOURCE:
-			menuPanel->refresh(LeftMenuMode::RESOURCE, selectedInfo);
-			queuePanel->setVisible(false);
-			break;
-		default:
-			menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
-			queuePanel->setVisible(false);
+void Hud::updateSelected(SelectedInfo* selectedInfo, int currentFrame) {
+	if (selectedInfo->isSthSelected()) {
+		if (selectedInfo->hasChanged() || currentFrame % 10 == 0) {
+			selectedHudPanel->update(selectedInfo);
+			menuPanel->updateSelected(selectedInfo);
+			switch (selectedInfo->getSelectedType()) {
+			case ObjectType::PHYSICAL:
+				menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
+				queuePanel->show(Game::getQueueManager());
+				break;
+			case ObjectType::UNIT:
+				menuPanel->refresh(LeftMenuMode::ORDER, selectedInfo);
+				queuePanel->setVisible(false);
+				break;
+			case ObjectType::BUILDING:
+				menuPanel->refresh(LeftMenuMode::UNIT, selectedInfo);
+				queuePanel->show(selectedInfo);
+				break;
+			case ObjectType::RESOURCE:
+				menuPanel->refresh(LeftMenuMode::RESOURCE, selectedInfo);
+				queuePanel->setVisible(false);
+				break;
+			default:
+				menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
+				queuePanel->setVisible(false);
+			}
+		}
+		if (selectedInfo->getSelectedType() == ObjectType::BUILDING) {
+			queuePanel->update(selectedInfo);
 		}
 	} else {
-		switch (selectedInfo->getSelectedType()) {
-		case ObjectType::PHYSICAL:
+
+		if (currentFrame % 10 == 0) {
 			queuePanel->update(Game::getQueueManager());
-			break;
-		case ObjectType::BUILDING:
-			queuePanel->update(selectedInfo);
-			break;
 		}
+
+		selectedHudPanel->clearSelected();
+		menuPanel->clearSelected();
 	}
 }
 

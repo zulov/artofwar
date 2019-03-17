@@ -10,6 +10,7 @@
 #include "objects/Physical.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
+#include "NamesUtils.h"
 
 
 LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuInfoPanel", {}) {
@@ -25,93 +26,97 @@ void LeftMenuInfoPanel::createBody() {
 }
 
 void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
-	setVisible(true);
-	if (selectedInfo->getAllNumber() == 1) {
-		text->SetVisible(true);
-		auto& infoTypes = selectedInfo->getSelectedTypes();
-		for (auto& infoType : infoTypes) {
-			auto& data = infoType->getData();
-			if (!data.empty()) {
-				text->SetText(data.at(0)->toMultiLineString());
-				break;
+	if (!hoverIsOn) {
+		selectedIsOn = true;
+		setVisible(true);
+		if (selectedInfo->getAllNumber() == 1) {
+			text->SetVisible(true);
+			auto& infoTypes = selectedInfo->getSelectedTypes();
+			for (auto& infoType : infoTypes) {
+				auto& data = infoType->getData();
+				if (!data.empty()) {
+					text->SetText(data.at(0)->toMultiLineString());
+					break;
+				}
 			}
+		} else {
+			text->SetVisible(false);
 		}
-	} else {
-		text->SetVisible(false);
-	}
 
-	text2->SetText(selectedInfo->getMessage());
-	text2->SetVisible(true);
+		text2->SetText(selectedInfo->getMessage());
+		text2->SetVisible(true);
+	}
 }
 
-void LeftMenuInfoPanel::setInfo(HudData* hudData) {
-	Urho3D::String message = "";
+Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	const auto id = hudData->getId();
 	switch (hudData->getType()) {
-
 	case ActionType::UNIT_CREATE:
 		{
-		auto dbUnit = Game::getDatabaseCache()->getUnit(id);
-		auto costs = Game::getDatabaseCache()->getCostForUnit(id);
-		message = stringFrom(dbUnit->name, costs);
+		return stringFrom(Game::getDatabaseCache()->getUnit(id)->name,
+		                  Game::getDatabaseCache()->getCostForUnit(id));
 		}
-		break;
 	case ActionType::UNIT_LEVEL:
 		{
 		const int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
-		auto dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
+		const auto dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
 		auto opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
 
-		message = stringFrom(dbLevel->name, opt.value());
+		return stringFrom(dbLevel->name, opt.value());
 		}
-		break;
 	case ActionType::UNIT_UPGRADE:
 		{
-		message = "TODO";
+		return "TODO";
 		}
-		break;
 	case ActionType::BUILDING_CREATE:
 		{
-		auto dbBuilding = Game::getDatabaseCache()->getBuilding(id);
-		auto costs = Game::getDatabaseCache()->getCostForBuilding(id);
-		message = stringFrom(dbBuilding->name, costs);
+		return stringFrom(Game::getDatabaseCache()->getBuilding(id)->name,
+		                  Game::getDatabaseCache()->getCostForBuilding(id));
 		}
-		break;
 	case ActionType::BUILDING_LEVEL:
 		{
 		auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;
 		auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(id, level).value();
-		auto opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
-		auto costs = opt.value();
-		message = stringFrom(dbLevel->name, costs);
+		auto optCost = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
+
+		return stringFrom(dbLevel->name, optCost.value());
 		}
-		break;
 	case ActionType::ORDER:
 		{
-		message = Game::getLocalization()->Get(Game::getDatabaseCache()->getOrder(id)->name);
+		return Game::getLocalization()->Get(Game::getDatabaseCache()->getOrder(id)->name);
 		}
 		break;
 	case ActionType::FORMATION:
 	case ActionType::RESOURCE:
-		message = hudData->getText();
-		break;
+		return hudData->getText();
 	default: ;
 	}
+}
+
+void LeftMenuInfoPanel::setHoverInfo(HudData* hudData) {
+	Urho3D::String message = createMessage(hudData);
 
 	if (message.Length() > 0) {
 		text->SetVisible(true);
 		text->SetText(message);
 		setVisible(true);
+		hoverIsOn = true;
 	} else {
-		setVisible(false);
+		removeHoverInfo();
 	}
 
 }
 
-Urho3D::String LeftMenuInfoPanel::stringFrom(const Urho3D::String& name, std::vector<db_cost*>* costs) {
-	auto msg = name + "\n";
-	for (db_cost* cost : *costs) {
-		msg += cost->resourceName + " - " + Urho3D::String(cost->value) + "\n";
+void LeftMenuInfoPanel::removeHoverInfo() {
+	hoverIsOn = false;
+	if (!selectedIsOn) {
+		setVisible(false);
 	}
-	return msg;
+}
+
+void LeftMenuInfoPanel::clearSelected() {
+	selectedIsOn = false;
+	if (!hoverIsOn) {
+		setVisible(false);
+	}
 }

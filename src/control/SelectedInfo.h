@@ -3,7 +3,7 @@
 #include <Urho3D/Container/Str.h>
 #include <vector>
 
-#define MAX_SELECTEDIN_TYPE 330
+#define MAX_SELECTED_TYPE 330
 #define MAX_SIZE_TYPES 8
 
 class Physical;
@@ -19,7 +19,7 @@ public:
 	void setSelectedType(ObjectType selectedType);
 	void reset();
 	void select(Physical* entity);
-	void hasBeedUpdatedDrawn();
+	void hasBeenUpdatedDrawn();
 	void setMessage(Urho3D::String& s);
 
 	std::vector<SelectedInfoType*>& getSelectedTypes() { return selectedByType; }
@@ -28,6 +28,7 @@ public:
 	char getSelectedSubTypeNumber() const { return allSubTypeNumber; }
 	int getAllNumber() const { return allNumber; }
 	bool hasChanged() const { return changed; }
+	bool isSthSelected();
 private:
 	bool changed = true;
 	int allNumber;

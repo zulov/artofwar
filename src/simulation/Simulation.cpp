@@ -77,6 +77,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		simObjectManager->prepareToDispose();
 		simObjectManager->updateInfo(simulationInfo);
+		simulationInfo->setCurrentFrame(currentFrameNumber);
 		enviroment->removeFromGrids(simObjectManager->getToDispose());
 
 		Game::getFormationManager()->update();

@@ -38,10 +38,10 @@ URHO3D_OBJECT(Hud, Object)
 	void update(int unitsNumber);
 	void createMiniMap();
 
-	void updateSelected(SelectedInfo* selectedInfo);
+	void updateSelected(SelectedInfo* selectedInfo, int currentFrame);
 
-	void hoverOnIcon(HudData* hudElement) const { menuPanel->setInfo(hudElement); }
-	void hoverOffIcon() const { menuPanel->removeInfo(); }
+	void hoverOnIcon(HudData* hudElement) const { menuPanel->setHoverInfo(hudElement); }
+	void hoverOffIcon() const { menuPanel->removeHoverInfo(); }
 
 	void HandleUIButtonHoverOn(Urho3D::StringHash, Urho3D::VariantMap& eventData);
 	void HandleUIButtonHoverOff(Urho3D::StringHash, Urho3D::VariantMap& eventData);

@@ -12,11 +12,15 @@ public:
 	explicit LeftMenuInfoPanel(Urho3D::XMLFile* _style);
 	~LeftMenuInfoPanel();
 	void updateSelected(SelectedInfo* selectedInfo);
-	void setInfo(HudData* hudData);
-	Urho3D::String stringFrom(const Urho3D::String &name, std::vector<db_cost*>* costs);
+	void setHoverInfo(HudData* hudData);
+	void removeHoverInfo();
+	void clearSelected();
 private:
+	Urho3D::String createMessage(HudData* hudData);
 	void createBody() override;
 
+	bool hoverIsOn = false;
+	bool selectedIsOn = false;
 	Urho3D::Text* text;
 	Urho3D::Text* text2;
 };

@@ -24,13 +24,14 @@ class MenuPanel : public AbstractWindowPanel
 public:
 	explicit MenuPanel(Urho3D::XMLFile* _style);
 	~MenuPanel();
-	void removeInfo();
+	void removeHoverInfo() const;
 	void refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo);
 
-	void setInfo(HudData* hudData);
+	void setHoverInfo(HudData* hudData) const;
 	void updateSelected(SelectedInfo* selectedInfo);
 	void setVisible(bool enable) override;
 	std::vector<HudData*>& getButtons();
+	void clearSelected();
 private:
 	void setCheckVisibility(std::initializer_list<bool> active);
 	void updateMode(LeftMenuMode mode);

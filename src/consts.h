@@ -31,4 +31,11 @@ struct Consts
 		stringify(COLLECT),
 		stringify(DISPOSE)
 	};
+
+	inline static char* StaticStateNames[] = {
+		stringify(ALIVE),
+		stringify(DEAD),
+		stringify(DISPOSE),
+		stringify(FREE)
+	};
 };

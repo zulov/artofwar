@@ -15,6 +15,7 @@ public:
 	
 	std::vector<Urho3D::Button*>& getButtonsSelectedToSubscribe();
 	void createRows();
+	void clearSelected();
 
 private:
 	int iconSize();

@@ -30,8 +30,8 @@ MenuPanel::~MenuPanel() {
 	clear_vector(hudElements);
 }
 
-void MenuPanel::removeInfo() {
-	infoPanel->setVisible(false);
+void MenuPanel::removeHoverInfo() const {
+	infoPanel->removeHoverInfo();
 }
 
 void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {
@@ -44,8 +44,8 @@ void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {
 	updateButtons(lastSelectedInfo);
 }
 
-void MenuPanel::setInfo(HudData* hudData) {
-	infoPanel->setInfo(hudData);
+void MenuPanel::setHoverInfo(HudData* hudData) const {
+	infoPanel->setHoverInfo(hudData);
 }
 
 void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
@@ -55,12 +55,16 @@ void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
 void MenuPanel::setVisible(bool enable) {
 	AbstractWindowPanel::setVisible(enable);
 	if (!enable) {
-		removeInfo();
+		removeHoverInfo();
 	}
 }
 
 std::vector<HudData*>& MenuPanel::getButtons() {
 	return hudElements;
+}
+
+void MenuPanel::clearSelected() {
+	infoPanel->clearSelected();
 }
 
 void MenuPanel::setCheckVisibility(std::initializer_list<bool> active) {
@@ -86,7 +90,7 @@ void MenuPanel::updateMode(LeftMenuMode mode) {
 void MenuPanel::createBody() {
 	infoPanel = new LeftMenuInfoPanel(style);
 	infoPanel->createWindow();
-	removeInfo();
+	removeHoverInfo();
 
 	mock = createElement<Urho3D::UIElement>(window, style, "LeftMenuMock");
 

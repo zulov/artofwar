@@ -1,8 +1,10 @@
 #include "SelectedInfo.h"
 #include "Controls.h"
+#include "ObjectEnums.h"
 #include "SelectedInfoType.h"
-#include "utils.h"
 #include "objects/Physical.h"
+#include "utils.h"
+
 
 SelectedInfo::SelectedInfo() {
 	allNumber = 0;
@@ -32,7 +34,7 @@ void SelectedInfo::reset() {
 	changed = true;
 	allNumber = 0;
 	allSubTypeNumber = 0;
-	for (auto & element : selectedByType) {
+	for (auto& element : selectedByType) {
 		element->clear();
 	}
 }
@@ -47,11 +49,15 @@ void SelectedInfo::select(Physical* entity) {
 	changed = true;
 }
 
-void SelectedInfo::hasBeedUpdatedDrawn() {
+void SelectedInfo::hasBeenUpdatedDrawn() {
 	changed = false;
 }
 
 void SelectedInfo::setMessage(Urho3D::String& s) {
 	message = Urho3D::String(s);
 	changed = true;
+}
+
+bool SelectedInfo::isSthSelected() {
+	return allNumber >0 && selectedType!=ObjectType::PHYSICAL;
 }

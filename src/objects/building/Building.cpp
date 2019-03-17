@@ -9,6 +9,7 @@
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include <string>
+#include "consts.h"
 
 
 Building::Building(Urho3D::Vector3* _position, int id, int player, int level, int mainCell):
@@ -52,9 +53,10 @@ void Building::absorbAttack(float attackCoef) {
 
 Urho3D::String& Building::toMultiLineString() {
 	menuString = dbBuilding->name + " " + dbLevel->name;
-	menuString += "\nAtak: " + Urho3D::String(attackCoef);
-	menuString += "\nObrona: " + Urho3D::String(defenseCoef);
-	menuString += "\nZdrowie: " + Urho3D::String(hpCoef) + "/" + Urho3D::String(maxHpCoef);
+	menuString.Append("\nAtak: ").Append(Urho3D::String(attackCoef))
+	          .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
+	          .Append("\nZdrowie: ").Append(Urho3D::String(hpCoef)).Append("/").Append(Urho3D::String(maxHpCoef))
+	          .Append("\nStan: ").Append(Consts::StaticStateNames[static_cast<char>(state)]);
 	return menuString;
 }
 

@@ -281,6 +281,7 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\NamesUtils.h" />
     <ClInclude Include="src\objects\unit\aim\order\FormationOrder.h" />
     <ClInclude Include="src\objects\unit\aim\order\GroupOrder.h" />
     <ClInclude Include="src\objects\unit\aim\order\IndividualOrder.h" />

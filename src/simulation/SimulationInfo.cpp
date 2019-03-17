@@ -1,5 +1,5 @@
 #include "SimulationInfo.h"
-
+#include "ObjectEnums.h"
 
 SimulationInfo::SimulationInfo() {
 	unitDied = &flags[0];
@@ -13,14 +13,6 @@ SimulationInfo::SimulationInfo() {
 
 
 SimulationInfo::~SimulationInfo() = default;
-
-bool SimulationInfo::ifUnitDied() {
-	return *unitDied;
-}
-
-bool SimulationInfo::ifUnitAmountChanged() const {
-	return *amountUnitChanged;
-}
 
 void SimulationInfo::reset() const {
 	*unitDied = false;
@@ -87,30 +79,10 @@ void SimulationInfo::setUnitsNumber(int _untisNumber) {
 	unitsNumber = _untisNumber;
 }
 
-bool SimulationInfo::ifUnitDied() const {
-	return *unitDied;
-}
-
-bool SimulationInfo::ifAmountUnitChanged() const {
-	return *amountUnitChanged;
-}
-
-bool SimulationInfo::ifBuildingDied() const {
-	return *buildingDied;
-}
-
-bool SimulationInfo::ifAmountBuildingChanged() const {
-	return *amountBuildingChanged;
-}
-
-bool SimulationInfo::ifResourceDied() const {
-	return *resourceDied;
-}
-
-bool SimulationInfo::ifAmountResourceChanged() const {
-	return *amountResourceChanged;
-}
-
-int SimulationInfo::getUnitsNumber() {
+int SimulationInfo::getUnitsNumber() const {
 	return unitsNumber;
+}
+
+void SimulationInfo::setCurrentFrame(int currentFrameNumber) {
+	this->currentFrameNumber = currentFrameNumber;
 }

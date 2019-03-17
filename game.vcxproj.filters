@@ -464,6 +464,7 @@
     <ClInclude Include="src\objects\unit\aim\order\GroupOrder.h" />
     <ClInclude Include="src\objects\unit\aim\order\FormationOrder.h" />
     <ClInclude Include="src\objects\ActionType.h" />
+    <ClInclude Include="src\NamesUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
