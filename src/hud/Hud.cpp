@@ -208,7 +208,7 @@ void Hud::updateStateVisibilty(GameState state) {
 }
 
 void Hud::updateSelected(SelectedInfo* selectedInfo, int currentFrame) {
-	if (selectedInfo->isSthSelected()) {
+	if (selectedInfo->isSthSelected() || selectedInfo->hasChanged()) {
 		if (selectedInfo->hasChanged() || currentFrame % 10 == 0) {
 			selectedHudPanel->update(selectedInfo);
 			menuPanel->updateSelected(selectedInfo);

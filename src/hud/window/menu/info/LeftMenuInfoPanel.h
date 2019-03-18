@@ -22,5 +22,4 @@ private:
 	bool hoverIsOn = false;
 	bool selectedIsOn = false;
 	Urho3D::Text* text;
-	Urho3D::Text* text2;
 };

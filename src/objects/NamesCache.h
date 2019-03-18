@@ -41,3 +41,17 @@ inline Urho3D::String getIconName(ActionType type, int level, int i) {
 		return "mock.png";
 	}
 }
+
+inline Urho3D::String getName(ObjectType type, int i) {
+	auto dbCache = Game::getDatabaseCache();
+	switch (type) {
+	case ObjectType::UNIT:
+		return dbCache->getUnit(i)->name;
+	case ObjectType::BUILDING:
+		return dbCache->getBuilding(i)->name;
+	case ObjectType::RESOURCE:
+		return dbCache->getResource(i)->name;
+	default:
+		return "Error";
+	}
+}

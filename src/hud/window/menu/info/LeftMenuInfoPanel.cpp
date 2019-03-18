@@ -11,6 +11,8 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "NamesUtils.h"
+#include <Urho3D/Resource/ResourceCache.h>
+#include "objects/NamesCache.h"
 
 
 LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuInfoPanel", {}) {
@@ -22,7 +24,6 @@ LeftMenuInfoPanel::~LeftMenuInfoPanel() = default;
 void LeftMenuInfoPanel::createBody() {
 	Urho3D::String a = "";
 	text = addChildText(window, "MyText", a, style);
-	text2 = addChildText(window, "MyText", a, style);
 }
 
 void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
@@ -30,21 +31,25 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 		selectedIsOn = true;
 		setVisible(true);
 		if (selectedInfo->getAllNumber() == 1) {
-			text->SetVisible(true);
-			auto& infoTypes = selectedInfo->getSelectedTypes();
-			for (auto& infoType : infoTypes) {
-				auto& data = infoType->getData();
-				if (!data.empty()) {
-					text->SetText(data.at(0)->toMultiLineString());
-					break;
+			auto optInfoTypes = selectedInfo->getOneSelectedTypeInfo();
+			if (optInfoTypes.has_value()) {
+				text->SetVisible(true);
+				text->SetText(optInfoTypes.value()->getData().at(0)->toMultiLineString());
+			}
+		} else if (selectedInfo->isSthSelected()) {
+			Urho3D::String msg = "";
+			for (auto selectedType : selectedInfo->getSelectedTypes()) {
+				if (!selectedType->getData().empty()) {
+					msg.Append(getName(selectedType->getData().at(0)->getType(),
+					                   selectedType->getData().at(0)->getDbID()))
+					   .Append(": ").Append(Urho3D::String(selectedType->getData().size())).Append("\n");
 				}
 			}
+			text->SetText(msg);
+			text->SetVisible(true);
 		} else {
 			text->SetVisible(false);
 		}
-
-		text2->SetText(selectedInfo->getMessage());
-		text2->SetVisible(true);
 	}
 }
 

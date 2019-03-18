@@ -444,13 +444,13 @@ void Controls::defaultControl() {
 		releaseRight();
 	}
 
-	if (input->GetMouseButtonDown(Urho3D::MOUSEB_MIDDLE)) {
-		hit_data hitData;
-
-		if (raycast(hitData)) {
-			selectedInfo->setMessage(hitData.position.ToString());
-		}
-	}
+	// if (input->GetMouseButtonDown(Urho3D::MOUSEB_MIDDLE)) {
+	// 	hit_data hitData;
+	//
+	// 	if (raycast(hitData)) {
+	// 		selectedInfo->setMessage(hitData.position.ToString());
+	// 	}
+	// }
 }
 
 void Controls::buildControl() {

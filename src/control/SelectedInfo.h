@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Urho3D/Container/Str.h>
+#include <optional>
 #include <vector>
 
 #define MAX_SELECTED_TYPE 330
@@ -20,11 +20,10 @@ public:
 	void reset();
 	void select(Physical* entity);
 	void hasBeenUpdatedDrawn();
-	void setMessage(Urho3D::String& s);
+	std::optional<SelectedInfoType*> getOneSelectedTypeInfo() const;
 
 	std::vector<SelectedInfoType*>& getSelectedTypes() { return selectedByType; }
-	ObjectType getSelectedType() const {return selectedType;}
-	Urho3D::String& getMessage() { return message; }
+	ObjectType getSelectedType() const { return selectedType; }
 	char getSelectedSubTypeNumber() const { return allSubTypeNumber; }
 	int getAllNumber() const { return allNumber; }
 	bool hasChanged() const { return changed; }
@@ -35,5 +34,4 @@ private:
 	char allSubTypeNumber;
 	ObjectType selectedType;
 	std::vector<SelectedInfoType*> selectedByType;
-	Urho3D::String message = "";
 };

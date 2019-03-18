@@ -53,11 +53,15 @@ void SelectedInfo::hasBeenUpdatedDrawn() {
 	changed = false;
 }
 
-void SelectedInfo::setMessage(Urho3D::String& s) {
-	message = Urho3D::String(s);
-	changed = true;
+std::optional<SelectedInfoType*> SelectedInfo::getOneSelectedTypeInfo() const {
+	for (auto info : selectedByType) {
+		if (!info->getData().empty()) {
+			return info;
+		}
+	}
+	return {};
 }
 
 bool SelectedInfo::isSthSelected() {
-	return allNumber >0 && selectedType!=ObjectType::PHYSICAL;
+	return allNumber > 0 && selectedType != ObjectType::PHYSICAL;
 }
