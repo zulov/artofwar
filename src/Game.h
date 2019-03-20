@@ -3,6 +3,7 @@
 #include <Urho3D/Engine/Engine.h>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Scene/Scene.h>
+#include <Urho3D/IO/Log.h>
 
 
 namespace Urho3D {
@@ -46,6 +47,7 @@ public:
 	static Game* setQueueManager(QueueManager* _queueManager);
 	static Game* setFormationManager(FormationManager* _formationManager);
 	static Game* setColorPeletteRepo(ColorPeletteRepo* _colorPeletteRepo);
+	static Game* setLog(Urho3D::Log* _log);
 
 	static Urho3D::ResourceCache* getCache() { return instance->cache; }
 	static Urho3D::SharedPtr<Urho3D::Scene> getScene() { return instance->scene; }
@@ -55,6 +57,8 @@ public:
 	static Urho3D::SharedPtr<Urho3D::Engine> getEngine() { return instance->engine; }
 	static Urho3D::Console* getConsole() { return instance->console; }
 	static Urho3D::Localization* getLocalization() { return instance->localization; }
+	static Urho3D::Log* getLog() { return instance->log; }
+
 	static CommandList* getActionList() { return instance->actionCommandList; }
 	static QueueManager* getQueueManager() { return instance->queue; }
 	static CreationCommandList* getCreationList() { return instance->creationCommandList; }
@@ -77,6 +81,7 @@ private:
 	Urho3D::SharedPtr<Urho3D::Engine> engine;
 	Urho3D::Console* console;
 	Urho3D::Localization* localization;
+	Urho3D::Log* log;
 
 	CameraManager* cameraManager;
 	CommandList* actionCommandList;

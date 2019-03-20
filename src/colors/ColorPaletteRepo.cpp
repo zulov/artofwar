@@ -1,11 +1,11 @@
-#include "ColorPaletteRepo.h"
+#include "ColorPeletteRepo.h"
 #include "Game.h"
 #include "objects/unit/state/StateManager.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <iostream>
 
 
-ColorPaletteRepo::ColorPaletteRepo() {
+ColorPeletteRepo::ColorPeletteRepo() {
 	for (int i = 0; i < PALLET_RESOLUTION; ++i) {
 		redPallet[i] = new Urho3D::Material(Game::getContext());
 		redPallet[i]->SetShaderParameter("MatDiffColor", Urho3D::Color(i * (1.0 / PALLET_RESOLUTION), 0, 0));
@@ -24,9 +24,9 @@ ColorPaletteRepo::ColorPaletteRepo() {
 }
 
 
-ColorPaletteRepo::~ColorPaletteRepo() = default;
+ColorPeletteRepo::~ColorPeletteRepo() = default;
 
-Urho3D::Material* ColorPaletteRepo::getColor(ColorPallet colorPallet, float value, float maxValue) {
+Urho3D::Material* ColorPeletteRepo::getColor(ColorPallet colorPallet, float value, float maxValue) {
 	if (value > maxValue) {
 		value = maxValue;
 	} else if (value < 0) {
@@ -41,10 +41,10 @@ Urho3D::Material* ColorPaletteRepo::getColor(ColorPallet colorPallet, float valu
 	return nullptr;
 }
 
-Urho3D::Material* ColorPaletteRepo::getColor(UnitState state) {
+Urho3D::Material* ColorPeletteRepo::getColor(UnitState state) {
 	return statePallet[static_cast<char>(state)];
 }
 
-Urho3D::Material* ColorPaletteRepo::getLineMaterial() const {
+Urho3D::Material* ColorPeletteRepo::getLineMaterial() const {
 	return lineMaterial;
 }

@@ -29,6 +29,8 @@
 #include "objects/unit/aim/order/IndividualOrder.h"
 #include "objects/unit/ActionParameter.h"
 #include "consts.h"
+#include <Urho3D\Core\Object.h>
+#include <Urho3D/IO/Log.h>
 
 
 Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), input(_input) {
@@ -444,13 +446,13 @@ void Controls::defaultControl() {
 		releaseRight();
 	}
 
-	// if (input->GetMouseButtonDown(Urho3D::MOUSEB_MIDDLE)) {
-	// 	hit_data hitData;
-	//
-	// 	if (raycast(hitData)) {
-	// 		selectedInfo->setMessage(hitData.position.ToString());
-	// 	}
-	// }
+	if (input->GetMouseButtonDown(Urho3D::MOUSEB_MIDDLE)) {
+		hit_data hitData;
+
+		if (raycast(hitData)) {
+			Game::getLog()->Write(0, hitData.position.ToString());
+		}
+	}
 }
 
 void Controls::buildControl() {

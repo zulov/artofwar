@@ -63,7 +63,8 @@ void Main::Setup() {
 		->setUI(GetSubsystem<UI>())
 		->setConsole(GetSubsystem<Console>())
 		->setContext(context_)
-		->setEngine(engine_);
+		->setEngine(engine_)
+		->setLog(GetSubsystem<Log>());
 
 	loadingProgress.reset(loadStages);
 	newGameProgress.reset(newGamesStages);

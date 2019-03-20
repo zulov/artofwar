@@ -100,3 +100,8 @@ Game* Game::setColorPeletteRepo(ColorPeletteRepo* _colorPeletteRepo) {
 	instance->colorPeletteRepo = _colorPeletteRepo;
 	return instance;
 }
+
+Game* Game::setLog(Urho3D::Log* _log) {
+	instance->log = _log;
+	return instance;
+}
