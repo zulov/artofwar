@@ -444,7 +444,7 @@ void Main::disposeScene() {
 		delete Game::getFormationManager();
 		Game::setFormationManager(nullptr);
 
-		delete Game::getColorPeletteRepo();
+		delete Game::getColorPaletteRepo();
 		Game::setColorPaletteRepo(nullptr);
 
 		loading2.inc("dispose creationList");

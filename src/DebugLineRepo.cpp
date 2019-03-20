@@ -25,7 +25,7 @@ DebugLineRepo::~DebugLineRepo() {
 
 void DebugLineRepo::commit() {
 	if constexpr (UNIT_DEBUG_ENABLED) {
-		geometry->SetMaterial(Game::getColorPeletteRepo()->getLineMaterial());
+		geometry->SetMaterial(Game::getColorPaletteRepo()->getLineMaterial());
 		geometry->Commit();
 	}
 }

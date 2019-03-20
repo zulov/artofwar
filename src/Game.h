@@ -1,9 +1,9 @@
 #pragma once
 #include <Urho3D/Container/Ptr.h>
 #include <Urho3D/Engine/Engine.h>
+#include <Urho3D/IO/Log.h>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Scene/Scene.h>
-#include <Urho3D/IO/Log.h>
 
 
 namespace Urho3D {
@@ -39,7 +39,7 @@ public:
 	static Game* setConsole(Urho3D::Console* _console);
 	static Game* setLocalization(Urho3D::Localization* _localization);
 	static Game* setCameraManager(CameraManager* cameraManager);
-	static Game* setActionCommmandList(CommandList* _actionCommmandList);
+	static Game* setActionCommandList(CommandList* _actionCommmandList);
 	static Game* setCreationCommandList(CreationCommandList* _simCommandList);
 	static Game* setDatabaseCache(DatabaseCache* _databaseCache);
 	static Game* setPlayersManager(PlayersManager* _playersManager);
@@ -49,47 +49,47 @@ public:
 	static Game* setColorPaletteRepo(ColorPaletteRepo* _colorPaletteRepo);
 	static Game* setLog(Urho3D::Log* _log);
 
-	static Urho3D::ResourceCache* getCache() { return instance->cache; }
-	static Urho3D::SharedPtr<Urho3D::Scene> getScene() { return instance->scene; }
-	static Urho3D::Context* getContext() { return instance->context; }
-	static Urho3D::UI* getUI() { return instance->ui; }
-	static Urho3D::Graphics* getGraphics() { return instance->graphics; }
 	static Urho3D::SharedPtr<Urho3D::Engine> getEngine() { return instance->engine; }
-	static Urho3D::Console* getConsole() { return instance->console; }
 	static Urho3D::Localization* getLocalization() { return instance->localization; }
+	static Urho3D::SharedPtr<Urho3D::Scene> getScene() { return instance->scene; }
+	static Urho3D::Graphics* getGraphics() { return instance->graphics; }
+	static Urho3D::ResourceCache* getCache() { return instance->cache; }
+	static Urho3D::Context* getContext() { return instance->context; }
+	static Urho3D::Console* getConsole() { return instance->console; }
 	static Urho3D::Log* getLog() { return instance->log; }
+	static Urho3D::UI* getUI() { return instance->ui; }
 
-	static CommandList* getActionList() { return instance->actionCommandList; }
-	static QueueManager* getQueueManager() { return instance->queue; }
 	static CreationCommandList* getCreationList() { return instance->creationCommandList; }
-	static DatabaseCache* getDatabaseCache() { return instance->databaseCache; }
-	static PlayersManager* getPlayersMan() { return instance->playersManager; }
-	static Environment* getEnvironment() { return instance->environment; }
 	static FormationManager* getFormationManager() { return instance->formationManager; }
 	static ColorPaletteRepo* getColorPaletteRepo() { return instance->colorPaletteRepo; }
+	static DatabaseCache* getDatabaseCache() { return instance->databaseCache; }
+	static CommandList* getActionList() { return instance->actionCommandList; }
+	static PlayersManager* getPlayersMan() { return instance->playersManager; }
 	static CameraManager* getCameraManager() { return instance->cameraManager; }
+	static Environment* getEnvironment() { return instance->environment; }
+	static QueueManager* getQueueManager() { return instance->queue; }
 
 private:
 	Game();
 	static Game* instance;
 
-	Urho3D::ResourceCache* cache;
-	Urho3D::SharedPtr<Urho3D::Scene> scene;
-	Urho3D::Context* context;
-	Urho3D::UI* ui;
-	Urho3D::Graphics* graphics;
 	Urho3D::SharedPtr<Urho3D::Engine> engine;
-	Urho3D::Console* console;
+	Urho3D::SharedPtr<Urho3D::Scene> scene;
 	Urho3D::Localization* localization;
+	Urho3D::ResourceCache* cache;
+	Urho3D::Graphics* graphics;
+	Urho3D::Console* console;
+	Urho3D::Context* context;
 	Urho3D::Log* log;
+	Urho3D::UI* ui;
 
-	CameraManager* cameraManager;
-	CommandList* actionCommandList;
 	CreationCommandList* creationCommandList;
-	DatabaseCache* databaseCache;
-	PlayersManager* playersManager;
-	Environment* environment;
-	QueueManager* queue;
 	FormationManager* formationManager;
 	ColorPaletteRepo* colorPaletteRepo;
+	CommandList* actionCommandList;
+	PlayersManager* playersManager;
+	CameraManager* cameraManager;
+	DatabaseCache* databaseCache;
+	Environment* environment;
+	QueueManager* queue;
 };

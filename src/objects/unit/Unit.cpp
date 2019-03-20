@@ -322,7 +322,7 @@ void Unit::addUpgrade(db_unit_upgrade* upgrade) {
 }
 
 void Unit::changeColor(float value, float maxValue) const {
-	changeMaterial(Game::getColorPeletteRepo()->getColor(ColorPallet::RED, value, maxValue), model);
+	changeMaterial(Game::getColorPaletteRepo()->getColor(ColorPallet::RED, value, maxValue), model);
 }
 
 void Unit::changeColor(ColorMode mode) {
@@ -332,7 +332,7 @@ void Unit::changeColor(ColorMode mode) {
 	case ColorMode::VELOCITY:
 		return changeColor(velocity.LengthSquared(), maxSpeed * maxSpeed);
 	case ColorMode::STATE:
-		return changeMaterial(Game::getColorPeletteRepo()->getColor(state), model);
+		return changeMaterial(Game::getColorPaletteRepo()->getColor(state), model);
 	case ColorMode::FORMATION:
 		if (formation != -1) {
 			changeColor(Game::getFormationManager()->getPriority(this), 3.0f);
