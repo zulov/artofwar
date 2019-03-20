@@ -16,6 +16,7 @@ public:
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);
 	ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow);
 	ActionParameter getChargeAim(Urho3D::Vector2& charge);
+
 	void execute();
 	bool getAppend() const { return append; }
 protected:
@@ -31,4 +32,5 @@ private:
 	virtual void addAttackAim() =0;
 	virtual void addDefendAim() =0;
 	virtual void addDeadAim() =0;
+	virtual void addStopAim() =0;
 };

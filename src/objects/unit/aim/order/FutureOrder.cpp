@@ -61,5 +61,7 @@ void FutureOrder::execute() {
 		return addDefendAim();
 	case UnitOrder::COLLECT:
 		return addCollectAim();
+	case UnitOrder::STOP:
+		return addStopAim();
 	}
 }

@@ -1,9 +1,9 @@
 #include "GroupOrder.h"
 #include "FormationOrder.h"
 #include "Game.h"
+#include "consts.h"
 #include "objects/unit/ActionParameter.h"
 #include "simulation/formation/FormationManager.h"
-#include "consts.h"
 
 
 GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitOrder action, const Urho3D::Vector2& vector,
@@ -63,6 +63,10 @@ void GroupOrder::addDefendAim() {
 }
 
 void GroupOrder::addDeadAim() {
+	simpleAction(Consts::EMPTY_ACTION_PARAMETER);
+}
+
+void GroupOrder::addStopAim() {
 	simpleAction(Consts::EMPTY_ACTION_PARAMETER);
 }
 

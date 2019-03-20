@@ -95,6 +95,10 @@ void FormationOrder::addDeadAim() {
 	simpleAction();
 }
 
+void FormationOrder::addStopAim() {
+	simpleAction();
+}
+
 void FormationOrder::simpleAction() {
 	for (auto unit : formation->getUnits()) {
 		unit->action(static_cast<char>(action), Consts::EMPTY_ACTION_PARAMETER);

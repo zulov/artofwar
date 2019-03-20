@@ -70,7 +70,7 @@ void Controls::selectOne(Physical* entity) const {
 	if (entityType != selectedInfo->getSelectedType()) {
 		unSelectAll();
 	}
-	if (!entity->isSelected()) {
+	if (!entity->isSelected() && entity->isAlive()) {
 		entity->select();
 		selected->push_back(entity);
 
@@ -312,7 +312,7 @@ void Controls::unitOrder(short id) {
 	case UnitOrder::STOP:
 	case UnitOrder::DEFEND:
 	case UnitOrder::DEAD:
-		executeOnAll(id, Consts::EMPTY_ACTION_PARAMETER);
+		executeOnAll(id, ActionParameter::Builder().setType(ActionType::ORDER).build());
 		break;
 	default: ;
 	}
@@ -328,6 +328,7 @@ void Controls::actionUnit(short id, const ActionParameter& parameter) {
 }
 
 void Controls::refreshSelected() {
+	bool sizeBefore = selected->size();
 	selected->erase(
 	                std::remove_if(
 	                               selected->begin(), selected->end(),
@@ -340,6 +341,11 @@ void Controls::refreshSelected() {
 		                               return false;
 	                               }),
 	                selected->end());
+
+	bool sizeAfter = selected->size();
+	if (sizeBefore != sizeAfter) {//TODO perf nie koniecznie resetowac ca³oœæ
+		selectedInfo->refresh(selected);
+	}
 }
 
 bool Controls::conditionToClean(SimulationInfo* simulationInfo) {

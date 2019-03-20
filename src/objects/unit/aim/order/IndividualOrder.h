@@ -16,6 +16,7 @@ private:
 	void addAttackAim() override;
 	void addDefendAim() override;
 	void addDeadAim() override;
+	void addStopAim() override;
 
 	void simpleAction() const;
 	void followAndAct(float distThreshold);

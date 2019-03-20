@@ -51,7 +51,7 @@ Game* Game::setCameraManager(CameraManager* cameraManager) {
 	return instance;
 }
 
-Game* Game::setActionCommmandList(CommandList* _actionCommmandList) {
+Game* Game::setActionCommandList(CommandList* _actionCommmandList) {
 	instance->actionCommandList = _actionCommmandList;
 	return instance;
 }

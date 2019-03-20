@@ -65,3 +65,10 @@ std::optional<SelectedInfoType*> SelectedInfo::getOneSelectedTypeInfo() const {
 bool SelectedInfo::isSthSelected() {
 	return allNumber > 0 && selectedType != ObjectType::PHYSICAL;
 }
+
+void SelectedInfo::refresh(std::vector<Physical*>* selected) {
+	reset();
+	for (auto physical : *selected) {
+		select(physical);
+	}
+}

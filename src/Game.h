@@ -63,9 +63,9 @@ public:
 	static FormationManager* getFormationManager() { return instance->formationManager; }
 	static ColorPaletteRepo* getColorPaletteRepo() { return instance->colorPaletteRepo; }
 	static DatabaseCache* getDatabaseCache() { return instance->databaseCache; }
+	static CameraManager* getCameraManager() { return instance->cameraManager; }
 	static CommandList* getActionList() { return instance->actionCommandList; }
 	static PlayersManager* getPlayersMan() { return instance->playersManager; }
-	static CameraManager* getCameraManager() { return instance->cameraManager; }
 	static Environment* getEnvironment() { return instance->environment; }
 	static QueueManager* getQueueManager() { return instance->queue; }
 

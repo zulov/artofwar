@@ -40,7 +40,7 @@ Simulation::Simulation(Environment* enviroment, CreationCommandList* creationCom
 
 	simulationInfo = new SimulationInfo();
 	actionCommandList = new CommandList();
-	Game::setActionCommmandList(actionCommandList);
+	Game::setActionCommandList(actionCommandList);
 
 	units = simObjectManager->getUnits();
 	buildings = simObjectManager->getBuildings();
@@ -52,7 +52,7 @@ Simulation::~Simulation() {
 	delete simulationInfo;
 	delete actionCommandList;
 	delete levelsCommandList;
-	Game::setActionCommmandList(nullptr);
+	Game::setActionCommandList(nullptr);
 }
 
 SimulationInfo* Simulation::update(float timeStep) {

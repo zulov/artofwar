@@ -21,6 +21,7 @@ private:
 	void addAttackAim() override;
 	void addDefendAim() override;
 	void addDeadAim() override;
+	void addStopAim() override;
 
 	void simpleAction(ActionParameter parameter);
 	void transformToFormationOrder() const;

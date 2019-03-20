@@ -55,6 +55,10 @@ void IndividualOrder::addDeadAim() {
 	simpleAction();
 }
 
+void IndividualOrder::addStopAim() {
+	simpleAction();
+}
+
 void IndividualOrder::simpleAction() const {
 	unit->action(static_cast<char>(action), Consts::EMPTY_ACTION_PARAMETER);
 }
