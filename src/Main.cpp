@@ -1,6 +1,6 @@
 #include "Urho3D/Resource/Image.h"
 #include "camera/CameraEnums.h"
-#include "colors/ColorPeletteRepo.h"
+#include "colors/ColorPaletteRepo.h"
 #include "commands/creation/CreationCommandList.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
@@ -204,7 +204,7 @@ void Main::setSimpleManagers() {
 		->setQueueManager(new QueueManager(1))
 		->setFormationManager(new FormationManager())
 		->setPlayersManager(new PlayersManager())
-		->setColorPeletteRepo(new ColorPeletteRepo());
+		->setColorPaletteRepo(new ColorPaletteRepo());
 }
 
 void Main::updateProgress(loading& progress, std::string msg) const {
@@ -445,7 +445,7 @@ void Main::disposeScene() {
 		Game::setFormationManager(nullptr);
 
 		delete Game::getColorPeletteRepo();
-		Game::setColorPeletteRepo(nullptr);
+		Game::setColorPaletteRepo(nullptr);
 
 		loading2.inc("dispose creationList");
 		delete Game::getCreationList();

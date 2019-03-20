@@ -1,6 +1,6 @@
 #include "DebugLineRepo.h"
 #include "Game.h"
-#include "colors/ColorPeletteRepo.h"
+#include "colors/ColorPaletteRepo.h"
 #include "defines.h"
 
 Urho3D::CustomGeometry* DebugLineRepo::geometry = nullptr;

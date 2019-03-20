@@ -21,7 +21,7 @@ class DatabaseCache;
 class CameraManager;
 class PlayersManager;
 class QueueManager;
-class ColorPeletteRepo;
+class ColorPaletteRepo;
 class FormationManager;
 
 class Game
@@ -46,7 +46,7 @@ public:
 	static Game* setEnvironment(Environment* _environment);
 	static Game* setQueueManager(QueueManager* _queueManager);
 	static Game* setFormationManager(FormationManager* _formationManager);
-	static Game* setColorPeletteRepo(ColorPeletteRepo* _colorPeletteRepo);
+	static Game* setColorPaletteRepo(ColorPaletteRepo* _colorPaletteRepo);
 	static Game* setLog(Urho3D::Log* _log);
 
 	static Urho3D::ResourceCache* getCache() { return instance->cache; }
@@ -66,7 +66,7 @@ public:
 	static PlayersManager* getPlayersMan() { return instance->playersManager; }
 	static Environment* getEnvironment() { return instance->environment; }
 	static FormationManager* getFormationManager() { return instance->formationManager; }
-	static ColorPeletteRepo* getColorPeletteRepo() { return instance->colorPeletteRepo; }
+	static ColorPaletteRepo* getColorPaletteRepo() { return instance->colorPaletteRepo; }
 	static CameraManager* getCameraManager() { return instance->cameraManager; }
 
 private:
@@ -91,5 +91,5 @@ private:
 	Environment* environment;
 	QueueManager* queue;
 	FormationManager* formationManager;
-	ColorPeletteRepo* colorPeletteRepo;
+	ColorPaletteRepo* colorPaletteRepo;
 };

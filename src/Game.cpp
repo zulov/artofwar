@@ -96,8 +96,8 @@ Game* Game::setFormationManager(FormationManager* _formationManager) {
 	return instance;
 }
 
-Game* Game::setColorPeletteRepo(ColorPeletteRepo* _colorPeletteRepo) {
-	instance->colorPeletteRepo = _colorPeletteRepo;
+Game* Game::setColorPaletteRepo(ColorPaletteRepo* _colorPaletteRepo) {
+	instance->colorPeletteRepo = _colorPaletteRepo;
 	return instance;
 }
 

@@ -7,11 +7,11 @@
 #define PALLET_RESOLUTION 32
 
 
-class ColorPeletteRepo
+class ColorPaletteRepo
 {
 public:
-	ColorPeletteRepo();
-	~ColorPeletteRepo();
+	ColorPaletteRepo();
+	~ColorPaletteRepo();
 	Urho3D::Material* getColor(ColorPallet colorPallet, float value, float maxValue);
 	Urho3D::Material* getColor(UnitState state);
 	Urho3D::Material* getLineMaterial() const;
