@@ -39,7 +39,6 @@ bool Aims::ifReach(Unit* unit) {
 	if (current) {
 		if (current->ifReach(unit)) {
 			removeCurrentAim();
-			//unit->action(static_cast<char>(UnitOrder::STOP));
 			return nextAims.empty();
 		}
 	} else if (!nextAims.empty()) {
@@ -47,7 +46,6 @@ bool Aims::ifReach(Unit* unit) {
 		nextAims.erase(nextAims.begin());
 		toExecute->execute();
 		delete toExecute;
-
 	}
 
 	return false;

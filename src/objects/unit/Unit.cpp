@@ -484,6 +484,7 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 
 			if (Game::getEnvironment()->cellInState(Game::getEnvironment()->getIndex(posToFollow),
 			                                        {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
+				i to nie jest index !!!!
 				setClosest(minDistance, closest, closestIndex, i, posToFollow, follower->getPosition());
 			}
 		}

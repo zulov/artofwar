@@ -82,6 +82,7 @@ bool StateManager::validateState(int id, UnitState stateTo) {
 bool StateManager::changeState(Unit* unit, UnitState stateTo) {
 	return changeState(unit, stateTo, Consts::EMPTY_ACTION_PARAMETER);
 }
+
 bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter) {
 	State* stateFrom = instance->states[static_cast<int>(unit->getState())];
 	if (stateFrom->validateTransition(stateTo)
@@ -92,6 +93,8 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 		instance->states[static_cast<int>(stateTo)]->onStart(unit, actionParameter);
 		return true;
 	}
+	Game::getLog()->Write(0, "fail to change state from" + Urho3D::
+	                      String(Consts::UnitStateNames[static_cast<char>(unit->getState())]));
 	return false;
 }
 
