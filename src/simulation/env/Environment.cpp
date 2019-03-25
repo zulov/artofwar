@@ -122,6 +122,10 @@ Urho3D::Vector2* Environment::validatePosition(Urho3D::Vector3* position) {
 	return mainGrid.getDirectionFrom(position);
 }
 
+int Environment::getCloseIndex(int center, int i) const {
+	return mainGrid.getCloseIndex(center, i);
+}
+
 std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
 	std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
 	for (auto grid : grids) {

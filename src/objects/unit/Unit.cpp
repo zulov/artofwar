@@ -481,11 +481,11 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 	for (int i = 0; i < USE_SOCKETS_NUMBER; ++i) {
 		if (!useSockets[i]) {
 			Urho3D::Vector2 posToFollow = getSocketPos(this, i);
-
-			if (Game::getEnvironment()->cellInState(Game::getEnvironment()->getIndex(posToFollow),
+			int index = Game::getEnvironment()->getCloseIndex(getMainBucketIndex(), i);
+			if (Game::getEnvironment()->cellInState(index,
 			                                        {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
-				i to nie jest index !!!!
-				setClosest(minDistance, closest, closestIndex, i, posToFollow, follower->getPosition());
+				//i to nie jest index !!!!
+				setClosest(minDistance, closest, closestIndex, index, posToFollow, follower->getPosition());
 			}
 		}
 	}

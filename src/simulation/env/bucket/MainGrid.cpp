@@ -399,6 +399,10 @@ void MainGrid::debug(int start, int end) {
 	staticCounter++;
 }
 
+int MainGrid::getCloseIndex(int center, int i) const {
+	return center + closeIndex[i];
+}
+
 std::vector<int>* MainGrid::findPath(Urho3D::IntVector2& startV, Urho3D::IntVector2& goalV) {
 	int start = getIndex(startV.x_, startV.y_);
 	int goal = getIndex(goalV.x_, goalV.y_);

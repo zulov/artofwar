@@ -67,9 +67,7 @@ void IndividualOrder::followAndAct(float distThreshold) {
 	auto posOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(unit));
 	if (posOpt.has_value()) {
 		auto postToUse = posOpt.value();
-		auto dist = std::get<1>(postToUse);
-		if (dist > distThreshold) {
-			//TODO hardcode
+		if (std::get<1>(postToUse) > distThreshold) {
 			auto pos = std::get<0>(postToUse);
 			unit->action(static_cast<char>(UnitOrder::FOLLOW),
 			             getFollowAim(unit->getMainCell(),

@@ -32,6 +32,7 @@ public:
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
 	Urho3D::Vector2* validatePosition(Urho3D::Vector3* position);
+	int getCloseIndex(int center, int i) const;
 
 	std::vector<Physical *>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);
 

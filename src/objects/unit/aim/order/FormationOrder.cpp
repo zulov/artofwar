@@ -55,12 +55,10 @@ void FormationOrder::addChargeAim() {
 void FormationOrder::followAndAct(float distThreshold) {
 	auto optLeader = formation->getLeader();
 	if (optLeader.has_value()) {
-		auto posOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(optLeader.value()));
-		if (posOpt.has_value()) {
-			auto postToUse = posOpt.value();
-			auto dist = std::get<1>(postToUse);
-			if (dist > distThreshold) {
-				//TODO hardcode
+		auto posToUseOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(optLeader.value()));
+		if (posToUseOpt.has_value()) {
+			auto postToUse = posToUseOpt.value();
+			if (std::get<1>(postToUse) > distThreshold) {
 				auto pos = std::get<0>(postToUse);
 				optLeader.value()->action(static_cast<char>(UnitOrder::FOLLOW),
 				                          getFollowAim(optLeader.value()->getMainCell(),

@@ -38,6 +38,8 @@ public:
 	float cost(int current, int next) const;
 	void debug(int start, int end);
 
+	int getCloseIndex(int center, int i) const;
+
 	std::vector<int>* findPath(Urho3D::IntVector2& startV, Urho3D::IntVector2& goalV);
 	std::vector<int>* findPath(int startIdx, int endIdx, float min, float max);
 	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim);
