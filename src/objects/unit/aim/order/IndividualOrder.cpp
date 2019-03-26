@@ -76,7 +76,7 @@ void IndividualOrder::followAndAct(float distThreshold) {
 		} else {
 			unit->action(static_cast<char>(action),
 			             ActionParameter::Builder()
-			             .setIndex(std::get<2>(postToUse))
+			             .setIndex(std::get<2>(postToUse)) to jest inne niz byl follow
 			             .setThingsToInteract(toUse)
 			             .build());
 		}

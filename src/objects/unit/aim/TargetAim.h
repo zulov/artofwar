@@ -14,8 +14,6 @@ public:
 	bool ifReach(Unit* unit) override;
 	bool expired() override;
 private:
-	float radiusSq;
-
 	std::vector<int> path;
 	short current;
 	Urho3D::Vector2 currentTarget;

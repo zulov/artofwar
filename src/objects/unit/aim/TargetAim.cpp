@@ -6,7 +6,7 @@
 
 
 TargetAim::TargetAim(std::vector<int>& _path) :
-	radiusSq(1 * 1), path(_path), current(0) {
+	path(_path), current(0) {
 	currentTarget = Game::getEnvironment()->getCenter(path[current]);
 }
 
@@ -32,7 +32,7 @@ Urho3D::Vector2 TargetAim::getDirection(Unit* unit) {
 }
 
 bool TargetAim::ifReach(Unit* unit) {
-	if (sqDist(currentTarget, *unit->getPosition()) < radiusSq) {
+	if (path[current]== unit->getMainCell()) {
 		++current;
 		if (current >= path.size()) {
 			return true;
