@@ -103,7 +103,7 @@ public:
 	bool bucketHasChanged(int _bucketIndex, char param) const;
 	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
 	void setBucket(int _bucketIndex, char param);
-	bool isSlotOccupied(int indexToInteract) override { return useSockets[indexToInteract]; }
+	bool isSlotOccupied(int indexToInteract) override; 
 	void setOccupiedSlot(int indexToInteract, bool value) { useSockets[indexToInteract] = value; }
 	Urho3D::Vector2 getPosToUse() const;
 

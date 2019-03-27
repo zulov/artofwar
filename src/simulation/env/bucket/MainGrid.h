@@ -73,6 +73,7 @@ public:
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinalInState(Unit* unit, UnitState state) const;
 	bool isInCell(int index, Urho3D::Vector3* const position);
+	int getRevertCloseIndex(int center, int gridIndex);
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);

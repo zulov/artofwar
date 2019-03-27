@@ -67,7 +67,7 @@ void IndividualOrder::followAndAct(float distThreshold) {
 	auto posOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(unit));
 	if (posOpt.has_value()) {
 		auto postToUse = posOpt.value();
-		if (std::get<1>(postToUse) > distThreshold) {
+		if (std::get<2>(postToUse) != unit->getMainBucketIndex()) {
 			auto pos = std::get<0>(postToUse);
 			unit->action(static_cast<char>(UnitOrder::FOLLOW),
 			             getFollowAim(unit->getMainCell(),
@@ -76,11 +76,10 @@ void IndividualOrder::followAndAct(float distThreshold) {
 		} else {
 			unit->action(static_cast<char>(action),
 			             ActionParameter::Builder()
-			             .setIndex(std::get<2>(postToUse)) to jest inne niz byl follow
+			             .setIndex(std::get<2>(postToUse))
 			             .setThingsToInteract(toUse)
 			             .build());
 		}
 
 	}
-
 }

@@ -17,6 +17,11 @@ public:
 	~AttackState() = default;
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
+		auto a = parameter.isFirstThingAlive();
+		auto b = unit->getMainBucketIndex() == parameter.index;
+		auto c = parameter.thingsToInteract[0]->isFirstThingInSameSocket();
+		auto d = !parameter.thingsToInteract[0]->isSlotOccupied(parameter.index);
+		
 		return parameter.isFirstThingAlive()
 			&& unit->getMainBucketIndex() == parameter.index //cos indexy jeszcze nie tak
 			&& parameter.thingsToInteract[0]->isFirstThingInSameSocket()

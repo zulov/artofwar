@@ -48,7 +48,7 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, const flo
 }
 
 std::vector<Physical*>* Environment::getNeighboursFromTeam(Physical* physical, const float radius, const int team,
-                                                          const OperatorType operatorType) {
+                                                           const OperatorType operatorType) {
 	switch (operatorType) {
 	case OperatorType::EQUAL:
 		return getNeighbours(physical, teamUnitGrid[team], radius);
@@ -150,7 +150,7 @@ float Environment::getGroundHeightPercent(float y, float x, float div) const {
 }
 
 Urho3D::Vector3 Environment::getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos,
-                                                 float min) const {
+                                                  float min) const {
 	auto a = Urho3D::Vector3(percentX * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, pos.y_,
 	                         percentY * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
 	const float h = terrian->GetHeight(a);
@@ -226,6 +226,10 @@ void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) {
 		default: ;
 		}
 	}
+}
+
+int Environment::getRevertCloseIndex(int center, int gridIndex) {
+	return mainGrid.getRevertCloseIndex(center, gridIndex);
 }
 
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {

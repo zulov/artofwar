@@ -65,6 +65,7 @@ public:
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinalInState(Unit* unit, UnitState state) const;
 	void removeFromGrids(const std::vector<Physical*>& toDispose);
+	int getRevertCloseIndex(int center, int gridIndex);
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid, buildingGrid;

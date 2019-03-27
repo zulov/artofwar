@@ -208,6 +208,17 @@ char MainGrid::getOrdinalInState(Unit* unit, UnitState state) const {
 	return -1;
 }
 
+int MainGrid::getRevertCloseIndex(int center, int gridIndex) {
+	int index = gridIndex - center;
+	for (int i = 0; i < 8; ++i) {	//TODO performance
+		if (closeIndex[i] == index) {
+			return i;
+		}
+	}
+	Game::getLog()->Write(0, "closeIndex miscalculate");
+	return 0;
+}
+
 void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {
 	switch (complexData[index].getType()) {
 	case CellState::NONE:

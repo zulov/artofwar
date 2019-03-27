@@ -431,6 +431,12 @@ void Unit::setBucket(int _bucketIndex, char param) {
 	teamBucketIndex[param] = _bucketIndex;
 }
 
+bool Unit::isSlotOccupied(int indexToInteract) {
+	int index= Game::getEnvironment()->getRevertCloseIndex(getMainCell(), indexToInteract);
+
+	return useSockets[index];
+}
+
 std::tuple<Physical*, float, int> Unit::closestPhysical(std::vector<Physical*>* things,
                                                         const std::function<bool(Physical*)>& condition) {
 	float minDistance = 99999;
@@ -484,7 +490,9 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 			int index = Game::getEnvironment()->getCloseIndex(getMainBucketIndex(), i);
 			if (Game::getEnvironment()->cellInState(index,
 			                                        {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
-				//i to nie jest index !!!!
+				if (index == follower->getMainCell()) {
+					return {{posToFollow, 0, index}};
+				}
 				setClosest(minDistance, closest, closestIndex, index, posToFollow, follower->getPosition());
 			}
 		}
