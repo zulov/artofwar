@@ -18,7 +18,7 @@ public:
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		return parameter.isFirstThingAlive()
-			&& unit->getMainBucketIndex() == parameter.index //cos indexy jeszcze nie tak
+			&& unit->getMainBucketIndex() == parameter.index 
 			&& parameter.thingsToInteract[0]->isFirstThingInSameSocket()
 			&& !parameter.thingsToInteract[0]->isSlotOccupied(parameter.index);
 	}
