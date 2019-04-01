@@ -147,7 +147,6 @@ private:
 	short posInFormation = -1, formation = -1;
 
 	int teamBucketIndex[BUCKET_SET_NUMBER];
-	int prevIndex = -1;
 
 	int indexToInteract = -1;
 	unsigned short currentFrameState = 0;

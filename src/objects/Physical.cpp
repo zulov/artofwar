@@ -110,6 +110,7 @@ bool Physical::bucketHasChanged(int _bucketIndex) const {
 
 void Physical::setBucket(int _bucketIndex) {
 	indexInGrid = _bucketIndex;
+	indexHasChanged = true;
 }
 
 void Physical::setTeam(unsigned char _team) {
@@ -130,6 +131,10 @@ void Physical::load(dbload_physical* dbloadPhysical) {
 
 Urho3D::String& Physical::toMultiLineString() {
 	return menuString;
+}
+
+void Physical::indexHasChangedReset() {
+	indexHasChanged = false;
 }
 
 std::string Physical::getColumns() {

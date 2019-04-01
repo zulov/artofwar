@@ -51,6 +51,8 @@ void Grid::update(Physical* entity) const {
 		removeAt(entity->getMainBucketIndex(), entity);
 		addAt(index, entity);
 		entity->setBucket(index);
+	} else {
+		entity->indexHasChangedReset();
 	}
 }
 

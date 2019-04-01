@@ -261,7 +261,7 @@ void Unit::action(char id) {
 }
 
 bool Unit::isFirstThingInSameSocket() const {
-	return prevIndex == getMainBucketIndex();
+	return !indexHasChanged;
 }
 
 void Unit::action(char id, const ActionParameter& parameter) {
@@ -419,7 +419,6 @@ int Unit::getDbID() {
 }
 
 void Unit::setBucket(int _bucketIndex) {
-	prevIndex = getMainBucketIndex();
 	Physical::setBucket(_bucketIndex);
 }
 

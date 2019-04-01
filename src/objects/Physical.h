@@ -35,6 +35,8 @@ public:
 	virtual void setOccupiedSlot(int indexToInteract, bool value) {
 	}
 
+	void indexHasChangedReset();
+
 	static std::string getColumns();
 	std::string getValues(int precision) override;
 	virtual bool isUsable() const { return isAlive(); }
@@ -106,6 +108,7 @@ protected:
 
 	unsigned char closeUsers = 0;
 	unsigned char rangeUsers = 0;
+	bool indexHasChanged = false;
 private:
 	void createBillboardBar();
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
