@@ -187,6 +187,7 @@
     <ClCompile Include="src\objects\unit\aim\order\GroupOrder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\FormationOrder.cpp" />
     <ClCompile Include="src\colors\ColorPaletteRepo.cpp" />
+    <ClCompile Include="src\simulation\env\bucket\PathFinder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -465,6 +466,7 @@
     <ClInclude Include="src\objects\ActionType.h" />
     <ClInclude Include="src\NamesUtils.h" />
     <ClInclude Include="src\colors\ColorPaletteRepo.h" />
+    <ClInclude Include="src\simulation\env\bucket\PathFinder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

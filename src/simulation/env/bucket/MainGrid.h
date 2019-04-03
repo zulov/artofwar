@@ -5,6 +5,7 @@
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/state/UnitState.h"
 #include <array>
+#include "PathFinder.h"
 
 
 class Unit;
@@ -29,22 +30,14 @@ public:
 	Urho3D::Vector2* getDirectionFrom(Urho3D::Vector3* position);
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos);
 	Urho3D::IntVector2 getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
-	inline float heuristic(int from, int to);
 
-	std::vector<int>* reconstruct_path(Urho3D::IntVector2& startV, Urho3D::IntVector2& goalV, const int came_from[]);
-	std::vector<int>* reconstruct_path(int start, int goal, const int came_from[]);
-	std::vector<int>* reconstruct_simplify_path(int start, int goal, const int came_from[]);
 	void updateNeighbors(int current) const;
 	float cost(int current, int next) const;
-	void debug(int start, int end);
 
 	int getCloseIndex(int center, int i) const;
 
-	std::vector<int>* findPath(Urho3D::IntVector2& startV, Urho3D::IntVector2& goalV);
-	std::vector<int>* findPath(int startIdx, int endIdx, float min, float max);
 	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim);
 
-	void refreshWayOut(std::vector<int>& toRefresh);
 	void drawMap(Urho3D::Image* image);
 	content_info* getContentInfo(const Urho3D::Vector2& from, const Urho3D::Vector2& to, bool checks[],
 	                             int activePlayer);
@@ -62,7 +55,7 @@ public:
 
 	Urho3D::Vector2& getCenter(short x, short z) { return getCenter(getIndex(x, z)); }
 	Urho3D::Vector2& getCenter(int index) const { return complexData[index].getCenter(); }
-	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
+
 	bool inSide(int x, int z) const { return !(x < 0 || x >= resolution || z < 0 || z >= resolution); }
 	bool inSide(int index) const { return !(index < 0 || index > sqResolution); }
 	CellState getType(int index) const { return complexData[index].getType(); }
@@ -72,28 +65,15 @@ public:
 	bool belowCellLimit(int index) const;
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinalInState(Unit* unit, UnitState state) const;
-	bool isInCell(int index, Urho3D::Vector3* const position);
 	int getRevertCloseIndex(int center, int gridIndex);
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
 
-	std::vector<int>* tempPath;
+	PathFinder *pathConstructor;
 
-	int lastStartIdx = -1;
-	int lastEndIdx = -1;
-
-	int staticCounter = 0;
 	content_info* ci;
 
-	int* came_from;
-	float* cost_so_far;
-	int min_cost_to_ref = 0;
-	int max_cost_to_ref = resolution * resolution - 1;
-	void updateCost(int startIdx, float x);
-	void resetPathArrays();
-	BucketQueue frontier;
-	bool pathInited = false;
 	std::vector<Urho3D::Vector2> posInBucket2;
 	std::vector<Urho3D::Vector2> posInBucket3;
 	std::vector<Urho3D::Vector2> posInBucket4;

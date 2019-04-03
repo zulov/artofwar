@@ -13,7 +13,8 @@ class CollectState : public State
 public:
 
 	CollectState(): State({
-		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO_TO, UnitState::FOLLOW, UnitState::CHARGE
+		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, 
+		UnitState::GO_TO, UnitState::FOLLOW, UnitState::CHARGE
 	}) {
 	}
 
