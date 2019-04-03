@@ -191,7 +191,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\simulation\env\bucket\PathFinder.cpp" />
+    <ClCompile Include="src\simulation\env\bucket\path\PathFinder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\FormationOrder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\GroupOrder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\IndividualOrder.cpp" />
@@ -226,7 +226,7 @@
     <ClCompile Include="src\scene\load\SceneLoader.cpp" />
     <ClCompile Include="src\scene\save\SceneSaver.cpp" />
     <ClCompile Include="src\simulation\env\bucket\Bucket.cpp" />
-    <ClCompile Include="src\simulation\env\bucket\BucketQueue.cpp" />
+    <ClCompile Include="src\simulation\env\bucket\path\BucketQueue.cpp" />
     <ClCompile Include="src\simulation\env\bucket\Grid.cpp" />
     <ClCompile Include="src\simulation\env\bucket\BucketIterator.cpp" />
     <ClCompile Include="src\objects\building\Building.cpp" />
@@ -282,7 +282,7 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\simulation\env\bucket\PathFinder.h" />
+    <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
     <ClInclude Include="src\NamesUtils.h" />
     <ClInclude Include="src\objects\unit\aim\order\FormationOrder.h" />
     <ClInclude Include="src\objects\unit\aim\order\GroupOrder.h" />
@@ -306,7 +306,7 @@
     <ClInclude Include="src\objects\unit\ColorMode.h" />
     <ClInclude Include="src\objects\unit\MissileData.h" />
     <ClInclude Include="src\replace_utils.h" />
-    <ClInclude Include="src\simulation\env\bucket\DrawGridUtils.h" />
+    <ClInclude Include="src\simulation\env\bucket\path\DrawGridUtils.h" />
     <ClInclude Include="src\simulation\force\ForceStats.h" />
     <ClInclude Include="src\simulation\formation\Formation.h" />
     <ClInclude Include="src\simulation\formation\FormationManager.h" />
@@ -362,8 +362,8 @@
     <ClInclude Include="src\scene\load\SceneLoader.h" />
     <ClInclude Include="src\scene\save\SceneSaver.h" />
     <ClInclude Include="src\simulation\env\bucket\Bucket.h" />
-    <ClInclude Include="src\simulation\env\bucket\BucketQueue.h" />
-    <ClInclude Include="src\simulation\env\bucket\fiboheap.h" />
+    <ClInclude Include="src\simulation\env\bucket\path\BucketQueue.h" />
+    <ClInclude Include="src\simulation\env\bucket\path\fiboheap.h" />
     <ClInclude Include="src\simulation\env\bucket\Grid.h" />
     <ClInclude Include="src\simulation\env\bucket\BucketIterator.h" />
     <ClInclude Include="src\objects\building\Building.h" />

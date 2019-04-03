@@ -4,7 +4,7 @@
 #include "DrawGridUtils.h"
 #include "Game.h"
 #include <unordered_set>
-#include "ComplexBucketData.h"
+#include "../ComplexBucketData.h"
 
 
 PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexData) : resolution(resolution),

@@ -6,7 +6,7 @@
 #include "objects/unit/Unit.h"
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
-#include <unordered_set>
+#include <array>
 
 #define BUCKET_GRID_RESOLUTION 512
 #define BUCKET_GRID_SIZE 1024

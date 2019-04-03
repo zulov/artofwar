@@ -1,11 +1,9 @@
 #pragma once
-#include "BucketQueue.h"
 #include "ComplexBucketData.h"
 #include "Grid.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/state/UnitState.h"
-#include <array>
-#include "PathFinder.h"
+#include "path/PathFinder.h"
 
 
 class Unit;
