@@ -53,7 +53,7 @@ std::vector<int>* PathFinder::reconstruct_simplify_path(int start, int goal, con
 
 		int next = came_from[current];
 
-		if (next == current) {
+		if (next == current || next < 0) {
 			break; //TODO BUG tu cos dziwnego sie dzieje
 		}
 		current = next;
