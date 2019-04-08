@@ -71,14 +71,14 @@ std::vector<Physical *>* Environment::getNeighbours(Physical* physical, Grid& bu
 
 	auto center = physical->getPosition();
 	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius, 0);
-	const float sqSepDistance = radius * radius;
+	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
 		if (physical == neight) { continue; }
 		const float xDiff = center->x_ - neight->getPosition()->x_;
 		const float zDiff = center->z_ - neight->getPosition()->z_;
 
-		if (xDiff * xDiff + zDiff * zDiff < sqSepDistance) {
+		if (xDiff * xDiff + zDiff * zDiff < sqRadius) {
 			neights->push_back(neight);
 		}
 	}

@@ -96,6 +96,10 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 	Game::getLog()->Write(0, "fail to change state from " +
 	                      Urho3D::String(Consts::UnitStateNames[static_cast<char>(unit->getState())]) + " to " +
 	                      Urho3D::String(Consts::UnitStateNames[static_cast<char>(stateTo)]));
+
+	unit->setState(UnitState::MOVE);
+	instance->states[static_cast<int>(UnitState::MOVE)]->onStart(unit, actionParameter);
+
 	return false;
 }
 

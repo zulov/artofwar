@@ -13,7 +13,7 @@ class CollectState : public State
 public:
 
 	CollectState(): State({
-		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, 
+		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
 		UnitState::GO_TO, UnitState::FOLLOW, UnitState::CHARGE
 	}) {
 	}
@@ -24,7 +24,8 @@ public:
 		return parameter.isFirstThingAlive()
 			&& unit->getMainCell() == parameter.index //TODO je¿eli jest inny to sprobowaæ podmienic
 			&& Game::getEnvironment()->cellInState(unit->getMainCell(), {CellState::RESOURCE, CellState::EMPTY})
-			&& Game::getEnvironment()->belowCellLimit(unit->getMainCell());
+			&& Game::getEnvironment()->belowCellLimit(unit->getMainCell())
+			&& parameter.thingsToInteract[0]->belowCloseLimit() > 0;
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
