@@ -48,6 +48,7 @@ public:
 	static Game* setFormationManager(FormationManager* _formationManager);
 	static Game* setColorPaletteRepo(ColorPaletteRepo* _colorPaletteRepo);
 	static Game* setLog(Urho3D::Log* _log);
+	static void addTime(float time);
 
 	static Urho3D::SharedPtr<Urho3D::Engine> getEngine() { return instance->engine; }
 	static Urho3D::Localization* getLocalization() { return instance->localization; }
@@ -68,6 +69,8 @@ public:
 	static PlayersManager* getPlayersMan() { return instance->playersManager; }
 	static Environment* getEnvironment() { return instance->environment; }
 	static QueueManager* getQueueManager() { return instance->queue; }
+
+	static float getTime() { return instance->accumTime; }
 
 private:
 	Game();
@@ -92,4 +95,6 @@ private:
 	DatabaseCache* databaseCache;
 	Environment* environment;
 	QueueManager* queue;
+
+	float accumTime = 0;
 };

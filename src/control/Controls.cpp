@@ -97,6 +97,15 @@ void Controls::leftClick(hit_data& hitData) const {
 	select(hitData.clicked);
 }
 
+void Controls::leftDoubleClick(hit_data& hitData) const {
+	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
+		unSelectAll();
+	}
+	std::vector<Physical*>* toSelect = selectSimular(hitData.clicked);
+
+	select(toSelect);
+}
+
 void Controls::leftClickBuild(hit_data& hitData) {
 	unSelectAll();
 	createBuilding({hitData.position.x_, hitData.position.z_});
@@ -169,8 +178,11 @@ void Controls::releaseLeft() {
 	hit_data hitData;
 
 	if (raycast(hitData)) {
+		auto lastClicked = left.lastAction;
 		left.setSecond(hitData.position);
-		if (sqDist(left.held.first, left.held.second) > clickDistance) {
+		if (left.lastAction - lastClicked < 0.5) {
+			leftDoubleClick(hitData);
+		} else if (sqDist(left.held.first, left.held.second) > clickDistance) {
 			leftHold(left.held);
 		} else if (hitData.clicked) {
 			leftClick(hitData);
@@ -343,7 +355,8 @@ void Controls::refreshSelected() {
 	                selected->end());
 
 	bool sizeAfter = selected->size();
-	if (sizeBefore != sizeAfter) {//TODO perf nie koniecznie resetowac ca³oœæ
+	if (sizeBefore != sizeAfter) {
+		//TODO perf nie koniecznie resetowac ca³oœæ
 		selectedInfo->refresh(selected);
 	}
 }

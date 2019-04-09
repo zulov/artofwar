@@ -1,10 +1,10 @@
 #include "PathFinder.h"
 #include "defines.h"
-#include <Urho3D/Math/Vector2.h>
 #include "DrawGridUtils.h"
 #include "Game.h"
-#include <unordered_set>
 #include "../ComplexBucketData.h"
+#include <Urho3D/Math/Vector2.h>
+#include <unordered_set>
 
 
 PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexData) : resolution(resolution),

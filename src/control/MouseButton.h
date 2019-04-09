@@ -1,6 +1,7 @@
 #pragma once
 #include <Urho3D/Math/Vector3.h>
 #include <utility>
+#include "Game.h"
 
 struct MouseButton
 {
@@ -38,6 +39,7 @@ struct MouseButton
 		}
 		held.second = new Urho3D::Vector3(hitPos);
 		isHeld = false;
+		lastAction = Game::getTime();
 	}
 
 	void markHeld() {
@@ -50,7 +52,7 @@ struct MouseButton
 		}
 	}
 
-
+	float lastAction = 999999;
 	bool isHeld = false;
 	std::pair<Urho3D::Vector3*, Urho3D::Vector3*> held;
 };

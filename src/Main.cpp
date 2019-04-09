@@ -118,6 +118,7 @@ void Main::subscribeToEvents() {
 }
 
 void Main::running(const double timeStep) {
+	Game::addTime(timeStep);
 	benchmark.add(1.0 / timeStep);
 
 	SimulationInfo* simulationInfo = simulation->update(timeStep);

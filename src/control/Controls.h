@@ -65,6 +65,7 @@ private:
 	void createBuilding(Urho3D::Vector2 pos);
 
 	void leftClick(hit_data& hitData) const;
+	void leftDoubleClick(hit_data& hitData) const;
 	void leftClickBuild(hit_data& hitData);
 	void rightClick(hit_data& hitData) const;
 
