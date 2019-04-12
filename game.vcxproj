@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="1.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGUID>{11DD11AC-6463-38B4-99F4-ED82616AAB75}</ProjectGUID>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <Keyword>Win32Proj</Keyword>
     <Platform>x64</Platform>
     <ProjectName>artofwar</ProjectName>
@@ -22,13 +22,13 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -55,7 +55,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>src;include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\Bullet;include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -78,14 +78,14 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_SECURE_SCL=0;URHO3D_MINIDUMPS;URHO3D_WIN32_CONSOLE;URHO3D_FILEWATCHER;URHO3D_PROFILING;URHO3D_LOGGING;URHO3D_THREADING;URHO3D_ANGELSCRIPT;URHO3D_LUA;URHO3D_LUA_RAW_SCRIPT_LOADER;URHO3D_NAVIGATION;URHO3D_NETWORK;URHO3D_PHYSICS;URHO3D_URHO2D;URHO3D_DATABASE;URHO3D_CXX11;_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Programowanie\Urho3d-build\include;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\Bullet;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <MASM>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_SECURE_SCL=0;URHO3D_MINIDUMPS;URHO3D_WIN32_CONSOLE;URHO3D_FILEWATCHER;URHO3D_PROFILING;URHO3D_LOGGING;URHO3D_THREADING;URHO3D_ANGELSCRIPT;URHO3D_LUA;URHO3D_LUA_RAW_SCRIPT_LOADER;URHO3D_NAVIGATION;URHO3D_NETWORK;URHO3D_PHYSICS;URHO3D_URHO2D;URHO3D_DATABASE;URHO3D_CXX11;_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <IncludePaths>D:\Programowanie\Urho3d-build\include;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\Bullet;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\LuaJIT;%(IncludePaths)</IncludePaths>
+      <IncludePaths>include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\LuaJIT;%(IncludePaths)</IncludePaths>
     </MASM>
     <Midl>
-      <AdditionalIncludeDirectories>D:\Programowanie\Urho3d-build\include;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\Bullet;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -119,7 +119,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>src;include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\Bullet;include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -138,14 +138,14 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;URHO3D_MINIDUMPS;URHO3D_WIN32_CONSOLE;URHO3D_FILEWATCHER;URHO3D_PROFILING;URHO3D_LOGGING;URHO3D_THREADING;URHO3D_ANGELSCRIPT;URHO3D_LUA;URHO3D_LUA_RAW_SCRIPT_LOADER;URHO3D_NAVIGATION;URHO3D_NETWORK;URHO3D_PHYSICS;URHO3D_URHO2D;URHO3D_DATABASE;URHO3D_CXX11;_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\Programowanie\Urho3d-build\include;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\Bullet;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <MASM>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;URHO3D_MINIDUMPS;URHO3D_WIN32_CONSOLE;URHO3D_FILEWATCHER;URHO3D_PROFILING;URHO3D_LOGGING;URHO3D_THREADING;URHO3D_ANGELSCRIPT;URHO3D_LUA;URHO3D_LUA_RAW_SCRIPT_LOADER;URHO3D_NAVIGATION;URHO3D_NETWORK;URHO3D_PHYSICS;URHO3D_URHO2D;URHO3D_DATABASE;URHO3D_CXX11;_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <IncludePaths>D:\Programowanie\Urho3d-build\include;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\Bullet;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\LuaJIT;%(IncludePaths)</IncludePaths>
+      <IncludePaths>include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\LuaJIT;%(IncludePaths)</IncludePaths>
     </MASM>
     <Midl>
-      <AdditionalIncludeDirectories>D:\Programowanie\Urho3d-build\include;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\Bullet;D:\Programowanie\Urho3d-build\include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\LuaJIT;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -178,17 +178,6 @@
   <ItemGroup>
     <None Include="CoreData" />
     <None Include="Data" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="D:/Programowanie/Urho3d-build/ZERO_CHECK.vcxproj">
-      <Project>619E5E7D-E6FC-3461-984B-576264D9CBB8</Project>
-    </ProjectReference>
-    <ProjectReference Include="D:/Programowanie/Urho3d-build/Source/Tools/Urho3DPlayer/RESOURCE_CHECK.vcxproj">
-      <Project>BD9F8EED-FA4B-3D77-AF9A-36E152153F5F</Project>
-    </ProjectReference>
-    <ProjectReference Include="D:/Programowanie/Urho3d-build/Source/Urho3D/Urho3D.vcxproj">
-      <Project>C4BBAE8E-01ED-3B54-81EB-6D732E10737A</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\simulation\env\bucket\path\PathFinder.cpp" />

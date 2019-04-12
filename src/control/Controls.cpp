@@ -101,9 +101,9 @@ void Controls::leftDoubleClick(hit_data& hitData) const {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
-	std::vector<Physical*>* toSelect = selectSimular(hitData.clicked);
-
-	select(toSelect);
+	// std::vector<Physical*>* toSelect = selectSimilar(hitData.clicked);
+	//
+	// select(toSelect);
 }
 
 void Controls::leftClickBuild(hit_data& hitData) {
