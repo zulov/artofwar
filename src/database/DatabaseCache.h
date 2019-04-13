@@ -3,14 +3,16 @@
 #include "db_strcut.h"
 #include <vector>
 #include <optional>
+#include <string>
 
 
 class DatabaseCache
 {
 public:
 	void execute(const char* sql, int (* load)(void*, int, char**, char**)) const;
-	DatabaseCache();
+	DatabaseCache(const char* path);
 	~DatabaseCache();
+	bool openDatabase();
 	db_unit* getUnit(int i) const { return dbContainer->units[i]; }
 	db_hud_size* getHudSize(int i) const { return dbContainer->hudSizes[i]; }
 	db_graph_settings* getGraphSettings(int i) const { return dbContainer->graphSettings[i]; }
@@ -59,4 +61,5 @@ public:
 private:
 	db_container* dbContainer;
 	sqlite3* database;
+	std::string base;
 };

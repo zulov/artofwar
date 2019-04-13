@@ -42,19 +42,20 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE),
 }
 
 void Main::Setup() {
-	Game::setDatabaseCache(new DatabaseCache());
+	Game::setDatabaseCache(new DatabaseCache(GetSubsystem<FileSystem>()->GetCurrentDir().CString()));
 	db_settings* settings = Game::getDatabaseCache()->getSettings();
 	db_graph_settings* graphSettings = Game::getDatabaseCache()->getGraphSettings(settings->graph);
 	db_resolution* resolution = Game::getDatabaseCache()->getResolution(settings->resolution);
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
 	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName()
-		+
-		".log";
+		+".log";
 	engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
 	engineParameters_[EP_HEADLESS] = false;
 	engineParameters_[EP_SOUND] = false;
 	engineParameters_[EP_WINDOW_WIDTH] = resolution->x;
 	engineParameters_[EP_WINDOW_HEIGHT] = resolution->y;
+
+	engineParameters_["ResourcePrefixPaths"] = " ;../";
 
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);

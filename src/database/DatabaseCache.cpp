@@ -5,7 +5,6 @@
 #include <sqlite3/sqlite3.h>
 #include <sstream>
 
-
 static unsigned fromHex(char** argv, int index) {
 	unsigned x;
 	std::stringstream ss;
@@ -189,9 +188,9 @@ int static loadBuildingLevels(void* data, int argc, char** argv, char** azColNam
 	const auto xyz = static_cast<db_container *>(data);
 
 	xyz->levelsToBuilding[atoi(argv[1])]->push_back(
-	                                         new db_building_level(atoi(argv[0]), atoi(argv[1]), argv[2], argv[3],
-	                                                               atoi(argv[4]))
-	                                        );
+	                                                new db_building_level(atoi(argv[0]), atoi(argv[1]),
+	                                                                      argv[2], argv[3], atoi(argv[4]))
+	                                               );
 
 	return 0;
 }
@@ -272,13 +271,22 @@ void DatabaseCache::execute(const char* sql, int (*load)(void*, int, char**, cha
 	ifError(rc, error);
 }
 
-DatabaseCache::DatabaseCache() {
-	const int rc = sqlite3_open("Data/Database/base.db", &database);
+bool DatabaseCache::openDatabase() {
+	const int rc = sqlite3_open(base.c_str(), &database);
+	std::cout << base;
 	if (rc) {
 		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
 		sqlite3_close(database);
-		return;
+		return true;
 	}
+	return false;
+}
+
+DatabaseCache::DatabaseCache(const char* path) {
+	base = std::string(path);
+	base.append("/Data/Database/base.db");
+
+	if (openDatabase()) { return; }
 
 	dbContainer = new db_container();
 
@@ -318,12 +326,7 @@ DatabaseCache::~DatabaseCache() {
 
 
 void DatabaseCache::executeSingle(const char* sql) {
-	const int rc = sqlite3_open("Data/Database/base.db", &database);
-	if (rc) {
-		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
-		sqlite3_close(database);
-		return;
-	}
+	if (openDatabase()) { return; }
 	execute(sql, callback);
 	sqlite3_close(database);
 }
