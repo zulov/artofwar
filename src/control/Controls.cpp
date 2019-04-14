@@ -13,6 +13,11 @@
 #include "objects/ActionType.h"
 #include "objects/NodeUtils.h"
 #include "objects/queue/QueueManager.h"
+#include "objects/unit/ActionParameter.h"
+#include "objects/unit/Unit.h"
+#include "objects/unit/aim/order/FutureOrder.h"
+#include "objects/unit/aim/order/GroupOrder.h"
+#include "objects/unit/aim/order/IndividualOrder.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
@@ -21,16 +26,9 @@
 #include "simulation/formation/FormationManager.h"
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/IO/Log.h>
 #include <algorithm>
 #include <queue>
-#include "objects/unit/aim/order/FutureOrder.h"
-#include "objects/unit/Unit.h"
-#include "objects/unit/aim/order/GroupOrder.h"
-#include "objects/unit/aim/order/IndividualOrder.h"
-#include "objects/unit/ActionParameter.h"
-#include "consts.h"
-#include <Urho3D\Core\Object.h>
-#include <Urho3D/IO/Log.h>
 
 
 Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), input(_input) {
@@ -136,15 +134,15 @@ void Controls::rightClick(hit_data& hitData) const {
 		break;
 	default: ;
 	}
+	bool shiftPressed = input->GetKeyDown(Urho3D::KEY_SHIFT); 
 
 	if (selected->size() == 1) {
 		Game::getActionList()->add(new ActionCommand(new IndividualOrder(static_cast<Unit*>(selected->at(0)),
-		                                                                 order, vector, toUse,
-		                                                                 input->GetKeyDown(Urho3D::KEY_SHIFT))));
+		                                                                 order, vector, toUse, shiftPressed )));
 	} else {
 		Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, order, vector,
 		                                                            toUse, ActionType::ORDER,
-		                                                            input->GetKeyDown(Urho3D::KEY_SHIFT))));
+		                                                           shiftPressed)));
 	}
 }
 
