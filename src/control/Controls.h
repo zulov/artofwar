@@ -23,7 +23,7 @@ public:
 	~Controls();
 
 	void select(std::vector<Physical*>* entities) const;
-	void select(Physical* physical) const;
+	void selectOne(Physical* entity) const;
 	void unSelectAll() const;
 
 	void toBuild(HudData* hud);
@@ -49,7 +49,6 @@ public:
 
 	SelectedInfo* getInfo() const { return selectedInfo; }
 private:
-	void selectOne(Physical* entity) const;
 
 	void orderPhysical(short id, const ActionParameter& parameter) const;
 

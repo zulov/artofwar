@@ -4,9 +4,10 @@
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
+#include <array>
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
-#include <array>
+
 
 #define BUCKET_GRID_RESOLUTION 512
 #define BUCKET_GRID_SIZE 1024
@@ -86,6 +87,23 @@ std::vector<Physical *>* Environment::getNeighbours(Physical* physical, Grid& bu
 	return neights;
 }
 
+std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clicked) const {
+	Grid* grid;
+	switch (clicked->getType()) {
+	case ObjectType::UNIT:
+		grid = grids[0];
+		break;
+	case ObjectType::BUILDING:
+		grid = grids[1];
+		break;
+	case ObjectType::RESOURCE:
+		grid = grids[2];
+		break;
+	default: return empty;
+	}
+	return grid->getArrayNeightSimilarAs(clicked, 20.0);
+}
+
 std::vector<Physical*>* Environment::getResources(Physical* physical, float radius) {
 	return getNeighbours(physical, resourceGrid, radius);
 }
@@ -127,7 +145,6 @@ int Environment::getCloseIndex(int center, int i) const {
 }
 
 std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
-	std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
 	for (auto grid : grids) {
 		const auto result = grid->getArrayNeight(pair);
 		if (!result->empty()) {

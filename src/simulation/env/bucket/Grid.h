@@ -22,6 +22,7 @@ public:
 
 	std::vector<short>* getEnvIndexsFromCache(float dist);
 	std::vector<Physical *>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);
+	std::vector<Physical *>* getArrayNeightSimilarAs(Physical* clicked, double radius);
 	BucketIterator& getArrayNeight(Urho3D::Vector3* position, float radius, short thread);
 
 	int indexFromPosition(Urho3D::Vector3* pos) const;

@@ -127,6 +127,33 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
 	return tempSelected;
 }
 
+std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, double radius) {
+	//TOODO clean prawie to samo co wy¿ej
+	tempSelected->clear();
+
+	const auto posBeginX = getIndex(clicked->getPosition()->x_ - radius);
+	const auto posBeginZ = getIndex(clicked->getPosition()->z_ - radius);
+	const auto posEndX = getIndex(clicked->getPosition()->x_ + radius);
+	const auto posEndZ = getIndex(clicked->getPosition()->z_ + radius);
+
+
+	auto dX = diff(posBeginX, posEndX);
+	auto dZ = diff(posBeginZ, posEndZ);
+
+	for (short i = posBeginX; i != posEndX + dX; i += dX) {
+		for (short j = posBeginZ; j != posEndZ + dZ; j += dZ) {
+			auto& content = getContentAt(getIndex(i, j));
+			for (auto thing : content) {
+				if (thing->getDbID() == clicked->getDbID()) {
+					tempSelected->push_back(thing);
+				}
+			}
+		}
+	}
+
+	return tempSelected;
+}
+
 int Grid::indexFromPosition(Urho3D::Vector3* pos) const {
 	return getIndex(getIndex(pos->x_), getIndex(pos->z_));
 }

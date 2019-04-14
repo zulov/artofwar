@@ -84,24 +84,19 @@ void Controls::select(std::vector<Physical*>* entities) const {
 	}
 }
 
-void Controls::select(Physical* physical) const {
-	selectOne(physical);
-}
-
 void Controls::leftClick(hit_data& hitData) const {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
-	select(hitData.clicked);
+	selectOne(hitData.clicked);
 }
 
 void Controls::leftDoubleClick(hit_data& hitData) const {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
-	// std::vector<Physical*>* toSelect = selectSimilar(hitData.clicked);
-	//
-	// select(toSelect);
+	select(Game::getEnvironment()->getNeighboursSimilarAs(hitData.clicked));
+
 }
 
 void Controls::leftClickBuild(hit_data& hitData) {
@@ -134,15 +129,15 @@ void Controls::rightClick(hit_data& hitData) const {
 		break;
 	default: ;
 	}
-	bool shiftPressed = input->GetKeyDown(Urho3D::KEY_SHIFT); 
+	const bool shiftPressed = input->GetKeyDown(Urho3D::KEY_SHIFT);
 
 	if (selected->size() == 1) {
 		Game::getActionList()->add(new ActionCommand(new IndividualOrder(static_cast<Unit*>(selected->at(0)),
-		                                                                 order, vector, toUse, shiftPressed )));
+		                                                                 order, vector, toUse, shiftPressed)));
 	} else {
 		Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, order, vector,
 		                                                            toUse, ActionType::ORDER,
-		                                                           shiftPressed)));
+		                                                            shiftPressed)));
 	}
 }
 
@@ -178,9 +173,10 @@ void Controls::releaseLeft() {
 	if (raycast(hitData)) {
 		auto lastClicked = left.lastAction;
 		left.setSecond(hitData.position);
-		if (left.lastAction - lastClicked < 0.5) {
+		const float dist = sqDist(left.held.first, left.held.second);
+		if (left.lastAction - lastClicked < 0.5 && dist < clickDistance) {
 			leftDoubleClick(hitData);
-		} else if (sqDist(left.held.first, left.held.second) > clickDistance) {
+		} else if (dist > clickDistance) {
 			leftHold(left.held);
 		} else if (hitData.clicked) {
 			leftClick(hitData);
