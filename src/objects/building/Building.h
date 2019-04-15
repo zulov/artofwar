@@ -36,4 +36,5 @@ private:
 
 	std::vector<db_unit*>* units;
 	QueueManager* queue;
+	Urho3D::Node* deployNode;
 };

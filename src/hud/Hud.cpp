@@ -67,6 +67,7 @@ void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 void Hud::createCursor() {
 	Urho3D::SharedPtr<Urho3D::Cursor> cursor(new Urho3D::Cursor(Game::getContext()));
 	cursor->SetStyleAuto(style);
+
 	Game::getUI()->SetCursor(cursor);
 	cursor->SetPosition(Game::getGraphics()->GetWidth() / 2, Game::getGraphics()->GetHeight() / 2);
 }

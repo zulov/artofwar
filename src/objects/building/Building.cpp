@@ -10,13 +10,24 @@
 #include "player/Resources.h"
 #include <string>
 #include "consts.h"
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/Resource/XMLFile.h>
+#include "objects/NodeUtils.h"
 
 
 Building::Building(Urho3D::Vector3* _position, int id, int player, int level, int mainCell):
 	Static(_position, ObjectType::BUILDING, mainCell),
 	target(_position->x_ + 5, _position->z_ + 5) {
+	
 	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 	upgrade(level);
+
+	deployNode = node->CreateChild();
+	deployNode->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/buildings/additional/target.xml")->
+	                                      GetRoot());
+	deployNode->SetPosition(Urho3D::Vector3(5, 0, 5));
+	deployNode->SetEnabled(true);
+	deployNode->SetScale(10);
 
 	units = Game::getDatabaseCache()->getUnitsForBuilding(id);
 
@@ -25,6 +36,7 @@ Building::Building(Urho3D::Vector3* _position, int id, int player, int level, in
 
 
 Building::~Building() {
+	node->RemoveAllChildren();
 	delete queue;
 }
 
@@ -55,7 +67,9 @@ Urho3D::String& Building::toMultiLineString() {
 	menuString = dbBuilding->name + " " + dbLevel->name;
 	menuString.Append("\nAtak: ").Append(Urho3D::String(attackCoef))
 	          .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
-	          .Append("\nZdrowie: ").Append(Urho3D::String(hpCoef)).Append("/").Append(Urho3D::String(maxHpCoef))
+	          .Append("\nZdrowie: ").Append(Urho3D::String((int)hpCoef)).Append("/").Append(Urho3D::String(maxHpCoef))
+	          .Append("\nU¿ytkowników: ").Append(Urho3D::String((int)closeUsers))
+	          .Append("/").Append(Urho3D::String((int)maxCloseUsers))
 	          .Append("\nStan: ").Append(Consts::StaticStateNames[static_cast<char>(state)]);
 	return menuString;
 }

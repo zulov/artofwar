@@ -1,18 +1,15 @@
 #include "objects/Physical.h"
 #include "Game.h"
-#include "MathUtils.h"
 #include "ObjectEnums.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include <algorithm>
 #include <string>
 #include <Urho3D/Resource/XMLFile.h>
 #include "player/PlayersManager.h"
 #include "player/Player.h"
 #include "unit/Unit.h"
-#include "PhysicalUtils.h"
 
 
 Physical::Physical(Urho3D::Vector3* _position, ObjectType _type): Entity(_type), position(_position),
@@ -178,7 +175,7 @@ void Physical::unSelect() {
 }
 
 void Physical::loadXml(Urho3D::String xmlName) {
-	node->RemoveAllChildren();
+	//node->RemoveAllChildren();
 	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(xmlName)->GetRoot());
 
 	node->SetVar("link", this);

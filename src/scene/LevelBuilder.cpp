@@ -24,7 +24,7 @@ LevelBuilder::LevelBuilder() {
 
 LevelBuilder::~LevelBuilder() {
 	delete objectManager;
-	scene->RemoveAllChildren();
+	scene->RemoveAllChildren();//TODO tu czasme b³ad 
 	scene->Clear();
 	scene->Remove();
 	Game::setScene(nullptr);

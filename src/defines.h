@@ -1,6 +1,6 @@
 #pragma once
 
-#define UNITS_NUMBER 8
+#define UNITS_NUMBER 30
 
 #define MAX_PLAYERS 2
 

@@ -37,7 +37,7 @@ void ResourceEntity::populate() {
 }
 
 float ResourceEntity::getMaxHpBarSize() {
-	return 3.0;
+	return 2.5;
 }
 
 float ResourceEntity::getHealthPercent() const {
