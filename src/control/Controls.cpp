@@ -96,7 +96,6 @@ void Controls::leftDoubleClick(hit_data& hitData) const {
 		unSelectAll();
 	}
 	select(Game::getEnvironment()->getNeighboursSimilarAs(hitData.clicked));
-
 }
 
 void Controls::leftClickBuild(hit_data& hitData) {
@@ -131,14 +130,16 @@ void Controls::rightClick(hit_data& hitData) const {
 	}
 	const bool shiftPressed = input->GetKeyDown(Urho3D::KEY_SHIFT);
 
+	FutureOrder* fOrder;
 	if (selected->size() == 1) {
-		Game::getActionList()->add(new ActionCommand(new IndividualOrder(static_cast<Unit*>(selected->at(0)),
-		                                                                 order, vector, toUse, shiftPressed)));
+		fOrder = new IndividualOrder(static_cast<Unit*>(selected->at(0)),
+		                             order, vector, toUse, shiftPressed);
 	} else {
-		Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, order, vector,
-		                                                            toUse, ActionType::ORDER,
-		                                                            shiftPressed)));
+		fOrder = new GroupOrder(selected, order, vector, toUse,
+		                        ActionType::ORDER, shiftPressed);
 	}
+
+	Game::getActionList()->add(new ActionCommand(fOrder));
 }
 
 void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
@@ -160,10 +161,10 @@ void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) co
 		                                              nullptr, ActionType::ORDER, true)));
 	} else {
 		actions->add(new ActionCommand(new GroupOrder(selected, UnitOrder::GO, {held.first->x_, held.first->z_},
-		                                              nullptr, ActionType::ORDER)));
-		actions->add(new ActionCommand(new GroupOrder(selected, UnitOrder::CHARGE, {
-			held.second->x_ - held.first->x_, held.second->z_ - held.first->z_
-		}, nullptr, ActionType::ORDER, true)));
+		                                              nullptr, ActionType::ORDER)),
+		             new ActionCommand(new GroupOrder(selected, UnitOrder::CHARGE, {
+			             held.second->x_ - held.first->x_, held.second->z_ - held.first->z_
+		             }, nullptr, ActionType::ORDER, true)));
 	}
 }
 
@@ -171,10 +172,10 @@ void Controls::releaseLeft() {
 	hit_data hitData;
 
 	if (raycast(hitData)) {
-		auto lastClicked = left.lastAction;
+		auto lastClicked = left.lastUp;
 		left.setSecond(hitData.position);
 		const float dist = sqDist(left.held.first, left.held.second);
-		if (left.lastAction - lastClicked < 0.5 && dist < clickDistance) {
+		if (left.lastUp - lastClicked < 0.5 && dist < clickDistance) {
 			leftDoubleClick(hitData);
 		} else if (dist > clickDistance) {
 			leftHold(left.held);
@@ -379,7 +380,7 @@ void Controls::updateSelection() {
 	if (raycast(hitData, ObjectType::PHYSICAL)) {
 		const float xScale = left.held.first->x_ - hitData.position.x_;
 		const float zScale = left.held.first->z_ - hitData.position.z_;
-		if (xScale * xScale > clickDistance || zScale * zScale > clickDistance) {
+		if ((xScale * xScale > clickDistance || zScale * zScale > clickDistance) && Game::getTime() - left.lastDown > 0.3) {
 			if (!selectionNode->IsEnabled()) {
 				selectionNode->SetEnabled(true);
 			}
@@ -400,7 +401,8 @@ void Controls::updateArrow() {
 		auto dir = *right.held.first - hitData.position;
 
 		const float length = dir.Length();
-		if (length * length > clickDistance) {
+
+		if (length * length > clickDistance && Game::getTime() - right.lastDown > 0.3) {
 			if (!arrowNode->IsEnabled()) {
 				arrowNode->SetEnabled(true);
 			}

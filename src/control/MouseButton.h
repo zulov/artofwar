@@ -29,6 +29,7 @@ struct MouseButton
 			held.first = nullptr;
 		}
 		held.first = new Urho3D::Vector3(hitPos);
+		lastDown = Game::getTime();
 		isHeld = true;
 	}
 
@@ -39,7 +40,7 @@ struct MouseButton
 		}
 		held.second = new Urho3D::Vector3(hitPos);
 		isHeld = false;
-		lastAction = Game::getTime();
+		lastUp = Game::getTime();
 	}
 
 	void markHeld() {
@@ -52,7 +53,8 @@ struct MouseButton
 		}
 	}
 
-	float lastAction = 999999;
+	float lastUp = 999999;
+	float lastDown = 999999;
 	bool isHeld = false;
 	std::pair<Urho3D::Vector3*, Urho3D::Vector3*> held;
 };
