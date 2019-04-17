@@ -44,6 +44,15 @@ Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), inp
 	tempBuildingNode->SetEnabled(false);
 
 	selectedInfo->setSelectedType(ObjectType::PHYSICAL);
+
+	for (int i = 0; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
+		deployMark[i] = Game::getScene()->CreateChild();
+		deployMark[i]->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/buildings/additional/target.xml")
+		                                       ->
+		                                       GetRoot());
+		//deployMark[i] ->SetPosition(Urho3D::Vector3(5, 12, 5));
+		//deployMark[i] ->SetEnabled(true);
+	}
 }
 
 Controls::~Controls() {
@@ -51,6 +60,31 @@ Controls::~Controls() {
 	delete selected;
 	selectionNode->Remove();
 	arrowNode->Remove();
+
+	for (auto mark : deployMark) {
+		mark->Remove();
+	}
+}
+
+void Controls::updateAdditionalInfo() const {
+	switch (selectedInfo->getSelectedType()) {
+	case ObjectType::BUILDING:
+		{
+		int min = Urho3D::Min(MAX_DEPLOY_MARK_NUMBER, selected->size());
+		for (int i = 0; i < min; ++i) {
+			deployMark[i]->SetEnabled(true);
+			deployMark[i]->SetPosition((*selected->at(i)->getPosition()) + Urho3D::Vector3(0, 5, 0));
+		}
+		for (int i = min; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
+			deployMark[i]->SetEnabled(false);
+		}
+		}
+		break;
+	default:
+		for (auto mark : deployMark) {
+			mark->SetEnabled(false);
+		}
+	}
 }
 
 
@@ -82,6 +116,7 @@ void Controls::select(std::vector<Physical*>* entities) const {
 	for (auto physical : *entities) {
 		selectOne(physical); //TODO perf zastapic wrzuceniem na raz
 	}
+	updateAdditionalInfo();
 }
 
 void Controls::leftClick(hit_data& hitData) const {
@@ -89,6 +124,7 @@ void Controls::leftClick(hit_data& hitData) const {
 		unSelectAll();
 	}
 	selectOne(hitData.clicked);
+	updateAdditionalInfo();
 }
 
 void Controls::leftDoubleClick(hit_data& hitData) const {
@@ -380,7 +416,8 @@ void Controls::updateSelection() {
 	if (raycast(hitData, ObjectType::PHYSICAL)) {
 		const float xScale = left.held.first->x_ - hitData.position.x_;
 		const float zScale = left.held.first->z_ - hitData.position.z_;
-		if ((xScale * xScale > clickDistance || zScale * zScale > clickDistance) && Game::getTime() - left.lastDown > 0.3) {
+		if ((xScale * xScale > clickDistance || zScale * zScale > clickDistance) && Game::getTime() - left.lastDown >
+			0.3) {
 			if (!selectionNode->IsEnabled()) {
 				selectionNode->SetEnabled(true);
 			}

@@ -9,6 +9,7 @@
 #include <Urho3D/Input/Input.h>
 #include <vector>
 
+#define MAX_DEPLOY_MARK_NUMBER 5
 
 class HudData;
 class SimulationInfo;
@@ -22,6 +23,7 @@ public:
 	explicit Controls(Urho3D::Input* _input);
 	~Controls();
 
+	void updateAdditionalInfo() const;
 	void select(std::vector<Physical*>* entities) const;
 	void selectOne(Physical* entity) const;
 	void unSelectAll() const;
@@ -89,6 +91,8 @@ private:
 	ObjectType typeToCreate;
 	SelectedInfo* selectedInfo;
 
+	Urho3D::Node* deployMark[MAX_DEPLOY_MARK_NUMBER
+	];
 	Urho3D::Node* selectionNode{};
 	Urho3D::Node* arrowNode{};
 	Urho3D::Node* tempBuildingNode{};

@@ -18,16 +18,9 @@
 Building::Building(Urho3D::Vector3* _position, int id, int player, int level, int mainCell):
 	Static(_position, ObjectType::BUILDING, mainCell),
 	target(_position->x_ + 5, _position->z_ + 5) {
-	
+
 	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 	upgrade(level);
-
-	deployNode = node->CreateChild();
-	deployNode->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/buildings/additional/target.xml")->
-	                                      GetRoot());
-	deployNode->SetPosition(Urho3D::Vector3(5, 0, 5));
-	deployNode->SetEnabled(true);
-	deployNode->SetScale(10);
 
 	units = Game::getDatabaseCache()->getUnitsForBuilding(id);
 
