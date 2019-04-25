@@ -10,12 +10,12 @@
 
 TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "TopWindow",
                                                                   {GameState::RUNNING, GameState::PAUSE}) {
-	elements = new TopHudElement*[Game::getDatabaseCache()->getResourceSize()];
+	elements = new TopHudElement*[Game::getDatabaseCache()->getResourceSize()+1];
 }
 
 
 TopPanel::~TopPanel() {
-	const int size = Game::getDatabaseCache()->getResourceSize();
+	const int size = Game::getDatabaseCache()->getResourceSize()+1;
 	for (int i = 0; i < size; ++i) {
 		delete elements[i];
 	}
@@ -23,29 +23,28 @@ TopPanel::~TopPanel() {
 }
 
 void TopPanel::createBody() {
-	unitsNumber = addChildText(window, "TopText", "Test", style);
-
+	const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/top/human.png");
+	elements[0] = new TopHudElement(window, style, texture);
 	const int size = Game::getDatabaseCache()->getResourceSize();
 
 	for (int i = 0; i < size; ++i) {
 		const auto resource = Game::getDatabaseCache()->getResource(i);
 		const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/resource/" + resource->icon);
 
-		elements[i] = new TopHudElement(window, style, texture);
+		elements[i+1] = new TopHudElement(window, style, texture);
 	}
 }
 
 void TopPanel::update(int value) const {
-	unitsNumber->SetText(Urho3D::String(value));
+	elements[0]->setText(Urho3D::String(value));
 }
 
 void TopPanel::update(Resources& resources) const {
 	if (resources.hasChanged()) {
-
 		short size = resources.getSize();
 		float* values = resources.getValues();
 		for (int i = 0; i < size; ++i) {
-			elements[i]->setText(Urho3D::String((int)values[i]));
+			elements[i+1]->setText(Urho3D::String((int)values[i]));
 		}
 		resources.hasBeedUpdatedDrawn();
 	}

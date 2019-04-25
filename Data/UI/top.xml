@@ -12,8 +12,8 @@
 	</element>
 	
 	<element type="TopButtons" style="Button" >
-		<attribute name="Min Size" value="{iconX*1.75} {iconY/2}"/>
-		<attribute name="Max Size" value="{iconX*1.75} {iconY/2}"/>
+		<attribute name="Min Size" value="{iconX*1} {iconY/2}"/>
+		<attribute name="Max Size" value="{iconX*2} {iconY/2}"/>
 	</element>
 	
 	<element type="TopText" style="MyText" >
@@ -24,13 +24,14 @@
 	<element type="mockCenter">
 		<attribute name="Layout Spacing" value="{spaceX/2}" />
         <attribute name="Layout Mode" value="Horizontal" />
-		<attribute name="Horiz Alignment" value="Left" />
-		<attribute name="Position" value="{iconX/2} 0"/>
+		<attribute name="Position" value="{-spaceX} 0" />
+		<attribute name="Horiz Alignment" value="Right" />
 		<attribute name="Min Size" value="0 {iconY/2}"/>
 		<attribute name="Max Size" value="{iconX} {iconY/2}"/>
 	</element>
 	
 	<element type="SpriteLeft" style="Sprite">
+		<attribute name="Position" value="{spaceX} 0" />
 		<attribute name="Horiz Alignment" value="Left" />
 		<attribute name="My Size" value="{(iconX-spaceX)/2} {(iconY-spaceY)/2}" />
 		<attribute name="Percent HotSpot" value="0.0 0.5" />
