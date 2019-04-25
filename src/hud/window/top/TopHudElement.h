@@ -2,6 +2,7 @@
 
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/Text.h>
+#include <Urho3D/UI/ToolTip.h>
 
 class MySprite;
 
@@ -18,4 +19,5 @@ private:
 	Urho3D::Button* button;
 	Urho3D::Text* value;
 	Urho3D::UIElement* mock;
+	Urho3D::ToolTip* toolTip;
 };

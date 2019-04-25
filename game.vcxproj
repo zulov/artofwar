@@ -269,6 +269,7 @@
     <ClCompile Include="src\simulation\Simulation.cpp" />
     <ClCompile Include="src\commands\upgrade\UpgradeCommand.cpp" />
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
+    <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
@@ -422,6 +423,7 @@
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommand.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommandList.h" />
+    <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
