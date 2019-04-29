@@ -47,12 +47,12 @@ public:
 
 private:
 	CellState type;
-	char size;
+	char size, additonalInfo{};
+	//float cost{};
+	int escapeBucketIndex = -1;
 	Urho3D::Vector2 center;
 
 	Static* object{};
-	char additonalInfo{};
 	std::vector<CostPair> neighbours, occupiedNeightbours;
-	float cost{};
-	int escapeBucketIndex = -1;
+
 };

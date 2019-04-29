@@ -11,7 +11,10 @@
 
 
 MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size),
-	closeIndex({-resolution - 1, -resolution, -resolution + 1, -1, 0, 1, resolution - 1, resolution, resolution + 1}) {
+                                                                closeIndex({
+	                                                                -resolution - 1, -resolution, -resolution + 1, -1,
+	                                                                0, 1, resolution - 1, resolution, resolution + 1
+                                                                }) {
 	short posX = 0;
 	short posZ = 0;
 
@@ -210,14 +213,14 @@ void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activeP
 	case CellState::COLLECT:
 	case CellState::EMPTY:
 	case CellState::ATTACK:
-		{
+	{
 		if (checks[3] || checks[4]) {
 			const bool hasInc = buckets[index].incUnitsPerPlayer(ci, activePlayer, checks);
 			if (hasInc) {
 				ci->hasUnit = true;
 			}
 		}
-		}
+	}
 		break;
 	case CellState::RESOURCE:
 		if (checks[1]) {

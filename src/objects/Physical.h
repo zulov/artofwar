@@ -10,8 +10,7 @@ struct ActionParameter;
 class Unit;
 
 class Physical :
-	public Entity
-{
+	public Entity {
 public:
 	Physical(Urho3D::Vector3* _position, ObjectType _type);
 	virtual ~Physical();
@@ -73,7 +72,7 @@ public:
 
 	virtual void select();
 	virtual void unSelect();
-	virtual Urho3D::String& toMultiLineString();
+	virtual Urho3D::String toMultiLineString();
 
 	virtual void action(char id, const ActionParameter& parameter) {
 	}
@@ -87,28 +86,26 @@ protected:
 	void loadXml(Urho3D::String xmlName);
 	void setPlayerAndTeam(int player);
 	virtual float getHealthBarThick() { return 0.15; }
-	Urho3D::Vector3* position = nullptr;
-	Urho3D::String menuString = "";
 
 	char team, player;
-
-	float hpCoef = 100, maxHpCoef = 100;
-	float attackCoef = 10, attackRange;
-	float attackSpeed = 1, attackProcess = 0;
-	float defenseCoef = 0.3f;
+	unsigned char maxRangeUsers = 8,
+	              maxCloseUsers = 8, //TODO default values
+	              closeUsers = 0,
+	              rangeUsers = 0;
+	bool indexHasChanged = false;
 
 	Urho3D::StaticModel* model;
 
 	Urho3D::Node *billboardNode, *barNode;
 	Urho3D::Billboard *billboardBar, *billboardShadow;
 	Urho3D::BillboardSet *billboardSetBar, *billboardSetShadow;
+	Urho3D::Vector3* position = nullptr;
 
-	unsigned char maxCloseUsers = 8; //TODO default values
-	unsigned char maxRangeUsers = 8;
+	float hpCoef = 100, maxHpCoef = 100,
+	      attackCoef = 10, attackRange,
+	      attackSpeed = 1, attackProcess = 0,
+	      defenseCoef = 0.3f;
 
-	unsigned char closeUsers = 0;
-	unsigned char rangeUsers = 0;
-	bool indexHasChanged = false;
 private:
 	void createBillboardBar();
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;

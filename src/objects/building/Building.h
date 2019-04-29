@@ -22,7 +22,7 @@ public:
 	Urho3D::Vector2& getTarget() { return target; } //TODO target to nie to samo co gdzie sie maja pojawiac!
 	QueueManager* getQueue() const { return queue; }
 
-	Urho3D::String& toMultiLineString() override;
+	Urho3D::String toMultiLineString() override;
 	void absorbAttack(float attackCoef) override;
 	void action(char id, const ActionParameter& parameter) override;
 	std::string getValues(int precision) override;

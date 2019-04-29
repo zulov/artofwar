@@ -37,10 +37,9 @@ public:
 protected:
 	void populate(const Urho3D::IntVector2& size);
 	float getHealthBarThick() override { return 0.3; }
-	std::vector<int> occupiedCells, surroundCells;
 
-	Urho3D::IntVector2 gridSize;
 	int mainCell{};
-
 	StaticState state, nextState;
+	Urho3D::IntVector2 gridSize;
+	std::vector<int> occupiedCells, surroundCells;
 };

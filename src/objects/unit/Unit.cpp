@@ -22,7 +22,7 @@
 
 
 Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
-	state(UnitState::STOP) {
+                                                                        state(UnitState::STOP) {
 
 	dbUnit = Game::getDatabaseCache()->getUnit(id);
 	dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
@@ -246,14 +246,13 @@ void Unit::setIndexToInteract(int index) {
 	indexToInteract = index;
 }
 
-Urho3D::String& Unit::toMultiLineString() {
-	menuString = dbUnit->name + " " + dbLevel->name;
-	menuString.Append("\nAtak: ").Append(Urho3D::String(attackCoef))
-	          .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
-	          .Append("\nZdrowie: ").Append(Urho3D::String(hpCoef))
-	          .Append("/").Append(Urho3D::String(maxHpCoef))
-	          .Append("\nStan:").Append(Urho3D::String(Consts::UnitStateNames[static_cast<char>(state)]));
-	return menuString;
+Urho3D::String Unit::toMultiLineString() {
+	return Urho3D::String(dbUnit->name + " " + dbLevel->name)
+	       .Append("\nAtak: ").Append(Urho3D::String(attackCoef))
+	       .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
+	       .Append("\nZdrowie: ").Append(Urho3D::String(hpCoef))
+	       .Append("/").Append(Urho3D::String(maxHpCoef))
+	       .Append("\nStan:").Append(Urho3D::String(Consts::UnitStateNames[static_cast<char>(state)]));
 }
 
 void Unit::action(char id) {
@@ -431,7 +430,7 @@ void Unit::setBucket(int _bucketIndex, char param) {
 }
 
 bool Unit::isSlotOccupied(int indexToInteract) {
-	int index= Game::getEnvironment()->getRevertCloseIndex(getMainCell(), indexToInteract);
+	int index = Game::getEnvironment()->getRevertCloseIndex(getMainCell(), indexToInteract);
 
 	return useSockets[index];
 }
@@ -466,11 +465,10 @@ bool Unit::isFirstThingAlive() const {
 void Unit::clean() {
 	Physical::clean();
 	thingsToInteract.erase(std::remove_if(
-	                                      thingsToInteract.begin(), thingsToInteract.end(),
-	                                      [](Physical* physical)
-	                                      {
-		                                      return physical == nullptr || !physical->isAlive();
-	                                      }),
+		                       thingsToInteract.begin(), thingsToInteract.end(),
+		                       [](Physical* physical) {
+			                       return physical == nullptr || !physical->isAlive();
+		                       }),
 	                       thingsToInteract.end());
 }
 

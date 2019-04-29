@@ -6,8 +6,7 @@
 
 class ComplexBucketData;
 
-class PathFinder
-{
+class PathFinder {
 public:
 	PathFinder(short resolution, float size, ComplexBucketData* complexData);
 
@@ -29,6 +28,9 @@ private:
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
 	int getIndex(short posX, short posZ) const { return posX * resolution + posZ; }
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
+	void resetPathArrays();
+	short getIndex(float value) const;
+
 	std::vector<int>* tempPath;
 
 	int lastStartIdx = -1;
@@ -36,19 +38,18 @@ private:
 
 	void updateCost(int startIdx, float x);
 
-	const short resolution;
+	const short resolution, halfResolution;
 	const float fieldSize;
-	ComplexBucketData* complexData;
+	bool pathInited = false;
+
 	int* came_from;
 	float* cost_so_far;
+	ComplexBucketData* complexData;
 
 	float invFieldSize;
-	short halfResolution;
 	int staticCounter = 0;
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref = resolution * resolution - 1;
-	void resetPathArrays();
-	short getIndex(float value) const;
+
 	BucketQueue frontier;
-	bool pathInited = false;
 };

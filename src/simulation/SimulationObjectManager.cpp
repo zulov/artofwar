@@ -45,11 +45,11 @@ void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const
 template <class T>
 void SimulationObjectManager::prepareToDispose(std::vector<T*>* objects) const {
 	objects->erase( //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
-	               std::remove_if(
-	                              objects->begin(), objects->end(),
-	                              physicalShouldDelete
-	                             ),
-	               objects->end());
+		std::remove_if(
+			objects->begin(), objects->end(),
+			physicalShouldDelete
+		),
+		objects->end());
 }
 
 void SimulationObjectManager::prepareToDispose() const {

@@ -44,12 +44,11 @@ float ResourceEntity::getHealthPercent() const {
 	return amonut / dbResource->maxCapacity;
 }
 
-Urho3D::String& ResourceEntity::toMultiLineString() {
-	menuString = dbResource->name;
-	menuString += "\nZasobów: " + Urho3D::String((int)amonut)
-		+ "\nU¿ytkowników: " + Urho3D::String((int)closeUsers)
-		+ "/" + Urho3D::String((int)maxCloseUsers);
-	return menuString;
+Urho3D::String ResourceEntity::toMultiLineString() {
+	return Urho3D::String(dbResource->name).Append(
+			"\nZasobów: ").Append(Urho3D::String((int)amonut)).Append(
+			"\nU¿ytkowników: ").Append(Urho3D::String((int)closeUsers))
+		.Append("/").Append(Urho3D::String((int)maxCloseUsers));
 }
 
 std::string ResourceEntity::getValues(int precision) {
@@ -61,7 +60,7 @@ std::string ResourceEntity::getValues(int precision) {
 void ResourceEntity::action(char id, const ActionParameter& parameter) {
 	switch (id) {
 	case ResourceOrder::COLLECT:
-		{
+	{
 		auto neights = Game::getEnvironment()->getNeighboursFromTeam(this, 24,
 		                                                             Game::getPlayersMan()
 		                                                             ->getActivePlayer()->getTeam(),
@@ -85,8 +84,8 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 				break;
 			}
 		}
-		}
-		break;
+	}
+	break;
 	case ResourceOrder::COLLECT_CANCEL:
 		StateManager::changeState(this, StaticState::FREE);
 		break;

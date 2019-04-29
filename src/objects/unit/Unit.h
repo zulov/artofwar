@@ -112,7 +112,7 @@ public:
 	void action(char id);
 	bool isFirstThingInSameSocket() const override;
 	std::string getValues(int precision) override;
-	Urho3D::String& toMultiLineString() override;
+	Urho3D::String toMultiLineString() override;
 	float getMaxHpBarSize() override;
 	bool isAlive() const override;
 	int getLevel() override;
@@ -124,13 +124,12 @@ private:
 	                         float sqDistance, float closeRange, float interestRange);
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);
+
 	Urho3D::Vector2 velocity, acceleration;
 	Aims aims;
 
 	db_unit* dbUnit;
 	db_unit_level* dbLevel;
-
-	UnitState state, actionState;
 
 	Urho3D::Material* basic;
 
@@ -138,20 +137,18 @@ private:
 	MissileData* missileData{};
 
 	std::vector<db_unit_upgrade*> upgrades;
+	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
 
+	UnitState state, actionState;
 	bool atState = false, rotatable;
 	float minimalDistance, maxSeparationDistance,
 	      maxSpeed, minSpeed, mass,
 	      attackInterest, collectSpeed;
 
 	short posInFormation = -1, formation = -1;
-
-	int teamBucketIndex[BUCKET_SET_NUMBER];
-
-	int indexToInteract = -1;
 	unsigned short currentFrameState = 0;
 
-	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
-
+	int indexToInteract = -1;
 	bool useSockets[USE_SOCKETS_NUMBER];
+	int teamBucketIndex[BUCKET_SET_NUMBER];
 };

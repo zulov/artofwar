@@ -8,10 +8,10 @@
 
 
 Grid::Grid(short _resolution, float _size): resolution(_resolution),
-	sqResolution(_resolution * _resolution),
-	size(_size), fieldSize(_size / _resolution), halfResolution(_resolution / 2),
-	invFieldSize(_resolution / _size) {
-
+                                            sqResolution(_resolution * _resolution),
+                                            size(_size), fieldSize(_size / _resolution),
+                                            halfResolution(_resolution / 2),
+                                            invFieldSize(_resolution / _size) {
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((double)MAX_SEP_DIST / RES_SEP_DIST * i);
 	}

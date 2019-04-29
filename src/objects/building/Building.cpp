@@ -56,15 +56,14 @@ void Building::absorbAttack(float attackCoef) {
 	}
 }
 
-Urho3D::String& Building::toMultiLineString() {
-	menuString = dbBuilding->name + " " + dbLevel->name;
-	menuString.Append("\nAtak: ").Append(Urho3D::String(attackCoef))
-	          .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
-	          .Append("\nZdrowie: ").Append(Urho3D::String((int)hpCoef)).Append("/").Append(Urho3D::String(maxHpCoef))
-	          .Append("\nU¿ytkowników: ").Append(Urho3D::String((int)closeUsers))
-	          .Append("/").Append(Urho3D::String((int)maxCloseUsers))
-	          .Append("\nStan: ").Append(Consts::StaticStateNames[static_cast<char>(state)]);
-	return menuString;
+Urho3D::String Building::toMultiLineString() {
+	return Urho3D::String(dbBuilding->name + " " + dbLevel->name)
+	       .Append("\nAtak: ").Append(Urho3D::String(attackCoef))
+	       .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
+	       .Append("\nZdrowie: ").Append(Urho3D::String((int)hpCoef)).Append("/").Append(Urho3D::String(maxHpCoef))
+	       .Append("\nU¿ytkowników: ").Append(Urho3D::String((int)closeUsers))
+	       .Append("/").Append(Urho3D::String((int)maxCloseUsers))
+	       .Append("\nStan: ").Append(Consts::StaticStateNames[static_cast<char>(state)]);
 }
 
 void Building::action(char id, const ActionParameter& parameter) {
@@ -72,15 +71,15 @@ void Building::action(char id, const ActionParameter& parameter) {
 
 	switch (parameter.type) {
 	case ActionType::UNIT_CREATE:
-		{
+	{
 		auto costs = Game::getDatabaseCache()->getCostForUnit(id);
 		if (resources.reduce(costs)) {
 			queue->add(1, parameter.type, id, 30);
 		}
-		}
-		break;
+	}
+	break;
 	case ActionType::UNIT_LEVEL:
-		{
+	{
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
 		if (opt.has_value()) {
@@ -89,10 +88,10 @@ void Building::action(char id, const ActionParameter& parameter) {
 				queue->add(1, parameter.type, id, 1);
 			}
 		}
-		}
-		break;
+	}
+	break;
 	case ActionType::UNIT_UPGRADE:
-		{
+	{
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForUnitUpgrade(id, level);
 		if (opt.has_value()) {
@@ -101,8 +100,8 @@ void Building::action(char id, const ActionParameter& parameter) {
 				queue->add(1, parameter.type, id, 1);
 			}
 		}
-		}
-		break;
+	}
+	break;
 	}
 }
 

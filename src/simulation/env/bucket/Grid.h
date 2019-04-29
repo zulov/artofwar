@@ -10,8 +10,7 @@ class Unit;
 class Bucket;
 class Physical;
 
-class Grid
-{
+class Grid {
 public:
 	Grid(short _resolution, float _size);
 	~Grid();
@@ -33,12 +32,11 @@ protected:
 	short diff(short a, short b);
 	short getIndex(float value) const;
 	bool inRange(int index) const { return index >= 0 && index < sqResolution; }
+	
+	Bucket* buckets;
 	short resolution, halfResolution;
 	int sqResolution;
-	float size, fieldSize;
-	float invFieldSize;
-
-	Bucket* buckets;
+	float size, fieldSize, invFieldSize;
 
 private:
 	bool fieldInCircle(short i, short j, float radius) const;
@@ -50,7 +48,6 @@ private:
 
 	BucketIterator iterators[MAX_THREADS];
 	std::vector<short>* levelsCache[RES_SEP_DIST];
-	std::vector<Physical*> empty;
-
 	std::vector<Physical*>* tempSelected;
+	std::vector<Physical*> empty;
 };
