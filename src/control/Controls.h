@@ -17,8 +17,7 @@ struct ActionParameter;
 struct MouseButton;
 struct hit_data;
 
-class Controls
-{
+class Controls {
 public:
 	explicit Controls(Urho3D::Input* _input);
 	~Controls();
@@ -91,8 +90,7 @@ private:
 	ObjectType typeToCreate;
 	SelectedInfo* selectedInfo;
 
-	Urho3D::Node* deployMark[MAX_DEPLOY_MARK_NUMBER
-	];
+	Urho3D::Node* deployMark[MAX_DEPLOY_MARK_NUMBER];
 	Urho3D::Node* selectionNode{};
 	Urho3D::Node* arrowNode{};
 	Urho3D::Node* tempBuildingNode{};

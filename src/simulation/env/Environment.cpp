@@ -54,7 +54,7 @@ std::vector<Physical*>* Environment::getNeighboursFromTeam(Physical* physical, c
 	case OperatorType::EQUAL:
 		return getNeighbours(physical, teamUnitGrid[team], radius);
 	case OperatorType::NOT_EQUAL:
-		{
+	{
 		neights2->clear();
 		for (int i = 0; i < MAX_PLAYERS; ++i) {
 			if (team != i) {
@@ -63,7 +63,7 @@ std::vector<Physical*>* Environment::getNeighboursFromTeam(Physical* physical, c
 			}
 		}
 		return neights2;
-		}
+	}
 	}
 }
 
@@ -158,6 +158,10 @@ float Environment::getGroundHeightAt(float x, float z) const {
 	return terrian->GetHeight(Urho3D::Vector3(x, 0, z));
 }
 
+Urho3D::Vector3 Environment::getPosWithHeightAt(float x, float z) const {
+	return Urho3D::Vector3(x, getGroundHeightAt(x, z), z);
+}
+
 float Environment::getGroundHeightPercent(float y, float x, float div) const {
 	const float scale = terrian->GetSpacing().y_;
 	auto a = Urho3D::Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, 0,
@@ -225,21 +229,21 @@ void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) {
 	for (auto dispose : toDispose) {
 		switch (dispose->getType()) {
 		case ObjectType::BUILDING:
-			{
+		{
 			const auto building = static_cast<Building*>(dispose);
 			mainGrid.removeStatic(building);
 			buildingGrid.update(dispose);
 			mainGrid.updateSurround(building);
-			}
-			break;
+		}
+		break;
 		case ObjectType::RESOURCE:
-			{
+		{
 			const auto resource = static_cast<ResourceEntity*>(dispose);
 			mainGrid.removeStatic(resource);
 			resourceGrid.update(resource);
 			mainGrid.updateSurround(resource);
-			}
-			break;
+		}
+		break;
 		default: ;
 		}
 	}

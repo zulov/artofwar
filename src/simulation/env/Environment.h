@@ -40,6 +40,7 @@ public:
 	std::vector<Physical *>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);
 
 	float getGroundHeightAt(float x, float z) const;
+	Urho3D::Vector3 getPosWithHeightAt(float x, float z) const;
 	float getGroundHeightPercent(float y, float x, float div) const;
 	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos);
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos);

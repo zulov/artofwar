@@ -73,7 +73,8 @@ void Controls::updateAdditionalInfo() const {
 		int min = Urho3D::Min(MAX_DEPLOY_MARK_NUMBER, selected->size());
 		for (int i = 0; i < min; ++i) {
 			deployMark[i]->SetEnabled(true);
-			deployMark[i]->SetPosition((*selected->at(i)->getPosition()) + Urho3D::Vector3(0, 5, 0));
+			auto target = selected->at(i)->getTarget().value();
+			deployMark[i]->SetPosition(Game::getEnvironment()->getPosWithHeightAt(target.x_,target.y_));
 		}
 		for (int i = min; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
 			deployMark[i]->SetEnabled(false);
@@ -520,9 +521,8 @@ void Controls::buildControl() {
 			auto hitPos = Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
 
 			const auto validPos = env->getValidPosition(dbBuilding->size, hitPos);
-			const auto height = env->getGroundHeightAt(validPos.x_, validPos.y_);
 
-			tempBuildingNode->SetPosition(Urho3D::Vector3(validPos.x_, height, validPos.y_));
+			tempBuildingNode->SetPosition(env->getPosWithHeightAt(validPos.x_, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
 				auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, 0).value();
 				tempBuildingNode->LoadXML(Game::getCache()

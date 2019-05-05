@@ -19,7 +19,7 @@ public:
 	static std::string getColumns();
 
 	QueueElement* updateQueue(float time) const { return queue->update(time); }
-	Urho3D::Vector2& getTarget() { return target; } //TODO target to nie to samo co gdzie sie maja pojawiac!
+	std::optional<Urho3D::Vector2> getTarget() override { return target; } //TODO target to nie to samo co gdzie sie maja pojawiac!
 	QueueManager* getQueue() const { return queue; }
 
 	Urho3D::String toMultiLineString() override;

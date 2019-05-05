@@ -87,12 +87,12 @@ struct dbload_resource_entities : dbload_static
 
 struct dbload_player
 {
-	int id;
 	bool is_active;
+	int id;
 	int team;
 	int nation;
-	Urho3D::String name;
 	int color;
+	Urho3D::String name;
 
 	dbload_player(int id, bool isActive, int team, int nation, char* name, int color)
 		: id(id),

@@ -54,6 +54,10 @@ public:
 
 	virtual char getPlayer() const { return player; }
 
+	virtual std::optional<Urho3D::Vector2> getTarget() {
+		return {};
+	}
+
 	int getMainBucketIndex() const { return indexInGrid; }
 
 	virtual void populate() {
