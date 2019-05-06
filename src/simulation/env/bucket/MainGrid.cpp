@@ -136,7 +136,7 @@ void MainGrid::updateSurround(Static* object) {
 			indexes.erase(index);
 		}
 		auto& surroundCells = object->getSurroundCells();
-		surroundCells.insert(surroundCells.begin(), indexes.begin(), indexes.end());
+		surroundCells.insert(surroundCells.begin(), indexes.begin(), indexes.end());		
 	} //TODO else czy cos trzeba usunac?
 }
 
@@ -267,6 +267,7 @@ void MainGrid::addStatic(Static* object) {
 		}
 		pathConstructor->refreshWayOut(toRefresh);
 	}
+	updateSurround(object);
 }
 
 void MainGrid::removeStatic(Static* object) {

@@ -54,7 +54,7 @@ public:
 
 	virtual char getPlayer() const { return player; }
 
-	virtual std::optional<Urho3D::Vector2> getTarget() {
+	virtual std::optional<int> getDeploy() {
 		return {};
 	}
 

@@ -196,7 +196,7 @@ void Simulation::updateBuildingQueues(const float time) const {
 			switch (done->getType()) {
 			case ActionType::UNIT_CREATE:
 				creationCommandList->add(new CreationCommand(ObjectType::UNIT, done->getAmount(),
-				                                             done->getId(), build->getTarget().value(),
+				                                             done->getId(), build->getDeploy().value(),
 				                                             build->getPlayer(),
 				                                             Game::getPlayersMan()->
 				                                             getPlayer(build->getPlayer())->

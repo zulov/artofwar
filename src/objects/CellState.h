@@ -8,5 +8,7 @@ enum class CellState : char
 	NONE,
 
 	RESOURCE,
-	BUILDING
+	BUILDING,
+
+	DEPLOY
 };

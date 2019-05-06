@@ -120,7 +120,9 @@ void Environment::update(std::vector<Building*>* buildings) {
 	for (auto building : *buildings) {
 		mainGrid.addStatic(building);
 		buildingGrid.update(building);
-		mainGrid.updateSurround(building);
+		building->createDeploy();
+
+		mainGrid.addDeploy(building->getDeploy());
 	}
 }
 
@@ -128,7 +130,6 @@ void Environment::update(std::vector<ResourceEntity*>* resources) {
 	for (auto resource : *resources) {
 		mainGrid.addStatic(resource);
 		resourceGrid.update(resource);
-		mainGrid.updateSurround(resource);
 	}
 }
 
@@ -232,8 +233,8 @@ void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) {
 		{
 			const auto building = static_cast<Building*>(dispose);
 			mainGrid.removeStatic(building);
+			mainGrid.removeDeploy(building->getDeploy());
 			buildingGrid.update(dispose);
-			mainGrid.updateSurround(building);
 		}
 		break;
 		case ObjectType::RESOURCE:
@@ -241,7 +242,6 @@ void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) {
 			const auto resource = static_cast<ResourceEntity*>(dispose);
 			mainGrid.removeStatic(resource);
 			resourceGrid.update(resource);
-			mainGrid.updateSurround(resource);
 		}
 		break;
 		default: ;

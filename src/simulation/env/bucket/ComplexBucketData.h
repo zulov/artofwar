@@ -8,20 +8,17 @@
 
 class Static;
 
-struct CostPair
-{
+struct CostPair {
 	int index;
 	float cost;
 
 	CostPair(int index, float cost)
-		: index(index),
-		cost(cost) {
+		: index(index), cost(cost) {
 	}
 };
 
 
-class ComplexBucketData
-{
+class ComplexBucketData {
 public:
 	ComplexBucketData();
 	~ComplexBucketData();

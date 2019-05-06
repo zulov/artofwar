@@ -16,9 +16,7 @@
 
 
 Building::Building(Urho3D::Vector3* _position, int id, int player, int level, int mainCell):
-	Static(_position, ObjectType::BUILDING, mainCell),
-	target(_position->x_ + 5, _position->z_ + 5) {
-
+	Static(_position, ObjectType::BUILDING, mainCell) {
 	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 	upgrade(level);
 
@@ -131,4 +129,11 @@ std::string Building::getValues(int precision) {
 
 int Building::getLevel() {
 	return dbLevel->level;
+}
+
+void Building::createDeploy() {
+	if (!getSurroundCells().empty()) {
+		deployIndex = getSurroundCells().at(0);
+	}
+	Game::getLog()->Write(0, "createDeploy fail");
 }

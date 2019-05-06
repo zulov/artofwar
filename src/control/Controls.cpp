@@ -47,11 +47,8 @@ Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), inp
 
 	for (int i = 0; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
 		deployMark[i] = Game::getScene()->CreateChild();
-		deployMark[i]->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>("Objects/buildings/additional/target.xml")
-		                                       ->
-		                                       GetRoot());
-		//deployMark[i] ->SetPosition(Urho3D::Vector3(5, 12, 5));
-		//deployMark[i] ->SetEnabled(true);
+		deployMark[i]->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>
+			("Objects/buildings/additional/target.xml")->GetRoot());
 	}
 }
 
@@ -69,18 +66,18 @@ Controls::~Controls() {
 void Controls::updateAdditionalInfo() const {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::BUILDING:
-		{
+	{
 		int min = Urho3D::Min(MAX_DEPLOY_MARK_NUMBER, selected->size());
 		for (int i = 0; i < min; ++i) {
 			deployMark[i]->SetEnabled(true);
-			auto target = selected->at(i)->getTarget().value();
-			deployMark[i]->SetPosition(Game::getEnvironment()->getPosWithHeightAt(target.x_,target.y_));
+			auto deploy = selected->at(i)->getDeploy().value();
+			deployMark[i]->SetPosition(Game::getEnvironment()->getPosWithHeightAt(deploy.x_, deploy.y_));
 		}
 		for (int i = min; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
 			deployMark[i]->SetEnabled(false);
 		}
-		}
-		break;
+	}
+	break;
 	default:
 		for (auto mark : deployMark) {
 			mark->SetEnabled(false);
@@ -191,11 +188,11 @@ void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) co
 
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
 		actions->add(
-		             new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
-		                                              {held.first->x_, held.first->z_}, nullptr, ActionType::ORDER)),
-		             new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
-		                                              {held.second->x_, held.second->z_},
-		                                              nullptr, ActionType::ORDER, true)));
+			new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
+			                                 {held.first->x_, held.first->z_}, nullptr, ActionType::ORDER)),
+			new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
+			                                 {held.second->x_, held.second->z_},
+			                                 nullptr, ActionType::ORDER, true)));
 	} else {
 		actions->add(new ActionCommand(new GroupOrder(selected, UnitOrder::GO, {held.first->x_, held.first->z_},
 		                                              nullptr, ActionType::ORDER)),
@@ -290,7 +287,7 @@ void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
 void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 	switch (parameter.type) {
 	case ActionType::BUILDING_LEVEL:
-		{
+	{
 		const auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
 		if (opt.has_value()) {
@@ -299,7 +296,7 @@ void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 			}
 		}
 		break;
-		}
+	}
 	}
 }
 
@@ -374,17 +371,16 @@ void Controls::actionUnit(short id, const ActionParameter& parameter) {
 void Controls::refreshSelected() {
 	bool sizeBefore = selected->size();
 	selected->erase(
-	                std::remove_if(
-	                               selected->begin(), selected->end(),
-	                               [](Physical* physical)
-	                               {
-		                               if (!physical->isAlive()) {
-			                               physical->unSelect();
-			                               return true;
-		                               }
-		                               return false;
-	                               }),
-	                selected->end());
+		std::remove_if(
+			selected->begin(), selected->end(),
+			[](Physical* physical) {
+				if (!physical->isAlive()) {
+					physical->unSelect();
+					return true;
+				}
+				return false;
+			}),
+		selected->end());
 
 	bool sizeAfter = selected->size();
 	if (sizeBefore != sizeAfter) {
