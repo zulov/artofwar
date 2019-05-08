@@ -70,8 +70,8 @@ void Controls::updateAdditionalInfo() const {
 		int min = Urho3D::Min(MAX_DEPLOY_MARK_NUMBER, selected->size());
 		for (int i = 0; i < min; ++i) {
 			deployMark[i]->SetEnabled(true);
-			auto deploy = selected->at(i)->getDeploy().value();
-			deployMark[i]->SetPosition(Game::getEnvironment()->getPosWithHeightAt(deploy.x_, deploy.y_));
+			auto deployIndex = selected->at(i)->getDeploy().value();
+			deployMark[i]->SetPosition(Game::getEnvironment()->getPosWithHeightAt(deployIndex));
 		}
 		for (int i = min; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
 			deployMark[i]->SetEnabled(false);

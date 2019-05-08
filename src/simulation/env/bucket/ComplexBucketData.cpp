@@ -57,3 +57,12 @@ void ComplexBucketData::updateSize(char val, CellState cellState) {
 bool ComplexBucketData::belowCellLimit() {
 	return size < 2;
 }
+
+void ComplexBucketData::setDeploy(Building* building) {
+	object = (Static*)building;
+	type = CellState::DEPLOY;
+}
+
+void ComplexBucketData::removeDeploy() {
+	removeStatic();
+}

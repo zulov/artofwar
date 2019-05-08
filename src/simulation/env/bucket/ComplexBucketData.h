@@ -6,6 +6,7 @@
 #include <vector>
 
 
+class Building;
 class Static;
 
 struct CostPair {
@@ -41,7 +42,8 @@ public:
 	char getSize() { return size; }
 	void updateSize(char val, CellState cellState);
 	bool belowCellLimit();
-
+	void setDeploy(Building* building);
+	void removeDeploy();
 private:
 	CellState type;
 	char size, additonalInfo{};

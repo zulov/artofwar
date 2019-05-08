@@ -64,6 +64,8 @@ public:
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinalInState(Unit* unit, UnitState state) const;
 	int getRevertCloseIndex(int center, int gridIndex);
+	void addDeploy(Building* building);
+	void removeDeploy(Building* building);
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);

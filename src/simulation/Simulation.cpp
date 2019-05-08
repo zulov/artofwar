@@ -30,7 +30,8 @@
 
 
 Simulation::Simulation(Environment* enviroment, CreationCommandList* creationCommandList): enviroment(enviroment),
-	creationCommandList(creationCommandList) {
+                                                                                           creationCommandList(
+	                                                                                           creationCommandList) {
 
 	simObjectManager = creationCommandList->getManager();
 	levelsCommandList = new UpgradeCommandList(simObjectManager);
@@ -183,10 +184,10 @@ void Simulation::applyForce() const {
 
 void Simulation::levelUp(QueueElement* done) const {
 	levelsCommandList->add(new UpgradeCommand(
-	                                          Game::getPlayersMan()->getActivePlayer()->getId(),
-	                                          done->getId(),
-	                                          done->getType()
-	                                         ));
+		Game::getPlayersMan()->getActivePlayer()->getId(),
+		done->getId(),
+		done->getType()
+	));
 }
 
 void Simulation::updateBuildingQueues(const float time) const {
@@ -195,14 +196,18 @@ void Simulation::updateBuildingQueues(const float time) const {
 		if (done) {
 			switch (done->getType()) {
 			case ActionType::UNIT_CREATE:
+			{
+				auto center = enviroment->getCenter(build->getDeploy().value());
+
 				creationCommandList->add(new CreationCommand(ObjectType::UNIT, done->getAmount(),
-				                                             done->getId(), build->getDeploy().value(),
+				                                             done->getId(), center,
 				                                             build->getPlayer(),
 				                                             Game::getPlayersMan()->
 				                                             getPlayer(build->getPlayer())->
 				                                             getLevelForUnit(done->getId())
-				                                            ));
-				break;
+				));
+			}
+			break;
 			case ActionType::UNIT_LEVEL:
 			case ActionType::BUILDING_LEVEL:
 			case ActionType::UNIT_UPGRADE:
@@ -305,15 +310,15 @@ void Simulation::calculateForces() {
 			force.inCell(newForce, unit);
 			break;
 		case UnitState::ATTACK:
-			{
+		{
 			const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);
 			force.inCell(newForce, unit);
-			}
-			break;
+		}
+		break;
 		default:
-			{
+		{
 			const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);
@@ -321,7 +326,7 @@ void Simulation::calculateForces() {
 			force.destination(newForce, unit);
 			force.formation(newForce, unit);
 			force.escapeFromInvalidPosition(newForce, unit);
-			}
+		}
 		}
 
 		auto stats = force.stats();

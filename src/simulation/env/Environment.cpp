@@ -122,7 +122,7 @@ void Environment::update(std::vector<Building*>* buildings) {
 		buildingGrid.update(building);
 		building->createDeploy();
 
-		mainGrid.addDeploy(building->getDeploy());
+		mainGrid.addDeploy(building);
 	}
 }
 
@@ -161,6 +161,11 @@ float Environment::getGroundHeightAt(float x, float z) const {
 
 Urho3D::Vector3 Environment::getPosWithHeightAt(float x, float z) const {
 	return Urho3D::Vector3(x, getGroundHeightAt(x, z), z);
+}
+
+Urho3D::Vector3 Environment::getPosWithHeightAt(int index) const {
+	auto center = mainGrid.getCenter(index);
+	return getPosWithHeightAt(center.x_, center.y_);
 }
 
 float Environment::getGroundHeightPercent(float y, float x, float div) const {
@@ -233,7 +238,7 @@ void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) {
 		{
 			const auto building = static_cast<Building*>(dispose);
 			mainGrid.removeStatic(building);
-			mainGrid.removeDeploy(building->getDeploy());
+			mainGrid.removeDeploy(building);
 			buildingGrid.update(dispose);
 		}
 		break;

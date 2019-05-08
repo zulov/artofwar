@@ -8,6 +8,7 @@
 #include "simulation/env/ContentInfo.h"
 #include <array>
 #include <unordered_set>
+#include "objects/building/Building.h"
 
 
 MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size),
@@ -136,7 +137,7 @@ void MainGrid::updateSurround(Static* object) {
 			indexes.erase(index);
 		}
 		auto& surroundCells = object->getSurroundCells();
-		surroundCells.insert(surroundCells.begin(), indexes.begin(), indexes.end());		
+		surroundCells.insert(surroundCells.begin(), indexes.begin(), indexes.end());
 	} //TODO else czy cos trzeba usunac?
 }
 
@@ -205,6 +206,18 @@ int MainGrid::getRevertCloseIndex(int center, int gridIndex) {
 	}
 	Game::getLog()->Write(0, "closeIndex miscalculate");
 	return 0;
+}
+
+void MainGrid::addDeploy(Building* building) {
+	auto optDeployIndex = building->getDeploy();
+
+	if (optDeployIndex.has_value()) {
+		complexData[optDeployIndex.value()].setDeploy(building);
+	}
+}
+
+void MainGrid::removeDeploy(Building* building) {
+	complexData[building->getDeploy().value()].removeDeploy();
 }
 
 void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {

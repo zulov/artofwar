@@ -110,7 +110,7 @@ void Building::upgrade(char level) {
 
 void Building::load(dbload_building* dbloadBuilding) {
 	Static::load(dbloadBuilding);
-	target = {dbloadBuilding->target_x, dbloadBuilding->target_z};
+//	target = {dbloadBuilding->target_x, dbloadBuilding->target_z};
 }
 
 std::string Building::getColumns() {
@@ -120,11 +120,11 @@ std::string Building::getColumns() {
 }
 
 std::string Building::getValues(int precision) {
-	int target_x = target.x_ * precision;
-	int target_y = target.y_ * precision;
-	return Static::getValues(precision)
-		+ std::to_string(target_x) + ","
-		+ std::to_string(target_y);
+//	int target_x = target.x_ * precision;
+//	int target_y = target.y_ * precision;
+	return Static::getValues(precision);
+	//	+ std::to_string(target_x) + ","
+	//	+ std::to_string(target_y);
 }
 
 int Building::getLevel() {
