@@ -6,7 +6,6 @@
 
 #define PALLET_RESOLUTION 32
 
-
 class ColorPaletteRepo
 {
 public:

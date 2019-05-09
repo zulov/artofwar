@@ -303,6 +303,25 @@ void Simulation::moveUnitsAndCheck(const float timeStep) const {
 void Simulation::calculateForces() {
 	DebugLineRepo::clear();
 	DebugLineRepo::beginGeometry();
+	DebugLineRepo::drawLine(Urho3D::Vector3(-512, 10, 18), Urho3D::Vector3(512, 10, 18));
+	DebugLineRepo::drawLine(Urho3D::Vector3(-512, 10, 16), Urho3D::Vector3(512, 10, 16));
+
+	DebugLineRepo::drawLine(Urho3D::Vector3(-512, 10, -4), Urho3D::Vector3(512, 10, -4));
+	DebugLineRepo::drawLine(Urho3D::Vector3(-512, 10, -2), Urho3D::Vector3(512, 10, -2));
+	DebugLineRepo::drawLine(Urho3D::Vector3(-512, 10, 0), Urho3D::Vector3(512, 10, 0));
+	DebugLineRepo::drawLine(Urho3D::Vector3(-512, 10, 2), Urho3D::Vector3(512, 10, 2));
+	DebugLineRepo::drawLine(Urho3D::Vector3(-512, 10, 4), Urho3D::Vector3(512, 10, 4));
+
+	DebugLineRepo::drawLine(Urho3D::Vector3(-2, 10, -512), Urho3D::Vector3(-2, 10, 512));
+	DebugLineRepo::drawLine(Urho3D::Vector3(0, 10, -512), Urho3D::Vector3(0, 10, 512));
+	DebugLineRepo::drawLine(Urho3D::Vector3(2, 10, -512), Urho3D::Vector3(2, 10, 512));
+
+
+	DebugLineRepo::drawLine(Urho3D::Vector3(-18, 10, -512), Urho3D::Vector3(-18, 10, 512));
+	DebugLineRepo::drawLine(Urho3D::Vector3(-16, 10, -512), Urho3D::Vector3(-16, 10, 512));
+
+	DebugLineRepo::drawLine(Urho3D::Vector3(-22, 10, -512), Urho3D::Vector3(-22, 10, 512));
+	DebugLineRepo::drawLine(Urho3D::Vector3(-24, 10, -512), Urho3D::Vector3(-24, 10, 512));
 	for (auto unit : *units) {
 		Urho3D::Vector2 newForce;
 		switch (unit->getState()) {
