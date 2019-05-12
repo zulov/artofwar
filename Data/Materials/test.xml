@@ -2,6 +2,6 @@
     <technique name="Techniques/Diff.xml" quality="1" />
     <texture unit="diffuse" name="Textures/test.png" />
     <parameter name="MatSpecColor" value="0.3 0.3 0.3 16" />
-    <parameter name="UOffset" value="16 0 0 0" />
-    <parameter name="VOffset" value="0 16 0 0" />
+    <parameter name="UOffset" value="15 0 0 0" />
+    <parameter name="VOffset" value="0 15 0 0" />
 </material>
