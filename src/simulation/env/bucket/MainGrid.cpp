@@ -260,14 +260,14 @@ void MainGrid::createDebugGrid() {
 	float value = -size / 2;
 	for (int i = 0; i < resolution; ++i) {
 		DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(-size / 2, 10, value),
-		                        Urho3D::Vector3(size / 2, 10, value));
+		                        Urho3D::Vector3(size / 2, 10, value), Urho3D::Color::CYAN);
 		value += fieldSize;
 	}
 
 	value = -size / 2;
 	for (int i = 0; i < resolution; ++i) {
 		DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(value, 10, -size / 2),
-		                        Urho3D::Vector3(value, 10, size / 2), Urho3D::Color::GRAY);
+		                        Urho3D::Vector3(value, 10, size / 2), Urho3D::Color::CYAN);
 		value += fieldSize;
 	}
 
