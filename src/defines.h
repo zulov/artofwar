@@ -8,4 +8,4 @@
 
 #define DEFAULT_VECTOR_SIZE 10
 
-#define UNIT_DEBUG_ENABLED true
+#define DEBUG_LINES_ENABLED true

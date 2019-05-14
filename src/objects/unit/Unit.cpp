@@ -179,11 +179,11 @@ void Unit::setAim(Aim* aim) {
 
 void Unit::drawLineTo(const Urho3D::Vector3& second,
                       const Urho3D::Color& color = Urho3D::Color::WHITE) const {
-	DebugLineRepo::drawLine(*position, second + *position, color);
+	DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, *position, second + *position, color);
 }
 
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
-	if constexpr (UNIT_DEBUG_ENABLED) {
+	if constexpr (DEBUG_LINES_ENABLED) {
 		if (billboardBar->enabled_) {
 			switch (type) {
 			case DebugUnitType::NONE:
@@ -222,14 +222,14 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 					auto lines = aims.getDebugLines(this);
 					if (!lines.empty()) {
 						for (int i = 0; i < lines.size() - 1; ++i) {
-							DebugLineRepo::drawLine(lines[i], lines[i + 1]);
+							DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, lines[i], lines[i + 1]);
 						}
 					}
 				}
 				break;
 			case DebugUnitType::INTERACT:
 				for (auto toInteract : thingsToInteract) {
-					DebugLineRepo::drawLine(*position, *toInteract->getPosition());
+					DebugLineRepo::drawLine(DebugLineType::UNIT_LINES,*position, *toInteract->getPosition());
 				}
 				break;
 			default: ;

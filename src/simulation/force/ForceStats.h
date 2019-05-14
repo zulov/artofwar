@@ -25,7 +25,7 @@ struct ForceStats
 		if constexpr (FORCE_STATS_ENABLE) {
 			sepObstStat += force.Length();
 		}
-		if constexpr (UNIT_DEBUG_ENABLED) {
+		if constexpr (DEBUG_LINES_ENABLED) {
 			sepObstLast = force;
 			sepObstLast.Normalize();
 		}
@@ -33,7 +33,7 @@ struct ForceStats
 
 	void addSepUnit(Urho3D::Vector2& force) {
 		if constexpr (FORCE_STATS_ENABLE) { sepUnitStat += force.Length(); }
-		if constexpr (UNIT_DEBUG_ENABLED) {
+		if constexpr (DEBUG_LINES_ENABLED) {
 			sepUnitLast = force;
 			sepUnitLast.Normalize();
 		}
@@ -41,7 +41,7 @@ struct ForceStats
 
 	void addDest(Urho3D::Vector2& force) {
 		if constexpr (FORCE_STATS_ENABLE) { destStat += force.Length(); }
-		if constexpr (UNIT_DEBUG_ENABLED) {
+		if constexpr (DEBUG_LINES_ENABLED) {
 			destLast = force;
 			destLast.Normalize();
 		}
@@ -49,7 +49,7 @@ struct ForceStats
 
 	void addForm(Urho3D::Vector2& force) {
 		if constexpr (FORCE_STATS_ENABLE) { formStat += force.Length(); }
-		if constexpr (UNIT_DEBUG_ENABLED) {
+		if constexpr (DEBUG_LINES_ENABLED) {
 			formLast = force;
 			formLast.Normalize();
 		}
@@ -57,7 +57,7 @@ struct ForceStats
 
 	void addEscp(Urho3D::Vector2& force) {
 		if constexpr (FORCE_STATS_ENABLE) { escaStat += force.Length(); }
-		if constexpr (UNIT_DEBUG_ENABLED) {
+		if constexpr (DEBUG_LINES_ENABLED) {
 			escaLast = force;
 			escaLast.Normalize();
 		}

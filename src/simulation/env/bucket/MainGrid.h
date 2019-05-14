@@ -69,6 +69,7 @@ public:
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
+	void createDebugGrid();
 
 	PathFinder *pathConstructor;
 

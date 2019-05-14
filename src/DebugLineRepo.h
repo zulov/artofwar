@@ -1,17 +1,29 @@
 #pragma once
 #include <Urho3D/Graphics/CustomGeometry.h>
 
-class DebugLineRepo
-{
+#define NUMBER_OF_GEOMETRIES 2
+
+enum class DebugLineType : char;
+
+class DebugLineRepo {
+
+
 public:
 	~DebugLineRepo();
-	static void commit();
-	static void beginGeometry();
-	static void clear();
-	static void drawLine(const Urho3D::Vector3& first, const Urho3D::Vector3& second, const Urho3D::Color& color = Urho3D::Color::WHITE);
+	static void commit(DebugLineType type);
+	static void beginGeometry(DebugLineType type);
+	static void clear(DebugLineType type);
+	static void drawLine(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
+	                     const Urho3D::Color& color = Urho3D::Color::WHITE);
 
-	static Urho3D::CustomGeometry* geometry;
-	static void init();
+	static void init(DebugLineType type);
 private:
 	DebugLineRepo();
+	static Urho3D::CustomGeometry* geometry[NUMBER_OF_GEOMETRIES];
+
+};
+
+enum class DebugLineType : char {
+	UNIT_LINES,
+	MAIN_GRID
 };

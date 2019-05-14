@@ -9,6 +9,7 @@
 #include <array>
 #include <unordered_set>
 #include "objects/building/Building.h"
+#include "DebugLineRepo.h"
 
 
 MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size),
@@ -44,6 +45,7 @@ MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution
 	pathConstructor = new PathFinder(resolution, size, complexData);
 
 	ci = new content_info();
+	createDebugGrid();
 }
 
 MainGrid::~MainGrid() {
@@ -249,6 +251,28 @@ void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activeP
 		break;
 	default: ;
 	}
+}
+
+void MainGrid::createDebugGrid() {
+	DebugLineRepo::init(DebugLineType::MAIN_GRID);
+	DebugLineRepo::clear(DebugLineType::MAIN_GRID);
+	DebugLineRepo::beginGeometry(DebugLineType::MAIN_GRID);
+	float value = -size / 2;
+	for (int i = 0; i < resolution; ++i) {
+		DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(-size / 2, 10, value),
+		                        Urho3D::Vector3(size / 2, 10, value));
+		value += fieldSize;
+	}
+
+	value = -size / 2;
+	for (int i = 0; i < resolution; ++i) {
+		DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(value, 10, -size / 2),
+		                        Urho3D::Vector3(value, 10, size / 2), Urho3D::Color::GRAY);
+		value += fieldSize;
+	}
+
+
+	DebugLineRepo::commit(DebugLineType::MAIN_GRID);
 }
 
 void MainGrid::addStatic(Static* object) {
