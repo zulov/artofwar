@@ -258,6 +258,10 @@ int Environment::getRevertCloseIndex(int center, int gridIndex) {
 	return mainGrid.getRevertCloseIndex(center, gridIndex);
 }
 
+void Environment::switchDebugGrid() {
+	mainGrid.switchDebugGrid();
+}
+
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {
 	return mainGrid.getValidPosition(size, pos);
 }

@@ -14,8 +14,14 @@ namespace Urho3D {
 
 class content_info;
 
-class MainGrid : public Grid
-{
+
+enum class GridDebugType : char {
+	NONE,
+	GRID,
+	CELLS_TYPE
+};
+
+class MainGrid : public Grid {
 public:
 	MainGrid(short _resolution, float _size);
 	~MainGrid();
@@ -67,11 +73,14 @@ public:
 	void addDeploy(Building* building);
 	void removeDeploy(Building* building);
 
+	void switchDebugGrid();
+
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
-	void createDebugGrid();
+	void drawDebug();
 
-	PathFinder *pathConstructor;
+
+	PathFinder* pathConstructor;
 
 	content_info* ci;
 
@@ -82,4 +91,6 @@ private:
 	ComplexBucketData* complexData;
 
 	std::vector<short> closeIndex;
+	GridDebugType debugType = GridDebugType::GRID;
 };
+

@@ -45,7 +45,7 @@ MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution
 	pathConstructor = new PathFinder(resolution, size, complexData);
 
 	ci = new content_info();
-	createDebugGrid();
+	switchDebugGrid();
 }
 
 MainGrid::~MainGrid() {
@@ -253,26 +253,62 @@ void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activeP
 	}
 }
 
-void MainGrid::createDebugGrid() {
+void MainGrid::drawDebug() {
 	DebugLineRepo::init(DebugLineType::MAIN_GRID);
 	DebugLineRepo::clear(DebugLineType::MAIN_GRID);
-	DebugLineRepo::beginGeometry(DebugLineType::MAIN_GRID);
-	float value = -size / 2;
-	for (int i = 0; i < resolution; ++i) {
-		DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(-size / 2, 10, value),
-		                        Urho3D::Vector3(size / 2, 10, value), Urho3D::Color::CYAN);
-		value += fieldSize;
-	}
 
-	value = -size / 2;
-	for (int i = 0; i < resolution; ++i) {
-		DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(value, 10, -size / 2),
-		                        Urho3D::Vector3(value, 10, size / 2), Urho3D::Color::CYAN);
-		value += fieldSize;
+	DebugLineRepo::beginGeometry(DebugLineType::MAIN_GRID);
+
+	switch (debugType) {
+	case GridDebugType::NONE:
+
+		break;
+	case GridDebugType::GRID:
+	{
+		float value = -size / 2;
+		for (int i = 0; i < resolution; ++i) {
+			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(-size / 2, 10, value),
+			                        Urho3D::Vector3(size / 2, 10, value), Urho3D::Color::CYAN);
+			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(value, 10, -size / 2),
+			                        Urho3D::Vector3(value, 10, size / 2), Urho3D::Color::CYAN);
+			value += fieldSize;
+		}
+	}
+	break;
+	case GridDebugType::CELLS_TYPE:
+	{
+		for (int i = 0; i < sqResolution; ++i) {
+			auto center = complexData[i].getCenter();
+			std::tuple<bool, Urho3D::Color> info = DebugLineRepo::getInfoForGrid(complexData[i].getType());
+
+			if (std::get<0>(info)) {
+				DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(center.x_, 10, center.y_),
+				                        Urho3D::Vector3(center.x_, 15, center.y_), std::get<1>(info));
+			}
+		}
+	}
+	break;
+	default: ;
 	}
 
 
 	DebugLineRepo::commit(DebugLineType::MAIN_GRID);
+}
+
+void MainGrid::switchDebugGrid() {
+	switch (debugType) {
+	case GridDebugType::NONE:
+		debugType = GridDebugType::GRID;
+		break;
+	case GridDebugType::GRID:
+		debugType = GridDebugType::CELLS_TYPE;
+		break;
+	case GridDebugType::CELLS_TYPE:
+		debugType = GridDebugType::NONE;
+		break;
+	default: ;
+	}
+	drawDebug();
 }
 
 void MainGrid::addStatic(Static* object) {

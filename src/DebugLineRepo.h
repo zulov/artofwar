@@ -3,6 +3,7 @@
 
 #define NUMBER_OF_GEOMETRIES 2
 
+enum class CellState : char;
 enum class DebugLineType : char;
 
 class DebugLineRepo {
@@ -10,6 +11,7 @@ class DebugLineRepo {
 
 public:
 	~DebugLineRepo();
+	static std::tuple<bool, Urho3D::Color> getInfoForGrid(CellState state);
 	static void commit(DebugLineType type);
 	static void beginGeometry(DebugLineType type);
 	static void clear(DebugLineType type);

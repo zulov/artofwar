@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
 #include "defines.h"
+#include "objects/CellState.h"
 
 Urho3D::CustomGeometry* DebugLineRepo::geometry[] = {nullptr, nullptr};
 
@@ -22,6 +23,19 @@ DebugLineRepo::~DebugLineRepo() {
 		for (auto customGeometry : geometry) {
 			customGeometry->Remove();
 		}
+	}
+}
+
+std::tuple<bool, Urho3D::Color> DebugLineRepo::getInfoForGrid(CellState state) {
+	switch (state) {
+	case CellState::EMPTY: return {false, Urho3D::Color::BLACK};
+	case CellState::ATTACK: return {true, Urho3D::Color::RED};
+	case CellState::COLLECT: return {true, Urho3D::Color::YELLOW};
+	case CellState::NONE: return {false, Urho3D::Color::BLACK};
+	case CellState::RESOURCE: return {true, Urho3D::Color::GREEN};
+	case CellState::BUILDING: return {true, Urho3D::Color::BLUE};
+	case CellState::DEPLOY: return {true, Urho3D::Color::CYAN};
+	default: ;
 	}
 }
 
