@@ -18,6 +18,7 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 	for (auto value : *_units) {
 		auto unit = dynamic_cast<Unit*>(value);
 		unit->clearAims();
+		StateManager::changeState(unit, UnitState::STOP);
 		units.push_back(unit);
 	}
 

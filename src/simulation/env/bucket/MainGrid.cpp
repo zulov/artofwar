@@ -291,7 +291,6 @@ void MainGrid::drawDebug() {
 	default: ;
 	}
 
-
 	DebugLineRepo::commit(DebugLineType::MAIN_GRID);
 }
 
