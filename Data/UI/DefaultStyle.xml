@@ -29,14 +29,14 @@
         <attribute name="Focus Mode" value="NotFocusable" />
     </element>
     <element type="Cursor">
-		<attribute name="Min Size" value="32 32" />
-        <attribute name="Max Size" value="32 32" />
+		<attribute name="Min Size" value="{iconX} {iconY}" />
+        <attribute name="Max Size" value="{iconX} {iconY}" />
         <attribute name="Shapes">
             <variant type="VariantVector" >
                 <variant type="String" value="Normal" />
-                <variant type="ResourceRef" value="Image;Textures/Cursor_Basic2.png" />
-                <variant type="IntRect" value="0 0 64 64" />
-                <variant type="IntVector2" value="0 0" />
+                <variant type="ResourceRef" value="Image;Textures/Hud/cursor.png" />
+                <variant type="IntRect" value="65 64 128 128" />
+                <variant type="IntVector2" value="4 2" />
             </variant>
             <variant type="VariantVector" >
                 <variant type="String" value="ResizeVertical" />
