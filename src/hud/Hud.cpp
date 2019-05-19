@@ -95,7 +95,7 @@ void Hud::prepareStyle() {
 	rapidxml::xml_node<>* a = baseXML.allocate_node(rapidxml::node_element, "elements");
 	baseXML.append_node(a);
 
-	for (auto sett : graphSettings->styles) {
+	for (const auto& sett : graphSettings->styles) {
 		auto style2 = Game::getCache()->GetResource<Urho3D::XMLFile>("UI/" + sett);
 		rapidxml::xml_document<> additionalXML;
 		auto chs = _strdup(style2->ToString().CString());

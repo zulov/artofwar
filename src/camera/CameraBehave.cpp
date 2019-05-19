@@ -4,8 +4,7 @@
 
 
 CameraBehave::CameraBehave(const Urho3D::Vector3& pos, float minY, const Urho3D::String& name):
-	minY(minY), name(name),
-	changed(true) {
+	minY(minY), name(name), changed(true) {
 
 	info = new Urho3D::String();
 

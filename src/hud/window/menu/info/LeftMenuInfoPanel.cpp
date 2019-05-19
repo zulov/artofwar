@@ -11,7 +11,6 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "NamesUtils.h"
-#include <Urho3D/Resource/ResourceCache.h>
 #include "objects/NamesCache.h"
 
 

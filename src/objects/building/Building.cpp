@@ -10,8 +10,6 @@
 #include "player/Resources.h"
 #include <string>
 #include "consts.h"
-#include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Resource/XMLFile.h>
 #include "objects/NodeUtils.h"
 
 

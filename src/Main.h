@@ -11,7 +11,6 @@
 #include "simulation/Simulation.h"
 #include <Urho3D/Engine/Application.h>
 #include <Urho3D/Graphics/Graphics.h>
-#include <Urho3D/IO/Log.h>
 #include <Urho3D/Input/Input.h>
 
 

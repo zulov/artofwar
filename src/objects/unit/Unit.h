@@ -104,7 +104,7 @@ public:
 	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
 	void setBucket(int _bucketIndex, char param);
 	bool isSlotOccupied(int indexToInteract) override; 
-	void setOccupiedSlot(int indexToInteract, bool value) { useSockets[indexToInteract] = value; }
+	void setOccupiedSlot(int indexToInteract, bool value) override { useSockets[indexToInteract] = value; }
 	Urho3D::Vector2 getPosToUse() const;
 
 	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* unit) const override;

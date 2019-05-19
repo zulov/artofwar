@@ -193,7 +193,7 @@ void PathFinder::invalidateCache() {
 }
 
 void PathFinder::debug(int start, int end) {
-	Urho3D::Image* image = new Urho3D::Image(Game::getContext());
+	auto image = new Urho3D::Image(Game::getContext());
 	image->SetSize(resolution, resolution, 4);
 
 	Urho3D::String prefix = Urho3D::String(staticCounter) + "_";

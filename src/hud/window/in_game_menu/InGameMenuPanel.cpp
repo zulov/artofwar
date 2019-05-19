@@ -1,6 +1,5 @@
 #include "InGameMenuPanel.h"
 #include "GameState.h"
-#include "hud/MySprite.h"
 #include "hud/UiUtils.h"
 #include "middle/FilePanel.h"
 #include <Urho3D/Resource/ResourceCache.h>

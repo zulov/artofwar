@@ -1,7 +1,6 @@
 #include "AbstractWindowPanel.h"
 #include "Game.h"
 #include "hud/UiUtils.h"
-#include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/UI.h>
 
 

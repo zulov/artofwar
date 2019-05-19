@@ -2,7 +2,6 @@
 #include "Game.h"
 #include "objects/unit/state/StateManager.h"
 #include <Urho3D/Resource/ResourceCache.h>
-#include <iostream>
 
 
 ColorPaletteRepo::ColorPaletteRepo() {

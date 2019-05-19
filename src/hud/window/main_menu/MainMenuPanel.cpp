@@ -2,7 +2,6 @@
 #include "GameState.h"
 #include "close//MainMenuClosePanel.h"
 #include "help/MainMenuHelpPanel.h"
-#include "hud/MySprite.h"
 #include "hud/UiUtils.h"
 #include "load/MainMenuLoadPanel.h"
 #include "new_game/MainMenuNewGamePanel.h"
