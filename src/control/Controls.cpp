@@ -209,7 +209,7 @@ void Controls::releaseLeft() {
 		auto lastClicked = left.lastUp;
 		left.setSecond(hitData.position);
 		const float dist = sqDist(left.held.first, left.held.second);
-		if (left.lastUp - lastClicked < 0.5 && dist < clickDistance) {
+		if (left.lastUp - lastClicked < 0.2 && dist < clickDistance) {
 			leftDoubleClick(hitData);
 		} else if (dist > clickDistance) {
 			leftHold(left.held);

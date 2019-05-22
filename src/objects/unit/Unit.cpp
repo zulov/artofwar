@@ -441,7 +441,7 @@ std::tuple<Physical*, float, int> Unit::closestPhysical(std::vector<Physical*>* 
 	Physical* closestPhy = nullptr;
 	int bestIndex = -1;
 	for (auto entity : *things) {
-		if (entity->isAlive() && condition(entity)) {
+			if (entity->isAlive() && condition(entity)) {
 			auto opt = entity->getPosToUseWithIndex(this);
 			if (opt.has_value()) {
 				auto [pos, distance, indexOfPos] = opt.value();

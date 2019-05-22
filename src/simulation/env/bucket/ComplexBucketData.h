@@ -32,8 +32,8 @@ public:
 	void setEscapeThrought(int val);
 	Urho3D::Vector2* getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket);
 
-	std::vector<CostPair>& getNeightbours() { return neighbours; }
-	std::vector<CostPair>& getOccupiedNeightbours() { return occupiedNeightbours; }
+	//std::vector<CostPair>& getNeightbours() { return neighbours; }
+	//std::vector<CostPair>& getOccupiedNeightbours() { return occupiedNeightbours; }
 	Urho3D::Vector2& getCenter() { return center; }
 	char getAdditonalInfo() const { return additonalInfo; }
 	int getEscapeBucket() const { return escapeBucketIndex; }
@@ -47,11 +47,14 @@ public:
 private:
 	CellState type;
 	char size, additonalInfo{};
+
+	unsigned char isNeightFree;
+	float costToNeight[8];
+
 	//float cost{};
 	int escapeBucketIndex = -1;
 	Urho3D::Vector2 center;
 
 	Static* object{};
-	std::vector<CostPair> neighbours, occupiedNeightbours;
-
+	//std::vector<CostPair> neighbours, occupiedNeightbours;
 };

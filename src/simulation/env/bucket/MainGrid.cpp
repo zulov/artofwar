@@ -46,6 +46,9 @@ MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution
 
 	ci = new content_info();
 	switchDebugGrid();
+	int a =sizeof(ComplexBucketData);
+
+	int b= 3;
 }
 
 MainGrid::~MainGrid() {
