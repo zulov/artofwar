@@ -2,8 +2,7 @@
 #include "objects/CellState.h"
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Math/Vector2.h>
-#include <Urho3D/Scene/Node.h>
-#include <vector>
+
 
 
 class Building;
@@ -32,29 +31,37 @@ public:
 	void setEscapeThrought(int val);
 	Urho3D::Vector2* getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket);
 
-	//std::vector<CostPair>& getNeightbours() { return neighbours; }
-	//std::vector<CostPair>& getOccupiedNeightbours() { return occupiedNeightbours; }
+	void setNeightOccupied(const unsigned char index);
+	void setNeightFree(const unsigned char index);
+	bool ifNeightIsFree(const unsigned char index) const;
+
+	float getCost(const unsigned char index) { return costToNeight[index]; }
+	void setCost(const unsigned char index, float cost) { costToNeight[index] = cost; }
+
+	bool allNeightOccupied() const {return isNeightOccupied == 255;}
+
+	bool allNeightFree() const { return isNeightOccupied == 0; }
+
 	Urho3D::Vector2& getCenter() { return center; }
-	char getAdditonalInfo() const { return additonalInfo; }
+	char getAdditionalInfo() const { return additionalInfo; }
 	int getEscapeBucket() const { return escapeBucketIndex; }
-	bool isUnit() const { return type < CellState::NONE; }
-	CellState getType() const { return type; }
+	bool isUnit() const { return state < CellState::NONE; }
+	CellState getType() const { return state; }
 	char getSize() { return size; }
 	void updateSize(char val, CellState cellState);
 	bool belowCellLimit();
 	void setDeploy(Building* building);
 	void removeDeploy();
 private:
-	CellState type;
-	char size, additonalInfo{};
+	CellState state;
+	char size, additionalInfo{};
 
-	unsigned char isNeightFree;
-	float costToNeight[8];
+	unsigned char isNeightOccupied = 0;
+	float costToNeight[8]={0,0,0,0,0,0,0,0};
 
 	//float cost{};
 	int escapeBucketIndex = -1;
 	Urho3D::Vector2 center;
 
 	Static* object{};
-	//std::vector<CostPair> neighbours, occupiedNeightbours;
 };

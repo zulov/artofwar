@@ -7,9 +7,15 @@
 #include <unordered_set>
 
 
-PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexData) : resolution(resolution),
-	fieldSize(size / resolution), complexData(complexData), invFieldSize(resolution / size),
-	halfResolution(resolution / 2) {
+PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexData) :
+	resolution(resolution), fieldSize(size / resolution),
+	complexData(complexData), invFieldSize(resolution / size),
+	halfResolution(resolution / 2),
+	closeIndex({
+		-resolution - 1, -resolution, -resolution + 1,
+		-1, 0, 1,
+		resolution - 1, resolution, resolution + 1
+	}) {
 	tempPath = new std::vector<int>();
 	tempPath->reserve(DEFAULT_VECTOR_SIZE);
 }
@@ -78,17 +84,20 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 		if (current == endIdx) {
 			break;
 		}
-		auto& neights = complexData[current].getNeightbours();
-		for (auto& neight : neights) {
-			int next = neight.index;
-			if (came_from[current] != next) {
-				const float new_cost = cost_so_far[current] + neight.cost;
-				if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
 
-					updateCost(next, new_cost);
-					frontier.put(next, new_cost + heuristic(next, endIdx));
-					came_from[next] = current;
+		for (int i = 0; i < 8; ++i) {
+			if (complexData[current].ifNeightIsFree(i)) {
+				int next = current + closeIndex[i];
+				if (came_from[current] != next) {
+					const float new_cost = cost_so_far[current] + complexData[current].getCost(i);
+					if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
+						updateCost(next, new_cost);
+						frontier.put(next, new_cost + heuristic(next, endIdx));
+						came_from[next] = current;
+					}
 				}
+			} else {
+				int a = 5;
 			}
 		}
 	}
@@ -104,10 +113,16 @@ std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim)
 	}
 
 	while (!complexData[end].isUnit()) {
-		if (complexData[end].getNeightbours().empty()) {
+		if (complexData[end].allNeightOccupied()) {
 			end = complexData[end].getEscapeBucket();
 		} else {
-			end = complexData[end].getNeightbours()[0].index; //TODO obliczyc lepszy
+			for (int i = 0; i < 8; ++i) {
+				if (complexData[end].ifNeightIsFree(i)) {
+					end = end + closeIndex[i]; //TODO obliczyc lepszy, a nie pierwszy z brzegu
+					break;
+				}
+			}
+
 		}
 	}
 
@@ -141,26 +156,29 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 		while (!frontier.empty()) {
 			const auto current = frontier.get();
 
-			if (!complexData[current].getNeightbours().empty()) {
+			if (!complexData[current].allNeightOccupied()) {
 				end = current;
 				complexData[current].setEscapeThrought(-1);
 				break;
 			}
-			auto& neights = complexData[current].getOccupiedNeightbours();
-			for (auto& neight : neights) {
-				if (!complexData[neight.index].getNeightbours().empty() && refreshed.find(neight.index) == refreshed.
-					end()) {
-					//TODO to chyba glupi warunek
-					toRefresh.push_back(neight.index);
-				}
-				int next = neight.index;
-				if (came_from[current] != next) {
-					const float new_cost = cost_so_far[current] + neight.cost;
-					if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
-						updateCost(next, new_cost);
+			for (int i = 0; i < 8; ++i) {
+				if (!complexData[current].ifNeightIsFree(i)) {
+					int nI = current + closeIndex[i];
 
-						frontier.put(next, new_cost);
-						came_from[next] = current;
+					if (!complexData[nI].allNeightOccupied() && refreshed.find(nI) == refreshed.
+						end()) {
+						//TODO to chyba glupi warunek
+						toRefresh.push_back(nI);
+					}
+					int next = nI;
+					if (came_from[current] != next) {
+						const float new_cost = cost_so_far[current] + complexData[current].getCost(i);
+						if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
+							updateCost(next, new_cost);
+
+							frontier.put(next, new_cost);
+							came_from[next] = current;
+						}
 					}
 				}
 			}

@@ -2,12 +2,12 @@
 #include "Game.h"
 #include "ObjectEnums.h"
 #include "objects/static/Static.h"
+#include "consts.h"
 #include <iostream>
 
 
 ComplexBucketData::ComplexBucketData() {
 	removeStatic();
-	neighbours.reserve(8);
 }
 
 ComplexBucketData::~ComplexBucketData() = default;
@@ -17,18 +17,18 @@ void ComplexBucketData::setStatic(Static* _object) {
 	size = 0;
 
 	if (object->getType() == ObjectType::BUILDING) {
-		type = CellState::BUILDING;
-		additonalInfo = object->getPlayer();
+		state = CellState::BUILDING;
+		additionalInfo = object->getPlayer();
 	} else {
-		type = CellState::RESOURCE;
-		additonalInfo = object->getDbID();
+		state = CellState::RESOURCE;
+		additionalInfo = object->getDbID();
 	}
 }
 
 void ComplexBucketData::removeStatic() {
 	object = nullptr;
-	type = CellState::EMPTY;
-	additonalInfo = -1;
+	state = CellState::EMPTY;
+	additionalInfo = -1;
 	size = 0;
 }
 
@@ -45,12 +45,24 @@ getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket) {
 	return new Urho3D::Vector2(escapeBucket.getCenter().x_ - position->x_, escapeBucket.getCenter().y_ - position->z_);
 }
 
+
+void ComplexBucketData::setNeightOccupied(const unsigned char index) {
+	isNeightOccupied |= Consts::bitFlags[index];
+}
+void ComplexBucketData::setNeightFree(const unsigned char index) {
+	isNeightOccupied &= ~Consts::bitFlags[index];
+}
+
+bool ComplexBucketData::ifNeightIsFree(const unsigned char index) const {
+	return !(isNeightOccupied & Consts::bitFlags[index]);
+}
+
 void ComplexBucketData::updateSize(char val, CellState cellState) {
 	size += val;
 	if (size <= 0) {
-		type = CellState::EMPTY;
-	} else if (type != CellState::NONE) {
-		type = cellState;
+		state = CellState::EMPTY;
+	} else if (state != CellState::NONE) {
+		state = cellState;
 	}
 }
 
@@ -60,7 +72,7 @@ bool ComplexBucketData::belowCellLimit() {
 
 void ComplexBucketData::setDeploy(Building* building) {
 	object = (Static*)building;
-	type = CellState::DEPLOY;
+	state = CellState::DEPLOY;
 }
 
 void ComplexBucketData::removeDeploy() {

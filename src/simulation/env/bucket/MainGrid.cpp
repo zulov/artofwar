@@ -46,9 +46,9 @@ MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution
 
 	ci = new content_info();
 	switchDebugGrid();
-	int a =sizeof(ComplexBucketData);
+	int a = sizeof(ComplexBucketData);
 
-	int b= 3;
+	int b = 3;
 }
 
 MainGrid::~MainGrid() {
@@ -115,11 +115,15 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 	Urho3D::Vector2 sum;
 	if (index != unit->getIndexToInteract()
 		&& complexData[index].isUnit()
-		&& !complexData[index].getOccupiedNeightbours().empty()) {
-		for (const auto neightbour : complexData[index].getOccupiedNeightbours()) {
-			sum += complexData[neightbour.index].getCenter();
+		&& complexData[index].allNeightOccupied()) {
+		int counter = 0;
+		for (int i = 0; i < 8; ++i) {
+			if (!complexData[index].ifNeightIsFree(i)) {
+				sum += complexData[index + closeIndex[i]].getCenter();
+				++counter;
+			}
 		}
-		sum /= complexData[index].getOccupiedNeightbours().size();
+		sum /= counter;
 		sum -= Urho3D::Vector2(unit->getPosition()->x_, unit->getPosition()->z_);
 	}
 	return -sum;
@@ -243,13 +247,13 @@ void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activeP
 	case CellState::RESOURCE:
 		if (checks[1]) {
 			ci->hasResource = true;
-			ci->resourceNumber[complexData[index].getAdditonalInfo()]++;
+			ci->resourceNumber[complexData[index].getAdditionalInfo()]++;
 		}
 		break;
 	case CellState::BUILDING:
 		if (checks[2]) {
 			ci->hasBuilding = true;
-			ci->buildingNumberPerPlayer[complexData[index].getAdditonalInfo()]++;
+			ci->buildingNumberPerPlayer[complexData[index].getAdditionalInfo()]++;
 		}
 		break;
 	default: ;
@@ -360,16 +364,19 @@ void MainGrid::removeStatic(Static* object) {
 Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3* position) {
 	int index = indexFromPosition(position);
 	if (!complexData[index].isUnit()) {
-		int escapeBucket;
-		auto& neights = complexData[index].getNeightbours();
-		if (!neights.empty()) {
-			float dist = sqDist(complexData[neights.at(0).index].getCenter(), complexData[index].getCenter());
-			escapeBucket = neights.at(0).index;
-
-			for (int i = 1; i < neights.size(); ++i) {
-				float newDist = sqDist(complexData[neights.at(i).index].getCenter(), complexData[index].getCenter());
-				if (newDist < dist) {
-					escapeBucket = neights.at(i).index;
+		int escapeBucket;//=-1
+		//auto& neights = complexData[index].getNeightbours();
+		if (!complexData[index].allNeightOccupied()) {
+			float dist = 999999;
+			for (int i = 0; i < 8; ++i) {
+				if (complexData[index].ifNeightIsFree(i)) {
+					int ni = index + closeIndex[i];
+					float newDist = sqDist(complexData[ni].getCenter(),
+					                       complexData[index].getCenter());
+					if (newDist < dist) {
+						dist = newDist;
+						escapeBucket = ni;
+					}
 				}
 			}
 		} else {
@@ -409,19 +416,15 @@ Urho3D::IntVector2 MainGrid::getBucketCords(const Urho3D::IntVector2& size, cons
 }
 
 void MainGrid::updateNeighbors(const int current) const {
-	auto& neigths = complexData[current].getNeightbours();
-	neigths.clear();
-	auto& ocupNeigths = complexData[current].getOccupiedNeightbours();
-	ocupNeigths.clear();
-
-	for (auto i : closeIndex) {
-		const int index = current + i; //TODO bug przy skrajach bedzie całkiem inne indexy updejtowac :O
-		if (inSide(index)) {
-			if (complexData[index].isUnit()) {
-				neigths.emplace_back(index, cost(current, index));
-			} else if (!complexData[index].isUnit()) {
-				ocupNeigths.emplace_back(index, cost(current, index));
+	for (unsigned char i = 0; i < 8; ++i) {
+		const int nI = current + closeIndex[i]; //TODO bug przy skrajach bedzie całkiem inne indexy updejtowac :O
+		if (inSide(nI)) {
+			if (complexData[nI].isUnit()) {
+				complexData[current].setNeightFree(i);
+			} else if (!complexData[nI].isUnit()) {
+				complexData[current].setNeightOccupied(i);
 			}
+			complexData[current].setCost(i, cost(current, nI));
 		}
 	}
 }

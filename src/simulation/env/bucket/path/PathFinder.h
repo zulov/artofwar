@@ -51,5 +51,7 @@ private:
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref = resolution * resolution - 1;
 
+	std::vector<short> closeIndex;
+
 	BucketQueue frontier;
 };
