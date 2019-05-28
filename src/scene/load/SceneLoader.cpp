@@ -144,5 +144,7 @@ void SceneLoader::load(const char* sql, int (*load)(void*, int, char**, char**))
 
 void SceneLoader::end() {
 	sqlite3_close(database);
+	delete dbLoad;
+	dbLoad = nullptr;
 	loadingState.inc("");
 }

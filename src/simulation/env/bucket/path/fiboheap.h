@@ -4,17 +4,15 @@
 #include <cmath>
 #include <vector>
 
-	static int degree_cache[1000];
+static int degree_cache[1000];
 
-class FibHeap
-{
+class FibHeap {
 public:
 
-	class FibNode
-	{
+	class FibNode {
 	public:
-		FibNode(const float k, const int pl): key(k), left(nullptr), right(nullptr), child(nullptr), degree(-1),
-			payload(pl) {
+		FibNode(const float k, const int pl): left(nullptr), right(nullptr), child(nullptr), key(k), degree(-1),
+		                                      payload(pl) {
 		}
 
 		~FibNode() = default;
@@ -32,13 +30,15 @@ public:
 			payload = -1;
 		}
 
-		float key;
+
 		FibNode* left;
 		FibNode* right;
 		FibNode* child;
-		short degree;
+		float key;
 		int payload;
 		int id;
+		short degree;
+
 	};
 
 	FibHeap() {
@@ -256,11 +256,11 @@ public:
 		++n;
 	}
 
-	int n{0};
 	FibNode* minNode{nullptr};
 	std::vector<FibNode*> temp;
 	std::vector<FibNode*> pool;
 
+	int n{0};
 	int lowestFree = 0;
 	int highestUsed = 399;
 

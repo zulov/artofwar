@@ -4,8 +4,7 @@
 #include <algorithm>
 
 
-struct content_info
-{
+struct content_info {
 	content_info() {
 		reset();
 	}
@@ -43,13 +42,14 @@ struct content_info
 	int unitsNumberPerPlayer[MAX_PLAYERS];
 	int allyNumber;
 	int enemiesNumber;
-	bool hasUnit;
 
 	int allyBuilding;
 	int enemyBuilding;
 	int buildingNumberPerPlayer[MAX_PLAYERS];
-	bool hasBuilding;
 
 	int resourceNumber[RESOURCE_NUMBER_DB];
+
+	bool hasUnit;
+	bool hasBuilding;
 	bool hasResource;
 };
