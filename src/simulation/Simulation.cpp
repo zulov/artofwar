@@ -32,7 +32,6 @@
 Simulation::Simulation(Environment* enviroment, CreationCommandList* creationCommandList): enviroment(enviroment),
                                                                                            creationCommandList(
 	                                                                                           creationCommandList) {
-
 	simObjectManager = creationCommandList->getManager();
 	levelsCommandList = new UpgradeCommandList(simObjectManager);
 	colorScheme = ColorMode::BASIC;
@@ -146,7 +145,12 @@ void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
 		//creationCommandList->addUnits(UNITS_NUMBER, 2, Urho3D::Vector2(20, -30), 0, 0);
 		//creationCommandList->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-20, -10), 1, 0);
-		//creationCommandList->addUnits(UNITS_NUMBER, 4, Urho3D::Vector2(-20, -20), 0, 0);
+		creationCommandList->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-20, -20), 0, 0);
+		creationCommandList->addBuilding(1, Urho3D::Vector2(-10, -18), 0, 0);
+		creationCommandList->addBuilding(1, Urho3D::Vector2(-6, -18), 0, 0);
+		creationCommandList->addBuilding(1, Urho3D::Vector2(-2, -18), 0, 0);
+		creationCommandList->addBuilding(1, Urho3D::Vector2(4, -18), 0, 0);
+		creationCommandList->addBuilding(1, Urho3D::Vector2(10, -18), 0, 0);
 		//creationCommandList->addResource(0, Urho3D::Vector2(0, 0), 0);
 	}
 }

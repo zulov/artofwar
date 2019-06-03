@@ -47,8 +47,8 @@ private:
 	FormationType type;
 	bool changed = true;
 
-	float sparsity = 1;
 	FormationState state;
+	float sparsity = 1;
 
 	char* rechnessLevel;
 

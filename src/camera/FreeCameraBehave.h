@@ -13,6 +13,6 @@ public:
 	Urho3D::String* getInfo() override;
 	Urho3D::MouseMode getMouseMode() override;
 private:
-	double yaw = 0.0;
-	double pitch = 0.0;
+	float yaw = 0.0;
+	float pitch = 0.0;
 };

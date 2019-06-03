@@ -6,12 +6,12 @@
 
 enum class UnitOrder : char;
 enum class UnitState : char;
+enum class ColorMode : char;
+struct NewGameForm;
 class Unit;
 class ResourceEntity;
 class Building;
 class QueueElement;
-enum class ColorMode : char;
-struct NewGameForm;
 class Environment;
 class SceneSaver;
 class SceneLoader;
