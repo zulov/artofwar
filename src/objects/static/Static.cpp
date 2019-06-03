@@ -5,7 +5,7 @@
 #include "simulation/env/Environment.h"
 #include <string>
 
-Static::Static(Urho3D::Vector3* _position, ObjectType _type, int mainCell) : Physical(_position, _type) {
+Static::Static(Urho3D::Vector3* _position, int mainCell) : Physical(_position) {
 	state = StaticState::ALIVE;
 	nextState = StaticState::ALIVE;
 	setMainCell(mainCell);

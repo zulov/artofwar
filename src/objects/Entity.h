@@ -6,18 +6,17 @@ enum class ObjectType : char;
 class Entity
 {
 public:
-	explicit Entity(ObjectType type);
+	explicit Entity();
 	virtual ~Entity();
 
 	static std::string getColumns();
 
 	Urho3D::Node* getNode() const { return node; }
-	ObjectType getType() const { return type; }
+	virtual ObjectType getType() const;
 
 	virtual bool isAlive() const;
 	virtual int getDbID();
 	virtual std::string getValues(int precision);
 protected:
 	Urho3D::Node* node;
-	ObjectType type;
 };

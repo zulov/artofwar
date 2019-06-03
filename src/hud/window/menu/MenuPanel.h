@@ -19,8 +19,7 @@ class LeftMenuInfoPanel;
 class MySprite;
 class SelectedInfoType;
 
-class MenuPanel : public AbstractWindowPanel
-{
+class MenuPanel : public AbstractWindowPanel {
 public:
 	explicit MenuPanel(Urho3D::XMLFile* _style);
 	~MenuPanel();
@@ -75,9 +74,10 @@ private:
 	Urho3D::CheckBox* checks[LEFT_MENU_CHECKS_NUMBER];
 	Urho3D::UIElement* mock;
 	LeftMenuInfoPanel* infoPanel;
+	SelectedInfo* lastSelectedInfo = nullptr;
+
+	char page = 0;
 	LeftMenuMode mode = LeftMenuMode::UNIT;
 	LeftMenuSubMode subMode = LeftMenuSubMode::BASIC;
-	int page = 0;
 
-	SelectedInfo* lastSelectedInfo = nullptr;
 };

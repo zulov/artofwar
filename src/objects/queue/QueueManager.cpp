@@ -9,7 +9,7 @@
 
 
 QueueManager::QueueManager(short maxCapacity):maxCapacity(maxCapacity) {
-	queue.reserve(DEFAULT_VECTOR_SIZE);
+	queue.reserve(DEFAULT_VECTOR_SIZE/2);
 }
 
 

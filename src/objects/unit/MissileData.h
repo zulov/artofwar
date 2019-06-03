@@ -9,14 +9,15 @@ struct MissileData
 	Urho3D::Vector3 start;
 	Urho3D::Vector3 end;
 	Urho3D::Vector3 direction;
+	
+	Physical* aim;
+	Urho3D::Node* node;
 
 	float distance;
 	float distanceSoFar;
 
-	Physical* aim;
 	float peakHeight;
 	float speed;
-	Urho3D::Node* node;
 
 	~MissileData() {
 		node->Remove();

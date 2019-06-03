@@ -44,20 +44,20 @@ private:
 	short id;
 	short sideA;
 	short sideB;
-	float sparsity = 1;
-
-	std::vector<Unit*> units;
-	char* rechnessLevel;
 	FormationType type;
-	Urho3D::Vector2 center;
-
 	bool changed = true;
 
+	float sparsity = 1;
+	FormationState state;
+
+	char* rechnessLevel;
+
+	Urho3D::Vector2 center;
 	Urho3D::Vector2 direction;
 	Unit* leader = nullptr;
 	Unit* oldLeader = nullptr;
-	FormationState state;
 
+	std::vector<Unit*> units;
 	std::vector<FutureOrder*> futureOrders;
 
 	float thresholdMin = 0.01;

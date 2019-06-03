@@ -1,6 +1,5 @@
 #pragma once
 #include "Aim.h"
-#include <Urho3D/Scene/Node.h>
 #include <vector>
 
 class TargetAim : public Aim
@@ -15,6 +14,6 @@ public:
 	bool expired() override;
 private:
 	std::vector<int> path;
-	short current;
 	Urho3D::Vector2 currentTarget;
+	short current;
 };

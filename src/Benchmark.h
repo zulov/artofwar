@@ -22,6 +22,6 @@ private:
 	short index;
 	float sum;
 	float avg;
-	std::ofstream output;
 	int loops = 0;
+	std::ofstream output;
 };

@@ -12,8 +12,8 @@
 #include "unit/Unit.h"
 
 
-Physical::Physical(Urho3D::Vector3* _position, ObjectType _type): Entity(_type), position(_position),
-	indexInGrid(INT_MIN) {
+Physical::Physical(Urho3D::Vector3* _position):
+	position(_position), indexInGrid(INT_MIN) {
 	node->SetVar("link", this);
 	node->SetPosition(*position);
 }
@@ -119,7 +119,7 @@ void Physical::setPlayer(unsigned char player) {
 }
 
 bool Physical::isSelected() const {
-	return type != ObjectType::PHYSICAL && billboardBar->enabled_;
+	return getType() != ObjectType::PHYSICAL && billboardBar->enabled_;
 }
 
 void Physical::load(dbload_physical* dbloadPhysical) {
@@ -158,15 +158,19 @@ int Physical::belowCloseLimit() {
 	return diff > 0 ? diff : 0;
 }
 
+ObjectType Physical::getType() const {
+	return ObjectType::PHYSICAL;
+}
+
 void Physical::select() {
-	if (type == ObjectType::PHYSICAL) { return; }
+	if (getType() == ObjectType::PHYSICAL) { return; }
 	billboardBar->enabled_ = true;
 	billboardShadow->enabled_ = true;
 	updateHealthBar();
 }
 
 void Physical::unSelect() {
-	if (type == ObjectType::PHYSICAL) { return; }
+	if (getType() == ObjectType::PHYSICAL) { return; }
 	billboardBar->enabled_ = false;
 	billboardShadow->enabled_ = false;
 

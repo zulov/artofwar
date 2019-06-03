@@ -67,6 +67,7 @@ public:
 
 	void load(dbload_unit* unit);
 
+	ObjectType getType() const override;
 	void setFormation(short _formation);
 	void resetFormation();
 	void setPositionInFormation(short _pos);

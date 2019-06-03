@@ -54,7 +54,7 @@ Urho3D::Terrain* LevelBuilder::getTerrain() const {
 }
 
 Entity* LevelBuilder::createZone() {
-	const auto entity = new Entity(ObjectType::ENTITY);
+	const auto entity = new Entity();
 
 	auto zoneNode = entity->getNode();
 	auto zone = zoneNode->CreateComponent<Urho3D::Zone>();
@@ -68,7 +68,7 @@ Entity* LevelBuilder::createZone() {
 
 Entity* LevelBuilder::createLight(const Urho3D::Vector3& direction, const Urho3D::Color& color,
                                   Urho3D::LightType lightType) {
-	const auto entity = new Entity(ObjectType::ENTITY);
+	const auto entity = new Entity();
 	auto lightNode = entity->getNode();
 	lightNode->SetDirection(direction);
 	auto light = lightNode->CreateComponent<Urho3D::Light>();
@@ -82,7 +82,7 @@ Entity* LevelBuilder::createLight(const Urho3D::Vector3& direction, const Urho3D
 
 Entity* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho3D::String& texture,
                                    float horScale, float verScale) {
-	const auto entity = new Physical(new Urho3D::Vector3, ObjectType::PHYSICAL);
+	const auto entity = new Physical(new Urho3D::Vector3);
 
 	terrain = entity->getNode()->CreateComponent<Urho3D::Terrain>();
 	terrain->SetHeightMap(Game::getCache()->GetResource<Urho3D::Image>(heightMap));

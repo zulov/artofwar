@@ -20,8 +20,8 @@ public:
 	void execute();
 	bool getAppend() const { return append; }
 protected:
-	Urho3D::Vector2 vector;
 	Physical* toUse;
+	Urho3D::Vector2 vector;
 	UnitOrder action;
 	const bool append;
 private:

@@ -4,13 +4,13 @@
 struct SettingsForm
 {
 	int resolution;
-	bool fullScreen;
 	int maxFps;
 	int minFps;
-	bool vSync;
 	int textureQuality;
-	bool shadow;
 	int hudSize;
+	bool fullScreen;
+	bool vSync;
+	bool shadow;
 
 	static SettingsForm* getFromElement(Urho3D::VariantMap& eventData) {
 		auto element = static_cast<Urho3D::UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());

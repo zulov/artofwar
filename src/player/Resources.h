@@ -19,8 +19,8 @@ public:
 	void setValue(int id, float amount);
 	static std::string getColumns();
 private:
-	bool changed;
 	void revert(int end, std::vector<db_cost*>* costs);
 	float values[RESOURCE_NUMBER_DB];
 	int size;
+	bool changed;
 };

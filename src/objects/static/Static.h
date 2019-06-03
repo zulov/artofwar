@@ -8,7 +8,7 @@ enum class CellState : char;
 class Static : public Physical
 {
 public:
-	Static(Urho3D::Vector3* _position, ObjectType _type, int mainCell);
+	Static(Urho3D::Vector3* _position, int mainCell);
 	virtual ~Static();
 
 	void setMainCell(int _mainCell);

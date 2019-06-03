@@ -8,16 +8,6 @@
 class Building;
 class Static;
 
-struct CostPair {
-	int index;
-	float cost;
-
-	CostPair(int index, float cost)
-		: index(index), cost(cost) {
-	}
-};
-
-
 class ComplexBucketData {
 public:
 	ComplexBucketData();

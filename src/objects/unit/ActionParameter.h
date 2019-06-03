@@ -20,9 +20,9 @@ struct ActionParameter
 	}
 
 	Aim* aim = nullptr;
+	std::vector<Physical*> thingsToInteract;
 	ActionType type = ActionType::NONE;
 	int index = -1;
-	std::vector<Physical*> thingsToInteract;
 };
 
 struct ActionParameter::Builder

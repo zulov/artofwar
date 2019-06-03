@@ -1,15 +1,20 @@
 #include "Entity.h"
 #include "Game.h"
+#include "ObjectEnums.h"
 #include <Urho3D/Scene/Scene.h>
 #include <string>
 
 
-Entity::Entity(ObjectType type): type(type) {
+Entity::Entity() {
 	node = Game::getScene()->CreateChild();
 }
 
 Entity::~Entity() {
 	node->Remove();
+}
+
+ObjectType Entity::getType() const {
+	return ObjectType::ENTITY;
 }
 
 bool Entity::isAlive() const {

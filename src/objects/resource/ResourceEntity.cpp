@@ -15,7 +15,7 @@
 
 ResourceEntity::
 ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell)
-	: Static(_position, ObjectType::RESOURCE, mainCell) {
+	: Static(_position, mainCell) {
 	dbResource = Game::getDatabaseCache()->getResource(id);
 	loadXml("Objects/resources/" + dbResource->nodeName);
 
@@ -45,9 +45,9 @@ float ResourceEntity::getHealthPercent() const {
 
 Urho3D::String ResourceEntity::toMultiLineString() {
 	return Urho3D::String(dbResource->name).Append(
-			"\nZasobów: ").Append(Urho3D::String((int)amonut)).Append(
-			"\nU¿ytkowników: ").Append(Urho3D::String((int)closeUsers))
-		.Append("/").Append(Urho3D::String((int)maxCloseUsers));
+		                                       "\nZasobów: ").Append(Urho3D::String((int)amonut)).Append(
+		                                       "\nU¿ytkowników: ").Append(Urho3D::String((int)closeUsers))
+	                                       .Append("/").Append(Urho3D::String((int)maxCloseUsers));
 }
 
 std::string ResourceEntity::getValues(int precision) {
@@ -90,6 +90,10 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 		break;
 	}
 
+}
+
+ObjectType ResourceEntity::getType() const{
+	return ObjectType::RESOURCE;
 }
 
 std::string ResourceEntity::getColumns() {

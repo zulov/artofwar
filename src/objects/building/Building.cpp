@@ -14,7 +14,7 @@
 
 
 Building::Building(Urho3D::Vector3* _position, int id, int player, int level, int mainCell):
-	Static(_position, ObjectType::BUILDING, mainCell) {
+	Static(_position, mainCell) {
 	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 	upgrade(level);
 
@@ -50,6 +50,9 @@ void Building::absorbAttack(float attackCoef) {
 	if (hpCoef < 0) {
 		StateManager::changeState(this, StaticState::DEAD);
 	}
+}
+ObjectType Building::getType() const{
+	return ObjectType::BUILDING;
 }
 
 Urho3D::String Building::toMultiLineString() {

@@ -209,14 +209,14 @@ struct db_graph_settings
 {
 	int id;
 	int hud_size;
-	Urho3D::Vector<Urho3D::String> styles;
-	bool fullscreen;
 	float max_fps;
 	float min_fps;
+	Urho3D::Vector<Urho3D::String> styles;
 	Urho3D::String name;
+	int texture_quality;
+	bool fullscreen;
 	bool v_sync;
 	bool shadow;
-	int texture_quality;
 
 	db_graph_settings(int id, int hudSize, char* styles, int fullscreen, float maxFps, float minFps,
 	                  char* name, bool v_sync, bool shadow, int texture_quality)
@@ -272,8 +272,8 @@ struct db_hud_vars
 {
 	const int id;
 	const int hud_size;
-	const Urho3D::String name;
 	float value;
+	const Urho3D::String name;
 
 	db_hud_vars(int id, int hudSize, char* name, float value)
 		: id(id),
@@ -288,8 +288,8 @@ struct db_cost
 	const int id;
 	const int resource;
 	const int value;
-	const Urho3D::String resourceName;
 	const int thing;
+	const Urho3D::String resourceName;
 
 	db_cost(int id, int resource, int value, Urho3D::String resourceName, int thing)
 		: id(id),

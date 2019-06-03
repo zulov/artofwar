@@ -21,7 +21,7 @@
 #include "aim/order/IndividualOrder.h"
 
 
-Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position, ObjectType::UNIT),
+Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position),
                                                                         state(UnitState::STOP) {
 
 	dbUnit = Game::getDatabaseCache()->getUnit(id);
@@ -229,7 +229,7 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				break;
 			case DebugUnitType::INTERACT:
 				for (auto toInteract : thingsToInteract) {
-					DebugLineRepo::drawLine(DebugLineType::UNIT_LINES,*position, *toInteract->getPosition());
+					DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, *position, *toInteract->getPosition());
 				}
 				break;
 			default: ;
@@ -349,6 +349,10 @@ void Unit::load(dbload_unit* unit) {
 	velocity = {unit->vel_x, unit->vel_z};
 }
 
+ObjectType Unit::getType() const{
+	return ObjectType::UNIT;
+}
+
 int Unit::getLevel() {
 	return dbLevel->level;
 }
@@ -441,7 +445,7 @@ std::tuple<Physical*, float, int> Unit::closestPhysical(std::vector<Physical*>* 
 	Physical* closestPhy = nullptr;
 	int bestIndex = -1;
 	for (auto entity : *things) {
-			if (entity->isAlive() && condition(entity)) {
+		if (entity->isAlive() && condition(entity)) {
 			auto opt = entity->getPosToUseWithIndex(this);
 			if (opt.has_value()) {
 				auto [pos, distance, indexOfPos] = opt.value();

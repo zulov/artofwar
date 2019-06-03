@@ -12,7 +12,7 @@ class Unit;
 class Physical :
 	public Entity {
 public:
-	Physical(Urho3D::Vector3* _position, ObjectType _type);
+	Physical(Urho3D::Vector3* _position);
 	virtual ~Physical();
 
 	void updateHealthBar();
@@ -47,6 +47,8 @@ public:
 	bool belowRangeLimit() const { return rangeUsers < maxRangeUsers; }
 	void reduceRange() { --rangeUsers; }
 	void upRange() { ++rangeUsers; }
+	
+	ObjectType getType() const override ;
 
 	virtual float getHealthPercent() const { return hpCoef / maxHpCoef; }
 	signed char getTeam() const { return team; }

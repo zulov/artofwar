@@ -30,9 +30,9 @@ public:
 	bool isSthSelected();
 	void refresh(std::vector<Physical*>* selected);
 private:
+	std::vector<SelectedInfoType*> selectedByType;
 	bool changed = true;
-	int allNumber;
 	char allSubTypeNumber;
 	ObjectType selectedType;
-	std::vector<SelectedInfoType*> selectedByType;
+	int allNumber;
 };
