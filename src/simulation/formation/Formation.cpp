@@ -28,8 +28,8 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 	} else {
 		changeState(FormationState::EMPTY);
 	}
-	rechnessLevel = new char[units.size()];
-	std::fill_n(rechnessLevel, units.size(), 0);
+	levelOfReach = new char[units.size()];
+	std::fill_n(levelOfReach, units.size(), 0);
 }
 
 Formation::~Formation() = default;
@@ -173,14 +173,14 @@ void Formation::calculateNotWellFormed() {
 		const auto dist = sqDist(*unit->getPosition(), desiredPos);
 
 		if (dist < 0.5) {
-			rechnessLevel[unit->getPositionInFormation()] = 0;
+			levelOfReach[unit->getPositionInFormation()] = 0;
 		} else if (dist < 2 * 2) {
 			notWellFormedExact += 1;
-			rechnessLevel[unit->getPositionInFormation()] = 1;
+			levelOfReach[unit->getPositionInFormation()] = 1;
 		} else {
 			notWellFormed += 1;
 			notWellFormedExact += 1;
-			rechnessLevel[unit->getPositionInFormation()] = 2;
+			levelOfReach[unit->getPositionInFormation()] = 2;
 		}
 	}
 	notWellFormed /= units.size();
@@ -269,7 +269,7 @@ Urho3D::Vector2 Formation::getPositionFor(short id) {
 }
 
 float Formation::getPriority(int id) const {
-	return rechnessLevel[id];
+	return levelOfReach[id];
 }
 
 std::optional<Physical*> Formation::getLeader() {
@@ -296,7 +296,7 @@ void Formation::semiReset() {
 	notWellFormedExact = 1;
 	changed = true;
 	futureOrders.clear();
-	std::fill_n(rechnessLevel, units.size(), 0);
+	std::fill_n(levelOfReach, units.size(), 0);
 	changeState(FormationState::FORMING);
 }
 

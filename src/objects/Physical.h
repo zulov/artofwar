@@ -47,23 +47,21 @@ public:
 	bool belowRangeLimit() const { return rangeUsers < maxRangeUsers; }
 	void reduceRange() { --rangeUsers; }
 	void upRange() { ++rangeUsers; }
-	
-	ObjectType getType() const override ;
+
+	ObjectType getType() const override;
 
 	virtual float getHealthPercent() const { return hpCoef / maxHpCoef; }
 	signed char getTeam() const { return team; }
 	Urho3D::Vector3* getPosition() const { return position; }
 
 	virtual char getPlayer() const { return player; }
-
-	virtual std::optional<int> getDeploy() {
-		return {};
-	}
+	virtual std::optional<int> getDeploy() { return {}; }
 
 	int getMainBucketIndex() const { return indexInGrid; }
 
 	virtual void populate() {
-	};
+	}
+
 	virtual int getMainCell() const;
 
 	virtual bool isToDispose() const { return false; }

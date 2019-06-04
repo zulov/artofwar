@@ -50,7 +50,7 @@ private:
 	FormationState state;
 	float sparsity = 1;
 
-	char* rechnessLevel;
+	char* levelOfReach;
 
 	Urho3D::Vector2 center;
 	Urho3D::Vector2 direction;
