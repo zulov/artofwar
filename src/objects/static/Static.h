@@ -8,7 +8,7 @@ enum class CellState : char;
 class Static : public Physical
 {
 public:
-	Static(Urho3D::Vector3* _position, int mainCell);
+	Static(Urho3D::Vector3& _position, int mainCell);
 	virtual ~Static();
 
 	void setMainCell(int _mainCell);
@@ -32,7 +32,7 @@ public:
 	std::vector<int>& getOccupiedCells() { return occupiedCells; }
 	std::vector<int>& getSurroundCells() { return surroundCells; }
 
-	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* unit) const override;
+	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* unit) override;
 	std::string getValues(int precision) override;
 protected:
 	void populate(const Urho3D::IntVector2& size);

@@ -26,9 +26,9 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Urho3D::Vector2
 
 	while (units->size() < number) {
 		for (int x = 0; x < xMax; ++x) {
-			auto position = new Urho3D::Vector3(x + center.x_ - sideSize, 0, y + center.y_ - sideSize);
+			auto position = Urho3D::Vector3(x + center.x_ - sideSize, 0, y + center.y_ - sideSize);
 
-			position->y_ = Game::getEnvironment()->getGroundHeightAt(position->x_, position->z_);
+			position.y_ = Game::getEnvironment()->getGroundHeightAt(position.x_, position.z_);
 
 			units->push_back(new Unit(position, id, player, level));
 			if (units->size() >= number) { break; }
@@ -41,7 +41,7 @@ std::vector<Unit*>* UnitFactory::create(unsigned number, int id, Urho3D::Vector2
 std::vector<Unit*>* UnitFactory::load(dbload_unit* unit) {
 	units->clear();
 
-	const auto position = new Urho3D::Vector3(unit->pos_x, Game::getEnvironment()->getGroundHeightAt(unit->pos_x, unit->pos_z), unit->pos_z);
+	auto position = Urho3D::Vector3(unit->pos_x, Game::getEnvironment()->getGroundHeightAt(unit->pos_x, unit->pos_z), unit->pos_z);
 
 	auto newUnit = new Unit(position, unit->id_db, unit->player, unit->level);
 	newUnit->load(unit);

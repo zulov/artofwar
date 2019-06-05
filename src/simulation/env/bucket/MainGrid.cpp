@@ -67,7 +67,7 @@ void MainGrid::prepareGridToFind() {
 
 bool MainGrid::validateAdd(Static* object) {
 	const auto pos = object->getPosition();
-	return validateAdd(object->getGridSize(), Urho3D::Vector2(pos->x_, pos->z_));
+	return validateAdd(object->getGridSize(), Urho3D::Vector2(pos.x_, pos.z_));
 }
 
 bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) {
@@ -124,7 +124,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 			}
 		}
 		sum /= counter;
-		sum -= Urho3D::Vector2(unit->getPosition()->x_, unit->getPosition()->z_);
+		sum -= Urho3D::Vector2(unit->getPosition().x_, unit->getPosition().z_);
 	}
 	return -sum;
 }
@@ -361,7 +361,7 @@ void MainGrid::removeStatic(Static* object) {
 	}
 }
 
-Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3* position) {
+Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3& position) {
 	int index = indexFromPosition(position);
 	if (!complexData[index].isUnit()) {
 		int escapeBucket;//=-1

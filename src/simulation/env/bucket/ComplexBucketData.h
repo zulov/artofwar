@@ -19,7 +19,7 @@ public:
 	void setCenter(float _centerX, float _centerY);
 
 	void setEscapeThrought(int val);
-	Urho3D::Vector2* getDirectrionFrom(Urho3D::Vector3* position, ComplexBucketData& escapeBucket);
+	Urho3D::Vector2* getDirectrionFrom(Urho3D::Vector3& position, ComplexBucketData& escapeBucket);
 
 	void setNeightOccupied(const unsigned char index);
 	void setNeightFree(const unsigned char index);

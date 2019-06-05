@@ -14,7 +14,7 @@
 
 
 ResourceEntity::
-ResourceEntity(Urho3D::Vector3* _position, int id, int level, int mainCell)
+ResourceEntity(Urho3D::Vector3& _position, int id, int level, int mainCell)
 	: Static(_position, mainCell) {
 	dbResource = Game::getDatabaseCache()->getResource(id);
 	loadXml("Objects/resources/" + dbResource->nodeName);

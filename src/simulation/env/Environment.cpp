@@ -76,8 +76,8 @@ std::vector<Physical *>* Environment::getNeighbours(Physical* physical, Grid& bu
 
 	while (Physical* neight = bucketIterator.next()) {
 		if (physical == neight) { continue; }
-		const float xDiff = center->x_ - neight->getPosition()->x_;
-		const float zDiff = center->z_ - neight->getPosition()->z_;
+		const float xDiff = center.x_ - neight->getPosition().x_;
+		const float zDiff = center.z_ - neight->getPosition().z_;
 
 		if (xDiff * xDiff + zDiff * zDiff < sqRadius) {
 			neights->push_back(neight);
@@ -137,7 +137,7 @@ Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) {
 	return mainGrid.repulseObstacle(unit);
 }
 
-Urho3D::Vector2* Environment::validatePosition(Urho3D::Vector3* position) {
+Urho3D::Vector2* Environment::validatePosition(Urho3D::Vector3& position) {
 	return mainGrid.getDirectionFrom(position);
 }
 

@@ -8,7 +8,7 @@ class Physical;
 class FollowAim : public Aim
 {
 public:
-	explicit FollowAim(const Physical* physical, TargetAim* subTarget);
+	explicit FollowAim(Physical* physical, TargetAim* subTarget);
 	~FollowAim();
 
 	std::vector<Urho3D::Vector3> getDebugLines(Unit* follower) const override;
@@ -16,7 +16,7 @@ public:
 	bool ifReach(Unit* follower) override;
 	bool expired() override;
 private:
-	const Physical* physical;
+	Physical* physical;
 	TargetAim* subTarget;
 	float radiusSq;
 };

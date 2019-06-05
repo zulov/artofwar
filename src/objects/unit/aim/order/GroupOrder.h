@@ -10,8 +10,8 @@ public:
 	~GroupOrder();
 	bool add() override;
 private:
-	std::vector<Physical*>* entities;
 	const ActionType actionType;
+	std::vector<Physical*>* entities;
 	//TODO to trzeba kopiowac, ale wtedy trzeba sprawdzac przed wykonaniem czy cos sie nie zepsulo
 
 	void addCollectAim() override;

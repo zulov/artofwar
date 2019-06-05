@@ -13,7 +13,7 @@
 #include "objects/NodeUtils.h"
 
 
-Building::Building(Urho3D::Vector3* _position, int id, int player, int level, int mainCell):
+Building::Building(Urho3D::Vector3& _position, int id, int player, int level, int mainCell):
 	Static(_position, mainCell) {
 	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 	upgrade(level);
@@ -43,11 +43,11 @@ void Building::populate() {
 }
 
 void Building::absorbAttack(float attackCoef) {
-	hpCoef -= attackCoef * (1 - defenseCoef);
+	hp -= attackCoef * (1 - defenseCoef);
 
 	updateHealthBar();
 
-	if (hpCoef < 0) {
+	if (hp < 0) {
 		StateManager::changeState(this, StaticState::DEAD);
 	}
 }
@@ -59,7 +59,7 @@ Urho3D::String Building::toMultiLineString() {
 	return Urho3D::String(dbBuilding->name + " " + dbLevel->name)
 	       .Append("\nAtak: ").Append(Urho3D::String(attackCoef))
 	       .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
-	       .Append("\nZdrowie: ").Append(Urho3D::String((int)hpCoef)).Append("/").Append(Urho3D::String(maxHpCoef))
+	       .Append("\nZdrowie: ").Append(Urho3D::String((int)hp)).Append("/").Append(Urho3D::String(maxHp))
 	       .Append("\nU¿ytkowników: ").Append(Urho3D::String((int)closeUsers))
 	       .Append("/").Append(Urho3D::String((int)maxCloseUsers))
 	       .Append("\nStan: ").Append(Consts::StaticStateNames[static_cast<char>(state)]);

@@ -14,7 +14,7 @@ public:
 	bool expired() const;
 	virtual bool add() =0;
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);
-	ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow);
+	ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow);
 	ActionParameter getChargeAim(Urho3D::Vector2& charge);
 
 	void execute();

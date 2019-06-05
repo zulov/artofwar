@@ -5,7 +5,7 @@
 #include "simulation/env/Environment.h"
 #include <string>
 
-Static::Static(Urho3D::Vector3* _position, int mainCell) : Physical(_position) {
+Static::Static(Urho3D::Vector3& _position, int mainCell) : Physical(_position) {
 	state = StaticState::ALIVE;
 	nextState = StaticState::ALIVE;
 	setMainCell(mainCell);
@@ -73,7 +73,7 @@ bool Static::canCollect(int index) {
 		&& Game::getEnvironment()->getCurrentSize(index) < 2;
 }
 
-std::optional<std::tuple<Urho3D::Vector2, float, int>> Static::getPosToUseWithIndex(Unit* unit) const {
+std::optional<std::tuple<Urho3D::Vector2, float, int>> Static::getPosToUseWithIndex(Unit* unit) {
 	float minDistance = 999999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;

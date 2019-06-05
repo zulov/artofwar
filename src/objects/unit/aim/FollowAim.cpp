@@ -5,7 +5,7 @@
 #include "simulation/env/Environment.h"
 
 
-FollowAim::FollowAim(const Physical* physical, TargetAim* subTarget): physical(physical), subTarget(subTarget) {
+FollowAim::FollowAim(Physical* physical, TargetAim* subTarget): physical(physical), subTarget(subTarget) {
 	radiusSq = 1 * 1;
 }
 
@@ -22,8 +22,8 @@ std::vector<Urho3D::Vector3> FollowAim::getDebugLines(Unit* follower) const {
 	auto optPos = physical->getPosToUseBy(follower);
 	if (optPos.has_value()) {
 		auto pos = optPos.value();
-		points.emplace_back(*position);
-		points.emplace_back(pos.x_, position->y_, pos.y_);
+		points.emplace_back(position);
+		points.emplace_back(pos.x_, position.y_, pos.y_);
 	}
 
 	return points;
@@ -35,7 +35,8 @@ Urho3D::Vector2 FollowAim::getDirection(Unit* follower) {
 	}
 	const auto opt = physical->getPosToUseBy(follower);
 	if (opt.has_value()) {
-		return dirTo(follower->getPosition(), opt.value());
+		auto val = opt.value();
+		return dirTo(follower->getPosition(), val);
 	}
 	return {};
 }
@@ -46,7 +47,7 @@ bool FollowAim::ifReach(Unit* follower) {
 	}
 	auto opt = physical->getPosToUseBy(follower);
 	if (opt.has_value()) {
-		return sqDist(*follower->getPosition(), opt.value()) < radiusSq;
+		return sqDist(follower->getPosition(), opt.value()) < radiusSq;
 	}
 	return true;
 }

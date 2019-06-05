@@ -16,8 +16,8 @@ public:
 
 	void shot(Unit* unit) {
 		unit->missileData->reset();
-		unit->missileData->init(*unit->getPosition(),
-		                       *unit->thingsToInteract[0]->getPosition(),
+		unit->missileData->init(unit->getPosition(),
+		                       unit->thingsToInteract[0]->getPosition(),
 		                       unit->thingsToInteract[0]);
 	}
 
@@ -37,7 +37,7 @@ public:
 	}
 
 	bool closeEnough(Unit* unit) {
-		return sqDist(unit->getPosition(), unit->missileData->aim->getPosition()) < unit->attackRange * unit->attackRange;
+		return sqDist(unit->getPosition(), unit->missileData->aim->getPosition()) < unit->dbLevel->attackRange * unit->dbLevel->attackRange;
 	}
 
 	void execute(Unit* unit, float timeStep) override {

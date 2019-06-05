@@ -38,8 +38,8 @@ Urho3D::Vector2 Formation::computeLocalCenter() {
 	auto localCenter = Urho3D::Vector2::ZERO;
 	for (auto unit : units) {
 		const auto pos = unit->getPosition();
-		localCenter.x_ += pos->x_;
-		localCenter.y_ += pos->z_;
+		localCenter.x_ += pos.x_;
+		localCenter.y_ += pos.z_;
 	}
 	localCenter /= units.size();
 	return localCenter;
@@ -49,7 +49,7 @@ void Formation::setNewLeader(Urho3D::Vector2& localCenter) {
 	int maxDist = 99999;
 	leader = nullptr;
 	for (auto& unit : units) {
-		const auto dist = sqDist(localCenter, *unit->getPosition());
+		const auto dist = sqDist(localCenter, unit->getPosition());
 		if (dist < maxDist) {
 			leader = unit;
 			maxDist = dist;
@@ -120,7 +120,7 @@ void Formation::updateIds() {
 			}
 			int bucketId = unit->getMainCell();
 			const auto pos = unit->getPosition();
-			const auto currentPos = Urho3D::Vector2(pos->x_, pos->z_);
+			const auto currentPos = Urho3D::Vector2(pos.x_, pos.z_);
 
 			auto it = bucketToIds.find(bucketId);
 			if (it != bucketToIds.end()) {
@@ -170,7 +170,7 @@ void Formation::calculateNotWellFormed() {
 	notWellFormedExact = 0;
 	for (auto unit : units) {
 		const auto desiredPos = getPositionFor(unit->getPositionInFormation());
-		const auto dist = sqDist(*unit->getPosition(), desiredPos);
+		const auto dist = sqDist(unit->getPosition(), desiredPos);
 
 		if (dist < 0.5) {
 			levelOfReach[unit->getPositionInFormation()] = 0;
@@ -320,5 +320,5 @@ void Formation::updateUnits() {
 
 void Formation::updateCenter() {
 	const auto leaderPos = leader->getPosition();
-	center = Urho3D::Vector2(leaderPos->x_, leaderPos->z_);
+	center = Urho3D::Vector2(leaderPos.x_, leaderPos.z_);
 }

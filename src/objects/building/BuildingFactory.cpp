@@ -20,7 +20,7 @@ create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _b
 	const auto env = Game::getEnvironment();
 
 	buildings->push_back(new Building(
-	                                  new Urho3D::Vector3(center.x_, env->getGroundHeightAt(center.x_, center.y_),
+	                                  Urho3D::Vector3(center.x_, env->getGroundHeightAt(center.x_, center.y_),
 	                                                      center.y_),
 	                                  id, player, level, env->getIndex(_bucketCords.x_, _bucketCords.y_)));
 

@@ -31,7 +31,7 @@ public:
 	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos);
 	void addStatic(Static* object);
 	void removeStatic(Static* object);
-	Urho3D::Vector2* getDirectionFrom(Urho3D::Vector3* position);
+	Urho3D::Vector2* getDirectionFrom(Urho3D::Vector3& position);
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos);
 	Urho3D::IntVector2 getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
 
@@ -93,4 +93,3 @@ private:
 	std::vector<short> closeIndex;
 	GridDebugType debugType = GridDebugType::GRID;
 };
-

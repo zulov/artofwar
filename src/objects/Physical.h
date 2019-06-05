@@ -12,7 +12,7 @@ class Unit;
 class Physical :
 	public Entity {
 public:
-	Physical(Urho3D::Vector3* _position);
+	Physical(Urho3D::Vector3& _position);
 	virtual ~Physical();
 
 	void updateHealthBar();
@@ -50,9 +50,9 @@ public:
 
 	ObjectType getType() const override;
 
-	virtual float getHealthPercent() const { return hpCoef / maxHpCoef; }
+	virtual float getHealthPercent() const { return hp / maxHp; }
 	signed char getTeam() const { return team; }
-	Urho3D::Vector3* getPosition() const { return position; }
+	Urho3D::Vector3& getPosition() { return position; }
 
 	virtual char getPlayer() const { return player; }
 	virtual std::optional<int> getDeploy() { return {}; }
@@ -65,9 +65,9 @@ public:
 	virtual int getMainCell() const;
 
 	virtual bool isToDispose() const { return false; }
-	virtual std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* follower) const;
+	virtual std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* follower);
 
-	virtual std::optional<Urho3D::Vector2> getPosToUseBy(Unit* follower) const;
+	virtual std::optional<Urho3D::Vector2> getPosToUseBy(Unit* follower);
 
 	virtual float getMaxHpBarSize() { return 0; }
 
@@ -91,6 +91,12 @@ protected:
 	void setPlayerAndTeam(int player);
 	virtual float getHealthBarThick() { return 0.15; }
 
+	Urho3D::StaticModel* model;
+
+	Urho3D::Node *billboardNode, *barNode;
+	Urho3D::Billboard *billboardBar, *billboardShadow;
+	Urho3D::BillboardSet *billboardSetBar, *billboardSetShadow;
+
 	char team, player;
 	unsigned char maxRangeUsers = 8,
 	              maxCloseUsers = 8, //TODO default values
@@ -98,16 +104,10 @@ protected:
 	              rangeUsers = 0;
 	bool indexHasChanged = false;
 
-	Urho3D::StaticModel* model;
+	Urho3D::Vector3 position;
 
-	Urho3D::Node *billboardNode, *barNode;
-	Urho3D::Billboard *billboardBar, *billboardShadow;
-	Urho3D::BillboardSet *billboardSetBar, *billboardSetShadow;
-	Urho3D::Vector3* position = nullptr;
-
-	float hpCoef = 100, maxHpCoef = 100,
-	      attackCoef = 10, attackRange,
-	      attackSpeed = 1, attackProcess = 0,
+	float hp = 100, maxHp = 100,
+	      attackCoef = 10, attackSpeed = 1,
 	      defenseCoef = 0.3f;
 
 private:

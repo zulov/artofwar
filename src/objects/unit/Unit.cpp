@@ -21,9 +21,8 @@
 #include "aim/order/IndividualOrder.h"
 
 
-Unit::Unit(Urho3D::Vector3* _position, int id, int player, int level) : Physical(_position),
+Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position),
                                                                         state(UnitState::STOP) {
-
 	dbUnit = Game::getDatabaseCache()->getUnit(id);
 	dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
 	loadXml("Objects/units/" + dbLevel->nodeName);
@@ -60,15 +59,14 @@ void Unit::populate() {
 	maxSpeed = dbLevel->maxSpeed;
 	minSpeed = dbLevel->minSpeed;
 	minimalDistance = dbLevel->minDist;
-	attackRange = dbLevel->attackRange;
 	attackInterest = dbLevel->attackRange * 10;
 	rotatable = dbUnit->rotatable;
 	actionState = UnitState(dbUnit->actionState);
 
 	collectSpeed = dbLevel->collectSpeed;
 
-	hpCoef = dbLevel->maxHp;
-	maxHpCoef = dbLevel->maxHp;
+	hp = dbLevel->maxHp;
+	maxHp = dbLevel->maxHp;
 	attackCoef = dbLevel->attack;
 	defenseCoef = dbLevel->defense;
 	attackSpeed = dbLevel->attackSpeed / 100.f;
@@ -80,11 +78,11 @@ void Unit::checkAim() {
 	}
 }
 
-void Unit::move(double timeStep) const {
+void Unit::move(double timeStep) {
 	if (state != UnitState::STOP) {
-		position->x_ += velocity.x_ * timeStep;
-		position->z_ += velocity.y_ * timeStep;
-		node->SetPosition(*position);
+		position.x_ += velocity.x_ * timeStep;
+		position.z_ += velocity.y_ * timeStep;
+		node->SetPosition(position);
 		//node->Translate((*velocity) * timeStep, TS_WORLD);
 	}
 	if (missileData && missileData->isUp()) {
@@ -124,11 +122,11 @@ Urho3D::Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 }
 
 void Unit::absorbAttack(float attackCoef) {
-	hpCoef -= attackCoef * (1 - defenseCoef);
+	hp -= attackCoef * (1 - defenseCoef);
 
 	updateHealthBar();
 
-	if (hpCoef < 0) {
+	if (hp < 0) {
 		StateManager::changeState(this, UnitState::DEAD);
 	}
 }
@@ -146,12 +144,12 @@ void Unit::actionIfCloseEnough(UnitOrder order, Physical* closest, int indexToIn
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order) {
-	actionIfCloseEnough(order, closest, indexToInteract, minDistance, attackRange, attackInterest);
+	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->attackRange, attackInterest);
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order,
                     float attackInterest) {
-	actionIfCloseEnough(order, closest, indexToInteract, minDistance, attackRange, attackInterest);
+	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->attackRange, attackInterest);
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {
@@ -165,8 +163,8 @@ void Unit::toCharge(std::vector<Physical*>* enemies) {
 }
 
 void Unit::updateHeight(float y, double timeStep) {
-	velocity *= 1 + (position->y_ - y) * 0.1 * mass * timeStep;
-	position->y_ = y;
+	velocity *= 1 + (position.y_ - y) * 0.1 * mass * timeStep;
+	position.y_ = y;
 }
 
 void Unit::addOrder(FutureOrder* aim) {
@@ -179,7 +177,7 @@ void Unit::setAim(Aim* aim) {
 
 void Unit::drawLineTo(const Urho3D::Vector3& second,
                       const Urho3D::Color& color = Urho3D::Color::WHITE) const {
-	DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, *position, second + *position, color);
+	DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, position, second + position, color);
 }
 
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
@@ -229,7 +227,7 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				break;
 			case DebugUnitType::INTERACT:
 				for (auto toInteract : thingsToInteract) {
-					DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, *position, *toInteract->getPosition());
+					DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, position, toInteract->getPosition());
 				}
 				break;
 			default: ;
@@ -250,8 +248,8 @@ Urho3D::String Unit::toMultiLineString() {
 	return Urho3D::String(dbUnit->name + " " + dbLevel->name)
 	       .Append("\nAtak: ").Append(Urho3D::String(attackCoef))
 	       .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
-	       .Append("\nZdrowie: ").Append(Urho3D::String(hpCoef))
-	       .Append("/").Append(Urho3D::String(maxHpCoef))
+	       .Append("\nZdrowie: ").Append(Urho3D::String(hp))
+	       .Append("/").Append(Urho3D::String(maxHp))
 	       .Append("\nStan:").Append(Urho3D::String(Consts::UnitStateNames[static_cast<char>(state)]));
 }
 
@@ -295,8 +293,8 @@ void Unit::action(char id, const ActionParameter& parameter) {
 }
 
 std::string Unit::getValues(int precision) {
-	const int position_x = position->x_ * precision;
-	const int position_z = position->z_ * precision;
+	const int position_x = position.x_ * precision;
+	const int position_z = position.z_ * precision;
 	const int state = static_cast<int>(this->state);
 	const int velocity_x = velocity.x_ * precision;
 	const int velocity_z = velocity.y_ * precision;
@@ -349,7 +347,7 @@ void Unit::load(dbload_unit* unit) {
 	velocity = {unit->vel_x, unit->vel_z};
 }
 
-ObjectType Unit::getType() const{
+ObjectType Unit::getType() const {
 	return ObjectType::UNIT;
 }
 
@@ -378,8 +376,8 @@ void Unit::clearAims() {
 	aims.clear();
 }
 
-bool Unit::closeEnoughToAttack() const {
-	return dirTo(position, getPosToUse()).LengthSquared() < attackRange * attackRange;
+bool Unit::closeEnoughToAttack() {
+	return dirTo(position, getPosToUse()).LengthSquared() < dbLevel->attackRange * dbLevel->attackRange;
 }
 
 bool Unit::isInRightSocket() const {
@@ -420,6 +418,8 @@ void Unit::applyForce(double timeStep) {
 int Unit::getDbID() {
 	return dbUnit->id;
 }
+
+float Unit::getAttackRange() const { return dbLevel->attackRange; }
 
 void Unit::setBucket(int _bucketIndex) {
 	Physical::setBucket(_bucketIndex);
@@ -476,12 +476,12 @@ void Unit::clean() {
 	                       thingsToInteract.end());
 }
 
-Urho3D::Vector2 Unit::getSocketPos(const Unit* toFollow, int i) const {
+Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) {
 	auto vector = Consts::circleCords[i] * (minimalDistance + toFollow->getMinimalDistance()) * 2;
-	return {toFollow->getPosition()->x_ + vector.x_, toFollow->getPosition()->z_ + vector.y_};
+	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().z_ + vector.y_};
 }
 
-std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithIndex(Unit* follower) const {
+std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithIndex(Unit* follower) {
 	float minDistance = 99999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
@@ -504,9 +504,9 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 	return {};
 }
 
-Urho3D::Vector2 Unit::getPosToUse() const {
+Urho3D::Vector2 Unit::getPosToUse() {
 	if (isFirstThingAlive() && indexToInteract != -1) {
 		return getSocketPos(static_cast<Unit*>(thingsToInteract[0]), indexToInteract);
 	}
-	return {position->x_, position->z_};
+	return {position.x_, position.z_};
 }

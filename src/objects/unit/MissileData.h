@@ -61,7 +61,7 @@ struct MissileData
 
 		if (finished()) {
 			if (aim && aim->isAlive()
-				&& sqDist(*aim->getPosition(), getPosition()) < 3 * 3) {
+				&& sqDist(aim->getPosition(), getPosition()) < 3 * 3) {
 				aim->absorbAttack(attackCoef);
 			}
 			reset();

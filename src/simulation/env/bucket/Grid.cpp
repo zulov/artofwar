@@ -79,7 +79,7 @@ short Grid::getIndex(float value) const {
 	return resolution - 1; //TODO czy aby napewno?
 }
 
-BucketIterator& Grid::getArrayNeight(Urho3D::Vector3* position, float radius, short thread) {
+BucketIterator& Grid::getArrayNeight(Urho3D::Vector3& position, float radius, short thread) {
 	return *iterators[thread].init(getEnvIndexsFromCache(radius), indexFromPosition(position), this);
 }
 
@@ -131,10 +131,10 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, double 
 	//TOODO clean prawie to samo co wy¿ej
 	tempSelected->clear();
 
-	const auto posBeginX = getIndex(clicked->getPosition()->x_ - radius);
-	const auto posBeginZ = getIndex(clicked->getPosition()->z_ - radius);
-	const auto posEndX = getIndex(clicked->getPosition()->x_ + radius);
-	const auto posEndZ = getIndex(clicked->getPosition()->z_ + radius);
+	const auto posBeginX = getIndex(clicked->getPosition().x_ - radius);
+	const auto posBeginZ = getIndex(clicked->getPosition().z_ - radius);
+	const auto posEndX = getIndex(clicked->getPosition().x_ + radius);
+	const auto posEndZ = getIndex(clicked->getPosition().z_ + radius);
 
 
 	auto dX = diff(posBeginX, posEndX);
@@ -154,8 +154,8 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, double 
 	return tempSelected;
 }
 
-int Grid::indexFromPosition(Urho3D::Vector3* pos) const {
-	return getIndex(getIndex(pos->x_), getIndex(pos->z_));
+int Grid::indexFromPosition(Urho3D::Vector3& pos) const {
+	return getIndex(getIndex(pos.x_), getIndex(pos.z_));
 }
 
 int Grid::indexFromPosition(Urho3D::Vector2& pos) const {

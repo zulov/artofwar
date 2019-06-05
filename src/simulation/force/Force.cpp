@@ -41,8 +41,8 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 		sqSepDist *= sqSepDist;
 
 		Urho3D::Vector2 diff(
-		                     unit->getPosition()->x_ - neight->getPosition()->x_,
-		                     unit->getPosition()->z_ - neight->getPosition()->z_
+		                     unit->getPosition().x_ - neight->getPosition().x_,
+		                     unit->getPosition().z_ - neight->getPosition().z_
 		                    );
 		const float sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist) { continue; }

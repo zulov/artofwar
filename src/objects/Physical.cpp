@@ -12,15 +12,13 @@
 #include "unit/Unit.h"
 
 
-Physical::Physical(Urho3D::Vector3* _position):
+Physical::Physical(Urho3D::Vector3& _position):
 	position(_position), indexInGrid(INT_MIN) {
 	node->SetVar("link", this);
-	node->SetPosition(*position);
+	node->SetPosition(position);
 }
 
-Physical::~Physical() {
-	delete position;
-}
+Physical::~Physical() =default;
 
 
 void Physical::createBillboardBar() {
@@ -83,11 +81,11 @@ int Physical::getMainCell() const {
 	return getMainBucketIndex();
 }
 
-std::optional<std::tuple<Urho3D::Vector2, float, int>> Physical::getPosToUseWithIndex(Unit* user) const {
+std::optional<std::tuple<Urho3D::Vector2, float, int>> Physical::getPosToUseWithIndex(Unit* user) {
 	return {};
 }
 
-std::optional<Urho3D::Vector2> Physical::getPosToUseBy(Unit* follower) const {
+std::optional<Urho3D::Vector2> Physical::getPosToUseBy(Unit* follower) {
 	auto a = getPosToUseWithIndex(follower);
 	if (a.has_value()) {
 		return std::get<0>(a.value());
@@ -123,7 +121,7 @@ bool Physical::isSelected() const {
 }
 
 void Physical::load(dbload_physical* dbloadPhysical) {
-	hpCoef = maxHpCoef * dbloadPhysical->hp_coef;
+	hp = maxHp * dbloadPhysical->hp_coef;
 }
 
 Urho3D::String Physical::toMultiLineString() {

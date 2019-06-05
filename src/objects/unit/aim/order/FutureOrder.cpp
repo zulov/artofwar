@@ -32,7 +32,7 @@ ActionParameter FutureOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
 	return Consts::EMPTY_ACTION_PARAMETER;
 }
 
-ActionParameter FutureOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, const Physical* toFollow) {
+ActionParameter FutureOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow) {
 	auto const target = getTargetAim(startInx, toSoFar);
 	//jesli jest nulem to co?
 	return ActionParameter::Builder().setAim(new FollowAim(toFollow, static_cast<TargetAim*>(target.aim))).build();
