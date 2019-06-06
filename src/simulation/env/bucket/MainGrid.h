@@ -41,6 +41,7 @@ public:
 	int getCloseIndex(int center, int i) const;
 
 	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim);
+	std::vector<int>* findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim);
 
 	void drawMap(Urho3D::Image* image);
 	content_info* getContentInfo(const Urho3D::Vector2& from, const Urho3D::Vector2& to, bool checks[],
@@ -74,6 +75,7 @@ public:
 	void removeDeploy(Building* building);
 
 	void switchDebugGrid();
+	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);

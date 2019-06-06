@@ -317,6 +317,17 @@ void MainGrid::switchDebugGrid() {
 	drawDebug();
 }
 
+bool MainGrid::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {
+	auto index = indexFromPosition(pos);
+	if (getMainCell == index) { return true; }
+	for (auto value : closeIndex) {
+		if (getMainCell == index + value) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void MainGrid::addStatic(Static* object) {
 	if (validateAdd(object)) {
 		const auto bucketPos = getCords(object->getMainCell());
@@ -364,7 +375,7 @@ void MainGrid::removeStatic(Static* object) {
 Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3& position) {
 	int index = indexFromPosition(position);
 	if (!complexData[index].isUnit()) {
-		int escapeBucket;//=-1
+		int escapeBucket; //=-1
 		//auto& neights = complexData[index].getNeightbours();
 		if (!complexData[index].allNeightOccupied()) {
 			float dist = 999999;
@@ -446,6 +457,10 @@ int MainGrid::getCloseIndex(int center, int i) const {
 
 std::vector<int>* MainGrid::findPath(int startIdx, const Urho3D::Vector2& aim) {
 	return pathConstructor->findPath(startIdx, aim);
+}
+
+std::vector<int>* MainGrid::findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) {
+	return pathConstructor->findPath(from, aim);
 }
 
 void MainGrid::drawMap(Urho3D::Image* image) {

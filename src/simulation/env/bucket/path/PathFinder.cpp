@@ -105,6 +105,11 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 	return reconstruct_simplify_path(startIdx, endIdx, came_from);
 }
 
+std::vector<int>* PathFinder::findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) {
+	int start = getIndex(getIndex(from.x_), getIndex(from.z_));
+	return findPath(start, aim);
+}
+
 std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim) {
 	int end = getIndex(getIndex(aim.x_), getIndex(aim.y_));
 

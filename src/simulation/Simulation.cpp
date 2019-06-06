@@ -152,6 +152,8 @@ void Simulation::addTestEntities() const {
 		creationCommandList->addBuilding(1, Urho3D::Vector2(0, -20), 0, 0);
 		creationCommandList->addBuilding(1, Urho3D::Vector2(7, -16), 0, 0);
 		creationCommandList->addBuilding(1, Urho3D::Vector2(15, -18), 0, 0);
+
+		//creationCommandList->addUnits(UNITS_NUMBER*100, 0, Urho3D::Vector2(-200, -200), 0, 0);
 	}
 }
 

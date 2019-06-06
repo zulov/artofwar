@@ -262,6 +262,10 @@ void Environment::switchDebugGrid() {
 	mainGrid.switchDebugGrid();
 }
 
+bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {
+	return mainGrid.isInLocalArea(getMainCell, pos);
+}
+
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {
 	return mainGrid.getValidPosition(size, pos);
 }
@@ -272,6 +276,10 @@ Urho3D::IntVector2 Environment::getBucketCords(const Urho3D::IntVector2& size, c
 
 std::vector<int>* Environment::findPath(int startIdx, Urho3D::Vector2& aim) {
 	return mainGrid.findPath(startIdx, aim);
+}
+
+std::vector<int>* Environment::findPath(Urho3D::Vector3& from, Urho3D::Vector2& aim) {
+	return mainGrid.findPath(from, aim);
 }
 
 void Environment::prepareGridToFind() {

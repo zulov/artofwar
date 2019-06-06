@@ -41,9 +41,9 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 		sqSepDist *= sqSepDist;
 
 		Urho3D::Vector2 diff(
-		                     unit->getPosition().x_ - neight->getPosition().x_,
-		                     unit->getPosition().z_ - neight->getPosition().z_
-		                    );
+			unit->getPosition().x_ - neight->getPosition().x_,
+			unit->getPosition().z_ - neight->getPosition().z_
+		);
 		const float sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist) { continue; }
 		if (isLeaderFor != -1 && isLeaderFor == neight->getFormation()) { continue; }
@@ -83,7 +83,21 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 	if (opt.has_value()) {
 		const float priority = Game::getFormationManager()->getPriority(unit);
 		if (priority > 0) {
-			auto force = dirTo(unit->getPosition(), opt.value());
+			auto pos = opt.value();
+			Urho3D::Vector2 force;
+			if (Game::getEnvironment()->isInLocalArea(unit->getMainCell(), pos)) {
+				force = dirTo(unit->getPosition(), opt.value());
+			} else {
+				const auto path = Game::getEnvironment()->findPath(unit->getPosition(), opt.value());
+				if(path->size()==1) {
+					force = dirTo(unit->getPosition(), opt.value());
+				}else if(path->size()>1){ 
+					
+					force = dirTo(unit->getPosition(), Game::getEnvironment()->getCenter(path->at(0)));
+				}else {
+					Game::getLog()->Write(0,"brak drogi w formacji");
+				}
+			}
 
 			force *= formationCoef * boostCoef * priority;
 

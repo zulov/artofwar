@@ -47,6 +47,7 @@ public:
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos);
 	Urho3D::IntVector2 getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
 	std::vector<int>* findPath(int startIdx, Urho3D::Vector2& aim);
+	std::vector<int>* findPath(Urho3D::Vector3& from, Urho3D::Vector2& aim);
 
 	void prepareGridToFind();
 	content_info* getContentInfo(Urho3D::Vector2 from, Urho3D::Vector2 to, bool checks[], int activePlayer);
@@ -72,6 +73,7 @@ public:
 	void removeFromGrids(const std::vector<Physical*>& toDispose);
 	int getRevertCloseIndex(int center, int gridIndex);
 	void switchDebugGrid();
+	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid, buildingGrid;

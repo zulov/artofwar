@@ -55,7 +55,6 @@ bool Unit::isAlive() const {
 
 void Unit::populate() {
 	maxSeparationDistance = dbLevel->maxSep;
-	mass = dbLevel->mass;
 	maxSpeed = dbLevel->maxSpeed;
 	minSpeed = dbLevel->minSpeed;
 	minimalDistance = dbLevel->minDist;
@@ -103,7 +102,7 @@ void Unit::forceGo(float boostCoef, float aimCoef, Urho3D::Vector2& force) const
 	force *= boostCoef;
 	force -= velocity;
 	force /= 0.5;
-	force *= mass;
+	force *= dbLevel->mass;
 	force *= aimCoef;
 }
 
@@ -163,7 +162,7 @@ void Unit::toCharge(std::vector<Physical*>* enemies) {
 }
 
 void Unit::updateHeight(float y, double timeStep) {
-	velocity *= 1 + (position.y_ - y) * 0.1 * mass * timeStep;
+	velocity *= 1 + (position.y_ - y) * 0.1 * dbLevel->mass * timeStep;
 	position.y_ = y;
 }
 
@@ -395,7 +394,7 @@ std::string Unit::getColumns() {
 
 void Unit::applyForce(double timeStep) {
 	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
-	velocity += acceleration * (timeStep / mass);
+	velocity += acceleration * (timeStep / dbLevel->mass);
 	const float velLength = velocity.LengthSquared();
 	if (velLength < minSpeed * minSpeed) {
 		if (state == UnitState::MOVE) {

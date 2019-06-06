@@ -143,7 +143,7 @@ private:
 	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
 
 	float minimalDistance, maxSeparationDistance,
-	      maxSpeed, minSpeed, mass,
+	      maxSpeed, minSpeed,
 	      attackInterest, collectSpeed;
 
 	short posInFormation = -1, formation = -1;

@@ -18,7 +18,7 @@ public:
 
 	void update();
 	void remove();
-	Urho3D::Vector2 getPositionFor(short id);
+	Urho3D::Vector2 getPositionFor(short id) const;
 	float getPriority(int id) const;
 	FormationState getState() const { return state; }
 	std::optional<Physical*> getLeader();

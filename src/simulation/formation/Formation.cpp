@@ -215,8 +215,6 @@ void Formation::update() {
 			changeState(FormationState::MOVING);
 			if (!futureOrders.empty()) {
 				futureOrders[0]->execute();
-				// Game::getActionList()->add(new FormationAction(this, FutureOrder()
-				// 	futureOrder, newUrho3D::Vector2(futureOrder.vector)));
 				stopAllBesideLeader();
 				delete futureOrders[0];
 				futureOrders.erase(futureOrders.begin()); //TODO to zachowaæ
@@ -254,16 +252,16 @@ void Formation::changeState(FormationState newState) {
 	state = newState;
 }
 
-Urho3D::Vector2 Formation::getPositionFor(short id) {
-	const int columnThis = id % sideA;
-	const int rowThis = id / sideA;
+Urho3D::Vector2 Formation::getPositionFor(short id) const {
+	const short columnThis = id % sideA;
+	const short rowThis = id / sideA;
 	const short leaderID = leader->getPositionInFormation();
 
-	const int columnLeader = leaderID % sideA;
-	const int rowLeader = leaderID / sideA;
+	const short columnLeader = leaderID % sideA;
+	const short rowLeader = leaderID / sideA;
 
-	const int column = columnThis - columnLeader;
-	const int row = rowThis - rowLeader;
+	const short column = columnThis - columnLeader;
+	const short row = rowThis - rowLeader;
 
 	return center - Urho3D::Vector2(column * sparsity, row * sparsity);
 }
