@@ -250,7 +250,7 @@ struct db_resource
 	const Urho3D::String name;
 	const Urho3D::String icon;
 	const int maxCapacity;
-	const Urho3D::String nodeName;
+	Urho3D::Vector<Urho3D::String> nodeName;
 	const Urho3D::IntVector2 size;
 	const int maxUsers;
 	const unsigned mini_map_color;
@@ -261,7 +261,7 @@ struct db_resource
 		name(name),
 		icon(icon),
 		maxCapacity(maxCapacity),
-		nodeName(nodeName),
+		nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
 		size(Urho3D::IntVector2(sizeX, sizeZ)),
 		maxUsers(maxUsers),
 		mini_map_color(mini_map_color) {

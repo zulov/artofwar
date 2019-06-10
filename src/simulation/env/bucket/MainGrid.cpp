@@ -317,11 +317,11 @@ void MainGrid::switchDebugGrid() {
 	drawDebug();
 }
 
-bool MainGrid::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {
-	auto index = indexFromPosition(pos);
-	if (getMainCell == index) { return true; }
+bool MainGrid::isInLocalArea(int cell, Urho3D::Vector2& pos) {
+	const auto index = indexFromPosition(pos);
+	if (cell == index) { return true; }
 	for (auto value : closeIndex) {
-		if (getMainCell == index + value) {
+		if (cell == index + value) {
 			return true;
 		}
 	}

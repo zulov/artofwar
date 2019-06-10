@@ -127,7 +127,6 @@ std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim)
 					break;
 				}
 			}
-
 		}
 	}
 
@@ -170,9 +169,8 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 				if (!complexData[current].ifNeightIsFree(i)) {
 					int nI = current + closeIndex[i];
 
-					if (!complexData[nI].allNeightOccupied() && refreshed.find(nI) == refreshed.
-						end()) {
-						//TODO to chyba glupi warunek
+					if (!complexData[nI].allNeightOccupied() 
+						&& refreshed.find(nI) == refreshed.end()) {//TODO to chyba glupi warunek
 						toRefresh.push_back(nI);
 					}
 					int next = nI;

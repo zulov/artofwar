@@ -1,0 +1,7 @@
+<node>
+<attribute name="Scale" value="6 6 6" />
+<component type="StaticModel" >
+	<attribute name="Model" value="Model;Models/tree_default_dark.mdl" />
+	<attribute name="Material" value="Material;Materials/natureKit-wood.003.xml;Materials/natureKit-leaves.001.xml" />
+</component>
+</node>

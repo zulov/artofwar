@@ -89,13 +89,12 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 				force = dirTo(unit->getPosition(), opt.value());
 			} else {
 				const auto path = Game::getEnvironment()->findPath(unit->getPosition(), opt.value());
-				if(path->size()==1) {
+				if (path->size() == 1) {
 					force = dirTo(unit->getPosition(), opt.value());
-				}else if(path->size()>1){ 
-					
+				} else if (path->size() > 1) {
 					force = dirTo(unit->getPosition(), Game::getEnvironment()->getCenter(path->at(0)));
-				}else {
-					Game::getLog()->Write(0,"brak drogi w formacji");
+				} else {
+					Game::getLog()->Write(0, "brak drogi w formacji");
 				}
 			}
 

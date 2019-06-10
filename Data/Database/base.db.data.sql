@@ -34,7 +34,9 @@ INSERT INTO `unit_level` (level,unit,name,minDist,maxSep,nodeName,mass,attack,at
  (1,5,'better',0.25,1.0,'general',50.0,0.6,3,1.0,0.06,80,5.0,1.0,0.0,3.0,5000.0);
 INSERT INTO `settings` (graph,resolution) VALUES (0,1);
 INSERT INTO `resource` (id,name,icon,maxCapacity,nodeName,sizeX,sizeZ,maxUsers,mini_map_color) VALUES (0,'gold','gold.png',1000,'gold.xml',2,2,4,'0xFF00D0FF'),
- (1,'wood','wood.png',100,'tree_2.xml',2,2,3,'0xFF00B600'),
+ (1,'wood','wood.png',100,'tree_1.xml
+ tree_2.xml
+ tree_3.xml',2,2,3,'0xFF00B600'),
  (2,'food','food.png',100,'food.xml',2,2,3,'0xFF9000A7'),
  (3,'stone','stone.png',1000,'stone.xml',2,2,4,'0xFF808080');
 INSERT INTO `resolution` (id,x,y) VALUES (0,1366,768),
