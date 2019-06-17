@@ -32,7 +32,9 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 	std::fill_n(levelOfReach, units.size(), 0);
 }
 
-Formation::~Formation() = default;
+Formation::~Formation() {
+	delete[] levelOfReach;
+}
 
 Urho3D::Vector2 Formation::computeLocalCenter() {
 	auto localCenter = Urho3D::Vector2::ZERO;
