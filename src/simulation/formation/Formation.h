@@ -32,13 +32,15 @@ private:
 	Urho3D::Vector2 computeLocalCenter();
 	void setNewLeader(Urho3D::Vector2& localCenter);
 	void updateUnits();
-	void updateCenter();
+	void setCenter();
 	void updateIds();
-	void updateSizes();
+	void updateSideSize();
 	void calculateNotWellFormed();
 	void innerUpdate();
 
 	void electLeader();
+	void setFormationClearPosition();
+	void setPosInFormationForLeader();
 
 	void changeState(FormationState newState);
 	short id;

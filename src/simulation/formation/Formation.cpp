@@ -12,8 +12,7 @@
 
 
 Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Urho3D::Vector2& _direction) :
-	id(_id),
-	type(_type), direction(_direction), state(FormationState::FORMING) {
+	id(_id), type(_type), state(FormationState::FORMING), direction(_direction) {
 
 	for (auto value : *_units) {
 		auto unit = dynamic_cast<Unit*>(value);
@@ -24,7 +23,7 @@ Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _t
 
 	if (!units.empty()) {
 		updateIds();
-		updateCenter();
+		setCenter();
 	} else {
 		changeState(FormationState::EMPTY);
 	}
@@ -74,22 +73,29 @@ void Formation::electLeader() {
 	oldLeader = leader;
 }
 
+void Formation::setFormationClearPosition() {
+	for (auto unit : units) {
+		unit->setFormation(id);
+		unit->setPositionInFormation(-1);
+	}
+}
+
+void Formation::setPosInFormationForLeader() {
+	short posInFormation = (short)((sideB - 1) / 2) * sideA + (short)(sideA / 2.0 + 0.5);
+	if (posInFormation >= units.size()) {
+		posInFormation = units.size() - 1;
+	}
+	leader->setPositionInFormation(posInFormation);
+}
+
 void Formation::updateIds() {
 	if (changed) {
-		updateSizes();
+		updateSideSize();
 		electLeader();
+		setCenter();
+		setFormationClearPosition();
 
-		updateCenter();
-		for (auto unit : units) {
-			unit->setFormation(id);
-			unit->setPositionInFormation(-1);
-		}
-
-		short cc = (short)((sideB - 1) / 2) * sideA + (short)(sideA / 2.0 + 0.5);
-		if (cc >= units.size()) {
-			cc = units.size() - 1;
-		}
-		leader->setPositionInFormation(cc);
+		setPosInFormationForLeader();
 
 		auto env = Game::getEnvironment();
 		std::unordered_map<int, std::vector<short>> bucketToIds;
@@ -97,8 +103,8 @@ void Formation::updateIds() {
 			if (leader->getPositionInFormation() == i) {
 				continue;
 			}
-			auto pos = getPositionFor(i);
-			int bucketForI = env->getIndex(pos);
+
+			int bucketForI = env->getIndex(getPositionFor(i));
 
 			auto it = bucketToIds.find(bucketForI);
 			if (it != bucketToIds.end()) {
@@ -115,7 +121,7 @@ void Formation::updateIds() {
 
 		short leaderID = leader->getPositionInFormation();
 		tempVec[leaderID] = -1;
-		short sizeToAssign = tempVec.size() - 1;
+		short restToAssign = tempVec.size() - 1;
 		for (auto unit : units) {
 			if (leader == unit) {
 				continue;
@@ -140,7 +146,7 @@ void Formation::updateIds() {
 				}
 
 				if (bestId >= 0) {
-					--sizeToAssign;
+					--restToAssign;
 					tempVec[it->second[bestId]] = -1;
 					unit->setPositionInFormation(it->second[bestId]);
 					it->second.erase(it->second.begin() + bestId);
@@ -148,7 +154,7 @@ void Formation::updateIds() {
 			}
 		}
 		std::vector<short> output;
-		output.reserve(sizeToAssign);
+		output.reserve(restToAssign);
 		std::copy_if(tempVec.begin(), tempVec.end(), std::back_inserter(output), [](const short i) { return i >= 0; });
 
 		int i = 0;
@@ -162,7 +168,7 @@ void Formation::updateIds() {
 	}
 }
 
-void Formation::updateSizes() {
+void Formation::updateSideSize() {
 	sideA = sqrt(units.size()) + 0.5;
 	sideB = units.size() / sideA;
 }
@@ -194,7 +200,7 @@ void Formation::innerUpdate() {
 
 	if (!units.empty()) {
 		updateIds();
-		updateCenter();
+		setCenter();
 		calculateNotWellFormed();
 	} else {
 		changeState(FormationState::EMPTY);
@@ -302,23 +308,22 @@ void Formation::semiReset() {
 
 void Formation::updateUnits() {
 	units.erase(
-	            std::remove_if(
-	                           units.begin(), units.end(),
-	                           [this](Unit* unit)
-	                           {
-		                           bool ifErase = !unit->isAlive() || unit->getFormation() != id;
-		                           if (ifErase) {
-			                           if (unit->getFormation() == id) {
-				                           unit->resetFormation();
-			                           }
-			                           changed = true;
-		                           }
-		                           return ifErase;
-	                           }),
-	            units.end());
+		std::remove_if(
+			units.begin(), units.end(),
+			[this](Unit* unit) {
+				bool ifErase = !unit->isAlive() || unit->getFormation() != id;
+				if (ifErase) {
+					if (unit->getFormation() == id) {
+						unit->resetFormation();
+					}
+					changed = true;
+				}
+				return ifErase;
+			}),
+		units.end());
 }
 
-void Formation::updateCenter() {
+void Formation::setCenter() {
 	const auto leaderPos = leader->getPosition();
 	center = Urho3D::Vector2(leaderPos.x_, leaderPos.z_);
 }
