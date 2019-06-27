@@ -23,8 +23,7 @@
 #include <vector>
 
 
-struct db_unit
-{
+struct db_unit {
 	const int id;
 	const Urho3D::String name;
 	const bool rotatable;
@@ -34,16 +33,15 @@ struct db_unit
 
 	db_unit(int id, char* name, int rotatable, int nation, char* icon, int actionState)
 		: id(id),
-		name(name),
-		rotatable(rotatable),
-		nation(nation),
-		icon(icon),
-		actionState(actionState) {
+		  name(name),
+		  rotatable(rotatable),
+		  nation(nation),
+		  icon(icon),
+		  actionState(actionState) {
 	}
 };
 
-struct db_unit_level
-{
+struct db_unit_level {
 	const int level;
 	const int unit;
 	const Urho3D::String name;
@@ -64,41 +62,39 @@ struct db_unit_level
 
 
 	db_unit_level(int level, int unit, char* name, float minDist, float maxSep, char* nodeName,
-		float mass, float attack, int attackSpeed, float attackRange, float defense,
+	              float mass, float attack, int attackSpeed, float attackRange, float defense,
 	              int maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed, float maxForce)
 		: level(level),
-		unit(unit),
-		name(name),
-		minDist(minDist),
-		maxSep(maxSep),
-		nodeName(nodeName),
-		mass(mass),
-		attack(attack),
-		attackSpeed(attackSpeed),
-		attackRange(attackRange),
-		defense(defense),
-		maxHp(maxHp),
-		maxSpeed(maxSpeed),
-		minSpeed(minSpeed),
-		collectSpeed(collectSpeed),
-		upgradeSpeed(upgradeSpeed),
-		maxForce(maxForce) {
+		  unit(unit),
+		  name(name),
+		  minDist(minDist),
+		  maxSep(maxSep),
+		  nodeName(nodeName),
+		  mass(mass),
+		  attack(attack),
+		  attackSpeed(attackSpeed),
+		  attackRange(attackRange),
+		  defense(defense),
+		  maxHp(maxHp),
+		  maxSpeed(maxSpeed),
+		  minSpeed(minSpeed),
+		  collectSpeed(collectSpeed),
+		  upgradeSpeed(upgradeSpeed),
+		  maxForce(maxForce) {
 	}
 };
 
-struct db_unit_to_upgrade
-{
+struct db_unit_to_upgrade {
 	const int upgrade;
 	const int unit;
 
 	db_unit_to_upgrade(int upgrade, int unit)
 		: upgrade(upgrade),
-		unit(unit) {
+		  unit(unit) {
 	}
 };
 
-struct db_unit_upgrade
-{
+struct db_unit_upgrade {
 	const int id;
 	const int path;
 	const int level;
@@ -118,23 +114,22 @@ struct db_unit_upgrade
 	db_unit_upgrade(int id, int path, int level, char* name, float attack, float attackSpeed, float attackRange,
 	                float defense, float maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed)
 		: id(id),
-		path(path),
-		level(level),
-		name(name),
-		attack(attack),
-		attackSpeed(attackSpeed),
-		attackRange(attackRange),
-		defense(defense),
-		maxHp(maxHp),
-		maxSpeed(maxSpeed),
-		minSpeed(minSpeed),
-		collectSpeed(collectSpeed),
-		upgradeSpeed(upgradeSpeed) {
+		  path(path),
+		  level(level),
+		  name(name),
+		  attack(attack),
+		  attackSpeed(attackSpeed),
+		  attackRange(attackRange),
+		  defense(defense),
+		  maxHp(maxHp),
+		  maxSpeed(maxSpeed),
+		  minSpeed(minSpeed),
+		  collectSpeed(collectSpeed),
+		  upgradeSpeed(upgradeSpeed) {
 	}
 };
 
-struct db_building
-{
+struct db_building {
 	const int id;
 	const Urho3D::String name;
 	const Urho3D::IntVector2 size;
@@ -145,15 +140,14 @@ struct db_building
 
 	db_building(int id, char* name, int sizeX, int sizeZ, int nation, char* icon)
 		: id(id),
-		name(name),
-		size({sizeX, sizeZ}),
-		nation(nation),
-		icon(icon) {
+		  name(name),
+		  size({sizeX, sizeZ}),
+		  nation(nation),
+		  icon(icon) {
 	}
 };
 
-struct db_building_level
-{
+struct db_building_level {
 	const int level;
 	const int unit;
 	const Urho3D::String name;
@@ -163,50 +157,46 @@ struct db_building_level
 
 	db_building_level(int level, int unit, char* name, char* nodeName, short queueMaxCapacity)
 		: level(level),
-		unit(unit),
-		name(name),
-		nodeName(nodeName),
-		queueMaxCapacity(queueMaxCapacity) {
+		  unit(unit),
+		  name(name),
+		  nodeName(nodeName),
+		  queueMaxCapacity(queueMaxCapacity) {
 	}
 };
 
-struct db_hud_size
-{
+struct db_hud_size {
 	const int id;
 	const Urho3D::String name;
 
 	db_hud_size(int id, char* name)
 		: id(id),
-		name(name) {
+		  name(name) {
 	}
 };
 
-struct db_settings
-{
+struct db_settings {
 	int graph;
 	int resolution;
 
 	db_settings(int graph, int resolution)
 		: graph(graph),
-		resolution(resolution) {
+		  resolution(resolution) {
 	}
 };
 
-struct db_resolution
-{
+struct db_resolution {
 	const int id;
 	const int x;
 	const int y;
 
 	db_resolution(int id, int x, int y)
 		: id(id),
-		x(x),
-		y(y) {
+		  x(x),
+		  y(y) {
 	}
 };
 
-struct db_graph_settings
-{
+struct db_graph_settings {
 	int id;
 	int hud_size;
 	float max_fps;
@@ -221,31 +211,29 @@ struct db_graph_settings
 	db_graph_settings(int id, int hudSize, char* styles, int fullscreen, float maxFps, float minFps,
 	                  char* name, bool v_sync, bool shadow, int texture_quality)
 		: id(id),
-		hud_size(hudSize),
-		styles(Urho3D::String(styles).Split(SPLIT_SIGN)),
-		fullscreen(fullscreen),
-		max_fps(maxFps),
-		min_fps(minFps),
-		name(name),
-		v_sync(v_sync),
-		shadow(shadow),
-		texture_quality(texture_quality) {
+		  hud_size(hudSize),
+		  styles(Urho3D::String(styles).Split(SPLIT_SIGN)),
+		  fullscreen(fullscreen),
+		  max_fps(maxFps),
+		  min_fps(minFps),
+		  name(name),
+		  v_sync(v_sync),
+		  shadow(shadow),
+		  texture_quality(texture_quality) {
 	}
 };
 
-struct db_nation
-{
+struct db_nation {
 	const int id;
 	const Urho3D::String name;
 
 	db_nation(int id, char* name)
 		: id(id),
-		name(name) {
+		  name(name) {
 	}
 };
 
-struct db_resource
-{
+struct db_resource {
 	const int id;
 	const Urho3D::String name;
 	const Urho3D::String icon;
@@ -258,18 +246,17 @@ struct db_resource
 	db_resource(int id, char* name, char* icon, int maxCapacity, char* nodeName, int sizeX,
 	            int sizeZ, int maxUsers, unsigned mini_map_color)
 		: id(id),
-		name(name),
-		icon(icon),
-		maxCapacity(maxCapacity),
-		nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
-		size(Urho3D::IntVector2(sizeX, sizeZ)),
-		maxUsers(maxUsers),
-		mini_map_color(mini_map_color) {
+		  name(name),
+		  icon(icon),
+		  maxCapacity(maxCapacity),
+		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
+		  size(Urho3D::IntVector2(sizeX, sizeZ)),
+		  maxUsers(maxUsers),
+		  mini_map_color(mini_map_color) {
 	}
 };
 
-struct db_hud_vars
-{
+struct db_hud_vars {
 	const int id;
 	const int hud_size;
 	float value;
@@ -277,14 +264,13 @@ struct db_hud_vars
 
 	db_hud_vars(int id, int hudSize, char* name, float value)
 		: id(id),
-		hud_size(hudSize),
-		name(name),
-		value(value) {
+		  hud_size(hudSize),
+		  name(name),
+		  value(value) {
 	}
 };
 
-struct db_cost
-{
+struct db_cost {
 	const int id;
 	const int resource;
 	const int value;
@@ -293,28 +279,26 @@ struct db_cost
 
 	db_cost(int id, int resource, int value, Urho3D::String resourceName, int thing)
 		: id(id),
-		resource(resource),
-		value(value),
-		resourceName(resourceName),
-		thing(thing) {
+		  resource(resource),
+		  value(value),
+		  resourceName(resourceName),
+		  thing(thing) {
 	}
 };
 
-struct db_order
-{
+struct db_order {
 	const int id;
 	const Urho3D::String icon;
 	const Urho3D::String name;
 
 	db_order(int id, char* icon, char* name)
 		: id(id),
-		icon(icon),
-		name(name) {
+		  icon(icon),
+		  name(name) {
 	}
 };
 
-struct db_map
-{
+struct db_map {
 	const int id;
 	const Urho3D::String height_map;
 	const Urho3D::String texture;
@@ -324,16 +308,15 @@ struct db_map
 
 	db_map(int id, char* heightMap, char* texture, float scaleHor, float scaleVer, char* name)
 		: id(id),
-		height_map(heightMap),
-		texture(texture),
-		scale_hor(scaleHor),
-		scale_ver(scaleVer),
-		name(name) {
+		  height_map(heightMap),
+		  texture(texture),
+		  scale_hor(scaleHor),
+		  scale_ver(scaleVer),
+		  name(name) {
 	}
 };
 
-struct db_player_colors
-{
+struct db_player_colors {
 	const int id;
 	const unsigned unit;
 	const unsigned building;
@@ -341,14 +324,13 @@ struct db_player_colors
 
 	db_player_colors(int id, unsigned unit, unsigned building, char* name)
 		: id(id),
-		unit(unit),
-		building(building),
-		name(name) {
+		  unit(unit),
+		  building(building),
+		  name(name) {
 	}
 };
 
-struct db_container
-{
+struct db_container {
 	db_unit* units[UNITS_NUMBER_DB] = {nullptr};
 	db_building* buildings[BUILDINGS_NUMBER_DB] = {nullptr};
 	db_hud_size* hudSizes[HUD_SIZES_NUMBER_DB] = {nullptr};
@@ -391,7 +373,7 @@ struct db_container
 	int resolutions_size = 0;
 
 
-	explicit db_container() {
+	explicit db_container() {//TODO bug delete what inside
 		for (int i = 0; i < BUILDINGS_NUMBER_DB; ++i) {
 			unitsForBuilding[i] = new std::vector<db_unit*>();
 			costForBuilding[i] = new std::vector<db_cost*>();
@@ -423,5 +405,33 @@ struct db_container
 		}
 	}
 
-	~db_container() = default;
+	~db_container() {
+		for (int i = 0; i < BUILDINGS_NUMBER_DB; ++i) {
+			delete unitsForBuilding[i];
+			delete costForBuilding[i];
+			delete levelsToBuilding[i];
+			for (int j = 0; j < MAX_BUILDING_LEVEL_NUMBER_DB; ++j) {
+				delete costForBuildingLevel[i]->at(j);
+			}
+			delete costForBuildingLevel[i];
+
+		}
+		for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
+			delete costForUnit[i];
+			delete ordersToUnit[i];
+			delete levelsToUnit[i];
+			for (int j = 0; j < MAX_UNIT_LEVEL_NUMBER_DB; ++j) {
+				delete costForUnitLevel[i]->at(j);
+			}
+			delete costForUnitLevel[i];
+		}
+
+		for (auto& unitUpgrade : unitUpgrades) {
+			delete unitUpgrade;
+		}
+
+		for (auto& unitUpgradesCost : unitUpgradesCosts) {
+			delete unitUpgradesCost;
+		}
+	}
 };
