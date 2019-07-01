@@ -328,6 +328,15 @@ bool MainGrid::isInLocalArea(int cell, Urho3D::Vector2& pos) {
 	return false;
 }
 
+int MainGrid::closestEmpty(int posIndex) {//TODO improve closest? skorzystac z escape?
+	for (auto index : closeIndex) {
+		if (complexData[index + posIndex].getType() == CellState::EMPTY) {
+			return index + posIndex;
+		}
+	}
+	return posIndex;
+}
+
 void MainGrid::addStatic(Static* object) {
 	if (validateAdd(object)) {
 		const auto bucketPos = getCords(object->getMainCell());

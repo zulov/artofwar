@@ -76,6 +76,7 @@ public:
 
 	void switchDebugGrid();
 	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
+	int closestEmpty(int posIndex);
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);

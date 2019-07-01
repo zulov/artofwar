@@ -36,7 +36,7 @@ URHO3D_DEFINE_APPLICATION_MAIN(Main)
 using namespace Urho3D;
 
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
-	gameState(GameState::STARTING) {
+                               gameState(GameState::STARTING) {
 	MySprite::RegisterObject(context);
 	Game::init();
 }
@@ -48,7 +48,7 @@ void Main::Setup() {
 	db_resolution* resolution = Game::getDatabaseCache()->getResolution(settings->resolution);
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
 	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName()
-		+".log";
+		+ ".log";
 	engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
 	engineParameters_[EP_HEADLESS] = false;
 	engineParameters_[EP_SOUND] = false;
@@ -91,6 +91,8 @@ void Main::Stop() {
 	disposeScene();
 
 	delete hud;
+	delete Game::getDatabaseCache();
+	Game::setDatabaseCache(nullptr);
 	Game::dispose();
 	engine_->DumpResources(true);
 }
@@ -217,7 +219,7 @@ void Main::updateProgress(loading& progress, std::string msg) const {
 void Main::load(String saveName, loading& progress) {
 	switch (progress.currentStage) {
 	case 0:
-		{
+	{
 		setSimpleManagers();
 
 		loader.createLoad(saveName);
@@ -231,19 +233,19 @@ void Main::load(String saveName, loading& progress) {
 		hud->resetLoading();
 
 		levelBuilder->createScene(loader);
-		}
-		break;
+	}
+	break;
 	case 1:
-		{
+	{
 		createEnv();
 		break;
-		}
+	}
 	case 2:
-		{
+	{
 		Game::getEnvironment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
-		}
+	}
 	case 3:
 		createSimulation();
 		break;
@@ -266,7 +268,7 @@ void Main::createEnv() {
 void Main::newGame(NewGameForm* form, loading& progress) {
 	switch (progress.currentStage) {
 	case 0:
-		{
+	{
 		disposeScene();
 		setSimpleManagers();
 
@@ -279,19 +281,19 @@ void Main::newGame(NewGameForm* form, loading& progress) {
 		hud->resetLoading();
 
 		levelBuilder->createScene(form);
-		}
-		break;
+	}
+	break;
 	case 1:
-		{
+	{
 		createEnv();
 		break;
-		}
+	}
 	case 2:
-		{
+	{
 		Game::getEnvironment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
-		}
+	}
 	case 3:
 		createSimulation();
 		break;

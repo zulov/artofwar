@@ -373,7 +373,7 @@ struct db_container {
 	int resolutions_size = 0;
 
 
-	explicit db_container() {//TODO bug delete what inside
+	explicit db_container() {
 		for (int i = 0; i < BUILDINGS_NUMBER_DB; ++i) {
 			unitsForBuilding[i] = new std::vector<db_unit*>();
 			costForBuilding[i] = new std::vector<db_cost*>();
@@ -405,7 +405,11 @@ struct db_container {
 		}
 	}
 
-	~db_container() {
+	~db_container() {		//TODO bug delete what inside
+		for (auto unit : units) {
+			delete unit;
+		}
+
 		for (int i = 0; i < BUILDINGS_NUMBER_DB; ++i) {
 			delete unitsForBuilding[i];
 			delete costForBuilding[i];

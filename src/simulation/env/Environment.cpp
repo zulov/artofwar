@@ -266,6 +266,10 @@ bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {
 	return mainGrid.isInLocalArea(getMainCell, pos);
 }
 
+int Environment::closestEmpty(int posIndex) {
+	return mainGrid.closestEmpty(posIndex);
+}
+
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {
 	return mainGrid.getValidPosition(size, pos);
 }
