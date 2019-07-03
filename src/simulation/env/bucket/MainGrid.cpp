@@ -14,8 +14,20 @@
 
 MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size),
                                                                 closeIndex({
-	                                                                -resolution - 1, -resolution, -resolution + 1, -1,
-	                                                                0, 1, resolution - 1, resolution, resolution + 1
+	                                                                -resolution - 1, -resolution, -resolution + 1,
+	                                                                -1, 0, 1,
+	                                                                resolution - 1, resolution, resolution + 1
+                                                                }),
+                                                                closeIndexSecond({
+	                                                                -2 * resolution - 2, -2 * resolution - 1,
+	                                                                -2 * resolution, -2 * resolution + 1,
+	                                                                -2 * resolution + 2,
+	                                                                -resolution - 2, -resolution + 2,
+	                                                                -2, 2,
+	                                                                resolution - 2, resolution + 2,
+	                                                                2 * resolution - 2, 2 * resolution - 1,
+	                                                                2 * resolution, 2 * resolution + 1,
+	                                                                2 * resolution + 2
                                                                 }) {
 	short posX = 0;
 	short posZ = 0;
@@ -290,7 +302,7 @@ void MainGrid::drawDebug() {
 
 			if (std::get<0>(info)) {
 				DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(center.x_, 10, center.y_),
-				                        Urho3D::Vector3(center.x_, 15, center.y_), std::get<1>(info));
+				                        Urho3D::Vector3(center.x_, 20, center.y_), std::get<1>(info));
 			}
 		}
 	}
@@ -328,9 +340,19 @@ bool MainGrid::isInLocalArea(int cell, Urho3D::Vector2& pos) {
 	return false;
 }
 
-int MainGrid::closestEmpty(int posIndex) {//TODO improve closest? skorzystac z escape?
+int MainGrid::closestEmpty(int posIndex) {
+	//TODO improve closest? skorzystac z escape?
+	int bestIndex = posIndex;
+	double closest = 99999;
 	for (auto index : closeIndex) {
-		if (complexData[index + posIndex].getType() == CellState::EMPTY) {
+		if (complexData[index + posIndex].getType() == CellState::EMPTY || complexData[index + posIndex].getType() ==
+			CellState::DEPLOY) {
+			return index + posIndex;
+		}
+	}
+	for (auto index : closeIndexSecond) {
+		if (complexData[index + posIndex].getType() == CellState::EMPTY || complexData[index + posIndex].getType() ==
+			CellState::DEPLOY) {
 			return index + posIndex;
 		}
 	}

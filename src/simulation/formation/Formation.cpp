@@ -273,11 +273,12 @@ Urho3D::Vector2 Formation::getPositionFor(short id) const {
 
 	auto position = center - Urho3D::Vector2(column * sparsity, row * sparsity);
 	auto posIndex = Game::getEnvironment()->getIndex(position);
-	if (Game::getEnvironment()->cellInState(posIndex, {CellState::EMPTY})) {
+	if (Game::getEnvironment()->cellInState(posIndex, {CellState::EMPTY, CellState::DEPLOY})) {
 		return position;
-	}else {
+	} else {
+		//TODO perf map posIndex to closestIndex
 		int closestIndex = Game::getEnvironment()->closestEmpty(posIndex);
-		return Game::getEnvironment()->getCenter(closestIndex);//TODO change center
+		return Game::getEnvironment()->getCenter(closestIndex); //TODO change center
 	}
 }
 

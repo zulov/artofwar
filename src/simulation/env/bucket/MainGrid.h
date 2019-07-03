@@ -94,5 +94,6 @@ private:
 	ComplexBucketData* complexData;
 
 	std::vector<short> closeIndex;
+	std::vector<short> closeIndexSecond;
 	GridDebugType debugType = GridDebugType::GRID;
 };
