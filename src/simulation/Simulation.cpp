@@ -63,6 +63,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		executeLists();
 		selfAI();
+		aiPlayers();
 
 		actionCommandList->execute();
 		enviroment->update(units);
@@ -81,7 +82,8 @@ SimulationInfo* Simulation::update(float timeStep) {
 		enviroment->removeFromGrids(simObjectManager->getToDispose());
 
 		Game::getFormationManager()->update();
-	} else {
+	}
+	else {
 		moveUnits(timeStep);
 	}
 	return simulationInfo;
@@ -145,14 +147,13 @@ void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
 		//creationCommandList->addUnits(UNITS_NUMBER, 2, Urho3D::Vector2(20, -30), 0, 0);
 		//creationCommandList->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-20, -10), 1, 0);
-		creationCommandList->addUnits(UNITS_NUMBER*5, 0, Urho3D::Vector2(-20, -20), 0, 0);
-		
+		creationCommandList->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0, 0);
+
 		creationCommandList->addBuilding(1, Urho3D::Vector2(-10, -18), 0, 0);
 		creationCommandList->addBuilding(1, Urho3D::Vector2(-5, -18), 0, 0);
 		creationCommandList->addBuilding(1, Urho3D::Vector2(0, -20), 0, 0);
 		creationCommandList->addBuilding(1, Urho3D::Vector2(7, -16), 0, 0);
 		creationCommandList->addBuilding(1, Urho3D::Vector2(15, -18), 0, 0);
-
 
 
 		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -30), 0, 0);
@@ -305,6 +306,15 @@ void Simulation::initScene(NewGameForm* form) const {
 	loadEntities(form);
 	//addTestEntities();
 	executeLists();
+}
+
+void Simulation::aiPlayers() {
+	auto players = Game::getPlayersMan()->getAllPlayers();
+	for (auto player : players) {
+		if (Game::getPlayersMan()->getActivePlayer() != player) {
+			int a = 5;
+		}
+	}
 }
 
 void Simulation::moveUnits(const float timeStep) const {

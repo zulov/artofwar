@@ -32,6 +32,7 @@ class Simulation
 public:
 	Simulation(Environment* enviroment, CreationCommandList* creationCommandList);
 	~Simulation();
+
 	SimulationInfo* update(float timeStep);
 	void executeLists() const;
 	void initScene(SceneLoader& loader) const;
@@ -43,6 +44,7 @@ public:
 	void changeColorMode(ColorMode _colorMode);
 
 private:
+	void aiPlayers();
 	void moveUnits(float timeStep) const;
 	void moveUnitsAndCheck(float timeStep) const;
 	void calculateForces();
@@ -82,3 +84,4 @@ private:
 	UpgradeCommandList* levelsCommandList;
 	CommandList* actionCommandList;
 };
+
