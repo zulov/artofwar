@@ -7,6 +7,7 @@
 #include <Urho3D/Graphics/Terrain.h>
 #include <vector>
 #include <array>
+#include "influence/InfluenceManager.h"
 
 
 class ResourceEntity;
@@ -14,8 +15,7 @@ class Unit;
 class Building;
 enum class OperatorType : char;
 
-class Environment
-{
+class Environment {
 public:
 	explicit Environment(Urho3D::Terrain* _terrian);
 	~Environment();
@@ -24,7 +24,7 @@ public:
 	std::vector<Physical *>* getNeighboursFromTeam(Physical* physical, float radius, int team,
 	                                               OperatorType operatorType);
 	std::vector<Physical *>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
-	
+
 	std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
 	std::vector<Physical*>* getResources(Physical* physical, float radius);
@@ -79,7 +79,8 @@ private:
 	MainGrid mainGrid;
 	Grid resourceGrid, buildingGrid;
 	Grid teamUnitGrid[MAX_PLAYERS];
-	std::array<Grid*, 3> grids={&mainGrid, &buildingGrid, &resourceGrid};
+	InfluenceManager influenceManager;
+	std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
 	Urho3D::Terrain* terrian;
 
 	std::vector<Physical*> *neights, *neights2, *empty; //TODO tu bedzie trzeba tablica jesli beda watki

@@ -180,6 +180,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\simulation\env\influence\map\InfluenceMap.cpp" />
     <ClCompile Include="src\simulation\env\bucket\path\PathFinder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\FormationOrder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\GroupOrder.cpp" />
@@ -188,6 +189,9 @@
     <ClCompile Include="src\colors\ColorPaletteRepo.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\FutureOrder.cpp" />
     <ClCompile Include="src\objects\unit\state\State.cpp" />
+    <ClCompile Include="src\simulation\env\influence\InfluenceManager.cpp" />
+    <ClCompile Include="src\simulation\env\influence\map\InfluenceMapFloat.cpp" />
+    <ClCompile Include="src\simulation\env\influence\map\InfluenceMapInt.cpp" />
     <ClCompile Include="src\simulation\formation\Formation.cpp" />
     <ClCompile Include="src\simulation\formation\FormationManager.cpp" />
     <ClCompile Include="src\hud\window\menu\info\LeftMenuInfoPanel.cpp" />
@@ -297,6 +301,10 @@
     <ClInclude Include="src\objects\unit\MissileData.h" />
     <ClInclude Include="src\replace_utils.h" />
     <ClInclude Include="src\simulation\env\bucket\path\DrawGridUtils.h" />
+    <ClInclude Include="src\simulation\env\influence\InfluenceManager.h" />
+    <ClInclude Include="src\simulation\env\influence\map\InfluenceMap.h" />
+    <ClInclude Include="src\simulation\env\influence\map\InfluenceMapFloat.h" />
+    <ClInclude Include="src\simulation\env\influence\map\InfluenceMapInt.h" />
     <ClInclude Include="src\simulation\force\ForceStats.h" />
     <ClInclude Include="src\simulation\formation\Formation.h" />
     <ClInclude Include="src\simulation\formation\FormationManager.h" />

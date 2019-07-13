@@ -8,7 +8,6 @@
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
 
-
 #define BUCKET_GRID_RESOLUTION 512
 #define BUCKET_GRID_SIZE 1024
 
@@ -20,21 +19,19 @@
 #define BUCKET_GRID_SIZE_ENEMY 1024
 #define BUCKET_GRID_SIZE_RESOURCE 1024
 
-Environment::Environment(Urho3D::Terrain* _terrian):
+Environment::Environment(Urho3D::Terrain* terrian):
 	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE),
 	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE_RESOURCE),
 	buildingGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE_BUILD),
 	teamUnitGrid{
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY},
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE_ENEMY}
-	} {
+	}, terrian(terrian), influenceManager(MAX_PLAYERS) {
 	neights = new std::vector<Physical *>();
 	neights2 = new std::vector<Physical *>();
 	empty = new std::vector<Physical *>();
 	neights->reserve(DEFAULT_VECTOR_SIZE * 2);
 	neights2->reserve(DEFAULT_VECTOR_SIZE * 2);
-
-	terrian = _terrian;
 }
 
 

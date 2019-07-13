@@ -105,9 +105,8 @@ void MiniMapPanel::update() {
 	float xinc = 1.0f / size.x_;
 	float yinc = 1.0f / size.y_;
 
-	int partIndex = 0;
 	bool changed = false;
-	for (; partIndex < indexPerUpdate && indexUpdate < size.y_ * size.x_; ++partIndex, ++indexUpdate) {
+	for (int partIndex = 0; partIndex < indexPerUpdate && indexUpdate < size.y_ * size.x_; ++partIndex, ++indexUpdate) {
 		const float yVal = 1 - yinc * (indexUpdate / size.x_);
 		const float xVal = 0 + xinc * (indexUpdate % size.x_);
 		int activePlayer = Game::getPlayersMan()->getActivePlayer()->getId();
@@ -137,10 +136,8 @@ void MiniMapPanel::update() {
 	}
 	if (changed) {
 		text->SetData(minimap);
-
 		spr->SetTexture(text);
 	}
-
 }
 
 void MiniMapPanel::createBody() {

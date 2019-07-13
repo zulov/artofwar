@@ -82,8 +82,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 		enviroment->removeFromGrids(simObjectManager->getToDispose());
 
 		Game::getFormationManager()->update();
-	}
-	else {
+	} else {
 		moveUnits(timeStep);
 	}
 	return simulationInfo;
