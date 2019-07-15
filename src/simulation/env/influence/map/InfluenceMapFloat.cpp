@@ -1,8 +1,8 @@
 #include "InfluenceMapFloat.h"
 #include <algorithm>
 
-InfluenceMapFloat::InfluenceMapFloat(unsigned short size): InfluenceMap(size) {
-	values = new float[size];
+InfluenceMapFloat::InfluenceMapFloat(unsigned short resolution): InfluenceMap(resolution) {
+	values = new float[arraySize];
 }
 
 InfluenceMapFloat::~InfluenceMapFloat() {
@@ -12,5 +12,5 @@ InfluenceMapFloat::~InfluenceMapFloat() {
 void InfluenceMapFloat::update(Physical* physical) { }
 
 void InfluenceMapFloat::reset() {
-	std::fill_n(values, size, 0);
+	std::fill_n(values, arraySize, 0);
 }

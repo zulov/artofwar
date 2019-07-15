@@ -83,12 +83,12 @@ bool MainGrid::validateAdd(Static* object) {
 }
 
 bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) {
-	const auto sizeX = calculateSize(size.x_, getIndex(pos.x_));
-	const auto sizeZ = calculateSize(size.y_, getIndex(pos.y_));
+	const auto sizeX = calculateSize(size.x_, calculator.getIndex(pos.x_));
+	const auto sizeZ = calculateSize(size.y_, calculator.getIndex(pos.y_));
 
 	for (int i = sizeX.x_; i < sizeX.y_; ++i) {
 		for (int j = sizeZ.x_; j < sizeZ.y_; ++j) {
-			const int index = getIndex(i, j);
+			const int index = calculator.getIndex(i, j);
 			if (!(inRange(index) && complexData[index].isUnit())) {
 				return false;
 			}
@@ -100,10 +100,10 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 
 content_info* MainGrid::getContentInfo(const Urho3D::Vector2& from, const Urho3D::Vector2& to, bool checks[],
                                        int activePlayer) {
-	const auto posBeginX = getIndex(from.x_);
-	const auto posBeginZ = getIndex(from.y_);
-	const auto posEndX = getIndex(to.x_);
-	const auto posEndZ = getIndex(to.y_);
+	const auto posBeginX = calculator.getIndex(from.x_);
+	const auto posBeginZ = calculator.getIndex(from.y_);
+	const auto posEndX = calculator.getIndex(to.x_);
+	const auto posEndZ = calculator.getIndex(to.y_);
 
 	const auto iMin = Urho3D::Min(posBeginX, posEndX);
 	const auto iMax = Urho3D::Max(posBeginX, posEndX);

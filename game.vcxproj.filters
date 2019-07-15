@@ -11,9 +11,6 @@
     <ClCompile Include="src\camera\CameraBehave.cpp">
       <Filter>camera\behave</Filter>
     </ClCompile>
-    <ClCompile Include="src\cameratsCameraBehave.cpp">
-      <Filter>camera\behave</Filter>
-    </ClCompile>
     <ClCompile Include="src\camera\FreeCameraBehave.cpp">
       <Filter>camera\behave</Filter>
     </ClCompile>
@@ -48,15 +45,6 @@
       <Filter>hud</Filter>
     </ClCompile>
     <ClCompile Include="src\objects\Player.cpp">
-      <Filter>player</Filter>
-    </ClCompile>
-    <ClCompile Include="src\objectsesourceesourceEntity.cpp">
-      <Filter>objectsesource</Filter>
-    </ClCompile>
-    <ClCompile Include="src\objectsesourceesourceFactory.cpp">
-      <Filter>objects\collection\factory</Filter>
-    </ClCompile>
-    <ClCompile Include="src\playeresources.cpp">
       <Filter>player</Filter>
     </ClCompile>
     <ClCompile Include="src\control\SelectedInfo.cpp">
@@ -193,6 +181,10 @@
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapInt.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMap.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapFloat.cpp" />
+    <ClCompile Include="src\objects\resource\ResourceEntity.cpp" />
+    <ClCompile Include="src\objects\resource\ResourceFactory.cpp" />
+    <ClCompile Include="src\player\Resources.cpp" />
+    <ClCompile Include="src\camera\RtsCameraBehave.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -212,9 +204,6 @@
     </ClInclude>
     <ClInclude Include="src\camera\CameraManager.h">
       <Filter>camera</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cameratsCameraBehave.h">
-      <Filter>camera\behave</Filter>
     </ClInclude>
     <ClInclude Include="src\camera\FreeCameraBehave.h">
       <Filter>camera\behave</Filter>
@@ -267,15 +256,6 @@
     <ClInclude Include="src\player\Player.h">
       <Filter>player</Filter>
     </ClInclude>
-    <ClInclude Include="src\objectsesourceesourceEntity.h">
-      <Filter>objectsesource</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objectsesourceesourceFactory.h">
-      <Filter>objects\collection\factory</Filter>
-    </ClInclude>
-    <ClInclude Include="src\playeresources.h">
-      <Filter>player</Filter>
-    </ClInclude>
     <ClInclude Include="src\control\SelectedInfo.h">
       <Filter>control</Filter>
     </ClInclude>
@@ -309,9 +289,6 @@
     </ClInclude>
     <ClInclude Include="src\scene\SceneObjectManager.h">
       <Filter>objects\collection\manager</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objectsesourceesourceType.h">
-      <Filter>objectsesource</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\LevelBuilder.h" />
     <ClInclude Include="src\hud\window\top\TopPanel.h">
@@ -449,12 +426,10 @@
     <ClInclude Include="src\objects\PhysicalUtils.h" />
     <ClInclude Include="src\objects\CellState.h" />
     <ClInclude Include="src\DebugUnitType.h" />
-    <ClInclude Include="srceplace_utils.h" />
     <ClInclude Include="src\objects\static\Static.h" />
     <ClInclude Include="src\objects\static\StaticState.h" />
     <ClInclude Include="src\objects\static\StaticStateUtils.h" />
     <ClInclude Include="src\objects\unit\state\CollectState.h" />
-    <ClInclude Include="src\objectsesourceesourceOrder.h" />
     <ClInclude Include="src\DebugLineRepo.h" />
     <ClInclude Include="src\consts.h" />
     <ClInclude Include="src\simulation\env\Environment.h">
@@ -477,6 +452,14 @@
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapInt.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMap.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapFloat.h" />
+    <ClInclude Include="src\objects\resource\ResourceOrder.h" />
+    <ClInclude Include="src\replace_utils.h" />
+    <ClInclude Include="src\objects\resource\ResourceEntity.h" />
+    <ClInclude Include="src\objects\resource\ResourceFactory.h" />
+    <ClInclude Include="src\player\Resources.h" />
+    <ClInclude Include="src\objects\resource\ResourceType.h" />
+    <ClInclude Include="src\camera\RtsCameraBehave.h" />
+    <ClInclude Include="src\simulation\env\GridCalculator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

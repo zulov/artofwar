@@ -2,6 +2,7 @@
 #include "BucketIterator.h"
 #include "defines.h"
 #include <Urho3D/Math/Vector3.h>
+#include "simulation/env/GridCalculator.h"
 
 #define MAX_SEP_DIST 24
 #define RES_SEP_DIST 120
@@ -23,18 +24,13 @@ public:
 	std::vector<Physical *>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);
 	std::vector<Physical *>* getArrayNeightSimilarAs(Physical* clicked, double radius);
 	BucketIterator& getArrayNeight(Urho3D::Vector3& position, float radius, short thread);
-
-	int indexFromPosition(Urho3D::Vector3& pos) const;
-	int indexFromPosition(Urho3D::Vector2& pos) const;
-
-	int getIndex(short posX, short posZ) const { return posX * resolution + posZ; }
 protected:
+	GridCalculator calculator;
 	short diff(short a, short b);
-	short getIndex(float value) const;
 	bool inRange(int index) const { return index >= 0 && index < sqResolution; }
-	
+
 	Bucket* buckets;
-	short resolution, halfResolution;
+	short resolution;
 	int sqResolution;
 	float size, fieldSize, invFieldSize;
 
