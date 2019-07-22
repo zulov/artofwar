@@ -18,7 +18,7 @@ void InfluenceMapFloat::update(Physical* physical) {
 	auto iZ = calculator.getIndex(physical->getPosition().z_);
 	for (int i = iX - threshold; i < iX + threshold; ++i) {
 		if (validIndex(i)) {
-			for (int j = iX - threshold; j < iX + threshold; ++j) {
+			for (int j = iZ - threshold; j < iZ + threshold; ++j) {
 				if (validIndex(j)) {
 					int index = calculator.getIndex(i, j);
 					values[index] += 1; //TODO bug dodac gradient

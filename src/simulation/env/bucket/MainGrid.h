@@ -88,8 +88,6 @@ private:
 
 	PathFinder* pathConstructor;
 
-	content_info* ci;
-
 	std::vector<Urho3D::Vector2> posInBucket2;
 	std::vector<Urho3D::Vector2> posInBucket3;
 	std::vector<Urho3D::Vector2> posInBucket4;

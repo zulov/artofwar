@@ -102,6 +102,7 @@ void Environment::update(std::vector<Unit*>* units) const {
 		mainGrid.update(unit);
 		teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
 	}
+	influenceManager.update(units);
 }
 
 void Environment::update(std::vector<Building*>* buildings) {
@@ -285,5 +286,5 @@ content_info* Environment::getContentInfo(Urho3D::Vector2 from, Urho3D::Vector2 
 	to.x_ = to.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
 	to.y_ = to.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
 
-	return mainGrid.getContentInfo(from, to, checks, activePlayer);
+	return influenceManager.getContentInfo(from, to, checks, activePlayer);
 }

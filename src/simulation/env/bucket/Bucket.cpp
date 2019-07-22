@@ -3,17 +3,12 @@
 #include "simulation/env/ContentInfo.h"
 
 
-Bucket::Bucket() {
-	std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
-}
+Bucket::Bucket() = default;
 
 Bucket::~Bucket() = default;
 
 void Bucket::add(Physical* entity) {
 	content.push_back(entity);
-	if (entity->getPlayer() >= 0) {
-		++unitsNumberPerPlayer[entity->getPlayer()];
-	}
 }
 
 void Bucket::remove(Physical* entity) {
@@ -26,11 +21,7 @@ void Bucket::remove(Physical* entity) {
 
 	if (pos < content.size()) {
 		content.erase(content.begin() + pos);
-		if (entity->getPlayer() >= 0) {
-			--unitsNumberPerPlayer[entity->getPlayer()];
-		}
 	}
-
 }
 
 bool Bucket::incUnitsPerPlayer(content_info* ci, int activePlayer, const bool checks[]) {
