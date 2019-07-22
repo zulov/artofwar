@@ -10,6 +10,7 @@ public:
 	void update(Physical* physical) override;
 	void reset() override;
 private:
+	bool validIndex(int i) const;
 	float* values;
 	float coef;
 	float threshold;

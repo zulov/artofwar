@@ -14,10 +14,24 @@ InfluenceMapFloat::~InfluenceMapFloat() {
 }
 
 void InfluenceMapFloat::update(Physical* physical) {
-	const int index = calculator.indexFromPosition(physical->getPosition());
-
+	auto iX = calculator.getIndex(physical->getPosition().x_);
+	auto iZ = calculator.getIndex(physical->getPosition().z_);
+	for (int i = iX - threshold; i < iX + threshold; ++i) {
+		if (validIndex(i)) {
+			for (int j = iX - threshold; j < iX + threshold; ++j) {
+				if (validIndex(j)) {
+					int index = calculator.getIndex(i, j);
+					values[index] += 1; //TODO bug dodac gradient
+				}
+			}
+		}
+	}
 }
 
 void InfluenceMapFloat::reset() {
 	std::fill_n(values, arraySize, 0);
+}
+
+bool InfluenceMapFloat::validIndex(int i) const {
+	return i < 0 && i >= resolution;
 }
