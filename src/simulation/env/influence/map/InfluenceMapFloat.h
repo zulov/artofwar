@@ -3,7 +3,7 @@
 
 class InfluenceMapFloat : InfluenceMap {
 public:
-	InfluenceMapFloat(unsigned short size);
+	InfluenceMapFloat(unsigned short resolution, float size, float coef, float threshold);
 
 	virtual ~InfluenceMapFloat();
 
@@ -11,4 +11,6 @@ public:
 	void reset() override;
 private:
 	float* values;
+	float coef;
+	float threshold;
 };

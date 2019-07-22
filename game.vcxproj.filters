@@ -460,6 +460,7 @@
     <ClInclude Include="src\objects\resource\ResourceType.h" />
     <ClInclude Include="src\camera\RtsCameraBehave.h" />
     <ClInclude Include="src\simulation\env\GridCalculator.h" />
+    <ClInclude Include="src\simulation\env\EnvConsts.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

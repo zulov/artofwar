@@ -13,7 +13,7 @@ class Physical;
 
 class Grid {
 public:
-	Grid(short _resolution, float _size);
+	Grid(short resolution, float size);
 	~Grid();
 
 	void update(Unit* unit, char team) const;

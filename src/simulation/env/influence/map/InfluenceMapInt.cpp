@@ -1,7 +1,8 @@
 #include "InfluenceMapInt.h"
+#include "objects/Physical.h"
 #include <algorithm>
 
-InfluenceMapInt::InfluenceMapInt(unsigned short resolution): InfluenceMap(resolution) {
+InfluenceMapInt::InfluenceMapInt(unsigned short resolution, float size): InfluenceMap(resolution, size) {
 	values = new unsigned char[arraySize];
 }
 
@@ -10,16 +11,9 @@ InfluenceMapInt::~InfluenceMapInt() {
 }
 
 void InfluenceMapInt::update(Physical* physical) {
-	
-	const int index = indexFromPosition(unit->getPosition());
-	
-	if (!unit->isAlive()) {
-		removeAt(unit->getBucketIndex(team), unit);
-	} else if (unit->bucketHasChanged(index, team)) {
-		removeAt(unit->getBucketIndex(team), unit);
-		addAt(index, unit);
-		unit->setBucket(index, team);
-	}
+	const int index = calculator.indexFromPosition(physical->getPosition());
+
+	++values[index];
 }
 
 void InfluenceMapInt::reset() {

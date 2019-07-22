@@ -1,10 +1,11 @@
 #pragma once
+#include "simulation/env/GridCalculator.h"
 class Physical;
 
 class InfluenceMap {
 
 public:
-	InfluenceMap(unsigned short resolution);
+	InfluenceMap(unsigned short resolution, float size);
 	virtual ~InfluenceMap();
 
 	virtual void update(Physical* physical) =0;
@@ -12,5 +13,7 @@ public:
 
 protected:
 	unsigned short resolution;
+	float size;
 	unsigned int arraySize;
+	GridCalculator calculator;
 };

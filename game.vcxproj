@@ -301,6 +301,7 @@
     <ClInclude Include="src\objects\unit\MissileData.h" />
     <ClInclude Include="src\replace_utils.h" />
     <ClInclude Include="src\simulation\env\bucket\path\DrawGridUtils.h" />
+    <ClInclude Include="src\simulation\env\EnvConsts.h" />
     <ClInclude Include="src\simulation\env\GridCalculator.h" />
     <ClInclude Include="src\simulation\env\influence\InfluenceManager.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMap.h" />

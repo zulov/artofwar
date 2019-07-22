@@ -4,10 +4,10 @@
 #include "bucket/MainGrid.h"
 #include "defines.h"
 #include "objects/unit/state/UnitState.h"
+#include "influence/InfluenceManager.h"
 #include <Urho3D/Graphics/Terrain.h>
 #include <vector>
 #include <array>
-#include "influence/InfluenceManager.h"
 
 
 class ResourceEntity;
@@ -60,7 +60,7 @@ public:
 
 	void invalidateCache();
 
-	int getIndex(Urho3D::Vector2& pos) const { return mainGrid.indexFromPosition(pos); }
+	int getIndex(Urho3D::Vector2& pos) const { return mainGrid.getIndex(pos); }
 	int getIndex(short x, short z) const { return mainGrid.getIndex(x, z); }
 	Urho3D::IntVector2 getCords(int index) const { return mainGrid.getCords(index); }
 	CellState getType(int index) const { return mainGrid.getType(index); }

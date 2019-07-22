@@ -122,7 +122,7 @@ content_info* MainGrid::getContentInfo(const Urho3D::Vector2& from, const Urho3D
 }
 
 Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
-	auto index = indexFromPosition(unit->getPosition());
+	auto index = calculator.indexFromPosition(unit->getPosition());
 
 	Urho3D::Vector2 sum;
 	if (index != unit->getIndexToInteract()
@@ -330,7 +330,7 @@ void MainGrid::switchDebugGrid() {
 }
 
 bool MainGrid::isInLocalArea(int cell, Urho3D::Vector2& pos) {
-	const auto index = indexFromPosition(pos);
+	const auto index = calculator.indexFromPosition(pos);
 	if (cell == index) { return true; }
 	for (auto value : closeIndex) {
 		if (cell == index + value) {
@@ -363,7 +363,7 @@ void MainGrid::addStatic(Static* object) {
 	if (validateAdd(object)) {
 		const auto bucketPos = getCords(object->getMainCell());
 
-		object->setMainCell(getIndex(bucketPos.x_, bucketPos.y_));
+		object->setMainCell(calculator.getIndex(bucketPos.x_, bucketPos.y_));
 
 		for (auto index : object->getOccupiedCells()) {
 			complexData[index].setStatic(object);
@@ -377,7 +377,7 @@ void MainGrid::addStatic(Static* object) {
 
 		for (int i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
 			for (int j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {
-				const int index = getIndex(i, j);
+				const int index = calculator.getIndex(i, j);
 				updateNeighbors(index);
 				if (!complexData[index].isUnit()) {
 					toRefresh.push_back(index);
@@ -404,7 +404,7 @@ void MainGrid::removeStatic(Static* object) {
 }
 
 Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3& position) {
-	int index = indexFromPosition(position);
+	int index = calculator.indexFromPosition(position);
 	if (!complexData[index].isUnit()) {
 		int escapeBucket; //=-1
 		//auto& neights = complexData[index].getNeightbours();
@@ -438,14 +438,14 @@ Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3& position) {
 
 Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {
 	//TODO tu mozna to sporo zoptymalizowac ale pewnie nie ma potrzeby
-	const short posX = getIndex(pos.x_);
-	const short posZ = getIndex(pos.y_);
+	const short posX = calculator.getIndex(pos.x_);
+	const short posZ = calculator.getIndex(pos.y_);
 
 	const auto sizeX = calculateSize(size.x_, posX);
 	const auto sizeZ = calculateSize(size.y_, posZ);
 
-	const int index1 = getIndex(sizeX.x_, sizeZ.x_);
-	const int index2 = getIndex(sizeX.y_ - 1, sizeZ.y_ - 1);
+	const int index1 = calculator.getIndex(sizeX.x_, sizeZ.x_);
+	const int index2 = calculator.getIndex(sizeX.y_ - 1, sizeZ.y_ - 1);
 	const auto center1 = complexData[index1].getCenter();
 	const auto center2 = complexData[index2].getCenter();
 	const auto newCenter = (center1 + center2) / 2;
@@ -454,7 +454,7 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 }
 
 Urho3D::IntVector2 MainGrid::getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
-	return {getIndex(pos.x_), getIndex(pos.y_)};
+	return {calculator.getIndex(pos.x_), calculator.getIndex(pos.y_)};
 }
 
 void MainGrid::updateNeighbors(const int current) const {
@@ -498,8 +498,8 @@ void MainGrid::drawMap(Urho3D::Image* image) {
 	const auto data = (uint32_t*)image->GetData();
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
-			const int index = getIndex(x, y);
-			const int idR = getIndex(resolution - y - 1, x);
+			const int index = calculator.getIndex(x, y);
+			const int idR = calculator.getIndex(resolution - y - 1, x);
 			if (complexData[index].isUnit()) {
 				*(data + idR) = 0xFFFFFFFF;
 			} else {

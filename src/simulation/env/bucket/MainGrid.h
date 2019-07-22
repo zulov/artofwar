@@ -55,10 +55,10 @@ public:
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 
 	Urho3D::Vector2& getCenterAt(const Urho3D::IntVector2& cords) const {
-		return complexData[getIndex(cords.x_, cords.y_)].getCenter();
+		return complexData[calculator.getIndex(cords.x_, cords.y_)].getCenter();
 	}
 
-	Urho3D::Vector2& getCenter(short x, short z) { return getCenter(getIndex(x, z)); }
+	Urho3D::Vector2& getCenter(short x, short z) { return getCenter(calculator.getIndex(x, z)); }
 	Urho3D::Vector2& getCenter(int index) const { return complexData[index].getCenter(); }
 
 	bool inSide(int x, int z) const { return !(x < 0 || x >= resolution || z < 0 || z >= resolution); }
@@ -77,6 +77,9 @@ public:
 	void switchDebugGrid();
 	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
 	int closestEmpty(int posIndex);
+	int indexFromPosition(const Urho3D::Vector2& pos) { return calculator.indexFromPosition(pos); }
+	int getIndex(short i, short z) const { return calculator.getIndex(i, z); }
+	int getIndex(Urho3D::Vector2& pos) const { return calculator.indexFromPosition(pos); }
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
