@@ -5,18 +5,19 @@
 #include "objects/CellState.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
+#include "objects/building/Building.h"
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
 		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(DEFAULT_INF_GRID_SIZE,BUCKET_GRID_SIZE));
+		buildingsInfluencePerPlayer.emplace_back(new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE,0.5,3));
 	}
 	ci = new content_info();
 }
 
 InfluenceManager::~InfluenceManager() {
-	for (auto map : unitsNumberPerPlayer) {
-		delete map;
-	}
+	clear_vector(unitsNumberPerPlayer);
+	clear_vector(buildingsInfluencePerPlayer);
 	delete ci;
 }
 
@@ -26,6 +27,15 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 	}
 	for (auto unit : (*units)) {
 		unitsNumberPerPlayer[unit->getPlayer()]->update(unit);
+	}
+}
+
+void InfluenceManager::update(std::vector<Building*>* buildings) const {
+	for (auto map : buildingsInfluencePerPlayer) {
+		map->reset();
+	}
+	for (auto building : (*buildings)) {
+		buildingsInfluencePerPlayer[building->getPlayer()]->update(building);
 	}
 }
 

@@ -3,9 +3,9 @@
 #include <algorithm>
 
 InfluenceMapFloat::
-InfluenceMapFloat(unsigned short resolution, float size, float coef, float threshold): InfluenceMap(resolution, size),
+InfluenceMapFloat(unsigned short resolution, float size, float coef, float level): InfluenceMap(resolution, size),
                                                                                        coef(coef),
-                                                                                       threshold(threshold) {
+                                                                                       level(level) {
 	values = new float[arraySize];
 }
 
@@ -16,9 +16,9 @@ InfluenceMapFloat::~InfluenceMapFloat() {
 void InfluenceMapFloat::update(Physical* physical) {
 	auto iX = calculator.getIndex(physical->getPosition().x_);
 	auto iZ = calculator.getIndex(physical->getPosition().z_);
-	for (int i = iX - threshold; i < iX + threshold; ++i) {
+	for (int i = iX - level; i < iX + level; ++i) {
 		if (validIndex(i)) {
-			for (int j = iZ - threshold; j < iZ + threshold; ++j) {
+			for (int j = iZ - level; j < iZ + level; ++j) {
 				if (validIndex(j)) {
 					int index = calculator.getIndex(i, j);
 					values[index] += 1; //TODO bug dodac gradient
