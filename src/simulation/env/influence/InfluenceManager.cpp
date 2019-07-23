@@ -2,6 +2,9 @@
 #include "objects/unit/Unit.h"
 #include "simulation/env/EnvConsts.h"
 #include "simulation/env/ContentInfo.h"
+#include "objects/CellState.h"
+#include "Game.h"
+#include "database/DatabaseCache.h"
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
@@ -27,25 +30,38 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 }
 
 
-content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& from, const Urho3D::Vector2& to, bool checks[],
-                                               int activePlayer) {
-	const auto posBeginX = calculator.getIndex(from.x_);
-	const auto posBeginZ = calculator.getIndex(from.y_);
-	const auto posEndX = calculator.getIndex(to.x_);
-	const auto posEndZ = calculator.getIndex(to.y_);
-
-	const auto iMin = Urho3D::Min(posBeginX, posEndX);
-	const auto iMax = Urho3D::Max(posBeginX, posEndX);
-	const auto jMin = Urho3D::Min(posBeginZ, posEndZ);
-	const auto jMax = Urho3D::Max(posBeginZ, posEndZ);
-
+content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfo,
+                                               bool checks[], int activePlayer) {
 	ci->reset();
-
-	for (short i = iMin; i < iMax; ++i) {
-		for (short j = jMin; j < jMax; ++j) {
-			const int index = i * resolution + j;
-			updateInfo(index, ci, checks, activePlayer);
+	switch (state) {
+	case CellState::EMPTY:
+	case CellState::ATTACK:
+	case CellState::COLLECT:
+	case CellState::NONE:
+		if (checks[3] || checks[4]) {
+			for (int i = 0; i < unitsNumberPerPlayer.size(); ++i) {
+				char value = unitsNumberPerPlayer[i]->getValue(center);
+				if ((checks[3] && i == activePlayer || checks[4] && i != activePlayer) && value > 0) {
+					ci->unitsNumberPerPlayer[i] = value;
+					ci->hasUnit = true;
+				}
+			}
 		}
+		break;
+	case CellState::RESOURCE:
+		if (checks[1]) {
+			ci->hasResource = true;
+			ci->resourceNumber[additionalInfo]++;
+		}
+		break;
+	case CellState::BUILDING:
+		if (checks[2]) {
+			ci->hasBuilding = true;
+			ci->buildingNumberPerPlayer[additionalInfo]++;
+		}
+		break;
+	default: ;
 	}
+
 	return ci;
 }

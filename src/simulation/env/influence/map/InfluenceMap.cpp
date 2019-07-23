@@ -7,3 +7,5 @@ InfluenceMap::InfluenceMap(unsigned short resolution, float size): resolution(re
 }
 
 InfluenceMap::~InfluenceMap() = default;
+
+

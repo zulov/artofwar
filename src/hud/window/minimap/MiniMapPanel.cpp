@@ -111,8 +111,7 @@ void MiniMapPanel::update() {
 		const float xVal = 0 + xinc * (indexUpdate % size.x_);
 		int activePlayer = Game::getPlayersMan()->getActivePlayer()->getId();
 
-		content_info* ci = env->getContentInfo({xVal, yVal}, {xVal + xinc, yVal - yinc},
-		                                       checks, activePlayer);
+		content_info* ci = env->getContentInfo({xVal + xinc / 2, yVal - yinc / 2}, checks, activePlayer);
 
 		if (checks[2] && ci->hasBuilding) {
 			unsigned char player = ci->biggestBuilding();
@@ -126,10 +125,8 @@ void MiniMapPanel::update() {
 		} else if (checks[0]) {
 			changeValue(data, changed, heightMap[indexUpdate]);
 		} else {
-			changeValue(data, changed, 0xFF222222);
+			changeValue(data, changed, 0x00FFFFFF);
 		}
-
-
 	}
 	if (indexUpdate >= size.y_ * size.x_) {
 		indexUpdate = 0;

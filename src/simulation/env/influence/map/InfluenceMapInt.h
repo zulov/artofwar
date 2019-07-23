@@ -9,7 +9,7 @@ public:
 
 	void update(Physical* physical) override;
 	void reset() override;
+	char getValue(const Urho3D::Vector2& pos);
 private:
 	unsigned char* values;
 };
-

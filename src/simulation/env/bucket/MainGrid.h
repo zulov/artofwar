@@ -80,6 +80,8 @@ public:
 	int indexFromPosition(const Urho3D::Vector2& pos) { return calculator.indexFromPosition(pos); }
 	int getIndex(short i, short z) const { return calculator.getIndex(i, z); }
 	int getIndex(Urho3D::Vector2& pos) const { return calculator.indexFromPosition(pos); }
+	CellState getCellAt(float x, float z);
+	int getAdditionalInfoAt(float x, float z);
 
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);

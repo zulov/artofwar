@@ -50,7 +50,8 @@ public:
 	std::vector<int>* findPath(Urho3D::Vector3& from, Urho3D::Vector2& aim);
 
 	void prepareGridToFind();
-	content_info* getContentInfo(Urho3D::Vector2 from, Urho3D::Vector2 to, bool checks[], int activePlayer);
+	content_info* getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer);
+	float getPositionFromPercent(float value) const;
 	Urho3D::Vector3 getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos, float min) const;
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords);
 	Urho3D::Vector2& getCenter(int index) const;

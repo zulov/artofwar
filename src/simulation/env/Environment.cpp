@@ -279,12 +279,14 @@ void Environment::prepareGridToFind() {
 	mainGrid.prepareGridToFind();
 }
 
-content_info* Environment::getContentInfo(Urho3D::Vector2 from, Urho3D::Vector2 to, bool checks[], int activePlayer) {
-	from.x_ = from.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
-	from.y_ = from.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
+content_info* Environment::getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer) {
+	float x = getPositionFromPercent(centerPercent.x_);
+	float z = getPositionFromPercent(centerPercent.y_);
+	CellState state = mainGrid.getCellAt(x, z);
+	int addInfo = mainGrid.getAdditionalInfoAt(x, z);
+	return influenceManager.getContentInfo({x, z}, state, addInfo, checks, activePlayer);
+}
 
-	to.x_ = to.x_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
-	to.y_ = to.y_ * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
-
-	return influenceManager.getContentInfo(from, to, checks, activePlayer);
+float Environment::getPositionFromPercent(float value) const {
+	return value * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
 }

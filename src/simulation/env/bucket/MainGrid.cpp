@@ -212,36 +212,16 @@ void MainGrid::removeDeploy(Building* building) {
 	complexData[building->getDeploy().value()].removeDeploy();
 }
 
-void MainGrid::updateInfo(int index, content_info* ci, bool* checks, int activePlayer) {
-	switch (complexData[index].getType()) {
-	case CellState::NONE:
-	case CellState::COLLECT:
-	case CellState::EMPTY:
-	case CellState::ATTACK:
-	{
-		if (checks[3] || checks[4]) {
-			const bool hasInc = buckets[index].incUnitsPerPlayer(ci, activePlayer, checks);
-			if (hasInc) {
-				ci->hasUnit = true;
-			}
-		}
-	}
-		break;
-	case CellState::RESOURCE:
-		if (checks[1]) {
-			ci->hasResource = true;
-			ci->resourceNumber[complexData[index].getAdditionalInfo()]++;
-		}
-		break;
-	case CellState::DEPLOY:
-	case CellState::BUILDING:
-		if (checks[2]) {
-			ci->hasBuilding = true;
-			ci->buildingNumberPerPlayer[complexData[index].getAdditionalInfo()]++;
-		}
-		break;
-	default: ;
-	}
+CellState MainGrid::getCellAt(float x, float z) {
+	auto index = indexFromPosition({x, z});
+
+	return complexData[index].getType();
+}
+
+int MainGrid::getAdditionalInfoAt(float x, float z) {
+	auto index = indexFromPosition({x, z});
+
+	return complexData[index].getAdditionalInfo();
 }
 
 void MainGrid::drawDebug() {

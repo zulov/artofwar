@@ -19,3 +19,8 @@ void InfluenceMapInt::update(Physical* physical) {
 void InfluenceMapInt::reset() {
 	std::fill_n(values, arraySize, 0);
 }
+
+char InfluenceMapInt::getValue(const Urho3D::Vector2& pos) {
+	auto index = calculator.indexFromPosition(pos);
+	return values[index];
+}
