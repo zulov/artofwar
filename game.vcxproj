@@ -180,6 +180,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\player\ai\AiManager.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMap.cpp" />
     <ClCompile Include="src\simulation\env\bucket\path\PathFinder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\FormationOrder.cpp" />
@@ -276,6 +277,8 @@
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\player\ai\AiManager.h" />
+    <ClInclude Include="src\player\ai\InfluanceType.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
     <ClInclude Include="src\NamesUtils.h" />
     <ClInclude Include="src\objects\unit\aim\order\FormationOrder.h" />

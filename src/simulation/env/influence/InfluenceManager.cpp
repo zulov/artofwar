@@ -6,18 +6,24 @@
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include "objects/building/Building.h"
+#include "DebugLineRepo.h"
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
 		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(DEFAULT_INF_GRID_SIZE,BUCKET_GRID_SIZE));
-		buildingsInfluencePerPlayer.emplace_back(new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE,0.5,3));
+		buildingsInfluencePerPlayer.emplace_back(
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 3));
+		unitsInfluencePerPlayer.emplace_back(
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 3));
 	}
 	ci = new content_info();
+	DebugLineRepo::init(DebugLineType::INFLUANCE);
 }
 
 InfluenceManager::~InfluenceManager() {
 	clear_vector(unitsNumberPerPlayer);
 	clear_vector(buildingsInfluencePerPlayer);
+	clear_vector(unitsInfluencePerPlayer);
 	delete ci;
 }
 
@@ -25,8 +31,12 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 	for (auto map : unitsNumberPerPlayer) {
 		map->reset();
 	}
+	for (auto map : unitsInfluencePerPlayer) {
+		map->reset();
+	}
 	for (auto unit : (*units)) {
 		unitsNumberPerPlayer[unit->getPlayer()]->update(unit);
+		unitsInfluencePerPlayer[unit->getPlayer()]->update(unit);
 	}
 }
 
@@ -39,6 +49,41 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 	}
 }
 
+
+void InfluenceManager::draw(InfluanceType type, char index) {
+	DebugLineRepo::init(DebugLineType::INFLUANCE);
+	DebugLineRepo::clear(DebugLineType::INFLUANCE);
+
+	DebugLineRepo::beginGeometry(DebugLineType::INFLUANCE);
+
+	switch (type) {
+	case InfluanceType::NONE:
+		break;
+	case InfluanceType::UNITS_NUMBER_PER_PLAYER:
+		unitsNumberPerPlayer[index]->draw();
+		break;
+	case InfluanceType::UNITS_INFLUENCE_PER_PLAYER:
+		unitsInfluencePerPlayer[index]->draw();
+		break;
+	default: ;
+	}
+	DebugLineRepo::commit(DebugLineType::INFLUANCE);
+}
+
+void InfluenceManager::switchDebug() {
+	switch (debugType) {
+	case InfluanceType::NONE:
+		debugType = InfluanceType::UNITS_NUMBER_PER_PLAYER;
+		break;
+	case InfluanceType::UNITS_NUMBER_PER_PLAYER:
+		debugType = InfluanceType::UNITS_INFLUENCE_PER_PLAYER;
+		break;
+	case InfluanceType::UNITS_INFLUENCE_PER_PLAYER:
+		debugType = InfluanceType::NONE;
+		break;
+	default: ;
+	}
+}
 
 content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfo,
                                                bool checks[], int activePlayer) {

@@ -259,6 +259,10 @@ int Environment::closestEmpty(int posIndex) {
 	return mainGrid.closestEmpty(posIndex);
 }
 
+void Environment::drawDebug() {
+	influenceManager.draw(InfluanceType::UNITS_INFLUENCE_PER_PLAYER, 0);
+}
+
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {
 	return mainGrid.getValidPosition(size, pos);
 }

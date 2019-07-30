@@ -76,6 +76,7 @@ public:
 	void switchDebugGrid();
 	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
 	int closestEmpty(int posIndex);
+	void drawDebug();
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid, buildingGrid;

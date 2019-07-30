@@ -3,15 +3,18 @@
 
 class InfluenceMapFloat : InfluenceMap {
 public:
-	InfluenceMapFloat(unsigned short resolution, float size, float coef, float level);
+	InfluenceMapFloat(unsigned short resolution, float size, float coef, char level);
 
 	virtual ~InfluenceMapFloat();
 
 	void update(Physical* physical) override;
 	void reset() override;
+	void drawCell(Urho3D::Vector3 center);
+
+	void draw() override;
 private:
 	bool validIndex(int i) const;
 	float* values;
 	float coef;
-	float level;
+	char level;
 };

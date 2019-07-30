@@ -55,6 +55,7 @@ MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution
 	};
 	pathConstructor = new PathFinder(resolution, size, complexData);
 
+	DebugLineRepo::init(DebugLineType::MAIN_GRID);
 	switchDebugGrid();
 }
 
@@ -225,7 +226,6 @@ int MainGrid::getAdditionalInfoAt(float x, float z) {
 }
 
 void MainGrid::drawDebug() {
-	DebugLineRepo::init(DebugLineType::MAIN_GRID);
 	DebugLineRepo::clear(DebugLineType::MAIN_GRID);
 
 	DebugLineRepo::beginGeometry(DebugLineType::MAIN_GRID);

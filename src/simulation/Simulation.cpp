@@ -27,6 +27,7 @@
 #include "simulation/formation/FormationManager.h"
 #include "UnitOrder.h"
 #include <ctime>
+#include "player/ai/AiManager.h"
 
 
 Simulation::Simulation(Environment* enviroment, CreationCommandList* creationCommandList): enviroment(enviroment),
@@ -67,6 +68,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		actionCommandList->execute();
 		enviroment->update(units);
+		enviroment->drawDebug();
 
 		calculateForces();
 		applyForce();
@@ -308,12 +310,7 @@ void Simulation::initScene(NewGameForm* form) const {
 }
 
 void Simulation::aiPlayers() {
-	auto players = Game::getPlayersMan()->getAllPlayers();
-	for (auto player : players) {
-		if (Game::getPlayersMan()->getActivePlayer() != player) {
-			int a = 5;
-		}
-	}
+	aiManager->ai();
 }
 
 void Simulation::moveUnits(const float timeStep) const {

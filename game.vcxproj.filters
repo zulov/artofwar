@@ -185,6 +185,7 @@
     <ClCompile Include="src\objects\resource\ResourceFactory.cpp" />
     <ClCompile Include="src\player\Resources.cpp" />
     <ClCompile Include="src\camera\RtsCameraBehave.cpp" />
+    <ClCompile Include="src\player\ai\AiManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -461,6 +462,8 @@
     <ClInclude Include="src\camera\RtsCameraBehave.h" />
     <ClInclude Include="src\simulation\env\GridCalculator.h" />
     <ClInclude Include="src\simulation\env\EnvConsts.h" />
+    <ClInclude Include="src\player\ai\AiManager.h" />
+    <ClInclude Include="src\player\ai\InfluanceType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

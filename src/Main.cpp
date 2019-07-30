@@ -507,6 +507,9 @@ SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo
 	if (input->GetKeyPress(KEY_G)) {
 		Game::getEnvironment()->switchDebugGrid();
 	}
+	if (input->GetKeyPress(KEY_I)) {
+		//Game::getEnvironment()->dr();
+	}
 
 	Game::getCameraManager()->translate(cursorPos, input, timeStep);
 	Game::getCameraManager()->rotate(input->GetMouseMove());

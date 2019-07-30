@@ -21,6 +21,7 @@ class CreationCommandList;
 class SimulationObjectManager;
 class UpgradeCommandList;
 class CommandList;
+class AiManager;
 
 namespace Urho3D {
 	class Node;
@@ -83,5 +84,6 @@ private:
 	CreationCommandList* creationCommandList;
 	UpgradeCommandList* levelsCommandList;
 	CommandList* actionCommandList;
+	AiManager* aiManager;
 };
 

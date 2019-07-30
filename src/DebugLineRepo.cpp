@@ -4,7 +4,7 @@
 #include "defines.h"
 #include "objects/CellState.h"
 
-Urho3D::CustomGeometry* DebugLineRepo::geometry[] = {nullptr, nullptr};
+Urho3D::CustomGeometry* DebugLineRepo::geometry[] = {nullptr, nullptr, nullptr};
 
 void DebugLineRepo::init(DebugLineType type) {
 	if constexpr (DEBUG_LINES_ENABLED) {
@@ -48,7 +48,11 @@ void DebugLineRepo::commit(DebugLineType type) {
 
 void DebugLineRepo::beginGeometry(DebugLineType type) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		geometry[static_cast<char>(type)]->BeginGeometry(0, Urho3D::PrimitiveType::LINE_LIST);
+		if (type == DebugLineType::INFLUANCE) {
+			geometry[static_cast<char>(type)]->BeginGeometry(0, Urho3D::PrimitiveType::TRIANGLE_LIST);
+		} else {
+			geometry[static_cast<char>(type)]->BeginGeometry(0, Urho3D::PrimitiveType::LINE_LIST);
+		}
 	}
 }
 
@@ -65,6 +69,18 @@ void DebugLineRepo::drawLine(DebugLineType type, const Urho3D::Vector3& first, c
 		geometry[static_cast<char>(type)]->DefineVertex(first);
 		geometry[static_cast<char>(type)]->DefineColor(color);
 		geometry[static_cast<char>(type)]->DefineVertex(second);
+		geometry[static_cast<char>(type)]->DefineColor(color);
+	}
+}
+
+void DebugLineRepo::drawTriangle(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
+                                 const Urho3D::Vector3& third, const Urho3D::Color& color) {
+	if constexpr (DEBUG_LINES_ENABLED) {
+		geometry[static_cast<char>(type)]->DefineVertex(first);
+		geometry[static_cast<char>(type)]->DefineColor(color);
+		geometry[static_cast<char>(type)]->DefineVertex(second);
+		geometry[static_cast<char>(type)]->DefineColor(color);
+		geometry[static_cast<char>(type)]->DefineVertex(third);
 		geometry[static_cast<char>(type)]->DefineColor(color);
 	}
 }

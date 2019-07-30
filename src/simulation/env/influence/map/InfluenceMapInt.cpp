@@ -24,3 +24,6 @@ char InfluenceMapInt::getValue(const Urho3D::Vector2& pos) {
 	auto index = calculator.indexFromPosition(pos);
 	return values[index];
 }
+
+void InfluenceMapInt::draw() {
+}
