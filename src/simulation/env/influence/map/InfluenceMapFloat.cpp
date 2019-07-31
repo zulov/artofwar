@@ -4,6 +4,7 @@
 #include "DebugLineRepo.h"
 #include "Game.h"
 #include "simulation/env/Environment.h"
+#include "colors/ColorPaletteRepo.h"
 
 InfluenceMapFloat::
 InfluenceMapFloat(unsigned short resolution, float size, float coef, char level): InfluenceMap(resolution, size),
@@ -37,20 +38,21 @@ void InfluenceMapFloat::reset() {
 	std::fill_n(values, arraySize, 0);
 }
 
-void InfluenceMapFloat::drawCell(Urho3D::Vector3 center) {
+void InfluenceMapFloat::drawCell(int index) {
+	Urho3D::Vector3 center = calculator.getCenter(index);
 	center = Game::getEnvironment()->getPosWithHeightAt(center.x_, center.z_);
-
+	Urho3D::Color color = Game::getColorPaletteRepo()->getColor(values[index], 10);
 	DebugLineRepo::drawTriangle(DebugLineType::INFLUANCE,
-	                            center + Urho3D::Vector3(2, 1, 2),
-	                            center + Urho3D::Vector3(2, 1, 0),
-	                            center + Urho3D::Vector3(0, 1, 2)
+	                            center + Urho3D::Vector3(fieldSize, 1, fieldSize),
+	                            center + Urho3D::Vector3(fieldSize, 1, 0),
+	                            center + Urho3D::Vector3(0, 1, fieldSize / 2),
+	                            color
 	);
 }
 
 void InfluenceMapFloat::draw() {
 	for (int i = 0; i < arraySize; ++i) {
-		Urho3D::Vector3 center = calculator.getCenter(i);
-		drawCell(center);
+		drawCell(i);
 	}
 }
 

@@ -9,7 +9,7 @@ public:
 
 	void update(Physical* physical) override;
 	void reset() override;
-	void drawCell(Urho3D::Vector3 center);
+	void drawCell(int index);
 
 	void draw() override;
 private:

@@ -14,6 +14,7 @@ public:
 protected:
 	unsigned short resolution;
 	float size;
+	float fieldSize;
 	unsigned int arraySize;
 	GridCalculator calculator;
 };

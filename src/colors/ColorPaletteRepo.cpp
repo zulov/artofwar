@@ -20,17 +20,17 @@ ColorPaletteRepo::ColorPaletteRepo() {
 		Game::getCache()->AddManualResource(statePallet[i]);
 	}
 	lineMaterial = Game::getCache()->GetResource<Urho3D::Material>("Materials/line.xml");
+	for (int i = 0; i < SPECTRUM_RESOLUTION; ++i) {
+		basicSpectrum[i] = Urho3D::Color(0, 0, i * (1.0 / SPECTRUM_RESOLUTION));
+	}
+	basicSpectrum[SPECTRUM_RESOLUTION] = basicSpectrum[SPECTRUM_RESOLUTION - 1];
 }
 
 
 ColorPaletteRepo::~ColorPaletteRepo() = default;
 
 Urho3D::Material* ColorPaletteRepo::getColor(ColorPallet colorPallet, float value, float maxValue) {
-	if (value > maxValue) {
-		value = maxValue;
-	} else if (value < 0) {
-		value = 0;
-	}
+	value = fixValue(value, maxValue);
 	const int index = value / maxValue * PALLET_RESOLUTION;
 
 	switch (colorPallet) {
@@ -38,6 +38,22 @@ Urho3D::Material* ColorPaletteRepo::getColor(ColorPallet colorPallet, float valu
 		return redPallet[index];
 	}
 	return nullptr;
+}
+
+float ColorPaletteRepo::fixValue(float value, float maxValue) {
+	if (value > maxValue) {
+		return maxValue;
+	}
+	if (value < 0) {
+		return 0;
+	}
+	return value;
+}
+
+Urho3D::Color& ColorPaletteRepo::getColor(float value, float maxValue) {
+	value = fixValue(value, maxValue);
+	const int index = value / maxValue * SPECTRUM_RESOLUTION;
+	return basicSpectrum[index];
 }
 
 Urho3D::Material* ColorPaletteRepo::getColor(UnitState state) {
