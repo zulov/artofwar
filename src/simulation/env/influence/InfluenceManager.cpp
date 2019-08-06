@@ -8,6 +8,7 @@
 #include "objects/building/Building.h"
 #include "DebugLineRepo.h"
 
+
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
 		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(DEFAULT_INF_GRID_SIZE,BUCKET_GRID_SIZE));
@@ -17,7 +18,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 3));
 	}
 	ci = new content_info();
-	DebugLineRepo::init(DebugLineType::INFLUANCE);
+	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUANCE);
 }
 
 InfluenceManager::~InfluenceManager() {
@@ -51,23 +52,25 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 
 
 void InfluenceManager::draw(InfluanceType type, char index) {
-	DebugLineRepo::init(DebugLineType::INFLUANCE);
-	DebugLineRepo::clear(DebugLineType::INFLUANCE);
-
-	DebugLineRepo::beginGeometry(DebugLineType::INFLUANCE);
+	DebugLineRepo::clear(DebugLineType::INFLUANCE, currentDebugBatch);
+	DebugLineRepo::beginGeometry(DebugLineType::INFLUANCE, currentDebugBatch);
 
 	switch (type) {
 	case InfluanceType::NONE:
 		break;
 	case InfluanceType::UNITS_NUMBER_PER_PLAYER:
-		unitsNumberPerPlayer[index]->draw();
+		unitsNumberPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUANCE);
 		break;
 	case InfluanceType::UNITS_INFLUENCE_PER_PLAYER:
-		unitsInfluencePerPlayer[index]->draw();
+		unitsInfluencePerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUANCE);
 		break;
 	default: ;
 	}
-	DebugLineRepo::commit(DebugLineType::INFLUANCE);
+	DebugLineRepo::commit(DebugLineType::INFLUANCE, currentDebugBatch);
+	currentDebugBatch++;
+	if (currentDebugBatch >= MAX_DEBUG_PARTS_INFLUANCE) {
+		currentDebugBatch = 0;
+	}
 }
 
 void InfluenceManager::switchDebug() {

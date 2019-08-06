@@ -10,7 +10,7 @@ public:
 	void update(Physical* physical) override;
 	void reset() override;
 	char getValue(const Urho3D::Vector2& pos);
-	void draw() override;
+	void draw(short batch, short maxParts) override;
 private:
 	unsigned char* values;
 };

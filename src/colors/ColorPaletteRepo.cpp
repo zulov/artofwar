@@ -21,7 +21,7 @@ ColorPaletteRepo::ColorPaletteRepo() {
 	}
 	lineMaterial = Game::getCache()->GetResource<Urho3D::Material>("Materials/line.xml");
 	for (int i = 0; i < SPECTRUM_RESOLUTION; ++i) {
-		basicSpectrum[i] = Urho3D::Color(0, 0, i * (1.0 / SPECTRUM_RESOLUTION));
+		basicSpectrum[i] = Urho3D::Color(0, i * (1.0 / SPECTRUM_RESOLUTION), 0);
 	}
 	basicSpectrum[SPECTRUM_RESOLUTION] = basicSpectrum[SPECTRUM_RESOLUTION - 1];
 }

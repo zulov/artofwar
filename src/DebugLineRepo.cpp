@@ -4,13 +4,27 @@
 #include "defines.h"
 #include "objects/CellState.h"
 
-Urho3D::CustomGeometry* DebugLineRepo::geometry[] = {nullptr, nullptr, nullptr};
+std::vector<Urho3D::CustomGeometry*> DebugLineRepo::geometry[];
 
 void DebugLineRepo::init(DebugLineType type) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		if (geometry[static_cast<char>(type)] == nullptr) {
-			geometry[static_cast<char>(type)] = Game::getScene()
-			                                    ->CreateChild()->GetOrCreateComponent<Urho3D::CustomGeometry>();
+		if (geometry[static_cast<char>(type)].empty()) {
+			geometry[static_cast<char>(type)].push_back(Game::getScene()->CreateChild()
+			                                                            ->GetOrCreateComponent<Urho3D::CustomGeometry
+			                                                            >());
+		}
+	}
+}
+
+void DebugLineRepo::init(DebugLineType type, short batches) {
+	if constexpr (DEBUG_LINES_ENABLED) {
+		if (geometry[static_cast<char>(type)].empty()) {
+			for (int i = 0; i < batches; ++i) {
+				geometry[static_cast<char>(type)].push_back(Game::getScene()->CreateChild()
+				                                                            ->GetOrCreateComponent<Urho3D::
+					                                                            CustomGeometry
+				                                                            >());
+			}
 		}
 	}
 }
@@ -20,8 +34,10 @@ DebugLineRepo::DebugLineRepo() = default;
 
 DebugLineRepo::~DebugLineRepo() {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		for (auto customGeometry : geometry) {
-			customGeometry->Remove();
+		for (auto vector : geometry) {
+			for (auto customGeometry : vector) {
+				customGeometry->Remove();
+			}
 		}
 	}
 }
@@ -39,48 +55,48 @@ std::tuple<bool, Urho3D::Color> DebugLineRepo::getInfoForGrid(CellState state) {
 	}
 }
 
-void DebugLineRepo::commit(DebugLineType type) {
+void DebugLineRepo::commit(DebugLineType type, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		geometry[static_cast<char>(type)]->SetMaterial(Game::getColorPaletteRepo()->getLineMaterial());
-		geometry[static_cast<char>(type)]->Commit();
+		geometry[static_cast<char>(type)].at(batch)->SetMaterial(Game::getColorPaletteRepo()->getLineMaterial());
+		geometry[static_cast<char>(type)].at(batch)->Commit();
 	}
 }
 
-void DebugLineRepo::beginGeometry(DebugLineType type) {
+void DebugLineRepo::beginGeometry(DebugLineType type, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		if (type == DebugLineType::INFLUANCE) {
-			geometry[static_cast<char>(type)]->BeginGeometry(0, Urho3D::PrimitiveType::TRIANGLE_LIST);
-		} else {
-			geometry[static_cast<char>(type)]->BeginGeometry(0, Urho3D::PrimitiveType::LINE_LIST);
+			geometry[static_cast<char>(type)].at(batch)->BeginGeometry(0, Urho3D::PrimitiveType::TRIANGLE_LIST);
+		} else {								
+			geometry[static_cast<char>(type)].at(batch)->BeginGeometry(0, Urho3D::PrimitiveType::LINE_LIST);
 		}
 	}
 }
 
-void DebugLineRepo::clear(DebugLineType type) {
+void DebugLineRepo::clear(DebugLineType type, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		geometry[static_cast<char>(type)]->Clear();
-		geometry[static_cast<char>(type)]->SetNumGeometries(1);
+		geometry[static_cast<char>(type)].at(batch)->Clear();
+		geometry[static_cast<char>(type)].at(batch)->SetNumGeometries(1);
 	}
 }
 
 void DebugLineRepo::drawLine(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-                             const Urho3D::Color& color) {
+                             const Urho3D::Color& color, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		geometry[static_cast<char>(type)]->DefineVertex(first);
-		geometry[static_cast<char>(type)]->DefineColor(color);
-		geometry[static_cast<char>(type)]->DefineVertex(second);
-		geometry[static_cast<char>(type)]->DefineColor(color);
+		geometry[static_cast<char>(type)].at(batch)->DefineVertex(first);
+		geometry[static_cast<char>(type)].at(batch)->DefineColor(color);
+		geometry[static_cast<char>(type)].at(batch)->DefineVertex(second);
+		geometry[static_cast<char>(type)].at(batch)->DefineColor(color);
 	}
 }
 
 void DebugLineRepo::drawTriangle(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-                                 const Urho3D::Vector3& third, const Urho3D::Color& color) {
+                                 const Urho3D::Vector3& third, const Urho3D::Color& color, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		geometry[static_cast<char>(type)]->DefineVertex(first);
-		geometry[static_cast<char>(type)]->DefineColor(color);
-		geometry[static_cast<char>(type)]->DefineVertex(second);
-		geometry[static_cast<char>(type)]->DefineColor(color);
-		geometry[static_cast<char>(type)]->DefineVertex(third);
-		geometry[static_cast<char>(type)]->DefineColor(color);
+		geometry[static_cast<char>(type)].at(batch)->DefineVertex(first);
+		geometry[static_cast<char>(type)].at(batch)->DefineColor(color);
+		geometry[static_cast<char>(type)].at(batch)->DefineVertex(second);
+		geometry[static_cast<char>(type)].at(batch)->DefineColor(color);
+		geometry[static_cast<char>(type)].at(batch)->DefineVertex(third);
+		geometry[static_cast<char>(type)].at(batch)->DefineColor(color);
 	}
 }

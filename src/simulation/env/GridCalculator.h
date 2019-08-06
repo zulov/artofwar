@@ -41,7 +41,7 @@ struct GridCalculator {
 		Urho3D::IntVector2 pos = getIndexes(i);
 		const float cX = (pos.x_ + 0.5) * fieldSize - size / 2;
 		const float cZ = (pos.y_ + 0.5) * fieldSize - size / 2;
-		return {cX, 0, cZ};
+		return {cZ, 0, cX};
 	}
 
 private:

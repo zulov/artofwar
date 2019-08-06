@@ -9,9 +9,9 @@ public:
 
 	void update(Physical* physical) override;
 	void reset() override;
-	void drawCell(int index);
+	void drawCell(int index, short batch);
 
-	void draw() override;
+	void draw(short batch, short maxParts) override;
 private:
 	bool validIndex(int i) const;
 	float* values;

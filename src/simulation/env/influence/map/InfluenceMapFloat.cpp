@@ -38,7 +38,15 @@ void InfluenceMapFloat::reset() {
 	std::fill_n(values, arraySize, 0);
 }
 
-void InfluenceMapFloat::drawCell(int index) {
+void InfluenceMapFloat::draw(short batch, short maxParts) {
+	auto size = arraySize / maxParts;
+
+	for (int i = batch * size; (i < arraySize && i < (batch + 1) * size); ++i) {
+		drawCell(i, batch);
+	}
+}
+
+void InfluenceMapFloat::drawCell(int index, short batch) {
 	Urho3D::Vector3 center = calculator.getCenter(index);
 	center = Game::getEnvironment()->getPosWithHeightAt(center.x_, center.z_);
 	Urho3D::Color color = Game::getColorPaletteRepo()->getColor(values[index], 10);
@@ -46,14 +54,8 @@ void InfluenceMapFloat::drawCell(int index) {
 	                            center + Urho3D::Vector3(fieldSize, 1, fieldSize),
 	                            center + Urho3D::Vector3(fieldSize, 1, 0),
 	                            center + Urho3D::Vector3(0, 1, fieldSize / 2),
-	                            color
+	                            color, batch
 	);
-}
-
-void InfluenceMapFloat::draw() {
-	for (int i = 0; i < arraySize; ++i) {
-		drawCell(i);
-	}
 }
 
 bool InfluenceMapFloat::validIndex(int i) const {

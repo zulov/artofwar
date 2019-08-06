@@ -25,5 +25,5 @@ char InfluenceMapInt::getValue(const Urho3D::Vector2& pos) {
 	return values[index];
 }
 
-void InfluenceMapInt::draw() {
+void InfluenceMapInt::draw(short batch, short maxParts) {
 }

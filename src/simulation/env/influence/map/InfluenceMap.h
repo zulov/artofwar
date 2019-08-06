@@ -10,7 +10,7 @@ public:
 
 	virtual void update(Physical* physical) =0;
 	virtual void reset() =0;
-	virtual void draw() =0;
+	virtual void draw(short batch, short maxParts) =0;
 protected:
 	unsigned short resolution;
 	float size;
