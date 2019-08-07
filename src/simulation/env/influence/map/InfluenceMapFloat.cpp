@@ -49,11 +49,17 @@ void InfluenceMapFloat::draw(short batch, short maxParts) {
 void InfluenceMapFloat::drawCell(int index, short batch) {
 	Urho3D::Vector3 center = calculator.getCenter(index);
 	center = Game::getEnvironment()->getPosWithHeightAt(center.x_, center.z_);
-	Urho3D::Color color = Game::getColorPaletteRepo()->getColor(values[index], 10);
+	Urho3D::Color color = Game::getColorPaletteRepo()->getColor(values[index], VALUE_THRESHOLD_DEBUG);
 	DebugLineRepo::drawTriangle(DebugLineType::INFLUANCE,
-	                            center + Urho3D::Vector3(fieldSize, 1, fieldSize),
-	                            center + Urho3D::Vector3(fieldSize, 1, 0),
-	                            center + Urho3D::Vector3(0, 1, fieldSize / 2),
+	                            center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),
+	                            center + Urho3D::Vector3(fieldSize / 3, 1, fieldSize / 3),
+	                            center + Urho3D::Vector3(fieldSize / 3, 1, -fieldSize / 3),
+	                            color, batch
+	);
+	DebugLineRepo::drawTriangle(DebugLineType::INFLUANCE,
+	                            center + Urho3D::Vector3(fieldSize / 3, 1, -fieldSize / 3),
+	                            center + Urho3D::Vector3(-fieldSize / 3, 1, -fieldSize / 3),
+	                            center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),
 	                            color, batch
 	);
 }

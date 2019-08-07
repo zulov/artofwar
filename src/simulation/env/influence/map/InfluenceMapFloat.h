@@ -1,6 +1,8 @@
 #pragma once
 #include "InfluenceMap.h"
 
+#define VALUE_THRESHOLD_DEBUG 40
+
 class InfluenceMapFloat : InfluenceMap {
 public:
 	InfluenceMapFloat(unsigned short resolution, float size, float coef, char level);
