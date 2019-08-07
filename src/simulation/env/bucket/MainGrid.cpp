@@ -8,7 +8,7 @@
 #include <array>
 #include <unordered_set>
 #include "objects/building/Building.h"
-#include "DebugLineRepo.h"
+#include "debug/DebugLineRepo.h"
 
 
 MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size),
@@ -232,7 +232,6 @@ void MainGrid::drawDebug() {
 
 	switch (debugType) {
 	case GridDebugType::NONE:
-
 		break;
 	case GridDebugType::GRID:
 	{

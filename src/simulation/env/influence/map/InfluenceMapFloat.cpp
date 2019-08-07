@@ -1,7 +1,7 @@
 #include "InfluenceMapFloat.h"
 #include "objects/Physical.h"
 #include <algorithm>
-#include "DebugLineRepo.h"
+#include "debug/DebugLineRepo.h"
 #include "Game.h"
 #include "simulation/env/Environment.h"
 #include "colors/ColorPaletteRepo.h"

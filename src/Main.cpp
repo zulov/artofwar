@@ -15,7 +15,6 @@
 #include "objects/unit/ActionParameter.h"
 #include "camera/CameraManager.h"
 #include "Main.h"
-#include "objects/unit/ColorMode.h"
 #include "objects/ActionType.h"
 #include "hud/window/selected/SelectedHudElement.h"
 #include "objects/queue/QueueManager.h"
@@ -488,28 +487,8 @@ SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo
 	}
 
 	const auto input = GetSubsystem<Input>();
+	debugManager.change(input, simulation);
 
-	if (input->GetKeyPress(KEY_F8)) {
-		simulation->changeColorMode(ColorMode::BASIC);
-	} else if (input->GetKeyPress(KEY_F9)) {
-		coefToEdit = 0;
-		simulation->changeColorMode(ColorMode::VELOCITY);
-	} else if (input->GetKeyPress(KEY_F10)) {
-		coefToEdit = 1;
-		simulation->changeColorMode(ColorMode::STATE);
-	} else if (input->GetKeyPress(KEY_F11)) {
-		coefToEdit = 2;
-		simulation->changeColorMode(ColorMode::FORMATION);
-	} else if (input->GetKeyPress(KEY_F12)) {
-		coefToEdit = 3;
-	}
-
-	if (input->GetKeyPress(KEY_G)) {
-		Game::getEnvironment()->switchDebugGrid();
-	}
-	if (input->GetKeyPress(KEY_I)) {
-		//Game::getEnvironment()->dr();
-	}
 
 	Game::getCameraManager()->translate(cursorPos, input, timeStep);
 	Game::getCameraManager()->rotate(input->GetMouseMove());

@@ -6,7 +6,7 @@
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include "objects/building/Building.h"
-#include "DebugLineRepo.h"
+#include "debug/DebugLineRepo.h"
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {

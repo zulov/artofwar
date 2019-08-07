@@ -165,7 +165,6 @@
     </ClCompile>
     <ClCompile Include="src\objects\unit\state\State.cpp" />
     <ClCompile Include="src\objects\static\Static.cpp" />
-    <ClCompile Include="src\DebugLineRepo.cpp" />
     <ClCompile Include="src\simulation\env\Environment.cpp">
       <Filter>simulation\env</Filter>
     </ClCompile>
@@ -186,6 +185,8 @@
     <ClCompile Include="src\player\Resources.cpp" />
     <ClCompile Include="src\camera\RtsCameraBehave.cpp" />
     <ClCompile Include="src\player\ai\AiManager.cpp" />
+    <ClCompile Include="src\debug\DebugLineRepo.cpp" />
+    <ClCompile Include="src\debug\DebugManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -426,12 +427,10 @@
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
     <ClInclude Include="src\objects\CellState.h" />
-    <ClInclude Include="src\DebugUnitType.h" />
     <ClInclude Include="src\objects\static\Static.h" />
     <ClInclude Include="src\objects\static\StaticState.h" />
     <ClInclude Include="src\objects\static\StaticStateUtils.h" />
     <ClInclude Include="src\objects\unit\state\CollectState.h" />
-    <ClInclude Include="src\DebugLineRepo.h" />
     <ClInclude Include="src\consts.h" />
     <ClInclude Include="src\simulation\env\Environment.h">
       <Filter>simulation\env</Filter>
@@ -464,6 +463,10 @@
     <ClInclude Include="src\simulation\env\EnvConsts.h" />
     <ClInclude Include="src\player\ai\AiManager.h" />
     <ClInclude Include="src\player\ai\InfluanceType.h" />
+    <ClInclude Include="src\debug\DebugLineRepo.h" />
+    <ClInclude Include="src\debug\DebugUnitType.h" />
+    <ClInclude Include="src\debug\DebugManager.h" />
+    <ClInclude Include="src\debug\EnvironmentDebugMode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

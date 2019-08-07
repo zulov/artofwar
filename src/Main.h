@@ -12,6 +12,7 @@
 #include <Urho3D/Engine/Application.h>
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Input/Input.h>
+#include "debug/DebugManager.h"
 
 
 struct NewGameForm;
@@ -79,6 +80,7 @@ private:
 	loading loadingProgress;
 	loading newGameProgress;
 	GameState gameState;
+	DebugManager debugManager;
 
 	NewGameForm* newGameForm;
 	Urho3D::String saveToLoad = "quicksave.db";

@@ -180,13 +180,14 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\debug\DebugManager.cpp" />
     <ClCompile Include="src\player\ai\AiManager.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMap.cpp" />
     <ClCompile Include="src\simulation\env\bucket\path\PathFinder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\FormationOrder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\GroupOrder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\IndividualOrder.cpp" />
-    <ClCompile Include="src\DebugLineRepo.cpp" />
+    <ClCompile Include="src\debug\DebugLineRepo.cpp" />
     <ClCompile Include="src\colors\ColorPaletteRepo.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\FutureOrder.cpp" />
     <ClCompile Include="src\objects\unit\state\State.cpp" />
@@ -277,6 +278,8 @@
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\debug\DebugManager.h" />
+    <ClInclude Include="src\debug\EnvironmentDebugMode.h" />
     <ClInclude Include="src\player\ai\AiManager.h" />
     <ClInclude Include="src\player\ai\InfluanceType.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
@@ -285,8 +288,8 @@
     <ClInclude Include="src\objects\unit\aim\order\GroupOrder.h" />
     <ClInclude Include="src\objects\unit\aim\order\IndividualOrder.h" />
     <ClInclude Include="src\consts.h" />
-    <ClInclude Include="src\DebugLineRepo.h" />
-    <ClInclude Include="src\DebugUnitType.h" />
+    <ClInclude Include="src\debug\DebugLineRepo.h" />
+    <ClInclude Include="src\debug\DebugUnitType.h" />
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
     <ClInclude Include="src\objects\CellState.h" />

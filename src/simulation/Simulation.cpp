@@ -1,6 +1,6 @@
 #include "Simulation.h"
-#include "DebugLineRepo.h"
-#include "DebugUnitType.h"
+#include "debug/DebugLineRepo.h"
+#include "debug/DebugUnitType.h"
 #include "Game.h"
 #include "ObjectEnums.h"
 #include "OperatorType.h"

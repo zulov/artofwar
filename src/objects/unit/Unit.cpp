@@ -1,5 +1,4 @@
 #include "Unit.h"
-#include "DebugUnitType.h"
 #include "Game.h"
 #include "ObjectEnums.h"
 #include "UnitOrder.h"
@@ -13,7 +12,8 @@
 #include "simulation/force/ForceStats.h"
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
-#include "DebugLineRepo.h"
+#include "debug/DebugLineRepo.h"
+#include "debug/DebugUnitType.h"
 #include <string>
 #include <algorithm>
 #include "consts.h"

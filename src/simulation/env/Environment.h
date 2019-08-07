@@ -73,10 +73,12 @@ public:
 	char getOrdinalInState(Unit* unit, UnitState state) const;
 	void removeFromGrids(const std::vector<Physical*>& toDispose);
 	int getRevertCloseIndex(int center, int gridIndex);
-	void switchDebugGrid();
+
 	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
 	int closestEmpty(int posIndex);
+	void switchDebugGrid();
 	void drawDebug();
+	void nextDebugGrid();
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid, buildingGrid;
