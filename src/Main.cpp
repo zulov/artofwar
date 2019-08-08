@@ -124,6 +124,7 @@ void Main::running(const double timeStep) {
 	benchmark.add(1.0 / timeStep);
 
 	SimulationInfo* simulationInfo = simulation->update(timeStep);
+	debugManager.draw();
 
 	SelectedInfo* selectedInfo = control(timeStep, simulationInfo);
 

@@ -4,28 +4,18 @@
 
 void DebugManager::change(Urho3D::Input* input, Simulation* simulation) {
 	if (input->GetKeyPress(Urho3D::KEY_F9)) {
-		switch (simColorMode) {
-		case ColorMode::BASIC:
-			simColorMode = ColorMode::VELOCITY;
-			break;
-		case ColorMode::VELOCITY:
-			simColorMode = ColorMode::STATE;
-			break;
-		case ColorMode::STATE:
-			simColorMode = ColorMode::FORMATION;
-			break;
-		case ColorMode::FORMATION:
-			simColorMode = ColorMode::BASIC;
-			break;
-		default:
-			simColorMode = ColorMode::BASIC;
-		}
+		simColorMode = nextColorMode[static_cast<char>(simColorMode)];
 		simulation->changeColorMode(simColorMode);
 	}
 
 	if (input->GetKeyPress(Urho3D::KEY_F10)) {
-		Game::getEnvironment()->switchDebugGrid();
+		environmentDebugMode = nextEnvMode[static_cast<char>(environmentDebugMode)];
 	} else if (input->GetKeyPress(Urho3D::KEY_F11)) {
-		Game::getEnvironment()->nextDebugGrid();
+		environmentIndex++;
+		environmentIndex = environmentIndex % MAX_ENV_INDEX;
 	}
+}
+
+void DebugManager::draw() const {
+	Game::getEnvironment()->drawDebug(environmentDebugMode,environmentIndex);
 }

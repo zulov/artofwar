@@ -56,7 +56,6 @@ MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution
 	pathConstructor = new PathFinder(resolution, size, complexData);
 
 	DebugLineRepo::init(DebugLineType::MAIN_GRID);
-	switchDebugGrid();
 }
 
 MainGrid::~MainGrid() {
@@ -225,12 +224,12 @@ int MainGrid::getAdditionalInfoAt(float x, float z) {
 	return complexData[index].getAdditionalInfo();
 }
 
-void MainGrid::drawDebug() {
+void MainGrid::drawDebug(GridDebugType type) {
 	DebugLineRepo::clear(DebugLineType::MAIN_GRID);
 
 	DebugLineRepo::beginGeometry(DebugLineType::MAIN_GRID);
 
-	switch (debugType) {
+	switch (type) {
 	case GridDebugType::NONE:
 		break;
 	case GridDebugType::GRID:
@@ -262,22 +261,6 @@ void MainGrid::drawDebug() {
 	}
 
 	DebugLineRepo::commit(DebugLineType::MAIN_GRID);
-}
-
-void MainGrid::switchDebugGrid() {
-	switch (debugType) {
-	case GridDebugType::NONE:
-		debugType = GridDebugType::GRID;
-		break;
-	case GridDebugType::GRID:
-		debugType = GridDebugType::CELLS_TYPE;
-		break;
-	case GridDebugType::CELLS_TYPE:
-		debugType = GridDebugType::NONE;
-		break;
-	default: ;
-	}
-	drawDebug();
 }
 
 bool MainGrid::isInLocalArea(int cell, Urho3D::Vector2& pos) {

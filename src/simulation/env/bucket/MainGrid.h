@@ -5,7 +5,7 @@
 #include "objects/unit/state/UnitState.h"
 #include "path/PathFinder.h"
 
-
+#define GRID_DEBUG_SIZE 3
 class Unit;
 
 namespace Urho3D {
@@ -74,7 +74,6 @@ public:
 	void addDeploy(Building* building);
 	void removeDeploy(Building* building);
 
-	void switchDebugGrid();
 	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
 	int closestEmpty(int posIndex);
 	int indexFromPosition(const Urho3D::Vector2& pos) { return calculator.indexFromPosition(pos); }
@@ -82,11 +81,9 @@ public:
 	int getIndex(Urho3D::Vector2& pos) const { return calculator.indexFromPosition(pos); }
 	CellState getCellAt(float x, float z);
 	int getAdditionalInfoAt(float x, float z);
-
+	void drawDebug(GridDebugType type);
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
-	void drawDebug();
-
 
 	PathFinder* pathConstructor;
 
@@ -98,5 +95,4 @@ private:
 
 	std::vector<short> closeIndex;
 	std::vector<short> closeIndexSecond;
-	GridDebugType debugType = GridDebugType::GRID;
 };

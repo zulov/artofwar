@@ -59,9 +59,11 @@ void InfluenceManager::draw(InfluanceType type, char index) {
 	case InfluanceType::NONE:
 		break;
 	case InfluanceType::UNITS_NUMBER_PER_PLAYER:
+		index = index % unitsNumberPerPlayer.size();
 		unitsNumberPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUANCE);
 		break;
 	case InfluanceType::UNITS_INFLUENCE_PER_PLAYER:
+		index = index % unitsInfluencePerPlayer.size();
 		unitsInfluencePerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUANCE);
 		break;
 	default: ;

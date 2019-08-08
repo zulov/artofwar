@@ -1,4 +1,6 @@
 #pragma once
+#define ENVIRONMENT_DEBUG_SIZE 4
+
 enum class EnvironmentDebugMode : char {
 	NONE,
 	MAIN_GRID,

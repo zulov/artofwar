@@ -247,15 +247,25 @@ int Environment::getRevertCloseIndex(int center, int gridIndex) {
 	return mainGrid.getRevertCloseIndex(center, gridIndex);
 }
 
-void Environment::switchDebugGrid() {
-	mainGrid.switchDebugGrid();
-}
+void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char index) {
+	switch (environmentDebugMode) {
 
-void Environment::drawDebug() {
-	influenceManager.draw(InfluanceType::UNITS_INFLUENCE_PER_PLAYER, 0);
-}
+	case EnvironmentDebugMode::NONE:
+		influenceManager.draw(InfluanceType::NONE, index);
+		break;
+	case EnvironmentDebugMode::MAIN_GRID:
+		mainGrid.drawDebug(GridDebugType(index % GRID_DEBUG_SIZE));
+		influenceManager.draw(InfluanceType::NONE, index);
+		break;
+	case EnvironmentDebugMode::INF_UNITS_NUMBER_PER_PLAYER:
+		influenceManager.draw(InfluanceType::UNITS_NUMBER_PER_PLAYER, index);
+		break;
+	case EnvironmentDebugMode::INF_UNITS_INFLUENCE_PER_PLAYER:
+		influenceManager.draw(InfluanceType::UNITS_INFLUENCE_PER_PLAYER, index);
+		break;
+	default: ;
+	}
 
-void Environment::nextDebugGrid() {
 
 }
 

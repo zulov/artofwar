@@ -68,7 +68,6 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		actionCommandList->execute();
 		enviroment->update(units);
-		enviroment->drawDebug();
 
 		calculateForces();
 		applyForce();

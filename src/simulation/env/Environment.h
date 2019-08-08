@@ -8,6 +8,7 @@
 #include <Urho3D/Graphics/Terrain.h>
 #include <vector>
 #include <array>
+#include "debug/EnvironmentDebugMode.h"
 
 
 class ResourceEntity;
@@ -76,9 +77,9 @@ public:
 
 	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
 	int closestEmpty(int posIndex);
-	void switchDebugGrid();
-	void drawDebug();
-	void nextDebugGrid();
+
+	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
+
 private:
 	MainGrid mainGrid;
 	Grid resourceGrid, buildingGrid;
