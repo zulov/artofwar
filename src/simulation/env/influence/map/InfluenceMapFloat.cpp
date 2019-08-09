@@ -38,32 +38,11 @@ void InfluenceMapFloat::reset() {
 	std::fill_n(values, arraySize, 0);
 }
 
-void InfluenceMapFloat::draw(short batch, short maxParts) {
-	auto size = arraySize / maxParts;
-
-	for (int i = batch * size; (i < arraySize && i < (batch + 1) * size); ++i) {
-		drawCell(i, batch);
-	}
-}
-
-void InfluenceMapFloat::drawCell(int index, short batch) {
-	Urho3D::Vector3 center = calculator.getCenter(index);
-	center = Game::getEnvironment()->getPosWithHeightAt(center.x_, center.z_);
-	Urho3D::Color color = Game::getColorPaletteRepo()->getColor(values[index], VALUE_THRESHOLD_DEBUG);
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUANCE,
-	                            center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),
-	                            center + Urho3D::Vector3(fieldSize / 3, 1, fieldSize / 3),
-	                            center + Urho3D::Vector3(fieldSize / 3, 1, -fieldSize / 3),
-	                            color, batch
-	);
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUANCE,
-	                            center + Urho3D::Vector3(fieldSize / 3, 1, -fieldSize / 3),
-	                            center + Urho3D::Vector3(-fieldSize / 3, 1, -fieldSize / 3),
-	                            center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),
-	                            color, batch
-	);
-}
-
 bool InfluenceMapFloat::validIndex(int i) const {
 	return i >= 0 && i < resolution;
 }
+
+float InfluenceMapFloat::getValueAt(int index) {
+	return values[index];
+}
+

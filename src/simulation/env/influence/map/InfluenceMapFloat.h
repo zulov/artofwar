@@ -1,9 +1,8 @@
 #pragma once
 #include "InfluenceMap.h"
 
-#define VALUE_THRESHOLD_DEBUG 40
 
-class InfluenceMapFloat : InfluenceMap {
+class InfluenceMapFloat : public InfluenceMap {
 public:
 	InfluenceMapFloat(unsigned short resolution, float size, float coef, char level);
 
@@ -11,9 +10,7 @@ public:
 
 	void update(Physical* physical) override;
 	void reset() override;
-	void drawCell(int index, short batch);
-
-	void draw(short batch, short maxParts) override;
+	float getValueAt(int index) override;
 private:
 	bool validIndex(int i) const;
 	float* values;

@@ -1,7 +1,7 @@
 #pragma once
 #include "InfluenceMap.h"
 
-class InfluenceMapInt : InfluenceMap {
+class InfluenceMapInt : public InfluenceMap {
 
 public:
 	InfluenceMapInt(unsigned short resolution, float size);
@@ -10,7 +10,7 @@ public:
 	void update(Physical* physical) override;
 	void reset() override;
 	char getValue(const Urho3D::Vector2& pos);
-	void draw(short batch, short maxParts) override;
+	float getValueAt(int index) override;
 private:
 	unsigned char* values;
 };
