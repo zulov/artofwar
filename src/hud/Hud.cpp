@@ -82,6 +82,7 @@ void Hud::createMyPanels() {
 	panels.push_back(inGameMenuPanel = new InGameMenuPanel(style));
 	panels.push_back(mainMenuPanel = new MainMenuPanel(style));
 	panels.push_back(miniMapPanel = new MiniMapPanel(style));
+	panels.push_back(scorePanel = new ScorePanel(style));
 
 	for (auto panel : panels) {
 		panel->createWindow();
@@ -182,6 +183,7 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
 
 	topPanel->update(Game::getPlayersMan()->getActivePlayer()->getResources());
 	topPanel->update(simulationInfo->getUnitsNumber());
+	scorePanel->update(Game::getPlayersMan()->getAllPlayers());
 	miniMapPanel->update();
 	selectedInfo->hasBeenUpdatedDrawn();
 }

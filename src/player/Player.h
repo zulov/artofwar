@@ -20,6 +20,7 @@ public:
 	int getTeam() const { return team; }
 	int getId() const { return id; }
 	int getColor() const { return color; }
+	Urho3D::String& getName() { return name; }
 	char getLevelForUnit(int id) { return unitLevels[id]; }
 	char getLevelForBuilding(int id) { return buildingLevels[id]; }
 	char getLevelForUnitUpgradePath(short id) { return unitUpgradeLevels[id]; }

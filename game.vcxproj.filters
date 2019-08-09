@@ -188,6 +188,7 @@
     <ClCompile Include="src\debug\DebugLineRepo.cpp" />
     <ClCompile Include="src\debug\DebugManager.cpp" />
     <ClCompile Include="src\player\Possession.cpp" />
+    <ClCompile Include="src\hud\window\score\ScorePanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -471,6 +472,7 @@
     <ClInclude Include="src\player\ai\tree\AiNode.h" />
     <ClInclude Include="src\player\ai\tree\AiOrderType.h" />
     <ClInclude Include="src\player\Possession.h" />
+    <ClInclude Include="src\hud\window\score\ScorePanel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

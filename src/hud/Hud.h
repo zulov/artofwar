@@ -9,6 +9,7 @@
 #include "xml/rapidxml_print.hpp"
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/Text.h>
+#include "window/score/ScorePanel.h"
 
 class CameraManager;
 class SimulationInfo;
@@ -82,6 +83,7 @@ private:
 	LoadingPanel* loadingPanel;
 	InGameMenuPanel* inGameMenuPanel;
 	MainMenuPanel* mainMenuPanel;
+	ScorePanel* scorePanel;
 
 	std::vector<AbstractWindowPanel*> panels;
 

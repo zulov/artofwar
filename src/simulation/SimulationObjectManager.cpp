@@ -89,6 +89,9 @@ void SimulationObjectManager::updateUnits(std::vector<Unit*>* temp) const {
 void SimulationObjectManager::updateBuilding(std::vector<Building*>* temp) const {
 	if (!temp->empty()) {
 		buildings->insert(buildings->end(), temp->begin(), temp->end());
+		for (auto value : *temp) {
+			Game::getPlayersMan()->getPlayer(value->getPlayer())->add(value);
+		}
 		Game::getEnvironment()->update(temp);
 		simulationInfo.setAmountBuildingChanged();
 	}

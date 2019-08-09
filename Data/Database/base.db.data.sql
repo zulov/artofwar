@@ -143,6 +143,7 @@ selected.xml
 queue.xml
 main_menu.xml
 left_menu.xml
+score.xml
 ',1,120.0,1.0,'high',0,1,2);
 INSERT INTO `cost_unit_level` (unit,level,resource,value) VALUES (0,1,1,1000),
  (0,1,2,500),
