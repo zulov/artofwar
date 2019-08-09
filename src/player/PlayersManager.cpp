@@ -70,6 +70,12 @@ void PlayersManager::save(SceneSaver& saver) {
 	saver.saveResources(allPlayers);
 }
 
+void PlayersManager::update() {
+	for (auto player : allPlayers) {
+		player->updatePossession();
+	}
+}
+
 std::string PlayersManager::getColumns() {
 	return "id		INT     NOT NULL,"
 		"is_active		INT     NOT NULL,"

@@ -27,6 +27,7 @@ public:
 	std::vector<Player*>& getTeam(short i);
 	void changeActive(short i);
 	void save(SceneSaver& saver);
+	void update();
 	static std::string getColumns();
 	std::vector<Player*>& getAllPlayers();
 private:

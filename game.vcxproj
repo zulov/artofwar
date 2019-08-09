@@ -182,6 +182,7 @@
   <ItemGroup>
     <ClCompile Include="src\debug\DebugManager.cpp" />
     <ClCompile Include="src\player\ai\AiManager.cpp" />
+    <ClCompile Include="src\player\Possession.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMap.cpp" />
     <ClCompile Include="src\simulation\env\bucket\path\PathFinder.cpp" />
     <ClCompile Include="src\objects\unit\aim\order\FormationOrder.cpp" />
@@ -281,7 +282,10 @@
     <ClInclude Include="src\debug\DebugManager.h" />
     <ClInclude Include="src\debug\EnvironmentDebugMode.h" />
     <ClInclude Include="src\player\ai\AiManager.h" />
+    <ClInclude Include="src\player\ai\tree\AiOrderType.h" />
     <ClInclude Include="src\player\ai\InfluanceType.h" />
+    <ClInclude Include="src\player\ai\tree\AiNode.h" />
+    <ClInclude Include="src\player\Possession.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
     <ClInclude Include="src\NamesUtils.h" />
     <ClInclude Include="src\objects\unit\aim\order\FormationOrder.h" />

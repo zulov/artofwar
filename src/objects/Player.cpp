@@ -6,7 +6,9 @@
 
 
 Player::Player(int nationId, int team, int id, int color, const Urho3D::String name, bool active): team(team), id(id),
-	color(color), active(active), name(name) {
+                                                                                                   color(color),
+                                                                                                   active(active),
+                                                                                                   name(name) {
 	dbNation = Game::getDatabaseCache()->getNation(nationId);
 
 	std::fill_n(unitLevels, UNITS_NUMBER_DB, 0);
@@ -56,4 +58,20 @@ char Player::upgradeLevel(ActionType type, int id) {
 	default: ;
 	}
 	return -1;
+}
+
+void Player::updatePossession() {
+	possession.updateAndClean(resources);
+}
+
+void Player::add(Unit* unit) {
+	possession.add(unit);
+}
+
+void Player::add(Building* building) {
+	possession.add(building);
+}
+
+int Player::getScore() {
+	return possession.getScore();
 }

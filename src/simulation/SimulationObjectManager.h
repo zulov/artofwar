@@ -42,10 +42,6 @@ private:
 
 	bool shouldDelete(Physical* physical);
 
-	void add(Unit* unit) const { units->push_back(unit); }
-	void add(Building* building) const { buildings->push_back(building); }
-	void add(ResourceEntity* resourceEntity) const { resources->push_back(resourceEntity); }
-
 	UnitFactory unitFactory;
 	BuildingFactory buildingFactory;
 	ResourceFactory resourceFactory;

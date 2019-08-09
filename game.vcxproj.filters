@@ -187,6 +187,7 @@
     <ClCompile Include="src\player\ai\AiManager.cpp" />
     <ClCompile Include="src\debug\DebugLineRepo.cpp" />
     <ClCompile Include="src\debug\DebugManager.cpp" />
+    <ClCompile Include="src\player\Possession.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -467,6 +468,9 @@
     <ClInclude Include="src\debug\DebugUnitType.h" />
     <ClInclude Include="src\debug\DebugManager.h" />
     <ClInclude Include="src\debug\EnvironmentDebugMode.h" />
+    <ClInclude Include="src\player\ai\tree\AiNode.h" />
+    <ClInclude Include="src\player\ai\tree\AiOrderType.h" />
+    <ClInclude Include="src\player\Possession.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

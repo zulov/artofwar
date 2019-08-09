@@ -1,10 +1,11 @@
 #pragma once
 #include "Resources.h"
+#include "ai/tree/AiNode.h"
+#include "Possession.h"
 
 enum class ActionType : char;
 
-class Player
-{
+class Player {
 public:
 	Player(int nationId, int team, int id, int color, const Urho3D::String name, bool active);
 	~Player();
@@ -23,7 +24,13 @@ public:
 	char getLevelForBuilding(int id) { return buildingLevels[id]; }
 	char getLevelForUnitUpgradePath(short id) { return unitUpgradeLevels[id]; }
 	char getLevelForUnitUpgrade(int id) { return unitUpgradeLevels[id]; }
+	void updatePossession();
+	void add(Unit* unit);
+	void add(Building* building);
+	int getScore();
 private:
+	AiNode* aiRoot;
+	Possession possession;
 	Resources resources;
 	db_nation* dbNation;
 	Urho3D::String name;

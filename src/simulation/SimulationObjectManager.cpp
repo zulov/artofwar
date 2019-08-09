@@ -5,6 +5,8 @@
 #include "objects/unit/Unit.h"
 #include <algorithm>
 #include <simulation/env/Environment.h>
+#include "player/PlayersManager.h"
+#include "player/Player.h"
 
 
 SimulationObjectManager::SimulationObjectManager() {
@@ -77,6 +79,9 @@ std::vector<Physical*>& SimulationObjectManager::getToDispose() {
 void SimulationObjectManager::updateUnits(std::vector<Unit*>* temp) const {
 	if (!temp->empty()) {
 		units->insert(units->end(), temp->begin(), temp->end());
+		for (auto value : *temp) {
+			Game::getPlayersMan()->getPlayer(value->getPlayer())->add(value);
+		}
 		simulationInfo.setAmountUnitChanged();
 	}
 }
