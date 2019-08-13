@@ -29,8 +29,10 @@ public:
 	void add(Unit* unit);
 	void add(Building* building);
 	int getScore();
+	void ai();
 private:
 	AiNode* aiRoot;
+	std::vector<AiNode*> aiLeafs;
 	Possession possession;
 	Resources resources;
 	db_nation* dbNation;

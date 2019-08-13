@@ -4,7 +4,7 @@
 #include "Resources.h"
 #include <numeric>
 
-int Possession::getScore() {
+int Possession::getScore() const {
 	return buildings.size() * 10 + units.size() + resourcesSum / 100;
 }
 

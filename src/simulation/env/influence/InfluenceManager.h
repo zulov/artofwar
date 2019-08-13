@@ -6,7 +6,7 @@
 #include "player/ai/InfluanceType.h"
 
 #define DEFAULT_INF_GRID_SIZE 128
-#define DEFAULT_INF_FLOAT_GRID_SIZE 256
+#define DEFAULT_INF_FLOAT_GRID_SIZE 128
 #define MAX_DEBUG_PARTS_INFLUANCE 32
 
 enum class CellState : char;

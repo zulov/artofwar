@@ -45,7 +45,7 @@ public:
 	void changeColorMode(ColorMode _colorMode);
 
 private:
-	void aiPlayers();
+	void aiPlayers() const;
 	void moveUnits(float timeStep) const;
 	void moveUnitsAndCheck(float timeStep) const;
 	void calculateForces();

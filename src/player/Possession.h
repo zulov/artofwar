@@ -8,7 +8,7 @@ class Resources;
 
 class Possession {
 public:
-	int getScore();
+	int getScore() const;
 	void add(Building* building);
 	void add(Unit* unit);
 	void updateAndClean(Resources& resources);

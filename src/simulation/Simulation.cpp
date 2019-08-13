@@ -279,7 +279,6 @@ void Simulation::performStateAction(float timeStep) const {
 	for (auto building : *buildings) {
 		StateManager::executeChange(building);
 	}
-
 	for (auto resource : *resources) {
 		StateManager::executeChange(resource);
 	}
@@ -308,8 +307,7 @@ void Simulation::initScene(NewGameForm* form) const {
 	executeLists();
 }
 
-void Simulation::aiPlayers() {
-	
+void Simulation::aiPlayers() const {	
 	aiManager->ai();
 }
 

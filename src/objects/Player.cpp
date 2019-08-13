@@ -14,6 +14,7 @@ Player::Player(int nationId, int team, int id, int color, const Urho3D::String n
 	std::fill_n(unitLevels, UNITS_NUMBER_DB, 0);
 	std::fill_n(buildingLevels, BUILDINGS_NUMBER_DB, 0);
 	std::fill_n(unitUpgradeLevels, PATH_UPGRADES_NUMBER_DB, -1);
+	aiRoot = new AiNode();
 }
 
 Player::~Player() = default;
@@ -62,6 +63,10 @@ char Player::upgradeLevel(ActionType type, int id) {
 
 void Player::updatePossession() {
 	possession.updateAndClean(resources);
+	for (auto aiLeaf : aiLeafs) {
+		aiLeaf->update(1);
+		aiLeaf->update(possession);
+	}
 }
 
 void Player::add(Unit* unit) {
@@ -74,4 +79,8 @@ void Player::add(Building* building) {
 
 int Player::getScore() {
 	return possession.getScore();
+}
+
+void Player::ai() {
+	aiRoot->getOrder();
 }

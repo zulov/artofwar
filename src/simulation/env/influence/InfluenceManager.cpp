@@ -13,9 +13,9 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
 		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(DEFAULT_INF_GRID_SIZE,BUCKET_GRID_SIZE));
 		buildingsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 3));
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2));
 		unitsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 3));
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2));
 	}
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUANCE);
