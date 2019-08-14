@@ -284,6 +284,7 @@
     <ClInclude Include="src\debug\EnvironmentDebugMode.h" />
     <ClInclude Include="src\hud\window\score\ScorePanel.h" />
     <ClInclude Include="src\player\ai\AiManager.h" />
+    <ClInclude Include="src\player\ai\tree\AiOrderData.h" />
     <ClInclude Include="src\player\ai\tree\AiOrderType.h" />
     <ClInclude Include="src\player\ai\InfluanceType.h" />
     <ClInclude Include="src\player\ai\tree\AiNode.h" />

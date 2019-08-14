@@ -473,6 +473,7 @@
     <ClInclude Include="src\player\ai\tree\AiOrderType.h" />
     <ClInclude Include="src\player\Possession.h" />
     <ClInclude Include="src\hud\window\score\ScorePanel.h" />
+    <ClInclude Include="src\player\ai\tree\AiOrderData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
