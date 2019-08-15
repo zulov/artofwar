@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sqlite3/sqlite3.h>
 #include <sstream>
+#include "Game.h"
 
 static unsigned fromHex(char** argv, int index) {
 	unsigned x;
@@ -43,7 +44,14 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container *>(data);
 	const int id = atoi(argv[0]);
+	if (id >= BUILDINGS_NUMBER_DB) {
+		Game::getLog()->Write(0, "ERROR - Out of bounds!!");
+	}
 	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), argv[5]);
+	if (xyz->buildings[id]->nation >= MAX_NUMBER_OF_NATIONS) {
+		Game::getLog()->Write(0, "ERROR - Out of bounds!!");
+	}
+	xyz->buildingsPerNation[xyz->buildings[id]->nation]->push_back(xyz->buildings[id]);
 	xyz->building_size++;
 	return 0;
 }
@@ -188,9 +196,9 @@ int static loadBuildingLevels(void* data, int argc, char** argv, char** azColNam
 	const auto xyz = static_cast<db_container *>(data);
 
 	xyz->levelsToBuilding[atoi(argv[1])]->push_back(
-	                                                new db_building_level(atoi(argv[0]), atoi(argv[1]),
-	                                                                      argv[2], argv[3], atoi(argv[4]))
-	                                               );
+		new db_building_level(atoi(argv[0]), atoi(argv[1]),
+		                      argv[2], argv[3], atoi(argv[4]))
+	);
 
 	return 0;
 }
@@ -199,13 +207,13 @@ int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container *>(data);
 	int unitId = atoi(argv[1]);
 	xyz->levelsToUnit[unitId]->push_back(
-	                                     new db_unit_level(
-	                                                       atoi(argv[0]), atoi(argv[1]), argv[2], atof(argv[3]),
-	                                                       atof(argv[4]), argv[5], atof(argv[6]), atof(argv[7]),
-	                                                       atoi(argv[8]), atof(argv[9]), atof(argv[10]), atoi(argv[11]),
-	                                                       atof(argv[12]), atof(argv[13]), atof(argv[14]),
-	                                                       atof(argv[15]), atof(argv[16]))
-	                                    );
+		new db_unit_level(
+			atoi(argv[0]), atoi(argv[1]), argv[2], atof(argv[3]),
+			atof(argv[4]), argv[5], atof(argv[6]), atof(argv[7]),
+			atoi(argv[8]), atof(argv[9]), atof(argv[10]), atoi(argv[11]),
+			atof(argv[12]), atof(argv[13]), atof(argv[14]),
+			atof(argv[15]), atof(argv[16]))
+	);
 
 	return 0;
 }
@@ -214,11 +222,11 @@ int static loadUnitUpgrade(void* data, int argc, char** argv, char** azColName) 
 	const auto xyz = static_cast<db_container *>(data);
 	int pathId = atoi(argv[1]);
 	auto unitUpgrade = new db_unit_upgrade(
-	                                       atoi(argv[0]), pathId, atoi(argv[2]), argv[3],
-	                                       atof(argv[4]), atof(argv[5]), atof(argv[6]), atof(argv[7]),
-	                                       atof(argv[8]), atof(argv[9]), atof(argv[10]), atof(argv[11]),
-	                                       atof(argv[12])
-	                                      );
+		atoi(argv[0]), pathId, atoi(argv[2]), argv[3],
+		atof(argv[4]), atof(argv[5]), atof(argv[6]), atof(argv[7]),
+		atof(argv[8]), atof(argv[9]), atof(argv[10]), atof(argv[11]),
+		atof(argv[12])
+	);
 	xyz->unitUpgrades[pathId]->push_back(unitUpgrade);
 	xyz->unitUpgradesPerId[atoi(argv[0])] = unitUpgrade;
 	return 0;

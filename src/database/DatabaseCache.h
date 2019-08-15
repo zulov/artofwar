@@ -41,6 +41,8 @@ public:
 	std::vector<db_cost*>* getCostForUnit(int id) const { return dbContainer->costForUnit[id]; }
 	std::vector<db_cost*>* getCostForBuilding(int id) const { return dbContainer->costForBuilding[id]; }
 	std::vector<db_order*>* getOrdersForUnit(int id) const { return dbContainer->ordersToUnit[id]; }
+	
+	std::vector<db_building*>* getBuildingForNation(int id) const { return dbContainer->buildingsPerNation[id]; }
 
 	int getResourceSize() const { return dbContainer->resource_size; }
 	int getHudVarsSize() const { return dbContainer->hud_vars_size; }

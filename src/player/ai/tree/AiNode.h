@@ -1,18 +1,28 @@
 #pragma once
 #include <vector>
 #include "AiOrderData.h"
+#include <optional>
+#include "utils.h"
 
 struct AiNode {
 public:
+	AiNode(const std::string& name, float targetValue, AiOrderData data, const AiNode* parent)
+		: name(name), targetValue(targetValue), data(data), parent(parent), currentValue(0) {
+	}
+
+	AiNode(const AiNode&) = delete;
+	~AiNode() {
+		clear_vector(children);
+	}
+	
+
 	float getValueDiff() const;
 	AiOrderData getOrder();
 	void update(float value);
+	const std::string& getName();
+	std::optional<AiNode*> getChildByName(std::string str);
 
-	AiNode(const std::string& name, float targetValue, AiOrderData data, const AiNode* parent)
-		: name(name), targetValue(targetValue), data(data), parent(parent) {
-	}
-
-	AiNode& addChild(const std::string& name, float targetValue, AiOrderData type);
+	AiNode* addChild(const std::string& name, float targetValue, AiOrderData data);
 
 private:
 	const std::string name;
@@ -21,7 +31,7 @@ private:
 	float currentValue;
 	const float targetValue;
 	const AiOrderData data;
-	std::vector<AiNode> children;
+	std::vector<AiNode*> children;
 	const AiNode* parent;
 	//std::vector<BuildingCondition> buildingConditions;
 	//std::vector<ResourceCondition> resourceConditions;
@@ -38,16 +48,30 @@ inline AiOrderData AiNode::getOrder() {
 	std::vector<float> values;
 	values.reserve(children.size());
 	for (auto child : children) {
-		values.push_back(child.getValueDiff());
+		values.push_back(child->getValueDiff());
 	}
 	auto indexBest = std::max_element(values.begin(), values.end()) - values.begin();
-	return children.at(indexBest).getOrder();
+	return children.at(indexBest)->getOrder();
 }
 
 inline void AiNode::update(float value) {
 	currentValue += value;
 }
 
-inline AiNode& AiNode::addChild(const std::string& name, float targetValue, AiOrderData type) {
-	return children.emplace_back(name, targetValue, type, this);
+inline const std::string& AiNode::getName() {
+	return name;
+}
+
+inline std::optional<AiNode*> AiNode::getChildByName(std::string str) {
+	for (auto& child : children) {
+		if (child->getName() == str) {
+			return child;
+		}
+	}
+	return {};
+}
+
+inline AiNode* AiNode::addChild(const std::string& name, float targetValue, AiOrderData data) {
+	children.emplace_back(new AiNode(name, targetValue, data, this));
+	return children.back();
 }

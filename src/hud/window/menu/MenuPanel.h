@@ -38,7 +38,7 @@ private:
 	void setChecks(int val);
 
 	void ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
-	void setNextElement(int& k, Urho3D::String texture, int id, ActionType menuAction, Urho3D::String text);
+	void setNext(int& k, Urho3D::String texture, int id, ActionType menuAction, Urho3D::String text);
 
 	void basicUnit(SelectedInfo* selectedInfo);
 	void levelUnit(SelectedInfo* selectedInfo);
@@ -59,7 +59,7 @@ private:
 	void resourceMenu(SelectedInfo* selectedInfo);
 	void updateButtons(SelectedInfo* selectedInfo);
 
-	void resetButtons(int from);
+	void resetRestButtons(int from);
 
 	std::unordered_set<int> getUnitInBuilding(std::vector<SelectedInfoType*>& infoTypes);
 	std::unordered_set<int> getUpgradePathInBuilding(std::vector<SelectedInfoType*>& infoTypes);

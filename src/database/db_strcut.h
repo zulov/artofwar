@@ -15,6 +15,7 @@
 #define MAX_UNIT_LEVEL_NUMBER_DB 6
 #define MAX_BUILDING_LEVEL_NUMBER_DB 6
 #define PATH_UPGRADES_NUMBER_DB 30
+#define MAX_NUMBER_OF_NATIONS 5
 
 #define SPLIT_SIGN '\n'
 
@@ -130,7 +131,7 @@ struct db_unit_upgrade {
 };
 
 struct db_building {
-	const int id;
+	const short id;
 	const Urho3D::String name;
 	const Urho3D::IntVector2 size;
 	const int nation;
@@ -359,6 +360,9 @@ struct db_container {
 	std::vector<db_unit_level*>* levelsToUnit[UNITS_NUMBER_DB]{};
 	std::vector<db_building_level*>* levelsToBuilding[BUILDINGS_NUMBER_DB]{};
 
+
+	std::vector<db_building*>* buildingsPerNation[MAX_NUMBER_OF_NATIONS]{};
+
 	int units_size = 0;
 	int hud_size_size = 0;
 	int building_size = 0;
@@ -403,9 +407,14 @@ struct db_container {
 		for (auto& unitUpgradesCost : unitUpgradesCosts) {
 			unitUpgradesCost = new std::vector<db_cost*>();
 		}
+		for (auto&& perNation : buildingsPerNation) {
+			perNation = new std::vector<db_building*>;
+		}
+
 	}
 
-	~db_container() {		//TODO bug delete what inside
+	~db_container() {
+		//TODO bug delete what inside
 		for (auto unit : units) {
 			delete unit;
 		}
@@ -436,6 +445,9 @@ struct db_container {
 
 		for (auto& unitUpgradesCost : unitUpgradesCosts) {
 			delete unitUpgradesCost;
+		}
+		for (auto dbBuildings : buildingsPerNation) {
+			delete dbBuildings;			
 		}
 	}
 };
