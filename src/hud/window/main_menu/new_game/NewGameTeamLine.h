@@ -9,8 +9,9 @@
 #include <Urho3D/UI/LineEdit.h>
 
 
-struct NewGameTeamLine
-{
+struct NewGameTeamLine {
+	NewGameTeamLine() = default;
+	NewGameTeamLine(const NewGameTeamLine&) = delete;
 	Urho3D::LineEdit* lineEdit;
 	Urho3D::DropDownList* nation;
 	Urho3D::DropDownList* color;
@@ -33,7 +34,7 @@ struct NewGameTeamLine
 		auto names = Game::getCache()->GetResource<Urho3D::JSONFile>("lang/names.json");
 		auto namesArray = names->GetRoot().Get("player_names").GetArray();
 		lineEdit->SetText(namesArray.At(rand() % namesArray.Size()).GetCString());
-		
+
 		team = createElement<Urho3D::DropDownList>(row, style, "MainMenuNewGameDropDownList");
 		addChildTexts(team, {l10n->Get("1"), l10n->Get("2")}, style);
 

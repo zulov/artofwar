@@ -10,6 +10,7 @@ struct loading
 	loading() {
 		reset(1);
 	}
+	loading(const loading&) = delete;
 
 	~loading() = default;
 

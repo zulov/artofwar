@@ -23,6 +23,7 @@ private:
 	void addDeadAim() override;
 	void addStopAim() override;
 
-	void simpleAction(ActionParameter parameter);
+	void simpleAction(ActionParameter& parameter);
+	void simpleAction();
 	void transformToFormationOrder() const;
 };

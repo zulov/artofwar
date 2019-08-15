@@ -6,6 +6,8 @@ class Physical;
 
 struct hit_data
 {
+	hit_data() = default;
+	hit_data(const hit_data&) = delete;
 	Urho3D::Vector3 position;
 	Urho3D::Drawable* drawable;
 	Physical* clicked;

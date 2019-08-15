@@ -1,8 +1,7 @@
 #pragma once
 #include <Urho3D/Container/Str.h>
 
-struct NewGamePlayer
-{
+struct NewGamePlayer {
 	Urho3D::String name;
 	int nation;
 	int team;

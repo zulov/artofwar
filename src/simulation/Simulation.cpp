@@ -355,7 +355,7 @@ void Simulation::calculateForces() {
 		}
 		}
 
-		auto stats = force.stats();
+		auto& stats = force.stats();
 		stats.result();
 
 		unit->setAcceleration(newForce);

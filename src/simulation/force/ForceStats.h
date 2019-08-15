@@ -6,8 +6,7 @@
 #define FORCE_STATS_SIZE 1000
 #define FORCE_STATS_ENABLE false
 
-struct ForceStats
-{
+struct ForceStats {
 	void reset() {
 		sepObstStat = 0;
 		sepUnitStat = 0;
@@ -20,6 +19,8 @@ struct ForceStats
 		reset();
 		std::fill_n(stats, 5, 0);
 	}
+
+	ForceStats(const ForceStats&) = delete;
 
 	void addSepObst(Urho3D::Vector2& force) {
 		if constexpr (FORCE_STATS_ENABLE) {

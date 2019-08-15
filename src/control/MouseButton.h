@@ -3,9 +3,9 @@
 #include <utility>
 #include "Game.h"
 
-struct MouseButton
-{
+struct MouseButton {
 	MouseButton() = default;
+	MouseButton(const MouseButton&) = delete;
 
 	~MouseButton() {
 		clean();

@@ -1,8 +1,9 @@
 #pragma once
 #include <Urho3D/UI/UIEvents.h>
 
-struct SettingsForm
-{
+struct SettingsForm {
+	SettingsForm() = default;
+	SettingsForm(const SettingsForm&) = delete;
 	int resolution;
 	int maxFps;
 	int minFps;

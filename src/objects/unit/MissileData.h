@@ -4,12 +4,11 @@
 #include "MathUtils.h"
 #include <Urho3D/Math/Vector3.h>
 
-struct MissileData
-{
+struct MissileData {
 	Urho3D::Vector3 start;
 	Urho3D::Vector3 end;
 	Urho3D::Vector3 direction;
-	
+
 	Physical* aim;
 	Urho3D::Node* node;
 
@@ -26,11 +25,13 @@ struct MissileData
 
 	MissileData(float peakHeight, float speed)
 		: peakHeight(peakHeight),
-		speed(speed) {
+		  speed(speed) {
 		createNode("Models/Prism.mdl", "Materials/brown.xml", &node);
 		node->SetEnabled(false);
 		node->SetScale(Urho3D::Vector3(0.1, 0.1, 0.3));
 	}
+
+	MissileData(const MissileData&) = delete;
 
 	void init(Urho3D::Vector3& _start, Urho3D::Vector3& _end, Physical* _aim, float _speed = 7) {
 		start = _start;

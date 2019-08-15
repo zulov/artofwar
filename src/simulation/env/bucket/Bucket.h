@@ -9,6 +9,7 @@ class Bucket {
 public:
 	Bucket();
 	~Bucket();
+	Bucket(const Bucket&) = delete;
 
 	std::vector<Physical*>& getContent() { return content; }
 	void add(Physical* entity);

@@ -8,6 +8,8 @@ struct GridCalculator {
 		  invFieldSize(resolution / size), size(size) {
 	}
 
+	GridCalculator(const GridCalculator&) = delete;
+
 	int getIndex(short posX, short posZ) const { return posX * resolution + posZ; }
 
 	short getIndex(float value) const {

@@ -9,6 +9,8 @@ struct content_info {
 		reset();
 	}
 
+	content_info(const content_info&) = delete;
+
 	void reset() {
 		allyNumber = 0;
 		enemiesNumber = 0;

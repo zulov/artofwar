@@ -59,20 +59,26 @@ void GroupOrder::addAttackAim() {
 }
 
 void GroupOrder::addDefendAim() {
-	simpleAction(Consts::EMPTY_ACTION_PARAMETER);
+	simpleAction();
 }
 
 void GroupOrder::addDeadAim() {
-	simpleAction(Consts::EMPTY_ACTION_PARAMETER);
+	simpleAction();
 }
 
 void GroupOrder::addStopAim() {
-	simpleAction(Consts::EMPTY_ACTION_PARAMETER);
+	simpleAction();
 }
 
-void GroupOrder::simpleAction(ActionParameter parameter) {
+void GroupOrder::simpleAction(ActionParameter& parameter) {
 	for (auto entity : *entities) {
 		entity->action(static_cast<char>(FutureOrder::action), parameter);
+	}
+}
+
+void GroupOrder::simpleAction() {
+	for (auto entity : *entities) {
+		entity->action(static_cast<char>(FutureOrder::action), Consts::EMPTY_ACTION_PARAMETER);
 	}
 }
 

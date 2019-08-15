@@ -6,12 +6,13 @@ struct ChargeData
 	float energyMax;
 	float attackRange;
 
-
 	ChargeData(float energyMax, float attackRange)
 		: energyMax(energyMax),
 		attackRange(attackRange) {
 		reset();
 	}
+
+	ChargeData(const ChargeData&) = delete;
 
 	void reset() {
 		energy = energyMax;

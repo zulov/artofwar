@@ -3,14 +3,14 @@
 #include <vector>
 #include <Urho3D/Container/Str.h>
 
-struct dbload_config
-{
+struct dbload_config {
+	dbload_config(const dbload_config&) = delete;
+	dbload_config() = default;
 	int precision;
 	int map;
 };
 
-struct dbload_physical
-{
+struct dbload_physical {
 	int id_db;
 	float hp_coef;
 	int player;
@@ -18,14 +18,13 @@ struct dbload_physical
 
 	dbload_physical(int idDb, float hpCoef, int player, int level)
 		: id_db(idDb),
-		hp_coef(hpCoef),
-		player(player),
-		level(level) {
+		  hp_coef(hpCoef),
+		  player(player),
+		  level(level) {
 	}
 };
 
-struct dbload_static : dbload_physical
-{
+struct dbload_static : dbload_physical {
 	int buc_x;
 	int buc_y;
 	char state;
@@ -34,15 +33,14 @@ struct dbload_static : dbload_physical
 	dbload_static(int idDb, float hpCoef, int player, int bucX, int bucY, int level, int state,
 	              int nextState)
 		: dbload_physical(idDb, hpCoef, player, level),
-		buc_x(bucX),
-		buc_y(bucY),
-		state(state),
-		nextState(nextState) {
+		  buc_x(bucX),
+		  buc_y(bucY),
+		  state(state),
+		  nextState(nextState) {
 	}
 };
 
-struct dbload_unit : dbload_physical
-{
+struct dbload_unit : dbload_physical {
 	float pos_x;
 	float pos_z;
 	int state;
@@ -52,16 +50,15 @@ struct dbload_unit : dbload_physical
 	dbload_unit(int idDb, float hpCoef, int player, int level, float posX, float posZ, int state,
 	            float velX, float velZ)
 		: dbload_physical(idDb, hpCoef, player, level),
-		pos_x(posX),
-		pos_z(posZ),
-		state(state),
-		vel_x(velX),
-		vel_z(velZ) {
+		  pos_x(posX),
+		  pos_z(posZ),
+		  state(state),
+		  vel_x(velX),
+		  vel_z(velZ) {
 	}
 };
 
-struct dbload_building : dbload_static
-{
+struct dbload_building : dbload_static {
 	float target_x;
 	float target_z;
 
@@ -69,24 +66,22 @@ struct dbload_building : dbload_static
 	                float targetX,
 	                float targetZ)
 		: dbload_static(idDb, hpCoef, player, bucX, bucY, level, state, nextState),
-		target_x(targetX),
-		target_z(targetZ) {
+		  target_x(targetX),
+		  target_z(targetZ) {
 	}
 };
 
-struct dbload_resource_entities : dbload_static
-{
+struct dbload_resource_entities : dbload_static {
 	float amount;
 
 	dbload_resource_entities(int idDb, float hpCoef, int player, int level, int bucX, int bucY
 	                         , int state, int nextState, float amount)
 		: dbload_static(idDb, hpCoef, player, bucX, bucY, level, state, nextState),
-		amount(amount) {
+		  amount(amount) {
 	}
 };
 
-struct dbload_player
-{
+struct dbload_player {
 	bool is_active;
 	int id;
 	int team;
@@ -96,29 +91,27 @@ struct dbload_player
 
 	dbload_player(int id, bool isActive, int team, int nation, char* name, int color)
 		: id(id),
-		is_active(isActive),
-		team(team),
-		nation(nation),
-		name(name),
-		color(color) {
+		  is_active(isActive),
+		  team(team),
+		  nation(nation),
+		  name(name),
+		  color(color) {
 	}
 };
 
-struct dbload_resource
-{
+struct dbload_resource {
 	int player;
 	int resource;
 	float amount;
 
 	dbload_resource(int player, int resource, float amount)
 		: player(player),
-		resource(resource),
-		amount(amount) {
+		  resource(resource),
+		  amount(amount) {
 	}
 };
 
-struct dbload_container
-{
+struct dbload_container {
 	dbload_container() {
 		precision = 1;
 		config = new dbload_config();

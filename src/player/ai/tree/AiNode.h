@@ -14,7 +14,6 @@ public:
 	~AiNode() {
 		clear_vector(children);
 	}
-	
 
 	float getValueDiff() const;
 	AiOrderData getOrder();

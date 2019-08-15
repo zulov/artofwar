@@ -4,8 +4,7 @@
 
 class Aim;
 
-struct ActionParameter
-{
+struct ActionParameter {
 	class Builder;
 
 	ActionParameter(Aim* aim, ActionType type, int index, std::vector<Physical*>& _thingsToInteract)
@@ -13,8 +12,9 @@ struct ActionParameter
 		thingsToInteract.insert(thingsToInteract.begin(), _thingsToInteract.begin(), _thingsToInteract.end());
 	}
 
+
 	bool isFirstThingAlive() const {
-		return  !thingsToInteract.empty()
+		return !thingsToInteract.empty()
 			&& thingsToInteract[0] != nullptr
 			&& thingsToInteract[0]->isUsable();
 	}
@@ -25,8 +25,7 @@ struct ActionParameter
 	int index = -1;
 };
 
-struct ActionParameter::Builder
-{
+struct ActionParameter::Builder {
 private:
 	Aim* aim = nullptr;
 	ActionType type = ActionType::NONE;
