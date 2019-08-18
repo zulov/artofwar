@@ -13,6 +13,5 @@ void TopInfoPanel::hoverOff() {
 }
 
 void TopInfoPanel::createBody() {
-	Urho3D::String a = "test";
-	text = addChildText(window, "MyText", a, style);
+	text = addChildText(window, "MyText", style);
 }

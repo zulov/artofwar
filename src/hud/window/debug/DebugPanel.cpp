@@ -21,5 +21,5 @@ void DebugPanel::setText(float getLastFps, float getAverageFps, int getLoops, Ur
 }
 
 void DebugPanel::createBody() {	
-	fpsText = addChildText(window, "MyText", "", style);
+	fpsText = addChildText(window, "MyText", style);
 }

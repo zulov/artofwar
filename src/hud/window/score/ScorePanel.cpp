@@ -21,6 +21,5 @@ void ScorePanel::update(const std::vector<Player*>& players) {
 }
 
 void ScorePanel::createBody() {
-	Urho3D::String a = "test";
-	text = addChildText(window, "MyText", a, style);
+	text = addChildText(window, "MyText", style);
 }

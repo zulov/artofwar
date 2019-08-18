@@ -71,12 +71,17 @@ inline Urho3D::Text* addTextItem(Urho3D::DropDownList* cob, Urho3D::String str, 
 	return item;
 }
 
+inline Urho3D::Text* addChildText(Urho3D::UIElement* parent, Urho3D::String styleName, Urho3D::XMLFile* style) {
+	return createElement<Urho3D::Text>(parent, style, styleName);
+}
+
 inline Urho3D::Text* addChildText(Urho3D::UIElement* parent, Urho3D::String styleName, Urho3D::String value,
                                   Urho3D::XMLFile* style) {
-	auto text = createElement<Urho3D::Text>(parent, style, styleName);
+	auto text = addChildText(parent, styleName, style);
 	text->SetText(value);
 	return text;
 }
+
 
 inline void addChildTexts(Urho3D::DropDownList* cob, std::vector<Urho3D::String> names, Urho3D::XMLFile* style) {
 	for (auto& name : names) {

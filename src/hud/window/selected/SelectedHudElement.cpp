@@ -10,7 +10,7 @@ SelectedHudElement::SelectedHudElement(Urho3D::UIElement* parent, Urho3D::XMLFil
 
 	button = createElement<Urho3D::Button>(parent,style, "SmallIcon");
 	button->SetVisible(false);
-	text = addChildText(button, "MyText", "", style);
+	text = addChildText(button, "MyText", style);
 
 	icon = createElement<MySprite>(button, style, "SmallSprite");
 	button->SetVar("SelectedHudElement", this);
