@@ -2,14 +2,12 @@
 #include "simulation/env/GridCalculator.h"
 
 
-#define VALUE_THRESHOLD_DEBUG 40
-
 class Physical;
 
 class InfluenceMap {
 
 public:
-	InfluenceMap(unsigned short resolution, float size);
+	InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug);
 	virtual ~InfluenceMap();
 
 	virtual void update(Physical* physical) =0;
@@ -22,5 +20,6 @@ protected:
 	float size;
 	float fieldSize;
 	unsigned int arraySize;
+	const float valueThresholdDebug;
 	GridCalculator calculator;
 };

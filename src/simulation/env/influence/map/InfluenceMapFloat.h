@@ -4,7 +4,7 @@
 
 class InfluenceMapFloat : public InfluenceMap {
 public:
-	InfluenceMapFloat(unsigned short resolution, float size, float coef, char level);
+	InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug);
 
 	virtual ~InfluenceMapFloat();
 

@@ -2,7 +2,8 @@
 #include "objects/Physical.h"
 #include <algorithm>
 
-InfluenceMapInt::InfluenceMapInt(unsigned short resolution, float size): InfluenceMap(resolution, size) {
+InfluenceMapInt::InfluenceMapInt(unsigned short resolution, float size, float valueThresholdDebug): InfluenceMap(
+	resolution, size, valueThresholdDebug) {
 	values = new unsigned char[arraySize];
 }
 

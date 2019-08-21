@@ -17,7 +17,7 @@ private:
 
 	EnvironmentDebugMode nextEnvMode[ENVIRONMENT_DEBUG_SIZE] = {
 		EnvironmentDebugMode::MAIN_GRID, EnvironmentDebugMode::INF_UNITS_NUMBER_PER_PLAYER,
-		EnvironmentDebugMode::INF_UNITS_INFLUENCE_PER_PLAYER, EnvironmentDebugMode::NONE
+		EnvironmentDebugMode::INF_UNITS_INFLUENCE_PER_PLAYER, EnvironmentDebugMode::INF_BUILDING_INFLUENCE_PER_PLAYER, EnvironmentDebugMode::NONE
 	};
 	ColorMode nextColorMode[COLOR_MODE_SIZE] = {
 		ColorMode::VELOCITY, ColorMode::STATE, ColorMode::FORMATION, ColorMode::BASIC

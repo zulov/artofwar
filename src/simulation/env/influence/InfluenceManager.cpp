@@ -11,14 +11,14 @@
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
-		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(DEFAULT_INF_GRID_SIZE,BUCKET_GRID_SIZE));
+		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(DEFAULT_INF_GRID_SIZE,BUCKET_GRID_SIZE,40));
 		buildingsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2));
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2,5));
 		unitsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2));
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2,40));
 	}
 	ci = new content_info();
-	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUANCE);
+	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUENCE);
 }
 
 InfluenceManager::~InfluenceManager() {
@@ -60,17 +60,21 @@ void InfluenceManager::draw(InfluanceType type, char index) {
 		break;
 	case InfluanceType::UNITS_NUMBER_PER_PLAYER:
 		index = index % unitsNumberPerPlayer.size();
-		unitsNumberPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUANCE);
+		unitsNumberPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
 	case InfluanceType::UNITS_INFLUENCE_PER_PLAYER:
 		index = index % unitsInfluencePerPlayer.size();
-		unitsInfluencePerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUANCE);
+		unitsInfluencePerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		break;
+	case InfluanceType::BUILDING_INFLUENCE_PER_PLAYER:
+		index = index % buildingsInfluencePerPlayer.size();
+		buildingsInfluencePerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
 	default: ;
 	}
 	DebugLineRepo::commit(DebugLineType::INFLUANCE, currentDebugBatch);
 	currentDebugBatch++;
-	if (currentDebugBatch >= MAX_DEBUG_PARTS_INFLUANCE) {
+	if (currentDebugBatch >= MAX_DEBUG_PARTS_INFLUENCE) {
 		currentDebugBatch = 0;
 	}
 }

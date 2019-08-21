@@ -33,6 +33,8 @@ public:
 	void update(std::vector<Unit*>* units) const;
 	void update(std::vector<Building*>* buildings);
 	void update(std::vector<ResourceEntity*>* resources);
+	
+	void updateAll(std::vector<Building*>* const buildings);
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
 	Urho3D::Vector2* validatePosition(Urho3D::Vector3& position);
@@ -91,3 +93,4 @@ private:
 
 	std::vector<Physical*> *neights, *neights2, *empty; //TODO tu bedzie trzeba tablica jesli beda watki
 };
+

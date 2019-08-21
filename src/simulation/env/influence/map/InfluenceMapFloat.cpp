@@ -7,9 +7,10 @@
 #include "colors/ColorPaletteRepo.h"
 
 InfluenceMapFloat::
-InfluenceMapFloat(unsigned short resolution, float size, float coef, char level): InfluenceMap(resolution, size),
-                                                                                  coef(coef),
-                                                                                  level(level) {
+InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug):
+	InfluenceMap(resolution, size, valueThresholdDebug),
+	coef(coef),
+	level(level) {
 	values = new float[arraySize];
 }
 
@@ -45,4 +46,3 @@ bool InfluenceMapFloat::validIndex(int i) const {
 float InfluenceMapFloat::getValueAt(int index) {
 	return values[index];
 }
-

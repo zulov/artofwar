@@ -115,6 +115,12 @@ void Environment::update(std::vector<Building*>* buildings) {
 	}
 }
 
+
+void Environment::updateAll(std::vector<Building*>* const buildings) {
+	//TODO performance, zmianiac tylko to co sie zmienilo
+	influenceManager.update(buildings);
+}
+
 void Environment::update(std::vector<ResourceEntity*>* resources) {
 	for (auto resource : *resources) {
 		mainGrid.addStatic(resource);
@@ -263,6 +269,9 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 	case EnvironmentDebugMode::INF_UNITS_INFLUENCE_PER_PLAYER:
 		influenceManager.draw(InfluanceType::UNITS_INFLUENCE_PER_PLAYER, index);
 		break;
+	case EnvironmentDebugMode::INF_BUILDING_INFLUENCE_PER_PLAYER:
+		influenceManager.draw(InfluanceType::BUILDING_INFLUENCE_PER_PLAYER, index);
+		break;
 	default: ;
 	}
 
@@ -272,7 +281,7 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 Urho3D::Vector2 Environment::bestPosToBuild(const short id) {
 	//influenceManager.
 	//mainGrid.
-	return {rand() % 512-256.f, rand() % 512-256.f};
+	return {rand() % 512 - 256.f, rand() % 512 - 256.f};
 }
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {

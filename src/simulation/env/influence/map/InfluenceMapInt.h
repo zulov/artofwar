@@ -4,7 +4,7 @@
 class InfluenceMapInt : public InfluenceMap {
 
 public:
-	InfluenceMapInt(unsigned short resolution, float size);
+	InfluenceMapInt(unsigned short resolution, float size, float valueThresholdDebug);
 	~InfluenceMapInt();
 
 	void update(Physical* physical) override;

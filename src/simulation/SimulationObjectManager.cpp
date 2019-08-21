@@ -95,6 +95,7 @@ void SimulationObjectManager::updateBuilding(std::vector<Building*>* temp) const
 		Game::getEnvironment()->update(temp);
 		simulationInfo.setAmountBuildingChanged();
 	}
+	Game::getEnvironment()->updateAll(buildings);
 }
 
 void SimulationObjectManager::updateResource(std::vector<ResourceEntity*>* temp) const {
