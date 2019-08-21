@@ -19,7 +19,7 @@ public:
 	                const Urho3D::IntVector2& bucketCords, int level);
 	CreationCommand(ObjectType type, int number, int id, const Urho3D::Vector2& position, int player,
                                  int level);
-	virtual ~CreationCommand();
+	virtual ~CreationCommand() = default;
 	void execute() override;
 	void setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager);
 private:

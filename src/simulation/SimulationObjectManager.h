@@ -22,7 +22,7 @@ public:
 	std::vector<ResourceEntity*>* getResources() const { return resources; }
 
 	void addUnits(unsigned number, int id, Urho3D::Vector2& center, int player, int level);
-	void addBuilding(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level);
+	void addBuilding(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level) const;
 	void addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level) const;
 
 	void prepareToDispose() const;

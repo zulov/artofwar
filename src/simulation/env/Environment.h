@@ -79,6 +79,7 @@ public:
 	int closestEmpty(int posIndex);
 
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
+	Urho3D::Vector2 bestPosToBuild(const short id);
 
 private:
 	MainGrid mainGrid;

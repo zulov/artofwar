@@ -269,6 +269,12 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 
 }
 
+Urho3D::Vector2 Environment::bestPosToBuild(const short id) {
+	//influenceManager.
+	//mainGrid.
+	return {rand() % 512-256.f, rand() % 512-256.f};
+}
+
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {
 	return mainGrid.isInLocalArea(getMainCell, pos);
 }

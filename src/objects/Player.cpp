@@ -5,6 +5,8 @@
 #include "database/DatabaseCache.h"
 #include <string>
 #include <utility>
+#include "commands/creation/CreationCommandList.h"
+#include "simulation/env/Environment.h"
 
 
 Player::Player(int nationId, int team, int id, int color, Urho3D::String name, bool active): team(team), id(id),
@@ -86,21 +88,48 @@ int Player::getScore() {
 }
 
 void Player::ai() {
-	auto orderData = aiRoot->getOrder();
+	auto& orderData = aiRoot->getOrder();
+	execute(orderData);
+}
+
+Urho3D::Vector2 Player::bestPosToBuild(const short id) {
+	return Game::getEnvironment()->bestPosToBuild(id);
+}
+
+void Player::execute(const AiOrderData& orderData) {
+	Game::getLog()->Write(0, "test");
+	switch (orderData.type) {
+	case AiOrderType::NONE:
+
+		break;
+	case AiOrderType::BUILD:
+	{
+		Urho3D::Vector2 pos = bestPosToBuild(orderData.id);
+		Game::getCreationList()->addBuilding(orderData.id, pos, id, getLevelForBuilding(orderData.id));
+	}
+		break;
+	case AiOrderType::ORDER:
+
+		break;
+	case AiOrderType::DEPLOY:
+
+		break;
+	default: ;
+	}
 }
 
 void Player::initAi() {
 	aiRoot = new AiNode("root", 100, {AiOrderType::NONE, -1}, nullptr);
 
-	fillAttackNode(aiRoot->addChild("ATTACK", 30, {AiOrderType::NONE, -1}));
+	fillAttackNode(aiRoot->addChild("ATTACK", 40, {AiOrderType::NONE, -1}));
 	fillDefenseNode(aiRoot->addChild("DEFENSE", 30, {AiOrderType::NONE, -1}));
-	fillResourceNode(aiRoot->addChild("RESOURCE", 40, {AiOrderType::NONE, -1}));
+	fillResourceNode(aiRoot->addChild("RESOURCE", 30, {AiOrderType::NONE, -1}));
 	fillIntelNode(aiRoot->addChild("INTEL", 0, {AiOrderType::NONE, -1}));
 }
 
 void Player::addBasicNodes(AiNode* parent) {
-	parent->addChild("Build", 30, {AiOrderType::BUILD, -1});
-	parent->addChild("Order", 40, {AiOrderType::ORDER, -1});
+	parent->addChild("Build", 40, {AiOrderType::BUILD, -1});
+	parent->addChild("Order", 30, {AiOrderType::ORDER, -1});
 	parent->addChild("Deploy", 30, {AiOrderType::DEPLOY, -1});
 }
 
@@ -108,6 +137,13 @@ void Player::mockLeaf(AiNode* parent, std::string name) {
 	auto opt1 = parent->getChildByName(name);
 	if (opt1.has_value()) {
 		opt1.value()->addChild("Mock", 1, {AiOrderType::NONE, -1});
+	}
+}
+
+void Player::addChild(AiNode* parent, const std::string& name, float targetValue, AiOrderData data) {
+	auto node = parent->addChild(name, targetValue, data);
+	if (node->getOrder().type != AiOrderType::NONE) {
+		aiLeafs.push_back(node);
 	}
 }
 

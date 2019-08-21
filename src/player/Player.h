@@ -31,9 +31,12 @@ public:
 	int getScore();
 	void ai();
 private:
+	Urho3D::Vector2 bestPosToBuild(const short id);
+	void execute(const AiOrderData& orderData);
 	void initAi();
 	void addBasicNodes(AiNode* parent);
 	void mockLeaf(AiNode* parent, std::string name);
+	void addChild(AiNode* parent, const std::string& name, float targetValue, AiOrderData data);
 	void fillAttackNode(AiNode* parent);
 	void fillDefenseNode(AiNode* parent);
 	void fillResourceNode(AiNode* parent);

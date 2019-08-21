@@ -34,7 +34,7 @@ void SimulationObjectManager::addUnits(unsigned int number, int id, Urho3D::Vect
 }
 
 void SimulationObjectManager::addBuilding(int id, Urho3D::Vector2& center, int player,
-                                          const Urho3D::IntVector2& _bucketCords, int level) {
+                                          const Urho3D::IntVector2& _bucketCords, int level) const {
 	updateBuilding(buildingFactory.create(id, center, player, _bucketCords, level));
 }
 
