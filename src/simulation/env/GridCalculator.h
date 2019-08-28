@@ -35,15 +35,15 @@ struct GridCalculator {
 		return getIndex(getIndex(pos.x_), getIndex(pos.y_));
 	}
 
-	Urho3D::IntVector2 getIndexes(int i) {
+	Urho3D::IntVector2 getIndexes(int i) const {
 		return {i % resolution, i / resolution};
 	}
 
-	Urho3D::Vector3 getCenter(int i) {
+	Urho3D::Vector2 getCenter(int i) const  {
 		Urho3D::IntVector2 pos = getIndexes(i);
 		const float cX = (pos.x_ + 0.5) * fieldSize - size / 2;
 		const float cZ = (pos.y_ + 0.5) * fieldSize - size / 2;
-		return {cZ, 0, cX};
+		return {cZ,cX};
 	}
 
 private:

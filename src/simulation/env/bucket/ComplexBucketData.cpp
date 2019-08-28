@@ -49,6 +49,7 @@ getDirectrionFrom(Urho3D::Vector3& position, ComplexBucketData& escapeBucket) {
 void ComplexBucketData::setNeightOccupied(const unsigned char index) {
 	isNeightOccupied |= Consts::bitFlags[index];
 }
+
 void ComplexBucketData::setNeightFree(const unsigned char index) {
 	isNeightOccupied &= ~Consts::bitFlags[index];
 }
@@ -77,4 +78,8 @@ void ComplexBucketData::setDeploy(Building* building) {
 
 void ComplexBucketData::removeDeploy() {
 	removeStatic();
+}
+
+bool ComplexBucketData::isFreeToBuild(const short id) {
+	return isUnit();//TODO bug uwzglednic ID
 }

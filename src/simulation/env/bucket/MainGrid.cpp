@@ -263,6 +263,26 @@ void MainGrid::drawDebug(GridDebugType type) {
 	DebugLineRepo::commit(DebugLineType::MAIN_GRID);
 }
 
+Urho3D::Vector2 MainGrid::getNewBuildingPos(const Urho3D::Vector2& center, const char player, const short id) {
+	auto index = calculator.indexFromPosition(center);
+	if (complexData[index].isFreeToBuild(id)) {
+		return center;
+	}
+	for (auto close : closeIndex) {
+		calculator.
+		if (complexData[index + close].isFreeToBuild(id)) {
+			return calculator.getCenter(index + close);
+		}
+	}
+
+	for (auto close : closeIndexSecond) {
+		if (complexData[index + close].isFreeToBuild(id)) {
+			return calculator.getCenter(index + close);
+		}
+	}
+	return center; //TODO bug optional
+}
+
 bool MainGrid::isInLocalArea(int cell, Urho3D::Vector2& pos) {
 	const auto index = calculator.indexFromPosition(pos);
 	if (cell == index) { return true; }

@@ -9,7 +9,7 @@ struct AiOrderData {
 	AiOrderData(AiOrderType type, const short id)
 		: type(type), id(id) {
 	}
-	
+
 	const AiOrderType type;
 	const short id;
 };

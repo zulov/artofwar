@@ -22,8 +22,8 @@ void InfluenceMap::draw(short batch, short maxParts) {
 }
 
 void InfluenceMap::drawCell(int index, short batch) {
-	Urho3D::Vector3 center = calculator.getCenter(index);
-	center = Game::getEnvironment()->getPosWithHeightAt(center.x_, center.z_);
+	Urho3D::Vector2 center2 = calculator.getCenter(index);
+	Urho3D::Vector3 center = Game::getEnvironment()->getPosWithHeightAt(center2.x_, center2.y_);
 	Urho3D::Color color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);
 	DebugLineRepo::drawTriangle(DebugLineType::INFLUANCE,
 	                            center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),

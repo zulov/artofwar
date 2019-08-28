@@ -42,6 +42,7 @@ public:
 	bool belowCellLimit();
 	void setDeploy(Building* building);
 	void removeDeploy();
+	bool isFreeToBuild(const short id);
 private:
 	CellState state;
 	char size, additionalInfo{};

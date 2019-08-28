@@ -82,6 +82,7 @@ public:
 	CellState getCellAt(float x, float z);
 	int getAdditionalInfoAt(float x, float z);
 	void drawDebug(GridDebugType type);
+	Urho3D::Vector2 getNewBuildingPos(const Urho3D::Vector2& center, const char player, const short id);
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
 

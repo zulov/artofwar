@@ -93,7 +93,7 @@ void Player::ai() {
 }
 
 Urho3D::Vector2 Player::bestPosToBuild(const short id) {
-	return Game::getEnvironment()->bestPosToBuild(id);
+	return Game::getEnvironment()->bestPosToBuild(this->id, id);
 }
 
 void Player::execute(const AiOrderData& orderData) {
@@ -107,7 +107,7 @@ void Player::execute(const AiOrderData& orderData) {
 		Urho3D::Vector2 pos = bestPosToBuild(orderData.id);
 		Game::getCreationList()->addBuilding(orderData.id, pos, id, getLevelForBuilding(orderData.id));
 	}
-		break;
+	break;
 	case AiOrderType::ORDER:
 
 		break;

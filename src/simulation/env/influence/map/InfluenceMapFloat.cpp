@@ -46,3 +46,8 @@ bool InfluenceMapFloat::validIndex(int i) const {
 float InfluenceMapFloat::getValueAt(int index) {
 	return values[index];
 }
+
+Urho3D::Vector2  InfluenceMapFloat::getBestIndexToBuild(const short id) const {
+	auto index = std::max_element(values, values + arraySize) - values;
+	return calculator.getCenter(index);
+}
