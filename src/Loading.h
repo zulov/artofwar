@@ -31,7 +31,7 @@ struct loading
 
 	void inc() {
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
-		std::cout << currentStage << " complated (" << msg.c_str() << ") at " << duration.count() << " ms" << std::endl;
+		std::cout << currentStage << " completed (" << msg.c_str() << ") at " << duration.count() << " ms" << std::endl;
 		start = std::chrono::system_clock::now();
 		++currentStage;
 	}

@@ -30,7 +30,6 @@ bool CreationCommandList::addBuilding(int id, Urho3D::Vector2& position, int pla
 	db_building* db_building = Game::getDatabaseCache()->getBuilding(id);
 
 	if (env->validateStatic(db_building->size, position) && resources.reduce(costs)) {
-
 		auto bucketCords = env->getBucketCords(db_building->size, position);
 		auto pos = env->getValidPosition(db_building->size, position);
 

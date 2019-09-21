@@ -9,6 +9,8 @@
 #include <unordered_set>
 #include "objects/building/Building.h"
 #include "debug/DebugLineRepo.h"
+#include "simulation/env/Environment.h"
+#include "database/DatabaseCache.h"
 
 
 MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size),
@@ -263,23 +265,31 @@ void MainGrid::drawDebug(GridDebugType type) {
 	DebugLineRepo::commit(DebugLineType::MAIN_GRID);
 }
 
+bool MainGrid::validAndFree(const short id, int index, std::vector<short>::value_type close) {
+	auto building = Game::getDatabaseCache()->getBuilding(id);
+
+	return calculator.validIndex(index + close)
+		&& Game::getEnvironment()->validateStatic(building->size, calculator.getCenter(index + close))
+		&& complexData[index + close].isFreeToBuild(id);
+}
+
 Urho3D::Vector2 MainGrid::getNewBuildingPos(const Urho3D::Vector2& center, const char player, const short id) {
 	auto index = calculator.indexFromPosition(center);
 	if (complexData[index].isFreeToBuild(id)) {
 		return center;
 	}
 	for (auto close : closeIndex) {
-		calculator.
-		if (complexData[index + close].isFreeToBuild(id)) {
+		if (validAndFree(id, index, close)) {
 			return calculator.getCenter(index + close);
 		}
 	}
 
 	for (auto close : closeIndexSecond) {
-		if (complexData[index + close].isFreeToBuild(id)) {
+		if (calculator.validIndex(index + close) && complexData[index + close].isFreeToBuild(id)) {
 			return calculator.getCenter(index + close);
 		}
 	}
+	Game::getLog()->Write(0, "AI wrong POS");
 	return center; //TODO bug optional
 }
 
@@ -331,12 +341,14 @@ void MainGrid::addStatic(Static* object) {
 
 		for (int i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
 			for (int j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {
-				const int index = calculator.getIndex(i, j);
-				updateNeighbors(index);
-				if (!complexData[index].isUnit()) {
-					toRefresh.push_back(index);
-				} else {
-					complexData[index].setEscapeThrought(-1);
+				if (calculator.validIndex(i, j)) {
+					const int index = calculator.getIndex(i, j);
+					updateNeighbors(index);
+					if (!complexData[index].isUnit()) {
+						toRefresh.push_back(index);
+					} else {
+						complexData[index].setEscapeThrought(-1);
+					}
 				}
 			}
 		}
@@ -414,7 +426,7 @@ Urho3D::IntVector2 MainGrid::getBucketCords(const Urho3D::IntVector2& size, cons
 void MainGrid::updateNeighbors(const int current) const {
 	for (unsigned char i = 0; i < 8; ++i) {
 		const int nI = current + closeIndex[i]; //TODO bug przy skrajach bedzie całkiem inne indexy updejtowac :O
-		if (inSide(nI)) {
+		if (calculator.validIndex(nI)) {
 			if (complexData[nI].isUnit()) {
 				complexData[current].setNeightFree(i);
 			} else if (!complexData[nI].isUnit()) {

@@ -61,8 +61,6 @@ public:
 	Urho3D::Vector2& getCenter(short x, short z) { return getCenter(calculator.getIndex(x, z)); }
 	Urho3D::Vector2& getCenter(int index) const { return complexData[index].getCenter(); }
 
-	bool inSide(int x, int z) const { return !(x < 0 || x >= resolution || z < 0 || z >= resolution); }
-	bool inSide(int index) const { return !(index < 0 || index > sqResolution); }
 	CellState getType(int index) const { return complexData[index].getType(); }
 	char getCurrentSize(int index) const { return complexData[index].getSize(); }
 	bool cellInStates(int index, std::vector<CellState>& cellStates) const;
@@ -82,6 +80,7 @@ public:
 	CellState getCellAt(float x, float z);
 	int getAdditionalInfoAt(float x, float z);
 	void drawDebug(GridDebugType type);
+	bool validAndFree(short id, int index, std::vector<short>::value_type close);
 	Urho3D::Vector2 getNewBuildingPos(const Urho3D::Vector2& center, const char player, const short id);
 private:
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);

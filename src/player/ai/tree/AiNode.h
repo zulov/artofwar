@@ -5,9 +5,9 @@
 #include "utils.h"
 
 struct AiNode {
-public:
+
 	AiNode(const std::string& name, float targetValue, AiOrderData data, const AiNode* parent)
-		: name(name), targetValue(targetValue), data(data), parent(parent), currentValue(0) {
+		: name(name), currentValue(0), targetValue(targetValue), data(data), parent(parent) {
 	}
 
 	AiNode(const AiNode&) = delete;

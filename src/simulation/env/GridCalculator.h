@@ -4,8 +4,8 @@
 struct GridCalculator {
 
 	explicit GridCalculator(unsigned short resolution, float size)
-		: resolution(resolution), halfRes(resolution / 2), fieldSize(size / resolution),
-		  invFieldSize(resolution / size), size(size) {
+		: sqResolution(resolution * resolution), resolution(resolution), halfRes(resolution / 2),
+		  fieldSize(size / resolution), invFieldSize(resolution / size), size(size) {
 	}
 
 	GridCalculator(const GridCalculator&) = delete;
@@ -39,14 +39,21 @@ struct GridCalculator {
 		return {i % resolution, i / resolution};
 	}
 
-	Urho3D::Vector2 getCenter(int i) const  {
+	Urho3D::Vector2 getCenter(int i) const {
 		Urho3D::IntVector2 pos = getIndexes(i);
 		const float cX = (pos.x_ + 0.5) * fieldSize - size / 2;
 		const float cZ = (pos.y_ + 0.5) * fieldSize - size / 2;
-		return {cZ,cX};
+		return {cZ, cX};
 	}
 
+	bool validIndex(int x, int z) const {
+		return !(x < 0 || x >= resolution || z < 0 || z >= resolution);
+	}
+
+	bool validIndex(int index) const { return index >= 0 && index < sqResolution; }
+
 private:
+	int sqResolution;
 	short resolution;
 	short halfRes;
 	float invFieldSize;

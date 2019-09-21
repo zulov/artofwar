@@ -8,8 +8,6 @@ void AiManager::ai() {
 	for (auto player : players) {
 		if (Game::getPlayersMan()->getActivePlayer() != player) {
 			player->ai();
-			//Game::getEnvironment()->
-			int a = 5;
 		}
 	}
 }
