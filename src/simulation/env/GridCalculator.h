@@ -50,7 +50,7 @@ struct GridCalculator {
 		return !(x < 0 || x >= resolution || z < 0 || z >= resolution);
 	}
 
-	bool validIndex(int index) const { return index >= 0 && index < sqResolution; }
+	bool validIndex(int index) const { return index >= 0 && index < sqResolution; }//TODO BUG jeœli coœ jest na skarju to weŸmie coœ skrajnego
 
 private:
 	int sqResolution;

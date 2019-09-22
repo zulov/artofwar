@@ -58,7 +58,7 @@ public:
 		return complexData[calculator.getIndex(cords.x_, cords.y_)].getCenter();
 	}
 
-	Urho3D::Vector2& getCenter(short x, short z) { return getCenter(calculator.getIndex(x, z)); }
+	Urho3D::Vector2& getCenter(short x, short z) const { return getCenter(calculator.getIndex(x, z)); }
 	Urho3D::Vector2& getCenter(int index) const { return complexData[index].getCenter(); }
 
 	CellState getType(int index) const { return complexData[index].getType(); }
@@ -73,8 +73,9 @@ public:
 	void removeDeploy(Building* building);
 
 	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
+	bool isEmpty(int inx);
 	int closestEmpty(int posIndex);
-	int indexFromPosition(const Urho3D::Vector2& pos) { return calculator.indexFromPosition(pos); }
+	int indexFromPosition(const Urho3D::Vector2& pos) const { return calculator.indexFromPosition(pos); }
 	int getIndex(short i, short z) const { return calculator.getIndex(i, z); }
 	int getIndex(Urho3D::Vector2& pos) const { return calculator.indexFromPosition(pos); }
 	CellState getCellAt(float x, float z);
@@ -83,6 +84,7 @@ public:
 	bool validAndFree(short id, int index, std::vector<short>::value_type close);
 	Urho3D::Vector2 getNewBuildingPos(const Urho3D::Vector2& center, const char player, const short id);
 private:
+	void initCloseIndexs(char a, std::vector<short>& vector);
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
 
 	PathFinder* pathConstructor;
@@ -93,6 +95,6 @@ private:
 
 	ComplexBucketData* complexData;
 
-	std::vector<short> closeIndex;
-	std::vector<short> closeIndexSecond;
+	
+	std::vector<short> closeIndexes[3];
 };
