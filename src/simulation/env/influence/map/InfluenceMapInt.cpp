@@ -26,6 +26,6 @@ char InfluenceMapInt::getValue(const Urho3D::Vector2& pos) {
 	return values[index];
 }
 
-float InfluenceMapInt::getValueAt(int index) {
+float InfluenceMapInt::getValueAt(int index) const {
 	return values[index];
 }

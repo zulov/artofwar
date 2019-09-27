@@ -9,7 +9,7 @@ public:
 
 	void update(Physical* physical) override;
 	void reset() override;
-	float getValueAt(int index) override;
+	float getValueAt(int index) const override;
 	Urho3D::Vector2 getBestIndexToBuild(const short id) const;
 private:
 	bool validIndex(int i) const;

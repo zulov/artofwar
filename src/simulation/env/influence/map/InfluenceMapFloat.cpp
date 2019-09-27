@@ -1,10 +1,9 @@
 #include "InfluenceMapFloat.h"
 #include "objects/Physical.h"
 #include <algorithm>
-#include "debug/DebugLineRepo.h"
 #include "Game.h"
 #include "simulation/env/Environment.h"
-#include "colors/ColorPaletteRepo.h"
+#include <numeric>
 
 InfluenceMapFloat::
 InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug):
@@ -43,11 +42,23 @@ bool InfluenceMapFloat::validIndex(int i) const {
 	return i >= 0 && i < resolution;
 }
 
-float InfluenceMapFloat::getValueAt(int index) {
+float InfluenceMapFloat::getValueAt(int index) const {
 	return values[index];
 }
 
-Urho3D::Vector2  InfluenceMapFloat::getBestIndexToBuild(const short id) const {
-	auto index = std::max_element(values, values + arraySize) - values;
-	return calculator.getCenter(index);
+Urho3D::Vector2 InfluenceMapFloat::getBestIndexToBuild(const short id) const {
+	const auto [min, max] = std::minmax_element(values, values + arraySize);
+	auto avg = std::accumulate(values, values + arraySize, 0) / (double)arraySize;
+
+	float* iter = values;
+	std::vector<int> indexes;
+	while ((iter = std::find_if(iter, values + arraySize,
+	                            [avg,max](float i) { return i > avg && i < *max; }))
+		!= values + arraySize) {
+		indexes.push_back(iter - values);
+		iter++;
+	}
+
+	//print();
+	return calculator.getCenter(indexes[rand() % indexes.size()]);
 }

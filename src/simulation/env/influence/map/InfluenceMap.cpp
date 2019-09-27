@@ -5,9 +5,13 @@
 #include "colors/ColorPaletteRepo.h"
 
 
-InfluenceMap::InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug): resolution(resolution), fieldSize(size / resolution),
-                                                                   arraySize(resolution * resolution), size(size),
-                                                                   calculator(resolution, size),valueThresholdDebug(valueThresholdDebug) {
+InfluenceMap::InfluenceMap(unsigned short resolution, float size,
+                           float valueThresholdDebug): resolution(resolution),
+                                                       fieldSize(size / resolution),
+                                                       arraySize(resolution * resolution),
+                                                       size(size),
+                                                       calculator(resolution, size),
+                                                       valueThresholdDebug(valueThresholdDebug) {
 }
 
 InfluenceMap::~InfluenceMap() = default;
@@ -37,4 +41,13 @@ void InfluenceMap::drawCell(int index, short batch) {
 	                            center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),
 	                            color, batch
 	);
+}
+
+void InfluenceMap::print() const {
+	for (int i = 0; i < resolution; ++i) {
+		for (int j = 0; j < resolution; ++j) {
+			std::cout << getValueAt(calculator.getIndex(i, j)) << " ";
+		}
+		std::cout << "\n";
+	}
 }

@@ -12,10 +12,12 @@ public:
 
 	virtual void update(Physical* physical) =0;
 	virtual void reset() =0;
-	virtual float getValueAt(int index) =0;
+	virtual float getValueAt(int index) const =0;
 	void draw(short batch, short maxParts);
 	void drawCell(int index, short batch);
+
 protected:
+	void print() const;
 	unsigned short resolution;
 	float size;
 	float fieldSize;
