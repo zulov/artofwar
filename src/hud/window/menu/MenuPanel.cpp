@@ -181,7 +181,7 @@ std::unordered_set<int> MenuPanel::getUpgradePathInBuilding(std::vector<Selected
 	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
-			removefromCommon(common, pathsIdsInbuilding(i));
+			removeFromCommon(common, pathsIdsInbuilding(i));
 		}
 	}
 
@@ -193,14 +193,14 @@ std::unordered_set<int> MenuPanel::getUnitInBuilding(std::vector<SelectedInfoTyp
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
-			removefromCommon(common, unitsIdsForBuildingNation(nation, i));
+			removeFromCommon(common, unitsIdsForBuildingNation(nation, i));
 		}
 	}
 
 	return common;
 }
 
-void MenuPanel::removefromCommon(std::unordered_set<int>& common, std::unordered_set<int>& set) {
+void MenuPanel::removeFromCommon(std::unordered_set<int>& common, std::unordered_set<int>& set) {
 	std::unordered_set<int> temp(common);
 	for (const auto& id : temp) {
 		if (set.find(id) == set.end()) {
@@ -260,12 +260,7 @@ std::unordered_set<int> MenuPanel::getOrderForUnit(std::vector<SelectedInfoType*
 				//todo to zrobic raz i pobierac
 				common2.insert(order->id);
 			}
-			std::unordered_set<int> temp(common);
-			for (const auto& id : temp) {
-				if (common2.find(id) == common2.end()) {
-					common.erase(id);
-				}
-			}
+			removeFromCommon(common,common2);
 		}
 	}
 	return common;

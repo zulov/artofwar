@@ -32,6 +32,10 @@ private:
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
 	std::vector<InfluenceMapFloat*> buildingsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;
+	
+	std::vector<InfluenceMapFloat*> attackLevelPerPlayer;
+	std::vector<InfluenceMapFloat*> defenceLevelPerPlayer;
+
 	InfluanceType debugType = InfluanceType::UNITS_INFLUENCE_PER_PLAYER;
 	char debugIndex = 0;
 	content_info* ci;

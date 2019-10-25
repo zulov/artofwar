@@ -43,7 +43,7 @@ QueueElement* QueueManager::update(float time) {
 		QueueElement* element = queue.at(0);
 
 		if (element->update(time)) {
-			//TODO memoryleak
+			//TODO BUG memoryleak
 			queue.erase(queue.begin());
 			return element;
 		}

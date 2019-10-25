@@ -16,6 +16,10 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2,5));
 		unitsInfluencePerPlayer.emplace_back(
 			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2,40));
+		attackLevelPerPlayer.emplace_back(
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2,40));
+		defenceLevelPerPlayer.emplace_back(
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2,40));
 	}
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUENCE);
@@ -25,6 +29,8 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(unitsNumberPerPlayer);
 	clear_vector(buildingsInfluencePerPlayer);
 	clear_vector(unitsInfluencePerPlayer);
+	clear_vector(defenceLevelPerPlayer);
+	clear_vector(attackLevelPerPlayer);
 	delete ci;
 }
 
