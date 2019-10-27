@@ -474,6 +474,7 @@
     <ClInclude Include="src\player\Possession.h" />
     <ClInclude Include="src\hud\window\score\ScorePanel.h" />
     <ClInclude Include="src\player\ai\tree\AiOrderData.h" />
+    <ClInclude Include="src\objects\ValueType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

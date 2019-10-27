@@ -11,10 +11,10 @@ InfluenceMapInt::~InfluenceMapInt() {
 	delete[] values;
 }
 
-void InfluenceMapInt::update(Physical* physical) {
+void InfluenceMapInt::update(Physical* physical, float value) {
 	const int index = calculator.indexFromPosition(physical->getPosition());
 
-	++values[index];
+	values[index] += round(value);
 }
 
 void InfluenceMapInt::reset() {

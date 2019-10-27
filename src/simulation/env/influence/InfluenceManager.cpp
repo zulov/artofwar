@@ -7,6 +7,7 @@
 #include "database/DatabaseCache.h"
 #include "objects/building/Building.h"
 #include "debug/DebugLineRepo.h"
+#include "objects/ValueType.h"
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
@@ -35,12 +36,9 @@ InfluenceManager::~InfluenceManager() {
 }
 
 void InfluenceManager::update(std::vector<Unit*>* units) const {
-	for (auto map : unitsNumberPerPlayer) {
-		map->reset();
-	}
-	for (auto map : unitsInfluencePerPlayer) {
-		map->reset();
-	}
+	resetMapsI(unitsNumberPerPlayer);
+	resetMapsF(unitsInfluencePerPlayer);
+	
 	for (auto unit : (*units)) {
 		unitsNumberPerPlayer[unit->getPlayer()]->update(unit);
 		unitsInfluencePerPlayer[unit->getPlayer()]->update(unit);
@@ -48,14 +46,36 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 }
 
 void InfluenceManager::update(std::vector<Building*>* buildings) const {
-	for (auto map : buildingsInfluencePerPlayer) {
-		map->reset();
-	}
+	resetMapsF(buildingsInfluencePerPlayer);
 	for (auto building : (*buildings)) {
 		buildingsInfluencePerPlayer[building->getPlayer()]->update(building);
 	}
 }
 
+void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
+}
+
+
+void InfluenceManager::resetMapsF(const std::vector<InfluenceMapFloat*> &maps) const {
+	for (auto map : maps) {
+		map->reset();
+	}
+}
+
+void InfluenceManager::resetMapsI(const std::vector<InfluenceMapInt*>& maps) const {
+	for (auto map : maps) {
+		map->reset();
+	}
+}
+
+void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
+	resetMapsF(attackLevelPerPlayer);
+	resetMapsF(defenceLevelPerPlayer);
+
+	for (auto unit : (*units)) {
+		attackLevelPerPlayer[unit->getPlayer()]->update(unit,unit->getValueOf(ValueType::ATTACK));
+	}
+}
 
 void InfluenceManager::draw(InfluanceType type, char index) {
 	DebugLineRepo::clear(DebugLineType::INFLUANCE, currentDebugBatch);

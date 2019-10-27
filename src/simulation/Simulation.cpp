@@ -68,6 +68,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		actionCommandList->execute();
 		enviroment->update(units);
+		enviroment->updateInfluence(units, buildings, resources);
 
 		calculateForces();
 		applyForce();
@@ -168,7 +169,7 @@ void Simulation::addTestEntities() const {
 		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -12), 0, 0);
 		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -10), 0, 0);
 		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -8), 0, 0);
-		
+
 		creationCommandList->addBuilding(2, Urho3D::Vector2(-100, 50), 1, 0);
 
 		//creationCommandList->addUnits(UNITS_NUMBER*100, 0, Urho3D::Vector2(-200, -200), 0, 0);
@@ -309,7 +310,7 @@ void Simulation::initScene(NewGameForm* form) const {
 	executeLists();
 }
 
-void Simulation::aiPlayers() const {	
+void Simulation::aiPlayers() const {
 	aiManager->ai();
 }
 

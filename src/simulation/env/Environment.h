@@ -29,6 +29,8 @@ public:
 	std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
 	std::vector<Physical*>* getResources(Physical* physical, float radius);
+	void updateInfluence(std::vector<Unit*>* units, std::vector<Building*>* buildings,
+	                     std::vector<ResourceEntity*>* resources) const;
 
 	void update(std::vector<Unit*>* units) const;
 	void update(std::vector<Building*>* buildings);

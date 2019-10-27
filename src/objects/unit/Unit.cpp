@@ -19,6 +19,7 @@
 #include "consts.h"
 #include "simulation/env/Environment.h"
 #include "aim/order/IndividualOrder.h"
+#include "../ValueType.h"
 
 
 Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position),
@@ -473,6 +474,15 @@ void Unit::clean() {
 			                       return physical == nullptr || !physical->isAlive();
 		                       }),
 	                       thingsToInteract.end());
+}
+
+float Unit::getValueOf(ValueType type) {
+	switch (type) {
+	case ValueType::ATTACK:
+		return attackCoef * (hp / maxHp);
+	case ValueType::DEFENCE:
+		return defenseCoef * (hp / maxHp);
+	}
 }
 
 Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) {

@@ -96,13 +96,22 @@ std::vector<Physical*>* Environment::getResources(Physical* physical, float radi
 	return getNeighbours(physical, resourceGrid, radius);
 }
 
+void Environment::updateInfluence(std::vector<Unit*>* units,
+                                  std::vector<Building*>* buildings,
+                                  std::vector<ResourceEntity*>* resources) const {
+	influenceManager.update(units);
+	influenceManager.update(buildings);
+	influenceManager.update(resources);
+
+	influenceManager.update(units, buildings);
+}
+
 void Environment::update(std::vector<Unit*>* units) const {
 	//TODO to mozna rodzielic na dodawanei u usywanie
 	for (auto unit : *units) {
 		mainGrid.update(unit);
 		teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
 	}
-	influenceManager.update(units);
 }
 
 void Environment::update(std::vector<Building*>* buildings) {
@@ -115,10 +124,9 @@ void Environment::update(std::vector<Building*>* buildings) {
 	}
 }
 
-
 void Environment::updateAll(std::vector<Building*>* const buildings) {
 	//TODO performance, zmianiac tylko to co sie zmienilo
-	influenceManager.update(buildings);
+	influenceManager.update(buildings); //TODO bug updej tylko jak sie doda a nie uwzglednia usuwania
 }
 
 void Environment::update(std::vector<ResourceEntity*>* resources) {

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <optional>
 
+enum class ValueType : char;
 struct ActionParameter;
 class Unit;
 
@@ -85,6 +86,8 @@ public:
 
 	virtual void clean() {
 	}
+
+	virtual	float getValueOf(ValueType type);
 
 protected:
 	void loadXml(Urho3D::String xmlName);

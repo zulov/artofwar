@@ -10,7 +10,7 @@ public:
 	InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug);
 	virtual ~InfluenceMap();
 
-	virtual void update(Physical* physical) =0;
+	virtual void update(Physical* physical, float value=1) =0;
 	virtual void reset() =0;
 	virtual float getValueAt(int index) const =0;
 	void draw(short batch, short maxParts);

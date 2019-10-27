@@ -176,6 +176,10 @@ void Physical::unSelect() {
 	billboardSetShadow->Commit();
 }
 
+float Physical::getValueOf(ValueType type) {
+	return -1;
+}
+
 void Physical::loadXml(Urho3D::String xmlName) {
 	//node->RemoveAllChildren();
 	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(xmlName)->GetRoot());

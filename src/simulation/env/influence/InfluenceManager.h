@@ -21,7 +21,11 @@ public:
 	~InfluenceManager();
 	void update(std::vector<Unit*>* units) const;
 	void update(std::vector<Building*>* buildings) const;
+
 	void update(std::vector<ResourceEntity*>* resources) const;
+
+	void update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
+
 	void draw(InfluanceType type, char index);
 	void switchDebug();
 
@@ -29,10 +33,12 @@ public:
 	                             int activePlayer);
 	Urho3D::Vector2 getNewBuildingPos(const char player, const short id);
 private:
+	void resetMapsF(const std::vector<InfluenceMapFloat*> &maps) const;
+	void resetMapsI(const std::vector<InfluenceMapInt*> &maps) const;
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
 	std::vector<InfluenceMapFloat*> buildingsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;
-	
+
 	std::vector<InfluenceMapFloat*> attackLevelPerPlayer;
 	std::vector<InfluenceMapFloat*> defenceLevelPerPlayer;
 
