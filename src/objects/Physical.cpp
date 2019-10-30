@@ -176,7 +176,7 @@ void Physical::unSelect() {
 	billboardSetShadow->Commit();
 }
 
-float Physical::getValueOf(ValueType type) {
+float Physical::getValueOf(ValueType type) const{
 	return -1;
 }
 

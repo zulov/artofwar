@@ -11,6 +11,7 @@
 #include <string>
 #include "consts.h"
 #include "objects/NodeUtils.h"
+#include "../ValueType.h"
 
 
 Building::Building(Urho3D::Vector3& _position, int id, int player, int level, int mainCell):
@@ -130,6 +131,15 @@ std::string Building::getValues(int precision) {
 
 int Building::getLevel() {
 	return dbLevel->level;
+}
+
+float Building::getValueOf(ValueType type) const {
+	switch (type) {
+	case ValueType::ATTACK:
+		return attackCoef * (hp / maxHp);
+	case ValueType::DEFENCE:
+		return defenseCoef * (hp / maxHp);
+	}
 }
 
 void Building::createDeploy() {

@@ -38,6 +38,7 @@ public:
 	float getMaxHpBarSize() override;
 	int getDbID() override;
 	int getLevel() override;
+	float getValueOf(ValueType type) const override;
 
 	void createDeploy();
 private:

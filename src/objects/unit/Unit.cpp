@@ -476,7 +476,7 @@ void Unit::clean() {
 	                       thingsToInteract.end());
 }
 
-float Unit::getValueOf(ValueType type) {
+float Unit::getValueOf(ValueType type) const {
 	switch (type) {
 	case ValueType::ATTACK:
 		return attackCoef * (hp / maxHp);

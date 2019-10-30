@@ -280,6 +280,12 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 	case EnvironmentDebugMode::INF_BUILDING_INFLUENCE_PER_PLAYER:
 		influenceManager.draw(InfluanceType::BUILDING_INFLUENCE_PER_PLAYER, index);
 		break;
+	case EnvironmentDebugMode::INF_ATTACK_INFLUENCE_PER_PLAYER:
+		influenceManager.draw(InfluanceType::ATTACK_INFLUENCE_PER_PLAYER, index);
+		break;
+	case EnvironmentDebugMode::INF_DEFENCE_INFLUENCE_PER_PLAYER:
+		influenceManager.draw(InfluanceType::DEFENCE_INFLUENCE_PER_PLAYER, index);
+		break;
 	default: ;
 	}
 

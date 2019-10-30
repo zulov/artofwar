@@ -87,7 +87,7 @@ public:
 	virtual void clean() {
 	}
 
-	virtual	float getValueOf(ValueType type);
+	virtual float getValueOf(ValueType type) const;
 
 protected:
 	void loadXml(Urho3D::String xmlName);
