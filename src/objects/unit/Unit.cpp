@@ -6,7 +6,7 @@
 #include "colors/ColorPaletteRepo.h"
 #include "database/DatabaseCache.h"
 #include "objects/unit/ChargeData.h"
-#include "objects/unit/ColorMode.h"
+#include "objects/unit/SimColorMode.h"
 #include "objects/unit/MissileData.h"
 #include "scene/load/dbload_container.h"
 #include "simulation/force/ForceStats.h"
@@ -322,15 +322,15 @@ void Unit::changeColor(float value, float maxValue) const {
 	changeMaterial(Game::getColorPaletteRepo()->getColor(ColorPallet::RED, value, maxValue), model);
 }
 
-void Unit::changeColor(ColorMode mode) {
+void Unit::changeColor(SimColorMode mode) {
 	switch (mode) {
-	case ColorMode::BASIC:
+	case SimColorMode::BASIC:
 		return changeMaterial(basic, model);
-	case ColorMode::VELOCITY:
+	case SimColorMode::VELOCITY:
 		return changeColor(velocity.LengthSquared(), maxSpeed * maxSpeed);
-	case ColorMode::STATE:
+	case SimColorMode::STATE:
 		return changeMaterial(Game::getColorPaletteRepo()->getColor(state), model);
-	case ColorMode::FORMATION:
+	case SimColorMode::FORMATION:
 		if (formation != -1) {
 			changeColor(Game::getFormationManager()->getPriority(this), 3.0f);
 		}

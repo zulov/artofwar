@@ -6,7 +6,7 @@
 
 enum class UnitOrder : char;
 enum class UnitState : char;
-enum class ColorMode : char;
+enum class SimColorMode : char;
 struct NewGameForm;
 class Unit;
 class ResourceEntity;
@@ -42,7 +42,7 @@ public:
 	void dispose() const;
 	void save(SceneSaver& saver) const;
 	void changeCoef(int i, int wheel);
-	void changeColorMode(ColorMode _colorMode);
+	void changeColorMode(SimColorMode _colorMode);
 
 private:
 	void aiPlayers() const;
@@ -71,7 +71,7 @@ private:
 	float maxTimeFrame = 0.05f;
 	int framesPeriod = 20;
 	int currentFrameNumber = 0;
-	ColorMode colorScheme;
+	SimColorMode colorScheme;
 	Force force;
 
 	std::vector<Unit*>* units;

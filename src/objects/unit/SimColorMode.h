@@ -1,6 +1,6 @@
 #pragma once
 #define COLOR_MODE_SIZE 4
-enum class ColorMode : char
+enum class SimColorMode : char
 {
 	BASIC,
 	VELOCITY,

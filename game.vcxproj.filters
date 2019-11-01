@@ -410,7 +410,6 @@
     <ClInclude Include="src\simulation\formation\FormationManager.h" />
     <ClInclude Include="src\simulation\formation\FormationType.h" />
     <ClInclude Include="src\simulation\force\ForceStats.h" />
-    <ClInclude Include="src\objects\unit\ColorMode.h" />
     <ClInclude Include="src\colors\ColorPallet.h" />
     <ClInclude Include="src\simulation\formation\FormationState.h" />
     <ClInclude Include="src\control\ControlsUtils.h" />
@@ -475,6 +474,7 @@
     <ClInclude Include="src\hud\window\score\ScorePanel.h" />
     <ClInclude Include="src\player\ai\tree\AiOrderData.h" />
     <ClInclude Include="src\objects\ValueType.h" />
+    <ClInclude Include="src\objects\unit\SimColorMode.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

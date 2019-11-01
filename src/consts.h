@@ -50,4 +50,23 @@ struct Consts {
 		stringify(DISPOSE),
 		stringify(FREE)
 	};
+
+	inline static char* SimColorModeNames[] =
+	{
+		stringify(BASIC),
+		stringify(VELOCITY),
+		stringify(STATE),
+		stringify(FORMATION)
+	};
+
+	inline static char* EnvDebugModeNames[] =
+	{
+		stringify(NONE),
+		stringify(MAIN_GRID),
+		stringify(INF_UNITS_NUMBER_PER_PLAYER),
+		stringify(INF_UNITS_INFLUENCE_PER_PLAYER),
+		stringify(INF_BUILDING_INFLUENCE_PER_PLAYER),
+		stringify(INF_ATTACK_INFLUENCE_PER_PLAYER),
+		stringify(INF_DEFENCE_INFLUENCE_PER_PLAYER)
+	};
 };

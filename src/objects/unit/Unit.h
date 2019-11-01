@@ -12,7 +12,7 @@
 
 enum class UnitOrder : char;
 enum class DebugUnitType : char;
-enum class ColorMode : char;
+enum class SimColorMode : char;
 struct ForceStats;
 struct db_unit_upgrade;
 struct db_unit_level;
@@ -79,7 +79,7 @@ public:
 
 	static std::string getColumns();
 	void addUpgrade(db_unit_upgrade* upgrade);
-	void changeColor(ColorMode mode);
+	void changeColor(SimColorMode mode);
 	void addOrder(FutureOrder* aim);
 
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;

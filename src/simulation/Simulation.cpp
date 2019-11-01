@@ -16,7 +16,7 @@
 #include "objects/PhysicalUtils.h"
 #include "objects/building/Building.h"
 #include "objects/queue/QueueElement.h"
-#include "objects/unit/ColorMode.h"
+#include "objects/unit/SimColorMode.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "objects/unit/state/UnitState.h"
@@ -35,7 +35,7 @@ Simulation::Simulation(Environment* enviroment, CreationCommandList* creationCom
 	                                                                                           creationCommandList) {
 	simObjectManager = creationCommandList->getManager();
 	levelsCommandList = new UpgradeCommandList(simObjectManager);
-	colorScheme = ColorMode::BASIC;
+	colorScheme = SimColorMode::BASIC;
 
 	srand(time(NULL));
 
@@ -271,7 +271,7 @@ void Simulation::changeCoef(int i, int wheel) {
 	force.changeCoef(i, wheel);
 }
 
-void Simulation::changeColorMode(ColorMode _colorMode) {
+void Simulation::changeColorMode(SimColorMode _colorMode) {
 	colorScheme = _colorMode;
 }
 
