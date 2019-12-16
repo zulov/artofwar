@@ -189,6 +189,8 @@
     <ClCompile Include="src\debug\DebugManager.cpp" />
     <ClCompile Include="src\player\Possession.cpp" />
     <ClCompile Include="src\hud\window\score\ScorePanel.cpp" />
+    <ClCompile Include="src\player\ai\nn\Layer.cpp" />
+    <ClCompile Include="src\player\ai\nn\Brain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -475,6 +477,9 @@
     <ClInclude Include="src\player\ai\tree\AiOrderData.h" />
     <ClInclude Include="src\objects\ValueType.h" />
     <ClInclude Include="src\objects\unit\SimColorMode.h" />
+    <ClInclude Include="src\player\ai\nn\Layer.h" />
+    <ClInclude Include="src\player\ai\nn\Brain.h" />
+    <ClInclude Include="src\player\ai\nn\AFUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
