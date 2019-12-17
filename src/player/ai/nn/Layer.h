@@ -1,6 +1,4 @@
 #pragma once
-#include <src/Core/DenseStorage.h>
-#include <Core>
 
 class Layer {
 

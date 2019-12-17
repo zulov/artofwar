@@ -1,7 +1,4 @@
 #include "Brain.h"
-#include <src/Core/util/ForwardDeclarations.h>
-#include <src/Core/util/ForwardDeclarations.h>
-
 
 Brain::Brain(int numberOfHiddenLayers, int numberOfInput, int numberOfOutput, int wSize):
 	input(numberOfInput, 0), output(numberOfOutput, wSize) {
@@ -32,8 +29,8 @@ double* Brain::decide(double data[]) {
 }
 
 Eigen::MatrixXd Brain::multiply(Layer* current, Layer* prevLayer) {//TODO performance 
-	Eigen::VectorXd input = Eigen::VectorXd(prevLayer->getValues(), prevLayer->getNumberOfValues());
-	Eigen::MatrixXd weightedMatrix = Eigen::Map<Eigen::MatrixXd>(current->getW(), current->getPrevSize(),
+	auto input = Eigen::Map<Eigen::VectorXd>(prevLayer->getValues(), prevLayer->getNumberOfValues());
+	auto weightedMatrix = Eigen::Map<Eigen::MatrixXd>(current->getW(), current->getPrevSize(),
 	                                                             current->getNumberOfValues()).transpose();
 
 	return weightedMatrix * input;
@@ -41,7 +38,7 @@ Eigen::MatrixXd Brain::multiply(Layer* current, Layer* prevLayer) {//TODO perfor
 
 void Brain::setValues(Layer* layer, Eigen::MatrixXd& mult) const {
 	for (int i = 0; i < mult.cols(); i++) {
-		double q = mult[i] + layer->getBias(i);
+		double q = mult(i) + layer->getBias(i);
 		double newValue = tanh(q);
 		layer->setValueAt(i, newValue);
 	}

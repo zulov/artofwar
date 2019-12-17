@@ -26,4 +26,3 @@ void Layer::setValues(double data[]) {
 	//TODO musi sie zgadzac rozmiar czy to jest sprawdzane?
 	std::copy(data, data + numberOfNodes, values);
 }
-
