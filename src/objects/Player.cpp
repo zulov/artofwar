@@ -9,9 +9,9 @@
 #include "simulation/env/Environment.h"
 
 
-Player::Player(int nationId, int team, int id, int color, Urho3D::String name, bool active): team(team), id(id),
+Player::Player(int nationId, int team, int id, int color, Urho3D::String name, bool active): team(team),
                                                                                              name(std::move(name)),
-                                                                                             color(color),
+                                                                                             id(id), color(color),
                                                                                              active(active) {
 	dbNation = Game::getDatabaseCache()->getNation(nationId);
 
@@ -23,6 +23,7 @@ Player::Player(int nationId, int team, int id, int color, Urho3D::String name, b
 
 Player::~Player() {
 	delete aiRoot;
+	delete brain;
 }
 
 std::string Player::getValues(int precision) {
@@ -88,6 +89,12 @@ int Player::getScore() {
 }
 
 void Player::ai() {
+	double data[] = {1, 2, 3, 4, 5, 6};
+	auto result = brain->decide(data);
+	for (int i = 0; i < brain->getOutputSize(); ++i) {
+		std::cout<<result[i];
+	}
+	
 	auto& orderData = aiRoot->getOrder();
 	execute(orderData);
 }
@@ -125,6 +132,9 @@ void Player::initAi() {
 	fillDefenseNode(aiRoot->addChild("DEFENSE", 30, {AiOrderType::NONE, -1}));
 	fillResourceNode(aiRoot->addChild("RESOURCE", 30, {AiOrderType::NONE, -1}));
 	fillIntelNode(aiRoot->addChild("INTEL", 0, {AiOrderType::NONE, -1}));
+
+	brain = new Brain(2, 5, 6, 4);
+
 }
 
 void Player::addBasicNodes(AiNode* parent) {

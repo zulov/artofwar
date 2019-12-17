@@ -2,6 +2,7 @@
 #include "Resources.h"
 #include "ai/tree/AiNode.h"
 #include "Possession.h"
+#include "ai/nn/Brain.h"
 
 enum class ActionType : char;
 
@@ -42,6 +43,7 @@ private:
 	void fillResourceNode(AiNode* parent);
 	void fillIntelNode(AiNode* parent);
 	AiNode* aiRoot;
+	Brain * brain;
 	std::vector<AiNode*> aiLeafs;
 	Possession possession;
 	Resources resources;
