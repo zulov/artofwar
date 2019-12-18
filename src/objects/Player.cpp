@@ -92,7 +92,7 @@ void Player::ai() {
 	double data[] = {1, 2, 3, 4, 5, 6};
 	auto result = brain->decide(data);
 	for (int i = 0; i < brain->getOutputSize(); ++i) {
-		std::cout<<result[i];
+		std::cout<<result[i]<<std::endl;
 	}
 	
 	auto& orderData = aiRoot->getOrder();

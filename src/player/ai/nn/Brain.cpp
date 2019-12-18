@@ -45,7 +45,7 @@ Eigen::MatrixXd Brain::multiply(Layer* current, Layer* prevLayer) {
 }
 
 void Brain::setValues(Layer* layer, Eigen::MatrixXd& mult) const {
-	for (int i = 0; i < mult.cols(); i++) {
+	for (int i = 0; i < mult.rows(); i++) {
 		double q = mult(i) + layer->getBias(i);
 		double newValue = tanh(q);
 		layer->setValueAt(i, newValue);

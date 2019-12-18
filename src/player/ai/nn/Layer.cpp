@@ -1,5 +1,6 @@
 #include "Layer.h"
 #include <algorithm>
+#include <iostream>
 
 Layer::Layer(short numberOfNodes, short prevSize): numberOfNodes(numberOfNodes), prevSize(prevSize) {
 	values = new double[numberOfNodes];
