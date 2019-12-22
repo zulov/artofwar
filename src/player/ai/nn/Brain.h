@@ -5,6 +5,7 @@
 class Brain {
 public:
 	Brain(int numberOfHiddenLayers, int numberOfInput, int numberOfOutput, int wSize);
+	explicit Brain(std::vector<std::string>& lines);
 	~Brain();
 	double* decide(double data[]);
 	short getOutputSize() const { return output->getNumberOfValues(); }

@@ -7,6 +7,7 @@
 #include <utility>
 #include "commands/creation/CreationCommandList.h"
 #include "simulation/env/Environment.h"
+#include <fstream>
 
 
 Player::Player(int nationId, int team, int id, int color, Urho3D::String name, bool active): team(team),
@@ -92,9 +93,9 @@ void Player::ai() {
 	double data[] = {1, 2, 3, 4, 5, 6};
 	auto result = brain->decide(data);
 	for (int i = 0; i < brain->getOutputSize(); ++i) {
-		std::cout<<result[i]<<std::endl;
+		std::cout << result[i] << std::endl;
 	}
-	
+
 	auto& orderData = aiRoot->getOrder();
 	execute(orderData);
 }
@@ -132,9 +133,16 @@ void Player::initAi() {
 	fillDefenseNode(aiRoot->addChild("DEFENSE", 30, {AiOrderType::NONE, -1}));
 	fillResourceNode(aiRoot->addChild("RESOURCE", 30, {AiOrderType::NONE, -1}));
 	fillIntelNode(aiRoot->addChild("INTEL", 0, {AiOrderType::NONE, -1}));
+	std::ifstream infile("Data/ai/w.csv");
+	std::string line;
+	std::vector<std::string> lines;
+	while (std::getline(infile, line)) {
+		lines.push_back(line);
+	}
 
-	brain = new Brain(2, 5, 6, 4);
-
+	//brain = new Brain(2, 5, 6, 4);
+	brain = new Brain(lines);
+	
 }
 
 void Player::addBasicNodes(AiNode* parent) {

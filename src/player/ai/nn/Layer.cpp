@@ -17,6 +17,19 @@ Layer::Layer(short numberOfNodes, short prevSize): numberOfNodes(numberOfNodes),
 
 }
 
+Layer::Layer(std::vector<double>& w, std::vector<double>& bias) {
+	values = new double[bias.size()];
+	std::fill_n(values, numberOfNodes, 0);
+
+	this->bias = new double[bias.size()];
+	std::copy(bias.begin(), bias.end(), this->bias);
+
+	this->w = new double[w.size()];
+	std::copy(w.begin(), w.end(), this->w);
+	numberOfNodes = bias.size();
+	prevSize = w.size() / bias.size();
+}
+
 Layer::~Layer() {
 	delete []values;
 	delete []bias;

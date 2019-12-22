@@ -1,5 +1,7 @@
 #include "Brain.h"
 #include "utils.h"
+#include "StringUtils.h"
+#include <iostream>
 
 Brain::Brain(int numberOfHiddenLayers, int numberOfInput, int numberOfOutput, int wSize) {
 	input = new Layer(numberOfInput, 0);
@@ -16,6 +18,28 @@ Brain::Brain(int numberOfHiddenLayers, int numberOfInput, int numberOfOutput, in
 		allLayers.push_back(value);
 	}
 	allLayers.push_back(output);
+}
+
+Brain::Brain(std::vector<std::string>& lines) {
+	for (auto line : lines) {
+		std::vector<double> w;
+		std::vector<double> b;
+		auto splitVec = split(line, ';');
+		auto p = std::find(splitVec.begin(), splitVec.end(), "");
+		std::vector<std::string>::iterator i;
+		for (i = splitVec.begin(); i != p; i++) {
+			w.push_back(atof((*i).c_str()));
+		}
+		i += 2;
+		for (; i != splitVec.end(); i++) {
+			b.push_back(atof((*i).c_str()));
+		}
+		allLayers.push_back(new Layer(w, b));
+		w.clear();
+		b.clear();
+	}
+	input = *allLayers.begin();
+	output = *(allLayers.end()-1);
 }
 
 Brain::~Brain() {

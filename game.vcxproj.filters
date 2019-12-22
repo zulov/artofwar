@@ -480,6 +480,7 @@
     <ClInclude Include="src\player\ai\nn\Layer.h" />
     <ClInclude Include="src\player\ai\nn\Brain.h" />
     <ClInclude Include="src\player\ai\nn\AFUtil.h" />
+    <ClInclude Include="src\StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
