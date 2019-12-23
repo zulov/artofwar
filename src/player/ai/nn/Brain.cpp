@@ -22,8 +22,8 @@ Brain::Brain(int numberOfHiddenLayers, int numberOfInput, int numberOfOutput, in
 
 Brain::Brain(std::vector<std::string>& lines) {
 	for (auto line : lines) {
-		std::vector<double> w;
-		std::vector<double> b;
+		std::vector<float> w;
+		std::vector<float> b;
 		auto splitVec = split(line, ';');
 		auto p = std::find(splitVec.begin(), splitVec.end(), "");
 		std::vector<std::string>::iterator i;
@@ -39,36 +39,36 @@ Brain::Brain(std::vector<std::string>& lines) {
 		b.clear();
 	}
 	input = *allLayers.begin();
-	output = *(allLayers.end()-1);
+	output = *(allLayers.end() - 1);
 }
 
 Brain::~Brain() {
 	clear_vector(allLayers);
 }
 
-double* Brain::decide(double data[]) {
+float* Brain::decide(float data[]) {
 	input->setValues(data);
 	for (int i = 1; i < allLayers.size(); i++) {
 		Layer* layer = allLayers.at(i);
 		Layer* prevLayer = allLayers.at(i - 1);
 
-		Eigen::MatrixXd mult = multiply(layer, prevLayer);
+		Eigen::MatrixXf mult = multiply(layer, prevLayer);
 
 		setValues(layer, mult);
 	}
 	return output->getValues();
 }
 
-Eigen::MatrixXd Brain::multiply(Layer* current, Layer* prevLayer) {
+Eigen::MatrixXf Brain::multiply(Layer* current, Layer* prevLayer) {
 	//TODO performance 
-	auto input = Eigen::Map<Eigen::VectorXd>(prevLayer->getValues(), prevLayer->getNumberOfValues());
-	auto weightedMatrix = Eigen::Map<Eigen::MatrixXd>(current->getW(), current->getPrevSize(),
+	auto input = Eigen::Map<Eigen::VectorXf>(prevLayer->getValues(), prevLayer->getNumberOfValues());
+	auto weightedMatrix = Eigen::Map<Eigen::MatrixXf>(current->getW(), current->getPrevSize(),
 	                                                  current->getNumberOfValues()).transpose();
 
 	return weightedMatrix * input;
 }
 
-void Brain::setValues(Layer* layer, Eigen::MatrixXd& mult) const {
+void Brain::setValues(Layer* layer, Eigen::MatrixXf& mult) const {
 	for (int i = 0; i < mult.rows(); i++) {
 		double q = mult(i) + layer->getBias(i);
 		double newValue = tanh(q);

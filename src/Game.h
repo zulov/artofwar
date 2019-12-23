@@ -4,9 +4,11 @@
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Scene/Scene.h>
+#include "Stats.h"
 
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class Console;
 	class Graphics;
 	class Context;
@@ -24,8 +26,7 @@ class QueueManager;
 class ColorPaletteRepo;
 class FormationManager;
 
-class Game
-{
+class Game {
 public:
 	static void init();
 	static void dispose();
@@ -48,6 +49,7 @@ public:
 	static Game* setFormationManager(FormationManager* _formationManager);
 	static Game* setColorPaletteRepo(ColorPaletteRepo* _colorPaletteRepo);
 	static Game* setLog(Urho3D::Log* _log);
+	static Game* setStats(Stats* _stats);
 	static void addTime(float time);
 
 	static Urho3D::SharedPtr<Urho3D::Engine> getEngine() { return instance->engine; }
@@ -69,6 +71,7 @@ public:
 	static PlayersManager* getPlayersMan() { return instance->playersManager; }
 	static Environment* getEnvironment() { return instance->environment; }
 	static QueueManager* getQueueManager() { return instance->queue; }
+	static Stats* getStats() { return instance->stats; }
 
 	static float getTime() { return instance->accumTime; }
 
@@ -95,6 +98,7 @@ private:
 	DatabaseCache* databaseCache;
 	Environment* environment;
 	QueueManager* queue;
+	Stats* stats;
 
 	float accumTime = 0;
 };

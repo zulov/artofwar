@@ -106,6 +106,11 @@ Game* Game::setLog(Urho3D::Log* _log) {
 	return instance;
 }
 
+Game* Game::setStats(Stats* _stats) {
+	instance->stats = _stats;
+	return instance;
+}
+
 void Game::addTime(float time) {
 	instance->accumTime += time;
 }

@@ -208,6 +208,7 @@ void Main::setSimpleManagers() {
 		->setQueueManager(new QueueManager(1))
 		->setFormationManager(new FormationManager())
 		->setPlayersManager(new PlayersManager())
+		->setStats(new Stats())
 		->setColorPaletteRepo(new ColorPaletteRepo());
 }
 
@@ -228,6 +229,7 @@ void Main::load(String saveName, loading& progress) {
 		SetupViewport();
 
 		Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
+		Game::getStats()->init();
 
 		subscribeToUIEvents();
 		hud->resetLoading();
@@ -277,6 +279,7 @@ void Main::newGame(NewGameForm* form, loading& progress) {
 		SetupViewport();
 
 		Game::getPlayersMan()->load(form);
+		Game::getStats()->init();
 
 		hud->resetLoading();
 
@@ -346,7 +349,7 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 
 void Main::HandleNewGame(StringHash eventType, VariantMap& eventData) {
 	const auto element = static_cast<UIElement*>(eventData[UIMouseClick::P_ELEMENT].GetVoidPtr());
-	const auto form = static_cast<NewGameForm *>(element->GetVar("NewGameForm").GetVoidPtr());
+	const auto form = static_cast<NewGameForm*>(element->GetVar("NewGameForm").GetVoidPtr());
 
 	changeState(GameState::NEW_GAME);
 	newGameForm = new NewGameForm(*form);
@@ -379,7 +382,7 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	controls->unSelectAll();
 	const auto element = static_cast<UIElement*>(eventData[UIMouseClick::P_ELEMENT].GetVoidPtr());
-	auto sHudElement = static_cast<SelectedHudElement *>(element->GetVar("SelectedHudElement").GetVoidPtr());
+	auto sHudElement = static_cast<SelectedHudElement*>(element->GetVar("SelectedHudElement").GetVoidPtr());
 	controls->select(sHudElement->getSelected());
 }
 
@@ -419,7 +422,7 @@ void Main::HandleMouseModeChange(StringHash /*eventType*/, VariantMap& eventData
 
 void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 	const auto element = static_cast<UIElement*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	const auto data = static_cast<FileFormData *>(element->GetVar("file_data").GetVoidPtr());
+	const auto data = static_cast<FileFormData*>(element->GetVar("file_data").GetVoidPtr());
 	save(data->fileName);
 }
 
@@ -434,7 +437,7 @@ void Main::disposeScene() {
 		loading loading2;
 		Game::getScene()->SetUpdateEnabled(false);
 
-		loading2.reset(4, "dispose simulation");
+		loading2.reset(5, "dispose simulation");
 		delete simulation;
 		simulation = nullptr;
 
@@ -462,6 +465,10 @@ void Main::disposeScene() {
 		loading2.inc("dispose playerManager");
 		delete Game::getPlayersMan();
 		Game::setPlayersManager(nullptr);
+
+		loading2.inc("dispose Stats");
+		delete Game::getStats();
+		Game::setStats(nullptr);
 
 		loading2.inc("dispose controls");
 		delete controls;

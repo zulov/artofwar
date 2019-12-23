@@ -90,7 +90,7 @@ int Player::getScore() {
 }
 
 void Player::ai() {
-	double data[] = {1, 2, 3, 4, 5, 6};
+	auto data= Game::getStats()->getInputFor(getId());
 	auto result = brain->decide(data);
 	for (int i = 0; i < brain->getOutputSize(); ++i) {
 		std::cout << result[i] << std::endl;
@@ -142,7 +142,7 @@ void Player::initAi() {
 
 	//brain = new Brain(2, 5, 6, 4);
 	brain = new Brain(lines);
-	
+
 }
 
 void Player::addBasicNodes(AiNode* parent) {
