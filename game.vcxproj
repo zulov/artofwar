@@ -280,7 +280,7 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommand.cpp" />
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
-    <ClCompile Include="src\Stats.cpp" />
+    <ClCompile Include="src\stats\Stats.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\player\ai\nn\AFUtil.h" />
@@ -400,6 +400,7 @@
     <ClInclude Include="src\hud\window\menu\MenuPanel.h" />
     <ClInclude Include="src\hud\window\minimap\MiniMapPanel.h" />
     <ClInclude Include="src\hud\MySprite.h" />
+    <ClInclude Include="src\stats\StatsType.h" />
     <ClInclude Include="src\StringUtils.h" />
     <ClInclude Include="src\UnitOrder.h" />
     <ClInclude Include="src\objects\Physical.h" />
@@ -455,7 +456,7 @@
     <ClInclude Include="src\commands\upgrade\UpgradeCommand.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommandList.h" />
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
-    <ClInclude Include="src\Stats.h" />
+    <ClInclude Include="src\stats\Stats.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

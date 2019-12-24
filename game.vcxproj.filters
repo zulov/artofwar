@@ -191,7 +191,7 @@
     <ClCompile Include="src\hud\window\score\ScorePanel.cpp" />
     <ClCompile Include="src\player\ai\nn\Layer.cpp" />
     <ClCompile Include="src\player\ai\nn\Brain.cpp" />
-    <ClCompile Include="src\Stats.cpp" />
+    <ClCompile Include="src\stats\Stats.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -482,7 +482,8 @@
     <ClInclude Include="src\player\ai\nn\Brain.h" />
     <ClInclude Include="src\player\ai\nn\AFUtil.h" />
     <ClInclude Include="src\StringUtils.h" />
-    <ClInclude Include="src\Stats.h" />
+    <ClInclude Include="src\stats\Stats.h" />
+    <ClInclude Include="src\stats\StatsType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
