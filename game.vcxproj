@@ -457,6 +457,7 @@
     <ClInclude Include="src\commands\upgrade\UpgradeCommandList.h" />
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
     <ClInclude Include="src\stats\Stats.h" />
+    <ClInclude Include="src\VectorUtils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

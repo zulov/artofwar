@@ -86,8 +86,28 @@ void Player::add(Building* building) {
 	possession.add(building);
 }
 
-int Player::getScore() {
+int Player::getScore() const {
 	return possession.getScore();
+}
+
+int Player::getAttackScore() {
+	return possession.getAttackScore();
+}
+
+int Player::getDefenceScore() {
+	return possession.getDefenceScore();
+}
+
+int Player::getUnitsNumber() const {
+	return possession.getUnitsNumber();
+}
+
+int Player::getBuildingsNumber() const {
+	return possession.getBuildingsNumber();
+}
+
+int Player::getWorkersNumber() const {
+	return possession.getWorkersNumber();
 }
 
 void Player::ai() {

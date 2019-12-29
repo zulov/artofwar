@@ -18,9 +18,9 @@ Environment::Environment(Urho3D::Terrain* terrian):
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE},
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE}
 	}, terrian(terrian), influenceManager(MAX_PLAYERS) {
-	neights = new std::vector<Physical *>();
-	neights2 = new std::vector<Physical *>();
-	empty = new std::vector<Physical *>();
+	neights = new std::vector<Physical*>();
+	neights2 = new std::vector<Physical*>();
+	empty = new std::vector<Physical*>();
 	neights->reserve(DEFAULT_VECTOR_SIZE * 2);
 	neights2->reserve(DEFAULT_VECTOR_SIZE * 2);
 }
@@ -55,7 +55,7 @@ std::vector<Physical*>* Environment::getNeighboursFromTeam(Physical* physical, c
 	}
 }
 
-std::vector<Physical *>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
+std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
 	neights->clear();
 
 	auto center = physical->getPosition();
@@ -295,6 +295,10 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 Urho3D::Vector2 Environment::bestPosToBuild(const char player, const short id) {
 	Urho3D::Vector2 center = influenceManager.getNewBuildingPos(player, id);
 	return mainGrid.getNewBuildingPos(center, player, id);
+}
+
+float Environment::getDistToEnemy(Player* player) {
+	return 500.0; //TODO IMPLEMENT
 }
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {

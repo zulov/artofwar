@@ -29,8 +29,13 @@ public:
 	void updatePossession();
 	void add(Unit* unit);
 	void add(Building* building);
-	int getScore();
 	void ai();
+	int getScore() const;
+	int getAttackScore();
+	int getDefenceScore();
+	int getUnitsNumber() const;
+	int getBuildingsNumber() const;
+	int getWorkersNumber() const;
 private:
 	Urho3D::Vector2 bestPosToBuild(const short id);
 	void execute(const AiOrderData& orderData);

@@ -484,6 +484,7 @@
     <ClInclude Include="src\StringUtils.h" />
     <ClInclude Include="src\stats\Stats.h" />
     <ClInclude Include="src\stats\StatsType.h" />
+    <ClInclude Include="src\VectorUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -9,6 +9,7 @@
 #include <vector>
 #include <array>
 #include "debug/EnvironmentDebugMode.h"
+#include "player/Player.h"
 
 
 class ResourceEntity;
@@ -84,6 +85,7 @@ public:
 
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
 	Urho3D::Vector2 bestPosToBuild(const char player, const short id);
+	float getDistToEnemy(Player* player);
 
 private:
 	MainGrid mainGrid;

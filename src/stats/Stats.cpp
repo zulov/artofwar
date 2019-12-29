@@ -22,6 +22,7 @@ Stats::Stats() {
 
 Stats::~Stats() {
 	clear();
+	delete []input;
 }
 
 void Stats::init() {
@@ -64,5 +65,4 @@ float* Stats::getInputFor(short id) {
 
 void Stats::clear() {
 	clear_vector(statsPerPlayer);
-	delete []input;
 }

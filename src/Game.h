@@ -6,8 +6,7 @@
 #include <Urho3D/Scene/Scene.h>
 
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Console;
 	class Graphics;
 	class Context;
