@@ -8,6 +8,7 @@
 #include "commands/creation/CreationCommandList.h"
 #include "simulation/env/Environment.h"
 #include <fstream>
+#include "stats/Stats.h"
 
 
 Player::Player(int nationId, int team, int id, int color, Urho3D::String name, bool active): team(team),

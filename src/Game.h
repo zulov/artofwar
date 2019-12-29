@@ -4,7 +4,6 @@
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Scene/Scene.h>
-#include "Stats.h"
 
 
 namespace Urho3D
@@ -16,6 +15,7 @@ namespace Urho3D
 	class UI;
 }
 
+class Stats;
 class CommandList;
 class CreationCommandList;
 class Environment;
