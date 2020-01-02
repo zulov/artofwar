@@ -28,7 +28,7 @@ Stats::~Stats() {
 void Stats::init() {
 	clear();
 	input = new float[INPUT_STATS_SIZE];
-	for (auto& allPlayer : Game::getPlayersMan()->getAllPlayers()) {
+	for (auto allPlayer : Game::getPlayersMan()->getAllPlayers()) {
 		statsPerPlayer.push_back(new float[STATS_PER_PLAYER_SIZE]);
 	}
 }
@@ -36,17 +36,18 @@ void Stats::init() {
 void Stats::update(short id) {
 	float* data = statsPerPlayer.at(id);
 	auto player = Game::getPlayersMan()->getPlayer(id);
-	data[cast(StatsType::RESULT)] = player->getScore() / weights[cast(StatsType::RESULT)];
-	data[cast(StatsType::GOLD)] = player->getResources().getValues()[0] / weights[cast(StatsType::GOLD)];
-	data[cast(StatsType::WOOD)] = player->getResources().getValues()[1] / weights[cast(StatsType::WOOD)];
-	data[cast(StatsType::FOOD)] = player->getResources().getValues()[2] / weights[cast(StatsType::FOOD)];
-	data[cast(StatsType::STONE)] = player->getResources().getValues()[3] / weights[cast(StatsType::STONE)];
-	data[cast(StatsType::ATTACK)] = player->getAttackScore() / weights[cast(StatsType::ATTACK)];
-	data[cast(StatsType::DEFENCE)] = player->getDefenceScore() / weights[cast(StatsType::DEFENCE)];
+	data[cast(StatsType::RESULT)] = player->getScore();
+	data[cast(StatsType::GOLD)] = player->getResources().getValues()[0];
+	data[cast(StatsType::WOOD)] = player->getResources().getValues()[1];
+	data[cast(StatsType::FOOD)] = player->getResources().getValues()[2];
+	data[cast(StatsType::STONE)] = player->getResources().getValues()[3];
+	data[cast(StatsType::ATTACK)] = player->getAttackScore();
+	data[cast(StatsType::DEFENCE)] = player->getDefenceScore();
 	data[cast(StatsType::BASE_TO_ENEMY)] = Game::getEnvironment()->getDistToEnemy(player); //TODO ale do którego
 	data[cast(StatsType::UNITS)] = player->getUnitsNumber();
 	data[cast(StatsType::BUILDINGS)] = player->getBuildingsNumber();
 	data[cast(StatsType::WORKERS)] = player->getWorkersNumber();
+	std::transform(data, data + STATS_PER_PLAYER_SIZE, weights, data, std::divides<>());
 }
 
 
