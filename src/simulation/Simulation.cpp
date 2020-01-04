@@ -30,18 +30,14 @@
 #include "player/ai/AiManager.h"
 
 
-Simulation::Simulation(Environment* enviroment, CreationCommandList* creationCommandList): enviroment(enviroment),
-                                                                                           creationCommandList(
-	                                                                                           creationCommandList) {
-	simObjectManager = creationCommandList->getManager();
-	levelsCommandList = new UpgradeCommandList(simObjectManager);
+Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
+	simObjectManager = new SimulationObjectManager();
+	Game::setActionCenter(new ActionCenter(simObjectManager));
 	colorScheme = SimColorMode::BASIC;
 
 	srand(time(NULL));
 
 	simulationInfo = new SimulationInfo();
-	actionCommandList = new CommandList();
-	Game::setActionCommandList(actionCommandList);
 
 	units = simObjectManager->getUnits();
 	buildings = simObjectManager->getBuildings();
@@ -51,9 +47,8 @@ Simulation::Simulation(Environment* enviroment, CreationCommandList* creationCom
 
 Simulation::~Simulation() {
 	delete simulationInfo;
-	delete actionCommandList;
-	delete levelsCommandList;
-	Game::setActionCommandList(nullptr);
+	delete simObjectManager;
+	Game::disposeActionCenter();
 }
 
 SimulationInfo* Simulation::update(float timeStep) {
@@ -62,11 +57,11 @@ SimulationInfo* Simulation::update(float timeStep) {
 	if (accumulateTime >= maxTimeFrame) {
 		handleTimeInFrame(timeStep);
 
-		executeLists();
+		Game::getActionCenter()->executeLists();
 		selfAI();
 		aiPlayers();
 
-		actionCommandList->execute();
+		Game::getActionCenter()->executeActions();
 		enviroment->update(units);
 		enviroment->updateInfluence(units, buildings, resources);
 
@@ -146,33 +141,33 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		//creationCommandList->addUnits(UNITS_NUMBER, 2, Urho3D::Vector2(20, -30), 0, 0);
-		//creationCommandList->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-20, -10), 1, 0);
-		creationCommandList->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0, 0);
+		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 2, Urho3D::Vector2(20, -30), 0, 0);
+		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-20, -10), 1, 0);
+		Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0, 0);
 
-		creationCommandList->addBuilding(1, Urho3D::Vector2(-10, -18), 0, 0);
-		creationCommandList->addBuilding(1, Urho3D::Vector2(-5, -18), 0, 0);
-		creationCommandList->addBuilding(1, Urho3D::Vector2(0, -20), 0, 0);
-		creationCommandList->addBuilding(1, Urho3D::Vector2(7, -16), 0, 0);
-		creationCommandList->addBuilding(1, Urho3D::Vector2(15, -18), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(-10, -18), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(-5, -18), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(0, -20), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(7, -16), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(15, -18), 0, 0);
 
 
-		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -30), 0, 0);
-		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -28), 0, 0);
-		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -26), 0, 0);
-		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -24), 0, 0);
-		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -22), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(-50, -30), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(-50, -28), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(-50, -26), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(-50, -24), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(-50, -22), 0, 0);
 
-		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -18), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(-50, -18), 0, 0);
 
-		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -14), 0, 0);
-		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -12), 0, 0);
-		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -10), 0, 0);
-		creationCommandList->addBuilding(1, Urho3D::Vector2(-50, -8), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(-50, -14), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(-50, -12), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(-50, -10), 0, 0);
+		Game::getActionCenter()->addBuilding(1, Urho3D::Vector2(-50, -8), 0, 0);
 
-		creationCommandList->addBuilding(2, Urho3D::Vector2(-100, 50), 1, 0);
+		Game::getActionCenter()->addBuilding(2, Urho3D::Vector2(-100, 50), 1, 0);
 
-		//creationCommandList->addUnits(UNITS_NUMBER*100, 0, Urho3D::Vector2(-200, -200), 0, 0);
+		//Game::getActionCenter()->addUnits(UNITS_NUMBER*100, 0, Urho3D::Vector2(-200, -200), 0, 0);
 	}
 }
 
@@ -208,7 +203,7 @@ void Simulation::applyForce() const {
 }
 
 void Simulation::levelUp(QueueElement* done) const {
-	levelsCommandList->add(new UpgradeCommand(
+	Game::getActionCenter()->add(new UpgradeCommand(
 		Game::getPlayersMan()->getActivePlayer()->getId(),
 		done->getId(),
 		done->getType()
@@ -224,12 +219,12 @@ void Simulation::updateBuildingQueues(const float time) const {
 			{
 				auto center = enviroment->getCenter(build->getDeploy().value());
 
-				creationCommandList->add(new CreationCommand(ObjectType::UNIT, done->getAmount(),
-				                                             done->getId(), center,
-				                                             build->getPlayer(),
-				                                             Game::getPlayersMan()->
-				                                             getPlayer(build->getPlayer())->
-				                                             getLevelForUnit(done->getId())
+				Game::getActionCenter()->add(new CreationCommand(ObjectType::UNIT, done->getAmount(),
+				                                                 done->getId(), center,
+				                                                 build->getPlayer(),
+				                                                 Game::getPlayersMan()->
+				                                                 getPlayer(build->getPlayer())->
+				                                                 getLevelForUnit(done->getId())
 				));
 			}
 			break;
@@ -293,21 +288,16 @@ void Simulation::handleTimeInFrame(float timeStep) {
 	accumulateTime -= maxTimeFrame;
 }
 
-void Simulation::executeLists() const {
-	levelsCommandList->execute();
-	creationCommandList->execute();
-}
-
 void Simulation::initScene(SceneLoader& loader) const {
 	loadEntities(loader);
 	addTestEntities();
-	executeLists();
+	Game::getActionCenter()->executeLists();
 }
 
 void Simulation::initScene(NewGameForm* form) const {
 	loadEntities(form);
 	//addTestEntities();
-	executeLists();
+	Game::getActionCenter()->executeLists();
 }
 
 void Simulation::aiPlayers() const {

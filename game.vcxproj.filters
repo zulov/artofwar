@@ -192,6 +192,7 @@
     <ClCompile Include="src\player\ai\nn\Layer.cpp" />
     <ClCompile Include="src\player\ai\nn\Brain.cpp" />
     <ClCompile Include="src\stats\Stats.cpp" />
+    <ClCompile Include="src\ActionCenter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -485,6 +486,7 @@
     <ClInclude Include="src\stats\Stats.h" />
     <ClInclude Include="src\stats\StatsType.h" />
     <ClInclude Include="src\VectorUtils.h" />
+    <ClInclude Include="src\ActionCenter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

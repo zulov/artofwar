@@ -11,12 +11,11 @@ class SimulationObjectManager;
 class CreationCommandList : public CommandList
 {
 public:
-	CreationCommandList();
+	CreationCommandList(SimulationObjectManager* simulationObjectManager);
 	virtual ~CreationCommandList();
-	bool addUnits(int _number, int id, Urho3D::Vector2& position, int player, int level);
+	bool addUnits(int number, int id, Urho3D::Vector2& position, int player, int level);
 	bool addBuilding(int id, Urho3D::Vector2& position, int player, int level);
 	bool addResource(int id, Urho3D::Vector2& position, int level);
-	SimulationObjectManager* getManager() const;
 
 protected:
 	void setParemeters(AbstractCommand* command) override;

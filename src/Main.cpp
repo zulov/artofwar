@@ -200,8 +200,7 @@ void Main::save(String name) {
 }
 
 void Main::createSimulation() {
-	Game::setCreationCommandList(new CreationCommandList());
-	simulation = new Simulation(Game::getEnvironment(), Game::getCreationList());
+	simulation = new Simulation(Game::getEnvironment());
 }
 
 void Main::setSimpleManagers() {
@@ -454,10 +453,6 @@ void Main::disposeScene() {
 
 		delete Game::getColorPaletteRepo();
 		Game::setColorPaletteRepo(nullptr);
-
-		loading2.inc("dispose creationList");
-		delete Game::getCreationList();
-		Game::setCreationCommandList(nullptr);
 
 		loading2.inc("dispose enviroment");
 		delete Game::getEnvironment();

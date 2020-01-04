@@ -31,11 +31,10 @@ namespace Urho3D {
 class Simulation
 {
 public:
-	Simulation(Environment* enviroment, CreationCommandList* creationCommandList);
+	Simulation(Environment* enviroment);
 	~Simulation();
 
 	SimulationInfo* update(float timeStep);
-	void executeLists() const;
 	void initScene(SceneLoader& loader) const;
 	void initScene(NewGameForm* form) const;
 
@@ -81,9 +80,7 @@ private:
 	SimulationInfo* simulationInfo;
 	Environment* enviroment;
 	SimulationObjectManager* simObjectManager;
-	CreationCommandList* creationCommandList;
-	UpgradeCommandList* levelsCommandList;
-	CommandList* actionCommandList;
+
 	AiManager* aiManager;
 };
 

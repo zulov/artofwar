@@ -64,7 +64,7 @@ private:
 	void save(Urho3D::String name);
 	void running(double timeStep);
 	void createSimulation();
-	void setSimpleManagers();
+static void setSimpleManagers();
 	void updateProgress(loading& progress, std::string msg) const;
 	void newGame(NewGameForm* form, loading& progress);
 	void changeState(GameState newState);

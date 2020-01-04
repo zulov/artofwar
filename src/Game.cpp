@@ -16,6 +16,11 @@ void Game::dispose() {
 
 Game::~Game() = default;
 
+void Game::disposeActionCenter() {
+	delete instance->actionCenter;
+	instance->actionCenter = nullptr;
+}
+
 Game* Game::setCache(Urho3D::ResourceCache* _cache) {
 	instance->cache = _cache;
 	return instance;
@@ -51,11 +56,6 @@ Game* Game::setCameraManager(CameraManager* cameraManager) {
 	return instance;
 }
 
-Game* Game::setActionCommandList(CommandList* _actionCommmandList) {
-	instance->actionCommandList = _actionCommmandList;
-	return instance;
-}
-
 Game* Game::setConsole(Urho3D::Console* _console) {
 	instance->console = _console;
 	return instance;
@@ -63,11 +63,6 @@ Game* Game::setConsole(Urho3D::Console* _console) {
 
 Game* Game::setLocalization(Urho3D::Localization* _localization) {
 	instance->localization = _localization;
-	return instance;
-}
-
-Game* Game::setCreationCommandList(CreationCommandList* _simCommandList) {
-	instance->creationCommandList = _simCommandList;
 	return instance;
 }
 
@@ -108,6 +103,11 @@ Game* Game::setLog(Urho3D::Log* _log) {
 
 Game* Game::setStats(Stats* _stats) {
 	instance->stats = _stats;
+	return instance;
+}
+
+Game* Game::setActionCenter(ActionCenter* _actionCenter) {
+	instance->actionCenter = _actionCenter;
 	return instance;
 }
 

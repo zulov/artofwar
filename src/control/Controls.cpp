@@ -173,7 +173,7 @@ void Controls::rightClick(hit_data& hitData) const {
 		                        ActionType::ORDER, shiftPressed);
 	}
 
-	Game::getActionList()->add(new ActionCommand(fOrder));
+	Game::getActionCenter()->add(new ActionCommand(fOrder));
 }
 
 void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
@@ -184,21 +184,21 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) con
 }
 
 void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
-	auto actions = Game::getActionList();
-
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
-		actions->add(
+		Game::getActionCenter()->add(
 			new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
 			                                 {held.first->x_, held.first->z_}, nullptr, ActionType::ORDER)),
 			new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
 			                                 {held.second->x_, held.second->z_},
 			                                 nullptr, ActionType::ORDER, true)));
 	} else {
-		actions->add(new ActionCommand(new GroupOrder(selected, UnitOrder::GO, {held.first->x_, held.first->z_},
-		                                              nullptr, ActionType::ORDER)),
-		             new ActionCommand(new GroupOrder(selected, UnitOrder::CHARGE, {
-			             held.second->x_ - held.first->x_, held.second->z_ - held.first->z_
-		             }, nullptr, ActionType::ORDER, true)));
+		Game::getActionCenter()->add(new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
+		                                                              {held.first->x_, held.first->z_},
+		                                                              nullptr, ActionType::ORDER)),
+		                             new ActionCommand(new GroupOrder(selected, UnitOrder::CHARGE, {
+			                                                              held.second->x_ - held.first->x_,
+			                                                              held.second->z_ - held.first->z_
+		                                                              }, nullptr, ActionType::ORDER, true)));
 	}
 }
 
@@ -280,7 +280,8 @@ void Controls::order(short id, const ActionParameter& parameter) {
 }
 
 void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
-	Game::getActionList()->add(new ActionCommand(new GroupOrder(selected, UnitOrder(id), {}, nullptr, parameter.type)));
+	Game::getActionCenter()->add(
+		new ActionCommand(new GroupOrder(selected, UnitOrder(id), {}, nullptr, parameter.type)));
 	//TODO przyjrzec sie typowi
 }
 
@@ -313,7 +314,7 @@ void Controls::createBuilding(Urho3D::Vector2 pos) {
 	if (idToCreate >= 0) {
 		auto player = Game::getPlayersMan()->getActivePlayer();
 
-		Game::getCreationList()->addBuilding(idToCreate, pos,
+		Game::getActionCenter()->addBuilding(idToCreate, pos,
 		                                     player->getId(),
 		                                     player->getLevelForBuilding(idToCreate));
 	}

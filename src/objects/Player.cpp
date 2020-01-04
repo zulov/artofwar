@@ -134,7 +134,7 @@ void Player::execute(const AiOrderData& orderData) {
 	case AiOrderType::BUILD:
 	{
 		Urho3D::Vector2 pos = bestPosToBuild(orderData.id);
-		Game::getCreationList()->addBuilding(orderData.id, pos, id, getLevelForBuilding(orderData.id));
+		Game::getActionCenter()->addBuilding(orderData.id, pos, id, getLevelForBuilding(orderData.id));
 	}
 	break;
 	case AiOrderType::ORDER:

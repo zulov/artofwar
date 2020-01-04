@@ -4,6 +4,7 @@
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Scene/Scene.h>
+#include "ActionCenter.h"
 
 
 namespace Urho3D {
@@ -24,12 +25,14 @@ class PlayersManager;
 class QueueManager;
 class ColorPaletteRepo;
 class FormationManager;
+class ActionCenter;
 
 class Game {
 public:
 	static void init();
 	static void dispose();
 	~Game();
+	static void disposeActionCenter();
 	static Game* setCache(Urho3D::ResourceCache* _cache);
 	static Game* setContext(Urho3D::Context* _context);
 	static Game* setUI(Urho3D::UI* _ui);
@@ -39,8 +42,6 @@ public:
 	static Game* setConsole(Urho3D::Console* _console);
 	static Game* setLocalization(Urho3D::Localization* _localization);
 	static Game* setCameraManager(CameraManager* cameraManager);
-	static Game* setActionCommandList(CommandList* _actionCommmandList);
-	static Game* setCreationCommandList(CreationCommandList* _simCommandList);
 	static Game* setDatabaseCache(DatabaseCache* _databaseCache);
 	static Game* setPlayersManager(PlayersManager* _playersManager);
 	static Game* setEnvironment(Environment* _environment);
@@ -49,6 +50,7 @@ public:
 	static Game* setColorPaletteRepo(ColorPaletteRepo* _colorPaletteRepo);
 	static Game* setLog(Urho3D::Log* _log);
 	static Game* setStats(Stats* _stats);
+	static Game* setActionCenter(ActionCenter* _actionCenter);
 	static void addTime(float time);
 
 	static Urho3D::SharedPtr<Urho3D::Engine> getEngine() { return instance->engine; }
@@ -61,16 +63,17 @@ public:
 	static Urho3D::Log* getLog() { return instance->log; }
 	static Urho3D::UI* getUI() { return instance->ui; }
 
-	static CreationCommandList* getCreationList() { return instance->creationCommandList; }
+	//static CreationCommandList* getCreationList() { return instance->creationCommandList; }
 	static FormationManager* getFormationManager() { return instance->formationManager; }
 	static ColorPaletteRepo* getColorPaletteRepo() { return instance->colorPaletteRepo; }
 	static DatabaseCache* getDatabaseCache() { return instance->databaseCache; }
 	static CameraManager* getCameraManager() { return instance->cameraManager; }
-	static CommandList* getActionList() { return instance->actionCommandList; }
+	//static CommandList* getActionList() { return instance->actionCommandList; }
 	static PlayersManager* getPlayersMan() { return instance->playersManager; }
 	static Environment* getEnvironment() { return instance->environment; }
 	static QueueManager* getQueueManager() { return instance->queue; }
 	static Stats* getStats() { return instance->stats; }
+	static ActionCenter* getActionCenter() { return instance->actionCenter; }
 
 	static float getTime() { return instance->accumTime; }
 
@@ -88,16 +91,17 @@ private:
 	Urho3D::Log* log;
 	Urho3D::UI* ui;
 
-	CreationCommandList* creationCommandList;
+	//CreationCommandList* creationCommandList;
 	FormationManager* formationManager;
 	ColorPaletteRepo* colorPaletteRepo;
-	CommandList* actionCommandList;
+	//CommandList* actionCommandList;
 	PlayersManager* playersManager;
 	CameraManager* cameraManager;
 	DatabaseCache* databaseCache;
 	Environment* environment;
 	QueueManager* queue;
 	Stats* stats;
+	ActionCenter * actionCenter;
 
 	float accumTime = 0;
 };

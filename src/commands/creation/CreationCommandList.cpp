@@ -10,16 +10,14 @@
 #include "player/Player.h"
 
 
-CreationCommandList::CreationCommandList() {
-	simulationObjectManager = new SimulationObjectManager();
+CreationCommandList::CreationCommandList(SimulationObjectManager* simulationObjectManager) {
+	this->simulationObjectManager = simulationObjectManager;
 }
 
-CreationCommandList::~CreationCommandList() {
-	delete simulationObjectManager;
-}
+CreationCommandList::~CreationCommandList() = default;
 
-bool CreationCommandList::addUnits(int _number, int id, Urho3D::Vector2& position, int player, int level) {
-	add(new CreationCommand(ObjectType::UNIT, _number, id, position, player, level));
+bool CreationCommandList::addUnits(int number, int id, Urho3D::Vector2& position, int player, int level) {
+	add(new CreationCommand(ObjectType::UNIT, number, id, position, player, level));
 	return true;
 }
 
@@ -53,10 +51,6 @@ bool CreationCommandList::addResource(int id, Urho3D::Vector2& position, int lev
 	return false;
 }
 
-SimulationObjectManager* CreationCommandList::getManager() const {
-	return simulationObjectManager;
-}
-
 void CreationCommandList::setParemeters(AbstractCommand* command) {
-	dynamic_cast<CreationCommand *>(command)->setSimulationObjectManager(simulationObjectManager);
+	dynamic_cast<CreationCommand*>(command)->setSimulationObjectManager(simulationObjectManager);
 }

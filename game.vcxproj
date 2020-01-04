@@ -180,6 +180,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ActionCenter.cpp" />
     <ClCompile Include="src\player\ai\nn\Brain.cpp" />
     <ClCompile Include="src\player\ai\nn\Layer.cpp" />
     <ClCompile Include="src\debug\DebugManager.cpp" />
@@ -283,6 +284,7 @@
     <ClCompile Include="src\stats\Stats.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ActionCenter.h" />
     <ClInclude Include="src\player\ai\nn\AFUtil.h" />
     <ClInclude Include="src\player\ai\nn\Brain.h" />
     <ClInclude Include="src\player\ai\nn\Layer.h" />
