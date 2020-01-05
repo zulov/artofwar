@@ -28,6 +28,7 @@
 #include "UnitOrder.h"
 #include <ctime>
 #include "player/ai/AiManager.h"
+#include "stats/Stats.h"
 
 
 Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
@@ -60,7 +61,6 @@ SimulationInfo* Simulation::update(float timeStep) {
 		Game::getActionCenter()->executeLists();
 		selfAI();
 		aiPlayers();
-
 		Game::getActionCenter()->executeActions();
 		enviroment->update(units);
 		enviroment->updateInfluence(units, buildings, resources);
@@ -79,6 +79,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 		enviroment->removeFromGrids(simObjectManager->getToDispose());
 		Game::getPlayersMan()->update();
 		Game::getFormationManager()->update();
+		Game::getStats()->save();
 	} else {
 		moveUnits(timeStep);
 	}

@@ -113,9 +113,9 @@ int Player::getWorkersNumber() const {
 void Player::ai() {
 	auto data= Game::getStats()->getInputFor(getId());
 	auto result = brain->decide(data);
-	for (int i = 0; i < brain->getOutputSize(); ++i) {
-		std::cout << result[i] << std::endl;
-	}
+	// for (int i = 0; i < brain->getOutputSize(); ++i) {
+	// 	std::cout << result[i] << std::endl;
+	// }
 
 	auto& orderData = aiRoot->getOrder();
 	execute(orderData);

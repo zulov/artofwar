@@ -1,8 +1,11 @@
 #include "ActionCenter.h"
 #include "commands/action/ActionCommand.h"
 #include "commands/creation/CreationCommand.h"
+#include "commands/upgrade/UpgradeCommand.h"
 #include "commands/upgrade/UpgradeCommandList.h"
 #include "commands/creation/CreationCommandList.h"
+#include "Game.h"
+#include "stats/Stats.h"
 
 ActionCenter::ActionCenter(SimulationObjectManager* simulationObjectManager) {
 	creation = new CreationCommandList(simulationObjectManager);
@@ -11,18 +14,23 @@ ActionCenter::ActionCenter(SimulationObjectManager* simulationObjectManager) {
 }
 
 void ActionCenter::add(UpgradeCommand* command) const {
+	Game::getStats()->add(command);
 	upgrade->add(command);
 }
 
 void ActionCenter::add(CreationCommand* command) const {
+	Game::getStats()->add(command);
 	creation->add(command);
 }
 
 void ActionCenter::add(ActionCommand* command) const {
+	Game::getStats()->add(command);
 	action->add(command);
 }
 
 void ActionCenter::add(ActionCommand* first, ActionCommand* second) const {
+	Game::getStats()->add(first);
+	Game::getStats()->add(second);
 	action->add(first, second);
 }
 

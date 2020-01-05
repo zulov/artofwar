@@ -4,6 +4,10 @@
 #include "player/Player.h"
 #include "StatsType.h"
 #include "simulation/env/Environment.h"
+#include "StringUtils.h"
+#include "commands/creation/CreationCommand.h"
+#include "commands/upgrade/UpgradeCommand.h"
+#include <fstream>
 
 
 Stats::Stats() {
@@ -33,6 +37,39 @@ void Stats::init() {
 	}
 }
 
+void Stats::add(UpgradeCommand* command) {
+	auto input = getInputFor(command->player);
+	std::string data = join(input, input + INPUT_STATS_SIZE, ';');
+	data.append("Upgrade");
+	dataToSave.push_back(data);
+}
+
+void Stats::add(ActionCommand* command) {
+	auto input = getInputFor(0); //TODO change player
+	std::string data = join(input, input + INPUT_STATS_SIZE, ';');
+	data.append("Action");
+	dataToSave.push_back(data);
+}
+
+void Stats::add(CreationCommand* command) {
+	auto input = getInputFor(command->player);
+	std::string data = join(input, input + INPUT_STATS_SIZE, ';');
+	data.append("Create");
+	dataToSave.push_back(data);
+}
+
+void Stats::save() {
+	if (dataToSave.size() >= SAVE_BATCH_SIZE) {
+		std::ofstream outFile;
+		outFile.open("Data/ai/test.txt", std::ios_base::app);
+		for (const auto& e : dataToSave) {
+			outFile << e << "\n";
+		}
+		outFile.close();
+		dataToSave.clear();
+	}
+}
+
 void Stats::update(short id) {
 	float* data = statsPerPlayer.at(id);
 	auto player = Game::getPlayersMan()->getPlayer(id);
@@ -58,7 +95,13 @@ int Stats::getScoreFor(short id) const {
 float* Stats::getInputFor(short id) {
 	update(id);
 	auto stats = statsPerPlayer.at(id);
-	auto enemy = statsPerPlayer.at(id - 1); //TODO wybrac wroga
+	char idEnemy; //TODO do it better
+	if (id == 0) {
+		idEnemy = 1;
+	} else {
+		idEnemy = 0;
+	}
+	auto enemy = statsPerPlayer.at(idEnemy); //TODO BUG wybrac wroga
 	std::copy(stats, stats + STATS_PER_PLAYER_SIZE, input);
 	std::copy(enemy, enemy + STATS_PER_PLAYER_SIZE, input + STATS_PER_PLAYER_SIZE);
 	return input;

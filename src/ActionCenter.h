@@ -1,7 +1,6 @@
 #pragma once
-#include "stats/Stats.h"
-#include "commands/upgrade/UpgradeCommand.h"
 
+class SimulationObjectManager;
 
 namespace Urho3D {
 	class Vector2;
@@ -11,6 +10,7 @@ class ActionCommand;
 class UpgradeCommandList;
 class CreationCommandList;
 class CreationCommand;
+class UpgradeCommand;
 class CommandList;
 
 class ActionCenter {
@@ -27,7 +27,7 @@ public:
 	bool addResource(int id, Urho3D::Vector2& position, int level);
 
 private:
-	Stats* stats;
+
 	CreationCommandList* creation;
 	UpgradeCommandList* upgrade;
 	CommandList* action;
