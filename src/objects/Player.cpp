@@ -5,13 +5,12 @@
 #include "database/DatabaseCache.h"
 #include <string>
 #include <utility>
-#include "commands/creation/CreationCommandList.h"
 #include "simulation/env/Environment.h"
 #include <fstream>
 #include "stats/Stats.h"
 
 
-Player::Player(int nationId, int team, int id, int color, Urho3D::String name, bool active): team(team),
+Player::Player(int nationId, int team, char id, int color, Urho3D::String name, bool active): team(team),
                                                                                              name(std::move(name)),
                                                                                              id(id), color(color),
                                                                                              active(active) {

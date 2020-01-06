@@ -43,11 +43,11 @@ void ActionCenter::executeLists() const {
 	creation->execute();
 }
 
-bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, int player, int level) const {
+bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const {
 	return creation->addUnits(number, id, position, player, level);
 }
 
-bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, int player, int level) const {
+bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, int level) const {
 	return creation->addBuilding(id, position, player, level);
 }
 

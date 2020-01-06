@@ -8,7 +8,7 @@ enum class ActionType : char;
 
 class Player {
 public:
-	Player(int nationId, int team, int id, int color, Urho3D::String name, bool active);
+	Player(int nationId, int team, char id, int color, Urho3D::String name, bool active);
 	~Player();
 
 	std::string getValues(int precision);
@@ -19,7 +19,7 @@ public:
 	Resources& getResources() { return resources; }
 	int getNation() const { return dbNation->id; }
 	int getTeam() const { return team; }
-	int getId() const { return id; }
+	char getId() const { return id; }
 	int getColor() const { return color; }
 	Urho3D::String& getName() { return name; }
 	char getLevelForUnit(int id) { return unitLevels[id]; }
@@ -55,8 +55,8 @@ private:
 	db_nation* dbNation;
 	Urho3D::String name;
 	int team;
-	int id;
 	int color;
+	char id;
 	bool active;
 	char unitLevels[UNITS_NUMBER_DB];
 	char buildingLevels[BUILDINGS_NUMBER_DB];

@@ -13,15 +13,15 @@ namespace Urho3D {
 }
 
 class CreationCommand : public AbstractCommand {
+	friend class Stats;
 public:
-	CreationCommand(ObjectType type, int id, const Urho3D::Vector2& position, int player,
+	CreationCommand(ObjectType type, int id, const Urho3D::Vector2& position, char player,
 	                const Urho3D::IntVector2& bucketCords, int level);
-	CreationCommand(ObjectType type, int number, int id, const Urho3D::Vector2& position, int player,
-	                int level);
+	CreationCommand(ObjectType type, int number, int id, const Urho3D::Vector2& position,
+	                char player, int level);
 	virtual ~CreationCommand() = default;
 	void execute() override;
 	void setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager);
-	int player;
 private:
 	SimulationObjectManager* simulationObjectManager;
 	int id;

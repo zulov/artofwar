@@ -16,12 +16,12 @@ CreationCommandList::CreationCommandList(SimulationObjectManager* simulationObje
 
 CreationCommandList::~CreationCommandList() = default;
 
-bool CreationCommandList::addUnits(int number, int id, Urho3D::Vector2& position, int player, int level) {
+bool CreationCommandList::addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) {
 	add(new CreationCommand(ObjectType::UNIT, number, id, position, player, level));
 	return true;
 }
 
-bool CreationCommandList::addBuilding(int id, Urho3D::Vector2& position, int player, int level) {
+bool CreationCommandList::addBuilding(int id, Urho3D::Vector2& position, char player, int level) {
 	Resources& resources = Game::getPlayersMan()->getPlayer(player)->getResources();
 	auto costs = Game::getDatabaseCache()->getCostForBuilding(id);
 	auto env = Game::getEnvironment();

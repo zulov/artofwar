@@ -22,8 +22,8 @@ public:
 	void add(ActionCommand* first, ActionCommand* second) const;
 	void executeActions() const;
 	void executeLists() const;
-	bool addUnits(int number, int id, Urho3D::Vector2& position, int player, int level) const;
-	bool addBuilding(int id, Urho3D::Vector2& position, int player, int level) const;
+	bool addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const;
+	bool addBuilding(int id, Urho3D::Vector2& position, char player, int level) const;
 	bool addResource(int id, Urho3D::Vector2& position, int level);
 
 private:

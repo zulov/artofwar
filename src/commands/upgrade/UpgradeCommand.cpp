@@ -7,7 +7,7 @@
 #include "simulation/SimulationObjectManager.h"
 
 
-UpgradeCommand::UpgradeCommand(int player, int id, ActionType type): player(player), id(id), type(type) {
+UpgradeCommand::UpgradeCommand(char player, int id, ActionType type): AbstractCommand(player), id(id), type(type) {
 }
 
 UpgradeCommand::~UpgradeCommand() = default;

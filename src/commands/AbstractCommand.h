@@ -1,8 +1,12 @@
 #pragma once
-class AbstractCommand
-{
+class AbstractCommand {
 public:
-	AbstractCommand();
 	virtual ~AbstractCommand();
 	virtual void execute() =0;
+
+protected:
+	explicit AbstractCommand(char player): player(player) {
+	}
+
+	char player;
 };

@@ -8,13 +8,12 @@ namespace Urho3D {
 
 class SimulationObjectManager;
 
-class CreationCommandList : public CommandList
-{
+class CreationCommandList : public CommandList {
 public:
 	CreationCommandList(SimulationObjectManager* simulationObjectManager);
 	virtual ~CreationCommandList();
-	bool addUnits(int number, int id, Urho3D::Vector2& position, int player, int level);
-	bool addBuilding(int id, Urho3D::Vector2& position, int player, int level);
+	bool addUnits(int number, int id, Urho3D::Vector2& position, char player, int level);
+	bool addBuilding(int id, Urho3D::Vector2& position, char player, int level);
 	bool addResource(int id, Urho3D::Vector2& position, int level);
 
 protected:

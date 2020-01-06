@@ -5,18 +5,16 @@
 enum class ActionType : char;
 class SimulationObjectManager;
 
-class UpgradeCommand :
-	public AbstractCommand {
+class UpgradeCommand : public AbstractCommand {
+	friend class Stats;
 public:
-	UpgradeCommand(int player, int id, ActionType type);
+	UpgradeCommand(char player, int id, ActionType type);
 	~UpgradeCommand() override;
 	void execute() override;
 	void setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager);
-
-	int player;
-	int id;
-	ActionType type;
 private:
+	ActionType type;
+	short id;
 
 	SimulationObjectManager* simulationObjectManager;
 };

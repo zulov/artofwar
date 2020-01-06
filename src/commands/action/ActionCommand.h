@@ -10,8 +10,8 @@ namespace Urho3D {
 class Physical;
 enum class UnitOrder : char;
 
-class ActionCommand : public AbstractCommand
-{
+class ActionCommand : public AbstractCommand {
+	friend class Stats;
 public:
 	ActionCommand(FutureOrder* futureAim);
 	~ActionCommand() override;

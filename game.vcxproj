@@ -402,7 +402,7 @@
     <ClInclude Include="src\hud\window\menu\MenuPanel.h" />
     <ClInclude Include="src\hud\window\minimap\MiniMapPanel.h" />
     <ClInclude Include="src\hud\MySprite.h" />
-    <ClInclude Include="src\stats\StatsType.h" />
+    <ClInclude Include="src\stats\StatsEnums.h" />
     <ClInclude Include="src\StringUtils.h" />
     <ClInclude Include="src\UnitOrder.h" />
     <ClInclude Include="src\objects\Physical.h" />

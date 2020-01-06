@@ -484,9 +484,9 @@
     <ClInclude Include="src\player\ai\nn\AFUtil.h" />
     <ClInclude Include="src\StringUtils.h" />
     <ClInclude Include="src\stats\Stats.h" />
-    <ClInclude Include="src\stats\StatsType.h" />
     <ClInclude Include="src\VectorUtils.h" />
     <ClInclude Include="src\ActionCenter.h" />
+    <ClInclude Include="src\stats\StatsEnums.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

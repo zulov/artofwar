@@ -1,7 +1,7 @@
 #include "ActionCommand.h"
 
 
-ActionCommand::ActionCommand(FutureOrder* futureAim):
+ActionCommand::ActionCommand(FutureOrder* futureAim): AbstractCommand(0),//TODO BUG PLAYER
 	futureAim(futureAim) {
 }
 
