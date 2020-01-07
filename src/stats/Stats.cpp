@@ -1,12 +1,14 @@
 #include "Stats.h"
 #include "Game.h"
-#include "player/PlayersManager.h"
-#include "player/Player.h"
 #include "StatsEnums.h"
-#include "simulation/env/Environment.h"
 #include "StringUtils.h"
+#include "ObjectEnums.h"
+#include "player/Player.h"
+#include "player/PlayersManager.h"
+#include "simulation/env/Environment.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
+#include "commands/action/ActionCommand.h"
 #include <fstream>
 
 
@@ -48,14 +50,16 @@ void Stats::add(UpgradeCommand* command) {
 void Stats::add(ActionCommand* command) {
 	auto input = getInputFor(0); //TODO change player
 	std::string data = join(input, input + INPUT_STATS_SIZE);
-	data.append("Action");
+	std::string output = getOutput(command);
+	data.append(output);
 	dataToSavePerPlayer[0].push_back(data);
 }
 
 void Stats::add(CreationCommand* command) {
 	auto input = getInputFor(command->player);
 	std::string data = join(input, input + INPUT_STATS_SIZE);
-	data.append("Create");
+	std::string output = getOutput(command);
+	data.append(output);
 	dataToSavePerPlayer[command->player].push_back(data);
 }
 
@@ -118,7 +122,30 @@ void Stats::clear() {
 	clear_vector(statsPerPlayer);
 }
 
-std::string Stats::getOutput(UpgradeCommand* command) {
+std::string Stats::getOutput(CreationCommand* command) const {
+	float output[STATS_OUTPUT_SIZE];
+	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
+	//TODO command->type;, command->id; wybrac ktore wzmocnic
+	switch (command->objectType) {
+	case ObjectType::UNIT:
+	{
+		output[cast(StatsOutputType::CREATE_UNIT_ATTACK)] = 1;
+		output[cast(StatsOutputType::CREATE_UNIT_DEFENCE)] = 1;
+		output[cast(StatsOutputType::CREATE_UNIT_ECON)] = 1;
+	}
+	break;
+	case ObjectType::BUILDING:
+		output[cast(StatsOutputType::CREATE_BUILDING_ATTACK)] = 1;
+		output[cast(StatsOutputType::CREATE_BUILDING_DEFENCE)] = 1;
+		output[cast(StatsOutputType::CREATE_BUILDING_ECON)] = 1;
+		break;
+
+	}
+
+	return join(output, output + STATS_OUTPUT_SIZE);
+}
+
+std::string Stats::getOutput(UpgradeCommand* command) const {
 	float output[STATS_OUTPUT_SIZE];
 	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
 	//TODO command->type;, command->id; wybrac ktore wzmocnic
@@ -126,5 +153,41 @@ std::string Stats::getOutput(UpgradeCommand* command) {
 	output[cast(StatsOutputType::UPGRADE_ATTACK)] = 1;
 	output[cast(StatsOutputType::UPGRADE_DEFENCE)] = 1;
 	output[cast(StatsOutputType::UPGRADE_ECON)] = 1;
+	return join(output, output + STATS_OUTPUT_SIZE);
+}
+
+std::string Stats::getOutput(ActionCommand* command) const {
+	float output[STATS_OUTPUT_SIZE];
+	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
+	//TODO command->type;, command->id; wybrac ktore wzmocnic
+	switch (command->futureAim->getAction()) {
+
+	case UnitOrder::GO:
+		output[cast(StatsOutputType::ORDER_GO)] = 1;
+		break;
+	case UnitOrder::STOP:
+		output[cast(StatsOutputType::ORDER_STOP)] = 1;
+		break;
+	case UnitOrder::CHARGE:
+		output[cast(StatsOutputType::ORDER_CHARGE)] = 1;
+		break;
+	case UnitOrder::ATTACK:
+		output[cast(StatsOutputType::ORDER_ATTACK)] = 1;
+		break;
+	case UnitOrder::DEAD:
+		output[cast(StatsOutputType::ORDER_DEAD)] = 1;
+		break;
+	case UnitOrder::DEFEND:
+		output[cast(StatsOutputType::ORDER_DEFEND)] = 1;
+		break;
+	case UnitOrder::FOLLOW:
+		output[cast(StatsOutputType::ORDER_FOLLOW)] = 1;
+		break;
+	case UnitOrder::COLLECT:
+		output[cast(StatsOutputType::ORDER_COLLECT)] = 1;
+		break;
+	default: ;
+	}
+
 	return join(output, output + STATS_OUTPUT_SIZE);
 }

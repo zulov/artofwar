@@ -25,7 +25,9 @@ public:
 private:
 	void update(short id);
 	void clear();
-	std::string getOutput(UpgradeCommand* command);
+	std::string getOutput(CreationCommand* command) const;
+	std::string getOutput(UpgradeCommand* command) const;
+	std::string getOutput(ActionCommand* command) const;
 	float* input;
 	std::vector<float*> statsPerPlayer;
 	float weights[STATS_PER_PLAYER_SIZE];

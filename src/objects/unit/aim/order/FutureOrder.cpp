@@ -65,3 +65,7 @@ void FutureOrder::execute() {
 		return addStopAim();
 	}
 }
+
+UnitOrder FutureOrder::getAction() const {
+	return action;
+}

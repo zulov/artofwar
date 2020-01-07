@@ -19,6 +19,7 @@ public:
 
 	void execute();
 	bool getAppend() const { return append; }
+	UnitOrder getAction() const;
 protected:
 	Physical* toUse;
 	Urho3D::Vector2 vector;
