@@ -5,7 +5,7 @@
 
 #define INPUT_STATS_SIZE 24
 #define STATS_PER_PLAYER_SIZE 12
-#define SAVE_BATCH_SIZE 30
+#define SAVE_BATCH_SIZE 10
 
 class ActionCommand;
 class UpgradeCommand;

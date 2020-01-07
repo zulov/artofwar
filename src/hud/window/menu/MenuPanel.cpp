@@ -270,7 +270,7 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 	int k = 0;
 	for (auto id : getOrderForUnit(selectedInfo->getSelectedTypes())) {
 		db_order* order = Game::getDatabaseCache()->getOrder(id);
-		if (order) {
+		if (order) {//TODO BUG textures/hud/icon/orders/map/HeightMap.png
 			setNext(k, "textures/hud/icon/orders/" + order->icon, order->id, ActionType::ORDER, "");
 		}
 	}
