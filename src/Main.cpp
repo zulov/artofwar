@@ -383,7 +383,7 @@ void Main::HandleSelectedButton(StringHash eventType, VariantMap& eventData) {
 	controls->unSelectAll();
 	const auto element = static_cast<UIElement*>(eventData[UIMouseClick::P_ELEMENT].GetVoidPtr());
 	auto sHudElement = static_cast<SelectedHudElement*>(element->GetVar("SelectedHudElement").GetVoidPtr());
-	controls->select(sHudElement->getSelected());
+	controls->select(&sHudElement->getSelected());
 }
 
 void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {

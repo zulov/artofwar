@@ -18,6 +18,7 @@
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <unordered_set>
+#include <iostream>
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow",
@@ -260,7 +261,7 @@ std::unordered_set<int> MenuPanel::getOrderForUnit(std::vector<SelectedInfoType*
 				//todo to zrobic raz i pobierac
 				common2.insert(order->id);
 			}
-			removeFromCommon(common,common2);
+			removeFromCommon(common, common2);
 		}
 	}
 	return common;
@@ -270,7 +271,9 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 	int k = 0;
 	for (auto id : getOrderForUnit(selectedInfo->getSelectedTypes())) {
 		db_order* order = Game::getDatabaseCache()->getOrder(id);
-		if (order) {//TODO BUG textures/hud/icon/orders/map/HeightMap.png
+		if (order) {
+			//TODO BUG textures/hud/icon/orders/map/HeightMap.png
+			std::cout << order->icon.CString() << std::endl;
 			setNext(k, "textures/hud/icon/orders/" + order->icon, order->id, ActionType::ORDER, "");
 		}
 	}

@@ -5,10 +5,9 @@
 
 
 SelectedHudElement::SelectedHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style) {
-	selected = new std::vector<Physical*>();
-	selected->reserve(MAX_SELECTED_IN_BUTTON);
+	selected.reserve(MAX_SELECTED_IN_BUTTON);
 
-	button = createElement<Urho3D::Button>(parent,style, "SmallIcon");
+	button = createElement<Urho3D::Button>(parent, style, "SmallIcon");
 	button->SetVisible(false);
 	text = addChildText(button, "MyText", style);
 
@@ -16,63 +15,57 @@ SelectedHudElement::SelectedHudElement(Urho3D::UIElement* parent, Urho3D::XMLFil
 	button->SetVar("SelectedHudElement", this);
 	mock = createElement<Urho3D::UIElement>(button, style, "mock");
 
-	bars = new Urho3D::ProgressBar*[MAX_SELECTED_IN_BUTTON];
-	for (int i = 0; i < MAX_SELECTED_IN_BUTTON; ++i) {
-		bars[i] = createElement<Urho3D::ProgressBar>(mock, style, "MiniProgressBar");
-		bars[i]->SetRange(1);
-		bars[i]->SetValue(0.5);
-		bars[i]->SetVisible(false);
-	}
+	bars = createElement<Urho3D::ProgressBar>(mock, style, "MiniProgressBar");
+	bars->SetRange(1);
+	bars->SetValue(0.5);
+	bars->SetVisible(false);
 }
 
 
-SelectedHudElement::~SelectedHudElement() {
-	delete selected;
-	delete[] bars;
-}
+SelectedHudElement::~SelectedHudElement() = default;
 
-Urho3D::Button* SelectedHudElement::getButton() {
+Urho3D::Button* SelectedHudElement::getButton() const {
 	return button;
 }
 
-void SelectedHudElement::hide() {
+void SelectedHudElement::hide() const {
 	button->SetVisible(false);
 }
 
-void SelectedHudElement::show() {
+void SelectedHudElement::show() const {
 	button->SetVisible(true);
 }
 
-void SelectedHudElement::setText(const Urho3D::String& msg) {
+void SelectedHudElement::setText(const Urho3D::String& msg) const {
 	text->SetVisible(true);
 	text->SetText(msg);
 }
 
-void SelectedHudElement::hideText() {
+void SelectedHudElement::hideText() const {
 	text->SetVisible(false);
 }
 
-void SelectedHudElement::setTexture(Urho3D::Texture2D* texture) {
+void SelectedHudElement::setTexture(Urho3D::Texture2D* texture) const {
 	setTextureToSprite(icon, texture);
 }
 
 void SelectedHudElement::add(std::vector<Physical*>& physicals, int start, int end) {
-	selected->clear();
+	selected.clear();
 
-	for (int i = 0; i < MAX_SELECTED_IN_BUTTON; ++i) {
-		bars[i]->SetVisible(false);
-	}
+	float sum = 0;
 	for (int i = start; i < end; ++i) {
-		selected->push_back(physicals.at(i));
+		selected.push_back(physicals.at(i));
 		int ind = i - start;
 		if (ind < MAX_SELECTED_IN_BUTTON) {
-			bars[ind]->SetRange(1);
-			bars[ind]->SetValue(physicals.at(i)->getHealthPercent());
-			bars[ind]->SetVisible(true);
+			sum += physicals.at(i)->getHealthPercent();
 		}
 	}
+
+	bars->SetRange(1);
+	bars->SetValue(sum + (end - start));
+	bars->SetVisible(true);
 }
 
-std::vector<Physical*>* SelectedHudElement::getSelected() {
+std::vector<Physical*>& SelectedHudElement::getSelected() {
 	return selected;
 }
