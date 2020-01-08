@@ -60,7 +60,7 @@ void SelectedHudPanel::createBody() {
 
 int SelectedHudPanel::iconSize() {
 	auto test = new Urho3D::UIElement(Game::getContext());
-	test->SetStyle("SmallIcon", style);
+	test->SetStyle("Icon", style);
 
 	int size = test->GetSize().x_ + rows[0]->GetLayoutSpacing();
 	test->Remove();
@@ -75,7 +75,7 @@ void SelectedHudPanel::createRows() {
 	}
 }
 
-void SelectedHudPanel::clearSelected() {	
+void SelectedHudPanel::clearSelected() {
 	hide(0);
 }
 

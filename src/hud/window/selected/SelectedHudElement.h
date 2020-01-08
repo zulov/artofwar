@@ -9,8 +9,7 @@
 class MySprite;
 class Physical;
 
-class SelectedHudElement
-{
+class SelectedHudElement {
 public:
 	explicit SelectedHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style);
 	~SelectedHudElement();
@@ -26,10 +25,10 @@ public:
 	std::vector<Physical*>& getSelected();
 private:
 	Urho3D::Button* button;
-	std::vector<Physical*> selected;
-
-	MySprite* icon;
 	Urho3D::ProgressBar* bars;
 	Urho3D::Text* text;
 	Urho3D::UIElement* mock;
+	MySprite* icon;
+
+	std::vector<Physical*> selected;
 };

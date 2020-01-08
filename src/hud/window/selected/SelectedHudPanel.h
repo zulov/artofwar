@@ -22,7 +22,7 @@ private:
 	void hide(int i);
 	void createBody() override;
 	short maxInRow = 31;
-	short LINES_IN_SELECTION = 4;
+	short LINES_IN_SELECTION = 3;
 	std::vector<Urho3D::Button*> buttons;
 	SelectedHudElement** elements;
 	Urho3D::UIElement **rows;

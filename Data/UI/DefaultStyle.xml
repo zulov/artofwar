@@ -424,6 +424,17 @@
 		<attribute name="Horiz Alignment" value="Center" />
 		<attribute name="My Size" value="{(iconX-spaceX)*3/4} {(iconY-spaceY)*3/4}" />
     </element>
+		
+	<element type="Icon" style="Button">
+        <attribute name="Min Size" value="{iconX} {iconY}" />
+        <attribute name="Max Size" value="{iconX} {iconY}" />
+    </element>
+	
+	<element type="NormalSprite" style="Sprite">
+        <attribute name="Vert Alignment" value="Center" />
+		<attribute name="Horiz Alignment" value="Center" />
+		<attribute name="My Size" value="{(iconX-spaceX)} {(iconY-spaceY)}" />
+    </element>
 	
 	<element type="MyText" style="Text" >
 		<attribute name="Font" value="Font;Fonts/Anonymous Pro.ttf" />
@@ -434,8 +445,8 @@
 	</element>
 	
 	<element type="MiniProgressBar" style="ProgressBar">
-        <attribute name="Min Size" value="0 {spaceY*1.5}" />
-        <attribute name="Max Size" value="128 {spaceY*1.5}" />
+        <attribute name="Min Size" value="0 {spaceY*2}" />
+        <attribute name="Max Size" value="128 {spaceY*2}" />
         <attribute name="Image Rect" value="48 0 64 16" />
         <attribute name="Border" value="2 2 2 2" />
         <attribute name="Show Percent Text" value="false" />
@@ -453,8 +464,8 @@
 		<attribute name="Layout Spacing" value="0" />
         <attribute name="Layout Mode" value="Vertical" />
 		<attribute name="Vert Alignment" value="Bottom" />
-		<attribute name="Min Size" value="{iconX*3/4} {0}" />
-        <attribute name="Max Size" value="{iconX*3/4} {iconY*3/4}" />
+		<attribute name="Min Size" value="{iconX} {0}" />
+        <attribute name="Max Size" value="{iconX} {iconY*3/4}" />
 	</element>
 	
 	<element type="MsgButton" style="Button">

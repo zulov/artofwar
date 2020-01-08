@@ -79,11 +79,6 @@
 		<attribute name="Position" value="{-spaceX} {spaceY} "/>
     </element>
 	
-	<element type="Icon" style="Button">
-        <attribute name="Min Size" value="{iconX} {iconY}" />
-        <attribute name="Max Size" value="{iconX} {iconY}" />
-    </element>
-	
 	<element type="FileNameLineEdit" style="LineEdit">
         <attribute name="Min Size" value="{iconX*4} {iconY/2}" />
     </element>

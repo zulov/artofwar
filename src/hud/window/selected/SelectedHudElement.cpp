@@ -7,11 +7,11 @@
 SelectedHudElement::SelectedHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style) {
 	selected.reserve(MAX_SELECTED_IN_BUTTON);
 
-	button = createElement<Urho3D::Button>(parent, style, "SmallIcon");
+	button = createElement<Urho3D::Button>(parent, style, "Icon");
 	button->SetVisible(false);
 	text = addChildText(button, "MyText", style);
 
-	icon = createElement<MySprite>(button, style, "SmallSprite");
+	icon = createElement<MySprite>(button, style, "NormalSprite");
 	button->SetVar("SelectedHudElement", this);
 	mock = createElement<Urho3D::UIElement>(button, style, "mock");
 
