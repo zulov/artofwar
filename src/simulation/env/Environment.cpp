@@ -293,8 +293,10 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 }
 
 Urho3D::Vector2 Environment::bestPosToBuild(const char player, const short id) {
-	Urho3D::Vector2 center = influenceManager.getNewBuildingPos(player, id);
-	return mainGrid.getNewBuildingPos(center, player, id);
+	std::optional<Urho3D::Vector2> center = influenceManager.getNewBuildingPos(player, id);
+	if (center.has_value()) {
+		return mainGrid.getNewBuildingPos(center.value(), player, id);
+	}
 }
 
 float Environment::getDistToEnemy(Player* player) {

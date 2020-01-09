@@ -1,14 +1,13 @@
 #pragma once
 
 #include "../AbstractWindowPanel.h"
-#include <Urho3D/UI/Text.h>
 #include "info/TopInfoPanel.h"
+#include <Urho3D/UI/Text.h>
 
 class Resources;
 class TopHudElement;
 
-class TopPanel : public AbstractWindowPanel
-{
+class TopPanel : public AbstractWindowPanel {
 public:
 	explicit TopPanel(Urho3D::XMLFile* _style);
 	~TopPanel();

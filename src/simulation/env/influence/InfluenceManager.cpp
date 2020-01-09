@@ -171,6 +171,6 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 	return ci;
 }
 
-Urho3D::Vector2 InfluenceManager::getNewBuildingPos(const char player, const short id) {
+std::optional<Urho3D::Vector2> InfluenceManager::getNewBuildingPos(const char player, const short id) {
 	return buildingsInfluencePerPlayer[player]->getBestIndexToBuild(id);
 }

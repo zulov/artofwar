@@ -21,9 +21,11 @@ Brain::Brain(int numberOfHiddenLayers, int numberOfInput, int numberOfOutput, in
 }
 
 Brain::Brain(std::vector<std::string>& lines) {
-	for (auto line : lines) {
-		std::vector<float> w;
-		std::vector<float> b;
+	std::vector<float> w;
+	std::vector<float> b;
+	for (auto& line : lines) {
+		std::cout << line;
+
 		auto splitVec = split(line, ';');
 		auto p = std::find(splitVec.begin(), splitVec.end(), "");
 		std::vector<std::string>::iterator i;

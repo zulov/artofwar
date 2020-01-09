@@ -1,5 +1,6 @@
 #pragma once
 #include "InfluenceMap.h"
+#include <optional>
 
 
 class InfluenceMapFloat : public InfluenceMap {
@@ -10,7 +11,7 @@ public:
 	void update(Physical* physical, float value=1) override;
 	void reset() override;
 	float getValueAt(int index) const override;
-	Urho3D::Vector2 getBestIndexToBuild(const short id) const;
+	std::optional<Urho3D::Vector2> getBestIndexToBuild(const short id) const;
 private:
 	bool validIndex(int i) const;
 	float* values;

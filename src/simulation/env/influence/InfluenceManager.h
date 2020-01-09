@@ -4,6 +4,7 @@
 #include "map/InfluenceMapFloat.h"
 #include "player/ai/InfluanceType.h"
 #include <vector>
+#include <optional>
 
 #define DEFAULT_INF_GRID_SIZE 128
 #define DEFAULT_INF_FLOAT_GRID_SIZE 128
@@ -31,7 +32,7 @@ public:
 
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
 	                             int activePlayer);
-	Urho3D::Vector2 getNewBuildingPos(const char player, const short id);
+	std::optional<Urho3D::Vector2> getNewBuildingPos(const char player, const short id);
 private:
 	void resetMapsF(const std::vector<InfluenceMapFloat*> &maps) const;
 	void resetMapsI(const std::vector<InfluenceMapInt*> &maps) const;
