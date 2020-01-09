@@ -19,10 +19,10 @@ public:
 
 private:
 	int iconSize();
-	void hide(int i);
+	void hide(int i) const;
 	void createBody() override;
-	short maxInRow = 31;
-	short LINES_IN_SELECTION = 3;
+	char maxInRow;
+	const char linesNumber = 3;
 	std::vector<Urho3D::Button*> buttons;
 	SelectedHudElement** elements;
 	Urho3D::UIElement **rows;

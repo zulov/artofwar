@@ -10,23 +10,21 @@
 #include <Urho3D/Resource/ResourceCache.h>
 
 
-SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "SelectedInfoWindow",
-                                                                                 {
-	                                                                                 GameState::RUNNING,
-	                                                                                 GameState::PAUSE
-                                                                                 }) {
+SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style)
+	: AbstractWindowPanel(_style, "SelectedInfoWindow",
+	                      {GameState::RUNNING, GameState::PAUSE}) {
 }
 
 SelectedHudPanel::~SelectedHudPanel() {
-	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
+	for (int i = 0; i < linesNumber * maxInRow; ++i) {
 		delete elements[i];
 	}
 	delete[]elements;
 	delete[]rows;
 }
 
-void SelectedHudPanel::hide(int i) {
-	for (; i < LINES_IN_SELECTION * maxInRow; ++i) {
+void SelectedHudPanel::hide(int i) const {
+	for (; i < linesNumber * maxInRow; ++i) {
 		elements[i]->hide();
 	}
 }
@@ -44,16 +42,16 @@ void SelectedHudPanel::createBody() {
 
 	maxInRow = space / iconSize();
 
-	elements = new SelectedHudElement*[LINES_IN_SELECTION * maxInRow];
+	elements = new SelectedHudElement*[linesNumber * maxInRow];
 
-	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
+	for (int i = 0; i < linesNumber; ++i) {
 		for (int j = 0; j < maxInRow; ++j) {
 			elements[i * maxInRow + j] = new SelectedHudElement(rows[i], style);
 		}
 	}
 
-	buttons.reserve(LINES_IN_SELECTION * maxInRow);
-	for (int i = 0; i < LINES_IN_SELECTION * maxInRow; ++i) {
+	buttons.reserve(linesNumber * maxInRow);
+	for (int i = 0; i < linesNumber * maxInRow; ++i) {
 		buttons.push_back(elements[i]->getButton());
 	}
 }
@@ -69,8 +67,8 @@ int SelectedHudPanel::iconSize() {
 }
 
 void SelectedHudPanel::createRows() {
-	rows = new Urho3D::UIElement*[LINES_IN_SELECTION];
-	for (int i = 0; i < LINES_IN_SELECTION; ++i) {
+	rows = new Urho3D::UIElement*[linesNumber];
+	for (int i = 0; i < linesNumber; ++i) {
 		rows[i] = createElement<Urho3D::UIElement>(window, style, "MyListRow");
 	}
 }
@@ -85,7 +83,7 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 
 	int all = selectedInfo->getAllNumber();
 	auto selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
-	int ratio = all / (LINES_IN_SELECTION * maxInRow - selectedSubTypeNumber + 2) + 1;
+	int ratio = all / (linesNumber * maxInRow - selectedSubTypeNumber + 2) + 1;
 	int k = 0;
 	for (auto& infoType : infoTypes) {
 		auto& data = infoType->getData();
@@ -107,7 +105,7 @@ void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 				elements[k]->hideText();
 			}
 			++k;
-			if (k >= LINES_IN_SELECTION * maxInRow) {
+			if (k >= linesNumber * maxInRow) {
 				break;
 			}
 		}
