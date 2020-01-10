@@ -5,9 +5,7 @@
 #include "MathUtils.h"
 #include "ObjectEnums.h"
 #include "camera/CameraManager.h"
-#include "commands/CommandList.h"
 #include "commands/action/ActionCommand.h"
-#include "commands/creation/CreationCommandList.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
 #include "objects/ActionType.h"
@@ -29,6 +27,7 @@
 #include <Urho3D/IO/Log.h>
 #include <algorithm>
 #include <queue>
+#include "ActionCenter.h"
 
 
 Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), input(_input) {

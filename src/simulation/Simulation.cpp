@@ -7,9 +7,7 @@
 #include "SimulationInfo.h"
 #include "SimulationObjectManager.h"
 #include "commands/creation/CreationCommand.h"
-#include "commands/creation/CreationCommandList.h"
 #include "commands/upgrade/UpgradeCommand.h"
-#include "commands/upgrade/UpgradeCommandList.h"
 #include "env/Environment.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "objects/ActionType.h"
@@ -29,6 +27,7 @@
 #include <ctime>
 #include "player/ai/AiManager.h"
 #include "stats/Stats.h"
+#include "ActionCenter.h"
 
 
 Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {

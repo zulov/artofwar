@@ -96,9 +96,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 						came_from[next] = current;
 					}
 				}
-			} else {
-				int a = 5;
-			}
+			} 
 		}
 	}
 	//debug(startIdx, endIdx);

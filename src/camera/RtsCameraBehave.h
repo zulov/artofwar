@@ -6,7 +6,6 @@ class RtsCameraBehave : public CameraBehave
 public:
 	RtsCameraBehave();
 	virtual ~RtsCameraBehave();
-	void doWork(bool* cameraKeys, float timeStep, double diff);
 	void translate(bool cameraKeys[], int wheel, float timeStep, float min) override;
 	void rotate(const Urho3D::IntVector2& mouseMove, double mouse_sensitivity) override;
 

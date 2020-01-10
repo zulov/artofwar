@@ -4,7 +4,6 @@
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Scene/Scene.h>
-#include "ActionCenter.h"
 
 
 namespace Urho3D {
@@ -63,12 +62,10 @@ public:
 	static Urho3D::Log* getLog() { return instance->log; }
 	static Urho3D::UI* getUI() { return instance->ui; }
 
-	//static CreationCommandList* getCreationList() { return instance->creationCommandList; }
 	static FormationManager* getFormationManager() { return instance->formationManager; }
 	static ColorPaletteRepo* getColorPaletteRepo() { return instance->colorPaletteRepo; }
 	static DatabaseCache* getDatabaseCache() { return instance->databaseCache; }
 	static CameraManager* getCameraManager() { return instance->cameraManager; }
-	//static CommandList* getActionList() { return instance->actionCommandList; }
 	static PlayersManager* getPlayersMan() { return instance->playersManager; }
 	static Environment* getEnvironment() { return instance->environment; }
 	static QueueManager* getQueueManager() { return instance->queue; }
@@ -91,10 +88,8 @@ private:
 	Urho3D::Log* log;
 	Urho3D::UI* ui;
 
-	//CreationCommandList* creationCommandList;
 	FormationManager* formationManager;
 	ColorPaletteRepo* colorPaletteRepo;
-	//CommandList* actionCommandList;
 	PlayersManager* playersManager;
 	CameraManager* cameraManager;
 	DatabaseCache* databaseCache;
