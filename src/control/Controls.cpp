@@ -29,6 +29,7 @@
 #include <Urho3D/IO/Log.h>
 #include <algorithm>
 #include <queue>
+#include "ActionCenter.h"
 
 
 Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), input(_input) {

@@ -8,12 +8,13 @@
 #include "simulation/env/Environment.h"
 #include <fstream>
 #include "stats/Stats.h"
+#include "ActionCenter.h"
 
 
 Player::Player(int nationId, int team, char id, int color, Urho3D::String name, bool active): team(team),
-                                                                                             name(std::move(name)),
-                                                                                             id(id), color(color),
-                                                                                             active(active) {
+                                                                                              name(std::move(name)),
+                                                                                              id(id), color(color),
+                                                                                              active(active) {
 	dbNation = Game::getDatabaseCache()->getNation(nationId);
 
 	std::fill_n(unitLevels, UNITS_NUMBER_DB, 0);
