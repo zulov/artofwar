@@ -262,7 +262,7 @@ bool Unit::isFirstThingInSameSocket() const {
 }
 
 void Unit::action(char id, const ActionParameter& parameter) {
-	switch (id) {
+	switch (static_cast<UnitOrder>(id)) {
 	case UnitOrder::GO:
 		StateManager::changeState(this, UnitState::GO_TO, parameter);
 		break;
@@ -290,22 +290,6 @@ void Unit::action(char id, const ActionParameter& parameter) {
 		break;
 	default: ;
 	}
-}
-
-std::string Unit::getValues(int precision) {
-	const int position_x = position.x_ * precision;
-	const int position_z = position.z_ * precision;
-	const int state = static_cast<int>(this->state);
-	const int velocity_x = velocity.x_ * precision;
-	const int velocity_z = velocity.y_ * precision;
-	return Physical::getValues(precision)
-		+ std::to_string(position_x) + "," +
-		std::to_string(position_z) + "," +
-		std::to_string(state) + "," +
-		std::to_string(velocity_x) + "," +
-		std::to_string(velocity_z) + "," +
-		std::to_string(-1);
-
 }
 
 void Unit::addUpgrade(db_unit_upgrade* upgrade) {
@@ -391,6 +375,21 @@ std::string Unit::getColumns() {
 		"state			INT     NOT NULL,"
 		"velocity_x		INT     NOT NULL,"
 		"velocity_z		INT     NOT NULL";
+}
+
+std::string Unit::getValues(int precision) {
+	const int position_x = position.x_ * precision;
+	const int position_z = position.z_ * precision;
+	const int state = static_cast<int>(this->state);
+	const int velocity_x = velocity.x_ * precision;
+	const int velocity_z = velocity.y_ * precision;
+	return Physical::getValues(precision)
+		+ std::to_string(position_x) + "," +
+		std::to_string(position_z) + "," +
+		std::to_string(state) + "," +
+		std::to_string(velocity_x) + "," +
+		std::to_string(velocity_z);
+
 }
 
 void Unit::applyForce(double timeStep) {

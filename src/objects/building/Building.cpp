@@ -8,10 +8,10 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
-#include <string>
 #include "consts.h"
 #include "objects/NodeUtils.h"
 #include "../ValueType.h"
+#include <string>
 
 
 Building::Building(Urho3D::Vector3& _position, int id, int player, int level, int mainCell):
@@ -52,7 +52,8 @@ void Building::absorbAttack(float attackCoef) {
 		StateManager::changeState(this, StaticState::DEAD);
 	}
 }
-ObjectType Building::getType() const{
+
+ObjectType Building::getType() const {
 	return ObjectType::BUILDING;
 }
 
@@ -112,21 +113,17 @@ void Building::upgrade(char level) {
 
 void Building::load(dbload_building* dbloadBuilding) {
 	Static::load(dbloadBuilding);
-//	target = {dbloadBuilding->target_x, dbloadBuilding->target_z};
+	//	target = {dbloadBuilding->target_x, dbloadBuilding->target_z};
 }
 
 std::string Building::getColumns() {
 	return Static::getColumns() +
-		"target_x		INT     NOT NULL,"
-		"target_z		INT     NOT NULL";
+		"deploy_Idx		INT     NOT NULL";
 }
 
 std::string Building::getValues(int precision) {
-//	int target_x = target.x_ * precision;
-//	int target_y = target.y_ * precision;
-	return Static::getValues(precision);
-	//	+ std::to_string(target_x) + ","
-	//	+ std::to_string(target_y);
+	return Static::getValues(precision)
+		+ std::to_string(deployIndex);
 }
 
 int Building::getLevel() {

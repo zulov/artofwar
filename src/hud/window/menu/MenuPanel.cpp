@@ -273,7 +273,12 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 		db_order* order = Game::getDatabaseCache()->getOrder(id);
 		if (order) {
 			//TODO BUG textures/hud/icon/orders/map/HeightMap.png
-			std::cout << order->icon.CString() << std::endl;
+			std::string name = "textures/hud/icon/orders/";
+			name.append((order->icon).CString());
+			std::string name1 = "textures/hud/icon/orders/map/HeightMap.png";
+			if (name1==name) {
+				int a = 5;
+			}
 			setNext(k, "textures/hud/icon/orders/" + order->icon, order->id, ActionType::ORDER, "");
 		}
 	}

@@ -24,8 +24,6 @@ Brain::Brain(std::vector<std::string>& lines) {
 	std::vector<float> w;
 	std::vector<float> b;
 	for (auto& line : lines) {
-		std::cout << line;
-
 		auto splitVec = split(line, ';');
 		auto p = std::find(splitVec.begin(), splitVec.end(), "");
 		std::vector<std::string>::iterator i;

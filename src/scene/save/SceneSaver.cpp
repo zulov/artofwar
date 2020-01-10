@@ -83,14 +83,15 @@ void SceneSaver::createDatabase(const Urho3D::String& fileName) {
 	}
 }
 
-void SceneSaver::createSave(Urho3D::String fileName) {
+void SceneSaver::createSave(const Urho3D::String& fileName) {
 	loadingState.reset(7, "create database");
 	createDatabase(fileName);
 	loadingState.inc("create Tables");
 	createTables();
 }
 
-void SceneSaver::executeInsert(std::string sqlstatement) {
+void SceneSaver::executeInsert(std::string &sqlstatement) {
+	std::cout<<sqlstatement<< std::endl;
 	sqlstatement[sqlstatement.size() - 1] = ';';
 	sqlite3_stmt* stmt;
 	const int rc = sqlite3_prepare(database, sqlstatement.c_str(), -1, &stmt, NULL);
@@ -118,6 +119,7 @@ void SceneSaver::saveBuildings(std::vector<Building*>* buildings) {
 	for (auto building : *buildings) {
 		sql += " (" + building->getValues(precision) + "),";
 	}
+	//std::cout << sql << std::endl;
 	executeInsert(sql);
 }
 

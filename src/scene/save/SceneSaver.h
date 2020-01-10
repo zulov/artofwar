@@ -14,15 +14,14 @@ class ResourceEntity;
 class Building;
 class Player;
 
-class SceneSaver
-{
+class SceneSaver {
 public:
 	explicit SceneSaver(int _precision);
 	~SceneSaver();
 
 	void createTables();
 	void createDatabase(const Urho3D::String& fileName);
-	void createSave(Urho3D::String fileName);
+	void createSave(const Urho3D::String& fileName);
 	void saveUnits(std::vector<Unit*>* units);
 	void saveBuildings(std::vector<Building*>* buildings);
 	void saveResourceEntities(std::vector<ResourceEntity*>* resources);
@@ -31,7 +30,7 @@ public:
 	void saveConfig();
 	void close();
 private:
-	void executeInsert(std::string sqlstatement);
+	void executeInsert(std::string& sqlstatement);
 
 	void createUnitsTable();
 	void createTable(const std::string& sql);

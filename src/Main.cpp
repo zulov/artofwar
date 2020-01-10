@@ -217,7 +217,7 @@ void Main::updateProgress(loading& progress, std::string msg) const {
 	hud->updateLoading(progress.getProgres());
 }
 
-void Main::load(String saveName, loading& progress) {
+void Main::load(const String& saveName, loading& progress) {
 	switch (progress.currentStage) {
 	case 0:
 	{
