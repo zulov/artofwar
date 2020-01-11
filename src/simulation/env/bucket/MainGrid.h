@@ -12,7 +12,7 @@ namespace Urho3D {
 	class Image;
 }
 
-class content_info;
+struct content_info;
 
 
 enum class GridDebugType : char {

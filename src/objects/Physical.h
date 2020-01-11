@@ -90,7 +90,7 @@ public:
 	virtual float getValueOf(ValueType type) const;
 
 protected:
-	void loadXml(Urho3D::String xmlName);
+	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);
 	virtual float getHealthBarThick() { return 0.15; }
 

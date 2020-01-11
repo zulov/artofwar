@@ -21,6 +21,7 @@
 
 #include <Urho3D/Container/Str.h>
 #include <Urho3D/Math/Vector2.h>
+#include <utility>
 #include <vector>
 
 
@@ -283,7 +284,7 @@ struct db_cost {
 		  resource(resource),
 		  value(value),
 		  thing(thing),
-		  resourceName(resourceName) {
+		  resourceName(std::move(resourceName)) {
 	}
 };
 

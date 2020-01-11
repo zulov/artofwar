@@ -5,7 +5,7 @@
 class Aim;
 
 struct ActionParameter {
-	class Builder;
+	struct Builder;
 
 	ActionParameter(Aim* aim, ActionType type, int index, std::vector<Physical*>& _thingsToInteract)
 		: aim(aim), type(type), index(index) {

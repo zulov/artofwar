@@ -19,7 +19,7 @@ struct AiNode {
 	AiOrderData getOrder();
 	void update(float value);
 	const std::string& getName() const;
-	std::optional<AiNode*> getChildByName(std::string str);
+	std::optional<AiNode*> getChildByName(const std::string& str);
 
 	AiNode* addChild(const std::string& name, float targetValue, AiOrderData data);
 
@@ -61,7 +61,7 @@ inline const std::string& AiNode::getName() const {
 	return name;
 }
 
-inline std::optional<AiNode*> AiNode::getChildByName(std::string str) {
+inline std::optional<AiNode*> AiNode::getChildByName(const std::string& str) {
 	for (auto& child : children) {
 		if (child->getName() == str) {
 			return child;

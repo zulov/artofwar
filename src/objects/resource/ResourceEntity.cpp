@@ -44,9 +44,11 @@ float ResourceEntity::getHealthPercent() const {
 }
 
 Urho3D::String ResourceEntity::toMultiLineString() {
+	auto l10n = Game::getLocalization();
+
 	return Urho3D::String(dbResource->name)
-	       .Append("\nZasobów: ").Append(Urho3D::String((int)amonut)).Append(
-		       "\nU¿ytkowników: ").Append(Urho3D::String((int)closeUsers))
+	       .Append("\n" + l10n->Get("ml_res_1") + ": ").Append(Urho3D::String((int)amonut))
+	       .Append("\n" + l10n->Get("ml_res_2") + ": ").Append(Urho3D::String((int)closeUsers))
 	       .Append("/").Append(Urho3D::String((int)maxCloseUsers));
 }
 
@@ -57,7 +59,7 @@ std::string ResourceEntity::getValues(int precision) {
 }
 
 void ResourceEntity::action(char id, const ActionParameter& parameter) {
-	switch (id) {
+	switch (static_cast<ResourceOrder>(id)) {
 	case ResourceOrder::COLLECT:
 	{
 		auto neights = Game::getEnvironment()->getNeighboursFromTeam(this, 24,

@@ -15,7 +15,7 @@ PlayersManager::~PlayersManager() {
 
 void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dbload_resource*>* resources) {
 	for (auto player : *players) {
-		Player* newPlayer = new Player(player->nation, player->team, player->id, player->color, player->name,
+		auto newPlayer = new Player(player->nation, player->team, player->id, player->color, player->name,
 		                               player->is_active);
 		if (player->is_active) {
 			activePlayer = newPlayer;
@@ -34,7 +34,7 @@ void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dblo
 }
 
 void PlayersManager::addPlayer(NewGamePlayer& player) {
-	Player* newPlayer = new Player(player.nation, player.team, player.id, player.color, player.name, player.active);
+	auto newPlayer = new Player(player.nation, player.team, player.id, player.color, player.name, player.active);
 	if (player.active) {
 		activePlayer = newPlayer;
 	}

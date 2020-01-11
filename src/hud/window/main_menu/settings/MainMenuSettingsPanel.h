@@ -14,12 +14,12 @@ struct SettingsForm;
 class MainMenuSettingsPanel : public MainMenuDetailsPanel
 {
 public:
-	MainMenuSettingsPanel(Urho3D::XMLFile* _style, Urho3D::String _title);
+	MainMenuSettingsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~MainMenuSettingsPanel();
 	void setValues(int graphID) const;
 private:
 	void createBody() override;
-	void populateLabels(int index, Urho3D::String name);
+	void populateLabels(int index, const Urho3D::String& name);
 	void popualateForm(SettingsForm* form) const;
 	void HandleChangeSettings(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	void HandleSaveSettings(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);

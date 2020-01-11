@@ -34,7 +34,7 @@ DebugLineRepo::DebugLineRepo() = default;
 
 DebugLineRepo::~DebugLineRepo() {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		for (auto vector : geometry) {
+		for (const auto& vector : geometry) {
 			for (auto customGeometry : vector) {
 				customGeometry->Remove();
 			}

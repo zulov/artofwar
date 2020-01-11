@@ -27,6 +27,8 @@
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
+
+#include <utility>
 #include "stats/Stats.h"
 
 
@@ -190,7 +192,7 @@ void Main::InitLocalizationSystem() const {
 	Game::setLocalization(l10n);
 }
 
-void Main::save(String name) {
+void Main::save(const String& name) {
 	saver.createSave(name);
 	saver.saveConfig();
 	simulation->save(saver);
@@ -212,7 +214,7 @@ void Main::setSimpleManagers() {
 }
 
 void Main::updateProgress(loading& progress, std::string msg) const {
-	progress.inc(msg);
+	progress.inc(std::move(msg));
 	hud->updateLoading(progress.getProgres());
 }
 

@@ -12,12 +12,12 @@
 class MainMenuNewGamePanel : public MainMenuDetailsPanel
 {
 public:
-	MainMenuNewGamePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
+	MainMenuNewGamePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~MainMenuNewGamePanel();
 	Urho3D::Button* getProceed() const;
 
 private:
-	void populateLabels(Urho3D::Localization* localization, int i, Urho3D::String name);
+	void populateLabels(Urho3D::Localization* localization, int i, const Urho3D::String& name);
 	void HandleCheck(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	void HandleNewGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 

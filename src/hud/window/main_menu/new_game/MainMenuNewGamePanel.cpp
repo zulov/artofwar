@@ -8,7 +8,7 @@
 
 
 MainMenuNewGamePanel::
-MainMenuNewGamePanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDetailsPanel(_style, _title) {
+MainMenuNewGamePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(_style, _title) {
 	bodyStyle = "MainMenuNewGameMock";
 	srand(time(NULL));
 }
@@ -76,7 +76,7 @@ void MainMenuNewGamePanel::HandleNewGame(Urho3D::StringHash eventType, Urho3D::V
 	data->players.push_back(enemyLine.getNewGamePlayer());
 }
 
-void MainMenuNewGamePanel::populateLabels(Urho3D::Localization* l10n, int index, const Urho3D::String name) {
+void MainMenuNewGamePanel::populateLabels(Urho3D::Localization* l10n, int index, const Urho3D::String& name) {
 	addChildText(rows[index], "MainMenuNewGameButtonLabel", l10n->Get(name), style);
 }
 

@@ -61,7 +61,7 @@ private:
 	void changeCamera(int type);
 	void load(const Urho3D::String& saveName, loading& progress);
 	void createEnv() const;
-	void save(Urho3D::String name);
+	void save(const Urho3D::String& name);
 	void running(double timeStep);
 	void createSimulation();
 static void setSimpleManagers();

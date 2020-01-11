@@ -2,6 +2,7 @@
 #include "utils.h"
 #include "StringUtils.h"
 #include <iostream>
+#include "AFUtil.h"
 
 Brain::Brain(int numberOfHiddenLayers, int numberOfInput, int numberOfOutput, int wSize) {
 	input = new Layer(numberOfInput, 0);
@@ -27,11 +28,11 @@ Brain::Brain(std::vector<std::string>& lines) {
 		auto splitVec = split(line, ';');
 		auto p = std::find(splitVec.begin(), splitVec.end(), "");
 		std::vector<std::string>::iterator i;
-		for (i = splitVec.begin(); i != p; i++) {
+		for (i = splitVec.begin(); i != p; ++i) {
 			w.push_back(atof((*i).c_str()));
 		}
 		i += 2;
-		for (; i != splitVec.end(); i++) {
+		for (; i != splitVec.end(); ++i) {
 			b.push_back(atof((*i).c_str()));
 		}
 		allLayers.push_back(new Layer(w, b));
@@ -71,7 +72,7 @@ Eigen::MatrixXf Brain::multiply(Layer* current, Layer* prevLayer) {
 void Brain::setValues(Layer* layer, Eigen::MatrixXf& mult) const {
 	for (int i = 0; i < mult.rows(); i++) {
 		double q = mult(i) + layer->getBias(i);
-		double newValue = tanh(q);
+		double newValue = tanh1(q);
 		layer->setValueAt(i, newValue);
 	}
 }

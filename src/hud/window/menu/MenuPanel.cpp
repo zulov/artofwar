@@ -19,6 +19,7 @@
 #include <Urho3D/UI/UIEvents.h>
 #include <unordered_set>
 #include <iostream>
+#include <utility>
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow",
@@ -143,12 +144,12 @@ void MenuPanel::ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMa
 	}
 }
 
-void MenuPanel::setNext(int& k, Urho3D::String texture, int id, ActionType menuAction, Urho3D::String text) {
+void MenuPanel::setNext(int& k, const Urho3D::String& texture, int id, ActionType menuAction, Urho3D::String text) {
 	setTextureToSprite(sprites[k], Game::getCache()->GetResource<Urho3D::Texture2D>(texture));
 
 	buttons[k]->SetVisible(true);
 
-	hudElements[k]->set(id, menuAction, text);
+	hudElements[k]->set(id, menuAction, std::move(text));
 	k++;
 }
 

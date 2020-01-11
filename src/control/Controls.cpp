@@ -272,7 +272,6 @@ void Controls::order(short id, const ActionParameter& parameter) {
 	case ObjectType::UNIT:
 		return actionUnit(id, parameter);
 	case ObjectType::BUILDING:
-		return executeOnAll(id, parameter);
 	case ObjectType::RESOURCE:
 		return executeOnAll(id, parameter);
 	}

@@ -7,7 +7,7 @@
 
 
 MainMenuSettingsPanel::
-MainMenuSettingsPanel(Urho3D::XMLFile* _style, Urho3D::String _title): MainMenuDetailsPanel(_style, _title) {
+MainMenuSettingsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(_style, _title) {
 	bodyStyle = "MainMenuSettingsMock";
 }
 
@@ -98,7 +98,7 @@ void MainMenuSettingsPanel::createBody() {
 	setValues(graphID);
 }
 
-void MainMenuSettingsPanel::populateLabels(int index, Urho3D::String name) {
+void MainMenuSettingsPanel::populateLabels(int index, const Urho3D::String& name) {
 	addChildText(rows[index], "MainMenuSettingsLabel", Game::getLocalization()->Get(name), style);
 }
 

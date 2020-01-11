@@ -129,7 +129,6 @@ void Player::execute(const AiOrderData& orderData) {
 	Game::getLog()->Write(0, "test");
 	switch (orderData.type) {
 	case AiOrderType::NONE:
-
 		break;
 	case AiOrderType::BUILD:
 	{
@@ -138,10 +137,8 @@ void Player::execute(const AiOrderData& orderData) {
 	}
 	break;
 	case AiOrderType::ORDER:
-
 		break;
 	case AiOrderType::DEPLOY:
-
 		break;
 	default: ;
 	}
@@ -173,7 +170,7 @@ void Player::addBasicNodes(AiNode* parent) {
 }
 
 void Player::mockLeaf(AiNode* parent, std::string name) {
-	auto opt1 = parent->getChildByName(name);
+	auto opt1 = parent->getChildByName(std::move(name));
 	if (opt1.has_value()) {
 		opt1.value()->addChild("Mock", 1, {AiOrderType::NONE, -1});
 	}

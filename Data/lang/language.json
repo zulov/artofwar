@@ -248,5 +248,14 @@
 	},		
 	"new_load_msg_5":{
 		"pl":"Kończenie ładowania"
+	},		
+	"ml_res_1":{
+		"pl":"Zasobów"
+	},	
+	"ml_res_2":{
+		"pl":"Używane przez"
+	},	
+	"ml_build":{
+		"pl":"\nAtak: %f\nObrona: %f\nZdrowie: %d/%d\nUżytkowników: %d/%d\nStan: %s"
 	}
 }

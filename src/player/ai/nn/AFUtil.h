@@ -5,7 +5,7 @@ double sigm(double x) {
 	return 1 / (1 + exp(-x));
 }
 
-double tanh(double x) {
+double tanh1(double x) {
 	return tanh(x);
 }
 

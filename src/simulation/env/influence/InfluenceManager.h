@@ -14,7 +14,7 @@ enum class CellState : char;
 class Unit;
 class Building;
 class ResourceEntity;
-class content_info;
+struct content_info;
 
 class InfluenceManager {
 public:

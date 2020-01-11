@@ -454,7 +454,6 @@
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\simulation\Simulation.h" />
     <ClInclude Include="src\objects\unit\state\UnitState.h" />
-    <ClInclude Include="src\objects\unit\UnitType.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommand.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommandList.h" />

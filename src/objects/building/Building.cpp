@@ -58,13 +58,11 @@ ObjectType Building::getType() const {
 }
 
 Urho3D::String Building::toMultiLineString() {
+	auto l10n = Game::getLocalization();
+
 	return Urho3D::String(dbBuilding->name + " " + dbLevel->name)
-	       .Append("\nAtak: ").Append(Urho3D::String(attackCoef))
-	       .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
-	       .Append("\nZdrowie: ").Append(Urho3D::String((int)hp)).Append("/").Append(Urho3D::String(maxHp))
-	       .Append("\nU¿ytkowników: ").Append(Urho3D::String((int)closeUsers))
-	       .Append("/").Append(Urho3D::String((int)maxCloseUsers))
-	       .Append("\nStan: ").Append(Consts::StaticStateNames[static_cast<char>(state)]);
+		.AppendWithFormat(l10n->Get("ml_build").CString(), attackCoef, defenseCoef, (int)hp, maxHp, closeUsers,
+		                  maxCloseUsers, Consts::StaticStateNames[static_cast<char>(state)]);
 }
 
 void Building::action(char id, const ActionParameter& parameter) {

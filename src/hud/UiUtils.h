@@ -6,6 +6,7 @@
 #include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/UI/Sprite.h>
 #include <Urho3D/UI/Text.h>
+#include <utility>
 #include <vector>
 
 static Urho3D::Button* simpleButton(Urho3D::XMLFile* style, const Urho3D::String& styleName) {
@@ -63,7 +64,7 @@ static MySprite* createSprite(Urho3D::UIElement* parent, Urho3D::Texture2D* text
 	return sprite;
 }
 
-inline Urho3D::Text* addTextItem(Urho3D::DropDownList* cob, Urho3D::String str, Urho3D::XMLFile* style) {
+inline Urho3D::Text* addTextItem(Urho3D::DropDownList* cob, const Urho3D::String& str, Urho3D::XMLFile* style) {
 	auto item = new Urho3D::Text(Game::getContext());
 	item->SetStyle("MyText", style);
 	item->SetText(str);
@@ -71,31 +72,32 @@ inline Urho3D::Text* addTextItem(Urho3D::DropDownList* cob, Urho3D::String str, 
 	return item;
 }
 
-inline Urho3D::Text* addChildText(Urho3D::UIElement* parent, Urho3D::String styleName, Urho3D::XMLFile* style) {
+inline Urho3D::Text* addChildText(Urho3D::UIElement* parent, const Urho3D::String& styleName, Urho3D::XMLFile* style) {
 	return createElement<Urho3D::Text>(parent, style, styleName);
 }
 
-inline Urho3D::Text* addChildText(Urho3D::UIElement* parent, Urho3D::String styleName, Urho3D::String value,
+inline Urho3D::Text* addChildText(Urho3D::UIElement* parent, Urho3D::String styleName, const Urho3D::String& value,
                                   Urho3D::XMLFile* style) {
-	auto text = addChildText(parent, styleName, style);
+	auto text = addChildText(parent, std::move(styleName), style);
 	text->SetText(value);
 	return text;
 }
 
 
-inline void addChildTexts(Urho3D::DropDownList* cob, std::vector<Urho3D::String> names, Urho3D::XMLFile* style) {
+inline void addChildTexts(Urho3D::DropDownList* cob, const std::vector<Urho3D::String>& names, Urho3D::XMLFile* style) {
 	for (auto& name : names) {
 		addTextItem(cob, name, style);
 	}
 }
 
-inline void addTextItem(Urho3D::DropDownList* cob, Urho3D::String& name, Urho3D::XMLFile* style, Urho3D::Variant var,
+inline void addTextItem(Urho3D::DropDownList* cob, Urho3D::String& name, Urho3D::XMLFile* style, const Urho3D::Variant&
+                        var,
                         const Urho3D::String& varName) {
 	addTextItem(cob, name, style)->SetVar(varName, var);
 }
 
 inline void addChildTexts(Urho3D::DropDownList* cob, std::vector<Urho3D::String> names, Urho3D::XMLFile* style,
-                          std::vector<Urho3D::Variant> vars, Urho3D::String varsName) {
+                          std::vector<Urho3D::Variant> vars, const Urho3D::String& varsName) {
 	for (int i = 0; i < names.size(); ++i) {
 		addTextItem(cob, names.at(i), style, vars.at(i), varsName);
 	}
