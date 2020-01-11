@@ -44,7 +44,7 @@ void CameraBehave::translateCam(float timeStep, double diff, Urho3D::Vector3 dir
 	changed = true;
 }
 
-void CameraBehave::translateInternal(bool* cameraKeys, float timeStep, double diff) {
+void CameraBehave::translateInternal(const bool* cameraKeys, float timeStep, double diff) {
 	for (int i = 0; i < 4; ++i) {
 		if (cameraKeys[i]) {
 			translateCam(timeStep, coefs[i] * diff, dirs[i]);

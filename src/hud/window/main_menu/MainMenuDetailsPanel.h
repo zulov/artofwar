@@ -12,7 +12,6 @@ protected:
 
 	void createBody() override;
 private:
-	Urho3D::Text* title;
 	Urho3D::String msg;
 };
 

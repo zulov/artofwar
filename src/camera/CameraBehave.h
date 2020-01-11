@@ -20,7 +20,7 @@ public:
 	void changePosition(float percentX, float percentY);
 protected:
 	void translateCam(float timeStep, double diff, Urho3D::Vector3 dir);
-	void translateInternal(bool* cameraKeys, float timeStep, double diff);
+	void translateInternal(const bool* cameraKeys, float timeStep, double diff);
 	Urho3D::Node* cameraNode;
 	Urho3D::String* info;
 	bool changed;

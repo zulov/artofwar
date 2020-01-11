@@ -17,7 +17,7 @@ public:
 	Urho3D::Button* getProceed() const;
 
 private:
-	void populateLabels(Urho3D::Localization* localization, int i, const Urho3D::String& name);
+	void populateLabels(Urho3D::Localization* l10n, int index, const Urho3D::String& name);
 	void HandleCheck(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	void HandleNewGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 

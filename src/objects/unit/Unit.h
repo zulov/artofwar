@@ -58,7 +58,8 @@ public:
 	void toCharge(std::vector<Physical*>* enemies);
 
 	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order);
-	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order, float attackIntrest);
+	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order,
+                    float attackInterest);
 
 	void updateHeight(float y, double timeStep);
 
@@ -107,7 +108,7 @@ public:
 	void setOccupiedSlot(int indexToInteract, bool value) override { useSockets[indexToInteract] = value; }
 	Urho3D::Vector2 getPosToUse();
 
-	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* unit) override;
+	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* follower) override;
 	void action(char id, const ActionParameter& parameter) override;
 	void action(char id);
 	bool isFirstThingInSameSocket() const override;
@@ -119,7 +120,7 @@ public:
 	int getDbID() override;
 	void clean() override;
 	float getValueOf(ValueType type) const override;
-	Urho3D::Vector2 getSocketPos(Unit* unit, int i) const;
+	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 private:
 	void actionIfCloseEnough(UnitOrder order, Physical* closest, int indexToInteract,
 	                         float sqDistance, float closeRange, float interestRange);
