@@ -52,6 +52,6 @@ void MainMenuLoadPanel::HandleLoadClick(Urho3D::StringHash eventType, Urho3D::Va
 	action(text->GetText());
 }
 
-Urho3D::Button* MainMenuLoadPanel::getLoadButton() {
+Urho3D::Button* MainMenuLoadPanel::getLoadButton() const {
 	return loadButton;
 }

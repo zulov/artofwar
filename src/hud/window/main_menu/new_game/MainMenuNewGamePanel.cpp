@@ -56,7 +56,7 @@ void MainMenuNewGamePanel::createBody() {
 	addChildText(proceed, "MainMenuNewGameButtonText", l10n->Get("start"), style);
 }
 
-Urho3D::Button* MainMenuNewGamePanel::getProceed() {
+Urho3D::Button* MainMenuNewGamePanel::getProceed() const {
 	return proceed;
 }
 

@@ -14,7 +14,7 @@ class MainMenuNewGamePanel : public MainMenuDetailsPanel
 public:
 	MainMenuNewGamePanel(Urho3D::XMLFile* _style, Urho3D::String _title);
 	~MainMenuNewGamePanel();
-	Urho3D::Button* getProceed();
+	Urho3D::Button* getProceed() const;
 
 private:
 	void populateLabels(Urho3D::Localization* localization, int i, Urho3D::String name);

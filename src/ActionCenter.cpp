@@ -51,6 +51,6 @@ bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, i
 	return creation->addBuilding(id, position, player, level);
 }
 
-auto ActionCenter::addResource(int id, Urho3D::Vector2& position, int level) -> bool {
+auto ActionCenter::addResource(int id, Urho3D::Vector2& position, int level) const -> bool {
 	return creation->addResource(id, position, level);
 }

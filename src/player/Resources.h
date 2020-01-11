@@ -11,8 +11,8 @@ public:
 	~Resources();
 	bool reduce(std::vector<db_cost*>* costs);
 	void add(int id, float value);
-	bool hasChanged();
-	short getSize();
+	bool hasChanged() const;
+	short getSize() const;
 	float *getValues();
 	void hasBeedUpdatedDrawn();
 	std::string getValues(int precision, int player);

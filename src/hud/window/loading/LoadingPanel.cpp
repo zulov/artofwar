@@ -30,6 +30,6 @@ void LoadingPanel::createBody() {
 	bar->SetVisible(true);
 }
 
-void LoadingPanel::update(float progres) {
+void LoadingPanel::update(float progres) const {
 	bar->SetValue(progres);
 }

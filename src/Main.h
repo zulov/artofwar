@@ -30,7 +30,7 @@ URHO3D_OBJECT(Main, Application)
 
 protected:
 	void InitMouseMode(Urho3D::MouseMode mode);
-	void SetupViewport();
+	void SetupViewport() const;
 
 private:
 
@@ -55,12 +55,12 @@ private:
 	void HandleLeftMenuButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	void HandleSelectedButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
-	void InitLocalizationSystem();
+	void InitLocalizationSystem() const;
 
 	SelectedInfo* control(float timeStep, SimulationInfo* simulationInfo);
 	void changeCamera(int type);
 	void load(const Urho3D::String& saveName, loading& progress);
-	void createEnv();
+	void createEnv() const;
 	void save(Urho3D::String name);
 	void running(double timeStep);
 	void createSimulation();

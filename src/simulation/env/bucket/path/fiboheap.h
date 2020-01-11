@@ -11,8 +11,8 @@ public:
 
 	class FibNode {
 	public:
-		FibNode(const float k, const int pl): left(nullptr), right(nullptr), child(nullptr), key(k), degree(-1),
-		                                      payload(pl) {
+		FibNode(const float k, const int pl): left(nullptr), right(nullptr), child(nullptr), key(k), payload(pl),
+		                                      degree(-1) {
 		}
 
 		~FibNode() = default;

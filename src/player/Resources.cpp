@@ -45,11 +45,11 @@ void Resources::add(int id, float value) {
 	changed = true;
 }
 
-bool Resources::hasChanged() {
+bool Resources::hasChanged() const {
 	return changed;
 }
 
-short Resources::getSize() {
+short Resources::getSize() const {
 	return size;
 }
 

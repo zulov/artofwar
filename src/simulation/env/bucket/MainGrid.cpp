@@ -15,7 +15,7 @@
 #define CLOSE_INDEX_LEVEL 3
 
 
-void MainGrid::initCloseIndexs(char a, std::vector<short>& vector) {
+void MainGrid::initCloseIndexs(char a, std::vector<short>& vector) const {
 	for (char i = -a; i <= a; ++i) {
 		for (char j = -a; j <= a; ++j) {
 			vector.push_back(i * resolution + j);
@@ -73,7 +73,7 @@ MainGrid::~MainGrid() {
 	delete pathConstructor;
 }
 
-void MainGrid::prepareGridToFind() {
+void MainGrid::prepareGridToFind() const {
 	for (int i = 0; i < resolution * resolution; ++i) {
 		updateNeighbors(i);
 	}
@@ -81,12 +81,12 @@ void MainGrid::prepareGridToFind() {
 }
 
 
-bool MainGrid::validateAdd(Static* object) {
+bool MainGrid::validateAdd(Static* object) const {
 	const auto pos = object->getPosition();
 	return validateAdd(object->getGridSize(), Urho3D::Vector2(pos.x_, pos.z_));
 }
 
-bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) {
+bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const {
 	const auto sizeX = calculateSize(size.x_, calculator.getIndex(pos.x_));
 	const auto sizeZ = calculateSize(size.y_, calculator.getIndex(pos.y_));
 
@@ -125,7 +125,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 	return -sum;
 }
 
-void MainGrid::invalidateCache() {
+void MainGrid::invalidateCache() const {
 	pathConstructor->invalidateCache();
 }
 
@@ -213,7 +213,7 @@ int MainGrid::getRevertCloseIndex(int center, int gridIndex) {
 	return 0;
 }
 
-void MainGrid::addDeploy(Building* building) {
+void MainGrid::addDeploy(Building* building) const {
 	auto optDeployIndex = building->getDeploy();
 
 	if (optDeployIndex.has_value()) {
@@ -221,23 +221,23 @@ void MainGrid::addDeploy(Building* building) {
 	}
 }
 
-void MainGrid::removeDeploy(Building* building) {
+void MainGrid::removeDeploy(Building* building) const {
 	complexData[building->getDeploy().value()].removeDeploy();
 }
 
-CellState MainGrid::getCellAt(float x, float z) {
+CellState MainGrid::getCellAt(float x, float z) const {
 	auto index = indexFromPosition({x, z});
 
 	return complexData[index].getType();
 }
 
-int MainGrid::getAdditionalInfoAt(float x, float z) {
+int MainGrid::getAdditionalInfoAt(float x, float z) const {
 	auto index = indexFromPosition({x, z});
 
 	return complexData[index].getAdditionalInfo();
 }
 
-void MainGrid::drawDebug(GridDebugType type) {
+void MainGrid::drawDebug(GridDebugType type) const {
 	DebugLineRepo::clear(DebugLineType::MAIN_GRID);
 
 	DebugLineRepo::beginGeometry(DebugLineType::MAIN_GRID);
@@ -276,7 +276,7 @@ void MainGrid::drawDebug(GridDebugType type) {
 	DebugLineRepo::commit(DebugLineType::MAIN_GRID);
 }
 
-bool MainGrid::validAndFree(const short id, int index, std::vector<short>::value_type close) {
+bool MainGrid::validAndFree(short id, int index, std::vector<short>::value_type close) const {
 	auto building = Game::getDatabaseCache()->getBuilding(id);
 
 	return calculator.validIndex(index + close)
@@ -284,7 +284,7 @@ bool MainGrid::validAndFree(const short id, int index, std::vector<short>::value
 		&& complexData[index + close].isFreeToBuild(id);
 }
 
-Urho3D::Vector2 MainGrid::getNewBuildingPos(const Urho3D::Vector2& center, const char player, const short id) {
+Urho3D::Vector2 MainGrid::getNewBuildingPos(const Urho3D::Vector2& center, char player, const short id) {
 	auto index = calculator.indexFromPosition(center);
 	if (complexData[index].isFreeToBuild(id)) {
 		return center;
@@ -315,7 +315,7 @@ bool MainGrid::isInLocalArea(int cell, Urho3D::Vector2& pos) {
 	return false;
 }
 
-bool MainGrid::isEmpty(int inx) {
+bool MainGrid::isEmpty(int inx) const {
 	return calculator.validIndex(inx) && complexData[inx].getType() == CellState::EMPTY || complexData[inx].getType() ==
 		CellState::DEPLOY;
 }
@@ -372,7 +372,7 @@ void MainGrid::addStatic(Static* object) {
 	updateSurround(object);
 }
 
-void MainGrid::removeStatic(Static* object) {
+void MainGrid::removeStatic(Static* object) const {
 	//TODO bug poprawic dziwne zygzagki sie robia gdy przechodzi przez// moze invalidate cache?
 	object->setMainCell(-1);
 	for (auto index : object->getOccupiedCells()) {
@@ -417,7 +417,7 @@ Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3& position) {
 	return nullptr;
 }
 
-Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {
+Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
 	//TODO tu mozna to sporo zoptymalizowac ale pewnie nie ma potrzeby
 	const short posX = calculator.getIndex(pos.x_);
 	const short posZ = calculator.getIndex(pos.y_);
@@ -467,15 +467,15 @@ int MainGrid::getCloseIndex(int center, int i) const {
 // 	return pathConstructor->findPath(start, goal, min, min * 2);
 // }
 
-std::vector<int>* MainGrid::findPath(int startIdx, const Urho3D::Vector2& aim) {
+std::vector<int>* MainGrid::findPath(int startIdx, const Urho3D::Vector2& aim) const {
 	return pathConstructor->findPath(startIdx, aim);
 }
 
-std::vector<int>* MainGrid::findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) {
+std::vector<int>* MainGrid::findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) const {
 	return pathConstructor->findPath(from, aim);
 }
 
-void MainGrid::drawMap(Urho3D::Image* image) {
+void MainGrid::drawMap(Urho3D::Image* image) const {
 	const auto data = (uint32_t*)image->GetData();
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {

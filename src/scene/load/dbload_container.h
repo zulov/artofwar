@@ -88,12 +88,12 @@ struct dbload_player {
 	Urho3D::String name;
 
 	dbload_player(int id, bool isActive, int team, int nation, char* name, int color)
-		: id(id),
-		  is_active(isActive),
+		: is_active(isActive),
+		  id(id),
 		  team(team),
 		  nation(nation),
-		  name(name),
-		  color(color) {
+		  color(color),
+		  name(name) {
 	}
 };
 

@@ -12,7 +12,7 @@ MainMenuClosePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): MainM
 
 MainMenuClosePanel::~MainMenuClosePanel() = default;
 
-Urho3D::Button* MainMenuClosePanel::getCloseButton() {
+Urho3D::Button* MainMenuClosePanel::getCloseButton() const {
 	return yes;
 }
 

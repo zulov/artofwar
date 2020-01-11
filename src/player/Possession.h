@@ -21,7 +21,7 @@ private:
 	std::vector<Building*> buildings;
 	std::vector<Unit*> units;
 	std::vector<Unit*> workers;
-	float resourcesSum;
-	float attackSum;
-	float defenceSum;
+	float resourcesSum = 0;
+	float attackSum = 0;
+	float defenceSum = 0;
 };

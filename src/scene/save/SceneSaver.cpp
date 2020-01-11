@@ -20,37 +20,37 @@ SceneSaver::SceneSaver(int _precision) {
 
 SceneSaver::~SceneSaver() = default;
 
-void SceneSaver::createUnitsTable() {
+void SceneSaver::createUnitsTable() const {
 	const std::string sql = "CREATE TABLE units(" + Unit::getColumns() + ");";
 
 	createTable(sql);
 }
 
-void SceneSaver::createTable(const std::string& sql) {
+void SceneSaver::createTable(const std::string& sql) const {
 	const char* charSql = sql.c_str();
 	char* error;
 	const int rc = sqlite3_exec(database, charSql, nullptr, nullptr, &error);
 	ifError(rc, error);
 }
 
-void SceneSaver::createBuildingsTable() {
+void SceneSaver::createBuildingsTable() const {
 	const std::string sql = "CREATE TABLE buildings(" + Building::getColumns() + ");";
 
 	createTable(sql);
 }
 
-void SceneSaver::createResourceEntitiesTable() {
+void SceneSaver::createResourceEntitiesTable() const {
 	const std::string sql = "CREATE TABLE resource_entities(" + ResourceEntity::getColumns() + ");";
 
 	createTable(sql);
 }
 
-void SceneSaver::createPlayerTable() {
+void SceneSaver::createPlayerTable() const {
 	const std::string sql = "CREATE TABLE players(" + PlayersManager::getColumns() + ");";
 	createTable(sql);
 }
 
-void SceneSaver::createConfigTable() {
+void SceneSaver::createConfigTable() const {
 	const std::string sql = "CREATE TABLE config("
 		"precision		INT     NOT NULL,"
 		"map			INT     NOT NULL"
@@ -58,12 +58,12 @@ void SceneSaver::createConfigTable() {
 	createTable(sql);
 }
 
-void SceneSaver::createResourceTable() {
+void SceneSaver::createResourceTable() const {
 	const std::string sql = "CREATE TABLE resources(" + Resources::getColumns() + ");";
 	createTable(sql);
 }
 
-void SceneSaver::createTables() {
+void SceneSaver::createTables() const {
 	createUnitsTable();
 	createBuildingsTable();
 	createResourceEntitiesTable();
@@ -90,7 +90,7 @@ void SceneSaver::createSave(const Urho3D::String& fileName) {
 	createTables();
 }
 
-void SceneSaver::executeInsert(std::string &sqlstatement) {
+void SceneSaver::executeInsert(std::string &sqlstatement) const {
 	std::cout<<sqlstatement<< std::endl;
 	sqlstatement[sqlstatement.size() - 1] = ';';
 	sqlite3_stmt* stmt;

@@ -70,7 +70,7 @@ struct MissileData {
 
 	}
 
-	void reset() {
+	void reset() const {
 		node->SetEnabled(false);
 	}
 
@@ -78,7 +78,7 @@ struct MissileData {
 		return node->IsEnabled();
 	}
 
-	bool finished() {
+	bool finished() const {
 		return distanceSoFar >= distance && node->IsEnabled();
 	}
 

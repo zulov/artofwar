@@ -9,7 +9,7 @@ class MainMenuHelpPanel : public MainMenuDetailsPanel
 public:
 	MainMenuHelpPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~MainMenuHelpPanel();
-	void action(short id);
+	void action(short id) const;
 	void HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 private:
 	void createBody() override;

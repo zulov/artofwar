@@ -15,16 +15,16 @@ public:
 
 	~MoveState() = default;
 
-	void onStart(Unit* unit, const ActionParameter& parameter) {
+	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->removeCurrentAim();
 		unit->thingsToInteract.clear();
 	}
 
-	void onEnd(Unit* unit) {
+	void onEnd(Unit* unit) override {
 		State::onEnd(unit);
 	}
 
-	void execute(Unit* unit, float timeStep) {
+	void execute(Unit* unit, float timeStep) override {
 		State::execute(unit, timeStep);
 	}
 };

@@ -46,7 +46,7 @@ float InfluenceMapFloat::getValueAt(int index) const {
 	return values[index];
 }
 
-std::optional<Urho3D::Vector2> InfluenceMapFloat::getBestIndexToBuild(const short id) const {
+std::optional<Urho3D::Vector2> InfluenceMapFloat::getBestIndexToBuild(short id) const {
 	const auto [min, max] = std::minmax_element(values, values + arraySize);
 	auto avg = std::accumulate(values, values + arraySize, 0) / (double)arraySize;
 

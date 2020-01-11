@@ -8,7 +8,7 @@ public:
 	explicit LoadingPanel(Urho3D::XMLFile* _style);
 	~LoadingPanel();
 	void show();
-	void update(float progres);
+	void update(float progres) const;
 	void end();
 private:
 	void createBody() override;

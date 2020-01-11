@@ -15,7 +15,7 @@ public:
 	explicit MiniMapPanel(Urho3D::XMLFile* _style);
 	~MiniMapPanel();
 	void createEmpty(int parts);
-	void changeValue(uint32_t* data, bool& changed, unsigned val);
+	void changeValue(uint32_t* data, bool& changed, unsigned val) const;
 	void update();
 
 private:

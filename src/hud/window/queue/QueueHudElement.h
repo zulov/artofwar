@@ -14,7 +14,7 @@ class QueueHudElement
 public:
 	explicit QueueHudElement(Urho3D::UIElement *parent, Urho3D::XMLFile* style);
 	~QueueHudElement();
-	Urho3D::Button* getButton();
+	Urho3D::Button* getButton() const;
 	void hide() const;
 	void show() const;
 

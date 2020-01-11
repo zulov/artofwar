@@ -7,11 +7,11 @@
 
 InfluenceMap::InfluenceMap(unsigned short resolution, float size,
                            float valueThresholdDebug): resolution(resolution),
+                                                       size(size),
                                                        fieldSize(size / resolution),
                                                        arraySize(resolution * resolution),
-                                                       size(size),
-                                                       calculator(resolution, size),
-                                                       valueThresholdDebug(valueThresholdDebug) {
+                                                       valueThresholdDebug(valueThresholdDebug),
+                                                       calculator(resolution, size) {
 }
 
 InfluenceMap::~InfluenceMap() = default;
@@ -25,7 +25,7 @@ void InfluenceMap::draw(short batch, short maxParts) {
 	}
 }
 
-void InfluenceMap::drawCell(int index, short batch) {
+void InfluenceMap::drawCell(int index, short batch) const {
 	Urho3D::Vector2 center2 = calculator.getCenter(index);
 	Urho3D::Vector3 center = Game::getEnvironment()->getPosWithHeightAt(center2.x_, center2.y_);
 	Urho3D::Color color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);

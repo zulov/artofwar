@@ -26,7 +26,7 @@
 #include <regex>
 
 
-void Hud::replaceVariables(std::string& xml, int hudSizeId) {
+void Hud::replaceVariables(std::string& xml, int hudSizeId) const {
 	exprtk::symbol_table<float> symbol_table;
 	int varsSize = Game::getDatabaseCache()->getHudVarsSize();
 	for (int i = 0; i < varsSize; ++i) {
@@ -64,7 +64,7 @@ void Hud::replaceVariables(std::string& xml, int hudSizeId) {
 	xml = regex_replace(xml, reg, values);
 }
 
-void Hud::createCursor() {
+void Hud::createCursor() const {
 	Urho3D::SharedPtr<Urho3D::Cursor> cursor(new Urho3D::Cursor(Game::getContext()));
 	cursor->SetStyleAuto(style);
 
@@ -125,7 +125,7 @@ void Hud::prepareStyle() {
 	Game::getUI()->GetRoot()->SetDefaultStyle(style);
 }
 
-void Hud::prepreUrho() {
+void Hud::prepreUrho() const {
 	createConsole();
 	createDebugHud();
 	createCursor();
@@ -160,19 +160,19 @@ Hud::~Hud() {
 	Game::getUI()->GetCursor()->Remove();
 }
 
-void Hud::createDebugHud() {
+void Hud::createDebugHud() const {
 	auto debugHud = Game::getEngine()->CreateDebugHud();
 	debugHud->SetDefaultStyle(style);
 }
 
-void Hud::createConsole() {
+void Hud::createConsole() const {
 	auto console = Game::getEngine()->CreateConsole();
 	console->SetDefaultStyle(style);
 	console->GetBackground()->SetOpacity(0.8f);
 }
 
 void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
-                 SimulationInfo* simulationInfo) {
+                 SimulationInfo* simulationInfo) const {
 	updateSelected(selectedInfo, simulationInfo->getCurrentFrame());
 	if (simulationInfo->ifAmountUnitChanged()) {
 		update(simulationInfo->getUnitsNumber());
@@ -188,19 +188,19 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
 	selectedInfo->hasBeenUpdatedDrawn();
 }
 
-void Hud::update(int unitsNumber) {
+void Hud::update(int unitsNumber) const {
 	topPanel->update(unitsNumber);
 }
 
-void Hud::createMiniMap() {
+void Hud::createMiniMap() const {
 	miniMapPanel->createEmpty(160);
 }
 
-void Hud::resetLoading() {
+void Hud::resetLoading() const {
 	loadingPanel->show();
 }
 
-void Hud::updateLoading(float progress) {
+void Hud::updateLoading(float progress) const {
 	loadingPanel->update(progress);
 }
 
@@ -210,7 +210,7 @@ void Hud::updateStateVisibilty(GameState state) {
 	}
 }
 
-void Hud::updateSelected(SelectedInfo* selectedInfo, int currentFrame) {
+void Hud::updateSelected(SelectedInfo* selectedInfo, int currentFrame) const {
 	if (selectedInfo->isSthSelected() || selectedInfo->hasChanged()) {
 		if (selectedInfo->hasChanged() || currentFrame % 10 == 0) {
 			selectedHudPanel->update(selectedInfo);

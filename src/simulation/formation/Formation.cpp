@@ -80,7 +80,7 @@ void Formation::setFormationClearPosition() {
 	}
 }
 
-void Formation::setPosInFormationForLeader() {
+void Formation::setPosInFormationForLeader() const {
 	short posInFormation = (short)((sideB - 1) / 2) * sideA + (short)(sideA / 2.0 + 0.5);
 	if (posInFormation >= units.size()) {
 		posInFormation = units.size() - 1;
@@ -301,7 +301,7 @@ void Formation::addOrder(FutureOrder* order) {
 	futureOrders.emplace_back(order);
 }
 
-size_t Formation::getSize() {
+size_t Formation::getSize() const {
 	return units.size();
 }
 

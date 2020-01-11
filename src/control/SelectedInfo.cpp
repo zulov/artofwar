@@ -62,7 +62,7 @@ std::optional<SelectedInfoType*> SelectedInfo::getOneSelectedTypeInfo() const {
 	return {};
 }
 
-bool SelectedInfo::isSthSelected() {
+bool SelectedInfo::isSthSelected() const {
 	return allNumber > 0 && selectedType != ObjectType::PHYSICAL;
 }
 

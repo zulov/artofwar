@@ -11,7 +11,7 @@ class MainMenuClosePanel : public MainMenuDetailsPanel
 public:
 	MainMenuClosePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~MainMenuClosePanel();
-	Urho3D::Button * getCloseButton();
+	Urho3D::Button * getCloseButton() const;
 private:
 	void createBody() override;
 	void HandleCancelClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);

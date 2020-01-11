@@ -21,7 +21,7 @@ public:
 
 	void invalidateCache();
 	void debug(int start, int end);
-	void drawMap(Urho3D::Image* image);
+	void drawMap(Urho3D::Image* image) const;
 	void prepareGridToFind();
 private:
 	float heuristic(int from, int to) const;

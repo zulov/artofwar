@@ -2,7 +2,6 @@
 
 #include "../AbstractWindowPanel.h"
 #include "info/TopInfoPanel.h"
-#include <Urho3D/UI/Text.h>
 
 class Resources;
 class TopHudElement;

@@ -18,7 +18,7 @@ struct AiNode {
 	float getValueDiff() const;
 	AiOrderData getOrder();
 	void update(float value);
-	const std::string& getName();
+	const std::string& getName() const;
 	std::optional<AiNode*> getChildByName(std::string str);
 
 	AiNode* addChild(const std::string& name, float targetValue, AiOrderData data);
@@ -57,7 +57,7 @@ inline void AiNode::update(float value) {
 	currentValue += value;
 }
 
-inline const std::string& AiNode::getName() {
+inline const std::string& AiNode::getName() const {
 	return name;
 }
 

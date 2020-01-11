@@ -52,7 +52,7 @@ struct NewGameTeamLine {
 		chk = createElement<Urho3D::CheckBox>(row, style, "CheckBox");
 	}
 
-	NewGamePlayer getNewGamePlayer() {
+	NewGamePlayer getNewGamePlayer() const {
 		NewGamePlayer player;
 		player.name = lineEdit->GetText();
 		player.color = color->GetSelection();
@@ -63,11 +63,11 @@ struct NewGameTeamLine {
 		return player;
 	}
 
-	Urho3D::CheckBox* getCheckBox() {
+	Urho3D::CheckBox* getCheckBox() const {
 		return chk;
 	}
 
-	void setCheck(bool check) {
+	void setCheck(bool check) const {
 		chk->SetChecked(check);
 	}
 };

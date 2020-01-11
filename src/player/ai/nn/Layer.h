@@ -7,14 +7,14 @@ public:
 	Layer(short numberOfNodes, short prevSize);
 	Layer(std::vector<float>& w, std::vector<float>& bias);
 	~Layer();
-	void setValues(float data[]);
+	void setValues(float data[]) const;
 	float* getValues() const { return values; }
 	short getNumberOfValues() const { return numberOfNodes; }
 	short getPrevSize() const { return prevSize; }
 	float* getW() const { return w; }
 	short getWSize() const { return numberOfNodes * prevSize; }
 	float getBias(int i) const { return bias[i]; }
-	void setValueAt(int i, float newValue) { values[i] = newValue; }
+	void setValueAt(int i, float newValue) const { values[i] = newValue; }
 private:
 
 	short numberOfNodes;

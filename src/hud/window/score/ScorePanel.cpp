@@ -9,7 +9,7 @@ ScorePanel::ScorePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "S
 
 ScorePanel::~ScorePanel() = default;
 
-void ScorePanel::update(const std::vector<Player*>& players) {
+void ScorePanel::update(const std::vector<Player*>& players) const {
 	Urho3D::String s = "";
 	for (auto player : players) {
 		s.Append(player->getName())

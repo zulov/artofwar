@@ -22,6 +22,6 @@ private:
 	void addDeadAim() override;
 	void addStopAim() override;
 
-	void simpleAction();
+	void simpleAction() const;
 	void followAndAct(float distThreshold);
 };

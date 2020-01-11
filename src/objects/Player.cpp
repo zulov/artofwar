@@ -11,9 +11,9 @@
 #include "ActionCenter.h"
 
 
-Player::Player(int nationId, int team, char id, int color, Urho3D::String name, bool active): team(team),
-                                                                                              name(std::move(name)),
-                                                                                              id(id), color(color),
+Player::Player(int nationId, int team, char id, int color, Urho3D::String name, bool active): name(std::move(name)),
+                                                                                              team(team),
+                                                                                              color(color), id(id),
                                                                                               active(active) {
 	dbNation = Game::getDatabaseCache()->getNation(nationId);
 
@@ -28,7 +28,7 @@ Player::~Player() {
 	delete brain;
 }
 
-std::string Player::getValues(int precision) {
+std::string Player::getValues(int precision) const {
 	return std::to_string(id) + ","
 		+ std::to_string(active) + ","
 		+ std::to_string(team) + ","
@@ -90,11 +90,11 @@ int Player::getScore() const {
 	return possession.getScore();
 }
 
-int Player::getAttackScore() {
+int Player::getAttackScore() const {
 	return possession.getAttackScore();
 }
 
-int Player::getDefenceScore() {
+int Player::getDefenceScore() const {
 	return possession.getDefenceScore();
 }
 
@@ -121,7 +121,7 @@ void Player::ai() {
 	execute(orderData);
 }
 
-Urho3D::Vector2 Player::bestPosToBuild(const short id) {
+Urho3D::Vector2 Player::bestPosToBuild(const short id) const {
 	return Game::getEnvironment()->bestPosToBuild(this->id, id);
 }
 

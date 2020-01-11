@@ -26,13 +26,13 @@ public:
 	MainGrid(short _resolution, float _size);
 	~MainGrid();
 
-	void prepareGridToFind();
-	bool validateAdd(Static* object);
-	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos);
+	void prepareGridToFind() const;
+	bool validateAdd(Static* object) const;
+	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const;
 	void addStatic(Static* object);
-	void removeStatic(Static* object);
+	void removeStatic(Static* object) const;
 	Urho3D::Vector2* getDirectionFrom(Urho3D::Vector3& position);
-	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos);
+	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
 	Urho3D::IntVector2 getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
 
 	void updateNeighbors(int current) const;
@@ -40,14 +40,14 @@ public:
 
 	int getCloseIndex(int center, int i) const;
 
-	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim);
-	std::vector<int>* findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim);
+	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim) const;
+	std::vector<int>* findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) const;
 
-	void drawMap(Urho3D::Image* image);
+	void drawMap(Urho3D::Image* image) const;
 	content_info* getContentInfo(const Urho3D::Vector2& from, const Urho3D::Vector2& to, bool checks[],
 	                             int activePlayer);
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
-	void invalidateCache();
+	void invalidateCache() const;
 	void updateSurround(Static* object);
 
 	Urho3D::Vector2 getPositionInBucket(int index, char max, char i);
@@ -69,22 +69,22 @@ public:
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinalInState(Unit* unit, UnitState state) const;
 	int getRevertCloseIndex(int center, int gridIndex);
-	void addDeploy(Building* building);
-	void removeDeploy(Building* building);
+	void addDeploy(Building* building) const;
+	void removeDeploy(Building* building) const;
 
 	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
-	bool isEmpty(int inx);
+	bool isEmpty(int inx) const;
 	int closestEmpty(int posIndex);
 	int indexFromPosition(const Urho3D::Vector2& pos) const { return calculator.indexFromPosition(pos); }
 	int getIndex(short i, short z) const { return calculator.getIndex(i, z); }
 	int getIndex(Urho3D::Vector2& pos) const { return calculator.indexFromPosition(pos); }
-	CellState getCellAt(float x, float z);
-	int getAdditionalInfoAt(float x, float z);
-	void drawDebug(GridDebugType type);
-	bool validAndFree(short id, int index, std::vector<short>::value_type close);
-	Urho3D::Vector2 getNewBuildingPos(const Urho3D::Vector2& center, const char player, const short id);
+	CellState getCellAt(float x, float z) const;
+	int getAdditionalInfoAt(float x, float z) const;
+	void drawDebug(GridDebugType type) const;
+	bool validAndFree(short id, int index, std::vector<short>::value_type close) const;
+	Urho3D::Vector2 getNewBuildingPos(const Urho3D::Vector2& center, char player, short id);
 private:
-	void initCloseIndexs(char a, std::vector<short>& vector);
+	void initCloseIndexs(char a, std::vector<short>& vector) const;
 	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
 
 	PathFinder* pathConstructor;
@@ -95,6 +95,6 @@ private:
 
 	ComplexBucketData* complexData;
 
-	
+
 	std::vector<short> closeIndexes[3];
 };

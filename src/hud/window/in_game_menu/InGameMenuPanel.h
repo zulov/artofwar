@@ -10,12 +10,12 @@ public:
 	explicit InGameMenuPanel(Urho3D::XMLFile* _style);
 	~InGameMenuPanel();
 	void setVisible(bool enable) override;
-	Urho3D::Button* getSaveButton();
+	Urho3D::Button* getSaveButton() const;
 
 private:
 	void toggle();
 	void action(short id);
-	void close();
+	void close() const;
 	void createBody() override;
 	void HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	void HandleToggle(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);

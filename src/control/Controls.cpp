@@ -30,7 +30,7 @@
 #include "ActionCenter.h"
 
 
-Controls::Controls(Urho3D::Input* _input): typeToCreate(ObjectType::ENTITY), input(_input) {
+Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::ENTITY) {
 	selected = new std::vector<Physical*>();
 	selected->reserve(5000);
 
@@ -131,7 +131,7 @@ void Controls::leftDoubleClick(hit_data& hitData) const {
 	select(Game::getEnvironment()->getNeighboursSimilarAs(hitData.clicked));
 }
 
-void Controls::leftClickBuild(hit_data& hitData) {
+void Controls::leftClickBuild(hit_data& hitData) const {
 	unSelectAll();
 	createBuilding({hitData.position.x_, hitData.position.z_});
 }
@@ -248,7 +248,7 @@ void Controls::releaseBuildLeft() {
 	}
 }
 
-bool Controls::orderAction() {
+bool Controls::orderAction() const {
 	hit_data hitData;
 
 	if (raycast(hitData) && hitData.clicked) {
@@ -300,7 +300,7 @@ void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
 	}
 }
 
-bool Controls::clickDown(MouseButton& var) {
+bool Controls::clickDown(MouseButton& var) const {
 	hit_data hitData;
 	if (raycast(hitData)) {
 		var.setFirst(hitData.position);
@@ -309,7 +309,7 @@ bool Controls::clickDown(MouseButton& var) {
 	return false;
 }
 
-void Controls::createBuilding(Urho3D::Vector2 pos) {
+void Controls::createBuilding(Urho3D::Vector2 pos) const {
 	if (idToCreate >= 0) {
 		auto player = Game::getPlayersMan()->getActivePlayer();
 
@@ -368,7 +368,7 @@ void Controls::actionUnit(short id, const ActionParameter& parameter) {
 	}
 }
 
-void Controls::refreshSelected() {
+void Controls::refreshSelected() const {
 	bool sizeBefore = selected->size();
 	selected->erase(
 		std::remove_if(
@@ -389,7 +389,7 @@ void Controls::refreshSelected() {
 	}
 }
 
-bool Controls::conditionToClean(SimulationInfo* simulationInfo) {
+bool Controls::conditionToClean(SimulationInfo* simulationInfo) const {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::UNIT:
 		return simulationInfo->ifUnitDied();
@@ -401,13 +401,13 @@ bool Controls::conditionToClean(SimulationInfo* simulationInfo) {
 	return false;
 }
 
-void Controls::clean(SimulationInfo* simulationInfo) {
+void Controls::clean(SimulationInfo* simulationInfo) const {
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
 	}
 }
 
-void Controls::updateSelection() {
+void Controls::updateSelection() const {
 	hit_data hitData;
 
 	if (raycast(hitData, ObjectType::PHYSICAL)) {
@@ -428,7 +428,7 @@ void Controls::updateSelection() {
 	}
 }
 
-void Controls::updateArrow() {
+void Controls::updateArrow() const {
 	hit_data hitData;
 
 	if (selectedInfo->getSelectedType() == ObjectType::UNIT && raycast(hitData, ObjectType::PHYSICAL)) {
@@ -458,7 +458,7 @@ void Controls::toDefault() {
 	tempBuildingNode->SetEnabled(false);
 }
 
-void Controls::unitFormation(short id) {
+void Controls::unitFormation(short id) const {
 	Game::getFormationManager()->createFormation(selected, FormationType(id));
 }
 

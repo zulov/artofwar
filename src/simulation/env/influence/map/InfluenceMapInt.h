@@ -9,7 +9,7 @@ public:
 
 	void update(Physical* physical, float value = 1) override;
 	void reset() override;
-	char getValue(const Urho3D::Vector2& pos);
+	char getValue(const Urho3D::Vector2& pos) const;
 	float getValueAt(int index) const override;
 private:
 	unsigned char* values;

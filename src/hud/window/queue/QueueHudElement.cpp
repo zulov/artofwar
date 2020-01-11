@@ -26,7 +26,7 @@ QueueHudElement::QueueHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* sty
 
 QueueHudElement::~QueueHudElement() = default;
 
-Urho3D::Button* QueueHudElement::getButton() {
+Urho3D::Button* QueueHudElement::getButton() const {
 	return button;
 }
 

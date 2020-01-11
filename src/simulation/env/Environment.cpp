@@ -17,7 +17,7 @@ Environment::Environment(Urho3D::Terrain* terrian):
 	teamUnitGrid{
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE},
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE}
-	}, terrian(terrian), influenceManager(MAX_PLAYERS) {
+	}, influenceManager(MAX_PLAYERS), terrian(terrian) {
 	neights = new std::vector<Physical*>();
 	neights2 = new std::vector<Physical*>();
 	empty = new std::vector<Physical*>();
@@ -124,7 +124,7 @@ void Environment::update(std::vector<Building*>* buildings) {
 	}
 }
 
-void Environment::updateAll(std::vector<Building*>* const buildings) {
+void Environment::updateAll(std::vector<Building*>* const buildings) const {
 	//TODO performance, zmianiac tylko to co sie zmienilo
 	influenceManager.update(buildings); //TODO bug updej tylko jak sie doda a nie uwzglednia usuwania
 }
@@ -190,11 +190,11 @@ Urho3D::Vector3 Environment::getValidPosForCamera(float percentX, float percentY
 	return a;
 }
 
-bool Environment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) {
+bool Environment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const {
 	return mainGrid.validateAdd(size, pos);
 }
 
-Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) {
+Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const {
 	return getValidPosition(size, mainGrid.getCenterAt(bucketCords));
 }
 
@@ -202,7 +202,7 @@ Urho3D::Vector2& Environment::getCenter(int index) const {
 	return mainGrid.getCenter(index);
 }
 
-Urho3D::Vector2& Environment::getCenter(short x, short z) {
+Urho3D::Vector2& Environment::getCenter(short x, short z) const {
 	return mainGrid.getCenter(x, z);
 }
 
@@ -210,7 +210,7 @@ Urho3D::Vector2 Environment::getPositionInBucket(int index, char max, char i) {
 	return mainGrid.getPositionInBucket(index, max, i);
 }
 
-void Environment::invalidateCache() {
+void Environment::invalidateCache() const {
 	mainGrid.invalidateCache();
 }
 
@@ -234,7 +234,7 @@ char Environment::getOrdinalInState(Unit* unit, UnitState state) const {
 	return mainGrid.getOrdinalInState(unit, state);
 }
 
-void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) {
+void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) const {
 	for (auto dispose : toDispose) {
 		switch (dispose->getType()) {
 		case ObjectType::BUILDING:
@@ -289,10 +289,9 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 	default: ;
 	}
 
-
 }
 
-Urho3D::Vector2 Environment::bestPosToBuild(const char player, const short id) {
+Urho3D::Vector2 Environment::bestPosToBuild(char player, short id) {
 	std::optional<Urho3D::Vector2> center = influenceManager.getNewBuildingPos(player, id);
 	if (center.has_value()) {
 		return mainGrid.getNewBuildingPos(center.value(), player, id);
@@ -311,7 +310,7 @@ int Environment::closestEmpty(int posIndex) {
 	return mainGrid.closestEmpty(posIndex);
 }
 
-Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) {
+Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
 	return mainGrid.getValidPosition(size, pos);
 }
 
@@ -319,15 +318,15 @@ Urho3D::IntVector2 Environment::getBucketCords(const Urho3D::IntVector2& size, c
 	return mainGrid.getBucketCords(size, pos);
 }
 
-std::vector<int>* Environment::findPath(int startIdx, Urho3D::Vector2& aim) {
+std::vector<int>* Environment::findPath(int startIdx, Urho3D::Vector2& aim) const {
 	return mainGrid.findPath(startIdx, aim);
 }
 
-std::vector<int>* Environment::findPath(Urho3D::Vector3& from, Urho3D::Vector2& aim) {
+std::vector<int>* Environment::findPath(Urho3D::Vector3& from, Urho3D::Vector2& aim) const {
 	return mainGrid.findPath(from, aim);
 }
 
-void Environment::prepareGridToFind() {
+void Environment::prepareGridToFind() const {
 	mainGrid.prepareGridToFind();
 }
 

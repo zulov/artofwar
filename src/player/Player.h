@@ -11,7 +11,7 @@ public:
 	Player(int nationId, int team, char id, int color, Urho3D::String name, bool active);
 	~Player();
 
-	std::string getValues(int precision);
+	std::string getValues(int precision) const;
 	void setResourceAmount(int resource, float amount);
 	void setResourceAmount(float amount);
 	char upgradeLevel(ActionType type, int id);
@@ -31,13 +31,13 @@ public:
 	void add(Building* building);
 	void ai();
 	int getScore() const;
-	int getAttackScore();
-	int getDefenceScore();
+	int getAttackScore() const;
+	int getDefenceScore() const;
 	int getUnitsNumber() const;
 	int getBuildingsNumber() const;
 	int getWorkersNumber() const;
 private:
-	Urho3D::Vector2 bestPosToBuild(const short id);
+	Urho3D::Vector2 bestPosToBuild(const short id) const;
 	void execute(const AiOrderData& orderData);
 	void initAi();
 	void addBasicNodes(AiNode* parent);

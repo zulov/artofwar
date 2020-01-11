@@ -36,7 +36,7 @@ Layer::~Layer() {
 	delete []w;
 }
 
-void Layer::setValues(float data[]) {
+void Layer::setValues(float data[]) const {
 	//TODO musi sie zgadzac rozmiar czy to jest sprawdzane?
 	std::copy(data, data + numberOfNodes, values);
 }

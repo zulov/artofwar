@@ -64,7 +64,7 @@ void SimulationObjectManager::load(dbload_unit* unit) {
 	updateUnits(unitFactory.load(unit));
 }
 
-void SimulationObjectManager::load(dbload_building* building) {
+void SimulationObjectManager::load(dbload_building* building) const {
 	updateBuilding(buildingFactory.load(building));
 }
 

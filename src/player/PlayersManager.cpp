@@ -49,7 +49,7 @@ void PlayersManager::load(NewGameForm* form) {
 	}
 }
 
-Player* PlayersManager::getActivePlayer() {
+Player* PlayersManager::getActivePlayer() const {
 	return activePlayer;
 }
 

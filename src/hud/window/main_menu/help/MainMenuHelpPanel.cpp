@@ -33,7 +33,7 @@ void MainMenuHelpPanel::createBody() {
 
 MainMenuHelpPanel::~MainMenuHelpPanel() = default;
 
-void MainMenuHelpPanel::action(short id) {
+void MainMenuHelpPanel::action(short id) const {
 	contentText->SetText(Game::getLocalization()->Get("help_value_" + Urho3D::String(id)));
 	contentText->SetWidth(content->GetWidth() * 0.9);
 }

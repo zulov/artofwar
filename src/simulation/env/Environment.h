@@ -37,7 +37,7 @@ public:
 	void update(std::vector<Building*>* buildings);
 	void update(std::vector<ResourceEntity*>* resources);
 	
-	void updateAll(std::vector<Building*>* const buildings);
+	void updateAll(std::vector<Building*>* buildings) const;
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
 	Urho3D::Vector2* validatePosition(Urho3D::Vector3& position);
@@ -49,23 +49,23 @@ public:
 	Urho3D::Vector3 getPosWithHeightAt(float x, float z) const;
 	Urho3D::Vector3 getPosWithHeightAt(int index) const;
 	float getGroundHeightPercent(float y, float x, float div) const;
-	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos);
-	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos);
+	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const;
+	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
 	Urho3D::IntVector2 getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
-	std::vector<int>* findPath(int startIdx, Urho3D::Vector2& aim);
-	std::vector<int>* findPath(Urho3D::Vector3& from, Urho3D::Vector2& aim);
+	std::vector<int>* findPath(int startIdx, Urho3D::Vector2& aim) const;
+	std::vector<int>* findPath(Urho3D::Vector3& from, Urho3D::Vector2& aim) const;
 
-	void prepareGridToFind();
+	void prepareGridToFind() const;
 	content_info* getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer);
 	float getPositionFromPercent(float value) const;
 	Urho3D::Vector3 getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos, float min) const;
-	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords);
+	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const;
 	Urho3D::Vector2& getCenter(int index) const;
-	Urho3D::Vector2& getCenter(short x, short z);
+	Urho3D::Vector2& getCenter(short x, short z) const;
 
 	Urho3D::Vector2 getPositionInBucket(int index, char max, char i);
 
-	void invalidateCache();
+	void invalidateCache() const;
 
 	int getIndex(Urho3D::Vector2& pos) const { return mainGrid.getIndex(pos); }
 	int getIndex(short x, short z) const { return mainGrid.getIndex(x, z); }
@@ -77,14 +77,14 @@ public:
 	bool belowCellLimit(int index) const;
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinalInState(Unit* unit, UnitState state) const;
-	void removeFromGrids(const std::vector<Physical*>& toDispose);
+	void removeFromGrids(const std::vector<Physical*>& toDispose) const;
 	int getRevertCloseIndex(int center, int gridIndex);
 
 	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
 	int closestEmpty(int posIndex);
 
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
-	Urho3D::Vector2 bestPosToBuild(const char player, const short id);
+	Urho3D::Vector2 bestPosToBuild(char player, short id);
 	float getDistToEnemy(Player* player);
 
 private:

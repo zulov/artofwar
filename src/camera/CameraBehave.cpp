@@ -4,7 +4,7 @@
 
 
 CameraBehave::CameraBehave(const Urho3D::Vector3& pos, float minY, const Urho3D::String& name):
-	minY(minY), name(name), changed(true) {
+	changed(true), minY(minY), name(name) {
 
 	info = new Urho3D::String();
 
@@ -23,11 +23,11 @@ CameraBehave::~CameraBehave() {
 	cameraNode->Remove();
 }
 
-Urho3D::Camera* CameraBehave::getComponent() {
+Urho3D::Camera* CameraBehave::getComponent() const {
 	return cameraNode->GetComponent<Urho3D::Camera>();
 }
 
-const Urho3D::Vector3& CameraBehave::getPosition() {
+const Urho3D::Vector3& CameraBehave::getPosition() const {
 	return cameraNode->GetPosition();
 }
 

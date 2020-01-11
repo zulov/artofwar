@@ -7,11 +7,11 @@
 #include "consts.h"
 
 FutureOrder::FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector, Physical* toUse)
-	: vector(vector), toUse(toUse), action(action), append(append) {
+	: toUse(toUse), vector(vector), action(action), append(append) {
 }
 
 FutureOrder::FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector)
-	: vector(vector), toUse(nullptr), action(action), append(append) {
+	: toUse(nullptr), vector(vector), action(action), append(append) {
 }
 
 FutureOrder::FutureOrder(UnitOrder action, bool append, Physical* toUse)

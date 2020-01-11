@@ -8,7 +8,7 @@ class ScorePanel: public AbstractWindowPanel
 public:
 	explicit ScorePanel(Urho3D::XMLFile* _style);
 	~ScorePanel();
-	void update(const std::vector<Player*>& players);
+	void update(const std::vector<Player*>& players) const;
 private:
 	void createBody() override;
 	Urho3D::Text* text;

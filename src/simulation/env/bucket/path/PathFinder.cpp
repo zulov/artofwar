@@ -8,9 +8,9 @@
 
 
 PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexData) :
-	resolution(resolution), fieldSize(size / resolution),
-	complexData(complexData), invFieldSize(resolution / size),
-	halfResolution(resolution / 2),
+	resolution(resolution), halfResolution(resolution / 2),
+	fieldSize(size / resolution), complexData(complexData),
+	invFieldSize(resolution / size),
 	closeIndex({
 		-resolution - 1, -resolution, -resolution + 1,
 		-1, 0, 1,
@@ -232,7 +232,7 @@ void PathFinder::debug(int start, int end) {
 	staticCounter++;
 }
 
-void PathFinder::drawMap(Urho3D::Image* image) {
+void PathFinder::drawMap(Urho3D::Image* image) const {
 	const auto data = (uint32_t*)image->GetData();
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {

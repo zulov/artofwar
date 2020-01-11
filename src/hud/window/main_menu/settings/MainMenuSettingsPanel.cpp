@@ -15,7 +15,7 @@ MainMenuSettingsPanel::~MainMenuSettingsPanel() {
 	delete data;
 }
 
-void MainMenuSettingsPanel::setValues(int graphID) {
+void MainMenuSettingsPanel::setValues(int graphID) const {
 	db_graph_settings* graphSettings = Game::getDatabaseCache()->getGraphSettings(graphID);
 
 	fullScreen->SetChecked(graphSettings->fullscreen);
@@ -102,7 +102,7 @@ void MainMenuSettingsPanel::populateLabels(int index, Urho3D::String name) {
 	addChildText(rows[index], "MainMenuSettingsLabel", Game::getLocalization()->Get(name), style);
 }
 
-void MainMenuSettingsPanel::popualateForm(SettingsForm* form) {
+void MainMenuSettingsPanel::popualateForm(SettingsForm* form) const {
 	form->resolution = resolution->GetSelection();
 	form->fullScreen = fullScreen->IsChecked();
 	form->maxFps = maxFps->GetSelectedItem()->GetVar("IntValue").GetInt();

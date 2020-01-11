@@ -23,13 +23,13 @@ MainMenuPanel::~MainMenuPanel() {
 	delete[] detailsPanels;
 }
 
-void MainMenuPanel::action(short id) {
+void MainMenuPanel::action(short id) const {
 	close();
 
 	detailsPanels[id]->setVisible(true);
 }
 
-void MainMenuPanel::close() {
+void MainMenuPanel::close() const {
 	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {
 		detailsPanels[i]->setVisible(false);
 	}
@@ -41,15 +41,15 @@ void MainMenuPanel::setVisible(bool enable) {
 	background->SetVisible(enable);
 }
 
-Urho3D::Button* MainMenuPanel::getNewGameProceed() {
+Urho3D::Button* MainMenuPanel::getNewGameProceed() const {
 	return static_cast<MainMenuNewGamePanel*>(detailsPanels[0])->getProceed();
 }
 
-Urho3D::Button* MainMenuPanel::getLoadButton() {
+Urho3D::Button* MainMenuPanel::getLoadButton() const {
 	return static_cast<MainMenuLoadPanel*>(detailsPanels[1])->getLoadButton();
 }
 
-Urho3D::Button* MainMenuPanel::getCloseButton() {
+Urho3D::Button* MainMenuPanel::getCloseButton() const {
 	return static_cast<MainMenuClosePanel*>(detailsPanels[4])->getCloseButton();
 }
 

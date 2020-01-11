@@ -29,11 +29,11 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 	loadXml("Objects/units/" + dbLevel->nodeName);
 
 	basic = model->GetMaterial(0);
-	if (StateManager::validateState(getDbID(), UnitState::CHARGE)) {
+	if (StateManager::validateState(dbUnit->id, UnitState::CHARGE)) {
 		chargeData = new ChargeData(150, 2);
 	}
 
-	if (StateManager::validateState(getDbID(), UnitState::SHOT)) {
+	if (StateManager::validateState(dbUnit->id, UnitState::SHOT)) {
 		missileData = new MissileData(150, 2);
 	}
 
@@ -484,7 +484,7 @@ float Unit::getValueOf(ValueType type) const {
 	}
 }
 
-Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) {
+Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
 	auto vector = Consts::circleCords[i] * (minimalDistance + toFollow->getMinimalDistance()) * 2;
 	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().z_ + vector.y_};
 }

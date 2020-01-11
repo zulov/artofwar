@@ -119,7 +119,7 @@ public:
 	int getDbID() override;
 	void clean() override;
 	float getValueOf(ValueType type) const override;
-	Urho3D::Vector2 getSocketPos(Unit* unit, int i);
+	Urho3D::Vector2 getSocketPos(Unit* unit, int i) const;
 private:
 	void actionIfCloseEnough(UnitOrder order, Physical* closest, int indexToInteract,
 	                         float sqDistance, float closeRange, float interestRange);

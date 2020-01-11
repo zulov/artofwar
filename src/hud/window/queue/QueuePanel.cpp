@@ -25,7 +25,7 @@ QueuePanel::~QueuePanel() {
 	delete[] elements;
 }
 
-void QueuePanel::update(QueueManager* queue, short& j) {
+void QueuePanel::update(QueueManager* queue, short& j) const {
 	const short size = queue->getSize();
 	for (int i = 0; i < size; ++i) {
 		QueueElement* element = queue->getAt(i);
@@ -52,7 +52,7 @@ void QueuePanel::show(SelectedInfo* selectedInfo) {
 	update(selectedInfo);
 }
 
-void QueuePanel::update(QueueManager* queue) {
+void QueuePanel::update(QueueManager* queue) const {
 	short j = 0;
 	update(queue, j);
 	hideElements(j);
@@ -63,7 +63,7 @@ void QueuePanel::show(QueueManager* queue) {
 	update(queue);
 }
 
-void QueuePanel::update(SelectedInfo* selectedInfo) {
+void QueuePanel::update(SelectedInfo* selectedInfo) const {
 	//TODO wykonuje sie nawet jeœli sie nic nie zmieni³o
 	short j = 0;
 	if (window->IsVisible()) {
@@ -81,7 +81,7 @@ void QueuePanel::update(SelectedInfo* selectedInfo) {
 	hideElements(j);
 }
 
-void QueuePanel::hideElements(int from) {
+void QueuePanel::hideElements(int from) const {
 	for (int i = from; i < MAX_ICON_SELECTION; ++i) {
 		elements[i]->hide();
 	}

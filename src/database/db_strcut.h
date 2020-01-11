@@ -213,14 +213,14 @@ struct db_graph_settings {
 	                  char* name, bool v_sync, bool shadow, int texture_quality)
 		: id(id),
 		  hud_size(hudSize),
-		  styles(Urho3D::String(styles).Split(SPLIT_SIGN)),
-		  fullscreen(fullscreen),
 		  max_fps(maxFps),
 		  min_fps(minFps),
+		  styles(Urho3D::String(styles).Split(SPLIT_SIGN)),
 		  name(name),
+		  texture_quality(texture_quality),
+		  fullscreen(fullscreen),
 		  v_sync(v_sync),
-		  shadow(shadow),
-		  texture_quality(texture_quality) {
+		  shadow(shadow) {
 	}
 };
 
@@ -266,8 +266,8 @@ struct db_hud_vars {
 	db_hud_vars(int id, int hudSize, char* name, float value)
 		: id(id),
 		  hud_size(hudSize),
-		  name(name),
-		  value(value) {
+		  value(value),
+		  name(name) {
 	}
 };
 
@@ -282,8 +282,8 @@ struct db_cost {
 		: id(id),
 		  resource(resource),
 		  value(value),
-		  resourceName(resourceName),
-		  thing(thing) {
+		  thing(thing),
+		  resourceName(resourceName) {
 	}
 };
 

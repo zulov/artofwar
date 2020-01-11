@@ -37,10 +37,10 @@ public:
 	void activate();
 	void unitOrder(short id);
 
-	void clean(SimulationInfo* simulationInfo);
+	void clean(SimulationInfo* simulationInfo) const;
 
-	void updateSelection();
-	void updateArrow();
+	void updateSelection() const;
+	void updateArrow() const;
 
 	void defaultControl();
 	void buildControl();
@@ -55,25 +55,25 @@ private:
 
 	void executeOnAll(short id, const ActionParameter& parameter) const;
 
-	void unitFormation(short id);
+	void unitFormation(short id) const;
 	void actionUnit(short id, const ActionParameter& parameter);
 
-	void refreshSelected();
-	bool conditionToClean(SimulationInfo* simulationInfo);
+	void refreshSelected() const;
+	bool conditionToClean(SimulationInfo* simulationInfo) const;
 
-	bool clickDown(MouseButton& var);
-	void createBuilding(Urho3D::Vector2 pos);
+	bool clickDown(MouseButton& var) const;
+	void createBuilding(Urho3D::Vector2 pos) const;
 
 	void leftClick(hit_data& hitData) const;
 	void leftDoubleClick(hit_data& hitData) const;
-	void leftClickBuild(hit_data& hitData);
+	void leftClickBuild(hit_data& hitData) const;
 	void rightClick(hit_data& hitData) const;
 
 	void leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const;
 	void rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const;
 
 	void releaseRight();
-	bool orderAction();
+	bool orderAction() const;
 	void releaseLeft();
 	void releaseBuildLeft();
 	void toDefault();

@@ -67,7 +67,7 @@ void ComplexBucketData::updateSize(char val, CellState cellState) {
 	}
 }
 
-bool ComplexBucketData::belowCellLimit() {
+bool ComplexBucketData::belowCellLimit() const {
 	return size < 2;
 }
 
@@ -80,6 +80,6 @@ void ComplexBucketData::removeDeploy() {
 	removeStatic();
 }
 
-bool ComplexBucketData::isFreeToBuild(const short id) {
+bool ComplexBucketData::isFreeToBuild(const short id) const {
 	return isUnit();//TODO bug uwzglednic ID
 }

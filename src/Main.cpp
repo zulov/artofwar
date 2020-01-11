@@ -183,7 +183,7 @@ void Main::changeCamera(int type) {
 	InitMouseMode(Game::getCameraManager()->getMouseMode());
 }
 
-void Main::InitLocalizationSystem() {
+void Main::InitLocalizationSystem() const {
 	auto l10n = GetSubsystem<Localization>();
 
 	l10n->LoadJSONFile("lang/language.json");
@@ -262,7 +262,7 @@ void Main::load(const String& saveName, loading& progress) {
 	updateProgress(progress, Game::getLocalization()->Get("load_msg_" + String(progress.currentStage)).CString());
 }
 
-void Main::createEnv() {
+void Main::createEnv() const {
 	Game::setEnvironment(new Environment(levelBuilder->getTerrain()));
 }
 
@@ -425,7 +425,7 @@ void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 	save(data->fileName);
 }
 
-void Main::SetupViewport() {
+void Main::SetupViewport() const {
 	SharedPtr<Viewport> viewport(new Viewport(context_, Game::getScene(),
 	                                          Game::getCameraManager()->getComponent()));
 	GetSubsystem<Renderer>()->SetViewport(0, viewport);

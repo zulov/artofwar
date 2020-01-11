@@ -56,7 +56,7 @@ void SelectedHudPanel::createBody() {
 	}
 }
 
-int SelectedHudPanel::iconSize() {
+int SelectedHudPanel::iconSize() const {
 	auto test = new Urho3D::UIElement(Game::getContext());
 	test->SetStyle("Icon", style);
 
@@ -73,11 +73,11 @@ void SelectedHudPanel::createRows() {
 	}
 }
 
-void SelectedHudPanel::clearSelected() {
+void SelectedHudPanel::clearSelected() const {
 	hide(0);
 }
 
-void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
+void SelectedHudPanel::update(SelectedInfo* selectedInfo) const {
 	ObjectType type = selectedInfo->getSelectedType();
 	auto& infoTypes = selectedInfo->getSelectedTypes();
 

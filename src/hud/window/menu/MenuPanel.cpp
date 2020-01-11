@@ -49,7 +49,7 @@ void MenuPanel::setHoverInfo(HudData* hudData) const {
 	infoPanel->setHoverInfo(hudData);
 }
 
-void MenuPanel::updateSelected(SelectedInfo* selectedInfo) {
+void MenuPanel::updateSelected(SelectedInfo* selectedInfo) const {
 	infoPanel->updateSelected(selectedInfo);
 }
 
@@ -64,7 +64,7 @@ std::vector<HudData*>& MenuPanel::getButtons() {
 	return hudElements;
 }
 
-void MenuPanel::clearSelected() {
+void MenuPanel::clearSelected() const {
 	infoPanel->clearSelected();
 }
 

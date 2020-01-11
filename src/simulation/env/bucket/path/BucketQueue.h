@@ -9,12 +9,12 @@ class BucketQueue
 public:
 	BucketQueue();
 	~BucketQueue();
-	bool empty();
+	bool empty() const;
 	void put(int item, float priority);
 	int get();
 	void init(float _max, float _min);
 private:
-	int getIndex(float priority);
+	int getIndex(float priority) const;
 	void updateCurrentIndex();
 	float max;
 	float min;

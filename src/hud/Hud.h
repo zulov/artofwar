@@ -35,26 +35,26 @@ URHO3D_OBJECT(Hud, Object)
 	void clear();
 
 	void update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
-	            SimulationInfo* simulationInfo);
-	void update(int unitsNumber);
-	void createMiniMap();
+	            SimulationInfo* simulationInfo) const;
+	void update(int unitsNumber) const;
+	void createMiniMap() const;
 
-	void updateSelected(SelectedInfo* selectedInfo, int currentFrame);
+	void updateSelected(SelectedInfo* selectedInfo, int currentFrame) const;
 
 	void hoverOnIcon(HudData* hudElement) const { menuPanel->setHoverInfo(hudElement); }
 	void hoverOffIcon() const { menuPanel->removeHoverInfo(); }
 
 	void HandleUIButtonHoverOn(Urho3D::StringHash, Urho3D::VariantMap& eventData);
 	void HandleUIButtonHoverOff(Urho3D::StringHash, Urho3D::VariantMap& eventData);
-	void resetLoading();
+	void resetLoading() const;
 
-	void updateLoading(float progress);
+	void updateLoading(float progress) const;
 
 	void updateStateVisibilty(GameState state);
 
 	void createMyPanels();
 	void prepareStyle();
-	void prepreUrho();
+	void prepreUrho() const;
 	void subscribeToUIEvents();
 
 	std::vector<Urho3D::Button*>& getButtonsSelectedToSubscribe() const {
@@ -69,10 +69,10 @@ URHO3D_OBJECT(Hud, Object)
 	Urho3D::Button* getCloseButton() const { return mainMenuPanel->getCloseButton(); }
 private:
 
-	void replaceVariables(std::string& xml, int hudSizeId);
-	void createDebugHud();
-	void createConsole();
-	void createCursor();
+	void replaceVariables(std::string& xml, int hudSizeId) const;
+	void createDebugHud() const;
+	void createConsole() const;
+	void createCursor() const;
 
 	SelectedHudPanel* selectedHudPanel;
 	DebugPanel* debugPanel;

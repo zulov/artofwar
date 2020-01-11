@@ -1,9 +1,11 @@
 #pragma once
 #include "objects/CellState.h"
-#include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Math/Vector2.h>
 
 
+namespace Urho3D {
+	class Vector3;
+}
 
 class Building;
 class Static;
@@ -21,9 +23,9 @@ public:
 	void setEscapeThrought(int val);
 	Urho3D::Vector2* getDirectrionFrom(Urho3D::Vector3& position, ComplexBucketData& escapeBucket);
 
-	void setNeightOccupied(const unsigned char index);
-	void setNeightFree(const unsigned char index);
-	bool ifNeightIsFree(const unsigned char index) const;
+	void setNeightOccupied(unsigned char index);
+	void setNeightFree(unsigned char index);
+	bool ifNeightIsFree(unsigned char index) const;
 
 	float getCost(const unsigned char index) { return costToNeight[index]; }
 	void setCost(const unsigned char index, float cost) { costToNeight[index] = cost; }
@@ -37,12 +39,12 @@ public:
 	int getEscapeBucket() const { return escapeBucketIndex; }
 	bool isUnit() const { return state < CellState::NONE; }
 	CellState getType() const { return state; }
-	char getSize() { return size; }
+	char getSize() const { return size; }
 	void updateSize(char val, CellState cellState);
-	bool belowCellLimit();
+	bool belowCellLimit() const;
 	void setDeploy(Building* building);
 	void removeDeploy();
-	bool isFreeToBuild(const short id);
+	bool isFreeToBuild(short id) const;
 private:
 	CellState state;
 	char size, additionalInfo{};

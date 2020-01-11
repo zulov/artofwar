@@ -18,7 +18,7 @@ public:
 	void destination(Urho3D::Vector2& newForce, Unit* unit);
 	void formation(Urho3D::Vector2& newForce, Unit* unit);
 	void escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit);
-	void inCell(Urho3D::Vector2& newForce, Unit* unit);
+	void inCell(Urho3D::Vector2& newForce, Unit* unit) const;
 
 	ForceStats& stats();
 	void changeCoef(int i, int wheel);

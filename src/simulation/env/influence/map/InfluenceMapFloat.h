@@ -11,7 +11,7 @@ public:
 	void update(Physical* physical, float value=1) override;
 	void reset() override;
 	float getValueAt(int index) const override;
-	std::optional<Urho3D::Vector2> getBestIndexToBuild(const short id) const;
+	std::optional<Urho3D::Vector2> getBestIndexToBuild(short id) const;
 private:
 	bool validIndex(int i) const;
 	float* values;

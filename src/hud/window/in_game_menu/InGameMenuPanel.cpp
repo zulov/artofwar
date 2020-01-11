@@ -32,7 +32,7 @@ void InGameMenuPanel::setVisible(bool enable) {
 	toggleButton->SetVisible(enable);
 }
 
-Urho3D::Button* InGameMenuPanel::getSaveButton() {
+Urho3D::Button* InGameMenuPanel::getSaveButton() const {
 	return addionalPanels[0]->getMainButton();
 }
 
@@ -47,7 +47,7 @@ void InGameMenuPanel::action(short id) {
 	addionalPanels[id]->setVisible(true);
 }
 
-void InGameMenuPanel::close() {
+void InGameMenuPanel::close() const {
 	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
 		addionalPanels[i]->setVisible(false);
 	}

@@ -36,7 +36,7 @@ public:
 		unit->currentFrameState = 0;
 	}
 
-	bool closeEnough(Unit* unit) {
+	bool closeEnough(Unit* unit) const {
 		return sqDist(unit->getPosition(), unit->missileData->aim->getPosition()) < unit->dbLevel->attackRange * unit->dbLevel->attackRange;
 	}
 

@@ -24,7 +24,7 @@ public:
 	void executeLists() const;
 	bool addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const;
 	bool addBuilding(int id, Urho3D::Vector2& position, char player, int level) const;
-	bool addResource(int id, Urho3D::Vector2& position, int level);
+	bool addResource(int id, Urho3D::Vector2& position, int level) const;
 
 private:
 

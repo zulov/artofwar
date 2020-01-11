@@ -119,7 +119,7 @@ void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
 	}
 }
 
-void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) {
+void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) const {
 	char max = Game::getEnvironment()->getNumberInState(unit->getMainCell(), unit->getState());
 	char i = Game::getEnvironment()->getOrdinalInState(unit, unit->getState());
 

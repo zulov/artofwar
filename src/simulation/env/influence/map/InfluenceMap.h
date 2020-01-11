@@ -14,7 +14,7 @@ public:
 	virtual void reset() =0;
 	virtual float getValueAt(int index) const =0;
 	void draw(short batch, short maxParts);
-	void drawCell(int index, short batch);
+	void drawCell(int index, short batch) const;
 
 protected:
 	void print() const;

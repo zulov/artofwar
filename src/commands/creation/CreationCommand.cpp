@@ -5,7 +5,7 @@
 
 CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::Vector2& position, char player,
                                  const Urho3D::IntVector2& bucketCords, int level): AbstractCommand(player), id(id),
-                                                                                    number(number),
+                                                                                    number(0),
                                                                                     level(level),
                                                                                     position(position),
                                                                                     objectType(type),

@@ -27,10 +27,10 @@ public:
 	void refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo);
 
 	void setHoverInfo(HudData* hudData) const;
-	void updateSelected(SelectedInfo* selectedInfo);
+	void updateSelected(SelectedInfo* selectedInfo) const;
 	void setVisible(bool enable) override;
 	std::vector<HudData*>& getButtons();
-	void clearSelected();
+	void clearSelected() const;
 private:
 	void setCheckVisibility(std::initializer_list<bool> active);
 	void updateMode(LeftMenuMode mode);

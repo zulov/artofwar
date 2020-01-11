@@ -11,14 +11,14 @@ class SelectedHudPanel :public AbstractWindowPanel
 public:
 	explicit SelectedHudPanel(Urho3D::XMLFile* _style);
 	~SelectedHudPanel();	
-	void update(SelectedInfo* selectedInfo);
+	void update(SelectedInfo* selectedInfo) const;
 	
 	std::vector<Urho3D::Button*>& getButtonsSelectedToSubscribe();
 	void createRows();
-	void clearSelected();
+	void clearSelected() const;
 
 private:
-	int iconSize();
+	int iconSize() const;
 	void hide(int i) const;
 	void createBody() override;
 	char maxInRow;

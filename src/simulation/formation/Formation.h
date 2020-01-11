@@ -24,7 +24,7 @@ public:
 	std::optional<Physical*> getLeader();
 
 	void addOrder(FutureOrder* order);
-	size_t getSize();
+	size_t getSize() const;
 	void semiReset();
 	std::vector<Unit*>& getUnits() { return units; }
 	void stopAllBesideLeader();
@@ -40,7 +40,7 @@ private:
 
 	void electLeader();
 	void setFormationClearPosition();
-	void setPosInFormationForLeader();
+	void setPosInFormationForLeader() const;
 
 	void changeState(FormationState newState);
 	short id;

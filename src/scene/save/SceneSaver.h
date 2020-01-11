@@ -19,7 +19,7 @@ public:
 	explicit SceneSaver(int _precision);
 	~SceneSaver();
 
-	void createTables();
+	void createTables() const;
 	void createDatabase(const Urho3D::String& fileName);
 	void createSave(const Urho3D::String& fileName);
 	void saveUnits(std::vector<Unit*>* units);
@@ -30,15 +30,15 @@ public:
 	void saveConfig();
 	void close();
 private:
-	void executeInsert(std::string& sqlstatement);
+	void executeInsert(std::string& sqlstatement) const;
 
-	void createUnitsTable();
-	void createTable(const std::string& sql);
-	void createBuildingsTable();
-	void createResourceEntitiesTable();
-	void createPlayerTable();
-	void createConfigTable();
-	void createResourceTable();
+	void createUnitsTable() const;
+	void createTable(const std::string& sql) const;
+	void createBuildingsTable() const;
+	void createResourceEntitiesTable() const;
+	void createPlayerTable() const;
+	void createConfigTable() const;
+	void createResourceTable() const;
 
 	sqlite3* database;
 	int precision;

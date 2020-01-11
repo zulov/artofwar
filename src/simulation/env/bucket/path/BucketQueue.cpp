@@ -18,7 +18,7 @@ void BucketQueue::init(float _max, float _min) {
 	}
 }
 
-bool BucketQueue::empty() { return size == 0; }
+bool BucketQueue::empty() const { return size == 0; }
 
 void BucketQueue::put(int item, float priority) {
 	const int index = getIndex(priority);
@@ -41,7 +41,7 @@ int BucketQueue::get() {
 	return best_item;
 }
 
-int BucketQueue::getIndex(float priority) {
+int BucketQueue::getIndex(float priority) const {
 	if (priority >= max) {
 		return QUEUE_BUCKETS_SIZE - 1;
 	}

@@ -8,7 +8,7 @@
 
 GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitOrder action, const Urho3D::Vector2& vector,
                        Physical* toUse, ActionType menuAction, bool append):
-	FutureOrder(action, append, vector, toUse), entities(entities), actionType(menuAction) {
+	FutureOrder(action, append, vector, toUse), actionType(menuAction), entities(entities) {
 }
 
 GroupOrder::~GroupOrder() = default;
@@ -70,13 +70,13 @@ void GroupOrder::addStopAim() {
 	simpleAction();
 }
 
-void GroupOrder::simpleAction(ActionParameter& parameter) {
+void GroupOrder::simpleAction(ActionParameter& parameter) const {
 	for (auto entity : *entities) {
 		entity->action(static_cast<char>(FutureOrder::action), parameter);
 	}
 }
 
-void GroupOrder::simpleAction() {
+void GroupOrder::simpleAction() const {
 	for (auto entity : *entities) {
 		entity->action(static_cast<char>(FutureOrder::action), Consts::EMPTY_ACTION_PARAMETER);
 	}

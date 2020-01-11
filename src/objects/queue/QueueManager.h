@@ -12,7 +12,7 @@ public:
 
 	void add(short value, ActionType type, short id, short localMaxCapacity);
 	QueueElement* update(float time);
-	short getSize();
+	short getSize() const;
 	QueueElement* getAt(short i);
 private:
 	float getSecToComplete(ActionType type, short id, int level);

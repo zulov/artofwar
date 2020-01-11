@@ -7,10 +7,10 @@
 #include <Urho3D/Graphics/Model.h>
 
 
-Grid::Grid(short resolution, float size): resolution(resolution),
-                                            sqResolution(resolution * resolution),
-                                            size(size), fieldSize(size / resolution),
-                                            invFieldSize(resolution / size), calculator(resolution,size) {
+Grid::Grid(short resolution, float size): calculator(resolution,size),
+                                            resolution(resolution),
+                                            sqResolution(resolution * resolution), size(size),
+                                            fieldSize(size / resolution), invFieldSize(resolution / size) {
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((double)MAX_SEP_DIST / RES_SEP_DIST * i);
 	}

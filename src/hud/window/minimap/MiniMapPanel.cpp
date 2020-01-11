@@ -90,7 +90,7 @@ void MiniMapPanel::createEmpty(int parts) {
 	indexPerUpdate = size.x_ * size.y_ / parts + 1;
 }
 
-void MiniMapPanel::changeValue(uint32_t* data, bool& changed, unsigned val) {
+void MiniMapPanel::changeValue(uint32_t* data, bool& changed, unsigned val) const {
 	if (*(data + indexUpdate) != val) {
 		changed = true;
 		*(data + indexUpdate) = val;

@@ -52,7 +52,7 @@ QueueElement* QueueManager::update(float time) {
 	return nullptr;
 }
 
-short QueueManager::getSize() {
+short QueueManager::getSize() const {
 	return queue.size();
 }
 

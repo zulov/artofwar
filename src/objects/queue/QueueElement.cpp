@@ -1,8 +1,8 @@
 #include "QueueElement.h"
 
 QueueElement::QueueElement(ActionType type, short id, short maxCapacity, float initialSecondsToComplete,
-                           float secondsToCompletePerInstance): elapsedSeconds(0), amount(0), type(type), id(id),
-	maxCapacity(maxCapacity), secondsToComplete(initialSecondsToComplete),
+                           float secondsToCompletePerInstance): type(type), id(id), maxCapacity(maxCapacity), amount(0),
+	secondsToComplete(initialSecondsToComplete), elapsedSeconds(0),
 	initialSecondsToComplete(initialSecondsToComplete),
 	secondsToCompletePerInstance(secondsToCompletePerInstance) {
 
@@ -10,7 +10,7 @@ QueueElement::QueueElement(ActionType type, short id, short maxCapacity, float i
 
 QueueElement::~QueueElement() = default;
 
-bool QueueElement::checkType(ActionType _type, short _id) {
+bool QueueElement::checkType(ActionType _type, short _id) const {
 	return type == _type && id == _id;
 }
 
@@ -36,22 +36,22 @@ bool QueueElement::update(float time) {
 	return elapsedSeconds >= secondsToComplete;
 }
 
-ActionType QueueElement::getType() {
+ActionType QueueElement::getType() const {
 	return type;
 }
 
-short QueueElement::getId() {
+short QueueElement::getId() const {
 	return id;
 }
 
-short QueueElement::getAmount() {
+short QueueElement::getAmount() const {
 	return amount;
 }
 
-short QueueElement::getMaxCapacity() {
+short QueueElement::getMaxCapacity() const {
 	return maxCapacity;
 }
 
-float QueueElement::getProgress() {
+float QueueElement::getProgress() const {
 	return elapsedSeconds / secondsToComplete;
 }
