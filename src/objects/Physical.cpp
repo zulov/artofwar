@@ -23,7 +23,10 @@ Physical::~Physical() = default;
 
 
 Urho3D::String Physical::getBarMaterialName() {
-	return "Materials/bar/red_overlay.xml";
+	if (player == -1) {
+		return "Materials/bar/bar_grey.xml";
+	}
+	return "Materials/bar/bar_" + Game::getDatabaseCache()->getPlayerColor(player)->name + ".xml";
 }
 
 void Physical::createBillboardBar() {
