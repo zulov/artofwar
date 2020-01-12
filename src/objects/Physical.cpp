@@ -22,8 +22,12 @@ Physical::Physical(Urho3D::Vector3& _position):
 Physical::~Physical() = default;
 
 
+Urho3D::String Physical::getBarMaterialName() {
+	return "Materials/bar/red_overlay.xml";
+}
+
 void Physical::createBillboardBar() {
-	billboardBar = createBillboardSet(barNode, billboardSetBar, "Materials/red_overlay.xml");
+	billboardBar = createBillboardSet(barNode, billboardSetBar, getBarMaterialName());
 }
 
 void Physical::createBillboardShadow() {
@@ -39,6 +43,10 @@ void Physical::createBillboardShadow() {
 	billboardSetShadow->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 }
 
+float Physical::getShadowSize(const Urho3D::Vector3& boundingBox) const {
+	return (boundingBox.x_ + boundingBox.z_) / 2 * 1.2f;
+}
+
 Urho3D::Billboard* Physical::createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet,
                                                 const Urho3D::String& material) const {
 	node = this->node->CreateChild();
@@ -51,7 +59,7 @@ Urho3D::Billboard* Physical::createBillboardSet(Urho3D::Node*& node, Urho3D::Bil
 }
 
 void Physical::updateBillboardShadow(Urho3D::Vector3& boundingBox) const {
-	const auto boudingSize = (boundingBox.x_ + boundingBox.z_) / 2 * 1.2f;
+	const auto boudingSize = getShadowSize(boundingBox);
 	billboardShadow->size_ = {boudingSize, boudingSize};
 	billboardShadow->enabled_ = false;
 

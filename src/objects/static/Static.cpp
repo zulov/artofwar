@@ -44,6 +44,10 @@ void Static::populate(const Urho3D::IntVector2& size) {
 	}
 }
 
+float Static::getShadowSize(const Urho3D::Vector3& boundingBox) const {
+	return Urho3D::Max(gridSize.x_, gridSize.y_) / node->GetScale().x_ * 1.2f;
+}
+
 std::string Static::getColumns() {
 	return Physical::getColumns() +
 		+ "bucket_x		INT     NOT NULL,"

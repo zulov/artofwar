@@ -98,6 +98,10 @@ ObjectType ResourceEntity::getType() const {
 	return ObjectType::RESOURCE;
 }
 
+Urho3D::String ResourceEntity::getBarMaterialName() {
+	return "Materials/bar/gray_overlay.xml";
+}
+
 std::string ResourceEntity::getColumns() {
 	return Static::getColumns() +
 		"amount		INT     NOT NULL";

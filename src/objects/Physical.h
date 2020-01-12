@@ -118,7 +118,10 @@ private:
 	Urho3D::Billboard* createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet,
 	                                      const Urho3D::String& material) const;
 	void createBillboardShadow();
+	virtual float getShadowSize(const Urho3D::Vector3& boundingBox) const;
+	virtual Urho3D::String getBarMaterialName();
 	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;
+	
 
 	int indexInGrid;
 };

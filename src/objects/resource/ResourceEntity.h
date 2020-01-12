@@ -4,8 +4,7 @@
 
 struct db_resource;
 
-class ResourceEntity : public Static
-{
+class ResourceEntity : public Static {
 public:
 	ResourceEntity(Urho3D::Vector3& _position, int id, int level, int mainCell);
 	virtual ~ResourceEntity();
@@ -26,7 +25,7 @@ public:
 	void action(char id, const ActionParameter& parameter) override;
 	ObjectType getType() const override;
 private:
-
+	Urho3D::String getBarMaterialName() override;
 	db_resource* dbResource;
 	float amonut;
 };
