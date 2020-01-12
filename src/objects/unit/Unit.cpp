@@ -26,6 +26,7 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
                                                                         state(UnitState::STOP) {
 	dbUnit = Game::getDatabaseCache()->getUnit(id);
 	dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
+	setPlayerAndTeam(player);
 	loadXml("Objects/units/" + dbLevel->nodeName);
 
 	basic = model->GetMaterial(0);
@@ -37,7 +38,6 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 		missileData = new MissileData(150, 2);
 	}
 
-	setPlayerAndTeam(player);
 
 	for (auto& bucket : teamBucketIndex) {
 		bucket = INT_MIN;

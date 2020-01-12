@@ -10,8 +10,7 @@ enum class ValueType : char;
 struct ActionParameter;
 class Unit;
 
-class Physical :
-	public Entity {
+class Physical : public Entity {
 public:
 	Physical(Urho3D::Vector3& _position);
 	virtual ~Physical();
@@ -100,7 +99,7 @@ protected:
 	Urho3D::Billboard *billboardBar, *billboardShadow;
 	Urho3D::BillboardSet *billboardSetBar, *billboardSetShadow;
 
-	char team, player;
+	char team, player = -1;
 	unsigned char maxRangeUsers = 8,
 	              maxCloseUsers = 8, //TODO default values
 	              closeUsers = 0,

@@ -16,12 +16,12 @@
 
 Building::Building(Urho3D::Vector3& _position, int id, int player, int level, int mainCell):
 	Static(_position, mainCell) {
+	setPlayerAndTeam(player);
 	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 	upgrade(level);
 
 	units = Game::getDatabaseCache()->getUnitsForBuilding(id);
 
-	setPlayerAndTeam(player);
 }
 
 

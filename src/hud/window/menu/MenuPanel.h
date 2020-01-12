@@ -50,7 +50,6 @@ private:
 	void basicOrder(SelectedInfo* selectedInfo);
 	void formationOrder();
 
-
 	void buildingMenu();
 
 	void unitMenu(SelectedInfo* selectedInfo);

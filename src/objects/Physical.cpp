@@ -10,6 +10,7 @@
 #include "player/PlayersManager.h"
 #include "player/Player.h"
 #include "unit/Unit.h"
+#include "database/DatabaseCache.h"
 
 
 Physical::Physical(Urho3D::Vector3& _position):
@@ -18,7 +19,7 @@ Physical::Physical(Urho3D::Vector3& _position):
 	node->SetPosition(position);
 }
 
-Physical::~Physical() =default;
+Physical::~Physical() = default;
 
 
 void Physical::createBillboardBar() {
@@ -26,7 +27,14 @@ void Physical::createBillboardBar() {
 }
 
 void Physical::createBillboardShadow() {
-	billboardShadow = createBillboardSet(billboardNode, billboardSetShadow, "Materials/select.xml");
+	Urho3D::String material;
+
+	if (player == -1) {
+		material = "Materials/select/octa_grey.xml";
+	} else {
+		material = "Materials/select/select_" + Game::getDatabaseCache()->getPlayerColor(player)->name + ".xml";
+	}
+	billboardShadow = createBillboardSet(billboardNode, billboardSetShadow, material);
 	billboardNode->Pitch(90);
 	billboardSetShadow->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 }
@@ -152,8 +160,7 @@ std::string Physical::getValues(int precision) {
 }
 
 int Physical::belowCloseLimit() {
-	auto diff = maxCloseUsers - closeUsers;
-	return diff > 0 ? diff : 0;
+	return Urho3D::Max(maxCloseUsers - closeUsers, 0);
 }
 
 ObjectType Physical::getType() const {
@@ -176,7 +183,7 @@ void Physical::unSelect() {
 	billboardSetShadow->Commit();
 }
 
-float Physical::getValueOf(ValueType type) const{
+float Physical::getValueOf(ValueType type) const {
 	return -1;
 }
 

@@ -448,7 +448,7 @@ struct db_container {
 			delete unitUpgradesCost;
 		}
 		for (auto dbBuildings : buildingsPerNation) {
-			delete dbBuildings;			
+			delete dbBuildings;
 		}
 	}
 };

@@ -1,0 +1,6 @@
+<material>
+	<technique name="Techniques/DiffAlpha.xml"/>
+	<texture name="Textures/select/circle_red.png" unit="diffuse"/>
+	<parameter name="MatDiffColor" value="1 1 1 0.8"/>
+	<parameter name="MatSpecColor" value="0.1 0.1 0.1 1"/>
+</material>
