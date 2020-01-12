@@ -30,7 +30,7 @@ void Physical::createBillboardShadow() {
 	Urho3D::String material;
 
 	if (player == -1) {
-		material = "Materials/select/octa_grey.xml";
+		material = "Materials/select/select_grey.xml";
 	} else {
 		material = "Materials/select/select_" + Game::getDatabaseCache()->getPlayerColor(player)->name + ".xml";
 	}
