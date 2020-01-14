@@ -1,7 +1,7 @@
 #include "Hud.h"
 #include "Game.h"
 #include "HudData.h"
-#include "ObjectEnums.h"
+#include "objects/ObjectEnums.h"
 #include "UiUtils.h"
 #include "camera/CameraManager.h"
 #include "database/DatabaseCache.h"

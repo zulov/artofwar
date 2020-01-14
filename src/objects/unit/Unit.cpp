@@ -1,6 +1,6 @@
 #include "Unit.h"
 #include "Game.h"
-#include "ObjectEnums.h"
+#include "objects/ObjectEnums.h"
 #include "UnitOrder.h"
 #include "aim/order/FutureOrder.h"
 #include "colors/ColorPaletteRepo.h"

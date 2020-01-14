@@ -1,19 +1,23 @@
 #pragma once
-#include "Entity.h"
 #include "scene/load/dbload_container.h"
 #include <Urho3D/Graphics/BillboardSet.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <iostream>
 #include <optional>
+#include "objects/ObjectEnums.h"
 
 enum class ValueType : char;
 struct ActionParameter;
 class Unit;
 
-class Physical : public Entity {
+class Physical {
 public:
 	Physical(Urho3D::Vector3& _position);
 	virtual ~Physical();
+
+	virtual bool isAlive() const;
+	virtual int getDbID();
+	Urho3D::Node* getNode() const { return node; }
 
 	void updateHealthBar();
 	float getHealthBarSize();
@@ -37,7 +41,7 @@ public:
 	void indexHasChangedReset();
 
 	static std::string getColumns();
-	std::string getValues(int precision) override;
+	virtual std::string getValues(int precision);
 	virtual bool isUsable() const { return isAlive(); }
 
 	virtual int belowCloseLimit();
@@ -48,7 +52,7 @@ public:
 	void reduceRange() { --rangeUsers; }
 	void upRange() { ++rangeUsers; }
 
-	ObjectType getType() const override;
+	virtual ObjectType getType() const;
 
 	virtual float getHealthPercent() const { return hp / maxHp; }
 	signed char getTeam() const { return team; }
@@ -92,6 +96,7 @@ protected:
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);
 	virtual float getHealthBarThick() { return 0.15; }
+	Urho3D::Node* node;
 
 	Urho3D::StaticModel* model;
 
@@ -121,7 +126,7 @@ private:
 	virtual float getShadowSize(const Urho3D::Vector3& boundingBox) const;
 	virtual Urho3D::String getBarMaterialName();
 	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;
-	
+
 
 	int indexInGrid;
 };

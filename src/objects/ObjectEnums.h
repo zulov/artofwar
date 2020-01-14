@@ -1,8 +1,7 @@
 #pragma once
 
-enum class ObjectType : char
-{
-	ENTITY = 0,
+enum class ObjectType : char {
+	NONE =-1,
 	PHYSICAL,
 	UNIT,
 	BUILDING,

@@ -1,5 +1,5 @@
 #include "Environment.h"
-#include "ObjectEnums.h"
+#include "objects/ObjectEnums.h"
 #include "OperatorType.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"

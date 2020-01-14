@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "StatsEnums.h"
 #include "StringUtils.h"
-#include "ObjectEnums.h"
+#include "objects/ObjectEnums.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/Environment.h"

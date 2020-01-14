@@ -1,7 +1,7 @@
 #include "CreationCommandList.h"
 #include "CreationCommand.h"
 #include "Game.h"
-#include "ObjectEnums.h"
+#include "objects/ObjectEnums.h"
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"

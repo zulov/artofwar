@@ -1,5 +1,5 @@
 #include "SimulationInfo.h"
-#include "ObjectEnums.h"
+#include "objects/ObjectEnums.h"
 
 SimulationInfo::SimulationInfo() {
 	unitDied = &flags[0];

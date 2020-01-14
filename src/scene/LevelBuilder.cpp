@@ -38,10 +38,10 @@ void LevelBuilder::createScene(SceneLoader& loader) {
 void LevelBuilder::createMap(int mapId) {
 	const auto map = Game::getDatabaseCache()->getMap(mapId);
 
-	objectManager->add(createZone());
-	objectManager->add(createLight({0.6f, -1.0f, 0.8f}, {0.7f, 0.6f, 0.6f},
+	objectManager->setZone(createZone());
+	objectManager->setLight(createLight({0.6f, -1.0f, 0.8f}, {0.7f, 0.6f, 0.6f},
 	                               Urho3D::LIGHT_DIRECTIONAL));
-	objectManager->add(createGround(map->height_map, map->texture, map->scale_hor, map->scale_ver));
+	objectManager->setGround(createGround(map->height_map, map->texture, map->scale_hor, map->scale_ver));
 }
 
 void LevelBuilder::createScene(NewGameForm* form) {
@@ -52,34 +52,31 @@ Urho3D::Terrain* LevelBuilder::getTerrain() const {
 	return terrain;
 }
 
-Entity* LevelBuilder::createZone() {
-	const auto entity = new Entity();
-
-	auto zoneNode = entity->getNode();
+Urho3D::Node* LevelBuilder::createZone() {
+	auto zoneNode = Game::getScene()->CreateChild();
 	auto zone = zoneNode->CreateComponent<Urho3D::Zone>();
 	zone->SetBoundingBox(Urho3D::BoundingBox(-1000.0f, 1000.0f));
 	zone->SetFogColor(Urho3D::Color(0.15f, 0.15f, 0.3f));
 	zone->SetFogStart(200);
 	zone->SetFogEnd(300);
 
-	return entity;
+	return zoneNode;
 }
 
-Entity* LevelBuilder::createLight(const Urho3D::Vector3& direction, const Urho3D::Color& color,
+Urho3D::Node* LevelBuilder::createLight(const Urho3D::Vector3& direction, const Urho3D::Color& color,
                                   Urho3D::LightType lightType) {
-	const auto entity = new Entity();
-	auto lightNode = entity->getNode();
+	auto lightNode = Game::getScene()->CreateChild();
 	lightNode->SetDirection(direction);
 	auto light = lightNode->CreateComponent<Urho3D::Light>();
 	light->SetPerVertex(true);
 	light->SetLightType(lightType);
 	light->SetColor(color);
 
-	return entity;
+	return lightNode;
 }
 
 
-Entity* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho3D::String& texture,
+Physical* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho3D::String& texture,
                                    float horScale, float verScale) {
 	const auto entity = new Physical(Urho3D::Vector3());
 

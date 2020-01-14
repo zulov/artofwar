@@ -38,9 +38,6 @@
     <ClCompile Include="src\database\DatabaseCache.cpp">
       <Filter>database</Filter>
     </ClCompile>
-    <ClCompile Include="src\objects\Entity.cpp">
-      <Filter>objects</Filter>
-    </ClCompile>
     <ClCompile Include="src\hud\MySprite.cpp">
       <Filter>hud</Filter>
     </ClCompile>
@@ -197,9 +194,6 @@
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\Benchmark.h" />
-    <ClInclude Include="src\ObjectEnums.h">
-      <Filter>objects</Filter>
-    </ClInclude>
     <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\Game.h" />
@@ -248,9 +242,6 @@
     </ClInclude>
     <ClInclude Include="src\database\db_strcut.h">
       <Filter>database</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objects\Entity.h">
-      <Filter>objects</Filter>
     </ClInclude>
     <ClInclude Include="src\hud\Hud.h">
       <Filter>hud</Filter>
@@ -484,6 +475,9 @@
     <ClInclude Include="src\VectorUtils.h" />
     <ClInclude Include="src\ActionCenter.h" />
     <ClInclude Include="src\stats\StatsEnums.h" />
+    <ClInclude Include="src\objects\ObjectEnums.h">
+      <Filter>objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

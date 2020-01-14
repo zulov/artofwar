@@ -1,6 +1,6 @@
 #include "ResourceEntity.h"
 #include "Game.h"
-#include "ObjectEnums.h"
+#include "objects/ObjectEnums.h"
 #include "OperatorType.h"
 #include "ResourceOrder.h"
 #include "database/DatabaseCache.h"
@@ -77,7 +77,6 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 						auto [pos, distance, indexOfPos] = opt.value();
 						unit->toAction(this, distance, indexOfPos, UnitOrder::COLLECT, 24);
 						//TODO add order?
-
 						++k;
 					}
 				}

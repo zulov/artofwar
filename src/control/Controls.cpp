@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "HitData.h"
 #include "MathUtils.h"
-#include "ObjectEnums.h"
+#include "objects/ObjectEnums.h"
 #include "camera/CameraManager.h"
 #include "commands/action/ActionCommand.h"
 #include "database/DatabaseCache.h"
@@ -30,7 +30,7 @@
 #include "ActionCenter.h"
 
 
-Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::ENTITY) {
+Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
 	selected = new std::vector<Physical*>();
 	selected->reserve(5000);
 
@@ -90,7 +90,7 @@ void Controls::unSelectAll() const {
 		phy->unSelect();
 	}
 	selected->clear();
-	selectedInfo->setSelectedType(ObjectType::ENTITY);
+	selectedInfo->setSelectedType(ObjectType::NONE);
 	selectedInfo->reset();
 }
 

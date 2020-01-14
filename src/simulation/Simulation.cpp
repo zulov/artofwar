@@ -2,7 +2,7 @@
 #include "debug/DebugLineRepo.h"
 #include "debug/DebugUnitType.h"
 #include "Game.h"
-#include "ObjectEnums.h"
+#include "objects/ObjectEnums.h"
 #include "OperatorType.h"
 #include "SimulationInfo.h"
 #include "SimulationObjectManager.h"

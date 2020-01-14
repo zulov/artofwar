@@ -1,6 +1,6 @@
 #include "objects/Physical.h"
 #include "Game.h"
-#include "ObjectEnums.h"
+#include "objects/ObjectEnums.h"
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
@@ -15,12 +15,23 @@
 
 Physical::Physical(Urho3D::Vector3& _position):
 	position(_position), indexInGrid(INT_MIN) {
+	node = Game::getScene()->CreateChild();
 	node->SetVar("link", this);
 	node->SetPosition(position);
 }
 
-Physical::~Physical() = default;
+Physical::~Physical() {
+	node->Remove();
+}
 
+
+bool Physical::isAlive() const {
+	return true;
+}
+
+int Physical::getDbID() {
+	return -1;
+}
 
 Urho3D::String Physical::getBarMaterialName() {
 	if (player == -1) {
@@ -152,10 +163,10 @@ void Physical::indexHasChangedReset() {
 }
 
 std::string Physical::getColumns() {
-	return Entity::getColumns()
-		+ "hp_coef		INT     NOT NULL,"
-		+ "player		INT     NOT NULL,"
-		+ "level		INT     NOT NULL,";
+	return "id_db	INT		NOT NULL,"
+		"hp_coef	INT     NOT NULL,"
+		"player		INT     NOT NULL,"
+		"level		INT     NOT NULL,";
 }
 
 int Physical::getLevel() {
@@ -164,7 +175,7 @@ int Physical::getLevel() {
 
 std::string Physical::getValues(int precision) {
 	int hp_coef = getHealthPercent() * precision;
-	return Entity::getValues(precision)
+	return std::to_string(getDbID()) + ","
 		+ std::to_string(hp_coef) + ","
 		+ std::to_string(player) + ","
 		+ std::to_string(getLevel()) + ",";

@@ -1,5 +1,5 @@
 #include "CreationCommand.h"
-#include "ObjectEnums.h"
+#include "objects/ObjectEnums.h"
 #include "simulation/SimulationObjectManager.h"
 
 

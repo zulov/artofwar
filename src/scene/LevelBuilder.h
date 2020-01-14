@@ -21,10 +21,10 @@ public:
 private:
 	Urho3D::SharedPtr<Urho3D::Scene> scene;
 
-	static Entity* createZone();
-	static Entity* createLight(const Urho3D::Vector3& direction, const Urho3D::Color& color, Urho3D::LightType lightType);
+	Urho3D::Node* createZone();
+	Urho3D::Node* createLight(const Urho3D::Vector3& direction, const Urho3D::Color& color, Urho3D::LightType lightType);
 	void setMaterial(const Urho3D::String& texture) const;
-	Entity* createGround(const Urho3D::String& heightMap, const Urho3D::String& texture, float horScale, float verScale);
+	Physical* createGround(const Urho3D::String& heightMap, const Urho3D::String& texture, float horScale, float verScale);
 
 	SceneObjectManager *objectManager;
 	Urho3D::Terrain* terrain;

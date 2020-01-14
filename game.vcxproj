@@ -258,7 +258,6 @@
     <ClCompile Include="src\commands\creation\CreationCommand.cpp" />
     <ClCompile Include="src\commands\CommandList.cpp" />
     <ClCompile Include="src\control\Controls.cpp" />
-    <ClCompile Include="src\objects\Entity.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\scene\LevelBuilder.cpp" />
     <ClCompile Include="src\scene\SceneObjectManager.cpp" />
@@ -426,10 +425,9 @@
     <ClInclude Include="src\control\Controls.h" />
     <ClInclude Include="src\control\ControlsState.h" />
     <ClInclude Include="src\defines.h" />
-    <ClInclude Include="src\objects\Entity.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\scene\LevelBuilder.h" />
-    <ClInclude Include="src\ObjectEnums.h" />
+    <ClInclude Include="src\objects\ObjectEnums.h" />
     <ClInclude Include="src\scene\SceneObjectManager.h" />
     <ClInclude Include="src\commands\creation\CreationCommandList.h" />
     <ClInclude Include="src\simulation\env\bucket\ComplexBucketData.h" />

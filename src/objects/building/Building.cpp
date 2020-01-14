@@ -1,6 +1,6 @@
 #include "Building.h"
 #include "Game.h"
-#include "ObjectEnums.h"
+#include "objects/ObjectEnums.h"
 #include "database/DatabaseCache.h"
 #include "objects/ActionType.h"
 #include "objects/unit/ActionParameter.h"

@@ -1,16 +1,21 @@
 #pragma once
 #include <vector>
+#include "objects/Physical.h"
 
 class Entity;
 
-class SceneObjectManager
-{
+class SceneObjectManager {
 public:
 	SceneObjectManager();
 	~SceneObjectManager();
 
-	void add(Entity* entity);
+	void setGround(Physical* ground);
+	void setLight(Urho3D::Node* light);
+	void setZone(Urho3D::Node* zone);
 private:
-	std::vector<Entity*> entities;
+	Physical* ground;
+	Urho3D::Node* light;
+	Urho3D::Node* zone;
+
 
 };
