@@ -1,10 +1,10 @@
 #pragma once
 #include "scene/load/dbload_container.h"
+#include "objects/ObjectEnums.h"
 #include <Urho3D/Graphics/BillboardSet.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <iostream>
 #include <optional>
-#include "objects/ObjectEnums.h"
 
 enum class ValueType : char;
 struct ActionParameter;
@@ -116,16 +116,16 @@ protected:
 	float hp = 100, maxHp = 100,
 	      attackCoef = 10, attackSpeed = 1,
 	      defenseCoef = 0.3f;
-
+	
 private:
 	void createBillboardBar();
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
 	Urho3D::Billboard* createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet,
 	                                      const Urho3D::String& material) const;
 	void createBillboardShadow();
+	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;
 	virtual float getShadowSize(const Urho3D::Vector3& boundingBox) const;
 	virtual Urho3D::String getBarMaterialName();
-	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;
 
 
 	int indexInGrid;

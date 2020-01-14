@@ -19,9 +19,6 @@ Building::Building(Urho3D::Vector3& _position, int id, int player, int level, in
 	setPlayerAndTeam(player);
 	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
 	upgrade(level);
-
-	units = Game::getDatabaseCache()->getUnitsForBuilding(id);
-
 }
 
 
@@ -111,7 +108,6 @@ void Building::upgrade(char level) {
 
 void Building::load(dbload_building* dbloadBuilding) {
 	Static::load(dbloadBuilding);
-	//	target = {dbloadBuilding->target_x, dbloadBuilding->target_z};
 }
 
 std::string Building::getColumns() {

@@ -47,6 +47,5 @@ private:
 	db_building* dbBuilding;
 	db_building_level* dbLevel;
 
-	std::vector<db_unit*>* units;
 	QueueManager* queue;
 };

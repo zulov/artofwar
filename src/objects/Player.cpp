@@ -117,8 +117,8 @@ void Player::ai() {
 	// 	std::cout << result[i] << std::endl;
 	// }
 
-	auto& orderData = aiRoot->getOrder();
-	execute(orderData);
+	//auto& orderData = aiRoot->getOrder();
+	//execute(orderData);
 }
 
 Urho3D::Vector2 Player::bestPosToBuild(const short id) const {
