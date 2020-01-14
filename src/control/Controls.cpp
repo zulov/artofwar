@@ -62,6 +62,7 @@ Controls::~Controls() {
 	}
 }
 
+
 void Controls::updateAdditionalInfo() const {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::BUILDING:
@@ -83,7 +84,6 @@ void Controls::updateAdditionalInfo() const {
 		}
 	}
 }
-
 
 void Controls::unSelectAll() const {
 	for (auto& phy : *selected) {

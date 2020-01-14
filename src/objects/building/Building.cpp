@@ -31,7 +31,7 @@ Building::~Building() {
 }
 
 float Building::getMaxHpBarSize() {
-	return 2.0f;
+	return Urho3D::Max(gridSize.x_, gridSize.y_) * 0.5;
 }
 
 int Building::getDbID() {
