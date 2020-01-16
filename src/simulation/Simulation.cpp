@@ -144,7 +144,11 @@ void Simulation::addTestEntities() const {
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 2, Urho3D::Vector2(20, -30), 0, 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-20, -10), 1, 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0, 0);
-
+		for (int i = -200; i < -150; i+=4) {
+			for (int j = -200; j < -50; j+=4) {
+				Game::getActionCenter()->addResource(1, Urho3D::Vector2(i, j), 0);
+			}
+		}
 	}
 }
 
