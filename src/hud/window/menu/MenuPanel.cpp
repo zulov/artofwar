@@ -179,8 +179,10 @@ void MenuPanel::levelBuilding() {
 	resetRestButtons(k);
 }
 
-std::unordered_set<int> MenuPanel::getUpgradePathInBuilding(std::vector<SelectedInfoType*>& infoTypes) {
+std::unordered_set<int> MenuPanel::getUpgradePathInBuilding(SelectedInfo* selectedInfo) {
+	if (selectedInfo->getAllNumber() <= 0) { return {}; }
 	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	auto& infoTypes = selectedInfo->getSelectedTypes();
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
 			removeFromCommon(common, pathsIdsInbuilding(i));
@@ -190,9 +192,11 @@ std::unordered_set<int> MenuPanel::getUpgradePathInBuilding(std::vector<Selected
 	return common;
 }
 
-std::unordered_set<int> MenuPanel::getUnitInBuilding(std::vector<SelectedInfoType*>& infoTypes) {
+std::unordered_set<int> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) {
+	if (selectedInfo->getAllNumber() <= 0) { return {}; }
 	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
+	auto& infoTypes = selectedInfo->getSelectedTypes();
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
 			removeFromCommon(common, unitsIdsForBuildingNation(nation, i));
@@ -213,7 +217,7 @@ void MenuPanel::removeFromCommon(std::unordered_set<int>& common, std::unordered
 
 void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
-	for (auto id : getUnitInBuilding(selectedInfo->getSelectedTypes())) {
+	for (auto id : getUnitInBuilding(selectedInfo)) {
 		db_unit* unit = Game::getDatabaseCache()->getUnit(id);
 		if (unit) {
 			setNext(k, "textures/hud/icon/unit/" + unit->icon, unit->id, ActionType::UNIT_CREATE, "");
@@ -224,7 +228,7 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 
 void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
-	for (auto id : getUnitInBuilding(selectedInfo->getSelectedTypes())) {
+	for (auto id : getUnitInBuilding(selectedInfo)) {
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
 		auto opt = Game::getDatabaseCache()->getUnitLevel(id, level);
 		if (opt.has_value()) {
@@ -238,7 +242,7 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 
 void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
-	for (auto id : getUpgradePathInBuilding(selectedInfo->getSelectedTypes())) {
+	for (auto id : getUpgradePathInBuilding(selectedInfo)) {
 		auto opt = Game::getDatabaseCache()->
 			getUnitUpgrade(id, Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1);
 
@@ -251,8 +255,10 @@ void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 	resetRestButtons(k);
 }
 
-std::unordered_set<int> MenuPanel::getOrderForUnit(std::vector<SelectedInfoType*>& infoTypes) {
+std::unordered_set<int> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) {
+	if (selectedInfo->getAllNumber() <= 0) { return {}; }
 	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	auto& infoTypes = selectedInfo->getSelectedTypes();
 
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
@@ -270,16 +276,10 @@ std::unordered_set<int> MenuPanel::getOrderForUnit(std::vector<SelectedInfoType*
 
 void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 	int k = 0;
-	for (auto id : getOrderForUnit(selectedInfo->getSelectedTypes())) {
+
+	for (auto id : getOrderForUnit(selectedInfo)) {
 		db_order* order = Game::getDatabaseCache()->getOrder(id);
 		if (order) {
-			//TODO BUG textures/hud/icon/orders/map/HeightMap.png
-			std::string name = "textures/hud/icon/orders/";
-			name.append((order->icon).CString());
-			std::string name1 = "textures/hud/icon/orders/map/HeightMap.png";
-			if (name1==name) {
-				int a = 5;
-			}
 			setNext(k, "textures/hud/icon/orders/" + order->icon, order->id, ActionType::ORDER, "");
 		}
 	}

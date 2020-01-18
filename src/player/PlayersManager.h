@@ -6,7 +6,6 @@
 
 #define TEAMS_NUMBER 5
 
-
 struct NewGameForm;
 class SceneSaver;
 class Player;

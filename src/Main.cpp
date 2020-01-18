@@ -331,6 +331,11 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 			engine_->Exit();
 		}
 	}
+	if (key == KEY_KP_0) {
+		Game::getPlayersMan()->changeActive(0);
+	} else if (key == KEY_KP_1) {
+		Game::getPlayersMan()->changeActive(1);
+	}
 	if (gameState == GameState::RUNNING || gameState == GameState::PAUSE) {
 		if (key == KEY_1) {
 			changeCamera(CameraBehaviorType::FREE);
