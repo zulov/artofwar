@@ -16,7 +16,7 @@ PlayersManager::~PlayersManager() {
 void PlayersManager::load(std::vector<dbload_player*>* players, std::vector<dbload_resource*>* resources) {
 	for (auto player : *players) {
 		auto newPlayer = new Player(player->nation, player->team, player->id, player->color, player->name,
-		                               player->is_active);
+		                            player->is_active);
 		if (player->is_active) {
 			activePlayer = newPlayer;
 		}
@@ -62,7 +62,9 @@ std::vector<Player*>& PlayersManager::getTeam(short i) {
 }
 
 void PlayersManager::changeActive(short i) {
+	activePlayer->deactivate();
 	activePlayer = allPlayers[i];
+	activePlayer->activate();
 }
 
 void PlayersManager::save(SceneSaver& saver) {

@@ -110,8 +110,16 @@ int Player::getWorkersNumber() const {
 	return possession.getWorkersNumber();
 }
 
+void Player::deactivate() {
+	resources.change();
+}
+
+void Player::activate() {
+	resources.change();
+}
+
 void Player::ai() {
-	auto data= Game::getStats()->getInputFor(getId());
+	auto data = Game::getStats()->getInputFor(getId());
 	auto result = brain->decide(data);
 	// for (int i = 0; i < brain->getOutputSize(); ++i) {
 	// 	std::cout << result[i] << std::endl;

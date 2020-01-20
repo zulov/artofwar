@@ -175,21 +175,17 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
                  SimulationInfo* simulationInfo) const {
 	updateSelected(selectedInfo, simulationInfo->getCurrentFrame());
 	if (simulationInfo->ifAmountUnitChanged()) {
-		update(simulationInfo->getUnitsNumber());
+		topPanel->update(Game::getPlayersMan()->getActivePlayer()->getPossession());
 	}
 
 	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
 	                    cameraManager->getInfo());
 
 	topPanel->update(Game::getPlayersMan()->getActivePlayer()->getResources());
-	topPanel->update(simulationInfo->getUnitsNumber());
+	topPanel->update(Game::getPlayersMan()->getActivePlayer()->getPossession());
 	scorePanel->update(Game::getPlayersMan()->getAllPlayers());
 	miniMapPanel->update();
 	selectedInfo->hasBeenUpdatedDrawn();
-}
-
-void Hud::update(int unitsNumber) const {
-	topPanel->update(unitsNumber);
 }
 
 void Hud::createMiniMap() const {

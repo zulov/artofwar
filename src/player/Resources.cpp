@@ -11,7 +11,7 @@ Resources::Resources() {
 void Resources::init(float valueForAll) {
 	size = Game::getDatabaseCache()->getResourceSize();
 	int i = 0;
-	for (; i < size; ++i) {	
+	for (; i < size; ++i) {
 		values[i] = valueForAll;
 	}
 	for (; i < RESOURCE_NUMBER_DB; ++i) {
@@ -64,13 +64,18 @@ void Resources::hasBeedUpdatedDrawn() {
 std::string Resources::getValues(int precision, int player) {
 	std::string str;
 	for (int i = 0; i < RESOURCE_NUMBER_DB; ++i) {
-		str += "(" + std::to_string(player) + "," + std::to_string(i) + "," + std::to_string((int)(values[i] * precision)) + "),";
+		str += "(" + std::to_string(player) + "," + std::to_string(i) + "," + std::to_string(
+			(int)(values[i] * precision)) + "),";
 	}
 	return str;
 }
 
 void Resources::setValue(int id, float amount) {
 	values[id] = amount;
+	changed = true;
+}
+
+void Resources::change() {
 	changed = true;
 }
 

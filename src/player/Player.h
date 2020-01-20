@@ -17,6 +17,7 @@ public:
 	char upgradeLevel(ActionType type, int id);
 
 	Resources& getResources() { return resources; }
+	Possession& getPossession() { return possession; }
 	int getNation() const { return dbNation->id; }
 	int getTeam() const { return team; }
 	char getId() const { return id; }
@@ -36,6 +37,8 @@ public:
 	int getUnitsNumber() const;
 	int getBuildingsNumber() const;
 	int getWorkersNumber() const;
+	void deactivate();
+	void activate();
 private:
 	Urho3D::Vector2 bestPosToBuild(const short id) const;
 	void execute(const AiOrderData& orderData);
@@ -48,7 +51,7 @@ private:
 	void fillResourceNode(AiNode* parent);
 	void fillIntelNode(AiNode* parent);
 	AiNode* aiRoot;
-	Brain * brain;
+	Brain* brain;
 	std::vector<AiNode*> aiLeafs;
 	Possession possession;
 	Resources resources;

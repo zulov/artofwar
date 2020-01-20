@@ -36,7 +36,6 @@ URHO3D_OBJECT(Hud, Object)
 
 	void update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
 	            SimulationInfo* simulationInfo) const;
-	void update(int unitsNumber) const;
 	void createMiniMap() const;
 
 	void updateSelected(SelectedInfo* selectedInfo, int currentFrame) const;

@@ -17,6 +17,7 @@ public:
 	void hasBeedUpdatedDrawn();
 	std::string getValues(int precision, int player);
 	void setValue(int id, float amount);
+	void change();
 	static std::string getColumns();
 private:
 	void revert(int end, std::vector<db_cost*>* costs);
