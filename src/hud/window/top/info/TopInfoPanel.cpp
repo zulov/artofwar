@@ -8,6 +8,10 @@ TopInfoPanel::TopInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 
 TopInfoPanel::~TopInfoPanel() = default;
 
+void TopInfoPanel::hoverOn() {
+	setVisible(true);
+}
+
 void TopInfoPanel::hoverOff() {
 	setVisible(false);
 }

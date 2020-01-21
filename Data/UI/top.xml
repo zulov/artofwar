@@ -13,6 +13,11 @@
 	<element type="TopButtons" style="Button" >
 		<attribute name="Min Size" value="{iconX*1} {iconY/2}"/>
 		<attribute name="Max Size" value="{iconX*2} {iconY/2}"/>
+	</element>	
+	
+	<element type="TopButtonsNarrow" style="Button" >
+		<attribute name="Min Size" value="{iconX*1} {iconY/2}"/>
+		<attribute name="Max Size" value="{iconX*1.25} {iconY/2}"/>
 	</element>
 	
 	<element type="TopText" style="MyText" >

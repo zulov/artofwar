@@ -174,15 +174,11 @@ void Hud::createConsole() const {
 void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
                  SimulationInfo* simulationInfo) const {
 	updateSelected(selectedInfo, simulationInfo->getCurrentFrame());
-	if (simulationInfo->ifAmountUnitChanged()) {
-		topPanel->update(Game::getPlayersMan()->getActivePlayer()->getPossession());
-	}
-
+	
 	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
 	                    cameraManager->getInfo());
 
-	topPanel->update(Game::getPlayersMan()->getActivePlayer()->getResources());
-	topPanel->update(Game::getPlayersMan()->getActivePlayer()->getPossession());
+	topPanel->update(Game::getPlayersMan()->getActivePlayer());//TODO performance if (simulationInfo->ifAmountUnitChanged()) {
 	scorePanel->update(Game::getPlayersMan()->getAllPlayers());
 	miniMapPanel->update();
 	selectedInfo->hasBeenUpdatedDrawn();

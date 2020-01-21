@@ -6,10 +6,9 @@
 
 class MySprite;
 
-class TopHudElement
-{
+class TopHudElement {
 public:
-	TopHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style, Urho3D::Texture2D* texture);
+	TopHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style, Urho3D::Texture2D* texture, Urho3D::String styleName="TopButtons");
 	~TopHudElement();
 	void hide() const;
 	void show() const;
