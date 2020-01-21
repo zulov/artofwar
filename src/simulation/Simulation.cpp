@@ -219,14 +219,16 @@ void Simulation::updateBuildingQueues(const float time) const {
 
 void Simulation::updateQueues() const {
 	updateBuildingQueues(maxTimeFrame);
-	auto done = Game::getQueueManager()->update(maxTimeFrame);
-	if (done) {
-		switch (done->getType()) {
-		case ActionType::BUILDING_LEVEL:
-			levelUp(done);
-			break;
+	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+		auto done = player->updateQueue(maxTimeFrame);
+		if (done) {
+			switch (done->getType()) {
+			case ActionType::BUILDING_LEVEL:
+				levelUp(done);
+				break;
+			}
+			delete done;
 		}
-		delete done;
 	}
 }
 

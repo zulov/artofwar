@@ -206,7 +206,6 @@ void Main::createSimulation() {
 
 void Main::setSimpleManagers() {
 	Game::setCameraManager(new CameraManager())
-		->setQueueManager(new QueueManager(1))
 		->setFormationManager(new FormationManager())
 		->setPlayersManager(new PlayersManager())
 		->setStats(new Stats())
@@ -450,9 +449,6 @@ void Main::disposeScene() {
 		loading2.inc("dispose managers");
 		delete Game::getCameraManager();
 		Game::setCameraManager(nullptr);
-
-		delete Game::getQueueManager();
-		Game::setQueueManager(nullptr);
 
 		delete Game::getFormationManager();
 		Game::setFormationManager(nullptr);

@@ -44,7 +44,6 @@ public:
 	static Game* setDatabaseCache(DatabaseCache* _databaseCache);
 	static Game* setPlayersManager(PlayersManager* _playersManager);
 	static Game* setEnvironment(Environment* _environment);
-	static Game* setQueueManager(QueueManager* _queueManager);
 	static Game* setFormationManager(FormationManager* _formationManager);
 	static Game* setColorPaletteRepo(ColorPaletteRepo* _colorPaletteRepo);
 	static Game* setLog(Urho3D::Log* _log);
@@ -68,7 +67,7 @@ public:
 	static CameraManager* getCameraManager() { return instance->cameraManager; }
 	static PlayersManager* getPlayersMan() { return instance->playersManager; }
 	static Environment* getEnvironment() { return instance->environment; }
-	static QueueManager* getQueueManager() { return instance->queue; }
+	//static QueueManager* getQueueManager() { return instance->queue; }
 	static Stats* getStats() { return instance->stats; }
 	static ActionCenter* getActionCenter() { return instance->actionCenter; }
 
@@ -94,7 +93,7 @@ private:
 	CameraManager* cameraManager;
 	DatabaseCache* databaseCache;
 	Environment* environment;
-	QueueManager* queue;
+	//QueueManager* queue;
 	Stats* stats;
 	ActionCenter * actionCenter;
 

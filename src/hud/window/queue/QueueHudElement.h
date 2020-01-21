@@ -9,10 +9,9 @@
 class QueueElement;
 class MySprite;
 
-class QueueHudElement
-{
+class QueueHudElement {
 public:
-	explicit QueueHudElement(Urho3D::UIElement *parent, Urho3D::XMLFile* style);
+	explicit QueueHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style);
 	~QueueHudElement();
 	Urho3D::Button* getButton() const;
 	void hide() const;

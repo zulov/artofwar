@@ -14,7 +14,8 @@
 Player::Player(int nationId, int team, char id, int color, Urho3D::String name, bool active): name(std::move(name)),
                                                                                               team(team),
                                                                                               color(color), id(id),
-                                                                                              active(active) {
+                                                                                              active(active),
+                                                                                              queue(1) {
 	dbNation = Game::getDatabaseCache()->getNation(nationId);
 
 	std::fill_n(unitLevels, UNITS_NUMBER_DB, 0);
@@ -116,6 +117,14 @@ void Player::deactivate() {
 
 void Player::activate() {
 	resources.change();
+}
+
+QueueElement* Player::updateQueue(float time) {
+	return queue.update(time);
+}
+
+QueueManager& Player::getQueue() {
+	return queue;
 }
 
 void Player::ai() {

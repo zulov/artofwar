@@ -25,10 +25,10 @@ QueuePanel::~QueuePanel() {
 	delete[] elements;
 }
 
-void QueuePanel::update(QueueManager* queue, short& j) const {
-	const short size = queue->getSize();
+void QueuePanel::update(QueueManager& queue, short& j) const {
+	const short size = queue.getSize();
 	for (int i = 0; i < size; ++i) {
-		QueueElement* element = queue->getAt(i);
+		QueueElement* element = queue.getAt(i);
 		elements[j]->show();
 		auto name = getIconName(element->getType(), element->getAmount(), element->getId());
 		auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>("textures/hud/icon/" + name);
@@ -52,13 +52,13 @@ void QueuePanel::show(SelectedInfo* selectedInfo) {
 	update(selectedInfo);
 }
 
-void QueuePanel::update(QueueManager* queue) const {
+void QueuePanel::update(QueueManager& queue) const {
 	short j = 0;
 	update(queue, j);
 	hideElements(j);
 }
 
-void QueuePanel::show(QueueManager* queue) {
+void QueuePanel::show(QueueManager& queue) {
 	setVisible(true);
 	update(queue);
 }
@@ -74,7 +74,7 @@ void QueuePanel::update(SelectedInfo* selectedInfo) const {
 			for (Physical* physical : data) {
 				//TODO przeniesc kolejke do Physical
 				const auto building = dynamic_cast<Building*>(physical);
-				update(building->getQueue(), j);
+				update(*building->getQueue(), j);
 			}
 		}
 	}

@@ -91,7 +91,7 @@ void Hud::createMyPanels() {
 }
 
 void Hud::prepareStyle() {
-	std::vector<char *> sth;
+	std::vector<char*> sth;
 	rapidxml::xml_document<> baseXML;
 	rapidxml::xml_node<>* a = baseXML.allocate_node(rapidxml::node_element, "elements");
 	baseXML.append_node(a);
@@ -174,11 +174,12 @@ void Hud::createConsole() const {
 void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
                  SimulationInfo* simulationInfo) const {
 	updateSelected(selectedInfo, simulationInfo->getCurrentFrame());
-	
+
 	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
 	                    cameraManager->getInfo());
 
-	topPanel->update(Game::getPlayersMan()->getActivePlayer());//TODO performance if (simulationInfo->ifAmountUnitChanged()) {
+	topPanel->update(Game::getPlayersMan()->getActivePlayer());
+	//TODO performance if (simulationInfo->ifAmountUnitChanged()) {
 	scorePanel->update(Game::getPlayersMan()->getAllPlayers());
 	miniMapPanel->update();
 	selectedInfo->hasBeenUpdatedDrawn();
@@ -210,7 +211,8 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, int currentFrame) const {
 			switch (selectedInfo->getSelectedType()) {
 			case ObjectType::PHYSICAL:
 				menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
-				queuePanel->show(Game::getQueueManager());
+
+				queuePanel->show(Game::getPlayersMan()->getActivePlayer()->getQueue());
 				break;
 			case ObjectType::UNIT:
 				menuPanel->refresh(LeftMenuMode::ORDER, selectedInfo);
@@ -235,7 +237,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, int currentFrame) const {
 	} else {
 
 		if (currentFrame % 10 == 0) {
-			queuePanel->update(Game::getQueueManager());
+			queuePanel->update(Game::getPlayersMan()->getActivePlayer()->getQueue());
 		}
 
 		selectedHudPanel->clearSelected();

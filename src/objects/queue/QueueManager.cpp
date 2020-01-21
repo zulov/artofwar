@@ -60,7 +60,7 @@ QueueElement* QueueManager::getAt(short i) {
 	return queue.at(i);
 }
 
-float QueueManager::getSecToComplete(ActionType type, short id, int level) {//TODO performance przerobic na tablice
+float QueueManager::getSecToComplete(ActionType type, short id, int level) {
 	switch (type) {
 	case ActionType::UNIT_CREATE:
 		return 5;

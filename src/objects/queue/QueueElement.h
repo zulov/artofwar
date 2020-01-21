@@ -2,8 +2,7 @@
 
 enum class ActionType : char;
 
-class QueueElement
-{
+class QueueElement {
 public:
 	QueueElement(ActionType type, short id, short maxCapacity, float initialSecondsToComplete,
 	             float secondsToCompletePerInstance);

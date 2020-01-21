@@ -4,8 +4,7 @@
 enum class ActionType : char;
 class QueueElement;
 
-class QueueManager
-{
+class QueueManager {
 public:
 	explicit QueueManager(short maxCapacity);
 	~QueueManager();

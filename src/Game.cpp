@@ -82,11 +82,6 @@ Game* Game::setEnvironment(Environment* _environment) {
 	return instance;
 }
 
-Game* Game::setQueueManager(QueueManager* _queueManager) {
-	instance->queue = _queueManager;
-	return instance;
-}
-
 Game* Game::setFormationManager(FormationManager* _formationManager) {
 	instance->formationManager = _formationManager;
 	return instance;

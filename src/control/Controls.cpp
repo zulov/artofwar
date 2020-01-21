@@ -284,18 +284,16 @@ void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
 }
 
 void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
-	switch (parameter.type) {
-	case ActionType::BUILDING_LEVEL:
-	{
-		const auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;
+	if (parameter.type==ActionType::BUILDING_LEVEL) {
+		auto player = Game::getPlayersMan()->getActivePlayer();
+		const auto level = player->getLevelForBuilding(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
 		if (opt.has_value()) {
-			if (Game::getPlayersMan()->getActivePlayer()->getResources().reduce(opt.value())) {
-				Game::getQueueManager()->add(1, parameter.type, id, 1);
+			if (player->getResources().reduce(opt.value())) {
+				//Game::getQueueManager()->add(1, parameter.type, id, 1);
+				player->getQueue().add(1, parameter.type, id, 1);
 			}
 		}
-		break;
-	}
 	}
 }
 
@@ -312,8 +310,7 @@ void Controls::createBuilding(Urho3D::Vector2 pos) const {
 	if (idToCreate >= 0) {
 		auto player = Game::getPlayersMan()->getActivePlayer();
 
-		Game::getActionCenter()->addBuilding(idToCreate, pos,
-		                                     player->getId(),
+		Game::getActionCenter()->addBuilding(idToCreate, pos, player->getId(),
 		                                     player->getLevelForBuilding(idToCreate));
 	}
 }

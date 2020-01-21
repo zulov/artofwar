@@ -3,6 +3,7 @@
 #include "ai/tree/AiNode.h"
 #include "Possession.h"
 #include "ai/nn/Brain.h"
+#include "objects/queue/QueueManager.h"
 
 enum class ActionType : char;
 
@@ -39,6 +40,8 @@ public:
 	int getWorkersNumber() const;
 	void deactivate();
 	void activate();
+	QueueElement* updateQueue(float time);
+	QueueManager& getQueue();
 private:
 	Urho3D::Vector2 bestPosToBuild(const short id) const;
 	void execute(const AiOrderData& orderData);
@@ -55,6 +58,7 @@ private:
 	std::vector<AiNode*> aiLeafs;
 	Possession possession;
 	Resources resources;
+	QueueManager queue;
 	db_nation* dbNation;
 	Urho3D::String name;
 	int team;
