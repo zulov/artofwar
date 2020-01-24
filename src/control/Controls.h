@@ -80,15 +80,7 @@ private:
 
 	std::vector<Physical*>* selected; //TODO to powinien byæ set
 
-	MouseButton left;
-	MouseButton right;
-
 	Urho3D::Input* input;
-
-	ControlsState state = ControlsState::DEFAULT;
-	UnitOrder unitOrderType = UnitOrder::GO;
-	ObjectType typeToCreate;
-	SelectedInfo* selectedInfo;
 
 	Urho3D::Node* deployMark[MAX_DEPLOY_MARK_NUMBER];
 	Urho3D::Node* selectionNode{};
@@ -96,7 +88,16 @@ private:
 	Urho3D::Node* tempBuildingNode{};
 	Urho3D::StaticModel* tempBuildingModel;
 
-	short idToCreate = -1;
+	SelectedInfo* selectedInfo;
+
 	float clickDistance = 2 * 2;
+	short idToCreate = -1;
 	bool active = true;
+
+	ControlsState state = ControlsState::DEFAULT;
+	UnitOrder unitOrderType = UnitOrder::GO;
+	ObjectType typeToCreate;
+
+	MouseButton left;
+	MouseButton right;
 };

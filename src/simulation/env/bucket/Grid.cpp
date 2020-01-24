@@ -7,10 +7,10 @@
 #include <Urho3D/Graphics/Model.h>
 
 
-Grid::Grid(short resolution, float size): calculator(resolution,size),
-                                            resolution(resolution),
-                                            sqResolution(resolution * resolution), size(size),
-                                            fieldSize(size / resolution), invFieldSize(resolution / size) {
+Grid::Grid(short resolution, float size): calculator(resolution, size),
+                                          resolution(resolution),
+                                          sqResolution(resolution * resolution), size(size),
+                                          fieldSize(size / resolution), invFieldSize(resolution / size) {
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((double)MAX_SEP_DIST / RES_SEP_DIST * i);
 	}
@@ -104,6 +104,7 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
 	for (short i = posBeginX; i != posEndX + dX; i += dX) {
 		for (short j = posBeginZ; j != posEndZ + dZ; j += dZ) {
 			auto& content = getContentAt(calculator.getIndex(i, j));
+			tu filtorowac albo innego grida dac :O
 			tempSelected->insert(tempSelected->end(), content.begin(), content.end());
 		}
 	}
@@ -128,7 +129,7 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, double 
 		for (short j = posBeginZ; j != posEndZ + dZ; j += dZ) {
 			auto& content = getContentAt(calculator.getIndex(i, j));
 			for (auto thing : content) {
-				if (thing->getDbID() == clicked->getDbID()) {
+				if (thing->getDbID() == clicked->getDbID() && thing->getPlayer() == clicked->getPlayer()) {
 					tempSelected->push_back(thing);
 				}
 			}
