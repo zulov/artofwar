@@ -1,6 +1,5 @@
 #include "Environment.h"
 #include "objects/ObjectEnums.h"
-#include "OperatorType.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
@@ -36,29 +35,26 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, const flo
 	return getNeighbours(physical, mainGrid, radius);
 }
 
-std::vector<Physical*>* Environment::getNeighboursFromTeam(Physical* physical, const float radius, const int team,
-                                                           const OperatorType operatorType) {
-	switch (operatorType) {
-	case OperatorType::EQUAL:
-		return getNeighbours(physical, teamUnitGrid[team], radius);
-	case OperatorType::NOT_EQUAL:
-	{
-		neights2->clear();
-		for (int i = 0; i < MAX_PLAYERS; ++i) {
-			if (team != i) {
-				auto neightLocal = getNeighbours(physical, teamUnitGrid[i], radius);
-				neights2->insert(neights2->end(), neightLocal->begin(), neightLocal->end());
-			}
+std::vector<Physical*>* Environment::getNeighboursFromTeamEq(Physical* physical, const float radius, const int team) {
+	return getNeighbours(physical, teamUnitGrid[team], radius);
+}
+
+std::vector<Physical*>* Environment::getNeighboursFromTeamNotEq(Physical* physical,
+                                                                const float radius, const int team) {
+	neights2->clear();
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		if (team != i) {
+			auto neightLocal = getNeighbours(physical, teamUnitGrid[i], radius);
+			neights2->insert(neights2->end(), neightLocal->begin(), neightLocal->end());
 		}
-		return neights2;
 	}
-	}
+	return neights2;
 }
 
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
 	neights->clear();
 
-	auto center = physical->getPosition();
+	const auto center = physical->getPosition();
 	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius, 0);
 	const float sqRadius = radius * radius;
 
@@ -167,14 +163,14 @@ Urho3D::Vector3 Environment::getPosWithHeightAt(float x, float z) const {
 }
 
 Urho3D::Vector3 Environment::getPosWithHeightAt(int index) const {
-	auto center = mainGrid.getCenter(index);
+	const auto center = mainGrid.getCenter(index);
 	return getPosWithHeightAt(center.x_, center.y_);
 }
 
 float Environment::getGroundHeightPercent(float y, float x, float div) const {
 	const float scale = terrian->GetSpacing().y_;
-	auto a = Urho3D::Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, 0,
-	                         y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
+	const auto a = Urho3D::Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, 0,
+	                               y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
 
 	return terrian->GetHeight(a) / scale / div;
 }
@@ -194,7 +190,8 @@ bool Environment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2
 	return mainGrid.validateAdd(size, pos);
 }
 
-Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const {
+Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
+                                              const Urho3D::IntVector2& bucketCords) const {
 	return getValidPosition(size, mainGrid.getCenterAt(bucketCords));
 }
 
@@ -239,7 +236,7 @@ void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) const
 		switch (dispose->getType()) {
 		case ObjectType::BUILDING:
 		{
-			const auto building = static_cast<Building*>(dispose);
+			const auto building = dynamic_cast<Building*>(dispose);
 			mainGrid.removeStatic(building);
 			mainGrid.removeDeploy(building);
 			buildingGrid.update(dispose);
@@ -247,7 +244,7 @@ void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) const
 		break;
 		case ObjectType::RESOURCE:
 		{
-			const auto resource = static_cast<ResourceEntity*>(dispose);
+			const auto resource = dynamic_cast<ResourceEntity*>(dispose);
 			mainGrid.removeStatic(resource);
 			resourceGrid.update(resource);
 		}
@@ -331,10 +328,10 @@ void Environment::prepareGridToFind() const {
 }
 
 content_info* Environment::getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer) {
-	float x = getPositionFromPercent(centerPercent.x_);
-	float z = getPositionFromPercent(centerPercent.y_);
-	CellState state = mainGrid.getCellAt(x, z);
-	int addInfo = mainGrid.getAdditionalInfoAt(x, z);
+	const float x = getPositionFromPercent(centerPercent.x_);
+	const float z = getPositionFromPercent(centerPercent.y_);
+	const CellState state = mainGrid.getCellAt(x, z);
+	const int addInfo = mainGrid.getAdditionalInfoAt(x, z);
 	return influenceManager.getContentInfo({x, z}, state, addInfo, checks, activePlayer);
 }
 

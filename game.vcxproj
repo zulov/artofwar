@@ -240,7 +240,6 @@
     <ClCompile Include="src\hud\window\menu\MenuPanel.cpp" />
     <ClCompile Include="src\hud\window\minimap\MiniMapPanel.cpp" />
     <ClCompile Include="src\hud\MySprite.cpp" />
-    <ClCompile Include="src\OperatorType.h" />
     <ClCompile Include="src\objects\Physical.cpp" />
     <ClCompile Include="src\objects\Player.cpp" />
     <ClCompile Include="src\player\PlayersManager.cpp" />

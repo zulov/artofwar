@@ -4,7 +4,6 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\OperatorType.h" />
     <ClCompile Include="src\camera\CameraManager.cpp">
       <Filter>camera</Filter>
     </ClCompile>

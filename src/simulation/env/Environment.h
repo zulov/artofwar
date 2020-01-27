@@ -23,8 +23,8 @@ public:
 	~Environment();
 
 	std::vector<Physical *>* getNeighbours(Physical* physical, float radius);
-	std::vector<Physical *>* getNeighboursFromTeam(Physical* physical, float radius, int team,
-	                                               OperatorType operatorType);
+	std::vector<Physical *>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);
+	std::vector<Physical *>* getNeighboursFromTeamNotEq(Physical* physical, float radius, int team);
 	std::vector<Physical *>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 
 	std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;

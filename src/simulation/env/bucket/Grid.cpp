@@ -13,7 +13,7 @@ Grid::Grid(short resolution, float size): calculator(resolution, size), resoluti
                                           fieldSize(size / resolution), invFieldSize(resolution / size) {
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((double)MAX_SEP_DIST / RES_SEP_DIST * i);
-	}
+	}//TODO memory jesli ten sam vector towskaznik do tego samego
 
 	buckets = new Bucket[sqResolution];
 	tempSelected = new std::vector<Physical*>();

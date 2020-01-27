@@ -3,7 +3,6 @@
 #include "debug/DebugUnitType.h"
 #include "Game.h"
 #include "objects/ObjectEnums.h"
-#include "OperatorType.h"
 #include "SimulationInfo.h"
 #include "SimulationObjectManager.h"
 #include "commands/creation/CreationCommand.h"
@@ -86,8 +85,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 }
 
 void Simulation::tryToAttack(Unit* unit, float dist, UnitOrder order, const std::function<bool(Physical*)>& condition) {
-	toAction(unit, enviroment->getNeighboursFromTeam(unit, dist, unit->getTeam(),
-	                                                 OperatorType::NOT_EQUAL), order, condition);
+	toAction(unit, enviroment->getNeighboursFromTeamNotEq(unit, dist, unit->getTeam()), order, condition);
 }
 
 void Simulation::tryToCollect(Unit* unit) {
@@ -104,7 +102,7 @@ void Simulation::selfAI() {
 	for (auto unit : *units) {
 		switch (unit->getState()) {
 		case UnitState::CHARGE:
-			unit->toCharge(enviroment->getNeighboursFromTeam(unit, 12, unit->getTeam(), OperatorType::NOT_EQUAL));
+			unit->toCharge(enviroment->getNeighboursFromTeamNotEq(unit, 12, unit->getTeam()));
 			break;
 		case UnitState::STOP:
 		case UnitState::MOVE:

@@ -1,7 +1,6 @@
 #include "ResourceEntity.h"
 #include "Game.h"
 #include "objects/ObjectEnums.h"
-#include "OperatorType.h"
 #include "ResourceOrder.h"
 #include "database/DatabaseCache.h"
 #include "UnitOrder.h"
@@ -13,8 +12,8 @@
 #include <string>
 
 
-ResourceEntity::
-ResourceEntity(Urho3D::Vector3& _position, int id, int level, int mainCell)
+ResourceEntity::ResourceEntity(Urho3D::Vector3& _position,
+                               int id, int level, int mainCell)
 	: Static(_position, mainCell) {
 	dbResource = Game::getDatabaseCache()->getResource(id);;
 	loadXml("Objects/resources/" + dbResource->nodeName[rand() % dbResource->nodeName.Size()]);
@@ -62,10 +61,9 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 	switch (static_cast<ResourceOrder>(id)) {
 	case ResourceOrder::COLLECT:
 	{
-		auto neights = Game::getEnvironment()->getNeighboursFromTeam(this, 24,
+		auto neights = Game::getEnvironment()->getNeighboursFromTeamEq(this, 24,
 		                                                             Game::getPlayersMan()
-		                                                             ->getActivePlayer()->getTeam(),
-		                                                             OperatorType::EQUAL);
+		                                                             ->getActivePlayer()->getTeam());
 		int k = 0;
 		char limit = belowCloseLimit();
 		for (auto neight : *neights) {
