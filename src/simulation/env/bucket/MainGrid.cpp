@@ -22,6 +22,7 @@ void MainGrid::initCloseIndexs(char a, std::vector<short>& vector) const {
 		}
 	}
 	std::sort(vector.begin(), vector.end());
+	vector.shrink_to_fit();
 }
 
 MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size) {

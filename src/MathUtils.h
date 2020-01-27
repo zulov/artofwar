@@ -44,3 +44,9 @@ inline void setClosest(float& minDistance, Urho3D::Vector2& closest, int& closes
 		closestindex = i;
 	}
 }
+
+inline short diff(const short a, const short b) {
+	auto diff = Urho3D::Sign(b - a);
+	if (diff == 0) { return 1; }
+	return diff;
+}

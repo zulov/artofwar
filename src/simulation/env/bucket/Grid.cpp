@@ -5,10 +5,10 @@
 #include "objects/unit/Unit.h"
 #include "simulation/env/ContentInfo.h"
 #include <Urho3D/Graphics/Model.h>
+#include "MathUtils.h"
 
 
-Grid::Grid(short resolution, float size): calculator(resolution, size),
-                                          resolution(resolution),
+Grid::Grid(short resolution, float size): calculator(resolution, size), resolution(resolution),
                                           sqResolution(resolution * resolution), size(size),
                                           fieldSize(size / resolution), invFieldSize(resolution / size) {
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
@@ -55,7 +55,7 @@ void Grid::update(Physical* entity) const {
 	}
 }
 
-std::vector<short>* Grid::getEnvIndexsFromCache(float dist) {
+std::vector<short>* Grid::getEnvIndexesFromCache(float dist) {
 	const int index = dist * invDiff;
 	if (index < RES_SEP_DIST) {
 		return levelsCache[index];
@@ -64,7 +64,7 @@ std::vector<short>* Grid::getEnvIndexsFromCache(float dist) {
 }
 
 BucketIterator& Grid::getArrayNeight(Urho3D::Vector3& position, float radius, short thread) {
-	return *iterators[thread].init(getEnvIndexsFromCache(radius), calculator.indexFromPosition(position), this);
+	return *iterators[thread].init(getEnvIndexesFromCache(radius), calculator.indexFromPosition(position), this);
 }
 
 void Grid::removeAt(int index, Physical* entity) const {
@@ -84,12 +84,6 @@ std::vector<Physical*>& Grid::getContentAt(int index) {
 	return empty;
 }
 
-short Grid::diff(const short a, const short b) {
-	auto diff = Urho3D::Sign(b - a);
-	if (diff == 0) { return 1; }
-	return diff;
-}
-
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
 	tempSelected->clear();
 
@@ -104,7 +98,7 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
 	for (short i = posBeginX; i != posEndX + dX; i += dX) {
 		for (short j = posBeginZ; j != posEndZ + dZ; j += dZ) {
 			auto& content = getContentAt(calculator.getIndex(i, j));
-			tu filtorowac albo innego grida dac :O
+			//tu filtorowac albo innego grida dac
 			tempSelected->insert(tempSelected->end(), content.begin(), content.end());
 		}
 	}
@@ -113,7 +107,7 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
 }
 
 std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, double radius) {
-	//TOODO clean prawie to samo co wy¿ej
+	//TODO clean prawie to samo co wy¿ej
 	tempSelected->clear();
 
 	const auto posBeginX = calculator.getIndex(clicked->getPosition().x_ - radius);
@@ -172,5 +166,6 @@ std::vector<short>* Grid::getEnvIndexs(float radius) const {
 	}
 	indexes->push_back(calculator.getIndex(0, 0));
 	std::sort(indexes->begin(), indexes->end());
+	indexes->shrink_to_fit();
 	return indexes;
 }

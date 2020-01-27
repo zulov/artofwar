@@ -451,4 +451,5 @@ struct db_container {
 			delete dbBuildings;
 		}
 	}
+
 };

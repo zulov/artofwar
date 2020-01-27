@@ -6,12 +6,11 @@
 #include <string>
 
 
-class DatabaseCache
-{
+class DatabaseCache {
 public:
-	void execute(const char* sql, int (* load)(void*, int, char**, char**)) const;
 	DatabaseCache(const char* path);
 	~DatabaseCache();
+	void execute(const char* sql, int (* load)(void*, int, char**, char**)) const;
 	bool openDatabase();
 	db_unit* getUnit(int i) const { return dbContainer->units[i]; }
 	db_hud_size* getHudSize(int i) const { return dbContainer->hudSizes[i]; }
@@ -41,7 +40,7 @@ public:
 	std::vector<db_cost*>* getCostForUnit(int id) const { return dbContainer->costForUnit[id]; }
 	std::vector<db_cost*>* getCostForBuilding(int id) const { return dbContainer->costForBuilding[id]; }
 	std::vector<db_order*>* getOrdersForUnit(int id) const { return dbContainer->ordersToUnit[id]; }
-	
+
 	std::vector<db_building*>* getBuildingForNation(int id) const { return dbContainer->buildingsPerNation[id]; }
 
 	int getResourceSize() const { return dbContainer->resource_size; }
