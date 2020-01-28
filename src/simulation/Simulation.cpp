@@ -139,7 +139,8 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 2, Urho3D::Vector2(20, -30), 0, 0);
+		Game::getActionCenter()->addUnits(UNITS_NUMBER, 4, Urho3D::Vector2(20, -20), 0, 0);
+		Game::getActionCenter()->addUnits(UNITS_NUMBER, 4, Urho3D::Vector2(10, -20), 1, 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-20, -10), 1, 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0, 0);
 		//Game::getActionCenter()->addResource(1, Urho3D::Vector2(i, j), 0);

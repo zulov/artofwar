@@ -144,9 +144,9 @@ int Environment::getCloseIndex(int center, int i) const {
 	return mainGrid.getCloseIndex(center, i);
 }
 
-std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
+std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player) {
 	for (auto grid : grids) {
-		const auto result = grid->getArrayNeight(pair);
+		const auto result = grid->getArrayNeight(pair, player);
 		if (!result->empty()) {
 			return result;
 		}

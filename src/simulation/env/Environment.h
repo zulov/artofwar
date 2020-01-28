@@ -43,7 +43,7 @@ public:
 	Urho3D::Vector2* validatePosition(Urho3D::Vector3& position);
 	int getCloseIndex(int center, int i) const;
 
-	std::vector<Physical *>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair);
+	std::vector<Physical *>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 
 	float getGroundHeightAt(float x, float z) const;
 	Urho3D::Vector3 getPosWithHeightAt(float x, float z) const;

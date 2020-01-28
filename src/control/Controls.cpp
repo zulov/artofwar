@@ -179,7 +179,8 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) con
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
-	select(Game::getEnvironment()->getNeighbours(held));
+
+	select(Game::getEnvironment()->getNeighbours(held, Game::getPlayersMan()->getActivePlayer()->getId()));
 }
 
 void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
@@ -284,7 +285,7 @@ void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
 }
 
 void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
-	if (parameter.type==ActionType::BUILDING_LEVEL) {
+	if (parameter.type == ActionType::BUILDING_LEVEL) {
 		auto player = Game::getPlayersMan()->getActivePlayer();
 		const auto level = player->getLevelForBuilding(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);

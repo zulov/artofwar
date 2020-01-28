@@ -13,7 +13,7 @@ Grid::Grid(short resolution, float size): calculator(resolution, size), resoluti
                                           fieldSize(size / resolution), invFieldSize(resolution / size) {
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((double)MAX_SEP_DIST / RES_SEP_DIST * i);
-	}//TODO memory jesli ten sam vector towskaznik do tego samego
+	} //TODO memory jesli ten sam vector towskaznik do tego samego
 
 	buckets = new Bucket[sqResolution];
 	tempSelected = new std::vector<Physical*>();
@@ -84,7 +84,7 @@ std::vector<Physical*>& Grid::getContentAt(int index) {
 	return empty;
 }
 
-std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair) {
+std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, const char player) {
 	tempSelected->clear();
 
 	const auto posBeginX = calculator.getIndex(pair.first->x_);
@@ -99,6 +99,8 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
 		for (short j = posBeginZ; j != posEndZ + dZ; j += dZ) {
 			auto& content = getContentAt(calculator.getIndex(i, j));
 			//tu filtorowac albo innego grida dac
+			std::copy_if(content.begin(), content.end(), tempSelected->begin(),
+			             [player](Physical* p) { return p->getPlayer() == player; });
 			tempSelected->insert(tempSelected->end(), content.begin(), content.end());
 		}
 	}
