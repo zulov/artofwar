@@ -75,7 +75,6 @@ Urho3D::Node* LevelBuilder::createLight(const Urho3D::Vector3& direction, const 
 	return lightNode;
 }
 
-
 Physical* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho3D::String& texture,
                                    float horScale, float verScale) {
 	const auto entity = new Physical(Urho3D::Vector3());

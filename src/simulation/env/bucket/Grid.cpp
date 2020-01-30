@@ -98,10 +98,8 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
 	for (short i = posBeginX; i != posEndX + dX; i += dX) {
 		for (short j = posBeginZ; j != posEndZ + dZ; j += dZ) {
 			auto& content = getContentAt(calculator.getIndex(i, j));
-			//tu filtorowac albo innego grida dac
-			std::copy_if(content.begin(), content.end(), tempSelected->begin(),
-			             [player](Physical* p) { return p->getPlayer() == player; });
-			tempSelected->insert(tempSelected->end(), content.begin(), content.end());
+			std::copy_if(content.begin(), content.end(), std::back_inserter(*tempSelected),
+			             [player](Physical* p) { return p->getPlayer() < 0 || p->getPlayer() == player; });
 		}
 	}
 

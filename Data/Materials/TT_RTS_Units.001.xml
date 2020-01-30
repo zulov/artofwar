@@ -1,6 +1,13 @@
 <?xml version="1.0" ?>
 <material>
-	<technique name="Techniques/Diff.xml" />
+	<technique name="Techniques/DiffOutline.xml" />
 	<texture name="textures/TT_RTS_Units_blue.tga" unit="diffuse" />
+    <parameter name="OutlineWidth" value="0.01" />
 	<parameter name="MatDiffColor" value="0.588235 0.588235 0.588235 1" />
+	<parameter name="MatSpecColor" value="0.1 0.1 0.1 16" />
+    <parameter name="OutlineColor" value="1 1 0 0" />
+    <parameter name="OutlineEnable" value="true" />
+	
+    <parameter name="OutlineMaskInvSize" value="1 1" />
+    <parameter name="OutlineBlurredMaskHInvSize" value="1 1" />
 </material>

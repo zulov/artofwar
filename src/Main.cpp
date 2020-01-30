@@ -16,7 +16,6 @@
 #include "Main.h"
 #include "objects/ActionType.h"
 #include "hud/window/selected/SelectedHudElement.h"
-#include "objects/queue/QueueManager.h"
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
@@ -55,7 +54,7 @@ void Main::Setup() {
 	engineParameters_[EP_SOUND] = false;
 	engineParameters_[EP_WINDOW_WIDTH] = resolution->x;
 	engineParameters_[EP_WINDOW_HEIGHT] = resolution->y;
-
+	engineParameters_["ResourcePaths"] = "Data;CoreData;CoreDataMy"; 
 	engineParameters_["ResourcePrefixPaths"] = " ;../";
 
 	engine_->SetMaxFps(graphSettings->max_fps);
