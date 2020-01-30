@@ -459,11 +459,8 @@
     <ClInclude Include="src\debug\DebugUnitType.h" />
     <ClInclude Include="src\debug\DebugManager.h" />
     <ClInclude Include="src\debug\EnvironmentDebugMode.h" />
-    <ClInclude Include="src\player\ai\tree\AiNode.h" />
-    <ClInclude Include="src\player\ai\tree\AiOrderType.h" />
     <ClInclude Include="src\player\Possession.h" />
     <ClInclude Include="src\hud\window\score\ScorePanel.h" />
-    <ClInclude Include="src\player\ai\tree\AiOrderData.h" />
     <ClInclude Include="src\objects\ValueType.h" />
     <ClInclude Include="src\objects\unit\SimColorMode.h" />
     <ClInclude Include="src\player\ai\nn\Layer.h" />

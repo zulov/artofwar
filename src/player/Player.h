@@ -1,6 +1,5 @@
 #pragma once
 #include "Resources.h"
-#include "ai/tree/AiNode.h"
 #include "Possession.h"
 #include "ai/nn/Brain.h"
 #include "objects/queue/QueueManager.h"
@@ -44,18 +43,9 @@ public:
 	QueueManager& getQueue();
 private:
 	Urho3D::Vector2 bestPosToBuild(const short id) const;
-	void execute(const AiOrderData& orderData);
 	void initAi();
-	void addBasicNodes(AiNode* parent);
-	void mockLeaf(AiNode* parent, std::string name);
-	void addChild(AiNode* parent, const std::string& name, float targetValue, AiOrderData data);
-	void fillAttackNode(AiNode* parent);
-	void fillDefenseNode(AiNode* parent);
-	void fillResourceNode(AiNode* parent);
-	void fillIntelNode(AiNode* parent);
-	AiNode* aiRoot;
+
 	Brain* brain;
-	std::vector<AiNode*> aiLeafs;
 	Possession possession;
 	Resources resources;
 	QueueManager queue;
