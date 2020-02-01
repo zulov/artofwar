@@ -13,7 +13,7 @@ enum class UnitOrder : char;
 class ActionCommand : public AbstractCommand {
 	friend class Stats;
 public:
-	ActionCommand(FutureOrder* futureAim);
+	ActionCommand(FutureOrder* futureAim, char player);
 	~ActionCommand() override;
 
 	void execute() override;

@@ -48,7 +48,7 @@ void Stats::add(UpgradeCommand* command) {
 }
 
 void Stats::add(ActionCommand* command) {
-	auto input = getInputFor(0); //TODO change player
+	auto input = getInputFor(command->player); //TODO change player
 	std::string data = join(input, input + INPUT_STATS_SIZE);
 	std::string output = getOutput(command);
 	data.append(output);

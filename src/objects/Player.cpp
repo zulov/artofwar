@@ -127,7 +127,12 @@ void Player::ai() {
 	// for (int i = 0; i < brain->getOutputSize(); ++i) {
 	// 	std::cout << result[i] << std::endl;
 	// }
+	auto max = std::max_element(result, result + brain->getOutputSize());
 
+	auto index = max - result;
+	auto value = *max;
+
+	int a = 5;
 	//auto& orderData = aiRoot->getOrder();
 	//execute(orderData);
 }

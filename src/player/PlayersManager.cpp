@@ -78,6 +78,10 @@ void PlayersManager::update() {
 	}
 }
 
+char PlayersManager::getActivePlayerID() {
+	return activePlayer->getId();
+}
+
 std::string PlayersManager::getColumns() {
 	return "id		INT     NOT NULL,"
 		"is_active		INT     NOT NULL,"

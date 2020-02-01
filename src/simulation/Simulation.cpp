@@ -179,9 +179,9 @@ void Simulation::applyForce() const {
 	}
 }
 
-void Simulation::levelUp(QueueElement* done) const {
+void Simulation::levelUp(QueueElement* done, char player) const {
 	Game::getActionCenter()->add(new UpgradeCommand(
-		Game::getPlayersMan()->getActivePlayer()->getId(),
+		Game::getPlayersMan()->getActivePlayerID(),
 		done->getId(),
 		done->getType()
 	));
@@ -208,7 +208,7 @@ void Simulation::updateBuildingQueues(const float time) const {
 			case ActionType::UNIT_LEVEL:
 			case ActionType::BUILDING_LEVEL:
 			case ActionType::UNIT_UPGRADE:
-				levelUp(done);
+				levelUp(done, build->getPlayer());
 				break;
 			}
 			delete done;
@@ -223,7 +223,7 @@ void Simulation::updateQueues() const {
 		if (done) {
 			switch (done->getType()) {
 			case ActionType::BUILDING_LEVEL:
-				levelUp(done);
+				levelUp(done, player->getId());
 				break;
 			}
 			delete done;

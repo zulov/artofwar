@@ -56,7 +56,7 @@ private:
 	void loadEntities(SceneLoader& loader) const;
 	void countFrame();
 	void applyForce() const;
-	void levelUp(QueueElement* done) const;
+	void levelUp(QueueElement* done, char player) const;
 	void updateBuildingQueues(float time) const;
 	void updateQueues() const;
 	void selfAI();

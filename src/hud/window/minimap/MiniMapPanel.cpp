@@ -109,7 +109,7 @@ void MiniMapPanel::update() {
 	for (int partIndex = 0; partIndex < indexPerUpdate && indexUpdate < size.y_ * size.x_; ++partIndex, ++indexUpdate) {
 		const float yVal = 1 - yinc * (indexUpdate / size.x_);
 		const float xVal = 0 + xinc * (indexUpdate % size.x_);
-		int activePlayer = Game::getPlayersMan()->getActivePlayer()->getId();
+		int activePlayer = Game::getPlayersMan()->getActivePlayerID();
 
 		content_info* ci = env->getContentInfo({xVal + xinc / 2, yVal - yinc / 2}, checks, activePlayer);
 

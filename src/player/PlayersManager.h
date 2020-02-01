@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include "commands/action/ActionCommand.h"
 
 #define TEAMS_NUMBER 5
 
@@ -27,6 +28,7 @@ public:
 	void changeActive(short i);
 	void save(SceneSaver& saver);
 	void update();
+	char getActivePlayerID();
 	static std::string getColumns();
 	std::vector<Player*>& getAllPlayers();
 private:

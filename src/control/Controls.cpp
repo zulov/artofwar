@@ -172,7 +172,7 @@ void Controls::rightClick(hit_data& hitData) const {
 		                        ActionType::ORDER, shiftPressed);
 	}
 
-	Game::getActionCenter()->add(new ActionCommand(fOrder));
+	Game::getActionCenter()->add(new ActionCommand(fOrder, Game::getPlayersMan()->getActivePlayerID()));
 }
 
 void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
@@ -180,25 +180,29 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) con
 		unSelectAll();
 	}
 
-	select(Game::getEnvironment()->getNeighbours(held, Game::getPlayersMan()->getActivePlayer()->getId()));
+	select(Game::getEnvironment()->getNeighbours(held, Game::getPlayersMan()->getActivePlayerID()));
 }
 
 void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
 		Game::getActionCenter()->add(
 			new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
-			                                 {held.first->x_, held.first->z_}, nullptr, ActionType::ORDER)),
+			                                 {held.first->x_, held.first->z_}, nullptr, ActionType::ORDER),
+			                  Game::getPlayersMan()->getActivePlayerID()),
 			new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
 			                                 {held.second->x_, held.second->z_},
-			                                 nullptr, ActionType::ORDER, true)));
+			                                 nullptr, ActionType::ORDER, true),
+			                  Game::getPlayersMan()->getActivePlayerID()));
 	} else {
 		Game::getActionCenter()->add(new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
 		                                                              {held.first->x_, held.first->z_},
-		                                                              nullptr, ActionType::ORDER)),
+		                                                              nullptr, ActionType::ORDER),
+		                                               Game::getPlayersMan()->getActivePlayerID()),
 		                             new ActionCommand(new GroupOrder(selected, UnitOrder::CHARGE, {
 			                                                              held.second->x_ - held.first->x_,
 			                                                              held.second->z_ - held.first->z_
-		                                                              }, nullptr, ActionType::ORDER, true)));
+		                                                              }, nullptr, ActionType::ORDER, true),
+		                                               Game::getPlayersMan()->getActivePlayerID()));
 	}
 }
 
@@ -280,7 +284,8 @@ void Controls::order(short id, const ActionParameter& parameter) {
 
 void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
 	Game::getActionCenter()->add(
-		new ActionCommand(new GroupOrder(selected, UnitOrder(id), {}, nullptr, parameter.type)));
+		new ActionCommand(new GroupOrder(selected, UnitOrder(id), {}, nullptr, parameter.type),
+		                  Game::getPlayersMan()->getActivePlayerID()));
 	//TODO przyjrzec sie typowi
 }
 
