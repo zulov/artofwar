@@ -17,7 +17,7 @@ class ActionCenter {
 public:
 	ActionCenter(SimulationObjectManager* simulationObjectManager);
 	void add(UpgradeCommand* command) const;
-	void add(CreationCommand* command) const;
+	//void add(CreationCommand* command) const;
 	void add(ActionCommand* command) const;
 	void add(ActionCommand* first, ActionCommand* second) const;
 	void executeActions() const;

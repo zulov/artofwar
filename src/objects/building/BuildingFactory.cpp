@@ -7,7 +7,7 @@
 
 
 BuildingFactory::BuildingFactory() {
-	buildings = new std::vector<Building *>();
+	buildings = new std::vector<Building*>();
 }
 
 BuildingFactory::~BuildingFactory() {
@@ -19,9 +19,8 @@ create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _b
 	buildings->clear();
 	const auto env = Game::getEnvironment();
 
-	buildings->push_back(new Building(
-	                                  Urho3D::Vector3(center.x_, env->getGroundHeightAt(center.x_, center.y_),
-	                                                      center.y_),
+	buildings->push_back(new Building(Urho3D::Vector3(center.x_, env->getGroundHeightAt(center.x_, center.y_),
+	                                                  center.y_),
 	                                  id, player, level, env->getIndex(_bucketCords.x_, _bucketCords.y_)));
 
 	return buildings;

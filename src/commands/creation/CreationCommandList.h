@@ -7,14 +7,15 @@ namespace Urho3D {
 }
 
 class SimulationObjectManager;
+class CreationCommand;
 
 class CreationCommandList : public CommandList {
 public:
 	CreationCommandList(SimulationObjectManager* simulationObjectManager);
 	virtual ~CreationCommandList();
-	bool addUnits(int number, int id, Urho3D::Vector2& position, char player, int level);
-	bool addBuilding(int id, Urho3D::Vector2& position, char player, int level);
-	bool addResource(int id, Urho3D::Vector2& position, int level);
+	CreationCommand* addUnits(int number, int id, Urho3D::Vector2& position, char player, int level);
+	CreationCommand* addBuilding(int id, Urho3D::Vector2& position, char player, int level);
+	CreationCommand* addResource(int id, Urho3D::Vector2& position, int level);
 
 protected:
 	void setParemeters(AbstractCommand* command) override;

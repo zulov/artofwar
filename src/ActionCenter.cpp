@@ -18,10 +18,10 @@ void ActionCenter::add(UpgradeCommand* command) const {
 	upgrade->add(command);
 }
 
-void ActionCenter::add(CreationCommand* command) const {
-	Game::getStats()->add(command);
-	creation->add(command);
-}
+// void ActionCenter::add(CreationCommand* command) const {
+// 	Game::getStats()->add(command);
+// 	creation->add(command);
+// }
 
 void ActionCenter::add(ActionCommand* command) const {
 	Game::getStats()->add(command);
@@ -44,13 +44,32 @@ void ActionCenter::executeLists() const {
 }
 
 bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const {
-	return creation->addUnits(number, id, position, player, level);
+	auto command = creation->addUnits(number, id, position, player, level);
+	if (command) {
+		Game::getStats()->add(command);
+		creation->add(command);
+		return true;
+	}
+	return false;
 }
 
 bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, int level) const {
-	return creation->addBuilding(id, position, player, level);
+	auto command = creation->addBuilding(id, position, player, level);
+	if (command) {
+		Game::getStats()->add(command);
+		creation->add(command);
+		return true;
+	}
+	return false;
 }
 
 auto ActionCenter::addResource(int id, Urho3D::Vector2& position, int level) const -> bool {
-	return creation->addResource(id, position, level);
+	auto command = creation->addResource(id, position, level);
+	if (command) {
+		Game::getStats()->add(command);
+		creation->add(command);
+		return true;
+	}
+
+	return false;
 }

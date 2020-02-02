@@ -139,12 +139,11 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		Game::getActionCenter()->addUnits(UNITS_NUMBER, 4, Urho3D::Vector2(20, -20), 0, 0);
-		Game::getActionCenter()->addUnits(UNITS_NUMBER, 4, Urho3D::Vector2(10, -20), 1, 0);
+		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 4, Urho3D::Vector2(20, -20), 0, 0);
+		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 4, Urho3D::Vector2(10, -20), 1, 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-20, -10), 1, 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0, 0);
 		//Game::getActionCenter()->addResource(1, Urho3D::Vector2(i, j), 0);
-
 	}
 }
 
@@ -196,13 +195,12 @@ void Simulation::updateBuildingQueues(const float time) const {
 			{
 				auto center = enviroment->getCenter(build->getDeploy().value());
 
-				Game::getActionCenter()->add(new CreationCommand(ObjectType::UNIT, done->getAmount(),
-				                                                 done->getId(), center,
-				                                                 build->getPlayer(),
-				                                                 Game::getPlayersMan()->
-				                                                 getPlayer(build->getPlayer())->
-				                                                 getLevelForUnit(done->getId())
-				));
+				Game::getActionCenter()->addUnits(done->getAmount(),
+				                                  done->getId(), center,
+				                                  build->getPlayer(),
+				                                  Game::getPlayersMan()->
+				                                  getPlayer(build->getPlayer())->
+				                                  getLevelForUnit(done->getId()));
 			}
 			break;
 			case ActionType::UNIT_LEVEL:

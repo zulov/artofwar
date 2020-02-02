@@ -7,6 +7,7 @@
 #define STATS_PER_PLAYER_SIZE 12
 #define SAVE_BATCH_SIZE 10
 
+class AbstractCommand;
 class ActionCommand;
 class UpgradeCommand;
 class CreationCommand;

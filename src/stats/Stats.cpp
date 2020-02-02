@@ -42,24 +42,24 @@ void Stats::init() {
 void Stats::add(UpgradeCommand* command) {
 	auto input = getInputFor(command->player);
 	std::string data = join(input, input + INPUT_STATS_SIZE);
-	std::string output = getOutput(command);
-	data.append(output);
+
+	data.append(getOutput(command));
 	dataToSavePerPlayer[command->player].push_back(data);
 }
 
 void Stats::add(ActionCommand* command) {
-	auto input = getInputFor(command->player); //TODO change player
+	auto input = getInputFor(command->player);
 	std::string data = join(input, input + INPUT_STATS_SIZE);
-	std::string output = getOutput(command);
-	data.append(output);
-	dataToSavePerPlayer[0].push_back(data);
+
+	data.append(getOutput(command));
+	dataToSavePerPlayer[command->player].push_back(data);
 }
 
 void Stats::add(CreationCommand* command) {
 	auto input = getInputFor(command->player);
 	std::string data = join(input, input + INPUT_STATS_SIZE);
-	std::string output = getOutput(command);
-	data.append(output);
+
+	data.append(getOutput(command));
 	dataToSavePerPlayer[command->player].push_back(data);
 }
 
