@@ -14,7 +14,7 @@ public:
 	short getSize() const;
 	QueueElement* getAt(short i);
 private:
-	float getSecToComplete(ActionType type, short id, int level);
+	static float getSecToComplete(ActionType type, short id, int level);
 	float getSecPerInstance(ActionType type, short id, int level);
 
 	std::vector<QueueElement*> queue;

@@ -94,12 +94,12 @@ void Controls::unSelectAll() const {
 	selectedInfo->reset();
 }
 
-void Controls::selectOne(Physical* entity) const {
+void Controls::selectOne(Physical* entity, char player) const {
 	const auto entityType = entity->getType();
 	if (entityType != selectedInfo->getSelectedType()) {
 		unSelectAll();
 	}
-	if (!entity->isSelected() && entity->isAlive()) {
+	if (!entity->isSelected() && entity->isAlive() && (entity->getPlayer() < 0 || entity->getPlayer() == player)) {
 		entity->select();
 		selected->push_back(entity);
 
@@ -110,8 +110,9 @@ void Controls::selectOne(Physical* entity) const {
 }
 
 void Controls::select(std::vector<Physical*>* entities) const {
+	auto player = Game::getPlayersMan()->getActivePlayerID();
 	for (auto physical : *entities) {
-		selectOne(physical); //TODO perf zastapic wrzuceniem na raz
+		selectOne(physical, player); //TODO perf zastapic wrzuceniem na raz
 	}
 	updateAdditionalInfo();
 }
@@ -120,7 +121,7 @@ void Controls::leftClick(hit_data& hitData) const {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
-	selectOne(hitData.clicked);
+	selectOne(hitData.clicked, Game::getPlayersMan()->getActivePlayerID());
 	updateAdditionalInfo();
 }
 

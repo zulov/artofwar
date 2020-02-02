@@ -24,7 +24,7 @@ public:
 
 	void updateAdditionalInfo() const;
 	void select(std::vector<Physical*>* entities) const;
-	void selectOne(Physical* entity) const;
+	void selectOne(Physical* entity, char player) const;
 	void unSelectAll() const;
 
 	void toBuild(HudData* hud);

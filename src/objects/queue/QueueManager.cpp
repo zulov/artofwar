@@ -8,8 +8,8 @@
 #include <algorithm>
 
 
-QueueManager::QueueManager(short maxCapacity):maxCapacity(maxCapacity) {
-	queue.reserve(DEFAULT_VECTOR_SIZE/2);
+QueueManager::QueueManager(short maxCapacity): maxCapacity(maxCapacity) {
+	queue.reserve(DEFAULT_VECTOR_SIZE / 2);
 }
 
 
@@ -23,11 +23,11 @@ void QueueManager::add(short value, ActionType type, short id, short localMaxCap
 			value = i->add(value);
 		}
 	}
+
 	while (value > 0) {
-		float secToInstance = getSecPerInstance(type, id, 0);
-		float initialSecondsToComplete = getSecToComplete(type, id, 0);
-		auto element = new QueueElement(type, id, std::min(maxCapacity, localMaxCapacity), initialSecondsToComplete,
-		                                         secToInstance);
+		auto element = new QueueElement(type, id, std::min(maxCapacity, localMaxCapacity),
+		                                getSecToComplete(type, id, 0),
+		                                getSecPerInstance(type, id, 0));
 		value = element->add(value);
 		queue.push_back(element);
 	}
@@ -36,6 +36,7 @@ void QueueManager::add(short value, ActionType type, short id, short localMaxCap
 QueueElement* QueueManager::update(float time) {
 	for (int i = 0; i < queue.size(); ++i) {
 		if (queue.at(i)->getAmount() <= 0) {
+			delete queue.at(i);
 			queue.erase(queue.begin() + i);
 		}
 	}
@@ -43,11 +44,9 @@ QueueElement* QueueManager::update(float time) {
 		QueueElement* element = queue.at(0);
 
 		if (element->update(time)) {
-			//TODO BUG memoryleak
 			queue.erase(queue.begin());
 			return element;
 		}
-
 	}
 	return nullptr;
 }
@@ -67,10 +66,7 @@ float QueueManager::getSecToComplete(ActionType type, short id, int level) {
 	case ActionType::BUILDING_CREATE:
 		return 10;
 	case ActionType::UNIT_LEVEL:
-		{
-		auto dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
-		return dbLevel->upgradeSpeed;
-		}
+		return Game::getDatabaseCache()->getUnitLevel(id, level).value()->upgradeSpeed;
 	case ActionType::BUILDING_LEVEL:
 		return 10;
 	default:
@@ -78,16 +74,14 @@ float QueueManager::getSecToComplete(ActionType type, short id, int level) {
 	}
 }
 
-float QueueManager::getSecPerInstance(ActionType type, short id, int level) {//TODO performance przerobic na tablice
+float QueueManager::getSecPerInstance(ActionType type, short id, int level) {
+	//TODO performance przerobic na tablice
 	switch (type) {
 	case ActionType::UNIT_CREATE:
 		return 0.5;
 	case ActionType::BUILDING_CREATE:
-		return 0;
 	case ActionType::UNIT_LEVEL:
-		return 0;
 	case ActionType::BUILDING_LEVEL:
-		return 0;
 	default:
 		return 0;
 	}
