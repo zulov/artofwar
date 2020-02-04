@@ -79,13 +79,13 @@ auto ActionCenter::addResource(int id, Urho3D::Vector2& position, int level) con
 
 void ActionCenter::orderPhysical(short id, const ActionParameter& parameter, char playerId) const {
 	if (parameter.type == ActionType::BUILDING_LEVEL) {
+		Game::getStats()->addBuildLevel(id, parameter, playerId);
 		auto player = Game::getPlayersMan()->getPlayer(playerId);
 		const auto level = player->getLevelForBuilding(id) + 1;
 		auto opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
 		if (opt.has_value()) {
 			if (player->getResources().reduce(opt.value())) {
-				player->getQueue().add(1, parameter.type, id, 1);
-				Game::getStats()->addQBuildLevel(id, parameter, playerId);
+				player->getQueue().add(1, parameter.type, id, 1);			
 			}
 		}
 	}

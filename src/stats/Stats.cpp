@@ -51,7 +51,7 @@ void Stats::add(ActionCommand* command) {
 	auto input = getInputFor(command->player);
 	std::string data = join(input, input + INPUT_STATS_SIZE);
 
-	data.append(getOutput(command));
+	data.append(";;").append(getOutput(command));
 	dataToSavePerPlayer[command->player].push_back(data);
 }
 
@@ -78,6 +78,10 @@ void Stats::save() {
 		}
 	}
 
+}
+
+void Stats::addBuildLevel(short id, const ActionParameter& parameter, char playerId) {
+	//TODO zrobic cos
 }
 
 void Stats::update(short id) {

@@ -276,7 +276,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::PHYSICAL:
-		return 	Game::getActionCenter()->orderPhysical(id, parameter, player);
+		return Game::getActionCenter()->orderPhysical(id, parameter, player);
 	case ObjectType::UNIT:
 		return actionUnit(id, parameter);
 	case ObjectType::BUILDING:

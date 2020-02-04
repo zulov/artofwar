@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include "defines.h"
+#include "commands/action/ActionCommand.h"
 
 #define INPUT_STATS_SIZE 24
 #define STATS_PER_PLAYER_SIZE 12
@@ -23,6 +24,7 @@ public:
 	void add(ActionCommand* command);
 	void add(CreationCommand* command);
 	void save();
+	void addBuildLevel(short id, const ActionParameter& parameter, char playerId);
 private:
 	void update(short id);
 	void clear();
