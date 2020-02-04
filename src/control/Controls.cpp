@@ -272,9 +272,11 @@ void Controls::toBuild(HudData* hud) {
 }
 
 void Controls::order(short id, const ActionParameter& parameter) {
+	char player = Game::getPlayersMan()->getActivePlayerID();
+
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::PHYSICAL:
-		return orderPhysical(id, parameter);
+		return 	Game::getActionCenter()->orderPhysical(id, parameter, player);
 	case ObjectType::UNIT:
 		return actionUnit(id, parameter);
 	case ObjectType::BUILDING:
@@ -290,20 +292,6 @@ void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
 	//TODO przyjrzec sie typowi
 }
 
-void Controls::orderPhysical(short id, const ActionParameter& parameter) const {
-	if (parameter.type == ActionType::BUILDING_LEVEL) {
-		auto player = Game::getPlayersMan()->getActivePlayer();
-		const auto level = player->getLevelForBuilding(id) + 1;
-		auto opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
-		if (opt.has_value()) {
-			if (player->getResources().reduce(opt.value())) {
-				//Game::getQueueManager()->add(1, parameter.type, id, 1);
-				player->getQueue().add(1, parameter.type, id, 1);
-			}
-		}
-	}
-}
-
 bool Controls::clickDown(MouseButton& var) const {
 	hit_data hitData;
 	if (raycast(hitData)) {
@@ -316,7 +304,6 @@ bool Controls::clickDown(MouseButton& var) const {
 void Controls::createBuilding(Urho3D::Vector2 pos) const {
 	if (idToCreate >= 0) {
 		auto player = Game::getPlayersMan()->getActivePlayer();
-
 		Game::getActionCenter()->addBuilding(idToCreate, pos, player->getId(),
 		                                     player->getLevelForBuilding(idToCreate));
 	}

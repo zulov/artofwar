@@ -41,7 +41,7 @@ QueueElement* QueueManager::update(float time) {
 		}
 	}
 	if (!queue.empty()) {
-		QueueElement* element = queue.at(0);
+		QueueElement* element = *queue.begin();
 
 		if (element->update(time)) {
 			queue.erase(queue.begin());

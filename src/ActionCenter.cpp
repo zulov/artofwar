@@ -6,6 +6,9 @@
 #include "commands/creation/CreationCommandList.h"
 #include "Game.h"
 #include "stats/Stats.h"
+#include "player/PlayersManager.h"
+#include "player/Player.h"
+#include "database/DatabaseCache.h"
 
 ActionCenter::ActionCenter(SimulationObjectManager* simulationObjectManager) {
 	creation = new CreationCommandList(simulationObjectManager);
@@ -72,4 +75,18 @@ auto ActionCenter::addResource(int id, Urho3D::Vector2& position, int level) con
 	}
 
 	return false;
+}
+
+void ActionCenter::orderPhysical(short id, const ActionParameter& parameter, char playerId) const {
+	if (parameter.type == ActionType::BUILDING_LEVEL) {
+		auto player = Game::getPlayersMan()->getPlayer(playerId);
+		const auto level = player->getLevelForBuilding(id) + 1;
+		auto opt = Game::getDatabaseCache()->getCostForBuildingLevel(id, level);
+		if (opt.has_value()) {
+			if (player->getResources().reduce(opt.value())) {
+				player->getQueue().add(1, parameter.type, id, 1);
+				Game::getStats()->addQBuildLevel(id, parameter, playerId);
+			}
+		}
+	}
 }

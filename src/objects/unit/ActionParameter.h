@@ -1,6 +1,8 @@
 #pragma once
 
 #include  "objects/ActionType.h"
+#include <vector>
+#include "objects/Physical.h"
 
 class Aim;
 

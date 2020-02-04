@@ -5,7 +5,6 @@ QueueElement::QueueElement(ActionType type, short id, short maxCapacity, float i
 	secondsToComplete(initialSecondsToComplete), elapsedSeconds(0),
 	initialSecondsToComplete(initialSecondsToComplete),
 	secondsToCompletePerInstance(secondsToCompletePerInstance) {
-
 }
 
 QueueElement::~QueueElement() = default;

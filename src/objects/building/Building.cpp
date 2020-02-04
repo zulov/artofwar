@@ -64,7 +64,7 @@ Urho3D::String Building::toMultiLineString() {
 
 void Building::action(char id, const ActionParameter& parameter) {
 	Resources& resources = Game::getPlayersMan()->getActivePlayer()->getResources();
-
+	
 	switch (parameter.type) {
 	case ActionType::UNIT_CREATE:
 	{

@@ -1,4 +1,5 @@
 #pragma once
+#include "objects/unit/ActionParameter.h"
 
 class SimulationObjectManager;
 
@@ -25,6 +26,7 @@ public:
 	bool addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const;
 	bool addBuilding(int id, Urho3D::Vector2& position, char player, int level) const;
 	bool addResource(int id, Urho3D::Vector2& position, int level) const;
+	void orderPhysical(short id, const ActionParameter& parameter, char playerId) const;
 
 private:
 
