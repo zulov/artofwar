@@ -4,7 +4,6 @@
 class Layer {
 
 public:
-	Layer(short numberOfNodes, short prevSize);
 	Layer(std::vector<float>& w, std::vector<float>& bias);
 	~Layer();
 	void setValues(float data[]) const;

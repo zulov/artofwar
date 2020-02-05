@@ -2,20 +2,6 @@
 #include <algorithm>
 #include <iostream>
 
-Layer::Layer(short numberOfNodes, short prevSize): numberOfNodes(numberOfNodes), prevSize(prevSize) {
-	values = new float[numberOfNodes];
-	std::fill_n(values, numberOfNodes, 0);
-
-	bias = new float[numberOfNodes];
-	for (int i = 0; i < numberOfNodes; i++) {
-		bias[i] = (static_cast<float>(rand()) / RAND_MAX - 0.5) * 2;
-	}
-	w = new float[numberOfNodes * prevSize];
-	for (int i = 0; i < numberOfNodes * prevSize; i++) {
-		w[i] = (static_cast<float>(rand()) / RAND_MAX - 0.5) * 2;
-	}
-
-}
 
 Layer::Layer(std::vector<float>& w, std::vector<float>& bias) {
 	numberOfNodes = bias.size();

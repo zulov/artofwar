@@ -4,7 +4,6 @@
 
 class Brain {
 public:
-	Brain(int numberOfHiddenLayers, int numberOfInput, int numberOfOutput, int wSize);
 	explicit Brain(std::vector<std::string>& lines);
 	~Brain();
 	float* decide(float data[]);

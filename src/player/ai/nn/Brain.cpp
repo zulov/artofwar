@@ -4,23 +4,6 @@
 #include <iostream>
 #include "AFUtil.h"
 
-Brain::Brain(int numberOfHiddenLayers, int numberOfInput, int numberOfOutput, int wSize) {
-	input = new Layer(numberOfInput, 0);
-	output = new Layer(numberOfOutput, wSize);
-
-	hidden.reserve(numberOfHiddenLayers);
-	hidden.push_back(new Layer(wSize, numberOfInput));
-	for (int i = 0; i < numberOfHiddenLayers; ++i) {
-		hidden.push_back(new Layer(wSize, wSize));
-	}
-
-	allLayers.push_back(input);
-	for (auto value : hidden) {
-		allLayers.push_back(value);
-	}
-	allLayers.push_back(output);
-}
-
 Brain::Brain(std::vector<std::string>& lines) {
 	std::vector<float> w;
 	std::vector<float> b;
@@ -62,9 +45,9 @@ float* Brain::decide(float data[]) {
 
 Eigen::MatrixXf Brain::multiply(Layer* current, Layer* prevLayer) {
 	//TODO performance 
-	auto input = Eigen::Map<Eigen::VectorXf>(prevLayer->getValues(), prevLayer->getNumberOfValues());
-	auto weightedMatrix = Eigen::Map<Eigen::MatrixXf>(current->getW(), current->getPrevSize(),
-	                                                  current->getNumberOfValues()).transpose();
+	const auto input = Eigen::Map<Eigen::VectorXf>(prevLayer->getValues(), prevLayer->getNumberOfValues());
+	const auto weightedMatrix = Eigen::Map<Eigen::MatrixXf>(current->getW(), current->getPrevSize(),
+	                                                        current->getNumberOfValues()).transpose();
 
 	return weightedMatrix * input;
 }

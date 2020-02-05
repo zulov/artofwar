@@ -123,10 +123,9 @@ QueueManager& Player::getQueue() {
 
 void Player::ai() {
 	auto data = Game::getStats()->getInputFor(getId());
+
 	auto result = brain->decide(data);
-	// for (int i = 0; i < brain->getOutputSize(); ++i) {
-	// 	std::cout << result[i] << std::endl;
-	// }
+
 	auto max = std::max_element(result, result + brain->getOutputSize());
 
 	auto index = max - result;
