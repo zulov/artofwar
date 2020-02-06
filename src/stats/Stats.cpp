@@ -39,28 +39,38 @@ void Stats::init() {
 	}
 }
 
-void Stats::add(UpgradeCommand* command) {
-	auto input = getInputFor(command->player);
-	std::string data = join(input, input + INPUT_STATS_SIZE);
+std::string Stats::getInputData(char player) {
+	const auto input = getInputFor(player);
+	return join(input, input + INPUT_STATS_SIZE);
+}
 
-	data.append(getOutput(command));
-	dataToSavePerPlayer[command->player].push_back(data);
+void Stats::add(UpgradeCommand* command) {
+	const auto player = command->player;
+
+	const std::string data = getInputData(player);
+
+	appendOutput(player, data, getOutput(command));
 }
 
 void Stats::add(ActionCommand* command) {
-	auto input = getInputFor(command->player);
-	std::string data = join(input, input + INPUT_STATS_SIZE);
+	const auto player = command->player;
 
-	data.append(";;").append(getOutput(command));
-	dataToSavePerPlayer[command->player].push_back(data);
+	const std::string data = getInputData(player);
+
+	appendOutput(player, data, getOutput(command));
 }
 
 void Stats::add(CreationCommand* command) {
-	auto input = getInputFor(command->player);
-	std::string data = join(input, input + INPUT_STATS_SIZE);
+	const auto player = command->player;
 
-	data.append(getOutput(command));
-	dataToSavePerPlayer[command->player].push_back(data);
+	const std::string data = getInputData(player);
+
+	appendOutput(player, data, getOutput(command));
+}
+
+void Stats::appendOutput(char player, std::string data, std::string& output) {
+	data.append(";;").append(output);
+	dataToSavePerPlayer[player].push_back(data);
 }
 
 void Stats::save() {
@@ -77,7 +87,6 @@ void Stats::save() {
 			dataToSavePerPlayer[i].clear();
 		}
 	}
-
 }
 
 void Stats::addBuildLevel(short id, const ActionParameter& parameter, char playerId) {
@@ -143,7 +152,6 @@ std::string Stats::getOutput(CreationCommand* command) const {
 		output[cast(StatsOutputType::CREATE_BUILDING_DEFENCE)] = 1;
 		output[cast(StatsOutputType::CREATE_BUILDING_ECON)] = 1;
 		break;
-
 	}
 
 	return join(output, output + STATS_OUTPUT_SIZE);

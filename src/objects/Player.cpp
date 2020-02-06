@@ -8,6 +8,7 @@
 #include <fstream>
 #include "stats/Stats.h"
 #include "ActionCenter.h"
+#include "stats/StatsEnums.h"
 
 
 Player::Player(int nationId, int team, char id, int color, Urho3D::String name, bool active): name(std::move(name)),
@@ -122,18 +123,46 @@ QueueManager& Player::getQueue() {
 }
 
 void Player::ai() {
-	auto data = Game::getStats()->getInputFor(getId());
+	const auto data = Game::getStats()->getInputFor(getId());
 
-	auto result = brain->decide(data);
+	const auto result = brain->decide(data);
 
 	auto max = std::max_element(result, result + brain->getOutputSize());
 
+	std::cout << std::endl << *max << std::endl;
 	auto index = max - result;
 	auto value = *max;
 
-	int a = 5;
-	//auto& orderData = aiRoot->getOrder();
-	//execute(orderData);
+	StatsOutputType order = static_cast<StatsOutputType>(index);
+
+	createOrder(order);
+}
+
+void Player::createOrder(StatsOutputType order) {
+	switch (order) {
+	case StatsOutputType::IDLE: break;
+	case StatsOutputType::CREATE_UNIT_ATTACK: break;
+	case StatsOutputType::CREATE_UNIT_DEFENCE: break;
+	case StatsOutputType::CREATE_UNIT_ECON: break;
+	case StatsOutputType::CREATE_BUILDING_ATTACK:
+		short id = chooseBuilding();
+		auto pos = bestPosToBuild(id);
+		break;
+	case StatsOutputType::CREATE_BUILDING_DEFENCE: break;
+	case StatsOutputType::CREATE_BUILDING_ECON: break;
+	case StatsOutputType::UPGRADE_ATTACK: break;
+	case StatsOutputType::UPGRADE_DEFENCE: break;
+	case StatsOutputType::UPGRADE_ECON: break;
+	case StatsOutputType::ORDER_GO: break;
+	case StatsOutputType::ORDER_STOP: break;
+	case StatsOutputType::ORDER_CHARGE: break;
+	case StatsOutputType::ORDER_ATTACK: break;
+	case StatsOutputType::ORDER_DEAD: break;
+	case StatsOutputType::ORDER_DEFEND: break;
+	case StatsOutputType::ORDER_FOLLOW: break;
+	case StatsOutputType::ORDER_COLLECT: break;
+	default: ;
+	}
 }
 
 Urho3D::Vector2 Player::bestPosToBuild(const short id) const {

@@ -20,6 +20,7 @@ public:
 	int getScoreFor(short id) const;
 	float* getInputFor(short id);
 	void init();
+	std::string getInputData(char player);
 	void add(UpgradeCommand* command);
 	void add(ActionCommand* command);
 	void add(CreationCommand* command);
@@ -31,6 +32,7 @@ private:
 	std::string getOutput(CreationCommand* command) const;
 	std::string getOutput(UpgradeCommand* command) const;
 	std::string getOutput(ActionCommand* command) const;
+	void appendOutput(char player, std::string data, std::string& output);
 	float* input;
 	std::vector<float*> statsPerPlayer;
 	float weights[STATS_PER_PLAYER_SIZE];

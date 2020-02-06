@@ -1,8 +1,8 @@
 #include "Brain.h"
 #include "utils.h"
 #include "StringUtils.h"
-#include <iostream>
 #include "AFUtil.h"
+#include <iostream>
 
 Brain::Brain(std::vector<std::string>& lines) {
 	std::vector<float> w;

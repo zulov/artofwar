@@ -3,6 +3,7 @@
 #include "Possession.h"
 #include "ai/nn/Brain.h"
 #include "objects/queue/QueueManager.h"
+#include "stats/StatsEnums.h"
 
 enum class ActionType : char;
 
@@ -42,6 +43,8 @@ public:
 	QueueElement* updateQueue(float time);
 	QueueManager& getQueue();
 private:
+
+	void createOrder(StatsOutputType order);
 	Urho3D::Vector2 bestPosToBuild(const short id) const;
 	void initAi();
 
