@@ -144,15 +144,20 @@ void Player::createOrder(StatsOutputType order) {
 	case StatsOutputType::CREATE_UNIT_ATTACK: break;
 	case StatsOutputType::CREATE_UNIT_DEFENCE: break;
 	case StatsOutputType::CREATE_UNIT_ECON: break;
-	case StatsOutputType::CREATE_BUILDING_ATTACK:
-		short id = chooseBuilding();
-		auto pos = bestPosToBuild(id);
+		short id = chooseUnit(order);
+		auto pos = bestBuildingToDeployUnit(order,id);
 		break;
-	case StatsOutputType::CREATE_BUILDING_DEFENCE: break;
-	case StatsOutputType::CREATE_BUILDING_ECON: break;
-	case StatsOutputType::UPGRADE_ATTACK: break;
-	case StatsOutputType::UPGRADE_DEFENCE: break;
-	case StatsOutputType::UPGRADE_ECON: break;
+	case StatsOutputType::CREATE_BUILDING_ATTACK:
+	case StatsOutputType::CREATE_BUILDING_DEFENCE:
+	case StatsOutputType::CREATE_BUILDING_ECON:
+		short id = chooseBuilding(order);
+		auto pos = bestPosToBuild(order,id);
+		break;
+	case StatsOutputType::UPGRADE_ATTACK:
+	case StatsOutputType::UPGRADE_DEFENCE: 
+	case StatsOutputType::UPGRADE_ECON:
+		short id = chooseUpgrade(order);
+		break;
 	case StatsOutputType::ORDER_GO: break;
 	case StatsOutputType::ORDER_STOP: break;
 	case StatsOutputType::ORDER_CHARGE: break;
