@@ -34,9 +34,9 @@ void MainMenuNewGamePanel::createBody() {
 	myLine.setCheck(true);
 
 	map = createElement<Urho3D::DropDownList>(rows[2], style, "MainMenuNewGameDropDownList");
-	int mapsSize = Game::getDatabaseCache()->getMapSize();
+	int mapsSize = Game::getDatabase()->getMapSize();
 	for (int i = 0; i < mapsSize; ++i) {
-		addTextItem(map, Game::getDatabaseCache()->getMap(i)->name, style);
+		addTextItem(map, Game::getDatabase()->getMap(i)->name, style);
 	}
 
 	difficulty = createElement<Urho3D::DropDownList>(rows[3], style, "MainMenuNewGameDropDownList");

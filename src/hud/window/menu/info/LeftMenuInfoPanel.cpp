@@ -55,31 +55,31 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	const auto id = hudData->getId();
 	switch (hudData->getType()) {
 	case ActionType::UNIT_CREATE:
-			return stringFrom(Game::getDatabaseCache()->getUnit(id)->name,
-		                  Game::getDatabaseCache()->getCostForUnit(id));
+			return stringFrom(Game::getDatabase()->getUnit(id)->name,
+		                  Game::getDatabase()->getCostForUnit(id));
 	case ActionType::UNIT_LEVEL:
 	{
 		const int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
-		const auto dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
-		auto opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
+		const auto dbLevel = Game::getDatabase()->getUnitLevel(id, level).value();
+		auto opt = Game::getDatabase()->getCostForUnitLevel(id, level);
 
 		return stringFrom(dbLevel->name, opt.value());
 	}
 	case ActionType::UNIT_UPGRADE:
 		return "TODO";
 	case ActionType::BUILDING_CREATE:
-		return stringFrom(Game::getDatabaseCache()->getBuilding(id)->name,
-		                  Game::getDatabaseCache()->getCostForBuilding(id));
+		return stringFrom(Game::getDatabase()->getBuilding(id)->name,
+		                  Game::getDatabase()->getCostForBuilding(id));
 	case ActionType::BUILDING_LEVEL:
 	{
 		auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;
-		auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(id, level).value();
-		auto optCost = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
+		auto dbLevel = Game::getDatabase()->getBuildingLevel(id, level).value();
+		auto optCost = Game::getDatabase()->getCostForUnitLevel(id, level);
 
 		return stringFrom(dbLevel->name, optCost.value());
 	}
 	case ActionType::ORDER:
-		return Game::getLocalization()->Get(Game::getDatabaseCache()->getOrder(id)->name);
+		return Game::getLocalization()->Get(Game::getDatabase()->getOrder(id)->name);
 	case ActionType::FORMATION:
 	case ActionType::RESOURCE:
 		return hudData->getText();

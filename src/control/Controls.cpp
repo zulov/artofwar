@@ -502,7 +502,7 @@ void Controls::buildControl() {
 			//TODO perf nie robic tego co klatkê
 			auto env = Game::getEnvironment();
 
-			const auto dbBuilding = Game::getDatabaseCache()->getBuilding(idToCreate);
+			const auto dbBuilding = Game::getDatabase()->getBuilding(idToCreate);
 
 			auto hitPos = Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
 
@@ -510,7 +510,7 @@ void Controls::buildControl() {
 
 			tempBuildingNode->SetPosition(env->getPosWithHeightAt(validPos.x_, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
-				auto dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, 0).value();
+				auto dbLevel = Game::getDatabase()->getBuildingLevel(dbBuilding->id, 0).value();
 				tempBuildingNode->LoadXML(Game::getCache()
 				                          ->GetResource<Urho3D::XMLFile>("Objects/buildings/" + dbLevel->nodeName)->
 				                          GetRoot());

@@ -16,7 +16,7 @@ Player::Player(int nationId, int team, char id, int color, Urho3D::String name, 
                                                                                               color(color), id(id),
                                                                                               active(active),
                                                                                               queue(1) {
-	dbNation = Game::getDatabaseCache()->getNation(nationId);
+	dbNation = Game::getDatabase()->getNation(nationId);
 
 	std::fill_n(unitLevels, UNITS_NUMBER_DB, 0);
 	std::fill_n(buildingLevels, BUILDINGS_NUMBER_DB, 0);
@@ -48,19 +48,19 @@ void Player::setResourceAmount(float amount) {
 char Player::upgradeLevel(ActionType type, int id) {
 	switch (type) {
 	case ActionType::UNIT_LEVEL:
-		if (Game::getDatabaseCache()->getUnitLevels(id)->size() - 1 > unitLevels[id]) {
+		if (Game::getDatabase()->getUnitLevels(id)->size() - 1 > unitLevels[id]) {
 			unitLevels[id]++;
 			return unitLevels[id];
 		}
 		break;
 	case ActionType::BUILDING_LEVEL:
-		if (Game::getDatabaseCache()->getBuildingLevels(id)->size() - 1 > buildingLevels[id]) {
+		if (Game::getDatabase()->getBuildingLevels(id)->size() - 1 > buildingLevels[id]) {
 			buildingLevels[id]++;
 			return buildingLevels[id];
 		}
 		break;
 	case ActionType::UNIT_UPGRADE:
-		if (Game::getDatabaseCache()->getUnitUpgrades(id)->size() - 1 > unitUpgradeLevels[id]) {
+		if (Game::getDatabase()->getUnitUpgrades(id)->size() - 1 > unitUpgradeLevels[id]) {
 			unitUpgradeLevels[id]++;
 			return unitUpgradeLevels[id];
 		}
@@ -122,6 +122,14 @@ QueueManager& Player::getQueue() {
 	return queue;
 }
 
+short Player::chooseUpgrade(StatsOutputType order) {
+	auto db = Game::getDatabase();
+	db->getUnitUpgrades(0);
+	db->getBuildingLevels(0);
+	db->getUnitLevels(0);
+	return 0;
+}
+
 void Player::ai() {
 	const auto data = Game::getStats()->getInputFor(getId());
 
@@ -129,34 +137,32 @@ void Player::ai() {
 
 	auto max = std::max_element(result, result + brain->getOutputSize());
 
-	std::cout << std::endl << *max << std::endl;
 	auto index = max - result;
-	auto value = *max;
 
-	StatsOutputType order = static_cast<StatsOutputType>(index);
-
-	createOrder(order);
+	createOrder(static_cast<StatsOutputType>(index));
 }
 
 void Player::createOrder(StatsOutputType order) {
 	switch (order) {
 	case StatsOutputType::IDLE: break;
-	case StatsOutputType::CREATE_UNIT_ATTACK: break;
-	case StatsOutputType::CREATE_UNIT_DEFENCE: break;
-	case StatsOutputType::CREATE_UNIT_ECON: break;
-		short id = chooseUnit(order);
-		auto pos = bestBuildingToDeployUnit(order,id);
+
+	case StatsOutputType::CREATE_UNIT_ATTACK:
+	case StatsOutputType::CREATE_UNIT_DEFENCE:
+	case StatsOutputType::CREATE_UNIT_ECON:
+		//	short id = chooseUnit(order);
+		//	auto pos = bestBuildingToDeployUnit(order, id);
 		break;
 	case StatsOutputType::CREATE_BUILDING_ATTACK:
 	case StatsOutputType::CREATE_BUILDING_DEFENCE:
 	case StatsOutputType::CREATE_BUILDING_ECON:
-		short id = chooseBuilding(order);
-		auto pos = bestPosToBuild(order,id);
+		//	short id = chooseBuilding(order);
+		//	auto pos = bestPosToBuild(order, id);
 		break;
 	case StatsOutputType::UPGRADE_ATTACK:
-	case StatsOutputType::UPGRADE_DEFENCE: 
+	case StatsOutputType::UPGRADE_DEFENCE:
 	case StatsOutputType::UPGRADE_ECON:
-		short id = chooseUpgrade(order);
+		//short id = chooseUpgrade(order);
+		//	bestBuildingToUpgrade();
 		break;
 	case StatsOutputType::ORDER_GO: break;
 	case StatsOutputType::ORDER_STOP: break;

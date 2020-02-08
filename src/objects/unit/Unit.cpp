@@ -24,8 +24,8 @@
 
 Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position),
                                                                         state(UnitState::STOP) {
-	dbUnit = Game::getDatabaseCache()->getUnit(id);
-	dbLevel = Game::getDatabaseCache()->getUnitLevel(id, level).value();
+	dbUnit = Game::getDatabase()->getUnit(id);
+	dbLevel = Game::getDatabase()->getUnitLevel(id, level).value();
 	setPlayerAndTeam(player);
 	loadXml("Objects/units/" + dbLevel->nodeName);
 

@@ -21,10 +21,10 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 		buildingColors[i] = 0xFF505050;
 	}
 
-	int size = Game::getDatabaseCache()->getResourceSize();
+	int size = Game::getDatabase()->getResourceSize();
 
 	for (int i = 0; i < size; ++i) {
-		const auto res = Game::getDatabaseCache()->getResource(i);
+		const auto res = Game::getDatabase()->getResource(i);
 		if (res) {
 			resourceColors[i] = res->mini_map_color;
 		} else {
@@ -50,7 +50,7 @@ void MiniMapPanel::initColors() {
 
 	PlayersManager* playerManager = Game::getPlayersMan();
 	for (auto player : playerManager->getAllPlayers()) {
-		db_player_colors* col = Game::getDatabaseCache()->getPlayerColor(player->getColor());
+		db_player_colors* col = Game::getDatabase()->getPlayerColor(player->getColor());
 
 		if (col) {
 			unitsColors[player->getId()] = col->unit;

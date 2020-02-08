@@ -23,9 +23,9 @@ CreationCommand* CreationCommandList::addUnits(int number, int id, Urho3D::Vecto
 
 CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& position, char player, int level) {
 	Resources& resources = Game::getPlayersMan()->getPlayer(player)->getResources();
-	auto costs = Game::getDatabaseCache()->getCostForBuilding(id);
+	auto costs = Game::getDatabase()->getCostForBuilding(id);
 	auto env = Game::getEnvironment();
-	db_building* db_building = Game::getDatabaseCache()->getBuilding(id);
+	db_building* db_building = Game::getDatabase()->getBuilding(id);
 
 	if (env->validateStatic(db_building->size, position) && resources.reduce(costs)) {
 		auto bucketCords = env->getBucketCords(db_building->size, position);
@@ -38,7 +38,7 @@ CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& posit
 
 CreationCommand* CreationCommandList::addResource(int id, Urho3D::Vector2& position, int level) {
 	auto env = Game::getEnvironment();
-	db_resource* db_resource = Game::getDatabaseCache()->getResource(id);
+	db_resource* db_resource = Game::getDatabase()->getResource(id);
 
 	if (env->validateStatic(db_resource->size, position)) {
 		auto bucketCords = env->getBucketCords(db_resource->size, position);

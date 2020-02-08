@@ -16,7 +16,7 @@ MainMenuSettingsPanel::~MainMenuSettingsPanel() {
 }
 
 void MainMenuSettingsPanel::setValues(int graphID) const {
-	db_graph_settings* graphSettings = Game::getDatabaseCache()->getGraphSettings(graphID);
+	db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings(graphID);
 
 	fullScreen->SetChecked(graphSettings->fullscreen);
 	vSync->SetChecked(graphSettings->v_sync);
@@ -45,8 +45,8 @@ void MainMenuSettingsPanel::createBody() {
 
 	settings = createElement<Urho3D::DropDownList>(rows[0], style, "MainMenuNewGameDropDownList");
 	std::vector<Urho3D::String> settingsNames;
-	for (int i = 0; i < Game::getDatabaseCache()->getGraphSettingsSize(); ++i) {
-		db_graph_settings* settings = Game::getDatabaseCache()->getGraphSettings(i);
+	for (int i = 0; i < Game::getDatabase()->getGraphSettingsSize(); ++i) {
+		db_graph_settings* settings = Game::getDatabase()->getGraphSettings(i);
 		settingsNames.push_back(l10n->Get(settings->name));
 	}
 	SubscribeToEvent(settings, Urho3D::E_ITEMSELECTED, URHO3D_HANDLER(MainMenuSettingsPanel, HandleChangeSettings));
@@ -55,8 +55,8 @@ void MainMenuSettingsPanel::createBody() {
 
 	resolution =  createElement<Urho3D::DropDownList>(rows[1], style, "MainMenuNewGameDropDownList");
 	std::vector<Urho3D::String> resNames;
-	for (int i = 0; i < Game::getDatabaseCache()->getResourceSize(); ++i) {
-		db_resolution* res = Game::getDatabaseCache()->getResolution(i);
+	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
+		db_resolution* res = Game::getDatabase()->getResolution(i);
 		resNames.push_back(Urho3D::String(res->x) + "x" + Urho3D::String(res->y));
 	}
 	addChildTexts(resolution, resNames, style);
@@ -79,8 +79,8 @@ void MainMenuSettingsPanel::createBody() {
 	hudSize = createElement<Urho3D::DropDownList>(rows[8], style, "MainMenuNewGameDropDownList");
 
 	std::vector<Urho3D::String> hudNames;
-	for (int i = 0; i < Game::getDatabaseCache()->getHudSizeSize(); ++i) {
-		db_hud_size* hudSize = Game::getDatabaseCache()->getHudSize(i);
+	for (int i = 0; i < Game::getDatabase()->getHudSizeSize(); ++i) {
+		db_hud_size* hudSize = Game::getDatabase()->getHudSize(i);
 		hudNames.push_back(hudSize->name);
 	}
 	addChildTexts(hudSize, hudNames, style);
@@ -91,7 +91,7 @@ void MainMenuSettingsPanel::createBody() {
 	save->SetVar("SettingsForm", data);
 	SubscribeToEvent(save, Urho3D::E_CLICK, URHO3D_HANDLER(MainMenuSettingsPanel, HandleSaveSettings));
 
-	db_settings* set = Game::getDatabaseCache()->getSettings();
+	db_settings* set = Game::getDatabase()->getSettings();
 	settings->SetSelection(set->graph);
 	resolution->SetSelection(set->resolution);
 	int graphID = set->graph;
@@ -129,6 +129,6 @@ void MainMenuSettingsPanel::HandleSaveSettings(Urho3D::StringHash eventType, Urh
 	auto graphSettings = new db_graph_settings(0, form->hudSize, nullptr, form->fullScreen, form->maxFps,
 	                                                         form->minFps, nullptr, form->vSync, form->shadow,
 	                                                         form->textureQuality);
-	Game::getDatabaseCache()->setGraphSettings(0, graphSettings);
-	Game::getDatabaseCache()->setSettings(0, new db_settings(0, form->resolution));
+	Game::getDatabase()->setGraphSettings(0, graphSettings);
+	Game::getDatabase()->setSettings(0, new db_settings(0, form->resolution));
 }

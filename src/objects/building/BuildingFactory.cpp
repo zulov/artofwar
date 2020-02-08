@@ -28,7 +28,7 @@ create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _b
 
 std::vector<Building*>* BuildingFactory::load(dbload_building* building) const {
 	const Urho3D::IntVector2 bucketCords(building->buc_x, building->buc_y);
-	const auto db_building = Game::getDatabaseCache()->getBuilding(building->id_db);
+	const auto db_building = Game::getDatabase()->getBuilding(building->id_db);
 
 	auto center = Game::getEnvironment()->getValidPosition(db_building->size, bucketCords);
 

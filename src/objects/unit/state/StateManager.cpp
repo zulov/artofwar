@@ -55,7 +55,7 @@ StateManager::StateManager() {
 	orderToState[static_cast<char>(UnitOrder::COLLECT)] = {static_cast<char>(UnitState::COLLECT)};
 
 	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
-		auto orders = Game::getDatabaseCache()->getOrdersForUnit(i);
+		auto orders = Game::getDatabase()->getOrdersForUnit(i);
 		//test //TTO cos zle
 		std::fill_n(ordersToUnit[i], STATE_SIZE, false);
 		for (auto order : *orders) {

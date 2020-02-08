@@ -43,9 +43,9 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE),
 
 void Main::Setup() {
 	Game::setDatabaseCache(new DatabaseCache(GetSubsystem<FileSystem>()->GetCurrentDir().CString()));
-	db_settings* settings = Game::getDatabaseCache()->getSettings();
-	db_graph_settings* graphSettings = Game::getDatabaseCache()->getGraphSettings(settings->graph);
-	db_resolution* resolution = Game::getDatabaseCache()->getResolution(settings->resolution);
+	db_settings* settings = Game::getDatabase()->getSettings();
+	db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings(settings->graph);
+	db_resolution* resolution = Game::getDatabase()->getResolution(settings->resolution);
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
 	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName()
 		+ ".log";
@@ -91,7 +91,7 @@ void Main::Stop() {
 	disposeScene();
 
 	delete hud;
-	delete Game::getDatabaseCache();
+	delete Game::getDatabase();
 	Game::setDatabaseCache(nullptr);
 	Game::dispose();
 	engine_->DumpResources(true);

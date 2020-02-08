@@ -37,7 +37,7 @@ Urho3D::String Physical::getBarMaterialName() {
 	if (player == -1) {
 		return "Materials/bar/bar_grey.xml";
 	}
-	return "Materials/bar/bar_" + Game::getDatabaseCache()->getPlayerColor(player)->name + ".xml";
+	return "Materials/bar/bar_" + Game::getDatabase()->getPlayerColor(player)->name + ".xml";
 }
 
 void Physical::createBillboardBar() {
@@ -50,7 +50,7 @@ void Physical::createBillboardShadow() {
 	if (player == -1) {
 		material = "Materials/select/select_grey.xml";
 	} else {
-		material = "Materials/select/select_" + Game::getDatabaseCache()->getPlayerColor(player)->name + ".xml";
+		material = "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player)->name + ".xml";
 	}
 	billboardShadow = createBillboardSet(billboardNode, billboardSetShadow, material);
 	billboardNode->Pitch(90);

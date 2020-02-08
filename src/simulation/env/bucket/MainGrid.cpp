@@ -278,7 +278,7 @@ void MainGrid::drawDebug(GridDebugType type) const {
 }
 
 bool MainGrid::validAndFree(short id, int index, std::vector<short>::value_type close) const {
-	auto building = Game::getDatabaseCache()->getBuilding(id);
+	auto building = Game::getDatabase()->getBuilding(id);
 
 	return calculator.validIndex(index + close)
 		&& Game::getEnvironment()->validateStatic(building->size, calculator.getCenter(index + close))

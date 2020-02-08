@@ -7,7 +7,7 @@
 
 inline std::unordered_set<int> unitsIdsForBuildingNation(int nation, int i) {
 	std::unordered_set<int> common;
-	auto units = Game::getDatabaseCache()->getUnitsForBuilding(i);
+	auto units = Game::getDatabase()->getUnitsForBuilding(i);
 	for (auto& unit : *units) {
 		//todo to zrobic raz i pobierac
 		if (unit->nation == nation) {
@@ -20,7 +20,7 @@ inline std::unordered_set<int> unitsIdsForBuildingNation(int nation, int i) {
 
 inline std::unordered_set<int> pathsIdsInbuilding(int id) {
 	std::unordered_set<int> common;
-	auto paths = Game::getDatabaseCache()->getBuilding(id)->unitUpgradePath;
+	auto paths = Game::getDatabase()->getBuilding(id)->unitUpgradePath;
 	for (auto id : paths) {
 		common.insert(id);
 	}

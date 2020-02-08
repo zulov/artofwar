@@ -5,8 +5,7 @@ class SelectedInfo;
 class QueueManager;
 class QueueHudElement;
 
-class QueuePanel : public AbstractWindowPanel //TODO moze zrobic multilina
-{
+class QueuePanel : public AbstractWindowPanel {
 public:
 	explicit QueuePanel(Urho3D::XMLFile* _style);
 	~QueuePanel();

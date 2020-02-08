@@ -156,7 +156,7 @@ void MenuPanel::setNext(int& k, const Urho3D::String& texture, int id, ActionTyp
 void MenuPanel::basicBuilding() {
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	int k = 0;
-	for (auto building : *Game::getDatabaseCache()->getBuildingForNation(nation)) {
+	for (auto building : *Game::getDatabase()->getBuildingForNation(nation)) {
 		setNext(k, "textures/hud/icon/building/" + building->icon, building->id, ActionType::BUILDING_CREATE, "");
 	}
 	resetRestButtons(k);
@@ -165,11 +165,11 @@ void MenuPanel::basicBuilding() {
 void MenuPanel::levelBuilding() {
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	int k = 0;
-	for (int i = 0; i < Game::getDatabaseCache()->getBuildingSize(); ++i) {
+	for (int i = 0; i < Game::getDatabase()->getBuildingSize(); ++i) {
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i) + 1;
-		auto opt = Game::getDatabaseCache()->getBuildingLevel(i, level);
+		auto opt = Game::getDatabase()->getBuildingLevel(i, level);
 		if (opt.has_value()) {
-			auto building = Game::getDatabaseCache()->getBuilding(i);
+			auto building = Game::getDatabase()->getBuilding(i);
 			if (building->nation == nation) {
 				setNext(k, "textures/hud/icon/building/levels/" + Urho3D::String(level) + "/" + building->icon,
 				        building->id, ActionType::BUILDING_LEVEL, "");
@@ -218,7 +218,7 @@ void MenuPanel::removeFromCommon(std::unordered_set<int>& common, std::unordered
 void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
 	for (auto id : getUnitInBuilding(selectedInfo)) {
-		db_unit* unit = Game::getDatabaseCache()->getUnit(id);
+		db_unit* unit = Game::getDatabase()->getUnit(id);
 		if (unit) {
 			setNext(k, "textures/hud/icon/unit/" + unit->icon, unit->id, ActionType::UNIT_CREATE, "");
 		}
@@ -230,9 +230,9 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
 	for (auto id : getUnitInBuilding(selectedInfo)) {
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
-		auto opt = Game::getDatabaseCache()->getUnitLevel(id, level);
+		auto opt = Game::getDatabase()->getUnitLevel(id, level);
 		if (opt.has_value()) {
-			db_unit* unit = Game::getDatabaseCache()->getUnit(id);
+			db_unit* unit = Game::getDatabase()->getUnit(id);
 			setNext(k, "textures/hud/icon/unit/levels/" + Urho3D::String(level) + "/" + unit->icon, unit->id,
 			        ActionType::UNIT_LEVEL, "");
 		}
@@ -243,7 +243,7 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
 	for (auto id : getUpgradePathInBuilding(selectedInfo)) {
-		auto opt = Game::getDatabaseCache()->
+		auto opt = Game::getDatabase()->
 			getUnitUpgrade(id, Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1);
 
 		if (opt.has_value()) {
@@ -262,7 +262,7 @@ std::unordered_set<int> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) {
 
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
-			auto orders = Game::getDatabaseCache()->getOrdersForUnit(i);
+			auto orders = Game::getDatabase()->getOrdersForUnit(i);
 			std::unordered_set<int> common2;
 			for (auto& order : *orders) {
 				//todo to zrobic raz i pobierac
@@ -278,7 +278,7 @@ void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 	int k = 0;
 
 	for (auto id : getOrderForUnit(selectedInfo)) {
-		db_order* order = Game::getDatabaseCache()->getOrder(id);
+		db_order* order = Game::getDatabase()->getOrder(id);
 		if (order) {
 			setNext(k, "textures/hud/icon/orders/" + order->icon, order->id, ActionType::ORDER, "");
 		}

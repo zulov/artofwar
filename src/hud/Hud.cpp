@@ -28,9 +28,9 @@
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) const {
 	exprtk::symbol_table<float> symbol_table;
-	int varsSize = Game::getDatabaseCache()->getHudVarsSize();
+	int varsSize = Game::getDatabase()->getHudVarsSize();
 	for (int i = 0; i < varsSize; ++i) {
-		db_hud_vars* var = Game::getDatabaseCache()->getHudVar(i);
+		db_hud_vars* var = Game::getDatabase()->getHudVar(i);
 		if (var != nullptr && var->hud_size == hudSizeId) {
 			symbol_table.add_variable(var->name.CString(), var->value);
 		}
@@ -140,9 +140,9 @@ void Hud::subscribeToUIEvents() {
 }
 
 Hud::Hud() : Object(Game::getContext()) {
-	db_settings* settings = Game::getDatabaseCache()->getSettings();
-	graphSettings = Game::getDatabaseCache()->getGraphSettings(settings->graph);
-	resolution = Game::getDatabaseCache()->getResolution(settings->resolution);
+	db_settings* settings = Game::getDatabase()->getSettings();
+	graphSettings = Game::getDatabase()->getGraphSettings(settings->graph);
+	resolution = Game::getDatabase()->getResolution(settings->resolution);
 
 	prepareStyle();
 }

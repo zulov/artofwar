@@ -27,7 +27,7 @@ std::vector<ResourceEntity*>* ResourceFactory::create(int id, Urho3D::Vector2& c
 
 std::vector<ResourceEntity*>* ResourceFactory::load(dbload_resource_entities* resource) const {
 	Urho3D::IntVector2 bucketCords(resource->buc_x, resource->buc_y);
-	db_resource* db_resource = Game::getDatabaseCache()->getResource(resource->id_db);
+	db_resource* db_resource = Game::getDatabase()->getResource(resource->id_db);
 
 	auto center = Game::getEnvironment()->getValidPosition(db_resource->size, bucketCords);
 

@@ -15,7 +15,7 @@
 ResourceEntity::ResourceEntity(Urho3D::Vector3& _position,
                                int id, int level, int mainCell)
 	: Static(_position, mainCell) {
-	dbResource = Game::getDatabaseCache()->getResource(id);;
+	dbResource = Game::getDatabase()->getResource(id);;
 	loadXml("Objects/resources/" + dbResource->nodeName[rand() % dbResource->nodeName.Size()]);
 
 	node->SetRotation(Urho3D::Quaternion(0, rand() % 360, 0.0f));

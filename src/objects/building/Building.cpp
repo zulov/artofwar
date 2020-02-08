@@ -17,7 +17,7 @@
 Building::Building(Urho3D::Vector3& _position, int id, int player, int level, int mainCell):
 	Static(_position, mainCell) {
 	setPlayerAndTeam(player);
-	dbBuilding = Game::getDatabaseCache()->getBuilding(id);
+	dbBuilding = Game::getDatabase()->getBuilding(id);
 	upgrade(level);
 }
 
@@ -68,7 +68,7 @@ void Building::action(char id, const ActionParameter& parameter) {
 	switch (parameter.type) {
 	case ActionType::UNIT_CREATE:
 	{
-		auto costs = Game::getDatabaseCache()->getCostForUnit(id);
+		auto costs = Game::getDatabase()->getCostForUnit(id);
 		if (resources.reduce(costs)) {
 			queue->add(1, parameter.type, id, 30);
 		}
@@ -77,7 +77,7 @@ void Building::action(char id, const ActionParameter& parameter) {
 	case ActionType::UNIT_LEVEL:
 	{
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
-		auto opt = Game::getDatabaseCache()->getCostForUnitLevel(id, level);
+		auto opt = Game::getDatabase()->getCostForUnitLevel(id, level);
 		if (opt.has_value()) {
 			const auto costs = opt.value();
 			if (resources.reduce(costs)) {
@@ -89,7 +89,7 @@ void Building::action(char id, const ActionParameter& parameter) {
 	case ActionType::UNIT_UPGRADE:
 	{
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
-		auto opt = Game::getDatabaseCache()->getCostForUnitUpgrade(id, level);
+		auto opt = Game::getDatabase()->getCostForUnitUpgrade(id, level);
 		if (opt.has_value()) {
 			const auto costs = opt.value();
 			if (resources.reduce(costs)) {
@@ -102,7 +102,7 @@ void Building::action(char id, const ActionParameter& parameter) {
 }
 
 void Building::upgrade(char level) {
-	dbLevel = Game::getDatabaseCache()->getBuildingLevel(dbBuilding->id, level).value();
+	dbLevel = Game::getDatabase()->getBuildingLevel(dbBuilding->id, level).value();
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
 }
 

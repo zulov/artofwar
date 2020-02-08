@@ -66,7 +66,7 @@ float QueueManager::getSecToComplete(ActionType type, short id, int level) {
 	case ActionType::BUILDING_CREATE:
 		return 10;
 	case ActionType::UNIT_LEVEL:
-		return Game::getDatabaseCache()->getUnitLevel(id, level).value()->upgradeSpeed;
+		return Game::getDatabase()->getUnitLevel(id, level).value()->upgradeSpeed;
 	case ActionType::BUILDING_LEVEL:
 		return 10;
 	default:

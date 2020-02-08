@@ -36,7 +36,7 @@ void LevelBuilder::createScene(SceneLoader& loader) {
 }
 
 void LevelBuilder::createMap(int mapId) {
-	const auto map = Game::getDatabaseCache()->getMap(mapId);
+	const auto map = Game::getDatabase()->getMap(mapId);
 
 	objectManager->setZone(createZone());
 	objectManager->setLight(createLight({0.6f, -1.0f, 0.8f}, {0.7f, 0.6f, 0.6f},
