@@ -19,6 +19,12 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	const int id = atoi(argv[0]);
 	xyz->units[id] = new db_unit(id, argv[1], atoi(argv[2]), atoi(argv[3]), argv[4],
 	                             atoi(argv[5]));
+
+	if (xyz->units[id]->nation >= MAX_NUMBER_OF_NATIONS) {
+		Game::getLog()->Write(0, "ERROR - Out of bounds!!");
+	}
+	xyz->unitsPerNation[xyz->units[id]->nation]->push_back(xyz->units[id]);
+	
 	xyz->units_size++;
 	return 0;
 }

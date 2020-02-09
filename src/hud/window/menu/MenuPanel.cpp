@@ -156,7 +156,7 @@ void MenuPanel::setNext(int& k, const Urho3D::String& texture, int id, ActionTyp
 void MenuPanel::basicBuilding() {
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	int k = 0;
-	for (auto building : *Game::getDatabase()->getBuildingForNation(nation)) {
+	for (auto building : *Game::getDatabase()->getBuildingsForNation(nation)) {
 		setNext(k, "textures/hud/icon/building/" + building->icon, building->id, ActionType::BUILDING_CREATE, "");
 	}
 	resetRestButtons(k);

@@ -1,8 +1,7 @@
 #pragma once
 #define STATE_SIZE 11
 
-enum class UnitState : char
-{
+enum class UnitState : char {
 	STOP=0,
 	MOVE,
 	GO_TO,
@@ -15,4 +14,3 @@ enum class UnitState : char
 	COLLECT,
 	DISPOSE
 };
-

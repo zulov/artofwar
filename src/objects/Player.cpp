@@ -7,8 +7,10 @@
 #include "simulation/env/Environment.h"
 #include <fstream>
 #include "stats/Stats.h"
-#include "ActionCenter.h"
 #include "stats/StatsEnums.h"
+#include "ActionCenter.h"
+#include "commands/upgrade/UpgradeCommand.h"
+#include "building/Building.h"
 
 
 Player::Player(int nationId, int team, char id, int color, Urho3D::String name, bool active): name(std::move(name)),
@@ -122,12 +124,47 @@ QueueManager& Player::getQueue() {
 	return queue;
 }
 
-short Player::chooseUpgrade(StatsOutputType order) {
+std::optional<short> Player::chooseUpgrade(StatsOutputType order) {
+	//TODO perf tu jakich cahce
 	auto db = Game::getDatabase();
-	db->getUnitUpgrades(0);
-	db->getBuildingLevels(0);
-	db->getUnitLevels(0);
-	return 0;
+	std::vector<db_unit_level*> unitsLevels;
+	std::vector<db_unit_upgrade*> unitsUpgrades;
+	for (auto unit : *db->getUnitsForNation(this->getNation())) {
+		// for (auto unitUpgrade : *db->getUnitUpgrades(unit->id)) {
+		// 	unitUpgrade->
+		// }
+		auto level = db->getUnitLevel(unit->id, getLevelForUnit(unit->id) + 1);
+		if (level.has_value()) {
+			unitsLevels.push_back(level.value());
+		}
+
+	}
+	std::vector<db_building_level*> buildingLevels;
+
+	for (auto building : *db->getBuildingsForNation(this->getNation())) {
+		auto level = db->getBuildingLevel(building->id, getLevelForBuilding(building->id) + 1);
+		if (level.has_value()) {
+			buildingLevels.push_back(level.value());
+		}
+	}
+
+	switch (order) {
+
+	case StatsOutputType::UPGRADE_ATTACK:
+		if (!unitsLevels.empty()) {
+			return unitsLevels.at(0)->unit;
+		}
+		break;
+	case StatsOutputType::UPGRADE_DEFENCE:
+		//if (!buildingLevels.empty()) {
+		break;
+	case StatsOutputType::UPGRADE_ECON:
+		//if (!buildingLevels.empty()) {
+		break;
+	default: ;
+	}
+
+	return {};
 }
 
 void Player::ai() {
@@ -161,8 +198,14 @@ void Player::createOrder(StatsOutputType order) {
 	case StatsOutputType::UPGRADE_ATTACK:
 	case StatsOutputType::UPGRADE_DEFENCE:
 	case StatsOutputType::UPGRADE_ECON:
-		//short id = chooseUpgrade(order);
-		//	bestBuildingToUpgrade();
+		auto opt = chooseUpgrade(order);
+		if (opt.has_value()) {
+			short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to
+			Building* building = bestBuildingToUpgrade(unitId);
+			building->action(unitId,ac)
+			Game::getActionCenter()->add(new UpgradeCommand(getId(),));
+		}
+
 		break;
 	case StatsOutputType::ORDER_GO: break;
 	case StatsOutputType::ORDER_STOP: break;

@@ -17,7 +17,7 @@ ActionCenter::ActionCenter(SimulationObjectManager* simulationObjectManager) {
 }
 
 void ActionCenter::add(UpgradeCommand* command) const {
-	Game::getStats()->add(command);
+	Game::getStats()->add(command);//TODO BUG to nie jest akcja tylko rezultat
 	upgrade->add(command);
 }
 

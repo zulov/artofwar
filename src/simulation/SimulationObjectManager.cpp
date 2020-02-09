@@ -29,7 +29,7 @@ SimulationObjectManager::~SimulationObjectManager() {
 }
 
 void SimulationObjectManager::addUnits(unsigned int number, int id, Urho3D::Vector2& center,
-                                       int player, int level) {
+                                       int player, int level) const {
 	updateUnits(unitFactory.create(number, id, center, player, level));
 }
 

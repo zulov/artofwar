@@ -4,6 +4,7 @@
 #include "ai/nn/Brain.h"
 #include "objects/queue/QueueManager.h"
 #include "stats/StatsEnums.h"
+#include <optional>
 
 enum class ActionType : char;
 
@@ -44,7 +45,7 @@ public:
 	QueueManager& getQueue();
 private:
 
-	short chooseUpgrade(StatsOutputType order);
+	std::optional<short> chooseUpgrade(StatsOutputType order);
 	void createOrder(StatsOutputType order);
 	Urho3D::Vector2 bestPosToBuild(const short id) const;
 	void initAi();
@@ -59,6 +60,7 @@ private:
 	int color;
 	char id;
 	bool active;
+	
 	char unitLevels[UNITS_NUMBER_DB];
 	char buildingLevels[BUILDINGS_NUMBER_DB];
 	char unitUpgradeLevels[PATH_UPGRADES_NUMBER_DB];

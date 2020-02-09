@@ -8,7 +8,6 @@
 #include "simulation/SimulationObjectManager.h"
 #include "simulation/env/Environment.h"
 #include "player/Player.h"
-#include "ActionCenter.h"
 
 
 CreationCommandList::CreationCommandList(SimulationObjectManager* simulationObjectManager) {
