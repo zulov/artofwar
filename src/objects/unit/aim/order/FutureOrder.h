@@ -2,8 +2,7 @@
 #include "UnitOrder.h"
 #include "objects/Physical.h"
 
-class FutureOrder
-{
+class FutureOrder {
 public:
 	FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector, Physical* toUse);
 	FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector);

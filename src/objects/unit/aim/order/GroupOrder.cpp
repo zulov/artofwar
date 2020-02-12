@@ -21,16 +21,18 @@ bool GroupOrder::add() {
 	case ActionType::ORDER:
 		execute();
 		break;
-	case ActionType::NONE:
-	case ActionType::UNIT_LEVEL:
-	case ActionType::UNIT_UPGRADE:
 	case ActionType::BUILDING_CREATE:
 	case ActionType::BUILDING_LEVEL:
-	case ActionType::FORMATION:
+	case ActionType::UNIT_LEVEL:
+	case ActionType::UNIT_UPGRADE:
 	case ActionType::RESOURCE:
-		{
+		simpleAction(ActionParameter::Builder().setType(actionType).build());
+		break;
+	case ActionType::NONE:
+	case ActionType::FORMATION:
+	{
 		int a = 5;
-		}
+	}
 		break;
 	default: ;
 	}

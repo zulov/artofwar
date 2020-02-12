@@ -198,14 +198,13 @@ void Player::createOrder(StatsOutputType order) {
 	case StatsOutputType::UPGRADE_ATTACK:
 	case StatsOutputType::UPGRADE_DEFENCE:
 	case StatsOutputType::UPGRADE_ECON:
-		auto opt = chooseUpgrade(order);
-		if (opt.has_value()) {
-			short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to
-			Building* building = bestBuildingToUpgrade(unitId);
-			building->action(unitId,ac)
-			Game::getActionCenter()->add(new UpgradeCommand(getId(),));
-		}
-
+		// auto opt = chooseUpgrade(order);
+		// if (opt.has_value()) {
+		// 	short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to
+		// 	Building* building = bestBuildingToUpgrade(unitId);
+		// 	building->action(unitId,ac)
+		// 	Game::getActionCenter()->add(new UpgradeCommand(getId(),));
+		// }
 		break;
 	case StatsOutputType::ORDER_GO: break;
 	case StatsOutputType::ORDER_STOP: break;
