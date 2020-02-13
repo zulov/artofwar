@@ -11,11 +11,16 @@ IndividualOrder::IndividualOrder(Unit* unit, UnitOrder action, const Urho3D::Vec
 	FutureOrder(action, append, vector, toUse), unit(unit) {
 }
 
+IndividualOrder::IndividualOrder(Physical* physical, UnitOrder action,
+                                 const Urho3D::Vector2& vector, Physical* toUse, bool append):
+	FutureOrder(action, append, vector, toUse), actionType(menuAction) {
+}
+
 
 IndividualOrder::~IndividualOrder() = default;
 
 bool IndividualOrder::add() {
-	unit->addOrder(this);
+	physical->addOrder(this);
 	return false;
 }
 
@@ -24,27 +29,27 @@ void IndividualOrder::addCollectAim() {
 }
 
 void IndividualOrder::addTargetAim() {
-	unit->action(static_cast<char>(action), getTargetAim(unit->getMainCell(), vector)); //TODO execute i akajca
-	static_cast<Unit*>(unit)->resetFormation();
+	physical->action(static_cast<char>(action), getTargetAim(physical->getMainCell(), vector)); //TODO execute i akajca
+	static_cast<Unit*>(physical)->resetFormation();
 
 	Game::getEnvironment()->invalidateCache();
 }
 
 void IndividualOrder::addFollowAim() {
-	auto opt = toUse->getPosToUseBy(static_cast<Unit*>(unit));
+	auto opt = toUse->getPosToUseBy(static_cast<Unit*>(physical));
 	if (opt.has_value()) {
-		unit->action(static_cast<char>(action),
-		             getFollowAim(unit->getMainCell(),
+		physical->action(static_cast<char>(action),
+		             getFollowAim(physical->getMainCell(),
 		                          opt.value(), toUse));
 	}
 }
 
 void IndividualOrder::addChargeAim() {
-	unit->action(static_cast<char>(action), getChargeAim(vector));
+	physical->action(static_cast<char>(action), getChargeAim(vector));
 }
 
 void IndividualOrder::addAttackAim() {
-	followAndAct(unit->getAttackRange());
+	followAndAct(physical->getAttackRange());
 }
 
 void IndividualOrder::addDefendAim() {
@@ -60,26 +65,25 @@ void IndividualOrder::addStopAim() {
 }
 
 void IndividualOrder::simpleAction() const {
-	unit->action(static_cast<char>(action), Consts::EMPTY_ACTION_PARAMETER);
+	physical->action(static_cast<char>(action), Consts::EMPTY_ACTION_PARAMETER);
 }
 
 void IndividualOrder::followAndAct(float distThreshold) {
-	auto posOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(unit));
+	auto posOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(physical));
 	if (posOpt.has_value()) {
 		auto postToUse = posOpt.value();
-		if (std::get<2>(postToUse) != unit->getMainBucketIndex()) {
+		if (std::get<2>(postToUse) != physical->getMainBucketIndex()) {
 			auto pos = std::get<0>(postToUse);
-			unit->action(static_cast<char>(UnitOrder::FOLLOW),
-			             getFollowAim(unit->getMainCell(),
+			physical->action(static_cast<char>(UnitOrder::FOLLOW),
+			             getFollowAim(physical->getMainCell(),
 			                          pos, toUse));
-			unit->addOrder(new IndividualOrder(unit, action, {}, toUse, true)); //Dodanie celu po dojsciu
+			physical->addOrder(new IndividualOrder(physical, action, {}, toUse, true)); //Dodanie celu po dojsciu
 		} else {
-			unit->action(static_cast<char>(action),
+			physical->action(static_cast<char>(action),
 			             ActionParameter::Builder()
 			             .setIndex(std::get<2>(postToUse))
 			             .setThingsToInteract(toUse)
 			             .build());
 		}
-
 	}
 }

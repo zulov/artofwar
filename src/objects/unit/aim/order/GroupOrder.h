@@ -2,8 +2,7 @@
 #include "FutureOrder.h"
 #include "objects/ActionType.h"
 
-class GroupOrder : public FutureOrder
-{
+class GroupOrder : public FutureOrder {
 public:
 	GroupOrder(std::vector<Physical*>* entities, UnitOrder action, const Urho3D::Vector2& vector,
 	           Physical* toUse, ActionType menuAction, bool append = false);
@@ -12,7 +11,8 @@ public:
 private:
 	const ActionType actionType;
 	std::vector<Physical*>* entities;
-	//TODO to trzeba kopiowac, ale wtedy trzeba sprawdzac przed wykonaniem czy cos sie nie zepsulo
+	//TODO to trzeba kopiowac, ale wtedy trzeba sprawdzac przed wykonaniem
+	//czy cos sie nie zepsulo ale i tak cos takiego robie w formacji
 
 	void addCollectAim() override;
 	void addTargetAim() override;

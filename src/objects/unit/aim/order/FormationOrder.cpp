@@ -8,8 +8,8 @@
 
 
 FormationOrder::FormationOrder(Formation* formation, UnitOrder action, const Urho3D::Vector2& vector,
-                               Physical* physical, bool append):
-	FutureOrder(action, append, vector, physical), formation(formation) {
+                               Physical* toUse, bool append):
+	FutureOrder(action, append, vector, toUse), formation(formation) {
 }
 
 FormationOrder::~FormationOrder() = default;

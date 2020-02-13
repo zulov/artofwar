@@ -1,10 +1,12 @@
 #pragma once
 #include "objects/unit/aim/order/FutureOrder.h"
 
-class IndividualOrder : public FutureOrder
-{
+class IndividualOrder : public FutureOrder {
 public:
 	IndividualOrder(Unit* unit, UnitOrder action, const Urho3D::Vector2& vector, Physical* toUse,
+	                bool append = false);
+
+	IndividualOrder(Physical* physical, UnitOrder action, const Urho3D::Vector2& vector, Physical* toUse,
 	                bool append = false);
 	~IndividualOrder();
 	bool add() override;
@@ -22,5 +24,5 @@ private:
 	void followAndAct(float distThreshold);
 
 
-	Unit* unit;
+	Physical* physical;
 };
