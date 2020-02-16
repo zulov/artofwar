@@ -7,7 +7,7 @@
 #include "consts.h"
 
 
-FormationOrder::FormationOrder(Formation* formation, UnitOrder action, const Urho3D::Vector2& vector,
+FormationOrder::FormationOrder(Formation* formation, UnitAction action, const Urho3D::Vector2& vector,
                                Physical* toUse, bool append):
 	FutureOrder(action, append, vector, toUse), formation(formation) {
 }
@@ -59,7 +59,7 @@ void FormationOrder::followAndAct(float distThreshold) {
 			auto postToUse = posToUseOpt.value();
 			if (std::get<1>(postToUse) > distThreshold) {
 				auto pos = std::get<0>(postToUse);
-				optLeader.value()->action(static_cast<char>(UnitOrder::FOLLOW),
+				optLeader.value()->action(static_cast<char>(UnitAction::FOLLOW),
 				                          getFollowAim(optLeader.value()->getMainCell(),
 				                                       pos, toUse));
 				formation->addOrder(new FormationOrder(formation, action, {}, toUse, true)); //Dodanie celu po dojsciu

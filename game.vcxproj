@@ -181,6 +181,8 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\objects\order\ResourceOrder.cpp" />
+    <ClCompile Include="src\objects\order\BuildingOrder.cpp" />
     <ClCompile Include="src\ActionCenter.cpp" />
     <ClCompile Include="src\player\ai\nn\Brain.cpp" />
     <ClCompile Include="src\player\ai\nn\Layer.cpp" />
@@ -190,12 +192,12 @@
     <ClCompile Include="src\player\Possession.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMap.cpp" />
     <ClCompile Include="src\simulation\env\bucket\path\PathFinder.cpp" />
-    <ClCompile Include="src\objects\unit\aim\order\FormationOrder.cpp" />
-    <ClCompile Include="src\objects\unit\aim\order\GroupOrder.cpp" />
-    <ClCompile Include="src\objects\unit\aim\order\IndividualOrder.cpp" />
+    <ClCompile Include="src\objects\order\FormationOrder.cpp" />
+    <ClCompile Include="src\objects\order\GroupOrder.cpp" />
+    <ClCompile Include="src\objects\order\IndividualOrder.cpp" />
     <ClCompile Include="src\debug\DebugLineRepo.cpp" />
     <ClCompile Include="src\colors\ColorPaletteRepo.cpp" />
-    <ClCompile Include="src\objects\unit\aim\order\FutureOrder.cpp" />
+    <ClCompile Include="src\objects\order\FutureOrder.cpp" />
     <ClCompile Include="src\objects\unit\state\State.cpp" />
     <ClCompile Include="src\simulation\env\influence\InfluenceManager.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapFloat.cpp" />
@@ -281,8 +283,11 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
     <ClCompile Include="src\stats\Stats.cpp" />
+    <ClCompile Include="src\objects\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\objects\order\ResourceOrder.h" />
+    <ClInclude Include="src\objects\order\BuildingOrder.h" />
     <ClInclude Include="src\ActionCenter.h" />
     <ClInclude Include="src\player\ai\nn\AFUtil.h" />
     <ClInclude Include="src\player\ai\nn\Brain.h" />
@@ -296,9 +301,9 @@
     <ClInclude Include="src\player\Possession.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
     <ClInclude Include="src\NamesUtils.h" />
-    <ClInclude Include="src\objects\unit\aim\order\FormationOrder.h" />
-    <ClInclude Include="src\objects\unit\aim\order\GroupOrder.h" />
-    <ClInclude Include="src\objects\unit\aim\order\IndividualOrder.h" />
+    <ClInclude Include="src\objects\order\FormationOrder.h" />
+    <ClInclude Include="src\objects\order\GroupOrder.h" />
+    <ClInclude Include="src\objects\order\IndividualOrder.h" />
     <ClInclude Include="src\consts.h" />
     <ClInclude Include="src\debug\DebugLineRepo.h" />
     <ClInclude Include="src\debug\DebugUnitType.h" />
@@ -313,7 +318,7 @@
     <ClInclude Include="src\colors\ColorPallet.h" />
     <ClInclude Include="src\control\ControlsUtils.h" />
     <ClInclude Include="src\objects\NodeUtils.h" />
-    <ClInclude Include="src\objects\unit\aim\order\FutureOrder.h" />
+    <ClInclude Include="src\objects\order\FutureOrder.h" />
     <ClInclude Include="src\objects\unit\ChargeData.h" />
     <ClInclude Include="src\objects\unit\SimColorMode.h" />
     <ClInclude Include="src\objects\unit\MissileData.h" />
@@ -400,7 +405,7 @@
     <ClInclude Include="src\hud\MySprite.h" />
     <ClInclude Include="src\stats\StatsEnums.h" />
     <ClInclude Include="src\StringUtils.h" />
-    <ClInclude Include="src\UnitOrder.h" />
+    <ClInclude Include="src\UnitAction.h" />
     <ClInclude Include="src\objects\Physical.h" />
     <ClInclude Include="src\player\Player.h" />
     <ClInclude Include="src\player\PlayersManager.h" />
@@ -454,6 +459,7 @@
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
     <ClInclude Include="src\stats\Stats.h" />
     <ClInclude Include="src\VectorUtils.h" />
+    <ClInclude Include="src\objects\order\UnitOrder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -6,12 +6,12 @@
 #include "simulation/env/Environment.h"
 
 
-IndividualOrder::IndividualOrder(Unit* unit, UnitOrder action, const Urho3D::Vector2& vector,
+IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, const Urho3D::Vector2& vector,
                                  Physical* toUse, bool append):
 	FutureOrder(action, append, vector, toUse), unit(unit) {
 }
 
-IndividualOrder::IndividualOrder(Physical* physical, UnitOrder action,
+IndividualOrder::IndividualOrder(Physical* physical, UnitAction action,
                                  const Urho3D::Vector2& vector, Physical* toUse, bool append):
 	FutureOrder(action, append, vector, toUse), actionType(menuAction) {
 }
@@ -74,7 +74,7 @@ void IndividualOrder::followAndAct(float distThreshold) {
 		auto postToUse = posOpt.value();
 		if (std::get<2>(postToUse) != physical->getMainBucketIndex()) {
 			auto pos = std::get<0>(postToUse);
-			physical->action(static_cast<char>(UnitOrder::FOLLOW),
+			physical->action(static_cast<char>(UnitAction::FOLLOW),
 			             getFollowAim(physical->getMainCell(),
 			                          pos, toUse));
 			physical->addOrder(new IndividualOrder(physical, action, {}, toUse, true)); //Dodanie celu po dojsciu

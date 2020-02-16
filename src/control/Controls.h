@@ -2,7 +2,7 @@
 #include "ControlsState.h"
 #include "MouseButton.h"
 #include "SelectedInfo.h"
-#include "UnitOrder.h"
+#include "UnitAction.h"
 #include "commands/creation/CreationCommand.h"
 #include <Urho3D/Graphics/Renderer.h>
 #include <Urho3D/Graphics/StaticModel.h>
@@ -92,7 +92,7 @@ private:
 	bool active = true;
 
 	ControlsState state = ControlsState::DEFAULT;
-	UnitOrder unitOrderType = UnitOrder::GO;
+	UnitAction unitOrderType = UnitAction::GO;
 	ObjectType typeToCreate;
 
 	MouseButton left;

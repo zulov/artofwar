@@ -5,7 +5,7 @@
 #include "objects/unit/state/StateManager.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
-#include "UnitOrder.h"
+#include "UnitAction.h"
 #include "VectorUtils.h"
 #include "objects/ValueType.h"
 #include <numeric>
@@ -44,7 +44,7 @@ void Possession::add(Unit* unit) {
 	auto orders = Game::getDatabase()->getOrdersForUnit(unit->getDbID());
 	bool result = false;
 	for (auto order : *orders) {
-		if (order->id == static_cast<char>(UnitOrder::COLLECT)) {
+		if (order->id == static_cast<char>(UnitAction::COLLECT)) {
 			result = true;
 		}
 	}

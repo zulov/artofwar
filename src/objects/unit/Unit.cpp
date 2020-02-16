@@ -1,7 +1,7 @@
 #include "Unit.h"
 #include "Game.h"
 #include "objects/ObjectEnums.h"
-#include "UnitOrder.h"
+#include "UnitAction.h"
 #include "aim/order/FutureOrder.h"
 #include "colors/ColorPaletteRepo.h"
 #include "database/DatabaseCache.h"
@@ -131,23 +131,23 @@ void Unit::absorbAttack(float attackCoef) {
 	}
 }
 
-void Unit::actionIfCloseEnough(UnitOrder order, Physical* closest, int indexToInteract,
+void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, int indexToInteract,
                                float sqDistance, float closeRange, float interestRange) {
 	if (closest) {
 		if (sqDistance < closeRange * closeRange) {
 			addOrder(new IndividualOrder(this, order, {}, closest));
 		} else if (sqDistance < interestRange * interestRange) {
-			addOrder(new IndividualOrder(this, UnitOrder::FOLLOW, {}, closest));
+			addOrder(new IndividualOrder(this, UnitAction::FOLLOW, {}, closest));
 			addOrder(new IndividualOrder(this, order, {}, closest));
 		}
 	}
 }
 
-void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order) {
+void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order) {
 	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->attackRange, attackInterest);
 }
 
-void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order,
+void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order,
                     float attackInterest) {
 	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->attackRange, attackInterest);
 }
@@ -262,30 +262,30 @@ bool Unit::isFirstThingInSameSocket() const {
 }
 
 void Unit::action(char id, const ActionParameter& parameter) {
-	switch (static_cast<UnitOrder>(id)) {
-	case UnitOrder::GO:
+	switch (static_cast<UnitAction>(id)) {
+	case UnitAction::GO:
 		StateManager::changeState(this, UnitState::GO_TO, parameter);
 		break;
-	case UnitOrder::STOP:
+	case UnitAction::STOP:
 		StateManager::changeState(this, UnitState::STOP, parameter);
 		break;
-	case UnitOrder::CHARGE:
+	case UnitAction::CHARGE:
 		StateManager::changeState(this, UnitState::CHARGE, parameter);
 		break;
-	case UnitOrder::ATTACK:
+	case UnitAction::ATTACK:
 		StateManager::changeState(this, UnitState::ATTACK, parameter);
 		break;
-	case UnitOrder::DEAD:
+	case UnitAction::DEAD:
 		StateManager::changeState(this, UnitState::DEAD, parameter);
 		break;
-	case UnitOrder::DEFEND:
+	case UnitAction::DEFEND:
 		resetFormation();
 		StateManager::changeState(this, UnitState::DEFEND, parameter);
 		break;
-	case UnitOrder::FOLLOW:
+	case UnitAction::FOLLOW:
 		StateManager::changeState(this, UnitState::FOLLOW, parameter);
 		break;
-	case UnitOrder::COLLECT:
+	case UnitAction::COLLECT:
 		StateManager::changeState(this, UnitState::COLLECT, parameter);
 		break;
 	default: ;

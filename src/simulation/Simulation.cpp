@@ -22,7 +22,7 @@
 #include "scene/load/SceneLoader.h"
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
-#include "UnitOrder.h"
+#include "UnitAction.h"
 #include <ctime>
 #include "player/ai/AiManager.h"
 #include "stats/Stats.h"
@@ -84,15 +84,15 @@ SimulationInfo* Simulation::update(float timeStep) {
 	return simulationInfo;
 }
 
-void Simulation::tryToAttack(Unit* unit, float dist, UnitOrder order, const std::function<bool(Physical*)>& condition) {
+void Simulation::tryToAttack(Unit* unit, float dist, UnitAction order, const std::function<bool(Physical*)>& condition) {
 	toAction(unit, enviroment->getNeighboursFromTeamNotEq(unit, dist, unit->getTeam()), order, condition);
 }
 
 void Simulation::tryToCollect(Unit* unit) {
-	toAction(unit, enviroment->getResources(unit, 12), UnitOrder::COLLECT, belowClose);
+	toAction(unit, enviroment->getResources(unit, 12), UnitAction::COLLECT, belowClose);
 }
 
-void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitOrder order,
+void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
                           const std::function<bool(Physical*)>& condition) {
 	auto [closest, minDistance, indexToInteract] = unit->closestPhysical(list, condition);
 	unit->toAction(closest, minDistance, indexToInteract, order);
@@ -110,13 +110,13 @@ void Simulation::selfAI() {
 				&& StateManager::checkChangeState(unit, unit->getActionState())) {
 				switch (unit->getActionState()) {
 				case UnitState::ATTACK:
-					tryToAttack(unit, 12, UnitOrder::ATTACK, belowClose);
+					tryToAttack(unit, 12, UnitAction::ATTACK, belowClose);
 					break ;
 				case UnitState::COLLECT:
 					tryToCollect(unit);
 					break;
 				case UnitState::SHOT:
-					tryToAttack(unit, 12, UnitOrder::ATTACK, belowRange);
+					tryToAttack(unit, 12, UnitAction::ATTACK, belowRange);
 					break;
 				}
 			}

@@ -28,6 +28,7 @@
 #include <algorithm>
 #include <queue>
 #include "ActionCenter.h"
+#include "objects/order/GroupOrder.h"
 
 
 Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
@@ -138,25 +139,25 @@ void Controls::leftClickBuild(hit_data& hitData) const {
 }
 
 void Controls::rightClick(hit_data& hitData) const {
-	UnitOrder order;
+	UnitAction order;
 	Urho3D::Vector2 vector;
 	Physical* toUse;
 	switch (hitData.clicked->getType()) {
 	case ObjectType::PHYSICAL:
-		order = UnitOrder::GO;
+		order = UnitAction::GO;
 		vector = {hitData.position.x_, hitData.position.z_};
 		toUse = nullptr;
 		break;
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
 		order = hitData.clicked->getTeam() == selected->at(0)->getTeam()
-			        ? UnitOrder::FOLLOW
-			        : UnitOrder::ATTACK;
+			        ? UnitAction::FOLLOW
+			        : UnitAction::ATTACK;
 		vector = {};
 		toUse = hitData.clicked;
 		break;
 	case ObjectType::RESOURCE:
-		order = UnitOrder::COLLECT;
+		order = UnitAction::COLLECT;
 		vector = {};
 		toUse = hitData.clicked;
 		break;
@@ -187,19 +188,19 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) con
 void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
 		Game::getActionCenter()->add(
-			new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
+			new ActionCommand(new GroupOrder(selected, UnitAction::GO,
 			                                 {held.first->x_, held.first->z_}, nullptr, ActionType::ORDER),
 			                  Game::getPlayersMan()->getActivePlayerID()),
-			new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
+			new ActionCommand(new GroupOrder(selected, UnitAction::GO,
 			                                 {held.second->x_, held.second->z_},
 			                                 nullptr, ActionType::ORDER, true),
 			                  Game::getPlayersMan()->getActivePlayerID()));
 	} else {
-		Game::getActionCenter()->add(new ActionCommand(new GroupOrder(selected, UnitOrder::GO,
+		Game::getActionCenter()->add(new ActionCommand(new GroupOrder(selected, UnitAction::GO,
 		                                                              {held.first->x_, held.first->z_},
 		                                                              nullptr, ActionType::ORDER),
 		                                               Game::getPlayersMan()->getActivePlayerID()),
-		                             new ActionCommand(new GroupOrder(selected, UnitOrder::CHARGE, {
+		                             new ActionCommand(new GroupOrder(selected, UnitAction::CHARGE, {
 			                                                              held.second->x_ - held.first->x_,
 			                                                              held.second->z_ - held.first->z_
 		                                                              }, nullptr, ActionType::ORDER, true),
@@ -287,7 +288,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 
 void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
 	Game::getActionCenter()->add(
-		new ActionCommand(new GroupOrder(selected, UnitOrder(id), {}, nullptr, parameter.type),
+		new ActionCommand(new GroupOrder(selected, UnitAction(id), {}, nullptr, parameter.type),
 		                  Game::getPlayersMan()->getActivePlayerID()));
 	//TODO przyjrzec sie typowi
 }
@@ -331,18 +332,18 @@ void Controls::activate() {
 }
 
 void Controls::unitOrder(short id) {
-	const auto type = UnitOrder(id);
+	const auto type = UnitAction(id);
 	switch (type) {
-	case UnitOrder::GO:
-	case UnitOrder::CHARGE:
-	case UnitOrder::ATTACK:
-	case UnitOrder::FOLLOW:
+	case UnitAction::GO:
+	case UnitAction::CHARGE:
+	case UnitAction::ATTACK:
+	case UnitAction::FOLLOW:
 		state = ControlsState::ORDER;
 		unitOrderType = type;
 		break;
-	case UnitOrder::STOP:
-	case UnitOrder::DEFEND:
-	case UnitOrder::DEAD:
+	case UnitAction::STOP:
+	case UnitAction::DEFEND:
+	case UnitAction::DEAD:
 		executeOnAll(id, ActionParameter::Builder().setType(ActionType::ORDER).build());
 		break;
 	default: ;
@@ -544,14 +545,14 @@ void Controls::orderControl() {
 		left.markIfNotHeld();
 	} else if (left.isHeld) {
 		switch (unitOrderType) {
-		case UnitOrder::GO:
-		case UnitOrder::ATTACK:
-		case UnitOrder::FOLLOW:
+		case UnitAction::GO:
+		case UnitAction::ATTACK:
+		case UnitAction::FOLLOW:
 			if (orderAction()) {
 				toDefault();
 			}
 			break;
-		case UnitOrder::CHARGE:
+		case UnitAction::CHARGE:
 			break;
 		default: ;
 		}

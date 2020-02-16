@@ -1,13 +1,20 @@
 #pragma once
-#include "objects/unit/aim/order/FutureOrder.h"
+#include "objects/order/FutureOrder.h"
+
+class ResourceEntity;
+class Building;
 
 class IndividualOrder : public FutureOrder {
 public:
-	IndividualOrder(Unit* unit, UnitOrder action, const Urho3D::Vector2& vector, Physical* toUse,
+	IndividualOrder(Unit* unit, UnitAction action,
+	                const Urho3D::Vector2& vector, Physical* toUse,
 	                bool append = false);
 
-	IndividualOrder(Physical* physical, UnitOrder action, const Urho3D::Vector2& vector, Physical* toUse,
-	                bool append = false);
+	IndividualOrder(Building* building, BuildingAction action, 
+					unsigned short id);
+
+	IndividualOrder(ResourceEntity* resource, ResourceAction action);
+	
 	~IndividualOrder();
 	bool add() override;
 private:
@@ -22,7 +29,6 @@ private:
 
 	void simpleAction() const;
 	void followAndAct(float distThreshold);
-
 
 	Physical* physical;
 };

@@ -6,15 +6,15 @@
 #include "objects/unit/aim/FollowAim.h"
 #include "consts.h"
 
-FutureOrder::FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector, Physical* toUse)
+FutureOrder::FutureOrder(UnitAction action, bool append, const Urho3D::Vector2& vector, Physical* toUse)
 	: toUse(toUse), vector(vector), action(action), append(append) {
 }
 
-FutureOrder::FutureOrder(UnitOrder action, bool append, const Urho3D::Vector2& vector)
+FutureOrder::FutureOrder(UnitAction action, bool append, const Urho3D::Vector2& vector)
 	: toUse(nullptr), vector(vector), action(action), append(append) {
 }
 
-FutureOrder::FutureOrder(UnitOrder action, bool append, Physical* toUse)
+FutureOrder::FutureOrder(UnitAction action, bool append, Physical* toUse)
 	: toUse(toUse), action(action), append(append) {
 }
 
@@ -44,28 +44,28 @@ ActionParameter FutureOrder::getChargeAim(Urho3D::Vector2& charge) {
 
 void FutureOrder::execute() {
 	switch (action) {
-	case UnitOrder::GO:
+	case UnitAction::GO:
 		return addTargetAim();
-	case UnitOrder::FOLLOW:
+	case UnitAction::FOLLOW:
 		if (toUse && toUse->isAlive()) {
 			addFollowAim();
 		}
 		break;
-	case UnitOrder::CHARGE:
+	case UnitAction::CHARGE:
 		return addChargeAim();
-	case UnitOrder::ATTACK:
+	case UnitAction::ATTACK:
 		return addAttackAim();
-	case UnitOrder::DEAD:
+	case UnitAction::DEAD:
 		return addDeadAim();
-	case UnitOrder::DEFEND:
+	case UnitAction::DEFEND:
 		return addDefendAim();
-	case UnitOrder::COLLECT:
+	case UnitAction::COLLECT:
 		return addCollectAim();
-	case UnitOrder::STOP:
+	case UnitAction::STOP:
 		return addStopAim();
 	}
 }
 
-UnitOrder FutureOrder::getAction() const {
+UnitAction FutureOrder::getAction() const {
 	return action;
 }

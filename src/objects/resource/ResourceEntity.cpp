@@ -3,7 +3,7 @@
 #include "objects/ObjectEnums.h"
 #include "ResourceOrder.h"
 #include "database/DatabaseCache.h"
-#include "UnitOrder.h"
+#include "UnitAction.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
@@ -73,7 +73,7 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 					auto opt = this->getPosToUseWithIndex(unit);
 					if (opt.has_value()) {
 						auto [pos, distance, indexOfPos] = opt.value();
-						unit->toAction(this, distance, indexOfPos, UnitOrder::COLLECT, 24);
+						unit->toAction(this, distance, indexOfPos, UnitAction::COLLECT, 24);
 						//TODO add order?
 						++k;
 					}

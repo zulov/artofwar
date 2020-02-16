@@ -174,28 +174,28 @@ std::string Stats::getOutput(ActionCommand* command) const {
 	//TODO command->type;, command->id; wybrac ktore wzmocnic
 	switch (command->futureAim->getAction()) {
 
-	case UnitOrder::GO:
+	case UnitAction::GO:
 		output[cast(StatsOutputType::ORDER_GO)] = 1;
 		break;
-	case UnitOrder::STOP:
+	case UnitAction::STOP:
 		output[cast(StatsOutputType::ORDER_STOP)] = 1;
 		break;
-	case UnitOrder::CHARGE:
+	case UnitAction::CHARGE:
 		output[cast(StatsOutputType::ORDER_CHARGE)] = 1;
 		break;
-	case UnitOrder::ATTACK:
+	case UnitAction::ATTACK:
 		output[cast(StatsOutputType::ORDER_ATTACK)] = 1;
 		break;
-	case UnitOrder::DEAD:
+	case UnitAction::DEAD:
 		output[cast(StatsOutputType::ORDER_DEAD)] = 1;
 		break;
-	case UnitOrder::DEFEND:
+	case UnitAction::DEFEND:
 		output[cast(StatsOutputType::ORDER_DEFEND)] = 1;
 		break;
-	case UnitOrder::FOLLOW:
+	case UnitAction::FOLLOW:
 		output[cast(StatsOutputType::ORDER_FOLLOW)] = 1;
 		break;
-	case UnitOrder::COLLECT:
+	case UnitAction::COLLECT:
 		output[cast(StatsOutputType::ORDER_COLLECT)] = 1;
 		break;
 	default: ;

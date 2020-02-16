@@ -6,7 +6,7 @@
 #include "simulation/formation/FormationManager.h"
 
 
-GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitOrder action, const Urho3D::Vector2& vector,
+GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitAction action, const Urho3D::Vector2& vector,
                        Physical* toUse, ActionType menuAction, bool append):
 	FutureOrder(action, append, vector, toUse), actionType(menuAction), entities(entities) {
 }

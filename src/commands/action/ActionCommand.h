@@ -8,7 +8,7 @@ namespace Urho3D {
 }
 
 class Physical;
-enum class UnitOrder : char;
+enum class UnitAction : char;
 
 class ActionCommand : public AbstractCommand {
 	friend class Stats;

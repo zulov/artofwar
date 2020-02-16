@@ -13,7 +13,7 @@
 #include "MoveState.h"
 #include "ShotState.h"
 #include "StopState.h"
-#include "UnitOrder.h"
+#include "UnitAction.h"
 #include "UnitState.h"
 #include "database/DatabaseCache.h"
 #include "objects/static/StaticStateUtils.h"
@@ -35,24 +35,24 @@ StateManager::StateManager() {
 	states[static_cast<char>(UnitState::DEAD)] = new DeadState();
 	states[static_cast<char>(UnitState::DISPOSE)] = new DisposeState();
 	std::vector<char> orderToState[UNIT_ORDER_SIZE];
-	orderToState[static_cast<char>(UnitOrder::GO)] =
+	orderToState[static_cast<char>(UnitAction::GO)] =
 	{
 		static_cast<char>(UnitState::GO_TO),
 		static_cast<char>(UnitState::MOVE)
 	};
-	orderToState[static_cast<char>(UnitOrder::ATTACK)] = {
+	orderToState[static_cast<char>(UnitAction::ATTACK)] = {
 		static_cast<char>(UnitState::ATTACK),
 		static_cast<char>(UnitState::SHOT)
 	};
-	orderToState[static_cast<char>(UnitOrder::DEAD)] = {
+	orderToState[static_cast<char>(UnitAction::DEAD)] = {
 		static_cast<char>(UnitState::DEAD),
 		static_cast<char>(UnitState::DISPOSE)
 	};
-	orderToState[static_cast<char>(UnitOrder::STOP)] = {static_cast<char>(UnitState::STOP)};
-	orderToState[static_cast<char>(UnitOrder::CHARGE)] = {static_cast<char>(UnitState::CHARGE)};
-	orderToState[static_cast<char>(UnitOrder::DEFEND)] = {static_cast<char>(UnitState::DEFEND)};
-	orderToState[static_cast<char>(UnitOrder::FOLLOW)] = {static_cast<char>(UnitState::FOLLOW)};
-	orderToState[static_cast<char>(UnitOrder::COLLECT)] = {static_cast<char>(UnitState::COLLECT)};
+	orderToState[static_cast<char>(UnitAction::STOP)] = {static_cast<char>(UnitState::STOP)};
+	orderToState[static_cast<char>(UnitAction::CHARGE)] = {static_cast<char>(UnitState::CHARGE)};
+	orderToState[static_cast<char>(UnitAction::DEFEND)] = {static_cast<char>(UnitState::DEFEND)};
+	orderToState[static_cast<char>(UnitAction::FOLLOW)] = {static_cast<char>(UnitState::FOLLOW)};
+	orderToState[static_cast<char>(UnitAction::COLLECT)] = {static_cast<char>(UnitState::COLLECT)};
 
 	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
 		auto orders = Game::getDatabase()->getOrdersForUnit(i);

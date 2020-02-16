@@ -10,7 +10,7 @@
 #define BUCKET_SET_NUMBER 4
 #define USE_SOCKETS_NUMBER 8
 
-enum class UnitOrder : char;
+enum class UnitAction : char;
 enum class DebugUnitType : char;
 enum class SimColorMode : char;
 struct ForceStats;
@@ -57,8 +57,8 @@ public:
 
 	void toCharge(std::vector<Physical*>* enemies);
 
-	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order);
-	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitOrder order,
+	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order);
+	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order,
                     float attackInterest);
 
 	void updateHeight(float y, double timeStep);
@@ -122,7 +122,7 @@ public:
 	float getValueOf(ValueType type) const override;
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 private:
-	void actionIfCloseEnough(UnitOrder order, Physical* closest, int indexToInteract,
+	void actionIfCloseEnough(UnitAction order, Physical* closest, int indexToInteract,
 	                         float sqDistance, float closeRange, float interestRange);
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);

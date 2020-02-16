@@ -4,7 +4,7 @@
 #include <vector>
 #include <functional>
 
-enum class UnitOrder : char;
+enum class UnitAction : char;
 enum class UnitState : char;
 enum class SimColorMode : char;
 struct NewGameForm;
@@ -62,8 +62,8 @@ private:
 	void selfAI();
 	void addTestEntities() const;
 
-	void tryToAttack(Unit* unit, float dist, UnitOrder order, const std::function<bool(Physical*)>& condition);
-	void toAction(Unit* unit, std::vector<Physical*>* list,  UnitOrder order, const std::function<bool(Physical*)>& condition);
+	void tryToAttack(Unit* unit, float dist, UnitAction order, const std::function<bool(Physical*)>& condition);
+	void toAction(Unit* unit, std::vector<Physical*>* list,  UnitAction order, const std::function<bool(Physical*)>& condition);
 	void tryToCollect(Unit* unit);
 
 	float accumulateTime = 0;

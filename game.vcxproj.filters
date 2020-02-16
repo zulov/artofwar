@@ -164,10 +164,6 @@
     <ClCompile Include="src\simulation\env\Environment.cpp">
       <Filter>simulation\env</Filter>
     </ClCompile>
-    <ClCompile Include="src\objects\unit\aim\order\FutureOrder.cpp" />
-    <ClCompile Include="src\objects\unit\aim\order\IndividualOrder.cpp" />
-    <ClCompile Include="src\objects\unit\aim\order\GroupOrder.cpp" />
-    <ClCompile Include="src\objects\unit\aim\order\FormationOrder.cpp" />
     <ClCompile Include="src\colors\ColorPaletteRepo.cpp" />
     <ClCompile Include="src\simulation\env\bucket\path\PathFinder.cpp" />
     <ClCompile Include="src\simulation\env\bucket\path\BucketQueue.cpp" />
@@ -189,6 +185,13 @@
     <ClCompile Include="src\player\ai\nn\Brain.cpp" />
     <ClCompile Include="src\stats\Stats.cpp" />
     <ClCompile Include="src\ActionCenter.cpp" />
+    <ClCompile Include="src\objects\order\FormationOrder.cpp" />
+    <ClCompile Include="src\objects\order\FutureOrder.cpp" />
+    <ClCompile Include="src\objects\order\GroupOrder.cpp" />
+    <ClCompile Include="src\objects\order\IndividualOrder.cpp" />
+    <ClCompile Include="src\objects\order\UnitOrder.cpp" />
+    <ClCompile Include="src\objects\order\BuildingOrder.cpp" />
+    <ClCompile Include="src\objects\order\ResourceOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -413,9 +416,6 @@
     <ClInclude Include="src\objects\unit\state\UnitState.h">
       <Filter>objects\state</Filter>
     </ClInclude>
-    <ClInclude Include="src\UnitOrder.h">
-      <Filter>objects\unit</Filter>
-    </ClInclude>
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
     <ClInclude Include="src\objects\CellState.h" />
@@ -428,10 +428,6 @@
       <Filter>simulation\env</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\unit\MissileData.h" />
-    <ClInclude Include="src\objects\unit\aim\order\FutureOrder.h" />
-    <ClInclude Include="src\objects\unit\aim\order\IndividualOrder.h" />
-    <ClInclude Include="src\objects\unit\aim\order\GroupOrder.h" />
-    <ClInclude Include="src\objects\unit\aim\order\FormationOrder.h" />
     <ClInclude Include="src\objects\ActionType.h" />
     <ClInclude Include="src\NamesUtils.h" />
     <ClInclude Include="src\colors\ColorPaletteRepo.h" />
@@ -474,6 +470,16 @@
     <ClInclude Include="src\objects\ObjectEnums.h">
       <Filter>objects</Filter>
     </ClInclude>
+    <ClInclude Include="src\objects\order\FormationOrder.h" />
+    <ClInclude Include="src\objects\order\FutureOrder.h" />
+    <ClInclude Include="src\objects\order\GroupOrder.h" />
+    <ClInclude Include="src\objects\order\IndividualOrder.h" />
+    <ClInclude Include="src\UnitAction.h">
+      <Filter>objects\unit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\order\UnitOrder.h" />
+    <ClInclude Include="src\objects\order\BuildingOrder.h" />
+    <ClInclude Include="src\objects\order\ResourceOrder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
