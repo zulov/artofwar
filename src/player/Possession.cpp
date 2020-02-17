@@ -5,7 +5,7 @@
 #include "objects/unit/state/StateManager.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
-#include "UnitAction.h"
+#include "objects/order/enums/UnitAction.h"
 #include "VectorUtils.h"
 #include "objects/ValueType.h"
 #include <numeric>

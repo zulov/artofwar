@@ -2,7 +2,7 @@
 #include "ControlsState.h"
 #include "MouseButton.h"
 #include "SelectedInfo.h"
-#include "UnitAction.h"
+#include "objects/order/enums/UnitAction.h"
 #include "commands/creation/CreationCommand.h"
 #include <Urho3D/Graphics/Renderer.h>
 #include <Urho3D/Graphics/StaticModel.h>

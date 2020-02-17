@@ -22,7 +22,7 @@
 #include "scene/load/SceneLoader.h"
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
-#include "UnitAction.h"
+#include "objects/order/enums/UnitAction.h"
 #include <ctime>
 #include "player/ai/AiManager.h"
 #include "stats/Stats.h"

@@ -6,7 +6,10 @@ class ResourceEntity;
 
 class ResourceOrder : public FutureOrder {
 
-	ResourceOrder(ResourceEntity* resource, ResourceActionType action, unsigned short id);
-	ResourceOrder(std::vector<Physical*>* resources, ResourceActionType action, unsigned short id);
+	ResourceOrder(ResourceEntity* resource, ResourceActionType action, short id);
+	ResourceOrder(std::vector<Physical*>* resources, ResourceActionType action, short id);
 
+	bool expired() override;
+private:
+	std::vector<ResourceEntity*> resources;
 };

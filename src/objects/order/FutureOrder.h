@@ -1,16 +1,14 @@
 #pragma once
-#include "UnitAction.h"
 #include "objects/Physical.h"
 
 class FutureOrder {
 public:
-	FutureOrder(UnitAction action, bool append, const Urho3D::Vector2& vector, Physical* toUse);
-	FutureOrder(UnitAction action, bool append, const Urho3D::Vector2& vector);
-	FutureOrder(UnitAction action, bool append, Physical* toUse);
+	FutureOrder(short actionType, short id, bool append);
 
 	virtual ~FutureOrder();
 
-	bool expired() const;
+	virtual bool expired() =0;
+	virtual bool clean() =0;
 	virtual bool add() =0;
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);
 	ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow);
@@ -18,12 +16,11 @@ public:
 
 	void execute();
 	bool getAppend() const { return append; }
-	UnitAction getAction() const;
+	short getAction() const { return action; }
 protected:
-	//Physical* toUse;
-	//Urho3D::Vector2 vector;
-	short id;
-	//UnitAction action;
+	const short action;
+	const short id;
+
 	const bool append;
 private:
 	virtual void addCollectAim() =0;

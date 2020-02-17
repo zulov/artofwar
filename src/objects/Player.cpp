@@ -10,8 +10,8 @@
 #include "stats/StatsEnums.h"
 #include "ActionCenter.h"
 #include "building/Building.h"
-#include "unit/aim/order/GroupOrder.h"
-#include "unit/aim/order/IndividualOrder.h"
+#include "objects/order/GroupOrder.h"
+#include "objects/order/IndividualOrder.h"
 
 
 Player::Player(int nationId, int team, char id, int color, Urho3D::String name, bool active): name(std::move(name)),
@@ -199,16 +199,16 @@ void Player::createOrder(StatsOutputType order) {
 	case StatsOutputType::UPGRADE_ATTACK:
 	case StatsOutputType::UPGRADE_DEFENCE:
 	case StatsOutputType::UPGRADE_ECON:
-		auto opt = chooseUpgrade(order);
-		if (opt.has_value()) {
-			short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to
-			Building* building = bestBuildingToUpgrade(unitId);
-
-			Game::getActionCenter()->add(
-				new ActionCommand(new IndividualOrder(building, UnitAction(-1), {}, nullptr, ),
-				                  Game::getPlayersMan()->getActivePlayerID()));
-		}
-		break;
+		// auto opt = chooseUpgrade(order);
+		// if (opt.has_value()) {
+		// 	short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to
+		// 	Building* building = bestBuildingToUpgrade(unitId);
+		//
+		// 	Game::getActionCenter()->add(
+		// 		new ActionCommand(new IndividualOrder(building, UnitAction(-1), {}, nullptr, ),
+		// 		                  Game::getPlayersMan()->getActivePlayerID()));
+		// }
+		// break;
 	case StatsOutputType::ORDER_GO: break;
 	case StatsOutputType::ORDER_STOP: break;
 	case StatsOutputType::ORDER_CHARGE: break;

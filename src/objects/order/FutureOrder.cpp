@@ -6,23 +6,10 @@
 #include "objects/unit/aim/FollowAim.h"
 #include "consts.h"
 
-FutureOrder::FutureOrder(UnitAction action, bool append, const Urho3D::Vector2& vector, Physical* toUse)
-	: toUse(toUse), vector(vector), action(action), append(append) {
-}
-
-FutureOrder::FutureOrder(UnitAction action, bool append, const Urho3D::Vector2& vector)
-	: toUse(nullptr), vector(vector), action(action), append(append) {
-}
-
-FutureOrder::FutureOrder(UnitAction action, bool append, Physical* toUse)
-	: toUse(toUse), action(action), append(append) {
+FutureOrder::FutureOrder(short actionType, short id, bool append): action(actionType), id(id), append(append) {
 }
 
 FutureOrder::~FutureOrder() = default;
-
-bool FutureOrder::expired() const {
-	return toUse != nullptr && !toUse->isAlive();
-}
 
 ActionParameter FutureOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
 	const auto path = Game::getEnvironment()->findPath(startInx, to);
@@ -47,7 +34,11 @@ void FutureOrder::execute() {
 	case UnitAction::GO:
 		return addTargetAim();
 	case UnitAction::FOLLOW:
-		if (toUse && toUse->isAlive()) {
+		if (toUse &&toUse
+		->
+		isAlive()
+		)
+		{
 			addFollowAim();
 		}
 		break;
@@ -66,6 +57,3 @@ void FutureOrder::execute() {
 	}
 }
 
-UnitAction FutureOrder::getAction() const {
-	return action;
-}

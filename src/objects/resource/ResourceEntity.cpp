@@ -1,9 +1,9 @@
 #include "ResourceEntity.h"
 #include "Game.h"
 #include "objects/ObjectEnums.h"
-#include "ResourceOrder.h"
+#include "ResourceOrderType.h"
 #include "database/DatabaseCache.h"
-#include "UnitAction.h"
+#include "objects/order/enums/UnitAction.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
@@ -58,8 +58,8 @@ std::string ResourceEntity::getValues(int precision) {
 }
 
 void ResourceEntity::action(char id, const ActionParameter& parameter) {
-	switch (static_cast<ResourceOrder>(id)) {
-	case ResourceOrder::COLLECT:
+	switch (static_cast<ResourceOrderType>(id)) {
+	case ResourceOrderType::COLLECT:
 	{
 		auto neights = Game::getEnvironment()->getNeighboursFromTeamEq(this, 24,
 		                                                             Game::getPlayersMan()
@@ -84,7 +84,7 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 		}
 	}
 	break;
-	case ResourceOrder::COLLECT_CANCEL:
+	case ResourceOrderType::COLLECT_CANCEL:
 		StateManager::changeState(this, StaticState::FREE);
 		break;
 	}

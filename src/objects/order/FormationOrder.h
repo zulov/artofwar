@@ -1,10 +1,11 @@
 #pragma once
 #include "FutureOrder.h"
+#include "UnitOrder.h"
 
+enum class UnitAction : char;
 class Formation;
 
-class FormationOrder : public FutureOrder
-{
+class FormationOrder : public UnitOrder {
 public:
 	FormationOrder(Formation* formation, UnitAction action, const Urho3D::Vector2& vector,
 	               Physical* toUse, bool append = false);

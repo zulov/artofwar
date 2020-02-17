@@ -11,13 +11,18 @@ IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, const Urho3D::Ve
 	FutureOrder(action, append, vector, toUse), unit(unit) {
 }
 
-IndividualOrder::IndividualOrder(Physical* physical, UnitAction action,
+IndividualOrder::IndividualOrder(Unit* physical, UnitAction action,
                                  const Urho3D::Vector2& vector, Physical* toUse, bool append):
 	FutureOrder(action, append, vector, toUse), actionType(menuAction) {
 }
 
 
 IndividualOrder::~IndividualOrder() = default;
+
+bool IndividualOrder::expired()  {
+	return toUse != nullptr && !toUse->isAlive();
+}
+
 
 bool IndividualOrder::add() {
 	physical->addOrder(this);

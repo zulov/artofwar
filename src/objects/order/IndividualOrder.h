@@ -1,10 +1,10 @@
 #pragma once
 #include "objects/order/FutureOrder.h"
+#include "UnitOrder.h"
 
-class ResourceEntity;
-class Building;
+enum class UnitAction : char;
 
-class IndividualOrder : public FutureOrder {
+class IndividualOrder : public UnitOrder {
 public:
 	IndividualOrder(Unit* unit, UnitAction action,
 	                const Urho3D::Vector2& vector, Physical* toUse,
@@ -12,6 +12,7 @@ public:
 
 	
 	~IndividualOrder();
+	bool expired() override;
 	bool add() override;
 private:
 	void addCollectAim() override;

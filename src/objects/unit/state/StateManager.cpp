@@ -13,11 +13,11 @@
 #include "MoveState.h"
 #include "ShotState.h"
 #include "StopState.h"
-#include "UnitAction.h"
 #include "UnitState.h"
+#include "consts.h"
+#include "objects/order/enums/UnitAction.h"
 #include "database/DatabaseCache.h"
 #include "objects/static/StaticStateUtils.h"
-#include "consts.h"
 
 
 StateManager* StateManager::instance = nullptr;

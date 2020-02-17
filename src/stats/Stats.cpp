@@ -9,6 +9,7 @@
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "commands/action/ActionCommand.h"
+#include "objects/order/enums/UnitAction.h"
 #include <fstream>
 
 

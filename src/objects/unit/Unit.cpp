@@ -1,8 +1,8 @@
 #include "Unit.h"
 #include "Game.h"
 #include "objects/ObjectEnums.h"
-#include "UnitAction.h"
-#include "aim/order/FutureOrder.h"
+#include "objects/order/enums/UnitAction.h"
+#include "objects/order/FutureOrder.h"
 #include "colors/ColorPaletteRepo.h"
 #include "database/DatabaseCache.h"
 #include "objects/unit/ChargeData.h"
@@ -18,7 +18,7 @@
 #include <algorithm>
 #include "consts.h"
 #include "simulation/env/Environment.h"
-#include "aim/order/IndividualOrder.h"
+#include "objects/order/IndividualOrder.h"
 #include "../ValueType.h"
 
 

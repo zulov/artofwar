@@ -1,8 +1,11 @@
 #pragma once
 #include "FutureOrder.h"
 #include "objects/ActionType.h"
+#include "UnitOrder.h"
 
-class GroupOrder : public FutureOrder {
+enum class UnitAction : char;
+
+class GroupOrder : public UnitOrder {
 public:
 	GroupOrder(std::vector<Physical*>* entities, UnitAction action, const Urho3D::Vector2& vector,
 	           Physical* toUse, ActionType menuAction, bool append = false);

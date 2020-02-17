@@ -189,9 +189,9 @@
     <ClCompile Include="src\objects\order\FutureOrder.cpp" />
     <ClCompile Include="src\objects\order\GroupOrder.cpp" />
     <ClCompile Include="src\objects\order\IndividualOrder.cpp" />
-    <ClCompile Include="src\objects\order\UnitOrder.cpp" />
     <ClCompile Include="src\objects\order\BuildingOrder.cpp" />
     <ClCompile Include="src\objects\order\ResourceOrder.cpp" />
+    <ClCompile Include="src\objects\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -440,7 +440,6 @@
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapInt.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMap.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapFloat.h" />
-    <ClInclude Include="src\objects\resource\ResourceOrder.h" />
     <ClInclude Include="src\replace_utils.h" />
     <ClInclude Include="src\objects\resource\ResourceEntity.h" />
     <ClInclude Include="src\objects\resource\ResourceFactory.h" />
@@ -474,15 +473,16 @@
     <ClInclude Include="src\objects\order\FutureOrder.h" />
     <ClInclude Include="src\objects\order\GroupOrder.h" />
     <ClInclude Include="src\objects\order\IndividualOrder.h" />
-    <ClInclude Include="src\objects\order\UnitOrder.h" />
     <ClInclude Include="src\objects\order\BuildingOrder.h" />
-    <ClInclude Include="src\objects\order\ResourceOrder.h" />
-    <ClInclude Include="src\objects\order\UnitAction.h">
-      <Filter>objects\unit</Filter>
-    </ClInclude>
     <ClInclude Include="src\objects\order\enums\ResourceActionType.h" />
     <ClInclude Include="src\objects\order\enums\BuildingActionType.h" />
     <ClInclude Include="src\objects\order\enums\UnitActionType.h" />
+    <ClInclude Include="src\objects\order\enums\UnitAction.h">
+      <Filter>objects\unit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\resource\ResourceOrderType.h" />
+    <ClInclude Include="src\objects\order\ResourceOrder.h" />
+    <ClInclude Include="src\objects\order\UnitOrder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

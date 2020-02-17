@@ -1,5 +1,5 @@
 #pragma once
-enum class ResourceOrder : char
+enum class ResourceOrderType : char
 {
 	COLLECT=0,
 	COLLECT_CANCEL

@@ -313,7 +313,7 @@
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
     <ClInclude Include="src\objects\CellState.h" />
-    <ClInclude Include="src\objects\resource\ResourceOrder.h" />
+    <ClInclude Include="src\objects\resource\ResourceOrderType.h" />
     <ClInclude Include="src\objects\static\StaticStateUtils.h" />
     <ClInclude Include="src\objects\static\StaticState.h" />
     <ClInclude Include="src\objects\unit\state\ShotState.h" />
@@ -408,7 +408,7 @@
     <ClInclude Include="src\hud\MySprite.h" />
     <ClInclude Include="src\stats\StatsEnums.h" />
     <ClInclude Include="src\StringUtils.h" />
-    <ClInclude Include="src\objects\order\UnitAction.h" />
+    <ClInclude Include="src\objects\order\enums\UnitAction.h" />
     <ClInclude Include="src\objects\Physical.h" />
     <ClInclude Include="src\player\Player.h" />
     <ClInclude Include="src\player\PlayersManager.h" />
