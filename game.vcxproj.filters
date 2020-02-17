@@ -474,12 +474,15 @@
     <ClInclude Include="src\objects\order\FutureOrder.h" />
     <ClInclude Include="src\objects\order\GroupOrder.h" />
     <ClInclude Include="src\objects\order\IndividualOrder.h" />
-    <ClInclude Include="src\UnitAction.h">
-      <Filter>objects\unit</Filter>
-    </ClInclude>
     <ClInclude Include="src\objects\order\UnitOrder.h" />
     <ClInclude Include="src\objects\order\BuildingOrder.h" />
     <ClInclude Include="src\objects\order\ResourceOrder.h" />
+    <ClInclude Include="src\objects\order\UnitAction.h">
+      <Filter>objects\unit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\order\enums\ResourceActionType.h" />
+    <ClInclude Include="src\objects\order\enums\BuildingActionType.h" />
+    <ClInclude Include="src\objects\order\enums\UnitActionType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -10,10 +10,6 @@ public:
 	                const Urho3D::Vector2& vector, Physical* toUse,
 	                bool append = false);
 
-	IndividualOrder(Building* building, BuildingAction action, 
-					unsigned short id);
-
-	IndividualOrder(ResourceEntity* resource, ResourceAction action);
 	
 	~IndividualOrder();
 	bool add() override;

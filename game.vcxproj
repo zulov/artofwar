@@ -286,6 +286,9 @@
     <ClCompile Include="src\objects\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\objects\order\enums\BuildingActionType.h" />
+    <ClInclude Include="src\objects\order\enums\ResourceActionType.h" />
+    <ClInclude Include="src\objects\order\enums\UnitActionType.h" />
     <ClInclude Include="src\objects\order\ResourceOrder.h" />
     <ClInclude Include="src\objects\order\BuildingOrder.h" />
     <ClInclude Include="src\ActionCenter.h" />
@@ -405,7 +408,7 @@
     <ClInclude Include="src\hud\MySprite.h" />
     <ClInclude Include="src\stats\StatsEnums.h" />
     <ClInclude Include="src\StringUtils.h" />
-    <ClInclude Include="src\UnitAction.h" />
+    <ClInclude Include="src\objects\order\UnitAction.h" />
     <ClInclude Include="src\objects\Physical.h" />
     <ClInclude Include="src\player\Player.h" />
     <ClInclude Include="src\player\PlayersManager.h" />
