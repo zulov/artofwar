@@ -13,9 +13,9 @@
 #include "objects/queue/QueueManager.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
-#include "objects/unit/aim/order/FutureOrder.h"
-#include "objects/unit/aim/order/GroupOrder.h"
-#include "objects/unit/aim/order/IndividualOrder.h"
+#include "objects/order/FutureOrder.h"
+#include "objects/order/GroupOrder.h"
+#include "objects/order/IndividualOrder.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
@@ -28,7 +28,6 @@
 #include <algorithm>
 #include <queue>
 #include "ActionCenter.h"
-#include "objects/order/GroupOrder.h"
 
 
 Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
