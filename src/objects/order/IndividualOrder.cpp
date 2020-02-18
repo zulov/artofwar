@@ -8,14 +8,8 @@
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, const Urho3D::Vector2& vector,
                                  Physical* toUse, bool append):
-	FutureOrder(action, append, vector, toUse), unit(unit) {
+	UnitOrder(action, append, vector, toUse), unit(unit) {
 }
-
-IndividualOrder::IndividualOrder(Unit* physical, UnitAction action,
-                                 const Urho3D::Vector2& vector, Physical* toUse, bool append):
-	FutureOrder(action, append, vector, toUse), actionType(menuAction) {
-}
-
 
 IndividualOrder::~IndividualOrder() = default;
 

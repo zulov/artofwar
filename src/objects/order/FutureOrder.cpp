@@ -28,32 +28,3 @@ ActionParameter FutureOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar
 ActionParameter FutureOrder::getChargeAim(Urho3D::Vector2& charge) {
 	return Consts::EMPTY_ACTION_PARAMETER;
 }
-
-void FutureOrder::execute() {
-	switch (action) {
-	case UnitAction::GO:
-		return addTargetAim();
-	case UnitAction::FOLLOW:
-		if (toUse &&toUse
-		->
-		isAlive()
-		)
-		{
-			addFollowAim();
-		}
-		break;
-	case UnitAction::CHARGE:
-		return addChargeAim();
-	case UnitAction::ATTACK:
-		return addAttackAim();
-	case UnitAction::DEAD:
-		return addDeadAim();
-	case UnitAction::DEFEND:
-		return addDefendAim();
-	case UnitAction::COLLECT:
-		return addCollectAim();
-	case UnitAction::STOP:
-		return addStopAim();
-	}
-}
-

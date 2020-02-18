@@ -27,5 +27,5 @@ private:
 	void simpleAction() const;
 	void followAndAct(float distThreshold);
 
-	Physical* physical;
+	Unit* unit;
 };
