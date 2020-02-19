@@ -3,7 +3,7 @@
 
 class FutureOrder {
 public:
-	FutureOrder(short actionType, short id, bool append);
+	FutureOrder(char actionType, short id, bool append);
 
 	virtual ~FutureOrder();
 
@@ -15,7 +15,7 @@ public:
 	bool getAppend() const { return append; }
 	short getAction() const { return action; }
 protected:
-	const short action;
+	const char action;
 	const short id;
 	const bool append;
 };

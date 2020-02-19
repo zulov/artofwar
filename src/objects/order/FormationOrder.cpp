@@ -1,15 +1,16 @@
 #include "FormationOrder.h"
 #include "Game.h"
 #include "objects/unit/Unit.h"
+#include "objects/order/enums/UnitAction.h"
 #include "simulation/formation/Formation.h"
 #include "simulation/env/Environment.h"
 #include "IndividualOrder.h"
 #include "consts.h"
 
-
-FormationOrder::FormationOrder(Formation* formation, UnitAction action, const Urho3D::Vector2& vector,
+FormationOrder::FormationOrder(Formation* formation, UnitActionType actionType, UnitAction action,
+                               const Urho3D::Vector2& vector,
                                Physical* toUse, bool append):
-	FutureOrder(action, append, vector, toUse), formation(formation) {
+	UnitOrder(actionType, action, append, toUse, vector), formation(formation) {
 }
 
 FormationOrder::~FormationOrder() = default;
@@ -54,7 +55,8 @@ void FormationOrder::addChargeAim() {
 void FormationOrder::followAndAct(float distThreshold) {
 	auto optLeader = formation->getLeader();
 	if (optLeader.has_value()) {
-		auto posToUseOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(optLeader.value()));//TODO bug TuUSe moze nie istniec
+		auto posToUseOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(optLeader.value()));
+		//TODO bug TuUSe moze nie istniec
 		if (posToUseOpt.has_value()) {
 			auto postToUse = posToUseOpt.value();
 			if (std::get<1>(postToUse) > distThreshold) {
@@ -62,11 +64,12 @@ void FormationOrder::followAndAct(float distThreshold) {
 				optLeader.value()->action(static_cast<char>(UnitAction::FOLLOW),
 				                          getFollowAim(optLeader.value()->getMainCell(),
 				                                       pos, toUse));
-				formation->addOrder(new FormationOrder(formation, action, {}, toUse, true)); //Dodanie celu po dojsciu
+				formation->addOrder(new FormationOrder(formation, UnitActionType::ORDER, action, {}, toUse, true));
+				//Dodanie celu po dojsciu
 			} else {
 				for (auto unit : formation->getUnits()) {
 					unit->resetFormation();
-					unit->addOrder(new IndividualOrder(unit, action, {}, toUse, false));
+					unit->addOrder(new IndividualOrder(unit, UnitActionType::ORDER, action, {}, toUse, false));
 					//TODO to samo zrobic w innnych akcjach z atakiem
 					//TOAttack jak nie ten to zaatakowac blizeszego
 				}

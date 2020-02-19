@@ -1,4 +1,5 @@
 #include "ResourceOrder.h"
+#include "VectorUtils.h"
 
 ResourceOrder::ResourceOrder(ResourceEntity* resource, ResourceActionType action, short id)
 	: FutureOrder(static_cast<short>(action), id, false) {
@@ -13,5 +14,11 @@ ResourceOrder::ResourceOrder(std::vector<Physical*>* resources, ResourceActionTy
 	}
 }
 
+bool ResourceOrder::clean() {
+	cleanDead(resources);
+}
+
+
 bool ResourceOrder::expired() {
+	return resources.empty();
 }

@@ -7,13 +7,14 @@ enum class UnitAction : char;
 
 class GroupOrder : public UnitOrder {
 public:
-	GroupOrder(std::vector<Physical*>* entities, UnitAction action, const Urho3D::Vector2& vector,
-	           Physical* toUse, ActionType menuAction, bool append = false);
+	GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, UnitAction action,
+	           const Urho3D::Vector2& vector, Physical* toUse, ActionType menuAction, bool append = false);
 	~GroupOrder();
 	bool add() override;
+	bool clean() override;
+	bool expired() override;
 private:
-	const ActionType actionType;
-	std::vector<Physical*>* entities;
+	std::vector<Unit*> units;
 	//TODO to trzeba kopiowac, ale wtedy trzeba sprawdzac przed wykonaniem
 	//czy cos sie nie zepsulo ale i tak cos takiego robie w formacji
 

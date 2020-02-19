@@ -23,3 +23,14 @@ void static cleanDead(std::vector<Building*>& vector) {
 		),
 		vector.end());
 }
+
+void static cleanDead(std::vector<ResourceEntity*>& vector) {
+	vector.erase(
+		std::remove_if(
+			vector.begin(), vector.end(),
+			[](ResourceEntity* u) {
+				return !u->isAlive();
+			}
+		),
+		vector.end());
+}

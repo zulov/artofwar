@@ -2,13 +2,19 @@
 #include "FormationOrder.h"
 #include "Game.h"
 #include "consts.h"
+#include "VectorUtils.h"
 #include "objects/unit/ActionParameter.h"
 #include "simulation/formation/FormationManager.h"
 
 
-GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitAction action, const Urho3D::Vector2& vector,
+GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, UnitAction action,
+                       const Urho3D::Vector2& vector,
                        Physical* toUse, ActionType menuAction, bool append):
-	FutureOrder(action, append, vector, toUse), actionType(menuAction), entities(entities) {
+	UnitOrder(actionType, action, append, toUse, vector) {
+	for (auto unit : *entities) {
+		//TODO performance spróbowaæ z insertem
+		this->units.emplace_back(reinterpret_cast<Unit*>(unit));
+	}
 }
 
 GroupOrder::~GroupOrder() = default;
@@ -38,6 +44,10 @@ bool GroupOrder::add() {
 	}
 
 	return true;
+}
+
+bool GroupOrder::clean() {
+	cleanDead(units);
 }
 
 void GroupOrder::addCollectAim() {
@@ -73,20 +83,26 @@ void GroupOrder::addStopAim() {
 }
 
 void GroupOrder::simpleAction(ActionParameter& parameter) const {
-	for (auto entity : *entities) {
+	for (auto entity : units) {
 		entity->action(static_cast<char>(FutureOrder::action), parameter);
 	}
 }
 
 void GroupOrder::simpleAction() const {
-	for (auto entity : *entities) {
+	for (auto entity : units) {
 		entity->action(static_cast<char>(FutureOrder::action), Consts::EMPTY_ACTION_PARAMETER);
 	}
 }
 
 void GroupOrder::transformToFormationOrder() const {
-	auto opt = Game::getFormationManager()->createFormation(entities);
+	auto opt = Game::getFormationManager()->createFormation(units);
 	if (opt.has_value()) {
-		opt.value()->addOrder(new FormationOrder(opt.value(), action, vector, toUse, append));
+		opt.value()->addOrder(new FormationOrder(opt.value(), UnitActionType::FORMATION, action, vector, toUse,
+		                                         append));
 	}
 }
+
+bool GroupOrder::expired() {
+	return units.empty();
+}
+

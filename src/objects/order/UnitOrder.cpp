@@ -1,16 +1,41 @@
 #include "UnitOrder.h"
 #include "enums/UnitAction.h"
+#include "Game.h"
+#include "objects/unit/aim/TargetAim.h"
+#include "consts.h"
+#include "objects/unit/aim/FollowAim.h"
+#include "simulation/env/Environment.h"
+
+UnitOrder::UnitOrder(UnitActionType actionType, UnitAction id, bool append, Physical* toUse,
+                     const Urho3D::Vector2& vector): FutureOrder(static_cast<char>(actionType), static_cast<short>(id), append),
+                                                     toUse(toUse),
+                                                     vector(vector) {
+}
+
+ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
+	const auto path = Game::getEnvironment()->findPath(startInx, to);
+	if (!path->empty()) {
+		return ActionParameter::Builder().setAim(new TargetAim(*path)).build();
+	}
+	return Consts::EMPTY_ACTION_PARAMETER;
+}
+
+ActionParameter UnitOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow) {
+	auto const target = getTargetAim(startInx, toSoFar);
+	//jesli jest nulem to co?
+	return ActionParameter::Builder().setAim(new FollowAim(toFollow, static_cast<TargetAim*>(target.aim))).build();
+}
+
+ActionParameter UnitOrder::getChargeAim(Urho3D::Vector2& charge) {
+	return Consts::EMPTY_ACTION_PARAMETER;
+}
 
 void UnitOrder::execute() {
-	switch (action) {
+	switch (static_cast<UnitAction>(action)) {
 	case UnitAction::GO:
 		return addTargetAim();
 	case UnitAction::FOLLOW:
-		if (toUse &&toUse
-		->
-		isAlive()
-		)
-		{
+		if (toUse && toUse->isAlive()) {
 			addFollowAim();
 		}
 		break;

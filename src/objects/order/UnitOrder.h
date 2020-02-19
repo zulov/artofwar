@@ -1,14 +1,23 @@
 #pragma once
 #include "FutureOrder.h"
+#include "enums/UnitActionType.h"
+#include "enums/UnitActionType.h"
+
+enum class UnitAction : char;
+enum class UnitActionType : char;
 
 class UnitOrder : public FutureOrder {
+public:
+	UnitOrder(UnitActionType actionType, UnitAction id, bool append, Physical* toUse, const Urho3D::Vector2& vector);
 	void execute() override;
+protected:
+	Physical* toUse;
+	Urho3D::Vector2 vector;
+
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);
 	ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow);
 	ActionParameter getChargeAim(Urho3D::Vector2& charge);
 private:
-	Physical* toUse;
-	Urho3D::Vector2 vector;
 
 	virtual void addCollectAim() =0;
 	virtual void addTargetAim() =0;

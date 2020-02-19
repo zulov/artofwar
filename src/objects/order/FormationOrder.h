@@ -7,7 +7,7 @@ class Formation;
 
 class FormationOrder : public UnitOrder {
 public:
-	FormationOrder(Formation* formation, UnitAction action, const Urho3D::Vector2& vector,
+	FormationOrder(Formation* formation, UnitActionType actionType, UnitAction action, const Urho3D::Vector2& vector,
 	               Physical* toUse, bool append = false);
 	~FormationOrder();
 	bool add() override;
