@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 #include "objects/unit/Unit.h"
+#include "objects/building/Building.h"
+#include "objects/resource/ResourceEntity.h"
 
 void static cleanDead(std::vector<Unit*>& vector) {
 	vector.erase(

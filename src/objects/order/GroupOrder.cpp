@@ -7,10 +7,9 @@
 #include "simulation/formation/FormationManager.h"
 
 
-GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, UnitAction action,
-                       const Urho3D::Vector2& vector,
-                       Physical* toUse, ActionType menuAction, bool append):
-	UnitOrder(actionType, action, append, toUse, vector) {
+GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, short id,
+                       const Urho3D::Vector2& vector, Physical* toUse, bool append):
+	UnitOrder(actionType, id, append, toUse, vector) {
 	for (auto unit : *entities) {
 		//TODO performance spróbowaæ z insertem
 		this->units.emplace_back(reinterpret_cast<Unit*>(unit));
@@ -20,33 +19,21 @@ GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitActionType actionTy
 GroupOrder::~GroupOrder() = default;
 
 bool GroupOrder::add() {
-	switch (actionType) {
-	case ActionType::UNIT_CREATE:
-		simpleAction(ActionParameter::Builder().setType(actionType).build());
-		break;
-	case ActionType::ORDER:
+	switch (UnitActionType(action)) {
+	case UnitActionType::ORDER:
 		execute();
 		break;
-	case ActionType::BUILDING_CREATE:
-	case ActionType::BUILDING_LEVEL:
-	case ActionType::UNIT_LEVEL:
-	case ActionType::UNIT_UPGRADE:
-	case ActionType::RESOURCE:
-		simpleAction(ActionParameter::Builder().setType(actionType).build());
-		break;
-	case ActionType::NONE:
-	case ActionType::FORMATION:
+	case UnitActionType::FORMATION:
 	{
 		int a = 5;
 	}
-		break;
+	break;
 	default: ;
 	}
-
 	return true;
 }
 
-bool GroupOrder::clean() {
+void GroupOrder::clean() {
 	cleanDead(units);
 }
 
@@ -97,12 +84,13 @@ void GroupOrder::simpleAction() const {
 void GroupOrder::transformToFormationOrder() const {
 	auto opt = Game::getFormationManager()->createFormation(units);
 	if (opt.has_value()) {
-		opt.value()->addOrder(new FormationOrder(opt.value(), UnitActionType::FORMATION, action, vector, toUse,
-		                                         append));
+		opt.value()->addOrder(
+			new FormationOrder(opt.value(), UnitActionType::FORMATION,
+			                   UnitAction(action),
+			                   vector, toUse, append));
 	}
 }
 
 bool GroupOrder::expired() {
 	return units.empty();
 }
-

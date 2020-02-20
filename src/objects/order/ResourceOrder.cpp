@@ -14,7 +14,7 @@ ResourceOrder::ResourceOrder(std::vector<Physical*>* resources, ResourceActionTy
 	}
 }
 
-bool ResourceOrder::clean() {
+void ResourceOrder::clean() {
 	cleanDead(resources);
 }
 

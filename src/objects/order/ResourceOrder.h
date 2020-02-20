@@ -10,7 +10,7 @@ class ResourceOrder : public FutureOrder {
 	ResourceOrder(std::vector<Physical*>* resources, ResourceActionType action, short id);
 	
 	bool expired() override;
-	bool clean() override;
+	void clean() override;
 private:
 	std::vector<ResourceEntity*> resources;
 };

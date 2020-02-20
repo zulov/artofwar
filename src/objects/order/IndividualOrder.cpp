@@ -3,6 +3,7 @@
 #include "consts.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
+#include "objects/order/enums/UnitAction.h"
 #include "simulation/env/Environment.h"
 
 
@@ -22,7 +23,7 @@ bool IndividualOrder::add() {
 	return false;
 }
 
-bool IndividualOrder::clean() {
+void IndividualOrder::clean() {
 	if (!unit->isAlive()) {
 		unit = nullptr;
 	}
@@ -81,7 +82,7 @@ void IndividualOrder::followAndAct(float distThreshold) {
 			unit->action(static_cast<char>(UnitAction::FOLLOW),
 			             getFollowAim(unit->getMainCell(),
 			                          pos, toUse));
-			unit->addOrder(new IndividualOrder(unit, UnitActionType::ORDER, action, {}, toUse, true));
+			unit->addOrder(new IndividualOrder(unit, UnitActionType::ORDER, UnitAction(action), {}, toUse, true));
 			//Dodanie celu po dojsciu
 		} else {
 			unit->action(static_cast<char>(action),

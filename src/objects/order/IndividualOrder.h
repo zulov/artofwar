@@ -14,7 +14,7 @@ public:
 	~IndividualOrder();
 	bool expired() override;
 	bool add() override;
-	bool clean() override;
+	void clean() override;
 private:
 	void addCollectAim() override;
 	void addTargetAim() override;

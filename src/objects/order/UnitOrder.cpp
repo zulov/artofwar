@@ -1,15 +1,15 @@
 #include "UnitOrder.h"
-#include "enums/UnitAction.h"
 #include "Game.h"
-#include "objects/unit/aim/TargetAim.h"
 #include "consts.h"
+#include "enums/UnitAction.h"
+#include "objects/unit/aim/TargetAim.h"
 #include "objects/unit/aim/FollowAim.h"
 #include "simulation/env/Environment.h"
 
-UnitOrder::UnitOrder(UnitActionType actionType, UnitAction id, bool append, Physical* toUse,
-                     const Urho3D::Vector2& vector): FutureOrder(static_cast<char>(actionType), static_cast<short>(id), append),
-                                                     toUse(toUse),
-                                                     vector(vector) {
+UnitOrder::UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse,
+                     const Urho3D::Vector2& vector):
+	FutureOrder(static_cast<char>(actionType), static_cast<short>(id), append),
+	toUse(toUse), vector(vector) {
 }
 
 ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {

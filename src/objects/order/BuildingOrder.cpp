@@ -14,7 +14,7 @@ BuildingOrder::BuildingOrder(std::vector<Physical*>* buildings, BuildingActionTy
 	}
 }
 
-bool BuildingOrder::clean() {
+void BuildingOrder::clean() {
 	cleanDead(buildings);
 }
 

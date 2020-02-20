@@ -10,10 +10,9 @@ class FutureOrder;
 class Physical;
 class Unit;
 
-class Formation
-{
+class Formation {
 public:
-	Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Urho3D::Vector2& _direction);
+	Formation(short _id, std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction);
 	~Formation();
 
 	void update();
@@ -47,12 +46,12 @@ private:
 	short sideA;
 	short sideB;
 	FormationType type;
-	bool changed = true;
-
 	FormationState state;
-	float sparsity = 1;
 
 	char* levelOfReach;
+	float sparsity = 1;
+	bool changed = true;
+
 
 	Urho3D::Vector2 center;
 	Urho3D::Vector2 direction;

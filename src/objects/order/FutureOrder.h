@@ -8,8 +8,8 @@ public:
 	virtual ~FutureOrder();
 
 	virtual bool expired() =0;
-	virtual bool clean() =0;
 	virtual bool add() =0;
+	virtual void clean() =0;
 	virtual void execute() =0;
 
 	bool getAppend() const { return append; }

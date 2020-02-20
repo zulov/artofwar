@@ -11,10 +11,10 @@
 #include <unordered_set>
 
 
-Formation::Formation(short _id, std::vector<Physical*>* _units, FormationType _type, Urho3D::Vector2& _direction) :
+Formation::Formation(short _id, std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction) :
 	id(_id), type(_type), state(FormationState::FORMING), direction(_direction) {
 
-	for (auto value : *_units) {
+	for (auto value : _units) {
 		auto unit = dynamic_cast<Unit*>(value);
 		unit->clearAims();
 		StateManager::changeState(unit, UnitState::STOP);

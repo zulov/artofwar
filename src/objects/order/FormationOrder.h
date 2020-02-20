@@ -11,6 +11,8 @@ public:
 	               Physical* toUse, bool append = false);
 	~FormationOrder();
 	bool add() override;
+	bool expired() override;
+	void clean() override;
 private:
 	Formation* formation;
 

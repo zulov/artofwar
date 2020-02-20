@@ -1,14 +1,13 @@
 #pragma once
 #include "FutureOrder.h"
 #include "enums/UnitActionType.h"
-#include "enums/UnitActionType.h"
 
 enum class UnitAction : char;
 enum class UnitActionType : char;
 
 class UnitOrder : public FutureOrder {
 public:
-	UnitOrder(UnitActionType actionType, UnitAction id, bool append, Physical* toUse, const Urho3D::Vector2& vector);
+	UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse, const Urho3D::Vector2& vector);
 	void execute() override;
 protected:
 	Physical* toUse;

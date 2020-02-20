@@ -7,11 +7,11 @@ enum class UnitAction : char;
 
 class GroupOrder : public UnitOrder {
 public:
-	GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, UnitAction action,
-	           const Urho3D::Vector2& vector, Physical* toUse, ActionType menuAction, bool append = false);
+	GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, short id,
+	           const Urho3D::Vector2& vector, Physical* toUse, bool append = false);
 	~GroupOrder();
 	bool add() override;
-	bool clean() override;
+	void clean() override;
 	bool expired() override;
 private:
 	std::vector<Unit*> units;

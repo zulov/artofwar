@@ -169,8 +169,8 @@ void Controls::rightClick(hit_data& hitData) const {
 		fOrder = new IndividualOrder(static_cast<Unit*>(selected->at(0)), UnitActionType::ORDER,
 		                             order, vector, toUse, shiftPressed);
 	} else {
-		fOrder = new GroupOrder(selected, UnitActionType::ORDER, order, vector, toUse,
-		                        ActionType::ORDER, shiftPressed);
+		fOrder = new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(order), vector, toUse,
+		                        shiftPressed);
 	}
 
 	Game::getActionCenter()->add(new ActionCommand(fOrder, Game::getPlayersMan()->getActivePlayerID()));
@@ -187,23 +187,24 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) con
 void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
 		Game::getActionCenter()->add(
-			new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER, UnitAction::GO,
-			                                 {held.first->x_, held.first->z_}, nullptr, ActionType::ORDER),
+			new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(UnitAction::GO),
+			                                 {held.first->x_, held.first->z_}, nullptr),
 			                  Game::getPlayersMan()->getActivePlayerID()),
-			new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER, UnitAction::GO,
+			new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(UnitAction::GO),
 			                                 {held.second->x_, held.second->z_},
-			                                 nullptr, ActionType::ORDER, true),
+			                                 nullptr, true),
 			                  Game::getPlayersMan()->getActivePlayerID()));
 	} else {
-		Game::getActionCenter()->add(new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER, UnitAction::GO,
+		Game::getActionCenter()->add(new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER,
+		                                                              static_cast<short>(UnitAction::GO),
 		                                                              {held.first->x_, held.first->z_},
-		                                                              nullptr, ActionType::ORDER),
+		                                                              nullptr),
 		                                               Game::getPlayersMan()->getActivePlayerID()),
 		                             new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER,
-		                                                              UnitAction::CHARGE, {
+		                                                              static_cast<short>(UnitAction::CHARGE), {
 			                                                              held.second->x_ - held.first->x_,
 			                                                              held.second->z_ - held.first->z_
-		                                                              }, nullptr, ActionType::ORDER, true),
+		                                                              }, nullptr, true),
 		                                               Game::getPlayersMan()->getActivePlayerID()));
 	}
 }
@@ -288,7 +289,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 
 void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
 	Game::getActionCenter()->add(
-		new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER, UnitAction(id), {}, nullptr, parameter.type),
+		new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER, id, {}, nullptr),
 		                  Game::getPlayersMan()->getActivePlayerID()));
 	//TODO przyjrzec sie typowi
 }
@@ -450,7 +451,10 @@ void Controls::toDefault() {
 }
 
 void Controls::unitFormation(short id) const {
-	Game::getFormationManager()->createFormation(selected, FormationType(id));
+	Game::getActionCenter()->add(
+		new ActionCommand(new GroupOrder(selected, UnitActionType::FORMATION, id, {}, nullptr),
+		                  Game::getPlayersMan()->getActivePlayerID()));
+	Game::getFormationManager()->createFormation(*selected, FormationType(id));
 }
 
 
