@@ -205,7 +205,7 @@ void Player::createOrder(StatsOutputType order) {
 		// 	Building* building = bestBuildingToUpgrade(unitId);
 		//
 		// 	Game::getActionCenter()->add(
-		// 		new ActionCommand(new IndividualOrder(building, UnitAction(-1), {}, nullptr, ),
+		// 		new UnitActionCommand(new IndividualOrder(building, UnitAction(-1), {}, nullptr, ),
 		// 		                  Game::getPlayersMan()->getActivePlayerID()));
 		// }
 		// break;

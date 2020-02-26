@@ -11,11 +11,11 @@ FormationManager::~FormationManager() {
 	clear_vector(formations);
 }
 
-std::optional<Formation*> FormationManager::createFormation(std::vector<Unit*>& _units, FormationType _type) {
+std::optional<Formation*> FormationManager::createFormation(const std::vector<Unit*>& _units, FormationType _type) {
 	if (_units.empty()) { return {}; }
 	if (_type == FormationType::NONE) {
 		for (auto unit : _units) {
-			static_cast<Unit*>(unit)->resetFormation();
+			unit->resetFormation();
 		}
 	} else {
 		short formationInFirst = _units.at(0)->getFormation();
@@ -24,7 +24,7 @@ std::optional<Formation*> FormationManager::createFormation(std::vector<Unit*>& 
 			&& formations[formationInFirst] != nullptr
 			&& formations[formationInFirst]->getSize() == _units.size()) {
 			for (auto unit : _units) {
-				if (static_cast<Unit*>(unit)->getFormation() != formationInFirst) {
+				if (unit->getFormation() != formationInFirst) {
 					allIn = false;
 					break;
 				}

@@ -8,7 +8,7 @@
 #include "simulation/env/Environment.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
-#include "commands/action/ActionCommand.h"
+#include "commands/action/UnitActionCommand.h"
 #include "objects/order/enums/UnitAction.h"
 #include <fstream>
 
@@ -53,7 +53,7 @@ void Stats::add(UpgradeCommand* command) {
 	appendOutput(player, data, getOutput(command));
 }
 
-void Stats::add(ActionCommand* command) {
+void Stats::add(UnitActionCommand* command) {
 	const auto player = command->player;
 
 	const std::string data = getInputData(player);
@@ -169,7 +169,7 @@ std::string Stats::getOutput(UpgradeCommand* command) const {
 	return join(output, output + STATS_OUTPUT_SIZE);
 }
 
-std::string Stats::getOutput(ActionCommand* command) const {
+std::string Stats::getOutput(UnitActionCommand* command) const {
 	float output[STATS_OUTPUT_SIZE];
 	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
 	//TODO command->type;, command->id; wybrac ktore wzmocnic

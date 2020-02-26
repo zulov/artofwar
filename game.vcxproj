@@ -223,7 +223,7 @@
     <ClCompile Include="src\objects\unit\aim\TargetAim.cpp" />
     <ClCompile Include="src\commands\AbstractCommand.cpp" />
     <ClCompile Include="src\hud\window\AbstractWindowPanel.cpp" />
-    <ClCompile Include="src\commands\action\ActionCommand.cpp" />
+    <ClCompile Include="src\commands\action\UnitActionCommand.cpp" />
     <ClCompile Include="src\objects\unit\aim\Aims.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\scene\load\SceneLoader.cpp" />
@@ -358,7 +358,7 @@
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\hud\window\in_game_menu\middle\AbstractMiddlePanel.h" />
     <ClInclude Include="src\hud\window\AbstractWindowPanel.h" />
-    <ClInclude Include="src\commands\action\ActionCommand.h" />
+    <ClInclude Include="src\commands\action\UnitActionCommand.h" />
     <ClInclude Include="src\hud\window\in_game_menu\InGameMenuPanel.h" />
     <ClInclude Include="src\hud\window\loading\LoadingPanel.h" />
     <ClInclude Include="src\hud\window\in_game_menu\middle\FileFormData.h" />

@@ -9,7 +9,7 @@
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitActionType actionType, UnitAction action,
                                  const Urho3D::Vector2& vector, Physical* toUse, bool append):
-	UnitOrder(actionType, action, append, toUse, vector), unit(unit) {
+	UnitOrder(actionType, static_cast<short>(action), append, toUse, vector), unit(unit) {
 }
 
 IndividualOrder::~IndividualOrder() = default;

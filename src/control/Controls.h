@@ -50,7 +50,9 @@ public:
 
 	SelectedInfo* getInfo() const { return selectedInfo; }
 private:
-	void executeOnAll(short id, const ActionParameter& parameter) const;
+	void executeOnUnits(short id, const ActionParameter& parameter) const;
+	void executeOnResources(short id, const ActionParameter& parameter) const;
+	void executeOnBuildings(short id, const ActionParameter& parameter) const;
 
 	void unitFormation(short id) const;
 	void actionUnit(short id, const ActionParameter& parameter);

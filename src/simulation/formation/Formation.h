@@ -12,7 +12,7 @@ class Unit;
 
 class Formation {
 public:
-	Formation(short _id, std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction);
+	Formation(short _id, const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction);
 	~Formation();
 
 	void update();

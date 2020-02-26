@@ -1,6 +1,4 @@
 #pragma once
-#include "FutureOrder.h"
-#include "objects/ActionType.h"
 #include "UnitOrder.h"
 
 enum class UnitAction : char;

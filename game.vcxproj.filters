@@ -127,9 +127,6 @@
     <ClCompile Include="src\commands\creation\CreationCommandList.cpp">
       <Filter>command\list</Filter>
     </ClCompile>
-    <ClCompile Include="src\commands\action\ActionCommand.cpp">
-      <Filter>command\action</Filter>
-    </ClCompile>
     <ClCompile Include="src\objects\Physical.cpp">
       <Filter>objects</Filter>
     </ClCompile>
@@ -192,6 +189,9 @@
     <ClCompile Include="src\objects\order\BuildingOrder.cpp" />
     <ClCompile Include="src\objects\order\ResourceOrder.cpp" />
     <ClCompile Include="src\objects\order\UnitOrder.cpp" />
+    <ClCompile Include="src\commands\action\UnitActionCommand.cpp">
+      <Filter>command\action</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -363,9 +363,6 @@
     <ClInclude Include="src\commands\creation\CreationCommand.h">
       <Filter>command</Filter>
     </ClInclude>
-    <ClInclude Include="src\commands\action\ActionCommand.h">
-      <Filter>command\action</Filter>
-    </ClInclude>
     <ClInclude Include="src\hud\window\main_menu\MainMenuPanel.h" />
     <ClInclude Include="src\hud\window\main_menu\MainMenuDetailsPanel.h" />
     <ClInclude Include="src\hud\window\in_game_menu\middle\AbstractMiddlePanel.h" />
@@ -483,6 +480,9 @@
     <ClInclude Include="src\objects\resource\ResourceOrderType.h" />
     <ClInclude Include="src\objects\order\ResourceOrder.h" />
     <ClInclude Include="src\objects\order\UnitOrder.h" />
+    <ClInclude Include="src\commands\action\UnitActionCommand.h">
+      <Filter>command\action</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

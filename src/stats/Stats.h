@@ -2,14 +2,15 @@
 #include <vector>
 #include <string>
 #include "defines.h"
-#include "commands/action/ActionCommand.h"
+#include "commands/action/UnitActionCommand.h"
 
 #define INPUT_STATS_SIZE 24
 #define STATS_PER_PLAYER_SIZE 12
 #define SAVE_BATCH_SIZE 10
 
+struct ActionParameter;
 class AbstractCommand;
-class ActionCommand;
+class UnitActionCommand;
 class UpgradeCommand;
 class CreationCommand;
 
@@ -22,7 +23,7 @@ public:
 	void init();
 	std::string getInputData(char player);
 	void add(UpgradeCommand* command);
-	void add(ActionCommand* command);
+	void add(UnitActionCommand* command);
 	void add(CreationCommand* command);
 	void save();
 	void addBuildLevel(short id, const ActionParameter& parameter, char playerId);
@@ -31,7 +32,7 @@ private:
 	void clear();
 	std::string getOutput(CreationCommand* command) const;
 	std::string getOutput(UpgradeCommand* command) const;
-	std::string getOutput(ActionCommand* command) const;
+	std::string getOutput(UnitActionCommand* command) const;
 	void appendOutput(char player, std::string data, std::string& output);
 	float* input;
 	std::vector<float*> statsPerPlayer;

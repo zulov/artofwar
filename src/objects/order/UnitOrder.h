@@ -1,6 +1,13 @@
 #pragma once
 #include "FutureOrder.h"
 #include "enums/UnitActionType.h"
+#include "objects/unit/ActionParameter.h"
+
+class Physical;
+
+namespace Urho3D {
+	class Vector2;
+}
 
 enum class UnitAction : char;
 enum class UnitActionType : char;

@@ -5,12 +5,11 @@
 #include "MathUtils.h"
 #include "objects/ObjectEnums.h"
 #include "camera/CameraManager.h"
-#include "commands/action/ActionCommand.h"
+#include "commands/action/UnitActionCommand.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
 #include "objects/ActionType.h"
 #include "objects/NodeUtils.h"
-#include "objects/queue/QueueManager.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
 #include "objects/order/FutureOrder.h"
@@ -21,13 +20,14 @@
 #include "player/Resources.h"
 #include "simulation/SimulationInfo.h"
 #include "simulation/env/Environment.h"
-#include "simulation/formation/FormationManager.h"
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/IO/Log.h>
 #include <algorithm>
 #include <queue>
 #include "ActionCenter.h"
+#include "objects/order/ResourceOrder.h"
+#include "objects/order/BuildingOrder.h"
 
 
 Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
@@ -173,7 +173,7 @@ void Controls::rightClick(hit_data& hitData) const {
 		                        shiftPressed);
 	}
 
-	Game::getActionCenter()->add(new ActionCommand(fOrder, Game::getPlayersMan()->getActivePlayerID()));
+	Game::getActionCenter()->add(new UnitActionCommand(fOrder, Game::getPlayersMan()->getActivePlayerID()));
 }
 
 void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
@@ -187,20 +187,20 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) con
 void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
 		Game::getActionCenter()->add(
-			new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(UnitAction::GO),
+			new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(UnitAction::GO),
 			                                 {held.first->x_, held.first->z_}, nullptr),
 			                  Game::getPlayersMan()->getActivePlayerID()),
-			new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(UnitAction::GO),
+			new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(UnitAction::GO),
 			                                 {held.second->x_, held.second->z_},
 			                                 nullptr, true),
 			                  Game::getPlayersMan()->getActivePlayerID()));
 	} else {
-		Game::getActionCenter()->add(new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER,
+		Game::getActionCenter()->add(new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER,
 		                                                              static_cast<short>(UnitAction::GO),
 		                                                              {held.first->x_, held.first->z_},
 		                                                              nullptr),
 		                                               Game::getPlayersMan()->getActivePlayerID()),
-		                             new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER,
+		                             new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER,
 		                                                              static_cast<short>(UnitAction::CHARGE), {
 			                                                              held.second->x_ - held.first->x_,
 			                                                              held.second->z_ - held.first->z_
@@ -282,16 +282,28 @@ void Controls::order(short id, const ActionParameter& parameter) {
 	case ObjectType::UNIT:
 		return actionUnit(id, parameter);
 	case ObjectType::BUILDING:
+		return executeOnResources(id, parameter);
 	case ObjectType::RESOURCE:
-		return executeOnAll(id, parameter);
+		return executeOnBuildings(id, parameter);
 	}
 }
 
-void Controls::executeOnAll(short id, const ActionParameter& parameter) const {
+void Controls::executeOnUnits(short id, const ActionParameter& parameter) const {
 	Game::getActionCenter()->add(
-		new ActionCommand(new GroupOrder(selected, UnitActionType::ORDER, id, {}, nullptr),
+		new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, id, {}, nullptr),
 		                  Game::getPlayersMan()->getActivePlayerID()));
-	//TODO przyjrzec sie typowi
+}
+
+void Controls::executeOnResources(short id, const ActionParameter& parameter) const {
+	Game::getActionCenter()->add(
+		new UnitActionCommand(new ResourceOrder(selected, ResourceActionType(id)),
+		                  Game::getPlayersMan()->getActivePlayerID()));
+}
+
+void Controls::executeOnBuildings(short id, const ActionParameter& parameter) const {
+		Game::getActionCenter()->add(
+		new UnitActionCommand(new BuildingOrder(selected, ResourceActionType(id), id),
+		                  Game::getPlayersMan()->getActivePlayerID()));
 }
 
 bool Controls::clickDown(MouseButton& var) const {
@@ -345,7 +357,7 @@ void Controls::unitOrder(short id) {
 	case UnitAction::STOP:
 	case UnitAction::DEFEND:
 	case UnitAction::DEAD:
-		executeOnAll(id, ActionParameter::Builder().setType(ActionType::ORDER).build());
+		executeOnUnits(id, ActionParameter::Builder().setType(ActionType::ORDER).build());
 		break;
 	default: ;
 	}
@@ -452,9 +464,8 @@ void Controls::toDefault() {
 
 void Controls::unitFormation(short id) const {
 	Game::getActionCenter()->add(
-		new ActionCommand(new GroupOrder(selected, UnitActionType::FORMATION, id, {}, nullptr),
+		new UnitActionCommand(new GroupOrder(selected, UnitActionType::FORMATION, id, {}, nullptr),
 		                  Game::getPlayersMan()->getActivePlayerID()));
-	Game::getFormationManager()->createFormation(*selected, FormationType(id));
 }
 
 

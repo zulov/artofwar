@@ -7,7 +7,7 @@
 #include "simulation/formation/Formation.h"
 #include "simulation/env/Environment.h"
 
-FormationOrder::FormationOrder(Formation* formation, UnitActionType actionType, UnitAction action,
+FormationOrder::FormationOrder(Formation* formation, UnitActionType actionType, short action,
                                const Urho3D::Vector2& vector, Physical* toUse, bool append):
 	UnitOrder(actionType, action, append, toUse, vector), formation(formation) {
 }
@@ -74,7 +74,7 @@ void FormationOrder::followAndAct(float distThreshold) {
 				                          getFollowAim(optLeader.value()->getMainCell(),
 				                                       pos, toUse));
 				formation->addOrder(
-					new FormationOrder(formation, UnitActionType::ORDER, UnitAction(action), {}, toUse, true));
+					new FormationOrder(formation, UnitActionType::ORDER, action, {}, toUse, true));
 				//Dodanie celu po dojsciu
 			} else {
 				for (auto unit : formation->getUnits()) {

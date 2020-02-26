@@ -7,7 +7,7 @@ namespace Urho3D {
 	class Vector2;
 }
 
-class ActionCommand;
+class UnitActionCommand;
 class UpgradeCommandList;
 class CreationCommandList;
 class CreationCommand;
@@ -19,8 +19,8 @@ public:
 	ActionCenter(SimulationObjectManager* simulationObjectManager);
 	void add(UpgradeCommand* command) const;
 	//void add(CreationCommand* command) const;
-	void add(ActionCommand* command) const;
-	void add(ActionCommand* first, ActionCommand* second) const;
+	void add(UnitActionCommand* command) const;
+	void add(UnitActionCommand* first, UnitActionCommand* second) const;
 	void executeActions() const;
 	void executeLists() const;
 	bool addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const;
