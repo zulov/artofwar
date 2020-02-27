@@ -2,6 +2,7 @@
 #include "objects/static/Static.h"
 #include "objects/queue/QueueManager.h"
 
+enum class BuildingActionType : char;
 struct db_building;
 struct db_building_level;
 struct db_unit;
@@ -9,7 +10,6 @@ class QueueElement;
 
 class Building : public Static {
 public:
-
 	Building(Urho3D::Vector3& _position, int id, int player, int level, int mainCell);
 	~Building();
 
@@ -33,7 +33,7 @@ public:
 	Urho3D::String toMultiLineString() override;
 	void absorbAttack(float attackCoef) override;
 	ObjectType getType() const override;
-	void action(char id, const ActionParameter& parameter) override;
+	void action(BuildingActionType type, short id);
 	std::string getValues(int precision) override;
 	float getMaxHpBarSize() override;
 	int getDbID() override;

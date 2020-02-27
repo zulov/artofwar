@@ -15,7 +15,7 @@ class UnitActionCommand : public AbstractCommand {
 public:
 	UnitActionCommand(FutureOrder* futureAim, char player);
 	~UnitActionCommand() override;
-	
+
 	void execute() override;
 protected:
 	FutureOrder* futureAim;

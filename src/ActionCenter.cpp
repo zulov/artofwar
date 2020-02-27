@@ -1,5 +1,7 @@
 #include "ActionCenter.h"
 #include "commands/action/UnitActionCommand.h"
+#include "commands/action/ResourceActionCommand.h"
+#include "commands/action/BuildingActionCommand.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "commands/upgrade/UpgradeCommandList.h"
@@ -21,10 +23,16 @@ void ActionCenter::add(UpgradeCommand* command) const {
 	upgrade->add(command);
 }
 
-// void ActionCenter::add(CreationCommand* command) const {
-// 	Game::getStats()->add(command);
-// 	creation->add(command);
-// }
+void ActionCenter::add(ResourceActionCommand* command) const {
+	Game::getStats()->add(command);
+	action->add(command);
+}
+
+
+void ActionCenter::add(BuildingActionCommand* command) const {
+	Game::getStats()->add(command);
+	action->add(command);
+}
 
 void ActionCenter::add(UnitActionCommand* command) const {
 	Game::getStats()->add(command);

@@ -8,7 +8,7 @@
 
 UnitOrder::UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse,
                      const Urho3D::Vector2& vector):
-	FutureOrder(static_cast<char>(actionType), static_cast<short>(id), append),
+	FutureOrder(actionType, static_cast<short>(id), append),
 	toUse(toUse), vector(vector) {
 }
 

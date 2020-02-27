@@ -6,5 +6,5 @@ enum class BuildingActionType : char {
 	UNIT_LEVEL,
 	UNIT_UPGRADE,
 
-	BUILDING_LEVEL
-}
+	//BUILDING_LEVEL
+};

@@ -20,7 +20,7 @@ public:
 	Urho3D::Vector2 getPositionFor(short id) const;
 	float getPriority(int id) const;
 	FormationState getState() const { return state; }
-	std::optional<Physical*> getLeader();
+	std::optional<Unit*> getLeader();
 
 	void addOrder(FutureOrder* order);
 	size_t getSize() const;

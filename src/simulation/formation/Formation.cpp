@@ -286,7 +286,7 @@ float Formation::getPriority(int id) const {
 	return levelOfReach[id];
 }
 
-std::optional<Physical*> Formation::getLeader() {
+std::optional<Unit*> Formation::getLeader() {
 	if (state != FormationState::REACHED && units.size() > leader->getPositionInFormation()) {
 		return leader;
 	}

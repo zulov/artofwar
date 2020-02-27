@@ -109,7 +109,7 @@ public:
 	Urho3D::Vector2 getPosToUse();
 
 	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* follower) override;
-	void action(char id, const ActionParameter& parameter) override;
+	void action(char id, const ActionParameter& parameter);
 	void action(char id);
 	bool isFirstThingInSameSocket() const override;
 	std::string getValues(int precision) override;

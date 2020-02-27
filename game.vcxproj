@@ -181,8 +181,8 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\objects\order\ResourceOrder.cpp" />
-    <ClCompile Include="src\objects\order\BuildingOrder.cpp" />
+    <ClCompile Include="src\commands\action\ResourceActionCommand.cpp" />
+    <ClCompile Include="src\commands\action\BuildingActionCommand.cpp" />
     <ClCompile Include="src\ActionCenter.cpp" />
     <ClCompile Include="src\player\ai\nn\Brain.cpp" />
     <ClCompile Include="src\player\ai\nn\Layer.cpp" />
@@ -197,7 +197,6 @@
     <ClCompile Include="src\objects\order\IndividualOrder.cpp" />
     <ClCompile Include="src\debug\DebugLineRepo.cpp" />
     <ClCompile Include="src\colors\ColorPaletteRepo.cpp" />
-    <ClCompile Include="src\objects\order\FutureOrder.cpp" />
     <ClCompile Include="src\objects\unit\state\State.cpp" />
     <ClCompile Include="src\simulation\env\influence\InfluenceManager.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapFloat.cpp" />
@@ -286,11 +285,11 @@
     <ClCompile Include="src\objects\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\objects\order\enums\BuildingActionType.h" />
-    <ClInclude Include="src\objects\order\enums\ResourceActionType.h" />
+    <ClInclude Include="src\commands\action\BuildingActionType.h" />
+    <ClInclude Include="src\commands\action\ResourceActionType.h" />
     <ClInclude Include="src\objects\order\enums\UnitActionType.h" />
-    <ClInclude Include="src\objects\order\ResourceOrder.h" />
-    <ClInclude Include="src\objects\order\BuildingOrder.h" />
+    <ClInclude Include="src\commands\action\ResourceActionCommand.h" />
+    <ClInclude Include="src\commands\action\BuildingActionCommand.h" />
     <ClInclude Include="src\ActionCenter.h" />
     <ClInclude Include="src\player\ai\nn\AFUtil.h" />
     <ClInclude Include="src\player\ai\nn\Brain.h" />
@@ -313,7 +312,6 @@
     <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
     <ClInclude Include="src\objects\CellState.h" />
-    <ClInclude Include="src\objects\resource\ResourceOrderType.h" />
     <ClInclude Include="src\objects\static\StaticStateUtils.h" />
     <ClInclude Include="src\objects\static\StaticState.h" />
     <ClInclude Include="src\objects\unit\state\ShotState.h" />

@@ -183,15 +183,14 @@
     <ClCompile Include="src\stats\Stats.cpp" />
     <ClCompile Include="src\ActionCenter.cpp" />
     <ClCompile Include="src\objects\order\FormationOrder.cpp" />
-    <ClCompile Include="src\objects\order\FutureOrder.cpp" />
-    <ClCompile Include="src\objects\order\GroupOrder.cpp" />
     <ClCompile Include="src\objects\order\IndividualOrder.cpp" />
-    <ClCompile Include="src\objects\order\BuildingOrder.cpp" />
-    <ClCompile Include="src\objects\order\ResourceOrder.cpp" />
     <ClCompile Include="src\objects\order\UnitOrder.cpp" />
     <ClCompile Include="src\commands\action\UnitActionCommand.cpp">
       <Filter>command\action</Filter>
     </ClCompile>
+    <ClCompile Include="src\objects\order\GroupOrder.cpp" />
+    <ClCompile Include="src\commands\action\ResourceActionCommand.cpp" />
+    <ClCompile Include="src\commands\action\BuildingActionCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -468,21 +467,20 @@
     </ClInclude>
     <ClInclude Include="src\objects\order\FormationOrder.h" />
     <ClInclude Include="src\objects\order\FutureOrder.h" />
-    <ClInclude Include="src\objects\order\GroupOrder.h" />
     <ClInclude Include="src\objects\order\IndividualOrder.h" />
-    <ClInclude Include="src\objects\order\BuildingOrder.h" />
-    <ClInclude Include="src\objects\order\enums\ResourceActionType.h" />
-    <ClInclude Include="src\objects\order\enums\BuildingActionType.h" />
     <ClInclude Include="src\objects\order\enums\UnitActionType.h" />
     <ClInclude Include="src\objects\order\enums\UnitAction.h">
       <Filter>objects\unit</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\resource\ResourceOrderType.h" />
-    <ClInclude Include="src\objects\order\ResourceOrder.h" />
     <ClInclude Include="src\objects\order\UnitOrder.h" />
     <ClInclude Include="src\commands\action\UnitActionCommand.h">
       <Filter>command\action</Filter>
     </ClInclude>
+    <ClInclude Include="src\objects\order\GroupOrder.h" />
+    <ClInclude Include="src\commands\action\ResourceActionCommand.h" />
+    <ClInclude Include="src\commands\action\BuildingActionCommand.h" />
+    <ClInclude Include="src\commands\action\ResourceActionType.h" />
+    <ClInclude Include="src\commands\action\BuildingActionType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

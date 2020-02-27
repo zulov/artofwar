@@ -1,10 +1,13 @@
 #pragma once
 
+enum class UnitActionType : char;
+
 class FutureOrder {
 public:
-	FutureOrder(char actionType, short id, bool append);
+	FutureOrder(UnitActionType actionType, short id, bool append): action(actionType), id(id), append(append) {
+	}
 
-	virtual ~FutureOrder();
+	virtual ~FutureOrder() = default;
 
 	virtual bool expired() =0;
 	virtual bool add() =0;
@@ -12,9 +15,9 @@ public:
 	virtual void execute() =0;
 
 	bool getAppend() const { return append; }
-	short getAction() const { return action; }
+	UnitActionType getAction() const { return action; }
 protected:
-	const char action;
+	const UnitActionType action;
 	const short id;
 	const bool append;
 };

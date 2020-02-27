@@ -2,6 +2,7 @@
 #include "objects/static/Static.h"
 #include "scene/load/dbload_container.h"
 
+enum class ResourceActionType : char;
 struct db_resource;
 
 class ResourceEntity : public Static {
@@ -22,7 +23,7 @@ public:
 	float getHealthPercent() const override;
 	Urho3D::String toMultiLineString() override;
 	std::string getValues(int precision) override;
-	void action(char id, const ActionParameter& parameter) override;
+	void action(ResourceActionType type);
 	ObjectType getType() const override;
 private:
 	Urho3D::String getBarMaterialName() override;

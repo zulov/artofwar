@@ -9,6 +9,8 @@
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "commands/action/UnitActionCommand.h"
+#include "commands/action/BuildingActionCommand.h"
+#include "commands/action/ResourceActionCommand.h"
 #include "objects/order/enums/UnitAction.h"
 #include <fstream>
 
@@ -46,6 +48,22 @@ std::string Stats::getInputData(char player) {
 }
 
 void Stats::add(UpgradeCommand* command) {
+	const auto player = command->player;
+
+	const std::string data = getInputData(player);
+
+	appendOutput(player, data, getOutput(command));
+}
+
+void Stats::add(ResourceActionCommand* command) {
+	const auto player = command->player;
+
+	const std::string data = getInputData(player);
+
+	appendOutput(player, data, getOutput(command));
+}
+
+void Stats::add(BuildingActionCommand* command) {
 	const auto player = command->player;
 
 	const std::string data = getInputData(player);

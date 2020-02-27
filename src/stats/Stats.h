@@ -9,6 +9,8 @@
 #define SAVE_BATCH_SIZE 10
 
 struct ActionParameter;
+class BuildingActionCommand;
+class ResourceActionCommand;
 class AbstractCommand;
 class UnitActionCommand;
 class UpgradeCommand;
@@ -23,7 +25,11 @@ public:
 	void init();
 	std::string getInputData(char player);
 	void add(UpgradeCommand* command);
+
+	void add(ResourceActionCommand* command);
+	void add(BuildingActionCommand* command);
 	void add(UnitActionCommand* command);
+
 	void add(CreationCommand* command);
 	void save();
 	void addBuildLevel(short id, const ActionParameter& parameter, char playerId);
@@ -32,7 +38,11 @@ private:
 	void clear();
 	std::string getOutput(CreationCommand* command) const;
 	std::string getOutput(UpgradeCommand* command) const;
+
 	std::string getOutput(UnitActionCommand* command) const;
+	std::string getOutput(ResourceActionCommand* command) const;
+	std::string getOutput(BuildingActionCommand* command) const;
+
 	void appendOutput(char player, std::string data, std::string& output);
 	float* input;
 	std::vector<float*> statsPerPlayer;

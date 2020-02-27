@@ -10,7 +10,6 @@
 #include "info/LeftMenuInfoPanel.h"
 #include "objects/ActionType.h"
 #include "objects/building/BuildingUtils.h"
-#include "objects/resource/ResourceOrderType.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "utils.h"
@@ -20,6 +19,7 @@
 #include <unordered_set>
 #include <iostream>
 #include <utility>
+#include "commands/action/ResourceActionType.h"
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow",
@@ -357,10 +357,10 @@ void MenuPanel::basicResource(SelectedInfo* selectedInfo) {
 	int k = 0;
 	auto l10n = Game::getLocalization();
 
-	setNext(k, "textures/hud/icon/resource_action/get_worker.png", int(ResourceOrderType::COLLECT),
+	setNext(k, "textures/hud/icon/resource_action/get_worker.png", int(ResourceActionType::COLLECT),
 	        ActionType::RESOURCE,
 	        l10n->Get("res_act_get_worker"));
-	setNext(k, "textures/hud/icon/resource_action/remove_workers.png", int(ResourceOrderType::COLLECT_CANCEL),
+	setNext(k, "textures/hud/icon/resource_action/remove_workers.png", int(ResourceActionType::CANCEL),
 	        ActionType::RESOURCE,
 	        l10n->Get("res_act_cancel_worker"));
 

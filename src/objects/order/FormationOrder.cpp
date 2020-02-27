@@ -46,7 +46,7 @@ void FormationOrder::addFollowAim() {
 	auto opt = formation->getLeader();
 	if (opt.has_value()) {
 		formation->stopAllBesideLeader();
-		auto posOpt = toUse->getPosToUseBy(static_cast<Unit*>(opt.value()));
+		auto posOpt = toUse->getPosToUseBy(opt.value());
 		if (posOpt.has_value()) {
 			opt.value()->action(static_cast<char>(action),
 			                    getFollowAim(opt.value()->getMainCell(),
@@ -74,7 +74,7 @@ void FormationOrder::followAndAct(float distThreshold) {
 				                          getFollowAim(optLeader.value()->getMainCell(),
 				                                       pos, toUse));
 				formation->addOrder(
-					new FormationOrder(formation, UnitActionType::ORDER, action, {}, toUse, true));
+					new FormationOrder(formation, UnitActionType::ORDER, id, {}, toUse, true));
 				//Dodanie celu po dojsciu
 			} else {
 				for (auto unit : formation->getUnits()) {

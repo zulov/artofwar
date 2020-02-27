@@ -1,7 +1,6 @@
 #include "ResourceEntity.h"
 #include "Game.h"
 #include "objects/ObjectEnums.h"
-#include "ResourceOrderType.h"
 #include "database/DatabaseCache.h"
 #include "objects/order/enums/UnitAction.h"
 #include "objects/unit/Unit.h"
@@ -10,6 +9,7 @@
 #include "player/PlayersManager.h"
 #include "simulation/env/Environment.h"
 #include <string>
+#include "commands/action/ResourceActionType.h"
 
 
 ResourceEntity::ResourceEntity(Urho3D::Vector3& _position,
@@ -57,13 +57,13 @@ std::string ResourceEntity::getValues(int precision) {
 		+ std::to_string(amountI);
 }
 
-void ResourceEntity::action(char id, const ActionParameter& parameter) {
-	switch (static_cast<ResourceOrderType>(id)) {
-	case ResourceOrderType::COLLECT:
+void ResourceEntity::action(ResourceActionType type) {
+	switch (type) {
+	case ResourceActionType::COLLECT:
 	{
 		auto neights = Game::getEnvironment()->getNeighboursFromTeamEq(this, 24,
-		                                                             Game::getPlayersMan()
-		                                                             ->getActivePlayer()->getTeam());
+		                                                               Game::getPlayersMan()
+		                                                               ->getActivePlayer()->getTeam());
 		int k = 0;
 		char limit = belowCloseLimit();
 		for (auto neight : *neights) {
@@ -84,7 +84,7 @@ void ResourceEntity::action(char id, const ActionParameter& parameter) {
 		}
 	}
 	break;
-	case ResourceOrderType::COLLECT_CANCEL:
+	case ResourceActionType::CANCEL:
 		StateManager::changeState(this, StaticState::FREE);
 		break;
 	}
