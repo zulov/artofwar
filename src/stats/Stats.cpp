@@ -11,6 +11,8 @@
 #include "commands/action/UnitActionCommand.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/ResourceActionCommand.h"
+#include "commands/action/ResourceActionType.h"
+#include "commands/action/BuildingActionType.h"
 #include "objects/order/enums/UnitAction.h"
 #include <fstream>
 
@@ -108,7 +110,7 @@ void Stats::save() {
 	}
 }
 
-void Stats::addBuildLevel(short id, const ActionParameter& parameter, char playerId) {
+void Stats::addBuildLevel(short id, char playerId) {
 	//TODO zrobic cos
 }
 
@@ -191,8 +193,7 @@ std::string Stats::getOutput(UnitActionCommand* command) const {
 	float output[STATS_OUTPUT_SIZE];
 	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
 	//TODO command->type;, command->id; wybrac ktore wzmocnic
-	switch (command->futureAim->getAction()) {
-
+	switch (static_cast<UnitAction>(command->futureAim->getId())) {
 	case UnitAction::GO:
 		output[cast(StatsOutputType::ORDER_GO)] = 1;
 		break;
@@ -221,4 +222,26 @@ std::string Stats::getOutput(UnitActionCommand* command) const {
 	}
 
 	return join(output, output + STATS_OUTPUT_SIZE);
+}
+
+std::string Stats::getOutput(ResourceActionCommand* command) const {
+	float output[STATS_OUTPUT_SIZE];
+	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
+	switch (command->action) {
+	case ResourceActionType::COLLECT: break;
+	case ResourceActionType::CANCEL: break;
+	default: ;
+	}
+}
+
+std::string Stats::getOutput(BuildingActionCommand* command) const {
+	float output[STATS_OUTPUT_SIZE];
+	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
+	switch (command->action) {
+
+	case BuildingActionType::UNIT_CREATE: break;
+	case BuildingActionType::UNIT_LEVEL: break;
+	case BuildingActionType::UNIT_UPGRADE: break;
+	default: ;
+	}
 }

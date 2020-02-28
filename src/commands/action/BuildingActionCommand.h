@@ -17,6 +17,7 @@ public:
 
 	void execute() override;
 private:
+	short id;
 	BuildingActionType action;
 	std::vector<Building*> buildings;
 };

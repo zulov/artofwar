@@ -1,6 +1,6 @@
 #include "player/Player.h"
 #include "Game.h"
-#include "ActionType.h"
+#include "queue/QueueActionType.h"
 #include "database/DatabaseCache.h"
 #include <string>
 #include <utility>
@@ -8,10 +8,7 @@
 #include <fstream>
 #include "stats/Stats.h"
 #include "stats/StatsEnums.h"
-#include "ActionCenter.h"
 #include "building/Building.h"
-#include "objects/order/GroupOrder.h"
-#include "objects/order/IndividualOrder.h"
 
 
 Player::Player(int nationId, int team, char id, int color, Urho3D::String name, bool active): name(std::move(name)),
@@ -48,21 +45,21 @@ void Player::setResourceAmount(float amount) {
 	resources.init(amount);
 }
 
-char Player::upgradeLevel(ActionType type, int id) {
+char Player::upgradeLevel(QueueActionType type, int id) {
 	switch (type) {
-	case ActionType::UNIT_LEVEL:
+	case QueueActionType::UNIT_LEVEL:
 		if (Game::getDatabase()->getUnitLevels(id)->size() - 1 > unitLevels[id]) {
 			unitLevels[id]++;
 			return unitLevels[id];
 		}
 		break;
-	case ActionType::BUILDING_LEVEL:
+	case QueueActionType::BUILDING_LEVEL:
 		if (Game::getDatabase()->getBuildingLevels(id)->size() - 1 > buildingLevels[id]) {
 			buildingLevels[id]++;
 			return buildingLevels[id];
 		}
 		break;
-	case ActionType::UNIT_UPGRADE:
+	case QueueActionType::UNIT_UPGRADE:
 		if (Game::getDatabase()->getUnitUpgrades(id)->size() - 1 > unitUpgradeLevels[id]) {
 			unitUpgradeLevels[id]++;
 			return unitUpgradeLevels[id];

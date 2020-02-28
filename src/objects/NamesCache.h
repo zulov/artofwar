@@ -4,6 +4,7 @@
 #include "objects/ObjectEnums.h"
 #include "database/DatabaseCache.h"
 #include <Urho3D/Container/Str.h>
+#include "queue/QueueActionType.h"
 
 
 inline Urho3D::String getIconName(ObjectType type, int i) {
@@ -20,16 +21,16 @@ inline Urho3D::String getIconName(ObjectType type, int i) {
 	}
 }
 
-inline Urho3D::String getIconName(ActionType type, int level, int i) {
+inline Urho3D::String getIconName(QueueActionType type, int level, int i) {
 	DatabaseCache* dbCache = Game::getDatabase();
 	switch (type) {
-	case ActionType::UNIT_CREATE:
+	case QueueActionType::UNIT_CREATE:
 		return "unit/" + dbCache->getUnit(i)->icon;
-	case ActionType::UNIT_LEVEL:
+	case QueueActionType::UNIT_LEVEL:
 		return "unit/levels/" + Urho3D::String(level) + "/" + dbCache->getUnit(i)->icon;
-	case ActionType::BUILDING_LEVEL:
+	case QueueActionType::BUILDING_LEVEL:
 		return "building/levels/" + Urho3D::String(level) + "/" + dbCache->getBuilding(i)->icon;
-	case ActionType::UNIT_UPGRADE:
+	case QueueActionType::UNIT_UPGRADE:
 		{
 		auto opt = dbCache->getUnitUpgrade(i, level);
 		if (opt.has_value()) {

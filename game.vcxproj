@@ -291,6 +291,7 @@
     <ClInclude Include="src\commands\action\ResourceActionCommand.h" />
     <ClInclude Include="src\commands\action\BuildingActionCommand.h" />
     <ClInclude Include="src\ActionCenter.h" />
+    <ClInclude Include="src\objects\queue\QueueActionType.h" />
     <ClInclude Include="src\player\ai\nn\AFUtil.h" />
     <ClInclude Include="src\player\ai\nn\Brain.h" />
     <ClInclude Include="src\player\ai\nn\Layer.h" />
@@ -417,7 +418,6 @@
     <ClInclude Include="src\objects\resource\ResourceEntity.h" />
     <ClInclude Include="src\objects\resource\ResourceFactory.h" />
     <ClInclude Include="src\player\Resources.h" />
-    <ClInclude Include="src\objects\resource\ResourceType.h" />
     <ClInclude Include="src\hud\window\selected\SelectedHudElement.h" />
     <ClInclude Include="src\hud\window\selected\SelectedHudPanel.h" />
     <ClInclude Include="src\control\SelectedInfo.h" />

@@ -21,6 +21,7 @@
 #include "simulation/SimulationInfo.h"
 #include "simulation/env/Environment.h"
 #include "ActionCenter.h"
+#include "objects/queue/QueueActionType.h"
 #include "commands/action/BuildingActionType.h"
 #include "commands/action/ResourceActionType.h"
 #include "commands/action/ResourceActionCommand.h"
@@ -280,28 +281,28 @@ void Controls::order(short id, const ActionParameter& parameter) {
 
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::PHYSICAL:
-		return Game::getActionCenter()->orderPhysical(id, parameter, player);
+		return Game::getActionCenter()->orderPhysical(id, QueueActionType::BUILDING_LEVEL, player);
 	case ObjectType::UNIT:
 		return actionUnit(id, parameter);
 	case ObjectType::BUILDING:
-		return executeOnResources(id, parameter);
+		return executeOnResources(id);
 	case ObjectType::RESOURCE:
-		return executeOnBuildings(id, parameter);
+		return executeOnBuildings(id);
 	}
 }
 
-void Controls::executeOnUnits(short id, const ActionParameter& parameter) const {
+void Controls::executeOnUnits(short id) const {
 	Game::getActionCenter()->add(
 		new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, id, {}, nullptr),
 		                      Game::getPlayersMan()->getActivePlayerID()));
 }
 
-void Controls::executeOnResources(short id, const ActionParameter& parameter) const {
+void Controls::executeOnResources(short id) const {
 	Game::getActionCenter()->add(
 		new ResourceActionCommand(selected, ResourceActionType(id), Game::getPlayersMan()->getActivePlayerID()));
 }
 
-void Controls::executeOnBuildings(short id, const ActionParameter& parameter) const {
+void Controls::executeOnBuildings(short id) const {
 	Game::getActionCenter()->add(
 		new BuildingActionCommand(selected, BuildingActionType(id), id, Game::getPlayersMan()->getActivePlayerID()));
 }
@@ -357,7 +358,7 @@ void Controls::unitOrder(short id) {
 	case UnitAction::STOP:
 	case UnitAction::DEFEND:
 	case UnitAction::DEAD:
-		executeOnUnits(id, ActionParameter::Builder().setType(ActionType::ORDER).build());
+		executeOnUnits(id);
 		break;
 	default: ;
 	}

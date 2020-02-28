@@ -16,7 +16,7 @@ public:
 	std::string getValues(int precision) const;
 	void setResourceAmount(int resource, float amount);
 	void setResourceAmount(float amount);
-	char upgradeLevel(ActionType type, int id);
+	char upgradeLevel(QueueActionType type, int id);
 
 	Resources& getResources() { return resources; }
 	Possession& getPossession() { return possession; }

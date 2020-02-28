@@ -1,8 +1,6 @@
 #pragma once
 enum class BuildingActionType : char {
-	NONE=0,
-
-	UNIT_CREATE,
+	UNIT_CREATE=0,
 	UNIT_LEVEL,
 	UNIT_UPGRADE,
 

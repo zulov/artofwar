@@ -1,15 +1,16 @@
 #include "QueueElement.h"
+#include "QueueActionType.h"
 
-QueueElement::QueueElement(ActionType type, short id, short maxCapacity, float initialSecondsToComplete,
+QueueElement::QueueElement(QueueActionType type, short id, short maxCapacity, float initialSecondsToComplete,
                            float secondsToCompletePerInstance): type(type), id(id), maxCapacity(maxCapacity), amount(0),
-	secondsToComplete(initialSecondsToComplete), elapsedSeconds(0),
-	initialSecondsToComplete(initialSecondsToComplete),
-	secondsToCompletePerInstance(secondsToCompletePerInstance) {
+                                                                secondsToComplete(initialSecondsToComplete), elapsedSeconds(0),
+                                                                initialSecondsToComplete(initialSecondsToComplete),
+                                                                secondsToCompletePerInstance(secondsToCompletePerInstance) {
 }
 
 QueueElement::~QueueElement() = default;
 
-bool QueueElement::checkType(ActionType _type, short _id) const {
+bool QueueElement::checkType(QueueActionType _type, short _id) const {
 	return type == _type && id == _id;
 }
 
@@ -35,7 +36,7 @@ bool QueueElement::update(float time) {
 	return elapsedSeconds >= secondsToComplete;
 }
 
-ActionType QueueElement::getType() const {
+QueueActionType QueueElement::getType() const {
 	return type;
 }
 

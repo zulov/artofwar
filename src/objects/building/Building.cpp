@@ -13,6 +13,7 @@
 #include "objects/NodeUtils.h"
 #include "../ValueType.h"
 #include <string>
+#include "objects/queue/QueueActionType.h"
 
 
 Building::Building(Urho3D::Vector3& _position, int id, int player, int level, int mainCell):
@@ -71,7 +72,7 @@ void Building::action(BuildingActionType type, short id) {
 	{
 		auto costs = Game::getDatabase()->getCostForUnit(id);
 		if (resources.reduce(costs)) {
-			queue->add(1, type, id, 30);
+			queue->add(1, QueueActionType::UNIT_CREATE, id, 30);
 		}
 	}
 	break;
@@ -82,7 +83,7 @@ void Building::action(BuildingActionType type, short id) {
 		if (opt.has_value()) {
 			const auto costs = opt.value();
 			if (resources.reduce(costs)) {
-				queue->add(1, type, id, 1);
+				queue->add(1, QueueActionType::UNIT_LEVEL, id, 1);
 			}
 		}
 	}
@@ -94,7 +95,7 @@ void Building::action(BuildingActionType type, short id) {
 		if (opt.has_value()) {
 			const auto costs = opt.value();
 			if (resources.reduce(costs)) {
-				queue->add(1, type, id, 1);
+				queue->add(1, QueueActionType::UNIT_UPGRADE, id, 1);
 			}
 		}
 	}

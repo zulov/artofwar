@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-enum class ActionType : char;
+enum class QueueActionType : char;
 class QueueElement;
 
 class QueueManager {
@@ -9,13 +9,13 @@ public:
 	explicit QueueManager(short maxCapacity);
 	~QueueManager();
 
-	void add(short value, ActionType type, short id, short localMaxCapacity);
+	void add(short number, QueueActionType type, short id, short localMaxCapacity);
 	QueueElement* update(float time);
 	short getSize() const;
 	QueueElement* getAt(short i);
 private:
-	static float getSecToComplete(ActionType type, short id, int level);
-	float getSecPerInstance(ActionType type, short id, int level);
+	static float getSecToComplete(QueueActionType type, short id, int level);
+	float getSecPerInstance(QueueActionType type, short id, int level);
 
 	std::vector<QueueElement*> queue;
 

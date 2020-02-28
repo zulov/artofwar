@@ -32,7 +32,7 @@ public:
 
 	void add(CreationCommand* command);
 	void save();
-	void addBuildLevel(short id, const ActionParameter& parameter, char playerId);
+	void addBuildLevel(short id, char playerId);
 private:
 	void update(short id);
 	void clear();

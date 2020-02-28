@@ -16,6 +16,7 @@ public:
 
 	bool getAppend() const { return append; }
 	UnitActionType getAction() const { return action; }
+	short getId() const { return id; }
 protected:
 	const UnitActionType action;
 	const short id;

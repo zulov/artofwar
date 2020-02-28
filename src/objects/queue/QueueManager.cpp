@@ -3,7 +3,7 @@
 #include "QueueElement.h"
 #include "database/DatabaseCache.h"
 #include "defines.h"
-#include "objects/ActionType.h"
+#include "QueueActionType.h"
 #include "utils.h"
 #include <algorithm>
 
@@ -17,18 +17,18 @@ QueueManager::~QueueManager() {
 	clear_vector(queue);
 }
 
-void QueueManager::add(short value, ActionType type, short id, short localMaxCapacity) {
+void QueueManager::add(short number, QueueActionType type, short id, short localMaxCapacity) {
 	for (auto& i : queue) {
 		if (i->checkType(type, id)) {
-			value = i->add(value);
+			number = i->add(number);
 		}
 	}
 
-	while (value > 0) {
+	while (number > 0) {
 		auto element = new QueueElement(type, id, std::min(maxCapacity, localMaxCapacity),
 		                                getSecToComplete(type, id, 0),
 		                                getSecPerInstance(type, id, 0));
-		value = element->add(value);
+		number = element->add(number);
 		queue.push_back(element);
 	}
 }
@@ -59,29 +59,29 @@ QueueElement* QueueManager::getAt(short i) {
 	return queue.at(i);
 }
 
-float QueueManager::getSecToComplete(ActionType type, short id, int level) {
+float QueueManager::getSecToComplete(QueueActionType type, short id, int level) {
 	switch (type) {
-	case ActionType::UNIT_CREATE:
+	case QueueActionType::UNIT_CREATE:
 		return 5;
-	case ActionType::BUILDING_CREATE:
+	case QueueActionType::BUILDING_CREATE:
 		return 10;
-	case ActionType::UNIT_LEVEL:
+	case QueueActionType::UNIT_LEVEL:
 		return Game::getDatabase()->getUnitLevel(id, level).value()->upgradeSpeed;
-	case ActionType::BUILDING_LEVEL:
+	case QueueActionType::BUILDING_LEVEL:
 		return 10;
 	default:
 		return 1;
 	}
 }
 
-float QueueManager::getSecPerInstance(ActionType type, short id, int level) {
+float QueueManager::getSecPerInstance(QueueActionType type, short id, int level) {
 	//TODO performance przerobic na tablice
 	switch (type) {
-	case ActionType::UNIT_CREATE:
+	case QueueActionType::UNIT_CREATE:
 		return 0.5;
-	case ActionType::BUILDING_CREATE:
-	case ActionType::UNIT_LEVEL:
-	case ActionType::BUILDING_LEVEL:
+	case QueueActionType::BUILDING_CREATE:
+	case QueueActionType::UNIT_LEVEL:
+	case QueueActionType::BUILDING_LEVEL:
 	default:
 		return 0;
 	}

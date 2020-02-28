@@ -19,7 +19,7 @@ ActionCenter::ActionCenter(SimulationObjectManager* simulationObjectManager) {
 }
 
 void ActionCenter::add(UpgradeCommand* command) const {
-	Game::getStats()->add(command);//TODO BUG to nie jest akcja tylko rezultat
+	Game::getStats()->add(command); //TODO BUG to nie jest akcja tylko rezultat
 	upgrade->add(command);
 }
 
@@ -85,15 +85,15 @@ auto ActionCenter::addResource(int id, Urho3D::Vector2& position, int level) con
 	return false;
 }
 
-void ActionCenter::orderPhysical(short id, const ActionParameter& parameter, char playerId) const {
-	if (parameter.type == ActionType::BUILDING_LEVEL) {
-		Game::getStats()->addBuildLevel(id, parameter, playerId);
+void ActionCenter::orderPhysical(short id, QueueActionType type, char playerId) const {
+	if (type == QueueActionType::BUILDING_LEVEL) {
+		Game::getStats()->addBuildLevel(id, playerId);
 		auto player = Game::getPlayersMan()->getPlayer(playerId);
 		const auto level = player->getLevelForBuilding(id) + 1;
 		auto opt = Game::getDatabase()->getCostForBuildingLevel(id, level);
 		if (opt.has_value()) {
 			if (player->getResources().reduce(opt.value())) {
-				player->getQueue().add(1, parameter.type, id, 1);			
+				player->getQueue().add(1, QueueActionType::BUILDING_LEVEL, id, 1);
 			}
 		}
 	}
