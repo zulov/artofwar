@@ -11,6 +11,8 @@
 
 #define MAX_DEPLOY_MARK_NUMBER 5
 
+enum class BuildingActionType : char;
+enum class ResourceActionType : char;
 class HudData;
 class SimulationInfo;
 struct ActionParameter;
@@ -51,8 +53,8 @@ public:
 	SelectedInfo* getInfo() const { return selectedInfo; }
 private:
 	void executeOnUnits(short id) const;
-	void executeOnResources(short id) const;
-	void executeOnBuildings(short id) const;
+	void executeOnResources(ResourceActionType action) const;
+	void executeOnBuildings(BuildingActionType action, short id) const;
 
 	void unitFormation(short id) const;
 	void actionUnit(short id, const ActionParameter& parameter);

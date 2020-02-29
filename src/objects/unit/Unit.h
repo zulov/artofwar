@@ -59,7 +59,7 @@ public:
 
 	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order);
 	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order,
-                    float attackInterest);
+	              float attackInterest);
 
 	void updateHeight(float y, double timeStep);
 
@@ -109,8 +109,10 @@ public:
 	Urho3D::Vector2 getPosToUse();
 
 	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* follower) override;
-	void action(char id, const ActionParameter& parameter);
-	void action(char id);
+
+	void action(UnitAction unitAction, const ActionParameter& parameter);
+	void action(UnitAction unitAction);
+
 	bool isFirstThingInSameSocket() const override;
 	std::string getValues(int precision) override;
 	Urho3D::String toMultiLineString() override;

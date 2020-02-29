@@ -1,4 +1,9 @@
 #include "ActionCenter.h"
+#include "Game.h"
+#include "stats/Stats.h"
+#include "player/PlayersManager.h"
+#include "player/Player.h"
+#include "database/DatabaseCache.h"
 #include "commands/action/UnitActionCommand.h"
 #include "commands/action/ResourceActionCommand.h"
 #include "commands/action/BuildingActionCommand.h"
@@ -6,11 +11,6 @@
 #include "commands/upgrade/UpgradeCommand.h"
 #include "commands/upgrade/UpgradeCommandList.h"
 #include "commands/creation/CreationCommandList.h"
-#include "Game.h"
-#include "stats/Stats.h"
-#include "player/PlayersManager.h"
-#include "player/Player.h"
-#include "database/DatabaseCache.h"
 
 ActionCenter::ActionCenter(SimulationObjectManager* simulationObjectManager) {
 	creation = new CreationCommandList(simulationObjectManager);
@@ -19,7 +19,7 @@ ActionCenter::ActionCenter(SimulationObjectManager* simulationObjectManager) {
 }
 
 void ActionCenter::add(UpgradeCommand* command) const {
-	Game::getStats()->add(command); //TODO BUG to nie jest akcja tylko rezultat
+	//Game::getStats()->add(command); //TODO BUG to nie jest akcja tylko rezultat
 	upgrade->add(command);
 }
 

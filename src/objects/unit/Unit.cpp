@@ -1,25 +1,26 @@
 #include "Unit.h"
+#include <algorithm>
+#include <string>
+#include "../ValueType.h"
+#include "colors/ColorPaletteRepo.h"
+#include "consts.h"
+#include "database/DatabaseCache.h"
+#include "debug/DebugLineRepo.h"
+#include "debug/DebugUnitType.h"
 #include "Game.h"
 #include "objects/ObjectEnums.h"
 #include "objects/order/enums/UnitAction.h"
+#include "objects/order/enums/UnitActionType.h"
 #include "objects/order/FutureOrder.h"
-#include "colors/ColorPaletteRepo.h"
-#include "database/DatabaseCache.h"
+#include "objects/order/IndividualOrder.h"
 #include "objects/unit/ChargeData.h"
-#include "objects/unit/SimColorMode.h"
 #include "objects/unit/MissileData.h"
+#include "objects/unit/SimColorMode.h"
 #include "scene/load/dbload_container.h"
+#include "simulation/env/Environment.h"
 #include "simulation/force/ForceStats.h"
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
-#include "debug/DebugLineRepo.h"
-#include "debug/DebugUnitType.h"
-#include <string>
-#include <algorithm>
-#include "consts.h"
-#include "simulation/env/Environment.h"
-#include "objects/order/IndividualOrder.h"
-#include "../ValueType.h"
 
 
 Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position),
@@ -253,16 +254,16 @@ Urho3D::String Unit::toMultiLineString() {
 	       .Append("\nStan:").Append(Urho3D::String(Consts::UnitStateNames[static_cast<char>(state)]));
 }
 
-void Unit::action(char id) {
-	action(id, Consts::EMPTY_ACTION_PARAMETER);
+void Unit::action(UnitAction unitAction) {
+	action(unitAction, Consts::EMPTY_ACTION_PARAMETER);
 }
 
 bool Unit::isFirstThingInSameSocket() const {
 	return !indexHasChanged;
 }
 
-void Unit::action(char id, const ActionParameter& parameter) {
-	switch (static_cast<UnitAction>(id)) {
+void Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
+	switch (unitAction) {
 	case UnitAction::GO:
 		StateManager::changeState(this, UnitState::GO_TO, parameter);
 		break;

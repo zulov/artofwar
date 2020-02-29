@@ -31,7 +31,7 @@ ActionParameter UnitOrder::getChargeAim(Urho3D::Vector2& charge) {
 }
 
 void UnitOrder::execute() {
-	switch (static_cast<UnitAction>(action)) {
+	switch (static_cast<UnitAction>(actionType)) {
 	case UnitAction::GO:
 		return addTargetAim();
 	case UnitAction::FOLLOW:

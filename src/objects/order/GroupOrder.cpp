@@ -1,10 +1,10 @@
 #include "GroupOrder.h"
 #include "FormationOrder.h"
 #include "Game.h"
-#include "consts.h"
 #include "VectorUtils.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/order/enums/UnitAction.h"
+#include "objects/order/enums/UnitActionType.h"
 #include "simulation/formation/FormationManager.h"
 
 
@@ -20,7 +20,7 @@ GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitActionType actionTy
 GroupOrder::~GroupOrder() = default;
 
 bool GroupOrder::add() {
-	switch (UnitActionType(action)) {
+	switch (actionType) {
 	case UnitActionType::ORDER:
 		execute();
 		break;
@@ -71,14 +71,14 @@ void GroupOrder::addStopAim() {
 }
 
 void GroupOrder::simpleAction(ActionParameter& parameter) const {
-	for (auto entity : units) {
-		entity->action(static_cast<char>(FutureOrder::action), parameter);
+	for (auto unit : units) {
+		unit->action(static_cast<UnitAction>(id), parameter);
 	}
 }
 
 void GroupOrder::simpleAction() const {
-	for (auto entity : units) {
-		entity->action(static_cast<char>(FutureOrder::action), Consts::EMPTY_ACTION_PARAMETER);
+	for (auto unit : units) {
+		unit->action(static_cast<UnitAction>(id));
 	}
 }
 

@@ -1,9 +1,9 @@
 #include "IndividualOrder.h"
 #include "Game.h"
-#include "consts.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
 #include "objects/order/enums/UnitAction.h"
+#include "objects/order/enums/UnitActionType.h"
 #include "simulation/env/Environment.h"
 
 
@@ -34,7 +34,7 @@ void IndividualOrder::addCollectAim() {
 }
 
 void IndividualOrder::addTargetAim() {
-	unit->action(static_cast<char>(action), getTargetAim(unit->getMainCell(), vector)); //TODO execute i akajca
+	unit->action(static_cast<UnitAction>(id), getTargetAim(unit->getMainCell(), vector)); //TODO execute i akajca
 	unit->resetFormation();
 
 	Game::getEnvironment()->invalidateCache();
@@ -43,14 +43,13 @@ void IndividualOrder::addTargetAim() {
 void IndividualOrder::addFollowAim() {
 	auto opt = toUse->getPosToUseBy(unit);
 	if (opt.has_value()) {
-		unit->action(static_cast<char>(action),
-		             getFollowAim(unit->getMainCell(),
-		                          opt.value(), toUse));
+		unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainCell(),
+		                                                       opt.value(), toUse));
 	}
 }
 
 void IndividualOrder::addChargeAim() {
-	unit->action(static_cast<char>(action), getChargeAim(vector));
+	unit->action(static_cast<UnitAction>(id), getChargeAim(vector));
 }
 
 void IndividualOrder::addAttackAim() {
@@ -70,7 +69,7 @@ void IndividualOrder::addStopAim() {
 }
 
 void IndividualOrder::simpleAction() const {
-	unit->action(static_cast<char>(action), Consts::EMPTY_ACTION_PARAMETER);
+	unit->action(static_cast<UnitAction>(id));
 }
 
 void IndividualOrder::followAndAct(float distThreshold) {
@@ -79,13 +78,12 @@ void IndividualOrder::followAndAct(float distThreshold) {
 		auto postToUse = posOpt.value();
 		if (std::get<2>(postToUse) != unit->getMainBucketIndex()) {
 			auto pos = std::get<0>(postToUse);
-			unit->action(static_cast<char>(UnitAction::FOLLOW),
-			             getFollowAim(unit->getMainCell(),
-			                          pos, toUse));
-			unit->addOrder(new IndividualOrder(unit, UnitActionType::ORDER, UnitAction(action), {}, toUse, true));
+			unit->action(UnitAction::FOLLOW,
+			             getFollowAim(unit->getMainCell(), pos, toUse));
+			unit->addOrder(new IndividualOrder(unit, UnitActionType::ORDER, UnitAction(actionType), {}, toUse, true));
 			//Dodanie celu po dojsciu
 		} else {
-			unit->action(static_cast<char>(action),
+			unit->action(static_cast<UnitAction>(id),
 			             ActionParameter::Builder()
 			             .setIndex(std::get<2>(postToUse))
 			             .setThingsToInteract(toUse)

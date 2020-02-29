@@ -191,7 +191,7 @@ void Simulation::updateBuildingQueues(const float time) const {
 		auto done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {
-			case ActionType::UNIT_CREATE:
+			case QueueActionType::UNIT_CREATE:
 			{
 				auto center = enviroment->getCenter(build->getDeploy().value());
 
@@ -203,9 +203,9 @@ void Simulation::updateBuildingQueues(const float time) const {
 				                                  getLevelForUnit(done->getId()));
 			}
 			break;
-			case ActionType::UNIT_LEVEL:
-			case ActionType::BUILDING_LEVEL:
-			case ActionType::UNIT_UPGRADE:
+			case QueueActionType::UNIT_LEVEL:
+			case QueueActionType::BUILDING_LEVEL:
+			case QueueActionType::UNIT_UPGRADE:
 				levelUp(done, build->getPlayer());
 				break;
 			}
@@ -220,7 +220,7 @@ void Simulation::updateQueues() const {
 		auto done = player->updateQueue(maxTimeFrame);
 		if (done) {
 			switch (done->getType()) {
-			case ActionType::BUILDING_LEVEL:
+			case QueueActionType::BUILDING_LEVEL:
 				levelUp(done, player->getId());
 				break;
 			}

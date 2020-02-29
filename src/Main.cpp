@@ -54,7 +54,7 @@ void Main::Setup() {
 	engineParameters_[EP_SOUND] = false;
 	engineParameters_[EP_WINDOW_WIDTH] = resolution->x;
 	engineParameters_[EP_WINDOW_HEIGHT] = resolution->y;
-	engineParameters_["ResourcePaths"] = "Data;CoreData;CoreDataMy"; 
+	engineParameters_["ResourcePaths"] = "Data;CoreData;CoreDataMy";
 	engineParameters_["ResourcePrefixPaths"] = " ;../";
 
 	engine_->SetMaxFps(graphSettings->max_fps);

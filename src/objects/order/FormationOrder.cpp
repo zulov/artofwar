@@ -36,7 +36,7 @@ void FormationOrder::addCollectAim() {
 void FormationOrder::addTargetAim() {
 	auto opt = formation->getLeader();
 	if (opt.has_value()) {
-		opt.value()->action(static_cast<char>(action), getTargetAim(opt.value()->getMainCell(), vector));
+		opt.value()->action(static_cast<UnitAction>(id), getTargetAim(opt.value()->getMainCell(), vector));
 		formation->stopAllBesideLeader();
 		Game::getEnvironment()->invalidateCache();
 	}
@@ -48,7 +48,7 @@ void FormationOrder::addFollowAim() {
 		formation->stopAllBesideLeader();
 		auto posOpt = toUse->getPosToUseBy(opt.value());
 		if (posOpt.has_value()) {
-			opt.value()->action(static_cast<char>(action),
+			opt.value()->action(static_cast<UnitAction>(id),
 			                    getFollowAim(opt.value()->getMainCell(),
 			                                 posOpt.value(), toUse));
 		}
@@ -57,7 +57,7 @@ void FormationOrder::addFollowAim() {
 
 void FormationOrder::addChargeAim() {
 	for (auto unit : formation->getUnits()) {
-		unit->action(static_cast<char>(action), getChargeAim(vector));
+		unit->action(static_cast<char>(actionType), getChargeAim(vector));
 	}
 }
 
@@ -80,7 +80,7 @@ void FormationOrder::followAndAct(float distThreshold) {
 				for (auto unit : formation->getUnits()) {
 					unit->resetFormation();
 					unit->addOrder(
-						new IndividualOrder(unit, UnitActionType::ORDER, UnitAction(action), {}, toUse, false));
+						new IndividualOrder(unit, UnitActionType::ORDER, UnitAction(actionType), {}, toUse, false));
 					//TODO to samo zrobic w innnych akcjach z atakiem
 					//TOAttack jak nie ten to zaatakowac blizeszego
 				}
@@ -112,6 +112,6 @@ void FormationOrder::addStopAim() {
 
 void FormationOrder::simpleAction() const {
 	for (auto unit : formation->getUnits()) {
-		unit->action(static_cast<char>(action), Consts::EMPTY_ACTION_PARAMETER);
+		unit->action(static_cast<char>(actionType), Consts::EMPTY_ACTION_PARAMETER);
 	}
 }

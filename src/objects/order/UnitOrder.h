@@ -1,6 +1,5 @@
 #pragma once
 #include "FutureOrder.h"
-#include "enums/UnitActionType.h"
 #include "objects/unit/ActionParameter.h"
 
 class Physical;

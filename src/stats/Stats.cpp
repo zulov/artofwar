@@ -49,13 +49,13 @@ std::string Stats::getInputData(char player) {
 	return join(input, input + INPUT_STATS_SIZE);
 }
 
-void Stats::add(UpgradeCommand* command) {
-	const auto player = command->player;
-
-	const std::string data = getInputData(player);
-
-	appendOutput(player, data, getOutput(command));
-}
+// void Stats::add(UpgradeCommand* command) {
+// 	const auto player = command->player;
+//
+// 	const std::string data = getInputData(player);
+//
+// 	appendOutput(player, data, getOutput(command));
+// }
 
 void Stats::add(ResourceActionCommand* command) {
 	const auto player = command->player;
@@ -163,9 +163,9 @@ std::string Stats::getOutput(CreationCommand* command) const {
 	switch (command->objectType) {
 	case ObjectType::UNIT:
 	{
-		output[cast(StatsOutputType::CREATE_UNIT_ATTACK)] = 1;
-		output[cast(StatsOutputType::CREATE_UNIT_DEFENCE)] = 1;
-		output[cast(StatsOutputType::CREATE_UNIT_ECON)] = 1;
+		//output[cast(StatsOutputType::CREATE_UNIT_ATTACK)] = 1;
+		//output[cast(StatsOutputType::CREATE_UNIT_DEFENCE)] = 1;
+		//output[cast(StatsOutputType::CREATE_UNIT_ECON)] = 1;
 	}
 	break;
 	case ObjectType::BUILDING:
@@ -224,7 +224,7 @@ std::string Stats::getOutput(UnitActionCommand* command) const {
 	return join(output, output + STATS_OUTPUT_SIZE);
 }
 
-std::string Stats::getOutput(ResourceActionCommand* command) const {
+std::string Stats::getOutput(ResourceActionCommand* command) const {//TODO
 	float output[STATS_OUTPUT_SIZE];
 	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
 	switch (command->action) {
@@ -232,16 +232,25 @@ std::string Stats::getOutput(ResourceActionCommand* command) const {
 	case ResourceActionType::CANCEL: break;
 	default: ;
 	}
+	return join(output, output + STATS_OUTPUT_SIZE);
 }
 
 std::string Stats::getOutput(BuildingActionCommand* command) const {
 	float output[STATS_OUTPUT_SIZE];
 	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
 	switch (command->action) {
-
-	case BuildingActionType::UNIT_CREATE: break;
-	case BuildingActionType::UNIT_LEVEL: break;
-	case BuildingActionType::UNIT_UPGRADE: break;
+	case BuildingActionType::UNIT_CREATE:
+		output[cast(StatsOutputType::CREATE_UNIT_ATTACK)] = 1;
+		output[cast(StatsOutputType::CREATE_UNIT_DEFENCE)] = 1;
+		output[cast(StatsOutputType::CREATE_UNIT_ECON)] = 1;
+		break;
+	case BuildingActionType::UNIT_LEVEL:
+	case BuildingActionType::UNIT_UPGRADE:
+		output[cast(StatsOutputType::UPGRADE_ATTACK)] = 1;
+		output[cast(StatsOutputType::UPGRADE_DEFENCE)] = 1;
+		output[cast(StatsOutputType::UPGRADE_ECON)] = 1;
+		break;
 	default: ;
 	}
+	return join(output, output + STATS_OUTPUT_SIZE);
 }

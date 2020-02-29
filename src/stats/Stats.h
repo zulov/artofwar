@@ -24,7 +24,7 @@ public:
 	float* getInputFor(short id);
 	void init();
 	std::string getInputData(char player);
-	void add(UpgradeCommand* command);
+	//void add(UpgradeCommand* command);
 
 	void add(ResourceActionCommand* command);
 	void add(BuildingActionCommand* command);

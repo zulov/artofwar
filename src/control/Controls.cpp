@@ -1,36 +1,37 @@
 #include "Controls.h"
-#include "ControlsUtils.h"
-#include "Game.h"
-#include "HitData.h"
-#include "MathUtils.h"
-#include "objects/ObjectEnums.h"
-#include "camera/CameraManager.h"
-#include "commands/action/UnitActionCommand.h"
-#include "database/DatabaseCache.h"
-#include "hud/HudData.h"
-#include "objects/ActionType.h"
-#include "objects/NodeUtils.h"
-#include "objects/unit/ActionParameter.h"
-#include "objects/unit/Unit.h"
-#include "objects/order/FutureOrder.h"
-#include "objects/order/GroupOrder.h"
-#include "objects/order/IndividualOrder.h"
-#include "player/Player.h"
-#include "player/PlayersManager.h"
-#include "player/Resources.h"
-#include "simulation/SimulationInfo.h"
-#include "simulation/env/Environment.h"
-#include "ActionCenter.h"
-#include "objects/queue/QueueActionType.h"
-#include "commands/action/BuildingActionType.h"
-#include "commands/action/ResourceActionType.h"
-#include "commands/action/ResourceActionCommand.h"
-#include "commands/action/BuildingActionCommand.h"
+#include <algorithm>
+#include <queue>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/IO/Log.h>
-#include <algorithm>
-#include <queue>
+#include "ActionCenter.h"
+#include "camera/CameraManager.h"
+#include "commands/action/BuildingActionCommand.h"
+#include "commands/action/BuildingActionType.h"
+#include "commands/action/ResourceActionCommand.h"
+#include "commands/action/ResourceActionType.h"
+#include "commands/action/UnitActionCommand.h"
+#include "ControlsUtils.h"
+#include "database/DatabaseCache.h"
+#include "Game.h"
+#include "HitData.h"
+#include "hud/HudData.h"
+#include "MathUtils.h"
+#include "objects/ActionType.h"
+#include "objects/NodeUtils.h"
+#include "objects/ObjectEnums.h"
+#include "objects/order/enums/UnitActionType.h"
+#include "objects/order/FutureOrder.h"
+#include "objects/order/GroupOrder.h"
+#include "objects/order/IndividualOrder.h"
+#include "objects/queue/QueueActionType.h"
+#include "objects/unit/ActionParameter.h"
+#include "objects/unit/Unit.h"
+#include "player/Player.h"
+#include "player/PlayersManager.h"
+#include "player/Resources.h"
+#include "simulation/env/Environment.h"
+#include "simulation/SimulationInfo.h"
 
 
 Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
@@ -285,9 +286,24 @@ void Controls::order(short id, const ActionParameter& parameter) {
 	case ObjectType::UNIT:
 		return actionUnit(id, parameter);
 	case ObjectType::BUILDING:
-		return executeOnResources(id);
+		BuildingActionType type;
+		switch (parameter.type) {
+
+		case ActionType::UNIT_CREATE:
+			type = BuildingActionType::UNIT_CREATE;
+			break;
+		case ActionType::UNIT_LEVEL:
+			type = BuildingActionType::UNIT_LEVEL;
+			break;
+		case ActionType::UNIT_UPGRADE:
+			type = BuildingActionType::UNIT_UPGRADE;
+			break;
+		default:
+			int a = 5;
+		}
+		return executeOnBuildings(type, id);
 	case ObjectType::RESOURCE:
-		return executeOnBuildings(id);
+		return executeOnResources(ResourceActionType(id));
 	}
 }
 
@@ -297,14 +313,14 @@ void Controls::executeOnUnits(short id) const {
 		                      Game::getPlayersMan()->getActivePlayerID()));
 }
 
-void Controls::executeOnResources(short id) const {
+void Controls::executeOnResources(ResourceActionType action) const {
 	Game::getActionCenter()->add(
-		new ResourceActionCommand(selected, ResourceActionType(id), Game::getPlayersMan()->getActivePlayerID()));
+		new ResourceActionCommand(selected, action, Game::getPlayersMan()->getActivePlayerID()));
 }
 
-void Controls::executeOnBuildings(short id) const {
+void Controls::executeOnBuildings(BuildingActionType action, short id) const {
 	Game::getActionCenter()->add(
-		new BuildingActionCommand(selected, BuildingActionType(id), id, Game::getPlayersMan()->getActivePlayerID()));
+		new BuildingActionCommand(selected, action, id, Game::getPlayersMan()->getActivePlayerID()));
 }
 
 bool Controls::clickDown(MouseButton& var) const {

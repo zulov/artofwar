@@ -4,7 +4,7 @@ enum class UnitActionType : char;
 
 class FutureOrder {
 public:
-	FutureOrder(UnitActionType actionType, short id, bool append): action(actionType), id(id), append(append) {
+	FutureOrder(UnitActionType actionType, short id, bool append): actionType(actionType), append(append), id(id) {
 	}
 
 	virtual ~FutureOrder() = default;
@@ -15,10 +15,10 @@ public:
 	virtual void execute() =0;
 
 	bool getAppend() const { return append; }
-	UnitActionType getAction() const { return action; }
+	UnitActionType getAction() const { return actionType; }
 	short getId() const { return id; }
 protected:
-	const UnitActionType action;
-	const short id;
+	const UnitActionType actionType;
 	const bool append;
+	const short id;
 };
