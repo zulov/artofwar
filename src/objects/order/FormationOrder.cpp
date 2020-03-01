@@ -1,9 +1,9 @@
 #include "FormationOrder.h"
 #include "Game.h"
-#include "consts.h"
 #include "IndividualOrder.h"
 #include "objects/unit/Unit.h"
 #include "objects/order/enums/UnitAction.h"
+#include "objects/order/enums/UnitActionType.h"
 #include "simulation/formation/Formation.h"
 #include "simulation/env/Environment.h"
 
@@ -57,7 +57,7 @@ void FormationOrder::addFollowAim() {
 
 void FormationOrder::addChargeAim() {
 	for (auto unit : formation->getUnits()) {
-		unit->action(static_cast<char>(actionType), getChargeAim(vector));
+		unit->action(static_cast<UnitAction>(id), getChargeAim(vector));
 	}
 }
 
@@ -70,9 +70,9 @@ void FormationOrder::followAndAct(float distThreshold) {
 			auto postToUse = posToUseOpt.value();
 			if (std::get<1>(postToUse) > distThreshold) {
 				auto pos = std::get<0>(postToUse);
-				optLeader.value()->action(static_cast<char>(UnitAction::FOLLOW),
-				                          getFollowAim(optLeader.value()->getMainCell(),
-				                                       pos, toUse));
+				optLeader.value()->action
+				(UnitAction::FOLLOW, getFollowAim(optLeader.value()->getMainCell(),
+				                                  pos, toUse));
 				formation->addOrder(
 					new FormationOrder(formation, UnitActionType::ORDER, id, {}, toUse, true));
 				//Dodanie celu po dojsciu
@@ -112,6 +112,6 @@ void FormationOrder::addStopAim() {
 
 void FormationOrder::simpleAction() const {
 	for (auto unit : formation->getUnits()) {
-		unit->action(static_cast<char>(actionType), Consts::EMPTY_ACTION_PARAMETER);
+		unit->action(static_cast<UnitAction>(id));
 	}
 }
