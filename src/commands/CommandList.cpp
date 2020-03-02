@@ -20,8 +20,11 @@ void CommandList::add(AbstractCommand* first, AbstractCommand* second) {
 
 void CommandList::execute() {
 	for (auto& command : commands) {
-		setParemeters(command);
-		command->execute();
+		command->clean();
+		if (!command->expired()) {
+			setParemeters(command);
+			command->execute();
+		}
 		delete command;
 	}
 	commands.clear();

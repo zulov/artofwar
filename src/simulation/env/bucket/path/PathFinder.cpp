@@ -88,6 +88,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 		for (int i = 0; i < 8; ++i) {
 			if (complexData[current].ifNeightIsFree(i)) {
 				int next = current + closeIndex[i];
+				//TODO BUG IMPORTANT nextujemne :O
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + complexData[current].getCost(i);
 					if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
