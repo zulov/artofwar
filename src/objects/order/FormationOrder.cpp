@@ -8,7 +8,7 @@
 #include "simulation/env/Environment.h"
 
 FormationOrder::FormationOrder(Formation* formation, UnitActionType actionType, short action,
-                               const Urho3D::Vector2& vector, Physical* toUse, bool append):
+                               Urho3D::Vector2* vector, Physical* toUse, bool append):
 	UnitOrder(actionType, action, append, toUse, vector), formation(formation) {
 }
 
@@ -35,8 +35,8 @@ void FormationOrder::addCollectAim() {
 
 void FormationOrder::addTargetAim() {
 	auto opt = formation->getLeader();
-	if (opt.has_value()) {
-		opt.value()->action(static_cast<UnitAction>(id), getTargetAim(opt.value()->getMainCell(), vector));
+	if (opt.has_value() && vector) {
+		opt.value()->action(static_cast<UnitAction>(id), getTargetAim(opt.value()->getMainCell(), *vector));
 		formation->stopAllBesideLeader();
 		Game::getEnvironment()->invalidateCache();
 	}
@@ -57,7 +57,7 @@ void FormationOrder::addFollowAim() {
 
 void FormationOrder::addChargeAim() {
 	for (auto unit : formation->getUnits()) {
-		unit->action(static_cast<UnitAction>(id), getChargeAim(vector));
+		unit->action(static_cast<UnitAction>(id), getChargeAim(*vector));
 	}
 }
 

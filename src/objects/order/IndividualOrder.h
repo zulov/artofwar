@@ -6,11 +6,11 @@ enum class UnitAction : char;
 class IndividualOrder : public UnitOrder {
 public:
 	IndividualOrder(Unit* unit, UnitActionType actionType, UnitAction action,
-	                const Urho3D::Vector2& vector, Physical* toUse,
+	                Urho3D::Vector2* vector, Physical* toUse,
 	                bool append = false);
 
-	
 	~IndividualOrder();
+	
 	bool expired() override;
 	bool add() override;
 	void clean() override;

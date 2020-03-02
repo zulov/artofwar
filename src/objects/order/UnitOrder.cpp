@@ -7,9 +7,13 @@
 #include "simulation/env/Environment.h"
 
 UnitOrder::UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse,
-                     const Urho3D::Vector2& vector):
+                     Urho3D::Vector2* vector):
 	FutureOrder(actionType, static_cast<short>(id), append),
 	toUse(toUse), vector(vector) {
+}
+
+UnitOrder::~UnitOrder() {
+	delete vector;
 }
 
 ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {

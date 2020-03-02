@@ -143,12 +143,12 @@ void Controls::leftClickBuild(hit_data& hitData) const {
 
 void Controls::rightClick(hit_data& hitData) const {
 	UnitAction order;
-	Urho3D::Vector2 vector;
+	Urho3D::Vector2* vector;
 	Physical* toUse;
 	switch (hitData.clicked->getType()) {
 	case ObjectType::PHYSICAL:
 		order = UnitAction::GO;
-		vector = {hitData.position.x_, hitData.position.z_};
+		vector = new Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
 		toUse = nullptr;
 		break;
 	case ObjectType::UNIT:
@@ -156,12 +156,12 @@ void Controls::rightClick(hit_data& hitData) const {
 		order = hitData.clicked->getTeam() == selected->at(0)->getTeam()
 			        ? UnitAction::FOLLOW
 			        : UnitAction::ATTACK;
-		vector = {};
+		vector = nullptr;
 		toUse = hitData.clicked;
 		break;
 	case ObjectType::RESOURCE:
 		order = UnitAction::COLLECT;
-		vector = {};
+		vector = nullptr;
 		toUse = hitData.clicked;
 		break;
 	default: ;
@@ -170,7 +170,7 @@ void Controls::rightClick(hit_data& hitData) const {
 
 	FutureOrder* fOrder;
 	if (selected->size() == 1) {
-		fOrder = new IndividualOrder(static_cast<Unit*>(selected->at(0)), UnitActionType::ORDER,
+		fOrder = new IndividualOrder(dynamic_cast<Unit*>(selected->at(0)), UnitActionType::ORDER,
 		                             order, vector, toUse, shiftPressed);
 	} else {
 		fOrder = new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(order), vector, toUse,
@@ -192,23 +192,25 @@ void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) co
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
 		Game::getActionCenter()->add(
 			new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(UnitAction::GO),
-			                                     {held.first->x_, held.first->z_}, nullptr),
+			                                     new Urho3D::Vector2(held.first->x_, held.first->z_), nullptr),
 			                      Game::getPlayersMan()->getActivePlayerID()),
 			new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(UnitAction::GO),
-			                                     {held.second->x_, held.second->z_},
+			                                     new Urho3D::Vector2(held.second->x_, held.second->z_),
 			                                     nullptr, true),
 			                      Game::getPlayersMan()->getActivePlayerID()));
 	} else {
 		Game::getActionCenter()->add(new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER,
 		                                                                  static_cast<short>(UnitAction::GO),
-		                                                                  {held.first->x_, held.first->z_},
+		                                                                  new Urho3D::Vector2(
+			                                                                  held.second->x_, held.second->z_),
 		                                                                  nullptr),
 		                                                   Game::getPlayersMan()->getActivePlayerID()),
 		                             new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER,
-		                                                                  static_cast<short>(UnitAction::CHARGE), {
+		                                                                  static_cast<short>(UnitAction::CHARGE),
+		                                                                  new Urho3D::Vector2(
 			                                                                  held.second->x_ - held.first->x_,
-			                                                                  held.second->z_ - held.first->z_
-		                                                                  }, nullptr, true),
+			                                                                  held.second->z_ - held.first->z_)
+		                                                                  , nullptr, true),
 		                                                   Game::getPlayersMan()->getActivePlayerID()));
 	}
 }

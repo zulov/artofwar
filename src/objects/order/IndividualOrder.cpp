@@ -8,7 +8,7 @@
 
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitActionType actionType, UnitAction action,
-                                 const Urho3D::Vector2& vector, Physical* toUse, bool append):
+                                 Urho3D::Vector2* vector, Physical* toUse, bool append):
 	UnitOrder(actionType, static_cast<short>(action), append, toUse, vector), unit(unit) {
 }
 
@@ -34,7 +34,7 @@ void IndividualOrder::addCollectAim() {
 }
 
 void IndividualOrder::addTargetAim() {
-	unit->action(static_cast<UnitAction>(id), getTargetAim(unit->getMainCell(), vector)); //TODO execute i akajca
+	unit->action(static_cast<UnitAction>(id), getTargetAim(unit->getMainCell(), *vector)); //TODO execute i akajca
 	unit->resetFormation();
 
 	Game::getEnvironment()->invalidateCache();
@@ -49,7 +49,7 @@ void IndividualOrder::addFollowAim() {
 }
 
 void IndividualOrder::addChargeAim() {
-	unit->action(static_cast<UnitAction>(id), getChargeAim(vector));
+	unit->action(static_cast<UnitAction>(id), getChargeAim(*vector));
 }
 
 void IndividualOrder::addAttackAim() {

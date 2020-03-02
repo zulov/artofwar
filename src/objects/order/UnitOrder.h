@@ -13,11 +13,12 @@ enum class UnitActionType : char;
 
 class UnitOrder : public FutureOrder {
 public:
-	UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse, const Urho3D::Vector2& vector);
+	UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse, Urho3D::Vector2* vector);
+	virtual ~UnitOrder();
 	void execute() override;
 protected:
-	Physical* toUse;
-	Urho3D::Vector2 vector;
+	Physical* toUse = nullptr;
+	Urho3D::Vector2* vector = nullptr;
 
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);
 	ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow);
