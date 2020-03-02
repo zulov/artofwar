@@ -14,8 +14,7 @@
 Formation::Formation(short _id,const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction) :
 	id(_id), type(_type), state(FormationState::FORMING), direction(_direction) {
 
-	for (auto value : _units) {
-		auto unit = dynamic_cast<Unit*>(value);
+	for (auto unit : _units) {
 		unit->clearAims();
 		StateManager::changeState(unit, UnitState::STOP);
 		units.push_back(unit);
@@ -97,7 +96,7 @@ void Formation::updateIds() {
 
 		setPosInFormationForLeader();
 
-		auto env = Game::getEnvironment();
+		const auto env = Game::getEnvironment();
 		std::unordered_map<int, std::vector<short>> bucketToIds;
 		for (int i = 0; i < units.size(); ++i) {
 			if (leader->getPositionInFormation() == i) {
@@ -119,7 +118,7 @@ void Formation::updateIds() {
 		std::vector<short> tempVec(units.size());
 		std::iota(tempVec.begin(), tempVec.end(), 0);
 
-		short leaderID = leader->getPositionInFormation();
+		const short leaderID = leader->getPositionInFormation();
 		tempVec[leaderID] = -1;
 		short restToAssign = tempVec.size() - 1;
 		for (auto unit : units) {
@@ -135,7 +134,7 @@ void Formation::updateIds() {
 				short bestId = -1;
 				float bestSize = 99999; //TODO do zast¹pienia tym z unit
 				for (int i = 0; i < it->second.size(); ++i) {
-					auto id = it->second[i];
+					const auto id = it->second[i];
 					if (tempVec[id] != -1) {
 						const auto dist = sqDist(currentPos, getPositionFor(id));
 						if (dist < bestSize) {
@@ -272,12 +271,12 @@ Urho3D::Vector2 Formation::getPositionFor(short id) const {
 	const short row = rowThis - rowLeader;
 
 	auto position = center - Urho3D::Vector2(column * sparsity, row * sparsity);
-	auto posIndex = Game::getEnvironment()->getIndex(position);
+	const auto posIndex = Game::getEnvironment()->getIndex(position);
 	if (Game::getEnvironment()->cellInState(posIndex, {CellState::EMPTY, CellState::DEPLOY})) {
 		return position;
 	} else {
 		//TODO perf map posIndex to closestIndex
-		int closestIndex = Game::getEnvironment()->closestEmpty(posIndex);
+		const int closestIndex = Game::getEnvironment()->closestEmpty(posIndex);
 		return Game::getEnvironment()->getCenter(closestIndex); //TODO change center
 	}
 }
@@ -319,7 +318,7 @@ void Formation::updateUnits() {
 		std::remove_if(
 			units.begin(), units.end(),
 			[this](Unit* unit) {
-				bool ifErase = !unit->isAlive() || unit->getFormation() != id;
+				const bool ifErase = !unit->isAlive() || unit->getFormation() != id;
 				if (ifErase) {
 					if (unit->getFormation() == id) {
 						unit->resetFormation();

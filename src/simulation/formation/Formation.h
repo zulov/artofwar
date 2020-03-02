@@ -52,7 +52,6 @@ private:
 	float sparsity = 1;
 	bool changed = true;
 
-
 	Urho3D::Vector2 center;
 	Urho3D::Vector2 direction;
 	Unit* leader = nullptr;
