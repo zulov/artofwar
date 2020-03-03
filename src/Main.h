@@ -58,7 +58,7 @@ private:
 	void InitLocalizationSystem() const;
 
 	SelectedInfo* control(float timeStep, SimulationInfo* simulationInfo);
-	void changeCamera(int type);
+	void changeCamera(CameraBehaviorType type);
 	void load(const Urho3D::String& saveName, loading& progress);
 	void createEnv() const;
 	void save(const Urho3D::String& name);

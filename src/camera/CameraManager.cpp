@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "RtsCameraBehave.h"
 #include "TopCameraBehave.h"
+#include "CameraEnums.h"
 #include "simulation/env/Environment.h"
 #include <Urho3D/Graphics/Graphics.h>
 
@@ -28,15 +29,16 @@ CameraManager::~CameraManager() {
 	clear_vector(cameraBehaves);
 }
 
-void CameraManager::setCameraBehave(int _type) {
-	activeBehave = cameraBehaves.at(_type);
+void CameraManager::setCameraBehave(CameraBehaviorType _type) {
+	activeBehave = cameraBehaves.at(static_cast<char>(_type));
 }
 
 Urho3D::Camera* CameraManager::getComponent() const {
 	return activeBehave->getComponent();
 }
 
-void CameraManager::createCameraKeys(Urho3D::Input* input, bool cameraKeys[4], const Urho3D::IntVector2& cursorPos) const {
+void CameraManager::createCameraKeys(Urho3D::Input* input, bool cameraKeys[4],
+                                     const Urho3D::IntVector2& cursorPos) const {
 	cameraKeys[0] = input->GetKeyDown(Urho3D::KEY_W);
 	cameraKeys[1] = input->GetKeyDown(Urho3D::KEY_S);
 	cameraKeys[2] = input->GetKeyDown(Urho3D::KEY_A);

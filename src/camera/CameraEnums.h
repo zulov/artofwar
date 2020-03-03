@@ -1,5 +1,5 @@
 #pragma once
-enum CameraBehaviorType {
+enum class CameraBehaviorType : char {
 	FREE = 0,
 	RTS,
 	TOP

@@ -2,13 +2,14 @@
 #include "CameraBehave.h"
 #include <vector>
 
+enum class CameraBehaviorType : char;
 class CameraBehave;
 
 class CameraManager {
 public:
 	CameraManager();
 	~CameraManager();
-	void setCameraBehave(int _type);
+	void setCameraBehave(CameraBehaviorType _type);
 	Urho3D::Camera *getComponent() const;
 	void translate(const Urho3D::IntVector2& cursorPos, Urho3D::Input* input, float timeStep) const;
 	Urho3D::String *getInfo() const;

@@ -10,6 +10,9 @@ UnitOrder::UnitOrder(UnitActionType actionType, short id, bool append, Physical*
                      Urho3D::Vector2* vector):
 	FutureOrder(actionType, static_cast<short>(id), append),
 	toUse(toUse), vector(vector) {
+	if (id == 0 && vector == nullptr) {
+		int a = 5;
+	}
 }
 
 UnitOrder::~UnitOrder() {

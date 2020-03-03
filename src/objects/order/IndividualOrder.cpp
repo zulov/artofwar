@@ -80,7 +80,7 @@ void IndividualOrder::followAndAct(float distThreshold) {
 			auto pos = std::get<0>(postToUse);
 			unit->action(UnitAction::FOLLOW,
 			             getFollowAim(unit->getMainCell(), pos, toUse));
-			unit->addOrder(new IndividualOrder(unit, UnitActionType::ORDER, UnitAction(actionType), {}, toUse, true));
+			unit->addOrder(new IndividualOrder(unit, UnitActionType::ORDER, UnitAction(id), {}, toUse, true));
 			//Dodanie celu po dojsciu
 		} else {
 			unit->action(static_cast<UnitAction>(id),

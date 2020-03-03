@@ -80,7 +80,7 @@ void FormationOrder::followAndAct(float distThreshold) {
 				for (auto unit : formation->getUnits()) {
 					unit->resetFormation();
 					unit->addOrder(
-						new IndividualOrder(unit, UnitActionType::ORDER, UnitAction(actionType), {}, toUse, false));
+						new IndividualOrder(unit, UnitActionType::ORDER, UnitAction(id), {}, toUse, false));
 					//TODO to samo zrobic w innnych akcjach z atakiem
 					//TOAttack jak nie ten to zaatakowac blizeszego
 				}

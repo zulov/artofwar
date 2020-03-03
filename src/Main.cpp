@@ -178,7 +178,7 @@ void Main::SetWindowTitleAndIcon() {
 	graphics->SetWindowTitle("Art of War 2017");
 }
 
-void Main::changeCamera(int type) {
+void Main::changeCamera(CameraBehaviorType type) {
 	Game::getCameraManager()->setCameraBehave(type);
 	SetupViewport();
 	InitMouseMode(Game::getCameraManager()->getMouseMode());

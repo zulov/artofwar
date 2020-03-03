@@ -1,5 +1,4 @@
 #pragma once
-enum class ColorPallet : char
-{
+enum class ColorPallet : char {
 	RED=0,
 };
