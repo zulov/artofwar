@@ -4,6 +4,9 @@
 #include "BucketQueue.h"
 #include <Urho3D/Resource/Image.h>
 
+#include "simulation/env/CloseIndexProvider.h"
+
+
 class ComplexBucketData;
 
 class PathFinder {
@@ -31,6 +34,7 @@ private:
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 	void resetPathArrays();
 	short getIndex(float value) const;
+	CloseIndexProvider closeIndexProvider;
 
 	std::vector<int>* tempPath;
 
@@ -51,8 +55,6 @@ private:
 	int staticCounter = 0;
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref = resolution * resolution - 1;
-
-	std::vector<short> closeIndex;
 
 	BucketQueue frontier;
 };

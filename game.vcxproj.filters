@@ -191,6 +191,7 @@
     <ClCompile Include="src\objects\order\GroupOrder.cpp" />
     <ClCompile Include="src\commands\action\ResourceActionCommand.cpp" />
     <ClCompile Include="src\commands\action\BuildingActionCommand.cpp" />
+    <ClCompile Include="src\simulation\env\CloseIndexProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -481,6 +482,7 @@
     <ClInclude Include="src\commands\action\ResourceActionType.h" />
     <ClInclude Include="src\commands\action\BuildingActionType.h" />
     <ClInclude Include="src\objects\queue\QueueActionType.h" />
+    <ClInclude Include="src\simulation\env\CloseIndexProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

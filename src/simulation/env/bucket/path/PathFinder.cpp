@@ -11,11 +11,7 @@ PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexD
 	resolution(resolution), halfResolution(resolution / 2),
 	fieldSize(size / resolution), complexData(complexData),
 	invFieldSize(resolution / size),
-	closeIndex({
-		-resolution - 1, -resolution, -resolution + 1,
-		-1, 0, 1,
-		resolution - 1, resolution, resolution + 1
-	}) {
+	closeIndexProvider(resolution) {
 	tempPath = new std::vector<int>();
 	tempPath->reserve(DEFAULT_VECTOR_SIZE);
 }
@@ -84,10 +80,10 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 		if (current == endIdx) {
 			break;
 		}
-
-		for (int i = 0; i < 8; ++i) {
+		auto& closeIndexGood = closeIndexProvider.get(current);
+		for (int i = 0; i < closeIndexGood.size(); ++i) {
 			if (complexData[current].ifNeightIsFree(i)) {
-				int next = current + closeIndex[i];
+				int next = current + closeIndexGood[i];
 				//TODO BUG IMPORTANT nextujemne :O
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + complexData[current].getCost(i);
@@ -97,7 +93,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 						came_from[next] = current;
 					}
 				}
-			} 
+			}
 		}
 	}
 	//debug(startIdx, endIdx);
@@ -120,9 +116,11 @@ std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim)
 		if (complexData[end].allNeightOccupied()) {
 			end = complexData[end].getEscapeBucket();
 		} else {
-			for (int i = 0; i < 8; ++i) {
+			auto& closeIndexGood = closeIndexProvider.get(end);
+			for (int i = 0; i < closeIndexGood.size(); ++i) {
 				if (complexData[end].ifNeightIsFree(i)) {
-					end = end + closeIndex[i]; //TODO obliczyc lepszy, a nie pierwszy z brzegu
+					end = end + closeIndexGood[i]; //TODO obliczyc lepszy, a nie pierwszy z brzegu
+					//TODO bug wyjscie pioza
 					break;
 				}
 			}
@@ -164,12 +162,15 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 				complexData[current].setEscapeThrought(-1);
 				break;
 			}
-			for (int i = 0; i < 8; ++i) {
+			auto& closeIndexGood = closeIndexProvider.get(current);
+			for (int i = 0; i < closeIndexGood.size(); ++i) {
+				//TODO BUG IMPORTANT nextujemne :O
 				if (!complexData[current].ifNeightIsFree(i)) {
-					int nI = current + closeIndex[i];
+					int nI = current + closeIndexGood[i];
 
-					if (!complexData[nI].allNeightOccupied() 
-						&& refreshed.find(nI) == refreshed.end()) {//TODO to chyba glupi warunek
+					if (!complexData[nI].allNeightOccupied()
+						&& refreshed.find(nI) == refreshed.end()) {
+						//TODO to chyba glupi warunek
 						toRefresh.push_back(nI);
 					}
 					int next = nI;
