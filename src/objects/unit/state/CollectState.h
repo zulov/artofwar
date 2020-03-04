@@ -57,7 +57,7 @@ public:
 			&& Game::getEnvironment()->cellInState(unit->getMainCell(), {CellState::COLLECT})) {
 			//TODO musi byc dokladnie w dobry mbuckecie
 			auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
-			auto resource = static_cast<ResourceEntity*>(unit->thingsToInteract[0]);
+			auto resource = dynamic_cast<ResourceEntity*>(unit->thingsToInteract[0]);
 			const float value = resource->collect(unit->collectSpeed * timeStep);
 			resources.add(resource->getDbID(), value);
 		} else {

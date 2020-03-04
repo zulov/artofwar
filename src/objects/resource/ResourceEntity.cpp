@@ -68,7 +68,7 @@ void ResourceEntity::action(ResourceActionType type) {
 		char limit = belowCloseLimit();
 		for (auto neight : *neights) {
 			if (k < limit) {
-				auto unit = static_cast<Unit*>(neight);
+				auto unit = dynamic_cast<Unit*>(neight);
 				if (unit->getState() == UnitState::STOP && StateManager::checkChangeState(unit, UnitState::COLLECT)) {
 					auto opt = this->getPosToUseWithIndex(unit);
 					if (opt.has_value()) {

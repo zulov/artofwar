@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 #include "objects/Physical.h"
 
 class Entity;

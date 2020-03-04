@@ -2,7 +2,6 @@
 #include "Game.h"
 #include "objects/ObjectEnums.h"
 #include "database/DatabaseCache.h"
-#include "objects/ActionType.h"
 #include "commands/action/BuildingActionType.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/state/StateManager.h"

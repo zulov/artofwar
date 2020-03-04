@@ -515,7 +515,7 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 
 Urho3D::Vector2 Unit::getPosToUse() {
 	if (isFirstThingAlive() && indexToInteract != -1) {
-		return getSocketPos(static_cast<Unit*>(thingsToInteract[0]), indexToInteract);
+		return getSocketPos(dynamic_cast<Unit*>(thingsToInteract[0]), indexToInteract);
 	}
 	return {position.x_, position.z_};
 }

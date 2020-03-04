@@ -30,7 +30,7 @@ ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
 ActionParameter UnitOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow) {
 	auto const target = getTargetAim(startInx, toSoFar);
 	//jesli jest nulem to co?
-	return ActionParameter::Builder().setAim(new FollowAim(toFollow, static_cast<TargetAim*>(target.aim))).build();
+	return ActionParameter::Builder().setAim(new FollowAim(toFollow, dynamic_cast<TargetAim*>(target.aim))).build();
 }
 
 ActionParameter UnitOrder::getChargeAim(Urho3D::Vector2& charge) {

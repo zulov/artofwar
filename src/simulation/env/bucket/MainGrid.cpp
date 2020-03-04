@@ -181,7 +181,7 @@ bool MainGrid::belowCellLimit(int index) const {
 char MainGrid::getNumberInState(int index, UnitState state) const {
 	char num = 0;
 	for (auto&& physical : buckets[index].getContent()) {
-		if (static_cast<Unit*>(physical)->getState() == state) {
+		if (dynamic_cast<Unit*>(physical)->getState() == state) {
 			++num;
 		}
 	}
@@ -195,7 +195,7 @@ char MainGrid::getOrdinalInState(Unit* unit, UnitState state) const {
 		if (physical == unit) {
 			return ordinal;
 		}
-		if (static_cast<Unit*>(physical)->getState() == state) {
+		if (dynamic_cast<Unit*>(physical)->getState() == state) {
 			++ordinal;
 		}
 	}

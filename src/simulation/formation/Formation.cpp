@@ -274,11 +274,10 @@ Urho3D::Vector2 Formation::getPositionFor(short id) const {
 	const auto posIndex = Game::getEnvironment()->getIndex(position);
 	if (Game::getEnvironment()->cellInState(posIndex, {CellState::EMPTY, CellState::DEPLOY})) {
 		return position;
-	} else {
-		//TODO perf map posIndex to closestIndex
-		const int closestIndex = Game::getEnvironment()->closestEmpty(posIndex);
-		return Game::getEnvironment()->getCenter(closestIndex); //TODO change center
-	}
+	} 
+	//TODO perf map posIndex to closestIndex
+	const int closestIndex = Game::getEnvironment()->closestEmpty(posIndex);
+	return Game::getEnvironment()->getCenter(closestIndex); //TODO change center
 }
 
 float Formation::getPriority(int id) const {

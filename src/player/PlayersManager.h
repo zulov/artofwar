@@ -1,9 +1,6 @@
 #pragma once
-
-
 #include <string>
 #include <vector>
-#include "commands/action/UnitActionCommand.h"
 
 #define TEAMS_NUMBER 5
 

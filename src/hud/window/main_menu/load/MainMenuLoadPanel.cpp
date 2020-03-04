@@ -46,7 +46,7 @@ MainMenuLoadPanel::~MainMenuLoadPanel() = default;
 
 void MainMenuLoadPanel::HandleLoadClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	const auto element = static_cast<Urho3D::Button*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
-	const auto text = static_cast<Urho3D::Text*>(element->GetChild(0));
+	const auto text = dynamic_cast<Urho3D::Text*>(element->GetChild(0));
 
 	loadButton->SetVar("LoadFileName", text->GetText());
 	action(text->GetText());

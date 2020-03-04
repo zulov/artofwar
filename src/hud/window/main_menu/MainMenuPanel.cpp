@@ -42,15 +42,15 @@ void MainMenuPanel::setVisible(bool enable) {
 }
 
 Urho3D::Button* MainMenuPanel::getNewGameProceed() const {
-	return static_cast<MainMenuNewGamePanel*>(detailsPanels[0])->getProceed();
+	return dynamic_cast<MainMenuNewGamePanel*>(detailsPanels[0])->getProceed();
 }
 
 Urho3D::Button* MainMenuPanel::getLoadButton() const {
-	return static_cast<MainMenuLoadPanel*>(detailsPanels[1])->getLoadButton();
+	return dynamic_cast<MainMenuLoadPanel*>(detailsPanels[1])->getLoadButton();
 }
 
 Urho3D::Button* MainMenuPanel::getCloseButton() const {
-	return static_cast<MainMenuClosePanel*>(detailsPanels[4])->getCloseButton();
+	return dynamic_cast<MainMenuClosePanel*>(detailsPanels[4])->getCloseButton();
 }
 
 void MainMenuPanel::HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {

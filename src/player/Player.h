@@ -47,7 +47,7 @@ private:
 
 	std::optional<short> chooseUpgrade(StatsOutputType order);
 	void createOrder(StatsOutputType order);
-	Urho3D::Vector2 bestPosToBuild(const short id) const;
+	Urho3D::Vector2 bestPosToBuild(short id) const;
 	void initAi();
 
 	Brain* brain;
