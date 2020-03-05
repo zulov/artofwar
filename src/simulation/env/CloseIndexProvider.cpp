@@ -13,4 +13,11 @@ CloseIndexProvider::CloseIndexProvider(short res)
 		  {-res - 1, -res, -1}
 	  } {}
 
-std::vector<short>& CloseIndexProvider::get(int current) {}
+std::vector<short>& CloseIndexProvider::get(int current) {
+	bool firstRow = current < resolution;
+	bool lastRow = current > resolution * resolution - resolution;
+	bool firstColumn = current % resolution == 0;
+	bool lastColumn = current % resolution == resolution - 1;
+
+
+}
