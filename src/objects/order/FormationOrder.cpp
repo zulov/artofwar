@@ -70,17 +70,15 @@ void FormationOrder::followAndAct(float distThreshold) {
 			auto postToUse = posToUseOpt.value();
 			if (std::get<1>(postToUse) > distThreshold) {
 				auto pos = std::get<0>(postToUse);
-				optLeader.value()->action
-				(UnitAction::FOLLOW, getFollowAim(optLeader.value()->getMainCell(),
-				                                  pos, toUse));
+				optLeader.value()->action(UnitAction::FOLLOW,
+				                          getFollowAim(optLeader.value()->getMainCell(), pos, toUse));
 				formation->addOrder(
-					new FormationOrder(formation, UnitActionType::ORDER, id, {}, toUse, true));
+					new FormationOrder(formation, UnitActionType::ORDER, id, nullptr, toUse, true));
 				//Dodanie celu po dojsciu
 			} else {
 				for (auto unit : formation->getUnits()) {
 					unit->resetFormation();
-					unit->addOrder(
-						new IndividualOrder(unit, UnitActionType::ORDER, UnitAction(id), {}, toUse, false));
+					unit->addOrder(new IndividualOrder(unit, UnitAction(id), nullptr, toUse, false));
 					//TODO to samo zrobic w innnych akcjach z atakiem
 					//TOAttack jak nie ten to zaatakowac blizeszego
 				}

@@ -13,8 +13,8 @@ class Formation;
 
 class FormationOrder : public UnitOrder {
 public:
-	FormationOrder(Formation* formation, UnitActionType actionType, short action, Urho3D::Vector2* vector,
-	               Physical* toUse, bool append = false);
+	FormationOrder(Formation* formation, UnitActionType actionType, short action, Urho3D::Vector2& vector, bool append = false);
+	FormationOrder(Formation* formation, UnitActionType actionType, short action, Physical* toUse, bool append = false);
 	~FormationOrder();
 	bool add() override;
 	bool expired() override;

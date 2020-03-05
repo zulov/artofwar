@@ -9,8 +9,17 @@
 
 
 GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, short id,
-                       Urho3D::Vector2* vector, Physical* toUse, bool append):
-	UnitOrder(actionType, id, append, toUse, vector) {
+                       Urho3D::Vector2& vector, bool append):
+	UnitOrder(actionType, id, append, vector) {
+	for (auto unit : *entities) {
+		//TODO performance spróbowaæ z insertem
+		this->units.emplace_back(reinterpret_cast<Unit*>(unit));
+	}
+}
+
+GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, short id,
+                       Physical* toUse, bool append):
+	UnitOrder(actionType, id, append, toUse) {
 	for (auto unit : *entities) {
 		//TODO performance spróbowaæ z insertem
 		this->units.emplace_back(reinterpret_cast<Unit*>(unit));

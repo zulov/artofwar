@@ -13,7 +13,8 @@ enum class UnitActionType : char;
 
 class UnitOrder : public FutureOrder {
 public:
-	UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse, Urho3D::Vector2* vector);
+	UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse);
+	UnitOrder(UnitActionType actionType, short id, bool append, Urho3D::Vector2& vector);
 	virtual ~UnitOrder();
 	void execute() override;
 protected:

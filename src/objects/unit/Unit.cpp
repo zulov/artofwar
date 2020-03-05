@@ -136,10 +136,10 @@ void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, int indexToI
                                float sqDistance, float closeRange, float interestRange) {
 	if (closest) {
 		if (sqDistance < closeRange * closeRange) {
-			addOrder(new IndividualOrder(this, UnitActionType::ORDER, order, {}, closest));
+			addOrder(new IndividualOrder(this, order, nullptr, closest));
 		} else if (sqDistance < interestRange * interestRange) {
-			addOrder(new IndividualOrder(this, UnitActionType::ORDER, UnitAction::FOLLOW, {}, closest));
-			addOrder(new IndividualOrder(this, UnitActionType::ORDER, order, {}, closest));
+			addOrder(new IndividualOrder(this, UnitAction::FOLLOW, nullptr, closest));
+			addOrder(new IndividualOrder(this, order, nullptr, closest));
 		}
 	}
 }

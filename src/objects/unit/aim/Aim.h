@@ -8,7 +8,9 @@ class Unit;
 class Aim
 {
 public:
-	virtual ~Aim() = default;
+	virtual ~Aim() {
+		int a =5;
+	};
 	virtual Urho3D::Vector2 getDirection(Unit* unit) = 0;
 	virtual bool ifReach(Unit* unit) = 0;
 	virtual bool expired() = 0;

@@ -170,7 +170,7 @@ void Controls::rightClick(hit_data& hitData) const {
 
 	FutureOrder* fOrder;
 	if (selected->size() == 1) {
-		fOrder = new IndividualOrder(dynamic_cast<Unit*>(selected->at(0)), UnitActionType::ORDER,
+		fOrder = new IndividualOrder(dynamic_cast<Unit*>(selected->at(0)),
 		                             order, vector, toUse, shiftPressed);
 	} else {
 		fOrder = new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(order), vector, toUse,
@@ -311,7 +311,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 
 void Controls::executeOnUnits(short id) const {
 	Game::getActionCenter()->add(
-		new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, id, {}, nullptr),
+		new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, id, nullptr, nullptr),
 		                      Game::getPlayersMan()->getActivePlayerID()));
 }
 
@@ -483,7 +483,7 @@ void Controls::toDefault() {
 
 void Controls::unitFormation(short id) const {
 	Game::getActionCenter()->add(
-		new UnitActionCommand(new GroupOrder(selected, UnitActionType::FORMATION, id, {}, nullptr),
+		new UnitActionCommand(new GroupOrder(selected, UnitActionType::FORMATION, id, nullptr, nullptr),
 		                      Game::getPlayersMan()->getActivePlayerID()));
 }
 

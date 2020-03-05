@@ -7,9 +7,15 @@
 #include "simulation/env/Environment.h"
 
 
-IndividualOrder::IndividualOrder(Unit* unit, UnitActionType actionType, UnitAction action,
+IndividualOrder::IndividualOrder(Unit* unit, UnitAction action,
+                                 Urho3D::Vector2& vector, bool append):
+	UnitOrder(UnitActionType::ORDER, static_cast<short>(action), append, nullptr, new Urho3D::Vector2(vector)),
+	unit(unit) {
+}
+
+IndividualOrder::IndividualOrder(Unit* unit, UnitAction action,
                                  Urho3D::Vector2* vector, Physical* toUse, bool append):
-	UnitOrder(actionType, static_cast<short>(action), append, toUse, vector), unit(unit) {
+	UnitOrder(UnitActionType::ORDER, static_cast<short>(action), append, toUse, vector), unit(unit) {
 }
 
 IndividualOrder::~IndividualOrder() = default;
@@ -80,7 +86,7 @@ void IndividualOrder::followAndAct(float distThreshold) {
 			auto pos = std::get<0>(postToUse);
 			unit->action(UnitAction::FOLLOW,
 			             getFollowAim(unit->getMainCell(), pos, toUse));
-			unit->addOrder(new IndividualOrder(unit, UnitActionType::ORDER, UnitAction(id), {}, toUse, true));
+			unit->addOrder(new IndividualOrder(unit, UnitAction(id), nullptr, toUse, true));
 			//Dodanie celu po dojsciu
 		} else {
 			unit->action(static_cast<UnitAction>(id),
