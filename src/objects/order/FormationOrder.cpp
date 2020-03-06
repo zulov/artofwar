@@ -8,9 +8,15 @@
 #include "simulation/env/Environment.h"
 
 FormationOrder::FormationOrder(Formation* formation, UnitActionType actionType, short action,
-                               Urho3D::Vector2* vector, Physical* toUse, bool append):
-	UnitOrder(actionType, action, append, toUse, vector), formation(formation) {
+                               Urho3D::Vector2& vector, bool append):
+	UnitOrder(actionType, action, append, vector), formation(formation) {
 }
+
+FormationOrder::FormationOrder(Formation* formation, UnitActionType actionType, short action,
+                               Physical* toUse, bool append):
+	UnitOrder(actionType, action, append, toUse), formation(formation) {
+}
+
 
 FormationOrder::~FormationOrder() = default;
 
@@ -73,12 +79,12 @@ void FormationOrder::followAndAct(float distThreshold) {
 				optLeader.value()->action(UnitAction::FOLLOW,
 				                          getFollowAim(optLeader.value()->getMainCell(), pos, toUse));
 				formation->addOrder(
-					new FormationOrder(formation, UnitActionType::ORDER, id, nullptr, toUse, true));
+					new FormationOrder(formation, UnitActionType::ORDER, id, toUse, true));
 				//Dodanie celu po dojsciu
 			} else {
 				for (auto unit : formation->getUnits()) {
 					unit->resetFormation();
-					unit->addOrder(new IndividualOrder(unit, UnitAction(id), nullptr, toUse, false));
+					unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, false));
 					//TODO to samo zrobic w innnych akcjach z atakiem
 					//TOAttack jak nie ten to zaatakowac blizeszego
 				}

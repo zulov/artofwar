@@ -457,10 +457,6 @@ float MainGrid::cost(const int current, const int next) const {
 	return (complexData[current].getCenter() - complexData[next].getCenter()).Length();
 }
 
-int MainGrid::getCloseIndex(int center, int i) const {
-	return center + closeIndexes[1][i];
-}
-
 // std::vector<int>* MainGrid::findPath(Urho3D::IntVector2& startV, Urho3D::IntVector2& goalV) {
 // 	int start = getIndex(startV.x_, startV.y_);
 // 	int goal = getIndex(goalV.x_, goalV.y_);

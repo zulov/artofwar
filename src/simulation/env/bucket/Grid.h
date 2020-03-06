@@ -3,6 +3,7 @@
 #include "defines.h"
 #include <Urho3D/Math/Vector3.h>
 #include "simulation/env/GridCalculator.h"
+#include "simulation/env/CloseIndexProvider.h"
 
 #define MAX_SEP_DIST 24
 #define RES_SEP_DIST 120
@@ -21,11 +22,13 @@ public:
 	std::vector<Physical*>& getContentAt(int index);
 
 	std::vector<short>* getEnvIndexesFromCache(float dist);
-	std::vector<Physical *>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,char player);
-	std::vector<Physical *>* getArrayNeightSimilarAs(Physical* clicked, double radius);
+	std::vector<Physical*>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
+	std::vector<Physical*>* getArrayNeightSimilarAs(Physical* clicked, double radius);
 	BucketIterator& getArrayNeight(Urho3D::Vector3& position, float radius, short thread);
+	std::vector<short>& getCloseIndexes(int center);
 protected:
 	GridCalculator calculator;
+	CloseIndexProvider closeIndexProvider;
 	bool inRange(int index) const { return index >= 0 && index < sqResolution; }
 
 	Bucket* buckets;

@@ -41,7 +41,6 @@ public:
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
 	Urho3D::Vector2* validatePosition(Urho3D::Vector3& position);
-	int getCloseIndex(int center, int i) const;
 
 	std::vector<Physical *>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 
@@ -86,6 +85,7 @@ public:
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
 	Urho3D::Vector2 bestPosToBuild(char player, short id);
 	float getDistToEnemy(Player* player);
+	std::vector<short>& getCloseIndexs(int center);
 
 private:
 	MainGrid mainGrid;

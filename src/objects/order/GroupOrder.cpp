@@ -94,8 +94,14 @@ void GroupOrder::simpleAction() const {
 void GroupOrder::transformToFormationOrder() const {
 	auto opt = Game::getFormationManager()->createFormation(units);
 	if (opt.has_value()) {
-		opt.value()->addOrder(
-			new FormationOrder(opt.value(), UnitActionType::FORMATION, id, vector, toUse, append));
+		if (vector) {
+			opt.value()->addOrder(
+				new FormationOrder(opt.value(), UnitActionType::FORMATION, id, *vector, append));
+		} else {
+			opt.value()->addOrder(
+				new FormationOrder(opt.value(), UnitActionType::FORMATION, id, toUse, append));
+		}
+
 	}
 }
 

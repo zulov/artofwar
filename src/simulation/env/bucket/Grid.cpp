@@ -10,7 +10,8 @@
 
 Grid::Grid(short resolution, float size): calculator(resolution, size), resolution(resolution),
                                           sqResolution(resolution * resolution), size(size),
-                                          fieldSize(size / resolution), invFieldSize(resolution / size) {
+                                          fieldSize(size / resolution), invFieldSize(resolution / size),
+                                          closeIndexProvider(resolution) {
 	for (int i = 0; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs((double)MAX_SEP_DIST / RES_SEP_DIST * i);
 	} //TODO memory jesli ten sam vector towskaznik do tego samego
@@ -65,6 +66,10 @@ std::vector<short>* Grid::getEnvIndexesFromCache(float dist) {
 
 BucketIterator& Grid::getArrayNeight(Urho3D::Vector3& position, float radius, short thread) {
 	return *iterators[thread].init(getEnvIndexesFromCache(radius), calculator.indexFromPosition(position), this);
+}
+
+std::vector<short>& Grid::getCloseIndexes(int center) {
+	return closeIndexProvider.get(center);
 }
 
 void Grid::removeAt(int index, Physical* entity) const {

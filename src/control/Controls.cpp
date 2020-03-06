@@ -170,11 +170,21 @@ void Controls::rightClick(hit_data& hitData) const {
 
 	FutureOrder* fOrder;
 	if (selected->size() == 1) {
-		fOrder = new IndividualOrder(dynamic_cast<Unit*>(selected->at(0)),
-		                             order, vector, toUse, shiftPressed);
+		if (vector) {
+			fOrder = new IndividualOrder(dynamic_cast<Unit*>(selected->at(0)),
+			                             order, *vector, shiftPressed);
+		} else {
+			fOrder = new IndividualOrder(dynamic_cast<Unit*>(selected->at(0)),
+			                             order, toUse, shiftPressed);
+		}
 	} else {
-		fOrder = new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(order), vector, toUse,
-		                        shiftPressed);
+		if (vector) {
+			fOrder = new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(order), *vector,
+			                        shiftPressed);
+		} else {
+			fOrder = new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(order), toUse,
+			                        shiftPressed);
+		}
 	}
 
 	Game::getActionCenter()->add(new UnitActionCommand(fOrder, Game::getPlayersMan()->getActivePlayerID()));
@@ -192,26 +202,24 @@ void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) co
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
 		Game::getActionCenter()->add(
 			new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(UnitAction::GO),
-			                                     new Urho3D::Vector2(held.first->x_, held.first->z_), nullptr),
+			                                     Urho3D::Vector2(held.first->x_, held.first->z_)),
 			                      Game::getPlayersMan()->getActivePlayerID()),
 			new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(UnitAction::GO),
-			                                     new Urho3D::Vector2(held.second->x_, held.second->z_),
-			                                     nullptr, true),
+			                                     Urho3D::Vector2(held.second->x_, held.second->z_), true),
 			                      Game::getPlayersMan()->getActivePlayerID()));
 	} else {
-		Game::getActionCenter()->add(new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER,
-		                                                                  static_cast<short>(UnitAction::GO),
-		                                                                  new Urho3D::Vector2(
-			                                                                  held.second->x_, held.second->z_),
-		                                                                  nullptr),
-		                                                   Game::getPlayersMan()->getActivePlayerID()),
-		                             new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER,
-		                                                                  static_cast<short>(UnitAction::CHARGE),
-		                                                                  new Urho3D::Vector2(
-			                                                                  held.second->x_ - held.first->x_,
-			                                                                  held.second->z_ - held.first->z_)
-		                                                                  , nullptr, true),
-		                                                   Game::getPlayersMan()->getActivePlayerID()));
+		Game::getActionCenter()->add(new UnitActionCommand(
+			                             new GroupOrder(selected, UnitActionType::ORDER,
+			                                            static_cast<short>(UnitAction::GO),
+			                                            Urho3D::Vector2(held.second->x_, held.second->z_)),
+			                             Game::getPlayersMan()->getActivePlayerID()),
+		                             new UnitActionCommand(
+			                             new GroupOrder(selected, UnitActionType::ORDER,
+			                                            static_cast<short>(UnitAction::CHARGE),
+			                                            Urho3D::Vector2(held.second->x_ - held.first->x_,
+			                                                            held.second->z_ - held.first->z_)
+			                                            , true),
+			                             Game::getPlayersMan()->getActivePlayerID()));
 	}
 }
 
@@ -483,10 +491,9 @@ void Controls::toDefault() {
 
 void Controls::unitFormation(short id) const {
 	Game::getActionCenter()->add(
-		new UnitActionCommand(new GroupOrder(selected, UnitActionType::FORMATION, id, nullptr, nullptr),
+		new UnitActionCommand(new GroupOrder(selected, UnitActionType::FORMATION, id, nullptr),
 		                      Game::getPlayersMan()->getActivePlayerID()));
 }
-
 
 void Controls::control() {
 	switch (state) {

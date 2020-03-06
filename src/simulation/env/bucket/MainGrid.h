@@ -38,14 +38,11 @@ public:
 	void updateNeighbors(int current) const;
 	float cost(int current, int next) const;
 
-	int getCloseIndex(int center, int i) const;
-
 	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim) const;
 	std::vector<int>* findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) const;
 
 	void drawMap(Urho3D::Image* image) const;
-	content_info* getContentInfo(const Urho3D::Vector2& from, const Urho3D::Vector2& to, bool checks[],
-	                             int activePlayer);
+
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
 	void invalidateCache() const;
 	void updateSurround(Static* object);
@@ -96,5 +93,5 @@ private:
 	ComplexBucketData* complexData;
 
 
-	std::vector<short> closeIndexes[3];
+	//std::vector<short> closeIndexes[3];
 };

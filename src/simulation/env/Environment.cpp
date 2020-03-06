@@ -140,10 +140,6 @@ Urho3D::Vector2* Environment::validatePosition(Urho3D::Vector3& position) {
 	return mainGrid.getDirectionFrom(position);
 }
 
-int Environment::getCloseIndex(int center, int i) const {
-	return mainGrid.getCloseIndex(center, i);
-}
-
 std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player) {
 	for (auto grid : grids) {
 		const auto result = grid->getArrayNeight(pair, player);
@@ -297,6 +293,10 @@ Urho3D::Vector2 Environment::bestPosToBuild(char player, short id) {
 
 float Environment::getDistToEnemy(Player* player) {
 	return 500.0; //TODO IMPLEMENT
+}
+
+std::vector<short>& Environment::getCloseIndexs(int center) {
+	return mainGrid.getCloseIndexes(center);
 }
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {
