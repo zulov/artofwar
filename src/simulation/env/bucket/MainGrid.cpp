@@ -12,35 +12,10 @@
 #include "simulation/env/Environment.h"
 #include "database/DatabaseCache.h"
 
-#define CLOSE_INDEX_LEVEL 3
-
-
-void MainGrid::initCloseIndexs(char a, std::vector<short>& vector) const {
-	for (char i = -a; i <= a; ++i) {
-		for (char j = -a; j <= a; ++j) {
-			vector.push_back(i * resolution + j);
-		}
-	}
-	std::sort(vector.begin(), vector.end());
-	vector.shrink_to_fit();
-}
 
 MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size) {
 	short posX = 0;
 	short posZ = 0;
-
-	int i = 0;
-	for (auto& closeIndex : closeIndexes) {
-		initCloseIndexs(i++, closeIndex);
-	}
-	for (int i = CLOSE_INDEX_LEVEL - 1; i > 0; --i) {
-		closeIndexes[i].erase(std::remove_if(closeIndexes[i].begin(), closeIndexes[i].end(),
-		                                     [this,i](short val) {
-			                                     auto next = closeIndexes[i - 1];
-			                                     return std::find(next.begin(), next.end(), val) != next.end();
-		                                     }),
-		                      closeIndexes[i].end());
-	}
 
 	complexData = new ComplexBucketData[sqResolution];
 	for (int i = 0; i < sqResolution; ++i) {
@@ -114,9 +89,10 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
 		&& complexData[index].isUnit()
 		&& complexData[index].allNeightOccupied()) {
 		int counter = 0;
-		for (int i = 0; i < 8; ++i) {
+
+		for (auto i : closeIndexProvider.getTabIndexes(index)) {
 			if (!complexData[index].ifNeightIsFree(i)) {
-				sum += complexData[index + closeIndexes[1][i]].getCenter();
+				sum += complexData[index + closeIndexProvider.getIndexAt(i)].getCenter();
 				++counter;
 			}
 		}
@@ -134,7 +110,7 @@ void MainGrid::updateSurround(Static* object) {
 	if (object->isAlive()) {
 		std::unordered_set<int> indexes;
 		for (auto index : object->getOccupiedCells()) {
-			for (auto inIndex : closeIndexes[1]) {
+			for (auto inIndex : closeIndexProvider.get(index)) {
 				auto newIndex = index + inIndex;
 				indexes.emplace(newIndex);
 			}
@@ -203,10 +179,10 @@ char MainGrid::getOrdinalInState(Unit* unit, UnitState state) const {
 }
 
 int MainGrid::getRevertCloseIndex(int center, int gridIndex) {
-	int index = gridIndex - center;
-	for (int i = 0; i < 8; ++i) {
-		//TODO performance
-		if (closeIndexes[1][i] == index) {
+	int index = gridIndex - center;;
+	for (auto i : closeIndexProvider.getTabIndexes(center)) {
+		if (closeIndexProvider.getIndexAt(i) == index) {
+			//TODO performance
 			return i;
 		}
 	}
@@ -240,7 +216,6 @@ int MainGrid::getAdditionalInfoAt(float x, float z) const {
 
 void MainGrid::drawDebug(GridDebugType type) const {
 	DebugLineRepo::clear(DebugLineType::MAIN_GRID);
-
 	DebugLineRepo::beginGeometry(DebugLineType::MAIN_GRID);
 
 	switch (type) {
@@ -250,10 +225,10 @@ void MainGrid::drawDebug(GridDebugType type) const {
 	{
 		float value = -size / 2;
 		for (int i = 0; i < resolution; ++i) {
-			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(-size / 2, 10, value),
-			                        Urho3D::Vector3(size / 2, 10, value), Urho3D::Color::CYAN);
-			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(value, 10, -size / 2),
-			                        Urho3D::Vector3(value, 10, size / 2), Urho3D::Color::CYAN);
+			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, {-size / 2, 10, value},
+			                        {size / 2, 10, value}, Urho3D::Color::CYAN);
+			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, {value, 10, -size / 2},
+			                        {value, 10, size / 2}, Urho3D::Color::CYAN);
 			value += fieldSize;
 		}
 	}
@@ -265,8 +240,8 @@ void MainGrid::drawDebug(GridDebugType type) const {
 			std::tuple<bool, Urho3D::Color> info = DebugLineRepo::getInfoForGrid(complexData[i].getType());
 
 			if (std::get<0>(info)) {
-				DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, Urho3D::Vector3(center.x_, 10, center.y_),
-				                        Urho3D::Vector3(center.x_, 20, center.y_), std::get<1>(info));
+				DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, {center.x_, 10, center.y_},
+				                        {center.x_, 20, center.y_}, std::get<1>(info));
 			}
 		}
 	}
@@ -290,13 +265,14 @@ Urho3D::Vector2 MainGrid::getNewBuildingPos(const Urho3D::Vector2& center, char 
 	if (complexData[index].isFreeToBuild(id)) {
 		return center;
 	}
-	for (auto close : closeIndexes[1]) {
+
+	for (auto close : closeIndexProvider.get(index)) {
 		if (validAndFree(id, index, close)) {
 			return calculator.getCenter(index + close);
 		}
 	}
 
-	for (auto close : closeIndexes[2]) {
+	for (auto close : closeIndexProvider.getSecond(index)) {
 		if (validAndFree(id, index, close)) {
 			return calculator.getCenter(index + close);
 		}
@@ -308,7 +284,7 @@ Urho3D::Vector2 MainGrid::getNewBuildingPos(const Urho3D::Vector2& center, char 
 bool MainGrid::isInLocalArea(int cell, Urho3D::Vector2& pos) {
 	const auto index = calculator.indexFromPosition(pos);
 	if (cell == index) { return true; }
-	for (auto value : closeIndexes[1]) {
+	for (auto value : closeIndexProvider.get(index)) {
 		if (cell == index + value) {
 			return true;
 		}
@@ -325,15 +301,15 @@ int MainGrid::closestEmpty(int posIndex) {
 	//TODO improve closest? skorzystac z escape?
 	int bestIndex = posIndex;
 	double closest = 99999;
-	auto vec = closeIndexes[1];
-	for (auto index : vec) {
-		if (isEmpty(index + posIndex)) {
-			return index + posIndex;
+
+	for (auto i : closeIndexProvider.get(posIndex)) {
+		if (isEmpty(i + posIndex)) {
+			return i + posIndex;
 		}
 	}
-	for (auto index : closeIndexes[2]) {
-		if (isEmpty(index + posIndex)) {
-			return index + posIndex;
+	for (auto i : closeIndexProvider.getSecond(posIndex)) {
+		if (isEmpty(i + posIndex)) {
+			return i + posIndex;
 		}
 	}
 	return posIndex;
@@ -392,11 +368,11 @@ Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3& position) {
 		//auto& neights = complexData[index].getNeightbours();
 		if (!complexData[index].allNeightOccupied()) {
 			float dist = 999999;
-			for (int i = 0; i < 8; ++i) {
+
+			for (auto i : closeIndexProvider.getTabIndexes(index)) {
 				if (complexData[index].ifNeightIsFree(i)) {
-					int ni = index + closeIndexes[1][i];
-					float newDist = sqDist(complexData[ni].getCenter(),
-					                       complexData[index].getCenter());
+					int ni = index + closeIndexProvider.getIndexAt(i);
+					float newDist = sqDist(complexData[ni].getCenter(), complexData[index].getCenter());
 					if (newDist < dist) {
 						dist = newDist;
 						escapeBucket = ni;
@@ -440,8 +416,8 @@ Urho3D::IntVector2 MainGrid::getBucketCords(const Urho3D::IntVector2& size, cons
 }
 
 void MainGrid::updateNeighbors(const int current) const {
-	for (unsigned char i = 0; i < 8; ++i) {
-		const int nI = current + closeIndexes[1][i]; //TODO bug przy skrajach bedzie całkiem inne indexy updejtowac :O
+	for (auto i: closeIndexProvider.getTabIndexes(current)) {
+		const int nI = current + closeIndexProvider.getIndexAt(i);
 		if (calculator.validIndex(nI)) {
 			if (complexData[nI].isUnit()) {
 				complexData[current].setNeightFree(i);

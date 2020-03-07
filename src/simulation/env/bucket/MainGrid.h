@@ -81,8 +81,6 @@ public:
 	bool validAndFree(short id, int index, std::vector<short>::value_type close) const;
 	Urho3D::Vector2 getNewBuildingPos(const Urho3D::Vector2& center, char player, short id);
 private:
-	void initCloseIndexs(char a, std::vector<short>& vector) const;
-	void updateInfo(int index, content_info* ci, bool* checks, int activePlayer);
 
 	PathFinder* pathConstructor;
 

@@ -25,7 +25,8 @@ public:
 	std::vector<Physical*>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 	std::vector<Physical*>* getArrayNeightSimilarAs(Physical* clicked, double radius);
 	BucketIterator& getArrayNeight(Urho3D::Vector3& position, float radius, short thread);
-	std::vector<short>& getCloseIndexes(int center);
+	const std::vector<short>& getCloseIndexes(int center) const;
+	const std::vector<char>& getCloseTabIndexes(short center) const;
 protected:
 	GridCalculator calculator;
 	CloseIndexProvider closeIndexProvider;

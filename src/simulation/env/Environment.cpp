@@ -295,8 +295,12 @@ float Environment::getDistToEnemy(Player* player) {
 	return 500.0; //TODO IMPLEMENT
 }
 
-std::vector<short>& Environment::getCloseIndexs(int center) {
+const std::vector<short>& Environment::getCloseIndexs(int center) const{
 	return mainGrid.getCloseIndexes(center);
+}
+
+const std::vector<char>& Environment::getCloseTabIndexes(int center) const {
+	return mainGrid.getCloseTabIndexes(center);
 }
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {

@@ -68,8 +68,12 @@ BucketIterator& Grid::getArrayNeight(Urho3D::Vector3& position, float radius, sh
 	return *iterators[thread].init(getEnvIndexesFromCache(radius), calculator.indexFromPosition(position), this);
 }
 
-std::vector<short>& Grid::getCloseIndexes(int center) {
+const std::vector<short>& Grid::getCloseIndexes(int center)const {
 	return closeIndexProvider.get(center);
+}
+
+const std::vector<char>& Grid::getCloseTabIndexes(short center) const {
+	return closeIndexProvider.getTabIndexes(center);
 }
 
 void Grid::removeAt(int index, Physical* entity) const {

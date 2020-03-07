@@ -495,14 +495,14 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
 	int mainIndex = getMainBucketIndex();
-	std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
-
-	for (auto i : closeIndexes) {
-		if (!useSockets[i]) {
-			Urho3D::Vector2 posToFollow = getSocketPos(this, i);
-			int index = mainIndex + i;
+	const std::vector<char>& closeTabIndexes = Game::getEnvironment()->getCloseTabIndexes(mainIndex);
+	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
+	for (auto i : closeTabIndexes) {
+		if (!useSockets[i]) {		
+			int index = mainIndex + closeIndexes[i];
 			if (Game::getEnvironment()->cellInState(index,
 			                                        {CellState::EMPTY, CellState::COLLECT, CellState::ATTACK})) {
+				Urho3D::Vector2 posToFollow = getSocketPos(this, i);
 				if (index == follower->getMainCell()) {
 					return {{posToFollow, 0, index}};
 				}

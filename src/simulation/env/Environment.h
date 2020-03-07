@@ -22,10 +22,10 @@ public:
 	explicit Environment(Urho3D::Terrain* _terrian);
 	~Environment();
 
-	std::vector<Physical *>* getNeighbours(Physical* physical, float radius);
-	std::vector<Physical *>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);
-	std::vector<Physical *>* getNeighboursFromTeamNotEq(Physical* physical, float radius, int team);
-	std::vector<Physical *>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
+	std::vector<Physical*>* getNeighbours(Physical* physical, float radius);
+	std::vector<Physical*>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);
+	std::vector<Physical*>* getNeighboursFromTeamNotEq(Physical* physical, float radius, int team);
+	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 
 	std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
@@ -36,13 +36,13 @@ public:
 	void update(std::vector<Unit*>* units) const;
 	void update(std::vector<Building*>* buildings);
 	void update(std::vector<ResourceEntity*>* resources);
-	
+
 	void updateAll(std::vector<Building*>* buildings) const;
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit);
 	Urho3D::Vector2* validatePosition(Urho3D::Vector3& position);
 
-	std::vector<Physical *>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
+	std::vector<Physical*>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 
 	float getGroundHeightAt(float x, float z) const;
 	Urho3D::Vector3 getPosWithHeightAt(float x, float z) const;
@@ -85,7 +85,8 @@ public:
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
 	Urho3D::Vector2 bestPosToBuild(char player, short id);
 	float getDistToEnemy(Player* player);
-	std::vector<short>& getCloseIndexs(int center);
+	const std::vector<short>& getCloseIndexs(int center) const;
+	const std::vector<char>& getCloseTabIndexes(int center) const;
 
 private:
 	MainGrid mainGrid;
@@ -97,4 +98,3 @@ private:
 
 	std::vector<Physical*> *neights, *neights2, *empty; //TODO tu bedzie trzeba tablica jesli beda watki
 };
-
