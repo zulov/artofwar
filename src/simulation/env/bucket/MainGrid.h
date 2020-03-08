@@ -89,7 +89,4 @@ private:
 	std::vector<Urho3D::Vector2> posInBucket4;
 
 	ComplexBucketData* complexData;
-
-
-	//std::vector<short> closeIndexes[3];
 };

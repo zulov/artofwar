@@ -80,10 +80,11 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 		if (current == endIdx) {
 			break;
 		}
-		auto& closeIndexGood = closeIndexProvider.get(current);
-		for (int i = 0; i < closeIndexGood.size(); ++i) {
+		auto& closeTabIndx = closeIndexProvider.getTabIndexes(current);
+
+		for (auto i : closeTabIndx) {
 			if (complexData[current].ifNeightIsFree(i)) {
-				int next = current + closeIndexGood[i];
+				int next = current + closeIndexProvider.getIndexAt(i);
 				//TODO BUG IMPORTANT nextujemne :O
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + complexData[current].getCost(i);
@@ -116,10 +117,11 @@ std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim)
 		if (complexData[end].allNeightOccupied()) {
 			end = complexData[end].getEscapeBucket();
 		} else {
-			auto& closeIndexGood = closeIndexProvider.get(end);
-			for (int i = 0; i < closeIndexGood.size(); ++i) {
+			auto& closeTabIndx = closeIndexProvider.getTabIndexes(end);
+
+			for (auto i : closeTabIndx) {
 				if (complexData[end].ifNeightIsFree(i)) {
-					end = end + closeIndexGood[i]; //TODO obliczyc lepszy, a nie pierwszy z brzegu
+					end = end + closeIndexProvider.getIndexAt(i); //TODO obliczyc lepszy, a nie pierwszy z brzegu
 					//TODO bug wyjscie pioza
 					break;
 				}
@@ -162,11 +164,11 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 				complexData[current].setEscapeThrought(-1);
 				break;
 			}
-			auto& closeIndexGood = closeIndexProvider.get(current);
-			for (int i = 0; i < closeIndexGood.size(); ++i) {
-				//TODO BUG IMPORTANT nextujemne :O
+			auto& closeTabIndx = closeIndexProvider.getTabIndexes(end);
+
+			for (auto i : closeTabIndx) {
 				if (!complexData[current].ifNeightIsFree(i)) {
-					int nI = current + closeIndexGood[i];
+					int nI = current + closeIndexProvider.getIndexAt(i);
 
 					if (!complexData[nI].allNeightOccupied()
 						&& refreshed.find(nI) == refreshed.end()) {
