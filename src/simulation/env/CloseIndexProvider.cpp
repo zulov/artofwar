@@ -1,8 +1,7 @@
 #include "CloseIndexProvider.h"
 
 CloseIndexProvider::CloseIndexProvider(short res)
-	: resolution(res),
-	  templateVec{-res - 1, -res, -res + 1, -1, 1, res - 1, res, res + 1},
+	: resolution(res), templateVec{-res - 1, -res, -res + 1, -1, 1, res - 1, res, res + 1},
 	  templateVecSecond{
 		  -2 * res - 2, -2 * res - 1, -2 * res, -2 * res + 1, -2 * res + 2,
 		  -res - 2, -res + 2,
@@ -65,14 +64,13 @@ CloseIndexProvider::CloseIndexProvider(short res)
 		}
 		closeIndexesSecond[i].shrink_to_fit();
 	}
-	int a = 5;
 }
 
 char CloseIndexProvider::getIndex(int center) const {
-	bool firstRow = center < resolution;
-	bool lastRow = center > resolution * resolution - resolution;
-	bool firstColumn = center % resolution == 0;
-	bool lastColumn = center % resolution == resolution - 1;
+	const bool firstRow = center < resolution;
+	const bool lastRow = center > resolution * resolution - resolution;
+	const bool firstColumn = center % resolution == 0;
+	const bool lastColumn = center % resolution == resolution - 1;
 
 	char index = 0;
 	if (firstRow) { } else if (lastRow) {
@@ -93,11 +91,38 @@ const std::vector<short>& CloseIndexProvider::get(int center) const {
 }
 
 const std::vector<short>& CloseIndexProvider::getSecond(int center) const {
-	bool firstRow = center < resolution;
-	bool lastRow = center > resolution * resolution - resolution;
-	bool firstColumn = center % resolution == 0;
-	bool lastColumn = center % resolution == resolution - 1;
-	return closeIndexes[getIndex(center)];
+	const bool firstRow = center < resolution;
+	const bool secondRow = !firstRow && center < 2 * resolution;
+
+	const bool lastRow = center > resolution * resolution - resolution;
+	const bool almostLastRow = !lastRow && center > resolution * resolution - 2 * resolution;
+
+	const bool firstColumn = center % resolution == 0;
+	const bool secondColumn = center % resolution == 1;
+
+	const bool lastColumn = center % resolution == resolution - 1;
+	const bool almostLastColumn = center % resolution == resolution - 2;
+	char index = 0;
+	if (firstRow) { } else if (secondRow) {
+		index += 5;
+	} else if (almostLastRow) {
+		index += 15;
+	} else if (lastRow) {
+		index += 20;
+	} else {
+		index += 10;
+	}
+
+	if (firstColumn) { } else if (secondColumn) {
+		index += 1;
+	} else if (almostLastColumn) {
+		index += 3;
+	} else if (lastColumn) {
+		index += 4;
+	} else { index += 2; }
+
+
+	return closeIndexesSecond[index];
 }
 
 const std::vector<char>& CloseIndexProvider::getTabIndexes(int center) const {
