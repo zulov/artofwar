@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#define CLOSE_SIZE 9
+#define CLOSE_SECOND_SIZE 25
 
 class CloseIndexProvider {
 public:
@@ -14,10 +16,11 @@ private:
 
 	short resolution;
 	std::vector<short> templateVec;
+	std::vector<short> templateVecSecond;
 
-	std::vector<char> tabIndexes[9];
-	std::vector<short> closeIndexes[9];
+	std::vector<char> tabIndexes[CLOSE_SIZE];
+	std::vector<short> closeIndexes[CLOSE_SIZE];
 
-	std::vector<char> tabIndexesSecond[25];
-	std::vector<short> closeIndexesSecond[25];
+	std::vector<char> tabIndexesSecond[CLOSE_SECOND_SIZE];
+	std::vector<short> closeIndexesSecond[CLOSE_SECOND_SIZE];
 };
