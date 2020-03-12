@@ -10,8 +10,12 @@ class DatabaseCache {
 public:
 	DatabaseCache(const char* path);
 	~DatabaseCache();
+
+	void loadBasic(std::string name);
+	void loadData(std::string name);
+
 	void execute(const char* sql, int (* load)(void*, int, char**, char**)) const;
-	bool openDatabase();
+	bool openDatabase(const std::string& name);
 	db_unit* getUnit(int i) const { return dbContainer->units[i]; }
 	db_hud_size* getHudSize(int i) const { return dbContainer->hudSizes[i]; }
 	db_graph_settings* getGraphSettings(int i) const { return dbContainer->graphSettings[i]; }
@@ -56,12 +60,12 @@ public:
 	int getGraphSettingsSize() const { return dbContainer->graph_settings_size; }
 	int getResolutionSize() const { return dbContainer->resolutions_size; }
 
-	void executeSingle(const char* sql);
+	void executeSingleBasic(std::string name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* graphSettings);
 	void setSettings(int i, db_settings* settings);
 
 private:
 	db_container* dbContainer;
 	sqlite3* database;
-	std::string base;
+	std::string pathStr;
 };
