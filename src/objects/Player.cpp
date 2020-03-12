@@ -1,21 +1,22 @@
 #include "player/Player.h"
-#include "Game.h"
-#include "queue/QueueActionType.h"
-#include "database/DatabaseCache.h"
+#include <fstream>
 #include <string>
 #include <utility>
+#include "ActionCenter.h"
+#include "building/Building.h"
+#include "commands/action/BuildingActionCommand.h"
+#include "database/DatabaseCache.h"
+#include "Game.h"
+#include "queue/QueueActionType.h"
 #include "simulation/env/Environment.h"
-#include <fstream>
 #include "stats/Stats.h"
 #include "stats/StatsEnums.h"
-#include "building/Building.h"
 
 
-Player::Player(int nationId, int team, char id, int color, Urho3D::String name, bool active): name(std::move(name)),
-                                                                                              team(team),
-                                                                                              color(color), id(id),
-                                                                                              active(active),
-                                                                                              queue(1) {
+Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active):
+	name(std::move(name)), team(team),
+	color(color), id(id), active(active),
+	queue(1) {
 	dbNation = Game::getDatabase()->getNation(nationId);
 
 	std::fill_n(unitLevels, UNITS_NUMBER_DB, 0);
@@ -165,6 +166,26 @@ std::optional<short> Player::chooseUpgrade(StatsOutputType order) {
 	return {};
 }
 
+short Player::chooseBuilding(StatsOutputType order) const {
+	auto buildings = Game::getDatabase()->getBuildingsForNation(getNation());
+	
+	if (order == StatsOutputType::CREATE_BUILDING_ATTACK) {
+		for (auto building : *buildings) {
+		//	float attack = Game::getDatabase()->getBuildingLevel(building->id,buildingLevels[building->id]).value().attack();
+		}
+	} else if (order == StatsOutputType::CREATE_BUILDING_DEFENCE) {
+		for (auto building : *buildings) {
+			//float attack = Game::getDatabase()->getBuildingLevel(building->id,buildingLevels[building->id]).value().deffence();
+		}
+	} else if (order == StatsOutputType::CREATE_BUILDING_ECON) {
+		for (auto building : *buildings) {
+		//	float attack = Game::getDatabase()->getBuildingLevel(building->id,buildingLevels[building->id]).value().econ();
+			// attack = Game::getDatabase()->getBuildingLevel(building->id,buildingLevels[building->id]).value().econ();
+		}
+	}
+	return buildings->at(0)->id;
+}
+
 void Player::ai() {
 	const auto data = Game::getStats()->getInputFor(getId());
 
@@ -190,22 +211,26 @@ void Player::createOrder(StatsOutputType order) {
 	case StatsOutputType::CREATE_BUILDING_ATTACK:
 	case StatsOutputType::CREATE_BUILDING_DEFENCE:
 	case StatsOutputType::CREATE_BUILDING_ECON:
-		//	short id = chooseBuilding(order);
-		//	auto pos = bestPosToBuild(order, id);
+	{
+		short idToCreate = chooseBuilding(order);
+		Game::getActionCenter()->addBuilding(idToCreate, bestPosToBuild(order, id), id,
+		                                     getLevelForBuilding(idToCreate));
+	}
 		break;
 	case StatsOutputType::UPGRADE_ATTACK:
 	case StatsOutputType::UPGRADE_DEFENCE:
 	case StatsOutputType::UPGRADE_ECON:
+	{
 		// auto opt = chooseUpgrade(order);
 		// if (opt.has_value()) {
 		// 	short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to
-		// 	Building* building = bestBuildingToUpgrade(unitId);
+		// 	Building* building = bestBuildingToUpgrade(id, unitId);
 		//
 		// 	Game::getActionCenter()->add(
-		// 		new UnitActionCommand(new IndividualOrder(building, UnitAction(-1), {}, nullptr, ),
-		// 		                  Game::getPlayersMan()->getActivePlayerID()));
+		// 		new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL, unitId, id));
 		// }
-		// break;
+	}
+		break;
 	case StatsOutputType::ORDER_GO: break;
 	case StatsOutputType::ORDER_STOP: break;
 	case StatsOutputType::ORDER_CHARGE: break;
@@ -218,7 +243,7 @@ void Player::createOrder(StatsOutputType order) {
 	}
 }
 
-Urho3D::Vector2 Player::bestPosToBuild(const short id) const {
+Urho3D::Vector2 Player::bestPosToBuild(StatsOutputType order, const short id) const {
 	return Game::getEnvironment()->bestPosToBuild(this->id, id);
 }
 

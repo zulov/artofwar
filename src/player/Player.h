@@ -10,7 +10,7 @@ enum class ActionType : char;
 
 class Player {
 public:
-	Player(int nationId, int team, char id, int color, Urho3D::String name, bool active);
+	Player(int nationId, char team, char id, int color, Urho3D::String name, bool active);
 	~Player();
 
 	std::string getValues(int precision) const;
@@ -21,7 +21,7 @@ public:
 	Resources& getResources() { return resources; }
 	Possession& getPossession() { return possession; }
 	int getNation() const { return dbNation->id; }
-	int getTeam() const { return team; }
+	char getTeam() const { return team; }
 	char getId() const { return id; }
 	int getColor() const { return color; }
 	Urho3D::String& getName() { return name; }
@@ -46,8 +46,10 @@ public:
 private:
 
 	std::optional<short> chooseUpgrade(StatsOutputType order);
+
+	short chooseBuilding(StatsOutputType order) const;
 	void createOrder(StatsOutputType order);
-	Urho3D::Vector2 bestPosToBuild(short id) const;
+	Urho3D::Vector2 bestPosToBuild(StatsOutputType order, short id) const;
 	void initAi();
 
 	Brain* brain;
@@ -56,11 +58,11 @@ private:
 	QueueManager queue;
 	db_nation* dbNation;
 	Urho3D::String name;
-	int team;
+	char team;
 	int color;
 	char id;
 	bool active;
-	
+
 	char unitLevels[UNITS_NUMBER_DB];
 	char buildingLevels[BUILDINGS_NUMBER_DB];
 	char unitUpgradeLevels[PATH_UPGRADES_NUMBER_DB];
