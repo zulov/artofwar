@@ -102,35 +102,34 @@ int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
 	const int unitId = atoi(argv[3]);
 	const int resourceId = atoi(argv[1]);
 	db_resource* dbResource = xyz->resources[resourceId];
-	xyz->costForUnit[unitId]->
-		push_back(new db_cost(atoi(argv[0]), resourceId, atoi(argv[2]), dbResource->name, unitId));
+	xyz->units[unitId]
+		->costs.push_back(new db_cost(atoi(argv[0]), resourceId, atoi(argv[2]), dbResource->name, unitId));
 
 	return 0;
 }
 
 int static loadCostUnitLevel(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	const int unit = atoi(argv[0]);
+	const int unitId = atoi(argv[0]);
 	const int level = atoi(argv[1]);
 	const int resourceId = atoi(argv[2]);
 	db_resource* dbResource = xyz->resources[resourceId];
-
-	xyz->costForUnitLevel[unit]
-		->at(level)->push_back(new db_cost(-1, resourceId, atoi(argv[3]), dbResource->name, unit));
+	xyz->units[unitId]->getLevel(level).value()->costs.push_back(
+		new db_cost(-1, resourceId, atoi(argv[3]), dbResource->name, unitId));
 
 	return 0;
 }
 
 int static loadCostBuildingLevel(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	const int building = atoi(argv[0]);
+	const int buildingId = atoi(argv[0]);
 	const int level = atoi(argv[1]);
 	const int resourceId = atoi(argv[2]);
 	db_resource* dbResource = xyz->resources[resourceId];
-
-	xyz->costForBuildingLevel[building]->at(level)->push_back(new db_cost(-1, resourceId, atoi(argv[3]),
-	                                                                      dbResource->name,
-	                                                                      building));
+	xyz->buildings[buildingId]->getLevel(level)
+	                          .value()->costs.push_back(new db_cost(-1, resourceId, atoi(argv[3]),
+	                                                                dbResource->name,
+	                                                                buildingId));
 
 	return 0;
 }
@@ -382,50 +381,4 @@ void DatabaseCache::setSettings(int i, db_settings* settings) {
 	   .Append(", resolution = ").Append(Urho3D::String(settings->resolution));
 
 	executeSingleBasic("base.db", sql.CString());
-}
-
-std::optional<db_unit_level*> DatabaseCache::getUnitLevel(int id, int level) const {
-	if (dbContainer->levelsToUnit[id]->size() > level) {
-		return dbContainer->levelsToUnit[id]->at(level);
-	}
-	return {};
-}
-
-std::optional<db_building_level*> DatabaseCache::getBuildingLevel(int id, int level) const {
-	if (dbContainer->buildings[id]->levels.size() > level) {
-		return dbContainer->buildings[id]->levels.at(level);
-	}
-	return {};
-}
-
-std::optional<db_unit_upgrade*> DatabaseCache::getUnitUpgrade(int id, int level) const {
-	if (dbContainer->unitUpgrades[id]->size() > level) {
-		return dbContainer->unitUpgrades[id]->at(level);
-	}
-	return {};
-}
-
-std::optional<std::vector<db_cost*>*> DatabaseCache::getCostForUnitLevel(short id, int level) const {
-	if (dbContainer->costForUnitLevel[id]->size() > level
-		&& !dbContainer->costForUnitLevel[id]->at(level)->empty()) {
-		return dbContainer->costForUnitLevel[id]->at(level);
-	}
-	return {};
-}
-
-std::optional<std::vector<db_cost*>*> DatabaseCache::getCostForBuildingLevel(short id, int level) const {
-	if (dbContainer->costForBuildingLevel[id]->size() > level
-		&& !dbContainer->costForBuildingLevel[id]->at(level)->empty()) {
-		return dbContainer->costForBuildingLevel[id]->at(level);
-	}
-	return {};
-}
-
-std::optional<std::vector<db_cost*>*> DatabaseCache::getCostForUnitUpgrade(short id, int level) const {
-	auto upgrade = dbContainer->unitUpgrades[id]->at(level);
-
-	if (!dbContainer->unitUpgradesCosts[upgrade->id]->empty()) {
-		return dbContainer->unitUpgradesCosts[upgrade->id];
-	}
-	return {};
 }

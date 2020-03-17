@@ -26,7 +26,7 @@
 Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position),
                                                                         state(UnitState::STOP) {
 	dbUnit = Game::getDatabase()->getUnit(id);
-	dbLevel = Game::getDatabase()->getUnitLevel(id, level).value();
+	dbLevel = dbUnit->getLevel(level).value();//TODO bug value
 	setPlayerAndTeam(player);
 	loadXml("Objects/units/" + dbLevel->nodeName);
 

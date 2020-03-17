@@ -81,7 +81,7 @@ void Building::action(BuildingActionType type, short id) const {
 		
 		auto opt = Game::getDatabase()->getUnit(id)->getLevel(level);
 		if (opt.has_value()) {
-			const auto costs = opt.value().costs;
+			const auto costs = opt.value()->costs;
 			if (resources.reduce(costs)) {
 				queue->add(1, QueueActionType::UNIT_LEVEL, id, 1);
 			}
@@ -91,10 +91,9 @@ void Building::action(BuildingActionType type, short id) const {
 	case BuildingActionType::UNIT_UPGRADE:
 	{
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
-		auto opt = Game::getDatabase()->getCostForUnitUpgrade(id, level);
 		auto opt = Game::getDatabase()->getUnit(id)->getUpgrade(level);
 		if (opt.has_value()) {
-			const auto costs = opt.value().costs;
+			const auto costs = opt.value()->costs;
 			if (resources.reduce(costs)) {
 				queue->add(1, QueueActionType::UNIT_UPGRADE, id, 1);
 			}
@@ -105,7 +104,7 @@ void Building::action(BuildingActionType type, short id) const {
 }
 
 void Building::upgrade(char level) {
-	dbLevel = Game::getDatabase()->getBuildingLevel(dbBuilding->id, level).value();
+	dbLevel = dbBuilding->getLevel(level).value();//TODO BUG value()
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
 }
 

@@ -21,7 +21,7 @@ LeftMenuInfoPanel::~LeftMenuInfoPanel() = default;
 
 
 void LeftMenuInfoPanel::createBody() {
-	text = addChildText(window, "MyText",  style);
+	text = addChildText(window, "MyText", style);
 }
 
 void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
@@ -55,28 +55,32 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	const auto id = hudData->getId();
 	switch (hudData->getType()) {
 	case ActionType::UNIT_CREATE:
-			return stringFrom(Game::getDatabase()->getUnit(id)->name,
-		                  Game::getDatabase()->getUnit(id)->costs);
+	{
+		auto dbUnit = Game::getDatabase()->getUnit(id);
+
+		return stringFrom(dbUnit->name, dbUnit->costs);
+	}
 	case ActionType::UNIT_LEVEL:
 	{
 		const int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
-		const auto dbLevel = Game::getDatabase()->getUnitLevel(id, level).value();
-		auto opt = Game::getDatabase()->getUnit(id)->getLevel(level)->costs;
+		auto dbLevel = Game::getDatabase()->getUnit(id)->getLevel(level).value(); //TODO probable bug value
 
-		return stringFrom(dbLevel->name, opt.value());
+		return stringFrom(dbLevel->name, dbLevel->costs);
 	}
 	case ActionType::UNIT_UPGRADE:
 		return "TODO";
 	case ActionType::BUILDING_CREATE:
-		return stringFrom(Game::getDatabase()->getBuilding(id)->name,
-		                  Game::getDatabase()->getBuilding(id)->costs);
+	{
+		auto dbBuilding = Game::getDatabase()->getBuilding(id);
+
+		return stringFrom(dbBuilding->name, dbBuilding->costs);
+	}
 	case ActionType::BUILDING_LEVEL:
 	{
 		auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;
-		auto dbLevel = Game::getDatabase()->getBuildingLevel(id, level).value();
-		auto optCost = Game::getDatabase()->getCostForUnitLevel(id, level);
+		auto dbLevel = Game::getDatabase()->getBuilding(id)->getLevel(level).value(); //TODO BUG value
 
-		return stringFrom(dbLevel->name, optCost.value());
+		return stringFrom(dbLevel->name, dbLevel->costs);
 	}
 	case ActionType::ORDER:
 		return Game::getLocalization()->Get(Game::getDatabase()->getOrder(id)->name);

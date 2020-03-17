@@ -132,7 +132,8 @@ std::optional<short> Player::chooseUpgrade(StatsOutputType order) {
 		// for (auto unitUpgrade : *db->getUnitUpgrades(unit->id)) {
 		// 	unitUpgrade->
 		// }
-		auto level = db->getUnitLevel(unit->id, getLevelForUnit(unit->id) + 1);
+		
+		auto level = unit->getLevel(getLevelForUnit(unit->id) + 1);
 		if (level.has_value()) {
 			unitsLevels.push_back(level.value());
 		}
@@ -141,7 +142,7 @@ std::optional<short> Player::chooseUpgrade(StatsOutputType order) {
 	std::vector<db_building_level*> buildingLevels;
 
 	for (auto building : *db->getBuildingsForNation(this->getNation())) {
-		auto level = db->getBuildingLevel(building->id, getLevelForBuilding(building->id) + 1);
+		auto level = building->getLevel(getLevelForBuilding(building->id) + 1);
 		if (level.has_value()) {
 			buildingLevels.push_back(level.value());
 		}

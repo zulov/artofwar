@@ -167,9 +167,9 @@ void MenuPanel::levelBuilding() {
 	int k = 0;
 	for (int i = 0; i < Game::getDatabase()->getBuildingSize(); ++i) {
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i) + 1;
-		auto opt = Game::getDatabase()->getBuildingLevel(i, level);
-		if (opt.has_value()) {
-			auto building = Game::getDatabase()->getBuilding(i);
+		auto building = Game::getDatabase()->getBuilding(i);
+		auto opt = building->getLevel(level);
+		if (opt.has_value()) {	
 			if (building->nation == nation) {
 				setNext(k, "textures/hud/icon/building/levels/" + Urho3D::String(level) + "/" + building->icon,
 				        building->id, ActionType::BUILDING_LEVEL, "");
@@ -230,7 +230,8 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
 	for (auto id : getUnitInBuilding(selectedInfo)) {
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
-		auto opt = Game::getDatabase()->getUnitLevel(id, level);
+		auto unit = Game::getDatabase()->getUnit(id);
+		auto opt = unit->getLevel(level);
 		if (opt.has_value()) {
 			db_unit* unit = Game::getDatabase()->getUnit(id);
 			setNext(k, "textures/hud/icon/unit/levels/" + Urho3D::String(level) + "/" + unit->icon, unit->id,
@@ -243,8 +244,8 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
 	for (auto id : getUpgradePathInBuilding(selectedInfo)) {
-		auto opt = Game::getDatabase()->
-			getUnitUpgrade(id, Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1);
+		auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1;
+		auto opt = Game::getDatabase()->getUnit(id)->getUpgrade(level);
 
 		if (opt.has_value()) {
 			auto upgrade = opt.value();

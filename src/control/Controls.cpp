@@ -552,7 +552,8 @@ void Controls::buildControl() {
 
 			tempBuildingNode->SetPosition(env->getPosWithHeightAt(validPos.x_, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
-				auto dbLevel = Game::getDatabase()->getBuildingLevel(dbBuilding->id, 0).value();
+				
+				auto dbLevel = dbBuilding->getLevel(0).value();
 				tempBuildingNode->LoadXML(Game::getCache()
 				                          ->GetResource<Urho3D::XMLFile>("Objects/buildings/" + dbLevel->nodeName)->
 				                          GetRoot());

@@ -33,7 +33,7 @@ public:
 	Urho3D::String toMultiLineString() override;
 	void absorbAttack(float attackCoef) override;
 	ObjectType getType() const override;
-	void action(BuildingActionType type, short id);
+	void action(BuildingActionType type, short id) const;
 	std::string getValues(int precision) override;
 	float getMaxHpBarSize() override;
 	int getDbID() override;

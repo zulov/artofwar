@@ -29,20 +29,6 @@ public:
 	db_settings* getSettings() const { return dbContainer->settings[0]; }
 	db_resolution* getResolution(int id) const { return dbContainer->resolutions[id]; }
 
-	std::optional<db_unit_level*> getUnitLevel(int id, int level) const;
-	std::optional<db_building_level*> getBuildingLevel(int id, int level) const;
-	std::optional<db_unit_upgrade*> getUnitUpgrade(int id, int level) const;
-	std::optional<std::vector<db_cost*>*> getCostForUnitLevel(short id, int level) const;
-	std::optional<std::vector<db_cost*>*> getCostForBuildingLevel(short id, int level) const;
-	std::optional<std::vector<db_cost*>*> getCostForUnitUpgrade(short id, int level) const;
-
-
-	std::vector<db_unit_level*>* getUnitLevels(int id) const { return dbContainer->levelsToUnit[id]; }
-	const std::vector<db_building_level*>& getBuildingLevels(int id) const { return dbContainer->buildings[id]->levels; }
-	std::vector<db_unit_upgrade*>* getUnitUpgrades(int id) const { return dbContainer->unitUpgrades[id]; }
-	const std::vector<db_unit*>& getUnitsForBuilding(int id) const { return dbContainer->buildings[id]->units; }
-	std::vector<db_cost*>* getCostForUnit(int id) const { return dbContainer->costForUnit[id]; }
-	std::vector<db_cost*>& getCostForBuilding(int id) const { return dbContainer->buildings[id]->costs; }
 	std::vector<db_order*>* getOrdersForUnit(int id) const { return dbContainer->ordersToUnit[id]; }
 
 	std::vector<db_building*>* getBuildingsForNation(int id) const { return dbContainer->buildingsPerNation[id]; }

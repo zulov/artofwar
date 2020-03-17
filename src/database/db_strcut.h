@@ -50,7 +50,7 @@ struct db_unit_level {
 	const float maxForce;
 
 	std::vector<db_cost*> costs;
-	
+
 	db_unit_level(int level, int unit, char* name, float minDist, float maxSep, char* nodeName,
 	              float mass, float attack, int attackSpeed, float attackRange, float defense,
 	              int maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed, float maxForce)
@@ -84,6 +84,7 @@ struct db_unit {
 
 	std::vector<db_cost*> costs;
 	std::vector<db_unit_level*> levels;
+	std::vector<db_unit_upgrade*> upgrades;
 
 	db_unit(int id, char* name, int rotatable, int nation, char* icon, int actionState)
 		: id(id),
@@ -94,8 +95,25 @@ struct db_unit {
 		  actionState(actionState) {
 	}
 
-	std::optional<db_unit_level*> getLevel(int level);
-	std::optional<db_unit_upgrade*> getUpgrade(int level);
+	~db_unit() {
+		clear_vector(costs);
+		clear_vector(levels);
+		clear_vector(upgrades);
+	}
+
+	std::optional<db_unit_level*> getLevel(int level) {
+		if (levels.size() < level) {
+			return levels.at(level);
+		}
+		return {};
+	}
+
+	std::optional<db_unit_upgrade*> getUpgrade(int level) {
+		if (upgrades.size() < level) {
+			return upgrades.at(level);
+		}
+		return {};
+	}
 };
 
 struct db_unit_upgrade {
@@ -113,7 +131,9 @@ struct db_unit_upgrade {
 	const float collectSpeed;
 	const float upgradeSpeed;
 	Urho3D::String pathName;
+
 	std::vector<db_unit*> units;
+	std::vector<db_cost*> costs;
 
 	db_unit_upgrade(int id, int path, int level, char* name, float attack, float attackSpeed, float attackRange,
 	                float defense, float maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed)
@@ -130,6 +150,11 @@ struct db_unit_upgrade {
 		  minSpeed(minSpeed),
 		  collectSpeed(collectSpeed),
 		  upgradeSpeed(upgradeSpeed) {
+	}
+
+	~db_unit_upgrade() {
+		clear_vector(units);
+		clear_vector(costs);
 	}
 };
 
@@ -159,7 +184,12 @@ struct db_building {
 		clear_vector(levels);
 	}
 
-	std::optional<db_building_level*> getLevel(int level);
+	std::optional<db_building_level*> getLevel(int level) {
+		if (levels.size() < level) {
+			return levels.at(level);
+		}
+		return {};
+	}
 };
 
 struct db_building_level {
@@ -169,6 +199,7 @@ struct db_building_level {
 	const Urho3D::String nodeName;
 	const short queueMaxCapacity;
 
+	std::vector<db_cost*> costs;
 
 	db_building_level(int level, int unit, char* name, char* nodeName, short queueMaxCapacity)
 		: level(level),
@@ -176,6 +207,10 @@ struct db_building_level {
 		  name(name),
 		  nodeName(nodeName),
 		  queueMaxCapacity(queueMaxCapacity) {
+	}
+
+	~db_building_level() {
+		clear_vector(costs);
 	}
 };
 
@@ -346,30 +381,30 @@ struct db_player_colors {
 };
 
 struct db_container {
-	db_unit* units[UNITS_NUMBER_DB] = {nullptr};
-	db_building* buildings[BUILDINGS_NUMBER_DB] = {nullptr};
 	db_hud_size* hudSizes[HUD_SIZES_NUMBER_DB] = {nullptr};
 	db_graph_settings* graphSettings[GRAPH_SETTINGS_NUMBER_DB] = {nullptr};
+	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB] = {nullptr};
+	db_resolution* resolutions[RESOLUTIONS_NUMBER_DB] = {nullptr};
+	db_settings* settings[SETTINGS_NUMBER_DB] = {nullptr};
+	
+	db_unit* units[UNITS_NUMBER_DB] = {nullptr};
+	db_building* buildings[BUILDINGS_NUMBER_DB] = {nullptr};
 	db_nation* nations[NATION_NUMBER_DB] = {nullptr};
 	db_resource* resources[RESOURCE_NUMBER_DB] = {nullptr};
-	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB] = {nullptr};
 	db_order* orders[ORDERS_NUMBER_DB] = {nullptr};
 	db_map* maps[MAP_NUMBER_DB] = {nullptr};
 	db_player_colors* playerColors[PLAYER_COLORS_NUMBER_DB] = {nullptr};
-	db_resolution* resolutions[RESOLUTIONS_NUMBER_DB] = {nullptr};
-	db_settings* settings[SETTINGS_NUMBER_DB] = {nullptr};
-	std::vector<db_unit_upgrade*>* unitUpgrades[PATH_UPGRADES_NUMBER_DB] = {nullptr};
 	db_unit_upgrade* unitUpgradesPerId[PATH_UPGRADES_NUMBER_DB * 10] = {nullptr};
+	std::vector<db_unit_upgrade*>* unitUpgrades[PATH_UPGRADES_NUMBER_DB] = {nullptr};
 	std::vector<db_cost*>* unitUpgradesCosts[PATH_UPGRADES_NUMBER_DB * 10] = {nullptr};
 
-	std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB]{};
-	std::vector<std::vector<db_cost*>*>* costForBuildingLevel[BUILDINGS_NUMBER_DB]{};
-	std::vector<std::vector<db_cost*>*>* costForUnitLevel[UNITS_NUMBER_DB]{};
+	//std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB]{};
+	//std::vector<std::vector<db_cost*>*>* costForBuildingLevel[BUILDINGS_NUMBER_DB]{};
+	//std::vector<std::vector<db_cost*>*>* costForUnitLevel[UNITS_NUMBER_DB]{};
 
 	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB]{};
 
 	std::vector<db_unit_level*>* levelsToUnit[UNITS_NUMBER_DB]{};
-	//std::vector<db_building_level*>* levelsToBuilding[BUILDINGS_NUMBER_DB]{};
 
 	std::vector<db_building*>* buildingsPerNation[MAX_NUMBER_OF_NATIONS]{};
 	std::vector<db_unit*>* unitsPerNation[MAX_NUMBER_OF_NATIONS]{};
