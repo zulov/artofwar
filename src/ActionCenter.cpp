@@ -91,8 +91,9 @@ void ActionCenter::orderPhysical(short id, QueueActionType type, char playerId) 
 		auto player = Game::getPlayersMan()->getPlayer(playerId);
 		const auto level = player->getLevelForBuilding(id) + 1;
 		auto opt = Game::getDatabase()->getCostForBuildingLevel(id, level);
-		if (opt.has_value()) {
-			if (player->getResources().reduce(opt.value())) {
+		auto opt = Game::getDatabase()->getBuilding(id)->getLevel(level);
+		if (opt.has_value()) {		
+			if (player->getResources().reduce(opt.value().costs)) {
 				player->getQueue().add(1, QueueActionType::BUILDING_LEVEL, id, 1);
 			}
 		}

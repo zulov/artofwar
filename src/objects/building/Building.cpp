@@ -63,13 +63,13 @@ Urho3D::String Building::toMultiLineString() {
 		                  maxCloseUsers, Consts::StaticStateNames[static_cast<char>(state)]);
 }
 
-void Building::action(BuildingActionType type, short id) {
+void Building::action(BuildingActionType type, short id) const {
 	Resources& resources = Game::getPlayersMan()->getActivePlayer()->getResources();
 
 	switch (type) {
 	case BuildingActionType::UNIT_CREATE:
 	{
-		auto costs = Game::getDatabase()->getCostForUnit(id);
+		auto costs = Game::getDatabase()->getUnit(id)->costs;
 		if (resources.reduce(costs)) {
 			queue->add(1, QueueActionType::UNIT_CREATE, id, 30);
 		}
@@ -78,9 +78,10 @@ void Building::action(BuildingActionType type, short id) {
 	case BuildingActionType::UNIT_LEVEL:
 	{
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
-		auto opt = Game::getDatabase()->getCostForUnitLevel(id, level);
+		
+		auto opt = Game::getDatabase()->getUnit(id)->getLevel(level);
 		if (opt.has_value()) {
-			const auto costs = opt.value();
+			const auto costs = opt.value().costs;
 			if (resources.reduce(costs)) {
 				queue->add(1, QueueActionType::UNIT_LEVEL, id, 1);
 			}
@@ -91,8 +92,9 @@ void Building::action(BuildingActionType type, short id) {
 	{
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
 		auto opt = Game::getDatabase()->getCostForUnitUpgrade(id, level);
+		auto opt = Game::getDatabase()->getUnit(id)->getUpgrade(level);
 		if (opt.has_value()) {
-			const auto costs = opt.value();
+			const auto costs = opt.value().costs;
 			if (resources.reduce(costs)) {
 				queue->add(1, QueueActionType::UNIT_UPGRADE, id, 1);
 			}

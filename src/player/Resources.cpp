@@ -27,10 +27,10 @@ Resources::Resources(float valueForAll) {
 
 Resources::~Resources() = default;
 
-bool Resources::reduce(std::vector<db_cost*>* costs) {
-	for (int i = 0; i < costs->size(); ++i) {
-		const int j = costs->at(i)->resource;
-		values[j] -= costs->at(i)->value;
+bool Resources::reduce(const std::vector<db_cost*>& costs) {
+	for (int i = 0; i < costs.size(); ++i) {
+		const int j = costs.at(i)->resource;
+		values[j] -= costs.at(i)->value;
 		if (values[j] < 0) {
 			revert(i, costs);
 			return false;
@@ -85,9 +85,9 @@ std::string Resources::getColumns() {
 		"amount		INT     NOT NULL";
 }
 
-void Resources::revert(int end, std::vector<db_cost*>* costs) {
+void Resources::revert(int end,const std::vector<db_cost*>& costs) {
 	for (int i = 0; i < end + 1; ++i) {
-		const int j = costs->at(i)->resource;
-		values[j] += costs->at(i)->value;
+		const int j = costs.at(i)->resource;
+		values[j] += costs.at(i)->value;
 	}
 }

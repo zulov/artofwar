@@ -56,12 +56,12 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	switch (hudData->getType()) {
 	case ActionType::UNIT_CREATE:
 			return stringFrom(Game::getDatabase()->getUnit(id)->name,
-		                  Game::getDatabase()->getCostForUnit(id));
+		                  Game::getDatabase()->getUnit(id)->costs);
 	case ActionType::UNIT_LEVEL:
 	{
 		const int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
 		const auto dbLevel = Game::getDatabase()->getUnitLevel(id, level).value();
-		auto opt = Game::getDatabase()->getCostForUnitLevel(id, level);
+		auto opt = Game::getDatabase()->getUnit(id)->getLevel(level)->costs;
 
 		return stringFrom(dbLevel->name, opt.value());
 	}
@@ -69,7 +69,7 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 		return "TODO";
 	case ActionType::BUILDING_CREATE:
 		return stringFrom(Game::getDatabase()->getBuilding(id)->name,
-		                  Game::getDatabase()->getCostForBuilding(id));
+		                  Game::getDatabase()->getBuilding(id)->costs);
 	case ActionType::BUILDING_LEVEL:
 	{
 		auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;

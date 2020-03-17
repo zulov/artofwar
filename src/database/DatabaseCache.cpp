@@ -92,7 +92,7 @@ int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
 int static loadBuildingToUnit(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int buildingId = atoi(argv[1]);
-	xyz->unitsForBuilding[buildingId]->push_back(xyz->units[atoi(argv[2])]);
+	xyz->buildings[buildingId]->units.push_back(xyz->units[atoi(argv[2])]);
 
 	return 0;
 }
@@ -140,9 +140,9 @@ int static loadCostBuilding(void* data, int argc, char** argv, char** azColName)
 	const int buildingId = atoi(argv[3]);
 	const int resourceId = atoi(argv[1]);
 	db_resource* dbResource = xyz->resources[resourceId];
-	xyz->costForBuilding[buildingId]->push_back(new db_cost(atoi(argv[0]), resourceId, atoi(argv[2]), dbResource->name,
-	                                                        buildingId));
 
+	xyz->buildings[buildingId]->costs.push_back(new db_cost(atoi(argv[0]), resourceId, atoi(argv[2]), dbResource->name,
+	                                                        buildingId));
 	return 0;
 }
 
@@ -200,11 +200,8 @@ int static loadSettings(void* data, int argc, char** argv, char** azColName) {
 
 int static loadBuildingLevels(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-
-	xyz->levelsToBuilding[atoi(argv[1])]->push_back(
-		new db_building_level(atoi(argv[0]), atoi(argv[1]),
-		                      argv[2], argv[3], atoi(argv[4]))
-	);
+	xyz->buildings[atoi(argv[1])]->levels.push_back(new db_building_level(atoi(argv[0]), atoi(argv[1]),
+	                                                                      argv[2], argv[3], atoi(argv[4])));
 
 	return 0;
 }
@@ -350,7 +347,6 @@ DatabaseCache::~DatabaseCache() {
 	delete dbContainer;
 }
 
-
 void DatabaseCache::executeSingleBasic(std::string name, const char* sql) {
 	if (openDatabase(name)) { return; }
 	execute(sql, callback);
@@ -396,8 +392,8 @@ std::optional<db_unit_level*> DatabaseCache::getUnitLevel(int id, int level) con
 }
 
 std::optional<db_building_level*> DatabaseCache::getBuildingLevel(int id, int level) const {
-	if (dbContainer->levelsToBuilding[id]->size() > level) {
-		return dbContainer->levelsToBuilding[id]->at(level);
+	if (dbContainer->buildings[id]->levels.size() > level) {
+		return dbContainer->buildings[id]->levels.at(level);
 	}
 	return {};
 }

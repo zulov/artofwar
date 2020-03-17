@@ -55,7 +55,7 @@ char Player::upgradeLevel(QueueActionType type, int id) {
 		}
 		break;
 	case QueueActionType::BUILDING_LEVEL:
-		if (Game::getDatabase()->getBuildingLevels(id)->size() - 1 > buildingLevels[id]) {
+		if (Game::getDatabase()->getBuildingLevels(id).size() - 1 > buildingLevels[id]) {
 			buildingLevels[id]++;
 			return buildingLevels[id];
 		}

@@ -38,11 +38,11 @@ public:
 
 
 	std::vector<db_unit_level*>* getUnitLevels(int id) const { return dbContainer->levelsToUnit[id]; }
-	std::vector<db_building_level*>* getBuildingLevels(int id) const { return dbContainer->levelsToBuilding[id]; }
+	const std::vector<db_building_level*>& getBuildingLevels(int id) const { return dbContainer->buildings[id]->levels; }
 	std::vector<db_unit_upgrade*>* getUnitUpgrades(int id) const { return dbContainer->unitUpgrades[id]; }
-	std::vector<db_unit*>* getUnitsForBuilding(int id) const { return dbContainer->unitsForBuilding[id]; }
+	const std::vector<db_unit*>& getUnitsForBuilding(int id) const { return dbContainer->buildings[id]->units; }
 	std::vector<db_cost*>* getCostForUnit(int id) const { return dbContainer->costForUnit[id]; }
-	std::vector<db_cost*>* getCostForBuilding(int id) const { return dbContainer->costForBuilding[id]; }
+	std::vector<db_cost*>& getCostForBuilding(int id) const { return dbContainer->buildings[id]->costs; }
 	std::vector<db_order*>* getOrdersForUnit(int id) const { return dbContainer->ordersToUnit[id]; }
 
 	std::vector<db_building*>* getBuildingsForNation(int id) const { return dbContainer->buildingsPerNation[id]; }
@@ -59,7 +59,7 @@ public:
 	int getHudSizeSize() const { return dbContainer->hud_size_size; }
 	int getGraphSettingsSize() const { return dbContainer->graph_settings_size; }
 	int getResolutionSize() const { return dbContainer->resolutions_size; }
-
+	
 	void executeSingleBasic(std::string name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* graphSettings);
 	void setSettings(int i, db_settings* settings);
