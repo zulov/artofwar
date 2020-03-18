@@ -49,19 +49,19 @@ void Player::setResourceAmount(float amount) {
 char Player::upgradeLevel(QueueActionType type, int id) {
 	switch (type) {
 	case QueueActionType::UNIT_LEVEL:
-		if (Game::getDatabase()->getUnitLevels(id)->size() - 1 > unitLevels[id]) {
+		if (Game::getDatabase()->getUnit(id)->levels.size() - 1 > unitLevels[id]) {
 			unitLevels[id]++;
 			return unitLevels[id];
 		}
 		break;
 	case QueueActionType::BUILDING_LEVEL:
-		if (Game::getDatabase()->getBuildingLevels(id).size() - 1 > buildingLevels[id]) {
+		if (Game::getDatabase()->getBuilding(id)->levels.size() - 1 > buildingLevels[id]) {
 			buildingLevels[id]++;
 			return buildingLevels[id];
 		}
 		break;
 	case QueueActionType::UNIT_UPGRADE:
-		if (Game::getDatabase()->getUnitUpgrades(id)->size() - 1 > unitUpgradeLevels[id]) {
+		if (Game::getDatabase()->getUnit(id)->upgrades.size() - 1 > unitUpgradeLevels[id]) {
 			unitUpgradeLevels[id]++;
 			return unitUpgradeLevels[id];
 		}

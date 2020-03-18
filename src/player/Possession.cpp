@@ -41,9 +41,9 @@ void Possession::add(Building* building) {
 void Possession::add(Unit* unit) {
 	units.push_back(unit);
 	StateManager::checkChangeState(unit, UnitState::COLLECT);
-	auto orders = Game::getDatabase()->getOrdersForUnit(unit->getDbID());
+	auto orders = Game::getDatabase()->getUnit(unit->getDbID())->orders;
 	bool result = false;
-	for (auto order : *orders) {
+	for (auto order : orders) {
 		if (order->id == static_cast<char>(UnitAction::COLLECT)) {
 			result = true;
 		}

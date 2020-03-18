@@ -91,7 +91,7 @@ void Building::action(BuildingActionType type, short id) const {
 	case BuildingActionType::UNIT_UPGRADE:
 	{
 		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
-		auto opt = Game::getDatabase()->getUnit(id)->getUpgrade(level);
+		auto opt = Game::getDatabase()->getCostForUnitUpgrade(id, level);
 		if (opt.has_value()) {
 			const auto costs = opt.value()->costs;
 			if (resources.reduce(costs)) {

@@ -245,7 +245,7 @@ void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
 	for (auto id : getUpgradePathInBuilding(selectedInfo)) {
 		auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1;
-		auto opt = Game::getDatabase()->getUnit(id)->getUpgrade(level);
+		auto opt = Game::getDatabase()->getCostForUnitUpgrade(id, level);
 
 		if (opt.has_value()) {
 			auto upgrade = opt.value();
@@ -263,9 +263,9 @@ std::unordered_set<int> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) {
 
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
-			auto orders = Game::getDatabase()->getOrdersForUnit(i);
+			auto orders = Game::getDatabase()->getUnit(i)->orders;
 			std::unordered_set<int> common2;
-			for (auto& order : *orders) {
+			for (auto& order : orders) {
 				//todo to zrobic raz i pobierac
 				common2.insert(order->id);
 			}

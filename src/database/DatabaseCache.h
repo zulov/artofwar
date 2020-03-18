@@ -2,7 +2,6 @@
 #include "sqlite3/sqlite3.h"
 #include "db_strcut.h"
 #include <vector>
-#include <optional>
 #include <string>
 
 
@@ -29,26 +28,24 @@ public:
 	db_settings* getSettings() const { return dbContainer->settings[0]; }
 	db_resolution* getResolution(int id) const { return dbContainer->resolutions[id]; }
 
-	std::vector<db_order*>* getOrdersForUnit(int id) const { return dbContainer->ordersToUnit[id]; }
-
 	std::vector<db_building*>* getBuildingsForNation(int id) const { return dbContainer->buildingsPerNation[id]; }
 	std::vector<db_unit*>* getUnitsForNation(int id) const { return dbContainer->unitsPerNation[id]; }
 
 	int getResourceSize() const { return dbContainer->resource_size; }
 	int getHudVarsSize() const { return dbContainer->hud_vars_size; }
 	int getBuildingSize() const { return dbContainer->building_size; }
-	int getUnitSize() const { return dbContainer->units_size; }
-	int getOrdersSize() const { return dbContainer->orders_size; }
+
 	int getMapSize() const { return dbContainer->maps_size; }
 	int getPlayerColorsSize() const { return dbContainer->player_colors_size; }
 	int getNationSize() const { return dbContainer->nation_size; }
 	int getHudSizeSize() const { return dbContainer->hud_size_size; }
 	int getGraphSettingsSize() const { return dbContainer->graph_settings_size; }
-	int getResolutionSize() const { return dbContainer->resolutions_size; }
 	
 	void executeSingleBasic(std::string name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* graphSettings);
 	void setSettings(int i, db_settings* settings);
+	
+	std::optional<std::vector<db_cost*>*> getCostForUnitUpgrade(short id, int level) const;
 
 private:
 	db_container* dbContainer;

@@ -26,6 +26,7 @@
 #include "utils.h"
 
 
+struct db_order;
 struct db_unit_upgrade;
 struct db_building_level;
 struct db_cost;
@@ -84,7 +85,8 @@ struct db_unit {
 
 	std::vector<db_cost*> costs;
 	std::vector<db_unit_level*> levels;
-	std::vector<db_unit_upgrade*> upgrades;
+
+	std::vector<db_order*> orders;
 
 	db_unit(int id, char* name, int rotatable, int nation, char* icon, int actionState)
 		: id(id),
@@ -98,7 +100,7 @@ struct db_unit {
 	~db_unit() {
 		clear_vector(costs);
 		clear_vector(levels);
-		clear_vector(upgrades);
+		clear_vector(orders);
 	}
 
 	std::optional<db_unit_level*> getLevel(int level) {
@@ -108,12 +110,6 @@ struct db_unit {
 		return {};
 	}
 
-	std::optional<db_unit_upgrade*> getUpgrade(int level) {
-		if (upgrades.size() < level) {
-			return upgrades.at(level);
-		}
-		return {};
-	}
 };
 
 struct db_unit_upgrade {
@@ -395,11 +391,6 @@ struct db_container {
 	db_map* maps[MAP_NUMBER_DB] = {nullptr};
 	db_player_colors* playerColors[PLAYER_COLORS_NUMBER_DB] = {nullptr};
 	db_unit_upgrade* unitUpgradesPerId[PATH_UPGRADES_NUMBER_DB * 10] = {nullptr};
-	std::vector<db_unit_upgrade*>* unitUpgrades[PATH_UPGRADES_NUMBER_DB] = {nullptr};
-	std::vector<db_cost*>* unitUpgradesCosts[PATH_UPGRADES_NUMBER_DB * 10] = {nullptr};
-
-	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB]{};
-
 
 	std::vector<db_building*>* buildingsPerNation[MAX_NUMBER_OF_NATIONS]{};
 	std::vector<db_unit*>* unitsPerNation[MAX_NUMBER_OF_NATIONS]{};
@@ -412,47 +403,23 @@ struct db_container {
 	unsigned short resource_size = 0;
 	unsigned short nation_size = 0;
 	unsigned short hud_vars_size = 0;
-	unsigned short orders_size = 0;
 	unsigned short maps_size = 0;
 	unsigned short player_colors_size = 0;
-	unsigned short resolutions_size = 0;
 
 
 	explicit db_container() {
-
-		for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
-			ordersToUnit[i] = new std::vector<db_order*>();
-		}
-
-		for (auto& unitUpgrade : unitUpgrades) {
-			unitUpgrade = new std::vector<db_unit_upgrade*>();
-		}
-		for (auto& unitUpgradesCost : unitUpgradesCosts) {
-			unitUpgradesCost = new std::vector<db_cost*>();
-		}
 		for (auto&& perNation : buildingsPerNation) {
 			perNation = new std::vector<db_building*>;
 		}
 		for (auto&& perNation : unitsPerNation) {
 			perNation = new std::vector<db_unit*>;
 		}
-
 	}
 
 	~db_container() {
 		//TODO bug delete what inside
 		for (auto unit : units) {
 			delete unit;
-		}
-		
-		for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
-			delete ordersToUnit[i];
-		}
-		for (auto unitUpgrade : unitUpgrades) {
-			delete unitUpgrade;
-		}
-		for (auto unitUpgradesCost : unitUpgradesCosts) {
-			delete unitUpgradesCost;
 		}
 		for (auto dbBuildings : buildingsPerNation) {
 			delete dbBuildings;

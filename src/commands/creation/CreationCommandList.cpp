@@ -23,7 +23,7 @@ CreationCommand* CreationCommandList::addUnits(int number, int id, Urho3D::Vecto
 CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& position, char player, int level) {
 	Resources& resources = Game::getPlayersMan()->getPlayer(player)->getResources();
 	db_building* db_building = Game::getDatabase()->getBuilding(id);
-	auto costs =db_building->costs;
+	auto costs = db_building->costs;
 	auto env = Game::getEnvironment();
 
 	if (env->validateStatic(db_building->size, position) && resources.reduce(costs)) {
