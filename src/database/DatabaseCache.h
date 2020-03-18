@@ -34,7 +34,6 @@ public:
 	int getResourceSize() const { return dbContainer->resource_size; }
 	int getHudVarsSize() const { return dbContainer->hud_vars_size; }
 	int getBuildingSize() const { return dbContainer->building_size; }
-
 	int getMapSize() const { return dbContainer->maps_size; }
 	int getPlayerColorsSize() const { return dbContainer->player_colors_size; }
 	int getNationSize() const { return dbContainer->nation_size; }
@@ -44,8 +43,6 @@ public:
 	void executeSingleBasic(std::string name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* graphSettings);
 	void setSettings(int i, db_settings* settings);
-	
-	std::optional<std::vector<db_cost*>*> getCostForUnitUpgrade(short id, int level) const;
 
 private:
 	db_container* dbContainer;

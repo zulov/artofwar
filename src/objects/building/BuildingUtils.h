@@ -16,13 +16,3 @@ inline std::unordered_set<int> unitsIdsForBuildingNation(int nation, int i) {
 	}
 	return common;
 }
-
-
-inline std::unordered_set<int> pathsIdsInbuilding(int id) {
-	std::unordered_set<int> common;
-	auto paths = Game::getDatabase()->getBuilding(id)->unitUpgradePath;
-	for (auto id : paths) {
-		common.insert(id);
-	}
-	return common;
-}

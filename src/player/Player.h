@@ -65,5 +65,4 @@ private:
 
 	char unitLevels[UNITS_NUMBER_DB];
 	char buildingLevels[BUILDINGS_NUMBER_DB];
-	char unitUpgradeLevels[PATH_UPGRADES_NUMBER_DB];
 };

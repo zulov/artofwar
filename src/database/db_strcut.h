@@ -13,7 +13,6 @@
 #define SETTINGS_NUMBER_DB 1
 #define MAX_UNIT_LEVEL_NUMBER_DB 6
 #define MAX_BUILDING_LEVEL_NUMBER_DB 6
-#define PATH_UPGRADES_NUMBER_DB 30
 #define MAX_NUMBER_OF_NATIONS 5
 
 #define SPLIT_SIGN '\n'
@@ -112,48 +111,6 @@ struct db_unit {
 
 };
 
-struct db_unit_upgrade {
-	const int id;
-	const int path;
-	const int level;
-	const Urho3D::String name;
-	const float attack;
-	const float attackSpeed;
-	const float attackRange;
-	const float defense;
-	const float maxHp;
-	const float maxSpeed;
-	const float minSpeed;
-	const float collectSpeed;
-	const float upgradeSpeed;
-	Urho3D::String pathName;
-
-	std::vector<db_unit*> units;
-	std::vector<db_cost*> costs;
-
-	db_unit_upgrade(int id, int path, int level, char* name, float attack, float attackSpeed, float attackRange,
-	                float defense, float maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed)
-		: id(id),
-		  path(path),
-		  level(level),
-		  name(name),
-		  attack(attack),
-		  attackSpeed(attackSpeed),
-		  attackRange(attackRange),
-		  defense(defense),
-		  maxHp(maxHp),
-		  maxSpeed(maxSpeed),
-		  minSpeed(minSpeed),
-		  collectSpeed(collectSpeed),
-		  upgradeSpeed(upgradeSpeed) {
-	}
-
-	~db_unit_upgrade() {
-		clear_vector(units);
-		clear_vector(costs);
-	}
-};
-
 struct db_building {
 	const short id;
 	const Urho3D::String name;
@@ -164,7 +121,6 @@ struct db_building {
 	std::vector<db_unit*> units;
 	std::vector<db_cost*> costs;
 	std::vector<db_building_level*> levels;
-	std::vector<int> unitUpgradePath;
 
 	db_building(int id, char* name, int sizeX, int sizeZ, int nation, char* icon)
 		: id(id),

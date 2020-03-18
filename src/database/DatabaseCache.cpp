@@ -218,58 +218,6 @@ int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
-int static loadUnitUpgrade(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-	int pathId = atoi(argv[1]);
-	auto unitUpgrade = new db_unit_upgrade(
-		atoi(argv[0]), pathId, atoi(argv[2]), argv[3],
-		atof(argv[4]), atof(argv[5]), atof(argv[6]), atof(argv[7]),
-		atof(argv[8]), atof(argv[9]), atof(argv[10]), atof(argv[11]),
-		atof(argv[12])
-	);
-	xyz->units[pathId]->upgrades.push_back(unitUpgrade);
-	xyz->unitUpgradesPerId[atoi(argv[0])] = unitUpgrade;
-	return 0;
-}
-
-int static loadUnitUpgradePath(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
-	for (auto unitUpgrade : xyz->units[atoi(argv[0])]->upgrades) {
-		unitUpgrade->pathName = Urho3D::String(argv[1]);
-	}
-
-	return 0;
-}
-
-int static loadUnitToUnitUpgrade(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-	int upgradeId = atoi(argv[0]);
-	xyz->unitUpgradesPerId[upgradeId]->units.push_back(xyz->units[atoi(argv[1])]);
-
-	return 0;
-}
-
-int static loadUnitUpgradeCost(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-	int upgradeId = atoi(argv[0]);
-	const int resourceId = atoi(argv[1]);
-	db_resource* dbResource = xyz->resources[resourceId];
-	xyz->unitUpgradesPerId[upgradeId]->costs.
-	                                   push_back(
-		                                   new db_cost(-1, resourceId, atoi(argv[2]), dbResource->name, upgradeId));
-
-	return 0;
-}
-
-int static loadBuildingToUnitUpgradePath(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
-	xyz->buildings[atoi(argv[0])]->unitUpgradePath.push_back(atoi(argv[1]));
-
-	return 0;
-}
-
 static int callback(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
@@ -331,10 +279,6 @@ void DatabaseCache::loadData(std::string name) {
 	execute("SELECT * from building_level order by level", loadBuildingLevels);
 	execute("SELECT * from cost_unit_level order by level,unit", loadCostUnitLevel);
 	execute("SELECT * from cost_building_level order by level,building", loadCostBuildingLevel);
-	execute("SELECT * from unit_upgrade order by level", loadUnitUpgrade);
-	execute("SELECT * from unit_upgrade_path", loadUnitUpgradePath);
-	execute("SELECT * from unit_to_unit_upgrade", loadUnitToUnitUpgrade);
-	execute("SELECT * from unit_upgrade_cost", loadUnitUpgradeCost);
 	execute("SELECT * from building_to_unit_upgrade_path", loadBuildingToUnitUpgradePath);
 
 	sqlite3_close(database);
@@ -380,13 +324,4 @@ void DatabaseCache::setSettings(int i, db_settings* settings) {
 	   .Append(", resolution = ").Append(Urho3D::String(settings->resolution));
 
 	executeSingleBasic("base.db", sql.CString());
-}
-
-std::optional<std::vector<db_cost*>*> DatabaseCache::getCostForUnitUpgrade(short id, int level) const {
-	auto upgrade = dbContainer->unitUpgrades[id]->at(level);
-
-	if (!dbContainer->unitUpgradesCosts[upgrade->id]->empty()) {
-		return dbContainer->unitUpgradesCosts[upgrade->id];
-	}
-	return {};
 }
