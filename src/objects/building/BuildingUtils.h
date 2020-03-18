@@ -7,7 +7,7 @@
 
 inline std::unordered_set<int> unitsIdsForBuildingNation(int nation, int i) {
 	std::unordered_set<int> common;
-	auto units = Game::getDatabase()->getUnitsForBuilding(i);
+	auto units = Game::getDatabase()->getBuilding(i)->units;
 	for (auto& unit : units) {
 		//todo to zrobic raz i pobierac
 		if (unit->nation == nation) {

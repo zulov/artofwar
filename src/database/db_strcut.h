@@ -398,13 +398,8 @@ struct db_container {
 	std::vector<db_unit_upgrade*>* unitUpgrades[PATH_UPGRADES_NUMBER_DB] = {nullptr};
 	std::vector<db_cost*>* unitUpgradesCosts[PATH_UPGRADES_NUMBER_DB * 10] = {nullptr};
 
-	//std::vector<db_cost*>* costForUnit[UNITS_NUMBER_DB]{};
-	//std::vector<std::vector<db_cost*>*>* costForBuildingLevel[BUILDINGS_NUMBER_DB]{};
-	//std::vector<std::vector<db_cost*>*>* costForUnitLevel[UNITS_NUMBER_DB]{};
-
 	std::vector<db_order*>* ordersToUnit[UNITS_NUMBER_DB]{};
 
-	std::vector<db_unit_level*>* levelsToUnit[UNITS_NUMBER_DB]{};
 
 	std::vector<db_building*>* buildingsPerNation[MAX_NUMBER_OF_NATIONS]{};
 	std::vector<db_unit*>* unitsPerNation[MAX_NUMBER_OF_NATIONS]{};
@@ -424,23 +419,9 @@ struct db_container {
 
 
 	explicit db_container() {
-		for (int i = 0; i < BUILDINGS_NUMBER_DB; ++i) {
-			costForBuildingLevel[i] = new std::vector<std::vector<db_cost*>*>();
-			costForBuildingLevel[i]->reserve(MAX_BUILDING_LEVEL_NUMBER_DB);
-			for (int j = 0; j < MAX_BUILDING_LEVEL_NUMBER_DB; ++j) {
-				costForBuildingLevel[i]->push_back(new std::vector<db_cost*>);
-			}
-		}
-		for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
-			costForUnit[i] = new std::vector<db_cost*>();
-			ordersToUnit[i] = new std::vector<db_order*>();
-			levelsToUnit[i] = new std::vector<db_unit_level*>();
 
-			costForUnitLevel[i] = new std::vector<std::vector<db_cost*>*>();
-			costForUnitLevel[i]->reserve(MAX_UNIT_LEVEL_NUMBER_DB);
-			for (int j = 0; j < MAX_UNIT_LEVEL_NUMBER_DB; ++j) {
-				costForUnitLevel[i]->push_back(new std::vector<db_cost*>);
-			}
+		for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
+			ordersToUnit[i] = new std::vector<db_order*>();
 		}
 
 		for (auto& unitUpgrade : unitUpgrades) {
@@ -463,22 +444,9 @@ struct db_container {
 		for (auto unit : units) {
 			delete unit;
 		}
-
-		for (int i = 0; i < BUILDINGS_NUMBER_DB; ++i) {
-			for (int j = 0; j < MAX_BUILDING_LEVEL_NUMBER_DB; ++j) {
-				delete costForBuildingLevel[i]->at(j);
-			}
-			delete costForBuildingLevel[i];
-
-		}
+		
 		for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
-			delete costForUnit[i];
 			delete ordersToUnit[i];
-			delete levelsToUnit[i];
-			for (int j = 0; j < MAX_UNIT_LEVEL_NUMBER_DB; ++j) {
-				delete costForUnitLevel[i]->at(j);
-			}
-			delete costForUnitLevel[i];
 		}
 		for (auto unitUpgrade : unitUpgrades) {
 			delete unitUpgrade;
