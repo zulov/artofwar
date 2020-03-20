@@ -32,8 +32,8 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	xyz->hudSizes[id] = new db_hud_size(id, argv[1]);
-	xyz->hud_size_size++;
+	xyz->hudSizes.push_back(new db_hud_size(id, argv[1]));
+
 	return 0;
 }
 
@@ -83,8 +83,7 @@ int static loadResource(void* data, int argc, char** argv, char** azColName) {
 int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	xyz->hudVars[id] = new db_hud_vars(id, atoi(argv[1]), argv[2], atof(argv[3]));
-	xyz->hud_vars_size++;
+	xyz->hudVars.push_back(new db_hud_vars(id, atoi(argv[1]), argv[2], atof(argv[3])));
 
 	return 0;
 }

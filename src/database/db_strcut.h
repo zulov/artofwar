@@ -1,11 +1,9 @@
 ﻿#pragma once
 #define UNITS_NUMBER_DB 50
 #define BUILDINGS_NUMBER_DB 50
-#define HUD_SIZES_NUMBER_DB 4
 #define GRAPH_SETTINGS_NUMBER_DB 4
 #define NATION_NUMBER_DB 10
 #define RESOURCE_NUMBER_DB 4
-#define HUD_VARS_NUMBER_DB 50
 #define ORDERS_NUMBER_DB 10
 #define MAP_NUMBER_DB 10
 #define PLAYER_COLORS_NUMBER_DB 10
@@ -331,9 +329,9 @@ struct db_player_colors {
 };
 
 struct db_container {
-	db_hud_size* hudSizes[HUD_SIZES_NUMBER_DB] = {nullptr};
+	std::vector<db_hud_size*> hudSizes;
+	std::vector<db_hud_vars*> hudVars;
 	db_graph_settings* graphSettings[GRAPH_SETTINGS_NUMBER_DB] = {nullptr};
-	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB] = {nullptr};
 	db_resolution* resolutions[RESOLUTIONS_NUMBER_DB] = {nullptr};
 	db_settings* settings[SETTINGS_NUMBER_DB] = {nullptr};
 
@@ -349,13 +347,11 @@ struct db_container {
 	std::vector<db_unit*>* unitsPerNation[MAX_NUMBER_OF_NATIONS]{};
 
 	unsigned short units_size = 0;
-	unsigned short hud_size_size = 0;
 	unsigned short building_size = 0;
 	unsigned short graph_settings_size = 0;
 	unsigned short unit_type_size = 0;
 	unsigned short resource_size = 0;
 	unsigned short nation_size = 0;
-	unsigned short hud_vars_size = 0;
 	unsigned short maps_size = 0;
 	unsigned short player_colors_size = 0;
 
@@ -370,6 +366,8 @@ struct db_container {
 	}
 
 	~db_container() {
+		clear_vector(hudSizes);
+		clear_vector(hudVars);
 		for (auto order : orders) {
 			delete order;
 		}

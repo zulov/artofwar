@@ -28,7 +28,7 @@ void MainMenuSettingsPanel::setValues(int graphID) const {
 void MainMenuSettingsPanel::createBody() {
 	MainMenuDetailsPanel::createBody();
 	for (auto& row : rows) {
-		row = createElement<Urho3D::BorderImage>(body, style,"MainMenuSettingsRow");
+		row = createElement<Urho3D::BorderImage>(body, style, "MainMenuSettingsRow");
 	}
 
 	populateLabels(0, "mmsp_settings");
@@ -53,7 +53,7 @@ void MainMenuSettingsPanel::createBody() {
 
 	addChildTexts(settings, settingsNames, style);
 
-	resolution =  createElement<Urho3D::DropDownList>(rows[1], style, "MainMenuNewGameDropDownList");
+	resolution = createElement<Urho3D::DropDownList>(rows[1], style, "MainMenuNewGameDropDownList");
 	std::vector<Urho3D::String> resNames;
 	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
 		db_resolution* res = Game::getDatabase()->getResolution(i);
@@ -79,13 +79,12 @@ void MainMenuSettingsPanel::createBody() {
 	hudSize = createElement<Urho3D::DropDownList>(rows[8], style, "MainMenuNewGameDropDownList");
 
 	std::vector<Urho3D::String> hudNames;
-	for (int i = 0; i < Game::getDatabase()->getHudSizeSize(); ++i) {
-		db_hud_size* hudSize = Game::getDatabase()->getHudSize(i);
+	for (auto hudSize : Game::getDatabase()->getHudSizes()) {
 		hudNames.push_back(hudSize->name);
 	}
 	addChildTexts(hudSize, hudNames, style);
 
-	save = createElement<Urho3D::Button>(body, style,"MainMenuSettingsButton");
+	save = createElement<Urho3D::Button>(body, style, "MainMenuSettingsButton");
 	addChildText(save, "MainMenuSettingsButtonText", l10n->Get("mmsp_save"), style);
 	data = new SettingsForm();
 	save->SetVar("SettingsForm", data);
@@ -127,8 +126,8 @@ void MainMenuSettingsPanel::HandleSaveSettings(Urho3D::StringHash eventType, Urh
 	popualateForm(form);
 
 	auto graphSettings = new db_graph_settings(0, form->hudSize, nullptr, form->fullScreen, form->maxFps,
-	                                                         form->minFps, nullptr, form->vSync, form->shadow,
-	                                                         form->textureQuality);
+	                                           form->minFps, nullptr, form->vSync, form->shadow,
+	                                           form->textureQuality);
 	Game::getDatabase()->setGraphSettings(0, graphSettings);
 	Game::getDatabase()->setSettings(0, new db_settings(0, form->resolution));
 }

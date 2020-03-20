@@ -27,10 +27,8 @@
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) const {
-	exprtk::symbol_table<float> symbol_table;
-	int varsSize = Game::getDatabase()->getHudVarsSize();
-	for (int i = 0; i < varsSize; ++i) {
-		db_hud_vars* var = Game::getDatabase()->getHudVar(i);
+	exprtk::symbol_table<float> symbol_table; 
+	for (auto var : Game::getDatabase()->getHudVar()) {
 		if (var != nullptr && var->hud_size == hudSizeId) {
 			symbol_table.add_variable(var->name.CString(), var->value);
 		}
