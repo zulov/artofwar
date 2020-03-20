@@ -69,8 +69,7 @@ void Building::action(BuildingActionType type, short id) const {
 	switch (type) {
 	case BuildingActionType::UNIT_CREATE:
 	{
-		auto costs = Game::getDatabase()->getUnit(id)->costs;
-		if (resources.reduce(costs)) {
+		if (resources.reduce(Game::getDatabase()->getUnit(id)->costs)) {
 			queue->add(1, QueueActionType::UNIT_CREATE, id, 30);
 		}
 	}
@@ -81,8 +80,7 @@ void Building::action(BuildingActionType type, short id) const {
 		
 		auto opt = Game::getDatabase()->getUnit(id)->getLevel(level);
 		if (opt.has_value()) {
-			const auto costs = opt.value()->costs;
-			if (resources.reduce(costs)) {
+			if (resources.reduce(opt.value()->costs)) {
 				queue->add(1, QueueActionType::UNIT_LEVEL, id, 1);
 			}
 		}

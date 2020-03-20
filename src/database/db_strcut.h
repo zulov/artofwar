@@ -98,11 +98,10 @@ struct db_unit {
 	~db_unit() {
 		clear_vector(costs);
 		clear_vector(levels);
-		clear_vector(orders);
 	}
 
 	std::optional<db_unit_level*> getLevel(int level) {
-		if (levels.size() < level) {
+		if (levels.size() > level) {
 			return levels.at(level);
 		}
 		return {};
@@ -136,7 +135,7 @@ struct db_building {
 	}
 
 	std::optional<db_building_level*> getLevel(int level) {
-		if (levels.size() < level) {
+		if (levels.size() > level) {
 			return levels.at(level);
 		}
 		return {};
@@ -337,7 +336,7 @@ struct db_container {
 	db_hud_vars* hudVars[HUD_VARS_NUMBER_DB] = {nullptr};
 	db_resolution* resolutions[RESOLUTIONS_NUMBER_DB] = {nullptr};
 	db_settings* settings[SETTINGS_NUMBER_DB] = {nullptr};
-	
+
 	db_unit* units[UNITS_NUMBER_DB] = {nullptr};
 	db_building* buildings[BUILDINGS_NUMBER_DB] = {nullptr};
 	db_nation* nations[NATION_NUMBER_DB] = {nullptr};
@@ -371,7 +370,9 @@ struct db_container {
 	}
 
 	~db_container() {
-		//TODO bug delete what inside
+		for (auto order : orders) {
+			delete order;
+		}
 		for (auto unit : units) {
 			delete unit;
 		}

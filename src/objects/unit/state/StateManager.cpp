@@ -55,16 +55,19 @@ StateManager::StateManager() {
 	orderToState[static_cast<char>(UnitAction::COLLECT)] = {static_cast<char>(UnitState::COLLECT)};
 
 	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
-		auto orders = Game::getDatabase()->getUnit(i)->orders;
-		//test //TTO cos zle
-		std::fill_n(ordersToUnit[i], STATE_SIZE, false);
-		for (auto order : orders) {
-			for (auto state : orderToState[order->id]) {
-				ordersToUnit[i][state] = true;
+		auto unit = Game::getDatabase()->getUnit(i);
+		if (unit) {
+			auto orders = unit->orders;
+			//test //TTO cos zle
+			std::fill_n(ordersToUnit[i], STATE_SIZE, false);
+			for (auto order : orders) {
+				for (auto state : orderToState[order->id]) {
+					ordersToUnit[i][state] = true;
+				}
 			}
+			ordersToUnit[i][static_cast<char>(UnitState::DEAD)] = true; //Always can die
+			ordersToUnit[i][static_cast<char>(UnitState::DISPOSE)] = true; //Always can die
 		}
-		ordersToUnit[i][static_cast<char>(UnitState::DEAD)] = true; //Always can die
-		ordersToUnit[i][static_cast<char>(UnitState::DISPOSE)] = true; //Always can die
 	}
 }
 
