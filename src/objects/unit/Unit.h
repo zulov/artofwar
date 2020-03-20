@@ -14,7 +14,6 @@ enum class UnitAction : char;
 enum class DebugUnitType : char;
 enum class SimColorMode : char;
 struct ForceStats;
-struct db_unit_upgrade;
 struct db_unit_level;
 struct db_unit;
 struct dbload_unit;
@@ -79,7 +78,6 @@ public:
 	bool isInRightSocket() const;
 
 	static std::string getColumns();
-	void addUpgrade(db_unit_upgrade* upgrade);
 	void changeColor(SimColorMode mode);
 	void addOrder(FutureOrder* aim);
 
@@ -143,7 +141,6 @@ private:
 	ChargeData* chargeData{};
 	MissileData* missileData{};
 
-	std::vector<db_unit_upgrade*> upgrades;
 	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
 
 	float minimalDistance, maxSeparationDistance,

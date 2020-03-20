@@ -293,16 +293,6 @@ void Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 	}
 }
 
-void Unit::addUpgrade(db_unit_upgrade* upgrade) {
-	for (auto& i : upgrades) {
-		if (i->path == upgrade->path) {
-			i = upgrade;
-			return;
-		}
-	}
-	upgrades.push_back(upgrade);
-}
-
 void Unit::changeColor(float value, float maxValue) const {
 	changeMaterial(Game::getColorPaletteRepo()->getColor(ColorPallet::RED, value, maxValue), model);
 }

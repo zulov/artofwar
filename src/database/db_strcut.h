@@ -26,7 +26,6 @@
 
 
 struct db_order;
-struct db_unit_upgrade;
 struct db_building_level;
 struct db_cost;
 
@@ -346,7 +345,6 @@ struct db_container {
 	db_order* orders[ORDERS_NUMBER_DB] = {nullptr};
 	db_map* maps[MAP_NUMBER_DB] = {nullptr};
 	db_player_colors* playerColors[PLAYER_COLORS_NUMBER_DB] = {nullptr};
-	db_unit_upgrade* unitUpgradesPerId[PATH_UPGRADES_NUMBER_DB * 10] = {nullptr};
 
 	std::vector<db_building*>* buildingsPerNation[MAX_NUMBER_OF_NATIONS]{};
 	std::vector<db_unit*>* unitsPerNation[MAX_NUMBER_OF_NATIONS]{};

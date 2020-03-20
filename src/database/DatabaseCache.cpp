@@ -279,7 +279,6 @@ void DatabaseCache::loadData(std::string name) {
 	execute("SELECT * from building_level order by level", loadBuildingLevels);
 	execute("SELECT * from cost_unit_level order by level,unit", loadCostUnitLevel);
 	execute("SELECT * from cost_building_level order by level,building", loadCostBuildingLevel);
-	execute("SELECT * from building_to_unit_upgrade_path", loadBuildingToUnitUpgradePath);
 
 	sqlite3_close(database);
 }

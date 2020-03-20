@@ -16,7 +16,7 @@ void UpgradeCommand::execute() {
 	if (type == QueueActionType::BUILDING_LEVEL && level > 0) {
 		for (auto building : *simulationObjectManager->getBuildings()) {
 			if (building->getPlayer() == player && building->getDbID() == id) {
-				building->upgrade(level);
+				building->levelUp(level);
 			}
 		}
 	}

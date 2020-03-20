@@ -19,7 +19,7 @@ Building::Building(Urho3D::Vector3& _position, int id, int player, int level, in
 	Static(_position, mainCell) {
 	setPlayerAndTeam(player);
 	dbBuilding = Game::getDatabase()->getBuilding(id);
-	upgrade(level);
+	levelUp(level);
 }
 
 
@@ -89,21 +89,11 @@ void Building::action(BuildingActionType type, short id) const {
 	}
 	break;
 	case BuildingActionType::UNIT_UPGRADE:
-	{
-		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgradePath(id) + 1;
-		auto opt = Game::getDatabase()->getCostForUnitUpgrade(id, level);
-		if (opt.has_value()) {
-			const auto costs = opt.value()->costs;
-			if (resources.reduce(costs)) {
-				queue->add(1, QueueActionType::UNIT_UPGRADE, id, 1);
-			}
-		}
-	}
 	break;
 	}
 }
 
-void Building::upgrade(char level) {
+void Building::levelUp(char level) {
 	dbLevel = dbBuilding->getLevel(level).value();//TODO BUG value()
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
 }

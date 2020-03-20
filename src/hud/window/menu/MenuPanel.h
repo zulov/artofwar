@@ -42,7 +42,6 @@ private:
 
 	void basicUnit(SelectedInfo* selectedInfo);
 	void levelUnit(SelectedInfo* selectedInfo);
-	void upgradeUnit(SelectedInfo* selectedInfo);
 
 	void basicBuilding();
 	void levelBuilding();
@@ -61,7 +60,6 @@ private:
 	void resetRestButtons(int from);
 
 	std::unordered_set<int> getUnitInBuilding(SelectedInfo* selectedInfo);
-	std::unordered_set<int> getUpgradePathInBuilding(SelectedInfo* selectedInfo);
 	std::unordered_set<int> getOrderForUnit(SelectedInfo* selectedInfo);
 	static void removeFromCommon(std::unordered_set<int>& common, std::unordered_set<int>& possibleUntis);
 

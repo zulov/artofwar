@@ -27,8 +27,6 @@ public:
 	Urho3D::String& getName() { return name; }
 	char getLevelForUnit(int id) { return unitLevels[id]; }
 	char getLevelForBuilding(int id) { return buildingLevels[id]; }
-	char getLevelForUnitUpgradePath(short id) { return unitUpgradeLevels[id]; }
-	char getLevelForUnitUpgrade(int id) { return unitUpgradeLevels[id]; }
 	void updatePossession();
 	void add(Unit* unit);
 	void add(Building* building);

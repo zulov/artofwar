@@ -29,14 +29,6 @@ inline Urho3D::String getIconName(QueueActionType type, int level, int i) {
 		return "unit/levels/" + Urho3D::String(level) + "/" + dbCache->getUnit(i)->icon;
 	case QueueActionType::BUILDING_LEVEL:
 		return "building/levels/" + Urho3D::String(level) + "/" + dbCache->getBuilding(i)->icon;
-	case QueueActionType::UNIT_UPGRADE:
-		{
-		auto opt = Game::getDatabase()->getCostForUnitUpgrade(id, level);
-		if (opt.has_value()) {
-			auto upgrade = opt.value();
-			return "unit/upgrades/" + upgrade->pathName + "/" + upgrade->name + ".png";
-		}
-		}
 	default:
 		return "mock.png";
 	}

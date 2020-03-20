@@ -21,7 +21,6 @@ Player::Player(int nationId, char team, char id, int color, Urho3D::String name,
 
 	std::fill_n(unitLevels, UNITS_NUMBER_DB, 0);
 	std::fill_n(buildingLevels, BUILDINGS_NUMBER_DB, 0);
-	std::fill_n(unitUpgradeLevels, PATH_UPGRADES_NUMBER_DB, -1);
 	initAi();
 }
 
@@ -61,10 +60,6 @@ char Player::upgradeLevel(QueueActionType type, int id) {
 		}
 		break;
 	case QueueActionType::UNIT_UPGRADE:
-		if (Game::getDatabase()->getUnit(id)->upgrades.size() - 1 > unitUpgradeLevels[id]) {
-			unitUpgradeLevels[id]++;
-			return unitUpgradeLevels[id];
-		}
 		break;
 	default: ;
 	}
@@ -127,7 +122,6 @@ std::optional<short> Player::chooseUpgrade(StatsOutputType order) {
 	//TODO perf tu jakich cahce
 	auto db = Game::getDatabase();
 	std::vector<db_unit_level*> unitsLevels;
-	std::vector<db_unit_upgrade*> unitsUpgrades;
 	for (auto unit : *db->getUnitsForNation(this->getNation())) {
 		// for (auto unitUpgrade : *db->getUnitUpgrades(unit->id)) {
 		// 	unitUpgrade->

@@ -179,19 +179,6 @@ void MenuPanel::levelBuilding() {
 	resetRestButtons(k);
 }
 
-std::unordered_set<int> MenuPanel::getUpgradePathInBuilding(SelectedInfo* selectedInfo) {
-	if (selectedInfo->getAllNumber() <= 0) { return {}; }
-	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-	auto& infoTypes = selectedInfo->getSelectedTypes();
-	for (int i = 0; i < infoTypes.size(); ++i) {
-		if (!infoTypes.at(i)->getData().empty()) {
-			removeFromCommon(common, pathsIdsInbuilding(i));
-		}
-	}
-
-	return common;
-}
-
 std::unordered_set<int> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) {
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
 	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -236,21 +223,6 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 			db_unit* unit = Game::getDatabase()->getUnit(id);
 			setNext(k, "textures/hud/icon/unit/levels/" + Urho3D::String(level) + "/" + unit->icon, unit->id,
 			        ActionType::UNIT_LEVEL, "");
-		}
-	}
-	resetRestButtons(k);
-}
-
-void MenuPanel::upgradeUnit(SelectedInfo* selectedInfo) {
-	int k = 0;
-	for (auto id : getUpgradePathInBuilding(selectedInfo)) {
-		auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnitUpgrade(id) + 1;
-		auto opt = Game::getDatabase()->getCostForUnitUpgrade(id, level);
-
-		if (opt.has_value()) {
-			auto upgrade = opt.value();
-			setNext(k, "textures/hud/icon/unit/upgrades/" + upgrade->pathName + "/" + upgrade->name + ".png", id,
-			        ActionType::UNIT_UPGRADE, "");
 		}
 	}
 	resetRestButtons(k);
@@ -324,8 +296,6 @@ void MenuPanel::unitMenu(SelectedInfo* selectedInfo) {
 		return basicUnit(selectedInfo);
 	case LeftMenuSubMode::LEVEL:
 		return levelUnit(selectedInfo);
-	case LeftMenuSubMode::UPGRADE:
-		return upgradeUnit(selectedInfo);
 	}
 }
 

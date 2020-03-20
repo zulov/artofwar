@@ -14,7 +14,7 @@ public:
 	~Building();
 
 	void populate() override;
-	void upgrade(char level);
+	void levelUp(char level);
 	void load(dbload_building* dbloadBuilding);
 	static std::string getColumns();
 
