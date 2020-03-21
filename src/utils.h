@@ -28,7 +28,6 @@ void clear_and_delete_vector(std::vector<T*>* container) {
 	delete container;
 }
 
-
 template <typename T>
 void clear_delete_null_vector(std::vector<T*>** container) {
 	for (T* obj : **container) {
@@ -39,4 +38,11 @@ void clear_delete_null_vector(std::vector<T*>** container) {
 	(*container)->clear();
 	delete container;
 	container = nullptr;
+}
+
+template <typename T>
+void clear_array(T** tab, int size) {
+	for (int i = 0; i < size; ++i) {
+		delete tab[i];
+	}
 }

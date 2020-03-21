@@ -23,8 +23,7 @@
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow",
-                                                                    {GameState::RUNNING, GameState::PAUSE}) {
-}
+                                                                    {GameState::RUNNING, GameState::PAUSE}) {}
 
 
 MenuPanel::~MenuPanel() {
@@ -156,7 +155,7 @@ void MenuPanel::setNext(int& k, const Urho3D::String& texture, int id, ActionTyp
 void MenuPanel::basicBuilding() {
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	int k = 0;
-	for (auto building : *Game::getDatabase()->getBuildingsForNation(nation)) {
+	for (auto building : Game::getDatabase()->getNation(nation)->buildings) {
 		setNext(k, "textures/hud/icon/building/" + building->icon, building->id, ActionType::BUILDING_CREATE, "");
 	}
 	resetRestButtons(k);
@@ -165,15 +164,12 @@ void MenuPanel::basicBuilding() {
 void MenuPanel::levelBuilding() {
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	int k = 0;
-	for (int i = 0; i < Game::getDatabase()->getBuildingSize(); ++i) {
-		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i) + 1;
-		auto building = Game::getDatabase()->getBuilding(i);
+	for (auto building : Game::getDatabase()->getNation(nation)->buildings) {
+		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(building->id) + 1;
 		auto opt = building->getLevel(level);
-		if (opt.has_value()) {	
-			if (building->nation == nation) {
-				setNext(k, "textures/hud/icon/building/levels/" + Urho3D::String(level) + "/" + building->icon,
-				        building->id, ActionType::BUILDING_LEVEL, "");
-			}
+		if (opt.has_value()) {
+			setNext(k, "textures/hud/icon/building/levels/" + Urho3D::String(level) + "/" + building->icon,
+			        building->id, ActionType::BUILDING_LEVEL, "");
 		}
 	}
 	resetRestButtons(k);

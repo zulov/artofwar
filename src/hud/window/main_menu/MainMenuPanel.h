@@ -21,6 +21,6 @@ public:
 	void HandleButtonClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 private:
 	void createBody() override;
-	MainMenuDetailsPanel** detailsPanels;
+	MainMenuDetailsPanel* detailsPanels[MAIN_MENU_BUTTON_NUMBER];
 	Urho3D::BorderImage* background;
 };

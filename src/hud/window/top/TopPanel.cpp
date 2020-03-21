@@ -17,9 +17,7 @@ TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "TopWi
 
 
 TopPanel::~TopPanel() {
-	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
-		delete elements[i];
-	}
+	clear_array(elements, Game::getDatabase()->getResourceSize());
 	delete units;
 	delete workers;
 	delete name;
@@ -34,9 +32,8 @@ void TopPanel::createBody() {
 	name = new TopHudElement(window, style, textureName);
 	units = new TopHudElement(window, style, textureHuman, "TopButtonsNarrow");
 	workers = new TopHudElement(window, style, textureWorker, "TopButtonsNarrow");
-	const int size = Game::getDatabase()->getResourceSize();
 
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
 		const auto resource = Game::getDatabase()->getResource(i);
 		const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>(
 			"textures/hud/icon/resource/" + resource->icon);

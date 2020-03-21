@@ -16,9 +16,8 @@ SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style)
 }
 
 SelectedHudPanel::~SelectedHudPanel() {
-	for (int i = 0; i < linesNumber * maxInRow; ++i) {
-		delete elements[i];
-	}
+	clear_array(elements,linesNumber * maxInRow);
+
 	delete[]elements;
 	delete[]rows;
 }

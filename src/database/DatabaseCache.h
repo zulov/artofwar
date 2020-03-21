@@ -15,24 +15,20 @@ public:
 
 	void execute(const char* sql, int (* load)(void*, int, char**, char**)) const;
 	bool openDatabase(const std::string& name);
-	db_unit* getUnit(int i) const { return dbContainer->units[i]; }
 	std::vector<db_hud_size*>& getHudSizes() const { return dbContainer->hudSizes; }
+	std::vector<db_hud_vars*>& getHudVar() const { return dbContainer->hudVars; }
+	db_unit* getUnit(int i) const { return dbContainer->units[i]; }
 	db_graph_settings* getGraphSettings(int i) const { return dbContainer->graphSettings[i]; }
 	db_building* getBuilding(int i) const { return dbContainer->buildings[i]; }
 	db_nation* getNation(int i) const { return dbContainer->nations[i]; }
 	db_resource* getResource(int i) const { return dbContainer->resources[i]; }
-	std::vector<db_hud_vars*>& getHudVar() const { return dbContainer->hudVars; }
 	db_order* getOrder(int i) const { return dbContainer->orders[i]; }
 	db_map* getMap(int i) const { return dbContainer->maps[i]; }
 	db_player_colors* getPlayerColor(int i) const { return dbContainer->playerColors[i]; }
 	db_settings* getSettings() const { return dbContainer->settings[0]; }
 	db_resolution* getResolution(int id) const { return dbContainer->resolutions[id]; }
 
-	std::vector<db_building*>* getBuildingsForNation(int id) const { return dbContainer->buildingsPerNation[id]; }
-	std::vector<db_unit*>* getUnitsForNation(int id) const { return dbContainer->unitsPerNation[id]; }
-
 	int getResourceSize() const { return dbContainer->resource_size; }
-	int getBuildingSize() const { return dbContainer->building_size; }
 	int getMapSize() const { return dbContainer->maps_size; }
 	int getPlayerColorsSize() const { return dbContainer->player_colors_size; }
 	int getNationSize() const { return dbContainer->nation_size; }

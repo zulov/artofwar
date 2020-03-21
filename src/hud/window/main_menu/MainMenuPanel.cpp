@@ -12,15 +12,11 @@
 
 
 MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "MainMenuWindow",
-                                                                           {GameState::MENU_MAIN}) {
-}
+                                                                           {GameState::MENU_MAIN}) {}
 
 
 MainMenuPanel::~MainMenuPanel() {
-	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {
-		delete detailsPanels[i];
-	}
-	delete[] detailsPanels;
+	clear_array(detailsPanels,MAIN_MENU_BUTTON_NUMBER);
 }
 
 void MainMenuPanel::action(short id) const {
@@ -61,12 +57,11 @@ void MainMenuPanel::HandleButtonClick(Urho3D::StringHash eventType, Urho3D::Vari
 }
 
 void MainMenuPanel::createBody() {
-	background = createElement<Urho3D::BorderImage>(Game::getUI()->GetRoot(), style,"MainMenuBackground");
+	background = createElement<Urho3D::BorderImage>(Game::getUI()->GetRoot(), style, "MainMenuBackground");
 	background->SetBringToBack(true);
 	background->SetPriority(-1);
 	window->SetPriority(1);
 
-	detailsPanels = new MainMenuDetailsPanel*[MAIN_MENU_BUTTON_NUMBER];
 	auto l10n = Game::getLocalization();
 	detailsPanels[0] = new MainMenuNewGamePanel(style, l10n->Get("menu_0"));
 	detailsPanels[1] = new MainMenuLoadPanel(style, l10n->Get("menu_1"));

@@ -9,8 +9,6 @@
 #define PLAYER_COLORS_NUMBER_DB 10
 #define RESOLUTIONS_NUMBER_DB 6
 #define SETTINGS_NUMBER_DB 1
-#define MAX_UNIT_LEVEL_NUMBER_DB 6
-#define MAX_BUILDING_LEVEL_NUMBER_DB 6
 #define MAX_NUMBER_OF_NATIONS 5
 
 #define SPLIT_SIGN '\n'
@@ -67,8 +65,7 @@ struct db_unit_level {
 		  minSpeed(minSpeed),
 		  collectSpeed(collectSpeed),
 		  upgradeSpeed(upgradeSpeed),
-		  maxForce(maxForce) {
-	}
+		  maxForce(maxForce) { }
 };
 
 struct db_unit {
@@ -90,8 +87,7 @@ struct db_unit {
 		  rotatable(rotatable),
 		  nation(nation),
 		  icon(icon),
-		  actionState(actionState) {
-	}
+		  actionState(actionState) { }
 
 	~db_unit() {
 		clear_vector(costs);
@@ -123,8 +119,7 @@ struct db_building {
 		  name(name),
 		  size({sizeX, sizeZ}),
 		  nation(nation),
-		  icon(icon) {
-	}
+		  icon(icon) { }
 
 	~db_building() {
 		clear_vector(units);
@@ -154,8 +149,7 @@ struct db_building_level {
 		  unit(unit),
 		  name(name),
 		  nodeName(nodeName),
-		  queueMaxCapacity(queueMaxCapacity) {
-	}
+		  queueMaxCapacity(queueMaxCapacity) { }
 
 	~db_building_level() {
 		clear_vector(costs);
@@ -168,8 +162,7 @@ struct db_hud_size {
 
 	db_hud_size(int id, char* name)
 		: id(id),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct db_settings {
@@ -178,8 +171,7 @@ struct db_settings {
 
 	db_settings(int graph, int resolution)
 		: graph(graph),
-		  resolution(resolution) {
-	}
+		  resolution(resolution) { }
 };
 
 struct db_resolution {
@@ -190,8 +182,7 @@ struct db_resolution {
 	db_resolution(int id, int x, int y)
 		: id(id),
 		  x(x),
-		  y(y) {
-	}
+		  y(y) { }
 };
 
 struct db_graph_settings {
@@ -217,18 +208,19 @@ struct db_graph_settings {
 		  texture_quality(texture_quality),
 		  fullscreen(fullscreen),
 		  v_sync(v_sync),
-		  shadow(shadow) {
-	}
+		  shadow(shadow) { }
 };
 
 struct db_nation {
 	const int id;
 	const Urho3D::String name;
 
+	std::vector<db_unit*> units;
+	std::vector<db_building*> buildings;
+
 	db_nation(int id, char* name)
 		: id(id),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct db_resource {
@@ -250,8 +242,7 @@ struct db_resource {
 		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
 		  size(Urho3D::IntVector2(sizeX, sizeZ)),
 		  maxUsers(maxUsers),
-		  mini_map_color(mini_map_color) {
-	}
+		  mini_map_color(mini_map_color) { }
 };
 
 struct db_hud_vars {
@@ -264,8 +255,7 @@ struct db_hud_vars {
 		: id(id),
 		  hud_size(hudSize),
 		  value(value),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct db_cost {
@@ -280,8 +270,7 @@ struct db_cost {
 		  resource(resource),
 		  value(value),
 		  thing(thing),
-		  resourceName(std::move(resourceName)) {
-	}
+		  resourceName(std::move(resourceName)) { }
 };
 
 struct db_order {
@@ -292,8 +281,7 @@ struct db_order {
 	db_order(int id, char* icon, char* name)
 		: id(id),
 		  icon(icon),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct db_map {
@@ -310,8 +298,7 @@ struct db_map {
 		  texture(texture),
 		  scale_hor(scaleHor),
 		  scale_ver(scaleVer),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct db_player_colors {
@@ -324,8 +311,7 @@ struct db_player_colors {
 		: id(id),
 		  unit(unit),
 		  building(building),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct db_container {
@@ -343,11 +329,6 @@ struct db_container {
 	db_map* maps[MAP_NUMBER_DB] = {nullptr};
 	db_player_colors* playerColors[PLAYER_COLORS_NUMBER_DB] = {nullptr};
 
-	std::vector<db_building*>* buildingsPerNation[MAX_NUMBER_OF_NATIONS]{};
-	std::vector<db_unit*>* unitsPerNation[MAX_NUMBER_OF_NATIONS]{};
-
-	unsigned short units_size = 0;
-	unsigned short building_size = 0;
 	unsigned short graph_settings_size = 0;
 	unsigned short unit_type_size = 0;
 	unsigned short resource_size = 0;
@@ -356,30 +337,21 @@ struct db_container {
 	unsigned short player_colors_size = 0;
 
 
-	explicit db_container() {
-		for (auto&& perNation : buildingsPerNation) {
-			perNation = new std::vector<db_building*>;
-		}
-		for (auto&& perNation : unitsPerNation) {
-			perNation = new std::vector<db_unit*>;
-		}
-	}
+	explicit db_container() { }
 
 	~db_container() {
 		clear_vector(hudSizes);
 		clear_vector(hudVars);
-		for (auto order : orders) {
-			delete order;
-		}
-		for (auto unit : units) {
-			delete unit;
-		}
-		for (auto dbBuildings : buildingsPerNation) {
-			delete dbBuildings;
-		}
-		for (auto dbUnits : unitsPerNation) {
-			delete dbUnits;
-		}
-	}
 
+		clear_array(graphSettings, GRAPH_SETTINGS_NUMBER_DB);
+		clear_array(resolutions, RESOLUTIONS_NUMBER_DB);
+		clear_array(settings, SETTINGS_NUMBER_DB);
+		clear_array(maps, MAP_NUMBER_DB);
+		clear_array(resources, RESOURCE_NUMBER_DB);
+		clear_array(nations, NATION_NUMBER_DB);
+		clear_array(units, UNITS_NUMBER_DB);
+		clear_array(orders, ORDERS_NUMBER_DB);
+		clear_array(buildings, BUILDINGS_NUMBER_DB);
+		clear_array(playerColors, PLAYER_COLORS_NUMBER_DB);
+	}
 };

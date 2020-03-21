@@ -21,9 +21,7 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 		buildingColors[i] = 0xFF505050;
 	}
 
-	int size = Game::getDatabase()->getResourceSize();
-
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
 		const auto res = Game::getDatabase()->getResource(i);
 		if (res) {
 			resourceColors[i] = res->mini_map_color;

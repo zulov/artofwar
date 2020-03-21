@@ -19,9 +19,8 @@ QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "Q
 }
 
 QueuePanel::~QueuePanel() {
-	for (int i = 0; i < MAX_ICON_SELECTION; ++i) {
-		delete elements[i];
-	}
+	clear_array(elements,MAX_ICON_SELECTION);
+
 	delete[] elements;
 }
 

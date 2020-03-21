@@ -23,9 +23,8 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	if (xyz->units[id]->nation >= MAX_NUMBER_OF_NATIONS) {
 		Game::getLog()->Write(0, "ERROR - Out of bounds!!");
 	}
-	xyz->unitsPerNation[xyz->units[id]->nation]->push_back(xyz->units[id]);
+	xyz->nations[xyz->units[id]->nation]->units.push_back(xyz->units[id]);
 
-	xyz->units_size++;
 	return 0;
 }
 
@@ -57,8 +56,8 @@ int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	if (xyz->buildings[id]->nation >= MAX_NUMBER_OF_NATIONS) {
 		Game::getLog()->Write(0, "ERROR - Out of bounds!!");
 	}
-	xyz->buildingsPerNation[xyz->buildings[id]->nation]->push_back(xyz->buildings[id]);
-	xyz->building_size++;
+	xyz->nations[xyz->buildings[id]->nation]->buildings.push_back(xyz->buildings[id]);
+
 	return 0;
 }
 
@@ -229,12 +228,12 @@ void DatabaseCache::execute(const char* sql, int (*load)(void*, int, char**, cha
 
 bool DatabaseCache::openDatabase(const std::string& name) {
 	const int rc = sqlite3_open((pathStr + name).c_str(), &database);
-	std::cout << name;
 	if (rc) {
 		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
 		sqlite3_close(database);
 		return true;
 	}
+	std::cout << "Database Opened: " << name << std::endl;
 	return false;
 }
 
@@ -263,9 +262,9 @@ void DatabaseCache::loadBasic(std::string name) {
 void DatabaseCache::loadData(std::string name) {
 	if (openDatabase(name)) { return; }
 
+	execute("SELECT * from nation", loadNation);
 	execute("SELECT * from units", loadUnits);
 	execute("SELECT * from building", loadBuildings);
-	execute("SELECT * from nation", loadNation);
 	execute("SELECT * from resource", loadResource);
 	execute("SELECT * from building_to_unit", loadBuildingToUnit);
 	execute("SELECT * from cost_building", loadCostBuilding);

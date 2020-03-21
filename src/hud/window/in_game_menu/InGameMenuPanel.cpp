@@ -6,8 +6,7 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
 
-
-#define IN_GAME_MENU_BUTTON_NUMBER 5
+#include "utils.h"
 
 InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "InGameMenuWindow",
                                                                                {GameState::RUNNING, GameState::PAUSE}) {
@@ -15,12 +14,7 @@ InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_
 
 InGameMenuPanel::~InGameMenuPanel() {
 	toggleButton->Remove();
-
-	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
-		delete addionalPanels[i];
-	}
-
-	delete[]addionalPanels;
+	clear_array(addionalPanels,IN_GAME_MENU_BUTTON_NUMBER);
 }
 
 void InGameMenuPanel::setVisible(bool enable) {
@@ -74,7 +68,6 @@ void InGameMenuPanel::createBody() {
 	}
 
 	auto l10n = Game::getLocalization();
-	addionalPanels = new AbstractMiddlePanel*[IN_GAME_MENU_BUTTON_NUMBER];
 	addionalPanels[0] = new FilePanel(style, l10n->Get("igm_0"));
 	addionalPanels[1] = new FilePanel(style, l10n->Get("igm_1"));
 	addionalPanels[2] = new AbstractMiddlePanel(style, l10n->Get("igm_2"));

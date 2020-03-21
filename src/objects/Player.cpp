@@ -15,8 +15,8 @@
 
 Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active):
 	name(std::move(name)), team(team),
-	color(color), id(id), active(active),
-	queue(1) {
+	color(color), id(id),
+	queue(1), active(active) {
 	dbNation = Game::getDatabase()->getNation(nationId);
 
 	std::fill_n(unitLevels, UNITS_NUMBER_DB, 0);
@@ -121,8 +121,9 @@ QueueManager& Player::getQueue() {
 std::optional<short> Player::chooseUpgrade(StatsOutputType order) {
 	//TODO perf tu jakich cahce
 	auto db = Game::getDatabase();
+	auto nation = db->getNation(this->getNation());
 	std::vector<db_unit_level*> unitsLevels;
-	for (auto unit : *db->getUnitsForNation(this->getNation())) {
+	for (auto unit : nation->units) {
 		// for (auto unitUpgrade : *db->getUnitUpgrades(unit->id)) {
 		// 	unitUpgrade->
 		// }
@@ -135,7 +136,7 @@ std::optional<short> Player::chooseUpgrade(StatsOutputType order) {
 	}
 	std::vector<db_building_level*> buildingLevels;
 
-	for (auto building : *db->getBuildingsForNation(this->getNation())) {
+	for (auto building : nation->buildings) {
 		auto level = building->getLevel(getLevelForBuilding(building->id) + 1);
 		if (level.has_value()) {
 			buildingLevels.push_back(level.value());
@@ -162,23 +163,23 @@ std::optional<short> Player::chooseUpgrade(StatsOutputType order) {
 }
 
 short Player::chooseBuilding(StatsOutputType order) const {
-	auto buildings = Game::getDatabase()->getBuildingsForNation(getNation());
+	auto buildings = Game::getDatabase()->getNation(getNation())->buildings;
 	
 	if (order == StatsOutputType::CREATE_BUILDING_ATTACK) {
-		for (auto building : *buildings) {
+		for (auto building : buildings) {
 		//	float attack = Game::getDatabase()->getBuildingLevel(building->id,buildingLevels[building->id]).value().attack();
 		}
 	} else if (order == StatsOutputType::CREATE_BUILDING_DEFENCE) {
-		for (auto building : *buildings) {
+		for (auto building : buildings) {
 			//float attack = Game::getDatabase()->getBuildingLevel(building->id,buildingLevels[building->id]).value().deffence();
 		}
 	} else if (order == StatsOutputType::CREATE_BUILDING_ECON) {
-		for (auto building : *buildings) {
+		for (auto building : buildings) {
 		//	float attack = Game::getDatabase()->getBuildingLevel(building->id,buildingLevels[building->id]).value().econ();
 			// attack = Game::getDatabase()->getBuildingLevel(building->id,buildingLevels[building->id]).value().econ();
 		}
 	}
-	return buildings->at(0)->id;
+	return buildings.at(0)->id;
 }
 
 void Player::ai() {
@@ -207,7 +208,7 @@ void Player::createOrder(StatsOutputType order) {
 	case StatsOutputType::CREATE_BUILDING_DEFENCE:
 	case StatsOutputType::CREATE_BUILDING_ECON:
 	{
-		short idToCreate = chooseBuilding(order);
+		auto idToCreate = chooseBuilding(order);
 		Game::getActionCenter()->addBuilding(idToCreate, bestPosToBuild(order, id), id,
 		                                     getLevelForBuilding(idToCreate));
 	}
