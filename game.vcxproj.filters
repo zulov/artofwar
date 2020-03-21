@@ -192,6 +192,7 @@
     <ClCompile Include="src\player\Player.cpp">
       <Filter>player</Filter>
     </ClCompile>
+    <ClCompile Include="src\player\ai\ActionMaker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -483,6 +484,7 @@
     <ClInclude Include="src\commands\action\BuildingActionType.h" />
     <ClInclude Include="src\objects\queue\QueueActionType.h" />
     <ClInclude Include="src\simulation\env\CloseIndexProvider.h" />
+    <ClInclude Include="src\player\ai\ActionMaker.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

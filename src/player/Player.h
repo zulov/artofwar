@@ -4,7 +4,7 @@
 #include "ai/nn/Brain.h"
 #include "objects/queue/QueueManager.h"
 #include "stats/StatsEnums.h"
-#include <optional>
+#include "ai/ActionMaker.h"
 
 enum class ActionType : char;
 
@@ -43,17 +43,13 @@ public:
 	QueueManager& getQueue();
 private:
 
-	std::optional<short> chooseUpgrade(StatsOutputType order);
-
-	short chooseBuilding(StatsOutputType order) const;
-	void createOrder(StatsOutputType order);
-	Urho3D::Vector2 bestPosToBuild(StatsOutputType order, short id) const;
 	void initAi();
 
 	Brain* brain;
 	Possession possession;
 	Resources resources;
 	QueueManager queue;
+	ActionMaker actionMaker;
 	db_nation* dbNation;
 	Urho3D::String name;
 	char team;

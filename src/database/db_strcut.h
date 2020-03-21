@@ -122,7 +122,6 @@ struct db_building {
 		  icon(icon) { }
 
 	~db_building() {
-		clear_vector(units);
 		clear_vector(costs);
 		clear_vector(levels);
 	}

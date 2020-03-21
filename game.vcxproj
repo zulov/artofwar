@@ -181,6 +181,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\player\ai\ActionMaker.cpp" />
     <ClCompile Include="src\simulation\env\CloseIndexProvider.cpp" />
     <ClCompile Include="src\commands\action\ResourceActionCommand.cpp" />
     <ClCompile Include="src\commands\action\BuildingActionCommand.cpp" />
@@ -286,6 +287,7 @@
     <ClCompile Include="src\objects\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\simulation\env\CloseIndexProvider.h" />
     <ClInclude Include="src\commands\action\BuildingActionType.h" />
     <ClInclude Include="src\commands\action\ResourceActionType.h" />
