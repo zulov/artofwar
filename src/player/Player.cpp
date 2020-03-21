@@ -3,11 +3,11 @@
 #include <string>
 #include <utility>
 #include "ActionCenter.h"
-#include "building/Building.h"
+#include "objects/building/Building.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "database/DatabaseCache.h"
 #include "Game.h"
-#include "queue/QueueActionType.h"
+#include "objects/queue/QueueActionType.h"
 #include "simulation/env/Environment.h"
 #include "stats/Stats.h"
 #include "stats/StatsEnums.h"

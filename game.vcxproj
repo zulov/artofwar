@@ -243,7 +243,7 @@
     <ClCompile Include="src\hud\window\minimap\MiniMapPanel.cpp" />
     <ClCompile Include="src\hud\MySprite.cpp" />
     <ClCompile Include="src\objects\Physical.cpp" />
-    <ClCompile Include="src\objects\Player.cpp" />
+    <ClCompile Include="src\player\Player.cpp" />
     <ClCompile Include="src\player\PlayersManager.cpp" />
     <ClCompile Include="src\objects\queue\QueueElement.cpp" />
     <ClCompile Include="src\hud\window\queue\QueueHudElement.cpp" />

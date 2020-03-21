@@ -40,9 +40,6 @@
     <ClCompile Include="src\hud\MySprite.cpp">
       <Filter>hud</Filter>
     </ClCompile>
-    <ClCompile Include="src\objects\Player.cpp">
-      <Filter>player</Filter>
-    </ClCompile>
     <ClCompile Include="src\control\SelectedInfo.cpp">
       <Filter>control</Filter>
     </ClCompile>
@@ -192,6 +189,9 @@
     <ClCompile Include="src\commands\action\ResourceActionCommand.cpp" />
     <ClCompile Include="src\commands\action\BuildingActionCommand.cpp" />
     <ClCompile Include="src\simulation\env\CloseIndexProvider.cpp" />
+    <ClCompile Include="src\player\Player.cpp">
+      <Filter>player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
