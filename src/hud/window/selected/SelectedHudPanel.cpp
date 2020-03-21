@@ -12,11 +12,10 @@
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style)
 	: AbstractWindowPanel(_style, "SelectedInfoWindow",
-	                      {GameState::RUNNING, GameState::PAUSE}) {
-}
+	                      {GameState::RUNNING, GameState::PAUSE}) {}
 
 SelectedHudPanel::~SelectedHudPanel() {
-	clear_array(elements,linesNumber * maxInRow);
+	clear_array(elements, linesNumber * maxInRow);
 
 	delete[]elements;
 	delete[]rows;
