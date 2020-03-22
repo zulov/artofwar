@@ -2,7 +2,6 @@
 #include <fstream>
 #include <string>
 #include <utility>
-#include "ActionCenter.h"
 #include "objects/building/Building.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "database/DatabaseCache.h"
@@ -139,7 +138,5 @@ void Player::initAi() {
 		lines.push_back(line);
 	}
 
-	//brain = new Brain(2, 5, 6, 4);
 	brain = new Brain(lines);
-
 }

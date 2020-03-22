@@ -1,9 +1,13 @@
 #include "ActionMaker.h"
 #include "ActionCenter.h"
+#include "commands/action/BuildingActionCommand.h"
+#include "commands/action/BuildingActionType.h"
 #include "player/Player.h"
 #include "database/DatabaseCache.h"
 #include "Game.h"
 #include "simulation/env/Environment.h"
+
+
 ActionMaker::ActionMaker(Player* player): player(player) {}
 
 void ActionMaker::createBuilding(StatsOutputType order) {
@@ -84,8 +88,7 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	case StatsOutputType::CREATE_UNIT_ATTACK:
 	case StatsOutputType::CREATE_UNIT_DEFENCE:
 	case StatsOutputType::CREATE_UNIT_ECON:
-		//	short id = chooseUnit(order);
-		//	auto pos = bestBuildingToDeployUnit(order, id);
+		createUnit(order);	
 		break;
 	case StatsOutputType::CREATE_BUILDING_ATTACK:
 	case StatsOutputType::CREATE_BUILDING_DEFENCE:
@@ -95,16 +98,7 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	case StatsOutputType::UPGRADE_ATTACK:
 	case StatsOutputType::UPGRADE_DEFENCE:
 	case StatsOutputType::UPGRADE_ECON:
-	{
-		// auto opt = chooseUpgrade(order);
-		// if (opt.has_value()) {
-		// 	short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to
-		// 	Building* building = bestBuildingToUpgrade(id, unitId);
-		//
-		// 	Game::getActionCenter()->add(
-		// 		new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL, unitId, id));
-		// }
-	}
+		upgrade(order);
 		break;
 	case StatsOutputType::ORDER_GO: break;
 	case StatsOutputType::ORDER_STOP: break;
@@ -118,7 +112,24 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	}
 }
 
+void ActionMaker::upgrade(StatsOutputType order) {
+	auto opt = chooseUpgrade(order);
+	if (opt.has_value()) {
+		short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to
+		Building* building = bestBuildingToUpgrade(player->getId(), unitId);
+
+		Game::getActionCenter()->add(
+			new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL, unitId, player->getId()));
+	}	
+}
+
 
 Urho3D::Vector2 ActionMaker::bestPosToBuild(StatsOutputType order, const short id) const {
 	return Game::getEnvironment()->bestPosToBuild(player->getId(), id);
+}
+
+
+void ActionMaker::createUnit(StatsOutputType order) {
+	//	short id = chooseUnit(order);
+		//	auto pos = bestBuildingToDeployUnit(order, id);
 }
