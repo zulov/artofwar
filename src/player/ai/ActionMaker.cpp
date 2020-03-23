@@ -113,14 +113,14 @@ void ActionMaker::createOrder(StatsOutputType order) {
 }
 
 void ActionMaker::upgrade(StatsOutputType order) {
-	auto opt = chooseUpgrade(order);
-	if (opt.has_value()) {
-		short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to
-		Building* building = bestBuildingToUpgrade(player->getId(), unitId);
-
-		Game::getActionCenter()->add(
-			new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL, unitId, player->getId()));
-	}	
+	// auto opt = chooseUnitUpgrade(order);
+	// if (opt.has_value()) {
+	// 	short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to
+	// 	Building* building = bestBuildingToUpgrade(player->getId(), unitId);
+	//
+	// 	Game::getActionCenter()->add(
+	// 		new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL, unitId, player->getId()));
+	// }	
 }
 
 

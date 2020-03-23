@@ -89,19 +89,23 @@ int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
 
 int static loadBuildingToUnit(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	const int buildingId = atoi(argv[1]);
-	xyz->buildings[buildingId]->units.push_back(xyz->units[atoi(argv[2])]);
+	const int buildingId = atoi(argv[0]);
+	xyz->buildings[buildingId]->units.push_back(xyz->units[atoi(argv[1])]);
 
 	return 0;
 }
 
-int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-	const int unitId = atoi(argv[3]);
+static void addCost(char** argv, db_container* const xyz, std::vector<db_cost*>& array) {
+	const int thingID = atoi(argv[3]);
 	const int resourceId = atoi(argv[1]);
 	db_resource* dbResource = xyz->resources[resourceId];
-	xyz->units[unitId]
-		->costs.push_back(new db_cost(atoi(argv[0]), resourceId, atoi(argv[2]), dbResource->name, unitId));
+	auto cost = new db_cost(resourceId, atoi(argv[2]), dbResource->name, thingID);
+	array.push_back(cost);
+}
+
+int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
+	const auto xyz = static_cast<db_container*>(data);
+	addCost(argv, xyz, xyz->units[atoi(argv[3])]->costs);
 
 	return 0;
 }
@@ -110,11 +114,8 @@ int static loadCostUnitLevel(void* data, int argc, char** argv, char** azColName
 	const auto xyz = static_cast<db_container*>(data);
 	const int unitId = atoi(argv[0]);
 	const int level = atoi(argv[1]);
-	const int resourceId = atoi(argv[2]);
-	db_resource* dbResource = xyz->resources[resourceId];
-	xyz->units[unitId]->getLevel(level).value()->costs.push_back(
-		new db_cost(-1, resourceId, atoi(argv[3]), dbResource->name, unitId));
-
+	addCost(argv, xyz, xyz->units[unitId]->getLevel(level).value()->costs);
+	
 	return 0;
 }
 
@@ -122,24 +123,16 @@ int static loadCostBuildingLevel(void* data, int argc, char** argv, char** azCol
 	const auto xyz = static_cast<db_container*>(data);
 	const int buildingId = atoi(argv[0]);
 	const int level = atoi(argv[1]);
-	const int resourceId = atoi(argv[2]);
-	db_resource* dbResource = xyz->resources[resourceId];
-	xyz->buildings[buildingId]->getLevel(level)
-	                          .value()->costs.push_back(new db_cost(-1, resourceId, atoi(argv[3]),
-	                                                                dbResource->name,
-	                                                                buildingId));
 
+	addCost(argv, xyz, xyz->buildings[buildingId]->getLevel(level) .value()->costs);
 	return 0;
 }
 
 int static loadCostBuilding(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int buildingId = atoi(argv[3]);
-	const int resourceId = atoi(argv[1]);
-	db_resource* dbResource = xyz->resources[resourceId];
 
-	xyz->buildings[buildingId]->costs.push_back(new db_cost(atoi(argv[0]), resourceId, atoi(argv[2]), dbResource->name,
-	                                                        buildingId));
+	addCost(argv, xyz, xyz->buildings[buildingId]->costs);
 	return 0;
 }
 
@@ -277,6 +270,8 @@ void DatabaseCache::loadData(std::string name) {
 	execute("SELECT * from building_level order by level", loadBuildingLevels);
 	execute("SELECT * from cost_unit_level order by level,unit", loadCostUnitLevel);
 	execute("SELECT * from cost_building_level order by level,building", loadCostBuildingLevel);
+	
+	//execute("SELECT * from ai_prop_level order by level,building", loadCostBuildingLevel);
 
 	sqlite3_close(database);
 }
