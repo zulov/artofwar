@@ -18,13 +18,18 @@ Player::Player(int nationId, char team, char id, int color, Urho3D::String name,
 	queue(1), active(active), actionMaker(this) {
 	dbNation = Game::getDatabase()->getNation(nationId);
 
-	std::fill_n(unitLevels, UNITS_NUMBER_DB, 0);
-	std::fill_n(buildingLevels, BUILDINGS_NUMBER_DB, 0);
+	unitLevels = new char[Game::getDatabase()->getUnits().size()];
+	buildingLevels = new char[Game::getDatabase()->getBuildings().size()];
+
+	std::fill_n(unitLevels, Game::getDatabase()->getUnits().size(), 0);
+	std::fill_n(buildingLevels, Game::getDatabase()->getBuildings().size(), 0);
 	initAi();
 }
 
 Player::~Player() {
 	delete brain;
+	delete[] unitLevels;
+	delete[] buildingLevels;
 }
 
 std::string Player::getValues(int precision) const {

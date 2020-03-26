@@ -16,7 +16,8 @@
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "MiniMapWindow",
                                                                           {GameState::RUNNING, GameState::PAUSE}) {
-	for (int i = 0; i < PLAYER_COLORS_NUMBER_DB; ++i) {
+
+	for (int i = 0; i < Game::getDatabase()->getPlayerColors().size(); ++i) {
 		unitsColors[i] = 0xFF505050;
 		buildingColors[i] = 0xFF505050;
 	}
@@ -37,14 +38,22 @@ MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style
 MiniMapPanel::~MiniMapPanel() {
 	delete[] heightMap;
 	delete minimap;
+	delete[] unitsColors;
+	delete[] buildingColors;
+	delete[] resourceColors;
 	text->Release();
 }
 
 void MiniMapPanel::initColors() {
-	for (int i = 0; i < PLAYER_COLORS_NUMBER_DB; ++i) {
-		unitsColors[i] = 0xFF505050;
-		buildingColors[i] = 0xFF505050;
-	}
+	auto colorsSize = Game::getDatabase()->getPlayerColors().size();
+	auto resourceSize = Game::getDatabase()->getResourceSize();
+	unitsColors = new unsigned[colorsSize];
+	buildingColors = new unsigned[colorsSize];
+	resourceColors = new unsigned[resourceSize];
+
+	std::fill_n(unitsColors, colorsSize, 0xFF505050);
+	std::fill_n(buildingColors, colorsSize, 0xFF505050);
+	std::fill_n(resourceColors, resourceSize, 0xFF606060);
 
 	PlayersManager* playerManager = Game::getPlayersMan();
 	for (auto player : playerManager->getAllPlayers()) {

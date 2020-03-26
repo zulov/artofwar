@@ -10,13 +10,9 @@ Resources::Resources() {
 
 void Resources::init(float valueForAll) {
 	size = Game::getDatabase()->getResourceSize();
-	int i = 0;
-	for (; i < size; ++i) {
-		values[i] = valueForAll;
-	}
-	for (; i < RESOURCE_NUMBER_DB; ++i) {
-		values[i] = 0;
-	}
+	values = new float[size];
+	std::fill_n(values, size, valueForAll);
+
 	changed = true;
 }
 
@@ -25,7 +21,9 @@ Resources::Resources(float valueForAll) {
 }
 
 
-Resources::~Resources() = default;
+Resources::~Resources() {
+	delete[] values;
+};
 
 bool Resources::reduce(const std::vector<db_cost*>& costs) {
 	for (int i = 0; i < costs.size(); ++i) {
@@ -63,7 +61,7 @@ void Resources::hasBeedUpdatedDrawn() {
 
 std::string Resources::getValues(int precision, int player) {
 	std::string str;
-	for (int i = 0; i < RESOURCE_NUMBER_DB; ++i) {
+	for (int i = 0; i < size; ++i) {
 		str += "(" + std::to_string(player) + "," + std::to_string(i) + "," + std::to_string(
 			(int)(values[i] * precision)) + "),";
 	}
@@ -85,7 +83,7 @@ std::string Resources::getColumns() {
 		"amount		INT     NOT NULL";
 }
 
-void Resources::revert(int end,const std::vector<db_cost*>& costs) {
+void Resources::revert(int end, const std::vector<db_cost*>& costs) {
 	for (int i = 0; i < end + 1; ++i) {
 		const int j = costs.at(i)->resource;
 		values[j] += costs.at(i)->value;

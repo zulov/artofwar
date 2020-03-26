@@ -17,7 +17,7 @@ void MainMenuNewGamePanel::createBody() {
 	MainMenuDetailsPanel::createBody();
 
 	for (auto& row : rows) {
-		row = createElement<Urho3D::BorderImage>(body, style,"MainMenuNewGameRow");
+		row = createElement<Urho3D::BorderImage>(body, style, "MainMenuNewGameRow");
 	}
 	auto l10n = Game::getLocalization();
 	myLine.init(style, l10n, 0);
@@ -34,9 +34,11 @@ void MainMenuNewGamePanel::createBody() {
 	myLine.setCheck(true);
 
 	map = createElement<Urho3D::DropDownList>(rows[2], style, "MainMenuNewGameDropDownList");
-	int mapsSize = Game::getDatabase()->getMapSize();
-	for (int i = 0; i < mapsSize; ++i) {
-		addTextItem(map, Game::getDatabase()->getMap(i)->name, style);
+
+	for (auto dbMap : Game::getDatabase()->getMaps()) {
+		if (dbMap) {
+			addTextItem(map, dbMap->name, style);
+		}
 	}
 
 	difficulty = createElement<Urho3D::DropDownList>(rows[3], style, "MainMenuNewGameDropDownList");
@@ -45,7 +47,7 @@ void MainMenuNewGamePanel::createBody() {
 	gameSpeed = createElement<Urho3D::DropDownList>(rows[4], style, "MainMenuNewGameDropDownList");
 	addChildTexts(gameSpeed, {l10n->Get("slow"), l10n->Get("normal"), l10n->Get("fast")}, style);
 
-	proceed = createElement<Urho3D::Button>(body, style,"MainMenuNewGameButton");
+	proceed = createElement<Urho3D::Button>(body, style, "MainMenuNewGameButton");
 	data = new NewGameForm();
 	proceed->SetVar("NewGameForm", data);
 
@@ -69,7 +71,7 @@ void MainMenuNewGamePanel::HandleCheck(Urho3D::StringHash eventType, Urho3D::Var
 }
 
 void MainMenuNewGamePanel::HandleNewGame(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
-	data->map = map->GetSelection();
+	data->map = map->GetSelection();//TODO bug niezgodnosc indeksów w wyborze i id
 	data->difficulty = difficulty->GetSelection();
 	data->gameSpeed = gameSpeed->GetSelection();
 	data->players.push_back(myLine.getNewGamePlayer());

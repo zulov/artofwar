@@ -16,7 +16,7 @@ MainMenuSettingsPanel::~MainMenuSettingsPanel() {
 }
 
 void MainMenuSettingsPanel::setValues(int graphID) const {
-	db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings(graphID);
+	db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings()[graphID];
 
 	fullScreen->SetChecked(graphSettings->fullscreen);
 	vSync->SetChecked(graphSettings->v_sync);
@@ -45,9 +45,11 @@ void MainMenuSettingsPanel::createBody() {
 
 	settings = createElement<Urho3D::DropDownList>(rows[0], style, "MainMenuNewGameDropDownList");
 	std::vector<Urho3D::String> settingsNames;
-	for (int i = 0; i < Game::getDatabase()->getGraphSettingsSize(); ++i) {
-		db_graph_settings* settings = Game::getDatabase()->getGraphSettings(i);
-		settingsNames.push_back(l10n->Get(settings->name));
+
+	for (auto graphSetting : Game::getDatabase()->getGraphSettings()) {
+		if (graphSetting) {
+			settingsNames.push_back(l10n->Get(graphSetting->name));
+		}
 	}
 	SubscribeToEvent(settings, Urho3D::E_ITEMSELECTED, URHO3D_HANDLER(MainMenuSettingsPanel, HandleChangeSettings));
 

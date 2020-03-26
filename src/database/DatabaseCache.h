@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "player/ai/ActionMaker.h"
+
 
 class DatabaseCache {
 public:
@@ -16,24 +18,31 @@ public:
 	void execute(const char* sql, int (* load)(void*, int, char**, char**)) const;
 	bool openDatabase(const std::string& name);
 	std::vector<db_hud_size*>& getHudSizes() const { return dbContainer->hudSizes; }
-	std::vector<db_hud_vars*>& getHudVar() const { return dbContainer->hudVars; }
-	db_unit* getUnit(int i) const { return dbContainer->units[i]; }
-	db_graph_settings* getGraphSettings(int i) const { return dbContainer->graphSettings[i]; }
-	db_building* getBuilding(int i) const { return dbContainer->buildings[i]; }
-	db_nation* getNation(int i) const { return dbContainer->nations[i]; }
-	db_resource* getResource(int i) const { return dbContainer->resources[i]; }
-	db_order* getOrder(int i) const { return dbContainer->orders[i]; }
-	db_map* getMap(int i) const { return dbContainer->maps[i]; }
-	db_player_colors* getPlayerColor(int i) const { return dbContainer->playerColors[i]; }
+	std::vector<db_hud_vars*>& getHudVars() const { return dbContainer->hudVars; }
+	std::vector<db_graph_settings*>& getGraphSettings() const { return dbContainer->graphSettings; }
 	db_settings* getSettings() const { return dbContainer->settings[0]; }
 	db_resolution* getResolution(int id) const { return dbContainer->resolutions[id]; }
 
-	int getResourceSize() const { return dbContainer->resource_size; }
-	int getMapSize() const { return dbContainer->maps_size; }
-	int getPlayerColorsSize() const { return dbContainer->player_colors_size; }
-	int getNationSize() const { return dbContainer->nation_size; }
-	int getGraphSettingsSize() const { return dbContainer->graph_settings_size; }
-	
+	std::vector<db_map*>& getMaps() const { return dbContainer->maps; }
+
+	db_unit* getUnit(int i) const { return dbContainer->units[i]; }
+	std::vector<db_unit*>& getUnits() const { return dbContainer->units; }
+
+	db_building* getBuilding(int i) const { return dbContainer->buildings[i]; }
+	std::vector<db_building*>& getBuildings() const { return dbContainer->buildings; }
+
+	std::vector<db_nation*>& getNations() const { return dbContainer->nations; }
+	db_nation* getNation(int i) const { return dbContainer->nations[i]; }
+
+	db_resource* getResource(int i) const { return dbContainer->resources[i]; }
+	db_order* getOrder(int i) const { return dbContainer->orders[i]; }
+
+	std::vector<db_player_colors*>& getPlayerColors() const { return dbContainer->playerColors; }
+	db_player_colors* getPlayerColor(int i) const { return dbContainer->playerColors[i]; }
+
+
+	int getResourceSize() const { return dbContainer->resources.size(); }
+
 	void executeSingleBasic(std::string name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* graphSettings);
 	void setSettings(int i, db_settings* settings);

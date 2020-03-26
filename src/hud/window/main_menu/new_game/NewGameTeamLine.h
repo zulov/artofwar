@@ -40,14 +40,19 @@ struct NewGameTeamLine {
 
 		nation = createElement<Urho3D::DropDownList>(row, style, "MainMenuNewGameDropDownList");
 
-		for (int i = 0; i < Game::getDatabase()->getNationSize(); ++i) {
-			addTextItem(nation, l10n->Get("nation_" + Game::getDatabase()->getNation(i)->name), style);
+
+		for (auto dbNation : Game::getDatabase()->getNations()) {
+			if (dbNation) {
+				addTextItem(nation, l10n->Get("nation_" + dbNation->name), style);
+			}
 		}
 
 		color = createElement<Urho3D::DropDownList>(row, style, "MainMenuNewGameDropDownList");
 
-		for (int i = 0; i < Game::getDatabase()->getPlayerColorsSize(); ++i) {
-			addTextItem(color, l10n->Get("color_" + Game::getDatabase()->getPlayerColor(i)->name), style);
+		for (auto playerColor : Game::getDatabase()->getPlayerColors()) {
+			if (playerColor) {
+				addTextItem(color, l10n->Get("color_" + playerColor->name), style);
+			}
 		}
 		chk = createElement<Urho3D::CheckBox>(row, style, "CheckBox");
 	}

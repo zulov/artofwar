@@ -57,6 +57,6 @@ private:
 	char id;
 	bool active;
 
-	char unitLevels[UNITS_NUMBER_DB];
-	char buildingLevels[BUILDINGS_NUMBER_DB];
+	char *unitLevels;
+	char *buildingLevels;
 };

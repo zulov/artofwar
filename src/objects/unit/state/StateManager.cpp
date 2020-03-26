@@ -54,8 +54,7 @@ StateManager::StateManager() {
 	orderToState[static_cast<char>(UnitAction::FOLLOW)] = {static_cast<char>(UnitState::FOLLOW)};
 	orderToState[static_cast<char>(UnitAction::COLLECT)] = {static_cast<char>(UnitState::COLLECT)};
 
-	for (int i = 0; i < UNITS_NUMBER_DB; ++i) {
-		auto unit = Game::getDatabase()->getUnit(i);
+	for (auto unit : Game::getDatabase()->getUnits()) {
 		if (unit) {
 			auto orders = unit->orders;
 			//test //TTO cos zle
@@ -73,9 +72,7 @@ StateManager::StateManager() {
 
 
 StateManager::~StateManager() {
-	for (auto state : states) {
-		delete state;
-	}
+	clear_array(states,STATE_SIZE);
 }
 
 bool StateManager::validateState(int id, UnitState stateTo) {

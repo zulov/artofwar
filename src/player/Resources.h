@@ -20,7 +20,7 @@ public:
 	static std::string getColumns();
 private:
 	void revert(int end, const std::vector<db_cost*>& costs);
-	float values[RESOURCE_NUMBER_DB];
+	float *values;
 	int size;
 	bool changed;
 };

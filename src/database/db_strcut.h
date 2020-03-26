@@ -1,15 +1,4 @@
 ﻿#pragma once
-#define UNITS_NUMBER_DB 50
-#define BUILDINGS_NUMBER_DB 50
-#define GRAPH_SETTINGS_NUMBER_DB 4
-#define NATION_NUMBER_DB 10
-#define RESOURCE_NUMBER_DB 4
-#define ORDERS_NUMBER_DB 10
-#define MAP_NUMBER_DB 10
-#define PLAYER_COLORS_NUMBER_DB 10
-#define RESOLUTIONS_NUMBER_DB 6
-#define SETTINGS_NUMBER_DB 1
-#define MAX_NUMBER_OF_NATIONS 5
 
 #define SPLIT_SIGN '\n'
 
@@ -18,8 +7,9 @@
 #include <Urho3D/Math/Vector2.h>
 #include <utility>
 #include <vector>
-#include "utils.h"
 
+#include "objects/unit/state/UnitState.h"
+#include "utils.h"
 
 struct db_order;
 struct db_building_level;
@@ -70,6 +60,7 @@ struct db_unit_level {
 };
 
 struct db_unit {
+
 	const int id;
 	const Urho3D::String name;
 	const bool rotatable;
@@ -81,6 +72,8 @@ struct db_unit {
 	std::vector<db_unit_level*> levels;
 
 	std::vector<db_order*> orders;
+
+	bool ordersToUnit[STATE_SIZE];
 
 	db_unit(int id, char* name, int rotatable, int nation, char* icon, int actionState)
 		: id(id),
@@ -344,41 +337,39 @@ struct db_ai_property {
 struct db_container {
 	std::vector<db_hud_size*> hudSizes;
 	std::vector<db_hud_vars*> hudVars;
-	db_graph_settings* graphSettings[GRAPH_SETTINGS_NUMBER_DB] = {nullptr};
-	db_resolution* resolutions[RESOLUTIONS_NUMBER_DB] = {nullptr};
-	db_settings* settings[SETTINGS_NUMBER_DB] = {nullptr};
+	std::vector<db_graph_settings*> graphSettings;
+	std::vector<db_resolution*> resolutions;
+	std::vector<db_settings*> settings;
 
-	db_unit* units[UNITS_NUMBER_DB] = {nullptr};
-	db_building* buildings[BUILDINGS_NUMBER_DB] = {nullptr};
-	db_nation* nations[NATION_NUMBER_DB] = {nullptr};
-	db_resource* resources[RESOURCE_NUMBER_DB] = {nullptr};
-	db_order* orders[ORDERS_NUMBER_DB] = {nullptr};
-	db_map* maps[MAP_NUMBER_DB] = {nullptr};
-	db_player_colors* playerColors[PLAYER_COLORS_NUMBER_DB] = {nullptr};
+	std::vector<db_map*> maps;
 
-	unsigned short graph_settings_size = 0;
-	unsigned short unit_type_size = 0;
-	unsigned short resource_size = 0;
-	unsigned short nation_size = 0;
-	unsigned short maps_size = 0;
-	unsigned short player_colors_size = 0;
-
+	std::vector<db_unit*> units;
+	std::vector<db_unit_level*> unitsLevels;
+	std::vector<db_building*> buildings;
+	std::vector<db_building_level*> buildingsLevels;
+	std::vector<db_nation*> nations;
+	std::vector<db_resource*> resources;
+	std::vector<db_player_colors*> playerColors;
+	std::vector<db_order*> orders;
 
 	explicit db_container() = default;
 
 	~db_container() {
 		clear_vector(hudSizes);
 		clear_vector(hudVars);
+		clear_vector(resolutions);
+		clear_vector(graphSettings);
+		clear_vector(settings);
 
-		clear_array(graphSettings, GRAPH_SETTINGS_NUMBER_DB);
-		clear_array(resolutions, RESOLUTIONS_NUMBER_DB);
-		clear_array(settings, SETTINGS_NUMBER_DB);
-		clear_array(maps, MAP_NUMBER_DB);
-		clear_array(resources, RESOURCE_NUMBER_DB);
-		clear_array(nations, NATION_NUMBER_DB);
-		clear_array(units, UNITS_NUMBER_DB);
-		clear_array(orders, ORDERS_NUMBER_DB);
-		clear_array(buildings, BUILDINGS_NUMBER_DB);
-		clear_array(playerColors, PLAYER_COLORS_NUMBER_DB);
+		clear_vector(maps);
+
+		clear_vector(resources);
+		clear_vector(nations);
+		clear_vector(units);
+		clear_vector(orders);
+		clear_vector(buildings);
+		clear_vector(playerColors);
+		clear_vector(unitsLevels);
+		clear_vector(buildingsLevels);
 	}
 };

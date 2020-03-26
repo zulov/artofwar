@@ -20,10 +20,7 @@ int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	xyz->units[id] = new db_unit(id, argv[1], atoi(argv[2]), atoi(argv[3]), argv[4],
 	                             atoi(argv[5]));
 
-	if (xyz->units[id]->nation >= MAX_NUMBER_OF_NATIONS) {
-		Game::getLog()->Write(0, "ERROR - Out of bounds!!");
-	}
-	xyz->nations[xyz->units[id]->nation]->units.push_back(xyz->units[id]);
+	//xyz->nations[xyz->units[id]->nation]->units.push_back(xyz->units[id]);
 
 	return 0;
 }
@@ -39,24 +36,20 @@ int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 int static loadGraphSettings(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
+	xyz->graphSettings.resize(id + 1, nullptr);
 	xyz->graphSettings[id] = new db_graph_settings(id, atoi(argv[1]), argv[2], atoi(argv[3]),
 	                                               atof(argv[4]), atof(argv[5]), argv[6],
 	                                               atoi(argv[7]), atoi(argv[8]), atoi(argv[9]));
-	xyz->graph_settings_size++;
 	return 0;
 }
 
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	if (id >= BUILDINGS_NUMBER_DB) {
-		Game::getLog()->Write(0, "ERROR - Out of bounds!!");
-	}
+	xyz->buildings.resize(id + 1, nullptr);
 	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), argv[5]);
-	if (xyz->buildings[id]->nation >= MAX_NUMBER_OF_NATIONS) {
-		Game::getLog()->Write(0, "ERROR - Out of bounds!!");
-	}
-	xyz->nations[xyz->buildings[id]->nation]->buildings.push_back(xyz->buildings[id]);
+
+	//xyz->nations[xyz->buildings[id]->nation]->buildings.push_back(xyz->buildings[id]);
 
 	return 0;
 }
@@ -64,17 +57,18 @@ int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 int static loadNation(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
+	xyz->nations.resize(id + 1, nullptr);
 	xyz->nations[id] = new db_nation(id, argv[1]);
-	xyz->nation_size++;
+
 	return 0;
 }
 
 int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
+	xyz->resources.resize(id + 1, nullptr);
 	xyz->resources[id] = new db_resource(id, argv[1], argv[2], atoi(argv[3]), argv[4],
 	                                     atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), fromHex(argv, 8));
-	xyz->resource_size++;
 
 	return 0;
 }
@@ -115,7 +109,7 @@ int static loadCostUnitLevel(void* data, int argc, char** argv, char** azColName
 	const int unitId = atoi(argv[0]);
 	const int level = atoi(argv[1]);
 	addCost(argv, xyz, xyz->units[unitId]->getLevel(level).value()->costs);
-	
+
 	return 0;
 }
 
@@ -124,7 +118,7 @@ int static loadCostBuildingLevel(void* data, int argc, char** argv, char** azCol
 	const int buildingId = atoi(argv[0]);
 	const int level = atoi(argv[1]);
 
-	addCost(argv, xyz, xyz->buildings[buildingId]->getLevel(level) .value()->costs);
+	addCost(argv, xyz, xyz->buildings[buildingId]->getLevel(level).value()->costs);
 	return 0;
 }
 
@@ -139,6 +133,7 @@ int static loadCostBuilding(void* data, int argc, char** argv, char** azColName)
 int static loadOrders(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
+	xyz->orders.resize(id + 1, nullptr);
 	xyz->orders[id] = new db_order(id, argv[1], argv[2]);
 
 	return 0;
@@ -157,30 +152,32 @@ int static loadOrdersToUnit(void* data, int argc, char** argv, char** azColName)
 int static loadMap(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-
+	xyz->maps.resize(id + 1);
 	xyz->maps[id] = new db_map(id, argv[1], argv[2], atof(argv[3]), atof(argv[4]), argv[5]);
-	xyz->maps_size++;
+
 	return 0;
 }
 
 int static loadPlayerColors(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
+	xyz->playerColors.resize(id + 1);
 	xyz->playerColors[id] = new db_player_colors(id, fromHex(argv, 1), fromHex(argv, 2), argv[3]);
-	xyz->player_colors_size++;
+
 	return 0;
 }
 
 int static loadResolution(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
+	xyz->resolutions.resize(id + 1);
 	xyz->resolutions[id] = new db_resolution(id, atoi(argv[1]), atoi(argv[2]));
 	return 0;
 }
 
 int static loadSettings(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-
+	xyz->resolutions.resize(1);
 	xyz->settings[0] = new db_settings(atoi(argv[0]), atoi(argv[1]));
 
 	return 0;
@@ -270,7 +267,7 @@ void DatabaseCache::loadData(std::string name) {
 	execute("SELECT * from building_level order by level", loadBuildingLevels);
 	execute("SELECT * from cost_unit_level order by level,unit", loadCostUnitLevel);
 	execute("SELECT * from cost_building_level order by level,building", loadCostBuildingLevel);
-	
+
 	//execute("SELECT * from ai_prop_level order by level,building", loadCostBuildingLevel);
 
 	sqlite3_close(database);

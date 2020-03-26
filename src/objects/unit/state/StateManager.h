@@ -28,6 +28,6 @@ private:
 	static State* getState(Unit* unit);
 
 	State* states[STATE_SIZE]{};
-	bool ordersToUnit[UNITS_NUMBER_DB][STATE_SIZE];
+	
 	static StateManager* instance;
 };

@@ -1,13 +1,17 @@
 #pragma once
-#include "database/db_strcut.h"
 #include "defines.h"
+#include "database/DatabaseCache.h"
+#include "Game.h"
 #include <algorithm>
 
 
 struct content_info {
 	content_info() {
 		reset();
+		resourceNumber = new int[Game::getDatabase()->getResourceSize()];
 	}
+
+	~content_info() { delete[]resourceNumber; }
 
 	content_info(const content_info&) = delete;
 
@@ -18,7 +22,7 @@ struct content_info {
 		enemyBuilding = 0;
 		std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
 		std::fill_n(buildingNumberPerPlayer, MAX_PLAYERS, 0);
-		std::fill_n(resourceNumber, RESOURCE_NUMBER_DB, 0);
+		std::fill_n(resourceNumber, Game::getDatabase()->getResourceSize(), 0);
 
 		hasBuilding = false;
 		hasUnit = false;
@@ -37,7 +41,7 @@ struct content_info {
 	}
 
 	unsigned char biggestResource() {
-		return std::max_element(resourceNumber, resourceNumber + RESOURCE_NUMBER_DB) -
+		return std::max_element(resourceNumber, resourceNumber + Game::getDatabase()->getResourceSize()) -
 			resourceNumber;
 	}
 
@@ -49,7 +53,7 @@ struct content_info {
 	int enemyBuilding;
 	int buildingNumberPerPlayer[MAX_PLAYERS];
 
-	int resourceNumber[RESOURCE_NUMBER_DB];
+	int* resourceNumber;
 
 	bool hasUnit;
 	bool hasBuilding;
