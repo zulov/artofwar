@@ -17,10 +17,9 @@ static unsigned fromHex(char** argv, int index) {
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	xyz->units[id] = new db_unit(id, argv[1], atoi(argv[2]), atoi(argv[3]), argv[4],
-	                             atoi(argv[5]));
+	ensureSize(id, xyz->units);
 
-	//xyz->nations[xyz->units[id]->nation]->units.push_back(xyz->units[id]);
+	xyz->units[id] = new db_unit(id, argv[1], atoi(argv[2]), argv[4], atoi(argv[4]));
 
 	return 0;
 }
@@ -36,7 +35,8 @@ int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 int static loadGraphSettings(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	xyz->graphSettings.resize(id + 1, nullptr);
+	ensureSize(id, xyz->graphSettings);
+
 	xyz->graphSettings[id] = new db_graph_settings(id, atoi(argv[1]), argv[2], atoi(argv[3]),
 	                                               atof(argv[4]), atof(argv[5]), argv[6],
 	                                               atoi(argv[7]), atoi(argv[8]), atoi(argv[9]));
@@ -46,10 +46,9 @@ int static loadGraphSettings(void* data, int argc, char** argv, char** azColName
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	xyz->buildings.resize(id + 1, nullptr);
-	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), atoi(argv[4]), argv[5]);
 
-	//xyz->nations[xyz->buildings[id]->nation]->buildings.push_back(xyz->buildings[id]);
+	ensureSize(id, xyz->buildings);
+	xyz->buildings[id] = new db_building(id, argv[1], atoi(argv[2]), atoi(argv[3]), argv[4]);
 
 	return 0;
 }
@@ -57,7 +56,8 @@ int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 int static loadNation(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	xyz->nations.resize(id + 1, nullptr);
+	ensureSize(id, xyz->nations);
+
 	xyz->nations[id] = new db_nation(id, argv[1]);
 
 	return 0;
@@ -66,7 +66,8 @@ int static loadNation(void* data, int argc, char** argv, char** azColName) {
 int static loadResource(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	xyz->resources.resize(id + 1, nullptr);
+	ensureSize(id, xyz->resources);
+
 	xyz->resources[id] = new db_resource(id, argv[1], argv[2], atoi(argv[3]), argv[4],
 	                                     atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), fromHex(argv, 8));
 
@@ -81,59 +82,44 @@ int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
-int static loadBuildingToUnit(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-	const int buildingId = atoi(argv[0]);
-	xyz->buildings[buildingId]->units.push_back(xyz->units[atoi(argv[1])]);
-
-	return 0;
-}
-
 static void addCost(char** argv, db_container* const xyz, std::vector<db_cost*>& array) {
-	const int thingID = atoi(argv[3]);
-	const int resourceId = atoi(argv[1]);
-	db_resource* dbResource = xyz->resources[resourceId];
-	auto cost = new db_cost(resourceId, atoi(argv[2]), dbResource->name, thingID);
-	array.push_back(cost);
+	array.push_back(new db_cost(atoi(argv[1]), atoi(argv[2])));
 }
 
 int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	addCost(argv, xyz, xyz->units[atoi(argv[3])]->costs);
+	addCost(argv, xyz, xyz->units[atoi(argv[0])]->costs);
 
 	return 0;
 }
 
 int static loadCostUnitLevel(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	const int unitId = atoi(argv[0]);
-	const int level = atoi(argv[1]);
-	addCost(argv, xyz, xyz->units[unitId]->getLevel(level).value()->costs);
+
+	addCost(argv, xyz, xyz->unitsLevels[atoi(argv[0])]->costs);
 
 	return 0;
 }
 
 int static loadCostBuildingLevel(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	const int buildingId = atoi(argv[0]);
-	const int level = atoi(argv[1]);
 
-	addCost(argv, xyz, xyz->buildings[buildingId]->getLevel(level).value()->costs);
+	addCost(argv, xyz, xyz->buildingsLevels[atoi(argv[0])]->costs);
 	return 0;
 }
 
 int static loadCostBuilding(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	const int buildingId = atoi(argv[3]);
 
-	addCost(argv, xyz, xyz->buildings[buildingId]->costs);
+	addCost(argv, xyz, xyz->buildings[atoi(argv[0])]->costs);
 	return 0;
 }
 
 int static loadOrders(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	xyz->orders.resize(id + 1, nullptr);
+	ensureSize(id, xyz->orders);
+
 	xyz->orders[id] = new db_order(id, argv[1], argv[2]);
 
 	return 0;
@@ -141,10 +127,9 @@ int static loadOrders(void* data, int argc, char** argv, char** azColName) {
 
 int static loadOrdersToUnit(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	const int orderId = atoi(argv[2]);
-	const int unitId = atoi(argv[1]);
-	db_order* dbOrder = xyz->orders[orderId];
-	xyz->units[unitId]->orders.push_back(dbOrder);
+	db_order* dbOrder = xyz->orders[atoi(argv[1])];
+
+	xyz->units[atoi(argv[0])]->orders.push_back(dbOrder);
 
 	return 0;
 }
@@ -152,7 +137,8 @@ int static loadOrdersToUnit(void* data, int argc, char** argv, char** azColName)
 int static loadMap(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	xyz->maps.resize(id + 1);
+	ensureSize(id, xyz->maps);
+
 	xyz->maps[id] = new db_map(id, argv[1], argv[2], atof(argv[3]), atof(argv[4]), argv[5]);
 
 	return 0;
@@ -161,7 +147,7 @@ int static loadMap(void* data, int argc, char** argv, char** azColName) {
 int static loadPlayerColors(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	xyz->playerColors.resize(id + 1);
+	ensureSize(id, xyz->playerColors);
 	xyz->playerColors[id] = new db_player_colors(id, fromHex(argv, 1), fromHex(argv, 2), argv[3]);
 
 	return 0;
@@ -170,39 +156,75 @@ int static loadPlayerColors(void* data, int argc, char** argv, char** azColName)
 int static loadResolution(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	xyz->resolutions.resize(id + 1);
+	ensureSize(id, xyz->resolutions);
+
 	xyz->resolutions[id] = new db_resolution(id, atoi(argv[1]), atoi(argv[2]));
 	return 0;
 }
 
 int static loadSettings(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	xyz->resolutions.resize(1);
+	ensureSize(1, xyz->settings);
 	xyz->settings[0] = new db_settings(atoi(argv[0]), atoi(argv[1]));
 
 	return 0;
 }
 
+
 int static loadBuildingLevels(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	xyz->buildings[atoi(argv[1])]->levels.push_back(new db_building_level(atoi(argv[0]), atoi(argv[1]),
-	                                                                      argv[2], argv[3], atoi(argv[4])));
-
+	auto levelId = atoi(argv[0]);
+	ensureSize(levelId, xyz->buildingsLevels);
+	xyz->buildingsLevels[levelId] = new db_building_level(levelId, atoi(argv[1]), atoi(argv[2]), argv[3],
+	                                                      argv[4], atoi(argv[5]));
+	xyz->buildings[atoi(argv[2])]->levels.push_back(xyz->buildingsLevels[levelId]);
 	return 0;
 }
 
 int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	int unitId = atoi(argv[1]);
-	xyz->units[unitId]->levels.push_back(
-		new db_unit_level(
-			atoi(argv[0]), atoi(argv[1]), argv[2], atof(argv[3]),
-			atof(argv[4]), argv[5], atof(argv[6]), atof(argv[7]),
-			atoi(argv[8]), atof(argv[9]), atof(argv[10]), atoi(argv[11]),
-			atof(argv[12]), atof(argv[13]), atof(argv[14]),
-			atof(argv[15]), atof(argv[16]))
-	);
+	auto levelId = atoi(argv[0]);
+	int unitId = atoi(argv[2]);
 
+	ensureSize(levelId, xyz->unitsLevels);
+	xyz->unitsLevels[levelId] = new db_unit_level(levelId, atoi(argv[1]), atoi(argv[2]), argv[3], atof(argv[4]),
+	                                              atof(argv[5]), argv[6], atof(argv[7]), atof(argv[8]),
+	                                              atoi(argv[9]), atof(argv[10]), atof(argv[11]), atoi(argv[12]),
+	                                              atof(argv[13]), atof(argv[14]), atof(argv[15]),
+	                                              atof(argv[16]), atof(argv[17]));
+
+	xyz->units[unitId]->levels.push_back(xyz->unitsLevels[levelId]);
+
+	return 0;
+}
+
+int static loadUnitToNation(void* data, int argc, char** argv, char** azColName) {
+	const auto xyz = static_cast<db_container*>(data);
+	int unitId = atoi(argv[0]);
+	int nationId = atoi(argv[1]);
+	xyz->nations[nationId]->units.push_back(xyz->units[unitId]);
+	xyz->units[unitId]->nations.push_back(xyz->nations[nationId]);
+	return 0;
+}
+
+int static loadBuildingToNation(void* data, int argc, char** argv, char** azColName) {
+	const auto xyz = static_cast<db_container*>(data);
+	int buildingId = atoi(argv[0]);
+	int nationId = atoi(argv[1]);
+	xyz->nations[nationId]->buildings.push_back(xyz->buildings[buildingId]);
+	xyz->buildings[buildingId]->nations.push_back(xyz->nations[nationId]);
+	return 0;
+}
+
+int static loadUnitToBuildingLevels(void* data, int argc, char** argv, char** azColName) {
+	const auto xyz = static_cast<db_container*>(data);
+	int unitId = atoi(argv[0]);
+	int buildingLevelId = atoi(argv[1]);
+	auto level = xyz->buildingsLevels[buildingLevelId];
+
+	level->allUnits.push_back(xyz->units[unitId]);
+
+	//level->unitsPerNation.resize(xyz)
 	return 0;
 }
 
@@ -252,21 +274,31 @@ void DatabaseCache::loadBasic(std::string name) {
 void DatabaseCache::loadData(std::string name) {
 	if (openDatabase(name)) { return; }
 
-	execute("SELECT * from nation", loadNation);
-	execute("SELECT * from units", loadUnits);
-	execute("SELECT * from building", loadBuildings);
-	execute("SELECT * from resource", loadResource);
-	execute("SELECT * from building_to_unit", loadBuildingToUnit);
-	execute("SELECT * from cost_building", loadCostBuilding);
-	execute("SELECT * from cost_unit", loadCostUnit);
-	execute("SELECT * from orders", loadOrders);
-	execute("SELECT * from orders_to_unit", loadOrdersToUnit);
 	execute("SELECT * from map", loadMap);
-	execute("SELECT * from player_colors", loadPlayerColors);
+
+	execute("SELECT * from nation", loadNation);
+	execute("SELECT * from unit", loadUnits);
+	execute("SELECT * from building", loadBuildings);
+
+	execute("SELECT * from resource", loadResource);
+	execute("SELECT * from building_cost", loadCostBuilding);
+	execute("SELECT * from unit_cost", loadCostUnit);
+
+	execute("SELECT * from orders", loadOrders);
+	execute("SELECT * from order_to_unit", loadOrdersToUnit);
+
+	execute("SELECT * from player_color", loadPlayerColors);
+
 	execute("SELECT * from unit_level order by level", loadUnitLevels);
 	execute("SELECT * from building_level order by level", loadBuildingLevels);
-	execute("SELECT * from cost_unit_level order by level,unit", loadCostUnitLevel);
-	execute("SELECT * from cost_building_level order by level,building", loadCostBuildingLevel);
+
+	execute("SELECT * from building_to_nation", loadBuildingToNation);
+	execute("SELECT * from unit_to_nation", loadUnitToNation);
+
+	execute("SELECT * from unit_to_building_level", loadUnitToBuildingLevels);
+
+	execute("SELECT * from unit_level_cost", loadCostUnitLevel);
+	execute("SELECT * from building_level_cost", loadCostBuildingLevel);
 
 	//execute("SELECT * from ai_prop_level order by level,building", loadCostBuildingLevel);
 

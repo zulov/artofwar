@@ -58,14 +58,14 @@ StateManager::StateManager() {
 		if (unit) {
 			auto orders = unit->orders;
 			//test //TTO cos zle
-			std::fill_n(ordersToUnit[i], STATE_SIZE, false);
+			std::fill_n(unit->possibleStates, STATE_SIZE, false);
 			for (auto order : orders) {
 				for (auto state : orderToState[order->id]) {
-					ordersToUnit[i][state] = true;
+					unit->possibleStates[state] = true;
 				}
 			}
-			ordersToUnit[i][static_cast<char>(UnitState::DEAD)] = true; //Always can die
-			ordersToUnit[i][static_cast<char>(UnitState::DISPOSE)] = true; //Always can die
+			unit->possibleStates[static_cast<char>(UnitState::DEAD)] = true; //Always can die
+			unit->possibleStates[static_cast<char>(UnitState::DISPOSE)] = true; //Always can die
 		}
 	}
 }
@@ -76,7 +76,7 @@ StateManager::~StateManager() {
 }
 
 bool StateManager::validateState(int id, UnitState stateTo) {
-	return instance->ordersToUnit[id][static_cast<char>(stateTo)];
+	return Game::getDatabase()->getUnit(id)->possibleStates[static_cast<char>(stateTo)];
 }
 
 bool StateManager::changeState(Unit* unit, UnitState stateTo) {

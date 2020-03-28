@@ -1,16 +1,13 @@
 #pragma once
 #include "State.h"
-#include "database/db_strcut.h"
-#include "objects/building/Building.h"
+
 
 
 enum class StaticState : char;
 class Static;
 
-class StateManager
-{
+class StateManager {
 public:
-
 	static bool validateState(int id, UnitState stateTo);
 	static bool changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter);
 	static bool changeState(Unit* unit, UnitState stateTo);
@@ -28,6 +25,6 @@ private:
 	static State* getState(Unit* unit);
 
 	State* states[STATE_SIZE]{};
-	
+
 	static StateManager* instance;
 };

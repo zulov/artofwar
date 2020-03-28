@@ -42,3 +42,10 @@ void clear_array(T** tab, int size) {
 		delete tab[i];
 	}
 }
+
+template <typename T>
+void ensureSize(int size, std::vector<T*>& array) {
+	if (array.size() <= size) {
+		array.resize(size + 1, nullptr);
+	}
+}

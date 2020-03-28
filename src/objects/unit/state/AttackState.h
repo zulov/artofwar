@@ -1,4 +1,5 @@
 #pragma once
+#include "database/db_strcut.h"
 #include "State.h"
 #include "StateManager.h"
 #include "objects/unit/ActionParameter.h"

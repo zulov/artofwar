@@ -3,14 +3,13 @@
 
 class Physical;
 
-class SelectedInfoType
-{
+class SelectedInfoType {
 public:
 	SelectedInfoType();
 	~SelectedInfoType();
 	void clear();
 	void add(Physical* physical);
-	
+
 	std::vector<Physical*>& getData() { return data; }
 	int getId() const { return id; }
 private:

@@ -11,23 +11,25 @@
 #include "objects/unit/state/UnitState.h"
 #include "utils.h"
 
+struct db_nation;
 struct db_order;
 struct db_building_level;
 struct db_cost;
 
 struct db_unit_level {
-	const int level;
-	const int unit;
+	const short id;
+	const short level;
+	const short unit;
 	const Urho3D::String name;
 	const float minDist;
 	const float maxSep;
 	const Urho3D::String nodeName;
 	const float mass;
 	const float attack;
-	const int attackSpeed;
+	const short attackSpeed;
 	const float attackRange;
 	const float defense;
-	const int maxHp;
+	const short maxHp;
 	const float maxSpeed;
 	const float minSpeed;
 	const float collectSpeed;
@@ -36,10 +38,11 @@ struct db_unit_level {
 
 	std::vector<db_cost*> costs;
 
-	db_unit_level(int level, int unit, char* name, float minDist, float maxSep, char* nodeName,
-	              float mass, float attack, int attackSpeed, float attackRange, float defense,
-	              int maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed, float maxForce)
-		: level(level),
+	db_unit_level(short id, short level, short unit, char* name, float minDist, float maxSep, char* nodeName,
+	              float mass, float attack, short attackSpeed, float attackRange, float defense,
+	              short maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed, float maxForce)
+		: id(id),
+		  level(level),
 		  unit(unit),
 		  name(name),
 		  minDist(minDist),
@@ -64,7 +67,6 @@ struct db_unit {
 	const int id;
 	const Urho3D::String name;
 	const bool rotatable;
-	const int nation;
 	const Urho3D::String icon;
 	const int actionState;
 
@@ -72,14 +74,14 @@ struct db_unit {
 	std::vector<db_unit_level*> levels;
 
 	std::vector<db_order*> orders;
+	std::vector<db_nation*> nations;
 
-	bool ordersToUnit[STATE_SIZE];
+	bool possibleStates[STATE_SIZE];
 
-	db_unit(int id, char* name, int rotatable, int nation, char* icon, int actionState)
+	db_unit(int id, char* name, int rotatable, char* icon, int actionState)
 		: id(id),
 		  name(name),
 		  rotatable(rotatable),
-		  nation(nation),
 		  icon(icon),
 		  actionState(actionState) {
 	}
@@ -102,24 +104,22 @@ struct db_building {
 	const short id;
 	const Urho3D::String name;
 	const Urho3D::IntVector2 size;
-	const int nation;
 	const Urho3D::String icon;
 
-	std::vector<db_unit*> units;
 	std::vector<db_cost*> costs;
 	std::vector<db_building_level*> levels;
 
-	db_building(int id, char* name, int sizeX, int sizeZ, int nation, char* icon)
+	std::vector<db_nation*> nations;
+
+	db_building(int id, char* name, int sizeX, int sizeZ, char* icon)
 		: id(id),
 		  name(name),
 		  size({sizeX, sizeZ}),
-		  nation(nation),
 		  icon(icon) {
 	}
 
 	~db_building() {
 		clear_vector(costs);
-		clear_vector(levels);
 	}
 
 	std::optional<db_building_level*> getLevel(int level) {
@@ -131,17 +131,21 @@ struct db_building {
 };
 
 struct db_building_level {
-	const int level;
-	const int unit;
+	const short id;
+	const short level;
+	const short building;
 	const Urho3D::String name;
 	const Urho3D::String nodeName;
 	const short queueMaxCapacity;
 
 	std::vector<db_cost*> costs;
+	std::vector<db_unit*> allUnits;
+	//std::vector<std::vector<db_unit*>> unitsPerNation;
 
-	db_building_level(int level, int unit, char* name, char* nodeName, short queueMaxCapacity)
-		: level(level),
-		  unit(unit),
+	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity)
+		: id(id),
+		  level(level),
+		  building(building),
 		  name(name),
 		  nodeName(nodeName),
 		  queueMaxCapacity(queueMaxCapacity) {
@@ -248,12 +252,12 @@ struct db_resource {
 };
 
 struct db_hud_vars {
-	const int id;
-	const int hud_size;
+	const short id;
+	const short hud_size;
 	float value;
 	const Urho3D::String name;
 
-	db_hud_vars(int id, int hudSize, char* name, float value)
+	db_hud_vars(short id, short hudSize, char* name, float value)
 		: id(id),
 		  hud_size(hudSize),
 		  value(value),
@@ -262,21 +266,17 @@ struct db_hud_vars {
 };
 
 struct db_cost {
-	const int resource;
-	const int value;
-	const int thing;
-	const Urho3D::String resourceName;
+	const short resource;
+	const short value;
 
-	db_cost(int resource, int value, Urho3D::String resourceName, int thing)
+	db_cost(short resource, short value)
 		: resource(resource),
-		  value(value),
-		  thing(thing),
-		  resourceName(std::move(resourceName)) {
+		  value(value) {
 	}
 };
 
 struct db_order {
-	const int id;
+	const short id;
 	const Urho3D::String icon;
 	const Urho3D::String name;
 

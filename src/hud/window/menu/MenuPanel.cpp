@@ -23,7 +23,8 @@
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow",
-                                                                    {GameState::RUNNING, GameState::PAUSE}) {}
+                                                                    {GameState::RUNNING, GameState::PAUSE}) {
+}
 
 
 MenuPanel::~MenuPanel() {
@@ -178,11 +179,15 @@ void MenuPanel::levelBuilding() {
 std::unordered_set<int> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) {
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
 	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	auto& infoTypes = selectedInfo->getSelectedTypes();
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
-			removeFromCommon(common, unitsIdsForBuildingNation(nation, i));
+			auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i);
+			auto building = Game::getDatabase()->getBuilding(i);
+
+			removeFromCommon(common, unitsIdsForBuildingNation(building->getLevel(level).value(),nation)); //TODO bug value));
 		}
 	}
 
