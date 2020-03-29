@@ -43,9 +43,16 @@ void clear_array(T** tab, int size) {
 	}
 }
 
+// template <typename T>
+// void ensureSize(int size, std::vector<T*>& array) {
+// 	if (array.size() <= size) {
+// 		array.resize(size + 1, nullptr);
+// 	}
+// }
+
 template <typename T>
-void ensureSize(int size, std::vector<T*>& array) {
-	if (array.size() <= size) {
-		array.resize(size + 1, nullptr);
-	}
+static void setEntity(const int id, std::vector<T*>& array, T* entity) {
+	ensureSize(id, array);
+
+	array[id] = entity;
 }

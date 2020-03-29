@@ -33,11 +33,10 @@ int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
 int static loadGraphSettings(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	ensureSize(id, xyz->graphSettings);
 
-	xyz->graphSettings[id] = new db_graph_settings(id, atoi(argv[1]), argv[2], atoi(argv[3]),
-	                                               atof(argv[4]), atof(argv[5]), argv[6],
-	                                               atoi(argv[7]), atoi(argv[8]), atoi(argv[9]));
+	setEntity(id, xyz->graphSettings, new db_graph_settings(id, atoi(argv[1]), argv[2], atoi(argv[3]),
+	                                                        atof(argv[4]), atof(argv[5]), argv[6],
+	                                                        atoi(argv[7]), atoi(argv[8]), atoi(argv[9])));
 	return 0;
 }
 
@@ -151,12 +150,14 @@ int static loadPlayerColors(void* data, int argc, char** argv, char** azColName)
 	return 0;
 }
 
+
 int static loadResolution(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 	const int id = atoi(argv[0]);
-	ensureSize(id, xyz->resolutions);
+	auto& tab = xyz->resolutions;
+	auto entity = new db_resolution(id, atoi(argv[1]), atoi(argv[2]));
 
-	xyz->resolutions[id] = new db_resolution(id, atoi(argv[1]), atoi(argv[2]));
+	setEntity(id, tab, entity);
 	return 0;
 }
 
@@ -222,10 +223,30 @@ int static loadUnitToBuildingLevels(void* data, int argc, char** argv, char** az
 
 	level->allUnits.push_back(xyz->units[unitId]);
 
-	//level->unitsPerNation.resize(xyz)
+	//level->unitsPerNation.resize(xyz)//TODO co z tym??
 	return 0;
 }
 
 static int callback(void* data, int argc, char** argv, char** azColName) {
 	return 0;
+}
+
+static int loadAiPropBuildingLevel(void* data, int argc, char** argv, char** azColName) {
+	const auto xyz = static_cast<db_container*>(data);
+
+}
+
+static int loadAiPropUnitLevel(void* data, int argc, char** argv, char** azColName) {
+	const auto xyz = static_cast<db_container*>(data);
+
+}
+
+static int loadAiPropBuildingLevelUp(void* data, int argc, char** argv, char** azColName) {
+	const auto xyz = static_cast<db_container*>(data);
+
+}
+
+static int loadAiPropUnitLevelUp(void* data, int argc, char** argv, char** azColName) {
+	const auto xyz = static_cast<db_container*>(data);
+
 }
