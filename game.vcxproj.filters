@@ -485,6 +485,7 @@
     <ClInclude Include="src\objects\queue\QueueActionType.h" />
     <ClInclude Include="src\simulation\env\CloseIndexProvider.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />
+    <ClInclude Include="src\database\db_load.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
