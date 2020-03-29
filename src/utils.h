@@ -46,6 +46,8 @@ void clear_array(T** tab, int size) {
 template <typename T>
 void ensureSize(int size, std::vector<T*>& array) {
 	if (array.size() <= size) {
+		auto a = array.capacity();
 		array.resize(size + 1, nullptr);
+		std::cout << array.size() << "/" <<a<<"/" << array.capacity() << std::endl;
 	}
 }

@@ -276,18 +276,18 @@ void DatabaseCache::loadData(std::string name) {
 
 	execute("SELECT * from map", loadMap);
 
-	execute("SELECT * from nation", loadNation);
-	execute("SELECT * from unit", loadUnits);
-	execute("SELECT * from building", loadBuildings);
+	execute("SELECT * from nation order by id desc", loadNation);
+	execute("SELECT * from unit order by id desc", loadUnits);
+	execute("SELECT * from building order by id desc", loadBuildings);
 
-	execute("SELECT * from resource", loadResource);
+	execute("SELECT * from resource order by id desc", loadResource);
 	execute("SELECT * from building_cost", loadCostBuilding);
 	execute("SELECT * from unit_cost", loadCostUnit);
 
-	execute("SELECT * from orders", loadOrders);
+	execute("SELECT * from orders order by id desc", loadOrders);
 	execute("SELECT * from order_to_unit", loadOrdersToUnit);
 
-	execute("SELECT * from player_color", loadPlayerColors);
+	execute("SELECT * from player_color order by id desc", loadPlayerColors);
 
 	execute("SELECT * from unit_level order by level", loadUnitLevels);
 	execute("SELECT * from building_level order by level", loadBuildingLevels);

@@ -4,9 +4,6 @@
 #include <vector>
 #include <string>
 
-#include "player/ai/ActionMaker.h"
-
-
 class DatabaseCache {
 public:
 	DatabaseCache(const char* path);
