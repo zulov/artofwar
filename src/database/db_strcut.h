@@ -88,7 +88,6 @@ struct db_unit {
 
 	~db_unit() {
 		clear_vector(costs);
-		clear_vector(levels);
 	}
 
 	std::optional<db_unit_level*> getLevel(int level) {

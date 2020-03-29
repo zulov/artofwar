@@ -7,8 +7,8 @@
 
 struct content_info {
 	content_info() {
-		reset();
 		resourceNumber = new int[Game::getDatabase()->getResourceSize()];
+		reset();
 	}
 
 	~content_info() { delete[]resourceNumber; }
