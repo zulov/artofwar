@@ -20,6 +20,9 @@
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Engine/EngineDefs.h>
+#include <Urho3D/Graphics/Technique.h>
+#include <Urho3D/Graphics/Viewport.h>
+#include <Urho3D/Graphics/Renderer.h>
 #include <Urho3D/IO/FileSystem.h>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Resource/ResourceCache.h>

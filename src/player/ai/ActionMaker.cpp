@@ -5,6 +5,7 @@
 #include "database/DatabaseCache.h"
 #include "Game.h"
 #include "simulation/env/Environment.h"
+#include "stats/StatsEnums.h"
 
 
 ActionMaker::ActionMaker(Player* player): player(player) {}
