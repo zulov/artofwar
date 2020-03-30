@@ -1,7 +1,6 @@
 #include "InfluenceMapFloat.h"
 #include "objects/Physical.h"
 #include <algorithm>
-#include "Game.h"
 #include "simulation/env/Environment.h"
 #include <numeric>
 

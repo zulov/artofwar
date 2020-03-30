@@ -6,11 +6,11 @@
 
 class DatabaseCache {
 public:
-	DatabaseCache(const char* path);
+	explicit DatabaseCache(const char* path);
 	~DatabaseCache();
 
-	void loadBasic(std::string name);
-	void loadData(std::string name);
+	void loadBasic(const std::string& name);
+	void loadData(const std::string& name);
 
 	void execute(const char* sql, int (* load)(void*, int, char**, char**)) const;
 	bool openDatabase(const std::string& name);
@@ -40,7 +40,7 @@ public:
 
 	int getResourceSize() const { return dbContainer->resources.size(); }
 
-	void executeSingleBasic(std::string name, const char* sql);
+	void executeSingleBasic(const std::string& name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* graphSettings);
 	void setSettings(int i, db_settings* settings);
 

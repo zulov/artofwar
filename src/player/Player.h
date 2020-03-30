@@ -3,7 +3,6 @@
 #include "Possession.h"
 #include "ai/nn/Brain.h"
 #include "objects/queue/QueueManager.h"
-#include "stats/StatsEnums.h"
 #include "ai/ActionMaker.h"
 
 enum class ActionType : char;

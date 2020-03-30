@@ -10,7 +10,6 @@
 #include "Game.h"
 #include "objects/ObjectEnums.h"
 #include "objects/order/enums/UnitAction.h"
-#include "objects/order/enums/UnitActionType.h"
 #include "objects/order/FutureOrder.h"
 #include "objects/order/IndividualOrder.h"
 #include "objects/unit/ChargeData.h"

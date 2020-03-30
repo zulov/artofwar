@@ -7,7 +7,7 @@ enum class StatsOutputType : char;
 
 class ActionMaker {
 public:
-	ActionMaker(Player* player);
+	explicit ActionMaker(Player* player);
 
 	void createOrder(StatsOutputType order);
 private:

@@ -13,9 +13,9 @@
 
 
 Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active):
+	queue(1), actionMaker(this),
 	name(std::move(name)), team(team),
-	color(color), id(id),
-	queue(1), active(active), actionMaker(this) {
+	color(color), id(id), active(active) {
 	dbNation = Game::getDatabase()->getNation(nationId);
 
 	unitLevels = new char[Game::getDatabase()->getUnits().size()];

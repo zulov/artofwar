@@ -35,7 +35,7 @@ DatabaseCache::DatabaseCache(const char* path) {
 	loadData("data.db");
 }
 
-void DatabaseCache::loadBasic(std::string name) {
+void DatabaseCache::loadBasic(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
 	execute("SELECT * from hud_size", loadHudSizes);
@@ -47,7 +47,7 @@ void DatabaseCache::loadBasic(std::string name) {
 	sqlite3_close(database);
 }
 
-void DatabaseCache::loadData(std::string name) {
+void DatabaseCache::loadData(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
 	execute("SELECT * from map order by id desc", loadMap);
@@ -90,7 +90,7 @@ DatabaseCache::~DatabaseCache() {
 	delete dbContainer;
 }
 
-void DatabaseCache::executeSingleBasic(std::string name, const char* sql) {
+void DatabaseCache::executeSingleBasic(const std::string& name, const char* sql) {
 	if (openDatabase(name)) { return; }
 	execute(sql, callback);
 	sqlite3_close(database);

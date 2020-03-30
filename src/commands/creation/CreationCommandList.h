@@ -11,7 +11,7 @@ class CreationCommand;
 
 class CreationCommandList : public CommandList {
 public:
-	CreationCommandList(SimulationObjectManager* simulationObjectManager);
+	explicit CreationCommandList(SimulationObjectManager* simulationObjectManager);
 	virtual ~CreationCommandList();
 	CreationCommand* addUnits(int number, int id, Urho3D::Vector2& position, char player, int level);
 	CreationCommand* addBuilding(int id, Urho3D::Vector2& position, char player, int level);

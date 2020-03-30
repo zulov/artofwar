@@ -26,8 +26,8 @@ void MainMenuPanel::action(short id) const {
 }
 
 void MainMenuPanel::close() const {
-	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {
-		detailsPanels[i]->setVisible(false);
+	for (auto detailsPanel : detailsPanels) {
+		detailsPanel->setVisible(false);
 	}
 }
 
@@ -68,9 +68,9 @@ void MainMenuPanel::createBody() {
 	detailsPanels[2] = new MainMenuSettingsPanel(style, l10n->Get("menu_2"));
 	detailsPanels[3] = new MainMenuHelpPanel(style, l10n->Get("menu_3"));
 	detailsPanels[4] = new MainMenuClosePanel(style, l10n->Get("menu_4"));
-	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {
-		detailsPanels[i]->createWindow();
-		detailsPanels[i]->setVisible(false);
+	for (auto detailsPanel : detailsPanels) {
+		detailsPanel->createWindow();
+		detailsPanel->setVisible(false);
 	}
 
 	for (int i = 0; i < MAIN_MENU_BUTTON_NUMBER; ++i) {

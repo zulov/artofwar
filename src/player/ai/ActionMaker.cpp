@@ -1,7 +1,6 @@
 #include "ActionMaker.h"
 #include "ActionCenter.h"
 #include "commands/action/BuildingActionCommand.h"
-#include "commands/action/BuildingActionType.h"
 #include "player/Player.h"
 #include "database/DatabaseCache.h"
 #include "Game.h"

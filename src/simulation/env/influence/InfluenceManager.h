@@ -18,7 +18,7 @@ struct content_info;
 
 class InfluenceManager {
 public:
-	InfluenceManager(char numberOfPlayers);
+	explicit InfluenceManager(char numberOfPlayers);
 	~InfluenceManager();
 	void update(std::vector<Unit*>* units) const;
 	void update(std::vector<Building*>* buildings) const;
@@ -44,7 +44,6 @@ private:
 	std::vector<InfluenceMapFloat*> defenceLevelPerPlayer;
 
 	InfluanceType debugType = InfluanceType::UNITS_INFLUENCE_PER_PLAYER;
-	char debugIndex = 0;
 	content_info* ci;
 	short currentDebugBatch = 0;
 };

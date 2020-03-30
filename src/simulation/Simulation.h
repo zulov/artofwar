@@ -31,7 +31,7 @@ namespace Urho3D {
 class Simulation
 {
 public:
-	Simulation(Environment* enviroment);
+	explicit Simulation(Environment* enviroment);
 	~Simulation();
 
 	SimulationInfo* update(float timeStep);

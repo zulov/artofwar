@@ -12,7 +12,7 @@ class Unit;
 
 class Physical {
 public:
-	Physical(Urho3D::Vector3& _position);
+	explicit Physical(Urho3D::Vector3& _position);
 	virtual ~Physical();
 
 	virtual bool isAlive() const;

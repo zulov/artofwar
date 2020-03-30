@@ -8,10 +8,10 @@
 
 
 PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexData) :
-	resolution(resolution), halfResolution(resolution / 2),
-	fieldSize(size / resolution), complexData(complexData),
-	invFieldSize(resolution / size),
-	closeIndexProvider(resolution) {
+	closeIndexProvider(resolution), resolution(resolution),
+	halfResolution(resolution / 2), fieldSize(size / resolution),
+	complexData(complexData),
+	invFieldSize(resolution / size) {
 	tempPath = new std::vector<int>();
 	tempPath->reserve(DEFAULT_VECTOR_SIZE);
 }

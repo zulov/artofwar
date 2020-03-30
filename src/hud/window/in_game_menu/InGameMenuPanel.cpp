@@ -9,8 +9,9 @@
 #include "utils.h"
 
 InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "InGameMenuWindow",
-                                                                               {GameState::RUNNING, GameState::PAUSE}) {
-}
+                                                                               {
+	                                                                               GameState::RUNNING, GameState::PAUSE
+                                                                               }) {}
 
 InGameMenuPanel::~InGameMenuPanel() {
 	toggleButton->Remove();
@@ -42,8 +43,8 @@ void InGameMenuPanel::action(short id) {
 }
 
 void InGameMenuPanel::close() const {
-	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
-		addionalPanels[i]->setVisible(false);
+	for (auto addionalPanel : addionalPanels) {
+		addionalPanel->setVisible(false);
 	}
 }
 
@@ -73,8 +74,8 @@ void InGameMenuPanel::createBody() {
 	addionalPanels[2] = new AbstractMiddlePanel(style, l10n->Get("igm_2"));
 	addionalPanels[3] = new AbstractMiddlePanel(style, l10n->Get("igm_3"));
 	addionalPanels[4] = new AbstractMiddlePanel(style, l10n->Get("igm_4"));
-	for (int i = 0; i < IN_GAME_MENU_BUTTON_NUMBER; ++i) {
-		addionalPanels[i]->createWindow();
+	for (auto addionalPanel : addionalPanels) {
+		addionalPanel->createWindow();
 	}
 }
 

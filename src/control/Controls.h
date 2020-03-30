@@ -4,7 +4,6 @@
 #include "SelectedInfo.h"
 #include "objects/order/enums/UnitAction.h"
 #include "commands/creation/CreationCommand.h"
-#include <Urho3D/Graphics/Renderer.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Input/Input.h>
 #include <vector>

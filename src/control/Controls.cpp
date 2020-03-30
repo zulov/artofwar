@@ -319,7 +319,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 
 void Controls::executeOnUnits(short id) const {
 	Game::getActionCenter()->add(
-		new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, id, nullptr, nullptr),
+		new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, id, nullptr, false),
 		                      Game::getPlayersMan()->getActivePlayerID()));
 }
 

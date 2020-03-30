@@ -194,10 +194,10 @@ std::unordered_set<int> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo)
 	return common;
 }
 
-void MenuPanel::removeFromCommon(std::unordered_set<int>& common, std::unordered_set<int>& set) {
+void MenuPanel::removeFromCommon(std::unordered_set<int>& common, std::unordered_set<int>& possibleUntis) {
 	std::unordered_set<int> temp(common);
 	for (const auto& id : temp) {
-		if (set.find(id) == set.end()) {
+		if (possibleUntis.find(id) == possibleUntis.end()) {
 			common.erase(id);
 		}
 	}

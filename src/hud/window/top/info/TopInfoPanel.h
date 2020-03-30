@@ -9,7 +9,6 @@ public:
 	~TopInfoPanel();
 	
 	void hoverOn();
-	void click();
 	void hoverOff();
 
 private:

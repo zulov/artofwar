@@ -20,7 +20,7 @@ class CommandList;
 
 class ActionCenter {
 public:
-	ActionCenter(SimulationObjectManager* simulationObjectManager);
+	explicit ActionCenter(SimulationObjectManager* simulationObjectManager);
 
 	void add(UpgradeCommand* command) const;
 
