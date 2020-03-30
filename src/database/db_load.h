@@ -191,11 +191,10 @@ int static loadBuildingToNation(void* data, int argc, char** argv, char** azColN
 
 int static loadUnitToBuildingLevels(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	int unitId = atoi(argv[0]);
-	int buildingLevelId = atoi(argv[1]);
-	auto level = xyz->buildingsLevels[buildingLevelId];
 
-	level->allUnits.push_back(xyz->units[unitId]);
+	auto level = xyz->buildingsLevels[atoi(argv[1])];
+
+	level->allUnits.push_back(xyz->units[atoi(argv[0])]);
 
 	//level->unitsPerNation.resize(xyz)//TODO co z tym??
 	return 0;
@@ -207,7 +206,8 @@ static int callback(void* data, int argc, char** argv, char** azColName) {
 
 static int loadAiPropBuildingLevel(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-
+	auto levelId = atoi(argv[0]);
+	xyz->buildingsLevels[levelId]->aiProps.pushba
 }
 
 static int loadAiPropUnitLevel(void* data, int argc, char** argv, char** azColName) {

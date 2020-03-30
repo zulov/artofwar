@@ -9,6 +9,7 @@
 #include "objects/unit/state/UnitState.h"
 #include "utils.h"
 
+struct db_ai_property;
 struct db_nation;
 struct db_order;
 struct db_building_level;
@@ -154,6 +155,7 @@ struct db_building_level : db_entity {
 
 	std::vector<db_cost*> costs;
 	std::vector<db_unit*> allUnits;
+	std::vector<db_ai_property*> aiProps;
 	//std::vector<std::vector<db_unit*>> unitsPerNation;
 
 	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity)
@@ -167,6 +169,7 @@ struct db_building_level : db_entity {
 
 	~db_building_level() {
 		clear_vector(costs);
+		clear_vector(aiProps);
 	}
 };
 

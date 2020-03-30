@@ -76,11 +76,11 @@ void DatabaseCache::loadData(const std::string& name) {
 	execute("SELECT * from unit_level_cost", loadCostUnitLevel);
 	execute("SELECT * from building_level_cost", loadCostBuildingLevel);
 
-	execute("SELECT * from ai_prop_building_level", loadAiPropBuildingLevel);
-	execute("SELECT * from ai_prop_unit_level", loadAiPropUnitLevel);
+	execute("SELECT * from building_level_ai_prop", loadAiPropBuildingLevel);
+	execute("SELECT * from unit_level_ai_prop", loadAiPropUnitLevel);
 	
-	execute("SELECT * from ai_prop_building_level_up", loadAiPropBuildingLevelUp);
-	execute("SELECT * from ai_prop_unit_level_up", loadAiPropUnitLevelUp);
+	execute("SELECT * from building_level_up_ai_prop", loadAiPropBuildingLevelUp);
+	execute("SELECT * from unit_level_up_ai_prop", loadAiPropUnitLevelUp);
 
 	sqlite3_close(database);
 }
