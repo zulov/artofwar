@@ -45,20 +45,6 @@ struct db_ai_prop_level {
 	}
 };
 
-struct db_ai_property {
-	float sum;
-
-	float econ;
-	float attack;
-	float defence;
-
-	db_ai_property(float econ, float attack, float defence)
-		: sum(econ + attack + defence), //TODO bug div zero
-		  econ(econ / sum),
-		  attack(attack / sum),
-		  defence(defence / sum) { }
-};
-
 template <typename T>
 static void setEntity(std::vector<T*>& array, T* entity) {
 	auto id = static_cast<db_entity*>(entity)->id;
@@ -91,9 +77,7 @@ struct db_unit_level : db_entity, db_ai_prop_level {
 	const float maxForce;
 
 	std::vector<db_cost*> costs;
-	db_ai_property* aiProps = nullptr;
-	db_ai_property* aiPropsLevelUp = nullptr;
-
+	
 	db_unit_level(short id, short level, short unit, char* name, float minDist, float maxSep, char* nodeName,
 	              float mass, float attack, short attackSpeed, float attackRange, float defense,
 	              short maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed, float maxForce)
