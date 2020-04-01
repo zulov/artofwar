@@ -45,20 +45,6 @@ struct db_ai_prop_level {
 	}
 };
 
-struct db_ai_property {
-	float sum;
-
-	float econ;
-	float attack;
-	float defence;
-
-	db_ai_property(float econ, float attack, float defence)
-		: sum(econ + attack + defence), //TODO bug div zero
-		  econ(econ / sum),
-		  attack(attack / sum),
-		  defence(defence / sum) { }
-};
-
 template <typename T>
 static void setEntity(std::vector<T*>& array, T* entity) {
 	auto id = static_cast<db_entity*>(entity)->id;
