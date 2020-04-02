@@ -152,6 +152,7 @@ int static loadBuildingLevels(void* data, int argc, char** argv, char** azColNam
 	auto building_level = new db_building_level(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), argv[3],
 	                                            argv[4], atoi(argv[5]));
 	setEntity(xyz->buildingsLevels, building_level);
+	xyz->buildings[building_level->building]->levels.push_back(building_level);
 	return 0;
 }
 
