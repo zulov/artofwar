@@ -124,7 +124,7 @@ struct db_unit : db_entity {
 
 	bool possibleStates[STATE_SIZE];
 
-	db_unit(int id, char* name, int rotatable, char* icon, int actionState)
+	db_unit(short id, char* name, short rotatable, char* icon, short actionState)
 		: db_entity(id),
 		  name(name),
 		  rotatable(rotatable),
@@ -136,7 +136,7 @@ struct db_unit : db_entity {
 		clear_vector(costs);
 	}
 
-	std::optional<db_unit_level*> getLevel(int level) {
+	std::optional<db_unit_level*> getLevel(short level) {
 		if (levels.size() > level) {
 			return levels.at(level);
 		}
@@ -156,7 +156,7 @@ struct db_building : db_entity {
 
 	std::vector<db_nation*> nations;
 
-	db_building(int id, char* name, int sizeX, int sizeZ, char* icon)
+	db_building(short id, char* name, short sizeX, short sizeZ, char* icon)
 		: db_entity(id),
 		  name(name),
 		  size({sizeX, sizeZ}),
@@ -167,7 +167,7 @@ struct db_building : db_entity {
 		clear_vector(costs);
 	}
 
-	std::optional<db_building_level*> getLevel(int level) {
+	std::optional<db_building_level*> getLevel(short level) {
 		if (levels.size() > level) {
 			return levels.at(level);
 		}
@@ -264,7 +264,7 @@ struct db_nation : db_entity {
 	std::vector<db_unit*> units;
 	std::vector<db_building*> buildings;
 
-	db_nation(int id, char* name)
+	db_nation(short id, char* name)
 		: db_entity(id),
 		  name(name) {
 	}
@@ -279,7 +279,7 @@ struct db_resource : db_entity {
 	const short maxUsers;
 	const unsigned mini_map_color;
 
-	db_resource(short id, char* name, char* icon, int maxCapacity, char* nodeName, short sizeX,
+	db_resource(short id, char* name, char* icon, short maxCapacity, char* nodeName, short sizeX,
 	            short sizeZ, short maxUsers, unsigned mini_map_color)
 		: db_entity(id),
 		  name(name),
@@ -319,7 +319,7 @@ struct db_order : db_entity {
 	const Urho3D::String icon;
 	const Urho3D::String name;
 
-	db_order(int id, char* icon, char* name)
+	db_order(short id, char* icon, char* name)
 		: db_entity(id),
 		  icon(icon),
 		  name(name) {
@@ -348,7 +348,7 @@ struct db_player_colors : db_entity {
 	const unsigned building;
 	const Urho3D::String name;
 
-	db_player_colors(int id, unsigned unit, unsigned building, char* name)
+	db_player_colors(short id, unsigned unit, unsigned building, char* name)
 		: db_entity(id),
 		  unit(unit),
 		  building(building),
