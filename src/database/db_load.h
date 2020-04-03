@@ -152,6 +152,7 @@ int static loadBuildingLevels(void* data, int argc, char** argv, char** azColNam
 	auto building_level = new db_building_level(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), argv[3],
 	                                            argv[4], atoi(argv[5]));
 	setEntity(xyz->buildingsLevels, building_level);
+	xyz->buildings[building_level->building]->levels.push_back(building_level);
 	return 0;
 }
 
@@ -204,30 +205,62 @@ static int callback(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+
+static db_ai_property* createAiProp(char** argv, std::vector<db_cost*>& costs) {
+	auto prop = new db_ai_property(atof(argv[1]), atof(argv[2]), atof(argv[3]));
+
+	for (auto cost : costs) {
+		prop->costSum += cost->value;
+	}
+	return prop;
+}
+
+static void addAiProp(char** argv, db_ai_prop_level* level, std::vector<db_cost*>& costs) {
+	auto prop = new db_ai_property(atof(argv[1]), atof(argv[2]), atof(argv[3]));
+
+	for (auto cost : costs) {
+		prop->costSum += cost->value;
+	}
+
+	level->aiProps =  createAiProp(argv, costs);
+}
+
+static void addAiPropUp(char** argv, db_ai_prop_level* level, std::vector<db_cost*>& costs) {
+	level->aiPropsLevelUp = createAiProp(argv, costs);
+}
+
 static int loadAiPropBuildingLevel(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	auto levelId = atoi(argv[0]);
-	xyz->buildingsLevels[levelId]->aiProps = new db_ai_property(atof(argv[1]), atof(argv[2]), atof(argv[3]));
+
+	auto level = xyz->buildingsLevels[atoi(argv[0])];
+
+	addAiProp(argv, level, xyz->buildings[level->building]->costs);
 	return 0;
 }
 
 static int loadAiPropUnitLevel(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	auto levelId = atoi(argv[0]);
-	xyz->unitsLevels[levelId]->aiProps = new db_ai_property(atof(argv[1]), atof(argv[2]), atof(argv[3]));
+
+	auto level = xyz->unitsLevels[atoi(argv[0])];
+
+	addAiProp(argv, level, xyz->units[level->unit]->costs);
 	return 0;
 }
 
 static int loadAiPropBuildingLevelUp(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	auto levelId = atoi(argv[0]);
-	xyz->buildingsLevels[levelId]->aiPropsLevelUp = new db_ai_property(atof(argv[1]), atof(argv[2]), atof(argv[3]));
+
+	auto level = xyz->buildingsLevels[atoi(argv[0])];
+
+	addAiPropUp(argv, level, level->costs);
 	return 0;
 }
 
 static int loadAiPropUnitLevelUp(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	auto levelId = atoi(argv[0]);
-	xyz->unitsLevels[levelId]->aiPropsLevelUp = new db_ai_property(atof(argv[1]), atof(argv[2]), atof(argv[3]));
+
+	auto level = xyz->unitsLevels[atoi(argv[0])];
+
+	addAiPropUp(argv, level, level->costs);
 	return 0;
 }
