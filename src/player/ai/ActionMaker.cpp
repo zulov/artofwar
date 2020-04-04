@@ -1,5 +1,6 @@
 #include "ActionMaker.h"
 #include "ActionCenter.h"
+#include "AiUtils.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "player/Player.h"
 #include "database/DatabaseCache.h"
@@ -10,14 +11,14 @@
 
 ActionMaker::ActionMaker(Player* player): player(player) {}
 
-void ActionMaker::createBuilding(StatsOutputType order) {
+void ActionMaker::createBuilding(StatsOutputType order) const {
 	auto idToCreate = chooseBuilding(order);
 	Game::getActionCenter()->addBuilding(idToCreate, bestPosToBuild(order, player->getId()), player->getId(),
 	                                     player->getLevelForBuilding(idToCreate));
 }
 
 
-std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) {
+std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
 	//TODO perf tu jakich cahce
 	auto db = Game::getDatabase();
 	auto nation = db->getNation(player->getNation());
@@ -26,7 +27,7 @@ std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) {
 		// for (auto unitUpgrade : *db->getUnitUpgrades(unit->id)) {
 		// 	unitUpgrade->
 		// }
-		
+
 		auto level = unit->getLevel(player->getLevelForUnit(unit->id) + 1);
 		if (level.has_value()) {
 			unitsLevels.push_back(level.value());
@@ -61,22 +62,34 @@ std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) {
 	return {};
 }
 
+auto isAlive = [](Physical* u) {
+	return !u->isAlive();
+};
+
+
+void ActionMaker::getValues(float* values,const std::function<float(db_ai_prop_level*)>& func) const {
+	int i = 0;
+	auto buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+	for (auto building : buildings) {
+		auto optLevel = building->getLevel(player->buildingLevels[building->id]);
+		if (optLevel.has_value()) {
+			values[i++] = func(optLevel.value());
+		} else {
+			values[i++] = -1;
+		}
+	}
+}
+
 short ActionMaker::chooseBuilding(StatsOutputType order) const {
 	auto buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	
+	float* values = new float[buildings.size()];
+
 	if (order == StatsOutputType::CREATE_BUILDING_ATTACK) {
-		for (auto building : buildings) {
-		//	float attack = Game::getDatabase()->getBuildingLevel(building->id,buildingLevels[building->id]).value().attack();
-		}
+		getValues(values, attackLevelValue);
 	} else if (order == StatsOutputType::CREATE_BUILDING_DEFENCE) {
-		for (auto building : buildings) {
-			//float attack = Game::getDatabase()->getBuildingLevel(building->id,buildingLevels[building->id]).value().deffence();
-		}
+		getValues(values, defenceLevelUpValue);
 	} else if (order == StatsOutputType::CREATE_BUILDING_ECON) {
-		for (auto building : buildings) {
-		//	float attack = Game::getDatabase()->getBuildingLevel(building->id,buildingLevels[building->id]).value().econ();
-			// attack = Game::getDatabase()->getBuildingLevel(building->id,buildingLevels[building->id]).value().econ();
-		}
+		getValues(values, econLevelUpValue);
 	}
 	return buildings.at(0)->id;
 }
@@ -88,7 +101,7 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	case StatsOutputType::CREATE_UNIT_ATTACK:
 	case StatsOutputType::CREATE_UNIT_DEFENCE:
 	case StatsOutputType::CREATE_UNIT_ECON:
-		createUnit(order);	
+		createUnit(order);
 		break;
 	case StatsOutputType::CREATE_BUILDING_ATTACK:
 	case StatsOutputType::CREATE_BUILDING_DEFENCE:
@@ -131,5 +144,5 @@ Urho3D::Vector2 ActionMaker::bestPosToBuild(StatsOutputType order, const short i
 
 void ActionMaker::createUnit(StatsOutputType order) {
 	//	short id = chooseUnit(order);
-		//	auto pos = bestBuildingToDeployUnit(order, id);
+	//	auto pos = bestBuildingToDeployUnit(order, id);
 }

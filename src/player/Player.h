@@ -8,6 +8,7 @@
 enum class ActionType : char;
 
 class Player {
+	friend class ActionMaker;
 public:
 	Player(int nationId, char team, char id, int color, Urho3D::String name, bool active);
 	~Player();
@@ -56,6 +57,6 @@ private:
 	char id;
 	bool active;
 
-	char *unitLevels;
-	char *buildingLevels;
+	char* unitLevels;
+	char* buildingLevels;
 };

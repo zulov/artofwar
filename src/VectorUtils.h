@@ -4,35 +4,24 @@
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 
+inline auto isAlive = [](Physical* u) {
+	return !u->isAlive();
+};
+
 void static cleanDead(std::vector<Unit*>& vector) {
 	vector.erase(
-		std::remove_if(
-			vector.begin(), vector.end(),
-			[](Unit* u) {
-				return !u->isAlive();
-			}
-		),
+		std::remove_if(vector.begin(), vector.end(), isAlive),
 		vector.end());
 }
 
 void static cleanDead(std::vector<Building*>& vector) {
 	vector.erase(
-		std::remove_if(
-			vector.begin(), vector.end(),
-			[](Building* u) {
-				return !u->isAlive();
-			}
-		),
+		std::remove_if(vector.begin(), vector.end(), isAlive),
 		vector.end());
 }
 
 void static cleanDead(std::vector<ResourceEntity*>& vector) {
 	vector.erase(
-		std::remove_if(
-			vector.begin(), vector.end(),
-			[](ResourceEntity* u) {
-				return !u->isAlive();
-			}
-		),
+		std::remove_if(vector.begin(), vector.end(), isAlive),
 		vector.end());
 }
