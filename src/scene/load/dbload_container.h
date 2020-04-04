@@ -11,12 +11,12 @@ struct dbload_config {
 };
 
 struct dbload_physical {
-	int id_db;
+	short id_db;
 	float hp_coef;
-	int player;
-	int level;
+	short player;
+	short level;
 
-	dbload_physical(int idDb, float hpCoef, int player, int level)
+	dbload_physical(short idDb, float hpCoef, short player, short level)
 		: id_db(idDb),
 		  hp_coef(hpCoef),
 		  player(player),
@@ -81,10 +81,10 @@ struct dbload_resource_entities : dbload_static {
 
 struct dbload_player {
 	bool is_active;
-	int id;
-	int team;
-	int nation;
-	int color;
+	short id;
+	short team;
+	short nation;
+	short color;
 	Urho3D::String name;
 
 	dbload_player(int id, bool isActive, int team, int nation, char* name, int color)
@@ -98,11 +98,11 @@ struct dbload_player {
 };
 
 struct dbload_resource {
-	int player;
-	int resource;
+	short player;
+	short resource;
 	float amount;
 
-	dbload_resource(int player, int resource, float amount)
+	dbload_resource(short player, short resource, float amount)
 		: player(player),
 		  resource(resource),
 		  amount(amount) {

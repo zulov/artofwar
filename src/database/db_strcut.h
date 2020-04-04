@@ -18,8 +18,7 @@ struct db_entity {
 	const short id;
 
 	explicit db_entity(short id)
-		: id(id) {
-	}
+		: id(id) { }
 };
 
 struct db_ai_property {
@@ -34,8 +33,7 @@ struct db_ai_property {
 		: sum(econ + attack + defence), //TODO bug div zero
 		  econ(econ / sum),
 		  attack(attack / sum),
-		  defence(defence / sum) {
-	}
+		  defence(defence / sum) { }
 };
 
 struct db_ai_prop_level {
@@ -63,10 +61,8 @@ static void setEntity(std::vector<T*>& array, T* entity) {
 struct db_unit_level : db_entity, db_ai_prop_level {
 	const short level;
 	const short unit;
-	const Urho3D::String name;
 	const float minDist;
 	const float maxSep;
-	const Urho3D::String nodeName;
 	const float mass;
 	const float attack;
 	const short attackSpeed;
@@ -79,8 +75,11 @@ struct db_unit_level : db_entity, db_ai_prop_level {
 	const float upgradeSpeed;
 	const float maxForce;
 
+	const Urho3D::String name;
+	const Urho3D::String nodeName;
+
 	std::vector<db_cost*> costs;
-	
+
 	db_unit_level(short id, short level, short unit, char* name, float minDist, float maxSep, char* nodeName,
 	              float mass, float attack, short attackSpeed, float attackRange, float defense,
 	              short maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed, float maxForce)
@@ -101,8 +100,7 @@ struct db_unit_level : db_entity, db_ai_prop_level {
 		  minSpeed(minSpeed),
 		  collectSpeed(collectSpeed),
 		  upgradeSpeed(upgradeSpeed),
-		  maxForce(maxForce) {
-	}
+		  maxForce(maxForce) { }
 
 	~db_unit_level() {
 		clear_vector(costs);
@@ -129,8 +127,7 @@ struct db_unit : db_entity {
 		  name(name),
 		  rotatable(rotatable),
 		  icon(icon),
-		  actionState(actionState) {
-	}
+		  actionState(actionState) { }
 
 	~db_unit() {
 		clear_vector(costs);
@@ -160,8 +157,7 @@ struct db_building : db_entity {
 		: db_entity(id),
 		  name(name),
 		  size({sizeX, sizeZ}),
-		  icon(icon) {
-	}
+		  icon(icon) { }
 
 	~db_building() {
 		clear_vector(costs);
@@ -193,12 +189,10 @@ struct db_building_level : db_entity, db_ai_prop_level {
 		  building(building),
 		  name(name),
 		  nodeName(nodeName),
-		  queueMaxCapacity(queueMaxCapacity) {
-	}
+		  queueMaxCapacity(queueMaxCapacity) { }
 
 	~db_building_level() {
 		clear_vector(costs);
-
 	}
 };
 
@@ -207,8 +201,7 @@ struct db_hud_size : public db_entity {
 
 	db_hud_size(short id, char* name)
 		: db_entity(id),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct db_settings {
@@ -217,8 +210,7 @@ struct db_settings {
 
 	db_settings(short graph, short resolution)
 		: graph(graph),
-		  resolution(resolution) {
-	}
+		  resolution(resolution) { }
 };
 
 struct db_resolution : public db_entity {
@@ -228,8 +220,7 @@ struct db_resolution : public db_entity {
 	db_resolution(short id, short x, short y)
 		: db_entity(id),
 		  x(x),
-		  y(y) {
-	}
+		  y(y) { }
 };
 
 struct db_graph_settings : db_entity {
@@ -254,8 +245,7 @@ struct db_graph_settings : db_entity {
 		  texture_quality(texture_quality),
 		  fullscreen(fullscreen),
 		  v_sync(v_sync),
-		  shadow(shadow) {
-	}
+		  shadow(shadow) { }
 };
 
 struct db_nation : db_entity {
@@ -266,8 +256,7 @@ struct db_nation : db_entity {
 
 	db_nation(short id, char* name)
 		: db_entity(id),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct db_resource : db_entity {
@@ -288,8 +277,7 @@ struct db_resource : db_entity {
 		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
 		  size(Urho3D::IntVector2(sizeX, sizeZ)),
 		  maxUsers(maxUsers),
-		  mini_map_color(mini_map_color) {
-	}
+		  mini_map_color(mini_map_color) { }
 };
 
 struct db_hud_vars : db_entity {
@@ -301,8 +289,7 @@ struct db_hud_vars : db_entity {
 		: db_entity(id),
 		  hud_size(hudSize),
 		  value(value),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct db_cost {
@@ -311,8 +298,7 @@ struct db_cost {
 
 	db_cost(short resource, short value)
 		: resource(resource),
-		  value(value) {
-	}
+		  value(value) { }
 };
 
 struct db_order : db_entity {
@@ -322,8 +308,7 @@ struct db_order : db_entity {
 	db_order(short id, char* icon, char* name)
 		: db_entity(id),
 		  icon(icon),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct db_map : db_entity {
@@ -339,8 +324,7 @@ struct db_map : db_entity {
 		  texture(texture),
 		  scale_hor(scaleHor),
 		  scale_ver(scaleVer),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct db_player_colors : db_entity {
@@ -352,8 +336,7 @@ struct db_player_colors : db_entity {
 		: db_entity(id),
 		  unit(unit),
 		  building(building),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct db_container {
