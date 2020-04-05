@@ -446,7 +446,6 @@
     <ClInclude Include="src\simulation\env\GridCalculator.h" />
     <ClInclude Include="src\simulation\env\EnvConsts.h" />
     <ClInclude Include="src\player\ai\AiManager.h" />
-    <ClInclude Include="src\player\ai\InfluanceType.h" />
     <ClInclude Include="src\debug\DebugLineRepo.h" />
     <ClInclude Include="src\debug\DebugUnitType.h" />
     <ClInclude Include="src\debug\DebugManager.h" />
@@ -487,6 +486,7 @@
     <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
+    <ClInclude Include="src\player\ai\InfluenceType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

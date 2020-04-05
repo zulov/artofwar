@@ -7,6 +7,7 @@
 #include <Urho3D/Math/Vector2.h>
 #include <vector>
 #include "objects/unit/state/UnitState.h"
+#include "objects/ValueType.h"
 #include "utils.h"
 
 struct db_nation;
@@ -34,6 +35,14 @@ struct db_ai_property {
 		  econ(econ / sum),
 		  attack(attack / sum),
 		  defence(defence / sum) { }
+
+	float getValueOf(ValueType type) {
+		switch (type) {
+		case ValueType::ATTACK: return attack;
+		case ValueType::DEFENCE: return defence;
+		case ValueType::ECON: return econ;
+		}
+	}
 };
 
 struct db_ai_prop_level {

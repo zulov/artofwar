@@ -21,6 +21,8 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2, 40));
 		defenceLevelPerPlayer.emplace_back(
 			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2, 40));
+		econLevelPerPlayer.emplace_back(
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2, 40));
 	}
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUENCE);
@@ -32,6 +34,7 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(unitsInfluencePerPlayer);
 	clear_vector(defenceLevelPerPlayer);
 	clear_vector(attackLevelPerPlayer);
+	clear_vector(econLevelPerPlayer);
 	delete ci;
 }
 
@@ -71,44 +74,51 @@ void InfluenceManager::resetMapsI(const std::vector<InfluenceMapInt*>& maps) con
 void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
 	resetMapsF(attackLevelPerPlayer);
 	resetMapsF(defenceLevelPerPlayer);
+	resetMapsF(econLevelPerPlayer);
 
 	for (auto unit : (*units)) {
 		attackLevelPerPlayer[unit->getPlayer()]->update(unit, unit->getValueOf(ValueType::ATTACK));
 		defenceLevelPerPlayer[unit->getPlayer()]->update(unit, unit->getValueOf(ValueType::DEFENCE));
+		econLevelPerPlayer[unit->getPlayer()]->update(unit, unit->getValueOf(ValueType::ECON));
 	}
 
 	for (auto building : (*buildings)) {
 		attackLevelPerPlayer[building->getPlayer()]->update(building, building->getValueOf(ValueType::ATTACK));
 		defenceLevelPerPlayer[building->getPlayer()]->update(building, building->getValueOf(ValueType::DEFENCE));
+		econLevelPerPlayer[building->getPlayer()]->update(building, building->getValueOf(ValueType::ECON));
 	}
 }
 
-void InfluenceManager::draw(InfluanceType type, char index) {
+void InfluenceManager::draw(InfluenceType type, char index) {
 	DebugLineRepo::clear(DebugLineType::INFLUANCE, currentDebugBatch);
 	DebugLineRepo::beginGeometry(DebugLineType::INFLUANCE, currentDebugBatch);
 
 	switch (type) {
-	case InfluanceType::NONE:
+	case InfluenceType::NONE:
 		break;
-	case InfluanceType::UNITS_NUMBER_PER_PLAYER:
+	case InfluenceType::UNITS_NUMBER_PER_PLAYER:
 		index = index % unitsNumberPerPlayer.size();
 		unitsNumberPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
-	case InfluanceType::UNITS_INFLUENCE_PER_PLAYER:
+	case InfluenceType::UNITS_INFLUENCE_PER_PLAYER:
 		index = index % unitsInfluencePerPlayer.size();
 		unitsInfluencePerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
-	case InfluanceType::BUILDING_INFLUENCE_PER_PLAYER:
+	case InfluenceType::BUILDING_INFLUENCE_PER_PLAYER:
 		index = index % buildingsInfluencePerPlayer.size();
 		buildingsInfluencePerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
-	case InfluanceType::ATTACK_INFLUENCE_PER_PLAYER:
+	case InfluenceType::ATTACK_INFLUENCE_PER_PLAYER:
 		index = index % attackLevelPerPlayer.size();
 		attackLevelPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
-	case InfluanceType::DEFENCE_INFLUENCE_PER_PLAYER:
+	case InfluenceType::DEFENCE_INFLUENCE_PER_PLAYER:
 		index = index % defenceLevelPerPlayer.size();
 		defenceLevelPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		break;
+		case InfluenceType::ECON_INFLUENCE_PER_PLAYER:
+		index = index % econLevelPerPlayer.size();
+		econLevelPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;	
 		
 	default: ;
@@ -122,14 +132,14 @@ void InfluenceManager::draw(InfluanceType type, char index) {
 
 void InfluenceManager::switchDebug() {
 	switch (debugType) {
-	case InfluanceType::NONE:
-		debugType = InfluanceType::UNITS_NUMBER_PER_PLAYER;
+	case InfluenceType::NONE:
+		debugType = InfluenceType::UNITS_NUMBER_PER_PLAYER;
 		break;
-	case InfluanceType::UNITS_NUMBER_PER_PLAYER:
-		debugType = InfluanceType::UNITS_INFLUENCE_PER_PLAYER;
+	case InfluenceType::UNITS_NUMBER_PER_PLAYER:
+		debugType = InfluenceType::UNITS_INFLUENCE_PER_PLAYER;
 		break;
-	case InfluanceType::UNITS_INFLUENCE_PER_PLAYER:
-		debugType = InfluanceType::NONE;
+	case InfluenceType::UNITS_INFLUENCE_PER_PLAYER:
+		debugType = InfluenceType::NONE;
 		break;
 	default: ;
 	}

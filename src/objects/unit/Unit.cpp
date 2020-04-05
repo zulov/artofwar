@@ -25,7 +25,7 @@
 Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position),
                                                                         state(UnitState::STOP) {
 	dbUnit = Game::getDatabase()->getUnit(id);
-	dbLevel = dbUnit->getLevel(level).value();//TODO bug value
+	dbLevel = dbUnit->getLevel(level).value(); //TODO bug value
 	setPlayerAndTeam(player);
 	loadXml("Objects/units/" + dbLevel->nodeName);
 
@@ -138,7 +138,7 @@ void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, int indexToI
 			addOrder(new IndividualOrder(this, order, closest));
 		} else if (sqDistance < interestRange * interestRange) {
 			addOrder(new IndividualOrder(this, UnitAction::FOLLOW, nullptr, closest));
-			addOrder(new IndividualOrder(this, order, closest,true));
+			addOrder(new IndividualOrder(this, order, closest, true));
 		}
 	}
 }
@@ -466,12 +466,7 @@ void Unit::clean() {
 }
 
 float Unit::getValueOf(ValueType type) const {
-	switch (type) {
-	case ValueType::ATTACK:
-		return attackCoef * (hp / maxHp);
-	case ValueType::DEFENCE:
-		return defenseCoef * (hp / maxHp);
-	}
+	return dbLevel->aiProps->getValueOf(type) * (hp / maxHp);
 }
 
 Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {

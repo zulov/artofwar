@@ -115,12 +115,7 @@ int Building::getLevel() {
 }
 
 float Building::getValueOf(ValueType type) const {
-	switch (type) {
-	case ValueType::ATTACK:
-		return attackCoef * (hp / maxHp);
-	case ValueType::DEFENCE:
-		return defenseCoef * (hp / maxHp);
-	}
+	return dbLevel->aiProps->getValueOf(type)* (hp / maxHp);
 }
 
 void Building::createDeploy() {

@@ -258,26 +258,26 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 	switch (environmentDebugMode) {
 
 	case EnvironmentDebugMode::NONE:
-		influenceManager.draw(InfluanceType::NONE, index);
+		influenceManager.draw(InfluenceType::NONE, index);
 		break;
 	case EnvironmentDebugMode::MAIN_GRID:
 		mainGrid.drawDebug(GridDebugType(index % GRID_DEBUG_SIZE));
-		influenceManager.draw(InfluanceType::NONE, index);
+		influenceManager.draw(InfluenceType::NONE, index);
 		break;
 	case EnvironmentDebugMode::INF_UNITS_NUMBER_PER_PLAYER:
-		influenceManager.draw(InfluanceType::UNITS_NUMBER_PER_PLAYER, index);
+		influenceManager.draw(InfluenceType::UNITS_NUMBER_PER_PLAYER, index);
 		break;
 	case EnvironmentDebugMode::INF_UNITS_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluanceType::UNITS_INFLUENCE_PER_PLAYER, index);
+		influenceManager.draw(InfluenceType::UNITS_INFLUENCE_PER_PLAYER, index);
 		break;
 	case EnvironmentDebugMode::INF_BUILDING_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluanceType::BUILDING_INFLUENCE_PER_PLAYER, index);
+		influenceManager.draw(InfluenceType::BUILDING_INFLUENCE_PER_PLAYER, index);
 		break;
 	case EnvironmentDebugMode::INF_ATTACK_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluanceType::ATTACK_INFLUENCE_PER_PLAYER, index);
+		influenceManager.draw(InfluenceType::ATTACK_INFLUENCE_PER_PLAYER, index);
 		break;
 	case EnvironmentDebugMode::INF_DEFENCE_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluanceType::DEFENCE_INFLUENCE_PER_PLAYER, index);
+		influenceManager.draw(InfluenceType::DEFENCE_INFLUENCE_PER_PLAYER, index);
 		break;
 	default: ;
 	}

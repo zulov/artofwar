@@ -306,7 +306,7 @@
     <ClInclude Include="src\hud\window\score\ScorePanel.h" />
     <ClInclude Include="src\objects\ValueType.h" />
     <ClInclude Include="src\player\ai\AiManager.h" />
-    <ClInclude Include="src\player\ai\InfluanceType.h" />
+    <ClInclude Include="src\player\ai\InfluenceType.h" />
     <ClInclude Include="src\player\Possession.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
     <ClInclude Include="src\NamesUtils.h" />

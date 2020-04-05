@@ -2,7 +2,7 @@
 
 #include "map/InfluenceMapInt.h"
 #include "map/InfluenceMapFloat.h"
-#include "player/ai/InfluanceType.h"
+#include "player/ai/InfluenceType.h"
 #include <vector>
 #include <optional>
 
@@ -27,7 +27,7 @@ public:
 
 	void update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
 
-	void draw(InfluanceType type, char index);
+	void draw(InfluenceType type, char index);
 	void switchDebug();
 
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
@@ -42,8 +42,9 @@ private:
 
 	std::vector<InfluenceMapFloat*> attackLevelPerPlayer;
 	std::vector<InfluenceMapFloat*> defenceLevelPerPlayer;
+	std::vector<InfluenceMapFloat*> econLevelPerPlayer;
 
-	InfluanceType debugType = InfluanceType::UNITS_INFLUENCE_PER_PLAYER;
+	InfluenceType debugType = InfluenceType::UNITS_INFLUENCE_PER_PLAYER;
 	content_info* ci;
 	short currentDebugBatch = 0;
 };
