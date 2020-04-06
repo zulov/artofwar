@@ -57,7 +57,7 @@ void ActionCenter::executeLists() const {
 bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const {
 	auto command = creation->addUnits(number, id, position, player, level);
 	if (command) {
-		Game::getStats()->add(command);
+		//Game::getStats()->add(command);
 		creation->add(command);
 		return true;
 	}
@@ -67,7 +67,7 @@ bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char 
 bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, int level) const {
 	auto command = creation->addBuilding(id, position, player, level);
 	if (command) {
-		Game::getStats()->add(command);
+		Game::getStats()->add(command);//TODO to dodaæ przez z jak¹œ kolejkê
 		creation->add(command);
 		return true;
 	}
@@ -77,7 +77,7 @@ bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, i
 auto ActionCenter::addResource(int id, Urho3D::Vector2& position, int level) const -> bool {
 	auto command = creation->addResource(id, position, level);
 	if (command) {
-		Game::getStats()->add(command);
+		//Game::getStats()->add(command);
 		creation->add(command);
 		return true;
 	}

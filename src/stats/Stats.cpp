@@ -81,13 +81,13 @@ void Stats::add(UnitActionCommand* command) {
 	appendOutput(player, data, getOutput(command));
 }
 
-void Stats::add(CreationCommand* command) {
-	const auto player = command->player;
-
-	const std::string data = getInputData(player);
-
-	appendOutput(player, data, getOutput(command));
-}
+// void Stats::add(CreationCommand* command) {
+// 	const auto player = command->player;
+//
+// 	const std::string data = getInputData(player);
+//
+// 	appendOutput(player, data, getOutput(command));
+// }
 
 void Stats::appendOutput(char player, std::string data, std::string& output) {
 	data.append(";;").append(output);
@@ -162,16 +162,10 @@ std::string Stats::getOutput(CreationCommand* command) const {
 	//TODO command->type;, command->id; wybrac ktore wzmocnic
 	switch (command->objectType) {
 	case ObjectType::UNIT:
-	{
-		//output[cast(StatsOutputType::CREATE_UNIT_ATTACK)] = 1;
-		//output[cast(StatsOutputType::CREATE_UNIT_DEFENCE)] = 1;
-		//output[cast(StatsOutputType::CREATE_UNIT_ECON)] = 1;
-	}
+		//output[cast(StatsOutputType::CREATE_UNIT)] = 1;
 	break;
 	case ObjectType::BUILDING:
-		output[cast(StatsOutputType::CREATE_BUILDING_ATTACK)] = 1;
-		output[cast(StatsOutputType::CREATE_BUILDING_DEFENCE)] = 1;
-		output[cast(StatsOutputType::CREATE_BUILDING_ECON)] = 1;
+		output[cast(StatsOutputType::CREATE_BUILDING)] = 1;
 		break;
 	}
 
@@ -182,10 +176,17 @@ std::string Stats::getOutput(UpgradeCommand* command) const {
 	float output[STATS_OUTPUT_SIZE];
 	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
 	//TODO command->type;, command->id; wybrac ktore wzmocnic
+	switch (command->type) {
 
-	output[cast(StatsOutputType::UPGRADE_ATTACK)] = 1;
-	output[cast(StatsOutputType::UPGRADE_DEFENCE)] = 1;
-	output[cast(StatsOutputType::UPGRADE_ECON)] = 1;
+	case QueueActionType::UNIT_LEVEL:
+		output[cast(StatsOutputType::LEVEL_UP_UNIT)] = 1;
+		break;
+	case QueueActionType::BUILDING_LEVEL:
+		output[cast(StatsOutputType::LEVEL_UP_BUILDING)] = 1;
+		break;
+	default: ;
+	}
+	
 	return join(output, output + STATS_OUTPUT_SIZE);
 }
 
