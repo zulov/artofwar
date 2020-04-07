@@ -44,19 +44,14 @@ std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
 	}
 
 	switch (order) {
-
-	case StatsOutputType::UPGRADE_ATTACK:
+	case StatsOutputType::LEVEL_UP_BUILDING:
 		if (!unitsLevels.empty()) {
 			return unitsLevels.at(0)->unit;
 		}
 		break;
-	case StatsOutputType::UPGRADE_DEFENCE:
+	case StatsOutputType::LEVEL_UP_UNIT:
 		//if (!buildingLevels.empty()) {
 		break;
-	case StatsOutputType::UPGRADE_ECON:
-		//if (!buildingLevels.empty()) {
-		break;
-	default: ;
 	}
 
 	return {};
@@ -84,12 +79,8 @@ short ActionMaker::chooseBuilding(StatsOutputType order) const {
 	auto buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 	float* values = new float[buildings.size()];
 
-	if (order == StatsOutputType::CREATE_BUILDING_ATTACK) {
+	if (order == StatsOutputType::CREATE_BUILDING) {
 		getValues(values, attackLevelValue);
-	} else if (order == StatsOutputType::CREATE_BUILDING_DEFENCE) {
-		getValues(values, defenceLevelUpValue);
-	} else if (order == StatsOutputType::CREATE_BUILDING_ECON) {
-		getValues(values, econLevelUpValue);
 	}
 	return buildings.at(0)->id;
 }
