@@ -9,7 +9,8 @@
 #include "stats/StatsEnums.h"
 
 
-ActionMaker::ActionMaker(Player* player): player(player) {}
+ActionMaker::ActionMaker(Player* player): player(player) {
+}
 
 void ActionMaker::createBuilding(StatsOutputType order) const {
 	auto idToCreate = chooseBuilding(order);
@@ -57,12 +58,7 @@ std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
 	return {};
 }
 
-auto isAlive = [](Physical* u) {
-	return !u->isAlive();
-};
-
-
-void ActionMaker::getValues(float* values,const std::function<float(db_ai_prop_level*)>& func) const {
+void ActionMaker::getValues(float* values, const std::function<float(db_ai_prop_level*)>& func) const {
 	int i = 0;
 	auto buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 	for (auto building : buildings) {
@@ -88,21 +84,17 @@ short ActionMaker::chooseBuilding(StatsOutputType order) const {
 void ActionMaker::createOrder(StatsOutputType order) {
 	switch (order) {
 	case StatsOutputType::IDLE: break;
-
-	case StatsOutputType::CREATE_UNIT_ATTACK:
-	case StatsOutputType::CREATE_UNIT_DEFENCE:
-	case StatsOutputType::CREATE_UNIT_ECON:
+	case StatsOutputType::CREATE_UNIT:
 		createUnit(order);
 		break;
-	case StatsOutputType::CREATE_BUILDING_ATTACK:
-	case StatsOutputType::CREATE_BUILDING_DEFENCE:
-	case StatsOutputType::CREATE_BUILDING_ECON:
+	case StatsOutputType::CREATE_BUILDING:
 		createBuilding(order);
 		break;
-	case StatsOutputType::UPGRADE_ATTACK:
-	case StatsOutputType::UPGRADE_DEFENCE:
-	case StatsOutputType::UPGRADE_ECON:
-		upgrade(order);
+	case StatsOutputType::LEVEL_UP_UNIT:
+		levelUpUnit();
+		break;
+	case StatsOutputType::LEVEL_UP_BUILDING:
+		levelUpBuilding();
 		break;
 	case StatsOutputType::ORDER_GO: break;
 	case StatsOutputType::ORDER_STOP: break;
@@ -116,7 +108,11 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	}
 }
 
-void ActionMaker::upgrade(StatsOutputType order) {
+void ActionMaker::levelUpBuilding() {
+
+}
+
+void ActionMaker::levelUpUnit() {
 	// auto opt = chooseUnitUpgrade(order);
 	// if (opt.has_value()) {
 	// 	short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to

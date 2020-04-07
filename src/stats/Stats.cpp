@@ -81,13 +81,13 @@ void Stats::add(UnitActionCommand* command) {
 	appendOutput(player, data, getOutput(command));
 }
 
-// void Stats::add(CreationCommand* command) {
-// 	const auto player = command->player;
-//
-// 	const std::string data = getInputData(player);
-//
-// 	appendOutput(player, data, getOutput(command));
-// }
+void Stats::add(CreationCommand* command) {
+	const auto player = command->player;
+
+	const std::string data = getInputData(player);
+
+	appendOutput(player, data, getOutput(command));
+}
 
 void Stats::appendOutput(char player, std::string data, std::string& output) {
 	data.append(";;").append(output);
@@ -241,15 +241,13 @@ std::string Stats::getOutput(BuildingActionCommand* command) const {
 	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
 	switch (command->action) {
 	case BuildingActionType::UNIT_CREATE:
-		output[cast(StatsOutputType::CREATE_UNIT_ATTACK)] = 1;
-		output[cast(StatsOutputType::CREATE_UNIT_DEFENCE)] = 1;
-		output[cast(StatsOutputType::CREATE_UNIT_ECON)] = 1;
+		output[cast(StatsOutputType::CREATE_UNIT)] = 1;
 		break;
 	case BuildingActionType::UNIT_LEVEL:
+		output[cast(StatsOutputType::LEVEL_UP_UNIT)] = 1;
+		break;
 	case BuildingActionType::UNIT_UPGRADE:
-		output[cast(StatsOutputType::UPGRADE_ATTACK)] = 1;
-		output[cast(StatsOutputType::UPGRADE_DEFENCE)] = 1;
-		output[cast(StatsOutputType::UPGRADE_ECON)] = 1;
+		//TODO dodac kieyœ
 		break;
 	default: ;
 	}

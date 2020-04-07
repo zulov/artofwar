@@ -15,7 +15,7 @@ static unsigned fromHex(char** argv, int index) {
 int static loadUnits(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 
-	setEntity(xyz->units, new db_unit(atoi(argv[0]), argv[1], atoi(argv[2]), argv[4], atoi(argv[4])));
+	setEntity(xyz->units, new db_unit(atoi(argv[0]), argv[1], atoi(argv[2]), argv[3], atoi(argv[4])));
 	return 0;
 }
 

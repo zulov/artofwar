@@ -16,7 +16,8 @@ public:
 
 	void createOrder(StatsOutputType order);
 private:
-	void upgrade(StatsOutputType order);
+	void levelUpUnit();
+	void levelUpBuilding();
 	void createUnit(StatsOutputType order);
 	void createBuilding(StatsOutputType order) const;
 	

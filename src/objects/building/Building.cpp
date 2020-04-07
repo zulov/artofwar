@@ -68,11 +68,9 @@ void Building::action(BuildingActionType type, short id) const {
 
 	switch (type) {
 	case BuildingActionType::UNIT_CREATE:
-	{
 		if (resources.reduce(Game::getDatabase()->getUnit(id)->costs)) {
 			queue->add(1, QueueActionType::UNIT_CREATE, id, 30);
 		}
-	}
 	break;
 	case BuildingActionType::UNIT_LEVEL:
 	{
