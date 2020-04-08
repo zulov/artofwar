@@ -1,7 +1,6 @@
 #pragma once
 #include "Resources.h"
 #include "Possession.h"
-#include "ai/nn/Brain.h"
 #include "objects/queue/QueueManager.h"
 #include "ai/ActionMaker.h"
 
@@ -42,10 +41,6 @@ public:
 	QueueElement* updateQueue(float time);
 	QueueManager& getQueue();
 private:
-
-	void initAi();
-
-	Brain* brain;
 	Possession possession;
 	Resources resources;
 	QueueManager queue;

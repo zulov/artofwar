@@ -5,6 +5,7 @@
 
 
 #include "database/db_strcut.h"
+#include "nn/Brain.h"
 #include "objects/building/Building.h"
 
 class Player;
@@ -14,16 +15,20 @@ class ActionMaker {
 public:
 	explicit ActionMaker(Player* player);
 
-	void createOrder(StatsOutputType order);
+	void action();
 private:
+	float* decide(Brain& brain) const;
+	void createOrder(StatsOutputType order);
 	void levelUpUnit();
 	void levelUpBuilding();
-	void createUnit(StatsOutputType order);
-	void createBuilding(StatsOutputType order) const;
-	
+	void createUnit();
+	void createBuilding();
+
 	std::optional<short> chooseUpgrade(StatsOutputType order) const;
 	void getValues(float* values, const std::function<float(db_ai_prop_level*)>& func) const;
-	short chooseBuilding(StatsOutputType order) const;
-	Urho3D::Vector2 bestPosToBuild(StatsOutputType order, short id) const;
+	short chooseBuilding();
+	Urho3D::Vector2 bestPosToBuild(short id) const;
 	Player* player;
+	Brain mainBrain;
+	Brain buildingBrain;
 };

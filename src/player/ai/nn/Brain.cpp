@@ -1,10 +1,20 @@
 #include "Brain.h"
+
+#include <fstream>
 #include "utils.h"
 #include "StringUtils.h"
 #include "AFUtil.h"
 #include <iostream>
 
-Brain::Brain(std::vector<std::string>& lines) {
+Brain::Brain(std::string dataPath) {
+	std::ifstream infile(dataPath);
+	std::string data;
+	std::vector<std::string> lines;
+	while (std::getline(infile, data)) {
+		lines.push_back(data);
+	}
+	infile.close();
+
 	std::vector<float> w;
 	std::vector<float> b;
 	for (auto& line : lines) {

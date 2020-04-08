@@ -84,9 +84,10 @@ void Stats::add(UnitActionCommand* command) {
 void Stats::add(CreationCommand* command) {
 	const auto player = command->player;
 
-	const std::string data = getInputData(player);
+	const std::string input = getInputData(player);
 
-	appendOutput(player, data, getOutput(command));
+	appendOutput(player, input, getOutput(command));
+	appendBuilding(player, input, getBuildingOutput(command));
 }
 
 void Stats::appendOutput(char player, std::string data, std::string& output) {

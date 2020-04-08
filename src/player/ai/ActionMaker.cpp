@@ -6,15 +6,35 @@
 #include "database/DatabaseCache.h"
 #include "Game.h"
 #include "simulation/env/Environment.h"
+#include "stats/Stats.h"
 #include "stats/StatsEnums.h"
+#include <valarray>
 
 
-ActionMaker::ActionMaker(Player* player): player(player) {
+ActionMaker::ActionMaker(Player* player): mainBrain("Data/ai/w.csv"),
+                                          buildingBrain("Data/ai/w.csv"),
+                                          player(player) {
 }
 
-void ActionMaker::createBuilding(StatsOutputType order) const {
-	auto idToCreate = chooseBuilding(order);
-	Game::getActionCenter()->addBuilding(idToCreate, bestPosToBuild(order, player->getId()), player->getId(),
+float* ActionMaker::decide(Brain& brain) const {
+	const auto data = Game::getStats()->getInputFor(player->getId());
+
+	return brain.decide(data);
+}
+
+void ActionMaker::action() {
+	const auto result = decide(mainBrain);
+
+	const auto max = std::max_element(result, result + mainBrain.getOutputSize());
+
+	auto index = max - result;
+
+	createOrder(static_cast<StatsOutputType>(index));
+}
+
+void ActionMaker::createBuilding() {
+	auto idToCreate = chooseBuilding();
+	Game::getActionCenter()->addBuilding(idToCreate, bestPosToBuild(player->getId()), player->getId(),
 	                                     player->getLevelForBuilding(idToCreate));
 }
 
@@ -71,13 +91,27 @@ void ActionMaker::getValues(float* values, const std::function<float(db_ai_prop_
 	}
 }
 
-short ActionMaker::chooseBuilding(StatsOutputType order) const {
+short ActionMaker::chooseBuilding() {
 	auto buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	float* values = new float[buildings.size()];
-
-	if (order == StatsOutputType::CREATE_BUILDING) {
-		getValues(values, attackLevelValue);
+	//float* values = new float[buildings.size()];
+	auto result = decide(buildingBrain);
+	float econ = result[0];
+	float attack = result[1];
+	float defence = result[2];
+	std::valarray<float> center = {result[0], result[1], result[2]}; //TODO perf valarraay test
+	for (auto building : buildings) {
+		//TODO bug value
+		auto props = building->getLevel(player->getLevelForBuilding(building->id)).value()->aiProps;
+		std::valarray<float> aiAsArray = {props->econ, props->attack, props->defence}; //TODO get as val array odrazu
+		auto diff = aiAsArray - center;
+		auto sq = diff * diff;
+		auto dist = sq.sum();
+		std::cout << dist;
 	}
+	std::cout << std::endl;
+	// if (order == StatsOutputType::CREATE_BUILDING) {
+	// 	getValues(values, attackLevelValue);
+	// }
 	return buildings.at(0)->id;
 }
 
@@ -85,10 +119,10 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	switch (order) {
 	case StatsOutputType::IDLE: break;
 	case StatsOutputType::CREATE_UNIT:
-		createUnit(order);
+		createUnit();
 		break;
 	case StatsOutputType::CREATE_BUILDING:
-		createBuilding(order);
+		createBuilding();
 		break;
 	case StatsOutputType::LEVEL_UP_UNIT:
 		levelUpUnit();
@@ -124,12 +158,12 @@ void ActionMaker::levelUpUnit() {
 }
 
 
-Urho3D::Vector2 ActionMaker::bestPosToBuild(StatsOutputType order, const short id) const {
+Urho3D::Vector2 ActionMaker::bestPosToBuild(const short id) const {
 	return Game::getEnvironment()->bestPosToBuild(player->getId(), id);
 }
 
 
-void ActionMaker::createUnit(StatsOutputType order) {
+void ActionMaker::createUnit() {
 	//	short id = chooseUnit(order);
 	//	auto pos = bestBuildingToDeployUnit(order, id);
 }

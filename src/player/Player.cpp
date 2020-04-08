@@ -23,11 +23,9 @@ Player::Player(int nationId, char team, char id, int color, Urho3D::String name,
 
 	std::fill_n(unitLevels, Game::getDatabase()->getUnits().size(), 0);
 	std::fill_n(buildingLevels, Game::getDatabase()->getBuildings().size(), 0);
-	initAi();
 }
 
 Player::~Player() {
-	delete brain;
 	delete[] unitLevels;
 	delete[] buildingLevels;
 }
@@ -124,24 +122,5 @@ QueueManager& Player::getQueue() {
 
 
 void Player::ai() {
-	const auto data = Game::getStats()->getInputFor(getId());
-
-	const auto result = brain->decide(data);
-
-	auto max = std::max_element(result, result + brain->getOutputSize());
-
-	auto index = max - result;
-
-	actionMaker.createOrder(static_cast<StatsOutputType>(index));
-}
-
-void Player::initAi() {
-	std::ifstream infile("Data/ai/w.csv");
-	std::string line;
-	std::vector<std::string> lines;
-	while (std::getline(infile, line)) {
-		lines.push_back(line);
-	}
-
-	brain = new Brain(lines);
+	actionMaker.action();
 }
