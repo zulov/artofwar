@@ -157,17 +157,29 @@ void Stats::clear() {
 	clear_vector(statsPerPlayer);
 }
 
+std::string Stats::getBuildingOutput(CreationCommand* command) const {
+	float output[AI_PROPS_SIZE];
+	std::fill_n(output,AI_PROPS_SIZE, 0);
+	if (command->objectType == ObjectType::BUILDING) {
+		command->id;
+		auto level = Game::getPlayersMan()->getPlayer(command->player)->getLevelForBuilding(command->id);
+		
+		db_ai_prop_level* aiProps =Game::getDatabase()->getBuilding(command->id)->getLevel(level).value();//TODO BUG value
+		output[]
+	} else {
+		int a = 5;
+	}
+	
+	return join(output, output + AI_PROPS_SIZE);
+}
+
 std::string Stats::getOutput(CreationCommand* command) const {
 	float output[STATS_OUTPUT_SIZE];
 	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
-	//TODO command->type;, command->id; wybrac ktore wzmocnic
-	switch (command->objectType) {
-	case ObjectType::UNIT:
-		//output[cast(StatsOutputType::CREATE_UNIT)] = 1;
-	break;
-	case ObjectType::BUILDING:
+	if (command->objectType == ObjectType::BUILDING) {
 		output[cast(StatsOutputType::CREATE_BUILDING)] = 1;
-		break;
+	} else {
+		int a = 5;
 	}
 
 	return join(output, output + STATS_OUTPUT_SIZE);
@@ -187,7 +199,7 @@ std::string Stats::getOutput(UpgradeCommand* command) const {
 		break;
 	default: ;
 	}
-	
+
 	return join(output, output + STATS_OUTPUT_SIZE);
 }
 
@@ -226,7 +238,8 @@ std::string Stats::getOutput(UnitActionCommand* command) const {
 	return join(output, output + STATS_OUTPUT_SIZE);
 }
 
-std::string Stats::getOutput(ResourceActionCommand* command) const {//TODO
+std::string Stats::getOutput(ResourceActionCommand* command) const {
+	//TODO
 	float output[STATS_OUTPUT_SIZE];
 	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
 	switch (command->action) {

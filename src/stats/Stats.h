@@ -6,6 +6,7 @@
 
 #define INPUT_STATS_SIZE 24
 #define STATS_PER_PLAYER_SIZE 12
+#define AI_PROPS_SIZE 3
 #define SAVE_BATCH_SIZE 10
 
 struct ActionParameter;
@@ -37,6 +38,7 @@ private:
 	void update(short id);
 	void clear();
 	std::string getOutput(CreationCommand* command) const;
+	std::string getBuildingOutput(CreationCommand* command) const;
 	std::string getOutput(UpgradeCommand* command) const;
 
 	std::string getOutput(UnitActionCommand* command) const;
