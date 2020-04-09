@@ -60,25 +60,25 @@ std::string Stats::getInputData(char player) {
 void Stats::add(ResourceActionCommand* command) {
 	const auto player = command->player;
 
-	const std::string data = getInputData(player);
+	const std::string input = getInputData(player);
 
-	appendOutput(player, data, getOutput(command));
+	joinAndPush(ordersStats, player, input, getOutput(command));
 }
 
 void Stats::add(BuildingActionCommand* command) {
 	const auto player = command->player;
 
-	const std::string data = getInputData(player);
+	const std::string input = getInputData(player);
 
-	appendOutput(player, data, getOutput(command));
+	joinAndPush(ordersStats, player, input, getOutput(command));
 }
 
 void Stats::add(UnitActionCommand* command) {
 	const auto player = command->player;
 
-	const std::string data = getInputData(player);
+	const std::string input = getInputData(player);
 
-	appendOutput(player, data, getOutput(command));
+	joinAndPush(ordersStats, player, input, getOutput(command));
 }
 
 void Stats::add(CreationCommand* command) {
@@ -86,28 +86,33 @@ void Stats::add(CreationCommand* command) {
 
 	const std::string input = getInputData(player);
 
-	appendOutput(player, input, getOutput(command));
-	appendBuilding(player, input, getBuildingOutput(command));
+	joinAndPush(ordersStats, player, input, getOutput(command));
+	joinAndPush(ordersBuildingCreate, player, input, getBuildingOutput(command));
 }
 
-void Stats::appendOutput(char player, std::string data, std::string& output) {
-	data.append(";;").append(output);
-	dataToSavePerPlayer[player].push_back(data);
+void Stats::joinAndPush(std::vector<std::string>* array, char player, std::string input, std::string& output) {
+	input.append(";;").append(output);
+	array[player].push_back(input);
+}
+
+void Stats::saveBatch(int i, std::vector<std::string>* array, int size) {
+	if (array[i].size() >= size) {
+		std::ofstream outFile;
+		std::string name = "Data/ai/test" + std::to_string(i) + ".csv";
+
+		outFile.open(name, std::ios_base::app);
+		for (const auto& e : array[i]) {
+			outFile << e << "\n";
+		}
+		outFile.close();
+		array[i].clear();
+	}
 }
 
 void Stats::save() {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		if (dataToSavePerPlayer[i].size() >= SAVE_BATCH_SIZE) {
-			std::ofstream outFile;
-			std::string name = "Data/ai/test" + std::to_string(i) + ".csv";
-
-			outFile.open(name, std::ios_base::app);
-			for (const auto& e : dataToSavePerPlayer[i]) {
-				outFile << e << "\n";
-			}
-			outFile.close();
-			dataToSavePerPlayer[i].clear();
-		}
+		saveBatch(i, ordersStats, SAVE_BATCH_SIZE);
+		saveBatch(i, ordersBuildingCreate, SAVE_BATCH_SIZE_MINI);
 	}
 }
 
@@ -157,19 +162,25 @@ void Stats::clear() {
 	clear_vector(statsPerPlayer);
 }
 
+db_building_level* Stats::getBuildingLevel(char player, int id) const {
+	auto level = Game::getPlayersMan()->getPlayer(player)->getLevelForBuilding(id);
+	return Game::getDatabase()->getBuilding(id)->getLevel(level).value();
+}
+
 std::string Stats::getBuildingOutput(CreationCommand* command) const {
 	float output[AI_PROPS_SIZE];
 	std::fill_n(output,AI_PROPS_SIZE, 0);
 	if (command->objectType == ObjectType::BUILDING) {
-		command->id;
-		auto level = Game::getPlayersMan()->getPlayer(command->player)->getLevelForBuilding(command->id);
-		
-		db_ai_prop_level* aiProps =Game::getDatabase()->getBuilding(command->id)->getLevel(level).value();//TODO BUG value
-		output[]
+		const auto aiProps = getBuildingLevel(command->player, command->id)->aiProps;
+
+		output[0] = aiProps->econ;
+		output[1] = aiProps->attack;
+		output[2] = aiProps->defence;
+
 	} else {
 		int a = 5;
 	}
-	
+
 	return join(output, output + AI_PROPS_SIZE);
 }
 
