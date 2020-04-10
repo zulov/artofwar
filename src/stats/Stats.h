@@ -50,7 +50,7 @@ private:
 
 	void joinAndPush(std::vector<std::string>* array, char player, std::string input, std::string& output);
 	void saveBatch(int i, std::vector<std::string>* array, int size);
-
+	void setAiProps(float output[AI_PROPS_SIZE], db_ai_property* const aiProps) const;
 	float* input;
 	std::vector<float*> statsPerPlayer;
 	float weights[STATS_PER_PLAYER_SIZE];

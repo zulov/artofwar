@@ -167,15 +167,19 @@ db_building_level* Stats::getBuildingLevel(char player, int id) const {
 	return Game::getDatabase()->getBuilding(id)->getLevel(level).value();
 }
 
+void Stats::setAiProps(float output[AI_PROPS_SIZE], db_ai_property* const aiProps) const {
+	output[0] = aiProps->econ;
+	output[1] = aiProps->attack;
+	output[2] = aiProps->defence;
+}
+
 std::string Stats::getBuildingOutput(CreationCommand* command) const {
 	float output[AI_PROPS_SIZE];
 	std::fill_n(output,AI_PROPS_SIZE, 0);
 	if (command->objectType == ObjectType::BUILDING) {
 		const auto aiProps = getBuildingLevel(command->player, command->id)->aiProps;
 
-		output[0] = aiProps->econ;
-		output[1] = aiProps->attack;
-		output[2] = aiProps->defence;
+		setAiProps(output, aiProps);
 
 	} else {
 		int a = 5;
