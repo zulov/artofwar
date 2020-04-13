@@ -11,6 +11,7 @@ public:
 	void reset() override;
 	char getValue(const Urho3D::Vector2& pos) const;
 	float getValueAt(int index) const override;
+	void calcStats() override;
 private:
 	unsigned char* values;
 };

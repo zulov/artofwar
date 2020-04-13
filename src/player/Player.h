@@ -24,8 +24,8 @@ public:
 	char getId() const { return id; }
 	int getColor() const { return color; }
 	Urho3D::String& getName() { return name; }
-	char getLevelForUnit(int id) { return unitLevels[id]; }
-	char getLevelForBuilding(int id) { return buildingLevels[id]; }
+	char getLevelForUnit(int id) const { return unitLevels[id]; }
+	char getLevelForBuilding(int id) const { return buildingLevels[id]; }
 	void updatePossession();
 	void add(Unit* unit);
 	void add(Building* building);

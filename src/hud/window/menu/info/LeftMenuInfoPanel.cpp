@@ -3,6 +3,7 @@
 #include "control/SelectedInfo.h"
 #include "control/SelectedInfoType.h"
 #include "database/DatabaseCache.h"
+#include "database/db_gets.h"
 #include "database/db_strcut.h"
 #include "hud/HudData.h"
 #include "hud/UiUtils.h"

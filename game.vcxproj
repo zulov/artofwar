@@ -287,6 +287,7 @@
     <ClCompile Include="src\objects\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\database\db_gets.h" />
     <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />

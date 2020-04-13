@@ -12,17 +12,17 @@
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
-		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(DEFAULT_INF_GRID_SIZE,BUCKET_GRID_SIZE, 40));
+		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(DEFAULT_INF_GRID_SIZE, BUCKET_GRID_SIZE, 40));
 		buildingsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2, 5));
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 5));
 		unitsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2, 40));
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
 		attackLevelPerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2, 40));
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
 		defenceLevelPerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2, 40));
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
 		econLevelPerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE,BUCKET_GRID_SIZE, 0.5, 2, 40));
+			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
 	}
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUENCE);
@@ -46,6 +46,8 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 		unitsNumberPerPlayer[unit->getPlayer()]->update(unit);
 		unitsInfluencePerPlayer[unit->getPlayer()]->update(unit);
 	}
+	calcStas(unitsNumberPerPlayer);
+	calcStas(unitsInfluencePerPlayer);
 }
 
 void InfluenceManager::update(std::vector<Building*>* buildings) const {
@@ -53,11 +55,10 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 	for (auto building : (*buildings)) {
 		buildingsInfluencePerPlayer[building->getPlayer()]->update(building);
 	}
+	calcStas(buildingsInfluencePerPlayer);\
 }
 
-void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
-}
-
+void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {}
 
 void InfluenceManager::resetMapsF(const std::vector<InfluenceMapFloat*>& maps) const {
 	for (auto map : maps) {
@@ -68,6 +69,18 @@ void InfluenceManager::resetMapsF(const std::vector<InfluenceMapFloat*>& maps) c
 void InfluenceManager::resetMapsI(const std::vector<InfluenceMapInt*>& maps) const {
 	for (auto map : maps) {
 		map->reset();
+	}
+}
+
+void InfluenceManager::calcStas(const std::vector<InfluenceMapFloat*>& maps) const {
+	for (auto map : maps) {
+		map->calcStats();
+	}
+}
+
+void InfluenceManager::calcStas(const std::vector<InfluenceMapInt*>& maps) const {
+	for (auto map : maps) {
+		map->calcStats();
 	}
 }
 
@@ -87,6 +100,9 @@ void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>*
 		defenceLevelPerPlayer[building->getPlayer()]->update(building, building->getValueOf(ValueType::DEFENCE));
 		econLevelPerPlayer[building->getPlayer()]->update(building, building->getValueOf(ValueType::ECON));
 	}
+	calcStas(attackLevelPerPlayer);
+	calcStas(defenceLevelPerPlayer);
+	calcStas(econLevelPerPlayer);
 }
 
 void InfluenceManager::draw(InfluenceType type, char index) {
@@ -116,11 +132,11 @@ void InfluenceManager::draw(InfluenceType type, char index) {
 		index = index % defenceLevelPerPlayer.size();
 		defenceLevelPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
-		case InfluenceType::ECON_INFLUENCE_PER_PLAYER:
+	case InfluenceType::ECON_INFLUENCE_PER_PLAYER:
 		index = index % econLevelPerPlayer.size();
 		econLevelPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
-		break;	
-		
+		break;
+
 	default: ;
 	}
 	DebugLineRepo::commit(DebugLineType::INFLUANCE, currentDebugBatch);

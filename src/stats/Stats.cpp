@@ -1,4 +1,4 @@
-#include "Stats.h"
+Ôªø#include "Stats.h"
 #include "Game.h"
 #include "StatsEnums.h"
 #include "StringUtils.h"
@@ -15,6 +15,8 @@
 #include "commands/action/BuildingActionType.h"
 #include "objects/order/enums/UnitAction.h"
 #include <fstream>
+
+#include "database/db_gets.h"
 
 
 Stats::Stats() {
@@ -87,7 +89,8 @@ void Stats::add(CreationCommand* command) {
 	const std::string input = getInputData(player);
 
 	joinAndPush(ordersStats, player, input, getOutput(command));
-	joinAndPush(ordersBuildingCreate, player, input, getBuildingOutput(command));
+	joinAndPush(ordersBuildingCreateId, player, input, getCreateBuildingOutput(command));
+	joinAndPush(ordersBuildingCreatePos, player, input, getCreateBuildingPosOutput(command));
 }
 
 void Stats::joinAndPush(std::vector<std::string>* array, char player, std::string input, std::string& output) {
@@ -95,7 +98,7 @@ void Stats::joinAndPush(std::vector<std::string>* array, char player, std::strin
 	array[player].push_back(input);
 }
 
-void Stats::saveBatch(int i, std::vector<std::string>* array, int size) {
+void Stats::saveBatch(int i, std::vector<std::string>* array, int size) const {
 	if (array[i].size() >= size) {
 		std::ofstream outFile;
 		std::string name = "Data/ai/test" + std::to_string(i) + ".csv";
@@ -112,7 +115,7 @@ void Stats::saveBatch(int i, std::vector<std::string>* array, int size) {
 void Stats::save() {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		saveBatch(i, ordersStats, SAVE_BATCH_SIZE);
-		saveBatch(i, ordersBuildingCreate, SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, ordersBuildingCreateId, SAVE_BATCH_SIZE_MINI);
 	}
 }
 
@@ -130,7 +133,7 @@ void Stats::update(short id) {
 	data[cast(StatsInputType::STONE)] = player->getResources().getValues()[3];
 	data[cast(StatsInputType::ATTACK)] = player->getAttackScore();
 	data[cast(StatsInputType::DEFENCE)] = player->getDefenceScore();
-	data[cast(StatsInputType::BASE_TO_ENEMY)] = Game::getEnvironment()->getDistToEnemy(player); //TODO ale do ktÛrego
+	data[cast(StatsInputType::BASE_TO_ENEMY)] = Game::getEnvironment()->getDistToEnemy(player); //TODO ale do kt√≥rego
 	data[cast(StatsInputType::UNITS)] = player->getUnitsNumber();
 	data[cast(StatsInputType::BUILDINGS)] = player->getBuildingsNumber();
 	data[cast(StatsInputType::WORKERS)] = player->getWorkersNumber();
@@ -149,7 +152,7 @@ float* Stats::getInputFor(short id) {
 	} else {
 		idEnemy = 0;
 	}
-	update(id); //TODO ERFORMANCE robic rzadzej
+	update(id); //TODO PERFORMANCE robic rzadzej
 	update(idEnemy);
 	auto stats = statsPerPlayer.at(id);
 	auto enemy = statsPerPlayer.at(idEnemy); //TODO BUG wybrac wroga
@@ -162,24 +165,31 @@ void Stats::clear() {
 	clear_vector(statsPerPlayer);
 }
 
-db_building_level* Stats::getBuildingLevel(char player, int id) const {
-	auto level = Game::getPlayersMan()->getPlayer(player)->getLevelForBuilding(id);
-	return Game::getDatabase()->getBuilding(id)->getLevel(level).value();
+void Stats::setAiProps(float* output, db_ai_property* aiProps) const {
+	std::copy(aiProps->params, aiProps->params + AI_PROPS_SIZE, output);
 }
 
-void Stats::setAiProps(float output[AI_PROPS_SIZE], db_ai_property* const aiProps) const {
-	output[0] = aiProps->econ;
-	output[1] = aiProps->attack;
-	output[2] = aiProps->defence;
-}
-
-std::string Stats::getBuildingOutput(CreationCommand* command) const {
+std::string Stats::getCreateBuildingOutput(CreationCommand* command) const {
 	float output[AI_PROPS_SIZE];
 	std::fill_n(output,AI_PROPS_SIZE, 0);
 	if (command->objectType == ObjectType::BUILDING) {
-		const auto aiProps = getBuildingLevel(command->player, command->id)->aiProps;
 
-		setAiProps(output, aiProps);
+		setAiProps(output, getBuildingLevel(command->player, command->id)->aiProps);
+
+	} else {
+		int a = 5;
+	}
+
+	return join(output, output + AI_PROPS_SIZE);
+}
+
+std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
+	float output[AI_INFUANCE_OUTPUT_SIZE];
+	
+	std::fill_n(output,AI_PROPS_SIZE, 0);
+	if (command->objectType == ObjectType::BUILDING) {
+		
+		Game::getEnvironment()->writeinInfluanceDataAt(output, command->player, command->position);
 
 	} else {
 		int a = 5;
@@ -276,7 +286,7 @@ std::string Stats::getOutput(BuildingActionCommand* command) const {
 		output[cast(StatsOutputType::LEVEL_UP_UNIT)] = 1;
 		break;
 	case BuildingActionType::UNIT_UPGRADE:
-		//TODO dodac kieyú
+		//TODO dodac kiey≈õ
 		break;
 	default: ;
 	}

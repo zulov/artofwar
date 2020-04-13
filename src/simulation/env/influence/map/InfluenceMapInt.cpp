@@ -1,6 +1,7 @@
 #include "InfluenceMapInt.h"
 #include "objects/Physical.h"
 #include <algorithm>
+#include <numeric>
 
 InfluenceMapInt::InfluenceMapInt(unsigned short resolution, float size, float valueThresholdDebug): InfluenceMap(
 	resolution, size, valueThresholdDebug) {
@@ -28,4 +29,11 @@ char InfluenceMapInt::getValue(const Urho3D::Vector2& pos) const {
 
 float InfluenceMapInt::getValueAt(int index) const {
 	return values[index];
+}
+
+void InfluenceMapInt::calcStats() {
+	const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
+	min = *minIdx;
+	max = *maxIdx;
+	avg = std::accumulate(values, values + arraySize, 0) / (double)arraySize;
 }

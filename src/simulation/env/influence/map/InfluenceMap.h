@@ -13,6 +13,7 @@ public:
 	virtual void update(Physical* physical, float value=1) =0;
 	virtual void reset() =0;
 	virtual float getValueAt(int index) const =0;
+	virtual void calcStats();
 	void draw(short batch, short maxParts);
 	void drawCell(int index, short batch) const;
 
@@ -23,5 +24,9 @@ protected:
 	float fieldSize;
 	unsigned int arraySize;
 	const float valueThresholdDebug;
+
+	float avg;
+	float min;
+	float max;
 	GridCalculator calculator;
 };

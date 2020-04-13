@@ -45,21 +45,28 @@ float InfluenceMapFloat::getValueAt(int index) const {
 	return values[index];
 }
 
-std::optional<Urho3D::Vector2> InfluenceMapFloat::getBestIndexToBuild(short id) const {
-	const auto [min, max] = std::minmax_element(values, values + arraySize);
-	auto avg = std::accumulate(values, values + arraySize, 0) / (double)arraySize;
-
-	float* iter = values;
-	std::vector<int> indexes;
-	while ((iter = std::find_if(iter, values + arraySize,
-	                            [avg,max](float i) { return i > avg && i < *max; }))
-		!= values + arraySize) {
-		indexes.push_back(iter - values);
-		iter++;
-	}
-
-	if (indexes.empty()) {
-		return {};
-	}
-	return calculator.getCenter(indexes[rand() % indexes.size()]);
+void InfluenceMapFloat::calcStats() {
+	const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
+	min = *minIdx;
+	max = *maxIdx;
+	avg = std::accumulate(values, values + arraySize, 0) / arraySize;
 }
+
+// std::optional<Urho3D::Vector2> InfluenceMapFloat::getBestIndexToBuild(short id) const {
+// 	const auto [min, max] = std::minmax_element(values, values + arraySize);
+// 	auto avg = std::accumulate(values, values + arraySize, 0) / (double)arraySize;
+//
+// 	float* iter = values;
+// 	std::vector<int> indexes;
+// 	while ((iter = std::find_if(iter, values + arraySize,
+// 	                            [avg,max](float i) { return i > avg && i < *max; }))
+// 		!= values + arraySize) {
+// 		indexes.push_back(iter - values);
+// 		iter++;
+// 	}
+//
+// 	if (indexes.empty()) {
+// 		return {};
+// 	}
+// 	return calculator.getCenter(indexes[rand() % indexes.size()]);
+// }

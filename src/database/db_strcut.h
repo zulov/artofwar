@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #define SPLIT_SIGN '\n'
+#define AI_PROPS_SIZE 3
 
 #include <optional>
 #include <Urho3D/Container/Str.h>
@@ -9,6 +10,7 @@
 #include "objects/unit/state/UnitState.h"
 #include "objects/ValueType.h"
 #include "utils.h"
+
 
 struct db_nation;
 struct db_order;
@@ -26,15 +28,17 @@ struct db_ai_property {
 	const float sum;
 	float costSum = 0;
 
+	float params[AI_PROPS_SIZE];
+
 	const float econ;
 	const float attack;
 	const float defence;
 
 	db_ai_property(float econ, float attack, float defence)
 		: sum(econ + attack + defence), //TODO bug div zero
-		  econ(econ / sum),
-		  attack(attack / sum),
-		  defence(defence / sum) { }
+		  econ(econ),
+		  attack(attack),
+		  defence(defence), params{econ, attack, defence} { }
 
 	float getValueOf(ValueType type) {
 		switch (type) {

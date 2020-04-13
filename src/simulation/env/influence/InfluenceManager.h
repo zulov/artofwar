@@ -36,6 +36,9 @@ public:
 private:
 	void resetMapsF(const std::vector<InfluenceMapFloat*> &maps) const;
 	void resetMapsI(const std::vector<InfluenceMapInt*> &maps) const;
+	void calcStas(const std::vector<InfluenceMapFloat*> &maps) const;
+	void calcStas(const std::vector<InfluenceMapInt*> &maps) const;
+	
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
 	std::vector<InfluenceMapFloat*> buildingsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;
