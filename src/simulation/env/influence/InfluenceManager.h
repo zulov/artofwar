@@ -32,12 +32,12 @@ public:
 
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
 	                             int activePlayer);
-	std::optional<Urho3D::Vector2> getNewBuildingPos(char player, short id);
+
 private:
 	void resetMapsF(const std::vector<InfluenceMapFloat*> &maps) const;
 	void resetMapsI(const std::vector<InfluenceMapInt*> &maps) const;
-	void calcStas(const std::vector<InfluenceMapFloat*> &maps) const;
-	void calcStas(const std::vector<InfluenceMapInt*> &maps) const;
+	void calcStats(const std::vector<InfluenceMapFloat*> &maps) const;
+	void calcStats(const std::vector<InfluenceMapInt*> &maps) const;
 	
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
 	std::vector<InfluenceMapFloat*> buildingsInfluencePerPlayer;

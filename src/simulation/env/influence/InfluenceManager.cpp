@@ -46,8 +46,8 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 		unitsNumberPerPlayer[unit->getPlayer()]->update(unit);
 		unitsInfluencePerPlayer[unit->getPlayer()]->update(unit);
 	}
-	calcStas(unitsNumberPerPlayer);
-	calcStas(unitsInfluencePerPlayer);
+	calcStats(unitsNumberPerPlayer);
+	calcStats(unitsInfluencePerPlayer);
 }
 
 void InfluenceManager::update(std::vector<Building*>* buildings) const {
@@ -55,7 +55,7 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 	for (auto building : (*buildings)) {
 		buildingsInfluencePerPlayer[building->getPlayer()]->update(building);
 	}
-	calcStas(buildingsInfluencePerPlayer);\
+	calcStats(buildingsInfluencePerPlayer);\
 }
 
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {}
@@ -72,13 +72,13 @@ void InfluenceManager::resetMapsI(const std::vector<InfluenceMapInt*>& maps) con
 	}
 }
 
-void InfluenceManager::calcStas(const std::vector<InfluenceMapFloat*>& maps) const {
+void InfluenceManager::calcStats(const std::vector<InfluenceMapFloat*>& maps) const {
 	for (auto map : maps) {
 		map->calcStats();
 	}
 }
 
-void InfluenceManager::calcStas(const std::vector<InfluenceMapInt*>& maps) const {
+void InfluenceManager::calcStats(const std::vector<InfluenceMapInt*>& maps) const {
 	for (auto map : maps) {
 		map->calcStats();
 	}
@@ -100,9 +100,9 @@ void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>*
 		defenceLevelPerPlayer[building->getPlayer()]->update(building, building->getValueOf(ValueType::DEFENCE));
 		econLevelPerPlayer[building->getPlayer()]->update(building, building->getValueOf(ValueType::ECON));
 	}
-	calcStas(attackLevelPerPlayer);
-	calcStas(defenceLevelPerPlayer);
-	calcStas(econLevelPerPlayer);
+	calcStats(attackLevelPerPlayer);
+	calcStats(defenceLevelPerPlayer);
+	calcStats(econLevelPerPlayer);
 }
 
 void InfluenceManager::draw(InfluenceType type, char index) {

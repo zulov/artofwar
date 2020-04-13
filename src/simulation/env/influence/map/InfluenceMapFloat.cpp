@@ -49,7 +49,7 @@ void InfluenceMapFloat::calcStats() {
 	const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
 	min = *minIdx;
 	max = *maxIdx;
-	avg = std::accumulate(values, values + arraySize, 0) / arraySize;
+	avg = std::accumulate(values, values + arraySize, 0.0f) / arraySize;
 }
 
 // std::optional<Urho3D::Vector2> InfluenceMapFloat::getBestIndexToBuild(short id) const {

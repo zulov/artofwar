@@ -116,6 +116,7 @@ void Stats::save() {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		saveBatch(i, ordersStats, SAVE_BATCH_SIZE);
 		saveBatch(i, ordersBuildingCreateId, SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, ordersBuildingCreatePos, SAVE_BATCH_SIZE_MINI);
 	}
 }
 
