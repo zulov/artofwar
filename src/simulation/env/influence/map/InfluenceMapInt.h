@@ -10,6 +10,7 @@ public:
 	void update(Physical* physical, float value = 1) override;
 	void reset() override;
 	char getValueAt(const Urho3D::Vector2& pos) const;
+	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
 	float getValueAt(int index) const override;
 	void calcStats() override;
 private:

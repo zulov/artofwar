@@ -22,9 +22,17 @@ void InfluenceMapInt::reset() {
 	std::fill_n(values, arraySize, 0);
 }
 
-char InfluenceMapInt::getValue(const Urho3D::Vector2& pos) const {
+char InfluenceMapInt::getValueAt(const Urho3D::Vector2& pos) const {
 	auto index = calculator.indexFromPosition(pos);
-	return values[index];
+	return getValueAt(index);
+}
+
+float InfluenceMapInt::getValueAsPercent(const Urho3D::Vector2& pos) const {
+	const float diff = max - min;
+	if (diff != 0) {
+		(getValueAt(pos) - min) / diff;
+	}
+	return 0.5;
 }
 
 float InfluenceMapInt::getValueAt(int index) const {

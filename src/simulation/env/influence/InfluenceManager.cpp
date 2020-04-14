@@ -55,10 +55,11 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 	for (auto building : (*buildings)) {
 		buildingsInfluencePerPlayer[building->getPlayer()]->update(building);
 	}
-	calcStats(buildingsInfluencePerPlayer);\
+	calcStats(buildingsInfluencePerPlayer);
 }
 
-void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {}
+void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
+}
 
 void InfluenceManager::resetMapsF(const std::vector<InfluenceMapFloat*>& maps) const {
 	for (auto map : maps) {
@@ -171,7 +172,7 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 	case CellState::NONE:
 		if (checks[3] || checks[4]) {
 			for (int i = 0; i < unitsNumberPerPlayer.size(); ++i) {
-				char value = unitsNumberPerPlayer[i]->getValue(center);
+				char value = unitsNumberPerPlayer[i]->getValueAt(center);
 				if ((checks[3] && i == activePlayer || checks[4] && i != activePlayer) && value > 0) {
 					ci->unitsNumberPerPlayer[i] = value;
 					ci->hasUnit = true;
@@ -198,5 +199,9 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 }
 
 void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos) {
-	data[0]=econLevelPerPlayer[player]->getValueAt(pos);
+	data[0] = econLevelPerPlayer[player]->getValueAsPercent(pos);
+	data[1] = attackLevelPerPlayer[player]->getValueAsPercent(pos);
+	data[2] = defenceLevelPerPlayer[player]->getValueAsPercent(pos);
+	data[3] = buildingsInfluencePerPlayer[player]->getValueAsPercent(pos);
+	//data[4] = resourceInfluencePerResource[player]->getValueAsPercent(pos);//TODO pewnie trzeba to dodaæ 
 }

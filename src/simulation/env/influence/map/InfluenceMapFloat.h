@@ -12,6 +12,7 @@ public:
 	void reset() override;
 	float getValueAt(int index) const override;
 	float getValueAt(const Urho3D::Vector2& pos) const;
+	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
 	void calcStats() override;
 private:
 	bool validIndex(int i) const;

@@ -5,7 +5,7 @@
 #include "commands/action/UnitActionCommand.h"
 #include "objects/building/BuildingUtils.h"
 
-#define INPUT_STATS_SIZE 24
+#define BASIC_INPUT_SIZE 24
 #define STATS_PER_PLAYER_SIZE 12
 #define SAVE_BATCH_SIZE 10
 #define SAVE_BATCH_SIZE_MINI 4

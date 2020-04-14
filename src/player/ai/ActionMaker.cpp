@@ -12,7 +12,8 @@
 
 
 ActionMaker::ActionMaker(Player* player): mainBrain("Data/ai/w.csv"),
-                                          buildingBrain("Data/ai/w.csv"),
+                                          buildingBrainId("Data/ai/w.csv"),
+                                          buildingBrainPos("Data/ai/w.csv"),
                                           player(player) {
 }
 
@@ -95,10 +96,8 @@ void ActionMaker::getValues(float* values, const std::function<float(db_ai_prop_
 short ActionMaker::chooseBuilding() {
 	auto buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 	//float* values = new float[buildings.size()];
-	auto result = decide(buildingBrain);
-	float econ = result[0];
-	float attack = result[1];
-	float defence = result[2];
+	auto result = decide(buildingBrainId);
+
 	std::valarray<float> center = {result[0], result[1], result[2]}; //TODO perf valarraay test
 	for (auto building : buildings) {
 		//TODO bug value
@@ -113,8 +112,19 @@ short ActionMaker::chooseBuilding() {
 	// if (order == StatsOutputType::CREATE_BUILDING) {
 	// 	getValues(values, attackLevelValue);
 	// }
-	return buildings.at(0)->id;
+	return buildings.at(0)->id; //TODO bug wybrac 
 }
+
+Urho3D::Vector2 ActionMaker::posToBuild(short idToCreate) {
+	auto building = Game::getDatabase()->getBuilding(idToCreate);
+	const auto basicInput = Game::getStats()->getInputFor(player->getId());
+	float input[BASIC_INPUT_SIZE + AI_PROPS_SIZE];
+	std::fill_n(input,BASIC_INPUT_SIZE + AI_PROPS_SIZE, 0.f);
+	std::copy(basicInput, basicInput + BASIC_INPUT_SIZE, input);
+	std::copy(enemy, enemy + STATS_PER_PLAYER_SIZE, input + BASIC_INPUT_SIZE);
+	return buildingBrainPos.decide(basicInput);
+}
+
 
 void ActionMaker::createOrder(StatsOutputType order) {
 	switch (order) {

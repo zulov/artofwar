@@ -6,7 +6,6 @@
 
 #include "database/db_strcut.h"
 #include "nn/Brain.h"
-#include "objects/building/Building.h"
 
 class Player;
 enum class StatsOutputType : char;
@@ -22,6 +21,7 @@ private:
 	void levelUpUnit();
 	void levelUpBuilding();
 	void createUnit();
+	Urho3D::Vector2 posToBuild(short idToCreate);
 	void createBuilding();
 
 	std::optional<short> chooseUpgrade(StatsOutputType order) const;
@@ -30,5 +30,6 @@ private:
 
 	Player* player;
 	Brain mainBrain;
-	Brain buildingBrain;
+	Brain buildingBrainId;
+	Brain buildingBrainPos;
 };
