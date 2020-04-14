@@ -284,23 +284,20 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 
 }
 
-Urho3D::Vector2 Environment::bestPosToBuild(char player, short id) {
-	std::optional<Urho3D::Vector2> center = influenceManager.getNewBuildingPos(player, id);
-	if (center.has_value()) {
-		return mainGrid.getNewBuildingPos(center.value(), player, id);
-	}
-}
-
 float Environment::getDistToEnemy(Player* player) {
 	return 500.0; //TODO IMPLEMENT
 }
 
-const std::vector<short>& Environment::getCloseIndexs(int center) const{
+const std::vector<short>& Environment::getCloseIndexs(int center) const {
 	return mainGrid.getCloseIndexes(center);
 }
 
 const std::vector<char>& Environment::getCloseTabIndexes(int center) const {
 	return mainGrid.getCloseTabIndexes(center);
+}
+
+void Environment::writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos) {
+	influenceManager.writeInInfluenceDataAt(data, player, pos);
 }
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {

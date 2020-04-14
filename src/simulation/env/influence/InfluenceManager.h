@@ -32,6 +32,7 @@ public:
 
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
 	                             int activePlayer);
+	void writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos);
 
 private:
 	void resetMapsF(const std::vector<InfluenceMapFloat*> &maps) const;

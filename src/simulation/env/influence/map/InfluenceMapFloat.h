@@ -11,7 +11,7 @@ public:
 	void update(Physical* physical, float value=1) override;
 	void reset() override;
 	float getValueAt(int index) const override;
-
+	float getValueAt(const Urho3D::Vector2& pos) const;
 	void calcStats() override;
 private:
 	bool validIndex(int i) const;

@@ -83,11 +83,11 @@ public:
 	int closestEmpty(int posIndex);
 
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
-	Urho3D::Vector2 bestPosToBuild(char player, short id);
+
 	float getDistToEnemy(Player* player);
 	const std::vector<short>& getCloseIndexs(int center) const;
 	const std::vector<char>& getCloseTabIndexes(int center) const;
-	void writeinInfluanceDataAt(float *data, char player, const Urho3D::Vector2& vector2);
+	void writeInInfluenceDataAt(float *data, char player, const Urho3D::Vector2& pos);
 
 private:
 	MainGrid mainGrid;

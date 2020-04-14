@@ -18,6 +18,7 @@
 
 #include "database/db_gets.h"
 
+#define AI_INFUANCE_OUTPUT_SIZE 3
 
 Stats::Stats() {
 	weights[cast(StatsInputType::RESULT)] = 1000;
@@ -174,9 +175,7 @@ std::string Stats::getCreateBuildingOutput(CreationCommand* command) const {
 	float output[AI_PROPS_SIZE];
 	std::fill_n(output,AI_PROPS_SIZE, 0);
 	if (command->objectType == ObjectType::BUILDING) {
-
 		setAiProps(output, getBuildingLevel(command->player, command->id)->aiProps);
-
 	} else {
 		int a = 5;
 	}
@@ -190,7 +189,7 @@ std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
 	std::fill_n(output,AI_PROPS_SIZE, 0);
 	if (command->objectType == ObjectType::BUILDING) {
 		
-		Game::getEnvironment()->writeinInfluanceDataAt(output, command->player, command->position);
+		Game::getEnvironment()->writeInInfluenceDataAt(output, command->player, command->position);
 
 	} else {
 		int a = 5;
@@ -214,7 +213,7 @@ std::string Stats::getOutput(CreationCommand* command) const {
 std::string Stats::getOutput(UpgradeCommand* command) const {
 	float output[STATS_OUTPUT_SIZE];
 	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
-	//TODO command->type;, command->id; wybrac ktore wzmocnic
+
 	switch (command->type) {
 
 	case QueueActionType::UNIT_LEVEL:
@@ -232,7 +231,7 @@ std::string Stats::getOutput(UpgradeCommand* command) const {
 std::string Stats::getOutput(UnitActionCommand* command) const {
 	float output[STATS_OUTPUT_SIZE];
 	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
-	//TODO command->type;, command->id; wybrac ktore wzmocnic
+
 	switch (static_cast<UnitAction>(command->futureAim->getId())) {
 	case UnitAction::GO:
 		output[cast(StatsOutputType::ORDER_GO)] = 1;

@@ -34,7 +34,8 @@ void ActionMaker::action() {
 
 void ActionMaker::createBuilding() {
 	auto idToCreate = chooseBuilding();
-	Game::getActionCenter()->addBuilding(idToCreate, bestPosToBuild(player->getId()), player->getId(),
+	Urho3D::Vector2 pos = posToBuild(idToCreate);
+	Game::getActionCenter()->addBuilding(idToCreate, pos, player->getId(),
 	                                     player->getLevelForBuilding(idToCreate));
 }
 
@@ -155,11 +156,6 @@ void ActionMaker::levelUpUnit() {
 	// 	Game::getActionCenter()->add(
 	// 		new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL, unitId, player->getId()));
 	// }	
-}
-
-
-Urho3D::Vector2 ActionMaker::bestPosToBuild(const short id) const {
-	return Game::getEnvironment()->bestPosToBuild(player->getId(), id);
 }
 
 

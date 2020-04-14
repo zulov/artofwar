@@ -27,7 +27,7 @@ private:
 	std::optional<short> chooseUpgrade(StatsOutputType order) const;
 	void getValues(float* values, const std::function<float(db_ai_prop_level*)>& func) const;
 	short chooseBuilding();
-	Urho3D::Vector2 bestPosToBuild(short id) const;
+
 	Player* player;
 	Brain mainBrain;
 	Brain buildingBrain;
