@@ -9,6 +9,8 @@
 #include "stats/StatsEnums.h"
 #include <valarray>
 
+
+#include "AiInfluenceType.h"
 #include "database/db_gets.h"
 
 
@@ -96,7 +98,7 @@ void ActionMaker::getValues(float* values, const std::function<float(db_ai_prop_
 
 short ActionMaker::chooseBuilding() {
 	auto buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	//float* values = new float[buildings.size()];
+
 	auto result = decide(buildingBrainId);
 
 	std::valarray<float> center = {result[0], result[1], result[2]}; //TODO perf valarraay test
@@ -126,7 +128,8 @@ Urho3D::Vector2 ActionMaker::posToBuild(short idToCreate) {
 	std::copy(aiInput, aiInput + AI_PROPS_SIZE, input + BASIC_INPUT_SIZE);
 
 	auto result = buildingBrainPos.decide(basicInput);
-
+	result[static_cast<char>(AiInfluenceType::ECON)]
+	std::valarray<float> center = {result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8]};
 	return {};
 }
 
