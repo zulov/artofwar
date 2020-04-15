@@ -110,9 +110,7 @@ short ActionMaker::chooseBuilding() {
 		std::cout << dist;
 	}
 	std::cout << std::endl;
-	// if (order == StatsOutputType::CREATE_BUILDING) {
-	// 	getValues(values, attackLevelValue);
-	// }
+
 	return buildings.at(0)->id; //TODO bug wybrac 
 }
 

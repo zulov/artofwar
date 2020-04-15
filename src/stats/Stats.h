@@ -40,7 +40,6 @@ private:
 	void clear();
 
 	std::string getOutput(CreationCommand* command) const;
-	std::string getCreateBuildingOutput(CreationCommand* command) const;
 	std::string getCreateBuildingPosOutput(CreationCommand* command) const;
 
 	std::string getOutput(UpgradeCommand* command) const;
@@ -49,9 +48,9 @@ private:
 	std::string getOutput(ResourceActionCommand* command) const;
 	std::string getOutput(BuildingActionCommand* command) const;
 
-	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, std::string& output);
+	static void joinAndPush(std::vector<std::string>* array, char player, std::string input,const std::string& output);
 	void saveBatch(int i, std::vector<std::string>* array, int size) const;
-	void setAiProps(float* output, db_ai_property* aiProps) const;
+
 	float* input;
 	std::vector<float*> statsPerPlayer;
 	float weights[STATS_PER_PLAYER_SIZE];

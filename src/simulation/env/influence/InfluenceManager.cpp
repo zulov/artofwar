@@ -8,7 +8,7 @@
 #include "objects/building/Building.h"
 #include "debug/DebugLineRepo.h"
 #include "objects/ValueType.h"
-#include "player/ai/AIInfluanceType.h"
+#include "player/ai/AiInfluenceType.h"
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
@@ -211,9 +211,15 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 }
 
 void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos) {
-	data[static_cast<char>(AiInfluanceType::ECON)] = econLevelPerPlayer[player]->getValueAsPercent(pos);
-	data[static_cast<char>(AiInfluanceType::ATTACK)] = attackLevelPerPlayer[player]->getValueAsPercent(pos);
-	data[static_cast<char>(AiInfluanceType::DEFENCE)] = defenceLevelPerPlayer[player]->getValueAsPercent(pos);
-	data[static_cast<char>(AiInfluanceType::BUILDINGS)] = buildingsInfluencePerPlayer[player]->getValueAsPercent(pos);
-	//data[4] = resourceInfluencePerResource[player]->getValueAsPercent(pos);//TODO pewnie trzeba to dodaæ 
+	data[static_cast<char>(AiInfluenceType::ECON)] = econLevelPerPlayer[player]->getValueAsPercent(pos);
+	data[static_cast<char>(AiInfluenceType::ATTACK)] = attackLevelPerPlayer[player]->getValueAsPercent(pos);
+	data[static_cast<char>(AiInfluenceType::DEFENCE)] = defenceLevelPerPlayer[player]->getValueAsPercent(pos);
+	
+	data[static_cast<char>(AiInfluenceType::BUILDINGS)] = buildingsInfluencePerPlayer[player]->getValueAsPercent(pos);
+	data[static_cast<char>(AiInfluenceType::UNITS)] = unitsInfluencePerPlayer[player]->getValueAsPercent(pos);
+	
+	data[static_cast<char>(AiInfluenceType::RESOURCE_0)] = resourceInfluence[0]->getValueAsPercent(pos);
+	data[static_cast<char>(AiInfluenceType::RESOURCE_1)] = resourceInfluence[1]->getValueAsPercent(pos);
+	data[static_cast<char>(AiInfluenceType::RESOURCE_2)] = resourceInfluence[2]->getValueAsPercent(pos);
+	data[static_cast<char>(AiInfluenceType::RESOURCE_3)] = resourceInfluence[3]->getValueAsPercent(pos);
 }

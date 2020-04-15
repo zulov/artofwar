@@ -18,7 +18,7 @@
 
 #include "database/db_gets.h"
 
-#define AI_INFUANCE_OUTPUT_SIZE 4
+#define AI_INFUENCE_OUTPUT_SIZE 9
 
 Stats::Stats() {
 	weights[cast(StatsInputType::RESULT)] = 1000;
@@ -90,18 +90,26 @@ void Stats::add(UnitActionCommand* command) {
 }
 
 void Stats::add(CreationCommand* command) {
+	if (command->objectType != ObjectType::BUILDING) {
+		Game::getLog()->Write(0, "ERROR - WRONG command");
+	}
+
 	const auto player = command->player;
 
 	const std::string input = getInputData(player);
 
 	joinAndPush(ordersStats, player, input, getOutput(command));
-	joinAndPush(ordersBuildingCreateId, player, input, getCreateBuildingOutput(command));
-	joinAndPush(ordersBuildingCreatePos, player, input, getCreateBuildingPosOutput(command));//TODO bug input dodac z create tego wyzej
+	auto& createOutput = getBuildingLevel(command->player, command->id)->aiProps->getParamsNormAsString();
+	joinAndPush(ordersBuildingCreateId, player, input, createOutput);
+	const std::string inputWithAiProps = input + ";" + createOutput;
+	joinAndPush(ordersBuildingCreatePos, player, inputWithAiProps, getCreateBuildingPosOutput(command));
 }
 
-void Stats::joinAndPush(std::vector<std::string>* array, char player, std::string input, std::string& output) {
-	input.append(";;").append(output);
-	array[player].push_back(input);
+void Stats::joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output) {
+	if (!output.empty()) {
+		input.append(";;").append(output);
+		array[player].push_back(input);
+	}
 }
 
 void Stats::saveBatch(int i, std::vector<std::string>* array, int size) const {
@@ -172,43 +180,21 @@ void Stats::clear() {
 	clear_vector(statsPerPlayer);
 }
 
-void Stats::setAiProps(float* output, db_ai_property* aiProps) const {
-	std::copy(aiProps->paramsNorm, aiProps->paramsNorm + AI_PROPS_SIZE, output);
-}
-
-std::string Stats::getCreateBuildingOutput(CreationCommand* command) const {
-	float output[AI_PROPS_SIZE];
-	std::fill_n(output,AI_PROPS_SIZE, 0.f);
-	if (command->objectType == ObjectType::BUILDING) {
-		setAiProps(output, getBuildingLevel(command->player, command->id)->aiProps);
-	} else {
-		int a = 5;
-	}
-
-	return join(output, output + AI_PROPS_SIZE);
-}
-
 std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
-	float output[AI_INFUANCE_OUTPUT_SIZE];
-	
-	std::fill_n(output,AI_INFUANCE_OUTPUT_SIZE, 0.f);
-	if (command->objectType == ObjectType::BUILDING) {		//TODO BUG pozycja taka sama dlaczegkolwiek
-		Game::getEnvironment()->writeInInfluenceDataAt(output, command->player, command->position);
-	} else {
-		int a = 5;
-	}
+	float output[AI_INFUENCE_OUTPUT_SIZE];
 
-	return join(output, output + AI_INFUANCE_OUTPUT_SIZE);
+	std::fill_n(output,AI_INFUENCE_OUTPUT_SIZE, 0.f);
+
+	Game::getEnvironment()->writeInInfluenceDataAt(output, command->player, command->position);
+
+	return join(output, output + AI_INFUENCE_OUTPUT_SIZE);
 }
 
 std::string Stats::getOutput(CreationCommand* command) const {
 	float output[STATS_OUTPUT_SIZE];
 	std::fill_n(output,STATS_OUTPUT_SIZE, 0.f);
-	if (command->objectType == ObjectType::BUILDING) {
-		output[cast(StatsOutputType::CREATE_BUILDING)] = 1;
-	} else {
-		int a = 5;
-	}
+
+	output[cast(StatsOutputType::CREATE_BUILDING)] = 1;
 
 	return join(output, output + STATS_OUTPUT_SIZE);
 }

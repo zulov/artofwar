@@ -3,6 +3,7 @@
 #include <ios>
 #include <iosfwd>
 #include "db_strcut.h"
+#include "StringUtils.h"
 
 static unsigned fromHex(char** argv, int index) {
 	unsigned x;
@@ -205,6 +206,13 @@ static int callback(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
+static std::string aiPropsAsString(db_ai_property* aiProps) {
+	float output[AI_PROPS_SIZE];
+	std::fill_n(output,AI_PROPS_SIZE, 0.f);
+
+	std::copy(aiProps->paramsNorm, aiProps->paramsNorm + AI_PROPS_SIZE, output);
+	return join(output, output + AI_PROPS_SIZE);
+}
 
 static db_ai_property* createAiProp(char** argv, std::vector<db_cost*>& costs, float normDiv) {
 	auto prop = new db_ai_property(atof(argv[1]), atof(argv[2]), atof(argv[3]));
@@ -214,6 +222,8 @@ static db_ai_property* createAiProp(char** argv, std::vector<db_cost*>& costs, f
 		sum += cost->value;
 	}
 	prop->setCostSum(sum, normDiv);
+	prop->setParamsNormAString(aiPropsAsString(prop));
+	
 	return prop;
 }
 
