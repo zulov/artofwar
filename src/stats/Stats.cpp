@@ -173,7 +173,7 @@ void Stats::clear() {
 }
 
 void Stats::setAiProps(float* output, db_ai_property* aiProps) const {
-	std::copy(aiProps->params, aiProps->params + AI_PROPS_SIZE, output);
+	std::copy(aiProps->paramsNorm, aiProps->paramsNorm + AI_PROPS_SIZE, output);
 }
 
 std::string Stats::getCreateBuildingOutput(CreationCommand* command) const {

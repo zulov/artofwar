@@ -206,27 +206,23 @@ static int callback(void* data, int argc, char** argv, char** azColName) {
 }
 
 
-static db_ai_property* createAiProp(char** argv, std::vector<db_cost*>& costs) {
+static db_ai_property* createAiProp(char** argv, std::vector<db_cost*>& costs, float normDiv) {
 	auto prop = new db_ai_property(atof(argv[1]), atof(argv[2]), atof(argv[3]));
 
+	float sum = 0;
 	for (auto cost : costs) {
-		prop->costSum += cost->value;
+		sum += cost->value;
 	}
+	prop->setCostSum(sum, normDiv);
 	return prop;
 }
 
 static void addAiProp(char** argv, db_ai_prop_level* level, std::vector<db_cost*>& costs) {
-	auto prop = new db_ai_property(atof(argv[1]), atof(argv[2]), atof(argv[3]));
-
-	for (auto cost : costs) {
-		prop->costSum += cost->value;
-	}
-
-	level->aiProps =  createAiProp(argv, costs);
+	level->aiProps = createAiProp(argv, costs, 100);
 }
 
 static void addAiPropUp(char** argv, db_ai_prop_level* level, std::vector<db_cost*>& costs) {
-	level->aiPropsLevelUp = createAiProp(argv, costs);
+	level->aiPropsLevelUp = createAiProp(argv, costs, 1000);
 }
 
 static int loadAiPropBuildingLevel(void* data, int argc, char** argv, char** azColName) {

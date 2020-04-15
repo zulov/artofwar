@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #define SPLIT_SIGN '\n'
-#define AI_PROPS_SIZE 3
+#define AI_PROPS_SIZE 4
 
 #include <optional>
 #include <Urho3D/Container/Str.h>
@@ -25,10 +25,11 @@ struct db_entity {
 };
 
 struct db_ai_property {
-	const float sum;
+private:
 	float costSum = 0;
-
-	float params[AI_PROPS_SIZE];
+	const float sum;
+public:
+	float paramsNorm[AI_PROPS_SIZE];
 
 	const float econ;
 	const float attack;
@@ -38,7 +39,12 @@ struct db_ai_property {
 		: sum(econ + attack + defence), //TODO bug div zero
 		  econ(econ),
 		  attack(attack),
-		  defence(defence), params{econ, attack, defence} { }
+		  defence(defence), paramsNorm{econ, attack, defence} { }
+
+	void setCostSum(float costSum, float normDiv) {
+		this->costSum = costSum;
+		paramsNorm[3] = costSum / normDiv;
+	}
 
 	float getValueOf(ValueType type) {
 		switch (type) {
