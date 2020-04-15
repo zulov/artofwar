@@ -11,6 +11,7 @@ public:
 
 	void loadBasic(const std::string& name);
 	void loadData(const std::string& name);
+	void loadMaps(const std::string& name);
 
 	void execute(const char* sql, int (* load)(void*, int, char**, char**)) const;
 	bool openDatabase(const std::string& name);

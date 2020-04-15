@@ -290,6 +290,7 @@
     <ClInclude Include="src\database\db_gets.h" />
     <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />
+    <ClInclude Include="src\player\ai\AIInfluanceType.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\simulation\env\CloseIndexProvider.h" />
     <ClInclude Include="src\commands\action\BuildingActionType.h" />

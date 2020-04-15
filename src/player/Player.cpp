@@ -120,7 +120,6 @@ QueueManager& Player::getQueue() {
 	return queue;
 }
 
-
 void Player::ai() {
 	actionMaker.action();
 }

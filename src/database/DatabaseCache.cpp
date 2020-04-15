@@ -29,10 +29,11 @@ DatabaseCache::DatabaseCache(const char* path) {
 	dbContainer = new db_container();
 
 	pathStr = std::string(path);
-	pathStr.append("/Data/Database/");
+	pathStr.append("/Data/");
 
-	loadBasic("base.db");
-	loadData("data.db");
+	loadBasic("Database/base.db");
+	loadData("Database/data.db");
+	loadMaps("map/maps.db");
 }
 
 void DatabaseCache::loadBasic(const std::string& name) {
@@ -49,8 +50,6 @@ void DatabaseCache::loadBasic(const std::string& name) {
 
 void DatabaseCache::loadData(const std::string& name) {
 	if (openDatabase(name)) { return; }
-
-	execute("SELECT * from map order by id desc", loadMap);
 
 	execute("SELECT * from nation order by id desc", loadNation);
 	execute("SELECT * from unit order by id desc", loadUnits);
@@ -78,10 +77,18 @@ void DatabaseCache::loadData(const std::string& name) {
 
 	execute("SELECT * from building_level_ai_prop", loadAiPropBuildingLevel);
 	execute("SELECT * from unit_level_ai_prop", loadAiPropUnitLevel);
-	
+
 	execute("SELECT * from building_level_up_ai_prop", loadAiPropBuildingLevelUp);
 	execute("SELECT * from unit_level_up_ai_prop", loadAiPropUnitLevelUp);
 
+	sqlite3_close(database);
+}
+
+void DatabaseCache::loadMaps(const std::string& name) {
+	if (openDatabase(name)) { return; }
+
+	execute("SELECT * from map order by id desc", loadMap);
+	
 	sqlite3_close(database);
 }
 

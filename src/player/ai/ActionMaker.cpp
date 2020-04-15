@@ -1,6 +1,5 @@
 #include "ActionMaker.h"
 #include "ActionCenter.h"
-#include "AiUtils.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "player/Player.h"
 #include "database/DatabaseCache.h"
@@ -13,10 +12,11 @@
 #include "database/db_gets.h"
 
 
-ActionMaker::ActionMaker(Player* player): mainBrain("Data/ai/w.csv"),
+ActionMaker::ActionMaker(Player* player): player(player),
+                                          mainBrain("Data/ai/w.csv"),
                                           buildingBrainId("Data/ai/w.csv"),
-                                          buildingBrainPos("Data/ai/w.csv"),
-                                          player(player) {}
+                                          buildingBrainPos("Data/ai/w.csv") {
+}
 
 float* ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -117,7 +117,6 @@ short ActionMaker::chooseBuilding() {
 }
 
 Urho3D::Vector2 ActionMaker::posToBuild(short idToCreate) {
-
 	auto level = getBuildingLevel(player->getId(), idToCreate);
 	float input[BASIC_INPUT_SIZE + AI_PROPS_SIZE];
 	std::fill_n(input,BASIC_INPUT_SIZE + AI_PROPS_SIZE, 0.f);
@@ -130,7 +129,7 @@ Urho3D::Vector2 ActionMaker::posToBuild(short idToCreate) {
 
 	auto result = buildingBrainPos.decide(basicInput);
 
-
+	return {};
 }
 
 
@@ -161,7 +160,8 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	}
 }
 
-void ActionMaker::levelUpBuilding() {}
+void ActionMaker::levelUpBuilding() {
+}
 
 void ActionMaker::levelUpUnit() {
 	// auto opt = chooseUnitUpgrade(order);

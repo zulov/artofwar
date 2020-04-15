@@ -4,7 +4,6 @@
 #include "map/InfluenceMapFloat.h"
 #include "player/ai/InfluenceType.h"
 #include <vector>
-#include <optional>
 
 #define DEFAULT_INF_GRID_SIZE 128
 #define DEFAULT_INF_FLOAT_GRID_SIZE 128
@@ -26,6 +25,7 @@ public:
 	void update(std::vector<ResourceEntity*>* resources) const;
 
 	void update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
+	void drawMap(char index,const  std::vector<InfluenceMapFloat*>& vector) const;
 
 	void draw(InfluenceType type, char index);
 	void switchDebug();
@@ -43,10 +43,11 @@ private:
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
 	std::vector<InfluenceMapFloat*> buildingsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;
+	std::vector<InfluenceMapFloat*> resourceInfluence;
 
+	std::vector<InfluenceMapFloat*> econLevelPerPlayer;
 	std::vector<InfluenceMapFloat*> attackLevelPerPlayer;
 	std::vector<InfluenceMapFloat*> defenceLevelPerPlayer;
-	std::vector<InfluenceMapFloat*> econLevelPerPlayer;
 
 	InfluenceType debugType = InfluenceType::UNITS_INFLUENCE_PER_PLAYER;
 	content_info* ci;

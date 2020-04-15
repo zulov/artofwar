@@ -488,6 +488,7 @@
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\player\ai\InfluenceType.h" />
     <ClInclude Include="src\database\db_gets.h" />
+    <ClInclude Include="src\player\ai\AIInfluanceType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

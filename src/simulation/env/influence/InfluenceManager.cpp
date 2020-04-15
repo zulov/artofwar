@@ -8,6 +8,7 @@
 #include "objects/building/Building.h"
 #include "debug/DebugLineRepo.h"
 #include "objects/ValueType.h"
+#include "player/ai/AIInfluanceType.h"
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
@@ -24,6 +25,12 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 		econLevelPerPlayer.emplace_back(
 			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
 	}
+
+	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
+		resourceInfluence.
+			emplace_back(new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
+	}
+
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUENCE);
 }
@@ -106,6 +113,11 @@ void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>*
 	calcStats(econLevelPerPlayer);
 }
 
+void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const {
+	index = index % vector.size();
+	vector[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+}
+
 void InfluenceManager::draw(InfluenceType type, char index) {
 	DebugLineRepo::clear(DebugLineType::INFLUANCE, currentDebugBatch);
 	DebugLineRepo::beginGeometry(DebugLineType::INFLUANCE, currentDebugBatch);
@@ -118,28 +130,28 @@ void InfluenceManager::draw(InfluenceType type, char index) {
 		unitsNumberPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
 	case InfluenceType::UNITS_INFLUENCE_PER_PLAYER:
-		index = index % unitsInfluencePerPlayer.size();
-		unitsInfluencePerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		drawMap(index, unitsInfluencePerPlayer);
 		break;
 	case InfluenceType::BUILDING_INFLUENCE_PER_PLAYER:
-		index = index % buildingsInfluencePerPlayer.size();
-		buildingsInfluencePerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		drawMap(index, buildingsInfluencePerPlayer);
+		break;
+	case InfluenceType::RESOURCE_INFLUENCE:
+		drawMap(index, resourceInfluence);
 		break;
 	case InfluenceType::ATTACK_INFLUENCE_PER_PLAYER:
-		index = index % attackLevelPerPlayer.size();
-		attackLevelPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		drawMap(index, attackLevelPerPlayer);
 		break;
 	case InfluenceType::DEFENCE_INFLUENCE_PER_PLAYER:
-		index = index % defenceLevelPerPlayer.size();
-		defenceLevelPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		drawMap(index, defenceLevelPerPlayer);
 		break;
 	case InfluenceType::ECON_INFLUENCE_PER_PLAYER:
-		index = index % econLevelPerPlayer.size();
-		econLevelPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		drawMap(index, econLevelPerPlayer);
 		break;
+
 
 	default: ;
 	}
+
 	DebugLineRepo::commit(DebugLineType::INFLUANCE, currentDebugBatch);
 	currentDebugBatch++;
 	if (currentDebugBatch >= MAX_DEBUG_PARTS_INFLUENCE) {
@@ -199,9 +211,9 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 }
 
 void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos) {
-	data[0] = econLevelPerPlayer[player]->getValueAsPercent(pos);
-	data[1] = attackLevelPerPlayer[player]->getValueAsPercent(pos);
-	data[2] = defenceLevelPerPlayer[player]->getValueAsPercent(pos);
-	data[3] = buildingsInfluencePerPlayer[player]->getValueAsPercent(pos);
+	data[static_cast<char>(AiInfluanceType::ECON)] = econLevelPerPlayer[player]->getValueAsPercent(pos);
+	data[static_cast<char>(AiInfluanceType::ATTACK)] = attackLevelPerPlayer[player]->getValueAsPercent(pos);
+	data[static_cast<char>(AiInfluanceType::DEFENCE)] = defenceLevelPerPlayer[player]->getValueAsPercent(pos);
+	data[static_cast<char>(AiInfluanceType::BUILDINGS)] = buildingsInfluencePerPlayer[player]->getValueAsPercent(pos);
 	//data[4] = resourceInfluencePerResource[player]->getValueAsPercent(pos);//TODO pewnie trzeba to dodaæ 
 }
