@@ -65,8 +65,7 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 	calcStats(buildingsInfluencePerPlayer);
 }
 
-void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
-}
+void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {}
 
 void InfluenceManager::resetMapsF(const std::vector<InfluenceMapFloat*>& maps) const {
 	for (auto map : maps) {
@@ -214,12 +213,17 @@ void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Ur
 	data[static_cast<char>(AiInfluenceType::ECON)] = econLevelPerPlayer[player]->getValueAsPercent(pos);
 	data[static_cast<char>(AiInfluenceType::ATTACK)] = attackLevelPerPlayer[player]->getValueAsPercent(pos);
 	data[static_cast<char>(AiInfluenceType::DEFENCE)] = defenceLevelPerPlayer[player]->getValueAsPercent(pos);
-	
+
 	data[static_cast<char>(AiInfluenceType::BUILDINGS)] = buildingsInfluencePerPlayer[player]->getValueAsPercent(pos);
 	data[static_cast<char>(AiInfluenceType::UNITS)] = unitsInfluencePerPlayer[player]->getValueAsPercent(pos);
-	
+
 	data[static_cast<char>(AiInfluenceType::RESOURCE_0)] = resourceInfluence[0]->getValueAsPercent(pos);
 	data[static_cast<char>(AiInfluenceType::RESOURCE_1)] = resourceInfluence[1]->getValueAsPercent(pos);
 	data[static_cast<char>(AiInfluenceType::RESOURCE_2)] = resourceInfluence[2]->getValueAsPercent(pos);
 	data[static_cast<char>(AiInfluenceType::RESOURCE_3)] = resourceInfluence[3]->getValueAsPercent(pos);
+}
+
+std::vector<Urho3D::Vector2> InfluenceManager::getAreas(float* result, char player, float tolerance) {
+	float econPercent = result[static_cast<char>(AiInfluenceType::ECON)];
+	std::vector<int> econIndexes = econLevelPerPlayer[player]->getIndexesWithValueCloseTo(econPercent, tolerance);
 }

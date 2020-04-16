@@ -25,7 +25,7 @@ public:
 	void update(std::vector<ResourceEntity*>* resources) const;
 
 	void update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
-	void drawMap(char index,const  std::vector<InfluenceMapFloat*>& vector) const;
+	void drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const;
 
 	void draw(InfluenceType type, char index);
 	void switchDebug();
@@ -33,13 +33,14 @@ public:
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
 	                             int activePlayer);
 	void writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos);
+	std::vector<Urho3D::Vector2> getAreas(float* result, char player, float tolerance);
 
 private:
-	void resetMapsF(const std::vector<InfluenceMapFloat*> &maps) const;
-	void resetMapsI(const std::vector<InfluenceMapInt*> &maps) const;
-	void calcStats(const std::vector<InfluenceMapFloat*> &maps) const;
-	void calcStats(const std::vector<InfluenceMapInt*> &maps) const;
-	
+	void resetMapsF(const std::vector<InfluenceMapFloat*>& maps) const;
+	void resetMapsI(const std::vector<InfluenceMapInt*>& maps) const;
+	void calcStats(const std::vector<InfluenceMapFloat*>& maps) const;
+	void calcStats(const std::vector<InfluenceMapInt*>& maps) const;
+
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
 	std::vector<InfluenceMapFloat*> buildingsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;

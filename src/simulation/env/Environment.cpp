@@ -306,6 +306,11 @@ void Environment::writeInInfluenceDataAt(float* data, char player, const Urho3D:
 	influenceManager.writeInInfluenceDataAt(data, player, pos);
 }
 
+Urho3D::Vector2 Environment::getPosToCreate(short idToCreate, float* result) {
+	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result,0.1);
+}
+
+
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {
 	return mainGrid.isInLocalArea(getMainCell, pos);
 }

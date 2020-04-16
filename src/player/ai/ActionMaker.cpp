@@ -17,8 +17,7 @@
 ActionMaker::ActionMaker(Player* player): player(player),
                                           mainBrain("Data/ai/w.csv"),
                                           buildingBrainId("Data/ai/w.csv"),
-                                          buildingBrainPos("Data/ai/w.csv") {
-}
+                                          buildingBrainPos("Data/ai/w.csv") {}
 
 float* ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -128,9 +127,7 @@ Urho3D::Vector2 ActionMaker::posToBuild(short idToCreate) {
 	std::copy(aiInput, aiInput + AI_PROPS_SIZE, input + BASIC_INPUT_SIZE);
 
 	auto result = buildingBrainPos.decide(basicInput);
-	result[static_cast<char>(AiInfluenceType::ECON)]
-	std::valarray<float> center = {result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8]};
-	return {};
+	return Game::getEnvironment()->getPosToCreate(idToCreate, result);
 }
 
 
@@ -161,8 +158,7 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	}
 }
 
-void ActionMaker::levelUpBuilding() {
-}
+void ActionMaker::levelUpBuilding() {}
 
 void ActionMaker::levelUpUnit() {
 	// auto opt = chooseUnitUpgrade(order);

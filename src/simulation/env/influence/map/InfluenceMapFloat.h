@@ -1,6 +1,7 @@
 #pragma once
 #include "InfluenceMap.h"
 #include <optional>
+#include <vector>
 
 
 class InfluenceMapFloat : public InfluenceMap {
@@ -14,6 +15,7 @@ public:
 	float getValueAt(const Urho3D::Vector2& pos) const;
 	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
 	void calcStats() override;
+	std::vector<int> getIndexesWithValueCloseTo(float percent, float tolerance);
 private:
 	bool validIndex(int i) const;
 	float* values;
