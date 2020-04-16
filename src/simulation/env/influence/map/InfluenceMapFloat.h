@@ -15,7 +15,7 @@ public:
 	float getValueAt(const Urho3D::Vector2& pos) const;
 	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
 	void calcStats() override;
-	std::vector<int> getIndexesWithValueCloseTo(float percent, float tolerance);
+	std::vector<int> getIndexesWithByValue(float percent, float tolerance) const;
 private:
 	bool validIndex(int i) const;
 	float* values;

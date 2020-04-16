@@ -65,19 +65,19 @@ void InfluenceMapFloat::calcStats() {
 	avg = std::accumulate(values, values + arraySize, 0.0f) / arraySize;
 }
 
-std::vector<int> InfluenceMapFloat::getIndexesWithValueCloseTo(float percent, float tolerance) {
+std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float tolerance) const {
 	const float diff = max - min;
 	auto minV = diff * (percent - tolerance) + min;
 	auto maxV = diff * (percent + tolerance) + min;
 
 	float* iter = values;
 	std::vector<int> indexes;
-	while ((iter = std::find_if(iter, values + arraySize,
-	                            [avg,max](float i) { return i > avg && i < *max; }))
-		!= values + arraySize) {
+	auto pred = [minV,maxV](float i) { return i > minV && i < maxV; };
+	while ((iter = std::find_if(iter, values + arraySize, pred)) != values + arraySize) {
 		indexes.push_back(iter - values);
 		iter++;
 	}
+	return indexes;//TODO BUG mayby make sure that is sorted
 }
 
 // std::optional<Urho3D::Vector2> InfluenceMapFloat::getBestIndexToBuild(short id) const {

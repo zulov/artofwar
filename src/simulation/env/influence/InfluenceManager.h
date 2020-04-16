@@ -9,6 +9,7 @@
 #define DEFAULT_INF_FLOAT_GRID_SIZE 128
 #define MAX_DEBUG_PARTS_INFLUENCE 32
 
+enum class AiInfluenceType : char;
 enum class CellState : char;
 class Unit;
 class Building;
@@ -33,6 +34,9 @@ public:
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
 	                             int activePlayer);
 	void writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos);
+
+	std::vector<int> getIndexesWithByValue(InfluenceMapFloat* map, AiInfluenceType type, float* result,
+	                                       float tolerance);
 	std::vector<Urho3D::Vector2> getAreas(float* result, char player, float tolerance);
 
 private:

@@ -65,7 +65,8 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 	calcStats(buildingsInfluencePerPlayer);
 }
 
-void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {}
+void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
+}
 
 void InfluenceManager::resetMapsF(const std::vector<InfluenceMapFloat*>& maps) const {
 	for (auto map : maps) {
@@ -223,7 +224,31 @@ void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Ur
 	data[static_cast<char>(AiInfluenceType::RESOURCE_3)] = resourceInfluence[3]->getValueAsPercent(pos);
 }
 
+std::vector<int> InfluenceManager::getIndexesWithByValue(InfluenceMapFloat* map, AiInfluenceType type, float* result,
+                                                         float tolerance) {
+	return map->getIndexesWithByValue(result[static_cast<char>(type)], tolerance);
+}
+
 std::vector<Urho3D::Vector2> InfluenceManager::getAreas(float* result, char player, float tolerance) {
-	float econPercent = result[static_cast<char>(AiInfluenceType::ECON)];
-	std::vector<int> econIndexes = econLevelPerPlayer[player]->getIndexesWithValueCloseTo(econPercent, tolerance);
+	std::vector<int> indexes[9];//TODO trzeba zrobic z trego pêtle
+	std::vector<InfluenceMapFloat*> maps = {econLevelPerPlayer[player],attackLevelPerPlayer[player],defenceLevelPerPlayer[player],
+	buildingsInfluencePerPlayer[player],unitsInfluencePerPlayer[player],
+		resourceInfluence[0], resourceInfluence[1], resourceInfluence[2], resourceInfluence[3]};
+	std::vector<int> v_intersection;
+	indexes[0] = getIndexesWithByValue(econLevelPerPlayer[player], AiInfluenceType::ECON, result, tolerance);
+	indexes[1] = getIndexesWithByValue(attackLevelPerPlayer[player], AiInfluenceType::ATTACK, result, tolerance);
+	indexes[2] = getIndexesWithByValue(defenceLevelPerPlayer[player], AiInfluenceType::DEFENCE, result, tolerance);
+
+	indexes[3] = getIndexesWithByValue(buildingsInfluencePerPlayer[player], AiInfluenceType::BUILDINGS, result,
+	                                   tolerance);
+	indexes[4] = getIndexesWithByValue(unitsInfluencePerPlayer[player], AiInfluenceType::UNITS, result, tolerance);
+
+	indexes[5] = getIndexesWithByValue(resourceInfluence[0], AiInfluenceType::RESOURCE_0, result, tolerance);
+	indexes[6] = getIndexesWithByValue(resourceInfluence[1], AiInfluenceType::RESOURCE_1, result, tolerance);
+	indexes[7] = getIndexesWithByValue(resourceInfluence[2], AiInfluenceType::RESOURCE_2, result, tolerance);
+	indexes[8] = getIndexesWithByValue(resourceInfluence[3], AiInfluenceType::RESOURCE_3, result, tolerance);
+
+	for (auto &vector : indexes) {
+		
+	} 
 }
