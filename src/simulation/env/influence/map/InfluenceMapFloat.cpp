@@ -77,7 +77,7 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 		indexes.push_back(iter - values);
 		iter++;
 	}
-	return indexes;//TODO BUG mayby make sure that is sorted
+	return indexes;//TODO should stay sorted
 }
 
 // std::optional<Urho3D::Vector2> InfluenceMapFloat::getBestIndexToBuild(short id) const {

@@ -1,6 +1,5 @@
 #pragma once
 #include "InfluenceMap.h"
-#include <optional>
 #include <vector>
 
 

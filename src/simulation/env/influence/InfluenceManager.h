@@ -35,8 +35,6 @@ public:
 	                             int activePlayer);
 	void writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos);
 
-	std::vector<int> getIndexesWithByValue(InfluenceMapFloat* map, AiInfluenceType type, float* result,
-	                                       float tolerance);
 	std::vector<Urho3D::Vector2> getAreas(float* result, char player, float tolerance);
 
 private:
@@ -44,6 +42,8 @@ private:
 	void resetMapsI(const std::vector<InfluenceMapInt*>& maps) const;
 	void calcStats(const std::vector<InfluenceMapFloat*>& maps) const;
 	void calcStats(const std::vector<InfluenceMapInt*>& maps) const;
+
+	std::vector<std::vector<InfluenceMapFloat*>> mapsForAiPerPlayer;
 
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
 	std::vector<InfluenceMapFloat*> buildingsInfluencePerPlayer;

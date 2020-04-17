@@ -30,6 +30,14 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 		resourceInfluence.
 			emplace_back(new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
 	}
+	for (int player = 0; player < numberOfPlayers; ++player) {
+		mapsForAiPerPlayer.emplace_back(std::vector<InfluenceMapFloat*>{
+			econLevelPerPlayer[player], attackLevelPerPlayer[player], defenceLevelPerPlayer[player],
+			buildingsInfluencePerPlayer[player], unitsInfluencePerPlayer[player],
+			resourceInfluence[0], resourceInfluence[1], resourceInfluence[2], resourceInfluence[3]
+		});
+	}
+
 
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUENCE);
@@ -66,6 +74,8 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 }
 
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
+	resetMapsF(resourceInfluence);
+
 }
 
 void InfluenceManager::resetMapsF(const std::vector<InfluenceMapFloat*>& maps) const {
@@ -211,44 +221,27 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 }
 
 void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos) {
-	data[static_cast<char>(AiInfluenceType::ECON)] = econLevelPerPlayer[player]->getValueAsPercent(pos);
-	data[static_cast<char>(AiInfluenceType::ATTACK)] = attackLevelPerPlayer[player]->getValueAsPercent(pos);
-	data[static_cast<char>(AiInfluenceType::DEFENCE)] = defenceLevelPerPlayer[player]->getValueAsPercent(pos);
-
-	data[static_cast<char>(AiInfluenceType::BUILDINGS)] = buildingsInfluencePerPlayer[player]->getValueAsPercent(pos);
-	data[static_cast<char>(AiInfluenceType::UNITS)] = unitsInfluencePerPlayer[player]->getValueAsPercent(pos);
-
-	data[static_cast<char>(AiInfluenceType::RESOURCE_0)] = resourceInfluence[0]->getValueAsPercent(pos);
-	data[static_cast<char>(AiInfluenceType::RESOURCE_1)] = resourceInfluence[1]->getValueAsPercent(pos);
-	data[static_cast<char>(AiInfluenceType::RESOURCE_2)] = resourceInfluence[2]->getValueAsPercent(pos);
-	data[static_cast<char>(AiInfluenceType::RESOURCE_3)] = resourceInfluence[3]->getValueAsPercent(pos);
-}
-
-std::vector<int> InfluenceManager::getIndexesWithByValue(InfluenceMapFloat* map, AiInfluenceType type, float* result,
-                                                         float tolerance) {
-	return map->getIndexesWithByValue(result[static_cast<char>(type)], tolerance);
+	auto& maps = mapsForAiPerPlayer[player];
+	for (char i = 0; i < maps.size(); ++i) {
+		data[i] = maps[i]->getValueAsPercent(pos);
+	}
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::getAreas(float* result, char player, float tolerance) {
-	std::vector<int> indexes[9];//TODO trzeba zrobic z trego pêtle
-	std::vector<InfluenceMapFloat*> maps = {econLevelPerPlayer[player],attackLevelPerPlayer[player],defenceLevelPerPlayer[player],
-	buildingsInfluencePerPlayer[player],unitsInfluencePerPlayer[player],
-		resourceInfluence[0], resourceInfluence[1], resourceInfluence[2], resourceInfluence[3]};
-	std::vector<int> v_intersection;
-	indexes[0] = getIndexesWithByValue(econLevelPerPlayer[player], AiInfluenceType::ECON, result, tolerance);
-	indexes[1] = getIndexesWithByValue(attackLevelPerPlayer[player], AiInfluenceType::ATTACK, result, tolerance);
-	indexes[2] = getIndexesWithByValue(defenceLevelPerPlayer[player], AiInfluenceType::DEFENCE, result, tolerance);
+	auto& maps = mapsForAiPerPlayer[player];
 
-	indexes[3] = getIndexesWithByValue(buildingsInfluencePerPlayer[player], AiInfluenceType::BUILDINGS, result,
-	                                   tolerance);
-	indexes[4] = getIndexesWithByValue(unitsInfluencePerPlayer[player], AiInfluenceType::UNITS, result, tolerance);
-
-	indexes[5] = getIndexesWithByValue(resourceInfluence[0], AiInfluenceType::RESOURCE_0, result, tolerance);
-	indexes[6] = getIndexesWithByValue(resourceInfluence[1], AiInfluenceType::RESOURCE_1, result, tolerance);
-	indexes[7] = getIndexesWithByValue(resourceInfluence[2], AiInfluenceType::RESOURCE_2, result, tolerance);
-	indexes[8] = getIndexesWithByValue(resourceInfluence[3], AiInfluenceType::RESOURCE_3, result, tolerance);
-
-	for (auto &vector : indexes) {
-		
-	} 
+	std::vector<int> intersection = maps[0]->getIndexesWithByValue(result[0], tolerance);//TODO increas tolerance check performance
+	for (char i = 1; i < maps.size(); ++i) {
+		std::vector<int> indexes = maps[i]->getIndexesWithByValue(result[i], tolerance);
+		std::vector<int> temp;
+		std::set_intersection(intersection.begin(), intersection.end(),
+		                      indexes.begin(), indexes.end(),
+		                      std::back_inserter(temp));
+		intersection = temp; //TODO optimize
+	}
+	std::vector<Urho3D::Vector2> centers(intersection.size());
+	for (auto value : intersection) {
+		centers.emplace_back(maps[0]->getCenter(value));
+	}
+	return centers;
 }
