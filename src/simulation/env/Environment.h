@@ -87,9 +87,9 @@ public:
 	float getDistToEnemy(Player* player);
 	const std::vector<short>& getCloseIndexs(int center) const;
 	const std::vector<char>& getCloseTabIndexes(int center) const;
-	void writeInInfluenceDataAt(float *data, char player, const Urho3D::Vector2& pos);
+	void writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos);
 
-	Urho3D::Vector2 getPosToCreate(short idToCreate, float* result);
+	Urho3D::Vector2 getPosToCreate(short idToCreate, char player, float* result);
 
 private:
 	MainGrid mainGrid;

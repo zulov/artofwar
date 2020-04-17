@@ -227,18 +227,33 @@ void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Ur
 	}
 }
 
+std::vector<int> InfluenceManager::getIndexes(float* result, float tolerance, std::vector<InfluenceMapFloat*>& maps) const {
+	float steps[] = {0.0, 0.1, 0.2};
+	for (auto step : steps) {
+		tolerance += step;
+		std::vector<int> intersection = maps[0]->getIndexesWithByValue(result[0], tolerance);
+		for (char i = 1; i < maps.size(); ++i) {
+			std::vector<int> indexes = maps[i]->getIndexesWithByValue(result[i], tolerance);
+			std::vector<int> temp;
+			std::set_intersection(intersection.begin(), intersection.end(),
+			                      indexes.begin(), indexes.end(),
+			                      std::back_inserter(temp));
+			if (temp.empty()) {
+				break;
+			}
+			intersection = temp; //TODO optimize
+		}
+		if (!intersection.empty()) {
+			return intersection;
+		}
+	}
+	return {};
+}
+
 std::vector<Urho3D::Vector2> InfluenceManager::getAreas(float* result, char player, float tolerance) {
 	auto& maps = mapsForAiPerPlayer[player];
 
-	std::vector<int> intersection = maps[0]->getIndexesWithByValue(result[0], tolerance);//TODO increas tolerance check performance
-	for (char i = 1; i < maps.size(); ++i) {
-		std::vector<int> indexes = maps[i]->getIndexesWithByValue(result[i], tolerance);
-		std::vector<int> temp;
-		std::set_intersection(intersection.begin(), intersection.end(),
-		                      indexes.begin(), indexes.end(),
-		                      std::back_inserter(temp));
-		intersection = temp; //TODO optimize
-	}
+	std::vector<int> intersection = getIndexes(result, tolerance, maps);
 	std::vector<Urho3D::Vector2> centers(intersection.size());
 	for (auto value : intersection) {
 		centers.emplace_back(maps[0]->getCenter(value));

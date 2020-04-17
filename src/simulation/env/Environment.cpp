@@ -306,8 +306,8 @@ void Environment::writeInInfluenceDataAt(float* data, char player, const Urho3D:
 	influenceManager.writeInInfluenceDataAt(data, player, pos);
 }
 
-Urho3D::Vector2 Environment::getPosToCreate(short idToCreate, float* result) {
-	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result,0.1);
+Urho3D::Vector2 Environment::getPosToCreate(short idToCreate, char player, float* result) {
+	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player, 0.1);
 }
 
 

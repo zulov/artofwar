@@ -34,6 +34,7 @@ public:
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
 	                             int activePlayer);
 	void writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos);
+	std::vector<int> getIndexes(float* result, float tolerance, std::vector<InfluenceMapFloat*>& maps) const;
 
 	std::vector<Urho3D::Vector2> getAreas(float* result, char player, float tolerance);
 
