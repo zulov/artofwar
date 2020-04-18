@@ -18,7 +18,7 @@ public:
 	CreationCommand* addResource(int id, Urho3D::Vector2& position, int level);
 
 protected:
-	void setParemeters(AbstractCommand* command) override;
+	void setParameters(AbstractCommand* command) override;
 private:
 	SimulationObjectManager* simulationObjectManager;
 };

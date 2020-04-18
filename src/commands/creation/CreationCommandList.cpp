@@ -22,13 +22,12 @@ CreationCommand* CreationCommandList::addUnits(int number, int id, Urho3D::Vecto
 
 CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& position, char player, int level) {
 	Resources& resources = Game::getPlayersMan()->getPlayer(player)->getResources();
-	db_building* db_building = Game::getDatabase()->getBuilding(id);
+	db_building* building = Game::getDatabase()->getBuilding(id);
 
 	auto env = Game::getEnvironment();
 
-	if (env->validateStatic(db_building->size, position) && resources.reduce(db_building->costs)) {
-		auto bucketCords = env->getBucketCords(db_building->size, position);
-		auto pos = env->getValidPosition(db_building->size, position);
+	if (env->validateStatic(building->size, position) && resources.reduce(building->costs)) {
+		auto [bucketCords,pos] = env->getValidPosition(building->size, position);
 
 		return new CreationCommand(ObjectType::BUILDING, id, pos, player, bucketCords, level);
 	}
@@ -40,14 +39,13 @@ CreationCommand* CreationCommandList::addResource(int id, Urho3D::Vector2& posit
 	db_resource* db_resource = Game::getDatabase()->getResource(id);
 
 	if (env->validateStatic(db_resource->size, position)) {
-		auto bucketCords = env->getBucketCords(db_resource->size, position);
-		auto pos = env->getValidPosition(db_resource->size, position);
+		auto [bucketCords,pos] = env->getValidPosition(db_resource->size, position);
 
 		return new CreationCommand(ObjectType::RESOURCE, id, pos, -1, bucketCords, level);
 	}
 	return nullptr;
 }
 
-void CreationCommandList::setParemeters(AbstractCommand* command) {
+void CreationCommandList::setParameters(AbstractCommand* command) {
 	dynamic_cast<CreationCommand*>(command)->setSimulationObjectManager(simulationObjectManager);
 }

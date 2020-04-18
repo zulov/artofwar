@@ -83,7 +83,7 @@ std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
 	return {};
 }
 
-void ActionMaker::getValues(float* values, const std::function<float(db_ai_prop_level*)>& func) const {
+void ActionMaker::getValues(float* values, const std::function<float(db_level*)>& func) const {
 	int i = 0;
 	auto buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 	for (auto building : buildings) {

@@ -394,7 +394,8 @@ Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3& position) {
 	return nullptr;
 }
 
-Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
+std::pair<Urho3D::IntVector2, Urho3D::Vector2> MainGrid::getValidPosition(
+	const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
 	//TODO tu mozna to sporo zoptymalizowac ale pewnie nie ma potrzeby
 	const short posX = calculator.getIndex(pos.x_);
 	const short posZ = calculator.getIndex(pos.y_);
@@ -408,15 +409,11 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 	const auto center2 = complexData[index2].getCenter();
 	const auto newCenter = (center1 + center2) / 2;
 
-	return newCenter;
-}
-
-Urho3D::IntVector2 MainGrid::getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
-	return {calculator.getIndex(pos.x_), calculator.getIndex(pos.y_)};
+	return {{posX, posZ}, newCenter};
 }
 
 void MainGrid::updateNeighbors(const int current) const {
-	for (auto i: closeIndexProvider.getTabIndexes(current)) {
+	for (auto i : closeIndexProvider.getTabIndexes(current)) {
 		const int nI = current + closeIndexProvider.getIndexAt(i);
 		if (calculator.validIndex(nI)) {
 			if (complexData[nI].isUnit()) {

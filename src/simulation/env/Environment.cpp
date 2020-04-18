@@ -188,7 +188,7 @@ bool Environment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2
 
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
                                               const Urho3D::IntVector2& bucketCords) const {
-	return getValidPosition(size, mainGrid.getCenterAt(bucketCords));
+	return getValidPosition(size, mainGrid.getCenterAt(bucketCords)).second;
 }
 
 Urho3D::Vector2& Environment::getCenter(int index) const {
@@ -308,8 +308,11 @@ void Environment::writeInInfluenceDataAt(float* data, char player, const Urho3D:
 
 Urho3D::Vector2 Environment::getPosToCreate(short idToCreate, char player, float* result) {
 	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player, 0.1);
+	auto building = Game::getDatabase()->getBuilding(idToCreate);
+	for (auto &center : centers) {
+		mainGrid.getIndex(center);
+	} 
 }
-
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {
 	return mainGrid.isInLocalArea(getMainCell, pos);
@@ -319,12 +322,8 @@ int Environment::closestEmpty(int posIndex) {
 	return mainGrid.closestEmpty(posIndex);
 }
 
-Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
+std::pair<Urho3D::IntVector2, Urho3D::Vector2> Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
 	return mainGrid.getValidPosition(size, pos);
-}
-
-Urho3D::IntVector2 Environment::getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
-	return mainGrid.getBucketCords(size, pos);
 }
 
 std::vector<int>* Environment::findPath(int startIdx, Urho3D::Vector2& aim) const {

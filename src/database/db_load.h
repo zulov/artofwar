@@ -227,11 +227,11 @@ static db_ai_property* createAiProp(char** argv, std::vector<db_cost*>& costs, f
 	return prop;
 }
 
-static void addAiProp(char** argv, db_ai_prop_level* level, std::vector<db_cost*>& costs) {
+static void addAiProp(char** argv, db_level* level, std::vector<db_cost*>& costs) {
 	level->aiProps = createAiProp(argv, costs, 100);
 }
 
-static void addAiPropUp(char** argv, db_ai_prop_level* level, std::vector<db_cost*>& costs) {
+static void addAiPropUp(char** argv, db_level* level, std::vector<db_cost*>& costs) {
 	level->aiPropsLevelUp = createAiProp(argv, costs, 1000);
 }
 

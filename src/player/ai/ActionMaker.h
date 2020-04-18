@@ -5,7 +5,7 @@
 #include "nn/Brain.h"
 
 class Player;
-struct db_ai_prop_level;
+struct db_level;
 enum class StatsOutputType : char;
 
 class ActionMaker {
@@ -23,7 +23,7 @@ private:
 	void createBuilding();
 
 	std::optional<short> chooseUpgrade(StatsOutputType order) const;
-	void getValues(float* values, const std::function<float(db_ai_prop_level*)>& func) const;
+	void getValues(float* values, const std::function<float(db_level*)>& func) const;
 	short chooseBuilding();
 
 	Player* player;

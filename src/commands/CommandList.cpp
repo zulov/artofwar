@@ -22,7 +22,7 @@ void CommandList::execute() {
 	for (auto& command : commands) {
 		command->clean();
 		if (!command->expired()) {
-			setParemeters(command);
+			setParameters(command);
 			command->execute();
 		}
 		delete command;
@@ -30,6 +30,6 @@ void CommandList::execute() {
 	commands.clear();
 }
 
-void CommandList::setParemeters(AbstractCommand* command) {
+void CommandList::setParameters(AbstractCommand* command) {
 
 }

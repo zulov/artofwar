@@ -27,6 +27,14 @@ struct db_entity {
 	}
 };
 
+struct db_with_name {
+	const Urho3D::String name;
+
+	explicit db_with_name(const Urho3D::String& name)
+		: name(name) {
+	}
+};
+
 struct db_ai_property {
 private:
 	float costSum = 0;
@@ -66,11 +74,17 @@ public:
 	}
 };
 
-struct db_ai_prop_level {
+struct db_level {
+	const short level;
 	db_ai_property* aiProps = nullptr;
 	db_ai_property* aiPropsLevelUp = nullptr;
 
-	~db_ai_prop_level() {
+
+	explicit db_level(short level)
+		: level(level) {
+	}
+
+	~db_level() {
 		delete aiProps;
 		delete aiPropsLevelUp;
 	}
@@ -88,8 +102,7 @@ static void setEntity(std::vector<T*>& array, T* entity) {
 }
 
 
-struct db_unit_level : db_entity, db_ai_prop_level {
-	const short level;
+struct db_unit_level : db_entity, db_level, db_with_name {
 	const short unit;
 	const float minDist;
 	const float maxSep;
@@ -105,7 +118,6 @@ struct db_unit_level : db_entity, db_ai_prop_level {
 	const float upgradeSpeed;
 	const float maxForce;
 
-	const Urho3D::String name;
 	const Urho3D::String nodeName;
 
 	std::vector<db_cost*> costs;
@@ -113,10 +125,8 @@ struct db_unit_level : db_entity, db_ai_prop_level {
 	db_unit_level(short id, short level, short unit, char* name, float minDist, float maxSep, char* nodeName,
 	              float mass, float attack, short attackSpeed, float attackRange, float defense,
 	              short maxHp, float maxSpeed, float minSpeed, float collectSpeed, float upgradeSpeed, float maxForce)
-		: db_entity(id),
-		  level(level),
+		: db_entity(id), db_level(level), db_with_name(name),
 		  unit(unit),
-		  name(name),
 		  minDist(minDist),
 		  maxSep(maxSep),
 		  nodeName(nodeName),
@@ -138,9 +148,7 @@ struct db_unit_level : db_entity, db_ai_prop_level {
 	}
 };
 
-struct db_unit : db_entity {
-
-	const Urho3D::String name;
+struct db_unit : db_entity, db_with_name {
 	const bool rotatable;
 	const Urho3D::String icon;
 	const short actionState;
@@ -154,8 +162,7 @@ struct db_unit : db_entity {
 	bool possibleStates[STATE_SIZE];
 
 	db_unit(short id, char* name, short rotatable, char* icon, short actionState)
-		: db_entity(id),
-		  name(name),
+		: db_entity(id), db_with_name(name),
 		  rotatable(rotatable),
 		  icon(icon),
 		  actionState(actionState) {
@@ -174,9 +181,8 @@ struct db_unit : db_entity {
 
 };
 
-struct db_building : db_entity {
+struct db_building : db_entity, db_with_name {
 
-	const Urho3D::String name;
 	const Urho3D::IntVector2 size;
 	const Urho3D::String icon;
 
@@ -186,8 +192,7 @@ struct db_building : db_entity {
 	std::vector<db_nation*> nations;
 
 	db_building(short id, char* name, short sizeX, short sizeZ, char* icon)
-		: db_entity(id),
-		  name(name),
+		: db_entity(id), db_with_name(name),
 		  size({sizeX, sizeZ}),
 		  icon(icon) {
 	}
@@ -204,10 +209,8 @@ struct db_building : db_entity {
 	}
 };
 
-struct db_building_level : db_entity, db_ai_prop_level {
-	const short level;
+struct db_building_level : db_entity, db_level, db_with_name {
 	const short building;
-	const Urho3D::String name;
 	const Urho3D::String nodeName;
 	const short queueMaxCapacity;
 
@@ -217,10 +220,8 @@ struct db_building_level : db_entity, db_ai_prop_level {
 	//std::vector<std::vector<db_unit*>> unitsPerNation;
 
 	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity)
-		: db_entity(id),
-		  level(level),
+		: db_entity(id), db_level(level), db_with_name(name),
 		  building(building),
-		  name(name),
 		  nodeName(nodeName),
 		  queueMaxCapacity(queueMaxCapacity) {
 	}
@@ -230,12 +231,10 @@ struct db_building_level : db_entity, db_ai_prop_level {
 	}
 };
 
-struct db_hud_size : public db_entity {
-	const Urho3D::String name;
+struct db_hud_size : db_entity, db_with_name {
 
 	db_hud_size(short id, char* name)
-		: db_entity(id),
-		  name(name) {
+		: db_entity(id), db_with_name(name) {
 	}
 };
 
@@ -249,7 +248,7 @@ struct db_settings {
 	}
 };
 
-struct db_resolution : public db_entity {
+struct db_resolution : db_entity {
 	const short x;
 	const short y;
 
@@ -286,20 +285,16 @@ struct db_graph_settings : db_entity {
 	}
 };
 
-struct db_nation : db_entity {
-	const Urho3D::String name;
-
+struct db_nation : db_entity, db_with_name {
 	std::vector<db_unit*> units;
 	std::vector<db_building*> buildings;
 
 	db_nation(short id, char* name)
-		: db_entity(id),
-		  name(name) {
+		: db_entity(id), db_with_name(name) {
 	}
 };
 
-struct db_resource : db_entity {
-	const Urho3D::String name;
+struct db_resource : db_entity, db_with_name {
 	const Urho3D::String icon;
 	const short maxCapacity;
 	Urho3D::Vector<Urho3D::String> nodeName;
@@ -309,8 +304,7 @@ struct db_resource : db_entity {
 
 	db_resource(short id, char* name, char* icon, short maxCapacity, char* nodeName, short sizeX,
 	            short sizeZ, short maxUsers, unsigned mini_map_color)
-		: db_entity(id),
-		  name(name),
+		: db_entity(id), db_with_name(name),
 		  icon(icon),
 		  maxCapacity(maxCapacity),
 		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
@@ -320,16 +314,14 @@ struct db_resource : db_entity {
 	}
 };
 
-struct db_hud_vars : db_entity {
+struct db_hud_vars : db_entity, db_with_name {
 	const short hud_size;
 	float value;
-	const Urho3D::String name;
 
 	db_hud_vars(short id, short hudSize, char* name, float value)
-		: db_entity(id),
+		: db_entity(id), db_with_name(name),
 		  hud_size(hudSize),
-		  value(value),
-		  name(name) {
+		  value(value) {
 	}
 };
 
@@ -343,44 +335,38 @@ struct db_cost {
 	}
 };
 
-struct db_order : db_entity {
+struct db_order : db_entity, db_with_name {
 	const Urho3D::String icon;
-	const Urho3D::String name;
 
 	db_order(short id, char* icon, char* name)
-		: db_entity(id),
-		  icon(icon),
-		  name(name) {
+		: db_entity(id), db_with_name(name),
+		  icon(icon) {
 	}
 };
 
-struct db_map : db_entity {
+struct db_map : db_entity, db_with_name {
 	const Urho3D::String height_map;
 	const Urho3D::String texture;
 	const float scale_hor;
 	const float scale_ver;
-	const Urho3D::String name;
 
 	db_map(short id, char* heightMap, char* texture, float scaleHor, float scaleVer, char* name)
-		: db_entity(id),
+		: db_entity(id), db_with_name(name),
 		  height_map(heightMap),
 		  texture(texture),
 		  scale_hor(scaleHor),
-		  scale_ver(scaleVer),
-		  name(name) {
+		  scale_ver(scaleVer) {
 	}
 };
 
-struct db_player_colors : db_entity {
+struct db_player_colors : db_entity, db_with_name {
 	const unsigned unit;
 	const unsigned building;
-	const Urho3D::String name;
 
 	db_player_colors(short id, unsigned unit, unsigned building, char* name)
-		: db_entity(id),
+		: db_entity(id), db_with_name(name),
 		  unit(unit),
-		  building(building),
-		  name(name) {
+		  building(building) {
 	}
 };
 

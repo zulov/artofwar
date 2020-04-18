@@ -12,7 +12,7 @@ public:
 
 	void execute();
 protected: 
-	virtual void setParemeters(AbstractCommand* command);
+	virtual void setParameters(AbstractCommand* command);
 private:
 	std::vector<AbstractCommand*> commands;
 };

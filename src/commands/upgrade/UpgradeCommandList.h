@@ -11,7 +11,7 @@ public:
 	~UpgradeCommandList();
 
 protected:
-	void setParemeters(AbstractCommand* command) override;
+	void setParameters(AbstractCommand* command) override;
 private:
 	SimulationObjectManager* simulationObjectManager;
 };

@@ -32,8 +32,7 @@ public:
 	void addStatic(Static* object);
 	void removeStatic(Static* object) const;
 	Urho3D::Vector2* getDirectionFrom(Urho3D::Vector3& position);
-	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
-	Urho3D::IntVector2 getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
+	std::pair<Urho3D::IntVector2, Urho3D::Vector2> getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
 
 	void updateNeighbors(int current) const;
 	float cost(int current, int next) const;

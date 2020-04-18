@@ -49,8 +49,8 @@ public:
 	Urho3D::Vector3 getPosWithHeightAt(int index) const;
 	float getGroundHeightPercent(float y, float x, float div) const;
 	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const;
-	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
-	Urho3D::IntVector2 getBucketCords(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
+	std::pair<Urho3D::IntVector2, Urho3D::Vector2> getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
+
 	std::vector<int>* findPath(int startIdx, Urho3D::Vector2& aim) const;
 	std::vector<int>* findPath(Urho3D::Vector3& from, Urho3D::Vector2& aim) const;
 

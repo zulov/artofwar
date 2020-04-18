@@ -544,24 +544,24 @@ void Controls::buildControl() {
 			//TODO perf nie robic tego co klatkê
 			auto env = Game::getEnvironment();
 
-			const auto dbBuilding = Game::getDatabase()->getBuilding(idToCreate);
+			const auto building = Game::getDatabase()->getBuilding(idToCreate);
 
 			auto hitPos = Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
 
-			const auto validPos = env->getValidPosition(dbBuilding->size, hitPos);
+			auto [bucketCords,validPos] = env->getValidPosition(building->size, hitPos);
 
 			tempBuildingNode->SetPosition(env->getPosWithHeightAt(validPos.x_, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {
-				
-				auto dbLevel = dbBuilding->getLevel(0).value();
+
+				auto level = building->getLevel(0).value();
 				tempBuildingNode->LoadXML(Game::getCache()
-				                          ->GetResource<Urho3D::XMLFile>("Objects/buildings/" + dbLevel->nodeName)->
+				                          ->GetResource<Urho3D::XMLFile>("Objects/buildings/" + level->nodeName)->
 				                          GetRoot());
 				tempBuildingModel = tempBuildingNode->GetComponent<Urho3D::StaticModel>();
 				tempBuildingNode->SetEnabled(true);
 			}
 			Urho3D::String textureName;
-			if (env->validateStatic(dbBuilding->size, hitPos)) {
+			if (env->validateStatic(building->size, hitPos)) {
 				textureName = "Materials/green_overlay.xml";
 			} else {
 				textureName = "Materials/red_overlay.xml";
