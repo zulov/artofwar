@@ -112,16 +112,21 @@ void Stats::joinAndPush(std::vector<std::string>* array, char player, std::strin
 	}
 }
 
+void Stats::save(int i, std::vector<std::string>* array, std::string fileName) const {
+	std::ofstream outFile;
+
+	outFile.open(fileName, std::ios_base::app);
+	for (const auto& e : array[i]) {
+		outFile << e << "\n";
+	}
+	outFile.close();
+}
+
 void Stats::saveBatch(int i, std::vector<std::string>* array, std::string name, int size) const {
 	if (array[i].size() >= size) {
-		std::ofstream outFile;
-		std::string name = "Data/ai/test" + std::to_string(i) + ".csv";
+		save(i, array, "result/ai/" + name + "_" + std::to_string(i) + ".csv");
+		save(i, array, "result/ai/" + name + "_combine.csv");
 
-		outFile.open(name, std::ios_base::app);
-		for (const auto& e : array[i]) {
-			outFile << e << "\n";
-		}
-		outFile.close();
 		array[i].clear();
 	}
 }

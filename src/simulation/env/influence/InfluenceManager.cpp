@@ -253,7 +253,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreas(float* result, char play
 	auto& maps = mapsForAiPerPlayer[player];
 
 	std::vector<int> intersection = getIndexes(result, tolerance, maps);
-	std::vector<Urho3D::Vector2> centers(intersection.size());
+	std::vector<Urho3D::Vector2> centers;
 	for (auto value : intersection) {
 		centers.emplace_back(maps[0]->getCenter(value));
 	}

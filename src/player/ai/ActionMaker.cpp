@@ -9,15 +9,13 @@
 #include "stats/StatsEnums.h"
 #include <valarray>
 
-
-#include "AiInfluenceType.h"
 #include "database/db_gets.h"
 
 
 ActionMaker::ActionMaker(Player* player): player(player),
-                                          mainBrain("Data/ai/w.csv"),
-                                          buildingBrainId("Data/ai/w.csv"),
-                                          buildingBrainPos("Data/ai/w.csv") {
+                                          mainBrain("Data/ai/main_w.csv"),
+                                          buildingBrainId("Data/ai/buildId_w.csv"),
+                                          buildingBrainPos("Data/ai/buildPos_w.csv") {
 }
 
 float* ActionMaker::decide(Brain& brain) const {
@@ -106,7 +104,7 @@ void ActionMaker::getValues(float* values, const std::function<float(db_level*)>
 }
 
 db_building* ActionMaker::chooseBuilding() {
-	auto buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 
 	auto result = decide(buildingBrainId);
 
