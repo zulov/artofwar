@@ -121,9 +121,7 @@ db_building* ActionMaker::chooseBuilding() {
 			closest = dist;
 			closestId = building->id;
 		}
-		std::cout << dist;
 	}
-	std::cout << buildings[closestId]->name.CString() << std::endl;
 
 	return buildings[closestId];
 }

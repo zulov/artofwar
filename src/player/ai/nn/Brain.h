@@ -14,7 +14,6 @@ private:
 	void setValues(Layer* layer, Eigen::MatrixXf& mult) const;
 	Layer* input;
 	Layer* output;
-	std::vector<Layer*> hidden;
 	std::vector<Layer*> allLayers;
 
 };
