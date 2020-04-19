@@ -306,12 +306,25 @@ void Environment::writeInInfluenceDataAt(float* data, char player, const Urho3D:
 	influenceManager.writeInInfluenceDataAt(data, player, pos);
 }
 
-Urho3D::Vector2 Environment::getPosToCreate(short idToCreate, char player, float* result) {
+std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player, float* result) {
 	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player, 0.1);
-	auto building = Game::getDatabase()->getBuilding(idToCreate);
-	for (auto &center : centers) {
-		mainGrid.getIndex(center);
-	} 
+	float infSize = influenceManager.getFieldSize();
+	float mainSize = mainGrid.getFieldSize();
+	float ratio = infSize / mainSize; //TODO use 
+	for (auto& center : centers) {
+		//TODO bug to jest 3x3 a ma byc 4x4 i jeszcze przesuniete jest
+		if (validateStatic(building->size, center)) {
+			return center;
+		}
+		auto centerIndex = mainGrid.getIndex(center);
+		for (auto index : mainGrid.getCloseIndexes(centerIndex)) {
+			if (validateStatic(building->size, center)) {
+				return center;
+			}
+		}
+
+	}
+	return {};
 }
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {
@@ -322,7 +335,8 @@ int Environment::closestEmpty(int posIndex) {
 	return mainGrid.closestEmpty(posIndex);
 }
 
-std::pair<Urho3D::IntVector2, Urho3D::Vector2> Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
+std::pair<Urho3D::IntVector2, Urho3D::Vector2> Environment::getValidPosition(
+	const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
 	return mainGrid.getValidPosition(size, pos);
 }
 

@@ -89,7 +89,7 @@ public:
 	const std::vector<char>& getCloseTabIndexes(int center) const;
 	void writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos);
 
-	Urho3D::Vector2 getPosToCreate(short idToCreate, char player, float* result);
+	std::optional<Urho3D::Vector2> getPosToCreate(db_building* building, char player, float* result);
 
 private:
 	MainGrid mainGrid;

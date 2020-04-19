@@ -9,6 +9,7 @@ public:
 	explicit Resources(float valueForAll);
 	~Resources();
 	bool reduce(const std::vector<db_cost*>& costs);
+	bool hasEnough(const std::vector<db_cost*>& costs) const;
 	void add(int id, float value);
 	bool hasChanged() const;
 	short getSize() const;

@@ -38,6 +38,15 @@ bool Resources::reduce(const std::vector<db_cost*>& costs) {
 	return true;
 }
 
+bool Resources::hasEnough(const std::vector<db_cost*>& costs) const {
+	for (auto cost : costs) {
+		if (values[cost->resource] < cost->value) {
+			return false;
+		}
+	}
+	return true;
+}
+
 void Resources::add(int id, float value) {
 	values[id] += value;
 	changed = true;

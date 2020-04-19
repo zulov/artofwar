@@ -37,10 +37,19 @@ void ActionMaker::action() {
 }
 
 void ActionMaker::createBuilding() {
-	auto idToCreate = chooseBuilding();
-	Urho3D::Vector2 pos = posToBuild(idToCreate);
-	Game::getActionCenter()->addBuilding(idToCreate, pos, player->getId(),
-	                                     player->getLevelForBuilding(idToCreate));
+	auto building = chooseBuilding();
+	if (building) {
+		Resources& resources = player->getResources();
+
+		if (resources.hasEnough(building->costs)) {
+			auto pos = posToBuild(building);
+			if (pos.has_value()) {
+				Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId(),
+				                                     player->getLevelForBuilding(building->id));
+			}
+		}
+	}
+
 }
 
 
@@ -96,28 +105,33 @@ void ActionMaker::getValues(float* values, const std::function<float(db_level*)>
 	}
 }
 
-short ActionMaker::chooseBuilding() {
+db_building* ActionMaker::chooseBuilding() {
 	auto buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 
 	auto result = decide(buildingBrainId);
 
-	std::valarray<float> center = {result[0], result[1], result[2]}; //TODO perf valarraay test
+	std::valarray<float> center(result,AI_PROPS_SIZE); //TODO perf valarraay test
+	auto closestId = buildings[0]->id;
+	float closest = 9999999;
 	for (auto building : buildings) {
-		//TODO bug value
 		auto props = building->getLevel(player->getLevelForBuilding(building->id)).value()->aiProps;
-		std::valarray<float> aiAsArray = {props->econ, props->attack, props->defence}; //TODO get as val array odrazu
+		std::valarray<float> aiAsArray(props->paramsNorm,AI_PROPS_SIZE); //TODO get as val array odrazu
 		auto diff = aiAsArray - center;
 		auto sq = diff * diff;
 		auto dist = sq.sum();
+		if (dist < closest) {
+			closest = dist;
+			closestId = building->id;
+		}
 		std::cout << dist;
 	}
-	std::cout << std::endl;
+	std::cout << buildings[closestId]->name.CString() << std::endl;
 
-	return buildings.at(0)->id; //TODO bug wybrac 
+	return buildings[closestId];
 }
 
-Urho3D::Vector2 ActionMaker::posToBuild(short idToCreate) {
-	auto level = getBuildingLevel(player->getId(), idToCreate);
+std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
+	const auto level = getBuildingLevel(player->getId(), building->id);
 	float input[BASIC_INPUT_SIZE + AI_PROPS_SIZE];
 	std::fill_n(input,BASIC_INPUT_SIZE + AI_PROPS_SIZE, 0.f);
 
@@ -128,7 +142,7 @@ Urho3D::Vector2 ActionMaker::posToBuild(short idToCreate) {
 	std::copy(aiInput, aiInput + AI_PROPS_SIZE, input + BASIC_INPUT_SIZE);
 
 	auto result = buildingBrainPos.decide(basicInput);
-	return Game::getEnvironment()->getPosToCreate(idToCreate, player->getId(), result);
+	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
 
 

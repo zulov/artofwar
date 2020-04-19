@@ -8,7 +8,6 @@
 #include "objects/building/Building.h"
 #include "debug/DebugLineRepo.h"
 #include "objects/ValueType.h"
-#include "player/ai/AiInfluenceType.h"
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
@@ -259,4 +258,8 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreas(float* result, char play
 		centers.emplace_back(maps[0]->getCenter(value));
 	}
 	return centers;
+}
+
+float InfluenceManager::getFieldSize() {
+	return resourceInfluence[0]->getFieldSize();
 }

@@ -24,13 +24,15 @@ CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& posit
 	Resources& resources = Game::getPlayersMan()->getPlayer(player)->getResources();
 	db_building* building = Game::getDatabase()->getBuilding(id);
 
-	auto env = Game::getEnvironment();
+	if (resources.reduce(building->costs)) {
+		const auto env = Game::getEnvironment();
+		if (env->validateStatic(building->size, position)) {
+			auto [bucketCords,pos] = env->getValidPosition(building->size, position);
 
-	if (env->validateStatic(building->size, position) && resources.reduce(building->costs)) {
-		auto [bucketCords,pos] = env->getValidPosition(building->size, position);
-
-		return new CreationCommand(ObjectType::BUILDING, id, pos, player, bucketCords, level);
+			return new CreationCommand(ObjectType::BUILDING, id, pos, player, bucketCords, level);
+		}
 	}
+
 	return nullptr;
 }
 

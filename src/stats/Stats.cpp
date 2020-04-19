@@ -36,9 +36,9 @@ Stats::Stats() {
 
 Stats::~Stats() {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		saveBatch(i, ordersStats, 1);
-		saveBatch(i, ordersBuildingCreateId, 1);
-		saveBatch(i, ordersBuildingCreatePos, 1);
+		saveBatch(i, ordersStats, "main", 1);
+		saveBatch(i, ordersBuildingCreateId, "buildId", 1);
+		saveBatch(i, ordersBuildingCreatePos, "buildPos", 1);
 	}
 	clear();
 	delete []input;
@@ -112,7 +112,7 @@ void Stats::joinAndPush(std::vector<std::string>* array, char player, std::strin
 	}
 }
 
-void Stats::saveBatch(int i, std::vector<std::string>* array, int size) const {
+void Stats::saveBatch(int i, std::vector<std::string>* array, std::string name, int size) const {
 	if (array[i].size() >= size) {
 		std::ofstream outFile;
 		std::string name = "Data/ai/test" + std::to_string(i) + ".csv";
@@ -128,9 +128,9 @@ void Stats::saveBatch(int i, std::vector<std::string>* array, int size) const {
 
 void Stats::save() {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		saveBatch(i, ordersStats, SAVE_BATCH_SIZE);
-		saveBatch(i, ordersBuildingCreateId, SAVE_BATCH_SIZE_MINI);
-		saveBatch(i, ordersBuildingCreatePos, SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, ordersStats, "main", SAVE_BATCH_SIZE);
+		saveBatch(i, ordersBuildingCreateId, "buildId", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, ordersBuildingCreatePos, "buildPos", SAVE_BATCH_SIZE_MINI);
 	}
 }
 

@@ -79,6 +79,7 @@ public:
 	void drawDebug(GridDebugType type) const;
 	bool validAndFree(short id, int index, std::vector<short>::value_type close) const;
 	Urho3D::Vector2 getNewBuildingPos(const Urho3D::Vector2& center, char player, short id);
+	float getFieldSize();
 private:
 
 	PathFinder* pathConstructor;

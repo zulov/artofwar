@@ -37,6 +37,7 @@ public:
 	std::vector<int> getIndexes(float* result, float tolerance, std::vector<InfluenceMapFloat*>& maps) const;
 
 	std::vector<Urho3D::Vector2> getAreas(float* result, char player, float tolerance);
+	float getFieldSize();
 
 private:
 	void resetMapsF(const std::vector<InfluenceMapFloat*>& maps) const;

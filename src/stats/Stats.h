@@ -49,7 +49,7 @@ private:
 	std::string getOutput(BuildingActionCommand* command) const;
 
 	static void joinAndPush(std::vector<std::string>* array, char player, std::string input,const std::string& output);
-	void saveBatch(int i, std::vector<std::string>* array, int size) const;
+	void saveBatch(int i, std::vector<std::string>* array, std::string name, int size) const;
 
 	float* input;
 	std::vector<float*> statsPerPlayer;

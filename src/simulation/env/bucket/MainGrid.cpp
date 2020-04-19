@@ -281,6 +281,10 @@ Urho3D::Vector2 MainGrid::getNewBuildingPos(const Urho3D::Vector2& center, char 
 	return center; //TODO bug optional
 }
 
+float MainGrid::getFieldSize() {
+	return calculator.getFieldSize();
+}
+
 bool MainGrid::isInLocalArea(int cell, Urho3D::Vector2& pos) {
 	const auto index = calculator.indexFromPosition(pos);
 	if (cell == index) { return true; }
