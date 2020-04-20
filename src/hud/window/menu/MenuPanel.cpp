@@ -176,9 +176,9 @@ void MenuPanel::levelBuilding() {
 	resetRestButtons(k);
 }
 
-std::unordered_set<int> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) {
+std::unordered_set<short> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) {
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
-	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	std::unordered_set<short> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	auto& infoTypes = selectedInfo->getSelectedTypes();
@@ -186,19 +186,27 @@ std::unordered_set<int> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo)
 		if (!infoTypes.at(i)->getData().empty()) {
 			auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i);
 			auto building = Game::getDatabase()->getBuilding(i);
-
-			removeFromCommon(common, unitsIdsForBuildingNation(building->getLevel(level).value(),nation)); //TODO bug value));
+			
+			removeFromCommon(common, building->getLevel(level).value()->unitsPerNation[nation]); //TODO bug value));
 		}
 	}
 
 	return common;
 }
 
-void MenuPanel::removeFromCommon(std::unordered_set<int>& common, std::unordered_set<int>& possibleUntis) {
-	std::unordered_set<int> temp(common);
-	for (const auto& id : temp) {
-		if (possibleUntis.find(id) == possibleUntis.end()) {
-			common.erase(id);
+void MenuPanel::removeFromCommon(std::unordered_set<short>& common, std::vector<db_unit*>* possibleUnits) {
+	std::unordered_set<short> temp(common);
+	for (auto possibleUnits : (*possibleUnits)) {
+		if (temp.find(possibleUnits->id)!=temp.end()) {
+			common.erase(possibleUnits->id);
+		}
+	}
+}
+void MenuPanel::removeFromCommon(std::unordered_set<short>& common, const std::vector<db_order*>& possibleOrders) {
+	std::unordered_set<short> temp(common);
+	for (auto possibleOrder : possibleOrders) {
+		if (temp.find(possibleOrder->id)!=temp.end()) {
+			common.erase(possibleOrder->id);
 		}
 	}
 }
@@ -229,24 +237,19 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	resetRestButtons(k);
 }
 
-std::unordered_set<int> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) {
+std::unordered_set<short> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) {
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
-	std::unordered_set<int> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	std::unordered_set<short> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	auto& infoTypes = selectedInfo->getSelectedTypes();
 
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
-			auto orders = Game::getDatabase()->getUnit(i)->orders;
-			std::unordered_set<int> common2;
-			for (auto& order : orders) {
-				//todo to zrobic raz i pobierac
-				common2.insert(order->id);
-			}
-			removeFromCommon(common, common2);
+			removeFromCommon(common, Game::getDatabase()->getUnit(i)->orders);
 		}
 	}
 	return common;
 }
+
 
 void MenuPanel::basicOrder(SelectedInfo* selectedInfo) {
 	int k = 0;

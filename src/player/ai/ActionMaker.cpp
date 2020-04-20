@@ -18,7 +18,8 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/buildId_w.csv"),
-                                          unitBrainPos("Data/ai/buildPos_w.csv") {}
+                                          unitBrainPos("Data/ai/buildPos_w.csv") {
+}
 
 float* ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -136,7 +137,8 @@ db_building* ActionMaker::chooseBuilding() {
 	return buildings[closestId];
 }
 
-void ActionMaker::closest(std::valarray<float> &center, short& closestId, float& closest, db_ai_property* props, short id) {
+void ActionMaker::closest(std::valarray<float>& center, short& closestId, float& closest, db_ai_property* props,
+                          short id) {
 	std::valarray<float> aiAsArray(props->paramsNorm,AI_PROPS_SIZE); //TODO get as val array odrazu
 	auto diff = aiAsArray - center;
 	auto sq = diff * diff;
@@ -179,9 +181,20 @@ std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
 }
 
 Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
-	auto & buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	std::vector<db_building> buildingThatCanDeploy;
-	std::vector<Building*> realBuildings = player->getPossession().getBuildings(buildingThatCanDeploy);
+	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+	std::unordered_set<short> buildingIdsThatCanDeploy;
+	for (auto building : buildings) {
+		auto level = getBuildingLevel(player->getId(), building->id);
+		for (auto dbUnit : *level->unitsPerNation[player->getNation()]) {
+			buildingIdsThatCanDeploy.insert()
+		}
+	}
+	std::vector<Building*>  allPossible;
+	for (auto thatCanDeploy : buildingIdsThatCanDeploy) {
+		auto buildingEnts = player->getPossession().getBuildings(thatCanDeploy);
+		allPossible.insert(allPossible.begin(),buildingEnts->begin(),buildingEnts->end());
+	}
+	
 }
 
 
@@ -212,7 +225,8 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	}
 }
 
-void ActionMaker::levelUpBuilding() {}
+void ActionMaker::levelUpBuilding() {
+}
 
 void ActionMaker::levelUpUnit() {
 	// auto opt = chooseUnitUpgrade(order);

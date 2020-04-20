@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 
+#include "database/db_strcut.h"
+
 
 class Unit;
 class Building;
@@ -8,6 +10,9 @@ class Resources;
 
 class Possession {
 public:
+	Possession(char nation);
+	~Possession();
+	
 	void add(Building* building);
 	void add(Unit* unit);
 	void updateAndClean(Resources& resources);
@@ -17,8 +22,11 @@ public:
 	int getWorkersNumber() const;
 	int getAttackScore() const;
 	int getDefenceScore() const;
+	std::vector<Building*>* getBuildings(short id);
 private:
 	std::vector<Building*> buildings;
+	std::vector<std::vector<Building*>*> buildingsPerId;
+
 	std::vector<Unit*> units;
 	std::vector<Unit*> workers;
 	float resourcesSum = 0;

@@ -20,6 +20,12 @@ void static cleanDead(std::vector<Building*>& vector) {
 		vector.end());
 }
 
+void static cleanDead(std::vector<Building*>* vector) {
+	vector->erase(
+		std::remove_if(vector->begin(), vector->end(), isAlive),
+		vector->end());
+}
+
 void static cleanDead(std::vector<ResourceEntity*>& vector) {
 	vector.erase(
 		std::remove_if(vector.begin(), vector.end(), isAlive),

@@ -195,10 +195,12 @@ int static loadUnitToBuildingLevels(void* data, int argc, char** argv, char** az
 	const auto xyz = static_cast<db_container*>(data);
 
 	auto level = xyz->buildingsLevels[atoi(argv[1])];
-
-	level->allUnits.push_back(xyz->units[atoi(argv[0])]);
-
-	//level->unitsPerNation.resize(xyz)//TODO co z tym??
+	auto unit = xyz->units[atoi(argv[0])];
+	level->allUnits.push_back(unit);
+	for (auto nation : unit->nations) {
+		level->unitsPerNation.resize(nation->id + 1);
+		level->unitsPerNation[nation->id]->push_back(unit);
+	}
 	return 0;
 }
 
@@ -223,7 +225,7 @@ static db_ai_property* createAiProp(char** argv, std::vector<db_cost*>& costs, f
 	}
 	prop->setCostSum(sum, normDiv);
 	prop->setParamsNormAString(aiPropsAsString(prop));
-	
+
 	return prop;
 }
 

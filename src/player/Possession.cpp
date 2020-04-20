@@ -10,6 +10,21 @@
 #include "objects/ValueType.h"
 #include <numeric>
 
+Possession::Possession(char nation) {
+	for (auto building : Game::getDatabase()->getNation(nation)->buildings) {
+		auto id = building->id;
+		if (buildingsPerId.size() <= id) {
+			buildingsPerId.resize(id + 1, nullptr);
+		}
+		buildingsPerId[id] = new std::vector<Building*>();
+	}
+}
+
+Possession::~Possession() {
+	clear_vector(buildingsPerId);
+}
+
+
 int Possession::getScore() const {
 	return buildings.size() * 10 + units.size() + resourcesSum / 100;
 }
@@ -34,8 +49,13 @@ int Possession::getDefenceScore() const {
 	return defenceSum;
 }
 
+std::vector<Building*>* Possession::getBuildings(short id) {
+	return buildingsPerId[id];
+}
+
 void Possession::add(Building* building) {
 	buildings.push_back(building);
+	buildingsPerId[building->getId()]->push_back(building);
 }
 
 void Possession::add(Unit* unit) {
@@ -57,6 +77,13 @@ void Possession::updateAndClean(Resources& resources) {
 	cleanDead(buildings); //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
 	cleanDead(units); //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
 	cleanDead(workers); //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
+
+	for (auto perId : buildingsPerId) {
+		//TODO performance iterowac tylko jezeli ktos umarl - tylko jeœli to wyzej coœwyczyœci³o
+		if (perId) {
+			cleanDead(perId);
+		}
+	}
 
 	attackSum = 0;
 	defenceSum = 0;

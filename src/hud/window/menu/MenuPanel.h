@@ -6,6 +6,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "database/db_strcut.h"
+
 
 #define LEFT_MENU_ROWS_NUMBER 4
 #define LEFT_MENU_CHECKS_NUMBER 3
@@ -13,6 +15,7 @@
 
 enum class ActionType : char;
 enum class LeftMenuMode : char;
+struct db_unit;
 class SelectedInfo;
 class HudData;
 class LeftMenuInfoPanel;
@@ -59,9 +62,10 @@ private:
 
 	void resetRestButtons(int from);
 
-	std::unordered_set<int> getUnitInBuilding(SelectedInfo* selectedInfo);
-	std::unordered_set<int> getOrderForUnit(SelectedInfo* selectedInfo);
-	static void removeFromCommon(std::unordered_set<int>& common, std::unordered_set<int>& possibleUntis);
+	std::unordered_set<short> getUnitInBuilding(SelectedInfo* selectedInfo);
+	std::unordered_set<short> getOrderForUnit(SelectedInfo* selectedInfo);
+	static void removeFromCommon(std::unordered_set<short>& common, const std::vector<db_order*>& possibleOrders);
+	static void removeFromCommon(std::unordered_set<short>& common, std::vector<db_unit*>* possibleUnits);
 
 	Urho3D::UIElement* rows[LEFT_MENU_ROWS_NUMBER];
 	Urho3D::Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
