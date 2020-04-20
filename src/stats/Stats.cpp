@@ -39,6 +39,8 @@ Stats::~Stats() {
 		saveBatch(i, ordersStats, "main", 1);
 		saveBatch(i, ordersBuildingCreateId, "buildId", 1);
 		saveBatch(i, ordersBuildingCreatePos, "buildPos", 1);
+		saveBatch(i, ordersUnitCreateId, "unitId", 1);
+		saveBatch(i, ordersUnitCreatePos, "unitPos", 1);
 	}
 	clear();
 	delete []input;
@@ -79,6 +81,10 @@ void Stats::add(BuildingActionCommand* command) {
 	const std::string input = getInputData(player);
 
 	joinAndPush(ordersStats, player, input, getOutput(command));
+	if (command->action == BuildingActionType::UNIT_CREATE) {
+		auto& createOutput = getUnitLevel(command->player, command->id)->aiProps->getParamsNormAsString();
+		joinAndPush(ordersUnitCreateId, player, input, createOutput);
+	}
 }
 
 void Stats::add(UnitActionCommand* command) {
@@ -134,8 +140,12 @@ void Stats::saveBatch(int i, std::vector<std::string>* array, std::string name, 
 void Stats::save() {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		saveBatch(i, ordersStats, "main", SAVE_BATCH_SIZE);
+
 		saveBatch(i, ordersBuildingCreateId, "buildId", SAVE_BATCH_SIZE_MINI);
 		saveBatch(i, ordersBuildingCreatePos, "buildPos", SAVE_BATCH_SIZE_MINI);
+
+		saveBatch(i, ordersUnitCreateId, "unitId", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, ordersUnitCreatePos, "unitPos", SAVE_BATCH_SIZE_MINI);
 	}
 }
 

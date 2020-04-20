@@ -29,7 +29,8 @@ bool Physical::isAlive() const {
 	return true;
 }
 
-int Physical::getDbID() {
+short Physical::getId() {
+	Game::getLog()->Write(0, "ERROR Physical getId");
 	return -1;
 }
 
@@ -175,7 +176,7 @@ int Physical::getLevel() {
 
 std::string Physical::getValues(int precision) {
 	int hp_coef = getHealthPercent() * precision;
-	return std::to_string(getDbID()) + ","
+	return std::to_string(getId()) + ","
 		+ std::to_string(hp_coef) + ","
 		+ std::to_string(player) + ","
 		+ std::to_string(getLevel()) + ",";

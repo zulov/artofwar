@@ -17,6 +17,6 @@ void SelectedInfoType::clear() {
 
 void SelectedInfoType::add(Physical* physical) {
 	data.push_back(physical);
-	id = physical->getDbID();
+	id = physical->getId();
 }
 

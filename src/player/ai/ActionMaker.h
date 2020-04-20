@@ -1,9 +1,13 @@
 #pragma once
 #include <functional>
 #include <optional>
+#include <valarray>
 #include <Urho3D/Math/Vector2.h>
 
+
+#include "database/db_strcut.h"
 #include "nn/Brain.h"
+#include "objects/building/Building.h"
 
 class Player;
 struct db_level;
@@ -22,14 +26,21 @@ private:
 	void levelUpBuilding();
 	void createUnit();
 	std::optional<Urho3D::Vector2> posToBuild(db_building* building);
+	Building* getBuildingToDeploy(db_unit* unit);
 	void createBuilding();
 
 	std::optional<short> chooseUpgrade(StatsOutputType order) const;
 	void getValues(float* values, const std::function<float(db_level*)>& func) const;
 	db_building* chooseBuilding();
+	void closest(std::valarray<float> &center, short& closestId, float& closest, db_ai_property* props, short id);
+	db_unit* chooseUnit();
 
 	Player* player;
 	Brain mainBrain;
+	
 	Brain buildingBrainId;
 	Brain buildingBrainPos;
+	
+	Brain unitBrainId;
+	Brain unitBrainPos;
 };

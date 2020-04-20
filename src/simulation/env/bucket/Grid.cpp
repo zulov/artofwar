@@ -132,7 +132,7 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, double 
 		for (short j = posBeginZ; j != posEndZ + dZ; j += dZ) {
 			auto& content = getContentAt(calculator.getIndex(i, j));
 			for (auto thing : content) {
-				if (thing->getDbID() == clicked->getDbID() && thing->getPlayer() == clicked->getPlayer()) {
+				if (thing->getId() == clicked->getId() && thing->getPlayer() == clicked->getPlayer()) {
 					tempSelected->push_back(thing);
 				}
 			}

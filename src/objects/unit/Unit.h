@@ -117,7 +117,7 @@ public:
 	float getMaxHpBarSize() override;
 	bool isAlive() const override;
 	int getLevel() override;
-	int getDbID() override;
+	short getId() override;
 	void clean() override;
 	float getValueOf(ValueType type) const override;
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;

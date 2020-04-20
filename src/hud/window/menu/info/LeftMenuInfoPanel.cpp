@@ -40,7 +40,7 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 			for (auto& selectedType : selectedInfo->getSelectedTypes()) {
 				if (!selectedType->getData().empty()) {
 					msg.Append(getName(selectedType->getData().at(0)->getType(),
-					                   selectedType->getData().at(0)->getDbID()))
+					                   selectedType->getData().at(0)->getId()))
 					   .Append(": ").Append(Urho3D::String(selectedType->getData().size())).Append("\n");
 				}
 			}

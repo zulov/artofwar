@@ -23,7 +23,7 @@ ResourceEntity::ResourceEntity(Urho3D::Vector3& _position,
 
 ResourceEntity::~ResourceEntity() = default;
 
-int ResourceEntity::getDbID() {
+short ResourceEntity::getId() {
 	return dbResource->id;
 }
 

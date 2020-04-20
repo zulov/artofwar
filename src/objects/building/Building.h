@@ -36,7 +36,7 @@ public:
 	void action(BuildingActionType type, short id) const;
 	std::string getValues(int precision) override;
 	float getMaxHpBarSize() override;
-	int getDbID() override;
+	short getId() override;
 	int getLevel() override;
 	float getValueOf(ValueType type) const override;
 

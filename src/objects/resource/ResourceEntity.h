@@ -18,7 +18,7 @@ public:
 
 	char getPlayer() const override { return -1; }
 
-	int getDbID() override;
+	short getId() override;
 	float getMaxHpBarSize() override;
 	float getHealthPercent() const override;
 	Urho3D::String toMultiLineString() override;

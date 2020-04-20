@@ -404,7 +404,7 @@ void Unit::applyForce(double timeStep) {
 	}
 }
 
-int Unit::getDbID() {
+short Unit::getId() {
 	return dbUnit->id;
 }
 

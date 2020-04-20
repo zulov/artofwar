@@ -1,4 +1,4 @@
-#include "InfluenceManager.h"
+﻿#include "InfluenceManager.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/EnvConsts.h"
 #include "simulation/env/ContentInfo.h"
@@ -8,6 +8,7 @@
 #include "objects/building/Building.h"
 #include "debug/DebugLineRepo.h"
 #include "objects/ValueType.h"
+#include "objects/resource/ResourceEntity.h"
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
@@ -34,7 +35,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			econLevelPerPlayer[player], attackLevelPerPlayer[player], defenceLevelPerPlayer[player],
 			buildingsInfluencePerPlayer[player], unitsInfluencePerPlayer[player],
 			resourceInfluence[0], resourceInfluence[1], resourceInfluence[2], resourceInfluence[3]
-		});
+		});//TODO performance posortowac tak żeby pierwsze zwracły mniej
 	}
 
 
@@ -74,7 +75,10 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 	resetMapsF(resourceInfluence);
-
+	for (auto resource : (*resources)) {
+		resourceInfluence[resource->getId()]->update(resource);
+	}
+	calcStats(resourceInfluence);
 }
 
 void InfluenceManager::resetMapsF(const std::vector<InfluenceMapFloat*>& maps) const {
@@ -226,7 +230,8 @@ void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Ur
 	}
 }
 
-std::vector<int> InfluenceManager::getIndexes(float* result, float tolerance, std::vector<InfluenceMapFloat*>& maps) const {
+std::vector<int> InfluenceManager::getIndexes(float* result, float tolerance,
+                                              std::vector<InfluenceMapFloat*>& maps) const {
 	float steps[] = {0.0, 0.1, 0.2};
 	for (auto step : steps) {
 		tolerance += step;
@@ -254,6 +259,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreas(float* result, char play
 
 	std::vector<int> intersection = getIndexes(result, tolerance, maps);
 	std::vector<Urho3D::Vector2> centers;
+	centers.reserve(intersection.size());
 	for (auto value : intersection) {
 		centers.emplace_back(maps[0]->getCenter(value));
 	}

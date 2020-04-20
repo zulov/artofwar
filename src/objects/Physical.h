@@ -16,7 +16,7 @@ public:
 	virtual ~Physical();
 
 	virtual bool isAlive() const;
-	virtual int getDbID();
+	virtual short getId();
 	Urho3D::Node* getNode() const { return node; }
 
 	void updateHealthBar();

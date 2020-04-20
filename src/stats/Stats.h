@@ -60,4 +60,7 @@ private:
 
 	std::vector<std::string> ordersBuildingCreateId[MAX_PLAYERS];
 	std::vector<std::string> ordersBuildingCreatePos[MAX_PLAYERS];
+
+	std::vector<std::string> ordersUnitCreateId[MAX_PLAYERS];
+	std::vector<std::string> ordersUnitCreatePos[MAX_PLAYERS];
 };

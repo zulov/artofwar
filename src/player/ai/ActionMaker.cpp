@@ -1,6 +1,7 @@
 #include "ActionMaker.h"
 #include "ActionCenter.h"
 #include "commands/action/BuildingActionCommand.h"
+#include "commands/action/BuildingActionType.h"
 #include "player/Player.h"
 #include "database/DatabaseCache.h"
 #include "Game.h"
@@ -15,8 +16,9 @@
 ActionMaker::ActionMaker(Player* player): player(player),
                                           mainBrain("Data/ai/main_w.csv"),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
-                                          buildingBrainPos("Data/ai/buildPos_w.csv") {
-}
+                                          buildingBrainPos("Data/ai/buildPos_w.csv"),
+                                          unitBrainId("Data/ai/buildId_w.csv"),
+                                          unitBrainPos("Data/ai/buildPos_w.csv") {}
 
 float* ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -47,7 +49,21 @@ void ActionMaker::createBuilding() {
 			}
 		}
 	}
+}
 
+void ActionMaker::createUnit() {
+	db_unit* unit = chooseUnit();
+	if (unit) {
+		Resources& resources = player->getResources();
+
+		if (resources.hasEnough(unit->costs)) {
+			Building* building = getBuildingToDeploy(unit);
+			if (building) {
+				Game::getActionCenter()->add(
+					new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id, player->getId()));
+			}
+		}
+	}
 }
 
 
@@ -110,20 +126,41 @@ db_building* ActionMaker::chooseBuilding() {
 
 	std::valarray<float> center(result,AI_PROPS_SIZE); //TODO perf valarraay test
 	auto closestId = buildings[0]->id;
-	float closest = 9999999;
+	float closestV = 9999999;
 	for (auto building : buildings) {
 		auto props = building->getLevel(player->getLevelForBuilding(building->id)).value()->aiProps;
-		std::valarray<float> aiAsArray(props->paramsNorm,AI_PROPS_SIZE); //TODO get as val array odrazu
-		auto diff = aiAsArray - center;
-		auto sq = diff * diff;
-		auto dist = sq.sum();
-		if (dist < closest) {
-			closest = dist;
-			closestId = building->id;
-		}
+
+		closest(center, closestId, closestV, props, building->id);
 	}
 
 	return buildings[closestId];
+}
+
+void ActionMaker::closest(std::valarray<float> &center, short& closestId, float& closest, db_ai_property* props, short id) {
+	std::valarray<float> aiAsArray(props->paramsNorm,AI_PROPS_SIZE); //TODO get as val array odrazu
+	auto diff = aiAsArray - center;
+	auto sq = diff * diff;
+	auto dist = sq.sum();
+	if (dist < closest) {
+		closest = dist;
+		closestId = id;
+	}
+}
+
+db_unit* ActionMaker::chooseUnit() {
+	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
+	auto result = decide(unitBrainId);
+
+	std::valarray<float> center(result,AI_PROPS_SIZE); //TODO perf valarraay test
+	auto closestId = units[0]->id;
+	float closestV = 9999999;
+	for (auto unit : units) {
+		auto props = unit->getLevel(player->getLevelForUnit(unit->id)).value()->aiProps;
+
+		closest(center, closestId, closestV, props, unit->id);
+	}
+
+	return units[closestId];
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
@@ -139,6 +176,12 @@ std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
 
 	auto result = buildingBrainPos.decide(basicInput);
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
+}
+
+Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
+	auto & buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+	std::vector<db_building> buildingThatCanDeploy;
+	std::vector<Building*> realBuildings = player->getPossession().getBuildings(buildingThatCanDeploy);
 }
 
 
@@ -169,8 +212,7 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	}
 }
 
-void ActionMaker::levelUpBuilding() {
-}
+void ActionMaker::levelUpBuilding() {}
 
 void ActionMaker::levelUpUnit() {
 	// auto opt = chooseUnitUpgrade(order);
@@ -181,10 +223,4 @@ void ActionMaker::levelUpUnit() {
 	// 	Game::getActionCenter()->add(
 	// 		new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL, unitId, player->getId()));
 	// }	
-}
-
-
-void ActionMaker::createUnit() {
-	//	short id = chooseUnit(order);
-	//	auto pos = bestBuildingToDeployUnit(order, id);
 }
