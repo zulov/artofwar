@@ -9,7 +9,6 @@
 #include "hud/window/in_game_menu/middle/AbstractMiddlePanel.h"
 #include "info/LeftMenuInfoPanel.h"
 #include "objects/ActionType.h"
-#include "objects/building/BuildingUtils.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "utils.h"
@@ -23,8 +22,7 @@
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow",
-                                                                    {GameState::RUNNING, GameState::PAUSE}) {
-}
+                                                                    {GameState::RUNNING, GameState::PAUSE}) {}
 
 
 MenuPanel::~MenuPanel() {
@@ -166,10 +164,9 @@ void MenuPanel::levelBuilding() {
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	int k = 0;
 	for (auto building : Game::getDatabase()->getNation(nation)->buildings) {
-		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(building->id) + 1;
-		auto opt = building->getLevel(level);
+		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForBuilding(building->id);
 		if (opt.has_value()) {
-			setNext(k, "textures/hud/icon/building/levels/" + Urho3D::String(level) + "/" + building->icon,
+			setNext(k, "textures/hud/icon/building/levels/" + Urho3D::String(opt.value()->level) + "/" + building->icon,
 			        building->id, ActionType::BUILDING_LEVEL, "");
 		}
 	}
@@ -185,9 +182,8 @@ std::unordered_set<short> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInf
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
 			auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i);
-			auto building = Game::getDatabase()->getBuilding(i);
-			
-			removeFromCommon(common, building->getLevel(level).value()->unitsPerNation[nation]); //TODO bug value));
+
+			removeFromCommon(common, level->unitsPerNation[nation]); //TODO bug value));
 		}
 	}
 
@@ -197,15 +193,16 @@ std::unordered_set<short> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInf
 void MenuPanel::removeFromCommon(std::unordered_set<short>& common, std::vector<db_unit*>* possibleUnits) {
 	std::unordered_set<short> temp(common);
 	for (auto possibleUnits : (*possibleUnits)) {
-		if (temp.find(possibleUnits->id)!=temp.end()) {
+		if (temp.find(possibleUnits->id) != temp.end()) {
 			common.erase(possibleUnits->id);
 		}
 	}
 }
+
 void MenuPanel::removeFromCommon(std::unordered_set<short>& common, const std::vector<db_order*>& possibleOrders) {
 	std::unordered_set<short> temp(common);
 	for (auto possibleOrder : possibleOrders) {
-		if (temp.find(possibleOrder->id)!=temp.end()) {
+		if (temp.find(possibleOrder->id) != temp.end()) {
 			common.erase(possibleOrder->id);
 		}
 	}
@@ -225,12 +222,11 @@ void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
 void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	int k = 0;
 	for (auto id : getUnitInBuilding(selectedInfo)) {
-		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
-		auto unit = Game::getDatabase()->getUnit(id);
-		auto opt = unit->getLevel(level);
+		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForUnit(id);
 		if (opt.has_value()) {
 			db_unit* unit = Game::getDatabase()->getUnit(id);
-			setNext(k, "textures/hud/icon/unit/levels/" + Urho3D::String(level) + "/" + unit->icon, unit->id,
+			setNext(k, "textures/hud/icon/unit/levels/" + Urho3D::String(opt.value()->level) + "/" + unit->icon,
+			        unit->id,
 			        ActionType::UNIT_LEVEL, "");
 		}
 	}

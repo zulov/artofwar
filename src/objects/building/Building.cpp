@@ -74,9 +74,7 @@ void Building::action(BuildingActionType type, short id) const {
 	break;
 	case BuildingActionType::UNIT_LEVEL:
 	{
-		int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
-		
-		auto opt = Game::getDatabase()->getUnit(id)->getLevel(level);
+		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForUnit(id) ;
 		if (opt.has_value()) {
 			if (resources.reduce(opt.value()->costs)) {
 				queue->add(1, QueueActionType::UNIT_LEVEL, id, 1);

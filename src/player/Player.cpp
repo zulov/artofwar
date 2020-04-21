@@ -8,8 +8,6 @@
 #include "Game.h"
 #include "objects/queue/QueueActionType.h"
 #include "simulation/env/Environment.h"
-#include "stats/Stats.h"
-#include "stats/StatsEnums.h"
 
 
 Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active):
@@ -66,6 +64,22 @@ char Player::upgradeLevel(QueueActionType type, int id) {
 	default: ;
 	}
 	return -1;
+}
+
+db_unit_level* Player::getLevelForUnit(short id) const {
+	return Game::getDatabase()->getUnit(id)->getLevel(unitLevels[id]).value();
+}
+
+db_building_level* Player::getLevelForBuilding(short id) const {
+	return Game::getDatabase()->getBuilding(id)->getLevel(buildingLevels[id]).value();
+}
+
+std::optional<db_unit_level*> Player::getNextLevelForUnit(short id) const {
+	return Game::getDatabase()->getUnit(id)->getLevel(unitLevels[id] + 1);
+}
+
+std::optional<db_building_level*> Player::getNextLevelForBuilding(short id) const {
+	return Game::getDatabase()->getBuilding(id)->getLevel(buildingLevels[id] + 1);
 }
 
 void Player::updatePossession() {

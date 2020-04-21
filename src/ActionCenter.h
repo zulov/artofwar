@@ -4,7 +4,8 @@
 
 enum class QueueActionType : char;
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class Vector2;
 }
 
@@ -32,12 +33,16 @@ public:
 
 	void executeActions() const;
 	void executeLists() const;
-	bool addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const;
-	bool addBuilding(int id, Urho3D::Vector2& position, char player, int level) const;
-	bool addResource(int id, Urho3D::Vector2& position, int level) const;
+
+	bool addUnits(int number, int id, Urho3D::Vector2& position, char player) const;
+	bool addBuilding(int id, Urho3D::Vector2& position, char player) const;
+	bool addResource(int id, Urho3D::Vector2& position) const;
+
 	void orderPhysical(short id, QueueActionType type, char playerId) const;
 
 private:
+	bool addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const;
+	bool addBuilding(int id, Urho3D::Vector2& position, char player, int level) const;
 
 	CreationCommandList* creation;
 	UpgradeCommandList* upgrade;

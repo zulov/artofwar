@@ -3,7 +3,6 @@
 #include "control/SelectedInfo.h"
 #include "control/SelectedInfoType.h"
 #include "database/DatabaseCache.h"
-#include "database/db_gets.h"
 #include "database/db_strcut.h"
 #include "hud/HudData.h"
 #include "hud/UiUtils.h"
@@ -63,8 +62,7 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	}
 	case ActionType::UNIT_LEVEL:
 	{
-		const int level = Game::getPlayersMan()->getActivePlayer()->getLevelForUnit(id) + 1;
-		auto dbLevel = Game::getDatabase()->getUnit(id)->getLevel(level).value(); //TODO probable bug value
+		auto dbLevel = Game::getPlayersMan()->getActivePlayer()->getNextLevelForUnit(id).value(); //TODO probable bug value
 
 		return stringFrom(dbLevel->name, dbLevel->costs);
 	}
@@ -78,8 +76,7 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	}
 	case ActionType::BUILDING_LEVEL:
 	{
-		auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(id) + 1;
-		auto dbLevel = Game::getDatabase()->getBuilding(id)->getLevel(level).value(); //TODO BUG value
+		auto dbLevel = Game::getPlayersMan()->getActivePlayer()->getNextLevelForBuilding(id).value(); //TODO BUG value
 
 		return stringFrom(dbLevel->name, dbLevel->costs);
 	}

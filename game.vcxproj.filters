@@ -385,7 +385,6 @@
     <ClInclude Include="src\objects\unit\state\DisposeState.h" />
     <ClInclude Include="src\hud\window\menu\info\LeftMenuInfoPanel.h" />
     <ClInclude Include="src\hud\window\menu\LeftMenuModes.h" />
-    <ClInclude Include="src\objects\building\BuildingUtils.h" />
     <ClInclude Include="src\objects\queue\QueueManager.h">
       <Filter>objects\building</Filter>
     </ClInclude>
@@ -487,7 +486,6 @@
     <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\player\ai\InfluenceType.h" />
-    <ClInclude Include="src\database\db_gets.h" />
     <ClInclude Include="src\player\ai\AiInfluenceType.h" />
   </ItemGroup>
   <ItemGroup>

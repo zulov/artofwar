@@ -17,7 +17,7 @@ struct ForceStats {
 
 	ForceStats() {
 		reset();
-		std::fill_n(stats, 5, 0);
+		std::fill_n(stats, 5, 0.f);
 	}
 
 	ForceStats(const ForceStats&) = delete;

@@ -1,4 +1,5 @@
 #include "ActionMaker.h"
+
 #include "ActionCenter.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
@@ -9,17 +10,14 @@
 #include "stats/Stats.h"
 #include "stats/StatsEnums.h"
 #include <valarray>
-
-#include "database/db_gets.h"
-
+#include <unordered_set>
 
 ActionMaker::ActionMaker(Player* player): player(player),
                                           mainBrain("Data/ai/main_w.csv"),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/buildId_w.csv"),
-                                          unitBrainPos("Data/ai/buildPos_w.csv") {
-}
+                                          unitBrainPos("Data/ai/buildPos_w.csv") {}
 
 float* ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -45,8 +43,7 @@ void ActionMaker::createBuilding() {
 		if (resources.hasEnough(building->costs)) {
 			auto pos = posToBuild(building);
 			if (pos.has_value()) {
-				Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId(),
-				                                     player->getLevelForBuilding(building->id));
+				Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId());
 			}
 		}
 	}
@@ -78,7 +75,7 @@ std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
 		// 	unitUpgrade->
 		// }
 
-		auto level = unit->getLevel(player->getLevelForUnit(unit->id) + 1);
+		auto level = player->getNextLevelForUnit(unit->id);
 		if (level.has_value()) {
 			unitsLevels.push_back(level.value());
 		}
@@ -87,7 +84,7 @@ std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
 	std::vector<db_building_level*> buildingLevels;
 
 	for (auto building : nation->buildings) {
-		auto level = building->getLevel(player->getLevelForBuilding(building->id) + 1);
+		auto level = player->getNextLevelForBuilding(building->id);
 		if (level.has_value()) {
 			buildingLevels.push_back(level.value());
 		}
@@ -129,7 +126,7 @@ db_building* ActionMaker::chooseBuilding() {
 	auto closestId = buildings[0]->id;
 	float closestV = 9999999;
 	for (auto building : buildings) {
-		auto props = building->getLevel(player->getLevelForBuilding(building->id)).value()->aiProps;
+		auto props = player->getLevelForBuilding(building->id)->aiProps;
 
 		closest(center, closestId, closestV, props, building->id);
 	}
@@ -157,7 +154,7 @@ db_unit* ActionMaker::chooseUnit() {
 	auto closestId = units[0]->id;
 	float closestV = 9999999;
 	for (auto unit : units) {
-		auto props = unit->getLevel(player->getLevelForUnit(unit->id)).value()->aiProps;
+		auto props = player->getLevelForUnit(unit->id)->aiProps;
 
 		closest(center, closestId, closestV, props, unit->id);
 	}
@@ -166,7 +163,8 @@ db_unit* ActionMaker::chooseUnit() {
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
-	const auto level = getBuildingLevel(player->getId(), building->id);
+	const auto level = player->getLevelForBuilding(building->id);
+	
 	float input[BASIC_INPUT_SIZE + AI_PROPS_SIZE];
 	std::fill_n(input,BASIC_INPUT_SIZE + AI_PROPS_SIZE, 0.f);
 
@@ -184,17 +182,17 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 	std::unordered_set<short> buildingIdsThatCanDeploy;
 	for (auto building : buildings) {
-		auto level = getBuildingLevel(player->getId(), building->id);
+		auto level = player->getLevelForBuilding(building->id);
 		for (auto dbUnit : *level->unitsPerNation[player->getNation()]) {
-			buildingIdsThatCanDeploy.insert()
+			buildingIdsThatCanDeploy.insert(dbUnit->id);
 		}
 	}
-	std::vector<Building*>  allPossible;
+	std::vector<Building*> allPossible;
 	for (auto thatCanDeploy : buildingIdsThatCanDeploy) {
 		auto buildingEnts = player->getPossession().getBuildings(thatCanDeploy);
-		allPossible.insert(allPossible.begin(),buildingEnts->begin(),buildingEnts->end());
+		allPossible.insert(allPossible.begin(), buildingEnts->begin(), buildingEnts->end());
 	}
-	
+
 }
 
 
@@ -225,8 +223,7 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	}
 }
 
-void ActionMaker::levelUpBuilding() {
-}
+void ActionMaker::levelUpBuilding() {}
 
 void ActionMaker::levelUpUnit() {
 	// auto opt = chooseUnitUpgrade(order);

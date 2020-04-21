@@ -82,7 +82,8 @@ SimulationInfo* Simulation::update(float timeStep) {
 	return simulationInfo;
 }
 
-void Simulation::tryToAttack(Unit* unit, float dist, UnitAction order, const std::function<bool(Physical*)>& condition) {
+void Simulation::tryToAttack(Unit* unit, float dist, UnitAction order,
+                             const std::function<bool(Physical*)>& condition) {
 	toAction(unit, enviroment->getNeighboursFromTeamNotEq(unit, dist, unit->getTeam()), order, condition);
 }
 
@@ -192,13 +193,9 @@ void Simulation::updateBuildingQueues(const float time) const {
 			case QueueActionType::UNIT_CREATE:
 			{
 				auto center = enviroment->getCenter(build->getDeploy().value());
-
 				Game::getActionCenter()->addUnits(done->getAmount(),
 				                                  done->getId(), center,
-				                                  build->getPlayer(),
-				                                  Game::getPlayersMan()->
-				                                  getPlayer(build->getPlayer())->
-				                                  getLevelForUnit(done->getId()));
+				                                  build->getPlayer());
 			}
 			break;
 			case QueueActionType::UNIT_LEVEL:

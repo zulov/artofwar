@@ -24,8 +24,7 @@ public:
 	char getId() const { return id; }
 	int getColor() const { return color; }
 	Urho3D::String& getName() { return name; }
-	char getLevelForUnit(int id) const { return unitLevels[id]; }
-	char getLevelForBuilding(int id) const { return buildingLevels[id]; }
+
 	void updatePossession();
 	void add(Unit* unit);
 	void add(Building* building);
@@ -40,6 +39,10 @@ public:
 	void activate();
 	QueueElement* updateQueue(float time);
 	QueueManager& getQueue();
+	db_unit_level* getLevelForUnit(short id) const;
+	db_building_level* getLevelForBuilding(short id) const;
+	std::optional<db_unit_level*> getNextLevelForUnit(short id) const;
+	std::optional<db_building_level*> getNextLevelForBuilding(short id) const;
 private:
 	Possession possession;
 	Resources resources;

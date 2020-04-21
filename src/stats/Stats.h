@@ -3,7 +3,6 @@
 #include <string>
 #include "defines.h"
 #include "commands/action/UnitActionCommand.h"
-#include "objects/building/BuildingUtils.h"
 
 #define BASIC_INPUT_SIZE 24
 #define STATS_PER_PLAYER_SIZE 12

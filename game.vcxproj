@@ -287,7 +287,6 @@
     <ClCompile Include="src\objects\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\database\db_gets.h" />
     <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\player\ai\AiInfluenceType.h" />
@@ -345,7 +344,6 @@
     <ClInclude Include="src\simulation\formation\FormationManager.h" />
     <ClInclude Include="src\hud\window\menu\info\LeftMenuInfoPanel.h" />
     <ClInclude Include="src\hud\window\menu\LeftMenuModes.h" />
-    <ClInclude Include="src\objects\building\BuildingUtils.h" />
     <ClInclude Include="src\objects\NamesCache.h" />
     <ClInclude Include="src\objects\ActionType.h" />
     <ClInclude Include="src\objects\unit\state\DisposeState.h" />

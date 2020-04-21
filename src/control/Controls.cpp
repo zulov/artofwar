@@ -345,8 +345,7 @@ bool Controls::clickDown(MouseButton& var) const {
 void Controls::createBuilding(Urho3D::Vector2 pos) const {
 	if (idToCreate >= 0) {
 		auto player = Game::getPlayersMan()->getActivePlayer();
-		Game::getActionCenter()->addBuilding(idToCreate, pos, player->getId(),
-		                                     player->getLevelForBuilding(idToCreate));
+		Game::getActionCenter()->addBuilding(idToCreate, pos, player->getId());
 	}
 }
 

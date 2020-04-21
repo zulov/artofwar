@@ -16,7 +16,6 @@
 #include "objects/order/enums/UnitAction.h"
 #include <fstream>
 
-#include "database/db_gets.h"
 
 #define AI_INFUENCE_OUTPUT_SIZE 9
 
@@ -82,7 +81,8 @@ void Stats::add(BuildingActionCommand* command) {
 
 	joinAndPush(ordersStats, player, input, getOutput(command));
 	if (command->action == BuildingActionType::UNIT_CREATE) {
-		auto& createOutput = getUnitLevel(command->player, command->id)->aiProps->getParamsNormAsString();
+		auto& createOutput = Game::getPlayersMan()
+		                     ->getPlayer(command->player)->getLevelForUnit(command->id)->aiProps->getParamsNormAsString();
 		joinAndPush(ordersUnitCreateId, player, input, createOutput);
 	}
 }
@@ -105,7 +105,8 @@ void Stats::add(CreationCommand* command) {
 	const std::string input = getInputData(player);
 
 	joinAndPush(ordersStats, player, input, getOutput(command));
-	auto& createOutput = getBuildingLevel(command->player, command->id)->aiProps->getParamsNormAsString();
+	auto& createOutput = Game::getPlayersMan()
+		                     ->getPlayer(command->player)->getLevelForBuilding(command->id)->aiProps->getParamsNormAsString();
 	joinAndPush(ordersBuildingCreateId, player, input, createOutput);
 	const std::string inputWithAiProps = input + ";" + createOutput;
 	joinAndPush(ordersBuildingCreatePos, player, inputWithAiProps, getCreateBuildingPosOutput(command));
@@ -270,7 +271,7 @@ std::string Stats::getOutput(UnitActionCommand* command) const {
 std::string Stats::getOutput(ResourceActionCommand* command) const {
 	//TODO
 	float output[STATS_OUTPUT_SIZE];
-	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
+	std::fill_n(output,STATS_OUTPUT_SIZE, 0.f);
 	switch (command->action) {
 	case ResourceActionType::COLLECT: break;
 	case ResourceActionType::CANCEL: break;
@@ -281,7 +282,7 @@ std::string Stats::getOutput(ResourceActionCommand* command) const {
 
 std::string Stats::getOutput(BuildingActionCommand* command) const {
 	float output[STATS_OUTPUT_SIZE];
-	std::fill_n(output,STATS_OUTPUT_SIZE, 0);
+	std::fill_n(output,STATS_OUTPUT_SIZE, 0.f);
 	switch (command->action) {
 	case BuildingActionType::UNIT_CREATE:
 		output[cast(StatsOutputType::CREATE_UNIT)] = 1;

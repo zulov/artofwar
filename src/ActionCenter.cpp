@@ -54,6 +54,11 @@ void ActionCenter::executeLists() const {
 	creation->execute();
 }
 
+bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char player) const {
+	auto level = Game::getPlayersMan()->getPlayer(player)->getLevelForUnit(id)->level;
+	return addUnits(number, id, position, player, level);
+}
+
 bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const {
 	auto command = creation->addUnits(number, id, position, player, level);
 	if (command) {
@@ -64,18 +69,24 @@ bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char 
 	return false;
 }
 
+
+bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player) const {
+	auto level = Game::getPlayersMan()->getPlayer(player)->getLevelForBuilding(id)->level;
+	return addBuilding(id, position, player, level);
+}
+
 bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, int level) const {
 	auto command = creation->addBuilding(id, position, player, level);
 	if (command) {
-		Game::getStats()->add(command);//TODO to dodaæ przez z jak¹œ kolejkê
+		Game::getStats()->add(command); //TODO to dodaæ przez z jak¹œ kolejkê
 		creation->add(command);
 		return true;
 	}
 	return false;
 }
 
-auto ActionCenter::addResource(int id, Urho3D::Vector2& position, int level) const -> bool {
-	auto command = creation->addResource(id, position, level);
+auto ActionCenter::addResource(int id, Urho3D::Vector2& position) const -> bool {
+	auto command = creation->addResource(id, position, 0);
 	if (command) {
 		//Game::getStats()->add(command);
 		creation->add(command);
@@ -89,9 +100,9 @@ void ActionCenter::orderPhysical(short id, QueueActionType type, char playerId) 
 	if (type == QueueActionType::BUILDING_LEVEL) {
 		Game::getStats()->addBuildLevel(id, playerId);
 		auto player = Game::getPlayersMan()->getPlayer(playerId);
-		const auto level = player->getLevelForBuilding(id) + 1;
-		auto opt = Game::getDatabase()->getBuilding(id)->getLevel(level);
-		if (opt.has_value()) {		
+
+		auto opt = player->getNextLevelForBuilding(id);
+		if (opt.has_value()) {
 			if (player->getResources().reduce(opt.value()->costs)) {
 				player->getQueue().add(1, QueueActionType::BUILDING_LEVEL, id, 1);
 			}
