@@ -242,10 +242,10 @@ std::vector<int> InfluenceManager::getIndexes(float* result, float tolerance,
 			std::set_intersection(intersection.begin(), intersection.end(),
 			                      indexes.begin(), indexes.end(),
 			                      std::back_inserter(temp));
+			intersection = temp; //TODO optimize
 			if (temp.empty()) {
 				break;
 			}
-			intersection = temp; //TODO optimize
 		}
 		if (!intersection.empty()) {
 			return intersection;

@@ -218,6 +218,7 @@ struct db_building_level : db_entity, db_level, db_with_name {
 	std::vector<db_unit*> allUnits;
 
 	std::vector<std::vector<db_unit*>*> unitsPerNation;
+	std::vector<std::vector<short>*> unitsPerNationIds;
 
 	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity)
 		: db_entity(id), db_level(level), db_with_name(name),
@@ -229,6 +230,7 @@ struct db_building_level : db_entity, db_level, db_with_name {
 	~db_building_level() {
 		clear_vector(costs);
 		clear_vector(unitsPerNation);
+		clear_vector(unitsPerNationIds);
 	}
 };
 

@@ -17,7 +17,8 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/buildId_w.csv"),
-                                          unitBrainPos("Data/ai/buildPos_w.csv") {}
+                                          unitBrainPos("Data/ai/buildPos_w.csv") {
+}
 
 float* ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -164,7 +165,7 @@ db_unit* ActionMaker::chooseUnit() {
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
 	const auto level = player->getLevelForBuilding(building->id);
-	
+
 	float input[BASIC_INPUT_SIZE + AI_PROPS_SIZE];
 	std::fill_n(input,BASIC_INPUT_SIZE + AI_PROPS_SIZE, 0.f);
 
@@ -192,7 +193,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 		auto buildingEnts = player->getPossession().getBuildings(thatCanDeploy);
 		allPossible.insert(allPossible.begin(), buildingEnts->begin(), buildingEnts->end());
 	}
-
+	return nullptr;
 }
 
 
@@ -223,7 +224,8 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	}
 }
 
-void ActionMaker::levelUpBuilding() {}
+void ActionMaker::levelUpBuilding() {
+}
 
 void ActionMaker::levelUpUnit() {
 	// auto opt = chooseUnitUpgrade(order);

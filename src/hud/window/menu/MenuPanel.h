@@ -62,8 +62,9 @@ private:
 
 	void resetRestButtons(int from);
 
-	std::unordered_set<short> getUnitInBuilding(SelectedInfo* selectedInfo);
-	std::unordered_set<short> getOrderForUnit(SelectedInfo* selectedInfo);
+	std::vector<short> getUnitInBuilding(SelectedInfo* selectedInfo);
+	std::vector<short> getOrderForUnit(SelectedInfo* selectedInfo);
+	
 	static void removeFromCommon(std::unordered_set<short>& common, const std::vector<db_order*>& possibleOrders);
 	static void removeFromCommon(std::unordered_set<short>& common, std::vector<db_unit*>* possibleUnits);
 

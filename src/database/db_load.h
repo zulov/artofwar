@@ -198,8 +198,16 @@ int static loadUnitToBuildingLevels(void* data, int argc, char** argv, char** az
 	auto unit = xyz->units[atoi(argv[0])];
 	level->allUnits.push_back(unit);
 	for (auto nation : unit->nations) {
-		level->unitsPerNation.resize(nation->id + 1);
+		level->unitsPerNation.resize(nation->id + 1, nullptr);
+		level->unitsPerNationIds.resize(nation->id + 1, nullptr);
+		if (level->unitsPerNation[nation->id] == nullptr) {
+			level->unitsPerNation[nation->id] = new std::vector<db_unit*>();
+		}
+		if (level->unitsPerNationIds[nation->id] == nullptr) {
+			level->unitsPerNationIds[nation->id] = new std::vector<short>();
+		}
 		level->unitsPerNation[nation->id]->push_back(unit);
+		level->unitsPerNationIds[nation->id]->push_back(unit->id);
 	}
 	return 0;
 }

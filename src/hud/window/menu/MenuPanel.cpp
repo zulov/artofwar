@@ -22,7 +22,8 @@
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow",
-                                                                    {GameState::RUNNING, GameState::PAUSE}) {}
+                                                                    {GameState::RUNNING, GameState::PAUSE}) {
+}
 
 
 MenuPanel::~MenuPanel() {
@@ -173,17 +174,28 @@ void MenuPanel::levelBuilding() {
 	resetRestButtons(k);
 }
 
-std::unordered_set<short> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) {
+std::vector<short> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) {
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
-	std::unordered_set<short> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
-	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
 	auto& infoTypes = selectedInfo->getSelectedTypes();
+	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
+	std::vector<std::vector<short>*> ids;
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
-			auto level = Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i);
+			ids.push_back(Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i)->unitsPerNationIds[nation]);
+		}
+	}
+	std::vector<short> common;
+	common.insert(common.begin(), ids[0]->begin(), ids[0]->end());
 
-			removeFromCommon(common, level->unitsPerNation[nation]); //TODO bug value));
+	for (int i = 1; i < ids.size(); ++i) {
+		std::vector<short> temp;
+		std::set_intersection(common.begin(), common.end(),
+		                      ids[i]->begin(), ids[i]->end(),
+		                      std::back_inserter(temp));
+		common = temp; //TODO optimize
+		if (temp.empty()) {
+			break;
 		}
 	}
 
