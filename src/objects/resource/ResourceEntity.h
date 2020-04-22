@@ -27,6 +27,8 @@ public:
 	ObjectType getType() const override;
 private:
 	Urho3D::String getBarMaterialName() override;
+	Urho3D::String getShadowMaterialName() override;
+	
 	db_resource* dbResource;
 	float amonut;
 };

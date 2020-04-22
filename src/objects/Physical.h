@@ -123,6 +123,7 @@ private:
 	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;
 	virtual float getShadowSize(const Urho3D::Vector3& boundingBox) const;
 	virtual Urho3D::String getBarMaterialName();
+	virtual Urho3D::String getShadowMaterialName();
 
 
 	int indexInGrid;

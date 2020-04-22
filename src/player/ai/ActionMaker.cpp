@@ -16,7 +16,7 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           mainBrain("Data/ai/main_w.csv"),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
-                                          unitBrainId("Data/ai/buildId_w.csv"),
+                                          unitBrainId("Data/ai/unitId_w.csv"),
                                           unitBrainPos("Data/ai/buildPos_w.csv") {}
 
 float* ActionMaker::decide(Brain& brain) const {
@@ -63,7 +63,6 @@ void ActionMaker::createUnit() {
 		}
 	}
 }
-
 
 std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
 	//TODO perf tu jakich cahce

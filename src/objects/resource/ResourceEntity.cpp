@@ -99,6 +99,10 @@ Urho3D::String ResourceEntity::getBarMaterialName() {
 	return "Materials/bar/bar_grey.xml";
 }
 
+Urho3D::String ResourceEntity::getShadowMaterialName() {
+	return "Materials/select/select_grey_" + dbResource->name + ".xml";
+}
+
 std::string ResourceEntity::getColumns() {
 	return Static::getColumns() +
 		"amount		INT     NOT NULL";

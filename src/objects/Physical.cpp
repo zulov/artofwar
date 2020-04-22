@@ -44,15 +44,15 @@ void Physical::createBillboardBar() {
 	billboardBar = createBillboardSet(barNode, billboardSetBar, getBarMaterialName());
 }
 
-void Physical::createBillboardShadow() {
-	Urho3D::String material;
-
+Urho3D::String Physical::getShadowMaterialName() {
 	if (player == -1) {
-		material = "Materials/select/select_grey.xml";
-	} else {
-		material = "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player)->name + ".xml";
-	}
-	billboardShadow = createBillboardSet(billboardNode, billboardSetShadow, material);
+		return "Materials/select/select_grey_g.xml";
+	} 
+	return "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player)->name + ".xml";
+}
+
+void Physical::createBillboardShadow() {
+	billboardShadow = createBillboardSet(billboardNode, billboardSetShadow, getShadowMaterialName());
 	billboardNode->Pitch(90);
 	billboardSetShadow->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 }
