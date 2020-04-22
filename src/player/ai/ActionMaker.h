@@ -1,10 +1,7 @@
 #pragma once
-#include <functional>
 #include <optional>
 #include <valarray>
 #include <Urho3D/Math/Vector2.h>
-
-
 #include "database/db_strcut.h"
 #include "nn/Brain.h"
 #include "objects/building/Building.h"

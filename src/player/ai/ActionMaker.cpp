@@ -17,7 +17,8 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/unitId_w.csv"),
-                                          unitBrainPos("Data/ai/buildPos_w.csv") {}
+                                          unitBrainPos("Data/ai/buildPos_w.csv") {
+}
 
 float* ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -27,7 +28,12 @@ float* ActionMaker::decide(Brain& brain) const {
 
 void ActionMaker::action() {
 	const auto result = decide(mainBrain);
-
+	std::vector<float> v;
+	for (int i = 0; i < mainBrain.getOutputSize(); ++i) {
+		v.push_back(result[i]);
+		//std::cout << result[i] << ";";
+	}
+	//std::cout << std::endl;
 	const auto max = std::max_element(result, result + mainBrain.getOutputSize());
 
 	auto index = max - result;
@@ -210,7 +216,8 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	}
 }
 
-void ActionMaker::levelUpBuilding() {}
+void ActionMaker::levelUpBuilding() {
+}
 
 void ActionMaker::levelUpUnit() {
 	// auto opt = chooseUnitUpgrade(order);
