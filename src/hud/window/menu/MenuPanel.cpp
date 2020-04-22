@@ -18,6 +18,8 @@
 #include <unordered_set>
 #include <iostream>
 #include <utility>
+
+#include "VectorUtils.h"
 #include "commands/action/ResourceActionType.h"
 
 
@@ -185,39 +187,7 @@ std::vector<short> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) {
 			ids.push_back(Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i)->unitsPerNationIds[nation]);
 		}
 	}
-	std::vector<short> common;
-	common.insert(common.begin(), ids[0]->begin(), ids[0]->end());
-
-	for (int i = 1; i < ids.size(); ++i) {
-		std::vector<short> temp;
-		std::set_intersection(common.begin(), common.end(),
-		                      ids[i]->begin(), ids[i]->end(),
-		                      std::back_inserter(temp));
-		common = temp; //TODO optimize
-		if (temp.empty()) {
-			break;
-		}
-	}
-
-	return common;
-}
-
-void MenuPanel::removeFromCommon(std::unordered_set<short>& common, std::vector<db_unit*>* possibleUnits) {
-	std::unordered_set<short> temp(common);
-	for (auto possibleUnits : (*possibleUnits)) {
-		if (temp.find(possibleUnits->id) != temp.end()) {
-			common.erase(possibleUnits->id);
-		}
-	}
-}
-
-void MenuPanel::removeFromCommon(std::unordered_set<short>& common, const std::vector<db_order*>& possibleOrders) {
-	std::unordered_set<short> temp(common);
-	for (auto possibleOrder : possibleOrders) {
-		if (temp.find(possibleOrder->id) != temp.end()) {
-			common.erase(possibleOrder->id);
-		}
-	}
+	return intersection(ids);
 }
 
 void MenuPanel::basicUnit(SelectedInfo* selectedInfo) {
@@ -245,17 +215,18 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	resetRestButtons(k);
 }
 
-std::unordered_set<short> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) {
+std::vector<short> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) {
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
-	std::unordered_set<short> common = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
 	auto& infoTypes = selectedInfo->getSelectedTypes();
 
+	std::vector<std::vector<short>*> ids;
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
-			removeFromCommon(common, Game::getDatabase()->getUnit(i)->orders);
+			ids.push_back(&Game::getDatabase()->getUnit(i)->ordersIds);
 		}
 	}
-	return common;
+	return intersection(ids);
 }
 
 

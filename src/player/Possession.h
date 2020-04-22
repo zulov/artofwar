@@ -1,8 +1,6 @@
 #pragma once
 #include <vector>
 
-#include "database/db_strcut.h"
-
 
 class Unit;
 class Building;

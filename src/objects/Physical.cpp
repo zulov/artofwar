@@ -30,7 +30,6 @@ bool Physical::isAlive() const {
 }
 
 short Physical::getId() {
-	Game::getLog()->Write(0, "ERROR Physical getId");
 	return -1;
 }
 

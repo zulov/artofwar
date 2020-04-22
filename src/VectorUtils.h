@@ -31,3 +31,23 @@ void static cleanDead(std::vector<ResourceEntity*>& vector) {
 		std::remove_if(vector.begin(), vector.end(), isAlive),
 		vector.end());
 }
+
+static std::vector<short> intersection(std::vector<std::vector<short>*>& ids) {
+	std::vector<short> common;//TODO check if ids sorted sometimes?
+	if (ids.empty()) {
+		return common;
+	}
+	common.insert(common.begin(), ids[0]->begin(), ids[0]->end());
+
+	for (int i = 1; i < ids.size(); ++i) {
+		std::vector<short> temp;
+		std::set_intersection(common.begin(), common.end(),
+		                      ids[i]->begin(), ids[i]->end(),
+		                      std::back_inserter(temp));
+		common = temp; //TODO optimize
+		if (temp.empty()) {
+			break;
+		}
+	}
+	return common;
+}

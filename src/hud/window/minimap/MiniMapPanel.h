@@ -1,6 +1,5 @@
 #pragma once
 #include "../AbstractWindowPanel.h"
-#include "database/db_strcut.h"
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/UI/Sprite.h>
 #include <vector>

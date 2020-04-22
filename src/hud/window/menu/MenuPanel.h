@@ -64,9 +64,6 @@ private:
 
 	std::vector<short> getUnitInBuilding(SelectedInfo* selectedInfo);
 	std::vector<short> getOrderForUnit(SelectedInfo* selectedInfo);
-	
-	static void removeFromCommon(std::unordered_set<short>& common, const std::vector<db_order*>& possibleOrders);
-	static void removeFromCommon(std::unordered_set<short>& common, std::vector<db_unit*>* possibleUnits);
 
 	Urho3D::UIElement* rows[LEFT_MENU_ROWS_NUMBER];
 	Urho3D::Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];

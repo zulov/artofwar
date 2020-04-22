@@ -157,6 +157,7 @@ struct db_unit : db_entity, db_with_name {
 	std::vector<db_unit_level*> levels;
 
 	std::vector<db_order*> orders;
+	std::vector<short> ordersIds;
 	std::vector<db_nation*> nations;
 
 	bool possibleStates[STATE_SIZE];
@@ -218,7 +219,7 @@ struct db_building_level : db_entity, db_level, db_with_name {
 	std::vector<db_unit*> allUnits;
 
 	std::vector<std::vector<db_unit*>*> unitsPerNation;
-	std::vector<std::vector<short>*> unitsPerNationIds;
+	std::vector<std::vector<short>*> unitsPerNationIds;//TODO remember must be storted
 
 	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity)
 		: db_entity(id), db_level(level), db_with_name(name),

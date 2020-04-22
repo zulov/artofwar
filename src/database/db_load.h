@@ -113,6 +113,7 @@ int static loadOrdersToUnit(void* data, int argc, char** argv, char** azColName)
 	db_order* dbOrder = xyz->orders[atoi(argv[1])];
 
 	xyz->units[atoi(argv[0])]->orders.push_back(dbOrder);
+	xyz->units[atoi(argv[0])]->ordersIds.push_back(dbOrder->id);
 
 	return 0;
 }
@@ -209,6 +210,7 @@ int static loadUnitToBuildingLevels(void* data, int argc, char** argv, char** az
 		level->unitsPerNation[nation->id]->push_back(unit);
 		level->unitsPerNationIds[nation->id]->push_back(unit->id);
 	}
+
 	return 0;
 }
 
