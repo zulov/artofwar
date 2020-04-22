@@ -3,7 +3,6 @@
 #include "LeftMenuModes.h"
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/CheckBox.h>
-#include <unordered_set>
 #include <vector>
 
 #include "database/db_strcut.h"

@@ -1,4 +1,4 @@
-#include "MenuPanel.h"
+﻿#include "MenuPanel.h"
 #include "GameState.h"
 #include "control/SelectedInfo.h"
 #include "control/SelectedInfoType.h"
@@ -37,7 +37,7 @@ void MenuPanel::removeHoverInfo() const {
 	infoPanel->removeHoverInfo();
 }
 
-void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {//TODO performance rzadniej od?wie?a?
+void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {//TODO performance rzadniej odświeżać
 	lastSelectedInfo = selectedInfo;
 	if (mode != _mode) {
 		mode = _mode;
@@ -184,9 +184,7 @@ std::vector<short> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) {
 	std::vector<std::vector<short>*> ids;
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
-			auto &a =Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i)->unitsPerNationIds;
-			auto ar=Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i)->unitsPerNationIds[nation];
-			ids.push_back(ar);
+			ids.push_back(Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i)->unitsPerNationIds[nation]);
 		}
 	}
 	return intersection(ids);
