@@ -17,8 +17,7 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/buildId_w.csv"),
-                                          unitBrainPos("Data/ai/buildPos_w.csv") {
-}
+                                          unitBrainPos("Data/ai/buildPos_w.csv") {}
 
 float* ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -105,19 +104,6 @@ std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
 	return {};
 }
 
-void ActionMaker::getValues(float* values, const std::function<float(db_level*)>& func) const {
-	int i = 0;
-	auto buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	for (auto building : buildings) {
-		auto optLevel = building->getLevel(player->buildingLevels[building->id]);
-		if (optLevel.has_value()) {
-			values[i++] = func(optLevel.value());
-		} else {
-			values[i++] = -1;
-		}
-	}
-}
-
 db_building* ActionMaker::chooseBuilding() {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 
@@ -179,19 +165,20 @@ std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
 
-Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
+Building* ActionMaker::getBuildingToDeploy(db_unit* unit) const {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	std::unordered_set<short> buildingIdsThatCanDeploy;
+	std::vector<short> buildingIdsThatCanDeploy;
 	for (auto building : buildings) {
-		auto level = player->getLevelForBuilding(building->id);
-		for (auto dbUnit : *level->unitsPerNation[player->getNation()]) {
-			buildingIdsThatCanDeploy.insert(dbUnit->id);
+		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
+
+		if (std::find(unitIds->begin(), unitIds->end(), unit->id) != unitIds->end()) {
+			buildingIdsThatCanDeploy.push_back(building->id);
 		}
 	}
 	std::vector<Building*> allPossible;
 	for (auto thatCanDeploy : buildingIdsThatCanDeploy) {
 		auto buildingEnts = player->getPossession().getBuildings(thatCanDeploy);
-		allPossible.insert(allPossible.begin(), buildingEnts->begin(), buildingEnts->end());
+		allPossible.insert(allPossible.end(), buildingEnts->begin(), buildingEnts->end());
 	}
 	return nullptr;
 }
@@ -224,8 +211,7 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	}
 }
 
-void ActionMaker::levelUpBuilding() {
-}
+void ActionMaker::levelUpBuilding() {}
 
 void ActionMaker::levelUpUnit() {
 	// auto opt = chooseUnitUpgrade(order);

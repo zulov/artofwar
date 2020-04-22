@@ -26,11 +26,10 @@ private:
 	void levelUpBuilding();
 	void createUnit();
 	std::optional<Urho3D::Vector2> posToBuild(db_building* building);
-	Building* getBuildingToDeploy(db_unit* unit);
+	Building* getBuildingToDeploy(db_unit* unit) const;
 	void createBuilding();
 
 	std::optional<short> chooseUpgrade(StatsOutputType order) const;
-	void getValues(float* values, const std::function<float(db_level*)>& func) const;
 	db_building* chooseBuilding();
 	void closest(std::valarray<float> &center, short& closestId, float& closest, db_ai_property* props, short id);
 	db_unit* chooseUnit();

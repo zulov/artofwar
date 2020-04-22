@@ -67,8 +67,8 @@ void DatabaseCache::loadData(const std::string& name) {
 	execute("SELECT * from unit_level order by level", loadUnitLevels);
 	execute("SELECT * from building_level order by level", loadBuildingLevels);
 
-	execute("SELECT * from building_to_nation", loadBuildingToNation);
-	execute("SELECT * from unit_to_nation", loadUnitToNation);
+	execute("SELECT * from building_to_nation order by building", loadBuildingToNation);
+	execute("SELECT * from unit_to_nation order by unit", loadUnitToNation);
 
 	execute("SELECT * from unit_to_building_level order by unit", loadUnitToBuildingLevels);//TODO make sure its sorted set_intersection
 

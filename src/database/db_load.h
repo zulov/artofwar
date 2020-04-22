@@ -151,10 +151,22 @@ int static loadSettings(void* data, int argc, char** argv, char** azColName) {
 
 int static loadBuildingLevels(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	auto building_level = new db_building_level(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), argv[3],
-	                                            argv[4], atoi(argv[5]));
-	setEntity(xyz->buildingsLevels, building_level);
-	xyz->buildings[building_level->building]->levels.push_back(building_level);
+	auto level = new db_building_level(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), argv[3],
+	                                   argv[4], atoi(argv[5]));
+	setEntity(xyz->buildingsLevels, level);
+	xyz->buildings[level->building]->levels.push_back(level);
+	for (auto nation : xyz->nations) {
+		if (nation) {
+			level->unitsPerNation.resize(nation->id + 1, nullptr);
+			level->unitsPerNationIds.resize(nation->id + 1, nullptr);
+			if (level->unitsPerNation[nation->id] == nullptr) {
+				level->unitsPerNation[nation->id] = new std::vector<db_unit*>();
+			}
+			if (level->unitsPerNationIds[nation->id] == nullptr) {
+				level->unitsPerNationIds[nation->id] = new std::vector<short>();
+			}
+		}
+	}
 	return 0;
 }
 
@@ -199,14 +211,6 @@ int static loadUnitToBuildingLevels(void* data, int argc, char** argv, char** az
 	auto unit = xyz->units[atoi(argv[0])];
 	level->allUnits.push_back(unit);
 	for (auto nation : unit->nations) {
-		level->unitsPerNation.resize(nation->id + 1, nullptr);
-		level->unitsPerNationIds.resize(nation->id + 1, nullptr);
-		if (level->unitsPerNation[nation->id] == nullptr) {
-			level->unitsPerNation[nation->id] = new std::vector<db_unit*>();
-		}
-		if (level->unitsPerNationIds[nation->id] == nullptr) {
-			level->unitsPerNationIds[nation->id] = new std::vector<short>();
-		}
 		level->unitsPerNation[nation->id]->push_back(unit);
 		level->unitsPerNationIds[nation->id]->push_back(unit->id);
 	}
