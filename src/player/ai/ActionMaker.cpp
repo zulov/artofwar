@@ -209,7 +209,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) const {
 		auto buildingEnts = player->getPossession().getBuildings(thatCanDeploy);
 		allPossible.insert(allPossible.end(), buildingEnts->begin(), buildingEnts->end());
 	}
-	return nullptr;
+	return allPossible[0];
 }
 
 
