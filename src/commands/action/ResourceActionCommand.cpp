@@ -1,5 +1,5 @@
 #include "ResourceActionCommand.h"
-#include "VectorUtils.h"
+#include "math/VectorUtils.h"
 
 ResourceActionCommand::ResourceActionCommand(ResourceEntity* resource, ResourceActionType action, char player)
 	: AbstractCommand(player), action(action) {

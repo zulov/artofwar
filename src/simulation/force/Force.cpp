@@ -1,6 +1,6 @@
 #include "Force.h"
 #include "Game.h"
-#include "MathUtils.h"
+#include "math/MathUtils.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"

@@ -4,7 +4,7 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/IO/Log.h>
-#include "ActionCenter.h"
+#include "player/ai/ActionCenter.h"
 #include "camera/CameraManager.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
@@ -16,7 +16,7 @@
 #include "Game.h"
 #include "HitData.h"
 #include "hud/HudData.h"
-#include "MathUtils.h"
+#include "math/MathUtils.h"
 #include "objects/ActionType.h"
 #include "objects/NodeUtils.h"
 #include "objects/ObjectEnums.h"

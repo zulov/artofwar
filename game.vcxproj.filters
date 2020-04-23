@@ -178,7 +178,6 @@
     <ClCompile Include="src\player\ai\nn\Layer.cpp" />
     <ClCompile Include="src\player\ai\nn\Brain.cpp" />
     <ClCompile Include="src\stats\Stats.cpp" />
-    <ClCompile Include="src\ActionCenter.cpp" />
     <ClCompile Include="src\objects\order\FormationOrder.cpp" />
     <ClCompile Include="src\objects\order\IndividualOrder.cpp" />
     <ClCompile Include="src\objects\order\UnitOrder.cpp" />
@@ -193,6 +192,8 @@
       <Filter>player</Filter>
     </ClCompile>
     <ClCompile Include="src\player\ai\ActionMaker.cpp" />
+    <ClCompile Include="src\math\RandGen.cpp" />
+    <ClCompile Include="src\player\ai\ActionCenter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -413,7 +414,6 @@
     <ClInclude Include="src\objects\unit\state\UnitState.h">
       <Filter>objects\state</Filter>
     </ClInclude>
-    <ClInclude Include="src\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
     <ClInclude Include="src\objects\CellState.h" />
     <ClInclude Include="src\objects\static\Static.h" />
@@ -458,8 +458,6 @@
     <ClInclude Include="src\player\ai\nn\AFUtil.h" />
     <ClInclude Include="src\StringUtils.h" />
     <ClInclude Include="src\stats\Stats.h" />
-    <ClInclude Include="src\VectorUtils.h" />
-    <ClInclude Include="src\ActionCenter.h" />
     <ClInclude Include="src\stats\StatsEnums.h" />
     <ClInclude Include="src\objects\ObjectEnums.h">
       <Filter>objects</Filter>
@@ -487,6 +485,11 @@
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\player\ai\InfluenceType.h" />
     <ClInclude Include="src\player\ai\AiInfluenceType.h" />
+    <ClInclude Include="src\math\VectorUtils.h" />
+    <ClInclude Include="src\math\MathUtils.h" />
+    <ClInclude Include="src\math\RandGen.h" />
+    <ClInclude Include="src\player\ai\ActionCenter.h" />
+    <ClInclude Include="src\math\RandType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

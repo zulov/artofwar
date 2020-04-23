@@ -1,6 +1,6 @@
 #include "Formation.h"
 #include "Game.h"
-#include "MathUtils.h"
+#include "math/MathUtils.h"
 #include "commands/CommandList.h"
 #include "objects/unit/Unit.h"
 #include "objects/order/FutureOrder.h"

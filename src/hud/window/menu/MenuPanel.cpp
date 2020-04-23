@@ -19,7 +19,7 @@
 #include <iostream>
 #include <utility>
 
-#include "VectorUtils.h"
+#include "math/VectorUtils.h"
 #include "commands/action/ResourceActionType.h"
 
 

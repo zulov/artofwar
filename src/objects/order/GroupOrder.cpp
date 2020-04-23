@@ -1,7 +1,7 @@
 #include "GroupOrder.h"
 #include "FormationOrder.h"
 #include "Game.h"
-#include "VectorUtils.h"
+#include "math/VectorUtils.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/order/enums/UnitAction.h"
 #include "objects/order/enums/UnitActionType.h"

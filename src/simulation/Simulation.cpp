@@ -24,7 +24,7 @@
 #include <ctime>
 #include "player/ai/AiManager.h"
 #include "stats/Stats.h"
-#include "ActionCenter.h"
+#include "player/ai/ActionCenter.h"
 
 
 Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {

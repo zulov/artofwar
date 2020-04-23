@@ -1,6 +1,6 @@
 #include "Static.h"
 #include "Game.h"
-#include "MathUtils.h"
+#include "math/MathUtils.h"
 #include "../unit/Unit.h"
 #include "simulation/env/Environment.h"
 #include <string>

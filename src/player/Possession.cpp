@@ -6,7 +6,7 @@
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include "objects/order/enums/UnitAction.h"
-#include "VectorUtils.h"
+#include "math/VectorUtils.h"
 #include "objects/ValueType.h"
 #include <numeric>
 

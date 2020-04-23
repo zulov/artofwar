@@ -31,6 +31,8 @@
 #include <Urho3D/UI/UIEvents.h>
 
 #include <utility>
+
+#include "math/RandGen.h"
 #include "stats/Stats.h"
 
 
@@ -42,6 +44,7 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE),
                                gameState(GameState::STARTING) {
 	MySprite::RegisterObject(context);
 	Game::init();
+	RandGen::init();
 }
 
 void Main::Setup() {
@@ -97,6 +100,7 @@ void Main::Stop() {
 	delete Game::getDatabase();
 	Game::setDatabaseCache(nullptr);
 	Game::dispose();
+	RandGen::dispose();
 	engine_->DumpResources(true);
 }
 

@@ -1,7 +1,7 @@
 ﻿#include "MainGrid.h"
 #include "Bucket.h"
 #include "Game.h"
-#include "MathUtils.h"
+#include "math/MathUtils.h"
 #include "Urho3D/Resource/Image.h"
 #include "objects/static/Static.h"
 #include "objects/unit/Unit.h"

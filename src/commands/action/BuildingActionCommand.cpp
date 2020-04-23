@@ -1,5 +1,5 @@
 #include "BuildingActionCommand.h"
-#include "VectorUtils.h"
+#include "math/VectorUtils.h"
 
 BuildingActionCommand::BuildingActionCommand(Building* building, BuildingActionType action, short id, char player)
 	: AbstractCommand(player), id(id), action(action) {

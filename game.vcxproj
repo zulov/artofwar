@@ -181,11 +181,12 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\math\RandGen.cpp" />
     <ClCompile Include="src\player\ai\ActionMaker.cpp" />
     <ClCompile Include="src\simulation\env\CloseIndexProvider.cpp" />
     <ClCompile Include="src\commands\action\ResourceActionCommand.cpp" />
     <ClCompile Include="src\commands\action\BuildingActionCommand.cpp" />
-    <ClCompile Include="src\ActionCenter.cpp" />
+    <ClCompile Include="src\player\ai\ActionCenter.cpp" />
     <ClCompile Include="src\player\ai\nn\Brain.cpp" />
     <ClCompile Include="src\player\ai\nn\Layer.cpp" />
     <ClCompile Include="src\debug\DebugManager.cpp" />
@@ -287,7 +288,9 @@
     <ClCompile Include="src\objects\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\math\RandGen.h" />
     <ClInclude Include="src\database\db_load.h" />
+    <ClInclude Include="src\math\RandType.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\player\ai\AiInfluenceType.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
@@ -297,7 +300,7 @@
     <ClInclude Include="src\objects\order\enums\UnitActionType.h" />
     <ClInclude Include="src\commands\action\ResourceActionCommand.h" />
     <ClInclude Include="src\commands\action\BuildingActionCommand.h" />
-    <ClInclude Include="src\ActionCenter.h" />
+    <ClInclude Include="src\player\ai\ActionCenter.h" />
     <ClInclude Include="src\objects\queue\QueueActionType.h" />
     <ClInclude Include="src\player\ai\nn\AFUtil.h" />
     <ClInclude Include="src\player\ai\nn\Brain.h" />
@@ -317,7 +320,7 @@
     <ClInclude Include="src\consts.h" />
     <ClInclude Include="src\debug\DebugLineRepo.h" />
     <ClInclude Include="src\debug\DebugUnitType.h" />
-    <ClInclude Include="src\MathUtils.h" />
+    <ClInclude Include="src\math\MathUtils.h" />
     <ClInclude Include="src\objects\PhysicalUtils.h" />
     <ClInclude Include="src\objects\CellState.h" />
     <ClInclude Include="src\objects\static\StaticStateUtils.h" />
@@ -465,7 +468,7 @@
     <ClInclude Include="src\commands\upgrade\UpgradeCommandList.h" />
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
     <ClInclude Include="src\stats\Stats.h" />
-    <ClInclude Include="src\VectorUtils.h" />
+    <ClInclude Include="src\math\VectorUtils.h" />
     <ClInclude Include="src\objects\order\UnitOrder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
