@@ -8,6 +8,8 @@
 #include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/UI/LineEdit.h>
 
+#include "math/RandGen.h"
+
 
 struct NewGameTeamLine {
 	NewGameTeamLine() = default;
@@ -33,7 +35,7 @@ struct NewGameTeamLine {
 
 		auto names = Game::getCache()->GetResource<Urho3D::JSONFile>("lang/names.json");
 		auto namesArray = names->GetRoot().Get("player_names").GetArray();
-		lineEdit->SetText(namesArray.At(rand() % namesArray.Size()).GetCString());
+		lineEdit->SetText(namesArray.At(RandGen::nextRand(RandIntType::PLAYER_NAME, namesArray.Size())).GetCString());
 
 		team = createElement<Urho3D::DropDownList>(row, style, "MainMenuNewGameDropDownList");
 		addChildTexts(team, {l10n->Get("1"), l10n->Get("2")}, style);

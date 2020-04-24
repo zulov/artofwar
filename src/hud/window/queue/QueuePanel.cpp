@@ -66,11 +66,8 @@ void QueuePanel::update(SelectedInfo* selectedInfo) const {
 	//TODO wykonuje sie nawet jeœli sie nic nie zmieni³o
 	short j = 0;
 	if (window->IsVisible()) {
-		std::vector<SelectedInfoType*> & infoTypes = selectedInfo->getSelectedTypes();
-
-		for (auto& infoType : infoTypes) {
-			std::vector<Physical*> & data = infoType->getData();
-			for (Physical* physical : data) {
+		for (auto infoType : selectedInfo->getSelectedTypes()) {
+			for (Physical* physical : infoType->getData()) {
 				//TODO przeniesc kolejke do Physical
 				const auto building = dynamic_cast<Building*>(physical);
 				update(*building->getQueue(), j);

@@ -53,7 +53,7 @@ void ActionMaker::action() {
 	if (max <= 0) {
 		return;
 	}
-	float val = RandGen::nextRand(RandType::AI, max);
+	float val = RandGen::nextRand(RandFloatType::AI, max);
 	float sum = 0;
 	for (int i = 0; i < 3; ++i) {
 		sum += vals[i];

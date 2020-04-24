@@ -21,7 +21,6 @@
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
 #include "objects/order/enums/UnitAction.h"
-#include <ctime>
 #include "player/ai/AiManager.h"
 #include "stats/Stats.h"
 #include "player/ai/ActionCenter.h"
@@ -32,7 +31,6 @@ Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 	Game::setActionCenter(new ActionCenter(simObjectManager));
 	colorScheme = SimColorMode::BASIC;
 
-	srand(time(NULL));
 
 	simulationInfo = new SimulationInfo();
 

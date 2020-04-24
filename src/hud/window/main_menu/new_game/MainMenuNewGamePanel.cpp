@@ -4,13 +4,10 @@
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
 #include <Urho3D/UI/UIEvents.h>
-#include <ctime>
-
 
 MainMenuNewGamePanel::
 MainMenuNewGamePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(_style, _title) {
 	bodyStyle = "MainMenuNewGameMock";
-	srand(time(NULL));
 }
 
 void MainMenuNewGamePanel::createBody() {

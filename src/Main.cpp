@@ -349,7 +349,7 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 		} else if (key == KEY_3) {
 			changeCamera(CameraBehaviorType::TOP);
 		} else if (key == KEY_F5) {
-			String name = "test" + String(rand());
+			String name = "test" + String(RandGen::nextRand(RandIntType::SAVE,99999999));
 			save(name);
 		} else if (key == KEY_F6) {
 			saveToLoad = "quicksave.db";

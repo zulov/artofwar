@@ -34,7 +34,7 @@ void SelectedInfo::reset() {
 	changed = true;
 	allNumber = 0;
 	allSubTypeNumber = 0;
-	for (auto& element : selectedByType) {
+	for (auto element : selectedByType) {
 		element->clear();
 	}
 }

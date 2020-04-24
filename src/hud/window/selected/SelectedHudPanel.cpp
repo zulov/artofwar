@@ -77,13 +77,12 @@ void SelectedHudPanel::clearSelected() const {
 
 void SelectedHudPanel::update(SelectedInfo* selectedInfo) const {
 	ObjectType type = selectedInfo->getSelectedType();
-	auto& infoTypes = selectedInfo->getSelectedTypes();
 
 	int all = selectedInfo->getAllNumber();
 	auto selectedSubTypeNumber = selectedInfo->getSelectedSubTypeNumber();
 	int ratio = all / (linesNumber * maxInRow - selectedSubTypeNumber + 2) + 1;
 	int k = 0;
-	for (auto& infoType : infoTypes) {
+	for (auto& infoType : selectedInfo->getSelectedTypes()) {
 		auto& data = infoType->getData();
 		if (data.empty()) { continue; }
 		auto name = getIconName(type, infoType->getId());

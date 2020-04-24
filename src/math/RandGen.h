@@ -9,12 +9,15 @@ class RandGen {
 public:
 	static void init();
 	static void dispose();
-	static float nextRand(RandType type, float max = 0.f);
+	static float nextRand(RandFloatType type, float max = 1.f);
+	static int nextRand(RandIntType type, int max = 255.f);
 private:
 	RandGen() = default;
 	~RandGen();
 	static RandGen* instance;
-	int indexes[RAND_TYPE_SIZE];
-	std::vector<float>* data[RAND_TYPE_SIZE];
+	int indexesFloat[RAND_FLOAT_SIZE];
+	int indexesInt[RAND_INT_SIZE];
+	std::vector<float>* dataFloat[RAND_FLOAT_SIZE];
+	std::vector<int>* dataInt[RAND_INT_SIZE];
 };
 

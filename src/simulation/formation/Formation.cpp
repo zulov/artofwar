@@ -48,7 +48,7 @@ Urho3D::Vector2 Formation::computeLocalCenter() {
 void Formation::setNewLeader(Urho3D::Vector2& localCenter) {
 	int maxDist = 99999;
 	leader = nullptr;
-	for (auto& unit : units) {
+	for (auto unit : units) {
 		const auto dist = sqDist(localCenter, unit->getPosition());
 		if (dist < maxDist) {
 			leader = unit;

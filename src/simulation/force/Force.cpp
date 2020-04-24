@@ -1,6 +1,7 @@
 #include "Force.h"
 #include "Game.h"
 #include "math/MathUtils.h"
+#include "math/RandGen.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"
@@ -48,8 +49,8 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 		if (sqDistance > sqSepDist) { continue; }
 		if (isLeaderFor != -1 && isLeaderFor == neight->getFormation()) { continue; }
 		if (sqDistance == 0) {
-			force.x_ = static_cast<float>(rand()) / RAND_MAX - 0.5;
-			force.y_ = static_cast<float>(rand()) / RAND_MAX - 0.5;
+			force.x_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE,1.f) - 0.5f;
+			force.y_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE,1.f) - 0.5f;
 			force *= boostCoef * sepCoef;
 			newForce += force;
 			return;
