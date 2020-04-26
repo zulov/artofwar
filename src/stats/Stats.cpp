@@ -58,14 +58,6 @@ std::string Stats::getInputData(char player) {
 	return join(input, input + BASIC_INPUT_SIZE);
 }
 
-// void Stats::add(UpgradeCommand* command) {
-// 	const auto player = command->player;
-//
-// 	const std::string data = getInputData(player);
-//
-// 	appendOutput(player, data, getOutput(command));
-// }
-
 void Stats::add(ResourceActionCommand* command) {
 	const auto player = command->player;
 

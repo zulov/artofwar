@@ -14,6 +14,7 @@
 #include "stats/Stats.h"
 #include "stats/StatsEnums.h"
 
+using namespace magic_enum::ostream_operators;
 
 ActionMaker::ActionMaker(Player* player): player(player),
                                           mainBrain("Data/ai/main_w.csv"),
@@ -53,10 +54,13 @@ void ActionMaker::action() {
 	}
 	float val = RandGen::nextRand(RandFloatType::AI, max);
 	float sum = 0;
-
+	for (int i = 0; i < 3; ++i) {
+		std::cout << static_cast<StatsOutputType>(ids[i]) << "-"<<(vals[i]/max*100)<<"%, ";
+	}
 	for (int i = 0; i < 3; ++i) {
 		sum += vals[i];
 		if (val <= sum) {
+			std::cout << " -> " << static_cast<StatsOutputType>(ids[i]) << std::endl;
 			createOrder(static_cast<StatsOutputType>(ids[i]));
 			return;
 		}
