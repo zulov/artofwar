@@ -29,46 +29,4 @@ struct Consts {
 
 	inline const static ActionParameter EMPTY_ACTION_PARAMETER = ActionParameter::Builder().build();
 
-	inline static char* UnitStateNames[] =
-	{
-		stringify(STOP),
-		stringify(MOVE),
-		stringify(GO_TO),
-		stringify(DEAD),
-		stringify(CHARGE),
-		stringify(ATTACK),
-		stringify(SHOT),
-		stringify(DEFEND),
-		stringify(FOLLOW),
-		stringify(COLLECT),
-		stringify(DISPOSE)
-	};
-
-	inline static char* StaticStateNames[] = {
-		stringify(ALIVE),
-		stringify(DEAD),
-		stringify(DISPOSE),
-		stringify(FREE)
-	};
-
-	inline static char* SimColorModeNames[] =
-	{
-		stringify(BASIC),
-		stringify(VELOCITY),
-		stringify(STATE),
-		stringify(FORMATION)
-	};
-
-	inline static char* EnvDebugModeNames[] =
-	{
-		stringify(NONE),
-		stringify(MAIN_GRID),
-		stringify(INF_UNITS_NUMBER_PER_PLAYER),
-		stringify(INF_UNITS_INFLUENCE_PER_PLAYER),
-		stringify(INF_BUILDING_INFLUENCE_PER_PLAYER),
-		stringify(INF_RESOURCE),
-		stringify(INF_ATTACK_INFLUENCE_PER_PLAYER),
-		stringify(INF_DEFENCE_INFLUENCE_PER_PLAYER)
-		stringify(INF_ECON_INFLUENCE_PER_PLAYER)
-	};
 };

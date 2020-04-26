@@ -2,19 +2,21 @@
 #include "Game.h"
 #include "simulation/env/Environment.h"
 #include "consts.h"
+#include <magic_enum.hpp>
 
 void DebugManager::change(Urho3D::Input* input, Simulation* simulation) {
 	if (input->GetKeyPress(Urho3D::KEY_F9)) {
 		simColorMode = nextColorMode[static_cast<char>(simColorMode)];
 		simulation->changeColorMode(simColorMode);
+
 		Game::getLog()->Write(0, "Debug Mode Simulation change to "
-		                      + Urho3D::String(Consts::SimColorModeNames[static_cast<char>(simColorMode)]));
+		                      + Urho3D::String(magic_enum::enum_name(simColorMode).data()));
 	}
 
 	if (input->GetKeyPress(Urho3D::KEY_F10)) {
 		environmentDebugMode = nextEnvMode[static_cast<char>(environmentDebugMode)];
 		Game::getLog()->Write(2, "Debug Mode Environment change to "
-		                      + Urho3D::String(Consts::EnvDebugModeNames[static_cast<char>(environmentDebugMode)]));
+			 + Urho3D::String(magic_enum::enum_name(environmentDebugMode).data()));
 		environmentIndex = 0;
 	} else if (input->GetKeyPress(Urho3D::KEY_F11)) {
 		environmentIndex++;

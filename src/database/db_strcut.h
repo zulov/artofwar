@@ -9,10 +9,10 @@
 #include <utility>
 #include <vector>
 #include <string>
-#include "objects/unit/state/UnitState.h"
+#include <magic_enum.hpp>
 #include "objects/ValueType.h"
 #include "utils.h"
-
+#include "objects/unit/state/UnitState.h"
 
 struct db_nation;
 struct db_order;
@@ -160,7 +160,7 @@ struct db_unit : db_entity, db_with_name {
 	std::vector<short> ordersIds;
 	std::vector<db_nation*> nations;
 
-	bool possibleStates[STATE_SIZE];
+	bool possibleStates[magic_enum::enum_count<UnitState>()];
 
 	db_unit(short id, char* name, short rotatable, char* icon, short actionState)
 		: db_entity(id), db_with_name(name),

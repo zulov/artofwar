@@ -250,7 +250,8 @@ Urho3D::String Unit::toMultiLineString() {
 	       .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
 	       .Append("\nZdrowie: ").Append(Urho3D::String(hp))
 	       .Append("/").Append(Urho3D::String(maxHp))
-	       .Append("\nStan:").Append(Urho3D::String(Consts::UnitStateNames[static_cast<char>(state)]));
+	       .Append("\nStan:").Append(Urho3D::String(magic_enum::enum_name(state).data()));
+	
 }
 
 void Unit::action(UnitAction unitAction) {

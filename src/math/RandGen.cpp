@@ -1,6 +1,7 @@
 #include "RandGen.h"
 
 #include <random>
+#include <magic_enum.hpp>
 #include "RandType.h"
 #include "utils.h"
 
@@ -11,8 +12,8 @@ RandGen* RandGen::instance = nullptr;
 
 
 RandGen::~RandGen() {
-	clear_array(instance->dataFloat, RAND_FLOAT_SIZE);
-	clear_array(instance->dataInt, RAND_INT_SIZE);
+	clear_array(instance->dataFloat, magic_enum::enum_count<RandFloatType>());
+	clear_array(instance->dataInt, magic_enum::enum_count<RandIntType>());
 }
 
 void RandGen::init() {
@@ -22,8 +23,8 @@ void RandGen::init() {
 	{
 		std::mt19937 gen(1);
 		std::uniform_real_distribution<double> disFloat(0.0, 1.0);
-		std::fill_n(instance->indexesFloat, RAND_FLOAT_SIZE, 0);
-		for (int i = 0; i < RAND_FLOAT_SIZE; ++i) {
+		std::fill_n(instance->indexesFloat, magic_enum::enum_count<RandFloatType>(), 0);
+		for (int i = 0; i < magic_enum::enum_count<RandIntType>(); ++i) {
 			instance->dataFloat[i] = new std::vector<float>();
 			for (int j = 0; j < RAND_TAB_SIZE; ++j) {
 				instance->dataFloat[i]->push_back(disFloat(gen));
@@ -32,9 +33,9 @@ void RandGen::init() {
 	}
 	{
 		std::mt19937 gen(1);
-		std::uniform_int_distribution<int> disInt(0, INT64_MAX);
-		std::fill_n(instance->indexesInt, RAND_INT_SIZE, 0);
-		for (int i = 0; i < RAND_INT_SIZE; ++i) {
+		std::uniform_int_distribution<int> disInt(0, INT32_MAX);
+		std::fill_n(instance->indexesInt, magic_enum::enum_count<RandIntType>(), 0);
+		for (int i = 0; i < magic_enum::enum_count<RandIntType>(); ++i) {
 			instance->dataInt[i] = new std::vector<int>();
 			for (int j = 0; j < RAND_TAB_SIZE; ++j) {
 				instance->dataInt[i]->push_back(disInt(gen));

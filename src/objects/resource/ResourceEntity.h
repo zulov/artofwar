@@ -23,7 +23,7 @@ public:
 	float getHealthPercent() const override;
 	Urho3D::String toMultiLineString() override;
 	std::string getValues(int precision) override;
-	void action(ResourceActionType type);
+	void action(ResourceActionType type, char player);
 	ObjectType getType() const override;
 private:
 	Urho3D::String getBarMaterialName() override;

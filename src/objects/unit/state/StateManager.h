@@ -1,6 +1,6 @@
 #pragma once
 #include "State.h"
-
+#include <magic_enum.hpp>
 
 
 enum class StaticState : char;
@@ -24,7 +24,7 @@ private:
 	~StateManager();
 	static State* getState(Unit* unit);
 
-	State* states[STATE_SIZE]{};
+	State* states[magic_enum::enum_count<UnitState>()]{};
 
 	static StateManager* instance;
 };

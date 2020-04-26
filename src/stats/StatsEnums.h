@@ -13,7 +13,6 @@ enum class StatsInputType : char {
 	WORKERS,
 };
 
-#define STATS_OUTPUT_SIZE 13
 
 enum class StatsOutputType : char {
 	IDLE =0,

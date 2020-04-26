@@ -1,18 +1,19 @@
 #include "Building.h"
+#include <magic_enum.hpp>
+#include <string>
+#include "consts.h"
 #include "Game.h"
-#include "objects/ObjectEnums.h"
-#include "database/DatabaseCache.h"
+#include "../ValueType.h"
 #include "commands/action/BuildingActionType.h"
+#include "database/DatabaseCache.h"
+#include "objects/NodeUtils.h"
+#include "objects/ObjectEnums.h"
+#include "objects/queue/QueueActionType.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
-#include "consts.h"
-#include "objects/NodeUtils.h"
-#include "../ValueType.h"
-#include <string>
-#include "objects/queue/QueueActionType.h"
 
 
 Building::Building(Urho3D::Vector3& _position, int id, int player, int level, int mainCell):
@@ -60,11 +61,12 @@ Urho3D::String Building::toMultiLineString() {
 
 	return Urho3D::String(dbBuilding->name + " " + dbLevel->name)
 		.AppendWithFormat(l10n->Get("ml_build").CString(), attackCoef, defenseCoef, (int)hp, maxHp, closeUsers,
-		                  maxCloseUsers, Consts::StaticStateNames[static_cast<char>(state)]);
+		                  maxCloseUsers, magic_enum::enum_name(state).data());
 }
 
 void Building::action(BuildingActionType type, short id) const {
-	Resources& resources = Game::getPlayersMan()->getActivePlayer()->getResources();
+	
+	Resources& resources = Game::getPlayersMan()->getPlayer(getPlayer())->getResources();
 
 	switch (type) {
 	case BuildingActionType::UNIT_CREATE:
@@ -74,7 +76,7 @@ void Building::action(BuildingActionType type, short id) const {
 	break;
 	case BuildingActionType::UNIT_LEVEL:
 	{
-		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForUnit(id) ;
+		auto opt = Game::getPlayersMan()->getPlayer(getPlayer())->getNextLevelForUnit(id) ;
 		if (opt.has_value()) {
 			if (resources.reduce(opt.value()->costs)) {
 				queue->add(1, QueueActionType::UNIT_LEVEL, id, 1);

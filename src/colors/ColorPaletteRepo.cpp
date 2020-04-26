@@ -13,9 +13,9 @@ ColorPaletteRepo::ColorPaletteRepo() {
 	}
 	redPallet[PALLET_RESOLUTION] = redPallet[PALLET_RESOLUTION - 1];
 
-	for (int i = 0; i < STATE_SIZE; ++i) {
+	for (int i = 0; i < magic_enum::enum_count<UnitState>(); ++i) {
 		statePallet[i] = new Urho3D::Material(Game::getContext());
-		statePallet[i]->SetShaderParameter("MatDiffColor", Urho3D::Color(i * (1.0 / STATE_SIZE), 0, 0));
+		statePallet[i]->SetShaderParameter("MatDiffColor", Urho3D::Color(i * (1.0 / magic_enum::enum_count<UnitState>()), 0, 0));
 		statePallet[i]->SetName("StatePallet_" + Urho3D::String(i));
 		Game::getCache()->AddManualResource(statePallet[i]);
 	}

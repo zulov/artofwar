@@ -6,7 +6,6 @@
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
-#include "player/PlayersManager.h"
 #include "simulation/env/Environment.h"
 #include <string>
 #include "commands/action/ResourceActionType.h"
@@ -17,9 +16,10 @@ ResourceEntity::ResourceEntity(Urho3D::Vector3& _position,
                                int id, int level, int mainCell)
 	: Static(_position, mainCell) {
 	dbResource = Game::getDatabase()->getResource(id);;
-	loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(RandIntType::RESOURCE_NODE,dbResource->nodeName.Size())]);
+	loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(
+		RandIntType::RESOURCE_NODE, dbResource->nodeName.Size())]);
 
-	node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION,360.f), 0.0f));
+	node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
 }
 
 ResourceEntity::~ResourceEntity() = default;
@@ -58,13 +58,11 @@ std::string ResourceEntity::getValues(int precision) {
 		+ std::to_string(amountI);
 }
 
-void ResourceEntity::action(ResourceActionType type) {
+void ResourceEntity::action(ResourceActionType type, char player) {
 	switch (type) {
 	case ResourceActionType::COLLECT:
 	{
-		auto neights = Game::getEnvironment()->getNeighboursFromTeamEq(this, 24,
-		                                                               Game::getPlayersMan()
-		                                                               ->getActivePlayer()->getTeam());
+		auto neights = Game::getEnvironment()->getNeighboursFromTeamEq(this, 24, player);
 		int k = 0;
 		char limit = belowCloseLimit();
 		for (auto neight : *neights) {

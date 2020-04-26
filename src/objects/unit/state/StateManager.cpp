@@ -1,4 +1,7 @@
 #include "StateManager.h"
+
+#include <magic_enum.hpp>
+
 #include "../Unit.h"
 #include "../../static/Static.h"
 #include "AttackState.h"
@@ -17,8 +20,9 @@
 #include "consts.h"
 #include "objects/order/enums/UnitAction.h"
 #include "database/DatabaseCache.h"
+#include "objects/order/UnitOrder.h"
 #include "objects/static/StaticStateUtils.h"
-
+#include <magic_enum.hpp>
 
 StateManager* StateManager::instance = nullptr;
 
@@ -34,7 +38,7 @@ StateManager::StateManager() {
 	states[static_cast<char>(UnitState::SHOT)] = new ShotState();
 	states[static_cast<char>(UnitState::DEAD)] = new DeadState();
 	states[static_cast<char>(UnitState::DISPOSE)] = new DisposeState();
-	std::vector<char> orderToState[UNIT_ORDER_SIZE];
+	std::vector<char> orderToState[magic_enum::enum_count<UnitAction>()];
 	orderToState[static_cast<char>(UnitAction::GO)] =
 	{
 		static_cast<char>(UnitState::GO_TO),
@@ -58,7 +62,7 @@ StateManager::StateManager() {
 		if (unit) {
 			auto orders = unit->orders;
 			//test //TTO cos zle
-			std::fill_n(unit->possibleStates, STATE_SIZE, false);
+			std::fill_n(unit->possibleStates, magic_enum::enum_count<UnitState>(), false);
 			for (auto order : orders) {
 				for (auto state : orderToState[order->id]) {
 					unit->possibleStates[state] = true;
@@ -72,7 +76,7 @@ StateManager::StateManager() {
 
 
 StateManager::~StateManager() {
-	clear_array(states,STATE_SIZE);
+	clear_array(states,magic_enum::enum_count<UnitState>());
 }
 
 bool StateManager::validateState(int id, UnitState stateTo) {
@@ -94,8 +98,8 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 		return true;
 	}
 	Game::getLog()->Write(0, "fail to change state from " +
-	                      Urho3D::String(Consts::UnitStateNames[static_cast<char>(unit->getState())]) + " to " +
-	                      Urho3D::String(Consts::UnitStateNames[static_cast<char>(stateTo)]));
+	                      Urho3D::String(magic_enum::enum_name(unit->getState()).data()) + " to " +
+	                      Urho3D::String(magic_enum::enum_name(stateTo).data()));
 
 	unit->setState(UnitState::MOVE);
 	instance->states[static_cast<int>(UnitState::MOVE)]->onStart(unit, actionParameter);

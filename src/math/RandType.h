@@ -1,8 +1,5 @@
 #pragma once
 
-#define RAND_FLOAT_SIZE 3
-#define RAND_INT_SIZE 3
-
 enum class RandFloatType : char {
 	AI=0,
 	RESOURCE_ROTATION,

@@ -1,5 +1,4 @@
 #pragma once
-#define STATE_SIZE 11
 
 enum class UnitState : char {
 	STOP=0,

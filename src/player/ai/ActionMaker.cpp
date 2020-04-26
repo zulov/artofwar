@@ -1,8 +1,6 @@
 #include "ActionMaker.h"
 
 #include <numeric>
-
-
 #include "player/ai/ActionCenter.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
@@ -11,11 +9,11 @@
 #include "Game.h"
 #include "simulation/env/Environment.h"
 #include "stats/Stats.h"
+#include "math/RandGen.h"
 #include "stats/StatsEnums.h"
 #include <valarray>
 #include <unordered_set>
 
-#include "math/RandGen.h"
 
 ActionMaker::ActionMaker(Player* player): player(player),
                                           mainBrain("Data/ai/main_w.csv"),
@@ -55,6 +53,7 @@ void ActionMaker::action() {
 	}
 	float val = RandGen::nextRand(RandFloatType::AI, max);
 	float sum = 0;
+
 	for (int i = 0; i < 3; ++i) {
 		sum += vals[i];
 		if (val <= sum) {

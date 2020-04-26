@@ -2,6 +2,7 @@
 #include "ColorPallet.h"
 #include "objects/unit/state/UnitState.h"
 #include <Urho3D/Graphics/Material.h>
+#include <magic_enum.hpp>
 
 
 #define PALLET_RESOLUTION 32
@@ -18,7 +19,7 @@ public:
 private:
 	float fixValue(float value, float maxValue);
 	Urho3D::Material* redPallet[PALLET_RESOLUTION + 1];
-	Urho3D::Material* statePallet[STATE_SIZE];
+	Urho3D::Material* statePallet[magic_enum::enum_count<UnitState>()];
 	Urho3D::Material* lineMaterial;
 	Urho3D::Color basicSpectrum[SPECTRUM_RESOLUTION+1];
 };

@@ -1,6 +1,7 @@
 #pragma once
 #include "UnitState.h"
 #include <initializer_list>
+#include <magic_enum.hpp>
 
 
 struct ActionParameter;
@@ -19,5 +20,5 @@ public:
 
 	bool validateTransition(UnitState stateTo);
 protected:
-	bool nextStates[STATE_SIZE];
+	bool nextStates[magic_enum::enum_count<UnitState>()];
 };

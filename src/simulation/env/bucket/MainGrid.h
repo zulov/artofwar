@@ -5,7 +5,6 @@
 #include "objects/unit/state/UnitState.h"
 #include "path/PathFinder.h"
 
-#define GRID_DEBUG_SIZE 3
 class Unit;
 
 namespace Urho3D {

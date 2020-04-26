@@ -261,7 +261,7 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 		influenceManager.draw(InfluenceType::NONE, index);
 		break;
 	case EnvironmentDebugMode::MAIN_GRID:
-		mainGrid.drawDebug(GridDebugType(index % GRID_DEBUG_SIZE));
+		mainGrid.drawDebug(GridDebugType(index % magic_enum::enum_count<GridDebugType>()));
 		influenceManager.draw(InfluenceType::NONE, index);
 		break;
 	case EnvironmentDebugMode::INF_UNITS_NUMBER_PER_PLAYER:

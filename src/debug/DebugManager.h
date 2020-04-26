@@ -3,6 +3,7 @@
 #include "simulation/Simulation.h"
 #include "objects/unit/SimColorMode.h"
 #include "debug/EnvironmentDebugMode.h"
+#include <magic_enum.hpp>
 
 #define MAX_ENV_INDEX 32;
 
@@ -15,14 +16,14 @@ private:
 	EnvironmentDebugMode environmentDebugMode = EnvironmentDebugMode::NONE;
 	char environmentIndex = 0;
 
-	EnvironmentDebugMode nextEnvMode[ENVIRONMENT_DEBUG_SIZE] = {
+	EnvironmentDebugMode nextEnvMode[magic_enum::enum_count<EnvironmentDebugMode>()] = {
 		EnvironmentDebugMode::MAIN_GRID, EnvironmentDebugMode::INF_UNITS_NUMBER_PER_PLAYER,
 		EnvironmentDebugMode::INF_UNITS_INFLUENCE_PER_PLAYER, EnvironmentDebugMode::INF_BUILDING_INFLUENCE_PER_PLAYER,
 		EnvironmentDebugMode::INF_RESOURCE, EnvironmentDebugMode::INF_ATTACK_INFLUENCE_PER_PLAYER,
 		EnvironmentDebugMode::INF_DEFENCE_INFLUENCE_PER_PLAYER, EnvironmentDebugMode::INF_ECON_INFLUENCE_PER_PLAYER,
 		EnvironmentDebugMode::NONE
 	};
-	SimColorMode nextColorMode[COLOR_MODE_SIZE] = {
+	SimColorMode nextColorMode[magic_enum::enum_count<SimColorMode>()] = {
 		SimColorMode::VELOCITY, SimColorMode::STATE, SimColorMode::FORMATION, SimColorMode::BASIC
 	};
 };

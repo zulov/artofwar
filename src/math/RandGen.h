@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-
+#include <magic_enum.hpp>
 #include "RandType.h"
 
 enum class RandType : char;
@@ -15,9 +15,9 @@ private:
 	RandGen() = default;
 	~RandGen();
 	static RandGen* instance;
-	int indexesFloat[RAND_FLOAT_SIZE];
-	int indexesInt[RAND_INT_SIZE];
-	std::vector<float>* dataFloat[RAND_FLOAT_SIZE];
-	std::vector<int>* dataInt[RAND_INT_SIZE];
+	int indexesFloat[magic_enum::enum_count<RandFloatType>()];
+	int indexesInt[magic_enum::enum_count<RandIntType>()];
+	std::vector<float>* dataFloat[magic_enum::enum_count<RandFloatType>()];
+	std::vector<int>* dataInt[magic_enum::enum_count<RandIntType>()];
 };
 

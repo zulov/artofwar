@@ -82,7 +82,8 @@ void Stats::add(BuildingActionCommand* command) {
 	joinAndPush(ordersStats, player, input, getOutput(command));
 	if (command->action == BuildingActionType::UNIT_CREATE) {
 		auto& createOutput = Game::getPlayersMan()
-		                     ->getPlayer(command->player)->getLevelForUnit(command->id)->aiProps->getParamsNormAsString();
+		                     ->getPlayer(command->player)->getLevelForUnit(command->id)->aiProps->
+		                     getParamsNormAsString();
 		joinAndPush(ordersUnitCreateId, player, input, createOutput);
 	}
 }
@@ -106,7 +107,8 @@ void Stats::add(CreationCommand* command) {
 
 	joinAndPush(ordersStats, player, input, getOutput(command));
 	auto& createOutput = Game::getPlayersMan()
-		                     ->getPlayer(command->player)->getLevelForBuilding(command->id)->aiProps->getParamsNormAsString();
+	                     ->getPlayer(command->player)->getLevelForBuilding(command->id)->aiProps->
+	                     getParamsNormAsString();
 	joinAndPush(ordersBuildingCreateId, player, input, createOutput);
 	const std::string inputWithAiProps = input + ";" + createOutput;
 	joinAndPush(ordersBuildingCreatePos, player, inputWithAiProps, getCreateBuildingPosOutput(command));
@@ -207,17 +209,17 @@ std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
 }
 
 std::string Stats::getOutput(CreationCommand* command) const {
-	float output[STATS_OUTPUT_SIZE];
-	std::fill_n(output,STATS_OUTPUT_SIZE, 0.f);
+	float output[magic_enum::enum_count<StatsOutputType>()];
+	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
 
 	output[cast(StatsOutputType::CREATE_BUILDING)] = 1;
 
-	return join(output, output + STATS_OUTPUT_SIZE);
+	return join(output, output + magic_enum::enum_count<StatsOutputType>());
 }
 
 std::string Stats::getOutput(UpgradeCommand* command) const {
-	float output[STATS_OUTPUT_SIZE];
-	std::fill_n(output,STATS_OUTPUT_SIZE, 0.f);
+	float output[magic_enum::enum_count<StatsOutputType>()];
+	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
 
 	switch (command->type) {
 
@@ -230,12 +232,12 @@ std::string Stats::getOutput(UpgradeCommand* command) const {
 	default: ;
 	}
 
-	return join(output, output + STATS_OUTPUT_SIZE);
+	return join(output, output + magic_enum::enum_count<StatsOutputType>());
 }
 
 std::string Stats::getOutput(UnitActionCommand* command) const {
-	float output[STATS_OUTPUT_SIZE];
-	std::fill_n(output,STATS_OUTPUT_SIZE, 0.f);
+	float output[magic_enum::enum_count<StatsOutputType>()];
+	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
 
 	switch (static_cast<UnitAction>(command->futureAim->getId())) {
 	case UnitAction::GO:
@@ -265,24 +267,24 @@ std::string Stats::getOutput(UnitActionCommand* command) const {
 	default: ;
 	}
 
-	return join(output, output + STATS_OUTPUT_SIZE);
+	return join(output, output + magic_enum::enum_count<StatsOutputType>());
 }
 
 std::string Stats::getOutput(ResourceActionCommand* command) const {
 	//TODO
-	float output[STATS_OUTPUT_SIZE];
-	std::fill_n(output,STATS_OUTPUT_SIZE, 0.f);
+	float output[magic_enum::enum_count<StatsOutputType>()];
+	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
 	switch (command->action) {
 	case ResourceActionType::COLLECT: break;
 	case ResourceActionType::CANCEL: break;
 	default: ;
 	}
-	return join(output, output + STATS_OUTPUT_SIZE);
+	return join(output, output + magic_enum::enum_count<StatsOutputType>());
 }
 
 std::string Stats::getOutput(BuildingActionCommand* command) const {
-	float output[STATS_OUTPUT_SIZE];
-	std::fill_n(output,STATS_OUTPUT_SIZE, 0.f);
+	float output[magic_enum::enum_count<StatsOutputType>()];
+	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
 	switch (command->action) {
 	case BuildingActionType::UNIT_CREATE:
 		output[cast(StatsOutputType::CREATE_UNIT)] = 1;
@@ -295,5 +297,5 @@ std::string Stats::getOutput(BuildingActionCommand* command) const {
 		break;
 	default: ;
 	}
-	return join(output, output + STATS_OUTPUT_SIZE);
+	return join(output, output + magic_enum::enum_count<StatsOutputType>());
 }
