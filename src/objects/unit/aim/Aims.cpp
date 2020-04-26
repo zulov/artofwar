@@ -1,9 +1,9 @@
 #include "Aims.h"
-#include "TargetAim.h"
-#include "objects/unit/Unit.h"
-#include "objects/order/FutureOrder.h"
 #include <algorithm>
 #include <optional>
+#include "TargetAim.h"
+#include "objects/order/FutureOrder.h"
+#include "objects/unit/Unit.h"
 
 
 Aims::Aims(): current(nullptr) {

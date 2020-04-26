@@ -1,7 +1,7 @@
 #include "RandGen.h"
 
-#include <random>
 #include <magic_enum.hpp>
+#include <random>
 #include "RandType.h"
 #include "utils.h"
 

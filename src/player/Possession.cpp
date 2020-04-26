@@ -1,14 +1,14 @@
 #include "Possession.h"
-#include "objects/building/Building.h"
-#include "objects/unit/Unit.h"
-#include "Resources.h"
-#include "objects/unit/state/StateManager.h"
+#include <numeric>
 #include "Game.h"
+#include "Resources.h"
 #include "database/DatabaseCache.h"
-#include "objects/order/enums/UnitAction.h"
 #include "math/VectorUtils.h"
 #include "objects/ValueType.h"
-#include <numeric>
+#include "objects/building/Building.h"
+#include "objects/order/enums/UnitAction.h"
+#include "objects/unit/Unit.h"
+#include "objects/unit/state/StateManager.h"
 
 Possession::Possession(char nation) {
 	for (auto building : Game::getDatabase()->getNation(nation)->buildings) {

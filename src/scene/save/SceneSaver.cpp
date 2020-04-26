@@ -1,16 +1,16 @@
 #include "SceneSaver.h"
-#include "Loading.h"
-#include "database/db_utils.h"
-#include "player/PlayersManager.h"
-#include "objects/resource/ResourceEntity.h"
-#include "objects/unit/Unit.h"
-#include "objects/building/Building.h"
-#include "player/Resources.h"
-#include "player/Player.h"
 #include <iostream>
 #include <ostream>
-#include <sqlite3/sqlite3.h>
 #include <string>
+#include <sqlite3/sqlite3.h>
+#include "Loading.h"
+#include "database/db_utils.h"
+#include "objects/building/Building.h"
+#include "objects/resource/ResourceEntity.h"
+#include "objects/unit/Unit.h"
+#include "player/Player.h"
+#include "player/PlayersManager.h"
+#include "player/Resources.h"
 
 SceneSaver::SceneSaver(int _precision) {
 	//TODO zapisywanie powinno byc tylko miedzy klatkami

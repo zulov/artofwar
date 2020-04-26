@@ -1,20 +1,20 @@
 ﻿#include "Stats.h"
+#include <fstream>
 #include "Game.h"
 #include "StatsEnums.h"
 #include "StringUtils.h"
+#include "commands/action/BuildingActionCommand.h"
+#include "commands/action/BuildingActionType.h"
+#include "commands/action/ResourceActionCommand.h"
+#include "commands/action/ResourceActionType.h"
+#include "commands/action/UnitActionCommand.h"
+#include "commands/creation/CreationCommand.h"
+#include "commands/upgrade/UpgradeCommand.h"
 #include "objects/ObjectEnums.h"
+#include "objects/order/enums/UnitAction.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/Environment.h"
-#include "commands/creation/CreationCommand.h"
-#include "commands/upgrade/UpgradeCommand.h"
-#include "commands/action/UnitActionCommand.h"
-#include "commands/action/BuildingActionCommand.h"
-#include "commands/action/ResourceActionCommand.h"
-#include "commands/action/ResourceActionType.h"
-#include "commands/action/BuildingActionType.h"
-#include "objects/order/enums/UnitAction.h"
-#include <fstream>
 
 
 #define AI_INFUENCE_OUTPUT_SIZE 9

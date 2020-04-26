@@ -1,20 +1,21 @@
 #pragma once
 
+#include <Urho3D/Engine/Application.h>
+#include <Urho3D/Graphics/Graphics.h>
+#include <Urho3D/Input/Input.h>
 #include "Benchmark.h"
 #include "GameState.h"
 #include "Loading.h"
 #include "control/Controls.h"
+#include "debug/DebugManager.h"
 #include "hud/Hud.h"
 #include "scene/LevelBuilder.h"
 #include "scene/load/SceneLoader.h"
 #include "scene/save/SceneSaver.h"
 #include "simulation/Simulation.h"
-#include <Urho3D/Engine/Application.h>
-#include <Urho3D/Graphics/Graphics.h>
-#include <Urho3D/Input/Input.h>
-#include "debug/DebugManager.h"
 
 
+enum class CameraBehaviorType : char;
 struct NewGameForm;
 
 

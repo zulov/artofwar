@@ -2,10 +2,10 @@
 #include <fstream>
 #include <string>
 #include <utility>
-#include "objects/building/Building.h"
+#include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "database/DatabaseCache.h"
-#include "Game.h"
+#include "objects/building/Building.h"
 #include "objects/queue/QueueActionType.h"
 #include "simulation/env/Environment.h"
 

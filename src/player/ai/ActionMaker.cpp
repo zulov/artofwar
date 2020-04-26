@@ -1,18 +1,18 @@
 #include "ActionMaker.h"
 
 #include <numeric>
-#include "player/ai/ActionCenter.h"
+#include <unordered_set>
+#include <valarray>
+#include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
-#include "player/Player.h"
 #include "database/DatabaseCache.h"
-#include "Game.h"
+#include "math/RandGen.h"
+#include "player/Player.h"
+#include "player/ai/ActionCenter.h"
 #include "simulation/env/Environment.h"
 #include "stats/Stats.h"
-#include "math/RandGen.h"
 #include "stats/StatsEnums.h"
-#include <valarray>
-#include <unordered_set>
 
 
 ActionMaker::ActionMaker(Player* player): player(player),
