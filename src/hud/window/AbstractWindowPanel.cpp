@@ -1,4 +1,7 @@
 #include "AbstractWindowPanel.h"
+
+#include <magic_enum.hpp>
+
 #include "Game.h"
 #include "hud/UiUtils.h"
 #include <Urho3D/UI/UI.h>
@@ -10,7 +13,7 @@ AbstractWindowPanel::AbstractWindowPanel(Urho3D::XMLFile* _style, Urho3D::String
                                          std::initializer_list<GameState> active): Object(Game::getContext()),
                                                                                    style(_style), styleName(
 	                                                                                   std::move(styleName)) {
-	std::fill_n(visibleAt, GAME_STATE_SIZE, false);
+	std::fill_n(visibleAt, magic_enum::enum_count<GameState>(), false);
 	for (auto a : active) {
 		visibleAt[static_cast<char>(a)] = true;
 	}

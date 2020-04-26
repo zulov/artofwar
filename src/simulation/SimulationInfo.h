@@ -4,8 +4,7 @@
 
 enum class ObjectType : char;
 
-class SimulationInfo
-{
+class SimulationInfo {
 public:
 	SimulationInfo();
 	~SimulationInfo();

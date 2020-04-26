@@ -6,7 +6,7 @@
 #include "utils.h"
 
 
-#define RAND_TAB_SIZE 500
+#define RAND_TAB_SIZE 1000
 
 RandGen* RandGen::instance = nullptr;
 

@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#define TEAMS_NUMBER 5
+#define TEAMS_NUMBER 3
 
 struct NewGameForm;
 class SceneSaver;

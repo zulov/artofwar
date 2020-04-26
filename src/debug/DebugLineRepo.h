@@ -1,10 +1,13 @@
 #pragma once
+#include <magic_enum.hpp>
 #include <Urho3D/Graphics/CustomGeometry.h>
 
-#define NUMBER_OF_GEOMETRIES 3
-
 enum class CellState : char;
-enum class DebugLineType : char;
+enum class DebugLineType : char {
+	UNIT_LINES,
+	MAIN_GRID,
+	INFLUANCE
+};
 
 class DebugLineRepo {
 
@@ -23,12 +26,7 @@ public:
 	static void init(DebugLineType type, short batches);
 private:
 	DebugLineRepo();
-	static std::vector<Urho3D::CustomGeometry*> geometry[NUMBER_OF_GEOMETRIES];
+	static std::vector<Urho3D::CustomGeometry*> geometry[magic_enum::enum_count<DebugLineType>()];
 
 };
 
-enum class DebugLineType : char {
-	UNIT_LINES,
-	MAIN_GRID,
-	INFLUANCE
-};

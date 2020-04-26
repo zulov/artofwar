@@ -1,6 +1,5 @@
 #pragma once
 #include "objects/unit/ActionParameter.h"
-#define stringify( name ) # name
 
 struct Consts {
 	inline static Urho3D::Vector2 circleCords[8] =

@@ -1,4 +1,6 @@
 #pragma once
+#include <magic_enum.hpp>
+
 #include "GameState.h"
 #include <Urho3D/UI/Window.h>
 
@@ -19,7 +21,7 @@ protected:
 	Urho3D::Window* window;
 	Urho3D::String styleName, bodyStyle;
 
-	bool visibleAt[GAME_STATE_SIZE];
+	bool visibleAt[magic_enum::enum_count<GameState>()];
 private:
 	virtual void createBody() =0;
 };
