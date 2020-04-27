@@ -68,13 +68,13 @@ int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
-static void addCost(char** argv, db_container* const xyz, std::vector<db_cost*>& array) {
-	array.push_back(new db_cost(atoi(argv[1]), atoi(argv[2])));
+static void addCost(char** argv, db_with_cost* withCost) {
+	withCost->costs.push_back(new db_cost(atoi(argv[1]), atoi(argv[2])));
 }
 
 int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	addCost(argv, xyz, xyz->units[atoi(argv[0])]->costs);
+	addCost(argv, xyz->units[atoi(argv[0])]);
 
 	return 0;
 }
@@ -82,7 +82,7 @@ int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
 int static loadCostUnitLevel(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 
-	addCost(argv, xyz, xyz->unitsLevels[atoi(argv[0])]->costs);
+	addCost(argv, xyz->unitsLevels[atoi(argv[0])]);
 
 	return 0;
 }
@@ -90,14 +90,14 @@ int static loadCostUnitLevel(void* data, int argc, char** argv, char** azColName
 int static loadCostBuildingLevel(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 
-	addCost(argv, xyz, xyz->buildingsLevels[atoi(argv[0])]->costs);
+	addCost(argv, xyz->buildingsLevels[atoi(argv[0])]);
 	return 0;
 }
 
 int static loadCostBuilding(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 
-	addCost(argv, xyz, xyz->buildings[atoi(argv[0])]->costs);
+	addCost(argv, xyz->buildings[atoi(argv[0])]);
 	return 0;
 }
 

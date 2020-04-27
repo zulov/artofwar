@@ -55,7 +55,7 @@ void ActionMaker::action() {
 	float val = RandGen::nextRand(RandFloatType::AI, max);
 	float sum = 0;
 	for (int i = 0; i < 3; ++i) {
-		std::cout << static_cast<StatsOutputType>(ids[i]) << "-"<<(vals[i]/max*100)<<"%, ";
+		std::cout << static_cast<StatsOutputType>(ids[i]) << "-" << (vals[i] / max * 100) << "%, ";
 	}
 	for (int i = 0; i < 3; ++i) {
 		sum += vals[i];
@@ -68,31 +68,25 @@ void ActionMaker::action() {
 
 }
 
+bool ActionMaker::enoughResources(db_with_cost* withCosts) const { return withCosts && player->getResources().hasEnough(withCosts->costs); }
+
 void ActionMaker::createBuilding() {
 	auto building = chooseBuilding();
-	if (building) {
-		Resources& resources = player->getResources();
-
-		if (resources.hasEnough(building->costs)) {
-			auto pos = posToBuild(building);
-			if (pos.has_value()) {
-				Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId());
-			}
+	if (enoughResources(building)) {
+		auto pos = posToBuild(building);
+		if (pos.has_value()) {
+			Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId());
 		}
 	}
 }
 
 void ActionMaker::createUnit() {
 	db_unit* unit = chooseUnit();
-	if (unit) {
-		Resources& resources = player->getResources();
-
-		if (resources.hasEnough(unit->costs)) {
-			Building* building = getBuildingToDeploy(unit);
-			if (building) {
-				Game::getActionCenter()->add(
-					new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id, player->getId()));
-			}
+	if (enoughResources(unit)) {
+		Building* building = getBuildingToDeploy(unit);
+		if (building) {
+			Game::getActionCenter()->add(
+				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id, player->getId()));
 		}
 	}
 }

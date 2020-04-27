@@ -16,6 +16,7 @@ public:
 	explicit ActionMaker(Player* player);
 
 	void action();
+	bool enoughResources(db_with_cost* withCosts) const;
 private:
 	float* decide(Brain& brain) const;
 	void createOrder(StatsOutputType order);
