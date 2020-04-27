@@ -68,7 +68,9 @@ void ActionMaker::action() {
 
 }
 
-bool ActionMaker::enoughResources(db_with_cost* withCosts) const { return withCosts && player->getResources().hasEnough(withCosts->costs); }
+bool ActionMaker::enoughResources(db_with_cost* withCosts) const {
+	return withCosts && player->getResources().hasEnough(withCosts->costs);
+}
 
 void ActionMaker::createBuilding() {
 	auto building = chooseBuilding();
@@ -132,19 +134,30 @@ std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
 
 db_building* ActionMaker::chooseBuilding() {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-
 	auto result = decide(buildingBrainId);
 
 	std::valarray<float> center(result,AI_PROPS_SIZE); //TODO perf valarraay test
 	auto closestId = buildings[0]->id;
 	float closestV = 9999999;
 	for (auto building : buildings) {
-		auto props = player->getLevelForBuilding(building->id)->aiProps;
-
-		closest(center, closestId, closestV, props, building->id);
+		closest(center, closestId, closestV, player->getLevelForBuilding(building->id)->aiProps, building->id);
 	}
 
 	return buildings[closestId];
+}
+
+db_unit* ActionMaker::chooseUnit() {
+	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
+	auto result = decide(unitBrainId);
+
+	std::valarray<float> center(result,AI_PROPS_SIZE); //TODO perf valarraay test
+	auto closestId = units[0]->id;
+	float closestV = 9999999;
+	for (auto unit : units) {
+		closest(center, closestId, closestV, player->getLevelForUnit(unit->id)->aiProps, unit->id);
+	}
+
+	return units[closestId];
 }
 
 void ActionMaker::closest(std::valarray<float>& center, short& closestId, float& closest, db_ai_property* props,
@@ -157,22 +170,6 @@ void ActionMaker::closest(std::valarray<float>& center, short& closestId, float&
 		closest = dist;
 		closestId = id;
 	}
-}
-
-db_unit* ActionMaker::chooseUnit() {
-	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	auto result = decide(unitBrainId);
-
-	std::valarray<float> center(result,AI_PROPS_SIZE); //TODO perf valarraay test
-	auto closestId = units[0]->id;
-	float closestV = 9999999;
-	for (auto unit : units) {
-		auto props = player->getLevelForUnit(unit->id)->aiProps;
-
-		closest(center, closestId, closestV, props, unit->id);
-	}
-
-	return units[closestId];
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
