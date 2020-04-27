@@ -1,14 +1,17 @@
 #pragma once
+#include <magic_enum.hpp>
 #include <vector>
 #include <string>
 #include "defines.h"
+#include "StatsEnums.h"
 #include "commands/action/UnitActionCommand.h"
 
-#define BASIC_INPUT_SIZE 24
-#define STATS_PER_PLAYER_SIZE 12
+//#define BASIC_INPUT_SIZE 24
+
 #define SAVE_BATCH_SIZE 10
 #define SAVE_BATCH_SIZE_MINI 4
 
+class Building;
 struct ActionParameter;
 class BuildingActionCommand;
 class ResourceActionCommand;
@@ -40,20 +43,20 @@ private:
 
 	std::string getOutput(CreationCommand* command) const;
 	std::string getCreateBuildingPosOutput(CreationCommand* command) const;
-
+	std::string getCreateUnitPosOutput(Building* building) const;
 	std::string getOutput(UpgradeCommand* command) const;
 
 	std::string getOutput(UnitActionCommand* command) const;
 	std::string getOutput(ResourceActionCommand* command) const;
 	std::string getOutput(BuildingActionCommand* command) const;
 
-	static void joinAndPush(std::vector<std::string>* array, char player, std::string input,const std::string& output);
+	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output);
 	void save(int i, std::vector<std::string>* array, std::string fileName) const;
 	void saveBatch(int i, std::vector<std::string>* array, std::string name, int size) const;
 
 	float* input;
 	std::vector<float*> statsPerPlayer;
-	float weights[STATS_PER_PLAYER_SIZE];
+	float weights[magic_enum::enum_count<StatsInputType>()];
 
 	std::vector<std::string> ordersStats[MAX_PLAYERS];
 

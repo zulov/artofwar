@@ -62,9 +62,11 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	}
 	case ActionType::UNIT_LEVEL:
 	{
-		auto dbLevel = Game::getPlayersMan()->getActivePlayer()->getNextLevelForUnit(id).value(); //TODO probable bug value
-
-		return stringFrom(dbLevel->name, dbLevel->costs);
+		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForUnit(id); 
+		if (opt.has_value()) {
+			auto dbLevel = opt.value();
+			return stringFrom(dbLevel->name, dbLevel->costs);
+		}
 	}
 	case ActionType::UNIT_UPGRADE:
 		return "TODO";
@@ -76,9 +78,12 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	}
 	case ActionType::BUILDING_LEVEL:
 	{
-		auto dbLevel = Game::getPlayersMan()->getActivePlayer()->getNextLevelForBuilding(id).value(); //TODO BUG value
+		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForBuilding(id); 
 
-		return stringFrom(dbLevel->name, dbLevel->costs);
+		if (opt.has_value()) {
+			auto dbLevel = opt.value();
+			return stringFrom(dbLevel->name, dbLevel->costs);
+		}
 	}
 	case ActionType::ORDER:
 		return Game::getLocalization()->Get(Game::getDatabase()->getOrder(id)->name);

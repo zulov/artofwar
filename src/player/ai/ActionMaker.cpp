@@ -21,7 +21,8 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/unitId_w.csv"),
-                                          unitBrainPos("Data/ai/buildPos_w.csv") {}
+                                          unitBrainPos("Data/ai/unitPos_w.csv") {
+}
 
 float* ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -175,14 +176,14 @@ void ActionMaker::closest(std::valarray<float>& center, short& closestId, float&
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
 	const auto level = player->getLevelForBuilding(building->id);
 
-	float input[BASIC_INPUT_SIZE + AI_PROPS_SIZE];
-	std::fill_n(input,BASIC_INPUT_SIZE + AI_PROPS_SIZE, 0.f);
+	float input[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
+	std::fill_n(input, magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE, 0.f);
 
 	const auto basicInput = Game::getStats()->getInputFor(player->getId());
-	std::copy(basicInput, basicInput + BASIC_INPUT_SIZE, input);
+	std::copy(basicInput, basicInput + magic_enum::enum_count<StatsInputType>() * 2, input);
 
 	const auto aiInput = level->aiProps->paramsNorm;
-	std::copy(aiInput, aiInput + AI_PROPS_SIZE, input + BASIC_INPUT_SIZE);
+	std::copy(aiInput, aiInput + AI_PROPS_SIZE, input + magic_enum::enum_count<StatsInputType>() * 2);
 
 	auto result = buildingBrainPos.decide(basicInput);
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
@@ -234,7 +235,8 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	}
 }
 
-void ActionMaker::levelUpBuilding() {}
+void ActionMaker::levelUpBuilding() {
+}
 
 void ActionMaker::levelUpUnit() {
 	// auto opt = chooseUnitUpgrade(order);

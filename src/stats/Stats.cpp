@@ -1,7 +1,6 @@
 ﻿#include "Stats.h"
 #include <fstream>
 #include "Game.h"
-#include "StatsEnums.h"
 #include "StringUtils.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
@@ -16,8 +15,7 @@
 #include "player/PlayersManager.h"
 #include "simulation/env/Environment.h"
 
-
-#define AI_INFUENCE_OUTPUT_SIZE 9
+#define DEFAULT_NORMALIZE_VALUE 10.f
 
 Stats::Stats() {
 	weights[cast(StatsInputType::RESULT)] = 1000;
@@ -47,15 +45,15 @@ Stats::~Stats() {
 
 void Stats::init() {
 	clear();
-	input = new float[BASIC_INPUT_SIZE];
+	input = new float[magic_enum::enum_count<StatsInputType>() * 2];
 	for (auto allPlayer : Game::getPlayersMan()->getAllPlayers()) {
-		statsPerPlayer.push_back(new float[STATS_PER_PLAYER_SIZE]);
+		statsPerPlayer.push_back(new float[magic_enum::enum_count<StatsInputType>()]);
 	}
 }
 
 std::string Stats::getInputData(char player) {
 	const auto input = getInputFor(player);
-	return join(input, input + BASIC_INPUT_SIZE);
+	return join(input, input + magic_enum::enum_count<StatsInputType>()*2);
 }
 
 void Stats::add(ResourceActionCommand* command) {
@@ -70,13 +68,19 @@ void Stats::add(BuildingActionCommand* command) {
 	const auto player = command->player;
 
 	const std::string input = getInputData(player);
+	const std::string basicOutput = getOutput(command);
+	auto& createOutput = Game::getPlayersMan()->getPlayer(command->player)
+	                                          ->getLevelForUnit(command->id)->aiProps->getParamsNormAsString();
 
-	joinAndPush(ordersStats, player, input, getOutput(command));
-	if (command->action == BuildingActionType::UNIT_CREATE) {
-		auto& createOutput = Game::getPlayersMan()
-		                     ->getPlayer(command->player)->getLevelForUnit(command->id)->aiProps->
-		                     getParamsNormAsString();
-		joinAndPush(ordersUnitCreateId, player, input, createOutput);
+	for (auto building : command->buildings) {
+		joinAndPush(ordersStats, player, input, basicOutput);
+		if (command->action == BuildingActionType::UNIT_CREATE) {
+
+			joinAndPush(ordersUnitCreateId, player, input, createOutput);
+
+			const std::string inputWithAiProps = input + ";" + createOutput;
+			joinAndPush(ordersUnitCreatePos, player, inputWithAiProps, getCreateUnitPosOutput(building));
+		}
 	}
 }
 
@@ -162,7 +166,7 @@ void Stats::update(short id) {
 	data[cast(StatsInputType::UNITS)] = player->getUnitsNumber();
 	data[cast(StatsInputType::BUILDINGS)] = player->getBuildingsNumber();
 	data[cast(StatsInputType::WORKERS)] = player->getWorkersNumber();
-	std::transform(data, data + STATS_PER_PLAYER_SIZE, weights, data, std::divides<>());
+	std::transform(data, data + magic_enum::enum_count<StatsInputType>(), weights, data, std::divides<>());
 }
 
 
@@ -181,8 +185,8 @@ float* Stats::getInputFor(short id) {
 	update(idEnemy);
 	auto stats = statsPerPlayer.at(id);
 	auto enemy = statsPerPlayer.at(idEnemy); //TODO BUG wybrac wroga
-	std::copy(stats, stats + STATS_PER_PLAYER_SIZE, input);
-	std::copy(enemy, enemy + STATS_PER_PLAYER_SIZE, input + STATS_PER_PLAYER_SIZE);
+	std::copy(stats, stats + magic_enum::enum_count<StatsInputType>(), input);
+	std::copy(enemy, enemy + magic_enum::enum_count<StatsInputType>(), input + magic_enum::enum_count<StatsInputType>());
 	return input;
 }
 
@@ -191,13 +195,25 @@ void Stats::clear() {
 }
 
 std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
-	float output[AI_INFUENCE_OUTPUT_SIZE];
+	float output[magic_enum::enum_count<StatsInputType>()];
 
-	std::fill_n(output,AI_INFUENCE_OUTPUT_SIZE, 0.f);
+	std::fill_n(output, magic_enum::enum_count<StatsInputType>(), 0.f);
 
 	Game::getEnvironment()->writeInInfluenceDataAt(output, command->player, command->position);
 
-	return join(output, output + AI_INFUENCE_OUTPUT_SIZE);
+	return join(output, output + magic_enum::enum_count<StatsInputType>());
+}
+
+std::string Stats::getCreateUnitPosOutput(Building* building) const {
+	float output[magic_enum::enum_count<StatsInputType>() + 1];
+
+	std::fill_n(output, magic_enum::enum_count<StatsInputType>() + 1, 0.f);
+	auto buildingPos = building->getPosition();
+
+	Game::getEnvironment()->writeInInfluenceDataAt(output, building->getPlayer(), {buildingPos.x_, buildingPos.z_});
+
+	output[magic_enum::enum_count<StatsInputType>()] = building->getQueue()->getSize() / DEFAULT_NORMALIZE_VALUE;
+	return join(output, output + magic_enum::enum_count<StatsInputType>()+1);
 }
 
 std::string Stats::getOutput(CreationCommand* command) const {
