@@ -21,8 +21,7 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/unitId_w.csv"),
-                                          unitBrainPos("Data/ai/unitPos_w.csv") {
-}
+                                          unitBrainPos("Data/ai/unitPos_w.csv") {}
 
 float* ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -173,9 +172,7 @@ void ActionMaker::closest(std::valarray<float>& center, short& closestId, float&
 	}
 }
 
-std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
-	const auto level = player->getLevelForBuilding(building->id);
-
+float* ActionMaker::inputWithParamsDecide(Brain& brain, const db_level* level) const {
 	float input[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
 	std::fill_n(input, magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE, 0.f);
 
@@ -185,11 +182,16 @@ std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
 	const auto aiInput = level->aiProps->paramsNorm;
 	std::copy(aiInput, aiInput + AI_PROPS_SIZE, input + magic_enum::enum_count<StatsInputType>() * 2);
 
-	auto result = buildingBrainPos.decide(basicInput);
+	return brain.decide(input);
+}
+
+std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
+	float* result = inputWithParamsDecide(buildingBrainPos, player->getLevelForBuilding(building->id));
+
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
 
-Building* ActionMaker::getBuildingToDeploy(db_unit* unit) const {
+Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 	std::vector<short> buildingIdsThatCanDeploy;
 	for (auto building : buildings) {
@@ -204,6 +206,10 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) const {
 		auto buildingEnts = player->getPossession().getBuildings(thatCanDeploy);
 		allPossible.insert(allPossible.end(), buildingEnts->begin(), buildingEnts->end());
 	}
+	if (allPossible.empty()) { return nullptr; }
+
+	auto result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id));
+	auto centers = Game::getEnvironment()->getPosToCreate(unit, player->getId(), result);
 	return allPossible[0];
 }
 
@@ -235,8 +241,7 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	}
 }
 
-void ActionMaker::levelUpBuilding() {
-}
+void ActionMaker::levelUpBuilding() {}
 
 void ActionMaker::levelUpUnit() {
 	// auto opt = chooseUnitUpgrade(order);

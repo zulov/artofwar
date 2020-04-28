@@ -24,7 +24,8 @@ private:
 	void levelUpBuilding();
 	void createUnit();
 	std::optional<Urho3D::Vector2> posToBuild(db_building* building);
-	Building* getBuildingToDeploy(db_unit* unit) const;
+	float* inputWithParamsDecide(Brain& brain, const db_level* level) const;
+	Building* getBuildingToDeploy(db_unit* unit);
 	void createBuilding();
 
 	std::optional<short> chooseUpgrade(StatsOutputType order) const;
