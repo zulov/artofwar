@@ -90,6 +90,7 @@ public:
 	void writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos);
 
 	std::optional<Urho3D::Vector2> getPosToCreate(db_building* building, char player, float* result);
+	std::vector<Urho3D::Vector2> getAreas(char player, float* result);
 
 private:
 	MainGrid mainGrid;

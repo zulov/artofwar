@@ -243,7 +243,7 @@ std::vector<int> InfluenceManager::getIndexes(float* result, float tolerance,
 			                      indexes.begin(), indexes.end(),
 			                      std::back_inserter(temp));
 			intersection = temp; //TODO optimize
-			if (temp.empty()) {
+			if (temp.empty()) {//TODO możę jakis treshold
 				break;
 			}
 		}

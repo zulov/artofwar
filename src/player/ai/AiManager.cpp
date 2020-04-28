@@ -4,10 +4,9 @@
 #include "player/Player.h"
 
 void AiManager::ai() {
-	auto players = Game::getPlayersMan()->getAllPlayers();
-	for (auto player : players) {
+	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 		if (Game::getPlayersMan()->getActivePlayer() != player) {
-			//player->ai();
+			player->ai();
 		}
 	}
 }

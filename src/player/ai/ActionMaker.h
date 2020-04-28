@@ -19,14 +19,14 @@ public:
 	bool enoughResources(db_with_cost* withCosts) const;
 private:
 	float* decide(Brain& brain) const;
-	void createOrder(StatsOutputType order);
-	void levelUpUnit();
-	void levelUpBuilding();
-	void createUnit();
+	bool createOrder(StatsOutputType order);
+	bool levelUpUnit();
+	bool levelUpBuilding();
+	bool createUnit();
 	std::optional<Urho3D::Vector2> posToBuild(db_building* building);
 	float* inputWithParamsDecide(Brain& brain, const db_level* level) const;
 	Building* getBuildingToDeploy(db_unit* unit);
-	void createBuilding();
+	bool createBuilding();
 
 	std::optional<short> chooseUpgrade(StatsOutputType order) const;
 	db_building* chooseBuilding();

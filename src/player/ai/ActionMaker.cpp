@@ -21,7 +21,8 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/unitId_w.csv"),
-                                          unitBrainPos("Data/ai/unitPos_w.csv") {}
+                                          unitBrainPos("Data/ai/unitPos_w.csv") {
+}
 
 float* ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -60,8 +61,13 @@ void ActionMaker::action() {
 	for (int i = 0; i < 3; ++i) {
 		sum += vals[i];
 		if (val <= sum) {
-			std::cout << " -> " << static_cast<StatsOutputType>(ids[i]) << std::endl;
-			createOrder(static_cast<StatsOutputType>(ids[i]));
+			std::cout << " -> " << static_cast<StatsOutputType>(ids[i]);
+			auto result = createOrder(static_cast<StatsOutputType>(ids[i]));
+			if (result) {
+				std::cout <<"(DONE)"<< std::endl;
+			}else {
+				std::cout << std::endl;
+			}
 			return;
 		}
 	}
@@ -72,25 +78,28 @@ bool ActionMaker::enoughResources(db_with_cost* withCosts) const {
 	return withCosts && player->getResources().hasEnough(withCosts->costs);
 }
 
-void ActionMaker::createBuilding() {
-	auto building = chooseBuilding();
+bool ActionMaker::createBuilding() {
+	const auto building = chooseBuilding();
 	if (enoughResources(building)) {
 		auto pos = posToBuild(building);
 		if (pos.has_value()) {
-			Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId());
+			return Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId());
 		}
 	}
+	return false;
 }
 
-void ActionMaker::createUnit() {
+bool ActionMaker::createUnit() {
 	db_unit* unit = chooseUnit();
 	if (enoughResources(unit)) {
 		Building* building = getBuildingToDeploy(unit);
 		if (building) {
 			Game::getActionCenter()->add(
 				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id, player->getId()));
+			return true;
 		}
 	}
+	return false;
 }
 
 std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
@@ -209,26 +218,39 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	if (allPossible.empty()) { return nullptr; }
 
 	auto result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id));
-	auto centers = Game::getEnvironment()->getPosToCreate(unit, player->getId(), result);
-	return allPossible[0];
+	//TODO improve last parameter ignored queue size
+	auto centers = Game::getEnvironment()->getAreas(player->getId(), result);
+	float closestVal = 99999;
+	Building* closest = allPossible[0];
+	for (auto possible : allPossible) {
+		//TODO performance O(^2)
+		Urho3D::Vector2 pos = {possible->getPosition().x_, possible->getPosition().z_};
+		for (auto& center : centers) {
+			auto diff = pos - center;
+			diff = diff * diff;
+			auto val = diff.LengthSquared();
+			if (val < closestVal) {
+				closest = possible;
+				closestVal = val;
+			}
+		}
+	}
+
+	return closest;
 }
 
 
-void ActionMaker::createOrder(StatsOutputType order) {
+bool ActionMaker::createOrder(StatsOutputType order) {
 	switch (order) {
 	case StatsOutputType::IDLE: break;
 	case StatsOutputType::CREATE_UNIT:
-		createUnit();
-		break;
+		return createUnit();
 	case StatsOutputType::CREATE_BUILDING:
-		createBuilding();
-		break;
+		return createBuilding();
 	case StatsOutputType::LEVEL_UP_UNIT:
-		levelUpUnit();
-		break;
+		return levelUpUnit();
 	case StatsOutputType::LEVEL_UP_BUILDING:
-		levelUpBuilding();
-		break;
+		return levelUpBuilding();
 	case StatsOutputType::ORDER_GO: break;
 	case StatsOutputType::ORDER_STOP: break;
 	case StatsOutputType::ORDER_CHARGE: break;
@@ -239,11 +261,15 @@ void ActionMaker::createOrder(StatsOutputType order) {
 	case StatsOutputType::ORDER_COLLECT: break;
 	default: ;
 	}
+	return false;
 }
 
-void ActionMaker::levelUpBuilding() {}
+bool ActionMaker::levelUpBuilding() {
+	return false;
+}
 
-void ActionMaker::levelUpUnit() {
+bool ActionMaker::levelUpUnit() {
+	return false;
 	// auto opt = chooseUnitUpgrade(order);
 	// if (opt.has_value()) {
 	// 	short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to

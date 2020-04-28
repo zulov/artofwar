@@ -70,8 +70,11 @@ void FormationOrder::addChargeAim() {
 void FormationOrder::followAndAct(float distThreshold) {
 	auto optLeader = formation->getLeader();
 	if (optLeader.has_value()) {
+		if(toUse==nullptr) {
+			int a =5;
+		}
 		auto posToUseOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(optLeader.value()));
-		//TODO bug TuUSe moze nie istniec
+		//TODO bug TuUSe moze nie istniec!!!!!!!!!
 		if (posToUseOpt.has_value()) {
 			auto postToUse = posToUseOpt.value();
 			if (std::get<1>(postToUse) > distThreshold) {

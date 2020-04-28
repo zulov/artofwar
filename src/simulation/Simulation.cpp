@@ -54,7 +54,10 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		Game::getActionCenter()->executeLists();
 		selfAI();
-		aiPlayers();
+		if (currentFrameNumber % 20 == 0) {
+			aiPlayers();
+		}
+
 		Game::getActionCenter()->executeActions();
 		enviroment->update(units);
 		enviroment->updateInfluence(units, buildings, resources);
