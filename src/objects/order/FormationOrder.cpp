@@ -26,7 +26,9 @@ bool FormationOrder::add() {
 }
 
 bool FormationOrder::expired() {
-	return formation == nullptr || formation->getSize() <= 0;
+	return formation == nullptr
+		|| formation->getSize() <= 0
+		|| toUse != nullptr && !toUse->isAlive();
 }
 
 void FormationOrder::clean() {
@@ -70,8 +72,8 @@ void FormationOrder::addChargeAim() {
 void FormationOrder::followAndAct(float distThreshold) {
 	auto optLeader = formation->getLeader();
 	if (optLeader.has_value()) {
-		if(toUse==nullptr) {
-			int a =5;
+		if (toUse == nullptr) {
+			int a = 5;
 		}
 		auto posToUseOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(optLeader.value()));
 		//TODO bug TuUSe moze nie istniec!!!!!!!!!
