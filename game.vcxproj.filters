@@ -463,7 +463,6 @@
       <Filter>objects</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\order\FormationOrder.h" />
-    <ClInclude Include="src\objects\order\FutureOrder.h" />
     <ClInclude Include="src\objects\order\IndividualOrder.h" />
     <ClInclude Include="src\objects\order\enums\UnitActionType.h" />
     <ClInclude Include="src\objects\order\enums\UnitAction.h">

@@ -330,7 +330,6 @@
     <ClInclude Include="src\colors\ColorPallet.h" />
     <ClInclude Include="src\control\ControlsUtils.h" />
     <ClInclude Include="src\objects\NodeUtils.h" />
-    <ClInclude Include="src\objects\order\FutureOrder.h" />
     <ClInclude Include="src\objects\unit\ChargeData.h" />
     <ClInclude Include="src\objects\unit\SimColorMode.h" />
     <ClInclude Include="src\objects\unit\MissileData.h" />

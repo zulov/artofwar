@@ -1,8 +1,8 @@
 #include "UnitActionCommand.h"
 
 
-UnitActionCommand::UnitActionCommand(FutureOrder* futureAim, char player): AbstractCommand(player),
-                                                                           futureAim(futureAim) {
+UnitActionCommand::UnitActionCommand(UnitOrder* order, char player): AbstractCommand(player),
+                                                                           order(order) {
 }
 
 UnitActionCommand::~UnitActionCommand() = default;
