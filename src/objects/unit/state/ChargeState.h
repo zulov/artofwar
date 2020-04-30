@@ -37,9 +37,9 @@ public:
 		if (unit->chargeData->updateFrame()) {
 			for (auto physical : unit->thingsToInteract) {
 				if (unit->getTeam() != physical->getTeam()) {
-					auto before = physical->getHealthPercent();
+					const auto before = physical->getHealthPercent();
 					physical->absorbAttack(unit->attackCoef);
-					auto after = physical->getHealthPercent();
+					const auto after = physical->getHealthPercent();
 					if (!unit->chargeData->updateHit(before, after)) {
 						StateManager::changeState(unit, UnitState::MOVE);
 						break;

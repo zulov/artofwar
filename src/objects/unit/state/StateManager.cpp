@@ -20,9 +20,7 @@
 #include "consts.h"
 #include "objects/order/enums/UnitAction.h"
 #include "database/DatabaseCache.h"
-#include "objects/order/UnitOrder.h"
 #include "objects/static/StaticStateUtils.h"
-#include <magic_enum.hpp>
 
 StateManager* StateManager::instance = nullptr;
 

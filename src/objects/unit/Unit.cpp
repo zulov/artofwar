@@ -424,7 +424,7 @@ void Unit::setBucket(int _bucketIndex, char param) {
 }
 
 bool Unit::isSlotOccupied(int indexToInteract) {
-	int index = Game::getEnvironment()->getRevertCloseIndex(getMainCell(), indexToInteract);
+	const int index = Game::getEnvironment()->getRevertCloseIndex(getMainCell(), indexToInteract);
 
 	return useSockets[index];
 }
@@ -471,7 +471,7 @@ float Unit::getValueOf(ValueType type) const {
 }
 
 Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
-	auto vector = Consts::circleCords[i] * (minimalDistance + toFollow->getMinimalDistance()) * 2;
+	const auto vector = Consts::circleCords[i] * (minimalDistance + toFollow->getMinimalDistance()) * 2;
 	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().z_ + vector.y_};
 }
 
@@ -479,7 +479,7 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 	float minDistance = 99999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
-	int mainIndex = getMainBucketIndex();
+	const int mainIndex = getMainBucketIndex();
 	const std::vector<char>& closeTabIndexes = Game::getEnvironment()->getCloseTabIndexes(mainIndex);
 	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
 	for (auto i : closeTabIndexes) {
