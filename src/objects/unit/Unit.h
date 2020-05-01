@@ -17,7 +17,6 @@ struct ForceStats;
 struct db_unit_level;
 struct db_unit;
 struct dbload_unit;
-class FutureOrder;
 struct MissileData;
 struct ChargeData;
 
@@ -79,7 +78,7 @@ public:
 
 	static std::string getColumns();
 	void changeColor(SimColorMode mode);
-	void addOrder(FutureOrder* aim);
+	void addOrder(UnitOrder* aim);
 
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);

@@ -7,12 +7,14 @@
 #include "simulation/env/Environment.h"
 
 UnitOrder::UnitOrder(UnitActionType actionType, short id, bool append, Urho3D::Vector2& vector):
-	FutureOrder(actionType, id, append),
-	toUse(nullptr), vector(new Urho3D::Vector2(vector)) {}
+	actionType(actionType), id(id), append(append),
+	toUse(nullptr), vector(new Urho3D::Vector2(vector)) {
+}
 
 UnitOrder::UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse):
-	FutureOrder(actionType, id, append),
-	toUse(toUse), vector(nullptr) {}
+	actionType(actionType), id(id), append(append),
+	toUse(toUse), vector(nullptr) {
+}
 
 
 UnitOrder::~UnitOrder() {

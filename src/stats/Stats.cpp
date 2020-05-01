@@ -10,6 +10,7 @@
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "objects/ObjectEnums.h"
+#include "objects/order/UnitOrder.h"
 #include "objects/order/enums/UnitAction.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
@@ -247,7 +248,7 @@ std::string Stats::getOutput(UnitActionCommand* command) const {
 	float output[magic_enum::enum_count<StatsOutputType>()];
 	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
 
-	switch (static_cast<UnitAction>(command->futureAim->getId())) {
+	switch (static_cast<UnitAction>(command->order->getId())) {
 	case UnitAction::GO:
 		output[cast(StatsOutputType::ORDER_GO)] = 1;
 		break;

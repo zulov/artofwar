@@ -9,7 +9,6 @@
 #include "debug/DebugLineRepo.h"
 #include "debug/DebugUnitType.h"
 #include "objects/ObjectEnums.h"
-#include "objects/order/FutureOrder.h"
 #include "objects/order/IndividualOrder.h"
 #include "objects/order/enums/UnitAction.h"
 #include "objects/unit/ChargeData.h"
@@ -167,7 +166,7 @@ void Unit::updateHeight(float y, double timeStep) {
 	position.y_ = y;
 }
 
-void Unit::addOrder(FutureOrder* aim) {
+void Unit::addOrder(UnitOrder* aim) {
 	aims.add(aim);
 }
 

@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <optional>
 #include "TargetAim.h"
-#include "objects/order/FutureOrder.h"
+#include "objects/order/UnitOrder.h"
 #include "objects/unit/Unit.h"
 
 
@@ -23,7 +23,7 @@ std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) const {
 
 void Aims::clearExpired() {
 	nextAims.erase(std::remove_if(nextAims.begin(), nextAims.end(),
-	                              [](FutureOrder* fa)
+	                              [](UnitOrder* fa)
 	                              {
 		                              const bool expired = fa->expired();
 		                              if (expired) { delete fa; }
@@ -51,7 +51,7 @@ bool Aims::ifReach(Unit* unit) {
 	return false;
 }
 
-void Aims::add(FutureOrder* order) {
+void Aims::add(UnitOrder* order) {
 	if (!order->getAppend()) {
 		clear();
 	}

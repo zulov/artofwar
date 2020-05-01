@@ -3,12 +3,13 @@
 #include "math/MathUtils.h"
 #include "commands/CommandList.h"
 #include "objects/unit/Unit.h"
-#include "objects/order/FutureOrder.h"
 #include "objects/unit/state/StateManager.h"
 #include "simulation/env/Environment.h"
 #include <Urho3D/Math/Vector2.h>
 #include <numeric>
 #include <unordered_set>
+
+#include "objects/order/UnitOrder.h"
 
 
 Formation::Formation(short _id,const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction) :
@@ -62,7 +63,7 @@ void Formation::electLeader() {
 
 	if (oldLeader != nullptr
 		&& leader != oldLeader
-		&& !futureOrders.empty()) {
+		&& !unitOrders.empty()) {
 
 		if (oldLeader->getFormation() == id) {
 			oldLeader->clearAims();
@@ -220,11 +221,11 @@ void Formation::update() {
 		innerUpdate();
 		if (notWellFormed < thresholdMin) {
 			changeState(FormationState::MOVING);
-			if (!futureOrders.empty()) {
-				futureOrders[0]->execute();
+			if (!unitOrders.empty()) {
+				unitOrders[0]->execute();
 				stopAllBesideLeader();
-				delete futureOrders[0];
-				futureOrders.erase(futureOrders.begin()); //TODO to zachowaæ
+				delete unitOrders[0];
+				unitOrders.erase(unitOrders.begin()); //TODO to zachowaæ
 			}
 		}
 		break;
@@ -234,7 +235,7 @@ void Formation::update() {
 			changeState(FormationState::FORMING);
 		} else if (notWellFormedExact < thresholdMin
 			&& !leader->hasAim()) {
-			if (futureOrders.empty()) {
+			if (unitOrders.empty()) {
 				changeState(FormationState::REACHED);
 			} else {
 				changeState(FormationState::FORMING);
@@ -291,12 +292,12 @@ std::optional<Unit*> Formation::getLeader() {
 	return {};
 }
 
-void Formation::addOrder(FutureOrder* order) {
+void Formation::addOrder(UnitOrder* order) {
 	if (!order->getAppend()) {
 		semiReset();
 		leader->clearAims();
 	}
-	futureOrders.emplace_back(order);
+	unitOrders.emplace_back(order);
 }
 
 size_t Formation::getSize() const {
@@ -307,7 +308,7 @@ void Formation::semiReset() {
 	notWellFormed = 1;
 	notWellFormedExact = 1;
 	changed = true;
-	futureOrders.clear();
+	unitOrders.clear();
 	std::fill_n(levelOfReach, units.size(), 0);
 	changeState(FormationState::FORMING);
 }

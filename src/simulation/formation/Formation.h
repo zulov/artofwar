@@ -6,7 +6,7 @@
 #include <vector>
 
 
-class FutureOrder;
+class UnitOrder;
 class Physical;
 class Unit;
 
@@ -22,7 +22,7 @@ public:
 	FormationState getState() const { return state; }
 	std::optional<Unit*> getLeader();
 
-	void addOrder(FutureOrder* order);
+	void addOrder(UnitOrder* order);
 	size_t getSize() const;
 	void semiReset();
 	std::vector<Unit*>& getUnits() { return units; }
@@ -58,7 +58,7 @@ private:
 	Unit* oldLeader = nullptr;
 
 	std::vector<Unit*> units;
-	std::vector<FutureOrder*> futureOrders;
+	std::vector<UnitOrder*> unitOrders;
 
 	float thresholdMin = 0.01;
 	float thresholdMax = 0.5;

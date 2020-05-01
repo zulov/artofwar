@@ -1,16 +1,18 @@
 #include "UnitActionCommand.h"
 
+#include "objects/order/UnitOrder.h"
+
 
 UnitActionCommand::UnitActionCommand(UnitOrder* order, char player): AbstractCommand(player),
-                                                                           order(order) {
+                                                                     order(order) {
 }
 
 UnitActionCommand::~UnitActionCommand() = default;
 
 void UnitActionCommand::execute() {
-	bool ifRemove = futureAim->add();
+	bool ifRemove = order->add();
 	if (ifRemove) {
-		delete futureAim;
-		futureAim = nullptr;
+		delete order;
+		order = nullptr;
 	}
 }

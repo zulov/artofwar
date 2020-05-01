@@ -21,7 +21,6 @@
 #include "objects/NodeUtils.h"
 #include "objects/ObjectEnums.h"
 #include "objects/order/enums/UnitActionType.h"
-#include "objects/order/FutureOrder.h"
 #include "objects/order/GroupOrder.h"
 #include "objects/order/IndividualOrder.h"
 #include "objects/queue/QueueActionType.h"
@@ -168,7 +167,7 @@ void Controls::rightClick(hit_data& hitData) const {
 	}
 	const bool shiftPressed = input->GetKeyDown(Urho3D::KEY_SHIFT);
 
-	FutureOrder* fOrder;
+	UnitOrder* fOrder;
 	if (selected->size() == 1) {
 		if (vector) {
 			fOrder = new IndividualOrder(dynamic_cast<Unit*>(selected->at(0)),

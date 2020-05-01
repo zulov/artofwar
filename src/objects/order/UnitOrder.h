@@ -1,5 +1,4 @@
 #pragma once
-#include "FutureOrder.h"
 #include "objects/unit/ActionParameter.h"
 
 class Physical;
@@ -16,12 +15,11 @@ public:
 	UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse);
 	UnitOrder(UnitActionType actionType, short id, bool append, Urho3D::Vector2& vector);
 	virtual ~UnitOrder();
-	//void execute() override;
+	virtual execute();
 
 	virtual bool expired() =0;
 	virtual bool add() =0;
 	virtual void clean() =0;
-	virtual void execute() =0;
 protected:
 	Physical* toUse = nullptr;
 	Urho3D::Vector2* vector = nullptr;
