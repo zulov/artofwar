@@ -3,7 +3,8 @@
 
 class Physical;
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class Vector2;
 }
 
@@ -15,11 +16,14 @@ public:
 	UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse);
 	UnitOrder(UnitActionType actionType, short id, bool append, Urho3D::Vector2& vector);
 	virtual ~UnitOrder();
-	virtual execute();
+	virtual void execute();
 
 	virtual bool expired() =0;
 	virtual bool add() =0;
 	virtual void clean() =0;
+
+	bool getAppend() const { return append; }
+	short getId() const { return id; }
 protected:
 	Physical* toUse = nullptr;
 	Urho3D::Vector2* vector = nullptr;
@@ -27,14 +31,10 @@ protected:
 	const UnitActionType actionType;
 	const bool append;
 	const short id;
-	
+
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);
 	ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow);
 	ActionParameter getChargeAim(Urho3D::Vector2& charge);
-
-	bool getAppend() const { return append; }
-	UnitActionType getAction() const { return actionType; }
-	short getId() const { return id; }
 private:
 
 	virtual void addCollectAim() =0;
