@@ -107,5 +107,5 @@ void GroupOrder::transformToFormationOrder() const {
 
 bool GroupOrder::expired() {
 	return units.empty()
-	|| toUse != nullptr && !toUse->isAlive();
+		|| toUse != nullptr && !toUse->isAlive();
 }

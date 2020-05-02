@@ -1,7 +1,7 @@
 #pragma once
 
-#include  "objects/ActionType.h"
 #include <vector>
+#include  "objects/ActionType.h"
 #include "objects/Physical.h"
 
 class Aim;
@@ -52,7 +52,7 @@ public:
 	}
 
 	Builder& setThingsToInteract(std::vector<Physical*>& _thingsToInteract) {
-		thingsToInteract = _thingsToInteract; //TODO probable bug? czy nie lepiej kopiowac
+		thingsToInteract = _thingsToInteract; //TODO probable bug? czy nie lepiej kopiowac to chyaba kopiuje i tak
 		return *this;
 	}
 

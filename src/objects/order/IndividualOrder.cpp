@@ -10,18 +10,17 @@
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action,
                                  Urho3D::Vector2& vector, bool append):
 	UnitOrder(UnitActionType::ORDER, static_cast<short>(action), append, vector),
-	unit(unit) {
-}
+	unit(unit) {}
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action,
                                  Physical* toUse, bool append):
-	UnitOrder(UnitActionType::ORDER, static_cast<short>(action), append, toUse), unit(unit) {
-}
+	UnitOrder(UnitActionType::ORDER, static_cast<short>(action), append, toUse), unit(unit) {}
 
 IndividualOrder::~IndividualOrder() = default;
 
 bool IndividualOrder::expired() {
-	return unit == nullptr || (toUse != nullptr && !toUse->isAlive());
+	return unit == nullptr
+		|| toUse != nullptr && !toUse->isAlive();
 }
 
 bool IndividualOrder::add() {

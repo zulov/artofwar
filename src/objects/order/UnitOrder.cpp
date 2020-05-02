@@ -16,9 +16,9 @@ UnitOrder::UnitOrder(UnitActionType actionType, short id, bool append, Physical*
 	toUse(toUse), vector(nullptr) {
 }
 
-
 UnitOrder::~UnitOrder() {
 	delete vector;
+	
 }
 
 ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {

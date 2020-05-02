@@ -9,13 +9,11 @@
 
 FormationOrder::FormationOrder(Formation* formation, UnitActionType actionType, short action,
                                Urho3D::Vector2& vector, bool append):
-	UnitOrder(actionType, action, append, vector), formation(formation) {
-}
+	UnitOrder(actionType, action, append, vector), formation(formation) {}
 
 FormationOrder::FormationOrder(Formation* formation, UnitActionType actionType, short action,
                                Physical* toUse, bool append):
-	UnitOrder(actionType, action, append, toUse), formation(formation) {
-}
+	UnitOrder(actionType, action, append, toUse), formation(formation) {}
 
 
 FormationOrder::~FormationOrder() = default;
@@ -75,7 +73,7 @@ void FormationOrder::followAndAct(float distThreshold) {
 		if (toUse == nullptr) {
 			int a = 5;
 		}
-		auto posToUseOpt = toUse->getPosToUseWithIndex(static_cast<Unit*>(optLeader.value()));
+		auto posToUseOpt = toUse->getPosToUseWithIndex(optLeader.value());
 		//TODO bug TuUSe moze nie istniec!!!!!!!!!
 		if (posToUseOpt.has_value()) {
 			auto postToUse = posToUseOpt.value();
@@ -102,7 +100,7 @@ void FormationOrder::followAndAct(float distThreshold) {
 void FormationOrder::addAttackAim() {
 	auto optLeader = formation->getLeader();
 	if (optLeader.has_value()) {
-		followAndAct(static_cast<Unit*>(optLeader.value())->getAttackRange());
+		followAndAct(optLeader.value()->getAttackRange());
 	}
 }
 
@@ -121,6 +119,8 @@ void FormationOrder::addStopAim() {
 
 void FormationOrder::simpleAction() const {
 	for (auto unit : formation->getUnits()) {
+		unit->resetFormation();
 		unit->action(static_cast<UnitAction>(id));
 	}
+	formation->remove();
 }
