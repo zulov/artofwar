@@ -6,19 +6,15 @@
 #include "objects/unit/aim/FollowAim.h"
 #include "simulation/env/Environment.h"
 
-UnitOrder::UnitOrder(UnitActionType actionType, short id, bool append, Urho3D::Vector2& vector):
-	actionType(actionType), id(id), append(append),
-	toUse(nullptr), vector(new Urho3D::Vector2(vector)) {
-}
+UnitOrder::UnitOrder(short id, bool append, Urho3D::Vector2& vector):
+	id(id), append(append), toUse(nullptr), vector(new Urho3D::Vector2(vector)) {}
 
-UnitOrder::UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse):
-	actionType(actionType), id(id), append(append),
-	toUse(toUse), vector(nullptr) {
-}
+UnitOrder::UnitOrder(short id, bool append, Physical* toUse):
+	id(id), append(append), toUse(toUse), vector(nullptr) {}
 
 UnitOrder::~UnitOrder() {
 	delete vector;
-	
+
 }
 
 ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {

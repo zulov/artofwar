@@ -10,7 +10,7 @@
 
 GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, short id,
                        Urho3D::Vector2& vector, bool append):
-	UnitOrder(actionType, id, append, vector) {
+	UnitOrder(id, append, vector), actionType(actionType) {
 	for (auto unit : *entities) {
 		//TODO performance spróbowaæ z insertem
 		this->units.emplace_back(reinterpret_cast<Unit*>(unit));
@@ -19,14 +19,12 @@ GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitActionType actionTy
 
 GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, short id,
                        Physical* toUse, bool append):
-	UnitOrder(actionType, id, append, toUse) {
+	UnitOrder(id, append, toUse), actionType(actionType) {
 	for (auto unit : *entities) {
 		//TODO performance spróbowaæ z insertem
 		this->units.emplace_back(reinterpret_cast<Unit*>(unit));
 	}
 }
-
-GroupOrder::~GroupOrder() = default;
 
 bool GroupOrder::add() {
 	switch (actionType) {
@@ -95,11 +93,9 @@ void GroupOrder::transformToFormationOrder() const {
 	auto opt = Game::getFormationManager()->createFormation(units);
 	if (opt.has_value()) {
 		if (vector) {
-			opt.value()->addOrder(
-				new FormationOrder(opt.value(), UnitActionType::FORMATION, id, *vector, append));
+			opt.value()->addOrder(new FormationOrder(opt.value(), id, *vector, append));
 		} else {
-			opt.value()->addOrder(
-				new FormationOrder(opt.value(), UnitActionType::FORMATION, id, toUse, append));
+			opt.value()->addOrder(new FormationOrder(opt.value(), id, toUse, append));
 		}
 
 	}

@@ -9,12 +9,11 @@ namespace Urho3D
 }
 
 enum class UnitAction : char;
-enum class UnitActionType : char;
 
 class UnitOrder {
 public:
-	UnitOrder(UnitActionType actionType, short id, bool append, Physical* toUse);
-	UnitOrder(UnitActionType actionType, short id, bool append, Urho3D::Vector2& vector);
+	UnitOrder(short id, bool append, Physical* toUse);
+	UnitOrder(short id, bool append, Urho3D::Vector2& vector);
 	virtual ~UnitOrder();
 	virtual void execute();
 
@@ -27,8 +26,7 @@ public:
 protected:
 	Physical* toUse = nullptr;
 	Urho3D::Vector2* vector = nullptr;
-
-	const UnitActionType actionType;
+	
 	const bool append;
 	const short id;
 

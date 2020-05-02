@@ -3,18 +3,17 @@
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
 #include "objects/order/enums/UnitAction.h"
-#include "objects/order/enums/UnitActionType.h"
 #include "simulation/env/Environment.h"
 
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action,
                                  Urho3D::Vector2& vector, bool append):
-	UnitOrder(UnitActionType::ORDER, static_cast<short>(action), append, vector),
+	UnitOrder(static_cast<short>(action), append, vector),
 	unit(unit) {}
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action,
                                  Physical* toUse, bool append):
-	UnitOrder(UnitActionType::ORDER, static_cast<short>(action), append, toUse), unit(unit) {}
+	UnitOrder(static_cast<short>(action), append, toUse), unit(unit) {}
 
 IndividualOrder::~IndividualOrder() = default;
 

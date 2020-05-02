@@ -3,7 +3,8 @@
 
 class Physical;
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class Vector2;
 }
 
@@ -12,9 +13,9 @@ class Formation;
 
 class FormationOrder : public UnitOrder {
 public:
-	FormationOrder(Formation* formation, UnitActionType actionType, short action, Urho3D::Vector2& vector, bool append = false);
-	FormationOrder(Formation* formation, UnitActionType actionType, short action, Physical* toUse, bool append = false);
-	~FormationOrder();
+	FormationOrder(Formation* formation, short action, Urho3D::Vector2& vector, bool append = false);
+	FormationOrder(Formation* formation, short action, Physical* toUse, bool append = false);
+	~FormationOrder() = default;
 	bool add() override;
 	bool expired() override;
 	void clean() override;

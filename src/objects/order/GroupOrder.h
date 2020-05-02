@@ -1,5 +1,6 @@
 #pragma once
 #include "UnitOrder.h"
+#include "enums/UnitActionType.h"
 
 enum class UnitAction : char;
 
@@ -10,11 +11,13 @@ public:
 
 	GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, short id,
 	           Urho3D::Vector2& vector, bool append = false);
-	~GroupOrder();
+	~GroupOrder() = default;
+	
 	bool add() override;
 	void clean() override;
 	bool expired() override;
 private:
+	const UnitActionType actionType;
 	std::vector<Unit*> units;
 	//TODO to trzeba kopiowac, ale wtedy trzeba sprawdzac przed wykonaniem
 	//czy cos sie nie zepsulo ale i tak cos takiego robie w formacji
