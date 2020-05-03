@@ -4,16 +4,16 @@
 #include "Game.h"
 #include "commands/CommandList.h"
 #include "math/MathUtils.h"
+#include "objects/order/OrderUtils.h"
 #include "objects/order/UnitOrder.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "simulation/env/Environment.h"
 
 
-Formation::Formation(short _id,const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction) :
-	id(_id), type(_type), state(FormationState::FORMING), direction(_direction),units(_units) {
+Formation::Formation(short _id, const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction) :
+	id(_id), type(_type), state(FormationState::FORMING), direction(_direction), units(_units) {
 
-	units.clear();
 	for (auto unit : units) {
 		unit->clearAims();
 		StateManager::changeState(unit, UnitState::STOP);
@@ -194,6 +194,7 @@ void Formation::calculateNotWellFormed() {
 }
 
 void Formation::innerUpdate() {
+	removeExpired(unitOrders);
 	updateUnits();
 
 	if (!units.empty()) {
@@ -223,7 +224,7 @@ void Formation::update() {
 				unitOrders[0]->execute();
 				stopAllBesideLeader();
 				delete unitOrders[0];
-				unitOrders.erase(unitOrders.begin()); //TODO to zachowaæ
+				unitOrders.erase(unitOrders.begin()); //TODO to zachowaæ, chyba jednak nie trzeba
 			}
 		}
 		break;

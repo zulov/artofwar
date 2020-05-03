@@ -3,11 +3,10 @@
 #include "State.h"
 
 
-class GoState : public State
-{
+class GoState : public State {
 public:
 	GoState() : State({
-		UnitState::STOP, UnitState::MOVE, UnitState::DEFEND, 
+		UnitState::STOP, UnitState::MOVE, UnitState::DEFEND,
 		UnitState::DEAD, UnitState::GO_TO, UnitState::FOLLOW,
 		UnitState::CHARGE
 	}) {
@@ -27,6 +26,6 @@ public:
 
 	void execute(Unit* unit, float timeStep) override {
 		State::execute(unit, timeStep);
-				//TODO probable bug trzeba wyjsc jesli nie ma juz aima
+		//TODO probable bug trzeba wyjsc jesli nie ma juz aima
 	}
 };

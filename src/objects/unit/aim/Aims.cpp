@@ -1,7 +1,7 @@
 #include "Aims.h"
-#include <algorithm>
 #include <optional>
 #include "TargetAim.h"
+#include "objects/order/OrderUtils.h"
 #include "objects/order/UnitOrder.h"
 #include "objects/unit/Unit.h"
 
@@ -11,7 +11,7 @@ Aims::Aims(): current(nullptr) {
 
 Aims::~Aims() {
 	delete current;
-	clear_vector(&nextAims);
+	clear_vector(nextAims);
 }
 
 std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) const {
@@ -22,14 +22,7 @@ std::optional<Urho3D::Vector2> Aims::getDirection(Unit* unit) const {
 }
 
 void Aims::clearExpired() {
-	nextAims.erase(std::remove_if(nextAims.begin(), nextAims.end(),
-	                              [](UnitOrder* fa)
-	                              {
-		                              const bool expired = fa->expired();
-		                              if (expired) { delete fa; }
-		                              return expired;
-	                              }),
-	               nextAims.end());
+	removeExpired(nextAims);
 	if (current != nullptr && current->expired()) {
 		removeCurrentAim();
 	}
@@ -59,7 +52,7 @@ void Aims::add(UnitOrder* order) {
 }
 
 void Aims::clear() {
-	clear_vector(&nextAims);
+	clear_vector(nextAims);
 	removeCurrentAim();
 }
 

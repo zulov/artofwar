@@ -33,13 +33,11 @@ void static cleanDead(std::vector<ResourceEntity*>& vector) {
 }
 
 static std::vector<short> intersection(std::vector<std::vector<short>*>& ids) {
-	std::vector<short> common;//TODO check if ids sorted sometimes?
+	std::vector<short> common; //TODO check if ids sorted sometimes?
 	if (ids.empty()) {
 		return common;
 	}
-	common=*ids[0];
-	//common.insert(common.begin(), ids[0]->begin(), ids[0]->end());
-
+	common = *ids[0];
 	for (int i = 1; i < ids.size(); ++i) {
 		std::vector<short> temp;
 		std::set_intersection(common.begin(), common.end(),

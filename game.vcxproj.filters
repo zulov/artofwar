@@ -489,6 +489,7 @@
     <ClInclude Include="src\math\RandGen.h" />
     <ClInclude Include="src\player\ai\ActionCenter.h" />
     <ClInclude Include="src\math\RandType.h" />
+    <ClInclude Include="src\objects\order\OrderUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

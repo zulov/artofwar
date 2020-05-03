@@ -291,6 +291,7 @@
     <ClInclude Include="src\math\RandGen.h" />
     <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\math\RandType.h" />
+    <ClInclude Include="src\objects\order\OrderUtils.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\player\ai\AiInfluenceType.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
