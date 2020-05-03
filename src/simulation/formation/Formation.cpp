@@ -4,9 +4,9 @@
 #include "Game.h"
 #include "commands/CommandList.h"
 #include "math/MathUtils.h"
-#include "objects/order/OrderUtils.h"
-#include "objects/order/UnitOrder.h"
 #include "objects/unit/Unit.h"
+#include "objects/unit/order/OrderUtils.h"
+#include "objects/unit/order/UnitOrder.h"
 #include "objects/unit/state/StateManager.h"
 #include "simulation/env/Environment.h"
 

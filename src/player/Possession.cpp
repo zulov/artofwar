@@ -6,8 +6,8 @@
 #include "math/VectorUtils.h"
 #include "objects/ValueType.h"
 #include "objects/building/Building.h"
-#include "objects/order/enums/UnitAction.h"
 #include "objects/unit/Unit.h"
+#include "objects/unit/order/enums/UnitAction.h"
 #include "objects/unit/state/StateManager.h"
 
 Possession::Possession(char nation) {

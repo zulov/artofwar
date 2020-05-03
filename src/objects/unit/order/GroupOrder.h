@@ -14,7 +14,6 @@ public:
 	~GroupOrder() = default;
 	
 	bool add() override;
-	void clean() override;
 	bool expired() override;
 private:
 	const UnitActionType actionType;

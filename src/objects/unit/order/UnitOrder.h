@@ -19,7 +19,6 @@ public:
 
 	virtual bool expired() =0;
 	virtual bool add() =0;
-	virtual void clean() =0;
 
 	bool getAppend() const { return append; }
 	short getId() const { return id; }

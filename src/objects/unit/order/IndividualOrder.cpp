@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
-#include "objects/order/enums/UnitAction.h"
+#include "objects/unit/order/enums/UnitAction.h"
 #include "simulation/env/Environment.h"
 
 
@@ -25,12 +25,6 @@ bool IndividualOrder::expired() {
 bool IndividualOrder::add() {
 	unit->addOrder(this);
 	return false;
-}
-
-void IndividualOrder::clean() {
-	if (!unit->isAlive()) {
-		unit = nullptr;
-	}
 }
 
 void IndividualOrder::addCollectAim() {

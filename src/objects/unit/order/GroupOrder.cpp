@@ -1,10 +1,10 @@
 #include "GroupOrder.h"
 #include "FormationOrder.h"
 #include "Game.h"
+#include "enums/UnitAction.h"
+#include "enums/UnitActionType.h"
 #include "math/VectorUtils.h"
 #include "objects/unit/ActionParameter.h"
-#include "objects/order/enums/UnitAction.h"
-#include "objects/order/enums/UnitActionType.h"
 #include "simulation/formation/FormationManager.h"
 
 
@@ -39,10 +39,6 @@ bool GroupOrder::add() {
 	default: ;
 	}
 	return true;
-}
-
-void GroupOrder::clean() {
-	cleanDead(units);
 }
 
 void GroupOrder::addCollectAim() {

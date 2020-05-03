@@ -1,15 +1,15 @@
 #include "ResourceEntity.h"
+#include <string>
 #include "Game.h"
-#include "objects/ObjectEnums.h"
+#include "commands/action/ResourceActionType.h"
 #include "database/DatabaseCache.h"
-#include "objects/order/enums/UnitAction.h"
+#include "math/RandGen.h"
+#include "objects/ObjectEnums.h"
 #include "objects/unit/Unit.h"
+#include "objects/unit/order/enums/UnitAction.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "simulation/env/Environment.h"
-#include <string>
-#include "commands/action/ResourceActionType.h"
-#include "math/RandGen.h"
 
 
 ResourceEntity::ResourceEntity(Urho3D::Vector3& _position,

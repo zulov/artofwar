@@ -11,7 +11,6 @@ public:
 
 	bool expired() override;
 	bool add() override;
-	void clean() override;
 private:
 	void addCollectAim() override;
 	void addTargetAim() override;

@@ -195,9 +195,9 @@
     <ClCompile Include="src\player\Possession.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMap.cpp" />
     <ClCompile Include="src\simulation\env\bucket\path\PathFinder.cpp" />
-    <ClCompile Include="src\objects\order\FormationOrder.cpp" />
-    <ClCompile Include="src\objects\order\GroupOrder.cpp" />
-    <ClCompile Include="src\objects\order\IndividualOrder.cpp" />
+    <ClCompile Include="src\objects\unit\order\FormationOrder.cpp" />
+    <ClCompile Include="src\objects\unit\order\GroupOrder.cpp" />
+    <ClCompile Include="src\objects\unit\order\IndividualOrder.cpp" />
     <ClCompile Include="src\debug\DebugLineRepo.cpp" />
     <ClCompile Include="src\colors\ColorPaletteRepo.cpp" />
     <ClCompile Include="src\objects\unit\state\State.cpp" />
@@ -285,20 +285,20 @@
     <ClCompile Include="src\commands\upgrade\UpgradeCommandList.cpp" />
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
     <ClCompile Include="src\stats\Stats.cpp" />
-    <ClCompile Include="src\objects\order\UnitOrder.cpp" />
+    <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\math\RandGen.h" />
     <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\math\RandType.h" />
-    <ClInclude Include="src\objects\order\OrderUtils.h" />
+    <ClInclude Include="src\objects\unit\order\OrderUtils.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\player\ai\AiInfluenceType.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\simulation\env\CloseIndexProvider.h" />
     <ClInclude Include="src\commands\action\BuildingActionType.h" />
     <ClInclude Include="src\commands\action\ResourceActionType.h" />
-    <ClInclude Include="src\objects\order\enums\UnitActionType.h" />
+    <ClInclude Include="src\objects\unit\order\enums\UnitActionType.h" />
     <ClInclude Include="src\commands\action\ResourceActionCommand.h" />
     <ClInclude Include="src\commands\action\BuildingActionCommand.h" />
     <ClInclude Include="src\player\ai\ActionCenter.h" />
@@ -315,9 +315,9 @@
     <ClInclude Include="src\player\Possession.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
     <ClInclude Include="src\NamesUtils.h" />
-    <ClInclude Include="src\objects\order\FormationOrder.h" />
-    <ClInclude Include="src\objects\order\GroupOrder.h" />
-    <ClInclude Include="src\objects\order\IndividualOrder.h" />
+    <ClInclude Include="src\objects\unit\order\FormationOrder.h" />
+    <ClInclude Include="src\objects\unit\order\GroupOrder.h" />
+    <ClInclude Include="src\objects\unit\order\IndividualOrder.h" />
     <ClInclude Include="src\consts.h" />
     <ClInclude Include="src\debug\DebugLineRepo.h" />
     <ClInclude Include="src\debug\DebugUnitType.h" />
@@ -416,7 +416,7 @@
     <ClInclude Include="src\hud\MySprite.h" />
     <ClInclude Include="src\stats\StatsEnums.h" />
     <ClInclude Include="src\StringUtils.h" />
-    <ClInclude Include="src\objects\order\enums\UnitAction.h" />
+    <ClInclude Include="src\objects\unit\order\enums\UnitAction.h" />
     <ClInclude Include="src\objects\Physical.h" />
     <ClInclude Include="src\player\Player.h" />
     <ClInclude Include="src\player\PlayersManager.h" />
@@ -469,7 +469,7 @@
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
     <ClInclude Include="src\stats\Stats.h" />
     <ClInclude Include="src\math\VectorUtils.h" />
-    <ClInclude Include="src\objects\order\UnitOrder.h" />
+    <ClInclude Include="src\objects\unit\order\UnitOrder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

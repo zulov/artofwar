@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "IndividualOrder.h"
 #include "objects/unit/Unit.h"
-#include "objects/order/enums/UnitAction.h"
+#include "enums/UnitAction.h"
 #include "simulation/formation/Formation.h"
 #include "simulation/env/Environment.h"
 
@@ -23,12 +23,6 @@ bool FormationOrder::expired() {
 	return formation == nullptr
 		|| formation->getSize() <= 0
 		|| toUse != nullptr && !toUse->isAlive();
-}
-
-void FormationOrder::clean() {
-	if (formation->getSize() <= 0) {
-		formation = nullptr;
-	}
 }
 
 void FormationOrder::addCollectAim() {

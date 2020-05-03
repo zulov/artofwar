@@ -178,13 +178,9 @@
     <ClCompile Include="src\player\ai\nn\Layer.cpp" />
     <ClCompile Include="src\player\ai\nn\Brain.cpp" />
     <ClCompile Include="src\stats\Stats.cpp" />
-    <ClCompile Include="src\objects\order\FormationOrder.cpp" />
-    <ClCompile Include="src\objects\order\IndividualOrder.cpp" />
-    <ClCompile Include="src\objects\order\UnitOrder.cpp" />
     <ClCompile Include="src\commands\action\UnitActionCommand.cpp">
       <Filter>command\action</Filter>
     </ClCompile>
-    <ClCompile Include="src\objects\order\GroupOrder.cpp" />
     <ClCompile Include="src\commands\action\ResourceActionCommand.cpp" />
     <ClCompile Include="src\commands\action\BuildingActionCommand.cpp" />
     <ClCompile Include="src\simulation\env\CloseIndexProvider.cpp" />
@@ -194,6 +190,10 @@
     <ClCompile Include="src\player\ai\ActionMaker.cpp" />
     <ClCompile Include="src\math\RandGen.cpp" />
     <ClCompile Include="src\player\ai\ActionCenter.cpp" />
+    <ClCompile Include="src\objects\unit\order\FormationOrder.cpp" />
+    <ClCompile Include="src\objects\unit\order\GroupOrder.cpp" />
+    <ClCompile Include="src\objects\unit\order\IndividualOrder.cpp" />
+    <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -462,17 +462,9 @@
     <ClInclude Include="src\objects\ObjectEnums.h">
       <Filter>objects</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\order\FormationOrder.h" />
-    <ClInclude Include="src\objects\order\IndividualOrder.h" />
-    <ClInclude Include="src\objects\order\enums\UnitActionType.h" />
-    <ClInclude Include="src\objects\order\enums\UnitAction.h">
-      <Filter>objects\unit</Filter>
-    </ClInclude>
-    <ClInclude Include="src\objects\order\UnitOrder.h" />
     <ClInclude Include="src\commands\action\UnitActionCommand.h">
       <Filter>command\action</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\order\GroupOrder.h" />
     <ClInclude Include="src\commands\action\ResourceActionCommand.h" />
     <ClInclude Include="src\commands\action\BuildingActionCommand.h" />
     <ClInclude Include="src\commands\action\ResourceActionType.h" />
@@ -489,7 +481,15 @@
     <ClInclude Include="src\math\RandGen.h" />
     <ClInclude Include="src\player\ai\ActionCenter.h" />
     <ClInclude Include="src\math\RandType.h" />
-    <ClInclude Include="src\objects\order\OrderUtils.h" />
+    <ClInclude Include="src\objects\unit\order\enums\UnitAction.h">
+      <Filter>objects\unit</Filter>
+    </ClInclude>
+    <ClInclude Include="src\objects\unit\order\enums\UnitActionType.h" />
+    <ClInclude Include="src\objects\unit\order\FormationOrder.h" />
+    <ClInclude Include="src\objects\unit\order\GroupOrder.h" />
+    <ClInclude Include="src\objects\unit\order\IndividualOrder.h" />
+    <ClInclude Include="src\objects\unit\order\OrderUtils.h" />
+    <ClInclude Include="src\objects\unit\order\UnitOrder.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

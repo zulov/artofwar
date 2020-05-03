@@ -2,11 +2,10 @@
 
 #include <magic_enum.hpp>
 
-#include "../Unit.h"
-#include "../../static/Static.h"
 #include "AttackState.h"
 #include "ChargeState.h"
 #include "CollectState.h"
+#include "consts.h"
 #include "DeadState.h"
 #include "DefendState.h"
 #include "DisposeState.h"
@@ -17,10 +16,11 @@
 #include "ShotState.h"
 #include "StopState.h"
 #include "UnitState.h"
-#include "consts.h"
-#include "objects/order/enums/UnitAction.h"
+#include "../Unit.h"
+#include "../../static/Static.h"
 #include "database/DatabaseCache.h"
 #include "objects/static/StaticStateUtils.h"
+#include "objects/unit/order/enums/UnitAction.h"
 
 StateManager* StateManager::instance = nullptr;
 
