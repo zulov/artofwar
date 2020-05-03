@@ -1,24 +1,22 @@
 #include "Formation.h"
+#include <numeric>
+#include <Urho3D/Math/Vector2.h>
 #include "Game.h"
-#include "math/MathUtils.h"
 #include "commands/CommandList.h"
+#include "math/MathUtils.h"
+#include "objects/order/UnitOrder.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/state/StateManager.h"
 #include "simulation/env/Environment.h"
-#include <Urho3D/Math/Vector2.h>
-#include <numeric>
-#include <unordered_set>
-
-#include "objects/order/UnitOrder.h"
 
 
 Formation::Formation(short _id,const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction) :
-	id(_id), type(_type), state(FormationState::FORMING), direction(_direction) {
+	id(_id), type(_type), state(FormationState::FORMING), direction(_direction),units(_units) {
 
-	for (auto unit : _units) {
+	units.clear();
+	for (auto unit : units) {
 		unit->clearAims();
 		StateManager::changeState(unit, UnitState::STOP);
-		units.push_back(unit);
 	}
 
 	if (!units.empty()) {
@@ -46,7 +44,7 @@ Urho3D::Vector2 Formation::computeLocalCenter() {
 	return localCenter;
 }
 
-void Formation::setNewLeader(Urho3D::Vector2& localCenter) {
+void Formation::chooseLeader(Urho3D::Vector2& localCenter) {
 	int maxDist = 99999;
 	leader = nullptr;
 	for (auto unit : units) {
@@ -59,7 +57,7 @@ void Formation::setNewLeader(Urho3D::Vector2& localCenter) {
 }
 
 void Formation::electLeader() {
-	setNewLeader(computeLocalCenter());
+	chooseLeader(computeLocalCenter());
 
 	if (oldLeader != nullptr
 		&& leader != oldLeader
@@ -275,7 +273,7 @@ Urho3D::Vector2 Formation::getPositionFor(short id) const {
 	const auto posIndex = Game::getEnvironment()->getIndex(position);
 	if (Game::getEnvironment()->cellInState(posIndex, {CellState::EMPTY, CellState::DEPLOY})) {
 		return position;
-	} 
+	}
 	//TODO perf map posIndex to closestIndex
 	const int closestIndex = Game::getEnvironment()->closestEmpty(posIndex);
 	return Game::getEnvironment()->getCenter(closestIndex); //TODO change center
@@ -332,5 +330,5 @@ void Formation::updateUnits() {
 
 void Formation::setCenter() {
 	const auto leaderPos = leader->getPosition();
-	center = Urho3D::Vector2(leaderPos.x_, leaderPos.z_);
+	center = {leaderPos.x_, leaderPos.z_};
 }

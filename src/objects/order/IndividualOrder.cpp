@@ -34,7 +34,7 @@ void IndividualOrder::clean() {
 }
 
 void IndividualOrder::addCollectAim() {
-	followAndAct(9);
+	followAndAct();
 }
 
 void IndividualOrder::addTargetAim() {
@@ -57,7 +57,7 @@ void IndividualOrder::addChargeAim() {
 }
 
 void IndividualOrder::addAttackAim() {
-	followAndAct(unit->getAttackRange());
+	followAndAct();
 }
 
 void IndividualOrder::addDefendAim() {
@@ -76,7 +76,7 @@ void IndividualOrder::simpleAction() const {
 	unit->action(static_cast<UnitAction>(id));
 }
 
-void IndividualOrder::followAndAct(float distThreshold) {
+void IndividualOrder::followAndAct() {
 	auto posOpt = toUse->getPosToUseWithIndex(unit);
 	if (posOpt.has_value()) {
 		auto postToUse = posOpt.value();

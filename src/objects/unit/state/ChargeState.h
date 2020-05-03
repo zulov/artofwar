@@ -19,8 +19,8 @@ public:
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->setAim(parameter.aim);
 		unit->thingsToInteract.clear();
-		unit->thingsToInteract.insert(unit->thingsToInteract.begin(), parameter.thingsToInteract.begin(),
-		                              parameter.thingsToInteract.end());
+		unit->thingsToInteract=parameter.thingsToInteract;
+		
 		//TODO aim?
 		unit->maxSpeed = unit->dbLevel->maxSpeed * 2;
 		unit->chargeData->reset();

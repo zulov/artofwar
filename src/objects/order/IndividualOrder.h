@@ -23,7 +23,7 @@ private:
 	void addStopAim() override;
 
 	void simpleAction() const;
-	void followAndAct(float distThreshold);
+	void followAndAct();
 
 	Unit* unit;
 };

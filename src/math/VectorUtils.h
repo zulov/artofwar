@@ -37,7 +37,8 @@ static std::vector<short> intersection(std::vector<std::vector<short>*>& ids) {
 	if (ids.empty()) {
 		return common;
 	}
-	common.insert(common.begin(), ids[0]->begin(), ids[0]->end());
+	common=*ids[0];
+	//common.insert(common.begin(), ids[0]->begin(), ids[0]->end());
 
 	for (int i = 1; i < ids.size(); ++i) {
 		std::vector<short> temp;

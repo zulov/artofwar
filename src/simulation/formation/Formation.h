@@ -12,7 +12,7 @@ class Unit;
 
 class Formation {
 public:
-	Formation(short _id, const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction);
+	Formation(short _id,const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction);
 	~Formation();
 
 	void update();
@@ -29,7 +29,7 @@ public:
 	void stopAllBesideLeader();
 private:
 	Urho3D::Vector2 computeLocalCenter();
-	void setNewLeader(Urho3D::Vector2& localCenter);
+	void chooseLeader(Urho3D::Vector2& localCenter);
 	void updateUnits();
 	void setCenter();
 	void updateIds();

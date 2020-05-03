@@ -10,9 +10,7 @@ struct ActionParameter {
 	struct Builder;
 
 	ActionParameter(Aim* aim, ActionType type, int index, std::vector<Physical*>& _thingsToInteract)
-		: aim(aim), type(type), index(index) {
-		thingsToInteract.insert(thingsToInteract.begin(), _thingsToInteract.begin(), _thingsToInteract.end());
-	}
+		: aim(aim), type(type), index(index), thingsToInteract(_thingsToInteract) {}
 
 
 	bool isFirstThingAlive() const {

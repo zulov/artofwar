@@ -1,9 +1,9 @@
 #include "UnitOrder.h"
-#include "Game.h"
 #include "consts.h"
+#include "Game.h"
 #include "enums/UnitAction.h"
-#include "objects/unit/aim/TargetAim.h"
 #include "objects/unit/aim/FollowAim.h"
+#include "objects/unit/aim/TargetAim.h"
 #include "simulation/env/Environment.h"
 
 UnitOrder::UnitOrder(short id, bool append, Urho3D::Vector2& vector):
@@ -14,7 +14,6 @@ UnitOrder::UnitOrder(short id, bool append, Physical* toUse):
 
 UnitOrder::~UnitOrder() {
 	delete vector;
-
 }
 
 ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
@@ -36,6 +35,9 @@ ActionParameter UnitOrder::getChargeAim(Urho3D::Vector2& charge) {
 }
 
 void UnitOrder::execute() {
+	if(expired()) {
+		int a =5;
+	}
 	switch (static_cast<UnitAction>(id)) {
 	case UnitAction::GO:
 		return addTargetAim();

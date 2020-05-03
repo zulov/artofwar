@@ -3,7 +3,6 @@
 #include "IndividualOrder.h"
 #include "objects/unit/Unit.h"
 #include "objects/order/enums/UnitAction.h"
-#include "objects/order/enums/UnitActionType.h"
 #include "simulation/formation/Formation.h"
 #include "simulation/env/Environment.h"
 
