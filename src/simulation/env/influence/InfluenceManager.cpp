@@ -35,7 +35,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			econLevelPerPlayer[player], attackLevelPerPlayer[player], defenceLevelPerPlayer[player],
 			buildingsInfluencePerPlayer[player], unitsInfluencePerPlayer[player],
 			resourceInfluence[0], resourceInfluence[1], resourceInfluence[2], resourceInfluence[3]
-		});//TODO performance posortowac tak żeby pierwsze zwracły mniej
+		}); //TODO performance posortowac tak żeby pierwsze zwracły mniej
 	}
 
 
@@ -228,6 +228,7 @@ void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Ur
 	for (char i = 0; i < maps.size(); ++i) {
 		data[i] = maps[i]->getValueAsPercent(pos);
 	}
+	int a = 5;
 }
 
 std::vector<int> InfluenceManager::getIndexes(float* result, float tolerance,
@@ -243,7 +244,8 @@ std::vector<int> InfluenceManager::getIndexes(float* result, float tolerance,
 			                      indexes.begin(), indexes.end(),
 			                      std::back_inserter(temp));
 			intersection = temp; //TODO optimize
-			if (temp.empty()) {//TODO możę jakis treshold
+			if (temp.empty()) {
+				//TODO możę jakis treshold
 				break;
 			}
 		}

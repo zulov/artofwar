@@ -15,8 +15,6 @@ IndividualOrder::IndividualOrder(Unit* unit, UnitAction action,
                                  Physical* toUse, bool append):
 	UnitOrder(static_cast<short>(action), append, toUse), unit(unit) {}
 
-IndividualOrder::~IndividualOrder() = default;
-
 bool IndividualOrder::expired() {
 	return unit == nullptr
 		|| toUse != nullptr && !toUse->isAlive();

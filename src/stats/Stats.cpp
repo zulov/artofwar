@@ -54,7 +54,7 @@ void Stats::init() {
 
 std::string Stats::getInputData(char player) {
 	const auto input = getInputFor(player);
-	return join(input, input + magic_enum::enum_count<StatsInputType>()*2);
+	return join(input, input + magic_enum::enum_count<StatsInputType>() * 2);
 }
 
 void Stats::add(ResourceActionCommand* command) {
@@ -187,7 +187,8 @@ float* Stats::getInputFor(short id) {
 	auto stats = statsPerPlayer.at(id);
 	auto enemy = statsPerPlayer.at(idEnemy); //TODO BUG wybrac wroga
 	std::copy(stats, stats + magic_enum::enum_count<StatsInputType>(), input);
-	std::copy(enemy, enemy + magic_enum::enum_count<StatsInputType>(), input + magic_enum::enum_count<StatsInputType>());
+	std::copy(enemy, enemy + magic_enum::enum_count<StatsInputType>(),
+	          input + magic_enum::enum_count<StatsInputType>());
 	return input;
 }
 
@@ -196,25 +197,25 @@ void Stats::clear() {
 }
 
 std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
-	float output[magic_enum::enum_count<StatsInputType>()];
+	float output[9]; //TODO hardcode
 
-	std::fill_n(output, magic_enum::enum_count<StatsInputType>(), 0.f);
+	std::fill_n(output, 9, 0.f); //TODO hardcode
 
 	Game::getEnvironment()->writeInInfluenceDataAt(output, command->player, command->position);
 
-	return join(output, output + magic_enum::enum_count<StatsInputType>());
+	return join(output, output + 9); //TODO hardcode
 }
 
 std::string Stats::getCreateUnitPosOutput(Building* building) const {
-	float output[magic_enum::enum_count<StatsInputType>() + 1];
+	float output[9 + 1]; //TODO hardcode
 
-	std::fill_n(output, magic_enum::enum_count<StatsInputType>() + 1, 0.f);
+	std::fill_n(output, 9 + 1, 0.f); //TODO hardcode
 	auto buildingPos = building->getPosition();
 
 	Game::getEnvironment()->writeInInfluenceDataAt(output, building->getPlayer(), {buildingPos.x_, buildingPos.z_});
 
-	output[magic_enum::enum_count<StatsInputType>()] = building->getQueue()->getSize() / DEFAULT_NORMALIZE_VALUE;
-	return join(output, output + magic_enum::enum_count<StatsInputType>()+1);
+	output[9] = building->getQueue()->getSize() / DEFAULT_NORMALIZE_VALUE; //TODO hardcode
+	return join(output, output + 9 + 1); //TODO hardcode
 }
 
 std::string Stats::getOutput(CreationCommand* command) const {

@@ -40,7 +40,7 @@ Brain::~Brain() {
 	clear_vector(allLayers);
 }
 
-float* Brain::decide(float data[]) {
+const std::vector<float>& Brain::decide(float data[]) {
 	input->setValues(data);
 	for (int i = 1; i < allLayers.size(); i++) {
 		Layer* layer = allLayers.at(i);

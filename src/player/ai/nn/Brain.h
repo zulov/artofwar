@@ -6,7 +6,7 @@ class Brain {
 public:
 	explicit Brain(std::string dataPath);
 	~Brain();
-	float* decide(float data[]);
+	const std::vector<float>& decide(float data[]);
 	short getOutputSize() const { return output->getNumberOfValues(); }
 
 private:
