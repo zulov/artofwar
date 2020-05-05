@@ -34,6 +34,7 @@ Brain::Brain(std::string dataPath) {
 	}
 	input = *allLayers.begin();
 	output = *(allLayers.end() - 1);
+	result.reserve(output->getNumberOfValues());
 }
 
 Brain::~Brain() {
@@ -50,7 +51,10 @@ const std::vector<float>& Brain::decide(float data[]) {
 
 		setValues(layer, mult);
 	}
-	return output->getValues();
+	result.clear();
+	result.insert(result.end(), output->getValues(),output->getValues()+output->getNumberOfValues());
+
+	return result;
 }
 
 Eigen::MatrixXf Brain::multiply(Layer* current, Layer* prevLayer) {

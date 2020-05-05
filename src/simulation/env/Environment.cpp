@@ -306,7 +306,7 @@ void Environment::writeInInfluenceDataAt(float* data, char player, const Urho3D:
 	influenceManager.writeInInfluenceDataAt(data, player, pos);
 }
 
-std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player, float* result) {
+std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,const std::vector<float>& result) {
 	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player, 0.1);
 	float infSize = influenceManager.getFieldSize();
 	float mainSize = mainGrid.getFieldSize();
@@ -327,7 +327,7 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 	return {};
 }
 
-std::vector<Urho3D::Vector2> Environment::getAreas(char player, float* result) {
+std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::vector<float>& result) {
 	return influenceManager.getAreas(result, player, 0.2);
 }
 

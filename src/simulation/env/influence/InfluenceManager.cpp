@@ -231,7 +231,7 @@ void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Ur
 	int a = 5;
 }
 
-std::vector<int> InfluenceManager::getIndexes(float* result, float tolerance,
+std::vector<int> InfluenceManager::getIndexes(const std::vector<float>& result, float tolerance,
                                               std::vector<InfluenceMapFloat*>& maps) const {
 	float steps[] = {0.0, 0.1, 0.2};
 	for (auto step : steps) {
@@ -256,7 +256,7 @@ std::vector<int> InfluenceManager::getIndexes(float* result, float tolerance,
 	return {};
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::getAreas(float* result, char player, float tolerance) {
+std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::vector<float>& result, char player, float tolerance) {
 	auto& maps = mapsForAiPerPlayer[player];
 
 	std::vector<int> intersection = getIndexes(result, tolerance, maps);

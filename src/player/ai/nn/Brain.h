@@ -6,8 +6,7 @@ class Brain {
 public:
 	explicit Brain(std::string dataPath);
 	~Brain();
-	const std::vector<float>& decide(float data[]);
-	short getOutputSize() const { return output->getNumberOfValues(); }
+	const std::vector<float>& decide(float data[]);//TODO std::spac after c++20
 
 private:
 	Eigen::MatrixXf multiply(Layer* current, Layer* prevLayer);
@@ -15,5 +14,5 @@ private:
 	Layer* input;
 	Layer* output;
 	std::vector<Layer*> allLayers;
-
+	std::vector<float> result;
 };

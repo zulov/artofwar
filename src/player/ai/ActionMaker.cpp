@@ -21,10 +21,9 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/unitId_w.csv"),
-                                          unitBrainPos("Data/ai/unitPos_w.csv") {
-}
+                                          unitBrainPos("Data/ai/unitPos_w.csv") {}
 
-float* ActionMaker::decide(Brain& brain) const {
+const std::vector<float>& ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
 
 	return brain.decide(data);
@@ -32,8 +31,7 @@ float* ActionMaker::decide(Brain& brain) const {
 
 void ActionMaker::action() {
 	const auto result = decide(mainBrain);
-	std::vector<float> v;
-	v.insert(v.begin(), result, result + mainBrain.getOutputSize());
+	std::vector<float> v = result;
 	int ids[3];
 	float vals[3];
 
@@ -64,8 +62,8 @@ void ActionMaker::action() {
 			std::cout << " -> " << static_cast<StatsOutputType>(ids[i]);
 			auto result = createOrder(static_cast<StatsOutputType>(ids[i]));
 			if (result) {
-				std::cout <<"(DONE)"<< std::endl;
-			}else {
+				std::cout << "(DONE)" << std::endl;
+			} else {
 				std::cout << std::endl;
 			}
 			return;
@@ -143,9 +141,9 @@ std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
 
 db_building* ActionMaker::chooseBuilding() {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	auto result = decide(buildingBrainId);
+	auto& result = decide(buildingBrainId);
 
-	std::valarray<float> center(result,AI_PROPS_SIZE); //TODO perf valarraay test
+	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	auto closestId = buildings[0]->id;
 	float closestV = 9999999;
 	for (auto building : buildings) {
@@ -157,9 +155,9 @@ db_building* ActionMaker::chooseBuilding() {
 
 db_unit* ActionMaker::chooseUnit() {
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	auto result = decide(unitBrainId);
+	auto& result = decide(unitBrainId);
 
-	std::valarray<float> center(result,AI_PROPS_SIZE); //TODO perf valarraay test
+	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	auto closestId = units[0]->id;
 	float closestV = 9999999;
 	for (auto unit : units) {
@@ -181,7 +179,7 @@ void ActionMaker::closest(std::valarray<float>& center, short& closestId, float&
 	}
 }
 
-float* ActionMaker::inputWithParamsDecide(Brain& brain, const db_level* level) const {
+const std::vector<float>& ActionMaker::inputWithParamsDecide(Brain& brain, const db_level* level) const {
 	float input[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
 	std::fill_n(input, magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE, 0.f);
 
@@ -195,7 +193,7 @@ float* ActionMaker::inputWithParamsDecide(Brain& brain, const db_level* level) c
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
-	float* result = inputWithParamsDecide(buildingBrainPos, player->getLevelForBuilding(building->id));
+	auto& result = inputWithParamsDecide(buildingBrainPos, player->getLevelForBuilding(building->id));
 
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
@@ -217,7 +215,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	}
 	if (allPossible.empty()) { return nullptr; }
 
-	auto result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id));
+	auto& result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id));
 	//TODO improve last parameter ignored queue size
 	auto centers = Game::getEnvironment()->getAreas(player->getId(), result);
 	float closestVal = 99999;
