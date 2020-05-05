@@ -132,7 +132,6 @@ std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
 		}
 		break;
 	case StatsOutputType::LEVEL_UP_UNIT:
-		//if (!buildingLevels.empty()) {
 		break;
 	}
 

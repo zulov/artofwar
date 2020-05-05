@@ -46,7 +46,7 @@ struct GridCalculator {
 		return {cZ, cX};
 	}
 
-	bool validIndex(int x, int z) const {
+	bool validIndex(short x, short z) const {
 		return !(x < 0 || x >= resolution || z < 0 || z >= resolution);
 	}
 

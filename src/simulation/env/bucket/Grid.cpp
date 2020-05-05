@@ -68,7 +68,7 @@ BucketIterator& Grid::getArrayNeight(Urho3D::Vector3& position, float radius, sh
 	return *iterators[thread].init(getEnvIndexesFromCache(radius), calculator.indexFromPosition(position), this);
 }
 
-const std::vector<short>& Grid::getCloseIndexes(int center)const {
+const std::vector<short>& Grid::getCloseIndexes(int center) const {
 	return closeIndexProvider.get(center);
 }
 
@@ -93,26 +93,50 @@ std::vector<Physical*>& Grid::getContentAt(int index) {
 	return empty;
 }
 
+std::vector<Physical*>& Grid::getContentAt(short x, short z) {
+	if (calculator.validIndex(x, z)) {
+		return buckets[calculator.getIndex(x, z)].getContent();
+	}
+	return empty;
+}
+
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, const char player) {
 	tempSelected->clear();
 
-	const auto posBeginX = calculator.getIndex(pair.first->x_);
-	const auto posBeginZ = calculator.getIndex(pair.first->z_);
-	const auto posEndX = calculator.getIndex(pair.second->x_);
-	const auto posEndZ = calculator.getIndex(pair.second->z_);
+	const auto posBeginX = calculator.getIndex(std::min(pair.first->x_, pair.second->x_));
+	const auto posEndX = calculator.getIndex(std::max(pair.first->x_, pair.second->x_));
+	const auto posBeginZ = calculator.getIndex(std::min(pair.first->z_, pair.second->z_));
+	const auto posEndZ = calculator.getIndex(std::max(pair.first->z_, pair.second->z_));
 
-	auto dX = diff(posBeginX, posEndX);
-	auto dZ = diff(posBeginZ, posEndZ);
-
-	for (short i = posBeginX; i != posEndX + dX; i += dX) {
-		for (short j = posBeginZ; j != posEndZ + dZ; j += dZ) {
-			auto& content = getContentAt(calculator.getIndex(i, j));
+	for (short i = posBeginX; i <= posEndX; ++i) {
+		for (short j = posBeginZ; j <= posEndZ; ++j) {
+			auto& content = getContentAt(i, j);
 			std::copy_if(content.begin(), content.end(), std::back_inserter(*tempSelected),
 			             [player](Physical* p) { return p->getPlayer() < 0 || p->getPlayer() == player; });
 		}
 	}
 
 	return tempSelected;
+}
+
+std::vector<int> Grid::getArrayNeight(const Urho3D::Vector2& center, float radius) const {
+	//TODO clean prawie to samo co wy¿ej
+	std::vector<int> indexes;//TODO performance
+
+	const auto posBeginX = calculator.getIndex(center.x_ - radius);
+	const auto posBeginZ = calculator.getIndex(center.y_ - radius);
+	const auto posEndX = calculator.getIndex(center.x_ + radius);
+	const auto posEndZ = calculator.getIndex(center.y_ + radius);
+
+	for (short i = posBeginX; i <= posEndX; ++i) {
+		for (short j = posBeginZ; j <= posEndZ; ++j) {
+			if (calculator.validIndex(i, j)) {
+				indexes.push_back(calculator.getIndex(i, j));
+			}
+		}
+	}
+
+	return indexes;
 }
 
 std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, double radius) {
@@ -125,17 +149,13 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, double 
 	const auto posEndZ = calculator.getIndex(clicked->getPosition().z_ + radius);
 
 
-	auto dX = diff(posBeginX, posEndX);
-	auto dZ = diff(posBeginZ, posEndZ);
-
-	for (short i = posBeginX; i != posEndX + dX; i += dX) {
-		for (short j = posBeginZ; j != posEndZ + dZ; j += dZ) {
-			auto& content = getContentAt(calculator.getIndex(i, j));
-			for (auto thing : content) {
-				if (thing->getId() == clicked->getId() && thing->getPlayer() == clicked->getPlayer()) {
-					tempSelected->push_back(thing);
-				}
-			}
+	for (short i = posBeginX; i <= posEndX; ++i) {
+		for (short j = posBeginZ; j <= posEndZ; ++j) {
+			auto& content = getContentAt(i, j);
+			std::copy_if(content.begin(), content.end(), std::back_inserter(*tempSelected),
+			             [clicked](Physical* p) {
+				             return p->getId() == clicked->getId() && p->getPlayer() == clicked->getPlayer();
+			             });
 		}
 	}
 

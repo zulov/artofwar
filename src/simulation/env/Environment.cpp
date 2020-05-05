@@ -306,23 +306,18 @@ void Environment::writeInInfluenceDataAt(float* data, char player, const Urho3D:
 	influenceManager.writeInInfluenceDataAt(data, player, pos);
 }
 
-std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,const std::vector<float>& result) {
-	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player, 0.1);
+std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,
+                                                           const std::vector<float>& result) {
+	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player, 0.1,10);//TODO dodæ akceptowalny próg
 	float infSize = influenceManager.getFieldSize();
 	float mainSize = mainGrid.getFieldSize();
-	float ratio = infSize / mainSize; //TODO use 
+	float ratio = infSize / mainSize; 
 	for (auto& center : centers) {
-		//TODO bug to jest 3x3 a ma byc 4x4 i jeszcze przesuniete jest
-		if (validateStatic(building->size, center)) {
-			return center;
-		}
-		auto centerIndex = mainGrid.getIndex(center);
-		for (auto index : mainGrid.getCloseIndexes(centerIndex)) {
-			if (validateStatic(building->size, center)) {
+		for (auto index : mainGrid.getArrayNeight(center, ratio)) {//TODO to powinno byæ lepiej posortowane	i braæ najlepsze
+			if (validateStatic(building->size, mainGrid.getCenter(index))) {
 				return center;
 			}
 		}
-
 	}
 	return {};
 }

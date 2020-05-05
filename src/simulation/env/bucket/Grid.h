@@ -24,6 +24,7 @@ public:
 	std::vector<short>* getEnvIndexesFromCache(float dist);
 	std::vector<Physical*>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 	std::vector<Physical*>* getArrayNeightSimilarAs(Physical* clicked, double radius);
+	std::vector<int> getArrayNeight(const Urho3D::Vector2& center, float radius) const;
 	BucketIterator& getArrayNeight(Urho3D::Vector3& position, float radius, short thread);
 	const std::vector<short>& getCloseIndexes(int center) const;
 	const std::vector<char>& getCloseTabIndexes(short center) const;
@@ -38,6 +39,7 @@ protected:
 	float size, fieldSize, invFieldSize;
 
 private:
+	std::vector<Physical*>& getContentAt(short x, short z);
 	bool fieldInCircle(short i, short j, float radius) const;
 	std::vector<short>* getEnvIndexs(float radius) const;
 	void addAt(int index, Physical* entity) const;
