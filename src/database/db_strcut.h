@@ -10,8 +10,9 @@
 #include <vector>
 #include <string>
 #include <magic_enum.hpp>
+
+#include "DeleteUtils.h"
 #include "objects/ValueType.h"
-#include "utils.h"
 #include "objects/unit/state/UnitState.h"
 
 struct db_nation;

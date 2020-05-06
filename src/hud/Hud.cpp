@@ -9,7 +9,7 @@
 #include "player/PlayersManager.h"
 #include "replace_utils.h"
 #include "simulation/SimulationInfo.h"
-#include "utils.h"
+#include "DeleteUtils.h"
 #include "window/debug/DebugPanel.h"
 #include "window/loading/LoadingPanel.h"
 #include "window/minimap/MiniMapPanel.h"

@@ -11,7 +11,7 @@
 #include "objects/ActionType.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "utils.h"
+#include "DeleteUtils.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>

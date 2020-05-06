@@ -3,7 +3,7 @@
 #include "objects/ObjectEnums.h"
 #include "SelectedInfoType.h"
 #include "objects/Physical.h"
-#include "utils.h"
+#include "DeleteUtils.h"
 
 
 SelectedInfo::SelectedInfo() {

@@ -199,7 +199,6 @@
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\Benchmark.h" />
     <ClInclude Include="src\defines.h" />
-    <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\camera\CameraEnums.h">
@@ -490,6 +489,7 @@
     <ClInclude Include="src\objects\unit\order\IndividualOrder.h" />
     <ClInclude Include="src\objects\unit\order\OrderUtils.h" />
     <ClInclude Include="src\objects\unit\order\UnitOrder.h" />
+    <ClInclude Include="src\DeleteUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
