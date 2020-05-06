@@ -43,7 +43,7 @@ static std::vector<short> intersection(std::vector<std::vector<short>*>& ids) {
 		std::set_intersection(common.begin(), common.end(),
 		                      ids[i]->begin(), ids[i]->end(),
 		                      std::back_inserter(temp));
-		common = temp; //TODO optimize
+		common = temp; //TODO optimize, mo¿e nie kopiowaæ
 		if (temp.empty()) {
 			break;
 		}

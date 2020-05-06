@@ -231,11 +231,13 @@ void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Ur
 	int a = 5;
 }
 
-std::vector<int> InfluenceManager::getIndexes(const std::vector<float>& result, float tolerance,
+std::vector<int> InfluenceManager::getIndexes(const std::vector<float>& result, float tolerance, int min,
                                               std::vector<InfluenceMapFloat*>& maps) const {
-	float steps[] = {0.0, 0.1, 0.2};
+	float steps[] = {0.0, 0.05, 0.1};
+	int k = 0;
 	for (auto step : steps) {
 		tolerance += step;
+		k++;
 		std::vector<int> intersection = maps[0]->getIndexesWithByValue(result[0], tolerance);
 		for (char i = 1; i < maps.size(); ++i) {
 			std::vector<int> indexes = maps[i]->getIndexesWithByValue(result[i], tolerance);
@@ -243,11 +245,12 @@ std::vector<int> InfluenceManager::getIndexes(const std::vector<float>& result, 
 			std::set_intersection(intersection.begin(), intersection.end(),
 			                      indexes.begin(), indexes.end(),
 			                      std::back_inserter(temp));
-			intersection = temp; //TODO optimize
-			if (temp.empty()) {
-				//TODO możę jakis treshold
+			//if (temp.size() < min) {
+			if (temp.empty() || temp.size() < min && k != 3) {
+				intersection.clear();
 				break;
 			}
+			intersection = temp; //TODO optimize, nie kopiować?
 		}
 		if (!intersection.empty()) {
 			return intersection;
@@ -256,10 +259,11 @@ std::vector<int> InfluenceManager::getIndexes(const std::vector<float>& result, 
 	return {};
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::vector<float>& result, char player, float tolerance) {
+std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::vector<float>& result, char player, float tolerance,
+                                                        int min) {
 	auto& maps = mapsForAiPerPlayer[player];
 
-	std::vector<int> intersection = getIndexes(result, tolerance, maps);
+	std::vector<int> intersection = getIndexes(result, tolerance, min, maps);
 	std::vector<Urho3D::Vector2> centers;
 	centers.reserve(intersection.size());
 	for (auto value : intersection) {
