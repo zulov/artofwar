@@ -308,7 +308,7 @@ void Environment::writeInInfluenceDataAt(float* data, char player, const Urho3D:
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,
                                                            const std::vector<float>& result) {
-	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player, 0.1, 7);
+	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player, 0.1);
 
 	float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (auto& center : centers) {
@@ -323,7 +323,7 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 }
 
 std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::vector<float>& result) {
-	return influenceManager.getAreas(result, player, 0.1, 7);
+	return influenceManager.getAreasIterative(result, player, 0.1, 7);
 }
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {

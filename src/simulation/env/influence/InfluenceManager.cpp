@@ -231,8 +231,8 @@ void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Ur
 	int a = 5;
 }
 
-std::vector<int> InfluenceManager::getIndexes(const std::vector<float>& result, float tolerance, int min,
-                                              std::vector<InfluenceMapFloat*>& maps) const {
+std::vector<int> InfluenceManager::getIndexesIterative(const std::vector<float>& result, float tolerance, int min,
+                                                       std::vector<InfluenceMapFloat*>& maps) const {
 	float steps[] = {0.0, 0.05, 0.1};
 	int k = 0;
 	for (auto step : steps) {
@@ -259,15 +259,31 @@ std::vector<int> InfluenceManager::getIndexes(const std::vector<float>& result, 
 	return {};
 }
 
+std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::vector<float>& result, char player,
+                                                                 float tolerance,
+                                                                 int min) {
+	auto& maps = mapsForAiPerPlayer[player];
+
+	std::vector<int> intersection = getIndexesIterative(result, tolerance, min, maps);
+	return centersFromIndexes(maps[0], intersection);
+}
+
+
+
 std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::vector<float>& result, char player, float tolerance,
                                                         int min) {
 	auto& maps = mapsForAiPerPlayer[player];
 
 	std::vector<int> intersection = getIndexes(result, tolerance, min, maps);
+	return centersFromIndexes(maps[0], intersection);
+}
+
+std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFloat* map,
+                                                                  const std::vector<int>& intersection) {
 	std::vector<Urho3D::Vector2> centers;
 	centers.reserve(intersection.size());
 	for (auto value : intersection) {
-		centers.emplace_back(maps[0]->getCenter(value));
+		centers.emplace_back(map->getCenter(value));
 	}
 	return centers;
 }

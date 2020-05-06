@@ -34,13 +34,17 @@ public:
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
 	                             int activePlayer);
 	void writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos);
-	std::vector<int> getIndexes(const std::vector<float>& result, float tolerance, int min,
+	std::vector<int> getIndexesIterative(const std::vector<float>& result, float tolerance, int min,
 	                            std::vector<InfluenceMapFloat*>& maps) const;
 
+	std::vector<Urho3D::Vector2> getAreasIterative(const std::vector<float>& result, char player, float tolerance, int min);
+	
 	std::vector<Urho3D::Vector2> getAreas(const std::vector<float>& result, char player, float tolerance, int min);
 	float getFieldSize();
 
 private:
+	std::vector<Urho3D::Vector2> centersFromIndexes(InfluenceMapFloat* map, const std::vector<int>& intersection);
+	
 	void resetMapsF(const std::vector<InfluenceMapFloat*>& maps) const;
 	void resetMapsI(const std::vector<InfluenceMapInt*>& maps) const;
 	void calcStats(const std::vector<InfluenceMapFloat*>& maps) const;
