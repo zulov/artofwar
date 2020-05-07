@@ -5,8 +5,8 @@
 
 void AiManager::ai() {
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-		if (Game::getPlayersMan()->getActivePlayer() != player) {
+		//if (Game::getPlayersMan()->getActivePlayer() != player) {
 			player->ai();
-		}
+		//}
 	}
 }

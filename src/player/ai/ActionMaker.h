@@ -24,13 +24,14 @@ private:
 	bool levelUpBuilding();
 	bool createUnit();
 	std::optional<Urho3D::Vector2> posToBuild(db_building* building);
+	std::vector<Building*> getBuildingsCanDeploy(db_unit* unit, std::vector<db_building*>& buildings) const;
 	const std::vector<float>& inputWithParamsDecide(Brain& brain, const db_level* level) const;
 	Building* getBuildingToDeploy(db_unit* unit);
 	bool createBuilding();
 
 	std::optional<short> chooseUpgrade(StatsOutputType order) const;
 	db_building* chooseBuilding();
-	int randFromThree(std::vector<float> diffs);
+	int randFromThree(std::vector<float> diffs) const;
 	float dist(std::valarray<float>& center, db_ai_property* props);
 
 	db_unit* chooseUnit();

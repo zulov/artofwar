@@ -76,7 +76,7 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 	resetMapsF(resourceInfluence);
 	for (auto resource : (*resources)) {
-		resourceInfluence[resource->getId()]->update(resource);
+		resourceInfluence[resource->getId()]->update(resource, resource->getHealthPercent());
 	}
 	calcStats(resourceInfluence);
 }
@@ -228,7 +228,6 @@ void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Ur
 	for (char i = 0; i < maps.size(); ++i) {
 		data[i] = maps[i]->getValueAsPercent(pos);
 	}
-	int a = 5;
 }
 
 std::vector<int> InfluenceManager::getIndexesIterative(const std::vector<float>& result, float tolerance, int min,
@@ -261,21 +260,22 @@ std::vector<int> InfluenceManager::getIndexesIterative(const std::vector<float>&
 std::vector<int> InfluenceManager::getIndexes(const std::vector<float>& result, float tolerance,
                                               std::vector<InfluenceMapFloat*>& maps) const {
 	std::vector<int> intersection = maps[0]->getIndexesWithByValue(result[0], tolerance);
-	std::cout<<intersection.size()<<"|";
+	std::cout << intersection.size() << "|";
 	for (char i = 1; i < maps.size(); ++i) {
 		std::vector<int> indexes = maps[i]->getIndexesWithByValue(result[i], tolerance);
-		std::cout<<indexes.size()<<"|";
+		//TODO performance pass indexex end check only them
+		std::cout << indexes.size() << "|";
 		std::vector<int> temp;
 		std::set_intersection(intersection.begin(), intersection.end(),
 		                      indexes.begin(), indexes.end(),
 		                      std::back_inserter(temp));
 		if (temp.empty()) {
-			std::cout<<std::endl;
+			std::cout << std::endl;
 			return {};
 		}
 		intersection = temp; //TODO optimize, nie kopiować?
 	}
-	std::cout<<std::endl;
+	std::cout << std::endl;
 	return intersection;
 }
 

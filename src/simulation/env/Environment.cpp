@@ -274,7 +274,7 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 		influenceManager.draw(InfluenceType::BUILDING_INFLUENCE_PER_PLAYER, index);
 		break;
 	case EnvironmentDebugMode::INF_RESOURCE:
-		influenceManager.draw(InfluenceType::ECON_INFLUENCE_PER_PLAYER, index);
+		influenceManager.draw(InfluenceType::RESOURCE_INFLUENCE, index);
 		break;
 	case EnvironmentDebugMode::INF_ATTACK_INFLUENCE_PER_PLAYER:
 		influenceManager.draw(InfluenceType::ATTACK_INFLUENCE_PER_PLAYER, index);

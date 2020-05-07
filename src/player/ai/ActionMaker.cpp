@@ -147,7 +147,7 @@ db_building* ActionMaker::chooseBuilding() {
 	return buildings[inx];
 }
 
-int ActionMaker::randFromThree(std::vector<float> diffs) {
+int ActionMaker::randFromThree(std::vector<float> diffs) const {
 	int ids[3];
 	float vals[3];
 	float sum = getLowestThree(ids, vals, diffs);
@@ -212,8 +212,7 @@ std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
 
-Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
-	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+std::vector<Building*> ActionMaker::getBuildingsCanDeploy(db_unit* unit, std::vector<db_building*>& buildings) const {
 	std::vector<short> buildingIdsThatCanDeploy;
 	for (auto building : buildings) {
 		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
@@ -227,6 +226,12 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 		auto buildingEnts = player->getPossession().getBuildings(thatCanDeploy);
 		allPossible.insert(allPossible.end(), buildingEnts->begin(), buildingEnts->end());
 	}
+	return allPossible;
+}
+
+Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
+	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit, buildings);
 	if (allPossible.empty()) { return nullptr; }
 
 	auto& result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id));
