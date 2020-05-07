@@ -324,8 +324,8 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 	return {};
 }
 
-std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::vector<float>& result) {
-	return influenceManager.getAreasIterative(result, player, 0.1, 7);
+std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::vector<float>& result, int min) {
+	return influenceManager.getAreasIterative(result, player, 0.1, min);
 }
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {

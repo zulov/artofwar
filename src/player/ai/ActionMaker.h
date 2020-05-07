@@ -30,7 +30,9 @@ private:
 
 	std::optional<short> chooseUpgrade(StatsOutputType order) const;
 	db_building* chooseBuilding();
-	void closest(std::valarray<float> &center, short& closestId, float& closest, db_ai_property* props, short id);
+	int randFromThree(std::vector<float> diffs);
+	float dist(std::valarray<float>& center, db_ai_property* props);
+
 	db_unit* chooseUnit();
 
 	Player* player;

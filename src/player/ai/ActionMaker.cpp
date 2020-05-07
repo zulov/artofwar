@@ -8,6 +8,7 @@
 #include "commands/action/BuildingActionType.h"
 #include "database/DatabaseCache.h"
 #include "math/RandGen.h"
+#include "math/VectorUtils.h"
 #include "player/Player.h"
 #include "player/ai/ActionCenter.h"
 #include "simulation/env/Environment.h"
@@ -21,7 +22,8 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/unitId_w.csv"),
-                                          unitBrainPos("Data/ai/unitPos_w.csv") {}
+                                          unitBrainPos("Data/ai/unitPos_w.csv") {
+}
 
 const std::vector<float>& ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -30,32 +32,20 @@ const std::vector<float>& ActionMaker::decide(Brain& brain) const {
 }
 
 void ActionMaker::action() {
-	const auto result = decide(mainBrain);
-	std::vector<float> v = result;
 	int ids[3];
 	float vals[3];
+	float max = getBestThree(ids, vals, decide(mainBrain));
 
-
-	for (int i = 0; i < 3; ++i) {
-		const auto max = std::max_element(v.begin(), v.end());
-		ids[i] = max - v.begin();
-		vals[i] = *max;
-		*max = -100;
-	}
-	for (auto& val : vals) {
-		if (val < 0) {
-			val = 0;
-		}
-	}
-	float max = std::accumulate(vals, vals + 3, 0.f);
 	if (max <= 0) {
 		return;
 	}
-	float val = RandGen::nextRand(RandFloatType::AI, max);
-	float sum = 0;
 	for (int i = 0; i < 3; ++i) {
 		std::cout << static_cast<StatsOutputType>(ids[i]) << "-" << (vals[i] / max * 100) << "%, ";
 	}
+
+	float val = RandGen::nextRand(RandFloatType::AI, max);
+	float sum = 0;
+
 	for (int i = 0; i < 3; ++i) {
 		sum += vals[i];
 		if (val <= sum) {
@@ -143,13 +133,38 @@ db_building* ActionMaker::chooseBuilding() {
 	auto& result = decide(buildingBrainId);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
-	auto closestId = buildings[0]->id;
-	float closestV = 9999999;
+	std::vector<float> diffs;
+	diffs.reserve(buildings.size());
 	for (auto building : buildings) {
-		closest(center, closestId, closestV, player->getLevelForBuilding(building->id)->aiProps, building->id);
+		diffs.push_back(dist(center, player->getLevelForBuilding(building->id)->aiProps));
 	}
 
-	return buildings[closestId];
+	auto inx = randFromThree(diffs);
+	if (inx < 0) {
+		return nullptr;
+	}
+	std::cout << buildings[inx]->name.CString();
+	return buildings[inx];
+}
+
+int ActionMaker::randFromThree(std::vector<float> diffs) {
+	int ids[3];
+	float vals[3];
+	float sum = getLowestThree(ids, vals, diffs);
+
+	if (sum <= 0) { return ids[0]; }
+	sum = mirror(vals, sum);
+	const float rand = RandGen::nextRand(RandFloatType::AI, sum);
+	float sumSoFar = 0;
+
+	for (int i = 0; i < 3; ++i) {
+		sumSoFar += vals[i];
+		if (rand <= sumSoFar) {
+			std::cout << "\t" << vals[i] / sum << "%|";
+			return ids[i];
+		}
+	}
+	return -1;
 }
 
 db_unit* ActionMaker::chooseUnit() {
@@ -157,25 +172,25 @@ db_unit* ActionMaker::chooseUnit() {
 	auto& result = decide(unitBrainId);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
-	auto closestId = units[0]->id;
-	float closestV = 9999999;
+	std::vector<float> diffs;
+	diffs.reserve(units.size());
 	for (auto unit : units) {
-		closest(center, closestId, closestV, player->getLevelForUnit(unit->id)->aiProps, unit->id);
+		diffs.push_back(dist(center, player->getLevelForUnit(unit->id)->aiProps));
 	}
 
-	return units[closestId];
+	auto inx = randFromThree(diffs);
+	if (inx < 0) {
+		return nullptr;
+	}
+	std::cout << units[inx]->name.CString();
+	return units[inx];
 }
 
-void ActionMaker::closest(std::valarray<float>& center, short& closestId, float& closest, db_ai_property* props,
-                          short id) {
+float ActionMaker::dist(std::valarray<float>& center, db_ai_property* props) {
 	std::valarray<float> aiAsArray(props->paramsNorm,AI_PROPS_SIZE); //TODO get as val array odrazu
 	auto diff = aiAsArray - center;
 	auto sq = diff * diff;
-	auto dist = sq.sum();
-	if (dist < closest) {
-		closest = dist;
-		closestId = id;
-	}
+	return sq.sum();
 }
 
 const std::vector<float>& ActionMaker::inputWithParamsDecide(Brain& brain, const db_level* level) const {
@@ -216,7 +231,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 
 	auto& result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id));
 	//TODO improve last parameter ignored queue size
-	auto centers = Game::getEnvironment()->getAreas(player->getId(), result);
+	auto centers = Game::getEnvironment()->getAreas(player->getId(), result, 10);
 	float closestVal = 99999;
 	Building* closest = allPossible[0];
 	for (auto possible : allPossible) {

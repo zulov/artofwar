@@ -1,4 +1,5 @@
 #pragma once
+#include <numeric>
 #include <vector>
 #include "objects/unit/Unit.h"
 #include "objects/building/Building.h"
@@ -49,4 +50,38 @@ static std::vector<short> intersection(std::vector<std::vector<short>*>& ids) {
 		}
 	}
 	return common;
+}
+
+static float getBestThree(int ids[3], float vals[3], std::vector<float> v) {
+	for (int i = 0; i < 3; ++i) {
+		const auto max = std::max_element(v.begin(), v.end());
+		ids[i] = max - v.begin();
+		vals[i] = *max;
+		*max = -100;
+	}
+
+	for (int i = 0; i < 3; ++i) {
+		if (vals[i] < 0) {
+			vals[i] = 0;
+		}
+	}
+	return std::accumulate(vals, vals + 3, 0.f);
+}
+
+static float getLowestThree(int ids[3], float vals[3], std::vector<float> v) {
+	for (int i = 0; i < 3; ++i) {
+		const auto min = std::min_element(v.begin(), v.end());
+		ids[i] = min - v.begin();
+		vals[i] = *min;
+		*min = 100000;
+	}
+
+	return std::accumulate(vals, vals + 3, 0.f);
+}
+
+static float mirror(float vals[3], float sum) {
+	for (int i = 0; i < 3; ++i) {
+		vals[i] = sum - vals[i];
+	}
+	return std::accumulate(vals, vals + 3, 0.f);
 }
