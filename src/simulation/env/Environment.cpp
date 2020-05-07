@@ -308,14 +308,16 @@ void Environment::writeInInfluenceDataAt(float* data, char player, const Urho3D:
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,
                                                            const std::vector<float>& result) {
-	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player, 0.1);
+	for (auto tolerance : {0.1f, 0.15f, 0.20f}) {
+		std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player, tolerance);
 
-	float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
-	for (auto& center : centers) {
-		for (auto index : mainGrid.getArrayNeight(center, ratio)) {
-			//TODO to powinno byæ lepiej posortowane i braæ najlepsze
-			if (validateStatic(building->size, mainGrid.getCenter(index))) {
-				return center;
+		float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
+		for (auto& center : centers) {
+			for (auto index : mainGrid.getArrayNeight(center, ratio)) {
+				//TODO to powinno byæ lepiej posortowane i braæ najlepsze
+				if (validateStatic(building->size, mainGrid.getCenter(index))) {
+					return center;
+				}
 			}
 		}
 	}

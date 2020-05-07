@@ -245,7 +245,6 @@ std::vector<int> InfluenceManager::getIndexesIterative(const std::vector<float>&
 			std::set_intersection(intersection.begin(), intersection.end(),
 			                      indexes.begin(), indexes.end(),
 			                      std::back_inserter(temp));
-			//if (temp.size() < min) {
 			if (temp.empty() || temp.size() < min && k != 3) {
 				intersection.clear();
 				break;
@@ -259,6 +258,27 @@ std::vector<int> InfluenceManager::getIndexesIterative(const std::vector<float>&
 	return {};
 }
 
+std::vector<int> InfluenceManager::getIndexes(const std::vector<float>& result, float tolerance,
+                                              std::vector<InfluenceMapFloat*>& maps) const {
+	std::vector<int> intersection = maps[0]->getIndexesWithByValue(result[0], tolerance);
+	std::cout<<intersection.size()<<"|";
+	for (char i = 1; i < maps.size(); ++i) {
+		std::vector<int> indexes = maps[i]->getIndexesWithByValue(result[i], tolerance);
+		std::cout<<indexes.size()<<"|";
+		std::vector<int> temp;
+		std::set_intersection(intersection.begin(), intersection.end(),
+		                      indexes.begin(), indexes.end(),
+		                      std::back_inserter(temp));
+		if (temp.empty()) {
+			std::cout<<std::endl;
+			return {};
+		}
+		intersection = temp; //TODO optimize, nie kopiować?
+	}
+	std::cout<<std::endl;
+	return intersection;
+}
+
 std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::vector<float>& result, char player,
                                                                  float tolerance,
                                                                  int min) {
@@ -269,12 +289,11 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::vect
 }
 
 
-
-std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::vector<float>& result, char player, float tolerance,
-                                                        int min) {
+std::vector<Urho3D::Vector2>
+InfluenceManager::getAreas(const std::vector<float>& result, char player, float tolerance) {
 	auto& maps = mapsForAiPerPlayer[player];
 
-	std::vector<int> intersection = getIndexes(result, tolerance, min, maps);
+	std::vector<int> intersection = getIndexes(result, tolerance, maps);
 	return centersFromIndexes(maps[0], intersection);
 }
 

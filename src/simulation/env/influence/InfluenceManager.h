@@ -36,10 +36,12 @@ public:
 	void writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos);
 	std::vector<int> getIndexesIterative(const std::vector<float>& result, float tolerance, int min,
 	                            std::vector<InfluenceMapFloat*>& maps) const;
+	std::vector<int> getIndexes(const std::vector<float>& result, float tolerance,
+	                            std::vector<InfluenceMapFloat*>& maps) const;
 
 	std::vector<Urho3D::Vector2> getAreasIterative(const std::vector<float>& result, char player, float tolerance, int min);
-	
-	std::vector<Urho3D::Vector2> getAreas(const std::vector<float>& result, char player, float tolerance, int min);
+
+	std::vector<Urho3D::Vector2> getAreas(const std::vector<float>& result, char player, float tolerance);
 	float getFieldSize();
 
 private:
