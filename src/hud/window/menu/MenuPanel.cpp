@@ -1,4 +1,10 @@
 ﻿#include "MenuPanel.h"
+#include <iostream>
+#include <utility>
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/UI/CheckBox.h>
+#include <Urho3D/UI/UIEvents.h>
+#include "DeleteUtils.h"
 #include "GameState.h"
 #include "control/SelectedInfo.h"
 #include "control/SelectedInfoType.h"
@@ -11,16 +17,9 @@
 #include "objects/ActionType.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "DeleteUtils.h"
-#include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/UI/CheckBox.h>
-#include <Urho3D/UI/UIEvents.h>
-#include <unordered_set>
-#include <iostream>
-#include <utility>
 
-#include "math/VectorUtils.h"
 #include "commands/action/ResourceActionType.h"
+#include "math/VectorUtils.h"
 
 
 MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow",
