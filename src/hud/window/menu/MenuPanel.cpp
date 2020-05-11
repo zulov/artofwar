@@ -4,7 +4,6 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "utils/DeleteUtils.h"
 #include "GameState.h"
 #include "control/SelectedInfo.h"
 #include "control/SelectedInfoType.h"
@@ -17,7 +16,7 @@
 #include "objects/ActionType.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-
+#include "utils/DeleteUtils.h"
 #include "commands/action/ResourceActionType.h"
 #include "math/VectorUtils.h"
 
@@ -175,7 +174,7 @@ void MenuPanel::levelBuilding() {
 	resetRestButtons(k);
 }
 
-std::vector<short> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) {
+std::vector<short> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) const{
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
 
 	auto& infoTypes = selectedInfo->getSelectedTypes();
@@ -207,14 +206,13 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 		if (opt.has_value()) {
 			db_unit* unit = Game::getDatabase()->getUnit(id);
 			setNext(k, "textures/hud/icon/unit/levels/" + Urho3D::String(opt.value()->level) + "/" + unit->icon,
-			        unit->id,
-			        ActionType::UNIT_LEVEL, "");
+			        unit->id, ActionType::UNIT_LEVEL, "");
 		}
 	}
 	resetRestButtons(k);
 }
 
-std::vector<short> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) {
+std::vector<short> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) const{
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
 
 	auto& infoTypes = selectedInfo->getSelectedTypes();

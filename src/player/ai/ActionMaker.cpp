@@ -256,7 +256,6 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	return closest;
 }
 
-
 bool ActionMaker::createOrder(StatsOutputType order) {
 	switch (order) {
 	case StatsOutputType::IDLE: break;
@@ -268,14 +267,6 @@ bool ActionMaker::createOrder(StatsOutputType order) {
 		return levelUpUnit();
 	case StatsOutputType::LEVEL_UP_BUILDING:
 		return levelUpBuilding();
-	case StatsOutputType::ORDER_GO: break;
-	case StatsOutputType::ORDER_STOP: break;
-	case StatsOutputType::ORDER_CHARGE: break;
-	case StatsOutputType::ORDER_ATTACK: break;
-	case StatsOutputType::ORDER_DEAD: break;
-	case StatsOutputType::ORDER_DEFEND: break;
-	case StatsOutputType::ORDER_FOLLOW: break;
-	case StatsOutputType::ORDER_COLLECT: break;
 	default: ;
 	}
 	return false;

@@ -58,11 +58,13 @@ private:
 	std::vector<float*> statsPerPlayer;
 	float weights[magic_enum::enum_count<StatsInputType>()];
 
-	std::vector<std::string> ordersStats[MAX_PLAYERS];
+	std::vector<std::string> mainOrder[MAX_PLAYERS];
 
 	std::vector<std::string> ordersBuildingCreateId[MAX_PLAYERS];
 	std::vector<std::string> ordersBuildingCreatePos[MAX_PLAYERS];
 
 	std::vector<std::string> ordersUnitCreateId[MAX_PLAYERS];
 	std::vector<std::string> ordersUnitCreatePos[MAX_PLAYERS];
+	
+	std::vector<std::string> unitOrderId[MAX_PLAYERS];
 };

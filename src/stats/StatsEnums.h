@@ -13,17 +13,19 @@ enum class StatsInputType : char {
 	WORKERS,
 };
 
-
 enum class StatsOutputType : char {
 	IDLE =0,
-	
-	CREATE_UNIT,
 
+	CREATE_UNIT,
 	CREATE_BUILDING,
 
 	LEVEL_UP_BUILDING,
-	LEVEL_UP_UNIT,
+	LEVEL_UP_UNIT
+};
 
+enum class StatsOrderOutputType : char {
+	IDLE =0,
+	
 	ORDER_GO,
 	ORDER_STOP,
 	ORDER_CHARGE,
@@ -39,5 +41,9 @@ inline char cast(StatsInputType type) {
 }
 
 inline char cast(StatsOutputType type) {
+	return static_cast<char>(type);
+}
+
+inline char cast(StatsOrderOutputType type) {
 	return static_cast<char>(type);
 }

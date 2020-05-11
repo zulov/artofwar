@@ -34,11 +34,12 @@ Stats::Stats() {
 
 Stats::~Stats() {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		saveBatch(i, ordersStats, "main", 1);
+		saveBatch(i, mainOrder, "main", 1);
 		saveBatch(i, ordersBuildingCreateId, "buildId", 1);
 		saveBatch(i, ordersBuildingCreatePos, "buildPos", 1);
 		saveBatch(i, ordersUnitCreateId, "unitId", 1);
 		saveBatch(i, ordersUnitCreatePos, "unitPos", 1);
+		saveBatch(i, unitOrderId, "unitOrderId", 1);
 	}
 	clear();
 	delete []input;
@@ -62,7 +63,7 @@ void Stats::add(ResourceActionCommand* command) {
 
 	const std::string input = getInputData(player);
 
-	joinAndPush(ordersStats, player, input, getOutput(command));
+	joinAndPush(mainOrder, player, input, getOutput(command));
 }
 
 void Stats::add(BuildingActionCommand* command) {
@@ -74,7 +75,7 @@ void Stats::add(BuildingActionCommand* command) {
 	                                          ->getLevelForUnit(command->id)->aiProps->getParamsNormAsString();
 
 	for (auto building : command->buildings) {
-		joinAndPush(ordersStats, player, input, basicOutput);
+		joinAndPush(mainOrder, player, input, basicOutput);
 		if (command->action == BuildingActionType::UNIT_CREATE) {
 
 			joinAndPush(ordersUnitCreateId, player, input, createOutput);
@@ -90,7 +91,7 @@ void Stats::add(UnitActionCommand* command) {
 
 	const std::string input = getInputData(player);
 
-	joinAndPush(ordersStats, player, input, getOutput(command));
+	joinAndPush(unitOrderId, player, input, getOutput(command));
 }
 
 void Stats::add(CreationCommand* command) {
@@ -102,7 +103,7 @@ void Stats::add(CreationCommand* command) {
 
 	const std::string input = getInputData(player);
 
-	joinAndPush(ordersStats, player, input, getOutput(command));
+	joinAndPush(mainOrder, player, input, getOutput(command));
 	auto& createOutput = Game::getPlayersMan()
 	                     ->getPlayer(command->player)->getLevelForBuilding(command->id)->aiProps->
 	                     getParamsNormAsString();
@@ -139,13 +140,15 @@ void Stats::saveBatch(int i, std::vector<std::string>* array, std::string name, 
 
 void Stats::save() {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		saveBatch(i, ordersStats, "main", SAVE_BATCH_SIZE);
+		saveBatch(i, mainOrder, "main", SAVE_BATCH_SIZE);
 
 		saveBatch(i, ordersBuildingCreateId, "buildId", SAVE_BATCH_SIZE_MINI);
 		saveBatch(i, ordersBuildingCreatePos, "buildPos", SAVE_BATCH_SIZE_MINI);
 
 		saveBatch(i, ordersUnitCreateId, "unitId", SAVE_BATCH_SIZE_MINI);
 		saveBatch(i, ordersUnitCreatePos, "unitPos", SAVE_BATCH_SIZE_MINI);
+		
+		saveBatch(i, unitOrderId, "unitOrderId", SAVE_BATCH_SIZE_MINI);
 	}
 }
 
@@ -246,38 +249,38 @@ std::string Stats::getOutput(UpgradeCommand* command) const {
 }
 
 std::string Stats::getOutput(UnitActionCommand* command) const {
-	float output[magic_enum::enum_count<StatsOutputType>()];
-	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
+	float output[magic_enum::enum_count<StatsOrderOutputType>()];
+	std::fill_n(output, magic_enum::enum_count<StatsOrderOutputType>(), 0.f);
 
 	switch (static_cast<UnitAction>(command->order->getId())) {
 	case UnitAction::GO:
-		output[cast(StatsOutputType::ORDER_GO)] = 1;
+		output[cast(StatsOrderOutputType::ORDER_GO)] = 1;
 		break;
 	case UnitAction::STOP:
-		output[cast(StatsOutputType::ORDER_STOP)] = 1;
+		output[cast(StatsOrderOutputType::ORDER_STOP)] = 1;
 		break;
 	case UnitAction::CHARGE:
-		output[cast(StatsOutputType::ORDER_CHARGE)] = 1;
+		output[cast(StatsOrderOutputType::ORDER_CHARGE)] = 1;
 		break;
 	case UnitAction::ATTACK:
-		output[cast(StatsOutputType::ORDER_ATTACK)] = 1;
+		output[cast(StatsOrderOutputType::ORDER_ATTACK)] = 1;
 		break;
 	case UnitAction::DEAD:
-		output[cast(StatsOutputType::ORDER_DEAD)] = 1;
+		output[cast(StatsOrderOutputType::ORDER_DEAD)] = 1;
 		break;
 	case UnitAction::DEFEND:
-		output[cast(StatsOutputType::ORDER_DEFEND)] = 1;
+		output[cast(StatsOrderOutputType::ORDER_DEFEND)] = 1;
 		break;
 	case UnitAction::FOLLOW:
-		output[cast(StatsOutputType::ORDER_FOLLOW)] = 1;
+		output[cast(StatsOrderOutputType::ORDER_FOLLOW)] = 1;
 		break;
 	case UnitAction::COLLECT:
-		output[cast(StatsOutputType::ORDER_COLLECT)] = 1;
+		output[cast(StatsOrderOutputType::ORDER_COLLECT)] = 1;
 		break;
 	default: ;
 	}
 
-	return join(output, output + magic_enum::enum_count<StatsOutputType>());
+	return join(output, output + magic_enum::enum_count<StatsOrderOutputType>());
 }
 
 std::string Stats::getOutput(ResourceActionCommand* command) const {
