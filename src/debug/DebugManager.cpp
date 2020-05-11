@@ -1,8 +1,7 @@
 #include "debug/DebugManager.h"
+#include <magic_enum.hpp>
 #include "Game.h"
 #include "simulation/env/Environment.h"
-#include "consts.h"
-#include <magic_enum.hpp>
 
 void DebugManager::change(Urho3D::Input* input, Simulation* simulation) {
 	if (input->GetKeyPress(Urho3D::KEY_F9)) {

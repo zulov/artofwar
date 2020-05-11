@@ -8,7 +8,7 @@ class UpgradeCommandList :
 {
 public:
 	explicit UpgradeCommandList(SimulationObjectManager* simulationObjectManager);
-	~UpgradeCommandList();
+	~UpgradeCommandList() = default;
 
 protected:
 	void setParameters(AbstractCommand* command) override;

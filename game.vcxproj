@@ -314,11 +314,11 @@
     <ClInclude Include="src\player\ai\InfluenceType.h" />
     <ClInclude Include="src\player\Possession.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
-    <ClInclude Include="src\NamesUtils.h" />
+    <ClInclude Include="src\utils\NamesUtils.h" />
     <ClInclude Include="src\objects\unit\order\FormationOrder.h" />
     <ClInclude Include="src\objects\unit\order\GroupOrder.h" />
     <ClInclude Include="src\objects\unit\order\IndividualOrder.h" />
-    <ClInclude Include="src\consts.h" />
+    <ClInclude Include="src\utils\consts.h" />
     <ClInclude Include="src\debug\DebugLineRepo.h" />
     <ClInclude Include="src\debug\DebugUnitType.h" />
     <ClInclude Include="src\math\MathUtils.h" />
@@ -334,7 +334,7 @@
     <ClInclude Include="src\objects\unit\ChargeData.h" />
     <ClInclude Include="src\objects\unit\SimColorMode.h" />
     <ClInclude Include="src\objects\unit\MissileData.h" />
-    <ClInclude Include="src\replace_utils.h" />
+    <ClInclude Include="src\utils\replace_utils.h" />
     <ClInclude Include="src\simulation\env\bucket\path\DrawGridUtils.h" />
     <ClInclude Include="src\simulation\env\EnvConsts.h" />
     <ClInclude Include="src\simulation\env\GridCalculator.h" />
@@ -415,7 +415,7 @@
     <ClInclude Include="src\hud\window\minimap\MiniMapPanel.h" />
     <ClInclude Include="src\hud\MySprite.h" />
     <ClInclude Include="src\stats\StatsEnums.h" />
-    <ClInclude Include="src\StringUtils.h" />
+    <ClInclude Include="src\utils\StringUtils.h" />
     <ClInclude Include="src\objects\unit\order\enums\UnitAction.h" />
     <ClInclude Include="src\objects\Physical.h" />
     <ClInclude Include="src\player\Player.h" />
@@ -435,7 +435,7 @@
     <ClInclude Include="src\commands\CommandList.h" />
     <ClInclude Include="src\control\Controls.h" />
     <ClInclude Include="src\control\ControlsState.h" />
-    <ClInclude Include="src\defines.h" />
+    <ClInclude Include="src\utils\defines.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\scene\LevelBuilder.h" />
     <ClInclude Include="src\objects\ObjectEnums.h" />
@@ -463,7 +463,7 @@
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\simulation\Simulation.h" />
     <ClInclude Include="src\objects\unit\state\UnitState.h" />
-    <ClInclude Include="src\DeleteUtils.h" />
+    <ClInclude Include="src\utils\DeleteUtils.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommand.h" />
     <ClInclude Include="src\commands\upgrade\UpgradeCommandList.h" />
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />

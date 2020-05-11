@@ -2,7 +2,7 @@
 #include <magic_enum.hpp>
 #include <vector>
 #include <string>
-#include "defines.h"
+#include "utils/defines.h"
 #include "StatsEnums.h"
 #include "commands/action/UnitActionCommand.h"
 

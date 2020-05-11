@@ -7,11 +7,11 @@
 #include "hud/HudData.h"
 #include "hud/UiUtils.h"
 #include "objects/ActionType.h"
+#include "objects/NamesCache.h"
 #include "objects/Physical.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "NamesUtils.h"
-#include "objects/NamesCache.h"
+#include "utils/NamesUtils.h"
 
 
 LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuInfoPanel", {}) {

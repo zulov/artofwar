@@ -2,9 +2,9 @@
 #include "Game.h"
 #include "QueueElement.h"
 #include "database/DatabaseCache.h"
-#include "defines.h"
+#include "utils/defines.h"
 #include "QueueActionType.h"
-#include "DeleteUtils.h"
+#include "utils/DeleteUtils.h"
 #include <algorithm>
 
 

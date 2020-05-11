@@ -1,20 +1,6 @@
 #include "Hud.h"
-#include "Game.h"
-#include "HudData.h"
-#include "objects/ObjectEnums.h"
-#include "UiUtils.h"
-#include "camera/CameraManager.h"
-#include "database/DatabaseCache.h"
-#include "player/Player.h"
-#include "player/PlayersManager.h"
-#include "replace_utils.h"
-#include "simulation/SimulationInfo.h"
-#include "DeleteUtils.h"
-#include "window/debug/DebugPanel.h"
-#include "window/loading/LoadingPanel.h"
-#include "window/minimap/MiniMapPanel.h"
-#include "window/queue/QueuePanel.h"
-#include "window/top/TopPanel.h"
+#include <regex>
+#include <exprtk/exprtk.hpp>
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Graphics/Graphics.h>
@@ -22,8 +8,22 @@
 #include <Urho3D/Resource/XMLFile.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
-#include <exprtk/exprtk.hpp>
-#include <regex>
+#include "Game.h"
+#include "HudData.h"
+#include "UiUtils.h"
+#include "camera/CameraManager.h"
+#include "database/DatabaseCache.h"
+#include "objects/ObjectEnums.h"
+#include "player/Player.h"
+#include "player/PlayersManager.h"
+#include "simulation/SimulationInfo.h"
+#include "utils/DeleteUtils.h"
+#include "utils/replace_utils.h"
+#include "window/debug/DebugPanel.h"
+#include "window/loading/LoadingPanel.h"
+#include "window/minimap/MiniMapPanel.h"
+#include "window/queue/QueuePanel.h"
+#include "window/top/TopPanel.h"
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) const {

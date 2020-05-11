@@ -2,7 +2,7 @@
 
 #include "ContentInfo.h"
 #include "bucket/MainGrid.h"
-#include "defines.h"
+#include "utils/defines.h"
 #include "objects/unit/state/UnitState.h"
 #include "influence/InfluenceManager.h"
 #include <Urho3D/Graphics/Terrain.h>

@@ -4,7 +4,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "DeleteUtils.h"
+#include "utils/DeleteUtils.h"
 #include "GameState.h"
 #include "control/SelectedInfo.h"
 #include "control/SelectedInfoType.h"

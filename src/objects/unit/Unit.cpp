@@ -1,7 +1,6 @@
 #include "Unit.h"
 #include <algorithm>
 #include <string>
-#include "consts.h"
 #include "Game.h"
 #include "../ValueType.h"
 #include "colors/ColorPaletteRepo.h"
@@ -19,6 +18,7 @@
 #include "simulation/force/ForceStats.h"
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
+#include "utils/consts.h"
 
 
 Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position),

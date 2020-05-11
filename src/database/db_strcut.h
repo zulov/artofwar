@@ -11,7 +11,7 @@
 #include <string>
 #include <magic_enum.hpp>
 
-#include "DeleteUtils.h"
+#include "utils/DeleteUtils.h"
 #include "objects/ValueType.h"
 #include "objects/unit/state/UnitState.h"
 

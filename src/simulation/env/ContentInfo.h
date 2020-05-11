@@ -1,8 +1,8 @@
 #pragma once
-#include "defines.h"
-#include "database/DatabaseCache.h"
-#include "Game.h"
 #include <algorithm>
+#include "Game.h"
+#include "database/DatabaseCache.h"
+#include "utils/defines.h"
 
 
 struct content_info {

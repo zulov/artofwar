@@ -1,5 +1,5 @@
 #include "PathFinder.h"
-#include "defines.h"
+#include "utils/defines.h"
 #include "DrawGridUtils.h"
 #include "Game.h"
 #include "../ComplexBucketData.h"

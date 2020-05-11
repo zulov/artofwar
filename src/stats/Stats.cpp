@@ -1,7 +1,6 @@
 ﻿#include "Stats.h"
 #include <fstream>
 #include "Game.h"
-#include "StringUtils.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
 #include "commands/action/ResourceActionCommand.h"
@@ -15,6 +14,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/Environment.h"
+#include "utils/StringUtils.h"
 
 #define DEFAULT_NORMALIZE_VALUE 10.f
 

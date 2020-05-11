@@ -3,7 +3,7 @@
 #include <magic_enum.hpp>
 #include <random>
 #include "RandType.h"
-#include "DeleteUtils.h"
+#include "utils/DeleteUtils.h"
 
 
 #define RAND_TAB_SIZE 1000

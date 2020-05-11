@@ -1,8 +1,8 @@
 #include "Brain.h"
 
 #include <fstream>
-#include "DeleteUtils.h"
-#include "StringUtils.h"
+#include "utils/DeleteUtils.h"
+#include "utils/StringUtils.h"
 #include "AFUtil.h"
 #include <iostream>
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "defines.h"
+#include "utils/defines.h"
 #include <Urho3D/Math/Vector2.h>
 #include <iostream>
 

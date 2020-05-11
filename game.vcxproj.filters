@@ -198,7 +198,6 @@
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
     <ClInclude Include="src\Benchmark.h" />
-    <ClInclude Include="src\defines.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\camera\CameraEnums.h">
@@ -419,13 +418,11 @@
     <ClInclude Include="src\objects\static\StaticState.h" />
     <ClInclude Include="src\objects\static\StaticStateUtils.h" />
     <ClInclude Include="src\objects\unit\state\CollectState.h" />
-    <ClInclude Include="src\consts.h" />
     <ClInclude Include="src\simulation\env\Environment.h">
       <Filter>simulation\env</Filter>
     </ClInclude>
     <ClInclude Include="src\objects\unit\MissileData.h" />
     <ClInclude Include="src\objects\ActionType.h" />
-    <ClInclude Include="src\NamesUtils.h" />
     <ClInclude Include="src\colors\ColorPaletteRepo.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
     <ClInclude Include="src\simulation\env\bucket\path\fiboheap.h" />
@@ -436,7 +433,6 @@
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapInt.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMap.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapFloat.h" />
-    <ClInclude Include="src\replace_utils.h" />
     <ClInclude Include="src\objects\resource\ResourceEntity.h" />
     <ClInclude Include="src\objects\resource\ResourceFactory.h" />
     <ClInclude Include="src\player\Resources.h" />
@@ -455,7 +451,6 @@
     <ClInclude Include="src\player\ai\nn\Layer.h" />
     <ClInclude Include="src\player\ai\nn\Brain.h" />
     <ClInclude Include="src\player\ai\nn\AFUtil.h" />
-    <ClInclude Include="src\StringUtils.h" />
     <ClInclude Include="src\stats\Stats.h" />
     <ClInclude Include="src\stats\StatsEnums.h" />
     <ClInclude Include="src\objects\ObjectEnums.h">
@@ -489,7 +484,12 @@
     <ClInclude Include="src\objects\unit\order\IndividualOrder.h" />
     <ClInclude Include="src\objects\unit\order\OrderUtils.h" />
     <ClInclude Include="src\objects\unit\order\UnitOrder.h" />
-    <ClInclude Include="src\DeleteUtils.h" />
+    <ClInclude Include="src\utils\consts.h" />
+    <ClInclude Include="src\utils\defines.h" />
+    <ClInclude Include="src\utils\DeleteUtils.h" />
+    <ClInclude Include="src\utils\NamesUtils.h" />
+    <ClInclude Include="src\utils\replace_utils.h" />
+    <ClInclude Include="src\utils\StringUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

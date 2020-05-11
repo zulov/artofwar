@@ -1,7 +1,7 @@
 #include "DebugLineRepo.h"
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
-#include "defines.h"
+#include "utils/defines.h"
 #include "objects/CellState.h"
 
 std::vector<Urho3D::CustomGeometry*> DebugLineRepo::geometry[];

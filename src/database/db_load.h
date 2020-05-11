@@ -3,7 +3,7 @@
 #include <ios>
 #include <iosfwd>
 #include "db_strcut.h"
-#include "StringUtils.h"
+#include "utils/StringUtils.h"
 
 static unsigned fromHex(char** argv, int index) {
 	unsigned x;
