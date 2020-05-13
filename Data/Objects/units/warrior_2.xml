@@ -1,7 +1,7 @@
 <node>
 <attribute name="Scale" value="0.5 0.5 0.5" />
 <component type="StaticModel">
-	<attribute name="Model" value="Model;Models/cube.mdl" />
-	<attribute name="Material" value="Material;Materials/grey.xml" />
+	<attribute name="Model" value="Model;Models/units/Body_08b.mdl" />
+	<attribute name="Material" value="Material;Materials/units/TT_RTS_Units.001.xml" />
 </component>
 </node>

@@ -1,7 +1,7 @@
 <node>
-<attribute name="Scale" value="0.5 0.5 0.5" />
+<attribute name="Scale" value="1 1.5 1" />
 <component type="StaticModel">
-	<attribute name="Model" value="Model;Models/tower.mdl" />
-	<attribute name="Material" value="Material;Materials/tower.xml" />
+	<attribute name="Model" value="Model;Models/buildings/tower.mdl" />
+	<attribute name="Material" value="Material;Materials/buildings/tower.xml" />
 </component>
 </node>
