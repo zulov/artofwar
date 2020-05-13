@@ -22,7 +22,8 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/unitId_w.csv"),
-                                          unitBrainPos("Data/ai/unitPos_w.csv") {
+                                          unitBrainPos("Data/ai/unitPos_w.csv"),
+                                          unitOrderId("Data/ai/unitOrderId_w.csv") {
 }
 
 const std::vector<float>& ActionMaker::decide(Brain& brain) const {

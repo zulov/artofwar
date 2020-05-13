@@ -44,4 +44,6 @@ private:
 	
 	Brain unitBrainId;
 	Brain unitBrainPos;
+	
+	Brain unitOrderId;
 };

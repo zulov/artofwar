@@ -40,7 +40,7 @@ Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectTyp
 	selectedInfo = new SelectedInfo();
 
 	createNode("Models/box.mdl", "Materials/green_overlay.xml", &selectionNode);
-	createNode("Models/arrow2.mdl", "Materials/red_overlay.xml", &arrowNode);
+	createNode("Models/arrow.mdl", "Materials/red_overlay.xml", &arrowNode);
 
 	tempBuildingNode = Game::getScene()->CreateChild();
 	tempBuildingNode->SetEnabled(false);
@@ -50,7 +50,7 @@ Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectTyp
 	for (int i = 0; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
 		deployMark[i] = Game::getScene()->CreateChild();
 		deployMark[i]->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>
-			("Objects/buildings/additional/target.xml")->GetRoot());
+			("Objects/buildings/additional/banner.xml")->GetRoot());
 	}
 }
 

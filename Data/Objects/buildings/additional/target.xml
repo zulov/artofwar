@@ -1,7 +1,0 @@
-<node>
-<attribute name="Scale" value="1 2 1" />
-<component type="StaticModel">
-	<attribute name="Model" value="Model;Models/Pyramid.mdl" />
-	<attribute name="Material" value="Material;Materials/red.xml" />
-</component>
-</node>
