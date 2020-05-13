@@ -82,6 +82,8 @@ void Stats::add(BuildingActionCommand* command) {
 
 			const std::string inputWithAiProps = input + ";" + createOutput;
 			joinAndPush(ordersUnitCreatePos, player, inputWithAiProps, getCreateUnitPosOutput(building));
+		} else if (command->action == BuildingActionType::UNIT_CREATE) {
+
 		}
 	}
 }
@@ -147,7 +149,7 @@ void Stats::save() {
 
 		saveBatch(i, ordersUnitCreateId, "unitId", SAVE_BATCH_SIZE_MINI);
 		saveBatch(i, ordersUnitCreatePos, "unitPos", SAVE_BATCH_SIZE_MINI);
-		
+
 		saveBatch(i, unitOrderId, "unitOrderId", SAVE_BATCH_SIZE_MINI);
 	}
 }

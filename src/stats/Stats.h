@@ -1,18 +1,16 @@
 #pragma once
 #include <magic_enum.hpp>
-#include <vector>
 #include <string>
-#include "utils/defines.h"
+#include <vector>
 #include "StatsEnums.h"
 #include "commands/action/UnitActionCommand.h"
-
-//#define BASIC_INPUT_SIZE 24
+#include "utils/defines.h"
 
 #define SAVE_BATCH_SIZE 10
 #define SAVE_BATCH_SIZE_MINI 4
 
-class Building;
 struct ActionParameter;
+class Building;
 class BuildingActionCommand;
 class ResourceActionCommand;
 class AbstractCommand;
@@ -28,7 +26,6 @@ public:
 	float* getInputFor(short id);
 	void init();
 	std::string getInputData(char player);
-	//void add(UpgradeCommand* command);
 
 	void add(ResourceActionCommand* command);
 	void add(BuildingActionCommand* command);

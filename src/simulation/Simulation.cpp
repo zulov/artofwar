@@ -180,7 +180,7 @@ void Simulation::applyForce() const {
 
 void Simulation::levelUp(QueueElement* done, char player) const {
 	Game::getActionCenter()->add(new UpgradeCommand(
-		Game::getPlayersMan()->getActivePlayerID(),
+		player,
 		done->getId(),
 		done->getType()
 	));

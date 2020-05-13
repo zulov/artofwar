@@ -181,6 +181,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
     <ClCompile Include="src\math\RandGen.cpp" />
     <ClCompile Include="src\player\ai\ActionMaker.cpp" />
     <ClCompile Include="src\simulation\env\CloseIndexProvider.cpp" />
@@ -288,6 +289,8 @@
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
+    <ClInclude Include="src\commands\action\GeneralActionType.h" />
     <ClInclude Include="src\math\RandGen.h" />
     <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\math\RandType.h" />

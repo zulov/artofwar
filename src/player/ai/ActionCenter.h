@@ -1,14 +1,13 @@
 #pragma once
 #include "objects/unit/ActionParameter.h"
 
-
 enum class QueueActionType : char;
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Vector2;
 }
 
+class GeneralActionCommand;
 class BuildingActionCommand;
 class ResourceActionCommand;
 class SimulationObjectManager;
@@ -25,6 +24,7 @@ public:
 
 	void add(UpgradeCommand* command) const;
 
+	void add(GeneralActionCommand* command) const;
 	void add(ResourceActionCommand* command) const;
 	void add(BuildingActionCommand* command) const;
 

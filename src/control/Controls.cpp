@@ -10,6 +10,7 @@
 #include "camera/CameraManager.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
+#include "commands/action/GeneralActionCommand.h"
 #include "commands/action/ResourceActionCommand.h"
 #include "commands/action/ResourceActionType.h"
 #include "commands/action/UnitActionCommand.h"
@@ -291,7 +292,8 @@ void Controls::order(short id, const ActionParameter& parameter) {
 
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::PHYSICAL:
-		return Game::getActionCenter()->orderPhysical(id, QueueActionType::BUILDING_LEVEL, player);
+		//return Game::getActionCenter()->orderPhysical(id, QueueActionType::BUILDING_LEVEL, player);
+		return Game::getActionCenter()->add(new GeneralActionCommand(id,GeneralActionType::BUILDING_LEVEL,player));
 	case ObjectType::UNIT:
 		return actionUnit(id, parameter);
 	case ObjectType::BUILDING:

@@ -194,6 +194,7 @@
     <ClCompile Include="src\objects\unit\order\GroupOrder.cpp" />
     <ClCompile Include="src\objects\unit\order\IndividualOrder.cpp" />
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
+    <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -490,6 +491,8 @@
     <ClInclude Include="src\utils\NamesUtils.h" />
     <ClInclude Include="src\utils\replace_utils.h" />
     <ClInclude Include="src\utils\StringUtils.h" />
+    <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
+    <ClInclude Include="src\commands\action\GeneralActionType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

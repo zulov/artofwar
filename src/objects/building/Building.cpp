@@ -63,8 +63,7 @@ Urho3D::String Building::toMultiLineString() {
 		                  maxCloseUsers, magic_enum::enum_name(state).data());
 }
 
-void Building::action(BuildingActionType type, short id) const {
-	
+void Building::action(BuildingActionType type, short id) const {	
 	Resources& resources = Game::getPlayersMan()->getPlayer(getPlayer())->getResources();
 
 	switch (type) {

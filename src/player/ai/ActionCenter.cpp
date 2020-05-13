@@ -96,7 +96,12 @@ auto ActionCenter::addResource(int id, Urho3D::Vector2& position) const -> bool 
 	return false;
 }
 
+void ActionCenter::add(GeneralActionCommand* command) const {
+	
+}
+
 void ActionCenter::orderPhysical(short id, QueueActionType type, char playerId) const {
+	
 	if (type == QueueActionType::BUILDING_LEVEL) {
 		Game::getStats()->addBuildLevel(id, playerId);
 		auto player = Game::getPlayersMan()->getPlayer(playerId);
