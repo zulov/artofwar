@@ -365,7 +365,7 @@ void MainGrid::removeStatic(Static* object) const {
 	}
 }
 
-Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3& position) {
+std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& position) {
 	int index = calculator.indexFromPosition(position);
 	if (!complexData[index].isUnit()) {
 		int escapeBucket; //=-1
@@ -387,15 +387,15 @@ Urho3D::Vector2* MainGrid::getDirectionFrom(Urho3D::Vector3& position) {
 			escapeBucket = complexData[index].getEscapeBucket();
 		}
 		if (escapeBucket == -1) {
-			return new Urho3D::Vector2;
+			return {};
 		}
-		Urho3D::Vector2* direction = complexData[index] //TODO Error'this' nie uzywany 
+		auto direction = complexData[index] //TODO Error'this' nie uzywany 
 			.getDirectrionFrom(position, complexData[escapeBucket]);
 
-		direction->Normalize();
+		direction.Normalize();
 		return direction;
 	}
-	return nullptr;
+	return {};
 }
 
 std::pair<Urho3D::IntVector2, Urho3D::Vector2> MainGrid::getValidPosition(

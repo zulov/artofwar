@@ -109,14 +109,13 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
-	const auto dir = Game::getEnvironment()->validatePosition(unit->getPosition());
-	if (dir) {
-		auto force = *dir * escapeCoef * boostCoef;
+	const auto opt = Game::getEnvironment()->validatePosition(unit->getPosition());
+	if (opt.has_value()) {
+		auto force = opt.value() * escapeCoef * boostCoef;
 
 		forceStats.addEscp(force);
 
 		newForce += force;
-		delete dir;
 	}
 }
 

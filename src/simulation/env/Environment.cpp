@@ -136,7 +136,7 @@ Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) {
 	return mainGrid.repulseObstacle(unit);
 }
 
-Urho3D::Vector2* Environment::validatePosition(Urho3D::Vector3& position) {
+std::optional<Urho3D::Vector2> Environment::validatePosition(Urho3D::Vector3& position) {
 	return mainGrid.getDirectionFrom(position);
 }
 
