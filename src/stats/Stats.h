@@ -10,6 +10,7 @@
 #define SAVE_BATCH_SIZE_MINI 4
 
 struct ActionParameter;
+class GeneralActionCommand;
 class Building;
 class BuildingActionCommand;
 class ResourceActionCommand;
@@ -27,6 +28,7 @@ public:
 	void init();
 	std::string getInputData(char player);
 
+	void add(GeneralActionCommand* command);
 	void add(ResourceActionCommand* command);
 	void add(BuildingActionCommand* command);
 	void add(UnitActionCommand* command);
@@ -46,6 +48,7 @@ private:
 	std::string getOutput(UnitActionCommand* command) const;
 	std::string getOutput(ResourceActionCommand* command) const;
 	std::string getOutput(BuildingActionCommand* command) const;
+	std::string getOutput(GeneralActionCommand* command) const;
 
 	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output);
 	void save(int i, std::vector<std::string>* array, std::string fileName) const;
@@ -62,6 +65,8 @@ private:
 
 	std::vector<std::string> ordersUnitCreateId[MAX_PLAYERS];
 	std::vector<std::string> ordersUnitCreatePos[MAX_PLAYERS];
-	
+
 	std::vector<std::string> unitOrderId[MAX_PLAYERS];
+
+	std::vector<std::string> buildUpgradeId[MAX_PLAYERS];
 };

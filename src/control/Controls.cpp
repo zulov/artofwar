@@ -14,13 +14,13 @@
 #include "commands/action/ResourceActionCommand.h"
 #include "commands/action/ResourceActionType.h"
 #include "commands/action/UnitActionCommand.h"
+#include "commands/action/GeneralActionType.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
 #include "math/MathUtils.h"
 #include "objects/ActionType.h"
 #include "objects/NodeUtils.h"
 #include "objects/ObjectEnums.h"
-#include "objects/queue/QueueActionType.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/GroupOrder.h"
@@ -293,7 +293,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::PHYSICAL:
 		//return Game::getActionCenter()->orderPhysical(id, QueueActionType::BUILDING_LEVEL, player);
-		return Game::getActionCenter()->add(new GeneralActionCommand(id,GeneralActionType::BUILDING_LEVEL,player));
+		return Game::getActionCenter()->add(new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL, player));
 	case ObjectType::UNIT:
 		return actionUnit(id, parameter);
 	case ObjectType::BUILDING:

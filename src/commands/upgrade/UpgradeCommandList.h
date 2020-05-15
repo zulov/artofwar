@@ -3,9 +3,7 @@
 
 class SimulationObjectManager;
 
-class UpgradeCommandList :
-	public CommandList
-{
+class UpgradeCommandList : public CommandList {
 public:
 	explicit UpgradeCommandList(SimulationObjectManager* simulationObjectManager);
 	~UpgradeCommandList() = default;

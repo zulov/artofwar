@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
+#include "commands/action/GeneralActionCommand.h"
 #include "commands/action/ResourceActionCommand.h"
 #include "commands/action/ResourceActionType.h"
 #include "commands/action/UnitActionCommand.h"
@@ -40,6 +41,7 @@ Stats::~Stats() {
 		saveBatch(i, ordersUnitCreateId, "unitId", 1);
 		saveBatch(i, ordersUnitCreatePos, "unitPos", 1);
 		saveBatch(i, unitOrderId, "unitOrderId", 1);
+		saveBatch(i, buildUpgradeId, "unitOrderId", 1);
 	}
 	clear();
 	delete []input;
@@ -56,6 +58,15 @@ void Stats::init() {
 std::string Stats::getInputData(char player) {
 	const auto input = getInputFor(player);
 	return join(input, input + magic_enum::enum_count<StatsInputType>() * 2);
+}
+
+void Stats::add(GeneralActionCommand* command) {
+	const auto player = command->player;
+
+	const std::string input = getInputData(player);
+
+	joinAndPush(mainOrder, player, input, getOutput(command));
+	joinAndPush(buildUpgradeId, player, input, getOutput(command));
 }
 
 void Stats::add(ResourceActionCommand* command) {
@@ -151,6 +162,8 @@ void Stats::save() {
 		saveBatch(i, ordersUnitCreatePos, "unitPos", SAVE_BATCH_SIZE_MINI);
 
 		saveBatch(i, unitOrderId, "unitOrderId", SAVE_BATCH_SIZE_MINI);
+
+		saveBatch(i, buildUpgradeId, "buildUpgradeId", SAVE_BATCH_SIZE_MINI);
 	}
 }
 
@@ -312,5 +325,14 @@ std::string Stats::getOutput(BuildingActionCommand* command) const {
 		break;
 	default: ;
 	}
+	return join(output, output + magic_enum::enum_count<StatsOutputType>());
+}
+
+std::string Stats::getOutput(GeneralActionCommand* command) const {
+	float output[magic_enum::enum_count<StatsOutputType>()];
+	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
+
+	output[cast(StatsOutputType::LEVEL_UP_BUILDING)] = 1;
+
 	return join(output, output + magic_enum::enum_count<StatsOutputType>());
 }

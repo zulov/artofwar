@@ -2,8 +2,7 @@
 #include "AbstractCommand.h"
 #include <vector>
 
-class CommandList
-{
+class CommandList {
 public:
 	CommandList();
 	virtual ~CommandList();
@@ -11,7 +10,7 @@ public:
 	void add(AbstractCommand* first, AbstractCommand* second);
 
 	void execute();
-protected: 
+protected:
 	virtual void setParameters(AbstractCommand* command);
 private:
 	std::vector<AbstractCommand*> commands;
