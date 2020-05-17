@@ -25,7 +25,6 @@ MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "Lef
                                                                     {GameState::RUNNING, GameState::PAUSE}) {
 }
 
-
 MenuPanel::~MenuPanel() {
 	delete infoPanel;
 	clear_vector(hudElements);

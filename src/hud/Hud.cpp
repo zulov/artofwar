@@ -208,8 +208,8 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, int currentFrame) const {
 			menuPanel->updateSelected(selectedInfo);
 			switch (selectedInfo->getSelectedType()) {
 			case ObjectType::PHYSICAL:
+			case ObjectType::NONE:
 				menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
-
 				queuePanel->show(Game::getPlayersMan()->getActivePlayer()->getQueue());
 				break;
 			case ObjectType::UNIT:
@@ -224,9 +224,6 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, int currentFrame) const {
 				menuPanel->refresh(LeftMenuMode::RESOURCE, selectedInfo);
 				queuePanel->setVisible(false);
 				break;
-			default:
-				menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
-				queuePanel->setVisible(false);
 			}
 		}
 		if (selectedInfo->getSelectedType() == ObjectType::BUILDING) {

@@ -17,9 +17,6 @@
 LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuInfoPanel", {}) {
 }
 
-LeftMenuInfoPanel::~LeftMenuInfoPanel() = default;
-
-
 void LeftMenuInfoPanel::createBody() {
 	text = addChildText(window, "MyText", style);
 }
@@ -33,6 +30,7 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 			if (optInfoTypes.has_value()) {
 				text->SetVisible(true);
 				text->SetText(optInfoTypes.value()->getData().at(0)->toMultiLineString());
+				setVisible(true);
 			}
 		} else if (selectedInfo->isSthSelected()) {
 			Urho3D::String msg = "";
@@ -45,8 +43,10 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 			}
 			text->SetText(msg);
 			text->SetVisible(true);
+			setVisible(true);
 		} else {
 			text->SetVisible(false);
+			setVisible(false);
 		}
 	}
 }
