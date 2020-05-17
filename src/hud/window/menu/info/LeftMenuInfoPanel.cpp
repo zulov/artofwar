@@ -24,11 +24,9 @@ void LeftMenuInfoPanel::createBody() {
 void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 	if (!hoverIsOn) {
 		selectedIsOn = true;
-		setVisible(true);
 		if (selectedInfo->getAllNumber() == 1) {
 			auto optInfoTypes = selectedInfo->getOneSelectedTypeInfo();
 			if (optInfoTypes.has_value()) {
-				text->SetVisible(true);
 				text->SetText(optInfoTypes.value()->getData().at(0)->toMultiLineString());
 				setVisible(true);
 			}
@@ -41,11 +39,8 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 					   .Append(": ").Append(Urho3D::String(selectedType->getData().size())).Append("\n");
 				}
 			}
-			text->SetText(msg);
-			text->SetVisible(true);
 			setVisible(true);
 		} else {
-			text->SetVisible(false);
 			setVisible(false);
 		}
 	}
@@ -98,7 +93,6 @@ void LeftMenuInfoPanel::setHoverInfo(HudData* hudData) {
 	Urho3D::String message = createMessage(hudData);
 
 	if (message.Length() > 0) {
-		text->SetVisible(true);
 		text->SetText(message);
 		setVisible(true);
 		hoverIsOn = true;
