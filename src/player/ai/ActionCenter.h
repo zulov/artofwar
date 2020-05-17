@@ -43,5 +43,4 @@ private:
 	CreationCommandList creation;
 	UpgradeCommandList upgrade;
 	CommandList action;
-	CommandList generalAction;
 };

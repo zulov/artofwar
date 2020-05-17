@@ -235,7 +235,7 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, int currentFrame) const {
 	} else {
 
 		if (currentFrame % 10 == 0) {
-			queuePanel->update(Game::getPlayersMan()->getActivePlayer()->getQueue());
+			queuePanel->show(Game::getPlayersMan()->getActivePlayer()->getQueue());
 		}
 
 		selectedHudPanel->clearSelected();

@@ -19,7 +19,7 @@ QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "Q
 }
 
 QueuePanel::~QueuePanel() {
-	clear_array(elements,MAX_ICON_SELECTION);
+	clear_array(elements, MAX_ICON_SELECTION);
 
 	delete[] elements;
 }
@@ -51,18 +51,13 @@ void QueuePanel::show(SelectedInfo* selectedInfo) {
 	update(selectedInfo);
 }
 
-void QueuePanel::update(QueueManager& queue) const {
+void QueuePanel::show(QueueManager& queue) {
 	short j = 0;
 	update(queue, j);
-	hideElements(j);
+	finish(j);
 }
 
-void QueuePanel::show(QueueManager& queue) {
-	setVisible(true);
-	update(queue);
-}
-
-void QueuePanel::update(SelectedInfo* selectedInfo) const {
+void QueuePanel::update(SelectedInfo* selectedInfo) {
 	//TODO wykonuje sie nawet jeœli sie nic nie zmieni³o
 	short j = 0;
 	if (window->IsVisible()) {
@@ -74,12 +69,17 @@ void QueuePanel::update(SelectedInfo* selectedInfo) const {
 			}
 		}
 	}
-	hideElements(j);
+	finish(j);
 }
 
-void QueuePanel::hideElements(int from) const {
+void QueuePanel::finish(int from) {
 	for (int i = from; i < MAX_ICON_SELECTION; ++i) {
 		elements[i]->hide();
+	}
+	if (from == 0) {
+		setVisible(false);
+	} else {
+		setVisible(true);
 	}
 }
 

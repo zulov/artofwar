@@ -14,7 +14,6 @@ public:
 
 	void clean() override;
 	bool expired() override;
-
 	void execute() override;
 private:
 	short id;

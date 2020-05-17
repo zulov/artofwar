@@ -167,10 +167,6 @@ void Stats::save() {
 	}
 }
 
-void Stats::addBuildLevel(short id, char playerId) {
-	//TODO zrobic cos
-}
-
 void Stats::update(short id) {
 	float* data = statsPerPlayer.at(id);
 	auto player = Game::getPlayersMan()->getPlayer(id);

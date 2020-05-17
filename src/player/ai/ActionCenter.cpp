@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/ResourceActionCommand.h"
+#include "commands/action/GeneralActionCommand.h"
 #include "commands/action/UnitActionCommand.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
@@ -34,6 +35,11 @@ void ActionCenter::add(UnitActionCommand* command) {
 	action.add(command);
 }
 
+void ActionCenter::add(GeneralActionCommand* command) {
+	Game::getStats()->add(command);
+	action.add(command);
+}
+
 void ActionCenter::add(UnitActionCommand* first, UnitActionCommand* second) {
 	Game::getStats()->add(first);
 	Game::getStats()->add(second);
@@ -47,7 +53,6 @@ void ActionCenter::executeActions() {
 void ActionCenter::executeLists() {
 	upgrade.execute();
 	creation.execute();
-	generalAction.execute();
 }
 
 bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char player) {
@@ -84,15 +89,9 @@ bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, i
 bool ActionCenter::addResource(int id, Urho3D::Vector2& position) {
 	auto command = creation.addResource(id, position, 0);
 	if (command) {
-		//Game::getStats()->add(command);
 		creation.add(command);
 		return true;
 	}
 
 	return false;
-}
-
-void ActionCenter::add(GeneralActionCommand* command) {
-	Game::getStats()->add(command);
-	generalAction.add(command);
 }

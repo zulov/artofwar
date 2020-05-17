@@ -11,10 +11,10 @@
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
 #include "commands/action/GeneralActionCommand.h"
+#include "commands/action/GeneralActionType.h"
 #include "commands/action/ResourceActionCommand.h"
 #include "commands/action/ResourceActionType.h"
 #include "commands/action/UnitActionCommand.h"
-#include "commands/action/GeneralActionType.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
 #include "math/MathUtils.h"
@@ -103,7 +103,9 @@ void Controls::selectOne(Physical* entity, char player) const {
 	if (entityType != selectedInfo->getSelectedType()) {
 		unSelectAll();
 	}
-	if (!entity->isSelected() && entity->isAlive() && (entity->getPlayer() < 0 || entity->getPlayer() == player)) {
+	if (entity->getType() != ObjectType::PHYSICAL 
+		&& !entity->isSelected() && entity->isAlive() 
+		&& (entity->getPlayer() < 0 || entity->getPlayer() == player)) {
 		entity->select();
 		selected->push_back(entity);
 
@@ -292,7 +294,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::PHYSICAL:
-		//return Game::getActionCenter()->orderPhysical(id, QueueActionType::BUILDING_LEVEL, player);
+	case ObjectType::NONE:
 		return Game::getActionCenter()->add(new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL, player));
 	case ObjectType::UNIT:
 		return actionUnit(id, parameter);

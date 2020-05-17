@@ -7,8 +7,12 @@
 #include "player/PlayersManager.h"
 #include "stats/Stats.h"
 
-void GeneralActionCommand::clean() {
-}
+GeneralActionCommand::GeneralActionCommand(short id, GeneralActionType action, char player)
+	: AbstractCommand(player),
+	  id(id),
+	  action(action) { }
+
+void GeneralActionCommand::clean() {}
 
 bool GeneralActionCommand::expired() {
 	return false;
@@ -16,7 +20,6 @@ bool GeneralActionCommand::expired() {
 
 void GeneralActionCommand::execute() {
 	if (action == GeneralActionType::BUILDING_LEVEL) {
-		Game::getStats()->addBuildLevel(id, player);
 		auto playerEnt = Game::getPlayersMan()->getPlayer(player);
 
 		auto opt = playerEnt->getNextLevelForBuilding(id);
