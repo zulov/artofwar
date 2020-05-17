@@ -2,12 +2,11 @@
 #include <Urho3D/UI/Text.h>
 #include "hud/window/AbstractWindowPanel.h"
 
-class TopInfoPanel : public AbstractWindowPanel
-{
+class TopInfoPanel : public AbstractWindowPanel {
 public:
 	explicit TopInfoPanel(Urho3D::XMLFile* _style);
 	~TopInfoPanel() = default;
-	
+
 	void hoverOn();
 	void hoverOff();
 
@@ -18,4 +17,3 @@ private:
 	bool hoverIsOn = false;
 	Urho3D::Text* text;
 };
-

@@ -66,7 +66,7 @@ void Stats::add(GeneralActionCommand* command) {
 	const std::string input = getInputData(player);
 
 	joinAndPush(mainOrder, player, input, getOutput(command));
-	joinAndPush(buildUpgradeId, player, input, getOutput(command));
+	joinAndPush(buildUpgradeId, player, input, getBuildUpgradeIdOutput(command));
 }
 
 void Stats::add(ResourceActionCommand* command) {
