@@ -1,16 +1,15 @@
 #pragma once
-#include "NewGameForm.h"
-#include "NewGameTeamLine.h"
-#include "hud/window/main_menu/MainMenuDetailsPanel.h"
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/DropDownList.h>
+#include "NewGameForm.h"
+#include "NewGameTeamLine.h"
+#include "hud/window/main_menu/MainMenuDetailsPanel.h"
 
 
 #define NEW_GAME_ROWS_NUMBER 5
 
-class MainMenuNewGamePanel : public MainMenuDetailsPanel
-{
+class MainMenuNewGamePanel : public MainMenuDetailsPanel {
 public:
 	MainMenuNewGamePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~MainMenuNewGamePanel();

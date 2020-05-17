@@ -21,9 +21,6 @@ SelectedHudElement::SelectedHudElement(Urho3D::UIElement* parent, Urho3D::XMLFil
 	bars->SetVisible(false);
 }
 
-
-SelectedHudElement::~SelectedHudElement() = default;
-
 Urho3D::Button* SelectedHudElement::getButton() const {
 	return button;
 }

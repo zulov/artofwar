@@ -7,8 +7,7 @@
 
 class MainMenuDetailsPanel;
 
-class MainMenuPanel : public AbstractWindowPanel
-{
+class MainMenuPanel : public AbstractWindowPanel {
 public:
 	explicit MainMenuPanel(Urho3D::XMLFile* _style);
 	~MainMenuPanel();

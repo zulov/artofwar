@@ -1,13 +1,12 @@
 #pragma once
-#include "hud/window/AbstractWindowPanel.h"
 #include <Urho3D/UI/Button.h>
+#include "hud/window/AbstractWindowPanel.h"
 
 #define IN_GAME_MENU_BUTTON_NUMBER 5
 
 class AbstractMiddlePanel;
 
-class InGameMenuPanel : public AbstractWindowPanel
-{
+class InGameMenuPanel : public AbstractWindowPanel {
 public:
 	explicit InGameMenuPanel(Urho3D::XMLFile* _style);
 	~InGameMenuPanel();
@@ -23,5 +22,5 @@ private:
 	void HandleToggle(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	bool menuVisibility = false;
 	Urho3D::Button* toggleButton;
-	AbstractMiddlePanel* addionalPanels[IN_GAME_MENU_BUTTON_NUMBER];
+	AbstractMiddlePanel* additionalPanels[IN_GAME_MENU_BUTTON_NUMBER];
 };

@@ -3,8 +3,7 @@
 
 enum class ActionType : char;
 
-class HudData
-{
+class HudData {
 public:
 	explicit HudData(Urho3D::UIElement* _uiParent);
 	~HudData();
@@ -19,6 +18,6 @@ public:
 private:
 	Urho3D::UIElement* parent;
 	Urho3D::String text;
-	ActionType type;
 	short id;
+	ActionType type;
 };

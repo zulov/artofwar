@@ -13,9 +13,6 @@ TopHudElement::TopHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style, 
 	button->SetVar("TopHudElement", this);
 }
 
-
-TopHudElement::~TopHudElement() = default;
-
 void TopHudElement::hide() const {
 	button->SetVisible(false);
 }

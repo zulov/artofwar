@@ -1,16 +1,16 @@
 #include "QueuePanel.h"
-#include "GameState.h"
-#include "Urho3D/Graphics/Texture2D.h"
-#include "database/DatabaseCache.h"
-#include "objects/NamesCache.h"
-#include "objects/building/Building.h"
-#include "control/SelectedInfoType.h"
-#include "objects/queue/QueueElement.h"
 #include <Urho3D/Input/InputEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UIEvents.h>
+#include "GameState.h"
 #include "QueueHudElement.h"
 #include "control/SelectedInfo.h"
+#include "control/SelectedInfoType.h"
+#include "database/DatabaseCache.h"
+#include "objects/NamesCache.h"
+#include "objects/building/Building.h"
+#include "objects/queue/QueueElement.h"
+#include "Urho3D/Graphics/Texture2D.h"
 
 
 QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "QueueWindow",

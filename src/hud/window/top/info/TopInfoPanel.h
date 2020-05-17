@@ -1,12 +1,12 @@
 #pragma once
-#include "hud/window/AbstractWindowPanel.h"
 #include <Urho3D/UI/Text.h>
+#include "hud/window/AbstractWindowPanel.h"
 
 class TopInfoPanel : public AbstractWindowPanel
 {
 public:
 	explicit TopInfoPanel(Urho3D::XMLFile* _style);
-	~TopInfoPanel();
+	~TopInfoPanel() = default;
 	
 	void hoverOn();
 	void hoverOff();

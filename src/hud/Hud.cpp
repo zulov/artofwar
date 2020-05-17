@@ -123,7 +123,7 @@ void Hud::prepareStyle() {
 	Game::getUI()->GetRoot()->SetDefaultStyle(style);
 }
 
-void Hud::prepreUrho() const {
+void Hud::prepareUrho() const {
 	createConsole();
 	createDebugHud();
 	createCursor();

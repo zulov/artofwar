@@ -9,9 +9,6 @@ MainMenuDetailsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title):
 	msg = _title;
 }
 
-
-MainMenuDetailsPanel::~MainMenuDetailsPanel() = default;
-
 void MainMenuDetailsPanel::createBody() {
 	addChildText(window, "MainMenuTitle", msg, style);
 

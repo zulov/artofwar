@@ -1,18 +1,16 @@
 #pragma once
 
-#include "hud/window/main_menu/MainMenuDetailsPanel.h"
-#include <Urho3D/Resource/Localization.h>
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/DropDownList.h>
+#include "hud/window/main_menu/MainMenuDetailsPanel.h"
 
 
 #define SETTINGS_ROWS_NUMBER 9
 
 struct SettingsForm;
 
-class MainMenuSettingsPanel : public MainMenuDetailsPanel
-{
+class MainMenuSettingsPanel : public MainMenuDetailsPanel {
 public:
 	MainMenuSettingsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~MainMenuSettingsPanel();
@@ -37,5 +35,5 @@ private:
 	Urho3D::CheckBox* shadow;
 	Urho3D::DropDownList* hudSize;
 
-	SettingsForm * data;
+	SettingsForm* data;
 };

@@ -104,7 +104,7 @@ void MenuPanel::createBody() {
 		checks[i] = createElement<Urho3D::CheckBox>(rows[LEFT_MENU_ROWS_NUMBER - 1], style, "LeftMenuCheckBox");
 		checks[i]->SetVar("Num", i);
 		createSprite(checks[i], texture, style, "LeftMenuSmallSprite");
-		SubscribeToEvent(checks[i], Urho3D::E_CLICK, URHO3D_HANDLER(MenuPanel, ChengeModeButton));
+		SubscribeToEvent(checks[i], Urho3D::E_CLICK, URHO3D_HANDLER(MenuPanel, ChangeModeButton));
 	}
 	const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
 	>("textures/hud/icon/lm/lm3.png");
@@ -132,7 +132,7 @@ void MenuPanel::setChecks(int val) {
 	checks[val]->SetChecked(true);
 }
 
-void MenuPanel::ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
+void MenuPanel::ChangeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
 	auto element = static_cast<Urho3D::CheckBox*>(eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr());
 
 	auto newSubMode = static_cast<LeftMenuSubMode>(element->GetVar("Num").GetInt());

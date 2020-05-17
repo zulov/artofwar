@@ -12,7 +12,7 @@ class Physical;
 class SelectedHudElement {
 public:
 	explicit SelectedHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style);
-	~SelectedHudElement();
+	~SelectedHudElement() = default;
 
 	Urho3D::Button* getButton() const;
 	void hide() const;

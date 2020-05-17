@@ -15,7 +15,7 @@ InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_
 
 InGameMenuPanel::~InGameMenuPanel() {
 	toggleButton->Remove();
-	clear_array(addionalPanels,IN_GAME_MENU_BUTTON_NUMBER);
+	clear_array(additionalPanels,IN_GAME_MENU_BUTTON_NUMBER);
 }
 
 void InGameMenuPanel::setVisible(bool enable) {
@@ -28,7 +28,7 @@ void InGameMenuPanel::setVisible(bool enable) {
 }
 
 Urho3D::Button* InGameMenuPanel::getSaveButton() const {
-	return addionalPanels[0]->getMainButton();
+	return additionalPanels[0]->getMainButton();
 }
 
 void InGameMenuPanel::toggle() {
@@ -39,11 +39,11 @@ void InGameMenuPanel::toggle() {
 void InGameMenuPanel::action(short id) {
 	close();
 
-	addionalPanels[id]->setVisible(true);
+	additionalPanels[id]->setVisible(true);
 }
 
 void InGameMenuPanel::close() const {
-	for (auto addionalPanel : addionalPanels) {
+	for (auto addionalPanel : additionalPanels) {
 		addionalPanel->setVisible(false);
 	}
 }
@@ -69,12 +69,12 @@ void InGameMenuPanel::createBody() {
 	}
 
 	auto l10n = Game::getLocalization();
-	addionalPanels[0] = new FilePanel(style, l10n->Get("igm_0"));
-	addionalPanels[1] = new FilePanel(style, l10n->Get("igm_1"));
-	addionalPanels[2] = new AbstractMiddlePanel(style, l10n->Get("igm_2"));
-	addionalPanels[3] = new AbstractMiddlePanel(style, l10n->Get("igm_3"));
-	addionalPanels[4] = new AbstractMiddlePanel(style, l10n->Get("igm_4"));
-	for (auto addionalPanel : addionalPanels) {
+	additionalPanels[0] = new FilePanel(style, l10n->Get("igm_0"));
+	additionalPanels[1] = new FilePanel(style, l10n->Get("igm_1"));
+	additionalPanels[2] = new AbstractMiddlePanel(style, l10n->Get("igm_2"));
+	additionalPanels[3] = new AbstractMiddlePanel(style, l10n->Get("igm_3"));
+	additionalPanels[4] = new AbstractMiddlePanel(style, l10n->Get("igm_4"));
+	for (auto addionalPanel : additionalPanels) {
 		addionalPanel->createWindow();
 	}
 }

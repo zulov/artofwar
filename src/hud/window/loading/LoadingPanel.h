@@ -2,8 +2,7 @@
 #include "hud/window/AbstractWindowPanel.h"
 #include <Urho3D/UI/ProgressBar.h>
 
-class LoadingPanel : public AbstractWindowPanel
-{
+class LoadingPanel : public AbstractWindowPanel {
 public:
 	explicit LoadingPanel(Urho3D::XMLFile* _style);
 	~LoadingPanel();

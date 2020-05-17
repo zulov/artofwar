@@ -9,7 +9,7 @@ class MySprite;
 class TopHudElement {
 public:
 	TopHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style, Urho3D::Texture2D* texture, Urho3D::String styleName="TopButtons");
-	~TopHudElement();
+	~TopHudElement() = default;
 	void hide() const;
 	void show() const;
 	void setText(const Urho3D::String& msg) const;

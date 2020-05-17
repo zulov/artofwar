@@ -39,7 +39,7 @@ private:
 	void createBody() override;
 	void setChecks(int val);
 
-	void ChengeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
+	void ChangeModeButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 	void setNext(int& k, const Urho3D::String& texture, int id, ActionType menuAction, Urho3D::String text);
 
 	void basicUnit(SelectedInfo* selectedInfo);

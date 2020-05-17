@@ -2,9 +2,8 @@
 
 #include <Urho3D/UI/Sprite.h>
 
-class MySprite : public Urho3D::Sprite
-{
-	URHO3D_OBJECT(MySprite, Sprite)
+class MySprite : public Urho3D::Sprite {
+URHO3D_OBJECT(MySprite, Sprite)
 
 	explicit MySprite(Urho3D::Context* context);
 	~MySprite() override;

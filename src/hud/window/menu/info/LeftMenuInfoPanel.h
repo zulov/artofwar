@@ -19,7 +19,7 @@ private:
 	Urho3D::String createMessage(HudData* hudData);
 	void createBody() override;
 
+	Urho3D::Text* text;
 	bool hoverIsOn = false;
 	bool selectedIsOn = false;
-	Urho3D::Text* text;
 };
