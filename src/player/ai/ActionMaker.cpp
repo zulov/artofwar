@@ -8,6 +8,8 @@
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
+#include "commands/action/GeneralActionCommand.h"
+#include "commands/action/GeneralActionType.h"
 #include "database/DatabaseCache.h"
 #include "math/RandGen.h"
 #include "math/VectorUtils.h"
@@ -153,6 +155,29 @@ db_building* ActionMaker::chooseBuilding() {
 db_building_level* ActionMaker::chooseBuildingLevelUp() {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 	auto& result = decide(buildingLevelUpId);
+
+	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
+	std::vector<float> diffs;
+	diffs.reserve(buildings.size());
+	for (auto building : buildings) {
+		auto opt = player->getNextLevelForBuilding(building->id);
+		if (opt.has_value()) {
+			diffs.push_back(dist(center, opt.value()->aiPropsLevelUp));
+		} else {
+			diffs.push_back(1000);
+		}
+	}
+
+	auto inx = randFromThree(diffs);
+	if (inx < 0) {
+		return nullptr;
+	}
+	auto opt = player->getNextLevelForBuilding(buildings[inx]->id);
+	if (opt.has_value()) {
+		std::cout << buildings[inx]->name.CString() << " " << opt.value()->name.CString();
+		return opt.value();
+	}
+	return nullptr;
 }
 
 db_unit* ActionMaker::chooseUnit() {
@@ -262,8 +287,12 @@ bool ActionMaker::createOrder(StatsOutputType order) {
 
 bool ActionMaker::levelUpBuilding() {
 	const auto level = chooseBuildingLevelUp();
-	if (enoughResources(level)) { }
-
+	if (enoughResources(level)) {
+		Game::getActionCenter()->add(
+			new GeneralActionCommand(level->building, GeneralActionType::BUILDING_LEVEL, player->getId()));
+		return true;
+	}
+	return false;
 }
 
 bool ActionMaker::levelUpUnit() {
