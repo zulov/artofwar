@@ -3,6 +3,8 @@
 #include <numeric>
 #include <unordered_set>
 #include <valarray>
+
+#include "AiUtils.h"
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
@@ -23,8 +25,8 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/unitId_w.csv"),
                                           unitBrainPos("Data/ai/unitPos_w.csv"),
-                                          unitOrderId("Data/ai/unitOrderId_w.csv") {
-}
+                                          unitOrderId("Data/ai/unitOrderId_w.csv"),
+                                          buildingLevelUpId("Data/ai/buildId_w.csv") {}
 
 const std::vector<float>& ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -148,24 +150,9 @@ db_building* ActionMaker::chooseBuilding() {
 	return buildings[inx];
 }
 
-int ActionMaker::randFromThree(std::vector<float> diffs) const {
-	int ids[3];
-	float vals[3];
-	float sum = getLowestThree(ids, vals, diffs);
-
-	if (sum <= 0) { return ids[0]; }
-	sum = mirror(vals, sum);
-	const float rand = RandGen::nextRand(RandFloatType::AI, sum);
-	float sumSoFar = 0;
-
-	for (int i = 0; i < 3; ++i) {
-		sumSoFar += vals[i];
-		if (rand <= sumSoFar) {
-			std::cout << "\t" << vals[i] / sum << "%|";
-			return ids[i];
-		}
-	}
-	return -1;
+db_building_level* ActionMaker::chooseBuildingLevelUp() {
+	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+	auto& result = decide(buildingLevelUpId);
 }
 
 db_unit* ActionMaker::chooseUnit() {
@@ -274,7 +261,9 @@ bool ActionMaker::createOrder(StatsOutputType order) {
 }
 
 bool ActionMaker::levelUpBuilding() {
-	return false;
+	const auto level = chooseBuildingLevelUp();
+	if (enoughResources(level)) { }
+
 }
 
 bool ActionMaker::levelUpUnit() {

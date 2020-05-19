@@ -30,20 +30,24 @@ private:
 	bool createBuilding();
 
 	std::optional<short> chooseUpgrade(StatsOutputType order) const;
-	db_building* chooseBuilding();
-	int randFromThree(std::vector<float> diffs) const;
+	
 	float dist(std::valarray<float>& center, db_ai_property* props);
-
+	
+	db_building* chooseBuilding();
+	db_building_level* chooseBuildingLevelUp();
 	db_unit* chooseUnit();
 
 	Player* player;
 	Brain mainBrain;
-	
+
 	Brain buildingBrainId;
 	Brain buildingBrainPos;
-	
+
 	Brain unitBrainId;
 	Brain unitBrainPos;
-	
+
 	Brain unitOrderId;
+
+
+	Brain buildingLevelUpId;
 };

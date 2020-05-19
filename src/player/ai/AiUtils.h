@@ -1,26 +1,23 @@
 #pragma once
-#include "database/db_strcut.h"
+#include "math/RandGen.h"
+#include "math/VectorUtils.h"
 
-inline auto attackLevelValue = [](db_level* level) {
-	return level->aiProps->attack;
-};
+inline int randFromThree(std::vector<float> diffs) {
+	int ids[3];
+	float vals[3];
+	float sum = getLowestThree(ids, vals, diffs);
 
-inline auto econLevelValue = [](db_level* level) {
-	return level->aiProps->econ;
-};
+	if (sum <= 0) { return ids[0]; }
+	sum = mirror(vals, sum);
+	const float rand = RandGen::nextRand(RandFloatType::AI, sum);
+	float sumSoFar = 0;
 
-inline auto defenceLevelValue = [](db_level* level) {
-	return level->aiProps->defence;
-};
-
-inline auto attackLevelUpValue = [](db_level* level) {
-	return level->aiPropsLevelUp->attack;
-};
-
-inline auto econLevelUpValue = [](db_level* level) {
-	return level->aiPropsLevelUp->econ;
-};
-
-inline auto defenceLevelUpValue = [](db_level* level) {
-	return level->aiPropsLevelUp->defence;
-};
+	for (int i = 0; i < 3; ++i) {
+		sumSoFar += vals[i];
+		if (rand <= sumSoFar) {
+			std::cout << "\t" << vals[i] / sum << "%|";
+			return ids[i];
+		}
+	}
+	return -1;
+}

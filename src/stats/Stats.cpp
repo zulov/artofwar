@@ -66,7 +66,13 @@ void Stats::add(GeneralActionCommand* command) {
 	const std::string input = getInputData(player);
 
 	joinAndPush(mainOrder, player, input, getOutput(command));
-	joinAndPush(buildUpgradeId, player, input, getBuildUpgradeIdOutput(command));
+
+	auto opt = Game::getPlayersMan()
+	           ->getPlayer(command->player)->getNextLevelForBuilding(command->id);
+	if (opt.has_value()) {
+		auto& createOutput = opt.value()->aiPropsLevelUp->getParamsNormAsString();
+		joinAndPush(buildUpgradeId, player, input, createOutput);
+	}
 }
 
 void Stats::add(ResourceActionCommand* command) {
@@ -93,8 +99,6 @@ void Stats::add(BuildingActionCommand* command) {
 
 			const std::string inputWithAiProps = input + ";" + createOutput;
 			joinAndPush(ordersUnitCreatePos, player, inputWithAiProps, getCreateUnitPosOutput(building));
-		} else if (command->action == BuildingActionType::UNIT_CREATE) {
-
 		}
 	}
 }
