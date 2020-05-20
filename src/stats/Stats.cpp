@@ -18,6 +18,7 @@
 #include "utils/StringUtils.h"
 
 #define DEFAULT_NORMALIZE_VALUE 10.f
+#define INFLUENCE_DATA_SIZE 9 //TODO hard code
 
 Stats::Stats() {
 	weights[cast(StatsInputType::RESULT)] = 1000;
@@ -36,12 +37,14 @@ Stats::Stats() {
 Stats::~Stats() {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		saveBatch(i, mainOrder, "main", 1);
-		saveBatch(i, ordersBuildingCreateId, "buildId", 1);
-		saveBatch(i, ordersBuildingCreatePos, "buildPos", 1);
-		saveBatch(i, ordersUnitCreateId, "unitId", 1);
-		saveBatch(i, ordersUnitCreatePos, "unitPos", 1);
+		saveBatch(i, buildingCreateId, "buildId", 1);
+		saveBatch(i, buildingCreatePos, "buildPos", 1);
+		saveBatch(i, unitCreateId, "unitId", 1);
+		saveBatch(i, unitCreatePos, "unitPos", 1);
 		saveBatch(i, unitOrderId, "unitOrderId", 1);
-		saveBatch(i, buildUpgradeId, "unitOrderId", 1);
+		saveBatch(i, buildLevelUpId, "unitOrderId", 1);
+		saveBatch(i, unitUpgradeId, "unitUpgradeId", 1);
+		saveBatch(i, unitLevelUpPos, "unitLevelUpPos", 1);
 	}
 	clear();
 	delete []input;
@@ -71,7 +74,7 @@ void Stats::add(GeneralActionCommand* command) {
 	           ->getPlayer(command->player)->getNextLevelForBuilding(command->id);
 	if (opt.has_value()) {
 		auto& createOutput = opt.value()->aiPropsLevelUp->getParamsNormAsString();
-		joinAndPush(buildUpgradeId, player, input, createOutput);
+		joinAndPush(buildLevelUpId, player, input, createOutput);
 	}
 }
 
@@ -84,21 +87,29 @@ void Stats::add(ResourceActionCommand* command) {
 }
 
 void Stats::add(BuildingActionCommand* command) {
-	const auto player = command->player;
-
-	const std::string input = getInputData(player);
+	const std::string input = getInputData(command->player);
 	const std::string basicOutput = getOutput(command);
-	auto& createOutput = Game::getPlayersMan()->getPlayer(command->player)
-	                                          ->getLevelForUnit(command->id)->aiProps->getParamsNormAsString();
+	auto player = Game::getPlayersMan()->getPlayer(command->player);
+
 
 	for (auto building : command->buildings) {
-		joinAndPush(mainOrder, player, input, basicOutput);
+		joinAndPush(mainOrder, command->player, input, basicOutput);
 		if (command->action == BuildingActionType::UNIT_CREATE) {
-
-			joinAndPush(ordersUnitCreateId, player, input, createOutput);
+			auto& createOutput = player->getLevelForUnit(command->id)->aiProps->getParamsNormAsString();
+			joinAndPush(unitCreateId, command->player, input, createOutput);
 
 			const std::string inputWithAiProps = input + ";" + createOutput;
-			joinAndPush(ordersUnitCreatePos, player, inputWithAiProps, getCreateUnitPosOutput(building));
+			joinAndPush(unitCreatePos, command->player, inputWithAiProps, getCreateUnitPosOutput(building));
+		} else if (command->action == BuildingActionType::UNIT_LEVEL) {
+			auto opt = player->getNextLevelForUnit(command->id);
+			if (opt.has_value()) {
+				auto& createOutput = opt.value()->aiPropsLevelUp->getParamsNormAsString();
+				joinAndPush(unitUpgradeId, command->player, input, createOutput);
+
+				const std::string inputWithAiProps = input + ";" + createOutput;
+				joinAndPush(unitLevelUpPos, command->player, inputWithAiProps, getLevelUpUnitPosOutput(building));
+			}
+
 		}
 	}
 }
@@ -124,9 +135,9 @@ void Stats::add(CreationCommand* command) {
 	auto& createOutput = Game::getPlayersMan()
 	                     ->getPlayer(command->player)->getLevelForBuilding(command->id)->aiProps->
 	                     getParamsNormAsString();
-	joinAndPush(ordersBuildingCreateId, player, input, createOutput);
+	joinAndPush(buildingCreateId, player, input, createOutput);
 	const std::string inputWithAiProps = input + ";" + createOutput;
-	joinAndPush(ordersBuildingCreatePos, player, inputWithAiProps, getCreateBuildingPosOutput(command));
+	joinAndPush(buildingCreatePos, player, inputWithAiProps, getCreateBuildingPosOutput(command));
 }
 
 void Stats::joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output) {
@@ -159,15 +170,18 @@ void Stats::save() {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		saveBatch(i, mainOrder, "main", SAVE_BATCH_SIZE);
 
-		saveBatch(i, ordersBuildingCreateId, "buildId", SAVE_BATCH_SIZE_MINI);
-		saveBatch(i, ordersBuildingCreatePos, "buildPos", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, buildingCreateId, "buildId", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, buildingCreatePos, "buildPos", SAVE_BATCH_SIZE_MINI);
 
-		saveBatch(i, ordersUnitCreateId, "unitId", SAVE_BATCH_SIZE_MINI);
-		saveBatch(i, ordersUnitCreatePos, "unitPos", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, unitCreateId, "unitId", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, unitCreatePos, "unitPos", SAVE_BATCH_SIZE_MINI);
 
 		saveBatch(i, unitOrderId, "unitOrderId", SAVE_BATCH_SIZE_MINI);
 
-		saveBatch(i, buildUpgradeId, "buildUpgradeId", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, buildLevelUpId, "buildLevelUpId", SAVE_BATCH_SIZE_MINI);
+
+		saveBatch(i, unitUpgradeId, "unitUpgradeId", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, unitLevelUpPos, "unitLevelUpPos", SAVE_BATCH_SIZE_MINI);
 	}
 }
 
@@ -215,25 +229,32 @@ void Stats::clear() {
 }
 
 std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
-	float output[9]; //TODO hardcode
+	float output[INFLUENCE_DATA_SIZE];
 
-	std::fill_n(output, 9, 0.f); //TODO hardcode
+	std::fill_n(output, INFLUENCE_DATA_SIZE, 0.f);
 
 	Game::getEnvironment()->writeInInfluenceDataAt(output, command->player, command->position);
 
-	return join(output, output + 9); //TODO hardcode
+	return join(output, output + INFLUENCE_DATA_SIZE);
 }
 
 std::string Stats::getCreateUnitPosOutput(Building* building) const {
-	float output[9 + 1]; //TODO hardcode
+	float output[INFLUENCE_DATA_SIZE + 1];
 
-	std::fill_n(output, 9 + 1, 0.f); //TODO hardcode
+	std::fill_n(output, INFLUENCE_DATA_SIZE + 1, 0.f);
 	auto buildingPos = building->getPosition();
 
 	Game::getEnvironment()->writeInInfluenceDataAt(output, building->getPlayer(), {buildingPos.x_, buildingPos.z_});
 
-	output[9] = building->getQueue()->getSize() / DEFAULT_NORMALIZE_VALUE; //TODO hardcode
-	return join(output, output + 9 + 1); //TODO hardcode
+	output[INFLUENCE_DATA_SIZE] = building->getQueue()->getSize() / DEFAULT_NORMALIZE_VALUE;
+	return join(output, output + INFLUENCE_DATA_SIZE + 1);
+}
+
+std::string Stats::getLevelUpUnitPosOutput(Building* building) const {
+	auto queueSize = building->getQueue()->getSize() / DEFAULT_NORMALIZE_VALUE;
+	std::ostringstream ss;
+	ss << queueSize;
+	return std::string(ss.str());
 }
 
 std::string Stats::getOutput(CreationCommand* command) const {

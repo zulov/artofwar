@@ -28,7 +28,11 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           unitBrainId("Data/ai/unitId_w.csv"),
                                           unitBrainPos("Data/ai/unitPos_w.csv"),
                                           unitOrderId("Data/ai/unitOrderId_w.csv"),
-                                          buildingLevelUpId("Data/ai/buildId_w.csv") {}
+
+                                          buildingLevelUpId("Data/ai/buildId_w.csv"),
+                                          unitLevelUpId("Data/ai/buildId_w.csv"),
+                                          unitLevelUpPos("Data/ai/buildId_w.csv") {
+}
 
 const std::vector<float>& ActionMaker::decide(Brain& brain) const {
 	const auto data = Game::getStats()->getInputFor(player->getId());
@@ -93,44 +97,6 @@ bool ActionMaker::createUnit() {
 		}
 	}
 	return false;
-}
-
-std::optional<short> ActionMaker::chooseUpgrade(StatsOutputType order) const {
-	//TODO perf tu jakich cahce
-	auto db = Game::getDatabase();
-	auto nation = db->getNation(player->getNation());
-	std::vector<db_unit_level*> unitsLevels;
-	for (auto unit : nation->units) {
-		// for (auto unitUpgrade : *db->getUnitUpgrades(unit->id)) {
-		// 	unitUpgrade->
-		// }
-
-		auto level = player->getNextLevelForUnit(unit->id);
-		if (level.has_value()) {
-			unitsLevels.push_back(level.value());
-		}
-
-	}
-	std::vector<db_building_level*> buildingLevels;
-
-	for (auto building : nation->buildings) {
-		auto level = player->getNextLevelForBuilding(building->id);
-		if (level.has_value()) {
-			buildingLevels.push_back(level.value());
-		}
-	}
-
-	switch (order) {
-	case StatsOutputType::LEVEL_UP_BUILDING:
-		if (!unitsLevels.empty()) {
-			return unitsLevels.at(0)->unit;
-		}
-		break;
-	case StatsOutputType::LEVEL_UP_UNIT:
-		break;
-	}
-
-	return {};
 }
 
 db_building* ActionMaker::chooseBuilding() {
@@ -199,6 +165,34 @@ db_unit* ActionMaker::chooseUnit() {
 	return units[inx];
 }
 
+db_unit_level* ActionMaker::chooseUnitLevelUp() {
+	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
+	auto& result = decide(unitLevelUpId);
+
+	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
+	std::vector<float> diffs;
+	diffs.reserve(units.size());
+	for (auto unit : units) {
+		auto opt = player->getNextLevelForUnit(unit->id);
+		if (opt.has_value()) {
+			diffs.push_back(dist(center, opt.value()->aiPropsLevelUp));
+		} else {
+			diffs.push_back(1000);
+		}
+	}
+
+	auto inx = randFromThree(diffs);
+	if (inx < 0) {
+		return nullptr;
+	}
+	auto opt = player->getNextLevelForUnit(units[inx]->id);
+	if (opt.has_value()) {
+		std::cout << units[inx]->name.CString() << " " << opt.value()->name.CString();
+		return opt.value();
+	}
+	return nullptr;
+}
+
 float ActionMaker::dist(std::valarray<float>& center, db_ai_property* props) {
 	std::valarray<float> aiAsArray(props->paramsNorm,AI_PROPS_SIZE); //TODO get as val array odrazu
 	auto diff = aiAsArray - center;
@@ -206,31 +200,31 @@ float ActionMaker::dist(std::valarray<float>& center, db_ai_property* props) {
 	return sq.sum();
 }
 
-const std::vector<float>& ActionMaker::inputWithParamsDecide(Brain& brain, const db_level* level) const {
+const std::vector<float>& ActionMaker::inputWithParamsDecide(Brain& brain, const db_ai_property* ai_property) const {
 	float input[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
 	std::fill_n(input, magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE, 0.f);
 
 	const auto basicInput = Game::getStats()->getInputFor(player->getId());
 	std::copy(basicInput, basicInput + magic_enum::enum_count<StatsInputType>() * 2, input);
 
-	const auto aiInput = level->aiProps->paramsNorm;
+	const auto aiInput = ai_property->paramsNorm;
 	std::copy(aiInput, aiInput + AI_PROPS_SIZE, input + magic_enum::enum_count<StatsInputType>() * 2);
 
 	return brain.decide(input);
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
-	auto& result = inputWithParamsDecide(buildingBrainPos, player->getLevelForBuilding(building->id));
+	auto& result = inputWithParamsDecide(buildingBrainPos, player->getLevelForBuilding(building->id)->aiProps);
 
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
 
-std::vector<Building*> ActionMaker::getBuildingsCanDeploy(db_unit* unit, std::vector<db_building*>& buildings) const {
+std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId, std::vector<db_building*>& buildings) const {
 	std::vector<short> buildingIdsThatCanDeploy;
 	for (auto building : buildings) {
 		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
 
-		if (std::find(unitIds->begin(), unitIds->end(), unit->id) != unitIds->end()) {
+		if (std::find(unitIds->begin(), unitIds->end(), unitId) != unitIds->end()) {
 			buildingIdsThatCanDeploy.push_back(building->id);
 		}
 	}
@@ -244,10 +238,10 @@ std::vector<Building*> ActionMaker::getBuildingsCanDeploy(db_unit* unit, std::ve
 
 Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit, buildings);
+	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id, buildings);
 	if (allPossible.empty()) { return nullptr; }
 
-	auto& result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id));
+	auto& result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id)->aiProps);
 	//TODO improve last parameter ignored queue size
 	auto centers = Game::getEnvironment()->getAreas(player->getId(), result, 10);
 	float closestVal = 99999;
@@ -267,6 +261,19 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	}
 
 	return closest;
+}
+
+Building* ActionMaker::getBuildingToLevelUpUnit(db_unit_level* level) {
+	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
+	std::vector<Building*> allPossible = getBuildingsCanDeploy(level->unit, buildings);
+	if (allPossible.empty()) { return nullptr; }
+	auto& result = inputWithParamsDecide(unitLevelUpPos, level->aiPropsLevelUp);
+	float val = result[0];
+	float closestVal = 99999;
+	Building* closest = allPossible[0];
+	for (auto possible : allPossible) {
+		
+	}
 }
 
 bool ActionMaker::createOrder(StatsOutputType order) {
@@ -296,13 +303,14 @@ bool ActionMaker::levelUpBuilding() {
 }
 
 bool ActionMaker::levelUpUnit() {
+	db_unit_level* level = chooseUnitLevelUp();
+	if (enoughResources(level)) {
+		Building* building = getBuildingToLevelUpUnit(level);
+		if (building) {
+			Game::getActionCenter()->add(
+				new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL, level->unit, player->getId()));
+			return true;
+		}
+	}
 	return false;
-	// auto opt = chooseUnitUpgrade(order);
-	// if (opt.has_value()) {
-	// 	short unitId = opt.value(); //TODO lub buildingID? rodzieliæ to
-	// 	Building* building = bestBuildingToUpgrade(player->getId(), unitId);
-	//
-	// 	Game::getActionCenter()->add(
-	// 		new BuildingActionCommand(building, BuildingActionType::UNIT_LEVEL, unitId, player->getId()));
-	// }	
 }

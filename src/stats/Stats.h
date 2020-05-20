@@ -35,7 +35,6 @@ public:
 
 	void add(CreationCommand* command);
 	void save();
-	void addBuildLevel(short id, char playerId);
 private:
 	void update(short id);
 	void clear();
@@ -43,6 +42,7 @@ private:
 	std::string getOutput(CreationCommand* command) const;
 	std::string getCreateBuildingPosOutput(CreationCommand* command) const;
 	std::string getCreateUnitPosOutput(Building* building) const;
+	std::string getLevelUpUnitPosOutput(Building* building)const;
 	std::string getOutput(UpgradeCommand* command) const;
 
 	std::string getOutput(UnitActionCommand* command) const;
@@ -60,13 +60,15 @@ private:
 
 	std::vector<std::string> mainOrder[MAX_PLAYERS];
 
-	std::vector<std::string> ordersBuildingCreateId[MAX_PLAYERS];
-	std::vector<std::string> ordersBuildingCreatePos[MAX_PLAYERS];
+	std::vector<std::string> buildingCreateId[MAX_PLAYERS];
+	std::vector<std::string> buildingCreatePos[MAX_PLAYERS];
 
-	std::vector<std::string> ordersUnitCreateId[MAX_PLAYERS];
-	std::vector<std::string> ordersUnitCreatePos[MAX_PLAYERS];
+	std::vector<std::string> unitCreateId[MAX_PLAYERS];
+	std::vector<std::string> unitCreatePos[MAX_PLAYERS];
 
 	std::vector<std::string> unitOrderId[MAX_PLAYERS];
 
-	std::vector<std::string> buildUpgradeId[MAX_PLAYERS];
+	std::vector<std::string> buildLevelUpId[MAX_PLAYERS];
+	std::vector<std::string> unitUpgradeId[MAX_PLAYERS];
+	std::vector<std::string> unitLevelUpPos[MAX_PLAYERS];
 };
