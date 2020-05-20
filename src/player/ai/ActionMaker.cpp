@@ -251,7 +251,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 		Urho3D::Vector2 pos = {possible->getPosition().x_, possible->getPosition().z_};
 		for (auto& center : centers) {
 			auto diff = pos - center;
-			diff = diff * diff;
+
 			auto val = diff.LengthSquared();
 			if (val < closestVal) {
 				closest = possible;
@@ -268,12 +268,18 @@ Building* ActionMaker::getBuildingToLevelUpUnit(db_unit_level* level) {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(level->unit, buildings);
 	if (allPossible.empty()) { return nullptr; }
 	auto& result = inputWithParamsDecide(unitLevelUpPos, level->aiPropsLevelUp);
-	float val = result[0];
+	float val = result[0] * 10.f; //DEFAULT_NORMALIZE_VALUE
 	float closestVal = 99999;
 	Building* closest = allPossible[0];
 	for (auto possible : allPossible) {
-		
+		auto diff = val - possible->getQueue()->getSize();
+		diff = diff * diff;
+		if (diff < closestVal) {
+			closest = possible;
+			closestVal = diff;
+		}
 	}
+	return closest;
 }
 
 bool ActionMaker::createOrder(StatsOutputType order) {
