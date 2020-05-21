@@ -29,9 +29,9 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           unitBrainPos("Data/ai/unitPos_w.csv"),
                                           unitOrderId("Data/ai/unitOrderId_w.csv"),
 
-                                          buildingLevelUpId("Data/ai/buildId_w.csv"),
-                                          unitLevelUpId("Data/ai/buildId_w.csv"),
-                                          unitLevelUpPos("Data/ai/buildId_w.csv") {
+                                          buildingLevelUpId("Data/ai/buildLevelUpId_w.csv"),
+                                          unitLevelUpId("Data/ai/unitUpgradeId_w.csv"),
+                                          unitLevelUpPos("Data/ai/unitLevelUpPos_w.csv") {
 }
 
 const std::vector<float>& ActionMaker::decide(Brain& brain) const {

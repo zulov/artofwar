@@ -35,17 +35,7 @@ Stats::Stats() {
 }
 
 Stats::~Stats() {
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		saveBatch(i, mainOrder, "main", 1);
-		saveBatch(i, buildingCreateId, "buildId", 1);
-		saveBatch(i, buildingCreatePos, "buildPos", 1);
-		saveBatch(i, unitCreateId, "unitId", 1);
-		saveBatch(i, unitCreatePos, "unitPos", 1);
-		saveBatch(i, unitOrderId, "unitOrderId", 1);
-		saveBatch(i, buildLevelUpId, "unitOrderId", 1);
-		saveBatch(i, unitUpgradeId, "unitUpgradeId", 1);
-		saveBatch(i, unitLevelUpPos, "unitLevelUpPos", 1);
-	}
+	saveAll(1, 1);
 	clear();
 	delete []input;
 }
@@ -166,23 +156,27 @@ void Stats::saveBatch(int i, std::vector<std::string>* array, std::string name, 
 	}
 }
 
-void Stats::save() {
+void Stats::saveAll(int big, int small) {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		saveBatch(i, mainOrder, "main", SAVE_BATCH_SIZE);
+		saveBatch(i, mainOrder, "main", big);
 
-		saveBatch(i, buildingCreateId, "buildId", SAVE_BATCH_SIZE_MINI);
-		saveBatch(i, buildingCreatePos, "buildPos", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, buildingCreateId, "buildId", small);
+		saveBatch(i, buildingCreatePos, "buildPos", small);
 
-		saveBatch(i, unitCreateId, "unitId", SAVE_BATCH_SIZE_MINI);
-		saveBatch(i, unitCreatePos, "unitPos", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, unitCreateId, "unitId", small);
+		saveBatch(i, unitCreatePos, "unitPos", small);
 
-		saveBatch(i, unitOrderId, "unitOrderId", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, unitOrderId, "unitOrderId", small);
 
-		saveBatch(i, buildLevelUpId, "buildLevelUpId", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, buildLevelUpId, "buildLevelUpId", small);
 
-		saveBatch(i, unitUpgradeId, "unitUpgradeId", SAVE_BATCH_SIZE_MINI);
-		saveBatch(i, unitLevelUpPos, "unitLevelUpPos", SAVE_BATCH_SIZE_MINI);
+		saveBatch(i, unitUpgradeId, "unitUpgradeId", small);
+		saveBatch(i, unitLevelUpPos, "unitLevelUpPos", small);
 	}
+}
+
+void Stats::save() {
+	saveAll(SAVE_BATCH_SIZE, SAVE_BATCH_SIZE_MINI);
 }
 
 void Stats::update(short id) {

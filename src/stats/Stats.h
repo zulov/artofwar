@@ -53,6 +53,7 @@ private:
 	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output);
 	void save(int i, std::vector<std::string>* array, std::string fileName) const;
 	void saveBatch(int i, std::vector<std::string>* array, std::string name, int size) const;
+	void saveAll(int big, int small);
 
 	float* input;
 	std::vector<float*> statsPerPlayer;
