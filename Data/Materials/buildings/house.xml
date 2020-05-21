@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <material>
 	<technique name="Techniques/Diff.xml" />
-	<texture name="Textures/house_col_2048.tga" unit="diffuse" />
+	<texture name="Textures/house_col_1024.png" unit="diffuse" />
 	<parameter name="MatDiffColor" value="1 1 1 1" />
 </material>
