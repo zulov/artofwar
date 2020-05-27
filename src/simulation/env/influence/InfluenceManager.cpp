@@ -223,11 +223,13 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 	return ci;
 }
 
-void InfluenceManager::writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos) {
+std::vector<float>& InfluenceManager::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
+	dataFromPos.clear();
 	auto& maps = mapsForAiPerPlayer[player];
-	for (char i = 0; i < maps.size(); ++i) {
-		data[i] = maps[i]->getValueAsPercent(pos);
+	for (auto map : maps) {
+		dataFromPos.push_back(map->getValueAsPercent(pos));
 	}
+	return dataFromPos;
 }
 
 std::vector<int> InfluenceManager::getIndexesIterative(const std::vector<float>& result, float tolerance, int min,

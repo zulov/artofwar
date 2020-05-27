@@ -49,7 +49,7 @@ void Stats::init() {
 }
 
 std::string Stats::getInputData(char player) {
-	const auto input = getInputFor(player);
+	const auto input = getBasicInput(player);
 	return join(input, input + magic_enum::enum_count<StatsInputType>() * 2);
 }
 
@@ -191,7 +191,7 @@ void Stats::update(short id) {
 	data[cast(StatsInputType::UNITS)] = player->getUnitsNumber();
 	data[cast(StatsInputType::BUILDINGS)] = player->getBuildingsNumber();
 	data[cast(StatsInputType::WORKERS)] = player->getWorkersNumber();
-	
+
 	std::transform(data, data + magic_enum::enum_count<StatsInputType>(), weights, data, std::divides<>());
 }
 
@@ -200,7 +200,7 @@ int Stats::getScoreFor(short id) const {
 	return Game::getPlayersMan()->getPlayer(id)->getScore();
 }
 
-float* Stats::getInputFor(short id) {
+float* Stats::getBasicInput(short id) {
 	char idEnemy; //TODO do it better
 	if (id == 0) {
 		idEnemy = 1;
@@ -222,13 +222,9 @@ void Stats::clear() {
 }
 
 std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
-	float output[INFLUENCE_DATA_SIZE];
+	auto& data = Game::getEnvironment()->getInfluenceDataAt(command->player, command->position);
 
-	std::fill_n(output, INFLUENCE_DATA_SIZE, 0.f);
-
-	Game::getEnvironment()->writeInInfluenceDataAt(output, command->player, command->position);
-
-	return join(output, output + INFLUENCE_DATA_SIZE);
+	return join(data.begin(), data.end());
 }
 
 std::string Stats::getCreateUnitPosOutput(Building* building) const {
@@ -237,7 +233,8 @@ std::string Stats::getCreateUnitPosOutput(Building* building) const {
 	std::fill_n(output, INFLUENCE_DATA_SIZE + 1, 0.f);
 	auto buildingPos = building->getPosition();
 
-	Game::getEnvironment()->writeInInfluenceDataAt(output, building->getPlayer(), {buildingPos.x_, buildingPos.z_});
+	auto& data = Game::getEnvironment()->getInfluenceDataAt(building->getPlayer(), {buildingPos.x_, buildingPos.z_});
+	std::copy(data.begin(), data.end(), output);
 
 	output[INFLUENCE_DATA_SIZE] = building->getQueue()->getSize() / DEFAULT_NORMALIZE_VALUE;
 	return join(output, output + INFLUENCE_DATA_SIZE + 1);

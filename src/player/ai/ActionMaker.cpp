@@ -35,7 +35,7 @@ ActionMaker::ActionMaker(Player* player): player(player),
 }
 
 const std::vector<float>& ActionMaker::decideFromBasic(Brain& brain) const {
-	return brain.decide(Game::getStats()->getInputFor(player->getId()));
+	return brain.decide(Game::getStats()->getBasicInput(player->getId()));
 }
 
 void ActionMaker::action() {
@@ -201,7 +201,7 @@ const std::vector<float>& ActionMaker::inputWithParamsDecide(Brain& brain, const
 	float input[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
 	std::fill_n(input, magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE, 0.f);
 
-	const auto basicInput = Game::getStats()->getInputFor(player->getId());
+	const auto basicInput = Game::getStats()->getBasicInput(player->getId());
 	std::copy(basicInput, basicInput + magic_enum::enum_count<StatsInputType>() * 2, input);
 
 	const auto aiInput = ai_property->paramsNorm;

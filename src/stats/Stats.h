@@ -24,7 +24,7 @@ public:
 	Stats();
 	~Stats();
 	int getScoreFor(short id) const;
-	float* getInputFor(short id);
+	float* getBasicInput(short id);
 	void init();
 	std::string getInputData(char player);
 

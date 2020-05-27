@@ -302,8 +302,8 @@ const std::vector<char>& Environment::getCloseTabIndexes(int center) const {
 	return mainGrid.getCloseTabIndexes(center);
 }
 
-void Environment::writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos) {
-	influenceManager.writeInInfluenceDataAt(data, player, pos);
+std::vector<float>& Environment::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
+	return influenceManager.getInfluenceDataAt(player, pos);
 }
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,

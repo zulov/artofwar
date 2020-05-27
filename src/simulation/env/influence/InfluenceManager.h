@@ -33,7 +33,7 @@ public:
 
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
 	                             int activePlayer);
-	void writeInInfluenceDataAt(float* data, char player, const Urho3D::Vector2& pos);
+	std::vector<float>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
 	std::vector<int> getIndexesIterative(const std::vector<float>& result, float tolerance, int min,
 	                            std::vector<InfluenceMapFloat*>& maps) const;
 	std::vector<int> getIndexes(const std::vector<float>& result, float tolerance,
@@ -65,5 +65,6 @@ private:
 
 	InfluenceType debugType = InfluenceType::UNITS_INFLUENCE_PER_PLAYER;
 	content_info* ci;
+	std::vector<float> dataFromPos;
 	short currentDebugBatch = 0;
 };
