@@ -31,9 +31,11 @@ public:
 	void add(GeneralActionCommand* command);
 	void add(ResourceActionCommand* command);
 	void add(BuildingActionCommand* command);
+	
 	void add(UnitActionCommand* command);
 
 	void add(CreationCommand* command);
+	
 	void save();
 private:
 	void update(short id);
@@ -49,6 +51,8 @@ private:
 	std::string getOutput(ResourceActionCommand* command) const;
 	std::string getOutput(BuildingActionCommand* command) const;
 	std::string getOutput(GeneralActionCommand* command) const;
+	
+	std::string getOutput(StatsOutputType stat) const;
 
 	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output);
 	void save(int i, std::vector<std::string>* array, std::string fileName) const;

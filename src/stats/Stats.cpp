@@ -99,7 +99,6 @@ void Stats::add(BuildingActionCommand* command) {
 				const std::string inputWithAiProps = input + ";" + createOutput;
 				joinAndPush(unitLevelUpPos, command->player, inputWithAiProps, getLevelUpUnitPosOutput(building));
 			}
-
 		}
 	}
 }
@@ -122,9 +121,8 @@ void Stats::add(CreationCommand* command) {
 	const std::string input = getInputData(player);
 
 	joinAndPush(mainOrder, player, input, getOutput(command));
-	auto& createOutput = Game::getPlayersMan()
-	                     ->getPlayer(command->player)->getLevelForBuilding(command->id)->aiProps->
-	                     getParamsNormAsString();
+	auto& createOutput = Game::getPlayersMan()->getPlayer(command->player)
+	                                          ->getLevelForBuilding(command->id)->aiProps->getParamsNormAsString();
 	joinAndPush(buildingCreateId, player, input, createOutput);
 	const std::string inputWithAiProps = input + ";" + createOutput;
 	joinAndPush(buildingCreatePos, player, inputWithAiProps, getCreateBuildingPosOutput(command));
@@ -193,6 +191,7 @@ void Stats::update(short id) {
 	data[cast(StatsInputType::UNITS)] = player->getUnitsNumber();
 	data[cast(StatsInputType::BUILDINGS)] = player->getBuildingsNumber();
 	data[cast(StatsInputType::WORKERS)] = player->getWorkersNumber();
+	
 	std::transform(data, data + magic_enum::enum_count<StatsInputType>(), weights, data, std::divides<>());
 }
 
@@ -252,31 +251,56 @@ std::string Stats::getLevelUpUnitPosOutput(Building* building) const {
 }
 
 std::string Stats::getOutput(CreationCommand* command) const {
-	float output[magic_enum::enum_count<StatsOutputType>()];
-	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
-
-	output[cast(StatsOutputType::CREATE_BUILDING)] = 1;
-
-	return join(output, output + magic_enum::enum_count<StatsOutputType>());
+	return getOutput(StatsOutputType::CREATE_BUILDING);
 }
 
 std::string Stats::getOutput(UpgradeCommand* command) const {
-	float output[magic_enum::enum_count<StatsOutputType>()];
-	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
-
 	switch (command->type) {
-
 	case QueueActionType::UNIT_LEVEL:
-		output[cast(StatsOutputType::LEVEL_UP_UNIT)] = 1;
-		break;
+		return getOutput({StatsOutputType::LEVEL_UP_UNIT});
 	case QueueActionType::BUILDING_LEVEL:
-		output[cast(StatsOutputType::LEVEL_UP_BUILDING)] = 1;
+		return getOutput({StatsOutputType::LEVEL_UP_BUILDING});
+	default: ;
+	}
+}
+
+std::string Stats::getOutput(ResourceActionCommand* command) const {
+	//TODO
+	switch (command->action) {
+	case ResourceActionType::COLLECT:
+		return getOutput(StatsOutputType::IDLE);
+	case ResourceActionType::CANCEL:
+		return getOutput(StatsOutputType::IDLE);
+	default: ;
+	}
+}
+
+std::string Stats::getOutput(BuildingActionCommand* command) const {
+	switch (command->action) {
+	case BuildingActionType::UNIT_CREATE:
+		return getOutput(StatsOutputType::CREATE_UNIT);
+	case BuildingActionType::UNIT_LEVEL:
+		return getOutput(StatsOutputType::LEVEL_UP_UNIT);
+	case BuildingActionType::UNIT_UPGRADE:
+		//TODO dodac kiedyś
 		break;
 	default: ;
 	}
+}
+
+std::string Stats::getOutput(GeneralActionCommand* command) const {
+	return getOutput(StatsOutputType::LEVEL_UP_BUILDING);
+}
+
+std::string Stats::getOutput(StatsOutputType stat) const {
+	float output[magic_enum::enum_count<StatsOutputType>()];
+	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
+
+	output[cast(stat)] = 1;
 
 	return join(output, output + magic_enum::enum_count<StatsOutputType>());
 }
+
 
 std::string Stats::getOutput(UnitActionCommand* command) const {
 	float output[magic_enum::enum_count<StatsOrderOutputType>()];
@@ -311,43 +335,4 @@ std::string Stats::getOutput(UnitActionCommand* command) const {
 	}
 
 	return join(output, output + magic_enum::enum_count<StatsOrderOutputType>());
-}
-
-std::string Stats::getOutput(ResourceActionCommand* command) const {
-	//TODO
-	float output[magic_enum::enum_count<StatsOutputType>()];
-	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
-	switch (command->action) {
-	case ResourceActionType::COLLECT: break;
-	case ResourceActionType::CANCEL: break;
-	default: ;
-	}
-	return join(output, output + magic_enum::enum_count<StatsOutputType>());
-}
-
-std::string Stats::getOutput(BuildingActionCommand* command) const {
-	float output[magic_enum::enum_count<StatsOutputType>()];
-	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
-	switch (command->action) {
-	case BuildingActionType::UNIT_CREATE:
-		output[cast(StatsOutputType::CREATE_UNIT)] = 1;
-		break;
-	case BuildingActionType::UNIT_LEVEL:
-		output[cast(StatsOutputType::LEVEL_UP_UNIT)] = 1;
-		break;
-	case BuildingActionType::UNIT_UPGRADE:
-		//TODO dodac kieyś
-		break;
-	default: ;
-	}
-	return join(output, output + magic_enum::enum_count<StatsOutputType>());
-}
-
-std::string Stats::getOutput(GeneralActionCommand* command) const {
-	float output[magic_enum::enum_count<StatsOutputType>()];
-	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
-
-	output[cast(StatsOutputType::LEVEL_UP_BUILDING)] = 1;
-
-	return join(output, output + magic_enum::enum_count<StatsOutputType>());
 }

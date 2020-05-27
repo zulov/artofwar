@@ -493,6 +493,7 @@
     <ClInclude Include="src\utils\StringUtils.h" />
     <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
     <ClInclude Include="src\commands\action\GeneralActionType.h" />
+    <ClInclude Include="src\player\ai\ActionMakerLogger.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

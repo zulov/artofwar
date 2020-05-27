@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include <valarray>
 
+#include "ActionMakerLogger.h"
 #include "AiUtils.h"
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
@@ -19,7 +20,6 @@
 #include "stats/Stats.h"
 #include "stats/StatsEnums.h"
 
-using namespace magic_enum::ostream_operators;
 
 ActionMaker::ActionMaker(Player* player): player(player),
                                           mainBrain("Data/ai/main_w.csv"),
@@ -34,23 +34,20 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           unitLevelUpPos("Data/ai/unitLevelUpPos_w.csv") {
 }
 
-const std::vector<float>& ActionMaker::decide(Brain& brain) const {
-	const auto data = Game::getStats()->getInputFor(player->getId());
-
-	return brain.decide(data);
+const std::vector<float>& ActionMaker::decideFromBasic(Brain& brain) const {
+	return brain.decide(Game::getStats()->getInputFor(player->getId()));
 }
 
 void ActionMaker::action() {
 	int ids[3];
 	float vals[3];
-	float max = getBestThree(ids, vals, decide(mainBrain));
+	float max = getBestThree(ids, vals, decideFromBasic(mainBrain));
 
 	if (max <= 0) {
 		return;
 	}
-	for (int i = 0; i < 3; ++i) {
-		std::cout << static_cast<StatsOutputType>(ids[i]) << "-" << (vals[i] / max * 100) << "%, ";
-	}
+
+	logThree(ids, vals, max);
 
 	float val = RandGen::nextRand(RandFloatType::AI, max);
 	float sum = 0;
@@ -58,13 +55,8 @@ void ActionMaker::action() {
 	for (int i = 0; i < 3; ++i) {
 		sum += vals[i];
 		if (val <= sum) {
-			std::cout << " -> " << static_cast<StatsOutputType>(ids[i]);
-			auto result = createOrder(static_cast<StatsOutputType>(ids[i]));
-			if (result) {
-				std::cout << "(DONE)" << std::endl;
-			} else {
-				std::cout << std::endl;
-			}
+			const auto result = createOrder(static_cast<StatsOutputType>(ids[i]));
+			logResult(ids, i, result);
 			return;
 		}
 	}
@@ -101,7 +93,7 @@ bool ActionMaker::createUnit() {
 
 db_building* ActionMaker::chooseBuilding() {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	auto& result = decide(buildingBrainId);
+	auto& result = decideFromBasic(buildingBrainId);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
@@ -114,13 +106,14 @@ db_building* ActionMaker::chooseBuilding() {
 	if (inx < 0) {
 		return nullptr;
 	}
-	std::cout << buildings[inx]->name.CString();
-	return buildings[inx];
+	const auto building = buildings[inx];	
+	logBuilding(building);
+	return building;
 }
 
 db_building_level* ActionMaker::chooseBuildingLevelUp() {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	auto& result = decide(buildingLevelUpId);
+	auto& result = decideFromBasic(buildingLevelUpId);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
@@ -138,9 +131,10 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 	if (inx < 0) {
 		return nullptr;
 	}
-	auto opt = player->getNextLevelForBuilding(buildings[inx]->id);
+	const auto building = buildings[inx];	
+	auto opt = player->getNextLevelForBuilding(building->id);
 	if (opt.has_value()) {
-		std::cout << buildings[inx]->name.CString() << " " << opt.value()->name.CString();
+		logBuildingLevel(building, opt);
 		return opt.value();
 	}
 	return nullptr;
@@ -148,7 +142,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 
 db_unit* ActionMaker::chooseUnit() {
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	auto& result = decide(unitBrainId);
+	auto& result = decideFromBasic(unitBrainId);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
@@ -161,13 +155,15 @@ db_unit* ActionMaker::chooseUnit() {
 	if (inx < 0) {
 		return nullptr;
 	}
-	std::cout << units[inx]->name.CString();
-	return units[inx];
+	auto unit = units[inx];
+	
+	logUnit(unit);
+	return unit;
 }
 
 db_unit_level* ActionMaker::chooseUnitLevelUp() {
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	auto& result = decide(unitLevelUpId);
+	auto& result = decideFromBasic(unitLevelUpId);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
@@ -185,9 +181,10 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 	if (inx < 0) {
 		return nullptr;
 	}
-	auto opt = player->getNextLevelForUnit(units[inx]->id);
+	auto unit = units[inx];
+	auto opt = player->getNextLevelForUnit(unit->id);
 	if (opt.has_value()) {
-		std::cout << units[inx]->name.CString() << " " << opt.value()->name.CString();
+		logUnitLevel(unit, opt);
 		return opt.value();
 	}
 	return nullptr;
@@ -268,7 +265,7 @@ Building* ActionMaker::getBuildingToLevelUpUnit(db_unit_level* level) {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(level->unit, buildings);
 	if (allPossible.empty()) { return nullptr; }
 	auto& result = inputWithParamsDecide(unitLevelUpPos, level->aiPropsLevelUp);
-	float val = result[0] * 10.f; //DEFAULT_NORMALIZE_VALUE
+	float val = result[0] * 10.f; //TODO hard code DEFAULT_NORMALIZE_VALUE
 	float closestVal = 99999;
 	Building* closest = allPossible[0];
 	for (auto possible : allPossible) {

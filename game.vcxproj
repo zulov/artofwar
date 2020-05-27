@@ -296,6 +296,7 @@
     <ClInclude Include="src\math\RandType.h" />
     <ClInclude Include="src\objects\unit\order\OrderUtils.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />
+    <ClInclude Include="src\player\ai\ActionMakerLogger.h" />
     <ClInclude Include="src\player\ai\AiInfluenceType.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\simulation\env\CloseIndexProvider.h" />

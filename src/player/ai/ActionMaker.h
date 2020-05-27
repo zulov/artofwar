@@ -18,7 +18,7 @@ public:
 	void action();
 	bool enoughResources(db_with_cost* withCosts) const;
 private:
-	const std::vector<float>& decide(Brain& brain) const;
+	const std::vector<float>& decideFromBasic(Brain& brain) const;
 	bool createOrder(StatsOutputType order);
 	
 	bool levelUpUnit();
