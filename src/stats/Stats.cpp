@@ -29,8 +29,15 @@ Stats::Stats() {
 	weights[cast(StatsInputType::ATTACK)] = 1000;
 	weights[cast(StatsInputType::DEFENCE)] = 1000;
 	weights[cast(StatsInputType::BASE_TO_ENEMY)] = 1000;
-	weights[cast(StatsInputType::UNITS)] = 1000;
-	weights[cast(StatsInputType::BUILDINGS)] = 100;
+	
+	weights[cast(StatsInputType::UNITS_ATTACK)] = 1000;
+	weights[cast(StatsInputType::UNITS_DEFENCE)] = 1000;
+	weights[cast(StatsInputType::UNITS_ECONOMY)] = 1000;
+	
+	weights[cast(StatsInputType::BUILDINGS_ATTACK)] = 100;
+	weights[cast(StatsInputType::BUILDINGS_DEFENCE)] = 100;
+	weights[cast(StatsInputType::BUILDINGS_ECONOMY)] = 100;
+	
 	weights[cast(StatsInputType::WORKERS)] = 100;
 }
 
@@ -188,8 +195,15 @@ void Stats::update(short id) {
 	data[cast(StatsInputType::ATTACK)] = player->getAttackScore();
 	data[cast(StatsInputType::DEFENCE)] = player->getDefenceScore();
 	data[cast(StatsInputType::BASE_TO_ENEMY)] = Game::getEnvironment()->getDistToEnemy(player); //TODO ale do którego
-	data[cast(StatsInputType::UNITS)] = player->getUnitsNumber();
-	data[cast(StatsInputType::BUILDINGS)] = player->getBuildingsNumber();
+	
+	data[cast(StatsInputType::UNITS_ATTACK)]  = player->getUnitsVal(ValueType::ATTACK);
+	data[cast(StatsInputType::UNITS_DEFENCE)] = player->getUnitsVal(ValueType::DEFENCE);
+	data[cast(StatsInputType::UNITS_ECONOMY)] = player->getUnitsVal(ValueType::ECON);
+	
+	data[cast(StatsInputType::BUILDINGS_ATTACK)] = player->getBuildingsVal(ValueType::ATTACK);
+	data[cast(StatsInputType::BUILDINGS_DEFENCE)] = player->getBuildingsVal(ValueType::DEFENCE);
+	data[cast(StatsInputType::BUILDINGS_ECONOMY)] = player->getBuildingsVal(ValueType::ECON);
+	
 	data[cast(StatsInputType::WORKERS)] = player->getWorkersNumber();
 
 	std::transform(data, data + magic_enum::enum_count<StatsInputType>(), weights, data, std::divides<>());

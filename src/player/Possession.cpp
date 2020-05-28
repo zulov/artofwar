@@ -33,10 +33,6 @@ int Possession::getUnitsNumber() const {
 	return units.size();
 }
 
-int Possession::getBuildingsNumber() const {
-	return buildings.size();
-}
-
 int Possession::getWorkersNumber() const {
 	return workers.size();
 }
@@ -51,6 +47,14 @@ int Possession::getDefenceScore() const {
 
 std::vector<Building*>* Possession::getBuildings(short id) {
 	return buildingsPerId[id];
+}
+
+float Possession::getUnitsVal(ValueType value) const {
+	return unitsValues[static_cast<char>(value)];
+}
+
+float Possession::getBuildingsVal(ValueType value) const {
+	return buildingsValues[static_cast<char>(value)];
 }
 
 void Possession::add(Building* building) {
@@ -87,13 +91,21 @@ void Possession::updateAndClean(Resources& resources) {
 
 	attackSum = 0;
 	defenceSum = 0;
+	std::fill_n(unitsValues, magic_enum::enum_count<ValueType>(), 0.f);
 	for (auto unit : units) {
 		attackSum += unit->getValueOf(ValueType::ATTACK);
 		defenceSum += unit->getValueOf(ValueType::DEFENCE);
+		for (auto v : magic_enum::enum_values<ValueType>()) {
+			unitsValues[static_cast<char>(v)] += unit->getValueOf(v);
+		}
 	}
+	std::fill_n(buildingsValues, magic_enum::enum_count<ValueType>(), 0.f);
 	for (auto building : buildings) {
 		attackSum += building->getValueOf(ValueType::ATTACK);
 		defenceSum += building->getValueOf(ValueType::DEFENCE);
+		for (auto v : magic_enum::enum_values<ValueType>()) {
+			buildingsValues[static_cast<char>(v)] += building->getValueOf(v);
+		}
 	}
 
 	short size = resources.getSize();

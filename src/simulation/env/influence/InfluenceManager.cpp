@@ -271,10 +271,10 @@ std::vector<int> InfluenceManager::getIndexes(const std::vector<float>& result, 
 		std::set_intersection(intersection.begin(), intersection.end(),
 		                      indexes.begin(), indexes.end(),
 		                      std::back_inserter(temp));
-		if (temp.empty()) {
-			std::cout << std::endl;
-			return {};
-		}
+		// if (temp.empty()) {
+		// 	std::cout << std::endl;
+		// 	return {};
+		// }
 		intersection = temp; //TODO optimize, nie kopiować?
 	}
 	std::cout << std::endl;

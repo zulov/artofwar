@@ -21,7 +21,7 @@ void RandGen::init() {
 		instance = new RandGen();
 	}
 	{
-		std::mt19937 gen(1);
+		std::mt19937 gen(2);
 		std::uniform_real_distribution<double> disFloat(0.0, 1.0);
 		std::fill_n(instance->indexesFloat, magic_enum::enum_count<RandFloatType>(), 0);
 		for (int i = 0; i < magic_enum::enum_count<RandIntType>(); ++i) {
@@ -32,7 +32,7 @@ void RandGen::init() {
 		}
 	}
 	{
-		std::mt19937 gen(1);
+		std::mt19937 gen(2);
 		std::uniform_int_distribution<int> disInt(0, INT32_MAX);
 		std::fill_n(instance->indexesInt, magic_enum::enum_count<RandIntType>(), 0);
 		for (int i = 0; i < magic_enum::enum_count<RandIntType>(); ++i) {

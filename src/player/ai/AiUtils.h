@@ -15,7 +15,6 @@ inline int randFromThree(std::vector<float> diffs) {
 	for (int i = 0; i < 3; ++i) {
 		sumSoFar += vals[i];
 		if (rand <= sumSoFar) {
-			std::cout << "\t" << vals[i] / sum << "%|";
 			return ids[i];
 		}
 	}
