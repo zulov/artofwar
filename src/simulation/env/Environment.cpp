@@ -324,9 +324,16 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 	return {};
 }
 
+std::optional<Urho3D::Vector2> Environment::getPosToCreate2(db_building* building, char player,
+                                                            const std::vector<float>& result) {
+	influenceManager.getAreas1(result, player, {0.1f, 0.15f, 0.20f});
+	return {};
+}
+
 std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::vector<float>& result, int min) {
 	return influenceManager.getAreasIterative(result, player, 0.1, min);
 }
+
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {
 	return mainGrid.isInLocalArea(getMainCell, pos);

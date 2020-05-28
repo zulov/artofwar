@@ -271,10 +271,10 @@ std::vector<int> InfluenceManager::getIndexes(const std::vector<float>& result, 
 		std::set_intersection(intersection.begin(), intersection.end(),
 		                      indexes.begin(), indexes.end(),
 		                      std::back_inserter(temp));
-		// if (temp.empty()) {
-		// 	std::cout << std::endl;
-		// 	return {};
-		// }
+		if (temp.empty()) {
+			std::cout << std::endl;
+			return {};
+		}
 		intersection = temp; //TODO optimize, nie kopiować?
 	}
 	std::cout << std::endl;
@@ -297,6 +297,17 @@ InfluenceManager::getAreas(const std::vector<float>& result, char player, float 
 
 	std::vector<int> intersection = getIndexes(result, tolerance, maps);
 	return centersFromIndexes(maps[0], intersection);
+}
+
+void InfluenceManager::getAreas1(const std::vector<float>& result, char player, std::vector<float> tolerances) {
+	auto& maps = mapsForAiPerPlayer[player];
+	unsigned char intersection[DEFAULT_INF_FLOAT_GRID_SIZE * DEFAULT_INF_FLOAT_GRID_SIZE];
+	for (auto tolerance : tolerances) {
+		for (char i = 0; i < maps.size(); ++i) {
+			maps[i]->getIndexesWithByValu1e(result[i], tolerance, intersection);//TODO PERFORMANCE nie trzeba zwracac tylko zwiekszac w srodku
+		}
+	}
+	//return intersection;
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFloat* map,

@@ -80,7 +80,24 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 	}
 	return indexes; //TODO should stay sorted
 }
+void InfluenceMapFloat::
+getIndexesWithByValu1e(const float percent, float tolerance, unsigned char intersection[16384]) {
+	const float diff = max - min;
+	auto minV = diff * (percent - tolerance) + min;
+	auto maxV = diff * (percent + tolerance) + min;
+
+	float* iter = values;
+	std::vector<int> indexes;
+	auto pred = [minV,maxV](float i) { return i >= minV && i <= maxV; };
+	while ((iter = std::find_if(iter, values + arraySize, pred)) != values + arraySize) {
+		//TODO performance!!!
+		++intersection[iter - values];
+		iter++;
+	}
+}
 
 float InfluenceMapFloat::getFieldSize() {
 	return calculator.getFieldSize();
 }
+
+

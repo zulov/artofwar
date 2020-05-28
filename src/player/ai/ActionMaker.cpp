@@ -1,5 +1,7 @@
 #include "ActionMaker.h"
 
+
+#include <chrono>
 #include <numeric>
 #include <unordered_set>
 #include <valarray>
@@ -106,7 +108,7 @@ db_building* ActionMaker::chooseBuilding() {
 	if (inx < 0) {
 		return nullptr;
 	}
-	const auto building = buildings[inx];	
+	const auto building = buildings[inx];
 	logBuilding(building);
 	return building;
 }
@@ -131,7 +133,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 	if (inx < 0) {
 		return nullptr;
 	}
-	const auto building = buildings[inx];	
+	const auto building = buildings[inx];
 	auto opt = player->getNextLevelForBuilding(building->id);
 	if (opt.has_value()) {
 		logBuildingLevel(building, opt);
@@ -156,7 +158,7 @@ db_unit* ActionMaker::chooseUnit() {
 		return nullptr;
 	}
 	auto unit = units[inx];
-	
+
 	logUnit(unit);
 	return unit;
 }
@@ -212,8 +214,19 @@ const std::vector<float>& ActionMaker::inputWithParamsDecide(Brain& brain, const
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
 	auto& result = inputWithParamsDecide(buildingBrainPos, player->getLevelForBuilding(building->id)->aiProps);
+	
+	auto t1 = std::chrono::high_resolution_clock::now();
+	Game::getEnvironment()->getPosToCreate2(building, player->getId(), result);
+	auto t2 = std::chrono::high_resolution_clock::now();
+	auto opt = Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
+	auto t3 = std::chrono::high_resolution_clock::now();
 
-	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
+	std::chrono::duration<double, std::milli> time_span1 = t2 - t1;
+	std::chrono::duration<double, std::milli> time_span2 = t3 - t2;
+
+	std::cout << "It took me " << time_span1.count() << " milliseconds.";
+	std::cout << "It took me " << time_span2.count() << " milliseconds.";
+	return opt;
 }
 
 std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId, std::vector<db_building*>& buildings) const {
