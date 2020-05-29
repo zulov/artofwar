@@ -299,16 +299,6 @@ InfluenceManager::getAreas(const std::vector<float>& result, char player, float 
 	return centersFromIndexes(maps[0], intersection);
 }
 
-void InfluenceManager::getAreas1(const std::vector<float>& result, char player, std::vector<float> tolerances) {
-	auto& maps = mapsForAiPerPlayer[player];
-	unsigned char intersection[DEFAULT_INF_FLOAT_GRID_SIZE * DEFAULT_INF_FLOAT_GRID_SIZE];
-	for (auto tolerance : tolerances) {
-		for (char i = 0; i < maps.size(); ++i) {
-			maps[i]->getIndexesWithByValu1e(result[i], tolerance, intersection);
-		}
-	}	
-}
-
 void InfluenceManager::getAreas2(const std::vector<float>& result, char player, std::vector<float> tolerances) {
 	auto& maps = mapsForAiPerPlayer[player];
 	unsigned char intersection[DEFAULT_INF_FLOAT_GRID_SIZE * DEFAULT_INF_FLOAT_GRID_SIZE];

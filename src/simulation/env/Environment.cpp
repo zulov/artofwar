@@ -324,12 +324,6 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 	return {};
 }
 
-std::optional<Urho3D::Vector2> Environment::getPosToCreate2(db_building* building, char player,
-                                                            const std::vector<float>& result) {
-	influenceManager.getAreas1(result, player, {0.1f, 0.15f, 0.20f});
-	return {};
-}
-
 std::optional<Urho3D::Vector2> Environment::getPosToCreate3(db_building* building, char player,
                                                             const std::vector<float>& result) {
 	influenceManager.getAreas2(result, player, {0.1f, 0.15f, 0.20f});
