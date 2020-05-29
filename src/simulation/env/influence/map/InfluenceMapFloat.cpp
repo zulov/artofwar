@@ -80,6 +80,7 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 	}
 	return indexes; //TODO should stay sorted
 }
+
 void InfluenceMapFloat::
 getIndexesWithByValu1e(const float percent, float tolerance, unsigned char intersection[16384]) {
 	const float diff = max - min;
@@ -96,8 +97,36 @@ getIndexesWithByValu1e(const float percent, float tolerance, unsigned char inter
 	}
 }
 
+void InfluenceMapFloat::getIndexesWithByValu2E(const float percent, const std::vector<float>& tolerances,
+                                               unsigned char intersection[16384]) {
+	const float diff = max - min;
+	auto minV0 = diff * (percent - tolerances[0]) + min;
+	auto maxV0 = diff * (percent + tolerances[0]) + min;
+
+	auto minV1 = diff * (percent - tolerances[1]) + min;
+	auto maxV1 = diff * (percent + tolerances[1]) + min;
+
+	auto minV2 = diff * (percent - tolerances[2]) + min;
+	auto maxV2 = diff * (percent + tolerances[2]) + min;
+
+	float* iter = values;
+	std::vector<int> indexes;
+	auto pred0 = [minV0,maxV0](float i) { return i >= minV0 && i <= maxV0; };
+	auto pred1 = [minV1,maxV1](float i) { return i >= minV1 && i <= maxV1; };
+	auto pred2 = [minV2,maxV2](float i) { return i >= minV2 && i <= maxV2; };
+	while ((iter = std::find_if(iter, values + arraySize, pred2)) != values + arraySize) {
+		//TODO performance!!!
+		if (pred0(*iter)) {
+			intersection[iter - values] += 3;
+		} else if (pred1(*iter)) {
+			intersection[iter - values] += 2;
+		} else {
+			++intersection[iter - values];
+		}
+		iter++;
+	}
+}
+
 float InfluenceMapFloat::getFieldSize() {
 	return calculator.getFieldSize();
 }
-
-

@@ -33,8 +33,7 @@ ActionMaker::ActionMaker(Player* player): player(player),
 
                                           buildingLevelUpId("Data/ai/buildLevelUpId_w.csv"),
                                           unitLevelUpId("Data/ai/unitUpgradeId_w.csv"),
-                                          unitLevelUpPos("Data/ai/unitLevelUpPos_w.csv") {
-}
+                                          unitLevelUpPos("Data/ai/unitLevelUpPos_w.csv") {}
 
 const std::vector<float>& ActionMaker::decideFromBasic(Brain& brain) const {
 	return brain.decide(Game::getStats()->getBasicInput(player->getId()));
@@ -214,18 +213,22 @@ const std::vector<float>& ActionMaker::inputWithParamsDecide(Brain& brain, const
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
 	auto& result = inputWithParamsDecide(buildingBrainPos, player->getLevelForBuilding(building->id)->aiProps);
-	
+
 	auto t1 = std::chrono::high_resolution_clock::now();
 	Game::getEnvironment()->getPosToCreate2(building, player->getId(), result);
 	auto t2 = std::chrono::high_resolution_clock::now();
-	auto opt = Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
+	Game::getEnvironment()->getPosToCreate3(building, player->getId(), result);
 	auto t3 = std::chrono::high_resolution_clock::now();
+	auto opt = Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
+	auto t4 = std::chrono::high_resolution_clock::now();
 
 	std::chrono::duration<double, std::milli> time_span1 = t2 - t1;
 	std::chrono::duration<double, std::milli> time_span2 = t3 - t2;
+	std::chrono::duration<double, std::milli> time_span3 = t4 - t3;
 
-	std::cout << "It took me " << time_span1.count() << " milliseconds.";
-	std::cout << "It took me " << time_span2.count() << " milliseconds.";
+	std::cout << "It took me " << time_span1.count() << " milliseconds.\t";
+	std::cout << "It took me " << time_span2.count() << " milliseconds.\t";
+	std::cout << "It took me " << time_span3.count() << " milliseconds.\t" << std::endl;
 	return opt;
 }
 

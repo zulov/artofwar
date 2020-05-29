@@ -304,10 +304,19 @@ void InfluenceManager::getAreas1(const std::vector<float>& result, char player, 
 	unsigned char intersection[DEFAULT_INF_FLOAT_GRID_SIZE * DEFAULT_INF_FLOAT_GRID_SIZE];
 	for (auto tolerance : tolerances) {
 		for (char i = 0; i < maps.size(); ++i) {
-			maps[i]->getIndexesWithByValu1e(result[i], tolerance, intersection);//TODO PERFORMANCE nie trzeba zwracac tylko zwiekszac w srodku
+			maps[i]->getIndexesWithByValu1e(result[i], tolerance, intersection);
 		}
+	}	
+}
+
+void InfluenceManager::getAreas2(const std::vector<float>& result, char player, std::vector<float> tolerances) {
+	auto& maps = mapsForAiPerPlayer[player];
+	unsigned char intersection[DEFAULT_INF_FLOAT_GRID_SIZE * DEFAULT_INF_FLOAT_GRID_SIZE];
+	
+	for (char i = 0; i < maps.size(); ++i) {
+		maps[i]->getIndexesWithByValu2E(result[i], tolerances, intersection);
 	}
-	//return intersection;
+
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFloat* map,

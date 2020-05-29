@@ -93,6 +93,7 @@ public:
 	std::optional<Urho3D::Vector2> getPosToCreate(db_building* building, char player, const std::vector<float>& result);
 	std::vector<Urho3D::Vector2> getAreas(char player, const std::vector<float>& result, int min);
 	std::optional<Urho3D::Vector2> getPosToCreate2(db_building* building, char player, const std::vector<float>& result);
+	std::optional<Urho3D::Vector2> getPosToCreate3(db_building* building, char player, const std::vector<float>& result);
 
 private:
 	MainGrid mainGrid;

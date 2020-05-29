@@ -45,6 +45,7 @@ public:
 	std::vector<Urho3D::Vector2> getAreas(const std::vector<float>& result, char player, float tolerance);
 	float getFieldSize();
 	void getAreas1(const std::vector<float>& result, char player, std::vector<float> tolerances);
+	void getAreas2(const std::vector<float>& result, char player, std::vector<float> tolerances);
 
 private:
 	std::vector<Urho3D::Vector2> centersFromIndexes(InfluenceMapFloat* map, const std::vector<int>& intersection);
