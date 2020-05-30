@@ -1,4 +1,7 @@
 ﻿#include "InfluenceManager.h"
+
+#include <chrono>
+
 #include "objects/unit/Unit.h"
 #include "simulation/env/EnvConsts.h"
 #include "simulation/env/ContentInfo.h"
@@ -7,6 +10,7 @@
 #include "database/DatabaseCache.h"
 #include "objects/building/Building.h"
 #include "debug/DebugLineRepo.h"
+#include "math/VectorUtils.h"
 #include "objects/ValueType.h"
 #include "objects/resource/ResourceEntity.h"
 
@@ -37,7 +41,6 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			resourceInfluence[0], resourceInfluence[1], resourceInfluence[2], resourceInfluence[3]
 		}); //TODO performance posortowac tak żeby pierwsze zwracły mniej
 	}
-
 
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUENCE);
@@ -259,28 +262,6 @@ std::vector<int> InfluenceManager::getIndexesIterative(const std::vector<float>&
 	return {};
 }
 
-std::vector<int> InfluenceManager::getIndexes(const std::vector<float>& result, float tolerance,
-                                              std::vector<InfluenceMapFloat*>& maps) const {
-	std::vector<int> intersection = maps[0]->getIndexesWithByValue(result[0], tolerance);
-	std::cout << intersection.size() << "|";
-	for (char i = 1; i < maps.size(); ++i) {
-		std::vector<int> indexes = maps[i]->getIndexesWithByValue(result[i], tolerance);
-		//TODO performance pass indexex end check only them
-		std::cout << indexes.size() << "|";
-		std::vector<int> temp;
-		std::set_intersection(intersection.begin(), intersection.end(),
-		                      indexes.begin(), indexes.end(),
-		                      std::back_inserter(temp));
-		if (temp.empty()) {
-			std::cout << std::endl;
-			return {};
-		}
-		intersection = temp; //TODO optimize, nie kopiować?
-	}
-	std::cout << std::endl;
-	return intersection;
-}
-
 std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::vector<float>& result, char player,
                                                                  float tolerance,
                                                                  int min) {
@@ -290,23 +271,35 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::vect
 	return centersFromIndexes(maps[0], intersection);
 }
 
-
-std::vector<Urho3D::Vector2>
-InfluenceManager::getAreas(const std::vector<float>& result, char player, float tolerance) {
+std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::vector<float>& result, char player,
+                                                        std::vector<float> tolerances) {
 	auto& maps = mapsForAiPerPlayer[player];
-
-	std::vector<int> intersection = getIndexes(result, tolerance, maps);
-	return centersFromIndexes(maps[0], intersection);
-}
-
-void InfluenceManager::getAreas2(const std::vector<float>& result, char player, std::vector<float> tolerances) {
-	auto& maps = mapsForAiPerPlayer[player];
+	auto arraySize = DEFAULT_INF_FLOAT_GRID_SIZE * DEFAULT_INF_FLOAT_GRID_SIZE;
 	unsigned char intersection[DEFAULT_INF_FLOAT_GRID_SIZE * DEFAULT_INF_FLOAT_GRID_SIZE];
-	
+	std::fill_n(intersection, arraySize, 0);
+
 	for (char i = 0; i < maps.size(); ++i) {
-		maps[i]->getIndexesWithByValu2E(result[i], tolerances, intersection);
+		maps[i]->getIndexesWithByValue(result[i], tolerances, intersection);
 	}
 
+	auto inx = sort_indexes_desc(intersection, arraySize);
+	return centersFromIndexes(maps[0], intersection, inx, 12);
+}
+
+std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFloat* map, unsigned char* values,
+                                                                  const std::vector<unsigned>& indexes,
+                                                                  unsigned char minVal) const {
+	std::vector<Urho3D::Vector2> centers;
+
+	for (auto ptr = indexes.begin(); (ptr < indexes.begin() + 256 && ptr < indexes.end()); ++ptr) {
+		auto value = values[*ptr];
+		std::cout << (int)value << "\t";
+		if (value < minVal) {
+			break;
+		}
+		centers.emplace_back(map->getCenter(value));
+	}
+	return centers;
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFloat* map,

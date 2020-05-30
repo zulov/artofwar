@@ -9,25 +9,25 @@ inline auto isAlive = [](Physical* u) {
 	return !u->isAlive();
 };
 
-void static cleanDead(std::vector<Unit*>& vector) {
+static void cleanDead(std::vector<Unit*>& vector) {
 	vector.erase(
 		std::remove_if(vector.begin(), vector.end(), isAlive),
 		vector.end());
 }
 
-void static cleanDead(std::vector<Building*>& vector) {
+static void cleanDead(std::vector<Building*>& vector) {
 	vector.erase(
 		std::remove_if(vector.begin(), vector.end(), isAlive),
 		vector.end());
 }
 
-void static cleanDead(std::vector<Building*>* vector) {
+static void cleanDead(std::vector<Building*>* vector) {
 	vector->erase(
 		std::remove_if(vector->begin(), vector->end(), isAlive),
 		vector->end());
 }
 
-void static cleanDead(std::vector<ResourceEntity*>& vector) {
+static void cleanDead(std::vector<ResourceEntity*>& vector) {
 	vector.erase(
 		std::remove_if(vector.begin(), vector.end(), isAlive),
 		vector.end());
@@ -84,4 +84,16 @@ static float mirror(float vals[3], float sum) {
 		vals[i] = sum - vals[i];
 	}
 	return std::accumulate(vals, vals + 3, 0.f);
+}
+
+template <typename T>
+static std::vector<unsigned int> sort_indexes_desc(T v[], int size) {
+	std::vector<unsigned int> idx(size);
+	
+	std::iota(idx.begin(), idx.end(), 0);
+
+	stable_sort(idx.begin(), idx.end(),
+	            [&v](auto i1, auto i2) { return v[i1] > v[i2]; });
+
+	return idx;
 }

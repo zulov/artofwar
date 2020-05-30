@@ -1,4 +1,4 @@
-#include "Environment.h"
+﻿#include "Environment.h"
 #include "objects/ObjectEnums.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
@@ -308,32 +308,24 @@ std::vector<float>& Environment::getInfluenceDataAt(char player, const Urho3D::V
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,
                                                            const std::vector<float>& result) {
-	for (auto tolerance : {0.1f, 0.15f, 0.20f}) {
-		std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player, tolerance);
-
-		float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
-		for (auto& center : centers) {
-			for (auto index : mainGrid.getArrayNeight(center, ratio)) {
-				//TODO to powinno by� lepiej posortowane i bra� najlepsze
-				if (validateStatic(building->size, mainGrid.getCenter(index))) {
-					return center;
-				}
+	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player, {0.05f, 0.1f, 0.15f});
+	std::cout << centers.size() << std::endl;
+	//TODO performance nie obliczać wszystkich centrów tylko te co trzeba
+	float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
+	for (auto& center : centers) {
+		for (auto index : mainGrid.getArrayNeight(center, ratio)) {
+			//TODO to powinno byæ lepiej posortowane i braæ najlepsze
+			if (validateStatic(building->size, mainGrid.getCenter(index))) {
+				return center;
 			}
 		}
 	}
 	return {};
 }
 
-std::optional<Urho3D::Vector2> Environment::getPosToCreate3(db_building* building, char player,
-                                                            const std::vector<float>& result) {
-	influenceManager.getAreas2(result, player, {0.1f, 0.15f, 0.20f});
-	return {};
-}
-
 std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::vector<float>& result, int min) {
 	return influenceManager.getAreasIterative(result, player, 0.1, min);
 }
-
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {
 	return mainGrid.isInLocalArea(getMainCell, pos);
