@@ -39,6 +39,7 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 					   .Append(": ").Append(Urho3D::String(selectedType->getData().size())).Append("\n");
 				}
 			}
+			text->SetText(msg);
 			setVisible(true);
 		} else {
 			setVisible(false);
