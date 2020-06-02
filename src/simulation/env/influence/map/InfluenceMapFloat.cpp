@@ -1,8 +1,8 @@
 #include "InfluenceMapFloat.h"
-#include "objects/Physical.h"
 #include <algorithm>
-#include "simulation/env/Environment.h"
 #include <numeric>
+#include "objects/Physical.h"
+#include "simulation/env/Environment.h"
 
 InfluenceMapFloat::
 InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug):
@@ -110,7 +110,7 @@ void InfluenceMapFloat::getIndexesWithByValue(float percent, const std::vector<f
 		} else if (pred1(*iter)) {
 			intersection[iter - values] += 2;
 		} else {
-			++intersection[iter - values];
+			intersection[iter - values] += 1;
 		}
 		iter++;
 	}

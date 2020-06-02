@@ -10,7 +10,12 @@ struct GridCalculator {
 
 	GridCalculator(const GridCalculator&) = delete;
 
-	int getIndex(short posX, short posZ) const { return posX * resolution + posZ; }
+	int getIndex(short posX, short posZ) const {
+		posX = getValid(posX);
+		posZ = getValid(posZ);
+
+		return posX * resolution + posZ;
+	}
 
 	short getIndex(float value) const {
 		if (value < 0) {
@@ -51,10 +56,20 @@ struct GridCalculator {
 	}
 
 	bool validIndex(int index) const { return index >= 0 && index < sqResolution; }
-	//TODO BUG jeœli coœ jest na skarju to weŸmie coœ skrajnego
 	float getFieldSize() { return fieldSize; }
 
 private:
+	short getValid(short val) const {
+		if (val < 0) {
+			return 0;
+		}
+		if (val >= resolution) {
+			return resolution - 1;
+		}
+		return val;
+	}
+
+
 	int sqResolution;
 	short resolution;
 	short halfRes;
