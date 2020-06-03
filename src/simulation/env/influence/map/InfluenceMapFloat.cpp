@@ -89,28 +89,31 @@ void InfluenceMapFloat::getIndexesWithByValue(float percent, const std::vector<f
 	} else if (percent < 1) {
 		percent = 1;
 	}
-	auto minV0 = diff * (percent - tolerances[0]) + min;
-	auto maxV0 = diff * (percent + tolerances[0]) + min;
 
-	auto minV1 = diff * (percent - tolerances[1]) + min;
-	auto maxV1 = diff * (percent + tolerances[1]) + min;
-
-	auto minV2 = diff * (percent - tolerances[2]) + min;
-	auto maxV2 = diff * (percent + tolerances[2]) + min;
+	auto minWeak = diff * (percent - tolerances.back()) + min;
+	auto maxWeak = diff * (percent + tolerances.back()) + min;
 
 	float* iter = values;
+	std::vector<std::function<bool(float)>> predicates;
 
-	auto pred0 = [minV0,maxV0](float i) { return i >= minV0 && i <= maxV0; };
-	auto pred1 = [minV1,maxV1](float i) { return i >= minV1 && i <= maxV1; };
-	auto pred2 = [minV2,maxV2](float i) { return i >= minV2 && i <= maxV2; };
+	for (int i = 0; i < tolerances.size() - 1; ++i) {
+		auto minV = diff * (percent - tolerances[i]) + min;
+		auto maxV = diff * (percent + tolerances[i]) + min;
 
-	while ((iter = std::find_if(iter, values + arraySize, pred2)) != values + arraySize) {
-		if (pred0(*iter)) {
-			intersection[iter - values] += 3;
-		} else if (pred1(*iter)) {
-			intersection[iter - values] += 2;
-		} else {
-			intersection[iter - values] += 1;
+		auto pred = [minV,maxV](float i) { return i >= minV && i <= maxV; };
+		predicates.emplace_back(pred);
+	}
+	auto truePred = [](float i) { return true; };
+	predicates.push_back(truePred);
+	
+	auto predWeek = [minWeak,maxWeak](float i) { return i >= minWeak && i <= maxWeak; };
+
+	while ((iter = std::find_if(iter, values + arraySize, predWeek)) != values + arraySize) {
+		for (int i = 0; i < predicates.size(); ++i) {
+			if (predicates[i](*iter)) {
+				intersection[iter - values] += predicates.size() - i;
+				break;
+			}
 		}
 		iter++;
 	}

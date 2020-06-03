@@ -34,12 +34,12 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 		resourceInfluence.
 			emplace_back(new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
 	}
-	for (int player = 0; player < numberOfPlayers; ++player) {
+	for (char player = 0; player < numberOfPlayers; ++player) {
 		mapsForAiPerPlayer.emplace_back(std::vector<InfluenceMapFloat*>{
 			econLevelPerPlayer[player], attackLevelPerPlayer[player], defenceLevelPerPlayer[player],
 			buildingsInfluencePerPlayer[player], unitsInfluencePerPlayer[player],
 			resourceInfluence[0], resourceInfluence[1], resourceInfluence[2], resourceInfluence[3]
-		}); //TODO performance posortowac tak żeby pierwsze zwracły mniej
+		});
 	}
 
 	ci = new content_info();
@@ -283,7 +283,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::vector<float>
 	}
 
 	auto inx = sort_indexes_desc(intersection, arraySize);
-	return centersFromIndexes(maps[0], intersection, inx, 12);
+	return centersFromIndexes(maps[0], intersection, inx, tolerances.size() * maps.size() * 0.66);
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFloat* map, unsigned char* values,
@@ -293,7 +293,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFl
 
 	for (auto ptr = indexes.begin(); (ptr < indexes.begin() + 256 && ptr < indexes.end()); ++ptr) {
 		auto value = values[*ptr];
-		std::cout << (int)value << "\t";
+		std::cout << " " << (int)value << "\t";
 		if (value < minVal) {
 			break;
 		}
