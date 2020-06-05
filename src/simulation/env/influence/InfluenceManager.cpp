@@ -2,43 +2,46 @@
 
 #include <chrono>
 
-#include "objects/unit/Unit.h"
-#include "simulation/env/EnvConsts.h"
-#include "simulation/env/ContentInfo.h"
-#include "objects/CellState.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
-#include "objects/building/Building.h"
 #include "debug/DebugLineRepo.h"
 #include "math/VectorUtils.h"
+#include "objects/CellState.h"
 #include "objects/ValueType.h"
+#include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
+#include "objects/unit/Unit.h"
+#include "simulation/env/ContentInfo.h"
+#include "simulation/env/EnvConsts.h"
 
+#define INF_GRID_SIZE 128
+#define MAX_DEBUG_PARTS_INFLUENCE 32
+#define INF_LEVEL 3
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
-		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(DEFAULT_INF_GRID_SIZE, BUCKET_GRID_SIZE, 40));
+		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(INF_GRID_SIZE, BUCKET_GRID_SIZE, 40));
 		buildingsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 5));
+			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 5));
 		unitsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
+			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
 		attackLevelPerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
+			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
 		defenceLevelPerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
+			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
 		econLevelPerPlayer.emplace_back(
-			new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
+			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
 	}
 
 	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
 		resourceInfluence.
-			emplace_back(new InfluenceMapFloat(DEFAULT_INF_FLOAT_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 2, 40));
+			emplace_back(new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
 	}
 	for (char player = 0; player < numberOfPlayers; ++player) {
 		mapsForAiPerPlayer.emplace_back(std::vector<InfluenceMapFloat*>{
 			econLevelPerPlayer[player], attackLevelPerPlayer[player], defenceLevelPerPlayer[player],
 			buildingsInfluencePerPlayer[player], unitsInfluencePerPlayer[player],
-			resourceInfluence[0], resourceInfluence[1], resourceInfluence[2], resourceInfluence[3]
+			resourceInfluence[0], resourceInfluence[1], resourceInfluence[2], resourceInfluence[3]//TODO moze to nie osobno jednak? za duza ma wage
 		});
 	}
 
@@ -57,8 +60,8 @@ InfluenceManager::~InfluenceManager() {
 }
 
 void InfluenceManager::update(std::vector<Unit*>* units) const {
-	resetMapsI(unitsNumberPerPlayer);
-	resetMapsF(unitsInfluencePerPlayer);
+	resetMaps(unitsNumberPerPlayer);
+	resetMaps(unitsInfluencePerPlayer);
 
 	for (auto unit : (*units)) {
 		unitsNumberPerPlayer[unit->getPlayer()]->update(unit);
@@ -69,7 +72,7 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 }
 
 void InfluenceManager::update(std::vector<Building*>* buildings) const {
-	resetMapsF(buildingsInfluencePerPlayer);
+	resetMaps(buildingsInfluencePerPlayer);
 	for (auto building : (*buildings)) {
 		buildingsInfluencePerPlayer[building->getPlayer()]->update(building);
 	}
@@ -77,20 +80,20 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 }
 
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
-	resetMapsF(resourceInfluence);
+	resetMaps(resourceInfluence);
 	for (auto resource : (*resources)) {
 		resourceInfluence[resource->getId()]->update(resource, resource->getHealthPercent());
 	}
 	calcStats(resourceInfluence);
 }
 
-void InfluenceManager::resetMapsF(const std::vector<InfluenceMapFloat*>& maps) const {
+void InfluenceManager::resetMaps(const std::vector<InfluenceMapFloat*>& maps) const {
 	for (auto map : maps) {
 		map->reset();
 	}
 }
 
-void InfluenceManager::resetMapsI(const std::vector<InfluenceMapInt*>& maps) const {
+void InfluenceManager::resetMaps(const std::vector<InfluenceMapInt*>& maps) const {
 	for (auto map : maps) {
 		map->reset();
 	}
@@ -109,9 +112,9 @@ void InfluenceManager::calcStats(const std::vector<InfluenceMapInt*>& maps) cons
 }
 
 void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
-	resetMapsF(attackLevelPerPlayer);
-	resetMapsF(defenceLevelPerPlayer);
-	resetMapsF(econLevelPerPlayer);
+	resetMaps(attackLevelPerPlayer);
+	resetMaps(defenceLevelPerPlayer);
+	resetMaps(econLevelPerPlayer);
 
 	for (auto unit : (*units)) {
 		attackLevelPerPlayer[unit->getPlayer()]->update(unit, unit->getValueOf(ValueType::ATTACK));
@@ -273,8 +276,8 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::vect
 std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::vector<float>& result, char player) {
 
 	auto& maps = mapsForAiPerPlayer[player];
-	auto arraySize = DEFAULT_INF_FLOAT_GRID_SIZE * DEFAULT_INF_FLOAT_GRID_SIZE;
-	float intersection[DEFAULT_INF_FLOAT_GRID_SIZE * DEFAULT_INF_FLOAT_GRID_SIZE];
+	auto arraySize = INF_GRID_SIZE * INF_GRID_SIZE;
+	float intersection[INF_GRID_SIZE * INF_GRID_SIZE];
 	std::fill_n(intersection, arraySize, 0.f);
 
 	for (char i = 0; i < maps.size(); ++i) {

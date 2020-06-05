@@ -5,10 +5,6 @@
 #include "player/ai/InfluenceType.h"
 #include <vector>
 
-#define DEFAULT_INF_GRID_SIZE 128
-#define DEFAULT_INF_FLOAT_GRID_SIZE 128
-#define MAX_DEBUG_PARTS_INFLUENCE 32
-
 enum class AiInfluenceType : char;
 enum class CellState : char;
 class Unit;
@@ -48,8 +44,8 @@ private:
 	                                                const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(InfluenceMapFloat* map, const std::vector<int>& intersection);
 
-	void resetMapsF(const std::vector<InfluenceMapFloat*>& maps) const;
-	void resetMapsI(const std::vector<InfluenceMapInt*>& maps) const;
+	void resetMaps(const std::vector<InfluenceMapFloat*>& maps) const;
+	void resetMaps(const std::vector<InfluenceMapInt*>& maps) const;
 	void calcStats(const std::vector<InfluenceMapFloat*>& maps) const;
 	void calcStats(const std::vector<InfluenceMapInt*>& maps) const;
 

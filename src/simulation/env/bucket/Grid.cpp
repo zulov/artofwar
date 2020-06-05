@@ -121,7 +121,8 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
 
 std::vector<int> Grid::getArrayNeight(const Urho3D::Vector2& center, float radius) const {
 	//TODO clean prawie to samo co wy¿ej
-	std::vector<int> indexes;//TODO performance
+	radius -= 0.1;
+	std::vector<int> indexes; //TODO performance
 
 	const auto posBeginX = calculator.getIndex(center.x_ - radius);
 	const auto posBeginZ = calculator.getIndex(center.y_ - radius);
