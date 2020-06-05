@@ -33,7 +33,8 @@ ActionMaker::ActionMaker(Player* player): player(player),
 
                                           buildingLevelUpId("Data/ai/buildLevelUpId_w.csv"),
                                           unitLevelUpId("Data/ai/unitUpgradeId_w.csv"),
-                                          unitLevelUpPos("Data/ai/unitLevelUpPos_w.csv") {}
+                                          unitLevelUpPos("Data/ai/unitLevelUpPos_w.csv") {
+}
 
 const std::vector<float>& ActionMaker::decideFromBasic(Brain& brain) const {
 	return brain.decide(Game::getStats()->getBasicInput(player->getId()));

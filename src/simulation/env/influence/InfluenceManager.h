@@ -41,13 +41,11 @@ public:
 	                                               int min);
 
 	float getFieldSize();
-	std::vector<Urho3D::Vector2> getAreas(const std::vector<float>& result, char player,
-	                                       std::vector<float> tolerances);
+	std::vector<Urho3D::Vector2> getAreas(const std::vector<float>& result, char player);
 
 private:
-
-	std::vector<Urho3D::Vector2> centersFromIndexes(InfluenceMapFloat* map, unsigned char* values,
-	                                                const std::vector<unsigned>& indexes, unsigned char minVal) const;
+	std::vector<Urho3D::Vector2> centersFromIndexes(InfluenceMapFloat* map, float* values,
+	                                                const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(InfluenceMapFloat* map, const std::vector<int>& intersection);
 
 	void resetMapsF(const std::vector<InfluenceMapFloat*>& maps) const;

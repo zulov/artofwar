@@ -237,9 +237,8 @@ std::vector<float>& InfluenceManager::getInfluenceDataAt(char player, const Urho
 
 std::vector<int> InfluenceManager::getIndexesIterative(const std::vector<float>& result, float tolerance, int min,
                                                        std::vector<InfluenceMapFloat*>& maps) const {
-	float steps[] = {0.0, 0.05, 0.1};
 	int k = 0;
-	for (auto step : steps) {
+	for (auto step : {0.0, 0.05, 0.1}) {
 		tolerance += step;
 		k++;
 		std::vector<int> intersection = maps[0]->getIndexesWithByValue(result[0], tolerance);
@@ -271,33 +270,31 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::vect
 	return centersFromIndexes(maps[0], intersection);
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::vector<float>& result, char player,
-                                                        std::vector<float> tolerances) {
+std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::vector<float>& result, char player) {
+
 	auto& maps = mapsForAiPerPlayer[player];
 	auto arraySize = DEFAULT_INF_FLOAT_GRID_SIZE * DEFAULT_INF_FLOAT_GRID_SIZE;
-	unsigned char intersection[DEFAULT_INF_FLOAT_GRID_SIZE * DEFAULT_INF_FLOAT_GRID_SIZE];
-	std::fill_n(intersection, arraySize, 0);
+	float intersection[DEFAULT_INF_FLOAT_GRID_SIZE * DEFAULT_INF_FLOAT_GRID_SIZE];
+	std::fill_n(intersection, arraySize, 0.f);
 
 	for (char i = 0; i < maps.size(); ++i) {
-		maps[i]->getIndexesWithByValue(result[i], tolerances, intersection);
+		maps[i]->getIndexesWithByValue(result[i], intersection);
 	}
-
-	auto inx = sort_indexes_desc(intersection, arraySize);
-	return centersFromIndexes(maps[0], intersection, inx, tolerances.size() * maps.size() * 0.66);
+	auto inx = sort_indexes(intersection, arraySize);
+	return centersFromIndexes(maps[0], intersection, inx, 0.02f * maps.size());
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFloat* map, unsigned char* values,
+std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFloat* map, float* values,
                                                                   const std::vector<unsigned>& indexes,
-                                                                  unsigned char minVal) const {
+                                                                  float minVal) const {
 	std::vector<Urho3D::Vector2> centers;
 
 	for (auto ptr = indexes.begin(); (ptr < indexes.begin() + 256 && ptr < indexes.end()); ++ptr) {
 		auto value = values[*ptr];
-		std::cout << " " << (int)value << "\t";
-		if (value < minVal) {
+		if (value > minVal) {
 			break;
 		}
-		centers.emplace_back(map->getCenter(value));
+		centers.emplace_back(map->getCenter(*ptr));
 	}
 	return centers;
 }

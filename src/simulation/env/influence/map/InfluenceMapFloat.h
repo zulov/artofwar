@@ -16,7 +16,7 @@ public:
 	void calcStats() override;
 	std::vector<int> getIndexesWithByValue(float percent, float tolerance) const;
 	float getFieldSize();
-	void getIndexesWithByValue(float percent, const std::vector<float>& tolerances, unsigned char *intersection) const;
+	void getIndexesWithByValue(float percent, float *intersection) const;
 private:
 	bool validIndex(int i) const;
 	float* values;

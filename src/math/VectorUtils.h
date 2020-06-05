@@ -97,3 +97,16 @@ static std::vector<unsigned int> sort_indexes_desc(T v[], int size) {
 
 	return idx;
 }
+
+template <typename T>
+static std::vector<unsigned int> sort_indexes(T v[], int size) {
+	std::vector<unsigned int> idx(size);
+	
+	std::iota(idx.begin(), idx.end(), 0);
+
+	stable_sort(idx.begin(), idx.end(),
+	            [&v](auto i1, auto i2) { return v[i1] < v[i2]; });
+
+	return idx;
+}
+

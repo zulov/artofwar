@@ -81,41 +81,17 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 	return indexes; //TODO should stay sorted
 }
 
-void InfluenceMapFloat::getIndexesWithByValue(float percent, const std::vector<float>& tolerances,
-                                              unsigned char* intersection) const {
+void InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection) const {
 	const float diff = max - min;
 	if (percent < 0) {
 		percent = 0;
-	} else if (percent < 1) {
+	} else if (percent > 1) {
 		percent = 1;
 	}
 
-	auto minWeak = diff * (percent - tolerances.back()) + min;
-	auto maxWeak = diff * (percent + tolerances.back()) + min;
-
-	float* iter = values;
-	std::vector<std::function<bool(float)>> predicates;
-
-	for (int i = 0; i < tolerances.size() - 1; ++i) {
-		auto minV = diff * (percent - tolerances[i]) + min;
-		auto maxV = diff * (percent + tolerances[i]) + min;
-
-		auto pred = [minV,maxV](float i) { return i >= minV && i <= maxV; };
-		predicates.emplace_back(pred);
-	}
-	auto truePred = [](float i) { return true; };
-	predicates.push_back(truePred);
-	
-	auto predWeek = [minWeak,maxWeak](float i) { return i >= minWeak && i <= maxWeak; };
-
-	while ((iter = std::find_if(iter, values + arraySize, predWeek)) != values + arraySize) {
-		for (int i = 0; i < predicates.size(); ++i) {
-			if (predicates[i](*iter)) {
-				intersection[iter - values] += predicates.size() - i;
-				break;
-			}
-		}
-		iter++;
+	for (int i = 0; i < arraySize; ++i) {
+		auto val = percent - ((values[i] - min) / diff);
+		intersection[i] += val * val;
 	}
 }
 
