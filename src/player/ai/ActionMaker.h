@@ -16,9 +16,9 @@ public:
 	explicit ActionMaker(Player* player);
 
 	void action();
-	bool enoughResources(db_with_cost* withCosts) const;
 private:
 	const std::vector<float>& decideFromBasic(Brain& brain) const;
+	bool enoughResources(db_with_cost* withCosts) const;
 	bool createOrder(StatsOutputType order);
 	
 	bool levelUpUnit();

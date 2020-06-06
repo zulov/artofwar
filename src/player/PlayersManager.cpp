@@ -75,6 +75,7 @@ void PlayersManager::save(SceneSaver& saver) {
 void PlayersManager::update() {
 	for (auto player : allPlayers) {
 		player->updatePossession();
+		player->updateResource();
 	}
 }
 

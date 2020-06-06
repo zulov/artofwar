@@ -57,6 +57,10 @@ float Possession::getBuildingsVal(ValueType value) const {
 	return buildingsValues[static_cast<char>(value)];
 }
 
+std::vector<Unit*>& Possession::getWorkers() {
+	return workers;
+}
+
 void Possession::add(Building* building) {
 	buildings.push_back(building);
 	buildingsPerId[building->getId()]->push_back(building);

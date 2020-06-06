@@ -31,7 +31,7 @@ public:
 	void add(GeneralActionCommand* command);
 	void add(ResourceActionCommand* command);
 	void add(BuildingActionCommand* command);
-	
+
 	void add(UnitActionCommand* command);
 
 	void add(CreationCommand* command);
@@ -53,6 +53,8 @@ private:
 	std::string getOutput(GeneralActionCommand* command) const;
 	
 	std::string getOutput(StatsOutputType stat) const;
+
+	std::string getResourceIdOutput(UnitActionCommand* command)const;
 
 	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output);
 	void save(int i, std::vector<std::string>* array, std::string fileName) const;
@@ -76,4 +78,5 @@ private:
 	std::vector<std::string> buildLevelUpId[MAX_PLAYERS];
 	std::vector<std::string> unitUpgradeId[MAX_PLAYERS];
 	std::vector<std::string> unitLevelUpPos[MAX_PLAYERS];
+	std::vector<std::string> resourceId[MAX_PLAYERS];
 };

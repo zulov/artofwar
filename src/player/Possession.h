@@ -25,6 +25,7 @@ public:
 	std::vector<Building*>* getBuildings(short id);
 	float getUnitsVal(ValueType value) const;
 	float getBuildingsVal(ValueType value) const;
+	std::vector<Unit*>& getWorkers();
 private:
 	std::vector<Building*> buildings;
 	std::vector<std::vector<Building*>*> buildingsPerId;
