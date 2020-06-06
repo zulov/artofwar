@@ -22,6 +22,7 @@ public:
 
 	bool getAppend() const { return append; }
 	short getId() const { return id; }
+	short getToUseId() const;
 protected:
 	Physical* toUse = nullptr;
 	Urho3D::Vector2* vector = nullptr;

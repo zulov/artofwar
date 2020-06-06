@@ -60,3 +60,10 @@ void UnitOrder::execute() {
 		return addStopAim();
 	}
 }
+
+short UnitOrder::getToUseId() const {
+	if (toUse) {
+		return toUse->getId();
+	}
+	return 0;//TODO ERROR null
+}

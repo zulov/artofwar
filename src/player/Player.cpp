@@ -11,7 +11,7 @@
 
 
 Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active):
-	queue(1), actionMaker(this),
+	queue(1), actionMaker(this), orderMaker(this),
 	name(std::move(name)), team(team),
 	color(color), id(id), active(active), possession(nationId) {
 	dbNation = Game::getDatabase()->getNation(nationId);
@@ -90,6 +90,10 @@ float Player::getBuildingsVal(ValueType value) const {
 	return possession.getBuildingsVal(value);
 }
 
+void Player::updateResource() {
+	resources.resetStats();
+}
+
 void Player::updatePossession() {
 	possession.updateAndClean(resources);
 }
@@ -136,4 +140,5 @@ QueueManager& Player::getQueue() {
 
 void Player::ai() {
 	actionMaker.action();
+	orderMaker.action();
 }

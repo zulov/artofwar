@@ -14,14 +14,20 @@ public:
 	bool hasChanged() const;
 	short getSize() const;
 	float* getValues();
-	void hasBeedUpdatedDrawn();
+	float* getGatherSpeeds();
+	void hasBeenUpdatedDrawn();
 	std::string getValues(int precision, int player);
 	void setValue(int id, float amount);
 	void change();
 	static std::string getColumns();
+	void resetStats() const;
 private:
 	void revert(int end, const std::vector<db_cost*>& costs);
-	float *values;
+
+	float* values;
+	float* gatherSpeeds;
+	float* sumGatherSpeed;
 	int size;
 	bool changed;
 };
+

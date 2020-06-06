@@ -195,6 +195,7 @@
     <ClCompile Include="src\objects\unit\order\IndividualOrder.cpp" />
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
     <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
+    <ClCompile Include="src\player\ai\OrderMaker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -494,6 +495,7 @@
     <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
     <ClInclude Include="src\commands\action\GeneralActionType.h" />
     <ClInclude Include="src\player\ai\ActionMakerLogger.h" />
+    <ClInclude Include="src\player\ai\OrderMaker.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

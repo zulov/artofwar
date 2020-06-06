@@ -3,11 +3,13 @@
 #include "Possession.h"
 #include "objects/queue/QueueManager.h"
 #include "ai/ActionMaker.h"
+#include "ai/OrderMaker.h"
 
 enum class ActionType : char;
 
 class Player {
 	friend class ActionMaker;
+	friend class OrderMaker;
 public:
 	Player(int nationId, char team, char id, int color, Urho3D::String name, bool active);
 	~Player();
@@ -25,6 +27,7 @@ public:
 	int getColor() const { return color; }
 	Urho3D::String& getName() { return name; }
 
+	void updateResource();
 	void updatePossession();
 	void add(Unit* unit);
 	void add(Building* building);
@@ -50,6 +53,7 @@ private:
 	Resources resources;
 	QueueManager queue;
 	ActionMaker actionMaker;
+	OrderMaker orderMaker;
 	db_nation* dbNation;
 	Urho3D::String name;
 	char team;
