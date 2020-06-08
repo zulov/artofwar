@@ -40,6 +40,18 @@ enum class StatsOrderOutputType : char {
 	ORDER_COLLECT
 };
 
+enum class ResourceInputType : char {
+	GOLD_SPEED,
+	WOOD_SPEED,
+	FOOD_SPEED,
+	STONE_SPEED,
+	GOLD_VALUE,
+	WOOD_VALUE,
+	FOOD_VALUE,
+	STONE_VALUE,
+	PLAYER_SCORE	
+};
+
 inline char cast(StatsInputType type) {
 	return static_cast<char>(type);
 }
