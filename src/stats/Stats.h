@@ -65,7 +65,8 @@ private:
 	float* basicInput;
 	std::span<float> basicInputSpan;
 	std::vector<float*> statsPerPlayer;
-	float weights[magic_enum::enum_count<StatsInputType>()];
+	float wBasic[magic_enum::enum_count<StatsInputType>()];
+	float wResourceInput[magic_enum::enum_count<ResourceInputType>()];
 
 	std::vector<std::string> mainOrder[MAX_PLAYERS];
 

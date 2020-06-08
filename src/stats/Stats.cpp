@@ -21,24 +21,26 @@
 #define INFLUENCE_DATA_SIZE 9 //TODO hard code
 
 Stats::Stats() {
-	weights[cast(StatsInputType::RESULT)] = 1000;
-	weights[cast(StatsInputType::GOLD)] = 1000;
-	weights[cast(StatsInputType::WOOD)] = 1000;
-	weights[cast(StatsInputType::FOOD)] = 1000;
-	weights[cast(StatsInputType::STONE)] = 1000;
-	weights[cast(StatsInputType::ATTACK)] = 1000;
-	weights[cast(StatsInputType::DEFENCE)] = 1000;
-	weights[cast(StatsInputType::BASE_TO_ENEMY)] = 1000;
+	wBasic[cast(StatsInputType::RESULT)] = 1000;
+	wBasic[cast(StatsInputType::GOLD)] = 1000;
+	wBasic[cast(StatsInputType::WOOD)] = 1000;
+	wBasic[cast(StatsInputType::FOOD)] = 1000;
+	wBasic[cast(StatsInputType::STONE)] = 1000;
+	wBasic[cast(StatsInputType::ATTACK)] = 1000;
+	wBasic[cast(StatsInputType::DEFENCE)] = 1000;
+	wBasic[cast(StatsInputType::BASE_TO_ENEMY)] = 1000;
 
-	weights[cast(StatsInputType::UNITS_ATTACK)] = 1000;
-	weights[cast(StatsInputType::UNITS_DEFENCE)] = 1000;
-	weights[cast(StatsInputType::UNITS_ECONOMY)] = 1000;
+	wBasic[cast(StatsInputType::UNITS_ATTACK)] = 1000;
+	wBasic[cast(StatsInputType::UNITS_DEFENCE)] = 1000;
+	wBasic[cast(StatsInputType::UNITS_ECONOMY)] = 1000;
 
-	weights[cast(StatsInputType::BUILDINGS_ATTACK)] = 100;
-	weights[cast(StatsInputType::BUILDINGS_DEFENCE)] = 100;
-	weights[cast(StatsInputType::BUILDINGS_ECONOMY)] = 100;
+	wBasic[cast(StatsInputType::BUILDINGS_ATTACK)] = 100;
+	wBasic[cast(StatsInputType::BUILDINGS_DEFENCE)] = 100;
+	wBasic[cast(StatsInputType::BUILDINGS_ECONOMY)] = 100;
 
-	weights[cast(StatsInputType::WORKERS)] = 100;
+	wBasic[cast(StatsInputType::WORKERS)] = 100;
+
+	wResourceInput[cast(ResourceInputType::GOLD_SPEED)] = 100;
 }
 
 Stats::~Stats() {
@@ -170,7 +172,7 @@ void Stats::saveAll(int big, int small) {
 
 		saveBatch(i, unitUpgradeId, "unitUpgradeId", small);
 		saveBatch(i, unitLevelUpPos, "unitLevelUpPos", small);
-		
+
 		saveBatch(i, resourceId, "resourceId", small);
 	}
 }
@@ -201,7 +203,7 @@ void Stats::update(short id) {
 
 	data[cast(StatsInputType::WORKERS)] = player->getWorkersNumber();
 
-	std::transform(data, data + magic_enum::enum_count<StatsInputType>(), weights, data, std::divides<>());
+	std::transform(data, data + magic_enum::enum_count<StatsInputType>(), wBasic, data, std::divides<>());
 }
 
 
@@ -307,7 +309,7 @@ std::string Stats::getOutput(StatsOutputType stat) const {
 	return join(output, output + magic_enum::enum_count<StatsOutputType>());
 }
 
-std::string Stats::getResourceIdOutput(UnitActionCommand* command) const{
+std::string Stats::getResourceIdOutput(UnitActionCommand* command) const {
 	float output[4];
 	std::fill_n(output, output + 4, 0.f);
 	output[command->order->getToUseId()] = 1;
@@ -322,7 +324,7 @@ void Stats::add(UnitActionCommand* command) {
 
 	joinAndPush(unitOrderId, playerId, input, getOutput(command));
 	if (command->order->getId() == static_cast<char>(UnitAction::COLLECT)) {
-		float input[1 + 4 * 2]; //TODO hardcode
+		float input[magic_enum::enum_count<ResourceInputType>()];
 
 		auto resourceSize = player->getResources().getSize();
 
@@ -330,10 +332,10 @@ void Stats::add(UnitActionCommand* command) {
 		float* values = player->getResources().getValues();
 		std::copy(gatherSpeeds, gatherSpeeds + resourceSize, input);
 		std::copy(values, values + resourceSize, input + resourceSize);
-		input[resourceSize * 2] = player->getScore();
-		
-		auto sInput = join(input, input + (1 + 4 * 2)); //TODO hardcode
-			std::transform(data, data + magic_enum::enum_count<StatsInputType>(), weights1, data, std::divides<>());
+		input[magic_enum::enum_count<ResourceInputType>() - 1] = player->getScore();
+
+		std::transform(input, input + magic_enum::enum_count<ResourceInputType>(), wResourceInput, input, std::divides<>());
+		auto sInput = join(input, input + magic_enum::enum_count<ResourceInputType>());
 		joinAndPush(resourceId, playerId, sInput, getResourceIdOutput(command));
 	}
 }
