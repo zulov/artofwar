@@ -12,6 +12,6 @@ private:
 	bool collect(std::vector<Unit*>& workers);
 
 	Player* player;
-	//Brain collectResourceId;
+	Brain collectResourceId;
 
 };

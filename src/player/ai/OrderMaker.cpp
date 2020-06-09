@@ -1,8 +1,9 @@
 #include "OrderMaker.h"
 #include "objects/unit/Unit.h"
+#include "stats/StatsEnums.h"
 
 OrderMaker::OrderMaker(Player* player)
-	: player(player) {
+	: player(player), collectResourceId("Data/ai/main_w.csv"){
 }
 
 void OrderMaker::action() {
@@ -33,6 +34,10 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() {
 
 bool OrderMaker::collect(std::vector<Unit*>& workers) {
 	auto values = player->getResources().getValues();
+
+	float input[magic_enum::enum_count<ResourceInputType>()];
+	
+	auto result = collectResourceId.decide(input);
 
 	
 }
