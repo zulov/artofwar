@@ -1,5 +1,8 @@
 #pragma once
-#include "player/Player.h"
+#include "nn/Brain.h"
+#include "objects/unit/Unit.h"
+
+class Player;
 
 class OrderMaker {
 public:

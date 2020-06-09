@@ -1,12 +1,13 @@
 #pragma once
 #include "Layer.h"
 #include <Eigen/Dense>
+#include <span>
 
 class Brain {
 public:
 	explicit Brain(std::string dataPath);
 	~Brain();
-	const std::vector<float>& decide(float data[]);//TODO std::spac after c++20
+	const std::vector<float>& decide(std::span<float> data);//TODO std::span after c++20
 
 private:
 	Eigen::MatrixXf multiply(Layer* current, Layer* prevLayer);

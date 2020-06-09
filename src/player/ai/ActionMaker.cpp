@@ -21,6 +21,7 @@
 #include "simulation/env/Environment.h"
 #include "stats/Stats.h"
 #include "stats/StatsEnums.h"
+#include "player/Player.h"
 
 
 ActionMaker::ActionMaker(Player* player): player(player),
@@ -37,7 +38,8 @@ ActionMaker::ActionMaker(Player* player): player(player),
 }
 
 const std::vector<float>& ActionMaker::decideFromBasic(Brain& brain) const {
-	return brain.decide(Game::getStats()->getBasicInput(player->getId()));
+	return {};
+	//return brain.decide(Game::getStats()->getBasicInput(player->getId()));
 }
 
 void ActionMaker::action() {
@@ -201,7 +203,12 @@ float ActionMaker::dist(std::valarray<float>& center, db_ai_property* props) {
 
 const std::vector<float>& ActionMaker::inputWithParamsDecide(Brain& brain, const db_ai_property* ai_property) const {
 	float input[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
-	std::fill_n(input, magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE, 0.f);
+	std::span inputSpan(input, magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE);
+	std::span inputSpan1(input);
+	
+
+	std::fill_n(inputSpan.begin(), inputSpan.end(), 0.f);
+	std::fill_n(input, input+magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE, 0.f);
 
 	const auto basicInput = Game::getStats()->getBasicInput(player->getId());
 	std::copy(basicInput, basicInput + magic_enum::enum_count<StatsInputType>() * 2, input);
@@ -209,6 +216,7 @@ const std::vector<float>& ActionMaker::inputWithParamsDecide(Brain& brain, const
 	const auto aiInput = ai_property->paramsNorm;
 	std::copy(aiInput, aiInput + AI_PROPS_SIZE, input + magic_enum::enum_count<StatsInputType>() * 2);
 
+	
 	return brain.decide(input);
 }
 

@@ -1,5 +1,9 @@
 #include "OrderMaker.h"
+
+#include <magic_enum.hpp>
+
 #include "objects/unit/Unit.h"
+#include "player/Player.h"
 #include "stats/StatsEnums.h"
 
 OrderMaker::OrderMaker(Player* player)
@@ -30,6 +34,7 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() {
 			freeWorkers.push_back(worker);
 		}
 	}
+	return freeWorkers;
 }
 
 bool OrderMaker::collect(std::vector<Unit*>& workers) {
@@ -37,7 +42,7 @@ bool OrderMaker::collect(std::vector<Unit*>& workers) {
 
 	float input[magic_enum::enum_count<ResourceInputType>()];
 	
-	auto result = collectResourceId.decide(input);
+	//auto result = collectResourceId.decide(input);
 
-	
+	return false;
 }

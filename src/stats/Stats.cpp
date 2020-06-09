@@ -40,7 +40,17 @@ Stats::Stats() {
 
 	wBasic[cast(StatsInputType::WORKERS)] = 100;
 
-	wResourceInput[cast(ResourceInputType::GOLD_SPEED)] = 100;
+	wResourceInput[cast(ResourceInputType::GOLD_SPEED)] = 10;
+	wResourceInput[cast(ResourceInputType::WOOD_SPEED)] = 10;
+	wResourceInput[cast(ResourceInputType::FOOD_SPEED)] = 10;
+	wResourceInput[cast(ResourceInputType::STONE_SPEED)] = 10;
+	
+	wResourceInput[cast(ResourceInputType::GOLD_VALUE)] = 1000;
+	wResourceInput[cast(ResourceInputType::WOOD_VALUE)] = 1000;
+	wResourceInput[cast(ResourceInputType::FOOD_VALUE)] = 1000;
+	wResourceInput[cast(ResourceInputType::STONE_VALUE)] = 1000;
+	
+	wResourceInput[cast(ResourceInputType::PLAYER_SCORE)] = 1000;
 }
 
 Stats::~Stats() {
@@ -315,6 +325,21 @@ std::string Stats::getResourceIdOutput(UnitActionCommand* command) const {
 	return join(output, output + 4);
 }
 
+std::string Stats::getResourceIdInputAsString(Player* player) {
+	float input[magic_enum::enum_count<ResourceInputType>()];
+
+	auto resourceSize = player->getResources().getSize();
+
+	float* gatherSpeeds = player->getResources().getGatherSpeeds();
+	float* values = player->getResources().getValues();
+	std::copy(gatherSpeeds, gatherSpeeds + resourceSize, input);
+	std::copy(values, values + resourceSize, input + resourceSize);
+	input[magic_enum::enum_count<ResourceInputType>() - 1] = player->getScore();
+
+	std::transform(input, input + magic_enum::enum_count<ResourceInputType>(), wResourceInput, input, std::divides<>());
+	return join(input, input + magic_enum::enum_count<ResourceInputType>());
+}
+
 void Stats::add(UnitActionCommand* command) {
 	const auto playerId = command->player;
 	auto player = Game::getPlayersMan()->getPlayer(command->player);
@@ -323,18 +348,7 @@ void Stats::add(UnitActionCommand* command) {
 
 	joinAndPush(unitOrderId, playerId, input, getOutput(command));
 	if (command->order->getId() == static_cast<char>(UnitAction::COLLECT)) {
-		float input[magic_enum::enum_count<ResourceInputType>()];
-
-		auto resourceSize = player->getResources().getSize();
-
-		float* gatherSpeeds = player->getResources().getGatherSpeeds();
-		float* values = player->getResources().getValues();
-		std::copy(gatherSpeeds, gatherSpeeds + resourceSize, input);
-		std::copy(values, values + resourceSize, input + resourceSize);
-		input[magic_enum::enum_count<ResourceInputType>() - 1] = player->getScore();
-
-		std::transform(input, input + magic_enum::enum_count<ResourceInputType>(), wResourceInput, input, std::divides<>());
-		auto sInput = join(input, input + magic_enum::enum_count<ResourceInputType>());
+		auto sInput = getResourceIdInputAsString(player);
 		joinAndPush(resourceId, playerId, sInput, getResourceIdOutput(command));
 	}
 }

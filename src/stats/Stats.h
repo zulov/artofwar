@@ -4,6 +4,7 @@
 #include <vector>
 #include "StatsEnums.h"
 #include "commands/action/UnitActionCommand.h"
+#include "player/ai/ActionMaker.h"
 #include "utils/defines.h"
 
 #define SAVE_BATCH_SIZE 10
@@ -55,6 +56,7 @@ private:
 	std::string getOutput(StatsOutputType stat) const;
 
 	std::string getResourceIdOutput(UnitActionCommand* command)const;
+	std::string getResourceIdInputAsString(Player* player);
 
 	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output);
 	void save(int i, std::vector<std::string>* array, std::string fileName) const;
