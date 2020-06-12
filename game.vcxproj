@@ -73,7 +73,7 @@
       <AdditionalOptions>/bigobj </AdditionalOptions>
       <MinimalRebuild>true</MinimalRebuild>
       <IntrinsicFunctions>false</IntrinsicFunctions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>

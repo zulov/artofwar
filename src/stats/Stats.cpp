@@ -56,12 +56,13 @@ Stats::Stats() {
 Stats::~Stats() {
 	saveAll(1, 1);
 	clear();
-	delete []input;
+	delete []basicInput;
 }
 
 void Stats::init() {
 	clear();
-	input = new float[magic_enum::enum_count<StatsInputType>() * 2];
+	basicInput = new float[magic_enum::enum_count<StatsInputType>() * 2];
+	basicInputSpan = std::span{basicInput, magic_enum::enum_count<StatsInputType>() * 2};
 	for (auto allPlayer : Game::getPlayersMan()->getAllPlayers()) {
 		statsPerPlayer.push_back(new float[magic_enum::enum_count<StatsInputType>()]);
 	}
@@ -69,7 +70,7 @@ void Stats::init() {
 
 std::string Stats::getInputData(char player) {
 	const auto input = getBasicInput(player);
-	return join(input, input + magic_enum::enum_count<StatsInputType>() * 2);
+	return join(input.begin(), input.end());
 }
 
 void Stats::add(GeneralActionCommand* command) {
@@ -220,7 +221,7 @@ int Stats::getScoreFor(short id) const {
 	return Game::getPlayersMan()->getPlayer(id)->getScore();
 }
 
-float* Stats::getBasicInput(short id) {
+std::span<float> Stats::getBasicInput(short id) {
 	char idEnemy; //TODO do it better
 	if (id == 0) {
 		idEnemy = 1;
@@ -231,10 +232,10 @@ float* Stats::getBasicInput(short id) {
 	update(idEnemy);
 	auto stats = statsPerPlayer.at(id);
 	auto enemy = statsPerPlayer.at(idEnemy); //TODO BUG wybrac wroga
-	std::copy(stats, stats + magic_enum::enum_count<StatsInputType>(), input);
+	std::copy(stats, stats + magic_enum::enum_count<StatsInputType>(), basicInput);
 	std::copy(enemy, enemy + magic_enum::enum_count<StatsInputType>(),
-	          input + magic_enum::enum_count<StatsInputType>());
-	return input;
+	          basicInput + magic_enum::enum_count<StatsInputType>());
+	return basicInputSpan;
 }
 
 void Stats::clear() {
@@ -320,7 +321,7 @@ std::string Stats::getOutput(StatsOutputType stat) const {
 
 std::string Stats::getResourceIdOutput(UnitActionCommand* command) const {
 	float output[4];
-	std::fill_n(output, output + 4, 0.f);
+	std::fill_n(output,  4, 0.f);
 	output[command->order->getToUseId()] = 1;
 	return join(output, output + 4);
 }

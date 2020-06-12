@@ -1,8 +1,12 @@
 #pragma once
-#include "nn/Brain.h"
-#include "objects/unit/Unit.h"
+#include <initializer_list>
+#include <vector>
 
+#include "nn/Brain.h"
+
+enum class UnitState : char;
 class Player;
+class Unit;
 
 class OrderMaker {
 public:
