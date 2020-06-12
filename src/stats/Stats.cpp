@@ -40,7 +40,7 @@ Stats::Stats() {
 
 	wBasic[cast(StatsInputType::WORKERS)] = 100;
 
-	wResourceInput[cast(ResourceInputType::GOLD_SPEED)] = 100;
+	//wResourceInput[cast(ResourceInputType::GOLD_SPEED)] = 100;
 }
 
 Stats::~Stats() {
@@ -311,7 +311,7 @@ std::string Stats::getOutput(StatsOutputType stat) const {
 
 std::string Stats::getResourceIdOutput(UnitActionCommand* command) const {
 	float output[4];
-	std::fill_n(output, output + 4, 0.f);
+	std::fill_n(output,  4, 0.f);
 	output[command->order->getToUseId()] = 1;
 	return join(output, output + 4);
 }

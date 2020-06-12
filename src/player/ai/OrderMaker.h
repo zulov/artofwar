@@ -2,6 +2,8 @@
 #include <initializer_list>
 #include <vector>
 
+#include "nn/Brain.h"
+
 enum class UnitState : char;
 class Player;
 class Unit;

@@ -1,6 +1,7 @@
 #include "OrderMaker.h"
 #include "objects/unit/Unit.h"
 #include "stats/StatsEnums.h"
+#include "player/Player.h"
 
 OrderMaker::OrderMaker(Player* player)
 	: player(player), collectResourceId("Data/ai/main_w.csv"){
