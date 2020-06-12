@@ -1,5 +1,10 @@
 #pragma once
-#include "player/Player.h"
+#include <initializer_list>
+#include <vector>
+
+enum class UnitState : char;
+class Player;
+class Unit;
 
 class OrderMaker {
 public:

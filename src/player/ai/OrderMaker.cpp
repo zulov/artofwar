@@ -1,5 +1,6 @@
 #include "OrderMaker.h"
 #include "objects/unit/Unit.h"
+#include "player/Player.h"
 
 OrderMaker::OrderMaker(Player* player)
 	: player(player) {
@@ -7,7 +8,7 @@ OrderMaker::OrderMaker(Player* player)
 
 void OrderMaker::action() {
 	auto freeWorkers = findFreeWorkers();
-	
+
 	if (!freeWorkers.empty()) {
 		collect(freeWorkers);
 	}
@@ -29,10 +30,11 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() {
 			freeWorkers.push_back(worker);
 		}
 	}
+	return freeWorkers;
 }
 
 bool OrderMaker::collect(std::vector<Unit*>& workers) {
 	auto values = player->getResources().getValues();
 
-	
+	return false;
 }
