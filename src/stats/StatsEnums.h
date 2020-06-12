@@ -55,11 +55,13 @@ enum class ResourceInputType : char {
 inline char cast(StatsInputType type) {
 	return static_cast<char>(type);
 }
-
 inline char cast(StatsOutputType type) {
 	return static_cast<char>(type);
 }
-
 inline char cast(StatsOrderOutputType type) {
 	return static_cast<char>(type);
 }
+inline char cast(ResourceInputType type) {
+	return static_cast<char>(type);
+}
+

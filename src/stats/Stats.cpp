@@ -40,7 +40,17 @@ Stats::Stats() {
 
 	wBasic[cast(StatsInputType::WORKERS)] = 100;
 
-	//wResourceInput[cast(ResourceInputType::GOLD_SPEED)] = 100;
+	wResourceInput[cast(ResourceInputType::GOLD_SPEED)] = 10;
+	wResourceInput[cast(ResourceInputType::WOOD_SPEED)] = 10;
+	wResourceInput[cast(ResourceInputType::FOOD_SPEED)] = 10;
+	wResourceInput[cast(ResourceInputType::STONE_SPEED)] = 10;
+	
+	wResourceInput[cast(ResourceInputType::GOLD_VALUE)] = 1000;
+	wResourceInput[cast(ResourceInputType::WOOD_VALUE)] = 1000;
+	wResourceInput[cast(ResourceInputType::FOOD_VALUE)] = 1000;
+	wResourceInput[cast(ResourceInputType::STONE_VALUE)] = 1000;
+	
+	wResourceInput[cast(ResourceInputType::PLAYER_SCORE)] = 1000;
 }
 
 Stats::~Stats() {
