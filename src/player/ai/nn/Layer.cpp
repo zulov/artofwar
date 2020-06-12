@@ -1,5 +1,6 @@
 #include "Layer.h"
 #include <algorithm>
+#include <cassert>
 #include <iostream>
 
 
@@ -22,7 +23,7 @@ Layer::~Layer() {
 	delete []w;
 }
 
-void Layer::setValues(float data[]) const {
-	//TODO musi sie zgadzac rozmiar czy to jest sprawdzane?
-	std::copy(data, data + numberOfNodes, values);
+void Layer::setValues(std::span<float> data) const {
+	assert(data.size()==numberOfNodes);
+	std::copy(data.begin(), data.end(), values);
 }

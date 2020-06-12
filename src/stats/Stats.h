@@ -1,5 +1,6 @@
 #pragma once
 #include <magic_enum.hpp>
+#include <span>
 #include <string>
 #include <vector>
 #include "StatsEnums.h"
@@ -24,7 +25,7 @@ public:
 	Stats();
 	~Stats();
 	int getScoreFor(short id) const;
-	float* getBasicInput(short id);
+	std::span<float> getBasicInput(short id);
 	void init();
 	std::string getInputData(char player);
 
@@ -59,7 +60,8 @@ private:
 	void saveBatch(int i, std::vector<std::string>* array, std::string name, int size) const;
 	void saveAll(int big, int small);
 
-	float* input;
+	float* basicInput;
+	std::span<float> basicInputSpan;
 	std::vector<float*> statsPerPlayer;
 	float weights[magic_enum::enum_count<StatsInputType>()];
 

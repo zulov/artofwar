@@ -29,27 +29,28 @@ Stats::Stats() {
 	weights[cast(StatsInputType::ATTACK)] = 1000;
 	weights[cast(StatsInputType::DEFENCE)] = 1000;
 	weights[cast(StatsInputType::BASE_TO_ENEMY)] = 1000;
-	
+
 	weights[cast(StatsInputType::UNITS_ATTACK)] = 1000;
 	weights[cast(StatsInputType::UNITS_DEFENCE)] = 1000;
 	weights[cast(StatsInputType::UNITS_ECONOMY)] = 1000;
-	
+
 	weights[cast(StatsInputType::BUILDINGS_ATTACK)] = 100;
 	weights[cast(StatsInputType::BUILDINGS_DEFENCE)] = 100;
 	weights[cast(StatsInputType::BUILDINGS_ECONOMY)] = 100;
-	
+
 	weights[cast(StatsInputType::WORKERS)] = 100;
 }
 
 Stats::~Stats() {
 	saveAll(1, 1);
 	clear();
-	delete []input;
+	delete []basicInput;
 }
 
 void Stats::init() {
 	clear();
-	input = new float[magic_enum::enum_count<StatsInputType>() * 2];
+	basicInput = new float[magic_enum::enum_count<StatsInputType>() * 2];
+	basicInputSpan = std::span{basicInput, magic_enum::enum_count<StatsInputType>() * 2};
 	for (auto allPlayer : Game::getPlayersMan()->getAllPlayers()) {
 		statsPerPlayer.push_back(new float[magic_enum::enum_count<StatsInputType>()]);
 	}
@@ -57,7 +58,7 @@ void Stats::init() {
 
 std::string Stats::getInputData(char player) {
 	const auto input = getBasicInput(player);
-	return join(input, input + magic_enum::enum_count<StatsInputType>() * 2);
+	return join(input.begin(), input.end());
 }
 
 void Stats::add(GeneralActionCommand* command) {
@@ -195,15 +196,15 @@ void Stats::update(short id) {
 	data[cast(StatsInputType::ATTACK)] = player->getAttackScore();
 	data[cast(StatsInputType::DEFENCE)] = player->getDefenceScore();
 	data[cast(StatsInputType::BASE_TO_ENEMY)] = Game::getEnvironment()->getDistToEnemy(player); //TODO ale do którego
-	
-	data[cast(StatsInputType::UNITS_ATTACK)]  = player->getUnitsVal(ValueType::ATTACK);
+
+	data[cast(StatsInputType::UNITS_ATTACK)] = player->getUnitsVal(ValueType::ATTACK);
 	data[cast(StatsInputType::UNITS_DEFENCE)] = player->getUnitsVal(ValueType::DEFENCE);
 	data[cast(StatsInputType::UNITS_ECONOMY)] = player->getUnitsVal(ValueType::ECON);
-	
+
 	data[cast(StatsInputType::BUILDINGS_ATTACK)] = player->getBuildingsVal(ValueType::ATTACK);
 	data[cast(StatsInputType::BUILDINGS_DEFENCE)] = player->getBuildingsVal(ValueType::DEFENCE);
 	data[cast(StatsInputType::BUILDINGS_ECONOMY)] = player->getBuildingsVal(ValueType::ECON);
-	
+
 	data[cast(StatsInputType::WORKERS)] = player->getWorkersNumber();
 
 	std::transform(data, data + magic_enum::enum_count<StatsInputType>(), weights, data, std::divides<>());
@@ -214,7 +215,7 @@ int Stats::getScoreFor(short id) const {
 	return Game::getPlayersMan()->getPlayer(id)->getScore();
 }
 
-float* Stats::getBasicInput(short id) {
+std::span<float> Stats::getBasicInput(short id) {
 	char idEnemy; //TODO do it better
 	if (id == 0) {
 		idEnemy = 1;
@@ -225,10 +226,10 @@ float* Stats::getBasicInput(short id) {
 	update(idEnemy);
 	auto stats = statsPerPlayer.at(id);
 	auto enemy = statsPerPlayer.at(idEnemy); //TODO BUG wybrac wroga
-	std::copy(stats, stats + magic_enum::enum_count<StatsInputType>(), input);
+	std::copy(stats, stats + magic_enum::enum_count<StatsInputType>(), basicInput);
 	std::copy(enemy, enemy + magic_enum::enum_count<StatsInputType>(),
-	          input + magic_enum::enum_count<StatsInputType>());
-	return input;
+	          basicInput + magic_enum::enum_count<StatsInputType>());
+	return basicInputSpan;
 }
 
 void Stats::clear() {

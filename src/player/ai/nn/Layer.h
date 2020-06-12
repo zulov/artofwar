@@ -1,4 +1,5 @@
 #pragma once
+#include <span>
 #include <vector>
 
 class Layer {
@@ -6,7 +7,7 @@ class Layer {
 public:
 	Layer(std::vector<float>& w, std::vector<float>& bias);
 	~Layer();
-	void setValues(float data[]) const;
+	void setValues(std::span<float> data) const;
 	float* getValues() const { return values; }
 	short getNumberOfValues() const { return numberOfNodes; }
 	short getPrevSize() const { return prevSize; }

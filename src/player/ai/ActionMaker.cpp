@@ -201,15 +201,16 @@ float ActionMaker::dist(std::valarray<float>& center, db_ai_property* props) {
 
 const std::vector<float>& ActionMaker::inputWithParamsDecide(Brain& brain, const db_ai_property* ai_property) const {
 	float input[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
+	std::span span{input};
 	std::fill_n(input, magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE, 0.f);
 
 	const auto basicInput = Game::getStats()->getBasicInput(player->getId());
-	std::copy(basicInput, basicInput + magic_enum::enum_count<StatsInputType>() * 2, input);
+	std::copy(basicInput.begin(), basicInput.end(), input);
 
 	const auto aiInput = ai_property->paramsNorm;
 	std::copy(aiInput, aiInput + AI_PROPS_SIZE, input + magic_enum::enum_count<StatsInputType>() * 2);
 
-	return brain.decide(input);
+	return brain.decide(span);
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
