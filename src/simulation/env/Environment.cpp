@@ -307,7 +307,7 @@ std::vector<float>& Environment::getInfluenceDataAt(char player, const Urho3D::V
 }
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,
-                                                           const std::vector<float>& result) {
+                                                           const std::span<float> result) {
 	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player);
 	//TODO performance nie obliczać wszystkich centrów tylko te co trzeba
 	float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
@@ -321,7 +321,7 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 	return {};
 }
 
-std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::vector<float>& result, int min) {
+std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::span<float> result, int min) {
 	return influenceManager.getAreasIterative(result, player, 0.1, min);
 }
 

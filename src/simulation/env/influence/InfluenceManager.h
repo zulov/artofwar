@@ -1,5 +1,7 @@
 #pragma once
 
+#include <span>
+
 #include "map/InfluenceMapInt.h"
 #include "map/InfluenceMapFloat.h"
 #include "player/ai/InfluenceType.h"
@@ -37,7 +39,7 @@ public:
 	                                               int min);
 
 	float getFieldSize();
-	std::vector<Urho3D::Vector2> getAreas(const std::vector<float>& result, char player);
+	std::vector<Urho3D::Vector2> getAreas(const std::span<float> result, char player);
 
 private:
 	std::vector<Urho3D::Vector2> centersFromIndexes(InfluenceMapFloat* map, float* values,

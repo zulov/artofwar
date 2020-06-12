@@ -34,14 +34,13 @@ Brain::Brain(std::string dataPath) {
 	}
 	input = *allLayers.begin();
 	output = *(allLayers.end() - 1);
-	result.reserve(output->getNumberOfValues());
 }
 
 Brain::~Brain() {
 	clear_vector(allLayers);
 }
 
-const std::vector<float>& Brain::decide(std::span<float> data) {
+const std::span<float> Brain::decide(std::span<float> data) {
 	input->setValues(data);
 	for (int i = 1; i < allLayers.size(); i++) {
 		Layer* layer = allLayers.at(i);
@@ -51,8 +50,7 @@ const std::vector<float>& Brain::decide(std::span<float> data) {
 
 		setValues(layer, mult);
 	}
-	result.clear();
-	result.insert(result.end(), output->getValues(),output->getValues()+output->getNumberOfValues());
+	std::span result{output->getValues(), static_cast<int>(output->getNumberOfValues())};
 
 	return result;
 }

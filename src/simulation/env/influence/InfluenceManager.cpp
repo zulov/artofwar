@@ -1,6 +1,8 @@
 ﻿#include "InfluenceManager.h"
 
 #include <chrono>
+#include <span>
+
 
 #include "Game.h"
 #include "database/DatabaseCache.h"
@@ -41,7 +43,8 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 		mapsForAiPerPlayer.emplace_back(std::vector<InfluenceMapFloat*>{
 			econLevelPerPlayer[player], attackLevelPerPlayer[player], defenceLevelPerPlayer[player],
 			buildingsInfluencePerPlayer[player], unitsInfluencePerPlayer[player],
-			resourceInfluence[0], resourceInfluence[1], resourceInfluence[2], resourceInfluence[3]//TODO moze to nie osobno jednak? za duza ma wage
+			resourceInfluence[0], resourceInfluence[1], resourceInfluence[2],
+			resourceInfluence[3] //TODO moze to nie osobno jednak? za duza ma wage
 		});
 	}
 
@@ -273,9 +276,9 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::vect
 	return centersFromIndexes(maps[0], intersection);
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::vector<float>& result, char player) {
-
+std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> result, char player) {
 	auto& maps = mapsForAiPerPlayer[player];
+	assert(result.size()==maps.size());
 	auto arraySize = INF_GRID_SIZE * INF_GRID_SIZE;
 	float intersection[INF_GRID_SIZE * INF_GRID_SIZE];
 	std::fill_n(intersection, arraySize, 0.f);

@@ -28,7 +28,7 @@ private:
 	
 	std::optional<Urho3D::Vector2> posToBuild(db_building* building);
 	std::vector<Building*> getBuildingsCanDeploy(short unitId, std::vector<db_building*>& buildings) const;
-	const std::vector<float>& inputWithParamsDecide(Brain& brain, const db_ai_property* ai_property) const;
+	const std::span<float> inputWithParamsDecide(Brain& brain, const db_ai_property* ai_property) const;
 
 	float dist(std::valarray<float>& center, db_ai_property* props);
 

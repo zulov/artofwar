@@ -201,7 +201,7 @@ float ActionMaker::dist(std::valarray<float>& center, db_ai_property* props) {
 	return sq.sum();
 }
 
-const std::vector<float>& ActionMaker::inputWithParamsDecide(Brain& brain, const db_ai_property* ai_property) const {
+const std::span<float> ActionMaker::inputWithParamsDecide(Brain& brain, const db_ai_property* ai_property) const {
 	float input[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
 	std::span span{input};
 
@@ -217,7 +217,7 @@ const std::vector<float>& ActionMaker::inputWithParamsDecide(Brain& brain, const
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
-	auto& result = inputWithParamsDecide(buildingBrainPos, player->getLevelForBuilding(building->id)->aiProps);
+	auto result = inputWithParamsDecide(buildingBrainPos, player->getLevelForBuilding(building->id)->aiProps);
 
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
