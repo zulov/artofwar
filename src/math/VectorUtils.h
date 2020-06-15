@@ -1,6 +1,7 @@
 #pragma once
 #include <numeric>
 #include <vector>
+#include <span>
 #include "objects/unit/Unit.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
@@ -52,7 +53,7 @@ static std::vector<short> intersection(std::vector<std::vector<short>*>& ids) {
 	return common;
 }
 
-static float getBestThree(int ids[3], float vals[3], std::vector<float> v) {
+static float getBestThree(int ids[3], float vals[3], std::span<float> v) {
 	for (int i = 0; i < 3; ++i) {
 		const auto max = std::max_element(v.begin(), v.end());
 		ids[i] = max - v.begin();

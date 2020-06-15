@@ -50,14 +50,15 @@ const std::span<float> Brain::decide(std::span<float> data) {
 
 		setValues(layer, mult);
 	}
-	std::span result{output->getValues(), static_cast<int>(output->getNumberOfValues())};
 
-	return result;
+	return output->getValues();
 }
 
 Eigen::MatrixXf Brain::multiply(Layer* current, Layer* prevLayer) {
-	//TODO performance 
-	const auto input = Eigen::Map<Eigen::VectorXf>(prevLayer->getValues(), prevLayer->getNumberOfValues());
+	//TODO performance
+	const auto vals = prevLayer->getValues();
+	
+	const auto input = Eigen::Map<Eigen::VectorXf>(vals.data(), vals.size());
 	const auto weightedMatrix = Eigen::Map<Eigen::MatrixXf>(current->getW(), current->getPrevSize(),
 	                                                        current->getNumberOfValues()).transpose();
 

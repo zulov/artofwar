@@ -241,7 +241,7 @@ std::vector<float>& InfluenceManager::getInfluenceDataAt(char player, const Urho
 	return dataFromPos;
 }
 
-std::vector<int> InfluenceManager::getIndexesIterative(const std::vector<float>& result, float tolerance, int min,
+std::vector<int> InfluenceManager::getIndexesIterative(const std::span<float> result, float tolerance, int min,
                                                        std::vector<InfluenceMapFloat*>& maps) const {
 	int k = 0;
 	for (auto step : {0.0, 0.05, 0.1}) {
@@ -267,13 +267,13 @@ std::vector<int> InfluenceManager::getIndexesIterative(const std::vector<float>&
 	return {};
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::vector<float>& result, char player,
+std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span<float> result, char player,
                                                                  float tolerance,
                                                                  int min) {
 	auto& maps = mapsForAiPerPlayer[player];
+	assert(result.size()==maps.size());
 
-	std::vector<int> intersection = getIndexesIterative(result, tolerance, min, maps);
-	return centersFromIndexes(maps[0], intersection);
+	return centersFromIndexes(maps[0], getIndexesIterative(result, tolerance, min, maps));
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> result, char player) {
