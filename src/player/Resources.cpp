@@ -8,6 +8,16 @@ Resources::Resources() {
 	init(0);
 }
 
+Resources::Resources(float valueForAll) {
+	init(valueForAll);
+}
+
+Resources::~Resources() {
+	delete[] values;
+	delete[] sumGatherSpeed;
+	delete[] gatherSpeeds;
+};
+
 void Resources::init(float valueForAll) {
 	size = Game::getDatabase()->getResourceSize();
 	values = new float[size];
@@ -16,19 +26,13 @@ void Resources::init(float valueForAll) {
 	std::fill_n(values, size, valueForAll);
 	std::fill_n(gatherSpeeds, size, 0.f);
 	std::fill_n(sumGatherSpeed, size, 0.f);
+
+	valuesSpan = std::span(values, size);
+	gatherSpeedsSpan = std::span(gatherSpeeds, size);
+	sumGatherSpeedSpan = std::span(sumGatherSpeed, size);
+
 	changed = true;
 }
-
-Resources::Resources(float valueForAll) {
-	init(valueForAll);
-}
-
-
-Resources::~Resources() {
-	delete[] values;
-	delete[] sumGatherSpeed;
-	delete[] gatherSpeeds;
-};
 
 bool Resources::reduce(const std::vector<db_cost*>& costs) {
 	for (int i = 0; i < costs.size(); ++i) {
@@ -62,16 +66,12 @@ bool Resources::hasChanged() const {
 	return changed;
 }
 
-short Resources::getSize() const {
-	return size;
+std::span<float> Resources::getValues() const {
+	return valuesSpan;
 }
 
-float* Resources::getValues() {
-	return values;
-}
-
-float* Resources::getGatherSpeeds() {
-	return gatherSpeeds;
+std::span<float> Resources::getGatherSpeeds() const {
+	return gatherSpeedsSpan;
 }
 
 void Resources::hasBeenUpdatedDrawn() {

@@ -112,7 +112,7 @@ void Possession::updateAndClean(Resources& resources) {
 		}
 	}
 
-	short size = resources.getSize();
-	float* values = resources.getValues();
-	resourcesSum = std::accumulate(values, values + size, 0.f);
+
+	auto values = resources.getValues();
+	resourcesSum = std::accumulate(values.begin(), values.end(), 0.f);
 }

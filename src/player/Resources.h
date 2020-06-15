@@ -1,6 +1,8 @@
 #pragma once
-#include "database/db_strcut.h"
+
 #include <string>
+#include <span>
+#include "database/db_strcut.h"
 
 class Resources {
 public:
@@ -12,9 +14,10 @@ public:
 	bool hasEnough(const std::vector<db_cost*>& costs) const;
 	void add(int id, float value);
 	bool hasChanged() const;
-	short getSize() const;
-	float* getValues();
-	float* getGatherSpeeds();
+
+	std::span<float> getValues() const;
+	std::span<float> getGatherSpeeds() const;
+	
 	void hasBeenUpdatedDrawn();
 	std::string getValues(int precision, int player);
 	void setValue(int id, float amount);
@@ -27,6 +30,11 @@ private:
 	float* values;
 	float* gatherSpeeds;
 	float* sumGatherSpeed;
+	
+	std::span<float> valuesSpan;
+	std::span<float> gatherSpeedsSpan;
+	std::span<float> sumGatherSpeedSpan;
+	
 	int size;
 	bool changed;
 };

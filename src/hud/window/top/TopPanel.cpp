@@ -54,10 +54,10 @@ void TopPanel::update(Player* player) const {
 
 	auto& resources = player->getResources();
 	if (resources.hasChanged()) {
-		short size = resources.getSize();
-		float* values = resources.getValues();
-		for (int i = 0; i < size; ++i) {
-			elements[i]->setText(Urho3D::String((int)values[i]));
+		auto vals = resources.getValues();
+
+		for (int i = 0; i < vals.size(); ++i) {
+			elements[i]->setText(Urho3D::String((int)vals[i]));
 		}
 		resources.hasBeenUpdatedDrawn();
 	}

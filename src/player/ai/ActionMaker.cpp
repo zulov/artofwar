@@ -21,7 +21,6 @@
 #include "simulation/env/Environment.h"
 #include "stats/Stats.h"
 #include "stats/StatsEnums.h"
-#include "player/Player.h"
 
 
 ActionMaker::ActionMaker(Player* player): player(player),
@@ -63,7 +62,6 @@ void ActionMaker::action() {
 			return;
 		}
 	}
-
 }
 
 bool ActionMaker::enoughResources(db_with_cost* withCosts) const {
@@ -96,7 +94,7 @@ bool ActionMaker::createUnit() {
 
 db_building* ActionMaker::chooseBuilding() {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	auto& result = decideFromBasic(buildingBrainId);
+	auto result = decideFromBasic(buildingBrainId);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
@@ -116,7 +114,7 @@ db_building* ActionMaker::chooseBuilding() {
 
 db_building_level* ActionMaker::chooseBuildingLevelUp() {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	auto& result = decideFromBasic(buildingLevelUpId);
+	auto result = decideFromBasic(buildingLevelUpId);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
@@ -145,7 +143,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 
 db_unit* ActionMaker::chooseUnit() {
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	auto& result = decideFromBasic(unitBrainId);
+	auto result = decideFromBasic(unitBrainId);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
@@ -166,7 +164,7 @@ db_unit* ActionMaker::chooseUnit() {
 
 db_unit_level* ActionMaker::chooseUnitLevelUp() {
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	auto& result = decideFromBasic(unitLevelUpId);
+	auto result = decideFromBasic(unitLevelUpId);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
