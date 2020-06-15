@@ -37,7 +37,7 @@ public:
 	void add(UnitActionCommand* command);
 
 	void add(CreationCommand* command);
-	
+
 	void save();
 private:
 	void update(short id);
@@ -46,18 +46,19 @@ private:
 	std::string getOutput(CreationCommand* command) const;
 	std::string getCreateBuildingPosOutput(CreationCommand* command) const;
 	std::string getCreateUnitPosOutput(Building* building) const;
-	std::string getLevelUpUnitPosOutput(Building* building)const;
+	std::string getLevelUpUnitPosOutput(Building* building) const;
 	std::string getOutput(UpgradeCommand* command) const;
 
 	std::string getOutput(UnitActionCommand* command) const;
 	std::string getOutput(ResourceActionCommand* command) const;
 	std::string getOutput(BuildingActionCommand* command) const;
 	std::string getOutput(GeneralActionCommand* command) const;
-	
+
 	std::string getOutput(StatsOutputType stat) const;
 
-	std::string getResourceIdOutput(UnitActionCommand* command)const;
+	std::string getResourceIdOutput(UnitActionCommand* command) const;
 	std::string getResourceIdInputAsString(Player* player);
+	std::span<float> getResourceIdInput(Player* player);
 
 	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output);
 	void save(int i, std::vector<std::string>* array, std::string fileName) const;
@@ -66,6 +67,10 @@ private:
 
 	float* basicInput;
 	std::span<float> basicInputSpan;
+
+	float* resourceIdInput;
+	std::span<float> resourceIdInputSpan;
+
 	std::vector<float*> statsPerPlayer;
 	float wBasic[magic_enum::enum_count<StatsInputType>()];
 	float wResourceInput[magic_enum::enum_count<ResourceInputType>()];

@@ -51,26 +51,30 @@ Stats::Stats() {
 	wResourceInput[cast(ResourceInputType::STONE_VALUE)] = 1000;
 
 	wResourceInput[cast(ResourceInputType::PLAYER_SCORE)] = 1000;
+
+
 }
 
 Stats::~Stats() {
 	saveAll(1, 1);
 	clear();
 	delete []basicInput;
+	delete []resourceIdInput;
 }
 
 void Stats::init() {
 	clear();
 	basicInput = new float[magic_enum::enum_count<StatsInputType>() * 2];
 	basicInputSpan = std::span{basicInput, magic_enum::enum_count<StatsInputType>() * 2};
+	resourceIdInput = new float[magic_enum::enum_count<ResourceInputType>()];
+	resourceIdInputSpan = std::span(resourceIdInput, magic_enum::enum_count<ResourceInputType>());
 	for (auto allPlayer : Game::getPlayersMan()->getAllPlayers()) {
 		statsPerPlayer.push_back(new float[magic_enum::enum_count<StatsInputType>()]);
 	}
 }
 
 std::string Stats::getInputData(char player) {
-	const auto input = getBasicInput(player);
-	return join(input.begin(), input.end());
+	return join(getBasicInput(player));
 }
 
 void Stats::add(GeneralActionCommand* command) {
@@ -327,18 +331,21 @@ std::string Stats::getResourceIdOutput(UnitActionCommand* command) const {
 }
 
 std::string Stats::getResourceIdInputAsString(Player* player) {
-	float input[magic_enum::enum_count<ResourceInputType>()];
+	return join(getResourceIdInput(player));
+}
 
+std::span<float> Stats::getResourceIdInput(Player* player) {
 	auto resources = player->getResources();
 
 	auto gatherSpeeds = resources.getGatherSpeeds();
 	auto values = resources.getValues();
-	std::copy(gatherSpeeds.begin(), gatherSpeeds.end(), input);
-	std::copy(values.begin(), values.end(), input + gatherSpeeds.size());
-	input[magic_enum::enum_count<ResourceInputType>() - 1] = player->getScore();
+	std::copy(gatherSpeeds.begin(), gatherSpeeds.end(), resourceIdInputSpan.begin());
+	std::copy(values.begin(), values.end(), resourceIdInputSpan.begin() + gatherSpeeds.size());
+	resourceIdInputSpan[magic_enum::enum_count<ResourceInputType>() - 1] = player->getScore();
 
-	std::transform(input, input + magic_enum::enum_count<ResourceInputType>(), wResourceInput, input, std::divides<>());
-	return join(input, input + magic_enum::enum_count<ResourceInputType>());
+	std::transform(resourceIdInputSpan.begin(), resourceIdInputSpan.end(), wResourceInput, resourceIdInputSpan.begin(),
+	               std::divides<>());
+	return resourceIdInputSpan;
 }
 
 void Stats::add(UnitActionCommand* command) {

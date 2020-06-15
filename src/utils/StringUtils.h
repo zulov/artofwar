@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <span>
 
 inline std::vector<std::string> split(const std::string& s, char delimiter) {
 	std::vector<std::string> tokens;
@@ -10,7 +11,7 @@ inline std::vector<std::string> split(const std::string& s, char delimiter) {
 	while (std::getline(tokenStream, token, delimiter)) {
 		tokens.push_back(token);
 	}
-	return tokens;//TODO performance czy to kopia?
+	return tokens; //TODO performance czy to kopia?
 }
 
 template <typename Iterator>
@@ -21,5 +22,10 @@ std::string join(Iterator begin, Iterator end, char separator = ';') {
 		for (; begin != end; ++begin)
 			o << separator << *begin;
 	}
-	return o.str();//TODO performance czy to kopia?
+	return o.str(); //TODO performance czy to kopia?
+}
+
+template <typename T>
+std::string join(std::span<T> span, char separator = ';') {
+	return join(span.begin(), span.end(), separator);
 }
