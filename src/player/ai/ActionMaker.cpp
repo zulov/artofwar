@@ -1,11 +1,9 @@
 #include "ActionMaker.h"
 
-
 #include <chrono>
 #include <numeric>
 #include <unordered_set>
 #include <valarray>
-
 #include "ActionMakerLogger.h"
 #include "AiUtils.h"
 #include "Game.h"
@@ -14,7 +12,6 @@
 #include "commands/action/GeneralActionCommand.h"
 #include "commands/action/GeneralActionType.h"
 #include "database/DatabaseCache.h"
-#include "math/RandGen.h"
 #include "math/VectorUtils.h"
 #include "player/Player.h"
 #include "player/ai/ActionCenter.h"
@@ -40,28 +37,12 @@ const std::span<float> ActionMaker::decideFromBasic(Brain& brain) const {
 	return brain.decide(Game::getStats()->getBasicInput(player->getId()));
 }
 
+
 void ActionMaker::action() {
-	int ids[3];
-	float vals[3];
-	float max = getBestThree(ids, vals, decideFromBasic(mainBrain));
+	int id = biggestWithRand(decideFromBasic(mainBrain));
 
-	if (max <= 0) {
-		return;
-	}
-
-	logThree(ids, vals, max);
-
-	float val = RandGen::nextRand(RandFloatType::AI, max);
-	float sum = 0;
-
-	for (int i = 0; i < 3; ++i) {
-		sum += vals[i];
-		if (val <= sum) {
-			const auto result = createOrder(static_cast<StatsOutputType>(ids[i]));
-			logResult(ids, i, result);
-			return;
-		}
-	}
+	const auto result = createOrder(static_cast<StatsOutputType>(id));
+	logResult(id, result);
 }
 
 bool ActionMaker::enoughResources(db_with_cost* withCosts) const {
@@ -102,11 +83,11 @@ db_building* ActionMaker::chooseBuilding() {
 	for (auto building : buildings) {
 		diffs.push_back(dist(center, player->getLevelForBuilding(building->id)->aiProps));
 	}
-
-	auto inx = randFromThree(diffs);
-	if (inx < 0) {
+	if (diffs.empty() ) {
 		return nullptr;
 	}
+	auto inx = lowestWithRand(diffs);
+	
 	const auto building = buildings[inx];
 	logBuilding(building);
 	return building;
@@ -127,11 +108,11 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 			diffs.push_back(1000);
 		}
 	}
-
-	auto inx = randFromThree(diffs);
-	if (inx < 0) {
+	if (diffs.empty() ) {
 		return nullptr;
 	}
+	auto inx = lowestWithRand(diffs);
+
 	const auto building = buildings[inx];
 	auto opt = player->getNextLevelForBuilding(building->id);
 	if (opt.has_value()) {
@@ -151,11 +132,11 @@ db_unit* ActionMaker::chooseUnit() {
 	for (auto unit : units) {
 		diffs.push_back(dist(center, player->getLevelForUnit(unit->id)->aiProps));
 	}
-
-	auto inx = randFromThree(diffs);
-	if (inx < 0) {
+	if (diffs.empty() ) {
 		return nullptr;
 	}
+	auto inx = lowestWithRand(diffs);
+
 	auto unit = units[inx];
 
 	logUnit(unit);
@@ -177,11 +158,11 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 			diffs.push_back(1000);
 		}
 	}
-
-	auto inx = randFromThree(diffs);
-	if (inx < 0) {
+	if (diffs.empty() ) {
 		return nullptr;
 	}
+	auto inx = lowestWithRand(diffs);
+
 	auto unit = units[inx];
 	auto opt = player->getNextLevelForUnit(unit->id);
 	if (opt.has_value()) {

@@ -27,6 +27,7 @@ public:
 	~Stats();
 	int getScoreFor(short id) const;
 	std::span<float> getBasicInput(short id);
+	std::span<float> getResourceIdInput(char playerId);
 	void init();
 	std::string getInputData(char player);
 
@@ -57,8 +58,7 @@ private:
 	std::string getOutput(StatsOutputType stat) const;
 
 	std::string getResourceIdOutput(UnitActionCommand* command) const;
-	std::string getResourceIdInputAsString(Player* player);
-	std::span<float> getResourceIdInput(Player* player);
+	std::string getResourceIdInputAsString(char playerId);
 
 	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output);
 	void save(int i, std::vector<std::string>* array, std::string fileName) const;

@@ -330,11 +330,12 @@ std::string Stats::getResourceIdOutput(UnitActionCommand* command) const {
 	return join(output, output + 4);
 }
 
-std::string Stats::getResourceIdInputAsString(Player* player) {
-	return join(getResourceIdInput(player));
+std::string Stats::getResourceIdInputAsString(char playerId) {
+	return join(getResourceIdInput(playerId));
 }
 
-std::span<float> Stats::getResourceIdInput(Player* player) {
+std::span<float> Stats::getResourceIdInput(char playerId) {
+	auto player = Game::getPlayersMan()->getPlayer(playerId);
 	auto resources = player->getResources();
 
 	auto gatherSpeeds = resources.getGatherSpeeds();
@@ -350,13 +351,12 @@ std::span<float> Stats::getResourceIdInput(Player* player) {
 
 void Stats::add(UnitActionCommand* command) {
 	const auto playerId = command->player;
-	auto player = Game::getPlayersMan()->getPlayer(command->player);
 
 	const std::string input = getInputData(playerId);
 
 	joinAndPush(unitOrderId, playerId, input, getOutput(command));
 	if (command->order->getId() == static_cast<char>(UnitAction::COLLECT)) {
-		auto sInput = getResourceIdInputAsString(player);
+		auto sInput = getResourceIdInputAsString(playerId);
 		joinAndPush(resourceId, playerId, sInput, getResourceIdOutput(command));
 	}
 }

@@ -18,6 +18,7 @@ public:
 	void action();
 private:
 	const std::span<float> decideFromBasic(Brain& brain) const;
+
 	bool enoughResources(db_with_cost* withCosts) const;
 	bool createOrder(StatsOutputType order);
 	

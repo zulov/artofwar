@@ -11,9 +11,9 @@ inline void logThree(int ids[3], float vals[3], float max) {
 	}
 }
 
-inline void logResult(int ids[3], int i, const bool result) {
+inline void logResult(int id, const bool result) {
 	if constexpr (LOG_ACTIONS_MAKER) {
-		std::cout << " -> " << static_cast<StatsOutputType>(ids[i]);
+		std::cout << " -> " << static_cast<StatsOutputType>(id);
 		if (result) {
 			std::cout << "(DONE)" << std::endl;
 		} else {

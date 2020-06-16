@@ -2,14 +2,8 @@
 #include "math/RandGen.h"
 #include "math/VectorUtils.h"
 
-inline int randFromThree(std::vector<float> diffs) {
-	int ids[3];
-	float vals[3];
-	float sum = getLowestThree(ids, vals, diffs);
-
-	if (sum <= 0) { return ids[0]; }
-	sum = mirror(vals, sum);
-	const float rand = RandGen::nextRand(RandFloatType::AI, sum);
+int randFromThree(int ids[3], float vals[3], float max) {
+	float rand = RandGen::nextRand(RandFloatType::AI, max);
 	float sumSoFar = 0;
 
 	for (int i = 0; i < 3; ++i) {
@@ -18,5 +12,32 @@ inline int randFromThree(std::vector<float> diffs) {
 			return ids[i];
 		}
 	}
-	return -1;
+	assert(1==0);
+	return ids[0];
+}
+
+inline int lowestWithRand(std::vector<float> diffs) {
+	assert(diffs.size()>0);
+	int ids[3];
+	float vals[3];
+	float max = getLowestThree(ids, vals, diffs);
+
+	if (max <= 0) { return ids[0]; }
+	max = mirror(vals, max);
+
+	return randFromThree(ids, vals, max);
+}
+
+
+inline int biggestWithRand(std::span<float> v) {
+	assert(v.size()>0);
+	int ids[3];
+	float vals[3];
+	float max = getBestThree(ids, vals, v);
+
+	if (max <= 0) { return ids[0]; }
+
+	logThree(ids, vals, max);
+
+	return randFromThree(ids, vals, max);
 }

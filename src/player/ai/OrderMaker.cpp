@@ -1,10 +1,10 @@
 #include "OrderMaker.h"
 
-#include <magic_enum.hpp>
-
+#include "AiUtils.h"
+#include "Game.h"
 #include "objects/unit/Unit.h"
 #include "player/Player.h"
-#include "stats/StatsEnums.h"
+#include "stats/Stats.h"
 
 OrderMaker::OrderMaker(Player* player)
 	: player(player), collectResourceId("Data/ai/main_w.csv"){
@@ -38,11 +38,9 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() {
 }
 
 bool OrderMaker::collect(std::vector<Unit*>& workers) {
-	auto values = player->getResources().getValues();
-
-	float input[magic_enum::enum_count<ResourceInputType>()];
+	auto input = Game::getStats()->getResourceIdInput(player->getId());
+	auto result = collectResourceId.decide(input);
+	auto resourceId = biggestWithRand(result);
 	
-	//auto result = collectResourceId.decide(input);
-
 	return false;
 }
