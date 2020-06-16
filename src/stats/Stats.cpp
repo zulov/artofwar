@@ -14,6 +14,7 @@
 #include "objects/unit/order/enums/UnitAction.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
+#include "player/ai/AiUtils.h"
 #include "simulation/env/Environment.h"
 #include "utils/StringUtils.h"
 
@@ -51,8 +52,6 @@ Stats::Stats() {
 	wResourceInput[cast(ResourceInputType::STONE_VALUE)] = 1000;
 
 	wResourceInput[cast(ResourceInputType::PLAYER_SCORE)] = 1000;
-
-
 }
 
 Stats::~Stats() {
@@ -60,14 +59,20 @@ Stats::~Stats() {
 	clear();
 	delete []basicInput;
 	delete []resourceIdInput;
+	delete []basicInputWithParams;
 }
 
 void Stats::init() {
 	clear();
 	basicInput = new float[magic_enum::enum_count<StatsInputType>() * 2];
 	basicInputSpan = std::span{basicInput, magic_enum::enum_count<StatsInputType>() * 2};
+	
 	resourceIdInput = new float[magic_enum::enum_count<ResourceInputType>()];
 	resourceIdInputSpan = std::span(resourceIdInput, magic_enum::enum_count<ResourceInputType>());
+	
+	basicInputWithParams = new float[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
+	basicInputWithParamsSpan = std::span{basicInputWithParams, magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE};
+	
 	for (auto allPlayer : Game::getPlayersMan()->getAllPlayers()) {
 		statsPerPlayer.push_back(new float[magic_enum::enum_count<StatsInputType>()]);
 	}
@@ -236,9 +241,9 @@ std::span<float> Stats::getBasicInput(short id) {
 	update(idEnemy);
 	auto stats = statsPerPlayer.at(id);
 	auto enemy = statsPerPlayer.at(idEnemy); //TODO BUG wybrac wroga
-	std::copy(stats, stats + magic_enum::enum_count<StatsInputType>(), basicInput);
+	std::copy(stats, stats + magic_enum::enum_count<StatsInputType>(), basicInputSpan.begin());
 	std::copy(enemy, enemy + magic_enum::enum_count<StatsInputType>(),
-	          basicInput + magic_enum::enum_count<StatsInputType>());
+	          basicInputSpan.begin() + magic_enum::enum_count<StatsInputType>());
 	return basicInputSpan;
 }
 
@@ -338,15 +343,22 @@ std::span<float> Stats::getResourceIdInput(char playerId) {
 	auto player = Game::getPlayersMan()->getPlayer(playerId);
 	auto resources = player->getResources();
 
-	auto gatherSpeeds = resources.getGatherSpeeds();
-	auto values = resources.getValues();
-	std::copy(gatherSpeeds.begin(), gatherSpeeds.end(), resourceIdInputSpan.begin());
-	std::copy(values.begin(), values.end(), resourceIdInputSpan.begin() + gatherSpeeds.size());
+	copyTo(resourceIdInputSpan,resources.getGatherSpeeds(),resources.getValues());
+
 	resourceIdInputSpan[magic_enum::enum_count<ResourceInputType>() - 1] = player->getScore();
 
 	std::transform(resourceIdInputSpan.begin(), resourceIdInputSpan.end(), wResourceInput, resourceIdInputSpan.begin(),
 	               std::divides<>());
 	return resourceIdInputSpan;
+}
+
+std::span<float> Stats::getBasicInputWithParams(char playerId, db_ai_property* prop) {
+	auto basicInput = getBasicInput(playerId);
+
+	copyTo(basicInputWithParamsSpan,basicInput,prop->getParamsNormAsSpan());
+
+
+	return basicInputWithParamsSpan;
 }
 
 void Stats::add(UnitActionCommand* command) {

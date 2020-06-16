@@ -2,13 +2,18 @@
 #include <optional>
 #include <valarray>
 #include <Urho3D/Math/Vector2.h>
-#include "database/db_strcut.h"
 #include "nn/Brain.h"
-#include "objects/building/Building.h"
+
 
 class Player;
+class Building;
+struct db_with_cost;
 struct db_level;
 struct db_building;
+struct db_unit_level;
+struct db_unit;
+struct db_building_level;
+struct db_ai_property;
 enum class StatsOutputType : char;
 
 class ActionMaker {

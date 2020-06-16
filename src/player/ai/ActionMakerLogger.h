@@ -1,5 +1,9 @@
 #pragma once
 #define LOG_ACTIONS_MAKER true
+#include <iostream>
+
+#include "database/db_strcut.h"
+#include "stats/StatsEnums.h"
 
 using namespace magic_enum::ostream_operators;
 

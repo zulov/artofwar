@@ -4,13 +4,12 @@
 #include <string>
 #include <vector>
 #include "StatsEnums.h"
-#include "commands/action/UnitActionCommand.h"
-#include "player/ai/ActionMaker.h"
 #include "utils/defines.h"
 
 #define SAVE_BATCH_SIZE 10
 #define SAVE_BATCH_SIZE_MINI 4
 
+struct db_ai_property;
 struct ActionParameter;
 class GeneralActionCommand;
 class Building;
@@ -27,7 +26,9 @@ public:
 	~Stats();
 	int getScoreFor(short id) const;
 	std::span<float> getBasicInput(short id);
+
 	std::span<float> getResourceIdInput(char playerId);
+	std::span<float> getBasicInputWithParams(char playerId, db_ai_property* prop);
 	void init();
 	std::string getInputData(char player);
 
@@ -70,6 +71,9 @@ private:
 
 	float* resourceIdInput;
 	std::span<float> resourceIdInputSpan;
+
+	float* basicInputWithParams;
+	std::span<float> basicInputWithParamsSpan;
 
 	std::vector<float*> statsPerPlayer;
 	float wBasic[magic_enum::enum_count<StatsInputType>()];

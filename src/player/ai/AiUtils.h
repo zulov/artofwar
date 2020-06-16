@@ -1,8 +1,9 @@
 #pragma once
 #include "math/RandGen.h"
 #include "math/VectorUtils.h"
+#include "ActionMakerLogger.h"
 
-int randFromThree(int ids[3], float vals[3], float max) {
+inline int randFromThree(int ids[3], float vals[3], float max) {
 	float rand = RandGen::nextRand(RandFloatType::AI, max);
 	float sumSoFar = 0;
 
@@ -40,4 +41,10 @@ inline int biggestWithRand(std::span<float> v) {
 	logThree(ids, vals, max);
 
 	return randFromThree(ids, vals, max);
+}
+
+inline void copyTo(std::span<float> dest, std::span<float> src1, std::span<float> src2) {
+	assert(dest.size()>=src1.size()+src2.size());
+	std::copy(src1.begin(), src1.end(), dest.begin());
+	std::copy(src2.begin(), src2.end(), dest.begin() + src1.size());
 }

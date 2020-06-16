@@ -2,9 +2,7 @@
 
 #include <chrono>
 #include <numeric>
-#include <unordered_set>
 #include <valarray>
-#include "ActionMakerLogger.h"
 #include "AiUtils.h"
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"

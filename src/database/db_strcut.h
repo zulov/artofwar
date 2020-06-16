@@ -10,6 +10,8 @@
 #include <vector>
 #include <string>
 #include <magic_enum.hpp>
+#include <span>
+
 
 #include "utils/DeleteUtils.h"
 #include "objects/ValueType.h"
@@ -44,6 +46,7 @@ private:
 	float costSum = 0;
 	const float sum;
 	std::string paramsNormAString;
+	std::span<float> paramsNormAsSpan;
 public:
 	float paramsNorm[AI_PROPS_SIZE];
 
@@ -58,6 +61,7 @@ public:
 		  defence(defence), paramsNorm{econ, attack, defence} { }
 
 	const std::string& getParamsNormAsString() const { return paramsNormAString; }
+	const std::span<float> getParamsNormAsSpan() const { return paramsNormAsSpan; }
 
 	void setCostSum(float costSum, float normDiv) {
 		this->costSum = costSum;
@@ -66,6 +70,7 @@ public:
 
 	void setParamsNormAString(std::string paramsNormAString) {
 		this->paramsNormAString = std::move(paramsNormAString);
+		paramsNormAsSpan = std::span{paramsNorm};
 	}
 
 	float getValueOf(ValueType type) {
