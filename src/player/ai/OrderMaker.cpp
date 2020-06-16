@@ -1,18 +1,24 @@
 #include "OrderMaker.h"
 
+#include "ActionCenter.h"
 #include "AiUtils.h"
 #include "Game.h"
+#include "commands/action/UnitActionCommand.h"
+#include "objects/PhysicalUtils.h"
 #include "objects/unit/Unit.h"
+#include "objects/unit/order/IndividualOrder.h"
+#include "objects/unit/order/enums/UnitAction.h"
 #include "player/Player.h"
+#include "simulation/env/Environment.h"
 #include "stats/Stats.h"
 
 OrderMaker::OrderMaker(Player* player)
-	: player(player), collectResourceId("Data/ai/main_w.csv"){
+	: player(player), collectResourceId("Data/ai/main_w.csv") {
 }
 
 void OrderMaker::action() {
 	auto freeWorkers = findFreeWorkers();
-	
+
 	if (!freeWorkers.empty()) {
 		collect(freeWorkers);
 	}
@@ -37,10 +43,20 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() {
 	return freeWorkers;
 }
 
-bool OrderMaker::collect(std::vector<Unit*>& workers) {
+void OrderMaker::collect(std::vector<Unit*>& workers) {
 	auto input = Game::getStats()->getResourceIdInput(player->getId());
 	auto result = collectResourceId.decide(input);
 	auto resourceId = biggestWithRand(result);
-	
-	return false;
+	for (auto worker : workers) {
+		auto pos = worker->getPosition();
+		auto list = Game::getEnvironment()->getResources(worker, 24, resourceId);
+		auto [closest, minDistance, indexToInteract] = worker->closestPhysical(list, belowClose);
+		//TODO zgrupowaæ i uwzglêdniæ limit
+		if (closest) {
+			Game::getActionCenter()->add(
+				new UnitActionCommand(new IndividualOrder(worker, UnitAction::COLLECT, closest, false),
+				                      player->getId()));
+		}
+
+	}
 }

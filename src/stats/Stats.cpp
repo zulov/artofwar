@@ -341,7 +341,7 @@ std::string Stats::getResourceIdInputAsString(char playerId) {
 
 std::span<float> Stats::getResourceIdInput(char playerId) {
 	auto player = Game::getPlayersMan()->getPlayer(playerId);
-	auto resources = player->getResources();
+	auto &resources = player->getResources();
 
 	copyTo(resourceIdInputSpan,resources.getGatherSpeeds(),resources.getValues());
 
@@ -352,11 +352,10 @@ std::span<float> Stats::getResourceIdInput(char playerId) {
 	return resourceIdInputSpan;
 }
 
-std::span<float> Stats::getBasicInputWithParams(char playerId, db_ai_property* prop) {
+std::span<float> Stats::getBasicInputWithParams(char playerId, const db_ai_property* prop) {
 	auto basicInput = getBasicInput(playerId);
 
 	copyTo(basicInputWithParamsSpan,basicInput,prop->getParamsNormAsSpan());
-
 
 	return basicInputWithParamsSpan;
 }

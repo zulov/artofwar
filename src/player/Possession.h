@@ -13,7 +13,7 @@ class Possession {
 public:
 	Possession(char nation);
 	~Possession();
-	
+	Possession(const Possession&) = delete;
 	void add(Building* building);
 	void add(Unit* unit);
 	void updateAndClean(Resources& resources);
@@ -36,6 +36,6 @@ private:
 	float attackSum = 0;
 	float defenceSum = 0;
 
-	float unitsValues[magic_enum::enum_count<ValueType>()]; 
-	float buildingsValues[magic_enum::enum_count<ValueType>()]; 
+	float unitsValues[magic_enum::enum_count<ValueType>()];
+	float buildingsValues[magic_enum::enum_count<ValueType>()];
 };

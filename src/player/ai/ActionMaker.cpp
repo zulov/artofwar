@@ -35,7 +35,6 @@ const std::span<float> ActionMaker::decideFromBasic(Brain& brain) const {
 	return brain.decide(Game::getStats()->getBasicInput(player->getId()));
 }
 
-
 void ActionMaker::action() {
 	int id = biggestWithRand(decideFromBasic(mainBrain));
 
@@ -171,25 +170,15 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 }
 
 float ActionMaker::dist(std::valarray<float>& center, db_ai_property* props) {
-	std::valarray<float> aiAsArray(props->paramsNorm,AI_PROPS_SIZE); //TODO get as val array odrazu
+	auto span = props->getParamsNormAsSpan();
+	std::valarray<float> aiAsArray(span.data(),span.size()); //TODO get as val array odrazu
 	auto diff = aiAsArray - center;
 	auto sq = diff * diff;
 	return sq.sum();
 }
 
 const std::span<float> ActionMaker::inputWithParamsDecide(Brain& brain, const db_ai_property* ai_property) const {
-	float input[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
-	std::span span{input};
-
-	std::fill_n(span.begin(), span.size(), 0.f);
-
-	const auto basicInput = Game::getStats()->getBasicInput(player->getId());
-	std::copy(basicInput.begin(), basicInput.end(), span.begin());
-
-	const auto aiInput = ai_property->paramsNorm;
-	std::copy(aiInput, aiInput + AI_PROPS_SIZE, input + magic_enum::enum_count<StatsInputType>() * 2);
-
-	return brain.decide(span);
+	return brain.decide(Game::getStats()->getBasicInputWithParams(player->getId(), ai_property));
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
@@ -220,7 +209,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id, buildings);
 	if (allPossible.empty()) { return nullptr; }
 
-	auto& result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id)->aiProps);
+	auto result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id)->aiProps);
 	//TODO improve last parameter ignored queue size
 	auto centers = Game::getEnvironment()->getAreas(player->getId(), result, 10);
 	float closestVal = 99999;

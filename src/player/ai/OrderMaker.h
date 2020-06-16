@@ -16,7 +16,7 @@ public:
 private:
 	bool isNotInStates(UnitState getState, std::initializer_list<UnitState> states);
 	std::vector<Unit*> findFreeWorkers();
-	bool collect(std::vector<Unit*>& workers);
+	void collect(std::vector<Unit*>& workers);
 
 	Player* player;
 	Brain collectResourceId;

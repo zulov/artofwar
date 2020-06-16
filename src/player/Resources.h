@@ -9,6 +9,7 @@ public:
 	Resources();
 	void init(float valueForAll);
 	explicit Resources(float valueForAll);
+	Resources(const Resources&) = delete;
 	~Resources();
 	bool reduce(const std::vector<db_cost*>& costs);
 	bool hasEnough(const std::vector<db_cost*>& costs) const;

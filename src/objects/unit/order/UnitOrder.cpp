@@ -62,7 +62,7 @@ void UnitOrder::execute() {
 }
 
 short UnitOrder::getToUseId() const {
-	assert(toUse==nullptr);
+	assert(toUse!=nullptr);
 	if (toUse) {
 		return toUse->getId();
 	}

@@ -28,7 +28,7 @@ public:
 	std::span<float> getBasicInput(short id);
 
 	std::span<float> getResourceIdInput(char playerId);
-	std::span<float> getBasicInputWithParams(char playerId, db_ai_property* prop);
+	std::span<float> getBasicInputWithParams(char playerId,const db_ai_property* prop);
 	void init();
 	std::string getInputData(char player);
 
