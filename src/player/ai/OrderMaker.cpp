@@ -45,11 +45,11 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() {
 
 void OrderMaker::collect(std::vector<Unit*>& workers) {
 	auto input = Game::getStats()->getResourceIdInput(player->getId());
-	auto result = collectResourceId.decide(input);
-	auto resourceId = biggestWithRand(result);
+	//auto result = collectResourceId.decide(input);
+	auto resourceId = 1;//biggestWithRand(result);
 	for (auto worker : workers) {
 		auto pos = worker->getPosition();
-		auto list = Game::getEnvironment()->getResources(worker, 24, resourceId);
+		auto list = Game::getEnvironment()->getResources(worker->getPosition(), 24, resourceId);
 		auto [closest, minDistance, indexToInteract] = worker->closestPhysical(list, belowClose);
 		//TODO zgrupowaæ i uwzglêdniæ limit
 		if (closest) {

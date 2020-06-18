@@ -26,5 +26,5 @@ Layer::~Layer() {
 
 void Layer::setValues(std::span<float> data) const {
 	assert(valuesSpan.size() == data.size());
-	std::copy(data.begin(), data.end(), values);
+	std::copy(data.begin(), data.end(), valuesSpan.begin());
 }

@@ -26,10 +26,12 @@ public:
 	std::vector<Physical*>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighboursFromTeamNotEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
+	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius, int id) const;
 
 	std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
 	std::vector<Physical*>* getResources(Physical* physical, float radius);
+	std::vector<Physical*>* getResources(Urho3D::Vector3& center, float radius, int id);
 	void updateInfluence(std::vector<Unit*>* units, std::vector<Building*>* buildings,
 	                     std::vector<ResourceEntity*>* resources) const;
 
@@ -91,7 +93,7 @@ public:
 	std::vector<float>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
 
 	std::optional<Urho3D::Vector2> getPosToCreate(db_building* building, char player, const std::span<float> result);
-	std::vector<Urho3D::Vector2> getAreas(char player,  const std::span<float>, int min);
+	std::vector<Urho3D::Vector2> getAreas(char player, const std::span<float>, int min);
 
 private:
 	MainGrid mainGrid;

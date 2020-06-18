@@ -1,9 +1,9 @@
 #pragma once
-#include "BucketIterator.h"
-#include "utils/defines.h"
 #include <Urho3D/Math/Vector3.h>
-#include "simulation/env/GridCalculator.h"
+#include "BucketIterator.h"
 #include "simulation/env/CloseIndexProvider.h"
+#include "simulation/env/GridCalculator.h"
+#include "utils/defines.h"
 
 #define MAX_SEP_DIST 24
 #define RES_SEP_DIST 120
@@ -12,6 +12,7 @@ class Unit;
 class Bucket;
 class Physical;
 
+//template<class T, class = std::enable_if<std::is_base_of<Physical, T>::value>>//TODO
 class Grid {
 public:
 	Grid(short resolution, float size);

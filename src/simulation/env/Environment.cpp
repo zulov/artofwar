@@ -7,6 +7,7 @@
 #include <chrono>
 #include <simulation/env/bucket/BucketIterator.h>
 #include "EnvConsts.h"
+#include "math/MathUtils.h"
 
 
 Environment::Environment(Urho3D::Terrain* terrian):
@@ -54,16 +55,28 @@ std::vector<Physical*>* Environment::getNeighboursFromTeamNotEq(Physical* physic
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
 	neights->clear();
 
-	const auto center = physical->getPosition();
+	const auto& center = physical->getPosition();
 	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius, 0);
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
-		if (physical == neight) { continue; }
-		const float xDiff = center.x_ - neight->getPosition().x_;
-		const float zDiff = center.z_ - neight->getPosition().z_;
+		if (physical != neight && sqDistAs2D(center, neight->getPosition()) < sqRadius) {
+			neights->push_back(neight);
+		}
+	}
 
-		if (xDiff * xDiff + zDiff * zDiff < sqRadius) {
+	return neights;
+}
+
+std::vector<Physical*>* Environment::getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius,
+                                                   int id) const {
+	neights->clear();
+
+	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(center, radius, 0);
+	const float sqRadius = radius * radius;
+
+	while (Physical* neight = bucketIterator.next()) {
+		if (id == neight->getId() && sqDistAs2D(center, neight->getPosition()) < sqRadius) {
 			neights->push_back(neight);
 		}
 	}
@@ -90,6 +103,10 @@ std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clicked) c
 
 std::vector<Physical*>* Environment::getResources(Physical* physical, float radius) {
 	return getNeighbours(physical, resourceGrid, radius);
+}
+
+std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, float radius, int id) {
+	return getNeighbours(center, resourceGrid, radius, id);
 }
 
 void Environment::updateInfluence(std::vector<Unit*>* units,
