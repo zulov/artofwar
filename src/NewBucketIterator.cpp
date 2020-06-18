@@ -1,7 +1,9 @@
-#include "BucketIterator.h"
-#include "Grid.h"
+#include "NewBucketIterator.h"
 
-Physical* BucketIterator::next() {
+#include "objects/resource/ResourceEntity.h"
+
+template <class T>
+T* NewBucketIterator<T>::next() {
 	while (currentIterator == currentEnd) {
 		++index;
 		if (index >= levelSize) { return nullptr; }
@@ -14,7 +16,8 @@ Physical* BucketIterator::next() {
 	return entity;
 }
 
-BucketIterator* BucketIterator::init(std::vector<short>* _levels, int _center, Grid* _bucketGrid) {
+template <class T>
+NewBucketIterator<T>* NewBucketIterator<T>::init(std::vector<short>* _levels, int _center, NewGrid<T>* _bucketGrid) {
 	levels = _levels;
 	center = _center;
 	index = 0;
@@ -24,9 +27,12 @@ BucketIterator* BucketIterator::init(std::vector<short>* _levels, int _center, G
 	return this;
 }
 
-void BucketIterator::setRange() {
+template <class T>
+void NewBucketIterator<T>::setRange() {
 	auto& content = bucketGrid->getContentAt((*levels)[index] + center);
 
 	currentIterator = content.begin();
 	currentEnd = content.end();
 }
+
+template class NewBucketIterator<ResourceEntity>;

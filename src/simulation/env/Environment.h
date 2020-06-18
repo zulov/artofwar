@@ -8,6 +8,8 @@
 #include <Urho3D/Graphics/Terrain.h>
 #include <vector>
 #include <array>
+
+#include "NewGrid.h"
 #include "debug/EnvironmentDebugMode.h"
 #include "player/Player.h"
 
@@ -26,7 +28,7 @@ public:
 	std::vector<Physical*>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighboursFromTeamNotEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
-	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius, int id) const;
+	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, NewGrid<ResourceEntity>& bucketGrid, float radius, int id) const;
 
 	std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
@@ -97,8 +99,10 @@ public:
 
 private:
 	MainGrid mainGrid;
-	Grid resourceGrid, buildingGrid;
+	Grid buildingGrid;
+	Grid resourceGrid;
 	Grid teamUnitGrid[MAX_PLAYERS];
+	NewGrid<ResourceEntity> newResourceGrid;
 	InfluenceManager influenceManager;
 	std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
 	Urho3D::Terrain* terrian;

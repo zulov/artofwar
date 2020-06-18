@@ -181,6 +181,8 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\NewBucketIterator.cpp" />
+    <ClCompile Include="src\NewGrid.cpp" />
     <ClCompile Include="src\player\ai\OrderMaker.cpp" />
     <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
     <ClCompile Include="src\math\RandGen.cpp" />
@@ -290,6 +292,9 @@
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\NewBucket.h" />
+    <ClInclude Include="src\NewBucketIterator.h" />
+    <ClInclude Include="src\NewGrid.h" />
     <ClInclude Include="src\player\ai\OrderMaker.h" />
     <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
     <ClInclude Include="src\commands\action\GeneralActionType.h" />

@@ -13,6 +13,7 @@
 Environment::Environment(Urho3D::Terrain* terrian):
 	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE),
 	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE),
+	newResourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE),
 	buildingGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE),
 	teamUnitGrid{
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE},
@@ -68,14 +69,14 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius,
+std::vector<Physical*>* Environment::getNeighbours(Urho3D::Vector3& center, NewGrid<ResourceEntity>& bucketGrid, float radius,
                                                    int id) const {
 	neights->clear();
 
-	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(center, radius, 0);
+	auto& bucketIterator = bucketGrid.getArrayNeight(center, radius, 0);
 	const float sqRadius = radius * radius;
 
-	while (Physical* neight = bucketIterator.next()) {
+	while (ResourceEntity* neight = bucketIterator.next()) {
 		if (id == neight->getId() && sqDistAs2D(center, neight->getPosition()) < sqRadius) {
 			neights->push_back(neight);
 		}
@@ -106,7 +107,7 @@ std::vector<Physical*>* Environment::getResources(Physical* physical, float radi
 }
 
 std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, float radius, int id) {
-	return getNeighbours(center, resourceGrid, radius, id);
+	return getNeighbours(center, newResourceGrid, radius, id);
 }
 
 void Environment::updateInfluence(std::vector<Unit*>* units,

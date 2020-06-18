@@ -1,5 +1,6 @@
 #pragma once
 #include <Urho3D/Math/Vector3.h>
+
 #include "BucketIterator.h"
 #include "simulation/env/CloseIndexProvider.h"
 #include "simulation/env/GridCalculator.h"
@@ -12,7 +13,6 @@ class Unit;
 class Bucket;
 class Physical;
 
-//template<class T, class = std::enable_if<std::is_base_of<Physical, T>::value>>//TODO
 class Grid {
 public:
 	Grid(short resolution, float size);

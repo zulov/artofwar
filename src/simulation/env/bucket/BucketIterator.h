@@ -1,15 +1,13 @@
 #pragma once
 #include <vector>
 
-
 class Grid;
 class Physical;
 
-class BucketIterator
-{
+class BucketIterator {
 public:
-	BucketIterator();
-	~BucketIterator();
+	BucketIterator() = default;
+	~BucketIterator() = default;
 	Physical* next();
 	void setRange();
 	BucketIterator* init(std::vector<short>* _levels, int _center, Grid* _bucketGrid);
@@ -20,6 +18,6 @@ private:
 
 	std::vector<short>* levels;
 	Grid* bucketGrid;
-	std::vector<Physical *>::iterator currentIterator;
-	std::vector<Physical *>::iterator currentEnd;
+	std::vector<Physical*>::iterator currentIterator;
+	std::vector<Physical*>::iterator currentEnd;
 };
