@@ -1,5 +1,7 @@
 #include "NewBucketIterator.h"
 
+
+#include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 
 template <class T>
@@ -36,3 +38,4 @@ void NewBucketIterator<T>::setRange() {
 }
 
 template class NewBucketIterator<ResourceEntity>;
+template class NewBucketIterator<Building>;

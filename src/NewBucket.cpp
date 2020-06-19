@@ -1,5 +1,7 @@
 #include "NewBucket.h"
 
+
+#include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 
 template <class T>
@@ -19,3 +21,4 @@ void NewBucket<T>::remove(T* entity) {
 }
 
 template class NewBucket<ResourceEntity>;
+template class NewBucket<Building>;

@@ -28,12 +28,12 @@ public:
 	std::vector<Physical*>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighboursFromTeamNotEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
-	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, NewGrid<ResourceEntity>& bucketGrid, float radius, int id) const;
+	std::vector<ResourceEntity*>* getNeighbours(Urho3D::Vector3& center, NewGrid<ResourceEntity>& bucketGrid, float radius, int id) const;
 
 	std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
-	std::vector<Physical*>* getResources(Physical* physical, float radius);
-	std::vector<Physical*>* getResources(Urho3D::Vector3& center, float radius, int id);
+	std::vector<ResourceEntity*>* getResources(Physical* physical, float radius);
+	std::vector<ResourceEntity*>* getResources(Urho3D::Vector3& center, float radius, int id);
 	void updateInfluence(std::vector<Unit*>* units, std::vector<Building*>* buildings,
 	                     std::vector<ResourceEntity*>* resources) const;
 
@@ -99,13 +99,15 @@ public:
 
 private:
 	MainGrid mainGrid;
-	Grid buildingGrid;
-	Grid resourceGrid;
+	NewGrid<Building> newBuildingGrid;
+	//Grid buildingGrid;
+	//Grid resourceGrid;
 	Grid teamUnitGrid[MAX_PLAYERS];
 	NewGrid<ResourceEntity> newResourceGrid;
 	InfluenceManager influenceManager;
-	std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
+	//std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
 	Urho3D::Terrain* terrian;
 
 	std::vector<Physical*> *neights, *neights2, *empty; //TODO tu bedzie trzeba tablica jesli beda watki
+	std::vector<ResourceEntity*> *neightsResources, *neightsResources2, *emptyResources; //TODO tu bedzie trzeba tablica jesli beda watki
 };

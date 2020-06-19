@@ -12,9 +12,8 @@
 
 Environment::Environment(Urho3D::Terrain* terrian):
 	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE),
-	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE),
+	newBuildingGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE),
 	newResourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE),
-	buildingGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE),
 	teamUnitGrid{
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE},
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE}
@@ -22,8 +21,10 @@ Environment::Environment(Urho3D::Terrain* terrian):
 	neights = new std::vector<Physical*>();
 	neights2 = new std::vector<Physical*>();
 	empty = new std::vector<Physical*>();
-	neights->reserve(DEFAULT_VECTOR_SIZE * 2);
-	neights2->reserve(DEFAULT_VECTOR_SIZE * 2);
+	
+	neightsResources = new std::vector<ResourceEntity*>();
+	neightsResources2 = new std::vector<ResourceEntity*>();
+	emptyResources = new std::vector<ResourceEntity*>();
 }
 
 
@@ -31,6 +32,10 @@ Environment::~Environment() {
 	delete neights;
 	delete neights2;
 	delete empty;
+	
+	delete neightsResources;
+	delete neightsResources2;
+	delete emptyResources;
 }
 
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, const float radius) {
@@ -69,20 +74,20 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getNeighbours(Urho3D::Vector3& center, NewGrid<ResourceEntity>& bucketGrid, float radius,
+std::vector<ResourceEntity*>* Environment::getNeighbours(Urho3D::Vector3& center, NewGrid<ResourceEntity>& bucketGrid, float radius,
                                                    int id) const {
-	neights->clear();
+	neightsResources->clear();
 
 	auto& bucketIterator = bucketGrid.getArrayNeight(center, radius, 0);
 	const float sqRadius = radius * radius;
 
 	while (ResourceEntity* neight = bucketIterator.next()) {
 		if (id == neight->getId() && sqDistAs2D(center, neight->getPosition()) < sqRadius) {
-			neights->push_back(neight);
+			neightsResources->push_back(neight);
 		}
 	}
 
-	return neights;
+	return neightsResources;
 }
 
 std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clicked) const {
@@ -102,11 +107,11 @@ std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clicked) c
 	return grid->getArrayNeightSimilarAs(clicked, 20.0);
 }
 
-std::vector<Physical*>* Environment::getResources(Physical* physical, float radius) {
-	return getNeighbours(physical, resourceGrid, radius);
+std::vector<ResourceEntity*>* Environment::getResources(Physical* physical, float radius) {
+	return getNeighbours(physical, newResourceGrid, radius);
 }
 
-std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, float radius, int id) {
+std::vector<ResourceEntity*>* Environment::getResources(Urho3D::Vector3& center, float radius, int id) {
 	return getNeighbours(center, newResourceGrid, radius, id);
 }
 
@@ -131,7 +136,7 @@ void Environment::update(std::vector<Unit*>* units) const {
 void Environment::update(std::vector<Building*>* buildings) {
 	for (auto building : *buildings) {
 		mainGrid.addStatic(building);
-		buildingGrid.update(building);
+		newBuildingGrid.update(building);
 		building->createDeploy();
 
 		mainGrid.addDeploy(building);
@@ -146,7 +151,7 @@ void Environment::updateAll(std::vector<Building*>* const buildings) const {
 void Environment::update(std::vector<ResourceEntity*>* resources) {
 	for (auto resource : *resources) {
 		mainGrid.addStatic(resource);
-		resourceGrid.update(resource);
+		newResourceGrid.update(resource);
 	}
 }
 
@@ -253,14 +258,14 @@ void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) const
 			const auto building = dynamic_cast<Building*>(dispose);
 			mainGrid.removeStatic(building);
 			mainGrid.removeDeploy(building);
-			buildingGrid.update(dispose);
+			newBuildingGrid.update(dispose);
 		}
 		break;
 		case ObjectType::RESOURCE:
 		{
 			const auto resource = dynamic_cast<ResourceEntity*>(dispose);
 			mainGrid.removeStatic(resource);
-			resourceGrid.update(resource);
+			newResourceGrid.update(resource);
 		}
 		break;
 		default: ;

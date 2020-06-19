@@ -1,6 +1,8 @@
 #include "NewGrid.h"
 
 #include <algorithm>
+
+#include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 
 template <class T>
@@ -212,3 +214,4 @@ std::vector<short>* NewGrid<T>::getEnvIndexs(float radius) const {
 }
 
 template class NewGrid<ResourceEntity>;
+template class NewGrid<Building>;
