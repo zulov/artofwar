@@ -1,8 +1,6 @@
-
 #include "NewGrid.h"
 
 #include <algorithm>
-
 #include "objects/resource/ResourceEntity.h"
 
 template <class T>
@@ -29,18 +27,18 @@ NewGrid<T>::~NewGrid() {
 	delete tempSelected;
 }
 
-template <class T>
-void NewGrid<T>::update(T* unit, const char team) const {
-	const int index = calculator.indexFromPosition(unit->getPosition());
-
-	if (!unit->isAlive()) {
-		removeAt(unit->getBucketIndex(team), unit);
-	} else if (unit->bucketHasChanged(index, team)) {
-		removeAt(unit->getBucketIndex(team), unit);
-		addAt(index, unit);
-		unit->setBucket(index, team);
-	}
-}
+// template <class T>
+// void NewGrid<T>::update(T* unit, const char team) const {
+// 	const int index = calculator.indexFromPosition(unit->getPosition());
+//
+// 	if (!unit->isAlive()) {
+// 		removeAt(unit->getBucketIndex(team), unit);
+// 	} else if (unit->bucketHasChanged(index, team)) {
+// 		removeAt(unit->getBucketIndex(team), unit);
+// 		addAt(index, unit);
+// 		unit->setBucket(index, team);
+// 	}
+// }
 
 template <class T>
 void NewGrid<T>::update(T* entity) const {

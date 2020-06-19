@@ -1,6 +1,6 @@
 #pragma once
+#include "AbstractGrid.h"
 #include <vector>
-#include "NewGrid.h"
 
 
 template <class T>
@@ -11,7 +11,7 @@ public:
 	T* next();
 	void setRange();
 
-	NewBucketIterator<T>* init(std::vector<short>* _levels, int _center, NewGrid<T>* _bucketGrid);
+	NewBucketIterator<T>* init(std::vector<short>* _levels, int _center, AbstractGrid<T>* _bucketGrid);
 
 private:
 	short index = 0;
@@ -19,7 +19,7 @@ private:
 	int center;
 
 	std::vector<short>* levels;
-	std::vector<T*>::iterator currentIterator;
-	std::vector<T*>::iterator currentEnd;
-	NewGrid<T>* bucketGrid;
+	typename std::vector<T*>::iterator currentIterator;
+	typename std::vector<T*>::iterator currentEnd;
+	AbstractGrid<T>* bucketGrid;
 };

@@ -17,7 +17,7 @@ T* NewBucketIterator<T>::next() {
 }
 
 template <class T>
-NewBucketIterator<T>* NewBucketIterator<T>::init(std::vector<short>* _levels, int _center, NewGrid<T>* _bucketGrid) {
+NewBucketIterator<T>* NewBucketIterator<T>::init(std::vector<short>* _levels, int _center, AbstractGrid<T>* _bucketGrid) {
 	levels = _levels;
 	center = _center;
 	index = 0;

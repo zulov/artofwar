@@ -1,6 +1,7 @@
 #pragma once
 #include <Urho3D/Math/Vector3.h>
 
+
 #include "BucketIterator.h"
 #include "simulation/env/CloseIndexProvider.h"
 #include "simulation/env/GridCalculator.h"

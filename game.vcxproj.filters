@@ -198,6 +198,7 @@
     <ClCompile Include="src\player\ai\OrderMaker.cpp" />
     <ClCompile Include="src\NewBucketIterator.cpp" />
     <ClCompile Include="src\NewGrid.cpp" />
+    <ClCompile Include="src\NewBucket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -501,6 +502,7 @@
     <ClInclude Include="src\NewGrid.h" />
     <ClInclude Include="src\NewBucket.h" />
     <ClInclude Include="src\NewBucketIterator.h" />
+    <ClInclude Include="src\AbstractGrid.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
