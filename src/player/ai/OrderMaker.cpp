@@ -13,7 +13,7 @@
 #include "stats/Stats.h"
 
 OrderMaker::OrderMaker(Player* player)
-	: player(player), collectResourceId("Data/ai/main_w.csv") {
+	: player(player), collectResourceId("Data/ai/resourceId_w.csv") {
 }
 
 void OrderMaker::action() {
@@ -45,8 +45,8 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() {
 
 void OrderMaker::collect(std::vector<Unit*>& workers) {
 	auto input = Game::getStats()->getResourceIdInput(player->getId());
-	//auto result = collectResourceId.decide(input);
-	auto resourceId = 1;//biggestWithRand(result);
+	auto result = collectResourceId.decide(input);
+	auto resourceId = biggestWithRand(result);
 	for (auto worker : workers) {
 		auto pos = worker->getPosition();
 		auto list = Game::getEnvironment()->getResources(worker->getPosition(), 24, resourceId);
