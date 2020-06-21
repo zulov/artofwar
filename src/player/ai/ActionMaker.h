@@ -19,7 +19,7 @@ enum class StatsOutputType : char;
 class ActionMaker {
 public:
 	explicit ActionMaker(Player* player);
-
+	ActionMaker(const ActionMaker& rhs) = delete;
 	void action();
 private:
 	const std::span<float> decideFromBasic(Brain& brain) const;

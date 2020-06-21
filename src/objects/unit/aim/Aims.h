@@ -13,6 +13,7 @@ class Aims
 {
 public:
 	Aims();
+	Aims(const Aims& rhs) = delete;
 	~Aims();
 	std::optional<Urho3D::Vector2> getDirection(Unit* unit) const;
 	void clearExpired();

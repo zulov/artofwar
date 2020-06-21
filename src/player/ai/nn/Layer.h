@@ -6,6 +6,7 @@ class Layer {
 
 public:
 	Layer(std::vector<float>& w, std::vector<float>& bias);
+	Layer(const Layer& rhs) = delete;
 	~Layer();
 	void setValues(std::span<float> data) const;
 	std::span<float> getValues() const  { return valuesSpan; }

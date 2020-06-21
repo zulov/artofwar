@@ -49,7 +49,7 @@ void OrderMaker::collect(std::vector<Unit*>& workers) {
 	auto resourceId = biggestWithRand(result);
 	for (auto worker : workers) {
 		auto pos = worker->getPosition();
-		auto list = Game::getEnvironment()->getResources(worker->getPosition(), 24, resourceId);
+		auto list = Game::getEnvironment()->getResources(worker->getPosition(), 128, resourceId);
 		auto [closest, minDistance, indexToInteract] = worker->closestPhysical(list, belowClose);
 		//TODO zgrupowaæ i uwzglêdniæ limit
 		if (closest) {

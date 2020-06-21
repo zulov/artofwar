@@ -23,6 +23,7 @@ enum class GridDebugType : char {
 class MainGrid : public Grid {
 public:
 	MainGrid(short _resolution, float _size);
+	MainGrid(const MainGrid& rhs) = delete;
 	~MainGrid();
 
 	void prepareGridToFind() const;
@@ -31,7 +32,8 @@ public:
 	void addStatic(Static* object);
 	void removeStatic(Static* object) const;
 	std::optional<Urho3D::Vector2> getDirectionFrom(Urho3D::Vector3& position);
-	std::pair<Urho3D::IntVector2, Urho3D::Vector2> getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
+	std::pair<Urho3D::IntVector2, Urho3D::Vector2> getValidPosition(const Urho3D::IntVector2& size,
+	                                                                const Urho3D::Vector2& pos) const;
 
 	void updateNeighbors(int current) const;
 	float cost(int current, int next) const;

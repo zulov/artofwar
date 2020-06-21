@@ -6,6 +6,7 @@
 class CloseIndexProvider {
 public:
 	explicit CloseIndexProvider(short res);
+	CloseIndexProvider(const CloseIndexProvider& rhs) = delete;
 	const std::vector<short>& get(int center) const;
 	const std::vector<short>& getSecond(int center) const;
 	const std::vector<char>& getTabIndexes(int center) const;

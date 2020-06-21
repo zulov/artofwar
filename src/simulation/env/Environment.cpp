@@ -21,8 +21,6 @@ Environment::Environment(Urho3D::Terrain* terrian):
 	neights = new std::vector<Physical*>();
 	neights2 = new std::vector<Physical*>();
 	empty = new std::vector<Physical*>();
-	neights->reserve(DEFAULT_VECTOR_SIZE * 2);
-	neights2->reserve(DEFAULT_VECTOR_SIZE * 2);
 }
 
 

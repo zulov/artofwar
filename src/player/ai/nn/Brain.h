@@ -6,8 +6,9 @@
 class Brain {
 public:
 	explicit Brain(std::string dataPath);
+	Brain(const Brain& rhs) = delete;
 	~Brain();
-	const std::span<float> decide(std::span<float> data);//TODO std::span after c++20
+	const std::span<float> decide(std::span<float> data); //TODO std::span after c++20
 
 private:
 	Eigen::MatrixXf multiply(Layer* current, Layer* prevLayer);

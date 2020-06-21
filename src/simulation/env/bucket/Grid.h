@@ -12,10 +12,10 @@ class Unit;
 class Bucket;
 class Physical;
 
-//template<class T, class = std::enable_if<std::is_base_of<Physical, T>::value>>//TODO
 class Grid {
 public:
 	Grid(short resolution, float size);
+	Grid(const Grid& rhs) = delete;
 	~Grid();
 
 	void update(Unit* unit, char team) const;

@@ -11,6 +11,7 @@ class Unit;
 class OrderMaker {
 public:
 	explicit OrderMaker(Player* player);
+	OrderMaker(const OrderMaker& rhs) = delete;
 
 	void action();
 private:
