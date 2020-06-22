@@ -15,6 +15,7 @@ public:
 	
 	bool add() override;
 	bool expired() override;
+	short getSize() const override;
 private:
 	const UnitActionType actionType;
 	std::vector<Unit*> units;

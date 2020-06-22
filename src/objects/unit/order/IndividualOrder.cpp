@@ -25,6 +25,10 @@ bool IndividualOrder::add() {
 	return false;
 }
 
+short IndividualOrder::getSize() const {
+	return 1;
+}
+
 void IndividualOrder::addCollectAim() {
 	followAndAct();
 }

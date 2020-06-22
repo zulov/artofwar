@@ -101,3 +101,7 @@ bool GroupOrder::expired() {
 	return units.empty()
 		|| toUse != nullptr && !toUse->isAlive();
 }
+
+short GroupOrder::getSize() const {
+	return units.size();
+}

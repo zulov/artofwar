@@ -8,11 +8,13 @@
 
 FormationOrder::FormationOrder(Formation* formation, short action,
                                Urho3D::Vector2& vector, bool append):
-	UnitOrder(action, append, vector), formation(formation) {}
+	UnitOrder(action, append, vector), formation(formation) {
+}
 
 FormationOrder::FormationOrder(Formation* formation, short action,
                                Physical* toUse, bool append):
-	UnitOrder(action, append, toUse), formation(formation) {}
+	UnitOrder(action, append, toUse), formation(formation) {
+}
 
 bool FormationOrder::add() {
 	//TODO to implement
@@ -23,6 +25,10 @@ bool FormationOrder::expired() {
 	return formation == nullptr
 		|| formation->getSize() <= 0
 		|| toUse != nullptr && !toUse->isAlive();
+}
+
+short FormationOrder::getSize() const {
+	return formation->getSize();
 }
 
 void FormationOrder::addCollectAim() {

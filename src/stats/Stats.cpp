@@ -368,7 +368,9 @@ void Stats::add(UnitActionCommand* command) {
 	joinAndPush(unitOrderId, playerId, input, getOutput(command));
 	if (command->order->getId() == static_cast<char>(UnitAction::COLLECT)) {
 		auto sInput = getResourceIdInputAsString(playerId);
-		joinAndPush(resourceId, playerId, sInput, getResourceIdOutput(command));
+		for (int i = 0; i < command->order->getSize(); ++i) {
+			joinAndPush(resourceId, playerId, sInput, getResourceIdOutput(command));
+		}	
 	}
 }
 
