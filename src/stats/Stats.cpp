@@ -66,13 +66,15 @@ void Stats::init() {
 	clear();
 	basicInput = new float[magic_enum::enum_count<StatsInputType>() * 2];
 	basicInputSpan = std::span{basicInput, magic_enum::enum_count<StatsInputType>() * 2};
-	
+
 	resourceIdInput = new float[magic_enum::enum_count<ResourceInputType>()];
 	resourceIdInputSpan = std::span(resourceIdInput, magic_enum::enum_count<ResourceInputType>());
-	
+
 	basicInputWithParams = new float[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
-	basicInputWithParamsSpan = std::span{basicInputWithParams, magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE};
-	
+	basicInputWithParamsSpan = std::span{
+		basicInputWithParams, magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE
+	};
+
 	for (auto allPlayer : Game::getPlayersMan()->getAllPlayers()) {
 		statsPerPlayer.push_back(new float[magic_enum::enum_count<StatsInputType>()]);
 	}
@@ -102,7 +104,7 @@ void Stats::add(ResourceActionCommand* command) {
 
 	const std::string input = getInputData(player);
 
-	joinAndPush(mainOrder, player, input, getOutput(command));
+	joinAndPush(mainOrder, player, input, getOutput(command),command->resources.size());
 }
 
 void Stats::add(BuildingActionCommand* command) {
@@ -110,9 +112,8 @@ void Stats::add(BuildingActionCommand* command) {
 	const std::string basicOutput = getOutput(command);
 	auto player = Game::getPlayersMan()->getPlayer(command->player);
 
-
+	joinAndPush(mainOrder, command->player, input, basicOutput, command->buildings.size());
 	for (auto building : command->buildings) {
-		joinAndPush(mainOrder, command->player, input, basicOutput);
 		if (command->action == BuildingActionType::UNIT_CREATE) {
 			auto& createOutput = player->getLevelForUnit(command->id)->aiProps->getParamsNormAsString();
 			joinAndPush(unitCreateId, command->player, input, createOutput);
@@ -149,10 +150,13 @@ void Stats::add(CreationCommand* command) {
 	joinAndPush(buildingCreatePos, player, inputWithAiProps, getCreateBuildingPosOutput(command));
 }
 
-void Stats::joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output) {
+void Stats::joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output,
+                        int number) {
 	if (!output.empty()) {
 		input.append(";;").append(output);
-		array[player].push_back(input);
+		for (int i = 0; i < number; ++i) {
+			array[player].push_back(input);
+		}
 	}
 }
 
@@ -341,9 +345,9 @@ std::string Stats::getResourceIdInputAsString(char playerId) {
 
 std::span<float> Stats::getResourceIdInput(char playerId) {
 	auto player = Game::getPlayersMan()->getPlayer(playerId);
-	auto &resources = player->getResources();
+	auto& resources = player->getResources();
 
-	copyTo(resourceIdInputSpan,resources.getGatherSpeeds(),resources.getValues());
+	copyTo(resourceIdInputSpan, resources.getGatherSpeeds(), resources.getValues());
 
 	resourceIdInputSpan[magic_enum::enum_count<ResourceInputType>() - 1] = player->getScore();
 
@@ -355,7 +359,7 @@ std::span<float> Stats::getResourceIdInput(char playerId) {
 std::span<float> Stats::getBasicInputWithParams(char playerId, const db_ai_property* prop) {
 	auto basicInput = getBasicInput(playerId);
 
-	copyTo(basicInputWithParamsSpan,basicInput,prop->getParamsNormAsSpan());
+	copyTo(basicInputWithParamsSpan, basicInput, prop->getParamsNormAsSpan());
 
 	return basicInputWithParamsSpan;
 }
@@ -367,10 +371,8 @@ void Stats::add(UnitActionCommand* command) {
 
 	joinAndPush(unitOrderId, playerId, input, getOutput(command));
 	if (command->order->getId() == static_cast<char>(UnitAction::COLLECT)) {
-		auto sInput = getResourceIdInputAsString(playerId);
-		for (int i = 0; i < command->order->getSize(); ++i) {
-			joinAndPush(resourceId, playerId, sInput, getResourceIdOutput(command));
-		}	
+		joinAndPush(resourceId, playerId, getResourceIdInputAsString(playerId), getResourceIdOutput(command),
+		            command->order->getSize());
 	}
 }
 

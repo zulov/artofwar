@@ -28,7 +28,7 @@ public:
 	std::span<float> getBasicInput(short id);
 
 	std::span<float> getResourceIdInput(char playerId);
-	std::span<float> getBasicInputWithParams(char playerId,const db_ai_property* prop);
+	std::span<float> getBasicInputWithParams(char playerId, const db_ai_property* prop);
 	void init();
 	std::string getInputData(char player);
 
@@ -61,7 +61,8 @@ private:
 	std::string getResourceIdOutput(UnitActionCommand* command) const;
 	std::string getResourceIdInputAsString(char playerId);
 
-	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output);
+	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output,
+	                        int number = 1);
 	void save(int i, std::vector<std::string>* array, std::string fileName) const;
 	void saveBatch(int i, std::vector<std::string>* array, std::string name, int size) const;
 	void saveAll(int big, int small);
