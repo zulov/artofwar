@@ -54,3 +54,13 @@ inline short diff(const short a, const short b) {
 	if (diff == 0) { return 1; }
 	return diff;
 }
+
+inline float fixValue(float value, float maxValue) {
+	if (value > maxValue) {
+		return maxValue;
+	}
+	if (value < 0) {
+		return 0;
+	}
+	return value;
+}

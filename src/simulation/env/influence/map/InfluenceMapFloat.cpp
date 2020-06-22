@@ -1,6 +1,8 @@
 #include "InfluenceMapFloat.h"
 #include <algorithm>
 #include <numeric>
+
+#include "math/MathUtils.h"
 #include "objects/Physical.h"
 #include "simulation/env/Environment.h"
 
@@ -83,11 +85,7 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 
 void InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection) const {
 	const float diff = max - min;
-	if (percent < 0) {
-		percent = 0;
-	} else if (percent > 1) {
-		percent = 1;
-	}
+	percent = fixValue(percent, 1);
 
 	for (int i = 0; i < arraySize; ++i) {
 		auto val = percent - ((values[i] - min) / diff);

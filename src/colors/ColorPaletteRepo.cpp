@@ -3,6 +3,8 @@
 #include "objects/unit/state/StateManager.h"
 #include <Urho3D/Resource/ResourceCache.h>
 
+#include "math/MathUtils.h"
+
 
 ColorPaletteRepo::ColorPaletteRepo() {
 	for (int i = 0; i < PALLET_RESOLUTION; ++i) {
@@ -38,16 +40,6 @@ Urho3D::Material* ColorPaletteRepo::getColor(ColorPallet colorPallet, float valu
 		return redPallet[index];
 	}
 	return nullptr;
-}
-
-float ColorPaletteRepo::fixValue(float value, float maxValue) {
-	if (value > maxValue) {
-		return maxValue;
-	}
-	if (value < 0) {
-		return 0;
-	}
-	return value;
 }
 
 Urho3D::Color& ColorPaletteRepo::getColor(float value, float maxValue) {
