@@ -3,7 +3,6 @@
 #include <numeric>
 
 #include "math/MathUtils.h"
-#include "objects/Physical.h"
 #include "simulation/env/Environment.h"
 
 InfluenceMapFloat::
@@ -18,17 +17,17 @@ InfluenceMapFloat::~InfluenceMapFloat() {
 	delete[] values;
 }
 
-void InfluenceMapFloat::update(Physical* physical, float value) {
-	auto iX = calculator.getIndex(physical->getPosition().x_);
-	auto iZ = calculator.getIndex(physical->getPosition().z_);
-	for (int i = iX - level; i < iX + level; ++i) {
+void InfluenceMapFloat::update(Urho3D::Vector3& pos, float value) {
+	const auto centerX = calculator.getIndex(pos.x_);
+	const auto centerZ = calculator.getIndex(pos.z_);
+	for (int i = centerX - level; i <= centerX + level; ++i) {
 		if (validIndex(i)) {
-			for (int j = iZ - level; j < iZ + level; ++j) {
+			for (int j = centerZ - level; j <= centerZ + level; ++j) {
 				if (validIndex(j)) {
-					auto a = (i - iX) * (i - iX);
-					auto b = (j - iZ) * (j - iZ);
+					auto a = (i - centerX) * (i - centerX);
+					auto b = (j - centerZ) * (j - centerZ);
 					int index = calculator.getIndex(i, j);
-					values[index] += (1 / ((a + b) * coef + 1)) * value;
+					values[index] += value / ((a + b) * coef + 1);
 				}
 			}
 		}

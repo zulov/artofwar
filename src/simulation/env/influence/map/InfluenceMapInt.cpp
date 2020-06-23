@@ -12,8 +12,8 @@ InfluenceMapInt::~InfluenceMapInt() {
 	delete[] values;
 }
 
-void InfluenceMapInt::update(Physical* physical, float value) {
-	const int index = calculator.indexFromPosition(physical->getPosition());
+void InfluenceMapInt::update(Urho3D::Vector3& pos, float value) {
+	const int index = calculator.indexFromPosition(pos);
 
 	values[index] += round(value);
 }

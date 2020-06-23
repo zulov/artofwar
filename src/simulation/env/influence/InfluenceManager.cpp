@@ -24,7 +24,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
 		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(INF_GRID_SIZE, BUCKET_GRID_SIZE, 40));
 		buildingsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 5));
+			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 1));
 		unitsInfluencePerPlayer.emplace_back(
 			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
 		attackLevelPerPlayer.emplace_back(
@@ -67,8 +67,8 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 	resetMaps(unitsInfluencePerPlayer);
 
 	for (auto unit : (*units)) {
-		unitsNumberPerPlayer[unit->getPlayer()]->update(unit);
-		unitsInfluencePerPlayer[unit->getPlayer()]->update(unit);
+		unitsNumberPerPlayer[unit->getPlayer()]->update(unit->getPosition());
+		unitsInfluencePerPlayer[unit->getPlayer()]->update(unit->getPosition());
 	}
 	calcStats(unitsNumberPerPlayer);
 	calcStats(unitsInfluencePerPlayer);
@@ -77,7 +77,7 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 void InfluenceManager::update(std::vector<Building*>* buildings) const {
 	resetMaps(buildingsInfluencePerPlayer);
 	for (auto building : (*buildings)) {
-		buildingsInfluencePerPlayer[building->getPlayer()]->update(building);
+		buildingsInfluencePerPlayer[building->getPlayer()]->update(building->getPosition());
 	}
 	calcStats(buildingsInfluencePerPlayer);
 }
@@ -85,7 +85,7 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 	resetMaps(resourceInfluence);
 	for (auto resource : (*resources)) {
-		resourceInfluence[resource->getId()]->update(resource, resource->getHealthPercent());
+		resourceInfluence[resource->getId()]->update(resource->getPosition(), resource->getHealthPercent());
 	}
 	calcStats(resourceInfluence);
 }
@@ -120,15 +120,15 @@ void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>*
 	resetMaps(econLevelPerPlayer);
 
 	for (auto unit : (*units)) {
-		attackLevelPerPlayer[unit->getPlayer()]->update(unit, unit->getValueOf(ValueType::ATTACK));
-		defenceLevelPerPlayer[unit->getPlayer()]->update(unit, unit->getValueOf(ValueType::DEFENCE));
-		econLevelPerPlayer[unit->getPlayer()]->update(unit, unit->getValueOf(ValueType::ECON));
+		attackLevelPerPlayer[unit->getPlayer()]->update(unit->getPosition(), unit->getValueOf(ValueType::ATTACK));
+		defenceLevelPerPlayer[unit->getPlayer()]->update(unit->getPosition(), unit->getValueOf(ValueType::DEFENCE));
+		econLevelPerPlayer[unit->getPlayer()]->update(unit->getPosition(), unit->getValueOf(ValueType::ECON));
 	}
 
 	for (auto building : (*buildings)) {
-		attackLevelPerPlayer[building->getPlayer()]->update(building, building->getValueOf(ValueType::ATTACK));
-		defenceLevelPerPlayer[building->getPlayer()]->update(building, building->getValueOf(ValueType::DEFENCE));
-		econLevelPerPlayer[building->getPlayer()]->update(building, building->getValueOf(ValueType::ECON));
+		attackLevelPerPlayer[building->getPlayer()]->update(building->getPosition(), building->getValueOf(ValueType::ATTACK));
+		defenceLevelPerPlayer[building->getPlayer()]->update(building->getPosition(), building->getValueOf(ValueType::DEFENCE));
+		econLevelPerPlayer[building->getPlayer()]->update(building->getPosition(), building->getValueOf(ValueType::ECON));
 	}
 	calcStats(attackLevelPerPlayer);
 	calcStats(defenceLevelPerPlayer);
