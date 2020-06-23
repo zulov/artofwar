@@ -18,7 +18,6 @@ public:
 	float getFieldSize();
 	void getIndexesWithByValue(float percent, float *intersection) const;
 private:
-	bool validIndex(int i) const;
 	float* values;
 	float coef;
 	unsigned char level;

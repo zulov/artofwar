@@ -40,10 +40,6 @@ void InfluenceMapFloat::reset() {
 	std::fill_n(values, arraySize, 0.f);
 }
 
-bool InfluenceMapFloat::validIndex(int i) const {
-	return i >= 0 && i < resolution;
-}
-
 float InfluenceMapFloat::getValueAt(int index) const {
 	return values[index];
 }
