@@ -95,7 +95,7 @@ std::vector<Physical*>& Grid::getContentAt(int index) {
 
 std::vector<Physical*>& Grid::getContentAt(short x, short z) {
 	if (calculator.validIndex(x, z)) {
-		return buckets[calculator.getIndex(x, z)].getContent();
+		return buckets[calculator.getNotSafeIndex(x, z)].getContent();
 	}
 	return empty;
 }
@@ -146,7 +146,6 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, double 
 	const auto posBeginZ = calculator.getIndex(clicked->getPosition().z_ - radius);
 	const auto posEndX = calculator.getIndex(clicked->getPosition().x_ + radius);
 	const auto posEndZ = calculator.getIndex(clicked->getPosition().z_ + radius);
-
 
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
