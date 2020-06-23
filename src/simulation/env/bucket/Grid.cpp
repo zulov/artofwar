@@ -5,7 +5,6 @@
 #include "objects/unit/Unit.h"
 #include "simulation/env/ContentInfo.h"
 #include <Urho3D/Graphics/Model.h>
-#include "math/MathUtils.h"
 
 
 Grid::Grid(short resolution, float size): calculator(resolution, size), closeIndexProvider(resolution),

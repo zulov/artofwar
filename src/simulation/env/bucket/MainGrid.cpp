@@ -154,14 +154,11 @@ bool MainGrid::belowCellLimit(int index) const {
 	return complexData[index].belowCellLimit();
 }
 
+
 char MainGrid::getNumberInState(int index, UnitState state) const {
-	char num = 0;
-	for (auto&& physical : buckets[index].getContent()) {
-		if (dynamic_cast<Unit*>(physical)->getState() == state) {
-			++num;
-		}
-	}
-	return num;
+	auto pred = [state](Physical* p) { return dynamic_cast<Unit*>(p)->getState() == state; };
+	auto& content = buckets[index].getContent();
+	return std::count_if(content.begin(), content.end(), pred);
 }
 
 char MainGrid::getOrdinalInState(Unit* unit, UnitState state) const {
