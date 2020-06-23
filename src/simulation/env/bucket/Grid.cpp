@@ -131,9 +131,7 @@ std::vector<int> Grid::getArrayNeight(const Urho3D::Vector2& center, float radiu
 
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
-			if (calculator.validIndex(i, j)) {
-				indexes.push_back(calculator.getIndex(i, j));
-			}
+			indexes.push_back(calculator.getNotSafeIndex(i, j));
 		}
 	}
 

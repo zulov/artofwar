@@ -30,7 +30,7 @@ void InfluenceMapFloat::update(Urho3D::Vector3& pos, float value) {
 		for (int j = minJ; j <= maxJ; ++j) {
 			auto a = (i - centerX) * (i - centerX);
 			auto b = (j - centerZ) * (j - centerZ);
-			int index = calculator.getIndex(i, j);
+			int index = calculator.getNotSafeIndex(i, j);
 			values[index] += value / ((a + b) * coef + 1);
 		}
 	}
