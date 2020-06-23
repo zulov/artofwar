@@ -56,9 +56,8 @@ struct GridCalculator {
 	}
 
 	bool validIndex(int index) const { return index >= 0 && index < sqResolution; }
-	float getFieldSize() { return fieldSize; }
+	float getFieldSize() const { return fieldSize; }
 
-private:
 	short getValid(short val) const {
 		if (val < 0) {
 			return 0;
@@ -68,6 +67,9 @@ private:
 		}
 		return val;
 	}
+
+private:
+	
 
 
 	int sqResolution;

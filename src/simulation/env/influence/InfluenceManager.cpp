@@ -2,8 +2,6 @@
 
 #include <chrono>
 #include <span>
-
-
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include "debug/DebugLineRepo.h"
@@ -18,13 +16,13 @@
 
 #define INF_GRID_SIZE 128
 #define MAX_DEBUG_PARTS_INFLUENCE 32
-#define INF_LEVEL 3
+#define INF_LEVEL 4
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
 		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(INF_GRID_SIZE, BUCKET_GRID_SIZE, 40));
 		buildingsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 1));
+			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 2));
 		unitsInfluencePerPlayer.emplace_back(
 			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
 		attackLevelPerPlayer.emplace_back(

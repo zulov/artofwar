@@ -20,16 +20,18 @@ InfluenceMapFloat::~InfluenceMapFloat() {
 void InfluenceMapFloat::update(Urho3D::Vector3& pos, float value) {
 	const auto centerX = calculator.getIndex(pos.x_);
 	const auto centerZ = calculator.getIndex(pos.z_);
-	for (int i = centerX - level; i <= centerX + level; ++i) {
-		if (validIndex(i)) {
-			for (int j = centerZ - level; j <= centerZ + level; ++j) {
-				if (validIndex(j)) {
-					auto a = (i - centerX) * (i - centerX);
-					auto b = (j - centerZ) * (j - centerZ);
-					int index = calculator.getIndex(i, j);
-					values[index] += value / ((a + b) * coef + 1);
-				}
-			}
+	const auto minI = calculator.getValid(centerX - level);
+	const auto maxI = calculator.getValid(centerX + level);
+
+	const auto minJ = calculator.getValid(centerZ - level);
+	const auto maxJ = calculator.getValid(centerZ + level);
+
+	for (int i = minI; i <= maxI; ++i) {
+		for (int j = minJ; j <= maxJ; ++j) {
+			auto a = (i - centerX) * (i - centerX);
+			auto b = (j - centerZ) * (j - centerZ);
+			int index = calculator.getIndex(i, j);
+			values[index] += value / ((a + b) * coef + 1);
 		}
 	}
 }
