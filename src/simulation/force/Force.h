@@ -7,14 +7,14 @@ enum class UnitState : char;
 class Unit;
 class Physical;
 
-class Force
-{
+class Force {
 public:
-	Force();
-	~Force();
+	Force() = default;
+	~Force() = default;
 
 	void separationObstacle(Urho3D::Vector2& newForce, Unit* unit);
-	void separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical *>* units);
+	void randSepForce(Urho3D::Vector2& newForce);
+	void separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical*>* units);
 	void destination(Urho3D::Vector2& newForce, Unit* unit);
 	void formation(Urho3D::Vector2& newForce, Unit* unit);
 	void escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit);

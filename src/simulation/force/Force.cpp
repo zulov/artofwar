@@ -7,16 +7,11 @@
 #include "simulation/formation/FormationManager.h"
 
 
-Force::Force() = default;
-
-Force::~Force() = default;
-
 void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit) {
-	auto repulse = Game::getEnvironment()->repulseObstacle(unit);
-	if (repulse == Urho3D::Vector2::ZERO) {
+	auto force = Game::getEnvironment()->repulseObstacle(unit);
+	if (force == Urho3D::Vector2::ZERO) {
 		return;
 	}
-	Urho3D::Vector2 force(repulse.x_, repulse.y_);
 	const auto distance = force.Length();
 	const auto minimalDistance = unit->getMinimalDistance() * 3;
 	const auto coef = calculateCoef(distance, minimalDistance);
@@ -26,6 +21,14 @@ void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit) {
 
 	forceStats.addSepObst(force);
 
+	newForce += force;
+}
+
+void Force::randSepForce(Urho3D::Vector2& newForce) {
+	Urho3D::Vector2 force;
+	force.x_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE,1.f) - 0.5f;
+	force.y_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE,1.f) - 0.5f;
+	force *= boostCoef * sepCoef;
 	newForce += force;
 }
 
@@ -49,10 +52,7 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 		if (sqDistance > sqSepDist) { continue; }
 		if (isLeaderFor != -1 && isLeaderFor == neight->getFormation()) { continue; }
 		if (sqDistance == 0) {
-			force.x_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE,1.f) - 0.5f;
-			force.y_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE,1.f) - 0.5f;
-			force *= boostCoef * sepCoef;
-			newForce += force;
+			randSepForce(newForce);
 			return;
 		}
 		const float distance = sqrt(sqDistance);
