@@ -13,7 +13,7 @@
 #include "database/DatabaseCache.h"
 
 
-MainGrid::MainGrid(const short _resolution, const float _size): Grid(_resolution, _size) {
+MainGrid::MainGrid(const short resolution, const float size): Grid(resolution, size) {
 	short posX = 0;
 	short posZ = 0;
 
@@ -56,7 +56,6 @@ void MainGrid::prepareGridToFind() const {
 	pathConstructor->prepareGridToFind();
 }
 
-
 bool MainGrid::validateAdd(Static* object) const {
 	const auto pos = object->getPosition();
 	return validateAdd(object->getGridSize(), Urho3D::Vector2(pos.x_, pos.z_));
@@ -68,11 +67,11 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 
 	for (int i = sizeX.x_; i < sizeX.y_; ++i) {
 		for (int j = sizeZ.x_; j < sizeZ.y_; ++j) {
-			if (!calculator.validIndex(i, j)) {
+			if (!calculator.isValidIndex(i, j)) {
 				return false;
 			}
 			const int index = calculator.getIndex(i, j);
-			if (!(inRange(index) && complexData[index].isUnit())) {
+			if (!(calculator.isValidIndex(index) && complexData[index].isUnit())) {
 				return false;
 			}
 		}
@@ -81,7 +80,7 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 	return true;
 }
 
-Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) {
+Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 	auto index = calculator.indexFromPosition(unit->getPosition());
 
 	Urho3D::Vector2 sum;
@@ -106,7 +105,7 @@ void MainGrid::invalidateCache() const {
 	pathConstructor->invalidateCache();
 }
 
-void MainGrid::updateSurround(Static* object) {
+void MainGrid::updateSurround(Static* object) const {
 	if (object->isAlive()) {
 		std::unordered_set<int> indexes;
 		for (auto index : object->getOccupiedCells()) {
@@ -157,7 +156,8 @@ bool MainGrid::belowCellLimit(int index) const {
 
 char MainGrid::getNumberInState(int index, UnitState state) const {
 	auto pred = [state](Physical* p) { return dynamic_cast<Unit*>(p)->getState() == state; };
-	auto& content = buckets[index].getContent();
+	
+	auto& content = getContentAt(index);
 	return std::count_if(content.begin(), content.end(), pred);
 }
 
@@ -175,14 +175,15 @@ char MainGrid::getOrdinalInState(Unit* unit, UnitState state) const {
 	return -1;
 }
 
-int MainGrid::getRevertCloseIndex(int center, int gridIndex) {
-	int index = gridIndex - center;;
+int MainGrid::getRevertCloseIndex(int center, int gridIndex) const {
+	int index = gridIndex - center;
 	for (auto i : closeIndexProvider.getTabIndexes(center)) {
 		if (closeIndexProvider.getIndexAt(i) == index) {
 			//TODO performance
 			return i;
 		}
 	}
+	assert(false);
 	Game::getLog()->Write(0, "closeIndex miscalculate");
 	return 0;
 }
@@ -249,40 +250,11 @@ void MainGrid::drawDebug(GridDebugType type) const {
 	DebugLineRepo::commit(DebugLineType::MAIN_GRID);
 }
 
-bool MainGrid::validAndFree(short id, int index, std::vector<short>::value_type close) const {
-	auto building = Game::getDatabase()->getBuilding(id);
-
-	return calculator.validIndex(index + close)
-		&& Game::getEnvironment()->validateStatic(building->size, calculator.getCenter(index + close))
-		&& complexData[index + close].isFreeToBuild(id);
-}
-
-Urho3D::Vector2 MainGrid::getNewBuildingPos(const Urho3D::Vector2& center, char player, const short id) {
-	auto index = calculator.indexFromPosition(center);
-	if (complexData[index].isFreeToBuild(id)) {
-		return center;
-	}
-
-	for (auto close : closeIndexProvider.get(index)) {
-		if (validAndFree(id, index, close)) {
-			return calculator.getCenter(index + close);
-		}
-	}
-
-	for (auto close : closeIndexProvider.getSecond(index)) {
-		if (validAndFree(id, index, close)) {
-			return calculator.getCenter(index + close);
-		}
-	}
-	Game::getLog()->Write(0, "AI wrong POS");
-	return center; //TODO bug optional
-}
-
-float MainGrid::getFieldSize() {
+float MainGrid::getFieldSize() const {
 	return calculator.getFieldSize();
 }
 
-bool MainGrid::isInLocalArea(int cell, Urho3D::Vector2& pos) {
+bool MainGrid::isInLocalArea(const int cell, Urho3D::Vector2& pos) const {
 	const auto index = calculator.indexFromPosition(pos);
 	if (cell == index) { return true; }
 	for (auto value : closeIndexProvider.get(index)) {
@@ -294,11 +266,11 @@ bool MainGrid::isInLocalArea(int cell, Urho3D::Vector2& pos) {
 }
 
 bool MainGrid::isEmpty(int inx) const {
-	return calculator.validIndex(inx) && complexData[inx].getType() == CellState::EMPTY || complexData[inx].getType() ==
+	return calculator.isValidIndex(inx) && complexData[inx].getType() == CellState::EMPTY || complexData[inx].getType() ==
 		CellState::DEPLOY;
 }
 
-int MainGrid::closestEmpty(int posIndex) {
+int MainGrid::closestEmpty(int posIndex) const {
 	//TODO improve closest? skorzystac z escape?
 	int bestIndex = posIndex;
 	double closest = 99999;
@@ -316,7 +288,7 @@ int MainGrid::closestEmpty(int posIndex) {
 	return posIndex;
 }
 
-void MainGrid::addStatic(Static* object) {
+void MainGrid::addStatic(Static* object) const {
 	if (validateAdd(object)) {
 		const auto bucketPos = getCords(object->getMainCell());
 
@@ -334,7 +306,7 @@ void MainGrid::addStatic(Static* object) {
 
 		for (int i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
 			for (int j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {
-				if (calculator.validIndex(i, j)) {
+				if (calculator.isValidIndex(i, j)) {
 					const int index = calculator.getIndex(i, j);
 					updateNeighbors(index);
 					if (!complexData[index].isUnit()) {
@@ -362,7 +334,7 @@ void MainGrid::removeStatic(Static* object) const {
 	}
 }
 
-std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& position) {
+std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& position) const {
 	int index = calculator.indexFromPosition(position);
 	if (!complexData[index].isUnit()) {
 		int escapeBucket; //=-1
@@ -416,7 +388,7 @@ std::pair<Urho3D::IntVector2, Urho3D::Vector2> MainGrid::getValidPosition(
 void MainGrid::updateNeighbors(const int current) const {
 	for (auto i : closeIndexProvider.getTabIndexes(current)) {
 		const int nI = current + closeIndexProvider.getIndexAt(i);
-		if (calculator.validIndex(nI)) {
+		if (calculator.isValidIndex(nI)) {
 			if (complexData[nI].isUnit()) {
 				complexData[current].setNeightFree(i);
 			} else if (!complexData[nI].isUnit()) {

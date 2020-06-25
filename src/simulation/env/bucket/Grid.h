@@ -20,10 +20,10 @@ public:
 
 	void update(Unit* unit, char team) const;
 	void update(Physical* entity) const;
-	std::vector<Physical*>& getContentAt(int index);
+	const std::vector<Physical*>& getContentAt(int index) const;
 
 	std::vector<short>* getEnvIndexesFromCache(float dist);
-	std::vector<Physical*>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
+	std::vector<Physical*>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player) const;
 	std::vector<Physical*>* getArrayNeightSimilarAs(Physical* clicked, double radius);
 	std::vector<int> getArrayNeight(const Urho3D::Vector2& center, float radius) const;
 	BucketIterator& getArrayNeight(Urho3D::Vector3& position, float radius, short thread);
@@ -32,7 +32,6 @@ public:
 protected:
 	GridCalculator calculator;
 	CloseIndexProvider closeIndexProvider;
-	bool inRange(int index) const { return index >= 0 && index < sqResolution; }
 
 	Bucket* buckets;
 	short resolution;
@@ -40,7 +39,8 @@ protected:
 	float size, fieldSize, invFieldSize;
 
 private:
-	std::vector<Physical*>& getContentAt(short x, short z);
+	const std::vector<Physical*>& getContentAt(short x, short z) const;
+	const std::vector<Physical*>& getNotSafeContentAt(short x, short z) const;
 	bool fieldInCircle(short i, short j, float radius) const;
 	std::vector<short>* getEnvIndexs(float radius) const;
 	void addAt(int index, Physical* entity) const;

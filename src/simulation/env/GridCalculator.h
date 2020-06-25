@@ -20,20 +20,20 @@ struct GridCalculator {
 
 	short getIndex(float value) const {
 		if (value < 0) {
-			short index = (short)(value * invFieldSize) + halfRes - 1;
+			const short index = (short)(value * invFieldSize) + halfRes - 1;
 			if (index >= 0) {
 				return index;
 			}
 			return 0;
 		}
-		short index = (short)(value * invFieldSize) + halfRes;
+		const short index = (short)(value * invFieldSize) + halfRes;
 		if (index < resolution) {
 			return index;
 		}
-		return resolution - 1; //TODO czy aby napewno?
+		return resolution - 1;
 	}
 
-	int indexFromPosition(Urho3D::Vector3& pos) const {
+	int indexFromPosition(const Urho3D::Vector3& pos) const {
 		return getIndex(getIndex(pos.x_), getIndex(pos.z_));
 	}
 
@@ -52,11 +52,11 @@ struct GridCalculator {
 		return {cZ, cX};
 	}
 
-	bool validIndex(short x, short z) const {
+	bool isValidIndex(short x, short z) const {
 		return !(x < 0 || x >= resolution || z < 0 || z >= resolution);
 	}
 
-	bool validIndex(int index) const { return index >= 0 && index < sqResolution; }
+	bool isValidIndex(int index) const { return index >= 0 && index < sqResolution; }
 	
 	float getFieldSize() const { return fieldSize; }
 

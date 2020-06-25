@@ -82,8 +82,8 @@ public:
 	void removeFromGrids(const std::vector<Physical*>& toDispose) const;
 	int getRevertCloseIndex(int center, int gridIndex);
 
-	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
-	int closestEmpty(int posIndex);
+	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos) const;
+	int closestEmpty(int posIndex) const;
 
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
 

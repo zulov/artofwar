@@ -11,7 +11,7 @@ public:
 	~Bucket();
 	Bucket(const Bucket&) = delete;
 
-	std::vector<Physical*>& getContent() { return content; }
+	const std::vector<Physical*>& getContent() const { return content; }
 	void add(Physical* entity);
 	void remove(Physical* entity);
 private:

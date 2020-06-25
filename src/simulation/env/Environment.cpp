@@ -340,11 +340,11 @@ std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::span<
 	return influenceManager.getAreasIterative(result, player, 0.1, min);
 }
 
-bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) {
+bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) const {
 	return mainGrid.isInLocalArea(getMainCell, pos);
 }
 
-int Environment::closestEmpty(int posIndex) {
+int Environment::closestEmpty(int posIndex) const {
 	return mainGrid.closestEmpty(posIndex);
 }
 

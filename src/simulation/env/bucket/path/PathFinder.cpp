@@ -1,17 +1,16 @@
 #include "PathFinder.h"
-#include "utils/defines.h"
+#include <unordered_set>
+#include <Urho3D/Math/Vector2.h>
 #include "DrawGridUtils.h"
 #include "Game.h"
 #include "../ComplexBucketData.h"
-#include <Urho3D/Math/Vector2.h>
-#include <unordered_set>
+#include "utils/defines.h"
 
 
 PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexData) :
-	closeIndexProvider(resolution), resolution(resolution),
-	halfResolution(resolution / 2), fieldSize(size / resolution),
-	complexData(complexData),
-	invFieldSize(resolution / size) {
+	closeIndexProvider(resolution), calculator(resolution, size),
+	resolution(resolution), fieldSize(size / resolution),
+	complexData(complexData) {
 	tempPath = new std::vector<int>();
 	tempPath->reserve(DEFAULT_VECTOR_SIZE);
 }
@@ -102,12 +101,11 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 }
 
 std::vector<int>* PathFinder::findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) {
-	int start = getIndex(getIndex(from.x_), getIndex(from.z_));
-	return findPath(start, aim);
+	return findPath(calculator.indexFromPosition(from), aim);
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim) {
-	int end = getIndex(getIndex(aim.x_), getIndex(aim.y_));
+	int end = calculator.indexFromPosition(aim);
 
 	if (ifInCache(startIdx, end)) {
 		return tempPath;
@@ -240,8 +238,8 @@ void PathFinder::drawMap(Urho3D::Image* image) const {
 	const auto data = (uint32_t*)image->GetData();
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
-			const int index = getIndex(x, y);
-			const int idR = getIndex(resolution - y - 1, x);
+			const int index = calculator.getIndex(x, y);
+			const int idR = calculator.getIndex(resolution - y - 1, x);
 			if (complexData[index].isUnit()) {
 				*(data + idR) = 0xFFFFFFFF;
 			} else {
@@ -255,7 +253,7 @@ void PathFinder::prepareGridToFind() {
 	came_from = new int[resolution * resolution];
 	cost_so_far = new float[resolution * resolution];
 	std::fill_n(came_from, resolution * resolution, -1);
-	std::fill_n(cost_so_far, resolution * resolution, -1);
+	std::fill_n(cost_so_far, resolution * resolution, -1.f);
 	pathInited = true;
 }
 
@@ -271,7 +269,7 @@ void PathFinder::updateCost(int idx, float x) {
 }
 
 void PathFinder::resetPathArrays() {
-	std::fill_n(cost_so_far + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1);
+	std::fill_n(cost_so_far + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1.f);
 
 	int x = -1;
 	int y = -1;
@@ -281,19 +279,4 @@ void PathFinder::resetPathArrays() {
 
 	min_cost_to_ref = resolution * resolution - 1;
 	max_cost_to_ref = 0;
-}
-
-short PathFinder::getIndex(float value) const {
-	if (value < 0) {
-		short index = (short)(value * invFieldSize) + halfResolution - 1;
-		if (index >= 0) {
-			return index;
-		}
-		return 0;
-	}
-	short index = (short)(value * invFieldSize) + halfResolution;
-	if (index < resolution) {
-		return index;
-	}
-	return resolution - 1; //TODO czy aby napewno?
 }

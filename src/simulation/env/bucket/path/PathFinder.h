@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
 #include <Urho3D/Math/Vector2.h>
-#include "BucketQueue.h"
 #include <Urho3D/Resource/Image.h>
-
+#include "BucketQueue.h"
 #include "simulation/env/CloseIndexProvider.h"
+#include "simulation/env/GridCalculator.h"
 
 
 class ComplexBucketData;
@@ -28,12 +28,10 @@ public:
 	void prepareGridToFind();
 private:
 	float heuristic(int from, int to) const;
-
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
-	int getIndex(short posX, short posZ) const { return posX * resolution + posZ; }
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 	void resetPathArrays();
-	short getIndex(float value) const;
+	GridCalculator calculator;
 	CloseIndexProvider closeIndexProvider;
 
 	std::vector<int>* tempPath;
@@ -43,7 +41,7 @@ private:
 
 	void updateCost(int startIdx, float x);
 
-	const short resolution, halfResolution;
+	const short resolution;
 	const float fieldSize;
 	bool pathInited = false;
 
@@ -51,7 +49,6 @@ private:
 	float* cost_so_far;
 	ComplexBucketData* complexData;
 
-	float invFieldSize;
 	int staticCounter = 0;
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref = resolution * resolution - 1;

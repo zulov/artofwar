@@ -22,16 +22,16 @@ enum class GridDebugType : char {
 
 class MainGrid : public Grid {
 public:
-	MainGrid(short _resolution, float _size);
+	MainGrid(short resolution, float size);
 	MainGrid(const MainGrid& rhs) = delete;
 	~MainGrid();
 
 	void prepareGridToFind() const;
 	bool validateAdd(Static* object) const;
 	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const;
-	void addStatic(Static* object);
+	void addStatic(Static* object) const;
 	void removeStatic(Static* object) const;
-	std::optional<Urho3D::Vector2> getDirectionFrom(Urho3D::Vector3& position);
+	std::optional<Urho3D::Vector2> getDirectionFrom(Urho3D::Vector3& position) const;
 	std::pair<Urho3D::IntVector2, Urho3D::Vector2> getValidPosition(const Urho3D::IntVector2& size,
 	                                                                const Urho3D::Vector2& pos) const;
 
@@ -43,9 +43,9 @@ public:
 
 	void drawMap(Urho3D::Image* image) const;
 
-	Urho3D::Vector2 repulseObstacle(Unit* unit);
+	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
 	void invalidateCache() const;
-	void updateSurround(Static* object);
+	void updateSurround(Static* object) const;
 
 	Urho3D::Vector2 getPositionInBucket(int index, char max, char i);
 
@@ -65,22 +65,20 @@ public:
 	bool belowCellLimit(int index) const;
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinalInState(Unit* unit, UnitState state) const;
-	int getRevertCloseIndex(int center, int gridIndex);
+	int getRevertCloseIndex(int center, int gridIndex) const;
 	void addDeploy(Building* building) const;
 	void removeDeploy(Building* building) const;
 
-	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos);
+	bool isInLocalArea(int cell, Urho3D::Vector2& pos) const;
 	bool isEmpty(int inx) const;
-	int closestEmpty(int posIndex);
+	int closestEmpty(int posIndex) const;
 	int indexFromPosition(const Urho3D::Vector2& pos) const { return calculator.indexFromPosition(pos); }
 	int getIndex(short i, short z) const { return calculator.getIndex(i, z); }
 	int getIndex(Urho3D::Vector2& pos) const { return calculator.indexFromPosition(pos); }
 	CellState getCellAt(float x, float z) const;
 	int getAdditionalInfoAt(float x, float z) const;
 	void drawDebug(GridDebugType type) const;
-	bool validAndFree(short id, int index, std::vector<short>::value_type close) const;
-	Urho3D::Vector2 getNewBuildingPos(const Urho3D::Vector2& center, char player, short id);
-	float getFieldSize();
+	float getFieldSize() const;
 private:
 
 	PathFinder* pathConstructor;

@@ -20,6 +20,6 @@ private:
 
 	std::vector<short>* levels;
 	Grid* bucketGrid;
-	std::vector<Physical *>::iterator currentIterator;
-	std::vector<Physical *>::iterator currentEnd;
+	std::vector<Physical *>::const_iterator currentIterator;
+	std::vector<Physical*>::const_iterator currentEnd;
 };

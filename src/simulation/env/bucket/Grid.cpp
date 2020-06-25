@@ -76,7 +76,7 @@ const std::vector<char>& Grid::getCloseTabIndexes(short center) const {
 }
 
 void Grid::removeAt(int index, Physical* entity) const {
-	if (inRange(index)) {
+	if (calculator.isValidIndex(index)) {
 		buckets[index].remove(entity);
 	}
 }
@@ -85,21 +85,25 @@ void Grid::addAt(int index, Physical* entity) const {
 	buckets[index].add(entity);
 }
 
-std::vector<Physical*>& Grid::getContentAt(int index) {
-	if (inRange(index)) {
+const std::vector<Physical*>& Grid::getContentAt(int index) const {
+	if (calculator.isValidIndex(index)) {
 		return buckets[index].getContent();
 	}
 	return empty;
 }
 
-std::vector<Physical*>& Grid::getContentAt(short x, short z) {
-	if (calculator.validIndex(x, z)) {
-		return buckets[calculator.getNotSafeIndex(x, z)].getContent();
+const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const {
+	return buckets[calculator.getNotSafeIndex(x, z)].getContent();
+}
+
+const std::vector<Physical*>& Grid::getContentAt(short x, short z) const {
+	if (calculator.isValidIndex(x, z)) {
+		return getNotSafeContentAt(x, z);
 	}
 	return empty;
 }
 
-std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, const char player) {
+std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, const char player) const {
 	tempSelected->clear();
 
 	const auto posBeginX = calculator.getIndex(std::min(pair.first->x_, pair.second->x_));
@@ -109,7 +113,7 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
 
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
-			auto& content = getContentAt(i, j);
+			const auto& content = getNotSafeContentAt(i, j);
 			std::copy_if(content.begin(), content.end(), std::back_inserter(*tempSelected),
 			             [player](Physical* p) { return p->getPlayer() < 0 || p->getPlayer() == player; });
 		}
@@ -148,7 +152,7 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, double 
 
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
-			auto& content = getContentAt(i, j);
+			auto& content = getNotSafeContentAt(i, j);
 			std::copy_if(content.begin(), content.end(), std::back_inserter(*tempSelected),
 			             [clicked](Physical* p) {
 				             return p->getId() == clicked->getId() && p->getPlayer() == clicked->getPlayer();
