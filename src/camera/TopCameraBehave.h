@@ -5,7 +5,7 @@ class TopCameraBehave : public CameraBehave
 {
 public:
 	TopCameraBehave();
-	~TopCameraBehave() override;
+	~TopCameraBehave() override = default;
 	void translate(bool cameraKeys[], int wheel, float timeStep, float min) override;
 	void rotate(const Urho3D::IntVector2& mouseMove, double mouse_sensitivity) override;
 

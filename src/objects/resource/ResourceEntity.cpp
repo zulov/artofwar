@@ -22,8 +22,6 @@ ResourceEntity::ResourceEntity(Urho3D::Vector3& _position,
 	node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
 }
 
-ResourceEntity::~ResourceEntity() = default;
-
 short ResourceEntity::getId() {
 	return dbResource->id;
 }

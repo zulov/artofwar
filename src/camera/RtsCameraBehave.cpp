@@ -7,9 +7,6 @@ RtsCameraBehave::RtsCameraBehave(): CameraBehave(Urho3D::Vector3(0.0f, 50.0f, -5
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * a);
 }
 
-
-RtsCameraBehave::~RtsCameraBehave() = default;
-
 void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
 	Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
 	const float localMin = minY + min;

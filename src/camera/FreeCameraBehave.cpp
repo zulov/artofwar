@@ -9,9 +9,6 @@ FreeCameraBehave::FreeCameraBehave(): CameraBehave(Urho3D::Vector3(0.0f, 50.0f, 
 	coefs[3] = 3;
 }
 
-
-FreeCameraBehave::~FreeCameraBehave() = default;
-
 void FreeCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
 	translateInternal(cameraKeys, timeStep, 1);
 }

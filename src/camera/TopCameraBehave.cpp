@@ -6,9 +6,6 @@ TopCameraBehave::TopCameraBehave(): CameraBehave(Urho3D::Vector3(0, 50, 0), 20, 
 	camera->SetOrthographic(true);
 }
 
-
-TopCameraBehave::~TopCameraBehave() = default;
-
 void TopCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
 	translateInternal(cameraKeys, timeStep, sqrt((orthoSize - minY) / 10) + 1);
 	if (wheel != 0) {

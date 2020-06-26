@@ -4,12 +4,12 @@
 #include <vector>
 
 
-class FormationManager
-{
+class FormationManager {
 public:
-	FormationManager();
+	FormationManager() = default;
 	~FormationManager();
-	std::optional<Formation*> createFormation(const std::vector<Unit*>& _units, FormationType _type = FormationType::SQUERE);
+	std::optional<Formation*> createFormation(const std::vector<Unit*>& _units,
+	                                          FormationType _type = FormationType::SQUERE);
 	void update();
 	float getPriority(Unit* unit);
 	std::optional<Urho3D::Vector2> getPositionFor(Unit* unit);
@@ -17,5 +17,5 @@ public:
 private:
 	std::vector<Formation*> formations;
 	int currentlyFree = 0;
-	
+
 };

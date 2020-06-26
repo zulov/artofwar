@@ -8,7 +8,7 @@ struct db_resource;
 class ResourceEntity : public Static {
 public:
 	ResourceEntity(Urho3D::Vector3& _position, int id, int level, int mainCell);
-	virtual ~ResourceEntity();
+	virtual ~ResourceEntity() = default;
 	void populate() override;
 
 	float collect(float collectSpeed);

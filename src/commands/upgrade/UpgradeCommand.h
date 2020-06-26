@@ -10,7 +10,7 @@ class UpgradeCommand : public AbstractCommand {
 	friend class Stats;
 public:
 	UpgradeCommand(char player, int id, QueueActionType type);
-	~UpgradeCommand() override;
+	~UpgradeCommand() override = default;
 	void execute() override;
 	void setSimulationObjectManager(SimulationObjectManager* _simulationObjectManager);
 private:

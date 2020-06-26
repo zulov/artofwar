@@ -26,8 +26,8 @@ void Force::separationObstacle(Urho3D::Vector2& newForce, Unit* unit) {
 
 void Force::randSepForce(Urho3D::Vector2& newForce) {
 	Urho3D::Vector2 force;
-	force.x_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE,1.f) - 0.5f;
-	force.y_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE,1.f) - 0.5f;
+	force.x_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE, 1.f) - 0.5f;
+	force.y_ = RandGen::nextRand(RandFloatType::COLLISION_FORCE, 1.f) - 0.5f;
 	force *= boostCoef * sepCoef;
 	newForce += force;
 }
@@ -49,8 +49,9 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 			unit->getPosition().z_ - neight->getPosition().z_
 		);
 		const float sqDistance = diff.LengthSquared();
-		if (sqDistance > sqSepDist) { continue; }
-		if (isLeaderFor != -1 && isLeaderFor == neight->getFormation()) { continue; }
+		if (sqDistance > sqSepDist
+			|| (isLeaderFor != -1 && isLeaderFor == neight->getFormation())) { continue; }
+
 		if (sqDistance == 0) {
 			randSepForce(newForce);
 			return;

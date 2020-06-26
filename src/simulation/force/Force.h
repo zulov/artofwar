@@ -13,7 +13,6 @@ public:
 	~Force() = default;
 
 	void separationObstacle(Urho3D::Vector2& newForce, Unit* unit);
-	void randSepForce(Urho3D::Vector2& newForce);
 	void separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical*>* units);
 	void destination(Urho3D::Vector2& newForce, Unit* unit);
 	void formation(Urho3D::Vector2& newForce, Unit* unit);
@@ -25,7 +24,7 @@ public:
 
 private:
 	float calculateCoef(float distance, float minDist) const;
-
+	void randSepForce(Urho3D::Vector2& newForce);
 	float boostCoef = 100;
 
 	float sepCoef = 10;

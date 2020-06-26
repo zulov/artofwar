@@ -4,9 +4,6 @@
 #include <optional>
 
 
-FormationManager::FormationManager() = default;
-
-
 FormationManager::~FormationManager() {
 	clear_vector(formations);
 }

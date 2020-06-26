@@ -9,8 +9,6 @@
 UpgradeCommand::UpgradeCommand(char player, int id, QueueActionType type): AbstractCommand(player), type(type), id(id) {
 }
 
-UpgradeCommand::~UpgradeCommand() = default;
-
 void UpgradeCommand::execute() {
 	char level = Game::getPlayersMan()->getPlayer(player)->upgradeLevel(type, id);
 	if (type == QueueActionType::BUILDING_LEVEL && level > 0) {
