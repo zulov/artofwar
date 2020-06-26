@@ -6,25 +6,24 @@
 class SelectedInfo;
 class SelectedHudElement;
 
-class SelectedHudPanel :public AbstractWindowPanel
-{
+class SelectedHudPanel : public AbstractWindowPanel {
 public:
 	explicit SelectedHudPanel(Urho3D::XMLFile* _style);
-	~SelectedHudPanel();	
-	void update(SelectedInfo* selectedInfo) const;
-	
+	~SelectedHudPanel();
+	void update(SelectedInfo* selectedInfo);
+
 	std::vector<Urho3D::Button*>& getButtonsSelectedToSubscribe();
 	void createRows();
-	void clearSelected() const;
+	void clearSelected();
 
 private:
 	int iconSize() const;
-	void hide(int i) const;
+	void hide(int i);
 	void createBody() override;
 	char maxInRow;
 	const char linesNumber = 3;
+	char lastHidden;
 	std::vector<Urho3D::Button*> buttons;
 	SelectedHudElement** elements;
-	Urho3D::UIElement **rows;
+	Urho3D::UIElement** rows;
 };
-

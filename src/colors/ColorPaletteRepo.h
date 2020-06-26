@@ -11,7 +11,7 @@
 class ColorPaletteRepo {
 public:
 	ColorPaletteRepo();
-	~ColorPaletteRepo();
+	~ColorPaletteRepo() = default;
 	Urho3D::Material* getColor(ColorPallet colorPallet, float value, float maxValue);	
 	Urho3D::Color& getColor(float value, float maxValue);
 	Urho3D::Material* getColor(UnitState state);

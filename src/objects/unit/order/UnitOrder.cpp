@@ -1,10 +1,10 @@
 #include "UnitOrder.h"
-#include "utils/consts.h"
 #include "Game.h"
 #include "enums/UnitAction.h"
 #include "objects/unit/aim/FollowAim.h"
 #include "objects/unit/aim/TargetAim.h"
 #include "simulation/env/Environment.h"
+#include "utils/consts.h"
 
 UnitOrder::UnitOrder(short id, bool append, Urho3D::Vector2& vector):
 	id(id), append(append), toUse(nullptr), vector(new Urho3D::Vector2(vector)) {}

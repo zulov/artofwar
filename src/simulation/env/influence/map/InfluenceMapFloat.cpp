@@ -27,9 +27,9 @@ void InfluenceMapFloat::update(Urho3D::Vector3& pos, float value) {
 	const auto maxJ = calculator.getValid(centerZ + level);
 
 	for (int i = minI; i <= maxI; ++i) {
+		const auto a = (i - centerX) * (i - centerX);
 		for (int j = minJ; j <= maxJ; ++j) {
-			auto a = (i - centerX) * (i - centerX);
-			auto b = (j - centerZ) * (j - centerZ);
+			const auto b = (j - centerZ) * (j - centerZ);
 			int index = calculator.getNotSafeIndex(i, j);
 			values[index] += value / ((a + b) * coef + 1);
 		}

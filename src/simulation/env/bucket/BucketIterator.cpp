@@ -1,10 +1,6 @@
 #include "BucketIterator.h"
 #include "Grid.h"
 
-BucketIterator::BucketIterator() = default;
-
-BucketIterator::~BucketIterator() = default;
-
 Physical* BucketIterator::next() {
 	while (currentIterator == currentEnd) {
 		++index;
@@ -13,9 +9,7 @@ Physical* BucketIterator::next() {
 		setRange();
 	}
 
-	const auto entity = *currentIterator;
-	++currentIterator;
-	return entity;
+	return *(currentIterator++);
 }
 
 BucketIterator* BucketIterator::init(std::vector<short>* _levels, int _center, Grid* _bucketGrid) {

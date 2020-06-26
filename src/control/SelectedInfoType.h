@@ -6,7 +6,7 @@ class Physical;
 class SelectedInfoType {
 public:
 	SelectedInfoType();
-	~SelectedInfoType();
+	~SelectedInfoType() = default;
 	void clear();
 	void add(Physical* physical);
 

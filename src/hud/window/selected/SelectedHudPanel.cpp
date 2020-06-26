@@ -21,8 +21,10 @@ SelectedHudPanel::~SelectedHudPanel() {
 	delete[]rows;
 }
 
-void SelectedHudPanel::hide(int i) const {
-	for (; i < linesNumber * maxInRow; ++i) {
+void SelectedHudPanel::hide(int i) {
+	const auto lh = lastHidden;
+	lastHidden = i;
+	for (; i < lh; ++i) {
 		elements[i]->hide();
 	}
 }
@@ -52,6 +54,7 @@ void SelectedHudPanel::createBody() {
 	for (int i = 0; i < linesNumber * maxInRow; ++i) {
 		buttons.push_back(elements[i]->getButton());
 	}
+	lastHidden = linesNumber * maxInRow;
 }
 
 int SelectedHudPanel::iconSize() const {
@@ -71,11 +74,11 @@ void SelectedHudPanel::createRows() {
 	}
 }
 
-void SelectedHudPanel::clearSelected() const {
+void SelectedHudPanel::clearSelected() {
 	hide(0);
 }
 
-void SelectedHudPanel::update(SelectedInfo* selectedInfo) const {
+void SelectedHudPanel::update(SelectedInfo* selectedInfo) {
 	ObjectType type = selectedInfo->getSelectedType();
 
 	int all = selectedInfo->getAllNumber();

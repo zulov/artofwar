@@ -50,7 +50,7 @@ MainGrid::~MainGrid() {
 }
 
 void MainGrid::prepareGridToFind() const {
-	for (int i = 0; i < resolution * resolution; ++i) {
+	for (int i = 0; i < sqResolution; ++i) {
 		updateNeighbors(i);
 	}
 	pathConstructor->prepareGridToFind();
@@ -137,8 +137,9 @@ Urho3D::Vector2 MainGrid::getPositionInBucket(int index, char max, char i) {
 }
 
 bool MainGrid::cellInStates(int index, std::vector<CellState>& cellStates) const {
+	auto type = complexData[index].getType();
 	for (auto cellState : cellStates) {
-		if (complexData[index].getType() == cellState) {
+		if (type == cellState) {
 			return true;
 		}
 	}
@@ -153,7 +154,6 @@ bool MainGrid::belowCellLimit(int index) const {
 	return complexData[index].belowCellLimit();
 }
 
-
 char MainGrid::getNumberInState(int index, UnitState state) const {
 	auto pred = [state](Physical* p) { return dynamic_cast<Unit*>(p)->getState() == state; };
 	
@@ -164,7 +164,7 @@ char MainGrid::getNumberInState(int index, UnitState state) const {
 char MainGrid::getOrdinalInState(Unit* unit, UnitState state) const {
 	const auto index = unit->getMainCell();
 	char ordinal = 0;
-	for (auto&& physical : buckets[index].getContent()) {
+	for (auto physical : buckets[index].getContent()) {
 		if (physical == unit) {
 			return ordinal;
 		}
@@ -201,9 +201,7 @@ void MainGrid::removeDeploy(Building* building) const {
 }
 
 CellState MainGrid::getCellAt(float x, float z) const {
-	auto index = indexFromPosition({x, z});
-
-	return complexData[index].getType();
+	return complexData[indexFromPosition({x, z})].getType();
 }
 
 int MainGrid::getAdditionalInfoAt(float x, float z) const {
@@ -271,10 +269,6 @@ bool MainGrid::isEmpty(int inx) const {
 }
 
 int MainGrid::closestEmpty(int posIndex) const {
-	//TODO improve closest? skorzystac z escape?
-	int bestIndex = posIndex;
-	double closest = 99999;
-
 	for (auto i : closeIndexProvider.get(posIndex)) {
 		if (isEmpty(i + posIndex)) {
 			return i + posIndex;
