@@ -1,4 +1,8 @@
 #include "MiniMapPanel.h"
+#include <Urho3D/Graphics/Texture2D.h>
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/UI/CheckBox.h>
+#include <Urho3D/UI/UIEvents.h>
 #include "GameState.h"
 #include "camera/CameraManager.h"
 #include "database/DatabaseCache.h"
@@ -8,10 +12,6 @@
 #include "player/PlayersManager.h"
 #include "simulation/env/ContentInfo.h"
 #include "simulation/env/Environment.h"
-#include <Urho3D/Graphics/Texture2D.h>
-#include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/UI/CheckBox.h>
-#include <Urho3D/UI/UIEvents.h>
 
 
 MiniMapPanel::MiniMapPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "MiniMapWindow",

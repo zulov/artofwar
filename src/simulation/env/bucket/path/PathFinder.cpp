@@ -55,7 +55,7 @@ std::vector<int>* PathFinder::reconstruct_simplify_path(int start, int goal, con
 		int next = came_from[current];
 
 		if (next == current || next < 0) {
-			break; //TODO BUG tu cos dziwnego sie dzieje
+			assert(false); break; //TODO BUG tu cos dziwnego sie dzieje
 		}
 		current = next;
 	}
@@ -84,7 +84,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 		for (auto i : closeTabIndx) {
 			if (complexData[current].ifNeightIsFree(i)) {
 				int next = current + closeIndexProvider.getIndexAt(i);
-				//TODO BUG IMPORTANT nextujemne :O
+				assert(next>=0 && next<resolution*resolution);
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + complexData[current].getCost(i);
 					if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {

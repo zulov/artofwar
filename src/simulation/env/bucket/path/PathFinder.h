@@ -31,8 +31,8 @@ private:
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 	void resetPathArrays();
-	GridCalculator calculator;
 	CloseIndexProvider closeIndexProvider;
+	GridCalculator calculator;
 
 	std::vector<int>* tempPath;
 
