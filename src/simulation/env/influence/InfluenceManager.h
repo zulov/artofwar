@@ -1,13 +1,11 @@
 #pragma once
 
 #include <span>
-
-#include "map/InfluenceMapInt.h"
-#include "map/InfluenceMapFloat.h"
-#include "player/ai/InfluenceType.h"
 #include <vector>
+#include "map/InfluenceMapFloat.h"
+#include "map/InfluenceMapInt.h"
+#include "player/ai/InfluenceType.h"
 
-enum class AiInfluenceType : char;
 enum class CellState : char;
 class Unit;
 class Building;

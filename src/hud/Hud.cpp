@@ -177,7 +177,7 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
 	                    cameraManager->getInfo());
 
 	topPanel->update(Game::getPlayersMan()->getActivePlayer());
-	//TODO performance if (simulationInfo->ifAmountUnitChanged()) {
+	
 	scorePanel->update(Game::getPlayersMan()->getAllPlayers());
 	miniMapPanel->update();
 	selectedInfo->hasBeenUpdatedDrawn();

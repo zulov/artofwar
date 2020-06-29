@@ -471,7 +471,6 @@
     <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\player\ai\InfluenceType.h" />
-    <ClInclude Include="src\player\ai\AiInfluenceType.h" />
     <ClInclude Include="src\math\VectorUtils.h" />
     <ClInclude Include="src\math\MathUtils.h" />
     <ClInclude Include="src\math\RandGen.h" />
@@ -496,6 +495,7 @@
     <ClInclude Include="src\commands\action\GeneralActionType.h" />
     <ClInclude Include="src\player\ai\ActionMakerLogger.h" />
     <ClInclude Include="src\player\ai\OrderMaker.h" />
+    <ClInclude Include="src\player\ai\AiPhase.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

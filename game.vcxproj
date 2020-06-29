@@ -290,6 +290,7 @@
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\player\ai\AiPhase.h" />
     <ClInclude Include="src\player\ai\OrderMaker.h" />
     <ClInclude Include="src\commands\action\GeneralActionCommand.h" />
     <ClInclude Include="src\commands\action\GeneralActionType.h" />
@@ -299,7 +300,6 @@
     <ClInclude Include="src\objects\unit\order\OrderUtils.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\player\ai\ActionMakerLogger.h" />
-    <ClInclude Include="src\player\ai\AiInfluenceType.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
     <ClInclude Include="src\simulation\env\CloseIndexProvider.h" />
     <ClInclude Include="src\commands\action\BuildingActionType.h" />
