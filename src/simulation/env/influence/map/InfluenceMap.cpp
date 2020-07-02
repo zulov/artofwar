@@ -13,8 +13,6 @@ InfluenceMap::InfluenceMap(unsigned short resolution, float size,
                                                        valueThresholdDebug(valueThresholdDebug),
                                                        calculator(resolution, size) {}
 
-InfluenceMap::~InfluenceMap() = default;
-
 
 void InfluenceMap::draw(short batch, short maxParts) {
 	auto size = arraySize / maxParts;
@@ -42,8 +40,12 @@ void InfluenceMap::drawCell(int index, short batch) const {
 	);
 }
 
-Urho3D::Vector2 InfluenceMap::getCenter(int index) {
+Urho3D::Vector2 InfluenceMap::getCenter(int index) const {
 	return calculator.getCenter(index);
+}
+
+float InfluenceMap::getFieldSize() const {
+	return calculator.getFieldSize();
 }
 
 void InfluenceMap::print() const {

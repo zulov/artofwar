@@ -12,7 +12,7 @@ public:
 	char getValueAt(const Urho3D::Vector2& pos) const;
 	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
 	float getValueAt(int index) const override;
-	void calcStats() override;
+	void finishCalc() override;
 private:
 	unsigned char* values;
 };

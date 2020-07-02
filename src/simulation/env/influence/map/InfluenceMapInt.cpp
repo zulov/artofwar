@@ -39,7 +39,7 @@ float InfluenceMapInt::getValueAt(int index) const {
 	return values[index];
 }
 
-void InfluenceMapInt::calcStats() {
+void InfluenceMapInt::finishCalc() {
 	const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
 	min = *minIdx;
 	max = *maxIdx;

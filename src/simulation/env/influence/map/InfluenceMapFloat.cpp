@@ -57,7 +57,7 @@ float InfluenceMapFloat::getValueAsPercent(const Urho3D::Vector2& pos) const {
 	return 0.5;
 }
 
-void InfluenceMapFloat::calcStats() {
+void InfluenceMapFloat::finishCalc() {
 	const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
 	min = *minIdx;
 	max = *maxIdx;
@@ -88,8 +88,4 @@ void InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection
 		auto val = percent - ((values[i] - min) / diff);
 		intersection[i] += val * val;
 	}
-}
-
-float InfluenceMapFloat::getFieldSize() {
-	return calculator.getFieldSize();
 }

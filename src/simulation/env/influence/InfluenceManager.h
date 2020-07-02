@@ -4,6 +4,7 @@
 #include <vector>
 #include "map/InfluenceMapFloat.h"
 #include "map/InfluenceMapInt.h"
+#include "map/InfluenceMapQTreeFloat.h"
 #include "player/ai/InfluenceType.h"
 
 enum class CellState : char;
@@ -44,8 +45,10 @@ private:
 	                                                const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(InfluenceMapFloat* map, const std::vector<int>& intersection);
 
+	void resetMaps(const std::vector<InfluenceMapQTreeFloat*>& maps) const;
 	void resetMaps(const std::vector<InfluenceMapFloat*>& maps) const;
 	void resetMaps(const std::vector<InfluenceMapInt*>& maps) const;
+	void calcStats(const std::vector<InfluenceMapQTreeFloat*>& maps) const;
 	void calcStats(const std::vector<InfluenceMapFloat*>& maps) const;
 	void calcStats(const std::vector<InfluenceMapInt*>& maps) const;
 
@@ -60,8 +63,11 @@ private:
 	std::vector<InfluenceMapFloat*> attackLevelPerPlayer;
 	std::vector<InfluenceMapFloat*> defenceLevelPerPlayer;
 
+	std::vector<InfluenceMapQTreeFloat*> main;
+
 	InfluenceType debugType = InfluenceType::UNITS_INFLUENCE_PER_PLAYER;
 	content_info* ci;
 	std::vector<float> dataFromPos;
 	short currentDebugBatch = 0;
 };
+
