@@ -5,6 +5,7 @@
 #include "map/InfluenceMapFloat.h"
 #include "map/InfluenceMapInt.h"
 #include "map/InfluenceMapQTreeFloat.h"
+#include "player/ai/ActionMaker.h"
 #include "player/ai/InfluenceType.h"
 
 enum class CellState : char;
@@ -51,6 +52,7 @@ private:
 	void calcStats(const std::vector<InfluenceMapQTreeFloat*>& maps) const;
 	void calcStats(const std::vector<InfluenceMapFloat*>& maps) const;
 	void calcStats(const std::vector<InfluenceMapInt*>& maps) const;
+	void updateMain(std::vector<Player*>& players, Physical * thing) const;
 
 	std::vector<std::vector<InfluenceMapFloat*>> mapsForAiPerPlayer;
 

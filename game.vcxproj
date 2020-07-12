@@ -181,6 +181,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\simulation\env\influence\map\InfluenceMapCombine.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapQTreeFloat.cpp" />
     <ClCompile Include="src\player\ai\OrderMaker.cpp" />
     <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
@@ -291,6 +292,7 @@
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\simulation\env\influence\map\InfluenceMapCombine.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapQTreeFloat.h" />
     <ClInclude Include="src\player\ai\AiPhase.h" />
     <ClInclude Include="src\player\ai\OrderMaker.h" />

@@ -129,6 +129,16 @@ void InfluenceManager::calcStats(const std::vector<InfluenceMapInt*>& maps) cons
 	}
 }
 
+void InfluenceManager::updateMain(std::vector<Player*>& players, Physical * thing) const {
+	for (auto player : players) {
+		if (player->getId() == thing->getPlayer()) {//TOOD BUG wizac tylko wrogów a nie reszte
+			main[player->getId()]->update(thing->getPosition(), 1);
+		}else {
+			main[player->getId()]->update(thing->getPosition(), -1);
+		}
+	}
+}
+
 void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
 	auto& players = Game::getPlayersMan()->getAllPlayers();
 
@@ -142,12 +152,7 @@ void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>*
 		defenceLevelPerPlayer[unit->getPlayer()]->update(unit->getPosition(), unit->getValueOf(ValueType::DEFENCE));
 		econLevelPerPlayer[unit->getPlayer()]->update(unit->getPosition(), unit->getValueOf(ValueType::ECON));
 
-		main[unit->getPlayer()]->update(unit->getPosition(), 1);
-		for (auto player : players) {
-			if (player->getId() != unit->getPlayer()) {//TOOD BUG wizac tylko wrogów a nie reszte
-				main[player->getId()]->update(unit->getPosition(), -1);
-			}
-		}
+		updateMain(players, unit);
 	}
 
 	for (auto building : (*buildings)) {
@@ -157,12 +162,8 @@ void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>*
 		                                                     building->getValueOf(ValueType::DEFENCE));
 		econLevelPerPlayer[building->getPlayer()]->update(building->getPosition(),
 		                                                  building->getValueOf(ValueType::ECON));
-		main[building->getPlayer()]->update(building->getPosition(), 1);
-		for (auto player : players) {
-			if (player->getId() != building->getPlayer()) {//TOOD BUG wizac tylko wrogów a nie reszte
-				main[player->getId()]->update(building->getPosition(), -1);
-			}
-		}
+
+		updateMain(players, building);
 	}
 	calcStats(attackLevelPerPlayer);
 	calcStats(defenceLevelPerPlayer);
