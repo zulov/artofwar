@@ -93,5 +93,5 @@ std::string PlayersManager::getColumns() {
 }
 
 std::vector<Player*>& PlayersManager::getAllPlayers() {
-	return allPlayers;
+	return allPlayers;//TODO bug id playera a jego index to czêsto nie to samo
 }

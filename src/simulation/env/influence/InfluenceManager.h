@@ -2,6 +2,8 @@
 
 #include <span>
 #include <vector>
+
+#include "map/InfluenceMapCombine.h"
 #include "map/InfluenceMapFloat.h"
 #include "map/InfluenceMapInt.h"
 #include "map/InfluenceMapQTreeFloat.h"
@@ -66,6 +68,7 @@ private:
 	std::vector<InfluenceMapFloat*> defenceLevelPerPlayer;
 
 	std::vector<InfluenceMapQTreeFloat*> main;
+	InfluenceMapCombine* main1;
 
 	InfluenceType debugType = InfluenceType::UNITS_INFLUENCE_PER_PLAYER;
 	content_info* ci;

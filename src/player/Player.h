@@ -23,7 +23,7 @@ public:
 	Possession& getPossession() { return possession; }
 	int getNation() const { return dbNation->id; }
 	char getTeam() const { return team; }
-	char getId() const { return id; }
+	char getId() const { return id; }//TODO bug id playera a jego index to czêsto nie to samo
 	int getColor() const { return color; }
 	Urho3D::String& getName() { return name; }
 

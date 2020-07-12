@@ -49,7 +49,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			resourceInfluence[3] //TODO moze to nie osobno jednak? za duza ma wage
 		});
 	}
-
+	main1 = new InfluenceMapCombine(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 32, 40);
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUENCE);
 }
@@ -62,6 +62,7 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(attackLevelPerPlayer);
 	clear_vector(econLevelPerPlayer);
 	clear_vector(main);
+	delete main1;
 	delete ci;
 }
 
@@ -129,11 +130,12 @@ void InfluenceManager::calcStats(const std::vector<InfluenceMapInt*>& maps) cons
 	}
 }
 
-void InfluenceManager::updateMain(std::vector<Player*>& players, Physical * thing) const {
+void InfluenceManager::updateMain(std::vector<Player*>& players, Physical* thing) const {
 	for (auto player : players) {
-		if (player->getId() == thing->getPlayer()) {//TOOD BUG wizac tylko wrogów a nie reszte
+		if (player->getId() == thing->getPlayer()) {
+			//TOOD BUG wizac tylko wrogów a nie reszte
 			main[player->getId()]->update(thing->getPosition(), 1);
-		}else {
+		} else {
 			main[player->getId()]->update(thing->getPosition(), -1);
 		}
 	}
@@ -145,14 +147,16 @@ void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>*
 	resetMaps(attackLevelPerPlayer);
 	resetMaps(defenceLevelPerPlayer);
 	resetMaps(econLevelPerPlayer);
-	resetMaps(main);
+	//resetMaps(main);
+	main1->reset();
 
 	for (auto unit : (*units)) {
 		attackLevelPerPlayer[unit->getPlayer()]->update(unit->getPosition(), unit->getValueOf(ValueType::ATTACK));
 		defenceLevelPerPlayer[unit->getPlayer()]->update(unit->getPosition(), unit->getValueOf(ValueType::DEFENCE));
 		econLevelPerPlayer[unit->getPlayer()]->update(unit->getPosition(), unit->getValueOf(ValueType::ECON));
 
-		updateMain(players, unit);
+		//updateMain(players, unit);
+		main1->update(unit, 1);
 	}
 
 	for (auto building : (*buildings)) {
@@ -163,12 +167,15 @@ void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>*
 		econLevelPerPlayer[building->getPlayer()]->update(building->getPosition(),
 		                                                  building->getValueOf(ValueType::ECON));
 
-		updateMain(players, building);
+		//updateMain(players, building);
+		main1->update(building, 1);
 	}
 	calcStats(attackLevelPerPlayer);
 	calcStats(defenceLevelPerPlayer);
 	calcStats(econLevelPerPlayer);
-	calcStats(main);
+	//calcStats(main);
+	main1->finishCalc();
+
 }
 
 void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const {
