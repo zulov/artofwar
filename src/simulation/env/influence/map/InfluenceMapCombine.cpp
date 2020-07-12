@@ -31,20 +31,21 @@ void InfluenceMapCombine::update(Physical* thing, float value) {
 
 	const auto minJ = calculator.getValid(centerZ - level);
 	const auto maxJ = calculator.getValid(centerZ + level);
-
+	auto playerIDd= thing->getPlayer();
+	
 	for (short i = minI; i <= maxI; ++i) {
 		const auto a = (i - centerX) * (i - centerX);
 		for (short j = minJ; j <= maxJ; ++j) {
 			const auto b = (j - centerZ) * (j - centerZ);
 			int index = calculator.getNotSafeIndex(i, j);
 			auto val = 1 / ((a + b) * coef + 1.f);
-			for (int i = 0; i < values.size(); ++i) {
+			for (int k = 0; k < values.size(); ++k) {
 				//toDO bug player id??
-				if (i == thing->getPlayer()) {
+				if (k == playerIDd) {
 					//TOOD BUG wizac tylko wrogów a nie reszte
-					values[i]->add(index, val);
+					values[k]->add(index, val);
 				} else {
-					values[i]->add(index, -val);
+					values[k]->add(index, -val);
 				}
 			}
 		}

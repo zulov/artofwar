@@ -89,7 +89,3 @@ void InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection
 		intersection[i] += val * val;
 	}
 }
-
-void InfluenceMapFloat::add(int index, float value) {
-	values[index] += value;
-}
