@@ -6,12 +6,12 @@ namespace Urho3D {
 	class XMLFile;
 }
 
-class DebugPanel : public AbstractWindowPanel
-{
+class DebugPanel : public AbstractWindowPanel {
 public:
 	explicit DebugPanel(Urho3D::XMLFile* _style);
 	~DebugPanel();
-	void setText(float getLastFps, float getAverageFps, int getLoops, Urho3D::String* string);
+	void setText(float getLastFps, float getAverageFps, int getLoops, float avgLow, float avgMiddle,
+	             float avgHighest, Urho3D::String* string);
 
 private:
 	void createBody() override;

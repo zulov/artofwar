@@ -1,15 +1,15 @@
 #pragma once
+#include <Urho3D/UI/Button.h>
+#include <Urho3D/UI/Text.h>
 #include "Benchmark.h"
 #include "GameState.h"
 #include "control/SelectedInfo.h"
+#include "window/in_game_menu/InGameMenuPanel.h"
 #include "window/main_menu/MainMenuPanel.h"
 #include "window/menu/MenuPanel.h"
-#include "window/in_game_menu/InGameMenuPanel.h"
+#include "window/score/ScorePanel.h"
 #include "window/selected/SelectedHudPanel.h"
 #include "xml/rapidxml_print.hpp"
-#include <Urho3D/UI/Button.h>
-#include <Urho3D/UI/Text.h>
-#include "window/score/ScorePanel.h"
 
 class CameraManager;
 class SimulationInfo;

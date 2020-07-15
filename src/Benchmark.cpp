@@ -1,9 +1,14 @@
 #include "Benchmark.h"
+
+#include <algorithm>
 #include <ctime>
+#include <numeric>
 #include <string>
 
+#define PERCENT 20
+#define PERCENT2 180
 
-Benchmark::Benchmark(): index(0), sum(0), avg(0) {
+Benchmark::Benchmark() {
 	if constexpr (BENCH_SAVE) {
 		auto now = time(0);
 		auto ltm = localtime(&now);
@@ -22,17 +27,20 @@ Benchmark::~Benchmark() {
 }
 
 void Benchmark::add(float fps) {
-	++index;
 	if (index >= BENCH_LENGTH) {
 		avg = sum / BENCH_LENGTH;
 		index = 0;
 		sum = 0;
+		std::sort(data, data + BENCH_LENGTH);
+		avgLowest = std::accumulate(std::begin(data), data + PERCENT, 0.f) / PERCENT;
+		avgMiddle = std::accumulate(data + PERCENT, data + PERCENT2, 0.f) / (PERCENT2 - PERCENT);
+		avgHighest = std::accumulate(data + PERCENT2, data + BENCH_LENGTH, 0.f) / (BENCH_LENGTH - PERCENT2);
 		save();
 		++loops;
 	}
-
 	data[index] = fps;
 	sum += fps;
+	++index;
 }
 
 void Benchmark::save() {

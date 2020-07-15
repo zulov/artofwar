@@ -27,7 +27,7 @@
 
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) const {
-	exprtk::symbol_table<float> symbol_table; 
+	exprtk::symbol_table<float> symbol_table;
 	for (auto var : Game::getDatabase()->getHudVars()) {
 		if (var != nullptr && var->hud_size == hudSizeId) {
 			symbol_table.add_variable(var->name.CString(), var->value);
@@ -174,10 +174,11 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
 	updateSelected(selectedInfo, simulationInfo->getCurrentFrame());
 
 	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
+	                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
 	                    cameraManager->getInfo());
 
 	topPanel->update(Game::getPlayersMan()->getActivePlayer());
-	
+
 	scorePanel->update(Game::getPlayersMan()->getAllPlayers());
 	miniMapPanel->update();
 	selectedInfo->hasBeenUpdatedDrawn();
