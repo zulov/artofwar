@@ -5,8 +5,8 @@
 #include <numeric>
 #include <string>
 
-#define PERCENT 20
-#define PERCENT2 180
+#define PERCENT 10
+#define PERCENT2 90
 
 Benchmark::Benchmark() {
 	if constexpr (BENCH_SAVE) {
@@ -32,9 +32,9 @@ void Benchmark::add(float fps) {
 		index = 0;
 		sum = 0;
 		std::sort(data, data + BENCH_LENGTH);
-		avgLowest = std::accumulate(std::begin(data), data + PERCENT, 0.f) / PERCENT;
-		avgMiddle = std::accumulate(data + PERCENT, data + PERCENT2, 0.f) / (PERCENT2 - PERCENT);
-		avgHighest = std::accumulate(data + PERCENT2, data + BENCH_LENGTH, 0.f) / (BENCH_LENGTH - PERCENT2);
+		avgLowest = roundf(std::accumulate(std::begin(data), data + PERCENT, 0.f) / PERCENT);
+		avgMiddle = roundf(std::accumulate(data + PERCENT, data + PERCENT2, 0.f) / (PERCENT2 - PERCENT));
+		avgHighest = roundf(std::accumulate(data + PERCENT2, data + BENCH_LENGTH, 0.f) / (BENCH_LENGTH - PERCENT2));
 		save();
 		++loops;
 	}

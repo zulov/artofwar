@@ -2,7 +2,7 @@
 
 #include <fstream>
 
-#define BENCH_LENGTH 200
+#define BENCH_LENGTH 100
 #define BENCH_SAVE false
 
 class Benchmark {

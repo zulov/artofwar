@@ -16,7 +16,7 @@ void DebugPanel::setText(float getLastFps, float getAverageFps, int getLoops, fl
 	msg.Append("FPS: ").Append(Urho3D::String(getLastFps))
 	   .Append("\navg FPS: ").Append(Urho3D::String(getAverageFps))
 	   .Append("\nPercentiles ")
-			.Append(Urho3D::String(avgLow,2)).Append("|")
+			.Append(Urho3D::String(avgLow)).Append("|")
 			.Append(Urho3D::String(avgMiddle)).Append("|")
 			.Append(Urho3D::String(avgHighest)).Append("|")
 	   .Append("\nLoops: ").Append(Urho3D::String(getLoops))
