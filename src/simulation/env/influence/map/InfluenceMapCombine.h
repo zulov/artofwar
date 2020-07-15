@@ -19,4 +19,6 @@ private:
 	std::vector<InfluenceMapFloat*> values;
 	float coef;
 	unsigned char level;
+	float* values1;
+	float* values2;
 };

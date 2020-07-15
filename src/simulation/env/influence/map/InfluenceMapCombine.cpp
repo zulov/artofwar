@@ -12,10 +12,14 @@ InfluenceMapCombine::InfluenceMapCombine(unsigned short resolution, float size, 
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 		values.push_back(new InfluenceMapFloat(resolution, size, coef, level, valueThresholdDebug));
 	}
+	values1 = new float[arraySize];
+	values2 = new float[arraySize];
 }
 
 InfluenceMapCombine::~InfluenceMapCombine() {
 	clear_vector(values);
+	delete [] values1;
+	delete [] values2;
 }
 
 void InfluenceMapCombine::update(Urho3D::Vector3& pos, float value) {
@@ -31,25 +35,35 @@ void InfluenceMapCombine::update(Physical* thing, float value) {
 
 	const auto minJ = calculator.getValid(centerZ - level);
 	const auto maxJ = calculator.getValid(centerZ + level);
-	auto playerIDd= thing->getPlayer();
-	
+	auto playerIDd = thing->getPlayer();
+	char t[] = {1, -1, -1, 1};
+	std::vector<float> vals(maxI*minI+1);
+	std::vector<int> indexes(maxJ*minJ+1);
+	//InfluenceMapFloat* a = std::begin(t).;
 	for (short i = minI; i <= maxI; ++i) {
 		const auto a = (i - centerX) * (i - centerX);
 		for (short j = minJ; j <= maxJ; ++j) {
 			const auto b = (j - centerZ) * (j - centerZ);
 			int index = calculator.getNotSafeIndex(i, j);
 			auto val = 1 / ((a + b) * coef + 1.f);
-			for (int k = 0; k < values.size(); ++k) {
-				//toDO bug player id??
-				if (k == playerIDd) {
-					//TOOD BUG wizac tylko wrogów a nie reszte
-					values[k]->add(index, val);
-				} else {
-					values[k]->add(index, -val);
-				}
-			}
+			// for (int k = 0; k < values.size(); ++k) {
+			// 	//toDO bug player id??
+			// 	if (k == playerIDd) {
+			// 		//TOOD BUG wizac tylko wrogów a nie reszte
+			// 		values[k]->add(index, val);
+			// 	} else {
+			// 		values[k]->add(index, -val);
+			// 	}
+			// }
+			// for (int i = 0; i < values.size(); ++i) {
+			// 	values[i]->add(index, t[i] * val);
+			// }
+			//vals.emplace_back(val);
+			//indexes.emplace_back(index);
+
 		}
 	}
+	
 }
 
 void InfluenceMapCombine::reset() {
