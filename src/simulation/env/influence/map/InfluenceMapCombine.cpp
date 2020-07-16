@@ -37,9 +37,13 @@ void InfluenceMapCombine::update(Physical* thing, float value) {
 	const auto maxJ = calculator.getValid(centerZ + level);
 	auto playerIDd = thing->getPlayer();
 	char t[] = {1, -1, -1, 1};
-	std::vector<float> vals(maxI*minI+1);
-	std::vector<int> indexes(maxJ*minJ+1);
+	int x = (maxI - minI + 1) * (maxJ - minJ + 1);
+	int* indexes = new int[x];
+	float* vals = new float[x];
+	//std::vector<float> vals((maxI-minI)*(maxJ-minJ)+1);
+	//std::vector<int> indexes((maxI-minI)*(maxJ-minJ)+1);
 	//InfluenceMapFloat* a = std::begin(t).;
+	int k = 0;
 	for (short i = minI; i <= maxI; ++i) {
 		const auto a = (i - centerX) * (i - centerX);
 		for (short j = minJ; j <= maxJ; ++j) {
@@ -58,12 +62,20 @@ void InfluenceMapCombine::update(Physical* thing, float value) {
 			// for (int i = 0; i < values.size(); ++i) {
 			// 	values[i]->add(index, t[i] * val);
 			// }
-			//vals.emplace_back(val);
-			//indexes.emplace_back(index);
-
+			vals[k] = val;
+			indexes[k] = index;
+			k++;
 		}
 	}
-	
+	for (auto influenceMapFloat : values) {
+		for (int i = 0; i < x; ++i) {
+			influenceMapFloat->add(indexes[i],vals[i]);
+		}
+	}
+
+	delete[]indexes;
+	delete[]vals;
+
 }
 
 void InfluenceMapCombine::reset() {
