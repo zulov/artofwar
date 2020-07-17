@@ -12,69 +12,73 @@ InfluenceMapCombine::InfluenceMapCombine(unsigned short resolution, float size, 
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 		values.push_back(new InfluenceMapFloat(resolution, size, coef, level, valueThresholdDebug));
 	}
-	values1 = new float[arraySize];
-	values2 = new float[arraySize];
+
+	auto sizetemp = (level + level + 1) * (level + level + 1);
+	indexes = new int[sizetemp];
+	vals = new float[sizetemp];
 }
 
 InfluenceMapCombine::~InfluenceMapCombine() {
 	clear_vector(values);
-	delete [] values1;
-	delete [] values2;
+
+	delete [] indexes;
+	delete [] vals;
 }
 
-void InfluenceMapCombine::update(Urho3D::Vector3& pos, float value) {
-
-}
+void InfluenceMapCombine::update(Urho3D::Vector3& pos, float value) {}
 
 void InfluenceMapCombine::update(Physical* thing, float value) {
 	auto& pos = thing->getPosition();
 	const auto centerX = calculator.getIndex(pos.x_);
 	const auto centerZ = calculator.getIndex(pos.z_);
-	const auto minI = calculator.getValid(centerX - level);
-	const auto maxI = calculator.getValid(centerX + level);
+	if (centerX != prevCenterX || centerZ != prevCenterZ) {
+		//std::cout<<centerX<<"|"<<centerZ<<"\t";
+		prevCenterX = centerX;
+		prevCenterZ = centerZ;
+		q++;
+		const auto minI = calculator.getValid(centerX - level);
+		const auto maxI = calculator.getValid(centerX + level);
 
-	const auto minJ = calculator.getValid(centerZ - level);
-	const auto maxJ = calculator.getValid(centerZ + level);
-	auto playerIDd = thing->getPlayer();
-	char t[] = {1, -1, -1, 1};
-	int x = (maxI - minI + 1) * (maxJ - minJ + 1);
-	int* indexes = new int[x];
-	float* vals = new float[x];
-	//std::vector<float> vals((maxI-minI)*(maxJ-minJ)+1);
-	//std::vector<int> indexes((maxI-minI)*(maxJ-minJ)+1);
-	//InfluenceMapFloat* a = std::begin(t).;
-	int k = 0;
-	for (short i = minI; i <= maxI; ++i) {
-		const auto a = (i - centerX) * (i - centerX);
-		for (short j = minJ; j <= maxJ; ++j) {
-			const auto b = (j - centerZ) * (j - centerZ);
-			int index = calculator.getNotSafeIndex(i, j);
-			auto val = 1 / ((a + b) * coef + 1.f);
-			// for (int k = 0; k < values.size(); ++k) {
-			// 	//toDO bug player id??
-			// 	if (k == playerIDd) {
-			// 		//TOOD BUG wizac tylko wrogów a nie reszte
-			// 		values[k]->add(index, val);
-			// 	} else {
-			// 		values[k]->add(index, -val);
-			// 	}
-			// }
-			// for (int i = 0; i < values.size(); ++i) {
-			// 	values[i]->add(index, t[i] * val);
-			// }
-			vals[k] = val;
-			indexes[k] = index;
-			k++;
+		const auto minJ = calculator.getValid(centerZ - level);
+		const auto maxJ = calculator.getValid(centerZ + level);
+		auto playerIDd = thing->getPlayer();
+		char t[] = {1, -1, -1, 1};
+
+		k = 0;
+		for (short i = minI; i <= maxI; ++i) {
+			const auto a = (i - centerX) * (i - centerX);
+			for (short j = minJ; j <= maxJ; ++j) {
+				const auto b = (j - centerZ) * (j - centerZ);
+				int index = calculator.getNotSafeIndex(i, j);
+				auto val = 1 / ((a + b) * coef + 1.f);
+				//  for (int m = 0; m < values.size(); ++m) {
+				// // 	//toDO bug player id??
+				// 	if (m == playerIDd) {
+				// 		//TOOD BUG wizac tylko wrogów a nie reszte
+				// 		values[m]->add(index, val);
+				// 	} else {
+				// 		values[m]->add(index, -val);
+				// 	}
+				//  }
+				//for (int i = 0; i < values.size(); ++i) {
+				//values[i]->add(index, t[i] * val);
+				//values[0]->add(index, t[0] * val);
+				//values[1]->add(index, t[1] * val);
+				//}
+				vals[k] = val;
+				indexes[k] = index;
+				++k;
+			}
 		}
+		--k;
 	}
+	w++;
+	//std::cout<<float(q)/w<<"|";
 	for (auto influenceMapFloat : values) {
-		for (int i = 0; i < x; ++i) {
-			influenceMapFloat->add(indexes[i],vals[i]);
+		for (int i = 0; i < k; ++i) {
+			influenceMapFloat->add(indexes[i], vals[i]);
 		}
 	}
-
-	delete[]indexes;
-	delete[]vals;
 
 }
 

@@ -175,7 +175,6 @@ void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>*
 	calcStats(econLevelPerPlayer);
 	//calcStats(main);
 	main1->finishCalc();
-
 }
 
 void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const {
