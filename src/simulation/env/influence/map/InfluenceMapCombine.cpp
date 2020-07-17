@@ -32,10 +32,9 @@ void InfluenceMapCombine::update(Physical* thing, float value) {
 	const auto centerX = calculator.getIndex(pos.x_);
 	const auto centerZ = calculator.getIndex(pos.z_);
 	if (centerX != prevCenterX || centerZ != prevCenterZ) {
-		//std::cout<<centerX<<"|"<<centerZ<<"\t";
 		prevCenterX = centerX;
 		prevCenterZ = centerZ;
-		q++;
+
 		const auto minI = calculator.getValid(centerX - level);
 		const auto maxI = calculator.getValid(centerX + level);
 
@@ -72,8 +71,7 @@ void InfluenceMapCombine::update(Physical* thing, float value) {
 		}
 		--k;
 	}
-	w++;
-	//std::cout<<float(q)/w<<"|";
+
 	for (auto influenceMapFloat : values) {
 		for (int i = 0; i < k; ++i) {
 			influenceMapFloat->add(indexes[i], vals[i]);

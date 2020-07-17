@@ -49,7 +49,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			resourceInfluence[3] //TODO moze to nie osobno jednak? za duza ma wage
 		});
 	}
-	main1 = new InfluenceMapCombine(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 32, 40);
+	main1 = new InfluenceMapCombine(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 16, 40);
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUENCE);
 }

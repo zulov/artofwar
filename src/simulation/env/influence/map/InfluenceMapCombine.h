@@ -26,6 +26,4 @@ private:
 	short prevCenterX = -1;
 	short prevCenterZ = -1;
 	int k = 0;
-	int q = 0;
-	int w = 0;
 };
