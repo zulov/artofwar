@@ -25,6 +25,7 @@
 #include "simulation/formation/FormationManager.h"
 #include "stats/Stats.h"
 
+#define BENCHMARK_MODE true
 
 Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 	simObjectManager = new SimulationObjectManager();
@@ -154,7 +155,7 @@ void Simulation::loadEntities(NewGameForm* form) const {
 }
 
 float Simulation::updateTime(float timeStep) {
-	if (timeStep > maxTimeFrame) {
+	if constexpr (BENCHMARK_MODE || timeStep > maxTimeFrame) {
 		timeStep = maxTimeFrame;
 	}
 	accumulateTime += timeStep;
