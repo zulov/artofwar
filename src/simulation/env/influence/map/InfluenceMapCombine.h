@@ -1,4 +1,5 @@
 #pragma once
+#include <span>
 #include <vector>
 
 #include "InfluenceMap.h"
@@ -6,11 +7,12 @@
 
 class InfluenceMapCombine : public InfluenceMap {
 public:
-	InfluenceMapCombine(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug);
+	InfluenceMapCombine(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug,
+		char numberOfMaps);
 	~InfluenceMapCombine();
 
-	void update(Urho3D::Vector3& pos, float value) override;
-	void update(Physical* thing, float value);
+	void update(Physical* thing, float value) override;
+	void update(Physical* thing, std::span<float> values1);
 	void reset() override;
 	float getValueAt(int index) const override;
 	void finishCalc() override;

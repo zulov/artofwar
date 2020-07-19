@@ -17,7 +17,9 @@ InfluenceMapFloat::~InfluenceMapFloat() {
 	delete[] values;
 }
 
-void InfluenceMapFloat::update(Urho3D::Vector3& pos, float value) {
+void InfluenceMapFloat::update(Physical* thing, float value) {
+	auto& pos = thing->getPosition();
+
 	const auto centerX = calculator.getIndex(pos.x_);
 	const auto centerZ = calculator.getIndex(pos.z_);
 	const auto minI = calculator.getValid(centerX - level);

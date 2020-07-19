@@ -8,7 +8,7 @@ public:
 	InfluenceMapFloat(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug);
 	virtual ~InfluenceMapFloat();
 
-	void update(Urho3D::Vector3& pos, float value = 1) override;
+	void update(Physical* thing, float value = 1) override;
 	void reset() override;
 	float getValueAt(int index) const override;
 	float getValueAt(const Urho3D::Vector2& pos) const;
