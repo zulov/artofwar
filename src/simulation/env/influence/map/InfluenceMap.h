@@ -31,3 +31,10 @@ protected:
 	float max;
 	GridCalculator calculator;
 };
+
+inline auto finishCalc = [](InfluenceMap* u) {
+	u->finishCalc();
+};
+inline auto resetMap = [](InfluenceMap* u) {
+	u->reset();
+};

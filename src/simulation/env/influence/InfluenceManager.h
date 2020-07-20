@@ -49,8 +49,10 @@ private:
 
 	void resetMaps(const std::vector<InfluenceMapFloat*>& maps) const;
 	void resetMaps(const std::vector<InfluenceMapInt*>& maps) const;
+	void resetMaps(const std::vector<InfluenceMapCombine*>& maps) const;
 	void calcStats(const std::vector<InfluenceMapFloat*>& maps) const;
 	void calcStats(const std::vector<InfluenceMapInt*>& maps) const;
+	void calcStats(const std::vector<InfluenceMapCombine*>& maps) const;
 
 	std::vector<std::vector<InfluenceMapFloat*>> mapsForAiPerPlayer;
 
@@ -63,6 +65,7 @@ private:
 	std::vector<InfluenceMapFloat*> attackLevelPerPlayer;
 	std::vector<InfluenceMapFloat*> defenceLevelPerPlayer;
 
+	std::vector<InfluenceMapCombine*> basicValues;
 	InfluenceMapCombine* main;
 
 	InfluenceType debugType = InfluenceType::UNITS_INFLUENCE_PER_PLAYER;

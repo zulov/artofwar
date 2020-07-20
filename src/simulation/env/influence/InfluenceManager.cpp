@@ -20,6 +20,7 @@
 #define MAX_DEBUG_PARTS_INFLUENCE 32
 #define INF_LEVEL 4
 
+
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
 		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(INF_GRID_SIZE, BUCKET_GRID_SIZE, 40));
@@ -27,12 +28,17 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 2));
 		unitsInfluencePerPlayer.emplace_back(
 			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
+
 		attackLevelPerPlayer.emplace_back(
 			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
 		defenceLevelPerPlayer.emplace_back(
 			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
 		econLevelPerPlayer.emplace_back(
 			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
+
+		basicValues.emplace_back(
+			new InfluenceMapCombine(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40,
+			                        magic_enum::enum_count<ValueType>()));
 	}
 
 	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
@@ -93,27 +99,27 @@ void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 }
 
 void InfluenceManager::resetMaps(const std::vector<InfluenceMapFloat*>& maps) const {
-	for (auto map : maps) {
-		map->reset();
-	}
+	std::for_each(maps.begin(), maps.end(), resetMap);
 }
 
 void InfluenceManager::resetMaps(const std::vector<InfluenceMapInt*>& maps) const {
-	for (auto map : maps) {
-		map->reset();
-	}
+	std::for_each(maps.begin(), maps.end(), resetMap);
+}
+
+void InfluenceManager::resetMaps(const std::vector<InfluenceMapCombine*>& maps) const {
+	std::for_each(maps.begin(), maps.end(), resetMap);
 }
 
 void InfluenceManager::calcStats(const std::vector<InfluenceMapFloat*>& maps) const {
-	for (auto map : maps) {
-		map->finishCalc();
-	}
+	std::for_each(maps.begin(), maps.end(), finishCalc);
 }
 
 void InfluenceManager::calcStats(const std::vector<InfluenceMapInt*>& maps) const {
-	for (auto map : maps) {
-		map->finishCalc();
-	}
+	std::for_each(maps.begin(), maps.end(), finishCalc);
+}
+
+void InfluenceManager::calcStats(const std::vector<InfluenceMapCombine*>& maps) const {
+	std::for_each(maps.begin(), maps.end(), finishCalc);
 }
 
 void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
@@ -122,13 +128,16 @@ void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>*
 	resetMaps(attackLevelPerPlayer);
 	resetMaps(defenceLevelPerPlayer);
 	resetMaps(econLevelPerPlayer);
+
+	resetMaps(basicValues);
 	main->reset();
+
 	float weights[3] = {-1}; //TODO hardcode
 	for (auto unit : (*units)) {
 		attackLevelPerPlayer[unit->getPlayer()]->update(unit, unit->getValueOf(ValueType::ATTACK));
 		defenceLevelPerPlayer[unit->getPlayer()]->update(unit, unit->getValueOf(ValueType::DEFENCE));
 		econLevelPerPlayer[unit->getPlayer()]->update(unit, unit->getValueOf(ValueType::ECON));
-		
+
 		std::fill_n(weights,MAX_PLAYERS, -1.f);
 		weights[unit->getPlayer()] = 1.f;
 		main->update(unit, std::span{weights, MAX_PLAYERS});
@@ -146,6 +155,7 @@ void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>*
 	calcStats(attackLevelPerPlayer);
 	calcStats(defenceLevelPerPlayer);
 	calcStats(econLevelPerPlayer);
+	calcStats(basicValues);
 	main->finishCalc();
 }
 
