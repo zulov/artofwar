@@ -226,7 +226,7 @@ static std::string aiPropsAsString(db_ai_property* aiProps) {
 	float output[AI_PROPS_SIZE];
 	std::fill_n(output,AI_PROPS_SIZE, 0.f);
 
-	std::copy(aiProps->paramsNorm, aiProps->paramsNorm + AI_PROPS_SIZE, output);
+	std::copy(aiProps->params, aiProps->params + AI_PROPS_SIZE, output);
 	return join(output, output + AI_PROPS_SIZE);
 }
 

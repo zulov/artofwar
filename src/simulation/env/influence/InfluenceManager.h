@@ -6,6 +6,7 @@
 #include "map/InfluenceMapCombine.h"
 #include "map/InfluenceMapFloat.h"
 #include "map/InfluenceMapInt.h"
+#include "objects/Physical.h"
 #include "player/ai/ActionMaker.h"
 #include "player/ai/InfluenceType.h"
 
@@ -26,7 +27,8 @@ public:
 
 	void update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
 	void drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const;
-
+	void drawMap(char index, const std::vector<InfluenceMapCombine*>& vector, ValueType type) const;
+	
 	void draw(InfluenceType type, char index);
 	void switchDebug();
 
@@ -54,16 +56,14 @@ private:
 	void calcStats(const std::vector<InfluenceMapInt*>& maps) const;
 	void calcStats(const std::vector<InfluenceMapCombine*>& maps) const;
 
+	void basicValuesFunc(float *weights, Physical* thing) const;
+
 	std::vector<std::vector<InfluenceMapFloat*>> mapsForAiPerPlayer;
 
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
 	std::vector<InfluenceMapFloat*> buildingsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> resourceInfluence;
-
-	std::vector<InfluenceMapFloat*> econLevelPerPlayer;
-	std::vector<InfluenceMapFloat*> attackLevelPerPlayer;
-	std::vector<InfluenceMapFloat*> defenceLevelPerPlayer;
 
 	std::vector<InfluenceMapCombine*> basicValues;
 	InfluenceMapCombine* main;

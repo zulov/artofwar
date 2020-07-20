@@ -39,7 +39,7 @@ public:
 	short getId() override;
 	int getLevel() override;
 	float getValueOf(ValueType type) const override;
-
+	void fillValues(std::span<float> weights) const override;
 	void createDeploy();
 private:
 

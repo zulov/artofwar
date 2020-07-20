@@ -63,7 +63,7 @@ Urho3D::String Building::toMultiLineString() {
 		                  maxCloseUsers, magic_enum::enum_name(state).data());
 }
 
-void Building::action(BuildingActionType type, short id) const {	
+void Building::action(BuildingActionType type, short id) const {
 	Resources& resources = Game::getPlayersMan()->getPlayer(getPlayer())->getResources();
 
 	switch (type) {
@@ -71,10 +71,10 @@ void Building::action(BuildingActionType type, short id) const {
 		if (resources.reduce(Game::getDatabase()->getUnit(id)->costs)) {
 			queue->add(1, QueueActionType::UNIT_CREATE, id, 30);
 		}
-	break;
+		break;
 	case BuildingActionType::UNIT_LEVEL:
 	{
-		auto opt = Game::getPlayersMan()->getPlayer(getPlayer())->getNextLevelForUnit(id) ;
+		auto opt = Game::getPlayersMan()->getPlayer(getPlayer())->getNextLevelForUnit(id);
 		if (opt.has_value()) {
 			if (resources.reduce(opt.value()->costs)) {
 				queue->add(1, QueueActionType::UNIT_LEVEL, id, 1);
@@ -83,12 +83,12 @@ void Building::action(BuildingActionType type, short id) const {
 	}
 	break;
 	case BuildingActionType::UNIT_UPGRADE:
-	break;
+		break;
 	}
 }
 
 void Building::levelUp(char level) {
-	dbLevel = dbBuilding->getLevel(level).value();//TODO BUG value()
+	dbLevel = dbBuilding->getLevel(level).value(); //TODO BUG value()
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
 }
 
@@ -111,7 +111,15 @@ int Building::getLevel() {
 }
 
 float Building::getValueOf(ValueType type) const {
-	return dbLevel->aiProps->getValueOf(type)* (hp / maxHp);
+	return dbLevel->aiProps->getValueOf(type) * (hp / maxHp);
+}
+
+void Building::fillValues(std::span<float> weights) const {
+	std::copy(dbLevel->aiProps->params, dbLevel->aiProps->params + 3, weights.begin());
+	auto percent = (hp / maxHp);
+	for (auto& weight : weights) {
+		weight *= percent;
+	}
 }
 
 void Building::createDeploy() {

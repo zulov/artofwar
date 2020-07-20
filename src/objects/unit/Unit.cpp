@@ -250,7 +250,7 @@ Urho3D::String Unit::toMultiLineString() {
 	       .Append("\nZdrowie: ").Append(Urho3D::String(hp))
 	       .Append("/").Append(Urho3D::String(maxHp))
 	       .Append("\nStan:").Append(Urho3D::String(magic_enum::enum_name(state).data()));
-	
+
 }
 
 void Unit::action(UnitAction unitAction) {
@@ -467,6 +467,14 @@ void Unit::clean() {
 
 float Unit::getValueOf(ValueType type) const {
 	return dbLevel->aiProps->getValueOf(type) * (hp / maxHp);
+}
+
+void Unit::fillValues(std::span<float> weights) const {
+	std::copy(dbLevel->aiProps->params, dbLevel->aiProps->params + 3, weights.begin());
+	auto percent = (hp / maxHp);
+	for (auto& weight : weights) {
+		weight *= percent;
+	}
 }
 
 Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {

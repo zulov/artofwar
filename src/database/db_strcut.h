@@ -45,32 +45,32 @@ struct db_ai_property {
 private:
 	float costSum = 0;
 	const float sum;
-	std::string paramsNormAString;
-	std::span<float> paramsNormAsSpan;
+	std::string paramsAString;
+	std::span<float> paramsAsSpan;
 public:
-	float paramsNorm[AI_PROPS_SIZE];
+	float params[AI_PROPS_SIZE];
 
 	const float econ;
 	const float attack;
 	const float defence;
 
 	db_ai_property(float econ, float attack, float defence)
-		: sum(econ + attack + defence), //TODO bug div zero
+		: sum(econ + attack + defence),
 		  econ(econ),
 		  attack(attack),
-		  defence(defence), paramsNorm{econ, attack, defence} { }
+		  defence(defence), params{econ, attack, defence} { }
 
-	const std::string& getParamsNormAsString() const { return paramsNormAString; }
-	const std::span<float> getParamsNormAsSpan() const { return paramsNormAsSpan; }
+	const std::string& getParamsNormAsString() const { return paramsAString; }
+	const std::span<float> getParamsNormAsSpan() const { return paramsAsSpan; }
 
 	void setCostSum(float costSum, float normDiv) {
 		this->costSum = costSum;
-		paramsNorm[3] = costSum / normDiv;
+		params[3] = costSum / normDiv;
 	}
 
-	void setParamsNormAString(std::string paramsNormAString) {
-		this->paramsNormAString = std::move(paramsNormAString);
-		paramsNormAsSpan = std::span{paramsNorm};
+	void setParamsNormAString(std::string paramsAString) {
+		this->paramsAString = std::move(paramsAString);
+		paramsAsSpan = std::span{params};
 	}
 
 	float getValueOf(ValueType type) {

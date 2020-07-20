@@ -1,6 +1,6 @@
 #pragma once
-enum class ValueType:char  {
-	ATTACK = 0,
+enum class ValueType:char {
+	ECON = 0,
+	ATTACK,
 	DEFENCE,
-	ECON,
 };

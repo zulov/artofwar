@@ -17,10 +17,12 @@ public:
 	float getValueAt(int index) const override;
 	void finishCalc() override;
 	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
+	InfluenceMapFloat* get(char index);
 private:
 	std::vector<InfluenceMapFloat*> values;
 	float coef;
 	unsigned char level;
+	unsigned char numberOfMaps;
 
 	int* indexes;
 	float* vals;

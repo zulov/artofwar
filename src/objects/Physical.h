@@ -5,6 +5,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <iostream>
 #include <optional>
+#include <span>
 
 enum class ValueType : char;
 struct ActionParameter;
@@ -88,7 +89,7 @@ public:
 	}
 
 	virtual float getValueOf(ValueType type) const;
-
+	virtual void fillValues(std::span<float> weights) const;
 protected:
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);
