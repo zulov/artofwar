@@ -125,7 +125,6 @@ void InfluenceManager::basicValuesFunc(float* weights, Physical* thing) const {
 void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
 	auto& players = Game::getPlayersMan()->getAllPlayers();
 
-
 	resetMaps(basicValues);
 	main->reset();
 

@@ -96,9 +96,12 @@ void Possession::updateAndClean(Resources& resources) {
 	attackSum = 0;
 	defenceSum = 0;
 	std::fill_n(unitsValues, magic_enum::enum_count<ValueType>(), 0.f);
+	std::span<float>(unitsValues,magic_enum::enum_count<ValueType>());
+	
 	for (auto unit : units) {
 		attackSum += unit->getValueOf(ValueType::ATTACK);
 		defenceSum += unit->getValueOf(ValueType::DEFENCE);
+		unit->addValues()
 		for (auto v : magic_enum::enum_values<ValueType>()) {
 			unitsValues[static_cast<char>(v)] += unit->getValueOf(v);
 		}
