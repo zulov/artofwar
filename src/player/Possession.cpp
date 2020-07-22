@@ -18,6 +18,8 @@ Possession::Possession(char nation) {
 		}
 		buildingsPerId[id] = new std::vector<Building*>();
 	}
+	unitsValuesAsSpan = std::span{unitsValues};
+	buildingsValuesAsSpan = std::span{buildingsValues};
 }
 
 Possession::~Possession() {
@@ -93,28 +95,20 @@ void Possession::updateAndClean(Resources& resources) {
 		}
 	}
 
-	attackSum = 0;
-	defenceSum = 0;
 	std::fill_n(unitsValues, magic_enum::enum_count<ValueType>(), 0.f);
-	std::span<float>(unitsValues,magic_enum::enum_count<ValueType>());
-	
 	for (auto unit : units) {
-		attackSum += unit->getValueOf(ValueType::ATTACK);
-		defenceSum += unit->getValueOf(ValueType::DEFENCE);
-		unit->addValues()
-		for (auto v : magic_enum::enum_values<ValueType>()) {
-			unitsValues[static_cast<char>(v)] += unit->getValueOf(v);
-		}
+		unit->addValues(unitsValuesAsSpan);
 	}
+	
 	std::fill_n(buildingsValues, magic_enum::enum_count<ValueType>(), 0.f);
 	for (auto building : buildings) {
-		attackSum += building->getValueOf(ValueType::ATTACK);
-		defenceSum += building->getValueOf(ValueType::DEFENCE);
-		for (auto v : magic_enum::enum_values<ValueType>()) {
-			buildingsValues[static_cast<char>(v)] += building->getValueOf(v);
-		}
+		building->addValues(buildingsValuesAsSpan);
 	}
 
+	attackSum = buildingsValuesAsSpan[static_cast<char>(ValueType::ATTACK)] + unitsValuesAsSpan[static_cast<char>(
+		ValueType::ATTACK)];
+	defenceSum = buildingsValuesAsSpan[static_cast<char>(ValueType::DEFENCE)] + unitsValuesAsSpan[static_cast<char>(
+		ValueType::DEFENCE)];
 
 	auto values = resources.getValues();
 	resourcesSum = std::accumulate(values.begin(), values.end(), 0.f);

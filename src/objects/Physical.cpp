@@ -212,6 +212,9 @@ float Physical::getValueOf(ValueType type) const {
 void Physical::fillValues(std::span<float> weights) const {
 }
 
+void Physical::addValues(std::span<float> vals) const {
+}
+
 void Physical::loadXml(const Urho3D::String& xmlName) {
 	//node->RemoveAllChildren();
 	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(xmlName)->GetRoot());

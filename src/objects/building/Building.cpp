@@ -122,6 +122,13 @@ void Building::fillValues(std::span<float> weights) const {
 	}
 }
 
+void Building::addValues(std::span<float> vals) const {
+	auto percent = hp / maxHp;
+	for (int i = 0; i < vals.size(); ++i) {
+		vals[i] += percent * dbLevel->aiProps->params[i];
+	}
+}
+
 void Building::createDeploy() {
 	if (!getSurroundCells().empty()) {
 		deployIndex = getSurroundCells().at(0);

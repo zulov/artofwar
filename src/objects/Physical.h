@@ -90,6 +90,7 @@ public:
 
 	virtual float getValueOf(ValueType type) const;
 	virtual void fillValues(std::span<float> weights) const;
+	virtual void addValues(std::span<float> vals) const;
 protected:
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);

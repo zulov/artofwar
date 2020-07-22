@@ -1,5 +1,6 @@
 #pragma once
 #include <magic_enum.hpp>
+#include <span>
 #include <vector>
 
 #include "objects/ValueType.h"
@@ -38,4 +39,7 @@ private:
 
 	float unitsValues[magic_enum::enum_count<ValueType>()];
 	float buildingsValues[magic_enum::enum_count<ValueType>()];
+	std::span<float> unitsValuesAsSpan;
+	std::span<float> buildingsValuesAsSpan;
+	
 };
