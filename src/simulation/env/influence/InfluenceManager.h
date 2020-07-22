@@ -22,10 +22,11 @@ public:
 	~InfluenceManager();
 	void update(std::vector<Unit*>* units) const;
 	void update(std::vector<Building*>* buildings) const;
-
 	void update(std::vector<ResourceEntity*>* resources) const;
 
-	void update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
+	void updateBasic(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
+	void updateMain(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
+	
 	void drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const;
 	void drawMap(char index, const std::vector<InfluenceMapCombine*>& vector, ValueType type) const;
 	

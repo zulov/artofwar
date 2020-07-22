@@ -47,6 +47,14 @@ Simulation::~Simulation() {
 	Game::disposeActionCenter();
 }
 
+void Simulation::updateInfluanceMaps() const {
+	if (currentFrameNumber % 2 == 0) {
+		enviroment->updateInfluence1(units, buildings, resources);
+	} else {
+		enviroment->updateInfluence2(units, buildings);
+	}
+}
+
 SimulationInfo* Simulation::update(float timeStep) {
 	simulationInfo->reset();
 	timeStep = updateTime(timeStep);
@@ -61,7 +69,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		Game::getActionCenter()->executeActions();
 		enviroment->update(units);
-		enviroment->updateInfluence(units, buildings, resources);
+		updateInfluanceMaps();
 
 		calculateForces();
 		applyForce();

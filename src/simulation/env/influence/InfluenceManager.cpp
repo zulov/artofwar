@@ -122,30 +122,35 @@ void InfluenceManager::basicValuesFunc(float* weights, Physical* thing) const {
 	basicValues[thing->getPlayer()]->update(thing, data);
 }
 
-void InfluenceManager::update(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
-	auto& players = Game::getPlayersMan()->getAllPlayers();
-
+void InfluenceManager::updateBasic(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
 	resetMaps(basicValues);
-	main->reset();
-
 	float weights[3] = {-1}; //TODO hardcode
 	for (auto unit : (*units)) {
 		basicValuesFunc(weights, unit);
+	}
 
+	for (auto building : (*buildings)) {
+		basicValuesFunc(weights, building);
+	}
+	calcStats(basicValues);
+}
+
+void InfluenceManager::updateMain(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
+	main->reset();
+
+	float weights[MAX_PLAYERS] = {-1}; //TODO hardcode
+	for (auto unit : (*units)) {
 		std::fill_n(weights,MAX_PLAYERS, -1.f);
 		weights[unit->getPlayer()] = 1.f;
 		main->update(unit, std::span{weights, MAX_PLAYERS});
 	}
 
 	for (auto building : (*buildings)) {
-		basicValuesFunc(weights, building);
-
 		std::fill_n(weights,MAX_PLAYERS, -1.f);
 		weights[building->getPlayer()] = 1.f;
 		main->update(building, std::span{weights, MAX_PLAYERS});
 	}
 
-	calcStats(basicValues);
 	main->finishCalc();
 }
 
