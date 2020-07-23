@@ -8,7 +8,7 @@ std::vector<Urho3D::CustomGeometry*> DebugLineRepo::geometry[];
 
 void DebugLineRepo::init(DebugLineType type) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		auto geom = geometry[static_cast<char>(type)];
+		auto& geom = geometry[static_cast<char>(type)];
 		if (geom.empty()) {
 			geom.push_back(Game::getScene()->CreateChild()
 			                               ->GetOrCreateComponent<Urho3D::CustomGeometry>());
@@ -18,7 +18,7 @@ void DebugLineRepo::init(DebugLineType type) {
 
 void DebugLineRepo::init(DebugLineType type, short batches) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		auto geom = geometry[static_cast<char>(type)];
+		auto& geom = geometry[static_cast<char>(type)];
 		if (geom.empty()) {
 			for (int i = 0; i < batches; ++i) {
 				geom.push_back(Game::getScene()->CreateChild()
@@ -88,9 +88,8 @@ void DebugLineRepo::drawLine(DebugLineType type, const Urho3D::Vector3& first, c
 	}
 }
 
-void DebugLineRepo::drawRectangle(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-                                  const Urho3D::Vector3& third, const Urho3D::Vector3& forth,
-                                  const Urho3D::Color& color, short batch) {
+void DebugLineRepo::drawTriangle(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
+                                 const Urho3D::Vector3& third, const Urho3D::Color& color, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		auto* geom = geometry[static_cast<char>(type)].at(batch);
 		geom->DefineVertex(first);
@@ -98,8 +97,6 @@ void DebugLineRepo::drawRectangle(DebugLineType type, const Urho3D::Vector3& fir
 		geom->DefineVertex(second);
 		geom->DefineColor(color);
 		geom->DefineVertex(third);
-		geom->DefineColor(color);
-		geom->DefineVertex(forth);
 		geom->DefineColor(color);
 	}
 }

@@ -22,9 +22,8 @@ public:
 	static void clear(DebugLineType type, short batch = 0);
 	static void drawLine(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
 	                     const Urho3D::Color& color = Urho3D::Color::WHITE, short batch = 0);
-	static void drawRectangle(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
-	                          const Urho3D::Vector3& third, const Urho3D::Vector3& forth,
-	                          const Urho3D::Color& color = Urho3D::Color::WHITE, short batch = 0);
+	static void drawTriangle(DebugLineType type, const Urho3D::Vector3& first, const Urho3D::Vector3& second,
+	                         const Urho3D::Vector3& third, const Urho3D::Color& color = Urho3D::Color::WHITE, short batch =0);
 	static void init(DebugLineType type);
 	static void init(DebugLineType type, short batches);
 private:
