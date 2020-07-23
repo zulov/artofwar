@@ -12,7 +12,6 @@
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
 #include "player/Player.h"
-#include "player/PlayersManager.h"
 #include "simulation/env/ContentInfo.h"
 #include "simulation/env/EnvConsts.h"
 
