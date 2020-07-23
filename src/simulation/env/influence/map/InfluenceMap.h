@@ -13,9 +13,9 @@ public:
 	virtual float getValueAt(int index) const =0;
 
 	virtual void finishCalc() =0;
-	void draw(short batch, short maxParts);
+	void draw(short batch, short maxParts) const;
 	void drawCell(int index, short batch) const;
-	Urho3D::Vector2 getCenter(int value) const;
+	Urho3D::Vector2 getCenter(int index) const;
 	float getFieldSize() const;
 	virtual float getValueAsPercent(const Urho3D::Vector2& pos) const =0;
 protected:

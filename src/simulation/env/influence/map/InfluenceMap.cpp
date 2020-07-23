@@ -5,39 +5,31 @@
 #include "colors/ColorPaletteRepo.h"
 
 
-InfluenceMap::InfluenceMap(unsigned short resolution, float size,
-                           float valueThresholdDebug): resolution(resolution),
-                                                       size(size),
-                                                       fieldSize(size / resolution),
-                                                       arraySize(resolution * resolution),
-                                                       valueThresholdDebug(valueThresholdDebug),
-                                                       calculator(resolution, size) {}
+InfluenceMap::InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug):
+	resolution(resolution), size(size), fieldSize(size / resolution),
+	arraySize(resolution * resolution), valueThresholdDebug(valueThresholdDebug),
+	calculator(resolution, size) {}
 
 
-void InfluenceMap::draw(short batch, short maxParts) {
+void InfluenceMap::draw(short batch, short maxParts) const {
 	auto size = arraySize / maxParts;
 
-	for (int i = batch * size; (i < arraySize && i < (batch + 1) * size); ++i) {
+	for (int i = batch * size; i < arraySize && i < (batch + 1) * size; ++i) {
 		drawCell(i, batch);
 	}
 }
 
 void InfluenceMap::drawCell(int index, short batch) const {
-	Urho3D::Vector2 center2 = calculator.getCenter(index);
-	Urho3D::Vector3 center = Game::getEnvironment()->getPosWithHeightAt(center2.x_, center2.y_);
-	Urho3D::Color color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUANCE,
-	                            center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),
-	                            center + Urho3D::Vector3(fieldSize / 3, 1, fieldSize / 3),
-	                            center + Urho3D::Vector3(fieldSize / 3, 1, -fieldSize / 3),
-	                            color, batch
-	);
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUANCE,
-	                            center + Urho3D::Vector3(fieldSize / 3, 1, -fieldSize / 3),
-	                            center + Urho3D::Vector3(-fieldSize / 3, 1, -fieldSize / 3),
-	                            center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),
-	                            color, batch
-	);
+	const auto center2 = calculator.getCenter(index);
+	const auto center = Game::getEnvironment()->getPosWithHeightAt(center2.x_, center2.y_);
+	const auto color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);
+
+	DebugLineRepo::drawRectangle(DebugLineType::INFLUANCE,
+	                             center + Urho3D::Vector3(fieldSize / 3, 1, -fieldSize / 3),
+	                             center + Urho3D::Vector3(-fieldSize / 3, 1, -fieldSize / 3),
+	                             center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),
+	                             center + Urho3D::Vector3(fieldSize / 3, 1, fieldSize / 3),
+	                             color, batch);
 }
 
 Urho3D::Vector2 InfluenceMap::getCenter(int index) const {
