@@ -46,37 +46,37 @@ float InfluenceMap::getFieldSize() const {
 }
 
 void InfluenceMap::print() const {
-	auto image = new Urho3D::Image(Game::getContext());
-	image->SetSize(resolution, resolution, 4);
-	
-	for (int i = 0; i < resolution; ++i) {
-		for (int j = 0; j < resolution; ++j) {
-			std::cout << getValueAt(calculator.getIndex(i, j)) << " ";
-			const int index = calculator.getIndex(x, y);
-			const int idR = calculator.getIndex(resolution - y - 1, x);
-			if (complexData[index].isUnit()) {
-				*(data + idR) = 0xFFFFFFFF;
-			} else {
-				*(data + idR) = 0xFF000000;
-			}
-		}
-		std::cout << "\n";
-	}
-	
-
-	Urho3D::String prefix = Urho3D::String(staticCounter) + "_";
-	drawMap(image);
-	image->SaveBMP("result/images/" + prefix + "1_grid_map.bmp");
-	//draw_grid_from(came_from, image);
-	//image->SaveBMP("result/images/" + prefix + "2_grid_from.bmp");
-	draw_grid_cost(cost_so_far, image, resolution);
-	image->SaveBMP("result/images/" + prefix + "3_grid_cost.bmp");
-
-	auto path = reconstruct_path(start, end, came_from);
-	draw_grid_path(path, image, resolution);
-
-	image->SaveBMP("result/images/" + prefix + "4_grid_path.bmp");
-
-	delete image;
-	staticCounter++;
+	// auto image = new Urho3D::Image(Game::getContext());
+	// image->SetSize(resolution, resolution, 4);
+	//
+	// for (int i = 0; i < resolution; ++i) {
+	// 	for (int j = 0; j < resolution; ++j) {
+	// 		std::cout << getValueAt(calculator.getIndex(i, j)) << " ";
+	// 		const int index = calculator.getIndex(x, y);
+	// 		const int idR = calculator.getIndex(resolution - y - 1, x);
+	// 		if (complexData[index].isUnit()) {
+	// 			*(data + idR) = 0xFFFFFFFF;
+	// 		} else {
+	// 			*(data + idR) = 0xFF000000;
+	// 		}
+	// 	}
+	// 	std::cout << "\n";
+	// }
+	//
+	//
+	// Urho3D::String prefix = Urho3D::String(staticCounter) + "_";
+	// drawMap(image);
+	// image->SaveBMP("result/images/" + prefix + "1_grid_map.bmp");
+	// //draw_grid_from(came_from, image);
+	// //image->SaveBMP("result/images/" + prefix + "2_grid_from.bmp");
+	// draw_grid_cost(cost_so_far, image, resolution);
+	// image->SaveBMP("result/images/" + prefix + "3_grid_cost.bmp");
+	//
+	// auto path = reconstruct_path(start, end, came_from);
+	// draw_grid_path(path, image, resolution);
+	//
+	// image->SaveBMP("result/images/" + prefix + "4_grid_path.bmp");
+	//
+	// delete image;
+	// staticCounter++;
 }

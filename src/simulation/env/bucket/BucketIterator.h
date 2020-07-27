@@ -5,8 +5,7 @@
 class Grid;
 class Physical;
 
-class BucketIterator
-{
+class BucketIterator {
 public:
 	BucketIterator() = default;
 	~BucketIterator() = default;
@@ -20,6 +19,6 @@ private:
 
 	std::vector<short>* levels;
 	Grid* bucketGrid;
-	std::vector<Physical *>::const_iterator currentIterator;
+	std::vector<Physical*>::const_iterator currentIterator;
 	std::vector<Physical*>::const_iterator currentEnd;
 };

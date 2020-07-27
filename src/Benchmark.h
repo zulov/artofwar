@@ -3,6 +3,9 @@
 #include <fstream>
 
 #define BENCH_LENGTH 100
+#define PERCENT 10
+#define PERCENT2 90
+
 #define BENCH_SAVE false
 
 class Benchmark {

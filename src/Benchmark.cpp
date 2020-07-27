@@ -6,9 +6,6 @@
 #include <numeric>
 #include <string>
 
-#define PERCENT 10
-#define PERCENT2 90
-
 Benchmark::Benchmark() {
 	if constexpr (BENCH_SAVE) {
 		auto now = time(0);
