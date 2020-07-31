@@ -249,6 +249,7 @@ void Simulation::changeCoef(int i, int wheel) {
 }
 
 void Simulation::changeColorMode(SimColorMode _colorMode) {
+	colorSchemeChanged = true;
 	colorScheme = _colorMode;
 }
 
@@ -292,11 +293,16 @@ void Simulation::moveUnits(const float timeStep) const {
 	}
 }
 
-void Simulation::moveUnitsAndCheck(const float timeStep) const {
+void Simulation::moveUnitsAndCheck(const float timeStep) {
 	for (auto unit : *units) {
 		unit->move(timeStep);
 		unit->checkAim();
-		unit->changeColor(colorScheme);
+	}
+	if (colorSchemeChanged || colorScheme != SimColorMode::BASIC) {
+		for (auto unit : *units) {
+			unit->changeColor(colorScheme);
+		}
+		colorSchemeChanged = false;
 	}
 }
 
@@ -334,7 +340,7 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);
-		unit->debug(DebugUnitType::AIM, stats);
+		unit->debug(DebugUnitType::AIM, stats);//TODO przeniesc do Controls
 	}
 	DebugLineRepo::commit(DebugLineType::UNIT_LINES);
 }

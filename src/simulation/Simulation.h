@@ -28,8 +28,7 @@ namespace Urho3D {
 	class Scene;
 }
 
-class Simulation
-{
+class Simulation {
 public:
 	explicit Simulation(Environment* enviroment);
 	~Simulation();
@@ -47,7 +46,7 @@ public:
 private:
 	void aiPlayers() const;
 	void moveUnits(float timeStep) const;
-	void moveUnitsAndCheck(float timeStep) const;
+	void moveUnitsAndCheck(float timeStep);
 	void calculateForces();
 	void performStateAction(float timeStep) const;
 	void handleTimeInFrame(float timeStep);
@@ -64,7 +63,8 @@ private:
 	void addTestEntities() const;
 
 	void tryToAttack(Unit* unit, float dist, UnitAction order, const std::function<bool(Physical*)>& condition);
-	void toAction(Unit* unit, std::vector<Physical*>* list,  UnitAction order, const std::function<bool(Physical*)>& condition);
+	void toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
+	              const std::function<bool(Physical*)>& condition);
 	void tryToCollect(Unit* unit);
 
 	float accumulateTime = 0;
@@ -72,6 +72,7 @@ private:
 	int framesPeriod = 20;
 	int currentFrameNumber = 0;
 	SimColorMode colorScheme;
+	bool colorSchemeChanged = true;
 	Force force;
 
 	std::vector<Unit*>* units;
@@ -84,4 +85,3 @@ private:
 
 	AiManager* aiManager;
 };
-
