@@ -4,9 +4,10 @@
 
 #define TEAMS_NUMBER 3
 
-struct NewGameForm;
+class SimulationInfo;
 class SceneSaver;
 class Player;
+struct NewGameForm;
 struct NewGamePlayer;
 struct dbload_player;
 struct dbload_resource;
@@ -24,7 +25,7 @@ public:
 	std::vector<Player*>& getTeam(short i);
 	void changeActive(short i);
 	void save(SceneSaver& saver);
-	void update();
+	void update(SimulationInfo * simInfo);
 	char getActivePlayerID();
 	static std::string getColumns();
 	std::vector<Player*>& getAllPlayers();

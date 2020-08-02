@@ -21,24 +21,24 @@ public:
 	std::vector<Building*>* getBuildings() const { return buildings; }
 	std::vector<ResourceEntity*>* getResources() const { return resources; }
 
-	void addUnits(unsigned number, int id, Urho3D::Vector2& center, int player, int level) const;
-	void addBuilding(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level) const;
-	void addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level) const;
+	void addUnits(unsigned number, int id, Urho3D::Vector2& center, int player, int level);
+	void addBuilding(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level);
+	void addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level);
 
 	void prepareToDispose() const;
-	void updateInfo(SimulationInfo* simulationInfo) const;
+	void updateInfo(SimulationInfo* simulationInfo);
 	void dispose();
 
 	void load(dbload_unit* unit);
-	void load(dbload_building* building) const;
-	void load(dbload_resource_entities* resource) const;
+	void load(dbload_building* building);
+	void load(dbload_resource_entities* resource);
 	std::vector<Physical*>& getToDispose();
 
 private:
 
-	void updateUnits(std::vector<Unit*>* temp) const;
-	void updateBuilding(std::vector<Building*>* temp) const;
-	void updateResource(std::vector<ResourceEntity*>* temp) const;
+	void updateUnits(std::vector<Unit*>* temp);
+	void updateBuilding(std::vector<Building*>* temp);
+	void updateResource(std::vector<ResourceEntity*>* temp);
 
 	bool shouldDelete(Physical* physical);
 

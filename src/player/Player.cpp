@@ -89,12 +89,12 @@ float Player::getBuildingsVal(ValueType value) const {
 	return possession.getBuildingsVal(value);
 }
 
-void Player::updateResource() {
+void Player::updateResource() const {
 	resources.resetStats();
 }
 
-void Player::updatePossession() {
-	possession.updateAndClean(resources);
+void Player::updatePossession(SimulationInfo* simInfo) {
+	possession.updateAndClean(resources, simInfo);
 }
 
 void Player::add(Unit* unit) {

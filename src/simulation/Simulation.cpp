@@ -63,13 +63,12 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		Game::getActionCenter()->executeLists();
 		selfAI();
-		if (currentFrameNumber % 20 == 0) {
-			aiPlayers();
-		}
+
+		aiPlayers();
 
 		Game::getActionCenter()->executeActions();
 		enviroment->update(units);
-		updateInfluanceMaps();
+		//updateInfluanceMaps();
 
 		calculateForces();
 		applyForce();
@@ -83,7 +82,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 		simObjectManager->updateInfo(simulationInfo);
 		simulationInfo->setCurrentFrame(currentFrameNumber);
 		enviroment->removeFromGrids(simObjectManager->getToDispose());
-		Game::getPlayersMan()->update();
+		Game::getPlayersMan()->update(simulationInfo);
 		Game::getFormationManager()->update();
 		Game::getStats()->save();
 	} else {
@@ -148,7 +147,7 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		Game::getActionCenter()->addUnits(UNITS_NUMBER * 100, 4, Urho3D::Vector2(20, -200), 0);
+		Game::getActionCenter()->addUnits(UNITS_NUMBER * 1000, 4, Urho3D::Vector2(20, -200), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 4, Urho3D::Vector2(10, -20), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-20, -10), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0);
@@ -284,7 +283,9 @@ void Simulation::initScene(NewGameForm* form) const {
 }
 
 void Simulation::aiPlayers() const {
-	aiManager->ai();
+	if (currentFrameNumber % 20 == 0) {
+		aiManager->ai();
+	}
 }
 
 void Simulation::moveUnits(const float timeStep) const {
@@ -340,7 +341,7 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);
-		unit->debug(DebugUnitType::AIM, stats);//TODO przeniesc do Controls
+		unit->debug(DebugUnitType::AIM, stats); //TODO przeniesc do Controls
 	}
 	DebugLineRepo::commit(DebugLineType::UNIT_LINES);
 }

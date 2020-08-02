@@ -9,6 +9,7 @@
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "objects/unit/state/StateManager.h"
+#include "simulation/SimulationInfo.h"
 
 Possession::Possession(char nation) {
 	for (auto building : Game::getDatabase()->getNation(nation)->buildings) {
@@ -83,32 +84,32 @@ void Possession::add(Unit* unit) {
 	}
 }
 
-void Possession::updateAndClean(Resources& resources) {
-	cleanDead(buildings); //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
-	cleanDead(units); //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
-	cleanDead(workers); //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
+void Possession::updateAndClean(Resources& resources, SimulationInfo* simInfo) {
+	cleanDead(buildings, simInfo->ifBuildingDied());
+	cleanDead(units, simInfo->ifUnitDied());
+	cleanDead(workers, simInfo->ifUnitDied());
 
-	for (auto perId : buildingsPerId) {
-		//TODO performance iterowac tylko jezeli ktos umarl - tylko jeœli to wyzej coœwyczyœci³o
-		if (perId) {
-			cleanDead(perId);
+	if (simInfo->ifBuildingDied()) {
+		for (auto perId : buildingsPerId) {
+			if (perId) {
+				cleanDead(perId);
+			}
 		}
 	}
-
 	std::fill_n(unitsValues, magic_enum::enum_count<ValueType>(), 0.f);
 	for (auto unit : units) {
 		unit->addValues(unitsValuesAsSpan);
 	}
-	
+
 	std::fill_n(buildingsValues, magic_enum::enum_count<ValueType>(), 0.f);
 	for (auto building : buildings) {
 		building->addValues(buildingsValuesAsSpan);
 	}
 
-	attackSum = buildingsValuesAsSpan[static_cast<char>(ValueType::ATTACK)] + unitsValuesAsSpan[static_cast<char>(
-		ValueType::ATTACK)];
-	defenceSum = buildingsValuesAsSpan[static_cast<char>(ValueType::DEFENCE)] + unitsValuesAsSpan[static_cast<char>(
-		ValueType::DEFENCE)];
+	attackSum = buildingsValuesAsSpan[static_cast<char>(ValueType::ATTACK)]
+		+ unitsValuesAsSpan[static_cast<char>(ValueType::ATTACK)];
+	defenceSum = buildingsValuesAsSpan[static_cast<char>(ValueType::DEFENCE)]
+		+ unitsValuesAsSpan[static_cast<char>(ValueType::DEFENCE)];
 
 	auto values = resources.getValues();
 	resourcesSum = std::accumulate(values.begin(), values.end(), 0.f);

@@ -29,18 +29,18 @@ SimulationObjectManager::~SimulationObjectManager() {
 }
 
 void SimulationObjectManager::addUnits(unsigned int number, int id, Urho3D::Vector2& center,
-                                       int player, int level) const {
+                                       int player, int level) {
 	updateUnits(unitFactory.create(number, id, center, player, level));
 }
 
 void SimulationObjectManager::addBuilding(int id, Urho3D::Vector2& center, int player,
-                                          const Urho3D::IntVector2& _bucketCords, int level) const {
+                                          const Urho3D::IntVector2& _bucketCords, int level) {
 	updateBuilding(buildingFactory.create(id, center, player, _bucketCords, level));
 }
 
 
 void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords,
-                                          int level) const {
+                                          int level) {
 	updateResource(resourceFactory.create(id, center, _bucketCords, level));
 }
 
@@ -64,11 +64,11 @@ void SimulationObjectManager::load(dbload_unit* unit) {
 	updateUnits(unitFactory.load(unit));
 }
 
-void SimulationObjectManager::load(dbload_building* building) const {
+void SimulationObjectManager::load(dbload_building* building) {
 	updateBuilding(buildingFactory.load(building));
 }
 
-void SimulationObjectManager::load(dbload_resource_entities* resource) const {
+void SimulationObjectManager::load(dbload_resource_entities* resource) {
 	updateResource(resourceFactory.load(resource));
 }
 
@@ -76,7 +76,7 @@ std::vector<Physical*>& SimulationObjectManager::getToDispose() {
 	return toDisposePhysical;
 }
 
-void SimulationObjectManager::updateUnits(std::vector<Unit*>* temp) const {
+void SimulationObjectManager::updateUnits(std::vector<Unit*>* temp) {
 	if (!temp->empty()) {
 		units->insert(units->end(), temp->begin(), temp->end());
 		for (auto value : *temp) {
@@ -86,7 +86,7 @@ void SimulationObjectManager::updateUnits(std::vector<Unit*>* temp) const {
 	}
 }
 
-void SimulationObjectManager::updateBuilding(std::vector<Building*>* temp) const {
+void SimulationObjectManager::updateBuilding(std::vector<Building*>* temp) {
 	if (!temp->empty()) {
 		buildings->insert(buildings->end(), temp->begin(), temp->end());
 		for (auto value : *temp) {
@@ -98,7 +98,7 @@ void SimulationObjectManager::updateBuilding(std::vector<Building*>* temp) const
 	Game::getEnvironment()->updateAll(buildings);
 }
 
-void SimulationObjectManager::updateResource(std::vector<ResourceEntity*>* temp) const {
+void SimulationObjectManager::updateResource(std::vector<ResourceEntity*>* temp) {
 	if (!temp->empty()) {
 		resources->insert(resources->end(), temp->begin(), temp->end());
 		Game::getEnvironment()->update(temp);
@@ -116,7 +116,7 @@ bool SimulationObjectManager::shouldDelete(Physical* physical) {
 	return false;
 }
 
-void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) const {
+void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
 	auto a = this->simulationInfo;
 	simulationInfo->set(a);
 	simulationInfo->setUnitsNumber(units->size());

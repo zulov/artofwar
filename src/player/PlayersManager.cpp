@@ -4,6 +4,7 @@
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "scene/load/dbload_container.h"
 #include "scene/save/SceneSaver.h"
+#include "simulation/SimulationInfo.h"
 
 
 PlayersManager::PlayersManager() = default;
@@ -72,9 +73,9 @@ void PlayersManager::save(SceneSaver& saver) {
 	saver.saveResources(allPlayers);
 }
 
-void PlayersManager::update() {
+void PlayersManager::update(SimulationInfo * simInfo) {
 	for (auto player : allPlayers) {
-		player->updatePossession();
+		player->updatePossession(simInfo);
 		player->updateResource();
 	}
 }

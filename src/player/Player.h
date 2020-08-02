@@ -27,8 +27,8 @@ public:
 	int getColor() const { return color; }
 	Urho3D::String& getName() { return name; }
 
-	void updateResource();
-	void updatePossession();
+	void updateResource() const;
+	void updatePossession(SimulationInfo * simInfo);
 	void add(Unit* unit);
 	void add(Building* building);
 	void ai();

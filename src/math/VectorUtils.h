@@ -10,28 +10,36 @@ inline auto isAlive = [](Physical* u) {
 	return !u->isAlive();
 };
 
-static void cleanDead(std::vector<Unit*>& vector) {
-	vector.erase(
-		std::remove_if(vector.begin(), vector.end(), isAlive),
-		vector.end());
+static void cleanDead(std::vector<Unit*>& vector, bool sthDead = true) {
+	if (sthDead) {
+		vector.erase(
+			std::remove_if(vector.begin(), vector.end(), isAlive),
+			vector.end());
+	}
 }
 
-static void cleanDead(std::vector<Building*>& vector) {
-	vector.erase(
-		std::remove_if(vector.begin(), vector.end(), isAlive),
-		vector.end());
+static void cleanDead(std::vector<Building*>& vector, bool sthDead = true) {
+	if (sthDead) {
+		vector.erase(
+			std::remove_if(vector.begin(), vector.end(), isAlive),
+			vector.end());
+	}
 }
 
-static void cleanDead(std::vector<Building*>* vector) {
-	vector->erase(
-		std::remove_if(vector->begin(), vector->end(), isAlive),
-		vector->end());
+static void cleanDead(std::vector<Building*>* vector, bool sthDead = true) {
+	if (sthDead) {
+		vector->erase(
+			std::remove_if(vector->begin(), vector->end(), isAlive),
+			vector->end());
+	}
 }
 
-static void cleanDead(std::vector<ResourceEntity*>& vector) {
-	vector.erase(
-		std::remove_if(vector.begin(), vector.end(), isAlive),
-		vector.end());
+static void cleanDead(std::vector<ResourceEntity*>& vector, bool sthDead = true) {
+	if (sthDead) {
+		vector.erase(
+			std::remove_if(vector.begin(), vector.end(), isAlive),
+			vector.end());
+	}
 }
 
 static std::vector<short> intersection(std::vector<std::vector<short>*>& ids) {
@@ -90,7 +98,7 @@ static float mirror(float vals[3], float sum) {
 template <typename T>
 static std::vector<unsigned int> sort_indexes_desc(T v[], int size) {
 	std::vector<unsigned int> idx(size);
-	
+
 	std::iota(idx.begin(), idx.end(), 0);
 
 	stable_sort(idx.begin(), idx.end(),
@@ -102,7 +110,7 @@ static std::vector<unsigned int> sort_indexes_desc(T v[], int size) {
 template <typename T>
 static std::vector<unsigned int> sort_indexes(T v[], int size) {
 	std::vector<unsigned int> idx(size);
-	
+
 	std::iota(idx.begin(), idx.end(), 0);
 
 	stable_sort(idx.begin(), idx.end(),
@@ -110,4 +118,3 @@ static std::vector<unsigned int> sort_indexes(T v[], int size) {
 
 	return idx;
 }
-

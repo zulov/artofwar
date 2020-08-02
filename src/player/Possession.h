@@ -6,6 +6,7 @@
 #include "objects/ValueType.h"
 
 
+class SimulationInfo;
 class Unit;
 class Building;
 class Resources;
@@ -17,7 +18,7 @@ public:
 	Possession(const Possession&) = delete;
 	void add(Building* building);
 	void add(Unit* unit);
-	void updateAndClean(Resources& resources);
+	void updateAndClean(Resources& resources, SimulationInfo * simInfo);
 	int getScore() const;
 	int getUnitsNumber() const;
 	int getWorkersNumber() const;
