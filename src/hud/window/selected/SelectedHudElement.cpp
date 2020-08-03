@@ -1,7 +1,7 @@
 #include "SelectedHudElement.h"
+#include <Urho3D/UI/Text.h>
 #include "hud/UiUtils.h"
 #include "objects/Physical.h"
-#include <Urho3D/UI/Text.h>
 
 
 SelectedHudElement::SelectedHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style) {
