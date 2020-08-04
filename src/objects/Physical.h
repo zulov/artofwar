@@ -79,7 +79,7 @@ public:
 	virtual void absorbAttack(float attackCoef) {
 	}
 
-	virtual void select();
+	virtual void select(Urho3D::Billboard* billboardBar1, Urho3D::Billboard* billboardShadow1);
 	virtual void unSelect();
 	virtual Urho3D::String toMultiLineString();
 
@@ -103,6 +103,8 @@ protected:
 	Urho3D::Billboard *billboardBar, *billboardShadow;
 	Urho3D::BillboardSet *billboardSetBar, *billboardSetShadow;
 
+	Urho3D::Billboard *billboardBar1 = nullptr, *billboardShadow1 = nullptr;
+
 	char team, player = -1;
 	unsigned char maxRangeUsers = 8,
 	              maxCloseUsers = 8, //TODO default values
@@ -115,11 +117,11 @@ protected:
 	float hp = 100, maxHp = 100,
 	      attackCoef = 10, attackSpeed = 1,
 	      defenseCoef = 0.3f;
-	
+
 private:
 	void createBillboardBar();
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
-	Urho3D::Billboard* createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet,
+	Urho3D::Billboard* createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billboardSet,
 	                                      const Urho3D::String& material) const;
 	void createBillboardShadow();
 	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;

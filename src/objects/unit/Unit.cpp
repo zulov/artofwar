@@ -181,7 +181,7 @@ void Unit::drawLineTo(const Urho3D::Vector3& second,
 
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		if (billboardBar->enabled_) {
+		if (false && billboardBar->enabled_) {
 			switch (type) {
 			case DebugUnitType::NONE:
 				break;

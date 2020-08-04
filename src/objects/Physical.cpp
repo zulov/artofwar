@@ -47,7 +47,7 @@ void Physical::createBillboardBar() {
 Urho3D::String Physical::getShadowMaterialName() {
 	if (player == -1) {
 		return "Materials/select/select_grey_g.xml";
-	} 
+	}
 	return "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player)->name + ".xml";
 }
 
@@ -61,15 +61,15 @@ float Physical::getShadowSize(const Urho3D::Vector3& boundingBox) const {
 	return (boundingBox.x_ + boundingBox.z_) / 2 * 1.2f;
 }
 
-Urho3D::Billboard* Physical::createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billbordSet,
+Urho3D::Billboard* Physical::createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billboardSet,
                                                 const Urho3D::String& material) const {
 	node = this->node->CreateChild();
 
-	billbordSet = node->CreateComponent<Urho3D::BillboardSet>();
-	billbordSet->SetNumBillboards(1);
-	billbordSet->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(material));
-	billbordSet->SetSorted(true);
-	return billbordSet->GetBillboard(0);
+	billboardSet = node->CreateComponent<Urho3D::BillboardSet>();
+	billboardSet->SetNumBillboards(1);
+	billboardSet->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(material));
+	billboardSet->SetSorted(true);
+	return billboardSet->GetBillboard(0);
 }
 
 void Physical::updateBillboardShadow(Urho3D::Vector3& boundingBox) const {
@@ -189,10 +189,17 @@ ObjectType Physical::getType() const {
 	return ObjectType::PHYSICAL;
 }
 
-void Physical::select() {
+void Physical::select(Urho3D::Billboard* billboardBar1, Urho3D::Billboard* billboardShadow1) {
 	if (getType() == ObjectType::PHYSICAL) { return; }
 	billboardBar->enabled_ = true;
 	billboardShadow->enabled_ = true;
+	this->billboardBar1 = billboardBar1;
+	this->billboardShadow1 = billboardShadow1;
+
+	billboardBar1->position_ = position + Urho3D::Vector3{0, 10 * 1.3f, 0};
+	billboardBar1->size_ = {2, 0.1};
+	billboardBar1->enabled_ = true;
+	//billboardBar1->screenScaleFactor_
 	updateHealthBar();
 }
 
@@ -203,6 +210,9 @@ void Physical::unSelect() {
 
 	billboardSetBar->Commit();
 	billboardSetShadow->Commit();
+
+	billboardBar1 = nullptr;
+	billboardShadow1 = nullptr;
 }
 
 float Physical::getValueOf(ValueType type) const {

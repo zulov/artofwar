@@ -67,8 +67,8 @@ void MiniMapPanel::createEmpty(int parts) {
 	int idR = 0;
 	float div = 5;
 
-	float xinc = 1.0f / (size.x_ - 1);
-	float yinc = 1.0f / (size.y_ - 1);
+	const float xinc = 1.0f / (size.x_ - 1);
+	const float yinc = 1.0f / (size.y_ - 1);
 	float yVal = 1;
 	float xVal = 0;
 	for (short y = size.y_; y > 0; --y) {
@@ -135,7 +135,7 @@ void MiniMapPanel::update() {
 void MiniMapPanel::createBody() {
 	spr = window->CreateChild<Urho3D::Sprite>();
 	spr->SetEnabled(true);
-	auto row = createElement<Urho3D::UIElement>(window, style, "MiniMapListRow");
+	const auto row = createElement<Urho3D::UIElement>(window, style, "MiniMapListRow");
 
 	checksElements.reserve(MINI_MAP_BUTTON_NUMBER);
 
@@ -168,16 +168,16 @@ void MiniMapPanel::createBody() {
 }
 
 void MiniMapPanel::HandleButton(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
-	auto element = (Urho3D::CheckBox*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
-	int id = element->GetVar("Num").GetInt();
+	const auto element = (Urho3D::CheckBox*)eventData[Urho3D::UIMouseClick::P_ELEMENT].GetVoidPtr();
+	const int id = element->GetVar("Num").GetInt();
 
 	checks[id] = element->IsChecked();
 }
 
 void MiniMapPanel::HandleMiniMapClick(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData) {
-	auto element = static_cast<Urho3D::Sprite*>(eventData[Urho3D::Click::P_ELEMENT].GetVoidPtr());
-	auto begin = element->GetScreenPosition();
-	auto size = element->GetSize();
+	const auto element = static_cast<Urho3D::Sprite*>(eventData[Urho3D::Click::P_ELEMENT].GetVoidPtr());
+	const auto begin = element->GetScreenPosition();
+	const auto size = element->GetSize();
 	float x = eventData[Urho3D::Click::P_X].GetInt() - begin.x_;
 	float y = size.y_ - (eventData[Urho3D::Click::P_Y].GetInt() - begin.y_);
 

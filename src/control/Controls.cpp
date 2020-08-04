@@ -53,6 +53,14 @@ Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectTyp
 		deployMark[i]->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>
 			("Objects/buildings/additional/banner.xml")->GetRoot());
 	}
+	billboardNodeResource1 = Game::getScene()->CreateChild();;
+
+	billboardSetResource1 = billboardNodeResource1->CreateComponent<Urho3D::BillboardSet>();
+	billboardSetResource1->SetNumBillboards(100);
+
+	billboardSetResource1->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/bar/bar_grey.xml"));
+	billboardSetResource1->SetSorted(true);
+	
 }
 
 Controls::~Controls() {
@@ -60,6 +68,7 @@ Controls::~Controls() {
 	delete selected;
 	selectionNode->Remove();
 	arrowNode->Remove();
+	billboardNodeResource1->Remove();
 
 	for (auto mark : deployMark) {
 		mark->Remove();
@@ -106,7 +115,8 @@ void Controls::selectOne(Physical* entity, char player) const {
 	if (entity->getType() != ObjectType::PHYSICAL 
 		&& !entity->isSelected() && entity->isAlive() 
 		&& (entity->getPlayer() < 0 || entity->getPlayer() == player)) {
-		entity->select();
+		entity->select(billboardSetResource1->GetBillboard(0),billboardSetResource1->GetBillboard(1));
+		billboardSetResource1->Commit();
 		selected->push_back(entity);
 
 		selectedInfo->setSelectedType(entityType);

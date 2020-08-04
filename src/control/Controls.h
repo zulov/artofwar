@@ -7,6 +7,7 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Input/Input.h>
 #include <vector>
+#include <Urho3D/Graphics/BillboardSet.h>
 
 #define MAX_DEPLOY_MARK_NUMBER 5
 
@@ -90,6 +91,9 @@ private:
 
 	SelectedInfo* selectedInfo;
 
+	Urho3D::BillboardSet *billboardSetResource1;
+	Urho3D::Node* billboardNodeResource1;
+	
 	float clickDistance = 2 * 2;
 	short idToCreate = -1;
 	bool active = true;
