@@ -97,12 +97,12 @@ void MiniMapPanel::changeValue(uint32_t* data, bool& changed, unsigned val) cons
 }
 
 void MiniMapPanel::update() {
-	auto size = spr->GetSize();
+	const auto size = spr->GetSize();
 	auto env = Game::getEnvironment();
 	auto* data = (uint32_t*)minimap->GetData();
 
-	float xinc = 1.0f / size.x_;
-	float yinc = 1.0f / size.y_;
+	const float xinc = 1.0f / size.x_;
+	const float yinc = 1.0f / size.y_;
 
 	bool changed = false;
 	const int activePlayer = Game::getPlayersMan()->getActivePlayerID();
@@ -112,14 +112,11 @@ void MiniMapPanel::update() {
 		content_info* ci = env->getContentInfo({xVal + xinc / 2, yVal - yinc / 2}, checks, activePlayer);
 
 		if (checks[2] && ci->hasBuilding) {
-			unsigned char player = ci->biggestBuilding();
-			changeValue(data, changed, buildingColors[player]);
+			changeValue(data, changed, buildingColors[ci->biggestBuilding()]);
 		} else if (checks[1] && ci->hasResource) {
-			unsigned char resID = ci->biggestResource();
-			changeValue(data, changed, resourceColors[resID]);
+			changeValue(data, changed, resourceColors[ci->biggestResource()]);
 		} else if ((checks[3] || checks[4]) && ci->hasUnit) {
-			unsigned char player = ci->biggestUnits();
-			changeValue(data, changed, unitsColors[player]);
+			changeValue(data, changed, unitsColors[ci->biggestUnits()]);
 		} else if (checks[0]) {
 			changeValue(data, changed, heightMap[indexUpdate]);
 		} else {

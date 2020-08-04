@@ -378,5 +378,5 @@ content_info* Environment::getContentInfo(Urho3D::Vector2 centerPercent, bool ch
 }
 
 float Environment::getPositionFromPercent(float value) const {
-	return value * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5;
+	return BUCKET_GRID_SIZE * (value - 0.5);
 }
