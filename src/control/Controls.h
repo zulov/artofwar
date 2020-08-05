@@ -26,6 +26,8 @@ public:
 	explicit Controls(Urho3D::Input* _input);
 	~Controls();
 
+	void init();
+
 	void updateAdditionalInfo() const;
 	void select(std::vector<Physical*>* entities);
 	void selectOne(Physical* entity, char player);

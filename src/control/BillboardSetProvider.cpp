@@ -10,9 +10,9 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 
-Urho3D::BillboardSet* BillboardSetProvider::createSet(Urho3D::String& materialName) const {
+Urho3D::BillboardSet* BillboardSetProvider::createSet(Urho3D::Node* node, Urho3D::String& materialName) const {
 	auto bs = node->CreateComponent<Urho3D::BillboardSet>();
-	bs->SetNumBillboards(1000);
+	bs->SetNumBillboards(10000);
 
 	bs->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(materialName));
 	bs->SetSorted(true);
@@ -21,24 +21,37 @@ Urho3D::BillboardSet* BillboardSetProvider::createSet(Urho3D::String& materialNa
 
 BillboardSetProvider::BillboardSetProvider() {
 	node = Game::getScene()->CreateChild();
-
-	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-		auto material = "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player->getId())->name +
-			".xml";
-		perPlayerAura.push_back(createSet(material));
-		material = "Materials/bar/bar_" + Game::getDatabase()->getPlayerColor(player->getId())->name + ".xml";
-		perPlayerAura.push_back(createSet(material));
-	}
-	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
-		auto material = "Materials/select/select_grey_" + Game::getDatabase()->getResource(i)->name + ".xml";
-		resourceAura.push_back(createSet(material));
-		material = "Materials/bar/bar_grey.xml";
-		resourceBar.push_back(createSet(material));
-	}
+	nodeAura = Game::getScene()->CreateChild();
 }
 
 BillboardSetProvider::~BillboardSetProvider() {
 	node->Remove();
+	nodeAura->Remove();
+}
+
+void BillboardSetProvider::init() {
+	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+		auto material = "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player->getId())->name +
+			".xml";
+		auto bs = createSet(nodeAura, material);
+		//bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
+		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_DIRECTION);
+		perPlayerAura.push_back(bs);
+		material = "Materials/bar/bar_" + Game::getDatabase()->getPlayerColor(player->getId())->name + ".xml";
+		perPlayerBar.push_back(createSet(node, material));
+	}
+	//nodeAura->Pitch(90);
+	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
+		auto material = "Materials/select/select_grey_" + Game::getDatabase()->getResource(i)->name + ".xml";
+		auto bs = createSet(nodeAura, material);
+		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_LOOKAT_Y);
+		//auto a = bs->GetUpdateGeometryType();
+
+		//bs->SetRelative(false);
+		resourceAura.push_back(bs);
+		material = "Materials/bar/bar_grey.xml";
+		resourceBar.push_back(createSet(node, material));
+	}
 }
 
 void BillboardSetProvider::reset() {
@@ -46,7 +59,7 @@ void BillboardSetProvider::reset() {
 	barIdx = 0;
 }
 
-Urho3D::Billboard* BillboardSetProvider::getNextBar(ObjectType type, char player, char id) {
+Urho3D::Billboard* BillboardSetProvider::getNextAura(ObjectType type, char player, char id) {
 	switch (type) {
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
@@ -57,7 +70,7 @@ Urho3D::Billboard* BillboardSetProvider::getNextBar(ObjectType type, char player
 	}
 }
 
-Urho3D::Billboard* BillboardSetProvider::getNextAura(ObjectType type, char player, char id) {
+Urho3D::Billboard* BillboardSetProvider::getNextBar(ObjectType type, char player, char id) {
 	switch (type) {
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
@@ -65,5 +78,20 @@ Urho3D::Billboard* BillboardSetProvider::getNextAura(ObjectType type, char playe
 	case ObjectType::RESOURCE:
 		return resourceBar[id]->GetBillboard(auraIdx++);
 	default: return nullptr;
+	}
+}
+
+void BillboardSetProvider::commit() {
+	for (auto billboardSet : perPlayerAura) {
+		billboardSet->Commit();
+	}
+	for (auto billboardSet : resourceAura) {
+		billboardSet->Commit();
+	}
+	for (auto billboardSet : perPlayerBar) {
+		billboardSet->Commit();
+	}
+	for (auto billboardSet : resourceBar) {
+		billboardSet->Commit();
 	}
 }

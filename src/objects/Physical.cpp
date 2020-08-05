@@ -202,6 +202,14 @@ void Physical::select(Urho3D::Billboard* billboardBar1, Urho3D::Billboard* billb
 		//billboardBar1->screenScaleFactor_
 	}
 
+	if (this->billboardShadow1) {
+		this->billboardShadow1->position_= position;// + Urho3D::Vector3{10, 0, 0};
+		this->billboardShadow1->direction_= Urho3D::Vector3(0,1000,100);// + Urho3D::Vector3{10, 0, 0};
+		this->billboardShadow1->rotation_= 101;// + Urho3D::Vector3{10, 0, 0};
+		this->billboardShadow1->size_ = {10, 10};
+		this->billboardShadow1->enabled_ = true;
+	}
+
 	updateHealthBar();
 }
 
@@ -212,18 +220,27 @@ void Physical::unSelect() {
 
 	billboardSetBar->Commit();
 	billboardSetShadow->Commit();
+	
+	if (billboardBar1) {
+		billboardBar1->enabled_ = false;
+		billboardBar1 = nullptr;
+	}
 
-	billboardBar1 = nullptr;
-	billboardShadow1 = nullptr;
+	if (billboardShadow1) {
+		billboardShadow1->enabled_ = false;
+		billboardShadow1 = nullptr;
+	}
 }
 
 float Physical::getValueOf(ValueType type) const {
 	return -1;
 }
 
-void Physical::fillValues(std::span<float> weights) const {}
+void Physical::fillValues(std::span<float> weights) const {
+}
 
-void Physical::addValues(std::span<float> vals) const {}
+void Physical::addValues(std::span<float> vals) const {
+}
 
 void Physical::loadXml(const Urho3D::String& xmlName) {
 	//node->RemoveAllChildren();

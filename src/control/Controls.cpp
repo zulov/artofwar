@@ -66,6 +66,9 @@ Controls::~Controls() {
 	}
 }
 
+void Controls::init() {
+	billboardSetProvider.init();
+}
 
 void Controls::updateAdditionalInfo() const {
 	switch (selectedInfo->getSelectedType()) {
@@ -110,6 +113,7 @@ void Controls::selectOne(Physical* entity, char player) {
 
 		entity->select(billboardSetProvider.getNextBar(entity->getType(), entity->getPlayer(), entity->getId()),
 		               billboardSetProvider.getNextAura(entity->getType(), entity->getPlayer(), entity->getId()));
+		//entity->select(nullptr,nullptr);
 		selected->push_back(entity);
 
 		selectedInfo->setSelectedType(entityType);
