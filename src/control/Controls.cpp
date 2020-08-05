@@ -53,14 +53,6 @@ Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectTyp
 		deployMark[i]->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>
 			("Objects/buildings/additional/banner.xml")->GetRoot());
 	}
-	billboardNodeResource1 = Game::getScene()->CreateChild();;
-
-	billboardSetResource1 = billboardNodeResource1->CreateComponent<Urho3D::BillboardSet>();
-	billboardSetResource1->SetNumBillboards(100);
-
-	billboardSetResource1->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/bar/bar_grey.xml"));
-	billboardSetResource1->SetSorted(true);
-	
 }
 
 Controls::~Controls() {
@@ -68,7 +60,6 @@ Controls::~Controls() {
 	delete selected;
 	selectionNode->Remove();
 	arrowNode->Remove();
-	billboardNodeResource1->Remove();
 
 	for (auto mark : deployMark) {
 		mark->Remove();
@@ -98,25 +89,27 @@ void Controls::updateAdditionalInfo() const {
 	}
 }
 
-void Controls::unSelectAll() const {
+void Controls::unSelectAll() {
 	for (auto& phy : *selected) {
 		phy->unSelect();
 	}
+	billboardSetProvider.reset();
 	selected->clear();
 	selectedInfo->setSelectedType(ObjectType::NONE);
 	selectedInfo->reset();
 }
 
-void Controls::selectOne(Physical* entity, char player) const {
+void Controls::selectOne(Physical* entity, char player) {
 	const auto entityType = entity->getType();
 	if (entityType != selectedInfo->getSelectedType()) {
 		unSelectAll();
 	}
-	if (entity->getType() != ObjectType::PHYSICAL 
-		&& !entity->isSelected() && entity->isAlive() 
+	if (entity->getType() != ObjectType::PHYSICAL
+		&& !entity->isSelected() && entity->isAlive()
 		&& (entity->getPlayer() < 0 || entity->getPlayer() == player)) {
-		entity->select(billboardSetResource1->GetBillboard(0),billboardSetResource1->GetBillboard(1));
-		billboardSetResource1->Commit();
+
+		entity->select(billboardSetProvider.getNextBar(entity->getType(), entity->getPlayer(), entity->getId()),
+		               billboardSetProvider.getNextAura(entity->getType(), entity->getPlayer(), entity->getId()));
 		selected->push_back(entity);
 
 		selectedInfo->setSelectedType(entityType);
@@ -125,30 +118,32 @@ void Controls::selectOne(Physical* entity, char player) const {
 	}
 }
 
-void Controls::select(std::vector<Physical*>* entities) const {
+void Controls::select(std::vector<Physical*>* entities) {
 	auto player = Game::getPlayersMan()->getActivePlayerID();
 	for (auto physical : *entities) {
 		selectOne(physical, player); //TODO perf zastapic wrzuceniem na raz
 	}
+	billboardSetProvider.commit();
 	updateAdditionalInfo();
 }
 
-void Controls::leftClick(hit_data& hitData) const {
+void Controls::leftClick(hit_data& hitData) {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
 	selectOne(hitData.clicked, Game::getPlayersMan()->getActivePlayerID());
+	billboardSetProvider.commit();
 	updateAdditionalInfo();
 }
 
-void Controls::leftDoubleClick(hit_data& hitData) const {
+void Controls::leftDoubleClick(hit_data& hitData) {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
 	select(Game::getEnvironment()->getNeighboursSimilarAs(hitData.clicked));
 }
 
-void Controls::leftClickBuild(hit_data& hitData) const {
+void Controls::leftClickBuild(hit_data& hitData) {
 	unSelectAll();
 	createBuilding({hitData.position.x_, hitData.position.z_});
 }
@@ -202,7 +197,7 @@ void Controls::rightClick(hit_data& hitData) const {
 	Game::getActionCenter()->add(new UnitActionCommand(fOrder, Game::getPlayersMan()->getActivePlayerID()));
 }
 
-void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
+void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}

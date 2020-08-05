@@ -9,6 +9,8 @@
 #include <vector>
 #include <Urho3D/Graphics/BillboardSet.h>
 
+#include "BillboardSetProvider.h"
+
 #define MAX_DEPLOY_MARK_NUMBER 5
 
 enum class BuildingActionType : char;
@@ -25,9 +27,9 @@ public:
 	~Controls();
 
 	void updateAdditionalInfo() const;
-	void select(std::vector<Physical*>* entities) const;
-	void selectOne(Physical* entity, char player) const;
-	void unSelectAll() const;
+	void select(std::vector<Physical*>* entities);
+	void selectOne(Physical* entity, char player);
+	void unSelectAll();
 
 	void toBuild(HudData* hud);
 
@@ -65,12 +67,12 @@ private:
 	bool clickDown(MouseButton& var) const;
 	void createBuilding(Urho3D::Vector2 pos) const;
 
-	void leftClick(hit_data& hitData) const;
-	void leftDoubleClick(hit_data& hitData) const;
-	void leftClickBuild(hit_data& hitData) const;
+	void leftClick(hit_data& hitData);
+	void leftDoubleClick(hit_data& hitData);
+	void leftClickBuild(hit_data& hitData);
 	void rightClick(hit_data& hitData) const;
 
-	void leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const;
+	void leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);
 	void rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const;
 
 	void releaseRight();
@@ -89,11 +91,10 @@ private:
 	Urho3D::Node* tempBuildingNode{};
 	Urho3D::StaticModel* tempBuildingModel;
 
+	BillboardSetProvider billboardSetProvider;
+
 	SelectedInfo* selectedInfo;
 
-	Urho3D::BillboardSet *billboardSetResource1;
-	Urho3D::Node* billboardNodeResource1;
-	
 	float clickDistance = 2 * 2;
 	short idToCreate = -1;
 	bool active = true;

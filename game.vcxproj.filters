@@ -197,6 +197,7 @@
     <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
     <ClCompile Include="src\player\ai\OrderMaker.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapCombine.cpp" />
+    <ClCompile Include="src\control\BillboardSetProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -498,6 +499,7 @@
     <ClInclude Include="src\player\ai\OrderMaker.h" />
     <ClInclude Include="src\player\ai\AiPhase.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapCombine.h" />
+    <ClInclude Include="src\control\BillboardSetProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

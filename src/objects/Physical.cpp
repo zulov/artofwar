@@ -195,11 +195,13 @@ void Physical::select(Urho3D::Billboard* billboardBar1, Urho3D::Billboard* billb
 	billboardShadow->enabled_ = true;
 	this->billboardBar1 = billboardBar1;
 	this->billboardShadow1 = billboardShadow1;
+	if (this->billboardBar1) {
+		this->billboardBar1->position_ = position + Urho3D::Vector3{0, 10 * 1.3f, 0};
+		this->billboardBar1->size_ = {2, 0.1};
+		this->billboardBar1->enabled_ = true;
+		//billboardBar1->screenScaleFactor_
+	}
 
-	billboardBar1->position_ = position + Urho3D::Vector3{0, 10 * 1.3f, 0};
-	billboardBar1->size_ = {2, 0.1};
-	billboardBar1->enabled_ = true;
-	//billboardBar1->screenScaleFactor_
 	updateHealthBar();
 }
 
@@ -219,11 +221,9 @@ float Physical::getValueOf(ValueType type) const {
 	return -1;
 }
 
-void Physical::fillValues(std::span<float> weights) const {
-}
+void Physical::fillValues(std::span<float> weights) const {}
 
-void Physical::addValues(std::span<float> vals) const {
-}
+void Physical::addValues(std::span<float> vals) const {}
 
 void Physical::loadXml(const Urho3D::String& xmlName) {
 	//node->RemoveAllChildren();

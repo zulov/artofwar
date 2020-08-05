@@ -31,8 +31,8 @@ public:
 	void refresh(std::vector<Physical*>* selected);
 private:
 	std::vector<SelectedInfoType*> selectedByType;
+	int allNumber;
 	bool changed = true;
 	char allSubTypeNumber;
 	ObjectType selectedType;
-	int allNumber;
 };
