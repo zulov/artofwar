@@ -18,8 +18,8 @@ public:
 	~BillboardSetProvider();
 	void init();
 	void reset();
-	Urho3D::Billboard* getNextBar(ObjectType type, char player, char id);
-	Urho3D::Billboard* getNextAura(ObjectType type, char player, char id);
+	Urho3D::Billboard* getNextBar(ObjectType type, char player, short id);
+	Urho3D::Billboard* getNextAura(ObjectType type, char player, short id);
 	void commit();
 
 private:

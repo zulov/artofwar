@@ -5,8 +5,7 @@
 
 enum class CellState : char;
 
-class Static : public Physical
-{
+class Static : public Physical {
 public:
 	Static(Urho3D::Vector3& _position, int mainCell);
 	virtual ~Static();
@@ -36,7 +35,7 @@ public:
 	std::string getValues(int precision) override;
 protected:
 	void populate(const Urho3D::IntVector2& size);
-	float getHealthBarThick() override { return 0.1; }
+	float getHealthBarThick() const override { return 0.15; }
 	float getShadowSize(const Urho3D::Vector3& boundingBox) const override;
 	int mainCell{};
 	StaticState state, nextState;

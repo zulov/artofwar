@@ -507,6 +507,6 @@ SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo
 	Game::getCameraManager()->translate(cursorPos, input, timeStep);
 	Game::getCameraManager()->rotate(input->GetMouseMove());
 
-	controls->clean(simulationInfo);
+	controls->cleanAndUpdate(simulationInfo);
 	return controls->getInfo();
 }

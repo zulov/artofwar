@@ -181,7 +181,7 @@ void Unit::drawLineTo(const Urho3D::Vector3& second,
 
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		if (false && billboardBar->enabled_) {
+		if (false && false) {
 			switch (type) {
 			case DebugUnitType::NONE:
 				break;
@@ -329,7 +329,7 @@ int Unit::getLevel() {
 	return dbLevel->level;
 }
 
-float Unit::getMaxHpBarSize() {
+float Unit::getMaxHpBarSize() const {
 	return 0.4f;
 }
 

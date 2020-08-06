@@ -27,7 +27,7 @@ public:
 	~Controls();
 
 	void init();
-
+	
 	void updateAdditionalInfo() const;
 	void select(std::vector<Physical*>* entities);
 	void selectOne(Physical* entity, char player);
@@ -43,7 +43,7 @@ public:
 	void activate();
 	void unitOrder(short id);
 
-	void clean(SimulationInfo* simulationInfo) const;
+	void cleanAndUpdate(SimulationInfo* simulationInfo);
 
 	void updateSelection() const;
 	void updateArrow() const;

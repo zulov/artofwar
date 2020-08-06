@@ -32,7 +32,7 @@ void ResourceEntity::populate() {
 	maxCloseUsers = dbResource->maxUsers;
 }
 
-float ResourceEntity::getMaxHpBarSize() {
+float ResourceEntity::getMaxHpBarSize() const {
 	return 1;
 }
 
@@ -89,14 +89,6 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 
 ObjectType ResourceEntity::getType() const {
 	return ObjectType::RESOURCE;
-}
-
-Urho3D::String ResourceEntity::getBarMaterialName() {
-	return "Materials/bar/bar_grey.xml";
-}
-
-Urho3D::String ResourceEntity::getShadowMaterialName() {
-	return "Materials/select/select_grey_" + dbResource->name + ".xml";
 }
 
 std::string ResourceEntity::getColumns() {

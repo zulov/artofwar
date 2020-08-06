@@ -443,10 +443,14 @@ bool Controls::conditionToClean(SimulationInfo* simulationInfo) const {
 	return false;
 }
 
-void Controls::clean(SimulationInfo* simulationInfo) const {
+void Controls::cleanAndUpdate(SimulationInfo* simulationInfo){
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
 	}
+	for (auto physical : *selected) {
+		physical->updateBillboards();
+	}
+	billboardSetProvider.commit();
 }
 
 void Controls::updateSelection() const {

@@ -115,7 +115,7 @@ public:
 	bool isFirstThingInSameSocket() const override;
 	std::string getValues(int precision) override;
 	Urho3D::String toMultiLineString() override;
-	float getMaxHpBarSize() override;
+	float getMaxHpBarSize() const override;
 	bool isAlive() const override;
 	int getLevel() override;
 	short getId() override;

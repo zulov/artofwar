@@ -20,14 +20,13 @@ public:
 	virtual short getId();
 	Urho3D::Node* getNode() const { return node; }
 
-	void updateHealthBar();
-	float getHealthBarSize();
+	void updateHealthBar() const;
+	float getHealthBarSize() const;
 
 	bool bucketHasChanged(int _bucketIndex) const;
 	virtual void setBucket(int _bucketIndex);
 
 	void updateBillboards() const;
-	void initBillboards();
 
 	void setTeam(unsigned char _team);
 	void setPlayer(unsigned char player);
@@ -74,7 +73,7 @@ public:
 
 	virtual std::optional<Urho3D::Vector2> getPosToUseBy(Unit* follower);
 
-	virtual float getMaxHpBarSize() { return 0; }
+	virtual float getMaxHpBarSize() const { return 0; }
 
 	virtual void absorbAttack(float attackCoef) {
 	}
@@ -94,14 +93,10 @@ public:
 protected:
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);
-	virtual float getHealthBarThick() { return 0.15; }
+	virtual float getHealthBarThick() const { return 0.12; }
 	Urho3D::Node* node;
 
 	Urho3D::StaticModel* model;
-
-	Urho3D::Node *billboardNode, *barNode;
-	Urho3D::Billboard *billboardBar, *billboardShadow;
-	Urho3D::BillboardSet *billboardSetBar, *billboardSetShadow;
 
 	Urho3D::Billboard *billboardBar1 = nullptr, *billboardShadow1 = nullptr;
 
@@ -111,6 +106,7 @@ protected:
 	              closeUsers = 0,
 	              rangeUsers = 0;
 	bool indexHasChanged = false;
+	bool selected = false;
 
 	Urho3D::Vector3 position;
 
@@ -119,15 +115,9 @@ protected:
 	      defenseCoef = 0.3f;
 
 private:
-	void createBillboardBar();
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
-	Urho3D::Billboard* createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billboardSet,
-	                                      const Urho3D::String& material) const;
-	void createBillboardShadow();
 	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;
 	virtual float getShadowSize(const Urho3D::Vector3& boundingBox) const;
-	virtual Urho3D::String getBarMaterialName();
-	virtual Urho3D::String getShadowMaterialName();
 
 
 	int indexInGrid;

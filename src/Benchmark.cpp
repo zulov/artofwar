@@ -26,18 +26,17 @@ Benchmark::~Benchmark() {
 
 void Benchmark::add(float fps) {
 	if (index >= BENCH_LENGTH) {
-		avg = sum / BENCH_LENGTH;
 		index = 0;
-		sum = 0;
 		std::sort(data, data + BENCH_LENGTH);
 		avgLowest = roundf(std::accumulate(std::begin(data), data + PERCENT, 0.f) / PERCENT);
 		avgMiddle = roundf(std::accumulate(data + PERCENT, data + PERCENT2, 0.f) / (PERCENT2 - PERCENT));
 		avgHighest = roundf(std::accumulate(data + PERCENT2, data + BENCH_LENGTH, 0.f) / (BENCH_LENGTH - PERCENT2));
+		avg = std::accumulate(data, data + BENCH_LENGTH, 0.f) / BENCH_LENGTH;
 		save();
 		++loops;
 	}
 	data[index] = fps;
-	sum += fps;
+	lastFps = fps;
 	++index;
 }
 

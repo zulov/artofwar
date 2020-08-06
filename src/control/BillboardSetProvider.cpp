@@ -10,15 +10,6 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 
-Urho3D::BillboardSet* BillboardSetProvider::createSet(Urho3D::Node* node, Urho3D::String& materialName) const {
-	auto bs = node->CreateComponent<Urho3D::BillboardSet>();
-	bs->SetNumBillboards(10000);
-
-	bs->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(materialName));
-	bs->SetSorted(true);
-	return bs;
-}
-
 BillboardSetProvider::BillboardSetProvider() {
 	node = Game::getScene()->CreateChild();
 	nodeAura = Game::getScene()->CreateChild();
@@ -34,24 +25,31 @@ void BillboardSetProvider::init() {
 		auto material = "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player->getId())->name +
 			".xml";
 		auto bs = createSet(nodeAura, material);
-		//bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
-		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_DIRECTION);
+		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
+		bs->SetRelative(false);
 		perPlayerAura.push_back(bs);
 		material = "Materials/bar/bar_" + Game::getDatabase()->getPlayerColor(player->getId())->name + ".xml";
 		perPlayerBar.push_back(createSet(node, material));
 	}
-	//nodeAura->Pitch(90);
+	nodeAura->Pitch(90);
 	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
 		auto material = "Materials/select/select_grey_" + Game::getDatabase()->getResource(i)->name + ".xml";
 		auto bs = createSet(nodeAura, material);
-		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_LOOKAT_Y);
-		//auto a = bs->GetUpdateGeometryType();
-
-		//bs->SetRelative(false);
+		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
+		bs->SetRelative(false);
 		resourceAura.push_back(bs);
 		material = "Materials/bar/bar_grey.xml";
 		resourceBar.push_back(createSet(node, material));
 	}
+}
+
+Urho3D::BillboardSet* BillboardSetProvider::createSet(Urho3D::Node* node, Urho3D::String& materialName) const {
+	auto bs = node->CreateComponent<Urho3D::BillboardSet>();
+	bs->SetNumBillboards(10000);
+
+	bs->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(materialName));
+	bs->SetSorted(true);
+	return bs;
 }
 
 void BillboardSetProvider::reset() {
@@ -59,7 +57,7 @@ void BillboardSetProvider::reset() {
 	barIdx = 0;
 }
 
-Urho3D::Billboard* BillboardSetProvider::getNextAura(ObjectType type, char player, char id) {
+Urho3D::Billboard* BillboardSetProvider::getNextAura(ObjectType type, char player, short id) {
 	switch (type) {
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
@@ -70,7 +68,7 @@ Urho3D::Billboard* BillboardSetProvider::getNextAura(ObjectType type, char playe
 	}
 }
 
-Urho3D::Billboard* BillboardSetProvider::getNextBar(ObjectType type, char player, char id) {
+Urho3D::Billboard* BillboardSetProvider::getNextBar(ObjectType type, char player, short id) {
 	switch (type) {
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:

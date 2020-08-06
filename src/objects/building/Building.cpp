@@ -28,7 +28,7 @@ Building::~Building() {
 	delete queue;
 }
 
-float Building::getMaxHpBarSize() {
+float Building::getMaxHpBarSize() const {
 	return Urho3D::Max(gridSize.x_, gridSize.y_) * 0.5;
 }
 

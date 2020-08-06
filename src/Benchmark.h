@@ -17,7 +17,7 @@ public:
 	void save();
 
 	float getAverageFPS() const { return avg; }
-	float getLastFPS() const { return data[index]; }
+	float getLastFPS() const { return lastFps; }
 	int getLoops() const { return loops; }
 	float getAvgLowest() const { return avgLowest; }
 	float getAvgMiddle() const { return avgMiddle; }
@@ -25,7 +25,7 @@ public:
 private:
 	float data[BENCH_LENGTH]{};
 	short index = 0;
-	float sum = 0;
+	float lastFps = 0;
 	float avg = 0;
 	float avgLowest = 0;
 	float avgMiddle = 0;

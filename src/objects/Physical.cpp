@@ -33,77 +33,38 @@ short Physical::getId() {
 	return -1;
 }
 
-Urho3D::String Physical::getBarMaterialName() {
-	if (player == -1) {
-		return "Materials/bar/bar_grey.xml";
-	}
-	return "Materials/bar/bar_" + Game::getDatabase()->getPlayerColor(player)->name + ".xml";
-}
-
-void Physical::createBillboardBar() {
-	billboardBar = createBillboardSet(barNode, billboardSetBar, getBarMaterialName());
-}
-
-Urho3D::String Physical::getShadowMaterialName() {
-	if (player == -1) {
-		return "Materials/select/select_grey_g.xml";
-	}
-	return "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player)->name + ".xml";
-}
-
-void Physical::createBillboardShadow() {
-	billboardShadow = createBillboardSet(billboardNode, billboardSetShadow, getShadowMaterialName());
-	billboardNode->Pitch(90);
-	billboardSetShadow->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
-}
-
 float Physical::getShadowSize(const Urho3D::Vector3& boundingBox) const {
 	return (boundingBox.x_ + boundingBox.z_) / 2 * 1.2f;
 }
 
-Urho3D::Billboard* Physical::createBillboardSet(Urho3D::Node*& node, Urho3D::BillboardSet*& billboardSet,
-                                                const Urho3D::String& material) const {
-	node = this->node->CreateChild();
-
-	billboardSet = node->CreateComponent<Urho3D::BillboardSet>();
-	billboardSet->SetNumBillboards(1);
-	billboardSet->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(material));
-	billboardSet->SetSorted(true);
-	return billboardSet->GetBillboard(0);
-}
-
 void Physical::updateBillboardShadow(Urho3D::Vector3& boundingBox) const {
 	const auto boudingSize = getShadowSize(boundingBox);
-	billboardShadow->size_ = {boudingSize, boudingSize};
-	billboardShadow->enabled_ = false;
-
-	billboardSetShadow->Commit();
+	if (selected && billboardShadow1) {
+		billboardShadow1->position_ = position;
+		billboardShadow1->size_ = {boudingSize, boudingSize};
+		billboardShadow1->enabled_ = true;
+	}
 }
 
 void Physical::updateBillboardBar(Urho3D::Vector3& boundingBox) const {
-	billboardBar->position_ = {0, boundingBox.y_ * 1.3f, 0};
-	billboardBar->size_ = {2, 0.1};
-	billboardBar->enabled_ = false;
-
-	billboardSetBar->Commit();
+	if (selected && billboardBar1) {
+		billboardBar1->position_ = position + Urho3D::Vector3{0, boundingBox.y_ * 1.3f, 0};
+		billboardBar1->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick());
+		billboardBar1->enabled_ = true;
+	}
 }
 
 void Physical::updateBillboards() const {
 	auto boundingBox = model->GetModel()->GetBoundingBox().Size();
-
-	updateBillboardBar(boundingBox);
-	updateBillboardShadow(boundingBox);
+	if (selected) {
+		updateBillboardBar(boundingBox);
+		updateBillboardShadow(boundingBox);
+	}
 }
 
-void Physical::initBillboards() {
-	createBillboardBar();
-	createBillboardShadow();
-}
-
-void Physical::updateHealthBar() {
-	if (billboardBar->enabled_) {
-		billboardBar->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick()) / node->GetScale2D();
-		billboardSetBar->Commit();
+void Physical::updateHealthBar() const {
+	if (selected && billboardBar1) {
+		billboardBar1->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick());
 	}
 }
 
@@ -123,7 +84,7 @@ std::optional<Urho3D::Vector2> Physical::getPosToUseBy(Unit* follower) {
 	return {};
 }
 
-float Physical::getHealthBarSize() {
+float Physical::getHealthBarSize() const {
 	auto healthBarSize = getMaxHpBarSize() * getHealthPercent();
 	if (healthBarSize <= 0) { healthBarSize = 0; }
 	return healthBarSize;
@@ -147,7 +108,8 @@ void Physical::setPlayer(unsigned char player) {
 }
 
 bool Physical::isSelected() const {
-	return getType() != ObjectType::PHYSICAL && billboardBar->enabled_;
+	assert(getType() != ObjectType::PHYSICAL);
+	return selected;
 }
 
 void Physical::load(dbload_physical* dbloadPhysical) {
@@ -191,36 +153,37 @@ ObjectType Physical::getType() const {
 
 void Physical::select(Urho3D::Billboard* billboardBar1, Urho3D::Billboard* billboardShadow1) {
 	if (getType() == ObjectType::PHYSICAL) { return; }
-	billboardBar->enabled_ = true;
-	billboardShadow->enabled_ = true;
+	selected = true;
+	// billboardBar->enabled_ = true;
+	// billboardShadow->enabled_ = true;
 	this->billboardBar1 = billboardBar1;
 	this->billboardShadow1 = billboardShadow1;
-	if (this->billboardBar1) {
-		this->billboardBar1->position_ = position + Urho3D::Vector3{0, 10 * 1.3f, 0};
-		this->billboardBar1->size_ = {2, 0.1};
-		this->billboardBar1->enabled_ = true;
-		//billboardBar1->screenScaleFactor_
-	}
+	updateBillboards();
+	// if (this->billboardBar1) {
+	// 	this->billboardBar1->position_ = position + Urho3D::Vector3{0, 10 * 1.3f, 0};
+	// 	this->billboardBar1->size_ = {2, 0.1};
+	// 	this->billboardBar1->enabled_ = true;
+	// 	//billboardBar1->screenScaleFactor_
+	// }
 
-	if (this->billboardShadow1) {
-		this->billboardShadow1->position_= position;// + Urho3D::Vector3{10, 0, 0};
-		this->billboardShadow1->direction_= Urho3D::Vector3(0,1000,100);// + Urho3D::Vector3{10, 0, 0};
-		this->billboardShadow1->rotation_= 101;// + Urho3D::Vector3{10, 0, 0};
-		this->billboardShadow1->size_ = {10, 10};
-		this->billboardShadow1->enabled_ = true;
-	}
+	// if (this->billboardShadow1) {
+	// 	this->billboardShadow1->position_ = position;
+	// 	this->billboardShadow1->size_ = {10, 10};
+	// 	this->billboardShadow1->enabled_ = true;
+	// }
 
 	updateHealthBar();
 }
 
 void Physical::unSelect() {
 	if (getType() == ObjectType::PHYSICAL) { return; }
-	billboardBar->enabled_ = false;
-	billboardShadow->enabled_ = false;
+	selected = false;
+	// billboardBar->enabled_ = false;
+	// billboardShadow->enabled_ = false;
+	//
+	// billboardSetBar->Commit();
+	// billboardSetShadow->Commit();
 
-	billboardSetBar->Commit();
-	billboardSetShadow->Commit();
-	
 	if (billboardBar1) {
 		billboardBar1->enabled_ = false;
 		billboardBar1 = nullptr;
@@ -247,7 +210,6 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(xmlName)->GetRoot());
 
 	node->SetVar("link", this);
-	initBillboards();
 
 	model = node->GetComponent<Urho3D::StaticModel>();
 	populate();
