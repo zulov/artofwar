@@ -78,7 +78,7 @@ public:
 	virtual void absorbAttack(float attackCoef) {
 	}
 
-	virtual void select(Urho3D::Billboard* billboardBar1, Urho3D::Billboard* billboardShadow1);
+	virtual void select(Urho3D::Billboard* billboardBar, Urho3D::Billboard* billboardAura);
 	virtual void unSelect();
 	virtual Urho3D::String toMultiLineString();
 
@@ -98,7 +98,7 @@ protected:
 
 	Urho3D::StaticModel* model;
 
-	Urho3D::Billboard *billboardBar1 = nullptr, *billboardShadow1 = nullptr;
+	Urho3D::Billboard *billboardBar = nullptr, *billboardAura = nullptr;
 
 	char team, player = -1;
 	unsigned char maxRangeUsers = 8,
@@ -116,8 +116,8 @@ protected:
 
 private:
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
-	void updateBillboardShadow(Urho3D::Vector3& boundingBox) const;
-	virtual float getShadowSize(const Urho3D::Vector3& boundingBox) const;
+	void updateBillboardAura(Urho3D::Vector3& boundingBox) const;
+	virtual float getAuraSize(const Urho3D::Vector3& boundingBox) const;
 
 
 	int indexInGrid;

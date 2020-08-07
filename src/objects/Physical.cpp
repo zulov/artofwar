@@ -22,6 +22,7 @@ Physical::Physical(Urho3D::Vector3& _position):
 
 Physical::~Physical() {
 	node->Remove();
+	unSelect();
 }
 
 
@@ -33,24 +34,24 @@ short Physical::getId() {
 	return -1;
 }
 
-float Physical::getShadowSize(const Urho3D::Vector3& boundingBox) const {
+float Physical::getAuraSize(const Urho3D::Vector3& boundingBox) const {
 	return (boundingBox.x_ + boundingBox.z_) / 2 * 1.2f;
 }
 
-void Physical::updateBillboardShadow(Urho3D::Vector3& boundingBox) const {
-	const auto boudingSize = getShadowSize(boundingBox);
-	if (selected && billboardShadow1) {
-		billboardShadow1->position_ = position;
-		billboardShadow1->size_ = {boudingSize, boudingSize};
-		billboardShadow1->enabled_ = true;
+void Physical::updateBillboardAura(Urho3D::Vector3& boundingBox) const {
+	const auto boudingSize = getAuraSize(boundingBox);
+	if (selected && billboardAura) {
+		billboardAura->position_ = position;
+		billboardAura->size_ = {boudingSize, boudingSize};
+		billboardAura->enabled_ = true;
 	}
 }
 
 void Physical::updateBillboardBar(Urho3D::Vector3& boundingBox) const {
-	if (selected && billboardBar1) {
-		billboardBar1->position_ = position + Urho3D::Vector3{0, boundingBox.y_ * 1.3f, 0};
-		billboardBar1->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick());
-		billboardBar1->enabled_ = true;
+	if (selected && billboardBar) {
+		billboardBar->position_ = position + Urho3D::Vector3{0, boundingBox.y_ * 1.3f, 0};
+		billboardBar->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick());
+		billboardBar->enabled_ = true;
 	}
 }
 
@@ -58,13 +59,13 @@ void Physical::updateBillboards() const {
 	auto boundingBox = model->GetModel()->GetBoundingBox().Size();
 	if (selected) {
 		updateBillboardBar(boundingBox);
-		updateBillboardShadow(boundingBox);
+		updateBillboardAura(boundingBox);
 	}
 }
 
 void Physical::updateHealthBar() const {
-	if (selected && billboardBar1) {
-		billboardBar1->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick());
+	if (selected && billboardBar) {
+		billboardBar->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick());
 	}
 }
 
@@ -151,47 +152,28 @@ ObjectType Physical::getType() const {
 	return ObjectType::PHYSICAL;
 }
 
-void Physical::select(Urho3D::Billboard* billboardBar1, Urho3D::Billboard* billboardShadow1) {
+void Physical::select(Urho3D::Billboard* billboardBar, Urho3D::Billboard* billboardAura) {
 	if (getType() == ObjectType::PHYSICAL) { return; }
+	assert(selected==false);
 	selected = true;
-	// billboardBar->enabled_ = true;
-	// billboardShadow->enabled_ = true;
-	this->billboardBar1 = billboardBar1;
-	this->billboardShadow1 = billboardShadow1;
+	this->billboardBar = billboardBar;
+	this->billboardAura = billboardAura;
 	updateBillboards();
-	// if (this->billboardBar1) {
-	// 	this->billboardBar1->position_ = position + Urho3D::Vector3{0, 10 * 1.3f, 0};
-	// 	this->billboardBar1->size_ = {2, 0.1};
-	// 	this->billboardBar1->enabled_ = true;
-	// 	//billboardBar1->screenScaleFactor_
-	// }
-
-	// if (this->billboardShadow1) {
-	// 	this->billboardShadow1->position_ = position;
-	// 	this->billboardShadow1->size_ = {10, 10};
-	// 	this->billboardShadow1->enabled_ = true;
-	// }
-
 	updateHealthBar();
 }
 
 void Physical::unSelect() {
 	if (getType() == ObjectType::PHYSICAL) { return; }
 	selected = false;
-	// billboardBar->enabled_ = false;
-	// billboardShadow->enabled_ = false;
-	//
-	// billboardSetBar->Commit();
-	// billboardSetShadow->Commit();
 
-	if (billboardBar1) {
-		billboardBar1->enabled_ = false;
-		billboardBar1 = nullptr;
+	if (billboardBar) {
+		billboardBar->enabled_ = false;
+		billboardBar = nullptr;
 	}
 
-	if (billboardShadow1) {
-		billboardShadow1->enabled_ = false;
-		billboardShadow1 = nullptr;
+	if (billboardAura) {
+		billboardAura->enabled_ = false;
+		billboardAura = nullptr;
 	}
 }
 

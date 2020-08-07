@@ -55,6 +55,7 @@ Urho3D::BillboardSet* BillboardSetProvider::createSet(Urho3D::Node* node, Urho3D
 void BillboardSetProvider::reset() {
 	auraIdx = 0;
 	barIdx = 0;
+	commit();
 }
 
 Urho3D::Billboard* BillboardSetProvider::getNextAura(ObjectType type, char player, short id) {

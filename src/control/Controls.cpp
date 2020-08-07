@@ -429,6 +429,8 @@ void Controls::refreshSelected() const {
 		//TODO perf nie koniecznie resetowac ca³oœæ
 		selectedInfo->refresh(selected);
 	}
+
+	//TODO bug billboard beda zajete
 }
 
 bool Controls::conditionToClean(SimulationInfo* simulationInfo) const {
