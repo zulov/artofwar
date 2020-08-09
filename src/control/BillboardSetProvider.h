@@ -23,8 +23,8 @@ public:
 	void commit();
 
 private:
-	Urho3D::BillboardSet* createSet(Urho3D::Node* node, Urho3D::String& materialName) const;
-	Urho3D::Node* node;
+	Urho3D::BillboardSet* createSet(Urho3D::Node* node, Urho3D::String& materialName, int size) const;
+	Urho3D::Node* nodeBar;
 	Urho3D::Node* nodeAura;
 
 	std::vector<Urho3D::BillboardSet*> resourceAura;

@@ -11,12 +11,12 @@
 #include "player/PlayersManager.h"
 
 BillboardSetProvider::BillboardSetProvider() {
-	node = Game::getScene()->CreateChild();
+	nodeBar = Game::getScene()->CreateChild();
 	nodeAura = Game::getScene()->CreateChild();
 }
 
 BillboardSetProvider::~BillboardSetProvider() {
-	node->Remove();
+	nodeBar->Remove();
 	nodeAura->Remove();
 }
 
@@ -24,28 +24,28 @@ void BillboardSetProvider::init() {
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 		auto material = "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player->getId())->name +
 			".xml";
-		auto bs = createSet(nodeAura, material);
+		auto bs = createSet(nodeAura, material,10000);
 		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 		bs->SetRelative(false);
 		perPlayerAura.push_back(bs);
 		material = "Materials/bar/bar_" + Game::getDatabase()->getPlayerColor(player->getId())->name + ".xml";
-		perPlayerBar.push_back(createSet(node, material));
+		perPlayerBar.push_back(createSet(nodeBar, material,10000));
 	}
 	nodeAura->Pitch(90);
 	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
 		auto material = "Materials/select/select_grey_" + Game::getDatabase()->getResource(i)->name + ".xml";
-		auto bs = createSet(nodeAura, material);
+		auto bs = createSet(nodeAura, material,1000);
 		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 		bs->SetRelative(false);
 		resourceAura.push_back(bs);
 		material = "Materials/bar/bar_grey.xml";
-		resourceBar.push_back(createSet(node, material));
+		resourceBar.push_back(createSet(nodeBar, material,1000));
 	}
 }
 
-Urho3D::BillboardSet* BillboardSetProvider::createSet(Urho3D::Node* node, Urho3D::String& materialName) const {
+Urho3D::BillboardSet* BillboardSetProvider::createSet(Urho3D::Node* node, Urho3D::String& materialName, int size) const {
 	auto bs = node->CreateComponent<Urho3D::BillboardSet>();
-	bs->SetNumBillboards(10000);
+	bs->SetNumBillboards(size);
 
 	bs->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(materialName));
 	bs->SetSorted(true);
