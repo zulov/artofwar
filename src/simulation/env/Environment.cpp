@@ -151,11 +151,11 @@ void Environment::update(std::vector<ResourceEntity*>* resources) {
 	}
 }
 
-Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) {
+Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) const {
 	return mainGrid.repulseObstacle(unit);
 }
 
-std::optional<Urho3D::Vector2> Environment::validatePosition(Urho3D::Vector3& position) {
+std::optional<Urho3D::Vector2> Environment::validatePosition(Urho3D::Vector3& position) const {
 	return mainGrid.getDirectionFrom(position);
 }
 

@@ -42,8 +42,8 @@ public:
 
 	void updateAll(std::vector<Building*>* buildings) const;
 
-	Urho3D::Vector2 repulseObstacle(Unit* unit);
-	std::optional<Urho3D::Vector2> validatePosition(Urho3D::Vector3& position);
+	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
+	std::optional<Urho3D::Vector2> validatePosition(Urho3D::Vector3& position) const;
 
 	std::vector<Physical*>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 

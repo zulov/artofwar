@@ -68,15 +68,16 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 
 Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 	auto index = calculator.indexFromPosition(unit->getPosition());
-
+	auto &data = complexData[index];
+	
 	Urho3D::Vector2 sum;
 	if (index != unit->getIndexToInteract()
-		&& complexData[index].isUnit()
-		&& complexData[index].allNeightOccupied()) {
+		&& data.isUnit()
+		&& data.allNeightOccupied()) {
 		int counter = 0;
 
 		for (auto i : closeIndexProvider.getTabIndexes(index)) {
-			if (!complexData[index].ifNeightIsFree(i)) {
+			if (!data.ifNeightIsFree(i)) {
 				sum += calculator.getCenter(index + closeIndexProvider.getIndexAt(i));
 				++counter;
 			}
@@ -317,14 +318,16 @@ void MainGrid::removeStatic(Static* object) const {
 
 std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& position) const {
 	int index = calculator.indexFromPosition(position);
-	if (!complexData[index].isUnit()) {
+	auto &data = complexData[index];
+	
+	if (!data.isUnit()) {
 		int escapeBucket; //=-1
 		//auto& neights = complexData[index].getNeightbours();
-		if (!complexData[index].allNeightOccupied()) {
+		if (!data.allNeightOccupied()) {
 			float dist = 999999;
 			auto center = calculator.getCenter(index);
 			for (auto i : closeIndexProvider.getTabIndexes(index)) {
-				if (complexData[index].ifNeightIsFree(i)) {
+				if (data.ifNeightIsFree(i)) {
 					int ni = index + closeIndexProvider.getIndexAt(i);
 					float newDist = sqDist(calculator.getCenter(ni), center);
 					if (newDist < dist) {
@@ -334,12 +337,12 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& posit
 				}
 			}
 		} else {
-			escapeBucket = complexData[index].getEscapeBucket();
+			escapeBucket = data.getEscapeBucket();
 		}
 		if (escapeBucket == -1) {
 			return {};
 		}
-		auto direction = complexData[index] //TODO Error'this' nie uzywany 
+		auto direction = data //TODO Error'this' nie uzywany 
 			.getDirectionFrom(position, calculator.getCenter(escapeBucket));
 
 		direction.Normalize();

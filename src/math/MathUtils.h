@@ -1,5 +1,9 @@
 #pragma once
 
+inline float sqDistAs2D(float a, float b) {
+	return a * a + b * b;
+}
+
 inline float sqDist(const Urho3D::Vector3* one, const Urho3D::Vector3* two) {
 	return (*one - *two).LengthSquared();
 }
@@ -13,15 +17,15 @@ inline float sqDist(const Urho3D::Vector3& one, const Urho3D::Vector3& two) {
 }
 
 inline float sqDist(const Urho3D::Vector2& one, const Urho3D::Vector3& two) {
-	return Urho3D::Vector2(one.x_ - two.x_, one.y_ - two.z_).LengthSquared();
+	return sqDistAs2D(one.x_ - two.x_, one.y_ - two.z_);
 }
 
 inline float sqDist(const Urho3D::Vector3& one, const Urho3D::Vector2& two) {
-	return Urho3D::Vector2(one.x_ - two.x_, one.z_ - two.y_).LengthSquared();
+	return sqDistAs2D(one.x_ - two.x_, one.z_ - two.y_);
 }
 
 inline float sqDistAs2D(const Urho3D::Vector3& one, const Urho3D::Vector3& two) {
-	return Urho3D::Vector2(one.x_ - two.x_, one.z_ - two.z_).LengthSquared();
+	return sqDistAs2D(one.x_ - two.x_, one.z_ - two.z_);
 }
 
 inline Urho3D::IntVector2 calculateSize(int size, int central) {
