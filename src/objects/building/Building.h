@@ -41,6 +41,7 @@ public:
 	float getValueOf(ValueType type) const override;
 	void fillValues(std::span<float> weights) const override;
 	void addValues(std::span<float> vals) const override;
+	const Urho3D::IntVector2 getGridSize() const override;
 	void createDeploy();
 private:
 

@@ -6,7 +6,7 @@ TopHudElement::TopHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style, 
 	button = createElement<Urho3D::Button>(parent, style, styleName );
 	icon = createSprite(button, texture, style, "SpriteLeft");
 
-	mock = createElement<Urho3D::UIElement>(button,  style, "mockCenter");
+	const auto mock = createElement<Urho3D::UIElement>(button,  style, "mockCenter");
 
 	value = addChildText(mock, "TopText", style);
 

@@ -17,6 +17,5 @@ private:
 	MySprite* icon;
 	Urho3D::Button* button;
 	Urho3D::Text* value;
-	Urho3D::UIElement* mock;
 	Urho3D::ToolTip* toolTip;
 };

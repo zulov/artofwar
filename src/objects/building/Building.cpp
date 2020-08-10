@@ -29,6 +29,7 @@ Building::~Building() {
 }
 
 float Building::getMaxHpBarSize() const {
+	auto gridSize = getGridSize();
 	return Urho3D::Max(gridSize.x_, gridSize.y_) * 0.5;
 }
 
@@ -37,12 +38,12 @@ short Building::getId() {
 }
 
 void Building::populate() {
-	Static::populate(dbBuilding->size);
+	Static::populate();
 	queue = new QueueManager(dbLevel->queueMaxCapacity);
 }
 
 void Building::absorbAttack(float attackCoef) {
-	hp -= attackCoef * (1 - defenseCoef);
+	hp -= attackCoef * (1 - dbLevel->defense);
 
 	updateHealthBar();
 
@@ -59,7 +60,8 @@ Urho3D::String Building::toMultiLineString() {
 	auto l10n = Game::getLocalization();
 
 	return Urho3D::String(dbBuilding->name + " " + dbLevel->name)
-		.AppendWithFormat(l10n->Get("ml_build").CString(), attackCoef, defenseCoef, (int)hp, maxHp, closeUsers,
+		.AppendWithFormat(l10n->Get("ml_build").CString(), dbLevel->attack, dbLevel->defense, (int)hp, maxHp,
+		                  closeUsers,
 		                  maxCloseUsers, magic_enum::enum_name(state).data());
 }
 
@@ -127,6 +129,10 @@ void Building::addValues(std::span<float> vals) const {
 	for (int i = 0; i < vals.size(); ++i) {
 		vals[i] += percent * dbLevel->aiProps->params[i];
 	}
+}
+
+const Urho3D::IntVector2 Building::getGridSize() const {
+	return dbBuilding->size;
 }
 
 void Building::createDeploy() {

@@ -28,7 +28,7 @@ public:
 	float getCost(const unsigned char index) { return costToNeight[index]; }
 	void setCost(const unsigned char index, float cost) { costToNeight[index] = cost; }
 
-	bool allNeightOccupied() const {return isNeightOccupied == 255;}
+	bool allNeightOccupied() const { return isNeightOccupied == 255; }
 
 	bool allNeightFree() const { return isNeightOccupied == 0; }
 
@@ -47,10 +47,9 @@ private:
 	char size, additionalInfo{};
 
 	unsigned char isNeightOccupied = 0;
-	float costToNeight[8]={0,0,0,0,0,0,0,0};
-
-	//float cost{};
 	int escapeBucketIndex = -1;
+	float costToNeight[8] = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
+	//float cost{};
 
 	Static* object{};
 };

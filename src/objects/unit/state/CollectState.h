@@ -58,7 +58,7 @@ public:
 			//TODO musi byc dokladnie w dobry mbuckecie
 			auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
 			auto resource = dynamic_cast<ResourceEntity*>(unit->thingsToInteract[0]);
-			const float value = resource->collect(unit->collectSpeed * timeStep);
+			const float value = resource->collect(unit->dbLevel->collectSpeed * timeStep);
 			resources.add(resource->getId(), value);
 		} else {
 			StateManager::changeState(unit, UnitState::STOP);

@@ -76,6 +76,6 @@ int SimulationInfo::getUnitsNumber() const {
 	return unitsNumber;
 }
 
-void SimulationInfo::setCurrentFrame(int currentFrameNumber) {
+void SimulationInfo::setCurrentFrame(unsigned char currentFrameNumber) {
 	this->currentFrameNumber = currentFrameNumber;
 }

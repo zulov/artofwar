@@ -37,7 +37,6 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 		missileData = new MissileData(150, 2);
 	}
 
-
 	for (auto& bucket : teamBucketIndex) {
 		bucket = INT_MIN;
 	}
@@ -54,19 +53,9 @@ bool Unit::isAlive() const {
 }
 
 void Unit::populate() {
-	maxSeparationDistance = dbLevel->maxSep;
 	maxSpeed = dbLevel->maxSpeed;
-	minSpeed = dbLevel->minSpeed;
-	minimalDistance = dbLevel->minDist;
-	attackInterest = dbLevel->attackRange * 10;
-
-	collectSpeed = dbLevel->collectSpeed;
-
 	hp = dbLevel->maxHp;
 	maxHp = dbLevel->maxHp;
-	attackCoef = dbLevel->attack;
-	defenseCoef = dbLevel->defense;
-	attackSpeed = dbLevel->attackSpeed / 100.f;
 }
 
 void Unit::checkAim() {
@@ -83,7 +72,7 @@ void Unit::move(double timeStep) {
 		//node->Translate((*velocity) * timeStep, TS_WORLD);
 	}
 	if (missileData && missileData->isUp()) {
-		missileData->update(timeStep, attackCoef);
+		missileData->update(timeStep, dbLevel->attack);
 	}
 }
 
@@ -119,7 +108,7 @@ Urho3D::Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 }
 
 void Unit::absorbAttack(float attackCoef) {
-	hp -= attackCoef * (1 - defenseCoef);
+	hp -= attackCoef * (1 - dbLevel->defense);
 
 	updateHealthBar();
 
@@ -141,7 +130,7 @@ void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, int indexToI
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order) {
-	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->attackRange, attackInterest);
+	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->attackRange, dbLevel->attackInterest);
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order,
@@ -179,7 +168,7 @@ void Unit::drawLineTo(const Urho3D::Vector3& second,
 
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		if (false && false) {
+		if (selected) {
 			switch (type) {
 			case DebugUnitType::NONE:
 				break;
@@ -243,12 +232,11 @@ void Unit::setIndexToInteract(int index) {
 
 Urho3D::String Unit::toMultiLineString() {
 	return Urho3D::String(dbUnit->name + " " + dbLevel->name)
-	       .Append("\nAtak: ").Append(Urho3D::String(attackCoef))
-	       .Append("\nObrona: ").Append(Urho3D::String(defenseCoef))
+	       .Append("\nAtak: ").Append(Urho3D::String(dbLevel->attack))
+	       .Append("\nObrona: ").Append(Urho3D::String(dbLevel->defense))
 	       .Append("\nZdrowie: ").Append(Urho3D::String(hp))
 	       .Append("/").Append(Urho3D::String(maxHp))
 	       .Append("\nStan:").Append(Urho3D::String(magic_enum::enum_name(state).data()));
-
 }
 
 void Unit::action(UnitAction unitAction) {
@@ -384,7 +372,7 @@ void Unit::applyForce(double timeStep) {
 	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep / dbLevel->mass);
 	const float velLength = velocity.LengthSquared();
-	if (velLength < minSpeed * minSpeed) {
+	if (velLength < dbLevel->sqMinSpeed) {
 		if (state == UnitState::MOVE) {
 			StateManager::changeState(this, UnitState::STOP);
 		}
@@ -396,7 +384,7 @@ void Unit::applyForce(double timeStep) {
 		if (state == UnitState::STOP) {
 			StateManager::changeState(this, UnitState::MOVE);
 		}
-		if (dbUnit->rotatable && velLength > 2 * minSpeed * minSpeed) {
+		if (dbUnit->rotatable && velLength > 2 * dbLevel->sqMinSpeed) {
 			node->SetDirection(Urho3D::Vector3(velocity.x_, 0, velocity.y_));
 		}
 	}
@@ -407,6 +395,15 @@ short Unit::getId() {
 }
 
 float Unit::getAttackRange() const { return dbLevel->attackRange; }
+
+float Unit::getMinimalDistance() const {
+	return dbLevel->minDist;
+}
+
+float Unit::getMaxSeparationDistance() const {
+	return dbLevel->maxSep;
+}
+
 
 UnitState Unit::getActionState() const {
 	return UnitState(dbUnit->actionState);
@@ -487,7 +484,7 @@ void Unit::addValues(std::span<float> vals) const {
 }
 
 Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
-	const auto vector = Consts::circleCords[i] * (minimalDistance + toFollow->getMinimalDistance()) * 2;
+	const auto vector = Consts::circleCords[i] * (dbLevel->minDist + toFollow->getMinimalDistance()) * 2;
 	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().z_ + vector.y_};
 }
 

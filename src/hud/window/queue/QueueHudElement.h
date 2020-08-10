@@ -30,7 +30,6 @@ private:
 	MySprite* icon;
 	Urho3D::ProgressBar* bar;
 	Urho3D::Text* text;
-	Urho3D::UIElement* mock;
 
 	QueueElement* element;
 };

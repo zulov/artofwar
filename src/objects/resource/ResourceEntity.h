@@ -17,6 +17,7 @@ public:
 	static std::string getColumns();
 
 	char getPlayer() const override { return -1; }
+	const Urho3D::IntVector2 getGridSize() const override;
 
 	short getId() override;
 	float getMaxHpBarSize() const override;

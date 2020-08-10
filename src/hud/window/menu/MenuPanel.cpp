@@ -92,7 +92,7 @@ void MenuPanel::createBody() {
 	infoPanel->createWindow();
 	removeHoverInfo();
 
-	mock = createElement<Urho3D::UIElement>(window, style, "LeftMenuMock");
+	const auto mock = createElement<Urho3D::UIElement>(window, style, "LeftMenuMock");
 
 	for (auto& row : rows) {
 		row = createElement<Urho3D::UIElement>(mock, style, "LeftMenuListRow");
@@ -108,7 +108,7 @@ void MenuPanel::createBody() {
 	}
 	const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D
 	>("textures/hud/icon/lm/lm3.png");
-	nextButton = createElement<Urho3D::Button>(rows[LEFT_MENU_ROWS_NUMBER - 1], style, "LeftMenuIcon");
+	const auto nextButton = createElement<Urho3D::Button>(rows[LEFT_MENU_ROWS_NUMBER - 1], style, "LeftMenuIcon");
 	createSprite(nextButton, texture, style, "LeftMenuSmallSprite");
 
 	int k = 0;

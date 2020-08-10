@@ -9,7 +9,7 @@
 #include <vector>
 
 
-#define BUCKET_SET_NUMBER 4
+#define BUCKET_SET_NUMBER 2
 #define USE_SOCKETS_NUMBER 8
 
 enum class UnitAction : char;
@@ -89,9 +89,9 @@ public:
 	std::tuple<Physical*, float, int> closestPhysical(std::vector<Physical*>* things,
 	                                                  const std::function<bool(Physical*)>& condition);
 
-	float getMaxSeparationDistance() const { return maxSeparationDistance; }
+	float getMaxSeparationDistance() const;
 	short getPositionInFormation() const { return posInFormation; }
-	float getMinimalDistance() const { return minimalDistance; }
+	float getMinimalDistance() const;
 	UnitState getActionState() const;
 	UnitState getState() const { return state; }
 	short getFormation() const { return formation; }
@@ -144,9 +144,7 @@ private:
 
 	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
 
-	float minimalDistance, maxSeparationDistance,
-	      maxSpeed, minSpeed,
-	      attackInterest, collectSpeed;
+	float maxSpeed;
 
 	UnitState state;
 	bool atState = false;
@@ -154,7 +152,7 @@ private:
 	short posInFormation = -1, formation = -1;
 	unsigned short currentFrameState = 0;
 
-	int indexToInteract = -1;
 	bool useSockets[USE_SOCKETS_NUMBER];
 	int teamBucketIndex[BUCKET_SET_NUMBER];
+	int indexToInteract = -1;
 };

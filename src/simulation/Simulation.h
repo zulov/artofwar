@@ -69,8 +69,8 @@ private:
 
 	float accumulateTime = 0;
 	float maxTimeFrame = 0.05f;
-	int framesPeriod = 20;
-	int currentFrameNumber = 0;
+	unsigned char framesPeriod = 20;
+	unsigned char currentFrameNumber = 0;
 	SimColorMode colorScheme;
 	bool colorSchemeChanged = true;
 	Force force;

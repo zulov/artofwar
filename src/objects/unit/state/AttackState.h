@@ -57,8 +57,8 @@ public:
 	void execute(Unit* unit, float timeStep) override {
 		State::execute(unit, timeStep);
 		if (isInRange(unit)) {
-			if (fmod(unit->currentFrameState, 1 / unit->attackSpeed) < 1) {
-				unit->thingsToInteract[0]->absorbAttack(unit->attackCoef);
+			if (fmod(unit->currentFrameState, 1 / unit->dbLevel->attackSpeed) < 1) {
+				unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->attack);
 			}
 			++unit->currentFrameState;
 		} else {

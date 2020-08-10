@@ -1,16 +1,15 @@
 #include "objects/Physical.h"
-#include "Game.h"
-#include "objects/ObjectEnums.h"
-#include <Urho3D/Graphics/Material.h>
+#include <string>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include <string>
 #include <Urho3D/Resource/XMLFile.h>
-#include "player/PlayersManager.h"
-#include "player/Player.h"
-#include "unit/Unit.h"
+#include "Game.h"
 #include "database/DatabaseCache.h"
+#include "objects/ObjectEnums.h"
+#include "player/Player.h"
+#include "player/PlayersManager.h"
+#include "unit/Unit.h"
 
 
 Physical::Physical(Urho3D::Vector3& _position):

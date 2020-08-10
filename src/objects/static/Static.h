@@ -1,6 +1,7 @@
 #pragma once
 #include "../Physical.h"
 #include "StaticState.h"
+#include "database/db_strcut.h"
 #include "scene/load/dbload_container.h"
 
 enum class CellState : char;
@@ -27,18 +28,18 @@ public:
 	bool isAlive() const override { return state == StaticState::ALIVE || state == StaticState::FREE; }
 	int getMainCell() const override { return mainCell; }
 	bool isToDispose() const override { return state == StaticState::DISPOSE; }
-	Urho3D::IntVector2& getGridSize() { return gridSize; }
+	virtual const Urho3D::IntVector2 getGridSize() const =0;
 	std::vector<int>& getOccupiedCells() { return occupiedCells; }
 	std::vector<int>& getSurroundCells() { return surroundCells; }
 
 	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* unit) override;
 	std::string getValues(int precision) override;
 protected:
-	void populate(const Urho3D::IntVector2& size);
+	void populate() override;
 	float getHealthBarThick() const override { return 0.15; }
 	float getAuraSize(const Urho3D::Vector3& boundingBox) const override;
 	int mainCell{};
+
 	StaticState state, nextState;
-	Urho3D::IntVector2 gridSize;
 	std::vector<int> occupiedCells, surroundCells;
 };

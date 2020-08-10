@@ -27,7 +27,6 @@ private:
 	Urho3D::Button* button;
 	Urho3D::ProgressBar* bars;
 	Urho3D::Text* text;
-	Urho3D::UIElement* mock;
 	MySprite* icon;
 
 	std::vector<Physical*> selected;

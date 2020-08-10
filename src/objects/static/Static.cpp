@@ -31,8 +31,8 @@ void Static::load(dbload_static* dbloadStatic) {
 	this->nextState = StaticState(dbloadStatic->nextState);
 }
 
-void Static::populate(const Urho3D::IntVector2& size) {
-	gridSize = size;
+void Static::populate() {
+	auto gridSize = getGridSize();
 	const auto cordsCell = Game::getEnvironment()->getCords(mainCell);
 	const auto sizeX = calculateSize(gridSize.x_, cordsCell.x_);
 	const auto sizeZ = calculateSize(gridSize.y_, cordsCell.y_);
@@ -45,6 +45,7 @@ void Static::populate(const Urho3D::IntVector2& size) {
 }
 
 float Static::getAuraSize(const Urho3D::Vector3& boundingBox) const {
+	auto gridSize = getGridSize();
 	return Urho3D::Max(gridSize.x_, gridSize.y_) * 1.2f;
 }
 

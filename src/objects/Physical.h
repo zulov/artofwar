@@ -110,15 +110,12 @@ protected:
 
 	Urho3D::Vector3 position;
 
-	float hp = 100, maxHp = 100,
-	      attackCoef = 10, attackSpeed = 1,
-	      defenseCoef = 0.3f;
+	float hp = 100, maxHp = 100;
 
 private:
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
 	void updateBillboardAura(Urho3D::Vector3& boundingBox) const;
 	virtual float getAuraSize(const Urho3D::Vector3& boundingBox) const;
-
 
 	int indexInGrid;
 };

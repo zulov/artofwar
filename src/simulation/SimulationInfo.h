@@ -26,7 +26,7 @@ public:
 	bool ifAmountResourceChanged() const { return amountResourceChanged; }
 
 	int getUnitsNumber() const;
-	void setCurrentFrame(int currentFrameNumber);
+	void setCurrentFrame(unsigned char currentFrameNumber);
 	int getCurrentFrame() const { return currentFrameNumber; }
 private:
 	void setUnitDied();
@@ -42,7 +42,8 @@ private:
 	bool resourceDied;
 	bool amountResourceChanged;
 
+	unsigned char currentFrameNumber;
+	
 	int unitsNumber;
 
-	int currentFrameNumber;
 };

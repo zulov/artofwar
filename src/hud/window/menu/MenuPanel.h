@@ -68,9 +68,9 @@ private:
 	Urho3D::Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
 	std::vector<HudData*> hudElements;
 	MySprite* sprites[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
-	Urho3D::Button* nextButton;
+
 	Urho3D::CheckBox* checks[LEFT_MENU_CHECKS_NUMBER];
-	Urho3D::UIElement* mock;
+
 	LeftMenuInfoPanel* infoPanel;
 	SelectedInfo* lastSelectedInfo = nullptr;
 

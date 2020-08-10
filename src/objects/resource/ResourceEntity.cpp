@@ -21,12 +21,16 @@ ResourceEntity::ResourceEntity(Urho3D::Vector3& _position, int id, int level, in
 	node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
 }
 
+const Urho3D::IntVector2 ResourceEntity::getGridSize() const {
+	return dbResource->size;
+}
+
 short ResourceEntity::getId() {
 	return dbResource->id;
 }
 
 void ResourceEntity::populate() {
-	Static::populate(dbResource->size);
+	Static::populate();
 
 	amonut = dbResource->maxCapacity;
 	maxCloseUsers = dbResource->maxUsers;

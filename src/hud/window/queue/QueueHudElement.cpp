@@ -13,7 +13,7 @@ QueueHudElement::QueueHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* sty
 	icon = createElement<MySprite>(button, style, "SmallSprite");
 
 	button->SetVar("QueueHudElement", this);
-	mock = createElement<Urho3D::UIElement>(button, style, "mock");
+	const auto mock = createElement<Urho3D::UIElement>(button, style, "mock");
 
 	bar = createElement<Urho3D::ProgressBar>(mock, style, "QueueProgressBar");
 	bar->SetRange(1);

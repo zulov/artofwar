@@ -48,7 +48,7 @@ public:
 		if (!unit->missileData->aim || !unit->missileData->aim->isAlive()) {
 			unit->missileData->reset();
 			StateManager::changeState(unit, UnitState::STOP);
-		} else if (!unit->missileData->isUp() && fmod(unit->currentFrameState, 1 / unit->attackSpeed) < 1) {
+		} else if (!unit->missileData->isUp() && fmod(unit->currentFrameState, 1 / unit->dbLevel->attackSpeed) < 1) {
 			if (closeEnough(unit)) {
 				shot(unit);
 			} else {
