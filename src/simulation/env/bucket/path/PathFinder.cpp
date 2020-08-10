@@ -135,7 +135,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim)
 }
 
 float PathFinder::cost(const int current, const int next) const {
-	return (complexData[current].getCenter() - complexData[next].getCenter()).Length();
+	return (calculator.getCenter(current) - calculator.getCenter(next)).Length();
 }
 
 void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {

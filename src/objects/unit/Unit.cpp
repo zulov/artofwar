@@ -59,8 +59,6 @@ void Unit::populate() {
 	minSpeed = dbLevel->minSpeed;
 	minimalDistance = dbLevel->minDist;
 	attackInterest = dbLevel->attackRange * 10;
-	rotatable = dbUnit->rotatable;
-	actionState = UnitState(dbUnit->actionState);
 
 	collectSpeed = dbLevel->collectSpeed;
 
@@ -398,7 +396,7 @@ void Unit::applyForce(double timeStep) {
 		if (state == UnitState::STOP) {
 			StateManager::changeState(this, UnitState::MOVE);
 		}
-		if (rotatable && velLength > 2 * minSpeed * minSpeed) {
+		if (dbUnit->rotatable && velLength > 2 * minSpeed * minSpeed) {
 			node->SetDirection(Urho3D::Vector3(velocity.x_, 0, velocity.y_));
 		}
 	}
@@ -409,6 +407,10 @@ short Unit::getId() {
 }
 
 float Unit::getAttackRange() const { return dbLevel->attackRange; }
+
+UnitState Unit::getActionState() const {
+	return UnitState(dbUnit->actionState);
+}
 
 void Unit::setBucket(int _bucketIndex) {
 	Physical::setBucket(_bucketIndex);

@@ -92,7 +92,7 @@ public:
 	float getMaxSeparationDistance() const { return maxSeparationDistance; }
 	short getPositionInFormation() const { return posInFormation; }
 	float getMinimalDistance() const { return minimalDistance; }
-	UnitState getActionState() const { return actionState; }
+	UnitState getActionState() const;
 	UnitState getState() const { return state; }
 	short getFormation() const { return formation; }
 	bool isToDispose() const override { return state == UnitState::DISPOSE && atState; }
@@ -131,9 +131,6 @@ private:
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);
 
-	UnitState state, actionState;
-	bool atState = false, rotatable;
-
 	Urho3D::Vector2 velocity, acceleration;
 	Aims aims;
 
@@ -150,6 +147,9 @@ private:
 	float minimalDistance, maxSeparationDistance,
 	      maxSpeed, minSpeed,
 	      attackInterest, collectSpeed;
+
+	UnitState state;
+	bool atState = false;
 
 	short posInFormation = -1, formation = -1;
 	unsigned short currentFrameState = 0;

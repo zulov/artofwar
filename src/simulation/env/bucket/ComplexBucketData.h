@@ -13,15 +13,13 @@ class Static;
 class ComplexBucketData {
 public:
 	ComplexBucketData();
-	~ComplexBucketData();
+	~ComplexBucketData() = default;
 
 	void setStatic(Static* _object);
 	void removeStatic();
 
-	void setCenter(float _centerX, float _centerY);
-
 	void setEscapeThrought(int val);
-	Urho3D::Vector2 getDirectrionFrom(Urho3D::Vector3& position, ComplexBucketData& escapeBucket);
+	Urho3D::Vector2 getDirectionFrom(Urho3D::Vector3& position, Urho3D::Vector2 centerEscape);
 
 	void setNeightOccupied(unsigned char index);
 	void setNeightFree(unsigned char index);
@@ -34,7 +32,6 @@ public:
 
 	bool allNeightFree() const { return isNeightOccupied == 0; }
 
-	Urho3D::Vector2& getCenter() { return center; }
 	char getAdditionalInfo() const { return additionalInfo; }
 	int getEscapeBucket() const { return escapeBucketIndex; }
 	bool isUnit() const { return state < CellState::NONE; }
@@ -54,7 +51,6 @@ private:
 
 	//float cost{};
 	int escapeBucketIndex = -1;
-	Urho3D::Vector2 center;
 
 	Static* object{};
 };

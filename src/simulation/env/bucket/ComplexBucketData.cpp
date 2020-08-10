@@ -1,6 +1,4 @@
 #include "ComplexBucketData.h"
-#include <iostream>
-#include "Game.h"
 #include "objects/ObjectEnums.h"
 #include "objects/static/Static.h"
 #include "utils/consts.h"
@@ -9,8 +7,6 @@
 ComplexBucketData::ComplexBucketData() {
 	removeStatic();
 }
-
-ComplexBucketData::~ComplexBucketData() = default;
 
 void ComplexBucketData::setStatic(Static* _object) {
 	object = _object;
@@ -32,17 +28,12 @@ void ComplexBucketData::removeStatic() {
 	size = 0;
 }
 
-void ComplexBucketData::setCenter(float _centerX, float _centerY) {
-	center = {_centerX, _centerY};
-}
-
 void ComplexBucketData::setEscapeThrought(int val) {
 	escapeBucketIndex = val;
 }
 
-Urho3D::Vector2 ComplexBucketData::
-getDirectrionFrom(Urho3D::Vector3& position, ComplexBucketData& escapeBucket) {
-	return {escapeBucket.getCenter().x_ - position.x_, escapeBucket.getCenter().y_ - position.z_};
+Urho3D::Vector2 ComplexBucketData::getDirectionFrom(Urho3D::Vector3& position, Urho3D::Vector2 centerEscape) {
+	return {centerEscape.x_ - position.x_, centerEscape.y_ - position.z_};
 }
 
 

@@ -12,7 +12,7 @@ public:
 	~SelectedHudPanel();
 	void update(SelectedInfo* selectedInfo);
 
-	std::vector<Urho3D::Button*>& getButtonsSelectedToSubscribe();
+	std::vector<Urho3D::Button*> getButtonsSelectedToSubscribe() const;
 	void createRows();
 	void clearSelected();
 
@@ -23,7 +23,7 @@ private:
 	char maxInRow;
 	const char linesNumber = 3;
 	char lastHidden;
-	std::vector<Urho3D::Button*> buttons;
+	
 	SelectedHudElement** elements;
 	Urho3D::UIElement** rows;
 };

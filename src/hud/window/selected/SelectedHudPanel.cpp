@@ -12,7 +12,8 @@
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style)
 	: AbstractWindowPanel(_style, "SelectedInfoWindow",
-	                      {GameState::RUNNING, GameState::PAUSE}) {}
+	                      {GameState::RUNNING, GameState::PAUSE}) {
+}
 
 SelectedHudPanel::~SelectedHudPanel() {
 	clear_array(elements, linesNumber * maxInRow);
@@ -29,7 +30,12 @@ void SelectedHudPanel::hide(int i) {
 	}
 }
 
-std::vector<Urho3D::Button*>& SelectedHudPanel::getButtonsSelectedToSubscribe() {
+std::vector<Urho3D::Button*> SelectedHudPanel::getButtonsSelectedToSubscribe() const {
+	std::vector<Urho3D::Button*> buttons;
+	buttons.reserve(linesNumber * maxInRow);
+	for (int i = 0; i < linesNumber * maxInRow; ++i) {
+		buttons.push_back(elements[i]->getButton());
+	}
 	return buttons;
 }
 
@@ -50,10 +56,6 @@ void SelectedHudPanel::createBody() {
 		}
 	}
 
-	buttons.reserve(linesNumber * maxInRow);
-	for (int i = 0; i < linesNumber * maxInRow; ++i) {
-		buttons.push_back(elements[i]->getButton());
-	}
 	lastHidden = linesNumber * maxInRow;
 }
 

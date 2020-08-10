@@ -14,21 +14,7 @@
 
 
 MainGrid::MainGrid(const short resolution, const float size): Grid(resolution, size) {
-	short posX = 0;
-	short posZ = 0;
-
 	complexData = new ComplexBucketData[sqResolution];
-	for (int i = 0; i < sqResolution; ++i) {
-		const float cX = (posX + 0.5) * fieldSize - size / 2;
-		const float cZ = (posZ + 0.5) * fieldSize - size / 2;
-		complexData[i].setCenter(cX, cZ);
-
-		++posZ;
-		if (posZ >= resolution) {
-			++posX;
-			posZ = 0;
-		}
-	}
 	auto quater = fieldSize / 4;
 	posInBucket2 = {Urho3D::Vector2(quater, quater), Urho3D::Vector2(-quater, -quater)};
 	posInBucket3 = {
@@ -91,7 +77,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 
 		for (auto i : closeIndexProvider.getTabIndexes(index)) {
 			if (!complexData[index].ifNeightIsFree(i)) {
-				sum += complexData[index + closeIndexProvider.getIndexAt(i)].getCenter();
+				sum += calculator.getCenter(index + closeIndexProvider.getIndexAt(i));
 				++counter;
 			}
 		}
@@ -123,7 +109,7 @@ void MainGrid::updateSurround(Static* object) const {
 }
 
 Urho3D::Vector2 MainGrid::getPositionInBucket(int index, char max, char i) {
-	auto center = complexData[index].getCenter();
+	auto center = calculator.getCenter(index);
 	switch (max) {
 	case 1:
 		return center;
@@ -156,7 +142,7 @@ bool MainGrid::belowCellLimit(int index) const {
 
 char MainGrid::getNumberInState(int index, UnitState state) const {
 	auto pred = [state](Physical* p) { return dynamic_cast<Unit*>(p)->getState() == state; };
-	
+
 	auto& content = getContentAt(index);
 	return std::count_if(content.begin(), content.end(), pred);
 }
@@ -232,7 +218,7 @@ void MainGrid::drawDebug(GridDebugType type) const {
 	case GridDebugType::CELLS_TYPE:
 	{
 		for (int i = 0; i < sqResolution; ++i) {
-			auto center = complexData[i].getCenter();
+			auto center = calculator.getCenter(i);
 			std::tuple<bool, Urho3D::Color> info = DebugLineRepo::getInfoForGrid(complexData[i].getType());
 
 			if (std::get<0>(info)) {
@@ -264,7 +250,8 @@ bool MainGrid::isInLocalArea(const int cell, Urho3D::Vector2& pos) const {
 }
 
 bool MainGrid::isEmpty(int inx) const {
-	return calculator.isValidIndex(inx) && complexData[inx].getType() == CellState::EMPTY || complexData[inx].getType() ==
+	return calculator.isValidIndex(inx) && complexData[inx].getType() == CellState::EMPTY || complexData[inx].getType()
+		==
 		CellState::DEPLOY;
 }
 
@@ -335,11 +322,11 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& posit
 		//auto& neights = complexData[index].getNeightbours();
 		if (!complexData[index].allNeightOccupied()) {
 			float dist = 999999;
-
+			auto center = calculator.getCenter(index);
 			for (auto i : closeIndexProvider.getTabIndexes(index)) {
 				if (complexData[index].ifNeightIsFree(i)) {
 					int ni = index + closeIndexProvider.getIndexAt(i);
-					float newDist = sqDist(complexData[ni].getCenter(), complexData[index].getCenter());
+					float newDist = sqDist(calculator.getCenter(ni), center);
 					if (newDist < dist) {
 						dist = newDist;
 						escapeBucket = ni;
@@ -353,7 +340,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& posit
 			return {};
 		}
 		auto direction = complexData[index] //TODO Error'this' nie uzywany 
-			.getDirectrionFrom(position, complexData[escapeBucket]);
+			.getDirectionFrom(position, calculator.getCenter(escapeBucket));
 
 		direction.Normalize();
 		return direction;
@@ -372,8 +359,8 @@ std::pair<Urho3D::IntVector2, Urho3D::Vector2> MainGrid::getValidPosition(
 
 	const int index1 = calculator.getIndex(sizeX.x_, sizeZ.x_);
 	const int index2 = calculator.getIndex(sizeX.y_ - 1, sizeZ.y_ - 1);
-	const auto center1 = complexData[index1].getCenter();
-	const auto center2 = complexData[index2].getCenter();
+	const auto center1 = calculator.getCenter(index1);
+	const auto center2 = calculator.getCenter(index2);
 	const auto newCenter = (center1 + center2) / 2;
 
 	return {{posX, posZ}, newCenter};
@@ -394,7 +381,7 @@ void MainGrid::updateNeighbors(const int current) const {
 }
 
 float MainGrid::cost(const int current, const int next) const {
-	return (complexData[current].getCenter() - complexData[next].getCenter()).Length();
+	return (calculator.getCenter(current) - calculator.getCenter(next)).Length();
 }
 
 // std::vector<int>* MainGrid::findPath(Urho3D::IntVector2& startV, Urho3D::IntVector2& goalV) {

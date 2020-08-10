@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+
 #include "ComplexBucketData.h"
 #include "Grid.h"
 #include "objects/resource/ResourceEntity.h"
@@ -52,11 +54,11 @@ public:
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 
 	Urho3D::Vector2& getCenterAt(const Urho3D::IntVector2& cords) const {
-		return complexData[calculator.getIndex(cords.x_, cords.y_)].getCenter();
+		return getCenter(calculator.getIndex(cords.x_, cords.y_));
 	}
 
 	Urho3D::Vector2& getCenter(short x, short z) const { return getCenter(calculator.getIndex(x, z)); }
-	Urho3D::Vector2& getCenter(int index) const { return complexData[index].getCenter(); }
+	Urho3D::Vector2& getCenter(int index) const { return calculator.getCenter(index); }
 
 	CellState getType(int index) const { return complexData[index].getType(); }
 	char getCurrentSize(int index) const { return complexData[index].getSize(); }
@@ -83,9 +85,9 @@ private:
 
 	PathFinder* pathConstructor;
 
-	std::vector<Urho3D::Vector2> posInBucket2;
-	std::vector<Urho3D::Vector2> posInBucket3;
-	std::vector<Urho3D::Vector2> posInBucket4;
+	std::array<Urho3D::Vector2,2> posInBucket2;
+	std::array<Urho3D::Vector2,3> posInBucket3;
+	std::array<Urho3D::Vector2,4> posInBucket4;
 
 	ComplexBucketData* complexData;
 };
