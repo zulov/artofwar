@@ -9,6 +9,13 @@ void clear_vector(std::vector<T*>* container) {
 	container->clear();
 }
 
+template <typename T, size_t SIZE>
+void clear_array(std::array<T*, SIZE>& container) {
+	for (T* obj : container) {
+		delete obj;
+	}
+}
+
 template <typename T>
 void clear_vector(std::vector<T*>& container) {
 	for (T* obj : container) {

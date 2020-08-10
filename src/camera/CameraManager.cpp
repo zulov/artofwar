@@ -9,9 +9,7 @@
 
 
 CameraManager::CameraManager() {
-	cameraBehaves.push_back(new FreeCameraBehave());
-	cameraBehaves.push_back(new RtsCameraBehave());
-	cameraBehaves.push_back(new TopCameraBehave());
+	cameraBehaves = {new FreeCameraBehave(), new RtsCameraBehave(), new TopCameraBehave()};
 
 	activeBehave = cameraBehaves.at(1);
 	float border = 256.f;
@@ -26,7 +24,7 @@ CameraManager::CameraManager() {
 }
 
 CameraManager::~CameraManager() {
-	clear_vector(cameraBehaves);
+	clear_array(cameraBehaves);
 }
 
 void CameraManager::setCameraBehave(CameraBehaviorType _type) {

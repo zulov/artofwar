@@ -21,15 +21,16 @@ BillboardSetProvider::~BillboardSetProvider() {
 }
 
 void BillboardSetProvider::init() {
-	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+	for (int i = 0; i < Game::getPlayersMan()->getAllPlayers().size(); ++i) {
+		auto player = Game::getPlayersMan()->getAllPlayers()[i];
 		auto material = "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player->getId())->name +
 			".xml";
 		auto bs = createSet(nodeAura, material,10000);
 		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 		bs->SetRelative(false);
-		perPlayerAura.push_back(bs);
+		perPlayerAura[i]=bs;
 		material = "Materials/bar/bar_" + Game::getDatabase()->getPlayerColor(player->getId())->name + ".xml";
-		perPlayerBar.push_back(createSet(nodeBar, material,10000));
+		perPlayerBar[i]=createSet(nodeBar, material,10000);
 	}
 	nodeAura->Pitch(90);
 	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
@@ -37,9 +38,9 @@ void BillboardSetProvider::init() {
 		auto bs = createSet(nodeAura, material,1000);
 		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 		bs->SetRelative(false);
-		resourceAura.push_back(bs);
+		resourceAura[i]=bs;
 		material = "Materials/bar/bar_grey.xml";
-		resourceBar.push_back(createSet(nodeBar, material,1000));
+		resourceBar[i]=createSet(nodeBar, material,1000);
 	}
 }
 

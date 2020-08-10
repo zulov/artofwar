@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+
 #include "CameraBehave.h"
 #include <vector>
 
@@ -20,7 +22,7 @@ private:
 	void createCameraKeys(Urho3D::Input* input, bool cameraKeys[4], const Urho3D::IntVector2& cursorPos) const;
 
 	const double MOUSE_SENSITIVITY = 0.1f;
-	std::vector<CameraBehave*> cameraBehaves;
+	std::array<CameraBehave*,3> cameraBehaves;
 	CameraBehave* activeBehave;
 	float MOVE_SPEED = 20;
 

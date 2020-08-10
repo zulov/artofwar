@@ -1,6 +1,9 @@
 #pragma once
+#include <array>
 #include <vector>
 #include <Urho3D/Graphics/BillboardSet.h>
+
+#include "utils/defines.h"
 
 
 enum class ObjectType : char;
@@ -27,12 +30,12 @@ private:
 	Urho3D::Node* nodeBar;
 	Urho3D::Node* nodeAura;
 
-	std::vector<Urho3D::BillboardSet*> resourceAura;
-	std::vector<Urho3D::BillboardSet*> perPlayerAura;
+	std::array<Urho3D::BillboardSet*, 4> resourceAura;
+	std::array<Urho3D::BillboardSet*,MAX_PLAYERS> perPlayerAura;
 
-	std::vector<Urho3D::BillboardSet*> resourceBar;
-	std::vector<Urho3D::BillboardSet*> perPlayerBar;
-	
+	std::array<Urho3D::BillboardSet*, 4> resourceBar;
+	std::array<Urho3D::BillboardSet*,MAX_PLAYERS> perPlayerBar;
+
 	int auraIdx = 0;
 	int barIdx = 0;
 };

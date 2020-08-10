@@ -7,8 +7,7 @@
 #define MINI_MAP_BUTTON_NUMBER 5
 
 
-class MiniMapPanel : public AbstractWindowPanel
-{
+class MiniMapPanel : public AbstractWindowPanel {
 public:
 	void initColors();
 	explicit MiniMapPanel(Urho3D::XMLFile* _style);
@@ -24,7 +23,6 @@ private:
 	Urho3D::Sprite* spr;
 	Urho3D::Image* minimap;
 	Urho3D::Texture2D* text;
-	std::vector<Urho3D::UIElement*> checksElements;
 	unsigned* heightMap;
 	int indexUpdate = 0;
 	int indexPerUpdate;
