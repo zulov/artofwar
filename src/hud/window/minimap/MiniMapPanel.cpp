@@ -103,12 +103,12 @@ void MiniMapPanel::update() {
 
 	const float xinc = 1.0f / size.x_;
 	const float yinc = 1.0f / size.y_;
-
+	const auto activePlayer = Game::getPlayersMan()->getActivePlayerID();
 	bool changed = false;
-	const int activePlayer = Game::getPlayersMan()->getActivePlayerID();
-	const float yVal = 1 - yinc * (indexUpdate / size.x_);
-	const float xVal = 0 + xinc * (indexUpdate % size.x_);
 	for (int partIndex = 0; partIndex < indexPerUpdate && indexUpdate < size.y_ * size.x_; ++partIndex, ++indexUpdate) {
+		const float yVal = 1 - yinc * (indexUpdate / size.x_);
+		const float xVal = 0 + xinc * (indexUpdate % size.x_);
+
 		content_info* ci = env->getContentInfo({xVal + xinc / 2, yVal - yinc / 2}, checks, activePlayer);
 
 		if (checks[2] && ci->hasBuilding) {
