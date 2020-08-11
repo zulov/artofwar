@@ -53,12 +53,12 @@ public:
 
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 
-	Urho3D::Vector2& getCenterAt(const Urho3D::IntVector2& cords) const {
+	Urho3D::Vector2 getCenterAt(const Urho3D::IntVector2& cords) const {
 		return getCenter(calculator.getIndex(cords.x_, cords.y_));
 	}
 
-	Urho3D::Vector2& getCenter(short x, short z) const { return getCenter(calculator.getIndex(x, z)); }
-	Urho3D::Vector2& getCenter(int index) const { return calculator.getCenter(index); }
+	Urho3D::Vector2 getCenter(short x, short z) const { return getCenter(calculator.getIndex(x, z)); }
+	Urho3D::Vector2 getCenter(int index) const { return calculator.getCenter(index); }
 
 	CellState getType(int index) const { return complexData[index].getType(); }
 	char getCurrentSize(int index) const { return complexData[index].getSize(); }
