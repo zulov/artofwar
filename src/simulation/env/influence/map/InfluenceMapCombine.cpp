@@ -57,11 +57,7 @@ void InfluenceMapCombine::update(Physical* thing, std::span<float> values1) {
 	}
 
 	for (int i = 0; i < values.size(); ++i) {
-		const auto map = values[i];
-		const auto val = values1[i];
-		for (int j = 0; j < k; ++j) {
-			map->add(indexes[j], val * vals[j]);
-		}
+		values[i]->add(indexes, vals, k, values1[i]);
 	}
 
 }

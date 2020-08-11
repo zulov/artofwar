@@ -16,7 +16,7 @@ public:
 	void finishCalc() override;
 	std::vector<int> getIndexesWithByValue(float percent, float tolerance) const;
 	void getIndexesWithByValue(float percent, float* intersection) const;
-	void add(int index, float value) const { values[index] += value; }
+	void add(int* indexes, float* vals, int k, float val);
 private:
 	float* values;
 	float coef;
