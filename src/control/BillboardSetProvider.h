@@ -31,10 +31,10 @@ private:
 	Urho3D::Node* nodeAura;
 
 	std::array<Urho3D::BillboardSet*, 4> resourceAura;
-	std::array<Urho3D::BillboardSet*,MAX_PLAYERS> perPlayerAura;
+	std::array<Urho3D::BillboardSet*, MAX_PLAYERS> perPlayerAura;
 
-	std::array<Urho3D::BillboardSet*, 4> resourceBar;
-	std::array<Urho3D::BillboardSet*,MAX_PLAYERS> perPlayerBar;
+	Urho3D::BillboardSet* resourceBar;
+	std::array<Urho3D::BillboardSet*, MAX_PLAYERS> perPlayerBar;
 
 	int auraIdx = 0;
 	int barIdx = 0;
