@@ -176,25 +176,25 @@ std::vector<short>* Grid::getEnvIndexs(float radius) const {
 			if (fieldInCircle(i, j, radius)) {
 				const short x = i + 1;
 				const short y = j + 1;
-				indexes->push_back(calculator.getIndex(x, y));
-				indexes->push_back(calculator.getIndex(x, -y));
-				indexes->push_back(calculator.getIndex(-x, y));
-				indexes->push_back(calculator.getIndex(-x, -y));
+				indexes->push_back(calculator.getNotSafeIndex(x, y));
+				indexes->push_back(calculator.getNotSafeIndex(x, -y));
+				indexes->push_back(calculator.getNotSafeIndex(-x, y));
+				indexes->push_back(calculator.getNotSafeIndex(-x, -y));
 			} else {
 				break;
 			}
 		}
 		if (fieldInCircle(i, 0, radius)) {
 			const short x = i + 1;
-			indexes->push_back(calculator.getIndex(x, 0));
-			indexes->push_back(calculator.getIndex(0, x));
-			indexes->push_back(calculator.getIndex(-x, 0));
-			indexes->push_back(calculator.getIndex(0, -x));
+			indexes->push_back(calculator.getNotSafeIndex(x, 0));
+			indexes->push_back(calculator.getNotSafeIndex(0, x));
+			indexes->push_back(calculator.getNotSafeIndex(-x, 0));
+			indexes->push_back(calculator.getNotSafeIndex(0, -x));
 		} else {
 			break;
 		}
 	}
-	indexes->push_back(calculator.getIndex(0, 0));
+	indexes->push_back(calculator.getNotSafeIndex(0, 0));
 	std::sort(indexes->begin(), indexes->end());
 	indexes->shrink_to_fit();
 	return indexes;
