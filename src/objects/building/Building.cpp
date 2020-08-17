@@ -2,11 +2,9 @@
 #include <magic_enum.hpp>
 #include <string>
 #include "Game.h"
-#include "../ValueType.h"
 #include "commands/action/BuildingActionType.h"
 #include "database/DatabaseCache.h"
 #include "objects/NodeUtils.h"
-#include "objects/ObjectEnums.h"
 #include "objects/queue/QueueActionType.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/state/StateManager.h"
@@ -30,7 +28,7 @@ Building::~Building() {
 
 float Building::getMaxHpBarSize() const {
 	auto gridSize = getGridSize();
-	return Urho3D::Max(gridSize.x_, gridSize.y_) * 0.5;
+	return Urho3D::Max(gridSize.x_, gridSize.y_) * 0.5f;
 }
 
 short Building::getId() {

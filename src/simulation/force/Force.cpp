@@ -157,8 +157,8 @@ void Force::changeCoef(int i, int wheel) {
 
 float Force::calculateCoef(const float distance, const float minDist) const {
 	float parameter = distance - minDist / 2;
-	if (parameter <= 0.00005) {
-		parameter = 0.00005;
+	if (parameter <= 0.00005f) {
+		parameter = 0.00005f;
 	}
 	return 1 / parameter;
 }

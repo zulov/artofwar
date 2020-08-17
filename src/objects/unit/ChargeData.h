@@ -24,7 +24,7 @@ struct ChargeData
 	}
 
 	bool updateHit(float before, float after) {
-		if (after < 0.1 && before - after > 0.1) {
+		if (after < 0.1f && before - after > 0.1f) {
 			++energy;
 		} else {
 			energy -= 5;

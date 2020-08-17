@@ -12,7 +12,7 @@ class MySprite;
 class QueueHudElement {
 public:
 	explicit QueueHudElement(Urho3D::UIElement* parent, Urho3D::XMLFile* style);
-	~QueueHudElement();
+	~QueueHudElement() = default;
 	Urho3D::Button* getButton() const;
 	void hide() const;
 	void show() const;

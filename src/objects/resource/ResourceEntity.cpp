@@ -4,7 +4,6 @@
 #include "commands/action/ResourceActionType.h"
 #include "database/DatabaseCache.h"
 #include "math/RandGen.h"
-#include "objects/ObjectEnums.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "objects/unit/state/StateManager.h"
@@ -14,7 +13,7 @@
 
 ResourceEntity::ResourceEntity(Urho3D::Vector3& _position, int id, int level, int mainCell)
 	: Static(_position, mainCell) {
-	dbResource = Game::getDatabase()->getResource(id);;
+	dbResource = Game::getDatabase()->getResource(id);
 	loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(
 		RandIntType::RESOURCE_NODE, dbResource->nodeName.Size())]);
 

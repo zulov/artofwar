@@ -13,7 +13,7 @@ void FreeCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, f
 	translateInternal(cameraKeys, timeStep, 1);
 }
 
-void FreeCameraBehave::rotate(const Urho3D::IntVector2& mouseMove, const double mouse_sensitivity) {
+void FreeCameraBehave::rotate(const Urho3D::IntVector2& mouseMove, const float mouse_sensitivity) {
 	yaw += mouse_sensitivity * mouseMove.x_;
 	pitch += mouse_sensitivity * mouseMove.y_;
 	//pitch_ = Clamp(pitch_, -90.0f, 90.0f);

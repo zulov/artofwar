@@ -88,12 +88,12 @@ public:
 
 	virtual void clean() { }
 
-	virtual void fillValues(std::span<float> weights) const {};
-	virtual void addValues(std::span<float> vals) const {};
+	virtual void fillValues(std::span<float> weights) const {}
+	virtual void addValues(std::span<float> vals) const {}
 protected:
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);
-	virtual float getHealthBarThick() const { return 0.12; }
+	virtual float getHealthBarThick() const { return 0.12f; }
 	Urho3D::Node* node;
 
 	Urho3D::StaticModel* model;

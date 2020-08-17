@@ -6,12 +6,10 @@ public:
 
 	virtual bool expired() { return false; }
 
-	virtual void clean() {
-	};
+	virtual void clean() {}
 
 protected:
-	explicit AbstractCommand(char player): player(player) {
-	}
+	explicit AbstractCommand(char player): player(player) { }
 
 	char player;
 };

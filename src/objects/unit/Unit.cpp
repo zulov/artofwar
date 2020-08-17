@@ -2,12 +2,10 @@
 #include <algorithm>
 #include <string>
 #include "Game.h"
-#include "../ValueType.h"
 #include "colors/ColorPaletteRepo.h"
 #include "database/DatabaseCache.h"
 #include "debug/DebugLineRepo.h"
 #include "debug/DebugUnitType.h"
-#include "objects/ObjectEnums.h"
 #include "objects/unit/ChargeData.h"
 #include "objects/unit/MissileData.h"
 #include "objects/unit/SimColorMode.h"
@@ -64,7 +62,7 @@ void Unit::checkAim() {
 	}
 }
 
-void Unit::move(double timeStep) {
+void Unit::move(float timeStep) {
 	if (state != UnitState::STOP) {
 		position.x_ += velocity.x_ * timeStep;
 		position.z_ += velocity.y_ * timeStep;
@@ -149,7 +147,7 @@ void Unit::toCharge(std::vector<Physical*>* enemies) {
 }
 
 void Unit::updateHeight(float y, double timeStep) {
-	velocity *= 1 + (position.y_ - y) * 0.1 * dbLevel->mass * timeStep;
+	velocity *= 1 + (position.y_ - y) * 0.1f * dbLevel->mass * timeStep;
 	position.y_ = y;
 }
 
@@ -364,7 +362,7 @@ std::string Unit::getValues(int precision) {
 
 }
 
-void Unit::applyForce(double timeStep) {
+void Unit::applyForce(float timeStep) {
 	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
 	velocity += acceleration * (timeStep / dbLevel->mass);
 	const float velLength = velocity.LengthSquared();

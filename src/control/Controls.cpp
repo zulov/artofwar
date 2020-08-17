@@ -111,7 +111,7 @@ void Controls::selectOne(Physical* entity, char player) {
 		&& !entity->isSelected() && entity->isAlive()
 		&& (entity->getPlayer() < 0 || entity->getPlayer() == player)) {
 
-		entity->select(billboardSetProvider.getNextBar(entity->getType(), entity->getPlayer(), entity->getId()),
+		entity->select(billboardSetProvider.getNextBar(entity->getType(), entity->getPlayer()),
 		               billboardSetProvider.getNextAura(entity->getType(), entity->getPlayer(), entity->getId()));
 		//entity->select(nullptr,nullptr);
 		selected->push_back(entity);
@@ -241,7 +241,7 @@ void Controls::releaseLeft() {
 		auto lastClicked = left.lastUp;
 		left.setSecond(hitData.position);
 		const float dist = sqDist(left.held.first, left.held.second);
-		if (left.lastUp - lastClicked < 0.2 && dist < clickDistance) {
+		if (left.lastUp - lastClicked < 0.2f && dist < clickDistance) {
 			leftDoubleClick(hitData);
 		} else if (dist > clickDistance) {
 			leftHold(left.held);
@@ -320,8 +320,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 		case ActionType::UNIT_UPGRADE:
 			type = BuildingActionType::UNIT_UPGRADE;
 			break;
-		default:
-			int a = 5;
+		default:;
 		}
 		return executeOnBuildings(type, id);
 	case ObjectType::RESOURCE:
@@ -461,12 +460,12 @@ void Controls::updateSelection() const {
 	if (raycast(hitData, ObjectType::PHYSICAL)) {
 		const float xScale = left.held.first->x_ - hitData.position.x_;
 		const float zScale = left.held.first->z_ - hitData.position.z_;
-		if ((xScale * xScale > clickDistance || zScale * zScale > clickDistance) && Game::getTime() - left.lastDown >
-			0.3) {
+		if ((xScale * xScale > clickDistance || zScale * zScale > clickDistance) 
+			&& Game::getTime() - left.lastDown > 0.3f) {
 			if (!selectionNode->IsEnabled()) {
 				selectionNode->SetEnabled(true);
 			}
-			selectionNode->SetScale({abs(xScale), 0.1, abs(zScale)});
+			selectionNode->SetScale({abs(xScale), 0.1f, abs(zScale)});
 			selectionNode->SetPosition((*left.held.first + hitData.position) / 2);
 		} else {
 			if (selectionNode->IsEnabled()) {
@@ -484,7 +483,7 @@ void Controls::updateArrow() const {
 
 		const float length = dir.Length();
 
-		if (length * length > clickDistance && Game::getTime() - right.lastDown > 0.3) {
+		if (length * length > clickDistance && Game::getTime() - right.lastDown > 0.3.f) {
 			if (!arrowNode->IsEnabled()) {
 				arrowNode->SetEnabled(true);
 			}

@@ -15,6 +15,4 @@ private:
 	Physical* ground;
 	Urho3D::Node* light;
 	Urho3D::Node* zone;
-
-
 };

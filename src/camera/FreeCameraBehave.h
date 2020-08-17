@@ -8,7 +8,7 @@ public:
 	virtual ~FreeCameraBehave() = default;
 
 	void translate(bool cameraKeys[], int wheel, float timeStep, float min) override;
-	void rotate(const Urho3D::IntVector2& mouseMove, double mouse_sensitivity) override;
+	void rotate(const Urho3D::IntVector2& mouseMove, float mouse_sensitivity) override;
 	void setRotation(const Urho3D::Quaternion& rotation) override;
 	Urho3D::String* getInfo() override;
 	Urho3D::MouseMode getMouseMode() override;

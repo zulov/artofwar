@@ -44,8 +44,8 @@ public:
 
 	void populate() override;
 	void checkAim();
-	void move(double timeStep);
-	void applyForce(double timeStep);
+	void move(float timeStep);
+	void applyForce(float timeStep);
 	void setAcceleration(Urho3D::Vector2& _acceleration);
 
 	void forceGo(float boostCoef, float aimCoef, Urho3D::Vector2& force) const;

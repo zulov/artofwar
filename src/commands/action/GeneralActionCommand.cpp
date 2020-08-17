@@ -5,7 +5,6 @@
 #include "GeneralActionType.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "stats/Stats.h"
 
 GeneralActionCommand::GeneralActionCommand(short id, GeneralActionType action, char player)
 	: AbstractCommand(player),

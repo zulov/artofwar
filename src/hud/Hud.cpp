@@ -10,7 +10,6 @@
 #include <Urho3D/UI/UIEvents.h>
 #include "Game.h"
 #include "HudData.h"
-#include "UiUtils.h"
 #include "camera/CameraManager.h"
 #include "database/DatabaseCache.h"
 #include "objects/ObjectEnums.h"

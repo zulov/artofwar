@@ -184,16 +184,16 @@ Urho3D::Vector3 Environment::getPosWithHeightAt(int index) const {
 
 float Environment::getGroundHeightPercent(float y, float x, float div) const {
 	const float scale = terrian->GetSpacing().y_;
-	const auto a = Urho3D::Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, 0,
-	                               y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
+	const auto a = Urho3D::Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5f, 0.f,
+	                               y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5f);
 
 	return terrian->GetHeight(a) / scale / div;
 }
 
 Urho3D::Vector3 Environment::getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos,
                                                   float min) const {
-	auto a = Urho3D::Vector3(percentX * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5, pos.y_,
-	                         percentY * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5);
+	auto a = Urho3D::Vector3(percentX * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5f, pos.y_,
+	                         percentY * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5f);
 	const float h = terrian->GetHeight(a);
 	if (h + min > pos.y_) {
 		a.y_ = h + min;

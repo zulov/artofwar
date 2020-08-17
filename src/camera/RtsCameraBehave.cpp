@@ -2,9 +2,8 @@
 #include "Game.h"
 
 RtsCameraBehave::RtsCameraBehave(): CameraBehave(Urho3D::Vector3(0.0f, 50.0f, -50.0f), 3, "RTSCam") {
-	const double diff = sqrt(50.0f - minY) + 1;
-	const double a = 10;
-	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * a);
+	const auto diff = sqrt(50.0f - minY) + 1.f;
+	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * 10.f);
 }
 
 void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
@@ -12,11 +11,11 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 	const float localMin = minY + min;
 	const float localMax = maxY + min;
 
-	double diff;
+	float diff;
 	if (pos.y_ < localMin) {
 		diff = 1;
 	} else {
-		diff = sqrt((pos.y_ - localMin) / 10) + 1;
+		diff = sqrt((pos.y_ - localMin) / 10) + 1.f;
 	}
 	translateInternal(cameraKeys, timeStep, diff);
 
@@ -25,22 +24,20 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 		if (pos2.y_ < localMin) {
 			pos2.y_ = localMin;
 		}
-		double diff = sqrt(pos2.y_ - localMin) + 1;
+		float diff = sqrt(pos2.y_ - localMin) + 1.f;
 
-		pos2 += Urho3D::Vector3::DOWN * wheel * diff * 1.5;
+		pos2 += Urho3D::Vector3::DOWN * wheel * diff * 1.5f;
 
 		if (pos2.y_ < localMin) {
 			pos2.y_ = localMin;
 		} else if (pos2.y_ > localMax) {
 			pos2.y_ = localMax;
 		}
-		double a = 10;
 
 		cameraNode->SetWorldPosition(pos2);
-		cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * a);
+		cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * 10);
 		changed = true;
 	}
-
 }
 
 void RtsCameraBehave::rotate(const Urho3D::IntVector2& mouseMove, const double mouse_sensitivity) {

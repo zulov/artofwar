@@ -141,7 +141,7 @@ std::vector<int> Grid::getArrayNeight(const Urho3D::Vector2& center, float radiu
 	return indexes;
 }
 
-std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, double radius) {
+std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float radius) {
 	//TODO clean prawie to samo co wy¿ej
 	tempSelected->clear();
 

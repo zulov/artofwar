@@ -178,7 +178,7 @@ void Formation::calculateNotWellFormed() {
 		const auto desiredPos = getPositionFor(unit->getPositionInFormation());
 		const auto dist = sqDist(unit->getPosition(), desiredPos);
 
-		if (dist < 0.5) {
+		if (dist < 0.5f) {
 			levelOfReach[unit->getPositionInFormation()] = 0;
 		} else if (dist < 2 * 2) {
 			notWellFormedExact += 1;

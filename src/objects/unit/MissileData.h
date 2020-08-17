@@ -28,7 +28,7 @@ struct MissileData {
 		  speed(speed) {
 		createNode("Models/units/additional/Prism.mdl", "Materials/units/additional/brown.xml", &node);
 		node->SetEnabled(false);
-		node->SetScale(Urho3D::Vector3(0.1, 0.1, 0.3));
+		node->SetScale(Urho3D::Vector3(0.1f, 0.1f, 0.3f));
 	}
 
 	MissileData(const MissileData&) = delete;

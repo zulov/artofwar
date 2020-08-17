@@ -49,7 +49,7 @@ void draw_grid_cost(const float* costSoFar, Urho3D::Image* image, short resoluti
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			int id = getIndex(x, y, resolution);
-			if (costSoFar[id] != -1) {
+			if (costSoFar[id] > 0.f) {
 				int idR = getIndex(resolution - y - 1, x, resolution);
 				*(data + idR) -= 0x0000007F;
 			}

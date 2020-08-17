@@ -87,7 +87,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 				assert(next>=0 && next<resolution*resolution);
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + complexData[current].getCost(i);
-					if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
+					if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
 						updateCost(next, new_cost);
 						frontier.put(next, new_cost + heuristic(next, endIdx));
 						came_from[next] = current;
@@ -176,7 +176,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 					int next = nI;
 					if (came_from[current] != next) {
 						const float new_cost = cost_so_far[current] + complexData[current].getCost(i);
-						if (cost_so_far[next] == -1 || new_cost < cost_so_far[next]) {
+						if (cost_so_far[next] <0.f || new_cost < cost_so_far[next]) {
 							updateCost(next, new_cost);
 
 							frontier.put(next, new_cost);

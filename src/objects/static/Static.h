@@ -36,7 +36,7 @@ public:
 	std::string getValues(int precision) override;
 protected:
 	void populate() override;
-	float getHealthBarThick() const override { return 0.15; }
+	float getHealthBarThick() const override { return 0.15f; }
 	float getAuraSize(const Urho3D::Vector3& boundingBox) const override;
 	int mainCell{};
 

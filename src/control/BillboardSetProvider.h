@@ -1,6 +1,5 @@
 #pragma once
 #include <array>
-#include <vector>
 #include <Urho3D/Graphics/BillboardSet.h>
 
 #include "utils/defines.h"
@@ -21,7 +20,7 @@ public:
 	~BillboardSetProvider();
 	void init();
 	void reset();
-	Urho3D::Billboard* getNextBar(ObjectType type, char player, short id);
+	Urho3D::Billboard* getNextBar(ObjectType type, char player);
 	Urho3D::Billboard* getNextAura(ObjectType type, char player, short id);
 	void commit();
 

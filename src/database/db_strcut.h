@@ -99,13 +99,6 @@ public:
 		paramsAsSpan = std::span{params};
 	}
 
-	float getValueOf(ValueType type) {
-		switch (type) {
-		case ValueType::ATTACK: return attack;
-		case ValueType::DEFENCE: return defence;
-		case ValueType::ECON: return econ;
-		}
-	}
 };
 
 struct db_level {

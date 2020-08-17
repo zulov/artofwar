@@ -44,7 +44,7 @@ void Player::setResourceAmount(float amount) {
 	resources.init(amount);
 }
 
-char Player::upgradeLevel(QueueActionType type, int id) {
+char Player::upgradeLevel(QueueActionType type, int id) const {
 	switch (type) {
 	case QueueActionType::UNIT_LEVEL:
 		if (Game::getDatabase()->getUnit(id)->levels.size() - 1 > unitLevels[id]) {

@@ -288,9 +288,9 @@ std::string Stats::getOutput(CreationCommand* command) const {
 std::string Stats::getOutput(UpgradeCommand* command) const {
 	switch (command->type) {
 	case QueueActionType::UNIT_LEVEL:
-		return getOutput({StatsOutputType::LEVEL_UP_UNIT});
+		return getOutput(StatsOutputType::LEVEL_UP_UNIT);
 	case QueueActionType::BUILDING_LEVEL:
-		return getOutput({StatsOutputType::LEVEL_UP_BUILDING});
+		return getOutput(StatsOutputType::LEVEL_UP_BUILDING);
 	default: ;
 	}
 }

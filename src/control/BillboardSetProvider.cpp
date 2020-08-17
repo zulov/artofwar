@@ -71,7 +71,7 @@ Urho3D::Billboard* BillboardSetProvider::getNextAura(ObjectType type, char playe
 	}
 }
 
-Urho3D::Billboard* BillboardSetProvider::getNextBar(ObjectType type, char player, short id) {
+Urho3D::Billboard* BillboardSetProvider::getNextBar(ObjectType type, char player) {
 	switch (type) {
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
