@@ -1,18 +1,21 @@
 #pragma once
 #include "CameraBehave.h"
 
-class RtsCameraBehave : public CameraBehave
-{
+class RtsCameraBehave : public CameraBehave {
 public:
 	RtsCameraBehave();
 	virtual ~RtsCameraBehave() = default;
 	void translate(bool cameraKeys[], int wheel, float timeStep, float min) override;
-	void rotate(const Urho3D::IntVector2& mouseMove, float mouse_sensitivity) override;
 
-	void setRotation(const Urho3D::Quaternion& rotation) override;
+	void rotate(const Urho3D::IntVector2& mouseMove, float mouse_sensitivity) override {
+	}
+
+	void setRotation(const Urho3D::Quaternion& rotation) override {
+	}
+
 	Urho3D::String* getInfo() override;
 	Urho3D::MouseMode getMouseMode() override;
 private:
 	float maxY = 200;
-	
+
 };

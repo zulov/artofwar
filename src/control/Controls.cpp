@@ -483,7 +483,7 @@ void Controls::updateArrow() const {
 
 		const float length = dir.Length();
 
-		if (length * length > clickDistance && Game::getTime() - right.lastDown > 0.3.f) {
+		if (length * length > clickDistance && Game::getTime() - right.lastDown > 0.3f) {
 			if (!arrowNode->IsEnabled()) {
 				arrowNode->SetEnabled(true);
 			}
