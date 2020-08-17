@@ -11,20 +11,6 @@ Static::Static(Urho3D::Vector3& _position, int mainCell) : Physical(_position) {
 	setMainCell(mainCell);
 }
 
-Static::~Static() = default;
-
-void Static::setMainCell(int _mainCell) {
-	mainCell = _mainCell;
-}
-
-void Static::setNextState(StaticState stateTo) {
-	nextState = stateTo;
-}
-
-void Static::setState(StaticState state) {
-	this->state = state;
-}
-
 void Static::load(dbload_static* dbloadStatic) {
 	Physical::load(dbloadStatic);
 	this->state = StaticState(dbloadStatic->state);

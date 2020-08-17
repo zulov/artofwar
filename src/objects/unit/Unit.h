@@ -1,12 +1,10 @@
 #pragma once
 
 #include <span>
-
+#include <vector>
 #include "aim/Aims.h"
 #include "objects/Physical.h"
 #include "state/UnitState.h"
-#include <Urho3D/Graphics/CustomGeometry.h>
-#include <vector>
 
 
 #define BUCKET_SET_NUMBER 2
@@ -67,7 +65,7 @@ public:
 
 	void load(dbload_unit* unit);
 
-	ObjectType getType() const override;
+	ObjectType getType() const override { return ObjectType::UNIT; }
 	void setFormation(short _formation);
 	void resetFormation();
 	void setPositionInFormation(short _pos);
@@ -99,7 +97,6 @@ public:
 	bool hasAim() const { return aims.hasAim(); }
 
 	float getAttackRange() const;
-	void setBucket(int _bucketIndex) override;
 	bool bucketHasChanged(int _bucketIndex, char param) const;
 	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
 	void setBucket(int _bucketIndex, char param);
@@ -120,10 +117,10 @@ public:
 	int getLevel() override;
 	short getId() override;
 	void clean() override;
-	float getValueOf(ValueType type) const override;
+
 	void fillValues(std::span<float> weights) const override;
 	void addValues(std::span<float> vals) const override;
-	
+
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 private:
 	void actionIfCloseEnough(UnitAction order, Physical* closest, int indexToInteract,

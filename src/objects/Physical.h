@@ -23,22 +23,25 @@ public:
 	void updateHealthBar() const;
 	float getHealthBarSize() const;
 
-	bool bucketHasChanged(int _bucketIndex) const;
-	virtual void setBucket(int _bucketIndex);
+	bool bucketHasChanged(int _bucketIndex) const { return indexInGrid != _bucketIndex; }
+
+	void setBucket(int _bucketIndex) {
+		indexInGrid = _bucketIndex;
+		indexHasChanged = true;
+	}
 
 	void updateBillboards() const;
 
-	void setTeam(unsigned char _team);
-	void setPlayer(unsigned char player);
+	void setTeam(unsigned char team) { this->team = team; }
+	void setPlayer(unsigned char player) { this->player = player; }
 	bool isSelected() const;
 	void load(dbload_physical* dbloadPhysical);
 	virtual bool isSlotOccupied(int indexToInteract) { return false; }
 	virtual bool isFirstThingInSameSocket() const { return true; }
 
-	virtual void setOccupiedSlot(int indexToInteract, bool value) {
-	}
+	virtual void setOccupiedSlot(int indexToInteract, bool value) { }
 
-	void indexHasChangedReset();
+	void indexHasChangedReset() { indexHasChanged = false; }
 
 	static std::string getColumns();
 	virtual std::string getValues(int precision);
@@ -52,7 +55,7 @@ public:
 	void reduceRange() { --rangeUsers; }
 	void upRange() { ++rangeUsers; }
 
-	virtual ObjectType getType() const;
+	virtual ObjectType getType() const { return ObjectType::PHYSICAL; }
 
 	virtual float getHealthPercent() const { return hp / maxHp; }
 	signed char getTeam() const { return team; }
@@ -63,33 +66,30 @@ public:
 
 	int getMainBucketIndex() const { return indexInGrid; }
 
-	virtual void populate() {
-	}
+	virtual void populate() { }
 
 	virtual int getMainCell() const;
 
 	virtual bool isToDispose() const { return false; }
 	virtual std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* follower);
 
-	virtual std::optional<Urho3D::Vector2> getPosToUseBy(Unit* follower);
+	std::optional<Urho3D::Vector2> getPosToUseBy(Unit* follower);
 
 	virtual float getMaxHpBarSize() const { return 0; }
 
-	virtual void absorbAttack(float attackCoef) {
-	}
+	virtual void absorbAttack(float attackCoef) { }
 
-	virtual void select(Urho3D::Billboard* billboardBar, Urho3D::Billboard* billboardAura);
-	virtual void unSelect();
+	void select(Urho3D::Billboard* healthBar, Urho3D::Billboard* aura);
+	void disableBillboard(Urho3D::Billboard* billboard);
+	void unSelect();
 	virtual Urho3D::String toMultiLineString();
 
 	virtual int getLevel();
 
-	virtual void clean() {
-	}
+	virtual void clean() { }
 
-	virtual float getValueOf(ValueType type) const;
-	virtual void fillValues(std::span<float> weights) const;
-	virtual void addValues(std::span<float> vals) const;
+	virtual void fillValues(std::span<float> weights) const {};
+	virtual void addValues(std::span<float> vals) const {};
 protected:
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);
@@ -98,7 +98,7 @@ protected:
 
 	Urho3D::StaticModel* model;
 
-	Urho3D::Billboard *billboardBar = nullptr, *billboardAura = nullptr;
+	Urho3D::Billboard *healthBar = nullptr, *aura = nullptr;
 
 	char team, player = -1;
 	unsigned char maxRangeUsers = 8,

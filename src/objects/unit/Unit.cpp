@@ -307,10 +307,6 @@ void Unit::load(dbload_unit* unit) {
 	velocity = {unit->vel_x, unit->vel_z};
 }
 
-ObjectType Unit::getType() const {
-	return ObjectType::UNIT;
-}
-
 int Unit::getLevel() {
 	return dbLevel->level;
 }
@@ -409,10 +405,6 @@ UnitState Unit::getActionState() const {
 	return UnitState(dbUnit->actionState);
 }
 
-void Unit::setBucket(int _bucketIndex) {
-	Physical::setBucket(_bucketIndex);
-}
-
 bool Unit::bucketHasChanged(int _bucketIndex, char param) const {
 	return teamBucketIndex[param] != _bucketIndex;
 }
@@ -464,10 +456,6 @@ void Unit::clean() {
 	                       thingsToInteract.end());
 }
 
-float Unit::getValueOf(ValueType type) const {
-	return dbLevel->aiProps->getValueOf(type) * (hp / maxHp);
-}
-
 void Unit::fillValues(std::span<float> weights) const {
 	std::copy(dbLevel->aiProps->params, dbLevel->aiProps->params + 3, weights.begin());
 	auto percent = hp / maxHp;
@@ -477,7 +465,7 @@ void Unit::fillValues(std::span<float> weights) const {
 }
 
 void Unit::addValues(std::span<float> vals) const {
-	auto percent = hp / maxHp;
+	const auto percent = hp / maxHp;
 	for (int i = 0; i < vals.size(); ++i) {
 		vals[i] += percent * dbLevel->aiProps->params[i];
 	}

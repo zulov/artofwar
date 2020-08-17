@@ -32,13 +32,12 @@ public:
 
 	Urho3D::String toMultiLineString() override;
 	void absorbAttack(float attackCoef) override;
-	ObjectType getType() const override;
+	ObjectType getType() const override { return ObjectType::BUILDING; }
 	void action(BuildingActionType type, short id) const;
 	std::string getValues(int precision) override;
 	float getMaxHpBarSize() const override;
 	short getId() override;
-	int getLevel() override;
-	float getValueOf(ValueType type) const override;
+	int getLevel() override { return dbLevel->level; }
 	void fillValues(std::span<float> weights) const override;
 	void addValues(std::span<float> vals) const override;
 	const Urho3D::IntVector2 getGridSize() const override;

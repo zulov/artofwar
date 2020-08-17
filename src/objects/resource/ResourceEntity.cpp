@@ -32,7 +32,7 @@ short ResourceEntity::getId() {
 void ResourceEntity::populate() {
 	Static::populate();
 
-	amonut = dbResource->maxCapacity;
+	amount = dbResource->maxCapacity;
 	maxCloseUsers = dbResource->maxUsers;
 }
 
@@ -41,20 +41,20 @@ float ResourceEntity::getMaxHpBarSize() const {
 }
 
 float ResourceEntity::getHealthPercent() const {
-	return amonut / dbResource->maxCapacity;
+	return amount / dbResource->maxCapacity;
 }
 
 Urho3D::String ResourceEntity::toMultiLineString() {
 	auto l10n = Game::getLocalization();
 
 	return Urho3D::String(dbResource->name)
-	       .Append("\n" + l10n->Get("ml_res_1") + ": ").Append(Urho3D::String((int)amonut))
+	       .Append("\n" + l10n->Get("ml_res_1") + ": ").Append(Urho3D::String((int)amount))
 	       .Append("\n" + l10n->Get("ml_res_2") + ": ").Append(Urho3D::String((int)closeUsers))
 	       .Append("/").Append(Urho3D::String((int)maxCloseUsers));
 }
 
 std::string ResourceEntity::getValues(int precision) {
-	int amountI = amonut * precision;
+	int amountI = amount * precision;
 	return Static::getValues(precision)
 		+ std::to_string(amountI);
 }
@@ -91,28 +91,24 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 
 }
 
-ObjectType ResourceEntity::getType() const {
-	return ObjectType::RESOURCE;
-}
-
 std::string ResourceEntity::getColumns() {
 	return Static::getColumns() +
 		"amount		INT     NOT NULL";
 }
 
 float ResourceEntity::collect(float collectSpeed) {
-	if (amonut - collectSpeed >= 0) {
-		amonut -= collectSpeed;
+	if (amount - collectSpeed >= 0) {
+		amount -= collectSpeed;
 		updateHealthBar();
 		return collectSpeed;
 	}
-	const float toReturn = amonut;
-	amonut = 0;
+	const float toReturn = amount;
+	amount = 0;
 	StateManager::changeState(this, StaticState::DEAD);
 	return toReturn;
 }
 
 void ResourceEntity::load(dbload_resource_entities* resource) {
 	Static::load(resource);
-	this->amonut = resource->amount;
+	this->amount = resource->amount;
 }

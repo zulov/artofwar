@@ -52,10 +52,6 @@ void Building::absorbAttack(float attackCoef) {
 	}
 }
 
-ObjectType Building::getType() const {
-	return ObjectType::BUILDING;
-}
-
 Urho3D::String Building::toMultiLineString() {
 	auto l10n = Game::getLocalization();
 
@@ -108,17 +104,9 @@ std::string Building::getValues(int precision) {
 		+ std::to_string(deployIndex);
 }
 
-int Building::getLevel() {
-	return dbLevel->level;
-}
-
-float Building::getValueOf(ValueType type) const {
-	return dbLevel->aiProps->getValueOf(type) * (hp / maxHp);
-}
-
 void Building::fillValues(std::span<float> weights) const {
 	std::copy(dbLevel->aiProps->params, dbLevel->aiProps->params + 3, weights.begin());
-	auto percent = (hp / maxHp);
+	auto percent = hp / maxHp;
 	for (auto& weight : weights) {
 		weight *= percent;
 	}

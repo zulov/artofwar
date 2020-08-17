@@ -38,19 +38,19 @@ float Physical::getAuraSize(const Urho3D::Vector3& boundingBox) const {
 }
 
 void Physical::updateBillboardAura(Urho3D::Vector3& boundingBox) const {
-	if (selected && billboardAura) {
-		const auto boudingSize = getAuraSize(boundingBox);
-		billboardAura->position_ = position;
-		billboardAura->size_ = {boudingSize, boudingSize};
-		billboardAura->enabled_ = true;
+	if (selected && aura) {
+		const auto auraSize = getAuraSize(boundingBox);
+		aura->position_ = position;
+		aura->size_ = {auraSize, auraSize};
+		aura->enabled_ = true;
 	}
 }
 
 void Physical::updateBillboardBar(Urho3D::Vector3& boundingBox) const {
-	if (selected && billboardBar) {
-		billboardBar->position_ = position + Urho3D::Vector3{0, boundingBox.y_ * 1.3f, 0};
-		billboardBar->size_ = {getHealthBarSize(), getHealthBarThick()};
-		billboardBar->enabled_ = true;
+	if (selected && healthBar) {
+		healthBar->position_ = position + Urho3D::Vector3{0, boundingBox.y_ * 1.3f, 0};
+		healthBar->size_ = {getHealthBarSize(), getHealthBarThick()};
+		healthBar->enabled_ = true;
 	}
 }
 
@@ -63,8 +63,8 @@ void Physical::updateBillboards() const {
 }
 
 void Physical::updateHealthBar() const {
-	if (selected && billboardBar) {
-		billboardBar->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick());
+	if (selected && healthBar) {
+		healthBar->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick());
 	}
 }
 
@@ -90,23 +90,6 @@ float Physical::getHealthBarSize() const {
 	return healthBarSize;
 }
 
-bool Physical::bucketHasChanged(int _bucketIndex) const {
-	return indexInGrid != _bucketIndex;
-}
-
-void Physical::setBucket(int _bucketIndex) {
-	indexInGrid = _bucketIndex;
-	indexHasChanged = true;
-}
-
-void Physical::setTeam(unsigned char _team) {
-	team = _team;
-}
-
-void Physical::setPlayer(unsigned char player) {
-	this->player = player;
-}
-
 bool Physical::isSelected() const {
 	assert(getType() != ObjectType::PHYSICAL);
 	return selected;
@@ -118,10 +101,6 @@ void Physical::load(dbload_physical* dbloadPhysical) {
 
 Urho3D::String Physical::toMultiLineString() {
 	return "Physical";
-}
-
-void Physical::indexHasChangedReset() {
-	indexHasChanged = false;
 }
 
 std::string Physical::getColumns() {
@@ -147,43 +126,29 @@ int Physical::belowCloseLimit() {
 	return Urho3D::Max(maxCloseUsers - closeUsers, 0);
 }
 
-ObjectType Physical::getType() const {
-	return ObjectType::PHYSICAL;
-}
-
-void Physical::select(Urho3D::Billboard* billboardBar, Urho3D::Billboard* billboardAura) {
+void Physical::select(Urho3D::Billboard* healthBar, Urho3D::Billboard* aura) {
 	if (getType() == ObjectType::PHYSICAL) { return; }
 	assert(selected==false);
 	selected = true;
-	this->billboardBar = billboardBar;
-	this->billboardAura = billboardAura;
+	this->healthBar = healthBar;
+	this->aura = aura;
 	updateBillboards();
 	updateHealthBar();
+}
+
+void Physical::disableBillboard(Urho3D::Billboard* billboard) {
+	if (billboard) {
+		billboard->enabled_ = false;
+		billboard = nullptr;
+	}
 }
 
 void Physical::unSelect() {
 	if (getType() == ObjectType::PHYSICAL) { return; }
 	selected = false;
 
-	if (billboardBar) {
-		billboardBar->enabled_ = false;
-		billboardBar = nullptr;
-	}
-
-	if (billboardAura) {
-		billboardAura->enabled_ = false;
-		billboardAura = nullptr;
-	}
-}
-
-float Physical::getValueOf(ValueType type) const {
-	return -1;
-}
-
-void Physical::fillValues(std::span<float> weights) const {
-}
-
-void Physical::addValues(std::span<float> vals) const {
+	disableBillboard(healthBar);
+	disableBillboard(aura);
 }
 
 void Physical::loadXml(const Urho3D::String& xmlName) {
