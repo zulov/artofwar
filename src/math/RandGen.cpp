@@ -12,11 +12,6 @@
 RandGen* RandGen::instance = nullptr;
 
 
-RandGen::~RandGen() {
-	clear_array(instance->dataFloat, magic_enum::enum_count<RandFloatType>());
-	clear_array(instance->dataInt, magic_enum::enum_count<RandIntType>());
-}
-
 void RandGen::init() {
 	if (instance == nullptr) {
 		instance = new RandGen();
@@ -26,10 +21,9 @@ void RandGen::init() {
 		std::uniform_real_distribution<double> disFloat(0.0, 1.0);
 		std::fill_n(instance->indexesFloat, magic_enum::enum_count<RandFloatType>(), 0);
 		for (int i = 0; i < magic_enum::enum_count<RandIntType>(); ++i) {
-			instance->dataFloat[i] = new std::vector<float>();
-			instance->dataFloat[i]->reserve(RAND_TAB_SIZE);
+			instance->dataFloat[i].reserve(RAND_TAB_SIZE);
 			for (int j = 0; j < RAND_TAB_SIZE; ++j) {
-				instance->dataFloat[i]->push_back(disFloat(gen));
+				instance->dataFloat[i].push_back(disFloat(gen));
 			}
 		}
 	}
@@ -38,10 +32,9 @@ void RandGen::init() {
 		std::uniform_int_distribution<int> disInt(0, INT32_MAX);
 		std::fill_n(instance->indexesInt, magic_enum::enum_count<RandIntType>(), 0);
 		for (int i = 0; i < magic_enum::enum_count<RandIntType>(); ++i) {
-			instance->dataInt[i] = new std::vector<int>();
-			instance->dataInt[i]->reserve(RAND_TAB_SIZE);
+			instance->dataInt[i].reserve(RAND_TAB_SIZE);
 			for (int j = 0; j < RAND_TAB_SIZE; ++j) {
-				instance->dataInt[i]->push_back(disInt(gen));
+				instance->dataInt[i].push_back(disInt(gen));
 			}
 		}
 	}
@@ -55,12 +48,12 @@ float RandGen::nextRand(RandFloatType type, float max) {
 	auto id = static_cast<char>(type);
 	instance->indexesFloat[id]++;
 	instance->indexesFloat[id] = instance->indexesFloat[id] % RAND_TAB_SIZE;
-	return instance->dataFloat[id]->at(instance->indexesFloat[id]) * max;
+	return instance->dataFloat[id].at(instance->indexesFloat[id]) * max;
 }
 
 int RandGen::nextRand(RandIntType type, int max) {
 	auto id = static_cast<char>(type);
 	instance->indexesInt[id]++;
 	instance->indexesInt[id] = instance->indexesInt[id] % RAND_TAB_SIZE;
-	return instance->dataInt[id]->at(instance->indexesInt[id]) % max;
+	return instance->dataInt[id].at(instance->indexesInt[id]) % max;
 }

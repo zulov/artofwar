@@ -13,11 +13,11 @@ public:
 	static int nextRand(RandIntType type, int max = 255.f);
 private:
 	RandGen() = default;
-	~RandGen();
+	~RandGen() = default;
 	static RandGen* instance;
 	int indexesFloat[magic_enum::enum_count<RandFloatType>()];
 	int indexesInt[magic_enum::enum_count<RandIntType>()];
-	std::vector<float>* dataFloat[magic_enum::enum_count<RandFloatType>()];
-	std::vector<int>* dataInt[magic_enum::enum_count<RandIntType>()];
+	std::vector<float> dataFloat[magic_enum::enum_count<RandFloatType>()];
+	std::vector<int> dataInt[magic_enum::enum_count<RandIntType>()];
 };
 
