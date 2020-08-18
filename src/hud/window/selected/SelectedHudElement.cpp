@@ -15,10 +15,10 @@ SelectedHudElement::SelectedHudElement(Urho3D::UIElement* parent, Urho3D::XMLFil
 	button->SetVar("SelectedHudElement", this);
 	const auto mock = createElement<Urho3D::UIElement>(button, style, "mock");
 
-	bars = createElement<Urho3D::ProgressBar>(mock, style, "MiniProgressBar");
-	bars->SetRange(1);
-	bars->SetValue(0.5);
-	bars->SetVisible(false);
+	bar = createElement<Urho3D::ProgressBar>(mock, style, "MiniProgressBar");
+	bar->SetRange(1);
+	bar->SetValue(0.5);
+	bar->SetVisible(false);
 }
 
 Urho3D::Button* SelectedHudElement::getButton() const {
@@ -58,9 +58,9 @@ void SelectedHudElement::add(std::vector<Physical*>& physicals, int start, int e
 		}
 	}
 
-	bars->SetRange(1);
-	bars->SetValue(sum + (end - start));
-	bars->SetVisible(true);
+	bar->SetRange(1);
+	bar->SetValue(sum + (end - start));
+	bar->SetVisible(true);
 }
 
 std::vector<Physical*>& SelectedHudElement::getSelected() {

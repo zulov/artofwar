@@ -24,8 +24,7 @@ class LoadingPanel;
 struct db_graph_settings;
 struct db_resolution;
 
-class Hud : public Urho3D::Object
-{
+class Hud : public Urho3D::Object {
 public:
 
 URHO3D_OBJECT(Hud, Object)
@@ -84,7 +83,7 @@ private:
 	MainMenuPanel* mainMenuPanel;
 	ScorePanel* scorePanel;
 
-	std::vector<AbstractWindowPanel*> panels;
+	std::array<AbstractWindowPanel*, 10> panels;
 
 	db_graph_settings* graphSettings;
 	db_resolution* resolution;

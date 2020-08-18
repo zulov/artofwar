@@ -2,14 +2,12 @@
 #include "Game.h"
 #include "QueueElement.h"
 #include "database/DatabaseCache.h"
-#include "utils/defines.h"
 #include "QueueActionType.h"
 #include "utils/DeleteUtils.h"
 #include <algorithm>
 
 
 QueueManager::QueueManager(short maxCapacity): maxCapacity(maxCapacity) {
-	queue.reserve(DEFAULT_VECTOR_SIZE / 2);
 }
 
 

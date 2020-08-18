@@ -70,16 +70,18 @@ void Hud::createCursor() const {
 }
 
 void Hud::createMyPanels() {
-	panels.push_back(selectedHudPanel = new SelectedHudPanel(style));
-	panels.push_back(debugPanel = new DebugPanel(style));
-	panels.push_back(topPanel = new TopPanel(style));
-	panels.push_back(menuPanel = new MenuPanel(style));
-	panels.push_back(queuePanel = new QueuePanel(style));
-	panels.push_back(loadingPanel = new LoadingPanel(style));
-	panels.push_back(inGameMenuPanel = new InGameMenuPanel(style));
-	panels.push_back(mainMenuPanel = new MainMenuPanel(style));
-	panels.push_back(miniMapPanel = new MiniMapPanel(style));
-	panels.push_back(scorePanel = new ScorePanel(style));
+	panels = {
+		selectedHudPanel = new SelectedHudPanel(style),
+		debugPanel = new DebugPanel(style),
+		topPanel = new TopPanel(style),
+		menuPanel = new MenuPanel(style),
+		queuePanel = new QueuePanel(style),
+		loadingPanel = new LoadingPanel(style),
+		inGameMenuPanel = new InGameMenuPanel(style),
+		mainMenuPanel = new MainMenuPanel(style),
+		miniMapPanel = new MiniMapPanel(style),
+		scorePanel = new ScorePanel(style)
+	};
 
 	for (auto panel : panels) {
 		panel->createWindow();
@@ -146,7 +148,7 @@ Hud::Hud() : Object(Game::getContext()) {
 
 
 void Hud::clear() {
-	clear_vector(panels);
+	clear_array(panels);
 
 	Game::getUI()->GetRoot()->RemoveAllChildren();
 }

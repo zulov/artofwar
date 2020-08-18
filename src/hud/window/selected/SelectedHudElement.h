@@ -25,7 +25,7 @@ public:
 	std::vector<Physical*>& getSelected();
 private:
 	Urho3D::Button* button;
-	Urho3D::ProgressBar* bars;
+	Urho3D::ProgressBar* bar;
 	Urho3D::Text* text;
 	MySprite* icon;
 

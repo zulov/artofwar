@@ -1,5 +1,6 @@
 #include "RandGen.h"
 
+
 #include <magic_enum.hpp>
 #include <random>
 #include "RandType.h"
@@ -26,6 +27,7 @@ void RandGen::init() {
 		std::fill_n(instance->indexesFloat, magic_enum::enum_count<RandFloatType>(), 0);
 		for (int i = 0; i < magic_enum::enum_count<RandIntType>(); ++i) {
 			instance->dataFloat[i] = new std::vector<float>();
+			instance->dataFloat[i]->reserve(RAND_TAB_SIZE);
 			for (int j = 0; j < RAND_TAB_SIZE; ++j) {
 				instance->dataFloat[i]->push_back(disFloat(gen));
 			}
@@ -37,12 +39,12 @@ void RandGen::init() {
 		std::fill_n(instance->indexesInt, magic_enum::enum_count<RandIntType>(), 0);
 		for (int i = 0; i < magic_enum::enum_count<RandIntType>(); ++i) {
 			instance->dataInt[i] = new std::vector<int>();
+			instance->dataInt[i]->reserve(RAND_TAB_SIZE);
 			for (int j = 0; j < RAND_TAB_SIZE; ++j) {
 				instance->dataInt[i]->push_back(disInt(gen));
 			}
 		}
 	}
-
 }
 
 void RandGen::dispose() {
