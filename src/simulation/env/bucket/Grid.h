@@ -42,7 +42,7 @@ private:
 	const std::vector<Physical*>& getContentAt(short x, short z) const;
 	const std::vector<Physical*>& getNotSafeContentAt(short x, short z) const;
 	bool fieldInCircle(short i, short j, float radius) const;
-	std::vector<short>* getEnvIndexs(float radius) const;
+	std::vector<short>* getEnvIndexs(float radius, std::vector<short>* prev) const;
 	void addAt(int index, Physical* entity) const;
 	void removeAt(int index, Physical* entity) const;
 

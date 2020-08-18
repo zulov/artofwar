@@ -11,18 +11,22 @@ Grid::Grid(short resolution, float size): calculator(resolution, size), closeInd
                                           resolution(resolution), sqResolution(resolution * resolution),
                                           size(size), fieldSize(size / resolution),
                                           invFieldSize(resolution / size) {
-	for (int i = 0; i < RES_SEP_DIST; ++i) {
-		levelsCache[i] = getEnvIndexs((double)MAX_SEP_DIST / RES_SEP_DIST * i);
-	} //TODO memory jesli ten sam vector towskaznik do tego samego
+
+	levelsCache[0] = new std::vector<short>(1);
+	for (int i = 1; i < RES_SEP_DIST; ++i) {
+		levelsCache[i] = getEnvIndexs((float)MAX_SEP_DIST / RES_SEP_DIST * i, levelsCache[i - 1]);
+	}
 
 	buckets = new Bucket[sqResolution];
 	tempSelected = new std::vector<Physical*>();
 }
 
 Grid::~Grid() {
-	for (auto& cache : levelsCache) {
-		delete cache;
-		cache = nullptr;
+	delete levelsCache[0];
+	for (int i = 1; i < RES_SEP_DIST; ++i) {
+		if (levelsCache[i - 1] != levelsCache[i]) {
+			delete levelsCache[i];
+		}
 	}
 
 	delete[] buckets;
@@ -103,7 +107,8 @@ const std::vector<Physical*>& Grid::getContentAt(short x, short z) const {
 	return empty;
 }
 
-std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, const char player) const {
+std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,
+                                             const char player) const {
 	tempSelected->clear();
 
 	const auto posBeginX = calculator.getIndex(std::min(pair.first->x_, pair.second->x_));
@@ -166,10 +171,11 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float r
 bool Grid::fieldInCircle(short i, short j, float radius) const {
 	const short x = i * fieldSize;
 	const short y = j * fieldSize;
-	return x * x + y * y < radius * radius;
+	return x * x + y * y < radius;
 }
 
-std::vector<short>* Grid::getEnvIndexs(float radius) const {
+std::vector<short>* Grid::getEnvIndexs(float radius, std::vector<short>* prev) const {
+	radius *= radius;
 	auto indexes = new std::vector<short>();
 	for (short i = 0; i < RES_SEP_DIST; ++i) {
 		for (short j = 0; j < RES_SEP_DIST; ++j) {
@@ -196,6 +202,10 @@ std::vector<short>* Grid::getEnvIndexs(float radius) const {
 	}
 	indexes->push_back(calculator.getNotSafeIndex(0, 0));
 	std::sort(indexes->begin(), indexes->end());
+	if (std::equal(indexes->begin(), indexes->end(), prev->begin(), prev->end())) {
+		delete indexes;
+		return prev;
+	}
 	indexes->shrink_to_fit();
 	return indexes;
 }
