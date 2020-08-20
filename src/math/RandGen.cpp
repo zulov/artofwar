@@ -1,16 +1,13 @@
 #include "RandGen.h"
 
-
 #include <magic_enum.hpp>
 #include <random>
 #include "RandType.h"
-#include "utils/DeleteUtils.h"
 
 
-#define RAND_TAB_SIZE 1000
+constexpr short RAND_TAB_SIZE = 1000;
 
 RandGen* RandGen::instance = nullptr;
-
 
 void RandGen::init() {
 	if (instance == nullptr) {

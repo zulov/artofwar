@@ -7,8 +7,8 @@
 #include "state/UnitState.h"
 
 
-#define BUCKET_SET_NUMBER 2
-#define USE_SOCKETS_NUMBER 8
+constexpr char BUCKET_SET_NUMBER = 2;
+constexpr char USE_SOCKETS_NUMBER = 8;
 
 enum class UnitAction : char;
 enum class DebugUnitType : char;

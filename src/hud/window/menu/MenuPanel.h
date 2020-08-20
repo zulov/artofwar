@@ -1,16 +1,14 @@
 #pragma once
-#include "../AbstractWindowPanel.h"
-#include "LeftMenuModes.h"
+#include <vector>
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/CheckBox.h>
-#include <vector>
-
+#include "LeftMenuModes.h"
+#include "../AbstractWindowPanel.h"
 #include "database/db_strcut.h"
 
-
-#define LEFT_MENU_ROWS_NUMBER 4
-#define LEFT_MENU_CHECKS_NUMBER 3
-#define LEFT_MENU_BUTTON_PER_ROW 4
+constexpr char LEFT_MENU_ROWS_NUMBER = 4;
+constexpr char LEFT_MENU_CHECKS_NUMBER = 3;
+constexpr char LEFT_MENU_BUTTON_PER_ROW = 4;
 
 enum class ActionType : char;
 enum class LeftMenuMode : char;

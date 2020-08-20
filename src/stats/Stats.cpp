@@ -18,8 +18,8 @@
 #include "simulation/env/Environment.h"
 #include "utils/StringUtils.h"
 
-#define DEFAULT_NORMALIZE_VALUE 10.f
-#define INFLUENCE_DATA_SIZE 9 //TODO hard code
+constexpr float DEFAULT_NORMALIZE_VALUE = 10.f;
+constexpr char INFLUENCE_DATA_SIZE = 9; //TODO hard code
 
 Stats::Stats() {
 	wBasic[cast(StatsInputType::RESULT)] = 1000;
@@ -104,7 +104,7 @@ void Stats::add(ResourceActionCommand* command) {
 
 	const std::string input = getInputData(player);
 
-	joinAndPush(mainOrder, player, input, getOutput(command),command->resources.size());
+	joinAndPush(mainOrder, player, input, getOutput(command), command->resources.size());
 }
 
 void Stats::add(BuildingActionCommand* command) {

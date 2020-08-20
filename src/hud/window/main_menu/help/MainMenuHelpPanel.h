@@ -1,8 +1,8 @@
 #pragma once
-#include "hud/window/main_menu/MainMenuDetailsPanel.h"
 #include <Urho3D/UI/ListView.h>
+#include "hud/window/main_menu/MainMenuDetailsPanel.h"
 
-#define HELP_ITEMS 5
+constexpr char HELP_ITEMS = 5;
 
 class MainMenuHelpPanel : public MainMenuDetailsPanel {
 public:

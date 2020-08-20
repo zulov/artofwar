@@ -2,7 +2,7 @@
 #include <Urho3D/UI/Button.h>
 #include "hud/window/AbstractWindowPanel.h"
 
-#define IN_GAME_MENU_BUTTON_NUMBER 5
+constexpr char IN_GAME_MENU_BUTTON_NUMBER = 5;
 
 class AbstractMiddlePanel;
 

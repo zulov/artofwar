@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#define TEAMS_NUMBER 3
+constexpr char TEAMS_NUMBER = 3;
 
 class SimulationInfo;
 class SceneSaver;
@@ -12,8 +12,7 @@ struct NewGamePlayer;
 struct dbload_player;
 struct dbload_resource;
 
-class PlayersManager
-{
+class PlayersManager {
 public:
 	PlayersManager();
 	~PlayersManager();
@@ -25,7 +24,7 @@ public:
 	std::vector<Player*>& getTeam(short i);
 	void changeActive(short i);
 	void save(SceneSaver& saver);
-	void update(SimulationInfo * simInfo);
+	void update(SimulationInfo* simInfo);
 	char getActivePlayerID();
 	static std::string getColumns();
 	std::vector<Player*>& getAllPlayers();

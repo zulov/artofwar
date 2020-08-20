@@ -1,11 +1,11 @@
 #pragma once
 
-#define UNITS_NUMBER 100
+constexpr short UNITS_NUMBER = 100;
 
-#define MAX_PLAYERS 2
+constexpr char MAX_PLAYERS = 2;
 
-#define MAX_THREADS 4
+constexpr char MAX_THREADS = 4;
 
-#define DEFAULT_VECTOR_SIZE 10
+constexpr char DEFAULT_VECTOR_SIZE = 10;
 
-#define DEBUG_LINES_ENABLED true
+constexpr bool DEBUG_LINES_ENABLED = true;

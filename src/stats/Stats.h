@@ -6,8 +6,8 @@
 #include "StatsEnums.h"
 #include "utils/defines.h"
 
-#define SAVE_BATCH_SIZE 10
-#define SAVE_BATCH_SIZE_MINI 4
+constexpr char SAVE_BATCH_SIZE = 10;
+constexpr char SAVE_BATCH_SIZE_MINI = 4;
 
 struct db_ai_property;
 struct ActionParameter;

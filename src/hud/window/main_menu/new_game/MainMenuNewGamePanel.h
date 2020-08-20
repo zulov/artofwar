@@ -7,7 +7,7 @@
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 
 
-#define NEW_GAME_ROWS_NUMBER 5
+constexpr char NEW_GAME_ROWS_NUMBER = 5;
 
 class MainMenuNewGamePanel : public MainMenuDetailsPanel {
 public:

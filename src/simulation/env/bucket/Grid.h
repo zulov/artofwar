@@ -5,8 +5,8 @@
 #include "simulation/env/GridCalculator.h"
 #include "utils/defines.h"
 
-#define MAX_SEP_DIST 24
-#define RES_SEP_DIST 120
+constexpr char MAX_SEP_DIST = 24;
+constexpr char RES_SEP_DIST = 120;
 
 class Unit;
 class Bucket;

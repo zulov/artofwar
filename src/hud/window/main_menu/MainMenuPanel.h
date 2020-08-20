@@ -1,9 +1,8 @@
 #pragma once
-#include "hud/window/AbstractWindowPanel.h"
 #include <Urho3D/UI/Button.h>
+#include "hud/window/AbstractWindowPanel.h"
 
-
-#define MAIN_MENU_BUTTON_NUMBER 5
+constexpr char MAIN_MENU_BUTTON_NUMBER = 5;
 
 class MainMenuDetailsPanel;
 

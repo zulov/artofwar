@@ -1,9 +1,10 @@
 #pragma once
-#define LOG_ACTIONS_MAKER true
-#include <iostream>
 
+#include <iostream>
 #include "database/db_strcut.h"
 #include "stats/StatsEnums.h"
+
+constexpr bool LOG_ACTIONS_MAKER = true;
 
 using namespace magic_enum::ostream_operators;
 

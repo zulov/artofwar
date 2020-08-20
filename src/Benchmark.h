@@ -2,11 +2,11 @@
 
 #include <fstream>
 
-#define BENCH_LENGTH 100
-#define PERCENT 10
-#define PERCENT2 90
+constexpr int BENCH_LENGTH = 100;
+constexpr int PERCENT = 10;
+constexpr int PERCENT2 = 90;
 
-#define BENCH_SAVE false
+constexpr bool BENCH_SAVE = false;
 
 class Benchmark {
 public:

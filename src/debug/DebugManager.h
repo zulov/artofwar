@@ -1,11 +1,11 @@
 #pragma once
-#include <Urho3D/Input/Input.h>
-#include "simulation/Simulation.h"
-#include "objects/unit/SimColorMode.h"
-#include "debug/EnvironmentDebugMode.h"
 #include <magic_enum.hpp>
+#include <Urho3D/Input/Input.h>
+#include "debug/EnvironmentDebugMode.h"
+#include "objects/unit/SimColorMode.h"
+#include "simulation/Simulation.h"
 
-#define MAX_ENV_INDEX 32;
+constexpr char MAX_ENV_INDEX = 32;
 
 class DebugManager {
 public:

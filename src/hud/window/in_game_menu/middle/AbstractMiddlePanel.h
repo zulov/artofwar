@@ -1,13 +1,11 @@
 #pragma once
-#include "hud/window/AbstractWindowPanel.h"
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/Text.h>
+#include "hud/window/AbstractWindowPanel.h"
 
+constexpr char MIDDLE_LIST_ROW_NUMBER = 3;
 
-#define MIDDLE_LIST_ROW_NUMBER 3
-
-class AbstractMiddlePanel : public AbstractWindowPanel
-{
+class AbstractMiddlePanel : public AbstractWindowPanel {
 public:
 	AbstractMiddlePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	virtual ~AbstractMiddlePanel();
@@ -16,7 +14,7 @@ public:
 	void HandleClose(Urho3D::StringHash, Urho3D::VariantMap& eventData);
 	virtual Urho3D::Button* getMainButton();
 protected:
-	Urho3D::UIElement * body;
+	Urho3D::UIElement* body;
 
 private:
 	Urho3D::Button* buttonClose;

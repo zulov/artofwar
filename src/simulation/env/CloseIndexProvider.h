@@ -1,7 +1,8 @@
 #pragma once
 #include <vector>
-#define CLOSE_SIZE 9
-#define CLOSE_SECOND_SIZE 25
+
+constexpr char CLOSE_SIZE = 9;
+constexpr char CLOSE_SECOND_SIZE = 25;
 
 class CloseIndexProvider {
 public:

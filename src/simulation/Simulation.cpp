@@ -25,7 +25,7 @@
 #include "simulation/formation/FormationManager.h"
 #include "stats/Stats.h"
 
-#define BENCHMARK_MODE true
+constexpr bool BENCHMARK_MODE = true;
 
 Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 	simObjectManager = new SimulationObjectManager();

@@ -3,7 +3,7 @@
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/UI/Sprite.h>
 
-#define MINI_MAP_BUTTON_NUMBER 5
+constexpr char MINI_MAP_BUTTON_NUMBER = 5;
 
 
 class MiniMapPanel : public AbstractWindowPanel {

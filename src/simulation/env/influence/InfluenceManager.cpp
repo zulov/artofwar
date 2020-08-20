@@ -15,27 +15,27 @@
 #include "simulation/env/ContentInfo.h"
 #include "simulation/env/EnvConsts.h"
 
-#define INF_GRID_SIZE 128
-#define MAX_DEBUG_PARTS_INFLUENCE 32
-#define INF_LEVEL 4
+constexpr short INF_GRID_SIZE = 128;
+constexpr char MAX_DEBUG_PARTS_INFLUENCE = 32;
+constexpr char INF_LEVEL = 4;
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
 		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(INF_GRID_SIZE, BUCKET_GRID_SIZE, 40));
 		buildingsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 2));
+			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 2));
 		unitsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
+			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40));
 
 		basicValues.emplace_back(
-			new InfluenceMapCombine(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40,
+			new InfluenceMapCombine(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40,
 			                        magic_enum::enum_count<ValueType>()));
 	}
 
 	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
 		resourceInfluence.
-			emplace_back(new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, INF_LEVEL, 40));
+			emplace_back(new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40));
 	}
 	for (char player = 0; player < numberOfPlayers; ++player) {
 		mapsForAiPerPlayer.emplace_back(std::vector<InfluenceMapFloat*>{
@@ -139,13 +139,13 @@ void InfluenceManager::updateMain(std::vector<Unit*>* units, std::vector<Buildin
 
 	float weights[MAX_PLAYERS] = {-1}; //TODO hardcode
 	for (auto unit : (*units)) {
-		std::fill_n(weights,MAX_PLAYERS, -1.f);
+		std::fill_n(weights, MAX_PLAYERS, -1.f);
 		weights[unit->getPlayer()] = 1.f;
 		main->update(unit, std::span{weights, MAX_PLAYERS});
 	}
 
 	for (auto building : (*buildings)) {
-		std::fill_n(weights,MAX_PLAYERS, -1.f);
+		std::fill_n(weights, MAX_PLAYERS, -1.f);
 		weights[building->getPlayer()] = 1.f;
 		main->update(building, std::span{weights, MAX_PLAYERS});
 	}

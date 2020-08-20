@@ -6,7 +6,7 @@
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 
 
-#define SETTINGS_ROWS_NUMBER 9
+constexpr char SETTINGS_ROWS_NUMBER = 9;
 
 struct SettingsForm;
 

@@ -1,11 +1,10 @@
 #pragma once
 
-#define QUEUE_BUCKETS_SIZE 10
-
 #include "fiboheap.h"
 
-class BucketQueue
-{
+constexpr char QUEUE_BUCKETS_SIZE = 10;
+
+class BucketQueue {
 public:
 	BucketQueue();
 	~BucketQueue();

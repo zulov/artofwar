@@ -4,7 +4,7 @@
 #include <Urho3D/UI/ProgressBar.h>
 #include <Urho3D/UI/Text.h>
 
-#define MAX_SELECTED_IN_BUTTON 5
+constexpr char MAX_SELECTED_IN_BUTTON = 5;
 
 class MySprite;
 class Physical;
