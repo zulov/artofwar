@@ -10,7 +10,7 @@
 	</element>
 	
 	<element type="LargeProgressBar" style="ProgressBar">
-        <attribute name="Texture" value="Texture2D;Textures/progress-bar.png" />
+        <attribute name="Texture" value="Texture2D;Textures/hud/progress-bar.png" />
 		<attribute name="Blend Mode" value="alpha" />
 
 		<attribute name="Min Size" value="{bigX/2} {iconX}" />
@@ -23,7 +23,7 @@
 		<attribute name="Vert Alignment" value="Center" />
 				
         <element type="BorderImage" internal="true">
-			<attribute name="Texture" value="Texture2D;Textures/bar.png" />
+			<attribute name="Texture" value="Texture2D;Textures/hud/bar.png" />
 			<attribute name="Blend Mode" value="alpha" />
 			<attribute name="Image Rect" value="0 0 8 8" />
 			<attribute name="Border" value="2 2 2 2" />

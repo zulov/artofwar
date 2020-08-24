@@ -30,7 +30,7 @@ class Game {
 public:
 	static void init();
 	static void dispose();
-	~Game();
+	~Game() = default;
 	static void disposeActionCenter();
 	static Game* setCache(Urho3D::ResourceCache* _cache);
 	static Game* setContext(Urho3D::Context* _context);

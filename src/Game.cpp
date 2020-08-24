@@ -15,8 +15,6 @@ void Game::dispose() {
 	delete instance;
 }
 
-Game::~Game() = default;
-
 void Game::disposeActionCenter() {
 	delete instance->actionCenter;
 	instance->actionCenter = nullptr;
