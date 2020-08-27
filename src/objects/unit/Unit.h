@@ -51,7 +51,7 @@ public:
 	void forceGo(float boostCoef, float aimCoef, Urho3D::Vector2& force) const;
 	Urho3D::Vector2 getDestination(float boostCoef, float aimCoef);
 
-	void absorbAttack(float attackCoef) override;
+	float absorbAttack(float attackCoef) override;
 
 	void toCharge(std::vector<Physical*>* enemies);
 

@@ -79,6 +79,8 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <StringPooling>true</StringPooling>
+      <OpenMPSupport>
+      </OpenMPSupport>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_SECURE_SCL=0;URHO3D_MINIDUMPS;URHO3D_WIN32_CONSOLE;URHO3D_FILEWATCHER;URHO3D_PROFILING;URHO3D_LOGGING;URHO3D_THREADING;URHO3D_ANGELSCRIPT;URHO3D_LUA;URHO3D_LUA_RAW_SCRIPT_LOADER;URHO3D_NAVIGATION;URHO3D_NETWORK;URHO3D_PHYSICS;URHO3D_URHO2D;URHO3D_DATABASE;URHO3D_CXX11;_CRT_SECURE_NO_WARNINGS;HAVE_STDINT_H;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -185,6 +187,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\simulation\env\influence\map\InfluenceMapHistory.cpp" />
     <ClCompile Include="src\control\BillboardSetProvider.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapCombine.cpp" />
     <ClCompile Include="src\player\ai\OrderMaker.cpp" />
@@ -296,6 +299,7 @@
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\simulation\env\influence\map\InfluenceMapHistory.h" />
     <ClInclude Include="src\control\BillboardSetProvider.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapCombine.h" />
     <ClInclude Include="src\player\ai\AiPhase.h" />

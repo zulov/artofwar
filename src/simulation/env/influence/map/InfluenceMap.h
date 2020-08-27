@@ -18,8 +18,10 @@ public:
 	Urho3D::Vector2 getCenter(int index) const;
 	float getFieldSize() const;
 	virtual float getValueAsPercent(const Urho3D::Vector2& pos) const =0;
+	virtual float getValueAsPercent(const int index) const =0;
+	virtual void print(Urho3D::String name);
 protected:
-	void print() const;
+
 	unsigned short resolution;
 	float size;
 	float fieldSize;
@@ -30,6 +32,7 @@ protected:
 	float min;
 	float max;
 	GridCalculator calculator;
+	int counter = 0;
 };
 
 inline auto finishCalc = [](InfluenceMap* u) {

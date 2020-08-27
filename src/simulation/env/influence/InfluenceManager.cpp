@@ -31,6 +31,11 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 		basicValues.emplace_back(
 			new InfluenceMapCombine(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40,
 			                        magic_enum::enum_count<ValueType>()));
+		gatherSpeed.emplace_back(
+			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.05f, 0.5f, 40));
+
+		attackSpeed.emplace_back(
+			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.05f, 0.5f, 40));
 	}
 
 	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
@@ -90,28 +95,21 @@ void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 	calcStats(resourceInfluence);
 }
 
-void InfluenceManager::resetMaps(const std::vector<InfluenceMapFloat*>& maps) const {
+template <typename T>
+void InfluenceManager::resetMaps(const std::vector<T*>& maps) const {
 	std::for_each(maps.begin(), maps.end(), resetMap);
 }
 
-void InfluenceManager::resetMaps(const std::vector<InfluenceMapInt*>& maps) const {
-	std::for_each(maps.begin(), maps.end(), resetMap);
-}
-
-void InfluenceManager::resetMaps(const std::vector<InfluenceMapCombine*>& maps) const {
-	std::for_each(maps.begin(), maps.end(), resetMap);
-}
-
-void InfluenceManager::calcStats(const std::vector<InfluenceMapFloat*>& maps) const {
+template <typename T>
+void InfluenceManager::calcStats(const std::vector<T*>& maps) const {
 	std::for_each(maps.begin(), maps.end(), finishCalc);
 }
 
-void InfluenceManager::calcStats(const std::vector<InfluenceMapInt*>& maps) const {
-	std::for_each(maps.begin(), maps.end(), finishCalc);
-}
-
-void InfluenceManager::calcStats(const std::vector<InfluenceMapCombine*>& maps) const {
-	std::for_each(maps.begin(), maps.end(), finishCalc);
+template <typename T>
+void InfluenceManager::drawAll(const std::vector<T*>& maps, Urho3D::String name) const {
+	for (int i = 0; i < maps.size(); ++i) {
+		maps[i]->print(name + Urho3D::String(i));
+	}
 }
 
 void InfluenceManager::basicValuesFunc(float* weights, Physical* thing) const {
@@ -151,6 +149,11 @@ void InfluenceManager::updateMain(std::vector<Unit*>* units, std::vector<Buildin
 	}
 
 	main->finishCalc();
+}
+
+void InfluenceManager::updateWithHistory() const {
+	resetMaps(gatherSpeed);
+	resetMaps(attackSpeed);
 }
 
 void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const {
@@ -200,6 +203,20 @@ void InfluenceManager::draw(InfluenceType type, char index) {
 	if (currentDebugBatch >= MAX_DEBUG_PARTS_INFLUENCE) {
 		currentDebugBatch = 0;
 	}
+}
+
+void InfluenceManager::drawAll() {
+
+	drawAll(unitsNumberPerPlayer, "unitsInt");
+	drawAll(buildingsInfluencePerPlayer, "buildingsInt");
+	drawAll(unitsInfluencePerPlayer, "units");
+	drawAll(resourceInfluence, "resource");
+
+	drawAll(gatherSpeed, "gather");
+	drawAll(attackSpeed, "attack");
+
+	drawAll(basicValues, "basic");
+	main->print("main");
 }
 
 void InfluenceManager::switchDebug() {
@@ -309,6 +326,14 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> r
 	}
 	auto inx = sort_indexes(intersection, arraySize);
 	return centersFromIndexes(maps[0], intersection, inx, 0.02f * maps.size());
+}
+
+void InfluenceManager::addCollect(Unit* unit, float value) {
+	gatherSpeed[unit->getPlayer()]->update(unit, value);
+}
+
+void InfluenceManager::addAttack(Unit* unit, float value) {
+	attackSpeed[unit->getPlayer()]->update(unit, value);
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFloat* map, float* values,

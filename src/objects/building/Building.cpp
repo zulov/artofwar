@@ -40,14 +40,16 @@ void Building::populate() {
 	queue = new QueueManager(dbLevel->queueMaxCapacity);
 }
 
-void Building::absorbAttack(float attackCoef) {
-	hp -= attackCoef * (1 - dbLevel->defense);
+float Building::absorbAttack(float attackCoef) {
+	auto val = attackCoef * (1 - dbLevel->defense);
+	hp -= val;
 
 	updateHealthBar();
 
 	if (hp < 0) {
 		StateManager::changeState(this, StaticState::DEAD);
 	}
+	return val;
 }
 
 Urho3D::String Building::toMultiLineString() {

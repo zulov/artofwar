@@ -13,12 +13,15 @@ public:
 	float getValueAt(int index) const override;
 	float getValueAt(const Urho3D::Vector2& pos) const;
 	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
+	float getValueAsPercent(int index) const override;
 	void finishCalc() override;
 	std::vector<int> getIndexesWithByValue(float percent, float tolerance) const;
 	void getIndexesWithByValue(float percent, float* intersection) const;
 	void add(int* indexes, float* vals, int k, float val);
-private:
+protected:
 	float* values;
 	float coef;
+private:
+
 	unsigned char level;
 };

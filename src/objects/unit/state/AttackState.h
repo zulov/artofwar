@@ -1,13 +1,14 @@
 #pragma once
+#include "Game.h"
 #include "database/db_strcut.h"
 #include "State.h"
 #include "StateManager.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
+#include "simulation/env/Environment.h"
 
 
-class AttackState : public State
-{
+class AttackState : public State {
 public:
 	AttackState(): State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
@@ -19,7 +20,7 @@ public:
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		return parameter.isFirstThingAlive()
-			&& unit->getMainBucketIndex() == parameter.index 
+			&& unit->getMainBucketIndex() == parameter.index
 			&& parameter.thingsToInteract[0]->isFirstThingInSameSocket()
 			&& !parameter.thingsToInteract[0]->isSlotOccupied(parameter.index);
 	}
@@ -58,7 +59,8 @@ public:
 		State::execute(unit, timeStep);
 		if (isInRange(unit)) {
 			if (fmod(unit->currentFrameState, 1 / unit->dbLevel->attackSpeed) < 1) {
-				unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->attack);
+				auto val = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->attack);
+				Game::getEnvironment()->addAttack(unit, val);
 			}
 			++unit->currentFrameState;
 		} else {

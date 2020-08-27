@@ -33,8 +33,9 @@ public:
 	std::vector<Physical*>* getResources(Physical* physical, float radius);
 	std::vector<Physical*>* getResources(Urho3D::Vector3& center, float radius, int id);
 	void updateInfluence1(std::vector<Unit*>* units, std::vector<Building*>* buildings,
-	                     std::vector<ResourceEntity*>* resources) const;
+	                      std::vector<ResourceEntity*>* resources) const;
 	void updateInfluence2(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
+	void updateInfluence3() const;
 
 	void update(std::vector<Unit*>* units) const;
 	void update(std::vector<Building*>* buildings);
@@ -95,6 +96,9 @@ public:
 
 	std::optional<Urho3D::Vector2> getPosToCreate(db_building* building, char player, const std::span<float> result);
 	std::vector<Urho3D::Vector2> getAreas(char player, const std::span<float>, int min);
+	void addCollect(Unit* unit, float value);
+	void addAttack(Unit* unit, float value);
+
 
 private:
 	MainGrid mainGrid;

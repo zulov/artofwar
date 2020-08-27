@@ -121,6 +121,10 @@ void Environment::updateInfluence2(std::vector<Unit*>* units,
 	influenceManager.updateMain(units, buildings);
 }
 
+void Environment::updateInfluence3() const {
+	influenceManager.updateWithHistory();
+}
+
 void Environment::update(std::vector<Unit*>* units) const {
 	//TODO to mozna rodzielic na dodawanei u usywanie
 	for (auto unit : *units) {
@@ -342,6 +346,14 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 
 std::vector<Urho3D::Vector2> Environment::getAreas(char player, const std::span<float> result, int min) {
 	return influenceManager.getAreasIterative(result, player, 0.1, min);
+}
+
+void Environment::addCollect(Unit* unit, float value) {
+	influenceManager.addCollect(unit, value);
+}
+
+void Environment::addAttack(Unit* unit, float value) {
+	influenceManager.addAttack(unit, value);
 }
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) const {

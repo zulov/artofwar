@@ -18,6 +18,7 @@ public:
 	void finishCalc() override;
 	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
 	InfluenceMapFloat* get(char index);
+	void print(Urho3D::String name) override;
 private:
 	std::vector<InfluenceMapFloat*> values;
 	float coef;

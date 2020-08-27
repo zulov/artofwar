@@ -39,7 +39,8 @@ public:
 	virtual bool isSlotOccupied(int indexToInteract) { return false; }
 	virtual bool isFirstThingInSameSocket() const { return true; }
 
-	virtual void setOccupiedSlot(int indexToInteract, bool value) { }
+	virtual void setOccupiedSlot(int indexToInteract, bool value) {
+	}
 
 	void indexHasChangedReset() { indexHasChanged = false; }
 
@@ -66,7 +67,8 @@ public:
 
 	int getMainBucketIndex() const { return indexInGrid; }
 
-	virtual void populate() { }
+	virtual void populate() {
+	}
 
 	virtual int getMainCell() const;
 
@@ -77,7 +79,7 @@ public:
 
 	virtual float getMaxHpBarSize() const { return 0; }
 
-	virtual void absorbAttack(float attackCoef) { }
+	virtual float absorbAttack(float attackCoef) { return 0.0f; }
 
 	void select(Urho3D::Billboard* healthBar, Urho3D::Billboard* aura);
 	void disableBillboard(Urho3D::Billboard* billboard);
@@ -86,10 +88,15 @@ public:
 
 	virtual int getLevel();
 
-	virtual void clean() { }
+	virtual void clean() {
+	}
 
-	virtual void fillValues(std::span<float> weights) const {}
-	virtual void addValues(std::span<float> vals) const {}
+	virtual void fillValues(std::span<float> weights) const {
+	}
+
+	virtual void addValues(std::span<float> vals) const {
+	}
+
 protected:
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);

@@ -2,9 +2,9 @@
 
 #include <span>
 #include <vector>
-
 #include "map/InfluenceMapCombine.h"
 #include "map/InfluenceMapFloat.h"
+#include "map/InfluenceMapHistory.h"
 #include "map/InfluenceMapInt.h"
 #include "objects/Physical.h"
 #include "player/ai/ActionMaker.h"
@@ -26,11 +26,13 @@ public:
 
 	void updateBasic(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
 	void updateMain(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
-	
+	void updateWithHistory() const;
+
 	void drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const;
 	void drawMap(char index, const std::vector<InfluenceMapCombine*>& vector, ValueType type) const;
-	
+
 	void draw(InfluenceType type, char index);
+	void drawAll();
 	void switchDebug();
 
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
@@ -44,20 +46,22 @@ public:
 
 	float getFieldSize();
 	std::vector<Urho3D::Vector2> getAreas(const std::span<float> result, char player);
+	void addCollect(Unit* unit, float value);
+	void addAttack(Unit* unit, float value);
 
 private:
 	std::vector<Urho3D::Vector2> centersFromIndexes(InfluenceMapFloat* map, float* values,
 	                                                const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(InfluenceMapFloat* map, const std::vector<int>& intersection);
 
-	void resetMaps(const std::vector<InfluenceMapFloat*>& maps) const;
-	void resetMaps(const std::vector<InfluenceMapInt*>& maps) const;
-	void resetMaps(const std::vector<InfluenceMapCombine*>& maps) const;
-	void calcStats(const std::vector<InfluenceMapFloat*>& maps) const;
-	void calcStats(const std::vector<InfluenceMapInt*>& maps) const;
-	void calcStats(const std::vector<InfluenceMapCombine*>& maps) const;
+	template <typename T>
+	void resetMaps(const std::vector<T*>& maps) const;
+	template <typename T>
+	void calcStats(const std::vector<T*>& maps) const;
+	template <typename T>
+	void drawAll(const std::vector<T*>& maps, Urho3D::String name) const;
 
-	void basicValuesFunc(float *weights, Physical* thing) const;
+	void basicValuesFunc(float* weights, Physical* thing) const;
 
 	std::vector<std::vector<InfluenceMapFloat*>> mapsForAiPerPlayer;
 
@@ -66,7 +70,11 @@ private:
 	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> resourceInfluence;
 
+	std::vector<InfluenceMapHistory*> gatherSpeed;
+	std::vector<InfluenceMapHistory*> attackSpeed;
+
 	std::vector<InfluenceMapCombine*> basicValues;
+
 	InfluenceMapCombine* main;
 
 	InfluenceType debugType = InfluenceType::UNITS_INFLUENCE_PER_PLAYER;
@@ -74,4 +82,3 @@ private:
 	std::vector<float> dataFromPos;
 	short currentDebugBatch = 0;
 };
-

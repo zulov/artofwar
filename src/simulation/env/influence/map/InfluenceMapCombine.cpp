@@ -86,3 +86,9 @@ InfluenceMapFloat* InfluenceMapCombine::get(char index) {
 	assert(index<numberOfMaps);
 	return values[index];
 }
+
+void InfluenceMapCombine::print(Urho3D::String name) {
+	for (int i = 0; i < numberOfMaps; ++i) {
+		values[i]->print(name + Urho3D::String(i));
+	}
+}

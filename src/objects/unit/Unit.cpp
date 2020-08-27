@@ -105,14 +105,16 @@ Urho3D::Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 	return force;
 }
 
-void Unit::absorbAttack(float attackCoef) {
-	hp -= attackCoef * (1 - dbLevel->defense);
+float Unit::absorbAttack(float attackCoef) {
+	auto val = attackCoef * (1 - dbLevel->defense);
+	hp -= val;
 
 	updateHealthBar();
 
 	if (hp < 0) {
 		StateManager::changeState(this, UnitState::DEAD);
 	}
+	return val;
 }
 
 void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, int indexToInteract,

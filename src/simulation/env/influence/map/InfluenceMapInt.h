@@ -11,6 +11,7 @@ public:
 	void reset() override;
 	char getValueAt(const Urho3D::Vector2& pos) const;
 	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
+	float getValueAsPercent(const int index) const override;
 	float getValueAt(int index) const override;
 	void finishCalc() override;
 private:

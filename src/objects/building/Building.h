@@ -31,7 +31,7 @@ public:
 	QueueManager* getQueue() const { return queue; }
 
 	Urho3D::String toMultiLineString() override;
-	void absorbAttack(float attackCoef) override;
+	float absorbAttack(float attackCoef) override;
 	ObjectType getType() const override { return ObjectType::BUILDING; }
 	void action(BuildingActionType type, short id) const;
 	std::string getValues(int precision) override;
