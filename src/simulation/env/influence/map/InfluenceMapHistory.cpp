@@ -9,8 +9,8 @@ InfluenceMapHistory::InfluenceMapHistory(unsigned short resolution, float size, 
 
 void InfluenceMapHistory::reset() {
 	for (int i = 0; i < arraySize; ++i) {
-		if (values[i] <minimalThreshold) {
-			values[i] = minimalThreshold;
+		if (values[i] < minimalThreshold) {
+			values[i] = 0.f;
 		} else {
 			values[i] *= vanishCoef;
 		}

@@ -32,10 +32,10 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			new InfluenceMapCombine(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40,
 			                        magic_enum::enum_count<ValueType>()));
 		gatherSpeed.emplace_back(
-			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.05f, 0.5f, 40));
+			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
 
 		attackSpeed.emplace_back(
-			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.05f, 0.5f, 40));
+			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
 	}
 
 	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
@@ -156,6 +156,9 @@ void InfluenceManager::updateMain(std::vector<Unit*>* units, std::vector<Buildin
 }
 
 void InfluenceManager::updateWithHistory() const {
+	calcStats(gatherSpeed);
+	calcStats(attackSpeed);
+	
 	resetMaps(gatherSpeed);
 	resetMaps(attackSpeed);
 }

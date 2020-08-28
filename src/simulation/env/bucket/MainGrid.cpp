@@ -403,13 +403,6 @@ float MainGrid::cost(const int current, const int next) const {
 	return (calculator.getCenter(current) - calculator.getCenter(next)).Length();
 }
 
-// std::vector<int>* MainGrid::findPath(Urho3D::IntVector2& startV, Urho3D::IntVector2& goalV) {
-// 	int start = getIndex(startV.x_, startV.y_);
-// 	int goal = getIndex(goalV.x_, goalV.y_);
-// 	float min = cost(start, goal);
-// 	return pathConstructor->findPath(start, goal, min, min * 2);
-// }
-
 std::vector<int>* MainGrid::findPath(int startIdx, const Urho3D::Vector2& aim) const {
 	return pathConstructor->findPath(startIdx, aim);
 }
@@ -419,12 +412,11 @@ std::vector<int>* MainGrid::findPath(const Urho3D::Vector3& from, const Urho3D::
 }
 
 void MainGrid::drawComplex(Urho3D::Image* image, Urho3D::String prefix) const {
-	const auto data = (uint32_t*)image->GetData();
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = calculator.getIndex(x, y);
 
-			image->SetPixel(x,resolution - y - 1, 
+			image->SetPixel(x, resolution - y - 1,
 			                std::get<1>(Game::getColorPaletteRepo()->getInfoForGrid(complexData[index].getType())));
 		}
 	}
