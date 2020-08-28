@@ -25,12 +25,12 @@ void InfluenceMap::drawCell(int index, short batch) const {
 	const auto center = Game::getEnvironment()->getPosWithHeightAt(center2.x_, center2.y_);
 	const auto color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);
 
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUANCE,
+	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE,
 	                            center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),
 	                            center + Urho3D::Vector3(fieldSize / 3, 1, fieldSize / 3),
 	                            center + Urho3D::Vector3(fieldSize / 3, 1, -fieldSize / 3),
 	                            color, batch);
-	DebugLineRepo::drawTriangle(DebugLineType::INFLUANCE,
+	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE,
 	                            center + Urho3D::Vector3(fieldSize / 3, 1, -fieldSize / 3),
 	                            center + Urho3D::Vector3(-fieldSize / 3, 1, -fieldSize / 3),
 	                            center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),
@@ -48,22 +48,18 @@ float InfluenceMap::getFieldSize() const {
 void InfluenceMap::print(Urho3D::String name) {
 	auto image = new Urho3D::Image(Game::getContext());
 	image->SetSize(resolution, resolution, 4);
-	const auto data = (uint32_t*)image->GetData();
 
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = calculator.getNotSafeIndex(x, y);
-			const int idR = calculator.getIndex(resolution - y - 1, x);
-			auto percent = getValueAsPercent(index);
+
 			const auto color = Game::getColorPaletteRepo()->getColor(getValueAsPercent(index), 1);
-			image->SetPixel(x, y, color);
-			//*(data + idR) = color;
+			image->SetPixel(resolution - y - 1, x, color);
+
 		}
 	}
 
-	Urho3D::String prefix = Urho3D::String(counter) + "_";
-
-	image->SaveBMP("result/images/influance/" + prefix + name + ".bmp");
+	image->SavePNG("result/images/infl/" + name + "_" + Urho3D::String(counter) + ".png");
 	++counter;
 
 	delete image;

@@ -1,8 +1,9 @@
 #pragma once
-#include "ColorPallet.h"
-#include "objects/unit/state/UnitState.h"
-#include <Urho3D/Graphics/Material.h>
 #include <magic_enum.hpp>
+#include <Urho3D/Graphics/Material.h>
+#include "ColorPallet.h"
+#include "objects/CellState.h"
+#include "objects/unit/state/UnitState.h"
 
 
 constexpr char PALLET_RESOLUTION = 32;
@@ -16,6 +17,7 @@ public:
 	Urho3D::Color& getColor(float value, float maxValue);
 	Urho3D::Material* getColor(UnitState state);
 	Urho3D::Material* getLineMaterial() const;
+	std::tuple<bool, Urho3D::Color> getInfoForGrid(CellState state);
 private:
 
 	Urho3D::Material* redPallet[PALLET_RESOLUTION + 1];

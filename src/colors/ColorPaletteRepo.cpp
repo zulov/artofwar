@@ -2,6 +2,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include "Game.h"
 #include "math/MathUtils.h"
+#include "objects/CellState.h"
 #include "objects/unit/state/StateManager.h"
 
 
@@ -23,7 +24,7 @@ ColorPaletteRepo::ColorPaletteRepo() {
 	}
 	lineMaterial = Game::getCache()->GetResource<Urho3D::Material>("Materials/line.xml");
 	for (int i = 0; i < SPECTRUM_RESOLUTION; ++i) {
-		basicSpectrum[i] = Urho3D::Color(0.1, i * (1.0f / SPECTRUM_RESOLUTION), 0.1,0.5);
+		basicSpectrum[i] = Urho3D::Color(0.1, i * (1.0f / SPECTRUM_RESOLUTION), 0.1, 0.5);
 	}
 	basicSpectrum[SPECTRUM_RESOLUTION] = basicSpectrum[SPECTRUM_RESOLUTION - 1];
 }
@@ -51,4 +52,17 @@ Urho3D::Material* ColorPaletteRepo::getColor(UnitState state) {
 
 Urho3D::Material* ColorPaletteRepo::getLineMaterial() const {
 	return lineMaterial;
+}
+
+std::tuple<bool, Urho3D::Color> ColorPaletteRepo::getInfoForGrid(CellState state) {
+	switch (state) {
+	case CellState::EMPTY: return {false, Urho3D::Color(0, 0, 0, 0)};
+	case CellState::ATTACK: return {true, Urho3D::Color::RED};
+	case CellState::COLLECT: return {true, Urho3D::Color::YELLOW};
+	case CellState::NONE: return {false, Urho3D::Color(0, 0, 0, 0)};
+	case CellState::RESOURCE: return {true, Urho3D::Color::GREEN};
+	case CellState::BUILDING: return {true, Urho3D::Color::BLUE};
+	case CellState::DEPLOY: return {true, Urho3D::Color::CYAN};
+	default: ;
+	}
 }

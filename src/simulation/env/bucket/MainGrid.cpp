@@ -7,6 +7,8 @@
 #include "objects/unit/Unit.h"
 #include <array>
 #include <unordered_set>
+
+#include "colors/ColorPaletteRepo.h"
 #include "objects/building/Building.h"
 #include "debug/DebugLineRepo.h"
 #include "simulation/env/Environment.h"
@@ -220,7 +222,8 @@ void MainGrid::drawDebug(GridDebugType type) const {
 	{
 		for (int i = 0; i < sqResolution; ++i) {
 			auto center = calculator.getCenter(i);
-			std::tuple<bool, Urho3D::Color> info = DebugLineRepo::getInfoForGrid(complexData[i].getType());
+			std::tuple<bool, Urho3D::Color> info = Game::getColorPaletteRepo()->
+				getInfoForGrid(complexData[i].getType());
 
 			if (std::get<0>(info)) {
 				DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, {center.x_, 10, center.y_},
@@ -242,7 +245,7 @@ float MainGrid::getFieldSize() const {
 void MainGrid::drawAll() {
 	auto image = new Urho3D::Image(Game::getContext());
 	image->SetSize(resolution, resolution, 4);
-	const auto data = (uint32_t*)image->GetData();
+
 	Urho3D::String prefix = Urho3D::String(counter) + "_";
 
 	drawComplex(image, prefix);
@@ -420,34 +423,11 @@ void MainGrid::drawComplex(Urho3D::Image* image, Urho3D::String prefix) const {
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = calculator.getIndex(x, y);
-			const int idR = calculator.getIndex(resolution - y - 1, x);
-			switch (complexData[index].getType()) {
 
-			case CellState::EMPTY:
-				*(data + idR) = 0xFFFFFFFF;			
-				break;
-			case CellState::ATTACK: 
-				*(data + idR) = 0xFF000000;
-				break;
-			case CellState::COLLECT: 
-				*(data + idR) = 0xF1D15200;
-				break;
-			case CellState::NONE: 
-				*(data + idR) = 0xFFFFFFFF;
-				break;
-			case CellState::RESOURCE: 
-				*(data + idR) = 0x00FF0000;
-				break;
-			case CellState::BUILDING: 
-				*(data + idR) = 0x00215A00;
-				break;
-			case CellState::DEPLOY: 
-				*(data + idR) = 0x809BCA00;
-				break;
-			default: ;
-			}
+			image->SetPixel(x,resolution - y - 1, 
+			                std::get<1>(Game::getColorPaletteRepo()->getInfoForGrid(complexData[index].getType())));
 		}
 	}
 
-	image->SaveBMP("result/images/complexData/" + prefix + "complexData.bmp");
+	image->SavePNG("result/images/complexData/type_" + prefix + ".png");
 }

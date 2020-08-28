@@ -55,7 +55,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 
 	main = new InfluenceMapCombine(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 16, 40, numberOfPlayers);
 	ci = new content_info();
-	DebugLineRepo::init(DebugLineType::INFLUANCE, MAX_DEBUG_PARTS_INFLUENCE);
+	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
 }
 
 InfluenceManager::~InfluenceManager() {
@@ -112,7 +112,7 @@ void InfluenceManager::calcStats(const std::vector<T*>& maps) const {
 template <typename T>
 void InfluenceManager::drawAll(const std::vector<T*>& maps, Urho3D::String name) const {
 	for (int i = 0; i < maps.size(); ++i) {
-		maps[i]->print(name + Urho3D::String(i));
+		maps[i]->print(name + "_" + Urho3D::String(i) + "_");
 	}
 }
 
@@ -171,8 +171,8 @@ void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapCombine
 }
 
 void InfluenceManager::draw(InfluenceType type, char index) {
-	DebugLineRepo::clear(DebugLineType::INFLUANCE, currentDebugBatch);
-	DebugLineRepo::beginGeometry(DebugLineType::INFLUANCE, currentDebugBatch);
+	DebugLineRepo::clear(DebugLineType::INFLUENCE, currentDebugBatch);
+	DebugLineRepo::beginGeometry(DebugLineType::INFLUENCE, currentDebugBatch);
 
 	switch (type) {
 	case InfluenceType::NONE:
@@ -202,7 +202,7 @@ void InfluenceManager::draw(InfluenceType type, char index) {
 	default: ;
 	}
 
-	DebugLineRepo::commit(DebugLineType::INFLUANCE, currentDebugBatch);
+	DebugLineRepo::commit(DebugLineType::INFLUENCE, currentDebugBatch);
 	currentDebugBatch++;
 	if (currentDebugBatch >= MAX_DEBUG_PARTS_INFLUENCE) {
 		currentDebugBatch = 0;

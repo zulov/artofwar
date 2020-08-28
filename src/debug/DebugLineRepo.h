@@ -7,16 +7,13 @@ enum class CellState : char;
 enum class DebugLineType : char {
 	UNIT_LINES,
 	MAIN_GRID,
-	INFLUANCE
+	INFLUENCE
 };
 
 class DebugLineRepo {
-
-
 public:
 	~DebugLineRepo();
 
-	static std::tuple<bool, Urho3D::Color> getInfoForGrid(CellState state);
 	static void commit(DebugLineType type, short batch = 0);
 	static void beginGeometry(DebugLineType type, short batch = 0);
 	static void clear(DebugLineType type, short batch = 0);

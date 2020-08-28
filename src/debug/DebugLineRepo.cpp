@@ -31,23 +31,10 @@ void DebugLineRepo::init(DebugLineType type, short batches) {
 DebugLineRepo::~DebugLineRepo() {
 	if constexpr (DEBUG_LINES_ENABLED) {
 		for (const auto& vector : geometry) {
-			for (auto customGeometry : vector) {
+			for (auto* customGeometry : vector) {
 				customGeometry->Remove();
 			}
 		}
-	}
-}
-
-std::tuple<bool, Urho3D::Color> DebugLineRepo::getInfoForGrid(CellState state) {
-	switch (state) {
-	case CellState::EMPTY: return {false, Urho3D::Color::BLACK};
-	case CellState::ATTACK: return {true, Urho3D::Color::RED};
-	case CellState::COLLECT: return {true, Urho3D::Color::YELLOW};
-	case CellState::NONE: return {false, Urho3D::Color::BLACK};
-	case CellState::RESOURCE: return {true, Urho3D::Color::GREEN};
-	case CellState::BUILDING: return {true, Urho3D::Color::BLUE};
-	case CellState::DEPLOY: return {true, Urho3D::Color::CYAN};
-	default: ;
 	}
 }
 
@@ -61,7 +48,7 @@ void DebugLineRepo::commit(DebugLineType type, short batch) {
 
 void DebugLineRepo::beginGeometry(DebugLineType type, short batch) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		if (type == DebugLineType::INFLUANCE) {
+		if (type == DebugLineType::INFLUENCE) {
 			geometry[static_cast<char>(type)].at(batch)->BeginGeometry(0, Urho3D::PrimitiveType::TRIANGLE_LIST);
 		} else {
 			geometry[static_cast<char>(type)].at(batch)->BeginGeometry(0, Urho3D::PrimitiveType::LINE_LIST);
