@@ -7,7 +7,7 @@
 
 InfluenceMapCombine::InfluenceMapCombine(unsigned short resolution, float size, float coef, char level,
                                          float valueThresholdDebug, char numberOfMaps) :
-	InfluenceMap(resolution, size, valueThresholdDebug), coef(coef), level(level), numberOfMaps(numberOfMaps) {
+	calculator(resolution, size), coef(coef), level(level), numberOfMaps(numberOfMaps) {
 	for (int i = 0; i < numberOfMaps; ++i) {
 		values.push_back(new InfluenceMapFloat(resolution, size, coef, level, valueThresholdDebug));
 	}
@@ -22,9 +22,6 @@ InfluenceMapCombine::~InfluenceMapCombine() {
 
 	delete [] indexes;
 	delete [] vals;
-}
-
-void InfluenceMapCombine::update(Physical* thing, float value) {
 }
 
 void InfluenceMapCombine::update(Physical* thing, std::span<float> values1) {
@@ -68,18 +65,10 @@ void InfluenceMapCombine::reset() {
 	}
 }
 
-float InfluenceMapCombine::getValueAt(int index) const {
-	return 0;
-}
-
 void InfluenceMapCombine::finishCalc() {
 	for (auto value : values) {
 		value->finishCalc();
 	}
-}
-
-float InfluenceMapCombine::getValueAsPercent(const Urho3D::Vector2& pos) const {
-	return 0.5;
 }
 
 InfluenceMapFloat* InfluenceMapCombine::get(char index) {

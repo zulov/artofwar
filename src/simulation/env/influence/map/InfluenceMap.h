@@ -22,7 +22,6 @@ public:
 	virtual void print(Urho3D::String name);
 protected:
 
-	unsigned short resolution;
 	float size;
 	float fieldSize;
 	unsigned int arraySize;
@@ -31,13 +30,7 @@ protected:
 	float avg;
 	float min;
 	float max;
-	GridCalculator calculator;
 	int counter = 0;
-};
-
-inline auto finishCalc = [](InfluenceMap* u) {
-	u->finishCalc();
-};
-inline auto resetMap = [](InfluenceMap* u) {
-	u->reset();
+	unsigned short resolution;
+	GridCalculator calculator;
 };

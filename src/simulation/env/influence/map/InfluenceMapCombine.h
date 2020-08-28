@@ -1,26 +1,22 @@
 #pragma once
 #include <span>
 #include <vector>
-
-#include "InfluenceMap.h"
 #include "InfluenceMapFloat.h"
 
-class InfluenceMapCombine : public InfluenceMap {
+class InfluenceMapCombine {
 public:
 	InfluenceMapCombine(unsigned short resolution, float size, float coef, char level, float valueThresholdDebug,
-		char numberOfMaps);
+	                    char numberOfMaps);
 	~InfluenceMapCombine();
 
-	void update(Physical* thing, float value) override;
 	void update(Physical* thing, std::span<float> values1);
-	void reset() override;
-	float getValueAt(int index) const override;
-	void finishCalc() override;
-	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
+	void reset();
+	void finishCalc();
 	InfluenceMapFloat* get(char index);
-	void print(Urho3D::String name) override;
+	void print(Urho3D::String name);
 private:
 	std::vector<InfluenceMapFloat*> values;
+	GridCalculator calculator;
 	float coef;
 	unsigned char level;
 	unsigned char numberOfMaps;

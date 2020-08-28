@@ -97,12 +97,16 @@ void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 
 template <typename T>
 void InfluenceManager::resetMaps(const std::vector<T*>& maps) const {
-	std::for_each(maps.begin(), maps.end(), resetMap);
+	for (auto map : maps) {
+		map->reset();
+	}
 }
 
 template <typename T>
 void InfluenceManager::calcStats(const std::vector<T*>& maps) const {
-	std::for_each(maps.begin(), maps.end(), finishCalc);
+	for (auto map : maps) {
+		map->finishCalc();
+	}
 }
 
 template <typename T>
