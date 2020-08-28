@@ -9,7 +9,8 @@
 
 class Unit;
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class Image;
 }
 
@@ -43,7 +44,7 @@ public:
 	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim) const;
 	std::vector<int>* findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) const;
 
-	void drawMap(Urho3D::Image* image) const;
+	void drawComplex(Urho3D::Image* image, Urho3D::String prefix) const;
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
 	void invalidateCache() const;
@@ -81,13 +82,15 @@ public:
 	int getAdditionalInfoAt(float x, float z) const;
 	void drawDebug(GridDebugType type) const;
 	float getFieldSize() const;
+	void drawAll();
 private:
 
 	PathFinder* pathConstructor;
 
-	std::array<Urho3D::Vector2,2> posInBucket2;
-	std::array<Urho3D::Vector2,3> posInBucket3;
-	std::array<Urho3D::Vector2,4> posInBucket4;
+	std::array<Urho3D::Vector2, 2> posInBucket2;
+	std::array<Urho3D::Vector2, 3> posInBucket3;
+	std::array<Urho3D::Vector2, 4> posInBucket4;
 
 	ComplexBucketData* complexData;
+	int counter = 0;
 };

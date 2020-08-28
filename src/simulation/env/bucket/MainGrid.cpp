@@ -68,8 +68,8 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 
 Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 	auto index = calculator.indexFromPosition(unit->getPosition());
-	auto &data = complexData[index];
-	
+	auto& data = complexData[index];
+
 	Urho3D::Vector2 sum;
 	if (index != unit->getIndexToInteract()
 		&& data.isUnit()
@@ -239,6 +239,20 @@ float MainGrid::getFieldSize() const {
 	return calculator.getFieldSize();
 }
 
+void MainGrid::drawAll() {
+	auto image = new Urho3D::Image(Game::getContext());
+	image->SetSize(resolution, resolution, 4);
+	const auto data = (uint32_t*)image->GetData();
+	Urho3D::String prefix = Urho3D::String(counter) + "_";
+
+	drawComplex(image, prefix);
+
+	++counter;
+
+	delete image;
+
+}
+
 bool MainGrid::isInLocalArea(const int cell, Urho3D::Vector2& pos) const {
 	const auto index = calculator.indexFromPosition(pos);
 	if (cell == index) { return true; }
@@ -251,9 +265,8 @@ bool MainGrid::isInLocalArea(const int cell, Urho3D::Vector2& pos) const {
 }
 
 bool MainGrid::isEmpty(int inx) const {
-	return calculator.isValidIndex(inx) && complexData[inx].getType() == CellState::EMPTY || complexData[inx].getType()
-		==
-		CellState::DEPLOY;
+	return calculator.isValidIndex(inx) && complexData[inx].getType() == CellState::EMPTY
+		|| complexData[inx].getType() == CellState::DEPLOY;
 }
 
 int MainGrid::closestEmpty(int posIndex) const {
@@ -318,8 +331,8 @@ void MainGrid::removeStatic(Static* object) const {
 
 std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& position) const {
 	int index = calculator.indexFromPosition(position);
-	auto &data = complexData[index];
-	
+	auto& data = complexData[index];
+
 	if (!data.isUnit()) {
 		int escapeBucket; //=-1
 		//auto& neights = complexData[index].getNeightbours();
@@ -402,17 +415,39 @@ std::vector<int>* MainGrid::findPath(const Urho3D::Vector3& from, const Urho3D::
 	return pathConstructor->findPath(from, aim);
 }
 
-void MainGrid::drawMap(Urho3D::Image* image) const {
+void MainGrid::drawComplex(Urho3D::Image* image, Urho3D::String prefix) const {
 	const auto data = (uint32_t*)image->GetData();
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = calculator.getIndex(x, y);
 			const int idR = calculator.getIndex(resolution - y - 1, x);
-			if (complexData[index].isUnit()) {
-				*(data + idR) = 0xFFFFFFFF;
-			} else {
+			switch (complexData[index].getType()) {
+
+			case CellState::EMPTY:
+				*(data + idR) = 0xFFFFFFFF;			
+				break;
+			case CellState::ATTACK: 
 				*(data + idR) = 0xFF000000;
+				break;
+			case CellState::COLLECT: 
+				*(data + idR) = 0xF1D15200;
+				break;
+			case CellState::NONE: 
+				*(data + idR) = 0xFFFFFFFF;
+				break;
+			case CellState::RESOURCE: 
+				*(data + idR) = 0x00FF0000;
+				break;
+			case CellState::BUILDING: 
+				*(data + idR) = 0x00215A00;
+				break;
+			case CellState::DEPLOY: 
+				*(data + idR) = 0x809BCA00;
+				break;
+			default: ;
 			}
 		}
 	}
+
+	image->SaveBMP("result/images/complexData/" + prefix + "complexData.bmp");
 }

@@ -210,7 +210,6 @@ void InfluenceManager::draw(InfluenceType type, char index) {
 }
 
 void InfluenceManager::drawAll() {
-
 	drawAll(unitsNumberPerPlayer, "unitsInt");
 	drawAll(buildingsInfluencePerPlayer, "buildingsInt");
 	drawAll(unitsInfluencePerPlayer, "units");
