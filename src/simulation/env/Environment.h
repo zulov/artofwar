@@ -1,15 +1,15 @@
 #pragma once
 
+#include <array>
+#include <vector>
+#include <Urho3D/Graphics/Terrain.h>
 #include "ContentInfo.h"
 #include "bucket/MainGrid.h"
-#include "utils/defines.h"
-#include "objects/unit/state/UnitState.h"
-#include "influence/InfluenceManager.h"
-#include <Urho3D/Graphics/Terrain.h>
-#include <vector>
-#include <array>
 #include "debug/EnvironmentDebugMode.h"
+#include "influence/InfluenceManager.h"
+#include "objects/unit/state/UnitState.h"
 #include "player/Player.h"
+#include "utils/defines.h"
 
 
 class ResourceEntity;
@@ -98,7 +98,7 @@ public:
 	std::vector<Urho3D::Vector2> getAreas(char player, const std::span<float>, int min);
 	void addCollect(Unit* unit, float value);
 	void addAttack(Unit* unit, float value);
-
+	void drawInfluence();
 
 private:
 	MainGrid mainGrid;

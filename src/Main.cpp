@@ -502,7 +502,9 @@ SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo
 
 	const auto input = GetSubsystem<Input>();
 	debugManager.change(input, simulation);
-
+	if (input->GetKeyPress(Urho3D::KEY_P)) {
+		Game::getEnvironment()->drawInfluence();	
+	}
 
 	Game::getCameraManager()->translate(cursorPos, input, timeStep);
 	Game::getCameraManager()->rotate(input->GetMouseMove());

@@ -356,6 +356,10 @@ void Environment::addAttack(Unit* unit, float value) {
 	influenceManager.addAttack(unit, value);
 }
 
+void Environment::drawInfluence() {
+	influenceManager.drawAll();
+}
+
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) const {
 	return mainGrid.isInLocalArea(getMainCell, pos);
 }
