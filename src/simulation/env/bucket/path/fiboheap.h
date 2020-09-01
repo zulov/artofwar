@@ -1,18 +1,22 @@
 #pragma once
 
-#include "utils/DeleteUtils.h"
+#include <assert.h>
 #include <cmath>
+#include <iostream>
 #include <vector>
+#include "utils/DeleteUtils.h"
 
-static int degree_cache[1000];
+#define CACHE_SIZE 4096
+
+static unsigned char degree_cache[CACHE_SIZE];
 
 class FibHeap {
 public:
-
 	class FibNode {
 	public:
-		FibNode(const float k, const int pl): left(nullptr), right(nullptr), child(nullptr), key(k), payload(pl),
-		                                      degree(-1) {
+		FibNode(const float k, const int pl):
+			left(nullptr), right(nullptr), child(nullptr),
+			key(k), payload(pl), degree(-1) {
 		}
 
 		~FibNode() = default;
@@ -30,7 +34,6 @@ public:
 			payload = -1;
 		}
 
-
 		FibNode* left;
 		FibNode* right;
 		FibNode* child;
@@ -38,7 +41,6 @@ public:
 		int payload;
 		int id;
 		short degree;
-
 	};
 
 	FibHeap() {
@@ -48,17 +50,15 @@ public:
 			pool[i] = new FibNode(-1, -1);
 			pool[i]->id = i;
 		}
-
 	}
 
 	~FibHeap() {
 		clear_vector(pool);
 	}
 
-
 	FibNode* getNode(const int pl, const float k) {
 		for (int i = lowestFree; i < pool.size(); ++i) {
-			const auto fibNode = pool[i];
+			auto* const fibNode = pool[i];
 			if (fibNode->isEmpty()) {
 				fibNode->payload = pl;
 				fibNode->key = k;
@@ -69,9 +69,10 @@ public:
 				return fibNode;
 			}
 		}
-		const auto newNode = new FibNode(k, pl);
+		auto* const newNode = new FibNode(k, pl);
 		newNode->id = pool.size() - 1;
 		pool.push_back(newNode);
+		//std::cout << pool.size() << std::endl;
 		lowestFree = pool.size() - 1;
 		if (lowestFree > highestUsed) {
 			highestUsed = lowestFree;
@@ -138,7 +139,11 @@ public:
 	}
 
 	void consolidate() {
-		int max_degree = degree_cache[n];
+		assert(n<CACHE_SIZE);
+		if (n >= CACHE_SIZE) {
+			std::cout << "DUPA" << std::endl;
+		}
+		const auto max_degree = degree_cache[n];
 
 		if (temp.size() < max_degree) {
 			temp.resize(max_degree);
@@ -265,9 +270,10 @@ public:
 	int highestUsed = 399;
 
 	static void initCache() {
-		double coef = 1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2);
-		for (int i = 0; i < 1000; ++i) {
-			degree_cache[i] = static_cast<int>(floor(log(static_cast<double>(i)) * coef)) + 2;
+		const double coef = 1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2);
+		for (int i = 0; i < CACHE_SIZE; ++i) {
+			degree_cache[i] = static_cast<unsigned char>(floor(log(static_cast<double>(i)) * coef)) + 2;
+			std::cout<<degree_cache[i]<<std::endl;
 			// plus two both for indexing to max degree and so A[max_degree+1] == NIL 
 		}
 	}
