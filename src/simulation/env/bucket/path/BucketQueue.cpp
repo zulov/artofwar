@@ -5,8 +5,6 @@ BucketQueue::BucketQueue() {
 	FibHeap::initCache();
 }
 
-BucketQueue::~BucketQueue() = default;
-
 void BucketQueue::init(float _max, float _min) {
 	max = _max;
 	min = _min;

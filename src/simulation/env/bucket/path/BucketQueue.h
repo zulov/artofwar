@@ -7,7 +7,7 @@ constexpr char QUEUE_BUCKETS_SIZE = 10;
 class BucketQueue {
 public:
 	BucketQueue();
-	~BucketQueue();
+	~BucketQueue() = default;
 	bool empty() const;
 	void put(int item, float priority);
 	int get();
