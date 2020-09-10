@@ -39,8 +39,8 @@ public:
 		FibNode* child;
 		float key;
 		int payload;
-		int id;
-		short degree;
+
+		unsigned char degree;
 	};
 
 	FibHeap() {
@@ -48,8 +48,10 @@ public:
 		pool.resize(400, nullptr);
 		for (int i = 0; i < 400; ++i) {
 			pool[i] = new FibNode(-1, -1);
-			pool[i]->id = i;
+			//pool[i]->id = i;
 		}
+		lowestFree = *pool.begin();
+		highestUsed = *pool.end();
 	}
 
 	~FibHeap() {
@@ -57,23 +59,23 @@ public:
 	}
 
 	FibNode* getNode(const int pl, const float k) {
-		for (int i = lowestFree; i < pool.size(); ++i) {
-			auto* const fibNode = pool[i];
+		for (; lowestFree < *pool.end(); ++lowestFree) {
+			auto* const fibNode = lowestFree;
 			if (fibNode->isEmpty()) {
 				fibNode->payload = pl;
 				fibNode->key = k;
-				if (i > highestUsed) {
-					highestUsed = i;
+				if (lowestFree > highestUsed) {
+					highestUsed = lowestFree;
 				}
-				lowestFree = i + 1;
+				++lowestFree;
 				return fibNode;
 			}
 		}
 		auto* const newNode = new FibNode(k, pl);
-		newNode->id = pool.size() - 1;
+		//newNode->id = pool.size() - 1;
 		pool.push_back(newNode);
 		//std::cout << pool.size() << std::endl;
-		lowestFree = pool.size() - 1;
+		lowestFree = pool.back();
 		if (lowestFree > highestUsed) {
 			highestUsed = lowestFree;
 		}
@@ -81,8 +83,8 @@ public:
 	}
 
 	void resetNode(FibNode* node) {
-		if (lowestFree > node->id) {
-			lowestFree = node->id;
+		if (lowestFree > node) {
+			lowestFree = node;
 		}
 		node->reset();
 	}
@@ -266,14 +268,14 @@ public:
 	std::vector<FibNode*> pool;
 
 	int n{0};
-	int lowestFree = 0;
-	int highestUsed = 399;
+	
+	std::vector<FibNode*>::iterator lowestFree;
+	std::vector<FibNode*>::iterator highestUsed;
 
 	static void initCache() {
 		const double coef = 1 / log(static_cast<double>(1 + sqrt(static_cast<double>(5))) / 2);
 		for (int i = 0; i < CACHE_SIZE; ++i) {
 			degree_cache[i] = static_cast<unsigned char>(floor(log(static_cast<double>(i)) * coef)) + 2;
-			std::cout<<degree_cache[i]<<std::endl;
 			// plus two both for indexing to max degree and so A[max_degree+1] == NIL 
 		}
 	}
