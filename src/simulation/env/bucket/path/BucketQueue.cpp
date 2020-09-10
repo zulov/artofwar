@@ -19,7 +19,7 @@ void BucketQueue::init(float _max, float _min) {
 bool BucketQueue::empty() const { return size == 0; }
 
 void BucketQueue::put(int item, float priority) {
-	const int index = getIndex(priority);
+	const auto index = getIndex(priority);
 
 	buckets[index].put(item, priority);
 
@@ -30,7 +30,7 @@ void BucketQueue::put(int item, float priority) {
 }
 
 int BucketQueue::get() {
-	const int best_item = buckets[currentIndex].get();
+	const auto best_item = buckets[currentIndex].get();
 
 	if (buckets[currentIndex].empty()) {
 		updateCurrentIndex();
@@ -50,7 +50,7 @@ int BucketQueue::getIndex(float priority) const {
 }
 
 void BucketQueue::updateCurrentIndex() {
-	for (int i = currentIndex + 1; i < QUEUE_BUCKETS_SIZE; ++i) {
+	for (auto i = currentIndex + 1; i < QUEUE_BUCKETS_SIZE; ++i) {
 		if (!buckets[i].empty()) {
 			currentIndex = i;
 			return;

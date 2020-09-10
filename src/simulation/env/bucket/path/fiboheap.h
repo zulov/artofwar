@@ -21,11 +21,11 @@ public:
 		~FibNode() = default;
 
 		bool isEmpty() const {
-			return key < 0;
+			return key < 0.f;
 		}
 
 		void reset() {
-			key = -1;
+			key = -1.f;
 			left = nullptr;
 			right = nullptr;
 			child = nullptr;

@@ -38,9 +38,6 @@ MySprite::MySprite(Urho3D::Context* context) :
 	Sprite(context) {
 }
 
-
-MySprite::~MySprite() = default;
-
 void MySprite::RegisterObject(Urho3D::Context* context) {
 	context->RegisterFactory<MySprite>();
 	using namespace Urho3D;
@@ -71,12 +68,4 @@ void MySprite::RegisterObject(Urho3D::Context* context) {
 	URHO3D_ACCESSOR_ATTRIBUTE("Use Derived Opacity", GetUseDerivedOpacity, SetUseDerivedOpacity, bool, true, AM_FILE);
 	URHO3D_ACCESSOR_ATTRIBUTE("Max Size", GetMaxSize, SetMaxSize, IntVector2, IntVector2::ZERO, AM_FILE);
 	//URHO3D_ATTRIBUTE("Variables", VariantMap, vars_, Variant::emptyVariantMap, AM_FILE);
-}
-
-const Urho3D::Vector2& MySprite::getPercentHotSpot() const {
-	return percentHotspot;
-}
-
-const Urho3D::IntVector2& MySprite::getMySize() const {
-	return mySize;
 }
