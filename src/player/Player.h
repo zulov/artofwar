@@ -56,10 +56,11 @@ private:
 	OrderMaker orderMaker;
 	db_nation* dbNation;
 	Urho3D::String name;
+	
 	char team;
-	int color;
 	char id;
 	bool active;
+	int color;
 
 	char* unitLevels;
 	char* buildingLevels;

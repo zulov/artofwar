@@ -18,5 +18,4 @@ void startState(StaticState state, Static* obj) {
 }
 
 void endState(StaticState state, Static* obj) {
-
 }

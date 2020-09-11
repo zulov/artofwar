@@ -498,7 +498,6 @@
     <ClInclude Include="src\commands\action\GeneralActionType.h" />
     <ClInclude Include="src\player\ai\ActionMakerLogger.h" />
     <ClInclude Include="src\player\ai\OrderMaker.h" />
-    <ClInclude Include="src\player\ai\AiPhase.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapCombine.h" />
     <ClInclude Include="src\control\BillboardSetProvider.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapHistory.h" />

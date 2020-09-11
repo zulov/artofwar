@@ -2,11 +2,10 @@
 #include "Aim.h"
 #include <vector>
 
-class TargetAim : public Aim
-{
+class TargetAim : public Aim {
 public:
 	explicit TargetAim(std::vector<int>& _path);
-	~TargetAim();
+	~TargetAim() = default;
 
 	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const override;
 	Urho3D::Vector2 getDirection(Unit* unit) override;

@@ -6,7 +6,7 @@ enum class ActionType : char;
 class HudData {
 public:
 	explicit HudData(Urho3D::UIElement* _uiParent);
-	~HudData();
+	~HudData() = default;
 
 	void set(short _id, ActionType _type, Urho3D::String _text);
 	static HudData* getFromElement(Urho3D::VariantMap& eventData);

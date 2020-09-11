@@ -5,9 +5,6 @@ ChargeAim::ChargeAim(Urho3D::Vector2* _direction): direction(*_direction), charg
 	direction.Normalize();
 }
 
-
-ChargeAim::~ChargeAim() = default;
-
 std::vector<Urho3D::Vector3> ChargeAim::getDebugLines(Unit* unit) const {
 	std::vector<Urho3D::Vector3> points;
 	auto position = unit->getPosition();

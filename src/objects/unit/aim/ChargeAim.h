@@ -5,7 +5,7 @@ class ChargeAim : public Aim
 {
 public:
 	explicit ChargeAim(Urho3D::Vector2* _direction);
-	~ChargeAim();
+	~ChargeAim() = default;
 
 	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const override;
 	Urho3D::Vector2 getDirection(Unit* unit) override;

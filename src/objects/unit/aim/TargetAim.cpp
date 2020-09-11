@@ -9,9 +9,6 @@ TargetAim::TargetAim(std::vector<int>& _path) :
 	currentTarget = Game::getEnvironment()->getCenter(path[current]);
 }
 
-
-TargetAim::~TargetAim() = default;
-
 std::vector<Urho3D::Vector3> TargetAim::getDebugLines(Unit* unit) const {
 	std::vector<Urho3D::Vector3> points;
 	points.emplace_back(unit->getPosition());

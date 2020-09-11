@@ -1,7 +1,7 @@
 #pragma once
-#include "utils/DeleteUtils.h"
 #include <vector>
 #include <Urho3D/Container/Str.h>
+#include "utils/DeleteUtils.h"
 
 struct dbload_config {
 	dbload_config(const dbload_config&) = delete;
@@ -25,8 +25,8 @@ struct dbload_physical {
 };
 
 struct dbload_static : dbload_physical {
-	int buc_x;
-	int buc_y;
+	short buc_x;
+	short buc_y;
 	char state;
 	char nextState;
 

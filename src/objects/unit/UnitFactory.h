@@ -1,23 +1,21 @@
 #pragma once
-
 #include <vector>
 
-struct dbload_unit;
 
 namespace Urho3D {
 	class Vector2;
 }
 
+struct dbload_unit;
 class Unit;
 
-class UnitFactory
-{
+class UnitFactory {
 public:
 	UnitFactory();
 	~UnitFactory();
 
-	std::vector<Unit*>* create(unsigned int number, int id, Urho3D::Vector2& center, int player, int level) const;
-	std::vector<Unit*>* load(dbload_unit* unit) const;
+	std::vector<Unit*>& create(unsigned int number, int id, Urho3D::Vector2& center, int player, int level);
+	std::vector<Unit*>& load(dbload_unit* unit);
 private:
-	std::vector<Unit*>* units;
+	std::vector<Unit*> units;
 };

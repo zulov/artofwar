@@ -9,8 +9,7 @@ class Aim;
 class Unit;
 class Entity;
 
-class Aims
-{
+class Aims {
 public:
 	Aims();
 	Aims(const Aims& rhs) = delete;

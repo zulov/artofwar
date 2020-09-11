@@ -2,7 +2,8 @@
 
 #include <vector>
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class IntVector2;
 	class Vector2;
 }
@@ -12,11 +13,8 @@ class Building;
 
 class BuildingFactory {
 public:
-	BuildingFactory();
-	~BuildingFactory();
-	std::vector<Building*>* create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level) const;
-	std::vector<Building*>* load(dbload_building* building) const;
-private:
-	std::vector<Building*>* buildings;
+	BuildingFactory() = default;
+	~BuildingFactory() = default;
+	Building* create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level);
+	Building* load(dbload_building* building);
 };
-

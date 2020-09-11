@@ -107,7 +107,8 @@ float ResourceEntity::collect(float collectSpeed) {
 	return toReturn;
 }
 
-void ResourceEntity::load(dbload_resource_entities* resource) {
+ResourceEntity* ResourceEntity::load(dbload_resource_entities* resource) {
 	Static::load(resource);
 	this->amount = resource->amount;
+	return this;
 }

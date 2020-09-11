@@ -90,8 +90,9 @@ void Building::levelUp(char level) {
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
 }
 
-void Building::load(dbload_building* dbloadBuilding) {
+Building* Building::load(dbload_building* dbloadBuilding) {
 	Static::load(dbloadBuilding);
+	return this;
 }
 
 std::string Building::getColumns() {

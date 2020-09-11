@@ -32,14 +32,14 @@ void QueueManager::add(short number, QueueActionType type, short id, short local
 }
 
 QueueElement* QueueManager::update(float time) {
-	for (int i = 0; i < queue.size(); ++i) {
+	for (auto i = 0; i < queue.size(); ++i) {
 		if (queue.at(i)->getAmount() <= 0) {
 			delete queue.at(i);
 			queue.erase(queue.begin() + i);
 		}
 	}
 	if (!queue.empty()) {
-		QueueElement* element = *queue.begin();
+		auto element = *queue.begin();
 
 		if (element->update(time)) {
 			queue.erase(queue.begin());

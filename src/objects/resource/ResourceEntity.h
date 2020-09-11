@@ -12,7 +12,7 @@ public:
 	void populate() override;
 
 	float collect(float collectSpeed);
-	void load(dbload_resource_entities* resource);
+	ResourceEntity* load(dbload_resource_entities* resource);
 
 	static std::string getColumns();
 
