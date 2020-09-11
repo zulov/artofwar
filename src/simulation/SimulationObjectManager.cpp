@@ -76,34 +76,30 @@ std::vector<Physical*>& SimulationObjectManager::getToDispose() {
 	return toDisposePhysical;
 }
 
-void SimulationObjectManager::updateUnits(std::vector<Unit*>* temp) {
-	if (!temp->empty()) {
-		units->insert(units->end(), temp->begin(), temp->end());
-		for (auto value : *temp) {
+void SimulationObjectManager::updateUnits(std::vector<Unit*>& temp) {
+	if (!temp.empty()) {
+		units->insert(units->end(), temp.begin(), temp.end());
+		for (auto value : temp) {
 			Game::getPlayersMan()->getPlayer(value->getPlayer())->add(value);
 		}
 		simulationInfo.setAmountUnitChanged();
 	}
 }
 
-void SimulationObjectManager::updateBuilding(std::vector<Building*>* temp) {
-	if (!temp->empty()) {
-		buildings->insert(buildings->end(), temp->begin(), temp->end());
-		for (auto value : *temp) {
-			Game::getPlayersMan()->getPlayer(value->getPlayer())->add(value);
-		}
-		Game::getEnvironment()->update(temp);
-		simulationInfo.setAmountBuildingChanged();
-	}
+void SimulationObjectManager::updateBuilding(Building* building) {
+	buildings->push_back(building);
+
+	Game::getPlayersMan()->getPlayer(building->getPlayer())->add(building);
+	Game::getEnvironment()->update(building);
+	simulationInfo.setAmountBuildingChanged();
+
 	Game::getEnvironment()->updateAll(buildings);
 }
 
-void SimulationObjectManager::updateResource(std::vector<ResourceEntity*>* temp) {
-	if (!temp->empty()) {
-		resources->insert(resources->end(), temp->begin(), temp->end());
-		Game::getEnvironment()->update(temp);
-		simulationInfo.setAmountResourceChanged();
-	}
+void SimulationObjectManager::updateResource(ResourceEntity* resource) {
+	resources->push_back(resource);
+	Game::getEnvironment()->update(resource);
+	simulationInfo.setAmountResourceChanged();
 }
 
 bool SimulationObjectManager::shouldDelete(Physical* physical) {

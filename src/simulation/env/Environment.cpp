@@ -133,14 +133,12 @@ void Environment::update(std::vector<Unit*>* units) const {
 	}
 }
 
-void Environment::update(std::vector<Building*>* buildings) {
-	for (auto building : *buildings) {
-		mainGrid.addStatic(building);
-		buildingGrid.update(building);
-		building->createDeploy();
+void Environment::update(Building* building) const {
+	mainGrid.addStatic(building);
+	buildingGrid.update(building);
+	building->createDeploy();
 
-		mainGrid.addDeploy(building);
-	}
+	mainGrid.addDeploy(building);
 }
 
 void Environment::updateAll(std::vector<Building*>* const buildings) const {
@@ -148,11 +146,9 @@ void Environment::updateAll(std::vector<Building*>* const buildings) const {
 	influenceManager.update(buildings); //TODO bug updej tylko jak sie doda a nie uwzglednia usuwania
 }
 
-void Environment::update(std::vector<ResourceEntity*>* resources) {
-	for (auto resource : *resources) {
-		mainGrid.addStatic(resource);
-		resourceGrid.update(resource);
-	}
+void Environment::update(ResourceEntity* resource) const {
+	mainGrid.addStatic(resource);
+	resourceGrid.update(resource);
 }
 
 Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) const {

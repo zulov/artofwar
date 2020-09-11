@@ -36,9 +36,9 @@ public:
 
 private:
 
-	void updateUnits(std::vector<Unit*>* temp);
-	void updateBuilding(std::vector<Building*>* temp);
-	void updateResource(std::vector<ResourceEntity*>* temp);
+	void updateUnits(std::vector<Unit*>& temp);
+	void updateBuilding(Building* building);
+	void updateResource(ResourceEntity* resource);
 
 	bool shouldDelete(Physical* physical);
 

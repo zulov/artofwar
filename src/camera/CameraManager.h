@@ -1,6 +1,5 @@
 #pragma once
 #include <array>
-
 #include "CameraBehave.h"
 
 enum class CameraBehaviorType : char;

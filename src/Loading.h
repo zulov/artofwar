@@ -43,7 +43,7 @@ struct loading
 
 	int currentStage;
 private:
-	std::string msg = "";
 	float stagesNumber;
+	std::string msg = "";
 	std::chrono::system_clock::time_point start;
 };

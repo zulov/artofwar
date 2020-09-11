@@ -38,8 +38,8 @@ public:
 	void updateInfluence3() const;
 
 	void update(std::vector<Unit*>* units) const;
-	void update(std::vector<Building*>* buildings);
-	void update(std::vector<ResourceEntity*>* resources);
+	void update(Building* building) const;
+	void update(ResourceEntity* resource) const;
 
 	void updateAll(std::vector<Building*>* buildings) const;
 

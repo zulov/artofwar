@@ -4,8 +4,7 @@
 #include <Urho3D/Scene/Node.h>
 
 
-class CameraBehave
-{
+class CameraBehave {
 public:
 	CameraBehave(const Urho3D::Vector3& pos, float minY, Urho3D::String name);
 	virtual ~CameraBehave();
@@ -23,12 +22,13 @@ protected:
 	void translateInternal(const bool* cameraKeys, float timeStep, float diff);
 	Urho3D::Node* cameraNode;
 	Urho3D::String* info;
-	bool changed;
 	Urho3D::Camera* camera;
-	float minY;
+
 	Urho3D::String name;
 	Urho3D::Vector3 dirs[4] = {
 		Urho3D::Vector3::FORWARD, Urho3D::Vector3::BACK, Urho3D::Vector3::LEFT, Urho3D::Vector3::RIGHT
 	};
+	bool changed;
+	float minY;
 	float coefs[4];
 };
