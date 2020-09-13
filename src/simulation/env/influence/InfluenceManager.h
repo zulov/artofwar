@@ -39,7 +39,7 @@ public:
 	                             int activePlayer);
 	std::vector<float>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
 	std::vector<int> getIndexesIterative(const std::span<float> result, float tolerance, int min,
-	                                     std::vector<InfluenceMapFloat*>& maps) const;
+	                                     std::array<InfluenceMapFloat*, 9>& maps) const;
 
 	std::vector<Urho3D::Vector2> getAreasIterative(const std::span<float> result, char player, float tolerance,
 	                                               int min);
@@ -63,9 +63,10 @@ private:
 
 	void basicValuesFunc(float* weights, Physical* thing) const;
 
-	std::vector<std::vector<InfluenceMapFloat*>> mapsForAiPerPlayer;
+	std::vector<std::array<InfluenceMapFloat*, 9>> mapsForAiPerPlayer;
 
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
+	
 	std::vector<InfluenceMapFloat*> buildingsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> resourceInfluence;

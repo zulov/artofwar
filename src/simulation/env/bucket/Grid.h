@@ -51,5 +51,4 @@ private:
 	BucketIterator iterators[MAX_THREADS];
 	std::vector<short>* levelsCache[RES_SEP_DIST];
 	std::vector<Physical*>* tempSelected;
-	std::vector<Physical*> empty;
 };

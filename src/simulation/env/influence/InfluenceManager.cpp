@@ -43,7 +43,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			emplace_back(new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40));
 	}
 	for (char player = 0; player < numberOfPlayers; ++player) {
-		mapsForAiPerPlayer.emplace_back(std::vector<InfluenceMapFloat*>{
+		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 9>{
 			basicValues[player]->get(static_cast<char>(ValueType::ECON)),
 			basicValues[player]->get(static_cast<char>(ValueType::ATTACK)),
 			basicValues[player]->get(static_cast<char>(ValueType::DEFENCE)),
@@ -158,7 +158,7 @@ void InfluenceManager::updateMain(std::vector<Unit*>* units, std::vector<Buildin
 void InfluenceManager::updateWithHistory() const {
 	calcStats(gatherSpeed);
 	calcStats(attackSpeed);
-	
+
 	resetMaps(gatherSpeed);
 	resetMaps(attackSpeed);
 }
@@ -278,15 +278,14 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 
 std::vector<float>& InfluenceManager::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
 	dataFromPos.clear();
-	auto& maps = mapsForAiPerPlayer[player];
-	for (auto map : maps) {
+	for (auto map : mapsForAiPerPlayer[player]) {
 		dataFromPos.push_back(map->getValueAsPercent(pos));
 	}
 	return dataFromPos;
 }
 
 std::vector<int> InfluenceManager::getIndexesIterative(const std::span<float> result, float tolerance, int min,
-                                                       std::vector<InfluenceMapFloat*>& maps) const {
+                                                       std::array<InfluenceMapFloat*, 9>& maps) const {
 	int k = 0;
 	for (auto step : {0.0, 0.05, 0.1}) {
 		tolerance += step;
@@ -323,8 +322,8 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> result, char player) {
 	auto& maps = mapsForAiPerPlayer[player];
 	assert(result.size()==maps.size());
-	auto arraySize = INF_GRID_SIZE * INF_GRID_SIZE;
-	float intersection[INF_GRID_SIZE * INF_GRID_SIZE];
+	auto constexpr arraySize = INF_GRID_SIZE * INF_GRID_SIZE;
+	float intersection[arraySize];
 	std::fill_n(intersection, arraySize, 0.f);
 
 	for (char i = 0; i < maps.size(); ++i) {

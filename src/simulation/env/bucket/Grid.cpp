@@ -1,11 +1,11 @@
 #include "Grid.h"
+#include <Urho3D/Graphics/Model.h>
 #include "Bucket.h"
 #include "BucketIterator.h"
 #include "objects/Physical.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/ContentInfo.h"
-#include <Urho3D/Graphics/Model.h>
-
+#include "utils/consts.h"
 
 Grid::Grid(short resolution, float size): calculator(resolution, size), closeIndexProvider(resolution),
                                           resolution(resolution), sqResolution(resolution * resolution),
@@ -93,7 +93,7 @@ const std::vector<Physical*>& Grid::getContentAt(int index) const {
 	if (calculator.isValidIndex(index)) {
 		return buckets[index].getContent();
 	}
-	return empty;
+	return Consts::EMPTY;
 }
 
 const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const {
@@ -104,7 +104,7 @@ const std::vector<Physical*>& Grid::getContentAt(short x, short z) const {
 	if (calculator.isValidIndex(x, z)) {
 		return getNotSafeContentAt(x, z);
 	}
-	return empty;
+	return Consts::EMPTY;
 }
 
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,

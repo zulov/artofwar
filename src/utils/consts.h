@@ -28,4 +28,5 @@ struct Consts {
 
 	inline const static ActionParameter EMPTY_ACTION_PARAMETER = ActionParameter::Builder().build();
 
+	inline const static std::vector<Physical*> EMPTY;
 };
