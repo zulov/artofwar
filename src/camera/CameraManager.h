@@ -19,7 +19,7 @@ public:
 private:
 	void createCameraKeys(Urho3D::Input* input, bool cameraKeys[4], const Urho3D::IntVector2& cursorPos) const;
 
-	std::array<CameraBehave*,3> cameraBehaves;
+	CameraBehave* cameraBehaves[3];
 	CameraBehave* activeBehave;
 	const float MOUSE_SENSITIVITY = 0.1f;
 	float MOVE_SPEED = 20;

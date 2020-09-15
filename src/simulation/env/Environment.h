@@ -28,7 +28,7 @@ public:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius, int id) const;
 
-	std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
+	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
 	std::vector<Physical*>* getResources(Physical* physical, float radius);
 	std::vector<Physical*>* getResources(Urho3D::Vector3& center, float radius, int id);
@@ -46,7 +46,7 @@ public:
 	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
 	std::optional<Urho3D::Vector2> validatePosition(Urho3D::Vector3& position) const;
 
-	std::vector<Physical*>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
+	const std::vector<Physical*>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 
 	float getGroundHeightAt(float x, float z) const;
 	Urho3D::Vector3 getPosWithHeightAt(float x, float z) const;
@@ -108,5 +108,5 @@ private:
 	std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
 	Urho3D::Terrain* terrian;
 
-	std::vector<Physical*> *neights, *neights2, *empty; //TODO tu bedzie trzeba tablica jesli beda watki
+	std::vector<Physical*> *neights, *neights2; //TODO tu bedzie trzeba tablica jesli beda watki
 };

@@ -122,7 +122,7 @@ void Controls::selectOne(Physical* entity, char player) {
 	}
 }
 
-void Controls::select(std::vector<Physical*>* entities) {
+void Controls::select(const std::vector<Physical*>* entities) {
 	auto player = Game::getPlayersMan()->getActivePlayerID();
 	for (auto physical : *entities) {
 		selectOne(physical, player); //TODO perf zastapic wrzuceniem na raz

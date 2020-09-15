@@ -8,6 +8,7 @@
 #include <simulation/env/bucket/BucketIterator.h>
 #include "EnvConsts.h"
 #include "math/MathUtils.h"
+#include "utils/consts.h"
 
 
 Environment::Environment(Urho3D::Terrain* terrian):
@@ -20,14 +21,12 @@ Environment::Environment(Urho3D::Terrain* terrian):
 	}, influenceManager(MAX_PLAYERS), terrian(terrian) {
 	neights = new std::vector<Physical*>();
 	neights2 = new std::vector<Physical*>();
-	empty = new std::vector<Physical*>();
 }
 
 
 Environment::~Environment() {
 	delete neights;
 	delete neights2;
-	delete empty;
 }
 
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, const float radius) {
@@ -82,7 +81,7 @@ std::vector<Physical*>* Environment::getNeighbours(Urho3D::Vector3& center, Grid
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clicked) const {
+const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clicked) const {
 	Grid* grid;
 	switch (clicked->getType()) {
 	case ObjectType::UNIT:
@@ -94,7 +93,7 @@ std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clicked) c
 	case ObjectType::RESOURCE:
 		grid = grids[2];
 		break;
-	default: return empty;
+	default: return &Consts::EMPTY;
 	}
 	return grid->getArrayNeightSimilarAs(clicked, 20.0);
 }
@@ -159,14 +158,14 @@ std::optional<Urho3D::Vector2> Environment::validatePosition(Urho3D::Vector3& po
 	return mainGrid.getDirectionFrom(position);
 }
 
-std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player) {
+const std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player) {
 	for (auto grid : grids) {
 		const auto result = grid->getArrayNeight(pair, player);
 		if (!result->empty()) {
 			return result;
 		}
 	}
-	return empty;
+	return &Consts::EMPTY;
 }
 
 float Environment::getGroundHeightAt(float x, float z) const {

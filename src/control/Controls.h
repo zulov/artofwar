@@ -27,7 +27,7 @@ public:
 	void init();
 
 	void updateAdditionalInfo() const;
-	void select(std::vector<Physical*>* entities);
+	void select(const std::vector<Physical*>* entities);
 	void selectOne(Physical* entity, char player);
 	void unSelectAll();
 

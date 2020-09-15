@@ -1,7 +1,6 @@
 #pragma once
 #include <Urho3D/Graphics/Camera.h>
 #include <Urho3D/Input/Input.h>
-#include <Urho3D/Scene/Node.h>
 
 
 class CameraBehave {

@@ -9,9 +9,11 @@
 
 
 CameraManager::CameraManager() {
-	cameraBehaves = {new FreeCameraBehave(), new RtsCameraBehave(), new TopCameraBehave()};
+	cameraBehaves[0] = new FreeCameraBehave();
+	cameraBehaves[1] = new RtsCameraBehave();
+	cameraBehaves[2] = new TopCameraBehave();
 
-	activeBehave = cameraBehaves.at(1);
+	activeBehave = cameraBehaves[1];
 	float border = 256.f;
 
 	const int width = Game::getGraphics()->GetWidth();
@@ -24,11 +26,11 @@ CameraManager::CameraManager() {
 }
 
 CameraManager::~CameraManager() {
-	clear_array(cameraBehaves);
+	clear_array(cameraBehaves,3);
 }
 
 void CameraManager::setCameraBehave(CameraBehaviorType _type) {
-	activeBehave = cameraBehaves.at(static_cast<char>(_type));
+	activeBehave = cameraBehaves[static_cast<char>(_type)];
 }
 
 Urho3D::Camera* CameraManager::getComponent() const {

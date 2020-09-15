@@ -1,5 +1,7 @@
 #include "TopCameraBehave.h"
 
+#include <Urho3D/Scene/Node.h>
+
 TopCameraBehave::TopCameraBehave(): CameraBehave(Urho3D::Vector3(0, 50, 0), 20, "TopCam") {
 	const auto diff = sqrt(50.0f - minY) + 1;
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff);
