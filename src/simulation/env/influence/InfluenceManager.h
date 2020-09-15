@@ -6,6 +6,7 @@
 #include "map/InfluenceMapFloat.h"
 #include "map/InfluenceMapHistory.h"
 #include "map/InfluenceMapInt.h"
+#include "map/InfluenceMapQuad.h"
 #include "objects/Physical.h"
 #include "player/ai/ActionMaker.h"
 #include "player/ai/InfluenceType.h"
@@ -25,7 +26,6 @@ public:
 	void update(std::vector<ResourceEntity*>* resources) const;
 
 	void updateBasic(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
-	void updateMain(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
 	void updateWithHistory() const;
 
 	void drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const;
@@ -66,7 +66,7 @@ private:
 	std::vector<std::array<InfluenceMapFloat*, 9>> mapsForAiPerPlayer;
 
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
-	
+
 	std::vector<InfluenceMapFloat*> buildingsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> resourceInfluence;
@@ -76,7 +76,7 @@ private:
 
 	std::vector<InfluenceMapCombine*> basicValues;
 
-	InfluenceMapCombine* main;
+	InfluenceMapQuad* quad;
 
 	InfluenceType debugType = InfluenceType::UNITS_INFLUENCE_PER_PLAYER;
 	content_info* ci;

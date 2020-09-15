@@ -117,7 +117,7 @@ void Environment::updateInfluence1(std::vector<Unit*>* units,
 
 void Environment::updateInfluence2(std::vector<Unit*>* units,
                                    std::vector<Building*>* buildings) const {
-	influenceManager.updateMain(units, buildings);
+	
 }
 
 void Environment::updateInfluence3() const {

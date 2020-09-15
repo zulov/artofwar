@@ -199,6 +199,9 @@
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapCombine.cpp" />
     <ClCompile Include="src\control\BillboardSetProvider.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapHistory.cpp" />
+    <ClCompile Include="src\simulation\env\influence\map\InfluenceMapQuad.cpp" />
+    <ClCompile Include="src\simulation\env\influence\map\InfluenceMapI.cpp" />
+    <ClCompile Include="src\simulation\env\GridCalculatorProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -501,6 +504,9 @@
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapCombine.h" />
     <ClInclude Include="src\control\BillboardSetProvider.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapHistory.h" />
+    <ClInclude Include="src\simulation\env\influence\map\InfluenceMapQuad.h" />
+    <ClInclude Include="src\simulation\env\influence\map\InfluenceMapI.h" />
+    <ClInclude Include="src\simulation\env\GridCalculatorProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

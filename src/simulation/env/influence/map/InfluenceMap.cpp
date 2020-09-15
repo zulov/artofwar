@@ -3,12 +3,13 @@
 #include "debug/DebugLineRepo.h"
 #include "simulation/env/Environment.h"
 #include "colors/ColorPaletteRepo.h"
+#include "simulation/env/GridCalculatorProvider.h"
 
 
 InfluenceMap::InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug):
 	resolution(resolution), size(size), fieldSize(size / resolution),
 	arraySize(resolution * resolution), valueThresholdDebug(valueThresholdDebug),
-	calculator(resolution, size) {
+	calculator(GridCalculatorProvider::get(resolution, size)) {
 }
 
 
@@ -21,7 +22,7 @@ void InfluenceMap::draw(short batch, short maxParts) const {
 }
 
 void InfluenceMap::drawCell(int index, short batch) const {
-	const auto center2 = calculator.getCenter(index);
+	const auto center2 = calculator->getCenter(index);
 	const auto center = Game::getEnvironment()->getPosWithHeightAt(center2.x_, center2.y_);
 	const auto color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);
 
@@ -38,11 +39,11 @@ void InfluenceMap::drawCell(int index, short batch) const {
 }
 
 Urho3D::Vector2 InfluenceMap::getCenter(int index) const {
-	return calculator.getCenter(index);
+	return calculator->getCenter(index);
 }
 
 float InfluenceMap::getFieldSize() const {
-	return calculator.getFieldSize();
+	return calculator->getFieldSize();
 }
 
 void InfluenceMap::print(Urho3D::String name) {
@@ -51,11 +52,10 @@ void InfluenceMap::print(Urho3D::String name) {
 
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
-			const int index = calculator.getNotSafeIndex(x, y);
+			const int index = calculator->getNotSafeIndex(x, y);
 
 			const auto color = Game::getColorPaletteRepo()->getColor(getValueAsPercent(index), 1);
 			image->SetPixel(x, resolution - y - 1, color);
-
 		}
 	}
 

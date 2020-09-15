@@ -52,8 +52,15 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			resourceInfluence[3] //TODO moze to nie osobno jednak? za duza ma wage
 		});
 	}
-
-	main = new InfluenceMapCombine(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5, 16, 40, numberOfPlayers);
+	quad = new InfluenceMapQuad({
+		new InfluenceMapFloat(2, BUCKET_GRID_SIZE, 0.5f, 1, 10),
+		new InfluenceMapFloat(4, BUCKET_GRID_SIZE, 0.5f, 1, 10),
+		new InfluenceMapFloat(8, BUCKET_GRID_SIZE, 0.5f, 1, 10),
+		new InfluenceMapFloat(16, BUCKET_GRID_SIZE, 0.5f, 1, 10),
+		new InfluenceMapFloat(32, BUCKET_GRID_SIZE, 0.5f, 1, 10),
+		new InfluenceMapFloat(64, BUCKET_GRID_SIZE, 0.5f, 1, 10),
+		new InfluenceMapFloat(128, BUCKET_GRID_SIZE, 0.5f, 1, 10),
+	});
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
 }
@@ -63,7 +70,6 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(buildingsInfluencePerPlayer);
 	clear_vector(unitsInfluencePerPlayer);
 
-	delete main;
 	delete ci;
 }
 
@@ -136,25 +142,6 @@ void InfluenceManager::updateBasic(std::vector<Unit*>* units, std::vector<Buildi
 	calcStats(basicValues);
 }
 
-void InfluenceManager::updateMain(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
-	main->reset();
-
-	float weights[MAX_PLAYERS] = {-1}; //TODO hardcode
-	for (auto unit : (*units)) {
-		std::fill_n(weights, MAX_PLAYERS, -1.f);
-		weights[unit->getPlayer()] = 1.f;
-		main->update(unit, std::span{weights, MAX_PLAYERS});
-	}
-
-	for (auto building : (*buildings)) {
-		std::fill_n(weights, MAX_PLAYERS, -1.f);
-		weights[building->getPlayer()] = 1.f;
-		main->update(building, std::span{weights, MAX_PLAYERS});
-	}
-
-	main->finishCalc();
-}
-
 void InfluenceManager::updateWithHistory() const {
 	calcStats(gatherSpeed);
 	calcStats(attackSpeed);
@@ -222,7 +209,7 @@ void InfluenceManager::drawAll() {
 	drawAll(attackSpeed, "attack");
 
 	drawAll(basicValues, "basic");
-	main->print("main");
+	quad->print("quad");
 }
 
 void InfluenceManager::switchDebug() {

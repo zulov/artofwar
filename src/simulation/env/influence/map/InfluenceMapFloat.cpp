@@ -1,7 +1,6 @@
 #include "InfluenceMapFloat.h"
 #include <algorithm>
 #include <numeric>
-
 #include "math/MathUtils.h"
 #include "simulation/env/Environment.h"
 
