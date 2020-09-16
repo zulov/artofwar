@@ -19,19 +19,19 @@ InfluenceMapFloat::~InfluenceMapFloat() {
 void InfluenceMapFloat::update(Physical* thing, float value) {
 	auto& pos = thing->getPosition();
 
-	const auto centerX = calculator.getIndex(pos.x_);
-	const auto centerZ = calculator.getIndex(pos.z_);
-	const auto minI = calculator.getValid(centerX - level);
-	const auto maxI = calculator.getValid(centerX + level);
+	const auto centerX = calculator->getIndex(pos.x_);
+	const auto centerZ = calculator->getIndex(pos.z_);
+	const auto minI = calculator->getValid(centerX - level);
+	const auto maxI = calculator->getValid(centerX + level);
 
-	const auto minJ = calculator.getValid(centerZ - level);
-	const auto maxJ = calculator.getValid(centerZ + level);
+	const auto minJ = calculator->getValid(centerZ - level);
+	const auto maxJ = calculator->getValid(centerZ + level);
 
 	for (short i = minI; i <= maxI; ++i) {
 		const auto a = (i - centerX) * (i - centerX);
 		for (short j = minJ; j <= maxJ; ++j) {
 			const auto b = (j - centerZ) * (j - centerZ);
-			int index = calculator.getNotSafeIndex(i, j);
+			int index = calculator->getNotSafeIndex(i, j);
 			values[index] += value / ((a + b) * coef + 1.f);
 		}
 	}
@@ -46,7 +46,7 @@ float InfluenceMapFloat::getValueAt(int index) const {
 }
 
 float InfluenceMapFloat::getValueAt(const Urho3D::Vector2& pos) const {
-	auto index = calculator.indexFromPosition(pos);
+	auto index = calculator->indexFromPosition(pos);
 	return getValueAt(index);
 }
 

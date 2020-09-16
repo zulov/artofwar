@@ -4,11 +4,12 @@
 #include "DrawGridUtils.h"
 #include "Game.h"
 #include "../ComplexBucketData.h"
+#include "simulation/env/GridCalculatorProvider.h"
 #include "utils/defines.h"
 
 
 PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexData) :
-	closeIndexProvider(resolution), calculator(resolution, size),
+	closeIndexProvider(resolution), calculator(GridCalculatorProvider::get(resolution, size)),
 	resolution(resolution), fieldSize(size / resolution),
 	complexData(complexData) {
 	tempPath = new std::vector<int>();
@@ -101,11 +102,11 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 }
 
 std::vector<int>* PathFinder::findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) {
-	return findPath(calculator.indexFromPosition(from), aim);
+	return findPath(calculator->indexFromPosition(from), aim);
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim) {
-	int end = calculator.indexFromPosition(aim);
+	int end = calculator->indexFromPosition(aim);
 
 	if (ifInCache(startIdx, end)) {
 		return tempPath;
@@ -135,7 +136,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim)
 }
 
 float PathFinder::cost(const int current, const int next) const {
-	return (calculator.getCenter(current) - calculator.getCenter(next)).Length();
+	return (calculator->getCenter(current) - calculator->getCenter(next)).Length();
 }
 
 void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
@@ -238,8 +239,8 @@ void PathFinder::drawMap(Urho3D::Image* image) const {
 	const auto data = (uint32_t*)image->GetData();
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
-			const int index = calculator.getIndex(x, y);
-			const int idR = calculator.getIndex(resolution - y - 1, x);
+			const int index = calculator->getIndex(x, y);
+			const int idR = calculator->getIndex(resolution - y - 1, x);
 			if (complexData[index].isUnit()) {
 				*(data + idR) = 0xFFFFFFFF;
 			} else {

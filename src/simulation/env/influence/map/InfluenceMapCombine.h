@@ -16,7 +16,7 @@ public:
 	void print(Urho3D::String name);
 private:
 	std::vector<InfluenceMapFloat*> values;
-	GridCalculator calculator;
+	GridCalculator* calculator;
 	float coef;
 	unsigned char level;
 	unsigned char numberOfMaps;

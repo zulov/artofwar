@@ -2,7 +2,7 @@
 
 #include "utils/DeleteUtils.h"
 
-std::vector<GridCalculator*> calculators;
+std::vector<GridCalculator*> GridCalculatorProvider::calculators;
 
 GridCalculatorProvider::~GridCalculatorProvider() {
 	clear_vector(calculators);

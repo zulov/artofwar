@@ -30,7 +30,7 @@ public:
 	const std::vector<short>& getCloseIndexes(int center) const;
 	const std::vector<char>& getCloseTabIndexes(short center) const;
 protected:
-	GridCalculator calculator;
+	GridCalculator* calculator;
 	CloseIndexProvider closeIndexProvider;
 
 	Bucket* buckets;

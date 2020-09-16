@@ -3,11 +3,12 @@
 #include <span>
 #include "Game.h"
 #include "objects/Physical.h"
+#include "simulation/env/GridCalculatorProvider.h"
 #include "utils/DeleteUtils.h"
 
 InfluenceMapCombine::InfluenceMapCombine(unsigned short resolution, float size, float coef, char level,
                                          float valueThresholdDebug, char numberOfMaps) :
-	calculator(resolution, size), coef(coef), level(level), numberOfMaps(numberOfMaps) {
+	calculator(GridCalculatorProvider::get(resolution, size)), coef(coef), level(level), numberOfMaps(numberOfMaps) {
 	for (int i = 0; i < numberOfMaps; ++i) {
 		values.push_back(new InfluenceMapFloat(resolution, size, coef, level, valueThresholdDebug));
 	}
@@ -27,17 +28,17 @@ InfluenceMapCombine::~InfluenceMapCombine() {
 void InfluenceMapCombine::update(Physical* thing, std::span<float> values1) {
 	assert(values1.size()==values.size());
 	auto& pos = thing->getPosition();
-	const auto centerX = calculator.getIndex(pos.x_);
-	const auto centerZ = calculator.getIndex(pos.z_);
+	const auto centerX = calculator->getIndex(pos.x_);
+	const auto centerZ = calculator->getIndex(pos.z_);
 	if (centerX != prevCenterX || centerZ != prevCenterZ) {
 		prevCenterX = centerX;
 		prevCenterZ = centerZ;
 
-		const auto minI = calculator.getValid(centerX - level);
-		const auto maxI = calculator.getValid(centerX + level);
+		const auto minI = calculator->getValid(centerX - level);
+		const auto maxI = calculator->getValid(centerX + level);
 
-		const auto minJ = calculator.getValid(centerZ - level);
-		const auto maxJ = calculator.getValid(centerZ + level);
+		const auto minJ = calculator->getValid(centerZ - level);
+		const auto maxJ = calculator->getValid(centerZ + level);
 
 		k = 0;
 		for (short i = minI; i <= maxI; ++i) {
@@ -46,7 +47,7 @@ void InfluenceMapCombine::update(Physical* thing, std::span<float> values1) {
 				const auto b = (j - centerZ) * (j - centerZ);
 
 				vals[k] = 1 / ((a + b) * coef + 1.f);
-				indexes[k] = calculator.getNotSafeIndex(i, j);
+				indexes[k] = calculator->getNotSafeIndex(i, j);
 				++k;
 			}
 		}

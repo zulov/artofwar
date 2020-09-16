@@ -32,7 +32,7 @@ private:
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 	void resetPathArrays();
 	CloseIndexProvider closeIndexProvider;
-	GridCalculator calculator;
+	GridCalculator* calculator;
 
 	std::vector<int>* tempPath;
 

@@ -5,8 +5,6 @@
 
 class GridCalculatorProvider {
 public:
-
-
 	~GridCalculatorProvider();
 	
 	static GridCalculator* get(unsigned short resolution, float size);

@@ -5,9 +5,10 @@
 #include "objects/Physical.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/ContentInfo.h"
+#include "simulation/env/GridCalculatorProvider.h"
 #include "utils/consts.h"
 
-Grid::Grid(short resolution, float size): calculator(resolution, size), closeIndexProvider(resolution),
+Grid::Grid(short resolution, float size): calculator(GridCalculatorProvider::get(resolution, size)), closeIndexProvider(resolution),
                                           resolution(resolution), sqResolution(resolution * resolution),
                                           size(size), fieldSize(size / resolution),
                                           invFieldSize(resolution / size) {
@@ -34,7 +35,7 @@ Grid::~Grid() {
 }
 
 void Grid::update(Unit* unit, const char team) const {
-	const int index = calculator.indexFromPosition(unit->getPosition());
+	const int index = calculator->indexFromPosition(unit->getPosition());
 
 	if (!unit->isAlive()) {
 		removeAt(unit->getBucketIndex(team), unit);
@@ -46,7 +47,7 @@ void Grid::update(Unit* unit, const char team) const {
 }
 
 void Grid::update(Physical* entity) const {
-	const int index = calculator.indexFromPosition(entity->getPosition());
+	const int index = calculator->indexFromPosition(entity->getPosition());
 
 	if (!entity->isAlive()) {
 		removeAt(entity->getMainBucketIndex(), entity);
@@ -68,7 +69,7 @@ std::vector<short>* Grid::getEnvIndexesFromCache(float dist) {
 }
 
 BucketIterator& Grid::getArrayNeight(Urho3D::Vector3& position, float radius, short thread) {
-	return *iterators[thread].init(getEnvIndexesFromCache(radius), calculator.indexFromPosition(position), this);
+	return *iterators[thread].init(getEnvIndexesFromCache(radius), calculator->indexFromPosition(position), this);
 }
 
 const std::vector<short>& Grid::getCloseIndexes(int center) const {
@@ -80,7 +81,7 @@ const std::vector<char>& Grid::getCloseTabIndexes(short center) const {
 }
 
 void Grid::removeAt(int index, Physical* entity) const {
-	if (calculator.isValidIndex(index)) {
+	if (calculator->isValidIndex(index)) {
 		buckets[index].remove(entity);
 	}
 }
@@ -90,18 +91,18 @@ void Grid::addAt(int index, Physical* entity) const {
 }
 
 const std::vector<Physical*>& Grid::getContentAt(int index) const {
-	if (calculator.isValidIndex(index)) {
+	if (calculator->isValidIndex(index)) {
 		return buckets[index].getContent();
 	}
 	return Consts::EMPTY;
 }
 
 const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const {
-	return buckets[calculator.getNotSafeIndex(x, z)].getContent();
+	return buckets[calculator->getNotSafeIndex(x, z)].getContent();
 }
 
 const std::vector<Physical*>& Grid::getContentAt(short x, short z) const {
-	if (calculator.isValidIndex(x, z)) {
+	if (calculator->isValidIndex(x, z)) {
 		return getNotSafeContentAt(x, z);
 	}
 	return Consts::EMPTY;
@@ -111,10 +112,10 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
                                              const char player) const {
 	tempSelected->clear();
 
-	const auto posBeginX = calculator.getIndex(std::min(pair.first->x_, pair.second->x_));
-	const auto posEndX = calculator.getIndex(std::max(pair.first->x_, pair.second->x_));
-	const auto posBeginZ = calculator.getIndex(std::min(pair.first->z_, pair.second->z_));
-	const auto posEndZ = calculator.getIndex(std::max(pair.first->z_, pair.second->z_));
+	const auto posBeginX = calculator->getIndex(std::min(pair.first->x_, pair.second->x_));
+	const auto posEndX = calculator->getIndex(std::max(pair.first->x_, pair.second->x_));
+	const auto posBeginZ = calculator->getIndex(std::min(pair.first->z_, pair.second->z_));
+	const auto posEndZ = calculator->getIndex(std::max(pair.first->z_, pair.second->z_));
 
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
@@ -132,14 +133,14 @@ std::vector<int> Grid::getArrayNeight(const Urho3D::Vector2& center, float radiu
 	radius -= 0.1;
 	std::vector<int> indexes; //TODO performance
 
-	const auto posBeginX = calculator.getIndex(center.x_ - radius);
-	const auto posBeginZ = calculator.getIndex(center.y_ - radius);
-	const auto posEndX = calculator.getIndex(center.x_ + radius);
-	const auto posEndZ = calculator.getIndex(center.y_ + radius);
+	const auto posBeginX = calculator->getIndex(center.x_ - radius);
+	const auto posBeginZ = calculator->getIndex(center.y_ - radius);
+	const auto posEndX = calculator->getIndex(center.x_ + radius);
+	const auto posEndZ = calculator->getIndex(center.y_ + radius);
 
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
-			indexes.push_back(calculator.getNotSafeIndex(i, j));
+			indexes.push_back(calculator->getNotSafeIndex(i, j));
 		}
 	}
 
@@ -150,10 +151,10 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float r
 	//TODO clean prawie to samo co wy¿ej
 	tempSelected->clear();
 
-	const auto posBeginX = calculator.getIndex(clicked->getPosition().x_ - radius);
-	const auto posBeginZ = calculator.getIndex(clicked->getPosition().z_ - radius);
-	const auto posEndX = calculator.getIndex(clicked->getPosition().x_ + radius);
-	const auto posEndZ = calculator.getIndex(clicked->getPosition().z_ + radius);
+	const auto posBeginX = calculator->getIndex(clicked->getPosition().x_ - radius);
+	const auto posBeginZ = calculator->getIndex(clicked->getPosition().z_ - radius);
+	const auto posEndX = calculator->getIndex(clicked->getPosition().x_ + radius);
+	const auto posEndZ = calculator->getIndex(clicked->getPosition().z_ + radius);
 
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
@@ -182,25 +183,25 @@ std::vector<short>* Grid::getEnvIndexs(float radius, std::vector<short>* prev) c
 			if (fieldInCircle(i, j, radius)) {
 				const short x = i + 1;
 				const short y = j + 1;
-				indexes->push_back(calculator.getNotSafeIndex(x, y));
-				indexes->push_back(calculator.getNotSafeIndex(x, -y));
-				indexes->push_back(calculator.getNotSafeIndex(-x, y));
-				indexes->push_back(calculator.getNotSafeIndex(-x, -y));
+				indexes->push_back(calculator->getNotSafeIndex(x, y));
+				indexes->push_back(calculator->getNotSafeIndex(x, -y));
+				indexes->push_back(calculator->getNotSafeIndex(-x, y));
+				indexes->push_back(calculator->getNotSafeIndex(-x, -y));
 			} else {
 				break;
 			}
 		}
 		if (fieldInCircle(i, 0, radius)) {
 			const short x = i + 1;
-			indexes->push_back(calculator.getNotSafeIndex(x, 0));
-			indexes->push_back(calculator.getNotSafeIndex(0, x));
-			indexes->push_back(calculator.getNotSafeIndex(-x, 0));
-			indexes->push_back(calculator.getNotSafeIndex(0, -x));
+			indexes->push_back(calculator->getNotSafeIndex(x, 0));
+			indexes->push_back(calculator->getNotSafeIndex(0, x));
+			indexes->push_back(calculator->getNotSafeIndex(-x, 0));
+			indexes->push_back(calculator->getNotSafeIndex(0, -x));
 		} else {
 			break;
 		}
 	}
-	indexes->push_back(calculator.getNotSafeIndex(0, 0));
+	indexes->push_back(calculator->getNotSafeIndex(0, 0));
 	std::sort(indexes->begin(), indexes->end());
 	if (std::equal(indexes->begin(), indexes->end(), prev->begin(), prev->end())) {
 		delete indexes;

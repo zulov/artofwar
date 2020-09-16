@@ -13,7 +13,7 @@ InfluenceMapInt::~InfluenceMapInt() {
 }
 
 void InfluenceMapInt::update(Physical* thing, float value) {
-	const int index = calculator.indexFromPosition(thing->getPosition());
+	const int index = calculator->indexFromPosition(thing->getPosition());
 
 	values[index] += round(value);
 }
@@ -23,7 +23,7 @@ void InfluenceMapInt::reset() {
 }
 
 char InfluenceMapInt::getValueAt(const Urho3D::Vector2& pos) const {
-	auto index = calculator.indexFromPosition(pos);
+	auto index = calculator->indexFromPosition(pos);
 	return getValueAt(index);
 }
 
