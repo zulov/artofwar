@@ -11,4 +11,5 @@ public:
 	virtual void reset() =0;
 	virtual void finishCalc() =0;
 	virtual void print(Urho3D::String name) =0;
+	virtual int getMaxElement() =0;
 };

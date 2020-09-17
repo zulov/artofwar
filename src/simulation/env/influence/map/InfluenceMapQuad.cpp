@@ -12,6 +12,10 @@ InfluenceMapQuad::~InfluenceMapQuad() {
 	clear_vector(maps);
 }
 
+Urho3D::Vector2 InfluenceMapQuad::getCenter() {
+	int index = maps[0]->getMaxElement();
+}
+
 void InfluenceMapQuad::update(Physical* thing, float value) {
 	for (auto* map : maps) {
 		map->update(thing, value);
