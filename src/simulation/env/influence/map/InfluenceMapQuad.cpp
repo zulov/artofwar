@@ -1,5 +1,8 @@
 #include "InfluenceMapQuad.h"
 
+#include <array>
+
+
 #include "utils/DeleteUtils.h"
 
 InfluenceMapQuad::InfluenceMapQuad(std::initializer_list<InfluenceMapI*> maps) {
@@ -14,6 +17,11 @@ InfluenceMapQuad::~InfluenceMapQuad() {
 
 Urho3D::Vector2 InfluenceMapQuad::getCenter() {
 	int index = maps[0]->getMaxElement();
+	for (int i = 1; i < maps.size(); ++i) {
+		std::array<int, 4> indexes = getIndexes(i,index);
+		index = maps[i]->getMaxElement(indexes);
+	}
+	maps.back()->getC
 }
 
 void InfluenceMapQuad::update(Physical* thing, float value) {

@@ -14,6 +14,8 @@ public:
 	float getValueAsPercent(const int index) const override;
 	float getValueAt(int index) const override;
 	void finishCalc() override;
+	int getMaxElement() override;
+	int getMaxElement(std::array<int, 4> indexes) override;
 private:
 	unsigned char* values;
 };

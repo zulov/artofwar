@@ -1,4 +1,5 @@
 #pragma once
+#include <array>
 class Physical;
 
 namespace Urho3D {
@@ -12,4 +13,5 @@ public:
 	virtual void finishCalc() =0;
 	virtual void print(Urho3D::String name) =0;
 	virtual int getMaxElement() =0;
+	virtual int getMaxElement(std::array<int, 4> indexes) =0;
 };

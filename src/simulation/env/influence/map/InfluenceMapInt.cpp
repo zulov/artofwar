@@ -53,3 +53,13 @@ void InfluenceMapInt::finishCalc() {
 	max = *maxIdx;
 	avg = std::accumulate(values, values + arraySize, 0) / (double)arraySize;
 }
+
+int InfluenceMapInt::getMaxElement() {
+	return std::distance(values, std::max_element(values, values + arraySize));
+}
+
+int InfluenceMapInt::getMaxElement(std::array<int, 4> indexes) {
+	float values1[4] = {values[indexes[0]], values[indexes[1]], values[indexes[2]], values[indexes[3]]};
+	int i = std::distance(values1, std::max_element(values1, values1 + 4));
+	return indexes[i];
+}

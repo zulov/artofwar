@@ -73,6 +73,16 @@ void InfluenceMapFloat::finishCalc() {
 	avg = std::accumulate(values, values + arraySize, 0.0f) / arraySize;
 }
 
+int InfluenceMapFloat::getMaxElement() {
+	return std::distance(values, std::max_element(values, values + arraySize));
+}
+
+int InfluenceMapFloat::getMaxElement(std::array<int, 4> indexes) {
+	float values1[4] = {values[indexes[0]], values[indexes[1]], values[indexes[2]], values[indexes[3]]};
+	int i = std::distance(values1, std::max_element(values1, values1 + 4));
+	return indexes[i];
+}
+
 std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float tolerance) const {
 	const float diff = max - min;
 	auto minV = diff * (percent - tolerance) + min;
