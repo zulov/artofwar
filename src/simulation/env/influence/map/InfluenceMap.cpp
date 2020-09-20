@@ -26,15 +26,16 @@ void InfluenceMap::drawCell(int index, short batch) const {
 	const auto center = Game::getEnvironment()->getPosWithHeightAt(center2.x_, center2.y_);
 	const auto color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);
 
+	auto v = fieldSize / 3;
 	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE,
-	                            center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),
-	                            center + Urho3D::Vector3(fieldSize / 3, 1, fieldSize / 3),
-	                            center + Urho3D::Vector3(fieldSize / 3, 1, -fieldSize / 3),
+	                            center + Urho3D::Vector3(-v, 1, v),
+	                            center + Urho3D::Vector3(v, 1, v),
+	                            center + Urho3D::Vector3(v, 1, -v),
 	                            color, batch);
 	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE,
-	                            center + Urho3D::Vector3(fieldSize / 3, 1, -fieldSize / 3),
-	                            center + Urho3D::Vector3(-fieldSize / 3, 1, -fieldSize / 3),
-	                            center + Urho3D::Vector3(-fieldSize / 3, 1, fieldSize / 3),
+	                            center + Urho3D::Vector3(v, 1, -v),
+	                            center + Urho3D::Vector3(-v, 1, -v),
+	                            center + Urho3D::Vector3(-v, 1, v),
 	                            color, batch);
 }
 
