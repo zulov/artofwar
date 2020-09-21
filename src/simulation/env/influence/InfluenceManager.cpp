@@ -70,6 +70,12 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(buildingsInfluencePerPlayer);
 	clear_vector(unitsInfluencePerPlayer);
 
+	clear_vector(basicValues);
+	clear_vector(gatherSpeed);
+	clear_vector(attackSpeed);
+	clear_vector(resourceInfluence);
+
+	delete quad;
 	delete ci;
 }
 
@@ -140,6 +146,17 @@ void InfluenceManager::updateBasic(std::vector<Unit*>* units, std::vector<Buildi
 		basicValuesFunc(weights, building);
 	}
 	calcStats(basicValues);
+}
+
+void InfluenceManager::updateQuad(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
+	quad->reset();
+	for (auto unit : (*units)) {
+		quad->update(unit);
+	}
+	for (auto building : (*buildings)) {
+		quad->update(building);
+	}
+	quad->finishCalc();
 }
 
 void InfluenceManager::updateWithHistory() const {

@@ -46,12 +46,17 @@ void InfluenceMapQuad::print(Urho3D::String name) {
 	}
 }
 
-std::array<int, 4> InfluenceMapQuad::getIndexes(unsigned short resolution, int index) {
-	std::array<int, 4> result;
-	auto mod = index%resolution;
-	auto div = index/resolution;
-	mod*2+div*resolution*4
-	
+std::array<int, 4> InfluenceMapQuad::getIndexes(unsigned short resolution, int index) const {
+	const auto mod = index % resolution;
+	const auto div = index / resolution;
+	const auto value = mod * 2 + div * resolution * 4;
+
+	return {
+		value,
+		value + 1,
+		value + resolution * 2,
+		value + resolution * 2 + 1
+	};
 }
 
 int InfluenceMapQuad::getMaxElement() {
@@ -59,7 +64,7 @@ int InfluenceMapQuad::getMaxElement() {
 	return 0;
 }
 
-int InfluenceMapQuad::getMaxElement(std::array<int, 4> indexes) {
+int InfluenceMapQuad::getMaxElement(const std::array<int, 4>& indexes) {
 	assert(false);
 	return 0;
 }

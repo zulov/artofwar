@@ -117,7 +117,7 @@ void Environment::updateInfluence1(std::vector<Unit*>* units,
 
 void Environment::updateInfluence2(std::vector<Unit*>* units,
                                    std::vector<Building*>* buildings) const {
-	
+	influenceManager.updateQuad(units, buildings);
 }
 
 void Environment::updateInfluence3() const {
@@ -158,7 +158,8 @@ std::optional<Urho3D::Vector2> Environment::validatePosition(Urho3D::Vector3& po
 	return mainGrid.getDirectionFrom(position);
 }
 
-const std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player) {
+const std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,
+                                                         char player) {
 	for (auto grid : grids) {
 		const auto result = grid->getArrayNeight(pair, player);
 		if (!result->empty()) {

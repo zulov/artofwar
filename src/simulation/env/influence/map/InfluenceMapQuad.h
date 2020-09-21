@@ -14,10 +14,10 @@ public:
 	void finishCalc() override;
 	void print(Urho3D::String name) override;
 
-	std::array<int, 4> getIndexes(unsigned short resolution, int index);
+	std::array<int, 4> getIndexes(unsigned short resolution, int index) const;
 	
 	int getMaxElement() override;
-	int getMaxElement(std::array<int, 4> indexes) override;
+	int getMaxElement(const std::array<int, 4>& indexes) override;
 	unsigned short getResolution() override;
 	Urho3D::Vector2 getCenter(int index) override;
 private:
