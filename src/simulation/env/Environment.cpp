@@ -277,32 +277,32 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 	switch (environmentDebugMode) {
 
 	case EnvironmentDebugMode::NONE:
-		influenceManager.draw(InfluenceType::NONE, index);
+		influenceManager.draw(InfluenceDataType::NONE, index);
 		break;
 	case EnvironmentDebugMode::MAIN_GRID:
 		mainGrid.drawDebug(GridDebugType(index % magic_enum::enum_count<GridDebugType>()));
-		influenceManager.draw(InfluenceType::NONE, index);
+		influenceManager.draw(InfluenceDataType::NONE, index);
 		break;
 	case EnvironmentDebugMode::INF_UNITS_NUMBER_PER_PLAYER:
-		influenceManager.draw(InfluenceType::UNITS_NUMBER_PER_PLAYER, index);
+		influenceManager.draw(InfluenceDataType::UNITS_NUMBER_PER_PLAYER, index);
 		break;
 	case EnvironmentDebugMode::INF_UNITS_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluenceType::UNITS_INFLUENCE_PER_PLAYER, index);
+		influenceManager.draw(InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER, index);
 		break;
 	case EnvironmentDebugMode::INF_BUILDING_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluenceType::BUILDING_INFLUENCE_PER_PLAYER, index);
+		influenceManager.draw(InfluenceDataType::BUILDING_INFLUENCE_PER_PLAYER, index);
 		break;
 	case EnvironmentDebugMode::INF_RESOURCE:
-		influenceManager.draw(InfluenceType::RESOURCE_INFLUENCE, index);
+		influenceManager.draw(InfluenceDataType::RESOURCE_INFLUENCE, index);
 		break;
 	case EnvironmentDebugMode::INF_ATTACK_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluenceType::ATTACK_INFLUENCE_PER_PLAYER, index);
+		influenceManager.draw(InfluenceDataType::ATTACK_INFLUENCE_PER_PLAYER, index);
 		break;
 	case EnvironmentDebugMode::INF_DEFENCE_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluenceType::DEFENCE_INFLUENCE_PER_PLAYER, index);
+		influenceManager.draw(InfluenceDataType::DEFENCE_INFLUENCE_PER_PLAYER, index);
 		break;
 	case EnvironmentDebugMode::INF_ECON_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluenceType::ECON_INFLUENCE_PER_PLAYER, index);
+		influenceManager.draw(InfluenceDataType::ECON_INFLUENCE_PER_PLAYER, index);
 		break;
 	default: ;
 	}

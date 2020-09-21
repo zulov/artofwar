@@ -3,6 +3,7 @@
 #include <chrono>
 #include <span>
 #include "Game.h"
+#include "InfluenceMapType.h"
 #include "database/DatabaseCache.h"
 #include "debug/DebugLineRepo.h"
 #include "math/VectorUtils.h"
@@ -36,6 +37,9 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 
 		attackSpeed.emplace_back(
 			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+		unitsQuad.emplace_back(new InfluenceMapQuad(1, 7, InfluenceMapType::INT, BUCKET_GRID_SIZE, 0.5f, 1, 2));
+		buildingsQuad.emplace_back(new InfluenceMapQuad(1, 7, InfluenceMapType::INT, BUCKET_GRID_SIZE, 0.5f, 1, 2));
+		gatherQuad.emplace_back(new InfluenceMapQuad(1, 7, InfluenceMapType::HISTORY, BUCKET_GRID_SIZE, 0.5f, 1, 10));
 	}
 
 	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
@@ -52,15 +56,8 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			resourceInfluence[3] //TODO moze to nie osobno jednak? za duza ma wage
 		});
 	}
-	quad = new InfluenceMapQuad({
-		new InfluenceMapFloat(2, BUCKET_GRID_SIZE, 0.5f, 1, 10),
-		new InfluenceMapFloat(4, BUCKET_GRID_SIZE, 0.5f, 1, 10),
-		new InfluenceMapFloat(8, BUCKET_GRID_SIZE, 0.5f, 1, 10),
-		new InfluenceMapFloat(16, BUCKET_GRID_SIZE, 0.5f, 1, 10),
-		new InfluenceMapFloat(32, BUCKET_GRID_SIZE, 0.5f, 1, 10),
-		new InfluenceMapFloat(64, BUCKET_GRID_SIZE, 0.5f, 1, 10),
-		new InfluenceMapFloat(128, BUCKET_GRID_SIZE, 0.5f, 1, 10),
-	});
+
+
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
 }
@@ -75,7 +72,9 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(attackSpeed);
 	clear_vector(resourceInfluence);
 
-	delete quad;
+	clear_vector(unitsQuad);
+	clear_vector(buildingsQuad);
+	clear_vector(gatherQuad);
 	delete ci;
 }
 
@@ -149,14 +148,19 @@ void InfluenceManager::updateBasic(std::vector<Unit*>* units, std::vector<Buildi
 }
 
 void InfluenceManager::updateQuad(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
-	quad->reset();
+	resetMaps(unitsQuad);
+	resetMaps(buildingsQuad);
+	resetMaps(gatherQuad);
+
 	for (auto unit : (*units)) {
-		quad->update(unit);
+		unitsQuad[unit->getPlayer()]->update(unit);
 	}
 	for (auto building : (*buildings)) {
-		quad->update(building);
+		buildingsQuad[building->getPlayer()]->update(building);
 	}
-	quad->finishCalc();
+	resetMaps(unitsQuad);
+	resetMaps(buildingsQuad);
+	resetMaps(gatherQuad);
 }
 
 void InfluenceManager::updateWithHistory() const {
@@ -177,33 +181,33 @@ void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapCombine
 	vector[index]->get(static_cast<char>(type))->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 }
 
-void InfluenceManager::draw(InfluenceType type, char index) {
+void InfluenceManager::draw(InfluenceDataType type, char index) {
 	DebugLineRepo::clear(DebugLineType::INFLUENCE, currentDebugBatch);
 	DebugLineRepo::beginGeometry(DebugLineType::INFLUENCE, currentDebugBatch);
 
 	switch (type) {
-	case InfluenceType::NONE:
+	case InfluenceDataType::NONE:
 		break;
-	case InfluenceType::UNITS_NUMBER_PER_PLAYER:
+	case InfluenceDataType::UNITS_NUMBER_PER_PLAYER:
 		index = index % unitsNumberPerPlayer.size();
 		unitsNumberPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
-	case InfluenceType::UNITS_INFLUENCE_PER_PLAYER:
+	case InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER:
 		drawMap(index, unitsInfluencePerPlayer);
 		break;
-	case InfluenceType::BUILDING_INFLUENCE_PER_PLAYER:
+	case InfluenceDataType::BUILDING_INFLUENCE_PER_PLAYER:
 		drawMap(index, buildingsInfluencePerPlayer);
 		break;
-	case InfluenceType::RESOURCE_INFLUENCE:
+	case InfluenceDataType::RESOURCE_INFLUENCE:
 		drawMap(index, resourceInfluence);
 		break;
-	case InfluenceType::ECON_INFLUENCE_PER_PLAYER:
+	case InfluenceDataType::ECON_INFLUENCE_PER_PLAYER:
 		drawMap(index, basicValues, ValueType::ECON);
 		break;
-	case InfluenceType::ATTACK_INFLUENCE_PER_PLAYER:
+	case InfluenceDataType::ATTACK_INFLUENCE_PER_PLAYER:
 		drawMap(index, basicValues, ValueType::ATTACK);
 		break;
-	case InfluenceType::DEFENCE_INFLUENCE_PER_PLAYER:
+	case InfluenceDataType::DEFENCE_INFLUENCE_PER_PLAYER:
 		drawMap(index, basicValues, ValueType::DEFENCE);
 		break;
 	default: ;
@@ -226,19 +230,22 @@ void InfluenceManager::drawAll() {
 	drawAll(attackSpeed, "attack");
 
 	drawAll(basicValues, "basic");
-	quad->print("quad");
+	
+	drawAll(unitsQuad, "unitsQuad");
+	drawAll(buildingsQuad, "buildingsQuad");
+	drawAll(gatherQuad, "gatherQuad");
 }
 
 void InfluenceManager::switchDebug() {
 	switch (debugType) {
-	case InfluenceType::NONE:
-		debugType = InfluenceType::UNITS_NUMBER_PER_PLAYER;
+	case InfluenceDataType::NONE:
+		debugType = InfluenceDataType::UNITS_NUMBER_PER_PLAYER;
 		break;
-	case InfluenceType::UNITS_NUMBER_PER_PLAYER:
-		debugType = InfluenceType::UNITS_INFLUENCE_PER_PLAYER;
+	case InfluenceDataType::UNITS_NUMBER_PER_PLAYER:
+		debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 		break;
-	case InfluenceType::UNITS_INFLUENCE_PER_PLAYER:
-		debugType = InfluenceType::NONE;
+	case InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER:
+		debugType = InfluenceDataType::NONE;
 		break;
 	default: ;
 	}
@@ -339,6 +346,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> r
 
 void InfluenceManager::addCollect(Unit* unit, float value) {
 	gatherSpeed[unit->getPlayer()]->update(unit, value);
+	gatherQuad[unit->getPlayer()]->update(unit, value);
 }
 
 void InfluenceManager::addAttack(Unit* unit, float value) {

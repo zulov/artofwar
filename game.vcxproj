@@ -188,7 +188,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\simulation\env\GridCalculatorProvider.cpp" />
-    <ClCompile Include="src\simulation\env\influence\map\InfluenceMapI.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapQuad.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapHistory.cpp" />
     <ClCompile Include="src\control\BillboardSetProvider.cpp" />
@@ -302,6 +301,8 @@
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\simulation\env\influence\InfluenceMapFactory.h" />
+    <ClInclude Include="src\simulation\env\influence\InfluenceMapType.h" />
     <ClInclude Include="src\simulation\env\GridCalculatorProvider.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapI.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapQuad.h" />
@@ -334,7 +335,7 @@
     <ClInclude Include="src\hud\window\score\ScorePanel.h" />
     <ClInclude Include="src\objects\ValueType.h" />
     <ClInclude Include="src\player\ai\AiManager.h" />
-    <ClInclude Include="src\player\ai\InfluenceType.h" />
+    <ClInclude Include="src\player\ai\InfluenceDataType.h" />
     <ClInclude Include="src\player\Possession.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
     <ClInclude Include="src\utils\NamesUtils.h" />

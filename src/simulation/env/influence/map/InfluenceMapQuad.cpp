@@ -1,11 +1,13 @@
 #include "InfluenceMapQuad.h"
 
 #include <array>
+#include "simulation/env/influence/InfluenceMapFactory.h"
 #include "utils/DeleteUtils.h"
 
-InfluenceMapQuad::InfluenceMapQuad(std::initializer_list<InfluenceMapI*> maps) {
-	for (auto* map : maps) {
-		this->maps.push_back(map);
+InfluenceMapQuad::InfluenceMapQuad(int from, int to, InfluenceMapType type, const unsigned short size, float coef,
+                                   char level, float valueThresholdDebug) {
+	for (; from <= to; ++from) {
+		maps.push_back(createMap(pow(2, from), type, size, coef, level, valueThresholdDebug));
 	}
 }
 

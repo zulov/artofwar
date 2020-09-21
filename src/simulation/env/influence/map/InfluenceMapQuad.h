@@ -2,11 +2,13 @@
 #include <vector>
 
 #include "InfluenceMap.h"
+#include "simulation/env/influence/InfluenceMapType.h"
 
 class InfluenceMapQuad : public InfluenceMapI {
 public:
-	explicit InfluenceMapQuad(std::initializer_list<InfluenceMapI*> maps);
-	~InfluenceMapQuad();
+	InfluenceMapQuad(int from, int to, InfluenceMapType type, const unsigned short size, float coef, char level,
+	                 float valueThresholdDebug);
+	virtual ~InfluenceMapQuad();
 
 	Urho3D::Vector2 getCenter();
 	void update(Physical* thing, float value = 1) override;
@@ -15,7 +17,7 @@ public:
 	void print(Urho3D::String name) override;
 
 	std::array<int, 4> getIndexes(unsigned short resolution, int index) const;
-	
+
 	int getMaxElement() override;
 	int getMaxElement(const std::array<int, 4>& indexes) override;
 	unsigned short getResolution() override;

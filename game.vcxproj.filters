@@ -200,7 +200,6 @@
     <ClCompile Include="src\control\BillboardSetProvider.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapHistory.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapQuad.cpp" />
-    <ClCompile Include="src\simulation\env\influence\map\InfluenceMapI.cpp" />
     <ClCompile Include="src\simulation\env\GridCalculatorProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -476,7 +475,6 @@
     <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
-    <ClInclude Include="src\player\ai\InfluenceType.h" />
     <ClInclude Include="src\math\VectorUtils.h" />
     <ClInclude Include="src\math\MathUtils.h" />
     <ClInclude Include="src\math\RandGen.h" />
@@ -507,6 +505,9 @@
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapQuad.h" />
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapI.h" />
     <ClInclude Include="src\simulation\env\GridCalculatorProvider.h" />
+    <ClInclude Include="src\player\ai\InfluenceDataType.h" />
+    <ClInclude Include="src\simulation\env\influence\InfluenceMapType.h" />
+    <ClInclude Include="src\simulation\env\influence\InfluenceMapFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

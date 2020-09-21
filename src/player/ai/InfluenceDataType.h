@@ -1,5 +1,5 @@
 #pragma once
-enum class InfluenceType : char {
+enum class InfluenceDataType : char {
 	NONE,
 	UNITS_NUMBER_PER_PLAYER,
 	UNITS_INFLUENCE_PER_PLAYER,

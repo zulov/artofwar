@@ -9,7 +9,7 @@
 #include "map/InfluenceMapQuad.h"
 #include "objects/Physical.h"
 #include "player/ai/ActionMaker.h"
-#include "player/ai/InfluenceType.h"
+#include "player/ai/InfluenceDataType.h"
 
 enum class CellState : char;
 class Unit;
@@ -32,7 +32,7 @@ public:
 	void drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const;
 	void drawMap(char index, const std::vector<InfluenceMapCombine*>& vector, ValueType type) const;
 
-	void draw(InfluenceType type, char index);
+	void draw(InfluenceDataType type, char index);
 	void drawAll();
 	void switchDebug();
 
@@ -77,9 +77,11 @@ private:
 
 	std::vector<InfluenceMapCombine*> basicValues;
 
-	InfluenceMapQuad* quad;
+	std::vector<InfluenceMapQuad*> unitsQuad;
+	std::vector<InfluenceMapQuad*> buildingsQuad;
+	std::vector<InfluenceMapQuad*> gatherQuad;
 
-	InfluenceType debugType = InfluenceType::UNITS_INFLUENCE_PER_PLAYER;
+	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 	content_info* ci;
 	std::vector<float> dataFromPos;
 	short currentDebugBatch = 0;

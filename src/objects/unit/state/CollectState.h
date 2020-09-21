@@ -45,8 +45,8 @@ public:
 		State::onEnd(unit);
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceClose();
-			Game::getEnvironment()->updateCell(unit->getMainCell(), -1, CellState::NONE);
 		}
+		Game::getEnvironment()->updateCell(unit->getMainCell(), -1, CellState::NONE);//TODO BUG a co jeœli wyszed³? odejmie ze z³ego cela
 		unit->indexToInteract = -1;
 	}
 
