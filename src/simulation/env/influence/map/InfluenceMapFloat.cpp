@@ -52,7 +52,7 @@ float InfluenceMapFloat::getValueAt(const Urho3D::Vector2& pos) const {
 
 float InfluenceMapFloat::getValueAsPercent(const Urho3D::Vector2& pos) const {
 	const float diff = max - min;
-	if (diff != 0) {
+	if (diff != 0.f) {
 		return (getValueAt(pos) - min) / diff;
 	}
 	return 0.5f;
@@ -60,7 +60,7 @@ float InfluenceMapFloat::getValueAsPercent(const Urho3D::Vector2& pos) const {
 
 float InfluenceMapFloat::getValueAsPercent(int index) const {
 	const float diff = max - min;
-	if (diff != 0) {
+	if (diff != 0.f) {
 		return (getValueAt(index) - min) / diff;
 	}
 	return 0.5f;

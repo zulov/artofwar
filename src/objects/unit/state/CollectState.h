@@ -8,8 +8,7 @@
 #include "simulation/env/Environment.h"
 
 
-class CollectState : public State
-{
+class CollectState : public State {
 public:
 
 	CollectState(): State({
@@ -46,7 +45,8 @@ public:
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceClose();
 		}
-		Game::getEnvironment()->updateCell(unit->getMainCell(), -1, CellState::NONE);//TODO BUG a co jeœli wyszed³? odejmie ze z³ego cela
+		Game::getEnvironment()->updateCell(unit->indexToInteract, -1, CellState::NONE);
+		assert(unit->getMainCell() == unit->indexToInteract);
 		unit->indexToInteract = -1;
 	}
 
