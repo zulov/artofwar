@@ -3,7 +3,6 @@
 #include <vector>
 
 class Layer {
-
 public:
 	Layer(std::vector<float>& w, std::vector<float>& bias);
 	Layer(const Layer& rhs) = delete;
@@ -22,7 +21,7 @@ private:
 	std::span<float> valuesSpan;
 	short prevSize;
 
-	float* values;
+	float* values;//TODO performance replate with eigen Vector
 	float* bias;
 
 	float* w;
