@@ -79,7 +79,7 @@ public:
 	db_basic_metric(float costSum, float defence, float distanceAttack)
 		: costSum(costSum),
 		  defence(defence),
-		  distanceAttack(distanceAttack) {
+		  distanceAttack(distanceAttack),params{costSum, defence, distanceAttack} {
 	}
 };
 
@@ -199,7 +199,10 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_basic
 		  upgradeSpeed(upgradeSpeed),
 		  maxForce(maxForce),
 		  sqMinSpeed(minSpeed * minSpeed),
-		  attackInterest(attackRange * 10) {
+		  attackInterest(attackRange * 10) {	
+	}
+
+	void finish() {
 		dbUnitMetric = new db_unit_metric();
 	}
 
@@ -275,13 +278,16 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_b
 		  building(building),
 		  nodeName(nodeName),
 		  queueMaxCapacity(queueMaxCapacity) {
-		dbBuildingMetric = new db_building_metric();
 	}
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);
 		clear_vector(unitsPerNationIds);
 		delete dbBuildingMetric;
+	}
+
+	void finish() {
+		dbBuildingMetric = new db_building_metric();
 	}
 };
 
@@ -459,5 +465,15 @@ struct db_container {
 		clear_vector(playerColors);
 		clear_vector(unitsLevels);
 		clear_vector(buildingsLevels);
+	}
+
+	void finish() {
+		for (auto unitLevel : unitsLevels) {
+			unitLevel->finish();
+		}
+
+		for (auto buildingLevel : buildingsLevels) {
+			buildingLevel->finish();
+		}
 	}
 };

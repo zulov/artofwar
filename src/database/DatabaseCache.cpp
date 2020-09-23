@@ -81,6 +81,8 @@ void DatabaseCache::loadData(const std::string& name) {
 	execute("SELECT * from building_level_up_ai_prop", loadAiPropBuildingLevelUp);
 	execute("SELECT * from unit_level_up_ai_prop", loadAiPropUnitLevelUp);
 
+	dbContainer->finish();
+
 	sqlite3_close(database);
 }
 
