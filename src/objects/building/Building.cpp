@@ -37,7 +37,7 @@ short Building::getId() {
 
 void Building::populate() {
 	Static::populate();
-	queue = new QueueManager(dbLevel->queueMaxCapacity);
+	queue = new QueueManager(dbLevel->queueMaxCapacity);//TODO perf je¿eli queueMaxCapacity ==0 to QueueManager::EMPTY
 }
 
 float Building::absorbAttack(float attackCoef) {

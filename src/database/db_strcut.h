@@ -18,6 +18,7 @@ struct db_nation;
 struct db_order;
 struct db_building_level;
 struct db_cost;
+struct db_unit_level;
 
 struct db_entity {
 	const short id;
@@ -168,6 +169,36 @@ static void setEntity(std::vector<T*>& array, T* entity) {
 }
 
 
+
+struct db_unit : db_entity, db_with_name, db_with_cost {
+	const bool rotatable;
+	const Urho3D::String icon;
+	const short actionState;
+
+	std::vector<db_unit_level*> levels;
+
+	std::vector<db_order*> orders;
+	std::vector<short> ordersIds;
+	std::vector<db_nation*> nations;
+
+	bool possibleStates[magic_enum::enum_count<UnitState>()];
+
+	db_unit(short id, char* name, short rotatable, char* icon, short actionState)
+		: db_entity(id), db_with_name(name),
+		  rotatable(rotatable),
+		  icon(icon),
+		  actionState(actionState) {
+	}
+
+	std::optional<db_unit_level*> getLevel(short level) {
+		if (levels.size() > level) {
+			return levels.at(level);
+		}
+		return {};
+	}
+
+};
+
 struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_basic {
 	const short unit;
 	const float minDist;
@@ -207,43 +238,14 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_basic
 		  attackInterest(attackRange * 10) {	
 	}
 
-	void finish() {
+	void finish(db_unit* dbUnit) {
 		
-		dbUnitMetric = new db_unit_metric(unit->getSumCost(),);
+		dbUnitMetric = new db_unit_metric(dbUnit->getSumCost(),);
 	}
 
 	~db_unit_level() {
 		delete dbUnitMetric;
 	}
-};
-
-struct db_unit : db_entity, db_with_name, db_with_cost {
-	const bool rotatable;
-	const Urho3D::String icon;
-	const short actionState;
-
-	std::vector<db_unit_level*> levels;
-
-	std::vector<db_order*> orders;
-	std::vector<short> ordersIds;
-	std::vector<db_nation*> nations;
-
-	bool possibleStates[magic_enum::enum_count<UnitState>()];
-
-	db_unit(short id, char* name, short rotatable, char* icon, short actionState)
-		: db_entity(id), db_with_name(name),
-		  rotatable(rotatable),
-		  icon(icon),
-		  actionState(actionState) {
-	}
-
-	std::optional<db_unit_level*> getLevel(short level) {
-		if (levels.size() > level) {
-			return levels.at(level);
-		}
-		return {};
-	}
-
 };
 
 struct db_building : db_entity, db_with_name, db_with_cost, db_static {
@@ -292,8 +294,8 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_b
 		delete dbBuildingMetric;
 	}
 
-	void finish() {
-		dbBuildingMetric = new db_building_metric();
+	void finish(db_building* dbBuilding) {
+		dbBuildingMetric = new db_building_metric(dbBuilding->getSumCost(),);
 	}
 };
 
@@ -475,11 +477,11 @@ struct db_container {
 
 	void finish() {
 		for (auto unitLevel : unitsLevels) {
-			unitLevel->finish();
+			unitLevel->finish(this);
 		}
 
 		for (auto buildingLevel : buildingsLevels) {
-			buildingLevel->finish();
+			buildingLevel->finish(this);
 		}
 	}
 };
