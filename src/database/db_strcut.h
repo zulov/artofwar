@@ -60,6 +60,11 @@ struct db_static {
 
 struct db_with_cost {
 	std::vector<db_cost*> costs;
+
+	float getSumCost() {
+		
+	}
+	
 	~db_with_cost() { clear_vector(costs); }
 };
 
@@ -203,7 +208,8 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_basic
 	}
 
 	void finish() {
-		dbUnitMetric = new db_unit_metric();
+		
+		dbUnitMetric = new db_unit_metric(unit->getSumCost(),);
 	}
 
 	~db_unit_level() {
