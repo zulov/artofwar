@@ -7,7 +7,7 @@
 #include <algorithm>
 
 
-QueueManager::QueueManager(short maxCapacity): maxCapacity(maxCapacity) {
+QueueManager::QueueManager(unsigned short maxCapacity): maxCapacity(maxCapacity) {
 }
 
 
@@ -15,7 +15,11 @@ QueueManager::~QueueManager() {
 	clear_vector(queue);
 }
 
-void QueueManager::add(short number, QueueActionType type, short id, short localMaxCapacity) {
+void QueueManager::add(short number, QueueActionType type, short id, unsigned short localMaxCapacity) {
+	if(maxCapacity==0) {
+		assert(false);
+		return;
+	}
 	for (auto i : queue) {
 		if (i->checkType(type, id)) {
 			number = i->add(number);
@@ -55,32 +59,4 @@ short QueueManager::getSize() const {
 
 QueueElement* QueueManager::getAt(short i) {
 	return queue.at(i);
-}
-
-float QueueManager::getSecToComplete(QueueActionType type, short id, int level) {
-	switch (type) {
-	case QueueActionType::UNIT_CREATE:
-		return 5;
-	case QueueActionType::BUILDING_CREATE:
-		return 10;
-	case QueueActionType::UNIT_LEVEL:
-		return Game::getDatabase()->getUnit(id)->getLevel(level).value()->upgradeSpeed; //TODO BUG value
-	case QueueActionType::BUILDING_LEVEL:
-		return 10;
-	default:
-		return 1;
-	}
-}
-
-float QueueManager::getSecPerInstance(QueueActionType type, short id, int level) {
-	//TODO performance przerobic na tablice
-	switch (type) {
-	case QueueActionType::UNIT_CREATE:
-		return 0.5;
-	case QueueActionType::BUILDING_CREATE:
-	case QueueActionType::UNIT_LEVEL:
-	case QueueActionType::BUILDING_LEVEL:
-	default:
-		return 0;
-	}
 }

@@ -94,7 +94,7 @@ const std::vector<Physical*>& Grid::getContentAt(int index) const {
 	if (calculator->isValidIndex(index)) {
 		return buckets[index].getContent();
 	}
-	return Consts::EMPTY;
+	return Consts::EMPTY_PHYSICAL;
 }
 
 const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const {
@@ -105,7 +105,7 @@ const std::vector<Physical*>& Grid::getContentAt(short x, short z) const {
 	if (calculator->isValidIndex(x, z)) {
 		return getNotSafeContentAt(x, z);
 	}
-	return Consts::EMPTY;
+	return Consts::EMPTY_PHYSICAL;
 }
 
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,

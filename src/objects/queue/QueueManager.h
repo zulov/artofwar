@@ -6,10 +6,10 @@ class QueueElement;
 
 class QueueManager {
 public:
-	explicit QueueManager(short maxCapacity);
+	explicit QueueManager(unsigned short maxCapacity);
 	~QueueManager();
 
-	void add(short number, QueueActionType type, short id, short localMaxCapacity);
+	void add(short number, QueueActionType type, short id, unsigned short localMaxCapacity);
 	QueueElement* update(float time);
 	short getSize() const;
 	QueueElement* getAt(short i);
@@ -19,5 +19,5 @@ private:
 
 	std::vector<QueueElement*> queue;
 
-	short maxCapacity;
+	unsigned short maxCapacity;
 };

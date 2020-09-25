@@ -11,6 +11,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
+#include "utils/consts.h"
 
 
 Building::Building(Urho3D::Vector3& _position, int id, int player, int level, int mainCell):
@@ -23,7 +24,9 @@ Building::Building(Urho3D::Vector3& _position, int id, int player, int level, in
 
 Building::~Building() {
 	node->RemoveAllChildren();
-	delete queue;
+	if (queue != &Consts::EMPTY_QUEUE) {
+		delete queue;
+	}
 }
 
 float Building::getMaxHpBarSize() const {
@@ -37,7 +40,11 @@ short Building::getId() {
 
 void Building::populate() {
 	Static::populate();
-	queue = new QueueManager(dbLevel->queueMaxCapacity);//TODO perf je¿eli queueMaxCapacity ==0 to QueueManager::EMPTY
+	if (dbLevel->queueMaxCapacity > 0) {
+		queue = new QueueManager(dbLevel->queueMaxCapacity);
+	} else {
+		queue = &Consts::EMPTY_QUEUE;
+	}
 }
 
 float Building::absorbAttack(float attackCoef) {

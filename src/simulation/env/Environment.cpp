@@ -93,7 +93,7 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 	case ObjectType::RESOURCE:
 		grid = grids[2];
 		break;
-	default: return &Consts::EMPTY;
+	default: return &Consts::EMPTY_PHYSICAL;
 	}
 	return grid->getArrayNeightSimilarAs(clicked, 20.0);
 }
@@ -166,7 +166,7 @@ const std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vecto
 			return result;
 		}
 	}
-	return &Consts::EMPTY;
+	return &Consts::EMPTY_PHYSICAL;
 }
 
 float Environment::getGroundHeightAt(float x, float z) const {

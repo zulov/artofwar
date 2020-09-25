@@ -1,7 +1,12 @@
 #pragma once
+#include "objects/queue/QueueManager.h"
 #include "objects/unit/ActionParameter.h"
 
 struct Consts {
+	~Consts() {
+		delete EMPTY_QUEUE;
+	}
+
 	inline static Urho3D::Vector2 circleCords[8] =
 	{
 		{0, 1},
@@ -28,5 +33,8 @@ struct Consts {
 
 	inline const static ActionParameter EMPTY_ACTION_PARAMETER = ActionParameter::Builder().build();
 
-	inline const static std::vector<Physical*> EMPTY;
+	inline const static std::vector<Physical*> EMPTY_PHYSICAL;
+
+	inline static QueueManager EMPTY_QUEUE = QueueManager(0);
+
 };
