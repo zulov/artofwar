@@ -117,7 +117,7 @@ protected:
 
 	Urho3D::Vector3 position;
 
-	float hp = 100, maxHp = 100;
+	float hp = 100;
 
 private:
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;

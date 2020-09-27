@@ -3,9 +3,6 @@
 #include "objects/unit/ActionParameter.h"
 
 struct Consts {
-	~Consts() {
-		delete EMPTY_QUEUE;
-	}
 
 	inline static Urho3D::Vector2 circleCords[8] =
 	{

@@ -37,7 +37,7 @@ public:
 	}
 
 	bool closeEnough(Unit* unit) const {
-		return sqDist(unit->getPosition(), unit->missileData->aim->getPosition()) < unit->dbLevel->attackRange * unit->dbLevel->attackRange;
+		return sqDist(unit->getPosition(), unit->missileData->aim->getPosition()) < unit->dbLevel->sqRangeAttackRange * unit->dbLevel->rangeAttackRange;
 	}
 
 	void execute(Unit* unit, float timeStep) override {
@@ -48,7 +48,7 @@ public:
 		if (!unit->missileData->aim || !unit->missileData->aim->isAlive()) {
 			unit->missileData->reset();
 			StateManager::changeState(unit, UnitState::STOP);
-		} else if (!unit->missileData->isUp() && fmod(unit->currentFrameState, 1 / unit->dbLevel->attackSpeed) < 1) {
+		} else if (!unit->missileData->isUp() && fmod(unit->currentFrameState, 1 / unit->dbLevel->rangeAttackSpeed) < 1) {
 			if (closeEnough(unit)) {
 				shot(unit);
 			} else {

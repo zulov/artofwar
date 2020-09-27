@@ -1,4 +1,4 @@
-#include "Unit.h"
+﻿#include "Unit.h"
 #include <algorithm>
 #include <string>
 #include "Game.h"
@@ -53,7 +53,6 @@ bool Unit::isAlive() const {
 void Unit::populate() {
 	maxSpeed = dbLevel->maxSpeed;
 	hp = dbLevel->maxHp;
-	maxHp = dbLevel->maxHp;
 }
 
 void Unit::checkAim() {
@@ -70,7 +69,7 @@ void Unit::move(float timeStep) {
 		//node->Translate((*velocity) * timeStep, TS_WORLD);
 	}
 	if (missileData && missileData->isUp()) {
-		missileData->update(timeStep, dbLevel->attack);
+		missileData->update(timeStep, dbLevel->rangeAttackVal);
 	}
 }
 
@@ -106,7 +105,7 @@ Urho3D::Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 }
 
 float Unit::absorbAttack(float attackCoef) {
-	auto val = attackCoef * (1 - dbLevel->defense);
+	auto val = attackCoef * (1 - dbLevel->armor);
 	hp -= val;
 
 	updateHealthBar();
@@ -120,7 +119,7 @@ float Unit::absorbAttack(float attackCoef) {
 void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, int indexToInteract,
                                float sqDistance, float closeRange, float interestRange) {
 	if (closest) {
-		if (sqDistance < closeRange * closeRange) {
+		if (sqDistance < closeRange * closeRange) {//TODO bug!!! co to za odległość?
 			addOrder(new IndividualOrder(this, order, closest));
 		} else if (sqDistance < interestRange * interestRange) {
 			addOrder(new IndividualOrder(this, UnitAction::FOLLOW, nullptr, closest));
@@ -130,12 +129,12 @@ void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, int indexToI
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order) {
-	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->attackRange, dbLevel->attackInterest);
+	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->rangeAttackRange, dbLevel->attackInterest);
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order,
                     float attackInterest) {
-	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->attackRange, attackInterest);
+	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->rangeAttackRange, attackInterest);
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {
@@ -233,9 +232,9 @@ void Unit::setIndexToInteract(int index) {
 Urho3D::String Unit::toMultiLineString() {
 	return Urho3D::String(dbUnit->name + " " + dbLevel->name)
 	       .Append("\nAtak: ").Append(Urho3D::String(dbLevel->attack))
-	       .Append("\nObrona: ").Append(Urho3D::String(dbLevel->defense))
+	       .Append("\nObrona: ").Append(Urho3D::String(dbLevel->armor))
 	       .Append("\nZdrowie: ").Append(Urho3D::String(hp))
-	       .Append("/").Append(Urho3D::String(maxHp))
+	       .Append("/").Append(Urho3D::String(dbLevel->maxHp))
 	       .Append("\nStan:").Append(Urho3D::String(magic_enum::enum_name(state).data()));
 }
 
@@ -303,7 +302,7 @@ void Unit::setState(UnitState _state) {
 
 void Unit::load(dbload_unit* unit) {
 	Physical::load(unit);
-	state = UnitState(unit->state); //TODO nie wiem czy nie przepisa�poprzez przejscie?
+	state = UnitState(unit->state); //TODO nie wiem czy nie przepisaæpoprzez przejscie?
 	velocity = {unit->vel_x, unit->vel_z};
 }
 

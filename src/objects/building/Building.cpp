@@ -48,7 +48,7 @@ void Building::populate() {
 }
 
 float Building::absorbAttack(float attackCoef) {
-	auto val = attackCoef * (1 - dbLevel->defense);
+	auto val = attackCoef * (1 - dbLevel->armor);
 	hp -= val;
 
 	updateHealthBar();
@@ -63,7 +63,7 @@ Urho3D::String Building::toMultiLineString() {
 	auto l10n = Game::getLocalization();
 
 	return Urho3D::String(dbBuilding->name + " " + dbLevel->name)
-		.AppendWithFormat(l10n->Get("ml_build").CString(), dbLevel->attack, dbLevel->defense, (int)hp, maxHp,
+		.AppendWithFormat(l10n->Get("ml_build").CString(), dbLevel->rangeAttackVal, dbLevel->armor, (int)hp, dbLevel->maxHp,
 		                  closeUsers,
 		                  maxCloseUsers, magic_enum::enum_name(state).data());
 }
@@ -114,14 +114,14 @@ std::string Building::getValues(int precision) {
 
 void Building::fillValues(std::span<float> weights) const {
 	std::copy(dbLevel->aiProps->params, dbLevel->aiProps->params + 3, weights.begin());
-	auto percent = hp / maxHp;
+	auto percent = hp / dbLevel->maxHp;
 	for (auto& weight : weights) {
 		weight *= percent;
 	}
 }
 
 void Building::addValues(std::span<float> vals) const {
-	auto percent = hp / maxHp;
+	auto percent = hp / dbLevel->maxHp;
 	for (int i = 0; i < vals.size(); ++i) {
 		vals[i] += percent * dbLevel->aiProps->params[i];
 	}

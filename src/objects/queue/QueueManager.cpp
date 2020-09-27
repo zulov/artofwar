@@ -6,6 +6,8 @@
 #include "utils/DeleteUtils.h"
 #include <algorithm>
 
+#include "QueueUtils.h"
+
 
 QueueManager::QueueManager(unsigned short maxCapacity): maxCapacity(maxCapacity) {
 }

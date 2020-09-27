@@ -58,8 +58,8 @@ public:
 	void execute(Unit* unit, float timeStep) override {
 		State::execute(unit, timeStep);
 		if (isInRange(unit)) {
-			if (fmod(unit->currentFrameState, 1 / unit->dbLevel->attackSpeed) < 1) {
-				auto val = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->attack);
+			if (fmod(unit->currentFrameState, 1 / unit->dbLevel->closeAttackSpeed) < 1) {
+				auto val = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->closeAttackVal);
 				Game::getEnvironment()->addAttack(unit, val);
 			}
 			++unit->currentFrameState;

@@ -12,13 +12,13 @@ struct dbload_config {
 
 struct dbload_physical {
 	short id_db;
-	float hp_coef;
+	float hp;
 	short player;
 	short level;
 
-	dbload_physical(short idDb, float hpCoef, short player, short level)
+	dbload_physical(short idDb, float hp, short player, short level)
 		: id_db(idDb),
-		  hp_coef(hpCoef),
+		  hp(hp),
 		  player(player),
 		  level(level) {
 	}
@@ -30,9 +30,9 @@ struct dbload_static : dbload_physical {
 	char state;
 	char nextState;
 
-	dbload_static(int idDb, float hpCoef, int player, int bucX, int bucY, int level, int state,
+	dbload_static(int idDb, float hp, int player, int bucX, int bucY, int level, int state,
 	              int nextState)
-		: dbload_physical(idDb, hpCoef, player, level),
+		: dbload_physical(idDb, hp, player, level),
 		  buc_x(bucX),
 		  buc_y(bucY),
 		  state(state),
@@ -47,9 +47,9 @@ struct dbload_unit : dbload_physical {
 	float vel_x;
 	float vel_z;
 
-	dbload_unit(int idDb, float hpCoef, int player, int level, float posX, float posZ, int state,
+	dbload_unit(int idDb, float hp, int player, int level, float posX, float posZ, int state,
 	            float velX, float velZ)
-		: dbload_physical(idDb, hpCoef, player, level),
+		: dbload_physical(idDb, hp, player, level),
 		  pos_x(posX),
 		  pos_z(posZ),
 		  state(state),

@@ -96,7 +96,7 @@ bool Physical::isSelected() const {
 }
 
 void Physical::load(dbload_physical* dbloadPhysical) {
-	hp = maxHp * dbloadPhysical->hp_coef;
+	hp = dbloadPhysical->hp;
 }
 
 Urho3D::String Physical::toMultiLineString() {
@@ -115,7 +115,7 @@ int Physical::getLevel() {
 }
 
 std::string Physical::getValues(int precision) {
-	int hp_coef = getHealthPercent() * precision;
+	int hp_coef = hp * precision;
 	return std::to_string(getId()) + ","
 		+ std::to_string(hp_coef) + ","
 		+ std::to_string(player) + ","
