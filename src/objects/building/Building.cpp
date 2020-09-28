@@ -63,7 +63,8 @@ Urho3D::String Building::toMultiLineString() {
 	auto l10n = Game::getLocalization();
 
 	return Urho3D::String(dbBuilding->name + " " + dbLevel->name)
-		.AppendWithFormat(l10n->Get("ml_build").CString(), dbLevel->rangeAttackVal, dbLevel->armor, (int)hp, dbLevel->maxHp,
+		.AppendWithFormat(l10n->Get("ml_build").CString(), dbLevel->rangeAttackVal, dbLevel->armor, (int)hp,
+		                  dbLevel->maxHp,
 		                  closeUsers,
 		                  maxCloseUsers, magic_enum::enum_name(state).data());
 }
@@ -129,6 +130,10 @@ void Building::addValues(std::span<float> vals) const {
 
 const Urho3D::IntVector2 Building::getGridSize() const {
 	return dbBuilding->size;
+}
+
+unsigned short Building::getMaxHp() const {
+	return dbLevel->maxHp;
 }
 
 void Building::createDeploy() {

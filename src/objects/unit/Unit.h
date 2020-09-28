@@ -120,11 +120,11 @@ public:
 
 	void fillValues(std::span<float> weights) const override;
 	void addValues(std::span<float> vals) const override;
+	unsigned short getMaxHp() const override;
 
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 private:
-	void actionIfCloseEnough(UnitAction order, Physical* closest, int indexToInteract,
-	                         float sqDistance, float closeRange, float interestRange);
+	void actionIfCloseEnough(UnitAction order, Physical* closest, float sqDistance);
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);
 

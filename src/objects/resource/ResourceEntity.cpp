@@ -39,10 +39,6 @@ float ResourceEntity::getMaxHpBarSize() const {
 	return 1;
 }
 
-float ResourceEntity::getHealthPercent() const {
-	return hp / dbResource->maxHp;
-}
-
 Urho3D::String ResourceEntity::toMultiLineString() {
 	auto l10n = Game::getLocalization();
 
@@ -56,6 +52,10 @@ std::string ResourceEntity::getValues(int precision) {
 	int amountI = hp * precision;
 	return Static::getValues(precision)
 		+ std::to_string(amountI);
+}
+
+unsigned short ResourceEntity::getMaxHp() const {
+	return dbResource->maxHp;
 }
 
 void ResourceEntity::action(ResourceActionType type, char player) {

@@ -116,8 +116,7 @@ float Unit::absorbAttack(float attackCoef) {
 	return val;
 }
 
-void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, int indexToInteract,
-                               float sqDistance, float closeRange, float interestRange) {
+void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, float sqDistance) {
 	if (closest) {
 		if (sqDistance < closeRange * closeRange) {
 			//TODO bug!!! co to za odległość?
@@ -130,8 +129,7 @@ void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, int indexToI
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order) {
-	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->rangeAttackRange,
-	                    dbLevel->attackInterest);
+	actionIfCloseEnough(order, closest,  minDistance);
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order,
@@ -337,17 +335,10 @@ void Unit::clearAims() {
 }
 
 bool Unit::closeEnoughToAttack() {
+	float dist = sqDist(position, getPosToUse());
 	float sqRange;
-	if (dbLevel->canCloseAttack) {
-		sqRange = dbLevel->sqCloseAttackRange;
-	} else if (dbLevel->canRangeAttack) {
-		sqRange = dbLevel->sqRangeAttackRange;
-	} else {
-		assert(fasle);
-		return false;
-	}
-
-	return dirTo(position, getPosToUse()).LengthSquared() < sqRange;
+	return dbLevel->canCloseAttack && sqRange < dbLevel->sqCloseAttackRange
+		|| dbLevel->canRangeAttack && sqRange < dbLevel->sqRangeAttackRange;
 }
 
 bool Unit::isInRightSocket() const {
@@ -483,6 +474,10 @@ void Unit::addValues(std::span<float> vals) const {
 	for (int i = 0; i < vals.size(); ++i) {
 		vals[i] += percent * dbLevel->aiProps->params[i];
 	}
+}
+
+unsigned short Unit::getMaxHp() const {
+	return dbLevel->maxHp;
 }
 
 Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
