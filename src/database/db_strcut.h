@@ -33,14 +33,29 @@ struct db_attack {
 	const float chargeAttackVal;
 	const float buildingAttackVal;
 
+	const float armor;
+
 	const short closeAttackSpeed;
 	const short rangeAttackSpeed;
 
+	const short closeAttackRange;
 	const short rangeAttackRange;
+	const short sqCloseAttackRange;
 	const short sqRangeAttackRange;
 
-	const float armor;
+	const float attackInterest;
 
+	const bool canCloseAttack;
+	const bool canRangeAttack;
+	const bool canChargeAttack;
+	const bool canCollectAttack;
+
+	bool initFlag(float val) {
+		if (val > 0.f) {
+			return true;
+		}
+		return false;
+	}
 
 	db_attack(float closeAttackVal, float rangeAttackVal, float chargeAttackVal, float buildingAttackVal,
 	          short closeAttackSpeed, short rangeAttackSpeed, short rangeAttackRange, float armor)
@@ -51,7 +66,13 @@ struct db_attack {
 		  closeAttackSpeed(closeAttackSpeed),
 		  rangeAttackSpeed(rangeAttackSpeed),
 		  rangeAttackRange(rangeAttackRange), sqRangeAttackRange(rangeAttackRange * rangeAttackRange),
-		  armor(armor) {}
+		  closeAttackRange(1.f), sqCloseAttackRange(1.f),
+		  attackInterest(rangeAttackRange * 10.f),
+		  armor (armor),
+	      canCloseAttack(initFlag (closeAttackVal)),
+	      canRangeAttack(initFlag (rangeAttackVal)),
+	      canChargeAttack(initFlag (chargeAttackVal)),
+	      canCollectAttack(initFlag (buildingAttackVal)) {}
 };
 
 struct db_with_name {
@@ -234,7 +255,6 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	const float upgradeSpeed;
 	const float maxForce;
 	const float sqMinSpeed;
-	const float attackInterest;
 
 	const Urho3D::String nodeName;
 
@@ -244,23 +264,21 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	              float mass, short maxHp, float maxSpeed, float minSpeed, float upgradeSpeed,
 	              float maxForce, float collectSpeed, float closeAttackVal, float rangeAttackVal, float chargeAttackVal,
 	              float buildingAttackVal, short closeAttackSpeed, short rangeAttackSpeed, short rangeAttackRange,
-	              float armor)
-		:
-		db_entity(id), db_level(level), db_with_name(name),
-		db_attack(closeAttackVal, rangeAttackVal, chargeAttackVal, buildingAttackVal,
-		          closeAttackSpeed, rangeAttackSpeed, rangeAttackRange, armor), db_with_hp(maxHp),
-		unit(unit),
-		minDist(minDist),
-		maxSep(maxSep),
-		nodeName(nodeName),
-		mass(mass),
-		maxSpeed(maxSpeed),
-		minSpeed(minSpeed),
-		collectSpeed(collectSpeed),
-		upgradeSpeed(upgradeSpeed),
-		maxForce(maxForce),
-		sqMinSpeed(minSpeed * minSpeed),
-		attackInterest(rangeAttackRange * 10) { }
+	              float armor): db_entity(id), db_level(level), db_with_name(name),
+	                            db_attack(closeAttackVal, rangeAttackVal, chargeAttackVal, buildingAttackVal,
+	                                      closeAttackSpeed, rangeAttackSpeed, rangeAttackRange, armor),
+	                            db_with_hp(maxHp),
+	                            unit(unit),
+	                            minDist(minDist),
+	                            maxSep(maxSep),
+	                            nodeName(nodeName),
+	                            mass(mass),
+	                            maxSpeed(maxSpeed),
+	                            minSpeed(minSpeed),
+	                            collectSpeed(collectSpeed),
+	                            upgradeSpeed(upgradeSpeed),
+	                            maxForce(maxForce),
+	                            sqMinSpeed(minSpeed * minSpeed) {}
 
 	void finish(db_unit* dbUnit) {
 

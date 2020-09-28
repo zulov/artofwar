@@ -119,7 +119,8 @@ float Unit::absorbAttack(float attackCoef) {
 void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, int indexToInteract,
                                float sqDistance, float closeRange, float interestRange) {
 	if (closest) {
-		if (sqDistance < closeRange * closeRange) {//TODO bug!!! co to za odległość?
+		if (sqDistance < closeRange * closeRange) {
+			//TODO bug!!! co to za odległość?
 			addOrder(new IndividualOrder(this, order, closest));
 		} else if (sqDistance < interestRange * interestRange) {
 			addOrder(new IndividualOrder(this, UnitAction::FOLLOW, nullptr, closest));
@@ -129,7 +130,8 @@ void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, int indexToI
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order) {
-	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->rangeAttackRange, dbLevel->attackInterest);
+	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->rangeAttackRange,
+	                    dbLevel->attackInterest);
 }
 
 void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order,
@@ -231,7 +233,10 @@ void Unit::setIndexToInteract(int index) {
 
 Urho3D::String Unit::toMultiLineString() {
 	return Urho3D::String(dbUnit->name + " " + dbLevel->name)
-	       .Append("\nAtak: ").Append(Urho3D::String(dbLevel->attack))
+	       .Append("\nAtak: ").Append(Urho3D::String(dbLevel->closeAttackVal))
+	       .Append(Urho3D::String(dbLevel->rangeAttackVal))
+	       .Append(Urho3D::String(dbLevel->chargeAttackVal))
+	       .Append(Urho3D::String(dbLevel->buildingAttackVal))
 	       .Append("\nObrona: ").Append(Urho3D::String(dbLevel->armor))
 	       .Append("\nZdrowie: ").Append(Urho3D::String(hp))
 	       .Append("/").Append(Urho3D::String(dbLevel->maxHp))
@@ -332,7 +337,17 @@ void Unit::clearAims() {
 }
 
 bool Unit::closeEnoughToAttack() {
-	return dirTo(position, getPosToUse()).LengthSquared() < dbLevel->attackRange * dbLevel->attackRange;
+	float sqRange;
+	if (dbLevel->canCloseAttack) {
+		sqRange = dbLevel->sqCloseAttackRange;
+	} else if (dbLevel->canRangeAttack) {
+		sqRange = dbLevel->sqRangeAttackRange;
+	} else {
+		assert(fasle);
+		return false;
+	}
+
+	return dirTo(position, getPosToUse()).LengthSquared() < sqRange;
 }
 
 bool Unit::isInRightSocket() const {
@@ -457,14 +472,14 @@ void Unit::clean() {
 
 void Unit::fillValues(std::span<float> weights) const {
 	std::copy(dbLevel->aiProps->params, dbLevel->aiProps->params + 3, weights.begin());
-	auto percent = hp / maxHp;
+	auto percent = hp / dbLevel->maxHp;
 	for (auto& weight : weights) {
 		weight *= percent;
 	}
 }
 
 void Unit::addValues(std::span<float> vals) const {
-	const auto percent = hp / maxHp;
+	const auto percent = hp / dbLevel->maxHp;
 	for (int i = 0; i < vals.size(); ++i) {
 		vals[i] += percent * dbLevel->aiProps->params[i];
 	}
