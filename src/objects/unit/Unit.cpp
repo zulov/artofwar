@@ -128,13 +128,8 @@ void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, float sqDist
 	}
 }
 
-void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order) {
-	actionIfCloseEnough(order, closest,  minDistance);
-}
-
-void Unit::toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order,
-                    float attackInterest) {
-	actionIfCloseEnough(order, closest, indexToInteract, minDistance, dbLevel->rangeAttackRange, attackInterest);
+void Unit::toAction(Physical* closest, float minDistance, UnitAction order) {
+	actionIfCloseEnough(order, closest, minDistance);
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {
@@ -395,7 +390,17 @@ short Unit::getId() {
 	return dbUnit->id;
 }
 
-float Unit::getAttackRange() const { return dbLevel->attackRange; }
+float Unit::getAttackRange() const {
+	if (dbLevel->canRangeAttack) {
+		return dbLevel->rangeAttackRange;
+	}
+
+	if (dbLevel->canRangeAttack) {
+		return dbLevel->closeAttackRange;
+	}
+	assert(false);
+	return 2.f;
+}
 
 float Unit::getMinimalDistance() const {
 	return dbLevel->minDist;

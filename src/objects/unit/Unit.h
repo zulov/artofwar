@@ -55,9 +55,7 @@ public:
 
 	void toCharge(std::vector<Physical*>* enemies);
 
-	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order);
-	void toAction(Physical* closest, float minDistance, int indexToInteract, UnitAction order,
-	              float attackInterest);
+	void toAction(Physical* closest, float minDistance, UnitAction order);
 
 	void updateHeight(float y, double timeStep);
 
