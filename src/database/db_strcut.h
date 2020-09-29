@@ -65,7 +65,7 @@ struct db_attack {
 		  rangeAttackVal(rangeAttackVal),
 		  chargeAttackVal(chargeAttackVal),
 		  buildingAttackVal(buildingAttackVal),
-	  armor(armor),
+		  armor(armor),
 		  closeAttackSpeed(closeAttackSpeed),
 		  rangeAttackSpeed(rangeAttackSpeed),
 		  rangeAttackRange(rangeAttackRange), sqRangeAttackRange(rangeAttackRange * rangeAttackRange),
@@ -136,6 +136,20 @@ public:
 		: costSum(costSum), defence(defence),
 		  distanceAttack(distanceAttack), params{costSum, defence, distanceAttack} {
 	}
+
+	// const std::string& getParamsNormAsString() const { return paramsAString; }
+	// const std::span<float> getParamsNormAsSpan() const { return paramsAsSpan; }
+	//
+	// void setCostSum(float costSum, float normDiv) {
+	// 	this->costSum = costSum;
+	// 	params[3] = costSum / normDiv;
+	// }
+	//
+	// void setParamsNormAString(std::string paramsAString) {
+	// 	this->paramsAString = std::move(paramsAString);
+	// 	paramsAsSpan = std::span{params};
+	// }
+
 };
 
 struct db_unit_metric : db_basic_metric {
@@ -159,53 +173,12 @@ public:
 	}
 };
 
-struct db_ai_property {
-private:
-	float costSum = 0;
-
-	std::string paramsAString;
-	std::span<float> paramsAsSpan;
-public:
-	float params[AI_PROPS_SIZE];
-
-	const float econ;
-	const float attack;
-	const float defence;
-
-	db_ai_property(float econ, float attack, float defence)
-		: econ(econ),
-		  attack(attack),
-		  defence(defence), params{econ, attack, defence} {
-	}
-
-	const std::string& getParamsNormAsString() const { return paramsAString; }
-	const std::span<float> getParamsNormAsSpan() const { return paramsAsSpan; }
-
-	void setCostSum(float costSum, float normDiv) {
-		this->costSum = costSum;
-		params[3] = costSum / normDiv;
-	}
-
-	void setParamsNormAString(std::string paramsAString) {
-		this->paramsAString = std::move(paramsAString);
-		paramsAsSpan = std::span{params};
-	}
-
-};
-
 struct db_level {
 	const short level;
-	db_ai_property* aiProps = nullptr;
-	db_ai_property* aiPropsLevelUp = nullptr;
 
 
 	explicit db_level(short level)
 		: level(level) {
-	}
-
-	~db_level() {
-		delete aiProps;
-		delete aiPropsLevelUp;
 	}
 };
 
@@ -275,28 +248,28 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	db_unit_metric* dbUnitMetric = nullptr;
 
 	db_unit_level(short id, short level, short unit, char* name, float minDist, float maxSep, char* nodeName,
-	              float mass, short maxHp, float maxSpeed, float minSpeed, float upgradeSpeed,
-	              float collectSpeed, float maxForce, float closeAttackVal, float rangeAttackVal, float chargeAttackVal,
+	              float mass, short maxHp, float maxSpeed, float minSpeed, float upgradeSpeed, float collectSpeed,
+	              float maxForce, float closeAttackVal, float rangeAttackVal, float chargeAttackVal,
 	              float buildingAttackVal, short closeAttackSpeed, short rangeAttackSpeed, short rangeAttackRange,
-	              float armor): db_entity(id), db_level(level), db_with_name(name),
-	                            db_attack(closeAttackVal, rangeAttackVal, chargeAttackVal, buildingAttackVal,
-	                                      closeAttackSpeed, rangeAttackSpeed, rangeAttackRange, armor),
-	                            db_with_hp(maxHp),
-	                            unit(unit),
-	                            minDist(minDist),
-	                            maxSep(maxSep),
-	                            nodeName(nodeName),
-	                            mass(mass),
-	                            maxSpeed(maxSpeed),
-	                            minSpeed(minSpeed),
-	                            collectSpeed(collectSpeed),
-	                            upgradeSpeed(upgradeSpeed),
-	                            maxForce(maxForce),
-	                            sqMinSpeed(minSpeed * minSpeed) {
+	              float armor):
+		db_entity(id), db_level(level), db_with_name(name),
+		db_attack(closeAttackVal, rangeAttackVal, chargeAttackVal, buildingAttackVal,
+		          closeAttackSpeed, rangeAttackSpeed, rangeAttackRange, armor),
+		db_with_hp(maxHp),
+		unit(unit),
+		minDist(minDist),
+		maxSep(maxSep),
+		nodeName(nodeName),
+		mass(mass),
+		maxSpeed(maxSpeed),
+		minSpeed(minSpeed),
+		collectSpeed(collectSpeed),
+		upgradeSpeed(upgradeSpeed),
+		maxForce(maxForce),
+		sqMinSpeed(minSpeed * minSpeed) {
 	}
 
 	void finish(db_unit* dbUnit) {
-
 		dbUnitMetric = new db_unit_metric(dbUnit->getSumCost(), armor * maxHp,
 		                                  rangeAttackVal * rangeAttackSpeed,
 		                                  closeAttackVal * closeAttackSpeed,
