@@ -104,7 +104,7 @@ void Simulation::tryToCollect(Unit* unit) {
 void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
                           const std::function<bool(Physical*)>& condition) {
 	auto [closest, minDistance, indexToInteract] = unit->closestPhysical(list, condition);
-	unit->toAction(closest, minDistance, indexToInteract, order);
+	unit->toAction(closest, minDistance, order);
 }
 
 void Simulation::selfAI() {
@@ -148,7 +148,7 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 0, Urho3D::Vector2(20, -220), 0);
+		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 0, Urho3D::Vector2(20, -220), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 4, Urho3D::Vector2(10, -20), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER, 0, Urho3D::Vector2(-20, -10), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0);

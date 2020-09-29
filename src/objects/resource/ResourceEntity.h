@@ -30,5 +30,4 @@ public:
 private:
 
 	db_resource* dbResource;
-	//float amount;
 };

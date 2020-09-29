@@ -85,9 +85,7 @@ void Unit::forceGo(float boostCoef, float aimCoef, Urho3D::Vector2& force) const
 	force.Normalize();
 	force *= boostCoef;
 	force -= velocity;
-	force /= 0.5;
-	force *= dbLevel->mass;
-	force *= aimCoef;
+	force *= dbLevel->mass * aimCoef * 2.f;
 }
 
 Urho3D::Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
@@ -116,20 +114,14 @@ float Unit::absorbAttack(float attackCoef) {
 	return val;
 }
 
-void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, float sqDistance) {
-	if (closest) {
-		if (sqDistance < closeRange * closeRange) {
-			//TODO bug!!! co to za odległość?
-			addOrder(new IndividualOrder(this, order, closest));
-		} else if (sqDistance < interestRange * interestRange) {
-			addOrder(new IndividualOrder(this, UnitAction::FOLLOW, nullptr, closest));
-			addOrder(new IndividualOrder(this, order, closest, true));
-		}
+void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, float sqDistance, bool force) {
+	if (closest && (force || sqDistance < dbLevel->sqAttackInterest)) {
+		addOrder(new IndividualOrder(this, order, closest, true));
 	}
 }
 
-void Unit::toAction(Physical* closest, float minDistance, UnitAction order) {
-	actionIfCloseEnough(order, closest, minDistance);
+void Unit::toAction(Physical* closest, float minDistance, UnitAction order, bool force) {
+	actionIfCloseEnough(order, closest, minDistance, force);
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {

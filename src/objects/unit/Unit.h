@@ -55,7 +55,7 @@ public:
 
 	void toCharge(std::vector<Physical*>* enemies);
 
-	void toAction(Physical* closest, float minDistance, UnitAction order);
+	void toAction(Physical* closest, float minDistance, UnitAction order, bool force = false);
 
 	void updateHeight(float y, double timeStep);
 
@@ -122,7 +122,7 @@ public:
 
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 private:
-	void actionIfCloseEnough(UnitAction order, Physical* closest, float sqDistance);
+	void actionIfCloseEnough(UnitAction order, Physical* closest, float sqDistance, bool force);
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);
 

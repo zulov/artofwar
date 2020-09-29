@@ -58,7 +58,7 @@ public:
 
 	virtual ObjectType getType() const { return ObjectType::PHYSICAL; }
 
-	virtual unsigned short getMaxHp() const;
+	virtual unsigned short getMaxHp() const { return 1; } //TODO =0
 	float getHealthPercent() const { return hp / getMaxHp(); }
 	signed char getTeam() const { return team; }
 	Urho3D::Vector3& getPosition() { return position; }
@@ -119,7 +119,6 @@ protected:
 	Urho3D::Vector3 position;
 
 	float hp = 100;
-
 private:
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
 	void updateBillboardAura(Urho3D::Vector3& boundingBox) const;

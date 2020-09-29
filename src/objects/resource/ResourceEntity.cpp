@@ -72,7 +72,7 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 					auto opt = this->getPosToUseWithIndex(unit);
 					if (opt.has_value()) {
 						auto [pos, distance, indexOfPos] = opt.value();
-						unit->toAction(this, distance, indexOfPos, UnitAction::COLLECT, 24);
+						unit->toAction(this, distance, UnitAction::COLLECT, true);
 						//TODO add order?
 						++k;
 					}
