@@ -1,4 +1,4 @@
-/test.VC.db
+﻿/test.VC.db
 /Debug
 bin
 test.dir
@@ -12,28 +12,7 @@ art_of_war.dir
 result
 *.rar
 include
-/Data/Database/base.db
 /CoreData
 saves
-/Data/Database/base.old.db
-/Data/Database/base — kopia.db
-/Data/Database/base — kopia (2).db
-/Data/Database/base.old.2.db
-/Data/Database/base.old3.db
 x64
-/Data/Database/base.old2.db
-/Data/Database/bas.old5.db
-/Data/Database/base.old.4db
-/Data/Database/test.db
-/Data/ai/test0.csv
-/Data/ai/test1.csv
-/Data/ai/test0a.csv
-/Data/Database/bin.zip
-/Data/Database/copy.zip
-/Data/Database/copy1.zip
-/Data/Database/data.db
-/Data/Database/copy1 (2).zip
-/Data/Database/data — kopia.db
-/Data/Database/data.zip
-/Data/Database/data2.db
-/Data/Database/copy2.zip
+Database
