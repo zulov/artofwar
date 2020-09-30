@@ -5,6 +5,7 @@
 #include "nn/Brain.h"
 
 
+struct db_basic_metric;
 class Player;
 class Building;
 struct db_with_cost;
@@ -13,7 +14,6 @@ struct db_building;
 struct db_unit_level;
 struct db_unit;
 struct db_building_level;
-struct db_ai_property;
 enum class StatsOutputType : char;
 
 class ActionMaker {
@@ -34,9 +34,9 @@ private:
 	
 	std::optional<Urho3D::Vector2> posToBuild(db_building* building);
 	std::vector<Building*> getBuildingsCanDeploy(short unitId, std::vector<db_building*>& buildings) const;
-	const std::span<float> inputWithParamsDecide(Brain& brain, const db_ai_property* ai_property) const;
+	const std::span<float> inputWithParamsDecide(Brain& brain, const db_basic_metric* metric) const;
 
-	float dist(std::valarray<float>& center, db_ai_property* props);
+	float dist(std::valarray<float>& center, const db_basic_metric* metric);
 
 	db_building* chooseBuilding();
 	db_building_level* chooseBuildingLevelUp();

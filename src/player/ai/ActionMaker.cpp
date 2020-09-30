@@ -78,7 +78,7 @@ db_building* ActionMaker::chooseBuilding() {
 	std::vector<float> diffs;
 	diffs.reserve(buildings.size());
 	for (auto building : buildings) {
-		diffs.push_back(dist(center, player->getLevelForBuilding(building->id)->aiProps));
+		diffs.push_back(dist(center, player->getLevelForBuilding(building->id)->dbBuildingMetric));
 	}
 	if (diffs.empty() ) {
 		return nullptr;
@@ -100,7 +100,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 	for (auto building : buildings) {
 		auto opt = player->getNextLevelForBuilding(building->id);
 		if (opt.has_value()) {
-			diffs.push_back(dist(center, opt.value()->aiPropsLevelUp));
+			diffs.push_back(dist(center, opt.value()->dbBuildingMetricUp));
 		} else {
 			diffs.push_back(1000);
 		}
@@ -127,7 +127,7 @@ db_unit* ActionMaker::chooseUnit() {
 	std::vector<float> diffs;
 	diffs.reserve(units.size());
 	for (auto unit : units) {
-		diffs.push_back(dist(center, player->getLevelForUnit(unit->id)->aiProps));
+		diffs.push_back(dist(center, player->getLevelForUnit(unit->id)->dbUnitMetric));
 	}
 	if (diffs.empty() ) {
 		return nullptr;
@@ -150,7 +150,7 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 	for (auto unit : units) {
 		auto opt = player->getNextLevelForUnit(unit->id);
 		if (opt.has_value()) {
-			diffs.push_back(dist(center, opt.value()->aiPropsLevelUp));
+			diffs.push_back(dist(center, opt.value()->dbUnitMetricUp));
 		} else {
 			diffs.push_back(1000);
 		}
@@ -169,20 +169,20 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 	return nullptr;
 }
 
-float ActionMaker::dist(std::valarray<float>& center, db_ai_property* props) {
-	auto span = props->getParamsNormAsSpan();
+float ActionMaker::dist(std::valarray<float>& center, const db_basic_metric* metric) {
+	auto span = metric->getParamsNormAsSpan();
 	std::valarray<float> aiAsArray(span.data(),span.size()); //TODO get as val array odrazu
 	auto diff = aiAsArray - center;
 	auto sq = diff * diff;
 	return sq.sum();
 }
 
-const std::span<float> ActionMaker::inputWithParamsDecide(Brain& brain, const db_ai_property* ai_property) const {
-	return brain.decide(Game::getStats()->getBasicInputWithParams(player->getId(), ai_property));
+const std::span<float> ActionMaker::inputWithParamsDecide(Brain& brain, const db_basic_metric* metric) const {
+	return brain.decide(Game::getStats()->getBasicInputWithMetric(player->getId(), metric));
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
-	auto result = inputWithParamsDecide(buildingBrainPos, player->getLevelForBuilding(building->id)->aiProps);
+	auto result = inputWithParamsDecide(buildingBrainPos, player->getLevelForBuilding(building->id)->dbBuildingMetric);
 
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
@@ -209,7 +209,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id, buildings);
 	if (allPossible.empty()) { return nullptr; }
 
-	auto result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id)->aiProps);
+	auto result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id)->dbUnitMetric);
 	//TODO improve last parameter ignored queue size
 	auto centers = Game::getEnvironment()->getAreas(player->getId(), result, 10);
 	float closestVal = 99999;
@@ -235,7 +235,7 @@ Building* ActionMaker::getBuildingToLevelUpUnit(db_unit_level* level) {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(level->unit, buildings);
 	if (allPossible.empty()) { return nullptr; }
-	auto& result = inputWithParamsDecide(unitLevelUpPos, level->aiPropsLevelUp);
+	auto& result = inputWithParamsDecide(unitLevelUpPos, level->dbUnitMetricUp);
 	float val = result[0] * 10.f; //TODO hard code DEFAULT_NORMALIZE_VALUE
 	float closestVal = 99999;
 	Building* closest = allPossible[0];

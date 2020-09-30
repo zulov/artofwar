@@ -7,7 +7,6 @@
 #include <optional>
 #include <span>
 
-enum class ValueType : char;
 struct ActionParameter;
 class Unit;
 
@@ -88,8 +87,6 @@ public:
 	virtual int getLevel();
 
 	virtual void clean() { }
-
-	virtual void fillValues(std::span<float> weights) const { }
 
 	virtual void addValues(std::span<float> vals) const { }
 

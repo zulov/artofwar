@@ -1,5 +1,4 @@
 #pragma once
-
 enum class EnvironmentDebugMode : char {
 	NONE,
 	MAIN_GRID,
@@ -7,7 +6,4 @@ enum class EnvironmentDebugMode : char {
 	INF_UNITS_INFLUENCE_PER_PLAYER,
 	INF_BUILDING_INFLUENCE_PER_PLAYER,
 	INF_RESOURCE,
-	INF_ATTACK_INFLUENCE_PER_PLAYER,
-	INF_DEFENCE_INFLUENCE_PER_PLAYER,
-	INF_ECON_INFLUENCE_PER_PLAYER
 };

@@ -4,7 +4,6 @@
 #include "Resources.h"
 #include "database/DatabaseCache.h"
 #include "math/VectorUtils.h"
-#include "objects/ValueType.h"
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
@@ -19,8 +18,8 @@ Possession::Possession(char nation) {
 		}
 		buildingsPerId[id] = new std::vector<Building*>();
 	}
-	unitsValuesAsSpan = std::span{unitsValues};
-	buildingsValuesAsSpan = std::span{buildingsValues};
+	unitsValuesAsSpan = std::span{unitsMetrics};
+	buildingsValuesAsSpan = std::span{buildingsMetrics};
 }
 
 Possession::~Possession() {
@@ -52,12 +51,12 @@ std::vector<Building*>* Possession::getBuildings(short id) {
 	return buildingsPerId[id];
 }
 
-float Possession::getUnitsVal(ValueType value) const {
-	return unitsValues[static_cast<char>(value)];
+float Possession::getUnitsVal(UnitMetric value) const {
+	return unitsMetrics[static_cast<char>(value)];
 }
 
-float Possession::getBuildingsVal(ValueType value) const {
-	return buildingsValues[static_cast<char>(value)];
+float Possession::getBuildingsVal(BuildingMetric value) const {
+	return buildingsMetrics[static_cast<char>(value)];
 }
 
 std::vector<Unit*>& Possession::getWorkers() {
@@ -96,20 +95,18 @@ void Possession::updateAndClean(Resources& resources, SimulationInfo* simInfo) {
 			}
 		}
 	}
-	std::fill_n(unitsValues, magic_enum::enum_count<ValueType>(), 0.f);
+	std::fill_n(unitsMetrics, magic_enum::enum_count<UnitMetric>(), 0.f);
 	for (auto unit : units) {
 		unit->addValues(unitsValuesAsSpan);
 	}
 
-	std::fill_n(buildingsValues, magic_enum::enum_count<ValueType>(), 0.f);
+	std::fill_n(buildingsMetrics, magic_enum::enum_count<BuildingMetric>(), 0.f);
 	for (auto building : buildings) {
 		building->addValues(buildingsValuesAsSpan);
 	}
 
-	attackSum = buildingsValuesAsSpan[static_cast<char>(ValueType::ATTACK)]
-		+ unitsValuesAsSpan[static_cast<char>(ValueType::ATTACK)];
-	defenceSum = buildingsValuesAsSpan[static_cast<char>(ValueType::DEFENCE)]
-		+ unitsValuesAsSpan[static_cast<char>(ValueType::DEFENCE)];
+	attackSum = 0;
+	defenceSum = 0;
 
 	auto values = resources.getValues();
 	resourcesSum = std::accumulate(values.begin(), values.end(), 0.f);

@@ -38,7 +38,7 @@ public:
 	float getMaxHpBarSize() const override;
 	short getId() override;
 	int getLevel() override { return dbLevel->level; }
-	void fillValues(std::span<float> weights) const override;
+	void fillValues(std::span<float> weights) const;
 	void addValues(std::span<float> vals) const override;
 	const Urho3D::IntVector2 getGridSize() const override;
 	unsigned short getMaxHp() const override;

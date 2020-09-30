@@ -30,7 +30,7 @@ public:
 	void updateWithHistory() const;
 
 	void drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const;
-	void drawMap(char index, const std::vector<InfluenceMapCombine*>& vector, ValueType type) const;
+	void drawMap(char index, const std::vector<InfluenceMapCombine*>& vector, char type) const;
 
 	void draw(InfluenceDataType type, char index);
 	void drawAll();
@@ -40,7 +40,7 @@ public:
 	                             int activePlayer);
 	std::vector<float>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
 	std::vector<int> getIndexesIterative(const std::span<float> result, float tolerance, int min,
-	                                     std::array<InfluenceMapFloat*, 9>& maps) const;
+	                                     std::array<InfluenceMapFloat*, 6>& maps) const;
 
 	std::vector<Urho3D::Vector2> getAreasIterative(const std::span<float> result, char player, float tolerance,
 	                                               int min);
@@ -62,9 +62,7 @@ private:
 	template <typename T>
 	void drawAll(const std::vector<T*>& maps, Urho3D::String name) const;
 
-	void basicValuesFunc(float* weights, Physical* thing) const;
-
-	std::vector<std::array<InfluenceMapFloat*, 9>> mapsForAiPerPlayer;
+	std::vector<std::array<InfluenceMapFloat*, 6>> mapsForAiPerPlayer;
 
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
 
@@ -74,8 +72,6 @@ private:
 
 	std::vector<InfluenceMapHistory*> gatherSpeed;
 	std::vector<InfluenceMapHistory*> attackSpeed;
-
-	std::vector<InfluenceMapCombine*> basicValues;
 
 	std::vector<InfluenceMapQuad*> unitsQuad;
 	std::vector<InfluenceMapQuad*> buildingsQuad;

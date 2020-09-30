@@ -6,10 +6,10 @@
 #include "StatsEnums.h"
 #include "utils/defines.h"
 
+struct db_basic_metric;
 constexpr char SAVE_BATCH_SIZE = 10;
 constexpr char SAVE_BATCH_SIZE_MINI = 4;
 
-struct db_ai_property;
 struct ActionParameter;
 class GeneralActionCommand;
 class Building;
@@ -28,7 +28,7 @@ public:
 	std::span<float> getBasicInput(short id);
 
 	std::span<float> getResourceIdInput(char playerId);
-	std::span<float> getBasicInputWithParams(char playerId, const db_ai_property* prop);
+	std::span<float> getBasicInputWithMetric(char playerId, const db_basic_metric* prop);
 	void init();
 	std::string getInputData(char player);
 

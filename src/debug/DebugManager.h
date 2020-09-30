@@ -19,9 +19,7 @@ private:
 	EnvironmentDebugMode nextEnvMode[magic_enum::enum_count<EnvironmentDebugMode>()] = {
 		EnvironmentDebugMode::MAIN_GRID, EnvironmentDebugMode::INF_UNITS_NUMBER_PER_PLAYER,
 		EnvironmentDebugMode::INF_UNITS_INFLUENCE_PER_PLAYER, EnvironmentDebugMode::INF_BUILDING_INFLUENCE_PER_PLAYER,
-		EnvironmentDebugMode::INF_RESOURCE, EnvironmentDebugMode::INF_ATTACK_INFLUENCE_PER_PLAYER,
-		EnvironmentDebugMode::INF_DEFENCE_INFLUENCE_PER_PLAYER, EnvironmentDebugMode::INF_ECON_INFLUENCE_PER_PLAYER,
-		EnvironmentDebugMode::NONE
+		EnvironmentDebugMode::INF_RESOURCE, EnvironmentDebugMode::NONE
 	};
 	SimColorMode nextColorMode[magic_enum::enum_count<SimColorMode>()] = {
 		SimColorMode::VELOCITY, SimColorMode::STATE, SimColorMode::FORMATION, SimColorMode::BASIC

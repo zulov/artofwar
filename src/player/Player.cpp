@@ -81,14 +81,6 @@ std::optional<db_building_level*> Player::getNextLevelForBuilding(short id) cons
 	return Game::getDatabase()->getBuilding(id)->getLevel(buildingLevels[id] + 1);
 }
 
-float Player::getUnitsVal(ValueType value) const {
-	return possession.getUnitsVal(value);
-}
-
-float Player::getBuildingsVal(ValueType value) const {
-	return possession.getBuildingsVal(value);
-}
-
 void Player::updateResource() const {
 	resources.resetStats();
 }

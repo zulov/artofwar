@@ -295,18 +295,8 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 	case EnvironmentDebugMode::INF_RESOURCE:
 		influenceManager.draw(InfluenceDataType::RESOURCE_INFLUENCE, index);
 		break;
-	case EnvironmentDebugMode::INF_ATTACK_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluenceDataType::ATTACK_INFLUENCE_PER_PLAYER, index);
-		break;
-	case EnvironmentDebugMode::INF_DEFENCE_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluenceDataType::DEFENCE_INFLUENCE_PER_PLAYER, index);
-		break;
-	case EnvironmentDebugMode::INF_ECON_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluenceDataType::ECON_INFLUENCE_PER_PLAYER, index);
-		break;
 	default: ;
 	}
-
 }
 
 float Environment::getDistToEnemy(Player* player) {

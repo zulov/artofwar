@@ -115,8 +115,7 @@ public:
 	int getLevel() override;
 	short getId() override;
 	void clean() override;
-
-	void fillValues(std::span<float> weights) const override;
+	void fillValues(std::span<float> weights) const;
 	void addValues(std::span<float> vals) const override;
 	unsigned short getMaxHp() const override;
 

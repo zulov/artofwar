@@ -46,8 +46,6 @@ public:
 	db_building_level* getLevelForBuilding(short id) const;
 	std::optional<db_unit_level*> getNextLevelForUnit(short id) const;
 	std::optional<db_building_level*> getNextLevelForBuilding(short id) const;
-	float getUnitsVal(ValueType value) const;
-	float getBuildingsVal(ValueType value) const;
 private:
 	Possession possession;
 	Resources resources;

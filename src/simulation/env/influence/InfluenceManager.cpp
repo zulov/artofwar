@@ -8,7 +8,6 @@
 #include "debug/DebugLineRepo.h"
 #include "math/VectorUtils.h"
 #include "objects/CellState.h"
-#include "objects/ValueType.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
@@ -29,9 +28,6 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 		unitsInfluencePerPlayer.emplace_back(
 			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40));
 
-		basicValues.emplace_back(
-			new InfluenceMapCombine(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40,
-			                        magic_enum::enum_count<ValueType>()));
 		gatherSpeed.emplace_back(
 			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
 
@@ -47,10 +43,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			emplace_back(new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40));
 	}
 	for (char player = 0; player < numberOfPlayers; ++player) {
-		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 9>{
-			basicValues[player]->get(static_cast<char>(ValueType::ECON)),
-			basicValues[player]->get(static_cast<char>(ValueType::ATTACK)),
-			basicValues[player]->get(static_cast<char>(ValueType::DEFENCE)),
+		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 6>{
 			buildingsInfluencePerPlayer[player], unitsInfluencePerPlayer[player],
 			resourceInfluence[0], resourceInfluence[1], resourceInfluence[2],
 			resourceInfluence[3] //TODO moze to nie osobno jednak? za duza ma wage
@@ -67,7 +60,6 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(buildingsInfluencePerPlayer);
 	clear_vector(unitsInfluencePerPlayer);
 
-	clear_vector(basicValues);
 	clear_vector(gatherSpeed);
 	clear_vector(attackSpeed);
 	clear_vector(resourceInfluence);
@@ -127,26 +119,6 @@ void InfluenceManager::drawAll(const std::vector<T*>& maps, Urho3D::String name)
 	}
 }
 
-void InfluenceManager::basicValuesFunc(float* weights, Physical* thing) const {
-	auto data = std::span{weights, 3};
-	thing->fillValues(data);
-
-	basicValues[thing->getPlayer()]->update(thing, data);
-}
-
-void InfluenceManager::updateBasic(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
-	resetMaps(basicValues);
-	float weights[3] = {-1}; //TODO hardcode
-	for (auto unit : (*units)) {
-		basicValuesFunc(weights, unit);
-	}
-
-	for (auto building : (*buildings)) {
-		basicValuesFunc(weights, building);
-	}
-	calcStats(basicValues);
-}
-
 void InfluenceManager::updateQuad(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
 	resetMaps(unitsQuad);
 	resetMaps(buildingsQuad);
@@ -176,7 +148,7 @@ void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapFloat*>
 	vector[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 }
 
-void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapCombine*>& vector, ValueType type) const {
+void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapCombine*>& vector, char type) const {
 	index = index % vector.size();
 	vector[index]->get(static_cast<char>(type))->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 }
@@ -201,15 +173,6 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 	case InfluenceDataType::RESOURCE_INFLUENCE:
 		drawMap(index, resourceInfluence);
 		break;
-	case InfluenceDataType::ECON_INFLUENCE_PER_PLAYER:
-		drawMap(index, basicValues, ValueType::ECON);
-		break;
-	case InfluenceDataType::ATTACK_INFLUENCE_PER_PLAYER:
-		drawMap(index, basicValues, ValueType::ATTACK);
-		break;
-	case InfluenceDataType::DEFENCE_INFLUENCE_PER_PLAYER:
-		drawMap(index, basicValues, ValueType::DEFENCE);
-		break;
 	default: ;
 	}
 
@@ -228,8 +191,6 @@ void InfluenceManager::drawAll() {
 
 	drawAll(gatherSpeed, "gather");
 	drawAll(attackSpeed, "attack");
-
-	drawAll(basicValues, "basic");
 	
 	drawAll(unitsQuad, "unitsQuad");
 	drawAll(buildingsQuad, "buildingsQuad");
@@ -296,7 +257,7 @@ std::vector<float>& InfluenceManager::getInfluenceDataAt(char player, const Urho
 }
 
 std::vector<int> InfluenceManager::getIndexesIterative(const std::span<float> result, float tolerance, int min,
-                                                       std::array<InfluenceMapFloat*, 9>& maps) const {
+                                                       std::array<InfluenceMapFloat*, 6>& maps) const {
 	int k = 0;
 	for (auto step : {0.0, 0.05, 0.1}) {
 		tolerance += step;

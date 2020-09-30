@@ -3,7 +3,7 @@
 #include <span>
 #include <vector>
 
-#include "objects/ValueType.h"
+#include "objects/Metrics.h"
 
 
 class SimulationInfo;
@@ -25,8 +25,8 @@ public:
 	int getAttackScore() const;
 	int getDefenceScore() const;
 	std::vector<Building*>* getBuildings(short id);
-	float getUnitsVal(ValueType value) const;
-	float getBuildingsVal(ValueType value) const;
+	float getUnitsVal(UnitMetric value) const;
+	float getBuildingsVal(BuildingMetric value) const;
 	std::vector<Unit*>& getWorkers();
 private:
 	std::vector<Building*> buildings;
@@ -38,8 +38,8 @@ private:
 	float attackSum = 0;
 	float defenceSum = 0;
 
-	float unitsValues[magic_enum::enum_count<ValueType>()];
-	float buildingsValues[magic_enum::enum_count<ValueType>()];
+	float unitsMetrics[magic_enum::enum_count<UnitMetric>()];
+	float buildingsMetrics[magic_enum::enum_count<BuildingMetric>()];
 	std::span<float> unitsValuesAsSpan;
 	std::span<float> buildingsValuesAsSpan;
 	

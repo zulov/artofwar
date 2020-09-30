@@ -31,14 +31,6 @@ Stats::Stats() {
 	wBasic[cast(StatsInputType::DEFENCE)] = 1000;
 	wBasic[cast(StatsInputType::BASE_TO_ENEMY)] = 1000;
 
-	wBasic[cast(StatsInputType::UNITS_ATTACK)] = 1000;
-	wBasic[cast(StatsInputType::UNITS_DEFENCE)] = 1000;
-	wBasic[cast(StatsInputType::UNITS_ECONOMY)] = 1000;
-
-	wBasic[cast(StatsInputType::BUILDINGS_ATTACK)] = 100;
-	wBasic[cast(StatsInputType::BUILDINGS_DEFENCE)] = 100;
-	wBasic[cast(StatsInputType::BUILDINGS_ECONOMY)] = 100;
-
 	wBasic[cast(StatsInputType::WORKERS)] = 100;
 
 	wResourceInput[cast(ResourceInputType::GOLD_SPEED)] = 10;
@@ -94,7 +86,7 @@ void Stats::add(GeneralActionCommand* command) {
 	auto opt = Game::getPlayersMan()
 	           ->getPlayer(command->player)->getNextLevelForBuilding(command->id);
 	if (opt.has_value()) {
-		auto& createOutput = opt.value()->aiPropsLevelUp->getParamsNormAsString();
+		auto& createOutput = opt.value()->dbBuildingMetricUp->getParamsNormAsString();
 		joinAndPush(buildLevelUpId, player, input, createOutput);
 	}
 }
@@ -115,7 +107,7 @@ void Stats::add(BuildingActionCommand* command) {
 	joinAndPush(mainOrder, command->player, input, basicOutput, command->buildings.size());
 	for (auto building : command->buildings) {
 		if (command->action == BuildingActionType::UNIT_CREATE) {
-			auto& createOutput = player->getLevelForUnit(command->id)->aiProps->getParamsNormAsString();
+			auto& createOutput = player->getLevelForUnit(command->id)->dbUnitMetric->getParamsNormAsString();
 			joinAndPush(unitCreateId, command->player, input, createOutput);
 
 			const std::string inputWithAiProps = input + ";" + createOutput;
@@ -123,7 +115,7 @@ void Stats::add(BuildingActionCommand* command) {
 		} else if (command->action == BuildingActionType::UNIT_LEVEL) {
 			auto opt = player->getNextLevelForUnit(command->id);
 			if (opt.has_value()) {
-				auto& createOutput = opt.value()->aiPropsLevelUp->getParamsNormAsString();
+				auto& createOutput = opt.value()->dbUnitMetricUp->getParamsNormAsString();
 				joinAndPush(unitUpgradeId, command->player, input, createOutput);
 
 				const std::string inputWithAiProps = input + ";" + createOutput;
@@ -144,7 +136,7 @@ void Stats::add(CreationCommand* command) {
 
 	joinAndPush(mainOrder, player, input, getOutput(command));
 	auto& createOutput = Game::getPlayersMan()->getPlayer(command->player)
-	                                          ->getLevelForBuilding(command->id)->aiProps->getParamsNormAsString();
+	                                          ->getLevelForBuilding(command->id)->dbBuildingMetric->getParamsNormAsString();
 	joinAndPush(buildingCreateId, player, input, createOutput);
 	const std::string inputWithAiProps = input + ";" + createOutput;
 	joinAndPush(buildingCreatePos, player, inputWithAiProps, getCreateBuildingPosOutput(command));
@@ -215,14 +207,6 @@ void Stats::update(short id) {
 	data[cast(StatsInputType::ATTACK)] = player->getAttackScore();
 	data[cast(StatsInputType::DEFENCE)] = player->getDefenceScore();
 	data[cast(StatsInputType::BASE_TO_ENEMY)] = Game::getEnvironment()->getDistToEnemy(player); //TODO ale do którego
-
-	data[cast(StatsInputType::UNITS_ATTACK)] = player->getUnitsVal(ValueType::ATTACK);
-	data[cast(StatsInputType::UNITS_DEFENCE)] = player->getUnitsVal(ValueType::DEFENCE);
-	data[cast(StatsInputType::UNITS_ECONOMY)] = player->getUnitsVal(ValueType::ECON);
-
-	data[cast(StatsInputType::BUILDINGS_ATTACK)] = player->getBuildingsVal(ValueType::ATTACK);
-	data[cast(StatsInputType::BUILDINGS_DEFENCE)] = player->getBuildingsVal(ValueType::DEFENCE);
-	data[cast(StatsInputType::BUILDINGS_ECONOMY)] = player->getBuildingsVal(ValueType::ECON);
 
 	data[cast(StatsInputType::WORKERS)] = player->getWorkersNumber();
 
@@ -356,7 +340,7 @@ std::span<float> Stats::getResourceIdInput(char playerId) {
 	return resourceIdInputSpan;
 }
 
-std::span<float> Stats::getBasicInputWithParams(char playerId, const db_ai_property* prop) {
+std::span<float> Stats::getBasicInputWithMetric(char playerId, const db_basic_metric* prop) {
 	auto basicInput = getBasicInput(playerId);
 
 	copyTo(basicInputWithParamsSpan, basicInput, prop->getParamsNormAsSpan());

@@ -459,7 +459,9 @@ void Unit::clean() {
 }
 
 void Unit::fillValues(std::span<float> weights) const {
-	std::copy(dbLevel->aiProps->params, dbLevel->aiProps->params + 3, weights.begin());
+	auto data = dbLevel->dbUnitMetric->getParamsNormAsSpan();
+	
+	std::copy(data.begin(), data.end(), weights.begin());
 	auto percent = hp / dbLevel->maxHp;
 	for (auto& weight : weights) {
 		weight *= percent;
@@ -468,8 +470,9 @@ void Unit::fillValues(std::span<float> weights) const {
 
 void Unit::addValues(std::span<float> vals) const {
 	const auto percent = hp / dbLevel->maxHp;
+	assert(vals.size()==dbLevel->dbUnitMetric->getParamsNormAsSpan().size());
 	for (int i = 0; i < vals.size(); ++i) {
-		vals[i] += percent * dbLevel->aiProps->params[i];
+		vals[i] += percent * dbLevel->dbUnitMetric->getParamsNormAsSpan()[i];
 	}
 }
 

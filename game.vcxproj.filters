@@ -453,7 +453,6 @@
     <ClInclude Include="src\debug\EnvironmentDebugMode.h" />
     <ClInclude Include="src\player\Possession.h" />
     <ClInclude Include="src\hud\window\score\ScorePanel.h" />
-    <ClInclude Include="src\objects\ValueType.h" />
     <ClInclude Include="src\objects\unit\SimColorMode.h" />
     <ClInclude Include="src\player\ai\nn\Layer.h" />
     <ClInclude Include="src\player\ai\nn\Brain.h" />
@@ -509,6 +508,7 @@
     <ClInclude Include="src\simulation\env\influence\InfluenceMapType.h" />
     <ClInclude Include="src\simulation\env\influence\InfluenceMapFactory.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
+    <ClInclude Include="src\objects\Metrics.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
