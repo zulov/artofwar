@@ -25,7 +25,6 @@ public:
 	void update(std::vector<Building*>* buildings) const;
 	void update(std::vector<ResourceEntity*>* resources) const;
 
-	void updateBasic(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
 	void updateQuad(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
 	void updateWithHistory() const;
 

@@ -78,13 +78,14 @@ db_building* ActionMaker::chooseBuilding() {
 	std::vector<float> diffs;
 	diffs.reserve(buildings.size());
 	for (auto building : buildings) {
-		diffs.push_back(dist(center, player->getLevelForBuilding(building->id)->dbBuildingMetric));
+		diffs.push_back(dist(
+			center, player->getLevelForBuilding(building->id)->dbBuildingMetricPerNation[player->getNation()]));
 	}
-	if (diffs.empty() ) {
+	if (diffs.empty()) {
 		return nullptr;
 	}
 	auto inx = lowestWithRand(diffs);
-	
+
 	const auto building = buildings[inx];
 	logBuilding(building);
 	return building;
@@ -94,28 +95,28 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 	auto result = decideFromBasic(buildingLevelUpId);
 
-	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
-	std::vector<float> diffs;
-	diffs.reserve(buildings.size());
-	for (auto building : buildings) {
-		auto opt = player->getNextLevelForBuilding(building->id);
-		if (opt.has_value()) {
-			diffs.push_back(dist(center, opt.value()->dbBuildingMetricUp));
-		} else {
-			diffs.push_back(1000);
-		}
-	}
-	if (diffs.empty() ) {
-		return nullptr;
-	}
-	auto inx = lowestWithRand(diffs);
-
-	const auto building = buildings[inx];
-	auto opt = player->getNextLevelForBuilding(building->id);
-	if (opt.has_value()) {
-		logBuildingLevel(building, opt);
-		return opt.value();
-	}
+	// std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
+	// std::vector<float> diffs;
+	// diffs.reserve(buildings.size());
+	// for (auto building : buildings) {
+	// 	auto opt = player->getNextLevelForBuilding(building->id);
+	// 	if (opt.has_value()) {
+	// 		diffs.push_back(dist(center, opt.value()->dbBuildingMetricUp));
+	// 	} else {
+	// 		diffs.push_back(1000);
+	// 	}
+	// }
+	// if (diffs.empty() ) {
+	// 	return nullptr;
+	// }
+	// auto inx = lowestWithRand(diffs);
+	//
+	// const auto building = buildings[inx];
+	// auto opt = player->getNextLevelForBuilding(building->id);
+	// if (opt.has_value()) {
+	// 	logBuildingLevel(building, opt);
+	// 	return opt.value();
+	// }
 	return nullptr;
 }
 
@@ -129,7 +130,7 @@ db_unit* ActionMaker::chooseUnit() {
 	for (auto unit : units) {
 		diffs.push_back(dist(center, player->getLevelForUnit(unit->id)->dbUnitMetric));
 	}
-	if (diffs.empty() ) {
+	if (diffs.empty()) {
 		return nullptr;
 	}
 	auto inx = lowestWithRand(diffs);
@@ -144,34 +145,34 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
 	auto result = decideFromBasic(unitLevelUpId);
 
-	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
-	std::vector<float> diffs;
-	diffs.reserve(units.size());
-	for (auto unit : units) {
-		auto opt = player->getNextLevelForUnit(unit->id);
-		if (opt.has_value()) {
-			diffs.push_back(dist(center, opt.value()->dbUnitMetricUp));
-		} else {
-			diffs.push_back(1000);
-		}
-	}
-	if (diffs.empty() ) {
-		return nullptr;
-	}
-	auto inx = lowestWithRand(diffs);
-
-	auto unit = units[inx];
-	auto opt = player->getNextLevelForUnit(unit->id);
-	if (opt.has_value()) {
-		logUnitLevel(unit, opt);
-		return opt.value();
-	}
+	// std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
+	// std::vector<float> diffs;
+	// diffs.reserve(units.size());
+	// for (auto unit : units) {
+	// 	auto opt = player->getNextLevelForUnit(unit->id);
+	// 	if (opt.has_value()) {
+	// 		diffs.push_back(dist(center, opt.value()->dbUnitMetricUp));
+	// 	} else {
+	// 		diffs.push_back(1000);
+	// 	}
+	// }
+	// if (diffs.empty() ) {
+	// 	return nullptr;
+	// }
+	// auto inx = lowestWithRand(diffs);
+	//
+	// auto unit = units[inx];
+	// auto opt = player->getNextLevelForUnit(unit->id);
+	// if (opt.has_value()) {
+	// 	logUnitLevel(unit, opt);
+	// 	return opt.value();
+	// }
 	return nullptr;
 }
 
 float ActionMaker::dist(std::valarray<float>& center, const db_basic_metric* metric) {
 	auto span = metric->getParamsNormAsSpan();
-	std::valarray<float> aiAsArray(span.data(),span.size()); //TODO get as val array odrazu
+	std::valarray<float> aiAsArray(span.data(), span.size()); //TODO get as val array odrazu
 	auto diff = aiAsArray - center;
 	auto sq = diff * diff;
 	return sq.sum();
@@ -182,7 +183,9 @@ const std::span<float> ActionMaker::inputWithParamsDecide(Brain& brain, const db
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
-	auto result = inputWithParamsDecide(buildingBrainPos, player->getLevelForBuilding(building->id)->dbBuildingMetric);
+	auto result = inputWithParamsDecide(buildingBrainPos,
+	                                    player->getLevelForBuilding(building->id)
+	                                          ->dbBuildingMetricPerNation[player->getNation()]);
 
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
@@ -234,20 +237,21 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 Building* ActionMaker::getBuildingToLevelUpUnit(db_unit_level* level) {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(level->unit, buildings);
-	if (allPossible.empty()) { return nullptr; }
-	auto& result = inputWithParamsDecide(unitLevelUpPos, level->dbUnitMetricUp);
-	float val = result[0] * 10.f; //TODO hard code DEFAULT_NORMALIZE_VALUE
-	float closestVal = 99999;
-	Building* closest = allPossible[0];
-	for (auto possible : allPossible) {
-		auto diff = val - possible->getQueue()->getSize();
-		diff = diff * diff;
-		if (diff < closestVal) {
-			closest = possible;
-			closestVal = diff;
-		}
-	}
-	return closest;
+	// if (allPossible.empty()) { return nullptr; }
+	// auto& result = inputWithParamsDecide(unitLevelUpPos, level->dbUnitMetricUp);
+	// float val = result[0] * 10.f; //TODO hard code DEFAULT_NORMALIZE_VALUE
+	// float closestVal = 99999;
+	// Building* closest = allPossible[0];
+	// for (auto possible : allPossible) {
+	// 	auto diff = val - possible->getQueue()->getSize();
+	// 	diff = diff * diff;
+	// 	if (diff < closestVal) {
+	// 		closest = possible;
+	// 		closestVal = diff;
+	// 	}
+	// }
+	// return closest;
+	return nullptr;
 }
 
 bool ActionMaker::createOrder(StatsOutputType order) {

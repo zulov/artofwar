@@ -112,7 +112,6 @@ void Environment::updateInfluence1(std::vector<Unit*>* units,
 	influenceManager.update(units);
 	influenceManager.update(buildings);
 	influenceManager.update(resources);
-	influenceManager.updateBasic(units, buildings);
 }
 
 void Environment::updateInfluence2(std::vector<Unit*>* units,

@@ -63,7 +63,7 @@ void MiniMapPanel::createEmpty(int parts) {
 	auto size = spr->GetSize();
 	const auto env = Game::getEnvironment();
 	const auto data = (uint32_t*)minimap->GetData();
-
+	
 	int idR = 0;
 	float div = 5;
 

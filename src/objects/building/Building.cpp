@@ -114,7 +114,10 @@ std::string Building::getValues(int precision) {
 }
 
 void Building::fillValues(std::span<float> weights) const {
-	auto data = dbLevel->dbBuildingMetric->getParamsNormAsSpan();
+	auto nation = Game::getPlayersMan()->getPlayer(player)->getNation();
+	
+	auto data = dbLevel->dbBuildingMetricPerNation[nation]->getParamsNormAsSpan();
+	
 	std::copy(data.begin(), data.end(), weights.begin());
 	auto percent = hp / dbLevel->maxHp;
 	for (auto& weight : weights) {
@@ -124,7 +127,9 @@ void Building::fillValues(std::span<float> weights) const {
 
 void Building::addValues(std::span<float> vals) const {
 	auto percent = hp / dbLevel->maxHp;
-	auto data = dbLevel->dbBuildingMetric->getParamsNormAsSpan();
+	auto nation = Game::getPlayersMan()->getPlayer(player)->getNation();
+	
+	auto data = dbLevel->dbBuildingMetricPerNation[nation]->getParamsNormAsSpan();
 	for (int i = 0; i < vals.size(); ++i) {
 		vals[i] += percent * data[i];
 	}

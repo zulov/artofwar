@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "objects/Metrics.h"
 
 constexpr char SPLIT_SIGN = '\n';
 constexpr char AI_PROPS_SIZE = 4;
@@ -24,7 +25,8 @@ struct db_entity {
 	const short id;
 
 	explicit db_entity(short id)
-		: id(id) { }
+		: id(id) {
+	}
 };
 
 struct db_attack {
@@ -74,21 +76,24 @@ struct db_attack {
 		  canCloseAttack(initFlag(closeAttackVal)),
 		  canRangeAttack(initFlag(rangeAttackVal)),
 		  canChargeAttack(initFlag(chargeAttackVal)),
-		  canCollectAttack(initFlag(buildingAttackVal)) { }
+		  canCollectAttack(initFlag(buildingAttackVal)) {
+	}
 };
 
 struct db_with_name {
 	const Urho3D::String name;
 
 	explicit db_with_name(const Urho3D::String& name)
-		: name(name) { }
+		: name(name) {
+	}
 };
 
 struct db_static {
 	const Urho3D::IntVector2 size;
 
 	explicit db_static(const Urho3D::IntVector2& size)
-		: size(size) { }
+		: size(size) {
+	}
 };
 
 struct db_cost {
@@ -97,7 +102,8 @@ struct db_cost {
 
 	db_cost(short resource, short value)
 		: resource(resource),
-		  value(value) { }
+		  value(value) {
+	}
 };
 
 struct db_with_cost {
@@ -116,17 +122,11 @@ struct db_with_cost {
 
 struct db_basic_metric {
 private:
-	float costSum = 0;
+
 protected:
 	std::string paramsAString;
 	std::span<float> paramsAsSpan;
 public:
-	const float defence;
-	const float distanceAttack;
-
-	db_basic_metric(float costSum, float defence, float distanceAttack)
-		: costSum(costSum), defence(defence),
-		  distanceAttack(distanceAttack) { }
 
 	const std::string& getParamsNormAsString() const { return paramsAString; }
 	const std::span<float> getParamsNormAsSpan() const { return paramsAsSpan; }
@@ -139,32 +139,24 @@ public:
 
 struct db_unit_metric : db_basic_metric {
 private:
-	float params[6];
+	float params[magic_enum::enum_count<UnitMetric>()];
 public:
-	const float closeAttack;
-	const float chargeAttack;
-	const float buildingAttack;
 
-
-	db_unit_metric(float costSum, float defence, float distanceAttack, float closeAttack, float chargeAttack,
-	               float buildingAttack)
-		: db_basic_metric(costSum, defence, distanceAttack),
-		  closeAttack(closeAttack),
-		  chargeAttack(chargeAttack),
-		  buildingAttack(buildingAttack),
-		  params{costSum, defence, distanceAttack, closeAttack, chargeAttack, buildingAttack} {
+	db_unit_metric(float val1, float val2, float val3, float val4, float val5,
+	               float val6)
+		: params{val1, val2, val3, val4, val5, val6} {
 		paramsAsSpan = std::span{params};
 	}
 };
 
 struct db_building_metric : db_basic_metric {
 private:
-	float params[3];
+	float params[magic_enum::enum_count<BuildingMetric>()];
 public:
 
-	db_building_metric(float costSum, float defence, float distanceAttack)
-		: db_basic_metric(costSum, defence, distanceAttack),
-		  params{costSum, defence, distanceAttack} {
+	db_building_metric(float val1, float val2, float val3, float val4, float val5,
+	                   float val6, float val7, float val8, float val9)
+		: params{val1, val2, val3, val4, val5, val6, val7, val8, val9} {
 		paramsAsSpan = std::span{params};
 	}
 };
@@ -174,7 +166,8 @@ struct db_level {
 
 
 	explicit db_level(short level)
-		: level(level) { }
+		: level(level) {
+	}
 };
 
 template <typename T>
@@ -192,35 +185,8 @@ struct db_with_hp {
 	const unsigned short maxHp;
 
 	explicit db_with_hp(unsigned short maxHp)
-		: maxHp(maxHp) { }
-};
-
-struct db_unit : db_entity, db_with_name, db_with_cost {
-	const bool rotatable;
-	const Urho3D::String icon;
-	const short actionState;
-
-	std::vector<db_unit_level*> levels;
-
-	std::vector<db_order*> orders;
-	std::vector<short> ordersIds;
-	std::vector<db_nation*> nations;
-
-	bool possibleStates[magic_enum::enum_count<UnitState>()];
-
-	db_unit(short id, char* name, short rotatable, char* icon, short actionState)
-		: db_entity(id), db_with_name(name),
-		  rotatable(rotatable),
-		  icon(icon),
-		  actionState(actionState) { }
-
-	std::optional<db_unit_level*> getLevel(short level) {
-		if (levels.size() > level) {
-			return levels.at(level);
-		}
-		return {};
+		: maxHp(maxHp) {
 	}
-
 };
 
 struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp {
@@ -259,10 +225,11 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 		collectSpeed(collectSpeed),
 		upgradeSpeed(upgradeSpeed),
 		maxForce(maxForce),
-		sqMinSpeed(minSpeed * minSpeed) { }
+		sqMinSpeed(minSpeed * minSpeed) {
+	}
 
-	void finish(db_unit* dbUnit) {
-		dbUnitMetric = new db_unit_metric(dbUnit->getSumCost(), armor * maxHp,
+	void finish(float sumCreateCost) {
+		dbUnitMetric = new db_unit_metric(sumCreateCost, armor * maxHp,
 		                                  rangeAttackVal * rangeAttackSpeed,
 		                                  closeAttackVal * closeAttackSpeed,
 		                                  chargeAttackVal,
@@ -272,6 +239,43 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	~db_unit_level() {
 		delete dbUnitMetric;
 	}
+};
+
+struct db_unit : db_entity, db_with_name, db_with_cost {
+	const bool rotatable;
+	const Urho3D::String icon;
+	const short actionState;
+
+	std::vector<db_unit_level*> levels;
+
+	std::vector<db_order*> orders;
+	std::vector<short> ordersIds;
+	std::vector<db_nation*> nations;
+
+	bool possibleStates[magic_enum::enum_count<UnitState>()];
+
+	db_unit(short id, char* name, short rotatable, char* icon, short actionState)
+		: db_entity(id), db_with_name(name),
+		  rotatable(rotatable),
+		  icon(icon),
+		  actionState(actionState) {
+	}
+
+	std::optional<db_unit_level*> getLevel(short level) {
+		if (levels.size() > level) {
+			return levels.at(level);
+		}
+		return {};
+	}
+
+	float getSumVal(UnitMetric unitMetric) const {
+		float sum = 0.f;
+		for (auto level : levels) {
+			sum += level->dbUnitMetric->getParamsNormAsSpan()[static_cast<char>(unitMetric)];
+		}
+		return sum;
+	}
+
 };
 
 struct db_building : db_entity, db_with_name, db_with_cost, db_static {
@@ -284,7 +288,8 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 
 	db_building(short id, char* name, short sizeX, short sizeZ, char* icon)
 		: db_entity(id), db_with_name(name), db_static({sizeX, sizeZ}),
-		  icon(icon) { }
+		  icon(icon) {
+	}
 
 	std::optional<db_building_level*> getLevel(short level) {
 		if (levels.size() > level) {
@@ -304,7 +309,7 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_a
 	std::vector<std::vector<db_unit*>*> unitsPerNation;
 	std::vector<std::vector<short>*> unitsPerNationIds; //TODO remember must be storted
 
-	db_building_metric* dbBuildingMetric = nullptr;
+	std::vector<db_building_metric*> dbBuildingMetricPerNation;
 
 	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity,
 	                  float rangeAttackVal, short rangeAttackSpeed, short rangeAttackRange, float armor)
@@ -313,24 +318,47 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_a
 		  db_with_hp(maxHp),
 		  building(building),
 		  nodeName(nodeName),
-		  queueMaxCapacity(queueMaxCapacity) { }
+		  queueMaxCapacity(queueMaxCapacity) {
+	}
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);
 		clear_vector(unitsPerNationIds);
-		delete dbBuildingMetric;
+		clear_vector(dbBuildingMetricPerNation);
 	}
 
 	void finish(db_building* dbBuilding) {
-		dbBuildingMetric = new db_building_metric(dbBuilding->getSumCost(), armor * maxHp,
-		                                          rangeAttackVal * rangeAttackSpeed);
+		dbBuildingMetricPerNation.resize(unitsPerNation.size(), nullptr);
+		for (int i = 0; i < unitsPerNation.size(); ++i) {
+			auto dbUnits = unitsPerNation.at(i);
+			if (dbUnits) {
+				float sums[magic_enum::enum_count<UnitMetric>()];
+				std::fill_n(sums, magic_enum::enum_count<UnitMetric>(), 0.f);
+				for (auto dbUnit : *dbUnits) {
+					constexpr auto& metrics = magic_enum::enum_values<UnitMetric>();
+					for (int i = 0; i < magic_enum::enum_count<UnitMetric>(); ++i) {
+						sums[static_cast<char>(metrics[i])] += dbUnit->getSumVal(metrics[i]);
+					}
+				}
+				dbBuildingMetricPerNation[i] =
+					new db_building_metric(dbBuilding->getSumCost(), armor * maxHp,
+					                       rangeAttackVal * rangeAttackSpeed,
+					                       sums[static_cast<char>(UnitMetric::COST_SUM)],
+					                       sums[static_cast<char>(UnitMetric::DEFENCE)],
+					                       sums[static_cast<char>(UnitMetric::DISTANCE_ATTACK)],
+					                       sums[static_cast<char>(UnitMetric::CLOSE_ATTACK)],
+					                       sums[static_cast<char>(UnitMetric::CHARGE_ATTACK)],
+					                       sums[static_cast<char>(UnitMetric::BUILDING_ATTACK)]);
+			}
+		}
 	}
 };
 
 struct db_hud_size : db_entity, db_with_name {
 
 	db_hud_size(short id, char* name)
-		: db_entity(id), db_with_name(name) { }
+		: db_entity(id), db_with_name(name) {
+	}
 };
 
 struct db_settings {
@@ -339,7 +367,8 @@ struct db_settings {
 
 	db_settings(short graph, short resolution)
 		: graph(graph),
-		  resolution(resolution) { }
+		  resolution(resolution) {
+	}
 };
 
 struct db_resolution : db_entity {
@@ -349,7 +378,8 @@ struct db_resolution : db_entity {
 	db_resolution(short id, short x, short y)
 		: db_entity(id),
 		  x(x),
-		  y(y) { }
+		  y(y) {
+	}
 };
 
 struct db_graph_settings : db_entity {
@@ -374,7 +404,8 @@ struct db_graph_settings : db_entity {
 		  texture_quality(texture_quality),
 		  fullscreen(fullscreen),
 		  v_sync(v_sync),
-		  shadow(shadow) { }
+		  shadow(shadow) {
+	}
 };
 
 struct db_nation : db_entity, db_with_name {
@@ -382,7 +413,8 @@ struct db_nation : db_entity, db_with_name {
 	std::vector<db_building*> buildings;
 
 	db_nation(short id, char* name)
-		: db_entity(id), db_with_name(name) { }
+		: db_entity(id), db_with_name(name) {
+	}
 };
 
 struct db_resource : db_entity, db_with_name, db_static, db_with_hp {
@@ -397,7 +429,8 @@ struct db_resource : db_entity, db_with_name, db_static, db_with_hp {
 		  icon(icon),
 		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
 		  maxUsers(maxUsers),
-		  mini_map_color(mini_map_color) { }
+		  mini_map_color(mini_map_color) {
+	}
 };
 
 struct db_hud_vars : db_entity, db_with_name {
@@ -407,7 +440,8 @@ struct db_hud_vars : db_entity, db_with_name {
 	db_hud_vars(short id, short hudSize, char* name, float value)
 		: db_entity(id), db_with_name(name),
 		  hud_size(hudSize),
-		  value(value) { }
+		  value(value) {
+	}
 };
 
 struct db_order : db_entity, db_with_name {
@@ -415,7 +449,8 @@ struct db_order : db_entity, db_with_name {
 
 	db_order(short id, char* icon, char* name)
 		: db_entity(id), db_with_name(name),
-		  icon(icon) { }
+		  icon(icon) {
+	}
 };
 
 struct db_map : db_entity, db_with_name {
@@ -429,7 +464,8 @@ struct db_map : db_entity, db_with_name {
 		  height_map(heightMap),
 		  texture(texture),
 		  scale_hor(scaleHor),
-		  scale_ver(scaleVer) { }
+		  scale_ver(scaleVer) {
+	}
 };
 
 struct db_player_colors : db_entity, db_with_name {
@@ -439,7 +475,8 @@ struct db_player_colors : db_entity, db_with_name {
 	db_player_colors(short id, unsigned unit, unsigned building, char* name)
 		: db_entity(id), db_with_name(name),
 		  unit(unit),
-		  building(building) { }
+		  building(building) {
+	}
 };
 
 struct db_container {
@@ -483,7 +520,7 @@ struct db_container {
 
 	void finish() {
 		for (auto* unitLevel : unitsLevels) {
-			unitLevel->finish(units[unitLevel->unit]);
+			unitLevel->finish(units[unitLevel->unit]->getSumCost());
 		}
 
 		for (auto* buildingLevel : buildingsLevels) {

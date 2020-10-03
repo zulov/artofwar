@@ -78,17 +78,17 @@ std::string Stats::getInputData(char player) {
 
 void Stats::add(GeneralActionCommand* command) {
 	const auto player = command->player;
-
-	const std::string input = getInputData(player);
-
-	joinAndPush(mainOrder, player, input, getOutput(command));
-
-	auto opt = Game::getPlayersMan()
-	           ->getPlayer(command->player)->getNextLevelForBuilding(command->id);
-	if (opt.has_value()) {
-		auto& createOutput = opt.value()->dbBuildingMetricUp->getParamsNormAsString();
-		joinAndPush(buildLevelUpId, player, input, createOutput);
-	}
+	//
+	// const std::string input = getInputData(player);
+	//
+	// joinAndPush(mainOrder, player, input, getOutput(command));
+	//
+	// auto opt = Game::getPlayersMan()
+	//            ->getPlayer(command->player)->getNextLevelForBuilding(command->id);
+	// if (opt.has_value()) {
+	// 	auto& createOutput = opt.value()->dbBuildingMetricUp->getParamsNormAsString();
+	// 	joinAndPush(buildLevelUpId, player, input, createOutput);
+	// }
 }
 
 void Stats::add(ResourceActionCommand* command) {
@@ -104,25 +104,25 @@ void Stats::add(BuildingActionCommand* command) {
 	const std::string basicOutput = getOutput(command);
 	auto player = Game::getPlayersMan()->getPlayer(command->player);
 
-	joinAndPush(mainOrder, command->player, input, basicOutput, command->buildings.size());
-	for (auto building : command->buildings) {
-		if (command->action == BuildingActionType::UNIT_CREATE) {
-			auto& createOutput = player->getLevelForUnit(command->id)->dbUnitMetric->getParamsNormAsString();
-			joinAndPush(unitCreateId, command->player, input, createOutput);
-
-			const std::string inputWithAiProps = input + ";" + createOutput;
-			joinAndPush(unitCreatePos, command->player, inputWithAiProps, getCreateUnitPosOutput(building));
-		} else if (command->action == BuildingActionType::UNIT_LEVEL) {
-			auto opt = player->getNextLevelForUnit(command->id);
-			if (opt.has_value()) {
-				auto& createOutput = opt.value()->dbUnitMetricUp->getParamsNormAsString();
-				joinAndPush(unitUpgradeId, command->player, input, createOutput);
-
-				const std::string inputWithAiProps = input + ";" + createOutput;
-				joinAndPush(unitLevelUpPos, command->player, inputWithAiProps, getLevelUpUnitPosOutput(building));
-			}
-		}
-	}
+	// joinAndPush(mainOrder, command->player, input, basicOutput, command->buildings.size());
+	// for (auto building : command->buildings) {
+	// 	if (command->action == BuildingActionType::UNIT_CREATE) {
+	// 		auto& createOutput = player->getLevelForUnit(command->id)->dbUnitMetric->getParamsNormAsString();
+	// 		joinAndPush(unitCreateId, command->player, input, createOutput);
+	//
+	// 		const std::string inputWithAiProps = input + ";" + createOutput;
+	// 		joinAndPush(unitCreatePos, command->player, inputWithAiProps, getCreateUnitPosOutput(building));
+	// 	} else if (command->action == BuildingActionType::UNIT_LEVEL) {
+	// 		auto opt = player->getNextLevelForUnit(command->id);
+	// 		if (opt.has_value()) {
+	// 			auto& createOutput = opt.value()->dbUnitMetricUp->getParamsNormAsString();
+	// 			joinAndPush(unitUpgradeId, command->player, input, createOutput);
+	//
+	// 			const std::string inputWithAiProps = input + ";" + createOutput;
+	// 			joinAndPush(unitLevelUpPos, command->player, inputWithAiProps, getLevelUpUnitPosOutput(building));
+	// 		}
+	// 	}
+	// }
 }
 
 void Stats::add(CreationCommand* command) {
@@ -130,16 +130,18 @@ void Stats::add(CreationCommand* command) {
 		Game::getLog()->Write(0, "ERROR - WRONG command");
 	}
 
-	const auto player = command->player;
+	const auto playerId = command->player;
 
-	const std::string input = getInputData(player);
+	const std::string input = getInputData(playerId);
 
-	joinAndPush(mainOrder, player, input, getOutput(command));
+	joinAndPush(mainOrder, playerId, input, getOutput(command));
+	auto player = Game::getPlayersMan()->getPlayer(command->player);
+	
 	auto& createOutput = Game::getPlayersMan()->getPlayer(command->player)
-	                                          ->getLevelForBuilding(command->id)->dbBuildingMetric->getParamsNormAsString();
-	joinAndPush(buildingCreateId, player, input, createOutput);
+	                                          ->getLevelForBuilding(command->id)->dbBuildingMetricPerNation[player->getNation()]->getParamsNormAsString();
+	joinAndPush(buildingCreateId, playerId, input, createOutput);
 	const std::string inputWithAiProps = input + ";" + createOutput;
-	joinAndPush(buildingCreatePos, player, inputWithAiProps, getCreateBuildingPosOutput(command));
+	joinAndPush(buildingCreatePos, playerId, inputWithAiProps, getCreateBuildingPosOutput(command));
 }
 
 void Stats::joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output,
