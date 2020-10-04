@@ -101,14 +101,6 @@ int Player::getScore() const {
 	return possession.getScore();
 }
 
-int Player::getAttackScore() const {
-	return possession.getAttackScore();
-}
-
-int Player::getDefenceScore() const {
-	return possession.getDefenceScore();
-}
-
 int Player::getWorkersNumber() const {
 	return possession.getWorkersNumber();
 }

@@ -1,14 +1,8 @@
 #pragma once
 enum class StatsInputType : char {
 	RESULT =0,
-	GOLD,
-	WOOD,
-	FOOD,
-	STONE,
-	ATTACK,
-	DEFENCE,
-	BASE_TO_ENEMY,
-	WORKERS,
+	UNIT_NUMBER,
+	BUILDING_NUMBER
 };
 
 enum class StatsOutputType : char {
@@ -21,19 +15,6 @@ enum class StatsOutputType : char {
 	LEVEL_UP_UNIT
 };
 
-enum class StatsOrderOutputType : char {
-	IDLE =0,
-	
-	ORDER_GO,
-	ORDER_STOP,
-	ORDER_CHARGE,
-	ORDER_ATTACK,
-	ORDER_DEAD,
-	ORDER_DEFEND,
-	ORDER_FOLLOW,
-	ORDER_COLLECT
-};
-
 enum class ResourceInputType : char {
 	GOLD_SPEED,
 	WOOD_SPEED,
@@ -43,18 +24,10 @@ enum class ResourceInputType : char {
 	WOOD_VALUE,
 	FOOD_VALUE,
 	STONE_VALUE,
-	PLAYER_SCORE	
+	WORKERS	
 };
 
-inline char cast(StatsInputType type) {
-	return static_cast<char>(type);
-}
-inline char cast(StatsOutputType type) {
-	return static_cast<char>(type);
-}
-inline char cast(StatsOrderOutputType type) {
-	return static_cast<char>(type);
-}
-inline char cast(ResourceInputType type) {
+template <typename T>
+inline char cast(T type) {
 	return static_cast<char>(type);
 }

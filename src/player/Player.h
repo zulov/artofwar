@@ -33,8 +33,6 @@ public:
 	void add(Building* building);
 	void ai();
 	int getScore() const;
-	int getAttackScore() const;
-	int getDefenceScore() const;
 
 	int getWorkersNumber() const;
 

@@ -35,16 +35,12 @@ int Possession::getUnitsNumber() const {
 	return units.size();
 }
 
+int Possession::getBuildingsNumber() const {
+	return buildings.size();
+}
+
 int Possession::getWorkersNumber() const {
 	return workers.size();
-}
-
-int Possession::getAttackScore() const {
-	return attackSum;
-}
-
-int Possession::getDefenceScore() const {
-	return defenceSum;
 }
 
 std::vector<Building*>* Possession::getBuildings(short id) {
@@ -104,9 +100,6 @@ void Possession::updateAndClean(Resources& resources, SimulationInfo* simInfo) {
 	for (auto building : buildings) {
 		building->addValues(buildingsValuesAsSpan);
 	}
-
-	attackSum = 0;
-	defenceSum = 0;
 
 	auto values = resources.getValues();
 	resourcesSum = std::accumulate(values.begin(), values.end(), 0.f);

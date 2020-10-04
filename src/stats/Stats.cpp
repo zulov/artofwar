@@ -22,28 +22,21 @@ constexpr float DEFAULT_NORMALIZE_VALUE = 10.f;
 constexpr char INFLUENCE_DATA_SIZE = 9; //TODO hard code
 
 Stats::Stats() {
-	wBasic[cast(StatsInputType::RESULT)] = 1000;
-	wBasic[cast(StatsInputType::GOLD)] = 1000;
-	wBasic[cast(StatsInputType::WOOD)] = 1000;
-	wBasic[cast(StatsInputType::FOOD)] = 1000;
-	wBasic[cast(StatsInputType::STONE)] = 1000;
-	wBasic[cast(StatsInputType::ATTACK)] = 1000;
-	wBasic[cast(StatsInputType::DEFENCE)] = 1000;
-	wBasic[cast(StatsInputType::BASE_TO_ENEMY)] = 1000;
+	wBasic[cast(StatsInputType::RESULT)] = 1000.f;
+	wBasic[cast(StatsInputType::UNIT_NUMBER)] = 100.f;
+	wBasic[cast(StatsInputType::BUILDING_NUMBER)] = 100.f;
 
-	wBasic[cast(StatsInputType::WORKERS)] = 100;
+	wResourceInput[cast(ResourceInputType::GOLD_SPEED)] = 10.f;
+	wResourceInput[cast(ResourceInputType::WOOD_SPEED)] = 10.f;
+	wResourceInput[cast(ResourceInputType::FOOD_SPEED)] = 10.f;
+	wResourceInput[cast(ResourceInputType::STONE_SPEED)] = 10.f;
 
-	wResourceInput[cast(ResourceInputType::GOLD_SPEED)] = 10;
-	wResourceInput[cast(ResourceInputType::WOOD_SPEED)] = 10;
-	wResourceInput[cast(ResourceInputType::FOOD_SPEED)] = 10;
-	wResourceInput[cast(ResourceInputType::STONE_SPEED)] = 10;
+	wResourceInput[cast(ResourceInputType::GOLD_VALUE)] = 1000.f;
+	wResourceInput[cast(ResourceInputType::WOOD_VALUE)] = 1000.f;
+	wResourceInput[cast(ResourceInputType::FOOD_VALUE)] = 1000.f;
+	wResourceInput[cast(ResourceInputType::STONE_VALUE)] = 1000.f;
 
-	wResourceInput[cast(ResourceInputType::GOLD_VALUE)] = 1000;
-	wResourceInput[cast(ResourceInputType::WOOD_VALUE)] = 1000;
-	wResourceInput[cast(ResourceInputType::FOOD_VALUE)] = 1000;
-	wResourceInput[cast(ResourceInputType::STONE_VALUE)] = 1000;
-
-	wResourceInput[cast(ResourceInputType::PLAYER_SCORE)] = 1000;
+	wResourceInput[cast(ResourceInputType::WORKERS)] = 100.f;
 }
 
 Stats::~Stats() {
@@ -59,8 +52,9 @@ void Stats::init() {
 	basicInput = new float[magic_enum::enum_count<StatsInputType>() * 2];
 	basicInputSpan = std::span{basicInput, magic_enum::enum_count<StatsInputType>() * 2};
 
-	resourceIdInput = new float[magic_enum::enum_count<ResourceInputType>()];
-	resourceIdInputSpan = std::span(resourceIdInput, magic_enum::enum_count<ResourceInputType>());
+	resourceIdInput = new float[basicInputSpan.size() + magic_enum::enum_count<ResourceInputType>()];
+	resourceIdInputSpan = std::span(resourceIdInput,
+	                                basicInputSpan.size() + magic_enum::enum_count<ResourceInputType>());
 
 	basicInputWithParams = new float[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
 	basicInputWithParamsSpan = std::span{
@@ -136,9 +130,10 @@ void Stats::add(CreationCommand* command) {
 
 	joinAndPush(mainOrder, playerId, input, getOutput(command));
 	auto player = Game::getPlayersMan()->getPlayer(command->player);
-	
+
 	auto& createOutput = Game::getPlayersMan()->getPlayer(command->player)
-	                                          ->getLevelForBuilding(command->id)->dbBuildingMetricPerNation[player->getNation()]->getParamsNormAsString();
+	                                          ->getLevelForBuilding(command->id)->dbBuildingMetricPerNation[player->
+		getNation()]->getParamsNormAsString();
 	joinAndPush(buildingCreateId, playerId, input, createOutput);
 	const std::string inputWithAiProps = input + ";" + createOutput;
 	joinAndPush(buildingCreatePos, playerId, inputWithAiProps, getCreateBuildingPosOutput(command));
@@ -202,15 +197,8 @@ void Stats::update(short id) {
 	float* data = statsPerPlayer.at(id);
 	auto player = Game::getPlayersMan()->getPlayer(id);
 	data[cast(StatsInputType::RESULT)] = player->getScore();
-	data[cast(StatsInputType::GOLD)] = player->getResources().getValues()[0];
-	data[cast(StatsInputType::WOOD)] = player->getResources().getValues()[1];
-	data[cast(StatsInputType::FOOD)] = player->getResources().getValues()[2];
-	data[cast(StatsInputType::STONE)] = player->getResources().getValues()[3];
-	data[cast(StatsInputType::ATTACK)] = player->getAttackScore();
-	data[cast(StatsInputType::DEFENCE)] = player->getDefenceScore();
-	data[cast(StatsInputType::BASE_TO_ENEMY)] = Game::getEnvironment()->getDistToEnemy(player); //TODO ale do którego
-
-	data[cast(StatsInputType::WORKERS)] = player->getWorkersNumber();
+	data[cast(StatsInputType::UNIT_NUMBER)] = player->getPossession().getUnitsNumber();
+	data[cast(StatsInputType::BUILDING_NUMBER)] = player->getPossession().getBuildingsNumber();
 
 	std::transform(data, data + magic_enum::enum_count<StatsInputType>(), wBasic, data, std::divides<>());
 }
@@ -332,8 +320,8 @@ std::string Stats::getResourceIdInputAsString(char playerId) {
 std::span<float> Stats::getResourceIdInput(char playerId) {
 	auto player = Game::getPlayersMan()->getPlayer(playerId);
 	auto& resources = player->getResources();
-
-	copyTo(resourceIdInputSpan, resources.getGatherSpeeds(), resources.getValues());
+	auto basic = getBasicInput(playerId);
+	copyTo(resourceIdInputSpan, basic, resources.getGatherSpeeds(), resources.getValues());
 
 	resourceIdInputSpan[magic_enum::enum_count<ResourceInputType>() - 1] = player->getScore();
 
@@ -352,47 +340,12 @@ std::span<float> Stats::getBasicInputWithMetric(char playerId, const db_basic_me
 
 void Stats::add(UnitActionCommand* command) {
 	const auto playerId = command->player;
-
-	const std::string input = getInputData(playerId);
-
-	joinAndPush(unitOrderId, playerId, input, getOutput(command));
-	if (command->order->getId() == static_cast<char>(UnitAction::COLLECT)) {
-		joinAndPush(resourceId, playerId, getResourceIdInputAsString(playerId), getResourceIdOutput(command),
-		            command->order->getSize());
-	}
-}
-
-std::string Stats::getOutput(UnitActionCommand* command) const {
-	float output[magic_enum::enum_count<StatsOrderOutputType>()];
-	std::fill_n(output, magic_enum::enum_count<StatsOrderOutputType>(), 0.f);
-
-	switch (static_cast<UnitAction>(command->order->getId())) {
-	case UnitAction::GO:
-		output[cast(StatsOrderOutputType::ORDER_GO)] = 1;
-		break;
-	case UnitAction::STOP:
-		output[cast(StatsOrderOutputType::ORDER_STOP)] = 1;
-		break;
-	case UnitAction::CHARGE:
-		output[cast(StatsOrderOutputType::ORDER_CHARGE)] = 1;
-		break;
-	case UnitAction::ATTACK:
-		output[cast(StatsOrderOutputType::ORDER_ATTACK)] = 1;
-		break;
-	case UnitAction::DEAD:
-		output[cast(StatsOrderOutputType::ORDER_DEAD)] = 1;
-		break;
-	case UnitAction::DEFEND:
-		output[cast(StatsOrderOutputType::ORDER_DEFEND)] = 1;
-		break;
-	case UnitAction::FOLLOW:
-		output[cast(StatsOrderOutputType::ORDER_FOLLOW)] = 1;
-		break;
-	case UnitAction::COLLECT:
-		output[cast(StatsOrderOutputType::ORDER_COLLECT)] = 1;
-		break;
-	default: ;
-	}
-
-	return join(output, output + magic_enum::enum_count<StatsOrderOutputType>());
+	//
+	// const std::string input = getInputData(playerId);
+	//
+	// joinAndPush(unitOrderId, playerId, input, getOutput(command));
+	// if (command->order->getId() == static_cast<char>(UnitAction::COLLECT)) {
+	// 	joinAndPush(resourceId, playerId, getResourceIdInputAsString(playerId), getResourceIdOutput(command),
+	// 	            command->order->getSize());
+	// }
 }
