@@ -37,10 +37,11 @@ public:
 	void add(BuildingActionCommand* command);
 
 	void add(UnitActionCommand* command);
-
 	void add(CreationCommand* command);
 
-	void save();
+	void accumulateAndWrite();
+
+	void save(bool accumulate);
 private:
 	void update(short id);
 	void clear();
@@ -76,6 +77,8 @@ private:
 	float* basicInputWithParams;
 	std::span<float> basicInputWithParamsSpan;
 
+	float workersOutputAccum[2];
+
 	std::vector<float*> statsPerPlayer;
 	float wBasic[magic_enum::enum_count<StatsInputType>()];
 	float wResourceInput[magic_enum::enum_count<ResourceInputType>()];
@@ -94,4 +97,6 @@ private:
 	std::vector<std::string> unitUpgradeId[MAX_PLAYERS];
 	std::vector<std::string> unitLevelUpPos[MAX_PLAYERS];
 	std::vector<std::string> resourceId[MAX_PLAYERS];
+
+	
 };

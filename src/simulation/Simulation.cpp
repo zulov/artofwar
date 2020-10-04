@@ -85,7 +85,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 		enviroment->removeFromGrids(simObjectManager->getToDispose());
 		Game::getPlayersMan()->update(simulationInfo);
 		Game::getFormationManager()->update();
-		Game::getStats()->save();
+		Game::getStats()->save(currentFrameNumber % framesPeriod == 0);
 	} else {
 		moveUnits(timeStep);
 	}
@@ -284,7 +284,7 @@ void Simulation::initScene(NewGameForm* form) const {
 }
 
 void Simulation::aiPlayers() const {
-	if (currentFrameNumber % 20 == 0) {
+	if (currentFrameNumber % framesPeriod == 0) {
 		aiManager->ai();
 	}
 }

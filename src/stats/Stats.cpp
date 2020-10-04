@@ -98,6 +98,12 @@ void Stats::add(BuildingActionCommand* command) {
 	const std::string basicOutput = getOutput(command);
 	auto player = Game::getPlayersMan()->getPlayer(command->player);
 
+	workersOutputAccum
+		for (auto building : command->buildings) {
+			if (command->action == BuildingActionType::UNIT_CREATE) {
+				command
+			}
+		}
 	// joinAndPush(mainOrder, command->player, input, basicOutput, command->buildings.size());
 	// for (auto building : command->buildings) {
 	// 	if (command->action == BuildingActionType::UNIT_CREATE) {
@@ -189,7 +195,13 @@ void Stats::saveAll(int big, int small) {
 	}
 }
 
-void Stats::save() {
+void Stats::save(bool accumulate) {
+	if(accumulate) {
+
+
+		workersOutputAccum[0]=0.f;
+		workersOutputAccum[1]=0.f;
+	}
 	saveAll(SAVE_BATCH_SIZE, SAVE_BATCH_SIZE_MINI);
 }
 
