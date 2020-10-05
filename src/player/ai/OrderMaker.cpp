@@ -44,7 +44,7 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() {
 }
 
 void OrderMaker::collect(std::vector<Unit*>& workers) {
-	auto input = Game::getStats()->getResourceIdInput(player->getId());
+	auto input = Game::getStats()->getResourceInput(player->getId());
 	auto result = collectResourceId.decide(input);
 	auto resourceId = biggestWithRand(result);
 	for (auto worker : workers) {

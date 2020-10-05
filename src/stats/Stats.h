@@ -27,7 +27,7 @@ public:
 	int getScoreFor(short id) const;
 	std::span<float> getBasicInput(short id);
 
-	std::span<float> getResourceIdInput(char playerId);
+	std::span<float> getResourceInput(char playerId);
 	std::span<float> getBasicInputWithMetric(char playerId, const db_basic_metric* prop);
 	void init();
 	std::string getInputData(char player);
@@ -38,8 +38,6 @@ public:
 
 	void add(UnitActionCommand* command);
 	void add(CreationCommand* command);
-
-	void accumulateAndWrite();
 
 	void save(bool accumulate);
 private:
@@ -60,7 +58,7 @@ private:
 	std::string getOutput(StatsOutputType stat) const;
 
 	std::string getResourceIdOutput(UnitActionCommand* command) const;
-	std::string getResourceIdInputAsString(char playerId);
+	std::string getResourceInputAsString(char playerId);
 
 	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output,
 	                        int number = 1);
@@ -77,12 +75,13 @@ private:
 	float* basicInputWithParams;
 	std::span<float> basicInputWithParamsSpan;
 
-	float workersOutputAccum[2];
+	unsigned short workersCreatedNum[MAX_PLAYERS];
 
 	std::vector<float*> statsPerPlayer;
 	float wBasic[magic_enum::enum_count<StatsInputType>()];
 	float wResourceInput[magic_enum::enum_count<ResourceInputType>()];
 
+	std::vector<std::string> workersCreate[MAX_PLAYERS];
 	std::vector<std::string> mainOrder[MAX_PLAYERS];
 
 	std::vector<std::string> buildingCreateId[MAX_PLAYERS];
@@ -98,5 +97,5 @@ private:
 	std::vector<std::string> unitLevelUpPos[MAX_PLAYERS];
 	std::vector<std::string> resourceId[MAX_PLAYERS];
 
-	
+
 };

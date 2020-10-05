@@ -37,6 +37,8 @@ Stats::Stats() {
 	wResourceInput[cast(ResourceInputType::STONE_VALUE)] = 1000.f;
 
 	wResourceInput[cast(ResourceInputType::WORKERS)] = 100.f;
+
+	std::fill_n(workersCreatedNum, MAX_PLAYERS, 0);
 }
 
 Stats::~Stats() {
@@ -98,12 +100,14 @@ void Stats::add(BuildingActionCommand* command) {
 	const std::string basicOutput = getOutput(command);
 	auto player = Game::getPlayersMan()->getPlayer(command->player);
 
-	workersOutputAccum
-		for (auto building : command->buildings) {
-			if (command->action == BuildingActionType::UNIT_CREATE) {
-				command
-			}
+	if (command->action == BuildingActionType::UNIT_CREATE) {
+		auto level = Game::getPlayersMan()->getPlayer(command->player)->getLevelForUnit(command->id);
+		if (level->canCollect) {
+			//TODO czy to worker
+			workersCreatedNum[command->player] += command->buildings.size();
 		}
+	}
+
 	// joinAndPush(mainOrder, command->player, input, basicOutput, command->buildings.size());
 	// for (auto building : command->buildings) {
 	// 	if (command->action == BuildingActionType::UNIT_CREATE) {
@@ -138,8 +142,8 @@ void Stats::add(CreationCommand* command) {
 	auto player = Game::getPlayersMan()->getPlayer(command->player);
 
 	auto& createOutput = Game::getPlayersMan()->getPlayer(command->player)
-	                                          ->getLevelForBuilding(command->id)->dbBuildingMetricPerNation[player->
-		getNation()]->getParamsNormAsString();
+	                                          ->getLevelForBuilding(command->id)
+	                                          ->dbBuildingMetricPerNation[player->getNation()]->getParamsNormAsString();
 	joinAndPush(buildingCreateId, playerId, input, createOutput);
 	const std::string inputWithAiProps = input + ";" + createOutput;
 	joinAndPush(buildingCreatePos, playerId, inputWithAiProps, getCreateBuildingPosOutput(command));
@@ -192,15 +196,17 @@ void Stats::saveAll(int big, int small) {
 		saveBatch(i, unitLevelUpPos, "unitLevelUpPos", small);
 
 		saveBatch(i, resourceId, "resourceId", small);
+		saveBatch(i, workersCreate, "workersCreate", small);
 	}
 }
 
 void Stats::save(bool accumulate) {
-	if(accumulate) {
+	if (accumulate) {
+		for (char i = 0; i < MAX_PLAYERS; ++i) {
+			joinAndPush(workersCreate, i, getResourceInputAsString(i), std::to_string(workersCreatedNum[i]));
+		}
 
-
-		workersOutputAccum[0]=0.f;
-		workersOutputAccum[1]=0.f;
+		std::fill_n(workersCreatedNum, MAX_PLAYERS, 0);
 	}
 	saveAll(SAVE_BATCH_SIZE, SAVE_BATCH_SIZE_MINI);
 }
@@ -214,7 +220,6 @@ void Stats::update(short id) {
 
 	std::transform(data, data + magic_enum::enum_count<StatsInputType>(), wBasic, data, std::divides<>());
 }
-
 
 int Stats::getScoreFor(short id) const {
 	return Game::getPlayersMan()->getPlayer(id)->getScore();
@@ -325,20 +330,20 @@ std::string Stats::getResourceIdOutput(UnitActionCommand* command) const {
 	return join(output, output + 4);
 }
 
-std::string Stats::getResourceIdInputAsString(char playerId) {
-	return join(getResourceIdInput(playerId));
+std::string Stats::getResourceInputAsString(char playerId) {
+	return join(getResourceInput(playerId));
 }
 
-std::span<float> Stats::getResourceIdInput(char playerId) {
+std::span<float> Stats::getResourceInput(char playerId) {
 	auto player = Game::getPlayersMan()->getPlayer(playerId);
 	auto& resources = player->getResources();
 	auto basic = getBasicInput(playerId);
 	copyTo(resourceIdInputSpan, basic, resources.getGatherSpeeds(), resources.getValues());
 
-	resourceIdInputSpan[magic_enum::enum_count<ResourceInputType>() - 1] = player->getScore();
+	resourceIdInputSpan.back() = player->getPossession().getWorkersNumber();
 
-	std::transform(resourceIdInputSpan.begin(), resourceIdInputSpan.end(), wResourceInput, resourceIdInputSpan.begin(),
-	               std::divides<>());
+	std::transform(resourceIdInputSpan.begin() + basic.size(), resourceIdInputSpan.end(), wResourceInput,
+	               resourceIdInputSpan.begin() + basic.size(), std::divides<>());
 	return resourceIdInputSpan;
 }
 

@@ -51,7 +51,8 @@ struct db_attack {
 	const bool canCloseAttack;
 	const bool canRangeAttack;
 	const bool canChargeAttack;
-	const bool canCollectAttack;
+	const bool canBuildingAttack;
+
 
 	bool initFlag(float val) {
 		if (val > 0.f) {
@@ -76,7 +77,7 @@ struct db_attack {
 		  canCloseAttack(initFlag(closeAttackVal)),
 		  canRangeAttack(initFlag(rangeAttackVal)),
 		  canChargeAttack(initFlag(chargeAttackVal)),
-		  canCollectAttack(initFlag(buildingAttackVal)) {
+		  canBuildingAttack(initFlag(buildingAttackVal)) {
 	}
 };
 
@@ -201,6 +202,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	const float upgradeSpeed;
 	const float maxForce;
 	const float sqMinSpeed;
+	const bool canCollect;
 
 	const Urho3D::String nodeName;
 
@@ -225,7 +227,8 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 		collectSpeed(collectSpeed),
 		upgradeSpeed(upgradeSpeed),
 		maxForce(maxForce),
-		sqMinSpeed(minSpeed * minSpeed) {
+		sqMinSpeed(minSpeed * minSpeed),
+		canCollect(initFlag(collectSpeed)) {
 	}
 
 	void finish(float sumCreateCost) {
