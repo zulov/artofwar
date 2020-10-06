@@ -23,6 +23,7 @@ public:
 	void action();
 private:
 	const std::span<float> decideFromBasic(Brain& brain) const;
+	bool createUnit(db_unit* unit);
 
 	bool enoughResources(db_with_cost* withCosts) const;
 	bool createOrder(StatsOutputType order);
@@ -47,7 +48,7 @@ private:
 	Building* getBuildingToLevelUpUnit(db_unit_level* level);
 
 	Player* player;
-	Brain mainBrain;
+	//Brain mainBrain;
 
 	Brain buildingBrainId;
 	Brain buildingBrainPos;
@@ -60,4 +61,6 @@ private:
 	Brain buildingLevelUpId;
 	Brain unitLevelUpId;
 	Brain unitLevelUpPos;
+
+	Brain ifWorkerNeeded;
 };

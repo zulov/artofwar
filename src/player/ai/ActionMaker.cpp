@@ -19,7 +19,7 @@
 
 
 ActionMaker::ActionMaker(Player* player): player(player),
-                                          mainBrain("Data/ai/main_w.csv"),
+
                                           buildingBrainId("Data/ai/buildId_w.csv"),
                                           buildingBrainPos("Data/ai/buildPos_w.csv"),
                                           unitBrainId("Data/ai/unitId_w.csv"),
@@ -28,18 +28,38 @@ ActionMaker::ActionMaker(Player* player): player(player),
 
                                           buildingLevelUpId("Data/ai/buildLevelUpId_w.csv"),
                                           unitLevelUpId("Data/ai/unitUpgradeId_w.csv"),
-                                          unitLevelUpPos("Data/ai/unitLevelUpPos_w.csv") {
+                                          unitLevelUpPos("Data/ai/unitLevelUpPos_w.csv"),
+                                          ifWorkerNeeded("Data/ai/workersCreate_w.csv") {
 }
 
 const std::span<float> ActionMaker::decideFromBasic(Brain& brain) const {
 	return brain.decide(Game::getStats()->getBasicInput(player->getId()));
 }
 
-void ActionMaker::action() {
-	int id = biggestWithRand(decideFromBasic(mainBrain));
+bool ActionMaker::createUnit(db_unit* unit) {
+	if (enoughResources(unit)) {
+		Building* building = getBuildingToDeploy(unit);
+		if (building) {
+			Game::getActionCenter()->add(
+				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id, player->getId()));
+			return true;
+		}else {
+			//TODO try to build
+		}
+	}
+	return false;
+}
 
-	const auto result = createOrder(static_cast<StatsOutputType>(id));
-	logResult(id, result);
+void ActionMaker::action() {
+	auto resInput = Game::getStats()->getResourceInput(player->getId());
+	auto resResult = ifWorkerNeeded.decide(resInput);
+
+	if (resResult[0] > 0.3f) {
+		auto& units = Game::getDatabase()->getNation(player->getNation())->units;
+		auto unit = units[4];
+		createUnit(unit);
+	}
+	int a = 5;
 }
 
 bool ActionMaker::enoughResources(db_with_cost* withCosts) const {
@@ -59,15 +79,7 @@ bool ActionMaker::createBuilding() {
 
 bool ActionMaker::createUnit() {
 	db_unit* unit = chooseUnit();
-	if (enoughResources(unit)) {
-		Building* building = getBuildingToDeploy(unit);
-		if (building) {
-			Game::getActionCenter()->add(
-				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id, player->getId()));
-			return true;
-		}
-	}
-	return false;
+	return createUnit(unit);
 }
 
 db_building* ActionMaker::chooseBuilding() {

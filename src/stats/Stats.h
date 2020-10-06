@@ -50,7 +50,6 @@ private:
 	std::string getLevelUpUnitPosOutput(Building* building) const;
 	std::string getOutput(UpgradeCommand* command) const;
 
-	std::string getOutput(UnitActionCommand* command) const;
 	std::string getOutput(ResourceActionCommand* command) const;
 	std::string getOutput(BuildingActionCommand* command) const;
 	std::string getOutput(GeneralActionCommand* command) const;

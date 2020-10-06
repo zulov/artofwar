@@ -123,5 +123,5 @@ QueueManager& Player::getQueue() {
 
 void Player::ai() {
 	actionMaker.action();
-	orderMaker.action();
+	//orderMaker.action();
 }

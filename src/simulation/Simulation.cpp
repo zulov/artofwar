@@ -85,7 +85,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 		enviroment->removeFromGrids(simObjectManager->getToDispose());
 		Game::getPlayersMan()->update(simulationInfo);
 		Game::getFormationManager()->update();
-		Game::getStats()->save(secondsElapsed % 10 && currentFrameNumber % framesPeriod == 0); //Every 10 seconds
+		Game::getStats()->save(secondsElapsed % 10 == 0 && currentFrameNumber % framesPeriod == 0); //Every 10 seconds
 	} else {
 		moveUnits(timeStep);
 	}
