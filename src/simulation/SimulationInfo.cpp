@@ -68,14 +68,6 @@ void SimulationInfo::set(SimulationInfo& simulationInfo) {
 	amountResourceChanged = simulationInfo.amountResourceChanged;
 }
 
-void SimulationInfo::setUnitsNumber(int unitsNumber) {
-	this->unitsNumber = unitsNumber;
-}
-
-int SimulationInfo::getUnitsNumber() const {
-	return unitsNumber;
-}
-
 void SimulationInfo::setCurrentFrame(unsigned char currentFrameNumber) {
 	this->currentFrameNumber = currentFrameNumber;
 }

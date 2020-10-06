@@ -71,6 +71,7 @@ private:
 	float maxTimeFrame = 0.05f;
 	unsigned char framesPeriod = 20;
 	unsigned char currentFrameNumber = 0;
+	unsigned int secondsElapsed = 0;
 	SimColorMode colorScheme;
 	bool colorSchemeChanged = true;
 	Force force;

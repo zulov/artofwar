@@ -115,7 +115,6 @@ bool SimulationObjectManager::shouldDelete(Physical* physical) {
 void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
 	auto a = this->simulationInfo;
 	simulationInfo->set(a);
-	simulationInfo->setUnitsNumber(units->size());
 	this->simulationInfo.reset();
 }
 
