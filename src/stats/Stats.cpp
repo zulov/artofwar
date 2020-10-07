@@ -22,50 +22,16 @@ constexpr float DEFAULT_NORMALIZE_VALUE = 10.f;
 constexpr char INFLUENCE_DATA_SIZE = 9; //TODO hard code
 
 Stats::Stats() {
-	wBasic[cast(StatsInputType::RESULT)] = 1000.f;
-	wBasic[cast(StatsInputType::UNIT_NUMBER)] = 100.f;
-	wBasic[cast(StatsInputType::BUILDING_NUMBER)] = 100.f;
-
-	wResourceInput[cast(ResourceInputType::GOLD_SPEED)] = 10.f;
-	wResourceInput[cast(ResourceInputType::WOOD_SPEED)] = 10.f;
-	wResourceInput[cast(ResourceInputType::FOOD_SPEED)] = 10.f;
-	wResourceInput[cast(ResourceInputType::STONE_SPEED)] = 10.f;
-
-	wResourceInput[cast(ResourceInputType::GOLD_VALUE)] = 1000.f;
-	wResourceInput[cast(ResourceInputType::WOOD_VALUE)] = 1000.f;
-	wResourceInput[cast(ResourceInputType::FOOD_VALUE)] = 1000.f;
-	wResourceInput[cast(ResourceInputType::STONE_VALUE)] = 1000.f;
-
-	wResourceInput[cast(ResourceInputType::WORKERS)] = 100.f;
-
 	std::fill_n(workersCreatedNum, MAX_PLAYERS, 0);
 }
 
 Stats::~Stats() {
 	saveAll(1, 1);
-	clear();
-	delete []basicInput;
-	delete []resourceIdInput;
-	delete []basicInputWithParams;
 }
 
 void Stats::init() {
-	clear();
-	basicInput = new float[magic_enum::enum_count<StatsInputType>() * 2];
-	basicInputSpan = std::span{basicInput, magic_enum::enum_count<StatsInputType>() * 2};
 
-	resourceIdInput = new float[basicInputSpan.size() + magic_enum::enum_count<ResourceInputType>()];
-	resourceIdInputSpan = std::span(resourceIdInput,
-	                                basicInputSpan.size() + magic_enum::enum_count<ResourceInputType>());
 
-	basicInputWithParams = new float[magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE];
-	basicInputWithParamsSpan = std::span{
-		basicInputWithParams, magic_enum::enum_count<StatsInputType>() * 2 + AI_PROPS_SIZE
-	};
-
-	for (auto allPlayer : Game::getPlayersMan()->getAllPlayers()) {
-		statsPerPlayer.push_back(new float[magic_enum::enum_count<StatsInputType>()]);
-	}
 }
 
 std::string Stats::getInputData(char player) {
@@ -211,39 +177,8 @@ void Stats::save(bool accumulate) {
 	saveAll(SAVE_BATCH_SIZE, SAVE_BATCH_SIZE_MINI);
 }
 
-void Stats::update(short id) {
-	float* data = statsPerPlayer.at(id);
-	auto player = Game::getPlayersMan()->getPlayer(id);
-	data[cast(StatsInputType::RESULT)] = player->getScore();
-	data[cast(StatsInputType::UNIT_NUMBER)] = player->getPossession().getUnitsNumber();
-	data[cast(StatsInputType::BUILDING_NUMBER)] = player->getPossession().getBuildingsNumber();
-
-	std::transform(data, data + magic_enum::enum_count<StatsInputType>(), wBasic, data, std::divides<>());
-}
-
 int Stats::getScoreFor(short id) const {
 	return Game::getPlayersMan()->getPlayer(id)->getScore();
-}
-
-std::span<float> Stats::getBasicInput(short id) {
-	char idEnemy; //TODO do it better
-	if (id == 0) {
-		idEnemy = 1;
-	} else {
-		idEnemy = 0;
-	}
-	update(id); //TODO PERFORMANCE robic rzadzej
-	update(idEnemy);
-	auto stats = statsPerPlayer.at(id);
-	auto enemy = statsPerPlayer.at(idEnemy); //TODO BUG wybrac wroga
-	std::copy(stats, stats + magic_enum::enum_count<StatsInputType>(), basicInputSpan.begin());
-	std::copy(enemy, enemy + magic_enum::enum_count<StatsInputType>(),
-	          basicInputSpan.begin() + magic_enum::enum_count<StatsInputType>());
-	return basicInputSpan;
-}
-
-void Stats::clear() {
-	clear_vector(statsPerPlayer);
 }
 
 std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
@@ -332,27 +267,6 @@ std::string Stats::getResourceIdOutput(UnitActionCommand* command) const {
 
 std::string Stats::getResourceInputAsString(char playerId) {
 	return join(getResourceInput(playerId));
-}
-
-std::span<float> Stats::getResourceInput(char playerId) {
-	auto player = Game::getPlayersMan()->getPlayer(playerId);
-	auto& resources = player->getResources();
-	auto basic = getBasicInput(playerId);
-	copyTo(resourceIdInputSpan, basic, resources.getGatherSpeeds(), resources.getValues());
-
-	resourceIdInputSpan.back() = player->getPossession().getWorkersNumber();
-
-	std::transform(resourceIdInputSpan.begin() + basic.size(), resourceIdInputSpan.end(), wResourceInput,
-	               resourceIdInputSpan.begin() + basic.size(), std::divides<>());
-	return resourceIdInputSpan;
-}
-
-std::span<float> Stats::getBasicInputWithMetric(char playerId, const db_basic_metric* prop) {
-	auto basicInput = getBasicInput(playerId);
-
-	copyTo(basicInputWithParamsSpan, basicInput, prop->getParamsNormAsSpan());
-
-	return basicInputWithParamsSpan;
 }
 
 void Stats::add(UnitActionCommand* command) {

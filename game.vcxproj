@@ -187,6 +187,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\stats\AiInputProvider.cpp" />
     <ClCompile Include="src\simulation\env\GridCalculatorProvider.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapQuad.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapHistory.cpp" />
@@ -301,6 +302,7 @@
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\stats\AiInputProvider.h" />
     <ClInclude Include="src\objects\Metrics.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
     <ClInclude Include="src\simulation\env\influence\InfluenceMapFactory.h" />

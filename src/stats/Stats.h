@@ -25,10 +25,7 @@ public:
 	Stats();
 	~Stats();
 	int getScoreFor(short id) const;
-	std::span<float> getBasicInput(short id);
 
-	std::span<float> getResourceInput(char playerId);
-	std::span<float> getBasicInputWithMetric(char playerId, const db_basic_metric* prop);
 	void init();
 	std::string getInputData(char player);
 
@@ -41,8 +38,6 @@ public:
 
 	void save(bool accumulate);
 private:
-	void update(short id);
-	void clear();
 
 	std::string getOutput(CreationCommand* command) const;
 	std::string getCreateBuildingPosOutput(CreationCommand* command) const;
@@ -65,20 +60,7 @@ private:
 	void saveBatch(int i, std::vector<std::string>* array, std::string name, int size) const;
 	void saveAll(int big, int small);
 
-	float* basicInput;
-	std::span<float> basicInputSpan;
-
-	float* resourceIdInput;
-	std::span<float> resourceIdInputSpan;
-
-	float* basicInputWithParams;
-	std::span<float> basicInputWithParamsSpan;
-
 	unsigned short workersCreatedNum[MAX_PLAYERS];
-
-	std::vector<float*> statsPerPlayer;
-	float wBasic[magic_enum::enum_count<StatsInputType>()];
-	float wResourceInput[magic_enum::enum_count<ResourceInputType>()];
 
 	std::vector<std::string> workersCreate[MAX_PLAYERS];
 	std::vector<std::string> mainOrder[MAX_PLAYERS];
@@ -95,6 +77,5 @@ private:
 	std::vector<std::string> unitUpgradeId[MAX_PLAYERS];
 	std::vector<std::string> unitLevelUpPos[MAX_PLAYERS];
 	std::vector<std::string> resourceId[MAX_PLAYERS];
-
 
 };

@@ -1,5 +1,5 @@
 #pragma once
-enum class StatsInputType : char {
+enum class BasicInputType : char {
 	RESULT =0,
 	UNIT_NUMBER,
 	BUILDING_NUMBER
