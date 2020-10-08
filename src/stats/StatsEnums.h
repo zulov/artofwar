@@ -24,6 +24,7 @@ enum class ResourceInputType : char {
 	WOOD_VALUE,
 	FOOD_VALUE,
 	STONE_VALUE,
+	FREE_WORKERS,
 	WORKERS	
 };
 

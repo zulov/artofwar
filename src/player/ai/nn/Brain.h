@@ -13,7 +13,5 @@ public:
 private:
 	Eigen::MatrixXf multiply(Layer* current, Layer* prevLayer);
 	void setValues(Layer* layer, Eigen::MatrixXf& mult) const;
-	Layer* input;
-	Layer* output;
 	std::vector<Layer*> allLayers;
 };

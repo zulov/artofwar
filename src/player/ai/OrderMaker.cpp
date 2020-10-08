@@ -8,9 +8,10 @@
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/IndividualOrder.h"
 #include "objects/unit/order/enums/UnitAction.h"
+#include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "simulation/env/Environment.h"
-#include "stats/Stats.h"
+#include "stats/AiInputProvider.h"
 
 OrderMaker::OrderMaker(Player* player)
 	: player(player), collectResourceId("Data/ai/resourceId_w.csv") {
@@ -24,15 +25,6 @@ void OrderMaker::action() {
 	}
 }
 
-bool OrderMaker::isNotInStates(UnitState state, std::initializer_list<UnitState> states) {
-	for (auto s : states) {
-		if (state == s) {
-			return false;
-		}
-	}
-	return true;
-}
-
 std::vector<Unit*> OrderMaker::findFreeWorkers() {
 	std::vector<Unit*> freeWorkers;
 	for (auto worker : player->getPossession().getWorkers()) {
@@ -44,7 +36,7 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() {
 }
 
 void OrderMaker::collect(std::vector<Unit*>& workers) {
-	auto input = Game::getStats()->getResourceInput(player->getId());
+	auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
 	auto result = collectResourceId.decide(input);
 	auto resourceId = biggestWithRand(result);
 	for (auto worker : workers) {

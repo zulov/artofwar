@@ -33,6 +33,7 @@
 #include <utility>
 
 #include "math/RandGen.h"
+#include "stats/AiInputProvider.h"
 #include "stats/Stats.h"
 
 
@@ -214,6 +215,7 @@ void Main::setSimpleManagers() {
 	Game::setCameraManager(new CameraManager())
 		->setFormationManager(new FormationManager())
 		->setPlayersManager(new PlayersManager())
+		->setAiInputProvider(new AiInputProvider())
 		->setStats(new Stats())
 		->setColorPaletteRepo(new ColorPaletteRepo());
 }
@@ -235,7 +237,6 @@ void Main::load(const String& saveName, loading& progress) {
 		SetupViewport();
 
 		Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
-		Game::getStats()->init();
 		controls->init();
 		
 		subscribeToUIEvents();
@@ -286,7 +287,6 @@ void Main::newGame(NewGameForm* form, loading& progress) {
 		SetupViewport();
 
 		Game::getPlayersMan()->load(form);
-		Game::getStats()->init();
 		controls->init();
 
 		hud->resetLoading();
@@ -472,7 +472,9 @@ void Main::disposeScene() {
 		delete Game::getPlayersMan();
 		Game::setPlayersManager(nullptr);
 
-		loading2.inc("dispose Stats");
+		loading2.inc("dispose Stats & AIinput");
+		delete Game::getAiInputProvider();
+		Game::setAiInputProvider(nullptr);
 		delete Game::getStats();
 		Game::setStats(nullptr);
 

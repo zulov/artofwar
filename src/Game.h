@@ -25,6 +25,7 @@ class QueueManager;
 class ColorPaletteRepo;
 class FormationManager;
 class ActionCenter;
+class AiInputProvider;
 
 class Game {
 public:
@@ -47,6 +48,7 @@ public:
 	static Game* setFormationManager(FormationManager* _formationManager);
 	static Game* setColorPaletteRepo(ColorPaletteRepo* _colorPaletteRepo);
 	static Game* setLog(Urho3D::Log* _log);
+	static Game* setAiInputProvider(AiInputProvider* _aiInputProvider);
 	static Game* setStats(Stats* _stats);
 	static Game* setActionCenter(ActionCenter* _actionCenter);
 	static void addTime(float time);
@@ -67,6 +69,7 @@ public:
 	static CameraManager* getCameraManager() { return instance->cameraManager; }
 	static PlayersManager* getPlayersMan() { return instance->playersManager; }
 	static Environment* getEnvironment() { return instance->environment; }
+	static AiInputProvider* getAiInputProvider() { return instance->aiInputProvider; }
 	static Stats* getStats() { return instance->stats; }
 	static ActionCenter* getActionCenter() { return instance->actionCenter; }
 
@@ -93,6 +96,7 @@ private:
 	DatabaseCache* databaseCache;
 	Environment* environment;
 	//QueueManager* queue;
+	AiInputProvider* aiInputProvider;
 	Stats* stats;
 	ActionCenter * actionCenter;
 

@@ -21,6 +21,7 @@ AiInputProvider::AiInputProvider() {
 	wResourceInput[cast(ResourceInputType::FOOD_VALUE)] = 1000.f;
 	wResourceInput[cast(ResourceInputType::STONE_VALUE)] = 1000.f;
 
+	wResourceInput[cast(ResourceInputType::FREE_WORKERS)] = 100.f;
 	wResourceInput[cast(ResourceInputType::WORKERS)] = 100.f;
 
 	basicInputSpan = std::span(basicInput);
@@ -34,7 +35,8 @@ std::span<float> AiInputProvider::getResourceInput(char playerId) {
 	const auto basic = getBasicInput(playerId);
 	copyTo(resourceIdInputSpan, basic, resources.getGatherSpeeds(), resources.getValues());
 
-	resourceIdInputSpan.back() = player->getPossession().getWorkersNumber();
+	resourceIdInputSpan[cast(ResourceInputType::FREE_WORKERS)] = player->getPossession().getFreeWorkersNumber();
+	resourceIdInputSpan[cast(ResourceInputType::WORKERS)] = player->getPossession().getWorkersNumber();
 
 	std::transform(resourceIdInputSpan.begin() + basic.size(), resourceIdInputSpan.end(), wResourceInput,
 	               resourceIdInputSpan.begin() + basic.size(), std::divides<>());

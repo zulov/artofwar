@@ -14,7 +14,7 @@
 #include "player/Player.h"
 #include "player/ai/ActionCenter.h"
 #include "simulation/env/Environment.h"
-#include "stats/Stats.h"
+#include "stats/AiInputProvider.h"
 #include "stats/StatsEnums.h"
 
 
@@ -33,7 +33,7 @@ ActionMaker::ActionMaker(Player* player): player(player),
 }
 
 const std::span<float> ActionMaker::decideFromBasic(Brain& brain) const {
-	return brain.decide(Game::getStats()->getBasicInput(player->getId()));
+	return brain.decide(Game::getAiInputProvider()->getBasicInput(player->getId()));
 }
 
 bool ActionMaker::createUnit(db_unit* unit) {
@@ -51,7 +51,7 @@ bool ActionMaker::createUnit(db_unit* unit) {
 }
 
 void ActionMaker::action() {
-	auto resInput = Game::getStats()->getResourceInput(player->getId());
+	auto resInput = Game::getAiInputProvider()->getResourceInput(player->getId());
 	auto resResult = ifWorkerNeeded.decide(resInput);
 
 	if (resResult[0] > 0.3f) {
@@ -191,7 +191,7 @@ float ActionMaker::dist(std::valarray<float>& center, const db_basic_metric* met
 }
 
 const std::span<float> ActionMaker::inputWithParamsDecide(Brain& brain, const db_basic_metric* metric) const {
-	return brain.decide(Game::getStats()->getBasicInputWithMetric(player->getId(), metric));
+	return brain.decide(Game::getAiInputProvider()->getBasicInputWithMetric(player->getId(), metric));
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {

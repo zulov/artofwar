@@ -16,14 +16,16 @@ public:
 	Possession(char nation);
 	~Possession();
 
+
 	Possession(const Possession&) = delete;
 	void add(Building* building);
 	void add(Unit* unit);
-	void updateAndClean(Resources& resources, SimulationInfo * simInfo);
+	void updateAndClean(Resources& resources, SimulationInfo* simInfo);
 	int getScore() const;
 	int getUnitsNumber() const;
 	int getBuildingsNumber() const;
 	int getWorkersNumber() const;
+	int getFreeWorkersNumber() const;
 	std::vector<Building*>* getBuildings(short id);
 	float getUnitsVal(UnitMetric value) const;
 	float getBuildingsVal(BuildingMetric value) const;
@@ -34,11 +36,12 @@ private:
 
 	std::vector<Unit*> units;
 	std::vector<Unit*> workers;
+	int freeWorkersNumber = 0;
 	float resourcesSum = 0;
 
 	float unitsMetrics[magic_enum::enum_count<UnitMetric>()];
 	float buildingsMetrics[magic_enum::enum_count<BuildingMetric>()];
 	std::span<float> unitsValuesAsSpan;
 	std::span<float> buildingsValuesAsSpan;
-	
+
 };

@@ -43,6 +43,8 @@ int Possession::getWorkersNumber() const {
 	return workers.size();
 }
 
+int Possession::getFreeWorkersNumber() const { return freeWorkersNumber; }
+
 std::vector<Building*>* Possession::getBuildings(short id) {
 	return buildingsPerId[id];
 }
@@ -103,4 +105,8 @@ void Possession::updateAndClean(Resources& resources, SimulationInfo* simInfo) {
 
 	auto values = resources.getValues();
 	resourcesSum = std::accumulate(values.begin(), values.end(), 0.f);
+
+	freeWorkersNumber = std::count_if(workers.begin(), workers.end(), [](Unit* worker) {
+		return isNotInStates(worker->getState(), {UnitState::COLLECT, UnitState::GO_TO});
+	});
 }

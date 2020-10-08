@@ -2,6 +2,8 @@
 #include "State.h"
 #include <magic_enum.hpp>
 
+#include "player/ai/OrderMaker.h"
+
 
 enum class StaticState : char;
 class Static;
@@ -28,3 +30,12 @@ private:
 
 	static StateManager* instance;
 };
+
+inline bool isNotInStates(UnitState state, std::initializer_list<UnitState> states) {
+	for (auto s : states) {
+		if (state == s) {
+			return false;
+		}
+	}
+	return true;
+}

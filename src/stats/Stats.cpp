@@ -1,5 +1,7 @@
 ﻿#include "Stats.h"
 #include <fstream>
+
+#include "AiInputProvider.h"
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
@@ -11,7 +13,6 @@
 #include "commands/upgrade/UpgradeCommand.h"
 #include "objects/ObjectEnums.h"
 #include "objects/unit/order/UnitOrder.h"
-#include "objects/unit/order/enums/UnitAction.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/ai/AiUtils.h"
@@ -27,15 +28,6 @@ Stats::Stats() {
 
 Stats::~Stats() {
 	saveAll(1, 1);
-}
-
-void Stats::init() {
-
-
-}
-
-std::string Stats::getInputData(char player) {
-	return join(getBasicInput(player));
 }
 
 void Stats::add(GeneralActionCommand* command) {
@@ -56,13 +48,13 @@ void Stats::add(GeneralActionCommand* command) {
 void Stats::add(ResourceActionCommand* command) {
 	const auto player = command->player;
 
-	const std::string input = getInputData(player);
+	const std::string input = join(Game::getAiInputProvider()->getBasicInput(player));
 
 	joinAndPush(mainOrder, player, input, getOutput(command), command->resources.size());
 }
 
 void Stats::add(BuildingActionCommand* command) {
-	const std::string input = getInputData(command->player);
+	const std::string input = join(Game::getAiInputProvider()->getBasicInput(command->player));
 	const std::string basicOutput = getOutput(command);
 	auto player = Game::getPlayersMan()->getPlayer(command->player);
 
@@ -102,7 +94,7 @@ void Stats::add(CreationCommand* command) {
 
 	const auto playerId = command->player;
 
-	const std::string input = getInputData(playerId);
+	const std::string input = join(Game::getAiInputProvider()->getBasicInput(playerId));
 
 	joinAndPush(mainOrder, playerId, input, getOutput(command));
 	auto player = Game::getPlayersMan()->getPlayer(command->player);
@@ -266,7 +258,7 @@ std::string Stats::getResourceIdOutput(UnitActionCommand* command) const {
 }
 
 std::string Stats::getResourceInputAsString(char playerId) {
-	return join(getResourceInput(playerId));
+	return join(Game::getAiInputProvider()->getResourceInput(playerId));
 }
 
 void Stats::add(UnitActionCommand* command) {

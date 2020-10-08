@@ -1,5 +1,4 @@
 #pragma once
-#include <initializer_list>
 #include <vector>
 
 #include "nn/Brain.h"
@@ -15,7 +14,6 @@ public:
 
 	void action();
 private:
-	bool isNotInStates(UnitState getState, std::initializer_list<UnitState> states);
 	std::vector<Unit*> findFreeWorkers();
 	void collect(std::vector<Unit*>& workers);
 

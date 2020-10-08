@@ -26,9 +26,6 @@ public:
 	~Stats();
 	int getScoreFor(short id) const;
 
-	void init();
-	std::string getInputData(char player);
-
 	void add(GeneralActionCommand* command);
 	void add(ResourceActionCommand* command);
 	void add(BuildingActionCommand* command);

@@ -32,8 +32,6 @@ Brain::Brain(std::string dataPath) {
 		w.clear();
 		b.clear();
 	}
-	input = *allLayers.begin();
-	output = *(allLayers.end() - 1);
 }
 
 Brain::~Brain() {
@@ -41,7 +39,7 @@ Brain::~Brain() {
 }
 
 const std::span<float> Brain::decide(std::span<float> data) {
-	input->setValues(data);
+	allLayers.front()->setValues(data);
 	for (int i = 1; i < allLayers.size(); i++) {
 		Layer* layer = allLayers.at(i);
 		Layer* prevLayer = allLayers.at(i - 1);
@@ -51,7 +49,7 @@ const std::span<float> Brain::decide(std::span<float> data) {
 		setValues(layer, mult);
 	}
 
-	return output->getValues();
+	return allLayers.back()->getValues();
 }
 
 Eigen::MatrixXf Brain::multiply(Layer* current, Layer* prevLayer) {
