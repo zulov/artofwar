@@ -74,7 +74,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>

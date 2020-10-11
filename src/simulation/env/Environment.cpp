@@ -310,7 +310,7 @@ const std::vector<char>& Environment::getCloseTabIndexes(int center) const {
 	return mainGrid.getCloseTabIndexes(center);
 }
 
-std::vector<float>& Environment::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
+std::array<float, 6>& Environment::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
 	return influenceManager.getInfluenceDataAt(player, pos);
 }
 

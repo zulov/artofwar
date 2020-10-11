@@ -60,6 +60,11 @@ void ActionMaker::action() {
 		createUnit(unit);
 	}
 	int a = 5;
+
+	//return createUnit();
+	//return createBuilding();
+	//return levelUpUnit();
+	//return levelUpBuilding();
 }
 
 bool ActionMaker::enoughResources(db_with_cost* withCosts) const {
@@ -264,22 +269,6 @@ Building* ActionMaker::getBuildingToLevelUpUnit(db_unit_level* level) {
 	// }
 	// return closest;
 	return nullptr;
-}
-
-bool ActionMaker::createOrder(StatsOutputType order) {
-	switch (order) {
-	case StatsOutputType::IDLE: break;
-	case StatsOutputType::CREATE_UNIT:
-		return createUnit();
-	case StatsOutputType::CREATE_BUILDING:
-		return createBuilding();
-	case StatsOutputType::LEVEL_UP_UNIT:
-		return levelUpUnit();
-	case StatsOutputType::LEVEL_UP_BUILDING:
-		return levelUpBuilding();
-	default: ;
-	}
-	return false;
 }
 
 bool ActionMaker::levelUpBuilding() {

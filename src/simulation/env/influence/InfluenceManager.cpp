@@ -191,7 +191,7 @@ void InfluenceManager::drawAll() {
 
 	drawAll(gatherSpeed, "gather");
 	drawAll(attackSpeed, "attack");
-	
+
 	drawAll(unitsQuad, "unitsQuad");
 	drawAll(buildingsQuad, "buildingsQuad");
 	drawAll(gatherQuad, "gatherQuad");
@@ -248,10 +248,10 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 	return ci;
 }
 
-std::vector<float>& InfluenceManager::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
-	dataFromPos.clear();
-	for (auto map : mapsForAiPerPlayer[player]) {
-		dataFromPos.push_back(map->getValueAsPercent(pos));
+std::array<float, 6>& InfluenceManager::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
+	auto& array = mapsForAiPerPlayer[player];
+	for (int i = 0; i < array.size(); ++i) {
+		dataFromPos[i] = array[i]->getValueAsPercent(pos);
 	}
 	return dataFromPos;
 }

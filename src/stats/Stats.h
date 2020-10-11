@@ -1,14 +1,10 @@
 #pragma once
-#include <magic_enum.hpp>
-#include <span>
 #include <string>
 #include <vector>
-#include "StatsEnums.h"
 #include "utils/defines.h"
 
 struct db_basic_metric;
 constexpr char SAVE_BATCH_SIZE = 10;
-constexpr char SAVE_BATCH_SIZE_MINI = 4;
 
 struct ActionParameter;
 class GeneralActionCommand;
@@ -22,14 +18,12 @@ class CreationCommand;
 
 class Stats {
 public:
+
 	Stats();
 	~Stats();
 	Stats(const Stats&) = delete;
-	
-	int getScoreFor(short id) const;
 
 	void add(GeneralActionCommand* command);
-	void add(ResourceActionCommand* command);
 	void add(BuildingActionCommand* command);
 
 	void add(UnitActionCommand* command);
@@ -37,44 +31,30 @@ public:
 
 	void save(bool accumulate);
 private:
-
-	std::string getOutput(CreationCommand* command) const;
+	void clearCounters();
 	std::string getCreateBuildingPosOutput(CreationCommand* command) const;
 	std::string getCreateUnitPosOutput(Building* building) const;
-	std::string getLevelUpUnitPosOutput(Building* building) const;
-	std::string getOutput(UpgradeCommand* command) const;
-
-	std::string getOutput(ResourceActionCommand* command) const;
-	std::string getOutput(BuildingActionCommand* command) const;
-	std::string getOutput(GeneralActionCommand* command) const;
-
-	std::string getOutput(StatsOutputType stat) const;
 
 	std::string getResourceIdOutput(UnitActionCommand* command) const;
-	std::string getResourceInputAsString(char playerId);
 
 	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output,
 	                        int number = 1);
 	void save(int i, std::vector<std::string>* array, std::string fileName) const;
 	void saveBatch(int i, std::vector<std::string>* array, std::string name, int size) const;
-	void saveAll(int big, int small);
+	void saveAll(int size);
 
-	unsigned short workersCreatedNum[MAX_PLAYERS];
+	unsigned short workersCreatedCount[MAX_PLAYERS];
+	std::vector<std::string> ifWorkersCreate[MAX_PLAYERS];
+	std::vector<std::string> whereWorkersCreate[MAX_PLAYERS];
 
-	std::vector<std::string> workersCreate[MAX_PLAYERS];
-	std::vector<std::string> mainOrder[MAX_PLAYERS];
+	unsigned short buildingsCreatedCount[MAX_PLAYERS];
+	std::vector<std::string> ifBuildingCreate[MAX_PLAYERS];
+	std::vector<std::string> whatBuildingCreate[MAX_PLAYERS];
+	std::vector<std::string> whereBuildingCreate[MAX_PLAYERS];
 
-	std::vector<std::string> buildingCreateId[MAX_PLAYERS];
-	std::vector<std::string> buildingCreatePos[MAX_PLAYERS];
-
-	std::vector<std::string> unitCreateId[MAX_PLAYERS];
-	std::vector<std::string> unitCreatePos[MAX_PLAYERS];
-
-	std::vector<std::string> unitOrderId[MAX_PLAYERS];
-
-	std::vector<std::string> buildLevelUpId[MAX_PLAYERS];
-	std::vector<std::string> unitUpgradeId[MAX_PLAYERS];
-	std::vector<std::string> unitLevelUpPos[MAX_PLAYERS];
-	std::vector<std::string> resourceId[MAX_PLAYERS];
+	unsigned short unitsCreatedCount[MAX_PLAYERS];
+	std::vector<std::string> ifUnitCreate[MAX_PLAYERS];
+	std::vector<std::string> whatUnitCreate[MAX_PLAYERS];
+	std::vector<std::string> whereUnitCreate[MAX_PLAYERS];
 
 };

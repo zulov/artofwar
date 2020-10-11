@@ -20,7 +20,7 @@ void ActionCenter::add(UpgradeCommand* command) {
 }
 
 void ActionCenter::add(ResourceActionCommand* command) {
-	Game::getStats()->add(command);
+	//Game::getStats()->add(command);
 	action.add(command);
 }
 

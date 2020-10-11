@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include "database/db_strcut.h"
-#include "stats/StatsEnums.h"
 
 constexpr bool LOG_ACTIONS_MAKER = true;
 
@@ -11,14 +10,14 @@ using namespace magic_enum::ostream_operators;
 inline void logThree(int ids[3], float vals[3], float max) {
 	if constexpr (LOG_ACTIONS_MAKER) {
 		for (int i = 0; i < 3; ++i) {
-			std::cout << static_cast<StatsOutputType>(ids[i]) << "-" << (vals[i] / max * 100) << "%, ";
+			std::cout << ids[i] << "-" << (vals[i] / max * 100) << "%, ";
 		}
 	}
 }
 
 inline void logResult(int id, const bool result) {
 	if constexpr (LOG_ACTIONS_MAKER) {
-		std::cout << " -> " << static_cast<StatsOutputType>(id);
+		std::cout << " -> " << id;
 		if (result) {
 			std::cout << "(DONE)" << std::endl;
 		} else {

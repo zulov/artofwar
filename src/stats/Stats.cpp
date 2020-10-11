@@ -1,6 +1,6 @@
 ﻿#include "Stats.h"
-#include <fstream>
 
+#include <fstream>
 #include "AiInputProvider.h"
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
@@ -9,9 +9,9 @@
 #include "commands/action/ResourceActionCommand.h"
 #include "commands/action/ResourceActionType.h"
 #include "commands/action/UnitActionCommand.h"
+#include "commands/action/GeneralActionType.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
-#include "objects/ObjectEnums.h"
 #include "objects/unit/order/UnitOrder.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
@@ -19,92 +19,77 @@
 #include "simulation/env/Environment.h"
 #include "utils/StringUtils.h"
 
-constexpr float DEFAULT_NORMALIZE_VALUE = 10.f;
-constexpr char INFLUENCE_DATA_SIZE = 9; //TODO hard code
 
 Stats::Stats() {
-	std::fill_n(workersCreatedNum, MAX_PLAYERS, 0);
+	clearCounters();
 }
 
 Stats::~Stats() {
-	saveAll(1, 1);
+	saveAll(1);
+}
+
+void Stats::clearCounters() {
+	std::fill_n(workersCreatedCount, MAX_PLAYERS, 0);
+	std::fill_n(buildingsCreatedCount, MAX_PLAYERS, 0);
+	std::fill_n(unitsCreatedCount, MAX_PLAYERS, 0);
 }
 
 void Stats::add(GeneralActionCommand* command) {
-	const auto player = command->player;
-	//
-	// const std::string input = getInputData(player);
-	//
-	// joinAndPush(mainOrder, player, input, getOutput(command));
-	//
-	// auto opt = Game::getPlayersMan()
-	//            ->getPlayer(command->player)->getNextLevelForBuilding(command->id);
-	// if (opt.has_value()) {
-	// 	auto& createOutput = opt.value()->dbBuildingMetricUp->getParamsNormAsString();
-	// 	joinAndPush(buildLevelUpId, player, input, createOutput);
-	// }
-}
-
-void Stats::add(ResourceActionCommand* command) {
-	const auto player = command->player;
-
-	const std::string input = join(Game::getAiInputProvider()->getBasicInput(player));
-
-	joinAndPush(mainOrder, player, input, getOutput(command), command->resources.size());
-}
-
-void Stats::add(BuildingActionCommand* command) {
-	const std::string input = join(Game::getAiInputProvider()->getBasicInput(command->player));
-	const std::string basicOutput = getOutput(command);
-	auto player = Game::getPlayersMan()->getPlayer(command->player);
-
-	if (command->action == BuildingActionType::UNIT_CREATE) {
-		auto level = Game::getPlayersMan()->getPlayer(command->player)->getLevelForUnit(command->id);
-		if (level->canCollect) {
-			//TODO czy to worker
-			workersCreatedNum[command->player] += command->buildings.size();
-		}
-	}
-
-	// joinAndPush(mainOrder, command->player, input, basicOutput, command->buildings.size());
-	// for (auto building : command->buildings) {
-	// 	if (command->action == BuildingActionType::UNIT_CREATE) {
-	// 		auto& createOutput = player->getLevelForUnit(command->id)->dbUnitMetric->getParamsNormAsString();
-	// 		joinAndPush(unitCreateId, command->player, input, createOutput);
-	//
-	// 		const std::string inputWithAiProps = input + ";" + createOutput;
-	// 		joinAndPush(unitCreatePos, command->player, inputWithAiProps, getCreateUnitPosOutput(building));
-	// 	} else if (command->action == BuildingActionType::UNIT_LEVEL) {
-	// 		auto opt = player->getNextLevelForUnit(command->id);
-	// 		if (opt.has_value()) {
-	// 			auto& createOutput = opt.value()->dbUnitMetricUp->getParamsNormAsString();
-	// 			joinAndPush(unitUpgradeId, command->player, input, createOutput);
-	//
-	// 			const std::string inputWithAiProps = input + ";" + createOutput;
-	// 			joinAndPush(unitLevelUpPos, command->player, inputWithAiProps, getLevelUpUnitPosOutput(building));
-	// 		}
-	// 	}
-	// }
-}
-
-void Stats::add(CreationCommand* command) {
-	if (command->objectType != ObjectType::BUILDING) {
-		Game::getLog()->Write(0, "ERROR - WRONG command");
-	}
-
+	// upgrade buildingu
 	const auto playerId = command->player;
 
 	const std::string input = join(Game::getAiInputProvider()->getBasicInput(playerId));
 
-	joinAndPush(mainOrder, playerId, input, getOutput(command));
+	if (command->action == GeneralActionType::BUILDING_LEVEL) {
+		// auto opt = Game::getPlayersMan()
+		//            ->getPlayer(command->player)->getNextLevelForBuilding(command->id);
+		// if (opt.has_value()) {
+		// 	auto& createOutput = opt.value()->dbBuildingMetricUp->getParamsNormAsString();
+		// 	joinAndPush(buildLevelUpId, player, input, createOutput);
+		// }
+	}
+}
+
+void Stats::add(BuildingActionCommand* command) {
+	const std::string input = join(Game::getAiInputProvider()->getBasicInput(command->player));
+
 	auto player = Game::getPlayersMan()->getPlayer(command->player);
 
-	auto& createOutput = Game::getPlayersMan()->getPlayer(command->player)
-	                                          ->getLevelForBuilding(command->id)
-	                                          ->dbBuildingMetricPerNation[player->getNation()]->getParamsNormAsString();
-	joinAndPush(buildingCreateId, playerId, input, createOutput);
+	if (command->action == BuildingActionType::UNIT_CREATE) {
+		auto level = player->getLevelForUnit(command->id);
+		if (level->canCollect) {
+			//TODO czy to worker
+			workersCreatedCount[command->player] += command->buildings.size();
+			for (auto building : command->buildings) {
+			auto resInput=	join(Game::getAiInputProvider()->getResourceInput(command->player));
+			joinAndPush(whereWorkersCreate, command->player, resInput, getCreateUnitPosOutput(building));
+		}
+		} else {
+			unitsCreatedCount[command->player] += command->buildings.size();
+			for (auto building : command->buildings) {
+			auto& createOutput = level->dbUnitMetric->getParamsNormAsString();
+			joinAndPush(whatBuildingCreate, command->player, input, createOutput);
+			const std::string inputWithAiProps = input + ";" + createOutput;
+			joinAndPush(whereBuildingCreate, command->player, inputWithAiProps, getCreateUnitPosOutput(building));
+		}
+		}
+		
+	}
+}
+
+void Stats::add(CreationCommand* command) {
+	assert(command->objectType == ObjectType::BUILDING);
+
+
+	const std::string input = join(Game::getAiInputProvider()->getBuildingsInput(command->player));
+
+	const auto player = Game::getPlayersMan()->getPlayer(command->player);
+
+	auto& createOutput = player->getLevelForBuilding(command->id)
+	                           ->dbBuildingMetricPerNation[player->getNation()]->getParamsNormAsString();
+	joinAndPush(whatBuildingCreate, command->player, input, createOutput);
 	const std::string inputWithAiProps = input + ";" + createOutput;
-	joinAndPush(buildingCreatePos, playerId, inputWithAiProps, getCreateBuildingPosOutput(command));
+	joinAndPush(whereBuildingCreate, command->player, inputWithAiProps, getCreateBuildingPosOutput(command));
 }
 
 void Stats::joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output,
@@ -136,41 +121,38 @@ void Stats::saveBatch(int i, std::vector<std::string>* array, std::string name, 
 	}
 }
 
-void Stats::saveAll(int big, int small) {
+void Stats::saveAll(int size) {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		saveBatch(i, mainOrder, "main", big);
+		saveBatch(i, ifWorkersCreate, "workersCreate", size);
+		saveBatch(i, whereWorkersCreate, "whereWorkersCreate", size);
 
-		saveBatch(i, buildingCreateId, "buildId", small);
-		saveBatch(i, buildingCreatePos, "buildPos", small);
+		saveBatch(i, ifBuildingCreate, "workersCreate", size);
+		saveBatch(i, whatBuildingCreate, "workersCreate", size);
+		saveBatch(i, whereBuildingCreate, "workersCreate", size);
 
-		saveBatch(i, unitCreateId, "unitId", small);
-		saveBatch(i, unitCreatePos, "unitPos", small);
-
-		saveBatch(i, unitOrderId, "unitOrderId", small);
-
-		saveBatch(i, buildLevelUpId, "buildLevelUpId", small);
-
-		saveBatch(i, unitUpgradeId, "unitUpgradeId", small);
-		saveBatch(i, unitLevelUpPos, "unitLevelUpPos", small);
-
-		saveBatch(i, resourceId, "resourceId", small);
-		saveBatch(i, workersCreate, "workersCreate", small);
+		saveBatch(i, ifUnitCreate, "workersCreate", size);
+		saveBatch(i, whatUnitCreate, "workersCreate", size);
+		saveBatch(i, whereUnitCreate, "workersCreate", size);
 	}
 }
 
 void Stats::save(bool accumulate) {
 	if (accumulate) {
 		for (char i = 0; i < MAX_PLAYERS; ++i) {
-			joinAndPush(workersCreate, i, getResourceInputAsString(i), std::to_string(workersCreatedNum[i]));
+			joinAndPush(ifWorkersCreate, i,
+			            join(Game::getAiInputProvider()->getResourceInput(i)),
+			            std::to_string(workersCreatedCount[i]));
+			joinAndPush(ifBuildingCreate, i,
+			            join(Game::getAiInputProvider()->getBuildingsInput(i)),
+			            std::to_string(buildingsCreatedCount[i]));
+			joinAndPush(ifUnitCreate, i,
+			            join(Game::getAiInputProvider()->getUnitsInput(i)),
+			            std::to_string(unitsCreatedCount[i]));
 		}
 
-		std::fill_n(workersCreatedNum, MAX_PLAYERS, 0);
+		clearCounters();
 	}
-	saveAll(SAVE_BATCH_SIZE, SAVE_BATCH_SIZE_MINI);
-}
-
-int Stats::getScoreFor(short id) const {
-	return Game::getPlayersMan()->getPlayer(id)->getScore();
+	saveAll(SAVE_BATCH_SIZE);
 }
 
 std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
@@ -180,74 +162,10 @@ std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
 }
 
 std::string Stats::getCreateUnitPosOutput(Building* building) const {
-	float output[INFLUENCE_DATA_SIZE + 1];
-
-	std::fill_n(output, INFLUENCE_DATA_SIZE + 1, 0.f);
-	auto buildingPos = building->getPosition();
+	const auto buildingPos = building->getPosition();
 
 	auto& data = Game::getEnvironment()->getInfluenceDataAt(building->getPlayer(), {buildingPos.x_, buildingPos.z_});
-	std::copy(data.begin(), data.end(), output);
-
-	output[INFLUENCE_DATA_SIZE] = building->getQueue()->getSize() / DEFAULT_NORMALIZE_VALUE;
-	return join(output, output + INFLUENCE_DATA_SIZE + 1);
-}
-
-std::string Stats::getLevelUpUnitPosOutput(Building* building) const {
-	auto queueSize = building->getQueue()->getSize() / DEFAULT_NORMALIZE_VALUE;
-	std::ostringstream ss;
-	ss << queueSize;
-	return std::string(ss.str());
-}
-
-std::string Stats::getOutput(CreationCommand* command) const {
-	return getOutput(StatsOutputType::CREATE_BUILDING);
-}
-
-std::string Stats::getOutput(UpgradeCommand* command) const {
-	switch (command->type) {
-	case QueueActionType::UNIT_LEVEL:
-		return getOutput(StatsOutputType::LEVEL_UP_UNIT);
-	case QueueActionType::BUILDING_LEVEL:
-		return getOutput(StatsOutputType::LEVEL_UP_BUILDING);
-	default: ;
-	}
-}
-
-std::string Stats::getOutput(ResourceActionCommand* command) const {
-	//TODO
-	switch (command->action) {
-	case ResourceActionType::COLLECT:
-		return getOutput(StatsOutputType::IDLE);
-	case ResourceActionType::CANCEL:
-		return getOutput(StatsOutputType::IDLE);
-	default: ;
-	}
-}
-
-std::string Stats::getOutput(BuildingActionCommand* command) const {
-	switch (command->action) {
-	case BuildingActionType::UNIT_CREATE:
-		return getOutput(StatsOutputType::CREATE_UNIT);
-	case BuildingActionType::UNIT_LEVEL:
-		return getOutput(StatsOutputType::LEVEL_UP_UNIT);
-	case BuildingActionType::UNIT_UPGRADE:
-		//TODO dodac kiedyś
-		break;
-	default: ;
-	}
-}
-
-std::string Stats::getOutput(GeneralActionCommand* command) const {
-	return getOutput(StatsOutputType::LEVEL_UP_BUILDING);
-}
-
-std::string Stats::getOutput(StatsOutputType stat) const {
-	float output[magic_enum::enum_count<StatsOutputType>()];
-	std::fill_n(output, magic_enum::enum_count<StatsOutputType>(), 0.f);
-
-	output[cast(stat)] = 1;
-
-	return join(output, output + magic_enum::enum_count<StatsOutputType>());
+	return join(data.begin(), data.end());
 }
 
 std::string Stats::getResourceIdOutput(UnitActionCommand* command) const {
@@ -255,10 +173,6 @@ std::string Stats::getResourceIdOutput(UnitActionCommand* command) const {
 	std::fill_n(output, 4, 0.f);
 	output[command->order->getToUseId()] = 1;
 	return join(output, output + 4);
-}
-
-std::string Stats::getResourceInputAsString(char playerId) {
-	return join(Game::getAiInputProvider()->getResourceInput(playerId));
 }
 
 void Stats::add(UnitActionCommand* command) {

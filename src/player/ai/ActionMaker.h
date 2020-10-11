@@ -14,7 +14,6 @@ struct db_building;
 struct db_unit_level;
 struct db_unit;
 struct db_building_level;
-enum class StatsOutputType : char;
 
 class ActionMaker {
 public:
@@ -26,8 +25,7 @@ private:
 	bool createUnit(db_unit* unit);
 
 	bool enoughResources(db_with_cost* withCosts) const;
-	bool createOrder(StatsOutputType order);
-	
+
 	bool levelUpUnit();
 	bool levelUpBuilding();
 	bool createUnit();

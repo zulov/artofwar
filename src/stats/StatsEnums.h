@@ -5,16 +5,6 @@ enum class BasicInputType : char {
 	BUILDING_NUMBER
 };
 
-enum class StatsOutputType : char {
-	IDLE =0,
-
-	CREATE_UNIT,
-	CREATE_BUILDING,
-
-	LEVEL_UP_BUILDING,
-	LEVEL_UP_UNIT
-};
-
 enum class ResourceInputType : char {
 	GOLD_SPEED,
 	WOOD_SPEED,
@@ -29,6 +19,6 @@ enum class ResourceInputType : char {
 };
 
 template <typename T>
-inline char cast(T type) {
+char cast(T type) {
 	return static_cast<char>(type);
 }
