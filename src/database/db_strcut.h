@@ -1,19 +1,21 @@
 ﻿#pragma once
-#include "objects/Metrics.h"
-
-constexpr char SPLIT_SIGN = '\n';
-constexpr char AI_PROPS_SIZE = 4;
-
 #include <magic_enum.hpp>
 #include <optional>
 #include <span>
 #include <string>
-#include <utility>
 #include <vector>
+#include <functional>
+#include <algorithm>
 #include <Urho3D/Container/Str.h>
 #include <Urho3D/Math/Vector2.h>
+#include "objects/Metrics.h"
 #include "objects/unit/state/UnitState.h"
+#include "stats/AiWeights.h"
+#include "stats/StatsEnums.h"
 #include "utils/DeleteUtils.h"
+#include "utils/StringUtils.h"
+
+constexpr char SPLIT_SIGN = '\n';
 
 struct db_nation;
 struct db_order;
@@ -25,8 +27,7 @@ struct db_entity {
 	const short id;
 
 	explicit db_entity(short id)
-		: id(id) {
-	}
+		: id(id) { }
 };
 
 struct db_attack {
@@ -77,24 +78,21 @@ struct db_attack {
 		  canCloseAttack(initFlag(closeAttackVal)),
 		  canRangeAttack(initFlag(rangeAttackVal)),
 		  canChargeAttack(initFlag(chargeAttackVal)),
-		  canBuildingAttack(initFlag(buildingAttackVal)) {
-	}
+		  canBuildingAttack(initFlag(buildingAttackVal)) { }
 };
 
 struct db_with_name {
 	const Urho3D::String name;
 
 	explicit db_with_name(const Urho3D::String& name)
-		: name(name) {
-	}
+		: name(name) { }
 };
 
 struct db_static {
 	const Urho3D::IntVector2 size;
 
 	explicit db_static(const Urho3D::IntVector2& size)
-		: size(size) {
-	}
+		: size(size) { }
 };
 
 struct db_cost {
@@ -103,8 +101,7 @@ struct db_cost {
 
 	db_cost(short resource, short value)
 		: resource(resource),
-		  value(value) {
-	}
+		  value(value) { }
 };
 
 struct db_with_cost {
@@ -122,43 +119,61 @@ struct db_with_cost {
 };
 
 struct db_basic_metric {
-private:
-
 protected:
 	std::string paramsAString;
 	std::span<float> paramsAsSpan;
+	std::span<float> paramsNormAsSpan;
 public:
 
 	const std::string& getParamsNormAsString() const { return paramsAString; }
-	const std::span<float> getParamsNormAsSpan() const { return paramsAsSpan; }
+	const std::span<float> getParamsAsSpan() const { return paramsAsSpan; }
+	const std::span<float> getParamsNorm() const { return paramsNormAsSpan; }
 
-	// void setParamsNormAString(std::string paramsAString) {
-	// 	this->paramsAString = std::move(paramsAString);
-	// 	paramsAsSpan = std::span{params};
-	// }
+	void setParamsNormAString(std::string paramsAString) {
+		this->paramsAString = std::move(paramsAString);
+
+	}
 };
 
 struct db_unit_metric : db_basic_metric {
 private:
-	float params[magic_enum::enum_count<UnitMetric>()];
+	float params[magic_enum::enum_count<UnitMetric>() + 1];
+	float paramsNorm[magic_enum::enum_count<UnitMetric>() + 1];
 public:
 
 	db_unit_metric(float val1, float val2, float val3, float val4, float val5,
 	               float val6)
-		: params{val1, val2, val3, val4, val5, val6} {
+		: params{val1, val2, val3, val4, val5, val6}, paramsNorm{val1, val2, val3, val4, val5, val6} {
+
 		paramsAsSpan = std::span{params};
+		paramsNormAsSpan = std::span{paramsNorm};
+
+		assert(paramsNormAsSpan.size()==AI_WEIGHTS.wUnitInputSpan.size());
+
+		std::transform(paramsNormAsSpan.begin(), paramsNormAsSpan.end(), AI_WEIGHTS.wUnitInputSpan.begin(),
+		               paramsNormAsSpan.begin(), std::divides<>());
+
+		paramsAString = join(paramsNormAsSpan);
 	}
 };
 
 struct db_building_metric : db_basic_metric {
 private:
-	float params[magic_enum::enum_count<BuildingMetric>()];
+	float params[magic_enum::enum_count<BuildingMetric>() + 1];
+	float paramsNorm[magic_enum::enum_count<BuildingMetric>() + 1];
 public:
 
 	db_building_metric(float val1, float val2, float val3, float val4, float val5,
 	                   float val6, float val7, float val8, float val9)
-		: params{val1, val2, val3, val4, val5, val6, val7, val8, val9} {
+		: params{val1, val2, val3, val4, val5, val6, val7, val8, val9},
+		  paramsNorm{val1, val2, val3, val4, val5, val6, val7, val8, val9} {
 		paramsAsSpan = std::span{params};
+		paramsNormAsSpan = std::span{paramsNorm};
+		assert(paramsNormAsSpan.size()==AI_WEIGHTS.wBuildingInputSpan.size());
+		std::transform(paramsNormAsSpan.begin(), paramsNormAsSpan.end(), AI_WEIGHTS.wBuildingInputSpan.begin(),
+		               paramsNormAsSpan.begin(), std::divides<>());
+
+		paramsAString = join(paramsNormAsSpan);
 	}
 };
 
@@ -167,8 +182,7 @@ struct db_level {
 
 
 	explicit db_level(short level)
-		: level(level) {
-	}
+		: level(level) { }
 };
 
 template <typename T>
@@ -186,8 +200,7 @@ struct db_with_hp {
 	const unsigned short maxHp;
 
 	explicit db_with_hp(unsigned short maxHp)
-		: maxHp(maxHp) {
-	}
+		: maxHp(maxHp) { }
 };
 
 struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp {
@@ -228,8 +241,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 		upgradeSpeed(upgradeSpeed),
 		maxForce(maxForce),
 		sqMinSpeed(minSpeed * minSpeed),
-		canCollect(initFlag(collectSpeed)) {
-	}
+		canCollect(initFlag(collectSpeed)) { }
 
 	void finish(float sumCreateCost) {
 		dbUnitMetric = new db_unit_metric(sumCreateCost, armor * maxHp,
@@ -261,8 +273,7 @@ struct db_unit : db_entity, db_with_name, db_with_cost {
 		: db_entity(id), db_with_name(name),
 		  rotatable(rotatable),
 		  icon(icon),
-		  actionState(actionState) {
-	}
+		  actionState(actionState) { }
 
 	std::optional<db_unit_level*> getLevel(short level) {
 		if (levels.size() > level) {
@@ -274,7 +285,7 @@ struct db_unit : db_entity, db_with_name, db_with_cost {
 	float getSumVal(UnitMetric unitMetric) const {
 		float sum = 0.f;
 		for (auto level : levels) {
-			sum += level->dbUnitMetric->getParamsNormAsSpan()[static_cast<char>(unitMetric)];
+			sum += level->dbUnitMetric->getParamsAsSpan()[static_cast<char>(unitMetric)];
 		}
 		return sum;
 	}
@@ -291,8 +302,7 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 
 	db_building(short id, char* name, short sizeX, short sizeZ, char* icon)
 		: db_entity(id), db_with_name(name), db_static({sizeX, sizeZ}),
-		  icon(icon) {
-	}
+		  icon(icon) { }
 
 	std::optional<db_building_level*> getLevel(short level) {
 		if (levels.size() > level) {
@@ -321,8 +331,7 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_a
 		  db_with_hp(maxHp),
 		  building(building),
 		  nodeName(nodeName),
-		  queueMaxCapacity(queueMaxCapacity) {
-	}
+		  queueMaxCapacity(queueMaxCapacity) { }
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);
@@ -346,12 +355,12 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_a
 				dbBuildingMetricPerNation[i] =
 					new db_building_metric(dbBuilding->getSumCost(), armor * maxHp,
 					                       rangeAttackVal * rangeAttackSpeed,
-					                       sums[static_cast<char>(UnitMetric::COST_SUM)],
-					                       sums[static_cast<char>(UnitMetric::DEFENCE)],
-					                       sums[static_cast<char>(UnitMetric::DISTANCE_ATTACK)],
-					                       sums[static_cast<char>(UnitMetric::CLOSE_ATTACK)],
-					                       sums[static_cast<char>(UnitMetric::CHARGE_ATTACK)],
-					                       sums[static_cast<char>(UnitMetric::BUILDING_ATTACK)]);
+					                       sums[cast(UnitMetric::COST_SUM)],
+					                       sums[cast(UnitMetric::DEFENCE)],
+					                       sums[cast(UnitMetric::DISTANCE_ATTACK)],
+					                       sums[cast(UnitMetric::CLOSE_ATTACK)],
+					                       sums[cast(UnitMetric::CHARGE_ATTACK)],
+					                       sums[cast(UnitMetric::BUILDING_ATTACK)]);
 			}
 		}
 	}
@@ -360,8 +369,7 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_a
 struct db_hud_size : db_entity, db_with_name {
 
 	db_hud_size(short id, char* name)
-		: db_entity(id), db_with_name(name) {
-	}
+		: db_entity(id), db_with_name(name) { }
 };
 
 struct db_settings {
@@ -370,8 +378,7 @@ struct db_settings {
 
 	db_settings(short graph, short resolution)
 		: graph(graph),
-		  resolution(resolution) {
-	}
+		  resolution(resolution) { }
 };
 
 struct db_resolution : db_entity {
@@ -381,8 +388,7 @@ struct db_resolution : db_entity {
 	db_resolution(short id, short x, short y)
 		: db_entity(id),
 		  x(x),
-		  y(y) {
-	}
+		  y(y) { }
 };
 
 struct db_graph_settings : db_entity {
@@ -407,8 +413,7 @@ struct db_graph_settings : db_entity {
 		  texture_quality(texture_quality),
 		  fullscreen(fullscreen),
 		  v_sync(v_sync),
-		  shadow(shadow) {
-	}
+		  shadow(shadow) { }
 };
 
 struct db_nation : db_entity, db_with_name {
@@ -416,8 +421,7 @@ struct db_nation : db_entity, db_with_name {
 	std::vector<db_building*> buildings;
 
 	db_nation(short id, char* name)
-		: db_entity(id), db_with_name(name) {
-	}
+		: db_entity(id), db_with_name(name) { }
 };
 
 struct db_resource : db_entity, db_with_name, db_static, db_with_hp {
@@ -432,8 +436,7 @@ struct db_resource : db_entity, db_with_name, db_static, db_with_hp {
 		  icon(icon),
 		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
 		  maxUsers(maxUsers),
-		  mini_map_color(mini_map_color) {
-	}
+		  mini_map_color(mini_map_color) { }
 };
 
 struct db_hud_vars : db_entity, db_with_name {
@@ -443,8 +446,7 @@ struct db_hud_vars : db_entity, db_with_name {
 	db_hud_vars(short id, short hudSize, char* name, float value)
 		: db_entity(id), db_with_name(name),
 		  hud_size(hudSize),
-		  value(value) {
-	}
+		  value(value) { }
 };
 
 struct db_order : db_entity, db_with_name {
@@ -452,8 +454,7 @@ struct db_order : db_entity, db_with_name {
 
 	db_order(short id, char* icon, char* name)
 		: db_entity(id), db_with_name(name),
-		  icon(icon) {
-	}
+		  icon(icon) { }
 };
 
 struct db_map : db_entity, db_with_name {
@@ -467,8 +468,7 @@ struct db_map : db_entity, db_with_name {
 		  height_map(heightMap),
 		  texture(texture),
 		  scale_hor(scaleHor),
-		  scale_ver(scaleVer) {
-	}
+		  scale_ver(scaleVer) { }
 };
 
 struct db_player_colors : db_entity, db_with_name {
@@ -478,8 +478,7 @@ struct db_player_colors : db_entity, db_with_name {
 	db_player_colors(short id, unsigned unit, unsigned building, char* name)
 		: db_entity(id), db_with_name(name),
 		  unit(unit),
-		  building(building) {
-	}
+		  building(building) { }
 };
 
 struct db_container {

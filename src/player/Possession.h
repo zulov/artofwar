@@ -16,7 +16,6 @@ public:
 	Possession(char nation);
 	~Possession();
 
-
 	Possession(const Possession&) = delete;
 	void add(Building* building);
 	void add(Unit* unit);
@@ -29,6 +28,10 @@ public:
 	std::vector<Building*>* getBuildings(short id);
 	float getUnitsVal(UnitMetric value) const;
 	float getBuildingsVal(BuildingMetric value) const;
+
+	std::span<float> getUnitsMetrics() const;
+	std::span<float> getBuildingsMetrics() const;
+
 	std::vector<Unit*>& getWorkers();
 private:
 	std::vector<Building*> buildings;
@@ -39,9 +42,8 @@ private:
 	int freeWorkersNumber = 0;
 	float resourcesSum = 0;
 
-	float unitsMetrics[magic_enum::enum_count<UnitMetric>()];
-	float buildingsMetrics[magic_enum::enum_count<BuildingMetric>()];
-	std::span<float> unitsValuesAsSpan;
-	std::span<float> buildingsValuesAsSpan;
-
+	float unitsMetrics[magic_enum::enum_count<UnitMetric>()-1];
+	float buildingsMetrics[magic_enum::enum_count<BuildingMetric>()-1];
+	std::span<float> unitsValuesAsSpan = std::span(unitsMetrics);
+	std::span<float> buildingsValuesAsSpan = std::span(buildingsMetrics);
 };

@@ -511,6 +511,7 @@
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
     <ClInclude Include="src\objects\Metrics.h" />
     <ClInclude Include="src\stats\AiInputProvider.h" />
+    <ClInclude Include="src\stats\AiWeights.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

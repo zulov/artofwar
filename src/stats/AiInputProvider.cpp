@@ -24,9 +24,13 @@ AiInputProvider::AiInputProvider() {
 	wResourceInput[cast(ResourceInputType::FREE_WORKERS)] = 100.f;
 	wResourceInput[cast(ResourceInputType::WORKERS)] = 100.f;
 
-	basicInputSpan = std::span(basicInput);
-	resourceIdInputSpan = std::span(resourceIdInput);
-	basicWithParamsSpan = std::span(basicWithParams);
+	wUnitsSumInput[cast(UnitMetric::DEFENCE)] = 100.f; //TODO to nie sa wartosci dla jednostki tylko dla sumy
+	wUnitsSumInput[cast(UnitMetric::DISTANCE_ATTACK)] = 1000.f;
+	wUnitsSumInput[cast(UnitMetric::CLOSE_ATTACK)] = 1000.f;
+	wUnitsSumInput[cast(UnitMetric::CHARGE_ATTACK)] = 1000.f;
+	wUnitsSumInput[cast(UnitMetric::BUILDING_ATTACK)] = 1000.f;
+
+
 }
 
 std::span<float> AiInputProvider::getResourceInput(char playerId) {
@@ -43,12 +47,37 @@ std::span<float> AiInputProvider::getResourceInput(char playerId) {
 	return resourceIdInputSpan;
 }
 
+std::span<float> AiInputProvider::getUnitsInput(char playerId) {
+	const auto basic = getBasicInput(playerId);
+
+	auto* player = Game::getPlayersMan()->getPlayer(playerId);
+
+	copyTo(unitsInputSpan, basic, player->getPossession().getUnitsMetrics());
+
+	std::transform(unitsInputSpan.begin() + basic.size(), unitsInputSpan.end(), wUnitsSumInput,
+	               unitsInputSpan.begin() + basic.size(), std::divides<>());
+	return unitsInputSpan;
+}
+
+std::span<float> AiInputProvider::getBuildingsInput(char playerId) {
+	const auto basic = getBasicInput(playerId);
+
+	auto* player = Game::getPlayersMan()->getPlayer(playerId);
+
+	copyTo(buildingsInputSpan, basic, player->getPossession().getBuildingsMetrics());
+
+	std::transform(buildingsInputSpan.begin() + basic.size(), buildingsInputSpan.end(), wBuildingsSumInput,
+	               buildingsInputSpan.begin() + basic.size(), std::divides<>());
+	return buildingsInputSpan;
+}
+
 std::span<float> AiInputProvider::getBasicInputWithMetric(char playerId, const db_basic_metric* prop) {
-	auto basicInput = getBasicInput(playerId);
-
-	copyTo(basicWithParamsSpan, basicInput, prop->getParamsNormAsSpan());
-
-	return basicWithParamsSpan;
+	if (prop->getParamsAsSpan().size() == magic_enum::enum_count<UnitMetric>()) {
+		copyTo(basicWithMetricUnitSpan, getBasicInput(playerId), prop->getParamsAsSpan());
+		return basicWithMetricUnitSpan;
+	}
+	copyTo(basicWithMetricBuildingSpan, getBasicInput(playerId), prop->getParamsAsSpan());
+	return basicWithMetricBuildingSpan;
 }
 
 std::span<float> AiInputProvider::getBasicInput(short id) {

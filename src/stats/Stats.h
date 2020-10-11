@@ -24,6 +24,8 @@ class Stats {
 public:
 	Stats();
 	~Stats();
+	Stats(const Stats&) = delete;
+	
 	int getScoreFor(short id) const;
 
 	void add(GeneralActionCommand* command);

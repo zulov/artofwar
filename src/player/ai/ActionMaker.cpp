@@ -183,7 +183,7 @@ db_unit_level* ActionMaker::chooseUnitLevelUp() {
 }
 
 float ActionMaker::dist(std::valarray<float>& center, const db_basic_metric* metric) {
-	auto span = metric->getParamsNormAsSpan();
+	auto span = metric->getParamsAsSpan();
 	std::valarray<float> aiAsArray(span.data(), span.size()); //TODO get as val array odrazu
 	auto diff = aiAsArray - center;
 	auto sq = diff * diff;

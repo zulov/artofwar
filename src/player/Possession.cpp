@@ -57,6 +57,14 @@ float Possession::getBuildingsVal(BuildingMetric value) const {
 	return buildingsMetrics[static_cast<char>(value)];
 }
 
+std::span<float> Possession::getUnitsMetrics() const {
+	return unitsValuesAsSpan;
+}
+
+std::span<float> Possession::getBuildingsMetrics() const {
+	return buildingsValuesAsSpan;
+}
+
 std::vector<Unit*>& Possession::getWorkers() {
 	return workers;
 }
