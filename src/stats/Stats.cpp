@@ -61,19 +61,19 @@ void Stats::add(BuildingActionCommand* command) {
 			//TODO czy to worker
 			workersCreatedCount[command->player] += command->buildings.size();
 			for (auto building : command->buildings) {
-			auto resInput=	join(Game::getAiInputProvider()->getResourceInput(command->player));
-			joinAndPush(whereWorkersCreate, command->player, resInput, getCreateUnitPosOutput(building));
-		}
+				auto resInput = join(Game::getAiInputProvider()->getResourceInput(command->player));
+				joinAndPush(whereWorkersCreate, command->player, resInput, getCreateUnitPosOutput(building));
+			}
 		} else {
 			unitsCreatedCount[command->player] += command->buildings.size();
 			for (auto building : command->buildings) {
-			auto& createOutput = level->dbUnitMetric->getParamsNormAsString();
-			joinAndPush(whatBuildingCreate, command->player, input, createOutput);
-			const std::string inputWithAiProps = input + ";" + createOutput;
-			joinAndPush(whereBuildingCreate, command->player, inputWithAiProps, getCreateUnitPosOutput(building));
+				auto& createOutput = level->dbUnitMetric->getParamsNormAsString();
+				joinAndPush(whatBuildingCreate, command->player, input, createOutput);
+				const std::string inputWithAiProps = input + ";" + createOutput;
+				joinAndPush(whereBuildingCreate, command->player, inputWithAiProps, getCreateUnitPosOutput(building));
+			}
 		}
-		}
-		
+
 	}
 }
 
@@ -156,15 +156,17 @@ void Stats::save(bool accumulate) {
 }
 
 std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
-	auto& data = Game::getEnvironment()->getInfluenceDataAt(command->player, command->position);
-
-	return join(data.begin(), data.end());
+	return getPosOutput(command->player, command->position);
 }
 
 std::string Stats::getCreateUnitPosOutput(Building* building) const {
 	const auto buildingPos = building->getPosition();
 
-	auto& data = Game::getEnvironment()->getInfluenceDataAt(building->getPlayer(), {buildingPos.x_, buildingPos.z_});
+	return getPosOutput(building->getPlayer(), Urho3D::Vector2(buildingPos.x_, buildingPos.z_));
+}
+
+std::string Stats::getPosOutput(char player, Urho3D::Vector2& pos) const {
+	auto& data = Game::getEnvironment()->getInfluenceDataAt(player, pos);
 	return join(data.begin(), data.end());
 }
 

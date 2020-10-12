@@ -38,15 +38,13 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 		gatherQuad.emplace_back(new InfluenceMapQuad(1, 7, InfluenceMapType::HISTORY, BUCKET_GRID_SIZE, 0.5f, 1, 10));
 	}
 
-	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
-		resourceInfluence.
-			emplace_back(new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40));
-	}
+	resourceInfluence=new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40);
+	
 	for (char player = 0; player < numberOfPlayers; ++player) {
 		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 6>{
-			buildingsInfluencePerPlayer[player], unitsInfluencePerPlayer[player],
-			resourceInfluence[0], resourceInfluence[1], resourceInfluence[2],
-			resourceInfluence[3] //TODO moze to nie osobno jednak? za duza ma wage
+			buildingsInfluencePerPlayer[player],
+			unitsInfluencePerPlayer[player],
+			resourceInfluence
 		});
 	}
 
@@ -62,7 +60,7 @@ InfluenceManager::~InfluenceManager() {
 
 	clear_vector(gatherSpeed);
 	clear_vector(attackSpeed);
-	clear_vector(resourceInfluence);
+	delete resourceInfluence;
 
 	clear_vector(unitsQuad);
 	clear_vector(buildingsQuad);
@@ -91,11 +89,11 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 }
 
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
-	resetMaps(resourceInfluence);
+	resourceInfluence->reset();
 	for (auto resource : (*resources)) {
-		resourceInfluence[resource->getId()]->update(resource, resource->getHealthPercent());
+		resourceInfluence->update(resource, resource->getHealthPercent());
 	}
-	calcStats(resourceInfluence);
+	resourceInfluence->finishCalc();
 }
 
 template <typename T>
@@ -171,7 +169,7 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 		drawMap(index, buildingsInfluencePerPlayer);
 		break;
 	case InfluenceDataType::RESOURCE_INFLUENCE:
-		drawMap(index, resourceInfluence);
+		resourceInfluence->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
 	default: ;
 	}
@@ -187,7 +185,7 @@ void InfluenceManager::drawAll() {
 	drawAll(unitsNumberPerPlayer, "unitsInt");
 	drawAll(buildingsInfluencePerPlayer, "buildingsInt");
 	drawAll(unitsInfluencePerPlayer, "units");
-	drawAll(resourceInfluence, "resource");
+	resourceInfluence->print("resource_");
 
 	drawAll(gatherSpeed, "gather");
 	drawAll(attackSpeed, "attack");
@@ -250,6 +248,7 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 
 std::array<float, 6>& InfluenceManager::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
 	auto& array = mapsForAiPerPlayer[player];
+	assert(array.size()==dataFromPos.size());
 	for (int i = 0; i < array.size(); ++i) {
 		dataFromPos[i] = array[i]->getValueAsPercent(pos);
 	}
@@ -340,5 +339,5 @@ std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFl
 }
 
 float InfluenceManager::getFieldSize() {
-	return resourceInfluence[0]->getFieldSize();
+	return resourceInfluence->getFieldSize();
 }

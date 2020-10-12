@@ -67,7 +67,7 @@ private:
 
 	std::vector<InfluenceMapFloat*> buildingsInfluencePerPlayer;
 	std::vector<InfluenceMapFloat*> unitsInfluencePerPlayer;
-	std::vector<InfluenceMapFloat*> resourceInfluence;
+	InfluenceMapFloat* resourceInfluence;
 
 	std::vector<InfluenceMapHistory*> gatherSpeed;
 	std::vector<InfluenceMapHistory*> attackSpeed;

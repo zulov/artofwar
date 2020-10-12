@@ -1,11 +1,12 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <Urho3D/Math/Vector2.h>
 #include "utils/defines.h"
 
-struct db_basic_metric;
 constexpr char SAVE_BATCH_SIZE = 10;
 
+struct db_basic_metric;
 struct ActionParameter;
 class GeneralActionCommand;
 class Building;
@@ -18,7 +19,6 @@ class CreationCommand;
 
 class Stats {
 public:
-
 	Stats();
 	~Stats();
 	Stats(const Stats&) = delete;
@@ -34,7 +34,8 @@ private:
 	void clearCounters();
 	std::string getCreateBuildingPosOutput(CreationCommand* command) const;
 	std::string getCreateUnitPosOutput(Building* building) const;
-
+	std::string getPosOutput(char player, Urho3D::Vector2& pos) const;
+	
 	std::string getResourceIdOutput(UnitActionCommand* command) const;
 
 	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output,
