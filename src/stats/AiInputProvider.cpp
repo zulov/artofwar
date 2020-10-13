@@ -29,8 +29,6 @@ AiInputProvider::AiInputProvider() {
 	wUnitsSumInput[cast(UnitMetric::CLOSE_ATTACK)] = 1000.f;
 	wUnitsSumInput[cast(UnitMetric::CHARGE_ATTACK)] = 1000.f;
 	wUnitsSumInput[cast(UnitMetric::BUILDING_ATTACK)] = 1000.f;
-
-
 }
 
 std::span<float> AiInputProvider::getResourceInput(char playerId) {

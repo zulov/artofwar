@@ -15,21 +15,19 @@
 #include "player/ai/ActionCenter.h"
 #include "simulation/env/Environment.h"
 #include "stats/AiInputProvider.h"
-#include "stats/StatsEnums.h"
 
 
 ActionMaker::ActionMaker(Player* player): player(player),
+                                          ifWorkersCreate("Data/ai/workersCreate_w.csv"),
+                                          whereWorkersCreate(),
 
-                                          buildingBrainId("Data/ai/buildId_w.csv"),
-                                          buildingBrainPos("Data/ai/buildPos_w.csv"),
-                                          unitBrainId("Data/ai/unitId_w.csv"),
-                                          unitBrainPos("Data/ai/unitPos_w.csv"),
-                                          unitOrderId("Data/ai/unitOrderId_w.csv"),
+                                          ifBuildingCreate(),
+                                          whatBuildingCreate(),
+                                          whereBuildingCreate(),
 
-                                          buildingLevelUpId("Data/ai/buildLevelUpId_w.csv"),
-                                          unitLevelUpId("Data/ai/unitUpgradeId_w.csv"),
-                                          unitLevelUpPos("Data/ai/unitLevelUpPos_w.csv"),
-                                          ifWorkerNeeded("Data/ai/workersCreate_w.csv") {
+                                          ifUnitCreate(),
+                                          whatUnitCreate(),
+                                          whereUnitCreate() {
 }
 
 const std::span<float> ActionMaker::decideFromBasic(Brain& brain) const {
@@ -43,7 +41,7 @@ bool ActionMaker::createUnit(db_unit* unit) {
 			Game::getActionCenter()->add(
 				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id, player->getId()));
 			return true;
-		}else {
+		} else {
 			//TODO try to build
 		}
 	}
@@ -52,7 +50,7 @@ bool ActionMaker::createUnit(db_unit* unit) {
 
 void ActionMaker::action() {
 	auto resInput = Game::getAiInputProvider()->getResourceInput(player->getId());
-	auto resResult = ifWorkerNeeded.decide(resInput);
+	const auto resResult = ifWorkersCreate.decide(resInput);
 
 	if (resResult[0] > 0.3f) {
 		auto& units = Game::getDatabase()->getNation(player->getNation())->units;

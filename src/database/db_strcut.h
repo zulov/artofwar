@@ -124,15 +124,9 @@ protected:
 	std::span<float> paramsAsSpan;
 	std::span<float> paramsNormAsSpan;
 public:
-
 	const std::string& getParamsNormAsString() const { return paramsAString; }
 	const std::span<float> getParamsAsSpan() const { return paramsAsSpan; }
 	const std::span<float> getParamsNorm() const { return paramsNormAsSpan; }
-
-	void setParamsNormAString(std::string paramsAString) {
-		this->paramsAString = std::move(paramsAString);
-
-	}
 };
 
 struct db_unit_metric : db_basic_metric {

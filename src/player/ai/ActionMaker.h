@@ -30,7 +30,7 @@ private:
 	bool levelUpBuilding();
 	bool createUnit();
 	bool createBuilding();
-	
+
 	std::optional<Urho3D::Vector2> posToBuild(db_building* building);
 	std::vector<Building*> getBuildingsCanDeploy(short unitId, std::vector<db_building*>& buildings) const;
 	const std::span<float> inputWithParamsDecide(Brain& brain, const db_basic_metric* metric) const;
@@ -46,19 +46,16 @@ private:
 	Building* getBuildingToLevelUpUnit(db_unit_level* level);
 
 	Player* player;
-	//Brain mainBrain;
 
-	Brain buildingBrainId;
-	Brain buildingBrainPos;
+	Brain ifWorkersCreate;
+	Brain whereWorkersCreate;
 
-	Brain unitBrainId;
-	Brain unitBrainPos;
+	Brain ifBuildingCreate;
+	Brain whatBuildingCreate;
+	Brain whereBuildingCreate;
 
-	Brain unitOrderId;
+	Brain ifUnitCreate;
+	Brain whatUnitCreate;
+	Brain whereUnitCreate;
 
-	Brain buildingLevelUpId;
-	Brain unitLevelUpId;
-	Brain unitLevelUpPos;
-
-	Brain ifWorkerNeeded;
 };
