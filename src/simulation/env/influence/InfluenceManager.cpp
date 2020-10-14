@@ -338,6 +338,6 @@ std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFl
 	return centers;
 }
 
-float InfluenceManager::getFieldSize() {
+float InfluenceManager::getFieldSize() const {
 	return resourceInfluence->getFieldSize();
 }

@@ -1,13 +1,13 @@
 #include "Brain.h"
 
 #include <fstream>
+#include <iostream>
+#include "AFUtil.h"
 #include "utils/DeleteUtils.h"
 #include "utils/StringUtils.h"
-#include "AFUtil.h"
-#include <iostream>
 
-Brain::Brain(std::string dataPath) {
-	std::ifstream infile(dataPath);
+Brain::Brain(std::string filename) {
+	std::ifstream infile("Data/ai/" + filename);
 	std::string data;
 	std::vector<std::string> lines;
 	while (std::getline(infile, data)) {

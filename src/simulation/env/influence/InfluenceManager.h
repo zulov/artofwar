@@ -44,7 +44,7 @@ public:
 	std::vector<Urho3D::Vector2> getAreasIterative(const std::span<float> result, char player, float tolerance,
 	                                               int min);
 
-	float getFieldSize();
+	float getFieldSize() const;
 	std::vector<Urho3D::Vector2> getAreas(const std::span<float> result, char player);
 	void addCollect(Unit* unit, float value);
 	void addAttack(Unit* unit, float value);

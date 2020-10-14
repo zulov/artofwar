@@ -18,16 +18,16 @@
 
 
 ActionMaker::ActionMaker(Player* player): player(player),
-                                          ifWorkersCreate("Data/ai/workersCreate_w.csv"),
-                                          whereWorkersCreate(),
+                                          ifWorkersCreate("ifWorkersCreate_w.csv"),
+                                          whereWorkersCreate("whereWorkersCreate_w.csv"),
 
-                                          ifBuildingCreate(),
-                                          whatBuildingCreate(),
-                                          whereBuildingCreate(),
+                                          ifBuildingCreate("ifBuildingCreate_w.csv"),
+                                          whatBuildingCreate("whatBuildingCreate_w.csv"),
+                                          whereBuildingCreate("whereBuildingCreate_w.csv"),
 
-                                          ifUnitCreate(),
-                                          whatUnitCreate(),
-                                          whereUnitCreate() {
+                                          ifUnitCreate("ifUnitCreate_w.csv"),
+                                          whatUnitCreate("whatUnitCreate_w.csv"),
+                                          whereUnitCreate("whereUnitCreate_w.csv") {
 }
 
 const std::span<float> ActionMaker::decideFromBasic(Brain& brain) const {
@@ -87,7 +87,7 @@ bool ActionMaker::createUnit() {
 
 db_building* ActionMaker::chooseBuilding() {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	auto result = decideFromBasic(buildingBrainId);
+	auto result = decideFromBasic(whatBuildingCreate);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
@@ -108,7 +108,7 @@ db_building* ActionMaker::chooseBuilding() {
 
 db_building_level* ActionMaker::chooseBuildingLevelUp() {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	auto result = decideFromBasic(buildingLevelUpId);
+	//auto result = decideFromBasic(buildingLevelUpId);
 
 	// std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	// std::vector<float> diffs;
@@ -137,7 +137,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 
 db_unit* ActionMaker::chooseUnit() {
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	auto result = decideFromBasic(unitBrainId);
+	auto result = decideFromBasic(whatUnitCreate);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
@@ -158,7 +158,7 @@ db_unit* ActionMaker::chooseUnit() {
 
 db_unit_level* ActionMaker::chooseUnitLevelUp() {
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	auto result = decideFromBasic(unitLevelUpId);
+	//auto result = decideFromBasic(unitLevelUpId);
 
 	// std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	// std::vector<float> diffs;
@@ -198,7 +198,7 @@ const std::span<float> ActionMaker::inputWithParamsDecide(Brain& brain, const db
 }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
-	auto result = inputWithParamsDecide(buildingBrainPos,
+	auto result = inputWithParamsDecide(whereBuildingCreate,
 	                                    player->getLevelForBuilding(building->id)
 	                                          ->dbBuildingMetricPerNation[player->getNation()]);
 
@@ -227,7 +227,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id, buildings);
 	if (allPossible.empty()) { return nullptr; }
 
-	auto result = inputWithParamsDecide(unitBrainPos, player->getLevelForUnit(unit->id)->dbUnitMetric);
+	auto result = inputWithParamsDecide(whereUnitCreate, player->getLevelForUnit(unit->id)->dbUnitMetric);
 	//TODO improve last parameter ignored queue size
 	auto centers = Game::getEnvironment()->getAreas(player->getId(), result, 10);
 	float closestVal = 99999;
