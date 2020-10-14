@@ -71,7 +71,17 @@ void ActionMaker::action() {
 		createWorker(unit);
 	}
 	int a = 5;
+	auto unitsInput = Game::getAiInputProvider()->getUnitsInput(player->getId());//TODO czy cokolwiek?
+	const auto unitsResult = ifUnitCreate.decide(unitsInput);
+	if (unitsResult[0] > 0.3f) {
+		
+	}
 
+	auto buildingsInput = Game::getAiInputProvider()->getBuildingsInput(player->getId());
+	const auto buildingsResult = ifBuildingCreate.decide(buildingsInput);
+	if (buildingsResult[0] > 0.3f) {
+		
+	}
 	//return createUnit();
 	//return createBuilding();
 	//return levelUpUnit();
@@ -241,34 +251,20 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	if (allPossible.empty()) { return nullptr; }
 
 	auto result = inputWithParamsDecide(whereUnitCreate, player->getLevelForUnit(unit->id)->dbUnitMetric);
-	//TODO improve last parameter ignored queue size
-	auto centers = Game::getEnvironment()->getAreas(player->getId(), result, 10);
-	float closestVal = 99999;
-	Building* closest = allPossible[0];
-	for (auto possible : allPossible) {
-		//TODO performance O(^2)
-		Urho3D::Vector2 pos = {possible->getPosition().x_, possible->getPosition().z_};
-		for (auto& center : centers) {
-			auto diff = pos - center;
 
-			auto val = diff.LengthSquared();
-			if (val < closestVal) {
-				closest = possible;
-				closestVal = val;
-			}
-		}
-	}
-
-	return closest;
+	return getBuildingClosestArea(allPossible, result);
 }
 
 Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) {
-
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
 
-	auto result = inputWithParamsDecide(whereUnitCreate, player->getLevelForUnit(unit->id)->dbUnitMetric);
-	//TODO improve last parameter ignored queue size
+	auto result = decideFromBasic(whereWorkersCreate);
+
+	return getBuildingClosestArea(allPossible, result);
+}
+
+Building* ActionMaker::getBuildingClosestArea(std::vector<Building*>& allPossible, std::span<float> result) const {
 	auto centers = Game::getEnvironment()->getAreas(player->getId(), result, 10);
 	float closestVal = 99999;
 	Building* closest = allPossible[0];

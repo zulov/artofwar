@@ -47,7 +47,8 @@ private:
 	Building* getBuildingToDeploy(db_unit* unit);
 	Building* getBuildingToDeployWorker(db_unit* unit);
 	Building* getBuildingToLevelUpUnit(db_unit_level* level);
-
+	Building* getBuildingClosestArea(std::vector<Building*>& allPossible, std::span<float> result) const;
+	
 	Player* player;
 
 	Brain ifWorkersCreate;

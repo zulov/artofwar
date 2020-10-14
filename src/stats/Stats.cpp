@@ -61,7 +61,7 @@ void Stats::add(BuildingActionCommand* command) {
 			//TODO czy to worker
 			workersCreatedCount[command->player] += command->buildings.size();
 			for (auto building : command->buildings) {
-				auto resInput = join(Game::getAiInputProvider()->getResourceInput(command->player));
+				auto resInput = join(Game::getAiInputProvider()->getBasicInput(command->player));
 				joinAndPush(whereWorkersCreate, command->player, resInput, getCreateUnitPosOutput(building));
 			}
 		} else {
@@ -140,13 +140,13 @@ void Stats::save(bool accumulate) {
 	if (accumulate) {
 		for (char i = 0; i < MAX_PLAYERS; ++i) {
 			joinAndPush(ifWorkersCreate, i,
-			            join(Game::getAiInputProvider()->getResourceInput(i)),
+			            join(Game::getAiInputProvider()->getResourceInput(i)),//TODO moze jakas srednai z tego okresu, albo poczatek
 			            std::to_string(workersCreatedCount[i]));
 			joinAndPush(ifBuildingCreate, i,
-			            join(Game::getAiInputProvider()->getBuildingsInput(i)),
+			            join(Game::getAiInputProvider()->getBuildingsInput(i)),//TODO moze jakas srednai z tego okresu, albo poczatek
 			            std::to_string(buildingsCreatedCount[i]));
 			joinAndPush(ifUnitCreate, i,
-			            join(Game::getAiInputProvider()->getUnitsInput(i)),
+			            join(Game::getAiInputProvider()->getUnitsInput(i)),//TODO moze jakas srednai z tego okresu, albo poczatek
 			            std::to_string(unitsCreatedCount[i]));
 		}
 
