@@ -22,7 +22,9 @@ public:
 	void action();
 private:
 	const std::span<float> decideFromBasic(Brain& brain) const;
+	bool createUnit(db_unit* unit, Building* building) const;
 	bool createUnit(db_unit* unit);
+	bool createWorker(db_unit* unit);
 
 	bool enoughResources(db_with_cost* withCosts) const;
 
@@ -32,7 +34,7 @@ private:
 	bool createBuilding();
 
 	std::optional<Urho3D::Vector2> posToBuild(db_building* building);
-	std::vector<Building*> getBuildingsCanDeploy(short unitId, std::vector<db_building*>& buildings) const;
+	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
 	const std::span<float> inputWithParamsDecide(Brain& brain, const db_basic_metric* metric) const;
 
 	float dist(std::valarray<float>& center, const db_basic_metric* metric);
@@ -43,6 +45,7 @@ private:
 	db_unit_level* chooseUnitLevelUp();
 
 	Building* getBuildingToDeploy(db_unit* unit);
+	Building* getBuildingToDeployWorker(db_unit* unit);
 	Building* getBuildingToLevelUpUnit(db_unit_level* level);
 
 	Player* player;

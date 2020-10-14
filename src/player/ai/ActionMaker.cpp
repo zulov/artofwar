@@ -34,16 +34,29 @@ const std::span<float> ActionMaker::decideFromBasic(Brain& brain) const {
 	return brain.decide(Game::getAiInputProvider()->getBasicInput(player->getId()));
 }
 
+bool ActionMaker::createUnit(db_unit* unit, Building* building) const {
+	if (building) {
+		Game::getActionCenter()->add(
+			new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id, player->getId()));
+		return true;
+	} else {
+		//TODO try to build
+		return false;
+	}
+}
+
+bool ActionMaker::createWorker(db_unit* unit) {
+	if (enoughResources(unit)) {
+		Building* building = getBuildingToDeployWorker(unit);
+		return createUnit(unit, building);
+	}
+	return false;
+}
+
 bool ActionMaker::createUnit(db_unit* unit) {
 	if (enoughResources(unit)) {
 		Building* building = getBuildingToDeploy(unit);
-		if (building) {
-			Game::getActionCenter()->add(
-				new BuildingActionCommand(building, BuildingActionType::UNIT_CREATE, unit->id, player->getId()));
-			return true;
-		} else {
-			//TODO try to build
-		}
+		return createUnit(unit, building);
 	}
 	return false;
 }
@@ -54,8 +67,8 @@ void ActionMaker::action() {
 
 	if (resResult[0] > 0.3f) {
 		auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-		auto unit = units[4];
-		createUnit(unit);
+		auto unit = units[4]; //TODO lepiej wybrac
+		createWorker(unit);
 	}
 	int a = 5;
 
@@ -205,7 +218,8 @@ std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
 
-std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId, std::vector<db_building*>& buildings) const {
+std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {
+	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
 	std::vector<short> buildingIdsThatCanDeploy;
 	for (auto building : buildings) {
 		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
@@ -223,8 +237,34 @@ std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId, std::vec
 }
 
 Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
-	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id, buildings);
+	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
+	if (allPossible.empty()) { return nullptr; }
+
+	auto result = inputWithParamsDecide(whereUnitCreate, player->getLevelForUnit(unit->id)->dbUnitMetric);
+	//TODO improve last parameter ignored queue size
+	auto centers = Game::getEnvironment()->getAreas(player->getId(), result, 10);
+	float closestVal = 99999;
+	Building* closest = allPossible[0];
+	for (auto possible : allPossible) {
+		//TODO performance O(^2)
+		Urho3D::Vector2 pos = {possible->getPosition().x_, possible->getPosition().z_};
+		for (auto& center : centers) {
+			auto diff = pos - center;
+
+			auto val = diff.LengthSquared();
+			if (val < closestVal) {
+				closest = possible;
+				closestVal = val;
+			}
+		}
+	}
+
+	return closest;
+}
+
+Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) {
+
+	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
 
 	auto result = inputWithParamsDecide(whereUnitCreate, player->getLevelForUnit(unit->id)->dbUnitMetric);
@@ -251,7 +291,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 
 Building* ActionMaker::getBuildingToLevelUpUnit(db_unit_level* level) {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	std::vector<Building*> allPossible = getBuildingsCanDeploy(level->unit, buildings);
+	//std::vector<Building*> allPossible = getBuildingsCanDeploy(level->unit, buildings);
 	// if (allPossible.empty()) { return nullptr; }
 	// auto& result = inputWithParamsDecide(unitLevelUpPos, level->dbUnitMetricUp);
 	// float val = result[0] * 10.f; //TODO hard code DEFAULT_NORMALIZE_VALUE
