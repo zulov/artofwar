@@ -21,7 +21,6 @@ public:
 	ActionMaker(const ActionMaker& rhs) = delete;
 	void action();
 private:
-	const std::span<float> decideFromBasic(Brain& brain) const;
 	bool createUnit(db_unit* unit, Building* building) const;
 	bool createUnit(db_unit* unit);
 	bool createWorker(db_unit* unit);
@@ -30,18 +29,16 @@ private:
 
 	bool levelUpUnit();
 	bool levelUpBuilding();
-	bool createUnit();
 	bool createBuilding();
 
 	std::optional<Urho3D::Vector2> posToBuild(db_building* building);
 	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
-	const std::span<float> inputWithParamsDecide(Brain& brain, const db_basic_metric* metric) const;
 
 	float dist(std::valarray<float>& center, const db_basic_metric* metric);
 
-	db_building* chooseBuilding();
+	db_building* chooseBuilding(std::span<float> result);
 	db_building_level* chooseBuildingLevelUp();
-	db_unit* chooseUnit();
+	db_unit* chooseUnit(std::span<float> result);
 	db_unit_level* chooseUnitLevelUp();
 
 	Building* getBuildingToDeploy(db_unit* unit);
@@ -55,11 +52,11 @@ private:
 	Brain whereWorkersCreate;
 
 	Brain ifBuildingCreate;
-	Brain whatBuildingCreate;
+	Brain whichBuildingCreate;
 	Brain whereBuildingCreate;
 
 	Brain ifUnitCreate;
-	Brain whatUnitCreate;
+	Brain whichUnitCreate;
 	Brain whereUnitCreate;
 
 };

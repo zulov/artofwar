@@ -22,16 +22,40 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           whereWorkersCreate("whereWorkersCreate_w.csv"),
 
                                           ifBuildingCreate("ifBuildingCreate_w.csv"),
-                                          whatBuildingCreate("whatBuildingCreate_w.csv"),
+                                          whichBuildingCreate("whichBuildingCreate_w.csv"),
                                           whereBuildingCreate("whereBuildingCreate_w.csv"),
 
                                           ifUnitCreate("ifUnitCreate_w.csv"),
-                                          whatUnitCreate("whatUnitCreate_w.csv"),
-                                          whereUnitCreate("whereUnitCreate_w.csv") {
-}
+                                          whichUnitCreate("whichUnitCreate_w.csv"),
+                                          whereUnitCreate("whereUnitCreate_w.csv") {}
 
-const std::span<float> ActionMaker::decideFromBasic(Brain& brain) const {
-	return brain.decide(Game::getAiInputProvider()->getBasicInput(player->getId()));
+void ActionMaker::action() {
+	auto aiInput = Game::getAiInputProvider();
+	const auto resInput = aiInput->getResourceInput(player->getId());
+	const auto unitsInput = aiInput->getUnitsInput(player->getId()); //TODO czy cokolwiek?
+	const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
+
+	const auto resResult = ifWorkersCreate.decide(resInput);
+	if (resResult[0] > 0.3f) {
+		auto& units = Game::getDatabase()->getNation(player->getNation())->units;
+		auto unit = units[4]; //TODO lepiej wybrac
+		createWorker(unit);
+	}
+
+	const auto unitsResult = ifUnitCreate.decide(unitsInput);
+	if (unitsResult[0] > 0.3f) {
+		auto whichOutput = whichUnitCreate.decide(unitsInput);
+		auto unit = chooseUnit(whichOutput);
+		
+		createUnit(unit);
+	}
+
+	const auto buildingsResult = ifBuildingCreate.decide(buildingsInput);
+	if (buildingsResult[0] > 0.3f) { }
+	//return createUnit();
+	//return createBuilding();
+	//return levelUpUnit();
+	//return levelUpBuilding();
 }
 
 bool ActionMaker::createUnit(db_unit* unit, Building* building) const {
@@ -61,33 +85,6 @@ bool ActionMaker::createUnit(db_unit* unit) {
 	return false;
 }
 
-void ActionMaker::action() {
-	auto resInput = Game::getAiInputProvider()->getResourceInput(player->getId());
-	const auto resResult = ifWorkersCreate.decide(resInput);
-
-	if (resResult[0] > 0.3f) {
-		auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-		auto unit = units[4]; //TODO lepiej wybrac
-		createWorker(unit);
-	}
-	int a = 5;
-	auto unitsInput = Game::getAiInputProvider()->getUnitsInput(player->getId());//TODO czy cokolwiek?
-	const auto unitsResult = ifUnitCreate.decide(unitsInput);
-	if (unitsResult[0] > 0.3f) {
-		
-	}
-
-	auto buildingsInput = Game::getAiInputProvider()->getBuildingsInput(player->getId());
-	const auto buildingsResult = ifBuildingCreate.decide(buildingsInput);
-	if (buildingsResult[0] > 0.3f) {
-		
-	}
-	//return createUnit();
-	//return createBuilding();
-	//return levelUpUnit();
-	//return levelUpBuilding();
-}
-
 bool ActionMaker::enoughResources(db_with_cost* withCosts) const {
 	return withCosts && player->getResources().hasEnough(withCosts->costs);
 }
@@ -103,14 +100,8 @@ bool ActionMaker::createBuilding() {
 	return false;
 }
 
-bool ActionMaker::createUnit() {
-	db_unit* unit = chooseUnit();
-	return createUnit(unit);
-}
-
-db_building* ActionMaker::chooseBuilding() {
+db_building* ActionMaker::chooseBuilding(std::span<float> result) {
 	auto& buildings = Game::getDatabase()->getNation(player->getNation())->buildings;
-	auto result = decideFromBasic(whatBuildingCreate);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
@@ -158,10 +149,9 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 	return nullptr;
 }
 
-db_unit* ActionMaker::chooseUnit() {
+db_unit* ActionMaker::chooseUnit(std::span<float> result) {
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	auto result = decideFromBasic(whatUnitCreate);
-
+	
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
 	diffs.reserve(units.size());
@@ -171,9 +161,9 @@ db_unit* ActionMaker::chooseUnit() {
 	if (diffs.empty()) {
 		return nullptr;
 	}
-	auto inx = lowestWithRand(diffs);
+	const auto inx = lowestWithRand(diffs);
 
-	auto unit = units[inx];
+	const auto unit = units[inx];
 
 	logUnit(unit);
 	return unit;
@@ -216,9 +206,9 @@ float ActionMaker::dist(std::valarray<float>& center, const db_basic_metric* met
 	return sq.sum();
 }
 
-const std::span<float> ActionMaker::inputWithParamsDecide(Brain& brain, const db_basic_metric* metric) const {
-	return brain.decide(Game::getAiInputProvider()->getBasicInputWithMetric(player->getId(), metric));
-}
+// const std::span<float> ActionMaker::inputWithParamsDecide(Brain& brain, const db_basic_metric* metric) const {
+// 	return brain.decide(Game::getAiInputProvider()->getBasicInputWithMetric(player->getId(), metric));
+// }
 
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
 	auto result = inputWithParamsDecide(whereBuildingCreate,

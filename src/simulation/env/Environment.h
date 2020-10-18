@@ -89,7 +89,6 @@ public:
 
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
 
-	float getDistToEnemy(Player* player);
 	const std::vector<short>& getCloseIndexs(int center) const;
 	const std::vector<char>& getCloseTabIndexes(int center) const;
 	std::array<float, 6>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
@@ -106,7 +105,7 @@ private:
 	Grid teamUnitGrid[MAX_PLAYERS];
 	InfluenceManager influenceManager;
 	std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
-	Urho3D::Terrain* terrian;
+	Urho3D::Terrain* terrain;
 
 	std::vector<Physical*> *neights, *neights2; //TODO tu bedzie trzeba tablica jesli beda watki
 };

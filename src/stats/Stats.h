@@ -50,12 +50,12 @@ private:
 
 	unsigned short buildingsCreatedCount[MAX_PLAYERS];
 	std::vector<std::string> ifBuildingCreate[MAX_PLAYERS];
-	std::vector<std::string> whatBuildingCreate[MAX_PLAYERS];
+	std::vector<std::string> whichBuildingCreate[MAX_PLAYERS];
 	std::vector<std::string> whereBuildingCreate[MAX_PLAYERS];
 
 	unsigned short unitsCreatedCount[MAX_PLAYERS];
 	std::vector<std::string> ifUnitCreate[MAX_PLAYERS];
-	std::vector<std::string> whatUnitCreate[MAX_PLAYERS];
+	std::vector<std::string> whichUnitCreate[MAX_PLAYERS];
 	std::vector<std::string> whereUnitCreate[MAX_PLAYERS];
 
 };

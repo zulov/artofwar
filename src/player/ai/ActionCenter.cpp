@@ -10,9 +10,8 @@
 #include "player/PlayersManager.h"
 #include "stats/Stats.h"
 
-ActionCenter::ActionCenter(SimulationObjectManager* simulationObjectManager): creation(simulationObjectManager),
-                                                                              upgrade(simulationObjectManager) {
-}
+ActionCenter::ActionCenter(SimulationObjectManager* simulationObjectManager):
+	creation(simulationObjectManager), upgrade(simulationObjectManager) {}
 
 void ActionCenter::add(UpgradeCommand* command) {
 	//Game::getStats()->add(command); //TODO BUG to nie jest akcja tylko rezultat
@@ -69,7 +68,6 @@ bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char 
 	}
 	return false;
 }
-
 
 bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player) {
 	auto level = Game::getPlayersMan()->getPlayer(player)->getLevelForBuilding(id)->level;

@@ -18,7 +18,7 @@ Environment::Environment(Urho3D::Terrain* terrian):
 	teamUnitGrid{
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE},
 		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE}
-	}, influenceManager(MAX_PLAYERS), terrian(terrian) {
+	}, influenceManager(MAX_PLAYERS), terrain(terrian) {
 	neights = new std::vector<Physical*>();
 	neights2 = new std::vector<Physical*>();
 }
@@ -169,7 +169,7 @@ const std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vecto
 }
 
 float Environment::getGroundHeightAt(float x, float z) const {
-	return terrian->GetHeight(Urho3D::Vector3(x, 0, z));
+	return terrain->GetHeight(Urho3D::Vector3(x, 0, z));
 }
 
 Urho3D::Vector3 Environment::getPosWithHeightAt(float x, float z) const {
@@ -182,18 +182,18 @@ Urho3D::Vector3 Environment::getPosWithHeightAt(int index) const {
 }
 
 float Environment::getGroundHeightPercent(float y, float x, float div) const {
-	const float scale = terrian->GetSpacing().y_;
+	const float scale = terrain->GetSpacing().y_;
 	const auto a = Urho3D::Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5f, 0.f,
 	                               y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5f);
 
-	return terrian->GetHeight(a) / scale / div;
+	return terrain->GetHeight(a) / scale / div;
 }
 
 Urho3D::Vector3 Environment::getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos,
                                                   float min) const {
 	auto a = Urho3D::Vector3(percentX * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5f, pos.y_,
 	                         percentY * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5f);
-	const float h = terrian->GetHeight(a);
+	const float h = terrain->GetHeight(a);
 	if (h + min > pos.y_) {
 		a.y_ = h + min;
 	}
@@ -296,10 +296,6 @@ void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char inde
 		break;
 	default: ;
 	}
-}
-
-float Environment::getDistToEnemy(Player* player) {
-	return 500.0; //TODO IMPLEMENT
 }
 
 const std::vector<short>& Environment::getCloseIndexs(int center) const {
