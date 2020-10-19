@@ -36,7 +36,7 @@ void InfluenceMapQuad::reset() {
 	}
 }
 
-void InfluenceMapQuad::finishCalc() {
+void InfluenceMapQuad::finishCalc() {//TODO perf czy to potrzebne
 	for (auto* map : maps) {
 		map->finishCalc();
 	}

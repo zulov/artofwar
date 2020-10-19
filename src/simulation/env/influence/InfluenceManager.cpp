@@ -41,11 +41,13 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	resourceInfluence=new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40);
 	
 	for (char player = 0; player < numberOfPlayers; ++player) {
-		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 6>{
+		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 5>{
 			buildingsInfluencePerPlayer[player],
 			unitsInfluencePerPlayer[player],
-			resourceInfluence
-		});
+			resourceInfluence,
+			attackSpeed[player],
+			gatherSpeed[player]
+		});//TODO more?
 	}
 
 
@@ -246,7 +248,7 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
 	return ci;
 }
 
-std::array<float, 6>& InfluenceManager::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
+std::array<float, 5>& InfluenceManager::getInfluenceDataAt(char player, const Urho3D::Vector2& pos) {
 	auto& array = mapsForAiPerPlayer[player];
 	assert(array.size()==dataFromPos.size());
 	for (int i = 0; i < array.size(); ++i) {
@@ -256,7 +258,7 @@ std::array<float, 6>& InfluenceManager::getInfluenceDataAt(char player, const Ur
 }
 
 std::vector<int> InfluenceManager::getIndexesIterative(const std::span<float> result, float tolerance, int min,
-                                                       std::array<InfluenceMapFloat*, 6>& maps) const {
+                                                       std::array<InfluenceMapFloat*, 5>& maps) const {
 	int k = 0;
 	for (auto step : {0.0, 0.05, 0.1}) {
 		tolerance += step;
@@ -282,8 +284,7 @@ std::vector<int> InfluenceManager::getIndexesIterative(const std::span<float> re
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span<float> result, char player,
-                                                                 float tolerance,
-                                                                 int min) {
+                                                                 float tolerance, int min) {
 	auto& maps = mapsForAiPerPlayer[player];
 	assert(result.size()==maps.size());
 

@@ -127,13 +127,13 @@ void Stats::saveAll(int size) {
 		saveBatch(i, ifWorkersCreate, "workersCreate", size);
 		saveBatch(i, whereWorkersCreate, "whereWorkersCreate", size);
 
-		saveBatch(i, ifBuildingCreate, "workersCreate", size);
-		saveBatch(i, whichBuildingCreate, "workersCreate", size);
-		saveBatch(i, whereBuildingCreate, "workersCreate", size);
+		saveBatch(i, ifBuildingCreate, "ifBuildingCreate", size);
+		saveBatch(i, whichBuildingCreate, "whichBuildingCreate", size);
+		saveBatch(i, whereBuildingCreate, "whereBuildingCreate", size);
 
-		saveBatch(i, ifUnitCreate, "workersCreate", size);
-		saveBatch(i, whichUnitCreate, "workersCreate", size);
-		saveBatch(i, whereUnitCreate, "workersCreate", size);
+		saveBatch(i, ifUnitCreate, "ifUnitCreate", size);
+		saveBatch(i, whichUnitCreate, "whichUnitCreate", size);
+		saveBatch(i, whereUnitCreate, "whereUnitCreate", size);
 	}
 }
 

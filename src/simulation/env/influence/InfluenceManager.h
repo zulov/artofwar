@@ -37,9 +37,9 @@ public:
 
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,
 	                             int activePlayer);
-	std::array<float, 6>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
+	std::array<float, 5>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
 	std::vector<int> getIndexesIterative(const std::span<float> result, float tolerance, int min,
-	                                     std::array<InfluenceMapFloat*, 6>& maps) const;
+	                                     std::array<InfluenceMapFloat*, 5>& maps) const;
 
 	std::vector<Urho3D::Vector2> getAreasIterative(const std::span<float> result, char player, float tolerance,
 	                                               int min);
@@ -61,7 +61,7 @@ private:
 	template <typename T>
 	void drawAll(const std::vector<T*>& maps, Urho3D::String name) const;
 
-	std::vector<std::array<InfluenceMapFloat*, 6>> mapsForAiPerPlayer;
+	std::vector<std::array<InfluenceMapFloat*, 5>> mapsForAiPerPlayer;
 
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
 
@@ -78,6 +78,6 @@ private:
 
 	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 	content_info* ci;
-	std::array<float, 6> dataFromPos;
+	std::array<float, 5> dataFromPos;
 	short currentDebugBatch = 0;
 };
