@@ -64,12 +64,13 @@ void Stats::add(BuildingActionCommand* command) {
 			}
 		} else {
 			unitsCreatedCount[command->player] += command->buildings.size();
-			const std::string inputWithMetric = join(
-				Game::getAiInputProvider()->getUnitsInputWithMetric(command->player, level->dbUnitMetric));
-			for (auto building : command->buildings) {
-				auto& createOutput = level->dbUnitMetric->getParamsNormAsString();
-				joinAndPush(whichUnitCreate, command->player, resInput, createOutput);
+			const auto metric = level->dbUnitMetric;
+			joinAndPush(whichUnitCreate, command->player, resInput, metric->getParamsNormAsString(),
+			            command->buildings.size());
 
+			const std::string inputWithMetric = join(
+				Game::getAiInputProvider()->getUnitsInputWithMetric(command->player, metric));
+			for (auto building : command->buildings) {
 				joinAndPush(whereUnitCreate, command->player, inputWithMetric, getCreateUnitPosOutput(building));
 			}
 		}
@@ -83,11 +84,12 @@ void Stats::add(CreationCommand* command) {
 	const std::string input = join(Game::getAiInputProvider()->getBuildingsInput(command->player));
 
 	const auto player = Game::getPlayersMan()->getPlayer(command->player);
+	auto metric = player->getLevelForBuilding(command->id)->dbBuildingMetricPerNation[player->getNation()];
 
-	auto& createOutput = player->getLevelForBuilding(command->id)
-	                           ->dbBuildingMetricPerNation[player->getNation()]->getParamsNormAsString();
-	joinAndPush(whichBuildingCreate, command->player, input, createOutput);
-	const std::string inputWithMetric = input + ";" + createOutput;
+	joinAndPush(whichBuildingCreate, command->player, input, metric->getParamsNormAsString());
+
+	const std::string inputWithMetric = join(
+		Game::getAiInputProvider()->getBuildingsInputWithMetric(command->player, metric));
 	joinAndPush(whereBuildingCreate, command->player, inputWithMetric, getCreateBuildingPosOutput(command));
 }
 

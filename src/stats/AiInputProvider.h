@@ -37,10 +37,9 @@ private:
 	//bez cost
 	std::span<float> buildingsInputSpan = std::span(buildingsInput);
 
-	float unitsWithMetric[magic_enum::enum_count<BasicInputType>() * 2
-		+ magic_enum::enum_count<UnitMetric>() * 2];
+	float unitsWithMetric[magic_enum::enum_count<BasicInputType>() * 2 + magic_enum::enum_count<UnitMetric>() * 2 - 1];
 	float buildingsWithMetric[magic_enum::enum_count<BasicInputType>() * 2
-		+ magic_enum::enum_count<BuildingMetric>() * 2];
+		+ magic_enum::enum_count<BuildingMetric>() * 2 - 1];
 
 	std::span<float> unitsWithMetricUnitSpan = std::span(unitsWithMetric);
 	std::span<float> basicWithMetricUnitSpan = std::span(buildingsWithMetric);
