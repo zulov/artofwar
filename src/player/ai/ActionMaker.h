@@ -29,7 +29,7 @@ private:
 
 	bool levelUpUnit();
 	bool levelUpBuilding();
-	bool createBuilding();
+	bool createBuilding(db_building* building);
 
 	std::optional<Urho3D::Vector2> posToBuild(db_building* building);
 	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
@@ -45,7 +45,7 @@ private:
 	Building* getBuildingToDeployWorker(db_unit* unit);
 	Building* getBuildingToLevelUpUnit(db_unit_level* level);
 	Building* getBuildingClosestArea(std::vector<Building*>& allPossible, std::span<float> result) const;
-	
+
 	Player* player;
 
 	Brain ifWorkersCreate;

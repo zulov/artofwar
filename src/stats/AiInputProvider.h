@@ -16,7 +16,9 @@ public:
 	std::span<float> getResourceInput(char playerId);
 	std::span<float> getUnitsInput(char playerId);
 	std::span<float> getBuildingsInput(char playerId);
-	std::span<float> getBasicInputWithMetric(char playerId, const db_basic_metric* prop);
+
+	std::span<float> getUnitsInputWithMetric(char playerId, const db_unit_metric* prop);
+	std::span<float> getBuildingsInputWithMetric(char playerId, const db_building_metric* prop);
 private:
 
 	void update(short id, float* data);
@@ -27,19 +29,21 @@ private:
 	float resourceIdInput[magic_enum::enum_count<BasicInputType>() * 2 + magic_enum::enum_count<ResourceInputType>()];
 	std::span<float> resourceIdInputSpan = std::span(resourceIdInput);
 
-	float unitsInput[magic_enum::enum_count<BasicInputType>() * 2 + magic_enum::enum_count<UnitMetric>() * 2];
+	float unitsInput[magic_enum::enum_count<BasicInputType>() * 2 + magic_enum::enum_count<UnitMetric>() - 1];
+	//bez cost
 	std::span<float> unitsInputSpan = std::span(unitsInput);
 
-	float buildingsInput[magic_enum::enum_count<BasicInputType>() * 2 + magic_enum::enum_count<BuildingMetric>() * 2];
+	float buildingsInput[magic_enum::enum_count<BasicInputType>() * 2 + magic_enum::enum_count<BuildingMetric>() - 1];
+	//bez cost
 	std::span<float> buildingsInputSpan = std::span(buildingsInput);
 
-	float basicWithMetric[magic_enum::enum_count<BasicInputType>() * 2 + magic_enum::enum_count<BuildingMetric>()];
-	std::span<float> basicWithMetricBuildingSpan = std::span(basicWithMetric,
-	                                                         magic_enum::enum_count<BasicInputType>() * 2 +
-	                                                         magic_enum::enum_count<BuildingMetric>());
-	std::span<float> basicWithMetricUnitSpan = std::span(basicWithMetric,
-	                                                     magic_enum::enum_count<BasicInputType>() * 2 +
-	                                                     magic_enum::enum_count<UnitMetric>());
+	float unitsWithMetric[magic_enum::enum_count<BasicInputType>() * 2
+		+ magic_enum::enum_count<UnitMetric>() * 2];
+	float buildingsWithMetric[magic_enum::enum_count<BasicInputType>() * 2
+		+ magic_enum::enum_count<BuildingMetric>() * 2];
+
+	std::span<float> unitsWithMetricUnitSpan = std::span(unitsWithMetric);
+	std::span<float> basicWithMetricUnitSpan = std::span(buildingsWithMetric);
 
 	float wBasic[magic_enum::enum_count<BasicInputType>()];
 	float wResourceInput[magic_enum::enum_count<ResourceInputType>()];

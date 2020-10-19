@@ -46,12 +46,15 @@ void ActionMaker::action() {
 	if (unitsResult[0] > 0.3f) {
 		auto whichOutput = whichUnitCreate.decide(unitsInput);
 		auto unit = chooseUnit(whichOutput);
-		
+
 		createUnit(unit);
 	}
 
 	const auto buildingsResult = ifBuildingCreate.decide(buildingsInput);
-	if (buildingsResult[0] > 0.3f) { }
+	if (buildingsResult[0] > 0.3f) {
+		auto whichOutput = whichBuildingCreate.decide(unitsInput);
+		auto building = chooseBuilding(whichOutput);
+	}
 	//return createUnit();
 	//return createBuilding();
 	//return levelUpUnit();
@@ -89,8 +92,8 @@ bool ActionMaker::enoughResources(db_with_cost* withCosts) const {
 	return withCosts && player->getResources().hasEnough(withCosts->costs);
 }
 
-bool ActionMaker::createBuilding() {
-	const auto building = chooseBuilding();
+bool ActionMaker::createBuilding(db_building* building) {
+
 	if (enoughResources(building)) {
 		auto pos = posToBuild(building);
 		if (pos.has_value()) {
@@ -151,7 +154,7 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 
 db_unit* ActionMaker::chooseUnit(std::span<float> result) {
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	
+
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
 	diffs.reserve(units.size());
@@ -206,14 +209,11 @@ float ActionMaker::dist(std::valarray<float>& center, const db_basic_metric* met
 	return sq.sum();
 }
 
-// const std::span<float> ActionMaker::inputWithParamsDecide(Brain& brain, const db_basic_metric* metric) const {
-// 	return brain.decide(Game::getAiInputProvider()->getBasicInputWithMetric(player->getId(), metric));
-// }
-
 std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
-	auto result = inputWithParamsDecide(whereBuildingCreate,
-	                                    player->getLevelForBuilding(building->id)
-	                                          ->dbBuildingMetricPerNation[player->getNation()]);
+	const auto input = Game::getAiInputProvider()->getBuildingsInputWithMetric(
+		player->getId(), player->getLevelForBuilding(building->id)
+		                       ->dbBuildingMetricPerNation[player->getNation()]);
+	const auto result = whereBuildingCreate.decide(input);
 
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
@@ -239,8 +239,10 @@ std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {
 Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
-
-	auto result = inputWithParamsDecide(whereUnitCreate, player->getLevelForUnit(unit->id)->dbUnitMetric);
+	const auto input = Game::getAiInputProvider()
+		->getUnitsInputWithMetric(player->getId(),
+		                          player->getLevelForUnit(unit->id)->dbUnitMetric);
+	const auto result = whereUnitCreate.decide(input);
 
 	return getBuildingClosestArea(allPossible, result);
 }
@@ -248,8 +250,9 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
+	const auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
 
-	auto result = decideFromBasic(whereWorkersCreate);
+	const auto result = whereWorkersCreate.decide(input);
 
 	return getBuildingClosestArea(allPossible, result);
 }

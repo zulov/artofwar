@@ -69,13 +69,14 @@ std::span<float> AiInputProvider::getBuildingsInput(char playerId) {
 	return buildingsInputSpan;
 }
 
-std::span<float> AiInputProvider::getBasicInputWithMetric(char playerId, const db_basic_metric* prop) {
-	if (prop->getParamsAsSpan().size() == magic_enum::enum_count<UnitMetric>()) {
-		copyTo(basicWithMetricUnitSpan, getBasicInput(playerId), prop->getParamsAsSpan());
-		return basicWithMetricUnitSpan;
-	}
-	copyTo(basicWithMetricBuildingSpan, getBasicInput(playerId), prop->getParamsAsSpan());
-	return basicWithMetricBuildingSpan;
+std::span<float> AiInputProvider::getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) {
+	copyTo(unitsWithMetricUnitSpan, getUnitsInput(playerId), prop->getParamsNorm());
+	return unitsWithMetricUnitSpan;
+}
+
+std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop) {
+	copyTo(basicWithMetricUnitSpan, getBuildingsInput(playerId), prop->getParamsNorm());
+	return basicWithMetricUnitSpan;
 }
 
 std::span<float> AiInputProvider::getBasicInput(short id) {

@@ -120,11 +120,10 @@ struct db_with_cost {
 
 struct db_basic_metric {
 protected:
-	std::string paramsAString;
+
 	std::span<float> paramsAsSpan;
 	std::span<float> paramsNormAsSpan;
 public:
-	const std::string& getParamsNormAsString() const { return paramsAString; }
 	const std::span<float> getParamsAsSpan() const { return paramsAsSpan; }
 	const std::span<float> getParamsNorm() const { return paramsNormAsSpan; }
 };
@@ -146,8 +145,6 @@ public:
 
 		std::transform(paramsNormAsSpan.begin(), paramsNormAsSpan.end(), AI_WEIGHTS.wUnitInputSpan.begin(),
 		               paramsNormAsSpan.begin(), std::divides<>());
-
-		paramsAString = join(paramsNormAsSpan);
 	}
 };
 
@@ -166,8 +163,6 @@ public:
 		assert(paramsNormAsSpan.size()==AI_WEIGHTS.wBuildingInputSpan.size());
 		std::transform(paramsNormAsSpan.begin(), paramsNormAsSpan.end(), AI_WEIGHTS.wBuildingInputSpan.begin(),
 		               paramsNormAsSpan.begin(), std::divides<>());
-
-		paramsAString = join(paramsNormAsSpan);
 	}
 };
 

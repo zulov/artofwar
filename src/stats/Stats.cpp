@@ -58,17 +58,18 @@ void Stats::add(BuildingActionCommand* command) {
 		const std::string resInput = join(Game::getAiInputProvider()->getResourceInput(command->player));
 		if (level->canCollect) {
 			//TODO czy to worker
-			workersCreatedCount[command->player] += command->buildings.size();		
-			for (auto building : command->buildings) {		
+			workersCreatedCount[command->player] += command->buildings.size();
+			for (auto building : command->buildings) {
 				joinAndPush(whereWorkersCreate, command->player, resInput, getCreateUnitPosOutput(building));
 			}
 		} else {
 			unitsCreatedCount[command->player] += command->buildings.size();
+			const std::string inputWithMetric = join(
+				Game::getAiInputProvider()->getUnitsInputWithMetric(command->player, level->dbUnitMetric));
 			for (auto building : command->buildings) {
 				auto& createOutput = level->dbUnitMetric->getParamsNormAsString();
 				joinAndPush(whichUnitCreate, command->player, resInput, createOutput);
-				
-				const std::string inputWithMetric = resInput + ";" + createOutput;
+
 				joinAndPush(whereUnitCreate, command->player, inputWithMetric, getCreateUnitPosOutput(building));
 			}
 		}
@@ -138,13 +139,16 @@ void Stats::save(bool accumulate) {
 	if (accumulate) {
 		for (char i = 0; i < MAX_PLAYERS; ++i) {
 			joinAndPush(ifWorkersCreate, i,
-			            join(Game::getAiInputProvider()->getResourceInput(i)),//TODO moze jakas srednai z tego okresu, albo poczatek
+			            join(Game::getAiInputProvider()->getResourceInput(i)),
+			            //TODO moze jakas srednai z tego okresu, albo poczatek
 			            std::to_string(workersCreatedCount[i]));
 			joinAndPush(ifBuildingCreate, i,
-			            join(Game::getAiInputProvider()->getBuildingsInput(i)),//TODO moze jakas srednai z tego okresu, albo poczatek
+			            join(Game::getAiInputProvider()->getBuildingsInput(i)),
+			            //TODO moze jakas srednai z tego okresu, albo poczatek
 			            std::to_string(buildingsCreatedCount[i]));
 			joinAndPush(ifUnitCreate, i,
-			            join(Game::getAiInputProvider()->getUnitsInput(i)),//TODO moze jakas srednai z tego okresu, albo poczatek
+			            join(Game::getAiInputProvider()->getUnitsInput(i)),
+			            //TODO moze jakas srednai z tego okresu, albo poczatek
 			            std::to_string(unitsCreatedCount[i]));
 		}
 
