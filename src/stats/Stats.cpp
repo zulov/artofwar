@@ -80,11 +80,12 @@ void Stats::add(BuildingActionCommand* command) {
 
 void Stats::add(CreationCommand* command) {
 	assert(command->objectType == ObjectType::BUILDING);
+	const auto player = Game::getPlayersMan()->getPlayer(command->player);
 
 	const std::string input = join(Game::getAiInputProvider()->getBuildingsInput(command->player));
 
-	const auto player = Game::getPlayersMan()->getPlayer(command->player);
 	auto metric = player->getLevelForBuilding(command->id)->dbBuildingMetricPerNation[player->getNation()];
+	++buildingsCreatedCount[command->player];
 
 	joinAndPush(whichBuildingCreate, command->player, input, metric->getParamsNormAsString());
 
