@@ -44,6 +44,6 @@ private:
 
 	float unitsMetrics[magic_enum::enum_count<UnitMetric>()-1];
 	float buildingsMetrics[magic_enum::enum_count<BuildingMetric>()-1];
-	std::span<float> unitsValuesAsSpan = std::span(unitsMetrics);
-	std::span<float> buildingsValuesAsSpan = std::span(buildingsMetrics);
+	const std::span<float> unitsValuesAsSpan = std::span(unitsMetrics);
+	const std::span<float> buildingsValuesAsSpan = std::span(buildingsMetrics);
 };

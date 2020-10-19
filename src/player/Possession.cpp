@@ -18,8 +18,6 @@ Possession::Possession(char nation) {
 		}
 		buildingsPerId[id] = new std::vector<Building*>();
 	}
-	unitsValuesAsSpan = std::span{unitsMetrics};
-	buildingsValuesAsSpan = std::span{buildingsMetrics};
 }
 
 Possession::~Possession() {
@@ -101,12 +99,12 @@ void Possession::updateAndClean(Resources& resources, SimulationInfo* simInfo) {
 			}
 		}
 	}
-	std::fill_n(unitsMetrics, magic_enum::enum_count<UnitMetric>(), 0.f);
+	std::fill_n(unitsValuesAsSpan.begin(), unitsValuesAsSpan.size(), 0.f);
 	for (auto unit : units) {
 		unit->addValues(unitsValuesAsSpan);
 	}
 
-	std::fill_n(buildingsMetrics, magic_enum::enum_count<BuildingMetric>(), 0.f);
+	std::fill_n(buildingsValuesAsSpan.begin(), buildingsValuesAsSpan.size(), 0.f);
 	for (auto building : buildings) {
 		building->addValues(buildingsValuesAsSpan);
 	}

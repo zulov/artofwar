@@ -29,6 +29,14 @@ AiInputProvider::AiInputProvider() {
 	wUnitsSumInput[cast(UnitMetric::CLOSE_ATTACK)] = 1000.f;
 	wUnitsSumInput[cast(UnitMetric::CHARGE_ATTACK)] = 1000.f;
 	wUnitsSumInput[cast(UnitMetric::BUILDING_ATTACK)] = 1000.f;
+
+	wBuildingsSumInput[cast(BuildingMetric::DEFENCE)] = 100.f; //TODO to nie sa wartosci dla jednostki tylko dla sumy
+	wBuildingsSumInput[cast(BuildingMetric::DISTANCE_ATTACK)] = 1000.f;
+	wBuildingsSumInput[cast(BuildingMetric::PROD_DEFENCE)] = 100.f;
+	wBuildingsSumInput[cast(BuildingMetric::PROD_DISTANCE_ATTACK)] = 100.f;
+	wBuildingsSumInput[cast(BuildingMetric::PROD_CLOSE_ATTACK)] = 100.f;
+	wBuildingsSumInput[cast(BuildingMetric::PROD_CHARGE_ATTACK)] = 100.f;
+	wBuildingsSumInput[cast(BuildingMetric::PROD_BUILDING_ATTACK)] = 100.f;
 }
 
 std::span<float> AiInputProvider::getResourceInput(char playerId) {

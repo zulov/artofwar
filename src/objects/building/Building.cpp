@@ -130,6 +130,8 @@ void Building::addValues(std::span<float> vals) const {
 	auto nation = Game::getPlayersMan()->getPlayer(player)->getNation();
 	
 	auto data = dbLevel->dbBuildingMetricPerNation[nation]->getParamsAsSpan();
+
+	assert(vals.size()==data.size()-1); //without cost
 	for (int i = 0; i < vals.size(); ++i) {
 		vals[i] += percent * data[i];
 	}
