@@ -332,7 +332,7 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_a
 	                  float rangeAttackVal, short rangeAttackSpeed, short rangeAttackRange, float armor)
 		: db_entity(id), db_level(level), db_with_name(name),
 		  db_attack(0.f, rangeAttackVal, 0.f, 0.f, 0.f, rangeAttackSpeed, rangeAttackRange, armor),
-		  db_with_hp(maxHp),
+		  db_with_hp( no elo co maxHp), 
 		  building(building),
 		  nodeName(nodeName),
 		  queueMaxCapacity(queueMaxCapacity) {

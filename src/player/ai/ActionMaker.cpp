@@ -35,25 +35,26 @@ void ActionMaker::action() {
 	const auto unitsInput = aiInput->getUnitsInput(player->getId()); //TODO czy cokolwiek?
 	const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
 
-	const auto resResult = ifWorkersCreate.decide(resInput);
-	if (resResult[0] > 0.3f) {
-		auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-		auto unit = units[4]; //TODO lepiej wybrac
-		createWorker(unit);
-	}
+	// const auto resResult = ifWorkersCreate.decide(resInput);
+	// if (resResult[0] > 0.3f) {
+	// 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
+	// 	auto unit = units[4]; //TODO lepiej wybrac
+	// 	createWorker(unit);
+	// }
 
-	const auto unitsResult = ifUnitCreate.decide(unitsInput);
-	if (unitsResult[0] > 0.3f) {
-		auto whichOutput = whichUnitCreate.decide(unitsInput);
-		auto unit = chooseUnit(whichOutput);
-
-		createUnit(unit);
-	}
+	// const auto unitsResult = ifUnitCreate.decide(unitsInput);
+	// if (unitsResult[0] > 0.3f) {
+	// 	auto whichOutput = whichUnitCreate.decide(unitsInput);
+	// 	auto unit = chooseUnit(whichOutput);
+	//
+	// 	createUnit(unit);
+	// }
 
 	const auto buildingsResult = ifBuildingCreate.decide(buildingsInput);
 	if (buildingsResult[0] > 0.3f) {
-		auto whichOutput = whichBuildingCreate.decide(unitsInput);
+		auto whichOutput = whichBuildingCreate.decide(buildingsInput);
 		auto building = chooseBuilding(whichOutput);
+		auto result = createBuilding(building);
 	}
 	//return createUnit();
 	//return createBuilding();
@@ -93,7 +94,6 @@ bool ActionMaker::enoughResources(db_with_cost* withCosts) const {
 }
 
 bool ActionMaker::createBuilding(db_building* building) {
-
 	if (enoughResources(building)) {
 		auto pos = posToBuild(building);
 		if (pos.has_value()) {
