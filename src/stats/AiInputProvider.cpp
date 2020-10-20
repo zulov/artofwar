@@ -24,19 +24,19 @@ AiInputProvider::AiInputProvider() {
 	wResourceInput[cast(ResourceInputType::FREE_WORKERS)] = 100.f;
 	wResourceInput[cast(ResourceInputType::WORKERS)] = 100.f;
 
-	wUnitsSumInput[cast(UnitMetric::DEFENCE)] = 100.f; //TODO to nie sa wartosci dla jednostki tylko dla sumy
-	wUnitsSumInput[cast(UnitMetric::DISTANCE_ATTACK)] = 1000.f;
-	wUnitsSumInput[cast(UnitMetric::CLOSE_ATTACK)] = 1000.f;
+	wUnitsSumInput[cast(UnitMetric::DEFENCE)] = 50000.f; //TODO to nie sa wartosci dla jednostki tylko dla sumy
+	wUnitsSumInput[cast(UnitMetric::DISTANCE_ATTACK)] = 10000.f;
+	wUnitsSumInput[cast(UnitMetric::CLOSE_ATTACK)] = 10000.f;
 	wUnitsSumInput[cast(UnitMetric::CHARGE_ATTACK)] = 1000.f;
-	wUnitsSumInput[cast(UnitMetric::BUILDING_ATTACK)] = 1000.f;
+	wUnitsSumInput[cast(UnitMetric::BUILDING_ATTACK)] = 10000.f;
 
-	wBuildingsSumInput[cast(BuildingMetric::DEFENCE)] = 100.f; //TODO to nie sa wartosci dla jednostki tylko dla sumy
-	wBuildingsSumInput[cast(BuildingMetric::DISTANCE_ATTACK)] = 1000.f;
-	wBuildingsSumInput[cast(BuildingMetric::PROD_DEFENCE)] = 100.f;
-	wBuildingsSumInput[cast(BuildingMetric::PROD_DISTANCE_ATTACK)] = 100.f;
-	wBuildingsSumInput[cast(BuildingMetric::PROD_CLOSE_ATTACK)] = 100.f;
-	wBuildingsSumInput[cast(BuildingMetric::PROD_CHARGE_ATTACK)] = 100.f;
-	wBuildingsSumInput[cast(BuildingMetric::PROD_BUILDING_ATTACK)] = 100.f;
+	wBuildingsSumInput[cast(BuildingMetric::DEFENCE)] = 200000.f; //TODO to nie sa wartosci dla jednostki tylko dla sumy
+	wBuildingsSumInput[cast(BuildingMetric::DISTANCE_ATTACK)] = 10000.f;
+	wBuildingsSumInput[cast(BuildingMetric::PROD_DEFENCE)] = 20000.f;
+	wBuildingsSumInput[cast(BuildingMetric::PROD_DISTANCE_ATTACK)] = 20000.f;
+	wBuildingsSumInput[cast(BuildingMetric::PROD_CLOSE_ATTACK)] = 20000.f;
+	wBuildingsSumInput[cast(BuildingMetric::PROD_CHARGE_ATTACK)] = 20000.f;
+	wBuildingsSumInput[cast(BuildingMetric::PROD_BUILDING_ATTACK)] = 20000.f;
 }
 
 std::span<float> AiInputProvider::getResourceInput(char playerId) {

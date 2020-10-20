@@ -6,6 +6,7 @@
 #include <vector>
 #include <functional>
 #include <algorithm>
+#include <iostream>
 #include <Urho3D/Container/Str.h>
 #include <Urho3D/Math/Vector2.h>
 #include "objects/Metrics.h"
@@ -246,11 +247,13 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	}
 
 	void finish(float sumCreateCost) {
-		dbUnitMetric = new db_unit_metric(sumCreateCost, armor * maxHp,
+		std::cout << nodeName.CString();
+		dbUnitMetric = new db_unit_metric(armor * maxHp,
 		                                  rangeAttackVal * rangeAttackSpeed,
 		                                  closeAttackVal * closeAttackSpeed,
 		                                  chargeAttackVal,
-		                                  buildingAttackVal * rangeAttackSpeed);
+		                                  buildingAttackVal * rangeAttackSpeed,
+		                                  sumCreateCost);
 	}
 
 	~db_unit_level() {
@@ -329,10 +332,10 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_a
 	std::vector<db_building_metric*> dbBuildingMetricPerNation;
 
 	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity,
-	                  float rangeAttackVal, short rangeAttackSpeed, short rangeAttackRange, float armor)
+	                  float rangeAttackVal, short rangeAttackSpeed, short rangeAttackRange, float armor, short maxHp)
 		: db_entity(id), db_level(level), db_with_name(name),
 		  db_attack(0.f, rangeAttackVal, 0.f, 0.f, 0.f, rangeAttackSpeed, rangeAttackRange, armor),
-		  db_with_hp( no elo co maxHp), 
+		  db_with_hp(maxHp),
 		  building(building),
 		  nodeName(nodeName),
 		  queueMaxCapacity(queueMaxCapacity) {

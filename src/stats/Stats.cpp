@@ -125,7 +125,7 @@ void Stats::saveBatch(int i, std::vector<std::string>* array, std::string name, 
 
 void Stats::saveAll(int size) {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		saveBatch(i, ifWorkersCreate, "workersCreate", size);
+		saveBatch(i, ifWorkersCreate, "ifWorkersCreate", size);
 		saveBatch(i, whereWorkersCreate, "whereWorkersCreate", size);
 
 		saveBatch(i, ifBuildingCreate, "ifBuildingCreate", size);
@@ -141,17 +141,15 @@ void Stats::saveAll(int size) {
 void Stats::save(bool accumulate) {
 	if (accumulate) {
 		for (char i = 0; i < MAX_PLAYERS; ++i) {
+			//TODO moze jakas srednai z tego okresu, albo poczatek
 			joinAndPush(ifWorkersCreate, i,
-			            join(Game::getAiInputProvider()->getResourceInput(i)),
-			            //TODO moze jakas srednai z tego okresu, albo poczatek
+			            join(Game::getAiInputProvider()->getResourceInput(i)),            
 			            std::to_string(workersCreatedCount[i]));
 			joinAndPush(ifBuildingCreate, i,
 			            join(Game::getAiInputProvider()->getBuildingsInput(i)),
-			            //TODO moze jakas srednai z tego okresu, albo poczatek
 			            std::to_string(buildingsCreatedCount[i]));
 			joinAndPush(ifUnitCreate, i,
 			            join(Game::getAiInputProvider()->getUnitsInput(i)),
-			            //TODO moze jakas srednai z tego okresu, albo poczatek
 			            std::to_string(unitsCreatedCount[i]));
 		}
 

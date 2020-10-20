@@ -151,9 +151,9 @@ int static loadSettings(void* data, int argc, char** argv, char** azColName) {
 
 int static loadBuildingLevels(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
-	auto level = new db_building_level(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), argv[3],
-	                                   argv[4], atoi(argv[5]), atof(argv[6]), atoi(argv[7]),
-	                                   atoi(argv[8]), atof(argv[9]));
+	auto level = new db_building_level(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), argv[3], argv[4],
+	                                   atoi(argv[5]), atof(argv[6]), atoi(argv[7]),
+	                                   atoi(argv[8]), atof(argv[9]), atoi(argv[10]));
 	setEntity(xyz->buildingsLevels, level);
 	xyz->buildings[level->building]->levels.push_back(level);
 	for (auto nation : xyz->nations) {

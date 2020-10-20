@@ -51,7 +51,7 @@ void ActionMaker::action() {
 	// }
 
 	const auto buildingsResult = ifBuildingCreate.decide(buildingsInput);
-	if (buildingsResult[0] > 0.3f) {
+	if (buildingsResult[0] > 0.1f) {
 		auto whichOutput = whichBuildingCreate.decide(buildingsInput);
 		auto building = chooseBuilding(whichOutput);
 		auto result = createBuilding(building);
