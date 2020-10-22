@@ -38,6 +38,10 @@ short Building::getId() {
 	return dbBuilding->id;
 }
 
+int Building::getLevel() {
+	return dbLevel->level; 
+}
+
 void Building::populate() {
 	Static::populate();
 	if (dbLevel->queueMaxCapacity > 0) {

@@ -3,7 +3,6 @@
 #include "objects/ObjectEnums.h"
 #include <Urho3D/Graphics/BillboardSet.h>
 #include <Urho3D/Graphics/StaticModel.h>
-#include <iostream>
 #include <optional>
 #include <span>
 

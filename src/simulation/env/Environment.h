@@ -1,17 +1,21 @@
 #pragma once
 
-#include <array>
-#include <vector>
-#include <Urho3D/Graphics/Terrain.h>
-#include "ContentInfo.h"
+#include <Urho3D/Math/Vector2.h>
+#include <Urho3D/Math/Vector3.h>
+#include "bucket/Grid.h"
 #include "bucket/MainGrid.h"
 #include "debug/EnvironmentDebugMode.h"
 #include "influence/InfluenceManager.h"
+#include "objects/CellState.h"
 #include "objects/unit/state/UnitState.h"
-#include "player/Player.h"
 #include "utils/defines.h"
 
+namespace Urho3D
+{
+	class Terrain;
+}
 
+struct content_info;
 class ResourceEntity;
 class Unit;
 class Building;

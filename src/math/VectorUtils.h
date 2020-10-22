@@ -1,4 +1,5 @@
 #pragma once
+#include <iterator>
 #include <numeric>
 #include <vector>
 #include <span>

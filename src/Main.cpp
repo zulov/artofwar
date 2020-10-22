@@ -4,15 +4,11 @@
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Engine/EngineDefs.h>
 #include <Urho3D/Graphics/Renderer.h>
-#include <Urho3D/Graphics/Technique.h>
-#include <Urho3D/Graphics/Viewport.h>
 #include <Urho3D/IO/FileSystem.h>
-#include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "Game.h"
 #include "camera/CameraEnums.h"
 #include "camera/CameraManager.h"
 #include "colors/ColorPaletteRepo.h"
@@ -22,17 +18,15 @@
 #include "hud/window/in_game_menu/middle/FileFormData.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "hud/window/selected/SelectedHudElement.h"
-#include "objects/ActionType.h"
 #include "objects/unit/ActionParameter.h"
 #include "player/PlayersManager.h"
-#include "simulation/SimulationInfo.h"
 #include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"
-#include "Urho3D/Resource/Image.h"
-
-#include <utility>
-
+#include <Urho3D/Graphics/Graphics.h>
+#include "control/Controls.h"
+#include "hud/Hud.h"
 #include "math/RandGen.h"
+#include "scene/LevelBuilder.h"
 #include "stats/AiInputProvider.h"
 #include "stats/Stats.h"
 

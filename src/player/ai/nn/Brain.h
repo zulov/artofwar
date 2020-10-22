@@ -1,7 +1,9 @@
 #pragma once
-#include "Layer.h"
+
 #include <Eigen/Dense>
 #include <span>
+
+class Layer;
 
 class Brain {
 public:

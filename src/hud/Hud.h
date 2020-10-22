@@ -1,19 +1,26 @@
 #pragma once
 #include <Urho3D/UI/Button.h>
-#include <Urho3D/UI/Text.h>
-#include "Benchmark.h"
 #include "GameState.h"
-#include "control/SelectedInfo.h"
+#include "window/selected/SelectedHudPanel.h"
 #include "window/in_game_menu/InGameMenuPanel.h"
 #include "window/main_menu/MainMenuPanel.h"
 #include "window/menu/MenuPanel.h"
-#include "window/score/ScorePanel.h"
-#include "window/selected/SelectedHudPanel.h"
-#include "xml/rapidxml_print.hpp"
+#include "Urho3D/Core/Object.h"
+#include "Urho3D/Core/Variant.h"
+#include "Urho3D/Math/StringHash.h"
 
+namespace Urho3D
+{
+	class XMLFile;
+}
+
+class AbstractWindowPanel;
+class Benchmark;
+class ScorePanel;
+class SelectedHudPanel;
+class SelectedInfo;
 class CameraManager;
 class SimulationInfo;
-class MainMenuPanel;
 class MiniMapPanel;
 class TopPanel;
 class HudData;

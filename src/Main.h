@@ -1,26 +1,35 @@
 #pragma once
 
+#include <Urho3D/Container/Str.h>
+#include <Urho3D/Core/Object.h>
+#include <Urho3D/Core/Variant.h>
 #include <Urho3D/Engine/Application.h>
-#include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Input/Input.h>
+#include <Urho3D/Math/StringHash.h>
 #include "Benchmark.h"
 #include "GameState.h"
 #include "Loading.h"
-#include "control/Controls.h"
 #include "debug/DebugManager.h"
-#include "hud/Hud.h"
-#include "scene/LevelBuilder.h"
 #include "scene/load/SceneLoader.h"
 #include "scene/save/SceneSaver.h"
-#include "simulation/Simulation.h"
 
+class Controls;
+class Hud;
+class LevelBuilder;
+class SelectedInfo;
+class Simulation;
+class SimulationInfo;
+
+namespace Urho3D
+{
+	class Context;
+}
 
 enum class CameraBehaviorType : char;
 struct NewGameForm;
 
 
-class Main : public Urho3D::Application
-{
+class Main : public Urho3D::Application {
 URHO3D_OBJECT(Main, Application)
 
 	explicit Main(Urho3D::Context* context);
@@ -65,7 +74,7 @@ private:
 	void save(const Urho3D::String& name);
 	void running(double timeStep);
 	void createSimulation();
-static void setSimpleManagers();
+	static void setSimpleManagers();
 	void updateProgress(loading& progress, std::string msg) const;
 	void newGame(NewGameForm* form, loading& progress);
 	void changeState(GameState newState);

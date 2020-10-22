@@ -3,7 +3,6 @@
 #include "math/MathUtils.h"
 #include "../unit/Unit.h"
 #include "simulation/env/Environment.h"
-#include <string>
 
 Static::Static(Urho3D::Vector3& _position, int mainCell) : Physical(_position) {
 	state = StaticState::ALIVE;

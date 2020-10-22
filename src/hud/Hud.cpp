@@ -1,29 +1,28 @@
 #include "Hud.h"
-#include <regex>
 #include <exprtk/exprtk.hpp>
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Resource/XMLFile.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
+#include <xml/rapidxml_print.hpp>
+#include "Benchmark.h"
 #include "Game.h"
 #include "HudData.h"
 #include "camera/CameraManager.h"
+#include "control/SelectedInfo.h"
 #include "database/DatabaseCache.h"
 #include "objects/ObjectEnums.h"
-#include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimulationInfo.h"
-#include "utils/DeleteUtils.h"
 #include "utils/replace_utils.h"
 #include "window/debug/DebugPanel.h"
 #include "window/loading/LoadingPanel.h"
 #include "window/minimap/MiniMapPanel.h"
 #include "window/queue/QueuePanel.h"
+#include "window/score/ScorePanel.h"
 #include "window/top/TopPanel.h"
-
 
 void Hud::replaceVariables(std::string& xml, int hudSizeId) const {
 	exprtk::symbol_table<float> symbol_table;

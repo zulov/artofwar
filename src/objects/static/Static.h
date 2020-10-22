@@ -1,8 +1,6 @@
 #pragma once
 #include "../Physical.h"
 #include "StaticState.h"
-#include "database/db_strcut.h"
-#include "scene/load/dbload_container.h"
 
 enum class CellState : char;
 
