@@ -1,6 +1,4 @@
 #include "BillboardSetProvider.h"
-
-
 #include <Urho3D/Graphics/BillboardSet.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Resource/ResourceCache.h>

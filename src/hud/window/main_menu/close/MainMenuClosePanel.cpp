@@ -1,5 +1,4 @@
 #include "MainMenuClosePanel.h"
-#include <Urho3D/UI/Button.h>
 #include "hud/UiUtils.h"
 #include <Urho3D/UI/UIEvents.h>
 

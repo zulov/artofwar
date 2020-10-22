@@ -1,4 +1,6 @@
 #include "SelectedHudElement.h"
+
+#include <Urho3D/UI/ProgressBar.h>
 #include <Urho3D/UI/Text.h>
 #include "hud/UiUtils.h"
 #include "objects/Physical.h"

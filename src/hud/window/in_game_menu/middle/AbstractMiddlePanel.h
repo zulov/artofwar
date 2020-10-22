@@ -1,7 +1,10 @@
 #pragma once
-#include <Urho3D/UI/Button.h>
-#include <Urho3D/UI/Text.h>
 #include "hud/window/AbstractWindowPanel.h"
+
+namespace Urho3D {
+	class Text;
+	class Button;
+}
 
 constexpr char MIDDLE_LIST_ROW_NUMBER = 3;
 

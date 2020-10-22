@@ -1,21 +1,19 @@
 #include "InGameMenuPanel.h"
-#include "GameState.h"
-#include "hud/UiUtils.h"
-#include "middle/FilePanel.h"
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
-
+#include "hud/UiUtils.h"
+#include "middle/FilePanel.h"
 #include "utils/DeleteUtils.h"
 
-InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "InGameMenuWindow",
-                                                                               {
-	                                                                               GameState::RUNNING, GameState::PAUSE
-                                                                               }) {}
+InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style)
+	: AbstractWindowPanel(_style, "InGameMenuWindow",
+	                      {GameState::RUNNING, GameState::PAUSE}) {
+}
 
 InGameMenuPanel::~InGameMenuPanel() {
 	toggleButton->Remove();
-	clear_array(additionalPanels,IN_GAME_MENU_BUTTON_NUMBER);
+	clear_array(additionalPanels, IN_GAME_MENU_BUTTON_NUMBER);
 }
 
 void InGameMenuPanel::setVisible(bool enable) {

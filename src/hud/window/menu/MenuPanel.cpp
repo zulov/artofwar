@@ -1,22 +1,16 @@
 ﻿#include "MenuPanel.h"
-#include <iostream>
-#include <utility>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "GameState.h"
 #include "control/SelectedInfo.h"
 #include "control/SelectedInfoType.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
-#include "hud/MySprite.h"
 #include "hud/UiUtils.h"
-#include "hud/window/in_game_menu/middle/AbstractMiddlePanel.h"
 #include "info/LeftMenuInfoPanel.h"
 #include "objects/ActionType.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "utils/DeleteUtils.h"
 #include "commands/action/ResourceActionType.h"
 #include "math/VectorUtils.h"
 

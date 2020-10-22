@@ -1,4 +1,5 @@
 #include "DebugLineRepo.h"
+#include <Urho3D/Graphics/CustomGeometry.h>
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
 #include "utils/defines.h"

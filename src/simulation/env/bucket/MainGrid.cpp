@@ -1,17 +1,15 @@
 ﻿#include "MainGrid.h"
-#include <array>
 #include <unordered_set>
+#include <Urho3D/Resource/Image.h>
+
 #include "Bucket.h"
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
-#include "database/DatabaseCache.h"
 #include "debug/DebugLineRepo.h"
 #include "math/MathUtils.h"
 #include "objects/building/Building.h"
-#include "objects/static/Static.h"
 #include "objects/unit/Unit.h"
-#include "simulation/env/Environment.h"
-#include "Urho3D/Resource/Image.h"
+#include "simulation/env/GridCalculator.h"
 
 
 MainGrid::MainGrid(const short resolution, const float size): Grid(resolution, size) {

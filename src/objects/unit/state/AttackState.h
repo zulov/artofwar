@@ -5,6 +5,7 @@
 #include "StateManager.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
+#include "UnitState.h"
 #include "simulation/env/Environment.h"
 
 

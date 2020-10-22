@@ -1,13 +1,16 @@
 #pragma once
 #include "hud/window/AbstractWindowPanel.h"
-#include <Urho3D/UI/Text.h>
+#include "Urho3D/Container/Str.h"
+
+namespace Urho3D {
+	class Text;
+	class XMLFile;
+}
 
 class SelectedInfo;
 class HudData;
-struct db_cost;
 
-class LeftMenuInfoPanel : public AbstractWindowPanel
-{
+class LeftMenuInfoPanel : public AbstractWindowPanel {
 public:
 	explicit LeftMenuInfoPanel(Urho3D::XMLFile* _style);
 	~LeftMenuInfoPanel() = default;

@@ -1,8 +1,15 @@
 #pragma once
+#include <vector>
 
-#include <Urho3D/UI/Button.h>
-#include <Urho3D/UI/ProgressBar.h>
-#include <Urho3D/UI/Text.h>
+namespace Urho3D {
+	class Texture2D;
+	class String;
+	class Text;
+	class XMLFile;
+	class UIElement;
+	class ProgressBar;
+	class Button;
+}
 
 constexpr char MAX_SELECTED_IN_BUTTON = 5;
 

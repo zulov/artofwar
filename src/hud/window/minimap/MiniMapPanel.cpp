@@ -1,12 +1,8 @@
 #include "MiniMapPanel.h"
-#include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
-#include "GameState.h"
 #include "camera/CameraManager.h"
-#include "database/DatabaseCache.h"
-#include "hud/MySprite.h"
 #include "hud/UiUtils.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"

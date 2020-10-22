@@ -1,11 +1,10 @@
 #pragma once
 
 #include "../AbstractWindowPanel.h"
-#include "info/TopInfoPanel.h"
 
+namespace Urho3D { class XMLFile; }
+class TopInfoPanel;
 class Player;
-class Possession;
-class Resources;
 class TopHudElement;
 
 class TopPanel : public AbstractWindowPanel {

@@ -1,11 +1,9 @@
 ﻿#pragma once
-#include <Urho3D/Graphics/Drawable.h>
 #include <Urho3D/Graphics/OctreeQuery.h>
 
 class Physical;
 
-struct hit_data
-{
+struct hit_data {
 	hit_data() = default;
 	hit_data(const hit_data&) = delete;
 	Urho3D::Vector3 position;

@@ -6,6 +6,7 @@
 #include "database/DatabaseCache.h"
 #include "debug/DebugLineRepo.h"
 #include "debug/DebugUnitType.h"
+#include "math/VectorUtils.h"
 #include "objects/unit/ChargeData.h"
 #include "objects/unit/MissileData.h"
 #include "objects/unit/SimColorMode.h"
@@ -449,11 +450,7 @@ bool Unit::isFirstThingAlive() const {
 
 void Unit::clean() {
 	Physical::clean();
-	thingsToInteract.erase(std::remove_if(
-		                       thingsToInteract.begin(), thingsToInteract.end(),
-		                       [](Physical* physical) {
-			                       return physical == nullptr || !physical->isAlive();
-		                       }),
+	thingsToInteract.erase(std::remove_if(thingsToInteract.begin(), thingsToInteract.end(), isAlivePred),
 	                       thingsToInteract.end());
 }
 

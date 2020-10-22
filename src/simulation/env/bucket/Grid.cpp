@@ -1,8 +1,5 @@
 #include "Grid.h"
-#include <Urho3D/Graphics/Model.h>
 #include "Bucket.h"
-#include "BucketIterator.h"
-#include "objects/Physical.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/ContentInfo.h"
 #include "simulation/env/GridCalculatorProvider.h"

@@ -1,4 +1,6 @@
 #include "Static.h"
+
+#include <string>
 #include "Game.h"
 #include "math/MathUtils.h"
 #include "../unit/Unit.h"

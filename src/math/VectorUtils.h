@@ -3,43 +3,27 @@
 #include <numeric>
 #include <vector>
 #include <span>
-#include "objects/unit/Unit.h"
-#include "objects/building/Building.h"
-#include "objects/resource/ResourceEntity.h"
+#include "objects/Physical.h"
 
-inline auto isAlive = [](Physical* u) {
-	return !u->isAlive();
+inline auto isAlivePred = [](Physical* physical) {
+	return physical == nullptr || !physical->isAlive();
 };
 
-static void cleanDead(std::vector<Unit*>& vector, bool sthDead = true) {
+template <typename T>
+static void cleanDead(std::vector<T*>& vector, bool sthDead = true) {
 	if (sthDead) {
 		vector.erase(
-			std::remove_if(vector.begin(), vector.end(), isAlive),
+			std::remove_if(vector.begin(), vector.end(), isAlivePred),
 			vector.end());
 	}
 }
 
-static void cleanDead(std::vector<Building*>& vector, bool sthDead = true) {
-	if (sthDead) {
-		vector.erase(
-			std::remove_if(vector.begin(), vector.end(), isAlive),
-			vector.end());
-	}
-}
-
-static void cleanDead(std::vector<Building*>* vector, bool sthDead = true) {
+template <typename T>
+static void cleanDead(std::vector<T*>* vector, bool sthDead = true) {
 	if (sthDead) {
 		vector->erase(
-			std::remove_if(vector->begin(), vector->end(), isAlive),
+			std::remove_if(vector->begin(), vector->end(), isAlivePred),
 			vector->end());
-	}
-}
-
-static void cleanDead(std::vector<ResourceEntity*>& vector, bool sthDead = true) {
-	if (sthDead) {
-		vector.erase(
-			std::remove_if(vector.begin(), vector.end(), isAlive),
-			vector.end());
 	}
 }
 

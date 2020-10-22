@@ -1,5 +1,6 @@
 #pragma once
 #include <Urho3D/UI/Button.h>
+
 #include "hud/window/AbstractWindowPanel.h"
 
 constexpr char IN_GAME_MENU_BUTTON_NUMBER = 5;

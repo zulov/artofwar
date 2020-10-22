@@ -1,10 +1,18 @@
 #pragma once
 #include <vector>
-#include <Urho3D/UI/Button.h>
-#include <Urho3D/UI/CheckBox.h>
 #include "LeftMenuModes.h"
 #include "../AbstractWindowPanel.h"
-#include "database/db_strcut.h"
+#include "initializer_list"
+#include <Urho3D/Container/Str.h>
+#include <Urho3D/Core/Variant.h>
+
+
+namespace Urho3D {
+	class Button;
+	class CheckBox;
+	class XMLFile;
+	class UIElement;
+}
 
 constexpr char LEFT_MENU_ROWS_NUMBER = 4;
 constexpr char LEFT_MENU_CHECKS_NUMBER = 3;
@@ -12,12 +20,10 @@ constexpr char LEFT_MENU_BUTTON_PER_ROW = 4;
 
 enum class ActionType : char;
 enum class LeftMenuMode : char;
-struct db_unit;
 class SelectedInfo;
 class HudData;
 class LeftMenuInfoPanel;
 class MySprite;
-class SelectedInfoType;
 
 class MenuPanel : public AbstractWindowPanel {
 public:

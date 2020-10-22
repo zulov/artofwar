@@ -1,5 +1,6 @@
 #include "ScorePanel.h"
 #include "hud/UiUtils.h"
+#include "player/Player.h"
 
 
 ScorePanel::ScorePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "ScorePanel", {

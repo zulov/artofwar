@@ -1,11 +1,14 @@
 #pragma once
 #include "hud/window/AbstractWindowPanel.h"
-#include <Urho3D/UI/ProgressBar.h>
+
+namespace Urho3D {
+	class ProgressBar;
+}
 
 class LoadingPanel : public AbstractWindowPanel {
 public:
 	explicit LoadingPanel(Urho3D::XMLFile* _style);
-	~LoadingPanel();
+	~LoadingPanel() = default;
 	void show();
 	void update(float progres) const;
 	void end();

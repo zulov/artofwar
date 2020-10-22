@@ -1,7 +1,7 @@
 #include "InfluenceMapInt.h"
-#include "objects/Physical.h"
 #include <algorithm>
 #include <numeric>
+#include "objects/Physical.h"
 
 InfluenceMapInt::InfluenceMapInt(unsigned short resolution, float size, float valueThresholdDebug): InfluenceMap(
 	resolution, size, valueThresholdDebug) {

@@ -1,9 +1,6 @@
 #include "Aims.h"
-#include <optional>
 #include "TargetAim.h"
 #include "../order/OrderUtils.h"
-#include "../order/UnitOrder.h"
-#include "objects/unit/Unit.h"
 
 
 Aims::Aims(): current(nullptr) {

@@ -1,6 +1,11 @@
 #pragma once
-#include <Urho3D/UI/Button.h>
 #include "hud/window/AbstractWindowPanel.h"
+
+namespace Urho3D {
+	class BorderImage;
+	class Button;
+	class XMLFile;
+}
 
 constexpr char MAIN_MENU_BUTTON_NUMBER = 5;
 

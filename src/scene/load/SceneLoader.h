@@ -1,11 +1,21 @@
 #pragma once
 #include "Loading.h"
-#include "dbload_container.h"
 #include <sqlite3/sqlite3.h>
+#include "vector"
+
+namespace Urho3D {
+	class String;
+}
+
+struct dbload_building;
+struct dbload_container;
+struct dbload_player;
+struct dbload_resource;
+struct dbload_resource_entities;
+struct dbload_unit;
 
 
-class SceneLoader
-{
+class SceneLoader {
 public:
 	SceneLoader();
 	~SceneLoader();

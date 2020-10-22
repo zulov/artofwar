@@ -1,8 +1,11 @@
 #pragma once
-#include <Urho3D/UI/Button.h>
-#include <Urho3D/UI/ListView.h>
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 
+namespace Urho3D {
+	class Button;
+	class ScrollView;
+	class ListView;
+}
 
 class MainMenuLoadPanel : public MainMenuDetailsPanel {
 public:

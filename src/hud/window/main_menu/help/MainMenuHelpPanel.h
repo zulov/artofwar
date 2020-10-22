@@ -1,6 +1,11 @@
 #pragma once
-#include <Urho3D/UI/ListView.h>
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
+
+namespace Urho3D {
+	class Text;
+	class ScrollView;
+	class ListView;
+}
 
 constexpr char HELP_ITEMS = 5;
 

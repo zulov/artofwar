@@ -1,17 +1,16 @@
 #include "LevelBuilder.h"
 #include <Urho3D/Graphics/Material.h>
-#include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Graphics/Technique.h>
 #include <Urho3D/Graphics/Terrain.h>
 #include <Urho3D/Graphics/Zone.h>
+#include <Urho3D/Resource/Image.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "load/SceneLoader.h"
 #include "objects/Physical.h"
-#include "Urho3D/Resource/Image.h"
 
 LevelBuilder::LevelBuilder() {
 	objectManager = new SceneObjectManager();

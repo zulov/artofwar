@@ -11,6 +11,7 @@
 #include "commands/action/GeneralActionType.h"
 #include "database/DatabaseCache.h"
 #include "math/VectorUtils.h"
+#include "objects/building/Building.h"
 #include "player/Player.h"
 #include "player/ai/ActionCenter.h"
 #include "simulation/env/Environment.h"
@@ -27,7 +28,8 @@ ActionMaker::ActionMaker(Player* player): player(player),
 
                                           ifUnitCreate("ifUnitCreate_w.csv"),
                                           whichUnitCreate("whichUnitCreate_w.csv"),
-                                          whereUnitCreate("whereUnitCreate_w.csv") {}
+                                          whereUnitCreate("whereUnitCreate_w.csv") {
+}
 
 void ActionMaker::action() {
 	auto aiInput = Game::getAiInputProvider();
@@ -97,6 +99,7 @@ bool ActionMaker::createBuilding(db_building* building) {
 	if (enoughResources(building)) {
 		auto pos = posToBuild(building);
 		if (pos.has_value()) {
+			std::cout << pos.value().x_ << "|" << pos.value().y_ << ";" << building->id;
 			return Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId());
 		}
 	}

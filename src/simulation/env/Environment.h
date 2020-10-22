@@ -10,6 +10,8 @@
 #include "objects/unit/state/UnitState.h"
 #include "utils/defines.h"
 
+struct db_building;
+
 namespace Urho3D
 {
 	class Terrain;

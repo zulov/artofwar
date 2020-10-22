@@ -1,7 +1,12 @@
 #pragma once
 #include "hud/window/AbstractWindowPanel.h"
-#include <Urho3D/UI/Text.h>
-#include "player/Player.h"
+
+
+namespace Urho3D {
+	class Text;
+}
+
+class Player;
 
 class ScorePanel : public AbstractWindowPanel {
 public:

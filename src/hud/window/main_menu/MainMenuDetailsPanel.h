@@ -1,6 +1,5 @@
 #pragma once
 #include "hud/window/AbstractWindowPanel.h"
-#include <Urho3D/UI/Text.h>
 
 class MainMenuDetailsPanel : public AbstractWindowPanel {
 public:

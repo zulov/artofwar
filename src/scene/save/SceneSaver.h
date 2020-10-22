@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Loading.h"
-#include <sqlite3/sqlite3.h>
+#include <string>
 #include <vector>
+#include <sqlite3/sqlite3.h>
+#include "Loading.h"
 
 
 namespace Urho3D {
@@ -17,7 +18,7 @@ class Player;
 class SceneSaver {
 public:
 	explicit SceneSaver(int _precision);
-	~SceneSaver();
+	~SceneSaver() = default;
 
 	void createTables() const;
 	void createDatabase(const Urho3D::String& fileName);

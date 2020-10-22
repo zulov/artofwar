@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "SimulationInfo.h"
 #include "objects/building/Building.h"
+#include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
 #include <algorithm>
 #include <simulation/env/Environment.h>
@@ -49,7 +50,16 @@ void SimulationObjectManager::prepareToDispose(std::vector<T*>* objects) const {
 	objects->erase( //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
 		std::remove_if(
 			objects->begin(), objects->end(),
-			physicalShouldDelete
+			[this](Physical* physical) {
+				if (physical->isToDispose()) {
+					toDisposePhysical.push_back(physical);
+					simulationInfo.setSthDied(physical->getType());
+					return true;
+				}
+				physical->clean();
+				return false;
+			}
+			//physicalShouldDelete
 		),
 		objects->end());
 }
@@ -100,16 +110,6 @@ void SimulationObjectManager::updateResource(ResourceEntity* resource) {
 	resources->push_back(resource);
 	Game::getEnvironment()->update(resource);
 	simulationInfo.setAmountResourceChanged();
-}
-
-bool SimulationObjectManager::shouldDelete(Physical* physical) {
-	if (physical->isToDispose()) {
-		toDisposePhysical.push_back(physical);
-		simulationInfo.setSthDied(physical->getType());
-		return true;
-	}
-	physical->clean();
-	return false;
 }
 
 void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {

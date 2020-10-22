@@ -1,5 +1,4 @@
 #include "ResourceEntity.h"
-#include <string>
 #include "Game.h"
 #include "commands/action/ResourceActionType.h"
 #include "database/DatabaseCache.h"
@@ -7,7 +6,6 @@
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "objects/unit/state/StateManager.h"
-#include "player/Player.h"
 #include "simulation/env/Environment.h"
 
 

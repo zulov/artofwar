@@ -1,18 +1,17 @@
 #pragma once
-#include "FormationState.h"
-#include "FormationType.h"
-#include <Urho3D/Math/Vector2.h>
 #include <optional>
 #include <vector>
+#include <Urho3D/Math/Vector2.h>
+#include "FormationState.h"
+#include "FormationType.h"
 
 
 class UnitOrder;
-class Physical;
 class Unit;
 
 class Formation {
 public:
-	Formation(short _id,const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction);
+	Formation(short _id, const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2& _direction);
 	~Formation();
 
 	void update();

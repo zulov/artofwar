@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <numeric>
 #include "math/MathUtils.h"
+#include "objects/Physical.h"
 #include "simulation/env/Environment.h"
 
 InfluenceMapFloat::

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 namespace Urho3D
 {
 	class IntVector2;

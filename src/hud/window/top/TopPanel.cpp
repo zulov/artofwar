@@ -6,6 +6,8 @@
 #include "player/Resources.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
+
+#include "info/TopInfoPanel.h"
 #include "player/Possession.h"
 #include "player/Player.h"
 

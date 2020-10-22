@@ -12,6 +12,7 @@
 #include "commands/action/GeneralActionType.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
+#include "objects/building/Building.h"
 #include "objects/unit/order/UnitOrder.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"

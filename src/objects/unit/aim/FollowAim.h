@@ -5,8 +5,7 @@
 class TargetAim;
 class Physical;
 
-class FollowAim : public Aim
-{
+class FollowAim : public Aim {
 public:
 	explicit FollowAim(Physical* physical, TargetAim* subTarget);
 	~FollowAim();

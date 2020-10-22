@@ -1,22 +1,20 @@
 #pragma once
 #include <array>
-
+#include <optional>
 #include "ComplexBucketData.h"
 #include "Grid.h"
-#include "objects/resource/ResourceEntity.h"
 #include "objects/unit/state/UnitState.h"
 #include "path/PathFinder.h"
+#include "simulation/env/GridCalculator.h"
 
-class Unit;
 
 namespace Urho3D
 {
 	class Image;
 }
 
+class Unit;
 struct content_info;
-
-
 enum class GridDebugType : char {
 	NONE,
 	GRID,

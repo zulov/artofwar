@@ -1,11 +1,14 @@
 #pragma once
-#include "objects/Physical.h"
 
-class Entity;
+namespace Urho3D {
+	class Node;
+}
+
+class Physical;
 
 class SceneObjectManager {
 public:
-	SceneObjectManager();
+	SceneObjectManager() = default;
 	~SceneObjectManager();
 
 	void setGround(Physical* ground);

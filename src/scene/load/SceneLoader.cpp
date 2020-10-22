@@ -1,9 +1,5 @@
 #include "SceneLoader.h"
-#include <iostream>
-#include <ostream>
-#include <sqlite3/sqlite3.h>
 #include "dbload_container.h"
-#include "Loading.h"
 #include "database/db_utils.h"
 
 

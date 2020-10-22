@@ -1,13 +1,15 @@
 #pragma once
 #include <vector>
-#include <Urho3D/Graphics/StaticModel.h>
-#include <Urho3D/Input/Input.h>
 #include "ControlsState.h"
 #include "MouseButton.h"
 #include "SelectedInfo.h"
-#include "commands/creation/CreationCommand.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "BillboardSetProvider.h"
+
+namespace Urho3D {
+	class StaticModel;
+	class Input;
+}
 
 constexpr char MAX_DEPLOY_MARK_NUMBER = 5;
 

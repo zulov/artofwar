@@ -1,5 +1,4 @@
 #include "DebugPanel.h"
-#include "GameState.h"
 #include "hud/UiUtils.h"
 
 
@@ -7,8 +6,6 @@ DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "M
                                                                       {GameState::RUNNING, GameState::PAUSE}) {
 }
 
-
-DebugPanel::~DebugPanel() = default;
 
 void DebugPanel::setText(float getLastFps, float getAverageFps, int getLoops, float avgLow, float avgMiddle,
                          float avgHighest, Urho3D::String* string) {

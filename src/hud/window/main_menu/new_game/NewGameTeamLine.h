@@ -1,14 +1,17 @@
 #pragma once
-#include "database/DatabaseCache.h"
-#include "hud/UiUtils.h"
-#include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/UI/BorderImage.h>
+
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/UI/LineEdit.h>
-
+#include "NewGamePlayer.h"
+#include "database/DatabaseCache.h"
+#include "hud/UiUtils.h"
 #include "math/RandGen.h"
+
+namespace Urho3D { class BorderImage; }
+namespace Urho3D { class Localization; }
+namespace Urho3D { class XMLFile; }
 
 
 struct NewGameTeamLine {

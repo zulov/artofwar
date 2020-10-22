@@ -1,11 +1,13 @@
 #pragma once
 #include "AbstractMiddlePanel.h"
-#include <Urho3D/UI/LineEdit.h>
+
+namespace Urho3D {
+	class LineEdit;
+}
 
 struct FileFormData;
 
-class FilePanel : public AbstractMiddlePanel
-{
+class FilePanel : public AbstractMiddlePanel {
 public:
 	FilePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~FilePanel();
@@ -15,5 +17,5 @@ public:
 private:
 	Urho3D::LineEdit* lineEdit;
 	Urho3D::Button* action;
-	FileFormData * data;
+	FileFormData* data;
 };

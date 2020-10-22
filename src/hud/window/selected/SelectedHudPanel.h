@@ -1,7 +1,11 @@
 #pragma once
 #include "../AbstractWindowPanel.h"
-#include <Urho3D/UI/Button.h>
 
+namespace Urho3D {
+	class Button;
+	class UIElement;
+	class XMLFile;
+}
 
 class SelectedInfo;
 class SelectedHudElement;
@@ -23,7 +27,7 @@ private:
 	char maxInRow;
 	const char linesNumber = 3;
 	char lastHidden;
-	
+
 	SelectedHudElement** elements;
 	Urho3D::UIElement** rows;
 };

@@ -1,7 +1,5 @@
 #pragma once
 #include <magic_enum.hpp>
-
-
 #include "objects/Metrics.h"
 
 inline struct AiWeights {

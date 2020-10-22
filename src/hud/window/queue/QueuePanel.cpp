@@ -10,7 +10,8 @@
 #include "objects/NamesCache.h"
 #include "objects/building/Building.h"
 #include "objects/queue/QueueElement.h"
-#include "Urho3D/Graphics/Texture2D.h"
+#include <Urho3D/Graphics/Texture2D.h>
+#include <Urho3D/ui/button.h>
 
 
 QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "QueueWindow",

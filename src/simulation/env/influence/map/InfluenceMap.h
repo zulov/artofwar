@@ -2,6 +2,7 @@
 #include "InfluenceMapI.h"
 #include "simulation/env/GridCalculator.h"
 
+struct GridCalculator;
 class Physical;
 
 class InfluenceMap : public InfluenceMapI {

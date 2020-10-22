@@ -1,10 +1,12 @@
 #pragma once
 
-#include <Urho3D/UI/Button.h>
-#include <Urho3D/UI/CheckBox.h>
-#include <Urho3D/UI/DropDownList.h>
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 
+namespace Urho3D {
+	class CheckBox;
+	class DropDownList;
+	class Button;
+}
 
 constexpr char SETTINGS_ROWS_NUMBER = 9;
 

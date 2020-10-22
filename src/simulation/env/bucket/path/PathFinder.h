@@ -1,12 +1,15 @@
 #pragma once
 #include <vector>
-#include <Urho3D/Math/Vector2.h>
-#include <Urho3D/Resource/Image.h>
 #include "BucketQueue.h"
 #include "simulation/env/CloseIndexProvider.h"
-#include "simulation/env/GridCalculator.h"
+#include "Urho3D/Math/Vector2.h"
 
+namespace Urho3D {
+	class Vector3;
+	class Image;
+}
 
+struct GridCalculator;
 class ComplexBucketData;
 
 class PathFinder {

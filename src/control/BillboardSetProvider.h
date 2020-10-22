@@ -1,16 +1,14 @@
 #pragma once
 #include <array>
-#include <Urho3D/Graphics/BillboardSet.h>
-
 #include "utils/defines.h"
-
 
 enum class ObjectType : char;
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class BillboardSet;
 	class Node;
+	class String;
+	struct Billboard;
 }
 
 class BillboardSetProvider {

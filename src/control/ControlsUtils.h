@@ -7,7 +7,6 @@
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Graphics/OctreeQuery.h>
-#include <Urho3D/Math/Ray.h>
 #include <Urho3D/UI/UI.h>
 
 

@@ -1,10 +1,16 @@
 #pragma once
+#include <Urho3D/Core/Variant.h>
 
-#include <Urho3D/UI/Button.h>
-#include <Urho3D/UI/ProgressBar.h>
-#include <Urho3D/UI/Text.h>
-#include <Urho3D/UI/UIElement.h>
 
+namespace Urho3D {
+	class Text;
+	class ProgressBar;
+	class Texture2D;
+	class String;
+	class XMLFile;
+	class UIElement;
+	class Button;
+}
 
 class QueueElement;
 class MySprite;

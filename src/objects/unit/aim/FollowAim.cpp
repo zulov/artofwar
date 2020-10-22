@@ -2,7 +2,6 @@
 #include "../Unit.h"
 #include "math/MathUtils.h"
 #include "TargetAim.h"
-#include "simulation/env/Environment.h"
 
 
 FollowAim::FollowAim(Physical* physical, TargetAim* subTarget): physical(physical), subTarget(subTarget) {

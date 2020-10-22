@@ -1,8 +1,10 @@
 #pragma once
 #include <vector>
-
-#include "InfluenceMap.h"
+#include <Urho3D/Math/Vector2.h>
+#include "InfluenceMapI.h"
 #include "simulation/env/influence/InfluenceMapType.h"
+
+class Physical;
 
 class InfluenceMapQuad : public InfluenceMapI {
 public:

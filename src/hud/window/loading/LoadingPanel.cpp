@@ -1,14 +1,12 @@
 #include "LoadingPanel.h"
-#include "GameState.h"
+
+#include <Urho3D/UI/ProgressBar.h>
 #include "hud/UiUtils.h"
 
 
 LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LoadingWindow",
                                                                           {GameState::LOADING, GameState::NEW_GAME}) {
 }
-
-
-LoadingPanel::~LoadingPanel() = default;
 
 void LoadingPanel::show() {
 	setVisible(true);

@@ -1,9 +1,13 @@
 #pragma once
 #include "objects/static/Static.h"
-#include "scene/load/dbload_container.h"
 
-enum class ResourceActionType : char;
+namespace Urho3D {
+	class Vector3;
+}
+
+struct dbload_resource_entities;
 struct db_resource;
+enum class ResourceActionType : char;
 
 class ResourceEntity : public Static {
 public:

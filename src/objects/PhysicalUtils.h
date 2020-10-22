@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Physical.h"
 
 inline bool belowClose(Physical* physical) {
 	return physical->belowCloseLimit();

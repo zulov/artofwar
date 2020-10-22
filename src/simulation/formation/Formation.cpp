@@ -1,12 +1,9 @@
 #include "Formation.h"
 #include <numeric>
-#include <Urho3D/Math/Vector2.h>
 #include "Game.h"
-#include "commands/CommandList.h"
 #include "math/MathUtils.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/OrderUtils.h"
-#include "objects/unit/order/UnitOrder.h"
 #include "objects/unit/state/StateManager.h"
 #include "simulation/env/Environment.h"
 

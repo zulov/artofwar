@@ -1,8 +1,6 @@
 #include "SceneObjectManager.h"
 #include <Urho3D/Scene/Node.h>
-
-
-SceneObjectManager::SceneObjectManager() = default;
+#include "objects/Physical.h"
 
 
 SceneObjectManager::~SceneObjectManager() {

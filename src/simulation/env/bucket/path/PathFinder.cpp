@@ -1,6 +1,5 @@
 #include "PathFinder.h"
 #include <unordered_set>
-#include <Urho3D/Math/Vector2.h>
 #include "DrawGridUtils.h"
 #include "Game.h"
 #include "../ComplexBucketData.h"

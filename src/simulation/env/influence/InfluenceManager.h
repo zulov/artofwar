@@ -1,20 +1,23 @@
 #pragma once
 
 #include <span>
+#include <array>
 #include <vector>
-#include "map/InfluenceMapCombine.h"
-#include "map/InfluenceMapFloat.h"
-#include "map/InfluenceMapHistory.h"
-#include "map/InfluenceMapInt.h"
-#include "map/InfluenceMapQuad.h"
-#include "objects/Physical.h"
-#include "player/ai/ActionMaker.h"
 #include "player/ai/InfluenceDataType.h"
+
+class InfluenceMapInt;
+class Building;
+class ResourceEntity;
+class InfluenceMapFloat;
+class InfluenceMapCombine;
+class InfluenceMapQuad;
+class InfluenceMapHistory;
+namespace Urho3D {
+	class String;
+	class Vector2; }
 
 enum class CellState : char;
 class Unit;
-class Building;
-class ResourceEntity;
 struct content_info;
 
 class InfluenceManager {

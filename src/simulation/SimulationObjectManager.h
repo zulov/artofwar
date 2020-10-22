@@ -11,8 +11,7 @@
 class Physical;
 class SimulationInfo;
 
-class SimulationObjectManager
-{
+class SimulationObjectManager {
 public:
 	SimulationObjectManager();
 	~SimulationObjectManager();
@@ -40,8 +39,6 @@ private:
 	void updateBuilding(Building* building);
 	void updateResource(ResourceEntity* resource);
 
-	bool shouldDelete(Physical* physical);
-
 	UnitFactory unitFactory;
 	BuildingFactory buildingFactory;
 	ResourceFactory resourceFactory;
@@ -54,8 +51,6 @@ private:
 
 	std::vector<Physical*> toDisposePhysical;
 
-	std::function<bool(Physical*)> physicalShouldDelete = std::bind(&SimulationObjectManager::shouldDelete, this,
-	                                                                std::placeholders::_1);
 	template <class T>
-	void prepareToDispose(std::vector<T*> * objects) const;
+	void prepareToDispose(std::vector<T*>* objects) const;
 };

@@ -1,17 +1,15 @@
 ﻿#include "InfluenceManager.h"
 
-#include <chrono>
-#include <span>
-#include "Game.h"
-#include "InfluenceMapType.h"
-#include "database/DatabaseCache.h"
+#include "map/InfluenceMapHistory.h"
+#include "map/InfluenceMapCombine.h"
+#include "map/InfluenceMapQuad.h"
 #include "debug/DebugLineRepo.h"
+#include "map/InfluenceMapInt.h"
 #include "math/VectorUtils.h"
 #include "objects/CellState.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
-#include "player/Player.h"
 #include "simulation/env/ContentInfo.h"
 #include "simulation/env/EnvConsts.h"
 

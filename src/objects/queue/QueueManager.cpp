@@ -1,11 +1,5 @@
 #include "QueueManager.h"
-#include "Game.h"
 #include "QueueElement.h"
-#include "database/DatabaseCache.h"
-#include "QueueActionType.h"
-#include "utils/DeleteUtils.h"
-#include <algorithm>
-
 #include "QueueUtils.h"
 
 

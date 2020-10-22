@@ -1,11 +1,17 @@
 #pragma once
-#include <Urho3D/Resource/Localization.h>
-#include <Urho3D/UI/Button.h>
-#include <Urho3D/UI/DropDownList.h>
-#include "NewGameForm.h"
+
 #include "NewGameTeamLine.h"
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 
+struct NewGameForm;
+
+namespace Urho3D {
+	class BorderImage;
+	class Button;
+	class DropDownList;
+	class Localization;
+	class XMLFile;
+}
 
 constexpr char NEW_GAME_ROWS_NUMBER = 5;
 

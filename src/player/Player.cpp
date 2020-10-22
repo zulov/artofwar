@@ -1,11 +1,6 @@
 #include "player/Player.h"
-#include <fstream>
-#include <string>
-#include <utility>
 #include "Game.h"
-#include "commands/action/BuildingActionCommand.h"
 #include "database/DatabaseCache.h"
-#include "objects/building/Building.h"
 #include "objects/queue/QueueActionType.h"
 
 

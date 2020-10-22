@@ -14,6 +14,7 @@
 #include "control/SelectedInfo.h"
 #include "database/DatabaseCache.h"
 #include "objects/ObjectEnums.h"
+#include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimulationInfo.h"
 #include "utils/replace_utils.h"

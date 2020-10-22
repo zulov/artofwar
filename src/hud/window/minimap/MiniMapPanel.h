@@ -1,7 +1,10 @@
 #pragma once
 #include "../AbstractWindowPanel.h"
-#include <Urho3D/Resource/Image.h>
-#include <Urho3D/UI/Sprite.h>
+
+namespace Urho3D {
+	class Image;
+	class Sprite;
+}
 
 constexpr char MINI_MAP_BUTTON_NUMBER = 5;
 

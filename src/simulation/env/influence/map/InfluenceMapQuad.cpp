@@ -1,6 +1,5 @@
 #include "InfluenceMapQuad.h"
 
-#include <array>
 #include "simulation/env/influence/InfluenceMapFactory.h"
 #include "utils/DeleteUtils.h"
 

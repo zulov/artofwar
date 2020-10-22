@@ -1,13 +1,13 @@
 #pragma once
-#include <Urho3D/Math/Vector3.h>
 #include <optional>
 #include <vector>
+#include <Urho3D/Math/Vector2.h>
+#include <Urho3D/Math/Vector3.h>
 
 
 class UnitOrder;
 class Aim;
 class Unit;
-class Entity;
 
 class Aims {
 public:

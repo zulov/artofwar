@@ -4,6 +4,9 @@
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/Resource/Localization.h>
+#include <Urho3D/UI/Button.h>
+#include <Urho3D/UI/DropDownList.h>
 
 MainMenuNewGamePanel::
 MainMenuNewGamePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(_style, _title) {

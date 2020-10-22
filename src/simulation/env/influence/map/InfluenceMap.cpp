@@ -1,4 +1,7 @@
 #include "InfluenceMap.h"
+
+#include <Urho3D/Resource/Image.h>
+
 #include "Game.h"
 #include "debug/DebugLineRepo.h"
 #include "simulation/env/Environment.h"

@@ -1,6 +1,12 @@
 #pragma once
 #include <magic_enum.hpp>
-#include <Urho3D/Graphics/CustomGeometry.h>
+#include <vector>
+#include <Urho3D/Math/Color.h>
+
+namespace Urho3D {
+	class Vector3;
+	class CustomGeometry;
+}
 
 enum class CellState : char;
 

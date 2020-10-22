@@ -1,9 +1,12 @@
 #pragma once
 #include <Urho3D/Math/Vector3.h>
 #include "BucketIterator.h"
+#include "vector"
 #include "simulation/env/CloseIndexProvider.h"
-#include "simulation/env/GridCalculator.h"
 #include "utils/defines.h"
+
+namespace Urho3D { class Vector2; }
+struct GridCalculator;
 
 constexpr char MAX_SEP_DIST = 24;
 constexpr char RES_SEP_DIST = 120;

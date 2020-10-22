@@ -1,7 +1,6 @@
 #pragma once
 #include <Urho3D/Container/Str.h>
 
-struct FileFormData
-{
+struct FileFormData {
 	Urho3D::String fileName;
 };

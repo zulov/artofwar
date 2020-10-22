@@ -1,15 +1,16 @@
 #pragma once
 #include "../AbstractWindowPanel.h"
-#include <Urho3D/UI/Text.h>
+
 
 namespace Urho3D {
+	class Text;
 	class XMLFile;
 }
 
 class DebugPanel : public AbstractWindowPanel {
 public:
 	explicit DebugPanel(Urho3D::XMLFile* _style);
-	~DebugPanel();
+	~DebugPanel() = default;
 	void setText(float getLastFps, float getAverageFps, int getLoops, float avgLow, float avgMiddle,
 	             float avgHighest, Urho3D::String* string);
 

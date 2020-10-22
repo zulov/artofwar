@@ -1,4 +1,6 @@
 #include "ColorPaletteRepo.h"
+
+#include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include "Game.h"
 #include "math/MathUtils.h"

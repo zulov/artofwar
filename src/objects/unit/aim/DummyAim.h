@@ -1,8 +1,7 @@
 #pragma once
 #include "Aim.h"
 
-class DummyAim : public Aim
-{
+class DummyAim : public Aim {
 public:
 	DummyAim() = default;
 	~DummyAim() override = default;

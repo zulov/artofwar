@@ -5,6 +5,7 @@
 #include "enums/UnitActionType.h"
 #include "math/VectorUtils.h"
 #include "objects/unit/ActionParameter.h"
+#include "objects/unit/Unit.h"
 #include "simulation/formation/FormationManager.h"
 
 

@@ -1,9 +1,12 @@
 #pragma once
 #include <magic_enum.hpp>
-#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Math/Color.h>
 #include "ColorPallet.h"
-#include "objects/CellState.h"
 #include "objects/unit/state/UnitState.h"
+
+enum class CellState : char;
+
+namespace Urho3D { class Material; }
 
 
 constexpr char PALLET_RESOLUTION = 32;

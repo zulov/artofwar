@@ -1,14 +1,9 @@
 #include "MainMenuLoadPanel.h"
 #include "hud/UiUtils.h"
 #include <Urho3D/UI/UIEvents.h>
-#include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/IO/FileSystem.h>
-#include <iostream>
+#include <Urho3D/UI/ListView.h>
 
-
-namespace Urho3D {
-	class Button;
-}
 
 MainMenuLoadPanel::
 MainMenuLoadPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(_style, _title) {
