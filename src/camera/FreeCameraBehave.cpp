@@ -1,6 +1,5 @@
 #include "FreeCameraBehave.h"
-#include "Game.h"
-
+#include <Urho3D/Scene/Node.h>
 
 FreeCameraBehave::FreeCameraBehave(): CameraBehave(Urho3D::Vector3(0.0f, 50.0f, -50.0f), 3, "FreeCam") {
 	coefs[0] = 4;

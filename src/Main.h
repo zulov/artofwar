@@ -13,13 +13,6 @@
 #include "scene/load/SceneLoader.h"
 #include "scene/save/SceneSaver.h"
 
-class Controls;
-class Hud;
-class LevelBuilder;
-class SelectedInfo;
-class Simulation;
-class SimulationInfo;
-
 namespace Urho3D
 {
 	class Context;
@@ -27,7 +20,12 @@ namespace Urho3D
 
 enum class CameraBehaviorType : char;
 struct NewGameForm;
-
+class Controls;
+class Hud;
+class LevelBuilder;
+class SelectedInfo;
+class Simulation;
+class SimulationInfo;
 
 class Main : public Urho3D::Application {
 URHO3D_OBJECT(Main, Application)

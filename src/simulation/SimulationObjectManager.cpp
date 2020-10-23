@@ -1,10 +1,8 @@
 #include "SimulationObjectManager.h"
 #include "Game.h"
-#include "SimulationInfo.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
-#include <algorithm>
 #include <simulation/env/Environment.h>
 #include "player/PlayersManager.h"
 #include "player/Player.h"
@@ -46,8 +44,8 @@ void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const
 }
 
 template <class T>
-void SimulationObjectManager::prepareToDispose(std::vector<T*>* objects) const {
-	objects->erase( //TODO performance iterowac tylko jezeli ktos umarl - przemyslec to
+void SimulationObjectManager::prepareToDispose(std::vector<T*>* objects) {
+	objects->erase(
 		std::remove_if(
 			objects->begin(), objects->end(),
 			[this](Physical* physical) {
@@ -56,15 +54,14 @@ void SimulationObjectManager::prepareToDispose(std::vector<T*>* objects) const {
 					simulationInfo.setSthDied(physical->getType());
 					return true;
 				}
-				physical->clean();
+				physical->clean();//TODO perf zrobic tylko dla Unit
 				return false;
 			}
-			//physicalShouldDelete
 		),
 		objects->end());
 }
 
-void SimulationObjectManager::prepareToDispose() const {
+void SimulationObjectManager::prepareToDispose()  {
 	prepareToDispose(units);
 	prepareToDispose(buildings);
 	prepareToDispose(resources);

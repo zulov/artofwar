@@ -1,4 +1,7 @@
 #include "ResourceEntity.h"
+
+#include <Urho3D/Resource/Localization.h>
+#include <Urho3D/Scene/Node.h>
 #include "Game.h"
 #include "commands/action/ResourceActionType.h"
 #include "database/DatabaseCache.h"

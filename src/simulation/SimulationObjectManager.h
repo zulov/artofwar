@@ -24,7 +24,7 @@ public:
 	void addBuilding(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level);
 	void addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level);
 
-	void prepareToDispose() const;
+	void prepareToDispose();
 	void updateInfo(SimulationInfo* simulationInfo);
 	void dispose();
 
@@ -52,5 +52,5 @@ private:
 	std::vector<Physical*> toDisposePhysical;
 
 	template <class T>
-	void prepareToDispose(std::vector<T*>* objects) const;
+	void prepareToDispose(std::vector<T*>* objects);
 };

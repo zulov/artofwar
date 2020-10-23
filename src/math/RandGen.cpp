@@ -1,8 +1,5 @@
 #include "RandGen.h"
-
-#include <magic_enum.hpp>
 #include <random>
-#include "RandType.h"
 
 
 constexpr short RAND_TAB_SIZE = 1000;

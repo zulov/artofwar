@@ -1,4 +1,5 @@
 #include "Force.h"
+#include <Urho3D/IO/Log.h>
 #include "Game.h"
 #include "math/MathUtils.h"
 #include "math/RandGen.h"

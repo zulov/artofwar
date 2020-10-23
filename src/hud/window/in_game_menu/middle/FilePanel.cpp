@@ -1,9 +1,11 @@
 #include "FilePanel.h"
+
+#include <Urho3D/Resource/Localization.h>
+#include <Urho3D/UI/LineEdit.h>
+#include <Urho3D/UI/UIEvents.h>
 #include "FileFormData.h"
 #include "Game.h"
 #include "hud/UiUtils.h"
-#include <Urho3D/UI/UIEvents.h>
-#include <Urho3D/UI/LineEdit.h>
 
 FilePanel::FilePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): AbstractMiddlePanel(_style, _title) {
 	data = nullptr;

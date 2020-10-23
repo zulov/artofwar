@@ -1,7 +1,7 @@
 ﻿#include "MainGrid.h"
 #include <unordered_set>
 #include <Urho3D/Resource/Image.h>
-
+#include <Urho3D/IO/Log.h>
 #include "Bucket.h"
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"

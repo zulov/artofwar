@@ -1,27 +1,25 @@
 #pragma once
 #include <Urho3D/Container/Ptr.h>
-#include <Urho3D/Engine/Engine.h>
-#include <Urho3D/IO/Log.h>
-#include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Scene/Scene.h>
+#include <Urho3D/Engine/Engine.h>
 
-
-namespace Urho3D {
+namespace Urho3D
+{
 	class Console;
 	class Graphics;
 	class Context;
 	class ResourceCache;
 	class UI;
+	class Log;
+	class Localization;
+	class Engine;
 }
 
 class Stats;
-class CommandList;
-class CreationCommandList;
 class Environment;
 class DatabaseCache;
 class CameraManager;
 class PlayersManager;
-class QueueManager;
 class ColorPaletteRepo;
 class FormationManager;
 class ActionCenter;
@@ -32,7 +30,7 @@ public:
 	static void init();
 	static void dispose();
 	~Game() = default;
-	static void disposeActionCenter();
+
 	static Game* setCache(Urho3D::ResourceCache* _cache);
 	static Game* setContext(Urho3D::Context* _context);
 	static Game* setUI(Urho3D::UI* _ui);
@@ -53,7 +51,7 @@ public:
 	static Game* setActionCenter(ActionCenter* _actionCenter);
 	static void addTime(float time);
 
-	static Urho3D::SharedPtr<Urho3D::Engine> getEngine() { return instance->engine; }
+	static Urho3D::Engine* getEngine() { return instance->engine.Get(); }
 	static Urho3D::Localization* getLocalization() { return instance->localization; }
 	static Urho3D::SharedPtr<Urho3D::Scene> getScene() { return instance->scene; }
 	static Urho3D::Graphics* getGraphics() { return instance->graphics; }
@@ -98,7 +96,7 @@ private:
 	//QueueManager* queue;
 	AiInputProvider* aiInputProvider;
 	Stats* stats;
-	ActionCenter * actionCenter;
+	ActionCenter* actionCenter;
 
 	float accumTime = 0;
 };

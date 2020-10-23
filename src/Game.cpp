@@ -1,6 +1,4 @@
 #include "Game.h"
-#include "player/ai/ActionCenter.h"
-
 Game* Game::instance = nullptr;
 
 Game::Game() = default;
@@ -13,11 +11,6 @@ void Game::init() {
 
 void Game::dispose() {
 	delete instance;
-}
-
-void Game::disposeActionCenter() {
-	delete instance->actionCenter;
-	instance->actionCenter = nullptr;
 }
 
 Game* Game::setCache(Urho3D::ResourceCache* _cache) {

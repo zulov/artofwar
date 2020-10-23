@@ -1,32 +1,36 @@
 #include "Main.h"
 #include <Urho3D/Core/CoreEvents.h>
+#include <Urho3D/Scene/Scene.h>
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Engine/EngineDefs.h>
+#include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Graphics/Renderer.h>
 #include <Urho3D/IO/FileSystem.h>
+#include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/IO/Log.h>
 #include "camera/CameraEnums.h"
 #include "camera/CameraManager.h"
 #include "colors/ColorPaletteRepo.h"
+#include "control/Controls.h"
 #include "database/DatabaseCache.h"
+#include "hud/Hud.h"
 #include "hud/HudData.h"
 #include "hud/MySprite.h"
 #include "hud/window/in_game_menu/middle/FileFormData.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "hud/window/selected/SelectedHudElement.h"
+#include "math/RandGen.h"
 #include "objects/unit/ActionParameter.h"
 #include "player/PlayersManager.h"
+#include "scene/LevelBuilder.h"
+#include "simulation/Simulation.h"
 #include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"
-#include <Urho3D/Graphics/Graphics.h>
-#include "control/Controls.h"
-#include "hud/Hud.h"
-#include "math/RandGen.h"
-#include "scene/LevelBuilder.h"
 #include "stats/AiInputProvider.h"
 #include "stats/Stats.h"
 
@@ -216,7 +220,7 @@ void Main::setSimpleManagers() {
 
 void Main::updateProgress(loading& progress, std::string msg) const {
 	progress.inc(std::move(msg));
-	hud->updateLoading(progress.getProgres());
+	hud->updateLoading(progress.getProgress());
 }
 
 void Main::load(const String& saveName, loading& progress) {

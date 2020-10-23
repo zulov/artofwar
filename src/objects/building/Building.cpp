@@ -1,6 +1,9 @@
 #include "Building.h"
 #include <magic_enum.hpp>
 #include <string>
+#include <Urho3D/IO/Log.h>
+#include <Urho3D/Resource/Localization.h>
+
 #include "Game.h"
 #include "commands/action/BuildingActionType.h"
 #include "database/DatabaseCache.h"

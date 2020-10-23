@@ -1,4 +1,5 @@
 #include "LeftMenuInfoPanel.h"
+#include <Urho3D/Resource/Localization.h>
 #include "control/SelectedInfo.h"
 #include "control/SelectedInfoType.h"
 #include "hud/HudData.h"
@@ -9,7 +10,6 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "utils/NamesUtils.h"
-
 
 LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuInfoPanel", {}) {
 }

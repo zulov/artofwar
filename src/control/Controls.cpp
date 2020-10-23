@@ -4,6 +4,7 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/IO/Log.h>
+#include <Urho3D/Scene/Scene.h>
 #include "ControlsUtils.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"

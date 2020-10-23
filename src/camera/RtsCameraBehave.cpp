@@ -1,5 +1,5 @@
 #include "RtsCameraBehave.h"
-#include "Game.h"
+#include <Urho3D/Scene/Node.h>
 
 RtsCameraBehave::RtsCameraBehave(): CameraBehave(Urho3D::Vector3(0.0f, 50.0f, -50.0f), 3, "RTSCam") {
 	const auto diff = sqrt(50.0f - minY) + 1.f;

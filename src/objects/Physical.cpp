@@ -2,6 +2,8 @@
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Resource/XMLFile.h>
+#include <Urho3D/Scene/Scene.h>
+
 #include "Game.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"

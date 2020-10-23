@@ -1,13 +1,13 @@
 #pragma once
+#include <Urho3D/Core/Object.h>
+#include <Urho3D/Core/Variant.h>
+#include <Urho3D/Math/StringHash.h>
 #include <Urho3D/UI/Button.h>
 #include "GameState.h"
-#include "window/selected/SelectedHudPanel.h"
 #include "window/in_game_menu/InGameMenuPanel.h"
 #include "window/main_menu/MainMenuPanel.h"
 #include "window/menu/MenuPanel.h"
-#include "Urho3D/Core/Object.h"
-#include "Urho3D/Core/Variant.h"
-#include "Urho3D/Math/StringHash.h"
+#include "window/selected/SelectedHudPanel.h"
 
 namespace Urho3D
 {

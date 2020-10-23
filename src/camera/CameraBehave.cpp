@@ -1,6 +1,7 @@
 #include "CameraBehave.h"
 
 #include <utility>
+#include <Urho3D/Scene/Node.h>
 #include "Game.h"
 #include "simulation/env/Environment.h"
 

@@ -1,12 +1,6 @@
 #include "DatabaseCache.h"
-#include "db_strcut.h"
-#include "db_utils.h"
-#include <iostream>
-#include <sqlite3/sqlite3.h>
-#include <sstream>
-
 #include "db_load.h"
-#include "Game.h"
+#include "db_utils.h"
 
 void DatabaseCache::execute(const char* sql, int (*load)(void*, int, char**, char**)) const {
 	char* error;

@@ -1,4 +1,6 @@
 #include "InGameMenuPanel.h"
+
+#include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>

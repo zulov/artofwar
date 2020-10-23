@@ -1,6 +1,7 @@
 #pragma once
+#include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Resource/ResourceCache.h>
-
+#include <Urho3D/Resource/JSONFile.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/UI/LineEdit.h>

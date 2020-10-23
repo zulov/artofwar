@@ -6,6 +6,7 @@
 #include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/Scene/Scene.h>
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"

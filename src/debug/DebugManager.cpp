@@ -1,6 +1,9 @@
 #include "debug/DebugManager.h"
-#include <magic_enum.hpp>
+#include <Urho3D/Input/Input.h>
+#include <Urho3D/IO/Log.h>
+#include <Urho3D/Scene/Scene.h>
 #include "Game.h"
+#include "simulation/Simulation.h"
 #include "simulation/env/Environment.h"
 
 void DebugManager::change(Urho3D::Input* input, Simulation* simulation) {

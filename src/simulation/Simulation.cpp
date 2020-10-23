@@ -46,7 +46,8 @@ Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 Simulation::~Simulation() {
 	delete simulationInfo;
 	delete simObjectManager;
-	Game::disposeActionCenter();
+	delete Game::getActionCenter();
+	Game::setActionCenter(nullptr);
 }
 
 void Simulation::updateInfluenceMaps() const {

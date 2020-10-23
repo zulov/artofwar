@@ -1,10 +1,13 @@
 #pragma once
 #include <magic_enum.hpp>
-#include <Urho3D/Input/Input.h>
 #include "debug/EnvironmentDebugMode.h"
 #include "objects/unit/SimColorMode.h"
-#include "simulation/Simulation.h"
 
+namespace Urho3D {
+	class Input;
+}
+
+class Simulation;
 constexpr char MAX_ENV_INDEX = 32;
 
 class DebugManager {
