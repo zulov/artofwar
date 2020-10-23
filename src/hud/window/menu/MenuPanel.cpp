@@ -4,6 +4,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/UI/Window.h>
 #include "control/SelectedInfo.h"
 #include "control/SelectedInfoType.h"
 #include "database/DatabaseCache.h"

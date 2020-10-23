@@ -3,6 +3,7 @@
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/UI/ListView.h>
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/UI/Window.h>
 #include "hud/UiUtils.h"
 
 

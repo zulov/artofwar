@@ -1,15 +1,15 @@
 #include "TopPanel.h"
-#include "../../UiUtils.h"
-#include "GameState.h"
-#include "TopHudElement.h"
-#include "database/DatabaseCache.h"
-#include "player/Resources.h"
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Resource/ResourceCache.h>
-
+#include <Urho3D/UI/Window.h>
+#include "GameState.h"
+#include "TopHudElement.h"
+#include "../../UiUtils.h"
+#include "database/DatabaseCache.h"
 #include "info/TopInfoPanel.h"
-#include "player/Possession.h"
 #include "player/Player.h"
+#include "player/Possession.h"
+#include "player/Resources.h"
 
 
 TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "TopWindow",

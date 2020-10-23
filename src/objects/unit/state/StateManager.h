@@ -1,12 +1,13 @@
 #pragma once
-#include "State.h"
+
 #include <magic_enum.hpp>
+#include "objects/unit/state/UnitState.h"
 
-#include "player/ai/OrderMaker.h"
-
-
-enum class StaticState : char;
+struct ActionParameter;
+class Unit;
+class State;
 class Static;
+enum class StaticState : char;
 
 class StateManager {
 public:

@@ -1,5 +1,6 @@
 #include "TopCameraBehave.h"
 
+#include <Urho3D/Graphics/Camera.h>
 #include <Urho3D/Scene/Node.h>
 
 TopCameraBehave::TopCameraBehave(): CameraBehave(Urho3D::Vector3(0, 50, 0), 20, "TopCam") {

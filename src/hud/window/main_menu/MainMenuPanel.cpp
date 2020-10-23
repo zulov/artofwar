@@ -1,4 +1,8 @@
 #include "MainMenuPanel.h"
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/UI/UI.h>
+#include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/UI/Window.h>
 #include "GameState.h"
 #include "close//MainMenuClosePanel.h"
 #include "help/MainMenuHelpPanel.h"
@@ -6,9 +10,6 @@
 #include "load/MainMenuLoadPanel.h"
 #include "new_game/MainMenuNewGamePanel.h"
 #include "settings/MainMenuSettingsPanel.h"
-#include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/UI/UI.h>
-#include <Urho3D/UI/UIEvents.h>
 
 
 MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "MainMenuWindow",

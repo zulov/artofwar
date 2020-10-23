@@ -1,12 +1,13 @@
 #include "ScorePanel.h"
+#include <Urho3D/UI/Window.h>
 #include "hud/UiUtils.h"
 #include "player/Player.h"
 
 
-ScorePanel::ScorePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "ScorePanel", {
-	                                                                      GameState::RUNNING, GameState::PAUSE
-                                                                      }) {
-}
+ScorePanel::ScorePanel(Urho3D::XMLFile* _style)
+	: AbstractWindowPanel(_style, "ScorePanel", {
+		                      GameState::RUNNING, GameState::PAUSE
+	                      }) {}
 
 void ScorePanel::update(const std::vector<Player*>& players) const {
 	Urho3D::String s = "";

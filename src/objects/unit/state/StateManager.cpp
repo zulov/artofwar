@@ -1,7 +1,7 @@
 #include "StateManager.h"
 
 #include <magic_enum.hpp>
-#include <Urho3D\IO\log.h>
+#include <Urho3D\IO\Log.h>
 #include "AttackState.h"
 #include "ChargeState.h"
 #include "CollectState.h"

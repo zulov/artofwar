@@ -3,6 +3,7 @@
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 
 namespace Urho3D {
+	class BorderImage;
 	class CheckBox;
 	class DropDownList;
 	class Button;

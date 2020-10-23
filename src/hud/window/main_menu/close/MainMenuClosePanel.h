@@ -2,6 +2,7 @@
 #include "hud/window/main_menu/MainMenuDetailsPanel.h"
 
 namespace Urho3D {
+	class UIElement;
 	class Text;
 	class Button;
 }

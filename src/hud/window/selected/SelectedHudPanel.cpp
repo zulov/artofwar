@@ -1,4 +1,7 @@
 #include "SelectedHudPanel.h"
+#include <Urho3D/Graphics/Texture2D.h>
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/UI/Window.h>
 #include "GameState.h"
 #include "SelectedHudElement.h"
 #include "control/SelectedInfo.h"
@@ -6,8 +9,6 @@
 #include "database/DatabaseCache.h"
 #include "hud/UiUtils.h"
 #include "objects/NamesCache.h"
-#include <Urho3D/Graphics/Texture2D.h>
-#include <Urho3D/Resource/ResourceCache.h>
 
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style)

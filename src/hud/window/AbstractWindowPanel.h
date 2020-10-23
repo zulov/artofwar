@@ -2,11 +2,18 @@
 #include <magic_enum.hpp>
 
 #include "GameState.h"
-#include <Urho3D/UI/Window.h>
+#include "initializer_list"
+#include "Urho3D/Container/Str.h"
+#include "Urho3D/Core/Object.h"
 
-class AbstractWindowPanel : public Urho3D::Object
+namespace Urho3D
 {
-	URHO3D_OBJECT(AbstractWindowPanel, Object)
+	class Window;
+	class XMLFile;
+}
+
+class AbstractWindowPanel : public Urho3D::Object {
+URHO3D_OBJECT(AbstractWindowPanel, Object)
 
 	explicit AbstractWindowPanel(Urho3D::XMLFile* _style, Urho3D::String styleName,
 	                             std::initializer_list<GameState> active);
@@ -15,7 +22,7 @@ class AbstractWindowPanel : public Urho3D::Object
 	void updateStateVisibilty(GameState state);
 
 	Urho3D::String& getStyleName() { return styleName; }
-	virtual void setVisible(bool enable) { window->SetVisible(enable); }
+	virtual void setVisible(bool enable);
 protected:
 	Urho3D::XMLFile* style;
 	Urho3D::Window* window;

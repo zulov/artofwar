@@ -1,7 +1,10 @@
 #include "QueuePanel.h"
+#include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Input/InputEvents.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/ui/button.h>
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/UI/Window.h>
 #include "GameState.h"
 #include "QueueHudElement.h"
 #include "control/SelectedInfo.h"
@@ -10,8 +13,6 @@
 #include "objects/NamesCache.h"
 #include "objects/building/Building.h"
 #include "objects/queue/QueueElement.h"
-#include <Urho3D/Graphics/Texture2D.h>
-#include <Urho3D/ui/button.h>
 
 
 QueuePanel::QueuePanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "QueueWindow",

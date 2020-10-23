@@ -4,6 +4,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/UI/Window.h>
 #include "hud/UiUtils.h"
 #include "middle/FilePanel.h"
 #include "utils/DeleteUtils.h"

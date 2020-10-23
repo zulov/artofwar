@@ -1,6 +1,5 @@
 #include "Main.h"
 #include <Urho3D/Core/CoreEvents.h>
-#include <Urho3D/Scene/Scene.h>
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
 #include <Urho3D/Engine/EngineDefs.h>
@@ -12,6 +11,7 @@
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/UI/Button.h>
 #include <Urho3D/IO/Log.h>
 #include "camera/CameraEnums.h"
 #include "camera/CameraManager.h"

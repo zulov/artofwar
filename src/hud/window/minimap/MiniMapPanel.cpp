@@ -2,6 +2,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/UI/Window.h>
 #include "camera/CameraManager.h"
 #include "hud/UiUtils.h"
 #include "player/Player.h"

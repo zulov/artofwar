@@ -1,5 +1,6 @@
 #pragma once
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/UI/UIElement.h>
 
 struct SettingsForm {
 	SettingsForm() = default;

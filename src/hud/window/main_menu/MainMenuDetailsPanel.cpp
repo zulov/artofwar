@@ -1,4 +1,5 @@
 #include "MainMenuDetailsPanel.h"
+#include <Urho3D/UI/Window.h>
 #include "hud/UiUtils.h"
 
 

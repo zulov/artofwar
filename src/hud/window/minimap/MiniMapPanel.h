@@ -2,6 +2,7 @@
 #include "../AbstractWindowPanel.h"
 
 namespace Urho3D {
+	class Texture2D;
 	class Image;
 	class Sprite;
 }

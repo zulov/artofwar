@@ -2,6 +2,7 @@
 #include "hud/window/AbstractWindowPanel.h"
 
 namespace Urho3D {
+	class UIElement;
 	class Text;
 	class Button;
 }

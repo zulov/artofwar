@@ -1,5 +1,6 @@
 #include "LeftMenuInfoPanel.h"
 #include <Urho3D/Resource/Localization.h>
+#include <Urho3D/UI/Window.h>
 #include "control/SelectedInfo.h"
 #include "control/SelectedInfoType.h"
 #include "hud/HudData.h"

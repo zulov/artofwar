@@ -1,6 +1,7 @@
 #include "AbstractMiddlePanel.h"
-#include "hud/UiUtils.h"
 #include <Urho3D/UI/UIEvents.h>
+#include <Urho3D/UI/Window.h>
+#include "hud/UiUtils.h"
 
 
 AbstractMiddlePanel::
