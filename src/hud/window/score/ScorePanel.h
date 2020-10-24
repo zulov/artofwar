@@ -1,6 +1,7 @@
 #pragma once
-#include "hud/window/AbstractWindowPanel.h"
+#include <vector>
 
+#include "hud/window/SimplePanel.h"
 
 namespace Urho3D {
 	class Text;
@@ -8,7 +9,7 @@ namespace Urho3D {
 
 class Player;
 
-class ScorePanel : public AbstractWindowPanel {
+class ScorePanel : public SimplePanel {
 public:
 	explicit ScorePanel(Urho3D::XMLFile* _style);
 	~ScorePanel() = default;

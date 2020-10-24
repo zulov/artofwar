@@ -12,7 +12,7 @@
 #include "player/PlayersManager.h"
 #include "utils/NamesUtils.h"
 
-LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuInfoPanel", {}) {
+LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "LeftMenuInfoPanel", {}) {
 }
 
 void LeftMenuInfoPanel::createBody() {

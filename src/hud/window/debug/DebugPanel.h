@@ -1,5 +1,5 @@
 #pragma once
-#include "../AbstractWindowPanel.h"
+#include "../SimplePanel.h"
 
 
 namespace Urho3D {
@@ -7,7 +7,7 @@ namespace Urho3D {
 	class XMLFile;
 }
 
-class DebugPanel : public AbstractWindowPanel {
+class DebugPanel : public SimplePanel {
 public:
 	explicit DebugPanel(Urho3D::XMLFile* _style);
 	~DebugPanel() = default;

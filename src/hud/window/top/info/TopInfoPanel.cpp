@@ -3,7 +3,7 @@
 #include "hud/UiUtils.h"
 
 
-TopInfoPanel::TopInfoPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "TopInfoPanel", {}) {
+TopInfoPanel::TopInfoPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "TopInfoPanel", {}) {
 }
 
 void TopInfoPanel::hoverOn() {

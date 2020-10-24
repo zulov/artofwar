@@ -1,5 +1,7 @@
 #pragma once
-#include "../AbstractWindowPanel.h"
+#include <vector>
+
+#include "../SimplePanel.h"
 
 namespace Urho3D {
 	class Button;
@@ -10,7 +12,7 @@ namespace Urho3D {
 class SelectedInfo;
 class SelectedHudElement;
 
-class SelectedHudPanel : public AbstractWindowPanel {
+class SelectedHudPanel : public SimplePanel {
 public:
 	explicit SelectedHudPanel(Urho3D::XMLFile* _style);
 	~SelectedHudPanel();

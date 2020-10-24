@@ -13,7 +13,7 @@ namespace Urho3D
 	class Button;
 }
 
-class AbstractWindowPanel;
+class SimplePanel;
 class Benchmark;
 class ScorePanel;
 class SelectedHudPanel;
@@ -89,7 +89,7 @@ private:
 	MainMenuPanel* mainMenuPanel;
 	ScorePanel* scorePanel;
 
-	std::array<AbstractWindowPanel*, 10> panels;
+	std::array<SimplePanel*, 10> panels;
 
 	db_graph_settings* graphSettings;
 	db_resolution* resolution;

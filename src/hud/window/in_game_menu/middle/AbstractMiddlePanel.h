@@ -1,5 +1,5 @@
 #pragma once
-#include "hud/window/AbstractWindowPanel.h"
+#include "hud/window/EventPanel.h"
 
 namespace Urho3D {
 	class UIElement;
@@ -9,7 +9,7 @@ namespace Urho3D {
 
 constexpr char MIDDLE_LIST_ROW_NUMBER = 3;
 
-class AbstractMiddlePanel : public AbstractWindowPanel {
+class AbstractMiddlePanel : public EventPanel {
 public:
 	AbstractMiddlePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	virtual ~AbstractMiddlePanel();

@@ -10,7 +10,7 @@
 #include "utils/DeleteUtils.h"
 
 InGameMenuPanel::InGameMenuPanel(Urho3D::XMLFile* _style)
-	: AbstractWindowPanel(_style, "InGameMenuWindow",
+	: EventPanel(_style, "InGameMenuWindow",
 	                      {GameState::RUNNING, GameState::PAUSE}) {
 }
 
@@ -21,9 +21,9 @@ InGameMenuPanel::~InGameMenuPanel() {
 
 void InGameMenuPanel::setVisible(bool enable) {
 	if (enable) {
-		AbstractWindowPanel::setVisible(menuVisibility);
+		SimplePanel::setVisible(menuVisibility);
 	} else {
-		AbstractWindowPanel::setVisible(enable);
+		SimplePanel::setVisible(enable);
 	}
 	toggleButton->SetVisible(enable);
 }

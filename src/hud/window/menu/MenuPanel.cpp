@@ -18,7 +18,7 @@
 #include "math/VectorUtils.h"
 
 
-MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LeftMenuWindow",
+MenuPanel::MenuPanel(Urho3D::XMLFile* _style) : EventPanel(_style, "LeftMenuWindow",
                                                                     {GameState::RUNNING, GameState::PAUSE}) {
 }
 
@@ -50,7 +50,7 @@ void MenuPanel::updateSelected(SelectedInfo* selectedInfo) const {
 }
 
 void MenuPanel::setVisible(bool enable) {
-	AbstractWindowPanel::setVisible(enable);
+	SimplePanel::setVisible(enable);
 	if (!enable) {
 		removeHoverInfo();
 	}

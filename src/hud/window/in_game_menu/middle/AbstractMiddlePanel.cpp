@@ -6,7 +6,7 @@
 
 AbstractMiddlePanel::
 AbstractMiddlePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title):
-	AbstractWindowPanel(_style, "AdditionalInGameWindow", {}) {
+	EventPanel(_style, "AdditionalInGameWindow", {}) {
 	msg = _title;
 }
 

@@ -4,7 +4,7 @@
 #include <Urho3D/UI/Window.h>
 #include "hud/UiUtils.h"
 
-LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "LoadingWindow",
+LoadingPanel::LoadingPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "LoadingWindow",
                                                                           {GameState::LOADING, GameState::NEW_GAME}) {}
 
 void LoadingPanel::show() {

@@ -1,5 +1,5 @@
 #pragma once
-#include "hud/window/AbstractWindowPanel.h"
+#include "hud/window/EventPanel.h"
 
 constexpr char IN_GAME_MENU_BUTTON_NUMBER = 5;
 
@@ -10,7 +10,7 @@ namespace Urho3D
 
 class AbstractMiddlePanel;
 
-class InGameMenuPanel : public AbstractWindowPanel {
+class InGameMenuPanel : public EventPanel {
 public:
 	explicit InGameMenuPanel(Urho3D::XMLFile* _style);
 	~InGameMenuPanel();

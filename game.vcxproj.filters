@@ -16,9 +16,6 @@
     <ClCompile Include="src\commands\AbstractCommand.cpp">
       <Filter>command</Filter>
     </ClCompile>
-    <ClCompile Include="src\hud\window\AbstractWindowPanel.cpp">
-      <Filter>hud\windows</Filter>
-    </ClCompile>
     <ClCompile Include="src\simulation\env\bucket\Bucket.cpp">
       <Filter>simulation\env\bucket</Filter>
     </ClCompile>
@@ -202,6 +199,10 @@
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapQuad.cpp" />
     <ClCompile Include="src\simulation\env\GridCalculatorProvider.cpp" />
     <ClCompile Include="src\stats\AiInputProvider.cpp" />
+    <ClCompile Include="src\hud\window\SimplePanel.cpp">
+      <Filter>hud\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hud\window\EventPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -225,9 +226,6 @@
     </ClInclude>
     <ClInclude Include="src\commands\CommandList.h">
       <Filter>command\list</Filter>
-    </ClInclude>
-    <ClInclude Include="src\hud\window\AbstractWindowPanel.h">
-      <Filter>hud\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\simulation\env\bucket\Bucket.h">
       <Filter>simulation\env\bucket</Filter>
@@ -512,6 +510,10 @@
     <ClInclude Include="src\objects\Metrics.h" />
     <ClInclude Include="src\stats\AiInputProvider.h" />
     <ClInclude Include="src\stats\AiWeights.h" />
+    <ClInclude Include="src\hud\window\SimplePanel.h">
+      <Filter>hud\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hud\window\EventPanel.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

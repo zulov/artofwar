@@ -1,5 +1,5 @@
 #pragma once
-#include "../AbstractWindowPanel.h"
+#include "hud/window/EventPanel.h"
 
 namespace Urho3D {
 	class Texture2D;
@@ -10,7 +10,7 @@ namespace Urho3D {
 constexpr char MINI_MAP_BUTTON_NUMBER = 5;
 
 
-class MiniMapPanel : public AbstractWindowPanel {
+class MiniMapPanel : public EventPanel {
 public:
 	void initColors();
 	explicit MiniMapPanel(Urho3D::XMLFile* _style);

@@ -188,6 +188,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\hud\window\EventPanel.cpp" />
     <ClCompile Include="src\stats\AiInputProvider.cpp" />
     <ClCompile Include="src\simulation\env\GridCalculatorProvider.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapQuad.cpp" />
@@ -239,7 +240,7 @@
     <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\TargetAim.cpp" />
     <ClCompile Include="src\commands\AbstractCommand.cpp" />
-    <ClCompile Include="src\hud\window\AbstractWindowPanel.cpp" />
+    <ClCompile Include="src\hud\window\SimplePanel.cpp" />
     <ClCompile Include="src\commands\action\UnitActionCommand.cpp" />
     <ClCompile Include="src\objects\unit\aim\Aims.cpp" />
     <ClCompile Include="src\Benchmark.cpp" />
@@ -303,6 +304,7 @@
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\hud\window\EventPanel.h" />
     <ClInclude Include="src\stats\AiInputProvider.h" />
     <ClInclude Include="src\objects\Metrics.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
@@ -394,7 +396,7 @@
     <ClInclude Include="src\database\db_utils.h" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\hud\window\in_game_menu\middle\AbstractMiddlePanel.h" />
-    <ClInclude Include="src\hud\window\AbstractWindowPanel.h" />
+    <ClInclude Include="src\hud\window\SimplePanel.h" />
     <ClInclude Include="src\commands\action\UnitActionCommand.h" />
     <ClInclude Include="src\hud\window\in_game_menu\InGameMenuPanel.h" />
     <ClInclude Include="src\hud\window\loading\LoadingPanel.h" />

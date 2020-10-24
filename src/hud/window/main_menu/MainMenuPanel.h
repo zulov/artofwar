@@ -1,5 +1,5 @@
 #pragma once
-#include "hud/window/AbstractWindowPanel.h"
+#include "hud/window/EventPanel.h"
 
 namespace Urho3D {
 	class BorderImage;
@@ -11,7 +11,7 @@ constexpr char MAIN_MENU_BUTTON_NUMBER = 5;
 
 class MainMenuDetailsPanel;
 
-class MainMenuPanel : public AbstractWindowPanel {
+class MainMenuPanel : public EventPanel {
 public:
 	explicit MainMenuPanel(Urho3D::XMLFile* _style);
 	~MainMenuPanel();

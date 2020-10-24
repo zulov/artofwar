@@ -12,7 +12,7 @@
 
 
 SelectedHudPanel::SelectedHudPanel(Urho3D::XMLFile* _style)
-	: AbstractWindowPanel(_style, "SelectedInfoWindow",
+	: SimplePanel(_style, "SelectedInfoWindow",
 	                      {GameState::RUNNING, GameState::PAUSE}) {
 }
 

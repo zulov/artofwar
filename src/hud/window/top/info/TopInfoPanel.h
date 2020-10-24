@@ -1,8 +1,8 @@
 #pragma once
 #include <Urho3D/UI/Text.h>
-#include "hud/window/AbstractWindowPanel.h"
+#include "hud/window/SimplePanel.h"
 
-class TopInfoPanel : public AbstractWindowPanel {
+class TopInfoPanel : public SimplePanel {
 public:
 	explicit TopInfoPanel(Urho3D::XMLFile* _style);
 	~TopInfoPanel() = default;

@@ -200,7 +200,7 @@ void Hud::updateLoading(float progress) const {
 
 void Hud::updateStateVisibilty(GameState state) {
 	for (auto panel : panels) {
-		panel->updateStateVisibilty(state);
+		panel->updateStateVisibility(state);
 	}
 }
 

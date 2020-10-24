@@ -12,7 +12,7 @@
 #include "settings/MainMenuSettingsPanel.h"
 
 
-MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): AbstractWindowPanel(_style, "MainMenuWindow",
+MainMenuPanel::MainMenuPanel(Urho3D::XMLFile* _style): EventPanel(_style, "MainMenuWindow",
                                                                            {GameState::MENU_MAIN}) {}
 
 
@@ -33,7 +33,7 @@ void MainMenuPanel::close() const {
 }
 
 void MainMenuPanel::setVisible(bool enable) {
-	AbstractWindowPanel::setVisible(enable);
+	SimplePanel::setVisible(enable);
 	close();
 	background->SetVisible(enable);
 }

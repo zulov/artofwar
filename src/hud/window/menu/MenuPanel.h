@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
 #include "LeftMenuModes.h"
-#include "../AbstractWindowPanel.h"
 #include "initializer_list"
 #include <Urho3D/Container/Str.h>
 #include <Urho3D/Core/Variant.h>
+
+#include "hud/window/EventPanel.h"
 
 
 namespace Urho3D {
@@ -25,7 +26,7 @@ class HudData;
 class LeftMenuInfoPanel;
 class MySprite;
 
-class MenuPanel : public AbstractWindowPanel {
+class MenuPanel : public EventPanel {
 public:
 	explicit MenuPanel(Urho3D::XMLFile* _style);
 	~MenuPanel();

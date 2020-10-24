@@ -1,5 +1,5 @@
 #pragma once
-#include "hud/window/AbstractWindowPanel.h"
+#include "hud/window/SimplePanel.h"
 #include "Urho3D/Container/Str.h"
 
 namespace Urho3D {
@@ -10,7 +10,7 @@ namespace Urho3D {
 class SelectedInfo;
 class HudData;
 
-class LeftMenuInfoPanel : public AbstractWindowPanel {
+class LeftMenuInfoPanel : public SimplePanel {
 public:
 	explicit LeftMenuInfoPanel(Urho3D::XMLFile* _style);
 	~LeftMenuInfoPanel() = default;

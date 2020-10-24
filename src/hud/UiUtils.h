@@ -1,13 +1,13 @@
 #pragma once
-#include "Game.h"
-#include "MySprite.h"
+#include <utility>
+#include <vector>
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/DropDownList.h>
 #include <Urho3D/UI/Sprite.h>
 #include <Urho3D/UI/Text.h>
-#include <utility>
-#include <vector>
+#include "Game.h"
+#include "MySprite.h"
 
 static Urho3D::Button* simpleButton(Urho3D::XMLFile* style, const Urho3D::String& styleName) {
 	auto button = new Urho3D::Button(Game::getContext());
@@ -90,9 +90,8 @@ inline void addChildTexts(Urho3D::DropDownList* cob, const std::vector<Urho3D::S
 	}
 }
 
-inline void addTextItem(Urho3D::DropDownList* cob, Urho3D::String& name, Urho3D::XMLFile* style, const Urho3D::Variant&
-                        var,
-                        const Urho3D::String& varName) {
+inline void addTextItem(Urho3D::DropDownList* cob, Urho3D::String& name, Urho3D::XMLFile* style,
+                        const Urho3D::Variant& var, const Urho3D::String& varName) {
 	addTextItem(cob, name, style)->SetVar(varName, var);
 }
 

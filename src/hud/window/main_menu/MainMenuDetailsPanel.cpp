@@ -3,9 +3,8 @@
 #include "hud/UiUtils.h"
 
 
-MainMenuDetailsPanel::
-MainMenuDetailsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title):
-	AbstractWindowPanel(_style, "MainMenuDetailsWindow", {}) {
+MainMenuDetailsPanel::MainMenuDetailsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title)
+	: EventPanel(_style, "MainMenuDetailsWindow", {}) {
 	bodyStyle = "MainMenuMock";
 	msg = _title;
 }

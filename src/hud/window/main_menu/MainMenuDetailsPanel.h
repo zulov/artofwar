@@ -1,11 +1,12 @@
 #pragma once
-#include "hud/window/AbstractWindowPanel.h"
+#include "hud/window/EventPanel.h"
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class UIElement;
 }
 
-class MainMenuDetailsPanel : public AbstractWindowPanel {
+class MainMenuDetailsPanel : public EventPanel {
 public:
 	MainMenuDetailsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title);
 	~MainMenuDetailsPanel() = default;

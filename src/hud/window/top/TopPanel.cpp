@@ -12,7 +12,7 @@
 #include "player/Resources.h"
 
 
-TopPanel::TopPanel(Urho3D::XMLFile* _style) : AbstractWindowPanel(_style, "TopWindow",
+TopPanel::TopPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "TopWindow",
                                                                   {GameState::RUNNING, GameState::PAUSE}) {
 	elements = new TopHudElement*[Game::getDatabase()->getResourceSize()];
 }
@@ -66,7 +66,7 @@ void TopPanel::update(Player* player) const {
 }
 
 void TopPanel::setVisible(bool enable) {
-	AbstractWindowPanel::setVisible(enable);
+	SimplePanel::setVisible(enable);
 	//if (!enable) {
 	infoPanel->setVisible(enable);
 	//}

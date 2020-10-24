@@ -1,11 +1,11 @@
 #pragma once
-#include "../AbstractWindowPanel.h"
+#include "hud/window/EventPanel.h"
 
 class SelectedInfo;
 class QueueManager;
 class QueueHudElement;
 
-class QueuePanel : public AbstractWindowPanel {
+class QueuePanel : public EventPanel {
 public:
 	explicit QueuePanel(Urho3D::XMLFile* _style);
 	~QueuePanel();

@@ -5,7 +5,7 @@
 
 
 ScorePanel::ScorePanel(Urho3D::XMLFile* _style)
-	: AbstractWindowPanel(_style, "ScorePanel", {
+	: SimplePanel(_style, "ScorePanel", {
 		                      GameState::RUNNING, GameState::PAUSE
 	                      }) {}
 
