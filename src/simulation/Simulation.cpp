@@ -22,6 +22,7 @@
 #include "player/PlayersManager.h"
 #include "player/ai/ActionCenter.h"
 #include "player/ai/AiManager.h"
+#include "scene/load/dbload_container.h"
 #include "scene/load/SceneLoader.h"
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"

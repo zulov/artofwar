@@ -1,6 +1,5 @@
 #pragma once
 #include "hud/window/SimplePanel.h"
-#include "Urho3D/Container/Str.h"
 
 namespace Urho3D {
 	class Text;

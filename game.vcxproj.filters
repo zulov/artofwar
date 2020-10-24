@@ -13,9 +13,6 @@
     <ClCompile Include="src\camera\FreeCameraBehave.cpp">
       <Filter>camera\behave</Filter>
     </ClCompile>
-    <ClCompile Include="src\commands\AbstractCommand.cpp">
-      <Filter>command</Filter>
-    </ClCompile>
     <ClCompile Include="src\simulation\env\bucket\Bucket.cpp">
       <Filter>simulation\env\bucket</Filter>
     </ClCompile>

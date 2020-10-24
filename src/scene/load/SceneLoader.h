@@ -1,6 +1,6 @@
 #pragma once
-#include "Loading.h"
 #include <sqlite3/sqlite3.h>
+#include "Loading.h"
 #include "vector"
 
 namespace Urho3D {

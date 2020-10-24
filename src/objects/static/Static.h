@@ -2,6 +2,7 @@
 #include "../Physical.h"
 #include "StaticState.h"
 
+struct dbload_static;
 enum class CellState : char;
 
 class Static : public Physical {

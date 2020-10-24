@@ -10,6 +10,7 @@
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
+#include "load/dbload_container.h"
 #include "load/SceneLoader.h"
 #include "objects/Physical.h"
 

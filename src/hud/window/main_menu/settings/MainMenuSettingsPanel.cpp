@@ -1,11 +1,10 @@
 #include "MainMenuSettingsPanel.h"
 
 #include <Urho3D/Resource/Localization.h>
-
+#include <Urho3D/UI/CheckBox.h>
 #include "SettingsForm.h"
 #include "database/DatabaseCache.h"
 #include "hud/UiUtils.h"
-#include <Urho3D/UI/CheckBox.h>
 
 MainMenuSettingsPanel::
 MainMenuSettingsPanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(_style, _title) {

@@ -1,11 +1,10 @@
 #pragma once
 #include <magic_enum.hpp>
 #include <Urho3D/Math/Color.h>
-#include "ColorPallet.h"
 #include "objects/unit/state/UnitState.h"
 
 enum class CellState : char;
-
+enum class ColorPallet : char;
 namespace Urho3D { class Material; }
 
 

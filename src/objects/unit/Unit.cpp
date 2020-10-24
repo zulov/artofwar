@@ -3,6 +3,7 @@
 #include <string>
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
+#include "colors/ColorPallet.h"
 #include "database/DatabaseCache.h"
 #include "debug/DebugLineRepo.h"
 #include "debug/DebugUnitType.h"
@@ -12,6 +13,7 @@
 #include "objects/unit/SimColorMode.h"
 #include "order/IndividualOrder.h"
 #include "order/enums/UnitAction.h"
+#include "scene/load/dbload_container.h"
 #include "simulation/env/Environment.h"
 #include "simulation/force/ForceStats.h"
 #include "simulation/formation/FormationManager.h"

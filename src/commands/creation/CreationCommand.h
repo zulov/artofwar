@@ -4,12 +4,11 @@
 #include <Urho3D/Math/Vector2.h>
 
 
+
 enum class ObjectType : char;
 class SimulationObjectManager;
 
 namespace Urho3D {
-	class IntVector2;
-	class Vector2;
 }
 
 class CreationCommand : public AbstractCommand {

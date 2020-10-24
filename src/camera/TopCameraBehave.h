@@ -1,8 +1,7 @@
 #pragma once
 #include "CameraBehave.h"
 
-class TopCameraBehave : public CameraBehave
-{
+class TopCameraBehave : public CameraBehave {
 public:
 	TopCameraBehave();
 	~TopCameraBehave() override = default;
@@ -16,4 +15,3 @@ private:
 	float maxY = 200;
 	float orthoSize = 100;
 };
-

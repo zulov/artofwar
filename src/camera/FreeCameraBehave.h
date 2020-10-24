@@ -1,8 +1,7 @@
 #pragma once
 #include "camera/CameraBehave.h"
 
-class FreeCameraBehave : public CameraBehave
-{
+class FreeCameraBehave : public CameraBehave {
 public:
 	FreeCameraBehave();
 	virtual ~FreeCameraBehave() = default;

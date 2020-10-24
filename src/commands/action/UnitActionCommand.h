@@ -2,12 +2,11 @@
 #include "commands/AbstractCommand.h"
 
 
-class UnitOrder;
-
 namespace Urho3D {
 	class Vector2;
 }
 
+class UnitOrder;
 class Physical;
 enum class UnitAction : char;
 

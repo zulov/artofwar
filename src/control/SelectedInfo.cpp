@@ -1,6 +1,4 @@
 #include "SelectedInfo.h"
-#include "Controls.h"
-#include "objects/ObjectEnums.h"
 #include "SelectedInfoType.h"
 #include "objects/Physical.h"
 #include "utils/DeleteUtils.h"

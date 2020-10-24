@@ -5,12 +5,14 @@
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Scene/Scene.h>
+#include "objects/unit/order/enums/UnitActionType.h"
 #include "ControlsUtils.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
 #include "commands/action/GeneralActionCommand.h"
 #include "commands/action/GeneralActionType.h"
 #include "commands/action/ResourceActionCommand.h"
+#include "commands/action/UnitActionCommand.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
 #include "math/MathUtils.h"

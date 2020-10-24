@@ -239,7 +239,6 @@
     <ClCompile Include="src\objects\unit\aim\ChargeAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\FollowAim.cpp" />
     <ClCompile Include="src\objects\unit\aim\TargetAim.cpp" />
-    <ClCompile Include="src\commands\AbstractCommand.cpp" />
     <ClCompile Include="src\hud\window\SimplePanel.cpp" />
     <ClCompile Include="src\commands\action\UnitActionCommand.cpp" />
     <ClCompile Include="src\objects\unit\aim\Aims.cpp" />

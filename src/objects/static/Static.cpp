@@ -4,6 +4,7 @@
 #include "Game.h"
 #include "math/MathUtils.h"
 #include "../unit/Unit.h"
+#include "scene/load/dbload_container.h"
 #include "simulation/env/Environment.h"
 
 Static::Static(Urho3D::Vector3& _position, int mainCell) : Physical(_position) {

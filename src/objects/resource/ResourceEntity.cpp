@@ -9,6 +9,7 @@
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "objects/unit/state/StateManager.h"
+#include "scene/load/dbload_container.h"
 #include "simulation/env/Environment.h"
 
 

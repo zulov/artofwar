@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
-#include "objects/Physical.h"
-#include "commands/action/UnitActionCommand.h"
+#include "commands/AbstractCommand.h"  // for AbstractCommand
 
 enum class ResourceActionType : char;
 class ResourceEntity;
+class Physical;
 
 class ResourceActionCommand : public AbstractCommand {
 	friend class Stats;

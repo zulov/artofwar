@@ -2,7 +2,6 @@
 #include <Urho3D/Graphics/BillboardSet.h>
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Scene/Scene.h>
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include "objects/ObjectEnums.h"

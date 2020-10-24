@@ -2,6 +2,7 @@
 
 #include "objects/Physical.h"
 #include "simulation/env/GridCalculatorProvider.h"
+#include "utils/DeleteUtils.h"
 
 InfluenceMapCombine::InfluenceMapCombine(unsigned short resolution, float size, float coef, char level,
                                          float valueThresholdDebug, char numberOfMaps) :

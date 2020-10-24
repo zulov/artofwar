@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-
 #include "../SimplePanel.h"
 
 namespace Urho3D {

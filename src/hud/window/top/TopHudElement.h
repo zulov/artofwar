@@ -1,8 +1,8 @@
 #pragma once
-
 #include "Urho3D/Container/Str.h"
 
 namespace Urho3D {
+	class String;
 	class Button;
 	class Text;
 	class Texture2D;

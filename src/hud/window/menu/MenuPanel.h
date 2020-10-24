@@ -1,10 +1,9 @@
 #pragma once
 #include <vector>
-#include "LeftMenuModes.h"
-#include "initializer_list"
 #include <Urho3D/Container/Str.h>
 #include <Urho3D/Core/Variant.h>
-
+#include "initializer_list"
+#include "LeftMenuModes.h"
 #include "hud/window/EventPanel.h"
 
 

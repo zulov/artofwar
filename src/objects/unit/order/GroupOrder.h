@@ -1,7 +1,7 @@
 #pragma once
 #include "UnitOrder.h"
-#include "enums/UnitActionType.h"
 
+enum class UnitActionType : char;
 enum class UnitAction : char;
 
 class GroupOrder : public UnitOrder {

@@ -2,6 +2,7 @@
 #include "objects/static/Static.h"
 #include "objects/queue/QueueManager.h"
 
+struct dbload_building;
 enum class BuildingActionType : char;
 struct db_building;
 struct db_building_level;

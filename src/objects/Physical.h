@@ -1,12 +1,16 @@
 #pragma once
-#include "scene/load/dbload_container.h"
-#include "objects/ObjectEnums.h"
-#include <Urho3D/Graphics/BillboardSet.h>
-#include <Urho3D/Graphics/StaticModel.h>
 #include <optional>
 #include <span>
+#include <Urho3D/Graphics/BillboardSet.h>
+#include "objects/ObjectEnums.h"
+
+
+namespace Urho3D {
+	class StaticModel;
+}
 
 struct ActionParameter;
+struct dbload_physical;
 class Unit;
 
 class Physical {

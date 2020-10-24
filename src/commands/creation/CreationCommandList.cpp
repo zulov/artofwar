@@ -4,8 +4,6 @@
 #include "objects/ObjectEnums.h"
 #include "database/DatabaseCache.h"
 #include "player/PlayersManager.h"
-#include "player/Resources.h"
-#include "simulation/SimulationObjectManager.h"
 #include "simulation/env/Environment.h"
 #include "player/Player.h"
 
@@ -13,8 +11,6 @@
 CreationCommandList::CreationCommandList(SimulationObjectManager* simulationObjectManager) {
 	this->simulationObjectManager = simulationObjectManager;
 }
-
-CreationCommandList::~CreationCommandList() = default;
 
 CreationCommand* CreationCommandList::addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) {
 	return new CreationCommand(ObjectType::UNIT, number, id, position, player, level);

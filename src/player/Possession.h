@@ -2,7 +2,6 @@
 #include <magic_enum.hpp>
 #include <span>
 #include <vector>
-
 #include "objects/Metrics.h"
 
 

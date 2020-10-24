@@ -14,6 +14,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
+#include "scene/load/dbload_container.h"
 #include "utils/consts.h"
 
 

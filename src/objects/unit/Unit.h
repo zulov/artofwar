@@ -1,20 +1,20 @@
 #pragma once
 
+#include <Urho3D/Container/Str.h>
+#include <Urho3D/Math/Vector2.h>
+#include <functional>
+#include <tuple>
 #include "aim/Aims.h"
+#include "objects/ObjectEnums.h"
+#include "objects/Physical.h"
 #include "state/UnitState.h"
-#include "functional"                    // for function
-#include "objects/ObjectEnums.h"         // for ObjectType, ObjectType::UNIT
-#include "objects/Physical.h"  // for Physical
-#include "tuple"                         // for tuple
-#include "Urho3D/Container/Str.h"        // for String
-#include "Urho3D/Math/Vector2.h"         // for Vector2
-#include "xstring"                       // for string
-class UnitOrder;
-namespace Urho3D { class Color; }
-namespace Urho3D { class Material; }
-namespace Urho3D { class Vector3; }
-struct ActionParameter;
 
+namespace Urho3D
+{
+	class Color;
+	class Material;
+	class Vector3;
+}
 
 constexpr char BUCKET_SET_NUMBER = 2;
 constexpr char USE_SOCKETS_NUMBER = 8;
@@ -28,7 +28,9 @@ struct db_unit;
 struct dbload_unit;
 struct MissileData;
 struct ChargeData;
+struct ActionParameter;
 
+class UnitOrder;
 class Aim;
 
 class Unit : public Physical {

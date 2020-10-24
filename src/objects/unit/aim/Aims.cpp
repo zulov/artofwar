@@ -1,6 +1,7 @@
 #include "Aims.h"
 #include "TargetAim.h"
 #include "../order/OrderUtils.h"
+#include "utils/DeleteUtils.h"
 
 
 Aims::Aims(): current(nullptr) {

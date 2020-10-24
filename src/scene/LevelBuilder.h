@@ -1,6 +1,6 @@
 #pragma once
-#include "SceneObjectManager.h"
 #include <Urho3D/Graphics/Light.h>
+#include "SceneObjectManager.h"
 
 namespace Urho3D {
 	class Color;

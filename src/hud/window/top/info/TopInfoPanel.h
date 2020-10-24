@@ -1,6 +1,9 @@
 #pragma once
-#include <Urho3D/UI/Text.h>
 #include "hud/window/SimplePanel.h"
+
+namespace Urho3D {
+	class Text;
+}
 
 class TopInfoPanel : public SimplePanel {
 public:
@@ -11,7 +14,6 @@ public:
 	void hoverOff();
 
 private:
-	//Urho3D::String createMessage(HudData* hudData);
 	void createBody() override;
 
 	bool hoverIsOn = false;

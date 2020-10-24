@@ -2,11 +2,10 @@
 
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include "ColorPallet.h"
 #include "Game.h"
 #include "math/MathUtils.h"
 #include "objects/CellState.h"
-#include "objects/unit/state/StateManager.h"
-
 
 ColorPaletteRepo::ColorPaletteRepo() {
 	for (int i = 0; i < PALLET_RESOLUTION; ++i) {
