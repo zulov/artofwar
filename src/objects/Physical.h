@@ -65,7 +65,6 @@ public:
 	Urho3D::Vector3& getPosition() { return position; }
 
 	virtual char getPlayer() const { return player; }
-	virtual std::optional<int> getDeploy() { return {}; }
 
 	int getMainBucketIndex() const { return indexInGrid; }
 

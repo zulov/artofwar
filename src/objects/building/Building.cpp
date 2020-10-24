@@ -43,7 +43,7 @@ short Building::getId() {
 }
 
 int Building::getLevel() {
-	return dbLevel->level; 
+	return dbLevel->level;
 }
 
 void Building::populate() {
@@ -116,6 +116,13 @@ std::string Building::getColumns() {
 		"deploy_Idx		INT     NOT NULL";
 }
 
+std::optional<int> Building::getDeploy() {
+	if (deployIndex > -1) {
+		return deployIndex;
+	}
+	return {};
+}
+
 std::string Building::getValues(int precision) {
 	return Static::getValues(precision)
 		+ std::to_string(deployIndex);
@@ -123,9 +130,9 @@ std::string Building::getValues(int precision) {
 
 void Building::fillValues(std::span<float> weights) const {
 	auto nation = Game::getPlayersMan()->getPlayer(player)->getNation();
-	
+
 	auto data = dbLevel->dbBuildingMetricPerNation[nation]->getParamsAsSpan();
-	
+
 	std::copy(data.begin(), data.end(), weights.begin());
 	auto percent = hp / dbLevel->maxHp;
 	for (auto& weight : weights) {
@@ -136,7 +143,7 @@ void Building::fillValues(std::span<float> weights) const {
 void Building::addValues(std::span<float> vals) const {
 	auto percent = hp / dbLevel->maxHp;
 	auto nation = Game::getPlayersMan()->getPlayer(player)->getNation();
-	
+
 	auto data = dbLevel->dbBuildingMetricPerNation[nation]->getParamsAsSpan();
 
 	assert(vals.size()==data.size()-1); //without cost
@@ -157,5 +164,7 @@ void Building::createDeploy() {
 	if (!getSurroundCells().empty()) {
 		deployIndex = getSurroundCells().at(0);
 	}
+	deployIndex = -1;
 	Game::getLog()->Write(0, "createDeploy fail");
+	assert(false);
 }

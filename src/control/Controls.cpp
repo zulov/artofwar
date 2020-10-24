@@ -17,6 +17,7 @@
 #include "hud/HudData.h"
 #include "math/MathUtils.h"
 #include "objects/NodeUtils.h"
+#include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/GroupOrder.h"
 #include "objects/unit/order/IndividualOrder.h"
@@ -70,7 +71,7 @@ void Controls::updateAdditionalInfo() const {
 		int min = Urho3D::Min(MAX_DEPLOY_MARK_NUMBER, selected->size());
 		for (int i = 0; i < min; ++i) {
 			deployMark[i]->SetEnabled(true);
-			auto deployIndex = selected->at(i)->getDeploy().value();
+			auto deployIndex = static_cast<Building*>(selected->at(i))->getDeploy().value();
 			deployMark[i]->SetPosition(Game::getEnvironment()->getPosWithHeightAt(deployIndex));
 		}
 		for (int i = min; i < MAX_DEPLOY_MARK_NUMBER; ++i) {

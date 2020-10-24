@@ -21,12 +21,7 @@ public:
 
 	QueueElement* updateQueue(float time) const { return queue->update(time); }
 
-	std::optional<int> getDeploy() override {
-		if (deployIndex > -1) {
-			return deployIndex;
-		}
-		return {};
-	}
+	std::optional<int> getDeploy();
 
 	//TODO target to nie to samo co gdzie sie maja pojawiac!
 	QueueManager* getQueue() const { return queue; }
