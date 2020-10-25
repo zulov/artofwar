@@ -36,9 +36,7 @@ void InfluenceMapQuad::reset() {
 }
 
 void InfluenceMapQuad::finishCalc() {//TODO perf czy to potrzebne
-	for (auto* map : maps) {
-		map->finishCalc();
-	}
+	assert(false);
 }
 
 void InfluenceMapQuad::print(Urho3D::String name) {

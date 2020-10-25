@@ -38,6 +38,25 @@ void InfluenceMapFloat::update(Physical* thing, float value) {
 	}
 }
 
+void InfluenceMapFloat::update(int index, float value) {
+	auto [centerX,centerZ] = calculator->getIndexes(index);
+
+	const auto minI = calculator->getValid(centerX - level);
+	const auto maxI = calculator->getValid(centerX + level);
+
+	const auto minJ = calculator->getValid(centerZ - level);
+	const auto maxJ = calculator->getValid(centerZ + level);
+
+	for (short i = minI; i <= maxI; ++i) {
+		const auto a = (i - centerX) * (i - centerX);
+		for (short j = minJ; j <= maxJ; ++j) {
+			const auto b = (j - centerZ) * (j - centerZ);
+			int index = calculator->getNotSafeIndex(i, j);
+			values[index] += value / ((a + b) * coef + 1.f);
+		}
+	}
+}
+
 void InfluenceMapFloat::reset() {
 	std::fill_n(values, arraySize, 0.f);
 }
@@ -114,4 +133,8 @@ void InfluenceMapFloat::add(int* indexes, float* vals, int k, float val) {
 	for (int j = 0; j < k; ++j) {
 		values[indexes[j]] += val * vals[j];
 	}
+}
+
+int InfluenceMapFloat::getIndex(const Urho3D::Vector3& pos) const {
+	return calculator->indexFromPosition(pos);
 }

@@ -36,8 +36,8 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 		gatherQuad.emplace_back(new InfluenceMapQuad(1, 7, InfluenceMapType::HISTORY, BUCKET_GRID_SIZE, 0.5f, 1, 10));
 	}
 
-	resourceInfluence=new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40);
-	
+	resourceInfluence = new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40);
+
 	for (char player = 0; player < numberOfPlayers; ++player) {
 		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 5>{
 			buildingsInfluencePerPlayer[player],
@@ -45,7 +45,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			resourceInfluence,
 			attackSpeed[player],
 			gatherSpeed[player]
-		});//TODO more?
+		}); //TODO more?
 	}
 
 
@@ -74,7 +74,27 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 
 	for (auto unit : (*units)) {
 		unitsNumberPerPlayer[unit->getPlayer()]->update(unit);
-		unitsInfluencePerPlayer[unit->getPlayer()]->update(unit);
+		//unitsInfluencePerPlayer[unit->getPlayer()]->update(unit);
+	}
+	std::unordered_map<int, float> data[MAX_PLAYERS];
+	for (int i = 0; i < units->size(); ++i) {
+		auto unit = units->at(i);
+		auto pId = unit->getPlayer();
+		int idx = unitsInfluencePerPlayer[pId]->getIndex(unit->getPosition());
+		auto nh = data[pId].extract(idx);
+
+		if (nh.empty()) {
+			data[pId].insert({idx, 1.f});
+		} else {
+			nh.key() += 1;
+			data[pId].insert(move(nh));
+		}
+	}
+	for (auto pairs : data[0]) {
+		unitsInfluencePerPlayer[0]->update(pairs.first, pairs.second);
+	}
+	for (auto pairs : data[1]) {
+		unitsInfluencePerPlayer[1]->update(pairs.first, pairs.second);
 	}
 	calcStats(unitsNumberPerPlayer);
 	calcStats(unitsInfluencePerPlayer);
@@ -128,9 +148,9 @@ void InfluenceManager::updateQuad(std::vector<Unit*>* units, std::vector<Buildin
 	for (auto building : (*buildings)) {
 		buildingsQuad[building->getPlayer()]->update(building);
 	}
-	calcStats(unitsQuad);
-	calcStats(buildingsQuad);
-	calcStats(gatherQuad);
+	//calcStats(unitsQuad);
+	//calcStats(buildingsQuad);
+	//calcStats(gatherQuad);
 }
 
 void InfluenceManager::updateWithHistory() const {

@@ -53,7 +53,7 @@ const std::span<float> Brain::decide(std::span<float> data) {
 }
 
 Eigen::MatrixXf Brain::multiply(Layer* current, Layer* prevLayer) {
-	//TODO performance
+	//TODO performance to eigen
 	const auto vals = prevLayer->getValues();
 	
 	const auto input = Eigen::Map<Eigen::VectorXf>(vals.data(), vals.size());
