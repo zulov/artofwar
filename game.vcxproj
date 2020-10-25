@@ -55,7 +55,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>src;include;include\Urho3D\ThirdParty;include\Urho3D\ThirdParty\LuaJIT;include\Eigen;include\enum</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;include;include\Urho3D\ThirdParty;include\Eigen;include\enum</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <CompileAs>CompileAsCpp</CompileAs>

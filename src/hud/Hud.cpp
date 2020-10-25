@@ -2,12 +2,10 @@
 #include <exprtk/exprtk.hpp>
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
-#include <Urho3D/Engine/Engine.h>
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
-#include <xml/rapidxml_print.hpp>
 #include "Benchmark.h"
 #include "Game.h"
 #include "HudData.h"
@@ -91,32 +89,17 @@ void Hud::createMyPanels() {
 }
 
 void Hud::prepareStyle() {
-	std::vector<char*> sth;
-	rapidxml::xml_document<> baseXML;
-	rapidxml::xml_node<>* a = baseXML.allocate_node(rapidxml::node_element, "elements");
-	baseXML.append_node(a);
+	Urho3D::String body = "<elements>";
 
 	for (const auto& sett : graphSettings->styles) {
 		auto style2 = Game::getCache()->GetResource<Urho3D::XMLFile>("UI/" + sett);
-		rapidxml::xml_document<> additionalXML;
-		auto chs = _strdup(style2->ToString().CString());
-		sth.push_back(chs);
-		additionalXML.parse<0>(chs);
 
-		rapidxml::xml_node<>* root = additionalXML.first_node();
-
-		for (rapidxml::xml_node<>* node = root->first_node(); node; node = node->next_sibling()) {
-			rapidxml::xml_node<>* clone = baseXML.clone_node(node);
-			baseXML.first_node()->append_node(clone);
-		}
+		body.Append(style2->ToString());
+		Game::getCache()->ReleaseResource<Urho3D::XMLFile>("UI/" + sett);
 	}
+	body.Append("</elements>");
 
-	std::stringstream ss;
-	ss << *baseXML.first_node();
-	std::string result_xml = ss.str();
-	for (auto value : sth) {
-		free(value);
-	}
+	std::string result_xml = body.CString();
 
 	replaceVariables(result_xml, graphSettings->hud_size);
 	style = new Urho3D::XMLFile(Game::getContext());

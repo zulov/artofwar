@@ -1,37 +1,34 @@
-<elements>
+<element type="MiniText" style="MyText" >
+	<attribute name="Font Size" value="{fontSize*8/10}" />
+	<attribute name="Vert Alignment" value="Top" />
+	<attribute name="Horiz Alignment" value="Center" />
+</element>
 
-	<element type="MiniText" style="MyText" >
-		<attribute name="Font Size" value="{fontSize*8/10}" />
-		<attribute name="Vert Alignment" value="Top" />
-		<attribute name="Horiz Alignment" value="Center" />
-	</element>
+<element type="QueueWindow" style="MyWindow">
+	<attribute name="Vert Alignment" value="Bottom" />
+	<attribute name="Horiz Alignment" value="Left" />
+	<attribute name="Layout Mode" value="Horizontal" />
+	<attribute name="Layout Spacing" value="{spaceX}" />
+	<attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
+	<attribute name="Min Size" value="{iconX*3/4+2*spaceX} {iconY}"/>
+	<attribute name="Max Size" value="{resX -(4*iconX+4*spaceX) -(4*iconX+2*spaceX)} {iconY}"/>
+	<attribute name="Opacity" value="0.5" />
+	<attribute name="Position" value="{4*iconX+5*spaceX} -{3*iconY+3*spaceY}"/>
+</element>
 
-	<element type="QueueWindow" style="MyWindow">
-		<attribute name="Vert Alignment" value="Bottom" />
-		<attribute name="Horiz Alignment" value="Left" />
-		<attribute name="Layout Mode" value="Horizontal" />
-		<attribute name="Layout Spacing" value="{spaceX}" />
-        <attribute name="Layout Border" value="{spaceX} {spaceY} {spaceX} {spaceY}" />
-		<attribute name="Min Size" value="{iconX*3/4+2*spaceX} {iconY}"/>
-		<attribute name="Max Size" value="{resX -(4*iconX+4*spaceX) -(4*iconX+2*spaceX)} {iconY}"/>
-		<attribute name="Opacity" value="0.5" />
-		<attribute name="Position" value="{4*iconX+5*spaceX} -{3*iconY+3*spaceY}"/>
+<element type="QueueProgressBar" style="ProgressBar">
+	<attribute name="Min Size" value="0 {spaceY*3}" />
+	<attribute name="Max Size" value="128 {spaceY*3}" />
+	<attribute name="Image Rect" value="48 0 64 16" />
+	<attribute name="Border" value="2 2 2 2" />
+	<attribute name="Show Percent Text" value="false" />
+	<attribute name="Opacity" value="0.8" />
+	<attribute name="Horiz Alignment" value="Left" />
+	
+	<element type="BorderImage" internal="true">
+		<attribute name="Image Rect" value="160 96 176 112" />
+		<attribute name="Border" value="0 0 0 0" />
+		<attribute name="Hover Image Offset" value="0 0" />
 	</element>
-	
-	<element type="QueueProgressBar" style="ProgressBar">
-        <attribute name="Min Size" value="0 {spaceY*3}" />
-        <attribute name="Max Size" value="128 {spaceY*3}" />
-        <attribute name="Image Rect" value="48 0 64 16" />
-        <attribute name="Border" value="2 2 2 2" />
-        <attribute name="Show Percent Text" value="false" />
-        <attribute name="Opacity" value="0.8" />
-		<attribute name="Horiz Alignment" value="Left" />
-		
-        <element type="BorderImage" internal="true">
-            <attribute name="Image Rect" value="160 96 176 112" />
-            <attribute name="Border" value="0 0 0 0" />
-            <attribute name="Hover Image Offset" value="0 0" />
-        </element>
-    </element>
-	
-</elements>
+</element>
+
