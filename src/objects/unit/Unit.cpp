@@ -29,11 +29,11 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 	loadXml("Objects/units/" + dbLevel->nodeName);
 
 	basic = model->GetMaterial(0);
-	if (StateManager::validateState(dbUnit->id, UnitState::CHARGE)) {
+	if (StateManager::validateState(dbUnit->id, UnitState::CHARGE) && dbLevel->canChargeAttack) {
 		chargeData = new ChargeData(150, 2);
 	}
 
-	if (StateManager::validateState(dbUnit->id, UnitState::SHOT)) {
+	if (StateManager::validateState(dbUnit->id, UnitState::SHOT) && dbLevel->canCollect) {
 		missileData = new MissileData(150, 2);
 	}
 
