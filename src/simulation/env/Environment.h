@@ -55,6 +55,7 @@ public:
 	const std::vector<Physical*>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 
 	float getGroundHeightAt(float x, float z) const;
+	float getGroundHeightAt(Urho3D::Vector3 &pos) const;
 	Urho3D::Vector3 getPosWithHeightAt(float x, float z) const;
 	Urho3D::Vector3 getPosWithHeightAt(int index) const;
 	float getGroundHeightPercent(float y, float x, float div) const;

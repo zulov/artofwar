@@ -75,45 +75,9 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 	for (auto unit : (*units)) {
 		auto pId = unit->getPlayer();
 		unitsNumberPerPlayer[pId]->update(unit);
-		int idx = unitsInfluencePerPlayer[pId]->getIndex(unit->getPosition());
-		unitsInfluencePerPlayer[pId]->addTemp(idx, 1.f);
-	}
 
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		unitsInfluencePerPlayer[i]->updateFromTemp();
+		unitsInfluencePerPlayer[pId]->tempUpdate(unit);
 	}
-	// float vals[MAX_PLAYERS][INF_GRID_SIZE * INF_GRID_SIZE];
-	// for (auto val : vals) {
-	// 	std::fill_n(val, INF_GRID_SIZE * INF_GRID_SIZE, 0.f);
-	// }
-	//
-	// for (auto unit : (*units)) {
-	// 	auto pId = unit->getPlayer();
-	// 	int idx = unitsInfluencePerPlayer[pId]->getIndex(unit->getPosition());
-	// 	vals[pId][idx] += 1.f;
-	// }
-	//
-	// for (int i = 0; i < MAX_PLAYERS; ++i) {
-	// 	unitsInfluencePerPlayer[i]->update1(vals[i]);
-	// }
-	// std::unordered_map<int, float> data[MAX_PLAYERS];
-	// for (auto unit : (*units)) {
-	// 	auto pId = unit->getPlayer();
-	// 	int idx = unitsInfluencePerPlayer[pId]->getIndex(unit->getPosition());
-	// 	auto nh = data[pId].extract(idx);
-	//
-	// 	if (nh.empty()) {
-	// 		data[pId].insert({idx, 1.f});
-	// 	} else {
-	// 		nh.key() += 1;
-	// 		data[pId].insert(move(nh));
-	// 	}
-	// }
-	// for (int i = 0; i < MAX_PLAYERS; ++i) {
-	// 	for (auto pairs : data[i]) {
-	// 		unitsInfluencePerPlayer[i]->update(pairs.first, pairs.second);
-	// 	}
-	// }
 
 	calcStats(unitsNumberPerPlayer);
 	calcStats(unitsInfluencePerPlayer);
@@ -122,7 +86,7 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 void InfluenceManager::update(std::vector<Building*>* buildings) const {
 	resetMaps(buildingsInfluencePerPlayer);
 	for (auto building : (*buildings)) {
-		buildingsInfluencePerPlayer[building->getPlayer()]->update(building);
+		buildingsInfluencePerPlayer[building->getPlayer()]->tempUpdate(building);
 	}
 	calcStats(buildingsInfluencePerPlayer);
 }
@@ -130,7 +94,7 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 	resourceInfluence->reset();
 	for (auto resource : (*resources)) {
-		resourceInfluence->update(resource, resource->getHealthPercent());
+		resourceInfluence->tempUpdate(resource, resource->getHealthPercent());
 	}
 	resourceInfluence->finishCalc();
 }

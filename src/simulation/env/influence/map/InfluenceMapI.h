@@ -9,7 +9,7 @@ namespace Urho3D {
 
 class InfluenceMapI {
 public:
-	virtual void update(Physical* thing, float value = 1) =0;
+	virtual void update(Physical* thing, float value = 1.f) =0;
 	virtual void reset() =0;
 	virtual void finishCalc() =0;
 	virtual void print(Urho3D::String name) =0;

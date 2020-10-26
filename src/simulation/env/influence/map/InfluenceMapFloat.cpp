@@ -40,6 +40,12 @@ void InfluenceMapFloat::update(Physical* thing, float value) {
 	}
 }
 
+void InfluenceMapFloat::tempUpdate(Physical* thing, float value) {
+	auto idx = calculator->indexFromPosition(thing->getPosition());
+	tempVals[idx] += value;
+	tempComputedNeeded = true;
+}
+
 void InfluenceMapFloat::update(int index, float value) {
 	auto [centerX,centerZ] = calculator->getIndexes(index);
 
@@ -55,14 +61,6 @@ void InfluenceMapFloat::update(int index, float value) {
 			const auto b = (j - centerZ) * (j - centerZ);
 			int index = calculator->getNotSafeIndex(i, j);
 			values[index] += value / ((a + b) * coef + 1.f);
-		}
-	}
-}
-
-void InfluenceMapFloat::update1(float* data) {
-	for (int i = 0; i < arraySize; ++i) {
-		if (data[i] > 0.f) {
-			update(i, data[i]);
 		}
 	}
 }
@@ -98,6 +96,7 @@ float InfluenceMapFloat::getValueAsPercent(int index) const {
 }
 
 void InfluenceMapFloat::finishCalc() {
+	updateFromTemp();
 	const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
 	min = *minIdx;
 	max = *maxIdx;
@@ -146,10 +145,14 @@ void InfluenceMapFloat::add(int* indexes, float* vals, int k, float val) {
 	}
 }
 
-int InfluenceMapFloat::getIndex(const Urho3D::Vector3& pos) const {
-	return calculator->indexFromPosition(pos);
-}
-
 void InfluenceMapFloat::updateFromTemp() {
-	update1(tempVals);
+	if (tempComputedNeeded) {
+
+		for (int i = 0; i < arraySize; ++i) {
+			if (tempVals[i] > 0.f) {
+				update(i, tempVals[i]);
+			}
+		}
+	}
+	tempComputedNeeded = false;
 }

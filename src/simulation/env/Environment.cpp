@@ -175,6 +175,10 @@ float Environment::getGroundHeightAt(float x, float z) const {
 	return terrain->GetHeight(Urho3D::Vector3(x, 0, z));
 }
 
+float Environment::getGroundHeightAt(Urho3D::Vector3& pos) const {
+	return terrain->GetHeight(pos);
+}
+
 Urho3D::Vector3 Environment::getPosWithHeightAt(float x, float z) const {
 	return Urho3D::Vector3(x, getGroundHeightAt(x, z), z);
 }
