@@ -26,6 +26,8 @@ CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& posit
 			auto [bucketCords,pos] = env->getValidPosition(building->size, position);
 
 			return new CreationCommand(ObjectType::BUILDING, id, pos, player, bucketCords, level);
+		}else {
+			zwrocic resource
 		}
 	}
 
