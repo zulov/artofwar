@@ -11,10 +11,12 @@ InfluenceMapFloat(unsigned short resolution, float size, float coef, char level,
 	coef(coef),
 	level(level) {
 	values = new float[arraySize];
+	tempVals = new float[arraySize];
 }
 
 InfluenceMapFloat::~InfluenceMapFloat() {
 	delete[] values;
+	delete[] tempVals;
 }
 
 void InfluenceMapFloat::update(Physical* thing, float value) {
@@ -57,8 +59,17 @@ void InfluenceMapFloat::update(int index, float value) {
 	}
 }
 
+void InfluenceMapFloat::update1(float* data) {
+	for (int i = 0; i < arraySize; ++i) {
+		if (data[i] > 0.f) {
+			update(i, data[i]);
+		}
+	}
+}
+
 void InfluenceMapFloat::reset() {
 	std::fill_n(values, arraySize, 0.f);
+	std::fill_n(tempVals, arraySize, 0.f);
 }
 
 float InfluenceMapFloat::getValueAt(int index) const {
@@ -137,4 +148,8 @@ void InfluenceMapFloat::add(int* indexes, float* vals, int k, float val) {
 
 int InfluenceMapFloat::getIndex(const Urho3D::Vector3& pos) const {
 	return calculator->indexFromPosition(pos);
+}
+
+void InfluenceMapFloat::updateFromTemp() {
+	update1(tempVals);
 }

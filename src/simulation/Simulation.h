@@ -32,7 +32,7 @@ class Simulation {
 public:
 	explicit Simulation(Environment* enviroment);
 	~Simulation();
-	void updateInfluenceMaps() const;
+	void updateInfluenceMaps();
 
 	SimulationInfo* update(float timeStep);
 	void initScene(SceneLoader& loader) const;

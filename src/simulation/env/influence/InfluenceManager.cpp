@@ -73,29 +73,48 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 	resetMaps(unitsInfluencePerPlayer);
 
 	for (auto unit : (*units)) {
-		unitsNumberPerPlayer[unit->getPlayer()]->update(unit);
-		//unitsInfluencePerPlayer[unit->getPlayer()]->update(unit);
-	}
-	std::unordered_map<int, float> data[MAX_PLAYERS];
-	for (int i = 0; i < units->size(); ++i) {
-		auto unit = units->at(i);
 		auto pId = unit->getPlayer();
+		unitsNumberPerPlayer[pId]->update(unit);
 		int idx = unitsInfluencePerPlayer[pId]->getIndex(unit->getPosition());
-		auto nh = data[pId].extract(idx);
+		unitsInfluencePerPlayer[pId]->addTemp(idx, 1.f);
+	}
 
-		if (nh.empty()) {
-			data[pId].insert({idx, 1.f});
-		} else {
-			nh.key() += 1;
-			data[pId].insert(move(nh));
-		}
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		unitsInfluencePerPlayer[i]->updateFromTemp();
 	}
-	for (auto pairs : data[0]) {
-		unitsInfluencePerPlayer[0]->update(pairs.first, pairs.second);
-	}
-	for (auto pairs : data[1]) {
-		unitsInfluencePerPlayer[1]->update(pairs.first, pairs.second);
-	}
+	// float vals[MAX_PLAYERS][INF_GRID_SIZE * INF_GRID_SIZE];
+	// for (auto val : vals) {
+	// 	std::fill_n(val, INF_GRID_SIZE * INF_GRID_SIZE, 0.f);
+	// }
+	//
+	// for (auto unit : (*units)) {
+	// 	auto pId = unit->getPlayer();
+	// 	int idx = unitsInfluencePerPlayer[pId]->getIndex(unit->getPosition());
+	// 	vals[pId][idx] += 1.f;
+	// }
+	//
+	// for (int i = 0; i < MAX_PLAYERS; ++i) {
+	// 	unitsInfluencePerPlayer[i]->update1(vals[i]);
+	// }
+	// std::unordered_map<int, float> data[MAX_PLAYERS];
+	// for (auto unit : (*units)) {
+	// 	auto pId = unit->getPlayer();
+	// 	int idx = unitsInfluencePerPlayer[pId]->getIndex(unit->getPosition());
+	// 	auto nh = data[pId].extract(idx);
+	//
+	// 	if (nh.empty()) {
+	// 		data[pId].insert({idx, 1.f});
+	// 	} else {
+	// 		nh.key() += 1;
+	// 		data[pId].insert(move(nh));
+	// 	}
+	// }
+	// for (int i = 0; i < MAX_PLAYERS; ++i) {
+	// 	for (auto pairs : data[i]) {
+	// 		unitsInfluencePerPlayer[i]->update(pairs.first, pairs.second);
+	// 	}
+	// }
+
 	calcStats(unitsNumberPerPlayer);
 	calcStats(unitsInfluencePerPlayer);
 }

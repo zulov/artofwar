@@ -111,7 +111,7 @@ std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, float
 
 void Environment::updateInfluence1(std::vector<Unit*>* units,
                                    std::vector<Building*>* buildings,
-                                   std::vector<ResourceEntity*>* resources) const {
+                                   std::vector<ResourceEntity*>* resources) {
 	influenceManager.update(units);
 	influenceManager.update(buildings);
 	influenceManager.update(resources);
