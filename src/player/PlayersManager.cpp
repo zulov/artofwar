@@ -78,7 +78,7 @@ void PlayersManager::update(SimulationInfo * simInfo) {
 	}
 }
 
-char PlayersManager::getActivePlayerID() {
+char PlayersManager::getActivePlayerID() const {
 	return activePlayer->getId();
 }
 

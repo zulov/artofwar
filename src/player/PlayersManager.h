@@ -25,7 +25,7 @@ public:
 	void changeActive(short i);
 	void save(SceneSaver& saver);
 	void update(SimulationInfo* simInfo);
-	char getActivePlayerID();
+	char getActivePlayerID() const;
 	static std::string getColumns();
 	std::vector<Player*>& getAllPlayers();
 private:

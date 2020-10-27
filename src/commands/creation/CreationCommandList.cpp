@@ -19,16 +19,16 @@ CreationCommand* CreationCommandList::addUnits(int number, int id, Urho3D::Vecto
 CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& position, char player, int level) {
 	Resources& resources = Game::getPlayersMan()->getPlayer(player)->getResources();
 	db_building* building = Game::getDatabase()->getBuilding(id);
-
-	if (resources.reduce(building->costs)) {
+	if (resources.hasEnough(building->costs)) {
 		const auto env = Game::getEnvironment();
 		if (env->validateStatic(building->size, position)) {
+			resources.reduce(building->costs);
 			auto [bucketCords,pos] = env->getValidPosition(building->size, position);
 
 			return new CreationCommand(ObjectType::BUILDING, id, pos, player, bucketCords, level);
-		}else {
-			zwrocic resource
 		}
+	}else {
+		//TODO add resource presures
 	}
 
 	return nullptr;

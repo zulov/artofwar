@@ -1,3 +1,2 @@
 deploy index jest sztywno błąd
 przy rozkazach nagla ida w odwrotnym kierunku
-gdy w złym miejscu to resorcy i tak sie pobieraja
