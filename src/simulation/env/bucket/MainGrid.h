@@ -71,8 +71,8 @@ public:
 	void removeDeploy(Building* building) const;
 
 	bool isInLocalArea(int cell, Urho3D::Vector2& pos) const;
-	bool isEmpty(int inx) const;
-	int closestEmpty(int posIndex) const;
+	bool isPassable(int inx) const;
+	int closestPassableCell(int posIndex) const;
 	int indexFromPosition(const Urho3D::Vector2& pos) const { return calculator->indexFromPosition(pos); }
 	int getIndex(short i, short z) const { return calculator->getIndex(i, z); }
 	int getIndex(Urho3D::Vector2& pos) const { return calculator->indexFromPosition(pos); }

@@ -161,10 +161,11 @@ unsigned short Building::getMaxHp() const {
 }
 
 void Building::createDeploy() {
-	if (!getSurroundCells().empty()) {
-		deployIndex = getSurroundCells().at(0);
+	if (!surroundCells.empty()) {
+		deployIndex = surroundCells.at(0);
+	} else {
+		deployIndex = -1;
+		Game::getLog()->Write(0, "createDeploy fail");
+		assert(false);
 	}
-	deployIndex = -1;
-	Game::getLog()->Write(0, "createDeploy fail");
-	assert(false);
 }

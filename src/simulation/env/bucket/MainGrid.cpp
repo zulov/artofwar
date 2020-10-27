@@ -56,7 +56,7 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 				return false;
 			}
 			const int index = calculator->getIndex(i, j);
-			if (!(calculator->isValidIndex(index) && complexData[index].isUnit())) {
+			if (!isPassable(index)) {
 				return false;
 			}
 		}
@@ -71,7 +71,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 
 	Urho3D::Vector2 sum;
 	if (index != unit->getIndexToInteract()
-		&& data.isUnit()
+		&& data.isPassable()
 		&& data.allNeightOccupied()) {
 		int counter = 0;
 
@@ -103,9 +103,8 @@ void MainGrid::updateSurround(Static* object) const {
 		for (auto index : object->getOccupiedCells()) {
 			indexes.erase(index);
 		}
-		auto& surroundCells = object->getSurroundCells();
-		surroundCells.insert(surroundCells.begin(), indexes.begin(), indexes.end());
-	} //TODO else czy cos trzeba usunac?
+		object->setSurroundCells(indexes);
+	}
 }
 
 Urho3D::Vector2 MainGrid::getPositionInBucket(int index, char max, char i) {
@@ -264,19 +263,18 @@ bool MainGrid::isInLocalArea(const int cell, Urho3D::Vector2& pos) const {
 	return false;
 }
 
-bool MainGrid::isEmpty(int inx) const {
-	return calculator->isValidIndex(inx) && complexData[inx].getType() == CellState::EMPTY
-		|| complexData[inx].getType() == CellState::DEPLOY;
+bool MainGrid::isPassable(int inx) const {
+	return calculator->isValidIndex(inx) && complexData[inx].isPassable();
 }
 
-int MainGrid::closestEmpty(int posIndex) const {
+int MainGrid::closestPassableCell(int posIndex) const {
 	for (auto i : closeIndexProvider.get(posIndex)) {
-		if (isEmpty(i + posIndex)) {
+		if (complexData[i + posIndex].isPassable()) {
 			return i + posIndex;
 		}
 	}
 	for (auto i : closeIndexProvider.getSecond(posIndex)) {
-		if (isEmpty(i + posIndex)) {
+		if (complexData[i + posIndex].isPassable()) {
 			return i + posIndex;
 		}
 	}
@@ -307,7 +305,7 @@ void MainGrid::addStatic(Static* object) const {
 					if (!complexData[index].isUnit()) {
 						toRefresh.push_back(index);
 					} else {
-						complexData[index].setEscapeThrought(-1);
+						complexData[index].setEscapeThrough(-1);
 					}
 				}
 			}
@@ -333,7 +331,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& posit
 	int index = calculator->indexFromPosition(position);
 	auto& data = complexData[index];
 
-	if (!data.isUnit()) {
+	if (!data.isPassable()) {
 		int escapeBucket; //=-1
 		//auto& neights = complexData[index].getNeightbours();
 		if (!data.allNeightOccupied()) {
@@ -386,9 +384,9 @@ void MainGrid::updateNeighbors(const int current) const {
 	for (auto i : closeIndexProvider.getTabIndexes(current)) {
 		const int nI = current + closeIndexProvider.getIndexAt(i);
 		if (calculator->isValidIndex(nI)) {
-			if (complexData[nI].isUnit()) {
+			if (complexData[nI].isPassable()) {
 				complexData[current].setNeightFree(i);
-			} else if (!complexData[nI].isUnit()) {
+			} else if (!complexData[nI].isPassable()) {
 				complexData[current].setNeightOccupied(i);
 			}
 			complexData[current].setCost(i, cost(current, nI));

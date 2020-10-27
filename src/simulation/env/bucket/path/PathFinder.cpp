@@ -159,7 +159,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 
 			if (!complexData[current].allNeightOccupied()) {
 				end = current;
-				complexData[current].setEscapeThrought(-1);
+				complexData[current].setEscapeThrough(-1);
 				break;
 			}
 			auto& closeTabIndx = closeIndexProvider.getTabIndexes(end);
@@ -190,13 +190,13 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 		if (path->size() >= 1) {
 			int current2 = startIndex;
 			for (int i = 1; i < path->size(); ++i) {
-				complexData[current2].setEscapeThrought(path->at(i));
+				complexData[current2].setEscapeThrough(path->at(i));
 				refreshed.insert(current2);
 				current2 = path->at(i);
 			}
 		} else {
 			refreshed.insert(startIndex);
-			complexData[startIndex].setEscapeThrought(-1);
+			complexData[startIndex].setEscapeThrough(-1);
 		}
 	}
 }

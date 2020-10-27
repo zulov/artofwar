@@ -217,10 +217,10 @@ content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, Ce
                                                bool checks[], int activePlayer) {
 	ci->reset();
 	switch (state) {
-	case CellState::EMPTY:
+	case CellState::NONE:
 	case CellState::ATTACK:
 	case CellState::COLLECT:
-	case CellState::NONE:
+	case CellState::DEPLOY:
 		if (checks[3] || checks[4]) {
 			for (int i = 0; i < unitsNumberPerPlayer.size(); ++i) {
 				char value = unitsNumberPerPlayer[i]->getValueAt(center);

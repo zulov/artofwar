@@ -1,5 +1,6 @@
 #include "ComplexBucketData.h"
 #include "objects/static/Static.h"
+#include "objects/CellState.h"
 #include "utils/consts.h"
 
 
@@ -22,12 +23,12 @@ void ComplexBucketData::setStatic(Static* _object) {
 
 void ComplexBucketData::removeStatic() {
 	object = nullptr;
-	state = CellState::EMPTY;
+	state = CellState::NONE;
 	additionalInfo = -1;
 	size = 0;
 }
 
-void ComplexBucketData::setEscapeThrought(int val) {
+void ComplexBucketData::setEscapeThrough(int val) {
 	escapeBucketIndex = val;
 }
 
@@ -48,13 +49,20 @@ bool ComplexBucketData::ifNeightIsFree(const unsigned char index) const {
 	return !(isNeightOccupied & Consts::bitFlags[index]);
 }
 
+bool ComplexBucketData::isPassable() const {
+	return state == CellState::NONE
+		|| state == CellState::ATTACK
+		|| state == CellState::COLLECT
+		|| state == CellState::DEPLOY;
+}
+
 void ComplexBucketData::updateSize(char val, CellState cellState) {
 	size += val;
 	if (size <= 0) {
-		state = CellState::EMPTY;
-	} else if (state != CellState::NONE) {
+		state = CellState::NONE;
+	} else {
 		state = cellState;
-	}
+	} //to jakies takie nie 
 }
 
 bool ComplexBucketData::belowCellLimit() const {
@@ -68,8 +76,4 @@ void ComplexBucketData::setDeploy(Building* building) {
 
 void ComplexBucketData::removeDeploy() {
 	removeStatic();
-}
-
-bool ComplexBucketData::isFreeToBuild(const short id) const {
-	return isUnit();//TODO bug uwzglednic ID
 }

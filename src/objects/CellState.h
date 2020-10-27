@@ -1,17 +1,11 @@
 #pragma once
-enum class CellState : char
-{
-	EMPTY=0,
+enum class CellState : char {
+	NONE=0,
 	ATTACK,
 	COLLECT,
-
-	NONE,
 
 	RESOURCE,
 	BUILDING,
 
 	DEPLOY
 };
-
-
-

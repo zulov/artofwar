@@ -57,10 +57,9 @@ Urho3D::Material* ColorPaletteRepo::getLineMaterial() const {
 
 std::tuple<bool, Urho3D::Color> ColorPaletteRepo::getInfoForGrid(CellState state) {
 	switch (state) {
-	case CellState::EMPTY: return {false, Urho3D::Color(0, 0, 0, 0)};
+	case CellState::NONE: return {false, Urho3D::Color(0, 0, 0, 0)};
 	case CellState::ATTACK: return {true, Urho3D::Color::RED};
 	case CellState::COLLECT: return {true, Urho3D::Color::YELLOW};
-	case CellState::NONE: return {false, Urho3D::Color(0, 0, 0, 0)};
 	case CellState::RESOURCE: return {true, Urho3D::Color::GREEN};
 	case CellState::BUILDING: return {true, Urho3D::Color::BLUE};
 	case CellState::DEPLOY: return {true, Urho3D::Color::CYAN};

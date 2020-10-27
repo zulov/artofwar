@@ -1,4 +1,6 @@
 #pragma once
+#include <unordered_set>
+
 #include "../Physical.h"
 #include "StaticState.h"
 
@@ -14,6 +16,7 @@ public:
 	void setNextState(StaticState stateTo) { nextState = stateTo; }
 	void setState(StaticState state) { this->state = state; }
 	void load(dbload_static* dbloadStatic);
+	void setSurroundCells(const std::unordered_set<int>& indexes);
 	static std::string getColumns();
 
 	int belowCloseLimit() override;

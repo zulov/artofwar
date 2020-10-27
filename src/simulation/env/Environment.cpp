@@ -349,12 +349,16 @@ void Environment::drawInfluence() {
 	mainGrid.drawAll();
 }
 
+bool Environment::cellIsPassable(int index) const {
+	return mainGrid.isPassable(index);
+}
+
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) const {
 	return mainGrid.isInLocalArea(getMainCell, pos);
 }
 
-int Environment::closestEmpty(int posIndex) const {
-	return mainGrid.closestEmpty(posIndex);
+int Environment::closestPassableCell(int posIndex) const {
+	return mainGrid.closestPassableCell(posIndex);
 }
 
 std::pair<Urho3D::IntVector2, Urho3D::Vector2> Environment::getValidPosition(

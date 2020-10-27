@@ -22,7 +22,7 @@ public:
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		return parameter.isFirstThingAlive()
 			&& unit->getMainCell() == parameter.index //TODO je¿eli jest inny to sprobowaæ podmienic
-			&& Game::getEnvironment()->cellInState(unit->getMainCell(), {CellState::COLLECT, CellState::EMPTY})
+			&& Game::getEnvironment()->cellInState(unit->getMainCell(), {CellState::COLLECT, CellState::NONE})
 			&& Game::getEnvironment()->belowCellLimit(unit->getMainCell())
 			&& parameter.thingsToInteract[0]->belowCloseLimit() > 0;
 	}

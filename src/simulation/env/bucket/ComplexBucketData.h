@@ -1,7 +1,9 @@
 #pragma once
-#include "objects/CellState.h"
+
 #include <Urho3D/Math/Vector2.h>
 
+
+enum class CellState : char;
 
 namespace Urho3D {
 	class Vector3;
@@ -18,7 +20,7 @@ public:
 	void setStatic(Static* _object);
 	void removeStatic();
 
-	void setEscapeThrought(int val);
+	void setEscapeThrough(int val);
 	Urho3D::Vector2 getDirectionFrom(Urho3D::Vector3& position, Urho3D::Vector2 centerEscape);
 
 	void setNeightOccupied(unsigned char index);
@@ -34,14 +36,13 @@ public:
 
 	char getAdditionalInfo() const { return additionalInfo; }
 	int getEscapeBucket() const { return escapeBucketIndex; }
-	bool isUnit() const { return state < CellState::NONE; }
+	bool isPassable() const;
 	CellState getType() const { return state; }
 	char getSize() const { return size; }
 	void updateSize(char val, CellState cellState);
 	bool belowCellLimit() const;
 	void setDeploy(Building* building);
 	void removeDeploy();
-	bool isFreeToBuild(short id) const;
 private:
 	CellState state;
 	char size, additionalInfo{};

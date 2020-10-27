@@ -19,6 +19,10 @@ void Static::load(dbload_static* dbloadStatic) {
 	this->nextState = StaticState(dbloadStatic->nextState);
 }
 
+void Static::setSurroundCells(const std::unordered_set<int>& indexes) {
+	surroundCells.insert(surroundCells.begin(), indexes.begin(), indexes.end());
+}
+
 void Static::populate() {
 	auto gridSize = getGridSize();
 	const auto cordsCell = Game::getEnvironment()->getCords(mainCell);
@@ -61,8 +65,8 @@ int Static::hasFreeSpace() const {
 }
 
 bool Static::canCollect(int index) {
-	const auto type = Game::getEnvironment()->getType(index);
-	return (type == CellState::EMPTY || type == CellState::COLLECT) //TODO collect or attack
+	const auto type = Game::getEnvironment()->cellIsEmpty()
+	return (type == CellState::NONE || type == CellState::COLLECT) //TODO collect or attack
 		&& Game::getEnvironment()->getCurrentSize(index) < 2;
 }
 

@@ -92,7 +92,7 @@ public:
 	int getRevertCloseIndex(int center, int gridIndex);
 
 	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos) const;
-	int closestEmpty(int posIndex) const;
+	int closestPassableCell(int posIndex) const;
 
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
 
@@ -105,6 +105,7 @@ public:
 	void addCollect(Unit* unit, float value);
 	void addAttack(Unit* unit, float value);
 	void drawInfluence();
+	bool cellIsPassable(int index) const;
 
 private:
 	MainGrid mainGrid;

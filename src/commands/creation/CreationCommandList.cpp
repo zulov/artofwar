@@ -12,11 +12,11 @@ CreationCommandList::CreationCommandList(SimulationObjectManager* simulationObje
 	this->simulationObjectManager = simulationObjectManager;
 }
 
-CreationCommand* CreationCommandList::addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) {
+CreationCommand* CreationCommandList::addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const {
 	return new CreationCommand(ObjectType::UNIT, number, id, position, player, level);
 }
 
-CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& position, char player, int level) {
+CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& position, char player, int level) const {
 	Resources& resources = Game::getPlayersMan()->getPlayer(player)->getResources();
 	db_building* building = Game::getDatabase()->getBuilding(id);
 	if (resources.hasEnough(building->costs)) {
@@ -34,7 +34,7 @@ CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& posit
 	return nullptr;
 }
 
-CreationCommand* CreationCommandList::addResource(int id, Urho3D::Vector2& position, int level) {
+CreationCommand* CreationCommandList::addResource(int id, Urho3D::Vector2& position, int level) const {
 	auto env = Game::getEnvironment();
 	db_resource* db_resource = Game::getDatabase()->getResource(id);
 
