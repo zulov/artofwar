@@ -56,11 +56,12 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 				return false;
 			}
 			const int index = calculator->getIndex(i, j);
-			if (!isPassable(index)) {
+			if (!isBuildable(index)) {
 				return false;
 			}
 		}
 	}
+	//TODO bug validate deploy przynajmniej jeden
 
 	return true;
 }
@@ -121,22 +122,12 @@ Urho3D::Vector2 MainGrid::getPositionInBucket(int index, char max, char i) {
 	}
 }
 
-bool MainGrid::cellInStates(int index, std::vector<CellState>& cellStates) const {
-	auto type = complexData[index].getType();
-	for (auto cellState : cellStates) {
-		if (type == cellState) {
-			return true;
-		}
-	}
-	return false;
+bool MainGrid::cellInState(int index, CellState state) const {
+	return complexData[index].getType() == state;
 }
 
 void MainGrid::updateCell(int index, char val, CellState cellState) const {
 	complexData[index].updateSize(val, cellState);
-}
-
-bool MainGrid::belowCellLimit(int index) const {
-	return complexData[index].belowCellLimit();
 }
 
 char MainGrid::getNumberInState(int index, UnitState state) const {
@@ -182,7 +173,7 @@ void MainGrid::addDeploy(Building* building) const {
 }
 
 void MainGrid::removeDeploy(Building* building) const {
-	complexData[building->getDeploy().value()].removeDeploy();
+	complexData[building->getDeploy().value()].clear();
 }
 
 CellState MainGrid::getCellAt(float x, float z) const {
@@ -252,6 +243,10 @@ void MainGrid::drawAll() {
 
 }
 
+bool MainGrid::cellIsCollectable(int index) const {
+	return complexData[index].cellIsCollectable();
+}
+
 bool MainGrid::isInLocalArea(const int cell, Urho3D::Vector2& pos) const {
 	const auto index = calculator->indexFromPosition(pos);
 	if (cell == index) { return true; }
@@ -265,6 +260,10 @@ bool MainGrid::isInLocalArea(const int cell, Urho3D::Vector2& pos) const {
 
 bool MainGrid::isPassable(int inx) const {
 	return calculator->isValidIndex(inx) && complexData[inx].isPassable();
+}
+
+bool MainGrid::isBuildable(int inx) const {
+	return calculator->isValidIndex(inx) && complexData[inx].isBuildable();
 }
 
 int MainGrid::closestPassableCell(int posIndex) const {
@@ -302,10 +301,10 @@ void MainGrid::addStatic(Static* object) const {
 				if (calculator->isValidIndex(i, j)) {
 					const int index = calculator->getIndex(i, j);
 					updateNeighbors(index);
-					if (!complexData[index].isUnit()) {
-						toRefresh.push_back(index);
-					} else {
+					if (complexData[index].isPassable()) {
 						complexData[index].setEscapeThrough(-1);
+					} else {
+						toRefresh.push_back(index);
 					}
 				}
 			}
@@ -319,7 +318,7 @@ void MainGrid::removeStatic(Static* object) const {
 	//TODO bug poprawic dziwne zygzagki sie robia gdy przechodzi przez// moze invalidate cache?
 	object->setMainCell(-1);
 	for (auto index : object->getOccupiedCells()) {
-		complexData[index].removeStatic();
+		complexData[index].clear();
 		updateNeighbors(index);
 	}
 	for (auto index : object->getSurroundCells()) {
@@ -386,7 +385,7 @@ void MainGrid::updateNeighbors(const int current) const {
 		if (calculator->isValidIndex(nI)) {
 			if (complexData[nI].isPassable()) {
 				complexData[current].setNeightFree(i);
-			} else if (!complexData[nI].isPassable()) {
+			} else {
 				complexData[current].setNeightOccupied(i);
 			}
 			complexData[current].setCost(i, cost(current, nI));

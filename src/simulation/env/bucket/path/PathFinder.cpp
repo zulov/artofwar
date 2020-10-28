@@ -55,7 +55,8 @@ std::vector<int>* PathFinder::reconstruct_simplify_path(int start, int goal, con
 		int next = came_from[current];
 
 		if (next == current || next < 0) {
-			assert(false); break; //TODO BUG tu cos dziwnego sie dzieje
+			assert(false);
+			break; //TODO BUG tu cos dziwnego sie dzieje
 		}
 		current = next;
 	}
@@ -111,7 +112,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim)
 		return tempPath;
 	}
 
-	while (!complexData[end].isUnit()) {
+	while (!complexData[end].isPassable()) {
 		if (complexData[end].allNeightOccupied()) {
 			end = complexData[end].getEscapeBucket();
 		} else {
@@ -176,7 +177,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 					int next = nI;
 					if (came_from[current] != next) {
 						const float new_cost = cost_so_far[current] + complexData[current].getCost(i);
-						if (cost_so_far[next] <0.f || new_cost < cost_so_far[next]) {
+						if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
 							updateCost(next, new_cost);
 
 							frontier.put(next, new_cost);
@@ -240,7 +241,7 @@ void PathFinder::drawMap(Urho3D::Image* image) const {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = calculator->getIndex(x, y);
 			const int idR = calculator->getIndex(resolution - y - 1, x);
-			if (complexData[index].isUnit()) {
+			if (complexData[index].isPassable()) {
 				*(data + idR) = 0xFFFFFFFF;
 			} else {
 				*(data + idR) = 0xFF000000;

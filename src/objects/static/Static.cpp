@@ -65,9 +65,7 @@ int Static::hasFreeSpace() const {
 }
 
 bool Static::canCollect(int index) {
-	const auto type = Game::getEnvironment()->cellIsEmpty()
-	return (type == CellState::NONE || type == CellState::COLLECT) //TODO collect or attack
-		&& Game::getEnvironment()->getCurrentSize(index) < 2;
+	return Game::getEnvironment()->cellIsCollectable(index);
 }
 
 std::optional<std::tuple<Urho3D::Vector2, float, int>> Static::getPosToUseWithIndex(Unit* unit) {

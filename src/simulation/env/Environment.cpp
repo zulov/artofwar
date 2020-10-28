@@ -137,7 +137,13 @@ void Environment::update(std::vector<Unit*>* units) const {
 void Environment::update(Building* building) const {
 	mainGrid.addStatic(building);
 	buildingGrid.update(building);
-	building->createDeploy();
+	for (auto cell : building->getSurroundCells()) {
+		if (mainGrid.isBuildable(cell)) {
+			building->setDeploy(cell);
+			break;
+		}
+	}
+	assert(building->getDeploy().has_value());
 
 	mainGrid.addDeploy(building);
 }
@@ -232,16 +238,12 @@ void Environment::invalidateCache() const {
 	mainGrid.invalidateCache();
 }
 
-bool Environment::cellInState(int index, std::vector<CellState> cellStates) const {
-	return mainGrid.cellInStates(index, cellStates);
+bool Environment::cellInState(int index, CellState state) const {
+	return mainGrid.cellInState(index, state);
 }
 
 void Environment::updateCell(int index, char val, CellState cellState) const {
 	mainGrid.updateCell(index, val, cellState);
-}
-
-bool Environment::belowCellLimit(int index) const {
-	return mainGrid.belowCellLimit(index);
 }
 
 char Environment::getNumberInState(int index, UnitState state) const {
@@ -281,7 +283,6 @@ int Environment::getRevertCloseIndex(int center, int gridIndex) {
 
 void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char index) {
 	switch (environmentDebugMode) {
-
 	case EnvironmentDebugMode::NONE:
 		influenceManager.draw(InfluenceDataType::NONE, index);
 		break;
@@ -351,6 +352,10 @@ void Environment::drawInfluence() {
 
 bool Environment::cellIsPassable(int index) const {
 	return mainGrid.isPassable(index);
+}
+
+bool Environment::cellIsCollectable(int index) const {
+	return mainGrid.cellIsCollectable(index);
 }
 
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) const {

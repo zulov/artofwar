@@ -165,7 +165,10 @@ void Building::createDeploy() {
 		deployIndex = surroundCells.at(0);
 	} else {
 		deployIndex = -1;
-		Game::getLog()->Write(0, "createDeploy fail");
-		assert(false);
+		
 	}
+}
+
+void Building::setDeploy(int cell) {
+	deployIndex = cell;
 }

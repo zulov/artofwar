@@ -22,8 +22,7 @@ public:
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		return parameter.isFirstThingAlive()
 			&& unit->getMainCell() == parameter.index //TODO je¿eli jest inny to sprobowaæ podmienic
-			&& Game::getEnvironment()->cellInState(unit->getMainCell(), {CellState::COLLECT, CellState::NONE})
-			&& Game::getEnvironment()->belowCellLimit(unit->getMainCell())
+			&& Game::getEnvironment()->cellIsCollectable(unit->getMainCell())
 			&& parameter.thingsToInteract[0]->belowCloseLimit() > 0;
 	}
 
@@ -54,7 +53,7 @@ public:
 		State::execute(unit, timeStep);
 		if (unit->isFirstThingAlive()
 			&& unit->getMainCell() == unit->indexToInteract
-			&& Game::getEnvironment()->cellInState(unit->getMainCell(), {CellState::COLLECT})) {
+			&& Game::getEnvironment()->cellInState(unit->getMainCell(), CellState::COLLECT)) {
 			//TODO musi byc dokladnie w dobry mbuckecie
 			auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
 			auto resource = dynamic_cast<ResourceEntity*>(unit->thingsToInteract[0]);

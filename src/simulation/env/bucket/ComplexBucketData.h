@@ -2,10 +2,13 @@
 
 #include <Urho3D/Math/Vector2.h>
 
+#include "simulation/env/GridCalculator.h"
+
 
 enum class CellState : char;
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class Vector3;
 }
 
@@ -18,7 +21,7 @@ public:
 	~ComplexBucketData() = default;
 
 	void setStatic(Static* _object);
-	void removeStatic();
+	void clear();
 
 	void setEscapeThrough(int val);
 	Urho3D::Vector2 getDirectionFrom(Urho3D::Vector3& position, Urho3D::Vector2 centerEscape);
@@ -36,13 +39,16 @@ public:
 
 	char getAdditionalInfo() const { return additionalInfo; }
 	int getEscapeBucket() const { return escapeBucketIndex; }
-	bool isPassable() const;
+
 	CellState getType() const { return state; }
-	char getSize() const { return size; }
+
 	void updateSize(char val, CellState cellState);
 	bool belowCellLimit() const;
 	void setDeploy(Building* building);
-	void removeDeploy();
+	bool cellIsCollectable() const;
+	bool cellIsAttackable() const;
+	bool isPassable() const;
+	bool isBuildable() const;
 private:
 	CellState state;
 	char size, additionalInfo{};

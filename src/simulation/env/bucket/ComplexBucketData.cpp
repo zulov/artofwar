@@ -5,7 +5,7 @@
 
 
 ComplexBucketData::ComplexBucketData() {
-	removeStatic();
+	clear();
 }
 
 void ComplexBucketData::setStatic(Static* _object) {
@@ -21,7 +21,7 @@ void ComplexBucketData::setStatic(Static* _object) {
 	}
 }
 
-void ComplexBucketData::removeStatic() {
+void ComplexBucketData::clear() {
 	object = nullptr;
 	state = CellState::NONE;
 	additionalInfo = -1;
@@ -56,6 +56,11 @@ bool ComplexBucketData::isPassable() const {
 		|| state == CellState::DEPLOY;
 }
 
+bool ComplexBucketData::isBuildable() const {
+	return state == CellState::NONE
+		|| state == CellState::COLLECT;
+}
+
 void ComplexBucketData::updateSize(char val, CellState cellState) {
 	size += val;
 	if (size <= 0) {
@@ -74,6 +79,15 @@ void ComplexBucketData::setDeploy(Building* building) {
 	state = CellState::DEPLOY;
 }
 
-void ComplexBucketData::removeDeploy() {
-	removeStatic();
+bool ComplexBucketData::cellIsCollectable() const {
+	return (state == CellState::NONE
+			|| state == CellState::COLLECT)
+		&& belowCellLimit();
+}
+
+bool ComplexBucketData::cellIsAttackable() const {
+	return (state == CellState::NONE
+			|| state == CellState::ATTACK
+			|| state == CellState::DEPLOY)
+		&& belowCellLimit();
 }

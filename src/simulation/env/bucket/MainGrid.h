@@ -15,6 +15,7 @@ namespace Urho3D
 
 class Unit;
 struct content_info;
+
 enum class GridDebugType : char {
 	NONE,
 	GRID,
@@ -59,11 +60,8 @@ public:
 	Urho3D::Vector2 getCenter(short x, short z) const { return getCenter(calculator->getIndex(x, z)); }
 	Urho3D::Vector2 getCenter(int index) const { return calculator->getCenter(index); }
 
-	CellState getType(int index) const { return complexData[index].getType(); }
-	char getCurrentSize(int index) const { return complexData[index].getSize(); }
-	bool cellInStates(int index, std::vector<CellState>& cellStates) const;
+	bool cellInState(int index, CellState state) const;
 	void updateCell(int index, char val, CellState cellState) const;
-	bool belowCellLimit(int index) const;
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinalInState(Unit* unit, UnitState state) const;
 	int getRevertCloseIndex(int center, int gridIndex) const;
@@ -72,6 +70,7 @@ public:
 
 	bool isInLocalArea(int cell, Urho3D::Vector2& pos) const;
 	bool isPassable(int inx) const;
+	bool isBuildable(int inx) const;
 	int closestPassableCell(int posIndex) const;
 	int indexFromPosition(const Urho3D::Vector2& pos) const { return calculator->indexFromPosition(pos); }
 	int getIndex(short i, short z) const { return calculator->getIndex(i, z); }
@@ -81,6 +80,7 @@ public:
 	void drawDebug(GridDebugType type) const;
 	float getFieldSize() const;
 	void drawAll();
+	bool cellIsCollectable(int index) const;
 private:
 
 	PathFinder* pathConstructor;

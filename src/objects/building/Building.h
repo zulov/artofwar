@@ -39,9 +39,10 @@ public:
 	const Urho3D::IntVector2 getGridSize() const override;
 	unsigned short getMaxHp() const override;
 	void createDeploy();
+	void setDeploy(int cell);
 private:
 
-	int deployIndex;
+	int deployIndex = -1;
 	db_building* dbBuilding;
 	db_building_level* dbLevel;
 
