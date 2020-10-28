@@ -1,14 +1,11 @@
 #pragma once
 
-#include <Urho3D/Math/Vector2.h>
-
-#include "simulation/env/GridCalculator.h"
-
 
 enum class CellState : char;
 
 namespace Urho3D
 {
+	class Vector2;
 	class Vector3;
 }
 

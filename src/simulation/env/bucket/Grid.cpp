@@ -2,6 +2,7 @@
 #include "Bucket.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/ContentInfo.h"
+#include "simulation/env/GridCalculator.h"
 #include "simulation/env/GridCalculatorProvider.h"
 #include "utils/consts.h"
 

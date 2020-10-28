@@ -9,7 +9,6 @@
 #include "math/MathUtils.h"
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
-#include "simulation/env/GridCalculator.h"
 
 
 MainGrid::MainGrid(const short resolution, const float size): Grid(resolution, size) {

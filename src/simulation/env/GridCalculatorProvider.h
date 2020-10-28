@@ -1,11 +1,12 @@
 #pragma once
 #include <vector>
-#include "GridCalculator.h"
+
+class GridCalculator;
 
 class GridCalculatorProvider {
 public:
 	~GridCalculatorProvider();
-	
+
 	static GridCalculator* get(unsigned short resolution, float size);
 private:
 	GridCalculatorProvider() = default;

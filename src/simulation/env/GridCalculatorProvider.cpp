@@ -1,5 +1,6 @@
 #include "GridCalculatorProvider.h"
 #include "utils/DeleteUtils.h"
+#include "GridCalculator.h"
 
 std::vector<GridCalculator*> GridCalculatorProvider::calculators;
 

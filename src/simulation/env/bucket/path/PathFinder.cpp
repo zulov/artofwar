@@ -3,6 +3,7 @@
 #include "DrawGridUtils.h"
 #include "Game.h"
 #include "../ComplexBucketData.h"
+#include "simulation/env/GridCalculator.h"
 #include "simulation/env/GridCalculatorProvider.h"
 #include "utils/defines.h"
 
