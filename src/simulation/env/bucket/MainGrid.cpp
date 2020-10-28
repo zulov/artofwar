@@ -176,11 +176,12 @@ void MainGrid::removeDeploy(Building* building) const {
 }
 
 CellState MainGrid::getCellAt(float x, float z) const {
-	return complexData[indexFromPosition({x, z})].getType();
+	auto index = calculator->indexFromPosition(Urho3D::Vector2{x, z});
+	return complexData[index].getType();
 }
 
 int MainGrid::getAdditionalInfoAt(float x, float z) const {
-	auto index = indexFromPosition({x, z});
+	auto index = calculator->indexFromPosition(Urho3D::Vector2{x, z});
 
 	return complexData[index].getAdditionalInfo();
 }

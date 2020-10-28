@@ -72,7 +72,6 @@ public:
 	bool isPassable(int inx) const;
 	bool isBuildable(int inx) const;
 	int closestPassableCell(int posIndex) const;
-	int indexFromPosition(const Urho3D::Vector2& pos) const { return calculator->indexFromPosition(pos); }
 	int getIndex(short i, short z) const { return calculator->getIndex(i, z); }
 	int getIndex(Urho3D::Vector2& pos) const { return calculator->indexFromPosition(pos); }
 	CellState getCellAt(float x, float z) const;
