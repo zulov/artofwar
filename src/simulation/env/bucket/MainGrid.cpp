@@ -42,7 +42,8 @@ void MainGrid::prepareGridToFind() const {
 
 bool MainGrid::validateAdd(Static* object) const {
 	const auto pos = object->getPosition();
-	return validateAdd(object->getGridSize(), Urho3D::Vector2(pos.x_, pos.z_));
+	auto pos2d = Urho3D::Vector2(pos.x_, pos.z_);
+	return validateAdd(object->getGridSize(), pos2d);
 }
 
 bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const {

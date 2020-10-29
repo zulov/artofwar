@@ -18,7 +18,7 @@
 #include "utils/consts.h"
 
 
-Building::Building(Urho3D::Vector3& _position, int id, int player, int level, int mainCell):
+Building::Building(Urho3D::Vector3 _position, int id, int player, int level, int mainCell):
 	Static(_position, mainCell) {
 	setPlayerAndTeam(player);
 	dbBuilding = Game::getDatabase()->getBuilding(id);

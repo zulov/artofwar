@@ -32,15 +32,13 @@ public:
 
 	bool allNeightOccupied() const { return isNeightOccupied == 255; }
 
-	bool allNeightFree() const { return isNeightOccupied == 0; }
-
 	char getAdditionalInfo() const { return additionalInfo; }
 	int getEscapeBucket() const { return escapeBucketIndex; }
 
 	CellState getType() const { return state; }
 
 	void updateSize(char val, CellState cellState);
-	bool belowCellLimit() const;
+
 	void setDeploy(Building* building);
 	bool cellIsCollectable() const;
 	bool cellIsAttackable() const;
@@ -56,4 +54,6 @@ private:
 	//float cost{};
 
 	Static* object{};
+
+	bool belowCellLimit() const;
 };

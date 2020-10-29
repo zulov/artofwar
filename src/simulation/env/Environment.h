@@ -12,8 +12,7 @@
 
 struct db_building;
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Terrain;
 }
 
@@ -55,7 +54,7 @@ public:
 	const std::vector<Physical*>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 
 	float getGroundHeightAt(float x, float z) const;
-	float getGroundHeightAt(Urho3D::Vector3 &pos) const;
+	float getGroundHeightAt(Urho3D::Vector3& pos) const;
 	Urho3D::Vector3 getPosWithHeightAt(float x, float z) const;
 	Urho3D::Vector3 getPosWithHeightAt(int index) const;
 	float getGroundHeightPercent(float y, float x, float div) const;
@@ -71,8 +70,8 @@ public:
 	float getPositionFromPercent(float value) const;
 	Urho3D::Vector3 getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos, float min) const;
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const;
-	Urho3D::Vector2& getCenter(int index) const;
-	Urho3D::Vector2& getCenter(short x, short z) const;
+	Urho3D::Vector2 getCenter(int index) const;
+	Urho3D::Vector2 getCenter(short x, short z) const;
 
 	Urho3D::Vector2 getPositionInBucket(int index, char max, char i);
 

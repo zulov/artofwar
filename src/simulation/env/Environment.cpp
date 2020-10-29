@@ -222,11 +222,11 @@ Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
 	return getValidPosition(size, mainGrid.getCenterAt(bucketCords)).second;
 }
 
-Urho3D::Vector2& Environment::getCenter(int index) const {
+Urho3D::Vector2 Environment::getCenter(int index) const {
 	return mainGrid.getCenter(index);
 }
 
-Urho3D::Vector2& Environment::getCenter(short x, short z) const {
+Urho3D::Vector2 Environment::getCenter(short x, short z) const {
 	return mainGrid.getCenter(x, z);
 }
 
