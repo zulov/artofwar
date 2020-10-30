@@ -3,7 +3,7 @@
 #include "QueueActionType.h"
 #include "database/DatabaseCache.h"
 
-float getSecToComplete(QueueActionType type, short id, int level) {
+inline float getSecToComplete(QueueActionType type, short id, int level) {
 	switch (type) {
 	case QueueActionType::UNIT_CREATE:
 		return 5;
@@ -18,7 +18,7 @@ float getSecToComplete(QueueActionType type, short id, int level) {
 	}
 }
 
-float getSecPerInstance(QueueActionType type, short id, int level) {
+inline float getSecPerInstance(QueueActionType type, short id, int level) {
 	//TODO performance przerobic na tablice
 	switch (type) {
 	case QueueActionType::UNIT_CREATE:

@@ -13,7 +13,7 @@ public:
 	virtual ~InfluenceMapQuad();
 
 	Urho3D::Vector2 getCenter();
-	void update(Physical* thing, float value = 1) override;
+	void update(Physical* thing, float value = 1.f) override;
 	void reset() override;
 	void finishCalc() override;
 	void print(Urho3D::String name) override;

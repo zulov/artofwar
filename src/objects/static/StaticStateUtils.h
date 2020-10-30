@@ -3,7 +3,7 @@
 #include "StaticState.h"
 
 
-void startState(StaticState state, Static* obj) {
+inline void startState(StaticState state, Static* obj) {
 	obj->setState(state);
 	switch (state) {
 	case StaticState::FREE:
@@ -17,5 +17,5 @@ void startState(StaticState state, Static* obj) {
 	}
 }
 
-void endState(StaticState state, Static* obj) {
+inline void endState(StaticState state, Static* obj) {
 }
