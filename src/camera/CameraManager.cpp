@@ -6,6 +6,7 @@
 #include "CameraEnums.h"
 #include "simulation/env/Environment.h"
 #include <Urho3D/Graphics/Graphics.h>
+#include <Urho3D/Input/Input.h>
 
 
 CameraManager::CameraManager() {
@@ -26,11 +27,13 @@ CameraManager::CameraManager() {
 }
 
 CameraManager::~CameraManager() {
-	clear_array(cameraBehaves,3);
+	clear_array(cameraBehaves, 3);
 }
 
 void CameraManager::setCameraBehave(CameraBehaviorType _type) {
+	auto& pos = activeBehave->getPosition();
 	activeBehave = cameraBehaves[static_cast<char>(_type)];
+	activeBehave->setPos2D(pos);
 }
 
 Urho3D::Camera* CameraManager::getComponent() const {

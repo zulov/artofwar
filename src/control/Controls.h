@@ -18,7 +18,6 @@ enum class ResourceActionType : char;
 class HudData;
 class SimulationInfo;
 struct ActionParameter;
-struct MouseButton;
 struct hit_data;
 
 class Controls {
@@ -93,9 +92,9 @@ private:
 	Urho3D::Node* tempBuildingNode{};
 	Urho3D::StaticModel* tempBuildingModel;
 
-	BillboardSetProvider billboardSetProvider;
-
 	SelectedInfo* selectedInfo;
+	
+	BillboardSetProvider billboardSetProvider;
 
 	float clickDistance = 2 * 2;
 	short idToCreate = -1;

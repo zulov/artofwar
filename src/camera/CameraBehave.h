@@ -1,5 +1,13 @@
 #pragma once
-#include <Urho3D/Input/Input.h>
+#include <Urho3D/Graphics/Camera.h>
+
+namespace Urho3D {
+	class Quaternion;
+	class IntVector2;
+	class String;
+	class Vector3;
+	enum MouseMode;
+}
 
 
 class CameraBehave {
@@ -15,6 +23,7 @@ public:
 	virtual Urho3D::MouseMode getMouseMode() = 0;
 	const Urho3D::Vector3& getPosition() const;
 	void changePosition(float percentX, float percentY);
+	void setPos2D(const Urho3D::Vector3& newPos);
 protected:
 	void translateCam(float timeStep, float diff, Urho3D::Vector3 dir);
 	void translateInternal(const bool* cameraKeys, float timeStep, float diff);
@@ -26,7 +35,7 @@ protected:
 	Urho3D::Vector3 dirs[4] = {
 		Urho3D::Vector3::FORWARD, Urho3D::Vector3::BACK, Urho3D::Vector3::LEFT, Urho3D::Vector3::RIGHT
 	};
-	bool changed;
 	float minY;
 	float coefs[4];
+	bool changed;
 };

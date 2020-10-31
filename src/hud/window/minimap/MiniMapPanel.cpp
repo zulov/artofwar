@@ -1,4 +1,6 @@
 #include "MiniMapPanel.h"
+
+#include <Urho3D/Resource/Image.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/CheckBox.h>
 #include <Urho3D/UI/UIEvents.h>

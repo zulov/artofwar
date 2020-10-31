@@ -3,6 +3,7 @@
 #include <queue>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
+#include <Urho3D/Input/Input.h>
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Scene/Scene.h>
 #include "objects/unit/order/enums/UnitActionType.h"

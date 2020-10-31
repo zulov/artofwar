@@ -2,6 +2,7 @@
 
 #include <Urho3D/Graphics/Camera.h>
 #include <Urho3D/Scene/Node.h>
+#include <Urho3D/Input/Input.h>
 
 TopCameraBehave::TopCameraBehave(): CameraBehave(Urho3D::Vector3(0, 50, 0), 20, "TopCam") {
 	const auto diff = sqrt(50.0f - minY) + 1;

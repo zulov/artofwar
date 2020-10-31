@@ -1,5 +1,13 @@
 #pragma once
-#include "CameraBehave.h"
+
+namespace Urho3D
+{
+	class IntVector2;
+	class Input;
+	class Camera;
+	class String;
+	enum MouseMode;
+}
 
 enum class CameraBehaviorType : char;
 class CameraBehave;
@@ -9,9 +17,9 @@ public:
 	CameraManager();
 	~CameraManager();
 	void setCameraBehave(CameraBehaviorType _type);
-	Urho3D::Camera *getComponent() const;
+	Urho3D::Camera* getComponent() const;
 	void translate(const Urho3D::IntVector2& cursorPos, Urho3D::Input* input, float timeStep) const;
-	Urho3D::String *getInfo() const;
+	Urho3D::String* getInfo() const;
 	Urho3D::MouseMode getMouseMode() const;
 	void rotate(const Urho3D::IntVector2& mouse_move) const;
 	void changePosition(float x, float y) const;
@@ -29,4 +37,3 @@ private:
 	int widthEdgeMax;
 	int heightEdgeMax;
 };
-

@@ -275,7 +275,7 @@ Urho3D::Vector2 Formation::getPositionFor(short id) const {
 	}
 	//TODO perf map posIndex to closestIndex
 	const int closestIndex = Game::getEnvironment()->closestPassableCell(posIndex);
-	return Game::getEnvironment()->getCenter(closestIndex); //TODO change center
+	return Game::getEnvironment()->getCenter(closestIndex) - Urho3D::Vector2(column * sparsity, row * sparsity);
 }
 
 float Formation::getPriority(int id) const {

@@ -7,9 +7,7 @@ struct MouseButton {
 	MouseButton() = default;
 	MouseButton(const MouseButton&) = delete;
 
-	~MouseButton() {
-		clean();
-	}
+	~MouseButton() { clean(); }
 
 	void clean() {
 		if (held.first) {
@@ -53,8 +51,8 @@ struct MouseButton {
 		}
 	}
 
+	std::pair<Urho3D::Vector3*, Urho3D::Vector3*> held;
 	float lastUp = -1;
 	float lastDown = -1;
-	std::pair<Urho3D::Vector3*, Urho3D::Vector3*> held;
 	bool isHeld = false;
 };
