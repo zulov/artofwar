@@ -268,16 +268,16 @@ bool MainGrid::isBuildable(int inx) const {
 }
 
 int MainGrid::closestPassableCell(int posIndex) const {
-	// for (auto i : closeIndexProvider.get(posIndex)) {
-	// 	if (complexData[i + posIndex].isPassable()) {
-	// 		return i + posIndex;
-	// 	}
-	// }
-	// for (auto i : closeIndexProvider.getSecond(posIndex)) {
-	// 	if (complexData[i + posIndex].isPassable()) {
-	// 		return i + posIndex;
-	// 	}
-	// }
+	for (auto i : closeIndexProvider.get(posIndex)) {
+		if (complexData[i + posIndex].isPassable()) {
+			return i + posIndex;
+		}
+	}
+	for (auto i : closeIndexProvider.getSecond(posIndex)) {
+		if (complexData[i + posIndex].isPassable()) {
+			return i + posIndex;
+		}
+	}
 	return posIndex;
 }
 
