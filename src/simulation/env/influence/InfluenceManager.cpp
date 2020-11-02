@@ -291,7 +291,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 	auto& maps = mapsForAiPerPlayer[player];
 	assert(result.size()==maps.size());
 
-	return centersFromIndexes(maps[0], getIndexesIterative(result, tolerance, min, maps));
+	return centersFromIndexes(getIndexesIterative(result, tolerance, min, maps));
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> result, char player) {
