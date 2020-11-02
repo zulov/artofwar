@@ -511,6 +511,7 @@
       <Filter>hud\windows</Filter>
     </ClInclude>
     <ClInclude Include="src\hud\window\EventPanel.h" />
+    <ClInclude Include="src\utils\AssertUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

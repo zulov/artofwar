@@ -344,6 +344,7 @@
     <ClInclude Include="src\player\Possession.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
     <ClInclude Include="src\stats\AiWeights.h" />
+    <ClInclude Include="src\utils\AssertUtils.h" />
     <ClInclude Include="src\utils\NamesUtils.h" />
     <ClInclude Include="src\objects\unit\order\FormationOrder.h" />
     <ClInclude Include="src\objects\unit\order\GroupOrder.h" />

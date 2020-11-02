@@ -12,8 +12,9 @@
 #include "objects/unit/Unit.h"
 #include "simulation/env/ContentInfo.h"
 #include "simulation/env/EnvConsts.h"
+#include "simulation/env/GridCalculatorProvider.h"
+#include "utils/AssertUtils.h"
 
-constexpr short INF_GRID_SIZE = 128;
 constexpr char MAX_DEBUG_PARTS_INFLUENCE = 32;
 constexpr char INF_LEVEL = 4;
 
@@ -46,9 +47,10 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			attackSpeed[player],
 			gatherSpeed[player]
 		}); //TODO more?
+		assert(validSizes(mapsForAiPerPlayer.at(player)));
 	}
 
-
+	calculator = GridCalculatorProvider::get(INF_GRID_SIZE, BUCKET_GRID_SIZE);
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
 }
@@ -295,15 +297,15 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> result, char player) {
 	auto& maps = mapsForAiPerPlayer[player];
 	assert(result.size()==maps.size());
-	auto constexpr arraySize = INF_GRID_SIZE * INF_GRID_SIZE;
-	float intersection[arraySize];
+
 	std::fill_n(intersection, arraySize, 0.f);
 
 	for (char i = 0; i < maps.size(); ++i) {
 		maps[i]->getIndexesWithByValue(result[i], intersection);
 	}
+
 	auto inx = sort_indexes(intersection, arraySize);
-	return centersFromIndexes(maps[0], intersection, inx, 0.02f * maps.size());
+	return centersFromIndexes(intersection, inx, 0.02f * maps.size());
 }
 
 void InfluenceManager::addCollect(Unit* unit, float value) {
@@ -315,7 +317,7 @@ void InfluenceManager::addAttack(Unit* unit, float value) {
 	attackSpeed[unit->getPlayer()]->update(unit, value);
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFloat* map, float* values,
+std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(float* values,
                                                                   const std::vector<unsigned>& indexes,
                                                                   float minVal) const {
 	std::vector<Urho3D::Vector2> centers;
@@ -325,17 +327,16 @@ std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFl
 		if (value > minVal) {
 			break;
 		}
-		centers.emplace_back(map->getCenter(*ptr));
+		centers.emplace_back(calculator->getCenter(*ptr));
 	}
 	return centers;
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(InfluenceMapFloat* map,
-                                                                  const std::vector<int>& intersection) {
+std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(const std::vector<int>& intersection) const {
 	std::vector<Urho3D::Vector2> centers;
 	centers.reserve(intersection.size());
 	for (auto value : intersection) {
-		centers.emplace_back(map->getCenter(value));
+		centers.emplace_back(calculator->getCenter(value));
 	}
 	return centers;
 }

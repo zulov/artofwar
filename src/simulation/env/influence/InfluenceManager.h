@@ -5,6 +5,7 @@
 #include <vector>
 #include "player/ai/InfluenceDataType.h"
 
+struct GridCalculator;
 class InfluenceMapInt;
 class Building;
 class ResourceEntity;
@@ -12,16 +13,23 @@ class InfluenceMapFloat;
 class InfluenceMapCombine;
 class InfluenceMapQuad;
 class InfluenceMapHistory;
-namespace Urho3D {
+
+namespace Urho3D
+{
 	class String;
-	class Vector2; }
+	class Vector2;
+}
 
 enum class CellState : char;
 class Unit;
 struct content_info;
 
+constexpr short INF_GRID_SIZE = 128;
+constexpr int arraySize = INF_GRID_SIZE * INF_GRID_SIZE;
+
 class InfluenceManager {
 public:
+	
 	explicit InfluenceManager(char numberOfPlayers);
 	~InfluenceManager();
 	void update(std::vector<Unit*>* units) const;
@@ -53,9 +61,9 @@ public:
 	void addAttack(Unit* unit, float value);
 
 private:
-	std::vector<Urho3D::Vector2> centersFromIndexes(InfluenceMapFloat* map, float* values,
+	std::vector<Urho3D::Vector2> centersFromIndexes(float* values,
 	                                                const std::vector<unsigned>& indexes, float minVal) const;
-	std::vector<Urho3D::Vector2> centersFromIndexes(InfluenceMapFloat* map, const std::vector<int>& intersection);
+	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<int>& intersection) const;
 
 	template <typename T>
 	void resetMaps(const std::vector<T*>& maps) const;
@@ -81,6 +89,9 @@ private:
 
 	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 	content_info* ci;
+	GridCalculator * calculator;
 	std::array<float, 5> dataFromPos;
 	short currentDebugBatch = 0;
+
+	float intersection[arraySize];
 };

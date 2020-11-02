@@ -1,4 +1,4 @@
-#include "Formation.h"
+﻿#include "Formation.h"
 #include <numeric>
 #include "Game.h"
 #include "math/MathUtils.h"
@@ -99,8 +99,8 @@ void Formation::updateIds() {
 			if (leader->getPositionInFormation() == i) {
 				continue;
 			}
-
-			int bucketForI = env->getIndex(getPositionFor(i));
+			auto pos = getPositionFor(i);
+			int bucketForI = env->getIndex(pos);
 
 			auto it = bucketToIds.find(bucketForI);
 			if (it != bucketToIds.end()) {
@@ -129,7 +129,7 @@ void Formation::updateIds() {
 			auto it = bucketToIds.find(bucketId);
 			if (it != bucketToIds.end()) {
 				short bestId = -1;
-				float bestSize = 99999; //TODO do zast�pienia tym z unit
+				float bestSize = 99999; //TODO do zast¹pienia tym z unit
 				for (int i = 0; i < it->second.size(); ++i) {
 					const auto id = it->second[i];
 					if (tempVec[id] != -1) {
@@ -222,7 +222,7 @@ void Formation::update() {
 				unitOrders[0]->execute();
 				stopAllBesideLeader();
 				delete unitOrders[0];
-				unitOrders.erase(unitOrders.begin()); //TODO to zachowa�, chyba jednak nie trzeba
+				unitOrders.erase(unitOrders.begin()); //TODO to zachowaæ, chyba jednak nie trzeba
 			}
 		}
 		break;
@@ -267,7 +267,9 @@ Urho3D::Vector2 Formation::getPositionFor(short id) const {
 
 	const short column = columnThis - columnLeader;
 	const short row = rowThis - rowLeader;
-
+	//if(leaderID==id) {//TODO dla leadera trzeba cos innego wymyślić
+		//return {};
+	//}
 	auto position = center - Urho3D::Vector2(column * sparsity, row * sparsity);
 	const auto posIndex = Game::getEnvironment()->getIndex(position);
 	if (Game::getEnvironment()->cellIsPassable(posIndex)) {
