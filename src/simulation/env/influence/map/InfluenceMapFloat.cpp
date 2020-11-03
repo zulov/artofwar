@@ -132,11 +132,7 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 void InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection) const {
 	const float diff = max - min;
 	percent = fixValue(percent, 1);
-	if (diff == 0.f) {
-		for (int i = 0; i < arraySize; ++i) {
-			intersection[i] += 0.25f; //0.5*0.5
-		}
-	} else {
+	if (diff != 0.f) {
 		for (int i = 0; i < arraySize; ++i) {
 			auto val = percent - ((values[i] - min) / diff);
 			intersection[i] += val * val;

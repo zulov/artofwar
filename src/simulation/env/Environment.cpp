@@ -325,8 +325,9 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 	float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (auto& center : centers) {
 		for (auto index : mainGrid.getArrayNeight(center, ratio)) {
-			if (validateStatic(building->size, mainGrid.getCenter(index))) {
-				return center;
+			auto gridCenter = mainGrid.getCenter(index);	
+			if (validateStatic(building->size, gridCenter)) {
+				return gridCenter;
 			}
 		}
 	}

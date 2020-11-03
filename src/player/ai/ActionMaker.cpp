@@ -99,7 +99,7 @@ bool ActionMaker::createBuilding(db_building* building) {
 	if (enoughResources(building)) {
 		auto pos = posToBuild(building);
 		if (pos.has_value()) {
-			std::cout << pos.value().x_ << "|" << pos.value().y_ << ";" << building->id;
+			std::cout<< " " << pos.value().x_ << "|" << pos.value().y_ << ";" << building->id << std::endl;
 			return Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId());
 		}
 	}

@@ -263,7 +263,7 @@ std::array<float, 5>& InfluenceManager::getInfluenceDataAt(char player, const Ur
 std::vector<int> InfluenceManager::getIndexesIterative(const std::span<float> result, float tolerance, int min,
                                                        std::array<InfluenceMapFloat*, 5>& maps) const {
 	int k = 0;
-	for (auto step : {0.0, 0.05, 0.1}) {
+	for (auto step : {0.0f, 0.05f, 0.1f}) {
 		tolerance += step;
 		k++;
 		std::vector<int> intersection = maps[0]->getIndexesWithByValue(result[0], tolerance);
