@@ -29,10 +29,22 @@ Stats::~Stats() {
 	saveAll(1);
 }
 
+void Stats::init() {
+	setInputs();
+}
+
 void Stats::clearCounters() {
 	std::fill_n(workersCreatedCount, MAX_PLAYERS, 0);
 	std::fill_n(buildingsCreatedCount, MAX_PLAYERS, 0);
 	std::fill_n(unitsCreatedCount, MAX_PLAYERS, 0);
+}
+
+void Stats::setInputs() {
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		ifWorkersCreateInput[i] = join(Game::getAiInputProvider()->getResourceInput(i));
+		ifBuildingsCreatedInput[i] = join(Game::getAiInputProvider()->getBuildingsInput(i));
+		ifUnitsCreatedInput[i] = join(Game::getAiInputProvider()->getUnitsInput(i));
+	}
 }
 
 void Stats::add(GeneralActionCommand* command) {
@@ -142,19 +154,14 @@ void Stats::saveAll(int size) {
 void Stats::save(bool accumulate) {
 	if (accumulate) {
 		for (char i = 0; i < MAX_PLAYERS; ++i) {
-			//TODO moze jakas srednai z tego okresu, albo poczatek
-			joinAndPush(ifWorkersCreate, i,
-			            join(Game::getAiInputProvider()->getResourceInput(i)),            
-			            std::to_string(workersCreatedCount[i]));
-			joinAndPush(ifBuildingCreate, i,
-			            join(Game::getAiInputProvider()->getBuildingsInput(i)),
-			            std::to_string(buildingsCreatedCount[i]));
-			joinAndPush(ifUnitCreate, i,
-			            join(Game::getAiInputProvider()->getUnitsInput(i)),
-			            std::to_string(unitsCreatedCount[i]));
+			//TODO chyba ze jednak srednia a nie poczatek
+			joinAndPush(ifWorkersCreate, i, ifWorkersCreateInput[i], std::to_string(workersCreatedCount[i]));
+			joinAndPush(ifBuildingCreate, i, ifBuildingsCreatedInput[i], std::to_string(buildingsCreatedCount[i]));
+			joinAndPush(ifUnitCreate, i, ifUnitsCreatedInput[i], std::to_string(unitsCreatedCount[i]));
 		}
 
 		clearCounters();
+		setInputs();
 	}
 	saveAll(SAVE_BATCH_SIZE);
 }

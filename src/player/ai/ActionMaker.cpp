@@ -44,22 +44,21 @@ void ActionMaker::action() {
 	// 	createWorker(unit);
 	// }
 
-	// const auto unitsResult = ifUnitCreate.decide(unitsInput);
-	// if (unitsResult[0] > 0.3f) {
-	// 	auto whichOutput = whichUnitCreate.decide(unitsInput);
-	// 	auto unit = chooseUnit(whichOutput);
-	//
-	// 	createUnit(unit);
+	const auto unitsResult = ifUnitCreate.decide(unitsInput);
+	if (unitsResult[0] > 0.3f) {
+		auto whichOutput = whichUnitCreate.decide(unitsInput);
+		auto unit = chooseUnit(whichOutput);
+	
+		createUnit(unit);
+	}
+
+	// const auto buildingsResult = ifBuildingCreate.decide(buildingsInput);
+	// if (buildingsResult[0] > 0.1f) {
+	// 	auto whichOutput = whichBuildingCreate.decide(buildingsInput);
+	// 	auto building = chooseBuilding(whichOutput);
+	// 	auto result = createBuilding(building);
 	// }
 
-	const auto buildingsResult = ifBuildingCreate.decide(buildingsInput);
-	if (buildingsResult[0] > 0.1f) {
-		auto whichOutput = whichBuildingCreate.decide(buildingsInput);
-		auto building = chooseBuilding(whichOutput);
-		auto result = createBuilding(building);
-	}
-	//return createUnit();
-	//return createBuilding();
 	//return levelUpUnit();
 	//return levelUpBuilding();
 }
@@ -99,7 +98,6 @@ bool ActionMaker::createBuilding(db_building* building) {
 	if (enoughResources(building)) {
 		auto pos = posToBuild(building);
 		if (pos.has_value()) {
-			std::cout<< " " << pos.value().x_ << "|" << pos.value().y_ << ";" << building->id << std::endl;
 			return Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId());
 		}
 	}

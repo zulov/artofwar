@@ -21,6 +21,8 @@ class Stats {
 public:
 	Stats();
 	~Stats();
+	void init();
+	
 	Stats(const Stats&) = delete;
 
 	void add(GeneralActionCommand* command);
@@ -32,6 +34,7 @@ public:
 	void save(bool accumulate);
 private:
 	void clearCounters();
+	void setInputs();
 	std::string getCreateBuildingPosOutput(CreationCommand* command) const;
 	std::string getCreateUnitPosOutput(Building* building) const;
 	std::string getPosOutput(char player, Urho3D::Vector2& pos) const;
@@ -57,5 +60,9 @@ private:
 	std::vector<std::string> ifUnitCreate[MAX_PLAYERS];
 	std::vector<std::string> whichUnitCreate[MAX_PLAYERS];
 	std::vector<std::string> whereUnitCreate[MAX_PLAYERS];
+
+	std::string ifWorkersCreateInput[MAX_PLAYERS];
+	std::string ifBuildingsCreatedInput[MAX_PLAYERS];
+	std::string ifUnitsCreatedInput[MAX_PLAYERS];
 
 };

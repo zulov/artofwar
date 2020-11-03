@@ -235,6 +235,7 @@ void Main::load(const String& saveName, loading& progress) {
 		SetupViewport();
 
 		Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
+		Game::getStats()->init();
 		controls->init();
 		
 		subscribeToUIEvents();
@@ -285,6 +286,7 @@ void Main::newGame(NewGameForm* form, loading& progress) {
 		SetupViewport();
 
 		Game::getPlayersMan()->load(form);
+		Game::getStats()->init();
 		controls->init();
 
 		hud->resetLoading();
