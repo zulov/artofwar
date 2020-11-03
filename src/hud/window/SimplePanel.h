@@ -1,6 +1,5 @@
 #pragma once
 #include <magic_enum.hpp>
-
 #include <Urho3D/Container/Str.h>
 #include "GameState.h"
 #include "initializer_list"

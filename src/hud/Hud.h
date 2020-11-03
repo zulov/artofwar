@@ -1,7 +1,5 @@
 #pragma once
 #include <Urho3D/Core/Object.h>
-
-#include "GameState.h"
 #include "window/in_game_menu/InGameMenuPanel.h"
 #include "window/main_menu/MainMenuPanel.h"
 #include "window/menu/MenuPanel.h"
