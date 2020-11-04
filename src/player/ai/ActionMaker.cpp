@@ -37,27 +37,27 @@ void ActionMaker::action() {
 	const auto unitsInput = aiInput->getUnitsInput(player->getId()); //TODO czy cokolwiek?
 	const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
 
-	// const auto resResult = ifWorkersCreate.decide(resInput);
-	// if (resResult[0] > 0.3f) {
-	// 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	// 	auto unit = units[4]; //TODO lepiej wybrac
-	// 	createWorker(unit);
-	// }
+	const auto resResult = ifWorkersCreate.decide(resInput);
+	if (resResult[0] > 0.3f) {
+		auto& units = Game::getDatabase()->getNation(player->getNation())->units;
+		auto unit = units[4]; //TODO lepiej wybrac
+		auto result = createWorker(unit);
+	}
 
 	const auto unitsResult = ifUnitCreate.decide(unitsInput);
 	if (unitsResult[0] > 0.3f) {
 		auto whichOutput = whichUnitCreate.decide(unitsInput);
 		auto unit = chooseUnit(whichOutput);
-	
-		createUnit(unit);
+
+		auto result = createUnit(unit);
 	}
 
-	// const auto buildingsResult = ifBuildingCreate.decide(buildingsInput);
-	// if (buildingsResult[0] > 0.1f) {
-	// 	auto whichOutput = whichBuildingCreate.decide(buildingsInput);
-	// 	auto building = chooseBuilding(whichOutput);
-	// 	auto result = createBuilding(building);
-	// }
+	const auto buildingsResult = ifBuildingCreate.decide(buildingsInput);
+	if (buildingsResult[0] > 0.1f) {
+		auto whichOutput = whichBuildingCreate.decide(buildingsInput);
+		auto building = chooseBuilding(whichOutput);
+		auto result = createBuilding(building);
+	}
 
 	//return levelUpUnit();
 	//return levelUpBuilding();
@@ -155,11 +155,15 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 
 db_unit* ActionMaker::chooseUnit(std::span<float> result) {
 	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
+	std::vector<db_unit*> unitsWithoutWorker(units.size());
+	auto pred = [this](db_unit* unit) { return !player->getLevelForUnit(unit->id)->canCollect; };
+	auto it = std::copy_if(units.begin(), units.end(), unitsWithoutWorker.begin(), pred);
+	unitsWithoutWorker.resize(std::distance(unitsWithoutWorker.begin(), it));
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
-	diffs.reserve(units.size());
-	for (auto unit : units) {
+	diffs.reserve(unitsWithoutWorker.size());
+	for (auto unit : unitsWithoutWorker) {
 		diffs.push_back(dist(center, player->getLevelForUnit(unit->id)->dbUnitMetric));
 	}
 	if (diffs.empty()) {
@@ -167,7 +171,7 @@ db_unit* ActionMaker::chooseUnit(std::span<float> result) {
 	}
 	const auto inx = lowestWithRand(diffs);
 
-	const auto unit = units[inx];
+	const auto unit = unitsWithoutWorker[inx];
 
 	logUnit(unit);
 	return unit;
