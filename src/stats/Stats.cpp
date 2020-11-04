@@ -78,7 +78,8 @@ void Stats::add(BuildingActionCommand* command) {
 		} else {
 			unitsCreatedCount[command->player] += command->buildings.size();
 			const auto metric = level->dbUnitMetric;
-			joinAndPush(whichUnitCreate, command->player, resInput, metric->getParamsNormAsString(),
+			const std::string unitsInput = join(Game::getAiInputProvider()->getUnitsInput(command->player));
+			joinAndPush(whichUnitCreate, command->player, unitsInput, metric->getParamsNormAsString(),
 			            command->buildings.size());
 
 			const std::string inputWithMetric = join(
