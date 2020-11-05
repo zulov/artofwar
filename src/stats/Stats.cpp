@@ -6,20 +6,20 @@
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
 #include "commands/action/GeneralActionCommand.h"
+#include "commands/action/GeneralActionType.h"
 #include "commands/action/ResourceActionCommand.h"
 #include "commands/action/ResourceActionType.h"
 #include "commands/action/UnitActionCommand.h"
-#include "commands/action/GeneralActionType.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "objects/building/Building.h"
 #include "objects/unit/order/UnitOrder.h"
+#include "objects/unit/order/enums/UnitAction.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/ai/AiUtils.h"
 #include "simulation/env/Environment.h"
 #include "utils/StringUtils.h"
-
 
 Stats::Stats() {
 	clearCounters();
@@ -139,8 +139,8 @@ void Stats::saveBatch(int i, std::vector<std::string>* array, std::string name, 
 
 void Stats::saveAll(int size) {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		saveBatch(i, ifWorkersCreate, "ifWorkersCreate", size);
-		saveBatch(i, whereWorkersCreate, "whereWorkersCreate", size);
+		saveBatch(i, ifWorkersCreate, "ifWorkerCreate", size);
+		saveBatch(i, whereWorkersCreate, "whereWorkerCreate", size);
 
 		saveBatch(i, ifBuildingCreate, "ifBuildingCreate", size);
 		saveBatch(i, whichBuildingCreate, "whichBuildingCreate", size);
@@ -149,6 +149,7 @@ void Stats::saveAll(int size) {
 		saveBatch(i, ifUnitCreate, "ifUnitCreate", size);
 		saveBatch(i, whichUnitCreate, "whichUnitCreate", size);
 		saveBatch(i, whereUnitCreate, "whereUnitCreate", size);
+		saveBatch(i, whatResource, "whatResource", size);
 	}
 }
 
@@ -182,21 +183,18 @@ std::string Stats::getPosOutput(char player, Urho3D::Vector2& pos) const {
 	return join(data.begin(), data.end());
 }
 
+void Stats::add(UnitActionCommand* command) {
+	const auto playerId = command->player;
+	//TODO czy tu wszystkie rozkazy czy tylko te wydane bez posrednio a nie same
+	if (command->order->getId() == static_cast<char>(UnitAction::COLLECT)) {
+		auto input = join(Game::getAiInputProvider()->getResourceInput(playerId));
+		joinAndPush(whatResource, playerId, input, getResourceIdOutput(command), command->order->getSize());
+	}
+}
+
 std::string Stats::getResourceIdOutput(UnitActionCommand* command) const {
 	float output[4];
 	std::fill_n(output, 4, 0.f);
-	output[command->order->getToUseId()] = 1;
+	output[command->order->getToUseId()] = 1.f;
 	return join(output, output + 4);
-}
-
-void Stats::add(UnitActionCommand* command) {
-	const auto playerId = command->player;
-	//
-	// const std::string input = getInputData(playerId);
-	//
-	// joinAndPush(unitOrderId, playerId, input, getOutput(command));
-	// if (command->order->getId() == static_cast<char>(UnitAction::COLLECT)) {
-	// 	joinAndPush(resourceId, playerId, getResourceIdInputAsString(playerId), getResourceIdOutput(command),
-	// 	            command->order->getSize());
-	// }
 }

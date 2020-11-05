@@ -48,8 +48,8 @@ private:
 
 	Player* player;
 
-	Brain ifWorkersCreate;
-	Brain whereWorkersCreate;
+	Brain ifWorkerCreate;
+	Brain whereWorkerCreate;
 
 	Brain ifBuildingCreate;
 	Brain whichBuildingCreate;

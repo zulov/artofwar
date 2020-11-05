@@ -1,8 +1,11 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <Urho3D/Math/Vector2.h>
 #include "utils/defines.h"
+
+namespace Urho3D {
+	class Vector2;
+}
 
 constexpr char SAVE_BATCH_SIZE = 10;
 
@@ -22,7 +25,7 @@ public:
 	Stats();
 	~Stats();
 	void init();
-	
+
 	Stats(const Stats&) = delete;
 
 	void add(GeneralActionCommand* command);
@@ -38,7 +41,7 @@ private:
 	std::string getCreateBuildingPosOutput(CreationCommand* command) const;
 	std::string getCreateUnitPosOutput(Building* building) const;
 	std::string getPosOutput(char player, Urho3D::Vector2& pos) const;
-	
+
 	std::string getResourceIdOutput(UnitActionCommand* command) const;
 
 	static void joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output,
@@ -60,6 +63,8 @@ private:
 	std::vector<std::string> ifUnitCreate[MAX_PLAYERS];
 	std::vector<std::string> whichUnitCreate[MAX_PLAYERS];
 	std::vector<std::string> whereUnitCreate[MAX_PLAYERS];
+
+	std::vector<std::string> whatResource[MAX_PLAYERS];
 
 	std::string ifWorkersCreateInput[MAX_PLAYERS];
 	std::string ifBuildingsCreatedInput[MAX_PLAYERS];

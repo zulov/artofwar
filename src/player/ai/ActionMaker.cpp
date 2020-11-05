@@ -19,8 +19,8 @@
 
 
 ActionMaker::ActionMaker(Player* player): player(player),
-                                          ifWorkersCreate("ifWorkersCreate_w.csv"),
-                                          whereWorkersCreate("whereWorkersCreate_w.csv"),
+                                          ifWorkerCreate("ifWorkerCreate_w.csv"),
+                                          whereWorkerCreate("whereWorkerCreate_w.csv"),
 
                                           ifBuildingCreate("ifBuildingCreate_w.csv"),
                                           whichBuildingCreate("whichBuildingCreate_w.csv"),
@@ -37,15 +37,15 @@ void ActionMaker::action() {
 	const auto unitsInput = aiInput->getUnitsInput(player->getId()); //TODO czy cokolwiek?
 	const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
 
-	const auto resResult = ifWorkersCreate.decide(resInput);
-	if (resResult[0] > 0.3f) {
+	const auto resResult = ifWorkerCreate.decide(resInput);
+	if (resResult[0] > 0.5f) {
 		auto& units = Game::getDatabase()->getNation(player->getNation())->units;
 		auto unit = units[4]; //TODO lepiej wybrac
 		auto result = createWorker(unit);
 	}
 
 	const auto unitsResult = ifUnitCreate.decide(unitsInput);
-	if (unitsResult[0] > 0.3f) {
+	if (unitsResult[0] > 0.5f) {
 		auto whichOutput = whichUnitCreate.decide(unitsInput);
 		auto unit = chooseUnit(whichOutput);
 
@@ -257,7 +257,7 @@ Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) {
 	if (allPossible.empty()) { return nullptr; }
 	const auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
 
-	const auto result = whereWorkersCreate.decide(input);
+	const auto result = whereWorkerCreate.decide(input);
 
 	return getBuildingClosestArea(allPossible, result);
 }

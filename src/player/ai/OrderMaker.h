@@ -14,7 +14,7 @@ public:
 
 	void action();
 private:
-	std::vector<Unit*> findFreeWorkers();
+	std::vector<Unit*> findFreeWorkers() const;
 	void collect(std::vector<Unit*>& workers);
 
 	Player* player;

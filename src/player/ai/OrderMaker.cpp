@@ -25,7 +25,7 @@ void OrderMaker::action() {
 	}
 }
 
-std::vector<Unit*> OrderMaker::findFreeWorkers() {
+std::vector<Unit*> OrderMaker::findFreeWorkers() const {
 	std::vector<Unit*> freeWorkers;
 	for (auto worker : player->getPossession().getWorkers()) {
 		if (isNotInStates(worker->getState(), {UnitState::COLLECT, UnitState::GO_TO})) {
