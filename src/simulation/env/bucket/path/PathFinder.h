@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "BucketQueue.h"
-#include "simulation/env/CloseIndexProvider.h"
 #include "Urho3D/Math/Vector2.h"
 
 namespace Urho3D {
@@ -10,6 +9,7 @@ namespace Urho3D {
 }
 
 struct GridCalculator;
+struct CloseIndexes;
 class ComplexBucketData;
 
 class PathFinder {
@@ -34,7 +34,7 @@ private:
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 	void resetPathArrays();
-	CloseIndexProvider closeIndexProvider;
+	CloseIndexes* closeIndexes;
 	GridCalculator* calculator;
 
 	std::vector<int>* tempPath;

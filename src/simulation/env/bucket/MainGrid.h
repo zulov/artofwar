@@ -24,7 +24,7 @@ enum class GridDebugType : char {
 
 class MainGrid : public Grid {
 public:
-	MainGrid(short resolution, float size);
+	MainGrid(short resolution, float size, float maxQueryRadius);
 	MainGrid(const MainGrid& rhs) = delete;
 	~MainGrid();
 

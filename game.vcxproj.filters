@@ -177,7 +177,6 @@
     </ClCompile>
     <ClCompile Include="src\commands\action\ResourceActionCommand.cpp" />
     <ClCompile Include="src\commands\action\BuildingActionCommand.cpp" />
-    <ClCompile Include="src\simulation\env\CloseIndexProvider.cpp" />
     <ClCompile Include="src\player\Player.cpp">
       <Filter>player</Filter>
     </ClCompile>
@@ -200,6 +199,10 @@
       <Filter>hud\windows</Filter>
     </ClCompile>
     <ClCompile Include="src\hud\window\EventPanel.cpp" />
+    <ClCompile Include="src\simulation\env\bucket\levels\LevelCache.cpp" />
+    <ClCompile Include="src\simulation\env\bucket\levels\LevelCacheProvider.cpp" />
+    <ClCompile Include="src\simulation\env\CloseIndexes.cpp" />
+    <ClCompile Include="src\simulation\env\CloseIndexesProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -466,7 +469,6 @@
     <ClInclude Include="src\commands\action\ResourceActionType.h" />
     <ClInclude Include="src\commands\action\BuildingActionType.h" />
     <ClInclude Include="src\objects\queue\QueueActionType.h" />
-    <ClInclude Include="src\simulation\env\CloseIndexProvider.h" />
     <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\database\db_load.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
@@ -512,6 +514,10 @@
     </ClInclude>
     <ClInclude Include="src\hud\window\EventPanel.h" />
     <ClInclude Include="src\utils\AssertUtils.h" />
+    <ClInclude Include="src\simulation\env\bucket\levels\LevelCache.h" />
+    <ClInclude Include="src\simulation\env\bucket\levels\LevelCacheProvider.h" />
+    <ClInclude Include="src\simulation\env\CloseIndexes.h" />
+    <ClInclude Include="src\simulation\env\CloseIndexesProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

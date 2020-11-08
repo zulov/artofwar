@@ -64,7 +64,7 @@ private:
 	std::vector<std::string> whichUnitCreate[MAX_PLAYERS];
 	std::vector<std::string> whereUnitCreate[MAX_PLAYERS];
 
-	std::vector<std::string> whatResource[MAX_PLAYERS];
+	std::vector<std::string> whichResource[MAX_PLAYERS];
 
 	std::string ifWorkersCreateInput[MAX_PLAYERS];
 	std::string ifBuildingsCreatedInput[MAX_PLAYERS];

@@ -1,5 +1,4 @@
 ﻿#include "MainGrid.h"
-#include <unordered_set>
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/IO/Log.h>
 #include "Bucket.h"
@@ -9,11 +8,12 @@
 #include "math/MathUtils.h"
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
+#include "simulation/env/CloseIndexes.h"
 
 
-MainGrid::MainGrid(const short resolution, const float size): Grid(resolution, size) {
+MainGrid::MainGrid(short resolution, float size, float maxQueryRadius): Grid(resolution, size, maxQueryRadius) {
 	complexData = new ComplexBucketData[sqResolution];
-	auto quater = fieldSize / 4;
+	auto quater = calculator->getFieldSize() / 4;
 	posInBucket2 = {Urho3D::Vector2(quater, quater), Urho3D::Vector2(-quater, -quater)};
 	posInBucket3 = {
 		Urho3D::Vector2(quater, quater), Urho3D::Vector2(-quater, quater),
@@ -76,9 +76,9 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 		&& data.allNeightOccupied()) {
 		int counter = 0;
 
-		for (auto i : closeIndexProvider.getTabIndexes(index)) {
+		for (auto i : closeIndexes->getTabIndexes(index)) {
 			if (!data.ifNeightIsFree(i)) {
-				sum += calculator->getCenter(index + closeIndexProvider.getIndexAt(i));
+				sum += calculator->getCenter(index + closeIndexes->getIndexAt(i));
 				++counter;
 			}
 		}
@@ -96,7 +96,7 @@ void MainGrid::updateSurround(Static* object) const {
 	if (object->isAlive()) {
 		std::unordered_set<int> indexes;
 		for (auto index : object->getOccupiedCells()) {
-			for (auto inIndex : closeIndexProvider.get(index)) {
+			for (auto inIndex : closeIndexes->get(index)) {
 				auto newIndex = index + inIndex;
 				indexes.emplace(newIndex);
 			}
@@ -153,8 +153,8 @@ char MainGrid::getOrdinalInState(Unit* unit, UnitState state) const {
 
 int MainGrid::getRevertCloseIndex(int center, int gridIndex) const {
 	int index = gridIndex - center;
-	for (auto i : closeIndexProvider.getTabIndexes(center)) {
-		if (closeIndexProvider.getIndexAt(i) == index) {
+	for (auto i : closeIndexes->getTabIndexes(center)) {
+		if (closeIndexes->getIndexAt(i) == index) {
 			//TODO performance
 			return i;
 		}
@@ -196,13 +196,14 @@ void MainGrid::drawDebug(GridDebugType type) const {
 		break;
 	case GridDebugType::GRID:
 	{
+		float size = calculator->getSize();
 		float value = -size / 2;
 		for (int i = 0; i < resolution; ++i) {
 			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, {-size / 2, 10, value},
 			                        {size / 2, 10, value}, Urho3D::Color::CYAN);
 			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, {value, 10, -size / 2},
 			                        {value, 10, size / 2}, Urho3D::Color::CYAN);
-			value += fieldSize;
+			value += calculator->getFieldSize();
 		}
 	}
 	break;
@@ -251,7 +252,7 @@ bool MainGrid::cellIsCollectable(int index) const {
 bool MainGrid::isInLocalArea(const int cell, Urho3D::Vector2& pos) const {
 	const auto index = calculator->indexFromPosition(pos);
 	if (cell == index) { return true; }
-	for (auto value : closeIndexProvider.get(index)) {
+	for (auto value : closeIndexes->get(index)) {
 		if (cell == index + value) {
 			return true;
 		}
@@ -268,12 +269,12 @@ bool MainGrid::isBuildable(int inx) const {
 }
 
 int MainGrid::closestPassableCell(int posIndex) const {
-	for (auto i : closeIndexProvider.get(posIndex)) {
+	for (auto i : closeIndexes->get(posIndex)) {
 		if (complexData[i + posIndex].isPassable()) {
 			return i + posIndex;
 		}
 	}
-	for (auto i : closeIndexProvider.getSecond(posIndex)) {
+	for (auto i : closeIndexes->getSecond(posIndex)) {
 		if (complexData[i + posIndex].isPassable()) {
 			return i + posIndex;
 		}
@@ -337,9 +338,9 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& posit
 		if (!data.allNeightOccupied()) {
 			float dist = 999999;
 			auto center = calculator->getCenter(index);
-			for (auto i : closeIndexProvider.getTabIndexes(index)) {
+			for (auto i : closeIndexes->getTabIndexes(index)) {
 				if (data.ifNeightIsFree(i)) {
-					int ni = index + closeIndexProvider.getIndexAt(i);
+					int ni = index + closeIndexes->getIndexAt(i);
 					float newDist = sqDist(calculator->getCenter(ni), center);
 					if (newDist < dist) {
 						dist = newDist;
@@ -381,8 +382,8 @@ std::pair<Urho3D::IntVector2, Urho3D::Vector2> MainGrid::getValidPosition(
 }
 
 void MainGrid::updateNeighbors(const int current) const {
-	for (auto i : closeIndexProvider.getTabIndexes(current)) {
-		const int nI = current + closeIndexProvider.getIndexAt(i);
+	for (auto i : closeIndexes->getTabIndexes(current)) {
+		const int nI = current + closeIndexes->getIndexAt(i);
 		if (calculator->isValidIndex(nI)) {
 			if (complexData[nI].isPassable()) {
 				complexData[current].setNeightFree(i);

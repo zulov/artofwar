@@ -1,6 +1,50 @@
-#include "CloseIndexProvider.h"
+#include "CloseIndexes.h"
 
-CloseIndexProvider::CloseIndexProvider(short res)
+const std::vector<char> CloseIndexes::tabIndexes[CLOSE_SIZE] = {
+	{4, 6, 7},
+	{3, 4, 5, 6, 7},
+	{3, 5, 6},
+	{1, 2, 4, 6, 7},
+	{0, 1, 2, 3, 4, 5, 6, 7},
+	{0, 1, 3, 5, 6},
+	{1, 2, 4},
+	{0, 1, 2, 3, 4},
+	{0, 1, 3}
+};
+
+const std::vector<char> CloseIndexes::tabIndexesSecond[CLOSE_SECOND_SIZE] = {
+	{8, 10, 13, 14, 15},
+	{8, 10, 12, 13, 14, 15},
+	{7, 8, 9, 10, 11, 12, 13, 14, 15},
+	{7, 9, 11, 12, 13, 14, 15},
+	{7, 9, 11, 12, 13},
+
+	{6, 8, 10, 13, 14, 15},
+	{6, 8, 10, 12, 13, 14, 15},
+	{5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+	{5, 7, 9, 11, 12, 13, 14},
+	{5, 7, 9, 11, 12, 13},
+
+	{2, 3, 4, 6, 8, 10, 13, 14, 15},
+	{1, 2, 3, 4, 6, 8, 10, 12, 13, 14, 15},
+	{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+	{0, 1, 2, 3, 5, 7, 9, 11, 12, 13, 14},
+	{0, 1, 2, 5, 7, 9, 11, 12, 13},
+
+	{2, 3, 4, 6, 8, 10},
+	{1, 2, 3, 4, 6, 8, 10},
+	{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+	{0, 1, 2, 3, 5, 7, 9},
+	{0, 1, 2, 5, 7, 9},
+
+	{2, 3, 4, 6, 8},
+	{1, 2, 3, 4, 6, 8},
+	{0, 1, 2, 3, 4, 5, 6, 7, 8},
+	{0, 1, 2, 3, 5, 7},
+	{0, 1, 2, 5, 7},
+};
+
+CloseIndexes::CloseIndexes(short res)
 	: resolution(res), templateVec{-res - 1, -res, -res + 1, -1, 1, res - 1, res, res + 1},
 	  templateVecSecond{
 		  -2 * res - 2, -2 * res - 1, -2 * res, -2 * res + 1, -2 * res + 2,
@@ -8,47 +52,6 @@ CloseIndexProvider::CloseIndexProvider(short res)
 		  - 2, +2,
 		  res - 2, res + 2,
 		  2 * res - 2, 2 * res - 1, 2 * res, 2 * res + 1, 2 * res + 2,
-	  },
-	  tabIndexes{
-		  {4, 6, 7},
-		  {3, 4, 5, 6, 7},
-		  {3, 5, 6},
-		  {1, 2, 4, 6, 7},
-		  {0, 1, 2, 3, 4, 5, 6, 7},
-		  {0, 1, 3, 5, 6},
-		  {1, 2, 4},
-		  {0, 1, 2, 3, 4},
-		  {0, 1, 3}
-	  }, tabIndexesSecond{
-		  {8, 10, 13, 14, 15},
-		  {8, 10, 12, 13, 14, 15},
-		  {7, 8, 9, 10, 11, 12, 13, 14, 15},
-		  {7, 9, 11, 12, 13, 14, 15},
-		  {7, 9, 11, 12, 13},
-
-		  {6, 8, 10, 13, 14, 15},
-		  {6, 8, 10, 12, 13, 14, 15},
-		  {5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-		  {5, 7, 9, 11, 12, 13, 14},
-		  {5, 7, 9, 11, 12, 13},
-
-		  {2, 3, 4, 6, 8, 10, 13, 14, 15},
-		  {1, 2, 3, 4, 6, 8, 10, 12, 13, 14, 15},
-		  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
-		  {0, 1, 2, 3, 5, 7, 9, 11, 12, 13, 14},
-		  {0, 1, 2, 5, 7, 9, 11, 12, 13},
-
-		  {2, 3, 4, 6, 8, 10},
-		  {1, 2, 3, 4, 6, 8, 10},
-		  {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
-		  {0, 1, 2, 3, 5, 7, 9},
-		  {0, 1, 2, 5, 7, 9},
-
-		  {2, 3, 4, 6, 8},
-		  {1, 2, 3, 4, 6, 8},
-		  {0, 1, 2, 3, 4, 5, 6, 7, 8},
-		  {0, 1, 2, 3, 5, 7},
-		  {0, 1, 2, 5, 7},
 	  } {
 
 	for (int i = 0; i < CLOSE_SIZE; ++i) {
@@ -66,19 +69,21 @@ CloseIndexProvider::CloseIndexProvider(short res)
 	}
 }
 
-char CloseIndexProvider::getIndex(int center) const {
+char CloseIndexes::getIndex(int center) const {
 	const bool firstRow = center < resolution;
 	const bool lastRow = center > resolution * resolution - resolution;
 	const bool firstColumn = center % resolution == 0;
 	const bool lastColumn = center % resolution == resolution - 1;
 
 	char index = 0;
-	if (firstRow) { } else if (lastRow) {
+	if (firstRow) {
+	} else if (lastRow) {
 		index += 6;
 	} else {
 		index += 3;
 	}
-	if (firstColumn) { } else if (lastColumn) {
+	if (firstColumn) {
+	} else if (lastColumn) {
 		index += 2;
 	} else {
 		index += 1;
@@ -86,11 +91,11 @@ char CloseIndexProvider::getIndex(int center) const {
 	return index;
 }
 
-const std::vector<short>& CloseIndexProvider::get(int center) const {
+const std::vector<short>& CloseIndexes::get(int center) const {
 	return closeIndexes[getIndex(center)];
 }
 
-const std::vector<short>& CloseIndexProvider::getSecond(int center) const {
+const std::vector<short>& CloseIndexes::getSecond(int center) const {
 	const bool firstRow = center < resolution;
 	const bool secondRow = !firstRow && center < 2 * resolution;
 
@@ -103,7 +108,8 @@ const std::vector<short>& CloseIndexProvider::getSecond(int center) const {
 	const bool lastColumn = center % resolution == resolution - 1;
 	const bool almostLastColumn = center % resolution == resolution - 2;
 	char index = 0;
-	if (firstRow) { } else if (secondRow) {
+	if (firstRow) {
+	} else if (secondRow) {
 		index += 5;
 	} else if (almostLastRow) {
 		index += 15;
@@ -113,7 +119,8 @@ const std::vector<short>& CloseIndexProvider::getSecond(int center) const {
 		index += 10;
 	}
 
-	if (firstColumn) { } else if (secondColumn) {
+	if (firstColumn) {
+	} else if (secondColumn) {
 		index += 1;
 	} else if (almostLastColumn) {
 		index += 3;
@@ -125,10 +132,10 @@ const std::vector<short>& CloseIndexProvider::getSecond(int center) const {
 	return closeIndexesSecond[index];
 }
 
-const std::vector<char>& CloseIndexProvider::getTabIndexes(int center) const {
+const std::vector<char>& CloseIndexes::getTabIndexes(int center) const {
 	return tabIndexes[getIndex(center)];
 }
 
-short CloseIndexProvider::getIndexAt(char index) const {
+short CloseIndexes::getIndexAt(char index) const {
 	return templateVec[index];
 }

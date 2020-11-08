@@ -1,33 +1,25 @@
 #include "Grid.h"
 #include "Bucket.h"
+#include "levels/LevelCache.h"
+#include "levels/LevelCacheProvider.h"
 #include "objects/unit/Unit.h"
+#include "simulation/env/CloseIndexes.h"
+#include "simulation/env/CloseIndexesProvider.h"
 #include "simulation/env/ContentInfo.h"
 #include "simulation/env/GridCalculator.h"
 #include "simulation/env/GridCalculatorProvider.h"
 #include "utils/consts.h"
 
-Grid::Grid(short resolution, float size): calculator(GridCalculatorProvider::get(resolution, size)), closeIndexProvider(resolution),
-                                          resolution(resolution), sqResolution(resolution * resolution),
-                                          size(size), fieldSize(size / resolution),
-                                          invFieldSize(resolution / size) {
-
-	levelsCache[0] = new std::vector<short>(1);
-	for (int i = 1; i < RES_SEP_DIST; ++i) {
-		levelsCache[i] = getEnvIndexs((float)MAX_SEP_DIST / RES_SEP_DIST * i, levelsCache[i - 1]);
-	}
-
+Grid::Grid(short resolution, float size, float maxQueryRadius)
+	: calculator(GridCalculatorProvider::get(resolution, size)),
+	  levelCache(LevelCacheProvider::get(resolution, maxQueryRadius, calculator)),
+	  closeIndexes(CloseIndexesProvider::get(resolution)),
+	  resolution(resolution), sqResolution(resolution * resolution){
 	buckets = new Bucket[sqResolution];
 	tempSelected = new std::vector<Physical*>();
 }
 
 Grid::~Grid() {
-	delete levelsCache[0];
-	for (int i = 1; i < RES_SEP_DIST; ++i) {
-		if (levelsCache[i - 1] != levelsCache[i]) {
-			delete levelsCache[i];
-		}
-	}
-
 	delete[] buckets;
 	delete tempSelected;
 }
@@ -58,24 +50,16 @@ void Grid::update(Physical* entity) const {
 	}
 }
 
-std::vector<short>* Grid::getEnvIndexesFromCache(float dist) {
-	const int index = dist * invDiff;
-	if (index < RES_SEP_DIST) {
-		return levelsCache[index];
-	}
-	return levelsCache[RES_SEP_DIST - 1];
-}
-
-BucketIterator& Grid::getArrayNeight(Urho3D::Vector3& position, float radius, short thread) {
-	return *iterators[thread].init(getEnvIndexesFromCache(radius), calculator->indexFromPosition(position), this);
+BucketIterator& Grid::getArrayNeight(Urho3D::Vector3& position, float radius) {
+	return *iterator.init(levelCache->get(radius), calculator->indexFromPosition(position), this);
 }
 
 const std::vector<short>& Grid::getCloseIndexes(int center) const {
-	return closeIndexProvider.get(center);
+	return closeIndexes->get(center);
 }
 
 const std::vector<char>& Grid::getCloseTabIndexes(short center) const {
-	return closeIndexProvider.getTabIndexes(center);
+	return closeIndexes->getTabIndexes(center);
 }
 
 void Grid::removeAt(int index, Physical* entity) const {
@@ -165,46 +149,4 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float r
 	}
 
 	return tempSelected;
-}
-
-bool Grid::fieldInCircle(short i, short j, float radius) const {
-	const short x = i * fieldSize;
-	const short y = j * fieldSize;
-	return x * x + y * y < radius;
-}
-
-std::vector<short>* Grid::getEnvIndexs(float radius, std::vector<short>* prev) const {
-	radius *= radius;
-	auto indexes = new std::vector<short>();
-	for (short i = 0; i < RES_SEP_DIST; ++i) {
-		for (short j = 0; j < RES_SEP_DIST; ++j) {
-			if (fieldInCircle(i, j, radius)) {
-				const short x = i + 1;
-				const short y = j + 1;
-				indexes->push_back(calculator->getNotSafeIndex(x, y));
-				indexes->push_back(calculator->getNotSafeIndex(x, -y));
-				indexes->push_back(calculator->getNotSafeIndex(-x, y));
-				indexes->push_back(calculator->getNotSafeIndex(-x, -y));
-			} else {
-				break;
-			}
-		}
-		if (fieldInCircle(i, 0, radius)) {
-			const short x = i + 1;
-			indexes->push_back(calculator->getNotSafeIndex(x, 0));
-			indexes->push_back(calculator->getNotSafeIndex(0, x));
-			indexes->push_back(calculator->getNotSafeIndex(-x, 0));
-			indexes->push_back(calculator->getNotSafeIndex(0, -x));
-		} else {
-			break;
-		}
-	}
-	indexes->push_back(calculator->getNotSafeIndex(0, 0));
-	std::sort(indexes->begin(), indexes->end());
-	if (std::equal(indexes->begin(), indexes->end(), prev->begin(), prev->end())) {
-		delete indexes;
-		return prev;
-	}
-	indexes->shrink_to_fit();
-	return indexes;
 }

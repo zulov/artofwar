@@ -6,10 +6,11 @@
 #include "simulation/env/GridCalculator.h"
 #include "simulation/env/GridCalculatorProvider.h"
 #include "utils/defines.h"
-
+#include "simulation/env/CloseIndexes.h"
+#include "simulation/env/CloseIndexesProvider.h"
 
 PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexData) :
-	closeIndexProvider(resolution), calculator(GridCalculatorProvider::get(resolution, size)),
+	closeIndexes(CloseIndexesProvider::get(resolution)), calculator(GridCalculatorProvider::get(resolution, size)),
 	resolution(resolution), fieldSize(size / resolution),
 	complexData(complexData) {
 	tempPath = new std::vector<int>();
@@ -81,11 +82,15 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 		if (current == endIdx) {
 			break;
 		}
-		auto& closeTabIndx = closeIndexProvider.getTabIndexes(current);
+		auto& closeTabIndx = closeIndexes->getTabIndexes(current);
 
 		for (auto i : closeTabIndx) {
 			if (complexData[current].ifNeightIsFree(i)) {
-				int next = current + closeIndexProvider.getIndexAt(i);
+				int next = current + closeIndexes->getIndexAt(i);
+				if (!(next >= 0 && next < resolution * resolution)) {
+					std::cout << current << "@@" << next << std::endl;
+					int a = 5;
+				}
 				assert(next>=0 && next<resolution*resolution);
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + complexData[current].getCost(i);
@@ -117,11 +122,11 @@ std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim)
 		if (complexData[end].allNeightOccupied()) {
 			end = complexData[end].getEscapeBucket();
 		} else {
-			auto& closeTabIndx = closeIndexProvider.getTabIndexes(end);
+			auto& closeTabIndx = closeIndexes->getTabIndexes(end);
 
 			for (auto i : closeTabIndx) {
 				if (complexData[end].ifNeightIsFree(i)) {
-					end = end + closeIndexProvider.getIndexAt(i); //TODO obliczyc lepszy, a nie pierwszy z brzegu
+					end = end + closeIndexes->getIndexAt(i); //TODO obliczyc lepszy, a nie pierwszy z brzegu
 					//TODO bug wyjscie pioza
 					break;
 				}
@@ -164,11 +169,11 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 				complexData[current].setEscapeThrough(-1);
 				break;
 			}
-			auto& closeTabIndx = closeIndexProvider.getTabIndexes(end);
+			auto& closeTabIndx = closeIndexes->getTabIndexes(end);
 
 			for (auto i : closeTabIndx) {
 				if (!complexData[current].ifNeightIsFree(i)) {
-					int nI = current + closeIndexProvider.getIndexAt(i);
+					int nI = current + closeIndexes->getIndexAt(i);
 
 					if (!complexData[nI].allNeightOccupied()
 						&& refreshed.find(nI) == refreshed.end()) {

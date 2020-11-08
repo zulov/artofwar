@@ -188,6 +188,9 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\simulation\env\CloseIndexesProvider.cpp" />
+    <ClCompile Include="src\simulation\env\bucket\levels\LevelCacheProvider.cpp" />
+    <ClCompile Include="src\simulation\env\bucket\levels\LevelCache.cpp" />
     <ClCompile Include="src\hud\window\EventPanel.cpp" />
     <ClCompile Include="src\stats\AiInputProvider.cpp" />
     <ClCompile Include="src\simulation\env\GridCalculatorProvider.cpp" />
@@ -199,7 +202,7 @@
     <ClCompile Include="src\commands\action\GeneralActionCommand.cpp" />
     <ClCompile Include="src\math\RandGen.cpp" />
     <ClCompile Include="src\player\ai\ActionMaker.cpp" />
-    <ClCompile Include="src\simulation\env\CloseIndexProvider.cpp" />
+    <ClCompile Include="src\simulation\env\CloseIndexes.cpp" />
     <ClCompile Include="src\commands\action\ResourceActionCommand.cpp" />
     <ClCompile Include="src\commands\action\BuildingActionCommand.cpp" />
     <ClCompile Include="src\player\ai\ActionCenter.cpp" />
@@ -303,6 +306,9 @@
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\simulation\env\CloseIndexesProvider.h" />
+    <ClInclude Include="src\simulation\env\bucket\levels\LevelCacheProvider.h" />
+    <ClInclude Include="src\simulation\env\bucket\levels\LevelCache.h" />
     <ClInclude Include="src\hud\window\EventPanel.h" />
     <ClInclude Include="src\stats\AiInputProvider.h" />
     <ClInclude Include="src\objects\Metrics.h" />
@@ -325,7 +331,7 @@
     <ClInclude Include="src\player\ai\ActionMaker.h" />
     <ClInclude Include="src\player\ai\ActionMakerLogger.h" />
     <ClInclude Include="src\player\ai\AiUtils.h" />
-    <ClInclude Include="src\simulation\env\CloseIndexProvider.h" />
+    <ClInclude Include="src\simulation\env\CloseIndexes.h" />
     <ClInclude Include="src\commands\action\BuildingActionType.h" />
     <ClInclude Include="src\commands\action\ResourceActionType.h" />
     <ClInclude Include="src\objects\unit\order\enums\UnitActionType.h" />

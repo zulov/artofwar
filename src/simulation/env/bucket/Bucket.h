@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 
-
 struct content_info;
 class Physical;
 

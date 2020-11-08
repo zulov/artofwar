@@ -139,17 +139,18 @@ void Stats::saveBatch(int i, std::vector<std::string>* array, std::string name, 
 
 void Stats::saveAll(int size) {
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		saveBatch(i, ifWorkersCreate, "ifWorkerCreate", size);
-		saveBatch(i, whereWorkersCreate, "whereWorkerCreate", size);
+		saveBatch(i, ifWorkersCreate, "worker/ifWorkerCreate", size);
+		saveBatch(i, whereWorkersCreate, "worker/whereWorkerCreate", size);
 
-		saveBatch(i, ifBuildingCreate, "ifBuildingCreate", size);
-		saveBatch(i, whichBuildingCreate, "whichBuildingCreate", size);
-		saveBatch(i, whereBuildingCreate, "whereBuildingCreate", size);
+		saveBatch(i, ifBuildingCreate, "building/ifBuildingCreate", size);
+		saveBatch(i, whichBuildingCreate, "building/whichBuildingCreate", size);
+		saveBatch(i, whereBuildingCreate, "building/whereBuildingCreate", size);
 
-		saveBatch(i, ifUnitCreate, "ifUnitCreate", size);
-		saveBatch(i, whichUnitCreate, "whichUnitCreate", size);
-		saveBatch(i, whereUnitCreate, "whereUnitCreate", size);
-		saveBatch(i, whatResource, "whatResource", size);
+		saveBatch(i, ifUnitCreate, "unit/ifUnitCreate", size);
+		saveBatch(i, whichUnitCreate, "unit/whichUnitCreate", size);
+		saveBatch(i, whereUnitCreate, "unit/whereUnitCreate", size);
+		
+		saveBatch(i, whichResource, "resource/whichResource", size);
 	}
 }
 
@@ -188,7 +189,7 @@ void Stats::add(UnitActionCommand* command) {
 	//TODO czy tu wszystkie rozkazy czy tylko te wydane bez posrednio a nie same
 	if (command->order->getId() == static_cast<char>(UnitAction::COLLECT)) {
 		auto input = join(Game::getAiInputProvider()->getResourceInput(playerId));
-		joinAndPush(whatResource, playerId, input, getResourceIdOutput(command), command->order->getSize());
+		joinAndPush(whichResource, playerId, input, getResourceIdOutput(command), command->order->getSize());
 	}
 }
 

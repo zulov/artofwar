@@ -15,12 +15,12 @@
 
 
 Environment::Environment(Urho3D::Terrain* terrian):
-	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE),
-	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE),
-	buildingGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE),
+	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, 24),
+	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE, 256),
+	buildingGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE, 256),
 	teamUnitGrid{
-		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE},
-		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE}
+		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE, 256},
+		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE, 256}
 	}, influenceManager(MAX_PLAYERS), terrain(terrian) {
 	neights = new std::vector<Physical*>();
 	neights2 = new std::vector<Physical*>();
@@ -56,7 +56,7 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	neights->clear();
 
 	const auto& center = physical->getPosition();
-	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius, 0);
+	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius);
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
@@ -72,7 +72,7 @@ std::vector<Physical*>* Environment::getNeighbours(Urho3D::Vector3& center, Grid
                                                    int id) const {
 	neights->clear();
 
-	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(center, radius, 0);
+	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(center, radius);
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
@@ -325,7 +325,7 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 	float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (auto& center : centers) {
 		for (auto index : mainGrid.getArrayNeight(center, ratio)) {
-			auto gridCenter = mainGrid.getCenter(index);	
+			auto gridCenter = mainGrid.getCenter(index);
 			if (validateStatic(building->size, gridCenter)) {
 				return gridCenter;
 			}
