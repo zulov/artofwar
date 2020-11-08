@@ -32,11 +32,15 @@ private:
 	static StateManager* instance;
 };
 
-inline bool isNotInStates(UnitState state, std::initializer_list<UnitState> states) {
+inline bool isInStates(UnitState state, std::initializer_list<UnitState> states) {
 	for (auto s : states) {
 		if (state == s) {
-			return false;
+			return true;
 		}
 	}
-	return true;
+	return false;
+}
+
+inline bool isFree(UnitState state) {
+	return isInStates(state, {UnitState::STOP, UnitState::MOVE});
 }

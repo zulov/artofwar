@@ -12,6 +12,7 @@ inline void logThree(int ids[3], float vals[3], float max) {
 		for (int i = 0; i < 3; ++i) {
 			std::cout << ids[i] << "-" << (vals[i] / max * 100) << "%, ";
 		}
+		std::cout << std::endl;
 	}
 }
 

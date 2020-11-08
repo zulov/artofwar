@@ -6,6 +6,7 @@
 enum class UnitState : char;
 class Player;
 class Unit;
+class Physical;
 
 class OrderMaker {
 public:
@@ -15,9 +16,10 @@ public:
 	void action();
 private:
 	std::vector<Unit*> findFreeWorkers() const;
+	
+	Physical * OrderMaker::closetInRange(Unit* worker, int resourceId, float radius);
 	void collect(std::vector<Unit*>& workers);
 
 	Player* player;
-	Brain collectResourceId;
-
+	Brain whatResource;
 };
