@@ -4,6 +4,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/SimulationObjectManager.h"
+#include "objects/queue/QueueActionType.h"
 
 
 UpgradeCommand::UpgradeCommand(char player, int id, QueueActionType type): AbstractCommand(player), type(type), id(id) {

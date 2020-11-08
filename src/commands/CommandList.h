@@ -1,10 +1,11 @@
 #pragma once
-#include "AbstractCommand.h"
 #include <vector>
+
+class AbstractCommand;
 
 class CommandList {
 public:
-	CommandList();
+	CommandList() = default;
 	virtual ~CommandList();
 	void add(AbstractCommand* command);
 	void add(AbstractCommand* first, AbstractCommand* second);

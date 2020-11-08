@@ -1,9 +1,6 @@
 #include "CommandList.h"
+#include "AbstractCommand.h"
 #include "utils/DeleteUtils.h"
-
-
-CommandList::CommandList() = default;
-
 
 CommandList::~CommandList() {
 	clear_vector(commands);

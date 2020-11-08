@@ -4,7 +4,9 @@
 #include "objects/queue/QueueManager.h"
 #include "ai/ActionMaker.h"
 #include "ai/OrderMaker.h"
+#include "database/db_strcut.h"
 
+struct db_nation;
 enum class ActionType : char;
 
 class Player {

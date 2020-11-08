@@ -1,5 +1,4 @@
 #include "Resources.h"
-#include <string>
 #include "Game.h"
 #include "database/DatabaseCache.h"
 

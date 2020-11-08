@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "commands/AbstractCommand.h"  // for AbstractCommand
+#include "commands/AbstractCommand.h"
 
 enum class ResourceActionType : char;
 class ResourceEntity;

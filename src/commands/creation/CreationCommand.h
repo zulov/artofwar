@@ -4,12 +4,8 @@
 #include <Urho3D/Math/Vector2.h>
 
 
-
 enum class ObjectType : char;
 class SimulationObjectManager;
-
-namespace Urho3D {
-}
 
 class CreationCommand : public AbstractCommand {
 	friend class Stats;

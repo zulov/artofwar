@@ -1,9 +1,8 @@
 #pragma once
 #include "commands/AbstractCommand.h"
-#include "objects/queue/QueueActionType.h"
-
 
 enum class ActionType : char;
+enum class QueueActionType : char;
 class SimulationObjectManager;
 
 class UpgradeCommand : public AbstractCommand {

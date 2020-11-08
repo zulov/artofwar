@@ -1,7 +1,5 @@
 #pragma once
 #include <vector>
-
-#include "initializer_list"
 #include "LeftMenuModes.h"
 #include "hud/window/EventPanel.h"
 

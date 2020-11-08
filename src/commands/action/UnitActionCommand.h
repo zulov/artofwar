@@ -14,7 +14,7 @@ class UnitActionCommand : public AbstractCommand {
 	friend class Stats;
 public:
 	UnitActionCommand(UnitOrder* order, char player);
-	~UnitActionCommand() override;
+	~UnitActionCommand() override = default;
 
 	void execute() override;
 protected:

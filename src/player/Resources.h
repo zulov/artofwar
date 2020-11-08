@@ -2,7 +2,9 @@
 
 #include <string>
 #include <span>
-#include "database/db_strcut.h"
+#include <vector>
+
+struct db_cost;
 
 class Resources {
 public:
