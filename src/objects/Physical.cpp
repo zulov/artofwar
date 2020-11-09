@@ -109,7 +109,7 @@ std::string Physical::getColumns() {
 		"level		INT     NOT NULL,";
 }
 
-int Physical::getLevel() {
+int Physical::getLevelNum() {
 	return -1;
 }
 
@@ -118,7 +118,7 @@ std::string Physical::getValues(int precision) {
 	return std::to_string(getId()) + ","
 		+ std::to_string(hp_coef) + ","
 		+ std::to_string(player) + ","
-		+ std::to_string(getLevel()) + ",";
+		+ std::to_string(getLevelNum()) + ",";
 }
 
 int Physical::belowCloseLimit() {

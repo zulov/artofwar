@@ -7,7 +7,7 @@
 LevelCache::LevelCache(unsigned short resolution, float maxDistance, GridCalculator* calculator)
 	: resolution(resolution), maxDistance(maxDistance), invDiff(RES_SEP_DIST / maxDistance), calculator(calculator) {
 
-	levelsCache[0] = new std::vector<short>(1); //TODO empty???
+	levelsCache[0] = new std::vector<short>(1);
 	for (int i = 1; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs(maxDistance / RES_SEP_DIST * i, levelsCache[i - 1]);
 	}

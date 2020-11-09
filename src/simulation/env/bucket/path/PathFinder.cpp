@@ -11,7 +11,7 @@
 
 PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexData) :
 	closeIndexes(CloseIndexesProvider::get(resolution)), calculator(GridCalculatorProvider::get(resolution, size)),
-	resolution(resolution), fieldSize(size / resolution),
+	resolution(resolution), fieldSize(size / resolution), max_cost_to_ref(resolution * resolution - 1),
 	complexData(complexData) {
 	tempPath = new std::vector<int>();
 	tempPath->reserve(DEFAULT_VECTOR_SIZE);

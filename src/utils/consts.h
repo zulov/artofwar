@@ -3,7 +3,6 @@
 #include "objects/unit/ActionParameter.h"
 
 struct Consts {
-
 	inline static Urho3D::Vector2 circleCords[8] =
 	{
 		{0, 1},

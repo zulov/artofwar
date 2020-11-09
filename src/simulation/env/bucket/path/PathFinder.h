@@ -54,7 +54,7 @@ private:
 
 	int staticCounter = 0;
 	int min_cost_to_ref = 0;
-	int max_cost_to_ref = resolution * resolution - 1;
+	int max_cost_to_ref;
 
 	BucketQueue frontier;
 };

@@ -59,6 +59,7 @@ public:
 	std::vector<Urho3D::Vector2> getAreas(const std::span<float> result, char player);
 	void addCollect(Unit* unit, float value);
 	void addAttack(Unit* unit, float value);
+	Urho3D::Vector2 getCenterOf(char id, char player);
 
 private:
 	std::vector<Urho3D::Vector2> centersFromIndexes(float* values,
@@ -73,6 +74,7 @@ private:
 	void drawAll(const std::vector<T*>& maps, Urho3D::String name) const;
 
 	std::vector<std::array<InfluenceMapFloat*, 5>> mapsForAiPerPlayer;
+	std::vector<std::array<InfluenceMapQuad*, 3>> mapsForCentersPerPlayer;
 
 	std::vector<InfluenceMapInt*> unitsNumberPerPlayer;
 
@@ -83,9 +85,9 @@ private:
 	std::vector<InfluenceMapHistory*> gatherSpeed;
 	std::vector<InfluenceMapHistory*> attackSpeed;
 
-	std::vector<InfluenceMapQuad*> unitsQuad;
+	std::vector<InfluenceMapQuad*> econQuad;
 	std::vector<InfluenceMapQuad*> buildingsQuad;
-	std::vector<InfluenceMapQuad*> gatherQuad;
+	std::vector<InfluenceMapQuad*> unitsQuad;
 
 	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 	content_info* ci;

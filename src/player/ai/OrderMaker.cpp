@@ -15,6 +15,7 @@
 
 OrderMaker::OrderMaker(Player* player)
 	: player(player), whatResource("whichResource_w.csv") {
+	assert(econAttackCenter.size()==player->getPossession().getFreeArmyMetrics().size());
 }
 
 void OrderMaker::action() {
@@ -22,6 +23,12 @@ void OrderMaker::action() {
 
 	if (!freeWorkers.empty()) {
 		collect(freeWorkers);
+	}
+	bool ifAttack = threshold.ifAttack(player->getPossession().getFreeArmyMetrics());
+	if (ifAttack) {
+		char id = threshold.getBestToAttack(player->getPossession().getFreeArmyMetrics());
+		char enemy=1;
+		Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(id,enemy);
 	}
 }
 
@@ -48,7 +55,8 @@ void OrderMaker::collect(std::vector<Unit*>& workers) {
 	for (auto worker : workers) {
 		const auto resourceId = biggestWithRand(result);
 
-		for (auto radius : {64.f, 128.f, 256.f}) {//TODO bug cos nei uwzglednia tej odleglsoci
+		for (auto radius : {64.f, 128.f, 256.f}) {
+			//TODO bug cos nei uwzglednia tej odleglsoci
 			auto closest = closetInRange(worker, resourceId, radius);
 			if (closest) {
 				Game::getActionCenter()

@@ -34,7 +34,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
 		unitsQuad.emplace_back(new InfluenceMapQuad(1, 7, InfluenceMapType::INT, BUCKET_GRID_SIZE, 0.5f, 1, 2));
 		buildingsQuad.emplace_back(new InfluenceMapQuad(1, 7, InfluenceMapType::INT, BUCKET_GRID_SIZE, 0.5f, 1, 2));
-		gatherQuad.emplace_back(new InfluenceMapQuad(1, 7, InfluenceMapType::HISTORY, BUCKET_GRID_SIZE, 0.5f, 1, 10));
+		econQuad.emplace_back(new InfluenceMapQuad(1, 7, InfluenceMapType::HISTORY, BUCKET_GRID_SIZE, 0.5f, 1, 10));
 	}
 
 	resourceInfluence = new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40);
@@ -47,6 +47,11 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 			attackSpeed[player],
 			gatherSpeed[player]
 		}); //TODO more?
+		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMapQuad*, 3>{
+			econQuad[player],
+			buildingsQuad[player],
+			unitsQuad[player]
+		});
 		assert(validSizes(mapsForAiPerPlayer.at(player)));
 	}
 
@@ -66,7 +71,7 @@ InfluenceManager::~InfluenceManager() {
 
 	clear_vector(unitsQuad);
 	clear_vector(buildingsQuad);
-	clear_vector(gatherQuad);
+	clear_vector(econQuad);
 	delete ci;
 }
 
@@ -125,7 +130,7 @@ void InfluenceManager::drawAll(const std::vector<T*>& maps, Urho3D::String name)
 void InfluenceManager::updateQuad(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
 	resetMaps(unitsQuad);
 	resetMaps(buildingsQuad);
-	resetMaps(gatherQuad);
+	resetMaps(econQuad);
 
 	for (auto unit : (*units)) {
 		unitsQuad[unit->getPlayer()]->update(unit);
@@ -135,7 +140,7 @@ void InfluenceManager::updateQuad(std::vector<Unit*>* units, std::vector<Buildin
 	}
 	//calcStats(unitsQuad);
 	//calcStats(buildingsQuad);
-	//calcStats(gatherQuad);
+	//calcStats(econQuad);
 }
 
 void InfluenceManager::updateWithHistory() const {
@@ -197,7 +202,7 @@ void InfluenceManager::drawAll() {
 
 	drawAll(unitsQuad, "unitsQuad");
 	drawAll(buildingsQuad, "buildingsQuad");
-	drawAll(gatherQuad, "gatherQuad");
+	drawAll(econQuad, "econQuad");
 }
 
 void InfluenceManager::switchDebug() {
@@ -310,11 +315,15 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> r
 
 void InfluenceManager::addCollect(Unit* unit, float value) {
 	gatherSpeed[unit->getPlayer()]->update(unit, value);
-	gatherQuad[unit->getPlayer()]->update(unit, value);
+	econQuad[unit->getPlayer()]->update(unit, value);
 }
 
 void InfluenceManager::addAttack(Unit* unit, float value) {
 	attackSpeed[unit->getPlayer()]->update(unit, value);
+}
+
+Urho3D::Vector2 InfluenceManager::getCenterOf(char id, char player) {
+	 return mapsForCentersPerPlayer[player][id]->getCenter();
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(float* values,

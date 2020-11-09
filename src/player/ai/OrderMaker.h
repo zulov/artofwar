@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "nn/Brain.h"
+#include "threshold/ThresholdCalculator.h"
 
 enum class UnitState : char;
 class Player;
@@ -22,4 +23,6 @@ private:
 
 	Player* player;
 	Brain whatResource;
+	ThresholdCalculator threshold;
+	
 };

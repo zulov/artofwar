@@ -359,6 +359,10 @@ bool Environment::cellIsCollectable(int index) const {
 	return mainGrid.cellIsCollectable(index);
 }
 
+Urho3D::Vector2 Environment::getCenterOf(char id, char player) {
+	return influenceManager.getCenterOf(id, player);
+}
+
 bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) const {
 	return mainGrid.isInLocalArea(getMainCell, pos);
 }

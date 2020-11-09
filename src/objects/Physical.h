@@ -86,7 +86,7 @@ public:
 	void unSelect();
 	virtual Urho3D::String toMultiLineString();
 
-	virtual int getLevel();
+	virtual int getLevelNum();
 
 	virtual void clean() { }
 

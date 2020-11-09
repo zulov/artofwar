@@ -1,0 +1,22 @@
+#pragma once
+
+#include <magic_enum.hpp>
+#include <span>
+#include "objects/Metrics.h"
+
+class ThresholdCalculator {
+public:
+
+	ThresholdCalculator() = default;
+	
+	bool ifAttack(std::span<float> value);
+	char getBestToAttack(std::span<float> value);
+private:
+	float hasReach(float* threshold, std::span<float> value);
+	float diff(float* threshold, std::span<float> value);
+	
+
+	float econAttackCenter[magic_enum::enum_count<UnitMetric>() - 1] = {1.f, 2.f, 3.f, 2.f, 2.f};
+	float buildingAttackCenter[magic_enum::enum_count<UnitMetric>() - 1] = {2.f, 3.f, 2.f, 2.f, 1.f};
+	float unitsAttackCenter[magic_enum::enum_count<UnitMetric>() - 1] = {3.f, 2.f, 2.f, 1.f, 2.f};
+};

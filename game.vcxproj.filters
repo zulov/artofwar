@@ -203,6 +203,7 @@
     <ClCompile Include="src\simulation\env\bucket\levels\LevelCacheProvider.cpp" />
     <ClCompile Include="src\simulation\env\CloseIndexes.cpp" />
     <ClCompile Include="src\simulation\env\CloseIndexesProvider.cpp" />
+    <ClCompile Include="src\player\ai\threshold\ThresholdCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -518,6 +519,7 @@
     <ClInclude Include="src\simulation\env\bucket\levels\LevelCacheProvider.h" />
     <ClInclude Include="src\simulation\env\CloseIndexes.h" />
     <ClInclude Include="src\simulation\env\CloseIndexesProvider.h" />
+    <ClInclude Include="src\player\ai\threshold\ThresholdCalculator.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

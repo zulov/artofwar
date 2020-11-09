@@ -5,6 +5,7 @@
 #include "objects/Metrics.h"
 
 
+class Player;
 class SimulationInfo;
 class Unit;
 class Building;
@@ -29,6 +30,7 @@ public:
 	float getBuildingsVal(BuildingMetric value) const;
 
 	std::span<float> getUnitsMetrics() const;
+	std::span<float> getFreeArmyMetrics() const;
 	std::span<float> getBuildingsMetrics() const;
 
 	std::vector<Unit*>& getWorkers();
@@ -42,7 +44,10 @@ private:
 	float resourcesSum = 0;
 
 	float unitsMetrics[magic_enum::enum_count<UnitMetric>()-1];
+	float freeArmyMetrics[magic_enum::enum_count<UnitMetric>()-1];
 	float buildingsMetrics[magic_enum::enum_count<BuildingMetric>()-1];
+	
 	const std::span<float> unitsValuesAsSpan = std::span(unitsMetrics);
+	const std::span<float> freeArmyMetricsAsSpan = std::span(freeArmyMetrics);
 	const std::span<float> buildingsValuesAsSpan = std::span(buildingsMetrics);
 };

@@ -102,6 +102,7 @@ public:
 	short getFormation() const { return formation; }
 	bool isToDispose() const override { return state == UnitState::DISPOSE && atState; }
 	bool hasAim() const { return aims.hasAim(); }
+	db_unit_level* getLevel() const { return dbLevel; }
 
 	float getAttackRange() const;
 	bool bucketHasChanged(int _bucketIndex, char param) const;
@@ -121,7 +122,7 @@ public:
 	Urho3D::String toMultiLineString() override;
 	float getMaxHpBarSize() const override;
 	bool isAlive() const override;
-	int getLevel() override;
+	int getLevelNum() override;
 	short getId() override;
 	void clean() override;
 	void fillValues(std::span<float> weights) const;

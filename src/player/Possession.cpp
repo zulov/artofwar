@@ -59,6 +59,10 @@ std::span<float> Possession::getUnitsMetrics() const {
 	return unitsValuesAsSpan;
 }
 
+std::span<float> Possession::getFreeArmyMetrics() const {
+	return unitsValuesAsSpan;
+}
+
 std::span<float> Possession::getBuildingsMetrics() const {
 	return buildingsValuesAsSpan;
 }
@@ -74,15 +78,8 @@ void Possession::add(Building* building) {
 
 void Possession::add(Unit* unit) {
 	units.push_back(unit);
-	StateManager::checkChangeState(unit, UnitState::COLLECT);
-	auto orders = Game::getDatabase()->getUnit(unit->getId())->orders;
-	bool result = false;
-	for (auto order : orders) {
-		if (order->id == static_cast<char>(UnitAction::COLLECT)) {
-			result = true;
-		}
-	}
-	if (result) {
+
+	if (unit->getLevel()->canCollect) {
 		workers.push_back(unit);
 	}
 }
@@ -100,8 +97,13 @@ void Possession::updateAndClean(Resources& resources, SimulationInfo* simInfo) {
 		}
 	}
 	std::fill_n(unitsValuesAsSpan.begin(), unitsValuesAsSpan.size(), 0.f);
+	std::fill_n(freeArmyMetricsAsSpan.begin(), freeArmyMetricsAsSpan.size(), 0.f);
 	for (auto unit : units) {
 		unit->addValues(unitsValuesAsSpan);
+		
+		if(!unit->getLevel()->canCollect && isFree(unit->getState())) {
+			unit->addValues(freeArmyMetricsAsSpan);
+		}
 	}
 
 	std::fill_n(buildingsValuesAsSpan.begin(), buildingsValuesAsSpan.size(), 0.f);

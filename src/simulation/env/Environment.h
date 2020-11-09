@@ -104,6 +104,7 @@ public:
 	void drawInfluence();
 	bool cellIsPassable(int index) const;
 	bool cellIsCollectable(int index) const;
+	Urho3D::Vector2 getCenterOf(char id, char player);
 
 private:
 	MainGrid mainGrid;
