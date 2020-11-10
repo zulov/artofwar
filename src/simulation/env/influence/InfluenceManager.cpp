@@ -322,8 +322,8 @@ void InfluenceManager::addAttack(Unit* unit, float value) {
 	attackSpeed[unit->getPlayer()]->update(unit, value);
 }
 
-Urho3D::Vector2 InfluenceManager::getCenterOf(char id, char player) {
-	 return mapsForCentersPerPlayer[player][id]->getCenter();
+Urho3D::Vector2 InfluenceManager::getCenterOf(CenterType id, char player) {
+	 return mapsForCentersPerPlayer[player][static_cast<char>(id)]->getCenter();
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(float* values,

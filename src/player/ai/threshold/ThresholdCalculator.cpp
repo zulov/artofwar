@@ -1,5 +1,7 @@
 #include "ThresholdCalculator.h"
 
+#include "simulation/env/influence/CenterType.h"
+
 
 float ThresholdCalculator::hasReach(float* threshold, std::span<float> value) {
 	float sum = 0;
@@ -26,21 +28,24 @@ float ThresholdCalculator::diff(float* threshold, std::span<float> value) {
 }
 
 bool ThresholdCalculator::ifAttack(std::span<float> value) {
+	assert((*(&econAttackCenter + 1) - econAttackCenter)==value.size());
+	assert((*(&buildingAttackCenter + 1) - buildingAttackCenter)==value.size());
+	assert((*(&unitsAttackCenter + 1) - unitsAttackCenter)==value.size());
 	return hasReach(econAttackCenter, value) == 0.f
 		|| hasReach(buildingAttackCenter, value) == 0.f
 		|| hasReach(unitsAttackCenter, value) == 0.f;
 }
 
-char ThresholdCalculator::getBestToAttack(std::span<float> value) {
+CenterType ThresholdCalculator::getBestToAttack(std::span<float> value) {
 	float a = diff(econAttackCenter, value);
 	float b = diff(buildingAttackCenter, value);
 	float c = diff(unitsAttackCenter, value);
 
 	if (a > b && a > c) {
-		return 1;
+		return CenterType::ECON;
 	}
 	if (b > c) {
-		return 2;
+		return CenterType::BUILDING;
 	}
-	return 3;
+	return CenterType::UNITS;
 }

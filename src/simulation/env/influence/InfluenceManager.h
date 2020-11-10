@@ -5,6 +5,7 @@
 #include <vector>
 #include "player/ai/InfluenceDataType.h"
 
+enum class CenterType:char;
 struct GridCalculator;
 class InfluenceMapInt;
 class Building;
@@ -14,8 +15,7 @@ class InfluenceMapCombine;
 class InfluenceMapQuad;
 class InfluenceMapHistory;
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class String;
 	class Vector2;
 }
@@ -29,7 +29,7 @@ constexpr int arraySize = INF_GRID_SIZE * INF_GRID_SIZE;
 
 class InfluenceManager {
 public:
-	
+
 	explicit InfluenceManager(char numberOfPlayers);
 	~InfluenceManager();
 	void update(std::vector<Unit*>* units) const;
@@ -59,7 +59,7 @@ public:
 	std::vector<Urho3D::Vector2> getAreas(const std::span<float> result, char player);
 	void addCollect(Unit* unit, float value);
 	void addAttack(Unit* unit, float value);
-	Urho3D::Vector2 getCenterOf(char id, char player);
+	Urho3D::Vector2 getCenterOf(CenterType id, char player);
 
 private:
 	std::vector<Urho3D::Vector2> centersFromIndexes(float* values,
@@ -91,7 +91,7 @@ private:
 
 	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 	content_info* ci;
-	GridCalculator * calculator;
+	GridCalculator* calculator;
 	std::array<float, 5> dataFromPos;
 	short currentDebugBatch = 0;
 

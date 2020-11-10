@@ -6,6 +6,7 @@
 #include <Urho3D/Graphics/Terrain.h>
 #include "EnvConsts.h"
 #include "database/db_strcut.h"
+#include "influence/CenterType.h"
 #include "math/MathUtils.h"
 #include "objects/ObjectEnums.h"
 #include "objects/building/Building.h"
@@ -359,7 +360,7 @@ bool Environment::cellIsCollectable(int index) const {
 	return mainGrid.cellIsCollectable(index);
 }
 
-Urho3D::Vector2 Environment::getCenterOf(char id, char player) {
+Urho3D::Vector2 Environment::getCenterOf(CenterType id, char player) {
 	return influenceManager.getCenterOf(id, player);
 }
 

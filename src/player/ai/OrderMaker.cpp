@@ -15,7 +15,6 @@
 
 OrderMaker::OrderMaker(Player* player)
 	: player(player), whatResource("whichResource_w.csv") {
-	assert(econAttackCenter.size()==player->getPossession().getFreeArmyMetrics().size());
 }
 
 void OrderMaker::action() {
@@ -26,7 +25,7 @@ void OrderMaker::action() {
 	}
 	bool ifAttack = threshold.ifAttack(player->getPossession().getFreeArmyMetrics());
 	if (ifAttack) {
-		char id = threshold.getBestToAttack(player->getPossession().getFreeArmyMetrics());
+		CenterType id = threshold.getBestToAttack(player->getPossession().getFreeArmyMetrics());
 		char enemy=1;
 		Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(id,enemy);
 	}
