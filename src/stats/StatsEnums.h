@@ -17,8 +17,3 @@ enum class ResourceInputType : char {
 	FREE_WORKERS,
 	WORKERS	
 };
-
-template <typename T>
-char cast(T type) {
-	return static_cast<char>(type);
-}

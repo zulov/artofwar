@@ -521,6 +521,7 @@
     <ClInclude Include="src\simulation\env\CloseIndexesProvider.h" />
     <ClInclude Include="src\player\ai\threshold\ThresholdCalculator.h" />
     <ClInclude Include="src\simulation\env\influence\CenterType.h" />
+    <ClInclude Include="src\utils\OtherUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -39,12 +39,12 @@ bool ThresholdCalculator::ifAttack(std::span<float> value) {
 CenterType ThresholdCalculator::getBestToAttack(std::span<float> value) {
 	float a = diff(econAttackCenter, value);
 	float b = diff(buildingAttackCenter, value);
-	float c = diff(unitsAttackCenter, value);
+	float u = diff(unitsAttackCenter, value);
 
-	if (a > b && a > c) {
+	if (a < b && a < u) {
 		return CenterType::ECON;
 	}
-	if (b > c) {
+	if (b < u) {
 		return CenterType::BUILDING;
 	}
 	return CenterType::UNITS;

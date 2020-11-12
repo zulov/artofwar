@@ -78,7 +78,8 @@ Urho3D::Node* LevelBuilder::createLight(const Urho3D::Vector3& direction, const 
 
 Physical* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho3D::String& texture,
                                    float horScale, float verScale) {
-	const auto entity = new Physical(Urho3D::Vector3());
+	auto pos = Urho3D::Vector3();
+	const auto entity = new Physical(pos);
 
 	terrain = entity->getNode()->CreateComponent<Urho3D::Terrain>();
 	terrain->SetHeightMap(Game::getCache()->GetResource<Urho3D::Image>(heightMap));

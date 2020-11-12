@@ -14,6 +14,7 @@
 #include "stats/AiWeights.h"
 #include "stats/StatsEnums.h"
 #include "utils/DeleteUtils.h"
+#include "utils/OtherUtils.h"
 #include "utils/StringUtils.h"
 
 constexpr char SPLIT_SIGN = '\n';

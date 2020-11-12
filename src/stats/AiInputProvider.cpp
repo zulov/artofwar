@@ -4,6 +4,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/ai/AiUtils.h"
+#include "utils/OtherUtils.h"
 
 
 AiInputProvider::AiInputProvider() {

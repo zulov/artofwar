@@ -374,6 +374,7 @@
     <ClInclude Include="src\objects\unit\ChargeData.h" />
     <ClInclude Include="src\objects\unit\SimColorMode.h" />
     <ClInclude Include="src\objects\unit\MissileData.h" />
+    <ClInclude Include="src\utils\OtherUtils.h" />
     <ClInclude Include="src\utils\replace_utils.h" />
     <ClInclude Include="src\simulation\env\bucket\path\DrawGridUtils.h" />
     <ClInclude Include="src\simulation\env\EnvConsts.h" />
