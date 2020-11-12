@@ -26,6 +26,7 @@ public:
 	void save(SceneSaver& saver);
 	void update(SimulationInfo* simInfo);
 	char getActivePlayerID() const;
+	char getEnemyFor(char player) const;
 	static std::string getColumns();
 	std::vector<Player*>& getAllPlayers();
 private:

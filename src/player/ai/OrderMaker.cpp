@@ -10,6 +10,7 @@
 #include "objects/unit/order/enums/UnitAction.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
+#include "player/PlayersManager.h"
 #include "simulation/env/Environment.h"
 #include "stats/AiInputProvider.h"
 
@@ -26,8 +27,10 @@ void OrderMaker::action() {
 	bool ifAttack = threshold.ifAttack(player->getPossession().getFreeArmyMetrics());
 	if (ifAttack) {
 		CenterType id = threshold.getBestToAttack(player->getPossession().getFreeArmyMetrics());
-		char enemy=1;
-		Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(id,enemy);
+
+		const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
+		Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(id, enemy);
+		std::cout<<pos.x_<<";"<<pos.y_<<std::endl;
 	}
 }
 

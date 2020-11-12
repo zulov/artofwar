@@ -71,7 +71,7 @@ void PlayersManager::save(SceneSaver& saver) {
 	saver.saveResources(allPlayers);
 }
 
-void PlayersManager::update(SimulationInfo * simInfo) {
+void PlayersManager::update(SimulationInfo* simInfo) {
 	for (auto player : allPlayers) {
 		player->updatePossession(simInfo);
 		player->updateResource();
@@ -80,6 +80,13 @@ void PlayersManager::update(SimulationInfo * simInfo) {
 
 char PlayersManager::getActivePlayerID() const {
 	return activePlayer->getId();
+}
+
+char PlayersManager::getEnemyFor(char player) const {
+	if (player == 0) {//TODO bug do it better
+		return 1;
+	}
+	return 0;
 }
 
 std::string PlayersManager::getColumns() {
@@ -92,5 +99,5 @@ std::string PlayersManager::getColumns() {
 }
 
 std::vector<Player*>& PlayersManager::getAllPlayers() {
-	return allPlayers;//TODO bug id playera a jego index to czêsto nie to samo
+	return allPlayers; //TODO bug id playera a jego index to czêsto nie to samo
 }

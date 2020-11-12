@@ -88,12 +88,7 @@ std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, con
 }
 
 std::span<float> AiInputProvider::getBasicInput(short id) {
-	char idEnemy; //TODO do it better
-	if (id == 0) {
-		idEnemy = 1;
-	} else {
-		idEnemy = 0;
-	}
+	char idEnemy = Game::getPlayersMan()->getEnemyFor(id);
 
 	update(id, basicInputSpan.data());
 	update(idEnemy, basicInputSpan.data() + magic_enum::enum_count<BasicInputType>());
