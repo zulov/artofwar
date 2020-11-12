@@ -10,7 +10,7 @@ public:
 	           Physical* toUse, bool append = false);
 
 	GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, short id,
-	           Urho3D::Vector2& vector, bool append = false);
+	           Urho3D::Vector2 vector, bool append = false);
 	~GroupOrder() = default;
 	
 	bool add() override;

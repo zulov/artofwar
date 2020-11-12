@@ -149,7 +149,7 @@ void Stats::saveAll(int size) {
 		saveBatch(i, ifUnitCreate, "unit/ifUnitCreate", size);
 		saveBatch(i, whichUnitCreate, "unit/whichUnitCreate", size);
 		saveBatch(i, whereUnitCreate, "unit/whereUnitCreate", size);
-		
+
 		saveBatch(i, whichResource, "resource/whichResource", size);
 	}
 }
@@ -175,8 +175,8 @@ std::string Stats::getCreateBuildingPosOutput(CreationCommand* command) const {
 
 std::string Stats::getCreateUnitPosOutput(Building* building) const {
 	const auto buildingPos = building->getPosition();
-
-	return getPosOutput(building->getPlayer(), Urho3D::Vector2(buildingPos.x_, buildingPos.z_));
+	auto pos = Urho3D::Vector2(buildingPos.x_, buildingPos.z_);
+	return getPosOutput(building->getPlayer(), pos);
 }
 
 std::string Stats::getPosOutput(char player, Urho3D::Vector2& pos) const {

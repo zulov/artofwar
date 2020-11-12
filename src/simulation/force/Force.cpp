@@ -2,6 +2,7 @@
 #include <Urho3D/IO/Log.h>
 #include "Game.h"
 #include "math/MathUtils.h"
+
 #include "math/RandGen.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/Environment.h"
@@ -95,7 +96,8 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 				if (path->size() == 1) {
 					force = dirTo(unit->getPosition(), opt.value());
 				} else if (path->size() > 1) {
-					force = dirTo(unit->getPosition(), Game::getEnvironment()->getCenter(path->at(0)));
+					auto center = Game::getEnvironment()->getCenter(path->at(0));
+					force = dirTo(unit->getPosition(), center);
 				} else {
 					Game::getLog()->Write(0, "brak drogi w formacji");
 				}

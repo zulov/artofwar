@@ -2,20 +2,20 @@
 
 #include "simulation/env/influence/CenterType.h"
 
+constexpr float THRESHOLD_VAL = 1.f;
 
-float ThresholdCalculator::hasReach(float* threshold, std::span<float> value) {
-	float sum = 0;
+bool ThresholdCalculator::hasReach(float* threshold, std::span<float> value) const {
 	for (int i = 0; i < value.size(); ++i) {
 		auto d = threshold[i] - value[i];
-		if (d > 0.f) {
-			sum += d * d;
+		if (d > THRESHOLD_VAL) {
+			return false;
 		}
 	}
-	return sum;
+	return true;
 }
 
-float ThresholdCalculator::diff(float* threshold, std::span<float> value) {
-	float sum = 0;
+float ThresholdCalculator::diff(float* threshold, std::span<float> value) const {
+	float sum = 0.f;
 	for (int i = 0; i < value.size(); ++i) {
 		auto d = threshold[i] - value[i];
 		if (d > 0.f) {
@@ -31,9 +31,9 @@ bool ThresholdCalculator::ifAttack(std::span<float> value) {
 	assert((*(&econAttackCenter + 1) - econAttackCenter)==value.size());
 	assert((*(&buildingAttackCenter + 1) - buildingAttackCenter)==value.size());
 	assert((*(&unitsAttackCenter + 1) - unitsAttackCenter)==value.size());
-	return hasReach(econAttackCenter, value) == 0.f
-		|| hasReach(buildingAttackCenter, value) == 0.f
-		|| hasReach(unitsAttackCenter, value) == 0.f;
+	return hasReach(econAttackCenter, value)
+		|| hasReach(buildingAttackCenter, value)
+		|| hasReach(unitsAttackCenter, value);
 }
 
 CenterType ThresholdCalculator::getBestToAttack(std::span<float> value) {

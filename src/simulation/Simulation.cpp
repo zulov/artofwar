@@ -163,7 +163,8 @@ void Simulation::addTestEntities() const {
 
 void Simulation::loadEntities(NewGameForm* form) const {
 	for (const auto& player : form->players) {
-		simObjectManager->addUnits(10, 1, Urho3D::Vector2(), player.id, 0);
+		auto fejkPost = Urho3D::Vector2(); //TODO trzeba inne
+		simObjectManager->addUnits(10, 1, fejkPost, player.id, 0);
 	}
 }
 

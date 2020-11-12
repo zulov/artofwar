@@ -18,7 +18,7 @@ public:
 private:
 	std::vector<Unit*> findFreeWorkers() const;
 	
-	Physical * OrderMaker::closetInRange(Unit* worker, int resourceId, float radius);
+	Physical * closetInRange(Unit* worker, int resourceId, float radius);
 	void collect(std::vector<Unit*>& workers);
 
 	Player* player;

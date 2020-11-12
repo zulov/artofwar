@@ -6,11 +6,10 @@
 #include "bucket/MainGrid.h"
 #include "debug/EnvironmentDebugMode.h"
 #include "influence/InfluenceManager.h"
-#include "objects/CellState.h"
 #include "objects/unit/state/UnitState.h"
 #include "utils/defines.h"
 
-enum class CenterType;
+enum class CenterType:char;
 struct db_building;
 
 namespace Urho3D {
