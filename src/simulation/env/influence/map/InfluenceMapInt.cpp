@@ -59,6 +59,7 @@ int InfluenceMapInt::getMaxElement() {
 }
 
 int InfluenceMapInt::getMaxElement(const std::array<int, 4>& indexes) {
+	assert(indexes[0]<arraySize && indexes[1]<arraySize &&indexes[2]<arraySize &&indexes[3]<arraySize);
 	float values1[4] = {values[indexes[0]], values[indexes[1]], values[indexes[2]], values[indexes[3]]};
 	int i = std::distance(values1, std::max_element(values1, values1 + 4));
 	return indexes[i];

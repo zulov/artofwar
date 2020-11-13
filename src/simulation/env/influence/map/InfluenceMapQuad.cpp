@@ -17,7 +17,7 @@ InfluenceMapQuad::~InfluenceMapQuad() {
 Urho3D::Vector2 InfluenceMapQuad::getCenter() {
 	int index = maps[0]->getMaxElement();
 	for (int i = 1; i < maps.size(); ++i) {
-		std::array<int, 4> indexes = getIndexes(maps[i]->getResolution(), index);
+		std::array<int, 4> indexes = getIndexes(maps[i-1]->getResolution(), index);
 		index = maps[i]->getMaxElement(indexes);
 	}
 	return maps.back()->getCenter(index);
