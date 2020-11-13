@@ -138,9 +138,9 @@ void InfluenceManager::updateQuad(std::vector<Unit*>* units, std::vector<Buildin
 	for (auto building : (*buildings)) {
 		buildingsQuad[building->getPlayer()]->update(building);
 	}
-	//calcStats(unitsQuad);
-	//calcStats(buildingsQuad);
-	//calcStats(econQuad);
+	calcStats(unitsQuad);
+	calcStats(buildingsQuad);
+	calcStats(econQuad);
 }
 
 void InfluenceManager::updateWithHistory() const {

@@ -64,8 +64,8 @@ void InfluenceMap::print(Urho3D::String name) {
 	}
 	image->Resize(256, 256);
 
-	image->SavePNG("result/images/infl/" + name + "_" + Urho3D::String(counter) + "_"
-		+ Urho3D::String(resolution) + "x" + Urho3D::String(resolution) + ".png");
+	image->SavePNG("result/images/infl/" + name + "_" + Urho3D::String(resolution) + "x" + Urho3D::String(resolution)
+		+ "#" + Urho3D::String(counter) + ".png");
 	++counter;
 
 	delete image;
