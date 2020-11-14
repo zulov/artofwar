@@ -63,12 +63,19 @@ void Unit::checkAim() {
 	}
 }
 
-void Unit::move(float timeStep) {
+void Unit::move(float timeStep, bool ifVisible) {
 	if (state != UnitState::STOP) {
 		position.x_ += velocity.x_ * timeStep;
 		position.z_ += velocity.y_ * timeStep;
-		node->SetPosition(position);
-		//node->Translate((*velocity) * timeStep, TS_WORLD);
+		if (ifVisible) {
+			if (dbUnit->rotatable && velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
+				node->SetTransform(
+					position,
+					Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(velocity.x_, 0, velocity.y_)));
+			} else {
+				node->SetPosition(position);
+			}
+		}
 	}
 	if (missileData && missileData->isUp()) {
 		missileData->update(timeStep, dbLevel->rangeAttackVal);
@@ -373,9 +380,6 @@ void Unit::applyForce(float timeStep) {
 		}
 		if (state == UnitState::STOP) {
 			StateManager::changeState(this, UnitState::MOVE);
-		}
-		if (dbUnit->rotatable && velLength > 2 * dbLevel->sqMinSpeed) {
-			node->SetDirection(Urho3D::Vector3(velocity.x_, 0, velocity.y_));
 		}
 	}
 }

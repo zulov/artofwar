@@ -53,7 +53,7 @@ public:
 
 	void populate() override;
 	void checkAim();
-	void move(float timeStep);
+	void move(float timeStep, bool ifVisible);
 	void applyForce(float timeStep);
 	void setAcceleration(Urho3D::Vector2& _acceleration);
 

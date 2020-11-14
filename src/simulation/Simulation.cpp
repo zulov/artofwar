@@ -153,7 +153,7 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 100, 0, Urho3D::Vector2(20, -220), 0);
+		Game::getActionCenter()->addUnits(UNITS_NUMBER * 100, 0, Urho3D::Vector2(20, -220), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER*10, 4, Urho3D::Vector2(-20, -200), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0);
@@ -298,13 +298,13 @@ void Simulation::aiPlayers() const {
 
 void Simulation::moveUnits(const float timeStep) const {
 	for (auto unit : *units) {
-		unit->move(timeStep);
+		unit->move(timeStep,true);
 	}
 }
 
 void Simulation::moveUnitsAndCheck(const float timeStep) {
 	for (auto unit : *units) {
-		unit->move(timeStep);
+		unit->move(timeStep,true);
 		unit->checkAim();
 	}
 	if (colorSchemeChanged || colorScheme != SimColorMode::BASIC) {

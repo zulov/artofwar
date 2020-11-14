@@ -32,7 +32,7 @@ public:
 	void executeActions();
 	void executeLists();
 
-	bool addUnits(int number, int id, Urho3D::Vector2& position, char player);
+	bool addUnits(int number, int id, Urho3D::Vector2 position, char player);
 	bool addBuilding(int id, Urho3D::Vector2& position, char player);
 	bool addResource(int id, Urho3D::Vector2& position);
 

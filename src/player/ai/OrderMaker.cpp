@@ -24,13 +24,14 @@ void OrderMaker::action() {
 	if (!freeWorkers.empty()) {
 		collect(freeWorkers);
 	}
+
 	bool ifAttack = threshold.ifAttack(player->getPossession().getFreeArmyMetrics());
 	//if (ifAttack) {
 	CenterType id = threshold.getBestToAttack(player->getPossession().getFreeArmyMetrics());
 
 	const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
 	Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(id, enemy);
-	std::cout << static_cast<int>(id) << " center: " << pos.x_ << ";" << pos.y_ << std::endl;
+
 	//}
 }
 
