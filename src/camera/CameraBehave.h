@@ -24,6 +24,7 @@ public:
 	const Urho3D::Vector3& getPosition() const;
 	void changePosition(float percentX, float percentY);
 	void setPos2D(const Urho3D::Vector3& newPos);
+	virtual Urho3D::Vector2 getTargetPos() const;
 protected:
 	void translateCam(float timeStep, float diff, Urho3D::Vector3 dir);
 	void translateInternal(const bool* cameraKeys, float timeStep, float diff);

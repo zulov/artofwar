@@ -15,6 +15,7 @@ public:
 
 	Urho3D::String* getInfo() override;
 	Urho3D::MouseMode getMouseMode() override;
+	Urho3D::Vector2 getTargetPos() const override;
 private:
 	float maxY = 200;
 

@@ -53,3 +53,9 @@ Urho3D::String* RtsCameraBehave::getInfo() {
 Urho3D::MouseMode RtsCameraBehave::getMouseMode() {
 	return Urho3D::MM_RELATIVE;
 }
+
+Urho3D::Vector2 RtsCameraBehave::getTargetPos() const {
+	auto pos = cameraNode->GetPosition();
+	
+	return Urho3D::Vector2(pos.x_, pos.z_+100.f);//TODO hardcoded
+}

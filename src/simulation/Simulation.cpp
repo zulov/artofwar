@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "SimulationInfo.h"
 #include "SimulationObjectManager.h"
+#include "camera/CameraManager.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "debug/DebugLineRepo.h"
@@ -30,6 +31,7 @@
 #include "stats/Stats.h"
 
 constexpr bool BENCHMARK_MODE = true;
+constexpr float UPDATE_DRAW_DISTANCE = 120.f;
 
 Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 	simObjectManager = new SimulationObjectManager();
@@ -79,7 +81,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 		calculateForces();
 		applyForce();
 
-		moveUnitsAndCheck(accumulateTime, true);
+		moveUnitsAndCheck(accumulateTime, false);
 
 		performStateAction(timeStep);
 		updateQueues();
@@ -92,7 +94,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 		Game::getFormationManager()->update();
 		Game::getStats()->save(secondsElapsed % 10 == 0 && currentFrameNumber % framesPeriod == 0); //Every 10 seconds
 	} else {
-		moveUnits(timeStep, true);
+		moveUnits(timeStep);
 	}
 	return simulationInfo;
 }
@@ -153,7 +155,7 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 100, 0, Urho3D::Vector2(20, -220), 0);
+		Game::getActionCenter()->addUnits(UNITS_NUMBER * 100, 0, Urho3D::Vector2(20, -220), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER*10, 4, Urho3D::Vector2(-20, -200), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0);
@@ -274,7 +276,7 @@ void Simulation::performStateAction(float timeStep) const {
 
 void Simulation::handleTimeInFrame(float timeStep) {
 	countFrame();
-	moveUnits(maxTimeFrame - (accumulateTime - timeStep),true);
+	moveUnits(maxTimeFrame - (accumulateTime - timeStep));
 	accumulateTime -= maxTimeFrame;
 }
 
@@ -296,16 +298,17 @@ void Simulation::aiPlayers() const {
 	}
 }
 
-void Simulation::moveUnits(const float timeStep, bool ifVisible) const {
-	//	Game::getCameraManager()->getC
+void Simulation::moveUnits(const float timeStep) const {
+	auto pos = Game::getCameraManager()->getTargetPos();
 	for (auto unit : *units) {
-		unit->move(timeStep, ifVisible);
+		unit->move(timeStep, pos, UPDATE_DRAW_DISTANCE);
 	}
 }
 
 void Simulation::moveUnitsAndCheck(const float timeStep, bool ifVisible) {
+	auto pos = Game::getCameraManager()->getTargetPos();
 	for (auto unit : *units) {
-		unit->move(timeStep, ifVisible);
+		unit->move(timeStep, pos, UPDATE_DRAW_DISTANCE);
 		unit->checkAim();
 	}
 	if (colorSchemeChanged || colorScheme != SimColorMode::BASIC) {

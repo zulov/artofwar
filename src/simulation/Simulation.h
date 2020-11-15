@@ -45,7 +45,7 @@ public:
 
 private:
 	void aiPlayers() const;
-	void moveUnits(float timeStep, bool ifVisible) const;
+	void moveUnits(float timeStep) const;
 	void moveUnitsAndCheck(float timeStep, bool ifVisible);
 	void calculateForces();
 	void performStateAction(float timeStep) const;

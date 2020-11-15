@@ -1,8 +1,10 @@
 #pragma once
 #include <optional>
 #include <vector>
-#include <Urho3D/Math/Vector2.h>
-#include <Urho3D/Math/Vector3.h>
+namespace Urho3D {
+	class Vector3;
+	class Vector2;
+}
 
 
 class UnitOrder;

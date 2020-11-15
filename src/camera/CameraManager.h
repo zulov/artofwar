@@ -3,6 +3,7 @@
 namespace Urho3D
 {
 	class IntVector2;
+	class Vector2;
 	class Input;
 	class Camera;
 	class String;
@@ -23,6 +24,7 @@ public:
 	Urho3D::MouseMode getMouseMode() const;
 	void rotate(const Urho3D::IntVector2& mouse_move) const;
 	void changePosition(float x, float y) const;
+	const Urho3D::Vector2 getTargetPos()const;
 private:
 	void createCameraKeys(Urho3D::Input* input, bool cameraKeys[4], const Urho3D::IntVector2& cursorPos) const;
 

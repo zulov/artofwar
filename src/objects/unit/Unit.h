@@ -9,8 +9,7 @@
 #include "objects/Physical.h"
 #include "state/UnitState.h"
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Color;
 	class Material;
 	class Vector3;
@@ -52,8 +51,9 @@ public:
 	~Unit();
 
 	void populate() override;
-	void checkAim();
-	void move(float timeStep, bool ifVisible);
+	void checkAim();	
+	void move(float timeStep, Urho3D::Vector2& camPos, float radius);
+	bool ifVisible(const Urho3D::Vector2& camPos, float radius) const;
 	void applyForce(float timeStep);
 	void setAcceleration(Urho3D::Vector2& _acceleration);
 

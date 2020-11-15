@@ -25,5 +25,4 @@ private:
 	float* bias;
 
 	float* w;
-
 };

@@ -83,3 +83,7 @@ void CameraManager::rotate(const Urho3D::IntVector2& mouse_move) const {
 void CameraManager::changePosition(float x, float y) const {
 	activeBehave->changePosition(x, y);
 }
+
+const Urho3D::Vector2 CameraManager::getTargetPos() const {
+	return activeBehave->getTargetPos();
+}
