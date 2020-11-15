@@ -33,11 +33,13 @@
 constexpr bool BENCHMARK_MODE = true;
 constexpr float UPDATE_DRAW_DISTANCE = 120.f;
 
+constexpr float TIME_PER_UPDATE = 0.033333333f;
+constexpr unsigned char FRAMES_IN_PERIOD = 1 / TIME_PER_UPDATE;
+
 Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 	simObjectManager = new SimulationObjectManager();
 	Game::setActionCenter(new ActionCenter(simObjectManager));
 	colorScheme = SimColorMode::BASIC;
-
 
 	simulationInfo = new SimulationInfo();
 
@@ -64,10 +66,11 @@ void Simulation::updateInfluenceMaps() {
 }
 
 SimulationInfo* Simulation::update(float timeStep) {
-	simulationInfo->reset();
-	timeStep = updateTime(timeStep);
-	if (accumulateTime >= maxTimeFrame) {
-		handleTimeInFrame(timeStep);
+	simObjectManager->dispose();
+
+	accumulateTime += updateTime(timeStep);
+	while (accumulateTime >= TIME_PER_UPDATE) {//TODO bug a co jesli kilka razy sie wykona, moga byæ b³êdy jezeli cos umrze
+		countFrame();
 
 		Game::getActionCenter()->executeLists();
 		selfAI();
@@ -81,9 +84,9 @@ SimulationInfo* Simulation::update(float timeStep) {
 		calculateForces();
 		applyForce();
 
-		moveUnitsAndCheck(accumulateTime, false);
+		moveUnitsAndCheck(TIME_PER_UPDATE);
 
-		performStateAction(timeStep);
+		performStateAction(TIME_PER_UPDATE);
 		updateQueues();
 
 		simObjectManager->prepareToDispose();
@@ -92,10 +95,12 @@ SimulationInfo* Simulation::update(float timeStep) {
 		enviroment->removeFromGrids(simObjectManager->getToDispose());
 		Game::getPlayersMan()->update(simulationInfo);
 		Game::getFormationManager()->update();
-		Game::getStats()->save(secondsElapsed % 10 == 0 && currentFrameNumber % framesPeriod == 0); //Every 10 seconds
-	} else {
-		moveUnits(timeStep);
+		Game::getStats()->save(secondsElapsed % 10 == 0 && currentFrameNumber % FRAMES_IN_PERIOD == 0);
+		//Every 10 seconds
+
+		accumulateTime -= TIME_PER_UPDATE;
 	}
+	
 	return simulationInfo;
 }
 
@@ -155,7 +160,7 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		Game::getActionCenter()->addUnits(UNITS_NUMBER * 100, 0, Urho3D::Vector2(20, -220), 0);
+		Game::getActionCenter()->addUnits(UNITS_NUMBER * 20, 0, Urho3D::Vector2(20, -220), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER*10, 4, Urho3D::Vector2(-20, -200), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0);
@@ -170,17 +175,16 @@ void Simulation::loadEntities(NewGameForm* form) const {
 	}
 }
 
-float Simulation::updateTime(float timeStep) {
-	if constexpr (BENCHMARK_MODE || timeStep > maxTimeFrame) {
-		timeStep = maxTimeFrame;
+float Simulation::updateTime(float timeStep) const{
+	if (BENCHMARK_MODE) {
+		return TIME_PER_UPDATE;
 	}
-	accumulateTime += timeStep;
 	return timeStep;
 }
 
 void Simulation::countFrame() {
 	++currentFrameNumber;
-	if (currentFrameNumber >= framesPeriod) {
+	if (currentFrameNumber >= FRAMES_IN_PERIOD) {
 		currentFrameNumber = 0;
 		++secondsElapsed;
 	}
@@ -188,11 +192,11 @@ void Simulation::countFrame() {
 
 void Simulation::applyForce() const {
 	for (auto unit : *units) {
-		unit->applyForce(maxTimeFrame);
+		unit->applyForce(TIME_PER_UPDATE);
 		auto pos = unit->getPosition();
 		//TODO to przeniesc do mova? to moze byc [rpblem gdy jest przesuwanie poza klatk¹
 		const float y = enviroment->getGroundHeightAt(pos);
-		unit->updateHeight(y, maxTimeFrame);
+		unit->updateHeight(y, TIME_PER_UPDATE);
 	}
 }
 
@@ -229,9 +233,9 @@ void Simulation::updateBuildingQueues(const float time) const {
 }
 
 void Simulation::updateQueues() const {
-	updateBuildingQueues(maxTimeFrame);
+	updateBuildingQueues(TIME_PER_UPDATE);
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-		auto done = player->updateQueue(maxTimeFrame);
+		auto done = player->updateQueue(TIME_PER_UPDATE);
 		if (done) {
 			switch (done->getType()) {
 			case QueueActionType::BUILDING_LEVEL:
@@ -241,10 +245,6 @@ void Simulation::updateQueues() const {
 			delete done;
 		}
 	}
-}
-
-void Simulation::dispose() const {
-	simObjectManager->dispose();
 }
 
 void Simulation::save(SceneSaver& saver) const {
@@ -274,12 +274,6 @@ void Simulation::performStateAction(float timeStep) const {
 	}
 }
 
-void Simulation::handleTimeInFrame(float timeStep) {
-	countFrame();
-	moveUnits(maxTimeFrame - (accumulateTime - timeStep));
-	accumulateTime -= maxTimeFrame;
-}
-
 void Simulation::initScene(SceneLoader& loader) const {
 	loadEntities(loader);
 	addTestEntities();
@@ -293,24 +287,19 @@ void Simulation::initScene(NewGameForm* form) const {
 }
 
 void Simulation::aiPlayers() const {
-	if (currentFrameNumber % framesPeriod == 0) {
+	if (currentFrameNumber % FRAMES_IN_PERIOD == 0) {
 		aiManager->ai();
 	}
 }
 
-void Simulation::moveUnits(const float timeStep) const {
+void Simulation::moveUnitsAndCheck(const float timeStep) {
 	auto pos = Game::getCameraManager()->getTargetPos();
-	for (auto unit : *units) {
-		unit->move(timeStep, pos, UPDATE_DRAW_DISTANCE);
-	}
-}
 
-void Simulation::moveUnitsAndCheck(const float timeStep, bool ifVisible) {
-	auto pos = Game::getCameraManager()->getTargetPos();
 	for (auto unit : *units) {
 		unit->move(timeStep, pos, UPDATE_DRAW_DISTANCE);
 		unit->checkAim();
 	}
+
 	if (colorSchemeChanged || colorScheme != SimColorMode::BASIC) {
 		for (auto unit : *units) {
 			unit->changeColor(colorScheme);

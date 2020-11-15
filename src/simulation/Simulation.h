@@ -38,19 +38,16 @@ public:
 	void initScene(SceneLoader& loader) const;
 	void initScene(NewGameForm* form) const;
 
-	void dispose() const;
 	void save(SceneSaver& saver) const;
 	void changeCoef(int i, int wheel);
 	void changeColorMode(SimColorMode _colorMode);
 
 private:
 	void aiPlayers() const;
-	void moveUnits(float timeStep) const;
-	void moveUnitsAndCheck(float timeStep, bool ifVisible);
+	void moveUnitsAndCheck(float timeStep);
 	void calculateForces();
 	void performStateAction(float timeStep) const;
-	void handleTimeInFrame(float timeStep);
-	float updateTime(float timeStep);
+	float updateTime(float timeStep) const;
 
 	void loadEntities(NewGameForm* form) const;
 	void loadEntities(SceneLoader& loader) const;
@@ -68,10 +65,8 @@ private:
 	void tryToCollect(Unit* unit);
 
 	float accumulateTime = 0;
-	float maxTimeFrame = 0.05f;
-	unsigned char framesPeriod = 20;
-	unsigned char currentFrameNumber = 0;
 	unsigned int secondsElapsed = 0;
+	unsigned char currentFrameNumber = 0;
 	SimColorMode colorScheme;
 	bool colorSchemeChanged = true;
 	Force force;
