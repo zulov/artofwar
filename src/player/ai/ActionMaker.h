@@ -1,19 +1,23 @@
 #pragma once
 #include <optional>
+#include <span>
 #include <valarray>
-#include <Urho3D/Math/Vector2.h>
-#include "nn/Brain.h"
+#include <vector>
 
+
+namespace Urho3D {
+	class Vector2;
+}
 
 struct db_basic_metric;
 class Player;
 class Building;
 struct db_with_cost;
-struct db_level;
 struct db_building;
 struct db_unit_level;
 struct db_unit;
 struct db_building_level;
+struct Brain;
 
 class ActionMaker {
 public:
@@ -48,15 +52,15 @@ private:
 
 	Player* player;
 
-	Brain ifWorkerCreate;
-	Brain whereWorkerCreate;
-
-	Brain ifBuildingCreate;
-	Brain whichBuildingCreate;
-	Brain whereBuildingCreate;
-
-	Brain ifUnitCreate;
-	Brain whichUnitCreate;
-	Brain whereUnitCreate;
+	Brain* ifWorkerCreate;
+	Brain* whereWorkerCreate;
+		
+	Brain* ifBuildingCreate;
+	Brain* whichBuildingCreate;
+	Brain* whereBuildingCreate;
+		 
+	Brain* ifUnitCreate;
+	Brain* whichUnitCreate;
+	Brain* whereUnitCreate;
 
 };

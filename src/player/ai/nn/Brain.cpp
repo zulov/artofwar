@@ -1,12 +1,15 @@
 #include "Brain.h"
 
 #include <fstream>
+#include <iostream>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
 #include "AFUtil.h"
 #include "Layer.h"
 #include "utils/DeleteUtils.h"
 #include "utils/StringUtils.h"
 
-Brain::Brain(std::string filename) {
+Brain::Brain(std::string filename): filename(filename) {
 	std::ifstream infile("Data/ai/" + filename);
 	std::string data;
 	std::vector<std::string> lines;
@@ -44,7 +47,13 @@ const std::span<float> Brain::decide(std::span<float> data) {
 		Layer* layer = allLayers.at(i);
 		Layer* prevLayer = allLayers.at(i - 1);
 
-		Eigen::MatrixXf mult = multiply(layer, prevLayer);
+		const auto vals = prevLayer->getValues();//TODO performance to eigen
+
+		const auto input = Eigen::Map<Eigen::VectorXf>(vals.data(), vals.size());
+		const auto weightedMatrix = Eigen::Map<Eigen::MatrixXf>(layer->getW(), layer->getPrevSize(),
+		                                                        layer->getNumberOfValues()).transpose();
+
+		Eigen::MatrixXf mult = weightedMatrix * input;
 
 		setValues(layer, mult);
 	}
@@ -52,21 +61,14 @@ const std::span<float> Brain::decide(std::span<float> data) {
 	return allLayers.back()->getValues();
 }
 
-Eigen::MatrixXf Brain::multiply(Layer* current, Layer* prevLayer) {
-	//TODO performance to eigen
-	const auto vals = prevLayer->getValues();
-	
-	const auto input = Eigen::Map<Eigen::VectorXf>(vals.data(), vals.size());
-	const auto weightedMatrix = Eigen::Map<Eigen::MatrixXf>(current->getW(), current->getPrevSize(),
-	                                                        current->getNumberOfValues()).transpose();
-
-	return weightedMatrix * input;
+std::string Brain::getName() const {
+	return filename;
 }
 
 void Brain::setValues(Layer* layer, Eigen::MatrixXf& mult) const {
 	for (int i = 0; i < mult.rows(); i++) {
-		double q = mult(i) + layer->getBias(i);
-		double newValue = tanh1(q);
+		const double q = mult(i) + layer->getBias(i);
+		const double newValue = tanh1(q);
 		layer->setValueAt(i, newValue);
 	}
 }

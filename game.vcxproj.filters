@@ -204,6 +204,7 @@
     <ClCompile Include="src\simulation\env\CloseIndexes.cpp" />
     <ClCompile Include="src\simulation\env\CloseIndexesProvider.cpp" />
     <ClCompile Include="src\player\ai\threshold\ThresholdCalculator.cpp" />
+    <ClCompile Include="src\player\ai\nn\BrainProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -522,6 +523,7 @@
     <ClInclude Include="src\player\ai\threshold\ThresholdCalculator.h" />
     <ClInclude Include="src\simulation\env\influence\CenterType.h" />
     <ClInclude Include="src\utils\OtherUtils.h" />
+    <ClInclude Include="src\player\ai\nn\BrainProvider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

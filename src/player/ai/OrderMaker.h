@@ -1,13 +1,12 @@
 #pragma once
 #include <vector>
-
-#include "nn/Brain.h"
 #include "threshold/ThresholdCalculator.h"
 
 enum class UnitState : char;
 class Player;
 class Unit;
 class Physical;
+class Brain;
 
 class OrderMaker {
 public:
@@ -22,7 +21,7 @@ private:
 	void collect(std::vector<Unit*>& workers);
 
 	Player* player;
-	Brain whatResource;
+	Brain *whatResource;
 	ThresholdCalculator threshold;
 	
 };

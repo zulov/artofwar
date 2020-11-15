@@ -10,7 +10,8 @@
 #include "commands/action/GeneralActionCommand.h"
 #include "commands/action/GeneralActionType.h"
 #include "database/DatabaseCache.h"
-#include "math/VectorUtils.h"
+#include "nn/Brain.h"
+#include "nn/BrainProvider.h"
 #include "objects/building/Building.h"
 #include "player/Player.h"
 #include "player/ai/ActionCenter.h"
@@ -19,16 +20,16 @@
 
 
 ActionMaker::ActionMaker(Player* player): player(player),
-                                          ifWorkerCreate("ifWorkerCreate_w.csv"),
-                                          whereWorkerCreate("whereWorkerCreate_w.csv"),
+                                          ifWorkerCreate(BrainProvider::get("ifWorkerCreate_w.csv")),
+                                          whereWorkerCreate(BrainProvider::get("whereWorkerCreate_w.csv")),
 
-                                          ifBuildingCreate("ifBuildingCreate_w.csv"),
-                                          whichBuildingCreate("whichBuildingCreate_w.csv"),
-                                          whereBuildingCreate("whereBuildingCreate_w.csv"),
+                                          ifBuildingCreate(BrainProvider::get("ifBuildingCreate_w.csv")),
+                                          whichBuildingCreate(BrainProvider::get("whichBuildingCreate_w.csv")),
+                                          whereBuildingCreate(BrainProvider::get("whereBuildingCreate_w.csv")),
 
-                                          ifUnitCreate("ifUnitCreate_w.csv"),
-                                          whichUnitCreate("whichUnitCreate_w.csv"),
-                                          whereUnitCreate("whereUnitCreate_w.csv") {
+                                          ifUnitCreate(BrainProvider::get("ifUnitCreate_w.csv")),
+                                          whichUnitCreate(BrainProvider::get("whichUnitCreate_w.csv")),
+                                          whereUnitCreate(BrainProvider::get("whereUnitCreate_w.csv")) {
 }
 
 void ActionMaker::action() {
@@ -37,24 +38,24 @@ void ActionMaker::action() {
 	const auto unitsInput = aiInput->getUnitsInput(player->getId()); //TODO czy cokolwiek?
 	const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
 
-	const auto resResult = ifWorkerCreate.decide(resInput);
+	const auto resResult = ifWorkerCreate->decide(resInput);
 	if (resResult[0] > 0.5f) {
 		auto& units = Game::getDatabase()->getNation(player->getNation())->units;
 		auto unit = units[4]; //TODO lepiej wybrac
 		auto result = createWorker(unit);
 	}
 
-	const auto unitsResult = ifUnitCreate.decide(unitsInput);
+	const auto unitsResult = ifUnitCreate->decide(unitsInput);
 	if (unitsResult[0] > 0.5f) {
-		auto whichOutput = whichUnitCreate.decide(unitsInput);
+		auto whichOutput = whichUnitCreate->decide(unitsInput);
 		auto unit = chooseUnit(whichOutput);
 
 		auto result = createUnit(unit);
 	}
 
-	const auto buildingsResult = ifBuildingCreate.decide(buildingsInput);
+	const auto buildingsResult = ifBuildingCreate->decide(buildingsInput);
 	if (buildingsResult[0] > 0.1f) {
-		auto whichOutput = whichBuildingCreate.decide(buildingsInput);
+		auto whichOutput = whichBuildingCreate->decide(buildingsInput);
 		auto building = chooseBuilding(whichOutput);
 		auto result = createBuilding(building);
 	}
@@ -218,7 +219,7 @@ std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
 	const auto input = Game::getAiInputProvider()->getBuildingsInputWithMetric(
 		player->getId(), player->getLevelForBuilding(building->id)
 		                       ->dbBuildingMetricPerNation[player->getNation()]);
-	const auto result = whereBuildingCreate.decide(input);
+	const auto result = whereBuildingCreate->decide(input);
 
 	return Game::getEnvironment()->getPosToCreate(building, player->getId(), result);
 }
@@ -247,7 +248,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	const auto input = Game::getAiInputProvider()
 		->getUnitsInputWithMetric(player->getId(),
 		                          player->getLevelForUnit(unit->id)->dbUnitMetric);
-	const auto result = whereUnitCreate.decide(input);
+	const auto result = whereUnitCreate->decide(input);
 
 	return getBuildingClosestArea(allPossible, result);
 }
@@ -257,7 +258,7 @@ Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) {
 	if (allPossible.empty()) { return nullptr; }
 	const auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
 
-	const auto result = whereWorkerCreate.decide(input);
+	const auto result = whereWorkerCreate->decide(input);
 
 	return getBuildingClosestArea(allPossible, result);
 }

@@ -79,7 +79,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 		calculateForces();
 		applyForce();
 
-		moveUnitsAndCheck(accumulateTime);
+		moveUnitsAndCheck(accumulateTime, true);
 
 		performStateAction(timeStep);
 		updateQueues();
@@ -92,7 +92,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 		Game::getFormationManager()->update();
 		Game::getStats()->save(secondsElapsed % 10 == 0 && currentFrameNumber % framesPeriod == 0); //Every 10 seconds
 	} else {
-		moveUnits(timeStep);
+		moveUnits(timeStep, true);
 	}
 	return simulationInfo;
 }
@@ -153,7 +153,7 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		Game::getActionCenter()->addUnits(UNITS_NUMBER * 100, 0, Urho3D::Vector2(20, -220), 0);
+		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 100, 0, Urho3D::Vector2(20, -220), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER*10, 4, Urho3D::Vector2(-20, -200), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0);
@@ -274,7 +274,7 @@ void Simulation::performStateAction(float timeStep) const {
 
 void Simulation::handleTimeInFrame(float timeStep) {
 	countFrame();
-	moveUnits(maxTimeFrame - (accumulateTime - timeStep));
+	moveUnits(maxTimeFrame - (accumulateTime - timeStep),true);
 	accumulateTime -= maxTimeFrame;
 }
 
@@ -296,15 +296,16 @@ void Simulation::aiPlayers() const {
 	}
 }
 
-void Simulation::moveUnits(const float timeStep) const {
+void Simulation::moveUnits(const float timeStep, bool ifVisible) const {
+	//	Game::getCameraManager()->getC
 	for (auto unit : *units) {
-		unit->move(timeStep,true);
+		unit->move(timeStep, ifVisible);
 	}
 }
 
-void Simulation::moveUnitsAndCheck(const float timeStep) {
+void Simulation::moveUnitsAndCheck(const float timeStep, bool ifVisible) {
 	for (auto unit : *units) {
-		unit->move(timeStep,true);
+		unit->move(timeStep, ifVisible);
 		unit->checkAim();
 	}
 	if (colorSchemeChanged || colorScheme != SimColorMode::BASIC) {

@@ -1,7 +1,9 @@
 #pragma once
 
-#include <Eigen/Dense>
 #include <span>
+#include <string>
+#include <vector>
+#include <Eigen/Core>
 
 class Layer;
 
@@ -10,10 +12,12 @@ public:
 	explicit Brain(std::string filename);
 	Brain(const Brain& rhs) = delete;
 	~Brain();
+	
 	const std::span<float> decide(std::span<float> data);
-
+	std::string getName() const;
 private:
-	Eigen::MatrixXf multiply(Layer* current, Layer* prevLayer);
 	void setValues(Layer* layer, Eigen::MatrixXf& mult) const;
 	std::vector<Layer*> allLayers;
+
+	std::string filename;
 };

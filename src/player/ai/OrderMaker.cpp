@@ -13,9 +13,11 @@
 #include "player/PlayersManager.h"
 #include "simulation/env/Environment.h"
 #include "stats/AiInputProvider.h"
+#include "nn/Brain.h"
+#include "nn/BrainProvider.h"
 
 OrderMaker::OrderMaker(Player* player)
-	: player(player), whatResource("whichResource_w.csv") {
+	: player(player), whatResource(BrainProvider::get("whichResource_w.csv")) {
 }
 
 void OrderMaker::action() {
@@ -53,7 +55,7 @@ Physical* OrderMaker::closetInRange(Unit* worker, int resourceId, float radius) 
 
 void OrderMaker::collect(std::vector<Unit*>& workers) {
 	auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
-	auto result = whatResource.decide(input);
+	auto result = whatResource->decide(input);
 
 	for (auto worker : workers) {
 		const auto resourceId = biggestWithRand(result);
