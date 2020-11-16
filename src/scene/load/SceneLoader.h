@@ -1,5 +1,5 @@
 #pragma once
-#include <sqlite3/sqlite3.h>
+
 #include "Loading.h"
 #include "vector"
 
@@ -7,6 +7,7 @@ namespace Urho3D {
 	class String;
 }
 
+class sqlite3;
 struct dbload_building;
 struct dbload_container;
 struct dbload_player;

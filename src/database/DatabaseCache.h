@@ -1,8 +1,9 @@
 #pragma once
-#include <string>
+
 #include <vector>
 #include "db_strcut.h"
-#include "sqlite3/sqlite3.h"
+
+class sqlite3;
 
 class DatabaseCache {
 public:

@@ -1,17 +1,19 @@
 #pragma once
 #include <optional>
 #include <span>
-#include <Urho3D/Graphics/BillboardSet.h>
+#include <string>
 #include "objects/ObjectEnums.h"
+#include "Urho3D/Math/Vector3.h"   
 
 
 namespace Urho3D {
+	class Node;
+	struct Billboard;
 	class StaticModel;
 }
 
-struct ActionParameter;
-struct dbload_physical;
 class Unit;
+struct dbload_physical;
 
 class Physical {
 public:

@@ -1,4 +1,5 @@
 #include "objects/Physical.h"
+#include <Urho3D/Graphics/BillboardSet.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Resource/ResourceCache.h>

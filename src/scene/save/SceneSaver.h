@@ -1,8 +1,6 @@
 #pragma once
 
-#include <string>
 #include <vector>
-#include <sqlite3/sqlite3.h>
 #include "Loading.h"
 
 
@@ -10,6 +8,7 @@ namespace Urho3D {
 	class String;
 }
 
+class sqlite3;
 class Unit;
 class ResourceEntity;
 class Building;

@@ -1,11 +1,6 @@
 #pragma once
 
-#include <Urho3D/Container/Str.h>
-#include <Urho3D/Core/Object.h>
-#include <Urho3D/Core/Variant.h>
 #include <Urho3D/Engine/Application.h>
-#include <Urho3D/Input/Input.h>
-#include <Urho3D/Math/StringHash.h>
 #include "Benchmark.h"
 #include "GameState.h"
 #include "Loading.h"
@@ -16,6 +11,7 @@
 namespace Urho3D
 {
 	class Context;
+	enum MouseMode;
 }
 
 enum class CameraBehaviorType : char;
@@ -79,10 +75,11 @@ private:
 
 	Urho3D::MouseMode useMouseMode_;
 	Simulation* simulation;
-	Benchmark benchmark;
 	Hud* hud;
 	Controls* controls;
 	LevelBuilder* levelBuilder;
+	
+	Benchmark benchmark;
 	SceneSaver saver;
 	SceneLoader loader;
 	loading loadingProgress;
