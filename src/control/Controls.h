@@ -5,6 +5,7 @@
 #include "SelectedInfo.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "BillboardSetProvider.h"
+#include "objects/unit/order/UnitOrder.h"
 
 namespace Urho3D {
 	class StaticModel;
@@ -71,6 +72,12 @@ private:
 	void leftClick(hit_data& hitData);
 	void leftDoubleClick(hit_data& hitData);
 	void leftClickBuild(hit_data& hitData);
+	
+	UnitOrder* vectorOrder(UnitAction order, Urho3D::Vector2* vector, bool shiftPressed, std::vector<Physical*>* vec) const;
+	UnitOrder* thingOrder(UnitAction order, Physical* toUse, bool shiftPressed, std::vector<Physical*>* vec) const;
+	UnitAction chooseAction(hit_data& hitData) const;
+	UnitOrder* createUnitOrder(hit_data& hitData) const;
+
 	void rightClick(hit_data& hitData) const;
 
 	void leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held);

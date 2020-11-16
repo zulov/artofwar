@@ -15,6 +15,8 @@
 #include "stats/AiInputProvider.h"
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
+#include "objects/unit/order/GroupOrder.h"
+#include "objects/unit/order/enums/UnitActionType.h"
 
 OrderMaker::OrderMaker(Player* player)
 	: player(player), whatResource(BrainProvider::get("whichResource_w.csv")) {
@@ -26,14 +28,19 @@ void OrderMaker::action() {
 	if (!freeWorkers.empty()) {
 		collect(freeWorkers);
 	}
+	auto &possesion = player->getPossession();
+	
 
-	bool ifAttack = threshold.ifAttack(player->getPossession().getFreeArmyMetrics());
+	bool ifAttack = threshold.ifAttack(possesion.getFreeArmyMetrics());
 	//if (ifAttack) {
-	CenterType id = threshold.getBestToAttack(player->getPossession().getFreeArmyMetrics());
+	CenterType id = threshold.getBestToAttack(possesion.getFreeArmyMetrics());
 
 	const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
 	Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(id, enemy);
-
+	
+	std::vector<Unit*> army = possesion.getFreeArmy();
+	Game::getActionCenter()->add(
+		new UnitActionCommand(new GroupOrder(&army, UnitActionType::ORDER, id, pos), player->getId()));
 	//}
 }
 

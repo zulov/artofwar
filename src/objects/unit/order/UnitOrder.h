@@ -1,13 +1,11 @@
 #pragma once
 #include "objects/unit/ActionParameter.h"
 
-class Physical;
-
 namespace Urho3D
 {
 	class Vector2;
 }
-
+class Physical;
 enum class UnitAction : char;
 
 class UnitOrder {
@@ -25,7 +23,7 @@ public:
 	short getId() const { return id; }
 	short getToUseId() const;
 protected:
-	Physical* toUse = nullptr;
+	Physical* toUse = nullptr;//TODO tu nada³a by sie unia?
 	Urho3D::Vector2* vector = nullptr;
 	
 	const bool append;

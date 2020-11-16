@@ -15,8 +15,8 @@ class Possession {
 public:
 	Possession(char nation);
 	~Possession();
-
 	Possession(const Possession&) = delete;
+
 	void add(Building* building);
 	void add(Unit* unit);
 	void updateAndClean(Resources& resources, SimulationInfo* simInfo);
@@ -34,6 +34,7 @@ public:
 	std::span<float> getBuildingsMetrics() const;
 
 	std::vector<Unit*>& getWorkers();
+	std::vector<Unit*> getFreeArmy();
 private:
 	std::vector<Building*> buildings;
 	std::vector<std::vector<Building*>*> buildingsPerId;
@@ -43,10 +44,10 @@ private:
 	int freeWorkersNumber = 0;
 	float resourcesSum = 0;
 
-	float unitsMetrics[magic_enum::enum_count<UnitMetric>()-1];
-	float freeArmyMetrics[magic_enum::enum_count<UnitMetric>()-1];
-	float buildingsMetrics[magic_enum::enum_count<BuildingMetric>()-1];
-	
+	float unitsMetrics[magic_enum::enum_count<UnitMetric>() - 1];
+	float freeArmyMetrics[magic_enum::enum_count<UnitMetric>() - 1];
+	float buildingsMetrics[magic_enum::enum_count<BuildingMetric>() - 1];
+
 	const std::span<float> unitsValuesAsSpan = std::span(unitsMetrics);
 	const std::span<float> freeArmyMetricsAsSpan = std::span(freeArmyMetrics);
 	const std::span<float> buildingsValuesAsSpan = std::span(buildingsMetrics);

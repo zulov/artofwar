@@ -147,53 +147,46 @@ void Controls::leftClickBuild(hit_data& hitData) {
 	createBuilding({hitData.position.x_, hitData.position.z_});
 }
 
-void Controls::rightClick(hit_data& hitData) const {
-	UnitAction order;
-	Urho3D::Vector2* vector;
-	Physical* toUse;
+UnitOrder* Controls::vectorOrder(UnitAction order, Urho3D::Vector2* vector, const bool shiftPressed,
+                                 std::vector<Physical*>* vec) const {
+	if (vec->size() == 1) {
+		return new IndividualOrder(dynamic_cast<Unit*>(vec->at(0)), order, *vector, shiftPressed);
+	}
+	return new GroupOrder(vec, UnitActionType::ORDER, static_cast<short>(order), *vector, shiftPressed);
+}
+
+UnitOrder* Controls::thingOrder(UnitAction order, Physical* toUse, const bool shiftPressed,
+                                std::vector<Physical*>* vec) const {
+	if (vec->size() == 1) {
+		return new IndividualOrder(dynamic_cast<Unit*>(vec->at(0)), order, toUse, shiftPressed);
+	}
+	return new GroupOrder(vec, UnitActionType::ORDER, static_cast<short>(order), toUse, shiftPressed);
+}
+
+UnitAction Controls::chooseAction(hit_data& hitData) const {
+	return hitData.clicked->getTeam() == selected->at(0)->getTeam()
+		       ? UnitAction::FOLLOW
+		       : UnitAction::ATTACK;
+}
+
+UnitOrder* Controls::createUnitOrder(hit_data& hitData) const {
+	const bool shiftPressed = input->GetKeyDown(Urho3D::KEY_SHIFT);
 	switch (hitData.clicked->getType()) {
 	case ObjectType::PHYSICAL:
-		order = UnitAction::GO;
-		vector = new Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
-		toUse = nullptr;
-		break;
+		return vectorOrder(UnitAction::GO, new Urho3D::Vector2(hitData.position.x_, hitData.position.z_), shiftPressed,
+		                   selected);
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
-		order = hitData.clicked->getTeam() == selected->at(0)->getTeam()
-			        ? UnitAction::FOLLOW
-			        : UnitAction::ATTACK;
-		vector = nullptr;
-		toUse = hitData.clicked;
-		break;
+		return thingOrder(chooseAction(hitData), hitData.clicked, shiftPressed, selected);
 	case ObjectType::RESOURCE:
-		order = UnitAction::COLLECT;
-		vector = nullptr;
-		toUse = hitData.clicked;
-		break;
+		return thingOrder(UnitAction::COLLECT, hitData.clicked, shiftPressed, selected);
 	default: ;
 	}
-	const bool shiftPressed = input->GetKeyDown(Urho3D::KEY_SHIFT);
+}
 
-	UnitOrder* fOrder;
-	if (selected->size() == 1) {
-		if (vector) {
-			fOrder = new IndividualOrder(dynamic_cast<Unit*>(selected->at(0)),
-			                             order, *vector, shiftPressed);
-		} else {
-			fOrder = new IndividualOrder(dynamic_cast<Unit*>(selected->at(0)),
-			                             order, toUse, shiftPressed);
-		}
-	} else {
-		if (vector) {
-			fOrder = new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(order), *vector,
-			                        shiftPressed);
-		} else {
-			fOrder = new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(order), toUse,
-			                        shiftPressed);
-		}
-	}
-
-	Game::getActionCenter()->add(new UnitActionCommand(fOrder, Game::getPlayersMan()->getActivePlayerID()));
+void Controls::rightClick(hit_data& hitData) const {
+	Game::getActionCenter()->add(new UnitActionCommand(createUnitOrder(hitData),
+	                                                   Game::getPlayersMan()->getActivePlayerID()));
 }
 
 void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
@@ -205,28 +198,19 @@ void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
 }
 
 void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) const {
+	GroupOrder* first = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::GO),
+	                                   Urho3D::Vector2(held.first->x_, held.first->z_));
+	GroupOrder* second;
 	if (input->GetKeyDown(Urho3D::KEY_SHIFT)) {
-		Game::getActionCenter()->add(
-			new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(UnitAction::GO),
-			                                     Urho3D::Vector2(held.first->x_, held.first->z_)),
-			                      Game::getPlayersMan()->getActivePlayerID()),
-			new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, static_cast<short>(UnitAction::GO),
-			                                     Urho3D::Vector2(held.second->x_, held.second->z_), true),
-			                      Game::getPlayersMan()->getActivePlayerID()));
+		second = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::GO),
+		                        Urho3D::Vector2(held.second->x_, held.second->z_), true);
 	} else {
-		Game::getActionCenter()->add(new UnitActionCommand(
-			                             new GroupOrder(selected, UnitActionType::ORDER,
-			                                            static_cast<short>(UnitAction::GO),
-			                                            Urho3D::Vector2(held.second->x_, held.second->z_)),
-			                             Game::getPlayersMan()->getActivePlayerID()),
-		                             new UnitActionCommand(
-			                             new GroupOrder(selected, UnitActionType::ORDER,
-			                                            static_cast<short>(UnitAction::CHARGE),
-			                                            Urho3D::Vector2(held.second->x_ - held.first->x_,
-			                                                            held.second->z_ - held.first->z_)
-			                                            , true),
-			                             Game::getPlayersMan()->getActivePlayerID()));
+		second = new GroupOrder(selected, UnitActionType::ORDER, cast(UnitAction::CHARGE),
+		                        Urho3D::Vector2(held.second->x_ - held.first->x_,
+		                                        held.second->z_ - held.first->z_), true); //TODO buf append nie dzia³a
 	}
+	const auto playerId = Game::getPlayersMan()->getActivePlayerID();
+	Game::getActionCenter()->add(new UnitActionCommand(first, playerId), new UnitActionCommand(second, playerId));
 }
 
 void Controls::releaseLeft() {
@@ -315,7 +299,7 @@ void Controls::order(short id, const ActionParameter& parameter) {
 		case ActionType::UNIT_UPGRADE:
 			type = BuildingActionType::UNIT_UPGRADE;
 			break;
-		default:;
+		default: ;
 		}
 		return executeOnBuildings(type, id);
 	case ObjectType::RESOURCE:
@@ -439,7 +423,7 @@ bool Controls::conditionToClean(SimulationInfo* simulationInfo) const {
 	return false;
 }
 
-void Controls::cleanAndUpdate(SimulationInfo* simulationInfo){
+void Controls::cleanAndUpdate(SimulationInfo* simulationInfo) {
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
 	}
@@ -455,7 +439,7 @@ void Controls::updateSelection() const {
 	if (raycast(hitData, ObjectType::PHYSICAL)) {
 		const float xScale = left.held.first->x_ - hitData.position.x_;
 		const float zScale = left.held.first->z_ - hitData.position.z_;
-		if ((xScale * xScale > clickDistance || zScale * zScale > clickDistance) 
+		if ((xScale * xScale > clickDistance || zScale * zScale > clickDistance)
 			&& Game::getTime() - left.lastDown > 0.3f) {
 			if (!selectionNode->IsEnabled()) {
 				selectionNode->SetEnabled(true);

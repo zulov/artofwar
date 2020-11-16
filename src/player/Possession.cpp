@@ -71,6 +71,16 @@ std::vector<Unit*>& Possession::getWorkers() {
 	return workers;
 }
 
+std::vector<Unit*> Possession::getFreeArmy() {
+	std::vector<Unit*> army(units.size());
+
+	auto it = std::copy_if(units.begin(), units.end(), army.begin(), [](Unit* unit) {
+		return !unit->getLevel()->canCollect && isFree(unit->getState());
+	});
+	army.resize(std::distance(army.begin(), it));
+	return army;
+}
+
 void Possession::add(Building* building) {
 	buildings.push_back(building);
 	buildingsPerId[building->getId()]->push_back(building);
@@ -100,8 +110,8 @@ void Possession::updateAndClean(Resources& resources, SimulationInfo* simInfo) {
 	std::fill_n(freeArmyMetricsAsSpan.begin(), freeArmyMetricsAsSpan.size(), 0.f);
 	for (auto unit : units) {
 		unit->addValues(unitsValuesAsSpan);
-		
-		if(!unit->getLevel()->canCollect && isFree(unit->getState())) {
+
+		if (!unit->getLevel()->canCollect && isFree(unit->getState())) {
 			unit->addValues(freeArmyMetricsAsSpan);
 		}
 	}
