@@ -52,6 +52,7 @@ public:
 
 	void populate() override;
 	void checkAim();
+	void updatePosition();
 	void move(float timeStep, Urho3D::Vector2& camPos, float radius);
 	bool ifVisible(const Urho3D::Vector2& camPos, float radius) const;
 	void applyForce(float timeStep);

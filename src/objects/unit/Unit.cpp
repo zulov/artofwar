@@ -63,20 +63,27 @@ void Unit::checkAim() {
 	}
 }
 
+void Unit::updatePosition() {
+	if (isVisible) {
+		if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
+			node->SetTransform(
+				position,
+				Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(velocity.x_, 0, velocity.y_)));
+		} else {
+			node->SetPosition(position);
+		}
+	}
+}
+
 void Unit::move(float timeStep, Urho3D::Vector2& camPos, float radius) {
+	bool prevVisible = isVisible;
 	isVisible = ifVisible(camPos, radius);
 	if (state != UnitState::STOP) {
 		position.x_ += velocity.x_ * timeStep;
 		position.z_ += velocity.y_ * timeStep;
-		if (isVisible) {
-			if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
-				node->SetTransform(
-					position,
-					Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(velocity.x_, 0, velocity.y_)));
-			} else {
-				node->SetPosition(position);
-			}
-		}
+		updatePosition();
+	} else if (prevVisible == false && isVisible == true) {
+		node->SetPosition(position);
 	}
 	if (missileData && missileData->isUp()) {
 		missileData->update(timeStep, dbLevel->rangeAttackVal);

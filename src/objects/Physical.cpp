@@ -16,6 +16,7 @@ Physical::Physical(Urho3D::Vector3& _position):
 	node = Game::getScene()->CreateChild();
 	node->SetVar("link", this);
 	node->SetPosition(position);
+	isVisible = true;
 }
 
 Physical::~Physical() {
