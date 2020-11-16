@@ -39,7 +39,7 @@ float Physical::getAuraSize(const Urho3D::Vector3& boundingBox) const {
 void Physical::updateBillboardAura(Urho3D::Vector3& boundingBox) const {
 	if (selected && aura) {
 		const auto auraSize = getAuraSize(boundingBox);
-		aura->position_ = position;
+		aura->position_ = node->GetPosition();
 		aura->size_ = {auraSize, auraSize};
 		aura->enabled_ = true;
 	}
@@ -47,7 +47,7 @@ void Physical::updateBillboardAura(Urho3D::Vector3& boundingBox) const {
 
 void Physical::updateBillboardBar(Urho3D::Vector3& boundingBox) const {
 	if (selected && healthBar) {
-		healthBar->position_ = position + Urho3D::Vector3{0, boundingBox.y_ * 1.3f, 0};
+		healthBar->position_ = node->GetPosition() + Urho3D::Vector3{0, boundingBox.y_ * 1.3f, 0};
 		healthBar->size_ = {getHealthBarSize(), getHealthBarThick()};
 		healthBar->enabled_ = true;
 	}

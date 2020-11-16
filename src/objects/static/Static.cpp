@@ -11,6 +11,7 @@ Static::Static(Urho3D::Vector3& _position, int mainCell) : Physical(_position) {
 	state = StaticState::ALIVE;
 	nextState = StaticState::ALIVE;
 	setMainCell(mainCell);
+	isVisible = true;
 }
 
 void Static::load(dbload_static* dbloadStatic) {

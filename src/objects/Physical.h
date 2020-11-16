@@ -41,7 +41,8 @@ public:
 	virtual bool isSlotOccupied(int indexToInteract) { return false; }
 	virtual bool isFirstThingInSameSocket() const { return true; }
 
-	virtual void setOccupiedSlot(int indexToInteract, bool value) { }
+	virtual void setOccupiedSlot(int indexToInteract, bool value) {
+	}
 
 	void indexHasChangedReset() { indexHasChanged = false; }
 
@@ -68,7 +69,8 @@ public:
 
 	int getMainBucketIndex() const { return indexInGrid; }
 
-	virtual void populate() { }
+	virtual void populate() {
+	}
 
 	virtual int getMainCell() const;
 
@@ -88,9 +90,11 @@ public:
 
 	virtual int getLevelNum();
 
-	virtual void clean() { }
+	virtual void clean() {
+	}
 
-	virtual void addValues(std::span<float> vals) const { }
+	virtual void addValues(std::span<float> vals) const {
+	}
 
 protected:
 	void loadXml(const Urho3D::String& xmlName);
@@ -109,6 +113,7 @@ protected:
 	              rangeUsers = 0;
 	bool indexHasChanged = false;
 	bool selected = false;
+	bool isVisible = false;
 
 	Urho3D::Vector3 position;
 

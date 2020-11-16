@@ -85,7 +85,6 @@ SimulationInfo* Simulation::update(float timeStep) {
 		applyForce();
 
 		moveUnitsAndCheck(TIME_PER_UPDATE);
-
 		performStateAction(TIME_PER_UPDATE);
 		updateQueues();
 

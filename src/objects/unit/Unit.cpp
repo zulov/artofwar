@@ -64,11 +64,12 @@ void Unit::checkAim() {
 }
 
 void Unit::move(float timeStep, Urho3D::Vector2& camPos, float radius) {
+	isVisible = ifVisible(camPos, radius);
 	if (state != UnitState::STOP) {
 		position.x_ += velocity.x_ * timeStep;
 		position.z_ += velocity.y_ * timeStep;
-		if (ifVisible(camPos, radius)) {
-			if (dbUnit->rotatable && velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
+		if (isVisible) {
+			if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
 				node->SetTransform(
 					position,
 					Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(velocity.x_, 0, velocity.y_)));
@@ -83,11 +84,11 @@ void Unit::move(float timeStep, Urho3D::Vector2& camPos, float radius) {
 }
 
 bool Unit::ifVisible(const Urho3D::Vector2& camPos, float radius) const {
-	return (camPos.x_ - radius < position.x_ || camPos.x_ - radius< node->GetPosition().x_)
-		&& (position.x_ < camPos.x_ + radius || node->GetPosition().x_ < camPos.x_ + radius) 
+	return (camPos.x_ - radius < position.x_ || camPos.x_ - radius < node->GetPosition().x_)
+		&& (position.x_ < camPos.x_ + radius || node->GetPosition().x_ < camPos.x_ + radius)
 		&& (camPos.y_ - radius < position.z_ || camPos.y_ - radius < node->GetPosition().z_)
 		&& (position.z_ < camPos.y_ + radius || node->GetPosition().z_ < camPos.y_ + radius);
-	
+
 }
 
 void Unit::setAcceleration(Urho3D::Vector2& _acceleration) {
@@ -171,7 +172,7 @@ void Unit::drawLineTo(const Urho3D::Vector3& second,
 
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		if (selected) {
+		if (selected && isVisible) {
 			switch (type) {
 			case DebugUnitType::NONE:
 				break;

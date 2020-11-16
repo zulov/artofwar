@@ -263,7 +263,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 };
 
 struct db_unit : db_entity, db_with_name, db_with_cost {
-	const bool rotatable;
+	
 	const Urho3D::String icon;
 	const short actionState;
 
@@ -275,9 +275,8 @@ struct db_unit : db_entity, db_with_name, db_with_cost {
 
 	bool possibleStates[magic_enum::enum_count<UnitState>()];
 
-	db_unit(short id, char* name, short rotatable, char* icon, short actionState)
+	db_unit(short id, char* name, char* icon, short actionState)
 		: db_entity(id), db_with_name(name),
-		  rotatable(rotatable),
 		  icon(icon),
 		  actionState(actionState) {
 	}
