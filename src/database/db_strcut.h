@@ -12,7 +12,6 @@
 #include "objects/Metrics.h"
 #include "objects/unit/state/UnitState.h"
 #include "stats/AiWeights.h"
-#include "stats/StatsEnums.h"
 #include "utils/DeleteUtils.h"
 #include "utils/OtherUtils.h"
 #include "utils/StringUtils.h"

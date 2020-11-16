@@ -32,7 +32,7 @@ class Simulation {
 public:
 	explicit Simulation(Environment* enviroment);
 	~Simulation();
-	void updateInfluenceMaps();
+	void updateInfluenceMaps() const;
 
 	SimulationInfo* update(float timeStep);
 	void initScene(SceneLoader& loader) const;
@@ -66,7 +66,7 @@ private:
 
 	float accumulateTime = 0;
 	unsigned int secondsElapsed = 0;
-	unsigned char currentFrameNumber = 0;
+	unsigned char currentFrame = 0;
 	SimColorMode colorScheme;
 	bool colorSchemeChanged = true;
 	Force force;

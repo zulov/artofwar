@@ -1,5 +1,6 @@
 #include "Simulation.h"
 #include "Game.h"
+#include "SimGlobals.h"
 #include "SimulationInfo.h"
 #include "SimulationObjectManager.h"
 #include "camera/CameraManager.h"
@@ -29,12 +30,7 @@
 #include "scene/save/SceneSaver.h"
 #include "simulation/formation/FormationManager.h"
 #include "stats/Stats.h"
-
-constexpr bool BENCHMARK_MODE = true;
-constexpr float UPDATE_DRAW_DISTANCE = 120.f;
-
-constexpr float TIME_PER_UPDATE = 0.033333333f;
-constexpr unsigned char FRAMES_IN_PERIOD = 1 / TIME_PER_UPDATE;
+#include "PerFrameAction.h"
 
 Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 	simObjectManager = new SimulationObjectManager();
@@ -56,10 +52,11 @@ Simulation::~Simulation() {
 	Game::setActionCenter(nullptr);
 }
 
-void Simulation::updateInfluenceMaps() {
-	if (currentFrameNumber % 2 == 0) {
+void Simulation::updateInfluenceMaps() const {
+	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_1, currentFrame)) {
 		enviroment->updateInfluence1(units, buildings, resources);
-	} else {
+	}
+	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_2, currentFrame)) {
 		enviroment->updateInfluence2(units, buildings);
 	}
 	enviroment->updateInfluence3();
@@ -69,8 +66,8 @@ SimulationInfo* Simulation::update(float timeStep) {
 	simObjectManager->dispose();
 
 	accumulateTime += updateTime(timeStep);
-	while (accumulateTime >= TIME_PER_UPDATE) {//TODO bug a co jesli kilka razy sie wykona, moga byæ b³êdy jezeli cos umrze
-		countFrame();
+	while (accumulateTime >= TIME_PER_UPDATE) {
+		//TODO bug a co jesli kilka razy sie wykona, moga byæ b³êdy jezeli cos umrze
 
 		Game::getActionCenter()->executeLists();
 		selfAI();
@@ -90,16 +87,18 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		simObjectManager->prepareToDispose();
 		simObjectManager->updateInfo(simulationInfo);
-		simulationInfo->setCurrentFrame(currentFrameNumber);
+		simulationInfo->setCurrentFrame(currentFrame);
 		enviroment->removeFromGrids(simObjectManager->getToDispose());
 		Game::getPlayersMan()->update(simulationInfo);
 		Game::getFormationManager()->update();
-		Game::getStats()->save(secondsElapsed % 10 == 0 && currentFrameNumber % FRAMES_IN_PERIOD == 0);
+		Game::getStats()->save(PER_FRAME_ACTION.get(PerFrameAction::STAT_SAVE, currentFrame, secondsElapsed));
 		//Every 10 seconds
 
 		accumulateTime -= TIME_PER_UPDATE;
+
+		countFrame();
 	}
-	
+
 	return simulationInfo;
 }
 
@@ -125,8 +124,8 @@ void Simulation::selfAI() {
 			unit->toCharge(enviroment->getNeighboursFromTeamNotEq(unit, 12, unit->getTeam()));
 			break;
 		case UnitState::STOP:
-		case UnitState::MOVE:
-			if (currentFrameNumber % 3 == 0 && unit->getFormation() == -1
+		case UnitState::MOVE:	
+			if (PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, currentFrame) && unit->getFormation() == -1
 				&& StateManager::checkChangeState(unit, unit->getActionState())) {
 				switch (unit->getActionState()) {
 				case UnitState::ATTACK:
@@ -174,7 +173,7 @@ void Simulation::loadEntities(NewGameForm* form) const {
 	}
 }
 
-float Simulation::updateTime(float timeStep) const{
+float Simulation::updateTime(float timeStep) const {
 	if (BENCHMARK_MODE) {
 		return TIME_PER_UPDATE;
 	}
@@ -182,9 +181,9 @@ float Simulation::updateTime(float timeStep) const{
 }
 
 void Simulation::countFrame() {
-	++currentFrameNumber;
-	if (currentFrameNumber >= FRAMES_IN_PERIOD) {
-		currentFrameNumber = 0;
+	++currentFrame;
+	if (currentFrame >= FRAMES_IN_PERIOD) {
+		currentFrame = 0;
 		++secondsElapsed;
 	}
 }
@@ -286,7 +285,7 @@ void Simulation::initScene(NewGameForm* form) const {
 }
 
 void Simulation::aiPlayers() const {
-	if (currentFrameNumber % FRAMES_IN_PERIOD == 0) {
+	if (currentFrame % FRAMES_IN_PERIOD == 0) {
 		aiManager->ai();
 	}
 }

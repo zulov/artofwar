@@ -1,7 +1,6 @@
 #include "debug/DebugManager.h"
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/IO/Log.h>
-#include <Urho3D/Scene/Scene.h>
 #include "Game.h"
 #include "simulation/Simulation.h"
 #include "simulation/env/Environment.h"

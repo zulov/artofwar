@@ -524,6 +524,8 @@
     <ClInclude Include="src\simulation\env\influence\CenterType.h" />
     <ClInclude Include="src\utils\OtherUtils.h" />
     <ClInclude Include="src\player\ai\nn\BrainProvider.h" />
+    <ClInclude Include="src\simulation\PerFrameAction.h" />
+    <ClInclude Include="src\simulation\SimGlobals.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

@@ -315,6 +315,8 @@
     <ClInclude Include="src\simulation\env\bucket\levels\LevelCache.h" />
     <ClInclude Include="src\hud\window\EventPanel.h" />
     <ClInclude Include="src\simulation\env\influence\CenterType.h" />
+    <ClInclude Include="src\simulation\PerFrameAction.h" />
+    <ClInclude Include="src\simulation\SimGlobals.h" />
     <ClInclude Include="src\stats\AiInputProvider.h" />
     <ClInclude Include="src\objects\Metrics.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
