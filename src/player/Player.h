@@ -33,7 +33,8 @@ public:
 	void updatePossession(SimulationInfo * simInfo);
 	void add(Unit* unit);
 	void add(Building* building);
-	void ai();
+	void aiAction();
+	void aiOrder();
 	int getScore() const;
 
 	int getWorkersNumber() const;

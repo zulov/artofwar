@@ -3,10 +3,18 @@
 #include "player/PlayersManager.h"
 #include "player/Player.h"
 
-void AiManager::ai() {
+void AiManager::aiOrder() {
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 		if (Game::getPlayersMan()->getActivePlayer() != player) {
-			player->ai();
+			player->aiOrder();
+		}
+	}
+}
+
+void AiManager::aiAction() {
+	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+		if (Game::getPlayersMan()->getActivePlayer() != player) {
+			player->aiAction();
 		}
 	}
 }

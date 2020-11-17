@@ -92,7 +92,6 @@ SimulationInfo* Simulation::update(float timeStep) {
 		Game::getPlayersMan()->update(simulationInfo);
 		Game::getFormationManager()->update();
 		Game::getStats()->save(PER_FRAME_ACTION.get(PerFrameAction::STAT_SAVE, currentFrame, secondsElapsed));
-		//Every 10 seconds
 
 		accumulateTime -= TIME_PER_UPDATE;
 
@@ -124,7 +123,7 @@ void Simulation::selfAI() {
 			unit->toCharge(enviroment->getNeighboursFromTeamNotEq(unit, 12, unit->getTeam()));
 			break;
 		case UnitState::STOP:
-		case UnitState::MOVE:	
+		case UnitState::MOVE:
 			if (PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, currentFrame) && unit->getFormation() == -1
 				&& StateManager::checkChangeState(unit, unit->getActionState())) {
 				switch (unit->getActionState()) {
@@ -285,8 +284,12 @@ void Simulation::initScene(NewGameForm* form) const {
 }
 
 void Simulation::aiPlayers() const {
-	if (currentFrame % FRAMES_IN_PERIOD == 0) {
-		aiManager->ai();
+	if (PER_FRAME_ACTION.get(PerFrameAction::AI_ACTION, currentFrame)) {
+		aiManager->aiAction();
+	}
+
+	if (PER_FRAME_ACTION.get(PerFrameAction::AI_ORDER, currentFrame)) {
+		aiManager->aiOrder();
 	}
 }
 
@@ -340,7 +343,7 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);
-		unit->debug(DebugUnitType::ALL_FORCE, stats); //TODO przeniesc do Controls
+		unit->debug(DebugUnitType::AIM, stats); //TODO przeniesc do Controls
 	}
 	DebugLineRepo::commit(DebugLineType::UNIT_LINES);
 }

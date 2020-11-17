@@ -116,7 +116,10 @@ QueueManager& Player::getQueue() {
 	return queue;
 }
 
-void Player::ai() {
+void Player::aiAction() {
 	//actionMaker.action();
+}
+
+void Player::aiOrder() {
 	orderMaker.action();
 }

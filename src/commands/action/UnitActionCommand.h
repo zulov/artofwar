@@ -1,7 +1,6 @@
 #pragma once
 #include "commands/AbstractCommand.h"
 
-
 namespace Urho3D {
 	class Vector2;
 }

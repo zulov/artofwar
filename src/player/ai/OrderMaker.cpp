@@ -28,8 +28,8 @@ void OrderMaker::action() {
 	if (!freeWorkers.empty()) {
 		collect(freeWorkers);
 	}
-	auto &possesion = player->getPossession();
-	
+	auto& possesion = player->getPossession();
+
 
 	bool ifAttack = threshold.ifAttack(possesion.getFreeArmyMetrics());
 	//if (ifAttack) {
@@ -37,17 +37,20 @@ void OrderMaker::action() {
 
 	const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
 	Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(id, enemy);
-	
+
 	std::vector<Unit*> army = possesion.getFreeArmy();
-	// Game::getActionCenter()->add(
-	// 	new UnitActionCommand(new GroupOrder(&army, UnitActionType::ORDER, id, pos), player->getId()));
+	if (!army.empty()) {
+		Game::getActionCenter()->add(
+			new UnitActionCommand(new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), pos),
+			                      player->getId()));
+	}
 	//}
 }
 
 std::vector<Unit*> OrderMaker::findFreeWorkers() const {
 	std::vector<Unit*> freeWorkers;
 	for (auto worker : player->getPossession().getWorkers()) {
-		if (isFree(worker->getState())) {
+		if (isFreeWorker(worker)) {
 			freeWorkers.push_back(worker);
 		}
 	}

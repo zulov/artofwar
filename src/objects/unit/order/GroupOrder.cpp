@@ -1,24 +1,24 @@
 #include "GroupOrder.h"
 #include "FormationOrder.h"
 #include "Game.h"
-#include "enums/UnitAction.h"
 #include "enums/UnitActionType.h"
-#include "math/VectorUtils.h"
-#include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
 #include "simulation/formation/FormationManager.h"
 
 
 GroupOrder::GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id,
-                       Physical* toUse, bool append):
-	UnitOrder(id, append, toUse), actionType(actionType) {
+                       Physical* toUse, bool append): UnitOrder(id, append, toUse), actionType(actionType) {
 	addUnits(entities);
 }
 
 GroupOrder::GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id,
-                       Urho3D::Vector2 vector, bool append):
-	UnitOrder(id, append, vector), actionType(actionType) {
+                       Urho3D::Vector2 vector, bool append): UnitOrder(id, append, vector), actionType(actionType) {
 	addUnits(entities);
+}
+
+GroupOrder::GroupOrder(const std::vector<Unit*>& entities, UnitActionType actionType, short id,
+                       Urho3D::Vector2 vector, bool append): UnitOrder(id, append, vector), actionType(actionType),
+                                                             units(entities) {
 }
 
 void GroupOrder::addUnits(const std::vector<Physical*>& entities) {

@@ -1,6 +1,5 @@
 #pragma once
 
-
 enum class CellState : char;
 
 namespace Urho3D

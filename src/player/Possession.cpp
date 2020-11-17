@@ -4,6 +4,7 @@
 #include "Resources.h"
 #include "database/DatabaseCache.h"
 #include "math/VectorUtils.h"
+#include "objects/PhysicalUtils.h"
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
@@ -75,7 +76,7 @@ std::vector<Unit*> Possession::getFreeArmy() {
 	std::vector<Unit*> army(units.size());
 
 	auto it = std::copy_if(units.begin(), units.end(), army.begin(), [](Unit* unit) {
-		return !unit->getLevel()->canCollect && isFree(unit->getState());
+		return isFreeSolider(unit);
 	});
 	army.resize(std::distance(army.begin(), it));
 	return army;
@@ -111,7 +112,7 @@ void Possession::updateAndClean(Resources& resources, SimulationInfo* simInfo) {
 	for (auto unit : units) {
 		unit->addValues(unitsValuesAsSpan);
 
-		if (!unit->getLevel()->canCollect && isFree(unit->getState())) {
+		if (isFreeSolider(unit)) {
 			unit->addValues(freeArmyMetricsAsSpan);
 		}
 	}

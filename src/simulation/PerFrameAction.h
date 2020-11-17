@@ -8,7 +8,9 @@ enum class PerFrameAction:char {
 	INFLUENCE_1=0,
 	INFLUENCE_2,
 	SELF_AI,
-	STAT_SAVE
+	STAT_SAVE,
+	AI_ACTION,
+	AI_ORDER
 };
 
 inline struct PerFrameActionData {
@@ -33,7 +35,17 @@ private:
 			10, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		} //STAT_SAVE
+		}, //STAT_SAVE
+		{
+			0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		}, //AI_ACTION
+		{
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		} //AI_ORDER
 	};
 public:
 	static bool get(PerFrameAction type, unsigned char frameNum, unsigned int second = 1) {
