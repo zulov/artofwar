@@ -2,22 +2,26 @@
 #include <vector>
 #include "ControlsState.h"
 #include "MouseButton.h"
-#include "SelectedInfo.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "BillboardSetProvider.h"
-#include "objects/unit/order/UnitOrder.h"
+
+constexpr char MAX_DEPLOY_MARK_NUMBER = 5;
 
 namespace Urho3D {
 	class StaticModel;
 	class Input;
+	class Vector3;
+	class Vector2;
+	class Node;
 }
-
-constexpr char MAX_DEPLOY_MARK_NUMBER = 5;
 
 enum class BuildingActionType : char;
 enum class ResourceActionType : char;
 class HudData;
 class SimulationInfo;
+class Physical;
+class SelectedInfo;
+class UnitOrder;
 struct ActionParameter;
 struct hit_data;
 
@@ -63,7 +67,7 @@ private:
 	void unitFormation(short id) const;
 	void actionUnit(short id, const ActionParameter& parameter);
 
-	void refreshSelected() const;
+	void refreshSelected();
 	bool conditionToClean(SimulationInfo* simulationInfo) const;
 
 	bool clickDown(MouseButton& var) const;
@@ -72,9 +76,13 @@ private:
 	void leftClick(hit_data& hitData);
 	void leftDoubleClick(hit_data& hitData);
 	void leftClickBuild(hit_data& hitData);
-	
-	UnitOrder* vectorOrder(UnitAction order, Urho3D::Vector2* vector, bool shiftPressed, std::vector<Physical*>* vec) const;
-	UnitOrder* thingOrder(UnitAction order, Physical* toUse, bool shiftPressed, std::vector<Physical*>* vec) const;
+
+	BuildingActionType getBuildingActionType(const ActionParameter& parameter);
+
+	UnitOrder* vectorOrder(UnitAction order, Urho3D::Vector2* vector, bool shiftPressed,
+	                       const std::vector<Physical*>& vec) const;
+	UnitOrder* thingOrder(UnitAction order, Physical* toUse, bool shiftPressed,
+	                      const std::vector<Physical*>& vec) const;
 	UnitAction chooseAction(hit_data& hitData) const;
 	UnitOrder* createUnitOrder(hit_data& hitData) const;
 
@@ -89,7 +97,7 @@ private:
 	void releaseBuildLeft();
 	void toDefault();
 
-	std::vector<Physical*>* selected; //TODO to powinien byæ set
+	std::vector<Physical*> selected;
 
 	Urho3D::Input* input;
 
@@ -100,7 +108,7 @@ private:
 	Urho3D::StaticModel* tempBuildingModel;
 
 	SelectedInfo* selectedInfo;
-	
+
 	BillboardSetProvider billboardSetProvider;
 
 	float clickDistance = 2 * 2;

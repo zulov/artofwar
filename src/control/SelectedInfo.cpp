@@ -64,9 +64,9 @@ bool SelectedInfo::isSthSelected() const {
 	return allNumber > 0 && selectedType != ObjectType::PHYSICAL;
 }
 
-void SelectedInfo::refresh(std::vector<Physical*>* selected) {
+void SelectedInfo::refresh(const std::vector<Physical*>& selected) {
 	reset();
-	for (auto physical : *selected) {
+	for (auto physical : selected) {
 		select(physical);
 	}
 }

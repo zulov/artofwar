@@ -70,7 +70,7 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 		for (auto neight : *neights) {
 			if (k < limit) {
 				auto unit = dynamic_cast<Unit*>(neight);
-				if (unit->getState() == UnitState::STOP && StateManager::checkChangeState(unit, UnitState::COLLECT)) {
+				if (unit->getState() == UnitState::STOP && unit->getLevel()->canCollect) {
 					auto opt = this->getPosToUseWithIndex(unit);
 					if (opt.has_value()) {
 						auto [pos, distance, indexOfPos] = opt.value();

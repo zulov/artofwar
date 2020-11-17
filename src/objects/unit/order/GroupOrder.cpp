@@ -8,20 +8,22 @@
 #include "objects/unit/Unit.h"
 #include "simulation/formation/FormationManager.h"
 
-GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, short id,
+
+GroupOrder::GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id,
                        Physical* toUse, bool append):
 	UnitOrder(id, append, toUse), actionType(actionType) {
-	for (auto unit : *entities) {
-		//TODO performance spróbowaæ z insertem
-		this->units.emplace_back(reinterpret_cast<Unit*>(unit));
-	}
+	addUnits(entities);
 }
 
-GroupOrder::GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, short id,
+GroupOrder::GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id,
                        Urho3D::Vector2 vector, bool append):
 	UnitOrder(id, append, vector), actionType(actionType) {
-	for (auto unit : *entities) {
-		//TODO performance spróbowaæ z insertem
+	addUnits(entities);
+}
+
+void GroupOrder::addUnits(const std::vector<Physical*>& entities) {
+	units.reserve(entities.size());
+	for (auto unit : entities) {
 		this->units.emplace_back(reinterpret_cast<Unit*>(unit));
 	}
 }

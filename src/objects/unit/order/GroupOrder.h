@@ -6,10 +6,11 @@ enum class UnitAction : char;
 
 class GroupOrder : public UnitOrder {
 public:
-	GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, short id,
+	void addUnits(const std::vector<Physical*>& entities);
+	GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id,
 	           Physical* toUse, bool append = false);
 
-	GroupOrder(std::vector<Physical*>* entities, UnitActionType actionType, short id,
+	GroupOrder(const std::vector<Physical*>& entities, UnitActionType actionType, short id,
 	           Urho3D::Vector2 vector, bool append = false);
 	~GroupOrder() = default;
 	

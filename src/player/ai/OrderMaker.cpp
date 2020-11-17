@@ -39,8 +39,8 @@ void OrderMaker::action() {
 	Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(id, enemy);
 	
 	std::vector<Unit*> army = possesion.getFreeArmy();
-	Game::getActionCenter()->add(
-		new UnitActionCommand(new GroupOrder(&army, UnitActionType::ORDER, id, pos), player->getId()));
+	// Game::getActionCenter()->add(
+	// 	new UnitActionCommand(new GroupOrder(&army, UnitActionType::ORDER, id, pos), player->getId()));
 	//}
 }
 

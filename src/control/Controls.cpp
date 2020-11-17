@@ -1,13 +1,8 @@
 #include "Controls.h"
-#include <algorithm>
-#include <queue>
-#include <Urho3D/Graphics/Model.h>
-#include <Urho3D/Graphics/StaticModel.h>
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/IO/Log.h>
-#include <Urho3D/Scene/Scene.h>
-#include "objects/unit/order/enums/UnitActionType.h"
 #include "ControlsUtils.h"
+#include "SelectedInfo.h"
 #include "commands/action/BuildingActionCommand.h"
 #include "commands/action/BuildingActionType.h"
 #include "commands/action/GeneralActionCommand.h"
@@ -22,6 +17,7 @@
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/GroupOrder.h"
 #include "objects/unit/order/IndividualOrder.h"
+#include "objects/unit/order/enums/UnitActionType.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/ai/ActionCenter.h"
@@ -30,8 +26,7 @@
 
 
 Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
-	selected = new std::vector<Physical*>();
-	selected->reserve(5000);
+	selected.reserve(5000);
 
 	selectedInfo = new SelectedInfo();
 
@@ -52,7 +47,6 @@ Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectTyp
 
 Controls::~Controls() {
 	delete selectedInfo;
-	delete selected;
 	selectionNode->Remove();
 	arrowNode->Remove();
 
@@ -69,10 +63,10 @@ void Controls::updateAdditionalInfo() const {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::BUILDING:
 	{
-		int min = Urho3D::Min(MAX_DEPLOY_MARK_NUMBER, selected->size());
+		int min = Urho3D::Min(MAX_DEPLOY_MARK_NUMBER, selected.size());
 		for (int i = 0; i < min; ++i) {
 			deployMark[i]->SetEnabled(true);
-			auto deployIndex = static_cast<Building*>(selected->at(i))->getDeploy().value();
+			auto deployIndex = static_cast<Building*>(selected.at(i))->getDeploy().value();
 			deployMark[i]->SetPosition(Game::getEnvironment()->getPosWithHeightAt(deployIndex));
 		}
 		for (int i = min; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
@@ -88,11 +82,11 @@ void Controls::updateAdditionalInfo() const {
 }
 
 void Controls::unSelectAll() {
-	for (auto& phy : *selected) {
+	for (auto& phy : selected) {
 		phy->unSelect();
 	}
 	billboardSetProvider.reset();
-	selected->clear();
+	selected.clear();
 	selectedInfo->setSelectedType(ObjectType::NONE);
 	selectedInfo->reset();
 }
@@ -109,10 +103,10 @@ void Controls::selectOne(Physical* entity, char player) {
 		entity->select(billboardSetProvider.getNextBar(entity->getType(), entity->getPlayer()),
 		               billboardSetProvider.getNextAura(entity->getType(), entity->getPlayer(), entity->getId()));
 		//entity->select(nullptr,nullptr);
-		selected->push_back(entity);
+		selected.push_back(entity);
 
 		selectedInfo->setSelectedType(entityType);
-		selectedInfo->setAllNumber(selected->size());
+		selectedInfo->setAllNumber(selected.size());
 		selectedInfo->select(entity);
 	}
 }
@@ -148,23 +142,23 @@ void Controls::leftClickBuild(hit_data& hitData) {
 }
 
 UnitOrder* Controls::vectorOrder(UnitAction order, Urho3D::Vector2* vector, const bool shiftPressed,
-                                 std::vector<Physical*>* vec) const {
-	if (vec->size() == 1) {
-		return new IndividualOrder(dynamic_cast<Unit*>(vec->at(0)), order, *vector, shiftPressed);
+                                 const std::vector<Physical*>& vec) const {
+	if (vec.size() == 1) {
+		return new IndividualOrder(dynamic_cast<Unit*>(vec.at(0)), order, *vector, shiftPressed);
 	}
 	return new GroupOrder(vec, UnitActionType::ORDER, static_cast<short>(order), *vector, shiftPressed);
 }
 
 UnitOrder* Controls::thingOrder(UnitAction order, Physical* toUse, const bool shiftPressed,
-                                std::vector<Physical*>* vec) const {
-	if (vec->size() == 1) {
-		return new IndividualOrder(dynamic_cast<Unit*>(vec->at(0)), order, toUse, shiftPressed);
+                                const std::vector<Physical*>& vec) const {
+	if (vec.size() == 1) {
+		return new IndividualOrder(dynamic_cast<Unit*>(vec.at(0)), order, toUse, shiftPressed);
 	}
 	return new GroupOrder(vec, UnitActionType::ORDER, static_cast<short>(order), toUse, shiftPressed);
 }
 
 UnitAction Controls::chooseAction(hit_data& hitData) const {
-	return hitData.clicked->getTeam() == selected->at(0)->getTeam()
+	return hitData.clicked->getTeam() == selected.at(0)->getTeam()
 		       ? UnitAction::FOLLOW
 		       : UnitAction::ATTACK;
 }
@@ -277,31 +271,27 @@ void Controls::toBuild(HudData* hud) {
 	tempBuildingNode->SetEnabled(false);
 }
 
-void Controls::order(short id, const ActionParameter& parameter) {
-	char player = Game::getPlayersMan()->getActivePlayerID();
+BuildingActionType Controls::getBuildingActionType(const ActionParameter& parameter) {
+	switch (parameter.type) {
+	case ActionType::UNIT_CREATE:
+		return BuildingActionType::UNIT_CREATE;
+	case ActionType::UNIT_LEVEL:
+		return BuildingActionType::UNIT_LEVEL;
+	case ActionType::UNIT_UPGRADE:
+		return BuildingActionType::UNIT_UPGRADE;
+	default: ;
+	}
+}
 
+void Controls::order(short id, const ActionParameter& parameter) {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::PHYSICAL:
 	case ObjectType::NONE:
-		return Game::getActionCenter()->add(new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL, player));
+		return Game::getActionCenter()->add(new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL, Game::getPlayersMan()->getActivePlayerID()));
 	case ObjectType::UNIT:
 		return actionUnit(id, parameter);
 	case ObjectType::BUILDING:
-		BuildingActionType type;
-		switch (parameter.type) {
-
-		case ActionType::UNIT_CREATE:
-			type = BuildingActionType::UNIT_CREATE;
-			break;
-		case ActionType::UNIT_LEVEL:
-			type = BuildingActionType::UNIT_LEVEL;
-			break;
-		case ActionType::UNIT_UPGRADE:
-			type = BuildingActionType::UNIT_UPGRADE;
-			break;
-		default: ;
-		}
-		return executeOnBuildings(type, id);
+		return executeOnBuildings(getBuildingActionType(parameter), id);
 	case ObjectType::RESOURCE:
 		return executeOnResources(ResourceActionType(id));
 	}
@@ -334,8 +324,8 @@ bool Controls::clickDown(MouseButton& var) const {
 
 void Controls::createBuilding(Urho3D::Vector2 pos) const {
 	if (idToCreate >= 0) {
-		auto player = Game::getPlayersMan()->getActivePlayer();
-		Game::getActionCenter()->addBuilding(idToCreate, pos, player->getId());
+		auto player = Game::getPlayersMan()->getActivePlayerID();
+		Game::getActionCenter()->addBuilding(idToCreate, pos, player);
 	}
 }
 
@@ -388,11 +378,11 @@ void Controls::actionUnit(short id, const ActionParameter& parameter) {
 	}
 }
 
-void Controls::refreshSelected() const {
-	bool sizeBefore = selected->size();
-	selected->erase(
+void Controls::refreshSelected() {
+	bool sizeBefore = selected.size();
+	selected.erase(
 		std::remove_if(
-			selected->begin(), selected->end(),
+			selected.begin(), selected.end(),
 			[](Physical* physical) {
 				if (!physical->isAlive()) {
 					physical->unSelect();
@@ -400,14 +390,13 @@ void Controls::refreshSelected() const {
 				}
 				return false;
 			}),
-		selected->end());
+		selected.end());
 
-	bool sizeAfter = selected->size();
+	bool sizeAfter = selected.size();
 	if (sizeBefore != sizeAfter) {
 		//TODO perf nie koniecznie resetowac ca³oœæ
 		selectedInfo->refresh(selected);
 	}
-
 	//TODO bug billboard beda zajete
 }
 
@@ -427,7 +416,7 @@ void Controls::cleanAndUpdate(SimulationInfo* simulationInfo) {
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
 	}
-	for (auto physical : *selected) {
+	for (auto physical : selected) {
 		physical->updateBillboards();
 	}
 	billboardSetProvider.commit();
@@ -522,11 +511,14 @@ void Controls::defaultControl() {
 		releaseRight();
 	}
 
-	if (input->GetMouseButtonDown(Urho3D::MOUSEB_MIDDLE)) {
+	if (input->GetMouseButtonPress(Urho3D::MOUSEB_MIDDLE)) {
 		hit_data hitData;
 
 		if (raycast(hitData)) {
-			Game::getLog()->Write(0, hitData.position.ToString());
+			if (hitData.clicked) {
+				Game::getLog()->Write(3, hitData.clicked->toMultiLineString());
+			}
+			Game::getLog()->Write(3, hitData.position.ToString());
 		}
 	}
 }

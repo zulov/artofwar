@@ -27,7 +27,7 @@ public:
 	int getAllNumber() const { return allNumber; }
 	bool hasChanged() const { return changed; }
 	bool isSthSelected() const;
-	void refresh(std::vector<Physical*>* selected);
+	void refresh(const std::vector<Physical*>& selected);
 private:
 	std::vector<SelectedInfoType*> selectedByType;
 	int allNumber;

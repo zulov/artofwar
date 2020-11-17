@@ -7,11 +7,11 @@ BuildingActionCommand::BuildingActionCommand(Building* building, BuildingActionT
 	buildings.emplace_back(building);
 }
 
-BuildingActionCommand::BuildingActionCommand(std::vector<Physical*>* buildings, BuildingActionType action, short id,
-                                             char player)
-	: AbstractCommand(player), id(id), action(action) {
-	for (auto building : *buildings) {
-		//TODO performance spróbowaæ z insertem
+BuildingActionCommand::BuildingActionCommand(const std::vector<Physical*>& buildings, BuildingActionType action,
+                                             short id,
+                                             char player) : AbstractCommand(player), id(id), action(action) {
+	this->buildings.reserve(buildings.size());
+	for (auto building : buildings) {
 		this->buildings.emplace_back(reinterpret_cast<Building*>(building));
 	}
 }

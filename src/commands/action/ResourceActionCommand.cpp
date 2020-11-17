@@ -7,10 +7,10 @@ ResourceActionCommand::ResourceActionCommand(ResourceEntity* resource, ResourceA
 	resources.emplace_back(resource);
 }
 
-ResourceActionCommand::ResourceActionCommand(std::vector<Physical*>* resources, ResourceActionType action, char player)
-	: AbstractCommand(player), action(action) {
-	for (auto resource : *resources) {
-		//TODO performance spróbowaæ z insertem
+ResourceActionCommand::ResourceActionCommand(const std::vector<Physical*>& resources, ResourceActionType action,
+                                             char player) : AbstractCommand(player), action(action) {
+	this->resources.reserve(resources.size());
+	for (auto* resource : resources) {
 		this->resources.emplace_back(reinterpret_cast<ResourceEntity*>(resource));
 	}
 }

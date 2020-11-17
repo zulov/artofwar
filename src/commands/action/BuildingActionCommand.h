@@ -10,7 +10,7 @@ class BuildingActionCommand : public AbstractCommand {
 	friend class Stats;
 public:
 	BuildingActionCommand(Building* building, BuildingActionType action, short id, char player);
-	BuildingActionCommand(std::vector<Physical*>* buildings, BuildingActionType action, short id, char player);
+	BuildingActionCommand(const std::vector<Physical*>& buildings, BuildingActionType action, short id, char player);
 
 	void clean() override;
 	bool expired() override;
