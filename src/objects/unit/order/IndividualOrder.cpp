@@ -3,7 +3,7 @@
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "simulation/env/Environment.h"
-
+#include "objects/unit/ActionParameter.h"
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action,
                                  Urho3D::Vector2& vector, bool append):

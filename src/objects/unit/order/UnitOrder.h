@@ -1,11 +1,11 @@
 #pragma once
-#include "objects/unit/ActionParameter.h"
 
 namespace Urho3D
 {
 	class Vector2;
 }
 class Physical;
+struct ActionParameter;
 enum class UnitAction : char;
 
 class UnitOrder {

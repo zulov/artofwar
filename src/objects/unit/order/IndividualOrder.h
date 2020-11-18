@@ -1,6 +1,7 @@
 #pragma once
 #include "UnitOrder.h"
 
+class Unit;
 enum class UnitAction : char;
 
 class IndividualOrder : public UnitOrder {

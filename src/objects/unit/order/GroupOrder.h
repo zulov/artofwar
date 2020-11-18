@@ -1,8 +1,11 @@
 #pragma once
+#include <vector>
+
 #include "UnitOrder.h"
 
 enum class UnitActionType : char;
 enum class UnitAction : char;
+class Unit;
 
 class GroupOrder : public UnitOrder {
 public:

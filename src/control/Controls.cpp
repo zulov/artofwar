@@ -21,7 +21,7 @@
 #include "player/ai/ActionCenter.h"
 #include "simulation/SimulationInfo.h"
 #include "simulation/env/Environment.h"
-
+#include "objects/unit/ActionParameter.h"
 
 Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
 	selected.reserve(5000);
