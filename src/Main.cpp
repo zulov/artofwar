@@ -70,7 +70,6 @@ void Main::Setup() {
 		->setUI(GetSubsystem<UI>())
 		->setConsole(GetSubsystem<Console>())
 		->setContext(context_)
-		->setEngine(engine_)
 		->setLog(GetSubsystem<Log>());
 
 	loadingProgress.reset(loadStages);
@@ -86,7 +85,7 @@ void Main::Start() {
 	subscribeToEvents();
 
 	hud = new Hud();
-	hud->prepareUrho();
+	hud->prepareUrho(engine_);
 	hud->createMyPanels();
 	subscribeToUIEvents();
 	InitMouseMode(MM_RELATIVE);

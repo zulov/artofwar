@@ -38,11 +38,6 @@ Game* Game::setScene(const Urho3D::SharedPtr<Urho3D::Scene>& scene) {
 	return instance;
 }
 
-Game* Game::setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine) {
-	instance->engine = _engine;
-	return instance;
-}
-
 Game* Game::setCameraManager(CameraManager* cameraManager) {
 	instance->cameraManager = cameraManager;
 	return instance;

@@ -2,6 +2,7 @@
 #include <exprtk/exprtk.hpp>
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
+#include <Urho3D/Engine/Engine.h>
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/UI.h>
@@ -108,9 +109,9 @@ void Hud::prepareStyle() {
 	Game::getUI()->GetRoot()->SetDefaultStyle(style);
 }
 
-void Hud::prepareUrho() const {
-	createConsole();
-	createDebugHud();
+void Hud::prepareUrho(Urho3D::Engine* engine) const {
+	createConsole(engine);
+	createDebugHud(engine);
 	createCursor();
 }
 
@@ -143,13 +144,12 @@ Hud::~Hud() {
 	Game::getUI()->GetCursor()->Remove();
 }
 
-void Hud::createDebugHud() const {
-	auto debugHud = Game::getEngine()->CreateDebugHud();
-	debugHud->SetDefaultStyle(style);
+void Hud::createDebugHud(Urho3D::Engine* engine) const {
+	engine->CreateDebugHud()->SetDefaultStyle(style);
 }
 
-void Hud::createConsole() const {
-	auto console = Game::getEngine()->CreateConsole();
+void Hud::createConsole(Urho3D::Engine* engine) const {
+	auto console = engine->CreateConsole();
 	console->SetDefaultStyle(style);
 	console->GetBackground()->SetOpacity(0.8f);
 }

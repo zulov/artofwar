@@ -1,7 +1,6 @@
 #pragma once
 #include <Urho3D/Container/Ptr.h>
 #include <Urho3D/Scene/Scene.h>
-#include <Urho3D/Engine/Engine.h>
 
 namespace Urho3D
 {
@@ -36,7 +35,6 @@ public:
 	static Game* setUI(Urho3D::UI* _ui);
 	static Game* setGraphics(Urho3D::Graphics* _graphics);
 	static Game* setScene(const Urho3D::SharedPtr<Urho3D::Scene>& scene);
-	static Game* setEngine(const Urho3D::SharedPtr<Urho3D::Engine>& _engine);
 	static Game* setConsole(Urho3D::Console* _console);
 	static Game* setLocalization(Urho3D::Localization* _localization);
 	static Game* setCameraManager(CameraManager* cameraManager);
@@ -51,7 +49,6 @@ public:
 	static Game* setActionCenter(ActionCenter* _actionCenter);
 	static void addTime(float time);
 
-	static Urho3D::Engine* getEngine() { return instance->engine.Get(); }
 	static Urho3D::Localization* getLocalization() { return instance->localization; }
 	static Urho3D::SharedPtr<Urho3D::Scene> getScene() { return instance->scene; }
 	static Urho3D::Graphics* getGraphics() { return instance->graphics; }
@@ -77,7 +74,6 @@ private:
 	Game();
 	static Game* instance;
 
-	Urho3D::SharedPtr<Urho3D::Engine> engine;
 	Urho3D::SharedPtr<Urho3D::Scene> scene;
 	Urho3D::Localization* localization;
 	Urho3D::ResourceCache* cache;
@@ -93,7 +89,7 @@ private:
 	CameraManager* cameraManager;
 	DatabaseCache* databaseCache;
 	Environment* environment;
-	//QueueManager* queue;
+
 	AiInputProvider* aiInputProvider;
 	Stats* stats;
 	ActionCenter* actionCenter;

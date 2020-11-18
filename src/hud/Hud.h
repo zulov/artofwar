@@ -7,6 +7,7 @@
 
 namespace Urho3D
 {
+	class Engine;
 	class XMLFile;
 	class Button;
 }
@@ -28,7 +29,8 @@ class LoadingPanel;
 struct db_graph_settings;
 struct db_resolution;
 
-class Hud : public Urho3D::Object {
+class Hud : public Urho3D::Object
+{
 public:
 
 URHO3D_OBJECT(Hud, Object)
@@ -56,10 +58,11 @@ URHO3D_OBJECT(Hud, Object)
 
 	void createMyPanels();
 	void prepareStyle();
-	void prepareUrho() const;
+	void prepareUrho(Urho3D::Engine* engine) const;
 	void subscribeToUIEvents();
 
-	std::vector<Urho3D::Button*> getButtonsSelectedToSubscribe() const {
+	std::vector<Urho3D::Button*> getButtonsSelectedToSubscribe() const
+	{
 		return selectedHudPanel->getButtonsSelectedToSubscribe();
 	}
 
@@ -72,8 +75,8 @@ URHO3D_OBJECT(Hud, Object)
 private:
 
 	void replaceVariables(std::string& xml, int hudSizeId) const;
-	void createDebugHud() const;
-	void createConsole() const;
+	void createDebugHud(Urho3D::Engine* engine) const;
+	void createConsole(Urho3D::Engine* engine) const;
 	void createCursor() const;
 
 	SelectedHudPanel* selectedHudPanel;
