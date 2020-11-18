@@ -1,8 +1,5 @@
 #include "ActionMaker.h"
 
-#include <chrono>
-#include <numeric>
-#include <valarray>
 #include "AiUtils.h"
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"

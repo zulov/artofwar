@@ -2,6 +2,7 @@
 #include "commands/creation/CreationCommandList.h"
 #include "commands/upgrade/UpgradeCommandList.h"
 
+class UnitOrder;
 enum class QueueActionType : char;
 
 namespace Urho3D {
@@ -26,8 +27,8 @@ public:
 	void add(ResourceActionCommand* command);
 	void add(BuildingActionCommand* command);
 
-	void add(UnitActionCommand* command);
-	void add(UnitActionCommand* first, UnitActionCommand* second);
+	void addUnitAction(UnitOrder* first, char player);
+	void addUnitAction(UnitOrder* first, UnitOrder* second, char player);
 
 	void executeActions();
 	void executeLists();

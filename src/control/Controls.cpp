@@ -8,7 +8,6 @@
 #include "commands/action/GeneralActionCommand.h"
 #include "commands/action/GeneralActionType.h"
 #include "commands/action/ResourceActionCommand.h"
-#include "commands/action/UnitActionCommand.h"
 #include "database/DatabaseCache.h"
 #include "hud/HudData.h"
 #include "math/MathUtils.h"
@@ -18,7 +17,6 @@
 #include "objects/unit/order/GroupOrder.h"
 #include "objects/unit/order/IndividualOrder.h"
 #include "objects/unit/order/enums/UnitActionType.h"
-#include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/ai/ActionCenter.h"
 #include "simulation/SimulationInfo.h"
@@ -102,7 +100,7 @@ void Controls::selectOne(Physical* entity, char player) {
 
 		entity->select(billboardSetProvider.getNextBar(entity->getType(), entity->getPlayer()),
 		               billboardSetProvider.getNextAura(entity->getType(), entity->getPlayer(), entity->getId()));
-		//entity->select(nullptr,nullptr);
+
 		selected.push_back(entity);
 
 		selectedInfo->setSelectedType(entityType);
@@ -114,7 +112,7 @@ void Controls::selectOne(Physical* entity, char player) {
 void Controls::select(const std::vector<Physical*>* entities) {
 	auto player = Game::getPlayersMan()->getActivePlayerID();
 	for (auto physical : *entities) {
-		selectOne(physical, player); //TODO perf zastapic wrzuceniem na raz
+		selectOne(physical, player);
 	}
 	billboardSetProvider.commit();
 	updateAdditionalInfo();
@@ -179,8 +177,7 @@ UnitOrder* Controls::createUnitOrder(hit_data& hitData) const {
 }
 
 void Controls::rightClick(hit_data& hitData) const {
-	Game::getActionCenter()->add(new UnitActionCommand(createUnitOrder(hitData),
-	                                                   Game::getPlayersMan()->getActivePlayerID()));
+	Game::getActionCenter()->addUnitAction(createUnitOrder(hitData), Game::getPlayersMan()->getActivePlayerID());
 }
 
 void Controls::leftHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) {
@@ -203,8 +200,8 @@ void Controls::rightHold(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& held) co
 		                        Urho3D::Vector2(held.second->x_ - held.first->x_,
 		                                        held.second->z_ - held.first->z_), true); //TODO buf append nie dzia³a
 	}
-	const auto playerId = Game::getPlayersMan()->getActivePlayerID();
-	Game::getActionCenter()->add(new UnitActionCommand(first, playerId), new UnitActionCommand(second, playerId));
+
+	Game::getActionCenter()->addUnitAction(first, second, Game::getPlayersMan()->getActivePlayerID());
 }
 
 void Controls::releaseLeft() {
@@ -287,7 +284,9 @@ void Controls::order(short id, const ActionParameter& parameter) {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::PHYSICAL:
 	case ObjectType::NONE:
-		return Game::getActionCenter()->add(new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL, Game::getPlayersMan()->getActivePlayerID()));
+		return Game::getActionCenter()->add(
+			new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL,
+			                         Game::getPlayersMan()->getActivePlayerID()));
 	case ObjectType::UNIT:
 		return actionUnit(id, parameter);
 	case ObjectType::BUILDING:
@@ -298,9 +297,9 @@ void Controls::order(short id, const ActionParameter& parameter) {
 }
 
 void Controls::executeOnUnits(short id) const {
-	Game::getActionCenter()->add(
-		new UnitActionCommand(new GroupOrder(selected, UnitActionType::ORDER, id, nullptr, false),
-		                      Game::getPlayersMan()->getActivePlayerID()));
+	Game::getActionCenter()->addUnitAction(
+		new GroupOrder(selected, UnitActionType::ORDER, id, nullptr, false),
+		Game::getPlayersMan()->getActivePlayerID());
 }
 
 void Controls::executeOnResources(ResourceActionType action) const {
@@ -474,9 +473,8 @@ void Controls::toDefault() {
 }
 
 void Controls::unitFormation(short id) const {
-	Game::getActionCenter()->add(
-		new UnitActionCommand(new GroupOrder(selected, UnitActionType::FORMATION, id, nullptr),
-		                      Game::getPlayersMan()->getActivePlayerID()));
+	Game::getActionCenter()->addUnitAction(
+		new GroupOrder(selected, UnitActionType::FORMATION, id, nullptr), Game::getPlayersMan()->getActivePlayerID());
 }
 
 void Controls::control() {

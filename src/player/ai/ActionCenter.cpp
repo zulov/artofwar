@@ -6,44 +6,44 @@
 #include "commands/action/UnitActionCommand.h"
 #include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
-#include "database/db_strcut.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "stats/Stats.h"
 
 ActionCenter::ActionCenter(SimulationObjectManager* simulationObjectManager):
-	creation(simulationObjectManager), upgrade(simulationObjectManager) {}
+	creation(simulationObjectManager), upgrade(simulationObjectManager) {
+}
 
 void ActionCenter::add(UpgradeCommand* command) {
-	//Game::getStats()->add(command); //TODO BUG to nie jest akcja tylko rezultat
 	upgrade.add(command);
 }
 
 void ActionCenter::add(ResourceActionCommand* command) {
-	//Game::getStats()->add(command);
 	action.add(command);
 }
-
 
 void ActionCenter::add(BuildingActionCommand* command) {
 	Game::getStats()->add(command);
 	action.add(command);
 }
 
-void ActionCenter::add(UnitActionCommand* command) {
-	Game::getStats()->add(command);
-	action.add(command);
+void ActionCenter::addUnitAction(UnitOrder* first, char player) {
+	auto com = new UnitActionCommand(first, player);
+	Game::getStats()->add(com);
+	action.add(com);
+}
+
+void ActionCenter::addUnitAction(UnitOrder* first, UnitOrder* second, char player) {
+	auto com1 = new UnitActionCommand(first, player);
+	auto com2 = new UnitActionCommand(second, player);
+	Game::getStats()->add(com1);
+	Game::getStats()->add(com2);
+	action.add(com1, com2);
 }
 
 void ActionCenter::add(GeneralActionCommand* command) {
 	Game::getStats()->add(command);
 	action.add(command);
-}
-
-void ActionCenter::add(UnitActionCommand* first, UnitActionCommand* second) {
-	Game::getStats()->add(first);
-	Game::getStats()->add(second);
-	action.add(first, second);
 }
 
 void ActionCenter::executeActions() {
@@ -63,7 +63,6 @@ bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2 position, char p
 bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) {
 	auto command = creation.addUnits(number, id, position, player, level);
 	if (command) {
-		//Game::getStats()->add(command);
 		creation.add(command);
 		return true;
 	}

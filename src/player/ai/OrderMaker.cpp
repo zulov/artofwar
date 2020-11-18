@@ -3,12 +3,10 @@
 #include "ActionCenter.h"
 #include "AiUtils.h"
 #include "Game.h"
-#include "commands/action/UnitActionCommand.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/IndividualOrder.h"
 #include "objects/unit/order/enums/UnitAction.h"
-#include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "simulation/env/Environment.h"
@@ -30,7 +28,6 @@ void OrderMaker::action() {
 	}
 	auto& possesion = player->getPossession();
 
-
 	bool ifAttack = threshold.ifAttack(possesion.getFreeArmyMetrics());
 	//if (ifAttack) {
 	CenterType id = threshold.getBestToAttack(possesion.getFreeArmyMetrics());
@@ -40,9 +37,8 @@ void OrderMaker::action() {
 
 	std::vector<Unit*> army = possesion.getFreeArmy();
 	if (!army.empty()) {
-		Game::getActionCenter()->add(
-			new UnitActionCommand(new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), pos),
-			                      player->getId()));
+		Game::getActionCenter()->addUnitAction(
+			new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), pos), player->getId());
 	}
 	//}
 }
@@ -75,8 +71,7 @@ void OrderMaker::collect(std::vector<Unit*>& workers) {
 			auto closest = closetInRange(worker, resourceId, radius);
 			if (closest) {
 				Game::getActionCenter()
-					->add(new UnitActionCommand(new IndividualOrder(worker, UnitAction::COLLECT, closest, false),
-					                            player->getId()));
+					->addUnitAction(new IndividualOrder(worker, UnitAction::COLLECT, closest, false), player->getId());
 				break;
 			}
 		}
