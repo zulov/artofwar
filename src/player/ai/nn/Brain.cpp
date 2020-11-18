@@ -1,22 +1,15 @@
 #include "Brain.h"
 
-#include <fstream>
-#include <iostream>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 #include "AFUtil.h"
 #include "Layer.h"
 #include "utils/DeleteUtils.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 
 Brain::Brain(std::string filename): filename(filename) {
-	std::ifstream infile("Data/ai/" + filename);
-	std::string data;
-	std::vector<std::string> lines;
-	while (std::getline(infile, data)) {
-		lines.push_back(data);
-	}
-	infile.close();
+	auto lines = loadLines("Data/ai/" + filename);
 
 	std::vector<float> w;
 	std::vector<float> b;
