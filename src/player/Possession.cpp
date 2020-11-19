@@ -8,7 +8,6 @@
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
-#include "objects/unit/state/StateManager.h"
 #include "simulation/SimulationInfo.h"
 
 Possession::Possession(char nation) {
@@ -61,7 +60,7 @@ std::span<float> Possession::getUnitsMetrics() const {
 }
 
 std::span<float> Possession::getFreeArmyMetrics() const {
-	return unitsValuesAsSpan;
+	return freeArmyMetricsAsSpan;
 }
 
 std::span<float> Possession::getBuildingsMetrics() const {

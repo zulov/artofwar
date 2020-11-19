@@ -1,5 +1,7 @@
 #include "ActionMaker.h"
 
+
+#include "AiActionType.h"
 #include "AiUtils.h"
 #include "Game.h"
 #include "commands/action/BuildingActionCommand.h"
@@ -29,6 +31,39 @@ ActionMaker::ActionMaker(Player* player): player(player),
                                           whereUnitCreate(BrainProvider::get("whereUnitCreate_w.csv")) {
 }
 
+bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
+	const auto whichOutput = whichBuildingCreate->decide(buildingsInput);
+	const auto building = chooseBuilding(whichOutput);
+	return createBuilding(building);
+}
+
+bool ActionMaker::createWorker() {
+	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
+	const auto unit = units[4]; //TODO lepiej wybrac
+	return createWorker(unit);
+}
+
+bool ActionMaker::createUnit(std::span<float> unitsInput) {
+	const auto whichOutput = whichUnitCreate->decide(unitsInput);
+	const auto unit = chooseUnit(whichOutput);
+
+	return createUnit(unit);
+}
+
+bool ActionMaker::execute(const std::span<float> unitsInput, const std::span<float> buildingsInput,
+                          AiActionType decision) {
+	switch (decision) {
+	case AiActionType::WORKER_CREATE:
+		return createWorker();
+	case AiActionType::UNIT_CREATE:
+		return createUnit(unitsInput);
+	case AiActionType::BUILDING_CREATE:
+		return createBuilding(buildingsInput);
+	default: ;
+	}
+	return false;
+}
+
 void ActionMaker::action() {
 	auto aiInput = Game::getAiInputProvider();
 	const auto resInput = aiInput->getResourceInput(player->getId());
@@ -36,26 +71,13 @@ void ActionMaker::action() {
 	const auto buildingsInput = aiInput->getBuildingsInput(player->getId());
 
 	const auto resResult = ifWorkerCreate->decide(resInput);
-	if (resResult[0] > 0.5f) {
-		auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-		auto unit = units[4]; //TODO lepiej wybrac
-		auto result = createWorker(unit);
-	}
-
 	const auto unitsResult = ifUnitCreate->decide(unitsInput);
-	if (unitsResult[0] > 0.5f) {
-		auto whichOutput = whichUnitCreate->decide(unitsInput);
-		auto unit = chooseUnit(whichOutput);
-
-		auto result = createUnit(unit);
-	}
-
 	const auto buildingsResult = ifBuildingCreate->decide(buildingsInput);
-	if (buildingsResult[0] > 0.1f) {
-		auto whichOutput = whichBuildingCreate->decide(buildingsInput);
-		auto building = chooseBuilding(whichOutput);
-		auto result = createBuilding(building);
-	}
+
+	float res[] = {resResult[0], unitsResult[0], buildingsResult[0]};
+
+	auto decision = static_cast<AiActionType>(biggestWithRand(std::span(res)));
+	execute(unitsInput, buildingsInput, decision);
 
 	//return levelUpUnit();
 	//return levelUpBuilding();
@@ -239,7 +261,7 @@ std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {
 	return allPossible;
 }
 
-Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
+Building* ActionMaker::getBuildingToDeploy(db_unit* unit) const {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
 	const auto input = Game::getAiInputProvider()
@@ -250,7 +272,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) {
 	return getBuildingClosestArea(allPossible, result);
 }
 
-Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) {
+Building* ActionMaker::getBuildingToDeployWorker(db_unit* unit) const {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
 	const auto input = Game::getAiInputProvider()->getResourceInput(player->getId());

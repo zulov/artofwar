@@ -6,19 +6,25 @@
 
 constexpr float THRESHOLD_VAL = 1.f;
 
-Threshold::Threshold(std::string filename):filename(filename) {
-	auto lines = loadLines("Data/ai/threshold" + filename);
-	for (auto& line : lines) {
-		auto splitVec = split(line, ';');
-		for (auto& vec : splitVec) {
-			
+Threshold::Threshold(std::string filename): filename(filename) {
+	auto lines = loadLines("Data/ai/threshold/" + filename);
+	data.reserve(lines.size());
+	for (int i = 0; i < lines.size(); ++i) {
+		auto splitVec = split(lines[i], ';');
+		std::vector<float> vector;
+		vector.reserve(splitVec.size());
+
+		for (auto& str : splitVec) {
+			vector.push_back(atof(str.c_str()));
 		}
+		data.emplace_back(vector);
 	}
 }
 
-bool Threshold::hasReach(float* threshold, std::span<float> value) const {
-	for (int i = 0; i < value.size(); ++i) {
-		auto d = threshold[i] - value[i];
+bool Threshold::hasReach(std::vector<float>& vec, std::span<float> value) const {
+	assert(vec.size()==value.size());
+	for (auto i = 0; i < value.size(); ++i) {
+		const auto d = vec[i] - value[i];
 		if (d > THRESHOLD_VAL) {
 			return false;
 		}
@@ -26,10 +32,11 @@ bool Threshold::hasReach(float* threshold, std::span<float> value) const {
 	return true;
 }
 
-float Threshold::diff(float* threshold, std::span<float> value) const {
+float Threshold::diff(std::vector<float>& vec, std::span<float> value) const {
+	assert(vec.size()==value.size());
 	float sum = 0.f;
-	for (int i = 0; i < value.size(); ++i) {
-		auto d = threshold[i] - value[i];
+	for (auto i = 0; i < value.size(); ++i) {
+		const auto d = vec[i] - value[i];
 		if (d > 0.f) {
 			sum += d * d;
 		} else {
@@ -39,25 +46,30 @@ float Threshold::diff(float* threshold, std::span<float> value) const {
 	return sum;
 }
 
-bool Threshold::ifAttack(std::span<float> value) {
-	assert((*(&econAttackCenter + 1) - econAttackCenter)==value.size());
-	assert((*(&buildingAttackCenter + 1) - buildingAttackCenter)==value.size());
-	assert((*(&unitsAttackCenter + 1) - unitsAttackCenter)==value.size());
-	return hasReach(econAttackCenter, value)
-		|| hasReach(buildingAttackCenter, value)
-		|| hasReach(unitsAttackCenter, value);
+bool Threshold::ifDo(std::span<float> value) {
+	for (int i = 0; i < data.size(); ++i) {
+		if (hasReach(data[i], value)) {
+			return true;
+		}
+	}
+	return false;
 }
 
-CenterType Threshold::getBestToAttack(std::span<float> value) {
-	float a = diff(econAttackCenter, value);
-	float b = diff(buildingAttackCenter, value);
-	float u = diff(unitsAttackCenter, value);
+char Threshold::getBest(std::span<float> value) {
+	char best = 0;
+	float bestVal = diff(data[0], value);
 
-	if (a < b && a < u) {
-		return CenterType::ECON;
+	for (char i = 1; i < data.size(); ++i) {
+		const auto val = diff(data[i], value);
+		if (val < bestVal) {
+			bestVal = val;
+			best = i;
+		}
 	}
-	if (b < u) {
-		return CenterType::BUILDING;
-	}
-	return CenterType::UNITS;
+
+	return best;
+}
+
+std::string Threshold::getName() const {
+	return filename;
 }

@@ -15,9 +15,12 @@
 #include "nn/BrainProvider.h"
 #include "objects/unit/order/GroupOrder.h"
 #include "objects/unit/order/enums/UnitActionType.h"
+#include "threshold/Threshold.h"
+#include "threshold/ThresholdProvider.h"
 
 OrderMaker::OrderMaker(Player* player)
-	: player(player), whatResource(BrainProvider::get("whichResource_w.csv")) {
+	: player(player), whatResource(BrainProvider::get("whichResource_w.csv")),
+	  threshold(ThresholdProvider::get("attack_t.csv")) {
 }
 
 void OrderMaker::action() {
@@ -28,19 +31,19 @@ void OrderMaker::action() {
 	}
 	auto& possesion = player->getPossession();
 
-	bool ifAttack = threshold.ifAttack(possesion.getFreeArmyMetrics());
-	//if (ifAttack) {
-	CenterType id = threshold.getBestToAttack(possesion.getFreeArmyMetrics());
+	bool ifAttack = threshold->ifDo(possesion.getFreeArmyMetrics());
+	if (ifAttack) {
+		char id = threshold->getBest(possesion.getFreeArmyMetrics());
 
-	const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
-	Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(id, enemy);
+		const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
+		Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(CenterType(id), enemy);
 
-	std::vector<Unit*> army = possesion.getFreeArmy();
-	if (!army.empty()) {
-		Game::getActionCenter()->addUnitAction(
-			new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), pos), player->getId());
+		std::vector<Unit*> army = possesion.getFreeArmy();
+		if (!army.empty()) {
+			Game::getActionCenter()->addUnitAction(
+				new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), pos), player->getId());
+		}
 	}
-	//}
 }
 
 std::vector<Unit*> OrderMaker::findFreeWorkers() const {

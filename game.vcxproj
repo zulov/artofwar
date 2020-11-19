@@ -309,6 +309,7 @@
     <ClCompile Include="src\player\ai\threshold\ThresholdProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\player\ai\AiActionType.h" />
     <ClInclude Include="src\player\ai\nn\BrainProvider.h" />
     <ClInclude Include="src\player\ai\threshold\Threshold.h" />
     <ClInclude Include="src\simulation\env\CloseIndexesProvider.h" />

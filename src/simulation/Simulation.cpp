@@ -285,11 +285,20 @@ void Simulation::initScene(NewGameForm* form) const {
 
 void Simulation::aiPlayers() const {
 	if (PER_FRAME_ACTION.get(PerFrameAction::AI_ACTION, currentFrame)) {
-		aiManager->aiAction();
+		for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+			if (Game::getPlayersMan()->getActivePlayer() != player) {
+				player->aiAction();
+			}
+		}
 	}
 
+
 	if (PER_FRAME_ACTION.get(PerFrameAction::AI_ORDER, currentFrame)) {
-		aiManager->aiOrder();
+		for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+			if (Game::getPlayersMan()->getActivePlayer() != player) {
+				player->aiOrder();
+			}
+		}
 	}
 }
 
