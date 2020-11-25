@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <Urho3D/Math/Vector3.h>
 
 struct GridCalculator {
@@ -18,8 +19,12 @@ struct GridCalculator {
 		return posX * resolution + posZ;
 	}
 
+	short getIndex2(float value) const {
+		return  getValid((short)(value+(size/2.f))*invFieldSize);
+	}
 	short getIndex(float value) const {
-		if (value < 0) {
+		//auto test = getValid((short)(value+halfRes)*invFieldSize);
+		if (value < 0.f) {
 			const short index = (short)(value * invFieldSize) + halfRes - 1;
 			if (index >= 0) {
 				return index;
@@ -38,7 +43,15 @@ struct GridCalculator {
 	}
 
 	int indexFromPosition(const Urho3D::Vector2& pos) const {
-		return getNotSafeIndex(getIndex(pos.x_), getIndex(pos.y_));
+		auto a = getNotSafeIndex(getIndex2(pos.x_), getIndex2(pos.y_));
+		auto b =  getNotSafeIndex(getIndex(pos.x_), getIndex(pos.y_));
+		if(a!=b) {
+			std::cout<<a <<" # "<<b<<" "<<a-b<<std::endl;
+		}else {
+
+			std::cout<<"|";
+		}
+		return b;
 	}
 
 	Urho3D::IntVector2 getIndexes(int i) const {
@@ -47,8 +60,8 @@ struct GridCalculator {
 
 	Urho3D::Vector2 getCenter(int i) const {
 		Urho3D::IntVector2 pos = getIndexes(i);
-		const float cX = (pos.x_ + 0.5) * fieldSize - size / 2;
-		const float cZ = (pos.y_ + 0.5) * fieldSize - size / 2;
+		const float cX = (pos.x_ + 0.5f) * fieldSize - size / 2.f;
+		const float cZ = (pos.y_ + 0.5f) * fieldSize - size / 2.f;
 		return {cZ, cX};
 	}
 

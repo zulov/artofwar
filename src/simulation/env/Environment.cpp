@@ -61,7 +61,8 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
-		if (physical != neight && sqDistAs2D(center, neight->getPosition()) < sqRadius) {
+		if (physical != neight
+			&& sqDistAs2D(center, neight->getPosition()) < sqRadius) {
 			neights->push_back(neight);
 		}
 	}
