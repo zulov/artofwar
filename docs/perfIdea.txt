@@ -1,0 +1,6 @@
+getNeight nie dla pos a dla indexu, można zrobic cache
+nie zwraca lisrty tylko perowac na itratorze
+InfluenceMapInt dla quad zaokrąglić tylko raz
+leniwe obliczanie max and min
+InfluencaMapQuad grupowac 
+Nie brac całej armi ani wszystkich workerów na raz
