@@ -34,11 +34,11 @@ struct GridCalculator {
 	}
 
 	int indexFromPosition(const Urho3D::Vector3& pos) const {
-		return getIndex(getIndex(pos.x_), getIndex(pos.z_));
+		return getNotSafeIndex(getIndex(pos.x_), getIndex(pos.z_));
 	}
 
 	int indexFromPosition(const Urho3D::Vector2& pos) const {
-		return getIndex(getIndex(pos.x_), getIndex(pos.y_));
+		return getNotSafeIndex(getIndex(pos.x_), getIndex(pos.y_));
 	}
 
 	Urho3D::IntVector2 getIndexes(int i) const {

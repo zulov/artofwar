@@ -87,3 +87,8 @@ void CameraManager::changePosition(float x, float y) const {
 const Urho3D::Vector2 CameraManager::getTargetPos() const {
 	return activeBehave->getTargetPos();
 }
+
+const Urho3D::Vector4 CameraManager::getCamBoundary(float radius) const {
+	auto camPos = activeBehave->getTargetPos();
+	return Urho3D::Vector4(camPos.x_ - radius, camPos.x_ + radius, camPos.y_ - radius, camPos.y_ + radius);
+}

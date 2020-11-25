@@ -29,6 +29,12 @@ void InfluenceMapQuad::update(Physical* thing, float value) {
 	}
 }
 
+void InfluenceMapQuad::updateInt(Physical* thing, int value) {
+	for (auto* map : maps) {
+		map->updateInt(thing, value);
+	}
+}
+
 void InfluenceMapQuad::reset() {
 	for (auto* map : maps) {
 		map->reset();

@@ -8,6 +8,7 @@ public:
 	~InfluenceMapInt();
 
 	void update(Physical* thing, float value = 1.f) override;
+	void updateInt(Physical* thing, int value = 1) override;
 	void reset() override;
 	char getValueAt(const Urho3D::Vector2& pos) const;
 	float getValueAsPercent(const Urho3D::Vector2& pos) const override;

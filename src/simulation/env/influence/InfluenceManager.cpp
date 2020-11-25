@@ -81,7 +81,7 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 
 	for (auto unit : (*units)) {
 		auto pId = unit->getPlayer();
-		unitsNumberPerPlayer[pId]->update(unit);
+		unitsNumberPerPlayer[pId]->updateInt(unit);
 
 		unitsInfluencePerPlayer[pId]->tempUpdate(unit);
 	}
@@ -133,10 +133,10 @@ void InfluenceManager::updateQuad(std::vector<Unit*>* units, std::vector<Buildin
 	resetMaps(econQuad);
 
 	for (auto unit : (*units)) {
-		unitsQuad[unit->getPlayer()]->update(unit);
+		unitsQuad[unit->getPlayer()]->updateInt(unit);
 	}
 	for (auto building : (*buildings)) {
-		buildingsQuad[building->getPlayer()]->update(building);
+		buildingsQuad[building->getPlayer()]->updateInt(building);
 	}
 	calcStats(unitsQuad);
 	calcStats(buildingsQuad);

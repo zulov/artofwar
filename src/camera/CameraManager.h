@@ -1,7 +1,7 @@
 #pragma once
+#include <Urho3D/Math/Vector4.h>
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class IntVector2;
 	class Vector2;
 	class Input;
@@ -24,7 +24,9 @@ public:
 	Urho3D::MouseMode getMouseMode() const;
 	void rotate(const Urho3D::IntVector2& mouse_move) const;
 	void changePosition(float x, float y) const;
-	const Urho3D::Vector2 getTargetPos()const;
+	const Urho3D::Vector2 getTargetPos() const;
+	const Urho3D::Vector4 getCamBoundary(float radius) const;
+
 private:
 	void createCameraKeys(Urho3D::Input* input, bool cameraKeys[4], const Urho3D::IntVector2& cursorPos) const;
 

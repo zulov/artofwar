@@ -75,9 +75,9 @@ void Unit::updatePosition() {
 	}
 }
 
-void Unit::move(float timeStep, Urho3D::Vector2& camPos, float radius) {
-	bool prevVisible = isVisible;
-	isVisible = ifVisible(camPos, radius);
+void Unit::move(float timeStep, const Urho3D::Vector4& boundary) {
+	const bool prevVisible = isVisible;
+	isVisible = ifVisible(boundary);
 	if (state != UnitState::STOP) {
 		position.x_ += velocity.x_ * timeStep;
 		position.z_ += velocity.y_ * timeStep;
@@ -90,11 +90,11 @@ void Unit::move(float timeStep, Urho3D::Vector2& camPos, float radius) {
 	}
 }
 
-bool Unit::ifVisible(const Urho3D::Vector2& camPos, float radius) const {
-	return (camPos.x_ - radius < position.x_ || camPos.x_ - radius < node->GetPosition().x_)
-		&& (position.x_ < camPos.x_ + radius || node->GetPosition().x_ < camPos.x_ + radius)
-		&& (camPos.y_ - radius < position.z_ || camPos.y_ - radius < node->GetPosition().z_)
-		&& (position.z_ < camPos.y_ + radius || node->GetPosition().z_ < camPos.y_ + radius);
+bool Unit::ifVisible(const Urho3D::Vector4& boundary) const {
+	return (boundary.x_ < position.x_ || boundary.x_ < node->GetPosition().x_)
+		&& (position.x_ < boundary.y_ || node->GetPosition().x_ < boundary.y_)
+		&& (boundary.z_ < position.z_ || boundary.z_ < node->GetPosition().z_)
+		&& (position.z_ < boundary.w_ || node->GetPosition().z_ < boundary.w_);
 
 }
 

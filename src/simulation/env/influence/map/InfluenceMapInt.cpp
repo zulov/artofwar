@@ -18,6 +18,10 @@ void InfluenceMapInt::update(Physical* thing, float value) {
 	values[index] += round(value);
 }
 
+void InfluenceMapInt::updateInt(Physical* thing, int value) {
+	values[calculator->indexFromPosition(thing->getPosition())] += value;
+}
+
 void InfluenceMapInt::reset() {
 	std::fill_n(values, arraySize, 0);
 }

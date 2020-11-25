@@ -40,6 +40,10 @@ void InfluenceMapFloat::update(Physical* thing, float value) {
 	}
 }
 
+void InfluenceMapFloat::updateInt(Physical* thing, int value) {
+	assert(false);
+}
+
 void InfluenceMapFloat::tempUpdate(Physical* thing, float value) {
 	auto idx = calculator->indexFromPosition(thing->getPosition());
 	tempVals[idx] += value;
