@@ -1,12 +1,11 @@
 #pragma once
-#include <iostream>
 #include <Urho3D/Math/Vector3.h>
 
 struct GridCalculator {
 
 	explicit GridCalculator(unsigned short resolution, float size)
-		: sqResolution(resolution * resolution), resolution(resolution), halfRes(resolution / 2),
-		  invFieldSize(resolution / size), fieldSize(size / resolution), size(size) {
+		: sqResolution(resolution * resolution), resolution(resolution),
+		  invFieldSize(resolution / size), fieldSize(size / resolution), size(size), halfSize(size / 2.f) {
 	}
 
 	GridCalculator(const GridCalculator&) = delete;
@@ -19,23 +18,8 @@ struct GridCalculator {
 		return posX * resolution + posZ;
 	}
 
-	short getIndex2(float value) const {
-		return  getValid((short)(value+(size/2.f))*invFieldSize);
-	}
 	short getIndex(float value) const {
-		//auto test = getValid((short)(value+halfRes)*invFieldSize);
-		if (value < 0.f) {
-			const short index = (short)(value * invFieldSize) + halfRes - 1;
-			if (index >= 0) {
-				return index;
-			}
-			return 0;
-		}
-		const short index = (short)(value * invFieldSize) + halfRes;
-		if (index < resolution) {
-			return index;
-		}
-		return resolution - 1;
+		return getValid((short)(value + halfSize) * invFieldSize);
 	}
 
 	int indexFromPosition(const Urho3D::Vector3& pos) const {
@@ -43,15 +27,11 @@ struct GridCalculator {
 	}
 
 	int indexFromPosition(const Urho3D::Vector2& pos) const {
-		auto a = getNotSafeIndex(getIndex2(pos.x_), getIndex2(pos.y_));
-		auto b =  getNotSafeIndex(getIndex(pos.x_), getIndex(pos.y_));
-		if(a!=b) {
-			std::cout<<a <<" # "<<b<<" "<<a-b<<std::endl;
-		}else {
+		return getNotSafeIndex(getIndex(pos.x_), getIndex(pos.y_));
+	}
 
-			std::cout<<"|";
-		}
-		return b;
+	int indexFromPosition(float x, float z) const {
+		return getNotSafeIndex(getIndex(x), getIndex(z));
 	}
 
 	Urho3D::IntVector2 getIndexes(int i) const {
@@ -60,8 +40,8 @@ struct GridCalculator {
 
 	Urho3D::Vector2 getCenter(int i) const {
 		Urho3D::IntVector2 pos = getIndexes(i);
-		const float cX = (pos.x_ + 0.5f) * fieldSize - size / 2.f;
-		const float cZ = (pos.y_ + 0.5f) * fieldSize - size / 2.f;
+		const float cX = (pos.x_ + 0.5f) * fieldSize - halfSize;
+		const float cZ = (pos.y_ + 0.5f) * fieldSize - halfSize;
 		return {cZ, cX};
 	}
 
@@ -89,7 +69,7 @@ struct GridCalculator {
 private:
 	unsigned int sqResolution;
 	unsigned short resolution;
-	unsigned short halfRes;
+	float halfSize;
 	float invFieldSize;
 	float fieldSize;
 	float size;
