@@ -34,7 +34,7 @@ Environment::~Environment() {
 }
 
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, const float radius) {
-	return getNeighbours(physical, mainGrid, radius);
+	return getNeighbours2(physical, mainGrid, radius);
 }
 
 std::vector<Physical*>* Environment::getNeighboursFromTeamEq(Physical* physical, const float radius, const int team) {
@@ -61,6 +61,24 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
+		if (physical != neight
+			&& sqDistAs2D(center, neight->getPosition()) < sqRadius) {
+			neights->push_back(neight);
+		}
+	}
+
+	return neights;
+}
+
+std::vector<Physical*>* Environment::getNeighbours2(Physical* physical, Grid& bucketGrid, float radius) const {
+	neights->clear();
+
+	const auto& center = physical->getPosition();
+	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius);
+	const float sqRadius = radius * radius;
+	std::vector<Physical*> neightsTest;
+	bucketIterator.all(neightsTest);
+	for (auto neight : neightsTest) {
 		if (physical != neight
 			&& sqDistAs2D(center, neight->getPosition()) < sqRadius) {
 			neights->push_back(neight);

@@ -31,6 +31,7 @@ public:
 	std::vector<Physical*>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighboursFromTeamNotEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
+	std::vector<Physical*>* getNeighbours2(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius, int id) const;
 
 	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
