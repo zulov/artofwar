@@ -12,8 +12,8 @@ public:
 	void setRange();
 	BucketIterator* init(std::vector<short>* _levels, int _center, Grid* _bucketGrid);
 private:
-	short index = 0;
-	short levelSize;
+	std::vector<short>::const_iterator index;
+	std::vector<short>::const_iterator levelSize;
 	int center;
 
 	std::vector<short>* levels;

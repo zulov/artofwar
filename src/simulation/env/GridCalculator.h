@@ -14,11 +14,11 @@ struct GridCalculator {
 		return getNotSafeIndex(getValid(posX), getValid(posZ));
 	}
 
-	int getNotSafeIndex(short posX, short posZ) const {
+	int getNotSafeIndex(unsigned short posX, unsigned short posZ) const {
 		return posX * resolution + posZ;
 	}
 
-	short getIndex(float value) const {
+	unsigned short getIndex(float value) const {
 		return getValid((short)(value + halfSize) * invFieldSize);
 	}
 
@@ -53,7 +53,7 @@ struct GridCalculator {
 
 	float getFieldSize() const { return fieldSize; }
 
-	short getValid(short val) const {
+	unsigned short getValid(short val) const {
 		if (val < 0) {
 			return 0;
 		}
