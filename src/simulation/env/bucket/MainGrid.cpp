@@ -55,7 +55,7 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 			if (!calculator->isValidIndex(i, j)) {
 				return false;
 			}
-			const int index = calculator->getIndex(i, j);
+			const int index = calculator->getNotSafeIndex(i, j);
 			if (!isBuildable(index)) {
 				return false;
 			}
@@ -301,7 +301,7 @@ void MainGrid::addStatic(Static* object) const {
 		for (int i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
 			for (int j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {
 				if (calculator->isValidIndex(i, j)) {
-					const int index = calculator->getIndex(i, j);
+					const int index = calculator->getNotSafeIndex(i, j);
 					updateNeighbors(index);
 					if (complexData[index].isPassable()) {
 						complexData[index].setEscapeThrough(-1);
