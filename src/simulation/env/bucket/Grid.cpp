@@ -62,6 +62,18 @@ const std::vector<char>& Grid::getCloseTabIndexes(short center) const {
 	return closeIndexes->getTabIndexes(center);
 }
 
+bool Grid::isSameBucket(const int prevIdx, const Urho3D::Vector3& vector3) const {
+	return prevIdx==calculator->indexFromPosition(vector3);
+}
+
+int Grid::getIndexFromPositions(const Urho3D::Vector3& vector3) {
+	return calculator->indexFromPosition(vector3);
+}
+
+bool Grid::onlyOneInside(int test) {
+	return buckets[test].getSize()==1;
+}
+
 void Grid::removeAt(int index, Physical* entity) const {
 	if (calculator->isValidIndex(index)) {
 		buckets[index].remove(entity);

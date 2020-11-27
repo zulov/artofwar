@@ -1,6 +1,10 @@
 #include "Bucket.h"
 
 
+int Bucket::getSize() {
+	return content.size();
+}
+
 void Bucket::add(Physical* entity) {
 	content.push_back(entity);
 }

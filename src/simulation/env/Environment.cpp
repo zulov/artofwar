@@ -70,15 +70,22 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getNeighbours2(Physical* physical, Grid& bucketGrid, float radius) const {
-	neights->clear();
-	neights2->clear();//TODO cached
-	
+std::vector<Physical*>* Environment::getNeighbours2(Physical* physical, Grid& bucketGrid, float radius) {
+	auto test = bucketGrid.getIndexFromPositions(physical->getPosition());
+	bool test1 = bucketGrid.onlyOneInside(test);
+	if (test1) {
+		return getNeighbours(physical, bucketGrid, radius);
+	}
+	if (test != prevIdx) {
+		neights2->clear(); //TODO cached
+		prevIdx = test;
+		BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius);
+		bucketIterator.all(neights2);
+	}
 	const auto& center = physical->getPosition();
-	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius);
 	const float sqRadius = radius * radius;
-	
-	bucketIterator.all(neights2);
+
+	neights->clear();
 	for (auto neight : *neights2) {
 		if (physical != neight
 			&& sqDistAs2D(center, neight->getPosition()) < sqRadius) {

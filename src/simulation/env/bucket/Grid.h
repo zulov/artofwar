@@ -30,6 +30,9 @@ public:
 	BucketIterator& getArrayNeight(Urho3D::Vector3& position, float radius);
 	const std::vector<short>& getCloseIndexes(int center) const;
 	const std::vector<char>& getCloseTabIndexes(short center) const;
+	bool isSameBucket(const int prevIdx, const Urho3D::Vector3& vector3) const;
+	int getIndexFromPositions(const Urho3D::Vector3& vector3);
+	bool onlyOneInside(int test);
 protected:
 	GridCalculator* calculator;
 	CloseIndexes* closeIndexes;

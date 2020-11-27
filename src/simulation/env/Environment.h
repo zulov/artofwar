@@ -24,14 +24,14 @@ enum class OperatorType : char;
 
 class Environment {
 public:
-	explicit Environment(Urho3D::Terrain* _terrian);
+	explicit Environment(Urho3D::Terrain* terrian);
 	~Environment();
 
 	std::vector<Physical*>* getNeighbours(Physical* physical, float radius);
 	std::vector<Physical*>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighboursFromTeamNotEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
-	std::vector<Physical*>* getNeighbours2(Physical* physical, Grid& bucketGrid, float radius) const;
+	std::vector<Physical*>* getNeighbours2(Physical* physical, Grid& bucketGrid, float radius);
 	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius, int id) const;
 
 	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
@@ -116,4 +116,5 @@ private:
 	Urho3D::Terrain* terrain;
 
 	std::vector<Physical*> *neights, *neights2; //TODO tu bedzie trzeba tablica jesli beda watki
+	int prevIdx = -1;
 };
