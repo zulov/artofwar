@@ -116,5 +116,4 @@ private:
 	Urho3D::Terrain* terrain;
 
 	std::vector<Physical*> *neights, *neights2; //TODO tu bedzie trzeba tablica jesli beda watki
-	int prevIdx = -1;
 };

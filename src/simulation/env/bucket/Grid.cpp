@@ -14,7 +14,7 @@ Grid::Grid(short resolution, float size, float maxQueryRadius)
 	: calculator(GridCalculatorProvider::get(resolution, size)),
 	  levelCache(LevelCacheProvider::get(resolution, maxQueryRadius, calculator)),
 	  closeIndexes(CloseIndexesProvider::get(resolution)),
-	  resolution(resolution), sqResolution(resolution * resolution){
+	  resolution(resolution), sqResolution(resolution * resolution) {
 	buckets = new Bucket[sqResolution];
 	tempSelected = new std::vector<Physical*>();
 }
@@ -54,6 +54,10 @@ BucketIterator& Grid::getArrayNeight(Urho3D::Vector3& position, float radius) {
 	return *iterator.init(levelCache->get(radius), calculator->indexFromPosition(position), this);
 }
 
+BucketIterator& Grid::getArrayNeight(int center, float radius) {
+	return *iterator.init(levelCache->get(radius), center, this);
+}
+
 const std::vector<short>& Grid::getCloseIndexes(int center) const {
 	return closeIndexes->get(center);
 }
@@ -63,7 +67,7 @@ const std::vector<char>& Grid::getCloseTabIndexes(short center) const {
 }
 
 bool Grid::isSameBucket(const int prevIdx, const Urho3D::Vector3& vector3) const {
-	return prevIdx==calculator->indexFromPosition(vector3);
+	return prevIdx == calculator->indexFromPosition(vector3);
 }
 
 int Grid::getIndexFromPositions(const Urho3D::Vector3& vector3) {
@@ -71,7 +75,7 @@ int Grid::getIndexFromPositions(const Urho3D::Vector3& vector3) {
 }
 
 bool Grid::onlyOneInside(int test) {
-	return buckets[test].getSize()==1;
+	return buckets[test].getSize() == 1;
 }
 
 void Grid::removeAt(int index, Physical* entity) const {
@@ -103,8 +107,8 @@ const std::vector<Physical*>& Grid::getContentAt(short x, short z) const {
 }
 
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,
-                                             const char player) const {
-	tempSelected->clear();
+                                             const char player) {
+	invalidateCache();
 
 	const auto posBeginX = calculator->getIndex(std::min(pair.first->x_, pair.second->x_));
 	const auto posEndX = calculator->getIndex(std::max(pair.first->x_, pair.second->x_));
@@ -141,10 +145,21 @@ std::vector<int> Grid::getArrayNeight(const Urho3D::Vector2& center, float radiu
 	return indexes;
 }
 
+void Grid::invalidateCache() {
+	tempSelected->clear();
+	prevIndex = -1;
+	prevRadius = -1.f;
+}
+
+void Grid::invalidateCache(const int currentIdx, float radius) {
+	tempSelected->clear();
+	prevIndex = currentIdx;
+	prevRadius = radius;
+}
+
 std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float radius) {
 	//TODO clean prawie to samo co wy¿ej
-	tempSelected->clear();
-
+	invalidateCache();
 	const auto posBeginX = calculator->getIndex(clicked->getPosition().x_ - radius);
 	const auto posBeginZ = calculator->getIndex(clicked->getPosition().z_ - radius);
 	const auto posEndX = calculator->getIndex(clicked->getPosition().x_ + radius);
@@ -160,5 +175,21 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float r
 		}
 	}
 
+	return tempSelected;
+}
+
+std::vector<Physical*>* Grid::getAllFromCache(int currentIdx, float radius) const {
+	if (currentIdx == prevIndex && radius == prevRadius) {
+		return tempSelected;
+	}
+	return nullptr;
+}
+
+std::vector<Physical*>* Grid::getAll(const int currentIdx, float radius) {
+	invalidateCache(currentIdx,radius);
+	for (auto level : *levelCache->get(radius)) {
+		auto& content = getContentAt(level + currentIdx);
+		tempSelected->insert(tempSelected->end(), content.begin(), content.end());
+	}
 	return tempSelected;
 }

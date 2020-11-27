@@ -22,13 +22,6 @@ BucketIterator* BucketIterator::init(std::vector<short>* _levels, int _center, G
 	return this;
 }
 
-void BucketIterator::all(std::vector<Physical*>* vector) const {
-	for (auto level : *levels) {
-		auto& content = bucketGrid->getContentAt(level + center);
-		vector->insert(vector->end(), content.begin(), content.end());
-	}
-}
-
 void BucketIterator::setRange() {
 	auto& content = bucketGrid->getContentAt((*index) + center);
 

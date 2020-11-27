@@ -71,22 +71,20 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 }
 
 std::vector<Physical*>* Environment::getNeighbours2(Physical* physical, Grid& bucketGrid, float radius) {
-	auto test = bucketGrid.getIndexFromPositions(physical->getPosition());
-	bool test1 = bucketGrid.onlyOneInside(test);
-	if (test1) {
+	const auto currentIdx = bucketGrid.getIndexFromPositions(physical->getPosition());
+
+	if (bucketGrid.onlyOneInside(currentIdx)) {
 		return getNeighbours(physical, bucketGrid, radius);
 	}
-	if (test != prevIdx) {
-		neights2->clear(); //TODO cached
-		prevIdx = test;
-		BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius);
-		bucketIterator.all(neights2);
+	auto simpleNeght = bucketGrid.getAllFromCache(currentIdx, radius);
+	if (simpleNeght == nullptr) {
+		simpleNeght = bucketGrid.getAll(currentIdx, radius);
 	}
 	const auto& center = physical->getPosition();
 	const float sqRadius = radius * radius;
 
 	neights->clear();
-	for (auto neight : *neights2) {
+	for (auto neight : *simpleNeght) {
 		if (physical != neight
 			&& sqDistAs2D(center, neight->getPosition()) < sqRadius) {
 			neights->push_back(neight);
@@ -160,6 +158,8 @@ void Environment::update(std::vector<Unit*>* units) const {
 		mainGrid.update(unit);
 		teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
 	}
+
+	invalidateCache();
 }
 
 void Environment::update(Building* building) const {

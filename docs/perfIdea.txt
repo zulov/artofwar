@@ -3,3 +3,6 @@ nie zwraca lisrty tylko perowac na itratorze
 leniwe obliczanie max and min
 InfluencaMapQuad grupowac 
 Nie brac całej armi ani wszystkich workerów na raz
+
+sortowac per index
+mainIndex nie trzeba obliczac bo jest znany

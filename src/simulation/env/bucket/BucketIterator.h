@@ -11,7 +11,6 @@ public:
 	Physical* next();
 	void setRange();
 	BucketIterator* init(std::vector<short>* _levels, int _center, Grid* _bucketGrid);
-	void all(std::vector<Physical*>* vector) const;
 private:
 	std::vector<short>::const_iterator index;
 	std::vector<short>::const_iterator levelSize;

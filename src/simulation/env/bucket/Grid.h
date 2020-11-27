@@ -24,15 +24,20 @@ public:
 	void update(Physical* entity) const;
 	const std::vector<Physical*>& getContentAt(int index) const;
 
-	std::vector<Physical*>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player) const;
+	std::vector<Physical*>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 	std::vector<Physical*>* getArrayNeightSimilarAs(Physical* clicked, float radius);
 	std::vector<int> getArrayNeight(const Urho3D::Vector2& center, float radius) const;
+	void invalidateCache();
+	void invalidateCache(const int currentIdx, float radius);
 	BucketIterator& getArrayNeight(Urho3D::Vector3& position, float radius);
+	BucketIterator& getArrayNeight(int center, float radius);
 	const std::vector<short>& getCloseIndexes(int center) const;
 	const std::vector<char>& getCloseTabIndexes(short center) const;
 	bool isSameBucket(const int prevIdx, const Urho3D::Vector3& vector3) const;
 	int getIndexFromPositions(const Urho3D::Vector3& vector3);
 	bool onlyOneInside(int test);
+	std::vector<Physical*>* getAllFromCache(int currentIdx, float radius) const;
+	std::vector<Physical*>* getAll(const int currentIdx, float radius);
 protected:
 	GridCalculator* calculator;
 	CloseIndexes* closeIndexes;
@@ -52,4 +57,6 @@ private:
 	LevelCache* levelCache;
 
 	std::vector<Physical*>* tempSelected;
+	int prevIndex = -1;
+	float prevRadius = -1.f;
 };

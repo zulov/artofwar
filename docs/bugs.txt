@@ -1,3 +1,4 @@
 przy rozkazach nagla ida w odwrotnym kierunku
 Assertion failed: unit->getMainCell() == unit->indexToInteract, file D:\Programowanie\art_of_war\src\objects\unit\state\CollectState.h, line 48
 przy pond 80k jednostkach blad
+invalidate cahce after grid updates
