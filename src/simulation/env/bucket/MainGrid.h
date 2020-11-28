@@ -46,7 +46,7 @@ public:
 	void drawComplex(Urho3D::Image* image, Urho3D::String prefix) const;
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
-	void invalidateCache() const;
+	void invalidatePathCache() const;
 	void updateSurround(Static* object) const;
 
 	Urho3D::Vector2 getPositionInBucket(int index, char max, char i);

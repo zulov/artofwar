@@ -70,16 +70,14 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getNeighbours2(Physical* physical, Grid& bucketGrid, float radius) {
+std::vector<Physical*>* Environment::getNeighbours2(Physical* physical, Grid& bucketGrid, float radius) const {
 	const auto currentIdx = bucketGrid.getIndexFromPositions(physical->getPosition());
-
+	assert(physical->getMainBucketIndex()==currentIdx);//TODO perf zamienic jezeli ok
 	if (bucketGrid.onlyOneInside(currentIdx)) {
 		return getNeighbours(physical, bucketGrid, radius);
 	}
-	auto simpleNeght = bucketGrid.getAllFromCache(currentIdx, radius);
-	if (simpleNeght == nullptr) {
-		simpleNeght = bucketGrid.getAll(currentIdx, radius);
-	}
+	const auto simpleNeght = bucketGrid.getAllFromCache(currentIdx, radius);
+
 	const auto& center = physical->getPosition();
 	const float sqRadius = radius * radius;
 
@@ -152,14 +150,22 @@ void Environment::updateInfluence3() const {
 	influenceManager.updateWithHistory();
 }
 
-void Environment::update(std::vector<Unit*>* units) const {
+void Environment::update(std::vector<Unit*>* units) {
 	//TODO to mozna rodzielic na dodawanei u usywanie
 	for (auto unit : *units) {
 		mainGrid.update(unit);
 		teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
 	}
 
-	invalidateCache();
+	invalidateCaches();
+}
+
+void Environment::invalidateCaches() {
+	mainGrid.invalidateCache();
+	for (auto &unitGrid : teamUnitGrid) {
+		unitGrid.invalidateCache();
+	}
+	
 }
 
 void Environment::update(Building* building) const {
@@ -262,8 +268,8 @@ Urho3D::Vector2 Environment::getPositionInBucket(int index, char max, char i) {
 	return mainGrid.getPositionInBucket(index, max, i);
 }
 
-void Environment::invalidateCache() const {
-	mainGrid.invalidateCache();
+void Environment::invalidatePathCache() const {
+	mainGrid.invalidatePathCache();
 }
 
 bool Environment::cellInState(int index, CellState state) const {

@@ -68,6 +68,7 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 
 Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 	auto index = calculator->indexFromPosition(unit->getPosition());
+	assert(unit->getMainBucketIndex()==index);//TODO perf zamienic jezeli ok
 	auto& data = complexData[index];
 
 	Urho3D::Vector2 sum;
@@ -88,7 +89,7 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 	return -sum;
 }
 
-void MainGrid::invalidateCache() const {
+void MainGrid::invalidatePathCache() const {
 	pathConstructor->invalidateCache();
 }
 
@@ -330,6 +331,7 @@ void MainGrid::removeStatic(Static* object) const {
 
 std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& position) const {
 	int index = calculator->indexFromPosition(position);
+	//assert(unit->getMainBucketIndex()==index);//TODO perf zamienic jezeli ok
 	auto& data = complexData[index];
 
 	if (!data.isPassable()) {

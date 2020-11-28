@@ -31,7 +31,7 @@ public:
 	std::vector<Physical*>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighboursFromTeamNotEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
-	std::vector<Physical*>* getNeighbours2(Physical* physical, Grid& bucketGrid, float radius);
+	std::vector<Physical*>* getNeighbours2(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius, int id) const;
 
 	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
@@ -43,7 +43,8 @@ public:
 	void updateInfluence2(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
 	void updateInfluence3() const;
 
-	void update(std::vector<Unit*>* units) const;
+	void invalidateCaches();
+	void update(std::vector<Unit*>* units);
 	void update(Building* building) const;
 	void update(ResourceEntity* resource) const;
 
@@ -76,7 +77,7 @@ public:
 
 	Urho3D::Vector2 getPositionInBucket(int index, char max, char i);
 
-	void invalidateCache() const;
+	void invalidatePathCache() const;
 
 	int getIndex(Urho3D::Vector2& pos) const { return mainGrid.getIndex(pos); }
 	int getIndex(short x, short z) const { return mainGrid.getIndex(x, z); }

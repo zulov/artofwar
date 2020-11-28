@@ -41,7 +41,7 @@ void FormationOrder::addTargetAim() {
 	if (opt.has_value() && vector) {
 		opt.value()->action(static_cast<UnitAction>(id), getTargetAim(opt.value()->getMainCell(), *vector));
 		formation->stopAllBesideLeader();
-		Game::getEnvironment()->invalidateCache();
+		Game::getEnvironment()->invalidatePathCache();
 	}
 }
 
