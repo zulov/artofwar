@@ -157,6 +157,10 @@ void Environment::update(std::vector<Unit*>* units) {
 		teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
 	}
 
+	std::sort(units->begin(), units->end(), [this](Unit* lhs, Unit* rhs) {
+		return lhs->getMainBucketIndex() < rhs->getMainBucketIndex();
+	});
+
 	invalidateCaches();
 }
 
