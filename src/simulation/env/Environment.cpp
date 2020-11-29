@@ -33,8 +33,8 @@ Environment::~Environment() {
 	delete neights2;
 }
 
-std::vector<Physical*>* Environment::getNeighbours(Physical* physical, const float radius) {
-	return getNeighbours2(physical, mainGrid, radius);
+std::vector<Physical*>* Environment::getNeighbours(Unit* unit, const float radius) {
+	return getNeighboursWithCache(unit, radius);
 }
 
 std::vector<Physical*>* Environment::getNeighboursFromTeamEq(Physical* physical, const float radius, const int team) {
@@ -61,32 +61,33 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
-		if (physical != neight
-			&& sqDistAs2D(center, neight->getPosition()) < sqRadius) {
-			neights->push_back(neight);
-		}
+		addIfInRange(physical, center, sqRadius, neight);
 	}
 
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getNeighbours2(Physical* physical, Grid& bucketGrid, float radius) const {
-	const auto currentIdx = bucketGrid.getIndexFromPositions(physical->getPosition());
-	assert(physical->getMainBucketIndex()==currentIdx);//TODO perf zamienic jezeli ok
-	if (bucketGrid.onlyOneInside(currentIdx)) {
-		return getNeighbours(physical, bucketGrid, radius);
+void Environment::addIfInRange(Physical* physical, const Urho3D::Vector3& center, const float sqRadius, Physical* neight) const {
+	if (physical != neight
+		&& sqDistAs2D(center, neight->getPosition()) < sqRadius) {
+		neights->push_back(neight);
 	}
-	const auto simpleNeght = bucketGrid.getAllFromCache(currentIdx, radius);
+}
 
-	const auto& center = physical->getPosition();
+std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float radius) {
+	const auto currentIdx = unit->getMainBucketIndex();
+
+	if (mainGrid.onlyOneInside(currentIdx)) {
+		return getNeighbours(unit, mainGrid, radius);
+	}
+	const auto simpleNeght = mainGrid.getAllFromCache(currentIdx, radius);
+
+	const auto& center = unit->getPosition();
 	const float sqRadius = radius * radius;
 
 	neights->clear();
 	for (auto neight : *simpleNeght) {
-		if (physical != neight
-			&& sqDistAs2D(center, neight->getPosition()) < sqRadius) {
-			neights->push_back(neight);
-		}
+		addIfInRange(unit, center, sqRadius, neight);
 	}
 
 	return neights;
@@ -157,19 +158,15 @@ void Environment::update(std::vector<Unit*>* units) {
 		teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
 	}
 
-	std::sort(units->begin(), units->end(), [this](Unit* lhs, Unit* rhs) {
-		return lhs->getMainBucketIndex() < rhs->getMainBucketIndex();
-	});
-
 	invalidateCaches();
 }
 
 void Environment::invalidateCaches() {
 	mainGrid.invalidateCache();
-	for (auto &unitGrid : teamUnitGrid) {
+	for (auto& unitGrid : teamUnitGrid) {
 		unitGrid.invalidateCache();
 	}
-	
+
 }
 
 void Environment::update(Building* building) const {

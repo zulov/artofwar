@@ -66,12 +66,8 @@ const std::vector<char>& Grid::getCloseTabIndexes(short center) const {
 	return closeIndexes->getTabIndexes(center);
 }
 
-int Grid::getIndexFromPositions(const Urho3D::Vector3& vector3) const {
-	return calculator->indexFromPosition(vector3);
-}
-
-bool Grid::onlyOneInside(int test) const {
-	return buckets[test].getSize() == 1;
+bool Grid::onlyOneInside(int index) const {
+	return buckets[index].getSize() == 1;
 }
 
 void Grid::removeAt(int index, Physical* entity) const {

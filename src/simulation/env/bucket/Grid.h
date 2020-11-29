@@ -33,8 +33,8 @@ public:
 	BucketIterator& getArrayNeight(int center, float radius);
 	const std::vector<short>& getCloseIndexes(int center) const;
 	const std::vector<char>& getCloseTabIndexes(short center) const;
-	int getIndexFromPositions(const Urho3D::Vector3& vector3) const;
-	bool onlyOneInside(int test) const;
+
+	bool onlyOneInside(int index) const;
 	std::vector<Physical*>* getAllFromCache(int currentIdx, float radius);
 	std::vector<Physical*>* getAll(int currentIdx, float radius);
 protected:

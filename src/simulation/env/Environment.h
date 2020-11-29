@@ -27,11 +27,11 @@ public:
 	explicit Environment(Urho3D::Terrain* terrian);
 	~Environment();
 
-	std::vector<Physical*>* getNeighbours(Physical* physical, float radius);
+	std::vector<Physical*>* getNeighbours(Unit* unit, float radius);
 	std::vector<Physical*>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighboursFromTeamNotEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
-	std::vector<Physical*>* getNeighbours2(Physical* physical, Grid& bucketGrid, float radius) const;
+	std::vector<Physical*>* getNeighboursWithCache(Unit* unit, float radius);
 	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius, int id) const;
 
 	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
@@ -109,6 +109,7 @@ public:
 	Urho3D::Vector2 getCenterOf(CenterType id, char player);
 
 private:
+	void addIfInRange(Physical* physical, const Urho3D::Vector3& center, float sqRadius, Physical* neight) const;
 	MainGrid mainGrid;
 	Grid resourceGrid, buildingGrid;
 	Grid teamUnitGrid[MAX_PLAYERS];

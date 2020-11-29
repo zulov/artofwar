@@ -1,30 +1,22 @@
 #include "Simulation.h"
 #include "Game.h"
-#include "SimGlobals.h"
-#include "SimulationInfo.h"
 #include "SimulationObjectManager.h"
 #include "camera/CameraManager.h"
-#include "commands/creation/CreationCommand.h"
 #include "commands/upgrade/UpgradeCommand.h"
 #include "debug/DebugLineRepo.h"
 #include "debug/DebugUnitType.h"
 #include "env/Environment.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
-#include "objects/Physical.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/building/Building.h"
 #include "objects/queue/QueueActionType.h"
 #include "objects/queue/QueueElement.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/SimColorMode.h"
-#include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
-#include "objects/unit/state/StateManager.h"
-#include "objects/unit/state/UnitState.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/ai/ActionCenter.h"
-#include "player/ai/AiManager.h"
 #include "scene/load/dbload_container.h"
 #include "scene/load/SceneLoader.h"
 #include "scene/save/SceneSaver.h"
@@ -76,6 +68,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 
 		Game::getActionCenter()->executeActions();
 		enviroment->update(units);
+		
 		updateInfluenceMaps();
 
 		calculateForces();

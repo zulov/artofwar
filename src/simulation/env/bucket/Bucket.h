@@ -8,7 +8,7 @@ class Bucket {
 public:
 	Bucket() = default;
 	~Bucket() = default;
-	int getSize();
+	int getSize() const;
 	Bucket(const Bucket&) = delete;
 
 	const std::vector<Physical*>& getContent() const { return content; }
