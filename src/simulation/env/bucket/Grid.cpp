@@ -25,29 +25,36 @@ Grid::~Grid() {
 }
 
 void Grid::update(Unit* unit, const char team) const {
-	const int index = calculator->indexFromPosition(unit->getPosition());
-
 	if (!unit->isAlive()) {
 		removeAt(unit->getBucketIndex(team), unit);
-	} else if (unit->bucketHasChanged(index, team)) {
-		removeAt(unit->getBucketIndex(team), unit);
-		addAt(index, unit);
-		unit->setBucket(index, team);
+		return;
 	}
+	if (unit->getHasMoved()) {
+		const int index = calculator->indexFromPosition(unit->getPosition());
+		if (unit->teamBucketHasChanged(index, team)) {
+			removeAt(unit->getBucketIndex(team), unit);
+			addAt(index, unit);
+			unit->setTeamBucket(index, team);
+		}
+	}
+
 }
 
 void Grid::update(Physical* entity) const {
-	const int index = calculator->indexFromPosition(entity->getPosition());
-
 	if (!entity->isAlive()) {
 		removeAt(entity->getMainBucketIndex(), entity);
-	} else if (entity->bucketHasChanged(index)) {
-		removeAt(entity->getMainBucketIndex(), entity);
-		addAt(index, entity);
-		entity->setBucket(index);
-	} else {
-		entity->indexHasChangedReset();
+		return;
 	}
+	if (entity->getHasMoved()) {
+		const int index = calculator->indexFromPosition(entity->getPosition());
+		if (entity->bucketHasChanged(index)) {
+			removeAt(entity->getMainBucketIndex(), entity);
+			addAt(index, entity);
+			entity->setBucket(index);
+		}
+		return;
+	}
+	entity->indexHasChangedReset();
 }
 
 BucketIterator& Grid::getArrayNeight(Urho3D::Vector3& position, float radius) {

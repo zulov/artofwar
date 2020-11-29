@@ -53,7 +53,7 @@ public:
 
 	void populate() override;
 	void checkAim();
-	void updatePosition();
+	void updatePosition() const;
 	void move(float timeStep, const Urho3D::Vector4& boundary);
 	bool ifVisible(const Urho3D::Vector4& boundary) const;
 	void applyForce(float timeStep);
@@ -107,9 +107,9 @@ public:
 	db_unit_level* getLevel() const { return dbLevel; }
 
 	float getAttackRange() const;
-	bool bucketHasChanged(int _bucketIndex, char param) const;
+	bool teamBucketHasChanged(int _bucketIndex, char param) const;
 	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
-	void setBucket(int _bucketIndex, char param);
+	void setTeamBucket(int _bucketIndex, char param);
 	bool isSlotOccupied(int indexToInteract) override;
 	void setOccupiedSlot(int indexToInteract, bool value) override { useSockets[indexToInteract] = value; }
 	Urho3D::Vector2 getPosToUse();

@@ -3,7 +3,7 @@
 #include <span>
 #include <string>
 #include "objects/ObjectEnums.h"
-#include "Urho3D/Math/Vector3.h"   
+#include "Urho3D/Math/Vector3.h"
 
 
 namespace Urho3D {
@@ -47,6 +47,7 @@ public:
 	}
 
 	void indexHasChangedReset() { indexHasChanged = false; }
+	bool getHasMoved() const { return hasMoved; }
 
 	static std::string getColumns();
 	virtual std::string getValues(int precision);
@@ -114,6 +115,7 @@ protected:
 	              closeUsers = 0,
 	              rangeUsers = 0;
 	bool indexHasChanged = false;
+	bool hasMoved = true;
 	bool selected = false;
 	bool isVisible = false;
 
@@ -125,5 +127,5 @@ private:
 	void updateBillboardAura(Urho3D::Vector3& boundingBox) const;
 	virtual float getAuraSize(const Urho3D::Vector3& boundingBox) const;
 
-	int indexInGrid;
+	int indexInGrid = -1;
 };

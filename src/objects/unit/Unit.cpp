@@ -63,7 +63,7 @@ void Unit::checkAim() {
 	}
 }
 
-void Unit::updatePosition() {
+void Unit::updatePosition() const {
 	if (isVisible) {
 		if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
 			node->SetTransform(
@@ -76,12 +76,14 @@ void Unit::updatePosition() {
 }
 
 void Unit::move(float timeStep, const Urho3D::Vector4& boundary) {
+	hasMoved = false;
 	const bool prevVisible = isVisible;
 	isVisible = ifVisible(boundary);
 	if (state != UnitState::STOP) {
 		position.x_ += velocity.x_ * timeStep;
 		position.z_ += velocity.y_ * timeStep;
 		updatePosition();
+		hasMoved = true;
 	} else if (prevVisible == false && isVisible == true) {
 		node->SetPosition(position);
 	}
@@ -429,11 +431,11 @@ UnitState Unit::getActionState() const {
 	return UnitState(dbUnit->actionState);
 }
 
-bool Unit::bucketHasChanged(int _bucketIndex, char param) const {
+bool Unit::teamBucketHasChanged(int _bucketIndex, char param) const {
 	return teamBucketIndex[param] != _bucketIndex;
 }
 
-void Unit::setBucket(int _bucketIndex, char param) {
+void Unit::setTeamBucket(int _bucketIndex, char param) {
 	teamBucketIndex[param] = _bucketIndex;
 }
 

@@ -76,7 +76,7 @@ void Environment::addIfInRange(Physical* physical, const Urho3D::Vector3& center
 
 std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float radius) {
 	const auto currentIdx = unit->getMainBucketIndex();
-
+	assert(currentIdx>=0);
 	if (mainGrid.onlyOneInside(currentIdx)) {
 		return getNeighbours(unit, mainGrid, radius);
 	}
@@ -154,6 +154,7 @@ void Environment::updateInfluence3() const {
 void Environment::update(std::vector<Unit*>* units) {
 	//TODO to mozna rodzielic na dodawanei u usywanie
 	for (auto unit : *units) {
+		//if (!entity->isAlive()) { //toDO perf mało dające
 		mainGrid.update(unit);
 		teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
 	}
