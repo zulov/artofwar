@@ -13,11 +13,9 @@ SimulationObjectManager::SimulationObjectManager() {
 	buildings = new std::vector<Building*>();
 	resources = new std::vector<ResourceEntity*>();
 
-	units->reserve(10000);
-	buildings->reserve(100);
-	resources->reserve(1000);
-
-	toDisposePhysical.reserve(1000);
+	units->reserve(8192);
+	buildings->reserve(128);
+	resources->reserve(1024);
 }
 
 
@@ -25,6 +23,10 @@ SimulationObjectManager::~SimulationObjectManager() {
 	clear_and_delete_vector(units);
 	clear_and_delete_vector(buildings);
 	clear_and_delete_vector(resources);
+
+	clear_vector(unitsToDispose);
+	clear_vector(buildingsToDispose);
+	clear_vector(resourcesToDispose);
 }
 
 void SimulationObjectManager::addUnits(unsigned int number, int id, Urho3D::Vector2& center,
@@ -43,28 +45,10 @@ void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const
 	updateResource(resourceFactory.create(id, center, _bucketCords, level));
 }
 
-template <class T>
-void SimulationObjectManager::prepareToDispose(std::vector<T*>* objects) {
-	objects->erase(
-		std::remove_if(
-			objects->begin(), objects->end(),
-			[this](Physical* physical) {
-				if (physical->isToDispose()) {
-					toDisposePhysical.push_back(physical);
-					simulationInfo.setSthDied(physical->getType());
-					return true;
-				}
-				physical->clean();//TODO perf zrobic tylko dla Unit
-				return false;
-			}
-		),
-		objects->end());
-}
-
-void SimulationObjectManager::prepareToDispose()  {
-	prepareToDispose(units);
-	prepareToDispose(buildings);
-	prepareToDispose(resources);
+void SimulationObjectManager::findDead() {
+	findDeadUnits();
+	findDeadBuildings();
+	findDeadResources();
 }
 
 void SimulationObjectManager::load(dbload_unit* unit) {
@@ -79,8 +63,12 @@ void SimulationObjectManager::load(dbload_resource_entities* resource) {
 	updateResource(resourceFactory.load(resource));
 }
 
-std::vector<Physical*>& SimulationObjectManager::getToDispose() {
-	return toDisposePhysical;
+std::vector<Building*>& SimulationObjectManager::getBuildingsToDispose() {
+	return buildingsToDispose;
+}
+
+std::vector<ResourceEntity*>& SimulationObjectManager::getResourcesToDispose() {
+	return resourcesToDispose;
 }
 
 void SimulationObjectManager::updateUnits(std::vector<Unit*>& temp) {
@@ -89,6 +77,7 @@ void SimulationObjectManager::updateUnits(std::vector<Unit*>& temp) {
 		for (auto value : temp) {
 			Game::getPlayersMan()->getPlayer(value->getPlayer())->add(value);
 		}
+		Game::getEnvironment()->updateNew(temp);
 		simulationInfo.setAmountUnitChanged();
 	}
 }
@@ -109,6 +98,61 @@ void SimulationObjectManager::updateResource(ResourceEntity* resource) {
 	simulationInfo.setAmountResourceChanged();
 }
 
+void SimulationObjectManager::findDeadUnits() {
+	units->erase(
+		std::remove_if(
+			units->begin(), units->end(),
+			[this](Unit* unit) {
+				if (unit->isToDispose()) {
+					unitsToDispose.push_back(unit);
+					return true;
+				}
+				unit->clean();
+				return false;
+			}
+		), units->end());
+
+	if (!unitsToDispose.empty()) {
+		simulationInfo.setUnitDied();
+	}
+}
+
+void SimulationObjectManager::findDeadBuildings() {
+	buildings->erase(
+		std::remove_if(
+			buildings->begin(), buildings->end(),
+			[this](Building* building) {
+				if (building->isToDispose()) {
+					buildingsToDispose.push_back(building);
+					return true;
+				}
+				return false;
+			}
+		), buildings->end());
+
+	if (!unitsToDispose.empty()) {
+		simulationInfo.setBuildingDied();
+	}
+}
+
+void SimulationObjectManager::findDeadResources() {
+	resources->erase(
+		std::remove_if(
+			resources->begin(), resources->end(),
+			[this](ResourceEntity* resource) {
+				if (resource->isToDispose()) {
+					resourcesToDispose.push_back(resource);
+					return true;
+				}
+				return false;
+			}
+		), resources->end());
+
+	if (!unitsToDispose.empty()) {
+		simulationInfo.setResourceDied();
+	}
+}
+
 void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
 	auto a = this->simulationInfo;
 	simulationInfo->set(a);
@@ -116,8 +160,9 @@ void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
 }
 
 void SimulationObjectManager::dispose() {
-	if (!toDisposePhysical.empty()) {
-		clear_vector(toDisposePhysical);
-	}
+	clear_vector(unitsToDispose);
+	clear_vector(buildingsToDispose);
+	clear_vector(resourcesToDispose);
+
 	simulationInfo.reset();
 }

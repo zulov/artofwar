@@ -22,6 +22,13 @@ public:
 
 	void update(Unit* unit, char team) const;
 	void update(Physical* entity) const;
+
+	void remove(Unit* unit, char team) const;
+	void remove(Physical* entity) const;
+
+	void updateNew(Unit* unit) const;
+	void updateNew(Unit* unit, char team) const;
+
 	const std::vector<Physical*>& getContentAt(int index) const;
 
 	std::vector<Physical*>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
@@ -37,6 +44,7 @@ public:
 	bool onlyOneInside(int index) const;
 	std::vector<Physical*>* getAllFromCache(int currentIdx, float radius);
 	std::vector<Physical*>* getAll(int currentIdx, float radius);
+
 protected:
 	GridCalculator* calculator;
 	CloseIndexes* closeIndexes;

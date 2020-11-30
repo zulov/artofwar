@@ -24,20 +24,26 @@ public:
 	void addBuilding(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level);
 	void addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level);
 
-	void prepareToDispose();
+	void findDead();
 	void updateInfo(SimulationInfo* simulationInfo);
 	void dispose();
 
 	void load(dbload_unit* unit);
 	void load(dbload_building* building);
 	void load(dbload_resource_entities* resource);
-	std::vector<Physical*>& getToDispose();
+	
+	//std::vector<Physical*>& getToDispose();
+	std::vector<Building*>& getBuildingsToDispose();
+	std::vector<ResourceEntity*>& getResourcesToDispose();
 
 private:
-
 	void updateUnits(std::vector<Unit*>& temp);
 	void updateBuilding(Building* building);
 	void updateResource(ResourceEntity* resource);
+	
+	void findDeadUnits();
+	void findDeadBuildings();
+	void findDeadResources();
 
 	UnitFactory unitFactory;
 	BuildingFactory buildingFactory;
@@ -49,8 +55,8 @@ private:
 	std::vector<Building*>* buildings;
 	std::vector<ResourceEntity*>* resources;
 
-	std::vector<Physical*> toDisposePhysical;
+	std::vector<Unit*> unitsToDispose;
+	std::vector<Building*> buildingsToDispose;
+	std::vector<ResourceEntity*> resourcesToDispose;
 
-	template <class T>
-	void prepareToDispose(std::vector<T*>* objects);
 };

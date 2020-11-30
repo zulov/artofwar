@@ -124,7 +124,7 @@ std::string Physical::getValues(int precision) {
 }
 
 int Physical::belowCloseLimit() {
-	return Urho3D::Max(maxCloseUsers - closeUsers, 0);
+	return Urho3D::Max(getMaxCloseUsers() - closeUsers, 0);
 }
 
 void Physical::select(Urho3D::Billboard* healthBar, Urho3D::Billboard* aura) {

@@ -34,7 +34,6 @@ void ResourceEntity::populate() {
 	Static::populate();
 
 	hp = dbResource->maxHp;
-	maxCloseUsers = dbResource->maxUsers;
 }
 
 float ResourceEntity::getMaxHpBarSize() const {
@@ -47,7 +46,7 @@ Urho3D::String ResourceEntity::toMultiLineString() {
 	return Urho3D::String(dbResource->name)
 	       .Append("\n" + l10n->Get("ml_res_1") + ": ").Append(Urho3D::String((int)hp))
 	       .Append("\n" + l10n->Get("ml_res_2") + ": ").Append(Urho3D::String((int)closeUsers))
-	       .Append("/").Append(Urho3D::String((int)maxCloseUsers));
+	       .Append("/").Append(Urho3D::String((int)getMaxCloseUsers()));
 }
 
 std::string ResourceEntity::getValues(int precision) {
@@ -58,6 +57,11 @@ std::string ResourceEntity::getValues(int precision) {
 
 unsigned short ResourceEntity::getMaxHp() const {
 	return dbResource->maxHp;
+}
+
+
+unsigned char ResourceEntity::getMaxCloseUsers() const {
+	return dbResource->maxUsers;
 }
 
 void ResourceEntity::action(ResourceActionType type, char player) {

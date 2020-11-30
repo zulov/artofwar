@@ -13,8 +13,6 @@ public:
 	void setAmountBuildingChanged();
 	void setAmountResourceChanged();
 
-	void setSthDied(ObjectType type);
-
 	void set(SimulationInfo& simulationInfo);
 
 	bool ifUnitDied() const { return unitDied; }
@@ -24,12 +22,14 @@ public:
 	bool ifResourceDied() const { return resourceDied; }
 	bool ifAmountResourceChanged() const { return amountResourceChanged; }
 
-	void setCurrentFrame(unsigned char currentFrameNumber);
-	int getCurrentFrame() const { return currentFrameNumber; }
-private:
 	void setUnitDied();
 	void setBuildingDied();
 	void setResourceDied();
+
+	void setCurrentFrame(unsigned char currentFrameNumber);
+	int getCurrentFrame() const { return currentFrameNumber; }
+private:
+
 
 	bool unitDied;
 	bool amountUnitChanged;

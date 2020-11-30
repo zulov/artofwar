@@ -54,7 +54,7 @@ public:
 	void populate() override;
 	void checkAim();
 	void updatePosition() const;
-	void move(float timeStep, const Urho3D::Vector4& boundary);
+	bool move(float timeStep, const Urho3D::Vector4& boundary);
 	bool ifVisible(const Urho3D::Vector4& boundary) const;
 	void applyForce(float timeStep);
 	void setAcceleration(Urho3D::Vector2& _acceleration);
@@ -126,7 +126,7 @@ public:
 	bool isAlive() const override;
 	int getLevelNum() override;
 	short getId() override;
-	void clean() override;
+	void clean();
 	void fillValues(std::span<float> weights) const;
 	void addValues(std::span<float> vals) const override;
 	unsigned short getMaxHp() const override;

@@ -44,21 +44,6 @@ void SimulationInfo::setAmountResourceChanged() {
 	amountResourceChanged = true;
 }
 
-void SimulationInfo::setSthDied(ObjectType type) {
-	switch (type) {
-	case ObjectType::UNIT:
-		setUnitDied();
-		break;
-	case ObjectType::BUILDING:
-		setBuildingDied();
-		break;
-	case ObjectType::RESOURCE:
-		setResourceDied();
-		break;
-	default: ;
-	}
-}
-
 void SimulationInfo::set(SimulationInfo& simulationInfo) {
 	unitDied = simulationInfo.unitDied;
 	amountUnitChanged = simulationInfo.amountUnitChanged;

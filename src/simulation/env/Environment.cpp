@@ -67,7 +67,8 @@ std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& buc
 	return neights;
 }
 
-void Environment::addIfInRange(Physical* physical, const Urho3D::Vector3& center, const float sqRadius, Physical* neight) const {
+void Environment::addIfInRange(Physical* physical, const Urho3D::Vector3& center, const float sqRadius,
+                               Physical* neight) const {
 	if (physical != neight
 		&& sqDistAs2D(center, neight->getPosition()) < sqRadius) {
 		neights->push_back(neight);
@@ -151,12 +152,15 @@ void Environment::updateInfluence3() const {
 	influenceManager.updateWithHistory();
 }
 
-void Environment::update(std::vector<Unit*>* units) {
-	//TODO to mozna rodzielic na dodawanei u usywanie
-	for (auto unit : *units) {
-		//if (!entity->isAlive()) { //toDO perf mało dające
-		mainGrid.update(unit);
-		teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
+void Environment::update(Unit* unit) const {
+	mainGrid.update(unit);
+	teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
+}
+
+void Environment::updateNew(const std::vector<Unit*>& units) {
+	for (auto unit : units) {
+		mainGrid.updateNew(unit);
+		teamUnitGrid[unit->getTeam()].updateNew(unit, unit->getTeam());
 	}
 
 	invalidateCaches();
@@ -290,26 +294,16 @@ char Environment::getOrdinalInState(Unit* unit, UnitState state) const {
 	return mainGrid.getOrdinalInState(unit, state);
 }
 
-void Environment::removeFromGrids(const std::vector<Physical*>& toDispose) const {
-	for (auto dispose : toDispose) {
-		switch (dispose->getType()) {
-		case ObjectType::BUILDING:
-		{
-			const auto building = dynamic_cast<Building*>(dispose);
-			mainGrid.removeStatic(building);
-			mainGrid.removeDeploy(building);
-			buildingGrid.update(dispose);
-		}
-		break;
-		case ObjectType::RESOURCE:
-		{
-			const auto resource = dynamic_cast<ResourceEntity*>(dispose);
-			mainGrid.removeStatic(resource);
-			resourceGrid.update(resource);
-		}
-		break;
-		default: ;
-		}
+void Environment::removeFromGrids(const std::vector<Building*>& buildingsToDispose,
+                                  const std::vector<ResourceEntity*>& resourceToDispose) const {
+	for (auto building : buildingsToDispose) {
+		mainGrid.removeStatic(building);
+		mainGrid.removeDeploy(building);
+		buildingGrid.remove(building);
+	}
+	for (auto resource : resourceToDispose) {
+		mainGrid.removeStatic(resource);
+		resourceGrid.remove(resource);
 	}
 }
 

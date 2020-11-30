@@ -44,7 +44,8 @@ public:
 	void updateInfluence3() const;
 
 	void invalidateCaches();
-	void update(std::vector<Unit*>* units);
+	void update(Unit* unit) const;
+	void updateNew(const std::vector<Unit*>& units);
 	void update(Building* building) const;
 	void update(ResourceEntity* resource) const;
 
@@ -87,7 +88,8 @@ public:
 	void updateCell(int index, char val, CellState cellState) const;
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinalInState(Unit* unit, UnitState state) const;
-	void removeFromGrids(const std::vector<Physical*>& toDispose) const;
+	void removeFromGrids(const std::vector<Building*>& buildingsToDispose,
+	                     const std::vector<ResourceEntity*>& resourceToDispose) const;
 	int getRevertCloseIndex(int center, int gridIndex);
 
 	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos) const;

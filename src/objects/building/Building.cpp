@@ -73,7 +73,7 @@ Urho3D::String Building::toMultiLineString() {
 		.AppendWithFormat(l10n->Get("ml_build").CString(), dbLevel->rangeAttackVal, dbLevel->armor, (int)hp,
 		                  dbLevel->maxHp,
 		                  closeUsers,
-		                  maxCloseUsers, magic_enum::enum_name(state).data());
+		                  getMaxCloseUsers(), magic_enum::enum_name(state).data());
 }
 
 void Building::action(BuildingActionType type, short id) const {

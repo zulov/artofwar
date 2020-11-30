@@ -47,7 +47,6 @@ public:
 	}
 
 	void indexHasChangedReset() { indexHasChanged = false; }
-	bool getHasMoved() const { return hasMoved; }
 
 	static std::string getColumns();
 	virtual std::string getValues(int precision);
@@ -57,7 +56,7 @@ public:
 	void reduceClose() { --closeUsers; }
 	void upClose() { ++closeUsers; }
 
-	bool belowRangeLimit() const { return rangeUsers < maxRangeUsers; }
+	bool belowRangeLimit() const { return rangeUsers < getMaxRangeUsers(); }
 	void reduceRange() { --rangeUsers; }
 	void upRange() { ++rangeUsers; }
 
@@ -93,29 +92,26 @@ public:
 
 	virtual int getLevelNum();
 
-	virtual void clean() {
-	}
-
 	virtual void addValues(std::span<float> vals) const {
 	}
+
+	virtual unsigned char getMaxRangeUsers() const { return 8; }
+	virtual unsigned char getMaxCloseUsers() const { return 8; }
 
 protected:
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);
 	virtual float getHealthBarThick() const { return 0.12f; }
 	Urho3D::Node* node;
-
 	Urho3D::StaticModel* model;
 
 	Urho3D::Billboard *healthBar = nullptr, *aura = nullptr;
 
 	char team, player = -1;
-	unsigned char maxRangeUsers = 8,
-	              maxCloseUsers = 8, //TODO default values
-	              closeUsers = 0,
+
+	unsigned char closeUsers = 0,
 	              rangeUsers = 0;
 	bool indexHasChanged = false;
-	bool hasMoved = true;
 	bool selected = false;
 	bool isVisible = false;
 

@@ -31,6 +31,7 @@ public:
 	unsigned short getMaxHp() const override;
 	void action(ResourceActionType type, char player);
 	ObjectType getType() const override { return ObjectType::RESOURCE; }
+	unsigned char getMaxCloseUsers() const override;
 private:
 
 	db_resource* dbResource;

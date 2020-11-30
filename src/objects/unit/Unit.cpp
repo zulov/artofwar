@@ -37,9 +37,7 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 		missileData = new MissileData(150, 2);
 	}
 
-	for (auto& bucket : teamBucketIndex) {
-		bucket = INT_MIN;
-	}
+	std::fill_n(teamBucketIndex, BUCKET_SET_NUMBER, -1);
 	std::fill_n(useSockets, USE_SOCKETS_NUMBER, false);
 }
 
@@ -75,8 +73,8 @@ void Unit::updatePosition() const {
 	}
 }
 
-void Unit::move(float timeStep, const Urho3D::Vector4& boundary) {
-	hasMoved = false;
+bool Unit::move(float timeStep, const Urho3D::Vector4& boundary) {
+	bool hasMoved = false;
 	const bool prevVisible = isVisible;
 	isVisible = ifVisible(boundary);
 	if (state != UnitState::STOP) {
@@ -90,6 +88,7 @@ void Unit::move(float timeStep, const Urho3D::Vector4& boundary) {
 	if (missileData && missileData->isUp()) {
 		missileData->update(timeStep, dbLevel->rangeAttackVal);
 	}
+	return hasMoved;
 }
 
 bool Unit::ifVisible(const Urho3D::Vector4& boundary) const {
@@ -473,7 +472,6 @@ bool Unit::isFirstThingAlive() const {
 }
 
 void Unit::clean() {
-	Physical::clean();
 	thingsToInteract.erase(std::remove_if(thingsToInteract.begin(), thingsToInteract.end(), isAlivePred),
 	                       thingsToInteract.end());
 }

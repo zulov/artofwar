@@ -55,33 +55,36 @@ void Simulation::updateInfluenceMaps() const {
 }
 
 SimulationInfo* Simulation::update(float timeStep) {
-	simObjectManager->dispose();
-
 	accumulateTime += updateTime(timeStep);
 	while (accumulateTime >= TIME_PER_UPDATE) {
-		//TODO bug a co jesli kilka razy sie wykona, moga byæ b³êdy jezeli cos umrze
+		//simObjectManager->dispose();
+		//TODO bug a co jesli kilka razy sie wykona, moga byæ b³êdy jezeli cos umrze to poza petl¹ 
+		simulationInfo->setCurrentFrame(currentFrame);
 
 		Game::getActionCenter()->executeLists();
-		selfAI();
 
+		selfAI();
 		aiPlayers();
 
 		Game::getActionCenter()->executeActions();
-		enviroment->update(units);
-		
-		updateInfluenceMaps();
+
+		//enviroment->update(units);
 
 		calculateForces();
 		applyForce();
 
 		moveUnitsAndCheck(TIME_PER_UPDATE);
-		performStateAction(TIME_PER_UPDATE);
+		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac
 		updateQueues();
+		updateInfluenceMaps();
 
-		simObjectManager->prepareToDispose();
+		//simObjectManager->dispose();
+		simObjectManager->findDead();
 		simObjectManager->updateInfo(simulationInfo);
-		simulationInfo->setCurrentFrame(currentFrame);
-		enviroment->removeFromGrids(simObjectManager->getToDispose());
+
+		enviroment->removeFromGrids(simObjectManager->getBuildingsToDispose(),
+		                            simObjectManager->getResourcesToDispose());
+
 		Game::getPlayersMan()->update(simulationInfo);
 		Game::getFormationManager()->update();
 		Game::getStats()->save(PER_FRAME_ACTION.get(PerFrameAction::STAT_SAVE, currentFrame, secondsElapsed));
@@ -150,9 +153,9 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 300, 0, Urho3D::Vector2(20, -250), 0);
+		Game::getActionCenter()->addUnits(UNITS_NUMBER * 300, 0, Urho3D::Vector2(20, -250), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 300, 0, Urho3D::Vector2(10, 250), 1);
+		Game::getActionCenter()->addUnits(UNITS_NUMBER * 300, 0, Urho3D::Vector2(10, 250), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER*10, 4, Urho3D::Vector2(-20, -200), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0);
 		//Game::getActionCenter()->addResource(1, Urho3D::Vector2(i, j), 0);
@@ -300,9 +303,14 @@ void Simulation::moveUnitsAndCheck(const float timeStep) {
 	auto pos = Game::getCameraManager()->getCamBoundary(UPDATE_DRAW_DISTANCE);
 
 	for (auto unit : *units) {
-		unit->move(timeStep, pos);
+		bool hasMoved = unit->move(timeStep, pos);
+
 		unit->checkAim();
+		if (hasMoved) {
+			enviroment->update(unit);
+		}
 	}
+	enviroment->invalidateCaches();
 
 	if (colorSchemeChanged || colorScheme != SimColorMode::BASIC) {
 		for (auto unit : *units) {
