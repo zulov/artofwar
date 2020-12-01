@@ -25,10 +25,7 @@ Grid::~Grid() {
 }
 
 void Grid::update(Unit* unit, const char team) const {
-	if (!unit->isAlive()) {
-		removeAt(unit->getBucketIndex(team), unit);
-		return;
-	}
+	assert(unit->isAlive());
 
 	const int index = calculator->indexFromPosition(unit->getPosition());
 	if (unit->teamBucketHasChanged(index, team)) {
@@ -39,10 +36,7 @@ void Grid::update(Unit* unit, const char team) const {
 }
 
 void Grid::update(Physical* entity) const {
-	if (!entity->isAlive()) {
-		removeAt(entity->getMainBucketIndex(), entity);
-		return;
-	}
+	assert(entity->isAlive());
 
 	const int index = calculator->indexFromPosition(entity->getPosition());
 	if (entity->bucketHasChanged(index)) {
@@ -54,15 +48,24 @@ void Grid::update(Physical* entity) const {
 	}
 }
 
-void Grid::updateNew(Unit* unit) const {
-	const int index = calculator->indexFromPosition(unit->getPosition());
-	addAt(index, unit);
-	unit->setBucket(index);
+void Grid::remove(Unit* unit, char team) const {
+	removeAt(unit->getBucketIndex(team), unit);
+}
+
+void Grid::remove(Physical* entity) const {
+	removeAt(entity->getMainBucketIndex(), entity);
+}
+
+void Grid::updateNew(Physical* physical) const {
+	assert(physical->getMainBucketIndex(), -1);
+	const int index = calculator->indexFromPosition(physical->getPosition());
+	addAt(index, physical);
+	physical->setBucket(index);
 }
 
 void Grid::updateNew(Unit* unit, char team) const {
-	const int index = calculator->indexFromPosition(unit->getPosition());
 	assert(unit->getBucketIndex(team), -1);
+	const int index = calculator->indexFromPosition(unit->getPosition());
 	addAt(index, unit);
 	unit->setTeamBucket(index, team);
 }

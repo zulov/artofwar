@@ -124,7 +124,7 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 		break;
 	default: return &Consts::EMPTY_PHYSICAL;
 	}
-	return grid->getArrayNeightSimilarAs(clicked, 20.0);
+	return grid->getArrayNeightSimilarAs(clicked, 20.f);
 }
 
 std::vector<Physical*>* Environment::getResources(Physical* physical, float radius) {
@@ -137,7 +137,7 @@ std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, float
 
 void Environment::updateInfluence1(std::vector<Unit*>* units,
                                    std::vector<Building*>* buildings,
-                                   std::vector<ResourceEntity*>* resources) {
+                                   std::vector<ResourceEntity*>* resources) const {
 	influenceManager.update(units);
 	influenceManager.update(buildings);
 	influenceManager.update(resources);
@@ -171,12 +171,11 @@ void Environment::invalidateCaches() {
 	for (auto& unitGrid : teamUnitGrid) {
 		unitGrid.invalidateCache();
 	}
-
 }
 
 void Environment::update(Building* building) const {
 	mainGrid.addStatic(building);
-	buildingGrid.update(building);
+	buildingGrid.updateNew(building);
 	for (auto cell : building->getSurroundCells()) {
 		if (mainGrid.isBuildable(cell)) {
 			building->setDeploy(cell);
@@ -195,7 +194,7 @@ void Environment::updateAll(std::vector<Building*>* const buildings) const {
 
 void Environment::update(ResourceEntity* resource) const {
 	mainGrid.addStatic(resource);
-	resourceGrid.update(resource);
+	resourceGrid.updateNew(resource);
 }
 
 Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) const {

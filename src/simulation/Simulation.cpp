@@ -207,8 +207,7 @@ void Simulation::updateBuildingQueues(const float time) const {
 		auto done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {
-			case QueueActionType::UNIT_CREATE:
-			{
+			case QueueActionType::UNIT_CREATE: {
 				auto center = enviroment->getCenter(build->getDeploy().value());
 				Game::getActionCenter()->addUnits(done->getAmount(),
 				                                  done->getId(), center,
@@ -308,7 +307,7 @@ void Simulation::moveUnitsAndCheck(const float timeStep) {
 		unit->checkAim();
 		if (hasMoved) {
 			enviroment->update(unit);
-		}
+		} else { unit->indexHasChangedReset(); }
 	}
 	enviroment->invalidateCaches();
 
@@ -330,17 +329,15 @@ void Simulation::calculateForces() {
 		case UnitState::COLLECT:
 			force.inCell(newForce, unit);
 			break;
-		case UnitState::ATTACK:
-		{
-			const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
+		case UnitState::ATTACK: {
+			const auto neighbours = enviroment->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);
 			force.inCell(newForce, unit);
 		}
 		break;
-		default:
-		{
-			const auto neighbours = enviroment->getNeighbours(unit, unit->getMaxSeparationDistance());
+		default: {
+			const auto neighbours = enviroment->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);
 			force.separationObstacle(newForce, unit); //TODO mo¿ê to 

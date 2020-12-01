@@ -26,7 +26,7 @@ public:
 	void remove(Unit* unit, char team) const;
 	void remove(Physical* entity) const;
 
-	void updateNew(Unit* unit) const;
+	void updateNew(Physical* physical) const;
 	void updateNew(Unit* unit, char team) const;
 
 	const std::vector<Physical*>& getContentAt(int index) const;
