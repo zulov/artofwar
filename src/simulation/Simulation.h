@@ -16,7 +16,7 @@ class Environment;
 class SceneSaver;
 class SceneLoader;
 class CreationCommandList;
-class SimulationInfo;
+class ObjectsInfo;
 class CreationCommandList;
 class SimulationObjectManager;
 class UpgradeCommandList;
@@ -34,7 +34,7 @@ public:
 	~Simulation();
 	void updateInfluenceMaps() const;
 
-	SimulationInfo* update(float timeStep);
+	ObjectsInfo* update(float timeStep);
 	void initScene(SceneLoader& loader) const;
 	void initScene(NewGameForm* form) const;
 

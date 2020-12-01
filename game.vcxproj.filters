@@ -40,7 +40,6 @@
     <ClCompile Include="src\simulation\Simulation.cpp">
       <Filter>simulation</Filter>
     </ClCompile>
-    <ClCompile Include="src\simulation\SimulationInfo.cpp" />
     <ClCompile Include="src\simulation\SimulationObjectManager.cpp">
       <Filter>objects\collection\manager</Filter>
     </ClCompile>
@@ -206,6 +205,8 @@
     <ClCompile Include="src\player\ai\nn\BrainProvider.cpp" />
     <ClCompile Include="src\player\ai\threshold\Threshold.cpp" />
     <ClCompile Include="src\player\ai\threshold\ThresholdProvider.cpp" />
+    <ClCompile Include="src\simulation\ObjectsInfo.cpp" />
+    <ClCompile Include="src\simulation\SimInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -272,7 +273,6 @@
     <ClInclude Include="src\simulation\Simulation.h">
       <Filter>simulation</Filter>
     </ClInclude>
-    <ClInclude Include="src\simulation\SimulationInfo.h" />
     <ClInclude Include="src\simulation\SimulationObjectManager.h">
       <Filter>objects\collection\manager</Filter>
     </ClInclude>
@@ -530,6 +530,8 @@
     <ClInclude Include="src\player\ai\threshold\Threshold.h" />
     <ClInclude Include="src\player\ai\threshold\ThresholdProvider.h" />
     <ClInclude Include="src\player\ai\AiActionType.h" />
+    <ClInclude Include="src\simulation\ObjectsInfo.h" />
+    <ClInclude Include="SimInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

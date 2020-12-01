@@ -4,7 +4,7 @@
 
 constexpr char TEAMS_NUMBER = 3;
 
-class SimulationInfo;
+class ObjectsInfo;
 class SceneSaver;
 class Player;
 struct NewGameForm;
@@ -24,7 +24,7 @@ public:
 	std::vector<Player*>& getTeam(short i);
 	void changeActive(short i);
 	void save(SceneSaver& saver);
-	void update(SimulationInfo* simInfo);
+	void update(ObjectsInfo* simInfo);
 	char getActivePlayerID() const;
 	char getEnemyFor(char player) const;
 	static std::string getColumns();

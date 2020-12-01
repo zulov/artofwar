@@ -71,7 +71,7 @@ void PlayersManager::save(SceneSaver& saver) {
 	saver.saveResources(allPlayers);
 }
 
-void PlayersManager::update(SimulationInfo* simInfo) {
+void PlayersManager::update(ObjectsInfo* simInfo) {
 	for (auto player : allPlayers) {
 		player->updatePossession(simInfo);
 		player->updateResource();

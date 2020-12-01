@@ -21,7 +21,7 @@ class Hud;
 class LevelBuilder;
 class SelectedInfo;
 class Simulation;
-class SimulationInfo;
+class ObjectsInfo;
 
 class Main : public Urho3D::Application {
 URHO3D_OBJECT(Main, Application)
@@ -61,7 +61,7 @@ private:
 
 	void InitLocalizationSystem() const;
 
-	SelectedInfo* control(float timeStep, SimulationInfo* simulationInfo);
+	SelectedInfo* control(float timeStep, ObjectsInfo* simulationInfo);
 	void changeCamera(CameraBehaviorType type);
 	void load(const Urho3D::String& saveName, loading& progress);
 	void createEnv() const;

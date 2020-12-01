@@ -2,18 +2,16 @@
 
 enum class ObjectType : char;
 
-class SimulationInfo {
+class ObjectsInfo {
 public:
-	SimulationInfo();
-	~SimulationInfo() = default;
+	ObjectsInfo();
+	~ObjectsInfo() = default;
 
 	void reset();
 
 	void setAmountUnitChanged(); 
 	void setAmountBuildingChanged();
 	void setAmountResourceChanged();
-
-	void set(SimulationInfo& simulationInfo);
 
 	bool ifUnitDied() const { return unitDied; }
 	bool ifAmountUnitChanged() const { return amountUnitChanged; }

@@ -130,7 +130,7 @@ void Main::running(const double timeStep) {
 	Game::addTime(timeStep);
 	benchmark.add(1.0f / timeStep);
 
-	SimulationInfo* simulationInfo = simulation->update(timeStep);
+	ObjectsInfo* simulationInfo = simulation->update(timeStep);
 	debugManager.draw();
 
 	SelectedInfo* selectedInfo = control(timeStep, simulationInfo);
@@ -489,7 +489,7 @@ void Main::disposeScene() {
 	newGameProgress.reset(newGamesStages);
 }
 
-SelectedInfo* Main::control(const float timeStep, SimulationInfo* simulationInfo) {
+SelectedInfo* Main::control(const float timeStep, ObjectsInfo* simulationInfo) {
 	const IntVector2 cursorPos = Game::getUI()->GetCursorPosition();
 	UIElement* element = Game::getUI()->GetElementAt(cursorPos, false);
 

@@ -8,7 +8,7 @@
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
-#include "simulation/SimulationInfo.h"
+#include "simulation/ObjectsInfo.h"
 
 Possession::Possession(char nation) {
 	for (auto building : Game::getDatabase()->getNation(nation)->buildings) {
@@ -94,7 +94,7 @@ void Possession::add(Unit* unit) {
 	}
 }
 
-void Possession::updateAndClean(Resources& resources, SimulationInfo* simInfo) {
+void Possession::updateAndClean(Resources& resources, ObjectsInfo* simInfo) {
 	cleanDead(buildings, simInfo->ifBuildingDied());
 	cleanDead(units, simInfo->ifUnitDied());
 	cleanDead(workers, simInfo->ifUnitDied());

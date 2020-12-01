@@ -51,12 +51,12 @@ void Simulation::updateInfluenceMaps() const {
 	enviroment->updateInfluence3();
 }
 
-SimulationInfo* Simulation::update(float timeStep) {
+ObjectsInfo* Simulation::update(float timeStep) {
 	accumulateTime += updateTime(timeStep);
 	while (accumulateTime >= TIME_PER_UPDATE) {
 		//simObjectManager->dispose();
 		//TODO bug a co jesli kilka razy sie wykona, moga byæ b³êdy jezeli cos umrze to poza petl¹ 
-		//simulationInfo->setCurrentFrame(currentFrame);
+		simulationInfo->setCurrentFrame(currentFrame);
 
 		Game::getActionCenter()->executeLists();
 

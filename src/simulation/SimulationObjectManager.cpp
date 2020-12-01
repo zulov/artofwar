@@ -1,6 +1,6 @@
 #include "SimulationObjectManager.h"
 #include "Game.h"
-#include "SimulationInfo.h"
+#include "ObjectsInfo.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
@@ -17,7 +17,7 @@ SimulationObjectManager::SimulationObjectManager() {
 	units->reserve(8192);
 	buildings->reserve(128);
 	resources->reserve(1024);
-	simulationInfo = new SimulationInfo();
+	simulationInfo = new ObjectsInfo();
 }
 
 

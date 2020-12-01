@@ -8,7 +8,7 @@
 
 
 class Physical;
-class SimulationInfo;
+class ObjectsInfo;
 
 class SimulationObjectManager {
 public:
@@ -24,7 +24,7 @@ public:
 	void addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level);
 
 	void findToDispose();
-	void updateInfo(SimulationInfo* simulationInfo);
+	void updateInfo(ObjectsInfo* simulationInfo);
 	void dispose();
 
 	void load(dbload_unit* unit);
@@ -44,7 +44,7 @@ private:
 	BuildingFactory buildingFactory;
 	ResourceFactory resourceFactory;
 
-	SimulationInfo *simulationInfo;
+	ObjectsInfo *simulationInfo;
 
 	std::vector<Unit*>* units;
 	std::vector<Building*>* buildings;

@@ -19,7 +19,7 @@
 #include "objects/unit/order/enums/UnitActionType.h"
 #include "player/PlayersManager.h"
 #include "player/ai/ActionCenter.h"
-#include "simulation/SimulationInfo.h"
+#include "simulation/ObjectsInfo.h"
 #include "simulation/env/Environment.h"
 #include "objects/unit/ActionParameter.h"
 
@@ -399,7 +399,7 @@ void Controls::refreshSelected() {
 	//TODO bug billboard beda zajete
 }
 
-bool Controls::conditionToClean(SimulationInfo* simulationInfo) const {
+bool Controls::conditionToClean(ObjectsInfo* simulationInfo) const {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::UNIT:
 		return simulationInfo->ifUnitDied();
@@ -411,7 +411,7 @@ bool Controls::conditionToClean(SimulationInfo* simulationInfo) const {
 	return false;
 }
 
-void Controls::cleanAndUpdate(SimulationInfo* simulationInfo) {
+void Controls::cleanAndUpdate(ObjectsInfo* simulationInfo) {
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
 	}

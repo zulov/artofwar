@@ -16,7 +16,7 @@
 #include "objects/ObjectEnums.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
-#include "simulation/SimulationInfo.h"
+#include "simulation/ObjectsInfo.h"
 #include "utils/replace_utils.h"
 #include "window/debug/DebugPanel.h"
 #include "window/loading/LoadingPanel.h"
@@ -155,7 +155,7 @@ void Hud::createConsole(Urho3D::Engine* engine) const {
 }
 
 void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
-                 SimulationInfo* simulationInfo) const {
+                 ObjectsInfo* simulationInfo) const {
 	updateSelected(selectedInfo);
 
 	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),

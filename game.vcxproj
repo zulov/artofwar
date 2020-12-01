@@ -188,6 +188,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\simulation\SimInfo.cpp" />
     <ClCompile Include="src\player\ai\nn\BrainProvider.cpp" />
     <ClCompile Include="src\player\ai\threshold\Threshold.cpp" />
     <ClCompile Include="src\simulation\env\CloseIndexesProvider.cpp" />
@@ -287,7 +288,7 @@
     <ClCompile Include="src\commands\creation\CreationCommandList.cpp" />
     <ClCompile Include="src\simulation\env\bucket\ComplexBucketData.cpp" />
     <ClCompile Include="src\simulation\env\bucket\MainGrid.cpp" />
-    <ClCompile Include="src\simulation\SimulationInfo.cpp" />
+    <ClCompile Include="src\simulation\ObjectsInfo.cpp" />
     <ClCompile Include="src\objects\unit\state\StateManager.cpp" />
     <ClCompile Include="src\hud\window\top\TopHudElement.cpp" />
     <ClCompile Include="src\hud\window\top\TopPanel.cpp" />
@@ -309,6 +310,7 @@
     <ClCompile Include="src\player\ai\threshold\ThresholdProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SimInfo.h" />
     <ClInclude Include="src\player\ai\AiActionType.h" />
     <ClInclude Include="src\player\ai\nn\BrainProvider.h" />
     <ClInclude Include="src\player\ai\threshold\Threshold.h" />
@@ -494,7 +496,7 @@
     <ClInclude Include="src\simulation\env\ContentInfo.h" />
     <ClInclude Include="src\simulation\formation\FormationState.h" />
     <ClInclude Include="src\simulation\formation\FormationType.h" />
-    <ClInclude Include="src\simulation\SimulationInfo.h" />
+    <ClInclude Include="src\simulation\ObjectsInfo.h" />
     <ClInclude Include="src\objects\unit\state\State.h" />
     <ClInclude Include="src\objects\unit\state\StateManager.h" />
     <ClInclude Include="src\objects\unit\state\StopState.h" />

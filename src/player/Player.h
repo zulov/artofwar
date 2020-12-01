@@ -30,7 +30,7 @@ public:
 	Urho3D::String& getName() { return name; }
 
 	void updateResource() const;
-	void updatePossession(SimulationInfo * simInfo);
+	void updatePossession(ObjectsInfo * simInfo);
 	void add(Unit* unit);
 	void add(Building* building);
 	void aiAction();

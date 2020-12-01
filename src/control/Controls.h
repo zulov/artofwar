@@ -18,7 +18,7 @@ namespace Urho3D {
 enum class BuildingActionType : char;
 enum class ResourceActionType : char;
 class HudData;
-class SimulationInfo;
+class ObjectsInfo;
 class Physical;
 class SelectedInfo;
 class UnitOrder;
@@ -47,7 +47,7 @@ public:
 	void activate();
 	void unitOrder(short id);
 
-	void cleanAndUpdate(SimulationInfo* simulationInfo);
+	void cleanAndUpdate(ObjectsInfo* simulationInfo);
 
 	void updateSelection() const;
 	void updateArrow() const;
@@ -68,7 +68,7 @@ private:
 	void actionUnit(short id, const ActionParameter& parameter);
 
 	void refreshSelected();
-	bool conditionToClean(SimulationInfo* simulationInfo) const;
+	bool conditionToClean(ObjectsInfo* simulationInfo) const;
 
 	bool clickDown(MouseButton& var) const;
 	void createBuilding(Urho3D::Vector2 pos) const;

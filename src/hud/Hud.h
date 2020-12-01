@@ -18,7 +18,7 @@ class ScorePanel;
 class SelectedHudPanel;
 class SelectedInfo;
 class CameraManager;
-class SimulationInfo;
+class ObjectsInfo;
 class MiniMapPanel;
 class TopPanel;
 class HudData;
@@ -40,7 +40,7 @@ URHO3D_OBJECT(Hud, Object)
 	void clear();
 
 	void update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
-	            SimulationInfo* simulationInfo) const;
+	            ObjectsInfo* simulationInfo) const;
 	void createMiniMap() const;
 
 	void updateSelected(SelectedInfo* selectedInfo) const;

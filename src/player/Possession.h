@@ -6,7 +6,7 @@
 
 
 class Player;
-class SimulationInfo;
+class ObjectsInfo;
 class Unit;
 class Building;
 class Resources;
@@ -19,7 +19,7 @@ public:
 
 	void add(Building* building);
 	void add(Unit* unit);
-	void updateAndClean(Resources& resources, SimulationInfo* simInfo);
+	void updateAndClean(Resources& resources, ObjectsInfo* simInfo);
 	int getScore() const;
 	int getUnitsNumber() const;
 	int getBuildingsNumber() const;
