@@ -7,11 +7,10 @@
 struct ActionParameter;
 class Unit;
 
-class State
-{
+class State {
 public:
 	State(std::initializer_list<UnitState> active);
-	virtual ~State();
+	virtual ~State() = default;
 	virtual bool canStart(Unit* unit, const ActionParameter& parameter);
 
 	virtual void onStart(Unit* unit, const ActionParameter& parameter) =0;

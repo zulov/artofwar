@@ -45,10 +45,10 @@ void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const
 	updateResource(resourceFactory.create(id, center, _bucketCords, level));
 }
 
-void SimulationObjectManager::findDead() {
-	findDeadUnits();
-	findDeadBuildings();
-	findDeadResources();
+void SimulationObjectManager::findToDispose() {
+	findToDisposeUnits();
+	findToDisposeBuildings();
+	findToDisposeResources();
 }
 
 void SimulationObjectManager::load(dbload_unit* unit) {
@@ -77,7 +77,7 @@ void SimulationObjectManager::updateUnits(std::vector<Unit*>& temp) {
 		for (auto value : temp) {
 			Game::getPlayersMan()->getPlayer(value->getPlayer())->add(value);
 		}
-		Game::getEnvironment()->updateNew(temp);
+		Game::getEnvironment()->addNew(temp);
 		simulationInfo.setAmountUnitChanged();
 	}
 }
@@ -86,7 +86,7 @@ void SimulationObjectManager::updateBuilding(Building* building) {
 	buildings->push_back(building);
 
 	Game::getPlayersMan()->getPlayer(building->getPlayer())->add(building);
-	Game::getEnvironment()->update(building);
+	Game::getEnvironment()->addNew(building);
 	simulationInfo.setAmountBuildingChanged();
 
 	Game::getEnvironment()->updateAll(buildings);
@@ -94,11 +94,11 @@ void SimulationObjectManager::updateBuilding(Building* building) {
 
 void SimulationObjectManager::updateResource(ResourceEntity* resource) {
 	resources->push_back(resource);
-	Game::getEnvironment()->update(resource);
+	Game::getEnvironment()->addNew(resource);
 	simulationInfo.setAmountResourceChanged();
 }
 
-void SimulationObjectManager::findDeadUnits() {
+void SimulationObjectManager::findToDisposeUnits() {
 	units->erase(
 		std::remove_if(
 			units->begin(), units->end(),
@@ -117,7 +117,7 @@ void SimulationObjectManager::findDeadUnits() {
 	}
 }
 
-void SimulationObjectManager::findDeadBuildings() {
+void SimulationObjectManager::findToDisposeBuildings() {
 	buildings->erase(
 		std::remove_if(
 			buildings->begin(), buildings->end(),
@@ -135,7 +135,7 @@ void SimulationObjectManager::findDeadBuildings() {
 	}
 }
 
-void SimulationObjectManager::findDeadResources() {
+void SimulationObjectManager::findToDisposeResources() {
 	resources->erase(
 		std::remove_if(
 			resources->begin(), resources->end(),
@@ -160,6 +160,9 @@ void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
 }
 
 void SimulationObjectManager::dispose() {
+	Game::getEnvironment()->removeFromGrids(unitsToDispose);
+	Game::getEnvironment()->removeFromGrids(buildingsToDispose, resourcesToDispose);
+	
 	clear_vector(unitsToDispose);
 	clear_vector(buildingsToDispose);
 	clear_vector(resourcesToDispose);

@@ -45,9 +45,14 @@ public:
 
 	void invalidateCaches();
 	void update(Unit* unit) const;
-	void updateNew(const std::vector<Unit*>& units);
-	void update(Building* building) const;
-	void update(ResourceEntity* resource) const;
+	void addNew(const std::vector<Unit*>& units);
+
+	void addNew(Building* building) const;
+	void addNew(ResourceEntity* resource) const;
+
+	void removeFromGrids(const std::vector<Unit*>& units) const;
+	void removeFromGrids(const std::vector<Building*>& buildingsToDispose,
+	                     const std::vector<ResourceEntity*>& resourceToDispose) const;
 
 	void updateAll(std::vector<Building*>* buildings) const;
 
@@ -89,8 +94,7 @@ public:
 	void updateCell(int index, char val, CellState cellState) const;
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinalInState(Unit* unit, UnitState state) const;
-	void removeFromGrids(const std::vector<Building*>& buildingsToDispose,
-	                     const std::vector<ResourceEntity*>& resourceToDispose) const;
+
 	int getRevertCloseIndex(int center, int gridIndex);
 
 	bool isInLocalArea(int getMainCell, int aimIndex) const;

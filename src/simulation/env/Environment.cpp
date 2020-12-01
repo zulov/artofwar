@@ -158,7 +158,7 @@ void Environment::update(Unit* unit) const {
 	teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
 }
 
-void Environment::updateNew(const std::vector<Unit*>& units) {
+void Environment::addNew(const std::vector<Unit*>& units) {
 	for (auto unit : units) {
 		mainGrid.updateNew(unit);
 		teamUnitGrid[unit->getTeam()].updateNew(unit, unit->getTeam());
@@ -174,7 +174,12 @@ void Environment::invalidateCaches() {
 	}
 }
 
-void Environment::update(Building* building) const {
+void Environment::updateAll(std::vector<Building*>* const buildings) const {
+	//TODO performance, zmianiac tylko to co sie zmienilo
+	influenceManager.update(buildings); //TODO bug updej tylko jak sie doda a nie uwzglednia usuwania
+}
+
+void Environment::addNew(Building* building) const {
 	mainGrid.addStatic(building);
 	buildingGrid.updateNew(building);
 	for (auto cell : building->getSurroundCells()) {
@@ -188,12 +193,7 @@ void Environment::update(Building* building) const {
 	mainGrid.addDeploy(building);
 }
 
-void Environment::updateAll(std::vector<Building*>* const buildings) const {
-	//TODO performance, zmianiac tylko to co sie zmienilo
-	influenceManager.update(buildings); //TODO bug updej tylko jak sie doda a nie uwzglednia usuwania
-}
-
-void Environment::update(ResourceEntity* resource) const {
+void Environment::addNew(ResourceEntity* resource) const {
 	mainGrid.addStatic(resource);
 	resourceGrid.updateNew(resource);
 }
@@ -292,6 +292,13 @@ char Environment::getNumberInState(int index, UnitState state) const {
 
 char Environment::getOrdinalInState(Unit* unit, UnitState state) const {
 	return mainGrid.getOrdinalInState(unit, state);
+}
+
+void Environment::removeFromGrids(const std::vector<Unit*>& units) const {
+	for (auto unit : units) {
+		mainGrid.remove(unit);
+		teamUnitGrid[unit->getTeam()].remove(unit, unit->getTeam());
+	}
 }
 
 void Environment::removeFromGrids(const std::vector<Building*>& buildingsToDispose,

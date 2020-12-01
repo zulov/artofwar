@@ -24,7 +24,7 @@ public:
 	void addBuilding(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level);
 	void addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level);
 
-	void findDead();
+	void findToDispose();
 	void updateInfo(SimulationInfo* simulationInfo);
 	void dispose();
 
@@ -41,9 +41,9 @@ private:
 	void updateBuilding(Building* building);
 	void updateResource(ResourceEntity* resource);
 	
-	void findDeadUnits();
-	void findDeadBuildings();
-	void findDeadResources();
+	void findToDisposeUnits();
+	void findToDisposeBuildings();
+	void findToDisposeResources();
 
 	UnitFactory unitFactory;
 	BuildingFactory buildingFactory;
