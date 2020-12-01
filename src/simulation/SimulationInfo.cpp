@@ -1,10 +1,8 @@
 #include "SimulationInfo.h"
-#include "objects/ObjectEnums.h"
 
 SimulationInfo::SimulationInfo() {
 	reset();
 }
-
 
 void SimulationInfo::reset() {
 	unitDied = false;
@@ -51,8 +49,4 @@ void SimulationInfo::set(SimulationInfo& simulationInfo) {
 	amountBuildingChanged = simulationInfo.amountBuildingChanged;
 	resourceDied = simulationInfo.resourceDied;
 	amountResourceChanged = simulationInfo.amountResourceChanged;
-}
-
-void SimulationInfo::setCurrentFrame(unsigned char currentFrameNumber) {
-	this->currentFrameNumber = currentFrameNumber;
 }

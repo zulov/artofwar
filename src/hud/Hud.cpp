@@ -156,7 +156,7 @@ void Hud::createConsole(Urho3D::Engine* engine) const {
 
 void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
                  SimulationInfo* simulationInfo) const {
-	updateSelected(selectedInfo, simulationInfo->getCurrentFrame());
+	updateSelected(selectedInfo);
 
 	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
 	                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
@@ -187,9 +187,9 @@ void Hud::updateStateVisibilty(GameState state) {
 	}
 }
 
-void Hud::updateSelected(SelectedInfo* selectedInfo, int currentFrame) const {
+void Hud::updateSelected(SelectedInfo* selectedInfo) const {
 	if (selectedInfo->isSthSelected() || selectedInfo->hasChanged()) {
-		if (selectedInfo->hasChanged() || currentFrame % 10 == 0) {
+		if (selectedInfo->hasChanged()) {
 			selectedHudPanel->update(selectedInfo);
 			menuPanel->updateSelected(selectedInfo);
 			switch (selectedInfo->getSelectedType()) {
@@ -217,9 +217,9 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, int currentFrame) const {
 		}
 	} else {
 
-		if (currentFrame % 10 == 0) {
+		//if (currentFrame % 10 == 0) {
 			queuePanel->show(Game::getPlayersMan()->getActivePlayer()->getQueue());
-		}
+		//}
 
 		selectedHudPanel->clearSelected();
 		menuPanel->clearSelected();

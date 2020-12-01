@@ -25,11 +25,7 @@ public:
 	void setUnitDied();
 	void setBuildingDied();
 	void setResourceDied();
-
-	void setCurrentFrame(unsigned char currentFrameNumber);
-	int getCurrentFrame() const { return currentFrameNumber; }
 private:
-
 
 	bool unitDied;
 	bool amountUnitChanged;
@@ -39,7 +35,5 @@ private:
 
 	bool resourceDied;
 	bool amountResourceChanged;
-
-	unsigned char currentFrameNumber;
 
 };

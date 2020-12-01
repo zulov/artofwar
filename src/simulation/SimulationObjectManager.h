@@ -1,6 +1,5 @@
 #pragma once
 
-#include "SimulationInfo.h"
 #include "objects/building/BuildingFactory.h"
 #include "objects/resource/ResourceFactory.h"
 #include "objects/unit/UnitFactory.h"
@@ -31,15 +30,11 @@ public:
 	void load(dbload_unit* unit);
 	void load(dbload_building* building);
 	void load(dbload_resource_entities* resource);
-	
-	//std::vector<Physical*>& getToDispose();
-	std::vector<Building*>& getBuildingsToDispose();
-	std::vector<ResourceEntity*>& getResourcesToDispose();
 
 private:
-	void updateUnits(std::vector<Unit*>& temp);
-	void updateBuilding(Building* building);
-	void updateResource(ResourceEntity* resource);
+	void addUnits(std::vector<Unit*>& temp);
+	void addBuilding(Building* building);
+	void addResource(ResourceEntity* resource);
 	
 	void findToDisposeUnits();
 	void findToDisposeBuildings();
@@ -49,7 +44,7 @@ private:
 	BuildingFactory buildingFactory;
 	ResourceFactory resourceFactory;
 
-	SimulationInfo simulationInfo;
+	SimulationInfo *simulationInfo;
 
 	std::vector<Unit*>* units;
 	std::vector<Building*>* buildings;

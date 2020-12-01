@@ -75,7 +75,7 @@ private:
 	std::vector<Building*>* buildings;
 	std::vector<ResourceEntity*>* resources;
 
-	SimulationInfo* simulationInfo;
+	//SimulationInfo* simulationInfo;
 	Environment* enviroment;
 	SimulationObjectManager* simObjectManager;
 

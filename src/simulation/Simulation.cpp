@@ -29,8 +29,6 @@ Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 	Game::setActionCenter(new ActionCenter(simObjectManager));
 	colorScheme = SimColorMode::BASIC;
 
-	simulationInfo = new SimulationInfo();
-
 	units = simObjectManager->getUnits();
 	buildings = simObjectManager->getBuildings();
 	resources = simObjectManager->getResources();
@@ -38,7 +36,6 @@ Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 }
 
 Simulation::~Simulation() {
-	delete simulationInfo;
 	delete simObjectManager;
 	delete Game::getActionCenter();
 	Game::setActionCenter(nullptr);
@@ -59,7 +56,7 @@ SimulationInfo* Simulation::update(float timeStep) {
 	while (accumulateTime >= TIME_PER_UPDATE) {
 		//simObjectManager->dispose();
 		//TODO bug a co jesli kilka razy sie wykona, moga byæ b³êdy jezeli cos umrze to poza petl¹ 
-		simulationInfo->setCurrentFrame(currentFrame);
+		//simulationInfo->setCurrentFrame(currentFrame);
 
 		Game::getActionCenter()->executeLists();
 
@@ -67,8 +64,6 @@ SimulationInfo* Simulation::update(float timeStep) {
 		aiPlayers();
 
 		Game::getActionCenter()->executeActions();
-
-		//enviroment->update(units);
 
 		calculateForces();
 		applyForce();

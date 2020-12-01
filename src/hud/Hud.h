@@ -43,7 +43,7 @@ URHO3D_OBJECT(Hud, Object)
 	            SimulationInfo* simulationInfo) const;
 	void createMiniMap() const;
 
-	void updateSelected(SelectedInfo* selectedInfo, int currentFrame) const;
+	void updateSelected(SelectedInfo* selectedInfo) const;
 
 	void hoverOnIcon(HudData* hudElement) const { menuPanel->setHoverInfo(hudElement); }
 	void hoverOffIcon() const { menuPanel->removeHoverInfo(); }

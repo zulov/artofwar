@@ -1,11 +1,12 @@
 #include "SimulationObjectManager.h"
 #include "Game.h"
+#include "SimulationInfo.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
-#include <simulation/env/Environment.h>
-#include "player/PlayersManager.h"
 #include "player/Player.h"
+#include "player/PlayersManager.h"
+#include "simulation/env/Environment.h"
 
 
 SimulationObjectManager::SimulationObjectManager() {
@@ -16,6 +17,7 @@ SimulationObjectManager::SimulationObjectManager() {
 	units->reserve(8192);
 	buildings->reserve(128);
 	resources->reserve(1024);
+	simulationInfo = new SimulationInfo();
 }
 
 
@@ -23,26 +25,26 @@ SimulationObjectManager::~SimulationObjectManager() {
 	clear_and_delete_vector(units);
 	clear_and_delete_vector(buildings);
 	clear_and_delete_vector(resources);
+	
+	delete simulationInfo;
 
-	clear_vector(unitsToDispose);
-	clear_vector(buildingsToDispose);
-	clear_vector(resourcesToDispose);
+	dispose();
 }
 
 void SimulationObjectManager::addUnits(unsigned int number, int id, Urho3D::Vector2& center,
                                        int player, int level) {
-	updateUnits(unitFactory.create(number, id, center, player, level));
+	addUnits(unitFactory.create(number, id, center, player, level));
 }
 
 void SimulationObjectManager::addBuilding(int id, Urho3D::Vector2& center, int player,
                                           const Urho3D::IntVector2& _bucketCords, int level) {
-	updateBuilding(buildingFactory.create(id, center, player, _bucketCords, level));
+	addBuilding(buildingFactory.create(id, center, player, _bucketCords, level));
 }
 
 
 void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords,
                                           int level) {
-	updateResource(resourceFactory.create(id, center, _bucketCords, level));
+	addResource(resourceFactory.create(id, center, _bucketCords, level));
 }
 
 void SimulationObjectManager::findToDispose() {
@@ -52,50 +54,42 @@ void SimulationObjectManager::findToDispose() {
 }
 
 void SimulationObjectManager::load(dbload_unit* unit) {
-	updateUnits(unitFactory.load(unit));
+	addUnits(unitFactory.load(unit));
 }
 
 void SimulationObjectManager::load(dbload_building* building) {
-	updateBuilding(buildingFactory.load(building));
+	addBuilding(buildingFactory.load(building));
 }
 
 void SimulationObjectManager::load(dbload_resource_entities* resource) {
-	updateResource(resourceFactory.load(resource));
+	addResource(resourceFactory.load(resource));
 }
 
-std::vector<Building*>& SimulationObjectManager::getBuildingsToDispose() {
-	return buildingsToDispose;
-}
-
-std::vector<ResourceEntity*>& SimulationObjectManager::getResourcesToDispose() {
-	return resourcesToDispose;
-}
-
-void SimulationObjectManager::updateUnits(std::vector<Unit*>& temp) {
+void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) {
 	if (!temp.empty()) {
 		units->insert(units->end(), temp.begin(), temp.end());
 		for (auto value : temp) {
 			Game::getPlayersMan()->getPlayer(value->getPlayer())->add(value);
 		}
 		Game::getEnvironment()->addNew(temp);
-		simulationInfo.setAmountUnitChanged();
+		simulationInfo->setAmountUnitChanged();
 	}
 }
 
-void SimulationObjectManager::updateBuilding(Building* building) {
+void SimulationObjectManager::addBuilding(Building* building) {
 	buildings->push_back(building);
 
 	Game::getPlayersMan()->getPlayer(building->getPlayer())->add(building);
 	Game::getEnvironment()->addNew(building);
-	simulationInfo.setAmountBuildingChanged();
+	simulationInfo->setAmountBuildingChanged();
 
 	Game::getEnvironment()->updateAll(buildings);
 }
 
-void SimulationObjectManager::updateResource(ResourceEntity* resource) {
+void SimulationObjectManager::addResource(ResourceEntity* resource) {
 	resources->push_back(resource);
 	Game::getEnvironment()->addNew(resource);
-	simulationInfo.setAmountResourceChanged();
+	simulationInfo->setAmountResourceChanged();
 }
 
 void SimulationObjectManager::findToDisposeUnits() {
@@ -113,7 +107,7 @@ void SimulationObjectManager::findToDisposeUnits() {
 		), units->end());
 
 	if (!unitsToDispose.empty()) {
-		simulationInfo.setUnitDied();
+		simulationInfo->setUnitDied();
 	}
 }
 
@@ -131,7 +125,7 @@ void SimulationObjectManager::findToDisposeBuildings() {
 		), buildings->end());
 
 	if (!unitsToDispose.empty()) {
-		simulationInfo.setBuildingDied();
+		simulationInfo->setBuildingDied();
 	}
 }
 
@@ -149,23 +143,17 @@ void SimulationObjectManager::findToDisposeResources() {
 		), resources->end());
 
 	if (!unitsToDispose.empty()) {
-		simulationInfo.setResourceDied();
+		simulationInfo->setResourceDied();
 	}
-}
-
-void SimulationObjectManager::updateInfo(SimulationInfo* simulationInfo) {
-	auto a = this->simulationInfo;
-	simulationInfo->set(a);
-	this->simulationInfo.reset();
 }
 
 void SimulationObjectManager::dispose() {
 	Game::getEnvironment()->removeFromGrids(unitsToDispose);
 	Game::getEnvironment()->removeFromGrids(buildingsToDispose, resourcesToDispose);
-	
+
 	clear_vector(unitsToDispose);
 	clear_vector(buildingsToDispose);
 	clear_vector(resourcesToDispose);
 
-	simulationInfo.reset();
+	simulationInfo->reset();
 }
