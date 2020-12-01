@@ -46,15 +46,13 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
-		Urho3D::Vector2 diff(
-			unit->getPosition().x_ - neight->getPosition().x_,
-			unit->getPosition().z_ - neight->getPosition().z_
-		);
+		auto diff = dirTo(neight->getPosition(), unit->getPosition());
+
 		const float sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist
 			|| (isLeaderFor != -1 && isLeaderFor == neight->getFormation())) { continue; }
 
-		if (sqDistance == 0) {
+		if (sqDistance == 0.f) {
 			randSepForce(newForce);
 			return;
 		}
@@ -87,14 +85,15 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 	if (opt.has_value()) {
 		const float priority = Game::getFormationManager()->getPriority(unit);
 		if (priority > 0) {
-			auto pos = opt.value();
+			auto pos =opt.value();
+			const auto aimIndex = Game::getEnvironment()->getIndex(pos);
 			Urho3D::Vector2 force;
-			if (Game::getEnvironment()->isInLocalArea(unit->getMainCell(), pos)) {
-				force = dirTo(unit->getPosition(), opt.value());
+			if (Game::getEnvironment()->isInLocalArea(unit->getMainCell(), aimIndex)) {
+				force = dirTo(unit->getPosition(), pos);
 			} else {
-				const auto path = Game::getEnvironment()->findPath(unit->getPosition(), opt.value());
+				const auto path = Game::getEnvironment()->findPath(unit->getMainCell(), aimIndex);
 				if (path->size() == 1) {
-					force = dirTo(unit->getPosition(), opt.value());
+					force = dirTo(unit->getPosition(), pos);//TODO bug moze to nie powinno bvc mo¿liwe?
 				} else if (path->size() > 1) {
 					auto center = Game::getEnvironment()->getCenter(path->at(0));
 					force = dirTo(unit->getPosition(), center);

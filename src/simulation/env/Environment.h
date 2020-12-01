@@ -66,6 +66,7 @@ public:
 	                                                                const Urho3D::Vector2& pos) const;
 
 	std::vector<int>* findPath(int startIdx, Urho3D::Vector2& aim) const;
+	std::vector<int>* findPath(int startIdx, int endIdx) const;
 	std::vector<int>* findPath(Urho3D::Vector3& from, Urho3D::Vector2& aim) const;
 
 	void prepareGridToFind() const;
@@ -92,7 +93,7 @@ public:
 	                     const std::vector<ResourceEntity*>& resourceToDispose) const;
 	int getRevertCloseIndex(int center, int gridIndex);
 
-	bool isInLocalArea(int getMainCell, Urho3D::Vector2& pos) const;
+	bool isInLocalArea(int getMainCell, int aimIndex) const;
 	int closestPassableCell(int posIndex) const;
 
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);

@@ -68,7 +68,7 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 
 Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 	auto index = calculator->indexFromPosition(unit->getPosition());
-	assert(unit->getMainBucketIndex()==index);//TODO perf zamienic jezeli ok
+	assert(unit->getMainBucketIndex()==index); //TODO perf zamienic jezeli ok
 	auto& data = complexData[index];
 
 	Urho3D::Vector2 sum;
@@ -243,18 +243,17 @@ void MainGrid::drawAll() {
 	++counter;
 
 	delete image;
-
 }
 
 bool MainGrid::cellIsCollectable(int index) const {
 	return complexData[index].cellIsCollectable();
 }
 
-bool MainGrid::isInLocalArea(const int cell, Urho3D::Vector2& pos) const {
-	const auto index = calculator->indexFromPosition(pos);
-	if (cell == index) { return true; }
-	for (auto value : closeIndexes->get(index)) {
-		if (cell == index + value) {
+bool MainGrid::isInLocalArea(const int center, int indexOfAim) const {
+	if (center == indexOfAim) { return true; }
+	auto diff = indexOfAim - center; //center + value == indexOfAim
+	for (auto value : closeIndexes->get(indexOfAim)) {
+		if (diff == value) {
 			return true;
 		}
 	}
@@ -403,6 +402,10 @@ float MainGrid::cost(const int current, const int next) const {
 
 std::vector<int>* MainGrid::findPath(int startIdx, const Urho3D::Vector2& aim) const {
 	return pathConstructor->findPath(startIdx, aim);
+}
+
+std::vector<int>* MainGrid::findPath(int startIdx, int endIdx) const {
+	return pathConstructor->findPath(startIdx, endIdx);
 }
 
 std::vector<int>* MainGrid::findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) const {

@@ -21,6 +21,7 @@ public:
 	std::vector<int>* reconstruct_simplify_path(int start, int goal, const int came_from[]) const;
 	std::vector<int>* findPath(int startIdx, int endIdx, float min, float max);
 	std::vector<int>* findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim);
+	std::vector<int>* findPath(int startIdx, int endIdx);
 	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim);
 	float cost(int current, int next) const;
 	void refreshWayOut(std::vector<int>& toRefresh);

@@ -96,7 +96,6 @@ bool Unit::ifVisible(const Urho3D::Vector4& boundary) const {
 		&& (position.x_ < boundary.y_ || node->GetPosition().x_ < boundary.y_)
 		&& (boundary.z_ < position.z_ || boundary.z_ < node->GetPosition().z_)
 		&& (position.z_ < boundary.w_ || node->GetPosition().z_ < boundary.w_);
-
 }
 
 void Unit::setAcceleration(Urho3D::Vector2& _acceleration) {

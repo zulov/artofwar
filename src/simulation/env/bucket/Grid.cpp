@@ -102,6 +102,7 @@ void Grid::addAt(int index, Physical* entity) const {
 }
 
 const std::vector<Physical*>& Grid::getContentAt(int index) const {
+	//TODO bug jezeli jest skrajne to bierze z drugiego konca
 	if (calculator->isValidIndex(index)) {
 		return buckets[index].getContent();
 	}

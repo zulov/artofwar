@@ -111,22 +111,20 @@ std::vector<int>* PathFinder::findPath(const Urho3D::Vector3& from, const Urho3D
 	return findPath(calculator->indexFromPosition(from), aim);
 }
 
-std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim) {
-	int end = calculator->indexFromPosition(aim);
-
-	if (ifInCache(startIdx, end)) {
+std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
+	if (ifInCache(startIdx, endIdx)) {
 		return tempPath;
 	}
 
-	while (!complexData[end].isPassable()) {
-		if (complexData[end].allNeightOccupied()) {
-			end = complexData[end].getEscapeBucket();
+	while (!complexData[endIdx].isPassable()) {
+		if (complexData[endIdx].allNeightOccupied()) {
+			endIdx = complexData[endIdx].getEscapeBucket();
 		} else {
-			auto& closeTabIndx = closeIndexes->getTabIndexes(end);
+			auto& closeTabIndx = closeIndexes->getTabIndexes(endIdx);
 
 			for (auto i : closeTabIndx) {
-				if (complexData[end].ifNeightIsFree(i)) {
-					end = end + closeIndexes->getIndexAt(i); //TODO obliczyc lepszy, a nie pierwszy z brzegu
+				if (complexData[endIdx].ifNeightIsFree(i)) {
+					endIdx = endIdx + closeIndexes->getIndexAt(i); //TODO obliczyc lepszy, a nie pierwszy z brzegu
 					//TODO bug wyjscie pioza
 					break;
 				}
@@ -135,10 +133,14 @@ std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim)
 	}
 
 	lastStartIdx = startIdx;
-	lastEndIdx = end;
+	lastEndIdx = endIdx;
 
-	float min = cost(startIdx, end);
-	return findPath(startIdx, end, min, min * 2);
+	float min = cost(startIdx, endIdx);
+	return findPath(startIdx, endIdx, min, min * 2);
+}
+
+std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim) {
+	return findPath(startIdx, calculator->indexFromPosition(aim));
 }
 
 float PathFinder::cost(const int current, const int next) const {

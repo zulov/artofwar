@@ -59,7 +59,6 @@ unsigned short ResourceEntity::getMaxHp() const {
 	return dbResource->maxHp;
 }
 
-
 unsigned char ResourceEntity::getMaxCloseUsers() const {
 	return dbResource->maxUsers;
 }

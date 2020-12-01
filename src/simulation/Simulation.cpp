@@ -340,7 +340,7 @@ void Simulation::calculateForces() {
 			const auto neighbours = enviroment->getNeighboursWithCache(unit, unit->getMaxSeparationDistance());
 
 			force.separationUnits(newForce, unit, neighbours);
-			force.separationObstacle(newForce, unit); //TODO mo¿ê to 
+			force.separationObstacle(newForce, unit);
 			force.destination(newForce, unit);
 			force.formation(newForce, unit);
 			force.escapeFromInvalidPosition(newForce, unit);

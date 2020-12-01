@@ -87,9 +87,10 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	const float sqRadius = radius * radius;
 
 	neights->clear();
-	for (auto neight : *simpleNeght) {
-		addIfInRange(unit, center, sqRadius, neight);
-	}
+	auto pred = [sqRadius,unit](Physical* neight) {
+		return (unit != neight && sqDistAs2D(unit->getPosition(), neight->getPosition()) < sqRadius);
+	};
+	std::copy_if(simpleNeght->begin(), simpleNeght->end(), std::back_inserter(*neights), pred);
 
 	return neights;
 }
@@ -392,8 +393,8 @@ Urho3D::Vector2 Environment::getCenterOf(CenterType id, char player) {
 	return influenceManager.getCenterOf(id, player);
 }
 
-bool Environment::isInLocalArea(int getMainCell, Urho3D::Vector2& pos) const {
-	return mainGrid.isInLocalArea(getMainCell, pos);
+bool Environment::isInLocalArea(int getMainCell, int aimIndex) const {
+	return mainGrid.isInLocalArea(getMainCell, aimIndex);
 }
 
 int Environment::closestPassableCell(int posIndex) const {
@@ -407,6 +408,10 @@ std::pair<Urho3D::IntVector2, Urho3D::Vector2> Environment::getValidPosition(
 
 std::vector<int>* Environment::findPath(int startIdx, Urho3D::Vector2& aim) const {
 	return mainGrid.findPath(startIdx, aim);
+}
+
+std::vector<int>* Environment::findPath(int startIdx, int endIdx) const {
+	return mainGrid.findPath(startIdx, endIdx);
 }
 
 std::vector<int>* Environment::findPath(Urho3D::Vector3& from, Urho3D::Vector2& aim) const {
