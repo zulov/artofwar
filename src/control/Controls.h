@@ -48,7 +48,7 @@ public:
 	void activate();
 	void unitOrder(short id);
 
-	void cleanAndUpdate(const ObjectsInfo* simulationInfo);
+	void cleanAndUpdate(const SimInfo* simulationInfo);
 
 	void updateSelection() const;
 	void updateArrow() const;

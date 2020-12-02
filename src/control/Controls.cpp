@@ -407,11 +407,11 @@ bool Controls::conditionToClean(const SimInfo* simulationInfo) const {
 	}
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::UNIT:
-		return simulationInfo->ifUnitDied();
+		return simulationInfo->getObjectsInfo()->ifUnitDied();
 	case ObjectType::BUILDING:
-		return simulationInfo->ifBuildingDied();
+		return simulationInfo->getObjectsInfo()->ifBuildingDied();
 	case ObjectType::RESOURCE:
-		return simulationInfo->ifResourceDied();
+		return simulationInfo->getObjectsInfo()->ifResourceDied();
 	}
 	return false;
 }
