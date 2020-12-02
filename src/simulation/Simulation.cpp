@@ -70,10 +70,10 @@ SimInfo* Simulation::update(float timeStep) {
 		Game::getActionCenter()->executeActions();
 
 		calculateForces();
-		applyForce();
+		applyForce();//zmiany stanu
 
-		moveUnitsAndCheck(TIME_PER_UPDATE);
-		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac
+		moveUnitsAndCheck(TIME_PER_UPDATE);//zmiany stanu
+		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac w tym zmiany stanu
 		updateQueues();
 		updateInfluenceMaps();
 
@@ -149,7 +149,7 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 0, Urho3D::Vector2(20, -250), 0);
+		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 0, Urho3D::Vector2(20, -250), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
 		Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 0, Urho3D::Vector2(10, 250), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER*10, 4, Urho3D::Vector2(-20, -200), 1);

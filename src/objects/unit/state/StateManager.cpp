@@ -1,6 +1,5 @@
 #include "StateManager.h"
 
-#include <magic_enum.hpp>
 #include <Urho3D\IO\Log.h>
 #include "AttackState.h"
 #include "ChargeState.h"
@@ -9,14 +8,10 @@
 #include "DefendState.h"
 #include "DisposeState.h"
 #include "FollowState.h"
-#include "Game.h"
 #include "GoState.h"
 #include "MoveState.h"
 #include "ShotState.h"
 #include "StopState.h"
-#include "UnitState.h"
-#include "../Unit.h"
-#include "../../static/Static.h"
 #include "database/DatabaseCache.h"
 #include "objects/static/StaticStateUtils.h"
 #include "objects/unit/order/enums/UnitAction.h"
@@ -25,36 +20,27 @@
 StateManager* StateManager::instance = nullptr;
 
 StateManager::StateManager() {
-	states[static_cast<char>(UnitState::GO_TO)] = new GoState();
-	states[static_cast<char>(UnitState::STOP)] = new StopState();
-	states[static_cast<char>(UnitState::CHARGE)] = new ChargeState();
-	states[static_cast<char>(UnitState::ATTACK)] = new AttackState();
-	states[static_cast<char>(UnitState::DEFEND)] = new DefendState();
-	states[static_cast<char>(UnitState::FOLLOW)] = new FollowState();
-	states[static_cast<char>(UnitState::COLLECT)] = new CollectState();
-	states[static_cast<char>(UnitState::MOVE)] = new MoveState();
-	states[static_cast<char>(UnitState::SHOT)] = new ShotState();
-	states[static_cast<char>(UnitState::DEAD)] = new DeadState();
-	states[static_cast<char>(UnitState::DISPOSE)] = new DisposeState();
+	states[cast(UnitState::GO_TO)] = new GoState();
+	states[cast(UnitState::STOP)] = new StopState();
+	states[cast(UnitState::CHARGE)] = new ChargeState();
+	states[cast(UnitState::ATTACK)] = new AttackState();
+	states[cast(UnitState::DEFEND)] = new DefendState();
+	states[cast(UnitState::FOLLOW)] = new FollowState();
+	states[cast(UnitState::COLLECT)] = new CollectState();
+	states[cast(UnitState::MOVE)] = new MoveState();
+	states[cast(UnitState::SHOT)] = new ShotState();
+	states[cast(UnitState::DEAD)] = new DeadState();
+	states[cast(UnitState::DISPOSE)] = new DisposeState();
+	//TODO improvment uzyc cancollect itp
 	std::vector<char> orderToState[magic_enum::enum_count<UnitAction>()];
-	orderToState[static_cast<char>(UnitAction::GO)] =
-	{
-		static_cast<char>(UnitState::GO_TO),
-		static_cast<char>(UnitState::MOVE)
-	};
-	orderToState[static_cast<char>(UnitAction::ATTACK)] = {
-		static_cast<char>(UnitState::ATTACK),
-		static_cast<char>(UnitState::SHOT)
-	};
-	orderToState[static_cast<char>(UnitAction::DEAD)] = {
-		static_cast<char>(UnitState::DEAD),
-		static_cast<char>(UnitState::DISPOSE)
-	};
-	orderToState[static_cast<char>(UnitAction::STOP)] = {static_cast<char>(UnitState::STOP)};
-	orderToState[static_cast<char>(UnitAction::CHARGE)] = {static_cast<char>(UnitState::CHARGE)};
-	orderToState[static_cast<char>(UnitAction::DEFEND)] = {static_cast<char>(UnitState::DEFEND)};
-	orderToState[static_cast<char>(UnitAction::FOLLOW)] = {static_cast<char>(UnitState::FOLLOW)};
-	orderToState[static_cast<char>(UnitAction::COLLECT)] = {static_cast<char>(UnitState::COLLECT)};
+	orderToState[cast(UnitAction::GO)] = {cast(UnitState::GO_TO), cast(UnitState::MOVE)};
+	orderToState[cast(UnitAction::ATTACK)] = {cast(UnitState::ATTACK), cast(UnitState::SHOT)};
+	orderToState[cast(UnitAction::DEAD)] = {cast(UnitState::DEAD), cast(UnitState::DISPOSE)};
+	orderToState[cast(UnitAction::STOP)] = {cast(UnitState::STOP)};
+	orderToState[cast(UnitAction::CHARGE)] = {cast(UnitState::CHARGE)};
+	orderToState[cast(UnitAction::DEFEND)] = {cast(UnitState::DEFEND)};
+	orderToState[cast(UnitAction::FOLLOW)] = {cast(UnitState::FOLLOW)};
+	orderToState[cast(UnitAction::COLLECT)] = {cast(UnitState::COLLECT)};
 
 	for (auto unit : Game::getDatabase()->getUnits()) {
 		if (unit) {
@@ -66,19 +52,19 @@ StateManager::StateManager() {
 					unit->possibleStates[state] = true;
 				}
 			}
-			unit->possibleStates[static_cast<char>(UnitState::DEAD)] = true; //Always can die
-			unit->possibleStates[static_cast<char>(UnitState::DISPOSE)] = true; //Always can die
+			unit->possibleStates[cast(UnitState::DEAD)] = true; //Always can die
+			unit->possibleStates[cast(UnitState::DISPOSE)] = true; //Always can die
 		}
 	}
 }
 
 
 StateManager::~StateManager() {
-	clear_array(states,magic_enum::enum_count<UnitState>());
+	clear_array(states, magic_enum::enum_count<UnitState>());
 }
 
 bool StateManager::validateState(int id, UnitState stateTo) {
-	return Game::getDatabase()->getUnit(id)->possibleStates[static_cast<char>(stateTo)];
+	return Game::getDatabase()->getUnit(id)->possibleStates[cast(stateTo)];
 }
 
 bool StateManager::changeState(Unit* unit, UnitState stateTo) {
@@ -86,13 +72,13 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo) {
 }
 
 bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter) {
-	State* stateFrom = instance->states[static_cast<int>(unit->getState())];
+	State* stateFrom = instance->states[cast(unit->getState())];
 	if (stateFrom->validateTransition(stateTo)
 		&& validateState(unit->getId(), stateTo)
-		&& instance->states[static_cast<int>(stateTo)]->canStart(unit, actionParameter)) {
+		&& instance->states[cast(stateTo)]->canStart(unit, actionParameter)) {
 		stateFrom->onEnd(unit);
 		unit->setState(stateTo);
-		instance->states[static_cast<int>(stateTo)]->onStart(unit, actionParameter);
+		instance->states[cast(stateTo)]->onStart(unit, actionParameter);
 		return true;
 	}
 	Game::getLog()->Write(0, "fail to change state from " +
@@ -100,7 +86,7 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 	                      Urho3D::String(magic_enum::enum_name(stateTo).data()));
 
 	unit->setState(UnitState::MOVE);
-	instance->states[static_cast<int>(UnitState::MOVE)]->onStart(unit, actionParameter);
+	instance->states[cast(UnitState::MOVE)]->onStart(unit, actionParameter);
 
 	return false;
 }
@@ -110,7 +96,7 @@ bool StateManager::checkChangeState(Unit* unit, UnitState stateTo) {
 }
 
 State* StateManager::getState(Unit* unit) {
-	return instance->states[static_cast<int>(unit->getState())];
+	return instance->states[cast(unit->getState())];
 }
 
 void StateManager::execute(Unit* unit, float timeStamp) {
