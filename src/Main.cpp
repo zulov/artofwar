@@ -29,6 +29,7 @@
 #include "objects/unit/ActionParameter.h"
 #include "player/PlayersManager.h"
 #include "scene/LevelBuilder.h"
+#include "simulation/SimInfo.h"
 #include "simulation/Simulation.h"
 #include "simulation/env/Environment.h"
 #include "simulation/formation/FormationManager.h"
@@ -130,12 +131,12 @@ void Main::running(const double timeStep) {
 	Game::addTime(timeStep);
 	benchmark.add(1.0f / timeStep);
 
-	ObjectsInfo* simulationInfo = simulation->update(timeStep);
+	SimInfo* simInfo = simulation->update(timeStep);
 	debugManager.draw();
 
-	SelectedInfo* selectedInfo = control(timeStep, simulationInfo);
+	SelectedInfo* selectedInfo = control(timeStep, simInfo);
 
-	hud->update(benchmark, Game::getCameraManager(), selectedInfo, simulationInfo);
+	hud->update(benchmark, Game::getCameraManager(), selectedInfo, simInfo);
 }
 
 void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
@@ -489,7 +490,7 @@ void Main::disposeScene() {
 	newGameProgress.reset(newGamesStages);
 }
 
-SelectedInfo* Main::control(const float timeStep, ObjectsInfo* simulationInfo) {
+SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 	const IntVector2 cursorPos = Game::getUI()->GetCursorPosition();
 	UIElement* element = Game::getUI()->GetElementAt(cursorPos, false);
 

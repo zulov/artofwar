@@ -22,6 +22,8 @@
 #include "simulation/ObjectsInfo.h"
 #include "simulation/env/Environment.h"
 #include "objects/unit/ActionParameter.h"
+#include "simulation/FrameInfo.h"
+#include "simulation/SimInfo.h"
 
 Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
 	selected.reserve(5000);
@@ -399,7 +401,10 @@ void Controls::refreshSelected() {
 	//TODO bug billboard beda zajete
 }
 
-bool Controls::conditionToClean(ObjectsInfo* simulationInfo) const {
+bool Controls::conditionToClean(const SimInfo* simulationInfo) const {
+	if (!simulationInfo->getFrameInfo()->isRealFrame()) {
+		return false;
+	}
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::UNIT:
 		return simulationInfo->ifUnitDied();
@@ -411,7 +416,7 @@ bool Controls::conditionToClean(ObjectsInfo* simulationInfo) const {
 	return false;
 }
 
-void Controls::cleanAndUpdate(ObjectsInfo* simulationInfo) {
+void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 	if (conditionToClean(simulationInfo)) {
 		refreshSelected();
 	}

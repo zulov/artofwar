@@ -94,7 +94,7 @@ void Possession::add(Unit* unit) {
 	}
 }
 
-void Possession::updateAndClean(Resources& resources, ObjectsInfo* simInfo) {
+void Possession::updateAndClean(Resources& resources, const ObjectsInfo* simInfo) {
 	cleanDead(buildings, simInfo->ifBuildingDied());
 	cleanDead(units, simInfo->ifUnitDied());
 	cleanDead(workers, simInfo->ifUnitDied());

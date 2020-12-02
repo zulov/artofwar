@@ -5,8 +5,9 @@
 #include "window/menu/MenuPanel.h"
 #include "window/selected/SelectedHudPanel.h"
 
-namespace Urho3D
-{
+class SimInfo;
+
+namespace Urho3D {
 	class Engine;
 	class XMLFile;
 	class Button;
@@ -29,8 +30,7 @@ class LoadingPanel;
 struct db_graph_settings;
 struct db_resolution;
 
-class Hud : public Urho3D::Object
-{
+class Hud : public Urho3D::Object {
 public:
 
 URHO3D_OBJECT(Hud, Object)
@@ -40,10 +40,10 @@ URHO3D_OBJECT(Hud, Object)
 	void clear();
 
 	void update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
-	            ObjectsInfo* simulationInfo) const;
+	            SimInfo* simInfo) const;
 	void createMiniMap() const;
 
-	void updateSelected(SelectedInfo* selectedInfo) const;
+	void updateSelected(SelectedInfo* selectedInfo, SimInfo* simInfo) const;
 
 	void hoverOnIcon(HudData* hudElement) const { menuPanel->setHoverInfo(hudElement); }
 	void hoverOffIcon() const { menuPanel->removeHoverInfo(); }
@@ -61,8 +61,7 @@ URHO3D_OBJECT(Hud, Object)
 	void prepareUrho(Urho3D::Engine* engine) const;
 	void subscribeToUIEvents();
 
-	std::vector<Urho3D::Button*> getButtonsSelectedToSubscribe() const
-	{
+	std::vector<Urho3D::Button*> getButtonsSelectedToSubscribe() const {
 		return selectedHudPanel->getButtonsSelectedToSubscribe();
 	}
 

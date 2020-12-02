@@ -24,7 +24,7 @@ public:
 	std::vector<Player*>& getTeam(short i);
 	void changeActive(short i);
 	void save(SceneSaver& saver);
-	void update(ObjectsInfo* simInfo);
+	void update(const ObjectsInfo* simInfo);
 	char getActivePlayerID() const;
 	char getEnemyFor(char player) const;
 	static std::string getColumns();

@@ -23,6 +23,7 @@
 #include "simulation/formation/FormationManager.h"
 #include "stats/Stats.h"
 #include "PerFrameAction.h"
+#include "SimInfo.h"
 
 Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 	simObjectManager = new SimulationObjectManager();
@@ -32,11 +33,13 @@ Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 	units = simObjectManager->getUnits();
 	buildings = simObjectManager->getBuildings();
 	resources = simObjectManager->getResources();
+	simInfo = new SimInfo();
 	DebugLineRepo::init(DebugLineType::UNIT_LINES);
 }
 
 Simulation::~Simulation() {
 	delete simObjectManager;
+	delete simInfo;
 	delete Game::getActionCenter();
 	Game::setActionCenter(nullptr);
 }
@@ -51,12 +54,13 @@ void Simulation::updateInfluenceMaps() const {
 	enviroment->updateInfluence3();
 }
 
-ObjectsInfo* Simulation::update(float timeStep) {
+SimInfo* Simulation::update(float timeStep) {
 	accumulateTime += updateTime(timeStep);
+	simInfo->setIsRealFrame(false);
 	while (accumulateTime >= TIME_PER_UPDATE) {
 		//simObjectManager->dispose();
 		//TODO bug a co jesli kilka razy sie wykona, moga byæ b³êdy jezeli cos umrze to poza petl¹ 
-		simulationInfo->setCurrentFrame(currentFrame);
+		simInfo->setCurrentFrame(currentFrame);
 
 		Game::getActionCenter()->executeLists();
 
@@ -75,9 +79,9 @@ ObjectsInfo* Simulation::update(float timeStep) {
 
 		simObjectManager->dispose();
 		simObjectManager->findToDispose();
-		simObjectManager->updateInfo(simulationInfo);
+		simInfo->setObjectsInfo(simObjectManager->getInfo());
 
-		Game::getPlayersMan()->update(simulationInfo);
+		Game::getPlayersMan()->update(simInfo->getObjectsInfo());
 		Game::getFormationManager()->update();
 		Game::getStats()->save(PER_FRAME_ACTION.get(PerFrameAction::STAT_SAVE, currentFrame, secondsElapsed));
 
@@ -86,7 +90,7 @@ ObjectsInfo* Simulation::update(float timeStep) {
 		countFrame();
 	}
 
-	return simulationInfo;
+	return simInfo;
 }
 
 void Simulation::tryToAttack(Unit* unit, float dist, UnitAction order,

@@ -24,18 +24,19 @@ public:
 	void addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level);
 
 	void findToDispose();
-	void updateInfo(ObjectsInfo* simulationInfo);
+
 	void dispose();
 
 	void load(dbload_unit* unit);
 	void load(dbload_building* building);
 	void load(dbload_resource_entities* resource);
+	ObjectsInfo* getInfo() const { return simulationInfo; }
 
 private:
 	void addUnits(std::vector<Unit*>& temp);
 	void addBuilding(Building* building);
 	void addResource(ResourceEntity* resource);
-	
+
 	void findToDisposeUnits();
 	void findToDisposeBuildings();
 	void findToDisposeResources();
@@ -44,7 +45,7 @@ private:
 	BuildingFactory buildingFactory;
 	ResourceFactory resourceFactory;
 
-	ObjectsInfo *simulationInfo;
+	ObjectsInfo* simulationInfo;
 
 	std::vector<Unit*>* units;
 	std::vector<Building*>* buildings;

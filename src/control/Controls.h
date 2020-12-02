@@ -5,6 +5,7 @@
 #include "objects/unit/order/enums/UnitAction.h"
 #include "BillboardSetProvider.h"
 
+class SimInfo;
 constexpr char MAX_DEPLOY_MARK_NUMBER = 5;
 
 namespace Urho3D {
@@ -47,7 +48,7 @@ public:
 	void activate();
 	void unitOrder(short id);
 
-	void cleanAndUpdate(ObjectsInfo* simulationInfo);
+	void cleanAndUpdate(const ObjectsInfo* simulationInfo);
 
 	void updateSelection() const;
 	void updateArrow() const;
@@ -68,7 +69,7 @@ private:
 	void actionUnit(short id, const ActionParameter& parameter);
 
 	void refreshSelected();
-	bool conditionToClean(ObjectsInfo* simulationInfo) const;
+	bool conditionToClean(const SimInfo* simulationInfo) const;
 
 	bool clickDown(MouseButton& var) const;
 	void createBuilding(Urho3D::Vector2 pos) const;

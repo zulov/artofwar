@@ -80,7 +80,7 @@ void Player::updateResource() const {
 	resources.resetStats();
 }
 
-void Player::updatePossession(ObjectsInfo* simInfo) {
+void Player::updatePossession(const ObjectsInfo* simInfo) {
 	possession.updateAndClean(resources, simInfo);
 }
 

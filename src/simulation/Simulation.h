@@ -22,6 +22,7 @@ class SimulationObjectManager;
 class UpgradeCommandList;
 class CommandList;
 class AiManager;
+class SimInfo;
 
 namespace Urho3D {
 	class Node;
@@ -34,7 +35,7 @@ public:
 	~Simulation();
 	void updateInfluenceMaps() const;
 
-	ObjectsInfo* update(float timeStep);
+	SimInfo* update(float timeStep);
 	void initScene(SceneLoader& loader) const;
 	void initScene(NewGameForm* form) const;
 
@@ -75,7 +76,7 @@ private:
 	std::vector<Building*>* buildings;
 	std::vector<ResourceEntity*>* resources;
 
-	//SimulationInfo* simulationInfo;
+	SimInfo* simInfo;
 	Environment* enviroment;
 	SimulationObjectManager* simObjectManager;
 

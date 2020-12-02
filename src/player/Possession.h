@@ -19,7 +19,7 @@ public:
 
 	void add(Building* building);
 	void add(Unit* unit);
-	void updateAndClean(Resources& resources, ObjectsInfo* simInfo);
+	void updateAndClean(Resources& resources, const ObjectsInfo* simInfo);
 	int getScore() const;
 	int getUnitsNumber() const;
 	int getBuildingsNumber() const;
