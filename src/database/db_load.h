@@ -1,7 +1,9 @@
 #pragma once
 #include <cstdlib>
 #include <iosfwd>
-#include "db_strcut.h"
+
+#include "db_container.h"
+#include "db_other_struct.h"
 
 static unsigned fromHex(char** argv, int index) {
 	unsigned x;
@@ -106,15 +108,15 @@ int static loadOrders(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
-int static loadOrdersToUnit(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-	db_order* dbOrder = xyz->orders[atoi(argv[1])];
-
-	xyz->units[atoi(argv[0])]->orders.push_back(dbOrder);
-	xyz->units[atoi(argv[0])]->ordersIds.push_back(dbOrder->id);
-
-	return 0;
-}
+// int static loadOrdersToUnit(void* data, int argc, char** argv, char** azColName) {
+// 	const auto xyz = static_cast<db_container*>(data);
+// 	db_order* dbOrder = xyz->orders[atoi(argv[1])];
+//
+// 	xyz->units[atoi(argv[0])]->orders.push_back(dbOrder);
+// 	xyz->units[atoi(argv[0])]->ordersIds.push_back(dbOrder->id);
+//
+// 	return 0;
+// }
 
 int static loadMap(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);

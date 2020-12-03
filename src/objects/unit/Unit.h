@@ -153,6 +153,7 @@ private:
 	float maxSpeed;
 
 	UnitState state;
+	UnitState nextState;
 	bool atState = false;
 
 	short posInFormation = -1, formation = -1;

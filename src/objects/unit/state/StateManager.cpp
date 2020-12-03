@@ -42,29 +42,18 @@ StateManager::StateManager() {
 	orderToState[cast(UnitAction::FOLLOW)] = {cast(UnitState::FOLLOW)};
 	orderToState[cast(UnitAction::COLLECT)] = {cast(UnitState::COLLECT)};
 
-	for (auto unit : Game::getDatabase()->getUnits()) {
-		if (unit) {
-			auto orders = unit->orders;
-			//test //TTO cos zle
-			std::fill_n(unit->possibleStates, magic_enum::enum_count<UnitState>(), false);
-			for (auto order : orders) {
-				for (auto state : orderToState[order->id]) {
-					unit->possibleStates[state] = true;
-				}
-			}
-			unit->possibleStates[cast(UnitState::DEAD)] = true; //Always can die
-			unit->possibleStates[cast(UnitState::DISPOSE)] = true; //Always can die
-		}
-	}
-}
+	initStates({
+		UnitState::GO_TO, UnitState::MOVE, UnitState::FOLLOW, UnitState::STOP, UnitState::DEAD, UnitState::DISPOSE
+	});
 
+}
 
 StateManager::~StateManager() {
 	clear_array(states, magic_enum::enum_count<UnitState>());
 }
 
-bool StateManager::validateState(int id, UnitState stateTo) {
-	return Game::getDatabase()->getUnit(id)->possibleStates[cast(stateTo)];
+bool StateManager::validateState(Unit* unit, UnitState stateTo) {
+	return unit->getLevel()->possibleStates[cast(stateTo)];
 }
 
 bool StateManager::changeState(Unit* unit, UnitState stateTo) {
@@ -74,7 +63,7 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo) {
 bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter) {
 	State* stateFrom = instance->states[cast(unit->getState())];
 	if (stateFrom->validateTransition(stateTo)
-		&& validateState(unit->getId(), stateTo)
+		&& validateState(unit, stateTo)
 		&& instance->states[cast(stateTo)]->canStart(unit, actionParameter)) {
 		stateFrom->onEnd(unit);
 		unit->setState(stateTo);
@@ -127,4 +116,18 @@ void StateManager::init() {
 void StateManager::dispose() {
 	delete instance;
 	instance = nullptr;
+}
+
+void StateManager::initStates(std::initializer_list<UnitState> states) {
+	constexpr char SIZE = magic_enum::enum_count<UnitState>();
+	bool possibleStates[SIZE];
+	std::fill_n(possibleStates, SIZE, false);
+	for (auto state : states) {
+		possibleStates[cast(state)] = true;
+	}
+	for (auto level : Game::getDatabase()->getLevels()) {
+		if (level) {
+			std::copy(possibleStates, possibleStates + SIZE, level->possibleStates);
+		}
+	}
 }

@@ -11,7 +11,7 @@ enum class StaticState : char;
 
 class StateManager {
 public:
-	static bool validateState(int id, UnitState stateTo);
+	static bool validateState(Unit* unit, UnitState stateTo);
 	static bool changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter);
 	static bool changeState(Unit* unit, UnitState stateTo);
 	static bool checkChangeState(Unit* unit, UnitState stateTo);
@@ -23,6 +23,7 @@ public:
 	static void init();
 	static void dispose();
 private:
+	void initStates( std::initializer_list<UnitState> states);
 	StateManager();
 	~StateManager();
 	static State* getState(Unit* unit);

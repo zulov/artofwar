@@ -6,7 +6,6 @@
 #include <Urho3D/Resource/XMLFile.h>
 #include <Urho3D/Scene/Scene.h>
 #include "Game.h"
-#include "database/db_load.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"

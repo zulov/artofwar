@@ -7,6 +7,7 @@
 #include <Urho3D/UI/LineEdit.h>
 #include "NewGamePlayer.h"
 #include "database/DatabaseCache.h"
+#include "database/db_other_struct.h"
 #include "hud/UiUtils.h"
 #include "math/RandGen.h"
 

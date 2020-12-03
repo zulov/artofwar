@@ -1,9 +1,16 @@
 #pragma once
 
+#include <string>
 #include <vector>
-#include "db_strcut.h"
+#include "db_container.h"
 
 class sqlite3;
+struct db_unit;
+struct db_building;
+struct db_nation;
+struct db_resource;
+struct db_order;
+struct db_player_colors;
 
 class DatabaseCache {
 public:
@@ -38,14 +45,15 @@ public:
 
 	std::vector<db_player_colors*>& getPlayerColors() const { return dbContainer->playerColors; }
 	db_player_colors* getPlayerColor(int i) const { return dbContainer->playerColors[i]; }
-
+	
+	std::vector<db_unit_level*>& getLevels() const { return dbContainer->unitsLevels; }
 
 	int getResourceSize() const { return dbContainer->resources.size(); }
 
 	void executeSingleBasic(const std::string& name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* graphSettings);
 	void setSettings(int i, db_settings* settings);
-
+	
 private:
 	db_container* dbContainer;
 	sqlite3* database;

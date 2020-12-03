@@ -9,6 +9,7 @@
 #include "commands/action/GeneralActionType.h"
 #include "commands/action/ResourceActionCommand.h"
 #include "database/DatabaseCache.h"
+#include "database/db_strcut.h"
 #include "hud/HudData.h"
 #include "math/MathUtils.h"
 #include "objects/NodeUtils.h"
@@ -24,6 +25,7 @@
 #include "objects/unit/ActionParameter.h"
 #include "simulation/FrameInfo.h"
 #include "simulation/SimInfo.h"
+#include "utils/OtherUtils.h"
 
 Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
 	selected.reserve(5000);

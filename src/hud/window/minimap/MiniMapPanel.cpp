@@ -6,6 +6,7 @@
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/UI/Window.h>
 #include "camera/CameraManager.h"
+#include "database/db_other_struct.h"
 #include "hud/UiUtils.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"

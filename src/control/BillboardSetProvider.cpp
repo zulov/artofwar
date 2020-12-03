@@ -4,6 +4,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include "Game.h"
 #include "database/DatabaseCache.h"
+#include "database/db_other_struct.h"
 #include "objects/ObjectEnums.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"

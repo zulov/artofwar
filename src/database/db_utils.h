@@ -8,4 +8,3 @@ inline void ifError(int rc, char* error) {
 		sqlite3_free(error);
 	}
 }
-

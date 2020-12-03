@@ -2,8 +2,10 @@
 #include <magic_enum.hpp>
 #include <span>
 #include "StatsEnums.h"
-#include "database/db_strcut.h"
+#include "objects/Metrics.h"
 
+struct db_unit_metric;
+struct db_building_metric;
 struct db_basic_metric;
 
 class AiInputProvider {

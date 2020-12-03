@@ -8,6 +8,8 @@
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/UI/DropDownList.h>
 
+#include "database/db_other_struct.h"
+
 MainMenuNewGamePanel::
 MainMenuNewGamePanel(Urho3D::XMLFile* _style, const Urho3D::String& _title): MainMenuDetailsPanel(_style, _title) {
 	bodyStyle = "MainMenuNewGameMock";

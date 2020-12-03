@@ -9,6 +9,7 @@
 #include <Urho3D/Scene/Scene.h>
 #include "Game.h"
 #include "database/DatabaseCache.h"
+#include "database/db_other_struct.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "load/dbload_container.h"
 #include "load/SceneLoader.h"

@@ -4,6 +4,7 @@
 #include <Urho3D/UI/CheckBox.h>
 #include "SettingsForm.h"
 #include "database/DatabaseCache.h"
+#include "database/db_grah_structs.h"
 #include "hud/UiUtils.h"
 
 MainMenuSettingsPanel::

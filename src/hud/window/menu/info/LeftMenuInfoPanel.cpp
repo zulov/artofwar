@@ -3,6 +3,7 @@
 #include <Urho3D/UI/Window.h>
 #include "control/SelectedInfo.h"
 #include "control/SelectedInfoType.h"
+#include "database/db_other_struct.h"
 #include "hud/HudData.h"
 #include "hud/UiUtils.h"
 #include "objects/ActionType.h"
