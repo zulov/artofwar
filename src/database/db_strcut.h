@@ -4,7 +4,6 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
-//#include <optional>
 #include <Urho3D/Math/Vector2.h>
 
 #include "db_basic_struct.h"
@@ -193,6 +192,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 
 	db_unit_metric* dbUnitMetric = nullptr;
 	bool possibleStates[magic_enum::enum_count<UnitState>()];
+	
 
 	db_unit_level(short id, short level, short unit, char* name, float minDist, float maxSep, char* nodeName,
 	              float mass, short maxHp, float maxSpeed, float minSpeed, float upgradeSpeed, float collectSpeed,
@@ -238,8 +238,6 @@ struct db_unit : db_entity, db_with_name, db_with_cost {
 
 	std::vector<db_unit_level*> levels;
 
-	//std::vector<db_order*> orders;
-	std::vector<short> ordersIds;
 	std::vector<db_nation*> nations;
 
 

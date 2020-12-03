@@ -108,16 +108,6 @@ int static loadOrders(void* data, int argc, char** argv, char** azColName) {
 	return 0;
 }
 
-// int static loadOrdersToUnit(void* data, int argc, char** argv, char** azColName) {
-// 	const auto xyz = static_cast<db_container*>(data);
-// 	db_order* dbOrder = xyz->orders[atoi(argv[1])];
-//
-// 	xyz->units[atoi(argv[0])]->orders.push_back(dbOrder);
-// 	xyz->units[atoi(argv[0])]->ordersIds.push_back(dbOrder->id);
-//
-// 	return 0;
-// }
-
 int static loadMap(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 

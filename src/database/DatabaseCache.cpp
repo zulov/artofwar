@@ -58,7 +58,6 @@ void DatabaseCache::loadData(const std::string& name) {
 	execute("SELECT * from unit_cost", loadCostUnit);
 
 	execute("SELECT * from orders order by id desc", loadOrders);
-	//execute("SELECT * from order_to_unit order by 2", loadOrdersToUnit);//TODO make sure its sorted set_intersection
 
 	execute("SELECT * from player_color order by id desc", loadPlayerColors);
 

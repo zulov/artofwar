@@ -42,9 +42,15 @@ StateManager::StateManager() {
 	orderToState[cast(UnitAction::FOLLOW)] = {cast(UnitState::FOLLOW)};
 	orderToState[cast(UnitAction::COLLECT)] = {cast(UnitState::COLLECT)};
 
+
 	initStates({
 		UnitState::GO_TO, UnitState::MOVE, UnitState::FOLLOW, UnitState::STOP, UnitState::DEAD, UnitState::DISPOSE
 	});
+
+	initOrders({
+			UnitAction::GO, UnitAction::DEAD,UnitAction::STOP,UnitAction::FOLLOW
+		}
+	);
 
 }
 
@@ -118,6 +124,10 @@ void StateManager::dispose() {
 	instance = nullptr;
 }
 
+
+void StateManager::initOrders(std::initializer_list<UnitAction> states) {
+	
+}
 void StateManager::initStates(std::initializer_list<UnitState> states) {
 	constexpr char SIZE = magic_enum::enum_count<UnitState>();
 	bool possibleStates[SIZE];
@@ -128,6 +138,20 @@ void StateManager::initStates(std::initializer_list<UnitState> states) {
 	for (auto level : Game::getDatabase()->getLevels()) {
 		if (level) {
 			std::copy(possibleStates, possibleStates + SIZE, level->possibleStates);
+			if (level->canCollect) {
+				level->possibleStates[cast(UnitState::COLLECT)] = true;
+			} else {
+				level->possibleStates[cast(UnitState::DEFEND)] = true;
+			}
+			if (level->canChargeAttack) {
+				level->possibleStates[cast(UnitState::CHARGE)] = true;
+			}
+			if (level->canRangeAttack) {
+				level->possibleStates[cast(UnitState::SHOT)] = true;
+			}
+			if (level->canCloseAttack || level->canBuildingAttack || level->canRangeAttack || level->canChargeAttack) {
+				level->possibleStates[cast(UnitState::ATTACK)] = true;
+			}
 		}
 	}
 }

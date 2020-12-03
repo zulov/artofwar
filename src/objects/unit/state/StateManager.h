@@ -1,6 +1,9 @@
 #pragma once
 
+#include <initializer_list>
 #include <magic_enum.hpp>
+
+#include "objects/unit/order/FormationOrder.h"
 #include "objects/unit/state/UnitState.h"
 
 struct ActionParameter;
@@ -22,8 +25,10 @@ public:
 
 	static void init();
 	static void dispose();
+
 private:
-	void initStates( std::initializer_list<UnitState> states);
+	void initOrders(std::initializer_list<UnitAction> states);//TODO move to level
+	void initStates( std::initializer_list<UnitState> states);//TODO move to level
 	StateManager();
 	~StateManager();
 	static State* getState(Unit* unit);
