@@ -1,5 +1,8 @@
 #include "SelectedInfo.h"
+
+#include "Game.h"
 #include "SelectedInfoType.h"
+#include "database/DatabaseCache.h"
 #include "objects/Physical.h"
 #include "utils/DeleteUtils.h"
 
@@ -7,9 +10,10 @@
 SelectedInfo::SelectedInfo() {
 	allNumber = 0;
 	allSubTypeNumber = 0;
-	selectedByType.reserve(MAX_SIZE_TYPES);
+	auto size  = Game::getDatabase()->getUnits().size();
+	selectedByType.reserve(size);
 
-	for (int i = 0; i < MAX_SIZE_TYPES; ++i) {
+	for (int i = 0; i < size; ++i) {
 		selectedByType.push_back(new SelectedInfoType());
 	}
 }

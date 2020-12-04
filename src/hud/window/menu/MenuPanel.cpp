@@ -171,12 +171,12 @@ void MenuPanel::levelBuilding() {
 	resetRestButtons(k);
 }
 
-std::vector<short> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) const{
+std::vector<unsigned char> MenuPanel::getUnitInBuilding(SelectedInfo* selectedInfo) const{
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
 
 	auto& infoTypes = selectedInfo->getSelectedTypes();
 	int nation = Game::getPlayersMan()->getActivePlayer()->getNation();
-	std::vector<std::vector<short>*> ids;
+	std::vector<std::vector<unsigned char>*> ids;
 	for (int i = 0; i < infoTypes.size(); ++i) {
 		if (!infoTypes.at(i)->getData().empty()) {
 			ids.push_back(Game::getPlayersMan()->getActivePlayer()->getLevelForBuilding(i)->unitsPerNationIds[nation]);
@@ -209,15 +209,20 @@ void MenuPanel::levelUnit(SelectedInfo* selectedInfo) {
 	resetRestButtons(k);
 }
 
-std::vector<short> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) const{
+std::vector<unsigned char> MenuPanel::getOrderForUnit(SelectedInfo* selectedInfo) const{
 	if (selectedInfo->getAllNumber() <= 0) { return {}; }
 
 	auto& infoTypes = selectedInfo->getSelectedTypes();
 
-	std::vector<std::vector<short>*> ids;
+	std::vector<std::vector<unsigned char>*> ids;
 	for (int i = 0; i < infoTypes.size(); ++i) {
-		if (!infoTypes.at(i)->getData().empty()) {
-			ids.push_back(&Game::getDatabase()->getUnit(i)->ordersIds);
+		auto info = infoTypes.at(i);
+		if (!info->getData().empty()) {
+			for (auto level : info->getLevels()) {
+			
+				ids.push_back(&Game::getDatabase()->getUnit(i)->getLevel(level).value()->ordersIds);
+			}
+			
 		}
 	}
 	return intersection(ids);

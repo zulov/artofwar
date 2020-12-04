@@ -27,14 +27,14 @@ static void cleanDead(std::vector<T*>* vector, bool sthDead = true) {
 	}
 }
 
-static std::vector<short> intersection(std::vector<std::vector<short>*>& ids) {
-	std::vector<short> common; //TODO check if ids sorted sometimes?
+static std::vector<unsigned char> intersection(std::vector<std::vector<unsigned char>*>& ids) {
+	std::vector<unsigned char> common; //TODO check if ids sorted sometimes?
 	if (ids.empty()) {
 		return common;
 	}
 	common = *ids[0];
 	for (int i = 1; i < ids.size(); ++i) {
-		std::vector<short> temp;
+		std::vector<unsigned char> temp;
 		std::set_intersection(common.begin(), common.end(),
 		                      ids[i]->begin(), ids[i]->end(),
 		                      std::back_inserter(temp));

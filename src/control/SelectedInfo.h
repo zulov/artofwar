@@ -3,9 +3,6 @@
 #include <optional>
 #include <vector>
 
-constexpr short MAX_SELECTED_TYPE = 330;
-constexpr char MAX_SIZE_TYPES = 8;
-
 class Physical;
 enum class ObjectType : char;
 class SelectedInfoType;

@@ -154,7 +154,7 @@ int static loadBuildingLevels(void* data, int argc, char** argv, char** azColNam
 				level->unitsPerNation[nation->id] = new std::vector<db_unit*>();
 			}
 			if (level->unitsPerNationIds[nation->id] == nullptr) {
-				level->unitsPerNationIds[nation->id] = new std::vector<short>();
+				level->unitsPerNationIds[nation->id] = new std::vector<unsigned char>();
 			}
 		}
 	}

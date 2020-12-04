@@ -191,7 +191,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 
 	db_unit_metric* dbUnitMetric = nullptr;
 	bool possibleStates[magic_enum::enum_count<UnitState>()];
-	std::vector<char> ordersIds;
+	std::vector<unsigned char> ordersIds;
 
 	db_unit_level(short id, short level, short unit, char* name, float minDist, float maxSep, char* nodeName,
 	              float mass, short maxHp, float maxSpeed, float minSpeed, float upgradeSpeed, float collectSpeed,
@@ -292,7 +292,7 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_a
 	std::vector<db_unit*> allUnits;
 
 	std::vector<std::vector<db_unit*>*> unitsPerNation;
-	std::vector<std::vector<short>*> unitsPerNationIds; //TODO remember must be storted
+	std::vector<std::vector<unsigned char>*> unitsPerNationIds; //TODO remember must be storted
 
 	std::vector<db_building_metric*> dbBuildingMetricPerNation;
 

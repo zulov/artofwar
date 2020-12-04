@@ -62,8 +62,8 @@ private:
 
 	void resetRestButtons(int from);
 
-	std::vector<short> getUnitInBuilding(SelectedInfo* selectedInfo) const;
-	std::vector<short> getOrderForUnit(SelectedInfo* selectedInfo) const;
+	std::vector<unsigned char> getUnitInBuilding(SelectedInfo* selectedInfo) const;
+	std::vector<unsigned char> getOrderForUnit(SelectedInfo* selectedInfo) const;
 
 	Urho3D::UIElement* rows[LEFT_MENU_ROWS_NUMBER];
 	Urho3D::Button* buttons[LEFT_MENU_BUTTON_PER_ROW * (LEFT_MENU_ROWS_NUMBER - 1)];
