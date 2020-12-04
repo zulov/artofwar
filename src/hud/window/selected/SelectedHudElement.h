@@ -28,7 +28,7 @@ public:
 	void setText(const Urho3D::String& msg) const;
 	void hideText() const;
 	void setTexture(Urho3D::Texture2D* texture) const;
-	void add(std::vector<Physical*>& physicals, int start, int end);
+	void add(const std::vector<Physical*>& physicals, int start, int end);
 	std::vector<Physical*>& getSelected();
 private:
 	Urho3D::Button* button;

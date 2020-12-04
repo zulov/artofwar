@@ -31,27 +31,11 @@ StateManager::StateManager() {
 	states[cast(UnitState::SHOT)] = new ShotState();
 	states[cast(UnitState::DEAD)] = new DeadState();
 	states[cast(UnitState::DISPOSE)] = new DisposeState();
-	//TODO improvment uzyc cancollect itp
-	std::vector<char> orderToState[magic_enum::enum_count<UnitAction>()];
-	orderToState[cast(UnitAction::GO)] = {cast(UnitState::GO_TO), cast(UnitState::MOVE)};
-	orderToState[cast(UnitAction::ATTACK)] = {cast(UnitState::ATTACK), cast(UnitState::SHOT)};
-	orderToState[cast(UnitAction::DEAD)] = {cast(UnitState::DEAD), cast(UnitState::DISPOSE)};
-	orderToState[cast(UnitAction::STOP)] = {cast(UnitState::STOP)};
-	orderToState[cast(UnitAction::CHARGE)] = {cast(UnitState::CHARGE)};
-	orderToState[cast(UnitAction::DEFEND)] = {cast(UnitState::DEFEND)};
-	orderToState[cast(UnitAction::FOLLOW)] = {cast(UnitState::FOLLOW)};
-	orderToState[cast(UnitAction::COLLECT)] = {cast(UnitState::COLLECT)};
 
+	initStates(
+		{UnitState::GO_TO, UnitState::MOVE, UnitState::FOLLOW, UnitState::STOP, UnitState::DEAD, UnitState::DISPOSE});
 
-	initStates({
-		UnitState::GO_TO, UnitState::MOVE, UnitState::FOLLOW, UnitState::STOP, UnitState::DEAD, UnitState::DISPOSE
-	});
-
-	initOrders({
-			UnitAction::GO, UnitAction::DEAD,UnitAction::STOP,UnitAction::FOLLOW
-		}
-	);
-
+	initOrders({UnitAction::GO, UnitAction::DEAD, UnitAction::STOP, UnitAction::FOLLOW});
 }
 
 StateManager::~StateManager() {
@@ -125,10 +109,32 @@ void StateManager::dispose() {
 }
 
 
-void StateManager::initOrders(std::initializer_list<UnitAction> states) {
-	
+void StateManager::initOrders(std::initializer_list<UnitAction> states) const {
+	std::vector<char> ids;
+	for (auto state : states) {
+		ids.push_back(cast(state));
+	}
+	for (auto level : Game::getDatabase()->getLevels()) {
+		if (level) {
+			level->ordersIds.insert(level->ordersIds.begin(), ids.begin(), ids.end());
+			if (level->canCollect) {
+				level->ordersIds.push_back(cast(UnitAction::COLLECT));
+			} else {
+				level->ordersIds.push_back(cast(UnitAction::DEFEND));
+			}
+			if (level->canChargeAttack) {
+				level->ordersIds.push_back(cast(UnitAction::CHARGE));
+			}
+			if (level->canCloseAttack || level->canBuildingAttack || level->canRangeAttack || level->canChargeAttack) {
+				level->ordersIds.push_back(cast(UnitAction::ATTACK));
+			}
+			level->ordersIds.shrink_to_fit();
+			std::sort(level->ordersIds.begin(), level->ordersIds.end());
+		}
+	}
 }
-void StateManager::initStates(std::initializer_list<UnitState> states) {
+
+void StateManager::initStates(std::initializer_list<UnitState> states) const {
 	constexpr char SIZE = magic_enum::enum_count<UnitState>();
 	bool possibleStates[SIZE];
 	std::fill_n(possibleStates, SIZE, false);

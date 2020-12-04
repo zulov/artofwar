@@ -41,7 +41,7 @@ short Building::getId() {
 	return dbBuilding->id;
 }
 
-int Building::getLevelNum() {
+char Building::getLevelNum() {
 	return dbLevel->level;
 }
 

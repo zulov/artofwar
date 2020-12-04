@@ -124,7 +124,7 @@ public:
 	Urho3D::String toMultiLineString() override;
 	float getMaxHpBarSize() const override;
 	bool isAlive() const override;
-	int getLevelNum() override;
+	char getLevelNum() override;
 	short getId() override;
 	void clean();
 	void fillValues(std::span<float> weights) const;
@@ -159,7 +159,7 @@ private:
 	short posInFormation = -1, formation = -1;
 	unsigned short currentFrameState = 0;
 
-	bool useSockets[USE_SOCKETS_NUMBER];
+	bool useSockets[USE_SOCKETS_NUMBER];//TODO mem przerobic na bit
 	int teamBucketIndex[BUCKET_SET_NUMBER];
 	int indexToInteract = -1;
 };

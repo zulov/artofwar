@@ -33,7 +33,7 @@ public:
 	std::string getValues(int precision) override;
 	float getMaxHpBarSize() const override;
 	short getId() override;
-	int getLevelNum() override;
+	char getLevelNum() override;
 	void fillValues(std::span<float> weights) const;
 	void addValues(std::span<float> vals) const override;
 	const Urho3D::IntVector2 getGridSize() const override;

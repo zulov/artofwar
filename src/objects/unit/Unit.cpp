@@ -321,7 +321,7 @@ void Unit::load(dbload_unit* unit) {
 	velocity = {unit->vel_x, unit->vel_z};
 }
 
-int Unit::getLevelNum() {
+char Unit::getLevelNum() {
 	return dbLevel->level;
 }
 

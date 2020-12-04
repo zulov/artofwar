@@ -110,7 +110,7 @@ std::string Physical::getColumns() {
 		"level		INT     NOT NULL,";
 }
 
-int Physical::getLevelNum() {
+char Physical::getLevelNum() {
 	return -1;
 }
 

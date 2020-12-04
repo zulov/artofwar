@@ -27,8 +27,8 @@ public:
 	static void dispose();
 
 private:
-	void initOrders(std::initializer_list<UnitAction> states);//TODO move to level
-	void initStates( std::initializer_list<UnitState> states);//TODO move to level
+	void initOrders(std::initializer_list<UnitAction> states) const;//TODO move to level
+	void initStates( std::initializer_list<UnitState> states) const;//TODO move to level
 	StateManager();
 	~StateManager();
 	static State* getState(Unit* unit);

@@ -1,4 +1,5 @@
 #pragma once
+#include <unordered_set>
 #include <vector>
 
 class Physical;
@@ -10,9 +11,11 @@ public:
 	void clear();
 	void add(Physical* physical);
 
-	std::vector<Physical*>& getData() { return data; }
+	const std::vector<Physical*>& getData() const { return data; }
+	const std::unordered_set<char>& getLevels() const { return levels; }
 	int getId() const { return id; }
 private:
 	int id;
+	std::unordered_set<char> levels;
 	std::vector<Physical*> data;
 };

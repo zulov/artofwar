@@ -90,7 +90,7 @@ public:
 	void unSelect();
 	virtual Urho3D::String toMultiLineString();
 
-	virtual int getLevelNum();
+	virtual char getLevelNum();
 
 	virtual void addValues(std::span<float> vals) const {
 	}

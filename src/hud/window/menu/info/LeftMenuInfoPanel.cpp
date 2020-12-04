@@ -13,8 +13,7 @@
 #include "player/PlayersManager.h"
 #include "utils/NamesUtils.h"
 
-LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "LeftMenuInfoPanel", {}) {
-}
+LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "LeftMenuInfoPanel", {}) {}
 
 void LeftMenuInfoPanel::createBody() {
 	text = addChildText(window, "MyText", style);
@@ -33,8 +32,8 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 			Urho3D::String msg = "";
 			for (auto& selectedType : selectedInfo->getSelectedTypes()) {
 				if (!selectedType->getData().empty()) {
-					msg.Append(getName(selectedType->getData().at(0)->getType(),
-					                   selectedType->getData().at(0)->getId()))
+					auto phy = selectedType->getData().at(0);
+					msg.Append(getName(phy->getType(), phy->getId()))
 					   .Append(": ").Append(Urho3D::String(selectedType->getData().size())).Append("\n");
 				}
 			}
@@ -49,15 +48,13 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	const auto id = hudData->getId();
 	switch (hudData->getType()) {
-	case ActionType::UNIT_CREATE:
-	{
+	case ActionType::UNIT_CREATE: {
 		auto dbUnit = Game::getDatabase()->getUnit(id);
 
 		return stringFrom(dbUnit->name, dbUnit->costs);
 	}
-	case ActionType::UNIT_LEVEL:
-	{
-		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForUnit(id); 
+	case ActionType::UNIT_LEVEL: {
+		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForUnit(id);
 		if (opt.has_value()) {
 			auto dbLevel = opt.value();
 			return stringFrom(dbLevel->name, dbLevel->costs);
@@ -65,15 +62,13 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	}
 	case ActionType::UNIT_UPGRADE:
 		return "TODO";
-	case ActionType::BUILDING_CREATE:
-	{
+	case ActionType::BUILDING_CREATE: {
 		auto dbBuilding = Game::getDatabase()->getBuilding(id);
 
 		return stringFrom(dbBuilding->name, dbBuilding->costs);
 	}
-	case ActionType::BUILDING_LEVEL:
-	{
-		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForBuilding(id); 
+	case ActionType::BUILDING_LEVEL: {
+		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForBuilding(id);
 
 		if (opt.has_value()) {
 			auto dbLevel = opt.value();

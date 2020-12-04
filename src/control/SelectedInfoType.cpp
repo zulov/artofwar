@@ -9,11 +9,12 @@ SelectedInfoType::SelectedInfoType() {
 
 void SelectedInfoType::clear() {
 	data.clear();
+	levels.clear();
 	id = -1;
 }
 
 void SelectedInfoType::add(Physical* physical) {
 	data.push_back(physical);
+	levels.insert(physical->getLevelNum());
 	id = physical->getId();
 }
-

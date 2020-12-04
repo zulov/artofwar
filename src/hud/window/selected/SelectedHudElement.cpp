@@ -48,7 +48,7 @@ void SelectedHudElement::setTexture(Urho3D::Texture2D* texture) const {
 	setTextureToSprite(icon, texture);
 }
 
-void SelectedHudElement::add(std::vector<Physical*>& physicals, int start, int end) {
+void SelectedHudElement::add(const std::vector<Physical*>& physicals, int start, int end) {
 	selected.clear();
 
 	float sum = 0;
