@@ -43,7 +43,7 @@ public:
 	virtual bool isSlotOccupied(int indexToInteract) { return false; }
 	virtual bool isFirstThingInSameSocket() const { return true; }
 
-	virtual void setOccupiedSlot(int indexToInteract, bool value) {
+	virtual void setOccupiedSlot(unsigned char index, bool value) {
 	}
 
 	void indexHasChangedReset() { indexHasChanged = false; }

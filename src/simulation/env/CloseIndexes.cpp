@@ -1,6 +1,6 @@
 #include "CloseIndexes.h"
 
-const std::vector<char> CloseIndexes::tabIndexes[CLOSE_SIZE] = {
+const std::vector<unsigned char> CloseIndexes::tabIndexes[CLOSE_SIZE] = {
 	{4, 6, 7},
 	{3, 4, 5, 6, 7},
 	{3, 5, 6},
@@ -12,7 +12,7 @@ const std::vector<char> CloseIndexes::tabIndexes[CLOSE_SIZE] = {
 	{0, 1, 3}
 };
 
-const std::vector<char> CloseIndexes::tabIndexesSecond[CLOSE_SECOND_SIZE] = {
+const std::vector<unsigned char> CloseIndexes::tabIndexesSecond[CLOSE_SECOND_SIZE] = {
 	{8, 10, 13, 14, 15},
 	{8, 10, 12, 13, 14, 15},
 	{7, 8, 9, 10, 11, 12, 13, 14, 15},
@@ -132,10 +132,10 @@ const std::vector<short>& CloseIndexes::getSecond(int center) const {
 	return closeIndexesSecond[index];
 }
 
-const std::vector<char>& CloseIndexes::getTabIndexes(int center) const {
+const std::vector<unsigned char>& CloseIndexes::getTabIndexes(int center) const {
 	return tabIndexes[getIndex(center)];
 }
 
-short CloseIndexes::getIndexAt(char index) const {
+short CloseIndexes::getIndexAt(unsigned char index) const {
 	return templateVec[index];
 }

@@ -1,10 +1,8 @@
 ﻿#include "Unit.h"
-#include <algorithm>
-#include <string>
-#include "Game.h"
 #include "colors/ColorPaletteRepo.h"
 #include "colors/ColorPallet.h"
 #include "database/DatabaseCache.h"
+#include "database/db_strcut.h"
 #include "debug/DebugLineRepo.h"
 #include "debug/DebugUnitType.h"
 #include "math/VectorUtils.h"
@@ -38,7 +36,7 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 	}
 
 	std::fill_n(teamBucketIndex, BUCKET_SET_NUMBER, -1);
-	std::fill_n(useSockets, USE_SOCKETS_NUMBER, false);
+
 }
 
 Unit::~Unit() {
@@ -438,9 +436,8 @@ void Unit::setTeamBucket(int _bucketIndex, char param) {
 }
 
 bool Unit::isSlotOccupied(int indexToInteract) {
-	const int index = Game::getEnvironment()->getRevertCloseIndex(getMainCell(), indexToInteract);
-
-	return useSockets[index];
+	const unsigned char index = Game::getEnvironment()->getRevertCloseIndex(getMainCell(), indexToInteract);
+	return ifSlotIsOccupied(index);
 }
 
 std::tuple<Physical*, float, int> Unit::closestPhysical(std::vector<Physical*>* things,
@@ -508,10 +505,10 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
 	const int mainIndex = getMainBucketIndex();
-	const std::vector<char>& closeTabIndexes = Game::getEnvironment()->getCloseTabIndexes(mainIndex);
+	const std::vector<unsigned char>& closeTabIndexes = Game::getEnvironment()->getCloseTabIndexes(mainIndex);
 	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
 	for (auto i : closeTabIndexes) {
-		if (!useSockets[i]) {
+		if (!ifSlotIsOccupied(i)) {
 			int index = mainIndex + closeIndexes[i];
 			if (Game::getEnvironment()->cellIsPassable(index)) {
 				Urho3D::Vector2 posToFollow = getSocketPos(this, i);
@@ -533,4 +530,16 @@ Urho3D::Vector2 Unit::getPosToUse() {
 		return getSocketPos(dynamic_cast<Unit*>(thingsToInteract[0]), indexToInteract);
 	}
 	return {position.x_, position.z_};
+}
+
+void Unit::setOccupiedSlot(unsigned char index, bool value) {
+	if (value) {
+		useSockets |= Consts::bitFlags[index];
+	} else {
+		useSockets &= ~Consts::bitFlags[index];
+	}
+}
+
+bool Unit::ifSlotIsOccupied(const unsigned char index) const {
+	return useSockets & Consts::bitFlags[index];
 }

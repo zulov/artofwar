@@ -314,7 +314,7 @@ void Environment::removeFromGrids(const std::vector<Building*>& buildingsToDispo
 	}
 }
 
-int Environment::getRevertCloseIndex(int center, int gridIndex) {
+unsigned char Environment::getRevertCloseIndex(int center, int gridIndex) const {
 	return mainGrid.getRevertCloseIndex(center, gridIndex);
 }
 
@@ -347,7 +347,7 @@ const std::vector<short>& Environment::getCloseIndexs(int center) const {
 	return mainGrid.getCloseIndexes(center);
 }
 
-const std::vector<char>& Environment::getCloseTabIndexes(int center) const {
+const std::vector<unsigned char>& Environment::getCloseTabIndexes(int center) const {
 	return mainGrid.getCloseTabIndexes(center);
 }
 

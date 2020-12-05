@@ -65,7 +65,7 @@ public:
 	void updateCell(int index, char val, CellState cellState) const;
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinalInState(Unit* unit, UnitState state) const;
-	int getRevertCloseIndex(int center, int gridIndex) const;
+	unsigned char getRevertCloseIndex(int center, int gridIndex) const;
 	void addDeploy(Building* building) const;
 	void removeDeploy(Building* building) const;
 

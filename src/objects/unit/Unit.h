@@ -111,8 +111,10 @@ public:
 	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
 	void setTeamBucket(int _bucketIndex, char param);
 	bool isSlotOccupied(int indexToInteract) override;
-	void setOccupiedSlot(int indexToInteract, bool value) override { useSockets[indexToInteract] = value; }
+
 	Urho3D::Vector2 getPosToUse();
+	void setOccupiedSlot(unsigned char index, bool value) override;
+	bool ifSlotIsOccupied(unsigned char index) const;
 
 	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* follower) override;
 
@@ -150,16 +152,16 @@ private:
 
 	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
 
+	int teamBucketIndex[BUCKET_SET_NUMBER];
+	int indexToInteract = -1;
+	
 	float maxSpeed;
-
+	
+	short posInFormation = -1, formation = -1;
+	unsigned short currentFrameState = 0;
+	
 	UnitState state;
 	UnitState nextState;
 	bool atState = false;
-
-	short posInFormation = -1, formation = -1;
-	unsigned short currentFrameState = 0;
-
-	bool useSockets[USE_SOCKETS_NUMBER];//TODO mem przerobic na bit
-	int teamBucketIndex[BUCKET_SET_NUMBER];
-	int indexToInteract = -1;
+	unsigned char useSockets = 0;
 };

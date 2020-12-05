@@ -95,7 +95,7 @@ public:
 	char getNumberInState(int index, UnitState state) const;
 	char getOrdinalInState(Unit* unit, UnitState state) const;
 
-	int getRevertCloseIndex(int center, int gridIndex);
+	unsigned char getRevertCloseIndex(int center, int gridIndex) const;
 
 	bool isInLocalArea(int getMainCell, int aimIndex) const;
 	int closestPassableCell(int posIndex) const;
@@ -103,7 +103,7 @@ public:
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
 
 	const std::vector<short>& getCloseIndexs(int center) const;
-	const std::vector<char>& getCloseTabIndexes(int center) const;
+	const std::vector<unsigned char>& getCloseTabIndexes(int center) const;
 	std::array<float, 5>& getInfluenceDataAt(char player, const Urho3D::Vector2& pos);
 
 	std::optional<Urho3D::Vector2> getPosToCreate(db_building* building, char player, const std::span<float> result);

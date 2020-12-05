@@ -152,7 +152,7 @@ char MainGrid::getOrdinalInState(Unit* unit, UnitState state) const {
 	return -1;
 }
 
-int MainGrid::getRevertCloseIndex(int center, int gridIndex) const {
+unsigned char MainGrid::getRevertCloseIndex(int center, int gridIndex) const {
 	int index = gridIndex - center;
 	for (auto i : closeIndexes->getTabIndexes(center)) {
 		if (closeIndexes->getIndexAt(i) == index) {
