@@ -1,14 +1,13 @@
 #pragma once
 
-struct ChargeData
-{
+struct ChargeData {
 	float energy;
 	float energyMax;
 	float attackRange;
 
 	ChargeData(float energyMax, float attackRange)
 		: energyMax(energyMax),
-		attackRange(attackRange) {
+		  attackRange(attackRange) {
 		reset();
 	}
 

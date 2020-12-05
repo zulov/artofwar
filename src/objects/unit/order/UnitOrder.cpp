@@ -1,6 +1,7 @@
 #include "UnitOrder.h"
 #include "Game.h"
 #include "enums/UnitAction.h"
+#include "objects/Physical.h"
 #include "objects/unit/aim/FollowAim.h"
 #include "objects/unit/aim/TargetAim.h"
 #include "simulation/env/Environment.h"
@@ -19,7 +20,7 @@ UnitOrder::~UnitOrder() {
 ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
 	const auto path = Game::getEnvironment()->findPath(startInx, to);
 	if (!path->empty()) {
-		return ActionParameter::Builder().setAim(new TargetAim(*path)).build();
+		return ActionParameter(new TargetAim(*path));
 	}
 	return Consts::EMPTY_ACTION_PARAMETER;
 }
@@ -27,7 +28,7 @@ ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
 ActionParameter UnitOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow) {
 	auto const target = getTargetAim(startInx, toSoFar);
 	//jesli jest nulem to co?
-	return ActionParameter::Builder().setAim(new FollowAim(toFollow, dynamic_cast<TargetAim*>(target.aim))).build();
+	return ActionParameter(new FollowAim(toFollow, dynamic_cast<TargetAim*>(target.aim)));
 }
 
 ActionParameter UnitOrder::getChargeAim(Urho3D::Vector2& charge) {

@@ -108,7 +108,6 @@ void StateManager::dispose() {
 	instance = nullptr;
 }
 
-
 void StateManager::initOrders(std::initializer_list<UnitAction> states) const {
 	std::vector<char> ids;
 	for (auto state : states) {

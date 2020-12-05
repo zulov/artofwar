@@ -23,7 +23,7 @@ public:
 		return parameter.isFirstThingAlive()
 			&& unit->getMainCell() == parameter.index //TODO je¿eli jest inny to sprobowaæ podmienic
 			&& Game::getEnvironment()->cellIsCollectable(unit->getMainCell())
-			&& parameter.thingsToInteract[0]->belowCloseLimit() > 0;
+			&& parameter.thingToInteract->belowCloseLimit() > 0;
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
@@ -31,7 +31,7 @@ public:
 		unit->currentFrameState = 0;
 
 		unit->thingsToInteract.clear();
-		unit->thingsToInteract.push_back(parameter.thingsToInteract[0]);
+		unit->thingsToInteract.push_back(parameter.thingToInteract);
 		unit->indexToInteract = parameter.index;
 
 		unit->thingsToInteract[0]->upClose();

@@ -83,10 +83,7 @@ void IndividualOrder::followAndAct() {
 			//Dodanie celu po dojsciu
 		} else {
 			unit->action(static_cast<UnitAction>(id),
-			             ActionParameter::Builder()
-			             .setIndex(std::get<2>(postToUse))
-			             .setThingsToInteract(toUse)
-			             .build());
+			             ActionParameter( toUse, std::get<2>(postToUse)));
 		}
 	}
 }

@@ -27,7 +27,7 @@
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "hud/window/selected/SelectedHudElement.h"
 #include "math/RandGen.h"
-#include "objects/unit/ActionParameter.h"
+#include "objects/ActionType.h"
 #include "player/PlayersManager.h"
 #include "scene/LevelBuilder.h"
 #include "simulation/SimInfo.h"
@@ -388,7 +388,7 @@ void Main::HandleLeftMenuButton(StringHash eventType, VariantMap& eventData) {
 	case ActionType::BUILDING_CREATE:
 		return controls->toBuild(hudData);
 	default: ;
-		controls->order(hudData->getId(), ActionParameter::Builder().setType(hudData->getType()).build());
+		controls->order(hudData->getId(), hudData->getType());
 	}
 }
 

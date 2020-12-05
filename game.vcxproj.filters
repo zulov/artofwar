@@ -207,6 +207,7 @@
     <ClCompile Include="src\player\ai\threshold\ThresholdProvider.cpp" />
     <ClCompile Include="src\simulation\ObjectsInfo.cpp" />
     <ClCompile Include="src\simulation\SimInfo.cpp" />
+    <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />

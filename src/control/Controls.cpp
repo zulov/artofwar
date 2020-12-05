@@ -22,7 +22,7 @@
 #include "player/ai/ActionCenter.h"
 #include "simulation/ObjectsInfo.h"
 #include "simulation/env/Environment.h"
-#include "objects/unit/ActionParameter.h"
+#include "objects/ActionType.h"
 #include "simulation/FrameInfo.h"
 #include "simulation/SimInfo.h"
 #include "utils/OtherUtils.h"
@@ -272,8 +272,8 @@ void Controls::toBuild(HudData* hud) {
 	tempBuildingNode->SetEnabled(false);
 }
 
-BuildingActionType Controls::getBuildingActionType(const ActionParameter& parameter) {
-	switch (parameter.type) {
+BuildingActionType Controls::getBuildingActionType(ActionType type) {
+	switch (type) {
 	case ActionType::UNIT_CREATE:
 		return BuildingActionType::UNIT_CREATE;
 	case ActionType::UNIT_LEVEL:
@@ -284,7 +284,7 @@ BuildingActionType Controls::getBuildingActionType(const ActionParameter& parame
 	}
 }
 
-void Controls::order(short id, const ActionParameter& parameter) {
+void Controls::order(short id, ActionType type) {
 	switch (selectedInfo->getSelectedType()) {
 	case ObjectType::PHYSICAL:
 	case ObjectType::NONE:
@@ -292,9 +292,9 @@ void Controls::order(short id, const ActionParameter& parameter) {
 			new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL,
 			                         Game::getPlayersMan()->getActivePlayerID()));
 	case ObjectType::UNIT:
-		return actionUnit(id, parameter);
+		return actionUnit(id, type);
 	case ObjectType::BUILDING:
-		return executeOnBuildings(getBuildingActionType(parameter), id);
+		return executeOnBuildings(getBuildingActionType(type), id);
 	case ObjectType::RESOURCE:
 		return executeOnResources(ResourceActionType(id));
 	}
@@ -372,8 +372,8 @@ void Controls::unitOrder(short id) {
 	}
 }
 
-void Controls::actionUnit(short id, const ActionParameter& parameter) {
-	switch (parameter.type) {
+void Controls::actionUnit(short id, ActionType type) {
+	switch (type) {
 	case ActionType::ORDER:
 		return unitOrder(id);
 	case ActionType::FORMATION:

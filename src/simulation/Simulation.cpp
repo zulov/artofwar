@@ -70,9 +70,9 @@ SimInfo* Simulation::update(float timeStep) {
 		Game::getActionCenter()->executeActions();
 
 		calculateForces();
-		applyForce();//zmiany stanu
+		applyForce(); //zmiany stanu
 
-		moveUnitsAndCheck(TIME_PER_UPDATE);//zmiany stanu
+		moveUnitsAndCheck(TIME_PER_UPDATE); //zmiany stanu
 		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac w tym zmiany stanu
 		updateQueues();
 		updateInfluenceMaps();
@@ -94,43 +94,38 @@ SimInfo* Simulation::update(float timeStep) {
 }
 
 void Simulation::tryToAttack(Unit* unit, float dist, UnitAction order,
-                             const std::function<bool(Physical*)>& condition) {
+                             const std::function<bool(Physical*)>& condition) const {
 	toAction(unit, enviroment->getNeighboursFromTeamNotEq(unit, dist, unit->getTeam()), order, condition);
 }
 
-void Simulation::tryToCollect(Unit* unit) {
+void Simulation::tryToCollect(Unit* unit) const {
 	toAction(unit, enviroment->getResources(unit, 12), UnitAction::COLLECT, belowClose);
 }
 
 void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
-                          const std::function<bool(Physical*)>& condition) {
+                          const std::function<bool(Physical*)>& condition) const {
 	auto [closest, minDistance, indexToInteract] = unit->closestPhysical(list, condition);
 	unit->toAction(closest, minDistance, order);
 }
 
-void Simulation::selfAI() {
-	for (auto unit : *units) {
-		switch (unit->getState()) {
-		case UnitState::CHARGE:
-			unit->toCharge(enviroment->getNeighboursFromTeamNotEq(unit, 12, unit->getTeam()));
-			break;
-		case UnitState::STOP:
-		case UnitState::MOVE:
-			if (PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, currentFrame) && unit->getFormation() == -1
-				&& StateManager::checkChangeState(unit, unit->getActionState())) {
-				switch (unit->getActionState()) {
-				case UnitState::ATTACK:
-					tryToAttack(unit, 12, UnitAction::ATTACK, belowClose);
-					break ;
-				case UnitState::COLLECT:
-					tryToCollect(unit);
-					break;
-				case UnitState::SHOT:
-					tryToAttack(unit, 12, UnitAction::ATTACK, belowRange);
-					break;
+void Simulation::selfAI() const {
+	if (PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, currentFrame)) {
+		for (auto unit : *units) {
+			if (isFree(unit)) {
+				if (StateManager::checkChangeState(unit, unit->getActionState())) {
+					switch (unit->getActionState()) {
+					case UnitState::ATTACK:
+						tryToAttack(unit, 12, UnitAction::ATTACK, belowClose);
+						break;
+					case UnitState::COLLECT:
+						tryToCollect(unit);
+						break;
+					case UnitState::SHOT:
+						tryToAttack(unit, 12, UnitAction::ATTACK, belowRange);
+						break;
+					}
 				}
 			}
-			break;
 		}
 	}
 }

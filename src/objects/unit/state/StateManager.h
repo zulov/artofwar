@@ -47,6 +47,6 @@ inline bool isInStates(UnitState state, std::initializer_list<UnitState> states)
 	return false;
 }
 
-inline bool isFree(UnitState state) {
+inline bool isInFreeState(UnitState state) {
 	return isInStates(state, {UnitState::STOP, UnitState::MOVE});
 }

@@ -5,6 +5,7 @@
 #include "objects/unit/order/enums/UnitAction.h"
 #include "BillboardSetProvider.h"
 
+enum class ActionType : char;
 class SimInfo;
 constexpr char MAX_DEPLOY_MARK_NUMBER = 5;
 
@@ -40,7 +41,7 @@ public:
 
 	void toBuild(HudData* hud);
 
-	void order(short id, const ActionParameter& parameter);
+	void order(short id, ActionType type);
 
 	void cleanMouse();
 
@@ -66,7 +67,7 @@ private:
 	void executeOnBuildings(BuildingActionType action, short id) const;
 
 	void unitFormation(short id) const;
-	void actionUnit(short id, const ActionParameter& parameter);
+	void actionUnit(short id, ActionType type);
 
 	void refreshSelected();
 	bool conditionToClean(const SimInfo* simulationInfo) const;
@@ -78,7 +79,7 @@ private:
 	void leftDoubleClick(hit_data& hitData);
 	void leftClickBuild(hit_data& hitData);
 
-	BuildingActionType getBuildingActionType(const ActionParameter& parameter);
+	BuildingActionType getBuildingActionType(ActionType type);
 
 	UnitOrder* vectorOrder(UnitAction order, Urho3D::Vector2* vector, bool shiftPressed,
 	                       const std::vector<Physical*>& vec) const;

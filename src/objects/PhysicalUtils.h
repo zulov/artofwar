@@ -12,10 +12,14 @@ inline bool belowRange(Physical* physical) {
 	return physical->belowRangeLimit();
 }
 
+inline bool isFree(Unit* unit) {
+	return unit->getFormation() < 0 && isInFreeState(unit->getState());
+}
+
 inline bool isFreeWorker(Unit* unit) {
-	return unit->getLevel()->canCollect && unit->getFormation()<0 && isFree(unit->getState());
+	return unit->getLevel()->canCollect && isFree(unit);
 }
 
 inline bool isFreeSolider(Unit* unit) {
-	return !unit->getLevel()->canCollect && unit->getFormation()<0 && isFree(unit->getState());
+	return !unit->getLevel()->canCollect && isFree(unit);
 }

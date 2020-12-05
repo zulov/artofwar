@@ -22,15 +22,15 @@ public:
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		return parameter.isFirstThingAlive()
 			&& unit->getMainBucketIndex() == parameter.index
-			&& parameter.thingsToInteract[0]->isFirstThingInSameSocket()
-			&& !parameter.thingsToInteract[0]->isSlotOccupied(parameter.index);
+			&& parameter.thingToInteract->isFirstThingInSameSocket()
+			&& !parameter.thingToInteract->isSlotOccupied(parameter.index);
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->currentFrameState = 0;
 
 		unit->thingsToInteract.clear();
-		unit->thingsToInteract.push_back(parameter.thingsToInteract[0]);
+		unit->thingsToInteract.push_back(parameter.thingToInteract);
 		unit->indexToInteract = parameter.index;
 
 		unit->thingsToInteract[0]->upClose();

@@ -57,13 +57,13 @@ private:
 	void levelUp(QueueElement* done, char player) const;
 	void updateBuildingQueues(float time) const;
 	void updateQueues() const;
-	void selfAI();
+	void selfAI() const;
 	void addTestEntities() const;
 
-	void tryToAttack(Unit* unit, float dist, UnitAction order, const std::function<bool(Physical*)>& condition);
+	void tryToAttack(Unit* unit, float dist, UnitAction order, const std::function<bool(Physical*)>& condition) const;
 	void toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
-	              const std::function<bool(Physical*)>& condition);
-	void tryToCollect(Unit* unit);
+	              const std::function<bool(Physical*)>& condition) const;
+	void tryToCollect(Unit* unit) const;
 
 	float accumulateTime = 0;
 	unsigned int secondsElapsed = 0;

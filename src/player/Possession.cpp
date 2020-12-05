@@ -125,6 +125,6 @@ void Possession::updateAndClean(Resources& resources, const ObjectsInfo* simInfo
 	resourcesSum = std::accumulate(values.begin(), values.end(), 0.f);
 
 	freeWorkersNumber = std::count_if(workers.begin(), workers.end(), [](Unit* worker) {
-		return isFree(worker->getState());
+		return isInFreeState(worker->getState());
 	});
 }

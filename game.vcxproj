@@ -188,6 +188,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
     <ClCompile Include="src\simulation\SimInfo.cpp" />
     <ClCompile Include="src\player\ai\nn\BrainProvider.cpp" />
     <ClCompile Include="src\player\ai\threshold\Threshold.cpp" />

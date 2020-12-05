@@ -18,8 +18,8 @@ public:
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->setAim(parameter.aim);
-		unit->thingsToInteract.clear();
-		unit->thingsToInteract = parameter.thingsToInteract;
+		// unit->thingsToInteract.clear();
+		// unit->thingsToInteract.push_back(parameter.thingToInteract);//TODO to chyba nie potrzebne
 
 		//TODO aim?
 		unit->maxSpeed = unit->dbLevel->maxSpeed * 2;
@@ -32,8 +32,8 @@ public:
 	}
 
 	void execute(Unit* unit, float timeStep) override {
-		State::execute(unit, timeStep);
-
+		State::execute(unit, timeStep);		
+		unit->toCharge(Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, 12, unit->getTeam()));
 		if (unit->chargeData->updateFrame()) {
 			for (auto physical : unit->thingsToInteract) {
 				if (unit->getTeam() != physical->getTeam()) {

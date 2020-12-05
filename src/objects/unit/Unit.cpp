@@ -36,7 +36,6 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 	}
 
 	std::fill_n(teamBucketIndex, BUCKET_SET_NUMBER, -1);
-
 }
 
 Unit::~Unit() {
