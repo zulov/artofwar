@@ -45,9 +45,10 @@ public:
 
 private:
 	void aiPlayers() const;
-	void moveUnitsAndCheck(float timeStep);
 	void calculateForces();
+	void moveUnitsAndCheck(float timeStep);
 	void performStateAction(float timeStep) const;
+	void executeStateTransition() const;
 	float updateTime(float timeStep) const;
 
 	void loadEntities(NewGameForm* form) const;

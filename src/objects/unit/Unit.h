@@ -4,6 +4,8 @@
 #include <Urho3D/Math/Vector2.h>
 #include <functional>
 #include <tuple>
+
+#include "ActionParameter.h"
 #include "aim/Aims.h"
 #include "objects/ObjectEnums.h"
 #include "objects/Physical.h"
@@ -84,6 +86,8 @@ public:
 	int getIndexToInteract() const { return indexToInteract; }
 	bool closeEnoughToAttack();
 	bool isInRightSocket() const;
+	void setNextState(UnitState stateTo, const ActionParameter& actionParameter);
+	void setNextState(UnitState stateTo);
 
 	static std::string getColumns();
 	void changeColor(SimColorMode mode);
@@ -101,8 +105,9 @@ public:
 	float getMinimalDistance() const;
 	UnitState getActionState() const;
 	UnitState getState() const { return state; }
+	UnitState getNextState() const { return nextState; }
 	short getFormation() const { return formation; }
-	bool isToDispose() const override { return state == UnitState::DISPOSE && atState; }
+	bool isToDispose() const override { return state == UnitState::DISPOSE; }
 	bool hasAim() const { return aims.hasAim(); }
 	db_unit_level* getLevel() const { return dbLevel; }
 
@@ -142,6 +147,7 @@ private:
 	Urho3D::Vector2 velocity, acceleration;
 	Aims aims;
 
+
 	db_unit* dbUnit;
 	db_unit_level* dbLevel;
 
@@ -154,14 +160,14 @@ private:
 
 	int teamBucketIndex[BUCKET_SET_NUMBER];
 	int indexToInteract = -1;
-	
+
 	float maxSpeed;
-	
+
 	short posInFormation = -1, formation = -1;
 	unsigned short currentFrameState = 0;
-	
+
 	UnitState state;
 	UnitState nextState;
-	bool atState = false;
+	ActionParameter nextActionParameter;
 	unsigned char useSockets = 0;
 };

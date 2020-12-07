@@ -14,14 +14,17 @@ enum class StaticState : char;
 
 class StateManager {
 public:
-	static bool validateState(Unit* unit, UnitState stateTo);
 	static bool changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter);
 	static bool changeState(Unit* unit, UnitState stateTo);
-	static bool checkChangeState(Unit* unit, UnitState stateTo);
+	static bool canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter, State* stateFrom,
+	                          State* toState);
+	static bool canChangeState(Unit* unit, UnitState stateTo);
 	static void execute(Unit* unit, float timeStamp);
+	static void executeChange(Unit* unit);
 
 	static bool changeState(Static* obj, StaticState stateTo);
 	static void executeChange(Static* obj);
+
 
 	static void init();
 	static void dispose();

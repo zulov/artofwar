@@ -11,8 +11,9 @@ struct ActionParameter {
 	ActionParameter(Physical* thing, int index) : index(index), thingToInteract(thing) { }
 
 	bool isFirstThingAlive() const;
+	void reset(const ActionParameter& actionParameter);
 
-	Aim* aim = nullptr;
-	Physical* thingToInteract;
+	Aim* aim = nullptr;//TODO union!!!!
+	Physical* thingToInteract = nullptr;
 	int index = -1;
 };

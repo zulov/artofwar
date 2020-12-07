@@ -42,35 +42,39 @@ StateManager::~StateManager() {
 	clear_array(states, magic_enum::enum_count<UnitState>());
 }
 
-bool StateManager::validateState(Unit* unit, UnitState stateTo) {
-	return unit->getLevel()->possibleStates[cast(stateTo)];
-}
-
 bool StateManager::changeState(Unit* unit, UnitState stateTo) {
 	return changeState(unit, stateTo, Consts::EMPTY_ACTION_PARAMETER);
 }
 
+bool StateManager::canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter,
+                                 State* stateFrom, State* toState) {
+	return stateFrom->validateTransition(stateTo)
+		&& unit->getLevel()->possibleStates[cast(stateTo)]
+		&& toState->canStart(unit, actionParameter);
+}
+
 bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter) {
 	State* stateFrom = instance->states[cast(unit->getState())];
-	if (stateFrom->validateTransition(stateTo)
-		&& validateState(unit, stateTo)
-		&& instance->states[cast(stateTo)]->canStart(unit, actionParameter)) {
-		stateFrom->onEnd(unit);
-		unit->setState(stateTo);
-		instance->states[cast(stateTo)]->onStart(unit, actionParameter);
+	State* toState = instance->states[cast(stateTo)];
+	if (canStartState(unit, stateTo, actionParameter, stateFrom, toState)) {
+		unit->setNextState(stateTo, actionParameter);
+		// stateFrom->onEnd(unit);
+		// unit->setState(stateTo);
+		// toState->onStart(unit, actionParameter);
 		return true;
 	}
 	Game::getLog()->Write(0, "fail to change state from " +
 	                      Urho3D::String(magic_enum::enum_name(unit->getState()).data()) + " to " +
 	                      Urho3D::String(magic_enum::enum_name(stateTo).data()));
 
-	unit->setState(UnitState::MOVE);
-	instance->states[cast(UnitState::MOVE)]->onStart(unit, actionParameter);
+	// unit->setState(UnitState::MOVE);
+	// instance->states[cast(UnitState::MOVE)]->onStart(unit, actionParameter);
+	unit->setNextState(UnitState::MOVE);
 
 	return false;
 }
 
-bool StateManager::checkChangeState(Unit* unit, UnitState stateTo) {
+bool StateManager::canChangeState(Unit* unit, UnitState stateTo) {
 	return getState(unit)->validateTransition(stateTo);
 }
 
@@ -80,6 +84,15 @@ State* StateManager::getState(Unit* unit) {
 
 void StateManager::execute(Unit* unit, float timeStamp) {
 	getState(unit)->execute(unit, timeStamp);
+}
+
+void StateManager::executeChange(Unit* unit) {
+	State* stateFrom = instance->states[cast(unit->getState())];
+	State* toState = instance->states[cast(unit->getNextState())];
+
+	stateFrom->onEnd(unit);
+	unit->setState(stateTo);
+	instance->states[cast(stateTo)]->onStart(unit, actionParameter);
 }
 
 bool StateManager::changeState(Static* obj, StaticState stateTo) {

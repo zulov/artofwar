@@ -117,7 +117,6 @@ public:
 
 struct db_unit_metric : db_basic_metric {
 private:
-
 	float params[magic_enum::enum_count<UnitMetric>()];
 	float paramsNorm[magic_enum::enum_count<UnitMetric>()];
 public:
@@ -143,7 +142,6 @@ private:
 	float params[magic_enum::enum_count<BuildingMetric>()];
 	float paramsNorm[magic_enum::enum_count<BuildingMetric>()];
 public:
-
 	db_building_metric(float val1, float val2, float val3, float val4, float val5,
 	                   float val6, float val7, float val8)
 		: params{val1, val2, val3, val4, val5, val6, val7, val8},
@@ -231,7 +229,6 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 };
 
 struct db_unit : db_entity, db_with_name, db_with_cost {
-
 	const Urho3D::String icon;
 	const short actionState;
 
@@ -260,7 +257,6 @@ struct db_unit : db_entity, db_with_name, db_with_cost {
 		}
 		return sum;
 	}
-
 };
 
 struct db_building : db_entity, db_with_name, db_with_cost, db_static {
@@ -333,8 +329,7 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_a
 					                       sums[cast(UnitMetric::CLOSE_ATTACK)],
 					                       sums[cast(UnitMetric::CHARGE_ATTACK)],
 					                       sums[cast(UnitMetric::BUILDING_ATTACK)],
-					                       dbBuilding->getSumCost()
-					);
+					                       dbBuilding->getSumCost());
 			}
 		}
 	}

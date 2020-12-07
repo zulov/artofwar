@@ -74,6 +74,7 @@ SimInfo* Simulation::update(float timeStep) {
 
 		moveUnitsAndCheck(TIME_PER_UPDATE); //zmiany stanu
 		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac w tym zmiany stanu
+		executeStateTransition();
 		updateQueues();
 		updateInfluenceMaps();
 
@@ -112,7 +113,7 @@ void Simulation::selfAI() const {
 	if (PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, currentFrame)) {
 		for (auto unit : *units) {
 			if (isFree(unit)) {
-				if (StateManager::checkChangeState(unit, unit->getActionState())) {
+				if (StateManager::canChangeState(unit, unit->getActionState())) {
 					switch (unit->getActionState()) {
 					case UnitState::ATTACK:
 						tryToAttack(unit, 12, UnitAction::ATTACK, belowClose);
@@ -249,6 +250,12 @@ void Simulation::changeColorMode(SimColorMode _colorMode) {
 void Simulation::performStateAction(float timeStep) const {
 	for (auto unit : *units) {
 		StateManager::execute(unit, timeStep);
+	}
+}
+
+void Simulation::executeStateTransition() const {
+	for (auto unit : *units) {
+		StateManager::executeChange(unit);
 	}
 	for (auto building : *buildings) {
 		StateManager::executeChange(building);

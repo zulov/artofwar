@@ -354,6 +354,15 @@ bool Unit::isInRightSocket() const {
 	return indexToInteract == getMainBucketIndex();
 }
 
+void Unit::setNextState(UnitState stateTo, const ActionParameter& actionParameter) {
+	nextState = stateTo;
+	nextActionParameter.reset(actionParameter);
+}
+
+void Unit::setNextState(UnitState stateTo) {
+	setNextState(stateTo, Consts::EMPTY_ACTION_PARAMETER);
+}
+
 std::string Unit::getColumns() {
 	return Physical::getColumns() +
 		"position_x		INT     NOT NULL,"

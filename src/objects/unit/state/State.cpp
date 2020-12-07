@@ -16,13 +16,13 @@ bool State::canStart(Unit* unit, const ActionParameter& parameter) {
 }
 
 void State::onEnd(Unit* unit) {
-	unit->atState = false;
+	//unit->atState = false;
 }
 
 void State::execute(Unit* unit, float timeStep) {
-	unit->atState = true;
+	//unit->atState = true;
 }
 
 bool State::validateTransition(UnitState stateTo) {
-	return nextStates[static_cast<char>(stateTo)];
+	return nextStates[cast(stateTo)];
 }
