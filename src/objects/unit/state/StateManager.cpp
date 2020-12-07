@@ -68,8 +68,8 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 	                      Urho3D::String(magic_enum::enum_name(stateTo).data()));
 
 	unit->setState(UnitState::MOVE);
-	instance->states[cast(UnitState::MOVE)]->onStart(unit, actionParameter);
-	actionParameter.reset();
+	instance->states[cast(UnitState::MOVE)]->onStart(unit, Consts::EMPTY_ACTION_PARAMETER);
+	
 	unit->setNextState(UnitState::MOVE);
 
 	return false;
