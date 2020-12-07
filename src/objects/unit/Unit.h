@@ -88,6 +88,7 @@ public:
 	bool isInRightSocket() const;
 	void setNextState(UnitState stateTo, const ActionParameter& actionParameter);
 	void setNextState(UnitState stateTo);
+	ActionParameter& getNextActionParameter();
 
 	static std::string getColumns();
 	void changeColor(SimColorMode mode);

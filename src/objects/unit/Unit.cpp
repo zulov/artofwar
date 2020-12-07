@@ -363,6 +363,10 @@ void Unit::setNextState(UnitState stateTo) {
 	setNextState(stateTo, Consts::EMPTY_ACTION_PARAMETER);
 }
 
+ActionParameter& Unit::getNextActionParameter() {
+	return nextActionParameter;
+}
+
 std::string Unit::getColumns() {
 	return Physical::getColumns() +
 		"position_x		INT     NOT NULL,"

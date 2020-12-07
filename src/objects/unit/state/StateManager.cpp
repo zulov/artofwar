@@ -67,8 +67,9 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 	                      Urho3D::String(magic_enum::enum_name(unit->getState()).data()) + " to " +
 	                      Urho3D::String(magic_enum::enum_name(stateTo).data()));
 
-	// unit->setState(UnitState::MOVE);
-	// instance->states[cast(UnitState::MOVE)]->onStart(unit, actionParameter);
+	unit->setState(UnitState::MOVE);
+	instance->states[cast(UnitState::MOVE)]->onStart(unit, actionParameter);
+	actionParameter.reset();
 	unit->setNextState(UnitState::MOVE);
 
 	return false;
@@ -91,8 +92,9 @@ void StateManager::executeChange(Unit* unit) {
 	State* toState = instance->states[cast(unit->getNextState())];
 
 	stateFrom->onEnd(unit);
-	unit->setState(stateTo);
-	instance->states[cast(stateTo)]->onStart(unit, actionParameter);
+	unit->setState(unit->getNextState());
+	instance->states[cast(toState)]->onStart(unit, unit->getNextActionParameter());
+	unit->getNextActionParameter().reset();
 }
 
 bool StateManager::changeState(Static* obj, StaticState stateTo) {
