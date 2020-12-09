@@ -1,8 +1,6 @@
-getNeight nie dla pos a dla indexu, można zrobic cache
-nie zwraca lisrty tylko perowac na itratorze
+nie zwraca listy tylko iterowac na itratorze
 leniwe obliczanie max and min
 InfluencaMapQuad grupowac 
 Nie brac całej armi ani wszystkich workerów na raz
 
 sortowac per index
-mainIndex nie trzeba obliczac bo jest znany
