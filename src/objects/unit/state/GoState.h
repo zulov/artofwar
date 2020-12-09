@@ -12,7 +12,6 @@ public:
 	}) {
 	}
 
-
 	~GoState() = default;
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
@@ -21,11 +20,10 @@ public:
 	}
 
 	void onEnd(Unit* unit) override {
-		State::onEnd(unit);
+		//TODO probable bug czy czyscic, ale moze przjsceie do mova zaltwia sprawe
 	}
 
 	void execute(Unit* unit, float timeStep) override {
-		State::execute(unit, timeStep);
 		//TODO probable bug trzeba wyjsc jesli nie ma juz aima
 	}
 };

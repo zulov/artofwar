@@ -27,12 +27,10 @@ public:
 	}
 
 	void onEnd(Unit* unit) override {
-		State::onEnd(unit);
 		unit->maxSpeed = unit->dbLevel->maxSpeed;
 	}
 
-	void execute(Unit* unit, float timeStep) override {
-		State::execute(unit, timeStep);		
+	void execute(Unit* unit, float timeStep) override {	
 		unit->toCharge(Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, unit->chargeData->attackRange, unit->getTeam()));
 		if (unit->chargeData->updateFrame()) {
 			for (auto physical : unit->thingsToInteract) {

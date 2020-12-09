@@ -39,7 +39,6 @@ public:
 	}
 
 	void onEnd(Unit* unit) override {
-		State::onEnd(unit);
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceClose();
 			unit->thingsToInteract[0]->setOccupiedSlot(unit->indexToInteract, false);
@@ -57,7 +56,6 @@ public:
 	}
 
 	void execute(Unit* unit, float timeStep) override {
-		State::execute(unit, timeStep);
 		if (isInRange(unit)) {
 			if (fmod(unit->currentFrameState, 1 / unit->dbLevel->closeAttackSpeed) < 1) {
 				auto val = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->closeAttackVal);

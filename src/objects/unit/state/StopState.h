@@ -3,8 +3,7 @@
 #include "State.h"
 
 
-class StopState : public State
-{
+class StopState : public State {
 public:
 
 	StopState(): State({

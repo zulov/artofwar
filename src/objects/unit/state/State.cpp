@@ -15,14 +15,6 @@ bool State::canStart(Unit* unit, const ActionParameter& parameter) {
 	return true;
 }
 
-void State::onEnd(Unit* unit) {
-	//unit->atState = false;
-}
-
-void State::execute(Unit* unit, float timeStep) {
-	//unit->atState = true;
-}
-
 bool State::validateTransition(UnitState stateTo) {
 	return nextStates[cast(stateTo)];
 }

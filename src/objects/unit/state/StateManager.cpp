@@ -54,23 +54,15 @@ bool StateManager::canStartState(Unit* unit, UnitState stateTo, const ActionPara
 }
 
 bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter) {
-	State* stateFrom = instance->states[cast(unit->getState())];
+	State* stateFrom = instance->states[cast(unit->getNextState())];
 	State* toState = instance->states[cast(stateTo)];
 	if (canStartState(unit, stateTo, actionParameter, stateFrom, toState)) {
 		unit->setNextState(stateTo, actionParameter);
-		// stateFrom->onEnd(unit);
-		// unit->setState(stateTo);
-		// toState->onStart(unit, actionParameter);
 		return true;
 	}
 	Game::getLog()->Write(0, "fail to change state from " +
-	                      Urho3D::String(magic_enum::enum_name(unit->getState()).data()) + " to " +
+	                      Urho3D::String(magic_enum::enum_name(unit->getNextState()).data()) + " to " +
 	                      Urho3D::String(magic_enum::enum_name(stateTo).data()));
-
-	unit->setState(UnitState::MOVE);
-	instance->states[cast(UnitState::MOVE)]->onStart(unit, Consts::EMPTY_ACTION_PARAMETER);
-	
-	unit->setNextState(UnitState::MOVE);
 
 	return false;
 }

@@ -12,7 +12,6 @@ public:
 	}) {
 	}
 
-
 	~MoveState() = default;
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
@@ -20,11 +19,4 @@ public:
 		unit->thingsToInteract.clear();
 	}
 
-	void onEnd(Unit* unit) override {
-		State::onEnd(unit);
-	}
-
-	void execute(Unit* unit, float timeStep) override {
-		State::execute(unit, timeStep);
-	}
 };

@@ -20,12 +20,8 @@ public:
 		unit->thingsToInteract.clear();
 	}
 
-
 	void onEnd(Unit* unit) override {
-		State::onEnd(unit);
+		//TODO czy czyœciæ aimy?
 	}
 
-	void execute(Unit* unit, float timeStep) override {
-		State::execute(unit, timeStep);
-	}
 };

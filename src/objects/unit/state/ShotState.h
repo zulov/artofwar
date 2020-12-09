@@ -28,7 +28,6 @@ public:
 	}
 
 	void onEnd(Unit* unit) override {
-		State::onEnd(unit);
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceRange();
 			unit->thingsToInteract.clear();
@@ -41,7 +40,6 @@ public:
 	}
 
 	void execute(Unit* unit, float timeStep) override {
-		State::execute(unit, timeStep);
 		unit->velocity = Urho3D::Vector2::ZERO;
 		++unit->currentFrameState;
 

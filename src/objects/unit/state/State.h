@@ -13,9 +13,14 @@ public:
 	virtual ~State() = default;
 	virtual bool canStart(Unit* unit, const ActionParameter& parameter);
 
-	virtual void onStart(Unit* unit, const ActionParameter& parameter) =0;
-	virtual void execute(Unit* unit, float timeStep);
-	virtual void onEnd(Unit* unit);
+	virtual void onStart(Unit* unit, const ActionParameter& parameter) {
+	}
+
+	virtual void execute(Unit* unit, float timeStep) {
+	}
+
+	virtual void onEnd(Unit* unit) {
+	}
 
 	bool validateTransition(UnitState stateTo);
 protected:

@@ -40,7 +40,6 @@ public:
 	}
 
 	void onEnd(Unit* unit) override {
-		State::onEnd(unit);
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceClose();
 		}
@@ -50,7 +49,6 @@ public:
 	}
 
 	void execute(Unit* unit, float timeStep) override {
-		State::execute(unit, timeStep);
 		if (unit->isFirstThingAlive()
 			&& unit->getMainCell() == unit->indexToInteract
 			&& Game::getEnvironment()->cellInState(unit->getMainCell(), CellState::COLLECT)) {
