@@ -311,6 +311,7 @@
     <ClCompile Include="src\player\ai\threshold\ThresholdProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\camera\CameraInfo.h" />
     <ClInclude Include="src\database\db_basic_struct.h" />
     <ClInclude Include="src\database\db_container.h" />
     <ClInclude Include="src\database\db_grah_structs.h" />

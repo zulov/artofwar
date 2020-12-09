@@ -88,13 +88,15 @@ void StateManager::execute(Unit* unit, float timeStamp) {
 }
 
 void StateManager::executeChange(Unit* unit) {
-	State* stateFrom = instance->states[cast(unit->getState())];
-	State* toState = instance->states[cast(unit->getNextState())];
+	if(unit->hasStateChangePending()) {
+		State* stateFrom = instance->states[cast(unit->getState())];
+		State* toState = instance->states[cast(unit->getNextState())];
 
-	stateFrom->onEnd(unit);
-	unit->setState(unit->getNextState());
-	instance->states[cast(toState)]->onStart(unit, unit->getNextActionParameter());
-	unit->getNextActionParameter().reset();
+		stateFrom->onEnd(unit);
+		unit->setState(unit->getNextState());
+		toState->onStart(unit, unit->getNextActionParameter());
+		unit->getNextActionParameter().resetUsed();
+	}
 }
 
 bool StateManager::changeState(Static* obj, StaticState stateTo) {

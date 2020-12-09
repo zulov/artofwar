@@ -67,8 +67,8 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 }
 
 Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
-	auto index = calculator->indexFromPosition(unit->getPosition());
-	assert(unit->getMainBucketIndex()==index); //TODO perf zamienic jezeli ok
+	auto index = unit->getMainBucketIndex();
+
 	auto& data = complexData[index];
 
 	Urho3D::Vector2 sum;

@@ -31,6 +31,7 @@ struct dbload_unit;
 struct MissileData;
 struct ChargeData;
 struct ActionParameter;
+struct CameraInfo;
 
 class UnitOrder;
 class Aim;
@@ -56,8 +57,8 @@ public:
 	void populate() override;
 	void checkAim();
 	void updatePosition() const;
-	bool move(float timeStep, const Urho3D::Vector4& boundary);
-	bool ifVisible(const Urho3D::Vector4& boundary) const;
+	bool move(float timeStep, const CameraInfo* camInfo);
+	bool ifVisible(bool hasMoved, const CameraInfo* camInfo) const;
 	void applyForce(float timeStep);
 	void setAcceleration(Urho3D::Vector2& _acceleration);
 
@@ -89,6 +90,7 @@ public:
 	void setNextState(UnitState stateTo, const ActionParameter& actionParameter);
 	void setNextState(UnitState stateTo);
 	ActionParameter& getNextActionParameter();
+	bool hasStateChangePending() const;
 
 	static std::string getColumns();
 	void changeColor(SimColorMode mode);
@@ -169,6 +171,7 @@ private:
 
 	UnitState state;
 	UnitState nextState;
-	ActionParameter nextActionParameter;
+	bool stateChangePending = false;
 	unsigned char useSockets = 0;
+	ActionParameter nextActionParameter;
 };

@@ -17,10 +17,12 @@
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
 #include "utils/consts.h"
+#include "camera/CameraInfo.h"
 
 
 Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position),
-                                                                        state(UnitState::STOP) {
+                                                                        state(UnitState::STOP),
+                                                                        nextState(UnitState::STOP) {
 	dbUnit = Game::getDatabase()->getUnit(id);
 	dbLevel = dbUnit->getLevel(level).value(); //TODO bug value
 	setPlayerAndTeam(player);
@@ -70,25 +72,35 @@ void Unit::updatePosition() const {
 	}
 }
 
-bool Unit::move(float timeStep, const Urho3D::Vector4& boundary) {
-	bool hasMoved = false;
-	const bool prevVisible = isVisible;
-	isVisible = ifVisible(boundary);
-	if (state != UnitState::STOP) {
-		position.x_ += velocity.x_ * timeStep;
-		position.z_ += velocity.y_ * timeStep;
-		updatePosition();
-		hasMoved = true;
-	} else if (prevVisible == false && isVisible == true) {
-		node->SetPosition(position);
-	}
+bool Unit::move(float timeStep, const CameraInfo* camInfo) {
 	if (missileData && missileData->isUp()) {
 		missileData->update(timeStep, dbLevel->rangeAttackVal);
 	}
+	bool hasMoved = false;
+	const bool prevVisible = isVisible;
+
+	if (state != UnitState::STOP) {
+		hasMoved = true;
+		position.x_ += velocity.x_ * timeStep;
+		position.z_ += velocity.y_ * timeStep;
+		isVisible = ifVisible(true, camInfo);
+		updatePosition();
+	} else {
+		isVisible = ifVisible(false, camInfo);
+	}
+	if (prevVisible == false && isVisible == true) {
+		node->SetPosition(position);
+	}
+
 	return hasMoved;
 }
 
-bool Unit::ifVisible(const Urho3D::Vector4& boundary) const {
+bool Unit::ifVisible(bool hasMoved, const CameraInfo* camInfo) const {
+	if (!(camInfo->hasMoved || hasMoved)) {
+		return isVisible;
+	}
+	auto& boundary = camInfo->boundary;
+
 	return (boundary.x_ < position.x_ || boundary.x_ < node->GetPosition().x_)
 		&& (position.x_ < boundary.y_ || node->GetPosition().x_ < boundary.y_)
 		&& (boundary.z_ < position.z_ || boundary.z_ < node->GetPosition().z_)
@@ -310,6 +322,7 @@ void Unit::changeColor(SimColorMode mode) {
 
 void Unit::setState(UnitState _state) {
 	state = _state;
+	stateChangePending = false;
 }
 
 void Unit::load(dbload_unit* unit) {
@@ -344,8 +357,7 @@ void Unit::clearAims() {
 }
 
 bool Unit::closeEnoughToAttack() {
-	float dist = sqDist(position, getPosToUse());
-	float sqRange;
+	const float sqRange = sqDist(position, getPosToUse());
 	return dbLevel->canCloseAttack && sqRange < dbLevel->sqCloseAttackRange
 		|| dbLevel->canRangeAttack && sqRange < dbLevel->sqRangeAttackRange;
 }
@@ -357,6 +369,7 @@ bool Unit::isInRightSocket() const {
 void Unit::setNextState(UnitState stateTo, const ActionParameter& actionParameter) {
 	nextState = stateTo;
 	nextActionParameter.reset(actionParameter);
+	stateChangePending = true;
 }
 
 void Unit::setNextState(UnitState stateTo) {
@@ -365,6 +378,10 @@ void Unit::setNextState(UnitState stateTo) {
 
 ActionParameter& Unit::getNextActionParameter() {
 	return nextActionParameter;
+}
+
+bool Unit::hasStateChangePending() const {
+	return stateChangePending;
 }
 
 std::string Unit::getColumns() {
@@ -393,7 +410,7 @@ std::string Unit::getValues(int precision) {
 
 void Unit::applyForce(float timeStep) {
 	velocity *= 0.5f; //TODO to dac jaki wspolczynnik tarcia terenu
-	velocity += acceleration * (timeStep / dbLevel->mass);
+	velocity += acceleration * (timeStep * dbLevel->invMass);
 	const float velLength = velocity.LengthSquared();
 	if (velLength < dbLevel->sqMinSpeed) {
 		if (state == UnitState::MOVE) {

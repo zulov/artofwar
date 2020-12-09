@@ -1,17 +1,14 @@
 #pragma once
 #include "CameraBehave.h"
 
+
 class TopCameraBehave : public CameraBehave {
 public:
 	TopCameraBehave();
 	~TopCameraBehave() override = default;
-	void translate(bool cameraKeys[], int wheel, float timeStep, float min) override;
-	void rotate(const Urho3D::IntVector2& mouseMove, float mouse_sensitivity) override;
+	bool translate(bool cameraKeys[], int wheel, float timeStep, float min) override;
 
-	void setRotation(const Urho3D::Quaternion& rotation) override;
-	Urho3D::String* getInfo() override;
 	Urho3D::MouseMode getMouseMode() override;
-private:
-	float maxY = 200;
+private:	
 	float orthoSize = 100;
 };

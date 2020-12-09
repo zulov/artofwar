@@ -16,6 +16,8 @@ void ActionParameter::reset(const ActionParameter& actionParameter) {
 	this->index = actionParameter.index;
 }
 
-void ActionParameter::reset() {
-	reset(Consts::EMPTY_ACTION_PARAMETER);
+void ActionParameter::resetUsed() {
+	this->aim = nullptr;
+	this->thingToInteract = nullptr;
+	this->index = -1;
 }

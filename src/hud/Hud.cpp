@@ -162,7 +162,7 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
 
 	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
 	                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
-	                    cameraManager->getInfo());
+	                    cameraManager->getPosInfo());
 
 	topPanel->update(Game::getPlayersMan()->getActivePlayer());
 

@@ -5,12 +5,11 @@
 #include <Urho3D/Scene/Node.h>
 #include "Game.h"
 #include "simulation/env/Environment.h"
+#include "utils/consts.h"
 
 
 CameraBehave::CameraBehave(const Urho3D::Vector3& pos, float minY, Urho3D::String name):
-	name(std::move(name)), changed(true), minY(minY) {
-
-	info = new Urho3D::String();
+	name(std::move(name)), minY(minY) {
 
 	cameraNode = new Urho3D::Node(Game::getContext());
 	cameraNode->SetPosition(pos);
@@ -23,7 +22,6 @@ CameraBehave::CameraBehave(const Urho3D::Vector3& pos, float minY, Urho3D::Strin
 }
 
 CameraBehave::~CameraBehave() {
-	delete info;
 	cameraNode->Remove();
 }
 
@@ -31,20 +29,23 @@ Urho3D::Camera* CameraBehave::getComponent() const {
 	return cameraNode->GetComponent<Urho3D::Camera>();
 }
 
+Urho3D::String CameraBehave::getInfo() const {
+	return name + " \t" + cameraNode->GetPosition().ToString() + "\n" + cameraNode->GetRotation().ToString();
+}
+
 const Urho3D::Vector3& CameraBehave::getPosition() const {
 	return cameraNode->GetPosition();
 }
 
-void CameraBehave::changePosition(float percentX, float percentY) {
+void CameraBehave::changePosition(float percentX, float percentY) const {
 	const auto newPos = Game::getEnvironment()->
 		getValidPosForCamera(percentX, percentY, cameraNode->GetPosition(), minY);
 
 	setPos2D(newPos);
 }
 
-void CameraBehave::setPos2D(const Urho3D::Vector3& newPos) {
+void CameraBehave::setPos2D(const Urho3D::Vector3& newPos) const {
 	cameraNode->SetPosition(newPos);
-	changed = true;
 }
 
 Urho3D::Vector2 CameraBehave::getTargetPos() const {
@@ -52,15 +53,17 @@ Urho3D::Vector2 CameraBehave::getTargetPos() const {
 	return Urho3D::Vector2(pos.x_, pos.z_);
 }
 
-void CameraBehave::translateCam(float timeStep, float diff, Urho3D::Vector3 dir) {
+void CameraBehave::translateCam(float timeStep, float diff, Urho3D::Vector3 dir) const {
 	cameraNode->Translate(diff * dir * timeStep, Urho3D::TS_WORLD);
-	changed = true;
 }
 
-void CameraBehave::translateInternal(const bool* cameraKeys, float timeStep, float diff) {
+bool CameraBehave::translateInternal(const bool* cameraKeys, float timeStep, float diff) {
+	bool hasMoved = false;
 	for (int i = 0; i < 4; ++i) {
 		if (cameraKeys[i]) {
-			translateCam(timeStep, coefs[i] * diff, dirs[i]);
+			translateCam(timeStep, coefs[i] * diff, Consts::DIRS[i]);
+			hasMoved = true;
 		}
 	}
+	return hasMoved;
 }

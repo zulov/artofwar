@@ -8,6 +8,8 @@
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Input/Input.h>
 
+#include "utils/OtherUtils.h"
+
 
 CameraManager::CameraManager() {
 	cameraBehaves[0] = new FreeCameraBehave();
@@ -15,6 +17,8 @@ CameraManager::CameraManager() {
 	cameraBehaves[2] = new TopCameraBehave();
 
 	activeBehave = cameraBehaves[1];
+
+	camInfo = new CameraInfo();
 	float border = 256.f;
 
 	const int width = Game::getGraphics()->GetWidth();
@@ -28,12 +32,14 @@ CameraManager::CameraManager() {
 
 CameraManager::~CameraManager() {
 	clear_array(cameraBehaves, 3);
+	delete camInfo;
 }
 
 void CameraManager::setCameraBehave(CameraBehaviorType _type) {
 	auto& pos = activeBehave->getPosition();
-	activeBehave = cameraBehaves[static_cast<char>(_type)];
+	activeBehave = cameraBehaves[cast(_type)];
 	activeBehave->setPos2D(pos);
+	hasMoved = true;
 }
 
 Urho3D::Camera* CameraManager::getComponent() const {
@@ -59,36 +65,42 @@ void CameraManager::createCameraKeys(Urho3D::Input* input, bool cameraKeys[4],
 	}
 }
 
-void CameraManager::translate(const Urho3D::IntVector2& cursorPos, Urho3D::Input* input, float timeStep) const {
+void CameraManager::translate(const Urho3D::IntVector2& cursorPos, Urho3D::Input* input, float timeStep) {
 	bool cameraKeys[4];
 	createCameraKeys(input, cameraKeys, cursorPos);
 	const int wheel = input->GetMouseMoveWheel();
 	const Urho3D::Vector3 pos = activeBehave->getPosition();
 	const float min = Game::getEnvironment()->getGroundHeightAt(pos.x_, pos.z_);
-	activeBehave->translate(cameraKeys, wheel, timeStep * MOVE_SPEED, min);
+
+	hasMoved = hasMoved || activeBehave->translate(cameraKeys, wheel, timeStep * MOVE_SPEED, min);
+	hasMoved = hasMoved || activeBehave->rotate(input->GetMouseMove(), MOUSE_SENSITIVITY);
+	if (hasMoved) {
+		camInfo->info = activeBehave->getInfo();
+	}
 }
 
-Urho3D::String* CameraManager::getInfo() const {
-	return activeBehave->getInfo();
+const Urho3D::String& CameraManager::getPosInfo() const {
+	return camInfo->info;
 }
 
 Urho3D::MouseMode CameraManager::getMouseMode() const {
 	return activeBehave->getMouseMode();
 }
 
-void CameraManager::rotate(const Urho3D::IntVector2& mouse_move) const {
-	activeBehave->rotate(mouse_move, MOUSE_SENSITIVITY);
-}
-
-void CameraManager::changePosition(float x, float y) const {
+void CameraManager::changePosition(float x, float y) {
 	activeBehave->changePosition(x, y);
+	hasMoved = true;
+	camInfo->info = activeBehave->getInfo();
 }
 
 const Urho3D::Vector2 CameraManager::getTargetPos() const {
 	return activeBehave->getTargetPos();
 }
 
-const Urho3D::Vector4 CameraManager::getCamBoundary(float radius) const {
+const CameraInfo* CameraManager::getCamInfo(float radius) {
 	auto camPos = activeBehave->getTargetPos();
-	return Urho3D::Vector4(camPos.x_ - radius, camPos.x_ + radius, camPos.y_ - radius, camPos.y_ + radius);
+	camInfo->boundary = Urho3D::Vector4(camPos.x_ - radius, camPos.x_ + radius, camPos.y_ - radius, camPos.y_ + radius);
+	camInfo->hasMoved = hasMoved;
+	hasMoved = false;
+	return camInfo;
 }

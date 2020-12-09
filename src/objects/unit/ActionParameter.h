@@ -12,7 +12,7 @@ struct ActionParameter {
 
 	bool isFirstThingAlive() const;
 	void reset(const ActionParameter& actionParameter);
-	void reset();
+	void resetUsed();
 
 	Aim* aim = nullptr;//TODO union!!!!
 	Physical* thingToInteract = nullptr;

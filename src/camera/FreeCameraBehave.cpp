@@ -2,34 +2,26 @@
 #include <Urho3D/Scene/Node.h>
 #include <Urho3D/Input/Input.h>
 
-FreeCameraBehave::FreeCameraBehave(): CameraBehave(Urho3D::Vector3(0.0f, 50.0f, -50.0f), 3, "FreeCam") {
-	coefs[0] = 4;
-	coefs[1] = 1;
-	coefs[2] = 3;
-	coefs[3] = 3;
+FreeCameraBehave::FreeCameraBehave(): CameraBehave(Urho3D::Vector3(0.f, 50.f, -50.f), 3, "FreeCam") {
+	coefs[0] = 4.f;
+	coefs[1] = 1.f;
+	coefs[2] = 3.f;
+	coefs[3] = 3.f;
 }
 
-void FreeCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
-	translateInternal(cameraKeys, timeStep, 1);
+bool FreeCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
+	return translateInternal(cameraKeys, timeStep, 1);
 }
 
-void FreeCameraBehave::rotate(const Urho3D::IntVector2& mouseMove, const float mouse_sensitivity) {
-	yaw += mouse_sensitivity * mouseMove.x_;
-	pitch += mouse_sensitivity * mouseMove.y_;
-	//pitch_ = Clamp(pitch_, -90.0f, 90.0f);
-	setRotation(Urho3D::Quaternion(pitch, yaw, 0.0f));
-}
-
-void FreeCameraBehave::setRotation(const Urho3D::Quaternion& rotation) {
-	cameraNode->SetRotation(rotation);
-}
-
-Urho3D::String* FreeCameraBehave::getInfo() {
-	if (changed) {
-		*info = name + " \t" + cameraNode->GetPosition().ToString();
-		changed = false;
+bool FreeCameraBehave::rotate(const Urho3D::IntVector2& mouseMove, const float mouse_sensitivity) {
+	if (mouseMove != Urho3D::IntVector2::ZERO) {
+		yaw += mouse_sensitivity * mouseMove.x_;
+		pitch += mouse_sensitivity * mouseMove.y_;
+		//pitch_ = Clamp(pitch_, -90.0f, 90.0f);
+		cameraNode->SetRotation(Urho3D::Quaternion(pitch, yaw, 0.0f));
+		return true;
 	}
-	return info;
+	return false;
 }
 
 Urho3D::MouseMode FreeCameraBehave::getMouseMode() {

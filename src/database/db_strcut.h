@@ -176,6 +176,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	const float minDist;
 	const float maxSep;
 	const float mass;
+	const float invMass;
 
 	const float maxSpeed;
 	const float minSpeed;
@@ -205,6 +206,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 		maxSep(maxSep),
 		nodeName(nodeName),
 		mass(mass),
+		invMass(1 / mass),
 		maxSpeed(maxSpeed),
 		minSpeed(minSpeed),
 		collectSpeed(collectSpeed),

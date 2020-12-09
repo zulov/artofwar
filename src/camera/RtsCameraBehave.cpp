@@ -7,7 +7,7 @@ RtsCameraBehave::RtsCameraBehave(): CameraBehave(Urho3D::Vector3(0.0f, 50.0f, -5
 	cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * 10.f);
 }
 
-void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
+bool RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, float min) {
 	Urho3D::Vector3 pos = cameraNode->GetWorldPosition();
 	const float localMin = minY + min;
 	const float localMax = maxY + min;
@@ -18,7 +18,7 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 	} else {
 		diff = sqrt((pos.y_ - localMin) / 10) + 1.f;
 	}
-	translateInternal(cameraKeys, timeStep, diff);
+	bool hasChange = translateInternal(cameraKeys, timeStep, diff);
 
 	if (wheel != 0 || pos.y_ < localMin) {
 		Urho3D::Vector3 pos2 = cameraNode->GetWorldPosition();
@@ -37,18 +37,11 @@ void RtsCameraBehave::translate(bool cameraKeys[], int wheel, float timeStep, fl
 
 		cameraNode->SetWorldPosition(pos2);
 		cameraNode->SetDirection(Urho3D::Vector3::DOWN * diff + Urho3D::Vector3::FORWARD * 10);
-		changed = true;
+		hasChange = true;
 	}
+	return hasChange;
 }
 
-
-Urho3D::String* RtsCameraBehave::getInfo() {
-	if (changed) {
-		*info = name + " \t" + cameraNode->GetPosition().ToString() + "\n" + cameraNode->GetRotation().ToString();
-		changed = false;
-	}
-	return info;
-}
 
 Urho3D::MouseMode RtsCameraBehave::getMouseMode() {
 	return Urho3D::MM_RELATIVE;
@@ -56,6 +49,6 @@ Urho3D::MouseMode RtsCameraBehave::getMouseMode() {
 
 Urho3D::Vector2 RtsCameraBehave::getTargetPos() const {
 	auto pos = cameraNode->GetPosition();
-	
-	return Urho3D::Vector2(pos.x_, pos.z_+100.f);//TODO hardcoded
+
+	return Urho3D::Vector2(pos.x_, pos.z_ + 100.f); //TODO hardcoded
 }

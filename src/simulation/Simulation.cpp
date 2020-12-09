@@ -145,9 +145,9 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 0, Urho3D::Vector2(20, -250), 0);
+		Game::getActionCenter()->addUnits(UNITS_NUMBER * 1, 0, Urho3D::Vector2(20, -250), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
-		Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 0, Urho3D::Vector2(10, 250), 1);
+		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 300, 0, Urho3D::Vector2(10, 250), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER*10, 4, Urho3D::Vector2(-20, -200), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 5, 0, Urho3D::Vector2(-20, -20), 0);
 		//Game::getActionCenter()->addResource(1, Urho3D::Vector2(i, j), 0);
@@ -286,7 +286,6 @@ void Simulation::aiPlayers() const {
 		}
 	}
 
-
 	if (PER_FRAME_ACTION.get(PerFrameAction::AI_ORDER, currentFrame)) {
 		for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 			if (Game::getPlayersMan()->getActivePlayer() != player) {
@@ -297,10 +296,10 @@ void Simulation::aiPlayers() const {
 }
 
 void Simulation::moveUnitsAndCheck(const float timeStep) {
-	auto pos = Game::getCameraManager()->getCamBoundary(UPDATE_DRAW_DISTANCE);
+	auto camInfo = Game::getCameraManager()->getCamInfo(UPDATE_DRAW_DISTANCE);
 
 	for (auto unit : *units) {
-		bool hasMoved = unit->move(timeStep, pos);
+		const bool hasMoved = unit->move(timeStep, camInfo);
 
 		unit->checkAim();
 		if (hasMoved) {
