@@ -132,7 +132,7 @@ void MainGrid::updateCell(int index, char val, CellState cellState) const {
 }
 
 char MainGrid::getNumberInState(int index, UnitState state) const {
-	auto pred = [state](Physical* p) { return dynamic_cast<Unit*>(p)->getState() == state; };
+	auto pred = [state](Physical* p) { return static_cast<Unit*>(p)->getState() == state; };
 
 	auto& content = getContentAt(index);
 	return std::count_if(content.begin(), content.end(), pred);
@@ -145,7 +145,7 @@ char MainGrid::getOrdinalInState(Unit* unit, UnitState state) const {
 		if (physical == unit) {
 			return ordinal;
 		}
-		if (dynamic_cast<Unit*>(physical)->getState() == state) {
+		if (static_cast<Unit*>(physical)->getState() == state) {
 			++ordinal;
 		}
 	}

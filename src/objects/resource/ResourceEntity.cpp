@@ -72,7 +72,7 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 		char limit = belowCloseLimit();
 		for (auto neight : *neights) {
 			if (k < limit) {
-				auto unit = dynamic_cast<Unit*>(neight);
+				auto unit = static_cast<Unit*>(neight);
 				if (unit->getState() == UnitState::STOP && unit->getLevel()->canCollect) {
 					auto opt = this->getPosToUseWithIndex(unit);
 					if (opt.has_value()) {
