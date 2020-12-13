@@ -16,7 +16,6 @@ public:
 	void setState(StaticState state) { this->state = state; }
 	void load(dbload_static* dbloadStatic);
 	void setSurroundCells(const std::unordered_set<int>& indexes);
-	static std::string getColumns();
 
 	int belowCloseLimit() override;
 	int hasFreeSpace() const;

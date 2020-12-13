@@ -70,12 +70,8 @@ struct dbload_building : dbload_static {
 };
 
 struct dbload_resource_entities : dbload_static {
-	float amount;
-
-	dbload_resource_entities(int idDb, float hpCoef, int player, int level, int bucX, int bucY
-	                         , int state, int nextState, float amount)
-		: dbload_static(idDb, hpCoef, player, bucX, bucY, level, state, nextState),
-		  amount(amount) {
+	dbload_resource_entities(int idDb, float hpCoef, int player, int level, int bucX, int bucY, int state,
+	                         int nextState) : dbload_static(idDb, hpCoef, player, bucX, bucY, level, state, nextState) {
 	}
 };
 

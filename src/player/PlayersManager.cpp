@@ -82,20 +82,11 @@ char PlayersManager::getActivePlayerID() const {
 	return activePlayer->getId();
 }
 
-char PlayersManager::getEnemyFor(char player) const {
+char PlayersManager::getEnemyFor(char player) {
 	if (player == 0) {//TODO bug do it better
 		return 1;
 	}
 	return 0;
-}
-
-std::string PlayersManager::getColumns() {
-	return "id		INT     NOT NULL,"
-		"is_active		INT     NOT NULL,"
-		"team		INT     NOT NULL,"
-		"nation		INT     NOT NULL,"
-		"name		TEXT     NOT NULL,"
-		"color		INT     NOT NULL";
 }
 
 std::vector<Player*>& PlayersManager::getAllPlayers() {

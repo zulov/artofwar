@@ -25,7 +25,7 @@ public:
 	std::string getValues(int precision, int player);
 	void setValue(int id, float amount);
 	void change();
-	static std::string getColumns();
+
 	void resetStats() const;
 private:
 	void revert(int end, const std::vector<db_cost*>& costs);

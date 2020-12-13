@@ -50,9 +50,7 @@ Urho3D::String ResourceEntity::toMultiLineString() {
 }
 
 std::string ResourceEntity::getValues(int precision) {
-	int amountI = hp * precision;
-	return Static::getValues(precision)
-		+ std::to_string(amountI);
+	return Static::getValues(precision);
 }
 
 unsigned short ResourceEntity::getMaxHp() const {
@@ -95,11 +93,6 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 
 }
 
-std::string ResourceEntity::getColumns() {
-	return Static::getColumns() +
-		"amount		INT     NOT NULL";
-}
-
 float ResourceEntity::collect(float collectSpeed) {
 	if (hp - collectSpeed >= 0) {
 		hp -= collectSpeed;
@@ -114,6 +107,6 @@ float ResourceEntity::collect(float collectSpeed) {
 
 ResourceEntity* ResourceEntity::load(dbload_resource_entities* resource) {
 	Static::load(resource);
-	this->hp = resource->amount;
+	this->hp = resource->hp;
 	return this;
 }

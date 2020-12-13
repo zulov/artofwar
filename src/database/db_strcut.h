@@ -255,7 +255,7 @@ struct db_unit : db_entity, db_with_name, db_with_cost {
 	float getSumVal(UnitMetric unitMetric) const {
 		float sum = 0.f;
 		for (auto level : levels) {
-			sum += level->dbUnitMetric->getParamsAsSpan()[static_cast<char>(unitMetric)];
+			sum += level->dbUnitMetric->getParamsAsSpan()[cast(unitMetric)];
 		}
 		return sum;
 	}
@@ -320,7 +320,7 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_a
 				for (auto dbUnit : *dbUnits) {
 					constexpr auto& metrics = magic_enum::enum_values<UnitMetric>();
 					for (int i = 0; i < magic_enum::enum_count<UnitMetric>(); ++i) {
-						sums[static_cast<char>(metrics[i])] += dbUnit->getSumVal(metrics[i]);
+						sums[cast(metrics[i])] += dbUnit->getSumVal(metrics[i]);
 					}
 				}
 				dbBuildingMetricPerNation[i] =

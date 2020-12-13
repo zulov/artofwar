@@ -71,7 +71,7 @@ int static load_resources_entities(void* data, int argc, char** argv, char** azC
 	int p = xyz->precision;
 	xyz->resource_entities->push_back(new dbload_resource_entities(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]),
 	                                                               atoi(argv[3]), atoi(argv[4]), atoi(argv[5]),
-	                                                               atoi(argv[6]), atoi(argv[7]), atof(argv[8]) / p));
+	                                                               atoi(argv[6]), atoi(argv[7])));
 
 	return 0;
 }

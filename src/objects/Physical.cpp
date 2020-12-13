@@ -103,13 +103,6 @@ Urho3D::String Physical::toMultiLineString() {
 	return "Physical";
 }
 
-std::string Physical::getColumns() {
-	return "id_db	INT		NOT NULL,"
-		"hp_coef	INT     NOT NULL,"
-		"player		INT     NOT NULL,"
-		"level		INT     NOT NULL,";
-}
-
 char Physical::getLevelNum() {
 	return -1;
 }

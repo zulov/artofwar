@@ -17,7 +17,6 @@ public:
 	void populate() override;
 	void levelUp(char level);
 	Building* load(dbload_building* dbloadBuilding);
-	static std::string getColumns();
 
 	QueueElement* updateQueue(float time) const { return queue->update(time); }
 

@@ -18,8 +18,6 @@ public:
 	float collect(float collectSpeed);
 	ResourceEntity* load(dbload_resource_entities* resource);
 
-	static std::string getColumns();
-
 	char getPlayer() const override { return -1; }
 	const Urho3D::IntVector2 getGridSize() const override;
 

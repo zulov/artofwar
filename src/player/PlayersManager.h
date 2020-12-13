@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include <vector>
 
 constexpr char TEAMS_NUMBER = 3;
@@ -26,8 +25,8 @@ public:
 	void save(SceneSaver& saver);
 	void update(const ObjectsInfo* simInfo);
 	char getActivePlayerID() const;
-	char getEnemyFor(char player) const;
-	static std::string getColumns();
+	static char getEnemyFor(char player);
+
 	std::vector<Player*>& getAllPlayers();
 private:
 	Player* activePlayer;

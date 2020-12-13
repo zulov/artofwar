@@ -6,6 +6,7 @@
 #include "../unit/Unit.h"
 #include "scene/load/dbload_container.h"
 #include "simulation/env/Environment.h"
+#include "utils/OtherUtils.h"
 
 Static::Static(Urho3D::Vector3& _position, int mainCell) : Physical(_position) {
 	state = StaticState::ALIVE;
@@ -39,14 +40,6 @@ void Static::populate() {
 float Static::getAuraSize(const Urho3D::Vector3& boundingBox) const {
 	auto gridSize = getGridSize();
 	return Urho3D::Max(gridSize.x_, gridSize.y_) * 1.2f;
-}
-
-std::string Static::getColumns() {
-	return Physical::getColumns() +
-		+ "bucket_x		INT     NOT NULL,"
-		+ "bucket_y		INT     NOT NULL,"
-		+ "state		INT     NOT NULL,"
-		+ "next_state		INT     NOT NULL,";
 }
 
 int Static::belowCloseLimit() {
@@ -89,6 +82,6 @@ std::string Static::getValues(int precision) {
 	return Physical::getValues(precision)
 		+ std::to_string(cordsCell.x_) + ","
 		+ std::to_string(cordsCell.y_) + ","
-		+ std::to_string(static_cast<char>(state)) + ","
-		+ std::to_string(static_cast<char>(nextState)) + ",";
+		+ std::to_string(cast(state)) + ","
+		+ std::to_string(cast(nextState)) + ",";
 }

@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "math/MathUtils.h"
 #include "objects/CellState.h"
+#include "utils/OtherUtils.h"
 
 ColorPaletteRepo::ColorPaletteRepo() {
 	for (int i = 0; i < PALLET_RESOLUTION; ++i) {
@@ -48,7 +49,7 @@ Urho3D::Color& ColorPaletteRepo::getColor(float value, float maxValue) {
 }
 
 Urho3D::Material* ColorPaletteRepo::getColor(UnitState state) {
-	return statePallet[static_cast<char>(state)];
+	return statePallet[cast(state)];
 }
 
 Urho3D::Material* ColorPaletteRepo::getLineMaterial() const {

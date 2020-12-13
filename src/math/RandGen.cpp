@@ -1,6 +1,8 @@
 #include "RandGen.h"
 #include <random>
 
+#include "utils/OtherUtils.h"
+
 
 constexpr short RAND_TAB_SIZE = 1000;
 
@@ -39,14 +41,14 @@ void RandGen::dispose() {
 }
 
 float RandGen::nextRand(RandFloatType type, float max) {
-	auto id = static_cast<char>(type);
+	auto id = cast(type);
 	instance->indexesFloat[id]++;
 	instance->indexesFloat[id] = instance->indexesFloat[id] % RAND_TAB_SIZE;
 	return instance->dataFloat[id].at(instance->indexesFloat[id]) * max;
 }
 
 int RandGen::nextRand(RandIntType type, int max) {
-	auto id = static_cast<char>(type);
+	auto id = cast(type);
 	instance->indexesInt[id]++;
 	instance->indexesInt[id] = instance->indexesInt[id] % RAND_TAB_SIZE;
 	return instance->dataInt[id].at(instance->indexesInt[id]) % max;

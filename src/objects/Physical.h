@@ -2,6 +2,7 @@
 #include <optional>
 #include <span>
 #include <string>
+
 #include "objects/ObjectEnums.h"
 #include "Urho3D/Math/Vector3.h"
 
@@ -48,7 +49,6 @@ public:
 
 	void indexHasChangedReset() { indexHasChanged = false; }
 
-	static std::string getColumns();
 	virtual std::string getValues(int precision);
 	virtual bool isUsable() const { return isAlive(); }
 
@@ -86,7 +86,7 @@ public:
 	virtual float absorbAttack(float attackCoef) { return 0.0f; }
 
 	void select(Urho3D::Billboard* healthBar, Urho3D::Billboard* aura);
-	void disableBillboard(Urho3D::Billboard* billboard);
+	static void disableBillboard(Urho3D::Billboard* billboard);
 	void unSelect();
 	virtual Urho3D::String toMultiLineString();
 

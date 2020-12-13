@@ -5,6 +5,7 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/Window.h>
 #include "hud/UiUtils.h"
+#include "utils/OtherUtils.h"
 
 
 SimplePanel::SimplePanel(Urho3D::XMLFile* _style, Urho3D::String styleName,
@@ -12,7 +13,7 @@ SimplePanel::SimplePanel(Urho3D::XMLFile* _style, Urho3D::String styleName,
 	style(_style), styleName(std::move(styleName)) {
 	std::fill_n(visibleAt, magic_enum::enum_count<GameState>(), false);
 	for (auto a : active) {
-		visibleAt[static_cast<char>(a)] = true;
+		visibleAt[cast(a)] = true;
 	}
 }
 
@@ -27,7 +28,7 @@ void SimplePanel::createWindow() {
 }
 
 void SimplePanel::updateStateVisibility(GameState state) {
-	setVisible(visibleAt[static_cast<char>(state)]);
+	setVisible(visibleAt[cast(state)]);
 }
 
 void SimplePanel::setVisible(bool enable) {

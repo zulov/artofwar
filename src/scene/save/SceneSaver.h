@@ -3,7 +3,6 @@
 #include <vector>
 #include "Loading.h"
 
-
 namespace Urho3D {
 	class String;
 }
@@ -16,7 +15,7 @@ class Player;
 
 class SceneSaver {
 public:
-	explicit SceneSaver(int _precision);
+	explicit SceneSaver(int precision);
 	~SceneSaver() = default;
 
 	void createTables() const;
@@ -30,7 +29,7 @@ public:
 	void saveConfig();
 	void close();
 private:
-	void executeInsert(std::string& sqlstatement) const;
+	void executeInsert(std::string& sql) const;
 
 	void createUnitsTable() const;
 	void createTable(const std::string& sql) const;

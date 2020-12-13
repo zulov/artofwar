@@ -110,11 +110,6 @@ Building* Building::load(dbload_building* dbloadBuilding) {
 	return this;
 }
 
-std::string Building::getColumns() {
-	return Static::getColumns() +
-		"deploy_Idx		INT     NOT NULL";
-}
-
 std::optional<int> Building::getDeploy() {
 	if (deployIndex > -1) {
 		return deployIndex;

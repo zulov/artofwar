@@ -316,6 +316,7 @@
     <ClInclude Include="src\database\db_container.h" />
     <ClInclude Include="src\database\db_grah_structs.h" />
     <ClInclude Include="src\database\db_other_struct.h" />
+    <ClInclude Include="src\scene\save\SQLConsts.h" />
     <ClInclude Include="src\simulation\FrameInfo.h" />
     <ClInclude Include="src\simulation\SimInfo.h" />
     <ClInclude Include="src\player\ai\AiActionType.h" />

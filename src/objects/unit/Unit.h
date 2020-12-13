@@ -92,7 +92,6 @@ public:
 	ActionParameter& getNextActionParameter();
 	bool hasStateChangePending() const;
 
-	static std::string getColumns();
 	void changeColor(SimColorMode mode);
 	void addOrder(UnitOrder* aim);
 

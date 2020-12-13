@@ -384,15 +384,6 @@ bool Unit::hasStateChangePending() const {
 	return stateChangePending;
 }
 
-std::string Unit::getColumns() {
-	return Physical::getColumns() +
-		"position_x		INT     NOT NULL,"
-		"position_z		INT     NOT NULL,"
-		"state			INT     NOT NULL,"
-		"velocity_x		INT     NOT NULL,"
-		"velocity_z		INT     NOT NULL";
-}
-
 std::string Unit::getValues(int precision) {
 	const int position_x = position.x_ * precision;
 	const int position_z = position.z_ * precision;
@@ -450,7 +441,6 @@ float Unit::getMinimalDistance() const {
 float Unit::getMaxSeparationDistance() const {
 	return dbLevel->maxSep;
 }
-
 
 UnitState Unit::getActionState() const {
 	return UnitState(dbUnit->actionState);

@@ -158,7 +158,7 @@ void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapFloat*>
 
 void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapCombine*>& vector, char type) const {
 	index = index % vector.size();
-	vector[index]->get(static_cast<char>(type))->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+	vector[index]->get(cast(type))->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 }
 
 void InfluenceManager::draw(InfluenceDataType type, char index) {
@@ -323,7 +323,7 @@ void InfluenceManager::addAttack(Unit* unit, float value) {
 }
 
 Urho3D::Vector2 InfluenceManager::getCenterOf(CenterType id, char player) {
-	 return mapsForCentersPerPlayer[player][static_cast<char>(id)]->getCenter();
+	 return mapsForCentersPerPlayer[player][cast(id)]->getCenter();
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(float* values,

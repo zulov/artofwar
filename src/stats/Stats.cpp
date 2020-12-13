@@ -187,7 +187,7 @@ std::string Stats::getPosOutput(char player, Urho3D::Vector2& pos) const {
 void Stats::add(UnitActionCommand* command) {
 	const auto playerId = command->player;
 	//TODO czy tu wszystkie rozkazy czy tylko te wydane bez posrednio a nie same
-	if (command->order->getId() == static_cast<char>(UnitAction::COLLECT)) {
+	if (command->order->getId() == cast(UnitAction::COLLECT)) {
 		auto input = join(Game::getAiInputProvider()->getResourceInput(playerId));
 		joinAndPush(whichResource, playerId, input, getResourceIdOutput(command), command->order->getSize());
 	}

@@ -95,12 +95,6 @@ void Resources::change() {
 	changed = true;
 }
 
-std::string Resources::getColumns() {
-	return "player		INT     NOT NULL,"
-		"resource		INT     NOT NULL,"
-		"amount		INT     NOT NULL";
-}
-
 void Resources::revert(int end, const std::vector<db_cost*>& costs) {
 	for (int i = 0; i < end + 1; ++i) {
 		const int j = costs.at(i)->resource;
