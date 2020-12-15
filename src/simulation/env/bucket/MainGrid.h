@@ -29,7 +29,6 @@ public:
 	~MainGrid();
 
 	void prepareGridToFind() const;
-	bool validateAdd(Static* object) const;
 	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const;
 	void addStatic(Static* object) const;
 	void removeStatic(Static* object) const;

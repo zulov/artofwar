@@ -107,6 +107,5 @@ float ResourceEntity::collect(float collectSpeed) {
 
 ResourceEntity* ResourceEntity::load(dbload_resource_entities* resource) {
 	Static::load(resource);
-	this->hp = resource->hp;
 	return this;
 }

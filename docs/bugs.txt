@@ -2,3 +2,7 @@ Assertion failed: unit->getMainCell() == unit->indexToInteract, file D:\Programo
 przy pond 80k jednostkach blad
 po updejcie formacji nie ida dalej
 czy na kazdym on end trzeba usunac aim?
+influance map building cos zle dziala na srodku cos doje (jest obrócona)
+
+calculate size?
+odwrocone x/z

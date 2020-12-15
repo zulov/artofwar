@@ -11,7 +11,6 @@ public:
 	Static(Urho3D::Vector3& _position, int mainCell);
 	virtual ~Static() = default;
 
-	void setMainCell(int _mainCell) { mainCell = _mainCell; }
 	void setNextState(StaticState stateTo) { nextState = stateTo; }
 	void setState(StaticState state) { this->state = state; }
 	void load(dbload_static* dbloadStatic);
@@ -29,8 +28,8 @@ public:
 	int getMainCell() const override { return mainCell; }
 	bool isToDispose() const override { return state == StaticState::DISPOSE; }
 	virtual const Urho3D::IntVector2 getGridSize() const =0;
-	std::vector<int>& getOccupiedCells() { return occupiedCells; }
-	std::vector<int>& getSurroundCells() { return surroundCells; }
+	const std::vector<int>& getOccupiedCells() const { return occupiedCells; }
+	const std::vector<int>& getSurroundCells() const { return surroundCells; }
 
 	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* unit) override;
 	std::string getValues(int precision) override;

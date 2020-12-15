@@ -41,13 +41,13 @@ void SimulationObjectManager::addUnits(unsigned int number, int id, Urho3D::Vect
 }
 
 void SimulationObjectManager::addBuilding(int id, Urho3D::Vector2& center, int player,
-                                          const Urho3D::IntVector2& _bucketCords, int level) {
+                                          const Urho3D::IntVector2& _bucketCords, int level) const {
 	addBuilding(buildingFactory.create(id, center, player, _bucketCords, level));
 }
 
 
 void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords,
-                                          int level) {
+                                          int level) const {
 	addResource(resourceFactory.create(id, center, _bucketCords, level));
 }
 

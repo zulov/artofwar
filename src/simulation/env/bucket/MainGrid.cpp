@@ -40,12 +40,6 @@ void MainGrid::prepareGridToFind() const {
 	pathConstructor->prepareGridToFind();
 }
 
-bool MainGrid::validateAdd(Static* object) const {
-	const auto pos = object->getPosition();
-	auto pos2d = Urho3D::Vector2(pos.x_, pos.z_);
-	return validateAdd(object->getGridSize(), pos2d);
-}
-
 bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const {
 	const auto sizeX = calculateSize(size.x_, calculator->getIndex(pos.x_));
 	const auto sizeZ = calculateSize(size.y_, calculator->getIndex(pos.y_));
@@ -283,45 +277,39 @@ int MainGrid::closestPassableCell(int posIndex) const {
 }
 
 void MainGrid::addStatic(Static* object) const {
-	if (validateAdd(object)) {
-		//TODO jak tu sie nie doda to doda sie do reszty
-		const auto bucketPos = getCords(object->getMainCell());
+	const auto bucketPos = getCords(object->getMainCell());
 
-		object->setMainCell(calculator->getIndex(bucketPos.x_, bucketPos.y_));
+	//object->setMainCell(calculator->getIndex(bucketPos.x_, bucketPos.y_));
 
-		for (auto index : object->getOccupiedCells()) {
-			complexData[index].setStatic(object);
-		}
+	for (auto index : object->getOccupiedCells()) {
+		complexData[index].setStatic(object);
+	}
 
-		std::vector<int> toRefresh;
+	std::vector<int> toRefresh;
 
-		const auto size = object->getGridSize();
-		const auto sizeX = calculateSize(size.x_, bucketPos.x_);
-		const auto sizeZ = calculateSize(size.y_, bucketPos.y_);
+	const auto size = object->getGridSize();
+	const auto sizeX = calculateSize(size.x_, bucketPos.x_);
+	const auto sizeZ = calculateSize(size.y_, bucketPos.y_);
 
-		for (int i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
-			for (int j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {
-				if (calculator->isValidIndex(i, j)) {
-					const int index = calculator->getNotSafeIndex(i, j);
-					updateNeighbors(index);
-					if (complexData[index].isPassable()) {
-						complexData[index].setEscapeThrough(-1);
-					} else {
-						toRefresh.push_back(index);
-					}
+	for (int i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
+		for (int j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {
+			if (calculator->isValidIndex(i, j)) {
+				const int index = calculator->getNotSafeIndex(i, j);
+				updateNeighbors(index);
+				if (complexData[index].isPassable()) {
+					complexData[index].setEscapeThrough(-1);
+				} else {
+					toRefresh.push_back(index);
 				}
 			}
 		}
-		pathConstructor->refreshWayOut(toRefresh);
-	} else {
-		assert(false);
 	}
+	pathConstructor->refreshWayOut(toRefresh);
+
 	updateSurround(object);
 }
 
 void MainGrid::removeStatic(Static* object) const {
-	//TODO bug poprawic dziwne zygzagki sie robia gdy przechodzi przez// moze invalidate cache?
-	object->setMainCell(-1);
 	for (auto index : object->getOccupiedCells()) {
 		complexData[index].clear();
 		updateNeighbors(index);

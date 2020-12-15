@@ -8,10 +8,8 @@
 #include "simulation/env/Environment.h"
 #include "utils/OtherUtils.h"
 
-Static::Static(Urho3D::Vector3& _position, int mainCell) : Physical(_position) {
-	state = StaticState::ALIVE;
-	nextState = StaticState::ALIVE;
-	setMainCell(mainCell);
+Static::Static(Urho3D::Vector3& _position, int mainCell) : Physical(_position), mainCell(mainCell),
+                                                           state(StaticState::ALIVE), nextState(StaticState::ALIVE) {
 }
 
 void Static::load(dbload_static* dbloadStatic) {
