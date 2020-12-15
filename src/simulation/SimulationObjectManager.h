@@ -29,15 +29,13 @@ public:
 
 	void load(dbload_unit* unit);
 	void load(dbload_building* building);
-	void load(dbload_resource_entities* resource);
+	void load(dbload_resource_entities* resource) const;
 	ObjectsInfo* getInfo() const { return simulationInfo; }
 
 private:
-	void addUnits(std::vector<Unit*>& temp);
-	bool valid(Building* building);
-	void addBuilding(Building* building);
-	bool valid(ResourceEntity* resource);
-	void addResource(ResourceEntity* resource);
+	void addUnits(std::vector<Unit*>& temp) const;
+	void addBuilding(Building* building) const;
+	void addResource(ResourceEntity* resource) const;
 
 	void findToDisposeUnits();
 	void findToDisposeBuildings();

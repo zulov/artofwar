@@ -1,7 +1,6 @@
 #pragma once
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class IntVector2;
 	class Vector2;
 }
@@ -13,6 +12,7 @@ class BuildingFactory {
 public:
 	BuildingFactory() = default;
 	~BuildingFactory() = default;
-	Building* create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level);
-	Building* load(dbload_building* building);
+	Building* create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords,
+	                 int level) const;
+	Building* load(dbload_building* building) const;
 };

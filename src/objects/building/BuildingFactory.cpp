@@ -7,23 +7,26 @@
 
 
 Building* BuildingFactory::create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords,
-                                  int level) {
+                                  int level) const {
 	const auto env = Game::getEnvironment();
+	const auto db_building = Game::getDatabase()->getBuilding(id);
+	if (env->validateStatic(db_building->size, center)) {
+		return new Building(Urho3D::Vector3(center.x_, env->getGroundHeightAt(center.x_, center.y_), center.y_),
+		                    id, player, level, env->getIndex(_bucketCords.x_, _bucketCords.y_));
+	}
 
-	return new Building(Urho3D::Vector3(center.x_, env->getGroundHeightAt(center.x_, center.y_),
-	                                    center.y_),
-	                    id, player, level, env->getIndex(_bucketCords.x_, _bucketCords.y_));
+	return nullptr;
+
 }
 
-Building* BuildingFactory::load(dbload_building* building) {
+Building* BuildingFactory::load(dbload_building* building) const {
 	const Urho3D::IntVector2 bucketCords(building->buc_x, building->buc_y);
 	const auto db_building = Game::getDatabase()->getBuilding(building->id_db);
 
 	auto center = Game::getEnvironment()->getValidPosition(db_building->size, bucketCords);
-	if (Game::getEnvironment()->validateStatic(db_building->size, center)) {
-		return create(building->id_db, center, building->player, bucketCords, building->level)
-			->load(building);
+	auto build = create(building->id_db, center, building->player, bucketCords, building->level);
+	if (build) {
+		return build->load(building);
 	}
-
 	return nullptr;
 }

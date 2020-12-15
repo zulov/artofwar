@@ -62,26 +62,14 @@ void SimulationObjectManager::load(dbload_unit* unit) {
 }
 
 void SimulationObjectManager::load(dbload_building* building) {
-	auto object = buildingFactory.load(building);
-	if (object) {
-		addBuilding(object);
-	} else {
-		Game::getLog()->Write(1, "Building loading not possible " + building->id_db);
-	}
-
+	addBuilding(buildingFactory.load(building));
 }
 
-void SimulationObjectManager::load(dbload_resource_entities* resource) {
-	auto object = resourceFactory.load(resource);
-	
-	if (object) {
-		addResource(object);
-	}else {
-		Game::getLog()->Write(1, "Resource loading not possible " + resource->id_db);
-	}
+void SimulationObjectManager::load(dbload_resource_entities* resource) const {
+	addResource(resourceFactory.load(resource));
 }
 
-void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) {
+void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) const {
 	if (!temp.empty()) {
 		units->insert(units->end(), temp.begin(), temp.end());
 		for (auto value : temp) {
@@ -93,20 +81,29 @@ void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) {
 }
 
 
-void SimulationObjectManager::addBuilding(Building* building) {
-	buildings->push_back(building);
+void SimulationObjectManager::addBuilding(Building* building) const {
+	if (building) {
+		buildings->push_back(building);
 
-	Game::getPlayersMan()->getPlayer(building->getPlayer())->add(building);
-	Game::getEnvironment()->addNew(building);
-	simulationInfo->setAmountBuildingChanged();
+		Game::getPlayersMan()->getPlayer(building->getPlayer())->add(building);
+		Game::getEnvironment()->addNew(building);
+		simulationInfo->setAmountBuildingChanged();
 
-	Game::getEnvironment()->updateAll(buildings);
+		Game::getEnvironment()->updateAll(buildings);
+	} else {
+		Game::getLog()->Write(0, "Building loading not possible");
+	}
+
 }
 
-void SimulationObjectManager::addResource(ResourceEntity* resource) {
-	resources->push_back(resource);
-	Game::getEnvironment()->addNew(resource);
-	simulationInfo->setAmountResourceChanged();
+void SimulationObjectManager::addResource(ResourceEntity* resource) const {
+	if (resource) {
+		resources->push_back(resource);
+		Game::getEnvironment()->addNew(resource);
+		simulationInfo->setAmountResourceChanged();
+	} else {
+		Game::getLog()->Write(0, "Resource adding not possible");
+	}
 }
 
 void SimulationObjectManager::findToDisposeUnits() {
