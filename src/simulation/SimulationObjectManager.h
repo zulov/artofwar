@@ -34,7 +34,9 @@ public:
 
 private:
 	void addUnits(std::vector<Unit*>& temp);
+	bool valid(Building* building);
 	void addBuilding(Building* building);
+	bool valid(ResourceEntity* resource);
 	void addResource(ResourceEntity* resource);
 
 	void findToDisposeUnits();

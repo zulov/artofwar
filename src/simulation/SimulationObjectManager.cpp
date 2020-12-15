@@ -1,4 +1,7 @@
 #include "SimulationObjectManager.h"
+
+#include <Urho3D/IO/Log.h>
+
 #include "Game.h"
 #include "ObjectsInfo.h"
 #include "objects/building/Building.h"
@@ -6,6 +9,7 @@
 #include "objects/unit/Unit.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
+#include "scene/load/dbload_container.h"
 #include "simulation/env/Environment.h"
 
 
@@ -25,7 +29,7 @@ SimulationObjectManager::~SimulationObjectManager() {
 	clear_and_delete_vector(units);
 	clear_and_delete_vector(buildings);
 	clear_and_delete_vector(resources);
-	
+
 	delete simulationInfo;
 
 	dispose();
@@ -58,11 +62,23 @@ void SimulationObjectManager::load(dbload_unit* unit) {
 }
 
 void SimulationObjectManager::load(dbload_building* building) {
-	addBuilding(buildingFactory.load(building));
+	auto object = buildingFactory.load(building);
+	if (object) {
+		addBuilding(object);
+	} else {
+		Game::getLog()->Write(1, "Building loading not possible " + building->id_db);
+	}
+
 }
 
 void SimulationObjectManager::load(dbload_resource_entities* resource) {
-	addResource(resourceFactory.load(resource));
+	auto object = resourceFactory.load(resource);
+	
+	if (object) {
+		addResource(object);
+	}else {
+		Game::getLog()->Write(1, "Resource loading not possible " + resource->id_db);
+	}
 }
 
 void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) {
@@ -75,6 +91,7 @@ void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) {
 		simulationInfo->setAmountUnitChanged();
 	}
 }
+
 
 void SimulationObjectManager::addBuilding(Building* building) {
 	buildings->push_back(building);

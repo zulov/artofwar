@@ -20,8 +20,10 @@ Building* BuildingFactory::load(dbload_building* building) {
 	const auto db_building = Game::getDatabase()->getBuilding(building->id_db);
 
 	auto center = Game::getEnvironment()->getValidPosition(db_building->size, bucketCords);
+	if (Game::getEnvironment()->validateStatic(db_building->size, center)) {
+		return create(building->id_db, center, building->player, bucketCords, building->level)
+			->load(building);
+	}
 
-	return create(building->id_db, center, building->player, bucketCords, building->level)
-		->load(building);
-
+	return nullptr;
 }

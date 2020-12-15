@@ -284,6 +284,7 @@ int MainGrid::closestPassableCell(int posIndex) const {
 
 void MainGrid::addStatic(Static* object) const {
 	if (validateAdd(object)) {
+		//TODO jak tu sie nie doda to doda sie do reszty
 		const auto bucketPos = getCords(object->getMainCell());
 
 		object->setMainCell(calculator->getIndex(bucketPos.x_, bucketPos.y_));
@@ -312,6 +313,8 @@ void MainGrid::addStatic(Static* object) const {
 			}
 		}
 		pathConstructor->refreshWayOut(toRefresh);
+	} else {
+		assert(false);
 	}
 	updateSurround(object);
 }

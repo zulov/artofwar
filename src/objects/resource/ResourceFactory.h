@@ -1,8 +1,7 @@
 #pragma once
 #include <vector>
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class IntVector2;
 	class Vector2;
 }
@@ -14,6 +13,6 @@ class ResourceFactory {
 public:
 	ResourceFactory() = default;
 	~ResourceFactory() = default;
-	ResourceEntity* create(int id, Urho3D::Vector2& center, Urho3D::IntVector2 _bucketCords, int level);
-	ResourceEntity* load(dbload_resource_entities* resource);
+	ResourceEntity* create(int id, Urho3D::Vector2& center, Urho3D::IntVector2 _bucketCords, int level) const;
+	ResourceEntity* load(dbload_resource_entities* resource) const;
 };
