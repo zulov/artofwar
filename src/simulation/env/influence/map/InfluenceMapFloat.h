@@ -13,7 +13,7 @@ public:
 	void update(Physical* thing, float value = 1.f) override;
 	void updateInt(Physical* thing, int value = 1) override;
 	void tempUpdate(Physical* thing, float value = 1.f);
-	void update(int index, float value);
+	void update(int index, float value) const;
 	void reset() override;
 	float getValueAt(int index) const override;
 	float getValueAt(const Urho3D::Vector2& pos) const;

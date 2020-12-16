@@ -35,14 +35,14 @@ struct GridCalculator {
 	}
 
 	Urho3D::IntVector2 getIndexes(int i) const {
-		return {i % resolution, i / resolution};
+		return {i / resolution, i % resolution};
 	}
 
 	Urho3D::Vector2 getCenter(int i) const {
-		Urho3D::IntVector2 pos = getIndexes(i);
+		const Urho3D::IntVector2 pos = getIndexes(i);
 		const float cX = (pos.x_ + 0.5f) * fieldSize - halfSize;
 		const float cZ = (pos.y_ + 0.5f) * fieldSize - halfSize;
-		return {cZ, cX};
+		return {cX, cZ};
 	}
 
 	bool isValidIndex(short x, short z) const {

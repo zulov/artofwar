@@ -43,7 +43,7 @@ public:
 	void drawMap(char index, const std::vector<InfluenceMapCombine*>& vector, char type) const;
 
 	void draw(InfluenceDataType type, char index);
-	void drawAll();
+	void drawAll() const;
 	void switchDebug();
 
 	content_info* getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfos, bool* checks,

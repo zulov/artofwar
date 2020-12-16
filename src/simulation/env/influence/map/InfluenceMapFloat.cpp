@@ -45,12 +45,12 @@ void InfluenceMapFloat::updateInt(Physical* thing, int value) {
 }
 
 void InfluenceMapFloat::tempUpdate(Physical* thing, float value) {
-	auto idx = calculator->indexFromPosition(thing->getPosition());
+	const auto idx = calculator->indexFromPosition(thing->getPosition());
 	tempVals[idx] += value;
 	tempComputedNeeded = true;
 }
 
-void InfluenceMapFloat::update(int index, float value) {
+void InfluenceMapFloat::update(int index, float value) const {
 	auto [centerX,centerZ] = calculator->getIndexes(index);
 
 	const auto minI = calculator->getValid(centerX - level);
@@ -71,7 +71,10 @@ void InfluenceMapFloat::update(int index, float value) {
 
 void InfluenceMapFloat::reset() {
 	std::fill_n(values, arraySize, 0.f);
-	std::fill_n(tempVals, arraySize, 0.f);
+	if (tempComputedNeeded) {
+		std::fill_n(tempVals, arraySize, 0.f);
+	}
+	tempComputedNeeded = false;
 }
 
 float InfluenceMapFloat::getValueAt(int index) const {
@@ -153,12 +156,10 @@ void InfluenceMapFloat::add(int* indexes, float* vals, int k, float val) {
 
 void InfluenceMapFloat::updateFromTemp() {
 	if (tempComputedNeeded) {
-
 		for (int i = 0; i < arraySize; ++i) {
 			if (tempVals[i] > 0.f) {
 				update(i, tempVals[i]);
 			}
 		}
 	}
-	tempComputedNeeded = false;
 }

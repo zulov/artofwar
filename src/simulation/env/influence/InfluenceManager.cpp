@@ -191,7 +191,7 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 	}
 }
 
-void InfluenceManager::drawAll() {
+void InfluenceManager::drawAll() const {
 	drawAll(unitsNumberPerPlayer, "unitsInt");
 	drawAll(buildingsInfluencePerPlayer, "buildingsInt");
 	drawAll(unitsInfluencePerPlayer, "units");
