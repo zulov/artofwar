@@ -12,7 +12,6 @@ class BuildingFactory {
 public:
 	BuildingFactory() = default;
 	~BuildingFactory() = default;
-	Building* create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords,
-	                 int level) const;
+	Building* create(int id, const Urho3D::IntVector2& bucketCords, int level, int player) const;
 	Building* load(dbload_building* building) const;
 };

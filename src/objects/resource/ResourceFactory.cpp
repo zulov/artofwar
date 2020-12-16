@@ -5,10 +5,10 @@
 #include "scene/load/dbload_container.h"
 #include "simulation/env/Environment.h"
 
-ResourceEntity* ResourceFactory::create(int id, Urho3D::Vector2& center, Urho3D::IntVector2 bucketCords,
-                                        int level) const {
+ResourceEntity* ResourceFactory::create(int id, Urho3D::IntVector2 bucketCords, int level) const {
 	db_resource* db_resource = Game::getDatabase()->getResource(id);
 	if (Game::getEnvironment()->validateStatic(db_resource->size, bucketCords)) {
+		auto center = Game::getEnvironment()->getValidPosition(db_resource->size, bucketCords);
 		float y = Game::getEnvironment()->getGroundHeightAt(center.x_, center.y_);
 		return new ResourceEntity(Urho3D::Vector3(center.x_, y, center.y_), id, level, 
 			Game::getEnvironment()->getIndex(bucketCords.x_, bucketCords.y_));
@@ -18,10 +18,7 @@ ResourceEntity* ResourceFactory::create(int id, Urho3D::Vector2& center, Urho3D:
 
 ResourceEntity* ResourceFactory::load(dbload_resource_entities* resource) const {
 	const Urho3D::IntVector2 bucketCords(resource->buc_x, resource->buc_y);
-	db_resource* db_resource = Game::getDatabase()->getResource(resource->id_db);
-
-	auto center = Game::getEnvironment()->getValidPosition(db_resource->size, bucketCords);
-	auto ress = create(resource->id_db, center, bucketCords, resource->level);
+	auto ress = create(resource->id_db, bucketCords, resource->level);
 	if (ress) {
 		return ress->load(resource);
 	}
