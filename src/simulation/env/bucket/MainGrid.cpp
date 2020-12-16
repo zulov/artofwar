@@ -1,4 +1,6 @@
 ﻿#include "MainGrid.h"
+
+#include <exprtk/exprtk.hpp>
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/IO/Log.h>
 #include "Bucket.h"
@@ -41,8 +43,12 @@ void MainGrid::prepareGridToFind() const {
 }
 
 bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const {
-	const auto sizeX = calculateSize(size.x_, calculator->getIndex(pos.x_));
-	const auto sizeZ = calculateSize(size.y_, calculator->getIndex(pos.y_));
+	return validateAdd(size, {calculator->getIndex(pos.x_), calculator->getIndex(pos.y_)});
+}
+
+bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords) const {
+	const auto sizeX = calculateSize(size.x_, bucketCords.x_);
+	const auto sizeZ = calculateSize(size.y_, bucketCords.y_);
 
 	for (int i = sizeX.x_; i < sizeX.y_; ++i) {
 		for (int j = sizeZ.x_; j < sizeZ.y_; ++j) {

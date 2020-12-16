@@ -257,6 +257,10 @@ bool Environment::validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2
 	return mainGrid.validateAdd(size, pos);
 }
 
+bool Environment::validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords) const {
+	return mainGrid.validateAdd(size, bucketCords);
+}
+
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
                                               const Urho3D::IntVector2& bucketCords) const {
 	return getValidPosition(size, mainGrid.getCenterAt(bucketCords)).second;

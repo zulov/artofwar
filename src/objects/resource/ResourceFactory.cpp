@@ -5,14 +5,13 @@
 #include "scene/load/dbload_container.h"
 #include "simulation/env/Environment.h"
 
-ResourceEntity* ResourceFactory::create(int id, Urho3D::Vector2& center, Urho3D::IntVector2 _bucketCords,
+ResourceEntity* ResourceFactory::create(int id, Urho3D::Vector2& center, Urho3D::IntVector2 bucketCords,
                                         int level) const {
-
-	float y = Game::getEnvironment()->getGroundHeightAt(center.x_, center.y_);
-	auto mainCell = Game::getEnvironment()->getIndex(_bucketCords.x_, _bucketCords.y_);
 	db_resource* db_resource = Game::getDatabase()->getResource(id);
-	if (Game::getEnvironment()->validateStatic(db_resource->size, center)) {
-		return new ResourceEntity(Urho3D::Vector3(center.x_, y, center.y_), id, level, mainCell);
+	if (Game::getEnvironment()->validateStatic(db_resource->size, bucketCords)) {
+		float y = Game::getEnvironment()->getGroundHeightAt(center.x_, center.y_);
+		return new ResourceEntity(Urho3D::Vector3(center.x_, y, center.y_), id, level, 
+			Game::getEnvironment()->getIndex(bucketCords.x_, bucketCords.y_));
 	}
 	return nullptr;
 }

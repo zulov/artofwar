@@ -5,14 +5,12 @@
 #include "scene/load/dbload_container.h"
 #include "simulation/env/Environment.h"
 
-
-Building* BuildingFactory::create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords,
+Building* BuildingFactory::create(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& bucketCords,
                                   int level) const {
-	const auto env = Game::getEnvironment();
 	const auto db_building = Game::getDatabase()->getBuilding(id);
-	if (env->validateStatic(db_building->size, center)) {
-		return new Building(Urho3D::Vector3(center.x_, env->getGroundHeightAt(center.x_, center.y_), center.y_),
-		                    id, player, level, env->getIndex(_bucketCords.x_, _bucketCords.y_));
+	if (Game::getEnvironment()->validateStatic(db_building->size, bucketCords)) {
+		return new Building(Urho3D::Vector3(center.x_, Game::getEnvironment()->getGroundHeightAt(center.x_, center.y_), center.y_),
+		                    id, player, level, Game::getEnvironment()->getIndex(bucketCords.x_, bucketCords.y_));
 	}
 
 	return nullptr;

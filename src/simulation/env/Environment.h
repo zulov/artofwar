@@ -67,6 +67,7 @@ public:
 	Urho3D::Vector3 getPosWithHeightAt(int index) const;
 	float getGroundHeightPercent(float y, float x, float div) const;
 	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const;
+	bool validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords) const;
 	std::pair<Urho3D::IntVector2, Urho3D::Vector2> getValidPosition(const Urho3D::IntVector2& size,
 	                                                                const Urho3D::Vector2& pos) const;
 
