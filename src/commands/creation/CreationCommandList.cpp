@@ -8,12 +8,14 @@
 #include "player/Player.h"
 
 
-CreationCommandList::CreationCommandList(SimulationObjectManager* simulationObjectManager) {
-	this->simulationObjectManager = simulationObjectManager;
+CreationCommandList::CreationCommandList(SimulationObjectManager* simulationObjectManager)
+	: simulationObjectManager(simulationObjectManager) {
 }
 
-CreationCommand* CreationCommandList::addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const {
-	return new CreationCommand(ObjectType::UNIT, number, id, position, player, level);
+
+CreationCommand* CreationCommandList::addUnits(int number, int id, Urho3D::Vector2& position, char player,
+                                               int level) const {
+	return new CreationCommand(ObjectType::UNIT, id, position, level, player, number);
 }
 
 CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& position, char player, int level) const {
@@ -23,11 +25,9 @@ CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& posit
 		const auto env = Game::getEnvironment();
 		if (env->validateStatic(building->size, position)) {
 			resources.reduce(building->costs);
-			auto [bucketCords,pos] = env->getValidPosition(building->size, position);
-
-			return new CreationCommand(ObjectType::BUILDING, id, pos, player, bucketCords, level);
+			return new CreationCommand(ObjectType::BUILDING, id, env->getCords(position), level, player);
 		}
-	}else {
+	} else {
 		//TODO add resource presures
 	}
 
@@ -38,10 +38,8 @@ CreationCommand* CreationCommandList::addResource(int id, Urho3D::Vector2& posit
 	auto env = Game::getEnvironment();
 	db_resource* db_resource = Game::getDatabase()->getResource(id);
 
-	if (env->validateStatic(db_resource->size, position)) {
-		auto [bucketCords,pos] = env->getValidPosition(db_resource->size, position);
-
-		return new CreationCommand(ObjectType::RESOURCE, id, pos, -1, bucketCords, level);
+	if (env->validateStatic(db_resource->size, position)) {	
+		return new CreationCommand(ObjectType::RESOURCE, id, env->getCords(position), level, -1);
 	}
 	return nullptr;
 }

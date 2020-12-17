@@ -540,7 +540,7 @@ void Controls::buildControl() {
 
 			auto hitPos = Urho3D::Vector2(hitData.position.x_, hitData.position.z_);
 
-			auto [bucketCords,validPos] = env->getValidPosition(building->size, hitPos);
+			const auto validPos = env->getValidPosition(building->size, hitPos);
 
 			tempBuildingNode->SetPosition(env->getPosWithHeightAt(validPos.x_, validPos.y_));
 			if (!tempBuildingNode->IsEnabled()) {

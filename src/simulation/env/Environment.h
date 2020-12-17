@@ -68,9 +68,10 @@ public:
 	float getGroundHeightPercent(float y, float x, float div) const;
 	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const;
 	bool validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords) const;
-	std::pair<Urho3D::IntVector2, Urho3D::Vector2> getValidPosition(const Urho3D::IntVector2& size,
-	                                                                const Urho3D::Vector2& pos) const;
-
+	
+	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
+	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const;
+	
 	std::vector<int>* findPath(int startIdx, Urho3D::Vector2& aim) const;
 	std::vector<int>* findPath(int startIdx, int endIdx) const;
 	std::vector<int>* findPath(Urho3D::Vector3& from, Urho3D::Vector2& aim) const;
@@ -79,7 +80,7 @@ public:
 	content_info* getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer);
 	float getPositionFromPercent(float value) const;
 	Urho3D::Vector3 getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos, float min) const;
-	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const;
+
 	Urho3D::Vector2 getCenter(int index) const;
 	Urho3D::Vector2 getCenter(short x, short z) const;
 
@@ -90,6 +91,7 @@ public:
 	int getIndex(Urho3D::Vector2& pos) const { return mainGrid.getIndex(pos); }
 	int getIndex(short x, short z) const { return mainGrid.getIndex(x, z); }
 	Urho3D::IntVector2 getCords(int index) const { return mainGrid.getCords(index); }
+	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) { return mainGrid.getCords(pos); }
 
 	bool cellInState(int index, CellState state) const;
 	void updateCell(int index, char val, CellState cellState) const;

@@ -35,20 +35,16 @@ SimulationObjectManager::~SimulationObjectManager() {
 	dispose();
 }
 
-void SimulationObjectManager::addUnits(unsigned int number, int id, Urho3D::Vector2& center,
-                                       int player, int level) {
+void SimulationObjectManager::addUnits(unsigned number, int id, Urho3D::Vector2& center, char level, char player) {
 	addUnits(unitFactory.create(number, id, center, player, level));
 }
 
-void SimulationObjectManager::addBuilding(int id, Urho3D::Vector2& center, int player,
-                                          const Urho3D::IntVector2& _bucketCords, int level) const {
-	addBuilding(buildingFactory.create(id, center, player, _bucketCords, level));
+void SimulationObjectManager::addBuilding(int id, const Urho3D::IntVector2& _bucketCords, char level, char player) const {
+	addBuilding(buildingFactory.create(id, _bucketCords, level, player));
 }
 
-
-void SimulationObjectManager::addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords,
-                                          int level) const {
-	addResource(resourceFactory.create(id, center, _bucketCords, level));
+void SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _bucketCords, char level) const {
+	addResource(resourceFactory.create(id, _bucketCords, level));
 }
 
 void SimulationObjectManager::findToDispose() {

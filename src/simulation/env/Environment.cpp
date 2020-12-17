@@ -261,11 +261,6 @@ bool Environment::validateStatic(const Urho3D::IntVector2& size, const Urho3D::I
 	return mainGrid.validateAdd(size, bucketCords);
 }
 
-Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
-                                              const Urho3D::IntVector2& bucketCords) const {
-	return getValidPosition(size, mainGrid.getCenterAt(bucketCords)).second;
-}
-
 Urho3D::Vector2 Environment::getCenter(int index) const {
 	return mainGrid.getCenter(index);
 }
@@ -412,9 +407,13 @@ int Environment::closestPassableCell(int posIndex) const {
 	return mainGrid.closestPassableCell(posIndex);
 }
 
-std::pair<Urho3D::IntVector2, Urho3D::Vector2> Environment::getValidPosition(
-	const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
+Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
 	return mainGrid.getValidPosition(size, pos);
+}
+
+Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
+                                              const Urho3D::IntVector2& bucketCords) const {
+	return mainGrid.getValidPosition(size, mainGrid.getCenterAt(bucketCords));
 }
 
 std::vector<int>* Environment::findPath(int startIdx, Urho3D::Vector2& aim) const {

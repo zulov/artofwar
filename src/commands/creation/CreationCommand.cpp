@@ -3,31 +3,27 @@
 #include "simulation/SimulationObjectManager.h"
 
 
-CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::Vector2& position, char player,
-                                 const Urho3D::IntVector2& bucketCords, int level): AbstractCommand(player), id(id),
-                                                                                    number(0),
-                                                                                    level(level),
-                                                                                    position(position),
-                                                                                    objectType(type),
-                                                                                    bucketCords(bucketCords) {
-}
+CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::IntVector2 bucketCords, char level, char player): AbstractCommand(player), id(id),
+	number(0),
+	level(level),
+	position(position),
+	objectType(type),
+	bucketCords(bucketCords) {}
 
-CreationCommand::CreationCommand(ObjectType type, int number, int id, const Urho3D::Vector2& position,
-                                 char player, int level): AbstractCommand(player),
+CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::Vector2& position, char level, char player, int number): AbstractCommand(player),
                                                           id(id), number(number), level(level),
-                                                          position(position), objectType(type) {
-}
+                                                          position(position), objectType(type) {}
 
 void CreationCommand::execute() {
 	switch (objectType) {
 	case ObjectType::UNIT:
-		simulationObjectManager->addUnits(number, id, position, player, level);
+		simulationObjectManager->addUnits(number, id, position, level, player);
 		break;
 	case ObjectType::BUILDING:
-		simulationObjectManager->addBuilding(id, position, player, bucketCords, level);
+		simulationObjectManager->addBuilding(id, bucketCords, player, level);
 		break;
 	case ObjectType::RESOURCE:
-		simulationObjectManager->addResource(id, position, bucketCords, level);
+		simulationObjectManager->addResource(id, bucketCords, level);
 		break;
 	}
 }

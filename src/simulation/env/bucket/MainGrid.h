@@ -8,8 +8,7 @@
 #include "simulation/env/GridCalculator.h"
 
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Image;
 }
 
@@ -34,8 +33,8 @@ public:
 	void addStatic(Static* object) const;
 	void removeStatic(Static* object) const;
 	std::optional<Urho3D::Vector2> getDirectionFrom(Urho3D::Vector3& position) const;
-	std::pair<Urho3D::IntVector2, Urho3D::Vector2> getValidPosition(const Urho3D::IntVector2& size,
-	                                                                const Urho3D::Vector2& pos) const;
+	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
+	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const;
 
 	void updateNeighbors(int current) const;
 	float cost(int current, int next) const;
@@ -52,7 +51,8 @@ public:
 
 	Urho3D::Vector2 getPositionInBucket(int index, char max, char i);
 
-	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
+	Urho3D::IntVector2 getCords(int index) const { return calculator->getIndexes(index); }
+	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) { return getCords(calculator->indexFromPosition(pos)); }
 
 	Urho3D::Vector2 getCenterAt(const Urho3D::IntVector2& cords) const {
 		return getCenter(calculator->getIndex(cords.x_, cords.y_));
@@ -81,6 +81,7 @@ public:
 	float getFieldSize() const;
 	void drawAll();
 	bool cellIsCollectable(int index) const;
+
 private:
 
 	PathFinder* pathConstructor;

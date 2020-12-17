@@ -285,8 +285,6 @@ int MainGrid::closestPassableCell(int posIndex) const {
 void MainGrid::addStatic(Static* object) const {
 	const auto bucketPos = getCords(object->getMainCell());
 
-	//object->setMainCell(calculator->getIndex(bucketPos.x_, bucketPos.y_));
-
 	for (auto index : object->getOccupiedCells()) {
 		complexData[index].setStatic(object);
 	}
@@ -361,22 +359,20 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& posit
 	return {};
 }
 
-std::pair<Urho3D::IntVector2, Urho3D::Vector2> MainGrid::getValidPosition(
-	const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
-	//TODO tu mozna to sporo zoptymalizowac ale pewnie nie ma potrzeby
-	const short posX = calculator->getIndex(pos.x_);
-	const short posZ = calculator->getIndex(pos.y_);
+Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
+	return getValidPosition(size,Urho3D::IntVector2(calculator->getIndex(pos.x_),calculator->getIndex(pos.y_)));
+}
 
-	const auto sizeX = calculateSize(size.x_, posX);
-	const auto sizeZ = calculateSize(size.y_, posZ);
+Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const {
+	const auto sizeX = calculateSize(size.x_, cords.x_);
+	const auto sizeZ = calculateSize(size.y_, cords.y_);
 
 	const int index1 = calculator->getIndex(sizeX.x_, sizeZ.x_);
 	const int index2 = calculator->getIndex(sizeX.y_ - 1, sizeZ.y_ - 1);
 	const auto center1 = calculator->getCenter(index1);
 	const auto center2 = calculator->getCenter(index2);
-	const auto newCenter = (center1 + center2) / 2;
 
-	return {{posX, posZ}, newCenter};
+	return (center1 + center2) / 2;
 }
 
 void MainGrid::updateNeighbors(const int current) const {

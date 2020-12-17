@@ -19,9 +19,9 @@ public:
 	std::vector<Building*>* getBuildings() const { return buildings; }
 	std::vector<ResourceEntity*>* getResources() const { return resources; }
 
-	void addUnits(unsigned number, int id, Urho3D::Vector2& center, int player, int level);
-	void addBuilding(int id, Urho3D::Vector2& center, int player, const Urho3D::IntVector2& _bucketCords, int level) const;
-	void addResource(int id, Urho3D::Vector2& center, const Urho3D::IntVector2& _bucketCords, int level) const;
+	void addUnits(unsigned number, int id, Urho3D::Vector2& center, char level, char player);
+	void addBuilding(int id, const Urho3D::IntVector2& _bucketCords, char level, char player) const;
+	void addResource(int id, const Urho3D::IntVector2& _bucketCords, char level) const;
 
 	void findToDispose();
 
