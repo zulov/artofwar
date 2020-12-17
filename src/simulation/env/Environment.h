@@ -27,13 +27,10 @@ public:
 	explicit Environment(Urho3D::Terrain* terrian);
 	~Environment();
 
-	std::vector<Physical*>* getNeighbours(Unit* unit, float radius);
 	std::vector<Physical*>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);
 	std::vector<Physical*>* getNeighboursFromTeamNotEq(Physical* physical, float radius, int team);
-	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
-	std::vector<Physical*>* getNeighboursWithCache(Unit* unit, float radius);
-	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius, int id) const;
 
+	std::vector<Physical*>* getNeighboursWithCache(Unit* unit, float radius);
 	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
 	std::vector<Physical*>* getResources(Physical* physical, float radius);
@@ -45,8 +42,8 @@ public:
 
 	void invalidateCaches();
 	void update(Unit* unit) const;
+	
 	void addNew(const std::vector<Unit*>& units);
-
 	void addNew(Building* building) const;
 	void addNew(ResourceEntity* resource) const;
 
@@ -68,10 +65,10 @@ public:
 	float getGroundHeightPercent(float y, float x, float div) const;
 	bool validateStatic(const Urho3D::IntVector2& size, Urho3D::Vector2& pos) const;
 	bool validateStatic(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords) const;
-	
+
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const;
-	
+
 	std::vector<int>* findPath(int startIdx, Urho3D::Vector2& aim) const;
 	std::vector<int>* findPath(int startIdx, int endIdx) const;
 	std::vector<int>* findPath(Urho3D::Vector3& from, Urho3D::Vector2& aim) const;
@@ -119,6 +116,8 @@ public:
 	Urho3D::Vector2 getCenterOf(CenterType id, char player);
 
 private:
+	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
+	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius, int id) const;
 	void addIfInRange(Physical* physical, const Urho3D::Vector3& center, float sqRadius, Physical* neight) const;
 	MainGrid mainGrid;
 	Grid resourceGrid, buildingGrid;

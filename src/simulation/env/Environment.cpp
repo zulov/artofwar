@@ -33,10 +33,6 @@ Environment::~Environment() {
 	delete neights2;
 }
 
-std::vector<Physical*>* Environment::getNeighbours(Unit* unit, const float radius) {
-	return getNeighboursWithCache(unit, radius);
-}
-
 std::vector<Physical*>* Environment::getNeighboursFromTeamEq(Physical* physical, const float radius, const int team) {
 	return getNeighbours(physical, teamUnitGrid[team], radius);
 }
