@@ -13,6 +13,7 @@
 #include "ShotState.h"
 #include "StopState.h"
 #include "database/DatabaseCache.h"
+#include "objects/building/Building.h"
 #include "objects/static/StaticStateUtils.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "utils/consts.h"
@@ -58,6 +59,7 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo, const ActionParame
 	State* toState = instance->states[cast(stateTo)];
 	if (canStartState(unit, stateTo, actionParameter, stateFrom, toState)) {
 		unit->setNextState(stateTo, actionParameter);
+		instance->unitHasChanged = true;
 		return true;
 	}
 	Game::getLog()->Write(0, "fail to change state from " +
@@ -79,24 +81,52 @@ void StateManager::execute(Unit* unit, float timeStamp) {
 	getState(unit)->execute(unit, timeStamp);
 }
 
-void StateManager::executeChange(Unit* unit) {
-	if(unit->hasStateChangePending()) {
-		State* stateFrom = instance->states[cast(unit->getState())];
-		State* toState = instance->states[cast(unit->getNextState())];
+void StateManager::executeChange(std::vector<Unit*>* units) {
+	if (instance->unitHasChanged) {
+		for (auto unit : *units) {
+			if (unit->hasStateChangePending()) {
+				State* stateFrom = instance->states[cast(unit->getState())];
+				State* toState = instance->states[cast(unit->getNextState())];
 
-		stateFrom->onEnd(unit);
-		unit->setState(unit->getNextState());
-		toState->onStart(unit, unit->getNextActionParameter());
-		unit->getNextActionParameter().resetUsed();
+				stateFrom->onEnd(unit);
+				unit->setState(unit->getNextState());
+				toState->onStart(unit, unit->getNextActionParameter());
+				unit->getNextActionParameter().resetUsed();
+			}
+		}
 	}
+	instance->unitHasChanged = false;
 }
 
 bool StateManager::changeState(Static* obj, StaticState stateTo) {
 	if (obj->getState() != stateTo) {
 		obj->setNextState(stateTo);
+		if (obj->getType() == ObjectType::BUILDING) {
+			instance->buildingHasChanged = true;
+		} else {
+			instance->resourceHasChanged = true;
+		}
 		return true;
 	}
 	return false;
+}
+
+void StateManager::executeChange(std::vector<Building*>* buildings) {
+	if (instance->buildingHasChanged) {
+		for (auto building : *buildings) {
+			executeChange(building);
+		}
+	}
+	instance->buildingHasChanged = false;
+}
+
+void StateManager::executeChange(std::vector<ResourceEntity*>* resources) {
+	if (instance->resourceHasChanged) {
+		for (auto resource : *resources) {
+			executeChange(resource);
+		}
+	}
+	instance->resourceHasChanged = false;
 }
 
 void StateManager::executeChange(Static* obj) {

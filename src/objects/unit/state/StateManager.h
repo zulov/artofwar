@@ -2,10 +2,13 @@
 
 #include <initializer_list>
 #include <magic_enum.hpp>
+#include <vector>
 
-#include "objects/unit/order/FormationOrder.h"
+#include "objects/unit/order/enums/UnitAction.h"
 #include "objects/unit/state/UnitState.h"
 
+class ResourceEntity;
+class Building;
 struct ActionParameter;
 class Unit;
 class State;
@@ -20,18 +23,21 @@ public:
 	                          State* toState);
 	static bool canChangeState(Unit* unit, UnitState stateTo);
 	static void execute(Unit* unit, float timeStamp);
-	static void executeChange(Unit* unit);
+	static void executeChange(std::vector<Unit*>* units);
 
 	static bool changeState(Static* obj, StaticState stateTo);
+	
 	static void executeChange(Static* obj);
-
+	static void executeChange(std::vector<Building*>* buildings);
+	static void executeChange(std::vector<ResourceEntity*>* resources);
 
 	static void init();
 	static void dispose();
 
 private:
-	void initOrders(std::initializer_list<UnitAction> states) const;//TODO move to level
-	void initStates( std::initializer_list<UnitState> states) const;//TODO move to level
+	void initOrders(std::initializer_list<UnitAction> states) const; //TODO move to level
+	void initStates(std::initializer_list<UnitState> states) const; //TODO move to level
+
 	StateManager();
 	~StateManager();
 	static State* getState(Unit* unit);
@@ -39,6 +45,10 @@ private:
 	State* states[magic_enum::enum_count<UnitState>()]{};
 
 	static StateManager* instance;
+
+	bool unitHasChanged = false;
+	bool buildingHasChanged = false;
+	bool resourceHasChanged = false;
 };
 
 inline bool isInStates(UnitState state, std::initializer_list<UnitState> states) {

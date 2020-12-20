@@ -254,15 +254,9 @@ void Simulation::performStateAction(float timeStep) const {
 }
 
 void Simulation::executeStateTransition() const {
-	for (auto unit : *units) {
-		StateManager::executeChange(unit);
-	}
-	for (auto building : *buildings) {
-		StateManager::executeChange(building);
-	}
-	for (auto resource : *resources) {
-		StateManager::executeChange(resource);
-	}
+	StateManager::executeChange(units);
+	StateManager::executeChange(buildings);
+	StateManager::executeChange(resources);
 }
 
 void Simulation::initScene(SceneLoader& loader) const {

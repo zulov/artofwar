@@ -134,7 +134,7 @@ void SimulationObjectManager::findToDisposeBuildings() {
 			}
 		), buildings->end());
 
-	if (!unitsToDispose.empty()) {
+	if (!buildingsToDispose.empty()) {
 		simulationInfo->setBuildingDied();
 	}
 }
@@ -152,7 +152,7 @@ void SimulationObjectManager::findToDisposeResources() {
 			}
 		), resources->end());
 
-	if (!unitsToDispose.empty()) {
+	if (!resourcesToDispose.empty()) {
 		simulationInfo->setResourceDied();
 	}
 }
