@@ -1,13 +1,13 @@
 #pragma once
 #include <optional>
 #include <vector>
+
 namespace Urho3D {
 	class Vector3;
 	class Vector2;
 }
 
-
-class UnitOrder;
+class IndividualOrder;
 class Aim;
 class Unit;
 
@@ -19,7 +19,7 @@ public:
 	std::optional<Urho3D::Vector2> getDirection(Unit* unit) const;
 	void clearExpired();
 	bool ifReach(Unit* unit);
-	void add(UnitOrder* order);
+	void add(IndividualOrder* order);
 	void clear();
 	void removeCurrentAim();
 	bool hasCurrent() const { return current != nullptr; }
@@ -27,6 +27,6 @@ public:
 	std::vector<Urho3D::Vector3> getDebugLines(Unit* unit) const;
 	void set(Aim* aim);
 private:
-	std::vector<UnitOrder*> nextAims;
+	std::vector<IndividualOrder*> nextAims;
 	Aim* current;
 };

@@ -1,6 +1,7 @@
 #include "Aims.h"
 #include "TargetAim.h"
 #include "../order/OrderUtils.h"
+#include "objects/unit/order/IndividualOrder.h"
 #include "utils/DeleteUtils.h"
 
 
@@ -42,7 +43,7 @@ bool Aims::ifReach(Unit* unit) {
 	return false;
 }
 
-void Aims::add(UnitOrder* order) {
+void Aims::add(IndividualOrder* order) {
 	if (!order->getAppend()) {
 		clear();
 	}

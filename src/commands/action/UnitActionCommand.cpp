@@ -2,12 +2,12 @@
 #include "objects/unit/order/UnitOrder.h"
 
 
-UnitActionCommand::UnitActionCommand(UnitOrder* order, char player): AbstractCommand(player),
-                                                                     order(order) {
-} 
+UnitActionCommand::UnitActionCommand(UnitOrder* order, char player)
+	: AbstractCommand(player),
+	  order(order) {}
 
 void UnitActionCommand::execute() {
-	bool ifRemove = order->add();
+	const bool ifRemove = order->add();
 	if (ifRemove) {
 		delete order;
 		order = nullptr;

@@ -1,9 +1,9 @@
 #pragma once
-#include "UnitOrder.h"
 
-inline void removeExpired(std::vector<UnitOrder*>& orders) {
+template <typename T>
+void removeExpired(std::vector<T*>& orders) {
 	orders.erase(std::remove_if(orders.begin(), orders.end(),
-	                            [](UnitOrder* uo) {
+	                            [](T* uo) {
 		                            const bool expired = uo->expired();
 		                            if (expired) { delete uo; }
 		                            return expired;

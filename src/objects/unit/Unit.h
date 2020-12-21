@@ -11,6 +11,8 @@
 #include "objects/Physical.h"
 #include "state/UnitState.h"
 
+class IndividualOrder;
+
 namespace Urho3D {
 	class Vector4;
 	class Color;
@@ -33,7 +35,6 @@ struct ChargeData;
 struct ActionParameter;
 struct CameraInfo;
 
-class UnitOrder;
 class Aim;
 
 class Unit : public Physical {
@@ -94,7 +95,7 @@ public:
 	bool hasStateChangePending() const;
 
 	void changeColor(SimColorMode mode);
-	void addOrder(UnitOrder* aim);
+	void addOrder(IndividualOrder* aim);
 
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);

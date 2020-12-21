@@ -24,7 +24,7 @@ public:
 	int getMaxElement(const std::array<int, 4>& indexes) override;
 	std::vector<int> getIndexesWithByValue(float percent, float tolerance) const;
 	void getIndexesWithByValue(float percent, float* intersection) const;
-	void add(int* indexes, float* vals, int k, float val);
+	void add(int* indexes, float* vals, int k, float val) const;
 
 	void updateFromTemp();
 

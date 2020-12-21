@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "math/MathUtils.h"
 #include "objects/unit/Unit.h"
+#include "objects/unit/order/FormationOrder.h"
 #include "objects/unit/order/OrderUtils.h"
 #include "objects/unit/state/StateManager.h"
 #include "simulation/env/Environment.h"
@@ -291,7 +292,7 @@ std::optional<Unit*> Formation::getLeader() {
 	return {};
 }
 
-void Formation::addOrder(UnitOrder* order) {
+void Formation::addOrder(FormationOrder* order) {
 	if (!order->getAppend()) {
 		semiReset();
 		leader->clearAims();

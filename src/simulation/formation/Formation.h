@@ -5,7 +5,7 @@
 #include "FormationState.h"
 #include "FormationType.h"
 
-
+class FormationOrder;
 class UnitOrder;
 class Unit;
 
@@ -21,7 +21,7 @@ public:
 	FormationState getState() const { return state; }
 	std::optional<Unit*> getLeader();
 
-	void addOrder(UnitOrder* order);
+	void addOrder(FormationOrder* order);
 	size_t getSize() const;
 	void semiReset();
 	std::vector<Unit*>& getUnits() { return units; }

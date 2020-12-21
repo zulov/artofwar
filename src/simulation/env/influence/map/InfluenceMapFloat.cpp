@@ -148,7 +148,7 @@ void InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection
 
 }
 
-void InfluenceMapFloat::add(int* indexes, float* vals, int k, float val) {
+void InfluenceMapFloat::add(int* indexes, float* vals, int k, float val) const {
 	for (int j = 0; j < k; ++j) {
 		values[indexes[j]] += val * vals[j];
 	}
