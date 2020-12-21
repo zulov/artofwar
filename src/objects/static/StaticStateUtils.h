@@ -12,10 +12,15 @@ inline void startState(StaticState state, Static* obj) {
 	case StaticState::DEAD:
 		StateManager::changeState(obj, StaticState::DISPOSE);
 		break;
-	case StaticState::DISPOSE: break;
+	case StaticState::DISPOSE:
+		if (obj->getType() == ObjectType::BUILDING) {
+			StateManager::setBuildingToDispose(true);
+		} else {
+			StateManager::setResourceToDispose(true);
+		}
+		break;
 	default: ;
 	}
 }
 
-inline void endState(StaticState state, Static* obj) {
-}
+inline void endState(StaticState state, Static* obj) {}

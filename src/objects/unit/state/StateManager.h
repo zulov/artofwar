@@ -31,12 +31,18 @@ public:
 	static void executeChange(std::vector<Building*>* buildings);
 	static void executeChange(std::vector<ResourceEntity*>* resources);
 
+	static bool isBuildingToDispose();
+	static void setBuildingToDispose(bool value);
+	static bool isResourceToDispose();
+	static void setResourceToDispose(bool value);
+
 	static void init();
 	static void dispose();
 
 private:
 	void initOrders(std::initializer_list<UnitAction> states) const; //TODO move to level
 	void initStates(std::initializer_list<UnitState> states) const; //TODO move to level
+
 
 	StateManager();
 	~StateManager();
@@ -49,6 +55,9 @@ private:
 	bool unitHasChanged = false;
 	bool buildingHasChanged = false;
 	bool resourceHasChanged = false;
+
+	bool buildingIsToDispose = false;
+	bool resourceIsToDispose = false;
 };
 
 inline bool isInStates(UnitState state, std::initializer_list<UnitState> states) {

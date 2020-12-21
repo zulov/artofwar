@@ -83,6 +83,7 @@ void StateManager::execute(Unit* unit, float timeStamp) {
 
 void StateManager::executeChange(std::vector<Unit*>* units) {
 	if (instance->unitHasChanged) {
+		instance->unitHasChanged = false;
 		for (auto unit : *units) {
 			if (unit->hasStateChangePending()) {
 				State* stateFrom = instance->states[cast(unit->getState())];
@@ -95,11 +96,10 @@ void StateManager::executeChange(std::vector<Unit*>* units) {
 			}
 		}
 	}
-	instance->unitHasChanged = false;
 }
 
 bool StateManager::changeState(Static* obj, StaticState stateTo) {
-	if (obj->getState() != stateTo) {
+	if (obj->getState() != StaticState::DISPOSE && obj->getState() != stateTo) {
 		obj->setNextState(stateTo);
 		if (obj->getType() == ObjectType::BUILDING) {
 			instance->buildingHasChanged = true;
@@ -113,20 +113,20 @@ bool StateManager::changeState(Static* obj, StaticState stateTo) {
 
 void StateManager::executeChange(std::vector<Building*>* buildings) {
 	if (instance->buildingHasChanged) {
+		instance->buildingHasChanged = false;
 		for (auto building : *buildings) {
 			executeChange(building);
-		}
+		}	
 	}
-	instance->buildingHasChanged = false;
 }
 
 void StateManager::executeChange(std::vector<ResourceEntity*>* resources) {
 	if (instance->resourceHasChanged) {
+		instance->resourceHasChanged = false;
 		for (auto resource : *resources) {
 			executeChange(resource);
 		}
 	}
-	instance->resourceHasChanged = false;
 }
 
 void StateManager::executeChange(Static* obj) {
@@ -198,4 +198,20 @@ void StateManager::initStates(std::initializer_list<UnitState> states) const {
 			}
 		}
 	}
+}
+
+void StateManager::setBuildingToDispose(bool value) {
+	instance->buildingIsToDispose = value;
+}
+
+void StateManager::setResourceToDispose(bool value) {
+	instance->resourceIsToDispose = value;
+}
+
+bool StateManager::isBuildingToDispose() {
+	return instance->buildingIsToDispose;
+}
+
+bool StateManager::isResourceToDispose() {
+	return instance->resourceIsToDispose;
 }

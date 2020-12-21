@@ -8,7 +8,6 @@
 #include "database/DatabaseCache.h"
 #include "objects/NodeUtils.h"
 #include "objects/queue/QueueActionType.h"
-#include "objects/unit/ActionParameter.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"

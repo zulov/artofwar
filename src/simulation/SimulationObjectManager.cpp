@@ -7,6 +7,7 @@
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
+#include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
@@ -39,7 +40,8 @@ void SimulationObjectManager::addUnits(unsigned number, int id, Urho3D::Vector2&
 	addUnits(unitFactory.create(number, id, center, player, level));
 }
 
-void SimulationObjectManager::addBuilding(int id, const Urho3D::IntVector2& _bucketCords, char level, char player) const {
+void SimulationObjectManager::addBuilding(int id, const Urho3D::IntVector2& _bucketCords, char level,
+                                          char player) const {
 	addBuilding(buildingFactory.create(id, _bucketCords, level, player));
 }
 
@@ -48,7 +50,7 @@ void SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _buc
 }
 
 void SimulationObjectManager::findToDispose() {
-	findToDisposeUnits();
+	findToDisposeUnits(); //TODO perf jezeli cos zmieni³o stan do dispose
 	findToDisposeBuildings();
 	findToDisposeResources();
 }
@@ -122,38 +124,44 @@ void SimulationObjectManager::findToDisposeUnits() {
 }
 
 void SimulationObjectManager::findToDisposeBuildings() {
-	buildings->erase(
-		std::remove_if(
-			buildings->begin(), buildings->end(),
-			[this](Building* building) {
-				if (building->isToDispose()) {
-					buildingsToDispose.push_back(building);
-					return true;
+	if (StateManager::isBuildingToDispose()) {
+		buildings->erase(
+			std::remove_if(
+				buildings->begin(), buildings->end(),
+				[this](Building* building) {
+					if (building->isToDispose()) {
+						buildingsToDispose.push_back(building);
+						return true;
+					}
+					return false;
 				}
-				return false;
-			}
-		), buildings->end());
+			), buildings->end());
 
-	if (!buildingsToDispose.empty()) {
-		simulationInfo->setBuildingDied();
+		if (!buildingsToDispose.empty()) {
+			simulationInfo->setBuildingDied();
+		}
+		StateManager::setBuildingToDispose(false);
 	}
 }
 
 void SimulationObjectManager::findToDisposeResources() {
-	resources->erase(
-		std::remove_if(
-			resources->begin(), resources->end(),
-			[this](ResourceEntity* resource) {
-				if (resource->isToDispose()) {
-					resourcesToDispose.push_back(resource);
-					return true;
+	if (StateManager::isResourceToDispose()) {
+		resources->erase(
+			std::remove_if(
+				resources->begin(), resources->end(),
+				[this](ResourceEntity* resource) {
+					if (resource->isToDispose()) {
+						resourcesToDispose.push_back(resource);
+						return true;
+					}
+					return false;
 				}
-				return false;
-			}
 		), resources->end());
 
-	if (!resourcesToDispose.empty()) {
-		simulationInfo->setResourceDied();
+		if (!resourcesToDispose.empty()) {
+			simulationInfo->setResourceDied();
+		}
+		StateManager::setResourceToDispose(false);
 	}
 }
 

@@ -1,10 +1,10 @@
 #pragma once
 
+#include <functional>
+#include <vector>
 #include "objects/building/BuildingFactory.h"
 #include "objects/resource/ResourceFactory.h"
 #include "objects/unit/UnitFactory.h"
-#include <functional>
-#include <vector>
 
 
 class Physical;
