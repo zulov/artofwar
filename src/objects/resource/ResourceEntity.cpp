@@ -6,6 +6,7 @@
 #include "commands/action/ResourceActionType.h"
 #include "database/DatabaseCache.h"
 #include "math/RandGen.h"
+#include "objects/PhysicalUtils.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "objects/unit/state/StateManager.h"
@@ -63,25 +64,22 @@ unsigned char ResourceEntity::getMaxCloseUsers() const {
 
 void ResourceEntity::action(ResourceActionType type, char player) {
 	switch (type) {
-	case ResourceActionType::COLLECT:
-	{
-		auto neights = Game::getEnvironment()->getNeighboursFromTeamEq(this, 24, player);
-		int k = 0;
-		char limit = belowCloseLimit();
-		for (auto neight : *neights) {
-			if (k < limit) {
-				auto unit = static_cast<Unit*>(neight);
-				if (unit->getState() == UnitState::STOP && unit->getLevel()->canCollect) {
-					auto opt = this->getPosToUseWithIndex(unit);
-					if (opt.has_value()) {
-						auto [pos, distance, indexOfPos] = opt.value();
-						unit->toAction(this, distance, UnitAction::COLLECT, true);
+	case ResourceActionType::COLLECT: {
+		if (hasAnyFreeSpace()) {
+			const auto neights = Game::getEnvironment()->getNeighboursFromTeamEq(this, 24, player);
+			int k = 0;
+			const char limit = belowCloseLimit();
+			for (auto neight : *neights) {
+				if (k < limit) {
+					auto unit = static_cast<Unit*>(neight);
+					if (isFreeWorker(unit)) {
+						unit->toAction(this, UnitAction::COLLECT);
 						//TODO add order?
 						++k;
 					}
+				} else {
+					break;
 				}
-			} else {
-				break;
 			}
 		}
 	}

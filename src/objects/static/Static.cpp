@@ -9,8 +9,7 @@
 #include "utils/OtherUtils.h"
 
 Static::Static(Urho3D::Vector3& _position, int mainCell) : Physical(_position), mainCell(mainCell),
-                                                           state(StaticState::ALIVE), nextState(StaticState::ALIVE) {
-}
+                                                           state(StaticState::ALIVE), nextState(StaticState::ALIVE) {}
 
 void Static::load(dbload_static* dbloadStatic) {
 	Physical::load(dbloadStatic);
@@ -43,6 +42,15 @@ float Static::getAuraSize(const Urho3D::Vector3& boundingBox) const {
 int Static::belowCloseLimit() {
 	return Urho3D::Min(Physical::belowCloseLimit(), hasFreeSpace());
 	//TODO PERF liczy sie hasFreeSpace nawet jak close limit 0
+}
+
+bool Static::hasAnyFreeSpace() const {
+	for (auto index : surroundCells) {
+		if (canCollect(index)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 int Static::hasFreeSpace() const {

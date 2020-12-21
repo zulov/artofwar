@@ -148,14 +148,24 @@ float Unit::absorbAttack(float attackCoef) {
 	return val;
 }
 
-void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, float sqDistance, bool force) {
-	if (closest && (force || sqDistance < dbLevel->sqAttackInterest)) {
+void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, float sqDistance) {
+	if (sqDistance < dbLevel->sqAttackInterest) {
+		actionIfCloseEnough(order, closest);
+	}	
+}
+
+void Unit::actionIfCloseEnough(UnitAction order, Physical* closest) {
+	if (closest) {
 		addOrder(new IndividualOrder(this, order, closest, true));
 	}
 }
 
-void Unit::toAction(Physical* closest, float minDistance, UnitAction order, bool force) {
-	actionIfCloseEnough(order, closest, minDistance, force);
+void Unit::toAction(Physical* closest, UnitAction order, float minDistance) {
+	actionIfCloseEnough(order, closest, minDistance);
+}
+
+void Unit::toAction(Physical* closest, UnitAction order) {
+	actionIfCloseEnough(order, closest);
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {

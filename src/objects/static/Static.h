@@ -18,6 +18,7 @@ public:
 
 	int belowCloseLimit() override;
 	int hasFreeSpace() const;
+	bool hasAnyFreeSpace() const;
 	static bool canCollect(int index);
 
 	bool isFirstThingInSameSocket() const override { return true; }
