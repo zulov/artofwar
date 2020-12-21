@@ -59,7 +59,7 @@ public:
 			Game::getEnvironment()->addCollect(unit, value);
 			resources.add(resource->getId(), value);
 		} else {
-			StateManager::changeState(unit, UnitState::STOP);
+			StateManager::toDefaultState(unit);
 		}
 	}
 };

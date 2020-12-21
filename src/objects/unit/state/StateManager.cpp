@@ -47,6 +47,10 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo) {
 	return changeState(unit, stateTo, Consts::EMPTY_ACTION_PARAMETER);
 }
 
+bool StateManager::toDefaultState(Unit* unit) {
+	return changeState(unit, UnitState::STOP, Consts::EMPTY_ACTION_PARAMETER);//TODO mo¿e lepiej move
+}
+
 bool StateManager::canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter,
                                  State* stateFrom, State* toState) {
 	return stateFrom->validateTransition(stateTo)

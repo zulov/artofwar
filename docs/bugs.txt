@@ -2,3 +2,4 @@ Assertion failed: unit->getMainCell() == unit->indexToInteract, file D:\Programo
 przy pond 80k jednostkach blad
 po updejcie formacji nie ida dalej
 czy na kazdym on end trzeba usunac aim?
+	wychodzenie gdy nie ma aima, tak ja w follow

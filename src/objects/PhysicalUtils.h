@@ -13,7 +13,7 @@ inline bool belowRange(Physical* physical) {
 }
 
 inline bool isFree(Unit* unit) {
-	return unit->getFormation() < 0 && isInFreeState(unit->getState());
+	return unit->getFormation() < 0 && isInFreeState(unit->getState()) && !unit->hasAim();
 }
 
 inline bool isFreeWorker(Unit* unit) {

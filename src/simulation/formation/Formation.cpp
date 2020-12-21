@@ -14,7 +14,7 @@ Formation::Formation(short _id, const std::vector<Unit*>& _units, FormationType 
 
 	for (auto unit : units) {
 		unit->clearAims();
-		StateManager::changeState(unit, UnitState::STOP);
+		StateManager::toDefaultState(unit);
 	}
 
 	if (!units.empty()) {
@@ -208,7 +208,7 @@ void Formation::innerUpdate() {
 void Formation::stopAllBesideLeader() {
 	for (auto unit : units) {
 		if (unit != leader) {
-			StateManager::changeState(unit, UnitState::STOP);
+			StateManager::toDefaultState(unit);
 		}
 	}
 }

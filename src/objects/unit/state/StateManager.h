@@ -19,6 +19,8 @@ class StateManager {
 public:
 	static bool changeState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter);
 	static bool changeState(Unit* unit, UnitState stateTo);
+	static bool toDefaultState(Unit* unit);
+	
 	static bool canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter, State* stateFrom,
 	                          State* toState);
 	static bool canChangeState(Unit* unit, UnitState stateTo);

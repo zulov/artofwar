@@ -20,7 +20,14 @@ public:
 		unit->thingsToInteract.clear();
 	}
 
+	void execute(Unit* unit, float timeStep)override {
+		if (!unit->aims.hasCurrent()) {
+			StateManager::toDefaultState(unit);
+		}
+	}
+
 	void onEnd(Unit* unit) override {
+		unit->removeCurrentAim();
 		//TODO czy czyœciæ aimy?
 	}
 
