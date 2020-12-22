@@ -28,7 +28,6 @@ public:
 
 	void onEnd(Unit* unit) override {
 		unit->removeCurrentAim();
-		//TODO czy czyœciæ aimy?
 	}
 
 };

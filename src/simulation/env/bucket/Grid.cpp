@@ -25,7 +25,7 @@ Grid::~Grid() {
 }
 
 void Grid::update(Unit* unit, const char team) const {
-	assert(unit->isAlive());
+	assert(!unit->isToDispose());
 
 	const int index = calculator->indexFromPosition(unit->getPosition());
 	if (unit->teamBucketHasChanged(index, team)) {
@@ -36,7 +36,7 @@ void Grid::update(Unit* unit, const char team) const {
 }
 
 void Grid::update(Physical* entity) const {
-	assert(entity->isAlive());
+	assert(!entity->isToDispose());
 
 	const int index = calculator->indexFromPosition(entity->getPosition());
 	if (entity->bucketHasChanged(index)) {

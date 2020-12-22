@@ -20,10 +20,12 @@ public:
 	}
 
 	void onEnd(Unit* unit) override {
-		//TODO probable bug czy czyscic, ale moze przjsceie do mova zaltwia sprawe
+		unit->removeCurrentAim();
 	}
 
 	void execute(Unit* unit, float timeStep) override {
-		//TODO probable bug trzeba wyjsc jesli nie ma juz aima
+		if (!unit->aims.hasCurrent()) {
+			StateManager::toDefaultState(unit);
+		}
 	}
 };
