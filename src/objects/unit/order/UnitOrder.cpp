@@ -18,17 +18,26 @@ UnitOrder::~UnitOrder() {
 }
 
 ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
-	const auto path = Game::getEnvironment()->findPath(startInx, to);
-	if (!path->empty()) {
-		return ActionParameter(new TargetAim(*path));
+	auto target = getTargetAimPtr(startInx, to);
+	if (target) {
+		return ActionParameter(target);
 	}
 	return Consts::EMPTY_ACTION_PARAMETER;
 }
 
+TargetAim* UnitOrder::getTargetAimPtr(int startInx, Urho3D::Vector2& to) const {
+	const auto path = Game::getEnvironment()->findPath(startInx, to);
+	if (!path->empty()) {
+		return new TargetAim(*path);
+	}
+	return nullptr;
+}
+
 ActionParameter UnitOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow) {
-	auto const target = getTargetAim(startInx, toSoFar);
+	auto const target = getTargetAimPtr(startInx, toSoFar);
+	assert(target != nullptr);
 	//jesli jest nulem to co?
-	return ActionParameter(new FollowAim(toFollow, dynamic_cast<TargetAim*>(target.aim)));
+	return ActionParameter(new FollowAim(toFollow, target));
 }
 
 ActionParameter UnitOrder::getChargeAim(Urho3D::Vector2& charge) {
@@ -36,8 +45,8 @@ ActionParameter UnitOrder::getChargeAim(Urho3D::Vector2& charge) {
 }
 
 void UnitOrder::execute() {
-	if(expired()) {
-		int a =5;
+	if (expired()) {
+		assert(false);
 	}
 	switch (static_cast<UnitAction>(id)) {
 	case UnitAction::GO:

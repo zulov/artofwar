@@ -1,10 +1,11 @@
 #pragma once
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Vector2;
 }
+
 class Physical;
+class TargetAim;
 struct ActionParameter;
 enum class UnitAction : char;
 
@@ -23,9 +24,9 @@ public:
 	short getId() const { return id; }
 	short getToUseId() const;
 protected:
-	Physical* toUse = nullptr;//TODO tu nada³a by sie unia?
+	Physical* toUse = nullptr; //TODO tu nada³a by sie unia?
 	Urho3D::Vector2* vector = nullptr;
-	
+
 	const bool append;
 	const short id;
 
@@ -33,7 +34,7 @@ protected:
 	ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow);
 	ActionParameter getChargeAim(Urho3D::Vector2& charge);
 private:
-
+	TargetAim* getTargetAimPtr(int startInx, Urho3D::Vector2& to) const;
 	virtual void addCollectAim() =0;
 	virtual void addTargetAim() =0;
 	virtual void addFollowAim() =0;

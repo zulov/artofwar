@@ -5,13 +5,10 @@
 #include "simulation/env/Environment.h"
 #include "objects/unit/ActionParameter.h"
 
-IndividualOrder::IndividualOrder(Unit* unit, UnitAction action,
-                                 Urho3D::Vector2& vector, bool append):
-	UnitOrder(static_cast<short>(action), append, vector),
-	unit(unit) {}
+IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Urho3D::Vector2& vector, bool append):
+	UnitOrder(static_cast<short>(action), append, vector), unit(unit) {}
 
-IndividualOrder::IndividualOrder(Unit* unit, UnitAction action,
-                                 Physical* toUse, bool append):
+IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Physical* toUse, bool append):
 	UnitOrder(static_cast<short>(action), append, toUse), unit(unit) {}
 
 bool IndividualOrder::expired() {
@@ -76,14 +73,12 @@ void IndividualOrder::followAndAct() {
 	if (posOpt.has_value()) {
 		auto postToUse = posOpt.value();
 		if (std::get<2>(postToUse) != unit->getMainBucketIndex()) {
-			auto pos = std::get<0>(postToUse);
 			unit->action(UnitAction::FOLLOW,
-			             getFollowAim(unit->getMainCell(), pos, toUse));
+			             getFollowAim(unit->getMainCell(), std::get<0>(postToUse), toUse));
 			unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, true));
 			//Dodanie celu po dojsciu
 		} else {
-			unit->action(static_cast<UnitAction>(id),
-			             ActionParameter( toUse, std::get<2>(postToUse)));
+			unit->action(static_cast<UnitAction>(id), ActionParameter(toUse, std::get<2>(postToUse)));
 		}
 	}
 }
