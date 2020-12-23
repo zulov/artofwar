@@ -76,14 +76,16 @@ void GroupOrder::addStopAim() {
 }
 
 void GroupOrder::simpleAction(ActionParameter& parameter) const {
-	for (auto unit : units) {
-		unit->action(static_cast<UnitAction>(id), parameter);
+	const auto action = static_cast<UnitAction>(id);
+	for (auto* unit : units) {
+		unit->action(action, parameter);
 	}
 }
 
 void GroupOrder::simpleAction() const {
-	for (auto unit : units) {
-		unit->action(static_cast<UnitAction>(id));
+	auto action = static_cast<UnitAction>(id);
+	for (auto* unit : units) {
+		unit->action(action);
 	}
 }
 
@@ -95,7 +97,6 @@ void GroupOrder::transformToFormationOrder() const {
 		} else {
 			opt.value()->addOrder(new FormationOrder(opt.value(), id, toUse, append));
 		}
-
 	}
 }
 

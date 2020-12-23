@@ -5,7 +5,6 @@
 #include "enums/UnitAction.h"
 #include "simulation/formation/Formation.h"
 #include "simulation/env/Environment.h"
-#include "objects/unit/ActionParameter.h"
 
 FormationOrder::FormationOrder(Formation* formation, short action,
                                Urho3D::Vector2& vector, bool append):
@@ -59,8 +58,9 @@ void FormationOrder::addFollowAim() {
 }
 
 void FormationOrder::addChargeAim() {
+	auto action = static_cast<UnitAction>(id);
 	for (auto unit : formation->getUnits()) {
-		unit->action(static_cast<UnitAction>(id), getChargeAim(*vector));
+		unit->action(action, getChargeAim(*vector));
 	}
 }
 
@@ -101,7 +101,6 @@ void FormationOrder::addDefendAim() {
 	simpleAction();
 }
 
-
 void FormationOrder::addDeadAim() {
 	simpleAction();
 }
@@ -111,9 +110,10 @@ void FormationOrder::addStopAim() {
 }
 
 void FormationOrder::simpleAction() const {
-	for (auto unit : formation->getUnits()) {
+	const auto action = static_cast<UnitAction>(id);
+	for (auto* unit : formation->getUnits()) {
 		unit->resetFormation();
-		unit->action(static_cast<UnitAction>(id));
+		unit->action(action);
 	}
 	formation->remove();
 }
