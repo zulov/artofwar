@@ -159,15 +159,15 @@ void Hud::createConsole(Urho3D::Engine* engine) const {
 void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
                  SimInfo* simInfo) const {
 	updateSelected(selectedInfo, simInfo);
-
 	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
 	                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
 	                    cameraManager->getPosInfo());
-
 	topPanel->update(Game::getPlayersMan()->getActivePlayer());
 
 	scorePanel->update(Game::getPlayersMan()->getAllPlayers());
-	miniMapPanel->update();
+	if (!TRAIN_MODE) {
+		miniMapPanel->update();
+	}
 	selectedInfo->hasBeenUpdatedDrawn();
 }
 
@@ -193,28 +193,28 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, SimInfo* simInfo) const {
 	if (selectedInfo->isSthSelected() || selectedInfo->hasChanged()) {
 		if (selectedInfo->hasChanged()
 			|| PER_FRAME_ACTION.get(PerFrameAction::QUEUE_HUD, simInfo->getFrameInfo())) {
-				selectedHudPanel->update(selectedInfo);
-				menuPanel->updateSelected(selectedInfo);
-				switch (selectedInfo->getSelectedType()) {
-				case ObjectType::PHYSICAL:
-				case ObjectType::NONE:
-					menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
-					queuePanel->show(Game::getPlayersMan()->getActivePlayer()->getQueue());
-					break;
-				case ObjectType::UNIT:
-					menuPanel->refresh(LeftMenuMode::ORDER, selectedInfo);
-					queuePanel->setVisible(false);
-					break;
-				case ObjectType::BUILDING:
-					menuPanel->refresh(LeftMenuMode::UNIT, selectedInfo);
-					queuePanel->show(selectedInfo);
-					break;
-				case ObjectType::RESOURCE:
-					menuPanel->refresh(LeftMenuMode::RESOURCE, selectedInfo);
-					queuePanel->setVisible(false);
-					break;
-				}
+			selectedHudPanel->update(selectedInfo);
+			menuPanel->updateSelected(selectedInfo);
+			switch (selectedInfo->getSelectedType()) {
+			case ObjectType::PHYSICAL:
+			case ObjectType::NONE:
+				menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
+				queuePanel->show(Game::getPlayersMan()->getActivePlayer()->getQueue());
+				break;
+			case ObjectType::UNIT:
+				menuPanel->refresh(LeftMenuMode::ORDER, selectedInfo);
+				queuePanel->setVisible(false);
+				break;
+			case ObjectType::BUILDING:
+				menuPanel->refresh(LeftMenuMode::UNIT, selectedInfo);
+				queuePanel->show(selectedInfo);
+				break;
+			case ObjectType::RESOURCE:
+				menuPanel->refresh(LeftMenuMode::RESOURCE, selectedInfo);
+				queuePanel->setVisible(false);
+				break;
 			}
+		}
 		if (selectedInfo->getSelectedType() == ObjectType::BUILDING) {
 			queuePanel->update(selectedInfo);
 		}

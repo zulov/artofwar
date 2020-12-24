@@ -260,6 +260,7 @@ std::array<float, 5>& InfluenceManager::getInfluenceDataAt(char player, const Ur
 	auto& array = mapsForAiPerPlayer[player];
 	assert(array.size()==dataFromPos.size());
 	for (int i = 0; i < array.size(); ++i) {
+		array[i]->computeMinMax();
 		dataFromPos[i] = array[i]->getValueAsPercent(pos);
 	}
 	return dataFromPos;

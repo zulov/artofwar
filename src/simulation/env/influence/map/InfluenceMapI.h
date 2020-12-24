@@ -13,6 +13,7 @@ public:
 	virtual void updateInt(Physical* thing, int value = 1) =0;
 	virtual void reset() =0;
 	virtual void finishCalc() =0;
+
 	virtual void print(Urho3D::String name) =0;
 	virtual int getMaxElement() =0;
 	virtual int getMaxElement(const std::array<int, 4>& indexes) =0;

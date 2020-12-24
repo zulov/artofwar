@@ -11,6 +11,7 @@ public:
 	virtual ~InfluenceMap() = default;
 
 	virtual float getValueAt(int index) const =0;
+	virtual void computeMinMax() = 0;
 	void draw(short batch, short maxParts) const;
 	void drawCell(int index, short batch) const;
 	Urho3D::Vector2 getCenter(int index) const;
@@ -21,16 +22,16 @@ public:
 	unsigned short getResolution() override { return calculator->getResolution(); }
 	Urho3D::Vector2 getCenter(int index) override { return calculator->getCenter(index); }
 protected:
-
+	GridCalculator* calculator;
 	float size;
 	float fieldSize;
 	unsigned int arraySize;
 	const float valueThresholdDebug;
 
-	float avg;
-	float min;
-	float max;
 	int counter = 0;
 	unsigned short resolution;
-	GridCalculator* calculator;
+
+	bool minMaxInited = false;
+	float min;
+	float max;
 };

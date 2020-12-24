@@ -51,11 +51,19 @@ float InfluenceMapInt::getValueAt(int index) const {
 	return values[index];
 }
 
+void InfluenceMapInt::computeMinMax() {
+	if (!minMaxInited) {
+		const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
+		min = *minIdx;
+		max = *maxIdx;
+		minMaxInited = true;
+	}
+}
+
 void InfluenceMapInt::finishCalc() {
-	const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
-	min = *minIdx;
-	max = *maxIdx;
-	avg = std::accumulate(values, values + arraySize, 0) / (double)arraySize;
+	// const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
+	// min = *minIdx;
+	// max = *maxIdx;
 }
 
 int InfluenceMapInt::getMaxElement() {

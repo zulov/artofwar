@@ -5,6 +5,7 @@
 #include "simulation/Simulation.h"
 #include "simulation/env/Environment.h"
 #include "utils/OtherUtils.h"
+#include "simulation/SimGlobals.h"
 
 void DebugManager::change(Urho3D::Input* input, Simulation* simulation) {
 	if (input->GetKeyPress(Urho3D::KEY_F9)) {
@@ -30,5 +31,7 @@ void DebugManager::change(Urho3D::Input* input, Simulation* simulation) {
 }
 
 void DebugManager::draw() const {
-	Game::getEnvironment()->drawDebug(environmentDebugMode, environmentIndex);
+	if (!TRAIN_MODE) {
+		Game::getEnvironment()->drawDebug(environmentDebugMode, environmentIndex);
+	}	
 }

@@ -87,6 +87,7 @@ float InfluenceMapFloat::getValueAt(const Urho3D::Vector2& pos) const {
 }
 
 float InfluenceMapFloat::getValueAsPercent(const Urho3D::Vector2& pos) const {
+	assert(minMaxInited);
 	const float diff = max - min;
 	if (diff != 0.f) {
 		return (getValueAt(pos) - min) / diff;
@@ -95,6 +96,7 @@ float InfluenceMapFloat::getValueAsPercent(const Urho3D::Vector2& pos) const {
 }
 
 float InfluenceMapFloat::getValueAsPercent(int index) const {
+	assert(minMaxInited);
 	const float diff = max - min;
 	if (diff != 0.f) {
 		return (getValueAt(index) - min) / diff;
@@ -102,12 +104,19 @@ float InfluenceMapFloat::getValueAsPercent(int index) const {
 	return 0.5f;
 }
 
+void InfluenceMapFloat::computeMinMax() {
+	if (!minMaxInited) {
+		const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
+		min = *minIdx;
+		max = *maxIdx;
+		minMaxInited = true;
+	}
+}
+
 void InfluenceMapFloat::finishCalc() {
 	updateFromTemp();
-	const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
-	min = *minIdx;
-	max = *maxIdx;
-	avg = std::accumulate(values, values + arraySize, 0.0f) / arraySize;
+	
+	//computeMinMax();
 }
 
 int InfluenceMapFloat::getMaxElement() {

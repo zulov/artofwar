@@ -53,7 +53,7 @@ float InfluenceMap::getFieldSize() const {
 void InfluenceMap::print(Urho3D::String name) {
 	auto image = new Urho3D::Image(Game::getContext());
 	image->SetSize(resolution, resolution, 4);
-
+	computeMinMax();
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = calculator->getNotSafeIndex(x, y);
