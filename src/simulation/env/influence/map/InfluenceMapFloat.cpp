@@ -115,7 +115,7 @@ void InfluenceMapFloat::computeMinMax() {
 
 void InfluenceMapFloat::finishCalc() {
 	updateFromTemp();
-	
+
 	//computeMinMax();
 }
 
@@ -163,11 +163,12 @@ void InfluenceMapFloat::add(int* indexes, float* vals, int k, float val) const {
 	}
 }
 
-void InfluenceMapFloat::updateFromTemp() {
+void InfluenceMapFloat::updateFromTemp() const {
 	if (tempComputedNeeded) {
 		for (int i = 0; i < arraySize; ++i) {
-			if (tempVals[i] > 0.f) {
-				update(i, tempVals[i]);
+			auto val = tempVals[i];
+			if (val > 0.f) {
+				update(i, val);
 			}
 		}
 	}

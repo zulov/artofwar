@@ -27,7 +27,7 @@ public:
 	void getIndexesWithByValue(float percent, float* intersection) const;
 	void add(int* indexes, float* vals, int k, float val) const;
 
-	void updateFromTemp();
+	void updateFromTemp() const;
 
 protected:
 	float* values;

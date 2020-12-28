@@ -159,13 +159,14 @@ void Hud::createConsole(Urho3D::Engine* engine) const {
 void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
                  SimInfo* simInfo) const {
 	updateSelected(selectedInfo, simInfo);
-	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
-	                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
-	                    cameraManager->getPosInfo());
-	topPanel->update(Game::getPlayersMan()->getActivePlayer());
+	if (!TRAIN_MODE || PER_FRAME_ACTION.get(PerFrameAction::HUD_UPDATE, simInfo->getFrameInfo())) {
+		debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
+		                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
+		                    cameraManager->getPosInfo());
+		topPanel->update(Game::getPlayersMan()->getActivePlayer());
 
-	scorePanel->update(Game::getPlayersMan()->getAllPlayers());
-	if (!TRAIN_MODE) {
+		scorePanel->update(Game::getPlayersMan()->getAllPlayers());
+
 		miniMapPanel->update();
 	}
 	selectedInfo->hasBeenUpdatedDrawn();

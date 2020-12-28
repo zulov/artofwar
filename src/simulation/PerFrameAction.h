@@ -13,11 +13,17 @@ enum class PerFrameAction:char {
 	STAT_SAVE,
 	AI_ACTION,
 	AI_ORDER,
-	QUEUE_HUD
+	QUEUE_HUD,
+	HUD_UPDATE
 };
 
 inline struct PerFrameActionData {
 private:
+	inline static std::array<unsigned char, FRAMES_IN_PERIOD> ONCE_PER_SECOND ={
+			1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		};
 	inline static std::array<unsigned char, FRAMES_IN_PERIOD> data[magic_enum::enum_count<PerFrameAction>()] = {
 		{
 			1, 0, 0, 0, 0, 1, 0, 0, 0, 0,
@@ -49,11 +55,8 @@ private:
 			0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}, //AI_ORDER
-		{
-			1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		} //QUEUE_HUD
+		ONCE_PER_SECOND, //QUEUE_HUD
+		ONCE_PER_SECOND //HUD_UPDATE
 	};
 public:
 	static bool get(PerFrameAction type, unsigned char frameNum, unsigned int second = 1) {
