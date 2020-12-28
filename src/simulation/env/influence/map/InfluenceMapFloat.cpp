@@ -22,22 +22,7 @@ InfluenceMapFloat::~InfluenceMapFloat() {
 void InfluenceMapFloat::update(Physical* thing, float value) {
 	auto& pos = thing->getPosition();
 
-	const auto centerX = calculator->getIndex(pos.x_);
-	const auto centerZ = calculator->getIndex(pos.z_);
-	const auto minI = calculator->getValid(centerX - level);
-	const auto maxI = calculator->getValid(centerX + level);
-
-	const auto minJ = calculator->getValid(centerZ - level);
-	const auto maxJ = calculator->getValid(centerZ + level);
-
-	for (short i = minI; i <= maxI; ++i) {
-		const auto a = (i - centerX) * (i - centerX);
-		for (short j = minJ; j <= maxJ; ++j) {
-			const auto b = (j - centerZ) * (j - centerZ);
-			int index = calculator->getNotSafeIndex(i, j);
-			values[index] += value / ((a + b) * coef + 1.f);
-		}
-	}
+	update(value, calculator->getIndex(pos.x_), calculator->getIndex(pos.z_));
 }
 
 void InfluenceMapFloat::updateInt(Physical* thing, int value) {
@@ -52,7 +37,10 @@ void InfluenceMapFloat::tempUpdate(Physical* thing, float value) {
 
 void InfluenceMapFloat::update(int index, float value) const {
 	auto [centerX,centerZ] = calculator->getIndexes(index);
+	update(value, centerX, centerZ);
+}
 
+void InfluenceMapFloat::update(float value, const unsigned short centerX, const unsigned short centerZ) const {
 	const auto minI = calculator->getValid(centerX - level);
 	const auto maxI = calculator->getValid(centerX + level);
 
@@ -61,10 +49,11 @@ void InfluenceMapFloat::update(int index, float value) const {
 
 	for (short i = minI; i <= maxI; ++i) {
 		const auto a = (i - centerX) * (i - centerX);
+		const int index = calculator->getNotSafeIndex(i, 0);
 		for (short j = minJ; j <= maxJ; ++j) {
 			const auto b = (j - centerZ) * (j - centerZ);
-			int index = calculator->getNotSafeIndex(i, j);
-			values[index] += value / ((a + b) * coef + 1.f);
+
+			values[index + j] += value / ((a + b) * coef + 1.f);
 		}
 	}
 }

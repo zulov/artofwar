@@ -33,6 +33,7 @@ protected:
 	float* values;
 	float coef;
 private:
+	__declspec(noinline) void update(float value, unsigned short centerX, unsigned short centerZ) const;
 
 	float* tempVals;
 	unsigned char level;
