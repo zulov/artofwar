@@ -48,13 +48,13 @@ void InfluenceMapFloat::update(float value, const unsigned short centerX, const 
 	const auto maxJ = calculator->getValid(centerZ + level);
 
 	int index = minI * calculator->getResolution();
-	for (short i = minI; i <= maxI; ++i) {//TODO iterowac po (i - centerX)
-		const auto a = (i - centerX) * (i - centerX);//TODO abs
+	for (short i = minI - centerX; i <= maxI - centerX; ++i) {//TODO iterowac po (i - centerX)
+		const auto a = std::abs(i)+1.f;//TODO abs
 
 		for (short j = minJ; j <= maxJ; ++j) {
-			const auto b = (j - centerZ) * (j - centerZ);
+			const auto b = std::abs(j - centerZ);
 
-			values[index + j] += value / ((a + b) * coef + 1.f);//TODO remove coef
+			values[index + j] += value / (a + b);//TODO remove coef
 		}
 		index += calculator->getResolution();
 	}
