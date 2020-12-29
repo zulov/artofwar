@@ -87,7 +87,7 @@ Physical* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho
 	terrain->SetPatchSize(8);
 	terrain->SetSpacing({horScale, verScale, horScale});
 	terrain->SetSmoothing(true);
-	terrain->SetOccluder(true);
+	terrain->SetOccluder(false);
 	setMaterial(texture);
 	return entity;
 }
