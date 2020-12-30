@@ -74,6 +74,12 @@ Urho3D::Node* LevelBuilder::createLight(const Urho3D::Vector3& direction, const 
 	light->SetLightType(lightType);
 	light->SetColor(color);
 
+	light->SetCastShadows(true);
+	light->SetShadowBias(Urho3D::BiasParameters(0.00025f, 0.5f));
+    light->SetShadowCascade(Urho3D::CascadeParameters(10.0f, 50.0f, 200.0f, 0.0f, 0.8f));
+    light->SetSpecularIntensity(0.5f);
+	light->SetPerVertex(false);
+	
 	return lightNode;
 }
 

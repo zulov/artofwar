@@ -3,5 +3,6 @@
 <component type="StaticModel">
 	<attribute name="Model" value="Model;Models/buildings/additional/banner.mdl" />
 	<attribute name="Material" value="Material;Materials/buildings/additional/banner.xml" />
+	<attribute name="Cast Shadows" value="true"/>
 </component>
 </node>

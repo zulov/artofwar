@@ -151,6 +151,7 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 	node->SetVar("link", this);
 
 	model = node->GetComponent<Urho3D::StaticModel>();
+
 	populate();
 	updateBillboards();
 }
