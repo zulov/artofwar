@@ -1,0 +1,3 @@
+Generate debugging information	
+	You should always set this option to Yes (/DEBUG) to create debugging symbols and files needed for debugging. When the application goes into production, you can set it to off.
+whole program optimization
