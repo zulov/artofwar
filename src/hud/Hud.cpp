@@ -197,7 +197,6 @@ void Hud::updateSelected(SelectedInfo* selectedInfo, SimInfo* simInfo) const {
 			selectedHudPanel->update(selectedInfo);
 			menuPanel->updateSelected(selectedInfo);
 			switch (selectedInfo->getSelectedType()) {
-			case ObjectType::PHYSICAL:
 			case ObjectType::NONE:
 				menuPanel->refresh(LeftMenuMode::BUILDING, selectedInfo);
 				queuePanel->show(Game::getPlayersMan()->getActivePlayer()->getQueue());

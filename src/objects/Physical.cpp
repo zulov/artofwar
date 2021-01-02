@@ -91,7 +91,6 @@ float Physical::getHealthBarSize() const {
 }
 
 bool Physical::isSelected() const {
-	assert(getType() != ObjectType::PHYSICAL);
 	return selected;
 }
 
@@ -120,7 +119,6 @@ int Physical::belowCloseLimit() {
 }
 
 void Physical::select(Urho3D::Billboard* healthBar, Urho3D::Billboard* aura) {
-	if (getType() == ObjectType::PHYSICAL) { return; }
 	assert(selected==false);
 	selected = true;
 	this->healthBar = healthBar;
@@ -137,7 +135,6 @@ void Physical::disableBillboard(Urho3D::Billboard* billboard) {
 }
 
 void Physical::unSelect() {
-	if (getType() == ObjectType::PHYSICAL) { return; }
 	selected = false;
 
 	disableBillboard(healthBar);

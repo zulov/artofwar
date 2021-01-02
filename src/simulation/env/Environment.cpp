@@ -108,20 +108,11 @@ std::vector<Physical*>* Environment::getNeighbours(Urho3D::Vector3& center, Grid
 }
 
 const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clicked) const {
-	Grid* grid;
-	switch (clicked->getType()) {
-	case ObjectType::UNIT:
-		grid = grids[0];
-		break;
-	case ObjectType::BUILDING:
-		grid = grids[1];
-		break;
-	case ObjectType::RESOURCE:
-		grid = grids[2];
-		break;
-	default: return &Consts::EMPTY_PHYSICAL;
+	if(!clicked) {
+		return &Consts::EMPTY_PHYSICAL;
 	}
-	return grid->getArrayNeightSimilarAs(clicked, 20.f);
+
+	return grids[cast(clicked->getType())]->getArrayNeightSimilarAs(clicked, 20.f);
 }
 
 std::vector<Physical*>* Environment::getResources(Physical* physical, float radius) {

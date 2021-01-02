@@ -29,7 +29,7 @@ private:
 	Urho3D::Node* createLight(const Urho3D::Vector3& direction, const Urho3D::Color& color,
 	                          Urho3D::LightType lightType);
 
-	Physical* createGround(const Urho3D::String& heightMap, const Urho3D::String& texture, float horScale,
+	Urho3D::Node* createGround(const Urho3D::String& heightMap, const Urho3D::String& texture, float horScale,
 	                       float verScale);
 
 	SceneObjectManager* objectManager;

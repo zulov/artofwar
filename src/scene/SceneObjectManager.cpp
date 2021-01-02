@@ -1,15 +1,14 @@
 #include "SceneObjectManager.h"
 #include <Urho3D/Scene/Node.h>
-#include "objects/Physical.h"
 
 
 SceneObjectManager::~SceneObjectManager() {
-	delete ground;
+	ground->Remove();
 	light->Remove();
 	zone->Remove();
 }
 
-void SceneObjectManager::setGround(Physical* ground) {
+void SceneObjectManager::setGround(Urho3D::Node* ground) {
 	this->ground = ground;
 }
 

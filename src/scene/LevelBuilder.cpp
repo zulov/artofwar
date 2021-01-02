@@ -25,7 +25,7 @@ LevelBuilder::LevelBuilder() {
 
 LevelBuilder::~LevelBuilder() {
 	delete objectManager;
-	scene->RemoveAllChildren();//TODO tu czasme b³ad 
+	scene->RemoveAllChildren(); //TODO tu czasme b³ad 
 	scene->Clear();
 	scene->Remove();
 	Game::setScene(nullptr);
@@ -42,7 +42,7 @@ void LevelBuilder::createMap(int mapId) {
 
 	objectManager->setZone(createZone());
 	objectManager->setLight(createLight({0.6f, -1.0f, 0.8f}, {0.7f, 0.6f, 0.6f},
-	                               Urho3D::LIGHT_DIRECTIONAL));
+	                                    Urho3D::LIGHT_DIRECTIONAL));
 	objectManager->setGround(createGround(map->height_map, map->texture, map->scale_hor, map->scale_ver));
 }
 
@@ -66,7 +66,7 @@ Urho3D::Node* LevelBuilder::createZone() {
 }
 
 Urho3D::Node* LevelBuilder::createLight(const Urho3D::Vector3& direction, const Urho3D::Color& color,
-                                  Urho3D::LightType lightType) {
+                                        Urho3D::LightType lightType) {
 	auto lightNode = Game::getScene()->CreateChild();
 	lightNode->SetDirection(direction);
 	auto light = lightNode->CreateComponent<Urho3D::Light>();
@@ -76,24 +76,24 @@ Urho3D::Node* LevelBuilder::createLight(const Urho3D::Vector3& direction, const 
 
 	light->SetCastShadows(true);
 	light->SetShadowBias(Urho3D::BiasParameters(0.00025f, 0.5f));
-    light->SetShadowCascade(Urho3D::CascadeParameters(10.0f, 50.0f, 200.0f, 0.0f, 0.8f));
-    light->SetSpecularIntensity(0.5f);
+	light->SetShadowCascade(Urho3D::CascadeParameters(10.0f, 50.0f, 200.0f, 0.0f, 0.8f));
+	light->SetSpecularIntensity(0.5f);
 	light->SetPerVertex(false);
-	
+
 	return lightNode;
 }
 
-Physical* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho3D::String& texture,
-                                   float horScale, float verScale) {
-	auto pos = Urho3D::Vector3();
-	const auto entity = new Physical(pos);
-
-	terrain = entity->getNode()->CreateComponent<Urho3D::Terrain>();
+Urho3D::Node* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho3D::String& texture,
+                                     float horScale, float verScale) {
+	auto node = Game::getScene()->CreateChild();
+	terrain = node->CreateComponent<Urho3D::Terrain>();
 	terrain->SetHeightMap(Game::getCache()->GetResource<Urho3D::Image>(heightMap));
 	terrain->SetPatchSize(8);
 	terrain->SetSpacing({horScale, verScale, horScale});
 	terrain->SetSmoothing(true);
 	terrain->SetOccluder(false);
 	terrain->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(texture));
-	return entity;
+	node->SetVar("ground", true);
+	
+	return node;
 }

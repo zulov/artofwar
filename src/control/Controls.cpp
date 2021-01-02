@@ -38,7 +38,7 @@ Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectTyp
 	tempBuildingNode = Game::getScene()->CreateChild();
 	tempBuildingNode->SetEnabled(false);
 
-	selectedInfo->setSelectedType(ObjectType::PHYSICAL);
+	selectedInfo->setSelectedType(ObjectType::NONE);
 
 	for (int i = 0; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
 		deployMark[i] = Game::getScene()->CreateChild();
@@ -95,11 +95,10 @@ void Controls::unSelectAll() {
 
 void Controls::selectOne(Physical* entity, char player) {
 	const auto entityType = entity->getType();
-	if (entityType != selectedInfo->getSelectedType()) {
+	if (entity == nullptr || entityType != selectedInfo->getSelectedType()) {
 		unSelectAll();
 	}
-	if (entity->getType() != ObjectType::PHYSICAL
-		&& !entity->isSelected() && entity->isAlive()
+	if (!entity->isSelected() && entity->isAlive()
 		&& (entity->getPlayer() < 0 || entity->getPlayer() == player)) {
 
 		entity->select(billboardSetProvider.getNextBar(entity->getType(), entity->getPlayer()),
@@ -126,7 +125,12 @@ void Controls::leftClick(hit_data& hitData) {
 	if (!input->GetKeyDown(Urho3D::KEY_CTRL)) {
 		unSelectAll();
 	}
-	selectOne(hitData.clicked, Game::getPlayersMan()->getActivePlayerID());
+	if (hitData.isGround) {
+		unSelectAll();
+	}else {
+		selectOne(hitData.clicked, Game::getPlayersMan()->getActivePlayerID());
+	}
+	
 	billboardSetProvider.commit();
 	updateAdditionalInfo();
 }
@@ -167,8 +171,8 @@ UnitAction Controls::chooseAction(hit_data& hitData) const {
 
 UnitOrder* Controls::createUnitOrder(hit_data& hitData) const {
 	const bool shiftPressed = input->GetKeyDown(Urho3D::KEY_SHIFT);
-	switch (hitData.clicked->getType()) {
-	case ObjectType::PHYSICAL:
+	switch (hitData.getType()) {
+	case ObjectType::NONE:
 		return vectorOrder(UnitAction::GO, new Urho3D::Vector2(hitData.position.x_, hitData.position.z_), shiftPressed,
 		                   selected);
 	case ObjectType::UNIT:
@@ -212,14 +216,14 @@ void Controls::releaseLeft() {
 	hit_data hitData;
 
 	if (raycast(hitData)) {
-		auto lastClicked = left.lastUp;
+		const auto lastClicked = left.lastUp;
 		left.setSecond(hitData.position);
 		const float dist = sqDist(left.held.first, left.held.second);
 		if (left.lastUp - lastClicked < 0.2f && dist < clickDistance) {
 			leftDoubleClick(hitData);
 		} else if (dist > clickDistance) {
 			leftHold(left.held);
-		} else if (hitData.clicked) {
+		} else if (hitData.isSth()) {
 			leftClick(hitData);
 		}
 	}
@@ -234,7 +238,7 @@ void Controls::releaseRight() {
 		right.setSecond(hitData.position);
 		if (sqDist(right.held.first, right.held.second) > clickDistance) {
 			rightHold(right.held);
-		} else if (hitData.clicked) {
+		} else if (hitData.isSth()) {
 			rightClick(hitData);
 		}
 	}
@@ -245,7 +249,7 @@ void Controls::releaseRight() {
 void Controls::releaseBuildLeft() {
 	hit_data hitData;
 
-	if (raycast(hitData) && hitData.clicked) {
+	if (raycastGround(hitData)) {
 		leftClickBuild(hitData);
 		if (input->GetKeyDown(Urho3D::KEY_CTRL)) {
 			cleanMouse();
@@ -258,7 +262,8 @@ void Controls::releaseBuildLeft() {
 bool Controls::orderAction() const {
 	hit_data hitData;
 
-	if (raycast(hitData) && hitData.clicked) {
+	//if (raycast(hitData) && hitData.clicked) {
+	if (raycast(hitData)) {
 		rightClick(hitData);
 		return true;
 	}
@@ -286,7 +291,6 @@ BuildingActionType Controls::getBuildingActionType(ActionType type) {
 
 void Controls::order(short id, ActionType type) {
 	switch (selectedInfo->getSelectedType()) {
-	case ObjectType::PHYSICAL:
 	case ObjectType::NONE:
 		return Game::getActionCenter()->add(
 			new GeneralActionCommand(id, GeneralActionType::BUILDING_LEVEL,
@@ -431,7 +435,7 @@ void Controls::cleanAndUpdate(const SimInfo* simulationInfo) {
 void Controls::updateSelection() const {
 	hit_data hitData;
 
-	if (raycast(hitData, ObjectType::PHYSICAL)) {
+	if (raycastGround(hitData)) {
 		const float xScale = left.held.first->x_ - hitData.position.x_;
 		const float zScale = left.held.first->z_ - hitData.position.z_;
 		if ((xScale * xScale > clickDistance || zScale * zScale > clickDistance)
@@ -452,7 +456,7 @@ void Controls::updateSelection() const {
 void Controls::updateArrow() const {
 	hit_data hitData;
 
-	if (selectedInfo->getSelectedType() == ObjectType::UNIT && raycast(hitData, ObjectType::PHYSICAL)) {
+	if (selectedInfo->getSelectedType() == ObjectType::UNIT && raycastGround(hitData)) {
 		auto dir = *right.held.first - hitData.position;
 
 		const float length = dir.Length();
@@ -532,7 +536,7 @@ void Controls::buildControl() {
 	if (!input->GetMouseButtonDown(Urho3D::MOUSEB_LEFT) && !input->GetMouseButtonDown(Urho3D::MOUSEB_RIGHT)) {
 		hit_data hitData;
 
-		if (raycast(hitData, ObjectType::PHYSICAL)) {
+		if (raycastGround(hitData)) {
 			//TODO perf nie robic tego co klatkê
 			auto env = Game::getEnvironment();
 

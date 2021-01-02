@@ -23,7 +23,6 @@ public:
 
 	virtual bool isAlive() const;
 	virtual short getId();
-	Urho3D::Node* getNode() const { return node; }
 
 	void updateHealthBar() const;
 	float getHealthBarSize() const;
@@ -60,9 +59,9 @@ public:
 	void reduceRange() { --rangeUsers; }
 	void upRange() { ++rangeUsers; }
 
-	virtual ObjectType getType() const { return ObjectType::PHYSICAL; }
+	virtual ObjectType getType() const = 0;
 
-	virtual unsigned short getMaxHp() const { return 1; } //TODO =0
+	virtual unsigned short getMaxHp() const = 0;
 	float getHealthPercent() const { return hp / getMaxHp(); }
 	signed char getTeam() const { return team; }
 	Urho3D::Vector3& getPosition() { return position; }
@@ -81,7 +80,7 @@ public:
 
 	std::optional<Urho3D::Vector2> getPosToUseBy(Unit* follower);
 
-	virtual float getMaxHpBarSize() const { return 0; }
+	virtual float getMaxHpBarSize() const = 0;
 
 	virtual float absorbAttack(float attackCoef) { return 0.0f; }
 

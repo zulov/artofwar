@@ -65,7 +65,7 @@ std::optional<SelectedInfoType*> SelectedInfo::getOneSelectedTypeInfo() const {
 }
 
 bool SelectedInfo::isSthSelected() const {
-	return allNumber > 0 && selectedType != ObjectType::PHYSICAL;
+	return allNumber > 0 && selectedType != ObjectType::NONE;
 }
 
 void SelectedInfo::refresh(const std::vector<Physical*>& selected) {
