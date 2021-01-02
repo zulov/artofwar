@@ -94,20 +94,6 @@ Physical* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho
 	terrain->SetSpacing({horScale, verScale, horScale});
 	terrain->SetSmoothing(true);
 	terrain->SetOccluder(false);
-	setMaterial(texture);
+	terrain->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(texture));
 	return entity;
-}
-
-void LevelBuilder::setMaterial(const Urho3D::String& texture) const {
-	auto mat = Game::getCache()->GetResource<Urho3D::Material>(texture)->Clone();
-	mat->SetRenderOrder(10); // Lower render order to render first
-	auto tecs = mat->GetTechniques();
-	for (size_t i = 0; i < tecs.Size(); ++i) {
-		auto tec = mat->GetTechnique(i)->Clone();
-		for (auto pass : tec->GetPasses()) {
-			pass->SetDepthWrite(false);
-		}
-		mat->SetTechnique(i, tec);
-	}
-	terrain->SetMaterial(mat);
 }
