@@ -159,7 +159,7 @@ void Hud::createConsole(Urho3D::Engine* engine) const {
 void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
                  SimInfo* simInfo) const {
 	updateSelected(selectedInfo, simInfo);
-	if (!TRAIN_MODE || PER_FRAME_ACTION.get(PerFrameAction::HUD_UPDATE, simInfo->getFrameInfo())) {
+	if (!SIM_GLOBALS.TRAIN_MODE || PER_FRAME_ACTION.get(PerFrameAction::HUD_UPDATE, simInfo->getFrameInfo())) {
 		debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
 		                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
 		                    cameraManager->getPosInfo());

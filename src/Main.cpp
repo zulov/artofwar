@@ -30,6 +30,7 @@
 #include "objects/ActionType.h"
 #include "player/PlayersManager.h"
 #include "scene/LevelBuilder.h"
+#include "simulation/SimGlobals.h"
 #include "simulation/SimInfo.h"
 #include "simulation/Simulation.h"
 #include "simulation/env/Environment.h"
@@ -68,13 +69,6 @@ void Main::Setup() {
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
 	readParameters();
-	auto arguments = GetArguments();
-	for (int i = 0; i < arguments.Size(); ++i) {
-		arguments.
-		for
-	
-	}
-	GetParameter(parameters, EP_HEADLESS, false).GetBool()
 
 	Game::setCache(GetSubsystem<ResourceCache>())
 		->setUI(GetSubsystem<UI>())
@@ -519,12 +513,16 @@ SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 void Main::readParameters() {
 	auto arguments = GetArguments();
 
-	for (unsigned i = 0; i < arguments.Size(); ++i) {
+for (unsigned i = 0; i < arguments.Size(); ++i) {
 		if (arguments[i].Length() > 1 && arguments[i][0] == '-') {
 			String argument = arguments[i].Substring(1).ToLower();
 			String value = i + 1 < arguments.Size() ? arguments[i + 1] : String::EMPTY;
 
-			if (argument == "trainMode") { } else if (argument == "benchmarkMode") { }
+			if (argument == "trainmode") {
+				SimGlobals::TRAIN_MODE = true;
+			} else if (argument == "benchmarkmode") {
+				SimGlobals::BENCHMARK_MODE = true;
+			}
 		}
 	}
 }

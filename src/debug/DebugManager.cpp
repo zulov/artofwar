@@ -31,7 +31,7 @@ void DebugManager::change(Urho3D::Input* input, Simulation* simulation) {
 }
 
 void DebugManager::draw() const {
-	if (!TRAIN_MODE) {
+	if (!SIM_GLOBALS.TRAIN_MODE) {
 		Game::getEnvironment()->drawDebug(environmentDebugMode, environmentIndex);
 	}	
 }

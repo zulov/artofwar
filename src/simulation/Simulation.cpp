@@ -162,7 +162,7 @@ void Simulation::loadEntities(NewGameForm* form) const {
 }
 
 float Simulation::updateTime(float timeStep) const {
-	if (BENCHMARK_MODE) {
+	if (SIM_GLOBALS.BENCHMARK_MODE) {
 		return TIME_PER_UPDATE;
 	}
 	return timeStep;
