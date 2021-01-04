@@ -10,8 +10,7 @@
 
 class SimInfo;
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Context;
 	enum MouseMode;
 }
@@ -29,17 +28,18 @@ class Main : public Urho3D::Application {
 URHO3D_OBJECT(Main, Application)
 
 	explicit Main(Urho3D::Context* context);
+
 	void Setup() override;
 	void Start() override;
 	void Stop() override;
 	void HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
 protected:
+
 	void InitMouseMode(Urho3D::MouseMode mode);
 	void SetupViewport() const;
 
 private:
-
 	void disposeScene();
 
 	void SetWindowTitleAndIcon();
@@ -64,6 +64,7 @@ private:
 	void InitLocalizationSystem() const;
 
 	SelectedInfo* control(float timeStep, SimInfo* simulationInfo);
+	void readParameters();
 	void changeCamera(CameraBehaviorType type);
 	void load(const Urho3D::String& saveName, loading& progress);
 	void createEnv() const;
@@ -80,7 +81,7 @@ private:
 	Hud* hud;
 	Controls* controls;
 	LevelBuilder* levelBuilder;
-	
+
 	Benchmark benchmark;
 	SceneSaver saver;
 	SceneLoader loader;

@@ -62,11 +62,19 @@ void Main::Setup() {
 	engineParameters_[EP_SOUND] = false;
 	engineParameters_[EP_WINDOW_WIDTH] = resolution->x;
 	engineParameters_[EP_WINDOW_HEIGHT] = resolution->y;
-	engineParameters_["ResourcePaths"] = "Data;CoreData;CoreDataMy";
-	engineParameters_["ResourcePrefixPaths"] = " ;../";
+	engineParameters_[EP_RESOURCE_PATHS] = "Data;CoreData;CoreDataMy";
+	engineParameters_[EP_RESOURCE_PREFIX_PATHS] = " ;../";
 
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
+	readParameters();
+	auto arguments = GetArguments();
+	for (int i = 0; i < arguments.Size(); ++i) {
+		arguments.
+		for
+	
+	}
+	GetParameter(parameters, EP_HEADLESS, false).GetBool()
 
 	Game::setCache(GetSubsystem<ResourceCache>())
 		->setUI(GetSubsystem<UI>())
@@ -225,8 +233,7 @@ void Main::updateProgress(loading& progress, std::string msg) const {
 
 void Main::load(const String& saveName, loading& progress) {
 	switch (progress.currentStage) {
-	case 0:
-	{
+	case 0: {
 		setSimpleManagers();
 
 		loader.createLoad(saveName);
@@ -237,20 +244,18 @@ void Main::load(const String& saveName, loading& progress) {
 		Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
 		Game::getStats()->init();
 		controls->init();
-		
+
 		subscribeToUIEvents();
 		hud->resetLoading();
 
 		levelBuilder->createScene(loader);
 	}
 	break;
-	case 1:
-	{
+	case 1: {
 		createEnv();
 		break;
 	}
-	case 2:
-	{
+	case 2: {
 		Game::getEnvironment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
@@ -276,8 +281,7 @@ void Main::createEnv() const {
 
 void Main::newGame(NewGameForm* form, loading& progress) {
 	switch (progress.currentStage) {
-	case 0:
-	{
+	case 0: {
 		disposeScene();
 		setSimpleManagers();
 
@@ -294,13 +298,11 @@ void Main::newGame(NewGameForm* form, loading& progress) {
 		levelBuilder->createScene(form);
 	}
 	break;
-	case 1:
-	{
+	case 1: {
 		createEnv();
 		break;
 	}
-	case 2:
-	{
+	case 2: {
 		Game::getEnvironment()->prepareGridToFind();
 		hud->createMiniMap();
 		break;
@@ -351,7 +353,7 @@ void Main::HandleKeyUp(StringHash /*eventType*/, VariantMap& eventData) {
 		} else if (key == KEY_3) {
 			changeCamera(CameraBehaviorType::TOP);
 		} else if (key == KEY_F5) {
-			String name = "test" + String(RandGen::nextRand(RandIntType::SAVE,99999999));
+			String name = "test" + String(RandGen::nextRand(RandIntType::SAVE, 99999999));
 			save(name);
 		} else if (key == KEY_F6) {
 			saveToLoad = "quicksave.db";
@@ -505,11 +507,24 @@ SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 	const auto input = GetSubsystem<Input>();
 	debugManager.change(input, simulation);
 	if (input->GetKeyPress(Urho3D::KEY_P)) {
-		Game::getEnvironment()->drawInfluence();	
+		Game::getEnvironment()->drawInfluence();
 	}
 
 	Game::getCameraManager()->translate(cursorPos, input, timeStep);
 
 	controls->cleanAndUpdate(simulationInfo);
 	return controls->getInfo();
+}
+
+void Main::readParameters() {
+	auto arguments = GetArguments();
+
+	for (unsigned i = 0; i < arguments.Size(); ++i) {
+		if (arguments[i].Length() > 1 && arguments[i][0] == '-') {
+			String argument = arguments[i].Substring(1).ToLower();
+			String value = i + 1 < arguments.Size() ? arguments[i + 1] : String::EMPTY;
+
+			if (argument == "trainMode") { } else if (argument == "benchmarkMode") { }
+		}
+	}
 }
