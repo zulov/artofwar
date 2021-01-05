@@ -513,15 +513,17 @@ SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {
 void Main::readParameters() {
 	auto arguments = GetArguments();
 
-for (unsigned i = 0; i < arguments.Size(); ++i) {
+	for (unsigned i = 0; i < arguments.Size(); ++i) {
 		if (arguments[i].Length() > 1 && arguments[i][0] == '-') {
 			String argument = arguments[i].Substring(1).ToLower();
-			String value = i + 1 < arguments.Size() ? arguments[i + 1] : String::EMPTY;
+			const String value = i + 1 < arguments.Size() ? arguments[i + 1] : String::EMPTY;
 
 			if (argument == "trainmode") {
 				SimGlobals::TRAIN_MODE = true;
 			} else if (argument == "benchmarkmode") {
 				SimGlobals::BENCHMARK_MODE = true;
+			} else if (argument == "savename") {
+				saveToLoad = value;
 			}
 		}
 	}
