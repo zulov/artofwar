@@ -533,8 +533,15 @@ void Main::readParameters() {
 				engine_->SetMaxInactiveFps(0);
 			} else if (argument == "savename") {
 				saveToLoad = value;
-			} else if (argument == "timelimit") {
+			} else if (argument == "timelimit" && !value.Empty()) {
 				timeLimit = ToInt(value);
+				++i;
+			} else if (argument == "x" && !value.Empty()) {
+				engineParameters_[EP_WINDOW_WIDTH] = ToInt(value);
+				++i;
+			} else if (argument == "y" && !value.Empty()) {
+				engineParameters_[EP_WINDOW_HEIGHT] = ToInt(value);
+				++i;
 			}
 		}
 	}
