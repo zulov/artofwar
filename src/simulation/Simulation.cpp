@@ -60,7 +60,7 @@ SimInfo* Simulation::update(float timeStep) {
 	while (accumulateTime >= TIME_PER_UPDATE) {
 		//simObjectManager->dispose();
 		//TODO bug a co jesli kilka razy sie wykona, moga byæ b³êdy jezeli cos umrze to poza petl¹ 
-		simInfo->setCurrentFrame(currentFrame);
+		simInfo->setFrame(currentFrame, secondsElapsed);
 
 		Game::getActionCenter()->executeLists();
 

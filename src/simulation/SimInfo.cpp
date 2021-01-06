@@ -8,10 +8,11 @@ SimInfo::SimInfo() {
 
 SimInfo::~SimInfo() { delete frameInfo; }
 
-void SimInfo::setIsRealFrame(bool realFrame) {
+void SimInfo::setIsRealFrame(bool realFrame) const {
 	frameInfo->setIsRealFrame(realFrame);
 }
 
-void SimInfo::setCurrentFrame(unsigned char currentFrame) {
+void SimInfo::setFrame(unsigned char currentFrame, unsigned secondsElapsed) const {
 	frameInfo->setCurrentFrame(currentFrame);
+	frameInfo->setSeconds(secondsElapsed);
 }

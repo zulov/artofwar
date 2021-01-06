@@ -30,6 +30,7 @@
 #include "objects/ActionType.h"
 #include "player/PlayersManager.h"
 #include "scene/LevelBuilder.h"
+#include "simulation/FrameInfo.h"
 #include "simulation/SimGlobals.h"
 #include "simulation/SimInfo.h"
 #include "simulation/Simulation.h"
@@ -140,6 +141,10 @@ void Main::running(const double timeStep) {
 	SelectedInfo* selectedInfo = control(timeStep, simInfo);
 
 	hud->update(benchmark, Game::getCameraManager(), selectedInfo, simInfo);
+
+	if (timeLimit != -1 && simInfo->getFrameInfo()->getSeconds() > timeLimit) {
+		engine_->Exit();
+	}
 }
 
 void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
@@ -520,10 +525,16 @@ void Main::readParameters() {
 
 			if (argument == "trainmode") {
 				SimGlobals::TRAIN_MODE = true;
+				engine_->SetMaxFps(0);
+				engine_->SetMaxInactiveFps(0);
 			} else if (argument == "benchmarkmode") {
 				SimGlobals::BENCHMARK_MODE = true;
+				engine_->SetMaxFps(0);
+				engine_->SetMaxInactiveFps(0);
 			} else if (argument == "savename") {
 				saveToLoad = value;
+			} else if (argument == "timelimit") {
+				timeLimit = ToInt(value);
 			}
 		}
 	}

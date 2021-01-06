@@ -8,7 +8,9 @@ struct FrameInfo {
 		this->realFrame = true;
 	}
 
-	void setSeconds(unsigned int seconds) { this->seconds = seconds; }
+	void setSeconds(unsigned int seconds) {
+		this->seconds = seconds;
+	}
 
 	char getCurrentFrame() const { return currentFrame; }
 	bool isRealFrame() const { return realFrame; }

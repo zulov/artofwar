@@ -95,6 +95,8 @@ private:
 	int loadStages = 6;
 	int newGamesStages = 6;
 
+	int timeLimit = -1;
+
 	bool inited = false;
 
 	short coefToEdit = 0;
