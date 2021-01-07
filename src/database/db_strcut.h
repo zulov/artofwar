@@ -341,8 +341,13 @@ struct db_nation : db_entity, db_with_name {
 	std::vector<db_unit*> units;
 	std::vector<db_building*> buildings;
 
-	db_nation(short id, char* name)
-		: db_entity(id), db_with_name(name) {
+	Urho3D::Vector<Urho3D::String> actionPrefix;
+	Urho3D::Vector<Urho3D::String> orderPrefix;
+
+	db_nation(short id, char* name, char* actionPrefix, char* orderPrefix)
+		: db_entity(id), db_with_name(name),
+		  actionPrefix(Urho3D::String(actionPrefix).Split(SPLIT_SIGN)),
+		  orderPrefix(Urho3D::String(orderPrefix).Split(SPLIT_SIGN)) {
 	}
 };
 

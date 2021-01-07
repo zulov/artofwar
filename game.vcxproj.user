@@ -9,7 +9,7 @@
     </LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>-x 1000</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-outputtype score -outputname elo.txt -timelimit 120</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

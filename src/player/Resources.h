@@ -22,7 +22,8 @@ public:
 	std::span<float> getGatherSpeeds() const;
 	
 	void hasBeenUpdatedDrawn();
-	std::string getValues(int precision, int player);
+	int getSum() const;
+	std::string getValues(int precision, int player) const;
 	void setValue(int id, float amount);
 	void change();
 

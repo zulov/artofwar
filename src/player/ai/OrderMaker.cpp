@@ -18,8 +18,9 @@
 #include "threshold/Threshold.h"
 #include "threshold/ThresholdProvider.h"
 
-OrderMaker::OrderMaker(Player* player)
-	: player(player), whatResource(BrainProvider::get("whichResource_w.csv")),
+OrderMaker::OrderMaker(Player* player, db_nation* nation)
+	: player(player),
+	  whatResource(BrainProvider::get(std::string(nation->orderPrefix[0].CString()) + "whichResource_w.csv")),
 	  threshold(ThresholdProvider::get("attack_t.csv")) {
 }
 

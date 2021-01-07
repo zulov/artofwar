@@ -1,4 +1,7 @@
 #include "Resources.h"
+
+#include <numeric>
+
 #include "Game.h"
 #include "database/DatabaseCache.h"
 
@@ -77,7 +80,11 @@ void Resources::hasBeenUpdatedDrawn() {
 	changed = false;
 }
 
-std::string Resources::getValues(int precision, int player) {
+int Resources::getSum() const {
+	return std::accumulate(values, values + size, 0);
+}
+
+std::string Resources::getValues(int precision, int player) const {
 	std::string str;
 	for (int i = 0; i < size; ++i) {
 		str += "(" + std::to_string(player) + "," + std::to_string(i) + "," + std::to_string(

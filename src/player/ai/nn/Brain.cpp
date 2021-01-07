@@ -9,7 +9,7 @@
 #include "utils/StringUtils.h"
 
 Brain::Brain(std::string filename): filename(filename) {
-	auto lines = loadLines("Data/ai/" + filename);
+	auto lines = loadLines(filename);
 
 	std::vector<float> w;
 	std::vector<float> b;

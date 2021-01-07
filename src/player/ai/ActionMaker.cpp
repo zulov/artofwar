@@ -18,17 +18,18 @@
 #include "stats/AiInputProvider.h"
 
 
-ActionMaker::ActionMaker(Player* player): player(player),
-                                          ifWorkerCreate(BrainProvider::get("ifWorkerCreate_w.csv")),
-                                          whereWorkerCreate(BrainProvider::get("whereWorkerCreate_w.csv")),
+ActionMaker::ActionMaker(Player* player, db_nation* nation):
+	player(player),
+	ifWorkerCreate(BrainProvider::get(std::string(nation->actionPrefix[0].CString()) + "ifWorkerCreate_w.csv")),
+	whereWorkerCreate(BrainProvider::get(std::string(nation->actionPrefix[1].CString()) + "whereWorkerCreate_w.csv")),
 
-                                          ifBuildingCreate(BrainProvider::get("ifBuildingCreate_w.csv")),
-                                          whichBuildingCreate(BrainProvider::get("whichBuildingCreate_w.csv")),
-                                          whereBuildingCreate(BrainProvider::get("whereBuildingCreate_w.csv")),
+	ifBuildingCreate(BrainProvider::get(std::string(nation->actionPrefix[2].CString()) + "ifBuildingCreate_w.csv")),
+	whichBuildingCreate(BrainProvider::get(std::string(nation->actionPrefix[3].CString()) + "whichBuildingCreate_w.csv")),
+	whereBuildingCreate(BrainProvider::get(std::string(nation->actionPrefix[4].CString()) + "whereBuildingCreate_w.csv")),
 
-                                          ifUnitCreate(BrainProvider::get("ifUnitCreate_w.csv")),
-                                          whichUnitCreate(BrainProvider::get("whichUnitCreate_w.csv")),
-                                          whereUnitCreate(BrainProvider::get("whereUnitCreate_w.csv")) {
+	ifUnitCreate(BrainProvider::get(std::string(nation->actionPrefix[5].CString()) + "ifUnitCreate_w.csv")),
+	whichUnitCreate(BrainProvider::get(std::string(nation->actionPrefix[6].CString()) + "whichUnitCreate_w.csv")),
+	whereUnitCreate(BrainProvider::get(std::string(nation->actionPrefix[7].CString()) + "whereUnitCreate_w.csv")) {
 }
 
 bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {

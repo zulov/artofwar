@@ -25,12 +25,12 @@ public:
 	Possession& getPossession() { return possession; }
 	short getNation() const { return dbNation->id; }
 	char getTeam() const { return team; }
-	char getId() const { return id; }//TODO bug id playera a jego index to czêsto nie to samo
+	char getId() const { return id; } //TODO bug id playera a jego index to czêsto nie to samo
 	int getColor() const { return color; }
 	Urho3D::String& getName() { return name; }
 
 	void updateResource() const;
-	void updatePossession(const ObjectsInfo * simInfo);
+	void updatePossession(const ObjectsInfo* simInfo);
 	void add(Unit* unit);
 	void add(Building* building);
 	void aiAction();
@@ -48,14 +48,14 @@ public:
 	std::optional<db_unit_level*> getNextLevelForUnit(short id) const;
 	std::optional<db_building_level*> getNextLevelForBuilding(short id) const;
 private:
+	db_nation* dbNation; //Must by first
 	Possession possession;
 	Resources resources;
 	QueueManager queue;
 	ActionMaker actionMaker;
 	OrderMaker orderMaker;
-	db_nation* dbNation;
 	Urho3D::String name;
-	
+
 	char team;
 	char id;
 	bool active;

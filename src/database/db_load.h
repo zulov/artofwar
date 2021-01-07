@@ -47,7 +47,7 @@ int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
 int static loadNation(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 
-	setEntity(xyz->nations, new db_nation(atoi(argv[0]), argv[1]));
+	setEntity(xyz->nations, new db_nation(atoi(argv[0]), argv[1], argv[2], argv[3]));
 	return 0;
 }
 

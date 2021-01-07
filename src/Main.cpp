@@ -28,6 +28,7 @@
 #include "hud/window/selected/SelectedHudElement.h"
 #include "math/RandGen.h"
 #include "objects/ActionType.h"
+#include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "scene/LevelBuilder.h"
 #include "simulation/FrameInfo.h"
@@ -97,7 +98,26 @@ void Main::Start() {
 	changeState(GameState::LOADING);
 }
 
+void Main::writeOutput() const {
+	if (!outputType.Empty()) {
+		std::ofstream outFile;
+		outFile.open(("result/" + outputName).CString(), std::ios_base::out);
+		if (outputType == "score") {
+			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+				outFile << std::to_string(player->getId()) << ";" << player->getScore() << "\n";
+			}
+		} else if (outputType == "ressum") {
+			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+				outFile << std::to_string(player->getId()) << ";" << player->getResources().getSum() << "\n";
+			}
+		}
+		outFile.close();
+	}
+}
+
 void Main::Stop() {
+	writeOutput();
+
 	disposeScene();
 
 	delete hud;
@@ -533,6 +553,12 @@ void Main::readParameters() {
 				engine_->SetMaxInactiveFps(0);
 			} else if (argument == "savename") {
 				saveToLoad = value;
+			} else if (argument == "outputtype" && !value.Empty()) {
+				outputType = value;
+				++i;
+			} else if (argument == "outputname" && !value.Empty()) {
+				outputName = value;
+				++i;
 			} else if (argument == "timelimit" && !value.Empty()) {
 				timeLimit = ToInt(value);
 				++i;

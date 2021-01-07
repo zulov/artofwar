@@ -31,7 +31,8 @@ URHO3D_OBJECT(Main, Application)
 
 	void Setup() override;
 	void Start() override;
-	void Stop() override;
+void writeOutput() const;
+void Stop() override;
 	void HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
 protected:
@@ -92,13 +93,18 @@ private:
 
 	NewGameForm* newGameForm;
 	Urho3D::String saveToLoad = "quicksave.db";
+	
+	
 	int loadStages = 6;
 	int newGamesStages = 6;
-
-	int timeLimit = -1;
 
 	bool inited = false;
 
 	short coefToEdit = 0;
+	
+	//
+	int timeLimit = -1;
+	Urho3D::String outputName = "test.txt";
+	Urho3D::String outputType = "";
 
 };

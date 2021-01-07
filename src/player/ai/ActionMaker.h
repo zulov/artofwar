@@ -5,6 +5,7 @@
 #include <vector>
 
 
+struct db_nation;
 enum class AiActionType : char;
 
 namespace Urho3D {
@@ -23,7 +24,7 @@ struct Brain;
 
 class ActionMaker {
 public:
-	explicit ActionMaker(Player* player);
+	explicit ActionMaker(Player* player, db_nation* nation);
 	ActionMaker(const ActionMaker& rhs) = delete;
 	void action();
 private:

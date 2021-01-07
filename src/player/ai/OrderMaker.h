@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 
+struct db_nation;
 enum class UnitState : char;
 class Player;
 class Unit;
@@ -10,7 +11,7 @@ class Threshold;
 
 class OrderMaker {
 public:
-	explicit OrderMaker(Player* player);
+	explicit OrderMaker(Player* player, db_nation* nation);
 	OrderMaker(const OrderMaker& rhs) = delete;
 
 	void action();
