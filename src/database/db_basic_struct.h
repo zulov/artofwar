@@ -1,7 +1,7 @@
 #pragma once
 #include <Urho3D/Container/Str.h>
 
-constexpr char SPLIT_SIGN = '\n';
+constexpr char SPLIT_SIGN = ';';
 
 struct db_entity {
 	const short id;

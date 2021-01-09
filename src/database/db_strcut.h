@@ -9,6 +9,7 @@
 #include "db_basic_struct.h"
 #include "objects/Metrics.h"
 #include "objects/unit/state/UnitState.h"
+#include "simulation/SimGlobals.h"
 #include "stats/AiWeights.h"
 #include "utils/DeleteUtils.h"
 #include "utils/OtherUtils.h"
@@ -348,6 +349,13 @@ struct db_nation : db_entity, db_with_name {
 		: db_entity(id), db_with_name(name),
 		  actionPrefix(Urho3D::String(actionPrefix).Split(SPLIT_SIGN)),
 		  orderPrefix(Urho3D::String(orderPrefix).Split(SPLIT_SIGN)) {
+		assert(id<MAX_PLAYERS); //TODO BUG to sa troszke inne rzeczy
+		if (!SimGlobals::ACTION_AI_PATH[id].Empty()) {
+			this->actionPrefix = SimGlobals::ACTION_AI_PATH[id].Split(SPLIT_SIGN);
+		}
+		if (!SimGlobals::ORDER_AI_PATH[id].Empty()) {
+			this->orderPrefix = SimGlobals::ORDER_AI_PATH[id].Split(SPLIT_SIGN);
+		}
 	}
 };
 

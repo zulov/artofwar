@@ -568,6 +568,18 @@ void Main::readParameters() {
 			} else if (argument == "y" && !value.Empty()) {
 				engineParameters_[EP_WINDOW_HEIGHT] = ToInt(value);
 				++i;
+			} else if (argument == "actionaipath1" && !value.Empty()) {
+				SimGlobals::ACTION_AI_PATH[0] = value;
+				++i;
+			} else if (argument == "actionaipath2" && !value.Empty()) {
+				SimGlobals::ACTION_AI_PATH[1] = value;
+				++i;
+			} else if (argument == "orderaipath1" && !value.Empty()) {
+				SimGlobals::ORDER_AI_PATH[0] = value;
+				++i;
+			} else if (argument == "orderaipath2" && !value.Empty()) {
+				SimGlobals::ORDER_AI_PATH[1] = value;
+				++i;
 			}
 		}
 	}
