@@ -49,11 +49,12 @@ void InfluenceMapFloat::update(float value, const unsigned short centerX, const 
 
 	for (short i = minI; i <= maxI; ++i) {
 		const auto a = (i - centerX) * (i - centerX);
-		const int index = calculator->getNotSafeIndex(i, 0);
+		const int index = calculator->getNotSafeIndex(i, minJ);
+		auto* t = &values[index];
 		for (short j = minJ; j <= maxJ; ++j) {
 			const auto b = (j - centerZ) * (j - centerZ);
 
-			values[index + j] += value / ((a + b) * coef + 1.f);
+			*(t++)+= value / ((a + b) * coef + 1.f);
 		}
 	}
 }
