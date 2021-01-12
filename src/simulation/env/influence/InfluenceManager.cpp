@@ -58,6 +58,9 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 	calculator = GridCalculatorProvider::get(INF_GRID_SIZE, BUCKET_GRID_SIZE);
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
+
+	assert(unitsNumberPerPlayer[0]->getResolution() == unitsInfluencePerPlayer[0]->getResolution()
+		&& calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
 }
 
 InfluenceManager::~InfluenceManager() {
@@ -80,10 +83,10 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 	resetMaps(unitsInfluencePerPlayer);
 
 	for (auto unit : (*units)) {
-		auto pId = unit->getPlayer();
-		unitsNumberPerPlayer[pId]->updateInt(unit);
-
-		unitsInfluencePerPlayer[pId]->tempUpdate(unit);
+		const auto pId = unit->getPlayer();
+		const auto index = calculator->indexFromPosition(unit->getPosition());
+		unitsNumberPerPlayer[pId]->updateInt(index);
+		unitsInfluencePerPlayer[pId]->tempUpdate(index);
 	}
 
 	calcStats(unitsNumberPerPlayer);
@@ -101,6 +104,7 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 	resourceInfluence->reset();
 	for (auto resource : (*resources)) {
+		//TODO perf nie ma co liczyć indeksu ciagle ob sie nie zmienia
 		resourceInfluence->tempUpdate(resource, resource->getHealthPercent());
 	}
 	resourceInfluence->finishCalc();
@@ -324,7 +328,7 @@ void InfluenceManager::addAttack(Unit* unit, float value) {
 }
 
 Urho3D::Vector2 InfluenceManager::getCenterOf(CenterType id, char player) {
-	 return mapsForCentersPerPlayer[player][cast(id)]->getCenter();
+	return mapsForCentersPerPlayer[player][cast(id)]->getCenter();
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(float* values,

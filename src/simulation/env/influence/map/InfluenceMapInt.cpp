@@ -19,7 +19,11 @@ void InfluenceMapInt::update(Physical* thing, float value) {
 }
 
 void InfluenceMapInt::updateInt(Physical* thing, int value) {
-	values[calculator->indexFromPosition(thing->getPosition())] += value;
+	updateInt(calculator->indexFromPosition(thing->getPosition()), value);
+}
+
+void InfluenceMapInt::updateInt(int index, int value) const {
+	values[index] += value;
 }
 
 void InfluenceMapInt::reset() {

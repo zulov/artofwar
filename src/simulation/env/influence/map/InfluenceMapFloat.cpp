@@ -30,8 +30,11 @@ void InfluenceMapFloat::updateInt(Physical* thing, int value) {
 }
 
 void InfluenceMapFloat::tempUpdate(Physical* thing, float value) {
-	const auto idx = calculator->indexFromPosition(thing->getPosition());
-	tempVals[idx] += value;
+	tempUpdate(calculator->indexFromPosition(thing->getPosition()), value);
+}
+
+void InfluenceMapFloat::tempUpdate(int index, float value) {
+	tempVals[index] += value;
 	tempComputedNeeded = true;
 }
 
@@ -54,7 +57,7 @@ void InfluenceMapFloat::update(float value, const unsigned short centerX, const 
 		for (short j = minJ; j <= maxJ; ++j) {
 			const auto b = (j - centerZ) * (j - centerZ);
 
-			*(t++)+= value / ((a + b) * coef + 1.f);
+			*(t++) += value / ((a + b) * coef + 1.f);
 		}
 	}
 }
