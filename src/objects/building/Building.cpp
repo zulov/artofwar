@@ -149,8 +149,8 @@ const Urho3D::IntVector2 Building::getGridSize() const {
 	return dbBuilding->size;
 }
 
-unsigned short Building::getMaxHp() const {
-	return dbLevel->maxHp;
+float Building::getInvMaxHp() const {
+	return dbLevel->invMaxHp;
 }
 
 void Building::createDeploy() {

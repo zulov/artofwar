@@ -520,8 +520,8 @@ void Unit::addValues(std::span<float> vals) const {
 	}
 }
 
-unsigned short Unit::getMaxHp() const {
-	return dbLevel->maxHp;
+float Unit::getInvMaxHp() const {
+	return dbLevel->invMaxHp;
 }
 
 Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {

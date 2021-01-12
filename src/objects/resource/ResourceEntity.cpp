@@ -54,8 +54,8 @@ std::string ResourceEntity::getValues(int precision) {
 	return Static::getValues(precision);
 }
 
-unsigned short ResourceEntity::getMaxHp() const {
-	return dbResource->maxHp;
+float ResourceEntity::getInvMaxHp() const {
+	return dbResource->invMaxHp;
 }
 
 unsigned char ResourceEntity::getMaxCloseUsers() const {

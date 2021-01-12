@@ -8,6 +8,8 @@
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Input/Input.h>
 
+
+#include "simulation/SimGlobals.h"
 #include "utils/OtherUtils.h"
 
 

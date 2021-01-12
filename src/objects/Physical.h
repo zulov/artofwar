@@ -61,8 +61,8 @@ public:
 
 	virtual ObjectType getType() const = 0;
 
-	virtual unsigned short getMaxHp() const = 0;
-	float getHealthPercent() const { return hp / getMaxHp(); }
+	virtual float getInvMaxHp() const = 0;
+	float getHealthPercent() const { return hp * getInvMaxHp(); }
 	signed char getTeam() const { return team; }
 	Urho3D::Vector3& getPosition() { return position; }
 

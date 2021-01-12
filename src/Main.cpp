@@ -268,10 +268,14 @@ void Main::load(const String& saveName, loading& progress) {
 		hud->resetLoading();
 
 		levelBuilder->createScene(loader);
+
 	}
 	break;
 	case 1: {
 		createEnv();
+		if (SIM_GLOBALS.CAMERA_START != Urho3D::Vector2::ZERO) {
+			Game::getCameraManager()->changePosition(SIM_GLOBALS.CAMERA_START.x_, SIM_GLOBALS.CAMERA_START.y_);
+		}
 		break;
 	}
 	case 2: {
@@ -579,6 +583,12 @@ void Main::readParameters() {
 				++i;
 			} else if (argument == "orderaipath2" && !value.Empty()) {
 				SimGlobals::ORDER_AI_PATH[1] = value;
+				++i;
+			} else if (argument == "camposx" && !value.Empty()) {
+				SimGlobals::CAMERA_START.x_ = ToInt(value);
+				++i;
+			} else if (argument == "camposy" && !value.Empty()) {
+				SimGlobals::CAMERA_START.y_ = ToInt(value);
 				++i;
 			}
 		}

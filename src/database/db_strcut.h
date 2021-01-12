@@ -166,9 +166,10 @@ struct db_level {
 
 struct db_with_hp {
 	const unsigned short maxHp;
+	const float invMaxHp;
 
 	explicit db_with_hp(unsigned short maxHp)
-		: maxHp(maxHp) {
+		: maxHp(maxHp), invMaxHp(1.f / maxHp) {
 	}
 };
 

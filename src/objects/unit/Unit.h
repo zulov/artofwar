@@ -140,7 +140,7 @@ public:
 	void clean();
 	void fillValues(std::span<float> weights) const;
 	void addValues(std::span<float> vals) const override;
-	unsigned short getMaxHp() const override;
+	float getInvMaxHp() const override;
 
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 private:
