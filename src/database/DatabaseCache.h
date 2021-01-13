@@ -53,7 +53,8 @@ public:
 	void executeSingleBasic(const std::string& name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* graphSettings);
 	void setSettings(int i, db_settings* settings);
-	
+	void refreshAfterParametersRead();
+
 private:
 	db_container* dbContainer;
 	sqlite3* database;

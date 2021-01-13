@@ -71,6 +71,7 @@ void Main::Setup() {
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
 	readParameters();
+	Game::getDatabase()->refreshAfterParametersRead();
 
 	Game::setCache(GetSubsystem<ResourceCache>())
 		->setUI(GetSubsystem<UI>())

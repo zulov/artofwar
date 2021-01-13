@@ -2,7 +2,10 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+#include <Urho3D/IO/Log.h>
+
 #include "AFUtil.h"
+#include "Game.h"
 #include "Layer.h"
 #include "utils/DeleteUtils.h"
 #include "utils/FileUtils.h"
@@ -10,7 +13,10 @@
 
 Brain::Brain(std::string filename): filename(filename) {
 	auto lines = loadLines(filename);
-
+	assert(!lines.empty());
+	if (!lines.empty()) {
+		Game::getLog()->WriteRaw("No brain Found " + Urho3D::String(filename.c_str()) + "\n", true);
+	}
 	std::vector<float> w;
 	std::vector<float> b;
 	for (auto& line : lines) {
@@ -40,7 +46,7 @@ const std::span<float> Brain::decide(std::span<float> data) {
 		Layer* layer = allLayers.at(i);
 		Layer* prevLayer = allLayers.at(i - 1);
 
-		const auto vals = prevLayer->getValues();//TODO performance to eigen
+		const auto vals = prevLayer->getValues(); //TODO performance to eigen
 
 		const auto input = Eigen::Map<Eigen::VectorXf>(vals.data(), vals.size());
 		const auto weightedMatrix = Eigen::Map<Eigen::MatrixXf>(layer->getW(), layer->getPrevSize(),

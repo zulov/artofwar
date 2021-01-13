@@ -126,3 +126,9 @@ void DatabaseCache::setSettings(int i, db_settings* settings) {
 
 	executeSingleBasic("base.db", sql.CString());
 }
+
+void DatabaseCache::refreshAfterParametersRead() {
+	for (auto nation : dbContainer->nations) {
+		nation->refresh();
+	}
+}
