@@ -14,7 +14,7 @@
 Brain::Brain(std::string filename): filename(filename) {
 	auto lines = loadLines(filename);
 	assert(!lines.empty());
-	if (!lines.empty()) {
+	if (lines.empty()) {
 		Game::getLog()->WriteRaw("No brain Found " + Urho3D::String(filename.c_str()) + "\n", true);
 	}
 	std::vector<float> w;
