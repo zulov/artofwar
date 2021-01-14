@@ -163,7 +163,6 @@
     <ClCompile Include="src\objects\resource\ResourceFactory.cpp" />
     <ClCompile Include="src\player\Resources.cpp" />
     <ClCompile Include="src\camera\RtsCameraBehave.cpp" />
-    <ClCompile Include="src\player\ai\AiManager.cpp" />
     <ClCompile Include="src\debug\DebugLineRepo.cpp" />
     <ClCompile Include="src\debug\DebugManager.cpp" />
     <ClCompile Include="src\player\Possession.cpp" />
@@ -449,7 +448,6 @@
     <ClInclude Include="src\camera\RtsCameraBehave.h" />
     <ClInclude Include="src\simulation\env\GridCalculator.h" />
     <ClInclude Include="src\simulation\env\EnvConsts.h" />
-    <ClInclude Include="src\player\ai\AiManager.h" />
     <ClInclude Include="src\debug\DebugLineRepo.h" />
     <ClInclude Include="src\debug\DebugUnitType.h" />
     <ClInclude Include="src\debug\DebugManager.h" />

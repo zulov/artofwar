@@ -214,7 +214,6 @@
     <ClCompile Include="src\player\ai\nn\Layer.cpp" />
     <ClCompile Include="src\debug\DebugManager.cpp" />
     <ClCompile Include="src\hud\window\score\ScorePanel.cpp" />
-    <ClCompile Include="src\player\ai\AiManager.cpp" />
     <ClCompile Include="src\player\Possession.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMap.cpp" />
     <ClCompile Include="src\simulation\env\bucket\path\PathFinder.cpp" />
@@ -364,7 +363,6 @@
     <ClInclude Include="src\debug\DebugManager.h" />
     <ClInclude Include="src\debug\EnvironmentDebugMode.h" />
     <ClInclude Include="src\hud\window\score\ScorePanel.h" />
-    <ClInclude Include="src\player\ai\AiManager.h" />
     <ClInclude Include="src\player\ai\InfluenceDataType.h" />
     <ClInclude Include="src\player\Possession.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
