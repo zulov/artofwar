@@ -87,6 +87,7 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 		unitsNumberPerPlayer[pId]->updateInt(index);
 		unitsInfluencePerPlayer[pId]->tempUpdate(index);
 	}
+	finalize(unitsInfluencePerPlayer);
 }
 
 void InfluenceManager::update(std::vector<Building*>* buildings) const {
@@ -94,7 +95,7 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 	for (auto building : (*buildings)) {
 		buildingsInfluencePerPlayer[building->getPlayer()]->tempUpdate(building);
 	}
-	calcStats(buildingsInfluencePerPlayer);
+	finalize(buildingsInfluencePerPlayer);
 }
 
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
@@ -110,6 +111,13 @@ template <typename T>
 void InfluenceManager::resetMaps(const std::vector<T*>& maps) const {
 	for (auto map : maps) {
 		map->reset();
+	}
+}
+
+template <typename T>
+void InfluenceManager::finalize(const std::vector<T*>& maps) const {
+	for (auto map : maps) {
+		map->updateFromTemp();
 	}
 }
 
@@ -131,17 +139,15 @@ void InfluenceManager::updateQuad(std::vector<Unit*>* units, std::vector<Buildin
 	for (auto building : (*buildings)) {
 		buildingsQuad[building->getPlayer()]->updateInt(building);
 	}
-	calcStats(unitsQuad);
-	calcStats(buildingsQuad);
-	calcStats(econQuad);
+
 }
 
 void InfluenceManager::updateWithHistory() const {
-	calcStats(gatherSpeed);
-	calcStats(attackSpeed);
-
 	resetMaps(gatherSpeed);
 	resetMaps(attackSpeed);
+
+	finalize(gatherSpeed);
+	finalize(attackSpeed);
 }
 
 void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const {

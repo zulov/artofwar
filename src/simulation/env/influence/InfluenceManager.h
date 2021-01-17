@@ -67,6 +67,8 @@ private:
 
 	template <typename T>
 	void resetMaps(const std::vector<T*>& maps) const;
+	template <typename T>
+	void finalize(const std::vector<T*>& maps) const;
 
 	template <typename T>
 	void drawAll(const std::vector<T*>& maps, Urho3D::String name) const;
