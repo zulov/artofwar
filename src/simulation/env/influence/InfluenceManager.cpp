@@ -103,6 +103,7 @@ void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 		//TODO perf nie ma co liczyć indeksu ciagle ob sie nie zmienia
 		resourceInfluence->tempUpdate(resource, resource->getHealthPercent());
 	}
+	resourceInfluence->updateFromTemp();
 }
 
 template <typename T>
