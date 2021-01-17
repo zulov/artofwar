@@ -106,12 +106,6 @@ void InfluenceMapFloat::computeMinMax() {
 	}
 }
 
-void InfluenceMapFloat::finishCalc() {
-	updateFromTemp();
-
-	//computeMinMax();
-}
-
 int InfluenceMapFloat::getMaxElement() {
 	return std::distance(values, std::max_element(values, values + arraySize));
 }

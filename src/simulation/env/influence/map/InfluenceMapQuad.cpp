@@ -41,12 +41,6 @@ void InfluenceMapQuad::reset() {
 	}
 }
 
-void InfluenceMapQuad::finishCalc() {
-	for (auto* map : maps) {
-		map->finishCalc();
-	}
-}
-
 void InfluenceMapQuad::print(Urho3D::String name) {
 	for (auto i = 0; i < maps.size(); ++i) {
 		maps.at(i)->print(name);

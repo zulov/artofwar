@@ -1,7 +1,6 @@
 ﻿#include "InfluenceManager.h"
 
 #include "map/InfluenceMapHistory.h"
-#include "map/InfluenceMapCombine.h"
 #include "map/InfluenceMapQuad.h"
 #include "debug/DebugLineRepo.h"
 #include "map/InfluenceMapInt.h"
@@ -88,9 +87,6 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 		unitsNumberPerPlayer[pId]->updateInt(index);
 		unitsInfluencePerPlayer[pId]->tempUpdate(index);
 	}
-
-	calcStats(unitsNumberPerPlayer);
-	calcStats(unitsInfluencePerPlayer);
 }
 
 void InfluenceManager::update(std::vector<Building*>* buildings) const {
@@ -107,20 +103,12 @@ void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 		//TODO perf nie ma co liczyć indeksu ciagle ob sie nie zmienia
 		resourceInfluence->tempUpdate(resource, resource->getHealthPercent());
 	}
-	resourceInfluence->finishCalc();
 }
 
 template <typename T>
 void InfluenceManager::resetMaps(const std::vector<T*>& maps) const {
 	for (auto map : maps) {
 		map->reset();
-	}
-}
-
-template <typename T>
-void InfluenceManager::calcStats(const std::vector<T*>& maps) const {
-	for (auto map : maps) {
-		map->finishCalc();
 	}
 }
 
@@ -158,11 +146,6 @@ void InfluenceManager::updateWithHistory() const {
 void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const {
 	index = index % vector.size();
 	vector[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
-}
-
-void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapCombine*>& vector, char type) const {
-	index = index % vector.size();
-	vector[index]->get(cast(type))->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 }
 
 void InfluenceManager::draw(InfluenceDataType type, char index) {
@@ -319,12 +302,12 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> r
 }
 
 void InfluenceManager::addCollect(Unit* unit, float value) {
-	gatherSpeed[unit->getPlayer()]->update(unit, value);
+	gatherSpeed[unit->getPlayer()]->tempUpdate(unit, value);
 	econQuad[unit->getPlayer()]->update(unit, value);
 }
 
 void InfluenceManager::addAttack(Unit* unit, float value) {
-	attackSpeed[unit->getPlayer()]->update(unit, value);
+	attackSpeed[unit->getPlayer()]->tempUpdate(unit, value);
 }
 
 Urho3D::Vector2 InfluenceManager::getCenterOf(CenterType id, char player) {

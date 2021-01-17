@@ -21,7 +21,7 @@ public:
 	float getValueAsPercent(const Urho3D::Vector2& pos) const override;
 	float getValueAsPercent(int index) const override;
 	void computeMinMax() override;
-	void finishCalc() override;
+
 	int getMaxElement() override;
 	int getMaxElement(const std::array<int, 4>& indexes) override;
 	std::vector<int> getIndexesWithByValue(float percent, float tolerance) const;

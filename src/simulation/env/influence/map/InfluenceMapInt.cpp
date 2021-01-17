@@ -64,12 +64,6 @@ void InfluenceMapInt::computeMinMax() {
 	}
 }
 
-void InfluenceMapInt::finishCalc() {
-	// const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
-	// min = *minIdx;
-	// max = *maxIdx;
-}
-
 int InfluenceMapInt::getMaxElement() {
 	return std::distance(values, std::max_element(values, values + arraySize));
 }

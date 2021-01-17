@@ -40,7 +40,6 @@ public:
 	void updateWithHistory() const;
 
 	void drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const;
-	void drawMap(char index, const std::vector<InfluenceMapCombine*>& vector, char type) const;
 
 	void draw(InfluenceDataType type, char index);
 	void drawAll() const;
@@ -68,8 +67,7 @@ private:
 
 	template <typename T>
 	void resetMaps(const std::vector<T*>& maps) const;
-	template <typename T>
-	void calcStats(const std::vector<T*>& maps) const;
+
 	template <typename T>
 	void drawAll(const std::vector<T*>& maps, Urho3D::String name) const;
 
