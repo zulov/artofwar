@@ -25,6 +25,11 @@ private:
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		};
+	inline static std::array<unsigned char, FRAMES_IN_PERIOD> ONCE_PER_2_SECONDS = {
+		2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	};
 	inline static std::array<unsigned char, FRAMES_IN_PERIOD> data[magic_enum::enum_count<PerFrameAction>()] = {
 		{
 			1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -38,8 +43,8 @@ private:
 		}, //INFLUANCE_2
 		{
 			0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 1, 0, 0, 0, 0, 0, 0, 0
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}, //INFLUANCE_3
 		{
 			0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
@@ -61,7 +66,7 @@ private:
 			0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}, //AI_ORDER
-		ONCE_PER_SECOND, //QUEUE_HUD
+		ONCE_PER_2_SECONDS, //QUEUE_HUD
 		ONCE_PER_SECOND //HUD_UPDATE
 	};
 public:
