@@ -36,8 +36,10 @@ public:
 	void update(std::vector<Building*>* buildings) const;
 	void update(std::vector<ResourceEntity*>* resources) const;
 
-	void updateQuad(std::vector<Unit*>* units, std::vector<Building*>* buildings) const;
+	void updateQuadUnits(std::vector<Unit*>* units) const;
+	void updateQuadBuildings(std::vector<Building*>* buildings) const;
 	void updateWithHistory() const;
+	void updateQuadOther() const;
 
 	void drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const;
 

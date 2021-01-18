@@ -107,6 +107,32 @@ void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 	resourceInfluence->updateFromTemp();
 }
 
+void InfluenceManager::updateQuadUnits(std::vector<Unit*>* units) const {
+	resetMaps(unitsQuad);
+	for (auto unit : (*units)) {
+		unitsQuad[unit->getPlayer()]->updateInt(unit);
+	}
+}
+
+void InfluenceManager::updateQuadBuildings(std::vector<Building*>* buildings) const {
+	resetMaps(buildingsQuad);
+	for (auto building : (*buildings)) {
+		buildingsQuad[building->getPlayer()]->updateInt(building);
+	}
+}
+
+void InfluenceManager::updateWithHistory() const {
+	resetMaps(gatherSpeed);
+	resetMaps(attackSpeed);
+
+	finalize(gatherSpeed);
+	finalize(attackSpeed);
+}
+
+void InfluenceManager::updateQuadOther() const {
+	resetMaps(econQuad);
+}
+
 template <typename T>
 void InfluenceManager::resetMaps(const std::vector<T*>& maps) const {
 	for (auto map : maps) {
@@ -128,27 +154,6 @@ void InfluenceManager::drawAll(const std::vector<T*>& maps, Urho3D::String name)
 	}
 }
 
-void InfluenceManager::updateQuad(std::vector<Unit*>* units, std::vector<Building*>* buildings) const {
-	resetMaps(unitsQuad);
-	resetMaps(buildingsQuad);
-	resetMaps(econQuad);
-
-	for (auto unit : (*units)) {
-		unitsQuad[unit->getPlayer()]->updateInt(unit);
-	}
-	for (auto building : (*buildings)) {
-		buildingsQuad[building->getPlayer()]->updateInt(building);
-	}
-
-}
-
-void InfluenceManager::updateWithHistory() const {
-	resetMaps(gatherSpeed);
-	resetMaps(attackSpeed);
-
-	finalize(gatherSpeed);
-	finalize(attackSpeed);
-}
 
 void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const {
 	index = index % vector.size();

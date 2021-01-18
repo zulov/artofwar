@@ -45,14 +45,17 @@ Simulation::~Simulation() {
 }
 
 void Simulation::updateInfluenceMaps() const {
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_1, currentFrame)) {
-		enviroment->updateInfluence1(units, buildings, resources);
+	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_1, currentFrame)) {
+		enviroment->updateInfluenceUnits1(units);
 	}
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_2, currentFrame)) {
-		enviroment->updateInfluence2(units, buildings);
+	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_2, currentFrame)) {
+		enviroment->updateInfluenceUnits2(units);
 	}
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_3, currentFrame)) {
-		enviroment->updateInfluence3();
+	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_RESOURCES, currentFrame)) {
+		enviroment->updateInfluenceResources(resources);
+	}
+	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_OTHER, currentFrame)) {
+		enviroment->updateInfluenceOther(buildings);
 	}
 }
 

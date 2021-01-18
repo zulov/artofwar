@@ -108,7 +108,7 @@ std::vector<Physical*>* Environment::getNeighbours(Urho3D::Vector3& center, Grid
 }
 
 const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clicked) const {
-	if(!clicked) {
+	if (!clicked) {
 		return &Consts::EMPTY_PHYSICAL;
 	}
 
@@ -123,20 +123,22 @@ std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, float
 	return getNeighbours(center, resourceGrid, radius, id);
 }
 
-void Environment::updateInfluence1(std::vector<Unit*>* units,
-                                   std::vector<Building*>* buildings,
-                                   std::vector<ResourceEntity*>* resources) const {
+void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) const {
 	influenceManager.update(units);
-	influenceManager.update(buildings);
+}
+
+void Environment::updateInfluenceUnits2(std::vector<Unit*>* units) const {
+	influenceManager.updateQuadUnits(units);
+}
+
+void Environment::updateInfluenceResources(std::vector<ResourceEntity*>* resources) const {
 	influenceManager.update(resources);
 }
 
-void Environment::updateInfluence2(std::vector<Unit*>* units,
-                                   std::vector<Building*>* buildings) const {
-	influenceManager.updateQuad(units, buildings);
-}
-
-void Environment::updateInfluence3() const {
+void Environment::updateInfluenceOther(std::vector<Building*>* buildings) const {
+	influenceManager.update(buildings);
+	influenceManager.updateQuadBuildings(buildings);
+	influenceManager.updateQuadOther();
 	influenceManager.updateWithHistory();
 }
 

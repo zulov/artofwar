@@ -7,9 +7,10 @@
 #include "utils/OtherUtils.h"
 
 enum class PerFrameAction:char {
-	INFLUENCE_1=0,
-	INFLUENCE_2,
-	INFLUENCE_3,
+	INFLUENCE_UNITS_1=0,
+	INFLUENCE_UNITS_2,
+	INFLUENCE_RESOURCES,
+	INFLUENCE_OTHER,
 	SELF_AI,
 	STAT_SAVE,
 	AI_ACTION,
@@ -20,11 +21,11 @@ enum class PerFrameAction:char {
 
 inline struct PerFrameActionData {
 private:
-	inline static std::array<unsigned char, FRAMES_IN_PERIOD> ONCE_PER_SECOND ={
-			1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		};
+	inline static std::array<unsigned char, FRAMES_IN_PERIOD> ONCE_PER_SECOND = {
+		1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	};
 	inline static std::array<unsigned char, FRAMES_IN_PERIOD> ONCE_PER_2_SECONDS = {
 		2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -33,19 +34,24 @@ private:
 	inline static std::array<unsigned char, FRAMES_IN_PERIOD> data[magic_enum::enum_count<PerFrameAction>()] = {
 		{
 			1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			1, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		}, //INFLUANCE_1
-		{
-			0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 1, 0, 0, 0, 0, 0, 0, 0, 0
-		}, //INFLUANCE_2
-		{
-			0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-		}, //INFLUANCE_3
+		}, //INFLUENCE_UNITS_1
+		{
+			0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		}, //INFLUENCE_UNITS_2
+		{
+			0, 0, 2, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		}, //INFLUENCE_RESOURCES		
+		{
+			0, 0, 0, 2, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		}, //INFLUENCE_OTHER
 		{
 			0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
 			0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
@@ -57,13 +63,13 @@ private:
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}, //STAT_SAVE
 		{
-			0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}, //AI_ACTION
 		{
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-			0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}, //AI_ORDER
 		ONCE_PER_2_SECONDS, //QUEUE_HUD
