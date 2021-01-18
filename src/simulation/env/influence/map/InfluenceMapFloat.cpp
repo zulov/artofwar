@@ -64,10 +64,6 @@ void InfluenceMapFloat::update(float value, const unsigned short centerX, const 
 
 void InfluenceMapFloat::reset() {
 	std::fill_n(values, arraySize, 0.f);
-	if (tempComputedNeeded) {
-		std::fill_n(tempVals, arraySize, 0.f);
-	}
-	tempComputedNeeded = false;
 }
 
 float InfluenceMapFloat::getValueAt(int index) const {
@@ -150,7 +146,7 @@ void InfluenceMapFloat::add(int* indexes, float* vals, int k, float val) const {
 	}
 }
 
-void InfluenceMapFloat::updateFromTemp() const {
+void InfluenceMapFloat::updateFromTemp() {
 	if (tempComputedNeeded) {
 		for (int i = 0; i < arraySize; ++i) {
 			auto val = tempVals[i];
@@ -158,5 +154,7 @@ void InfluenceMapFloat::updateFromTemp() const {
 				update(i, val);
 			}
 		}
+		std::fill_n(tempVals, arraySize, 0.f);
+		tempComputedNeeded = false;
 	}
 }

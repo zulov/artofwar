@@ -28,15 +28,16 @@ public:
 	void getIndexesWithByValue(float percent, float* intersection) const;
 	void add(int* indexes, float* vals, int k, float val) const;
 
-	void updateFromTemp() const;
+	void updateFromTemp();
 
 protected:
 	float* values;
 	float coef;
+	bool tempComputedNeeded = false;
+	float* tempVals;
 private:
 	void update(float value, unsigned short centerX, unsigned short centerZ) const;
 
-	float* tempVals;
 	unsigned char level;
-	bool tempComputedNeeded = false;
+
 };
