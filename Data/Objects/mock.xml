@@ -1,0 +1,7 @@
+<node>
+<attribute name="Scale" value="1 1 1" />
+<component type="StaticModel">
+	<attribute name="Model" value="Model;Models/Box.mdl" />
+	<attribute name="Material" value="Material;Materials/mock.xml" />
+</component>
+</node>

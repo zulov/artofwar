@@ -45,16 +45,16 @@ Simulation::~Simulation() {
 }
 
 void Simulation::updateInfluenceMaps() const {
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_1, currentFrame)) {
+	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_1, currentFrame, secondsElapsed)) {
 		enviroment->updateInfluenceUnits1(units);
 	}
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_2, currentFrame)) {
+	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_2, currentFrame, secondsElapsed)) {
 		enviroment->updateInfluenceUnits2(units);
 	}
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_RESOURCES, currentFrame)) {
+	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_RESOURCES, currentFrame, secondsElapsed)) {
 		enviroment->updateInfluenceResources(resources);
 	}
-	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_OTHER, currentFrame)) {
+	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_OTHER, currentFrame, secondsElapsed)) {
 		enviroment->updateInfluenceOther(buildings);
 	}
 }
@@ -81,7 +81,7 @@ SimInfo* Simulation::update(float timeStep) {
 		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac w tym zmiany stanu
 		executeStateTransition();
 		updateQueues();
-		updateInfluenceMaps();
+		updateInfluenceMaps();//TODO odtad dalej mozna zrobic forka ?
 
 		simObjectManager->dispose();
 		simObjectManager->findToDispose();
