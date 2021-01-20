@@ -19,11 +19,11 @@ ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, int id, int level, int
 	dbResource = Game::getDatabase()->getResource(id);
 	if (!SIM_GLOBALS.TRAIN_MODE) {
 		loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(
-		RandIntType::RESOURCE_NODE, dbResource->nodeName.Size())]);
-	}else {
+			RandIntType::RESOURCE_NODE, dbResource->nodeName.Size())]);
+	} else {
 		loadXml("Objects/mock.xml");
 	}
-	
+
 
 	node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
 }
