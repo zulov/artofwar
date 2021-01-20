@@ -7,9 +7,6 @@
 #include "simulation/env/Environment.h"
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Input/Input.h>
-
-
-#include "simulation/SimGlobals.h"
 #include "utils/OtherUtils.h"
 
 
@@ -22,14 +19,16 @@ CameraManager::CameraManager() {
 
 	camInfo = new CameraInfo();
 	float border = 256.f;
+	auto graphics = Game::getGraphics();
+	if (graphics) {
+		const int width = Game::getGraphics()->GetWidth();
+		const int height = Game::getGraphics()->GetHeight();
+		widthEdge = width / border;
+		heightEdge = height / border;
 
-	const int width = Game::getGraphics()->GetWidth();
-	const int height = Game::getGraphics()->GetHeight();
-	widthEdge = width / border;
-	heightEdge = height / border;
-
-	widthEdgeMax = width - widthEdge;
-	heightEdgeMax = height - heightEdge;
+		widthEdgeMax = width - widthEdge;
+		heightEdgeMax = height - heightEdge;
+	}
 }
 
 CameraManager::~CameraManager() {

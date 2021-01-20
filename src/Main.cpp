@@ -61,7 +61,7 @@ void Main::Setup() {
 	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName()
 		+ ".log";
 	engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
-	engineParameters_[EP_HEADLESS] = false;
+	//engineParameters_[EP_HEADLESS] = false;
 	engineParameters_[EP_SOUND] = false;
 	engineParameters_[EP_WINDOW_WIDTH] = resolution->x;
 	engineParameters_[EP_WINDOW_HEIGHT] = resolution->y;
@@ -207,9 +207,11 @@ void Main::InitMouseMode(MouseMode mode) {
 
 void Main::SetWindowTitleAndIcon() {
 	Graphics* graphics = Game::getGraphics();
-	const auto icon = Game::getCache()->GetResource<Image>("textures/UrhoIcon.png");
-	graphics->SetWindowIcon(icon);
-	graphics->SetWindowTitle("Art of War 2017");
+	if (graphics) {
+		const auto icon = Game::getCache()->GetResource<Image>("textures/UrhoIcon.png");
+		graphics->SetWindowIcon(icon);
+		graphics->SetWindowTitle("Art of War 2017");
+	}
 }
 
 void Main::changeCamera(CameraBehaviorType type) {
@@ -468,7 +470,10 @@ void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 void Main::SetupViewport() const {
 	SharedPtr<Viewport> viewport(new Viewport(context_, Game::getScene(),
 	                                          Game::getCameraManager()->getComponent()));
-	GetSubsystem<Renderer>()->SetViewport(0, viewport);
+	auto renderer = GetSubsystem<Renderer>();
+	if (renderer) {
+		GetSubsystem<Renderer>()->SetViewport(0, viewport);
+	}
 }
 
 void Main::disposeScene() {

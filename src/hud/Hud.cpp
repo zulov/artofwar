@@ -68,7 +68,12 @@ void Hud::createCursor() const {
 	cursor->SetStyleAuto(style);
 
 	Game::getUI()->SetCursor(cursor);
-	cursor->SetPosition(Game::getGraphics()->GetWidth() / 2, Game::getGraphics()->GetHeight() / 2);
+
+	auto graphics = Game::getGraphics();
+	if (graphics) {
+		cursor->SetPosition(graphics->GetWidth() / 2, graphics->GetHeight() / 2);
+	}
+	
 }
 
 void Hud::createMyPanels() {
@@ -112,9 +117,9 @@ void Hud::prepareStyle() {
 }
 
 void Hud::prepareUrho(Urho3D::Engine* engine) const {
-	createConsole(engine);
-	createDebugHud(engine);
-	createCursor();
+	//createConsole(engine);
+	//createDebugHud(engine);
+	//createCursor();
 }
 
 void Hud::subscribeToUIEvents() {
