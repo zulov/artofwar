@@ -106,5 +106,4 @@ private:
 	int timeLimit = -1;
 	Urho3D::String outputName = "test.txt";
 	Urho3D::String outputType = "";
-
 };

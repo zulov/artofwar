@@ -110,7 +110,8 @@ void Stats::add(CreationCommand* command) {
 
 void Stats::joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output,
                         int number) {
-	if (!output.empty()) {
+
+	if (!SIM_GLOBALS.TRAIN_MODE && !output.empty()) {
 		input.append(";;").append(output);
 		for (int i = 0; i < number; ++i) {
 			array[player].push_back(input);
@@ -138,19 +139,21 @@ void Stats::saveBatch(int i, std::vector<std::string>* array, std::string name, 
 }
 
 void Stats::saveAll(int size) {
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		saveBatch(i, ifWorkersCreate, "worker/ifWorkerCreate", size);
-		saveBatch(i, whereWorkersCreate, "worker/whereWorkerCreate", size);
+	if (!SIM_GLOBALS.TRAIN_MODE) {
+		for (int i = 0; i < MAX_PLAYERS; ++i) {
+			saveBatch(i, ifWorkersCreate, "worker/ifWorkerCreate", size);
+			saveBatch(i, whereWorkersCreate, "worker/whereWorkerCreate", size);
 
-		saveBatch(i, ifBuildingCreate, "building/ifBuildingCreate", size);
-		saveBatch(i, whichBuildingCreate, "building/whichBuildingCreate", size);
-		saveBatch(i, whereBuildingCreate, "building/whereBuildingCreate", size);
+			saveBatch(i, ifBuildingCreate, "building/ifBuildingCreate", size);
+			saveBatch(i, whichBuildingCreate, "building/whichBuildingCreate", size);
+			saveBatch(i, whereBuildingCreate, "building/whereBuildingCreate", size);
 
-		saveBatch(i, ifUnitCreate, "unit/ifUnitCreate", size);
-		saveBatch(i, whichUnitCreate, "unit/whichUnitCreate", size);
-		saveBatch(i, whereUnitCreate, "unit/whereUnitCreate", size);
+			saveBatch(i, ifUnitCreate, "unit/ifUnitCreate", size);
+			saveBatch(i, whichUnitCreate, "unit/whichUnitCreate", size);
+			saveBatch(i, whereUnitCreate, "unit/whereUnitCreate", size);
 
-		saveBatch(i, whichResource, "resource/whichResource", size);
+			saveBatch(i, whichResource, "resource/whichResource", size);
+		}
 	}
 }
 

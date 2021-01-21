@@ -92,7 +92,9 @@ void Main::Start() {
 	subscribeToEvents();
 
 	hud = new Hud();
-	hud->prepareUrho(engine_);
+	if (!engineParameters_[EP_HEADLESS].GetBool()) {
+		hud->prepareUrho(engine_);
+	}
 	hud->createMyPanels();
 	subscribeToUIEvents();
 	InitMouseMode(MM_RELATIVE);
@@ -157,11 +159,11 @@ void Main::running(const double timeStep) {
 	benchmark.add(1.0f / timeStep);
 
 	SimInfo* simInfo = simulation->update(timeStep);
-	debugManager.draw();
-
-	SelectedInfo* selectedInfo = control(timeStep, simInfo);
-
-	hud->update(benchmark, Game::getCameraManager(), selectedInfo, simInfo);
+	if (!engineParameters_[EP_HEADLESS].GetBool()) {
+		debugManager.draw();
+		SelectedInfo* selectedInfo = control(timeStep, simInfo);
+		hud->update(benchmark, Game::getCameraManager(), selectedInfo, simInfo);
+	}
 
 	if (timeLimit != -1 && simInfo->getFrameInfo()->getSeconds() > timeLimit) {
 		engine_->Exit();
@@ -470,7 +472,7 @@ void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 void Main::SetupViewport() const {
 	SharedPtr<Viewport> viewport(new Viewport(context_, Game::getScene(),
 	                                          Game::getCameraManager()->getComponent()));
-	auto renderer = GetSubsystem<Renderer>();
+	const auto renderer = GetSubsystem<Renderer>();
 	if (renderer) {
 		GetSubsystem<Renderer>()->SetViewport(0, viewport);
 	}

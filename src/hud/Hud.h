@@ -74,7 +74,6 @@ URHO3D_OBJECT(Hud, Object)
 private:
 
 	void replaceVariables(std::string& xml, int hudSizeId) const;
-	void createDebugHud(Urho3D::Engine* engine) const;
 	void createConsole(Urho3D::Engine* engine) const;
 	void createCursor() const;
 

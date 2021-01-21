@@ -73,7 +73,7 @@ void Hud::createCursor() const {
 	if (graphics) {
 		cursor->SetPosition(graphics->GetWidth() / 2, graphics->GetHeight() / 2);
 	}
-	
+
 }
 
 void Hud::createMyPanels() {
@@ -117,9 +117,9 @@ void Hud::prepareStyle() {
 }
 
 void Hud::prepareUrho(Urho3D::Engine* engine) const {
-	//createConsole(engine);
-	//createDebugHud(engine);
-	//createCursor();
+	createConsole(engine);
+	engine->CreateDebugHud()->SetDefaultStyle(style);
+	createCursor();
 }
 
 void Hud::subscribeToUIEvents() {
@@ -151,14 +151,12 @@ Hud::~Hud() {
 	Game::getUI()->GetCursor()->Remove();
 }
 
-void Hud::createDebugHud(Urho3D::Engine* engine) const {
-	engine->CreateDebugHud()->SetDefaultStyle(style);
-}
-
 void Hud::createConsole(Urho3D::Engine* engine) const {
 	auto console = engine->CreateConsole();
-	console->SetDefaultStyle(style);
-	console->GetBackground()->SetOpacity(0.8f);
+	if (console) {
+		console->SetDefaultStyle(style);
+		console->GetBackground()->SetOpacity(0.8f);
+	}
 }
 
 void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
