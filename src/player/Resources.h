@@ -23,6 +23,7 @@ public:
 	
 	void hasBeenUpdatedDrawn();
 	int getSum() const;
+	
 	std::string getValues(int precision, int player) const;
 	void setValue(int id, float amount);
 	void change();

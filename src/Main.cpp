@@ -1,4 +1,6 @@
 #include "Main.h"
+
+#include <numeric>
 #include <Urho3D/Core/CoreEvents.h>
 #include <Urho3D/Engine/Console.h>
 #include <Urho3D/Engine/DebugHud.h>
@@ -111,7 +113,15 @@ void Main::writeOutput() const {
 			}
 		} else if (outputType == "ressum") {
 			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-				outFile << std::to_string(player->getId()) << ";" << player->getResources().getSum() << "\n";
+				auto vals = player->getResources().getValues();
+				outFile << std::to_string(player->getId()) << ";" << std::accumulate(vals.begin(), vals.end(), 0) <<
+					"\n";
+			}
+		} else if (outputType == "ressmallest") {
+			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+				auto vals = player->getResources().getValues();
+				outFile << std::to_string(player->getId()) << ";" << std::accumulate(vals.begin(), vals.end(), 0) <<
+					"\n";
 			}
 		}
 		outFile.close();

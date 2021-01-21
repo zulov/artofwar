@@ -20,7 +20,7 @@
 
 OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
-	  whatResource(BrainProvider::get(std::string(nation->orderPrefix[0].CString()) + "whichResource_w.csv")),
+	  whichResource(BrainProvider::get(std::string(nation->orderPrefix[0].CString()) + "whichResource_w.csv")),
 	  threshold(ThresholdProvider::get("attack_t.csv")) {
 }
 
@@ -32,7 +32,7 @@ void OrderMaker::action() {
 	}
 	auto& possesion = player->getPossession();
 
-	bool ifAttack = threshold->ifDo(possesion.getFreeArmyMetrics());
+	bool ifAttack = threshold->ifDo(possesion.getFreeArmyMetrics()) && false;
 	if (ifAttack) {
 		char id = threshold->getBest(possesion.getFreeArmyMetrics());
 
@@ -65,7 +65,7 @@ Physical* OrderMaker::closetInRange(Unit* worker, int resourceId, float radius) 
 
 void OrderMaker::collect(std::vector<Unit*>& workers) {
 	auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
-	auto result = whatResource->decide(input);
+	auto result = whichResource->decide(input);
 
 	for (auto worker : workers) {
 		const auto resourceId = biggestWithRand(result);

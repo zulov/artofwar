@@ -22,7 +22,7 @@ private:
 	void collect(std::vector<Unit*>& workers);
 
 	Player* player;
-	Brain *whatResource;
+	Brain *whichResource;
 	Threshold* threshold;
 	
 };
