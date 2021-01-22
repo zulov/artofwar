@@ -72,7 +72,7 @@ void OrderMaker::collect(std::vector<Unit*>& workers) {
 
 		for (auto radius : {64.f, 128.f, 256.f}) {
 			//TODO bug cos nei uwzglednia tej odleglsoci
-			auto closest = closetInRange(worker, resourceId, radius);
+			auto closest = closetInRange(worker, resourceId, radius);//TODO perf nie sprawdzac tego co wczesniej
 			if (closest) {
 				Game::getActionCenter()
 					->addUnitAction(new IndividualOrder(worker, UnitAction::COLLECT, closest, false), player->getId());
