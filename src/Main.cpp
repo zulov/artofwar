@@ -96,9 +96,10 @@ void Main::Start() {
 	hud = new Hud();
 	if (!engineParameters_[EP_HEADLESS].GetBool()) {
 		hud->prepareUrho(engine_);
+		hud->createMyPanels();
+		subscribeToUIEvents();
 	}
-	hud->createMyPanels();
-	subscribeToUIEvents();
+
 	InitMouseMode(MM_RELATIVE);
 	changeState(GameState::LOADING);
 }
@@ -278,12 +279,11 @@ void Main::load(const String& saveName, loading& progress) {
 		Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
 		Game::getStats()->init();
 		controls->init();
-
-		subscribeToUIEvents();
+		if (!engineParameters_[EP_HEADLESS].GetBool()) {
+			subscribeToUIEvents();		
+		}
 		hud->resetLoading();
-
 		levelBuilder->createScene(loader);
-
 	}
 	break;
 	case 1: {

@@ -136,6 +136,7 @@ Hud::Hud() : Object(Game::getContext()) {
 	resolution = Game::getDatabase()->getResolution(settings->resolution);
 
 	prepareStyle();
+	std::fill(panels.begin(), panels.end(), nullptr);
 }
 
 
@@ -147,8 +148,9 @@ void Hud::clear() {
 
 Hud::~Hud() {
 	clear();
-
-	Game::getUI()->GetCursor()->Remove();
+	if (Game::getUI()->GetCursor() != nullptr) {
+		Game::getUI()->GetCursor()->Remove();
+	}
 }
 
 void Hud::createConsole(Urho3D::Engine* engine) const {
@@ -176,20 +178,28 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
 }
 
 void Hud::createMiniMap() const {
-	miniMapPanel->createEmpty(160);
+	if (miniMapPanel) {
+		miniMapPanel->createEmpty(160);
+	}
 }
 
 void Hud::resetLoading() const {
-	loadingPanel->show();
+	if (loadingPanel) {
+		loadingPanel->show();
+	}
 }
 
 void Hud::updateLoading(float progress) const {
-	loadingPanel->update(progress);
+	if (loadingPanel) {
+		loadingPanel->update(progress);
+	}
 }
 
 void Hud::updateStateVisibilty(GameState state) {
 	for (auto panel : panels) {
-		panel->updateStateVisibility(state);
+		if (panel) {
+			panel->updateStateVisibility(state);
+		}
 	}
 }
 

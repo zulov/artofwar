@@ -77,16 +77,16 @@ private:
 	void createConsole(Urho3D::Engine* engine) const;
 	void createCursor() const;
 
-	SelectedHudPanel* selectedHudPanel;
-	DebugPanel* debugPanel;
-	TopPanel* topPanel;
-	MiniMapPanel* miniMapPanel;
-	MenuPanel* menuPanel;
-	QueuePanel* queuePanel;
-	LoadingPanel* loadingPanel;
-	InGameMenuPanel* inGameMenuPanel;
-	MainMenuPanel* mainMenuPanel;
-	ScorePanel* scorePanel;
+	SelectedHudPanel* selectedHudPanel{};
+	DebugPanel* debugPanel{};
+	TopPanel* topPanel{};
+	MiniMapPanel* miniMapPanel{};
+	MenuPanel* menuPanel{};
+	QueuePanel* queuePanel{};
+	LoadingPanel* loadingPanel{};
+	InGameMenuPanel* inGameMenuPanel{};
+	MainMenuPanel* mainMenuPanel{};
+	ScorePanel* scorePanel{};
 
 	std::array<SimplePanel*, 10> panels;
 
