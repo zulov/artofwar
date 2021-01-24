@@ -121,7 +121,7 @@ void Main::writeOutput() const {
 		} else if (outputType == "ressmallest") {
 			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 				auto vals = player->getResources().getValues();
-				outFile << std::to_string(player->getId()) << ";" << *std::max(vals.begin(), vals.end()) << "\n";
+				outFile << std::to_string(player->getId()) << ";" << *std::min(vals.begin(), vals.end()) << "\n";
 			}
 		}
 		outFile.close();
@@ -277,9 +277,10 @@ void Main::load(const String& saveName, loading& progress) {
 
 		Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
 		Game::getStats()->init();
-		controls->init();
+
 		if (!engineParameters_[EP_HEADLESS].GetBool()) {
-			subscribeToUIEvents();		
+			controls->init();
+			subscribeToUIEvents();
 		}
 		hud->resetLoading();
 		levelBuilder->createScene(loader);
@@ -572,6 +573,8 @@ void Main::readParameters() {
 				SimGlobals::BENCHMARK_MODE = true;
 				engine_->SetMaxFps(0);
 				engine_->SetMaxInactiveFps(0);
+			} else if (argument == "headless") {
+				SimGlobals::HEADLESS = true;
 			} else if (argument == "savename") {
 				saveToLoad = value;
 			} else if (argument == "outputtype" && !value.Empty()) {

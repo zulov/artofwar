@@ -17,15 +17,15 @@
 ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, int id, int level, int mainCell)
 	: Static(_position, mainCell) {
 	dbResource = Game::getDatabase()->getResource(id);
-	if (!SIM_GLOBALS.TRAIN_MODE) {
+	if (!SIM_GLOBALS.TRAIN_MODE && !SIM_GLOBALS.HEADLESS) {
 		loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(
 			RandIntType::RESOURCE_NODE, dbResource->nodeName.Size())]);
-	} else {
+		node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
+	} else if (!SIM_GLOBALS.HEADLESS) {
 		loadXml("Objects/mock.xml");
+	} else {
+		loadXml("");
 	}
-
-
-	node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
 }
 
 const Urho3D::IntVector2 ResourceEntity::getGridSize() const {

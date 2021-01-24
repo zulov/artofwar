@@ -37,7 +37,7 @@ MainGrid::~MainGrid() {
 
 void MainGrid::prepareGridToFind() const {
 	for (int i = 0; i < sqResolution; ++i) {
-		updateNeighbors(i);
+		updateNeighborsAndCost(i);
 	}
 	pathConstructor->prepareGridToFind();
 }
@@ -195,8 +195,7 @@ void MainGrid::drawDebug(GridDebugType type) const {
 	switch (type) {
 	case GridDebugType::NONE:
 		break;
-	case GridDebugType::GRID:
-	{
+	case GridDebugType::GRID: {
 		float size = calculator->getSize();
 		float value = -size / 2;
 		for (int i = 0; i < resolution; ++i) {
@@ -208,8 +207,7 @@ void MainGrid::drawDebug(GridDebugType type) const {
 		}
 	}
 	break;
-	case GridDebugType::CELLS_TYPE:
-	{
+	case GridDebugType::CELLS_TYPE: {
 		for (int i = 0; i < sqResolution; ++i) {
 			auto center = calculator->getCenter(i);
 			std::tuple<bool, Urho3D::Color> info = Game::getColorPaletteRepo()->
@@ -360,7 +358,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& posit
 }
 
 Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const {
-	return getValidPosition(size,Urho3D::IntVector2(calculator->getIndex(pos.x_),calculator->getIndex(pos.y_)));
+	return getValidPosition(size, Urho3D::IntVector2(calculator->getIndex(pos.x_), calculator->getIndex(pos.y_)));
 }
 
 Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const {
@@ -376,9 +374,22 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 }
 
 void MainGrid::updateNeighbors(const int current) const {
-	for (auto i : closeIndexes->getTabIndexes(current)) {
-		const int nI = current + closeIndexes->getIndexAt(i);
-		if (calculator->isValidIndex(nI)) {
+	if (calculator->isValidIndex(current)) {
+		for (auto i : closeIndexes->getTabIndexes(current)) {
+			const int nI = current + closeIndexes->getIndexAt(i);
+			if (complexData[nI].isPassable()) {
+				complexData[current].setNeightFree(i);
+			} else {
+				complexData[current].setNeightOccupied(i);
+			}
+		}
+	}
+}
+
+void MainGrid::updateNeighborsAndCost(const int current) const {
+	if (calculator->isValidIndex(current)) {
+		for (auto i : closeIndexes->getTabIndexes(current)) {
+			const int nI = current + closeIndexes->getIndexAt(i);
 			if (complexData[nI].isPassable()) {
 				complexData[current].setNeightFree(i);
 			} else {

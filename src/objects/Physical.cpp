@@ -143,11 +143,13 @@ void Physical::unSelect() {
 
 void Physical::loadXml(const Urho3D::String& xmlName) {
 	//node->RemoveAllChildren();
-	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(xmlName)->GetRoot());
+	if (!xmlName.Empty()) {
+		node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(xmlName)->GetRoot());
 
-	node->SetVar("link", this);
+		node->SetVar("link", this);
 
-	model = node->GetComponent<Urho3D::StaticModel>();
+		model = node->GetComponent<Urho3D::StaticModel>();
+	}
 
 	populate();
 	updateBillboards();

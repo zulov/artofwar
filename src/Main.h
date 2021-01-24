@@ -103,7 +103,7 @@ private:
 	short coefToEdit = 0;
 	
 	//
-	int timeLimit = -1;
+	int timeLimit = 600;
 	Urho3D::String outputName = "test.txt";
 	Urho3D::String outputType = "";
 };

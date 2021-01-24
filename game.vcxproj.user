@@ -9,7 +9,7 @@
     </LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>-outputtype score -outputname elo.txt -benchmarkmode -trainmode</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-headless -outputtype score -benchmarkmode -trainmode</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>
