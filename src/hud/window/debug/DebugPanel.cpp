@@ -3,19 +3,20 @@
 #include <Urho3D/UI/Window.h>
 
 DebugPanel::DebugPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "MyDebugHudWindow",
-                                                                      {GameState::RUNNING, GameState::PAUSE}) {}
+                                                              {GameState::RUNNING, GameState::PAUSE}) {
+}
 
 
-void DebugPanel::setText(float getLastFps, float getAverageFps, int getLoops, float avgLow, float avgMiddle,
+void DebugPanel::setText(float getLastFps, float getAverageFps, unsigned int seconds, float avgLow, float avgMiddle,
                          float avgHighest, const Urho3D::String& camInfo) {
 	msg.Clear();
 	msg.Append("FPS: ").Append(Urho3D::String(getLastFps))
-	   .Append("\navg FPS: ").Append(Urho3D::String(getAverageFps))
+	   .Append("\nAVG FPS: ").Append(Urho3D::String(getAverageFps))
 	   .Append("\nPercentiles ")
 	   .Append(Urho3D::String(avgLow)).Append("|")
 	   .Append(Urho3D::String(avgMiddle)).Append("|")
 	   .Append(Urho3D::String(avgHighest)).Append("|")
-	   .Append("\nLoops: ").Append(Urho3D::String(getLoops))
+	   .Append("\nTime: ").Append(Urho3D::String(seconds / 60)).Append(":").Append(Urho3D::String(seconds % 60))
 	   .Append("\nCamera: \n\t").Append(camInfo);
 
 	fpsText->SetText(msg);

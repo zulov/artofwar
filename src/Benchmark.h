@@ -18,7 +18,6 @@ public:
 
 	float getAverageFPS() const { return avg; }
 	float getLastFPS() const { return lastFps; }
-	int getLoops() const { return loops; }
 	float getAvgLowest() const { return avgLowest; }
 	float getAvgMiddle() const { return avgMiddle; }
 	float getAvgHighest() const { return avgHighest; }
@@ -30,6 +29,5 @@ private:
 	float avgLowest = 0;
 	float avgMiddle = 0;
 	float avgHighest = 0;
-	int loops = 0;
 	std::ofstream output;
 };

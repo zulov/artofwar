@@ -165,7 +165,7 @@ void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInf
                  SimInfo* simInfo) const {
 	updateSelected(selectedInfo, simInfo);
 	if (!SIM_GLOBALS.TRAIN_MODE || PER_FRAME_ACTION.get(PerFrameAction::HUD_UPDATE, simInfo->getFrameInfo())) {
-		debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), benchmark.getLoops(),
+		debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), simInfo->getFrameInfo()->getSeconds(),
 		                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
 		                    cameraManager->getPosInfo());
 		topPanel->update(Game::getPlayersMan()->getActivePlayer());

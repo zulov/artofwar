@@ -32,7 +32,6 @@ void Benchmark::add(float fps) {
 		avgHighest = roundf(std::accumulate(data + PERCENT2, data + BENCH_LENGTH, 0.f) / (BENCH_LENGTH - PERCENT2));
 		avg = std::accumulate(data, data + BENCH_LENGTH, 0.f) / BENCH_LENGTH;
 		save();
-		++loops;
 	}
 	data[index] = fps;
 	lastFps = fps;

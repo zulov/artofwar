@@ -121,8 +121,7 @@ void Main::writeOutput() const {
 		} else if (outputType == "ressmallest") {
 			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 				auto vals = player->getResources().getValues();
-				outFile << std::to_string(player->getId()) << ";" << std::accumulate(vals.begin(), vals.end(), 0) <<
-					"\n";
+				outFile << std::to_string(player->getId()) << ";" << *std::max(vals.begin(), vals.end()) << "\n";
 			}
 		}
 		outFile.close();
