@@ -4,8 +4,8 @@
 
 SceneObjectManager::~SceneObjectManager() {
 	ground->Remove();
-	light->Remove();
-	zone->Remove();
+	if (light) { light->Remove(); }
+	if (zone) { zone->Remove(); }
 }
 
 void SceneObjectManager::setGround(Urho3D::Node* ground) {

@@ -14,7 +14,7 @@ public:
 	void setLight(Urho3D::Node* light);
 	void setZone(Urho3D::Node* zone);
 private:
-	Urho3D::Node* ground;
-	Urho3D::Node* light;
-	Urho3D::Node* zone;
+	Urho3D::Node* ground{};
+	Urho3D::Node* light{};
+	Urho3D::Node* zone{};
 };
