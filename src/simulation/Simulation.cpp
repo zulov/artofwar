@@ -44,6 +44,10 @@ Simulation::~Simulation() {
 	Game::setActionCenter(nullptr);
 }
 
+void Simulation::clearNodesWithoutDelete() {
+	simObjectManager->clearNodesWithoutDelete();
+}
+
 void Simulation::updateInfluenceMaps() const {
 	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_1, currentFrame, secondsElapsed)) {
 		enviroment->updateInfluenceUnits1(units);
@@ -81,7 +85,7 @@ SimInfo* Simulation::update(float timeStep) {
 		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac w tym zmiany stanu
 		executeStateTransition();
 		updateQueues();
-		updateInfluenceMaps();//TODO odtad dalej mozna zrobic forka ?
+		updateInfluenceMaps(); //TODO odtad dalej mozna zrobic forka ?
 
 		simObjectManager->dispose();
 		simObjectManager->findToDispose();

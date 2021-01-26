@@ -25,7 +25,9 @@ Building::Building(Urho3D::Vector3 _position, int id, int player, int level, int
 
 
 Building::~Building() {
-	node->RemoveAllChildren();
+	if (node) {
+		node->RemoveAllChildren();
+	}	
 	if (queue != &Consts::EMPTY_QUEUE) {
 		delete queue;
 	}

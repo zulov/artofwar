@@ -20,10 +20,16 @@ Physical::Physical(Urho3D::Vector3& _position):
 }
 
 Physical::~Physical() {
-	node->Remove();
+	if (node) {
+		node->Remove();
+	}
+
 	unSelect();
 }
 
+void Physical::clearNodeWithOutDelete() {
+	node = nullptr;
+}
 
 bool Physical::isAlive() const {
 	return true;

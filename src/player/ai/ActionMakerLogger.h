@@ -3,7 +3,7 @@
 #include <iostream>
 #include "database/db_strcut.h"
 
-constexpr bool LOG_ACTIONS_MAKER = true;
+constexpr bool LOG_ACTIONS_MAKER = false;
 
 using namespace magic_enum::ostream_operators;
 

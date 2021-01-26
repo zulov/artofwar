@@ -20,6 +20,7 @@ class Physical {
 public:
 	explicit Physical(Urho3D::Vector3& _position);
 	virtual ~Physical();
+	void clearNodeWithOutDelete();
 
 	virtual bool isAlive() const;
 	virtual short getId();
@@ -43,8 +44,7 @@ public:
 	virtual bool isSlotOccupied(int indexToInteract) { return false; }
 	virtual bool isFirstThingInSameSocket() const { return true; }
 
-	virtual void setOccupiedSlot(unsigned char index, bool value) {
-	}
+	virtual void setOccupiedSlot(unsigned char index, bool value) { }
 
 	void indexHasChangedReset() { indexHasChanged = false; }
 
@@ -70,8 +70,7 @@ public:
 
 	int getMainBucketIndex() const { return indexInGrid; }
 
-	virtual void populate() {
-	}
+	virtual void populate() { }
 
 	virtual int getMainCell() const;
 
@@ -91,8 +90,7 @@ public:
 
 	virtual char getLevelNum();
 
-	virtual void addValues(std::span<float> vals) const {
-	}
+	virtual void addValues(std::span<float> vals) const { }
 
 	virtual unsigned char getMaxRangeUsers() const { return 8; }
 	virtual unsigned char getMaxCloseUsers() const { return 8; }

@@ -494,6 +494,7 @@ void Main::disposeScene() {
 		Game::getScene()->SetUpdateEnabled(false);
 
 		loading2.reset(5, "dispose simulation");
+		simulation->clearNodesWithoutDelete();
 		delete simulation;
 		simulation = nullptr;
 

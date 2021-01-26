@@ -14,6 +14,7 @@ class SimulationObjectManager {
 public:
 	SimulationObjectManager();
 	~SimulationObjectManager();
+	void clearNodesWithoutDelete();
 
 	std::vector<Unit*>* getUnits() const { return units; }
 	std::vector<Building*>* getBuildings() const { return buildings; }

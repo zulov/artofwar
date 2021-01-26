@@ -33,6 +33,8 @@ class Simulation {
 public:
 	explicit Simulation(Environment* enviroment);
 	~Simulation();
+	void clearNodesWithoutDelete();
+	
 	void updateInfluenceMaps() const;
 
 	SimInfo* update(float timeStep);

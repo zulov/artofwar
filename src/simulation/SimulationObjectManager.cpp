@@ -36,6 +36,18 @@ SimulationObjectManager::~SimulationObjectManager() {
 	dispose();
 }
 
+void SimulationObjectManager::clearNodesWithoutDelete() {
+	for (auto value : *units) {
+		value->clearNodeWithOutDelete();
+	}
+	for (auto value : *buildings) {
+		value->clearNodeWithOutDelete();
+	}
+	for (auto value : *resources) {
+		value->clearNodeWithOutDelete();
+	}
+}
+
 void SimulationObjectManager::addUnits(unsigned number, int id, Urho3D::Vector2& center, char level, char player) {
 	addUnits(unitFactory.create(number, id, center, player, level));
 }
