@@ -24,14 +24,14 @@ public:
 	void translate(const Urho3D::IntVector2& cursorPos, Urho3D::Input* input, float timeStep);
 	const Urho3D::String& getPosInfo() const;
 	Urho3D::MouseMode getMouseMode() const;
-	
+
 	void changePosition(float x, float y);
 	const Urho3D::Vector2 getTargetPos() const;
 	const CameraInfo* getCamInfo(float radius);
 private:
 	void createCameraKeys(Urho3D::Input* input, bool cameraKeys[4], const Urho3D::IntVector2& cursorPos) const;
 
-	CameraBehave* cameraBehaves[3];
+	CameraBehave* cameraBehaves[3] = {nullptr, nullptr, nullptr};
 	CameraBehave* activeBehave;
 
 	CameraInfo* camInfo;

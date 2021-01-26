@@ -7,28 +7,33 @@
 #include "simulation/env/Environment.h"
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Input/Input.h>
+
+#include "simulation/SimGlobals.h"
 #include "utils/OtherUtils.h"
 
 
 CameraManager::CameraManager() {
-	cameraBehaves[0] = new FreeCameraBehave();
-	cameraBehaves[1] = new RtsCameraBehave();
-	cameraBehaves[2] = new TopCameraBehave();
+	if (!SIM_GLOBALS.HEADLESS) {
+		cameraBehaves[0] = new FreeCameraBehave();
+		cameraBehaves[1] = new RtsCameraBehave();
+		cameraBehaves[2] = new TopCameraBehave();
 
-	activeBehave = cameraBehaves[1];
+		activeBehave = cameraBehaves[1];
 
-	camInfo = new CameraInfo();
-	float border = 256.f;
-	auto graphics = Game::getGraphics();
-	if (graphics) {
-		const int width = Game::getGraphics()->GetWidth();
-		const int height = Game::getGraphics()->GetHeight();
-		widthEdge = width / border;
-		heightEdge = height / border;
 
-		widthEdgeMax = width - widthEdge;
-		heightEdgeMax = height - heightEdge;
+		float border = 256.f;
+		auto graphics = Game::getGraphics();
+		if (graphics) {
+			const int width = Game::getGraphics()->GetWidth();
+			const int height = Game::getGraphics()->GetHeight();
+			widthEdge = width / border;
+			heightEdge = height / border;
+
+			widthEdgeMax = width - widthEdge;
+			heightEdgeMax = height - heightEdge;
+		}
 	}
+	camInfo = new CameraInfo();
 }
 
 CameraManager::~CameraManager() {
@@ -99,9 +104,17 @@ const Urho3D::Vector2 CameraManager::getTargetPos() const {
 }
 
 const CameraInfo* CameraManager::getCamInfo(float radius) {
-	auto camPos = activeBehave->getTargetPos();
-	camInfo->boundary = Urho3D::Vector4(camPos.x_ - radius, camPos.x_ + radius, camPos.y_ - radius, camPos.y_ + radius);
-	camInfo->hasMoved = hasMoved;
-	hasMoved = false;
+	if (!SIM_GLOBALS.HEADLESS) {
+		auto camPos = activeBehave->getTargetPos();
+		camInfo->boundary = Urho3D::Vector4(camPos.x_ - radius, camPos.x_ + radius, camPos.y_ - radius,
+		                                    camPos.y_ + radius);
+		camInfo->hasMoved = hasMoved;
+		hasMoved = false;
+	} else {
+		camInfo->boundary = Urho3D::Vector4::ZERO;
+		camInfo->hasMoved = false;
+		hasMoved = false;
+	}
+
 	return camInfo;
 }

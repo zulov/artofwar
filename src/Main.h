@@ -38,7 +38,7 @@ void Stop() override;
 protected:
 
 	void InitMouseMode(Urho3D::MouseMode mode);
-	void SetupViewport() const;
+	void SetupViewport();
 
 private:
 	void disposeScene();

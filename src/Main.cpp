@@ -63,7 +63,7 @@ void Main::Setup() {
 	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName()
 		+ ".log";
 	engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
-	//engineParameters_[EP_HEADLESS] = false;
+
 	engineParameters_[EP_SOUND] = false;
 	engineParameters_[EP_WINDOW_WIDTH] = resolution->x;
 	engineParameters_[EP_WINDOW_HEIGHT] = resolution->y;
@@ -166,10 +166,11 @@ void Main::subscribeToEvents() {
 
 void Main::running(const double timeStep) {
 	Game::addTime(timeStep);
-	benchmark.add(1.0f / timeStep);
+
 
 	SimInfo* simInfo = simulation->update(timeStep);
 	if (!engineParameters_[EP_HEADLESS].GetBool()) {
+		benchmark.add(1.0f / timeStep);
 		debugManager.draw();
 		SelectedInfo* selectedInfo = control(timeStep, simInfo);
 		hud->update(benchmark, Game::getCameraManager(), selectedInfo, simInfo);
@@ -227,9 +228,11 @@ void Main::SetWindowTitleAndIcon() {
 }
 
 void Main::changeCamera(CameraBehaviorType type) {
-	Game::getCameraManager()->setCameraBehave(type);
-	SetupViewport();
-	InitMouseMode(Game::getCameraManager()->getMouseMode());
+	if (!engineParameters_[EP_HEADLESS].GetBool()) {
+		Game::getCameraManager()->setCameraBehave(type);
+		SetupViewport();
+		InitMouseMode(Game::getCameraManager()->getMouseMode());
+	}
 }
 
 void Main::InitLocalizationSystem() const {
@@ -479,12 +482,14 @@ void Main::HandleSaveScene(StringHash /*eventType*/, VariantMap& eventData) {
 	save(data->fileName);
 }
 
-void Main::SetupViewport() const {
-	SharedPtr<Viewport> viewport(new Viewport(context_, Game::getScene(),
-	                                          Game::getCameraManager()->getComponent()));
-	const auto renderer = GetSubsystem<Renderer>();
-	if (renderer) {
-		GetSubsystem<Renderer>()->SetViewport(0, viewport);
+void Main::SetupViewport() {
+	if (!engineParameters_[EP_HEADLESS].GetBool()) {
+		SharedPtr<Viewport> viewport(new Viewport(context_, Game::getScene(),
+		                                          Game::getCameraManager()->getComponent()));
+		const auto renderer = GetSubsystem<Renderer>();
+		if (renderer) {
+			GetSubsystem<Renderer>()->SetViewport(0, viewport);
+		}
 	}
 }
 
