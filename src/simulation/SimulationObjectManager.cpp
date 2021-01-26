@@ -19,9 +19,9 @@ SimulationObjectManager::SimulationObjectManager() {
 	buildings = new std::vector<Building*>();
 	resources = new std::vector<ResourceEntity*>();
 
-	units->reserve(8192);
+	units->reserve(4069);
 	buildings->reserve(128);
-	resources->reserve(1024);
+	resources->reserve(20 * 1024);
 	simulationInfo = new ObjectsInfo();
 }
 
@@ -168,7 +168,7 @@ void SimulationObjectManager::findToDisposeResources() {
 					}
 					return false;
 				}
-		), resources->end());
+			), resources->end());
 
 		if (!resourcesToDispose.empty()) {
 			simulationInfo->setResourceDied();

@@ -109,7 +109,7 @@ private:
 	Urho3D::Node* tempBuildingNode{};
 	Urho3D::StaticModel* tempBuildingModel;
 
-	SelectedInfo* selectedInfo;
+	SelectedInfo* selectedInfo{};
 
 	BillboardSetProvider billboardSetProvider;
 

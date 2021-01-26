@@ -28,32 +28,34 @@
 #include "utils/OtherUtils.h"
 
 Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectType::NONE) {
-	selected.reserve(5000);
+	if (!SIM_GLOBALS.HEADLESS) {
+		selectedInfo = new SelectedInfo();
+		selected.reserve(5000);
+		createNode("Models/box.mdl", "Materials/green_overlay.xml", &selectionNode);
+		createNode("Models/arrow.mdl", "Materials/red_overlay.xml", &arrowNode);
 
-	selectedInfo = new SelectedInfo();
+		tempBuildingNode = Game::getScene()->CreateChild();
+		tempBuildingNode->SetEnabled(false);
 
-	createNode("Models/box.mdl", "Materials/green_overlay.xml", &selectionNode);
-	createNode("Models/arrow.mdl", "Materials/red_overlay.xml", &arrowNode);
+		selectedInfo->setSelectedType(ObjectType::NONE);
 
-	tempBuildingNode = Game::getScene()->CreateChild();
-	tempBuildingNode->SetEnabled(false);
-
-	selectedInfo->setSelectedType(ObjectType::NONE);
-
-	for (int i = 0; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
-		deployMark[i] = Game::getScene()->CreateChild();
-		deployMark[i]->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>
-			("Objects/buildings/additional/banner.xml")->GetRoot());
+		for (int i = 0; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
+			deployMark[i] = Game::getScene()->CreateChild();
+			deployMark[i]->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>
+				("Objects/buildings/additional/banner.xml")->GetRoot());
+		}
 	}
 }
 
 Controls::~Controls() {
 	delete selectedInfo;
-	selectionNode->Remove();
-	arrowNode->Remove();
+	if (!SIM_GLOBALS.HEADLESS) {
+		selectionNode->Remove();
+		arrowNode->Remove();
 
-	for (auto mark : deployMark) {
-		mark->Remove();
+		for (auto mark : deployMark) {
+			mark->Remove();
+		}
 	}
 }
 
@@ -63,8 +65,7 @@ void Controls::init() {
 
 void Controls::updateAdditionalInfo() const {
 	switch (selectedInfo->getSelectedType()) {
-	case ObjectType::BUILDING:
-	{
+	case ObjectType::BUILDING: {
 		int min = Urho3D::Min(MAX_DEPLOY_MARK_NUMBER, selected.size());
 		for (int i = 0; i < min; ++i) {
 			deployMark[i]->SetEnabled(true);
@@ -127,10 +128,10 @@ void Controls::leftClick(hit_data& hitData) {
 	}
 	if (hitData.isGround) {
 		unSelectAll();
-	}else {
+	} else {
 		selectOne(hitData.clicked, Game::getPlayersMan()->getActivePlayerID());
 	}
-	
+
 	billboardSetProvider.commit();
 	updateAdditionalInfo();
 }
