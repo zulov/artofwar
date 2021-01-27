@@ -123,6 +123,12 @@ void Main::writeOutput() const {
 				auto vals = player->getResources().getValues();
 				outFile << std::to_string(player->getId()) << ";" << *std::min(vals.begin(), vals.end()) << "\n";
 			}
+		} else if (outputType == "ressmallest+sum") {
+			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+				auto vals = player->getResources().getValues();
+				outFile << std::to_string(player->getId()) << ";" << *std::min(vals.begin(), vals.end()) +
+					std::accumulate(vals.begin(), vals.end(), 0) << "\n";
+			}
 		}
 		outFile.close();
 	}
