@@ -131,12 +131,14 @@ void Hud::subscribeToUIEvents() {
 }
 
 Hud::Hud() : Object(Game::getContext()) {
-	db_settings* settings = Game::getDatabase()->getSettings();
-	graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
-	resolution = Game::getDatabase()->getResolution(settings->resolution);
+	if (!SIM_GLOBALS.HEADLESS) {
+		db_settings* settings = Game::getDatabase()->getSettings();
+		graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
+		resolution = Game::getDatabase()->getResolution(settings->resolution);
 
-	prepareStyle();
-	std::fill(panels.begin(), panels.end(), nullptr);
+		prepareStyle();
+		std::fill(panels.begin(), panels.end(), nullptr);
+	}
 }
 
 
