@@ -47,7 +47,7 @@ private:
 	CellState state;
 	char size, additionalInfo{};
 
-	unsigned char isNeightOccupied = 0;
+	unsigned char isNeightOccupied = 255;//na poczatku wszystko okupowane
 	int escapeBucketIndex = -1;
 	float costToNeight[8] = {0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f};
 	//float cost{};

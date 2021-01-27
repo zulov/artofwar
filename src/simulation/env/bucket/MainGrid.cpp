@@ -36,8 +36,13 @@ MainGrid::~MainGrid() {
 }
 
 void MainGrid::prepareGridToFind() const {
-	for (int i = 0; i < sqResolution; ++i) {
-		updateNeighborsAndCost(i);
+	for (int current = 0; current < sqResolution; ++current) {
+		auto& data = complexData[current];
+		for (auto i : closeIndexes->getTabIndexes(current)) {
+			const int nI = current + closeIndexes->getIndexAt(i);
+			data.setNeightFree(i);
+			data.setCost(i, cost(current, nI));
+		}
 	}
 	pathConstructor->prepareGridToFind();
 }
@@ -375,6 +380,7 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 
 void MainGrid::updateNeighbors(const int current) const {
 	if (calculator->isValidIndex(current)) {
+		auto& data = complexData[current];
 		for (auto i : closeIndexes->getTabIndexes(current)) {
 			const int nI = current + closeIndexes->getIndexAt(i);
 			if (complexData[nI].isPassable()) {
@@ -382,20 +388,6 @@ void MainGrid::updateNeighbors(const int current) const {
 			} else {
 				complexData[current].setNeightOccupied(i);
 			}
-		}
-	}
-}
-
-void MainGrid::updateNeighborsAndCost(const int current) const {
-	if (calculator->isValidIndex(current)) {
-		for (auto i : closeIndexes->getTabIndexes(current)) {
-			const int nI = current + closeIndexes->getIndexAt(i);
-			if (complexData[nI].isPassable()) {
-				complexData[current].setNeightFree(i);
-			} else {
-				complexData[current].setNeightOccupied(i);
-			}
-			complexData[current].setCost(i, cost(current, nI));
 		}
 	}
 }
