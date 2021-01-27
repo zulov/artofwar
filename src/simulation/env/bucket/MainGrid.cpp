@@ -38,10 +38,11 @@ MainGrid::~MainGrid() {
 void MainGrid::prepareGridToFind() const {
 	for (int current = 0; current < sqResolution; ++current) {
 		auto& data = complexData[current];
+		auto currentCenter = calculator->getCenter(current);
 		for (auto i : closeIndexes->getTabIndexes(current)) {
-			const int nI = current + closeIndexes->getIndexAt(i);
 			data.setNeightFree(i);
-			data.setCost(i, cost(current, nI));
+			const int nI = current + closeIndexes->getIndexAt(i);
+			data.setCost(i, cost(currentCenter, nI));
 		}
 	}
 	pathConstructor->prepareGridToFind();
@@ -293,6 +294,7 @@ void MainGrid::addStatic(Static* object) const {
 	}
 
 	std::vector<int> toRefresh;
+	toRefresh.reserve(4);
 
 	const auto size = object->getGridSize();
 	const auto sizeX = calculateSize(size.x_, bucketPos.x_);
@@ -384,16 +386,16 @@ void MainGrid::updateNeighbors(const int current) const {
 		for (auto i : closeIndexes->getTabIndexes(current)) {
 			const int nI = current + closeIndexes->getIndexAt(i);
 			if (complexData[nI].isPassable()) {
-				complexData[current].setNeightFree(i);
+				data.setNeightFree(i);
 			} else {
-				complexData[current].setNeightOccupied(i);
+				data.setNeightOccupied(i);
 			}
 		}
 	}
 }
 
-float MainGrid::cost(const int current, const int next) const {
-	return (calculator->getCenter(current) - calculator->getCenter(next)).Length();
+float MainGrid::cost(Urho3D::Vector2& center, int next) const {
+	return (center - calculator->getCenter(next)).Length();
 }
 
 std::vector<int>* MainGrid::findPath(int startIdx, const Urho3D::Vector2& aim) const {
