@@ -13,7 +13,7 @@ void DatabaseCache::execute(const char* sql, int (*load)(void*, int, char**, cha
 }
 
 bool DatabaseCache::openDatabase(const std::string& name) {
-	const int rc = sqlite3_open((pathStr + name).c_str(), &database);
+	const int rc = sqlite3_open_v2((pathStr + name).c_str(), &database, SQLITE_OPEN_READONLY, nullptr);
 	if (rc) {
 		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
 		sqlite3_close(database);
@@ -67,7 +67,8 @@ void DatabaseCache::loadData(const std::string& name) {
 	execute("SELECT * from building_to_nation order by building", loadBuildingToNation);
 	execute("SELECT * from unit_to_nation order by unit", loadUnitToNation);
 
-	execute("SELECT * from unit_to_building_level order by unit", loadUnitToBuildingLevels);//TODO make sure its sorted set_intersection
+	execute("SELECT * from unit_to_building_level order by unit", loadUnitToBuildingLevels);
+	//TODO make sure its sorted set_intersection
 
 	execute("SELECT * from unit_level_cost", loadCostUnitLevel);
 	execute("SELECT * from building_level_cost", loadCostBuildingLevel);
@@ -81,7 +82,7 @@ void DatabaseCache::loadMaps(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
 	execute("SELECT * from map order by id desc", loadMap);
-	
+
 	sqlite3_close(database);
 }
 

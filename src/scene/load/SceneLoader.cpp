@@ -92,7 +92,7 @@ void SceneLoader::createLoad(const Urho3D::String& fileName) {
 	reset();
 
 	std::string name = std::string("saves/") + fileName.CString();
-	int rc = sqlite3_open(name.c_str(), &database);
+	int rc = sqlite3_open_v2(name.c_str(), &database, SQLITE_OPEN_READONLY, nullptr);
 	if (rc) {
 		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
 		sqlite3_close(database);
