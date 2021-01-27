@@ -104,6 +104,10 @@ void Main::Start() {
 	changeState(GameState::LOADING);
 }
 
+void Main::writeSum(std::ofstream& outFile, std::span<float> vals, char pId) const {
+	outFile << std::to_string(pId) << ";" << std::accumulate(vals.begin(), vals.end(), 0) << "\n";
+}
+
 void Main::writeOutput() const {
 	if (!outputType.Empty()) {
 		std::ofstream outFile;
@@ -114,9 +118,7 @@ void Main::writeOutput() const {
 			}
 		} else if (outputType == "ressum") {
 			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-				auto vals = player->getResources().getValues();
-				outFile << std::to_string(player->getId()) << ";" << std::accumulate(vals.begin(), vals.end(), 0) <<
-					"\n";
+				writeSum(outFile, player->getResources().getValues(), player->getId());
 			}
 		} else if (outputType == "ressmallest") {
 			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
@@ -128,6 +130,10 @@ void Main::writeOutput() const {
 				auto vals = player->getResources().getValues();
 				outFile << std::to_string(player->getId()) << ";" << *std::min(vals.begin(), vals.end()) +
 					std::accumulate(vals.begin(), vals.end(), 0) << "\n";
+			}
+		} else if (outputType == "armysum") {
+			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+				writeSum(outFile, player->getPossession().getUnitsMetrics(), player->getId());
 			}
 		}
 		outFile.close();

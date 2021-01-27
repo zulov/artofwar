@@ -1,5 +1,6 @@
 #pragma once
 
+#include <span>
 #include <Urho3D/Engine/Application.h>
 #include "Benchmark.h"
 #include "GameState.h"
@@ -31,8 +32,7 @@ URHO3D_OBJECT(Main, Application)
 
 	void Setup() override;
 	void Start() override;
-void writeOutput() const;
-void Stop() override;
+	void Stop() override;
 	void HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
 protected:
@@ -77,6 +77,9 @@ private:
 	void newGame(NewGameForm* form, loading& progress);
 	void changeState(GameState newState);
 
+	void writeSum(std::ofstream &outFile, std::span<float> vals, char pId) const;
+	void writeOutput() const;
+
 	Urho3D::MouseMode useMouseMode_;
 	Simulation* simulation;
 	Hud* hud;
@@ -93,15 +96,15 @@ private:
 
 	NewGameForm* newGameForm;
 	Urho3D::String saveToLoad = "quicksave.db";
-	
-	
+
+
 	int loadStages = 6;
 	int newGamesStages = 6;
 
 	bool inited = false;
 
 	short coefToEdit = 0;
-	
+
 	//
 	int timeLimit = 600;
 	Urho3D::String outputName = "test.txt";
