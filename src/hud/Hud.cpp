@@ -136,9 +136,9 @@ Hud::Hud() : Object(Game::getContext()) {
 		graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
 		resolution = Game::getDatabase()->getResolution(settings->resolution);
 
-		prepareStyle();
-		std::fill(panels.begin(), panels.end(), nullptr);
+		prepareStyle();	
 	}
+	std::fill(panels.begin(), panels.end(), nullptr);
 }
 
 
