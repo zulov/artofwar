@@ -8,7 +8,7 @@ class Physical;
 
 class InfluenceMapQuad : public InfluenceMapI {
 public:
-	InfluenceMapQuad(int from, int to, InfluenceMapType type, const unsigned short size, float coef, char level,
+	InfluenceMapQuad(int from, int to, InfluenceMapType type, const unsigned short size, float coef,
 	                 float valueThresholdDebug);
 	virtual ~InfluenceMapQuad();
 

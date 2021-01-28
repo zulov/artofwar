@@ -4,9 +4,9 @@
 #include "utils/DeleteUtils.h"
 
 InfluenceMapQuad::InfluenceMapQuad(int from, int to, InfluenceMapType type, const unsigned short size, float coef,
-                                   char level, float valueThresholdDebug) {
+                                   float valueThresholdDebug) {
 	for (; from <= to; ++from) {
-		maps.push_back(createMap(pow(2, from), type, size, coef, level, valueThresholdDebug));
+		maps.push_back(createMap(pow(2, from), type, size, coef, 0, valueThresholdDebug));
 	}
 }
 
@@ -17,7 +17,7 @@ InfluenceMapQuad::~InfluenceMapQuad() {
 Urho3D::Vector2 InfluenceMapQuad::getCenter() {
 	int index = maps[0]->getMaxElement();
 	for (int i = 1; i < maps.size(); ++i) {
-		std::array<int, 4> indexes = getIndexes(maps[i-1]->getResolution(), index);
+		std::array<int, 4> indexes = getIndexes(maps[i - 1]->getResolution(), index);
 		index = maps[i]->getMaxElement(indexes);
 	}
 	return maps.back()->getCenter(index);
