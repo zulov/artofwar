@@ -49,7 +49,7 @@ public:
 	void invalidatePathCache() const;
 	void updateSurround(Static* object) const;
 
-	Urho3D::Vector2 getPositionInBucket(int index, char max, char i);
+	Urho3D::Vector2 getPositionInBucket(Unit* unit);
 
 	Urho3D::IntVector2 getCords(int index) const { return calculator->getIndexes(index); }
 	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) { return getCords(calculator->indexFromPosition(pos)); }
@@ -63,8 +63,7 @@ public:
 
 	bool cellInState(int index, CellState state) const;
 	void updateCell(int index, char val, CellState cellState) const;
-	char getNumberInState(int index, UnitState state) const;
-	char getOrdinalInState(Unit* unit, UnitState state) const;
+
 	unsigned char getRevertCloseIndex(int center, int gridIndex) const;
 	void addDeploy(Building* building) const;
 	void removeDeploy(Building* building) const;

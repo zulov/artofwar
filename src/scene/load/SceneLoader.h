@@ -35,7 +35,7 @@ public:
 private:
 	void load(const char* sql, int (*load)(void*, int, char**, char**)) const;
 
-	loading loadingState;
+	Loading loadingState;
 	sqlite3* database;
 	dbload_container* dbLoad;
 };

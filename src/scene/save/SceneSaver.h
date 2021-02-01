@@ -42,5 +42,5 @@ private:
 	sqlite3* database;
 	int precision;
 
-	loading loadingState;
+	Loading loadingState;
 };

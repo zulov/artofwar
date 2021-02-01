@@ -8,9 +8,8 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 
-SceneSaver::SceneSaver(int precision) {
+SceneSaver::SceneSaver(int precision):loadingState(7),precision(precision) {
 	//TODO zapisywanie powinno byc tylko miedzy klatkami
-	this->precision = precision;
 }
 
 void SceneSaver::createUnitsTable() const {
@@ -73,7 +72,7 @@ void SceneSaver::createDatabase(const Urho3D::String& fileName) {
 }
 
 void SceneSaver::createSave(const Urho3D::String& fileName) {
-	loadingState.reset(7, "create database");
+	loadingState.reset("create database");
 	createDatabase(fileName);
 	loadingState.inc("create Tables");
 	createTables();

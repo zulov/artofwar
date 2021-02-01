@@ -27,8 +27,10 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 	dbLevel = dbUnit->getLevel(level).value(); //TODO bug value
 	setPlayerAndTeam(player);
 	loadXml("Objects/units/" + dbLevel->nodeName);
-
-	basic = model->GetMaterial(0);
+	if(!SIM_GLOBALS.HEADLESS) {
+		basic = model->GetMaterial(0);
+	}
+	
 	if (dbLevel->canChargeAttack) {
 		chargeData = new ChargeData(150, 2);
 	}

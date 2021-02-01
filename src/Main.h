@@ -67,14 +67,14 @@ private:
 	SelectedInfo* control(float timeStep, SimInfo* simulationInfo);
 	void readParameters();
 	void changeCamera(CameraBehaviorType type);
-	void load(const Urho3D::String& saveName, loading& progress);
+	void load(const Urho3D::String& saveName, Loading& progress);
 	void createEnv() const;
 	void save(const Urho3D::String& name);
 	void running(double timeStep);
 	void createSimulation();
 	static void setSimpleManagers();
-	void updateProgress(loading& progress, std::string msg) const;
-	void newGame(NewGameForm* form, loading& progress);
+	void updateProgress(Loading& progress, std::string msg) const;
+	void newGame(NewGameForm* form, Loading& progress);
 	void changeState(GameState newState);
 
 	void writeSum(std::ofstream &outFile, std::span<float> vals, char pId) const;
@@ -89,8 +89,8 @@ private:
 	Benchmark benchmark;
 	SceneSaver saver;
 	SceneLoader loader;
-	loading loadingProgress;
-	loading newGameProgress;
+	Loading loadingProgress;
+	Loading newGameProgress;
 	GameState gameState;
 	DebugManager debugManager;
 

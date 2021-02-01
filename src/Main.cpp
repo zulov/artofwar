@@ -48,7 +48,7 @@ URHO3D_DEFINE_APPLICATION_MAIN(Main)
 using namespace Urho3D;
 
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
-                               gameState(GameState::STARTING) {
+                               gameState(GameState::STARTING),loadingProgress(loadStages), newGameProgress(newGamesStages){
 	MySprite::RegisterObject(context);
 	Game::init();
 	RandGen::init();
@@ -80,9 +80,6 @@ void Main::Setup() {
 		->setConsole(GetSubsystem<Console>())
 		->setContext(context_)
 		->setLog(GetSubsystem<Log>());
-
-	loadingProgress.reset(loadStages);
-	newGameProgress.reset(newGamesStages);
 }
 
 void Main::Start() {
@@ -275,12 +272,12 @@ void Main::setSimpleManagers() {
 		->setColorPaletteRepo(new ColorPaletteRepo());
 }
 
-void Main::updateProgress(loading& progress, std::string msg) const {
+void Main::updateProgress(Loading& progress, std::string msg) const {
 	progress.inc(std::move(msg));
 	hud->updateLoading(progress.getProgress());
 }
 
-void Main::load(const String& saveName, loading& progress) {
+void Main::load(const String& saveName, Loading& progress) {
 	switch (progress.currentStage) {
 	case 0: {
 		setSimpleManagers();
@@ -332,7 +329,7 @@ void Main::createEnv() const {
 	Game::setEnvironment(new Environment(levelBuilder->getTerrain()));
 }
 
-void Main::newGame(NewGameForm* form, loading& progress) {
+void Main::newGame(NewGameForm* form, Loading& progress) {
 	switch (progress.currentStage) {
 	case 0: {
 		disposeScene();
@@ -507,10 +504,10 @@ void Main::SetupViewport() {
 
 void Main::disposeScene() {
 	if (inited) {
-		loading loading2;
+		Loading loading2(5);
 		Game::getScene()->SetUpdateEnabled(false);
 
-		loading2.reset(5, "dispose simulation");
+		loading2.reset("dispose simulation");
 		simulation->clearNodesWithoutDelete();
 		delete simulation;
 		simulation = nullptr;
@@ -548,8 +545,8 @@ void Main::disposeScene() {
 		levelBuilder = nullptr;
 	}
 	inited = false;
-	loadingProgress.reset(loadStages);
-	newGameProgress.reset(newGamesStages);
+	loadingProgress.reset();
+	newGameProgress.reset();
 }
 
 SelectedInfo* Main::control(const float timeStep, SimInfo* simulationInfo) {

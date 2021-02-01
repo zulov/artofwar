@@ -15,7 +15,7 @@ inline void createNode(const Urho3D::String& model, const Urho3D::String& textur
 }
 
 inline void changeMaterial(Urho3D::Material* newMaterial, Urho3D::StaticModel* model) {
-	if (newMaterial != model->GetMaterial(0)) {
+	if (newMaterial && newMaterial != model->GetMaterial(0)) {
 		model->SetMaterial(newMaterial);
 	}
 }

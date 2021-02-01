@@ -3,9 +3,7 @@
 #include "database/db_utils.h"
 
 
-SceneLoader::SceneLoader() {
-	dbLoad = nullptr;
-}
+SceneLoader::SceneLoader(): loadingState(3), dbLoad(nullptr) {}
 
 
 SceneLoader::~SceneLoader() {
@@ -80,7 +78,7 @@ void SceneLoader::reset() {
 	database = nullptr;
 	delete dbLoad;
 	dbLoad = new dbload_container();
-	loadingState.reset(3, "start loading");
+	loadingState.reset("start loading");
 }
 
 dbload_container* SceneLoader::getData() const {

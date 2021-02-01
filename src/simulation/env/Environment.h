@@ -84,7 +84,7 @@ public:
 	Urho3D::Vector2 getCenter(int index) const;
 	Urho3D::Vector2 getCenter(short x, short z) const;
 
-	Urho3D::Vector2 getPositionInBucket(int index, char max, char i);
+	Urho3D::Vector2 getPositionInBucket(Unit* unit);
 
 	void invalidatePathCache() const;
 
@@ -95,8 +95,6 @@ public:
 
 	bool cellInState(int index, CellState state) const;
 	void updateCell(int index, char val, CellState cellState) const;
-	char getNumberInState(int index, UnitState state) const;
-	char getOrdinalInState(Unit* unit, UnitState state) const;
 
 	unsigned char getRevertCloseIndex(int center, int gridIndex) const;
 

@@ -123,12 +123,9 @@ void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::inCell(Urho3D::Vector2& newForce, Unit* unit) const {
-	char max = Game::getEnvironment()->getNumberInState(unit->getMainCell(), unit->getState());
-	char i = Game::getEnvironment()->getOrdinalInState(unit, unit->getState());
-
-	auto aim = Game::getEnvironment()->getPositionInBucket(unit->getMainCell(), max, i);
+	auto aim = Game::getEnvironment()->getPositionInBucket(unit);
 	auto force = dirTo(unit->getPosition(), aim);
-
+	//TODO czy to normalizacja?
 	force *= inCellCoef * boostCoef;
 	newForce += force;
 

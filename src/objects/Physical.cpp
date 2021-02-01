@@ -148,9 +148,18 @@ void Physical::unSelect() {
 }
 
 void Physical::loadXml(const Urho3D::String& xmlName) {
+	Urho3D::String name;
+	if (SIM_GLOBALS.HEADLESS) {
+		name = "";
+	} else if (SIM_GLOBALS.TRAIN_MODE) {
+		name = "Objects/mock.xml";
+	} else {
+		name = xmlName;
+	}
+
 	//node->RemoveAllChildren();
-	if (!xmlName.Empty()) {
-		node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(xmlName)->GetRoot());
+	if (!name.Empty()) {
+		node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(name)->GetRoot());
 
 		node->SetVar("link", this);
 

@@ -5,28 +5,28 @@
 #include <utility>
 
 
-struct loading
-{
-	loading() {
-		reset(1);
+struct Loading {
+	Loading(int stages):stagesNumber(stages) {
+		reset();
 	}
-	loading(const loading&) = delete;
 
-	~loading() = default;
+	Loading(const Loading&) = delete;
+
+	~Loading() = default;
 
 	float getProgress() const {
 		return currentStage / stagesNumber;
 	}
 
-	void reset(int stages) {
-		stagesNumber = stages;
+	void reset() {
+		
 		currentStage = 0;
 		start = std::chrono::system_clock::now();
 	}
 
-	void reset(int stages, std::string _msg) {
+	void reset(std::string _msg) {
 		msg = std::move(_msg);
-		reset(stages);
+		reset();
 	}
 
 	void inc() {

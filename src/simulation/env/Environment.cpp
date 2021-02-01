@@ -258,8 +258,8 @@ Urho3D::Vector2 Environment::getCenter(short x, short z) const {
 	return mainGrid.getCenter(x, z);
 }
 
-Urho3D::Vector2 Environment::getPositionInBucket(int index, char max, char i) {
-	return mainGrid.getPositionInBucket(index, max, i);
+Urho3D::Vector2 Environment::getPositionInBucket(Unit* unit) {
+	return mainGrid.getPositionInBucket(unit);
 }
 
 void Environment::invalidatePathCache() const {
@@ -272,14 +272,6 @@ bool Environment::cellInState(int index, CellState state) const {
 
 void Environment::updateCell(int index, char val, CellState cellState) const {
 	mainGrid.updateCell(index, val, cellState);
-}
-
-char Environment::getNumberInState(int index, UnitState state) const {
-	return mainGrid.getNumberInState(index, state);
-}
-
-char Environment::getOrdinalInState(Unit* unit, UnitState state) const {
-	return mainGrid.getOrdinalInState(unit, state);
 }
 
 void Environment::removeFromGrids(const std::vector<Unit*>& units) const {

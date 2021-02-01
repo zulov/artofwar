@@ -115,20 +115,6 @@ void MainGrid::updateSurround(Static* object) const {
 	}
 }
 
-Urho3D::Vector2 MainGrid::getPositionInBucket(int index, char max, char i) {
-	auto center = calculator->getCenter(index);
-	switch (max) {
-	case 1:
-		return center;
-	case 2:
-		return posInBucket2[i] + center;
-	case 3:
-		return posInBucket3[i] + center;
-	case 4:
-		return posInBucket4[i] + center;
-	}
-}
-
 bool MainGrid::cellInState(int index, CellState state) const {
 	return complexData[index].getType() == state;
 }
@@ -137,25 +123,30 @@ void MainGrid::updateCell(int index, char val, CellState cellState) const {
 	complexData[index].updateSize(val, cellState);
 }
 
-char MainGrid::getNumberInState(int index, UnitState state) const {
-	auto pred = [state](Physical* p) { return static_cast<Unit*>(p)->getState() == state; };
-
-	auto& content = getContentAt(index);
-	return std::count_if(content.begin(), content.end(), pred);
-}
-
-char MainGrid::getOrdinalInState(Unit* unit, UnitState state) const {
+Urho3D::Vector2 MainGrid::getPositionInBucket(Unit* unit) {
 	const auto index = unit->getMainCell();
-	char ordinal = 0;
+	char ordinal = -1;
+	char max = 0;
+	const auto state = unit->getState();
 	for (auto physical : buckets[index].getContent()) {
-		if (physical == unit) {
-			return ordinal;
+		if (physical == unit && ordinal<0) {
+			ordinal = max;
 		}
 		if (static_cast<Unit*>(physical)->getState() == state) {
-			++ordinal;
+			++max;
 		}
 	}
-	return -1;
+	auto center = calculator->getCenter(index);
+	switch (max) {
+	case 1:
+		return center;
+	case 2:
+		return posInBucket2[ordinal] + center;
+	case 3:
+		return posInBucket3[ordinal] + center;
+	case 4:
+		return posInBucket4[ordinal] + center;
+	}
 }
 
 unsigned char MainGrid::getRevertCloseIndex(int center, int gridIndex) const {
