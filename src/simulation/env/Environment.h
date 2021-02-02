@@ -35,17 +35,17 @@ public:
 
 	std::vector<Physical*>* getResources(Physical* physical, float radius);
 	std::vector<Physical*>* getResources(Urho3D::Vector3& center, float radius, int id);
-	
+
 	void updateInfluenceUnits1(std::vector<Unit*>* units) const;
 	void updateInfluenceUnits2(std::vector<Unit*>* units) const;
 
 	void updateInfluenceResources(std::vector<ResourceEntity*>* resources) const;
-	
+
 	void updateInfluenceOther(std::vector<Building*>* buildings) const;
 
 	void invalidateCaches();
 	void update(Unit* unit) const;
-	
+
 	void addNew(const std::vector<Unit*>& units);
 	void addNew(Building* building) const;
 	void addNew(ResourceEntity* resource) const;

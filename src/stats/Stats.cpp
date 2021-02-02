@@ -110,7 +110,6 @@ void Stats::add(CreationCommand* command) {
 
 void Stats::joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output,
                         int number) {
-
 	if (!SIM_GLOBALS.TRAIN_MODE && !output.empty()) {
 		input.append(";;").append(output);
 		for (int i = 0; i < number; ++i) {
@@ -158,7 +157,7 @@ void Stats::saveAll(int size) {
 }
 
 void Stats::save(bool accumulate) {
-	if (accumulate) {
+	if (accumulate && !SIM_GLOBALS.TRAIN_MODE) {
 		for (char i = 0; i < MAX_PLAYERS; ++i) {
 			//TODO chyba ze jednak srednia a nie poczatek
 			joinAndPush(ifWorkersCreate, i, ifWorkersCreateInput[i], std::to_string(workersCreatedCount[i]));

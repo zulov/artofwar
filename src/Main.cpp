@@ -48,7 +48,8 @@ URHO3D_DEFINE_APPLICATION_MAIN(Main)
 using namespace Urho3D;
 
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
-                               gameState(GameState::STARTING),loadingProgress(loadStages), newGameProgress(newGamesStages){
+                               gameState(GameState::STARTING), loadingProgress(loadStages),
+                               newGameProgress(newGamesStages) {
 	MySprite::RegisterObject(context);
 	Game::init();
 	RandGen::init();
@@ -315,6 +316,7 @@ void Main::load(const String& saveName, Loading& progress) {
 		break;
 	case 4:
 		simulation->initScene(loader);
+		simulation->forceUpdateInfluenceMaps();
 		break;
 	case 5:
 		changeState(GameState::RUNNING);
@@ -362,6 +364,7 @@ void Main::newGame(NewGameForm* form, Loading& progress) {
 		break;
 	case 4:
 		simulation->initScene(form);
+		simulation->forceUpdateInfluenceMaps();
 		break;
 	case 5:
 

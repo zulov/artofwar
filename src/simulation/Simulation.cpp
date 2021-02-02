@@ -48,6 +48,13 @@ void Simulation::clearNodesWithoutDelete() {
 	simObjectManager->clearNodesWithoutDelete();
 }
 
+void Simulation::forceUpdateInfluenceMaps() const {
+	enviroment->updateInfluenceUnits1(units);
+	enviroment->updateInfluenceUnits2(units);
+	enviroment->updateInfluenceResources(resources);
+	enviroment->updateInfluenceOther(buildings);
+}
+
 void Simulation::updateInfluenceMaps() const {
 	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_UNITS_1, currentFrame, secondsElapsed)) {
 		enviroment->updateInfluenceUnits1(units);

@@ -36,6 +36,7 @@ public:
 	void clearNodesWithoutDelete();
 	
 	void updateInfluenceMaps() const;
+	void forceUpdateInfluenceMaps() const;
 
 	SimInfo* update(float timeStep);
 	void initScene(SceneLoader& loader) const;
