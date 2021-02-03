@@ -314,8 +314,10 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> r
 }
 
 void InfluenceManager::addCollect(Unit* unit, float value) {
-	gatherSpeed[unit->getPlayer()]->tempUpdate(unit, value);
-	econQuad[unit->getPlayer()]->update(unit, value);
+	const auto playerId = unit->getPlayer();
+	
+	gatherSpeed[playerId]->tempUpdate(unit, value);
+	econQuad[playerId]->update(unit, value);
 }
 
 void InfluenceManager::addAttack(Unit* unit, float value) {

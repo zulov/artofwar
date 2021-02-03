@@ -47,7 +47,6 @@ void InfluenceMapFloat::update(int index, float value) const {
 }
 
 void InfluenceMapFloat::update(float value, const unsigned short centerX, const unsigned short centerZ) const {
-
 	const auto minI = calculator->getValid(centerX - level);
 	const auto maxI = calculator->getValid(centerX + level);
 

@@ -111,7 +111,7 @@ int static loadOrders(void* data, int argc, char** argv, char** azColName) {
 int static loadMap(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<db_container*>(data);
 
-	setEntity(xyz->maps, new db_map(atoi(argv[0]), argv[1], argv[2], atof(argv[3]), atof(argv[4]), argv[5]));
+	setEntity(xyz->maps, new db_map(atoi(argv[0]), argv[1], argv[2]));
 	return 0;
 }
 

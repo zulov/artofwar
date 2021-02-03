@@ -25,12 +25,14 @@ Urho3D::Vector2 InfluenceMapQuad::getCenter() {
 
 void InfluenceMapQuad::update(Physical* thing, float value) {
 	for (auto* map : maps) {
+		//TODO perf obliczyæ tylko dla ostatniego poziomu reszta leniwie
 		map->update(thing, value);
 	}
 }
 
 void InfluenceMapQuad::updateInt(Physical* thing, int value) {
 	for (auto* map : maps) {
+		//TODO perf obliczyæ tylko dla ostatniego poziomu reszta leniwie
 		map->updateInt(thing, value);
 	}
 }

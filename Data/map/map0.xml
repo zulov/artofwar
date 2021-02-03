@@ -1,0 +1,8 @@
+<node>
+	<component type="Terrain">
+		<attribute name="Height Map" value="Image;map/HeightMap.png" />
+		<attribute name="Material" value="Material;Materials/StoneTiled.xml" />
+		<attribute name="Vertex Spacing" value="2 0.1 2" />
+		<attribute name="Patch Size" value="8" />
+	</component>
+</node>

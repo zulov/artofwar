@@ -6,6 +6,7 @@
 #include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/Resource/Image.h>
 #include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/Resource/XMLFile.h>
 #include <Urho3D/Scene/Scene.h>
 #include "Game.h"
 #include "database/DatabaseCache.h"
@@ -44,7 +45,7 @@ void LevelBuilder::createMap(int mapId) {
 		objectManager->setLight(createLight({0.6f, -1.0f, 0.8f}, {0.7f, 0.6f, 0.6f},
 		                                    Urho3D::LIGHT_DIRECTIONAL));
 	}
-	objectManager->setGround(createGround(map->height_map, map->texture, map->scale_hor, map->scale_ver));
+	objectManager->setGround(createGround(map->xmlName));
 }
 
 void LevelBuilder::createScene(NewGameForm* form) {
@@ -84,17 +85,13 @@ Urho3D::Node* LevelBuilder::createLight(const Urho3D::Vector3& direction, const 
 	return lightNode;
 }
 
-Urho3D::Node* LevelBuilder::createGround(const Urho3D::String& heightMap, const Urho3D::String& texture,
-                                         float horScale, float verScale) {
+Urho3D::Node* LevelBuilder::createGround(const Urho3D::String& xmlName) {
 	auto node = Game::getScene()->CreateChild();
-	terrain = node->CreateComponent<Urho3D::Terrain>();
-	terrain->SetHeightMap(Game::getCache()->GetResource<Urho3D::Image>(heightMap));
-	terrain->SetPatchSize(8);
-	terrain->SetSpacing({horScale, verScale, horScale});
+	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(xmlName)->GetRoot());
+	terrain = node->GetComponent<Urho3D::Terrain>();
 	terrain->SetOccluder(false);
 	if (!SIM_GLOBALS.HEADLESS) {
 		terrain->SetSmoothing(true);
-		terrain->SetMaterial(Game::getCache()->GetResource<Urho3D::Material>(texture));
 		node->SetVar("ground", true);
 	}
 

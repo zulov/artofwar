@@ -11,17 +11,9 @@ struct db_order : db_entity, db_with_name {
 };
 
 struct db_map : db_entity, db_with_name {
-	const Urho3D::String height_map;
-	const Urho3D::String texture;
-	const float scale_hor;
-	const float scale_ver;
+	const Urho3D::String xmlName;
 
-	db_map(short id, char* heightMap, char* texture, float scaleHor, float scaleVer, char* name)
-		: db_entity(id), db_with_name(name),
-		  height_map(heightMap),
-		  texture(texture),
-		  scale_hor(scaleHor),
-		  scale_ver(scaleVer) {
+	db_map(short id, char* xmlName, char* name): db_entity(id), db_with_name(name), xmlName(xmlName) {
 	}
 };
 
