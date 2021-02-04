@@ -61,8 +61,7 @@ void Main::Setup() {
 	db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
 	db_resolution* resolution = Game::getDatabase()->getResolution(settings->resolution);
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
-	engineParameters_[EP_LOG_NAME] = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName()
-		+ ".log";
+	
 	engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
 
 	engineParameters_[EP_SOUND] = false;
@@ -74,6 +73,13 @@ void Main::Setup() {
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
 	readParameters();
+	if(SIM_GLOBALS.HEADLESS) {
+		engineParameters_[EP_LOG_NAME]="";
+		GetSubsystem<Log>()->SetLevel(LOG_NONE);
+	}else {
+		engineParameters_[EP_LOG_NAME] = "logs/"+ GetTypeName()+".log";
+	}
+	
 	Game::getDatabase()->refreshAfterParametersRead();
 
 	Game::setCache(GetSubsystem<ResourceCache>())
@@ -103,13 +109,12 @@ void Main::Start() {
 }
 
 void Main::writeSum(std::ofstream& outFile, std::span<float> vals, char pId) const {
-	outFile << std::to_string(pId) << ";" << std::accumulate(vals.begin(), vals.end(), 0) << "\n";
+	outFile << std::to_string(pId) << ";" << std::accumulate(vals.begin(), vals.end(), 0.f) << "\n";
 }
 
 void Main::writeOutput() const {
 	if (!outputType.Empty()) {
-		std::ofstream outFile;
-		outFile.open(("result/" + outputName).CString(), std::ios_base::out);
+		std::ofstream outFile(("result/" + outputName).CString(), std::ios_base::out);
 		if (outputType == "score") {
 			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 				outFile << std::to_string(player->getId()) << ";" << player->getScore() << "\n";
