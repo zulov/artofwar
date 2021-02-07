@@ -83,17 +83,16 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 			break;
 		}
 		auto& closeTabIndx = closeIndexes->getTabIndexes(current);
-
+		auto const& currentData = complexData[current];
 		for (auto i : closeTabIndx) {
-			if (complexData[current].ifNeightIsFree(i)) {
+			if (currentData.ifNeightIsFree(i)) {
 				int next = current + closeIndexes->getIndexAt(i);
 				if (!(next >= 0 && next < resolution * resolution)) {
 					std::cout << current << "@@" << next << std::endl;
-					int a = 5;
 				}
 				assert(next>=0 && next<resolution*resolution);
 				if (came_from[current] != next) {
-					const float new_cost = cost_so_far[current] + complexData[current].getCost(i);
+					const float new_cost = cost_so_far[current] + currentData.getCost(i);
 					if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
 						updateCost(next, new_cost);
 						frontier.put(next, new_cost + heuristic(next, endIdx));
@@ -165,18 +164,18 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 		int end = startIndex;
 		while (!frontier.empty()) {
 			const auto current = frontier.get();
-
-			if (!complexData[current].allNeightOccupied()) {
+			auto& currentData = complexData[current];
+			if (!currentData.allNeightOccupied()) {
 				end = current;
-				complexData[current].setEscapeThrough(-1);
+				currentData.setEscapeThrough(-1);
 				break;
 			}
-			auto& closeTabIndx = closeIndexes->getTabIndexes(end);
+			auto const& closeTabIndx = closeIndexes->getTabIndexes(current);
 
 			for (auto i : closeTabIndx) {
-				if (!complexData[current].ifNeightIsFree(i)) {
+				if (!currentData.ifNeightIsFree(i)) {
 					int nI = current + closeIndexes->getIndexAt(i);
-
+					assert(nI >= 0 && nI < resolution* resolution);
 					if (!complexData[nI].allNeightOccupied()
 						&& refreshed.find(nI) == refreshed.end()) {
 						//TODO to chyba glupi warunek
@@ -184,7 +183,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 					}
 					int next = nI;
 					if (came_from[current] != next) {
-						const float new_cost = cost_so_far[current] + complexData[current].getCost(i);
+						const float new_cost = cost_so_far[current] + currentData.getCost(i);
 						if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
 							updateCost(next, new_cost);
 

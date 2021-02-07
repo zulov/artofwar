@@ -154,7 +154,7 @@ void InfluenceMapFloat::updateFromTemp() {
 	if (tempComputedNeeded) {
 		if (level != 0) {
 			for (int i = 0; i < arraySize; ++i) {
-				auto val = tempVals[i];
+				const auto val = tempVals[i];
 				if (val > 0.f) {
 					update(i, val);
 				}

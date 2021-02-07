@@ -67,7 +67,6 @@ struct MissileData {
 			}
 			reset();
 		}
-
 	}
 
 	void reset() const {
