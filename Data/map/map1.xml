@@ -4,5 +4,6 @@
 		<attribute name="Material" value="Material;Materials/test.xml" />
 		<attribute name="Vertex Spacing" value="2 0.1 2" />
 		<attribute name="Patch Size" value="8" />
+		<attribute name="Is Occluder" value="false" />
 	</component>
 </node>

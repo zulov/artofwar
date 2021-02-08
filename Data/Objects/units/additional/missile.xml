@@ -1,0 +1,8 @@
+<node>
+	<attribute name="Scale" value="0.1 0.1 0.3" />
+	<attribute name="Is Enabled" value="false" />
+	<component type="StaticModel">
+		<attribute name="Model" value="Model;Models/units/additional/Prism.mdl" />
+		<attribute name="Material" value="Material;Materials/units/additional/brown.xml" />
+	</component>
+</node>

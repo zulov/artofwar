@@ -1,9 +1,9 @@
 #pragma once
-#include <Urho3D/Graphics/Light.h>
+
+#include <Urho3D/Container/Ptr.h>
 #include "SceneObjectManager.h"
 
 namespace Urho3D {
-	class Color;
 	class Node;
 	class Scene;
 	class Terrain;
@@ -24,11 +24,6 @@ public:
 	Urho3D::Terrain* getTerrain() const;
 private:
 	Urho3D::SharedPtr<Urho3D::Scene> scene;
-
-	Urho3D::Node* createZone();
-	Urho3D::Node* createLight(const Urho3D::Vector3& direction, const Urho3D::Color& color,
-	                          Urho3D::LightType lightType);
-
 	Urho3D::Node* createGround(const Urho3D::String& xmlName);
 
 	SceneObjectManager* objectManager;

@@ -1,0 +1,8 @@
+<node>
+	<attribute name="Scale" value="1 1 1" />
+	<attribute name="Is Enabled" value="false" />
+	<component type="StaticModel">
+		<attribute name="Model" value="Model;Models/arrow.mdl" />
+		<attribute name="Material" value="Material;Materials/red_overlay.xml" />
+	</component>
+</node>

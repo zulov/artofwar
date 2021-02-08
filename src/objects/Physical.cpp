@@ -160,9 +160,7 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 	//node->RemoveAllChildren();
 	if (!name.Empty()) {
 		node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(name)->GetRoot());
-
 		node->SetVar("link", this);
-
 		model = node->GetComponent<Urho3D::StaticModel>();
 	}
 

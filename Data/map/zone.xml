@@ -1,0 +1,9 @@
+<node>
+	<component type="Zone">
+		<attribute name="Bounding Box Min" value="-1000 -1000 -1000" />
+		<attribute name="Bounding Box Max" value="1000 1000 1000" />
+		<attribute name="Fog Color" value="0.2 0.2 0.7 1" />
+		<attribute name="Fog Start" value="200" />
+		<attribute name="Fog End" value="300" />
+	</component>
+</node>

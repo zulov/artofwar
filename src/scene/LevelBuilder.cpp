@@ -1,20 +1,13 @@
 #include "LevelBuilder.h"
-#include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Octree.h>
-#include <Urho3D/Graphics/Technique.h>
 #include <Urho3D/Graphics/Terrain.h>
 #include <Urho3D/Graphics/Zone.h>
-#include <Urho3D/Resource/Image.h>
-#include <Urho3D/Resource/ResourceCache.h>
-#include <Urho3D/Resource/XMLFile.h>
-#include <Urho3D/Scene/Scene.h>
-#include "Game.h"
 #include "database/DatabaseCache.h"
 #include "database/db_other_struct.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "load/dbload_container.h"
 #include "load/SceneLoader.h"
-#include "objects/Physical.h"
+#include "objects/NodeUtils.h"
 
 LevelBuilder::LevelBuilder() {
 	objectManager = new SceneObjectManager();
@@ -41,9 +34,8 @@ void LevelBuilder::createScene(SceneLoader& loader) {
 void LevelBuilder::createMap(int mapId) {
 	const auto map = Game::getDatabase()->getMaps()[mapId];
 	if (!SIM_GLOBALS.HEADLESS) {
-		objectManager->setZone(createZone());
-		objectManager->setLight(createLight({0.6f, -1.0f, 0.8f}, {0.7f, 0.6f, 0.6f},
-		                                    Urho3D::LIGHT_DIRECTIONAL));
+		objectManager->setZone(createNode("map/zone.xml"));
+		objectManager->setLight(createNode("map/light.xml"));
 	}
 	objectManager->setGround(createGround(map->xmlName));
 }
@@ -56,40 +48,9 @@ Urho3D::Terrain* LevelBuilder::getTerrain() const {
 	return terrain;
 }
 
-Urho3D::Node* LevelBuilder::createZone() {
-	auto zoneNode = Game::getScene()->CreateChild();
-	auto zone = zoneNode->CreateComponent<Urho3D::Zone>();
-	zone->SetBoundingBox(Urho3D::BoundingBox(-1000.0f, 1000.0f));
-	zone->SetFogColor(Urho3D::Color(0.15f, 0.15f, 0.3f));
-	zone->SetFogStart(200);
-	zone->SetFogEnd(300);
-
-	return zoneNode;
-}
-
-Urho3D::Node* LevelBuilder::createLight(const Urho3D::Vector3& direction, const Urho3D::Color& color,
-                                        Urho3D::LightType lightType) {
-	auto lightNode = Game::getScene()->CreateChild();
-	lightNode->SetDirection(direction);
-	auto light = lightNode->CreateComponent<Urho3D::Light>();
-	light->SetPerVertex(true);
-	light->SetLightType(lightType);
-	light->SetColor(color);
-
-	light->SetCastShadows(true);
-	light->SetShadowBias(Urho3D::BiasParameters(0.00025f, 0.5f));
-	light->SetShadowCascade(Urho3D::CascadeParameters(10.0f, 50.0f, 200.0f, 0.0f, 0.8f));
-	light->SetSpecularIntensity(0.5f);
-	light->SetPerVertex(false);
-
-	return lightNode;
-}
-
 Urho3D::Node* LevelBuilder::createGround(const Urho3D::String& xmlName) {
-	auto node = Game::getScene()->CreateChild();
-	node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(xmlName)->GetRoot());
+	auto node = createNode(xmlName);
 	terrain = node->GetComponent<Urho3D::Terrain>();
-	terrain->SetOccluder(false);
 	if (!SIM_GLOBALS.HEADLESS) {
 		terrain->SetSmoothing(true);
 		node->SetVar("ground", true);

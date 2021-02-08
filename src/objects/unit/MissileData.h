@@ -26,9 +26,7 @@ struct MissileData {
 	MissileData(float peakHeight, float speed)
 		: peakHeight(peakHeight),
 		  speed(speed) {
-		createNode("Models/units/additional/Prism.mdl", "Materials/units/additional/brown.xml", &node);
-		node->SetEnabled(false);
-		node->SetScale(Urho3D::Vector3(0.1f, 0.1f, 0.3f));
+		node = createNode("Objects/units/additional/missile.xml");
 	}
 
 	MissileData(const MissileData&) = delete;

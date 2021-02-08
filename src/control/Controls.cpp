@@ -31,8 +31,8 @@ Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectTyp
 	if (!SIM_GLOBALS.HEADLESS) {
 		selectedInfo = new SelectedInfo();
 		selected.reserve(5000);
-		createNode("Models/box.mdl", "Materials/green_overlay.xml", &selectionNode);
-		createNode("Models/arrow.mdl", "Materials/red_overlay.xml", &arrowNode);
+		selectionNode = createNode("Objects/additional/selectionNode.xml");
+		arrowNode = createNode("Objects/additional/arrowNode.xml");
 
 		tempBuildingNode = Game::getScene()->CreateChild();
 		tempBuildingNode->SetEnabled(false);
@@ -40,9 +40,7 @@ Controls::Controls(Urho3D::Input* _input): input(_input), typeToCreate(ObjectTyp
 		selectedInfo->setSelectedType(ObjectType::NONE);
 
 		for (int i = 0; i < MAX_DEPLOY_MARK_NUMBER; ++i) {
-			deployMark[i] = Game::getScene()->CreateChild();
-			deployMark[i]->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>
-				("Objects/buildings/additional/banner.xml")->GetRoot());
+			deployMark[i] = createNode("Objects/buildings/additional/banner.xml");
 		}
 	}
 }
