@@ -48,8 +48,8 @@ URHO3D_DEFINE_APPLICATION_MAIN(Main)
 using namespace Urho3D;
 
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
-                               gameState(GameState::STARTING), loadingProgress(loadStages),
-                               newGameProgress(newGamesStages) {
+                               gameState(GameState::STARTING), loadingProgress(6),
+                               newGameProgress(6) {
 	MySprite::RegisterObject(context);
 	Game::init();
 	RandGen::init();
@@ -132,7 +132,7 @@ void Main::writeOutput() const {
 			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 				auto vals = player->getResources().getValues();
 				outFile << std::to_string(player->getId()) << ";" << *std::min(vals.begin(), vals.end()) +
-					std::accumulate(vals.begin(), vals.end(), 0) << "\n";
+					std::accumulate(vals.begin(), vals.end(), 0.f) << "\n";
 			}
 		} else if (outputType == "armysum") {
 			for (auto player : Game::getPlayersMan()->getAllPlayers()) {

@@ -97,10 +97,6 @@ private:
 	NewGameForm* newGameForm;
 	Urho3D::String saveToLoad = "quicksave.db";
 
-
-	int loadStages = 6;
-	int newGamesStages = 6;
-
 	bool inited = false;
 
 	short coefToEdit = 0;
@@ -108,5 +104,5 @@ private:
 	//
 	int timeLimit = 600;
 	Urho3D::String outputName = "test.txt";
-	Urho3D::String outputType = "";
+	Urho3D::String outputType = "ressmallest+sum";
 };

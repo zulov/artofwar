@@ -6,7 +6,7 @@
 
 
 struct Loading {
-	Loading(int stages):stagesNumber(stages) {
+	Loading(int stages): stagesNumber(stages) {
 		reset();
 	}
 
@@ -19,7 +19,6 @@ struct Loading {
 	}
 
 	void reset() {
-		
 		currentStage = 0;
 		start = std::chrono::system_clock::now();
 	}
@@ -43,7 +42,7 @@ struct Loading {
 
 	int currentStage;
 private:
-	float stagesNumber;
+	const float stagesNumber;
 	std::string msg = "";
 	std::chrono::system_clock::time_point start;
 };
