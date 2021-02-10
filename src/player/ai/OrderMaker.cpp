@@ -66,9 +66,9 @@ Physical* OrderMaker::closetInRange(Unit* worker, int resourceId, float radius) 
 void OrderMaker::collect(std::vector<Unit*>& workers) {
 	const auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
 	const auto result = whichResource->decide(input);
-
+	//TODO perf pogrupowac workerów a nie po jednym
 	for (auto worker : workers) {
-		const auto resourceId = biggestWithRand(result);
+		const auto resourceId = biggestWithRand(result);//TODO perf tutaj tylko losowaca sortowanie wyciagnac wy¿ej
 
 		for (auto radius : {64.f, 128.f, 256.f}) {
 			const auto closest = closetInRange(worker, resourceId, radius);//TODO perf nie sprawdzac tego co wczesniej

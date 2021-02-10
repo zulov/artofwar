@@ -27,6 +27,26 @@ static void cleanDead(std::vector<T*>* vector, bool sthDead = true) {
 	}
 }
 
+template <typename T, class _Pr>
+static std::vector<unsigned int> sort_indexes(std::span<T> v, _Pr pred) {
+	std::vector<unsigned int> idx(v.size());
+
+	std::iota(idx.begin(), idx.end(), 0);
+
+	stable_sort(idx.begin(), idx.end(), pred);
+	return idx;
+}
+
+template <typename T>
+static std::vector<unsigned int> sort_indexes(std::span<T> v) {
+	return sort_indexes(v, [&v](auto i1, auto i2) { return v[i1] < v[i2]; });
+}
+
+template <typename T>
+static std::vector<unsigned int> sort_indexes_desc(std::span<T> v) {
+	return sort_indexes(v, [&v](auto i1, auto i2) { return v[i1] > v[i2]; });
+}
+
 static std::vector<unsigned char> intersection(std::vector<std::vector<unsigned char>*>& ids) {
 	std::vector<unsigned char> common; //TODO check if ids sorted sometimes?
 	if (ids.empty()) {
@@ -47,14 +67,11 @@ static std::vector<unsigned char> intersection(std::vector<std::vector<unsigned 
 }
 
 static float getBestThree(int ids[3], float vals[3], std::span<float> v) {
-	for (int i = 0; i < 3; ++i) {
-		const auto max = std::max_element(v.begin(), v.end());
-		ids[i] = max - v.begin();
-		vals[i] = *max;
-		*max = -100;
-	}
+	auto sortedIdx = sort_indexes_desc(v);
 
 	for (int i = 0; i < 3; ++i) {
+		ids[i] = sortedIdx[i];
+		vals[i] = v[sortedIdx[i]];
 		if (vals[i] < 0) {
 			vals[i] = 0;
 		}
@@ -62,12 +79,11 @@ static float getBestThree(int ids[3], float vals[3], std::span<float> v) {
 	return std::accumulate(vals, vals + 3, 0.f);
 }
 
-static float getLowestThree(int ids[3], float vals[3], std::vector<float> v) {
+static float getLowestThree(int ids[3], float vals[3], std::span<float> v) {
+	auto sortedIdx = sort_indexes(v);
 	for (int i = 0; i < 3; ++i) {
-		const auto min = std::min_element(v.begin(), v.end());
-		ids[i] = min - v.begin();
-		vals[i] = *min;
-		*min = 100000;
+		ids[i] = sortedIdx[i];
+		vals[i] = v[sortedIdx[i]];
 	}
 
 	return std::accumulate(vals, vals + 3, 0.f);
@@ -78,28 +94,4 @@ static float mirror(float vals[3], float sum) {
 		vals[i] = sum - vals[i];
 	}
 	return std::accumulate(vals, vals + 3, 0.f);
-}
-
-template <typename T>
-static std::vector<unsigned int> sort_indexes_desc(T v[], int size) {
-	std::vector<unsigned int> idx(size);
-
-	std::iota(idx.begin(), idx.end(), 0);
-
-	stable_sort(idx.begin(), idx.end(),
-	            [&v](auto i1, auto i2) { return v[i1] > v[i2]; });
-
-	return idx;
-}
-
-template <typename T>
-static std::vector<unsigned int> sort_indexes(T v[], int size) {
-	std::vector<unsigned int> idx(size);
-
-	std::iota(idx.begin(), idx.end(), 0);
-
-	stable_sort(idx.begin(), idx.end(),
-	            [&v](auto i1, auto i2) { return v[i1] < v[i2]; });
-
-	return idx;
 }

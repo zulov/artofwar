@@ -308,7 +308,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> r
 		maps[i]->getIndexesWithByValue(result[i], intersection);
 	}
 
-	auto inx = sort_indexes(intersection, arraySize);
+	auto inx = sort_indexes(std::span(intersection, arraySize));
 	return centersFromIndexes(intersection, inx, 0.02f * maps.size());
 }
 

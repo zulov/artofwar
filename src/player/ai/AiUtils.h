@@ -17,7 +17,7 @@ inline int randFromThree(int ids[3], float vals[3], float max) {
 	return ids[0];
 }
 
-inline int lowestWithRand(std::vector<float> diffs) {
+inline int lowestWithRand(std::span<float> diffs) {
 	assert(diffs.size()>0);
 	int ids[3];
 	float vals[3];
