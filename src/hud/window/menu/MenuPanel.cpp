@@ -32,7 +32,7 @@ void MenuPanel::removeHoverInfo() const {
 	infoPanel->removeHoverInfo();
 }
 
-void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {//TODO performance rzadniej odświeżać
+void MenuPanel::refresh(LeftMenuMode _mode, SelectedInfo* selectedInfo) {
 	lastSelectedInfo = selectedInfo;
 	if (mode != _mode) {
 		mode = _mode;

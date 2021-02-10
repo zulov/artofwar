@@ -153,7 +153,6 @@ unsigned char MainGrid::getRevertCloseIndex(int center, int gridIndex) const {
 	int index = gridIndex - center;
 	for (auto i : closeIndexes->getTabIndexes(center)) {
 		if (closeIndexes->getIndexAt(i) == index) {
-			//TODO performance
 			return i;
 		}
 	}
@@ -263,7 +262,7 @@ bool MainGrid::isBuildable(int inx) const {
 	return calculator->isValidIndex(inx) && complexData[inx].isBuildable();
 }
 
-int MainGrid::closestPassableCell(int posIndex) const {
+int MainGrid::closestPassableCell(int posIndex) const {//TODO improved pathFinder getPassableEnd
 	for (auto i : closeIndexes->get(posIndex)) {
 		if (complexData[i + posIndex].isPassable()) {
 			return i + posIndex;

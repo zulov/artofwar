@@ -101,7 +101,6 @@ void InfluenceManager::update(std::vector<Building*>* buildings) const {
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 	resourceInfluence->reset();
 	for (auto resource : (*resources)) {
-		//TODO perf nie ma co liczyć indeksu ciagle ob sie nie zmienia
 		resourceInfluence->tempUpdate(resource, resource->getHealthPercent());
 	}
 	resourceInfluence->updateFromTemp();

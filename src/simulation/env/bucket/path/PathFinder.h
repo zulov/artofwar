@@ -23,6 +23,8 @@ public:
 	std::vector<int>* findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim);
 	std::vector<int>* findPath(int startIdx, int endIdx);
 	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim);
+
+	int getPassableEnd(int endIdx) const;
 	float cost(int current, int next) const;
 	void refreshWayOut(std::vector<int>& toRefresh);
 

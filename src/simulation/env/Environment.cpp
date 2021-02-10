@@ -164,8 +164,7 @@ void Environment::invalidateCaches() {
 }
 
 void Environment::updateAll(std::vector<Building*>* const buildings) const {
-	//TODO performance, zmianiac tylko to co sie zmienilo
-	influenceManager.update(buildings); //TODO bug updej tylko jak sie doda a nie uwzglednia usuwania
+	influenceManager.update(buildings);
 }
 
 void Environment::addNew(Building* building) const {

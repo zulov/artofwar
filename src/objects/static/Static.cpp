@@ -40,8 +40,11 @@ float Static::getAuraSize(const Urho3D::Vector3& boundingBox) const {
 }
 
 int Static::belowCloseLimit() {
-	return Urho3D::Min(Physical::belowCloseLimit(), hasFreeSpace());
-	//TODO PERF liczy sie hasFreeSpace nawet jak close limit 0
+	auto freeClose = Physical::belowCloseLimit();
+	if (freeClose <= 0) {
+		return 0;
+	}
+	return Urho3D::Min(freeClose, hasFreeSpace());
 }
 
 bool Static::hasAnyFreeSpace() const {

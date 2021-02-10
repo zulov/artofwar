@@ -110,11 +110,7 @@ std::vector<int>* PathFinder::findPath(const Urho3D::Vector3& from, const Urho3D
 	return findPath(calculator->indexFromPosition(from), aim);
 }
 
-std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
-	if (ifInCache(startIdx, endIdx)) {
-		return tempPath;
-	}
-
+int PathFinder::getPassableEnd(int endIdx) const {
 	while (!complexData[endIdx].isPassable()) {
 		if (complexData[endIdx].allNeightOccupied()) {
 			endIdx = complexData[endIdx].getEscapeBucket();
@@ -130,6 +126,15 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
 			}
 		}
 	}
+	return endIdx;
+}
+
+std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
+	if (ifInCache(startIdx, endIdx)) {
+		return tempPath;
+	}
+
+	getPassableEnd(endIdx);
 
 	lastStartIdx = startIdx;
 	lastEndIdx = endIdx;
