@@ -64,18 +64,17 @@ Physical* OrderMaker::closetInRange(Unit* worker, int resourceId, float radius) 
 }
 
 void OrderMaker::collect(std::vector<Unit*>& workers) {
-	auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
-	auto result = whichResource->decide(input);
+	const auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
+	const auto result = whichResource->decide(input);
 
 	for (auto worker : workers) {
 		const auto resourceId = biggestWithRand(result);
 
 		for (auto radius : {64.f, 128.f, 256.f}) {
-			//TODO bug cos nei uwzglednia tej odleglsoci
-			auto closest = closetInRange(worker, resourceId, radius);//TODO perf nie sprawdzac tego co wczesniej
+			const auto closest = closetInRange(worker, resourceId, radius);//TODO perf nie sprawdzac tego co wczesniej
 			if (closest) {
 				Game::getActionCenter()
-					->addUnitAction(new IndividualOrder(worker, UnitAction::COLLECT, closest, false), player->getId());
+					->addUnitAction(new IndividualOrder(worker, UnitAction::COLLECT, closest), player->getId());
 				break;
 			}
 		}
