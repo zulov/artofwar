@@ -31,9 +31,9 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 
 		attackSpeed.emplace_back(
 			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
-		unitsQuad.emplace_back(new InfluenceMapQuad(1, 7, InfluenceMapType::INT, BUCKET_GRID_SIZE, 0.5f, 2));
-		buildingsQuad.emplace_back(new InfluenceMapQuad(1, 7, InfluenceMapType::INT, BUCKET_GRID_SIZE, 0.5f, 2));
-		econQuad.emplace_back(new InfluenceMapQuad(1, 7, InfluenceMapType::FLOAT, BUCKET_GRID_SIZE, 0.5f, 10));
+		unitsQuad.emplace_back(new InfluenceMapQuad(1, 7, BUCKET_GRID_SIZE, 2));
+		buildingsQuad.emplace_back(new InfluenceMapQuad(1, 7, BUCKET_GRID_SIZE, 2));
+		econQuad.emplace_back(new InfluenceMapQuad(1, 7, BUCKET_GRID_SIZE, 10));
 	}
 
 	resourceInfluence = new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40);
@@ -314,7 +314,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> r
 
 void InfluenceManager::addCollect(Unit* unit, float value) {
 	const auto playerId = unit->getPlayer();
-	
+
 	gatherSpeed[playerId]->tempUpdate(unit, value);
 	econQuad[playerId]->update(unit, value);
 }

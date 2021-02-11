@@ -503,8 +503,6 @@
     <ClInclude Include="src\simulation\env\influence\map\InfluenceMapI.h" />
     <ClInclude Include="src\simulation\env\GridCalculatorProvider.h" />
     <ClInclude Include="src\player\ai\InfluenceDataType.h" />
-    <ClInclude Include="src\simulation\env\influence\InfluenceMapType.h" />
-    <ClInclude Include="src\simulation\env\influence\InfluenceMapFactory.h" />
     <ClInclude Include="src\objects\queue\QueueUtils.h" />
     <ClInclude Include="src\objects\Metrics.h" />
     <ClInclude Include="src\stats\AiInputProvider.h" />

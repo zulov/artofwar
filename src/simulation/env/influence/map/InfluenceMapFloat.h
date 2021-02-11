@@ -22,8 +22,6 @@ public:
 	float getValueAsPercent(int index) const override;
 	void computeMinMax() override;
 
-	int getMaxElement() override;
-	int getMaxElement(const std::array<int, 4>& indexes) override;
 	std::vector<int> getIndexesWithByValue(float percent, float tolerance) const;
 	void getIndexesWithByValue(float percent, float* intersection) const;
 	void add(int* indexes, float* vals, int k, float val) const;

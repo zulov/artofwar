@@ -2,7 +2,6 @@
 #include "InfluenceMap.h"
 
 class InfluenceMapInt : public InfluenceMap {
-
 public:
 	InfluenceMapInt(unsigned short resolution, float size, float valueThresholdDebug);
 	~InfluenceMapInt();
@@ -17,8 +16,6 @@ public:
 	float getValueAt(int index) const override;
 	void computeMinMax() override;
 
-	int getMaxElement() override;
-	int getMaxElement(const std::array<int, 4>& indexes) override;
 private:
 	unsigned char* values;
 };
