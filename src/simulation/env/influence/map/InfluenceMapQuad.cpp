@@ -1,12 +1,19 @@
 #include "InfluenceMapQuad.h"
 
+#include <array>
+
+
+#include "simulation/env/GridCalculatorProvider.h"
 #include "simulation/env/influence/InfluenceMapFactory.h"
 #include "utils/DeleteUtils.h"
 
 InfluenceMapQuad::InfluenceMapQuad(int from, int to, InfluenceMapType type, const unsigned short size, float coef,
-                                   float valueThresholdDebug) {
+                                   float valueThresholdDebug): calculator(
+	GridCalculatorProvider::get(pow(2, to), size)) {
+	minSize = pow(2, from);
+	maxSize = pow(2, to);
 	for (; from <= to; ++from) {
-		maps.push_back(createMap(pow(2, from), type, size, coef, 0, valueThresholdDebug));
+		maps.push_back(new float[pow(2, from)]);
 	}
 }
 
@@ -14,36 +21,69 @@ InfluenceMapQuad::~InfluenceMapQuad() {
 	clear_vector(maps);
 }
 
-Urho3D::Vector2 InfluenceMapQuad::getCenter() {
-	int index = maps[0]->getMaxElement();
-	for (int i = 1; i < maps.size(); ++i) {
-		std::array<int, 4> indexes = getIndexes(maps[i - 1]->getResolution(), index);
-		index = maps[i]->getMaxElement(indexes);
+void InfluenceMapQuad::ensureReady() {
+	if (dataReady != false) {
+
+		auto size = calculator->getResolution();
+		for (int i = maps.size() - 2; i >= 0; --i) {
+			auto d = maps[i - 1];
+			auto lessSize = size / 2;
+			if (d[i] > 0.f) {
+				auto x = i / size;
+				auto z = i & size;
+				x /= 2;
+				z /= 2;
+
+				int newIndex = x * lessSize + z;
+				maps[i][newIndex] += d[i];
+				//calculator->getindexes test
+			}
+			size = lessSize;
+		}
+		for (int i = 0; i < size; ++i) { }
+		dataReady = true;
 	}
-	return maps.back()->getCenter(index);
+}
+
+Urho3D::Vector2 InfluenceMapQuad::getCenter() {
+	ensureReady();
+	int index = std::distance(maps[0], std::max_element(maps[0], maps[0] + minSize));
+	int size = minSize;
+	for (int i = 1; i < maps.size(); ++i) {
+		size *= 4;
+		std::array<int, 4> indexes = getIndexes(size, index);
+		index = getMaxElement(indexes, maps[i]);
+	}
+	return calculator->getCenter(index);
+}
+
+int InfluenceMapQuad::getMaxElement(const std::array<int, 4>& indexes, const float* values) const {
+	float values1[4] = {values[indexes[0]], values[indexes[1]], values[indexes[2]], values[indexes[3]]};
+	int i = std::distance(values1, std::max_element(values1, values1 + 4));
+	return indexes[i];
 }
 
 void InfluenceMapQuad::update(Physical* thing, float value) {
-	for (auto* map : maps) {
-		//TODO perf obliczyæ tylko dla ostatniego poziomu reszta leniwie
-		map->update(thing, value);
-	}
+	dataReady = false;
+	maps.back()[calculator->indexFromPosition(thing->getPosition())] += value;
 }
 
 void InfluenceMapQuad::updateInt(Physical* thing, int value) {
-	for (auto* map : maps) {
-		//TODO perf obliczyæ tylko dla ostatniego poziomu reszta leniwie
-		map->updateInt(thing, value);
-	}
+	dataReady = false;
+	maps.back()[calculator->indexFromPosition(thing->getPosition())] += value;
 }
 
 void InfluenceMapQuad::reset() {
-	for (auto* map : maps) {
-		map->reset();
+	dataReady = false;
+	auto size = minSize;
+	for (auto map : maps) {
+		std::fill_n(map, size, 0.f);
+		size *= 4;
 	}
 }
 
 void InfluenceMapQuad::print(Urho3D::String name) {
+	ensureReady();
 	for (auto i = 0; i < maps.size(); ++i) {
 		maps.at(i)->print(name);
 	}
@@ -60,24 +100,4 @@ std::array<int, 4> InfluenceMapQuad::getIndexes(unsigned short resolution, int i
 		value + resolution * 2,
 		value + resolution * 2 + 1
 	};
-}
-
-int InfluenceMapQuad::getMaxElement() {
-	assert(false);
-	return 0;
-}
-
-int InfluenceMapQuad::getMaxElement(const std::array<int, 4>& indexes) {
-	assert(false);
-	return 0;
-}
-
-unsigned short InfluenceMapQuad::getResolution() {
-	assert(false);
-	return 0;
-}
-
-Urho3D::Vector2 InfluenceMapQuad::getCenter(int index) {
-	assert(false);
-	return {};
 }

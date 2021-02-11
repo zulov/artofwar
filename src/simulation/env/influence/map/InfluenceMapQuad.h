@@ -4,6 +4,7 @@
 #include "InfluenceMapI.h"
 #include "simulation/env/influence/InfluenceMapType.h"
 
+struct GridCalculator;
 class Physical;
 
 class InfluenceMapQuad : public InfluenceMapI {
@@ -19,11 +20,12 @@ public:
 	void print(Urho3D::String name) override;
 
 	std::array<int, 4> getIndexes(unsigned short resolution, int index) const;
-
-	int getMaxElement() override;
-	int getMaxElement(const std::array<int, 4>& indexes) override;
-	unsigned short getResolution() override;
-	Urho3D::Vector2 getCenter(int index) override;
+	int getMaxElement(const std::array<int, 4>& indexes, const float* values) const;
 private:
-	std::vector<InfluenceMapI*> maps;
+	GridCalculator* calculator;
+	void ensureReady();
+	std::vector<float*> maps;
+	bool dataReady = false;
+	int maxSize = false;
+	int minSize = false;
 };

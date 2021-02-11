@@ -63,7 +63,6 @@ void InfluenceMapFloat::update(float value, const unsigned short centerX, const 
 			*(t++) += value / ((a + b) * coef + 1.f);
 		}
 	}
-
 }
 
 void InfluenceMapFloat::reset() {
@@ -75,8 +74,7 @@ float InfluenceMapFloat::getValueAt(int index) const {
 }
 
 float InfluenceMapFloat::getValueAt(const Urho3D::Vector2& pos) const {
-	auto index = calculator->indexFromPosition(pos);
-	return getValueAt(index);
+	return getValueAt(calculator->indexFromPosition(pos));
 }
 
 float InfluenceMapFloat::getValueAsPercent(const Urho3D::Vector2& pos) const {
@@ -141,7 +139,6 @@ void InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection
 			intersection[i] += val * val;
 		}
 	}
-
 }
 
 void InfluenceMapFloat::add(int* indexes, float* vals, int k, float val) const {
