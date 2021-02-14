@@ -1,10 +1,13 @@
 #include "InfluenceMapQuad.h"
 
 #include <array>
+#include <Urho3D/Resource/Image.h>
+
+
+#include "Game.h"
 #include "objects/Physical.h"
 #include "simulation/env/GridCalculator.h"
 #include "simulation/env/GridCalculatorProvider.h"
-#include "utils/DeleteUtils.h"
 
 InfluenceMapQuad::InfluenceMapQuad(int from, int to, const unsigned short size, float valueThresholdDebug)
 	: calculator(GridCalculatorProvider::get(pow(2, to), size)) {
@@ -12,20 +15,23 @@ InfluenceMapQuad::InfluenceMapQuad(int from, int to, const unsigned short size, 
 	maxRes = pow(2, to);
 	for (; from <= to; ++from) {
 		int res = pow(2, from);
-		maps.push_back(new float[res * res]);
+		auto arraySize = res * res;
+		maps.push_back(std::span<float>(new float[size], arraySize));
 	}
 }
 
 InfluenceMapQuad::~InfluenceMapQuad() {
-	clear_vector(maps);
+	for (auto xes : maps) {
+		delete[](xes.data());
+	}
 }
 
 void InfluenceMapQuad::ensureReady() {
 	if (dataReady != false) {
 		auto parentRes = calculator->getResolution();
 		for (int i = maps.size() - 2; i >= 0; --i) {
-			auto* const parent = maps[i + 1];
-			auto* const current = maps[i];
+			auto parent = maps[i + 1];
+			auto const current = maps[i];
 			const auto currentSize = parentRes / 2;
 			for (int j = 0; j < parentRes * parentRes; ++j) {
 				if (parent[j] > 0.f) {
@@ -48,18 +54,18 @@ void InfluenceMapQuad::ensureReady() {
 
 Urho3D::Vector2 InfluenceMapQuad::getCenter() {
 	ensureReady();
-	int size = minRes * minRes;
-	int index = std::distance(maps[0], std::max_element(maps[0], maps[0] + size));
+	//int size = minRes * minRes;
+	int index = std::distance(maps[0].begin(), std::max_element(maps[0].begin(), maps[0].end()));
 
 	for (int i = 1; i < maps.size(); ++i) {
-		size *= 4;
-		std::array<int, 4> indexes = getIndexes(size, index);
+
+		std::array<int, 4> indexes = getIndexes(maps[i].size(), index);
 		index = getMaxElement(indexes, maps[i]);
 	}
 	return calculator->getCenter(index);
 }
 
-int InfluenceMapQuad::getMaxElement(const std::array<int, 4>& indexes, const float* values) const {
+int InfluenceMapQuad::getMaxElement(const std::array<int, 4>& indexes, std::span<float> values) const {
 	float values1[4] = {values[indexes[0]], values[indexes[1]], values[indexes[2]], values[indexes[3]]};
 	int i = std::distance(values1, std::max_element(values1, values1 + 4));
 	return indexes[i];
@@ -92,10 +98,34 @@ void InfluenceMapQuad::reset() {
 	}
 }
 
+void InfluenceMapQuad::print(const Urho3D::String& name, std::span<float> map) {
+	auto image = new Urho3D::Image(Game::getContext());
+	auto resolution = sqrt(map.size());
+	
+	
+	image->SetSize(resolution, resolution, 4);
+	computeMinMax();
+	for (short y = 0; y != resolution; ++y) {
+		for (short x = 0; x != resolution; ++x) {
+			const int index = calculator->getNotSafeIndex(x, y);
+
+			const auto color = Game::getColorPaletteRepo()->getColor(getValueAsPercent(index), 1.f);
+			image->SetPixel(x, resolution - y - 1, color);
+		}
+	}
+	image->Resize(256, 256);
+
+	image->SavePNG("result/images/infl/" + name + "_" + Urho3D::String(resolution) + "x" + Urho3D::String(resolution)
+		+ "#" + Urho3D::String(counter) + ".png");
+	++counter;
+
+	delete image;
+}
+
 void InfluenceMapQuad::print(Urho3D::String name) {
 	ensureReady();
 	for (auto i = 0; i < maps.size(); ++i) {
-		//maps.at(i)->print(name);
+		print(name, maps[i]);
 	}
 }
 
