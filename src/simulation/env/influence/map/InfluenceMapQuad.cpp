@@ -100,15 +100,20 @@ void InfluenceMapQuad::reset() {
 
 void InfluenceMapQuad::print(const Urho3D::String& name, std::span<float> map) {
 	auto image = new Urho3D::Image(Game::getContext());
-	auto resolution = sqrt(map.size());
-	
+	const auto resolution = sqrt(map.size());	
 	
 	image->SetSize(resolution, resolution, 4);
-	computeMinMax();
+	
+		const float diff = max - min;
+	if (diff != 0.f) {
+		return (getValueAt(pos) - min) / diff;
+	
+	return 0.5f;
+	}
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = calculator->getNotSafeIndex(x, y);
-
+			(getValueAt(pos) - min) / diff;
 			const auto color = Game::getColorPaletteRepo()->getColor(getValueAsPercent(index), 1.f);
 			image->SetPixel(x, resolution - y - 1, color);
 		}
