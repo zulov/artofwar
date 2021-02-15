@@ -138,8 +138,11 @@ void Environment::updateInfluenceResources(std::vector<ResourceEntity*>* resourc
 void Environment::updateInfluenceOther(std::vector<Building*>* buildings) const {
 	influenceManager.update(buildings);
 	influenceManager.updateQuadBuildings(buildings);
-	influenceManager.updateQuadOther();
 	influenceManager.updateWithHistory();
+}
+
+void Environment::updateQuadOther() const {
+	influenceManager.updateQuadOther();
 }
 
 void Environment::update(Unit* unit) const {

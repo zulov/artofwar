@@ -42,7 +42,7 @@ public:
 	void updateInfluenceResources(std::vector<ResourceEntity*>* resources) const;
 
 	void updateInfluenceOther(std::vector<Building*>* buildings) const;
-
+	void updateQuadOther() const;
 	void invalidateCaches();
 	void update(Unit* unit) const;
 
