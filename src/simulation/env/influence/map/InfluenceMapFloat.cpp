@@ -112,7 +112,7 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 	while ((iter = std::find_if(iter, values + arraySize, pred)) != values + arraySize) {
 		//TODO performance!!!	
 		indexes.push_back(iter - values);
-		iter++;
+		++iter;
 	}
 	return indexes; //TODO should stay sorted
 }

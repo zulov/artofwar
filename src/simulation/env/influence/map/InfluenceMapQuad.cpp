@@ -12,7 +12,7 @@ InfluenceMapQuad::InfluenceMapQuad(int from, int to, const unsigned short size)
 	: calculator(GridCalculatorProvider::get(pow(2, to), size)) {
 	minRes = pow(2, from);
 	maxRes = pow(2, to);
-	int dataSize = 0;
+	dataSize = 0;
 	for (int i = from; i <= to; ++i) {
 		const int res = pow(2, i);
 		dataSize += res * res;
@@ -94,9 +94,7 @@ void InfluenceMapQuad::updateInt(Physical* thing, int value) {
 
 void InfluenceMapQuad::reset() {
 	dataReady = false;
-	for (auto map : maps) {
-		std::fill_n(map.begin(), map.size(), 0.f);
-	}
+	std::fill_n(data, dataSize, 0.f);	
 }
 
 void InfluenceMapQuad::print(const Urho3D::String& name, std::span<float> map) {

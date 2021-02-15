@@ -29,7 +29,8 @@ private:
 	void ensureReady();
 	std::vector<std::span<float>> maps;
 	float* data;
-	bool dataReady = false;
+	int dataSize;
+	bool dataReady = false;//TODO bug czy dobrze jest resetowana
 	int maxRes;
 	int minRes;
 	int counter = 0;

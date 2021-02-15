@@ -6,7 +6,7 @@
 #include <vector>
 #include "utils/DeleteUtils.h"
 
-constexpr short CACHE_SIZE=4096;
+constexpr short CACHE_SIZE = 4096;
 
 static unsigned char degree_cache[CACHE_SIZE];
 
@@ -150,11 +150,10 @@ public:
 		do {
 			++rootSize;
 			next = next->right;
-		}
-		while (next != w);
-		
+		} while (next != w);
+
 		const auto max_degree = degree_cache[n];
-		
+
 		const auto secondSize = max_degree + rootSize;
 		ensureSizeAndClear(secondSize);
 
@@ -170,7 +169,7 @@ public:
 			while (temp[d] != nullptr) {
 				auto y = temp[d];
 				if (x->key > y->key) {
-					std::swap(x,y);
+					std::swap(x, y);
 				}
 				fib_heap_link(y, x);
 				temp[d] = nullptr;
