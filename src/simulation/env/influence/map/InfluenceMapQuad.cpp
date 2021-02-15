@@ -8,21 +8,27 @@
 #include "simulation/env/GridCalculator.h"
 #include "simulation/env/GridCalculatorProvider.h"
 
-InfluenceMapQuad::InfluenceMapQuad(int from, int to, const unsigned short size, float valueThresholdDebug)
+InfluenceMapQuad::InfluenceMapQuad(int from, int to, const unsigned short size)
 	: calculator(GridCalculatorProvider::get(pow(2, to), size)) {
 	minRes = pow(2, from);
 	maxRes = pow(2, to);
-	for (; from <= to; ++from) {
-		const int res = pow(2, from);
+	int dataSize = 0;
+	for (int i = from; i <= to; ++i) {
+		const int res = pow(2, i);
+		dataSize += res * res;
+	}
+	data = new float[dataSize];
+	float* ptr = data;
+	for (int i = from; i <= to; ++i) {
+		const int res = pow(2, i);
 		const auto arraySize = res * res;
-		maps.push_back(std::span<float>(new float[size], arraySize));
+		maps.emplace_back(ptr, arraySize);
+		ptr += arraySize;
 	}
 }
 
 InfluenceMapQuad::~InfluenceMapQuad() {
-	for (auto xes : maps) {
-		delete[](xes.data());
-	}
+	delete[] data;
 }
 
 void InfluenceMapQuad::ensureReady() {
@@ -88,10 +94,8 @@ void InfluenceMapQuad::updateInt(Physical* thing, int value) {
 
 void InfluenceMapQuad::reset() {
 	dataReady = false;
-	auto size = minRes * minRes;
 	for (auto map : maps) {
-		std::fill_n(map, size, 0.f);
-		size *= 4;
+		std::fill_n(map.begin(), map.size(), 0.f);
 	}
 }
 
@@ -101,17 +105,17 @@ void InfluenceMapQuad::print(const Urho3D::String& name, std::span<float> map) {
 	const auto max = *maxIdx;
 	const float diff = max - min;
 	if (diff == 0.f) {
-		return;	
+		return;
 	}
 	auto image = new Urho3D::Image(Game::getContext());
-	const auto resolution = sqrt(map.size());	
-	
+	const auto resolution = sqrt(map.size());
+
 	image->SetSize(resolution, resolution, 4);
-	
+
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = calculator->getNotSafeIndex(x, y);
-			
+
 			const auto color = Game::getColorPaletteRepo()->getColor((map[index] - min) / diff, 1.f);
 			image->SetPixel(x, resolution - y - 1, color);
 		}
@@ -127,7 +131,7 @@ void InfluenceMapQuad::print(const Urho3D::String& name, std::span<float> map) {
 
 void InfluenceMapQuad::print(Urho3D::String name) {
 	ensureReady();
-	for (auto map : maps) {
+	for (const auto map : maps) {
 		print(name, map);
 	}
 }

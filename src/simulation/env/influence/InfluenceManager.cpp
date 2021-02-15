@@ -31,9 +31,9 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 
 		attackSpeed.emplace_back(
 			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
-		unitsQuad.emplace_back(new InfluenceMapQuad(1, 7, BUCKET_GRID_SIZE, 2));
-		buildingsQuad.emplace_back(new InfluenceMapQuad(1, 7, BUCKET_GRID_SIZE, 2));
-		econQuad.emplace_back(new InfluenceMapQuad(1, 7, BUCKET_GRID_SIZE, 10));
+		unitsQuad.emplace_back(new InfluenceMapQuad(1, 7, BUCKET_GRID_SIZE));
+		buildingsQuad.emplace_back(new InfluenceMapQuad(1, 7, BUCKET_GRID_SIZE));
+		econQuad.emplace_back(new InfluenceMapQuad(1, 7, BUCKET_GRID_SIZE));
 	}
 
 	resourceInfluence = new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40);

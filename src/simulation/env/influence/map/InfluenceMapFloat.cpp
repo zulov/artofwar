@@ -12,6 +12,7 @@ InfluenceMapFloat(unsigned short resolution, float size, float coef, char level,
 	level(level) {
 	values = new float[arraySize];
 	tempVals = new float[arraySize];
+	assert(level > 0);
 }
 
 InfluenceMapFloat::~InfluenceMapFloat() {
@@ -21,11 +22,7 @@ InfluenceMapFloat::~InfluenceMapFloat() {
 
 void InfluenceMapFloat::update(Physical* thing, float value) {
 	auto& pos = thing->getPosition();
-	if (level != 0) {
-		update(value, calculator->getIndex(pos.x_), calculator->getIndex(pos.z_));
-	} else {
-		values[calculator->indexFromPosition(pos)] += value;
-	}
+	update(value, calculator->getIndex(pos.x_), calculator->getIndex(pos.z_));
 }
 
 void InfluenceMapFloat::updateInt(Physical* thing, int value) {
@@ -139,15 +136,11 @@ void InfluenceMapFloat::add(int* indexes, float* vals, int k, float val) const {
 
 void InfluenceMapFloat::updateFromTemp() {
 	if (tempComputedNeeded) {
-		if (level != 0) {
-			for (int i = 0; i < arraySize; ++i) {
-				const auto val = tempVals[i];
-				if (val > 0.f) {
-					update(i, val);
-				}
+		for (int i = 0; i < arraySize; ++i) {
+			const auto val = tempVals[i];
+			if (val > 0.f) {
+				update(i, val);
 			}
-		} else {
-			std::copy_n(tempVals, arraySize, values);
 		}
 		std::fill_n(tempVals, arraySize, 0.f);
 		tempComputedNeeded = false;

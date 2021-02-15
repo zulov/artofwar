@@ -10,7 +10,7 @@ class Physical;
 class InfluenceMapQuad : public InfluenceMapI {
 	//TODO nieportzrebne
 public:
-	InfluenceMapQuad(int from, int to, const unsigned short size, float valueThresholdDebug);
+	InfluenceMapQuad(int from, int to, const unsigned short size);
 	virtual ~InfluenceMapQuad();
 
 	Urho3D::Vector2 getCenter();
@@ -28,6 +28,7 @@ private:
 	GridCalculator* calculator;
 	void ensureReady();
 	std::vector<std::span<float>> maps;
+	float* data;
 	bool dataReady = false;
 	int maxRes;
 	int minRes;
