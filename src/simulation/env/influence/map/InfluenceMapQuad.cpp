@@ -2,9 +2,8 @@
 
 #include <array>
 #include <Urho3D/Resource/Image.h>
-
-
 #include "Game.h"
+#include "colors/ColorPaletteRepo.h"
 #include "objects/Physical.h"
 #include "simulation/env/GridCalculator.h"
 #include "simulation/env/GridCalculatorProvider.h"
@@ -14,8 +13,8 @@ InfluenceMapQuad::InfluenceMapQuad(int from, int to, const unsigned short size, 
 	minRes = pow(2, from);
 	maxRes = pow(2, to);
 	for (; from <= to; ++from) {
-		int res = pow(2, from);
-		auto arraySize = res * res;
+		const int res = pow(2, from);
+		const auto arraySize = res * res;
 		maps.push_back(std::span<float>(new float[size], arraySize));
 	}
 }
@@ -33,7 +32,7 @@ void InfluenceMapQuad::ensureReady() {
 			auto parent = maps[i + 1];
 			auto const current = maps[i];
 			const auto currentSize = parentRes / 2;
-			for (int j = 0; j < parentRes * parentRes; ++j) {
+			for (int j = 0; j < parent.size(); ++j) {
 				if (parent[j] > 0.f) {
 					auto x = j / parentRes;
 					auto z = j % parentRes;
@@ -54,11 +53,9 @@ void InfluenceMapQuad::ensureReady() {
 
 Urho3D::Vector2 InfluenceMapQuad::getCenter() {
 	ensureReady();
-	//int size = minRes * minRes;
 	int index = std::distance(maps[0].begin(), std::max_element(maps[0].begin(), maps[0].end()));
 
 	for (int i = 1; i < maps.size(); ++i) {
-
 		std::array<int, 4> indexes = getIndexes(maps[i].size(), index);
 		index = getMaxElement(indexes, maps[i]);
 	}
@@ -99,22 +96,23 @@ void InfluenceMapQuad::reset() {
 }
 
 void InfluenceMapQuad::print(const Urho3D::String& name, std::span<float> map) {
+	auto [minIdx, maxIdx] = std::minmax_element(map.begin(), map.end());
+	const auto min = *minIdx;
+	const auto max = *maxIdx;
+	const float diff = max - min;
+	if (diff == 0.f) {
+		return;	
+	}
 	auto image = new Urho3D::Image(Game::getContext());
 	const auto resolution = sqrt(map.size());	
 	
 	image->SetSize(resolution, resolution, 4);
 	
-		const float diff = max - min;
-	if (diff != 0.f) {
-		return (getValueAt(pos) - min) / diff;
-	
-	return 0.5f;
-	}
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = calculator->getNotSafeIndex(x, y);
-			(getValueAt(pos) - min) / diff;
-			const auto color = Game::getColorPaletteRepo()->getColor(getValueAsPercent(index), 1.f);
+			
+			const auto color = Game::getColorPaletteRepo()->getColor((map[index] - min) / diff, 1.f);
 			image->SetPixel(x, resolution - y - 1, color);
 		}
 	}
@@ -129,8 +127,8 @@ void InfluenceMapQuad::print(const Urho3D::String& name, std::span<float> map) {
 
 void InfluenceMapQuad::print(Urho3D::String name) {
 	ensureReady();
-	for (auto i = 0; i < maps.size(); ++i) {
-		print(name, maps[i]);
+	for (auto map : maps) {
+		print(name, map);
 	}
 }
 

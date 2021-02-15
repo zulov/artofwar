@@ -7,7 +7,8 @@
 struct GridCalculator;
 class Physical;
 
-class InfluenceMapQuad : public InfluenceMapI {//TODO nieportzrebne
+class InfluenceMapQuad : public InfluenceMapI {
+	//TODO nieportzrebne
 public:
 	InfluenceMapQuad(int from, int to, const unsigned short size, float valueThresholdDebug);
 	virtual ~InfluenceMapQuad();
@@ -21,7 +22,7 @@ public:
 
 	std::array<int, 4> getIndexes(unsigned short resolution, int index) const;
 	int getMaxElement(const std::array<int, 4>& indexes, std::span<float> values) const;
-	unsigned short getResolution() override;//TODO to chyba niepotrzebne
+	unsigned short getResolution() override; //TODO to chyba niepotrzebne
 	Urho3D::Vector2 getCenter(int index) override;
 private:
 	GridCalculator* calculator;
@@ -30,4 +31,5 @@ private:
 	bool dataReady = false;
 	int maxRes;
 	int minRes;
+	int counter = 0;
 };
