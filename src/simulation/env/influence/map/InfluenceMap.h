@@ -19,7 +19,7 @@ public:
 	virtual float getValueAsPercent(const Urho3D::Vector2& pos) const =0;
 	virtual float getValueAsPercent(const int index) const =0;
 	void print(Urho3D::String name) override;
-	unsigned short getResolution() override { return calculator->getResolution(); }
+	unsigned short getResolution() const override { return calculator->getResolution(); }
 	Urho3D::Vector2 getCenter(int index) override { return calculator->getCenter(index); }
 protected:
 	GridCalculator* calculator;

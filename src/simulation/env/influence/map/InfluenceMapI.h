@@ -14,6 +14,6 @@ public:
 
 	virtual void print(Urho3D::String name) =0;
 
-	virtual unsigned short getResolution() =0;
+	virtual unsigned short getResolution() const =0;
 	virtual Urho3D::Vector2 getCenter(int index) =0;
 };

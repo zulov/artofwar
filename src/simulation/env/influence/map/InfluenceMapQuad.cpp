@@ -74,12 +74,8 @@ int InfluenceMapQuad::getMaxElement(const std::array<int, 4>& indexes, std::span
 	return indexes[i];
 }
 
-unsigned short InfluenceMapQuad::getResolution() {
+unsigned short InfluenceMapQuad::getResolution() const {
 	return calculator->getResolution();
-}
-
-Urho3D::Vector2 InfluenceMapQuad::getCenter(int index) {
-	return calculator->getCenter(index);
 }
 
 void InfluenceMapQuad::update(Physical* thing, float value) {
