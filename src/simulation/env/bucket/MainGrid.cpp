@@ -101,16 +101,22 @@ void MainGrid::invalidatePathCache() const {
 
 void MainGrid::updateSurround(Static* object) const {
 	if (object->isAlive()) {
-		std::unordered_set<int> indexes;
-		for (auto index : object->getOccupiedCells()) {
+		const auto& occu = object->getOccupiedCells();
+		std::vector<int> indexes;
+		indexes.reserve(occu.size() * 8);
+
+		for (auto index : occu) {
 			for (auto inIndex : closeIndexes->get(index)) {
-				auto newIndex = index + inIndex;
-				indexes.emplace(newIndex);
+				indexes.emplace_back(index + inIndex);
 			}
 		}
-		for (auto index : object->getOccupiedCells()) {
-			indexes.erase(index);
-		}
+		std::sort(indexes.begin(), indexes.end());
+		indexes.erase(std::unique(indexes.begin(), indexes.end()), indexes.end());
+		indexes.erase(
+			std::remove_if(indexes.begin(), indexes.end(),
+			               [&](auto x) { return std::find(occu.begin(), occu.end(), x) != occu.end(); }),
+			indexes.end());
+
 		object->setSurroundCells(indexes);
 	}
 }
@@ -129,7 +135,7 @@ Urho3D::Vector2 MainGrid::getPositionInBucket(Unit* unit) {
 	char max = 0;
 	const auto state = unit->getState();
 	for (auto physical : buckets[index].getContent()) {
-		if (physical == unit && ordinal<0) {
+		if (physical == unit && ordinal < 0) {
 			ordinal = max;
 		}
 		if (static_cast<Unit*>(physical)->getState() == state) {
@@ -262,7 +268,8 @@ bool MainGrid::isBuildable(int inx) const {
 	return calculator->isValidIndex(inx) && complexData[inx].isBuildable();
 }
 
-int MainGrid::closestPassableCell(int posIndex) const {//TODO improved pathFinder getPassableEnd
+int MainGrid::closestPassableCell(int posIndex) const {
+	//TODO improved pathFinder getPassableEnd
 	for (auto i : closeIndexes->get(posIndex)) {
 		if (complexData[i + posIndex].isPassable()) {
 			return i + posIndex;
@@ -290,16 +297,20 @@ void MainGrid::addStatic(Static* object) const {
 	const auto sizeX = calculateSize(size.x_, bucketPos.x_);
 	const auto sizeZ = calculateSize(size.y_, bucketPos.y_);
 
-	for (int i = sizeX.x_ - 1; i < sizeX.y_ + 1; ++i) {
-		for (int j = sizeZ.x_ - 1; j < sizeZ.y_ + 1; ++j) {
-			if (calculator->isValidIndex(i, j)) {
-				const int index = calculator->getNotSafeIndex(i, j);
-				updateNeighbors(index);
-				if (complexData[index].isPassable()) {
-					complexData[index].setEscapeThrough(-1);
-				} else {
-					toRefresh.push_back(index);
-				}
+	const auto iMin = calculator->getValid(sizeX.x_ - 1);
+	const auto iMax = calculator->getValid(sizeX.y_ + 1);
+
+	const auto jMin = calculator->getValid(sizeZ.x_ - 1);
+	const auto jMax = calculator->getValid(sizeZ.y_ + 1);
+
+	for (int i = iMin; i < iMax; ++i) {
+		for (int j = jMin; j < jMax; ++j) {
+			const int index = calculator->getNotSafeIndex(i, j);
+			updateNeighbors(index);
+			if (complexData[index].isPassable()) {
+				complexData[index].setEscapeThrough(-1);
+			} else {
+				toRefresh.push_back(index);
 			}
 		}
 	}

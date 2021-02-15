@@ -17,8 +17,8 @@ void Static::load(dbload_static* dbloadStatic) {
 	this->nextState = StaticState(dbloadStatic->nextState);
 }
 
-void Static::setSurroundCells(const std::unordered_set<int>& indexes) {
-	surroundCells.insert(surroundCells.begin(), indexes.begin(), indexes.end());
+void Static::setSurroundCells(const std::vector<int>& indexes) {
+	surroundCells = indexes;
 }
 
 void Static::populate() {

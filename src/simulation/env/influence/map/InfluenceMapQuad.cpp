@@ -33,11 +33,12 @@ InfluenceMapQuad::~InfluenceMapQuad() {
 
 void InfluenceMapQuad::ensureReady() {
 	if (dataReady != false) {
-		auto parentRes = calculator->getResolution();
+		std::fill_n(data, dataSize - maps.back().size(), 0.f);
 		for (int i = maps.size() - 2; i >= 0; --i) {
 			auto parent = maps[i + 1];
-			auto const current = maps[i];
-			const auto currentSize = parentRes / 2;
+			const auto parentRes = parent.size();
+			const auto current = maps[i];
+			const auto currentSize = current.size();
 			for (int j = 0; j < parent.size(); ++j) {
 				if (parent[j] > 0.f) {
 					auto x = j / parentRes;
@@ -47,12 +48,11 @@ void InfluenceMapQuad::ensureReady() {
 
 					const int newIndex = x * currentSize + z;
 					current[newIndex] += parent[j];
+					assert(newIndex<currentSize);
 					//calculator->getindexes test
 				}
 			}
-			parentRes = currentSize;
 		}
-
 		dataReady = true;
 	}
 }
@@ -90,7 +90,7 @@ void InfluenceMapQuad::updateInt(Physical* thing, int value) {
 
 void InfluenceMapQuad::reset() {
 	dataReady = false;
-	std::fill_n(data, dataSize, 0.f);	
+	std::fill_n(maps.back().begin(), maps.back().size(), 0.f);
 }
 
 void InfluenceMapQuad::print(const Urho3D::String& name, std::span<float> map) {
