@@ -67,6 +67,18 @@ CloseIndexes::CloseIndexes(short res)
 		}
 		closeIndexesSecond[i].shrink_to_fit();
 	}
+	if (resolution == 512) {
+		auto& closeTabIndx = getTabIndexes(261632);
+		for (auto i : closeTabIndx) {
+
+			int next = 261632 + getIndexAt(i);
+			if(next>=262144) {
+				int d = 4;
+			}
+			int a = 5;
+		}
+		
+	}
 }
 
 char CloseIndexes::getIndex(int center) const {
@@ -76,14 +88,12 @@ char CloseIndexes::getIndex(int center) const {
 	const bool lastColumn = center % resolution == resolution - 1;
 
 	char index = 0;
-	if (firstRow) {
-	} else if (lastRow) {
+	if (firstRow) { } else if (lastRow) {
 		index += 6;
 	} else {
 		index += 3;
 	}
-	if (firstColumn) {
-	} else if (lastColumn) {
+	if (firstColumn) { } else if (lastColumn) {
 		index += 2;
 	} else {
 		index += 1;
@@ -108,8 +118,7 @@ const std::vector<short>& CloseIndexes::getSecond(int center) const {
 	const bool lastColumn = center % resolution == resolution - 1;
 	const bool almostLastColumn = center % resolution == resolution - 2;
 	char index = 0;
-	if (firstRow) {
-	} else if (secondRow) {
+	if (firstRow) { } else if (secondRow) {
 		index += 5;
 	} else if (almostLastRow) {
 		index += 15;
@@ -119,8 +128,7 @@ const std::vector<short>& CloseIndexes::getSecond(int center) const {
 		index += 10;
 	}
 
-	if (firstColumn) {
-	} else if (secondColumn) {
+	if (firstColumn) { } else if (secondColumn) {
 		index += 1;
 	} else if (almostLastColumn) {
 		index += 3;

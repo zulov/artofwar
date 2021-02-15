@@ -74,7 +74,7 @@ void ActionMaker::action() {
 	const auto resResult = ifWorkerCreate->decide(resInput);
 	const auto unitsResult = ifUnitCreate->decide(unitsInput);
 	const auto buildingsResult = ifBuildingCreate->decide(buildingsInput);
-
+	assert(!isnan(resResult[0]));
 	float res[] = {resResult[0], unitsResult[0], buildingsResult[0]};
 
 	auto decision = static_cast<AiActionType>(biggestWithRand(std::span(res)));
