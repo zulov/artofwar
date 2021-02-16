@@ -1,7 +1,6 @@
 #include "LevelBuilder.h"
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Graphics/Terrain.h>
-#include <Urho3D/Graphics/Zone.h>
 #include "database/DatabaseCache.h"
 #include "database/db_other_struct.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
@@ -32,10 +31,10 @@ void LevelBuilder::createScene(SceneLoader& loader) {
 void LevelBuilder::createMap(int mapId) {
 	const auto map = Game::getDatabase()->getMaps()[mapId];
 	if (!SIM_GLOBALS.HEADLESS) {
-		zone = createNode("map/zone.xml");
-		light = createNode("map/light.xml");
+		createNode("map/zone.xml");
+		createNode("map/light.xml");
 	}
-	ground = createGround(map->xmlName);
+	createGround(map->xmlName);
 }
 
 void LevelBuilder::createScene(NewGameForm* form) {
@@ -46,13 +45,11 @@ Urho3D::Terrain* LevelBuilder::getTerrain() const {
 	return terrain;
 }
 
-Urho3D::Node* LevelBuilder::createGround(const Urho3D::String& xmlName) {
+void LevelBuilder::createGround(const Urho3D::String& xmlName) {
 	auto node = createNode(xmlName);
 	terrain = node->GetComponent<Urho3D::Terrain>();
 	if (!SIM_GLOBALS.HEADLESS) {
 		terrain->SetSmoothing(true);
 		node->SetVar("ground", true);
 	}
-
-	return node;
 }
