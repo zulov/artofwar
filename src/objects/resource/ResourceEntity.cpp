@@ -14,14 +14,15 @@
 #include "simulation/env/Environment.h"
 
 
-ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, int id, int level, int mainCell)
-	: Static(_position, mainCell) {
+ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, int id, int level, int mainCell, bool withNode)
+	: Static(_position, mainCell,withNode) {
 	dbResource = Game::getDatabase()->getResource(id);
 
 	loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(
 		RandIntType::RESOURCE_NODE, dbResource->nodeName.Size())]);
-	node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
-
+	if(withNode) {
+		node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
+	}
 }
 
 const Urho3D::IntVector2 ResourceEntity::getGridSize() const {

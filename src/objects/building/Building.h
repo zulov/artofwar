@@ -11,7 +11,7 @@ class QueueElement;
 
 class Building : public Static {
 public:
-	Building(Urho3D::Vector3 _position, int id, int player, int level, int mainCell);
+	Building(Urho3D::Vector3 _position, int id, int player, int level, int mainCell, bool withNode);
 	~Building();
 
 	void populate() override;

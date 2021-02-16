@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Urho3D/Container/Ptr.h>
-#include "SceneObjectManager.h"
 
 namespace Urho3D {
 	class Node;
@@ -26,6 +25,8 @@ private:
 	Urho3D::SharedPtr<Urho3D::Scene> scene;
 	Urho3D::Node* createGround(const Urho3D::String& xmlName);
 
-	SceneObjectManager* objectManager;
 	Urho3D::Terrain* terrain;
+	Urho3D::Node* ground{};
+	Urho3D::Node* light{};
+	Urho3D::Node* zone{};
 };

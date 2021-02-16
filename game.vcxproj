@@ -283,7 +283,6 @@
     <ClCompile Include="src\control\Controls.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\scene\LevelBuilder.cpp" />
-    <ClCompile Include="src\scene\SceneObjectManager.cpp" />
     <ClCompile Include="src\commands\creation\CreationCommandList.cpp" />
     <ClCompile Include="src\simulation\env\bucket\ComplexBucketData.cpp" />
     <ClCompile Include="src\simulation\env\bucket\MainGrid.cpp" />
@@ -491,7 +490,6 @@
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\scene\LevelBuilder.h" />
     <ClInclude Include="src\objects\ObjectEnums.h" />
-    <ClInclude Include="src\scene\SceneObjectManager.h" />
     <ClInclude Include="src\commands\creation\CreationCommandList.h" />
     <ClInclude Include="src\simulation\env\bucket\ComplexBucketData.h" />
     <ClInclude Include="src\simulation\env\bucket\MainGrid.h" />

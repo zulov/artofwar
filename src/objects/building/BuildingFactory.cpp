@@ -12,7 +12,8 @@ Building* BuildingFactory::create(int id, const Urho3D::IntVector2& bucketCords,
 		return new Building(Urho3D::Vector3(center.x_,
 		                                    Game::getEnvironment()->getGroundHeightAt(center.x_, center.y_),
 		                                    center.y_),
-		                    id, player, level, Game::getEnvironment()->getIndex(bucketCords.x_, bucketCords.y_));
+		                    id, player, level, Game::getEnvironment()->getIndex(bucketCords.x_, bucketCords.y_),
+		                    !SIM_GLOBALS.HEADLESS);
 	}
 
 	return nullptr;

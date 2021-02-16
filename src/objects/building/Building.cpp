@@ -16,8 +16,8 @@
 #include "utils/consts.h"
 
 
-Building::Building(Urho3D::Vector3 _position, int id, int player, int level, int mainCell):
-	Static(_position, mainCell) {
+Building::Building(Urho3D::Vector3 _position, int id, int player, int level, int mainCell, bool withNode):
+	Static(_position, mainCell, withNode) {
 	setPlayerAndTeam(player);
 	dbBuilding = Game::getDatabase()->getBuilding(id);
 	levelUp(level);
@@ -27,7 +27,7 @@ Building::Building(Urho3D::Vector3 _position, int id, int player, int level, int
 Building::~Building() {
 	if (node) {
 		node->RemoveAllChildren();
-	}	
+	}
 	if (queue != &Consts::EMPTY_QUEUE) {
 		delete queue;
 	}
@@ -86,8 +86,7 @@ void Building::action(BuildingActionType type, short id) const {
 			queue->add(1, QueueActionType::UNIT_CREATE, id, 30);
 		}
 		break;
-	case BuildingActionType::UNIT_LEVEL:
-	{
+	case BuildingActionType::UNIT_LEVEL: {
 		auto opt = Game::getPlayersMan()->getPlayer(getPlayer())->getNextLevelForUnit(id);
 		if (opt.has_value()) {
 			if (resources.reduce(opt.value()->costs)) {
@@ -160,7 +159,7 @@ void Building::createDeploy() {
 		deployIndex = surroundCells.at(0);
 	} else {
 		deployIndex = -1;
-		
+
 	}
 }
 

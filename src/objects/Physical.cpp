@@ -11,11 +11,14 @@
 #include "scene/load/dbload_container.h"
 
 
-Physical::Physical(Urho3D::Vector3& _position):
+Physical::Physical(Urho3D::Vector3& _position, bool withNode):
 	position(_position), indexInGrid(INT_MIN) {
-	node = Game::getScene()->CreateChild();
-	node->SetVar("link", this);
-	node->SetPosition(position);
+	if (withNode) {
+		node = Game::getScene()->CreateChild();
+		node->SetVar("link", this);
+		node->SetPosition(position);
+	}
+
 	isVisible = true;
 }
 

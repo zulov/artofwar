@@ -11,7 +11,8 @@ enum class ResourceActionType : char;
 
 class ResourceEntity : public Static {
 public:
-	ResourceEntity(Urho3D::Vector3 _position, int id, int level, int mainCell);
+	ResourceEntity(Urho3D::Vector3 _position, int id, int level, int mainCell, bool withNode);
+	ResourceEntity(int id, int level, int mainCell);
 	virtual ~ResourceEntity() = default;
 	void populate() override;
 

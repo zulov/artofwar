@@ -10,7 +10,6 @@
 #include "objects/NodeUtils.h"
 
 LevelBuilder::LevelBuilder() {
-	objectManager = new SceneObjectManager();
 	scene = new Urho3D::Scene(Game::getContext());
 
 	scene->CreateComponent<Urho3D::Octree>();
@@ -18,9 +17,8 @@ LevelBuilder::LevelBuilder() {
 }
 
 LevelBuilder::~LevelBuilder() {
-	delete objectManager;
-	scene->RemoveAllChildren(); //TODO tu czasme b³ad 
-	scene->Clear();
+	// scene->RemoveAllChildren();
+	// scene->Clear();
 	scene->Remove();
 	Game::setScene(nullptr);
 }
@@ -34,10 +32,10 @@ void LevelBuilder::createScene(SceneLoader& loader) {
 void LevelBuilder::createMap(int mapId) {
 	const auto map = Game::getDatabase()->getMaps()[mapId];
 	if (!SIM_GLOBALS.HEADLESS) {
-		objectManager->setZone(createNode("map/zone.xml"));
-		objectManager->setLight(createNode("map/light.xml"));
+		zone = createNode("map/zone.xml");
+		light = createNode("map/light.xml");
 	}
-	objectManager->setGround(createGround(map->xmlName));
+	ground = createGround(map->xmlName);
 }
 
 void LevelBuilder::createScene(NewGameForm* form) {

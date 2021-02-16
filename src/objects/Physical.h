@@ -18,7 +18,7 @@ struct dbload_physical;
 
 class Physical {
 public:
-	explicit Physical(Urho3D::Vector3& _position);
+	explicit Physical(Urho3D::Vector3& _position, bool withNode);
 	virtual ~Physical();
 	void clearNodeWithOutDelete();
 
@@ -99,8 +99,8 @@ protected:
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);
 	virtual float getHealthBarThick() const { return 0.12f; }
-	Urho3D::Node* node;
-	Urho3D::StaticModel* model;
+	Urho3D::Node* node{};
+	Urho3D::StaticModel* model{};
 
 	Urho3D::Billboard *healthBar = nullptr, *aura = nullptr;
 

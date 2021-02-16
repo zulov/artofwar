@@ -20,17 +20,17 @@
 #include "camera/CameraInfo.h"
 
 
-Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position),
+Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position, true),
                                                                         state(UnitState::STOP),
                                                                         nextState(UnitState::STOP) {
 	dbUnit = Game::getDatabase()->getUnit(id);
 	dbLevel = dbUnit->getLevel(level).value(); //TODO bug value
 	setPlayerAndTeam(player);
 	loadXml("Objects/units/" + dbLevel->nodeName);
-	if(!SIM_GLOBALS.HEADLESS) {
+	if (!SIM_GLOBALS.HEADLESS) {
 		basic = model->GetMaterial(0);
 	}
-	
+
 	if (dbLevel->canChargeAttack) {
 		chargeData = new ChargeData(150, 2);
 	}
@@ -153,7 +153,7 @@ float Unit::absorbAttack(float attackCoef) {
 void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, float sqDistance) {
 	if (sqDistance < dbLevel->sqAttackInterest) {
 		actionIfCloseEnough(order, closest);
-	}	
+	}
 }
 
 void Unit::actionIfCloseEnough(UnitAction order, Physical* closest) {

@@ -55,9 +55,6 @@
     <ClCompile Include="src\control\SelectedInfoType.cpp">
       <Filter>control</Filter>
     </ClCompile>
-    <ClCompile Include="src\scene\SceneObjectManager.cpp">
-      <Filter>objects\collection\manager</Filter>
-    </ClCompile>
     <ClCompile Include="src\scene\LevelBuilder.cpp" />
     <ClCompile Include="src\hud\Hud.cpp">
       <Filter>hud</Filter>
@@ -292,9 +289,6 @@
     </ClInclude>
     <ClInclude Include="src\control\SelectedInfoType.h">
       <Filter>control</Filter>
-    </ClInclude>
-    <ClInclude Include="src\scene\SceneObjectManager.h">
-      <Filter>objects\collection\manager</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\LevelBuilder.h" />
     <ClInclude Include="src\hud\window\top\TopPanel.h">
