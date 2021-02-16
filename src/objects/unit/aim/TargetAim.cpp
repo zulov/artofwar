@@ -4,7 +4,7 @@
 #include "simulation/env/Environment.h"
 
 
-TargetAim::TargetAim(std::vector<int>& _path) :
+TargetAim::TargetAim(const std::vector<int>& _path) :
 	path(_path), current(0) {
 	currentTarget = Game::getEnvironment()->getCenter(path[current]);
 }

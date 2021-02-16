@@ -80,7 +80,8 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 		const auto current = frontier.get();
 
 		if (current == endIdx) {
-			break;
+			//debug(startIdx, endIdx);
+			return reconstruct_simplify_path(startIdx, endIdx, came_from);
 		}
 		auto& closeTabIndx = closeIndexes->getTabIndexes(current);
 		auto const& currentData = complexData[current];
@@ -103,7 +104,8 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 		}
 	}
 	//debug(startIdx, endIdx);
-	return reconstruct_simplify_path(startIdx, endIdx, came_from);
+	tempPath->clear();
+	return tempPath;
 }
 
 std::vector<int>* PathFinder::findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) {

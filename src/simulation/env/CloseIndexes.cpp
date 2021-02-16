@@ -67,23 +67,11 @@ CloseIndexes::CloseIndexes(short res)
 		}
 		closeIndexesSecond[i].shrink_to_fit();
 	}
-	if (resolution == 512) {
-		auto& closeTabIndx = getTabIndexes(261632);
-		for (auto i : closeTabIndx) {
-
-			int next = 261632 + getIndexAt(i);
-			if(next>=262144) {
-				int d = 4;
-			}
-			int a = 5;
-		}
-		
-	}
 }
 
 char CloseIndexes::getIndex(int center) const {
 	const bool firstRow = center < resolution;
-	const bool lastRow = center > resolution * resolution - resolution;
+	const bool lastRow = center >= resolution * resolution - resolution;
 	const bool firstColumn = center % resolution == 0;
 	const bool lastColumn = center % resolution == resolution - 1;
 
@@ -109,8 +97,8 @@ const std::vector<short>& CloseIndexes::getSecond(int center) const {
 	const bool firstRow = center < resolution;
 	const bool secondRow = !firstRow && center < 2 * resolution;
 
-	const bool lastRow = center > resolution * resolution - resolution;
-	const bool almostLastRow = !lastRow && center > resolution * resolution - 2 * resolution;
+	const bool lastRow = center >= resolution * resolution - resolution;
+	const bool almostLastRow = !lastRow && center >= resolution * resolution - 2 * resolution;
 
 	const bool firstColumn = center % resolution == 0;
 	const bool secondColumn = center % resolution == 1;
