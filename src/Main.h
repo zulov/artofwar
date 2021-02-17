@@ -77,7 +77,7 @@ private:
 	void newGame(NewGameForm* form, Loading& progress);
 	void changeState(GameState newState);
 
-	void writeSum(std::ofstream &outFile, std::span<float> vals, char pId) const;
+	void writeOutput(std::ofstream& outFile, const std::function<float(Player*)>& func) const;
 	void writeOutput() const;
 
 	Urho3D::MouseMode useMouseMode_;

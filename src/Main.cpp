@@ -29,6 +29,7 @@
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "hud/window/selected/SelectedHudElement.h"
 #include "math/RandGen.h"
+#include "math/SpanUtils.h"
 #include "objects/ActionType.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
@@ -61,7 +62,7 @@ void Main::Setup() {
 	db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
 	db_resolution* resolution = Game::getDatabase()->getResolution(settings->resolution);
 	engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
-	
+
 	engineParameters_[EP_FULL_SCREEN] = graphSettings->fullscreen;
 
 	engineParameters_[EP_SOUND] = false;
@@ -73,13 +74,13 @@ void Main::Setup() {
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
 	readParameters();
-	if(SIM_GLOBALS.HEADLESS) {
-		engineParameters_[EP_LOG_NAME]="";
+	if (SIM_GLOBALS.HEADLESS) {
+		engineParameters_[EP_LOG_NAME] = "";
 		GetSubsystem<Log>()->SetLevel(LOG_NONE);
-	}else {
-		engineParameters_[EP_LOG_NAME] = "logs/"+ GetTypeName()+".log";
+	} else {
+		engineParameters_[EP_LOG_NAME] = "logs/" + GetTypeName() + ".log";
 	}
-	
+
 	Game::getDatabase()->refreshAfterParametersRead();
 
 	Game::setCache(GetSubsystem<ResourceCache>())
@@ -108,36 +109,25 @@ void Main::Start() {
 	changeState(GameState::LOADING);
 }
 
-void Main::writeSum(std::ofstream& outFile, std::span<float> vals, char pId) const {
-	outFile << std::to_string(pId) << ";" << std::accumulate(vals.begin(), vals.end(), 0.f) << "\n";
+void Main::writeOutput(std::ofstream& outFile, const std::function<float(Player*)>& func) const {
+	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+		outFile << std::to_string(player->getId()) << ";" << func(player) << "\n";
+	}
 }
 
 void Main::writeOutput() const {
 	if (!outputType.Empty()) {
 		std::ofstream outFile(("result/" + outputName).CString(), std::ios_base::out);
 		if (outputType == "score") {
-			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-				outFile << std::to_string(player->getId()) << ";" << player->getScore() << "\n";
-			}
+			writeOutput(outFile, [](Player* p) -> float { return p->getScore(); });
 		} else if (outputType == "ressum") {
-			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-				writeSum(outFile, player->getResources().getValues(), player->getId());
-			}
+			writeOutput(outFile, [](Player* p) -> float { return sumSpan(p->getResources().getValues()); });
 		} else if (outputType == "ressmallest") {
-			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-				auto vals = player->getResources().getValues();
-				outFile << std::to_string(player->getId()) << ";" << *std::min(vals.begin(), vals.end()) << "\n";
-			}
+			writeOutput(outFile, [](Player* p) -> float { return minSpan(p->getResources().getValues()); });
 		} else if (outputType == "ressmallest+sum") {
-			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-				auto vals = player->getResources().getValues();
-				outFile << std::to_string(player->getId()) << ";" << *std::min(vals.begin(), vals.end()) +
-					std::accumulate(vals.begin(), vals.end(), 0.f) << "\n";
-			}
+			writeOutput(outFile, [](Player* p) -> float { return minAndSumSpan(p->getResources().getValues()); });
 		} else if (outputType == "armysum") {
-			for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-				writeSum(outFile, player->getPossession().getUnitsMetrics(), player->getId());
-			}
+			writeOutput(outFile, [](Player* p) -> float { return sumSpan(p->getPossession().getUnitsMetrics()); });
 		}
 		outFile.close();
 	}

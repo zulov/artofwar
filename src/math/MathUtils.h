@@ -74,3 +74,4 @@ inline float fixValue(float value, float maxValue) {
 	}
 	return value;
 }
+
