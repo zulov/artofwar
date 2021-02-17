@@ -73,6 +73,7 @@ void Main::Setup() {
 
 	engine_->SetMaxFps(graphSettings->max_fps);
 	engine_->SetMinFps(graphSettings->min_fps);
+
 	readParameters();
 	if (SIM_GLOBALS.HEADLESS) {
 		engineParameters_[EP_LOG_NAME] = "";
@@ -109,27 +110,28 @@ void Main::Start() {
 	changeState(GameState::LOADING);
 }
 
-void Main::writeOutput(std::ofstream& outFile, const std::function<float(Player*)>& func) const {
+void Main::writeOutput(const std::function<float(Player*)>& func) const {
+	std::ofstream outFile(("result/" + outputName).CString(), std::ios_base::out);
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 		outFile << std::to_string(player->getId()) << ";" << func(player) << "\n";
 	}
+	outFile.close();
 }
 
 void Main::writeOutput() const {
 	if (!outputType.Empty()) {
 		std::ofstream outFile(("result/" + outputName).CString(), std::ios_base::out);
 		if (outputType == "score") {
-			writeOutput(outFile, [](Player* p) -> float { return p->getScore(); });
+			writeOutput([](Player* p) -> float { return p->getScore(); });
 		} else if (outputType == "ressum") {
-			writeOutput(outFile, [](Player* p) -> float { return sumSpan(p->getResources().getValues()); });
+			writeOutput([](Player* p) -> float { return sumSpan(p->getResources().getValues()); });
 		} else if (outputType == "ressmallest") {
-			writeOutput(outFile, [](Player* p) -> float { return minSpan(p->getResources().getValues()); });
+			writeOutput([](Player* p) -> float { return minSpan(p->getResources().getValues()); });
 		} else if (outputType == "ressmallest+sum") {
-			writeOutput(outFile, [](Player* p) -> float { return minAndSumSpan(p->getResources().getValues()); });
+			writeOutput([](Player* p) -> float { return minAndSumSpan(p->getResources().getValues()); });
 		} else if (outputType == "armysum") {
-			writeOutput(outFile, [](Player* p) -> float { return sumSpan(p->getPossession().getUnitsMetrics()); });
+			writeOutput([](Player* p) -> float { return sumSpan(p->getPossession().getUnitsMetrics()); });
 		}
-		outFile.close();
 	}
 }
 
@@ -464,6 +466,11 @@ void Main::HandleKeyDown(StringHash /*eventType*/, VariantMap& eventData) {
 		simulation->changeCoef(coefToEdit, -1);
 	}
 
+	if (key == KEY_F8) {
+		engine_->SetMaxFps((engine_->GetMaxFps() + 1) * 2);
+	} else if (key == KEY_F7) {
+		engine_->SetMaxFps(engine_->GetMaxFps() / 2);
+	}
 }
 
 void Main::HandleMouseModeRequest(StringHash /*eventType*/, VariantMap& eventData) {

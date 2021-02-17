@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Resources.h"
 #include "database/DatabaseCache.h"
+#include "math/SpanUtils.h"
 #include "math/VectorUtils.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/building/Building.h"
@@ -121,8 +122,7 @@ void Possession::updateAndClean(Resources& resources, const ObjectsInfo* simInfo
 		building->addValues(buildingsValuesAsSpan);
 	}
 
-	auto values = resources.getValues();
-	resourcesSum = std::accumulate(values.begin(), values.end(), 0.f);
+	resourcesSum = sumSpan(resources.getValues());
 
 	freeWorkersNumber = std::count_if(workers.begin(), workers.end(), [](Unit* worker) {
 		return isInFreeState(worker->getState());
