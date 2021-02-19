@@ -12,6 +12,7 @@ struct GridCalculator;
 struct CloseIndexes;
 class ComplexBucketData;
 
+//TODO perf zrobic takiego wstepnego findera o nizesz rozdzielczosci jezeli sa w jednym squere i tam nic niema to mozna isc prosto
 class PathFinder {
 public:
 	PathFinder(short resolution, float size, ComplexBucketData* complexData);
@@ -37,6 +38,7 @@ private:
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 	void resetPathArrays();
+	bool isInLocalArea(int center, int indexOfAim) const;
 	CloseIndexes* closeIndexes;
 	GridCalculator* calculator;
 

@@ -135,11 +135,17 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
 	if (ifInCache(startIdx, endIdx)) {
 		return tempPath;
 	}
-
-	getPassableEnd(endIdx);
+	
+	endIdx = getPassableEnd(endIdx);//TODO improve kolejnosc tego  i nize jest istotna?
 
 	lastStartIdx = startIdx;
 	lastEndIdx = endIdx;
+
+	if (isInLocalArea(startIdx, endIdx)) {
+		tempPath->clear();
+		tempPath->emplace_back(endIdx);
+		return tempPath;
+	}
 
 	float min = cost(startIdx, endIdx);
 	return findPath(startIdx, endIdx, min, min * 2);
@@ -161,6 +167,8 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 		if (refreshed.find(startIndex) != refreshed.end()) {
 			continue;
 		}
+
+		spradzic w najblizesz okolicy bez initu
 		resetPathArrays();
 
 		frontier.init(750, 0);
@@ -294,4 +302,16 @@ void PathFinder::resetPathArrays() {
 
 	min_cost_to_ref = resolution * resolution - 1;
 	max_cost_to_ref = 0;
+}
+
+bool PathFinder::isInLocalArea(const int center, int indexOfAim) const {
+	//TODO code duplite
+	if (center == indexOfAim) { return true; }
+	auto diff = indexOfAim - center; //center + value == indexOfAim
+	for (auto value : closeIndexes->get(indexOfAim)) {
+		if (diff == value) {
+			return true;
+		}
+	}
+	return false;
 }
