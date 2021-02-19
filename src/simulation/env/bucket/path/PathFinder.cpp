@@ -160,15 +160,19 @@ float PathFinder::cost(const int current, const int next) const {
 }
 
 void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
-	std::unordered_set<int> refreshed;
+	std::vector<int> refreshed;
 	while (!toRefresh.empty()) {
 		int startIndex = toRefresh.back();
 		toRefresh.pop_back();
-		if (refreshed.find(startIndex) != refreshed.end()) {
+
+		if (std::find(refreshed.begin(), refreshed.end(), startIndex) != refreshed.end()) {
 			continue;
 		}
-
-		spradzic w najblizesz okolicy bez initu
+		if (!complexData[startIndex].allNeightOccupied()) {
+			complexData[startIndex].setEscapeThrough(-1);
+			break;
+		}
+		
 		resetPathArrays();
 
 		frontier.init(750, 0);
@@ -192,7 +196,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 					int nI = current + closeIndexes->getIndexAt(i);
 					assert(nI >= 0 && nI < resolution* resolution);
 					if (!complexData[nI].allNeightOccupied()
-						&& refreshed.find(nI) == refreshed.end()) {
+						&& std::find(refreshed.begin(), refreshed.end(), nI) != refreshed.end()) {
 						//TODO to chyba glupi warunek
 						toRefresh.push_back(nI);
 					}
@@ -214,11 +218,12 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 			int current2 = startIndex;
 			for (int i = 1; i < path->size(); ++i) {
 				complexData[current2].setEscapeThrough(path->at(i));
-				refreshed.insert(current2);
+				refreshed.push_back(current2);
 				current2 = path->at(i);
 			}
-		} else {
-			refreshed.insert(startIndex);
+		}
+		else {
+			refreshed.push_back(startIndex);
 			complexData[startIndex].setEscapeThrough(-1);
 		}
 	}
