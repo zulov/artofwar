@@ -56,4 +56,3 @@ inline void copyTo(std::span<float> dest, std::span<float> src1, std::span<float
 	std::copy(src2.begin(), src2.end(), dest.begin() + src1.size());
 	std::copy(src3.begin(), src3.end(), dest.begin() + src1.size()+ src2.size());
 }
-

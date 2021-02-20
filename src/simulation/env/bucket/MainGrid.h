@@ -37,7 +37,7 @@ public:
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const;
 
 	void updateNeighbors(int current) const;
-	float cost(Urho3D::Vector2 &center, int next) const;
+	float cost(int first, int next) const;
 
 	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim) const;
 	std::vector<int>* findPath(int startIdx, int endIdx) const;

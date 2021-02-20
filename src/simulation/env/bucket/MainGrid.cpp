@@ -38,11 +38,10 @@ MainGrid::~MainGrid() {
 void MainGrid::prepareGridToFind() const {
 	for (int current = 0; current < sqResolution; ++current) {
 		auto& data = complexData[current];
-		auto currentCenter = calculator->getCenter(current);
 		for (auto i : closeIndexes->getTabIndexes(current)) {
 			data.setNeightFree(i);
 			const int nI = current + closeIndexes->getIndexAt(i);
-			data.setCost(i, cost(currentCenter, nI));
+			data.setCost(i, cost(current, nI));
 		}
 	}
 	pathConstructor->prepareGridToFind();
@@ -395,8 +394,8 @@ void MainGrid::updateNeighbors(const int current) const {
 	}
 }
 
-float MainGrid::cost(Urho3D::Vector2& center, int next) const {
-	return (center - calculator->getCenter(next)).Length();
+float MainGrid::cost(int first, int next) const {
+	return calculator->getDistance(first, next);
 }
 
 std::vector<int>* MainGrid::findPath(int startIdx, const Urho3D::Vector2& aim) const {

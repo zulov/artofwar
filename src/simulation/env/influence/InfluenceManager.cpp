@@ -298,7 +298,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 	return centersFromIndexes(getIndexesIterative(result, tolerance, min, maps));
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> result, char player) {
+std::vector<int> InfluenceManager::getAreas(const std::span<float> result, char player) {
 	auto& maps = mapsForAiPerPlayer[player];
 	assert(result.size()==maps.size());
 
@@ -307,7 +307,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreas(const std::span<float> r
 	for (char i = 0; i < maps.size(); ++i) {
 		maps[i]->getIndexesWithByValue(result[i], intersection);
 	}
-
+	//TODO pref std::partial_sort
 	const auto inx = sort_indexes(std::span(intersection, arraySize));
 	return centersFromIndexes(intersection, inx, 0.02f * maps.size());
 }
@@ -327,19 +327,17 @@ Urho3D::Vector2 InfluenceManager::getCenterOf(CenterType id, char player) {
 	return mapsForCentersPerPlayer[player][cast(id)]->getCenter();
 }
 
-std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(float* values,
-                                                                  const std::vector<unsigned>& indexes,
-                                                                  float minVal) const {
-	std::vector<Urho3D::Vector2> centers;
+std::vector<int> InfluenceManager::centersFromIndexes(float* values, const std::vector<unsigned>& indexes,
+                                                      float minVal) const {
+	std::vector<int> result;
 
 	for (auto ptr = indexes.begin(); (ptr < indexes.begin() + 256 && ptr < indexes.end()); ++ptr) {
-		auto value = values[*ptr];
-		if (value > minVal) {
+		if (values[*ptr] > minVal) {
 			break;
 		}
-		centers.emplace_back(calculator->getCenter(*ptr));
+		result.emplace_back(*ptr);
 	}
-	return centers;
+	return result;
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(const std::vector<int>& intersection) const {

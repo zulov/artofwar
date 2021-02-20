@@ -9,6 +9,7 @@
 #include "commands/action/GeneralActionCommand.h"
 #include "commands/action/GeneralActionType.h"
 #include "database/DatabaseCache.h"
+#include "math/SpanUtils.h"
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
 #include "objects/building/Building.h"
@@ -74,6 +75,9 @@ void ActionMaker::action() {
 	const auto resResult = ifWorkerCreate->decide(resInput);
 	const auto unitsResult = ifUnitCreate->decide(unitsInput);
 	const auto buildingsResult = ifBuildingCreate->decide(buildingsInput);
+	if (isnan(resResult[0])) {
+		printSpan(resInput);
+	}
 	assert(!isnan(resResult[0]));
 	float res[] = {resResult[0], unitsResult[0], buildingsResult[0]};
 

@@ -1,6 +1,7 @@
 #include "AiInputProvider.h"
 
 #include "Game.h"
+#include "math/SpanUtils.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/ai/AiUtils.h"
@@ -43,14 +44,17 @@ AiInputProvider::AiInputProvider() {
 std::span<float> AiInputProvider::getResourceInput(char playerId) {
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
 	auto& resources = player->getResources();
+	auto& possession = player->getPossession();
+
 	const auto basic = getBasicInput(playerId);
 	copyTo(resourceIdInputSpan, basic, resources.getGatherSpeeds(), resources.getValues());
 
-	resourceIdInputSpan[cast(ResourceInputType::FREE_WORKERS)] = player->getPossession().getFreeWorkersNumber();
-	resourceIdInputSpan[cast(ResourceInputType::WORKERS)] = player->getPossession().getWorkersNumber();
+	resourceIdInputSpan[cast(ResourceInputType::FREE_WORKERS) + basic.size()] = possession.getFreeWorkersNumber();
+	resourceIdInputSpan[cast(ResourceInputType::WORKERS) + basic.size()] = possession.getWorkersNumber();
 
 	std::transform(resourceIdInputSpan.begin() + basic.size(), resourceIdInputSpan.end(), wResourceInput,
 	               resourceIdInputSpan.begin() + basic.size(), std::divides<>());
+	validateSpan(resourceIdInputSpan);
 	return resourceIdInputSpan;
 }
 
@@ -63,6 +67,7 @@ std::span<float> AiInputProvider::getUnitsInput(char playerId) {
 
 	std::transform(unitsInputSpan.begin() + basic.size(), unitsInputSpan.end(), wUnitsSumInput,
 	               unitsInputSpan.begin() + basic.size(), std::divides<>());
+	validateSpan(unitsInputSpan);
 	return unitsInputSpan;
 }
 
@@ -75,16 +80,19 @@ std::span<float> AiInputProvider::getBuildingsInput(char playerId) {
 
 	std::transform(buildingsInputSpan.begin() + basic.size(), buildingsInputSpan.end(), wBuildingsSumInput,
 	               buildingsInputSpan.begin() + basic.size(), std::divides<>());
+	validateSpan(buildingsInputSpan);
 	return buildingsInputSpan;
 }
 
 std::span<float> AiInputProvider::getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) {
 	copyTo(unitsWithMetricUnitSpan, getUnitsInput(playerId), prop->getParamsNorm());
+	validateSpan(unitsWithMetricUnitSpan);
 	return unitsWithMetricUnitSpan;
 }
 
 std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop) {
 	copyTo(basicWithMetricUnitSpan, getBuildingsInput(playerId), prop->getParamsNorm());
+	validateSpan(basicWithMetricUnitSpan);
 	return basicWithMetricUnitSpan;
 }
 
@@ -93,7 +101,7 @@ std::span<float> AiInputProvider::getBasicInput(short id) {
 
 	update(id, basicInputSpan.data());
 	update(idEnemy, basicInputSpan.data() + magic_enum::enum_count<BasicInputType>());
-
+	validateSpan(unitsWithMetricUnitSpan);
 	return basicInputSpan;
 }
 

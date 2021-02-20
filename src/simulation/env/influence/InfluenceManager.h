@@ -57,14 +57,13 @@ public:
 	                                               int min);
 
 	float getFieldSize() const;
-	std::vector<Urho3D::Vector2> getAreas(const std::span<float> result, char player);
+	std::vector<int> getAreas(const std::span<float> result, char player);
 	void addCollect(Unit* unit, float value);
 	void addAttack(Unit* unit, float value);
 	Urho3D::Vector2 getCenterOf(CenterType id, char player);
 
 private:
-	std::vector<Urho3D::Vector2> centersFromIndexes(float* values,
-	                                                const std::vector<unsigned>& indexes, float minVal) const;
+	std::vector<int> centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<int>& intersection) const;
 
 	template <typename T>

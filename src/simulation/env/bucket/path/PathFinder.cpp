@@ -97,6 +97,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 					if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
 						updateCost(next, new_cost);
 						frontier.put(next, new_cost + heuristic(next, endIdx));
+						//TODO next mozna obliczyc raz w srodku
 						came_from[next] = current;
 					}
 				}
@@ -135,8 +136,8 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
 	if (ifInCache(startIdx, endIdx)) {
 		return tempPath;
 	}
-	
-	endIdx = getPassableEnd(endIdx);//TODO improve kolejnosc tego  i nize jest istotna?
+
+	endIdx = getPassableEnd(endIdx); //TODO improve kolejnosc tego  i nize jest istotna?
 
 	lastStartIdx = startIdx;
 	lastEndIdx = endIdx;
@@ -156,7 +157,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim)
 }
 
 float PathFinder::cost(const int current, const int next) const {
-	return (calculator->getCenter(current) - calculator->getCenter(next)).Length();
+	return calculator->getDistance(current, next);
 }
 
 void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
@@ -172,7 +173,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 			complexData[startIndex].setEscapeThrough(-1);
 			break;
 		}
-		
+
 		resetPathArrays();
 
 		frontier.init(750, 0);
@@ -221,8 +222,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 				refreshed.push_back(current2);
 				current2 = path->at(i);
 			}
-		}
-		else {
+		} else {
 			refreshed.push_back(startIndex);
 			complexData[startIndex].setEscapeThrough(-1);
 		}
@@ -230,8 +230,8 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 }
 
 inline float PathFinder::heuristic(int from, int to) const {
-	auto a = getCords(from);
-	auto b = getCords(to);
+	const auto a = getCords(from);
+	const auto b = getCords(to);
 
 	return (abs(a.x_ - b.x_) + abs(a.y_ - b.y_)) * fieldSize;
 }

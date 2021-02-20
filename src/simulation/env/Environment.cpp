@@ -339,11 +339,11 @@ std::array<float, 5>& Environment::getInfluenceDataAt(char player, const Urho3D:
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,
                                                            const std::span<float> result) {
-	std::vector<Urho3D::Vector2> centers = influenceManager.getAreas(result, player);
+	std::vector<int> indexes = influenceManager.getAreas(result, player);
 	//TODO performance nie obliczać wszystkich centrów tylko te co trzeba
 	float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
-	for (auto& center : centers) {
-		for (auto index : mainGrid.getArrayNeight(center, ratio)) {
+	for (auto centerIndex : indexes) {
+		for (auto index : mainGrid.getCloseCenters(centerIndex, ratio)) {
 			auto gridCenter = mainGrid.getCenter(index);
 			if (validateStatic(building->size, gridCenter)) {
 				return gridCenter;

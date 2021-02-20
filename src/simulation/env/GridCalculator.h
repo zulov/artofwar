@@ -5,8 +5,7 @@ struct GridCalculator {
 
 	explicit GridCalculator(unsigned short resolution, float size)
 		: sqResolution(resolution * resolution), resolution(resolution),
-		  invFieldSize(resolution / size), fieldSize(size / resolution), size(size), halfSize(size / 2.f) {
-	}
+		  invFieldSize(resolution / size), fieldSize(size / resolution), size(size), halfSize(size / 2.f) { }
 
 	GridCalculator(const GridCalculator&) = delete;
 
@@ -65,6 +64,14 @@ struct GridCalculator {
 
 	unsigned short getResolution() const { return resolution; }
 	float getSize() const { return size; }
+
+	float getDistance(int first, int next) const {
+		const auto a = getIndexes(first);
+		const auto b = getIndexes(next);
+		const auto x = (a.x_ - b.x_) * fieldSize;
+		const auto y = (a.y_ - b.y_) * fieldSize;
+		return sqrt(x * x + y * y);
+	}
 
 private:
 	unsigned int sqResolution;

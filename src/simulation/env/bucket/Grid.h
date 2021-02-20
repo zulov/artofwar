@@ -33,7 +33,7 @@ public:
 
 	std::vector<Physical*>* getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 	std::vector<Physical*>* getArrayNeightSimilarAs(Physical* clicked, float radius);
-	std::vector<int> getArrayNeight(const Urho3D::Vector2& center, float radius) const;
+	std::vector<int> getCloseCenters(const int centerIndex, float radius) const;
 	void invalidateCache();
 	void invalidateCache(const int currentIdx, float radius);
 	BucketIterator& getArrayNeight(Urho3D::Vector3& position, float radius);
