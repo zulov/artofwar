@@ -25,13 +25,16 @@ void Resources::init(float valueForAll) {
 	values = new float[size];
 	sumGatherSpeed = new float[size];
 	gatherSpeeds = new float[size];
+	sumValues = new float[size];
 	std::fill_n(values, size, valueForAll);
 	std::fill_n(gatherSpeeds, size, 0.f);
 	std::fill_n(sumGatherSpeed, size, 0.f);
+	std::fill_n(sumValues, size, 0.f);
 
 	valuesSpan = std::span(values, size);
 	gatherSpeedsSpan = std::span(gatherSpeeds, size);
 	sumGatherSpeedSpan = std::span(sumGatherSpeed, size);
+	sumValuesSpan = std::span(sumValues, size);
 
 	changed = true;
 }
@@ -61,19 +64,8 @@ bool Resources::hasEnough(const std::vector<db_cost*>& costs) const {
 void Resources::add(int id, float value) {
 	values[id] += value;
 	sumGatherSpeed[id] += value;
+	sumValues[id] += value;
 	changed = true;
-}
-
-bool Resources::hasChanged() const {
-	return changed;
-}
-
-std::span<float> Resources::getValues() const {
-	return valuesSpan;
-}
-
-std::span<float> Resources::getGatherSpeeds() const {
-	return gatherSpeedsSpan;
 }
 
 void Resources::hasBeenUpdatedDrawn() {
@@ -110,6 +102,6 @@ void Resources::revert(int end, const std::vector<db_cost*>& costs) {
 }
 
 void Resources::resetStats() const {
-	std::copy(sumGatherSpeed, sumGatherSpeed + size, gatherSpeeds);
-	std::fill_n(sumGatherSpeed, size, 0.f);
+	std::copy(sumGatherSpeedSpan.begin(), sumGatherSpeedSpan.end(), gatherSpeedsSpan.begin());
+	std::fill(sumGatherSpeedSpan.begin(), sumGatherSpeedSpan.end(), 0.f);
 }

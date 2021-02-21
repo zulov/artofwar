@@ -1,14 +1,8 @@
 ﻿#include "Environment.h"
-#include <array>
-#include <chrono>
-#include <magic_enum.hpp>
-#include <simulation/env/bucket/BucketIterator.h>
 #include <Urho3D/Graphics/Terrain.h>
 #include "EnvConsts.h"
 #include "database/db_strcut.h"
-#include "influence/CenterType.h"
 #include "math/MathUtils.h"
-#include "objects/ObjectEnums.h"
 #include "objects/building/Building.h"
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"

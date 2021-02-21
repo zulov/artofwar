@@ -1,5 +1,4 @@
 #include "PathFinder.h"
-#include <unordered_set>
 #include "DrawGridUtils.h"
 #include "Game.h"
 #include "../ComplexBucketData.h"

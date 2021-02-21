@@ -54,7 +54,7 @@ std::span<float> AiInputProvider::getResourceInput(char playerId) {
 
 	std::transform(resourceIdInputSpan.begin() + basic.size(), resourceIdInputSpan.end(), wResourceInput,
 	               resourceIdInputSpan.begin() + basic.size(), std::divides<>());
-	validateSpan(resourceIdInputSpan);
+	validateSpan(__LINE__, __FILE__, resourceIdInputSpan);
 	return resourceIdInputSpan;
 }
 
@@ -67,7 +67,7 @@ std::span<float> AiInputProvider::getUnitsInput(char playerId) {
 
 	std::transform(unitsInputSpan.begin() + basic.size(), unitsInputSpan.end(), wUnitsSumInput,
 	               unitsInputSpan.begin() + basic.size(), std::divides<>());
-	validateSpan(unitsInputSpan);
+	validateSpan(__LINE__, __FILE__, unitsInputSpan);
 	return unitsInputSpan;
 }
 
@@ -80,19 +80,21 @@ std::span<float> AiInputProvider::getBuildingsInput(char playerId) {
 
 	std::transform(buildingsInputSpan.begin() + basic.size(), buildingsInputSpan.end(), wBuildingsSumInput,
 	               buildingsInputSpan.begin() + basic.size(), std::divides<>());
-	validateSpan(buildingsInputSpan);
+	blad 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; -nan; 0; -7.09057e-42;
+	validateSpan(__LINE__, __FILE__, buildingsInputSpan);
+	
 	return buildingsInputSpan;
 }
 
 std::span<float> AiInputProvider::getUnitsInputWithMetric(char playerId, const db_unit_metric* prop) {
 	copyTo(unitsWithMetricUnitSpan, getUnitsInput(playerId), prop->getParamsNorm());
-	validateSpan(unitsWithMetricUnitSpan);
+	validateSpan(__LINE__, __FILE__, unitsWithMetricUnitSpan);
 	return unitsWithMetricUnitSpan;
 }
 
 std::span<float> AiInputProvider::getBuildingsInputWithMetric(char playerId, const db_building_metric* prop) {
 	copyTo(basicWithMetricUnitSpan, getBuildingsInput(playerId), prop->getParamsNorm());
-	validateSpan(basicWithMetricUnitSpan);
+	validateSpan(__LINE__, __FILE__, basicWithMetricUnitSpan);
 	return basicWithMetricUnitSpan;
 }
 
@@ -101,7 +103,7 @@ std::span<float> AiInputProvider::getBasicInput(short id) {
 
 	update(id, basicInputSpan.data());
 	update(idEnemy, basicInputSpan.data() + magic_enum::enum_count<BasicInputType>());
-	validateSpan(unitsWithMetricUnitSpan);
+	validateSpan(__LINE__, __FILE__, unitsWithMetricUnitSpan);
 	return basicInputSpan;
 }
 
