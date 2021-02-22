@@ -33,12 +33,12 @@ private:
 	};
 	inline static std::array<unsigned char, FRAMES_IN_PERIOD> data[magic_enum::enum_count<PerFrameAction>()] = {
 		{
-			1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}, //INFLUENCE_UNITS_1
 		{
-			0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}, //INFLUENCE_UNITS_2
@@ -48,7 +48,7 @@ private:
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}, //INFLUENCE_RESOURCES		
 		{
-			0, 0, 0, 2, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 5, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}, //INFLUENCE_OTHER

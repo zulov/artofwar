@@ -91,8 +91,8 @@ void Possession::updateAndClean(Resources& resources, const ObjectsInfo* simInfo
 			}
 		}
 	}
-	std::fill_n(unitsValuesAsSpan.begin(), unitsValuesAsSpan.size(), 0.f);
-	std::fill_n(freeArmyMetricsAsSpan.begin(), freeArmyMetricsAsSpan.size(), 0.f);
+	resetSpan(unitsValuesAsSpan);
+	resetSpan(freeArmyMetricsAsSpan);
 	for (auto unit : units) {
 		unit->addValues(unitsValuesAsSpan);
 
@@ -100,8 +100,7 @@ void Possession::updateAndClean(Resources& resources, const ObjectsInfo* simInfo
 			unit->addValues(freeArmyMetricsAsSpan);
 		}
 	}
-
-	std::fill_n(buildingsValuesAsSpan.begin(), buildingsValuesAsSpan.size(), 0.f);
+	resetSpan(buildingsValuesAsSpan);
 	for (auto building : buildings) {
 		building->addValues(buildingsValuesAsSpan);
 	}
