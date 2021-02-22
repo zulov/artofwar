@@ -80,7 +80,6 @@ std::span<float> AiInputProvider::getBuildingsInput(char playerId) {
 
 	std::transform(buildingsInputSpan.begin() + basic.size(), buildingsInputSpan.end(), wBuildingsSumInput,
 	               buildingsInputSpan.begin() + basic.size(), std::divides<>());
-	blad 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; -nan; 0; -7.09057e-42;
 	validateSpan(__LINE__, __FILE__, buildingsInputSpan);
 	
 	return buildingsInputSpan;

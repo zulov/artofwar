@@ -308,7 +308,7 @@ std::vector<int> InfluenceManager::getAreas(const std::span<float> result, char 
 		maps[i]->getIndexesWithByValue(result[i], intersection);
 	}
 	//TODO pref std::partial_sort
-	const auto inx = sort_indexes(std::span(intersection, arraySize));
+	const auto inx = sort_indexes(std::span(intersection, arraySize), 256);
 	return centersFromIndexes(intersection, inx, 0.02f * maps.size());
 }
 

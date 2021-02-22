@@ -1,5 +1,4 @@
 #include "Possession.h"
-#include <numeric>
 #include "Game.h"
 #include "Resources.h"
 #include "database/DatabaseCache.h"
@@ -7,8 +6,6 @@
 #include "math/VectorUtils.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/building/Building.h"
-#include "objects/unit/Unit.h"
-#include "objects/unit/order/enums/UnitAction.h"
 #include "simulation/ObjectsInfo.h"
 
 Possession::Possession(char nation) {
@@ -19,6 +16,9 @@ Possession::Possession(char nation) {
 		}
 		buildingsPerId[id] = new std::vector<Building*>();
 	}
+	resetSpan(unitsValuesAsSpan);
+	resetSpan(freeArmyMetricsAsSpan);
+	resetSpan(buildingsValuesAsSpan);
 }
 
 Possession::~Possession() {
@@ -49,27 +49,11 @@ std::vector<Building*>* Possession::getBuildings(short id) {
 }
 
 float Possession::getUnitsVal(UnitMetric value) const {
-	return unitsMetrics[cast(value)];
+	return unitsValuesAsSpan[cast(value)];
 }
 
 float Possession::getBuildingsVal(BuildingMetric value) const {
-	return buildingsMetrics[cast(value)];
-}
-
-std::span<float> Possession::getUnitsMetrics() const {
-	return unitsValuesAsSpan;
-}
-
-std::span<float> Possession::getFreeArmyMetrics() const {
-	return freeArmyMetricsAsSpan;
-}
-
-std::span<float> Possession::getBuildingsMetrics() const {
-	return buildingsValuesAsSpan;
-}
-
-std::vector<Unit*>& Possession::getWorkers() {
-	return workers;
+	return buildingsValuesAsSpan[cast(value)];
 }
 
 std::vector<Unit*> Possession::getFreeArmy() {

@@ -4,6 +4,7 @@
 #include <vector>
 #include <span>
 #include "objects/Physical.h"
+#include "SpanUtils.h"
 
 inline auto isAlivePred = [](Physical* physical) {
 	return physical == nullptr || !physical->isAlive();
@@ -28,23 +29,30 @@ static void cleanDead(std::vector<T*>* vector, bool sthDead = true) {
 }
 
 template <typename T, class _Pr>
-static std::vector<unsigned int> sort_indexes(std::span<T> v, _Pr pred) {
+static std::vector<unsigned int> sort_indexes(std::span<T> v, _Pr pred, int size) {
 	std::vector<unsigned int> idx(v.size());
 
 	std::iota(idx.begin(), idx.end(), 0);
 
-	stable_sort(idx.begin(), idx.end(), pred);
+	//stable_sort(idx.begin(), idx.end(), pred);
+	if (size != -1) {
+		std::partial_sort(idx.begin(), idx.begin() + size, idx.end(), pred);
+	} else {
+		stable_sort(idx.begin(), idx.end(), pred);
+	}
+
+
 	return idx;
 }
 
 template <typename T>
-static std::vector<unsigned int> sort_indexes(std::span<T> v) {
-	return sort_indexes(v, [&v](auto i1, auto i2) { return v[i1] < v[i2]; });
+static std::vector<unsigned int> sort_indexes(std::span<T> v, int size = -1) {
+	return sort_indexes(v, [&v](auto i1, auto i2) { return v[i1] < v[i2]; }, size);
 }
 
 template <typename T>
-static std::vector<unsigned int> sort_indexes_desc(std::span<T> v) {
-	return sort_indexes(v, [&v](auto i1, auto i2) { return v[i1] > v[i2]; });
+static std::vector<unsigned int> sort_indexes_desc(std::span<T> v, int size = -1) {
+	return sort_indexes(v, [&v](auto i1, auto i2) { return v[i1] > v[i2]; }, size);
 }
 
 static std::vector<unsigned char> intersection(std::vector<std::vector<unsigned char>*>& ids) {

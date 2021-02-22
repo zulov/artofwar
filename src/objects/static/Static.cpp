@@ -28,7 +28,7 @@ void Static::populate() {
 	const auto cordsCell = Game::getEnvironment()->getCords(mainCell);
 	const auto sizeX = calculateSize(gridSize.x_, cordsCell.x_);
 	const auto sizeZ = calculateSize(gridSize.y_, cordsCell.y_);
-
+	occupiedCells.reserve(gridSize.x_ * gridSize.y_);
 	for (short i = sizeX.x_; i < sizeX.y_; ++i) {
 		for (short j = sizeZ.x_; j < sizeZ.y_; ++j) {
 			occupiedCells.push_back(Game::getEnvironment()->getIndex(i, j));

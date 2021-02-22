@@ -51,3 +51,7 @@ inline float maxSpanRoot(std::span<float> vec) {
 	validateSpan(__LINE__, __FILE__, vec);
 	return maxSpan(vec);
 }
+
+inline void resetSpan(std::span<float> vec, float val = 0.f) {
+	std::fill_n(vec.begin(), vec.size(), val);
+}

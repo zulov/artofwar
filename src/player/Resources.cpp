@@ -4,6 +4,7 @@
 
 #include "Game.h"
 #include "database/DatabaseCache.h"
+#include "math/SpanUtils.h"
 
 
 Resources::Resources() {
@@ -14,42 +15,31 @@ Resources::Resources(float valueForAll) {
 	init(valueForAll);
 }
 
-Resources::~Resources() {
-	delete[] values;
-	delete[] sumGatherSpeed;
-	delete[] gatherSpeeds;
-};
-
 void Resources::init(float valueForAll) {
 	size = Game::getDatabase()->getResourceSize();
-	values = new float[size];
-	sumGatherSpeed = new float[size];
-	gatherSpeeds = new float[size];
-	sumValues = new float[size];
-	std::fill_n(values, size, valueForAll);
-	std::fill_n(gatherSpeeds, size, 0.f);
-	std::fill_n(sumGatherSpeed, size, 0.f);
-	std::fill_n(sumValues, size, 0.f);
+	values = std::span(data, size);
+	gatherSpeeds = std::span(data + size, size);
+	sumGatherSpeed = std::span(data + 2 * size, size);
+	sumValues = std::span(data + 3 * size, size);
 
-	valuesSpan = std::span(values, size);
-	gatherSpeedsSpan = std::span(gatherSpeeds, size);
-	sumGatherSpeedSpan = std::span(sumGatherSpeed, size);
-	sumValuesSpan = std::span(sumValues, size);
+	resetSpan(values, valueForAll);
+	resetSpan(gatherSpeeds);
+	resetSpan(sumGatherSpeed);
+	resetSpan(sumValues);
 
 	changed = true;
 }
 
 bool Resources::reduce(const std::vector<db_cost*>& costs) {
-	for (int i = 0; i < costs.size(); ++i) {
-		const int j = costs.at(i)->resource;
-		values[j] -= costs.at(i)->value;
-		if (values[j] < 0) {
-			revert(i, costs);
-			return false;
+	if (hasEnough(costs)) {
+		for (int i = 0; i < costs.size(); ++i) {
+			const int j = costs.at(i)->resource;
+			values[j] -= costs.at(i)->value;
 		}
+		changed = true;
+		return true;
 	}
-	changed = true;
-	return true;
+	return false;
 }
 
 bool Resources::hasEnough(const std::vector<db_cost*>& costs) const {
@@ -73,7 +63,7 @@ void Resources::hasBeenUpdatedDrawn() {
 }
 
 int Resources::getSum() const {
-	return std::accumulate(values, values + size, 0);
+	return sumSpan(values);
 }
 
 std::string Resources::getValues(int precision, int player) const {
@@ -94,14 +84,7 @@ void Resources::change() {
 	changed = true;
 }
 
-void Resources::revert(int end, const std::vector<db_cost*>& costs) {
-	for (int i = 0; i < end + 1; ++i) {
-		const int j = costs.at(i)->resource;
-		values[j] += costs.at(i)->value;
-	}
-}
-
 void Resources::resetStats() const {
-	std::copy(sumGatherSpeedSpan.begin(), sumGatherSpeedSpan.end(), gatherSpeedsSpan.begin());
-	std::fill(sumGatherSpeedSpan.begin(), sumGatherSpeedSpan.end(), 0.f);
+	std::copy(sumGatherSpeed.begin(), sumGatherSpeed.end(), gatherSpeeds.begin());
+	resetSpan(sumGatherSpeed);
 }

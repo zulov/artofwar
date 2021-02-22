@@ -29,11 +29,11 @@ public:
 	float getUnitsVal(UnitMetric value) const;
 	float getBuildingsVal(BuildingMetric value) const;
 
-	std::span<float> getUnitsMetrics() const;
-	std::span<float> getFreeArmyMetrics() const;
-	std::span<float> getBuildingsMetrics() const;
+	std::span<float> getUnitsMetrics() const { return unitsValuesAsSpan; }
+	std::span<float> getFreeArmyMetrics() const { return freeArmyMetricsAsSpan; }
+	std::span<float> getBuildingsMetrics() const { return buildingsValuesAsSpan; }
 
-	std::vector<Unit*>& getWorkers();
+	const std::vector<Unit*>& getWorkers() const { return workers; }
 	std::vector<Unit*> getFreeArmy();
 private:
 	std::vector<Building*> buildings;
@@ -44,11 +44,14 @@ private:
 	int freeWorkersNumber = 0;
 	float resourcesSum = 0;
 
-	float unitsMetrics[magic_enum::enum_count<UnitMetric>() - 1];
-	float freeArmyMetrics[magic_enum::enum_count<UnitMetric>() - 1];
-	float buildingsMetrics[magic_enum::enum_count<BuildingMetric>() - 1];
+	float data[magic_enum::enum_count<UnitMetric>() - 1
+		+ magic_enum::enum_count<UnitMetric>() - 1
+		+ magic_enum::enum_count<BuildingMetric>() - 1];
 
-	const std::span<float> unitsValuesAsSpan = std::span(unitsMetrics);
-	const std::span<float> freeArmyMetricsAsSpan = std::span(freeArmyMetrics);
-	const std::span<float> buildingsValuesAsSpan = std::span(buildingsMetrics);
+	const std::span<float> unitsValuesAsSpan = std::span(data, magic_enum::enum_count<UnitMetric>() - 1);
+	const std::span<float> freeArmyMetricsAsSpan = std::span(data + magic_enum::enum_count<UnitMetric>() - 1,
+	                                                         magic_enum::enum_count<UnitMetric>() - 1);
+	const std::span<float> buildingsValuesAsSpan = std::span(
+		data + (magic_enum::enum_count<UnitMetric>() - 1) * 2,
+		magic_enum::enum_count<BuildingMetric>() - 1);
 };

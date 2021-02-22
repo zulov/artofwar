@@ -130,7 +130,9 @@ void Main::writeOutput() const {
 		} else if (outputType == "ressmallest+sum") {
 			writeOutput([](Player* p) -> float { return minAndSumSpan(p->getResources().getValues()); });
 		} else if (outputType == "res_max_min") {
-			writeOutput([](Player* p) -> float { return minSpanSq(p->getResources().getValues())+ maxSpanRoot(p->getResources().getValues()); });
+			writeOutput([](Player* p) -> float {
+				return minSpanSq(p->getResources().getValues()) + maxSpanRoot(p->getResources().getValues());
+			});
 		} else if (outputType == "armysum") {
 			writeOutput([](Player* p) -> float { return sumSpan(p->getPossession().getUnitsMetrics()); });
 		} else if (outputType == "res_sum_all") {
@@ -149,7 +151,9 @@ void Main::Stop() {
 	Game::setDatabaseCache(nullptr);
 	Game::dispose();
 	RandGen::dispose();
-	engine_->DumpResources(true);
+	if (!SIM_GLOBALS.HEADLESS) {
+		engine_->DumpResources(true);
+	}
 }
 
 void Main::subscribeToUIEvents() {

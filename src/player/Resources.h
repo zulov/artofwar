@@ -9,41 +9,36 @@ struct db_cost;
 class Resources {
 public:
 	Resources();
+	~Resources() = default;
 	void init(float valueForAll);
 	explicit Resources(float valueForAll);
 	Resources(const Resources&) = delete;
-	~Resources();
+
 	bool reduce(const std::vector<db_cost*>& costs);
 	bool hasEnough(const std::vector<db_cost*>& costs) const;
 	void add(int id, float value);
 	bool hasChanged() const { return changed; }
 
-	std::span<float> getValues() const {return valuesSpan;}
-	std::span<float> getGatherSpeeds() const { return gatherSpeedsSpan; }
-	std::span<float> getSumValues() const { return sumValuesSpan; }
-	
+	std::span<float> getValues() const { return values; }
+	std::span<float> getGatherSpeeds() const { return gatherSpeeds; }
+	std::span<float> getSumValues() const { return sumValues; }
+
 	void hasBeenUpdatedDrawn();
 	int getSum() const;
-	
+
 	std::string getValues(int precision, int player) const;
 	void setValue(int id, float amount);
 	void change();
 
 	void resetStats() const;
 private:
-	void revert(int end, const std::vector<db_cost*>& costs);
+	float data[4 * 4];
 
-	float* values;
-	float* gatherSpeeds;
-	float* sumGatherSpeed;
-	float* sumValues;
-	
-	std::span<float> valuesSpan;
-	std::span<float> gatherSpeedsSpan;
-	std::span<float> sumGatherSpeedSpan;
-	std::span<float> sumValuesSpan;
-	
+	std::span<float> values;
+	std::span<float> gatherSpeeds;
+	std::span<float> sumGatherSpeed;
+	std::span<float> sumValues;
+
 	int size;
 	bool changed;
 };
-
