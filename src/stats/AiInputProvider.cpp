@@ -102,7 +102,7 @@ std::span<float> AiInputProvider::getBasicInput(short id) {
 
 	update(id, basicInputSpan.data());
 	update(idEnemy, basicInputSpan.data() + magic_enum::enum_count<BasicInputType>());
-	validateSpan(__LINE__, __FILE__, unitsWithMetricUnitSpan);
+	validateSpan(__LINE__, __FILE__, basicInputSpan);
 	return basicInputSpan;
 }
 
