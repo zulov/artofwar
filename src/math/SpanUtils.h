@@ -5,9 +5,8 @@
 #include <iostream>
 
 inline float minSpan(std::span<float> vec) {
-	return *std::min(vec.begin(), vec.end());
+	return *std::min_element(vec.begin(), vec.end());
 }
-
 
 inline float sumSpan(std::span<float> vec) {
 	return std::accumulate(vec.begin(), vec.end(), 0.f);
@@ -32,7 +31,7 @@ inline void printSpan(std::span<float> vec) {
 inline void validateSpan(int line, std::string file, std::span<float> vec) {
 	bool valid = true;
 	for (auto val : vec) {
-		if (isnan(val)) {
+		if (isnan(val) || isinf (val)) {
 			valid = false;
 		}
 	}
@@ -44,12 +43,12 @@ inline void validateSpan(int line, std::string file, std::span<float> vec) {
 }
 
 inline float maxSpan(std::span<float> vec) {
-	return *std::max(vec.begin(), vec.end());
+	return *std::max_element(vec.begin(), vec.end());
 }
 
 inline float maxSpanRoot(std::span<float> vec) {
 	validateSpan(__LINE__, __FILE__, vec);
-	return maxSpan(vec);
+	return sqrt(maxSpan(vec) + 1);
 }
 
 inline void resetSpan(std::span<float> vec, float val = 0.f) {

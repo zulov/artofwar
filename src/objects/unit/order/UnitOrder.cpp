@@ -35,9 +35,11 @@ TargetAim* UnitOrder::getTargetAimPtr(int startInx, Urho3D::Vector2& to) const {
 
 ActionParameter UnitOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow) {
 	auto const target = getTargetAimPtr(startInx, toSoFar);
-	assert(target != nullptr);
-	//jesli jest nulem to co?
-	return ActionParameter(new FollowAim(toFollow, target));
+	if(target) {
+		return ActionParameter(new FollowAim(toFollow, target));
+	}
+	return Consts::EMPTY_ACTION_PARAMETER;
+	//assert(target != nullptr); //TODO check
 }
 
 ActionParameter UnitOrder::getChargeAim(Urho3D::Vector2& charge) {

@@ -104,5 +104,5 @@ private:
 	//
 	int timeLimit = 600;
 	Urho3D::String outputName = "test.txt";
-	Urho3D::String outputType = "ressmallest+sum";
+	Urho3D::String outputType = "res_sum_min_max";
 };

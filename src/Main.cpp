@@ -135,8 +135,10 @@ void Main::writeOutput() const {
 			});
 		} else if (outputType == "armysum") {
 			writeOutput([](Player* p) -> float { return sumSpan(p->getPossession().getUnitsMetrics()); });
-		} else if (outputType == "res_sum_all") {
-			writeOutput([](Player* p) -> float { return sumSpan(p->getResources().getSumValues()); });
+		} else if (outputType == "res_sum_min_max") {
+			writeOutput([](Player* p) -> float {
+				return minSpan(p->getResources().getSumValues()) + maxSpanRoot(p->getResources().getSumValues());
+				});
 		}
 	}
 }

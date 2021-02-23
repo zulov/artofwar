@@ -73,10 +73,11 @@ void IndividualOrder::followAndAct() {
 	if (posOpt.has_value()) {
 		auto postToUse = posOpt.value();
 		if (std::get<2>(postToUse) != unit->getMainBucketIndex()) {
-			unit->action(UnitAction::FOLLOW,
-			             getFollowAim(unit->getMainCell(), std::get<0>(postToUse), toUse));
-			unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, true));
-			//Dodanie celu po dojsciu
+			const auto param = getFollowAim(unit->getMainCell(), std::get<0>(postToUse), toUse);
+			if(param.aim!=nullptr) {
+				unit->action(UnitAction::FOLLOW, param);
+				unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, true));
+			}
 		} else {
 			unit->action(static_cast<UnitAction>(id), ActionParameter(toUse, std::get<2>(postToUse)));
 		}

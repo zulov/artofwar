@@ -13,6 +13,10 @@ public:
 	}
 
 	~GoState() = default;
+	
+	bool canStart(Unit* unit, const ActionParameter& parameter) override {
+		return parameter.aim != nullptr;
+	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->setAim(parameter.aim);
