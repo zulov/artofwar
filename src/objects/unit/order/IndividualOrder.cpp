@@ -73,6 +73,7 @@ void IndividualOrder::followAndAct() {
 	if (posOpt.has_value()) {
 		auto postToUse = posOpt.value();
 		if (std::get<2>(postToUse) != unit->getMainBucketIndex()) {
+			//TODO moga byc tez inne pozycje nie tylko ta jedna 
 			const auto param = getFollowAim(unit->getMainCell(), std::get<0>(postToUse), toUse);
 			if(param.aim!=nullptr) {
 				unit->action(UnitAction::FOLLOW, param);

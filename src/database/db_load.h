@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <iosfwd>
 
-#include "db_container.h"
 #include "db_other_struct.h"
 
 static unsigned fromHex(char** argv, int index) {
