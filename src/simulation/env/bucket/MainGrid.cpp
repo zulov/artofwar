@@ -381,7 +381,7 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 }
 
 void MainGrid::updateNeighbors(const int current) const {
-	if (calculator->isValidIndex(current)) {
+	//if (calculator->isValidIndex(current)) {
 		auto& data = complexData[current];
 		for (auto i : closeIndexes->getTabIndexes(current)) {
 			const int nI = current + closeIndexes->getIndexAt(i);
@@ -391,7 +391,7 @@ void MainGrid::updateNeighbors(const int current) const {
 				data.setNeightOccupied(i);
 			}
 		}
-	}
+	//}
 }
 
 float MainGrid::cost(int first, int next) const {
