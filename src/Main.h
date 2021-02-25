@@ -1,6 +1,5 @@
 #pragma once
 
-#include <span>
 #include <Urho3D/Engine/Application.h>
 #include "Benchmark.h"
 #include "GameState.h"

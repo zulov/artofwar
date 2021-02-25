@@ -16,7 +16,7 @@ bool DatabaseCache::openDatabase(const std::string& name) {
 	const int rc = sqlite3_open_v2((pathStr + name).c_str(), &database, SQLITE_OPEN_READONLY, nullptr);
 	if (rc) {
 		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
-		sqlite3_close(database);
+		sqlite3_close_v2(database);
 		return true;
 	}
 	std::cout << "Database Opened: " << name << std::endl;
@@ -43,7 +43,7 @@ void DatabaseCache::loadBasic(const std::string& name) {
 	execute("SELECT * from resolution", loadResolution);
 	execute("SELECT * from settings", loadSettings);
 
-	sqlite3_close(database);
+	sqlite3_close_v2(database);
 }
 
 void DatabaseCache::loadData(const std::string& name) {
@@ -64,8 +64,8 @@ void DatabaseCache::loadData(const std::string& name) {
 	execute("SELECT * from unit_level order by level", loadUnitLevels);
 	execute("SELECT * from building_level order by level", loadBuildingLevels);
 
-	execute("SELECT * from building_to_nation order by building", loadBuildingToNation);
 	execute("SELECT * from unit_to_nation order by unit", loadUnitToNation);
+	execute("SELECT * from building_to_nation order by building", loadBuildingToNation);
 
 	execute("SELECT * from unit_to_building_level order by unit", loadUnitToBuildingLevels);
 	//TODO make sure its sorted set_intersection
@@ -75,7 +75,7 @@ void DatabaseCache::loadData(const std::string& name) {
 
 	dbContainer->finish();
 
-	sqlite3_close(database);
+	sqlite3_close_v2(database);
 }
 
 void DatabaseCache::loadMaps(const std::string& name) {
@@ -83,7 +83,7 @@ void DatabaseCache::loadMaps(const std::string& name) {
 
 	execute("SELECT * from map order by id desc", loadMap);
 
-	sqlite3_close(database);
+	sqlite3_close_v2(database);
 }
 
 
@@ -94,7 +94,7 @@ DatabaseCache::~DatabaseCache() {
 void DatabaseCache::executeSingleBasic(const std::string& name, const char* sql) {
 	if (openDatabase(name)) { return; }
 	execute(sql, callback);
-	sqlite3_close(database);
+	sqlite3_close_v2(database);
 }
 
 void DatabaseCache::setGraphSettings(int i, db_graph_settings* graphSettings) {

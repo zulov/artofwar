@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdlib>
 #include <iosfwd>
+#include <sqlite3/sqlite3.h>
+
 
 #include "db_other_struct.h"
 
@@ -12,57 +14,56 @@ static unsigned fromHex(char** argv, int index) {
 	return x;
 }
 
-int static loadUnits(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
+static db_container* getContainer(void* data) { return static_cast<db_container*>(data); }
 
-	setEntity(xyz->units, new db_unit(atoi(argv[0]), argv[1], argv[3], atoi(argv[4])));
+int static loadUnits(void* data, int argc, char** argv, char** azColName) {
+	if (argc == 0) { return 0; }
+	setEntity(getContainer(data)->units, new db_unit(atoi(argv[0]), argv[1], argv[3], atoi(argv[4])));
 	return 0;
 }
 
 int static loadHudSizes(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-	const int id = atoi(argv[0]);
-	xyz->hudSizes.push_back(new db_hud_size(id, argv[1]));
+	if (argc == 0) { return 0; }
+
+	getContainer(data)->hudSizes.push_back(new db_hud_size(atoi(argv[0]), argv[1]));
 
 	return 0;
 }
 
 int static loadGraphSettings(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
-	setEntity(xyz->graphSettings, new db_graph_settings(atoi(argv[0]), atoi(argv[1]), argv[2], atoi(argv[3]),
-	                                                    atof(argv[4]), atof(argv[5]), argv[6],
-	                                                    atoi(argv[7]), atoi(argv[8]), atoi(argv[9])));
+	if (argc == 0) { return 0; }
+	setEntity(getContainer(data)->graphSettings, new db_graph_settings(atoi(argv[0]), atoi(argv[1]), argv[2],
+	                                                                   atoi(argv[3]),
+	                                                                   atof(argv[4]), atof(argv[5]), argv[6],
+	                                                                   atoi(argv[7]), atoi(argv[8]), atoi(argv[9])));
 	return 0;
 }
 
 int static loadBuildings(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
-	setEntity(xyz->buildings, new db_building(atoi(argv[0]), argv[1], atoi(argv[2]), atoi(argv[3]), argv[4]));
+	if (argc == 0) { return 0; }
+	setEntity(getContainer(data)->buildings,
+	          new db_building(atoi(argv[0]), argv[1], atoi(argv[2]), atoi(argv[3]), argv[4]));
 	return 0;
 }
 
 int static loadNation(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
-	setEntity(xyz->nations, new db_nation(atoi(argv[0]), argv[1], argv[2], argv[3]));
+	if (argc == 0) { return 0; }
+	setEntity(getContainer(data)->nations, new db_nation(atoi(argv[0]), argv[1], argv[2], argv[3]));
 	return 0;
 }
 
 int static loadResource(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
+	if (argc == 0) { return 0; }
 	const auto resource = new db_resource(atoi(argv[0]), argv[1], argv[2], atoi(argv[3]), argv[4],
 	                                      atoi(argv[5]), atoi(argv[6]), atoi(argv[7]), fromHex(argv, 8));
-	setEntity(xyz->resources, resource);
+	setEntity(getContainer(data)->resources, resource);
 	return 0;
 }
 
 int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
+	if (argc == 0) { return 0; }
 	const int id = atoi(argv[0]);
-	xyz->hudVars.push_back(new db_hud_vars(id, atoi(argv[1]), argv[2], atof(argv[3])));
+	getContainer(data)->hudVars.push_back(new db_hud_vars(id, atoi(argv[1]), argv[2], atof(argv[3])));
 
 	return 0;
 }
@@ -72,65 +73,59 @@ static void addCost(char** argv, db_with_cost* withCost) {
 }
 
 int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-	addCost(argv, xyz->units[atoi(argv[0])]);
+	if (argc == 0) { return 0; }
+	addCost(argv, getContainer(data)->units[atoi(argv[0])]);
 
 	return 0;
 }
 
 int static loadCostUnitLevel(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
-	addCost(argv, xyz->unitsLevels[atoi(argv[0])]);
+	if (argc == 0) { return 0; }
+	addCost(argv, getContainer(data)->unitsLevels[atoi(argv[0])]);
 
 	return 0;
 }
 
 int static loadCostBuildingLevel(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
-	addCost(argv, xyz->buildingsLevels[atoi(argv[0])]);
+	if (argc == 0) { return 0; }
+	addCost(argv, getContainer(data)->buildingsLevels[atoi(argv[0])]);
 	return 0;
 }
 
 int static loadCostBuilding(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
-	addCost(argv, xyz->buildings[atoi(argv[0])]);
+	if (argc == 0) { return 0; }
+	addCost(argv, getContainer(data)->buildings[atoi(argv[0])]);
 	return 0;
 }
 
 int static loadOrders(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
-	setEntity(xyz->orders, new db_order(atoi(argv[0]), argv[1], argv[2]));
+	if (argc == 0) { return 0; }
+	setEntity(getContainer(data)->orders, new db_order(atoi(argv[0]), argv[1], argv[2]));
 	return 0;
 }
 
 int static loadMap(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
-	setEntity(xyz->maps, new db_map(atoi(argv[0]), argv[1], argv[2]));
+	if (argc == 0) { return 0; }
+	setEntity(getContainer(data)->maps, new db_map(atoi(argv[0]), argv[1], argv[2]));
 	return 0;
 }
 
 int static loadPlayerColors(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
-	setEntity(xyz->playerColors, new db_player_colors(atoi(argv[0]), fromHex(argv, 1), fromHex(argv, 2), argv[3]));
+	if (argc == 0) { return 0; }
+	setEntity(getContainer(data)->playerColors,
+	          new db_player_colors(atoi(argv[0]), fromHex(argv, 1), fromHex(argv, 2), argv[3]));
 	return 0;
 }
 
-
 int static loadResolution(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-
-	setEntity(xyz->resolutions, new db_resolution(atoi(argv[0]), atoi(argv[1]), atoi(argv[2])));
+	if (argc == 0) { return 0; }
+	setEntity(getContainer(data)->resolutions, new db_resolution(atoi(argv[0]), atoi(argv[1]), atoi(argv[2])));
 	return 0;
 }
 
 int static loadSettings(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
+	if (argc == 0) { return 0; }
+	const auto xyz = getContainer(data);
 	ensureSize(1, xyz->settings);
 	xyz->settings[0] = new db_settings(atoi(argv[0]), atoi(argv[1]));
 
@@ -139,7 +134,8 @@ int static loadSettings(void* data, int argc, char** argv, char** azColName) {
 
 
 int static loadBuildingLevels(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
+	if (argc == 0) { return 0; }
+	const auto xyz = getContainer(data);
 	auto level = new db_building_level(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]), argv[3], argv[4],
 	                                   atoi(argv[5]), atof(argv[6]), atoi(argv[7]),
 	                                   atoi(argv[8]), atof(argv[9]), atoi(argv[10]));
@@ -147,8 +143,8 @@ int static loadBuildingLevels(void* data, int argc, char** argv, char** azColNam
 	xyz->buildings[level->building]->levels.push_back(level);
 	for (auto nation : xyz->nations) {
 		if (nation) {
-			level->unitsPerNation.resize(nation->id + 1, nullptr);
-			level->unitsPerNationIds.resize(nation->id + 1, nullptr);
+			ensureSize(nation->id + 1, level->unitsPerNation);
+			ensureSize(nation->id + 1, level->unitsPerNationIds);
 			if (level->unitsPerNation[nation->id] == nullptr) {
 				level->unitsPerNation[nation->id] = new std::vector<db_unit*>();
 			}
@@ -161,7 +157,8 @@ int static loadBuildingLevels(void* data, int argc, char** argv, char** azColNam
 }
 
 int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
+	if (argc == 0) { return 0; }
+	const auto xyz = getContainer(data);
 	auto levelId = atoi(argv[0]);
 	int unitId = atoi(argv[2]);
 
@@ -178,25 +175,33 @@ int static loadUnitLevels(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static loadUnitToNation(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-	int unitId = atoi(argv[0]);
-	int nationId = atoi(argv[1]);
-	xyz->nations[nationId]->units.push_back(xyz->units[unitId]);
-	xyz->units[unitId]->nations.push_back(xyz->nations[nationId]);
+	if (argc == 0) { return 0; }
+	const auto xyz = getContainer(data);
+
+	//std::cerr << "(u" << atoi(argv[0]) << "@n" << atoi(argv[1]) << ") ";
+	auto unit = xyz->units[atoi(argv[0])];
+	auto nation = xyz->nations[atoi(argv[1])];
+	nation->units.push_back(unit);
+	unit->nations.push_back(nation);
 	return 0;
 }
 
 int static loadBuildingToNation(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
-	int buildingId = atoi(argv[0]);
-	int nationId = atoi(argv[1]);
-	xyz->nations[nationId]->buildings.push_back(xyz->buildings[buildingId]);
-	xyz->buildings[buildingId]->nations.push_back(xyz->nations[nationId]);
+	if (argc == 0) { return 0; }
+	const auto xyz = getContainer(data);
+
+	//std::cerr<<"(b" << atoi(argv[0]) << "@n" << atoi(argv[1]) << ") ";
+	auto building = xyz->buildings[atoi(argv[0])];
+	auto nation = xyz->nations[atoi(argv[1])];
+
+	nation->buildings.push_back(building);
+	building->nations.push_back(nation);
 	return 0;
 }
 
 int static loadUnitToBuildingLevels(void* data, int argc, char** argv, char** azColName) {
-	const auto xyz = static_cast<db_container*>(data);
+	if (argc == 0) { return 0; }
+	const auto xyz = getContainer(data);
 
 	auto level = xyz->buildingsLevels[atoi(argv[1])];
 	auto unit = xyz->units[atoi(argv[0])];

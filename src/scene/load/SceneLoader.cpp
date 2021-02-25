@@ -21,6 +21,7 @@ void SceneLoader::load() {
 
 
 int static load_config(void* data, int argc, char** argv, char** azColName) {
+	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	xyz->config->precision = atoi(argv[0]);
 	xyz->config->map = atoi(argv[1]);
@@ -29,6 +30,7 @@ int static load_config(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static load_players(void* data, int argc, char** argv, char** azColName) {
+	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	xyz->players->push_back(new dbload_player(atoi(argv[0]), atoi(argv[1]), atoi(argv[2]),
 	                                          atoi(argv[3]), argv[4], atoi(argv[5])));
@@ -37,6 +39,7 @@ int static load_players(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static load_resources(void* data, int argc, char** argv, char** azColName) {
+	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	int p = xyz->precision;
 	xyz->resources->push_back(new dbload_resource(atoi(argv[0]), atoi(argv[1]), atof(argv[2]) / p));
@@ -45,6 +48,7 @@ int static load_resources(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static load_units(void* data, int argc, char** argv, char** azColName) {
+	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	int p = xyz->precision;
 	xyz->units->push_back(new dbload_unit(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]),
@@ -55,6 +59,7 @@ int static load_units(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static load_buildings(void* data, int argc, char** argv, char** azColName) {
+	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	int p = xyz->precision;
 	xyz->buildings->push_back(new dbload_building(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]),
@@ -65,6 +70,7 @@ int static load_buildings(void* data, int argc, char** argv, char** azColName) {
 }
 
 int static load_resources_entities(void* data, int argc, char** argv, char** azColName) {
+	if (argc == 0) { return 0; }
 	const auto xyz = static_cast<dbload_container*>(data);
 	int p = xyz->precision;
 	xyz->resource_entities->push_back(new dbload_resource_entities(atoi(argv[0]), atof(argv[1]) / p, atoi(argv[2]),
@@ -93,7 +99,7 @@ void SceneLoader::createLoad(const Urho3D::String& fileName) {
 	int rc = sqlite3_open_v2(name.c_str(), &database, SQLITE_OPEN_READONLY, nullptr);
 	if (rc) {
 		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
-		sqlite3_close(database);
+		sqlite3_close_v2(database);
 	}
 	loadingState.inc("load config");
 	load("SELECT * from config", load_config);
@@ -136,7 +142,7 @@ void SceneLoader::load(const char* sql, int (*load)(void*, int, char**, char**))
 }
 
 void SceneLoader::end() {
-	sqlite3_close(database);
+	sqlite3_close_v2(database);
 	delete dbLoad;
 	dbLoad = nullptr;
 	loadingState.inc("");
