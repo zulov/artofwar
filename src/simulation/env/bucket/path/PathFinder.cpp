@@ -147,16 +147,12 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
 		return tempPath;
 	}
 
-	float min = cost(startIdx, endIdx);
+	const float min = calculator->getDistance(startIdx, endIdx);
 	return findPath(startIdx, endIdx, min, min * 2);
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim) {
 	return findPath(startIdx, calculator->indexFromPosition(aim));
-}
-
-float PathFinder::cost(const int current, const int next) const {
-	return calculator->getDistance(current, next);
 }
 
 void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {

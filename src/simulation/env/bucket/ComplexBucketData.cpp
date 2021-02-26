@@ -50,10 +50,11 @@ bool ComplexBucketData::ifNeightIsFree(const unsigned char index) const {
 }
 
 bool ComplexBucketData::isPassable() const {
-	return state == CellState::NONE
-		|| state == CellState::ATTACK
-		|| state == CellState::COLLECT
-		|| state == CellState::DEPLOY;
+	return state <= CellState::DEPLOY;
+	// return state == CellState::NONE
+	// 	|| state == CellState::ATTACK
+	// 	|| state == CellState::COLLECT
+	// 	|| state == CellState::DEPLOY;
 }
 
 bool ComplexBucketData::isBuildable() const {

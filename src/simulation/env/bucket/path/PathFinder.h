@@ -26,7 +26,6 @@ public:
 	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim);
 
 	int getPassableEnd(int endIdx) const;
-	float cost(int current, int next) const;
 	void refreshWayOut(std::vector<int>& toRefresh);
 
 	void invalidateCache();

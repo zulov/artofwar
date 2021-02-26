@@ -65,13 +65,17 @@ struct GridCalculator {
 	unsigned short getResolution() const { return resolution; }
 	float getSize() const { return size; }
 
-	float getDistance(int first, int next) const {
-		const auto a = getIndexes(first);
+	float getDistance(const Urho3D::IntVector2& a, int next) const {
 		const auto b = getIndexes(next);
 		const auto x = (a.x_ - b.x_) * fieldSize;
 		const auto y = (a.y_ - b.y_) * fieldSize;
 		return sqrt(x * x + y * y);
 	}
+
+	float getDistance(int first, int next) const {
+		return getDistance(getIndexes(first), next);
+	}
+
 
 private:
 	unsigned int sqResolution;
