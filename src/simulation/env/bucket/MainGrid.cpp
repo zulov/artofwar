@@ -38,8 +38,8 @@ MainGrid::~MainGrid() {
 void MainGrid::prepareGridToFind() const {
 	for (int current = 0; current < sqResolution; ++current) {
 		auto& data = complexData[current];
-		auto centerParams =calculator->getIndexes(current);
-		
+		auto centerParams = calculator->getIndexes(current);
+
 		for (auto i : closeIndexes->getTabIndexes(current)) {
 			data.setNeightFree(i);
 			const int nI = current + closeIndexes->getIndexAt(i);
@@ -384,15 +384,15 @@ Urho3D::Vector2 MainGrid::getValidPosition(const Urho3D::IntVector2& size, const
 
 void MainGrid::updateNeighbors(const int current) const {
 	//if (calculator->isValidIndex(current)) {
-		auto& data = complexData[current];
-		for (auto i : closeIndexes->getTabIndexes(current)) {
-			const int nI = current + closeIndexes->getIndexAt(i);
-			if (complexData[nI].isPassable()) {
-				data.setNeightFree(i);
-			} else {
-				data.setNeightOccupied(i);
-			}
+	auto& data = complexData[current];
+	for (auto i : closeIndexes->getTabIndexes(current)) {
+		const int nI = current + closeIndexes->getIndexAt(i);
+		if (complexData[nI].isPassable()) {
+			data.setNeightFree(i);
+		} else {
+			data.setNeightOccupied(i);
 		}
+	}
 	//}
 }
 
