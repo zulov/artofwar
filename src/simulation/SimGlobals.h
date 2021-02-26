@@ -17,6 +17,5 @@ inline struct SimGlobals {
 	inline static Urho3D::String ACTION_AI_PATH[MAX_PLAYERS] = {Urho3D::String::EMPTY, Urho3D::String::EMPTY};
 	inline static Urho3D::String ORDER_AI_PATH[MAX_PLAYERS] = {Urho3D::String::EMPTY, Urho3D::String::EMPTY};
 	inline static Urho3D::Vector2 CAMERA_START = Urho3D::Vector2::ZERO;
-private:
 
 } SIM_GLOBALS;

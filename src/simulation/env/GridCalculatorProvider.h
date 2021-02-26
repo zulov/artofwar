@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-class GridCalculator;
+struct GridCalculator;
 
 class GridCalculatorProvider {
 public:

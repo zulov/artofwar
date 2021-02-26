@@ -6,7 +6,6 @@
 #include "bucket/MainGrid.h"
 #include "debug/EnvironmentDebugMode.h"
 #include "influence/InfluenceManager.h"
-#include "objects/unit/state/UnitState.h"
 #include "utils/defines.h"
 
 enum class CenterType:char;

@@ -321,7 +321,7 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_a
 				std::fill_n(sums, magic_enum::enum_count<UnitMetric>(), 0.f);
 				for (auto dbUnit : *dbUnits) {
 					constexpr auto& metrics = magic_enum::enum_values<UnitMetric>();
-					for (int i = 0; i < magic_enum::enum_count<UnitMetric>(); ++i) {
+					for (int j = 0; j < magic_enum::enum_count<UnitMetric>(); ++j) {
 						sums[cast(metrics[i])] += dbUnit->getSumVal(metrics[i]);
 					}
 				}

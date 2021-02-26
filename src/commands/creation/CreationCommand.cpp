@@ -3,16 +3,13 @@
 #include "simulation/SimulationObjectManager.h"
 
 
-CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::IntVector2 bucketCords, char level, char player): AbstractCommand(player), id(id),
-	number(0),
-	level(level),
-	position(position),
-	objectType(type),
-	bucketCords(bucketCords) {}
+CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::IntVector2 bucketCords, char level, char player)
+	: AbstractCommand(player), id(id), number(0), level(level),
+	  objectType(type), bucketCords(bucketCords) {}
 
-CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::Vector2& position, char level, char player, int number): AbstractCommand(player),
-                                                          id(id), number(number), level(level),
-                                                          position(position), objectType(type) {}
+CreationCommand::CreationCommand(ObjectType type, int id, const Urho3D::Vector2& position, char level, char player,
+                                 int number): AbstractCommand(player), id(id),
+                                              number(number), level(level), position(position), objectType(type) {}
 
 void CreationCommand::execute() {
 	switch (objectType) {

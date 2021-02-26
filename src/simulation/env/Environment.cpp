@@ -73,7 +73,6 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	}
 	const auto simpleNeght = mainGrid.getAllFromCache(currentIdx, radius);
 
-	const auto& center = unit->getPosition();
 	const float sqRadius = radius * radius;
 
 	neights->clear();

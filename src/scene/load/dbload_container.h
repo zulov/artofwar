@@ -60,7 +60,6 @@ struct dbload_unit : dbload_physical {
 
 struct dbload_building : dbload_static {
 	float deploy_idx;
-	float target_z;
 
 	dbload_building(int idDb, float hpCoef, int player, int level, int bucX, int bucY, int state, int nextState,
 	                int deploy_idx)

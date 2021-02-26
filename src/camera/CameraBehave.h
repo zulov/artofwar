@@ -18,8 +18,7 @@ public:
 	virtual bool translate(bool cameraKeys[], int wheel, float timeStep, float min) = 0;
 	virtual bool rotate(const Urho3D::IntVector2& mouseMove, float mouse_sensitivity) { return false; }
 
-	virtual void setRotation(const Urho3D::Quaternion& rotation) {
-	};
+	virtual void setRotation(const Urho3D::Quaternion& rotation) {}
 	Urho3D::Camera* getComponent() const;
 	Urho3D::String getInfo() const;
 	virtual Urho3D::MouseMode getMouseMode() = 0;

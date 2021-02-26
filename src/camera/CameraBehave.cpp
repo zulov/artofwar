@@ -49,7 +49,7 @@ void CameraBehave::setPos2D(const Urho3D::Vector3& newPos) const {
 }
 
 Urho3D::Vector2 CameraBehave::getTargetPos() const {
-	auto pos = cameraNode->GetPosition();
+	const auto pos = cameraNode->GetPosition();
 	return Urho3D::Vector2(pos.x_, pos.z_);
 }
 

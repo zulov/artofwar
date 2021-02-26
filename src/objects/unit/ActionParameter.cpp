@@ -2,7 +2,6 @@
 
 #include "aim/Aim.h"
 #include "objects/Physical.h"
-#include "utils/consts.h"
 
 bool ActionParameter::isFirstThingAlive() const {
 	return thingToInteract != nullptr

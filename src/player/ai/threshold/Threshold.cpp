@@ -1,6 +1,5 @@
 #include "Threshold.h"
 
-#include "simulation/env/influence/CenterType.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 
@@ -9,8 +8,8 @@ constexpr float THRESHOLD_VAL = 1.f;
 Threshold::Threshold(std::string filename): filename(filename) {
 	auto lines = loadLines("Data/ai/threshold/" + filename);
 	data.reserve(lines.size());
-	for (int i = 0; i < lines.size(); ++i) {
-		auto splitVec = split(lines[i], ';');
+	for (auto& line : lines) {
+		auto splitVec = split(line, ';');
 		std::vector<float> vector;
 		vector.reserve(splitVec.size());
 

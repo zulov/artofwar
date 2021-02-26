@@ -4,7 +4,6 @@
 #include <vector>
 #include <span>
 #include "objects/Physical.h"
-#include "SpanUtils.h"
 
 inline auto isAlivePred = [](Physical* physical) {
 	return physical == nullptr || !physical->isAlive();

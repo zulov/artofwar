@@ -1,8 +1,6 @@
 #pragma once
 #include <cstdlib>
 #include <iosfwd>
-#include <sqlite3/sqlite3.h>
-
 
 #include "db_other_struct.h"
 

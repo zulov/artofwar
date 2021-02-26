@@ -1,11 +1,13 @@
 #include "TargetAim.h"
+
+#include <utility>
 #include "../Unit.h"
 #include "Game.h"
 #include "simulation/env/Environment.h"
 
 
-TargetAim::TargetAim(const std::vector<int>& _path) :
-	path(_path), current(0) {
+TargetAim::TargetAim(std::vector<int> _path) :
+	path(std::move(_path)), current(0) {
 	currentTarget = Game::getEnvironment()->getCenter(path[current]);
 }
 
