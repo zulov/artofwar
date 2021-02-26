@@ -138,7 +138,21 @@ void Main::writeOutput() const {
 		} else if (outputType == "res_sum_min_max") {
 			writeOutput([](Player* p) -> float {
 				return minSpan(p->getResources().getSumValues()) + maxSpanRoot(p->getResources().getSumValues());
-				});
+			});
+		} else if (outputType == "defence") {
+			writeOutput([](Player* p) -> float {
+				return p->getPossession().getBuildingsVal(BuildingMetric::DEFENCE)
+					+ p->getPossession().getUnitsVal(UnitMetric::DEFENCE);
+			});
+		} else if (outputType == "attack") {
+			writeOutput([](Player* p) -> float {
+				auto& poss = p->getPossession();
+				return poss.getBuildingsVal(BuildingMetric::DISTANCE_ATTACK)
+					+ poss.getUnitsVal(UnitMetric::DISTANCE_ATTACK)
+					+ poss.getUnitsVal(UnitMetric::BUILDING_ATTACK)
+					+ poss.getUnitsVal(UnitMetric::CHARGE_ATTACK)
+					+ poss.getUnitsVal(UnitMetric::CLOSE_ATTACK);
+			});
 		}
 	}
 }
