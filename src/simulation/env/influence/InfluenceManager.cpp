@@ -314,9 +314,13 @@ std::vector<int> InfluenceManager::getAreas(const std::span<float> result, char 
 
 void InfluenceManager::addCollect(Unit* unit, float value) {
 	const auto playerId = unit->getPlayer();
+	assert(gatherSpeed[playerId]->getResolution()==econQuad[playerId]->getResolution());
+	assert(gatherSpeed[playerId]->getResolution()==calculator->getResolution());
 
-	gatherSpeed[playerId]->tempUpdate(unit, value);
-	econQuad[playerId]->update(unit, value);
+	auto index = calculator->indexFromPosition(unit->getPosition());
+
+	gatherSpeed[playerId]->tempUpdate(index, value);
+	econQuad[playerId]->update(index, value);
 }
 
 void InfluenceManager::addAttack(Unit* unit, float value) {

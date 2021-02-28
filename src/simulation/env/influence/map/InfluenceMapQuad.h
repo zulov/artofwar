@@ -14,6 +14,7 @@ public:
 
 	Urho3D::Vector2 getCenter();
 	void update(Physical* thing, float value = 1.f);
+	void update(int index, float value = 1.f);
 	void updateInt(Physical* thing, int value = 1);
 	void reset();
 	void print(const Urho3D::String& name, std::span<float> map);

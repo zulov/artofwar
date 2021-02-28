@@ -344,7 +344,7 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& posit
 			for (auto i : closeIndexes->getTabIndexes(index)) {
 				if (data.ifNeightIsFree(i)) {
 					int ni = index + closeIndexes->getIndexAt(i);
-					float newDist = sqDist(calculator->getCenter(ni), center);
+					float newDist = sqDist(calculator->getCenter(ni), center);//TODO perf da sie obliczyc oglosc bez obliczania centrów calculator->getDistance
 					if (newDist < dist) {
 						dist = newDist;
 						escapeBucket = ni;
