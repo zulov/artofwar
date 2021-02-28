@@ -36,7 +36,6 @@ Urho3D::Vector2 ComplexBucketData::getDirectionFrom(Urho3D::Vector3& position, U
 	return {centerEscape.x_ - position.x_, centerEscape.y_ - position.z_};
 }
 
-
 void ComplexBucketData::setNeightOccupied(const unsigned char index) {
 	isNeightOccupied |= Consts::bitFlags[index];
 }
@@ -47,14 +46,6 @@ void ComplexBucketData::setNeightFree(const unsigned char index) {
 
 bool ComplexBucketData::ifNeightIsFree(const unsigned char index) const {
 	return !(isNeightOccupied & Consts::bitFlags[index]);
-}
-
-bool ComplexBucketData::isPassable() const {
-	return state <= CellState::DEPLOY;
-	// return state == CellState::NONE
-	// 	|| state == CellState::ATTACK
-	// 	|| state == CellState::COLLECT
-	// 	|| state == CellState::DEPLOY;
 }
 
 bool ComplexBucketData::isBuildable() const {

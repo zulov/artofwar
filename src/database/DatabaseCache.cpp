@@ -23,15 +23,14 @@ bool DatabaseCache::openDatabase(const std::string& name) {
 	return false;
 }
 
-DatabaseCache::DatabaseCache(const char* path) {
+DatabaseCache::DatabaseCache(std::string postfix) {
 	dbContainer = new db_container();
 
-	pathStr = std::string(path);
-	pathStr.append("/Data/");
+	pathStr = std::string("Data/");
 
-	loadBasic("Database/base.db");
-	loadData("Database/data.db");
-	loadMaps("map/maps.db");
+	loadBasic("Database/base" + postfix + ".db");
+	loadData("Database/data" + postfix + ".db");
+	loadMaps("map/maps" + postfix + ".db");
 }
 
 void DatabaseCache::loadBasic(const std::string& name) {

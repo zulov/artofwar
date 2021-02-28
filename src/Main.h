@@ -65,6 +65,7 @@ private:
 
 	SelectedInfo* control(float timeStep, SimInfo* simulationInfo);
 	void readParameters();
+	void miniReadParameters() const;
 	void changeCamera(CameraBehaviorType type);
 	void load(const Urho3D::String& saveName, Loading& progress);
 	void createEnv() const;

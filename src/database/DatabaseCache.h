@@ -14,7 +14,7 @@ struct db_player_colors;
 
 class DatabaseCache {
 public:
-	explicit DatabaseCache(const char* path);
+	explicit DatabaseCache(std::string postfix);
 	~DatabaseCache();
 
 	void loadBasic(const std::string& name);

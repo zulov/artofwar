@@ -1,6 +1,7 @@
 #pragma once
+#include "objects/CellState.h"
 
-enum class CellState : char;
+//enum class CellState : char;
 
 namespace Urho3D {
 	class Vector2;
@@ -41,7 +42,7 @@ public:
 	void setDeploy(Building* building);
 	bool cellIsCollectable() const;
 	bool cellIsAttackable() const;
-	bool isPassable() const;
+	bool isPassable() const { return state <= CellState::DEPLOY; }
 	bool isBuildable() const;
 private:
 	CellState state;

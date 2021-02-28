@@ -57,7 +57,8 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE),
 }
 
 void Main::Setup() {
-	Game::setDatabaseCache(new DatabaseCache(GetSubsystem<FileSystem>()->GetCurrentDir().CString()));
+	miniReadParameters();
+	Game::setDatabaseCache(new DatabaseCache(SIM_GLOBALS.DATABASE_NUMBER.CString()));
 	db_settings* settings = Game::getDatabase()->getSettings();
 	db_graph_settings* graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
 	db_resolution* resolution = Game::getDatabase()->getResolution(settings->resolution);
@@ -653,6 +654,22 @@ void Main::readParameters() {
 				++i;
 			} else if (argument == "camposy" && !value.Empty()) {
 				SimGlobals::CAMERA_START.y_ = ToInt(value);
+				++i;
+			}
+		}
+	}
+}
+
+void Main::miniReadParameters() const {
+	auto arguments = GetArguments();
+
+	for (unsigned i = 0; i < arguments.Size(); ++i) {
+		if (arguments[i].Length() > 1 && arguments[i][0] == '-') {
+			String argument = arguments[i].Substring(1).ToLower();
+			const String value = i + 1 < arguments.Size() ? arguments[i + 1] : String::EMPTY;
+
+			if (argument == "databasename" && !value.Empty()) {
+				SimGlobals::DATABASE_NUMBER = value;
 				++i;
 			}
 		}
