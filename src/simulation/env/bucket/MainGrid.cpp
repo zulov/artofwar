@@ -305,14 +305,15 @@ void MainGrid::addStatic(Static* object) const {
 	const auto jMax = calculator->getValid(sizeZ.y_ + 1);
 
 	for (int i = iMin; i < iMax; ++i) {
+		int index = calculator->getNotSafeIndex(i, jMin);
 		for (int j = jMin; j < jMax; ++j) {
-			const int index = calculator->getNotSafeIndex(i, j);
 			updateNeighbors(index);
 			if (complexData[index].isPassable()) {
 				complexData[index].setEscapeThrough(-1);
 			} else {
 				toRefresh.push_back(index);
 			}
+			++index;
 		}
 	}
 	pathConstructor->refreshWayOut(toRefresh);
@@ -344,7 +345,8 @@ std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& posit
 			for (auto i : closeIndexes->getTabIndexes(index)) {
 				if (data.ifNeightIsFree(i)) {
 					int ni = index + closeIndexes->getIndexAt(i);
-					float newDist = sqDist(calculator->getCenter(ni), center);//TODO perf da sie obliczyc oglosc bez obliczania centrów calculator->getDistance
+					float newDist = sqDist(calculator->getCenter(ni), center);
+					//TODO perf da sie obliczyc oglosc bez obliczania centrów calculator->getDistance
 					if (newDist < dist) {
 						dist = newDist;
 						escapeBucket = ni;
