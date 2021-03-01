@@ -6,7 +6,7 @@
 constexpr float THRESHOLD_VAL = 1.f;
 
 Threshold::Threshold(std::string filename): filename(filename) {
-	auto lines = loadLines("Data/ai/threshold/" + filename);
+	auto lines = loadLines(filename);
 	data.reserve(lines.size());
 	for (auto& line : lines) {
 		auto splitVec = split(line, ';');

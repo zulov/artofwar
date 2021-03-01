@@ -21,7 +21,7 @@
 OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
 	  whichResource(BrainProvider::get(std::string(nation->orderPrefix[0].CString()) + "whichResource_w.csv")),
-	  threshold(ThresholdProvider::get("attack_t.csv")) {
+	  threshold(ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {
 }
 
 void OrderMaker::action() {
