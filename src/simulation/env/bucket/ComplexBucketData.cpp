@@ -8,8 +8,7 @@ ComplexBucketData::ComplexBucketData() {
 	clear();
 }
 
-void ComplexBucketData::setStatic(Static* _object) {
-	object = _object;
+void ComplexBucketData::setStatic(Static* object) {
 	size = 0;
 
 	if (object->getType() == ObjectType::BUILDING) {
@@ -22,7 +21,6 @@ void ComplexBucketData::setStatic(Static* _object) {
 }
 
 void ComplexBucketData::clear() {
-	object = nullptr;
 	state = CellState::NONE;
 	additionalInfo = -1;
 	size = 0;
@@ -67,7 +65,6 @@ bool ComplexBucketData::belowCellLimit() const {
 }
 
 void ComplexBucketData::setDeploy(Building* building) {
-	object = (Static*)building;
 	state = CellState::DEPLOY;
 }
 

@@ -17,7 +17,7 @@ public:
 	~ComplexBucketData() = default;
 	ComplexBucketData(const ComplexBucketData&) = delete;
 
-	void setStatic(Static* _object);
+	void setStatic(Static* object);
 	void clear();
 
 	void setEscapeThrough(int val);
@@ -53,7 +53,6 @@ private:
 	float costToNeight[8] = {0.f};
 	//float cost{};
 
-	Static* object{};
 
 	bool belowCellLimit() const;
 };
