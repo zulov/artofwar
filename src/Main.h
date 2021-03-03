@@ -77,7 +77,7 @@ private:
 	void newGame(NewGameForm* form, Loading& progress);
 	void changeState(GameState newState);
 
-	void writeOutput(const std::function<float(Player*)>& func) const;
+	void writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs) const;
 	void writeOutput() const;
 
 	Urho3D::MouseMode useMouseMode_;
@@ -104,5 +104,4 @@ private:
 	//
 	int timeLimit = 600;
 	Urho3D::String outputName = "test.txt";
-	Urho3D::String outputType = "res_sum_min_max";
 };

@@ -111,50 +111,40 @@ void Main::Start() {
 	changeState(GameState::LOADING);
 }
 
-void Main::writeOutput(const std::function<float(Player*)>& func) const {
+void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs) const {
 	std::ofstream outFile(("result/" + outputName).CString(), std::ios_base::out);
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-		outFile << std::to_string(player->getId()) << ";" << func(player) << "\n";
+		outFile << std::to_string(player->getId());
+		for (auto& func : funcs) {
+			outFile << ";" << func(player);
+		}
+		outFile << "\n";
 	}
 	outFile.close();
 }
 
 void Main::writeOutput() const {
-	if (!outputType.Empty()) {
-		std::ofstream outFile(("result/" + outputName).CString(), std::ios_base::out);
-		if (outputType == "score") {
-			writeOutput([](Player* p) -> float { return p->getScore(); });
-		} else if (outputType == "ressum") {
-			writeOutput([](Player* p) -> float { return sumSpan(p->getResources().getValues()); });
-		} else if (outputType == "ressmallest") {
-			writeOutput([](Player* p) -> float { return minSpan(p->getResources().getValues()); });
-		} else if (outputType == "ressmallest+sum") {
-			writeOutput([](Player* p) -> float { return minAndSumSpan(p->getResources().getValues()); });
-		} else if (outputType == "res_max_min") {
-			writeOutput([](Player* p) -> float {
-				return minSpanSq(p->getResources().getValues()) + maxSpanRoot(p->getResources().getValues());
-			});
-		} else if (outputType == "armysum") {
-			writeOutput([](Player* p) -> float { return sumSpan(p->getPossession().getUnitsMetrics()); });
-		} else if (outputType == "res_sum_min_max") {
-			writeOutput([](Player* p) -> float {
+	if (!outputName.Empty()) {
+		writeOutput({
+			[](Player* p) -> float { return p->getScore(); },
+			[](Player* p) -> float { return sumSpan(p->getResources().getValues()); },
+			[](Player* p) -> float {
 				return minSpan(p->getResources().getSumValues()) + maxSpanRoot(p->getResources().getSumValues());
-			});
-		} else if (outputType == "defence") {
-			writeOutput([](Player* p) -> float {
+			},
+			[](Player* p) -> float { return sumSpan(p->getPossession().getUnitsMetrics()); },
+			[](Player* p) -> float {
 				return p->getPossession().getBuildingsVal(BuildingMetric::DEFENCE)
 					+ p->getPossession().getUnitsVal(UnitMetric::DEFENCE);
-			});
-		} else if (outputType == "attack") {
-			writeOutput([](Player* p) -> float {
+			},
+			[](Player* p) -> float {
 				auto& poss = p->getPossession();
 				return poss.getBuildingsVal(BuildingMetric::DISTANCE_ATTACK)
 					+ poss.getUnitsVal(UnitMetric::DISTANCE_ATTACK)
 					+ poss.getUnitsVal(UnitMetric::BUILDING_ATTACK)
 					+ poss.getUnitsVal(UnitMetric::CHARGE_ATTACK)
 					+ poss.getUnitsVal(UnitMetric::CLOSE_ATTACK);
-			});
-		}
+			}
+		});
 	}
 }
 
@@ -622,9 +612,6 @@ void Main::readParameters() {
 				SimGlobals::HEADLESS = true;
 			} else if (argument == "savename") {
 				saveToLoad = value;
-			} else if (argument == "outputtype" && !value.Empty()) {
-				outputType = value;
-				++i;
 			} else if (argument == "outputname" && !value.Empty()) {
 				outputName = value;
 				++i;
