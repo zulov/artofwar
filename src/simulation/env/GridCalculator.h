@@ -16,6 +16,10 @@ struct GridCalculator {
 	int getNotSafeIndex(unsigned short posX, unsigned short posZ) const {
 		return posX * resolution + posZ;
 	}
+	
+	short getNotSafeIndexClose(short posX, short posZ) const {
+		return posX * resolution + posZ;
+	}
 
 	unsigned short getIndex(float value) const {
 		return getValid((short)(value + halfSize) * invFieldSize);

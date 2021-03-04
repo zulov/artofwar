@@ -90,11 +90,11 @@ private:
 	std::vector<InfluenceMapQuad*> buildingsQuad;
 	std::vector<InfluenceMapQuad*> unitsQuad;
 
-	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 	content_info* ci;
 	GridCalculator* calculator;
 	std::array<float, 5> dataFromPos;
 	short currentDebugBatch = 0;
+	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 
 	float intersection[arraySize];
 };

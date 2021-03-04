@@ -8,10 +8,9 @@
 #include "simulation/env/GridCalculator.h"
 #include "simulation/env/GridCalculatorProvider.h"
 
+//TODO check if center are calculate well and correct in eny frame
 InfluenceMapQuad::InfluenceMapQuad(int from, int to, const unsigned short size)
 	: calculator(GridCalculatorProvider::get(pow(2, to), size)) {
-	minRes = pow(2, from);
-	maxRes = pow(2, to);
 	dataSize = 0;
 	for (int i = from; i <= to; ++i) {
 		const int res = pow(2, i);
@@ -94,7 +93,7 @@ void InfluenceMapQuad::updateInt(Physical* thing, int value) {
 }
 
 void InfluenceMapQuad::reset() {
-	dataReady = false;
+	//dataReady = false;
 	std::fill_n(maps.back().begin(), maps.back().size(), 0.f);
 }
 

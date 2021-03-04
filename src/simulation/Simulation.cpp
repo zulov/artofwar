@@ -69,7 +69,9 @@ void Simulation::updateInfluenceMaps() const {
 	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_OTHER, currentFrame, secondsElapsed)) {
 		enviroment->updateInfluenceOther(buildings);
 	}
-	enviroment->updateQuadOther();
+	if (PER_FRAME_ACTION.get(PerFrameAction::INFLUENCE_QUAD_OTHER, currentFrame, secondsElapsed)) {
+		enviroment->updateQuadOther();
+	}
 }
 
 SimInfo* Simulation::update(float timeStep) {

@@ -22,20 +22,19 @@ public:
 	float getValueAsPercent(int index) const override;
 	void computeMinMax() override;
 
-	std::vector<int> getIndexesWithByValue(float percent, float tolerance) const;
-	void getIndexesWithByValue(float percent, float* intersection) const;
+	std::vector<int> getIndexesWithByValue(float percent, float tolerance);
+	void getIndexesWithByValue(float percent, float* intersection);
 	void add(int* indexes, float* vals, int k, float val) const;
 
 	void updateFromTemp();
 
 protected:
 	float* values;
+	float* tempVals;
 	float coef;
 	bool tempComputedNeeded = false;
-	float* tempVals;
 private:
 	void update(float value, unsigned short centerX, unsigned short centerZ) const;
 
 	unsigned char level;
-
 };

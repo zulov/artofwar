@@ -50,9 +50,8 @@ struct MouseButton {
 			isHeld = true;
 		}
 	}
-
+	bool isHeld = false;
 	std::pair<Urho3D::Vector3*, Urho3D::Vector3*> held;
 	float lastUp = -1;
 	float lastDown = -1;
-	bool isHeld = false;
 };

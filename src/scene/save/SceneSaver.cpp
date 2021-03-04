@@ -8,7 +8,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 
-SceneSaver::SceneSaver(int precision):loadingState(7),precision(precision) {
+SceneSaver::SceneSaver(int precision): loadingState(7), precision(precision) {
 	//TODO zapisywanie powinno byc tylko miedzy klatkami
 }
 

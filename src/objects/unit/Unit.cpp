@@ -515,7 +515,7 @@ void Unit::fillValues(std::span<float> weights) const {
 }
 
 void Unit::addValues(std::span<float> vals) const {
-	const auto percent = hp / dbLevel->maxHp;
+	const auto percent = hp * dbLevel->invMaxHp;
 	assert(vals.size()==dbLevel->dbUnitMetric->getParamsAsSpan().size()-1); //without cost
 	for (int i = 0; i < vals.size(); ++i) {
 		vals[i] += percent * dbLevel->dbUnitMetric->getParamsAsSpan()[i];

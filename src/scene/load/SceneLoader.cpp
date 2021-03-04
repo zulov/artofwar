@@ -3,7 +3,7 @@
 #include "database/db_utils.h"
 
 
-SceneLoader::SceneLoader(): loadingState(3), dbLoad(nullptr) {}
+SceneLoader::SceneLoader(): loadingState(5, false), dbLoad(nullptr) {}
 
 
 SceneLoader::~SceneLoader() {

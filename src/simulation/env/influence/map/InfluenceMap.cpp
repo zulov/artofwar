@@ -10,10 +10,9 @@
 
 
 InfluenceMap::InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug):
-	resolution(resolution), size(size), fieldSize(size / resolution),
+	resolution(resolution),
 	arraySize(resolution * resolution), valueThresholdDebug(valueThresholdDebug),
-	calculator(GridCalculatorProvider::get(resolution, size)) {
-}
+	calculator(GridCalculatorProvider::get(resolution, size)) {}
 
 
 void InfluenceMap::draw(short batch, short maxParts) const {
@@ -29,7 +28,7 @@ void InfluenceMap::drawCell(int index, short batch) const {
 	const auto center = Game::getEnvironment()->getPosWithHeightAt(center2.x_, center2.y_);
 	const auto color = Game::getColorPaletteRepo()->getColor(getValueAt(index), valueThresholdDebug);
 
-	auto v = fieldSize / 3;
+	auto v = calculator->getFieldSize() / 3;
 	DebugLineRepo::drawTriangle(DebugLineType::INFLUENCE,
 	                            center + Urho3D::Vector3(-v, 1, v),
 	                            center + Urho3D::Vector3(v, 1, v),

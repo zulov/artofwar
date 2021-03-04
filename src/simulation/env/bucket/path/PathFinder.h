@@ -38,6 +38,9 @@ private:
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 	void resetPathArrays();
 	bool isInLocalArea(int center, int indexOfAim) const;
+	void updateCost(int startIdx, float x);
+
+	
 	CloseIndexes* closeIndexes;
 	GridCalculator* calculator;
 
@@ -46,17 +49,15 @@ private:
 	int lastStartIdx = -1;
 	int lastEndIdx = -1;
 
-	void updateCost(int startIdx, float x);
-
 	const short resolution;
-	const float fieldSize;
 	bool pathInited = false;
+	const float fieldSize;
 
 	int* came_from;
 	float* cost_so_far;
 	ComplexBucketData* complexData;
 
-	int staticCounter = 0;
+	unsigned short staticCounter = 0;
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref;
 

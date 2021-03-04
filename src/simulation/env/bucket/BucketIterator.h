@@ -8,6 +8,8 @@ class BucketIterator {
 public:
 	BucketIterator() = default;
 	~BucketIterator() = default;
+	BucketIterator(const BucketIterator&) = delete;
+	
 	Physical* next();
 	void setRange();
 	BucketIterator* init(std::vector<short>* _levels, int _center, Grid* _bucketGrid);

@@ -6,7 +6,7 @@
 
 
 struct Loading {
-	Loading(int stages): stagesNumber(stages) {
+	Loading(unsigned char stages, bool ifPrint = true): stagesNumber(stages), ifPrint(ifPrint) {
 		reset();
 	}
 
@@ -15,7 +15,7 @@ struct Loading {
 	~Loading() = default;
 
 	float getProgress() const {
-		return currentStage / stagesNumber;
+		return currentStage / (float)stagesNumber;
 	}
 
 	void reset() {
@@ -28,21 +28,27 @@ struct Loading {
 		reset();
 	}
 
+	void inc(std::string _msg) {
+		if (ifPrint) {
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+				std::chrono::system_clock::now() - start);
+			std::cout << (int)currentStage << " completed (" << msg.c_str() << ") at " << duration.count() << " ms" <<
+				std::endl;
+			start = std::chrono::system_clock::now();
+			msg = std::move(_msg);
+		}
+
+		inc();
+	}
+
 	void inc() {
-		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
-		std::cout << currentStage << " completed (" << msg.c_str() << ") at " << duration.count() << " ms" << std::endl;
-		start = std::chrono::system_clock::now();
 		++currentStage;
 	}
 
-	void inc(std::string _msg) {
-		inc();
-		msg = std::move(_msg);
-	}
-
-	int currentStage;
+	unsigned char currentStage;
 private:
-	const float stagesNumber;
+	const unsigned char stagesNumber;
+	const bool ifPrint;
 	std::string msg = "";
 	std::chrono::system_clock::time_point start;
 };

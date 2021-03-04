@@ -18,9 +18,9 @@ public:
 private:
 	SimulationObjectManager* simulationObjectManager;
 	Urho3D::Vector2 position;
-	ObjectType objectType;
 	Urho3D::IntVector2 bucketCords;
 	int number;
+	ObjectType objectType;
 	char id;
 	char level;
 };

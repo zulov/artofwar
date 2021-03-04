@@ -101,7 +101,8 @@ void InfluenceMapFloat::computeMinMax() {
 	}
 }
 
-std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float tolerance) const {
+std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float tolerance) {
+	computeMinMax();
 	const float diff = max - min;
 	auto minV = diff * (percent - tolerance) + min;
 	auto maxV = diff * (percent + tolerance) + min;
@@ -117,12 +118,16 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 	return indexes; //TODO should stay sorted
 }
 
-void InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection) const {
-	const float diff = max - min;
-	percent = fixValue(percent, 1);
+void InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection) {
+	computeMinMax();
+	float diff = max - min;
+	
 	if (diff != 0.f) {
+		diff = 1 / diff;
+		percent = fixValue(percent, 1);
+		percent = percent + min * diff;
 		for (int i = 0; i < arraySize; ++i) {
-			auto val = percent - ((values[i] - min) / diff);
+			auto val = percent - values[i] * diff;
 			intersection[i] += val * val;
 		}
 	}

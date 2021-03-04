@@ -286,8 +286,12 @@ void Main::setSimpleManagers() {
 }
 
 void Main::updateProgress(Loading& progress, std::string msg) const {
-	progress.inc(std::move(msg));
-	hud->updateLoading(progress.getProgress());
+	if (!SIM_GLOBALS.HEADLESS) {
+		progress.inc(std::move(msg));
+		hud->updateLoading(progress.getProgress());
+	} else {
+		progress.inc();
+	}
 }
 
 void Main::load(const String& saveName, Loading& progress) {
@@ -336,7 +340,7 @@ void Main::load(const String& saveName, Loading& progress) {
 		inited = true;
 		break;
 	}
-	updateProgress(progress, Game::getLocalization()->Get("load_msg_" + String(progress.currentStage)).CString());
+	updateProgress(progress, Game::getLocalization()->Get("load_msg_" + String((int)progress.currentStage)).CString());
 }
 
 void Main::createEnv() const {
@@ -386,7 +390,8 @@ void Main::newGame(NewGameForm* form, Loading& progress) {
 		inited = true;
 		break;
 	}
-	updateProgress(progress, Game::getLocalization()->Get("new_load_msg_" + String(progress.currentStage)).CString());
+	updateProgress(
+		progress, Game::getLocalization()->Get("new_load_msg_" + String((int)progress.currentStage)).CString());
 }
 
 void Main::changeState(GameState newState) {
@@ -524,7 +529,7 @@ void Main::SetupViewport() {
 
 void Main::disposeScene() {
 	if (inited) {
-		Loading loading2(5);
+		Loading loading2(5, !SIM_GLOBALS.HEADLESS);
 		Game::getScene()->SetUpdateEnabled(false);
 
 		loading2.reset("dispose simulation");

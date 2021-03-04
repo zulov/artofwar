@@ -273,10 +273,11 @@ void PathFinder::drawMap(Urho3D::Image* image) const {
 }
 
 void PathFinder::prepareGridToFind() {
-	came_from = new int[resolution * resolution];
-	cost_so_far = new float[resolution * resolution];
-	std::fill_n(came_from, resolution * resolution, -1);
-	std::fill_n(cost_so_far, resolution * resolution, -1.f);
+	auto sqRes = resolution * resolution;
+	came_from = new int[sqRes];
+	cost_so_far = new float[sqRes];
+	std::fill_n(came_from, sqRes, -1);
+	std::fill_n(cost_so_far, sqRes, -1.f);
 	pathInited = true;
 }
 

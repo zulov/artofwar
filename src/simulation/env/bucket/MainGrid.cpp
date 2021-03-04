@@ -56,16 +56,18 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, Urho3D::Vector2& pos)
 bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVector2 bucketCords) const {
 	const auto sizeX = calculateSize(size.x_, bucketCords.x_);
 	const auto sizeZ = calculateSize(size.y_, bucketCords.y_);
-
+	//WARN to troche złe użycie tego ale działa
+	if (!calculator->isValidIndex(sizeX.x_, sizeX.y_)
+		|| !calculator->isValidIndex(sizeZ.x_, sizeZ.y_)) {
+		return false;
+	}
 	for (int i = sizeX.x_; i < sizeX.y_; ++i) {
+		int index = calculator->getNotSafeIndex(i, sizeZ.x_);
 		for (int j = sizeZ.x_; j < sizeZ.y_; ++j) {
-			if (!calculator->isValidIndex(i, j)) {
-				return false;
-			}
-			const int index = calculator->getNotSafeIndex(i, j);
 			if (!isBuildable(index)) {
 				return false;
 			}
+			++index;
 		}
 	}
 	//TODO bug validate deploy przynajmniej jeden

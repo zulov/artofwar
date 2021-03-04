@@ -11,6 +11,7 @@ enum class PerFrameAction:char {
 	INFLUENCE_UNITS_2,
 	INFLUENCE_RESOURCES,
 	INFLUENCE_OTHER,
+	INFLUENCE_QUAD_OTHER,
 	SELF_AI,
 	STAT_SAVE,
 	AI_ACTION,
@@ -52,6 +53,11 @@ private:
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}, //INFLUENCE_OTHER
+		{
+			0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		}, //INFLUENCE_QUAD_OTHER
 		{
 			0, 0, 0, 0, 0, 1, 0, 0, 0, 0,
 			0, 1, 0, 0, 0, 0, 0, 1, 0, 0,

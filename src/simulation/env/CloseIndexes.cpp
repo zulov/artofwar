@@ -70,18 +70,14 @@ CloseIndexes::CloseIndexes(short res)
 }
 
 char CloseIndexes::getIndex(int center) const {
-	const bool firstRow = center < resolution;
-	const bool lastRow = center >= resolution * resolution - resolution;
-	const bool firstColumn = center % resolution == 0;
-	const bool lastColumn = center % resolution == resolution - 1;
-
 	char index = 0;
-	if (firstRow) { } else if (lastRow) {
+	if (center < resolution) { } else if (center >= resolution * resolution - resolution) {
 		index += 6;
 	} else {
 		index += 3;
 	}
-	if (firstColumn) { } else if (lastColumn) {
+	const auto mod = center % resolution;
+	if (mod == 0) { } else if (mod == resolution - 1) {
 		index += 2;
 	} else {
 		index += 1;

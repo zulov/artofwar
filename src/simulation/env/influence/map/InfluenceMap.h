@@ -23,8 +23,6 @@ public:
 	Urho3D::Vector2 getCenter(int index) override { return calculator->getCenter(index); }
 protected:
 	GridCalculator* calculator;
-	float size;
-	float fieldSize;
 	unsigned int arraySize;
 	const float valueThresholdDebug;
 

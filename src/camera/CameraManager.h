@@ -35,14 +35,15 @@ private:
 	CameraBehave* activeBehave;
 
 	CameraInfo* camInfo;
-	bool hasMoved = true;
 
 	const float MOUSE_SENSITIVITY = 0.1f;
 	float MOVE_SPEED = 20;
 
-	int widthEdge;
-	int heightEdge;
+	unsigned short widthEdge;
+	unsigned short heightEdge;
 
-	int widthEdgeMax;
-	int heightEdgeMax;
+	unsigned short widthEdgeMax;
+	unsigned short heightEdgeMax;
+
+	bool hasMoved = true;
 };
