@@ -55,17 +55,17 @@ CloseIndexes::CloseIndexes(short res)
 	  } {
 
 	for (int i = 0; i < CLOSE_SIZE; ++i) {
+		closeIndexes[i].reserve(tabIndexes[i].size());
 		for (auto j : tabIndexes[i]) {
 			closeIndexes[i].emplace_back(templateVec[j]);
 		}
-		closeIndexes[i].shrink_to_fit();
 	}
 
 	for (int i = 0; i < CLOSE_SECOND_SIZE; ++i) {
+		closeIndexesSecond[i].reserve(tabIndexesSecond[i].size());
 		for (auto j : tabIndexesSecond[i]) {
 			closeIndexesSecond[i].emplace_back(templateVecSecond[j]);
 		}
-		closeIndexesSecond[i].shrink_to_fit();
 	}
 }
 

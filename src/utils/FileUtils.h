@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-inline std::vector<std::string> loadLines(std::string path) {
+inline std::vector<std::string> loadLines(const std::string& path) {
 	std::ifstream infile(path);
 	std::string data;
 	std::vector<std::string> lines;

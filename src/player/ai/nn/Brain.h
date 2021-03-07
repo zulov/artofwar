@@ -9,7 +9,7 @@ class Layer;
 
 class Brain {
 public:
-	explicit Brain(std::string filename);
+	explicit Brain(const std::string& filename);
 	Brain(const Brain& rhs) = delete;
 	~Brain();
 	

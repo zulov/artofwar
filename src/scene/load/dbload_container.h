@@ -20,8 +20,7 @@ struct dbload_physical {
 		: id_db(idDb),
 		  hp(hp),
 		  player(player),
-		  level(level) {
-	}
+		  level(level) { }
 };
 
 struct dbload_static : dbload_physical {
@@ -36,8 +35,7 @@ struct dbload_static : dbload_physical {
 		  buc_x(bucX),
 		  buc_y(bucY),
 		  state(state),
-		  nextState(nextState) {
-	}
+		  nextState(nextState) { }
 };
 
 struct dbload_unit : dbload_physical {
@@ -54,8 +52,7 @@ struct dbload_unit : dbload_physical {
 		  pos_z(posZ),
 		  state(state),
 		  vel_x(velX),
-		  vel_z(velZ) {
-	}
+		  vel_z(velZ) { }
 };
 
 struct dbload_building : dbload_static {
@@ -64,14 +61,13 @@ struct dbload_building : dbload_static {
 	dbload_building(int idDb, float hpCoef, int player, int level, int bucX, int bucY, int state, int nextState,
 	                int deploy_idx)
 		: dbload_static(idDb, hpCoef, player, bucX, bucY, level, state, nextState),
-		  deploy_idx(deploy_idx) {
-	}
+		  deploy_idx(deploy_idx) { }
 };
 
 struct dbload_resource_entities : dbload_static {
 	dbload_resource_entities(int idDb, float hpCoef, int player, int level, int bucX, int bucY, int state,
-	                         int nextState) : dbload_static(idDb, hpCoef, player, bucX, bucY, level, state, nextState) {
-	}
+	                         int nextState) : dbload_static(idDb, hpCoef, player, bucX, bucY, level, state,
+	                                                        nextState) { }
 };
 
 struct dbload_player {
@@ -88,8 +84,7 @@ struct dbload_player {
 		  team(team),
 		  nation(nation),
 		  color(color),
-		  name(name) {
-	}
+		  name(name) { }
 };
 
 struct dbload_resource {
@@ -100,8 +95,7 @@ struct dbload_resource {
 	dbload_resource(short player, short resource, float amount)
 		: player(player),
 		  resource(resource),
-		  amount(amount) {
-	}
+		  amount(amount) { }
 };
 
 struct dbload_container {
@@ -114,6 +108,7 @@ struct dbload_container {
 		units = new std::vector<dbload_unit*>();
 		buildings = new std::vector<dbload_building*>();
 		resource_entities = new std::vector<dbload_resource_entities*>();
+		resource_entities->reserve(20 * 1024);
 	}
 
 	~dbload_container() {

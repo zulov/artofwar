@@ -1,6 +1,8 @@
 #include "LevelCache.h"
 
 #include <algorithm>
+#include <iostream>
+
 
 #include "simulation/env/GridCalculator.h"
 
@@ -10,6 +12,11 @@ LevelCache::LevelCache(unsigned short resolution, float maxDistance, GridCalcula
 	levelsCache[0] = new std::vector<short>(1);
 	for (int i = 1; i < RES_SEP_DIST; ++i) {
 		levelsCache[i] = getEnvIndexs(maxDistance / RES_SEP_DIST * i, levelsCache[i - 1]);
+	}
+	for (int i = 1; i < RES_SEP_DIST; ++i) {
+		if (levelsCache[i - 1] != levelsCache[i]) {
+			std::ranges::sort(*(levelsCache[i]));
+		} 
 	}
 }
 
@@ -33,33 +40,37 @@ std::vector<short>* LevelCache::get(float radius) {
 std::vector<short>* LevelCache::getEnvIndexs(float radius, std::vector<short>* prev) const {
 	radius *= radius;
 	auto indexes = new std::vector<short>();
-	indexes->reserve(9);
+	indexes->reserve(prev->size());
 	for (short i = 0; i < RES_SEP_DIST; ++i) {
 		for (short j = 0; j < RES_SEP_DIST; ++j) {
 			if (fieldInCircle(i, j, radius)) {
 				const short x = i + 1;
 				const short y = j + 1;
-				indexes->push_back(calculator->getNotSafeIndexClose(x, y));
-				indexes->push_back(calculator->getNotSafeIndexClose(x, -y));
-				indexes->push_back(calculator->getNotSafeIndexClose(-x, y));
-				indexes->push_back(calculator->getNotSafeIndexClose(-x, -y));
+				auto a = calculator->getNotSafeIndexClose(-x, -y);
+				auto b = calculator->getNotSafeIndexClose(-x, y);
+				indexes->push_back(a);
+				indexes->push_back(b);
+				indexes->push_back(-b);
+				indexes->push_back(-a);
 			} else {
 				break;
 			}
 		}
 		if (fieldInCircle(i, 0, radius)) {
 			const short x = i + 1;
-			indexes->push_back(calculator->getNotSafeIndexClose(x, 0));
-			indexes->push_back(calculator->getNotSafeIndexClose(0, x));
-			indexes->push_back(calculator->getNotSafeIndexClose(-x, 0));
-			indexes->push_back(calculator->getNotSafeIndexClose(0, -x));
+			auto a = calculator->getNotSafeIndexClose(-x, 0);
+			auto b = calculator->getNotSafeIndexClose(0, -x);
+			indexes->push_back(a);
+			indexes->push_back(b);
+			indexes->push_back(-b);
+			indexes->push_back(-a);
 		} else {
 			break;
 		}
 	}
+
 	indexes->push_back(0);
-	std::sort(indexes->begin(), indexes->end());
-	if (std::equal(indexes->begin(), indexes->end(), prev->begin(), prev->end())) {
+	if (std::ranges::equal(*indexes, *prev)) {
 		delete indexes;
 		return prev;
 	}

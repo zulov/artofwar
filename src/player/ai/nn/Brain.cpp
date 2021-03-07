@@ -11,7 +11,7 @@
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 
-Brain::Brain(std::string filename): filename(filename) {
+Brain::Brain(const std::string& filename): filename(filename) {
 	auto lines = loadLines(filename);
 	assert(!lines.empty());
 	if (lines.empty()) {
@@ -21,7 +21,7 @@ Brain::Brain(std::string filename): filename(filename) {
 	std::vector<float> b;
 	for (auto& line : lines) {
 		auto splitVec = split(line, ';');
-		auto p = std::find(splitVec.begin(), splitVec.end(), "");
+		auto p = std::ranges::find(splitVec, "");
 		std::vector<std::string>::iterator i;
 		for (i = splitVec.begin(); i != p; ++i) {
 			w.push_back(atof((*i).c_str()));
