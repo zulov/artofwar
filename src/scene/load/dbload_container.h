@@ -11,10 +11,10 @@ struct dbload_config {
 };
 
 struct dbload_physical {
-	short id_db;
 	float hp;
-	short player;
-	short level;
+	short id_db;
+	char player;
+	char level;
 
 	dbload_physical(short idDb, float hp, short player, short level)
 		: id_db(idDb),
@@ -56,7 +56,7 @@ struct dbload_unit : dbload_physical {
 };
 
 struct dbload_building : dbload_static {
-	float deploy_idx;
+	int deploy_idx;
 
 	dbload_building(int idDb, float hpCoef, int player, int level, int bucX, int bucY, int state, int nextState,
 	                int deploy_idx)
