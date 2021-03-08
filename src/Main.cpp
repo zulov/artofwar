@@ -51,6 +51,7 @@ using namespace Urho3D;
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
                                gameState(GameState::STARTING), loadingProgress(6),
                                newGameProgress(6) {
+	start = std::chrono::system_clock::now();
 	MySprite::RegisterObject(context);
 	Game::init();
 	RandGen::init();
@@ -161,6 +162,8 @@ void Main::Stop() {
 	if (!SIM_GLOBALS.HEADLESS) {
 		engine_->DumpResources(true);
 	}
+	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
+	std::cerr << "ENDED at " << duration.count() << " ms" << std::endl;
 }
 
 void Main::subscribeToUIEvents() {

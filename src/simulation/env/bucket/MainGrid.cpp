@@ -113,11 +113,13 @@ void MainGrid::updateSurround(Static* object) const {
 				indexes.emplace_back(index + inIndex);
 			}
 		}
-		std::sort(indexes.begin(), indexes.end());
+		std::ranges::sort(indexes);
 		indexes.erase(std::unique(indexes.begin(), indexes.end()), indexes.end());
 		indexes.erase(
-			std::remove_if(indexes.begin(), indexes.end(),
-			               [&](auto x) { return std::find(occu.begin(), occu.end(), x) != occu.end(); }),
+			std::ranges::remove_if(indexes,
+			                       [&](auto x) {
+				                       return std::find(occu.begin(), occu.end(), x) != occu.end();
+			                       }).begin(),
 			indexes.end());
 
 		object->setSurroundCells(indexes);

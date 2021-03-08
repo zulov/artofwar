@@ -8,7 +8,7 @@ class CloseIndexes {
 public:
 	explicit CloseIndexes(short res);
 	CloseIndexes(const CloseIndexes& rhs) = delete;
-	const std::vector<short>& get(int center) const;
+	const std::vector<short>& get(int center) const { return closeIndexes[getIndex(center)]; }
 	const std::vector<short>& getSecond(int center) const;
 	const std::vector<unsigned char>& getTabIndexes(int center) const { return tabIndexes[getIndex(center)]; }
 	short getIndexAt(unsigned char index) const { return templateVec[index]; }

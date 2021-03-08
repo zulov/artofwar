@@ -7,7 +7,7 @@
 #include "db_utils.h"
 #include "scene/save/SQLConsts.h"
 
-void DatabaseCache::execute(const std::string &sql, int (*load)(void*, int, char**, char**)) const {
+void DatabaseCache::execute(const std::string& sql, int (*load)(void*, int, char**, char**)) const {
 	char* error;
 	const int rc = sqlite3_exec(database, sql.c_str(), load, dbContainer, &error);
 	ifError(rc, error);
@@ -16,7 +16,7 @@ void DatabaseCache::execute(const std::string &sql, int (*load)(void*, int, char
 bool DatabaseCache::openDatabase(const std::string& name) {
 	const int rc = sqlite3_open_v2((pathStr + name).c_str(), &database, SQLITE_OPEN_READONLY, nullptr);
 	if (rc) {
-		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << std::endl << std::endl;
+		std::cerr << "Error opening SQLite3 database: " << sqlite3_errmsg(database) << " " << name << std::endl;
 		sqlite3_close_v2(database);
 		return true;
 	}

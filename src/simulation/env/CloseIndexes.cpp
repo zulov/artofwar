@@ -85,10 +85,6 @@ char CloseIndexes::getIndex(int center) const {
 	return index;
 }
 
-const std::vector<short>& CloseIndexes::get(int center) const {
-	return closeIndexes[getIndex(center)];
-}
-
 const std::vector<short>& CloseIndexes::getSecond(int center) const {
 	const bool firstRow = center < resolution;
 	const bool secondRow = !firstRow && center < 2 * resolution;
