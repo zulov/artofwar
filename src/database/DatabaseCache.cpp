@@ -5,10 +5,11 @@
 #include "db_grah_structs.h"
 #include "db_load.h"
 #include "db_utils.h"
+#include "scene/save/SQLConsts.h"
 
-void DatabaseCache::execute(const char* sql, int (*load)(void*, int, char**, char**)) const {
+void DatabaseCache::execute(const std::string &sql, int (*load)(void*, int, char**, char**)) const {
 	char* error;
-	const int rc = sqlite3_exec(database, sql, load, dbContainer, &error);
+	const int rc = sqlite3_exec(database, sql.c_str(), load, dbContainer, &error);
 	ifError(rc, error);
 }
 
@@ -36,11 +37,11 @@ DatabaseCache::DatabaseCache(std::string postfix) {
 void DatabaseCache::loadBasic(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
-	execute("SELECT * from hud_size", loadHudSizes);
-	execute("SELECT * from graph_settings", loadGraphSettings);
-	execute("SELECT * from hud_size_vars", loadHudVars);
-	execute("SELECT * from resolution", loadResolution);
-	execute("SELECT * from settings", loadSettings);
+	execute(SQLConsts::SELECT + "hud_size", loadHudSizes);
+	execute(SQLConsts::SELECT + "graph_settings", loadGraphSettings);
+	execute(SQLConsts::SELECT + "hud_size_vars", loadHudVars);
+	execute(SQLConsts::SELECT + "resolution", loadResolution);
+	execute(SQLConsts::SELECT + "settings", loadSettings);
 
 	sqlite3_close_v2(database);
 }
@@ -48,29 +49,29 @@ void DatabaseCache::loadBasic(const std::string& name) {
 void DatabaseCache::loadData(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
-	execute("SELECT * from nation order by id desc", loadNation);
-	execute("SELECT * from unit order by id desc", loadUnits);
-	execute("SELECT * from building order by id desc", loadBuildings);
+	execute(SQLConsts::SELECT + "nation order by id desc", loadNation);
+	execute(SQLConsts::SELECT + "unit order by id desc", loadUnits);
+	execute(SQLConsts::SELECT + "building order by id desc", loadBuildings);
 
-	execute("SELECT * from resource order by id desc", loadResource);
-	execute("SELECT * from building_cost", loadCostBuilding);
-	execute("SELECT * from unit_cost", loadCostUnit);
+	execute(SQLConsts::SELECT + "resource order by id desc", loadResource);
+	execute(SQLConsts::SELECT + "building_cost", loadCostBuilding);
+	execute(SQLConsts::SELECT + "unit_cost", loadCostUnit);
 
-	execute("SELECT * from orders order by id desc", loadOrders);
+	execute(SQLConsts::SELECT + "orders order by id desc", loadOrders);
 
-	execute("SELECT * from player_color order by id desc", loadPlayerColors);
+	execute(SQLConsts::SELECT + "player_color order by id desc", loadPlayerColors);
 
-	execute("SELECT * from unit_level order by level", loadUnitLevels);
-	execute("SELECT * from building_level order by level", loadBuildingLevels);
+	execute(SQLConsts::SELECT + "unit_level order by level", loadUnitLevels);
+	execute(SQLConsts::SELECT + "building_level order by level", loadBuildingLevels);
 
-	execute("SELECT * from unit_to_nation order by unit", loadUnitToNation);
-	execute("SELECT * from building_to_nation order by building", loadBuildingToNation);
+	execute(SQLConsts::SELECT + "unit_to_nation order by unit", loadUnitToNation);
+	execute(SQLConsts::SELECT + "building_to_nation order by building", loadBuildingToNation);
 
-	execute("SELECT * from unit_to_building_level order by unit", loadUnitToBuildingLevels);
+	execute(SQLConsts::SELECT + "nit_to_building_level order by unit", loadUnitToBuildingLevels);
 	//TODO make sure its sorted set_intersection
 
-	execute("SELECT * from unit_level_cost", loadCostUnitLevel);
-	execute("SELECT * from building_level_cost", loadCostBuildingLevel);
+	execute(SQLConsts::SELECT + "unit_level_cost", loadCostUnitLevel);
+	execute(SQLConsts::SELECT + "building_level_cost", loadCostBuildingLevel);
 
 	dbContainer->finish();
 
@@ -80,7 +81,7 @@ void DatabaseCache::loadData(const std::string& name) {
 void DatabaseCache::loadMaps(const std::string& name) {
 	if (openDatabase(name)) { return; }
 
-	execute("SELECT * from map order by id desc", loadMap);
+	execute(SQLConsts::SELECT + "map order by id desc", loadMap);
 
 	sqlite3_close_v2(database);
 }

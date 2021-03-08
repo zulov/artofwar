@@ -21,7 +21,7 @@ public:
 	void loadData(const std::string& name);
 	void loadMaps(const std::string& name);
 
-	void execute(const char* sql, int (* load)(void*, int, char**, char**)) const;
+	void execute(const std::string& sql, int (* load)(void*, int, char**, char**)) const;
 	bool openDatabase(const std::string& name);
 	std::vector<db_hud_size*>& getHudSizes() const { return dbContainer->hudSizes; }
 	std::vector<db_hud_vars*>& getHudVars() const { return dbContainer->hudVars; }
@@ -45,7 +45,7 @@ public:
 
 	std::vector<db_player_colors*>& getPlayerColors() const { return dbContainer->playerColors; }
 	db_player_colors* getPlayerColor(int i) const { return dbContainer->playerColors[i]; }
-	
+
 	std::vector<db_unit_level*>& getLevels() const { return dbContainer->unitsLevels; }
 
 	int getResourceSize() const { return dbContainer->resources.size(); }

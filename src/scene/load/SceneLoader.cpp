@@ -1,13 +1,14 @@
 #include "SceneLoader.h"
 #include "dbload_container.h"
 #include "database/db_utils.h"
+#include "scene/save/SQLConsts.h"
 
 
-SceneLoader::SceneLoader(): loadingState(5, false), dbLoad(nullptr) {}
+SceneLoader::SceneLoader(): loadingState(5, false) {}
 
 
 SceneLoader::~SceneLoader() {
-	delete dbLoad;
+	end();
 }
 
 void SceneLoader::load() {
@@ -17,6 +18,7 @@ void SceneLoader::load() {
 	loadUnits();
 	loadBuildings();
 	loadResourcesEntities();
+	close();
 }
 
 
@@ -102,48 +104,69 @@ void SceneLoader::createLoad(const Urho3D::String& fileName) {
 		sqlite3_close_v2(database);
 	}
 	loadingState.inc("load config");
-	load("SELECT * from config", load_config);
+	load(SQLConsts::SELECT + "config", load_config);
 }
 
 std::vector<dbload_player*>* SceneLoader::loadPlayers() {
+	if (dbLoad->players) { return dbLoad->players; }
+	dbLoad->players = new std::vector<dbload_player*>();
+
 	loadingState.inc("load players");
-	load("SELECT * from players", load_players);
+	load(SQLConsts::SELECT + "players", load_players);
 	return dbLoad->players;
 }
 
 std::vector<dbload_resource*>* SceneLoader::loadResources() {
+	if (dbLoad->resources) { return dbLoad->resources; }
+	dbLoad->resources = new std::vector<dbload_resource*>();
+
 	loadingState.inc("load resources");
-	load("SELECT * from resources", load_resources);
+	load(SQLConsts::SELECT + "resources", load_resources);
 	return dbLoad->resources;
 }
 
 std::vector<dbload_unit*>* SceneLoader::loadUnits() {
+	if (dbLoad->units) { return dbLoad->units; }
+	dbLoad->units = new std::vector<dbload_unit*>();
+
 	loadingState.inc("load units");
-	load("SELECT * from units", load_units);
+	load(SQLConsts::SELECT + "units", load_units);
 	return dbLoad->units;
 }
 
 std::vector<dbload_building*>* SceneLoader::loadBuildings() {
+	if (dbLoad->buildings) { return dbLoad->buildings; }
+	dbLoad->buildings = new std::vector<dbload_building*>();
+
 	loadingState.inc("load buildings");
-	load("SELECT * from buildings", load_buildings);
+	load(SQLConsts::SELECT + "buildings", load_buildings);
 	return dbLoad->buildings;
 }
 
 std::vector<dbload_resource_entities*>* SceneLoader::loadResourcesEntities() {
+	if (dbLoad->resource_entities) { return dbLoad->resource_entities; }
+	dbLoad->resource_entities = new std::vector<dbload_resource_entities*>();
+	dbLoad->resource_entities->reserve(19 * 1024);
+
 	loadingState.inc("load resource_entities");
-	load("SELECT * from resource_entities", load_resources_entities);
+	load(SQLConsts::SELECT + "resource_entities", load_resources_entities);
 	return dbLoad->resource_entities;
 }
 
-void SceneLoader::load(const char* sql, int (*load)(void*, int, char**, char**)) const {
+void SceneLoader::load(const std::string& sql, int (*load)(void*, int, char**, char**)) const {
 	char* error;
-	int rc = sqlite3_exec(database, sql, load, dbLoad, &error);
+	int rc = sqlite3_exec(database, sql.c_str(), load, dbLoad, &error);
 	ifError(rc, error);
 }
 
 void SceneLoader::end() {
-	sqlite3_close_v2(database);
+	close();
 	delete dbLoad;
 	dbLoad = nullptr;
 	loadingState.inc("");
+}
+
+void SceneLoader::close() {
+	sqlite3_close_v2(database);
+	database = nullptr;
 }

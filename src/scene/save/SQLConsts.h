@@ -45,5 +45,7 @@ struct SQLConsts {
 		"precision	INT NOT NULL,"
 		"map		INT NOT NULL";
 
-	inline const static std::string CREATE_TABLE ="CREATE TABLE ";
+	inline const static std::string CREATE_TABLE = "CREATE TABLE ";
+
+	inline const static std::string SELECT = "SELECT * from ";
 };

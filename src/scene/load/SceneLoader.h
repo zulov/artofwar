@@ -31,11 +31,12 @@ public:
 	std::vector<dbload_unit*>* loadUnits();
 	std::vector<dbload_building*>* loadBuildings();
 	std::vector<dbload_resource_entities*>* loadResourcesEntities();
+	void close();
 	void end();
 private:
-	void load(const char* sql, int (*load)(void*, int, char**, char**)) const;
+	void load(const std::string& sql, int (*load)(void*, int, char**, char**)) const;
 
 	Loading loadingState;
-	sqlite3* database;
-	dbload_container* dbLoad;
+	sqlite3* database{};
+	dbload_container* dbLoad{};
 };

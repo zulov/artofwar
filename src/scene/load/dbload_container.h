@@ -102,13 +102,6 @@ struct dbload_container {
 	dbload_container() {
 		precision = 1;
 		config = new dbload_config();
-		players = new std::vector<dbload_player*>();
-		resources = new std::vector<dbload_resource*>();
-
-		units = new std::vector<dbload_unit*>();
-		buildings = new std::vector<dbload_building*>();
-		resource_entities = new std::vector<dbload_resource_entities*>();
-		resource_entities->reserve(20 * 1024);
 	}
 
 	~dbload_container() {
@@ -124,10 +117,10 @@ struct dbload_container {
 	int precision;
 	dbload_config* config;
 
-	std::vector<dbload_player*>* players;
-	std::vector<dbload_resource*>* resources;
+	std::vector<dbload_player*>* players{};
+	std::vector<dbload_resource*>* resources{};
 
-	std::vector<dbload_unit*>* units;
-	std::vector<dbload_building*>* buildings;
-	std::vector<dbload_resource_entities*>* resource_entities;
+	std::vector<dbload_unit*>* units{};
+	std::vector<dbload_building*>* buildings{};
+	std::vector<dbload_resource_entities*>* resource_entities{};
 };

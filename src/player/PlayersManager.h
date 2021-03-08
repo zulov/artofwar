@@ -13,7 +13,7 @@ struct dbload_resource;
 
 class PlayersManager {
 public:
-	PlayersManager();
+	PlayersManager() = default;
 	~PlayersManager();
 	void load(std::vector<dbload_player*>* players, std::vector<dbload_resource*>* resources);
 	void addPlayer(NewGamePlayer& player);

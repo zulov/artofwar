@@ -5,9 +5,6 @@
 #include "scene/save/SceneSaver.h"
 
 
-PlayersManager::PlayersManager() = default;
-
-
 PlayersManager::~PlayersManager() {
 	clear_vector(allPlayers);
 }
