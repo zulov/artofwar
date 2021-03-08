@@ -123,11 +123,3 @@ const std::vector<short>& CloseIndexes::getSecond(int center) const {
 
 	return closeIndexesSecond[index];
 }
-
-const std::vector<unsigned char>& CloseIndexes::getTabIndexes(int center) const {
-	return tabIndexes[getIndex(center)];
-}
-
-short CloseIndexes::getIndexAt(unsigned char index) const {
-	return templateVec[index];
-}

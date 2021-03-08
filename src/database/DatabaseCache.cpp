@@ -67,7 +67,7 @@ void DatabaseCache::loadData(const std::string& name) {
 	execute(SQLConsts::SELECT + "unit_to_nation order by unit", loadUnitToNation);
 	execute(SQLConsts::SELECT + "building_to_nation order by building", loadBuildingToNation);
 
-	execute(SQLConsts::SELECT + "nit_to_building_level order by unit", loadUnitToBuildingLevels);
+	execute(SQLConsts::SELECT + "unit_to_building_level order by unit", loadUnitToBuildingLevels);
 	//TODO make sure its sorted set_intersection
 
 	execute(SQLConsts::SELECT + "unit_level_cost", loadCostUnitLevel);
