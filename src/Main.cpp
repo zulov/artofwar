@@ -52,6 +52,9 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE),
                                gameState(GameState::STARTING), loadingProgress(6),
                                newGameProgress(6) {
 	start = std::chrono::system_clock::now();
+	auto a = std::chrono::system_clock::now().time_since_epoch();
+	auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(a).count();
+	std::cout << "Start " << millis<< " ms" << std::endl;
 	MySprite::RegisterObject(context);
 	Game::init();
 	RandGen::init();
@@ -162,8 +165,11 @@ void Main::Stop() {
 	if (!SIM_GLOBALS.HEADLESS) {
 		engine_->DumpResources(true);
 	}
+	auto a = std::chrono::system_clock::now().time_since_epoch();
+	auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(a).count();
+	std::cout << "End " << millis<< " ms" << std::endl;
 	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
-	std::cerr << "ENDED at " << duration.count() << " ms" << std::endl;
+	std::cout << "ENDED at " << duration.count() << " ms" << std::endl;
 }
 
 void Main::subscribeToUIEvents() {
