@@ -32,7 +32,7 @@ void OrderMaker::action() {
 	}
 	auto& possesion = player->getPossession();
 
-	bool ifAttack = threshold->ifDo(possesion.getFreeArmyMetrics()) && false;
+	bool ifAttack = threshold->ifDo(possesion.getFreeArmyMetrics());
 	if (ifAttack) {
 		char id = threshold->getBest(possesion.getFreeArmyMetrics());
 

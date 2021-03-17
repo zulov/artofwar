@@ -4,6 +4,7 @@
 #include <Urho3D/Resource/Image.h>
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
+#include "math/SpanUtils.h"
 #include "objects/Physical.h"
 #include "simulation/env/GridCalculator.h"
 #include "simulation/env/GridCalculatorProvider.h"
@@ -31,24 +32,28 @@ InfluenceMapQuad::~InfluenceMapQuad() {
 }
 
 void InfluenceMapQuad::ensureReady() {
-	if (dataReady != false) {
+	if (dataReady == false) {
 		std::fill_n(data, dataSize - maps.back().size(), 0.f);
-		for (int i = maps.size() - 2; i >= 0; --i) {
-			auto parent = maps[i + 1];
-			const auto parentRes = parent.size();
-			const auto current = maps[i];
-			const auto currentSize = current.size();
-			for (int j = 0; j < parent.size(); ++j) {
-				if (parent[j] > 0.f) {
-					auto x = j / parentRes;
-					auto z = j % parentRes;
-					x /= 2;
-					z /= 2;
+		auto sum = sumSpan(maps.back());
+		if (sum != 0.f) {
+			for (int i = maps.size() - 2; i >= 0; --i) {
+				auto parent = maps[i + 1];
+				const int parentRes = sqrt(parent.size()); //TODO bug a co z zaokragleniem
+				const auto current = maps[i];
+				const int currentRes = sqrt(current.size());
+				for (int j = 0; j < parent.size(); ++j) {
+					if (parent[j] > 0.f) {
+						auto x = j / parentRes;
+						auto z = j % parentRes;
+						x /= 2;
+						z /= 2;
 
-					const int newIndex = x * currentSize + z;
-					current[newIndex] += parent[j];
-					assert(newIndex<currentSize);
-					//calculator->getindexes test
+						const int newIndex = x * currentRes + z;
+						assert(newIndex<currentRes*currentRes);
+						current[newIndex] += parent[j];
+
+						//calculator->getindexes test
+					}
 				}
 			}
 		}
@@ -61,7 +66,7 @@ Urho3D::Vector2 InfluenceMapQuad::getCenter() {
 	int index = std::distance(maps[0].begin(), std::max_element(maps[0].begin(), maps[0].end()));
 
 	for (int i = 1; i < maps.size(); ++i) {
-		std::array<int, 4> indexes = getIndexes(maps[i].size(), index);
+		std::array<int, 4> indexes = getIndexes(maps[i - 1].size(), index);
 		index = getMaxElement(indexes, maps[i]);
 	}
 	return calculator->getCenter(index);
