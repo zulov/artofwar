@@ -21,7 +21,7 @@
 OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
 	  whichResource(BrainProvider::get(std::string(nation->orderPrefix[0].CString()) + "whichResource_w.csv")),
-	  threshold(ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {
+	  attackthreshold(ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {
 }
 
 void OrderMaker::action() {
@@ -32,9 +32,9 @@ void OrderMaker::action() {
 	}
 	auto& possesion = player->getPossession();
 
-	bool ifAttack = threshold->ifDo(possesion.getFreeArmyMetrics());
+	bool ifAttack = attackthreshold->ifDo(possesion.getFreeArmyMetrics());
 	if (ifAttack) {
-		char id = threshold->getBest(possesion.getFreeArmyMetrics());
+		char id = attackthreshold->getBest(possesion.getFreeArmyMetrics());
 
 		const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
 		Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(CenterType(id), enemy);

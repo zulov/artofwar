@@ -23,5 +23,5 @@ private:
 
 	Player* player;
 	Brain *whichResource;
-	Threshold* threshold;
+	Threshold* attackthreshold;
 };

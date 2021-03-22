@@ -650,6 +650,12 @@ void Main::readParameters() {
 			} else if (argument == "orderaipath2" && !value.Empty()) {
 				SimGlobals::ORDER_AI_PATH[1] = value;
 				++i;
+			} else if (argument == "orderthreshold1" && !value.Empty()) {
+				SimGlobals::ORDER_THRESHOLD_PATH[0] = value;
+				++i;
+			} else if (argument == "orderthreshold2" && !value.Empty()) {
+				SimGlobals::ORDER_THRESHOLD_PATH[1] = value;
+				++i;
 			} else if (argument == "camposx" && !value.Empty()) {
 				SimGlobals::CAMERA_START.x_ = ToInt(value);
 				++i;
