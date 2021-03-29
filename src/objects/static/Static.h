@@ -33,6 +33,7 @@ public:
 	const std::vector<int>& getSurroundCells() const { return surroundCells; }
 
 	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* unit) override;
+	std::vector<int> getIndexesForUse(Unit* follower) override;
 	std::string getValues(int precision) override;
 protected:
 	void populate() override;

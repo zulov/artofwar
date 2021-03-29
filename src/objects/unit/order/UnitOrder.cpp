@@ -27,7 +27,7 @@ ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
 	return Consts::EMPTY_ACTION_PARAMETER;
 }
 
-TargetAim* UnitOrder::getTargetAimPtr(int startInx, Urho3D::Vector2& to) const {
+TargetAim* UnitOrder::getTargetAimPtr(int startInx, const Urho3D::Vector2& to) const {
 	const auto path = Game::getEnvironment()->findPath(startInx, to);
 	if (!path->empty()) {
 		return new TargetAim(*path);
@@ -36,16 +36,16 @@ TargetAim* UnitOrder::getTargetAimPtr(int startInx, Urho3D::Vector2& to) const {
 }
 
 
-TargetAim* UnitOrder::getTargetAimPtr(int startInx, int endIdx) const {
-	const auto path = Game::getEnvironment()->findPath(startInx, endIdx);
+TargetAim* UnitOrder::getTargetAimPtr(int startInx, std::vector<int>& endIdxs) const {
+	const auto path = Game::getEnvironment()->findPath(startInx, endIdxs);
 	if (!path->empty()) {
 		return new TargetAim(*path);
 	}
 	return nullptr;
 }
 
-ActionParameter UnitOrder::getFollowAim(int startInx, int endIdx) {
-	auto const target = getTargetAimPtr(startInx, endIdx);
+ActionParameter UnitOrder::getFollowAim(int startInx, const std::vector<int>& endIdxs) {
+	auto const target = getTargetAimPtr(startInx, endIdxs);
 	if (target) {
 		return ActionParameter(new FollowAim(toUse, target));
 	}

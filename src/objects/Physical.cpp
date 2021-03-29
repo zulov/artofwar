@@ -81,10 +81,6 @@ int Physical::getMainCell() const {
 	return getMainBucketIndex();
 }
 
-std::optional<std::tuple<Urho3D::Vector2, float, int>> Physical::getPosToUseWithIndex(Unit* user) {
-	return {};
-}
-
 std::optional<Urho3D::Vector2> Physical::getPosToUseBy(Unit* follower) {
 	auto a = getPosToUseWithIndex(follower);
 	if (a.has_value()) {

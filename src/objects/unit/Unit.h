@@ -126,6 +126,7 @@ public:
 	bool ifSlotIsOccupied(unsigned char index) const;
 
 	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* follower) override;
+	std::vector<int> getIndexesForUse(Unit* follower) override;
 
 	void action(UnitAction unitAction, const ActionParameter& parameter);
 	void action(UnitAction unitAction);

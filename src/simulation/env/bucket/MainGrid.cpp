@@ -414,8 +414,8 @@ std::vector<int>* MainGrid::findPath(int startIdx, int endIdx) const {
 	return pathConstructor->findPath(startIdx, endIdx);
 }
 
-std::vector<int>* MainGrid::findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) const {
-	return pathConstructor->findPath(from, aim);
+std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs) const {
+	return pathConstructor->findPath(startIdx, endIdxs);
 }
 
 void MainGrid::drawComplex(Urho3D::Image* image, Urho3D::String prefix) const {

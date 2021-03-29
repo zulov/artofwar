@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 namespace Urho3D {
 	class Vector2;
@@ -32,11 +33,12 @@ protected:
 
 
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);
-	ActionParameter getFollowAim(int startInx, int endIdx);
+	ActionParameter getFollowAim(int startInx, const std::vector<int>& endIdxs);
 	ActionParameter getChargeAim(Urho3D::Vector2& charge);
 private:
-	TargetAim* getTargetAimPtr(int startInx, int endIdx) const;
-	TargetAim* getTargetAimPtr(int startInx, Urho3D::Vector2& to) const;
+	TargetAim* getTargetAimPtr(int startInx, std::vector<int>& endIdxs) const;
+	TargetAim* getTargetAimPtr(int startInx, const Urho3D::Vector2& to) const;
+	
 	virtual void addCollectAim() =0;
 	virtual void addTargetAim() =0;
 	virtual void addFollowAim() =0;

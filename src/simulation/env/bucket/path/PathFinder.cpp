@@ -108,10 +108,6 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 	return tempPath;
 }
 
-std::vector<int>* PathFinder::findPath(const Urho3D::Vector3& from, const Urho3D::Vector2& aim) {
-	return findPath(calculator->indexFromPosition(from), aim);
-}
-
 int PathFinder::getPassableEnd(int endIdx) const {
 	while (!complexData[endIdx].isPassable()) {
 		if (complexData[endIdx].allNeightOccupied()) {
@@ -149,6 +145,10 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
 
 	const float min = calculator->getDistance(startIdx, endIdx);
 	return findPath(startIdx, endIdx, min, min * 2);
+}
+
+std::vector<int>* PathFinder::findPath(int startIdx,const std::vector<int>& endIdxs) {
+	
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim) {

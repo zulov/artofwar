@@ -2,6 +2,8 @@
 #include <optional>
 #include <span>
 #include <string>
+#include <vector>
+
 
 #include "objects/ObjectEnums.h"
 #include "Urho3D/Math/Vector3.h"
@@ -44,7 +46,8 @@ public:
 	virtual bool isSlotOccupied(int indexToInteract) { return false; }
 	virtual bool isFirstThingInSameSocket() const { return true; }
 
-	virtual void setOccupiedSlot(unsigned char index, bool value) { }
+	virtual void setOccupiedSlot(unsigned char index, bool value) {
+	}
 
 	void indexHasChangedReset() { indexHasChanged = false; }
 
@@ -70,12 +73,14 @@ public:
 
 	int getMainBucketIndex() const { return indexInGrid; }
 
-	virtual void populate() { }
+	virtual void populate() {
+	}
 
 	virtual int getMainCell() const;
 
 	virtual bool isToDispose() const { return false; }
-	virtual std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* follower);
+	virtual std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* follower) = 0;
+	virtual std::vector<int> getIndexesForUse(Unit* follower) = 0;
 
 	std::optional<Urho3D::Vector2> getPosToUseBy(Unit* follower);
 
@@ -90,7 +95,8 @@ public:
 
 	virtual char getLevelNum();
 
-	virtual void addValues(std::span<float> vals) const { }
+	virtual void addValues(std::span<float> vals) const {
+	}
 
 	virtual unsigned char getMaxRangeUsers() const { return 8; }
 	virtual unsigned char getMaxCloseUsers() const { return 8; }

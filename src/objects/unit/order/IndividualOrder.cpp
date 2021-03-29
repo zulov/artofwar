@@ -6,10 +6,12 @@
 #include "objects/unit/ActionParameter.h"
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Urho3D::Vector2& vector, bool append):
-	UnitOrder(static_cast<short>(action), append, vector), unit(unit) {}
+	UnitOrder(static_cast<short>(action), append, vector), unit(unit) {
+}
 
 IndividualOrder::IndividualOrder(Unit* unit, UnitAction action, Physical* toUse, bool append):
-	UnitOrder(static_cast<short>(action), append, toUse), unit(unit) {}
+	UnitOrder(static_cast<short>(action), append, toUse), unit(unit) {
+}
 
 bool IndividualOrder::expired() {
 	return unit == nullptr
@@ -37,9 +39,9 @@ void IndividualOrder::addTargetAim() {
 }
 
 void IndividualOrder::addFollowAim() {
-	auto opt = toUse->getPosToUseWithIndex(unit);
-	if (opt.has_value()) {
-		unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainCell(),std::get<2>(opt.value())));
+	const auto& indexes = toUse->getIndexesForUse(unit);
+	if (indexes.empty()) {
+		unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainCell(), indexes));
 	}
 }
 
@@ -74,7 +76,7 @@ void IndividualOrder::followAndAct() {
 		if (std::get<2>(postToUse) != unit->getMainBucketIndex()) {
 			//TODO moga byc tez inne pozycje nie tylko ta jedna 
 			const auto param = getFollowAim(unit->getMainCell(), std::get<2>(postToUse));
-			if(param.aim!=nullptr) {
+			if (param.aim != nullptr) {
 				unit->action(UnitAction::FOLLOW, param);
 				unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, true));
 			}
