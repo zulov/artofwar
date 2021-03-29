@@ -36,9 +36,9 @@ protected:
 	ActionParameter getFollowAim(int startInx, const std::vector<int>& endIdxs);
 	ActionParameter getChargeAim(Urho3D::Vector2& charge);
 private:
-	TargetAim* getTargetAimPtr(int startInx, std::vector<int>& endIdxs) const;
+	TargetAim* getTargetAimPtr(int startInx, const std::vector<int>& endIdxs) const;
 	TargetAim* getTargetAimPtr(int startInx, const Urho3D::Vector2& to) const;
-	
+
 	virtual void addCollectAim() =0;
 	virtual void addTargetAim() =0;
 	virtual void addFollowAim() =0;

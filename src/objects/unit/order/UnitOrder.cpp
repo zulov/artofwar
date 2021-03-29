@@ -36,7 +36,7 @@ TargetAim* UnitOrder::getTargetAimPtr(int startInx, const Urho3D::Vector2& to) c
 }
 
 
-TargetAim* UnitOrder::getTargetAimPtr(int startInx, std::vector<int>& endIdxs) const {
+TargetAim* UnitOrder::getTargetAimPtr(int startInx, const std::vector<int>& endIdxs) const {
 	const auto path = Game::getEnvironment()->findPath(startInx, endIdxs);
 	if (!path->empty()) {
 		return new TargetAim(*path);

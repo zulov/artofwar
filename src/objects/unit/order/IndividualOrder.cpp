@@ -39,7 +39,7 @@ void IndividualOrder::addTargetAim() {
 }
 
 void IndividualOrder::addFollowAim() {
-	const auto& indexes = toUse->getIndexesForUse(unit);
+	const auto indexes = toUse->getIndexesForUse(unit);
 	if (indexes.empty()) {
 		unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainCell(), indexes));
 	}
@@ -70,18 +70,16 @@ void IndividualOrder::simpleAction() const {
 }
 
 void IndividualOrder::followAndAct() {
-	auto posOpt = toUse->getPosToUseWithIndex(unit);
-	if (posOpt.has_value()) {
-		auto postToUse = posOpt.value();
-		if (std::get<2>(postToUse) != unit->getMainBucketIndex()) {
-			//TODO moga byc tez inne pozycje nie tylko ta jedna 
-			const auto param = getFollowAim(unit->getMainCell(), std::get<2>(postToUse));
+	auto const indexes = toUse->getIndexesForUse(unit);
+	if (!indexes.empty()) {
+		if (std::ranges::find(indexes, unit->getMainBucketIndex()) != indexes.end()) {
+			const auto param = getFollowAim(unit->getMainCell(), indexes);
 			if (param.aim != nullptr) {
 				unit->action(UnitAction::FOLLOW, param);
 				unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, true));
 			}
 		} else {
-			unit->action(static_cast<UnitAction>(id), ActionParameter(toUse, std::get<2>(postToUse)));
+			unit->action(static_cast<UnitAction>(id), ActionParameter(toUse, unit->getMainBucketIndex()));
 		}
 	}
 }

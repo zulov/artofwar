@@ -50,10 +50,9 @@ void FormationOrder::addFollowAim() {
 		formation->stopAllBesideLeader();
 		Unit* leader = leaderOpt.value();
 
-		auto posOpt = toUse->getPosToUseWithIndex(leader);
-		if (posOpt.has_value()) {
-			leader->action(static_cast<UnitAction>(id),
-			               getFollowAim(leader->getMainCell(), std::get<2>(posOpt.value())));
+		auto const indexes = toUse->getIndexesForUse(leader);
+		if (!indexes.empty()) {
+			leader->action(static_cast<UnitAction>(id), getFollowAim(leader->getMainCell(), indexes));
 		}
 	}
 }
@@ -69,13 +68,13 @@ void FormationOrder::followAndAct(float distThreshold) {
 	auto optLeader = formation->getLeader();
 	if (optLeader.has_value()) {
 		Unit* leader = optLeader.value();
-		auto posToUseOpt = toUse->getPosToUseWithIndex(leader);
-		if (posToUseOpt.has_value()) {
-			auto postToUse = posToUseOpt.value();
+		auto const indexes = toUse->getIndexesForUse(leader);
+		if (!indexes.empty()) {
+			
 			if (std::get<1>(postToUse) > distThreshold) {
 				auto pos = std::get<0>(postToUse);
 				optLeader.value()->action(UnitAction::FOLLOW,
-				                          getFollowAim(optLeader.value()->getMainCell(), std::get<2>(postToUse)));
+				                          getFollowAim(optLeader.value()->getMainCell(), indexes));
 				formation->addOrder(
 					new FormationOrder(formation, id, toUse, true));
 				//Dodanie celu po dojsciu

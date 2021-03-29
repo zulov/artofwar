@@ -147,8 +147,24 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
 	return findPath(startIdx, endIdx, min, min * 2);
 }
 
-std::vector<int>* PathFinder::findPath(int startIdx,const std::vector<int>& endIdxs) {
-	
+std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs) {
+	if (ifInCache(startIdx, endIdxs)) {
+		return tempPath;
+	}
+
+	endIdx = getPassableEnd(endIdx); //TODO improve kolejnosc tego  i nize jest istotna?
+
+	lastStartIdx = startIdx;
+	lastEndIdx = endIdx;
+
+	if (isInLocalArea(startIdx, endIdx)) {
+		tempPath->clear();
+		tempPath->emplace_back(endIdx);
+		return tempPath;
+	}
+
+	const float min = calculator->getDistance(startIdx, endIdx);
+	return findPath(startIdx, endIdx, min, min * 2);
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim) {
@@ -229,6 +245,10 @@ inline float PathFinder::heuristic(int from, int to) const {
 	const auto b = getCords(to);
 
 	return (abs(a.x_ - b.x_) + abs(a.y_ - b.y_)) * fieldSize;
+}
+
+bool PathFinder::ifInCache(int startIdx, const std::vector<int>& endIdxs) const {
+	
 }
 
 void PathFinder::invalidateCache() {

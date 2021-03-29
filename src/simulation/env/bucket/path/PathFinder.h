@@ -36,6 +36,7 @@ public:
 private:
 	float heuristic(int from, int to) const;
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
+	bool ifInCache(int startIdx, const std::vector<int>& endIdxs) const;
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 	void resetPathArrays();
 	bool isInLocalArea(int center, int indexOfAim) const;

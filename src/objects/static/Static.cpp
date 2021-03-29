@@ -11,7 +11,8 @@
 Static::Static(Urho3D::Vector3& _position, int mainCell, bool withNode) : Physical(_position, withNode),
                                                                           mainCell(mainCell),
                                                                           state(StaticState::ALIVE),
-                                                                          nextState(StaticState::ALIVE) {}
+                                                                          nextState(StaticState::ALIVE) {
+}
 
 void Static::load(dbload_static* dbloadStatic) {
 	Physical::load(dbloadStatic);
@@ -72,14 +73,14 @@ bool Static::canCollect(int index) {
 	return Game::getEnvironment()->cellIsCollectable(index);
 }
 
-std::optional<std::tuple<Urho3D::Vector2, float, int>> Static::getPosToUseWithIndex(Unit* unit) {
+std::optional<std::tuple<Urho3D::Vector2, float, int>> Static::getPosToUseWithIndex(Unit* user) {
 	float minDistance = 999999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
 	for (auto index : surroundCells) {
 		if (canCollect(index)) {
 			const auto vec = Game::getEnvironment()->getCenter(index);
-			setClosest(minDistance, closest, closestIndex, index, vec, unit->getPosition());
+			setClosest(minDistance, closest, closestIndex, index, vec, user->getPosition());
 		}
 	}
 	if (closestIndex >= 0) {
@@ -87,6 +88,19 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Static::getPosToUseWithIn
 	}
 	return {};
 }
+
+std::vector<int> Static::getIndexesForUse(Unit* user) {
+	std::vector<int> indexes;
+
+	for (auto index : surroundCells) {
+		if (canCollect(index)) {
+			indexes.push_back(index);
+		}
+	}
+
+	return indexes;
+}
+
 
 std::string Static::getValues(int precision) {
 	const auto cordsCell = Game::getEnvironment()->getCords(mainCell);
