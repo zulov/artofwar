@@ -8,10 +8,12 @@
 #include "utils/consts.h"
 
 UnitOrder::UnitOrder(short id, bool append, Urho3D::Vector2& vector):
-	id(id), append(append), toUse(nullptr), vector(new Urho3D::Vector2(vector)) {}
+	id(id), append(append), toUse(nullptr), vector(new Urho3D::Vector2(vector)) {
+}
 
 UnitOrder::UnitOrder(short id, bool append, Physical* toUse):
-	id(id), append(append), toUse(toUse), vector(nullptr) {}
+	id(id), append(append), toUse(toUse), vector(nullptr) {
+}
 
 UnitOrder::~UnitOrder() {
 	delete vector;
@@ -33,10 +35,19 @@ TargetAim* UnitOrder::getTargetAimPtr(int startInx, Urho3D::Vector2& to) const {
 	return nullptr;
 }
 
-ActionParameter UnitOrder::getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow) {
-	auto const target = getTargetAimPtr(startInx, toSoFar);
-	if(target) {
-		return ActionParameter(new FollowAim(toFollow, target));
+
+TargetAim* UnitOrder::getTargetAimPtr(int startInx, int endIdx) const {
+	const auto path = Game::getEnvironment()->findPath(startInx, endIdx);
+	if (!path->empty()) {
+		return new TargetAim(*path);
+	}
+	return nullptr;
+}
+
+ActionParameter UnitOrder::getFollowAim(int startInx, int endIdx) {
+	auto const target = getTargetAimPtr(startInx, endIdx);
+	if (target) {
+		return ActionParameter(new FollowAim(toUse, target));
 	}
 	return Consts::EMPTY_ACTION_PARAMETER;
 	//assert(target != nullptr); //TODO check

@@ -45,14 +45,15 @@ void FormationOrder::addTargetAim() {
 }
 
 void FormationOrder::addFollowAim() {
-	auto opt = formation->getLeader();
-	if (opt.has_value()) {
+	auto leaderOpt = formation->getLeader();
+	if (leaderOpt.has_value()) {
 		formation->stopAllBesideLeader();
-		auto posOpt = toUse->getPosToUseBy(opt.value());
+		Unit* leader = leaderOpt.value();
+
+		auto posOpt = toUse->getPosToUseWithIndex(leader);
 		if (posOpt.has_value()) {
-			opt.value()->action(static_cast<UnitAction>(id),
-			                    getFollowAim(opt.value()->getMainCell(),
-			                                 posOpt.value(), toUse));
+			leader->action(static_cast<UnitAction>(id),
+			               getFollowAim(leader->getMainCell(), std::get<2>(posOpt.value())));
 		}
 	}
 }
@@ -67,13 +68,14 @@ void FormationOrder::addChargeAim() {
 void FormationOrder::followAndAct(float distThreshold) {
 	auto optLeader = formation->getLeader();
 	if (optLeader.has_value()) {
-		auto posToUseOpt = toUse->getPosToUseWithIndex(optLeader.value());
+		Unit* leader = optLeader.value();
+		auto posToUseOpt = toUse->getPosToUseWithIndex(leader);
 		if (posToUseOpt.has_value()) {
 			auto postToUse = posToUseOpt.value();
 			if (std::get<1>(postToUse) > distThreshold) {
 				auto pos = std::get<0>(postToUse);
 				optLeader.value()->action(UnitAction::FOLLOW,
-				                          getFollowAim(optLeader.value()->getMainCell(), pos, toUse));
+				                          getFollowAim(optLeader.value()->getMainCell(), std::get<2>(postToUse)));
 				formation->addOrder(
 					new FormationOrder(formation, id, toUse, true));
 				//Dodanie celu po dojsciu

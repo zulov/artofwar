@@ -37,10 +37,9 @@ void IndividualOrder::addTargetAim() {
 }
 
 void IndividualOrder::addFollowAim() {
-	auto opt = toUse->getPosToUseBy(unit);
+	auto opt = toUse->getPosToUseWithIndex(unit);
 	if (opt.has_value()) {
-		unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainCell(),
-		                                                       opt.value(), toUse));
+		unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainCell(),std::get<2>(opt.value())));
 	}
 }
 
@@ -74,7 +73,7 @@ void IndividualOrder::followAndAct() {
 		auto postToUse = posOpt.value();
 		if (std::get<2>(postToUse) != unit->getMainBucketIndex()) {
 			//TODO moga byc tez inne pozycje nie tylko ta jedna 
-			const auto param = getFollowAim(unit->getMainCell(), std::get<0>(postToUse), toUse);
+			const auto param = getFollowAim(unit->getMainCell(), std::get<2>(postToUse));
 			if(param.aim!=nullptr) {
 				unit->action(UnitAction::FOLLOW, param);
 				unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, true));

@@ -27,13 +27,15 @@ protected:
 	Physical* toUse = nullptr; //TODO tu nada³a by sie unia?
 	Urho3D::Vector2* vector = nullptr;
 
-	const bool append;
 	const short id;
+	const bool append;
+
 
 	ActionParameter getTargetAim(int startInx, Urho3D::Vector2& to);
-	ActionParameter getFollowAim(int startInx, Urho3D::Vector2& toSoFar, Physical* toFollow);
+	ActionParameter getFollowAim(int startInx, int endIdx);
 	ActionParameter getChargeAim(Urho3D::Vector2& charge);
 private:
+	TargetAim* getTargetAimPtr(int startInx, int endIdx) const;
 	TargetAim* getTargetAimPtr(int startInx, Urho3D::Vector2& to) const;
 	virtual void addCollectAim() =0;
 	virtual void addTargetAim() =0;
