@@ -127,6 +127,16 @@ int PathFinder::getPassableEnd(int endIdx) const {
 	return endIdx;
 }
 
+std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs) const {
+	std::vector<int> result;
+	result.reserve(endIdxs.size());
+	for (int i = 0; i < endIdxs.size(); ++i) {
+		result.push_back(getPassableEnd(endIdxs.at(i)));
+	}
+	result.erase(std::unique(result.begin(), result.end()), result.end());
+	return result;
+}
+
 std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
 	if (ifInCache(startIdx, endIdx)) {
 		return tempPath;
@@ -152,12 +162,12 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 		return tempPath;
 	}
 
-	endIdx = getPassableEnd(endIdx); //TODO improve kolejnosc tego  i nize jest istotna?
+	auto newEndIndexes = getPassableIndexes(endIdxs);
 
-	lastStartIdx = startIdx;
-	lastEndIdx = endIdx;
+	lastStartIdx = -1;
+	lastEndIdx = -1;
 
-	if (isInLocalArea(startIdx, endIdx)) {
+	if (isInLocalArea(startIdx, newEndIndexes)) {
 		tempPath->clear();
 		tempPath->emplace_back(endIdx);
 		return tempPath;
@@ -248,7 +258,9 @@ inline float PathFinder::heuristic(int from, int to) const {
 }
 
 bool PathFinder::ifInCache(int startIdx, const std::vector<int>& endIdxs) const {
-	
+	if (lastStartIdx != startIdx) { return false; }
+	return std::ranges::any_of(endIdxs.begin(), endIdxs.end(),
+	                           [this](int i) { return i == lastEndIdx; });
 }
 
 void PathFinder::invalidateCache() {
@@ -331,6 +343,15 @@ bool PathFinder::isInLocalArea(const int center, int indexOfAim) const {
 	auto diff = indexOfAim - center; //center + value == indexOfAim
 	for (auto value : closeIndexes->get(indexOfAim)) {
 		if (diff == value) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool PathFinder::isInLocalArea(int center, std::vector<int>& endIdxs) const {
+	for (auto idxs : endIdxs) {//TOOD perf tu pewnie kilka rzecz sprawdzane pare rzeczy
+		if (isInLocalArea(center, idxs)) {
 			return true;
 		}
 	}

@@ -69,23 +69,21 @@ void FormationOrder::followAndAct(float distThreshold) {
 	if (optLeader.has_value()) {
 		Unit* leader = optLeader.value();
 		auto const indexes = toUse->getIndexesForUse(leader);
-		if (!indexes.empty()) {
-			
-			if (std::get<1>(postToUse) > distThreshold) {
-				auto pos = std::get<0>(postToUse);
-				optLeader.value()->action(UnitAction::FOLLOW,
-				                          getFollowAim(optLeader.value()->getMainCell(), indexes));
-				formation->addOrder(
-					new FormationOrder(formation, id, toUse, true));
-				//Dodanie celu po dojsciu
-			} else {
-				for (auto unit : formation->getUnits()) {
+		if (!indexes.empty()) {		
+			if (Game::getEnvironment()->anyCloseEnough(indexes, leader->getMainCell(), distThreshold)) {
+				for (auto* unit : formation->getUnits()) {
 					unit->resetFormation();
 					unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, false));
 					//TODO to samo zrobic w innnych akcjach z atakiem
 					//TOAttack jak nie ten to zaatakowac blizeszego
 				}
 				formation->remove();
+			} else {
+				//auto pos = std::get<0>(postToUse);
+				optLeader.value()->action(UnitAction::FOLLOW,
+				                          getFollowAim(optLeader.value()->getMainCell(), indexes));
+				formation->addOrder(new FormationOrder(formation, id, toUse, true));
+				//Dodanie celu po dojsciu
 			}
 		}
 	}

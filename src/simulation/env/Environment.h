@@ -114,6 +114,7 @@ public:
 	bool cellIsPassable(int index) const;
 	bool cellIsCollectable(int index) const;
 	Urho3D::Vector2 getCenterOf(CenterType id, char player);
+	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold);
 
 private:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;

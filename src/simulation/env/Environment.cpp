@@ -375,6 +375,10 @@ Urho3D::Vector2 Environment::getCenterOf(CenterType id, char player) {
 	return influenceManager.getCenterOf(id, player);
 }
 
+bool Environment::anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) {
+	return mainGrid.anyCloseEnough(indexes, center, distThreshold);
+}
+
 bool Environment::isInLocalArea(int getMainCell, int aimIndex) const {
 	return mainGrid.isInLocalArea(getMainCell, aimIndex);
 }

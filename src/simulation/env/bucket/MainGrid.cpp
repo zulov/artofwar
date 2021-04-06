@@ -254,6 +254,17 @@ bool MainGrid::cellIsCollectable(int index) const {
 	return complexData[index].cellIsCollectable();
 }
 
+bool MainGrid::anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const {
+	//TODO perf dac square
+	//TODO perf center obliczyc raz
+	for (auto index : indexes) {
+		if (calculator->getDistance(index, center) < distThreshold) {
+			return true;
+		}
+	}
+	return false;
+}
+
 bool MainGrid::isInLocalArea(const int center, int indexOfAim) const {
 	if (center == indexOfAim) { return true; }
 	auto diff = indexOfAim - center; //center + value == indexOfAim

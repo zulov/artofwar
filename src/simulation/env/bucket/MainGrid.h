@@ -80,6 +80,7 @@ public:
 	float getFieldSize() const;
 	void drawAll();
 	bool cellIsCollectable(int index) const;
+	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
 
 private:
 
