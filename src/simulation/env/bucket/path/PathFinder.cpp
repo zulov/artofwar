@@ -4,7 +4,7 @@
 #include "../ComplexBucketData.h"
 #include "simulation/env/GridCalculator.h"
 #include "simulation/env/GridCalculatorProvider.h"
-#include "utils/defines.h"
+
 #include "simulation/env/CloseIndexes.h"
 #include "simulation/env/CloseIndexesProvider.h"
 
@@ -13,7 +13,6 @@ PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexD
 	resolution(resolution), fieldSize(size / resolution), max_cost_to_ref(resolution * resolution - 1),
 	complexData(complexData) {
 	tempPath = new std::vector<int>();
-	tempPath->reserve(DEFAULT_VECTOR_SIZE);
 }
 
 PathFinder::~PathFinder() {
@@ -33,7 +32,7 @@ std::vector<int>* PathFinder::reconstruct_path(int start, int goal, const int ca
 		tempPath->emplace_back(current);
 	}
 
-	std::reverse(tempPath->begin(), tempPath->end());
+	std::ranges::reverse(*tempPath);
 	tempPath->emplace_back(goal);
 	return tempPath;
 }
@@ -46,7 +45,6 @@ std::vector<int>* PathFinder::reconstruct_simplify_path(int start, int goal, con
 
 	int lastDirection = 0;
 	while (current != start) {
-
 		const int currentDirection = current - came_from[current];
 		if (currentDirection != lastDirection) {
 			tempPath->emplace_back(current);
@@ -62,19 +60,23 @@ std::vector<int>* PathFinder::reconstruct_simplify_path(int start, int goal, con
 		current = next;
 	}
 
-	std::reverse(tempPath->begin(), tempPath->end());
+	std::ranges::reverse(*tempPath);
 	tempPath->pop_back();
 	return tempPath;
 }
 
-std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, float max) {
+void PathFinder::prepareToStart(int startIdx, float min, float max) {
 	resetPathArrays();
 	frontier.init(max, min);
 	frontier.put(startIdx, 0);
 
 	came_from[startIdx] = startIdx;
-
 	updateCost(startIdx, 0.0f);
+}
+
+std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, float max) {
+	prepareToStart(startIdx, min, max);
+
 	while (!frontier.empty()) {
 		const auto current = frontier.get();
 
@@ -87,10 +89,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 		for (auto i : closeTabIndx) {
 			if (currentData.ifNeightIsFree(i)) {
 				int next = current + closeIndexes->getIndexAt(i);
-				if (!(next >= 0 && next < resolution * resolution)) {
-					std::cout << current << "@@" << next << std::endl;
-				}
-				assert(next>=0 && next<resolution*resolution);
+				validateIndex(current, next);
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + currentData.getCost(i);
 					if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
@@ -108,34 +107,45 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 	return tempPath;
 }
 
-int PathFinder::getPassableEnd(int endIdx) const {
-	while (!complexData[endIdx].isPassable()) {
-		if (complexData[endIdx].allNeightOccupied()) {
-			endIdx = complexData[endIdx].getEscapeBucket();
-		} else {
-			auto& closeTabIndx = closeIndexes->getTabIndexes(endIdx);
+void PathFinder::validateIndex(const int current, int next) {
+	if (!calculator->isValidIndex(next)) {
+		std::cout << current << "@@" << next << std::endl;
+		assert(calculator->isValidIndex(next));
+	}
+}
 
-			for (auto i : closeTabIndx) {
-				if (complexData[endIdx].ifNeightIsFree(i)) {
-					endIdx = endIdx + closeIndexes->getIndexAt(i); //TODO obliczyc lepszy, a nie pierwszy z brzegu
-					//TODO bug wyjscie pioza
-					break;
+std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, float min, float max) {
+	prepareToStart(startIdx, min, max);
+	
+	while (!frontier.empty()) {
+		const auto current = frontier.get();
+
+		if (current == endIdx) {
+			//debug(startIdx, endIdx);
+			return reconstruct_simplify_path(startIdx, endIdx, came_from);
+		}
+		auto& closeTabIndx = closeIndexes->getTabIndexes(current);
+		auto const& currentData = complexData[current];
+		for (auto i : closeTabIndx) {
+			if (currentData.ifNeightIsFree(i)) {
+				int next = current + closeIndexes->getIndexAt(i);
+				validateIndex(current, next);
+				if (came_from[current] != next) {
+					const float new_cost = cost_so_far[current] + currentData.getCost(i);
+					if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
+						updateCost(next, new_cost);
+						frontier.put(next, new_cost + heuristic(next, endIdx));
+						//TODO next mozna obliczyc raz w srodku
+						came_from[next] = current;
+					}
 				}
 			}
 		}
 	}
-	return endIdx;
-}
-
-std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs) const {
-	std::vector<int> result;
-	result.reserve(endIdxs.size());
-	for (int i = 0; i < endIdxs.size(); ++i) {
-		result.push_back(getPassableEnd(endIdxs.at(i)));
-	}
-	result.erase(std::unique(result.begin(), result.end()), result.end());
-	return result;
-}
+	//debug(startIdx, endIdx);
+	tempPath->clear();
+	return tempPath;
+ }
 
 std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
 	if (ifInCache(startIdx, endIdx)) {
@@ -164,21 +174,49 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 
 	auto newEndIndexes = getPassableIndexes(endIdxs);
 
-	lastStartIdx = -1;
-	lastEndIdx = -1;
+	invalidateCache();
 
-	if (isInLocalArea(startIdx, newEndIndexes)) {
+	const int localIdx = isInLocalArea(startIdx, newEndIndexes);
+
+	if (localIdx != -1) {
 		tempPath->clear();
-		tempPath->emplace_back(endIdx);
+		tempPath->emplace_back(localIdx);
 		return tempPath;
 	}
 
-	const float min = calculator->getDistance(startIdx, endIdx);
-	return findPath(startIdx, endIdx, min, min * 2);
+	const float min = calculator->getClosestDistance(startIdx, newEndIndexes);
+	return findPath(startIdx, newEndIndexes, min, min * 2);
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim) {
 	return findPath(startIdx, calculator->indexFromPosition(aim));
+}
+
+int PathFinder::getPassableEnd(int endIdx) const {
+	while (!complexData[endIdx].isPassable()) {
+		if (complexData[endIdx].allNeightOccupied()) {
+			endIdx = complexData[endIdx].getEscapeBucket();
+		} else {
+			for (auto i : closeIndexes->getTabIndexes(endIdx)) {
+				if (complexData[endIdx].ifNeightIsFree(i)) {
+					endIdx = endIdx + closeIndexes->getIndexAt(i); //TODO obliczyc lepszy, a nie pierwszy z brzegu
+					//TODO bug wyjscie pioza
+					break;
+				}
+			}
+		}
+	}
+	return endIdx;
+}
+
+std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs) const {
+	std::vector<int> result;
+	result.reserve(endIdxs.size());
+	for (int endIdx : endIdxs) {
+		result.push_back(getPassableEnd(endIdx));
+	}
+	result.erase(std::unique(result.begin(), result.end()), result.end());
+	return result;
 }
 
 void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
@@ -187,7 +225,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 		int startIndex = toRefresh.back();
 		toRefresh.pop_back();
 
-		if (std::find(refreshed.begin(), refreshed.end(), startIndex) != refreshed.end()) {
+		if (std::ranges::find(refreshed, startIndex) != refreshed.end()) {
 			continue;
 		}
 		if (!complexData[startIndex].allNeightOccupied()) {
@@ -195,13 +233,8 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 			break;
 		}
 
-		resetPathArrays();
+		prepareToStart(startIndex, 0, 750);
 
-		frontier.init(750, 0);
-		frontier.put(startIndex, 0);
-
-		came_from[startIndex] = startIndex;
-		updateCost(startIndex, 0);
 		int end = startIndex;
 		while (!frontier.empty()) {
 			const auto current = frontier.get();
@@ -211,14 +244,12 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 				currentData.setEscapeThrough(-1);
 				break;
 			}
-			auto const& closeTabIndx = closeIndexes->getTabIndexes(current);
-
-			for (auto i : closeTabIndx) {
+			for (auto i : closeIndexes->getTabIndexes(current)) {
 				if (!currentData.ifNeightIsFree(i)) {
 					int nI = current + closeIndexes->getIndexAt(i);
 					assert(nI >= 0 && nI < resolution* resolution);
 					if (!complexData[nI].allNeightOccupied()
-						&& std::find(refreshed.begin(), refreshed.end(), nI) != refreshed.end()) {
+						&& std::ranges::find(refreshed, nI) != refreshed.end()) {
 						//TODO to chyba glupi warunek
 						toRefresh.push_back(nI);
 					}
@@ -313,7 +344,6 @@ void PathFinder::prepareGridToFind() {
 	pathInited = true;
 }
 
-
 void PathFinder::updateCost(int idx, float x) {
 	cost_so_far[idx] = x;
 	if (idx < min_cost_to_ref) {
@@ -338,22 +368,18 @@ void PathFinder::resetPathArrays() {
 }
 
 bool PathFinder::isInLocalArea(const int center, int indexOfAim) const {
-	//TODO code duplite
+	//TODO code duplicate
 	if (center == indexOfAim) { return true; }
 	auto diff = indexOfAim - center; //center + value == indexOfAim
-	for (auto value : closeIndexes->get(indexOfAim)) {
-		if (diff == value) {
-			return true;
-		}
-	}
-	return false;
+	return std::ranges::any_of(closeIndexes->get(indexOfAim), [diff](int i) {return i == diff; });
 }
 
-bool PathFinder::isInLocalArea(int center, std::vector<int>& endIdxs) const {
-	for (auto idxs : endIdxs) {//TOOD perf tu pewnie kilka rzecz sprawdzane pare rzeczy
+int PathFinder::isInLocalArea(int center, std::vector<int>& endIdxs) const {
+	for (auto const idxs : endIdxs) {
+		//TOOD perf tu pewnie kilka rzecz sprawdzane pare rzeczy
 		if (isInLocalArea(center, idxs)) {
-			return true;
+			return idxs;
 		}
 	}
-	return false;
+	return -1;
 }

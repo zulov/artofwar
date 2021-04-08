@@ -1,5 +1,6 @@
 #pragma once
 #include <Urho3D/Math/Vector3.h>
+#include <vector>
 
 struct GridCalculator {
 
@@ -16,7 +17,7 @@ struct GridCalculator {
 	int getNotSafeIndex(unsigned short posX, unsigned short posZ) const {
 		return posX * resolution + posZ;
 	}
-	
+
 	short getNotSafeIndexClose(short posX, short posZ) const {
 		return posX * resolution + posZ;
 	}
@@ -78,6 +79,18 @@ struct GridCalculator {
 
 	float getDistance(int first, int next) const {
 		return getDistance(getIndexes(first), next);
+	}
+
+	float getClosestDistance(int startIdx, const std::vector<int>& endIdxs) const {
+		const auto startPos = getIndexes(startIdx);
+		float min = 1000;
+		for (auto idxs : endIdxs) {
+			const auto dist = getDistance(startPos, idxs);
+			if (dist < min) {
+				min = dist;
+			}
+		}
+		return min;
 	}
 
 

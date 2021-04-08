@@ -20,7 +20,7 @@ UnitOrder::~UnitOrder() {
 }
 
 ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
-	auto target = getTargetAimPtr(startInx, to);
+	const auto target = getTargetAimPtr(startInx, to);
 	if (target) {
 		return ActionParameter(target);
 	}

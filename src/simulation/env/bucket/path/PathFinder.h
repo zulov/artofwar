@@ -20,7 +20,9 @@ public:
 	~PathFinder();
 	std::vector<int>* reconstruct_path(int start, int goal, const int came_from[]) const;
 	std::vector<int>* reconstruct_simplify_path(int start, int goal, const int came_from[]) const;
+	void prepareToStart(int startIdx, float min, float max);
 	std::vector<int>* findPath(int startIdx, int endIdx, float min, float max);
+	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, float min, float max);
 
 	std::vector<int>* findPath(int startIdx, int endIdx);
 	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs);
@@ -42,7 +44,7 @@ private:
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 	void resetPathArrays();
 	bool isInLocalArea(int center, int indexOfAim) const;
-	bool isInLocalArea(int center, std::vector<int>& endIdxs) const;
+	int isInLocalArea(int center, std::vector<int>& endIdxs) const;
 	void updateCost(int startIdx, float x);
 
 
