@@ -22,6 +22,7 @@ public:
 	std::vector<int>* reconstruct_simplify_path(int start, int goal, const int came_from[]) const;
 	void prepareToStart(int startIdx, float min, float max);
 	std::vector<int>* findPath(int startIdx, int endIdx, float min, float max);
+	void validateIndex(int current, int next);
 	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, float min, float max);
 
 	std::vector<int>* findPath(int startIdx, int endIdx);
