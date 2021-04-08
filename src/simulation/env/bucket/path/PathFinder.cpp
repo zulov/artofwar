@@ -76,6 +76,7 @@ void PathFinder::prepareToStart(int startIdx, float min, float max) {
 
 std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, float max) {
 	prepareToStart(startIdx, min, max);
+	auto endCords = getCords(endIdx);
 
 	while (!frontier.empty()) {
 		const auto current = frontier.get();
@@ -84,9 +85,9 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 			//debug(startIdx, endIdx);
 			return reconstruct_simplify_path(startIdx, endIdx, came_from);
 		}
-		auto& closeTabIndx = closeIndexes->getTabIndexes(current);
+
 		auto const& currentData = complexData[current];
-		for (auto i : closeTabIndx) {
+		for (auto i : closeIndexes->getTabIndexes(current)) {
 			if (currentData.ifNeightIsFree(i)) {
 				int next = current + closeIndexes->getIndexAt(i);
 				validateIndex(current, next);
@@ -94,8 +95,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 					const float new_cost = cost_so_far[current] + currentData.getCost(i);
 					if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
 						updateCost(next, new_cost);
-						frontier.put(next, new_cost + heuristic(next, endIdx));
-						//TODO next mozna obliczyc raz w srodku
+						frontier.put(next, new_cost + heuristic(next, endCords));
 						came_from[next] = current;
 					}
 				}
@@ -107,7 +107,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, floa
 	return tempPath;
 }
 
-void PathFinder::validateIndex(const int current, int next) {
+void PathFinder::validateIndex(const int current, int next) const {
 	if (!calculator->isValidIndex(next)) {
 		std::cout << current << "@@" << next << std::endl;
 		assert(calculator->isValidIndex(next));
@@ -116,13 +116,13 @@ void PathFinder::validateIndex(const int current, int next) {
 
 std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, float min, float max) {
 	prepareToStart(startIdx, min, max);
-	
+
 	while (!frontier.empty()) {
 		const auto current = frontier.get();
 
-		if (current == endIdx) {
+		if (std::ranges::any_of(endIdxs, [current](int i) { return i == current; })) {
 			//debug(startIdx, endIdx);
-			return reconstruct_simplify_path(startIdx, endIdx, came_from);
+			return reconstruct_simplify_path(startIdx, current, came_from);
 		}
 		auto& closeTabIndx = closeIndexes->getTabIndexes(current);
 		auto const& currentData = complexData[current];
@@ -134,8 +134,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 					const float new_cost = cost_so_far[current] + currentData.getCost(i);
 					if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
 						updateCost(next, new_cost);
-						frontier.put(next, new_cost + heuristic(next, endIdx));
-						//TODO next mozna obliczyc raz w srodku
+						frontier.put(next, new_cost + heuristic(next, endIdxs));
 						came_from[next] = current;
 					}
 				}
@@ -145,7 +144,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 	//debug(startIdx, endIdx);
 	tempPath->clear();
 	return tempPath;
- }
+}
 
 std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
 	if (ifInCache(startIdx, endIdx)) {
@@ -281,11 +280,24 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 	}
 }
 
-inline float PathFinder::heuristic(int from, int to) const {
+inline float PathFinder::heuristic(int from, const Urho3D::IntVector2& to) const {
 	const auto a = getCords(from);
-	const auto b = getCords(to);
 
-	return (abs(a.x_ - b.x_) + abs(a.y_ - b.y_)) * fieldSize;
+	return (abs(a.x_ - to.x_) + abs(a.y_ - to.y_)) * fieldSize;
+}
+
+float PathFinder::heuristic(int from, const std::vector<int>& endIdxs) const {
+	//closest from endIdxs
+	assert(!endIdxs.empty());
+	const auto a = getCords(from);
+	float min = 1000.f;
+	for (auto idx : endIdxs) {
+		const float val = heuristic(idx, a);
+		if (val < min) {
+			min = val;
+		}
+	}
+	return min;
 }
 
 bool PathFinder::ifInCache(int startIdx, const std::vector<int>& endIdxs) const {
@@ -371,7 +383,7 @@ bool PathFinder::isInLocalArea(const int center, int indexOfAim) const {
 	//TODO code duplicate
 	if (center == indexOfAim) { return true; }
 	auto diff = indexOfAim - center; //center + value == indexOfAim
-	return std::ranges::any_of(closeIndexes->get(indexOfAim), [diff](int i) {return i == diff; });
+	return std::ranges::any_of(closeIndexes->get(indexOfAim), [diff](int i) { return i == diff; });
 }
 
 int PathFinder::isInLocalArea(int center, std::vector<int>& endIdxs) const {

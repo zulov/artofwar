@@ -22,7 +22,7 @@ public:
 	std::vector<int>* reconstruct_simplify_path(int start, int goal, const int came_from[]) const;
 	void prepareToStart(int startIdx, float min, float max);
 	std::vector<int>* findPath(int startIdx, int endIdx, float min, float max);
-	void validateIndex(int current, int next);
+	void validateIndex(int current, int next) const;
 	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, float min, float max);
 
 	std::vector<int>* findPath(int startIdx, int endIdx);
@@ -38,8 +38,10 @@ public:
 private:
 	int getPassableEnd(int endIdx) const;
 	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs) const;
-	
-	float heuristic(int from, int to) const;
+
+	float heuristic(int from, const Urho3D::IntVector2& to) const;
+	float heuristic(int from, const std::vector<int>& endIdxs) const;
+
 	bool ifInCache(int startIdx, int end) const { return lastStartIdx == startIdx && lastEndIdx == end; }
 	bool ifInCache(int startIdx, const std::vector<int>& endIdxs) const;
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
