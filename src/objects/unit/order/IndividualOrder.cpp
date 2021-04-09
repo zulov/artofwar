@@ -72,14 +72,16 @@ void IndividualOrder::simpleAction() const {
 void IndividualOrder::followAndAct() {
 	auto const indexes = toUse->getIndexesForUse(unit);
 	if (!indexes.empty()) {
-		if (std::ranges::find(indexes, unit->getMainBucketIndex()) != indexes.end()) {
+		const auto find = std::ranges::find(indexes, unit->getMainBucketIndex());
+
+		if (find == indexes.end()) {
 			const auto param = getFollowAim(unit->getMainCell(), indexes);
 			if (param.aim != nullptr) {
 				unit->action(UnitAction::FOLLOW, param);
 				unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, true));
 			}
-		} else {
-			unit->action(static_cast<UnitAction>(id), ActionParameter(toUse, unit->getMainBucketIndex()));
+		} else {	
+			unit->action(static_cast<UnitAction>(id), ActionParameter(toUse, *find));//TODO moze nie sugerowac indeksu? wybierze siê pó¿niej
 		}
 	}
 }
