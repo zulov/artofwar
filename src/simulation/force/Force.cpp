@@ -94,7 +94,7 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 				const auto path = Game::getEnvironment()->findPath(unit->getMainCell(), aimIndex);
 				//std::cout << unit->getMainCell() << "||" << aimIndex << "||" << path->size() << std::endl;
 				if (path->size() == 1) {
-					force = dirTo(unit->getPosition(), pos); //TODO bug moze to nie powinno bvc mo¿liwe?
+					force = dirTo(unit->getPosition(), pos);
 				} else if (path->size() > 1) {
 					auto center = Game::getEnvironment()->getCenter(path->at(0));
 					force = dirTo(unit->getPosition(), center);

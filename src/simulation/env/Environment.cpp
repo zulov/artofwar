@@ -371,7 +371,7 @@ bool Environment::cellIsCollectable(int index) const {
 	return mainGrid.cellIsCollectable(index);
 }
 
-Urho3D::Vector2 Environment::getCenterOf(CenterType id, char player) {
+std::optional<Urho3D::Vector2> Environment::getCenterOf(CenterType id, char player) {
 	return influenceManager.getCenterOf(id, player);
 }
 

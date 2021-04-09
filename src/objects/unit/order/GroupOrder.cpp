@@ -92,6 +92,7 @@ void GroupOrder::simpleAction() const {
 }
 
 void GroupOrder::transformToFormationOrder() const {
+	
 	auto opt = Game::getFormationManager()->createFormation(units);
 	if (opt.has_value()) {
 		if (vector) {

@@ -37,13 +37,14 @@ void OrderMaker::action() {
 		char id = attackThreshold->getBest(possesion.getFreeArmyMetrics());
 
 		const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
-		Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(CenterType(id), enemy);
-
-		std::vector<Unit*> army = possesion.getFreeArmy();
-		//TODO perf podzieliæ armie
-		if (!army.empty()) {
-			Game::getActionCenter()->addUnitAction(
-				new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), pos), player->getId());
+		auto posOpt = Game::getEnvironment()->getCenterOf(CenterType(id), enemy);
+		if (posOpt.has_value()) {
+			std::vector<Unit*> army = possesion.getFreeArmy();
+			//TODO perf podzieliæ armie
+			if (!army.empty()) {
+				Game::getActionCenter()->addUnitAction(
+					new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), posOpt.value()), player->getId());
+			}
 		}
 	}
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 #include <span>
 #include <vector>
 #include <Urho3D/Math/Vector2.h>
@@ -12,7 +13,7 @@ public:
 	InfluenceMapQuad(int from, int to, const unsigned short size);
 	virtual ~InfluenceMapQuad();
 
-	Urho3D::Vector2 getCenter();
+	std::optional<Urho3D::Vector2> getCenter();
 	void update(Physical* thing, float value = 1.f);
 	void update(int index, float value = 1.f);
 	void updateInt(Physical* thing, int value = 1);

@@ -61,15 +61,19 @@ void InfluenceMapQuad::ensureReady() {
 	}
 }
 
-Urho3D::Vector2 InfluenceMapQuad::getCenter() {
+std::optional<Urho3D::Vector2> InfluenceMapQuad::getCenter() {
 	ensureReady();
-	int index = std::distance(maps[0].begin(), std::max_element(maps[0].begin(), maps[0].end()));
+	bool hasData = std::ranges::any_of(maps[0], [](float v) { return v > 0.f; });
+	if (hasData) {
+		int index = std::distance(maps[0].begin(), std::max_element(maps[0].begin(), maps[0].end()));
 
-	for (int i = 1; i < maps.size(); ++i) {
-		std::array<int, 4> indexes = getIndexes(sqrt(maps[i - 1].size()), index);
-		index = getMaxElement(indexes, maps[i]);
+		for (int i = 1; i < maps.size(); ++i) {
+			std::array<int, 4> indexes = getIndexes(sqrt(maps[i - 1].size()), index);
+			index = getMaxElement(indexes, maps[i]);
+		}
+		return calculator->getCenter(index);
 	}
-	return calculator->getCenter(index);
+	return {};
 }
 
 int InfluenceMapQuad::getMaxElement(const std::array<int, 4>& indexes, std::span<float> values) const {

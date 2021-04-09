@@ -2,6 +2,7 @@
 
 #include <span>
 #include <array>
+#include <optional>
 #include <vector>
 #include "player/ai/InfluenceDataType.h"
 
@@ -60,7 +61,7 @@ public:
 	std::vector<int> getAreas(const std::span<float> result, char player);
 	void addCollect(Unit* unit, float value);
 	void addAttack(Unit* unit, float value);
-	Urho3D::Vector2 getCenterOf(CenterType id, char player);
+	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
 
 private:
 	std::vector<int> centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
