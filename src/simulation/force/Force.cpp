@@ -85,15 +85,16 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 	if (opt.has_value()) {
 		const float priority = Game::getFormationManager()->getPriority(unit);
 		if (priority > 0) {
-			auto pos =opt.value();
+			auto pos = opt.value();
 			const auto aimIndex = Game::getEnvironment()->getIndex(pos);
 			Urho3D::Vector2 force;
 			if (Game::getEnvironment()->isInLocalArea(unit->getMainCell(), aimIndex)) {
 				force = dirTo(unit->getPosition(), pos);
 			} else {
 				const auto path = Game::getEnvironment()->findPath(unit->getMainCell(), aimIndex);
+				//std::cout << unit->getMainCell() << "||" << aimIndex << "||" << path->size() << std::endl;
 				if (path->size() == 1) {
-					force = dirTo(unit->getPosition(), pos);//TODO bug moze to nie powinno bvc mo¿liwe?
+					force = dirTo(unit->getPosition(), pos); //TODO bug moze to nie powinno bvc mo¿liwe?
 				} else if (path->size() > 1) {
 					auto center = Game::getEnvironment()->getCenter(path->at(0));
 					force = dirTo(unit->getPosition(), center);

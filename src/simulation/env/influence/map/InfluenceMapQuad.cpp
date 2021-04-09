@@ -66,7 +66,7 @@ Urho3D::Vector2 InfluenceMapQuad::getCenter() {
 	int index = std::distance(maps[0].begin(), std::max_element(maps[0].begin(), maps[0].end()));
 
 	for (int i = 1; i < maps.size(); ++i) {
-		std::array<int, 4> indexes = getIndexes(maps[i - 1].size(), index);
+		std::array<int, 4> indexes = getIndexes(sqrt(maps[i - 1].size()), index);
 		index = getMaxElement(indexes, maps[i]);
 	}
 	return calculator->getCenter(index);

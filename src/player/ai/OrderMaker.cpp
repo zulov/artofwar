@@ -21,7 +21,7 @@
 OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
 	  whichResource(BrainProvider::get(std::string(nation->orderPrefix[0].CString()) + "whichResource_w.csv")),
-	  attackthreshold(ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {
+	  attackThreshold(ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {
 }
 
 void OrderMaker::action() {
@@ -32,14 +32,15 @@ void OrderMaker::action() {
 	}
 	auto& possesion = player->getPossession();
 
-	bool ifAttack = attackthreshold->ifDo(possesion.getFreeArmyMetrics());
+	bool ifAttack = attackThreshold->ifDo(possesion.getFreeArmyMetrics());
 	if (ifAttack) {
-		char id = attackthreshold->getBest(possesion.getFreeArmyMetrics());
+		char id = attackThreshold->getBest(possesion.getFreeArmyMetrics());
 
 		const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
 		Urho3D::Vector2 pos = Game::getEnvironment()->getCenterOf(CenterType(id), enemy);
 
 		std::vector<Unit*> army = possesion.getFreeArmy();
+		//TODO perf podzieliæ armie
 		if (!army.empty()) {
 			Game::getActionCenter()->addUnitAction(
 				new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), pos), player->getId());
@@ -68,10 +69,10 @@ void OrderMaker::collect(std::vector<Unit*>& workers) {
 	const auto result = whichResource->decide(input);
 	//TODO perf pogrupowac workerów a nie po jednym
 	for (auto worker : workers) {
-		const auto resourceId = biggestWithRand(result);//TODO perf tutaj tylko losowaca sortowanie wyciagnac wy¿ej
+		const auto resourceId = biggestWithRand(result); //TODO perf tutaj tylko losowaca sortowanie wyciagnac wy¿ej
 
 		for (auto radius : {64.f, 128.f, 256.f}) {
-			const auto closest = closetInRange(worker, resourceId, radius);//TODO perf nie sprawdzac tego co wczesniej
+			const auto closest = closetInRange(worker, resourceId, radius); //TODO perf nie sprawdzac tego co wczesniej
 			if (closest) {
 				Game::getActionCenter()
 					->addUnitAction(new IndividualOrder(worker, UnitAction::COLLECT, closest), player->getId());

@@ -12,7 +12,7 @@
 Formation::Formation(short _id, const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2 _direction) :
 	id(_id), type(_type), state(FormationState::FORMING), direction(_direction), units(_units) {
 
-	for (auto unit : units) {
+	for (auto* unit : units) {
 		unit->clearAims();
 		StateManager::toDefaultState(unit);
 	}

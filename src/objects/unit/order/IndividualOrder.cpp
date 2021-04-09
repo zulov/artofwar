@@ -81,7 +81,7 @@ void IndividualOrder::followAndAct() {
 				unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, true));
 			}
 		} else {	
-			unit->action(static_cast<UnitAction>(id), ActionParameter(toUse, *find));//TODO moze nie sugerowac indeksu? wybierze siê pó¿niej
+			unit->action(static_cast<UnitAction>(id), ActionParameter(toUse, *find));
 		}
 	}
 }

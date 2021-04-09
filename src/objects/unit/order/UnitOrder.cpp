@@ -45,7 +45,7 @@ TargetAim* UnitOrder::getTargetAimPtr(int startInx, const std::vector<int>& endI
 }
 
 ActionParameter UnitOrder::getFollowAim(int startInx, const std::vector<int>& endIdxs) {
-	auto const target = getTargetAimPtr(startInx, endIdxs);
+	auto* const target = getTargetAimPtr(startInx, endIdxs);
 	if (target) {
 		return ActionParameter(new FollowAim(toUse, target));
 	}

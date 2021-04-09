@@ -85,7 +85,7 @@ void GroupOrder::simpleAction(ActionParameter& parameter) const {
 }
 
 void GroupOrder::simpleAction() const {
-	auto action = static_cast<UnitAction>(id);
+	const auto action = static_cast<UnitAction>(id);
 	for (auto* unit : units) {
 		unit->action(action);
 	}
