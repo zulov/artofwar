@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "BucketQueue.h"
+#include "fiboheap.h"
 #include "Urho3D/Math/Vector2.h"
 
 namespace Urho3D {
@@ -20,13 +20,10 @@ public:
 	~PathFinder();
 	std::vector<int>* reconstruct_path(int start, int goal, const int came_from[]) const;
 	std::vector<int>* reconstruct_simplify_path(int start, int goal, const int came_from[]) const;
-	void prepareToStart(int startIdx, float min, float max);
-	std::vector<int>* findPath(int startIdx, int endIdx, float min, float max);
-	void validateIndex(int current, int next) const;
-	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, float min, float max);
-
+	
 	std::vector<int>* findPath(int startIdx, int endIdx);
 	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs);
+
 	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim);
 
 	void refreshWayOut(std::vector<int>& toRefresh);
@@ -36,6 +33,12 @@ public:
 	void drawMap(Urho3D::Image* image) const;
 	void prepareGridToFind();
 private:
+	std::vector<int>* realFindPath(int startIdx, int endIdx);
+	std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs);
+
+	void prepareToStart(int startIdx);
+	void validateIndex(int current, int next) const;
+	
 	int getPassableEnd(int endIdx) const;
 	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs) const;
 
@@ -71,5 +74,5 @@ private:
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref;
 
-	BucketQueue frontier;
+	FibHeap frontier;
 };

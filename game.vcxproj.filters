@@ -150,7 +150,6 @@
     </ClCompile>
     <ClCompile Include="src\colors\ColorPaletteRepo.cpp" />
     <ClCompile Include="src\simulation\env\bucket\path\PathFinder.cpp" />
-    <ClCompile Include="src\simulation\env\bucket\path\BucketQueue.cpp" />
     <ClCompile Include="src\hud\window\top\info\TopInfoPanel.cpp" />
     <ClCompile Include="src\simulation\env\influence\InfluenceManager.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\InfluenceMapInt.cpp" />
@@ -428,7 +427,6 @@
     <ClInclude Include="src\colors\ColorPaletteRepo.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
     <ClInclude Include="src\simulation\env\bucket\path\fiboheap.h" />
-    <ClInclude Include="src\simulation\env\bucket\path\BucketQueue.h" />
     <ClInclude Include="src\simulation\env\bucket\path\DrawGridUtils.h" />
     <ClInclude Include="src\hud\window\top\info\TopInfoPanel.h" />
     <ClInclude Include="src\simulation\env\influence\InfluenceManager.h" />

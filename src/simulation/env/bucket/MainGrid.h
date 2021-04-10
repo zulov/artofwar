@@ -3,7 +3,6 @@
 #include <optional>
 #include "ComplexBucketData.h"
 #include "Grid.h"
-#include "objects/unit/state/UnitState.h"
 #include "path/PathFinder.h"
 #include "simulation/env/GridCalculator.h"
 

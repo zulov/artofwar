@@ -13,6 +13,7 @@ PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexD
 	resolution(resolution), fieldSize(size / resolution), max_cost_to_ref(resolution * resolution - 1),
 	complexData(complexData) {
 	tempPath = new std::vector<int>();
+	FibHeap::initCache();
 }
 
 PathFinder::~PathFinder() {
@@ -65,17 +66,17 @@ std::vector<int>* PathFinder::reconstruct_simplify_path(int start, int goal, con
 	return tempPath;
 }
 
-void PathFinder::prepareToStart(int startIdx, float min, float max) {
+void PathFinder::prepareToStart(int startIdx) {
 	resetPathArrays();
-	frontier.init(max, min);
-	frontier.put(startIdx, 0);
+	frontier.clear();
+	frontier.put(startIdx, 0.f);
 
 	came_from[startIdx] = startIdx;
-	updateCost(startIdx, 0.0f);
+	updateCost(startIdx, 0.f);
 }
 
-std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, float min, float max) {
-	prepareToStart(startIdx, min, max);
+std::vector<int>* PathFinder::realFindPath(int startIdx, int endIdx) {
+	prepareToStart(startIdx);
 	auto endCords = getCords(endIdx);
 
 	while (!frontier.empty()) {
@@ -114,8 +115,8 @@ void PathFinder::validateIndex(const int current, int next) const {
 	}
 }
 
-std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, float min, float max) {
-	prepareToStart(startIdx, min, max);
+std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs) {
+	prepareToStart(startIdx);
 
 	while (!frontier.empty()) {
 		const auto current = frontier.get();
@@ -148,6 +149,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 
 std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
 	if (ifInCache(startIdx, endIdx)) {
+		//TODO perf je¿eli tylko startowy jest ten sam to mo¿na by kontynu³owaæ algo? ale to by sie zjecha³a heurystka, chyba zeby tylko sprawdzic czy algo doszed³
 		return tempPath;
 	}
 
@@ -162,8 +164,8 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
 		return tempPath;
 	}
 
-	const float min = calculator->getDistance(startIdx, endIdx);
-	return findPath(startIdx, endIdx, min, min * 2);
+
+	return realFindPath(startIdx, endIdx);
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs) {
@@ -183,8 +185,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 		return tempPath;
 	}
 
-	const float min = calculator->getClosestDistance(startIdx, newEndIndexes);
-	return findPath(startIdx, newEndIndexes, min, min * 2);
+	return realFindPath(startIdx, newEndIndexes);
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim) {
@@ -232,7 +233,7 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 			break;
 		}
 
-		prepareToStart(startIndex, 0, 750);
+		prepareToStart(startIndex);
 
 		int end = startIndex;
 		while (!frontier.empty()) {
@@ -367,6 +368,7 @@ void PathFinder::updateCost(int idx, float x) {
 }
 
 void PathFinder::resetPathArrays() {
+	assert(min_cost_to_ref != resolution * resolution - 1);
 	std::fill_n(cost_so_far + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1.f);
 
 	int x = -1;

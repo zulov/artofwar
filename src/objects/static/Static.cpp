@@ -51,12 +51,7 @@ int Static::belowCloseLimit() {
 }
 
 bool Static::hasAnyFreeSpace() const {
-	for (auto index : surroundCells) {
-		if (canCollect(index)) {
-			return true;
-		}
-	}
-	return false;
+	return std::ranges::any_of(surroundCells,[](int index){return canCollect(index);});
 }
 
 int Static::hasFreeSpace() const {
