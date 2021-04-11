@@ -369,7 +369,8 @@ void PathFinder::updateCost(int idx, float x) {
 
 void PathFinder::resetPathArrays() {
 	assert(min_cost_to_ref != resolution * resolution - 1);
-	std::fill_n(cost_so_far + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1.f);
+	//std::fill_n(cost_so_far + min_cost_to_ref, max_cost_to_ref + 1 - min_cost_to_ref, -1.f);
+	std::fill(cost_so_far + min_cost_to_ref, cost_so_far + max_cost_to_ref + 1, -1.f);
 
 	int x = -1;
 	int y = -1;
