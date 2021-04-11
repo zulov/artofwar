@@ -560,8 +560,7 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 
 std::vector<int> Unit::getIndexesForUse(Unit* user) {
 	std::vector<int> indexes;
-	const int mainIndex1 = getMainCell();
-	const int mainIndex = getMainBucketIndex();
+	const int mainIndex = getMainCell();
 	const std::vector<unsigned char>& closeTabIndexes = Game::getEnvironment()->getCloseTabIndexes(mainIndex);
 	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
 	for (auto i : closeTabIndexes) {

@@ -267,7 +267,7 @@ bool MainGrid::anyCloseEnough(std::vector<int> const& indexes, int center, float
 
 bool MainGrid::isInLocalArea(const int center, int indexOfAim) const {
 	if (center == indexOfAim) { return true; }
-	auto diff = indexOfAim - center; //center + value == indexOfAim
+	const auto diff = indexOfAim - center; //center + value == indexOfAim
 	for (auto value : closeIndexes->get(indexOfAim)) {
 		if (diff == value) {
 			return true;
