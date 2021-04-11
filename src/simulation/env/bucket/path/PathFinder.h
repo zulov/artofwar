@@ -21,10 +21,10 @@ public:
 	std::vector<int>* reconstruct_path(int start, int goal, const int came_from[]) const;
 	std::vector<int>* reconstruct_simplify_path(int start, int goal, const int came_from[]) const;
 	
-	std::vector<int>* findPath(int startIdx, int endIdx);
-	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs);
+	std::vector<int>* findPath(int startIdx, int endIdx, int limit);
+	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 
-	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim);
+	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim, int limit);
 
 	void refreshWayOut(std::vector<int>& toRefresh);
 
@@ -33,8 +33,8 @@ public:
 	void drawMap(Urho3D::Image* image) const;
 	void prepareGridToFind();
 private:
-	std::vector<int>* realFindPath(int startIdx, int endIdx);
-	std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs);
+	std::vector<int>* realFindPath(int startIdx, int endIdx, int limit);
+	std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit);
 
 	void prepareToStart(int startIdx);
 	void validateIndex(int current, int next) const;
@@ -53,7 +53,6 @@ private:
 	int isInLocalArea(int center, std::vector<int>& endIdxs) const;
 	void updateCost(int startIdx, float x);
 
-
 	CloseIndexes* closeIndexes;
 	GridCalculator* calculator;
 
@@ -70,9 +69,9 @@ private:
 	float* cost_so_far;
 	ComplexBucketData* complexData;
 
-	unsigned short staticCounter = 0;
 	int min_cost_to_ref = 0;
 	int max_cost_to_ref;
+	unsigned short staticCounter = 0;
 
 	FibHeap frontier;
 };

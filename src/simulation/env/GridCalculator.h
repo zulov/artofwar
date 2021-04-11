@@ -1,12 +1,12 @@
 #pragma once
 #include <Urho3D/Math/Vector3.h>
-#include <vector>
 
 struct GridCalculator {
 
 	explicit GridCalculator(unsigned short resolution, float size)
 		: sqResolution(resolution * resolution), resolution(resolution),
-		  invFieldSize(resolution / size), fieldSize(size / resolution), size(size), halfSize(size / 2.f) { }
+		  invFieldSize(resolution / size), fieldSize(size / resolution), size(size), halfSize(size / 2.f) {
+	}
 
 	GridCalculator(const GridCalculator&) = delete;
 
@@ -80,19 +80,6 @@ struct GridCalculator {
 	float getDistance(int first, int next) const {
 		return getDistance(getIndexes(first), next);
 	}
-
-	float getClosestDistance(int startIdx, const std::vector<int>& endIdxs) const {
-		const auto startPos = getIndexes(startIdx);
-		float min = 1000;
-		for (auto idxs : endIdxs) {
-			const auto dist = getDistance(startPos, idxs);
-			if (dist < min) {
-				min = dist;
-			}
-		}
-		return min;
-	}
-
 
 private:
 	unsigned int sqResolution;

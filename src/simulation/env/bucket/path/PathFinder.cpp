@@ -75,11 +75,15 @@ void PathFinder::prepareToStart(int startIdx) {
 	updateCost(startIdx, 0.f);
 }
 
-std::vector<int>* PathFinder::realFindPath(int startIdx, int endIdx) {
+std::vector<int>* PathFinder::realFindPath(int startIdx, int endIdx, int limit) {
 	prepareToStart(startIdx);
 	auto endCords = getCords(endIdx);
-
+	int steps = 0;
 	while (!frontier.empty()) {
+		++steps;
+		if (limit != -1 && steps > limit) {
+			break;
+		}
 		const auto current = frontier.get();
 
 		if (current == endIdx) {
@@ -115,7 +119,7 @@ void PathFinder::validateIndex(const int current, int next) const {
 	}
 }
 
-std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs) {
+std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 	prepareToStart(startIdx);
 
 	while (!frontier.empty()) {
@@ -147,7 +151,7 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>&
 	return tempPath;
 }
 
-std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
+std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 	if (ifInCache(startIdx, endIdx)) {
 		//TODO perf je¿eli tylko startowy jest ten sam to mo¿na by kontynu³owaæ algo? ale to by sie zjecha³a heurystka, chyba zeby tylko sprawdzic czy algo doszed³
 		return tempPath;
@@ -165,10 +169,10 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx) {
 	}
 
 
-	return realFindPath(startIdx, endIdx);
+	return realFindPath(startIdx, endIdx, limit);
 }
 
-std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs) {
+std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 	if (ifInCache(startIdx, endIdxs)) {
 		return tempPath;
 	}
@@ -185,11 +189,11 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 		return tempPath;
 	}
 
-	return realFindPath(startIdx, newEndIndexes);
+	return realFindPath(startIdx, newEndIndexes, limit);
 }
 
-std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim) {
-	return findPath(startIdx, calculator->indexFromPosition(aim));
+std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim, int limit) {
+	return findPath(startIdx, calculator->indexFromPosition(aim), limit);
 }
 
 int PathFinder::getPassableEnd(int endIdx) const {
@@ -215,6 +219,7 @@ std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs)
 	for (int endIdx : endIdxs) {
 		result.push_back(getPassableEnd(endIdx));
 	}
+	std::ranges::sort(result);
 	result.erase(std::unique(result.begin(), result.end()), result.end());
 	return result;
 }

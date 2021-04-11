@@ -6,7 +6,7 @@
 #include <vector>
 #include "utils/DeleteUtils.h"
 
-constexpr short CACHE_SIZE = 4096;
+constexpr short CACHE_SIZE = 8192;
 
 static unsigned char degree_cache[CACHE_SIZE];
 

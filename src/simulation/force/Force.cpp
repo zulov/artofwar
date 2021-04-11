@@ -91,7 +91,7 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 			if (Game::getEnvironment()->isInLocalArea(unit->getMainCell(), aimIndex)) {
 				force = dirTo(unit->getPosition(), pos);
 			} else {
-				const auto path = Game::getEnvironment()->findPath(unit->getMainCell(), aimIndex);
+				const auto path = Game::getEnvironment()->findPath(unit->getMainCell(), aimIndex, 32);
 				//std::cout << unit->getMainCell() << "||" << aimIndex << "||" << path->size() << std::endl;
 				if (path->size() == 1) {
 					force = dirTo(unit->getPosition(), pos);

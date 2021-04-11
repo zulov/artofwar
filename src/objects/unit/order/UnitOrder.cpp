@@ -28,7 +28,7 @@ ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
 }
 
 TargetAim* UnitOrder::getTargetAimPtr(int startInx, const Urho3D::Vector2& to) const {
-	const auto path = Game::getEnvironment()->findPath(startInx, to);
+	const auto path = Game::getEnvironment()->findPath(startInx, to,-1);
 	if (!path->empty()) {
 		return new TargetAim(*path);
 	}
@@ -37,7 +37,7 @@ TargetAim* UnitOrder::getTargetAimPtr(int startInx, const Urho3D::Vector2& to) c
 
 
 TargetAim* UnitOrder::getTargetAimPtr(int startInx, const std::vector<int>& endIdxs) const {
-	const auto path = Game::getEnvironment()->findPath(startInx, endIdxs);
+	const auto path = Game::getEnvironment()->findPath(startInx, endIdxs,-1);
 	if (!path->empty()) {
 		return new TargetAim(*path);
 	}

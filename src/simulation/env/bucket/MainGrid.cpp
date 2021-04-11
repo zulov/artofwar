@@ -417,16 +417,16 @@ float MainGrid::cost(Urho3D::IntVector2& centerParams, int next) const {
 	return calculator->getDistance(centerParams, next);
 }
 
-std::vector<int>* MainGrid::findPath(int startIdx, const Urho3D::Vector2& aim) const {
-	return pathConstructor->findPath(startIdx, aim);
+std::vector<int>* MainGrid::findPath(int startIdx, const Urho3D::Vector2& aim, int limit) const {
+	return pathConstructor->findPath(startIdx, aim, limit);
 }
 
-std::vector<int>* MainGrid::findPath(int startIdx, int endIdx) const {
-	return pathConstructor->findPath(startIdx, endIdx);
+std::vector<int>* MainGrid::findPath(int startIdx, int endIdx, int limit) const {
+	return pathConstructor->findPath(startIdx, endIdx, limit);
 }
 
-std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs) const {
-	return pathConstructor->findPath(startIdx, endIdxs);
+std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) const {
+	return pathConstructor->findPath(startIdx, endIdxs, limit);
 }
 
 void MainGrid::drawComplex(Urho3D::Image* image, Urho3D::String prefix) const {

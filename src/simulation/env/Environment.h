@@ -71,9 +71,9 @@ public:
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& bucketCords) const;
 
-	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim) const;
-	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs) const;
-	std::vector<int>* findPath(int startIdx, int endIdx) const;
+	std::vector<int>* findPath(int startIdx, const Urho3D::Vector2& aim, int limit) const;
+	std::vector<int>* findPath(int startIdx, const std::vector<int>& endIdxs, int limit) const;
+	std::vector<int>* findPath(int startIdx, int endIdx, int limit) const;
 
 	void prepareGridToFind() const;
 	content_info* getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer);
