@@ -7,7 +7,7 @@ class GoState : public State {
 public:
 	GoState() : State({
 		UnitState::STOP, UnitState::MOVE, UnitState::DEFEND,
-		UnitState::DEAD, UnitState::GO_TO, UnitState::FOLLOW,
+		UnitState::DEAD, UnitState::GO, UnitState::FOLLOW,
 		UnitState::CHARGE
 	}) {
 	}
@@ -28,7 +28,7 @@ public:
 	}
 
 	void execute(Unit* unit, float timeStep) override {
-		if (!unit->aims.hasCurrent()) {
+		if (!unit->aims.hasCurrent() && !unit->hasStateChangePending()) {
 			StateManager::toDefaultState(unit);
 		}
 	}

@@ -3,7 +3,7 @@
 enum class UnitState : char {
 	STOP=0,
 	MOVE,
-	GO_TO,
+	GO,
 	DEAD,
 	CHARGE,
 	ATTACK,

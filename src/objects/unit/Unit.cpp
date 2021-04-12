@@ -285,7 +285,7 @@ bool Unit::isFirstThingInSameSocket() const {
 void Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 	switch (unitAction) {
 	case UnitAction::GO:
-		StateManager::changeState(this, UnitState::GO_TO, parameter);
+		StateManager::changeState(this, UnitState::GO, parameter);
 		break;
 	case UnitAction::STOP:
 		StateManager::changeState(this, UnitState::STOP, parameter);

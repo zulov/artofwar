@@ -13,7 +13,7 @@ class AttackState : public State {
 public:
 	AttackState(): State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
-		UnitState::GO_TO, UnitState::FOLLOW, UnitState::CHARGE
+		UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
 	}) {
 	}
 

@@ -269,7 +269,7 @@ Urho3D::Vector2 Formation::getPositionFor(short id) const {
 	const short column = columnThis - columnLeader;
 	const short row = rowThis - rowLeader;
 	//if(leaderID==id) {//TODO dla leadera trzeba cos innego wymyślić
-		//return {};
+	//return {};
 	//}
 	auto position = center - Urho3D::Vector2(column * sparsity, row * sparsity);
 	const auto posIndex = Game::getEnvironment()->getIndex(position);
@@ -320,9 +320,7 @@ void Formation::updateUnits() {
 			[this](Unit* unit) {
 				const bool ifErase = !unit->isAlive() || unit->getFormation() != id;
 				if (ifErase) {
-					if (unit->getFormation() == id) {
-						unit->resetFormation();
-					}
+					unit->resetFormation();
 					changed = true;
 				}
 				return ifErase;

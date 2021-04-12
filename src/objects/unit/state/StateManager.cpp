@@ -21,7 +21,7 @@
 StateManager* StateManager::instance = nullptr;
 
 StateManager::StateManager() {
-	states[cast(UnitState::GO_TO)] = new GoState();
+	states[cast(UnitState::GO)] = new GoState();
 	states[cast(UnitState::STOP)] = new StopState();
 	states[cast(UnitState::CHARGE)] = new ChargeState();
 	states[cast(UnitState::ATTACK)] = new AttackState();
@@ -34,7 +34,7 @@ StateManager::StateManager() {
 	states[cast(UnitState::DISPOSE)] = new DisposeState();
 
 	initStates(
-		{UnitState::GO_TO, UnitState::MOVE, UnitState::FOLLOW, UnitState::STOP, UnitState::DEAD, UnitState::DISPOSE});
+		{UnitState::GO, UnitState::MOVE, UnitState::FOLLOW, UnitState::STOP, UnitState::DEAD, UnitState::DISPOSE});
 
 	initOrders({UnitAction::GO, UnitAction::DEAD, UnitAction::STOP, UnitAction::FOLLOW});
 }

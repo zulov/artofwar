@@ -7,7 +7,7 @@ class FollowState : public State {
 public:
 	FollowState() : State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
-		UnitState::GO_TO, UnitState::MOVE, UnitState::FOLLOW,
+		UnitState::GO, UnitState::MOVE, UnitState::FOLLOW,
 		UnitState::COLLECT, UnitState::ATTACK
 	}) { }
 
@@ -23,7 +23,7 @@ public:
 	}
 
 	void execute(Unit* unit, float timeStep) override {
-		if (!unit->aims.hasCurrent()) {
+		if (!unit->aims.hasCurrent() && !unit->hasStateChangePending()) {
 			StateManager::toDefaultState(unit);
 		}
 	}

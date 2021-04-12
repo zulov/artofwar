@@ -8,7 +8,7 @@ class ShotState : public State
 {
 public:
 	ShotState() : State({
-		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO_TO, UnitState::FOLLOW, UnitState::CHARGE
+		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
 	}) {
 	}
 
