@@ -33,7 +33,7 @@ Formation::~Formation() {
 
 Urho3D::Vector2 Formation::computeLocalCenter() {
 	auto localCenter = Urho3D::Vector2::ZERO;
-	for (auto unit : units) {
+	for (auto* unit : units) {
 		const auto pos = unit->getPosition();
 		localCenter.x_ += pos.x_;
 		localCenter.y_ += pos.z_;
@@ -43,9 +43,9 @@ Urho3D::Vector2 Formation::computeLocalCenter() {
 }
 
 void Formation::chooseLeader(Urho3D::Vector2& localCenter) {
-	int maxDist = 99999;
+	float maxDist = 99999.f;
 	leader = nullptr;
-	for (auto unit : units) {
+	for (auto* unit : units) {
 		const auto dist = sqDist(localCenter, unit->getPosition());
 		if (dist < maxDist) {
 			leader = unit;
@@ -58,10 +58,8 @@ void Formation::electLeader() {
 	auto center = computeLocalCenter();
 	chooseLeader(center);
 
-	if (oldLeader != nullptr
-		&& leader != oldLeader
-		&& !unitOrders.empty()) {
-
+	if (oldLeader != nullptr && leader != oldLeader && !unitOrders.empty()) {
+		// lider sie zmienil i sa ordery
 		if (oldLeader->getFormation() == id) {
 			oldLeader->clearAims();
 		}
@@ -71,7 +69,7 @@ void Formation::electLeader() {
 }
 
 void Formation::setFormationClearPosition() {
-	for (auto unit : units) {
+	for (auto* unit : units) {
 		unit->setFormation(id);
 		unit->setPositionInFormation(-1);
 	}
@@ -94,7 +92,7 @@ void Formation::updateIds() {
 
 		setPosInFormationForLeader();
 
-		const auto env = Game::getEnvironment();
+		auto* const env = Game::getEnvironment();
 		std::unordered_map<int, std::vector<short>> bucketToIds;
 		for (int i = 0; i < units.size(); ++i) {
 			if (leader->getPositionInFormation() == i) {
@@ -166,7 +164,7 @@ void Formation::updateIds() {
 }
 
 void Formation::updateSideSize() {
-	sideA = sqrt(units.size()) + 0.5;
+	sideA = sqrt(units.size()) + 0.5f;
 	sideB = units.size() / sideA;
 }
 
@@ -268,14 +266,16 @@ Urho3D::Vector2 Formation::getPositionFor(short id) const {
 
 	const short column = columnThis - columnLeader;
 	const short row = rowThis - rowLeader;
-	//if(leaderID==id) {//TODO dla leadera trzeba cos innego wymyślić
-	//return {};
-	//}
+	if (leaderID == id) {
+		//TODO dla leadera trzeba cos innego wymyślić
+		return center;
+	}
 	auto position = center - Urho3D::Vector2(column * sparsity, row * sparsity);
 	const auto posIndex = Game::getEnvironment()->getIndex(position);
 	if (Game::getEnvironment()->cellIsPassable(posIndex)) {
 		return position;
 	}
+
 	//TODO perf map posIndex to closestIndex
 	const int closestIndex = Game::getEnvironment()->closestPassableCell(posIndex);
 	return Game::getEnvironment()->getCenter(closestIndex) - Urho3D::Vector2(column * sparsity, row * sparsity);

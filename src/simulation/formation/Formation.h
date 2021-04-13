@@ -59,8 +59,8 @@ private:
 	std::vector<Unit*> units;
 	std::vector<UnitOrder*> unitOrders;
 
-	float thresholdMin = 0.01;
-	float thresholdMax = 0.5;
-	float notWellFormed = 1.0;
-	float notWellFormedExact = 1.0;
+	float thresholdMin = 0.01f;
+	float thresholdMax = 0.5f;
+	float notWellFormed = 1.0f;
+	float notWellFormedExact = 1.0f;
 };
