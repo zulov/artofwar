@@ -6,7 +6,6 @@
 #include "FormationType.h"
 
 class FormationOrder;
-class UnitOrder;
 class Unit;
 
 class Formation {
@@ -57,10 +56,10 @@ private:
 	Unit* oldLeader = nullptr;
 
 	std::vector<Unit*> units;
-	std::vector<UnitOrder*> unitOrders;
+	std::vector<FormationOrder*> unitOrders;
 
 	float thresholdMin = 0.01f;
 	float thresholdMax = 0.5f;
-	float notWellFormed = 1.0f;
-	float notWellFormedExact = 1.0f;
+	float notWellFormed = 1.f;
+	float notWellFormedExact = 1.f;
 };

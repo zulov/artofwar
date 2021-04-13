@@ -204,7 +204,7 @@ void Formation::innerUpdate() {
 }
 
 void Formation::stopAllBesideLeader() {
-	for (auto unit : units) {
+	for (auto* unit : units) {
 		if (unit != leader) {
 			StateManager::toDefaultState(unit);
 		}
@@ -239,7 +239,7 @@ void Formation::update() {
 		}
 		break;
 	case FormationState::REACHED:
-		for (auto unit : units) {
+		for (auto* unit : units) {
 			unit->resetFormation();
 		}
 		units.clear();
