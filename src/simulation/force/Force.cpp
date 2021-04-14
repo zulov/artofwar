@@ -34,15 +34,15 @@ void Force::randSepForce(Urho3D::Vector2& newForce) {
 	newForce += force;
 }
 
-void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical*>* units) {
-	if (units->empty()) {
+void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical*>* neights) {
+	if (neights->empty()) {
 		return;
 	}
 	Urho3D::Vector2 force;
-	const int isLeaderFor = Game::getFormationManager()->isLeaderFor(unit);
+	const int isLeader = Game::getFormationManager()->isLeader(unit);
 
-	for (auto physical : *units) {
-		auto neight = static_cast<Unit*>(physical);
+	for (auto physical : *neights) {
+		auto neight = dynamic_cast<Unit*>(physical);
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
@@ -50,7 +50,7 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 
 		const float sqDistance = diff.LengthSquared();
 		if (sqDistance > sqSepDist
-			|| (isLeaderFor != -1 && isLeaderFor == neight->getFormation())) { continue; }
+			|| (isLeader != -1 && unit->getFormation() == neight->getFormation())) { continue; }
 
 		if (sqDistance == 0.f) {
 			randSepForce(newForce);
@@ -72,9 +72,13 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 	newForce += force;
 }
 
-void Force::destOrFormation(const Urho3D::Vector2& newForce, Unit* unit) {
-			destination(newForce, unit);
-			formation(newForce, unit);
+void Force::destOrFormation(Urho3D::Vector2& newForce, Unit* unit) {
+	if (unit->getFormation() < 0 || Game::getFormationManager()->isLeader(unit)) {
+		destination(newForce, unit);
+	} else {
+		//aims.clearExpired();
+		formation(newForce, unit);
+	}
 }
 
 void Force::destination(Urho3D::Vector2& newForce, Unit* unit) {
@@ -86,6 +90,7 @@ void Force::destination(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
+	assert(!unit->hasAim());
 	auto posOpt = Game::getFormationManager()->getPositionFor(unit);
 	if (posOpt.has_value()) {
 		const float priority = Game::getFormationManager()->getPriority(unit);

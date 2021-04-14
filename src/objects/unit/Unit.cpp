@@ -57,7 +57,7 @@ void Unit::populate() {
 }
 
 void Unit::checkAim() {
-	if (aims.ifReach(this)) {
+	if (aims.process(this)) {
 		StateManager::changeState(this, UnitState::MOVE);
 	}
 }

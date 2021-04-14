@@ -18,7 +18,7 @@ public:
 	~Aims();
 	std::optional<Urho3D::Vector2> getDirection(Unit* unit) const;
 	void clearExpired();
-	bool ifReach(Unit* unit);
+	bool process(Unit* unit);
 	void add(IndividualOrder* order);
 	void clear();
 	void removeCurrentAim();

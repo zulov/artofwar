@@ -15,7 +15,7 @@ std::optional<Formation*> FormationManager::createFormation(const std::vector<Un
 			unit->resetFormation();
 		}
 	} else {
-		short formationInFirst = _units.at(0)->getFormation();
+		const short formationInFirst = _units.at(0)->getFormation();
 		bool allIn = true;
 		if (formationInFirst >= 0
 			&& formations[formationInFirst] != nullptr
@@ -69,7 +69,7 @@ float FormationManager::getPriority(Unit* unit) {
 	if (formation >= 0) {
 		return formations[formation]->getPriority(unit->getPositionInFormation());
 	}
-	return 0.0;
+	return 0.f;
 }
 
 std::optional<Urho3D::Vector2> FormationManager::getPositionFor(Unit* unit) {
@@ -80,12 +80,7 @@ std::optional<Urho3D::Vector2> FormationManager::getPositionFor(Unit* unit) {
 	return {};
 }
 
-int FormationManager::isLeaderFor(Unit* unit) {
+bool FormationManager::isLeader(Unit* unit) const{
 	const short formation = unit->getFormation();
-	if (formation >= 0
-		&& formations[formation]->getLeader().has_value()
-		&& formations[formation]->getLeader().value() == unit) {
-		return formation;
-	}
-	return -1;
+	return formation >= 0 && formations[formation]->isLeader(unit);
 }

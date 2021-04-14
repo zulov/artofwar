@@ -62,6 +62,10 @@ void Formation::electLeader() {
 		// lider sie zmienil i sa ordery
 		if (oldLeader->getFormation() == id) {
 			oldLeader->clearAims();
+			if (pendingOrder) {
+				stopAllBesideLeader();
+				pendingOrder->execute();
+			}
 		}
 		changeState(FormationState::FORMING);
 	}
@@ -192,6 +196,10 @@ void Formation::calculateNotWellFormed() {
 
 void Formation::innerUpdate() {
 	removeExpired(unitOrders);
+	if (pendingOrder && pendingOrder->expired()) {
+		delete pendingOrder;
+		pendingOrder = nullptr;
+	}
 	updateUnits();
 
 	if (!units.empty()) {
@@ -211,26 +219,37 @@ void Formation::stopAllBesideLeader() {
 	}
 }
 
+bool Formation::isLeader(Unit* unit) const {
+	return hasLeader() && unit == leader;
+}
+
 void Formation::update() {
 	switch (state) {
 	case FormationState::FORMING:
 		innerUpdate();
 		if (notWellFormed < thresholdMin) {
 			changeState(FormationState::MOVING);
-			if (!unitOrders.empty()) {
-				unitOrders[0]->execute();
-				stopAllBesideLeader();
-				delete unitOrders[0];
-				unitOrders.erase(unitOrders.begin()); //TODO to zachowaæ, chyba jednak nie trzeba
-			}
+			if (!leader->hasAim()) {
+				if (pendingOrder) {
+					delete pendingOrder;
+					pendingOrder = nullptr;
+					
+				}
+				if (!unitOrders.empty()) {
+					pendingOrder = unitOrders[0];
+					unitOrders.erase(unitOrders.begin());
+					pendingOrder->execute();
+					stopAllBesideLeader();
+				}
+			} 
+
 		}
 		break;
 	case FormationState::MOVING:
 		innerUpdate();
 		if (notWellFormed > thresholdMax) {
 			changeState(FormationState::FORMING);
-		} else if (notWellFormedExact < thresholdMin
-			&& !leader->hasAim()) {
+		} else if (notWellFormedExact < thresholdMin && !leader->hasAim()) {
 			if (unitOrders.empty()) {
 				changeState(FormationState::REACHED);
 			} else {
@@ -285,8 +304,12 @@ float Formation::getPriority(int id) const {
 	return levelOfReach[id];
 }
 
+bool Formation::hasLeader() const {
+	return state != FormationState::REACHED && units.size() > leader->getPositionInFormation();
+}
+
 std::optional<Unit*> Formation::getLeader() {
-	if (state != FormationState::REACHED && units.size() > leader->getPositionInFormation()) {
+	if (hasLeader()) {
 		return leader;
 	}
 	return {};

@@ -17,6 +17,7 @@ public:
 	void remove();
 	Urho3D::Vector2 getPositionFor(short id) const;
 	float getPriority(int id) const;
+	
 	FormationState getState() const { return state; }
 	std::optional<Unit*> getLeader();
 
@@ -25,7 +26,9 @@ public:
 	void semiReset();
 	std::vector<Unit*>& getUnits() { return units; }
 	void stopAllBesideLeader();
+	bool isLeader(Unit* unit) const;
 private:
+	bool hasLeader() const;
 	Urho3D::Vector2 computeLocalCenter();
 	void chooseLeader(Urho3D::Vector2& localCenter);
 	void updateUnits();
@@ -57,6 +60,7 @@ private:
 
 	std::vector<Unit*> units;
 	std::vector<FormationOrder*> unitOrders;
+	FormationOrder* pendingOrder{};
 
 	float thresholdMin = 0.01f;
 	float thresholdMax = 0.5f;

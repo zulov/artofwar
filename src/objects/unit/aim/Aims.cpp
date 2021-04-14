@@ -27,7 +27,7 @@ void Aims::clearExpired() {
 	}
 }
 
-bool Aims::ifReach(Unit* unit) {
+bool Aims::process(Unit* unit) {
 	if (current) {
 		if (current->ifReach(unit)) {
 			removeCurrentAim();

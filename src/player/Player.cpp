@@ -123,5 +123,5 @@ void Player::aiAction() {
 }
 
 void Player::aiOrder() {
-	orderMaker.action();
+	//orderMaker.action();
 }
