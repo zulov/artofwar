@@ -58,14 +58,15 @@ void Formation::electLeader() {
 	auto center = computeLocalCenter();
 	chooseLeader(center);
 
-	if (oldLeader != nullptr && leader != oldLeader && !unitOrders.empty()) {
-		// lider sie zmienil i sa ordery
+	if (oldLeader != nullptr && leader != oldLeader) {
 		if (oldLeader->getFormation() == id) {
 			oldLeader->clearAims();
-			if (pendingOrder) {
-				stopAllBesideLeader();
-				pendingOrder->execute();
-			}
+		}
+		if (pendingOrder) {
+			stopAllBesideLeader();
+			pendingOrder->execute();
+		} else if (!unitOrders.empty()) {
+			//??a co to get next?
 		}
 		changeState(FormationState::FORMING);
 	}
@@ -233,7 +234,6 @@ void Formation::update() {
 				if (pendingOrder) {
 					delete pendingOrder;
 					pendingOrder = nullptr;
-					
 				}
 				if (!unitOrders.empty()) {
 					pendingOrder = unitOrders[0];
@@ -241,7 +241,7 @@ void Formation::update() {
 					pendingOrder->execute();
 					stopAllBesideLeader();
 				}
-			} 
+			}
 
 		}
 		break;
@@ -250,6 +250,10 @@ void Formation::update() {
 		if (notWellFormed > thresholdMax) {
 			changeState(FormationState::FORMING);
 		} else if (notWellFormedExact < thresholdMin && !leader->hasAim()) {
+			if (pendingOrder) {
+				delete pendingOrder;
+				pendingOrder = nullptr;
+			}
 			if (unitOrders.empty()) {
 				changeState(FormationState::REACHED);
 			} else {
@@ -332,6 +336,8 @@ void Formation::semiReset() {
 	notWellFormedExact = 1;
 	changed = true;
 	unitOrders.clear();
+	delete pendingOrder;
+	pendingOrder = nullptr;
 	std::fill_n(levelOfReach, units.size(), 0);
 	changeState(FormationState::FORMING);
 }
