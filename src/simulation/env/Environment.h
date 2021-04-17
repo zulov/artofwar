@@ -98,6 +98,7 @@ public:
 	unsigned char getRevertCloseIndex(int center, int gridIndex) const;
 
 	bool isInLocalArea(int getMainCell, int aimIndex) const;
+	bool isInLocal2Area(int getMainCell, int aimIndex) const;
 	int closestPassableCell(int posIndex) const;
 
 	void drawDebug(EnvironmentDebugMode environmentDebugMode, char index);
