@@ -90,26 +90,26 @@ void GroupOrder::simpleAction() const {
 	}
 }
 
-void GroupOrder::transformToFormationOrder() const {
-	for (auto& group : divide(units)) {
-		auto opt = Game::getFormationManager()->createFormation(group);
-		if (opt.has_value()) {
-			if (vector) {
-				opt.value()->addOrder(new FormationOrder(opt.value(), id, *vector, append));
-			} else {
-				opt.value()->addOrder(new FormationOrder(opt.value(), id, toUse, append));
-			}
+void GroupOrder::actOnFormation(std::vector<Unit*>& group) const {
+	auto opt = Game::getFormationManager()->createFormation(group);
+	if (opt.has_value()) {
+		if (vector) {
+			opt.value()->addOrder(new FormationOrder(opt.value(), id, *vector, append));
+		} else {
+			opt.value()->addOrder(new FormationOrder(opt.value(), id, toUse, append));
 		}
 	}
+}
 
-	// auto opt = Game::getFormationManager()->createFormation(units);
-	// if (opt.has_value()) {
-	// 	if (vector) {
-	// 		opt.value()->addOrder(new FormationOrder(opt.value(), id, *vector, append));
-	// 	} else {
-	// 		opt.value()->addOrder(new FormationOrder(opt.value(), id, toUse, append));
-	// 	}
-	// }
+void GroupOrder::transformToFormationOrder() const {
+	if(tryDivide) {
+		for (auto& group : divide(units)) {
+			actOnFormation(group);
+		}
+	}else {
+		actOnFormation(units);
+	}
+
 }
 
 bool GroupOrder::addToGroup(std::vector<std::vector<int>>& groupedIndexes, int current) const {

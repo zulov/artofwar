@@ -41,6 +41,7 @@ private:
 
 	void simpleAction(ActionParameter& parameter) const;
 	void simpleAction() const;
+	void actOnFormation(std::vector<Unit*>& group) const;
 	void transformToFormationOrder() const;
 	bool addToGroup(std::vector<std::vector<int>> &groupedIndexes, int current) const;
 	std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) const;
