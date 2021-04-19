@@ -32,7 +32,7 @@ void IndividualOrder::addCollectAim() {
 }
 
 void IndividualOrder::addTargetAim() {
-	unit->action(static_cast<UnitAction>(id), getTargetAim(unit->getMainCell(), *vector)); //TODO execute i akajca
+	unit->action(static_cast<UnitAction>(id), getTargetAim(unit->getMainBucketIndex(), *vector)); //TODO execute i akajca
 	unit->resetFormation();
 
 	Game::getEnvironment()->invalidatePathCache();
@@ -41,7 +41,7 @@ void IndividualOrder::addTargetAim() {
 void IndividualOrder::addFollowAim() {
 	const auto indexes = toUse->getIndexesForUse(unit);
 	if (indexes.empty()) {
-		unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainCell(), indexes));
+		unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainBucketIndex(), indexes));
 	}
 }
 
@@ -75,7 +75,7 @@ void IndividualOrder::followAndAct() {
 		const auto find = std::ranges::find(indexes, unit->getMainBucketIndex());
 
 		if (find == indexes.end()) {
-			const auto param = getFollowAim(unit->getMainCell(), indexes);
+			const auto param = getFollowAim(unit->getMainBucketIndex(), indexes);
 			if (param.aim != nullptr) {
 				unit->action(UnitAction::FOLLOW, param);
 				unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, true));

@@ -126,7 +126,7 @@ void Formation::updateIds() {
 			if (leader == unit) {
 				continue;
 			}
-			int bucketId = unit->getMainCell();
+			int bucketId = unit->getMainBucketIndex();
 			const auto pos = unit->getPosition();
 			const auto currentPos = Urho3D::Vector2(pos.x_, pos.z_);
 

@@ -38,7 +38,8 @@ void FormationOrder::addCollectAim() {
 void FormationOrder::addTargetAim() {
 	auto opt = formation->getLeader();
 	if (opt.has_value() && vector) {
-		opt.value()->action(static_cast<UnitAction>(id), getTargetAim(opt.value()->getMainCell(), *vector));
+		Unit* leader = opt.value();
+		leader->action(static_cast<UnitAction>(id), getTargetAim(leader->getMainBucketIndex(), *vector));
 		formation->stopAllBesideLeader();
 		Game::getEnvironment()->invalidatePathCache();
 	}
@@ -52,7 +53,7 @@ void FormationOrder::addFollowAim() {
 
 		auto const indexes = toUse->getIndexesForUse(leader);
 		if (!indexes.empty()) {
-			leader->action(static_cast<UnitAction>(id), getFollowAim(leader->getMainCell(), indexes));
+			leader->action(static_cast<UnitAction>(id), getFollowAim(leader->getMainBucketIndex(), indexes));
 		}
 	}
 }
@@ -65,12 +66,11 @@ void FormationOrder::addChargeAim() {
 }
 
 void FormationOrder::followAndAct(float distThreshold) {
-	auto optLeader = formation->getLeader();
-	if (optLeader.has_value()) {
+	if (auto optLeader = formation->getLeader(); optLeader.has_value()) {
 		Unit* leader = optLeader.value();
 		auto const indexes = toUse->getIndexesForUse(leader);
-		if (!indexes.empty()) {		
-			if (Game::getEnvironment()->anyCloseEnough(indexes, leader->getMainCell(), distThreshold)) {
+		if (!indexes.empty()) {
+			if (Game::getEnvironment()->anyCloseEnough(indexes, leader->getMainBucketIndex(), distThreshold)) {
 				for (auto* unit : formation->getUnits()) {
 					unit->resetFormation();
 					unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, false));
@@ -80,8 +80,7 @@ void FormationOrder::followAndAct(float distThreshold) {
 				formation->remove();
 			} else {
 				//auto pos = std::get<0>(postToUse);
-				optLeader.value()->action(UnitAction::FOLLOW,
-				                          getFollowAim(optLeader.value()->getMainCell(), indexes));
+				leader->action(UnitAction::FOLLOW, getFollowAim(leader->getMainBucketIndex(), indexes));
 				formation->addOrder(new FormationOrder(formation, id, toUse, true));
 				//Dodanie celu po dojsciu
 			}

@@ -21,8 +21,8 @@ public:
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		return parameter.isFirstThingAlive()
-			&& unit->getMainCell() == parameter.index //TODO je¿eli jest inny to sprobowaæ podmienic
-			&& Game::getEnvironment()->cellIsCollectable(unit->getMainCell())
+			&& unit->getMainBucketIndex() == parameter.index //TODO je¿eli jest inny to sprobowaæ podmienic
+			&& Game::getEnvironment()->cellIsCollectable(unit->getMainBucketIndex())
 			&& parameter.thingToInteract->belowCloseLimit() > 0;
 	}
 
@@ -36,7 +36,7 @@ public:
 
 		unit->thingsToInteract[0]->upClose();
 
-		Game::getEnvironment()->updateCell(unit->getMainCell(), 1, CellState::COLLECT);
+		Game::getEnvironment()->updateCell(unit->getMainBucketIndex(), 1, CellState::COLLECT);
 	}
 
 	void onEnd(Unit* unit) override {
@@ -44,14 +44,14 @@ public:
 			unit->thingsToInteract[0]->reduceClose();
 		}
 		Game::getEnvironment()->updateCell(unit->indexToInteract, -1, CellState::NONE);
-		assert(unit->getMainCell() == unit->indexToInteract);
+		assert(unit->getMainBucketIndex() == unit->indexToInteract);
 		unit->indexToInteract = -1;
 	}
 
 	void execute(Unit* unit, float timeStep) override {
 		if (unit->isFirstThingAlive()
-			&& unit->getMainCell() == unit->indexToInteract
-			&& Game::getEnvironment()->cellInState(unit->getMainCell(), CellState::COLLECT)) {
+			&& unit->getMainBucketIndex() == unit->indexToInteract
+			&& Game::getEnvironment()->cellInState(unit->getMainBucketIndex(), CellState::COLLECT)) {
 			//TODO musi byc dokladnie w dobry mbuckecie
 			auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
 			auto resource = dynamic_cast<ResourceEntity*>(unit->thingsToInteract[0]);

@@ -30,7 +30,7 @@ Urho3D::Vector2 TargetAim::getDirection(Unit* unit) {
 }
 
 bool TargetAim::ifReach(Unit* unit) {
-	if (path[current] == unit->getMainCell()) {
+	if (path[current] == unit->getMainBucketIndex()) {
 		++current;
 		if (current >= path.size()) {
 			return true;

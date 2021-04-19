@@ -26,7 +26,7 @@ public:
 	StaticState getState() const { return state; }
 	bool isUsable() const override { return state == StaticState::ALIVE; }
 	bool isAlive() const override { return state == StaticState::ALIVE || state == StaticState::FREE; }
-	int getMainCell() const override { return mainCell; }
+	int getMainCell() const { return mainCell; }
 	bool isToDispose() const override { return state == StaticState::DISPOSE; }
 	virtual const Urho3D::IntVector2 getGridSize() const =0;
 	const std::vector<int>& getOccupiedCells() const { return occupiedCells; }

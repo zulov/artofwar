@@ -467,7 +467,7 @@ void Unit::setTeamBucket(int _bucketIndex, char param) {
 }
 
 bool Unit::isSlotOccupied(int indexToInteract) {
-	const unsigned char index = Game::getEnvironment()->getRevertCloseIndex(getMainCell(), indexToInteract);
+	const unsigned char index = Game::getEnvironment()->getRevertCloseIndex(getMainBucketIndex(), indexToInteract);
 	return ifSlotIsOccupied(index);
 }
 
@@ -545,7 +545,7 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 			if (Game::getEnvironment()->cellIsPassable(index)) {
 				//TODO2 to chyba sprawdza to samo prawie?
 				Urho3D::Vector2 posToFollow = getSocketPos(this, i);
-				if (index == user->getMainCell()) {
+				if (index == user->getMainBucketIndex()) {
 					return {{posToFollow, 0, index}};
 				}
 				setClosest(minDistance, closest, closestIndex, index, posToFollow, user->getPosition());
@@ -560,7 +560,7 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 
 std::vector<int> Unit::getIndexesForUse(Unit* user) {
 	std::vector<int> indexes;
-	const int mainIndex = getMainCell();
+	const int mainIndex = getMainBucketIndex();
 	const std::vector<unsigned char>& closeTabIndexes = Game::getEnvironment()->getCloseTabIndexes(mainIndex);
 	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
 	for (auto i : closeTabIndexes) {

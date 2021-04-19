@@ -135,7 +135,7 @@ void MainGrid::updateCell(int index, char val, CellState cellState) const {
 }
 
 Urho3D::Vector2 MainGrid::getPositionInBucket(Unit* unit) {
-	const auto index = unit->getMainCell();
+	const auto index = unit->getMainBucketIndex();
 	char ordinal = -1;
 	char max = 0;
 	const auto state = unit->getState();

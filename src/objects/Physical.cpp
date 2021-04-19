@@ -77,10 +77,6 @@ void Physical::updateHealthBar() const {
 	}
 }
 
-int Physical::getMainCell() const {
-	return getMainBucketIndex();
-}
-
 std::optional<Urho3D::Vector2> Physical::getPosToUseBy(Unit* follower) {
 	auto a = getPosToUseWithIndex(follower);
 	if (a.has_value()) {

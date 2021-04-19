@@ -125,7 +125,7 @@ std::vector<std::vector<Unit*>> GroupOrder::divide(const std::vector<Unit*>& uni
 	std::vector<int> allIndexes;
 	allIndexes.reserve(units.size());
 	for (auto* unit : units) {
-		allIndexes.push_back(unit->getMainCell());
+		allIndexes.push_back(unit->getMainBucketIndex());
 	}
 	std::ranges::sort(allIndexes);
 	allIndexes.erase(std::unique(allIndexes.begin(), allIndexes.end()), allIndexes.end());
@@ -168,7 +168,7 @@ std::vector<std::vector<Unit*>> GroupOrder::divide(const std::vector<Unit*>& uni
 		//temp.reserve()
 		for (auto index : groupedIndex) {
 			for (auto value : units) {
-				if (value->getMainCell() == index) {
+				if (value->getMainBucketIndex() == index) {
 					temp.push_back(value);
 				}
 			}

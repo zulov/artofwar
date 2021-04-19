@@ -104,13 +104,13 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 			auto pos = posOpt.value();
 			const auto aimIndex = Game::getEnvironment()->getIndex(pos);
 			Urho3D::Vector2 force;
-			if (Game::getEnvironment()->isInLocalArea(unit->getMainCell(), aimIndex)) {
-				auto a = Game::getEnvironment()->cellIsPassable(unit->getMainCell());
+			if (Game::getEnvironment()->isInLocalArea(unit->getMainBucketIndex(), aimIndex)) {
+				auto a = Game::getEnvironment()->cellIsPassable(unit->getMainBucketIndex());
 				auto b = Game::getEnvironment()->cellIsPassable(aimIndex);
 
 				force = dirTo(unit->getPosition(), pos);
 			} else {
-				auto* const path = Game::getEnvironment()->findPath(unit->getMainCell(), aimIndex, 64);
+				auto* const path = Game::getEnvironment()->findPath(unit->getMainBucketIndex(), aimIndex, 64);
 				//std::cout << unit->getMainCell() << "||" << aimIndex << "||" << path->size() << std::endl;
 				if (!path->empty()) {
 					auto center = Game::getEnvironment()->getCenter(path->at(0));
