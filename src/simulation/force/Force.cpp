@@ -73,16 +73,22 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 }
 
 void Force::destOrFormation(Urho3D::Vector2& newForce, Unit* unit) {
-	if (unit->getFormation() < 0 || Game::getFormationManager()->isLeader(unit)) {
-		destination(newForce, unit);
+	if (unit->getFormation() < 0) {
+		destination(newForce, unit, 1.f);
+	} else if (Game::getFormationManager()->isLeader(unit)) {
+		if (Game::getFormationManager()->isMoving(unit)) {
+			destination(newForce, unit, 1.0f);
+		} else {
+			destination(newForce, unit, 0.5f);
+		}
 	} else {
 		//aims.clearExpired();
 		formation(newForce, unit);
 	}
 }
 
-void Force::destination(Urho3D::Vector2& newForce, Unit* unit) {
-	auto force = unit->getDestination(boostCoef, aimCoef);
+void Force::destination(Urho3D::Vector2& newForce, Unit* unit, float factor) {
+	auto force = unit->getDestination(boostCoef, aimCoef * factor);
 
 	forceStats.addDest(force);
 
@@ -99,6 +105,9 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 			const auto aimIndex = Game::getEnvironment()->getIndex(pos);
 			Urho3D::Vector2 force;
 			if (Game::getEnvironment()->isInLocalArea(unit->getMainCell(), aimIndex)) {
+				auto a = Game::getEnvironment()->cellIsPassable(unit->getMainCell());
+				auto b = Game::getEnvironment()->cellIsPassable(aimIndex);
+
 				force = dirTo(unit->getPosition(), pos);
 			} else {
 				auto* const path = Game::getEnvironment()->findPath(unit->getMainCell(), aimIndex, 64);

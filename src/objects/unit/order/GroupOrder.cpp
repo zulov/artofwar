@@ -21,7 +21,8 @@ GroupOrder::GroupOrder(const std::vector<Physical*>& entities, UnitActionType ac
 
 GroupOrder::GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, short id,
                        Urho3D::Vector2 vector, bool append): UnitOrder(id, append, vector), actionType(actionType),
-                                                             units(std::move(entities)) {}
+                                                             units(std::move(entities)) {
+}
 
 void GroupOrder::addUnits(const std::vector<Physical*>& entities) {
 	units.reserve(entities.size());
@@ -102,14 +103,9 @@ void GroupOrder::actOnFormation(std::vector<Unit*>& group) const {
 }
 
 void GroupOrder::transformToFormationOrder() const {
-	if(tryDivide) {
-		for (auto& group : divide(units)) {
-			actOnFormation(group);
-		}
-	}else {
-		actOnFormation(units);
+	for (auto& group : divide(units)) {
+		actOnFormation(group);
 	}
-
 }
 
 bool GroupOrder::addToGroup(std::vector<std::vector<int>>& groupedIndexes, int current) const {
@@ -147,7 +143,7 @@ std::vector<std::vector<Unit*>> GroupOrder::divide(const std::vector<Unit*>& uni
 	std::vector<std::vector<int>> newGroupedIndexes;
 	for (int i = 0; i < groupedIndexes.size(); ++i) {
 		const auto& current = groupedIndexes[i];
-	
+
 		if (current.empty()) { continue; }
 		std::vector<int> merged = current;
 		for (int j = i + 1; j < groupedIndexes.size(); ++j) {
@@ -160,7 +156,7 @@ std::vector<std::vector<Unit*>> GroupOrder::divide(const std::vector<Unit*>& uni
 					merged.insert(merged.end(), next.begin(), next.end());
 					next.clear();
 				}
-			}		
+			}
 		}
 		newGroupedIndexes.push_back(merged);
 	}

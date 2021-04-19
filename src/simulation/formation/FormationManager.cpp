@@ -84,3 +84,8 @@ bool FormationManager::isLeader(Unit* unit) const{
 	const short formation = unit->getFormation();
 	return formation >= 0 && formations[formation]->isLeader(unit);
 }
+
+bool FormationManager::isMoving(Unit* unit) const {
+	const short formation = unit->getFormation();
+	return formation >= 0 && formations[formation]->isMoving(unit);
+}

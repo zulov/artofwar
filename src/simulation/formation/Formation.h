@@ -27,6 +27,7 @@ public:
 	std::vector<Unit*>& getUnits() { return units; }
 	void stopAllBesideLeader();
 	bool isLeader(Unit* unit) const;
+	bool isMoving(Unit* unit) const;
 private:
 	bool hasLeader() const;
 	Urho3D::Vector2 computeLocalCenter();

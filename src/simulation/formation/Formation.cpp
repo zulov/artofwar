@@ -224,6 +224,10 @@ bool Formation::isLeader(Unit* unit) const {
 	return hasLeader() && unit == leader;
 }
 
+bool Formation::isMoving(Unit* unit) const {
+	return state == FormationState::MOVING;
+}
+
 void Formation::update() {
 	switch (state) {
 	case FormationState::FORMING:
@@ -301,7 +305,8 @@ Urho3D::Vector2 Formation::getPositionFor(short id) const {
 
 	//TODO perf map posIndex to closestIndex
 	const int closestIndex = Game::getEnvironment()->closestPassableCell(posIndex);
-	return Game::getEnvironment()->getCenter(closestIndex) - Urho3D::Vector2(column * sparsity, row * sparsity);
+	const auto diff = position - Game::getEnvironment()->getCenter(posIndex);
+	return Game::getEnvironment()->getCenter(closestIndex) + diff;
 }
 
 float Formation::getPriority(int id) const {

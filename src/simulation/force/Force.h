@@ -15,7 +15,7 @@ public:
 	void separationObstacle(Urho3D::Vector2& newForce, Unit* unit);
 	void separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<Physical*>* neights);
 	void destOrFormation(Urho3D::Vector2& newForce, Unit* unit);
-	void destination(Urho3D::Vector2& newForce, Unit* unit);
+	void destination(Urho3D::Vector2& newForce, Unit* unit, float factor);
 	void formation(Urho3D::Vector2& newForce, Unit* unit);
 	void escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit);
 	void inCell(Urho3D::Vector2& newForce, Unit* unit) const;

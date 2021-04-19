@@ -14,6 +14,7 @@ public:
 	float getPriority(Unit* unit);
 	std::optional<Urho3D::Vector2> getPositionFor(Unit* unit);
 	bool isLeader(Unit* unit) const;
+	bool isMoving(Unit* unit) const;
 private:
 	std::vector<Formation*> formations;
 	unsigned currentlyFree = 0;
