@@ -79,7 +79,7 @@ void Force::destOrFormation(Urho3D::Vector2& newForce, Unit* unit) {
 		if (Game::getFormationManager()->isMoving(unit)) {
 			destination(newForce, unit, 1.0f);
 		} else {
-			destination(newForce, unit, 0.5f);
+			destination(newForce, unit, 0.05f);
 		}
 	} else {
 		//aims.clearExpired();
