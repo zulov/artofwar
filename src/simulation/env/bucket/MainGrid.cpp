@@ -266,20 +266,11 @@ bool MainGrid::anyCloseEnough(std::vector<int> const& indexes, int center, float
 }
 
 bool MainGrid::isInLocalArea(const int center, int indexOfAim) const {
-	if (center == indexOfAim) { return true; }
-	const auto diff = indexOfAim - center; //center + value == indexOfAim
-	return isInTab(closeIndexes->get(indexOfAim), diff);
+	return closeIndexes->isInLocalArea(center, indexOfAim);
 }
 
-bool MainGrid::isInLocal2Area(int center, int indexOfAim) const {
-	if (center == indexOfAim) { return true; }
-	const auto diff = indexOfAim - center; //center + value == indexOfAim
-
-	return isInTab(closeIndexes->get(indexOfAim), diff) || isInTab(closeIndexes->getSecond(indexOfAim), diff);
-}
-
-bool MainGrid::isInTab(const std::vector<short>& tab, const int val) const {
-	return std::ranges::any_of(tab, [val](short i) { return val == i; });
+bool MainGrid::isInLocal1and2Area(int center, int indexOfAim) const {
+	return closeIndexes->isInLocalArea(center, indexOfAim) || closeIndexes->isInLocal2Area(center, indexOfAim);
 }
 
 bool MainGrid::isPassable(int inx) const {

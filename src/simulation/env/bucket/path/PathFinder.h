@@ -50,6 +50,7 @@ private:
 	Urho3D::IntVector2 getCords(int index) const { return Urho3D::IntVector2(index / resolution, index % resolution); }
 	void resetPathArrays();
 	bool isInLocalArea(int center, int indexOfAim) const;
+	bool isInLocal2Area(int center, int indexOfAim) const;
 	int isInLocalArea(int center, std::vector<int>& endIdxs) const;
 	void updateCost(int startIdx, float x);
 

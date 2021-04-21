@@ -383,8 +383,8 @@ bool Environment::isInLocalArea(int getMainCell, int aimIndex) const {
 	return mainGrid.isInLocalArea(getMainCell, aimIndex);
 }
 
-bool Environment::isInLocal2Area(int getMainCell, int aimIndex) const {
-	return mainGrid.isInLocal2Area(getMainCell, aimIndex);
+bool Environment::isInLocal1and2Area(int getMainCell, int aimIndex) const {
+	return mainGrid.isInLocal1and2Area(getMainCell, aimIndex);
 }
 
 int Environment::closestPassableCell(int posIndex) const {

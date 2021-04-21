@@ -167,6 +167,9 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 		tempPath->emplace_back(endIdx);
 		return tempPath;
 	}
+	if (isInLocal2Area(startIdx, endIdx)) {
+		
+	}
 
 
 	return realFindPath(startIdx, endIdx, limit);
@@ -388,10 +391,11 @@ void PathFinder::resetPathArrays() {
 }
 
 bool PathFinder::isInLocalArea(const int center, int indexOfAim) const {
-	//TODO code duplicate
-	if (center == indexOfAim) { return true; }
-	auto diff = indexOfAim - center; //center + value == indexOfAim
-	return std::ranges::any_of(closeIndexes->get(indexOfAim), [diff](int i) { return i == diff; });
+	return closeIndexes->isInLocalArea(center, indexOfAim);
+}
+
+bool PathFinder::isInLocal2Area(int center, int indexOfAim) const {
+	return closeIndexes->isInLocal2Area(center,indexOfAim);
 }
 
 int PathFinder::isInLocalArea(int center, std::vector<int>& endIdxs) const {

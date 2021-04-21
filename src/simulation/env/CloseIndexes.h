@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <vector>
 
 constexpr char CLOSE_SIZE = 9;
@@ -13,6 +14,8 @@ public:
 	const std::vector<unsigned char>& getTabIndexes(int center) const { return tabIndexes[getIndex(center)]; }
 	short getIndexAt(unsigned char index) const { return templateVec[index]; }
 	unsigned short getResolution() const { return resolution; }
+	bool isInLocalArea(int center, int indexOfAim) const;
+	bool isInLocal2Area(int center, int indexOfAim) const;
 
 private:
 	char getIndex(int center) const;
@@ -27,3 +30,7 @@ private:
 	static const std::vector<unsigned char> tabIndexesSecond[CLOSE_SECOND_SIZE];
 	std::vector<short> closeIndexesSecond[CLOSE_SECOND_SIZE];
 };
+
+inline bool isInTab(const std::vector<short>& tab, const int val) {
+	return std::ranges::any_of(tab, [val](short i) { return val == i; });
+}

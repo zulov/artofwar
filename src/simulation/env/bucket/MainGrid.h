@@ -68,8 +68,7 @@ public:
 	void removeDeploy(Building* building) const;
 
 	bool isInLocalArea(int center, int indexOfAim) const;
-	bool isInTab(const std::vector<short>& tab, int diff) const;
-	bool isInLocal2Area(int center, int indexOfAim) const;
+	bool isInLocal1and2Area(int center, int indexOfAim) const;
 	
 	bool isPassable(int inx) const;
 	bool isBuildable(int inx) const;

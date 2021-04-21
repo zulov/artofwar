@@ -111,7 +111,7 @@ void GroupOrder::transformToFormationOrder() const {
 bool GroupOrder::addToGroup(std::vector<std::vector<int>>& groupedIndexes, int current) const {
 	for (auto& groupedIndex : groupedIndexes) {
 		const auto isNear = std::ranges::any_of(groupedIndex, [current](int index) {
-			return Game::getEnvironment()->isInLocal2Area(current, index);
+			return Game::getEnvironment()->isInLocal1and2Area(current, index);
 		});
 		if (isNear) {
 			groupedIndex.push_back(current);
@@ -150,7 +150,7 @@ std::vector<std::vector<Unit*>> GroupOrder::divide(const std::vector<Unit*>& uni
 			auto& next = groupedIndexes[j];
 			for (auto value : current) {
 				const auto isNear = std::ranges::any_of(next, [value](int index) {
-					return Game::getEnvironment()->isInLocal2Area(value, index);
+					return Game::getEnvironment()->isInLocal1and2Area(value, index);
 				});
 				if (isNear) {
 					merged.insert(merged.end(), next.begin(), next.end());

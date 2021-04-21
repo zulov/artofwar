@@ -69,6 +69,15 @@ CloseIndexes::CloseIndexes(short res)
 	}
 }
 
+bool CloseIndexes::isInLocalArea(const int center, int indexOfAim) const {
+	if (center == indexOfAim) { return true; }
+	return isInTab(get(indexOfAim), indexOfAim - center);//center + value == indexOfAim
+}
+
+bool CloseIndexes::isInLocal2Area(int center, int indexOfAim) const {
+	return isInTab(getSecond(indexOfAim), indexOfAim - center);//center + value == indexOfAim
+}
+
 char CloseIndexes::getIndex(int center) const {
 	char index = 0;
 	if (center < resolution) { } else if (center >= resolution * resolution - resolution) {
