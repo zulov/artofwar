@@ -167,10 +167,20 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 		tempPath->emplace_back(endIdx);
 		return tempPath;
 	}
-	if (isInLocal2Area(startIdx, endIdx)) {
-		
-	}
 
+	auto& closePass = closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdx);
+	if (!closePass.empty()) {
+		for (auto pass : closePass) {
+			auto newPass = pass + startIdx;
+			assert(isInLocalArea(startIdx, newPass));
+			if (complexData[newPass].isPassable()) {
+				tempPath->clear();
+				tempPath->emplace_back(newPass);
+				tempPath->emplace_back(endIdx);
+				return tempPath;
+			}
+		}
+	}
 
 	return realFindPath(startIdx, endIdx, limit);
 }
@@ -395,7 +405,7 @@ bool PathFinder::isInLocalArea(const int center, int indexOfAim) const {
 }
 
 bool PathFinder::isInLocal2Area(int center, int indexOfAim) const {
-	return closeIndexes->isInLocal2Area(center,indexOfAim);
+	return closeIndexes->isInLocal2Area(center, indexOfAim);
 }
 
 int PathFinder::isInLocalArea(int center, std::vector<int>& endIdxs) const {

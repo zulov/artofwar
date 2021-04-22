@@ -1,4 +1,6 @@
-#include "closeVals.h"
+#include <vector>
+
+#include "CloseIndexes.h"
 
 const std::vector<unsigned char> CloseIndexes::tabIndexes[CLOSE_SIZE] = {
 	{4, 6, 7},
@@ -47,23 +49,24 @@ const std::vector<unsigned char> CloseIndexes::tabSecondIndexes[CLOSE_SECOND_SIZ
 const std::vector<unsigned char> CloseIndexes::passTo2From1Indexes[FROM_1_TO_2_SIZE] = {
 	{0},
 	{0, 1},
-	{0, 1, 2},
+	{1, 0, 2},
 	{1, 2},
 	{2},
 
 	{0, 3},
 	{2, 4},
-	{0, 3, 5},
-	{2, 4, 7},
+	{3, 0, 5},
+	{4, 2, 7},
 	{3, 5},
 	{4, 7},
 
 	{5},
 	{5, 6},
-	{5, 6, 7},
+	{6, 5, 7},
 	{6, 7},
 	{7}
 };
+const std::vector<short> CloseIndexes::EMPTY = {};
 
 CloseIndexes::CloseIndexes(short res)
 	: resolution(res), templateVec{-res - 1, -res, -res + 1, -1, 1, res - 1, res, res + 1},
@@ -88,6 +91,13 @@ CloseIndexes::CloseIndexes(short res)
 			closeSecondVals[i].emplace_back(templateVecSecond[j]);
 		}
 	}
+
+	for (int i = 0; i < FROM_1_TO_2_SIZE; ++i) {
+		passTo2From1Vals[i].reserve(passTo2From1Indexes[i].size());
+		for (auto j : tabSecondIndexes[i]) {
+			passTo2From1Vals[i].emplace_back(templateVec[j]);
+		}
+	}
 }
 
 bool CloseIndexes::isInLocalArea(const int center, int indexOfAim) const {
@@ -99,15 +109,30 @@ bool CloseIndexes::isInLocal2Area(int center, int indexOfAim) const {
 	return isInTab(getSecond(indexOfAim), indexOfAim - center); //center + value == indexOfAim
 }
 
+const std::vector<short>& CloseIndexes::getPassIndexVia1LevelTo2(int startIdx, int endIdx) const {
+	if (isInLocal2Area(startIdx, endIdx)) {
+		auto& tab = getSecond(startIdx);
+
+		for (int i = 0; i < tab.size(); ++i) {
+			if (startIdx + tab[i] == endIdx) {
+				return passTo2From1Vals[i];
+			}
+		}
+	}
+	return EMPTY;
+}
+
 char CloseIndexes::getIndex(int center) const {
 	char index = 0;
-	if (center < resolution) { } else if (center >= resolution * resolution - resolution) {
+	if (center < resolution) {
+	} else if (center >= resolution * resolution - resolution) {
 		index += 6;
 	} else {
 		index += 3;
 	}
 	const auto mod = center % resolution;
-	if (mod == 0) { } else if (mod == resolution - 1) {
+	if (mod == 0) {
+	} else if (mod == resolution - 1) {
 		index += 2;
 	} else {
 		index += 1;
@@ -128,7 +153,8 @@ const std::vector<short>& CloseIndexes::getSecond(int center) const {
 	const bool lastColumn = center % resolution == resolution - 1;
 	const bool almostLastColumn = center % resolution == resolution - 2;
 	char index = 0;
-	if (firstRow) { } else if (secondRow) {
+	if (firstRow) {
+	} else if (secondRow) {
 		index += 5;
 	} else if (almostLastRow) {
 		index += 15;
@@ -138,7 +164,8 @@ const std::vector<short>& CloseIndexes::getSecond(int center) const {
 		index += 10;
 	}
 
-	if (firstColumn) { } else if (secondColumn) {
+	if (firstColumn) {
+	} else if (secondColumn) {
 		index += 1;
 	} else if (almostLastColumn) {
 		index += 3;
