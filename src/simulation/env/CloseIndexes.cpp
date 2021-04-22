@@ -1,4 +1,4 @@
-#include "CloseIndexes.h"
+#include "closeVals.h"
 
 const std::vector<unsigned char> CloseIndexes::tabIndexes[CLOSE_SIZE] = {
 	{4, 6, 7},
@@ -12,7 +12,7 @@ const std::vector<unsigned char> CloseIndexes::tabIndexes[CLOSE_SIZE] = {
 	{0, 1, 3}
 };
 
-const std::vector<unsigned char> CloseIndexes::tabIndexesSecond[CLOSE_SECOND_SIZE] = {
+const std::vector<unsigned char> CloseIndexes::tabSecondIndexes[CLOSE_SECOND_SIZE] = {
 	{8, 10, 13, 14, 15},
 	{8, 10, 12, 13, 14, 15},
 	{7, 8, 9, 10, 11, 12, 13, 14, 15},
@@ -44,6 +44,27 @@ const std::vector<unsigned char> CloseIndexes::tabIndexesSecond[CLOSE_SECOND_SIZ
 	{0, 1, 2, 5, 7},
 };
 
+const std::vector<unsigned char> CloseIndexes::passTo2From1Indexes[FROM_1_TO_2_SIZE] = {
+	{0},
+	{0, 1},
+	{0, 1, 2},
+	{1, 2},
+	{2},
+
+	{0, 3},
+	{2, 4},
+	{0, 3, 5},
+	{2, 4, 7},
+	{3, 5},
+	{4, 7},
+
+	{5},
+	{5, 6},
+	{5, 6, 7},
+	{6, 7},
+	{7}
+};
+
 CloseIndexes::CloseIndexes(short res)
 	: resolution(res), templateVec{-res - 1, -res, -res + 1, -1, 1, res - 1, res, res + 1},
 	  templateVecSecond{
@@ -55,27 +76,27 @@ CloseIndexes::CloseIndexes(short res)
 	  } {
 
 	for (int i = 0; i < CLOSE_SIZE; ++i) {
-		closeIndexes[i].reserve(tabIndexes[i].size());
+		closeVals[i].reserve(tabIndexes[i].size());
 		for (auto j : tabIndexes[i]) {
-			closeIndexes[i].emplace_back(templateVec[j]);
+			closeVals[i].emplace_back(templateVec[j]);
 		}
 	}
 
 	for (int i = 0; i < CLOSE_SECOND_SIZE; ++i) {
-		closeIndexesSecond[i].reserve(tabIndexesSecond[i].size());
-		for (auto j : tabIndexesSecond[i]) {
-			closeIndexesSecond[i].emplace_back(templateVecSecond[j]);
+		closeSecondVals[i].reserve(tabSecondIndexes[i].size());
+		for (auto j : tabSecondIndexes[i]) {
+			closeSecondVals[i].emplace_back(templateVecSecond[j]);
 		}
 	}
 }
 
 bool CloseIndexes::isInLocalArea(const int center, int indexOfAim) const {
 	if (center == indexOfAim) { return true; }
-	return isInTab(get(indexOfAim), indexOfAim - center);//center + value == indexOfAim
+	return isInTab(get(indexOfAim), indexOfAim - center); //center + value == indexOfAim
 }
 
 bool CloseIndexes::isInLocal2Area(int center, int indexOfAim) const {
-	return isInTab(getSecond(indexOfAim), indexOfAim - center);//center + value == indexOfAim
+	return isInTab(getSecond(indexOfAim), indexOfAim - center); //center + value == indexOfAim
 }
 
 char CloseIndexes::getIndex(int center) const {
@@ -126,5 +147,5 @@ const std::vector<short>& CloseIndexes::getSecond(int center) const {
 	} else { index += 2; }
 
 
-	return closeIndexesSecond[index];
+	return closeSecondVals[index];
 }
