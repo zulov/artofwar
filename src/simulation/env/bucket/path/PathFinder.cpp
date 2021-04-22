@@ -162,7 +162,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 	lastStartIdx = startIdx;
 	lastEndIdx = endIdx;
 
-	if (isInLocalArea(startIdx, endIdx)) {
+	if (isInLocalArea(startIdx, endIdx)) {//ToDO perf close nie powinna isc do cache
 		tempPath->clear();
 		tempPath->emplace_back(endIdx);
 		return tempPath;

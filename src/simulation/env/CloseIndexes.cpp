@@ -110,15 +110,14 @@ bool CloseIndexes::isInLocal2Area(int center, int indexOfAim) const {
 }
 
 const std::vector<short>& CloseIndexes::getPassIndexVia1LevelTo2(int startIdx, int endIdx) const {
-	if (isInLocal2Area(startIdx, endIdx)) {
-		auto& tab = getSecond(startIdx);
+	auto& tab = getSecond(startIdx);
 
-		for (int i = 0; i < tab.size(); ++i) {
-			if (startIdx + tab[i] == endIdx) {
-				return passTo2From1Vals[i];
-			}
+	for (int i = 0; i < tab.size(); ++i) {
+		if (startIdx + tab[i] == endIdx) {
+			return passTo2From1Vals[i];
 		}
 	}
+
 	return EMPTY;
 }
 

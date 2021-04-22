@@ -294,7 +294,6 @@ Urho3D::Vector2 Formation::getPositionFor(short id) const {
 	const short column = columnThis - columnLeader;
 	const short row = rowThis - rowLeader;
 	if (leaderID == id) {
-		//TODO dla leadera trzeba cos innego wymyślić
 		return center;
 	}
 	auto position = center - Urho3D::Vector2(column * sparsity, row * sparsity);
