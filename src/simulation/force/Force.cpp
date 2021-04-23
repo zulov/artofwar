@@ -97,12 +97,12 @@ void Force::destination(Urho3D::Vector2& newForce, Unit* unit, float factor) {
 
 void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 	assert(!unit->hasAim());
-	auto posOpt = Game::getFormationManager()->getPositionFor(unit);
+	auto posOpt = Game::getFormationManager()->getPositionFor(unit); //TODO czasem jest niepassable
 	if (posOpt.has_value()) {
 		const float priority = Game::getFormationManager()->getPriority(unit);
 		if (priority > 0) {
 			auto pos = posOpt.value();
-			const auto aimIndex = Game::getEnvironment()->getIndex(pos); //TODO czasem jest niepassable
+			const auto aimIndex = Game::getEnvironment()->getIndex(pos);
 			Urho3D::Vector2 force;
 			if (Game::getEnvironment()->isInLocalArea(unit->getMainBucketIndex(), aimIndex)) {
 				force = dirTo(unit->getPosition(), pos);

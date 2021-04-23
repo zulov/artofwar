@@ -58,6 +58,7 @@ private:
 	GridCalculator* calculator;
 
 	std::vector<int>* tempPath;
+	std::vector<int>* closePath;
 
 	int lastStartIdx = -1;
 	int lastEndIdx = -1;

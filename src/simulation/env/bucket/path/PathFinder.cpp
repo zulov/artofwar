@@ -13,11 +13,13 @@ PathFinder::PathFinder(short resolution, float size, ComplexBucketData* complexD
 	resolution(resolution), fieldSize(size / resolution), max_cost_to_ref(resolution * resolution - 1),
 	complexData(complexData) {
 	tempPath = new std::vector<int>();
+	closePath = new std::vector<int>();
 	FibHeap::initCache();
 }
 
 PathFinder::~PathFinder() {
 	delete tempPath;
+	delete closePath;
 	if (pathInited) {
 		delete[]came_from;
 		delete[]cost_so_far;
@@ -41,7 +43,6 @@ std::vector<int>* PathFinder::reconstruct_path(int start, int goal, const int ca
 std::vector<int>* PathFinder::reconstruct_simplify_path(int start, int goal, const int came_from[]) const {
 	tempPath->clear();
 
-	tempPath->emplace_back(goal);
 	int current = goal;
 
 	int lastDirection = 0;
@@ -62,7 +63,6 @@ std::vector<int>* PathFinder::reconstruct_simplify_path(int start, int goal, con
 	}
 
 	std::ranges::reverse(*tempPath);
-	tempPath->pop_back();
 	return tempPath;
 }
 
@@ -98,9 +98,11 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, int endIdx, int limit) 
 				validateIndex(current, next);
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + currentData.getCost(i);
-					if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
+					auto const nextCost = cost_so_far[next];
+					if (nextCost < 0.f || new_cost < nextCost) {
 						updateCost(next, new_cost);
 						frontier.put(next, new_cost + heuristic(next, endCords));
+						//TODO perf najlepszego pushowac leniwie
 						came_from[next] = current;
 					}
 				}
@@ -152,20 +154,20 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>&
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
-	if (ifInCache(startIdx, endIdx)) {
-		//TODO perf je¿eli tylko startowy jest ten sam to mo¿na by kontynu³owaæ algo? ale to by sie zjecha³a heurystka, chyba zeby tylko sprawdzic czy algo doszed³
-		return tempPath;
-	}
+	// if (ifInCache(startIdx, endIdx)) {
+	// 	return tempPath;
+	// }
 
 	endIdx = getPassableEnd(endIdx); //TODO improve kolejnosc tego  i nize jest istotna?
 
-	lastStartIdx = startIdx;
-	lastEndIdx = endIdx;
+	if (ifInCache(startIdx, endIdx)) {
+		return tempPath;
+	}
 
 	if (isInLocalArea(startIdx, endIdx)) {//ToDO perf close nie powinna isc do cache
-		tempPath->clear();
-		tempPath->emplace_back(endIdx);
-		return tempPath;
+		closePath->clear();
+		closePath->emplace_back(endIdx);
+		return closePath;
 	}
 
 	auto& closePass = closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdx);
@@ -174,13 +176,16 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 			auto newPass = pass + startIdx;
 			assert(isInLocalArea(startIdx, newPass));
 			if (complexData[newPass].isPassable()) {
-				tempPath->clear();
-				tempPath->emplace_back(newPass);
-				tempPath->emplace_back(endIdx);
-				return tempPath;
+				closePath->clear();
+				closePath->emplace_back(newPass);
+				closePath->emplace_back(endIdx);
+				return closePath;
 			}
 		}
 	}
+
+	lastStartIdx = startIdx;
+	lastEndIdx = endIdx;
 
 	return realFindPath(startIdx, endIdx, limit);
 }

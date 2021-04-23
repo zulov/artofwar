@@ -293,7 +293,7 @@ int MainGrid::closestPassableCell(int posIndex) const {
 			return i + posIndex;
 		}
 	}
-	return posIndex;
+	return posIndex;//TODO to zwrócic optional empty
 }
 
 void MainGrid::addStatic(Static* object) const {
