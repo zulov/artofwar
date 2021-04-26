@@ -90,6 +90,7 @@ void Formation::setPosInFormationForLeader() const {
 
 void Formation::updateIds() {
 	if (changed) {
+		pathCache.clear();
 		updateSideSize();
 		electLeader();
 		setCenter();
@@ -196,6 +197,7 @@ void Formation::calculateNotWellFormed() {
 }
 
 void Formation::innerUpdate() {
+	//pathCache.clear();
 	removeExpired(unitOrders);
 	if (pendingOrder && pendingOrder->expired()) {
 		delete pendingOrder;
@@ -213,6 +215,7 @@ void Formation::innerUpdate() {
 }
 
 void Formation::stopAllBesideLeader() {
+	pathCache.clear();
 	for (auto* unit : units) {
 		if (unit != leader) {
 			StateManager::toDefaultState(unit);
@@ -226,6 +229,18 @@ bool Formation::isLeader(Unit* unit) const {
 
 bool Formation::isMoving(Unit* unit) const {
 	return state == FormationState::MOVING;
+}
+
+int Formation::getCachePath(int startIdx, int aimIndex) const {
+	const auto ptr = pathCache.find(std::make_pair(startIdx, aimIndex));
+	if (ptr == pathCache.end()) {
+		return -1;
+	}
+	return ptr->second;
+}
+
+void Formation::addCachePath(int startIdx, int aimIndex, int next) {
+	pathCache[std::make_pair(startIdx, aimIndex)] = next;
 }
 
 void Formation::update() {

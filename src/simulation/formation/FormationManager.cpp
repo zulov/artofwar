@@ -80,7 +80,7 @@ std::optional<Urho3D::Vector2> FormationManager::getPositionFor(Unit* unit) {
 	return {};
 }
 
-bool FormationManager::isLeader(Unit* unit) const{
+bool FormationManager::isLeader(Unit* unit) const {
 	const short formation = unit->getFormation();
 	return formation >= 0 && formations[formation]->isLeader(unit);
 }
@@ -88,4 +88,20 @@ bool FormationManager::isLeader(Unit* unit) const{
 bool FormationManager::isMoving(Unit* unit) const {
 	const short formation = unit->getFormation();
 	return formation >= 0 && formations[formation]->isMoving(unit);
+}
+
+int FormationManager::getCachePath(Unit* unit, int aimIndex) const {
+	const short formation = unit->getFormation();
+	if (formation > 0) {
+		return formations[formation]->getCachePath(unit->getMainBucketIndex(), aimIndex);
+	}
+	return -1;
+	assert(false);
+}
+
+void FormationManager::addCachePath(Unit* unit, int aimIndex, int next) {
+	const short formation = unit->getFormation();
+	if (formation > 0) {
+		formations[formation]->addCachePath(unit->getMainBucketIndex(), aimIndex, next);
+	}
 }

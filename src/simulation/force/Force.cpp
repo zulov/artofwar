@@ -107,16 +107,26 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 			if (Game::getEnvironment()->isInLocalArea(unit->getMainBucketIndex(), aimIndex)) {
 				force = dirTo(unit->getPosition(), pos);
 			} else {
-				auto* const path = Game::getEnvironment()->findPath(unit->getMainBucketIndex(), aimIndex, 64);
-				//std::cout << unit->getMainCell() << "||" << aimIndex << "||" << path->size() << std::endl;
-				if (!path->empty()) {
-					auto center = Game::getEnvironment()->getCenter(path->at(0));
+				int nextIndex = Game::getFormationManager()->getCachePath(unit, aimIndex);
+				if (nextIndex >= 0) {
+					auto center = Game::getEnvironment()->getCenter(nextIndex);
 					force = dirTo(unit->getPosition(), center);
+				} else if (nextIndex == -1) {
+					auto* const path = Game::getEnvironment()->findPath(unit->getMainBucketIndex(), aimIndex, 64);
+					//std::cout << unit->getMainCell() << "||" << aimIndex << "||" << path->size() << std::endl;
+					if (!path->empty()) {
+						Game::getFormationManager()->addCachePath(unit, aimIndex, path->at(0));
+						auto center = Game::getEnvironment()->getCenter(path->at(0));
+						force = dirTo(unit->getPosition(), center);
+					} else {
+						Game::getFormationManager()->addCachePath(unit, aimIndex, -2);
+						// auto dist = sqDist(unit->getPosition(), pos);
+						// if (dist > 32 * 32) {
+						// 	unit->resetFormation();
+						// }
+						Game::getLog()->Write(0, "brak drogi w formacji");
+					}
 				} else {
-					// auto dist = sqDist(unit->getPosition(), pos);
-					// if (dist > 32 * 32) {
-					// 	unit->resetFormation();
-					// }
 					Game::getLog()->Write(0, "brak drogi w formacji");
 				}
 			}

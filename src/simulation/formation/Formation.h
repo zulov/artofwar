@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 #include <optional>
 #include <vector>
 #include <Urho3D/Math/Vector2.h>
@@ -17,7 +18,7 @@ public:
 	void remove();
 	Urho3D::Vector2 getPositionFor(short id) const;
 	float getPriority(int id) const;
-	
+
 	FormationState getState() const { return state; }
 	std::optional<Unit*> getLeader();
 
@@ -28,6 +29,8 @@ public:
 	void stopAllBesideLeader();
 	bool isLeader(Unit* unit) const;
 	bool isMoving(Unit* unit) const;
+	int getCachePath(int startIdx, int aimIndex) const;
+	void addCachePath(int startIdx, int aimIndex, int next);
 private:
 	bool hasLeader() const;
 	Urho3D::Vector2 computeLocalCenter();
@@ -67,4 +70,6 @@ private:
 	float thresholdMax = 0.5f;
 	float notWellFormed = 1.f;
 	float notWellFormedExact = 1.f;
+
+	std::map<std::pair<int, int>, int> pathCache;
 };

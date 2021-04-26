@@ -15,6 +15,8 @@ public:
 	std::optional<Urho3D::Vector2> getPositionFor(Unit* unit);
 	bool isLeader(Unit* unit) const;
 	bool isMoving(Unit* unit) const;
+	int getCachePath(Unit* unit, int aimIndex) const;
+	void addCachePath(Unit* unit, int aimIndex, int next);
 private:
 	std::vector<Formation*> formations;
 	unsigned currentlyFree = 0;
