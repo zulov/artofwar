@@ -9,6 +9,8 @@
 #include "simulation/env/Environment.h"
 #include "utils/OtherUtils.h"
 
+constexpr float THRESHOLD_MIN = 0.01f;
+constexpr float THRESHOLD_MAX = 0.5f;
 
 Formation::Formation(short _id, const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2 _direction) :
 	id(_id), type(_type), state(FormationState::FORMING), direction(_direction), units(_units) {
@@ -248,7 +250,7 @@ void Formation::update() {
 	switch (state) {
 	case FormationState::FORMING:
 		innerUpdate();
-		if (notWellFormed < thresholdMin) {
+		if (notWellFormed < THRESHOLD_MIN) {
 			changeState(FormationState::MOVING);
 			if (!leader->hasAim()) {
 				if (pendingOrder) {
@@ -267,9 +269,9 @@ void Formation::update() {
 		break;
 	case FormationState::MOVING:
 		innerUpdate();
-		if (notWellFormed > thresholdMax) {
+		if (notWellFormed > THRESHOLD_MAX) {
 			changeState(FormationState::FORMING);
-		} else if (notWellFormedExact < thresholdMin && !leader->hasAim()) {
+		} else if (notWellFormedExact < THRESHOLD_MIN && !leader->hasAim()) {
 			if (pendingOrder) {
 				delete pendingOrder;
 				pendingOrder = nullptr;

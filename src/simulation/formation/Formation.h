@@ -66,10 +66,8 @@ private:
 	std::vector<FormationOrder*> unitOrders;
 	FormationOrder* pendingOrder{};
 
-	float thresholdMin = 0.01f;
-	float thresholdMax = 0.5f;
 	float notWellFormed = 1.f;
 	float notWellFormedExact = 1.f;
 
-	std::unordered_map<unsigned, int> pathCache;
+	std::unordered_map<size_t, int> pathCache;
 };
