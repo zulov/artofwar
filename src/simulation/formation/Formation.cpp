@@ -7,6 +7,7 @@
 #include "objects/unit/order/OrderUtils.h"
 #include "objects/unit/state/StateManager.h"
 #include "simulation/env/Environment.h"
+#include "utils/OtherUtils.h"
 
 
 Formation::Formation(short _id, const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2 _direction) :
@@ -232,7 +233,7 @@ bool Formation::isMoving(Unit* unit) const {
 }
 
 int Formation::getCachePath(int startIdx, int aimIndex) const {
-	const auto ptr = pathCache.find(std::make_pair(startIdx, aimIndex));
+	const auto ptr = pathCache.find(key(startIdx, aimIndex));
 	if (ptr == pathCache.end()) {
 		return -1;
 	}
@@ -240,7 +241,7 @@ int Formation::getCachePath(int startIdx, int aimIndex) const {
 }
 
 void Formation::addCachePath(int startIdx, int aimIndex, int next) {
-	pathCache[std::make_pair(startIdx, aimIndex)] = next;
+	pathCache[key(startIdx, aimIndex)] = next;
 }
 
 void Formation::update() {
@@ -302,15 +303,15 @@ Urho3D::Vector2 Formation::getPositionFor(short id) const {
 	const short columnThis = id % sideA;
 	const short rowThis = id / sideA;
 	const short leaderID = leader->getPositionInFormation();
-
+	if (leaderID == id) {
+		return center;
+	}
 	const short columnLeader = leaderID % sideA;
 	const short rowLeader = leaderID / sideA;
 
 	const short column = columnThis - columnLeader;
 	const short row = rowThis - rowLeader;
-	if (leaderID == id) {
-		return center;
-	}
+
 	auto position = center - Urho3D::Vector2(column * sparsity, row * sparsity);
 	const auto posIndex = Game::getEnvironment()->getIndex(position);
 	if (Game::getEnvironment()->cellIsPassable(posIndex)) {

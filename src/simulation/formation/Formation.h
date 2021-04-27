@@ -1,6 +1,6 @@
 #pragma once
-#include <map>
 #include <optional>
+#include <unordered_map>
 #include <vector>
 #include <Urho3D/Math/Vector2.h>
 #include "FormationState.h"
@@ -71,5 +71,5 @@ private:
 	float notWellFormed = 1.f;
 	float notWellFormedExact = 1.f;
 
-	std::map<std::pair<int, int>, int> pathCache;
+	std::unordered_map<unsigned, int> pathCache;
 };
