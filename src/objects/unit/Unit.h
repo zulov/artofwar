@@ -101,7 +101,7 @@ public:
 	void debug(DebugUnitType type, ForceStats& stats);
 	bool isFirstThingAlive() const;
 
-	std::tuple<Physical*, float, int> closestPhysical(std::vector<Physical*>* things,
+	std::tuple<Physical*, float> closestPhysical(std::vector<Physical*>* things,
 	                                                  const std::function<bool(Physical*)>& condition);
 
 	float getMaxSeparationDistance() const;
@@ -125,7 +125,7 @@ public:
 	void setOccupiedSlot(unsigned char index, bool value) override;
 	bool ifSlotIsOccupied(unsigned char index) const;
 
-	std::optional<std::tuple<Urho3D::Vector2, float, int>> getPosToUseWithIndex(Unit* follower) override;
+	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* follower) override;
 	std::vector<int> getIndexesForUse(Unit* follower) override;
 
 	void action(UnitAction unitAction, const ActionParameter& parameter);

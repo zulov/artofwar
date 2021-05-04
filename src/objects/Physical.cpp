@@ -78,7 +78,7 @@ void Physical::updateHealthBar() const {
 }
 
 std::optional<Urho3D::Vector2> Physical::getPosToUseBy(Unit* follower) {
-	auto a = getPosToUseWithIndex(follower);
+	auto a = getPosToUseWithDist(follower);
 	if (a.has_value()) {
 		return std::get<0>(a.value());
 	}

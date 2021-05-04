@@ -471,25 +471,23 @@ bool Unit::isSlotOccupied(int indexToInteract) {
 	return ifSlotIsOccupied(index);
 }
 
-std::tuple<Physical*, float, int> Unit::closestPhysical(std::vector<Physical*>* things,
+std::tuple<Physical*, float> Unit::closestPhysical(std::vector<Physical*>* things,
                                                         const std::function<bool(Physical*)>& condition) {
 	float minDistance = 99999;
 	Physical* closestPhy = nullptr;
-	int bestIndex = -1;
 	for (auto entity : *things) {
 		if (entity->isAlive() && condition(entity)) {
-			auto opt = entity->getPosToUseWithIndex(this);
+			auto opt = entity->getPosToUseWithDist(this);
 			if (opt.has_value()) {
-				auto [pos, distance, indexOfPos] = opt.value();
+				auto [pos, distance] = opt.value();
 				if (distance <= minDistance) {
 					minDistance = distance;
 					closestPhy = entity;
-					bestIndex = indexOfPos;
 				}
 			}
 		}
 	}
-	return {closestPhy, minDistance, bestIndex};
+	return {closestPhy, minDistance};
 }
 
 bool Unit::isFirstThingAlive() const {
@@ -531,7 +529,7 @@ Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
 	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().z_ + vector.y_};
 }
 
-std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithIndex(Unit* user) {
+std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit* user) {
 	float minDistance = 99999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
@@ -546,14 +544,14 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Unit::getPosToUseWithInde
 				//TODO2 to chyba sprawdza to samo prawie?
 				Urho3D::Vector2 posToFollow = getSocketPos(this, i);
 				if (index == user->getMainBucketIndex()) {
-					return {{posToFollow, 0, index}};
+					return {{posToFollow, 0}};
 				}
 				setClosest(minDistance, closest, closestIndex, index, posToFollow, user->getPosition());
 			}
 		}
 	}
 	if (closestIndex >= 0) {
-		return {{closest, minDistance, closestIndex}};
+		return {{closest, minDistance}};
 	}
 	return {};
 }

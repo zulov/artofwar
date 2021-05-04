@@ -68,7 +68,7 @@ bool Static::canCollect(int index) {
 	return Game::getEnvironment()->cellIsCollectable(index);
 }
 
-std::optional<std::tuple<Urho3D::Vector2, float, int>> Static::getPosToUseWithIndex(Unit* user) {
+std::optional<std::tuple<Urho3D::Vector2, float>> Static::getPosToUseWithDist(Unit* user) {
 	float minDistance = 999999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
@@ -79,7 +79,7 @@ std::optional<std::tuple<Urho3D::Vector2, float, int>> Static::getPosToUseWithIn
 		}
 	}
 	if (closestIndex >= 0) {
-		return {{closest, minDistance, closestIndex}};
+		return {{closest, minDistance}};
 	}
 	return {};
 }
