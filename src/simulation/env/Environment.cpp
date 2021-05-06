@@ -443,7 +443,7 @@ Physical* Environment::closestPhysical(Unit* unit, std::vector<Physical*>* thing
 		}
 	}
 	if (!allIndexes.empty()) {
-		auto path = mainGrid.findPath(unit->getMainBucketIndex(), allIndexes, 100);
+		auto path = mainGrid.findPath(unit->getMainBucketIndex(), allIndexes, 64);
 		if (!path->empty()) {
 			return idxToPhysical[path->back()];
 		}

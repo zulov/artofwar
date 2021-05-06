@@ -114,19 +114,15 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, int endIdx, int limit) 
 	return tempPath;
 }
 
-void PathFinder::validateIndex(const int current, int next) const {
-	if (!calculator->isValidIndex(next)) {
-		std::cout << current << "@@" << next << std::endl;
-		assert(calculator->isValidIndex(next));
-	}
-}
-
 std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 	prepareToStart(startIdx);
-
+	int steps = 0;
 	while (!frontier.empty()) {
 		const auto current = frontier.get();
-
+		++steps;
+		if (limit != -1 && steps > limit) {
+			break;
+		}
 		if (std::ranges::any_of(endIdxs, [current](int i) { return i == current; })) {
 			//debug(startIdx, endIdx);
 			return reconstruct_simplify_path(startIdx, current, came_from);
@@ -164,7 +160,8 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 		return tempPath;
 	}
 
-	if (isInLocalArea(startIdx, endIdx)) {//ToDO perf close nie powinna isc do cache
+	if (isInLocalArea(startIdx, endIdx)) {
+		//ToDO perf close nie powinna isc do cache
 		closePath->clear();
 		closePath->emplace_back(endIdx);
 		return closePath;
@@ -212,6 +209,13 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 
 std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim, int limit) {
 	return findPath(startIdx, calculator->indexFromPosition(aim), limit);
+}
+
+void PathFinder::validateIndex(const int current, int next) const {
+	if (!calculator->isValidIndex(next)) {
+		std::cout << current << "@@" << next << std::endl;
+		assert(calculator->isValidIndex(next));
+	}
 }
 
 int PathFinder::getPassableEnd(int endIdx) const {
