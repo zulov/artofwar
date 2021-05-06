@@ -150,24 +150,28 @@ float Unit::absorbAttack(float attackCoef) {
 	return val;
 }
 
-void Unit::actionIfCloseEnough(UnitAction order, Physical* closest, float sqDistance) {
-	if (sqDistance < dbLevel->sqAttackInterest) {
-		actionIfCloseEnough(order, closest);
+void Unit::actionIfInRange(UnitAction order, Physical* closest) {
+	if (closest) {
+		auto sqDistance = sqDistAs2D(getPosition(), closest->getPosition());
+		if (sqDistance < dbLevel->sqAttackInterest) {
+			actionIfPresent(order, closest);
+		}
 	}
+
 }
 
-void Unit::actionIfCloseEnough(UnitAction order, Physical* closest) {
+void Unit::actionIfPresent(UnitAction order, Physical* closest) {
 	if (closest) {
 		addOrder(new IndividualOrder(this, order, closest, true));
 	}
 }
 
-void Unit::toAction(Physical* closest, UnitAction order, float minDistance) {
-	actionIfCloseEnough(order, closest, minDistance);
+void Unit::toActionIfInRange(Physical* closest, UnitAction order) {
+	actionIfInRange(order, closest);
 }
 
 void Unit::toAction(Physical* closest, UnitAction order) {
-	actionIfCloseEnough(order, closest);
+	actionIfPresent(order, closest);
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {
@@ -469,25 +473,6 @@ void Unit::setTeamBucket(int _bucketIndex, char param) {
 bool Unit::isSlotOccupied(int indexToInteract) {
 	const unsigned char index = Game::getEnvironment()->getRevertCloseIndex(getMainBucketIndex(), indexToInteract);
 	return ifSlotIsOccupied(index);
-}
-
-std::tuple<Physical*, float> Unit::closestPhysical(std::vector<Physical*>* things,
-                                                        const std::function<bool(Physical*)>& condition) {
-	float minDistance = 99999;
-	Physical* closestPhy = nullptr;
-	for (auto entity : *things) {
-		if (entity->isAlive() && condition(entity)) {
-			auto opt = entity->getPosToUseWithDist(this);
-			if (opt.has_value()) {
-				auto [pos, distance] = opt.value();
-				if (distance <= minDistance) {
-					minDistance = distance;
-					closestPhy = entity;
-				}
-			}
-		}
-	}
-	return {closestPhy, minDistance};
 }
 
 bool Unit::isFirstThingAlive() const {

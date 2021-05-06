@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <Urho3D/Math/Vector2.h>
 #include <Urho3D/Math/Vector3.h>
 #include "bucket/Grid.h"
@@ -78,6 +79,8 @@ public:
 	void prepareGridToFind() const;
 	content_info* getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer);
 	float getPositionFromPercent(float value) const;
+	Physical* closestPhysical(Unit* unit, std::vector<Physical*>* things,
+	                          const std::function<bool(Physical*)>& condition) const;
 	Urho3D::Vector3 getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos, float min) const;
 
 	Urho3D::Vector2 getCenter(int index) const;
@@ -115,7 +118,7 @@ public:
 	bool cellIsPassable(int index) const;
 	bool cellIsCollectable(int index) const;
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
-	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold);
+	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
 
 private:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;

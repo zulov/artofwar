@@ -125,8 +125,8 @@ void Simulation::tryToCollect(Unit* unit) const {
 
 void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
                           const std::function<bool(Physical*)>& condition) const {
-	auto [closest, minDistance] = unit->closestPhysical(list, condition);
-	unit->toAction(closest, order, minDistance);
+	const auto closest = enviroment->closestPhysical(unit, list, condition);//TODO perf tutaj podac max odleglosc odciêcia
+	unit->toActionIfInRange(closest, order);
 }
 
 void Simulation::selfAI() const {

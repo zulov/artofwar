@@ -79,7 +79,7 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	auto pred = [sqRadius,unit](Physical* neight) {
 		return (unit != neight && sqDistAs2D(unit->getPosition(), neight->getPosition()) < sqRadius);
 	};
-	std::copy_if(simpleNeght->begin(), simpleNeght->end(), std::back_inserter(*neights), pred);
+	std::ranges::copy_if(*simpleNeght, std::back_inserter(*neights), pred);
 
 	return neights;
 }
@@ -334,7 +334,7 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
                                                            const std::span<float> result) {
 	std::vector<int> indexes = influenceManager.getAreas(result, player);
 	//TODO performance nie obliczać wszystkich centrów tylko te co trzeba
-	float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
+	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (auto centerIndex : indexes) {
 		for (auto index : mainGrid.getCloseCenters(centerIndex, ratio)) {
 			auto gridCenter = mainGrid.getCenter(index);
@@ -375,7 +375,7 @@ std::optional<Urho3D::Vector2> Environment::getCenterOf(CenterType id, char play
 	return influenceManager.getCenterOf(id, player);
 }
 
-bool Environment::anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) {
+bool Environment::anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const {
 	return mainGrid.anyCloseEnough(indexes, center, distThreshold);
 }
 
@@ -426,4 +426,27 @@ content_info* Environment::getContentInfo(Urho3D::Vector2 centerPercent, bool ch
 
 float Environment::getPositionFromPercent(float value) const {
 	return BUCKET_GRID_SIZE * (value - 0.5);
+}
+
+Physical* Environment::closestPhysical(Unit* unit, std::vector<Physical*>* things,
+                                       const std::function<bool(Physical*)>& condition) const {
+	std::vector<int> allIndexes;
+	std::unordered_map<int, Physical*> idxToPhysical;
+	for (auto entity : *things) {
+		if (entity->isAlive() && condition(entity)) {
+
+			auto const idxs = entity->getIndexesForUse(unit);
+			allIndexes.insert(allIndexes.end(), idxs.begin(), idxs.end());
+			for (auto idx : idxs) {
+				idxToPhysical[idx] = entity;
+			}
+		}
+	}
+	if (!allIndexes.empty()) {
+		auto path = mainGrid.findPath(unit->getMainBucketIndex(), allIndexes, 100);
+		if (!path->empty()) {
+			return idxToPhysical[path->back()];
+		}
+	}
+	return nullptr;
 }

@@ -2,7 +2,6 @@
 
 #include <Urho3D/Container/Str.h>
 #include <Urho3D/Math/Vector2.h>
-#include <functional>
 #include <tuple>
 
 #include "ActionParameter.h"
@@ -70,7 +69,7 @@ public:
 
 	void toCharge(std::vector<Physical*>* enemies);
 
-	void toAction(Physical* closest, UnitAction order, float minDistance);
+	void toActionIfInRange(Physical* closest, UnitAction order);
 	void toAction(Physical* closest, UnitAction order);
 
 	void updateHeight(float y, double timeStep);
@@ -100,9 +99,6 @@ public:
 	void drawLineTo(const Urho3D::Vector3& second, const Urho3D::Color& color) const;
 	void debug(DebugUnitType type, ForceStats& stats);
 	bool isFirstThingAlive() const;
-
-	std::tuple<Physical*, float> closestPhysical(std::vector<Physical*>* things,
-	                                                  const std::function<bool(Physical*)>& condition);
 
 	float getMaxSeparationDistance() const;
 	short getPositionInFormation() const { return posInFormation; }
@@ -145,8 +141,8 @@ public:
 
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 private:
-	void actionIfCloseEnough(UnitAction order, Physical* closest, float sqDistance);
-	void actionIfCloseEnough(UnitAction order, Physical* closest);
+	void actionIfInRange(UnitAction order, Physical* closest);
+	void actionIfPresent(UnitAction order, Physical* closest);
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);
 
