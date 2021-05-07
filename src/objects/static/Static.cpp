@@ -11,8 +11,7 @@
 Static::Static(Urho3D::Vector3& _position, int mainCell, bool withNode) : Physical(_position, withNode),
                                                                           mainCell(mainCell),
                                                                           state(StaticState::ALIVE),
-                                                                          nextState(StaticState::ALIVE) {
-}
+                                                                          nextState(StaticState::ALIVE) {}
 
 void Static::load(dbload_static* dbloadStatic) {
 	Physical::load(dbloadStatic);
@@ -51,7 +50,7 @@ int Static::belowCloseLimit() {
 }
 
 bool Static::hasAnyFreeSpace() const {
-	return std::ranges::any_of(surroundCells,[](int index){return canCollect(index);});
+	return std::ranges::any_of(surroundCells, [](int index) { return canCollect(index); });
 }
 
 int Static::hasFreeSpace() const {
@@ -86,9 +85,10 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Static::getPosToUseWithDist(Un
 
 std::vector<int> Static::getIndexesForUse(Unit* user) {
 	std::vector<int> indexes;
-
+	indexes.reserve(12);
 	for (auto index : surroundCells) {
 		if (canCollect(index)) {
+			//TODO bug a co z attakiem?
 			indexes.push_back(index);
 		}
 	}

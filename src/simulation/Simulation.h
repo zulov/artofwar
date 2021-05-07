@@ -64,7 +64,7 @@ private:
 	void selfAI() const;
 	void addTestEntities() const;
 
-	void tryToAttack(Unit* unit, float dist, UnitAction order, const std::function<bool(Physical*)>& condition) const;
+	void tryToAttack(Unit* unit, UnitAction order, const std::function<bool(Physical*)>& condition) const;
 	void toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
 	              const std::function<bool(Physical*)>& condition) const;
 	void tryToCollect(Unit* unit) const;

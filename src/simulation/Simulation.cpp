@@ -114,18 +114,19 @@ SimInfo* Simulation::update(float timeStep) {
 	return simInfo;
 }
 
-void Simulation::tryToAttack(Unit* unit, float dist, UnitAction order,
+void Simulation::tryToAttack(Unit* unit, UnitAction order,
                              const std::function<bool(Physical*)>& condition) const {
-	toAction(unit, enviroment->getNeighboursFromTeamNotEq(unit, dist, unit->getTeam()), order, condition);
+	toAction(unit, enviroment->getNeighboursFromTeamNotEq(unit, unit->getLevel()->attackInterest, unit->getTeam()),
+	         order, condition);
 }
 
 void Simulation::tryToCollect(Unit* unit) const {
-	toAction(unit, enviroment->getResources(unit, 12), UnitAction::COLLECT, belowClose);
+	toAction(unit, enviroment->getResources(unit, unit->getLevel()->attackInterest), UnitAction::COLLECT, belowClose);
 }
 
 void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
                           const std::function<bool(Physical*)>& condition) const {
-	const auto closest = enviroment->closestPhysical(unit, list, condition);//TODO perf tutaj podac max odleglosc odciêcia
+	const auto closest = enviroment->closestPhysical(unit, list, condition, 100);
 	unit->toActionIfInRange(closest, order);
 }
 
@@ -136,13 +137,13 @@ void Simulation::selfAI() const {
 				if (StateManager::canChangeState(unit, unit->getActionState())) {
 					switch (unit->getActionState()) {
 					case UnitState::ATTACK:
-						tryToAttack(unit, 12, UnitAction::ATTACK, belowClose);
+						tryToAttack(unit, UnitAction::ATTACK, belowClose);
 						break;
 					case UnitState::COLLECT:
 						tryToCollect(unit);
 						break;
 					case UnitState::SHOT:
-						tryToAttack(unit, 12, UnitAction::ATTACK, belowRange);
+						tryToAttack(unit, UnitAction::ATTACK, belowRange);
 						break;
 					}
 				}

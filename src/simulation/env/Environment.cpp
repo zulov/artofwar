@@ -429,12 +429,11 @@ float Environment::getPositionFromPercent(float value) const {
 }
 
 Physical* Environment::closestPhysical(Unit* unit, std::vector<Physical*>* things,
-                                       const std::function<bool(Physical*)>& condition) const {
+                                       const std::function<bool(Physical*)>& condition, int limit) const {
 	std::vector<int> allIndexes;
 	std::unordered_map<int, Physical*> idxToPhysical;
 	for (auto entity : *things) {
 		if (entity->isAlive() && condition(entity)) {
-
 			auto const idxs = entity->getIndexesForUse(unit);
 			allIndexes.insert(allIndexes.end(), idxs.begin(), idxs.end());
 			for (auto idx : idxs) {
@@ -443,7 +442,7 @@ Physical* Environment::closestPhysical(Unit* unit, std::vector<Physical*>* thing
 		}
 	}
 	if (!allIndexes.empty()) {
-		auto path = mainGrid.findPath(unit->getMainBucketIndex(), allIndexes, 64);
+		auto path = mainGrid.findPath(unit->getMainBucketIndex(), allIndexes, limit);
 		if (!path->empty()) {
 			return idxToPhysical[path->back()];
 		}

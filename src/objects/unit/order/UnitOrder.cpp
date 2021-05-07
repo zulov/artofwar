@@ -8,12 +8,10 @@
 #include "utils/consts.h"
 
 UnitOrder::UnitOrder(short id, bool append, Urho3D::Vector2& vector):
-	id(id), append(append), toUse(nullptr), vector(new Urho3D::Vector2(vector)) {
-}
+	id(id), append(append), toUse(nullptr), vector(new Urho3D::Vector2(vector)) {}
 
 UnitOrder::UnitOrder(short id, bool append, Physical* toUse):
-	id(id), append(append), toUse(toUse), vector(nullptr) {
-}
+	id(id), append(append), toUse(toUse), vector(nullptr) {}
 
 UnitOrder::~UnitOrder() {
 	delete vector;
@@ -28,7 +26,7 @@ ActionParameter UnitOrder::getTargetAim(int startInx, Urho3D::Vector2& to) {
 }
 
 TargetAim* UnitOrder::getTargetAimPtr(int startInx, const Urho3D::Vector2& to) const {
-	const auto path = Game::getEnvironment()->findPath(startInx, to,-1);
+	const auto path = Game::getEnvironment()->findPath(startInx, to, -1);
 	if (!path->empty()) {
 		return new TargetAim(*path);
 	}
@@ -37,7 +35,7 @@ TargetAim* UnitOrder::getTargetAimPtr(int startInx, const Urho3D::Vector2& to) c
 
 
 TargetAim* UnitOrder::getTargetAimPtr(int startInx, const std::vector<int>& endIdxs) const {
-	const auto path = Game::getEnvironment()->findPath(startInx, endIdxs,-1);
+	const auto path = Game::getEnvironment()->findPath(startInx, endIdxs, -1);
 	if (!path->empty()) {
 		return new TargetAim(*path);
 	}

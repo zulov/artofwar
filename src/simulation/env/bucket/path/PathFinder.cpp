@@ -118,11 +118,11 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>&
 	prepareToStart(startIdx);
 	int steps = 0;
 	while (!frontier.empty()) {
-		const auto current = frontier.get();
 		++steps;
 		if (limit != -1 && steps > limit) {
 			break;
 		}
+		const auto current = frontier.get();
 		if (std::ranges::any_of(endIdxs, [current](int i) { return i == current; })) {
 			//debug(startIdx, endIdx);
 			return reconstruct_simplify_path(startIdx, current, came_from);

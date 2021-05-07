@@ -141,8 +141,6 @@ public:
 
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 private:
-	void actionIfInRange(UnitAction order, Physical* closest);
-	void actionIfPresent(UnitAction order, Physical* closest);
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);
 

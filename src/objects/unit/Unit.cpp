@@ -150,28 +150,16 @@ float Unit::absorbAttack(float attackCoef) {
 	return val;
 }
 
-void Unit::actionIfInRange(UnitAction order, Physical* closest) {
-	if (closest) {
-		auto sqDistance = sqDistAs2D(getPosition(), closest->getPosition());
-		if (sqDistance < dbLevel->sqAttackInterest) {
-			actionIfPresent(order, closest);
-		}
-	}
-
-}
-
-void Unit::actionIfPresent(UnitAction order, Physical* closest) {
-	if (closest) {
-		addOrder(new IndividualOrder(this, order, closest, true));
-	}
-}
-
 void Unit::toActionIfInRange(Physical* closest, UnitAction order) {
-	actionIfInRange(order, closest);
+	if (closest && sqDistAs2D(getPosition(), closest->getPosition()) < dbLevel->sqAttackInterest) {
+		toAction(closest, order);
+	}
 }
 
 void Unit::toAction(Physical* closest, UnitAction order) {
-	actionIfPresent(order, closest);
+	if (closest) {
+		addOrder(new IndividualOrder(this, order, closest, true));
+	}
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {

@@ -21,8 +21,8 @@
 OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
 	  whichResource(BrainProvider::get(std::string(nation->orderPrefix[0].CString()) + "whichResource_w.csv")),
-	  attackThreshold(ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {
-}
+	  attackThreshold(
+		  ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {}
 
 void OrderMaker::action() {
 	auto freeWorkers = findFreeWorkers();
@@ -61,7 +61,7 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() const {
 
 Physical* OrderMaker::closetInRange(Unit* worker, int resourceId, float radius) {
 	auto list = Game::getEnvironment()->getResources(worker->getPosition(), radius, resourceId);
-	return Game::getEnvironment()->closestPhysical(worker, list, belowClose);
+	return Game::getEnvironment()->closestPhysical(worker, list, belowClose, radius * radius);
 }
 
 void OrderMaker::collect(std::vector<Unit*>& workers) {

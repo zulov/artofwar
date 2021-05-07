@@ -74,7 +74,7 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 			for (auto neight : *neights) {
 				if (k < limit) {
 					auto unit = static_cast<Unit*>(neight);
-					if (isFreeWorker(unit)) {
+					if (isFreeWorker(unit)) {//TODO findPath?
 						unit->toAction(this, UnitAction::COLLECT);
 						//TODO add order?
 						++k;
