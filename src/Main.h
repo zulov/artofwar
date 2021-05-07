@@ -102,7 +102,7 @@ private:
 	short coefToEdit = 0;
 
 	//
-	int timeLimit = 600;
-	Urho3D::String outputName = "test.txt";
+	int timeLimit = 3000;
+	Urho3D::String outputName = "test.stxt";
 	std::chrono::system_clock::time_point start;
 };

@@ -402,6 +402,7 @@
     <ClInclude Include="src\database\db_grah_structs.h" />
     <ClInclude Include="src\database\db_other_struct.h" />
     <ClInclude Include="src\math\SpanUtils.h" />
+    <ClInclude Include="src\objects\unit\GroupUtils.h" />
     <ClInclude Include="src\scene\save\SQLConsts.h" />
     <ClInclude Include="src\simulation\FrameInfo.h" />
     <ClInclude Include="src\simulation\SimInfo.h" />

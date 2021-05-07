@@ -527,6 +527,7 @@
     <ClInclude Include="src\camera\CameraInfo.h" />
     <ClInclude Include="src\scene\save\SQLConsts.h" />
     <ClInclude Include="src\math\SpanUtils.h" />
+    <ClInclude Include="src\objects\unit\GroupUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
