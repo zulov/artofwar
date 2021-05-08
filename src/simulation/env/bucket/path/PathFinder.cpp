@@ -150,10 +150,6 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>&
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
-	// if (ifInCache(startIdx, endIdx)) {
-	// 	return tempPath;
-	// }
-
 	endIdx = getPassableEnd(endIdx); //TODO improve kolejnosc tego  i nize jest istotna?
 
 	if (ifInCache(startIdx, endIdx)) {

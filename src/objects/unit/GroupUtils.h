@@ -2,8 +2,9 @@
 #include <vector>
 #include <objects/unit/Unit.h>
 #include <Game.h>
+#include "simulation/env/Environment.h"
 
-bool addToGroup(std::vector<std::vector<int>>& groupedIndexes, int current) const {
+bool addToGroup(std::vector<std::vector<int>>& groupedIndexes, int current) {
 	for (auto& groupedIndex : groupedIndexes) {
 		const auto isNear = std::ranges::any_of(groupedIndex, [current](int index) {
 			return Game::getEnvironment()->isInLocal1and2Area(current, index);
