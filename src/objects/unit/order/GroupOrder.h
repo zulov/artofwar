@@ -19,6 +19,9 @@ public:
 	GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, short id,
 	           Urho3D::Vector2 vector, bool append = false);
 
+	GroupOrder(std::vector<Unit*> entities, UnitActionType actionType, short id,
+	           Physical* toUse, bool append = false);
+
 	~GroupOrder() = default;
 
 	bool add() override;

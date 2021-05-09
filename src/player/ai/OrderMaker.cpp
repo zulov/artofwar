@@ -3,6 +3,7 @@
 #include "ActionCenter.h"
 #include "AiUtils.h"
 #include "Game.h"
+#include "database/DatabaseCache.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/IndividualOrder.h"
@@ -13,6 +14,7 @@
 #include "stats/AiInputProvider.h"
 #include "nn/Brain.h"
 #include "nn/BrainProvider.h"
+#include "objects/unit/GroupUtils.h"
 #include "objects/unit/order/GroupOrder.h"
 #include "objects/unit/order/enums/UnitActionType.h"
 #include "threshold/Threshold.h"
@@ -22,7 +24,8 @@ OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
 	  whichResource(BrainProvider::get(std::string(nation->orderPrefix[0].CString()) + "whichResource_w.csv")),
 	  attackThreshold(
-		  ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {}
+		  ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {
+}
 
 void OrderMaker::action() {
 	auto freeWorkers = findFreeWorkers();
@@ -59,25 +62,63 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() const {
 	return freeWorkers;
 }
 
-Physical* OrderMaker::closetInRange(Unit* worker, int resourceId, float radius) {
-	auto list = Game::getEnvironment()->getResources(worker->getPosition(), radius, resourceId);
-	return Game::getEnvironment()->closestPhysical(worker, list, belowClose, radius * radius);
+Physical* OrderMaker::closetInRange(Unit* worker, int resourceId) {
+	for (auto radius : {64.f, 128.f, 256.f}) {
+		const auto list = Game::getEnvironment()->getResources(worker->getPosition(), radius, resourceId);
+		const auto closest = Game::getEnvironment()->closestPhysical(worker, list, belowClose, radius * radius);
+		if (closest) {
+			return closest;
+		}
+	}
+	return nullptr;
 }
 
-void OrderMaker::collect(std::vector<Unit*>& workers) {
+void OrderMaker::actCollect(unsigned char& resHistogram, std::vector<Unit*>& rest, std::vector<Unit*>& workers) {
+	if (!workers.empty()) {
+		resHistogram[idx] -= workers.size();
+		const auto closest = closetInRange(workers.at(0), idx);
+		if (closest) {
+			if (workers.size() <= 1) {
+				Game::getActionCenter()
+					->addUnitAction(new IndividualOrder(workers.at(0), UnitAction::COLLECT, closest),
+					                player->getId());
+			} else {
+				Game::getActionCenter()
+					->addUnitAction(
+						new GroupOrder(workers, UnitActionType::ORDER, cast(UnitAction::COLLECT), closest),
+						player->getId());
+			}
+		} else {
+			rest.insert(rest.end(), workers.begin(), workers.end());
+		}
+	}
+}
+
+void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 	const auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
 	const auto result = whichResource->decide(input);
 	//TODO perf pogrupowac workerów a nie po jednym
-	for (auto worker : workers) {
+	unsigned char resHistogram[Game::getDatabase()->getResourceSize()];
+	std::fill_n(resHistogram, Game::getDatabase()->getResourceSize(), 0);
+	for (int i = 0; i < freeWorkers.size(); ++i) {
+		//TODO to powinno byc posortowane wed³ugo iloœci? 
 		const auto resourceId = biggestWithRand(result); //TODO perf tutaj tylko losowaca sortowanie wyciagnac wy¿ej
-
-		for (auto radius : {64.f, 128.f, 256.f}) {
-			const auto closest = closetInRange(worker, resourceId, radius); //TODO perf nie sprawdzac tego co wczesniej
-			if (closest) {
-				Game::getActionCenter()
-					->addUnitAction(new IndividualOrder(worker, UnitAction::COLLECT, closest), player->getId());
-				break;
+		++resHistogram[resourceId];
+	}
+	char idx = 0;
+	std::vector<Unit*> rest;
+	for (auto& workersGroup : divide(freeWorkers)) {
+		//TODO close divide
+		std::vector<Unit*> workers;
+		for (int i = 0; i < workersGroup.size(); ++i) {
+			if (workers.size() < resHistogram[idx]) {
+				workers.push_back(workersGroup[i]);
+			} else {
+				actCollect(resHistogram[idx], rest, workers);
+				++idx;
 			}
 		}
+		actCollect(resHistogram[idx], rest, workers);
+		
 	}
 }

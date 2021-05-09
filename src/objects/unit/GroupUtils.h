@@ -4,7 +4,7 @@
 #include <Game.h>
 #include "simulation/env/Environment.h"
 
-bool addToGroup(std::vector<std::vector<int>>& groupedIndexes, int current) {
+inline bool addToGroup(std::vector<std::vector<int>>& groupedIndexes, int current) {
 	for (auto& groupedIndex : groupedIndexes) {
 		const auto isNear = std::ranges::any_of(groupedIndex, [current](int index) {
 			return Game::getEnvironment()->isInLocal1and2Area(current, index);
@@ -17,7 +17,7 @@ bool addToGroup(std::vector<std::vector<int>>& groupedIndexes, int current) {
 	return false;
 }
 
-std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) {
+inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) {
 	std::vector<int> allIndexes;
 	allIndexes.reserve(units.size());
 	for (auto* unit : units) {
