@@ -73,10 +73,11 @@ Physical* OrderMaker::closetInRange(Unit* worker, int resourceId) {
 	return nullptr;
 }
 
-void OrderMaker::actCollect(unsigned char& resHistogram, std::vector<Unit*>& rest, std::vector<Unit*>& workers) {
+void OrderMaker::actCollect(unsigned char& resHistogram, char resId, std::vector<Unit*>& rest,
+                            std::vector<Unit*>& workers) {
 	if (!workers.empty()) {
-		resHistogram[idx] -= workers.size();
-		const auto closest = closetInRange(workers.at(0), idx);
+		resHistogram -= workers.size();
+		const auto closest = closetInRange(workers.at(0), resId);
 		if (closest) {
 			if (workers.size() <= 1) {
 				Game::getActionCenter()
@@ -114,11 +115,11 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 			if (workers.size() < resHistogram[idx]) {
 				workers.push_back(workersGroup[i]);
 			} else {
-				actCollect(resHistogram[idx], rest, workers);
+				actCollect(resHistogram[idx], idx, rest, workers);
 				++idx;
 			}
 		}
-		actCollect(resHistogram[idx], rest, workers);
-		
+		actCollect(resHistogram[idx], idx, rest, workers);
+
 	}
 }

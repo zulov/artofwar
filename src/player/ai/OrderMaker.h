@@ -17,12 +17,12 @@ public:
 	void action();
 private:
 	std::vector<Unit*> findFreeWorkers() const;
-	
-	Physical * closetInRange(Unit* worker, int resourceId);
-	void actCollect(unsigned char& resHistogram, std::vector<Unit*>& rest, std::vector<Unit*>& workers);
+
+	Physical* closetInRange(Unit* worker, int resourceId);
+	void actCollect(unsigned char& resHistogram, char resId, std::vector<Unit*>& rest, std::vector<Unit*>& workers);
 	void collect(std::vector<Unit*>& freeWorkers);
 
 	Player* player;
-	Brain *whichResource;
+	Brain* whichResource;
 	Threshold* attackThreshold;
 };
