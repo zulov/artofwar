@@ -18,6 +18,7 @@ public:
 	bool isInLocalArea(int center, int indexOfAim) const;
 	bool isInLocal2Area(int center, int indexOfAim) const;
 	const std::vector<short>& getPassIndexVia1LevelTo2(int startIdx, int endIdx) const;
+	std::pair<const std::vector<short>&, int> getPassIndexVia1LevelTo2(int startIdx, const std::vector<int>& endIdxs) const;
 
 private:
 	char getIndex(int center) const;

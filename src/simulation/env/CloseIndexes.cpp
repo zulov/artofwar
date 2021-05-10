@@ -121,6 +121,21 @@ const std::vector<short>& CloseIndexes::getPassIndexVia1LevelTo2(int startIdx, i
 	return EMPTY;
 }
 
+std::pair<const std::vector<short>&, int> CloseIndexes::getPassIndexVia1LevelTo2(
+	int startIdx, const std::vector<int>& endIdxs) const {
+	auto& tab = getSecond(startIdx);
+	for (auto endIdx : endIdxs) {
+		const auto diff = endIdx - startIdx; //startIdx + tab[i] == endIdx
+		for (int i = 0; i < tab.size(); ++i) {
+			if (tab[i] == diff) {
+				return {passTo2From1Vals[i], endIdx};
+			}
+		}
+	}
+
+	return {EMPTY, -1};
+}
+
 char CloseIndexes::getIndex(int center) const {
 	char index = 0;
 	if (center < resolution) { } else if (center >= resolution * resolution - resolution) {

@@ -168,7 +168,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 		for (auto pass : closePass) {
 			auto newPass = pass + startIdx;
 			assert(isInLocalArea(startIdx, newPass));
-			if(newPass<0) {
+			if (newPass < 0) {
 				std::cout << "ERROR";
 			}
 			if (complexData[newPass].isPassable()) {
@@ -193,15 +193,31 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 
 	auto newEndIndexes = getPassableIndexes(endIdxs);
 
-	invalidateCache();
-
 	const int localIdx = isInLocalArea(startIdx, newEndIndexes);
 
 	if (localIdx != -1) {
-		tempPath->clear();
-		tempPath->emplace_back(localIdx);
-		return tempPath;
+		closePath->clear();
+		closePath->emplace_back(localIdx);
+		return closePath;
 	}
+	auto [closePass, endIdx] = closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdxs);
+	if (!closePass.empty()) {
+		for (auto pass : closePass) {
+			auto newPass = pass + startIdx;
+			assert(isInLocalArea(startIdx, newPass));
+			if (newPass < 0) {
+				std::cout << "ERROR";
+			}
+			if (complexData[newPass].isPassable()) {
+				closePath->clear();
+				closePath->emplace_back(newPass);
+				closePath->emplace_back(endIdx);
+				return closePath;
+			}
+		}
+	}
+
+	invalidateCache(); //tu nie dzia³a cache?
 
 	return realFindPath(startIdx, newEndIndexes, limit);
 }
