@@ -528,6 +528,7 @@
     <ClInclude Include="src\scene\save\SQLConsts.h" />
     <ClInclude Include="src\math\SpanUtils.h" />
     <ClInclude Include="src\objects\unit\GroupUtils.h" />
+    <ClInclude Include="src\utils\Flags.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

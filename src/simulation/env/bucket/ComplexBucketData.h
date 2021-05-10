@@ -1,5 +1,6 @@
 #pragma once
 #include "objects/CellState.h"
+#include "utils/Flags.h"
 
 //enum class CellState : char;
 
@@ -25,7 +26,7 @@ public:
 
 	void setNeightOccupied(unsigned char index);
 	void setNeightFree(unsigned char index);
-	bool ifNeightIsFree(unsigned char index) const;
+	bool ifNeightIsFree(unsigned char index) const { return !(isNeightOccupied & Flags::bitFlags[index]); };
 
 	float getCost(const unsigned char index) const { return costToNeight[index]; }
 	void setCost(const unsigned char index, float cost) { costToNeight[index] = cost; }

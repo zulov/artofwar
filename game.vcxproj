@@ -454,6 +454,7 @@
     <ClInclude Include="src\stats\AiWeights.h" />
     <ClInclude Include="src\utils\AssertUtils.h" />
     <ClInclude Include="src\utils\FileUtils.h" />
+    <ClInclude Include="src\utils\Flags.h" />
     <ClInclude Include="src\utils\NamesUtils.h" />
     <ClInclude Include="src\objects\unit\order\FormationOrder.h" />
     <ClInclude Include="src\objects\unit\order\GroupOrder.h" />

@@ -16,8 +16,9 @@
 #include "simulation/force/ForceStats.h"
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
-#include "utils/consts.h"
 #include "camera/CameraInfo.h"
+#include "utils/consts.h"
+#include "utils/Flags.h"
 
 
 Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position, true),
@@ -555,12 +556,12 @@ Urho3D::Vector2 Unit::getPosToUse() {
 
 void Unit::setOccupiedSlot(unsigned char index, bool value) {
 	if (value) {
-		useSockets |= Consts::bitFlags[index];
+		useSockets |= Flags::bitFlags[index];
 	} else {
-		useSockets &= ~Consts::bitFlags[index];
+		useSockets &= ~Flags::bitFlags[index];
 	}
 }
 
 bool Unit::ifSlotIsOccupied(const unsigned char index) const {
-	return useSockets & Consts::bitFlags[index];
+	return useSockets & Flags::bitFlags[index];
 }

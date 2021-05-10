@@ -1,7 +1,7 @@
 #include "ComplexBucketData.h"
 #include "objects/static/Static.h"
 #include "objects/CellState.h"
-#include "utils/consts.h"
+#include "utils/Flags.h"
 
 
 ComplexBucketData::ComplexBucketData() {
@@ -35,15 +35,11 @@ Urho3D::Vector2 ComplexBucketData::getDirectionFrom(Urho3D::Vector3& position, U
 }
 
 void ComplexBucketData::setNeightOccupied(const unsigned char index) {
-	isNeightOccupied |= Consts::bitFlags[index];
+	isNeightOccupied |= Flags::bitFlags[index];
 }
 
 void ComplexBucketData::setNeightFree(const unsigned char index) {
-	isNeightOccupied &= ~Consts::bitFlags[index];
-}
-
-bool ComplexBucketData::ifNeightIsFree(const unsigned char index) const {
-	return !(isNeightOccupied & Consts::bitFlags[index]);
+	isNeightOccupied &= ~Flags::bitFlags[index];
 }
 
 bool ComplexBucketData::isBuildable() const {
