@@ -25,22 +25,20 @@ MiniMapPanel::~MiniMapPanel() {
 	delete minimap;
 	delete[] unitsColors;
 	delete[] buildingColors;
-	delete[] resourceColors;
 	text->Release();
 }
 
 void MiniMapPanel::initColors() {
 	auto colorsSize = Game::getDatabase()->getPlayerColors().size();
-	auto resourceSize = Game::getDatabase()->getResourceSize();
+
 	unitsColors = new unsigned[colorsSize];
 	buildingColors = new unsigned[colorsSize];
-	resourceColors = new unsigned[resourceSize];
 
 	std::fill_n(unitsColors, colorsSize, 0xFF505050);
 	std::fill_n(buildingColors, colorsSize, 0xFF505050);
-	std::fill_n(resourceColors, resourceSize, 0xFF808080);
+	std::fill_n(resourceColors, RESOURCES_SIZE, 0xFF808080);
 
-	for (int i = 0; i < resourceSize; ++i) {
+	for (int i = 0; i < RESOURCES_SIZE; ++i) {
 		const auto res = Game::getDatabase()->getResource(i);
 		if (res) {
 			resourceColors[i] = res->mini_map_color;

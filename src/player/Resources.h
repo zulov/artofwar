@@ -4,6 +4,8 @@
 #include <span>
 #include <vector>
 
+#include "utils/defines.h"
+
 struct db_cost;
 
 class Resources {
@@ -32,13 +34,12 @@ public:
 
 	void resetStats() const;
 private:
-	float data[4 * 4];
+	float data[RESOURCES_SIZE * RESOURCES_SIZE];
 
 	std::span<float> values;
 	std::span<float> gatherSpeeds;
 	std::span<float> sumGatherSpeed;
 	std::span<float> sumValues;
 
-	int size;
 	bool changed;
 };

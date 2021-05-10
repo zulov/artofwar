@@ -1,5 +1,6 @@
 #pragma once
 #include "hud/window/EventPanel.h"
+#include "utils/defines.h"
 
 namespace Urho3D {
 	class Texture2D;
@@ -31,6 +32,6 @@ private:
 	int indexPerUpdate;
 	bool checks[MINI_MAP_BUTTON_NUMBER];
 	unsigned *unitsColors,
-	         *buildingColors,
-	         *resourceColors;
+	         *buildingColors;
+	unsigned resourceColors[RESOURCES_SIZE];
 };

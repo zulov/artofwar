@@ -58,8 +58,7 @@ void MainMenuSettingsPanel::createBody() {
 
 	resolution = createElement<Urho3D::DropDownList>(rows[1], style, "MainMenuNewGameDropDownList");
 	std::vector<Urho3D::String> resNames;
-	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
-		db_resolution* res = Game::getDatabase()->getResolution(i);
+	for (auto res : Game::getDatabase()->getResolutions()) {
 		resNames.push_back(Urho3D::String(res->x) + "x" + Urho3D::String(res->y));
 	}
 	addChildTexts(resolution, resNames, style);

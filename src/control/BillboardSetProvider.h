@@ -27,7 +27,7 @@ private:
 	Urho3D::Node* nodeBar;
 	Urho3D::Node* nodeAura;
 
-	std::array<Urho3D::BillboardSet*, 4> resourceAura;
+	Urho3D::BillboardSet* resourceAura[RESOURCES_SIZE];
 	std::array<Urho3D::BillboardSet*, MAX_PLAYERS> perPlayerAura;
 
 	Urho3D::BillboardSet* resourceBar;

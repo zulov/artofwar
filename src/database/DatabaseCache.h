@@ -28,6 +28,7 @@ public:
 	std::vector<db_graph_settings*>& getGraphSettings() const { return dbContainer->graphSettings; }
 	db_settings* getSettings() const { return dbContainer->settings[0]; }
 	db_resolution* getResolution(int id) const { return dbContainer->resolutions[id]; }
+	std::vector<db_resolution*>& getResolutions() const { return dbContainer->resolutions; }
 
 	std::vector<db_map*>& getMaps() const { return dbContainer->maps; }
 
@@ -47,8 +48,6 @@ public:
 	db_player_colors* getPlayerColor(int i) const { return dbContainer->playerColors[i]; }
 
 	std::vector<db_unit_level*>& getLevels() const { return dbContainer->unitsLevels; }
-
-	int getResourceSize() const { return dbContainer->resources.size(); }
 
 	void executeSingleBasic(const std::string& name, const char* sql);
 	void setGraphSettings(int i, db_graph_settings* graphSettings);

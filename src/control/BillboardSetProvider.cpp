@@ -32,7 +32,7 @@ void BillboardSetProvider::init() {
 		perPlayerBar[i] = createSet(nodeBar, material, 10000);
 	}
 	nodeAura->Pitch(90);
-	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
+	for (int i = 0; i < RESOURCES_SIZE; ++i) {
 		auto material = "Materials/select/select_grey_" + Game::getDatabase()->getResource(i)->name + ".xml";
 		auto bs = createSet(nodeAura, material, 1000);
 		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);

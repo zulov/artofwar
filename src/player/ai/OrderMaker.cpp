@@ -99,8 +99,8 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 	const auto input = Game::getAiInputProvider()->getResourceInput(player->getId());
 	const auto result = whichResource->decide(input);
 	//TODO perf pogrupowac workerów a nie po jednym
-	unsigned char resHistogram[Game::getDatabase()->getResourceSize()];
-	std::fill_n(resHistogram, Game::getDatabase()->getResourceSize(), 0);
+	unsigned char resHistogram[RESOURCES_SIZE];
+	std::fill_n(resHistogram, RESOURCES_SIZE, 0);
 	for (int i = 0; i < freeWorkers.size(); ++i) {
 		//TODO to powinno byc posortowane wed³ugo iloœci? 
 		const auto resourceId = biggestWithRand(result); //TODO perf tutaj tylko losowaca sortowanie wyciagnac wy¿ej

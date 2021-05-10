@@ -220,7 +220,7 @@ void InfluenceManager::switchDebug() {
 
 content_info* InfluenceManager::getContentInfo(const Urho3D::Vector2& center, CellState state, int additionalInfo,
                                                bool checks[], int activePlayer) {
-	ci->reset();
+	ci->reset(); //TODO przemyslec to, zbyt skomplikowane
 	switch (state) {
 	case CellState::NONE:
 	case CellState::ATTACK:

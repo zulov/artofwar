@@ -1,17 +1,15 @@
 #pragma once
 #include <algorithm>
-#include "Game.h"
 #include "database/DatabaseCache.h"
 #include "utils/defines.h"
 
 
 struct content_info {
 	content_info() {
-		resourceNumber = new int[Game::getDatabase()->getResourceSize()];
 		reset();
 	}
 
-	~content_info() { delete[]resourceNumber; }
+	~content_info() = default;
 
 	content_info(const content_info&) = delete;
 
@@ -22,7 +20,7 @@ struct content_info {
 		enemyBuilding = 0;
 		std::fill_n(unitsNumberPerPlayer, MAX_PLAYERS, 0);
 		std::fill_n(buildingNumberPerPlayer, MAX_PLAYERS, 0);
-		std::fill_n(resourceNumber, Game::getDatabase()->getResourceSize(), 0);
+		std::fill_n(resourceNumber, RESOURCES_SIZE, 0);
 
 		hasBuilding = false;
 		hasUnit = false;
@@ -41,19 +39,19 @@ struct content_info {
 	}
 
 	unsigned char biggestResource() {
-		return std::max_element(resourceNumber, resourceNumber + Game::getDatabase()->getResourceSize()) -
+		return std::max_element(resourceNumber, resourceNumber + RESOURCES_SIZE) -
 			resourceNumber;
 	}
 
-	int unitsNumberPerPlayer[MAX_PLAYERS];
-	int allyNumber;
-	int enemiesNumber;
+	unsigned short unitsNumberPerPlayer[MAX_PLAYERS];
+	unsigned short allyNumber;
+	unsigned short enemiesNumber;
 
-	int allyBuilding;
-	int enemyBuilding;
-	int buildingNumberPerPlayer[MAX_PLAYERS];
+	unsigned char allyBuilding;
+	unsigned char enemyBuilding;
+	unsigned char buildingNumberPerPlayer[MAX_PLAYERS];
 
-	int* resourceNumber;
+	unsigned char resourceNumber[RESOURCES_SIZE];
 
 	bool hasUnit;
 	bool hasBuilding;

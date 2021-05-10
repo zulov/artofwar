@@ -12,18 +12,15 @@
 #include "player/Resources.h"
 
 
-TopPanel::TopPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "TopWindow",
-                                                                  {GameState::RUNNING, GameState::PAUSE}) {
-	elements = new TopHudElement*[Game::getDatabase()->getResourceSize()];
-}
+TopPanel::TopPanel(Urho3D::XMLFile* style) : SimplePanel(style, "TopWindow",
+                                                         {GameState::RUNNING, GameState::PAUSE}) {}
 
 
 TopPanel::~TopPanel() {
-	clear_array(elements, Game::getDatabase()->getResourceSize());
+	clear_array(elements, RESOURCES_SIZE);
 	delete units;
 	delete workers;
 	delete name;
-	delete[] elements;
 	delete infoPanel;
 }
 
@@ -35,7 +32,7 @@ void TopPanel::createBody() {
 	units = new TopHudElement(window, style, textureHuman, "TopButtonsNarrow");
 	workers = new TopHudElement(window, style, textureWorker, "TopButtonsNarrow");
 
-	for (int i = 0; i < Game::getDatabase()->getResourceSize(); ++i) {
+	for (int i = 0; i < RESOURCES_SIZE; ++i) {
 		const auto resource = Game::getDatabase()->getResource(i);
 		const auto texture = Game::getCache()->GetResource<Urho3D::Texture2D>(
 			"textures/hud/icon/resource/" + resource->icon);

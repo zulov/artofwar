@@ -16,11 +16,10 @@ Resources::Resources(float valueForAll) {
 }
 
 void Resources::init(float valueForAll) {
-	size = Game::getDatabase()->getResourceSize();
-	values = std::span(data, size);
-	gatherSpeeds = std::span(data + size, size);
-	sumGatherSpeed = std::span(data + 2 * size, size);
-	sumValues = std::span(data + 3 * size, size);
+	values = std::span(data, RESOURCES_SIZE);
+	gatherSpeeds = std::span(data + RESOURCES_SIZE, RESOURCES_SIZE);
+	sumGatherSpeed = std::span(data + 2 * RESOURCES_SIZE, RESOURCES_SIZE);
+	sumValues = std::span(data + 3 * RESOURCES_SIZE, RESOURCES_SIZE);
 
 	resetSpan(values, valueForAll);
 	resetSpan(gatherSpeeds);
@@ -68,7 +67,7 @@ int Resources::getSum() const {
 
 std::string Resources::getValues(int precision, int player) const {
 	std::string str;
-	for (int i = 0; i < size; ++i) {
+	for (int i = 0; i < RESOURCES_SIZE; ++i) {
 		str += "(" + std::to_string(player) + "," + std::to_string(i) + "," + std::to_string(
 			(int)(values[i] * precision)) + "),";
 	}
