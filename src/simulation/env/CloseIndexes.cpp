@@ -2,6 +2,8 @@
 
 #include "CloseIndexes.h"
 
+#include <cassert>
+
 const std::vector<unsigned char> CloseIndexes::tabIndexes[CLOSE_SIZE] = {
 	{4, 6, 7},
 	{3, 4, 5, 6, 7},
@@ -110,24 +112,28 @@ bool CloseIndexes::isInLocal2Area(int center, int indexOfAim) const {
 }
 
 const std::vector<short>& CloseIndexes::getPassIndexVia1LevelTo2(int startIdx, int endIdx) const {
-	auto& tab = getSecond(startIdx);
+	auto& tab = getTabSecondIndexes(endIdx);
+
 	const auto diff = endIdx - startIdx; //startIdx + tab[i] == endIdx
-	for (int i = 0; i < tab.size(); ++i) {
-		if (tab[i] == diff) {
+	for (auto i : tab) {
+		auto val = getSecondIndexAt(i);
+		if (val == diff) {
 			return passTo2From1Vals[i];
 		}
 	}
-
+	assert(!isInLocal2Area(startIdx, endIdx));
 	return EMPTY;
 }
 
 std::pair<const std::vector<short>&, int> CloseIndexes::getPassIndexVia1LevelTo2(
 	int startIdx, const std::vector<int>& endIdxs) const {
-	auto& tab = getSecond(startIdx);
 	for (auto endIdx : endIdxs) {
+		auto& tab = getTabSecondIndexes(endIdx);
+
 		const auto diff = endIdx - startIdx; //startIdx + tab[i] == endIdx
-		for (int i = 0; i < tab.size(); ++i) {
-			if (tab[i] == diff) {
+		for (auto i : tab) {
+			auto val = getSecondIndexAt(i);
+			if (val == diff) {
 				return {passTo2From1Vals[i], endIdx};
 			}
 		}
@@ -152,7 +158,7 @@ char CloseIndexes::getIndex(int center) const {
 	return index;
 }
 
-const std::vector<short>& CloseIndexes::getSecond(int center) const {
+char CloseIndexes::getSecondIndex(int center) const {
 	const bool firstRow = center < resolution;
 	const bool secondRow = !firstRow && center < 2 * resolution;
 
@@ -165,7 +171,7 @@ const std::vector<short>& CloseIndexes::getSecond(int center) const {
 	const bool lastColumn = center % resolution == resolution - 1;
 	const bool almostLastColumn = center % resolution == resolution - 2;
 	char index = 0;
-	if (firstRow) { } else if (secondRow) {
+	if (firstRow) {} else if (secondRow) {
 		index += 5;
 	} else if (almostLastRow) {
 		index += 15;
@@ -175,14 +181,12 @@ const std::vector<short>& CloseIndexes::getSecond(int center) const {
 		index += 10;
 	}
 
-	if (firstColumn) { } else if (secondColumn) {
+	if (firstColumn) {} else if (secondColumn) {
 		index += 1;
 	} else if (almostLastColumn) {
 		index += 3;
 	} else if (lastColumn) {
 		index += 4;
 	} else { index += 2; }
-
-
-	return closeSecondVals[index];
+	return index;
 }

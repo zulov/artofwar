@@ -167,7 +167,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 	if (!closePass.empty()) {
 		for (auto pass : closePass) {
 			auto newPass = pass + startIdx;
-			assert(isInLocalArea(startIdx, newPass));
+			assert(calculator->isValidIndex(newPass) && isInLocalArea(startIdx, newPass));
 			if (newPass < 0) {
 				std::cout << "ERROR";
 			}
