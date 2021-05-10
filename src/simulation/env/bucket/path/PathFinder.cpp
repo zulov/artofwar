@@ -168,6 +168,9 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 		for (auto pass : closePass) {
 			auto newPass = pass + startIdx;
 			assert(isInLocalArea(startIdx, newPass));
+			if(newPass<0) {
+				std::cout << "ERROR";
+			}
 			if (complexData[newPass].isPassable()) {
 				closePath->clear();
 				closePath->emplace_back(newPass);

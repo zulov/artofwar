@@ -24,8 +24,7 @@ OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
 	  whichResource(BrainProvider::get(std::string(nation->orderPrefix[0].CString()) + "whichResource_w.csv")),
 	  attackThreshold(
-		  ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {
-}
+		  ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {}
 
 void OrderMaker::action() {
 	auto freeWorkers = findFreeWorkers();
@@ -92,6 +91,7 @@ void OrderMaker::actCollect(unsigned char& resHistogram, char resId, std::vector
 		} else {
 			rest.insert(rest.end(), workers.begin(), workers.end());
 		}
+		workers.clear();
 	}
 }
 
@@ -116,7 +116,11 @@ void OrderMaker::collect(std::vector<Unit*>& freeWorkers) {
 				workers.push_back(workersGroup[i]);
 			} else {
 				actCollect(resHistogram[idx], idx, rest, workers);
+				--i;
 				++idx;
+			}
+			if (idx >= RESOURCES_SIZE) {
+				break;
 			}
 		}
 		actCollect(resHistogram[idx], idx, rest, workers);
