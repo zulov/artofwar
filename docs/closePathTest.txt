@@ -1,0 +1,31 @@
+
+for(auto t: { 0, 1, 512, 513 }) {
+	auto a = pathConstructor->findPath(0, t, 100);
+	assert(a->size() == 1);
+	assert(a->at(0) == t);
+}
+
+for(auto t: { 4863,4864,4865,5375,5376,5377,5887,5888,5889}) {
+	auto a = pathConstructor->findPath(5376, t, 100);
+	assert(a->size() == 1);
+	assert(a->at(0) == t);
+}
+
+
+for(auto t: { 261631,261632,262143,262144}) {
+	auto a = pathConstructor->findPath(262144, t, 100);
+	assert(a->size() == 1);
+	assert(a->at(0) == t);
+}
+
+for(auto t: { 4350,4351,4352,4353,4354,4862,5374,5886,6398,4866,5378,5890,6402,6399,6400,6401 }) {
+	auto a = pathConstructor->findPath(5376, t, 100);
+	assert(a->size() == 2);
+	assert(a->at(1) == t);
+}
+for(auto t: { 261118,261119,261120,261630,262142 }) {
+	auto a = pathConstructor->findPath(262144, t, 100);
+	assert(a->size() == 2);
+	assert(a->at(1) == t);
+}
+	
