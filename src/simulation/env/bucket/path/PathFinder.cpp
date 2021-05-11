@@ -225,9 +225,9 @@ std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim,
 bool PathFinder::validateIndex(const int current, int next) const {
 	if (!calculator->isValidIndex(next)) {
 		std::cout << current << "@@" << next << std::endl;
-		return true;
+		return false;
 	}
-	return false;
+	return true;
 }
 
 int PathFinder::getPassableEnd(int endIdx) const {
