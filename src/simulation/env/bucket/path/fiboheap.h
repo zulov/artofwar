@@ -16,7 +16,8 @@ public:
 	public:
 		FibNode(const float k, const int pl, int id):
 			left(nullptr), right(nullptr), child(nullptr),
-			key(k), payload(pl), id(id), degree(0) { }
+			key(k), payload(pl), id(id), degree(0) {
+		}
 
 		~FibNode() = default;
 
@@ -43,7 +44,7 @@ public:
 	};
 
 	FibHeap() {
-		temp.resize(15, nullptr);
+		temp.resize(50, nullptr);
 		pool.resize(400, nullptr);
 		for (auto i = 0; i < 400; ++i) {
 			pool[i] = new FibNode(-1, -1, i);
@@ -140,9 +141,6 @@ public:
 
 	void consolidate() {
 		assert(n<CACHE_SIZE);
-		if (n >= CACHE_SIZE) {
-			std::cout << "DUPA" << std::endl;
-		}
 
 		auto w = minNode;
 		unsigned short rootSize = 0;

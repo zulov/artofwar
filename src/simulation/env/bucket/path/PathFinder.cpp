@@ -95,7 +95,7 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, int endIdx, int limit) 
 		for (auto i : closeIndexes->getTabIndexes(current)) {
 			if (currentData.ifNeightIsFree(i)) {
 				int next = current + closeIndexes->getIndexAt(i);
-				validateIndex(current, next);
+				assert(validateIndex(current, next));
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + currentData.getCost(i);
 					auto const nextCost = cost_so_far[next];
@@ -132,7 +132,7 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>&
 		for (auto i : closeTabIndx) {
 			if (currentData.ifNeightIsFree(i)) {
 				int next = current + closeIndexes->getIndexAt(i);
-				validateIndex(current, next);
+				assert(validateIndex(current, next));
 				if (came_from[current] != next) {
 					const float new_cost = cost_so_far[current] + currentData.getCost(i);
 					if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
@@ -149,6 +149,23 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>&
 	return tempPath;
 }
 
+std::vector<int>* PathFinder::getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const {
+	if (!closePass.empty()) {
+		for (auto pass : closePass) {
+			auto newPass = pass + startIdx;
+			assert(calculator->isValidIndex(newPass) && isInLocalArea(startIdx, newPass));
+
+			if (complexData[newPass].isPassable()) {
+				closePath->clear();
+				closePath->emplace_back(newPass);
+				closePath->emplace_back(endIdx);
+				return closePath;
+			}
+		}
+	}
+	return nullptr;
+}
+
 std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 	endIdx = getPassableEnd(endIdx); //TODO improve kolejnosc tego  i nize jest istotna?
 
@@ -163,22 +180,8 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 		return closePath;
 	}
 
-	auto& closePass = closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdx);
-	if (!closePass.empty()) {
-		for (auto pass : closePass) {
-			auto newPass = pass + startIdx;
-			assert(calculator->isValidIndex(newPass) && isInLocalArea(startIdx, newPass));
-			if (newPass < 0) {
-				std::cout << "ERROR";
-			}
-			if (complexData[newPass].isPassable()) {
-				closePath->clear();
-				closePath->emplace_back(newPass);
-				closePath->emplace_back(endIdx);
-				return closePath;
-			}
-		}
-	}
+	const auto closePath = getClosePath2(startIdx, endIdx, closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdx));
+	if (closePath) { return closePath; }
 
 	lastStartIdx = startIdx;
 	lastEndIdx = endIdx;
@@ -201,34 +204,30 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 		return closePath;
 	}
 	auto [closePass, endIdx] = closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdxs);
-	if (!closePass.empty()) {
-		for (auto pass : closePass) {
-			auto newPass = pass + startIdx;
-			assert(isInLocalArea(startIdx, newPass));
+	//TODO zwrócic kilka vectorów??
+	const auto closePath = getClosePath2(startIdx, endIdx, closePass);
+	if (closePath) { return closePath; }
 
-			if (complexData[newPass].isPassable()) {
-				closePath->clear();
-				closePath->emplace_back(newPass);
-				closePath->emplace_back(endIdx);
-				return closePath;
-			}
-		}
+	auto path = realFindPath(startIdx, newEndIndexes, limit);
+	if (path->empty()) {
+		invalidateCache();
+	} else {
+		lastStartIdx = startIdx;
+		lastEndIdx = path->back();
 	}
-
-	invalidateCache(); //tu nie dzia³a cache?
-
-	return realFindPath(startIdx, newEndIndexes, limit);
+	return path;
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, const Urho3D::Vector2& aim, int limit) {
 	return findPath(startIdx, calculator->indexFromPosition(aim), limit);
 }
 
-void PathFinder::validateIndex(const int current, int next) const {
+bool PathFinder::validateIndex(const int current, int next) const {
 	if (!calculator->isValidIndex(next)) {
 		std::cout << current << "@@" << next << std::endl;
-		assert(calculator->isValidIndex(next));
+		return true;
 	}
+	return false;
 }
 
 int PathFinder::getPassableEnd(int endIdx) const {

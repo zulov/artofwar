@@ -35,9 +35,10 @@ public:
 private:
 	std::vector<int>* realFindPath(int startIdx, int endIdx, int limit);
 	std::vector<int>* realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit);
+	std::vector<int>* getClosePath2(int startIdx, int endIdx, const std::vector<short>& closePass) const;
 
 	void prepareToStart(int startIdx);
-	void validateIndex(int current, int next) const;
+	bool validateIndex(int current, int next) const;
 	
 	int getPassableEnd(int endIdx) const;
 	std::vector<int> getPassableIndexes(const std::vector<int>& endIdxs) const;

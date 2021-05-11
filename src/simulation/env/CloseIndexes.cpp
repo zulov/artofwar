@@ -143,6 +143,7 @@ std::pair<const std::vector<short>&, int> CloseIndexes::getPassIndexVia1LevelTo2
 }
 
 char CloseIndexes::getIndex(int center) const {
+	//auto t= false * 5;//TODO moze branchless
 	char index = 0;
 	if (center < resolution) { } else if (center >= resolution * resolution - resolution) {
 		index += 6;
