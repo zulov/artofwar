@@ -208,7 +208,7 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 		closePath->emplace_back(localIdx);
 		return closePath;
 	}
-	auto [closePass, endIdx] = closeIndexes->getPassIndexVia1LevelTo2(startIdx, endIdxs);
+	auto [closePass, endIdx] = closeIndexes->getPassIndexVia1LevelTo2(startIdx, newEndIndexes);
 	//TODO zwrócic kilka vectorów??
 	const auto closePath = getClosePath2(startIdx, endIdx, closePass);
 	if (closePath) { return closePath; }
