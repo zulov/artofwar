@@ -116,17 +116,28 @@ SimInfo* Simulation::update(float timeStep) {
 
 void Simulation::tryToAttack(Unit* unit, UnitAction order,
                              const std::function<bool(Physical*)>& condition) const {
-	toAction(unit, enviroment->getNeighboursFromTeamNotEq(unit, unit->getLevel()->attackInterest, unit->getTeam()),
+	toAction(unit, enviroment->getNeighboursFromTeamNotEq(unit, unit->getLevel()->interestRange, unit->getTeam()),
 	         order, condition);
 }
 
 void Simulation::tryToCollect(Unit* unit) const {
-	toAction(unit, enviroment->getResources(unit, unit->getLevel()->attackInterest), UnitAction::COLLECT, belowClose);
+	auto id = unit->getLastActionThingId();
+	std::vector<Physical*>* list = nullptr;
+
+	if (id >= 0) {
+		list = enviroment->getResources(unit->getPosition(), id, unit->getLevel()->interestRange, -1);
+	}
+	if (id < 0 || list->empty()) {
+		list = enviroment->getResources(unit->getPosition(), -1, unit->getLevel()->interestRange, -1);
+	}
+
+	toAction(unit, list, UnitAction::COLLECT, belowClose);
 }
 
 void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
                           const std::function<bool(Physical*)>& condition) const {
-	const auto closest = enviroment->closestPhysical(unit, list, condition, 100);
+	const auto closest = enviroment->closestPhysical(unit, list, condition,
+	                                                 unit->getLevel()->interestRange * unit->getLevel()->interestRange);
 	unit->toActionIfInRange(closest, order);
 }
 

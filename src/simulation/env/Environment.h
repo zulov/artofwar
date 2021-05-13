@@ -33,7 +33,7 @@ public:
 	std::vector<Physical*>* getNeighboursWithCache(Unit* unit, float radius);
 	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
-	std::vector<Physical*>* getResources(Physical* physical, float radius);
+	//std::vector<Physical*>* getResources(Physical* physical, float radius);
 	std::vector<Physical*>* getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius);
 
 	void updateInfluenceUnits1(std::vector<Unit*>* units) const;

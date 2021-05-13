@@ -10,7 +10,6 @@
 
 class CollectState : public State {
 public:
-
 	CollectState(): State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
 		UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
@@ -35,6 +34,7 @@ public:
 		unit->indexToInteract = parameter.index;
 
 		unit->thingsToInteract[0]->upClose();
+		unit->lastActionThingId = parameter.thingToInteract->getId();
 
 		Game::getEnvironment()->updateCell(unit->getMainBucketIndex(), 1, CellState::COLLECT);
 	}

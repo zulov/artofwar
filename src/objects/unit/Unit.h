@@ -110,7 +110,7 @@ public:
 	bool isToDispose() const override { return state == UnitState::DISPOSE; }
 	bool hasAim() const { return aims.hasAim(); }
 	db_unit_level* getLevel() const { return dbLevel; }
-
+	short getLastActionThingId() const { return lastActionThingId; }
 	float getAttackRange() const;
 	bool teamBucketHasChanged(int _bucketIndex, char param) const;
 	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
@@ -169,5 +169,6 @@ private:
 	UnitState nextState;
 	bool stateChangePending = false;
 	unsigned char useSockets = 0;
+	short lastActionThingId = -1;//TODO reset po jakimœ czasie
 	ActionParameter nextActionParameter;
 };

@@ -152,7 +152,7 @@ float Unit::absorbAttack(float attackCoef) {
 }
 
 void Unit::toActionIfInRange(Physical* closest, UnitAction order) {
-	if (closest && sqDistAs2D(getPosition(), closest->getPosition()) < dbLevel->sqAttackInterest) {
+	if (closest && sqDistAs2D(getPosition(), closest->getPosition()) < dbLevel->sqInterestRange) {
 		toAction(closest, order);
 	}
 }

@@ -37,8 +37,8 @@ struct db_attack {
 	const short sqCloseAttackRange;
 	const short sqRangeAttackRange;
 
-	const float attackInterest;
-	const float sqAttackInterest;
+	const float interestRange;
+	const float sqInterestRange;
 
 	const bool canCloseAttack;
 	const bool canRangeAttack;
@@ -64,8 +64,8 @@ struct db_attack {
 		  rangeAttackSpeed(rangeAttackSpeed),
 		  rangeAttackRange(rangeAttackRange), sqRangeAttackRange(rangeAttackRange * rangeAttackRange),
 		  closeAttackRange(1.f), sqCloseAttackRange(1.f),
-		  attackInterest(rangeAttackRange * 10.f),
-		  sqAttackInterest(attackInterest * attackInterest),
+		  interestRange(rangeAttackRange * 10.f),
+		  sqInterestRange(interestRange * interestRange),
 		  canCloseAttack(initFlag(closeAttackVal)),
 		  canRangeAttack(initFlag(rangeAttackVal)),
 		  canChargeAttack(initFlag(chargeAttackVal)),
