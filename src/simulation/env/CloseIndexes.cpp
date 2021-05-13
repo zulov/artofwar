@@ -71,7 +71,8 @@ const std::vector<unsigned char> CloseIndexes::passTo2From1Indexes[FROM_1_TO_2_S
 const std::vector<short> CloseIndexes::EMPTY = {};
 
 CloseIndexes::CloseIndexes(short res)
-	: resolution(res), templateVec{-res - 1, -res, -res + 1, -1, 1, res - 1, res, res + 1},
+	: resolution(res), sqResolutionMinusRes(res * res - res),
+	  templateVec{-res - 1, -res, -res + 1, -1, 1, res - 1, res, res + 1},
 	  templateVecSecond{
 		  -2 * res - 2, -2 * res - 1, -2 * res, -2 * res + 1, -2 * res + 2,
 		  -res - 2, -res + 2,
@@ -143,7 +144,6 @@ std::pair<const std::vector<short>&, int> CloseIndexes::getPassIndexVia1LevelTo2
 }
 
 char CloseIndexes::getIndex(int center) const {
-	//auto t= false * 5;//TODO moze branchless
 	char index = 0;
 	if (center < resolution) { } else if (center >= resolution * resolution - resolution) {
 		index += 6;
@@ -151,12 +151,21 @@ char CloseIndexes::getIndex(int center) const {
 		index += 3;
 	}
 	const auto mod = center % resolution;
+
 	if (mod == 0) { } else if (mod == resolution - 1) {
 		index += 2;
 	} else {
 		index += 1;
 	}
 	return index;
+	// const auto mod = center % resolution;
+	//
+	// auto a = center < resolution;
+	// auto b = center >= sqResolutionMinusRes;
+	// auto a1 = mod == 0;
+	// auto b1 = mod == resolution - 1;
+	// return  !a * (b * 6 + !b * 3) +
+	// 	!a1 * (b1 * 2 + !b1 * 1);
 }
 
 char CloseIndexes::getSecondIndex(int center) const {

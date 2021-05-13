@@ -116,6 +116,7 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, int endIdx, int limit) 
 
 std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
 	prepareToStart(startIdx);
+	auto endCords = getCords(endIdxs);
 	int steps = 0;
 	while (!frontier.empty()) {
 		++steps;
@@ -125,6 +126,7 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>&
 		const auto current = frontier.get();
 		if (std::ranges::any_of(endIdxs, [current](int i) { return i == current; })) {
 			//debug(startIdx, endIdx);
+			//std::cout << steps << "|" << limit << " ";
 			return reconstruct_simplify_path(startIdx, current, came_from);
 		}
 		auto& closeTabIndx = closeIndexes->getTabIndexes(current);
@@ -137,7 +139,7 @@ std::vector<int>* PathFinder::realFindPath(int startIdx, const std::vector<int>&
 					const float new_cost = cost_so_far[current] + currentData.getCost(i);
 					if (cost_so_far[next] < 0.f || new_cost < cost_so_far[next]) {
 						updateCost(next, new_cost);
-						frontier.put(next, new_cost + heuristic(next, endIdxs));
+						frontier.put(next, new_cost + heuristic(next, endCords));
 						came_from[next] = current;
 					}
 				}
@@ -174,7 +176,6 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 	}
 
 	if (isInLocalArea(startIdx, endIdx)) {
-		//ToDO perf close nie powinna isc do cache
 		closePath->clear();
 		closePath->emplace_back(endIdx);
 		return closePath;
@@ -190,6 +191,10 @@ std::vector<int>* PathFinder::findPath(int startIdx, int endIdx, int limit) {
 }
 
 std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& endIdxs, int limit) {
+	if (endIdxs.empty()) {
+		closePath->clear();
+		return closePath;
+	}
 	if (ifInCache(startIdx, endIdxs)) {
 		return tempPath;
 	}
@@ -320,19 +325,21 @@ void PathFinder::refreshWayOut(std::vector<int>& toRefresh) {
 	}
 }
 
-inline float PathFinder::heuristic(int from, const Urho3D::IntVector2& to) const {
-	const auto a = getCords(from);
-
-	return (abs(a.x_ - to.x_) + abs(a.y_ - to.y_)) * fieldSize;
+inline float PathFinder::heuristic(const Urho3D::IntVector2& from, const Urho3D::IntVector2& to) const {
+	return (abs(from.x_ - to.x_) + abs(from.y_ - to.y_)) * fieldSize;
 }
 
-float PathFinder::heuristic(int from, const std::vector<int>& endIdxs) const {
+inline float PathFinder::heuristic(int from, const Urho3D::IntVector2& to) const {
+	return heuristic(getCords(from), to);
+}
+
+float PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) const {
 	//closest from endIdxs
 	assert(!endIdxs.empty());
 	const auto a = getCords(from);
-	float min = 1000.f;
-	for (auto idx : endIdxs) {
-		const float val = heuristic(idx, a);
+	float min = 1024.f;
+	for (auto &endCords : endIdxs) {
+		const float val = heuristic(a, endCords);
 		if (val < min) {
 			min = val;
 		}
@@ -404,6 +411,15 @@ void PathFinder::updateCost(int idx, float x) {
 	if (idx > max_cost_to_ref) {
 		max_cost_to_ref = idx;
 	}
+}
+
+std::vector<Urho3D::IntVector2> PathFinder::getCords(const std::vector<int>& endIdxs) const {
+	std::vector<Urho3D::IntVector2> cords;
+	cords.reserve(endIdxs.size());
+	for (auto idx : endIdxs) {
+		cords.emplace_back(getCords(idx));
+	}
+	return cords;
 }
 
 void PathFinder::resetPathArrays() {

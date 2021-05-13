@@ -85,9 +85,10 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Static::getPosToUseWithDist(Un
 
 std::vector<int> Static::getIndexesForUse(Unit* user) {
 	std::vector<int> indexes;
-	indexes.reserve(12);
+	indexes.reserve(surroundCells.size());
 	for (auto index : surroundCells) {
 		if (canCollect(index)) {
+			//if (belowCloseLimit() == 0) { std::cout << "#"; }
 			//TODO bug a co z attakiem?
 			indexes.push_back(index);
 		}

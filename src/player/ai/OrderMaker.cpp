@@ -62,12 +62,14 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() const {
 }
 
 Physical* OrderMaker::closetInRange(Unit* worker, int resourceId) {
+	float prevRadius = -1.f;
 	for (auto radius : {64.f, 128.f, 256.f}) {
-		const auto list = Game::getEnvironment()->getResources(worker->getPosition(), radius, resourceId);
+		const auto list = Game::getEnvironment()->getResources(worker->getPosition(), resourceId, radius, prevRadius);
 		const auto closest = Game::getEnvironment()->closestPhysical(worker, list, belowClose, radius * radius);
 		if (closest) {
 			return closest;
 		}
+		prevRadius = radius;
 	}
 	return nullptr;
 }

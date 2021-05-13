@@ -34,7 +34,7 @@ public:
 	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
 	std::vector<Physical*>* getResources(Physical* physical, float radius);
-	std::vector<Physical*>* getResources(Urho3D::Vector3& center, float radius, int id);
+	std::vector<Physical*>* getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius);
 
 	void updateInfluenceUnits1(std::vector<Unit*>* units) const;
 	void updateInfluenceUnits2(std::vector<Unit*>* units) const;
@@ -122,7 +122,8 @@ public:
 
 private:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
-	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius, int id) const;
+	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
+	                                      float prevRadius) const;
 	void addIfInRange(Physical* physical, const Urho3D::Vector3& center, float sqRadius, Physical* neight) const;
 	MainGrid mainGrid;
 	Grid resourceGrid, buildingGrid;

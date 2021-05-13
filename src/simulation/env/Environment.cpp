@@ -84,16 +84,20 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, float radius,
-                                                   int id) const {
+std::vector<Physical*>* Environment::getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
+                                                   float prevRadius) const {
 	neights->clear();
 
 	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(center, radius);
 	const float sqRadius = radius * radius;
+	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
 
 	while (Physical* neight = bucketIterator.next()) {
-		if (id == neight->getId() && sqDistAs2D(center, neight->getPosition()) < sqRadius) {
-			neights->push_back(neight);
+		if (id == neight->getId()) {
+			auto dist = sqDistAs2D(center, neight->getPosition());
+			if (dist <= sqRadius && dist > sqPrevRadius) {
+				neights->push_back(neight);
+			}
 		}
 	}
 
@@ -112,8 +116,8 @@ std::vector<Physical*>* Environment::getResources(Physical* physical, float radi
 	return getNeighbours(physical, resourceGrid, radius);
 }
 
-std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, float radius, int id) {
-	return getNeighbours(center, resourceGrid, radius, id);
+std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius) {
+	return getNeighbours(center, resourceGrid, id, radius, prevRadius);
 }
 
 void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) const {

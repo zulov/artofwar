@@ -28,6 +28,7 @@ private:
 	char getSecondIndex(int center) const;
 
 	short resolution;
+	int sqResolutionMinusRes;
 	std::vector<short> templateVec;
 	std::vector<short> templateVecSecond;
 

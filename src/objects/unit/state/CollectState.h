@@ -44,7 +44,7 @@ public:
 			unit->thingsToInteract[0]->reduceClose();
 		}
 		Game::getEnvironment()->updateCell(unit->indexToInteract, -1, CellState::NONE);
-		assert(unit->getMainBucketIndex() == unit->indexToInteract);
+		//assert(unit->getMainBucketIndex() == unit->indexToInteract);
 		unit->indexToInteract = -1;
 	}
 
