@@ -54,7 +54,7 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE),
 	start = std::chrono::system_clock::now();
 	auto a = std::chrono::system_clock::now().time_since_epoch();
 	auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(a).count();
-	std::cout << "Start " << millis<< " ms" << std::endl;
+	//std::cout << "Start " << millis<< " ms" << std::endl;
 	MySprite::RegisterObject(context);
 	Game::init();
 	RandGen::init();
@@ -119,9 +119,7 @@ void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>
 	std::ofstream outFile(("result/" + outputName).CString(), std::ios_base::out);
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 		outFile << std::to_string(player->getId());
-		for (auto& func : funcs) {
-			outFile << ";" << func(player);
-		}
+		for (auto& func : funcs) { outFile << ";" << func(player); }
 		outFile << "\n";
 	}
 	outFile.close();
@@ -130,17 +128,17 @@ void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>
 void Main::writeOutput() const {
 	if (!outputName.Empty()) {
 		writeOutput({
-			[](Player* p) -> float { return p->getScore(); },
-			[](Player* p) -> float { return sumSpan(p->getResources().getValues()); },
-			[](Player* p) -> float {
+			[](Player* p) -> float{ return p->getScore(); },
+			[](Player* p) -> float{ return sumSpan(p->getResources().getValues()); },
+			[](Player* p) -> float{
 				return minSpan(p->getResources().getSumValues()) + maxSpanRoot(p->getResources().getSumValues());
 			},
-			[](Player* p) -> float { return sumSpan(p->getPossession().getUnitsMetrics()); },
-			[](Player* p) -> float {
+			[](Player* p) -> float{ return sumSpan(p->getPossession().getUnitsMetrics()); },
+			[](Player* p) -> float{
 				return p->getPossession().getBuildingsVal(BuildingMetric::DEFENCE)
 					+ p->getPossession().getUnitsVal(UnitMetric::DEFENCE);
 			},
-			[](Player* p) -> float {
+			[](Player* p) -> float{
 				auto& poss = p->getPossession();
 				return poss.getBuildingsVal(BuildingMetric::DISTANCE_ATTACK)
 					+ poss.getUnitsVal(UnitMetric::DISTANCE_ATTACK)
@@ -162,13 +160,12 @@ void Main::Stop() {
 	Game::setDatabaseCache(nullptr);
 	Game::dispose();
 	RandGen::dispose();
-	if (!SIM_GLOBALS.HEADLESS) {
-		engine_->DumpResources(true);
-	}
+	if (!SIM_GLOBALS.HEADLESS) { engine_->DumpResources(true); }
 	auto a = std::chrono::system_clock::now().time_since_epoch();
 	auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(a).count();
-	std::cout << "End " << millis<< " ms" << std::endl;
-	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start);
+	//std::cout << "End " << millis<< " ms" << std::endl;
+	const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+		std::chrono::system_clock::now() - start);
 	std::cout << "ENDED at " << duration.count() << " ms" << std::endl;
 }
 
@@ -197,8 +194,6 @@ void Main::subscribeToEvents() {
 
 void Main::running(const double timeStep) {
 	Game::addTime(timeStep);
-
-
 	SimInfo* simInfo = simulation->update(timeStep);
 	if (!engineParameters_[EP_HEADLESS].GetBool()) {
 		benchmark.add(1.0f / timeStep);
@@ -223,7 +218,8 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	case GameState::RUNNING:
 		running(eventData[SceneUpdate::P_TIMESTEP].GetDouble());
 		break;
-	case GameState::PAUSE: break;
+	case GameState::PAUSE:
+		break;
 	case GameState::CLOSING:
 		disposeScene();
 		changeState(GameState::MENU_MAIN);
@@ -231,7 +227,8 @@ void Main::HandleUpdate(StringHash eventType, VariantMap& eventData) {
 	case GameState::NEW_GAME:
 		newGame(newGameForm, newGameProgress);
 		break;
-	case GameState::STARTING: break;
+	case GameState::STARTING:
+		break;
 	default: ;
 	}
 }
@@ -352,9 +349,7 @@ void Main::load(const String& saveName, Loading& progress) {
 	updateProgress(progress, Game::getLocalization()->Get("load_msg_" + String((int)progress.currentStage)).CString());
 }
 
-void Main::createEnv() const {
-	Game::setEnvironment(new Environment(levelBuilder->getTerrain()));
-}
+void Main::createEnv() const { Game::setEnvironment(new Environment(levelBuilder->getTerrain())); }
 
 void Main::newGame(NewGameForm* form, Loading& progress) {
 	switch (progress.currentStage) {
@@ -681,4 +676,5 @@ void Main::miniReadParameters() const {
 			}
 		}
 	}
+
 }

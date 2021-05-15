@@ -78,8 +78,8 @@ void CameraManager::translate(const Urho3D::IntVector2& cursorPos, Urho3D::Input
 	const Urho3D::Vector3 pos = activeBehave->getPosition();
 	const float min = Game::getEnvironment()->getGroundHeightAt(pos.x_, pos.z_);
 
-	hasMoved = hasMoved || activeBehave->translate(cameraKeys, wheel, timeStep * MOVE_SPEED, min);
-	hasMoved = hasMoved || activeBehave->rotate(input->GetMouseMove(), MOUSE_SENSITIVITY);
+	hasMoved = activeBehave->translate(cameraKeys, wheel, timeStep * MOVE_SPEED, min) || hasMoved;
+	hasMoved = activeBehave->rotate(input->GetMouseMove(), MOUSE_SENSITIVITY) || hasMoved;
 	if (hasMoved) {
 		camInfo->info = activeBehave->getInfo();
 	}

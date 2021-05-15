@@ -1,6 +1,6 @@
 #pragma once
 #include "utils/defines.h"
-constexpr bool FORCE_BENCHMARK_MODE = true;
+constexpr bool FORCE_BENCHMARK_MODE = false;
 constexpr bool FORCE_TRAIN_MODE = false;
 constexpr bool FORCE_HEADLESS = false;
 

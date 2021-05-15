@@ -4,29 +4,29 @@ set start=%time%
 
 cd ..
 
-START 9>"%lock%0" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile0.txt 2>&1
-START 9>"%lock%1" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile1.txt 2>&1
-#START 9>"%lock%2" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile2.txt 2>&1
-#START 9>"%lock%3" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile3.txt 2>&1
-#START 9>"%lock%4" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile4.txt 2>&1
+START 9>"%lock%0" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile0.txt 2>&1
+START 9>"%lock%1" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile1.txt 2>&1
+#START 9>"%lock%2" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile2.txt 2>&1
+#START 9>"%lock%3" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile3.txt 2>&1
+#START 9>"%lock%4" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile4.txt 2>&1
 ::					 
-::START 9>"%lock%5" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile5.txt 2>&1
-::START 9>"%lock%6" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile6.txt 2>&1
-::START 9>"%lock%7" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile7.txt 2>&1
-::START 9>"%lock%8" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile8.txt 2>&1
-::START 9>"%lock%9" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile9.txt 2>&1
+::START 9>"%lock%5" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile5.txt 2>&1
+::START 9>"%lock%6" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile6.txt 2>&1
+::START 9>"%lock%7" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile7.txt 2>&1
+::START 9>"%lock%8" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile8.txt 2>&1
+::START 9>"%lock%9" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile9.txt 2>&1
 ::
-::START 9>"%lock%10" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile10.txt 2>&1
-::START 9>"%lock%11" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile11.txt 2>&1
-::START 9>"%lock%12" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile12.txt 2>&1
-::START 9>"%lock%13" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile13.txt 2>&1
-::START 9>"%lock%14" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile14.txt 2>&1
+::START 9>"%lock%10" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile10.txt 2>&1
+::START 9>"%lock%11" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile11.txt 2>&1
+::START 9>"%lock%12" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile12.txt 2>&1
+::START 9>"%lock%13" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile13.txt 2>&1
+::START 9>"%lock%14" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile14.txt 2>&1
 ::						
-::START 9>"%lock%15" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile15.txt 2>&1
-::START 9>"%lock%16" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile16.txt 2>&1
-::START 9>"%lock%17" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile17.txt 2>&1
-::START 9>"%lock%18" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile18.txt 2>&1
-::START 9>"%lock%19" /B art_of_war.exe -headless -outputtype score -benchmarkmode -trainmode -nothreads	> logs/logfile19.txt 2>&1
+::START 9>"%lock%15" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile15.txt 2>&1
+::START 9>"%lock%16" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile16.txt 2>&1
+::START 9>"%lock%17" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile17.txt 2>&1
+::START 9>"%lock%18" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile18.txt 2>&1
+::START 9>"%lock%19" /B art_of_war.exe -headless -benchmarkmode -trainmode -nothreads	> logs/logfile19.txt 2>&1
 
 
 :Wait for all processes to finish (wait until lock files are no longer locked)
