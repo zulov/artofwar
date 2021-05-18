@@ -14,7 +14,12 @@ struct ActionParameter {
 	void reset(const ActionParameter& actionParameter);
 	void resetUsed();
 
-	Aim* aim = nullptr;//TODO union!!!!
-	Physical* thingToInteract = nullptr;
+	//Aim* aim = nullptr;//TODO union!!!!
+	//Physical* thingToInteract = nullptr;
+
+	union {
+		Aim* aim = nullptr;
+		Physical* thingToInteract;
+	};
 	int index = -1;
 };
