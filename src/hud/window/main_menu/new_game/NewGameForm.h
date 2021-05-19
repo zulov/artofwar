@@ -7,4 +7,5 @@ struct NewGameForm {
 	int map;
 	int difficulty;
 	int gameSpeed;
+	unsigned size = 256;
 };

@@ -10,17 +10,17 @@
 #include "objects/resource/ResourceEntity.h"
 #include "objects/unit/Unit.h"
 #include "simulation/env/ContentInfo.h"
-#include "simulation/env/EnvConsts.h"
 #include "simulation/env/GridCalculatorProvider.h"
 #include "utils/AssertUtils.h"
 
 constexpr char MAX_DEBUG_PARTS_INFLUENCE = 32;
 constexpr char INF_LEVEL = 4;
+constexpr short INF_GRID_FIELD_SIZE = 8.f;
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
-		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(mapSize/INF_GRID_FIELD_SIZE, mapSize, 40));
+		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(mapSize / INF_GRID_FIELD_SIZE, mapSize, 40));
 		buildingsInfluencePerPlayer.emplace_back(
 			new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 2));
 		unitsInfluencePerPlayer.emplace_back(
@@ -32,21 +32,21 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 		attackSpeed.emplace_back(
 			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
 		unitsQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
-		buildingsQuad.emplace_back(new InfluenceMapQuad(1, 7, mapSize));
-		econQuad.emplace_back(new InfluenceMapQuad(1, 7, mapSize));
+		buildingsQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
+		econQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 	}
 
 	resourceInfluence = new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40);
 
 	for (char player = 0; player < numberOfPlayers; ++player) {
-		mapsForAiPerPlayer.emplace_back(std::array{
+		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 5>{
 			buildingsInfluencePerPlayer[player],
 			unitsInfluencePerPlayer[player],
 			resourceInfluence,
 			attackSpeed[player],
 			gatherSpeed[player]
 		}); //TODO more?
-		mapsForCentersPerPlayer.emplace_back(std::array{
+		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMapQuad*, 3>{
 			econQuad[player],
 			buildingsQuad[player],
 			unitsQuad[player]
@@ -60,8 +60,8 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 
 	assert(unitsNumberPerPlayer[0]->getResolution() == unitsInfluencePerPlayer[0]->getResolution()
 		&& calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
-
-	intersection = new float[];
+	arraySize = calculator->getResolution() * calculator->getResolution();
+	intersection = new float[arraySize];
 }
 
 InfluenceManager::~InfluenceManager() {

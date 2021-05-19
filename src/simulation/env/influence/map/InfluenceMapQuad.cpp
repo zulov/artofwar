@@ -10,18 +10,19 @@
 #include "simulation/env/GridCalculatorProvider.h"
 
 //TODO check if center are calculate well and correct in eny frame
-InfluenceMapQuad::InfluenceMapQuad(unsigned short resolution, float mapSize)
-	: calculator(GridCalculatorProvider::get(resolution, mapSize)) {
+InfluenceMapQuad::InfluenceMapQuad(unsigned short topResolution, float mapSize)
+	: calculator(GridCalculatorProvider::get(topResolution, mapSize)) {
 	dataSize = 0;
-	for (int i = from; i <= to; ++i) {
-		const int res = pow(2, i);
-		dataSize += res * res;
+	auto currentRes = topResolution;
+	while (currentRes % 2 == 0 && currentRes != 1) {
+		dataSize += currentRes * currentRes;
+		currentRes /= 2;
 	}
+	currentRes *= 2;
 	data = new float[dataSize];
 	float* ptr = data;
-	for (int i = from; i <= to; ++i) {
-		const int res = pow(2, i);
-		const auto arraySize = res * res;
+	for (int i = currentRes; i <= topResolution; i *= 2) {
+		const auto arraySize = i * i;
 		maps.emplace_back(ptr, arraySize);
 		ptr += arraySize;
 	}

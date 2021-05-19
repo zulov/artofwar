@@ -125,6 +125,7 @@ private:
 	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
 	                                      float prevRadius) const;
 	void addIfInRange(Physical* physical, const Urho3D::Vector3& center, float sqRadius, Physical* neight) const;
+	float mapSize;
 	MainGrid mainGrid;
 	Grid resourceGrid, buildingGrid;
 	Grid teamUnitGrid[MAX_PLAYERS];
@@ -133,4 +134,5 @@ private:
 	Urho3D::Terrain* terrain;
 
 	std::vector<Physical*> *neights, *neights2; //TODO tu bedzie trzeba tablica jesli beda watki
+
 };

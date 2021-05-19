@@ -68,7 +68,7 @@ private:
 	void miniReadParameters() const;
 	void changeCamera(CameraBehaviorType type);
 	void load(const Urho3D::String& saveName, Loading& progress);
-	void createEnv() const;
+	void createEnv(unsigned short mainMapResolution) const;
 	void save(const Urho3D::String& name);
 	void running(double timeStep);
 	void createSimulation();

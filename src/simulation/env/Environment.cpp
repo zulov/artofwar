@@ -10,16 +10,13 @@
 
 
 Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution):
-	mainGrid(mainMapResolution, mainMapResolution * BUCKET_GRID_FIELD_SIZE, 24),
-	resourceGrid(mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_RESOURCE,
-	             mainMapResolution * BUCKET_GRID_FIELD_SIZE, 256),
-	buildingGrid(mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_BUILD,
-	             mainMapResolution * BUCKET_GRID_FIELD_SIZE, 256),
+	mapSize(mainMapResolution * BUCKET_GRID_FIELD_SIZE),
+	mainGrid(mainMapResolution, mapSize, 24),
+	resourceGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize, 256),
+	buildingGrid(mapSize / BUCKET_GRID_FIELD_SIZE_BUILD, mapSize, 256),
 	teamUnitGrid{
-		{mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_ENEMY,
-			mainMapResolution * BUCKET_GRID_FIELD_SIZE, 256},
-		{mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_ENEMY,
-			mainMapResolution * BUCKET_GRID_FIELD_SIZE, 256}
+		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256},
+		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256}
 	}, influenceManager(MAX_PLAYERS, mainMapResolution), terrain(terrain) {
 	neights = new std::vector<Physical*>();
 	neights2 = new std::vector<Physical*>();
@@ -236,16 +233,16 @@ Urho3D::Vector3 Environment::getPosWithHeightAt(int index) const {
 
 float Environment::getGroundHeightPercent(float y, float x, float div) const {
 	const float scale = terrain->GetSpacing().y_;
-	const auto a = Urho3D::Vector3(x * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5f, 0.f,
-	                               y * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5f);
+	const auto a = Urho3D::Vector3(x * mapSize - mapSize * 0.5f, 0.f,
+	                               y * mapSize - mapSize * 0.5f);
 
 	return terrain->GetHeight(a) / scale / div;
 }
 
 Urho3D::Vector3 Environment::getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos,
                                                   float min) const {
-	auto a = Urho3D::Vector3(percentX * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5f, pos.y_,
-	                         percentY * BUCKET_GRID_SIZE - BUCKET_GRID_SIZE * 0.5f);
+	auto a = Urho3D::Vector3(percentX * mapSize - mapSize * 0.5f, pos.y_,
+	                         percentY * mapSize - mapSize * 0.5f);
 	const float h = terrain->GetHeight(a);
 	if (h + min > pos.y_) {
 		a.y_ = h + min;
@@ -441,7 +438,7 @@ content_info* Environment::getContentInfo(Urho3D::Vector2 centerPercent, bool ch
 }
 
 float Environment::getPositionFromPercent(float value) const {
-	return BUCKET_GRID_SIZE * (value - 0.5);
+	return mapSize * (value - 0.5);
 }
 
 Physical* Environment::closestPhysical(Unit* unit, std::vector<Physical*>* things,

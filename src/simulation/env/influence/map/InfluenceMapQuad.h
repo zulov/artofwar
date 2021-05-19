@@ -10,7 +10,7 @@ class Physical;
 
 class InfluenceMapQuad {
 public:
-	InfluenceMapQuad(unsigned short resolution, float mapSize);
+	InfluenceMapQuad(unsigned short topResolution, float mapSize);
 	virtual ~InfluenceMapQuad();
 
 	std::optional<Urho3D::Vector2> getCenter();

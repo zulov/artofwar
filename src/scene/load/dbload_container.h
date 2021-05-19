@@ -8,6 +8,7 @@ struct dbload_config {
 	dbload_config() = default;
 	int precision;
 	int map;
+	int size;
 };
 
 struct dbload_physical {

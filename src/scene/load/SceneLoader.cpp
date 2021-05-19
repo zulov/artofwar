@@ -27,6 +27,7 @@ int static load_config(void* data, int argc, char** argv, char** azColName) {
 	const auto xyz = static_cast<dbload_container*>(data);
 	xyz->config->precision = atoi(argv[0]);
 	xyz->config->map = atoi(argv[1]);
+	xyz->config->size = atoi(argv[2]);
 	xyz->precision = atoi(argv[0]);
 	return 0;
 }
@@ -105,6 +106,10 @@ void SceneLoader::createLoad(const Urho3D::String& fileName) {
 	}
 	loadingState.inc("load config");
 	load(SQLConsts::SELECT + "config", load_config);
+}
+
+dbload_config* SceneLoader::getConfig() const {
+	return dbLoad->config;
 }
 
 std::vector<dbload_player*>* SceneLoader::loadPlayers() {

@@ -3,6 +3,8 @@
 #include "Loading.h"
 #include "vector"
 
+struct dbload_config;
+
 namespace Urho3D {
 	class String;
 }
@@ -25,6 +27,7 @@ public:
 	void reset();
 	dbload_container* getData() const;
 	void createLoad(const Urho3D::String& fileName);
+	dbload_config* getConfig() const;
 	std::vector<dbload_player*>* loadPlayers();
 	std::vector<dbload_resource*>* loadResources();
 

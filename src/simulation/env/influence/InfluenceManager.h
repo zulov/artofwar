@@ -25,12 +25,10 @@ enum class CellState : char;
 class Unit;
 struct content_info;
 
-constexpr short INF_GRID_FIELD_SIZE = 8.f;
-
 class InfluenceManager {
 public:
 
-	explicit InfluenceManager(char numberOfPlayers);
+	explicit InfluenceManager(char numberOfPlayers, float mapSize);
 	~InfluenceManager();
 	void update(std::vector<Unit*>* units) const;
 	void update(std::vector<Building*>* buildings) const;
@@ -95,6 +93,6 @@ private:
 	std::array<float, 5> dataFromPos;
 	short currentDebugBatch = 0;
 	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
-
+	unsigned int arraySize;
 	float* intersection;// [arraySize] ;
 };

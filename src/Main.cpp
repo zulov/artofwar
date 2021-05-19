@@ -34,6 +34,7 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "scene/LevelBuilder.h"
+#include "scene/load/dbload_container.h"
 #include "simulation/FrameInfo.h"
 #include "simulation/SimGlobals.h"
 #include "simulation/SimInfo.h"
@@ -128,17 +129,17 @@ void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>
 void Main::writeOutput() const {
 	if (!outputName.Empty()) {
 		writeOutput({
-			[](Player* p) -> float{ return p->getScore(); },
-			[](Player* p) -> float{ return sumSpan(p->getResources().getValues()); },
-			[](Player* p) -> float{
+			[](Player* p) -> float { return p->getScore(); },
+			[](Player* p) -> float { return sumSpan(p->getResources().getValues()); },
+			[](Player* p) -> float {
 				return minSpan(p->getResources().getSumValues()) + maxSpanRoot(p->getResources().getSumValues());
 			},
-			[](Player* p) -> float{ return sumSpan(p->getPossession().getUnitsMetrics()); },
-			[](Player* p) -> float{
+			[](Player* p) -> float { return sumSpan(p->getPossession().getUnitsMetrics()); },
+			[](Player* p) -> float {
 				return p->getPossession().getBuildingsVal(BuildingMetric::DEFENCE)
 					+ p->getPossession().getUnitsVal(UnitMetric::DEFENCE);
 			},
-			[](Player* p) -> float{
+			[](Player* p) -> float {
 				auto& poss = p->getPossession();
 				return poss.getBuildingsVal(BuildingMetric::DISTANCE_ATTACK)
 					+ poss.getUnitsVal(UnitMetric::DISTANCE_ATTACK)
@@ -322,7 +323,7 @@ void Main::load(const String& saveName, Loading& progress) {
 	}
 	break;
 	case 1: {
-		createEnv();
+		createEnv(loader.getConfig()->size);
 		if (SIM_GLOBALS.CAMERA_START != Urho3D::Vector2::ZERO) {
 			Game::getCameraManager()->changePosition(SIM_GLOBALS.CAMERA_START.x_, SIM_GLOBALS.CAMERA_START.y_);
 		}
@@ -349,7 +350,9 @@ void Main::load(const String& saveName, Loading& progress) {
 	updateProgress(progress, Game::getLocalization()->Get("load_msg_" + String((int)progress.currentStage)).CString());
 }
 
-void Main::createEnv() const { Game::setEnvironment(new Environment(levelBuilder->getTerrain())); }
+void Main::createEnv(unsigned short mainMapResolution) const {
+	Game::setEnvironment(new Environment(levelBuilder->getTerrain(), mainMapResolution));
+}
 
 void Main::newGame(NewGameForm* form, Loading& progress) {
 	switch (progress.currentStage) {
@@ -371,7 +374,7 @@ void Main::newGame(NewGameForm* form, Loading& progress) {
 	}
 	break;
 	case 1: {
-		createEnv();
+		createEnv(form->size);
 		break;
 	}
 	case 2: {
