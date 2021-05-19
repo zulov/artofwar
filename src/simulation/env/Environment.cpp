@@ -11,16 +11,26 @@
 
 Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution):
 	mainGrid(mainMapResolution, mainMapResolution * BUCKET_GRID_FIELD_SIZE, 24),
-	resourceGrid(mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_RESOURCE, mainMapResolution * BUCKET_GRID_FIELD_SIZE,
-	             256),
-	buildingGrid(mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_BUILD, mainMapResolution * BUCKET_GRID_FIELD_SIZE,
-	             256),
+	resourceGrid(mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_RESOURCE,
+	             mainMapResolution * BUCKET_GRID_FIELD_SIZE, 256),
+	buildingGrid(mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_BUILD,
+	             mainMapResolution * BUCKET_GRID_FIELD_SIZE, 256),
 	teamUnitGrid{
-		{mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_ENEMY, mainMapResolution * BUCKET_GRID_FIELD_SIZE, 256},
-		{mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_ENEMY, mainMapResolution * BUCKET_GRID_FIELD_SIZE, 256}
+		{mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_ENEMY,
+			mainMapResolution * BUCKET_GRID_FIELD_SIZE, 256},
+		{mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_ENEMY,
+			mainMapResolution * BUCKET_GRID_FIELD_SIZE, 256}
 	}, influenceManager(MAX_PLAYERS, mainMapResolution), terrain(terrain) {
 	neights = new std::vector<Physical*>();
 	neights2 = new std::vector<Physical*>();
+
+	bool any = false;
+	for (auto val : {160, 192, 256, 320, 384, 512}) {
+		if (val == mainMapResolution) {
+			any = true;
+		}
+	}
+	assert(any);
 }
 
 
