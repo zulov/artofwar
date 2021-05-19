@@ -1,8 +1,7 @@
 #pragma once
 
-constexpr unsigned short BUCKET_GRID_RESOLUTION = 512;
-constexpr unsigned short BUCKET_GRID_SIZE = 1024;
+constexpr float BUCKET_GRID_FIELD_SIZE = 2.f;
 
-constexpr unsigned short BUCKET_GRID_RESOLUTION_BUILD = 128;
-constexpr unsigned short BUCKET_GRID_RESOLUTION_ENEMY = 64;
-constexpr unsigned short BUCKET_GRID_RESOLUTION_RESOURCE = 128;
+constexpr short BUCKET_GRID_FIELD_SIZE_BUILD = 8.f;
+constexpr short BUCKET_GRID_FIELD_SIZE_ENEMY = 16.f;
+constexpr short BUCKET_GRID_FIELD_SIZE_RESOURCE = 8.f;

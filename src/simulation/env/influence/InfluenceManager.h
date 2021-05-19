@@ -25,8 +25,7 @@ enum class CellState : char;
 class Unit;
 struct content_info;
 
-constexpr short INF_GRID_SIZE = 128;
-constexpr int arraySize = INF_GRID_SIZE * INF_GRID_SIZE;
+constexpr short INF_GRID_FIELD_SIZE = 8.f;
 
 class InfluenceManager {
 public:
@@ -97,5 +96,5 @@ private:
 	short currentDebugBatch = 0;
 	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 
-	float intersection[arraySize];
+	float* intersection;// [arraySize] ;
 };

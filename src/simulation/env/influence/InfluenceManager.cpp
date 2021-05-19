@@ -18,35 +18,35 @@ constexpr char MAX_DEBUG_PARTS_INFLUENCE = 32;
 constexpr char INF_LEVEL = 4;
 
 
-InfluenceManager::InfluenceManager(char numberOfPlayers) {
+InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 	for (int i = 0; i < numberOfPlayers; ++i) {
-		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(INF_GRID_SIZE, BUCKET_GRID_SIZE, 40));
+		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(mapSize/INF_GRID_FIELD_SIZE, mapSize, 40));
 		buildingsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 2));
+			new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 2));
 		unitsInfluencePerPlayer.emplace_back(
-			new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40));
+			new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40));
 
 		gatherSpeed.emplace_back(
-			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
 
 		attackSpeed.emplace_back(
-			new InfluenceMapHistory(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
-		unitsQuad.emplace_back(new InfluenceMapQuad(1, 7, BUCKET_GRID_SIZE));
-		buildingsQuad.emplace_back(new InfluenceMapQuad(1, 7, BUCKET_GRID_SIZE));
-		econQuad.emplace_back(new InfluenceMapQuad(1, 7, BUCKET_GRID_SIZE));
+			new InfluenceMapHistory(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 0.0001f, 0.5f, 40));
+		unitsQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
+		buildingsQuad.emplace_back(new InfluenceMapQuad(1, 7, mapSize));
+		econQuad.emplace_back(new InfluenceMapQuad(1, 7, mapSize));
 	}
 
-	resourceInfluence = new InfluenceMapFloat(INF_GRID_SIZE, BUCKET_GRID_SIZE, 0.5f, INF_LEVEL, 40);
+	resourceInfluence = new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40);
 
 	for (char player = 0; player < numberOfPlayers; ++player) {
-		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 5>{
+		mapsForAiPerPlayer.emplace_back(std::array{
 			buildingsInfluencePerPlayer[player],
 			unitsInfluencePerPlayer[player],
 			resourceInfluence,
 			attackSpeed[player],
 			gatherSpeed[player]
 		}); //TODO more?
-		mapsForCentersPerPlayer.emplace_back(std::array<InfluenceMapQuad*, 3>{
+		mapsForCentersPerPlayer.emplace_back(std::array{
 			econQuad[player],
 			buildingsQuad[player],
 			unitsQuad[player]
@@ -54,12 +54,14 @@ InfluenceManager::InfluenceManager(char numberOfPlayers) {
 		assert(validSizes(mapsForAiPerPlayer.at(player)));
 	}
 
-	calculator = GridCalculatorProvider::get(INF_GRID_SIZE, BUCKET_GRID_SIZE);
+	calculator = GridCalculatorProvider::get(mapSize / INF_GRID_FIELD_SIZE, mapSize);
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
 
 	assert(unitsNumberPerPlayer[0]->getResolution() == unitsInfluencePerPlayer[0]->getResolution()
 		&& calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
+
+	intersection = new float[];
 }
 
 InfluenceManager::~InfluenceManager() {
@@ -75,6 +77,8 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(buildingsQuad);
 	clear_vector(econQuad);
 	delete ci;
+
+	delete[]intersection;
 }
 
 void InfluenceManager::update(std::vector<Unit*>* units) const {

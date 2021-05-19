@@ -24,7 +24,7 @@ enum class OperatorType : char;
 
 class Environment {
 public:
-	explicit Environment(Urho3D::Terrain* terrian);
+	explicit Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution);
 	~Environment();
 
 	std::vector<Physical*>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);

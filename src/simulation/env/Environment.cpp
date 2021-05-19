@@ -9,14 +9,16 @@
 #include "utils/consts.h"
 
 
-Environment::Environment(Urho3D::Terrain* terrian):
-	mainGrid(BUCKET_GRID_RESOLUTION, BUCKET_GRID_SIZE, 24),
-	resourceGrid(BUCKET_GRID_RESOLUTION_RESOURCE, BUCKET_GRID_SIZE, 256),
-	buildingGrid(BUCKET_GRID_RESOLUTION_BUILD, BUCKET_GRID_SIZE, 256),
+Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution):
+	mainGrid(mainMapResolution, mainMapResolution * BUCKET_GRID_FIELD_SIZE, 24),
+	resourceGrid(mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_RESOURCE, mainMapResolution * BUCKET_GRID_FIELD_SIZE,
+	             256),
+	buildingGrid(mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_BUILD, mainMapResolution * BUCKET_GRID_FIELD_SIZE,
+	             256),
 	teamUnitGrid{
-		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE, 256},
-		{BUCKET_GRID_RESOLUTION_ENEMY, BUCKET_GRID_SIZE, 256}
-	}, influenceManager(MAX_PLAYERS), terrain(terrian) {
+		{mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_ENEMY, mainMapResolution * BUCKET_GRID_FIELD_SIZE, 256},
+		{mainMapResolution * BUCKET_GRID_FIELD_SIZE / BUCKET_GRID_FIELD_SIZE_ENEMY, mainMapResolution * BUCKET_GRID_FIELD_SIZE, 256}
+	}, influenceManager(MAX_PLAYERS, mainMapResolution), terrain(terrain) {
 	neights = new std::vector<Physical*>();
 	neights2 = new std::vector<Physical*>();
 }
