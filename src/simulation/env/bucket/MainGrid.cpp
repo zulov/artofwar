@@ -297,8 +297,8 @@ int MainGrid::closestPassableCell(int posIndex) const {
 }
 
 void MainGrid::addStatic(Static* object) const {
-	const auto bucketPos = getCords(object->getMainCell());
-
+	const auto bucketPos = calculator->getIndexes(object->getMainCell());
+	
 	for (auto index : object->getOccupiedCells()) {
 		complexData[index].setStatic(object);
 	}

@@ -43,7 +43,8 @@ struct SQLConsts {
 
 	inline const static std::string CONFIG_COL =
 		"precision	INT NOT NULL,"
-		"map		INT NOT NULL";
+		"map		INT NOT NULL,"
+		"size		INT NOT NULL";
 
 	inline const static std::string CREATE_TABLE = "CREATE TABLE ";
 

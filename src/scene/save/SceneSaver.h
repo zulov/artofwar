@@ -26,7 +26,7 @@ public:
 	void saveResourceEntities(std::vector<ResourceEntity*>* resources);
 	void savePlayers(std::vector<Player*>& players);
 	void saveResources(const std::vector<Player*>& players);
-	void saveConfig();
+	void saveConfig(int mapId, int size);
 	void close();
 private:
 	void executeInsert(std::string& sql) const;

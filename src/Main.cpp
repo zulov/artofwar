@@ -273,7 +273,8 @@ void Main::InitLocalizationSystem() const {
 
 void Main::save(const String& name) {
 	saver.createSave(name);
-	saver.saveConfig();
+	int mapId = 1; //TODO id mapy wpisac
+	saver.saveConfig(mapId, Game::getEnvironment()->getResolution());
 	simulation->save(saver);
 	Game::getPlayersMan()->save(saver);
 	saver.close();

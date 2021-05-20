@@ -1,6 +1,7 @@
 ﻿#include "Environment.h"
 #include <Urho3D/Graphics/Terrain.h>
 #include "EnvConsts.h"
+#include "GridCalculatorProvider.h"
 #include "database/db_strcut.h"
 #include "math/MathUtils.h"
 #include "objects/building/Building.h"
@@ -17,7 +18,8 @@ Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolut
 	teamUnitGrid{
 		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256},
 		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256}
-	}, influenceManager(MAX_PLAYERS, mainMapResolution), terrain(terrain) {
+	}, influenceManager(MAX_PLAYERS, mainMapResolution), terrain(terrain),
+	calculator(GridCalculatorProvider::get(mainMapResolution, mapSize)) {
 	neights = new std::vector<Physical*>();
 	neights2 = new std::vector<Physical*>();
 
@@ -222,7 +224,7 @@ Urho3D::Vector3 Environment::getPosWithHeightAt(float x, float z) const {
 }
 
 Urho3D::Vector3 Environment::getPosWithHeightAt(int index) const {
-	const auto center = mainGrid.getCenter(index);
+	const auto center = calculator->getCenter(index);
 	return getPosWithHeightAt(center.x_, center.y_);
 }
 
@@ -254,11 +256,11 @@ bool Environment::validateStatic(const Urho3D::IntVector2& size, const Urho3D::I
 }
 
 Urho3D::Vector2 Environment::getCenter(int index) const {
-	return mainGrid.getCenter(index);
+	return  calculator->getCenter(index);
 }
 
 Urho3D::Vector2 Environment::getCenter(short x, short z) const {
-	return mainGrid.getCenter(x, z);
+	return getCenter(calculator->getIndex(x, z));
 }
 
 Urho3D::Vector2 Environment::getPositionInBucket(Unit* unit) {
@@ -345,7 +347,7 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (auto centerIndex : indexes) {
 		for (auto index : mainGrid.getCloseCenters(centerIndex, ratio)) {
-			auto gridCenter = mainGrid.getCenter(index);
+			auto gridCenter = calculator->getCenter(index);
 			if (validateStatic(building->size, gridCenter)) {
 				return gridCenter;
 			}
@@ -405,7 +407,8 @@ Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, co
 
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
                                               const Urho3D::IntVector2& bucketCords) const {
-	return mainGrid.getValidPosition(size, mainGrid.getCenterAt(bucketCords));
+	
+	return mainGrid.getValidPosition(size, getCenter(calculator->getIndex(bucketCords.x_, bucketCords.y_)));
 }
 
 std::vector<int>* Environment::findPath(int startIdx, const Urho3D::Vector2& aim, int limit) const {

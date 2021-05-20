@@ -50,16 +50,6 @@ public:
 
 	Urho3D::Vector2 getPositionInBucket(Unit* unit);
 
-	Urho3D::IntVector2 getCords(int index) const { return calculator->getIndexes(index); }
-	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) { return getCords(calculator->indexFromPosition(pos)); }
-
-	Urho3D::Vector2 getCenterAt(const Urho3D::IntVector2& cords) const {
-		return getCenter(calculator->getIndex(cords.x_, cords.y_));
-	}
-
-	Urho3D::Vector2 getCenter(short x, short z) const { return getCenter(calculator->getIndex(x, z)); }
-	Urho3D::Vector2 getCenter(int index) const { return calculator->getCenter(index); }
-
 	bool cellInState(int index, CellState state) const;
 	void updateCell(int index, char val, CellState cellState) const;
 
@@ -69,12 +59,11 @@ public:
 
 	bool isInLocalArea(int center, int indexOfAim) const;
 	bool isInLocal1and2Area(int center, int indexOfAim) const;
-	
+
 	bool isPassable(int inx) const;
 	bool isBuildable(int inx) const;
 	int closestPassableCell(int posIndex) const;
-	int getIndex(short i, short z) const { return calculator->getIndex(i, z); }
-	int getIndex(Urho3D::Vector2& pos) const { return calculator->indexFromPosition(pos); }
+
 	CellState getCellAt(float x, float z) const;
 	int getAdditionalInfoAt(float x, float z) const;
 	void drawDebug(GridDebugType type) const;
@@ -84,7 +73,6 @@ public:
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
 
 private:
-
 	PathFinder* pathFinder;
 
 	std::array<Urho3D::Vector2, 2> posInBucket2;

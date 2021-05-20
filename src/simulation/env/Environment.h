@@ -90,10 +90,10 @@ public:
 
 	void invalidatePathCache() const;
 
-	int getIndex(Urho3D::Vector2& pos) const { return mainGrid.getIndex(pos); }
-	int getIndex(short x, short z) const { return mainGrid.getIndex(x, z); }
-	Urho3D::IntVector2 getCords(int index) const { return mainGrid.getCords(index); }
-	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) { return mainGrid.getCords(pos); }
+	int getIndex(Urho3D::Vector2& pos) const { return calculator->indexFromPosition(pos); }
+	int getIndex(short x, short z) const { return calculator->getIndex(x, z); }
+	Urho3D::IntVector2 getCords(int index) const { return calculator->getIndexes(index); }
+	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) { return calculator->getIndexes(calculator->indexFromPosition(pos)); }
 
 	bool cellInState(int index, CellState state) const;
 	void updateCell(int index, char val, CellState cellState) const;
@@ -119,6 +119,7 @@ public:
 	bool cellIsCollectable(int index) const;
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
+	short getResolution();
 
 private:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
@@ -132,6 +133,7 @@ private:
 	InfluenceManager influenceManager;
 	std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
 	Urho3D::Terrain* terrain;
+	GridCalculator* calculator;
 
 	std::vector<Physical*> *neights, *neights2; //TODO tu bedzie trzeba tablica jesli beda watki
 

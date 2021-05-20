@@ -140,10 +140,11 @@ void SceneSaver::saveResources(const std::vector<Player*>& players) {
 	executeInsert(sql);
 }
 
-void SceneSaver::saveConfig() {
+void SceneSaver::saveConfig(int mapId, int size) {
 	loadingState.inc("saving config");
 	std::string sql = "INSERT INTO config VALUES (";
-	sql += std::to_string(precision) + "," + "1" + "),"; //TODO id mapy wpisac
+	sql += std::to_string(precision) + "," + std::to_string(mapId) + "," + std::to_string(size) + "),";
+
 	executeInsert(sql);
 }
 
