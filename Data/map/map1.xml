@@ -2,7 +2,7 @@
 	<component type="Terrain">
 		<attribute name="Height Map" value="Image;map/h2.png" />
 		<attribute name="Material" value="Material;Materials/test.xml" />
-		<attribute name="Vertex Spacing" value="2 0.1 2" />
+		<attribute name="Vertex Spacing" value="1 0.1 1" />
 		<attribute name="Patch Size" value="32" />
 		<attribute name="Is Occluder" value="false" />
 	</component>

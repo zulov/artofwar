@@ -16,39 +16,39 @@ LevelBuilder::LevelBuilder() {
 }
 
 LevelBuilder::~LevelBuilder() {
-	// scene->RemoveAllChildren();
-	// scene->Clear();
 	scene->Remove();
 	Game::setScene(nullptr);
 }
 
 void LevelBuilder::createScene(SceneLoader& loader) {
 	loader.load();
-
-	createMap(loader.getData()->config->map);
+	createMap(loader.getData()->config->map, loader.getConfig()->size / 256.f);
 }
 
-void LevelBuilder::createMap(int mapId) {
+void LevelBuilder::createMap(int mapId, float spacing) {
 	const auto map = Game::getDatabase()->getMaps()[mapId];
 	if (!SIM_GLOBALS.HEADLESS) {
 		createNode("map/zone.xml");
 		createNode("map/light.xml");
 	}
-	createGround(map->xmlName);
+	createGround(map->xmlName, spacing);
 }
 
 void LevelBuilder::createScene(NewGameForm* form) {
-	createMap(form->map);
+	createMap(form->map, form->size / 256.f);
 }
 
 Urho3D::Terrain* LevelBuilder::getTerrain() const {
 	return terrain;
 }
 
-void LevelBuilder::createGround(const Urho3D::String& xmlName) {
+void LevelBuilder::createGround(const Urho3D::String& xmlName, float spacing) {
 	auto node = createNode(xmlName);
 	terrain = node->GetComponent<Urho3D::Terrain>();
-	terrain->SetSpacing()
+	auto s = terrain->GetSpacing();
+	s.x_ = spacing;
+	s.z_ = spacing;
+	terrain->SetSpacing(s);
 	if (!SIM_GLOBALS.HEADLESS) {
 		terrain->SetSmoothing(true);
 		node->SetVar("ground", true);
