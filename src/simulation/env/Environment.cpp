@@ -21,13 +21,8 @@ Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolut
 	neights = new std::vector<Physical*>();
 	neights2 = new std::vector<Physical*>();
 
-	bool any = false;
-	for (auto val : {160, 192, 256, 320, 384, 512}) {
-		if (val == mainMapResolution) {
-			any = true;
-		}
-	}
-	assert(any);
+	auto a = {160, 192, 256, 320, 384, 512};
+	assert(std::ranges::any_of(a, [mainMapResolution](int i) {return mainMapResolution == i; }));
 }
 
 

@@ -48,6 +48,7 @@ Urho3D::Terrain* LevelBuilder::getTerrain() const {
 void LevelBuilder::createGround(const Urho3D::String& xmlName) {
 	auto node = createNode(xmlName);
 	terrain = node->GetComponent<Urho3D::Terrain>();
+	terrain->SetSpacing()
 	if (!SIM_GLOBALS.HEADLESS) {
 		terrain->SetSmoothing(true);
 		node->SetVar("ground", true);
