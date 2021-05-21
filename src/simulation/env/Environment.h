@@ -119,7 +119,7 @@ public:
 	bool cellIsCollectable(int index) const;
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
-	short getResolution();
+	short getResolution() const { return calculator->getResolution(); };
 
 private:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
