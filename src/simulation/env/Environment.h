@@ -131,7 +131,7 @@ private:
 	Grid resourceGrid, buildingGrid;
 	Grid teamUnitGrid[MAX_PLAYERS];
 	InfluenceManager influenceManager;
-	std::array<Grid*, 3> grids = {&mainGrid, &buildingGrid, &resourceGrid};
+	Grid* grids[3] = {&mainGrid, &buildingGrid, &resourceGrid};
 	Urho3D::Terrain* terrain;
 	GridCalculator* calculator;
 

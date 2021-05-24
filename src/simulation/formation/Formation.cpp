@@ -2,6 +2,7 @@
 #include <numeric>
 #include "Game.h"
 #include "math/MathUtils.h"
+#include "objects/unit/GroupUtils.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/FormationOrder.h"
 #include "objects/unit/order/OrderUtils.h"
@@ -34,17 +35,6 @@ Formation::~Formation() {
 	delete[] levelOfReach;
 }
 
-Urho3D::Vector2 Formation::computeLocalCenter() {
-	auto localCenter = Urho3D::Vector2::ZERO;
-	for (auto* unit : units) {
-		const auto pos = unit->getPosition();
-		localCenter.x_ += pos.x_;
-		localCenter.y_ += pos.z_;
-	}
-	localCenter /= units.size();
-	return localCenter;
-}
-
 void Formation::chooseLeader(Urho3D::Vector2& localCenter) {
 	float maxDist = 99999.f;
 	leader = nullptr;
@@ -58,7 +48,7 @@ void Formation::chooseLeader(Urho3D::Vector2& localCenter) {
 }
 
 void Formation::electLeader() {
-	auto center = computeLocalCenter();
+	auto center = computeLocalCenter(units);
 	chooseLeader(center);
 
 	if (oldLeader != nullptr && leader != oldLeader) {

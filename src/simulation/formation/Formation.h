@@ -33,7 +33,7 @@ public:
 	void addCachePath(int startIdx, int aimIndex, int next);
 private:
 	bool hasLeader() const;
-	Urho3D::Vector2 computeLocalCenter();
+
 	void chooseLeader(Urho3D::Vector2& localCenter);
 	void updateUnits();
 	void setCenter();

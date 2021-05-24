@@ -4,6 +4,7 @@
 #include "AiUtils.h"
 #include "Game.h"
 #include "database/DatabaseCache.h"
+#include "math/MathUtils.h"
 #include "objects/PhysicalUtils.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/IndividualOrder.h"
@@ -24,7 +25,8 @@ OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
 	  whichResource(BrainProvider::get(std::string(nation->orderPrefix[0].CString()) + "whichResource_w.csv")),
 	  attackThreshold(
-		  ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {}
+		  ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {
+}
 
 void OrderMaker::action() {
 	auto freeWorkers = findFreeWorkers();
@@ -43,9 +45,22 @@ void OrderMaker::action() {
 		if (posOpt.has_value()) {
 			std::vector<Unit*> army = possesion.getFreeArmy();
 			//TODO perf podzieliæ armie
-			if (!army.empty()) {
-				Game::getActionCenter()->addUnitAction(
-					new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), posOpt.value()), player->getId());
+			auto subArmies = divide(army);
+			for (auto subArmy : subArmies) {
+				if (!subArmy.empty()) {
+					auto center = computeLocalCenter(subArmy);
+					auto d = sqDist(posOpt.value(), center);
+					if (d > 10 * 10) {
+						Game::getActionCenter()->addUnitAction(
+							new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), posOpt.value()),
+							player->getId());
+					} else {
+						//TODO tryToAttack
+						// Game::getActionCenter()->addUnitAction(
+						// 	new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::ATTACK), posOpt.value()),
+						// 	player->getId());
+					}
+				}
 			}
 		}
 	}

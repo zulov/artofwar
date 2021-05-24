@@ -8,7 +8,7 @@ inline bool addToGroup(std::vector<std::vector<int>>& groupedIndexes, int curren
 	for (auto& groupedIndex : groupedIndexes) {
 		const auto isNear = std::ranges::any_of(groupedIndex, [current](int index) {
 			return Game::getEnvironment()->isInLocal1and2Area(current, index);
-			});
+		});
 		if (isNear) {
 			groupedIndex.push_back(current);
 			return true;
@@ -47,7 +47,7 @@ inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) {
 			for (auto value : current) {
 				const auto isNear = std::ranges::any_of(next, [value](int index) {
 					return Game::getEnvironment()->isInLocal1and2Area(value, index);
-					});
+				});
 				if (isNear) {
 					merged.insert(merged.end(), next.begin(), next.end());
 					next.clear();
@@ -73,4 +73,15 @@ inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) {
 		result.push_back(temp);
 	}
 	return result;
+}
+
+inline Urho3D::Vector2 computeLocalCenter(const std::vector<Unit*>& units) {
+	auto localCenter = Urho3D::Vector2::ZERO;
+	for (auto* unit : units) {
+		const auto pos = unit->getPosition();
+		localCenter.x_ += pos.x_;
+		localCenter.y_ += pos.z_;
+	}
+	localCenter /= units.size();
+	return localCenter;
 }

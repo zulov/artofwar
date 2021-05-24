@@ -118,10 +118,6 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 	return grids[cast(clicked->getType())]->getArrayNeightSimilarAs(clicked, 20.f);
 }
 
-// std::vector<Physical*>* Environment::getResources(Physical* physical, float radius) {
-// 	return getNeighbours(physical, resourceGrid, radius);
-// }
-
 std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius) {
 	return getNeighbours(center, resourceGrid, id, radius, prevRadius);
 }
