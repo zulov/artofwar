@@ -68,7 +68,7 @@ void Unit::updatePosition() const {
 		if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
 			node->SetTransform(
 				position,
-				Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(velocity.x_, 0, velocity.y_)));
+				Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(velocity.x_, 0.f, velocity.y_)));
 		} else {
 			node->SetPosition(position);
 		}

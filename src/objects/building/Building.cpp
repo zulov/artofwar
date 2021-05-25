@@ -1,19 +1,19 @@
 #include "Building.h"
-#include <magic_enum.hpp>
-#include <string>
-#include <Urho3D/IO/Log.h>
-#include <Urho3D/Resource/Localization.h>
-#include "Game.h"
 #include "commands/action/BuildingActionType.h"
 #include "database/DatabaseCache.h"
+#include "Game.h"
 #include "objects/NodeUtils.h"
 #include "objects/queue/QueueActionType.h"
+#include "objects/queue/SimpleQueueManager.h"
 #include "objects/unit/state/StateManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "player/Resources.h"
 #include "scene/load/dbload_container.h"
-#include "utils/consts.h"
+#include <magic_enum.hpp>
+#include <string>
+#include <Urho3D/IO/Log.h>
+#include <Urho3D/Resource/Localization.h>
 
 
 Building::Building(Urho3D::Vector3 _position, int id, int player, int level, int mainCell, bool withNode):
@@ -21,6 +21,9 @@ Building::Building(Urho3D::Vector3 _position, int id, int player, int level, int
 	setPlayerAndTeam(player);
 	dbBuilding = Game::getDatabase()->getBuilding(id);
 	levelUp(level);
+	if (!ready) {
+		queue->add(1, QueueActionType::BUILDING_CREATE, id, 1);
+	}
 }
 
 
@@ -28,13 +31,11 @@ Building::~Building() {
 	if (node) {
 		node->RemoveAllChildren();
 	}
-	if (queue != &Consts::EMPTY_QUEUE) {
-		delete queue;
-	}
+	delete queue;
 }
 
 float Building::getMaxHpBarSize() const {
-	auto gridSize = getGridSize();
+	const auto gridSize = getGridSize();
 	return Urho3D::Max(gridSize.x_, gridSize.y_) * 0.5f;
 }
 
@@ -48,10 +49,11 @@ char Building::getLevelNum() {
 
 void Building::populate() {
 	Static::populate();
+
 	if (dbLevel->queueMaxCapacity > 0) {
 		queue = new QueueManager(dbLevel->queueMaxCapacity);
 	} else {
-		queue = &Consts::EMPTY_QUEUE;
+		queue = new SimpleQueueManager();
 	}
 }
 
@@ -159,10 +161,13 @@ void Building::createDeploy() {
 		deployIndex = surroundCells.at(0);
 	} else {
 		deployIndex = -1;
-
 	}
 }
 
 void Building::setDeploy(int cell) {
 	deployIndex = cell;
+}
+
+void Building::complete() {
+	ready = true;
 }

@@ -1,22 +1,15 @@
 #pragma once
-#include <vector>
-
 #include "AbstractQueueManager.h"
-
-enum class QueueActionType : char;
 class QueueElement;
 
-class QueueManager : public AbstractQueueManager {
+class SimpleQueueManager : public AbstractQueueManager {
 public:
-	explicit QueueManager(unsigned short maxCapacity);
-	~QueueManager();
-
+	SimpleQueueManager() = default;
+	~SimpleQueueManager();
 	void add(short number, QueueActionType type, short id, unsigned short localMaxCapacity) override;
 	QueueElement* update(float time) override;
 	short getSize() const override;
 	QueueElement* getAt(short i) override;
 private:
-	std::vector<QueueElement*> queue;
-
-	unsigned short maxCapacity;
+	QueueElement* element = nullptr;
 };

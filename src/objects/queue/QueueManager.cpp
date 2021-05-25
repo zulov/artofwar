@@ -12,10 +12,6 @@ QueueManager::~QueueManager() {
 }
 
 void QueueManager::add(short number, QueueActionType type, short id, unsigned short localMaxCapacity) {
-	if(maxCapacity==0) {
-		assert(false);
-		return;
-	}
 	for (auto i : queue) {
 		if (i->checkType(type, id)) {
 			number = i->add(number);

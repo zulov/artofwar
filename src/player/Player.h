@@ -41,17 +41,17 @@ public:
 
 	void deactivate();
 	void activate();
-	QueueElement* updateQueue(float time);
-	QueueManager& getQueue();
+	QueueElement* updateQueue(float time) const;
+	QueueManager* getQueue();
 	db_unit_level* getLevelForUnit(short id) const;
 	db_building_level* getLevelForBuilding(short id) const;
 	std::optional<db_unit_level*> getNextLevelForUnit(short id) const;
 	std::optional<db_building_level*> getNextLevelForBuilding(short id) const;
 private:
 	db_nation* dbNation; //Must by first
+	QueueManager* queue;
 	Possession possession;
 	Resources resources;
-	QueueManager queue;
 	ActionMaker actionMaker;
 	OrderMaker orderMaker;
 	Urho3D::String name;

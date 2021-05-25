@@ -277,6 +277,8 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\objects\queue\AbstractQueueManager.cpp" />
+    <ClCompile Include="src\objects\queue\SimpleQueueManager.cpp" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
     <ClCompile Include="src\simulation\SimInfo.cpp" />
     <ClCompile Include="src\player\ai\nn\BrainProvider.cpp" />
@@ -396,6 +398,8 @@
     <ClCompile Include="src\player\ai\threshold\ThresholdProvider.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\objects\queue\AbstractQueueManager.h" />
+    <ClInclude Include="src\objects\queue\SimpleQueueManager.h" />
     <ClInclude Include="src\camera\CameraInfo.h" />
     <ClInclude Include="src\database\db_basic_struct.h" />
     <ClInclude Include="src\database\db_container.h" />

@@ -246,6 +246,8 @@ void Simulation::updateBuildingQueues(const float time) const {
 			case QueueActionType::UNIT_UPGRADE:
 				levelUp(done, build->getPlayer());
 				break;
+			case QueueActionType::BUILDING_CREATE:
+				build->complete();
 			}
 			delete done;
 		}

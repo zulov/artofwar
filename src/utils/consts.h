@@ -19,8 +19,6 @@ struct Consts {
 
 	inline const static std::vector<Physical*> EMPTY_PHYSICAL;
 
-	inline static QueueManager EMPTY_QUEUE = QueueManager(0);
-
 	inline const static Urho3D::Vector3 DIRS[4] = {
 		Urho3D::Vector3::FORWARD, Urho3D::Vector3::BACK, Urho3D::Vector3::LEFT, Urho3D::Vector3::RIGHT
 	};

@@ -202,6 +202,8 @@
     <ClCompile Include="src\simulation\ObjectsInfo.cpp" />
     <ClCompile Include="src\simulation\SimInfo.cpp" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
+    <ClCompile Include="src\objects\queue\SimpleQueueManager.cpp" />
+    <ClCompile Include="src\objects\queue\AbstractQueueManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -529,6 +531,8 @@
     <ClInclude Include="src\math\SpanUtils.h" />
     <ClInclude Include="src\objects\unit\GroupUtils.h" />
     <ClInclude Include="src\utils\Flags.h" />
+    <ClInclude Include="src\objects\queue\SimpleQueueManager.h" />
+    <ClInclude Include="src\objects\queue\AbstractQueueManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

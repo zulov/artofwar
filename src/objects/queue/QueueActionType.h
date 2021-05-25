@@ -4,5 +4,5 @@ enum class QueueActionType : char {
 	UNIT_LEVEL,
 	UNIT_UPGRADE,//TODO dodac to kiedys
 	BUILDING_LEVEL,
-	BUILDING_CREATE
+	BUILDING_CREATE,
 };

@@ -5,12 +5,10 @@
 
 
 Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active):
-	queue(1), dbNation(Game::getDatabase()->getNation(nationId)),
-	actionMaker(this, dbNation),
-	orderMaker(this, dbNation),
+	queue(new QueueManager(1)), dbNation(Game::getDatabase()->getNation(nationId)),
+	actionMaker(this, dbNation), orderMaker(this, dbNation),
 	name(std::move(name)), team(team),
 	color(color), id(id), active(active), possession(nationId) {
-
 
 	unitLevels = new char[Game::getDatabase()->getUnits().size()];
 	buildingLevels = new char[Game::getDatabase()->getBuildings().size()];
@@ -22,6 +20,7 @@ Player::Player(int nationId, char team, char id, int color, Urho3D::String name,
 Player::~Player() {
 	delete[] unitLevels;
 	delete[] buildingLevels;
+	delete queue;
 }
 
 std::string Player::getValues(int precision) const {
@@ -110,16 +109,16 @@ void Player::activate() {
 	resources.change();
 }
 
-QueueElement* Player::updateQueue(float time) {
-	return queue.update(time);
+QueueElement* Player::updateQueue(float time) const {
+	return queue->update(time);
 }
 
-QueueManager& Player::getQueue() {
+QueueManager* Player::getQueue() {
 	return queue;
 }
 
 void Player::aiAction() {
-	actionMaker.action();
+	//actionMaker.action();
 }
 
 void Player::aiOrder() {

@@ -23,7 +23,7 @@ public:
 	std::optional<int> getDeploy();
 
 	//TODO target to nie to samo co gdzie sie maja pojawiac!
-	QueueManager* getQueue() const { return queue; }
+	AbstractQueueManager* getQueue() const { return queue; }
 
 	Urho3D::String toMultiLineString() override;
 	float absorbAttack(float attackCoef) override;
@@ -39,11 +39,12 @@ public:
 	float getInvMaxHp() const override;
 	void createDeploy();
 	void setDeploy(int cell);
+	void complete();
 private:
-
 	int deployIndex = -1;
+	bool ready = false;
 	db_building* dbBuilding;
 	db_building_level* dbLevel;
 
-	QueueManager* queue;
+	AbstractQueueManager* queue;
 };

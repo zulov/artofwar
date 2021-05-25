@@ -49,8 +49,7 @@ void OrderMaker::action() {
 			for (auto subArmy : subArmies) {
 				if (!subArmy.empty()) {
 					auto center = computeLocalCenter(subArmy);
-					auto d = sqDist(posOpt.value(), center);
-					if (d > 10 * 10) {
+					if (sqDist(posOpt.value(), center) > 10 * 10) {
 						Game::getActionCenter()->addUnitAction(
 							new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), posOpt.value()),
 							player->getId());
