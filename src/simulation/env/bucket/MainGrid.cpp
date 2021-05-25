@@ -26,7 +26,7 @@ MainGrid::MainGrid(short resolution, float size, float maxQueryRadius): Grid(res
 		Urho3D::Vector2(quater, -quater), Urho3D::Vector2(-quater, -quater)
 	};
 	pathFinder = new PathFinder(resolution, size, complexData);
-	
+
 	DebugLineRepo::init(DebugLineType::MAIN_GRID);
 }
 
@@ -100,30 +100,6 @@ Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
 
 void MainGrid::invalidatePathCache() const {
 	pathFinder->invalidateCache();
-}
-
-void MainGrid::updateSurround(Static* object) const {
-	if (object->isAlive()) {
-		const auto& occu = object->getOccupiedCells();
-		std::vector<int> indexes;
-		indexes.reserve(occu.size() * 8);
-
-		for (auto index : occu) {
-			for (auto inIndex : closeIndexes->get(index)) {
-				indexes.emplace_back(index + inIndex);
-			}
-		}
-		std::ranges::sort(indexes);
-		indexes.erase(std::unique(indexes.begin(), indexes.end()), indexes.end());
-		indexes.erase(
-			std::ranges::remove_if(indexes,
-			                       [&](auto x) {
-				                       return std::find(occu.begin(), occu.end(), x) != occu.end();
-			                       }).begin(),
-			indexes.end());
-
-		object->setSurroundCells(indexes);
-	}
 }
 
 bool MainGrid::cellInState(int index, CellState state) const {
@@ -298,7 +274,7 @@ int MainGrid::closestPassableCell(int posIndex) const {
 
 void MainGrid::addStatic(Static* object) const {
 	const auto bucketPos = calculator->getIndexes(object->getMainCell());
-	
+
 	for (auto index : object->getOccupiedCells()) {
 		complexData[index].setStatic(object);
 	}
@@ -329,8 +305,6 @@ void MainGrid::addStatic(Static* object) const {
 		}
 	}
 	pathFinder->refreshWayOut(toRefresh);
-
-	updateSurround(object);
 }
 
 void MainGrid::removeStatic(Static* object) const {

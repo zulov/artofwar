@@ -9,12 +9,11 @@ enum class CellState : char;
 class Static : public Physical {
 public:
 	Static(Urho3D::Vector3& _position, int mainCell, bool withNode);
-	virtual ~Static() = default;
+	virtual ~Static();
 
 	void setNextState(StaticState stateTo) { nextState = stateTo; }
 	void setState(StaticState state) { this->state = state; }
 	void load(dbload_static* dbloadStatic);
-	void setSurroundCells(const std::vector<int>& indexes);
 
 	int belowCloseLimit() override;
 	int hasFreeSpace() const;
@@ -29,8 +28,8 @@ public:
 	int getMainCell() const { return mainCell; }
 	bool isToDispose() const override { return state == StaticState::DISPOSE; }
 	virtual const Urho3D::IntVector2 getGridSize() const =0;
-	const std::vector<int>& getOccupiedCells() const { return occupiedCells; }
-	const std::vector<int>& getSurroundCells() const { return surroundCells; }
+	const std::span<int>& getOccupiedCells() const { return occupiedCells; }
+	const std::span<int>& getSurroundCells() const { return surroundCells; }
 
 	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) override;
 	std::vector<int> getIndexesForUse(Unit* user) override;
@@ -42,5 +41,7 @@ protected:
 	int mainCell{};
 
 	StaticState state, nextState;
-	std::vector<int> occupiedCells, surroundCells;
+	//std::vector<int> occupiedCells, surroundCells;
+	std::span<int> occupiedCells, surroundCells;
+	int * data;
 };

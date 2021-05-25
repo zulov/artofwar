@@ -29,8 +29,8 @@ public:
 	void action();
 private:
 	bool createUnit(db_unit* unit, Building* building) const;
-	bool createUnit(db_unit* unit);
-	bool createWorker(db_unit* unit);
+	bool createUnit(db_unit* unit) const;
+	bool createWorker(db_unit* unit) const;
 
 	bool enoughResources(db_with_cost* withCosts) const;
 
@@ -40,7 +40,6 @@ private:
 	bool createBuilding(std::span<float> buildingsInput);
 	bool createUnit(std::span<float> unitsInput);
 	bool createWorker();
-
 
 	bool execute(const std::span<float> unitsInput, const std::span<float> buildingsInput, AiActionType decision);
 

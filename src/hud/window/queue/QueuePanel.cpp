@@ -12,6 +12,7 @@
 #include "database/DatabaseCache.h"
 #include "objects/NamesCache.h"
 #include "objects/building/Building.h"
+#include "objects/queue/AbstractQueueManager.h"
 #include "objects/queue/QueueElement.h"
 
 

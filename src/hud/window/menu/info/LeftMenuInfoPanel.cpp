@@ -49,21 +49,21 @@ Urho3D::String LeftMenuInfoPanel::createMessage(HudData* hudData) {
 	const auto id = hudData->getId();
 	switch (hudData->getType()) {
 	case ActionType::UNIT_CREATE: {
-		auto dbUnit = Game::getDatabase()->getUnit(id);
+		const auto dbUnit = Game::getDatabase()->getUnit(id);
 
 		return stringFrom(dbUnit->name, dbUnit->costs);
 	}
 	case ActionType::UNIT_LEVEL: {
 		auto opt = Game::getPlayersMan()->getActivePlayer()->getNextLevelForUnit(id);
 		if (opt.has_value()) {
-			auto dbLevel = opt.value();
+			const auto dbLevel = opt.value();
 			return stringFrom(dbLevel->name, dbLevel->costs);
 		}
 	}
 	case ActionType::UNIT_UPGRADE:
 		return "TODO";
 	case ActionType::BUILDING_CREATE: {
-		auto dbBuilding = Game::getDatabase()->getBuilding(id);
+		const auto dbBuilding = Game::getDatabase()->getBuilding(id);
 
 		return stringFrom(dbBuilding->name, dbBuilding->costs);
 	}

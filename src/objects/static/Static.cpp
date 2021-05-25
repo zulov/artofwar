@@ -1,5 +1,6 @@
 #include "Static.h"
 
+#include <magic_enum.hpp>
 #include <string>
 #include "Game.h"
 #include "math/MathUtils.h"
@@ -11,7 +12,12 @@
 Static::Static(Urho3D::Vector3& _position, int mainCell, bool withNode) : Physical(_position, withNode),
                                                                           mainCell(mainCell),
                                                                           state(StaticState::ALIVE),
-                                                                          nextState(StaticState::ALIVE) {}
+                                                                          nextState(StaticState::ALIVE) {
+}
+
+Static::~Static() {
+	delete data;
+}
 
 void Static::load(dbload_static* dbloadStatic) {
 	Physical::load(dbloadStatic);
@@ -19,21 +25,43 @@ void Static::load(dbload_static* dbloadStatic) {
 	this->nextState = StaticState(dbloadStatic->nextState);
 }
 
-void Static::setSurroundCells(const std::vector<int>& indexes) {
-	surroundCells = indexes;
-}
-
 void Static::populate() {
+	std::vector<int> occupiedCells1;
+
 	auto gridSize = getGridSize();
 	const auto cordsCell = Game::getEnvironment()->getCords(mainCell);
 	const auto sizeX = calculateSize(gridSize.x_, cordsCell.x_);
 	const auto sizeZ = calculateSize(gridSize.y_, cordsCell.y_);
-	occupiedCells.reserve(gridSize.x_ * gridSize.y_);
+	occupiedCells1.reserve(gridSize.x_ * gridSize.y_);
 	for (short i = sizeX.x_; i < sizeX.y_; ++i) {
 		for (short j = sizeZ.x_; j < sizeZ.y_; ++j) {
-			occupiedCells.push_back(Game::getEnvironment()->getIndex(i, j));
+			occupiedCells1.push_back(Game::getEnvironment()->getIndex(i, j));
 		}
 	}
+
+	std::vector<int> surroundCells1;
+	surroundCells1.reserve(occupiedCells1.size() * 8);
+
+	for (auto index : occupiedCells1) {
+		for (auto inIndex : Game::getEnvironment()->getCloseIndexs(index)) {
+			surroundCells1.emplace_back(index + inIndex);
+		}
+	}
+	std::ranges::sort(surroundCells1);
+	surroundCells1.erase(std::unique(surroundCells1.begin(), surroundCells1.end()), surroundCells1.end());
+	surroundCells1.erase(
+		std::ranges::remove_if(surroundCells1,
+		                       [&](auto x) {
+			                       return std::find(occupiedCells1.begin(), occupiedCells1.end(), x) != occupiedCells1.
+				                       end();
+		                       }).begin(),
+		surroundCells1.end());
+
+	data = new int[occupiedCells1.size() + surroundCells1.size()];
+	occupiedCells = std::span{data,occupiedCells1.size()};
+	surroundCells = std::span{data+occupiedCells1.size(),surroundCells1.size()};
+	std::ranges::copy(occupiedCells1,occupiedCells.begin());
+	std::ranges::copy(surroundCells1,surroundCells.begin());
 }
 
 float Static::getAuraSize(const Urho3D::Vector3& boundingBox) const {
@@ -96,7 +124,6 @@ std::vector<int> Static::getIndexesForUse(Unit* user) {
 
 	return indexes;
 }
-
 
 std::string Static::getValues(int precision) {
 	const auto cordsCell = Game::getEnvironment()->getCords(mainCell);

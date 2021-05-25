@@ -86,9 +86,8 @@ std::optional<Urho3D::Vector2> Physical::getPosToUseBy(Unit* follower) {
 }
 
 float Physical::getHealthBarSize() const {
-	auto healthBarSize = getMaxHpBarSize() * getHealthPercent();
-	if (healthBarSize <= 0) { healthBarSize = 0; }
-	return healthBarSize;
+	const auto healthBarSize = getMaxHpBarSize() * getHealthPercent();
+	return healthBarSize <= 0.f ? 0.f : healthBarSize;
 }
 
 bool Physical::isSelected() const {
@@ -147,9 +146,9 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 	if (SIM_GLOBALS.HEADLESS) {
 		name = "";
 	}
-	// else if (SIM_GLOBALS.TRAIN_MODE) {
-	// 	name = "Objects/mock.xml";
-	// }
+		// else if (SIM_GLOBALS.TRAIN_MODE) {
+		// 	name = "Objects/mock.xml";
+		// }
 	else {
 		name = xmlName;
 	}

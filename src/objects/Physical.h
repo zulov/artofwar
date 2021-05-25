@@ -28,7 +28,7 @@ public:
 	virtual short getId();
 
 	void updateHealthBar() const;
-	float getHealthBarSize() const;
+	virtual float getHealthBarSize() const;
 
 	bool bucketHasChanged(int _bucketIndex) const { return indexInGrid != _bucketIndex; }
 
@@ -118,7 +118,7 @@ protected:
 
 	Urho3D::Vector3 position;
 
-	float hp = 100;
+	float hp;
 private:
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
 	void updateBillboardAura(Urho3D::Vector3& boundingBox) const;

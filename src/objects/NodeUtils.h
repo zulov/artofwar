@@ -13,7 +13,7 @@ inline Urho3D::Node* createNode(const Urho3D::String& name) {
 }
 
 inline void changeMaterial(Urho3D::Material* newMaterial, Urho3D::StaticModel* model) {
-	if (newMaterial && newMaterial != model->GetMaterial(0)) {
+	if (model && newMaterial && newMaterial != model->GetMaterial(0)) {
 		model->SetMaterial(newMaterial);
 	}
 }

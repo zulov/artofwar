@@ -5,6 +5,9 @@
 BuildingActionCommand::BuildingActionCommand(Building* building, BuildingActionType action, short id, char player)
 	: AbstractCommand(player), id(id), action(action) {
 	buildings.emplace_back(building);
+	if (building->isReady()) {
+		this->buildings.emplace_back(building);
+	}
 }
 
 BuildingActionCommand::BuildingActionCommand(const std::vector<Physical*>& buildings, BuildingActionType action,
@@ -12,7 +15,10 @@ BuildingActionCommand::BuildingActionCommand(const std::vector<Physical*>& build
                                              char player) : AbstractCommand(player), id(id), action(action) {
 	this->buildings.reserve(buildings.size());
 	for (auto building : buildings) {
-		this->buildings.emplace_back(reinterpret_cast<Building*>(building));
+		auto build = reinterpret_cast<Building*>(building);
+		if (build->isReady()) {
+			this->buildings.emplace_back(build);
+		}
 	}
 }
 

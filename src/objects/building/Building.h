@@ -1,7 +1,8 @@
 #pragma once
 #include "objects/static/Static.h"
-#include "objects/queue/QueueManager.h"
 
+
+class AbstractQueueManager;
 struct dbload_building;
 enum class BuildingActionType : char;
 struct db_building;
@@ -16,9 +17,10 @@ public:
 
 	void populate() override;
 	void levelUp(char level);
+	void postCreate();
 	Building* load(dbload_building* dbloadBuilding);
 
-	QueueElement* updateQueue(float time) const { return queue->update(time); }
+	QueueElement* updateQueue(float time) const;
 
 	std::optional<int> getDeploy();
 
@@ -31,6 +33,7 @@ public:
 	void action(BuildingActionType type, short id) const;
 	std::string getValues(int precision) override;
 	float getMaxHpBarSize() const override;
+	float getHealthBarSize() const override;
 	short getId() override;
 	char getLevelNum() override;
 	void fillValues(std::span<float> weights) const;
@@ -40,9 +43,11 @@ public:
 	void createDeploy();
 	void setDeploy(int cell);
 	void complete();
+	bool isReady() const { return ready; }
+
 private:
 	int deployIndex = -1;
-	bool ready = false;
+	bool ready = true;
 	db_building* dbBuilding;
 	db_building_level* dbLevel;
 

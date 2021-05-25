@@ -14,6 +14,9 @@
 #include <string>
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Resource/Localization.h>
+#include <Urho3D/Graphics/Material.h>
+#include "objects/queue/QueueElement.h"
+#include "simulation/env/Environment.h"
 
 
 Building::Building(Urho3D::Vector3 _position, int id, int player, int level, int mainCell, bool withNode):
@@ -21,9 +24,6 @@ Building::Building(Urho3D::Vector3 _position, int id, int player, int level, int
 	setPlayerAndTeam(player);
 	dbBuilding = Game::getDatabase()->getBuilding(id);
 	levelUp(level);
-	if (!ready) {
-		queue->add(1, QueueActionType::BUILDING_CREATE, id, 1);
-	}
 }
 
 
@@ -34,9 +34,22 @@ Building::~Building() {
 	delete queue;
 }
 
+void Building::postCreate() {
+	ready = false;
+	queue->add(1, QueueActionType::BUILDING_CREATE, getId(), 1);
+	changeMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/orange_overlay.xml"), model);
+}
+
 float Building::getMaxHpBarSize() const {
 	const auto gridSize = getGridSize();
 	return Urho3D::Max(gridSize.x_, gridSize.y_) * 0.5f;
+}
+
+float Building::getHealthBarSize() const {
+	if (ready) {
+		return Physical::getHealthBarSize();
+	}
+	return getMaxHpBarSize() * queue->getAt(0)->getProgress();
 }
 
 short Building::getId() {
@@ -49,7 +62,7 @@ char Building::getLevelNum() {
 
 void Building::populate() {
 	Static::populate();
-
+	hp = dbLevel->maxHp;
 	if (dbLevel->queueMaxCapacity > 0) {
 		queue = new QueueManager(dbLevel->queueMaxCapacity);
 	} else {
@@ -58,7 +71,7 @@ void Building::populate() {
 }
 
 float Building::absorbAttack(float attackCoef) {
-	auto val = attackCoef * (1 - dbLevel->armor);
+	const auto val = (attackCoef + attackCoef * ready) * (1 - dbLevel->armor);
 	hp -= val;
 
 	updateHealthBar();
@@ -80,6 +93,7 @@ Urho3D::String Building::toMultiLineString() {
 }
 
 void Building::action(BuildingActionType type, short id) const {
+	if (!ready) { return; }
 	Resources& resources = Game::getPlayersMan()->getPlayer(getPlayer())->getResources();
 
 	switch (type) {
@@ -110,6 +124,10 @@ void Building::levelUp(char level) {
 Building* Building::load(dbload_building* dbloadBuilding) {
 	Static::load(dbloadBuilding);
 	return this;
+}
+
+QueueElement* Building::updateQueue(float time) const {
+	return queue->update(time);
 }
 
 std::optional<int> Building::getDeploy() {
@@ -157,10 +175,11 @@ float Building::getInvMaxHp() const {
 }
 
 void Building::createDeploy() {
-	if (!surroundCells.empty()) {
-		deployIndex = surroundCells.at(0);
-	} else {
-		deployIndex = -1;
+	deployIndex = -1;
+	for (auto i : surroundCells) {
+		if (Game::getEnvironment()->cellIsPassable(i)) {
+			deployIndex = i;
+		}
 	}
 }
 
@@ -170,4 +189,5 @@ void Building::setDeploy(int cell) {
 
 void Building::complete() {
 	ready = true;
+	loadXml("Objects/buildings/" + dbLevel->nodeName);
 }

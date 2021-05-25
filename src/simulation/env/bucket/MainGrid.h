@@ -46,7 +46,6 @@ public:
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
 	void invalidatePathCache() const;
-	void updateSurround(Static* object) const;
 
 	Urho3D::Vector2 getPositionInBucket(Unit* unit);
 

@@ -203,7 +203,6 @@
     <ClCompile Include="src\simulation\SimInfo.cpp" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
     <ClCompile Include="src\objects\queue\SimpleQueueManager.cpp" />
-    <ClCompile Include="src\objects\queue\AbstractQueueManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
