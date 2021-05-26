@@ -311,6 +311,7 @@ std::vector<int> InfluenceManager::getAreas(const std::span<float> result, char 
 	for (char i = 0; i < maps.size(); ++i) {
 		maps[i]->getIndexesWithByValue(result[i], intersection);
 	}
+	intersection dodac ujemne wartosc tam gdzie widac
 	//TODO pref std::partial_sort
 	const auto inx = sort_indexes(std::span(intersection, arraySize), 256);
 	return centersFromIndexes(intersection, inx, 0.02f * maps.size());

@@ -123,7 +123,7 @@ bool ActionMaker::enoughResources(db_with_cost* withCosts) const {
 
 bool ActionMaker::createBuilding(db_building* building) {
 	if (enoughResources(building)) {
-		auto pos = posToBuild(building);
+		auto pos = findPosToBuild(building);
 		if (pos.has_value()) {
 			return Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId());
 		}
@@ -241,7 +241,7 @@ float ActionMaker::dist(std::valarray<float>& center, const db_basic_metric* met
 	return sq.sum();
 }
 
-std::optional<Urho3D::Vector2> ActionMaker::posToBuild(db_building* building) {
+std::optional<Urho3D::Vector2> ActionMaker::findPosToBuild(db_building* building) const {
 	const auto input = Game::getAiInputProvider()->getBuildingsInputWithMetric(
 		player->getId(), player->getLevelForBuilding(building->id)
 		                       ->dbBuildingMetricPerNation[player->getNation()]);
@@ -256,7 +256,7 @@ std::vector<Building*> ActionMaker::getBuildingsCanDeploy(short unitId) const {
 	for (auto building : buildings) {
 		auto unitIds = player->getLevelForBuilding(building->id)->unitsPerNationIds[player->getNation()];
 
-		if (std::find(unitIds->begin(), unitIds->end(), unitId) != unitIds->end()) {
+		if (std::ranges::find(*unitIds, unitId) != unitIds->end()) {
 			buildingIdsThatCanDeploy.push_back(building->id);
 		}
 	}
@@ -272,8 +272,7 @@ Building* ActionMaker::getBuildingToDeploy(db_unit* unit) const {
 	std::vector<Building*> allPossible = getBuildingsCanDeploy(unit->id);
 	if (allPossible.empty()) { return nullptr; }
 	const auto input = Game::getAiInputProvider()
-		->getUnitsInputWithMetric(player->getId(),
-		                          player->getLevelForUnit(unit->id)->dbUnitMetric);
+		->getUnitsInputWithMetric(player->getId(), player->getLevelForUnit(unit->id)->dbUnitMetric);
 	const auto result = whereUnitCreate->decide(input);
 
 	return getBuildingClosestArea(allPossible, result);

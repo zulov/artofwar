@@ -43,7 +43,7 @@ private:
 
 	bool execute(const std::span<float> unitsInput, const std::span<float> buildingsInput, AiActionType decision);
 
-	std::optional<Urho3D::Vector2> posToBuild(db_building* building);
+	std::optional<Urho3D::Vector2> findPosToBuild(db_building* building) const;
 	std::vector<Building*> getBuildingsCanDeploy(short unitId) const;
 
 	float dist(std::valarray<float>& center, const db_basic_metric* metric);
