@@ -395,6 +395,7 @@
     <ClCompile Include="src\stats\Stats.cpp" />
     <ClCompile Include="src\objects\unit\order\UnitOrder.cpp" />
     <ClCompile Include="src\player\ai\threshold\ThresholdProvider.cpp" />
+    <ClCompile Include="src\simulation\env\influence\map\VisibilityMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\objects\queue\AbstractQueueManager.h" />
@@ -614,6 +615,7 @@
     <ClInclude Include="src\math\VectorUtils.h" />
     <ClInclude Include="src\objects\unit\order\UnitOrder.h" />
     <ClInclude Include="src\player\ai\threshold\ThresholdProvider.h" />
+    <ClInclude Include="src\simulation\env\influence\map\VisibilityMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
