@@ -13,7 +13,7 @@ result
 *.rar
 include
 /CoreData
-saves
 x64
 Database
 /logs
+
