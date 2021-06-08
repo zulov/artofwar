@@ -1,6 +1,5 @@
 #pragma once
 #include "InfluenceMap.h"
-#include "InfluenceMapInt.h"
 
 class VisibilityMap : public InfluenceMap {
 public:

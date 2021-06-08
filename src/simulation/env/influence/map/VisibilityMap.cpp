@@ -14,6 +14,7 @@ VisibilityMap::~VisibilityMap() {
 
 void VisibilityMap::update(Physical* thing, float value) {
 	char sRadius = thing->getSightRadius();
+	if (sRadius < 0) { return; }
 	auto index = calculator->indexFromPosition(thing->getPosition());
 	auto [centerX,centerZ] = calculator->getIndexes(index);
 	const auto minI = calculator->getValid(centerX - sRadius);
@@ -21,13 +22,30 @@ void VisibilityMap::update(Physical* thing, float value) {
 
 	const auto minJ = calculator->getValid(centerZ - sRadius);
 	const auto maxJ = calculator->getValid(centerZ + sRadius);
+
+
+	for (short i = minI; i <= maxI; ++i) {
+		const int index = calculator->getNotSafeIndex(i, minJ);
+		auto* t = &values[index];
+		for (short j = minJ; j <= maxJ; ++j) {
+			*(t++) = 1;
+		}
+	}
+}
+
+void VisibilityMap::updateInt(Physical* thing, int value) {
+	update(thing);
+}
+
+void VisibilityMap::updateInt(int index, int value) const {
+	assert(false);
 }
 
 
 void VisibilityMap::reset() {
 	for (int i = 0; i < arraySize; ++i) {
 		if (values[i] == 1) {
-			values[i] = 1;
+			values[i] = 0;
 		}
 	}
 }

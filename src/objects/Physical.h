@@ -89,6 +89,8 @@ public:
 	void select(Urho3D::Billboard* healthBar, Urho3D::Billboard* aura);
 	static void disableBillboard(Urho3D::Billboard* billboard);
 	void unSelect();
+
+	virtual char getSightRadius() const { return -1; }
 	virtual Urho3D::String toMultiLineString();
 
 	virtual char getLevelNum();

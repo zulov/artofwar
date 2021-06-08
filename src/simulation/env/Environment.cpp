@@ -338,7 +338,7 @@ std::array<float, 5>& Environment::getInfluenceDataAt(char player, const Urho3D:
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,
                                                            const std::span<float> result) {
-	std::vector<int> indexes = influenceManager.getAreas(result, player);dodac widocznosc jako influnace map
+	std::vector<int> indexes = influenceManager.getAreas(result, player);//dodac widocznosc jako influnace map
 	//TODO performance nie obliczać wszystkich centrów tylko te co trzeba
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (auto centerIndex : indexes) {

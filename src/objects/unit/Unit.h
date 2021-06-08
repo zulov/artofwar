@@ -138,7 +138,7 @@ public:
 	void fillValues(std::span<float> weights) const;
 	void addValues(std::span<float> vals) const override;
 	float getInvMaxHp() const override;
-
+	char getSightRadius() const override;
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 private:
 	void changeColor(float value, float maxValue) const;
@@ -169,6 +169,6 @@ private:
 	UnitState nextState;
 	bool stateChangePending = false;
 	unsigned char useSockets = 0;
-	short lastActionThingId = -1;//TODO reset po jakimœ czasie
+	short lastActionThingId = -1; //TODO reset po jakimœ czasie
 	ActionParameter nextActionParameter;
 };

@@ -69,14 +69,16 @@ struct db_attack {
 		  canCloseAttack(initFlag(closeAttackVal)),
 		  canRangeAttack(initFlag(rangeAttackVal)),
 		  canChargeAttack(initFlag(chargeAttackVal)),
-		  canBuildingAttack(initFlag(buildingAttackVal)) { }
+		  canBuildingAttack(initFlag(buildingAttackVal)) {
+	}
 };
 
 struct db_static {
 	const Urho3D::IntVector2 size;
 
 	explicit db_static(const Urho3D::IntVector2& size)
-		: size(size) { }
+		: size(size) {
+	}
 };
 
 struct db_cost {
@@ -85,7 +87,8 @@ struct db_cost {
 
 	db_cost(short resource, short value)
 		: resource(resource),
-		  value(value) { }
+		  value(value) {
+	}
 };
 
 struct db_with_cost {
@@ -118,7 +121,6 @@ private:
 	float params[magic_enum::enum_count<UnitMetric>()];
 	float paramsNorm[magic_enum::enum_count<UnitMetric>()];
 public:
-
 	db_unit_metric(float val1, float val2, float val3, float val4, float val5,
 	               float val6)
 		: params{val1, val2, val3, val4, val5, val6}, paramsNorm{val1, val2, val3, val4, val5, val6} {
@@ -157,7 +159,16 @@ struct db_level {
 	const char level;
 
 	explicit db_level(char level)
-		: level(level) { }
+		: level(level) {
+	}
+};
+
+struct db_sight {
+	const char sightRadius;
+
+	explicit db_sight(char sightRadius)
+		: sightRadius(sightRadius) {
+	}
 };
 
 struct db_with_hp {
@@ -165,10 +176,11 @@ struct db_with_hp {
 	const float invMaxHp;
 
 	explicit db_with_hp(unsigned short maxHp)
-		: maxHp(maxHp), invMaxHp(1.f / maxHp) { }
+		: maxHp(maxHp), invMaxHp(1.f / maxHp) {
+	}
 };
 
-struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp {
+struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp, db_sight {
 	const unsigned short unit;
 	const float minDist;
 	const float maxSep;
@@ -197,7 +209,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 		db_entity(id), db_level(level), db_with_name(name),
 		db_attack(closeAttackVal, rangeAttackVal, chargeAttackVal, buildingAttackVal,
 		          closeAttackSpeed, rangeAttackSpeed, rangeAttackRange, armor),
-		db_with_hp(maxHp),
+		db_with_hp(maxHp), db_sight(3),
 		unit(unit),
 		minDist(minDist),
 		maxSep(maxSep),
@@ -210,7 +222,8 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 		upgradeSpeed(upgradeSpeed),
 		maxForce(maxForce),
 		sqMinSpeed(minSpeed * minSpeed),
-		canCollect(initFlag(collectSpeed)) { }
+		canCollect(initFlag(collectSpeed)) {
+	}
 
 	void finish(float sumCreateCost) {
 		dbUnitMetric = new db_unit_metric(armor * maxHp,
@@ -238,7 +251,8 @@ struct db_unit : db_entity, db_with_name, db_with_cost {
 	db_unit(short id, char* name, char* icon, short actionState)
 		: db_entity(id), db_with_name(name),
 		  icon(icon),
-		  actionState(actionState) { }
+		  actionState(actionState) {
+	}
 
 	std::optional<db_unit_level*> getLevel(short level) {
 		if (levels.size() > level) {
@@ -266,7 +280,8 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 
 	db_building(short id, char* name, short sizeX, short sizeZ, char* icon)
 		: db_entity(id), db_with_name(name), db_static({sizeX, sizeZ}),
-		  icon(icon) { }
+		  icon(icon) {
+	}
 
 	std::optional<db_building_level*> getLevel(short level) {
 		if (levels.size() > level) {
@@ -276,7 +291,7 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 	}
 };
 
-struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp {
+struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp, db_sight {
 	const short building;
 	const Urho3D::String nodeName;
 	const short queueMaxCapacity;
@@ -292,10 +307,11 @@ struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_a
 	                  float rangeAttackVal, short rangeAttackSpeed, short rangeAttackRange, float armor, short maxHp)
 		: db_entity(id), db_level(level), db_with_name(name),
 		  db_attack(0.f, rangeAttackVal, 0.f, 0.f, 0.f, rangeAttackSpeed, rangeAttackRange, armor),
-		  db_with_hp(maxHp),
+		  db_with_hp(maxHp), db_sight(5),
 		  building(building),
 		  nodeName(nodeName),
-		  queueMaxCapacity(queueMaxCapacity) { }
+		  queueMaxCapacity(queueMaxCapacity) {
+	}
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);
@@ -342,7 +358,8 @@ struct db_nation : db_entity, db_with_name {
 		: db_entity(id), db_with_name(name),
 		  actionPrefix(Urho3D::String(actionPrefix).Split(SPLIT_SIGN)),
 		  orderPrefix(Urho3D::String(orderPrefix).Split(SPLIT_SIGN)),
-		  orderThresholdPrefix(Urho3D::String(orderThresholdPrefix).Split(SPLIT_SIGN)) { }
+		  orderThresholdPrefix(Urho3D::String(orderThresholdPrefix).Split(SPLIT_SIGN)) {
+	}
 
 	void refresh() {
 		assert(id<MAX_PLAYERS); //TODO BUG to sa troszke inne rzeczy
@@ -370,5 +387,6 @@ struct db_resource : db_entity, db_with_name, db_static, db_with_hp {
 		  icon(icon),
 		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
 		  maxUsers(maxUsers),
-		  mini_map_color(mini_map_color) { }
+		  mini_map_color(mini_map_color) {
+	}
 };

@@ -6,6 +6,7 @@
 #include <vector>
 #include "player/ai/InfluenceDataType.h"
 
+class VisibilityMap;
 enum class CenterType:char;
 struct GridCalculator;
 class InfluenceMapInt;
@@ -87,6 +88,8 @@ private:
 	std::vector<InfluenceMapQuad*> econQuad;
 	std::vector<InfluenceMapQuad*> buildingsQuad;
 	std::vector<InfluenceMapQuad*> unitsQuad;
+	
+	std::vector<VisibilityMap*> visibilityPerPlayer;
 
 	content_info* ci;
 	GridCalculator* calculator;

@@ -4,6 +4,7 @@
 #include "map/InfluenceMapQuad.h"
 #include "debug/DebugLineRepo.h"
 #include "map/InfluenceMapInt.h"
+#include "map/VisibilityMap.h"
 #include "math/VectorUtils.h"
 #include "objects/CellState.h"
 #include "objects/building/Building.h"
@@ -34,6 +35,8 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 		unitsQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 		buildingsQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 		econQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
+
+		visibilityPerPlayer.emplace_back(new VisibilityMap(mapSize / INF_GRID_FIELD_SIZE, mapSize, 2));
 	}
 
 	resourceInfluence = new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40);
@@ -76,6 +79,8 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(unitsQuad);
 	clear_vector(buildingsQuad);
 	clear_vector(econQuad);
+
+	clear_vector(visibilityPerPlayer);
 	delete ci;
 
 	delete[]intersection;
@@ -311,7 +316,7 @@ std::vector<int> InfluenceManager::getAreas(const std::span<float> result, char 
 	for (char i = 0; i < maps.size(); ++i) {
 		maps[i]->getIndexesWithByValue(result[i], intersection);
 	}
-	intersection dodac ujemne wartosc tam gdzie widac
+	//intersection dodac ujemne wartosc tam gdzie widac
 	//TODO pref std::partial_sort
 	const auto inx = sort_indexes(std::span(intersection, arraySize), 256);
 	return centersFromIndexes(intersection, inx, 0.02f * maps.size());

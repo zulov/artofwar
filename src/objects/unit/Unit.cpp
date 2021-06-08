@@ -498,6 +498,10 @@ float Unit::getInvMaxHp() const {
 	return dbLevel->invMaxHp;
 }
 
+char Unit::getSightRadius() const {
+	return dbLevel->sightRadius;
+}
+
 Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
 	const auto vector = Consts::circleCords[i] * (dbLevel->minDist + toFollow->getMinimalDistance()) * 2;
 	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().z_ + vector.y_};

@@ -26,7 +26,8 @@ public:
 
 	//TODO target to nie to samo co gdzie sie maja pojawiac!
 	AbstractQueueManager* getQueue() const { return queue; }
-
+	bool isReady() const { return ready; }
+	
 	Urho3D::String toMultiLineString() override;
 	float absorbAttack(float attackCoef) override;
 	ObjectType getType() const override { return ObjectType::BUILDING; }
@@ -43,8 +44,8 @@ public:
 	void createDeploy();
 	void setDeploy(int cell);
 	void complete();
-	bool isReady() const { return ready; }
-
+	
+	char getSightRadius() const override;
 private:
 	int deployIndex = -1;
 	bool ready = true;
