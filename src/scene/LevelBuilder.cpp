@@ -1,4 +1,6 @@
 #include "LevelBuilder.h"
+
+#include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Graphics/Terrain.h>
 #include "database/DatabaseCache.h"
@@ -49,6 +51,9 @@ void LevelBuilder::createGround(const Urho3D::String& xmlName, float spacing) {
 	s.x_ = spacing;
 	s.z_ = spacing;
 	terrain->SetSpacing(s);
+	auto a = terrain->GetMaterial();
+	terrain->GetMaterial()->SetUVTransform(Urho3D::Vector2(0, 0), 0.f, 16.f*spacing);
+	
 	if (!SIM_GLOBALS.HEADLESS) {
 		terrain->SetSmoothing(true);
 		node->SetVar("ground", true);

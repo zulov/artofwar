@@ -43,6 +43,8 @@ public:
 
 	void updateInfluenceOther(std::vector<Building*>* buildings) const;
 	void updateQuadOther() const;
+	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const;
+	
 	void invalidateCaches();
 	void update(Unit* unit) const;
 
@@ -119,7 +121,8 @@ public:
 	bool cellIsCollectable(int index) const;
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
-	short getResolution() const { return calculator->getResolution(); };
+	short getResolution() const { return calculator->getResolution(); }
+	bool isVisible(char player, const Urho3D::Vector2& pos);
 
 private:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;

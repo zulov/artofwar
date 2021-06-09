@@ -39,6 +39,7 @@ public:
 	void updateQuadBuildings(std::vector<Building*>* buildings) const;
 	void updateWithHistory() const;
 	void updateQuadOther() const;
+	void updateV,isibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const;
 
 	void drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const;
 
@@ -60,6 +61,7 @@ public:
 	void addCollect(Unit* unit, float value);
 	void addAttack(Unit* unit, float value);
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
+	bool isVisible(char player, const Urho3D::Vector2& pos);
 
 private:
 	std::vector<int> centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;

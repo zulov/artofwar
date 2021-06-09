@@ -49,6 +49,10 @@ std::vector<Physical*>* Environment::getNeighboursFromTeamNotEq(Physical* physic
 	return neights2;
 }
 
+bool Environment::isVisible(char player, const Urho3D::Vector2& pos) {
+	return influenceManager.isVisible(player, pos);
+}
+
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
 	neights->clear();
 
@@ -142,6 +146,10 @@ void Environment::updateInfluenceOther(std::vector<Building*>* buildings) const 
 
 void Environment::updateQuadOther() const {
 	influenceManager.updateQuadOther();
+}
+
+void Environment::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const {
+	influenceManager.updateVisibility(buildings, units);
 }
 
 void Environment::update(Unit* unit) const {
@@ -252,7 +260,7 @@ bool Environment::validateStatic(const Urho3D::IntVector2& size, const Urho3D::I
 }
 
 Urho3D::Vector2 Environment::getCenter(int index) const {
-	return  calculator->getCenter(index);
+	return calculator->getCenter(index);
 }
 
 Urho3D::Vector2 Environment::getCenter(short x, short z) const {
@@ -338,14 +346,14 @@ std::array<float, 5>& Environment::getInfluenceDataAt(char player, const Urho3D:
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,
                                                            const std::span<float> result) {
-	std::vector<int> indexes = influenceManager.getAreas(result, player);//dodac widocznosc jako influnace map
+	std::vector<int> indexes = influenceManager.getAreas(result, player); //dodac widocznosc jako influnace map
 	//TODO performance nie obliczać wszystkich centrów tylko te co trzeba
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (auto centerIndex : indexes) {
 		for (auto index : mainGrid.getCloseCenters(centerIndex, ratio)) {
-			ten index jest widoczny
+			//ten index jest widoczny
 			auto gridCenter = calculator->getCenter(index);
-			if (validateStatic(building->size, gridCenter)) {
+			if (validateStatic(building->size, gridCenter) &&) {
 				return gridCenter;
 			}
 		}
@@ -404,7 +412,7 @@ Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size, co
 
 Urho3D::Vector2 Environment::getValidPosition(const Urho3D::IntVector2& size,
                                               const Urho3D::IntVector2& bucketCords) const {
-	
+
 	return mainGrid.getValidPosition(size, getCenter(calculator->getIndex(bucketCords.x_, bucketCords.y_)));
 }
 

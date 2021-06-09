@@ -20,7 +20,20 @@ constexpr short INF_GRID_FIELD_SIZE = 8.f;
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
-	for (int i = 0; i < numberOfPlayers; ++i) {
+	unitsNumberPerPlayer.reserve(numberOfPlayers);
+	buildingsInfluencePerPlayer.reserve(numberOfPlayers);
+	unitsInfluencePerPlayer.reserve(numberOfPlayers);
+	gatherSpeed.reserve(numberOfPlayers);
+	gatherSpeed.reserve(numberOfPlayers);
+	attackSpeed.reserve(numberOfPlayers);
+	unitsQuad.reserve(numberOfPlayers);
+	buildingsQuad.reserve(numberOfPlayers);
+	econQuad.reserve(numberOfPlayers);
+	visibilityPerPlayer.reserve(numberOfPlayers);
+	mapsForAiPerPlayer.reserve(numberOfPlayers);
+	mapsForCentersPerPlayer.reserve(numberOfPlayers);
+
+	for (int player = 0; player < numberOfPlayers; ++player) {
 		unitsNumberPerPlayer.emplace_back(new InfluenceMapInt(mapSize / INF_GRID_FIELD_SIZE, mapSize, 40));
 		buildingsInfluencePerPlayer.emplace_back(
 			new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 2));
@@ -40,8 +53,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 	}
 
 	resourceInfluence = new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40);
-
-	for (char player = 0; player < numberOfPlayers; ++player) {
+	for (int player = 0; player < numberOfPlayers; ++player) {
 		mapsForAiPerPlayer.emplace_back(std::array<InfluenceMapFloat*, 5>{
 			buildingsInfluencePerPlayer[player],
 			unitsInfluencePerPlayer[player],
@@ -139,6 +151,16 @@ void InfluenceManager::updateWithHistory() const {
 
 void InfluenceManager::updateQuadOther() const {
 	resetMaps(econQuad);
+}
+
+void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const {
+	resetMaps(visibilityPerPlayer);
+	for (auto unit : (*units)) {
+		visibilityPerPlayer[unit->getPlayer()]->update(unit);
+	}
+	for (auto building : (*buildings)) {
+		visibilityPerPlayer[building->getPlayer()]->update(building);
+	}
 }
 
 template <typename T>
@@ -339,6 +361,10 @@ void InfluenceManager::addAttack(Unit* unit, float value) {
 
 std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, char player) {
 	return mapsForCentersPerPlayer[player][cast(id)]->getCenter();
+}
+
+bool InfluenceManager::isVisible(char player, const Urho3D::Vector2& pos) {
+	return visibilityPerPlayer[player]->getValueAt(pos) == 1;
 }
 
 std::vector<int> InfluenceManager::centersFromIndexes(float* values, const std::vector<unsigned>& indexes,

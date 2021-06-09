@@ -17,7 +17,8 @@ enum class PerFrameAction:char {
 	AI_ACTION,
 	AI_ORDER,
 	QUEUE_HUD,
-	HUD_UPDATE
+	HUD_UPDATE,
+	VISIBILITY
 };
 
 inline struct PerFrameActionData {
@@ -79,7 +80,12 @@ private:
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 		}, //AI_ORDER
 		ONCE_PER_2_SECONDS, //QUEUE_HUD
-		ONCE_PER_SECOND //HUD_UPDATE
+		ONCE_PER_SECOND, //HUD_UPDATE
+		{
+			0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+		}
 	};
 public:
 	static bool get(PerFrameAction type, unsigned char frameNum, unsigned int second = 1) {

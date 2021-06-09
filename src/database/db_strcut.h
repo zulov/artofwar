@@ -181,7 +181,9 @@ struct db_with_hp {
 };
 
 struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp, db_sight {
+	const bool canCollect;
 	const unsigned short unit;
+
 	const float minDist;
 	const float maxSep;
 	const float mass;
@@ -193,7 +195,6 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	const float upgradeSpeed;
 	const float maxForce;
 	const float sqMinSpeed;
-	const bool canCollect;
 
 	const Urho3D::String nodeName;
 
@@ -239,14 +240,13 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	}
 };
 
-struct db_unit : db_entity, db_with_name, db_with_cost {
-	const Urho3D::String icon;
+struct db_unit : db_with_name, db_with_cost, db_entity {
 	const short actionState;
+	const Urho3D::String icon;
 
 	std::vector<db_unit_level*> levels;
 
 	std::vector<db_nation*> nations;
-
 
 	db_unit(short id, char* name, char* icon, short actionState)
 		: db_entity(id), db_with_name(name),
@@ -291,10 +291,10 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 	}
 };
 
-struct db_building_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp, db_sight {
+struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_sight, db_with_hp, db_attack {
 	const short building;
-	const Urho3D::String nodeName;
 	const short queueMaxCapacity;
+	const Urho3D::String nodeName;
 
 	std::vector<db_unit*> allUnits;
 
@@ -375,11 +375,12 @@ struct db_nation : db_entity, db_with_name {
 	}
 };
 
-struct db_resource : db_entity, db_with_name, db_static, db_with_hp {
-	const Urho3D::String icon;
-	Urho3D::Vector<Urho3D::String> nodeName;
+struct db_resource : db_with_name, db_static, db_with_hp, db_entity {
 	const short maxUsers;
 	const unsigned mini_map_color;
+	const Urho3D::String icon;
+	Urho3D::Vector<Urho3D::String> nodeName;
+
 
 	db_resource(short id, char* name, char* icon, unsigned short maxHp, char* nodeName, short sizeX,
 	            short sizeZ, short maxUsers, unsigned mini_map_color)
