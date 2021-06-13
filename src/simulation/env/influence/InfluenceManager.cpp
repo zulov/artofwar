@@ -17,6 +17,7 @@
 constexpr char MAX_DEBUG_PARTS_INFLUENCE = 32;
 constexpr char INF_LEVEL = 4;
 constexpr short INF_GRID_FIELD_SIZE = 8.f;
+constexpr short VISIBILITY_GRID_FIELD_SIZE = 4.f;
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
@@ -49,7 +50,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 		buildingsQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 		econQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 
-		visibilityPerPlayer.emplace_back(new VisibilityMap(mapSize / INF_GRID_FIELD_SIZE, mapSize, 2));
+		visibilityPerPlayer.emplace_back(new VisibilityMap(mapSize / VISIBILITY_GRID_FIELD_SIZE, mapSize, 2));
 	}
 
 	resourceInfluence = new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40);
@@ -184,8 +185,8 @@ void InfluenceManager::drawAll(const std::vector<T*>& maps, Urho3D::String name)
 	}
 }
 
-
-void InfluenceManager::drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const {
+template <typename T>
+void InfluenceManager::drawMap(char index, const std::vector<T*>& vector) const {
 	index = index % vector.size();
 	vector[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 }
@@ -209,6 +210,9 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 		break;
 	case InfluenceDataType::RESOURCE_INFLUENCE:
 		resourceInfluence->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		break;
+		case InfluenceDataType::VISIBILITY:
+			drawMap(index, visibilityPerPlayer);
 		break;
 	default: ;
 	}

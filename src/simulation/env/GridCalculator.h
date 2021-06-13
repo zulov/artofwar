@@ -5,7 +5,7 @@ struct GridCalculator {
 
 	explicit GridCalculator(unsigned short resolution, float size)
 		: sqResolution(resolution * resolution), resolution(resolution),
-		  invFieldSize(resolution / size), fieldSize(size / resolution), size(size), halfSize(size / 2.f) {
+		  halfSize(size * 0.5f), invFieldSize(static_cast<float>(resolution) / size), fieldSize(size / static_cast<float>(resolution)) {
 	}
 
 	GridCalculator(const GridCalculator&) = delete;
@@ -68,7 +68,6 @@ struct GridCalculator {
 	}
 
 	unsigned short getResolution() const { return resolution; }
-	float getSize() const { return size; }
 
 	float getDistance(const Urho3D::IntVector2& a, int next) const {
 		const auto b = getIndexes(next);
@@ -81,11 +80,14 @@ struct GridCalculator {
 		return getDistance(getIndexes(first), next);
 	}
 
+	float getSize() const  {
+		return fieldSize * resolution;
+	}
+
 private:
 	unsigned int sqResolution;
 	unsigned short resolution;
 	float halfSize;
 	float invFieldSize;
 	float fieldSize;
-	float size;
 };

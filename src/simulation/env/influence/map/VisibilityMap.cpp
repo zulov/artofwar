@@ -15,6 +15,7 @@ VisibilityMap::~VisibilityMap() {
 void VisibilityMap::update(Physical* thing, float value) {
 	char sRadius = thing->getSightRadius();
 	if (sRadius < 0) { return; }
+	//TODO nie kwadrat tylko ko³os
 	auto index = calculator->indexFromPosition(thing->getPosition());
 	auto [centerX,centerZ] = calculator->getIndexes(index);
 	const auto minI = calculator->getValid(centerX - sRadius);

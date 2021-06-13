@@ -41,8 +41,6 @@ public:
 	void updateQuadOther() const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const;
 
-	void drawMap(char index, const std::vector<InfluenceMapFloat*>& vector) const;
-
 	void draw(InfluenceDataType type, char index);
 	void drawAll() const;
 	void switchDebug();
@@ -71,7 +69,8 @@ private:
 	void resetMaps(const std::vector<T*>& maps) const;
 	template <typename T>
 	void finalize(const std::vector<T*>& maps) const;
-
+	template <typename T>
+	void drawMap(char index, const std::vector<T*>& vector) const;
 	template <typename T>
 	void drawAll(const std::vector<T*>& maps, Urho3D::String name) const;
 

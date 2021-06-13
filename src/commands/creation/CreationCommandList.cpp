@@ -23,7 +23,7 @@ CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& posit
 	db_building* building = Game::getDatabase()->getBuilding(id);
 	if (resources.hasEnough(building->costs)) {
 		const auto env = Game::getEnvironment();
-		if (env->validateStatic(building->size, position) && env->isVisible(position)) {
+		if (env->validateStatic(building->size, position) && env->isVisible(player, position)) {
 			resources.reduce(building->costs);
 			return new CreationCommand(ObjectType::BUILDING, id, env->getCords(position), level, player);
 		}

@@ -179,7 +179,7 @@ void MainGrid::drawDebug(GridDebugType type) const {
 	case GridDebugType::NONE:
 		break;
 	case GridDebugType::GRID: {
-		float size = calculator->getSize();
+		const float size = calculator->getSize();
 		float value = -size / 2;
 		for (int i = 0; i < resolution; ++i) {
 			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, {-size / 2, 10, value},

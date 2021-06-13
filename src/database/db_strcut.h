@@ -210,7 +210,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 		db_entity(id), db_level(level), db_with_name(name),
 		db_attack(closeAttackVal, rangeAttackVal, chargeAttackVal, buildingAttackVal,
 		          closeAttackSpeed, rangeAttackSpeed, rangeAttackRange, armor),
-		db_with_hp(maxHp), db_sight(3),
+		db_with_hp(maxHp), db_sight(1),
 		unit(unit),
 		minDist(minDist),
 		maxSep(maxSep),
@@ -307,7 +307,7 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_s
 	                  float rangeAttackVal, short rangeAttackSpeed, short rangeAttackRange, float armor, short maxHp)
 		: db_entity(id), db_level(level), db_with_name(name),
 		  db_attack(0.f, rangeAttackVal, 0.f, 0.f, 0.f, rangeAttackSpeed, rangeAttackRange, armor),
-		  db_with_hp(maxHp), db_sight(5),
+		  db_with_hp(maxHp), db_sight(2),
 		  building(building),
 		  nodeName(nodeName),
 		  queueMaxCapacity(queueMaxCapacity) {

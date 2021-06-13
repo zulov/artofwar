@@ -556,7 +556,7 @@ void Controls::buildControl() {
 				tempBuildingNode->SetEnabled(true);
 			}
 			Urho3D::String textureName;
-			if (env->validateStatic(building->size, hitPos) && env->isVisible) {
+			if (env->validateStatic(building->size, hitPos) && env->isVisible(Game::getPlayersMan()->getActivePlayerID(), hitPos)) {
 				textureName = "Materials/green_overlay.xml";
 			} else {
 				textureName = "Materials/red_overlay.xml";
