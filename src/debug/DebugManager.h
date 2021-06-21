@@ -3,6 +3,7 @@
 #include "debug/EnvironmentDebugMode.h"
 #include "objects/unit/SimColorMode.h"
 
+
 namespace Urho3D {
 	class Input;
 }
@@ -22,7 +23,7 @@ private:
 	EnvironmentDebugMode nextEnvMode[magic_enum::enum_count<EnvironmentDebugMode>()] = {
 		EnvironmentDebugMode::MAIN_GRID, EnvironmentDebugMode::INF_UNITS_NUMBER_PER_PLAYER,
 		EnvironmentDebugMode::INF_UNITS_INFLUENCE_PER_PLAYER, EnvironmentDebugMode::INF_BUILDING_INFLUENCE_PER_PLAYER,
-		EnvironmentDebugMode::INF_RESOURCE, EnvironmentDebugMode::NONE
+		EnvironmentDebugMode::INF_RESOURCE, EnvironmentDebugMode::VISIBILITY, EnvironmentDebugMode::NONE
 	};
 	SimColorMode nextColorMode[magic_enum::enum_count<SimColorMode>()] = {
 		SimColorMode::VELOCITY, SimColorMode::STATE, SimColorMode::FORMATION, SimColorMode::BASIC

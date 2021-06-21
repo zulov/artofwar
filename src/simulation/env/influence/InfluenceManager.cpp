@@ -199,8 +199,7 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 	case InfluenceDataType::NONE:
 		break;
 	case InfluenceDataType::UNITS_NUMBER_PER_PLAYER:
-		index = index % unitsNumberPerPlayer.size();
-		unitsNumberPerPlayer[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+		drawMap(index, unitsNumberPerPlayer);
 		break;
 	case InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER:
 		drawMap(index, unitsInfluencePerPlayer);
@@ -211,8 +210,23 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 	case InfluenceDataType::RESOURCE_INFLUENCE:
 		resourceInfluence->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
-		case InfluenceDataType::VISIBILITY:
-			drawMap(index, visibilityPerPlayer);
+	case InfluenceDataType::GATHER_SPEED:
+		drawMap(index, gatherSpeed);
+		break;
+	case InfluenceDataType::ATTACK_SPEED:
+		drawMap(index, attackSpeed);
+		break;
+	case InfluenceDataType::ECON_QUAD:
+		drawMap(index, econQuad);
+		break;
+	case InfluenceDataType::BUILDINGS_QUAD:
+		drawMap(index, buildingsQuad);
+		break;
+	case InfluenceDataType::UNITS_QUAD:
+		drawMap(index, unitsQuad);
+		break;
+	case InfluenceDataType::VISIBILITY:
+		drawMap(index, visibilityPerPlayer);
 		break;
 	default: ;
 	}

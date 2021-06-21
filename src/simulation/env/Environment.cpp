@@ -308,28 +308,10 @@ unsigned char Environment::getRevertCloseIndex(int center, int gridIndex) const 
 }
 
 void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char index) {
-	switch (environmentDebugMode) {
-	case EnvironmentDebugMode::NONE:
-		influenceManager.draw(InfluenceDataType::NONE, index);
-		break;
-	case EnvironmentDebugMode::MAIN_GRID:
+	if(environmentDebugMode== EnvironmentDebugMode::MAIN_GRID) {
 		mainGrid.drawDebug(GridDebugType(index % magic_enum::enum_count<GridDebugType>()));
-		influenceManager.draw(InfluenceDataType::NONE, index);
-		break;
-	case EnvironmentDebugMode::INF_UNITS_NUMBER_PER_PLAYER:
-		influenceManager.draw(InfluenceDataType::UNITS_NUMBER_PER_PLAYER, index);
-		break;
-	case EnvironmentDebugMode::INF_UNITS_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER, index);
-		break;
-	case EnvironmentDebugMode::INF_BUILDING_INFLUENCE_PER_PLAYER:
-		influenceManager.draw(InfluenceDataType::BUILDING_INFLUENCE_PER_PLAYER, index);
-		break;
-	case EnvironmentDebugMode::INF_RESOURCE:
-		influenceManager.draw(InfluenceDataType::RESOURCE_INFLUENCE, index);
-		break;
-	default: ;
 	}
+	influenceManager.draw(ENV_TO_INF_MAP[cast(environmentDebugMode)], index);
 }
 
 const std::vector<short>& Environment::getCloseIndexs(int center) const {
