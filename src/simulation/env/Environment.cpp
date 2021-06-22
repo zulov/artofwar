@@ -18,7 +18,7 @@ Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolut
 	teamUnitGrid{
 		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256},
 		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256}
-	}, influenceManager(MAX_PLAYERS, mainMapResolution), terrain(terrain),
+	}, influenceManager(MAX_PLAYERS, mapSize), terrain(terrain),
 	calculator(GridCalculatorProvider::get(mainMapResolution, mapSize)) {
 	neights = new std::vector<Physical*>();
 	neights2 = new std::vector<Physical*>();
@@ -308,7 +308,7 @@ unsigned char Environment::getRevertCloseIndex(int center, int gridIndex) const 
 }
 
 void Environment::drawDebug(EnvironmentDebugMode environmentDebugMode, char index) {
-	if(environmentDebugMode== EnvironmentDebugMode::MAIN_GRID) {
+	if (environmentDebugMode == EnvironmentDebugMode::MAIN_GRID) {
 		mainGrid.drawDebug(GridDebugType(index % magic_enum::enum_count<GridDebugType>()));
 	}
 	influenceManager.draw(ENV_TO_INF_MAP[cast(environmentDebugMode)], index);

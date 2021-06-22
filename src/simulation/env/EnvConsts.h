@@ -12,7 +12,7 @@ constexpr inline InfluenceDataType ENV_TO_INF_MAP[magic_enum::enum_count<Environ
 	InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER, InfluenceDataType::BUILDING_INFLUENCE_PER_PLAYER,
 	InfluenceDataType::RESOURCE_INFLUENCE, InfluenceDataType::GATHER_SPEED, InfluenceDataType::ATTACK_SPEED,
 
-	InfluenceDataType::ECON_QUAD, InfluenceDataType::BUILDINGS_QUAD, InfluenceDataType::UNITS_QUAD,
+	//InfluenceDataType::ECON_QUAD, InfluenceDataType::BUILDINGS_QUAD, InfluenceDataType::UNITS_QUAD,
 
 	InfluenceDataType::VISIBILITY
 };

@@ -17,7 +17,7 @@
 constexpr char MAX_DEBUG_PARTS_INFLUENCE = 32;
 constexpr char INF_LEVEL = 4;
 constexpr short INF_GRID_FIELD_SIZE = 8.f;
-constexpr short VISIBILITY_GRID_FIELD_SIZE = 4.f;
+constexpr short VISIBILITY_GRID_FIELD_SIZE = 2.f;
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
@@ -186,9 +186,9 @@ void InfluenceManager::drawAll(const std::vector<T*>& maps, Urho3D::String name)
 }
 
 template <typename T>
-void InfluenceManager::drawMap(char index, const std::vector<T*>& vector) const {
-	index = index % vector.size();
-	vector[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+void InfluenceManager::drawMap(char index, const std::vector<T*>& maps) const {
+	index = index % maps.size();
+	maps[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 }
 
 void InfluenceManager::draw(InfluenceDataType type, char index) {
@@ -216,15 +216,15 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 	case InfluenceDataType::ATTACK_SPEED:
 		drawMap(index, attackSpeed);
 		break;
-	case InfluenceDataType::ECON_QUAD:
-		drawMap(index, econQuad);
-		break;
-	case InfluenceDataType::BUILDINGS_QUAD:
-		drawMap(index, buildingsQuad);
-		break;
-	case InfluenceDataType::UNITS_QUAD:
-		drawMap(index, unitsQuad);
-		break;
+	// case InfluenceDataType::ECON_QUAD:
+	// 	drawMap(index, econQuad);
+	// 	break;
+	// case InfluenceDataType::BUILDINGS_QUAD:
+	// 	drawMap(index, buildingsQuad);
+	// 	break;
+	// case InfluenceDataType::UNITS_QUAD:
+	// 	drawMap(index, unitsQuad);
+	// 	break;
 	case InfluenceDataType::VISIBILITY:
 		drawMap(index, visibilityPerPlayer);
 		break;

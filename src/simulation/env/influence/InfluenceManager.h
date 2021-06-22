@@ -70,10 +70,10 @@ private:
 	template <typename T>
 	void finalize(const std::vector<T*>& maps) const;
 	template <typename T>
-	void drawMap(char index, const std::vector<T*>& vector) const;
+	void drawMap(char index, const std::vector<T*>& maps) const;
 	template <typename T>
 	void drawAll(const std::vector<T*>& maps, Urho3D::String name) const;
-
+	
 	std::vector<std::array<InfluenceMapFloat*, 5>> mapsForAiPerPlayer;
 	std::vector<std::array<InfluenceMapQuad*, 3>> mapsForCentersPerPlayer;
 

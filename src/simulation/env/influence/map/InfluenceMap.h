@@ -26,10 +26,10 @@ protected:
 	unsigned int arraySize;
 	const float valueThresholdDebug;
 
-	int counter = 0;
-	unsigned short resolution;
-
-	bool minMaxInited = false;
 	float min;
 	float max;
+
+	unsigned short counter = 0;
+
+	bool minMaxInited = false;
 };

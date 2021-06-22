@@ -10,7 +10,6 @@
 
 
 InfluenceMap::InfluenceMap(unsigned short resolution, float size, float valueThresholdDebug):
-	resolution(resolution),
 	arraySize(resolution * resolution), valueThresholdDebug(valueThresholdDebug),
 	calculator(GridCalculatorProvider::get(resolution, size)) {}
 
@@ -51,6 +50,7 @@ float InfluenceMap::getFieldSize() const {
 
 void InfluenceMap::print(Urho3D::String name) {
 	auto image = new Urho3D::Image(Game::getContext());
+	const auto resolution = getResolution();
 	image->SetSize(resolution, resolution, 4);
 	computeMinMax();
 	for (short y = 0; y != resolution; ++y) {
