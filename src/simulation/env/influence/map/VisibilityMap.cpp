@@ -1,11 +1,17 @@
 #include "VisibilityMap.h"
 
+#include "VisibilityType.h"
 #include "objects/Physical.h"
+#include "simulation/env/GridCalculatorProvider.h"
+#include "simulation/env/bucket/levels/LevelCache.h"
+#include "simulation/env/bucket/levels/LevelCacheProvider.h"
+#include "utils/OtherUtils.h"
 
-VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug): InfluenceMap(
-	resolution, size, valueThresholdDebug) {
-	values = new char[arraySize];
-	std::fill_n(values, arraySize, -1);
+VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug)
+	: InfluenceMap(resolution, size, valueThresholdDebug),
+	  levelCache(LevelCacheProvider::get(resolution, 60.f, calculator)) {
+	values = new VisibilityType[arraySize];
+	std::fill_n(values, arraySize, VisibilityType::NONE);
 }
 
 VisibilityMap::~VisibilityMap() {
@@ -13,23 +19,14 @@ VisibilityMap::~VisibilityMap() {
 }
 
 void VisibilityMap::update(Physical* thing, float value) {
-	char sRadius = thing->getSightRadius();
+	auto sRadius = thing->getSightRadius();
 	if (sRadius < 0) { return; }
-	//TODO nie kwadrat tylko ko³os
-	auto index = calculator->indexFromPosition(thing->getPosition());
-	auto [centerX,centerZ] = calculator->getIndexes(index);
-	const auto minI = calculator->getValid(centerX - sRadius);
-	const auto maxI = calculator->getValid(centerX + sRadius);
-
-	const auto minJ = calculator->getValid(centerZ - sRadius);
-	const auto maxJ = calculator->getValid(centerZ + sRadius);
-
-
-	for (short i = minI; i <= maxI; ++i) {
-		const int index = calculator->getNotSafeIndex(i, minJ);
-		auto* t = &values[index];
-		for (short j = minJ; j <= maxJ; ++j) {
-			*(t++) = 1;
+	auto centerIdx = calculator->indexFromPosition(thing->getPosition());
+	auto levels = levelCache->get(sRadius);
+	for (auto level : *levels) {
+		auto index = centerIdx + level;
+		if (calculator->isValidIndex(index)) {
+			values[index] = VisibilityType::VISIBLE;
 		}
 	}
 }
@@ -45,8 +42,8 @@ void VisibilityMap::updateInt(int index, int value) const {
 
 void VisibilityMap::reset() {
 	for (int i = 0; i < arraySize; ++i) {
-		if (values[i] == 1) {
-			values[i] = 0;
+		if (values[i] == VisibilityType::VISIBLE) {
+			values[i] = VisibilityType::SEEN;
 		}
 	}
 }
@@ -73,14 +70,14 @@ float VisibilityMap::getValueAsPercent(const int index) const {
 }
 
 float VisibilityMap::getValueAt(int index) const {
-	return values[index];
+	return cast(values[index]);
 }
 
 void VisibilityMap::computeMinMax() {
 	if (!minMaxInited) {
 		const auto [minIdx, maxIdx] = std::minmax_element(values, values + arraySize);
-		min = *minIdx;
-		max = *maxIdx;
+		min = cast(*minIdx);
+		max = cast(*maxIdx);
 		minMaxInited = true;
 	}
 }

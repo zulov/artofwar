@@ -192,6 +192,6 @@ void Building::complete() {
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
 }
 
-char Building::getSightRadius() const {
+float Building::getSightRadius() const {
 	return dbLevel->sightRadius;
 }

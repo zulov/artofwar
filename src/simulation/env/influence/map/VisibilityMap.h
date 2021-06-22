@@ -1,6 +1,9 @@
 #pragma once
 #include "InfluenceMap.h"
 
+enum class VisibilityType : char;
+class LevelCache;
+
 class VisibilityMap : public InfluenceMap {
 public:
 	VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug);
@@ -16,5 +19,6 @@ public:
 	float getValueAt(int index) const override;
 	void computeMinMax() override;
 private:
-	char* values;
+	VisibilityType* values;
+	LevelCache* levelCache;
 };

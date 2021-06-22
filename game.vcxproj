@@ -408,6 +408,7 @@
     <ClInclude Include="src\math\SpanUtils.h" />
     <ClInclude Include="src\objects\unit\GroupUtils.h" />
     <ClInclude Include="src\scene\save\SQLConsts.h" />
+    <ClInclude Include="src\simulation\env\influence\map\VisibilityType.h" />
     <ClInclude Include="src\simulation\FrameInfo.h" />
     <ClInclude Include="src\simulation\SimInfo.h" />
     <ClInclude Include="src\player\ai\AiActionType.h" />

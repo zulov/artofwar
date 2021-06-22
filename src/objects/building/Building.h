@@ -45,7 +45,7 @@ public:
 	void setDeploy(int cell);
 	void complete();
 	
-	char getSightRadius() const override;
+	float getSightRadius() const override;
 private:
 	int deployIndex = -1;
 	bool ready = true;

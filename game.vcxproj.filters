@@ -534,6 +534,7 @@
     <ClInclude Include="src\objects\queue\SimpleQueueManager.h" />
     <ClInclude Include="src\objects\queue\AbstractQueueManager.h" />
     <ClInclude Include="src\simulation\env\influence\map\VisibilityMap.h" />
+    <ClInclude Include="src\simulation\env\influence\map\VisibilityType.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

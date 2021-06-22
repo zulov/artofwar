@@ -90,7 +90,7 @@ public:
 	static void disableBillboard(Urho3D::Billboard* billboard);
 	void unSelect();
 
-	virtual char getSightRadius() const { return -1; }
+	virtual float getSightRadius() const { return -1.f; }
 	virtual Urho3D::String toMultiLineString();
 
 	virtual char getLevelNum();

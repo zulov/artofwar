@@ -498,7 +498,7 @@ float Unit::getInvMaxHp() const {
 	return dbLevel->invMaxHp;
 }
 
-char Unit::getSightRadius() const {
+float Unit::getSightRadius() const {
 	return dbLevel->sightRadius;
 }
 

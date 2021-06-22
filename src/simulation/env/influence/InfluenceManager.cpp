@@ -5,6 +5,7 @@
 #include "debug/DebugLineRepo.h"
 #include "map/InfluenceMapInt.h"
 #include "map/VisibilityMap.h"
+#include "map/VisibilityType.h"
 #include "math/VectorUtils.h"
 #include "objects/CellState.h"
 #include "objects/building/Building.h"
@@ -382,7 +383,7 @@ std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, char
 }
 
 bool InfluenceManager::isVisible(char player, const Urho3D::Vector2& pos) {
-	return visibilityPerPlayer[player]->getValueAt(pos) == 1;
+	return visibilityPerPlayer[player]->getValueAt(pos) == static_cast<char>(VisibilityType::VISIBLE);
 }
 
 std::vector<int> InfluenceManager::centersFromIndexes(float* values, const std::vector<unsigned>& indexes,
