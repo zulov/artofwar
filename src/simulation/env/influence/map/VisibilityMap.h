@@ -19,6 +19,9 @@ public:
 	float getValueAt(int index) const override;
 	void computeMinMax() override;
 private:
+	void ensureReady();
 	VisibilityType* values;
+	bool* valuesForInfluence;
 	LevelCache* levelCache;
+	bool valuesForInfluenceReady;
 };

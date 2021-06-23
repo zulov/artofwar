@@ -12,10 +12,13 @@ VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueT
 	  levelCache(LevelCacheProvider::get(resolution, 60.f, calculator)) {
 	values = new VisibilityType[arraySize];
 	std::fill_n(values, arraySize, VisibilityType::NONE);
+	valuesForInfluence = new bool[arraySize / 4];
+	std::fill_n(valuesForInfluence, arraySize / 4, false);
 }
 
 VisibilityMap::~VisibilityMap() {
 	delete[] values;
+	delete[] valuesForInfluence;
 }
 
 void VisibilityMap::update(Physical* thing, float value) {
@@ -79,5 +82,33 @@ void VisibilityMap::computeMinMax() {
 		min = cast(*minIdx);
 		max = cast(*maxIdx);
 		minMaxInited = true;
+	}
+}
+
+void VisibilityMap::ensureReady() {
+	if (valuesForInfluenceReady == false) {
+		std::fill_n(valuesForInfluence, arraySize / 4, false);
+
+
+		auto parent = values;
+		const int parentRes = sqrt(arraySize); //TODO bug a co z zaokragleniem
+		const auto current = valuesForInfluence;
+		const int currentRes = sqrt(arraySize / 4);
+		for (int j = 0; j < arraySize; ++j) {
+			if (parent[j] == VisibilityType::VISIBLE) {
+				auto x = j / parentRes;
+				auto z = j % parentRes;
+				x /= 2;
+				z /= 2;
+
+				const int newIndex = x * currentRes + z;
+				assert(newIndex<currentRes*currentRes);
+				current[newIndex] = true;
+
+			}
+		}
+
+
+		valuesForInfluenceReady = true;
 	}
 }

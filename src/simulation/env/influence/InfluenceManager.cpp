@@ -18,7 +18,7 @@
 constexpr char MAX_DEBUG_PARTS_INFLUENCE = 32;
 constexpr char INF_LEVEL = 4;
 constexpr short INF_GRID_FIELD_SIZE = 8.f;
-constexpr short VISIBILITY_GRID_FIELD_SIZE = 2.f;
+constexpr short VISIBILITY_GRID_FIELD_SIZE = INF_GRID_FIELD_SIZE / 2;
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
@@ -75,10 +75,12 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 	ci = new content_info();
 	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
 
-	assert(unitsNumberPerPlayer[0]->getResolution() == unitsInfluencePerPlayer[0]->getResolution()
-		&& calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
 	arraySize = calculator->getResolution() * calculator->getResolution();
 	intersection = new float[arraySize];
+
+	assert(unitsNumberPerPlayer[0]->getResolution() == unitsInfluencePerPlayer[0]->getResolution()
+		&& calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
+	assert(visibilityPerPlayer[0]->getResolution() / buildingsInfluencePerPlayer[0]->getResolution()==2);
 }
 
 InfluenceManager::~InfluenceManager() {
@@ -217,15 +219,15 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 	case InfluenceDataType::ATTACK_SPEED:
 		drawMap(index, attackSpeed);
 		break;
-	// case InfluenceDataType::ECON_QUAD:
-	// 	drawMap(index, econQuad);
-	// 	break;
-	// case InfluenceDataType::BUILDINGS_QUAD:
-	// 	drawMap(index, buildingsQuad);
-	// 	break;
-	// case InfluenceDataType::UNITS_QUAD:
-	// 	drawMap(index, unitsQuad);
-	// 	break;
+		// case InfluenceDataType::ECON_QUAD:
+		// 	drawMap(index, econQuad);
+		// 	break;
+		// case InfluenceDataType::BUILDINGS_QUAD:
+		// 	drawMap(index, buildingsQuad);
+		// 	break;
+		// case InfluenceDataType::UNITS_QUAD:
+		// 	drawMap(index, unitsQuad);
+		// 	break;
 	case InfluenceDataType::VISIBILITY:
 		drawMap(index, visibilityPerPlayer);
 		break;
@@ -351,7 +353,8 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 std::vector<int> InfluenceManager::getAreas(const std::span<float> result, char player) {
 	auto& maps = mapsForAiPerPlayer[player];
 	assert(result.size()==maps.size());
-
+	auto a = visibilityPerPlayer[player]->getResolution();
+	auto a1 = maps[0]->getResolution();
 	std::fill_n(intersection, arraySize, 0.f);
 
 	for (char i = 0; i < maps.size(); ++i) {
