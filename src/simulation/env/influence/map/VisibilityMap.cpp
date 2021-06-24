@@ -22,12 +22,12 @@ VisibilityMap::~VisibilityMap() {
 }
 
 void VisibilityMap::update(Physical* thing, float value) {
-	auto sRadius = thing->getSightRadius();
+	valuesForInfluenceReady = false;
+	const auto sRadius = thing->getSightRadius();
 	if (sRadius < 0) { return; }
-	auto centerIdx = calculator->indexFromPosition(thing->getPosition());
-	auto levels = levelCache->get(sRadius);
-	for (auto level : *levels) {
-		auto index = centerIdx + level;
+	const auto centerIdx = calculator->indexFromPosition(thing->getPosition());
+	for (auto level : *levelCache->get(sRadius)) {
+		const auto index = centerIdx + level;
 		if (calculator->isValidIndex(index)) {
 			values[index] = VisibilityType::VISIBLE;
 		}
@@ -35,6 +35,7 @@ void VisibilityMap::update(Physical* thing, float value) {
 }
 
 void VisibilityMap::updateInt(Physical* thing, int value) {
+	valuesForInfluenceReady = false;
 	update(thing);
 }
 
@@ -85,12 +86,20 @@ void VisibilityMap::computeMinMax() {
 	}
 }
 
+void VisibilityMap::removeUnseen(float* intersection) {
+	ensureReady();
+	const int size = arraySize / 4;
+	for (int i = 0; i < size; ++i) {
+		if (!valuesForInfluence[i]) {
+			intersection[i] = std::numeric_limits<float>::max();
+		}
+	}
+}
+
 void VisibilityMap::ensureReady() {
 	if (valuesForInfluenceReady == false) {
 		std::fill_n(valuesForInfluence, arraySize / 4, false);
-
-
-		auto parent = values;
+		const auto parent = values;
 		const int parentRes = sqrt(arraySize); //TODO bug a co z zaokragleniem
 		const auto current = valuesForInfluence;
 		const int currentRes = sqrt(arraySize / 4);
@@ -104,11 +113,8 @@ void VisibilityMap::ensureReady() {
 				const int newIndex = x * currentRes + z;
 				assert(newIndex<currentRes*currentRes);
 				current[newIndex] = true;
-
 			}
 		}
-
-
 		valuesForInfluenceReady = true;
 	}
 }

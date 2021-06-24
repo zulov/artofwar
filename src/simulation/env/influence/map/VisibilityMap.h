@@ -18,10 +18,11 @@ public:
 	float getValueAsPercent(const int index) const override;
 	float getValueAt(int index) const override;
 	void computeMinMax() override;
+	void removeUnseen(float* intersection);
 private:
 	void ensureReady();
 	VisibilityType* values;
 	bool* valuesForInfluence;
 	LevelCache* levelCache;
-	bool valuesForInfluenceReady;
+	bool valuesForInfluenceReady = false;
 };

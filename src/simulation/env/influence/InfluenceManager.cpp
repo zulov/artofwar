@@ -353,13 +353,14 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 std::vector<int> InfluenceManager::getAreas(const std::span<float> result, char player) {
 	auto& maps = mapsForAiPerPlayer[player];
 	assert(result.size()==maps.size());
-	auto a = visibilityPerPlayer[player]->getResolution();
-	auto a1 = maps[0]->getResolution();
+	assert(arraySize == visibilityPerPlayer[player]->getResolution()* visibilityPerPlayer[player]->getResolution());
+
 	std::fill_n(intersection, arraySize, 0.f);
 
 	for (char i = 0; i < maps.size(); ++i) {
 		maps[i]->getIndexesWithByValue(result[i], intersection);
 	}
+	visibilityPerPlayer[player]->removeUnseen(intersection);
 	//intersection dodac ujemne wartosc tam gdzie widac
 	//TODO pref std::partial_sort
 	const auto inx = sort_indexes(std::span(intersection, arraySize), 256);
