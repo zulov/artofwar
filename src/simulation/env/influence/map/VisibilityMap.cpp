@@ -1,6 +1,7 @@
 #include "VisibilityMap.h"
 
 #include "VisibilityType.h"
+#include "math/SpanUtils.h"
 #include "objects/Physical.h"
 #include "simulation/env/GridCalculatorProvider.h"
 #include "simulation/env/bucket/levels/LevelCache.h"
@@ -42,7 +43,6 @@ void VisibilityMap::updateInt(Physical* thing, int value) {
 void VisibilityMap::updateInt(int index, int value) const {
 	assert(false);
 }
-
 
 void VisibilityMap::reset() {
 	for (int i = 0; i < arraySize; ++i) {

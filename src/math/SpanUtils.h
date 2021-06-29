@@ -8,7 +8,8 @@ inline float minSpan(std::span<float> vec) {
 	return *std::min_element(vec.begin(), vec.end());
 }
 
-inline float sumSpan(std::span<float> vec) {
+template <typename T>
+inline float sumSpan(std::span<T> vec) {
 	return std::accumulate(vec.begin(), vec.end(), 0.f);
 }
 
@@ -21,8 +22,22 @@ inline float minSpanSq(std::span<float> vec) {
 	return a * a;
 }
 
-inline void printSpan(std::span<float> vec) {
+template <typename T>
+inline void printSpan(std::span<T> vec) {
 	for (auto val : vec) {
+		std::cerr << val << ";";
+	}
+	std::cerr << std::endl;
+}
+
+template <typename T>
+inline void printSpan(std::span<T> vec, int cols) {
+	int i = 0;
+	for (auto val : vec) {
+		if (i % cols == 0) {
+			std::cerr << std::endl;
+		}
+		++i;
 		std::cerr << val << ";";
 	}
 	std::cerr << std::endl;
@@ -31,7 +46,7 @@ inline void printSpan(std::span<float> vec) {
 inline void validateSpan(int line, std::string file, std::span<float> vec) {
 	bool valid = true;
 	for (auto val : vec) {
-		if (isnan(val) || isinf (val)) {
+		if (isnan(val) || isinf(val)) {
 			valid = false;
 		}
 	}

@@ -118,7 +118,7 @@ QueueManager* Player::getQueue() {
 }
 
 void Player::aiAction() {
-	//actionMaker.action();
+	actionMaker.action();
 }
 
 void Player::aiOrder() {

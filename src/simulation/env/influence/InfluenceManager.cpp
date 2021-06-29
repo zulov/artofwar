@@ -1,5 +1,7 @@
 ﻿#include "InfluenceManager.h"
 
+#include <iostream>
+
 #include "map/InfluenceMapHistory.h"
 #include "map/InfluenceMapQuad.h"
 #include "debug/DebugLineRepo.h"
@@ -353,13 +355,14 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 std::vector<int> InfluenceManager::getAreas(const std::span<float> result, char player) {
 	auto& maps = mapsForAiPerPlayer[player];
 	assert(result.size()==maps.size());
-	assert(arraySize == visibilityPerPlayer[player]->getResolution()* visibilityPerPlayer[player]->getResolution());
+	assert(arraySize * 4 == visibilityPerPlayer[player]->getResolution()* visibilityPerPlayer[player]->getResolution());
 
 	std::fill_n(intersection, arraySize, 0.f);
 
 	for (char i = 0; i < maps.size(); ++i) {
 		maps[i]->getIndexesWithByValue(result[i], intersection);
 	}
+	
 	visibilityPerPlayer[player]->removeUnseen(intersection);
 	//intersection dodac ujemne wartosc tam gdzie widac
 	//TODO pref std::partial_sort
@@ -395,6 +398,7 @@ std::vector<int> InfluenceManager::centersFromIndexes(float* values, const std::
 	std::vector<int> result;
 
 	for (auto ptr = indexes.begin(); (ptr < indexes.begin() + 256 && ptr < indexes.end()); ++ptr) {
+		std::cout << values[*ptr] << ";";
 		if (values[*ptr] > minVal) {
 			break;
 		}

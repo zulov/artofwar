@@ -335,7 +335,7 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 		for (auto index : mainGrid.getCloseCenters(centerIndex, ratio)) {
 			//ten index jest widoczny
 			auto gridCenter = calculator->getCenter(index);
-			if (validateStatic(building->size, gridCenter) && isVisible(player, calculator->getCenter(index))) {
+			if (validateStatic(building->size, gridCenter) ) {
 				return gridCenter;
 			}
 		}
