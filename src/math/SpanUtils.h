@@ -38,7 +38,7 @@ inline void printSpan(std::span<T> vec, int cols) {
 			std::cerr << std::endl;
 		}
 		++i;
-		std::cerr << val << ";";
+		std::cerr << (int)val << ";";
 	}
 	std::cerr << std::endl;
 }

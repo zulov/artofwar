@@ -328,14 +328,15 @@ std::array<float, 5>& Environment::getInfluenceDataAt(char player, const Urho3D:
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,
                                                            const std::span<float> result) {
-	std::vector<int> indexes = influenceManager.getAreas(result, player); //dodac widocznosc jako influnace map
-	//TODO performance nie obliczać wszystkich centrów tylko te co trzeba
+	std::vector<int> indexes = influenceManager.getAreas(result, player);
+
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
 	for (auto centerIndex : indexes) {
-		for (auto index : mainGrid.getCloseCenters(centerIndex, ratio)) {
+		Urho3D::Vector2 center = influenceManager.getCenter(centerIndex);
+		for (auto index : mainGrid.getCloseCenters(center, ratio)) {
 			//ten index jest widoczny
 			auto gridCenter = calculator->getCenter(index);
-			if (validateStatic(building->size, gridCenter) ) {
+			if (validateStatic(building->size, gridCenter) && influenceManager.isVisible(player, gridCenter)) {
 				return gridCenter;
 			}
 		}

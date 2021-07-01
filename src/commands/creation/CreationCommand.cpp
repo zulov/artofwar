@@ -17,7 +17,7 @@ void CreationCommand::execute() {
 		simulationObjectManager->addUnits(number, id, position, level, player);
 		break;
 	case ObjectType::BUILDING:
-		simulationObjectManager->addBuilding(id, bucketCords, player, level);
+		simulationObjectManager->addBuilding(id, bucketCords, level, player);
 		break;
 	case ObjectType::RESOURCE:
 		simulationObjectManager->addResource(id, bucketCords, level);

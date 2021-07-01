@@ -19,6 +19,7 @@ public:
 	float getValueAt(int index) const override;
 	void computeMinMax() override;
 	void removeUnseen(float* intersection);
+
 private:
 	void ensureReady();
 	VisibilityType* values;

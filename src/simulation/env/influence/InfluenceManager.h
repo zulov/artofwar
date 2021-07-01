@@ -28,7 +28,6 @@ struct content_info;
 
 class InfluenceManager {
 public:
-
 	explicit InfluenceManager(char numberOfPlayers, float mapSize);
 	~InfluenceManager();
 	void update(std::vector<Unit*>* units) const;
@@ -60,6 +59,7 @@ public:
 	void addAttack(Unit* unit, float value);
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
 	bool isVisible(char player, const Urho3D::Vector2& pos);
+	Urho3D::Vector2 getCenter(int index) const;
 
 private:
 	std::vector<int> centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
@@ -73,7 +73,7 @@ private:
 	void drawMap(char index, const std::vector<T*>& maps) const;
 	template <typename T>
 	void drawAll(const std::vector<T*>& maps, Urho3D::String name) const;
-	
+
 	std::vector<std::array<InfluenceMapFloat*, 5>> mapsForAiPerPlayer;
 	std::vector<std::array<InfluenceMapQuad*, 3>> mapsForCentersPerPlayer;
 
@@ -89,7 +89,7 @@ private:
 	std::vector<InfluenceMapQuad*> econQuad;
 	std::vector<InfluenceMapQuad*> buildingsQuad;
 	std::vector<InfluenceMapQuad*> unitsQuad;
-	
+
 	std::vector<VisibilityMap*> visibilityPerPlayer;
 
 	content_info* ci;
@@ -98,5 +98,5 @@ private:
 	short currentDebugBatch = 0;
 	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 	unsigned int arraySize;
-	float* intersection;// [arraySize] ;
+	float* intersection; // [arraySize] ;
 };

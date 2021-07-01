@@ -57,7 +57,6 @@ void SimulationObjectManager::addBuilding(int id, const Urho3D::IntVector2& _buc
 	auto* building = buildingFactory.create(id, _bucketCords, level, player);
 	building->postCreate();
 	addBuilding(building);
-	
 }
 
 void SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _bucketCords, char level) const {

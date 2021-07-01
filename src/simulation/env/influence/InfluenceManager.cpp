@@ -1,6 +1,7 @@
 ﻿#include "InfluenceManager.h"
 
 #include <iostream>
+#include <exprtk/exprtk.hpp>
 
 #include "map/InfluenceMapHistory.h"
 #include "map/InfluenceMapQuad.h"
@@ -362,10 +363,9 @@ std::vector<int> InfluenceManager::getAreas(const std::span<float> result, char 
 	for (char i = 0; i < maps.size(); ++i) {
 		maps[i]->getIndexesWithByValue(result[i], intersection);
 	}
-	
+
 	visibilityPerPlayer[player]->removeUnseen(intersection);
-	//intersection dodac ujemne wartosc tam gdzie widac
-	//TODO pref std::partial_sort
+
 	const auto inx = sort_indexes(std::span(intersection, arraySize), 256);
 	return centersFromIndexes(intersection, inx, 0.02f * maps.size());
 }
@@ -391,6 +391,10 @@ std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, char
 
 bool InfluenceManager::isVisible(char player, const Urho3D::Vector2& pos) {
 	return visibilityPerPlayer[player]->getValueAt(pos) == static_cast<char>(VisibilityType::VISIBLE);
+}
+
+Urho3D::Vector2 InfluenceManager::getCenter(int index) const {
+	return calculator->getCenter(index);
 }
 
 std::vector<int> InfluenceManager::centersFromIndexes(float* values, const std::vector<unsigned>& indexes,
