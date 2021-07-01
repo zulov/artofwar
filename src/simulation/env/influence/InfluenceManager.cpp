@@ -402,7 +402,6 @@ std::vector<int> InfluenceManager::centersFromIndexes(float* values, const std::
 	std::vector<int> result;
 
 	for (auto ptr = indexes.begin(); (ptr < indexes.begin() + 256 && ptr < indexes.end()); ++ptr) {
-		std::cout << values[*ptr] << ";";
 		if (values[*ptr] > minVal) {
 			break;
 		}

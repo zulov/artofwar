@@ -28,7 +28,7 @@ void VisibilityMap::update(Physical* thing, float value) {
 	if (sRadius < 0) { return; }
 	const auto centerIdx = calculator->indexFromPosition(thing->getPosition());
 	for (auto level : *levelCache->get(sRadius)) {
-		const auto index = centerIdx + level;
+		const auto index = centerIdx + level;//TOdo to trzeba inaczej sprawdzic, bo to wychodzi poza plansze i tak
 		if (calculator->isValidIndex(index)) {
 			values[index] = VisibilityType::VISIBLE;
 		}
