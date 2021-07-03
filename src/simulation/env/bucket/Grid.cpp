@@ -132,8 +132,8 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
 			const auto& content = getNotSafeContentAt(i, j);
-			std::copy_if(content.begin(), content.end(), std::back_inserter(*tempSelected),
-			             [player](Physical* p) { return p->getPlayer() < 0 || p->getPlayer() == player; });
+			std::ranges::copy_if(content, std::back_inserter(*tempSelected),
+			                     [player](Physical* p) { return p->getPlayer() < 0 || p->getPlayer() == player; });
 		}
 	}
 
@@ -184,10 +184,10 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float r
 	for (short i = posBeginX; i <= posEndX; ++i) {
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
 			auto& content = getNotSafeContentAt(i, j);
-			std::copy_if(content.begin(), content.end(), std::back_inserter(*tempSelected),
-			             [clicked](Physical* p) {
-				             return p->getId() == clicked->getId() && p->getPlayer() == clicked->getPlayer();
-			             });
+			std::ranges::copy_if(content, std::back_inserter(*tempSelected),
+			                     [clicked](Physical* p) {
+				                     return p->getId() == clicked->getId() && p->getPlayer() == clicked->getPlayer();
+			                     });
 		}
 	}
 

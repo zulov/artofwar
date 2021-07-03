@@ -329,9 +329,8 @@ std::vector<int> InfluenceManager::getIndexesIterative(const std::span<float> re
 		for (char i = 1; i < maps.size(); ++i) {
 			std::vector<int> indexes = maps[i]->getIndexesWithByValue(result[i], tolerance);
 			std::vector<int> temp;
-			std::set_intersection(intersection.begin(), intersection.end(),
-			                      indexes.begin(), indexes.end(),
-			                      std::back_inserter(temp));
+			std::ranges::set_intersection(intersection, indexes,
+			                              std::back_inserter(temp));
 			if (temp.empty() || temp.size() < min && k != 3) {
 				intersection.clear();
 				break;

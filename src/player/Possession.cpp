@@ -59,9 +59,9 @@ float Possession::getBuildingsVal(BuildingMetric value) const {
 std::vector<Unit*> Possession::getFreeArmy() {
 	std::vector<Unit*> army(units.size());
 
-	auto it = std::copy_if(units.begin(), units.end(), army.begin(), [](Unit* unit) {
+	auto it = std::ranges::copy_if(units, army.begin(), [](Unit* unit) {
 		return isFreeSolider(unit);
-	});
+	}).out;
 	army.resize(std::distance(army.begin(), it));
 	return army;
 }
@@ -107,7 +107,7 @@ void Possession::updateAndClean(Resources& resources, const ObjectsInfo* simInfo
 
 	resourcesSum = sumSpan(resources.getValues());
 
-	freeWorkersNumber = std::count_if(workers.begin(), workers.end(), [](Unit* worker) {
+	freeWorkersNumber = std::ranges::count_if(workers, [](Unit* worker) {
 		return isInFreeState(worker->getState());
 	});
 }

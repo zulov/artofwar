@@ -145,7 +145,7 @@ std::pair<const std::vector<short>&, int> CloseIndexes::getPassIndexVia1LevelTo2
 
 char CloseIndexes::getIndex(int center) const {
 	char index = 0;
-	if (center < resolution) { } else if (center >= resolution * resolution - resolution) {
+	if (center < resolution) { } else if (center >= sqResolutionMinusRes) {
 		index += 6;
 	} else {
 		index += 3;

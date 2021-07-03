@@ -10,7 +10,7 @@ void Bucket::add(Physical* entity) {
 }
 
 void Bucket::remove(Physical* entity) {
-	auto pos = std::find(content.begin(), content.end(), entity) - content.begin();
+	auto pos = std::ranges::find(content, entity) - content.begin();
 
 	if (pos < content.size()) {
 		content.erase(content.begin() + pos);

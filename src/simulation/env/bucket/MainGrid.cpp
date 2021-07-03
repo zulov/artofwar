@@ -231,10 +231,10 @@ bool MainGrid::cellIsCollectable(int index) const {
 }
 
 bool MainGrid::anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const {
-	//TODO perf dac square
-	//TODO perf center obliczyc raz
+	//TODO perf dac square anie sqroot
+	const auto centerCord = calculator->getIndexes(center);
 	for (auto index : indexes) {
-		if (calculator->getDistance(index, center) < distThreshold) {
+		if (calculator->getDistance(centerCord, index) < distThreshold) {
 			return true;
 		}
 	}
@@ -400,7 +400,7 @@ std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endId
 	return pathFinder->findPath(startIdx, endIdxs, limit);
 }
 
-void MainGrid::drawComplex(Urho3D::Image* image, Urho3D::String prefix) const {
+void MainGrid::drawComplex(Urho3D::Image* image, const Urho3D::String prefix) const {
 	for (short y = 0; y != resolution; ++y) {
 		for (short x = 0; x != resolution; ++x) {
 			const int index = calculator->getIndex(x, y);

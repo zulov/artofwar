@@ -8,7 +8,7 @@ BrainProvider::~BrainProvider() {
 	clear_vector(brains);
 }
 
-Brain* BrainProvider::get(std::string name) {
+Brain* BrainProvider::get(const std::string name) {
 	for (auto brain : brains) {
 		if (brain->getName() == name) {
 			return brain;

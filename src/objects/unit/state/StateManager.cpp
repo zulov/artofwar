@@ -171,7 +171,7 @@ void StateManager::initOrders(std::initializer_list<UnitAction> states) const {
 				level->ordersIds.push_back(cast(UnitAction::ATTACK));
 			}
 			level->ordersIds.shrink_to_fit();
-			std::sort(level->ordersIds.begin(), level->ordersIds.end());
+			std::ranges::sort(level->ordersIds);
 		}
 	}
 }
@@ -185,7 +185,7 @@ void StateManager::initStates(std::initializer_list<UnitState> states) const {
 	}
 	for (auto level : Game::getDatabase()->getLevels()) {
 		if (level) {
-			std::copy(possibleStates, possibleStates + SIZE, level->possibleStates);
+			std::copy_n(possibleStates, SIZE, level->possibleStates);
 			if (level->canCollect) {
 				level->possibleStates[cast(UnitState::COLLECT)] = true;
 			} else {

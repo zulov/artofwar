@@ -138,7 +138,7 @@ Hud::Hud() : Object(Game::getContext()) {
 
 		prepareStyle();	
 	}
-	std::fill(panels.begin(), panels.end(), nullptr);
+	std::ranges::fill(panels, nullptr);
 }
 
 

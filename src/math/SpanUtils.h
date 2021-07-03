@@ -5,7 +5,7 @@
 #include <iostream>
 
 inline float minSpan(std::span<float> vec) {
-	return *std::min_element(vec.begin(), vec.end());
+	return *std::ranges::min_element(vec);
 }
 
 template <typename T>

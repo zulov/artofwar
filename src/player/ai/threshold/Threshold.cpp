@@ -46,8 +46,8 @@ float Threshold::diff(std::vector<float>& vec, std::span<float> value) const {
 }
 
 bool Threshold::ifDo(std::span<float> value) {
-	for (int i = 0; i < data.size(); ++i) {
-		if (hasReach(data[i], value)) {
+	for (auto& i : data) {
+		if (hasReach(i, value)) {
 			return true;
 		}
 	}

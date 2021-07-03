@@ -45,14 +45,14 @@ inline int biggestWithRand(std::span<float> v) {
 
 inline void copyTo(std::span<float> dest, std::span<float> src1, std::span<float> src2) {
 	assert(dest.size()>=src1.size()+src2.size());
-	std::copy(src1.begin(), src1.end(), dest.begin());
-	std::copy(src2.begin(), src2.end(), dest.begin() + src1.size());
+	std::ranges::copy(src1, dest.begin());
+	std::ranges::copy(src2, dest.begin() + src1.size());
 }
 
 
 inline void copyTo(std::span<float> dest, std::span<float> src1, std::span<float> src2, std::span<float> src3) {
 	assert(dest.size()>=src1.size()+src2.size()+src3.size());
-	std::copy(src1.begin(), src1.end(), dest.begin());
-	std::copy(src2.begin(), src2.end(), dest.begin() + src1.size());
-	std::copy(src3.begin(), src3.end(), dest.begin() + src1.size()+ src2.size());
+	std::ranges::copy(src1, dest.begin());
+	std::ranges::copy(src2, dest.begin() + src1.size());
+	std::ranges::copy(src3, dest.begin() + src1.size()+ src2.size());
 }

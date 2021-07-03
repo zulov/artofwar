@@ -48,7 +48,7 @@ void Static::populate() {
 		}
 	}
 	std::ranges::sort(surroundCells1);
-	surroundCells1.erase(std::unique(surroundCells1.begin(), surroundCells1.end()), surroundCells1.end());
+	surroundCells1.erase(std::ranges::unique(surroundCells1).begin(), surroundCells1.end());
 	surroundCells1.erase(
 		std::ranges::remove_if(surroundCells1,
 		                       [&](auto x) {

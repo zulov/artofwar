@@ -66,7 +66,7 @@ std::optional<Urho3D::Vector2> InfluenceMapQuad::getCenter() {
 	ensureReady();
 	bool hasData = std::ranges::any_of(maps[0], [](float v) { return v > 0.f; });
 	if (hasData) {
-		int index = std::distance(maps[0].begin(), std::max_element(maps[0].begin(), maps[0].end()));
+		int index = std::distance(maps[0].begin(), std::ranges::max_element(maps[0]));
 
 		for (int i = 1; i < maps.size(); ++i) {
 			std::array<int, 4> indexes = getIndexes(sqrt(maps[i - 1].size()), index);
@@ -137,7 +137,7 @@ void InfluenceMapQuad::print(const Urho3D::String& name, std::span<float> map) {
 	delete image;
 }
 
-void InfluenceMapQuad::print(Urho3D::String name) {
+void InfluenceMapQuad::print(const Urho3D::String name) {
 	ensureReady();
 	for (const auto map : maps) {
 		print(name, map);

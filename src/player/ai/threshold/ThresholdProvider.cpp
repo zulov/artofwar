@@ -9,7 +9,7 @@ ThresholdProvider::~ThresholdProvider() {
 	clear_vector(thresholds);
 }
 
-Threshold* ThresholdProvider::get(std::string name) {
+Threshold* ThresholdProvider::get(const std::string name) {
 	for (auto* threshold : thresholds) {
 		if (threshold->getName() == name) {
 			return threshold;

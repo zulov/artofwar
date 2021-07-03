@@ -147,7 +147,7 @@ void Building::fillValues(std::span<float> weights) const {
 
 	auto data = dbLevel->dbBuildingMetricPerNation[nation]->getParamsAsSpan();
 
-	std::copy(data.begin(), data.end(), weights.begin());
+	std::ranges::copy(data, weights.begin());
 	auto percent = hp / dbLevel->maxHp;
 	for (auto& weight : weights) {
 		weight *= percent;

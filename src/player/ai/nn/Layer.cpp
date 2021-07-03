@@ -11,10 +11,10 @@ Layer::Layer(std::vector<float>& w, std::vector<float>& bias) {
 	std::fill_n(values, bias.size(), 0);
 
 	this->bias = new float[bias.size()];
-	std::copy(bias.begin(), bias.end(), this->bias);
+	std::ranges::copy(bias, this->bias);
 
 	this->w = new float[w.size()];
-	std::copy(w.begin(), w.end(), this->w);
+	std::ranges::copy(w, this->w);
 	valuesSpan = std::span{values, bias.size()};
 }
 
@@ -26,5 +26,5 @@ Layer::~Layer() {
 
 void Layer::setValues(std::span<float> data) const {
 	assert(valuesSpan.size() == data.size());
-	std::copy(data.begin(), data.end(), valuesSpan.begin());
+	std::ranges::copy(data, valuesSpan.begin());
 }

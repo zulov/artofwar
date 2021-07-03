@@ -1,4 +1,7 @@
 #include "PathFinder.h"
+
+#include <iostream>
+
 #include "DrawGridUtils.h"
 #include "Game.h"
 #include "../ComplexBucketData.h"
@@ -259,7 +262,7 @@ std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs)
 		result.push_back(getPassableEnd(endIdx));
 	}
 	std::ranges::sort(result);
-	result.erase(std::unique(result.begin(), result.end()), result.end());
+	result.erase(std::ranges::unique(result).begin(), result.end());
 	return result;
 }
 

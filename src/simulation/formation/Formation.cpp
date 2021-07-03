@@ -1,4 +1,6 @@
 ﻿#include "Formation.h"
+
+#include <iterator>
 #include <numeric>
 #include "Game.h"
 #include "math/MathUtils.h"
@@ -149,7 +151,7 @@ void Formation::updateIds() {
 		}
 		std::vector<short> output;
 		output.reserve(restToAssign);
-		std::copy_if(tempVec.begin(), tempVec.end(), std::back_inserter(output), [](const short i) { return i >= 0; });
+		std::ranges::copy_if(tempVec, std::back_inserter(output), [](const short i) { return i >= 0; });
 
 		int i = 0;
 		for (auto unit : units) {

@@ -2,7 +2,6 @@
 
 #include <numeric>
 
-#include "Game.h"
 #include "database/DatabaseCache.h"
 #include "math/SpanUtils.h"
 
@@ -84,6 +83,6 @@ void Resources::change() {
 }
 
 void Resources::resetStats() const {
-	std::copy(sumGatherSpeed.begin(), sumGatherSpeed.end(), gatherSpeeds.begin());
+	std::ranges::copy(sumGatherSpeed, gatherSpeeds.begin());
 	resetSpan(sumGatherSpeed);
 }
