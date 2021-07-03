@@ -15,7 +15,7 @@ LevelCache* LevelCacheProvider::get(unsigned short resolution, float maxDistance
 			return cache;
 		}
 	}
-	auto* const cache = new LevelCache(resolution, maxDistance, calculator);
+	auto* const cache = new LevelCache(maxDistance, calculator);
 	caches.push_back(cache);
 	return cache;
 }

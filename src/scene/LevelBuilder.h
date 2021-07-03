@@ -22,5 +22,5 @@ private:
 	Urho3D::SharedPtr<Urho3D::Scene> scene;
 	void createGround(const Urho3D::String& xmlName, float spacing);
 
-	Urho3D::Terrain* terrain;
+	Urho3D::Terrain* terrain{};
 };

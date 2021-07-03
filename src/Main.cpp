@@ -623,6 +623,8 @@ void Main::readParameters() {
 				engine_->SetMaxInactiveFps(0);
 			} else if (argument == "headless") {
 				SimGlobals::HEADLESS = true;
+			} else if (argument == "faketerrain") {
+				SimGlobals::FAKE_TERRAIN = true;
 			} else if (argument == "savename") {
 				saveToLoad = value;
 			} else if (argument == "outputname" && !value.Empty()) {

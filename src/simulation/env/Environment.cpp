@@ -86,7 +86,7 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	const float sqRadius = radius * radius;
 
 	neights->clear();
-	auto pred = [sqRadius,unit](Physical* neight) {
+	auto pred = [sqRadius,unit](Physical* neight){
 		return (unit != neight && sqDistAs2D(unit->getPosition(), neight->getPosition()) < sqRadius);
 	};
 	std::ranges::copy_if(*simpleNeght, std::back_inserter(*neights), pred);
@@ -216,11 +216,15 @@ const std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vecto
 }
 
 float Environment::getGroundHeightAt(float x, float z) const {
-	return terrain->GetHeight(Urho3D::Vector3(x, 0, z));
+	const auto vec = Urho3D::Vector3(x, 0, z);
+	return getGroundHeightAt(vec);
 }
 
-float Environment::getGroundHeightAt(Urho3D::Vector3& pos) const {
-	return terrain->GetHeight(pos);
+float Environment::getGroundHeightAt(const Urho3D::Vector3& pos) const {
+	if (terrain != nullptr) {
+		return terrain->GetHeight(pos);
+	}
+	return 0.f;
 }
 
 Urho3D::Vector3 Environment::getPosWithHeightAt(float x, float z) const {
@@ -233,18 +237,21 @@ Urho3D::Vector3 Environment::getPosWithHeightAt(int index) const {
 }
 
 float Environment::getGroundHeightPercent(float y, float x, float div) const {
-	const float scale = terrain->GetSpacing().y_;
-	const auto a = Urho3D::Vector3(x * mapSize - mapSize * 0.5f, 0.f,
-	                               y * mapSize - mapSize * 0.5f);
+	if (terrain != nullptr) {
+		const float scale = terrain->GetSpacing().y_;
+		auto const a = Urho3D::Vector3(x * mapSize - mapSize * 0.5f, 0.f,
+			y * mapSize - mapSize * 0.5f);
 
-	return terrain->GetHeight(a) / scale / div;
+		return getGroundHeightAt(a) / scale / div;
+	}
+	return 0.f;
 }
 
 Urho3D::Vector3 Environment::getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos,
                                                   float min) const {
 	auto a = Urho3D::Vector3(percentX * mapSize - mapSize * 0.5f, pos.y_,
 	                         percentY * mapSize - mapSize * 0.5f);
-	const float h = terrain->GetHeight(a);
+	const float h = getGroundHeightAt(a);
 	if (h + min > pos.y_) {
 		a.y_ = h + min;
 	}

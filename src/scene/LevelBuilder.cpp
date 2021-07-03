@@ -45,17 +45,19 @@ Urho3D::Terrain* LevelBuilder::getTerrain() const {
 }
 
 void LevelBuilder::createGround(const Urho3D::String& xmlName, float spacing) {
-	auto node = createNode(xmlName);
-	terrain = node->GetComponent<Urho3D::Terrain>();
-	auto s = terrain->GetSpacing();
-	s.x_ = spacing;
-	s.z_ = spacing;
-	terrain->SetSpacing(s);
+	if (!SIM_GLOBALS.FAKE_TERRAIN) {
+		auto node = createNode(xmlName);
+		terrain = node->GetComponent<Urho3D::Terrain>();
+		auto s = terrain->GetSpacing();
+		s.x_ = spacing;
+		s.z_ = spacing;
+		terrain->SetSpacing(s);
 
-	terrain->GetMaterial()->SetUVTransform(Urho3D::Vector2(0, 0), 0.f, 16.f*spacing);
-	
-	if (!SIM_GLOBALS.HEADLESS) {
-		terrain->SetSmoothing(true);
-		node->SetVar("ground", true);
+		terrain->GetMaterial()->SetUVTransform(Urho3D::Vector2(0, 0), 0.f, 16.f * spacing);
+
+		if (!SIM_GLOBALS.HEADLESS) {
+			terrain->SetSmoothing(true);
+			node->SetVar("ground", true);
+		}
 	}
 }
