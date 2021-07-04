@@ -31,13 +31,6 @@ std::vector<short>* LevelCache::get(float radius) {
 	return levelsCache[RES_SEP_DIST - 1];
 }
 
-void inline LevelCache::push(std::vector<short>& temp, short a, short b) const {
-	temp.push_back(a);
-	temp.push_back(b);
-	temp.push_back(-b);
-	temp.push_back(-a);
-}
-
 std::vector<short>* LevelCache::getEnvIndexs(float radius, std::vector<short>* prev, std::vector<short>& temp) const {
 	radius *= radius;
 	temp.clear();
@@ -47,29 +40,34 @@ std::vector<short>* LevelCache::getEnvIndexs(float radius, std::vector<short>* p
 		for (short j = 0; j < RES_SEP_DIST; ++j) {
 			if (fieldInCircle(i, j, radius)) {
 				const short y = j + 1;
-				const auto a = calculator->getNotSafeIndexClose(-x, -y);
-				const auto b = calculator->getNotSafeIndexClose(-x, y);
-				push(temp, a, b);
+				temp.push_back(calculator->getNotSafeIndexClose(-x, -y));
+				temp.push_back(calculator->getNotSafeIndexClose(-x, y));
 			} else {
 				break;
 			}
 		}
 		if (fieldInCircle(i, 0, radius)) {
-			auto a = calculator->getNotSafeIndexClose(-x, 0);
-			auto b = calculator->getNotSafeIndexClose(0, -x);
-			push(temp, a, b);
+			temp.push_back(calculator->getNotSafeIndexClose(-x, 0));
+			temp.push_back(calculator->getNotSafeIndexClose(0, -x));
 		} else {
 			break;
 		}
 	}
-
-	temp.push_back(0);
-	if (temp.size() == prev->size()) {
+	if (temp.size() * 2 + 1 == prev->size()) {
 		return prev;
 	}
+	temp.reserve(temp.size() * 2 + 1);
+	std::ranges::sort(temp);
+	temp.push_back(0);
+
+	const auto size = temp.size() - 2;
+	for (int i = size; i >= 0; --i) {
+		temp.push_back(-temp[i]);
+	}
+
 	const auto indexes = new std::vector<short>();
 	*indexes = temp;
-	std::ranges::sort(*indexes);
+
 	return indexes;
 }
 
