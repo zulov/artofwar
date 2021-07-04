@@ -15,12 +15,12 @@
 
 
 ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, int id, int level, int mainCell, bool withNode)
-	: Static(_position, mainCell,withNode) {
+	: Static(_position, mainCell, withNode) {
 	dbResource = Game::getDatabase()->getResource(id);
-
+	if (withNode) {
 	loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(
 		RandIntType::RESOURCE_NODE, dbResource->nodeName.Size())]);
-	if(withNode) {
+	
 		node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
 	}
 }

@@ -41,7 +41,7 @@ protected:
 	int mainCell{};
 
 	StaticState state, nextState;
-	//std::vector<int> occupiedCells, surroundCells;
+
 	std::span<int> occupiedCells, surroundCells;
-	int * data;
+	int * data{};
 };
