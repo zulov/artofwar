@@ -33,22 +33,24 @@ std::vector<short>* LevelCache::get(float radius) {
 
 std::vector<short>* LevelCache::getEnvIndexs(float radius, std::vector<short>* prev, std::vector<short>& temp) const {
 	radius *= radius;
+	radius /= calculator->getFieldSize() * calculator->getFieldSize();
 	temp.clear();
 	temp.reserve(prev->size());
 	for (short i = 0; i < RES_SEP_DIST; ++i) {
 		const short x = i + 1;
 		for (short j = 0; j < RES_SEP_DIST; ++j) {
-			if (fieldInCircle(i, j, radius)) {
+			if (i * i + j * j < radius) {
 				const short y = j + 1;
-				temp.push_back(calculator->getNotSafeIndexClose(-x, -y));
 				temp.push_back(calculator->getNotSafeIndexClose(-x, y));
+				temp.push_back(calculator->getNotSafeIndexClose(-x, -y));
 			} else {
 				break;
 			}
 		}
-		if (fieldInCircle(i, 0, radius)) {
-			temp.push_back(calculator->getNotSafeIndexClose(-x, 0));
+		//j=0
+		if (i * i < radius) {
 			temp.push_back(calculator->getNotSafeIndexClose(0, -x));
+			temp.push_back(calculator->getNotSafeIndexClose(-x, 0));
 		} else {
 			break;
 		}
@@ -56,8 +58,9 @@ std::vector<short>* LevelCache::getEnvIndexs(float radius, std::vector<short>* p
 	if (temp.size() * 2 + 1 == prev->size()) {
 		return prev;
 	}
-	temp.reserve(temp.size() * 2 + 1);
+	std::ranges::reverse(temp);
 	std::ranges::sort(temp);
+	temp.reserve(temp.size() * 2 + 1);
 	temp.push_back(0);
 
 	const auto size = temp.size() - 2;
@@ -69,11 +72,4 @@ std::vector<short>* LevelCache::getEnvIndexs(float radius, std::vector<short>* p
 	*indexes = temp;
 
 	return indexes;
-}
-
-
-bool LevelCache::fieldInCircle(short i, short j, float radius) const {
-	const short x = i * calculator->getFieldSize();
-	const short y = j * calculator->getFieldSize();
-	return x * x + y * y < radius;
 }

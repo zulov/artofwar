@@ -15,7 +15,6 @@ public:
 	float getMaxDistance() const { return maxDistance; }
 	std::vector<short>* get(float radius);
 	std::vector<short>* getEnvIndexs(float radius, std::vector<short>* prev, std::vector<short>& temp) const;
-	bool fieldInCircle(short i, short j, float radius) const;
 private:
 	float maxDistance;
 	float invDiff;
