@@ -36,6 +36,7 @@ public:
 	const std::vector<Unit*>& getWorkers() const { return workers; }
 	std::vector<Unit*> getFreeArmy();
 private:
+	
 	std::vector<Building*> buildings;
 	std::vector<std::vector<Building*>*> buildingsPerId;
 

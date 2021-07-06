@@ -1,7 +1,6 @@
 #pragma once
 #include "BucketIterator.h"
 
-
 namespace Urho3D {
 	class Vector2;
 	class Vector3;
@@ -20,14 +19,14 @@ public:
 	Grid(const Grid& rhs) = delete;
 	~Grid();
 
-	void update(Unit* unit, char team) const;
-	void update(Physical* entity) const;
+	virtual void update(Unit* unit, char team) const;
+	virtual void update(Physical* entity) const;
 
-	void remove(Unit* unit, char team) const;
-	void remove(Physical* entity) const;
+	virtual void remove(Unit* unit, char team) const;
+	virtual void remove(Physical* entity) const;
 
-	void updateNew(Physical* physical) const;
-	void updateNew(Unit* unit, char team) const;
+	virtual void updateNew(Unit* unit, char team) const;
+	virtual void updateNew(Physical* physical) const;
 
 	const std::vector<Physical*>& getContentAt(int index) const;
 

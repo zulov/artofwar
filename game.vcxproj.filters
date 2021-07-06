@@ -204,6 +204,7 @@
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
     <ClCompile Include="src\objects\queue\SimpleQueueManager.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\VisibilityMap.cpp" />
+    <ClCompile Include="src\simulation\env\bucket\StaticGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -535,6 +536,7 @@
     <ClInclude Include="src\objects\queue\AbstractQueueManager.h" />
     <ClInclude Include="src\simulation\env\influence\map\VisibilityMap.h" />
     <ClInclude Include="src\simulation\env\influence\map\VisibilityType.h" />
+    <ClInclude Include="src\simulation\env\bucket\StaticGrid.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />
