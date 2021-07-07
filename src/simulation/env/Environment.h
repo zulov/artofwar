@@ -5,6 +5,7 @@
 #include <Urho3D/Math/Vector3.h>
 #include "bucket/Grid.h"
 #include "bucket/MainGrid.h"
+#include "bucket/StaticGrid.h"
 #include "debug/EnvironmentDebugMode.h"
 #include "influence/InfluenceManager.h"
 #include "utils/defines.h"
@@ -135,6 +136,7 @@ private:
 	Grid teamUnitGrid[MAX_PLAYERS];
 	InfluenceManager influenceManager;
 	Grid* grids[3] = {&mainGrid, &buildingGrid, &resourceGrid};
+	StaticGrid resourceStaticGrid;
 	Urho3D::Terrain* terrain;
 	GridCalculator* calculator;
 

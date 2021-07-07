@@ -4,7 +4,7 @@
 #include "Grid.h"
 
 class StaticGrid: public Grid {
-	StaticGrid(short resolution, float size, std::vector<float> queryRadius);
+	StaticGrid(short resolution, float size, std::initializer_list<float> queryRadius);
 	StaticGrid(const StaticGrid& rhs) = delete;
 	~StaticGrid();
 

@@ -14,6 +14,7 @@ Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolut
 	mapSize(mainMapResolution * BUCKET_GRID_FIELD_SIZE),
 	mainGrid(mainMapResolution, mapSize, 24),
 	resourceGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize, 256),
+	resourceStaticGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize)
 	buildingGrid(mapSize / BUCKET_GRID_FIELD_SIZE_BUILD, mapSize, 256),
 	teamUnitGrid{
 		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256},
