@@ -181,7 +181,7 @@ void MainGrid::drawDebug(GridDebugType type) const {
 	case GridDebugType::GRID: {
 		const float size = calculator->getSize();
 		float value = -size / 2;
-		for (int i = 0; i < resolution; ++i) {
+		for (int i = 0; i < calculator->getResolution(); ++i) {
 			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, {-size / 2, 10, value},
 			                        {size / 2, 10, value}, Urho3D::Color::CYAN);
 			DebugLineRepo::drawLine(DebugLineType::MAIN_GRID, {value, 10, -size / 2},
@@ -215,7 +215,7 @@ float MainGrid::getFieldSize() const {
 
 void MainGrid::drawAll() {
 	auto image = new Urho3D::Image(Game::getContext());
-	image->SetSize(resolution, resolution, 4);
+	image->SetSize(calculator->getResolution(), calculator->getResolution(), 4);
 
 	Urho3D::String prefix = Urho3D::String(counter) + "_";
 
@@ -401,11 +401,11 @@ std::vector<int>* MainGrid::findPath(int startIdx, const std::vector<int>& endId
 }
 
 void MainGrid::drawComplex(Urho3D::Image* image, const Urho3D::String prefix) const {
-	for (short y = 0; y != resolution; ++y) {
-		for (short x = 0; x != resolution; ++x) {
+	for (short y = 0; y != calculator->getResolution(); ++y) {
+		for (short x = 0; x != calculator->getResolution(); ++x) {
 			const int index = calculator->getIndex(x, y);
 
-			image->SetPixel(x, resolution - y - 1,
+			image->SetPixel(x, calculator->getResolution() - y - 1,
 			                std::get<1>(Game::getColorPaletteRepo()->getInfoForGrid(complexData[index].getType())));
 		}
 	}

@@ -133,10 +133,10 @@ private:
 	float mapSize;
 	MainGrid mainGrid;
 	Grid resourceGrid, buildingGrid;
-	Grid teamUnitGrid[MAX_PLAYERS];
+	StaticGrid resourceStaticGrid;
+	Grid teamUnitGrid[MAX_PLAYERS];//TODO nie per player a poprostu rzadkie
 	InfluenceManager influenceManager;
 	Grid* grids[3] = {&mainGrid, &buildingGrid, &resourceGrid};
-	StaticGrid resourceStaticGrid;
 	Urho3D::Terrain* terrain;
 	GridCalculator* calculator;
 

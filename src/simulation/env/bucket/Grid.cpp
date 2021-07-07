@@ -14,7 +14,7 @@ Grid::Grid(short resolution, float size, float maxQueryRadius)
 	: calculator(GridCalculatorProvider::get(resolution, size)),
 	  levelCache(LevelCacheProvider::get(resolution, maxQueryRadius, calculator)),
 	  closeIndexes(CloseIndexesProvider::get(resolution)),
-	  resolution(resolution), sqResolution(resolution * resolution) {
+	  sqResolution(resolution * resolution) {
 	buckets = new Bucket[sqResolution];
 	tempSelected = new std::vector<Physical*>();
 }
@@ -35,16 +35,16 @@ void Grid::update(Unit* unit, const char team) const {
 	}
 }
 
-void Grid::update(Physical* entity) const {
-	assert(!entity->isToDispose());
+void Grid::update(Physical* physical) const {
+	assert(!physical->isToDispose());
 
-	const int index = calculator->indexFromPosition(entity->getPosition());
-	if (entity->bucketHasChanged(index)) {
-		removeAt(entity->getMainBucketIndex(), entity);
-		addAt(index, entity);
-		entity->setBucket(index);
+	const int index = calculator->indexFromPosition(physical->getPosition());
+	if (physical->bucketHasChanged(index)) {
+		removeAt(physical->getMainBucketIndex(), physical);
+		addAt(index, physical);
+		physical->setBucket(index);
 	} else {
-		entity->indexHasChangedReset();
+		physical->indexHasChangedReset();
 	}
 }
 
@@ -52,12 +52,12 @@ void Grid::remove(Unit* unit, char team) const {
 	removeAt(unit->getBucketIndex(team), unit);
 }
 
-void Grid::remove(Physical* entity) const {
-	removeAt(entity->getMainBucketIndex(), entity);
+void Grid::remove(Physical* physical) const {
+	removeAt(physical->getMainBucketIndex(), physical);
 }
 
 void Grid::updateNew(Physical* physical) const {
-	assert(physical->getMainBucketIndex(), -1);
+	//assert(physical->getMainBucketIndex(), -1);
 	const int index = calculator->indexFromPosition(physical->getPosition());
 	addAt(index, physical);
 	physical->setBucket(index);

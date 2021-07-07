@@ -13,12 +13,12 @@
 Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution):
 	mapSize(mainMapResolution * BUCKET_GRID_FIELD_SIZE),
 	mainGrid(mainMapResolution, mapSize, 24),
-	resourceGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize, 256),
-	resourceStaticGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize)
-	buildingGrid(mapSize / BUCKET_GRID_FIELD_SIZE_BUILD, mapSize, 256),
+	resourceGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize, 256.f),
+	resourceStaticGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize, {64.f, 128.f, 256.f}),
+	buildingGrid(mapSize / BUCKET_GRID_FIELD_SIZE_BUILD, mapSize, 256.f),
 	teamUnitGrid{
-		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256},
-		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256}
+		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256.f},
+		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, 256.f}
 	}, influenceManager(MAX_PLAYERS, mapSize), terrain(terrain),
 	calculator(GridCalculatorProvider::get(mainMapResolution, mapSize)) {
 	neights = new std::vector<Physical*>();
@@ -87,7 +87,7 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	const float sqRadius = radius * radius;
 
 	neights->clear();
-	auto pred = [sqRadius,unit](Physical* neight){
+	auto pred = [sqRadius,unit](Physical* neight) {
 		return (unit != neight && sqDistAs2D(unit->getPosition(), neight->getPosition()) < sqRadius);
 	};
 	std::ranges::copy_if(*simpleNeght, std::back_inserter(*neights), pred);
@@ -124,7 +124,23 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 }
 
 std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius) {
-	return getNeighbours(center, resourceGrid, id, radius, prevRadius);
+	auto a = getNeighbours(center, resourceGrid, id, radius, prevRadius);
+	auto b = resourceStaticGrid.get(center, id, radius, prevRadius);
+
+	const float sqRadius = radius * radius;
+	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
+	neights2->clear();
+	for (auto neight : b) {
+		if (id == -1 || id == neight->getId()) {
+			auto dist = sqDistAs2D(center, neight->getPosition());
+			if (dist <= sqRadius && dist > sqPrevRadius) {
+				neights2->push_back(neight);
+			}
+		}
+	}
+		
+	
+	return a;
 }
 
 void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) const {
@@ -195,6 +211,7 @@ void Environment::addNew(Building* building) const {
 void Environment::addNew(ResourceEntity* resource) const {
 	mainGrid.addStatic(resource);
 	resourceGrid.updateNew(resource);
+	resourceStaticGrid.updateNew(resource);
 }
 
 Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) const {
@@ -241,7 +258,7 @@ float Environment::getGroundHeightPercent(float y, float x, float div) const {
 	if (terrain != nullptr) {
 		const float scale = terrain->GetSpacing().y_;
 		auto const a = Urho3D::Vector3(x * mapSize - mapSize * 0.5f, 0.f,
-			y * mapSize - mapSize * 0.5f);
+		                               y * mapSize - mapSize * 0.5f);
 
 		return getGroundHeightAt(a) / scale / div;
 	}
@@ -308,6 +325,7 @@ void Environment::removeFromGrids(const std::vector<Building*>& buildingsToDispo
 	for (auto resource : resourceToDispose) {
 		mainGrid.removeStatic(resource);
 		resourceGrid.remove(resource);
+		resourceStaticGrid.remove(resource);
 	}
 }
 

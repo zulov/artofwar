@@ -17,13 +17,13 @@ class Grid {
 public:
 	Grid(short resolution, float size, float maxQueryRadius);
 	Grid(const Grid& rhs) = delete;
-	~Grid();
+	virtual ~Grid();
 
 	virtual void update(Unit* unit, char team) const;
-	virtual void update(Physical* entity) const;
+	virtual void update(Physical* physical) const;
 
 	virtual void remove(Unit* unit, char team) const;
-	virtual void remove(Physical* entity) const;
+	virtual void remove(Physical* physical) const;
 
 	virtual void updateNew(Unit* unit, char team) const;
 	virtual void updateNew(Physical* physical) const;
@@ -49,8 +49,8 @@ protected:
 	CloseIndexes* closeIndexes;
 
 	Bucket* buckets;
-	short resolution;
 	int sqResolution;
+	LevelCache* levelCache;
 
 private:
 	const std::vector<Physical*>& getContentAt(short x, short z) const;
@@ -60,7 +60,7 @@ private:
 	void removeAt(int index, Physical* entity) const;
 
 	BucketIterator iterator;
-	LevelCache* levelCache;
+
 
 	std::vector<Physical*>* tempSelected;
 	int prevIndex = -1;
