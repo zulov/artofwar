@@ -7,7 +7,7 @@
 #include "objects/Physical.h"
 
 StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRadius): Grid(resolution, size,
-	queryRadius.at(0)), queryRadius(queryRadius) {
+	queryRadius.back()), queryRadius(queryRadius) {
 	assert(queryRadius.size()>1);
 	bucketsPerRadius.reserve(queryRadius.size());
 	for (int i = 0; i < queryRadius.size(); ++i) {
@@ -56,6 +56,17 @@ void StaticGrid::updateNew(Physical* physical) const {
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		for (auto value : *levelCache->get(queryRadius.at(i))) {
 			int newIndex = centerIndex + value; //TODO bug check boundry, na druga strone
+			auto a = calculator->getIndexes(value);
+			auto b = calculator->getIndexes(centerIndex);
+			auto c= calculator->getIndexes(newIndex);
+			auto x1 = a.x_ + b.x_;
+			auto z1 = a.y_ + b.y_;
+			if (x1 < 0 || x1 >= calculator->getResolution()) {
+				int q = 5;
+			}
+			if (z1 < 0 || z1 >= calculator->getResolution()) {
+				int q = 5;
+			}
 			if (calculator->isValidIndex(newIndex)) {
 				bucketsPerRadius[i][newIndex].add(physical);
 			}
@@ -63,7 +74,17 @@ void StaticGrid::updateNew(Physical* physical) const {
 	}
 }
 
-const std::vector<Physical*>& StaticGrid::get(const Urho3D::Vector3& center, int id, float radius, float prevRadius) {
+const std::vector<Physical*>& StaticGrid::get(const Urho3D::Vector3& center, float radius) {
+	const int index = getIndexForRadius(radius);
 	const int centerIndex = calculator->indexFromPosition(center);
-	return bucketsPerRadius[2][centerIndex].getContent();
+	return bucketsPerRadius[index][centerIndex].getContent();
+}
+
+int StaticGrid::getIndexForRadius(float radius) const {
+	for (int i = 0; i < queryRadius.size(); ++i) {
+		if (queryRadius[i] >= radius) {
+			return i;
+		}
+	}
+	return queryRadius.size() - 1;
 }

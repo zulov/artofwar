@@ -13,7 +13,6 @@
 Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution):
 	mapSize(mainMapResolution * BUCKET_GRID_FIELD_SIZE),
 	mainGrid(mainMapResolution, mapSize, 24),
-	resourceGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize, 256.f),
 	resourceStaticGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize, {64.f, 128.f, 256.f}),
 	buildingGrid(mapSize / BUCKET_GRID_FIELD_SIZE_BUILD, mapSize, 256.f),
 	teamUnitGrid{
@@ -124,8 +123,8 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 }
 
 std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius) {
-	//auto a = getNeighbours(center, resourceGrid, id, radius, prevRadius);
-	auto b = resourceStaticGrid.get(center, id, radius, prevRadius);
+	//return getNeighbours(center, resourceGrid, id, radius, prevRadius);
+	auto &b = resourceStaticGrid.get(center, radius);
 	
 	const float sqRadius = radius * radius;
 	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
@@ -141,6 +140,10 @@ std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int i
 		
 	
 	return neights2;
+}
+
+std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int id, float radius) {
+	return getNeighbours(center, resourceStaticGrid, id, radius, -1);
 }
 
 void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) const {
@@ -210,7 +213,6 @@ void Environment::addNew(Building* building) const {
 
 void Environment::addNew(ResourceEntity* resource) const {
 	mainGrid.addStatic(resource);
-	resourceGrid.updateNew(resource);
 	resourceStaticGrid.updateNew(resource);
 }
 
@@ -324,7 +326,6 @@ void Environment::removeFromGrids(const std::vector<Building*>& buildingsToDispo
 	}
 	for (auto resource : resourceToDispose) {
 		mainGrid.removeStatic(resource);
-		resourceGrid.remove(resource);
 		resourceStaticGrid.remove(resource);
 	}
 }

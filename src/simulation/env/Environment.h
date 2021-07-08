@@ -36,6 +36,7 @@ public:
 
 	//std::vector<Physical*>* getResources(Physical* physical, float radius);
 	std::vector<Physical*>* getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius);
+	std::vector<Physical*>* getResources(Urho3D::Vector3& center, int id, float radius);
 
 	void updateInfluenceUnits1(std::vector<Unit*>* units) const;
 	void updateInfluenceUnits2(std::vector<Unit*>* units) const;
@@ -132,11 +133,11 @@ private:
 	void addIfInRange(Physical* physical, const Urho3D::Vector3& center, float sqRadius, Physical* neight) const;
 	float mapSize;
 	MainGrid mainGrid;
-	Grid resourceGrid, buildingGrid;
+	Grid buildingGrid;
 	StaticGrid resourceStaticGrid;
 	Grid teamUnitGrid[MAX_PLAYERS];//TODO nie per player a poprostu rzadkie
 	InfluenceManager influenceManager;
-	Grid* grids[3] = {&mainGrid, &buildingGrid, &resourceGrid};
+	Grid* grids[3] = {&mainGrid, &buildingGrid, &resourceStaticGrid};
 	Urho3D::Terrain* terrain;
 	GridCalculator* calculator;
 

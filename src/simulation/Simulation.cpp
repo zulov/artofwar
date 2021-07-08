@@ -129,10 +129,10 @@ void Simulation::tryToCollect(Unit* unit) const {
 	std::vector<Physical*>* list = nullptr;
 
 	if (id >= 0) {
-		list = enviroment->getResources(unit->getPosition(), id, unit->getLevel()->interestRange, -1);
+		list = enviroment->getResources(unit->getPosition(), id, unit->getLevel()->interestRange);
 	}
 	if (id < 0 || list->empty()) {
-		list = enviroment->getResources(unit->getPosition(), -1, unit->getLevel()->interestRange, -1);
+		list = enviroment->getResources(unit->getPosition(), -1, unit->getLevel()->interestRange);
 	}
 
 	toAction(unit, list, UnitAction::COLLECT, belowClose);

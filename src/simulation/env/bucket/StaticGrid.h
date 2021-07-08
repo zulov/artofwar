@@ -3,7 +3,7 @@
 
 #include "Grid.h"
 
-class StaticGrid: public Grid {
+class StaticGrid : public Grid {
 public:
 	StaticGrid(short resolution, float size, std::vector<float> queryRadius);
 	StaticGrid(const StaticGrid& rhs) = delete;
@@ -16,9 +16,10 @@ public:
 
 	void remove(Physical* physical) const override;
 	void updateNew(Physical* physical) const override;
-	
-	const std::vector<Physical*>& get(const Urho3D::Vector3& center, int id, float radius, float prevRadius);
+
+	const std::vector<Physical*>& get(const Urho3D::Vector3& center, float radius);
 private:
+	int getIndexForRadius(float radius) const;
 	std::vector<float> queryRadius;
 	std::vector<Bucket*> bucketsPerRadius;
 };
