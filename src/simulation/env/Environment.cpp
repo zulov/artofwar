@@ -124,9 +124,9 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 }
 
 std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius) {
-	auto a = getNeighbours(center, resourceGrid, id, radius, prevRadius);
+	//auto a = getNeighbours(center, resourceGrid, id, radius, prevRadius);
 	auto b = resourceStaticGrid.get(center, id, radius, prevRadius);
-
+	
 	const float sqRadius = radius * radius;
 	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
 	neights2->clear();
@@ -140,7 +140,7 @@ std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int i
 	}
 		
 	
-	return a;
+	return neights2;
 }
 
 void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) const {

@@ -65,5 +65,5 @@ void StaticGrid::updateNew(Physical* physical) const {
 
 const std::vector<Physical*>& StaticGrid::get(const Urho3D::Vector3& center, int id, float radius, float prevRadius) {
 	const int centerIndex = calculator->indexFromPosition(center);
-	return bucketsPerRadius[0][centerIndex].getContent();
+	return bucketsPerRadius[2][centerIndex].getContent();
 }
