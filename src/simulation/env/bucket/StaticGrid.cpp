@@ -51,27 +51,40 @@ void StaticGrid::updateNew(Unit* unit, char team) const {
 
 void StaticGrid::updateNew(Physical* physical) const {
 	Grid::updateNew(physical);
-
+	int d = 0;
+	int d1 = 0;
 	const int centerIndex = calculator->indexFromPosition(physical->getPosition());
 	for (int i = 0; i < queryRadius.size(); ++i) {
+		auto k = levelCache->get(queryRadius.at(i));
 		for (auto value : *levelCache->get(queryRadius.at(i))) {
 			int newIndex = centerIndex + value; //TODO bug check boundry, na druga strone
 			auto a = calculator->getIndexes(value);
+			auto az = calculator->getIndexes(-value);
 			auto b = calculator->getIndexes(centerIndex);
-			auto c= calculator->getIndexes(newIndex);
+			auto c = calculator->getIndexes(newIndex);
+			auto v = c-b;
 			auto x1 = a.x_ + b.x_;
 			auto z1 = a.y_ + b.y_;
+
+
 			if (x1 < 0 || x1 >= calculator->getResolution()) {
-				int q = 5;
+				// if ((v+a).Length()!=0) {
+				++d;
+				continue;
 			}
 			if (z1 < 0 || z1 >= calculator->getResolution()) {
-				int q = 5;
+				++d;
+				continue;
 			}
+
 			if (calculator->isValidIndex(newIndex)) {
+
+				d1++;
 				bucketsPerRadius[i][newIndex].add(physical);
 			}
 		}
 	}
+	int a = 5;
 }
 
 const std::vector<Physical*>& StaticGrid::get(const Urho3D::Vector3& center, float radius) {
