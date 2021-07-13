@@ -25,7 +25,7 @@ public:
 	void clearNodeWithOutDelete();
 
 	virtual bool isAlive() const;
-	virtual short getId();
+	virtual short getId() const = 0;
 
 	void updateHealthBar() const;
 	virtual float getHealthBarSize() const;
@@ -46,8 +46,7 @@ public:
 	virtual bool isSlotOccupied(int indexToInteract) { return false; }
 	virtual bool isFirstThingInSameSocket() const { return true; }
 
-	virtual void setOccupiedSlot(unsigned char index, bool value) {
-	}
+	virtual void setOccupiedSlot(unsigned char index, bool value) { }
 
 	void indexHasChangedReset() { indexHasChanged = false; }
 
@@ -73,8 +72,7 @@ public:
 
 	int getMainBucketIndex() const { return indexInGrid; }
 
-	virtual void populate() {
-	}
+	virtual void populate() { }
 
 	virtual bool isToDispose() const { return false; }
 
@@ -95,8 +93,7 @@ public:
 
 	virtual char getLevelNum();
 
-	virtual void addValues(std::span<float> vals) const {
-	}
+	virtual void addValues(std::span<float> vals) const { }
 
 	virtual unsigned char getMaxRangeUsers() const { return 8; }
 	virtual unsigned char getMaxCloseUsers() const { return 8; }

@@ -4,9 +4,9 @@
 struct GridCalculator {
 
 	explicit GridCalculator(unsigned short resolution, float size)
-		: sqResolution(resolution * resolution), resolution(resolution),
-		  halfSize(size * 0.5f), invFieldSize(static_cast<float>(resolution) / size), fieldSize(size / static_cast<float>(resolution)) {
-	}
+		: sqResolution(resolution * resolution), resolution(resolution), halfResolution(resolution / 2),
+		  halfSize(size * 0.5f), invFieldSize(static_cast<float>(resolution) / size),
+		  fieldSize(size / static_cast<float>(resolution)) { }
 
 	GridCalculator(const GridCalculator&) = delete;
 
@@ -40,6 +40,36 @@ struct GridCalculator {
 
 	Urho3D::IntVector2 getIndexes(int i) const {
 		return {i / resolution, i % resolution};
+	}
+
+	Urho3D::IntVector2 getShiftCords(int i) const {
+		auto cord = getIndexes(i);
+		// if (abs(cord.y_) >= halfResolution) {
+		// 	if (cord.x_ > 0) {
+		// 		cord.x_++;
+		// 	} else {
+		// 		cord.x_--;
+		// 	}
+		// }
+
+		if (cord.y_ <= -halfResolution) {
+			if (cord.x_ > 0) {
+				cord.x_++;
+			}
+			else {
+				cord.x_--;
+			}
+		}
+		else if (cord.y_ >= halfResolution) {
+			if (cord.x_ >= 0) {
+				cord.x_++;
+			}
+			else {
+				cord.x_--;
+			}
+		}
+		cord.y_ = i - (cord.x_ * resolution);
+		return cord;
 	}
 
 	Urho3D::Vector2 getCenter(int i) const {
@@ -80,13 +110,14 @@ struct GridCalculator {
 		return getDistance(getIndexes(first), next);
 	}
 
-	float getSize() const  {
+	float getSize() const {
 		return fieldSize * resolution;
 	}
 
 private:
 	unsigned int sqResolution;
 	unsigned short resolution;
+	unsigned short halfResolution;
 	float halfSize;
 	float invFieldSize;
 	float fieldSize;

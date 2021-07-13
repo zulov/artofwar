@@ -18,9 +18,9 @@ ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, int id, int level, int
 	: Static(_position, mainCell, withNode) {
 	dbResource = Game::getDatabase()->getResource(id);
 	if (withNode) {
-	loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(
-		RandIntType::RESOURCE_NODE, dbResource->nodeName.Size())]);
-	
+		loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(
+			RandIntType::RESOURCE_NODE, dbResource->nodeName.Size())]);
+
 		node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
 	}
 }
@@ -29,7 +29,7 @@ const Urho3D::IntVector2 ResourceEntity::getGridSize() const {
 	return dbResource->size;
 }
 
-short ResourceEntity::getId() {
+short ResourceEntity::getId() const {
 	return dbResource->id;
 }
 
@@ -74,7 +74,8 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 			for (auto neight : *neights) {
 				if (k < limit) {
 					auto unit = static_cast<Unit*>(neight);
-					if (isFreeWorker(unit)) {//TODO findPath?
+					if (isFreeWorker(unit)) {
+						//TODO findPath?
 						unit->toAction(this, UnitAction::COLLECT);
 						//TODO add order?
 						++k;

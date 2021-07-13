@@ -133,7 +133,7 @@ public:
 	float getMaxHpBarSize() const override;
 	bool isAlive() const override;
 	char getLevelNum() override;
-	short getId() override;
+	short getId() const override;
 	void clean();
 	void fillValues(std::span<float> weights) const;
 	void addValues(std::span<float> vals) const override;

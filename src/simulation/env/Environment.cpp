@@ -123,23 +123,21 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 }
 
 std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius) {
-	//return getNeighbours(center, resourceGrid, id, radius, prevRadius);
-	auto &b = resourceStaticGrid.get(center, radius);
-	
+	//return getNeighbours(center, resourceStaticGrid, id, radius, prevRadius);
 	const float sqRadius = radius * radius;
 	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
-	neights2->clear();
-	for (auto neight : b) {
+	neights->clear();
+	for (auto neight : resourceStaticGrid.get(center, radius)) {
 		if (id == -1 || id == neight->getId()) {
 			auto dist = sqDistAs2D(center, neight->getPosition());
 			if (dist <= sqRadius && dist > sqPrevRadius) {
-				neights2->push_back(neight);
+				neights->push_back(neight);
 			}
 		}
 	}
-		
-	
-	return neights2;
+
+
+	return neights;
 }
 
 std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int id, float radius) {

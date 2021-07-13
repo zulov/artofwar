@@ -423,7 +423,7 @@ void Unit::applyForce(float timeStep) {
 	}
 }
 
-short Unit::getId() {
+short Unit::getId() const {
 	return dbUnit->id;
 }
 

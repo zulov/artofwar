@@ -38,10 +38,6 @@ bool Physical::isAlive() const {
 	return true;
 }
 
-short Physical::getId() {
-	return -1;
-}
-
 float Physical::getAuraSize(const Urho3D::Vector3& boundingBox) const {
 	return (boundingBox.x_ + boundingBox.z_) / 2 * 1.2f;
 }

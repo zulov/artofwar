@@ -1,6 +1,7 @@
 #include "StaticGrid.h"
 
 #include <cassert>
+#include <iostream>
 
 #include "Bucket.h"
 #include "levels/LevelCache.h"
@@ -51,40 +52,20 @@ void StaticGrid::updateNew(Unit* unit, char team) const {
 
 void StaticGrid::updateNew(Physical* physical) const {
 	Grid::updateNew(physical);
-	int d = 0;
-	int d1 = 0;
+
 	const int centerIndex = calculator->indexFromPosition(physical->getPosition());
+	const auto centerCords = calculator->getIndexes(centerIndex);
 	for (int i = 0; i < queryRadius.size(); ++i) {
-		auto k = levelCache->get(queryRadius.at(i));
 		for (auto value : *levelCache->get(queryRadius.at(i))) {
-			int newIndex = centerIndex + value; //TODO bug check boundry, na druga strone
-			auto a = calculator->getIndexes(value);
-			auto az = calculator->getIndexes(-value);
-			auto b = calculator->getIndexes(centerIndex);
-			auto c = calculator->getIndexes(newIndex);
-			auto v = c-b;
-			auto x1 = a.x_ + b.x_;
-			auto z1 = a.y_ + b.y_;
+			const auto shiftCords = calculator->getShiftCords(value);
 
-
-			if (x1 < 0 || x1 >= calculator->getResolution()) {
-				// if ((v+a).Length()!=0) {
-				++d;
-				continue;
-			}
-			if (z1 < 0 || z1 >= calculator->getResolution()) {
-				++d;
-				continue;
-			}
-
-			if (calculator->isValidIndex(newIndex)) {
-
-				d1++;
-				bucketsPerRadius[i][newIndex].add(physical);
+			auto x1 = shiftCords.x_ + centerCords.x_;
+			auto z1 = shiftCords.y_ + centerCords.y_;
+			if (x1 >= 0 && x1 < calculator->getResolution() && z1 >= 0 && z1 < calculator->getResolution()) {
+				bucketsPerRadius[i][centerIndex + value].add(physical);
 			}
 		}
 	}
-	int a = 5;
 }
 
 const std::vector<Physical*>& StaticGrid::get(const Urho3D::Vector3& center, float radius) {
