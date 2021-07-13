@@ -11,13 +11,25 @@ StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRad
 	queryRadius.back()), queryRadius(queryRadius) {
 	assert(queryRadius.size()>1);
 	bucketsPerRadius.reserve(queryRadius.size());
+	int defSize = 250;
 	for (int i = 0; i < queryRadius.size(); ++i) {
-		bucketsPerRadius.push_back(new Bucket[resolution * resolution]);
+		auto buckets = new Bucket[resolution * resolution];
+		bucketsPerRadius.push_back(buckets);
+		for (int i = 0; i < resolution * resolution; ++i) {
+			buckets[i].reserve(defSize);
+		}
+		defSize *= 3;
 	}
 }
 
 StaticGrid::~StaticGrid() {
 	for (auto buckets : bucketsPerRadius) {
+		// for (int i = 0; i < calculator->getResolution() * calculator->getResolution(); ++i) {
+		// 	
+		//
+		// 	std::cout << buckets[i].getSize()<<";";
+		// }
+		// std::cout << std::endl;
 		delete[] buckets;
 	}
 }

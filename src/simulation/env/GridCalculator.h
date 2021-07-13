@@ -54,21 +54,23 @@ struct GridCalculator {
 
 		if (cord.y_ <= -halfResolution) {
 			if (cord.x_ > 0) {
-				cord.x_++;
+				++cord.x_;
+			} else {
+				--cord.x_;
 			}
-			else {
-				cord.x_--;
-			}
+			cord.y_ = i - (cord.x_ * resolution);
+			return cord;
 		}
-		else if (cord.y_ >= halfResolution) {
+		if (cord.y_ >= halfResolution) {
 			if (cord.x_ >= 0) {
-				cord.x_++;
+				++cord.x_;
+			} else {
+				--cord.x_;
 			}
-			else {
-				cord.x_--;
-			}
+			cord.y_ = i - (cord.x_ * resolution);
+			return cord;
 		}
-		cord.y_ = i - (cord.x_ * resolution);
+
 		return cord;
 	}
 

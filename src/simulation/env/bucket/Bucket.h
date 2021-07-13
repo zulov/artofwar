@@ -9,8 +9,9 @@ public:
 	Bucket() = default;
 	~Bucket() = default;
 	Bucket(const Bucket&) = delete;
-	
+
 	int getSize() const;
+	void reserve(int i);
 
 	const std::vector<Physical*>& getContent() const { return content; }
 	void add(Physical* entity);
