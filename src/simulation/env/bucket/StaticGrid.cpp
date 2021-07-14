@@ -11,7 +11,7 @@ StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRad
 	queryRadius.back()), queryRadius(queryRadius) {
 	assert(queryRadius.size()>1);
 	bucketsPerRadius.reserve(queryRadius.size());
-	int defSize = 250;
+	int defSize = 300;
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		auto buckets = new Bucket[resolution * resolution];
 		bucketsPerRadius.push_back(buckets);
@@ -62,6 +62,8 @@ void StaticGrid::updateNew(Unit* unit, char team) const {
 }
 
 
+inline bool StaticGrid::inside(int val) const { return val >= 0 && val < calculator->getResolution(); }
+
 void StaticGrid::updateNew(Physical* physical) const {
 	Grid::updateNew(physical);
 
@@ -70,10 +72,9 @@ void StaticGrid::updateNew(Physical* physical) const {
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		for (auto value : *levelCache->get(queryRadius.at(i))) {
 			const auto shiftCords = calculator->getShiftCords(value);
+			//TODO cache
 
-			auto x1 = shiftCords.x_ + centerCords.x_;
-			auto z1 = shiftCords.y_ + centerCords.y_;
-			if (x1 >= 0 && x1 < calculator->getResolution() && z1 >= 0 && z1 < calculator->getResolution()) {
+			if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
 				bucketsPerRadius[i][centerIndex + value].add(physical);
 			}
 		}

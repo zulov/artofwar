@@ -44,13 +44,6 @@ struct GridCalculator {
 
 	Urho3D::IntVector2 getShiftCords(int i) const {
 		auto cord = getIndexes(i);
-		// if (abs(cord.y_) >= halfResolution) {
-		// 	if (cord.x_ > 0) {
-		// 		cord.x_++;
-		// 	} else {
-		// 		cord.x_--;
-		// 	}
-		// }
 
 		if (cord.y_ <= -halfResolution) {
 			if (cord.x_ > 0) {
