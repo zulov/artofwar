@@ -70,13 +70,18 @@ void StaticGrid::updateNew(Physical* physical) const {
 	const int centerIndex = calculator->indexFromPosition(physical->getPosition());
 	const auto centerCords = calculator->getIndexes(centerIndex);
 	for (int i = 0; i < queryRadius.size(); ++i) {
+		auto const& values = levelCache->get(queryRadius.at(i));
+		auto const& cords = levelCache->getCords(queryRadius.at(i));
+		int k = 0;
 		for (auto value : *levelCache->get(queryRadius.at(i))) {
-			const auto shiftCords = calculator->getShiftCords(value);
-			//TODO cache
+			//const auto shiftCords = calculator->getShiftCords(value);
+			const auto shiftCords = cords->at(k);
+
 
 			if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
 				bucketsPerRadius[i][centerIndex + value].add(physical);
 			}
+			++k;
 		}
 	}
 }
