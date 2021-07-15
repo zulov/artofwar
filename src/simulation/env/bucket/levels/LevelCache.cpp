@@ -15,7 +15,7 @@ LevelCache::LevelCache(float maxDistance, GridCalculator* calculator)
 	levelsCacheCords[0] = new std::vector<Urho3D::IntVector2>();
 	levelsCacheCords[0]->push_back(Urho3D::IntVector2::ZERO);
 
-	auto prev = levelsCacheCords[0];//TODO perf tego nie robic dla ca³osci
+	auto prev = levelsCacheCords[0]; //TODO perf tego nie robic dla ca³osci
 	for (int i = 1; i < RES_SEP_DIST; ++i) {
 		if (levelsCache[i - 1] != levelsCache[i]) {
 			prev = new std::vector<Urho3D::IntVector2>();
@@ -58,6 +58,14 @@ std::vector<Urho3D::IntVector2>* LevelCache::getCords(float radius) const {
 		return levelsCacheCords[index];
 	}
 	return levelsCacheCords[RES_SEP_DIST - 1];
+}
+
+std::pair<std::vector<short>*, std::vector<Urho3D::IntVector2>*> LevelCache::getBoth(float radius) const {
+	const int index = radius * invDiff;
+	if (index < RES_SEP_DIST) {
+		return {levelsCache[index], levelsCacheCords[index]};
+	}
+	return {levelsCache[RES_SEP_DIST - 1], levelsCacheCords[RES_SEP_DIST - 1]};
 }
 
 std::vector<short>* LevelCache::getEnvIndexs(float radius, std::vector<short>* prev, std::vector<short>& temp) const {

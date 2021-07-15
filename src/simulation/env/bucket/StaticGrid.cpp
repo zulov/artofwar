@@ -24,12 +24,6 @@ StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRad
 
 StaticGrid::~StaticGrid() {
 	for (auto buckets : bucketsPerRadius) {
-		// for (int i = 0; i < calculator->getResolution() * calculator->getResolution(); ++i) {
-		// 	
-		//
-		// 	std::cout << buckets[i].getSize()<<";";
-		// }
-		// std::cout << std::endl;
 		delete[] buckets;
 	}
 }
@@ -70,18 +64,14 @@ void StaticGrid::updateNew(Physical* physical) const {
 	const int centerIndex = calculator->indexFromPosition(physical->getPosition());
 	const auto centerCords = calculator->getIndexes(centerIndex);
 	for (int i = 0; i < queryRadius.size(); ++i) {
-		auto const& values = levelCache->get(queryRadius.at(i));
-		auto const& cords = levelCache->getCords(queryRadius.at(i));
-		int k = 0;
-		for (auto value : *levelCache->get(queryRadius.at(i))) {
-			//const auto shiftCords = calculator->getShiftCords(value);
-			const auto shiftCords = cords->at(k);
-
-
+		auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
+		const auto itr = bucketsPerRadius[i];
+		int j = 0;
+		for (const auto& shiftCords : *cords) {
 			if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
-				bucketsPerRadius[i][centerIndex + value].add(physical);
+				itr[centerIndex + indexes->at(j)].add(physical);
 			}
-			++k;
+			++j;
 		}
 	}
 }
