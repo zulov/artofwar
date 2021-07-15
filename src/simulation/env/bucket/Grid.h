@@ -15,7 +15,7 @@ struct GridCalculator;
 
 class Grid {
 public:
-	Grid(short resolution, float size, float maxQueryRadius);
+	Grid(short resolution, float size, bool initCords, float maxQueryRadius);
 	Grid(const Grid& rhs) = delete;
 	virtual ~Grid();
 

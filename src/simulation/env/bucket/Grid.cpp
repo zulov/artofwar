@@ -10,9 +10,9 @@
 #include "simulation/env/GridCalculatorProvider.h"
 #include "utils/consts.h"
 
-Grid::Grid(short resolution, float size, float maxQueryRadius)
+Grid::Grid(short resolution, float size, bool initCords, float maxQueryRadius)
 	: calculator(GridCalculatorProvider::get(resolution, size)),
-	  levelCache(LevelCacheProvider::get(resolution, maxQueryRadius, calculator)),
+	  levelCache(LevelCacheProvider::get(resolution, initCords, maxQueryRadius, calculator)),
 	  closeIndexes(CloseIndexesProvider::get(resolution)),
 	  sqResolution(resolution * resolution) {
 	buckets = new Bucket[sqResolution];

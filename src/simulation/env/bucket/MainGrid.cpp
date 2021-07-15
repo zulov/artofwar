@@ -13,7 +13,7 @@
 #include "simulation/env/CloseIndexes.h"
 
 
-MainGrid::MainGrid(short resolution, float size, float maxQueryRadius): Grid(resolution, size, maxQueryRadius) {
+MainGrid::MainGrid(short resolution, float size, float maxQueryRadius): Grid(resolution, size, false, maxQueryRadius) {
 	complexData = new ComplexBucketData[sqResolution];
 	auto quater = calculator->getFieldSize() / 4;
 	posInBucket2 = {Urho3D::Vector2(quater, quater), Urho3D::Vector2(-quater, -quater)};

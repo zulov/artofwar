@@ -10,7 +10,7 @@
 
 VisibilityMap::VisibilityMap(unsigned short resolution, float size, float valueThresholdDebug)
 	: InfluenceMap(resolution, size, valueThresholdDebug),
-	  levelCache(LevelCacheProvider::get(resolution, 60.f, calculator)) {
+	  levelCache(LevelCacheProvider::get(resolution, false, 60.f, calculator)) {
 	values = new VisibilityType[arraySize];
 	std::fill_n(values, arraySize, VisibilityType::NONE);
 	valuesForInfluence = new bool[arraySize / 4];
@@ -28,7 +28,7 @@ void VisibilityMap::update(Physical* thing, float value) {
 	if (sRadius < 0) { return; }
 	const auto centerIdx = calculator->indexFromPosition(thing->getPosition());
 	for (auto level : *levelCache->get(sRadius)) {
-		const auto index = centerIdx + level;//TOdo to trzeba inaczej sprawdzic, bo to wychodzi poza plansze i tak
+		const auto index = centerIdx + level; //TOdo to trzeba inaczej sprawdzic, bo to wychodzi poza plansze i tak
 		if (calculator->isValidIndex(index)) {
 			values[index] = VisibilityType::VISIBLE;
 		}

@@ -7,18 +7,18 @@
 #include "levels/LevelCache.h"
 #include "objects/Physical.h"
 
-StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRadius): Grid(resolution, size,
+StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRadius): Grid(resolution, size, true,
 	queryRadius.back()), queryRadius(queryRadius) {
 	assert(queryRadius.size()>1);
 	bucketsPerRadius.reserve(queryRadius.size());
-	int defSize = 300;
+	int defSize = 550;
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		auto buckets = new Bucket[resolution * resolution];
 		bucketsPerRadius.push_back(buckets);
 		for (int i = 0; i < resolution * resolution; ++i) {
 			buckets[i].reserve(defSize);
 		}
-		defSize *= 3;
+		defSize *= 2.5;
 	}
 }
 
@@ -65,6 +65,7 @@ void StaticGrid::updateNew(Physical* physical) const {
 	const auto centerCords = calculator->getIndexes(centerIndex);
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
+		assert(indexes->size() == cords->size());
 		const auto itr = bucketsPerRadius[i];
 		int j = 0;
 		for (const auto& shiftCords : *cords) {
