@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "database/DatabaseCache.h"
 #include "objects/queue/QueueActionType.h"
+#include "simulation/env/Environment.h"
 
 
 Player::Player(int nationId, char team, char id, int color, Urho3D::String name, bool active):
@@ -94,7 +95,9 @@ void Player::add(Building* building) {
 }
 
 int Player::getScore() const {
-	return possession.getScore();
+	const float visibilityPercent = Game::getEnvironment()->getVisibilityScore(id);
+	return possession.getScore()
+		+ visibilityPercent * 1000.f;
 }
 
 int Player::getWorkersNumber() const {

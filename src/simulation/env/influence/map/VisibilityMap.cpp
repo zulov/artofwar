@@ -96,6 +96,14 @@ void VisibilityMap::removeUnseen(float* intersection) {
 	}
 }
 
+float VisibilityMap::getPercent() const {
+	float sum = 0.f;
+	for (int i = 0; i < arraySize; ++i) {
+		sum += cast(values[i]);
+	}
+	return sum / (arraySize * 2.f);
+}
+
 void VisibilityMap::ensureReady() {
 	if (valuesForInfluenceReady == false) {
 		std::fill_n(valuesForInfluence, arraySize / 4, false);

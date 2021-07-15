@@ -45,6 +45,8 @@ public:
 	void complete();
 	
 	float getSightRadius() const override;
+	db_building_level* getLevel() const ;
+	db_building* getDbData() const;
 private:
 	int deployIndex = -1;
 	bool ready = true;

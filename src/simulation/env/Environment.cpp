@@ -53,6 +53,10 @@ bool Environment::isVisible(char player, const Urho3D::Vector2& pos) {
 	return influenceManager.isVisible(player, pos);
 }
 
+float Environment::getVisibilityScore(char player) {
+	return influenceManager.getVisibilityScore(player);
+}
+
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
 	neights->clear();
 

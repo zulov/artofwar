@@ -192,3 +192,11 @@ void Building::complete() {
 float Building::getSightRadius() const {
 	return dbLevel->sightRadius;
 }
+
+db_building_level* Building::getLevel() const {
+	return dbLevel;
+}
+
+db_building* Building::getDbData() const {
+	return dbBuilding;
+}

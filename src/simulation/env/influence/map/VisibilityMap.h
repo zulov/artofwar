@@ -19,6 +19,7 @@ public:
 	float getValueAt(int index) const override;
 	void computeMinMax() override;
 	void removeUnseen(float* intersection);
+	float getPercent() const;
 
 private:
 	void ensureReady();

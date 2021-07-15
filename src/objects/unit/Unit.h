@@ -139,6 +139,7 @@ public:
 	float getInvMaxHp() const override;
 	float getSightRadius() const override;
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
+	db_unit* getDbData() const;
 private:
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);

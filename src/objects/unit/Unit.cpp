@@ -504,6 +504,10 @@ Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
 	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().z_ + vector.y_};
 }
 
+db_unit* Unit::getDbData() const {
+	return dbUnit;
+}
+
 std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit* user) {
 	float minDistance = 99999;
 	Urho3D::Vector2 closest;

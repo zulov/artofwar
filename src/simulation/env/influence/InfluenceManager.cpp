@@ -396,6 +396,10 @@ Urho3D::Vector2 InfluenceManager::getCenter(int index) const {
 	return calculator->getCenter(index);
 }
 
+float InfluenceManager::getVisibilityScore(char player) {
+	return visibilityPerPlayer[player]->getPercent();
+}
+
 std::vector<int> InfluenceManager::centersFromIndexes(float* values, const std::vector<unsigned>& indexes,
                                                       float minVal) const {
 	std::vector<int> result;

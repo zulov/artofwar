@@ -312,9 +312,9 @@ void Main::load(const String& saveName, Loading& progress) {
 		controls = new Controls(GetSubsystem<Input>());
 		SetupViewport();
 
-		Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
-		Game::getStats()->init();
-
+		Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());	
+		//Game::getStats()->init();
+		
 		if (!engineParameters_[EP_HEADLESS].GetBool()) {
 			controls->init();
 			subscribeToUIEvents();
@@ -325,6 +325,7 @@ void Main::load(const String& saveName, Loading& progress) {
 	break;
 	case 1: {
 		createEnv(loader.getConfig()->size);
+		Game::getStats()->init();
 		if (SIM_GLOBALS.CAMERA_START != Urho3D::Vector2::ZERO) {
 			Game::getCameraManager()->changePosition(SIM_GLOBALS.CAMERA_START.x_, SIM_GLOBALS.CAMERA_START.y_);
 		}
@@ -366,7 +367,7 @@ void Main::newGame(NewGameForm* form, Loading& progress) {
 		SetupViewport();
 
 		Game::getPlayersMan()->load(form);
-		Game::getStats()->init();
+		//Game::getStats()->init();
 		controls->init();
 
 		hud->resetLoading();
@@ -376,6 +377,7 @@ void Main::newGame(NewGameForm* form, Loading& progress) {
 	break;
 	case 1: {
 		createEnv(form->size);
+		Game::getStats()->init();
 		break;
 	}
 	case 2: {

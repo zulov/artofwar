@@ -27,7 +27,18 @@ Possession::~Possession() {
 
 
 int Possession::getScore() const {
-	return buildings.size() * 10 + units.size() + resourcesSum / 100;
+	float buildingScore = 0.f;
+	for (auto building : buildings) {
+		buildingScore += building->getDbData()->getSumCost();
+	}
+
+	float unitsScore = 0.f;
+	for (auto unit : units) {
+		unitsScore += unit->getDbData()->getSumCost();
+	}
+
+	return (buildingScore + unitsScore) * 0.2f + resourcesSum * 0.01f;
+	//return buildings.size() * 10 + units.size() + resourcesSum / 100;
 }
 
 int Possession::getUnitsNumber() const {
