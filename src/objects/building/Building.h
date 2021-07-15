@@ -35,7 +35,6 @@ public:
 	std::string getValues(int precision) override;
 	float getMaxHpBarSize() const override;
 	float getHealthBarSize() const override;
-	short getId() const override;
 	char getLevelNum() override;
 	void fillValues(std::span<float> weights) const;
 	void addValues(std::span<float> vals) const override;

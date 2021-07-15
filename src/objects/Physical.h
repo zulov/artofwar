@@ -25,7 +25,7 @@ public:
 	void clearNodeWithOutDelete();
 
 	virtual bool isAlive() const;
-	virtual short getId() const = 0;
+	short getId() const { return id; }
 
 	void updateHealthBar() const;
 	virtual float getHealthBarSize() const;
@@ -116,7 +116,7 @@ protected:
 	bool isVisible = false;
 
 	Urho3D::Vector3 position;
-
+	short id = -1;
 	float hp;
 private:
 	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;

@@ -52,10 +52,6 @@ float Building::getHealthBarSize() const {
 	return getMaxHpBarSize() * queue->getAt(0)->getProgress();
 }
 
-short Building::getId() const {
-	return dbBuilding->id;
-}
-
 char Building::getLevelNum() {
 	return dbLevel->level;
 }
@@ -63,6 +59,7 @@ char Building::getLevelNum() {
 void Building::populate() {
 	Static::populate();
 	hp = dbLevel->maxHp;
+	id = dbBuilding->id;
 	if (dbLevel->queueMaxCapacity > 0) {
 		queue = new QueueManager(dbLevel->queueMaxCapacity);
 	} else {

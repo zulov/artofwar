@@ -55,6 +55,7 @@ bool Unit::isAlive() const {
 void Unit::populate() {
 	maxSpeed = dbLevel->maxSpeed;
 	hp = dbLevel->maxHp;
+	id = dbUnit->id;
 }
 
 void Unit::checkAim() {
@@ -421,10 +422,6 @@ void Unit::applyForce(float timeStep) {
 			StateManager::changeState(this, UnitState::MOVE);
 		}
 	}
-}
-
-short Unit::getId() const {
-	return dbUnit->id;
 }
 
 float Unit::getAttackRange() const {

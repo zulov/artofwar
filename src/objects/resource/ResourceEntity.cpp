@@ -29,14 +29,11 @@ const Urho3D::IntVector2 ResourceEntity::getGridSize() const {
 	return dbResource->size;
 }
 
-short ResourceEntity::getId() const {
-	return dbResource->id;
-}
-
 void ResourceEntity::populate() {
 	Static::populate();
 
 	hp = dbResource->maxHp;
+	id = dbResource->id;
 }
 
 float ResourceEntity::getMaxHpBarSize() const {
