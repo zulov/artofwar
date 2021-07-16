@@ -78,9 +78,9 @@ std::pair<float, bool> Building::absorbAttack(float attackCoef) {
 
 	if (hp <= 0) {
 		StateManager::changeState(this, StaticState::DEAD);
-		return { val, true };
+		return {val, true};
 	}
-	return { val, false };
+	return {val, false};
 }
 
 Urho3D::String Building::toMultiLineString() {
@@ -197,10 +197,6 @@ float Building::getSightRadius() const {
 	return dbLevel->sightRadius;
 }
 
-db_building_level* Building::getLevel() const {
-	return dbLevel;
-}
-
-db_building* Building::getDbData() const {
-	return dbBuilding;
+short Building::getCostSum() const {
+	return dbBuilding->getSumCost();
 }

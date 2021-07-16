@@ -29,12 +29,12 @@ Possession::~Possession() {
 int Possession::getScore() const {
 	float buildingScore = 0.f;
 	for (auto building : buildings) {
-		buildingScore += building->getDbData()->getSumCost();
+		buildingScore += building->getCostSum();
 	}
 
 	float unitsScore = 0.f;
 	for (auto unit : units) {
-		unitsScore += unit->getDbData()->getSumCost();
+		unitsScore += unit->getCostSum();
 	}
 
 	return (buildingScore + unitsScore) * 0.2f + resourcesSum * 0.01f;
@@ -67,10 +67,14 @@ float Possession::getBuildingsVal(BuildingMetric value) const {
 	return buildingsValuesAsSpan[cast(value)];
 }
 
+void Possession::addKilled(Physical* physical) {
+	resourcesDestroyed += physical->getCostSum();
+}
+
 std::vector<Unit*> Possession::getFreeArmy() {
 	std::vector<Unit*> army(units.size());
 
-	auto it = std::ranges::copy_if(units, army.begin(), [](Unit* unit) {
+	auto it = std::ranges::copy_if(units, army.begin(), [](Unit* unit){
 		return isFreeSolider(unit);
 	}).out;
 	army.resize(std::distance(army.begin(), it));
@@ -118,7 +122,7 @@ void Possession::updateAndClean(Resources& resources, const ObjectsInfo* simInfo
 
 	resourcesSum = sumSpan(resources.getValues());
 
-	freeWorkersNumber = std::ranges::count_if(workers, [](Unit* worker) {
+	freeWorkersNumber = std::ranges::count_if(workers, [](Unit* worker){
 		return isInFreeState(worker->getState());
 	});
 }

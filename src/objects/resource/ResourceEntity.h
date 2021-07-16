@@ -1,7 +1,8 @@
 #pragma once
 #include "objects/static/Static.h"
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class Vector3;
 }
 
@@ -30,6 +31,7 @@ public:
 
 	ObjectType getType() const override { return ObjectType::RESOURCE; }
 	unsigned char getMaxCloseUsers() const override;
+	short getCostSum() const override { return 0; }
 private:
 	db_resource* dbResource;
 };

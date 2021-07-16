@@ -80,7 +80,7 @@ void Unit::updatePosition() const {
 
 bool Unit::move(float timeStep, const CameraInfo* camInfo) {
 	if (missileData && missileData->isUp()) {
-		auto [value, died ]  = missileData->update(timeStep, dbLevel->rangeAttackVal);
+		auto [value, died] = missileData->update(timeStep, dbLevel->rangeAttackVal);
 		Game::getEnvironment()->addAttack(this, value);
 		Game::getPlayersMan()->getPlayer(getPlayer())->addKilled(missileData->getAim());
 	}
@@ -146,7 +146,7 @@ Urho3D::Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 
 std::pair<float, bool> Unit::absorbAttack(float attackCoef) {
 	if (hp <= 0) {
-		return { 0.f, false };
+		return {0.f, false};
 	}
 	auto val = attackCoef * (1 - dbLevel->armor);
 	hp -= val;
@@ -155,9 +155,9 @@ std::pair<float, bool> Unit::absorbAttack(float attackCoef) {
 
 	if (hp <= 0) {
 		StateManager::changeState(this, UnitState::DEAD);
-		return { val, true };
+		return {val, true};
 	}
-	return { val, false };
+	return {val, false};
 }
 
 void Unit::toActionIfInRange(Physical* closest, UnitAction order) {
@@ -512,8 +512,8 @@ Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
 	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().z_ + vector.y_};
 }
 
-db_unit* Unit::getDbData() const {
-	return dbUnit;
+short Unit::getCostSum() const {
+	return dbUnit->getSumCost();
 }
 
 std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit* user) {

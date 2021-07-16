@@ -47,6 +47,7 @@ public:
 	db_building_level* getLevelForBuilding(short id) const;
 	std::optional<db_unit_level*> getNextLevelForUnit(short id) const;
 	std::optional<db_building_level*> getNextLevelForBuilding(short id) const;
+	void addKilled(Physical* physical);
 private:
 	db_nation* dbNation; //Must by first
 	QueueManager* queue;

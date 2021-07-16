@@ -27,7 +27,7 @@ public:
 	//TODO target to nie to samo co gdzie sie maja pojawiac!
 	AbstractQueueManager* getQueue() const { return queue; }
 	bool isReady() const { return ready; }
-	
+
 	Urho3D::String toMultiLineString() override;
 	std::pair<float, bool> absorbAttack(float attackCoef) override;
 	ObjectType getType() const override { return ObjectType::BUILDING; }
@@ -43,10 +43,9 @@ public:
 	void createDeploy();
 	void setDeploy(int cell);
 	void complete();
-	
+
 	float getSightRadius() const override;
-	db_building_level* getLevel() const ;
-	db_building* getDbData() const;
+	short getCostSum() const override;
 private:
 	int deployIndex = -1;
 	bool ready = true;

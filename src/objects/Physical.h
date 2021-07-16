@@ -6,10 +6,12 @@
 
 
 #include "objects/ObjectEnums.h"
+#include "player/Possession.h"
 #include "Urho3D/Math/Vector3.h"
 
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class Node;
 	struct Billboard;
 	class StaticModel;
@@ -82,9 +84,10 @@ public:
 
 	virtual float getMaxHpBarSize() const = 0;
 
-	virtual std::pair<float,bool> absorbAttack(float attackCoef) = 0;
+	virtual std::pair<float, bool> absorbAttack(float attackCoef) = 0;
 
 	void select(Urho3D::Billboard* healthBar, Urho3D::Billboard* aura);
+	virtual short getCostSum() const = 0;
 	static void disableBillboard(Urho3D::Billboard* billboard);
 	void unSelect();
 

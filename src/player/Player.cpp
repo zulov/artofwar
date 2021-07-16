@@ -78,6 +78,10 @@ std::optional<db_building_level*> Player::getNextLevelForBuilding(short id) cons
 	return Game::getDatabase()->getBuilding(id)->getLevel(buildingLevels[id] + 1);
 }
 
+void Player::addKilled(Physical* physical) {
+	possession.addKilled(physical);
+}
+
 void Player::updateResource() const {
 	resources.resetStats();
 }

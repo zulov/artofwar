@@ -5,6 +5,7 @@
 #include "objects/Metrics.h"
 
 
+class Physical;
 class Player;
 class ObjectsInfo;
 class Unit;
@@ -28,7 +29,8 @@ public:
 	std::vector<Building*>* getBuildings(short id);
 	float getUnitsVal(UnitMetric value) const;
 	float getBuildingsVal(BuildingMetric value) const;
-
+	void addKilled(Physical* physical);
+	
 	std::span<float> getUnitsMetrics() const { return unitsValuesAsSpan; }
 	std::span<float> getFreeArmyMetrics() const { return freeArmyMetricsAsSpan; }
 	std::span<float> getBuildingsMetrics() const { return buildingsValuesAsSpan; }
