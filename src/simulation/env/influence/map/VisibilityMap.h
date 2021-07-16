@@ -19,12 +19,14 @@ public:
 	float getValueAt(int index) const override;
 	void computeMinMax() override;
 	void removeUnseen(float* intersection);
-	float getPercent() const;
+	float getPercent();
 
 private:
 	void ensureReady();
 	VisibilityType* values;
 	bool* valuesForInfluence;
 	LevelCache* levelCache;
+	float percent = -1.f;
+	bool percentReady = false;
 	bool valuesForInfluenceReady = false;
 };

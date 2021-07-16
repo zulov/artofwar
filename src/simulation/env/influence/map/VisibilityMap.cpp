@@ -24,6 +24,7 @@ VisibilityMap::~VisibilityMap() {
 
 void VisibilityMap::update(Physical* thing, float value) {
 	valuesForInfluenceReady = false;
+	percentReady = false;
 	const auto sRadius = thing->getSightRadius();
 	if (sRadius < 0) { return; }
 	const auto centerIdx = calculator->indexFromPosition(thing->getPosition());
@@ -37,6 +38,7 @@ void VisibilityMap::update(Physical* thing, float value) {
 
 void VisibilityMap::updateInt(Physical* thing, int value) {
 	valuesForInfluenceReady = false;
+	percentReady = false;
 	update(thing);
 }
 
@@ -45,6 +47,8 @@ void VisibilityMap::updateInt(int index, int value) const {
 }
 
 void VisibilityMap::reset() {
+	valuesForInfluenceReady = false;
+	percentReady = false;
 	for (int i = 0; i < arraySize; ++i) {
 		if (values[i] == VisibilityType::VISIBLE) {
 			values[i] = VisibilityType::SEEN;
@@ -96,12 +100,13 @@ void VisibilityMap::removeUnseen(float* intersection) {
 	}
 }
 
-float VisibilityMap::getPercent() const {
-	float sum = 0.f;
-	for (int i = 0; i < arraySize; ++i) {
-		sum += cast(values[i]);
+float VisibilityMap::getPercent() {
+	if (!percentReady) {
+		float sum = std::accumulate((char*)values, (char*)(values + arraySize), 0.f);
+		percent = sum / (arraySize * 2.f);
+		percentReady = true;
 	}
-	return sum / (arraySize * 2.f);
+	return percent;
 }
 
 void VisibilityMap::ensureReady() {
