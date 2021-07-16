@@ -23,6 +23,7 @@
 #include "simulation/ObjectsInfo.h"
 #include "simulation/env/Environment.h"
 #include "objects/ActionType.h"
+#include "player/Player.h"
 #include "simulation/FrameInfo.h"
 #include "simulation/SimInfo.h"
 #include "utils/OtherUtils.h"
@@ -556,11 +557,18 @@ void Controls::buildControl() {
 				tempBuildingNode->SetEnabled(true);
 			}
 			Urho3D::String textureName;
-			if (env->validateStatic(building->size, hitPos) && env->isVisible(Game::getPlayersMan()->getActivePlayerID(), hitPos)) {
-				textureName = "Materials/green_overlay.xml";
+			if (env->validateStatic(building->size, hitPos)) {
+				if (env->isVisible(Game::getPlayersMan()->getActivePlayerID(), hitPos)) {
+					if (Game::getPlayersMan()->getActivePlayer()->getResources().hasEnough(building->costs)) {
+						textureName = "Materials/green_overlay.xml";
+					} else {
+						textureName = "Materials/light_red_overlay.xml";
+					}
+				}else {
+					textureName = "Materials/light_red_overlay2.xml";
+				}
 			} else {
 				textureName = "Materials/red_overlay.xml";
-
 			}
 			changeMaterial(Game::getCache()->GetResource<Urho3D::Material>(textureName), tempBuildingModel);
 		}
