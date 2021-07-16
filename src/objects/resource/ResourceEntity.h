@@ -15,7 +15,7 @@ public:
 	virtual ~ResourceEntity() = default;
 	void populate() override;
 
-	float collect(float collectSpeed);
+	std::pair<float, bool> absorbAttack(float collectSpeed) override;
 	ResourceEntity* load(dbload_resource_entities* resource);
 
 	char getPlayer() const override { return -1; }
@@ -27,9 +27,9 @@ public:
 
 	float getInvMaxHp() const override;
 	void action(ResourceActionType type, char player);
+
 	ObjectType getType() const override { return ObjectType::RESOURCE; }
 	unsigned char getMaxCloseUsers() const override;
 private:
-
 	db_resource* dbResource;
 };

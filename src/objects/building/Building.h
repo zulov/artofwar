@@ -29,7 +29,7 @@ public:
 	bool isReady() const { return ready; }
 	
 	Urho3D::String toMultiLineString() override;
-	float absorbAttack(float attackCoef) override;
+	std::pair<float, bool> absorbAttack(float attackCoef) override;
 	ObjectType getType() const override { return ObjectType::BUILDING; }
 	void action(BuildingActionType type, short id) const;
 	std::string getValues(int precision) override;

@@ -23,6 +23,8 @@ struct MissileData {
 		node = nullptr;
 	}
 
+	Physical* getAim() const { return aim; }
+
 	MissileData(float peakHeight, float speed)
 		: peakHeight(peakHeight),
 		  speed(speed) {
@@ -50,7 +52,7 @@ struct MissileData {
 		node->SetPosition(start);
 	}
 
-	void update(float timeStep, float attackCoef) {
+	std::pair<float, bool> update(float timeStep, float attackCoef) {
 		distanceSoFar += speed * timeStep;
 		auto pos = node->GetPosition();
 		pos += direction * timeStep; //TODO uwzglednic tylko 2 wymiary
@@ -61,7 +63,7 @@ struct MissileData {
 		if (finished()) {
 			if (aim && aim->isAlive()
 				&& sqDist(aim->getPosition(), getPosition()) < 3 * 3) {
-				aim->absorbAttack(attackCoef);
+				return aim->absorbAttack(attackCoef);
 			}
 			reset();
 		}

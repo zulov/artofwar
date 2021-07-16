@@ -17,6 +17,8 @@
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
 #include "camera/CameraInfo.h"
+#include "player/Player.h"
+#include "player/PlayersManager.h"
 #include "utils/consts.h"
 #include "utils/Flags.h"
 
@@ -78,7 +80,9 @@ void Unit::updatePosition() const {
 
 bool Unit::move(float timeStep, const CameraInfo* camInfo) {
 	if (missileData && missileData->isUp()) {
-		missileData->update(timeStep, dbLevel->rangeAttackVal);
+		auto [value, died ]  = missileData->update(timeStep, dbLevel->rangeAttackVal);
+		Game::getEnvironment()->addAttack(this, value);
+		Game::getPlayersMan()->getPlayer(getPlayer())->addKilled(missileData->getAim());
 	}
 	bool hasMoved = false;
 	const bool prevVisible = isVisible;
@@ -140,16 +144,20 @@ Urho3D::Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 	return force;
 }
 
-float Unit::absorbAttack(float attackCoef) {
+std::pair<float, bool> Unit::absorbAttack(float attackCoef) {
+	if (hp <= 0) {
+		return { 0.f, false };
+	}
 	auto val = attackCoef * (1 - dbLevel->armor);
 	hp -= val;
 
 	updateHealthBar();
 
-	if (hp < 0) {
+	if (hp <= 0) {
 		StateManager::changeState(this, UnitState::DEAD);
+		return { val, true };
 	}
-	return val;
+	return { val, false };
 }
 
 void Unit::toActionIfInRange(Physical* closest, UnitAction order) {

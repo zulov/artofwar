@@ -381,8 +381,8 @@ void Environment::addCollect(Unit* unit, float value) {
 	influenceManager.addCollect(unit, value);
 }
 
-void Environment::addAttack(Unit* unit, float value) {
-	influenceManager.addAttack(unit, value);
+void Environment::addAttack(Unit* attacker, float value) {
+	influenceManager.addAttack(attacker, value);
 }
 
 void Environment::drawInfluence() {

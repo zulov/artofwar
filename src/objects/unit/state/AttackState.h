@@ -6,6 +6,8 @@
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
 #include "UnitState.h"
+#include "player/Player.h"
+#include "player/PlayersManager.h"
 #include "simulation/env/Environment.h"
 
 
@@ -14,8 +16,7 @@ public:
 	AttackState(): State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
 		UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
-	}) {
-	}
+	}) { }
 
 	~AttackState() = default;
 
@@ -58,8 +59,9 @@ public:
 	void execute(Unit* unit, float timeStep) override {
 		if (isInRange(unit)) {
 			if (fmod(unit->currentFrameState, 1 / unit->dbLevel->closeAttackSpeed) < 1) {
-				auto val = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->closeAttackVal);
-				Game::getEnvironment()->addAttack(unit, val);
+				const auto [value, died] = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->closeAttackVal);
+				Game::getEnvironment()->addAttack(unit, value);
+				Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(unit->thingsToInteract[0]);
 			}
 			++unit->currentFrameState;
 		} else {

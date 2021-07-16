@@ -94,15 +94,14 @@ private:
 	GameState gameState;
 	DebugManager debugManager;
 
+	bool inited = false;
+	short coefToEdit = 0;
+	int timeLimit = 600;
+
 	NewGameForm* newGameForm;
 	Urho3D::String saveToLoad = "quicksave.db";
 
-	bool inited = false;
-
-	short coefToEdit = 0;
-
-	//
-	int timeLimit = 600;
+	
 	Urho3D::String outputName = "test.txt";
 	std::chrono::system_clock::time_point start;
 };

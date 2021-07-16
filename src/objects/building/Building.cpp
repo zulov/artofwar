@@ -67,16 +67,20 @@ void Building::populate() {
 	}
 }
 
-float Building::absorbAttack(float attackCoef) {
+std::pair<float, bool> Building::absorbAttack(float attackCoef) {
+	if (hp <= 0) {
+		return {0.f, false};
+	}
 	const auto val = (attackCoef + attackCoef * ready) * (1 - dbLevel->armor);
 	hp -= val;
 
 	updateHealthBar();
 
-	if (hp < 0) {
+	if (hp <= 0) {
 		StateManager::changeState(this, StaticState::DEAD);
+		return { val, true };
 	}
-	return val;
+	return { val, false };
 }
 
 Urho3D::String Building::toMultiLineString() {

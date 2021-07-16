@@ -380,8 +380,8 @@ void InfluenceManager::addCollect(Unit* unit, float value) {
 	econQuad[playerId]->update(index, value);
 }
 
-void InfluenceManager::addAttack(Unit* unit, float value) {
-	attackSpeed[unit->getPlayer()]->tempUpdate(unit, value);
+void InfluenceManager::addAttack(Unit* attacker, float value) {
+	attackSpeed[attacker->getPlayer()]->tempUpdate(attacker, value);
 }
 
 std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, char player) {

@@ -91,16 +91,17 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 
 }
 
-float ResourceEntity::collect(float collectSpeed) {
+std::pair<float, bool> ResourceEntity::absorbAttack(float collectSpeed) {
 	if (hp - collectSpeed >= 0) {
 		hp -= collectSpeed;
 		updateHealthBar();
-		return collectSpeed;
+		return {collectSpeed, false};
 	}
+	
 	const float toReturn = hp;
-	hp = 0;
+	hp = 0.f;
 	StateManager::changeState(this, StaticState::DEAD);
-	return toReturn;
+	return { toReturn, false };
 }
 
 ResourceEntity* ResourceEntity::load(dbload_resource_entities* resource) {

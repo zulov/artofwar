@@ -36,15 +36,15 @@ public:
 	const std::vector<Unit*>& getWorkers() const { return workers; }
 	std::vector<Unit*> getFreeArmy();
 private:
-	
 	std::vector<Building*> buildings;
 	std::vector<std::vector<Building*>*> buildingsPerId;
 
 	std::vector<Unit*> units;
 	std::vector<Unit*> workers;
 	int freeWorkersNumber = 0;
-	float resourcesSum = 0;
-
+	float resourcesSum = 0.f;
+	float resourcesDestroyed = 0.f;
+	
 	float data[magic_enum::enum_count<UnitMetric>() - 1
 		+ magic_enum::enum_count<UnitMetric>() - 1
 		+ magic_enum::enum_count<BuildingMetric>() - 1];

@@ -82,7 +82,7 @@ public:
 
 	virtual float getMaxHpBarSize() const = 0;
 
-	virtual float absorbAttack(float attackCoef) { return 0.0f; }
+	virtual std::pair<float,bool> absorbAttack(float attackCoef) = 0;
 
 	void select(Urho3D::Billboard* healthBar, Urho3D::Billboard* aura);
 	static void disableBillboard(Urho3D::Billboard* billboard);

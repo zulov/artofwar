@@ -13,8 +13,7 @@ public:
 	CollectState(): State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
 		UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
-	}) {
-	}
+	}) { }
 
 	~CollectState() = default;
 
@@ -55,7 +54,7 @@ public:
 			//TODO musi byc dokladnie w dobry mbuckecie
 			auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
 			auto resource = dynamic_cast<ResourceEntity*>(unit->thingsToInteract[0]);
-			const float value = resource->collect(unit->dbLevel->collectSpeed * timeStep);
+			const auto [value, died] = resource->absorbAttack(unit->dbLevel->collectSpeed * timeStep);
 			Game::getEnvironment()->addCollect(unit, value);
 			resources.add(resource->getId(), value);
 		} else {

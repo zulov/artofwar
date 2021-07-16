@@ -41,7 +41,12 @@ public:
 				for (auto physical : unit->thingsToInteract) {
 					if (unit->getTeam() != physical->getTeam()) {
 						const auto before = physical->getHealthPercent();
+						
 						physical->absorbAttack(unit->dbLevel->chargeAttackVal);
+						const auto [value, died] = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->closeAttackVal);
+						Game::getEnvironment()->addAttack(unit, value);
+						Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(unit->thingsToInteract[0]);
+						
 						const auto after = physical->getHealthPercent();
 						if (!unit->chargeData->updateHit(before, after)) {
 							StateManager::changeState(unit, UnitState::MOVE);

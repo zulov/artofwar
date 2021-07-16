@@ -117,7 +117,7 @@ public:
 	std::optional<Urho3D::Vector2> getPosToCreate(db_building* building, char player, const std::span<float> result);
 	std::vector<Urho3D::Vector2> getAreas(char player, const std::span<float>, int min);
 	void addCollect(Unit* unit, float value);
-	void addAttack(Unit* unit, float value);
+	void addAttack(Unit* attacker, float value);
 	void drawInfluence();
 	bool cellIsPassable(int index) const;
 	bool cellIsCollectable(int index) const;
