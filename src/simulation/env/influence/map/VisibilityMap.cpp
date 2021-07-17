@@ -49,11 +49,6 @@ void VisibilityMap::updateInt(int index, int value) const {
 void VisibilityMap::reset() {
 	valuesForInfluenceReady = false;
 	percentReady = false;
-	valuesForInfluenceReady = false;
-	percentReady = false;
-	for (int i = 0; i < arraySize; ++i) {
-		if (values[i] == VisibilityType::VISIBLE) {
-			values[i] = VisibilityType::SEEN;
 	auto end = values + arraySize;
 	for (auto i = values; i < end; ++i) {
 		if (*i == VisibilityType::VISIBLE) {
