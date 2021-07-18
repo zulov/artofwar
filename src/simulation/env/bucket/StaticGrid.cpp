@@ -39,10 +39,17 @@ void StaticGrid::update(Physical* entity) const {
 void StaticGrid::remove(Physical* physical) const {
 	Grid::remove(physical);
 	const int centerIndex = calculator->indexFromPosition(physical->getPosition());
+	const auto centerCords = calculator->getIndexes(centerIndex);
 	for (int i = 0; i < queryRadius.size(); ++i) {
-		for (auto value : *levelCache->get(queryRadius.at(i))) {
-			int newIndex = centerIndex + value; //TODO check boundry
-			bucketsPerRadius[i][newIndex].remove(physical);
+		auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
+		assert(indexes->size() == cords->size());
+		const auto itr = bucketsPerRadius[i];
+		int j = 0;
+		for (const auto& shiftCords : *cords) {
+			if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
+				itr[centerIndex + indexes->at(j)].remove(physical);
+			}
+			++j;
 		}
 	}
 }

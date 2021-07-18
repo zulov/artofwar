@@ -58,7 +58,7 @@ inline void validateSpan(int line, std::string file, std::span<float> vec) {
 }
 
 inline float maxSpan(std::span<float> vec) {
-	return *std::max_element(vec.begin(), vec.end());
+	return *std::ranges::max_element(vec);
 }
 
 inline float maxSpanRoot(std::span<float> vec) {
