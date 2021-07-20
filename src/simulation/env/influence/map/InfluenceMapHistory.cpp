@@ -8,11 +8,13 @@ InfluenceMapHistory::InfluenceMapHistory(unsigned short resolution, float size, 
 }
 
 void InfluenceMapHistory::reset() {
-	for (int i = 0; i < arraySize; ++i) {
-		if (values[i] < minimalThreshold) {
-			values[i] = 0.f;
-		} else {
-			values[i] *= vanishCoef;
+	const auto end = values + arraySize;
+	for (auto i = values; i < end; ++i) {
+		if (*i < minimalThreshold) {
+			*i = 0.f;
+		}
+		else {
+			*i *= vanishCoef;
 		}
 	}
 }
