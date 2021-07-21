@@ -37,7 +37,7 @@ int Possession::getScore() const {
 		unitsScore += unit->getCostSum();
 	}
 
-	return (buildingScore + unitsScore) * 0.2f + resourcesSum * 0.01f;
+	return buildingScore * 0.25f + unitsScore * 0.2f + resourcesSum * 0.01f;
 	//return buildings.size() * 10 + units.size() + resourcesSum / 100;
 }
 
@@ -74,7 +74,7 @@ void Possession::addKilled(Physical* physical) {
 std::vector<Unit*> Possession::getFreeArmy() {
 	std::vector<Unit*> army(units.size());
 
-	auto it = std::ranges::copy_if(units, army.begin(), [](Unit* unit){
+	auto it = std::ranges::copy_if(units, army.begin(), [](Unit* unit) {
 		return isFreeSolider(unit);
 	}).out;
 	army.resize(std::distance(army.begin(), it));
@@ -122,7 +122,7 @@ void Possession::updateAndClean(Resources& resources, const ObjectsInfo* simInfo
 
 	resourcesSum = sumSpan(resources.getValues());
 
-	freeWorkersNumber = std::ranges::count_if(workers, [](Unit* worker){
+	freeWorkersNumber = std::ranges::count_if(workers, [](Unit* worker) {
 		return isInFreeState(worker->getState());
 	});
 }
