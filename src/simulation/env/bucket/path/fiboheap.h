@@ -15,8 +15,7 @@ public:
 	public:
 		FibNode(const float k, const int pl, int id):
 			left(nullptr), right(nullptr), child(nullptr),
-			key(k), payload(pl), id(id), degree(0) {
-		}
+			key(k), payload(pl), id(id), degree(0) { }
 
 		~FibNode() = default;
 
@@ -86,8 +85,9 @@ public:
 	}
 
 	void clear() {
-		for (auto i = 0; i <= highestUsed; ++i) {
-			pool[i]->reset();
+		const auto end = pool.begin() + highestUsed;
+		for (auto i = pool.begin(); i <= end; ++i) {
+			(*i)->reset();
 		}
 
 		lowestFree = 0;

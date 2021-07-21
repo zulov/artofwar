@@ -127,7 +127,7 @@ void InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection
 		percent = fixValue(percent, 1);
 		percent = percent + min * diff;
 		for (int i = 0; i < arraySize; ++i) {
-			auto val = percent - values[i] * diff;
+			const auto val = percent - values[i] * diff;
 			intersection[i] += val * val;
 		}
 	}
