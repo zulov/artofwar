@@ -127,7 +127,7 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 }
 
 std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius) {
-	//return getNeighbours(center, resourceStaticGrid, id, radius, prevRadius);
+	//return getNeighbours(center, resourceStaticGrid, id, radius, prevRadius);//TODO perf? czy to moze jedna szybsze?
 	const float sqRadius = radius * radius;
 	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
 	neights->clear();
@@ -139,8 +139,8 @@ std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int i
 			}
 		}
 	}
-
-
+	
+	
 	return neights;
 }
 

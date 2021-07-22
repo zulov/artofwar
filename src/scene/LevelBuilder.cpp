@@ -24,16 +24,16 @@ LevelBuilder::~LevelBuilder() {
 
 void LevelBuilder::createScene(SceneLoader& loader) {
 	loader.load();
-	createMap(loader.getData()->config->map, loader.getConfig()->size / 256.f);
+	createMap(loader.getData()->config->map, loader.getConfig()->size);
 }
 
-void LevelBuilder::createMap(int mapId, float spacing) {
+void LevelBuilder::createMap(int mapId, int size) {
 	const auto map = Game::getDatabase()->getMaps()[mapId];
 	if (!SIM_GLOBALS.HEADLESS) {
 		createNode("map/zone.xml");
 		createNode("map/light.xml");
 	}
-	createGround(map->xmlName, spacing);
+	createGround(map->xmlName, size);
 }
 
 void LevelBuilder::createScene(NewGameForm* form) {
@@ -44,16 +44,18 @@ Urho3D::Terrain* LevelBuilder::getTerrain() const {
 	return terrain;
 }
 
-void LevelBuilder::createGround(const Urho3D::String& xmlName, float spacing) {
+void LevelBuilder::createGround(const Urho3D::String& xmlName, int size) {
 	if (!SIM_GLOBALS.FAKE_TERRAIN) {
+		const auto hSpacing = size / 256.f;
 		auto node = createNode(xmlName);
 		terrain = node->GetComponent<Urho3D::Terrain>();
 		auto s = terrain->GetSpacing();
-		s.x_ = spacing;
-		s.z_ = spacing;
+		s.x_ = hSpacing;
+		s.y_ *= hSpacing;
+		s.z_ = hSpacing;
 		terrain->SetSpacing(s);
 
-		terrain->GetMaterial()->SetUVTransform(Urho3D::Vector2(0, 0), 0.f, 16.f * spacing);
+		terrain->GetMaterial()->SetUVTransform(Urho3D::Vector2(0, 0), 0.f, 16.f * hSpacing);
 
 		if (!SIM_GLOBALS.HEADLESS) {
 			terrain->SetSmoothing(true);

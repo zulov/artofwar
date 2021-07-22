@@ -67,7 +67,9 @@ int static loadHudVars(void* data, int argc, char** argv, char** azColName) {
 }
 
 static void addCost(char** argv, db_with_cost* withCost) {
-	withCost->costs.push_back(new db_cost(atoi(argv[1]), atoi(argv[2])));
+	const auto value = atoi(argv[2]);
+	withCost->costs.push_back(new db_cost(atoi(argv[1]), value));
+	withCost->sumCost += value;
 }
 
 int static loadCostUnit(void* data, int argc, char** argv, char** azColName) {

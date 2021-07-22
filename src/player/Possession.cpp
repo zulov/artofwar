@@ -29,7 +29,12 @@ Possession::~Possession() {
 int Possession::getScore() const {
 	float buildingScore = 0.f;
 	for (auto building : buildings) {
-		buildingScore += building->getCostSum();
+		auto cost = building->getCostSum();
+
+		if (!building->isReady()) {
+			cost *= 0.5;
+		}
+		buildingScore += cost;
 	}
 
 	float unitsScore = 0.f;

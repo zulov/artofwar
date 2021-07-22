@@ -17,10 +17,10 @@
 ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, int id, int level, int mainCell, bool withNode)
 	: Static(_position, mainCell, withNode) {
 	dbResource = Game::getDatabase()->getResource(id);
-	if (withNode) {
-		loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(
-			RandIntType::RESOURCE_NODE, dbResource->nodeName.Size())]);
 
+	loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(
+		RandIntType::RESOURCE_NODE, dbResource->nodeName.Size())]);
+	if (withNode) {
 		node->SetRotation(Urho3D::Quaternion(0, RandGen::nextRand(RandFloatType::RESOURCE_ROTATION, 360.f), 0.0f));
 	}
 }
@@ -97,11 +97,11 @@ std::pair<float, bool> ResourceEntity::absorbAttack(float collectSpeed) {
 		updateHealthBar();
 		return {collectSpeed, false};
 	}
-	
+
 	const float toReturn = hp;
 	hp = 0.f;
 	StateManager::changeState(this, StaticState::DEAD);
-	return { toReturn, false };
+	return {toReturn, false};
 }
 
 ResourceEntity* ResourceEntity::load(dbload_resource_entities* resource) {

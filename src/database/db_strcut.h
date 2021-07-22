@@ -90,13 +90,10 @@ struct db_cost {
 
 struct db_with_cost {
 	std::vector<db_cost*> costs;
-
-	unsigned short getSumCost() {
-		unsigned short sum = 0;
-		for (auto cost : costs) {
-			sum += cost->value;
-		}
-		return sum;
+	short sumCost = 0;
+	
+	unsigned short getSumCost() const {
+		return sumCost;
 	}
 
 	~db_with_cost() { clear_vector(costs); }
