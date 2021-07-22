@@ -113,13 +113,6 @@ const std::vector<Physical*>& Grid::getNotSafeContentAt(short x, short z) const 
 	return buckets[calculator->getNotSafeIndex(x, z)].getContent();
 }
 
-const std::vector<Physical*>& Grid::getContentAt(short x, short z) const {
-	if (calculator->isValidIndex(x, z)) {
-		return getNotSafeContentAt(x, z);
-	}
-	return Consts::EMPTY_PHYSICAL;
-}
-
 std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,
                                              const char player) {
 	invalidateCache();
@@ -162,12 +155,10 @@ std::vector<int> Grid::getCloseCenters(Urho3D::Vector2& center, float radius) co
 }
 
 void Grid::invalidateCache() {
-	tempSelected->clear();
-	prevIndex = -1;
-	prevRadius = -1.f;
+	invalidateCache(-1, -1.f);
 }
 
-void Grid::invalidateCache(const int currentIdx, float radius) {
+void Grid::invalidateCache(int currentIdx, float radius) {
 	tempSelected->clear();
 	prevIndex = currentIdx;
 	prevRadius = radius;

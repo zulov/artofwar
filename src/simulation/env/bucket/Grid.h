@@ -34,7 +34,7 @@ public:
 	std::vector<Physical*>* getArrayNeightSimilarAs(Physical* clicked, float radius);
 	std::vector<int> getCloseCenters(Urho3D::Vector2& center, float radius) const;
 	void invalidateCache();
-	void invalidateCache(const int currentIdx, float radius);
+	void invalidateCache(int currentIdx, float radius);
 	BucketIterator& getArrayNeight(Urho3D::Vector3& position, float radius);
 	BucketIterator& getArrayNeight(int center, float radius);
 	const std::vector<short>& getCloseIndexes(int center) const;
@@ -53,14 +53,12 @@ protected:
 	LevelCache* levelCache;
 
 private:
-	const std::vector<Physical*>& getContentAt(short x, short z) const;
 	const std::vector<Physical*>& getNotSafeContentAt(short x, short z) const;
 
 	void addAt(int index, Physical* entity) const;
 	void removeAt(int index, Physical* entity) const;
 
 	BucketIterator iterator;
-
 
 	std::vector<Physical*>* tempSelected;
 	int prevIndex = -1;
