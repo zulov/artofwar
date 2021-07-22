@@ -116,14 +116,14 @@ Urho3D::Vector2 MainGrid::getPositionInBucket(Unit* unit) {
 	char max = 0;
 	const auto state = unit->getState();
 	for (auto physical : buckets[index].getContent()) {
-		if (physical == unit && ordinal < 0) {
-			ordinal = max;
-		}
 		if (static_cast<Unit*>(physical)->getState() == state) {
+			if (physical == unit && ordinal < 0) {
+				ordinal = max;
+			}
 			++max;
 		}
 	}
-	auto center = calculator->getCenter(index);
+	const auto center = calculator->getCenter(index);
 	switch (max) {
 	case 1:
 		return center;

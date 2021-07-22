@@ -109,6 +109,7 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 
 	float* iter = values;
 	std::vector<int> indexes;
+	indexes.reserve(16);
 	auto pred = [minV,maxV](float i) { return i >= minV && i <= maxV; };
 	while ((iter = std::find_if(iter, values + arraySize, pred)) != values + arraySize) {
 		//TODO performance!!!	
@@ -121,7 +122,7 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 void InfluenceMapFloat::getIndexesWithByValue(float percent, float* intersection) {
 	computeMinMax();
 	float diff = max - min;
-	
+
 	if (diff != 0.f) {
 		diff = 1 / diff;
 		percent = fixValue(percent, 1);
