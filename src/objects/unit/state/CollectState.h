@@ -53,7 +53,7 @@ public:
 			&& Game::getEnvironment()->cellInState(unit->getMainBucketIndex(), CellState::COLLECT)) {
 			//TODO musi byc dokladnie w dobry mbuckecie
 			auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
-			auto resource = dynamic_cast<ResourceEntity*>(unit->thingsToInteract[0]);
+			auto resource = unit->thingsToInteract[0];
 			const auto [value, died] = resource->absorbAttack(unit->dbLevel->collectSpeed * timeStep);
 			Game::getEnvironment()->addCollect(unit, value);
 			resources.add(resource->getId(), value);

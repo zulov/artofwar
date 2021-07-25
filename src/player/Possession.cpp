@@ -38,11 +38,16 @@ int Possession::getScore() const {
 	}
 
 	float unitsScore = 0.f;
+	float workerScore = 0.f;
 	for (auto unit : units) {
-		unitsScore += unit->getCostSum();
+		if (unit->getLevel()->canCollect) {
+			workerScore += unit->getCostSum();
+		} else {
+			unitsScore += unit->getCostSum();
+		}
 	}
 
-	return buildingScore * 0.25f + unitsScore * 0.2f + resourcesSum * 0.01f;
+	return buildingScore * 0.25f + unitsScore * 0.2f + workerScore * 0.05f + resourcesSum * 0.01f;
 	//return buildings.size() * 10 + units.size() + resourcesSum / 100;
 }
 
