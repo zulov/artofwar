@@ -5,14 +5,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-trainmode </LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-allplayerai</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>-benchmarkmode -trainmode</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-benchmark -allplayerai</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-ltcg|x64'">
-    <LocalDebuggerCommandArguments>-headless -outputtype score -benchmarkmode -trainmode -nothreads -faketerrain</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-headless -outputtype score -benchmark -allplayerai -nothreads -faketerrain</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

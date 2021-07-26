@@ -136,7 +136,7 @@ Hud::Hud() : Object(Game::getContext()) {
 		graphSettings = Game::getDatabase()->getGraphSettings()[settings->graph];
 		resolution = Game::getDatabase()->getResolution(settings->resolution);
 
-		prepareStyle();	
+		prepareStyle();
 	}
 	std::ranges::fill(panels, nullptr);
 }
@@ -166,16 +166,16 @@ void Hud::createConsole(Urho3D::Engine* engine) const {
 void Hud::update(Benchmark& benchmark, CameraManager* cameraManager, SelectedInfo* selectedInfo,
                  SimInfo* simInfo) const {
 	updateSelected(selectedInfo, simInfo);
-	if (!SIM_GLOBALS.TRAIN_MODE || PER_FRAME_ACTION.get(PerFrameAction::HUD_UPDATE, simInfo->getFrameInfo())) {
-		debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), simInfo->getFrameInfo()->getSeconds(),
-		                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
-		                    cameraManager->getPosInfo());
-		topPanel->update(Game::getPlayersMan()->getActivePlayer());
+	//if (PER_FRAME_ACTION.get(PerFrameAction::HUD_UPDATE, simInfo->getFrameInfo())) {
+	debugPanel->setText(benchmark.getLastFPS(), benchmark.getAverageFPS(), simInfo->getFrameInfo()->getSeconds(),
+	                    benchmark.getAvgLowest(), benchmark.getAvgMiddle(), benchmark.getAvgHighest(),
+	                    cameraManager->getPosInfo());
+	topPanel->update(Game::getPlayersMan()->getActivePlayer());
 
-		scorePanel->update(Game::getPlayersMan()->getAllPlayers());
+	scorePanel->update(Game::getPlayersMan()->getAllPlayers());
 
-		miniMapPanel->update();
-	}
+	miniMapPanel->update();
+	//}
 	selectedInfo->hasBeenUpdatedDrawn();
 }
 

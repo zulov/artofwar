@@ -615,11 +615,11 @@ void Main::readParameters() {
 			String argument = arguments[i].Substring(1).ToLower();
 			const String value = i + 1 < arguments.Size() ? arguments[i + 1] : String::EMPTY;
 
-			if (argument == "trainmode") {
+			if (argument == "train") {
 				SimGlobals::TRAIN_MODE = true;
 				engine_->SetMaxFps(0);
 				engine_->SetMaxInactiveFps(0);
-			} else if (argument == "benchmarkmode") {
+			} else if (argument == "benchmark") {
 				SimGlobals::BENCHMARK_MODE = true;
 				engine_->SetMaxFps(0);
 				engine_->SetMaxInactiveFps(0);
@@ -627,6 +627,10 @@ void Main::readParameters() {
 				SimGlobals::HEADLESS = true;
 			} else if (argument == "faketerrain") {
 				SimGlobals::FAKE_TERRAIN = true;
+			} else if (argument == "allplayerai") {
+				SimGlobals::ALL_PLAYER_AI = true;
+			} else if (argument == "aioutput") {
+				SimGlobals::AI_OUTPUT = true;
 			} else if (argument == "savename") {
 				saveToLoad = value;
 			} else if (argument == "outputname" && !value.Empty()) {

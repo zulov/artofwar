@@ -45,6 +45,7 @@ void Stats::setInputs() {
 }
 
 void Stats::add(GeneralActionCommand* command) {
+	if (!SIM_GLOBALS.AI_OUTPUT) { return; }
 	// upgrade buildingu
 	const auto playerId = command->player;
 
@@ -61,6 +62,7 @@ void Stats::add(GeneralActionCommand* command) {
 }
 
 void Stats::add(BuildingActionCommand* command) {
+	if (!SIM_GLOBALS.AI_OUTPUT) { return; }
 	auto player = Game::getPlayersMan()->getPlayer(command->player);
 
 	if (command->action == BuildingActionType::UNIT_CREATE) {
@@ -91,6 +93,7 @@ void Stats::add(BuildingActionCommand* command) {
 
 void Stats::add(CreationCommand* command) {
 	assert(command->objectType == ObjectType::BUILDING);
+	if (!SIM_GLOBALS.AI_OUTPUT) { return; }
 	const auto player = Game::getPlayersMan()->getPlayer(command->player);
 
 	const std::string input = join(Game::getAiInputProvider()->getBuildingsInput(command->player));
@@ -107,11 +110,9 @@ void Stats::add(CreationCommand* command) {
 
 void Stats::joinAndPush(std::vector<std::string>* array, char player, std::string input, const std::string& output,
                         int number) {
-	if (!SIM_GLOBALS.TRAIN_MODE && !output.empty()) {
-		input.append(";;").append(output);
-		for (int i = 0; i < number; ++i) {
-			array[player].push_back(input);
-		}
+	input.append(";;").append(output);
+	for (int i = 0; i < number; ++i) {
+		array[player].push_back(input);
 	}
 }
 
@@ -135,26 +136,26 @@ void Stats::saveBatch(int i, std::vector<std::string>* array, std::string name, 
 }
 
 void Stats::saveAll(int size) {
-	if (!SIM_GLOBALS.TRAIN_MODE) {
-		for (int i = 0; i < MAX_PLAYERS; ++i) {
-			saveBatch(i, ifWorkersCreate, "worker/ifWorkerCreate", size);
-			saveBatch(i, whereWorkersCreate, "worker/whereWorkerCreate", size);
+	if (!SIM_GLOBALS.AI_OUTPUT) { return; }
+	for (int i = 0; i < MAX_PLAYERS; ++i) {
+		saveBatch(i, ifWorkersCreate, "worker/ifWorkerCreate", size);
+		saveBatch(i, whereWorkersCreate, "worker/whereWorkerCreate", size);
 
-			saveBatch(i, ifBuildingCreate, "building/ifBuildingCreate", size);
-			saveBatch(i, whichBuildingCreate, "building/whichBuildingCreate", size);
-			saveBatch(i, whereBuildingCreate, "building/whereBuildingCreate", size);
+		saveBatch(i, ifBuildingCreate, "building/ifBuildingCreate", size);
+		saveBatch(i, whichBuildingCreate, "building/whichBuildingCreate", size);
+		saveBatch(i, whereBuildingCreate, "building/whereBuildingCreate", size);
 
-			saveBatch(i, ifUnitCreate, "unit/ifUnitCreate", size);
-			saveBatch(i, whichUnitCreate, "unit/whichUnitCreate", size);
-			saveBatch(i, whereUnitCreate, "unit/whereUnitCreate", size);
+		saveBatch(i, ifUnitCreate, "unit/ifUnitCreate", size);
+		saveBatch(i, whichUnitCreate, "unit/whichUnitCreate", size);
+		saveBatch(i, whereUnitCreate, "unit/whereUnitCreate", size);
 
-			saveBatch(i, whichResource, "resource/whichResource", size);
-		}
+		saveBatch(i, whichResource, "resource/whichResource", size);
 	}
 }
 
 void Stats::save(bool accumulate) {
-	if (accumulate && !SIM_GLOBALS.TRAIN_MODE) {
+	if (!SIM_GLOBALS.AI_OUTPUT) { return; }
+	if (accumulate) {
 		for (char i = 0; i < MAX_PLAYERS; ++i) {
 			//TODO chyba ze jednak srednia a nie poczatek
 			joinAndPush(ifWorkersCreate, i, ifWorkersCreateInput[i], std::to_string(workersCreatedCount[i]));
