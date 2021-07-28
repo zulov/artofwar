@@ -83,6 +83,15 @@ int static load_resources_entities(void* data, int argc, char** argv, char** azC
 	return 0;
 }
 
+int static load_resources_entities_size(void* data, int argc, char** argv, char** azColName) {
+	if (argc == 0) { return 0; }
+	const auto xyz = static_cast<dbload_container*>(data);
+	
+	xyz->resource_entities->reserve(atoi(argv[0]));
+
+	return 0;
+}
+
 void SceneLoader::reset() {
 	database = nullptr;
 	delete dbLoad;
@@ -151,10 +160,12 @@ std::vector<dbload_building*>* SceneLoader::loadBuildings() {
 std::vector<dbload_resource_entities*>* SceneLoader::loadResourcesEntities() {
 	if (dbLoad->resource_entities) { return dbLoad->resource_entities; }
 	dbLoad->resource_entities = new std::vector<dbload_resource_entities*>();
-	dbLoad->resource_entities->reserve(19 * 1024);
-
-	loadingState.inc("load resource_entities");
+	
+	load(SQLConsts::COUNT + "resource_entities", load_resources_entities_size);
 	load(SQLConsts::SELECT + "resource_entities", load_resources_entities);
+	
+	loadingState.inc("load resource_entities");
+	
 	return dbLoad->resource_entities;
 }
 

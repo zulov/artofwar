@@ -12,7 +12,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-ltcg|x64'">
-    <LocalDebuggerCommandArguments>-headless -outputtype score -benchmark -allplayerai -nothreads -faketerrain</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-headless -benchmark -allplayerai -nothreads -faketerrain</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

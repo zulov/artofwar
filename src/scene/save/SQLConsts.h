@@ -49,4 +49,5 @@ struct SQLConsts {
 	inline const static std::string CREATE_TABLE = "CREATE TABLE ";
 
 	inline const static std::string SELECT = "SELECT * from ";
+	inline const static std::string COUNT = "SELECT count(*) from ";
 };

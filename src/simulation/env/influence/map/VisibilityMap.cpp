@@ -93,10 +93,10 @@ void VisibilityMap::computeMinMax() {
 
 void VisibilityMap::removeUnseen(float* intersection) {
 	ensureReady();
-	const int size = arraySize / 4;
-	for (int i = 0; i < size; ++i) {
-		if (!valuesForInfluence[i]) {
-			intersection[i] = std::numeric_limits<float>::max();
+	const auto  end = valuesForInfluence + arraySize / 4;
+	for (auto ptrI = valuesForInfluence; ptrI < end; ++ptrI, ++intersection) {
+		if (!(*ptrI)) {
+			*intersection = std::numeric_limits<float>::max();
 		}
 	}
 }
