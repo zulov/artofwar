@@ -54,7 +54,7 @@ public:
 	                                               int min);
 
 	float getFieldSize() const;
-	std::vector<int> getAreas(const std::span<float> result, char player);
+	std::vector<int>* getAreas(const std::span<float> result, char player);
 	void addCollect(Unit* unit, float value);
 	void addAttack(Unit* attacker, float value);
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
@@ -63,7 +63,7 @@ public:
 	float getVisibilityScore(char player);
 
 private:
-	std::vector<int> centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
+	std::vector<int>* centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<int>& intersection) const;
 
 	template <typename T>
@@ -100,4 +100,5 @@ private:
 	InfluenceDataType debugType = InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER;
 	unsigned int arraySize;
 	float* intersection; // [arraySize] ;
+	std::vector<int>* tempIndexes;
 };

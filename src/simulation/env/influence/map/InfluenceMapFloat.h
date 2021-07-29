@@ -1,8 +1,8 @@
 #pragma once
-#include "InfluenceMap.h"
 #include <vector>
 
-#include "objects/unit/Unit.h"
+#include "InfluenceMap.h"
+
 
 
 class InfluenceMapFloat : public InfluenceMap {
@@ -23,7 +23,7 @@ public:
 	void computeMinMax() override;
 
 	std::vector<int> getIndexesWithByValue(float percent, float tolerance);
-	void getIndexesWithByValue(float percent, float* intersection);
+	bool getIndexesWithByValue(float percent, float* intersection);
 	void add(int* indexes, float* vals, int k, float val) const;
 
 	void updateFromTemp();

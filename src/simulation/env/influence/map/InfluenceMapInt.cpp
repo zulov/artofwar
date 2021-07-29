@@ -6,6 +6,7 @@
 InfluenceMapInt::InfluenceMapInt(unsigned short resolution, float size, float valueThresholdDebug): InfluenceMap(
 	resolution, size, valueThresholdDebug) {
 	values = new unsigned char[arraySize];
+	reset();
 }
 
 InfluenceMapInt::~InfluenceMapInt() {

@@ -357,10 +357,10 @@ std::array<float, 5>& Environment::getInfluenceDataAt(char player, const Urho3D:
 
 std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building, char player,
                                                            const std::span<float> result) {
-	std::vector<int> indexes = influenceManager.getAreas(result, player);
+	std::vector<int>* indexes = influenceManager.getAreas(result, player);
 
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
-	for (auto centerIndex : indexes) {
+	for (auto centerIndex : *indexes) {
 		Urho3D::Vector2 center = influenceManager.getCenter(centerIndex);
 		for (auto index : mainGrid.getCloseCenters(center, ratio)) {
 			//ten index jest widoczny

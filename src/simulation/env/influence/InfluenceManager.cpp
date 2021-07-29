@@ -1,8 +1,6 @@
 ﻿#include "InfluenceManager.h"
 
-#include <iostream>
 #include <exprtk/exprtk.hpp>
-
 #include "map/InfluenceMapHistory.h"
 #include "map/InfluenceMapQuad.h"
 #include "debug/DebugLineRepo.h"
@@ -80,6 +78,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 
 	arraySize = calculator->getResolution() * calculator->getResolution();
 	intersection = new float[arraySize];
+	tempIndexes = new std::vector<int>();
 
 	assert(unitsNumberPerPlayer[0]->getResolution() == unitsInfluencePerPlayer[0]->getResolution()
 		&& calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
@@ -103,6 +102,7 @@ InfluenceManager::~InfluenceManager() {
 	delete ci;
 
 	delete[]intersection;
+	delete tempIndexes;
 }
 
 void InfluenceManager::update(std::vector<Unit*>* units) const {
@@ -352,21 +352,22 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 	return centersFromIndexes(getIndexesIterative(result, tolerance, min, maps));
 }
 
-std::vector<int> InfluenceManager::getAreas(const std::span<float> result, char player) {
+std::vector<int>* InfluenceManager::getAreas(const std::span<float> result, char player) {
 	auto& maps = mapsForAiPerPlayer[player];
-	assert(result.size()==maps.size());
+	assert(result.size() == maps.size());
 	assert(arraySize * 4 == visibilityPerPlayer[player]->getResolution()* visibilityPerPlayer[player]->getResolution());
 
 	std::fill_n(intersection, arraySize, 0.f);
-
+	int times = 0;
 	for (char i = 0; i < maps.size(); ++i) {
-		maps[i]->getIndexesWithByValue(result[i], intersection);
+		const auto ok = maps[i]->getIndexesWithByValue(result[i], intersection);
+		times += ok;
 	}
 
 	visibilityPerPlayer[player]->removeUnseen(intersection);
 
 	const auto inx = sort_indexes(std::span(intersection, arraySize), 256);
-	return centersFromIndexes(intersection, inx, 0.02f * maps.size());
+	return centersFromIndexes(intersection, inx, 0.1f * times);
 }
 
 void InfluenceManager::addCollect(Unit* unit, float value) {
@@ -400,17 +401,17 @@ float InfluenceManager::getVisibilityScore(char player) {
 	return visibilityPerPlayer[player]->getPercent();
 }
 
-std::vector<int> InfluenceManager::centersFromIndexes(float* values, const std::vector<unsigned>& indexes,
-                                                      float minVal) const {
-	std::vector<int> result;
+std::vector<int>* InfluenceManager::centersFromIndexes(float* values, const std::vector<unsigned>& indexes,
+                                                       float minVal) const {
+	tempIndexes->clear();
 
 	for (auto ptr = indexes.begin(); (ptr < indexes.begin() + 256 && ptr < indexes.end()); ++ptr) {
 		if (values[*ptr] > minVal) {
 			break;
 		}
-		result.emplace_back(*ptr);
+		tempIndexes->emplace_back(*ptr);
 	}
-	return result;
+	return tempIndexes;
 }
 
 std::vector<Urho3D::Vector2> InfluenceManager::centersFromIndexes(const std::vector<int>& intersection) const {
