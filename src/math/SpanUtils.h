@@ -43,7 +43,7 @@ inline void printSpan(std::span<T> vec, int cols) {
 	std::cerr << std::endl;
 }
 
-inline void validateSpan(int line, std::string file, std::span<float> vec) {
+inline bool validateSpan(int line, std::string file, std::span<float> vec) {
 	bool valid = true;
 	for (auto val : vec) {
 		if (isnan(val) || isinf(val)) {
@@ -55,6 +55,7 @@ inline void validateSpan(int line, std::string file, std::span<float> vec) {
 		printSpan(vec);
 		assert(false);
 	}
+	return valid;
 }
 
 inline float maxSpan(std::span<float> vec) {
@@ -62,7 +63,7 @@ inline float maxSpan(std::span<float> vec) {
 }
 
 inline float maxSpanRoot(std::span<float> vec) {
-	validateSpan(__LINE__, __FILE__, vec);
+	assert(validateSpan(__LINE__, __FILE__, vec));
 	return sqrt(maxSpan(vec) + 1);
 }
 
