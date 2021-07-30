@@ -9,6 +9,9 @@
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 
+constexpr int PLAYER_SIZE = 10000;
+constexpr int RESOURCE_SIZE = 1000;
+
 BillboardSetProvider::BillboardSetProvider() {
 	nodeBar = Game::getScene()->CreateChild();
 	nodeAura = Game::getScene()->CreateChild();
@@ -24,23 +27,23 @@ void BillboardSetProvider::init() {
 		auto player = Game::getPlayersMan()->getAllPlayers()[i];
 		auto material = "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player->getId())->name +
 			".xml";
-		auto bs = createSet(nodeAura, material, 10000);
+		auto bs = createSet(nodeAura, material, PLAYER_SIZE);
 		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 		bs->SetRelative(false);
 		perPlayerAura[i] = bs;
 		material = "Materials/bar/bar_" + Game::getDatabase()->getPlayerColor(player->getId())->name + ".xml";
-		perPlayerBar[i] = createSet(nodeBar, material, 10000);
+		perPlayerBar[i] = createSet(nodeBar, material, PLAYER_SIZE);
 	}
 	nodeAura->Pitch(90);
 	for (int i = 0; i < RESOURCES_SIZE; ++i) {
 		auto material = "Materials/select/select_grey_" + Game::getDatabase()->getResource(i)->name + ".xml";
-		auto bs = createSet(nodeAura, material, 1000);
+		auto bs = createSet(nodeAura, material, RESOURCE_SIZE);
 		bs->SetFaceCameraMode(Urho3D::FaceCameraMode::FC_NONE);
 		bs->SetRelative(false);
 		resourceAura[i] = bs;
 	}
 	Urho3D::String material = "Materials/bar/bar_grey.xml";
-	resourceBar = createSet(nodeBar, material, 1000);
+	resourceBar = createSet(nodeBar, material, RESOURCE_SIZE);
 }
 
 Urho3D::BillboardSet*
