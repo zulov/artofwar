@@ -11,12 +11,7 @@
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 
-Brain::Brain(const std::string& filename): filename(filename) {
-	auto lines = loadLines(filename);
-	assert(!lines.empty());
-	if (lines.empty()) {
-		Game::getLog()->WriteRaw("No brain Found " + Urho3D::String(filename.c_str()) + "\n", true);
-	}
+Brain::Brain(const std::string& filename, std::vector<std::string>& lines): filename(filename) {
 	std::vector<float> w;
 	std::vector<float> b;
 	for (auto& line : lines) {

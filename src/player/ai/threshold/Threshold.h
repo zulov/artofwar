@@ -6,7 +6,7 @@
 
 class Threshold {
 public:
-	Threshold(std::string filename);
+	Threshold(const std::string& filename, std::vector<std::string>& lines);
 	Threshold(const Threshold& rhs) = delete;
 
 	bool ifDo(std::span<float> value);

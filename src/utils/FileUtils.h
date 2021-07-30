@@ -3,13 +3,12 @@
 #include <string>
 #include <vector>
 
-inline std::vector<std::string> loadLines(const std::string& path) {
-	std::ifstream infile(path);
+inline void loadLines(const std::string& path, std::vector<std::string>& lines) {
+	std::ifstream infile(path, std::fstream::in);
 	std::string data;
-	std::vector<std::string> lines;
+	lines.clear();
 	while (std::getline(infile, data)) {
 		lines.push_back(data);
 	}
 	infile.close();
-	return lines;
 }

@@ -12,4 +12,5 @@ public:
 private:
 	ThresholdProvider() = default;
 	static std::vector<Threshold*> thresholds;
+	static std::vector<std::string> tempLines;
 };

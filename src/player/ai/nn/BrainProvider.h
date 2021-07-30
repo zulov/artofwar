@@ -12,4 +12,5 @@ public:
 private:
 	BrainProvider() = default;
 	static std::vector<Brain*> brains;
+	static std::vector<std::string> tempLines;
 };

@@ -5,8 +5,8 @@
 
 constexpr float THRESHOLD_VAL = 1.f;
 
-Threshold::Threshold(std::string filename): filename(filename) {
-	auto lines = loadLines(filename);
+Threshold::Threshold(const std::string &filename, std::vector<std::string>& lines): filename(filename) {
+	loadLines(filename, lines);
 	data.reserve(lines.size());
 	for (auto& line : lines) {
 		auto splitVec = split(line, ';');
