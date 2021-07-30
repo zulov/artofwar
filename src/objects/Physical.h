@@ -122,8 +122,6 @@ protected:
 	short id = -1;
 	float hp;
 private:
-	void updateBillboardBar(Urho3D::Vector3& boundingBox) const;
-	void updateBillboardAura(Urho3D::Vector3& boundingBox) const;
 	virtual float getAuraSize(const Urho3D::Vector3& boundingBox) const;
 
 	int indexInGrid = -1;

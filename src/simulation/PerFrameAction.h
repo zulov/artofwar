@@ -23,17 +23,17 @@ enum class PerFrameAction:char {
 
 inline struct PerFrameActionData {
 private:
-	inline static std::array<unsigned char, FRAMES_IN_PERIOD> ONCE_PER_SECOND = {
+	inline static const std::array<unsigned char, FRAMES_IN_PERIOD> ONCE_PER_SECOND = {
 		1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	};
-	inline static std::array<unsigned char, FRAMES_IN_PERIOD> ONCE_PER_2_SECONDS = {
+	inline static const std::array<unsigned char, FRAMES_IN_PERIOD> ONCE_PER_2_SECONDS = {
 		2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	};
-	inline static std::array<unsigned char, FRAMES_IN_PERIOD> data[magic_enum::enum_count<PerFrameAction>()] = {
+	inline static const std::array<unsigned char, FRAMES_IN_PERIOD> data[magic_enum::enum_count<PerFrameAction>()] = {
 		{
 			2, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -89,12 +89,12 @@ private:
 	};
 public:
 	static bool get(PerFrameAction type, unsigned char frameNum, unsigned int second = 1) {
-		auto val = data[cast(type)][frameNum];
+		const auto val = data[cast(type)][frameNum];
 		return val != 0 && second % val == 0;
 	}
 
 	static bool get(PerFrameAction type, const FrameInfo* frameInfo) {
-		auto val = data[cast(type)][frameInfo->getCurrentFrame()];
+		const auto val = data[cast(type)][frameInfo->getCurrentFrame()];
 		return val != 0 && frameInfo->getSeconds() % val == 0;
 	}
 } PER_FRAME_ACTION;

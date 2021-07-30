@@ -42,28 +42,22 @@ float Physical::getAuraSize(const Urho3D::Vector3& boundingBox) const {
 	return (boundingBox.x_ + boundingBox.z_) / 2 * 1.2f;
 }
 
-void Physical::updateBillboardAura(Urho3D::Vector3& boundingBox) const {
-	if (selected && aura) {
-		const auto auraSize = getAuraSize(boundingBox);
-		aura->position_ = node->GetPosition();
-		aura->size_ = {auraSize, auraSize};
-		aura->enabled_ = true;
-	}
-}
-
-void Physical::updateBillboardBar(Urho3D::Vector3& boundingBox) const {
-	if (selected && healthBar) {
-		healthBar->position_ = node->GetPosition() + Urho3D::Vector3{0, boundingBox.y_ * 1.3f, 0};
-		healthBar->size_ = {getHealthBarSize(), getHealthBarThick()};
-		healthBar->enabled_ = true;
-	}
-}
-
 void Physical::updateBillboards() const {
 	if (selected) {
-		auto b = model->GetModel()->GetBoundingBox().Size() * node->GetScale();
-		updateBillboardBar(b);
-		updateBillboardAura(b);
+		const auto b = model->GetModel()->GetBoundingBox().Size() * node->GetScale();
+		if (selected) {
+			if (healthBar) {
+				healthBar->position_ = node->GetPosition() + Urho3D::Vector3{0, b.y_ * 1.3f, 0};
+				healthBar->size_ = {getHealthBarSize(), getHealthBarThick()};
+				healthBar->enabled_ = true;
+			}
+			if (aura) {
+				const auto auraSize = getAuraSize(b);
+				aura->position_ = node->GetPosition();
+				aura->size_ = {auraSize, auraSize};
+				aura->enabled_ = true;
+			}
+		}
 	}
 }
 

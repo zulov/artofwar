@@ -49,17 +49,12 @@ void VisibilityMap::updateInt(int index, int value) const {
 void VisibilityMap::reset() {
 	valuesForInfluenceReady = false;
 	percentReady = false;
-	auto end = values + arraySize;
-	for (auto i = values; i < end; ++i) {
-		if (*i == VisibilityType::VISIBLE) {
-			*i = VisibilityType::SEEN;
-		}
-	}
+	auto func = [](VisibilityType vt) -> float { return vt == VisibilityType::VISIBLE; };
+	std::replace_if(values, values + arraySize, func, VisibilityType::SEEN);
 }
 
 char VisibilityMap::getValueAt(const Urho3D::Vector2& pos) const {
-	auto index = calculator->indexFromPosition(pos);
-	return getValueAt(index);
+	return getValueAt(calculator->indexFromPosition(pos));
 }
 
 float VisibilityMap::getValueAsPercent(const Urho3D::Vector2& pos) const {
@@ -93,7 +88,7 @@ void VisibilityMap::computeMinMax() {
 
 void VisibilityMap::removeUnseen(float* intersection) {
 	ensureReady();
-	const auto  end = valuesForInfluence + arraySize / 4;
+	const auto end = valuesForInfluence + arraySize / 4;
 	for (auto ptrI = valuesForInfluence; ptrI < end; ++ptrI, ++intersection) {
 		if (!(*ptrI)) {
 			*intersection = std::numeric_limits<float>::max();
@@ -103,7 +98,7 @@ void VisibilityMap::removeUnseen(float* intersection) {
 
 float VisibilityMap::getPercent() {
 	if (!percentReady) {
-		float sum = std::accumulate((char*)values, (char*)(values + arraySize), 0.f);
+		const float sum = std::accumulate((char*)values, (char*)(values + arraySize), 0.f);
 		percent = sum / (arraySize * 2.f);
 		percentReady = true;
 	}
