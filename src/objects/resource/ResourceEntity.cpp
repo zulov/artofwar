@@ -31,7 +31,7 @@ const Urho3D::IntVector2 ResourceEntity::getGridSize() const {
 
 void ResourceEntity::populate() {
 	Static::populate();
-
+	invMaxHp = dbResource->invMaxHp;
 	hp = dbResource->maxHp;
 	id = dbResource->id;
 }
@@ -51,10 +51,6 @@ Urho3D::String ResourceEntity::toMultiLineString() {
 
 std::string ResourceEntity::getValues(int precision) {
 	return Static::getValues(precision);
-}
-
-float ResourceEntity::getInvMaxHp() const {
-	return dbResource->invMaxHp;
 }
 
 unsigned char ResourceEntity::getMaxCloseUsers() const {

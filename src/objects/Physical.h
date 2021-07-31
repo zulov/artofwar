@@ -3,17 +3,16 @@
 #include <span>
 #include <string>
 #include <vector>
-
-
 #include "objects/ObjectEnums.h"
 #include "player/Possession.h"
 #include "Urho3D/Math/Vector3.h"
 
 
+class SelectedObject;
+
 namespace Urho3D
 {
 	class Node;
-	struct Billboard;
 	class StaticModel;
 }
 
@@ -65,8 +64,7 @@ public:
 
 	virtual ObjectType getType() const = 0;
 
-	virtual float getInvMaxHp() const = 0;
-	float getHealthPercent() const { return hp * getInvMaxHp(); }
+	float getHealthPercent() const { return hp * invMaxHp; }
 	signed char getTeam() const { return team; }
 	Urho3D::Vector3& getPosition() { return position; }
 
@@ -86,9 +84,9 @@ public:
 
 	virtual std::pair<float, bool> absorbAttack(float attackCoef) = 0;
 
-	void select(Urho3D::Billboard* healthBar, Urho3D::Billboard* aura);
+	void select(SelectedObject* selectedObject);
 	virtual short getCostSum() const = 0;
-	static void disableBillboard(Urho3D::Billboard* billboard);
+
 	void unSelect();
 
 	virtual float getSightRadius() const { return -1.f; }
@@ -108,18 +106,19 @@ protected:
 	Urho3D::Node* node{};
 	Urho3D::StaticModel* model{};
 
-	Urho3D::Billboard *healthBar = nullptr, *aura = nullptr;
+	SelectedObject* selectedObject{};
+	Urho3D::Vector3 position;
 
 	char team, player = -1;
 
 	unsigned char closeUsers = 0,
 	              rangeUsers = 0;
 	bool indexHasChanged = false;
-	bool selected = false;
+
 	bool isVisible = false;
 
-	Urho3D::Vector3 position;
-	short id = -1;
+	short id = -1; // optm
+	float invMaxHp; // optm
 	float hp;
 private:
 	virtual float getAuraSize(const Urho3D::Vector3& boundingBox) const;

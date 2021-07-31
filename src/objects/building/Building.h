@@ -39,7 +39,6 @@ public:
 	void fillValues(std::span<float> weights) const;
 	void addValues(std::span<float> vals) const override;
 	const Urho3D::IntVector2 getGridSize() const override;
-	float getInvMaxHp() const override;
 	void createDeploy();
 	void setDeploy(int cell);
 	void complete();

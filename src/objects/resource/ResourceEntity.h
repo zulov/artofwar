@@ -26,7 +26,6 @@ public:
 	Urho3D::String toMultiLineString() override;
 	std::string getValues(int precision) override;
 
-	float getInvMaxHp() const override;
 	void action(ResourceActionType type, char player);
 
 	ObjectType getType() const override { return ObjectType::RESOURCE; }

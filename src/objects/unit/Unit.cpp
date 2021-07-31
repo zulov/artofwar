@@ -56,6 +56,7 @@ bool Unit::isAlive() const {
 
 void Unit::populate() {
 	maxSpeed = dbLevel->maxSpeed;
+	invMaxHp = dbLevel->invMaxHp;
 	hp = dbLevel->maxHp;
 	id = dbUnit->id;
 }
@@ -202,7 +203,7 @@ void Unit::drawLineTo(const Urho3D::Vector3& second,
 
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		if (selected && isVisible) {
+		if (selectedObject && isVisible) {
 			switch (type) {
 			case DebugUnitType::NONE:
 				break;
@@ -497,10 +498,6 @@ void Unit::addValues(std::span<float> vals) const {
 	for (int i = 0; i < vals.size(); ++i) {
 		vals[i] += percent * dbLevel->dbUnitMetric->getParamsAsSpan()[i];
 	}
-}
-
-float Unit::getInvMaxHp() const {
-	return dbLevel->invMaxHp;
 }
 
 float Unit::getSightRadius() const {

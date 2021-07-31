@@ -1,4 +1,5 @@
 #include "objects/Physical.h"
+
 #include <Urho3D/Graphics/BillboardSet.h>
 #include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/StaticModel.h>
@@ -6,6 +7,7 @@
 #include <Urho3D/Resource/XMLFile.h>
 #include <Urho3D/Scene/Scene.h>
 #include "Game.h"
+#include "SelectedObject.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "scene/load/dbload_container.h"
@@ -43,26 +45,27 @@ float Physical::getAuraSize(const Urho3D::Vector3& boundingBox) const {
 }
 
 void Physical::updateBillboards() const {
-	if (selected) {
+	if (selectedObject) {
 		const auto b = model->GetModel()->GetBoundingBox().Size() * node->GetScale();
-		if (selected) {
-			if (healthBar) {
-				healthBar->position_ = node->GetPosition() + Urho3D::Vector3{0, b.y_ * 1.3f, 0};
-				healthBar->size_ = {getHealthBarSize(), getHealthBarThick()};
-				healthBar->enabled_ = true;
-			}
-			if (aura) {
-				const auto auraSize = getAuraSize(b);
-				aura->position_ = node->GetPosition();
-				aura->size_ = {auraSize, auraSize};
-				aura->enabled_ = true;
-			}
+		auto const healthBar = selectedObject->getHealthBar();
+		if (healthBar) {
+			healthBar->position_ = node->GetPosition() + Urho3D::Vector3{0, b.y_ * 1.3f, 0};
+			healthBar->size_ = {getHealthBarSize(), getHealthBarThick()};
+			healthBar->enabled_ = true;
+		}
+		auto const aura = selectedObject->getAura();
+		if (aura) {
+			const auto auraSize = getAuraSize(b);
+			aura->position_ = node->GetPosition();
+			aura->size_ = {auraSize, auraSize};
+			aura->enabled_ = true;
 		}
 	}
 }
 
 void Physical::updateHealthBar() const {
-	if (selected && healthBar) {
+	auto const healthBar = selectedObject->getHealthBar();
+	if (selectedObject && healthBar) {
 		healthBar->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick());
 	}
 }
@@ -81,7 +84,7 @@ float Physical::getHealthBarSize() const {
 }
 
 bool Physical::isSelected() const {
-	return selected;
+	return selectedObject;
 }
 
 void Physical::load(dbload_physical* dbloadPhysical) {
@@ -108,27 +111,21 @@ int Physical::belowCloseLimit() {
 	return Urho3D::Max(getMaxCloseUsers() - closeUsers, 0);
 }
 
-void Physical::select(Urho3D::Billboard* healthBar, Urho3D::Billboard* aura) {
-	assert(selected==false);
-	selected = true;
-	this->healthBar = healthBar;
-	this->aura = aura;
+void Physical::select(SelectedObject* selectedObject) {
+	assert(selectedObject == nullptr);
+
+	this->selectedObject = selectedObject;
+
 	updateBillboards();
 	updateHealthBar();
 }
 
-void Physical::disableBillboard(Urho3D::Billboard* billboard) {
-	if (billboard) {
-		billboard->enabled_ = false;
-		billboard = nullptr;
-	}
-}
 
 void Physical::unSelect() {
-	selected = false;
-
-	disableBillboard(healthBar);
-	disableBillboard(aura);
+	if (selectedObject) {
+		selectedObject->disableBillboards();
+		selectedObject = nullptr;
+	}
 }
 
 void Physical::loadXml(const Urho3D::String& xmlName) {

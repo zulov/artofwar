@@ -60,6 +60,7 @@ void Building::populate() {
 	Static::populate();
 	hp = dbLevel->maxHp;
 	id = dbBuilding->id;
+	invMaxHp = dbLevel->invMaxHp;
 	if (dbLevel->queueMaxCapacity > 0) {
 		queue = new QueueManager(dbLevel->queueMaxCapacity);
 	} else {
@@ -169,10 +170,6 @@ void Building::addValues(std::span<float> vals) const {
 
 const Urho3D::IntVector2 Building::getGridSize() const {
 	return dbBuilding->size;
-}
-
-float Building::getInvMaxHp() const {
-	return dbLevel->invMaxHp;
 }
 
 void Building::createDeploy() {

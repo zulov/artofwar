@@ -6,11 +6,10 @@
 #include "database/DatabaseCache.h"
 #include "database/db_other_struct.h"
 #include "objects/ObjectEnums.h"
+#include "objects/SelectedObject.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 
-constexpr int PLAYER_SIZE = 10000;
-constexpr int RESOURCE_SIZE = 1000;
 
 BillboardSetProvider::BillboardSetProvider() {
 	nodeBar = Game::getScene()->CreateChild();
@@ -20,11 +19,12 @@ BillboardSetProvider::BillboardSetProvider() {
 BillboardSetProvider::~BillboardSetProvider() {
 	nodeBar->Remove();
 	nodeAura->Remove();
+	delete[]objects;
 }
 
 void BillboardSetProvider::init() {
 	for (int i = 0; i < Game::getPlayersMan()->getAllPlayers().size(); ++i) {
-		auto player = Game::getPlayersMan()->getAllPlayers()[i];
+		const auto player = Game::getPlayersMan()->getAllPlayers()[i];
 		auto material = "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player->getId())->name +
 			".xml";
 		auto bs = createSet(nodeAura, material, PLAYER_SIZE);
@@ -44,6 +44,7 @@ void BillboardSetProvider::init() {
 	}
 	Urho3D::String material = "Materials/bar/bar_grey.xml";
 	resourceBar = createSet(nodeBar, material, RESOURCE_SIZE);
+	objects = new SelectedObject[VECTOR_SIZE];
 }
 
 Urho3D::BillboardSet*
@@ -57,42 +58,37 @@ BillboardSetProvider::createSet(Urho3D::Node* node, Urho3D::String& materialName
 }
 
 void BillboardSetProvider::reset() {
-	auraIdx = 0;
-	barIdx = 0;
+	idx = 0;
 	commit();
 }
 
-Urho3D::Billboard* BillboardSetProvider::getNextAura(ObjectType type, char player, short id) {
+SelectedObject* BillboardSetProvider::getNext(ObjectType type, char player, short id) {
+	Urho3D::Billboard* aura{};
+	Urho3D::Billboard* bar{};
 	switch (type) {
 	case ObjectType::UNIT:
 	case ObjectType::BUILDING:
-		return perPlayerAura[player]->GetBillboard(auraIdx++);
+		aura = perPlayerAura[player]->GetBillboard(idx);
+		bar = perPlayerBar[player]->GetBillboard(idx);
+		break;
 	case ObjectType::RESOURCE:
-		return resourceAura[id]->GetBillboard(auraIdx++);
-	default: return nullptr;
+		aura = resourceAura[id]->GetBillboard(idx);
+		bar = resourceBar->GetBillboard(idx);
+		break;
 	}
+	++idx;
+	if (!aura && !bar) {
+		return &EMPTY;
+	}
+	objects[idx].set(aura, bar);
+	return &objects[idx];
 }
 
-Urho3D::Billboard* BillboardSetProvider::getNextBar(ObjectType type, char player) {
-	switch (type) {
-	case ObjectType::UNIT:
-	case ObjectType::BUILDING:
-		return perPlayerBar[player]->GetBillboard(barIdx++);
-	case ObjectType::RESOURCE:
-		return resourceBar->GetBillboard(barIdx++);
-	default: return nullptr;
-	}
-}
 
 void BillboardSetProvider::commit() {
-	for (auto billboardSet : perPlayerAura) {
-		billboardSet->Commit();
-	}
-	for (auto billboardSet : resourceAura) {
-		billboardSet->Commit();
-	}
-	for (auto billboardSet : perPlayerBar) {
-		billboardSet->Commit();
-	}
+	auto func = [](Urho3D::BillboardSet* b){ b->Commit(); };
+	std::ranges::for_each(perPlayerAura, func);
+	std::ranges::for_each(resourceAura, func);
+	std::ranges::for_each(perPlayerBar, func);
 	resourceBar->Commit();
 }

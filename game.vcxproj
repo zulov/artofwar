@@ -277,6 +277,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\objects\SelectedObject.cpp" />
     <ClCompile Include="src\objects\queue\SimpleQueueManager.cpp" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
     <ClCompile Include="src\simulation\SimInfo.cpp" />
@@ -399,6 +400,7 @@
     <ClCompile Include="src\simulation\env\bucket\StaticGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\objects\SelectedObject.h" />
     <ClInclude Include="src\objects\queue\AbstractQueueManager.h" />
     <ClInclude Include="src\objects\queue\SimpleQueueManager.h" />
     <ClInclude Include="src\camera\CameraInfo.h" />

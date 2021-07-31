@@ -101,8 +101,7 @@ void Controls::selectOne(Physical* entity, char player) {
 	if (!entity->isSelected() && entity->isAlive()
 		&& (entity->getPlayer() < 0 || entity->getPlayer() == player)) {
 
-		entity->select(billboardSetProvider.getNextBar(entity->getType(), entity->getPlayer()),
-		               billboardSetProvider.getNextAura(entity->getType(), entity->getPlayer(), entity->getId()));
+		entity->select(billboardSetProvider.getNext(entity->getType(), entity->getPlayer(), entity->getId()));
 
 		selected.push_back(entity);
 
@@ -390,7 +389,7 @@ void Controls::refreshSelected() {
 	selected.erase(
 		std::remove_if(
 			selected.begin(), selected.end(),
-			[](Physical* physical) {
+			[](Physical* physical){
 				if (!physical->isAlive()) {
 					physical->unSelect();
 					return true;
@@ -564,7 +563,7 @@ void Controls::buildControl() {
 					} else {
 						textureName = "Materials/light_red_overlay.xml";
 					}
-				}else {
+				} else {
 					textureName = "Materials/light_red_overlay2.xml";
 				}
 			} else {
