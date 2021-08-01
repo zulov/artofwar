@@ -72,6 +72,7 @@ void PlayersManager::update(const ObjectsInfo* simInfo) {
 	for (auto player : allPlayers) {
 		player->updatePossession(simInfo);
 		player->updateResource();
+		player->resetScore();
 	}
 }
 

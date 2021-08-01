@@ -11,18 +11,19 @@
 #include "player/PlayersManager.h"
 
 
-BillboardSetProvider::BillboardSetProvider() {
-	nodeBar = Game::getScene()->CreateChild();
-	nodeAura = Game::getScene()->CreateChild();
-}
-
 BillboardSetProvider::~BillboardSetProvider() {
-	nodeBar->Remove();
-	nodeAura->Remove();
+	if (nodeBar) {
+		nodeBar->Remove();
+		nodeAura->Remove();
+	}
+
 	delete[]objects;
 }
 
 void BillboardSetProvider::init() {
+	nodeBar = Game::getScene()->CreateChild();
+	nodeAura = Game::getScene()->CreateChild();
+
 	for (int i = 0; i < Game::getPlayersMan()->getAllPlayers().size(); ++i) {
 		const auto player = Game::getPlayersMan()->getAllPlayers()[i];
 		auto material = "Materials/select/select_" + Game::getDatabase()->getPlayerColor(player->getId())->name +

@@ -21,7 +21,7 @@ namespace Urho3D
 
 class BillboardSetProvider {
 public:
-	BillboardSetProvider();
+	BillboardSetProvider() = default;
 	BillboardSetProvider(const BillboardSetProvider& rhs) = delete;
 	~BillboardSetProvider();
 	void init();
@@ -33,8 +33,8 @@ public:
 private:
 	Urho3D::BillboardSet* createSet(Urho3D::Node* node, Urho3D::String& materialName, int size) const;
 
-	Urho3D::Node* nodeBar;
-	Urho3D::Node* nodeAura;
+	Urho3D::Node* nodeBar{};
+	Urho3D::Node* nodeAura{};
 
 	Urho3D::BillboardSet* resourceAura[RESOURCES_SIZE];
 	std::array<Urho3D::BillboardSet*, MAX_PLAYERS> perPlayerAura;

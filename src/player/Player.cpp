@@ -82,6 +82,10 @@ void Player::addKilled(Physical* physical) {
 	possession.addKilled(physical);
 }
 
+void Player::resetScore() {
+	score = -1;
+}
+
 void Player::updateResource() const {
 	resources.resetStats();
 }
@@ -98,10 +102,13 @@ void Player::add(Building* building) {
 	possession.add(building);
 }
 
-int Player::getScore() const {
-	const float visibilityPercent = Game::getEnvironment()->getVisibilityScore(id);
-	return possession.getScore()
-		+ visibilityPercent * 1000.f;
+int Player::getScore() {
+	if (score < 0) {
+		const float visibilityPercent = Game::getEnvironment()->getVisibilityScore(id);
+		score = possession.getScore()
+			+ visibilityPercent * 1000.f;
+	}
+	return score;
 }
 
 int Player::getWorkersNumber() const {
@@ -120,7 +127,7 @@ QueueElement* Player::updateQueue(float time) const {
 	return queue->update(time);
 }
 
-QueueManager* Player::getQueue() {
+QueueManager* Player::getQueue() const {
 	return queue;
 }
 

@@ -15,7 +15,7 @@ StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRad
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		auto buckets = new Bucket[resolution * resolution];
 		bucketsPerRadius.push_back(buckets);
-		const auto end = buckets+ resolution * resolution;
+		const auto end = buckets + resolution * resolution;
 		for (auto i = buckets; i < end; ++i) {
 			i->reserve(defSize);
 		}
@@ -45,12 +45,13 @@ void StaticGrid::remove(Physical* physical) const {
 		auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
 		assert(indexes->size() == cords->size());
 		const auto itr = bucketsPerRadius[i];
-		int j = 0;
+
+		auto ptrIdx = indexes->begin();
 		for (const auto& shiftCords : *cords) {
 			if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
-				itr[centerIndex + indexes->at(j)].remove(physical);
+				itr[centerIndex + *ptrIdx].remove(physical);
 			}
-			++j;
+			++ptrIdx;
 		}
 	}
 }
@@ -75,12 +76,13 @@ void StaticGrid::updateNew(Physical* physical) const {
 		auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
 		assert(indexes->size() == cords->size());
 		const auto itr = bucketsPerRadius[i];
-		int j = 0;
+
+		auto ptrIdx = indexes->begin();
 		for (const auto& shiftCords : *cords) {
 			if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
-				itr[centerIndex + indexes->at(j)].add(physical);
+				itr[centerIndex + *ptrIdx].add(physical);
 			}
-			++j;
+			++ptrIdx;
 		}
 	}
 }
