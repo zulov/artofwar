@@ -16,6 +16,8 @@ public:
 
 	void remove(Physical* physical) const override;
 	void updateNew(Physical* physical) const override;
+	
+	void initAdd() const;
 
 	const std::vector<Physical*>& get(const Urho3D::Vector3& center, float radius);
 private:

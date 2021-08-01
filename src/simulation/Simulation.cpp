@@ -174,6 +174,7 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 	for (auto resource : *loader.getData()->resource_entities) {
 		simObjectManager->load(resource);
 	}
+	Game::getEnvironment()->initStaticGrid();
 	for (auto building : *loader.getData()->buildings) {
 		simObjectManager->load(building);
 	}

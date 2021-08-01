@@ -126,6 +126,7 @@ public:
 	short getResolution() const { return calculator->getResolution(); }
 	bool isVisible(char player, const Urho3D::Vector2& pos);
 	float getVisibilityScore(char player);
+	void initStaticGrid();
 
 private:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;

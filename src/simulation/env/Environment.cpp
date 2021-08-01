@@ -57,6 +57,10 @@ float Environment::getVisibilityScore(char player) {
 	return influenceManager.getVisibilityScore(player);
 }
 
+void Environment::initStaticGrid() {
+	resourceStaticGrid.initAdd();
+}
+
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
 	neights->clear();
 

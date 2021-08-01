@@ -12,6 +12,10 @@ void Bucket::add(Physical* entity) {
 	content.push_back(entity);
 }
 
+void Bucket::add(const std::vector<Physical*>& things) {
+	content.insert(content.end(), things.begin(), things.end());
+}
+
 void Bucket::remove(Physical* entity) {
 	auto pos = std::ranges::find(content, entity) - content.begin();
 

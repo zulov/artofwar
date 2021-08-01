@@ -15,6 +15,7 @@ public:
 
 	const std::vector<Physical*>& getContent() const { return content; }
 	void add(Physical* entity);
+	void add(const std::vector<Physical*>& things);
 	void remove(Physical* entity);
 private:
 	std::vector<Physical*> content;

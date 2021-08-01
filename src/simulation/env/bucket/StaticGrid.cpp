@@ -70,19 +70,43 @@ inline bool StaticGrid::inside(int val) const { return val >= 0 && val < calcula
 void StaticGrid::updateNew(Physical* physical) const {
 	Grid::updateNew(physical);
 
-	const int centerIndex = calculator->indexFromPosition(physical->getPosition());
-	const auto centerCords = calculator->getIndexes(centerIndex);
-	for (int i = 0; i < queryRadius.size(); ++i) {
-		auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
-		assert(indexes->size() == cords->size());
-		const auto itr = bucketsPerRadius[i];
+	// const int centerIndex = calculator->indexFromPosition(physical->getPosition());
+	// const auto centerCords = calculator->getIndexes(centerIndex);
+	// for (int i = 0; i < queryRadius.size(); ++i) {
+	// 	auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
+	// 	assert(indexes->size() == cords->size());
+	// 	const auto itr = bucketsPerRadius[i];
+	//
+	// 	auto ptrIdx = indexes->begin();
+	// 	for (const auto& shiftCords : *cords) {
+	// 		if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
+	// 			itr[centerIndex + *ptrIdx].add(physical);
+	// 		}
+	// 		++ptrIdx;
+	// 	}
+	// }
+}
 
-		auto ptrIdx = indexes->begin();
-		for (const auto& shiftCords : *cords) {
-			if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
-				itr[centerIndex + *ptrIdx].add(physical);
+void StaticGrid::initAdd() const {
+	for (int k = 0; k < sqResolution; ++k) {
+		auto& bucket = buckets[k];
+		
+		if (bucket.getSize() > 0) {
+			const auto centerCords = calculator->getIndexes(k);
+			for (int i = 0; i < queryRadius.size(); ++i) {
+				auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
+				assert(indexes->size() == cords->size());
+				const auto itr = bucketsPerRadius[i];
+
+				auto ptrIdx = indexes->begin();
+				for (const auto& shiftCords : *cords) {
+					if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
+						std::cout<< bucket.getContent().size()
+						itr[k + *ptrIdx].add(bucket.getContent());
+					}
+					++ptrIdx;
+				}
 			}
-			++ptrIdx;
 		}
 	}
 }

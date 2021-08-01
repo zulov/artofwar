@@ -21,7 +21,7 @@ Brain* BrainProvider::get(const std::string name) {
 		}
 	}
 	loadLines(name, tempLines);
-	assert(!lines.empty());
+	assert(!tempLines.empty());
 	if (tempLines.empty()) {
 		Game::getLog()->WriteRaw("No brain Found " + Urho3D::String(name.c_str()) + "\n", true);
 		return nullptr;
