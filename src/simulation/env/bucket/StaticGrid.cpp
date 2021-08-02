@@ -15,11 +15,11 @@ StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRad
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		auto buckets = new Bucket[resolution * resolution];
 		bucketsPerRadius.push_back(buckets);
-		const auto end = buckets + resolution * resolution;
-		for (auto i = buckets; i < end; ++i) {
-			i->reserve(defSize);
-		}
-		defSize *= 2.5;
+		// const auto end = buckets + resolution * resolution;
+		// for (auto i = buckets; i < end; ++i) {
+		// 	i->reserve(defSize);
+		// }
+		// defSize *= 2.5;
 	}
 }
 
@@ -88,9 +88,42 @@ void StaticGrid::updateNew(Physical* physical) const {
 }
 
 void StaticGrid::initAdd() const {
+	unsigned short* sizes = new unsigned short[sqResolution];
+	for (int i = 0; i < queryRadius.size(); ++i) {
+		std::fill_n(sizes, sqResolution, 0);
+
+		auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
+		assert(indexes->size() == cords->size());
+		for (int k = 0; k < sqResolution; ++k) {
+			auto& bucket = buckets[k];
+
+			if (bucket.getSize() > 0) {
+				const auto centerCords = calculator->getIndexes(k);
+
+				auto ptrIdx = indexes->begin();
+				const auto ptrSize = sizes + k;
+				for (const auto& shiftCords : *cords) {
+					if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
+						*(ptrSize + *ptrIdx) += bucket.getContent().size();
+					}
+					++ptrIdx;
+				}
+			}
+		}
+		const auto itr = bucketsPerRadius[i];
+		for (int k = 0; k < sqResolution; ++k) {
+			auto val = sizes[k];
+			if (val > 0) {
+				itr[k].reserve(val);
+			}
+		}
+	}
+
+	delete[]sizes;
+
 	for (int k = 0; k < sqResolution; ++k) {
 		auto& bucket = buckets[k];
-		
+
 		if (bucket.getSize() > 0) {
 			const auto centerCords = calculator->getIndexes(k);
 			for (int i = 0; i < queryRadius.size(); ++i) {
@@ -99,10 +132,10 @@ void StaticGrid::initAdd() const {
 				const auto itr = bucketsPerRadius[i];
 
 				auto ptrIdx = indexes->begin();
+				auto x = itr + k;
 				for (const auto& shiftCords : *cords) {
 					if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
-						std::cout<< bucket.getContent().size()
-						itr[k + *ptrIdx].add(bucket.getContent());
+						(*(x + *ptrIdx)).add(bucket.getContent());
 					}
 					++ptrIdx;
 				}
