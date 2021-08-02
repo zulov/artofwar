@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "Grid.h"
+#include "objects/resource/ResourceEntity.h"
 
 class StaticGrid : public Grid {
 public:
@@ -15,11 +16,12 @@ public:
 	void update(Physical* physical) const override;
 
 	void remove(Physical* physical) const override;
-	void updateNew(Physical* physical) const override;
+	void updateStatic(Static* staticObj, bool bulkAdd) const;
 	
 	void initAdd() const;
 
 	const std::vector<Physical*>& get(const Urho3D::Vector3& center, float radius);
+
 private:
 	inline bool inside(int val) const;
 	int getIndexForRadius(float radius) const;

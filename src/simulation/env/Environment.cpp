@@ -217,9 +217,9 @@ void Environment::addNew(Building* building) const {
 	mainGrid.addDeploy(building);
 }
 
-void Environment::addNew(ResourceEntity* resource) const {
+void Environment::addNew(ResourceEntity* resource, bool bulkAdd) const {
 	mainGrid.addStatic(resource);
-	resourceStaticGrid.updateNew(resource);
+	resourceStaticGrid.updateStatic(resource, bulkAdd);
 }
 
 Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) const {

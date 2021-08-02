@@ -60,7 +60,7 @@ void SimulationObjectManager::addBuilding(int id, const Urho3D::IntVector2& _buc
 }
 
 void SimulationObjectManager::addResource(int id, const Urho3D::IntVector2& _bucketCords, char level) const {
-	addResource(resourceFactory.create(id, _bucketCords, level));
+	addResource(resourceFactory.create(id, _bucketCords, level), false);
 }
 
 void SimulationObjectManager::findToDispose() {
@@ -78,7 +78,7 @@ void SimulationObjectManager::load(dbload_building* building) {
 }
 
 void SimulationObjectManager::load(dbload_resource_entities* resource) const {
-	addResource(resourceFactory.load(resource));
+	addResource(resourceFactory.load(resource), true);
 }
 
 void SimulationObjectManager::addUnits(std::vector<Unit*>& temp) const {
@@ -108,10 +108,10 @@ void SimulationObjectManager::addBuilding(Building* building) const {
 
 }
 
-void SimulationObjectManager::addResource(ResourceEntity* resource) const {
+void SimulationObjectManager::addResource(ResourceEntity* resource, bool bulkAdd) const {
 	if (resource) {
 		resources->push_back(resource);
-		Game::getEnvironment()->addNew(resource);
+		Game::getEnvironment()->addNew(resource, bulkAdd);
 		simulationInfo->setAmountResourceChanged();
 	} else {
 		Game::getLog()->Write(0, "Resource adding not possible");

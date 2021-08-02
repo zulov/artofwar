@@ -11,15 +11,10 @@ StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRad
 	queryRadius.back()), queryRadius(queryRadius) {
 	assert(queryRadius.size()>1);
 	bucketsPerRadius.reserve(queryRadius.size());
-	int defSize = 550;
+
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		auto buckets = new Bucket[resolution * resolution];
 		bucketsPerRadius.push_back(buckets);
-		// const auto end = buckets + resolution * resolution;
-		// for (auto i = buckets; i < end; ++i) {
-		// 	i->reserve(defSize);
-		// }
-		// defSize *= 2.5;
 	}
 }
 
@@ -67,24 +62,27 @@ void StaticGrid::updateNew(Unit* unit, char team) const {
 
 inline bool StaticGrid::inside(int val) const { return val >= 0 && val < calculator->getResolution(); }
 
-void StaticGrid::updateNew(Physical* physical) const {
-	Grid::updateNew(physical);
+void StaticGrid::updateStatic(Static* staticObj, bool bulkAdd) const {
+	Grid::updateNew(staticObj);
 
-	// const int centerIndex = calculator->indexFromPosition(physical->getPosition());
-	// const auto centerCords = calculator->getIndexes(centerIndex);
-	// for (int i = 0; i < queryRadius.size(); ++i) {
-	// 	auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
-	// 	assert(indexes->size() == cords->size());
-	// 	const auto itr = bucketsPerRadius[i];
-	//
-	// 	auto ptrIdx = indexes->begin();
-	// 	for (const auto& shiftCords : *cords) {
-	// 		if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
-	// 			itr[centerIndex + *ptrIdx].add(physical);
-	// 		}
-	// 		++ptrIdx;
-	// 	}
-	// }
+	if (!bulkAdd) {
+		const int centerIndex = calculator->indexFromPosition(staticObj->getPosition());
+		const auto centerCords = calculator->getIndexes(centerIndex);
+		for (int i = 0; i < queryRadius.size(); ++i) {
+			auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
+			assert(indexes->size() == cords->size());
+			const auto itr = bucketsPerRadius[i];
+
+			auto ptrIdx = indexes->begin();
+			auto x = itr + centerIndex;
+			for (const auto& shiftCords : *cords) {
+				if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
+					(*(x + *ptrIdx)).add(staticObj);
+				}
+				++ptrIdx;
+			}
+		}
+	}
 }
 
 void StaticGrid::initAdd() const {
@@ -112,7 +110,7 @@ void StaticGrid::initAdd() const {
 		}
 		const auto itr = bucketsPerRadius[i];
 		for (int k = 0; k < sqResolution; ++k) {
-			auto val = sizes[k];
+			const auto val = sizes[k];
 			if (val > 0) {
 				itr[k].reserve(val);
 			}

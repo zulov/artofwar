@@ -36,7 +36,7 @@ public:
 private:
 	void addUnits(std::vector<Unit*>& temp) const;
 	void addBuilding(Building* building) const;
-	void addResource(ResourceEntity* resource) const;
+	void addResource(ResourceEntity* resource, bool bulkAdd) const;
 
 	void findToDisposeUnits();
 	void findToDisposeBuildings();
