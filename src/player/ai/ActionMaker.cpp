@@ -125,7 +125,7 @@ bool ActionMaker::createBuilding(db_building* building) {
 	if (enoughResources(building)) {
 		auto pos = findPosToBuild(building);
 		if (pos.has_value()) {
-			return Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId());
+			return Game::getActionCenter()->addBuilding(building->id, pos.value(), player->getId(), false);
 		}
 	}
 	return false;

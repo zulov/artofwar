@@ -15,6 +15,7 @@ public:
 	virtual ~CreationCommandList() = default;
 	CreationCommand* addUnits(int number, int id, Urho3D::Vector2& position, char player, int level) const;
 	CreationCommand* addBuilding(int id, Urho3D::Vector2& position, char player, int level) const;
+	CreationCommand* addBuildingForce(int id, Urho3D::Vector2& position, char player, int level) const;
 	CreationCommand* addResource(int id, Urho3D::Vector2& position, int level) const;
 
 protected:

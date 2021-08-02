@@ -39,18 +39,19 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 		return;
 	}
 	Urho3D::Vector2 force;
-	const int isLeader = Game::getFormationManager()->isLeader(unit);
+	const bool isLeader = Game::getFormationManager()->isLeader(unit);
 
 	for (auto physical : *neights) {
-		auto neight = dynamic_cast<Unit*>(physical);
+		auto neight = dynamic_cast<Unit*>(physical);//TODO perf rzutoac calosc vectoru
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
 		auto diff = dirTo(neight->getPosition(), unit->getPosition());
 
 		const float sqDistance = diff.LengthSquared();
-		if (sqDistance > sqSepDist
-			|| (isLeader != -1 && unit->getFormation() == neight->getFormation())) { continue; }
+
+		if (sqDistance > sqSepDist //jezeli za dalko lub jest liderem a sasiad jest z tego samego
+			|| (isLeader && unit->getFormation() == neight->getFormation())) { continue; }
 
 		if (sqDistance == 0.f) {
 			randSepForce(newForce);

@@ -23,9 +23,11 @@ CreationCommand* CreationCommandList::addBuilding(int id, Urho3D::Vector2& posit
 	db_building* building = Game::getDatabase()->getBuilding(id);
 	if (resources.hasEnough(building->costs)) {
 		const auto env = Game::getEnvironment();
-		if (env->validateStatic(building->size, position) && env->isVisible(player, position)) {
-			resources.reduce(building->costs);
-			return new CreationCommand(ObjectType::BUILDING, id, env->getCords(position), level, player);
+		if (env->isVisible(player, position)) {
+			if (env->validateStatic(building->size, position)) {
+				resources.reduce(building->costs);
+				return new CreationCommand(ObjectType::BUILDING, id, env->getCords(position), level, player);
+			}
 		}
 	} else {
 		//TODO add resource presures
@@ -38,9 +40,23 @@ CreationCommand* CreationCommandList::addResource(int id, Urho3D::Vector2& posit
 	auto env = Game::getEnvironment();
 	db_resource* db_resource = Game::getDatabase()->getResource(id);
 
-	if (env->validateStatic(db_resource->size, position)) {	
+	if (env->validateStatic(db_resource->size, position)) {
 		return new CreationCommand(ObjectType::RESOURCE, id, env->getCords(position), level, -1);
 	}
+	return nullptr;
+}
+
+CreationCommand*
+CreationCommandList::addBuildingForce(int id, Urho3D::Vector2& position, char player, int level) const {
+	Resources& resources = Game::getPlayersMan()->getPlayer(player)->getResources();
+	db_building* building = Game::getDatabase()->getBuilding(id);
+	const auto env = Game::getEnvironment();
+
+	if (env->validateStatic(building->size, position)) {
+		//resources.reduce(building->costs);
+		return new CreationCommand(ObjectType::BUILDING, id, env->getCords(position), level, player);
+	}
+
 	return nullptr;
 }
 

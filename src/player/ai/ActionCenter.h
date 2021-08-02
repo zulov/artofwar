@@ -34,12 +34,12 @@ public:
 	void executeLists();
 
 	bool addUnits(int number, int id, Urho3D::Vector2 position, char player);
-	bool addBuilding(int id, Urho3D::Vector2& position, char player);
+	bool addBuilding(int id, Urho3D::Vector2& position, char player, bool force);
 	bool addResource(int id, Urho3D::Vector2& position);
 
 private:
 	bool addUnits(int number, int id, Urho3D::Vector2& position, char player, int level);
-	bool addBuilding(int id, Urho3D::Vector2& position, char player, int level);
+	bool addBuilding(int id, Urho3D::Vector2& position, char player, int level, bool force);
 
 	CreationCommandList creation;
 	UpgradeCommandList upgrade;

@@ -69,13 +69,19 @@ bool ActionCenter::addUnits(int number, int id, Urho3D::Vector2& position, char 
 	return false;
 }
 
-bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player) {
+bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, bool force) {
 	auto level = Game::getPlayersMan()->getPlayer(player)->getLevelForBuilding(id)->level;
-	return addBuilding(id, position, player, level);
+	return addBuilding(id, position, player, level, force);
 }
 
-bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, int level) {
-	auto command = creation.addBuilding(id, position, player, level);
+bool ActionCenter::addBuilding(int id, Urho3D::Vector2& position, char player, int level, bool force) {
+	CreationCommand* command{};
+	if (force) {
+		command = creation.addBuildingForce(id, position, player, level);
+	} else {
+		command = creation.addBuilding(id, position, player, level);
+	}
+
 	if (command) {
 		Game::getStats()->add(command); //TODO to dodaæ przez z jak¹œ kolejkê
 		creation.add(command);

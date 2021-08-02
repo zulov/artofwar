@@ -1,6 +1,7 @@
 #include "PathFinder.h"
 
 #include <iostream>
+#include <Urho3D/IO/Log.h>
 
 #include "DrawGridUtils.h"
 #include "Game.h"
@@ -203,6 +204,12 @@ std::vector<int>* PathFinder::findPath(int startIdx, const std::vector<int>& end
 	}
 
 	auto newEndIndexes = getPassableIndexes(endIdxs);
+	if (newEndIndexes.empty()) {
+		Game::getLog()->WriteRaw("No TargetFound");
+		getPassableIndexes(endIdxs);
+		closePath->clear();
+		return closePath;
+	}
 
 	const int localIdx = isInLocalArea(startIdx, newEndIndexes);
 

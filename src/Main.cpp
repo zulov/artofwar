@@ -629,7 +629,9 @@ void Main::readParameters() {
 				SimGlobals::FAKE_TERRAIN = true;
 			} else if (argument == "allplayerai") {
 				SimGlobals::ALL_PLAYER_AI = true;
-			} else if (argument == "aioutput") {
+			} else if (argument == "noplayerai") {
+				SimGlobals::NO_PLAYER_AI = true;
+			}  else if (argument == "aioutput") {
 				SimGlobals::AI_OUTPUT = true;
 			} else if (argument == "savename") {
 				saveToLoad = value;

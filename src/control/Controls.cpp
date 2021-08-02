@@ -331,7 +331,7 @@ bool Controls::clickDown(MouseButton& var) const {
 void Controls::createBuilding(Urho3D::Vector2 pos) const {
 	if (idToCreate >= 0) {
 		auto player = Game::getPlayersMan()->getActivePlayerID();
-		Game::getActionCenter()->addBuilding(idToCreate, pos, player);
+		Game::getActionCenter()->addBuilding(idToCreate, pos, player, false);
 	}
 }
 
@@ -389,7 +389,7 @@ void Controls::refreshSelected() {
 	selected.erase(
 		std::remove_if(
 			selected.begin(), selected.end(),
-			[](Physical* physical){
+			[](Physical* physical) {
 				if (!physical->isAlive()) {
 					physical->unSelect();
 					return true;

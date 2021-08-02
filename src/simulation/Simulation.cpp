@@ -182,8 +182,11 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 1, 0, Urho3D::Vector2(0, 0), 0);
-		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.7f, 1, Urho3D::Vector2(310, 200), 0);
+		auto b = Urho3D::Vector2(0, 130);
+		Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.1f, 0, Urho3D::Vector2(0, 100), 0);
+
+		Game::getActionCenter()->addBuilding(1, b, 1, true);
+		Game::getActionCenter()->addUnits(UNITS_NUMBER  * 0.1f, 2, Urho3D::Vector2(0, 70), 1);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.5f, 1, Urho3D::Vector2(300, 212), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.2f, 1, Urho3D::Vector2(290, 210), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
@@ -314,6 +317,7 @@ void Simulation::initScene(NewGameForm* form) const {
 }
 
 void Simulation::aiPlayers() const {
+	if (SIM_GLOBALS.NO_PLAYER_AI) { return; }
 	if (PER_FRAME_ACTION.get(PerFrameAction::AI_ACTION, currentFrame)) {
 		for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 			if (SIM_GLOBALS.ALL_PLAYER_AI || Game::getPlayersMan()->getActivePlayer() != player) {

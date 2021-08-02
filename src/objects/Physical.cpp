@@ -64,9 +64,11 @@ void Physical::updateBillboards() const {
 }
 
 void Physical::updateHealthBar() const {
-	auto const healthBar = selectedObject->getHealthBar();
-	if (selectedObject && healthBar) {
-		healthBar->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick());
+	if (selectedObject) {
+		auto const healthBar = selectedObject->getHealthBar();
+		if (healthBar) {
+			healthBar->size_ = Urho3D::Vector2(getHealthBarSize(), getHealthBarThick());
+		}
 	}
 }
 
@@ -112,7 +114,7 @@ int Physical::belowCloseLimit() {
 }
 
 void Physical::select(SelectedObject* selectedObject) {
-	assert(selectedObject == nullptr);
+	assert(this->selectedObject == nullptr);
 
 	this->selectedObject = selectedObject;
 

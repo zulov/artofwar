@@ -58,7 +58,8 @@ public:
 
 	void execute(Unit* unit, float timeStep) override {
 		if (isInRange(unit)) {
-			if (fmod(unit->currentFrameState, 1 / unit->dbLevel->closeAttackSpeed) < 1) {
+			auto a =fmod(unit->currentFrameState, 1.f / unit->dbLevel->closeAttackSpeed);
+			if (fmod(unit->currentFrameState, 1.f / unit->dbLevel->closeAttackSpeed) < 1) {
 				const auto [value, died] = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->closeAttackVal);
 				Game::getEnvironment()->addAttack(unit, value);
 				Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(unit->thingsToInteract[0]);

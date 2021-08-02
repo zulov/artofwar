@@ -146,7 +146,7 @@ Urho3D::Vector2 Unit::getDestination(float boostCoef, float aimCoef) {
 }
 
 std::pair<float, bool> Unit::absorbAttack(float attackCoef) {
-	if (hp <= 0) {
+	if (hp <= 0.f) {
 		return {0.f, false};
 	}
 	auto val = attackCoef * (1 - dbLevel->armor);
@@ -438,7 +438,7 @@ float Unit::getAttackRange() const {
 		return dbLevel->rangeAttackRange;
 	}
 
-	if (dbLevel->canRangeAttack) {
+	if (dbLevel->canCloseAttack) {
 		return dbLevel->closeAttackRange;
 	}
 	assert(false);
