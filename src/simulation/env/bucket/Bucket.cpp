@@ -1,5 +1,7 @@
 #include "Bucket.h"
 
+#include <algorithm>
+
 int Bucket::getSize() const {
 	return content.size();
 }

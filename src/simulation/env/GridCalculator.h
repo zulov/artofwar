@@ -82,6 +82,20 @@ struct GridCalculator {
 
 	float getFieldSize() const { return fieldSize; }
 
+	unsigned short getValidLow(short val) const {
+		if (val < 0) {
+			return 0;
+		}
+		return val;
+	}
+	
+	unsigned short getValidHigh(short val) const {
+		if (val >= resolution) {
+			return resolution - 1;
+		}
+		return val;
+	}
+	
 	unsigned short getValid(short val) const {
 		if (val < 0) {
 			return 0;

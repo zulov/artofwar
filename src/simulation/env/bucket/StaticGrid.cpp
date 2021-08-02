@@ -13,8 +13,7 @@ StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRad
 	bucketsPerRadius.reserve(queryRadius.size());
 
 	for (int i = 0; i < queryRadius.size(); ++i) {
-		auto buckets = new Bucket[resolution * resolution];
-		bucketsPerRadius.push_back(buckets);
+		bucketsPerRadius.push_back(new Bucket[sqResolution]);
 	}
 }
 
@@ -108,12 +107,13 @@ void StaticGrid::initAdd() const {
 				}
 			}
 		}
-		const auto itr = bucketsPerRadius[i];
+		auto itr = bucketsPerRadius[i];
 		for (int k = 0; k < sqResolution; ++k) {
 			const auto val = sizes[k];
 			if (val > 0) {
-				itr[k].reserve(val);
+				itr->reserve(val);
 			}
+			++itr;
 		}
 	}
 

@@ -46,11 +46,11 @@ void InfluenceMapFloat::update(int index, float value) const {
 }
 
 void InfluenceMapFloat::update(float value, const unsigned short centerX, const unsigned short centerZ) const {
-	const auto minI = calculator->getValid(centerX - level);
-	const auto maxI = calculator->getValid(centerX + level);
+	const auto minI = calculator->getValidLow(centerX - level);
+	const auto maxI = calculator->getValidHigh(centerX + level);
 
-	const auto minJ = calculator->getValid(centerZ - level);
-	const auto maxJ = calculator->getValid(centerZ + level);
+	const auto minJ = calculator->getValidLow(centerZ - level);
+	const auto maxJ = calculator->getValidHigh(centerZ + level);
 
 	for (short i = minI; i <= maxI; ++i) {
 		const auto a = (i - centerX) * (i - centerX);
