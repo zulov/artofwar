@@ -183,10 +183,13 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
 		auto b = Urho3D::Vector2(0, 130);
-		Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.1f, 0, Urho3D::Vector2(0, 100), 0);
+		// Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.1f, 0, Urho3D::Vector2(0, 100), 0);
+		// Game::getActionCenter()->addUnits(UNITS_NUMBER  * 0.1f, 2, Urho3D::Vector2(0, 70), 1);
 
-		Game::getActionCenter()->addBuilding(1, b, 1, true);
-		Game::getActionCenter()->addUnits(UNITS_NUMBER  * 0.1f, 2, Urho3D::Vector2(0, 70), 1);
+		Game::getActionCenter()->addUnits(1, 0, Urho3D::Vector2(0, 100), 0);
+		Game::getActionCenter()->addUnits(1, 2, Urho3D::Vector2(0, 70), 1);
+
+		//Game::getActionCenter()->addBuilding(1, b, 1, true);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.5f, 1, Urho3D::Vector2(300, 212), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.2f, 1, Urho3D::Vector2(290, 210), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
@@ -387,7 +390,7 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);
-		unit->debug(DebugUnitType::AIM, stats); //TODO przeniesc do Controls
+		unit->debug(DebugUnitType::INTERACT, stats); //TODO przeniesc do Controls
 	}
 	DebugLineRepo::commit(DebugLineType::UNIT_LINES);
 }

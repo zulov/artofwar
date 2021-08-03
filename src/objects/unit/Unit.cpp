@@ -69,10 +69,21 @@ void Unit::checkAim() {
 
 void Unit::updatePosition() const {
 	if (isVisible) {
-		if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
+		if (isInStates(state, {UnitState::ATTACK, UnitState::COLLECT, UnitState::SHOT}) && isFirstThingAlive()) {
+			const auto dir = dirTo(position, thingsToInteract[0]->getPosition());
+
 			node->SetTransform(
 				position,
-				Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(velocity.x_, 0.f, velocity.y_)));
+				Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(dir.x_, 0.f, dir.y_)));
+		} else if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
+			if (state != UnitState::ATTACK) {
+				node->SetTransform(
+					position,
+					Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(velocity.x_, 0.f, velocity.y_)));
+			} else {
+
+
+			}
 		} else {
 			node->SetPosition(position);
 		}
@@ -247,7 +258,7 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				}
 				break;
 			case DebugUnitType::INTERACT:
-				for (auto toInteract : thingsToInteract) {
+				for (const auto toInteract : thingsToInteract) {
 					DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, position, toInteract->getPosition());
 				}
 				break;
