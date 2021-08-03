@@ -76,14 +76,9 @@ void Unit::updatePosition() const {
 				position,
 				Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(dir.x_, 0.f, dir.y_)));
 		} else if (velocity.LengthSquared() > 4 * dbLevel->sqMinSpeed) {
-			if (state != UnitState::ATTACK) {
-				node->SetTransform(
-					position,
-					Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(velocity.x_, 0.f, velocity.y_)));
-			} else {
-
-
-			}
+			node->SetTransform(
+				position,
+				Urho3D::Quaternion(Urho3D::Vector3::FORWARD, Urho3D::Vector3(velocity.x_, 0.f, velocity.y_)));
 		} else {
 			node->SetPosition(position);
 		}
@@ -214,7 +209,7 @@ void Unit::drawLineTo(const Urho3D::Vector3& second,
 
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		if (selectedObject && isVisible) {
+		if (selectedObject || isVisible) {
 			switch (type) {
 			case DebugUnitType::NONE:
 				break;

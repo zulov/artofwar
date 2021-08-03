@@ -187,7 +187,7 @@ void Simulation::addTestEntities() const {
 		// Game::getActionCenter()->addUnits(UNITS_NUMBER  * 0.1f, 2, Urho3D::Vector2(0, 70), 1);
 
 		Game::getActionCenter()->addUnits(1, 0, Urho3D::Vector2(0, 100), 0);
-		Game::getActionCenter()->addUnits(1, 2, Urho3D::Vector2(0, 70), 1);
+		Game::getActionCenter()->addUnits(10, 2, Urho3D::Vector2(0, 70), 1);
 
 		//Game::getActionCenter()->addBuilding(1, b, 1, true);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.5f, 1, Urho3D::Vector2(300, 212), 0);
@@ -390,7 +390,7 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);
-		unit->debug(DebugUnitType::INTERACT, stats); //TODO przeniesc do Controls
+		unit->debug(DebugUnitType::AIM, stats); //TODO przeniesc do Controls
 	}
 	DebugLineRepo::commit(DebugLineType::UNIT_LINES);
 }
