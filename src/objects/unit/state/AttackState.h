@@ -16,7 +16,8 @@ public:
 	AttackState(): State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
 		UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
-	}) { }
+	}) {
+	}
 
 	~AttackState() = default;
 
@@ -28,7 +29,7 @@ public:
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
-		unit->currentFrameState = 0;
+		unit->currentFrameState = 1;
 
 		unit->thingsToInteract.clear();
 		unit->thingsToInteract.push_back(parameter.thingToInteract);
@@ -58,8 +59,7 @@ public:
 
 	void execute(Unit* unit, float timeStep) override {
 		if (isInRange(unit)) {
-			auto a =fmod(unit->currentFrameState, 1.f / unit->dbLevel->closeAttackSpeed);
-			if (fmod(unit->currentFrameState, 1.f / unit->dbLevel->closeAttackSpeed) < 1) {
+			if (unit->currentFrameState % unit->dbLevel->closeAttackReload == 0) {
 				const auto [value, died] = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->closeAttackVal);
 				Game::getEnvironment()->addAttack(unit, value);
 				Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(unit->thingsToInteract[0]);

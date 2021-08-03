@@ -29,8 +29,8 @@ struct db_attack {
 
 	const float armor;
 
-	const short closeAttackSpeed;
-	const short rangeAttackSpeed;
+	const short closeAttackReload;
+	const short rangeAttackReload;
 
 	const short closeAttackRange;
 	const short rangeAttackRange;
@@ -54,14 +54,14 @@ struct db_attack {
 	}
 
 	db_attack(float closeAttackVal, float rangeAttackVal, float chargeAttackVal, float buildingAttackVal,
-	          short closeAttackSpeed, short rangeAttackSpeed, short rangeAttackRange, float armor)
+	          short closeAttackReload, short rangeAttackReload, short rangeAttackRange, float armor)
 		: closeAttackVal(closeAttackVal),
 		  rangeAttackVal(rangeAttackVal),
 		  chargeAttackVal(chargeAttackVal),
 		  buildingAttackVal(buildingAttackVal),
 		  armor(armor),
-		  closeAttackSpeed(closeAttackSpeed),
-		  rangeAttackSpeed(rangeAttackSpeed),
+		  closeAttackReload(closeAttackReload),
+		  rangeAttackReload(rangeAttackReload),
 		  rangeAttackRange(rangeAttackRange), sqRangeAttackRange(rangeAttackRange * rangeAttackRange),
 		  closeAttackRange(1.f), sqCloseAttackRange(1.f),
 		  interestRange(rangeAttackRange * 10.f),
@@ -218,10 +218,10 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 
 	void finish(float sumCreateCost) {
 		dbUnitMetric = new db_unit_metric(armor * maxHp,
-		                                  rangeAttackVal * rangeAttackSpeed,
-		                                  closeAttackVal * closeAttackSpeed,
+		                                  rangeAttackVal / rangeAttackReload * FRAMES_IN_PERIOD,
+		                                  closeAttackVal / closeAttackReload * FRAMES_IN_PERIOD,
 		                                  chargeAttackVal,
-		                                  buildingAttackVal * rangeAttackSpeed,
+		                                  buildingAttackVal / rangeAttackReload * FRAMES_IN_PERIOD,
 		                                  sumCreateCost);
 	}
 
@@ -319,7 +319,7 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_s
 				}
 				dbBuildingMetricPerNation[i] =
 					new db_building_metric(armor * maxHp,
-					                       rangeAttackVal * rangeAttackSpeed,
+					                       rangeAttackVal / rangeAttackReload * FRAMES_IN_PERIOD,
 					                       sums[cast(UnitMetric::DEFENCE)],
 					                       sums[cast(UnitMetric::DISTANCE_ATTACK)],
 					                       sums[cast(UnitMetric::CLOSE_ATTACK)],

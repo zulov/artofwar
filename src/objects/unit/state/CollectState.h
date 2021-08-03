@@ -26,7 +26,7 @@ public:
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->velocity = Urho3D::Vector2::ZERO;
-		unit->currentFrameState = 0;
+		unit->currentFrameState = 1;
 
 		unit->thingsToInteract.clear();
 		unit->thingsToInteract.push_back(parameter.thingToInteract);

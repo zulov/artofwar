@@ -269,7 +269,8 @@ std::vector<int> PathFinder::getPassableIndexes(const std::vector<int>& endIdxs)
 		result.push_back(getPassableEnd(endIdx));
 	}
 	std::ranges::sort(result);
-	result.erase(std::ranges::unique(result).begin(), result.end());
+	result.erase(std::unique(result.begin(), result.end()), result.end());
+
 	return result;
 }
 
@@ -348,7 +349,7 @@ float PathFinder::heuristic(int from, std::vector<Urho3D::IntVector2>& endIdxs) 
 	assert(!endIdxs.empty());
 	const auto a = getCords(from);
 	float min = 1024.f;
-	for (auto &endCords : endIdxs) {
+	for (auto& endCords : endIdxs) {
 		const float val = heuristic(a, endCords);
 		if (val < min) {
 			min = val;
