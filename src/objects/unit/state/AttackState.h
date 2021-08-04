@@ -22,28 +22,33 @@ public:
 	~AttackState() = default;
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
+		//assert(parameter.index != parameter.thingToInteract->getMainBucketIndex());
 		return parameter.isFirstThingAlive()
 			&& unit->getMainBucketIndex() == parameter.index
 			&& parameter.thingToInteract->isFirstThingInSameSocket()
-			&& !parameter.thingToInteract->isSlotOccupied(parameter.index);
+			&& !parameter.thingToInteract->isIndexSlotOccupied(parameter.index);
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
+		assert(parameter.index != parameter.thingToInteract->getMainBucketIndex());
 		unit->currentFrameState = 1;
 
 		unit->thingsToInteract.clear();
 		unit->thingsToInteract.push_back(parameter.thingToInteract);
 		unit->indexToInteract = parameter.index;
 
+		unit->slotToInteract = Game::getEnvironment()->getRevertCloseIndex(
+			unit->thingsToInteract[0]->getMainBucketIndex(), unit->indexToInteract);
+
 		unit->thingsToInteract[0]->upClose();
-		unit->thingsToInteract[0]->setOccupiedSlot(unit->indexToInteract, true);
+		unit->thingsToInteract[0]->setOccupiedIndexSlot(unit->slotToInteract, true);
 		unit->maxSpeed = unit->dbLevel->maxSpeed / 2;
 	}
 
 	void onEnd(Unit* unit) override {
 		if (unit->isFirstThingAlive()) {
 			unit->thingsToInteract[0]->reduceClose();
-			unit->thingsToInteract[0]->setOccupiedSlot(unit->indexToInteract, false);
+			unit->thingsToInteract[0]->setOccupiedIndexSlot(unit->slotToInteract, false);
 			unit->thingsToInteract.clear();
 		}
 		unit->maxSpeed = unit->dbLevel->maxSpeed;
@@ -51,7 +56,7 @@ public:
 		unit->indexToInteract = -1;
 	}
 
-	bool isInRange(Unit* unit) {
+	bool isInRange(const Unit* unit) {
 		return unit->isFirstThingAlive()
 			&& unit->isInRightSocket()
 			&& unit->thingsToInteract[0]->isFirstThingInSameSocket();

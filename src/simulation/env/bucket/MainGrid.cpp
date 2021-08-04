@@ -143,6 +143,11 @@ unsigned char MainGrid::getRevertCloseIndex(int center, int gridIndex) const {
 			return i;
 		}
 	}
+	for (auto i : closeIndexes->getTabIndexes(center)) {
+		if (closeIndexes->getIndexAt(i) == index) {
+			return i;
+		}
+	}
 	assert(false);
 	Game::getLog()->Write(0, "closeIndex miscalculate");
 	return 0;

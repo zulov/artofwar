@@ -471,7 +471,7 @@ void Unit::setTeamBucket(int _bucketIndex, char param) {
 	teamBucketIndex[param] = _bucketIndex;
 }
 
-bool Unit::isSlotOccupied(int indexToInteract) {
+bool Unit::isIndexSlotOccupied(int indexToInteract) {
 	const unsigned char index = Game::getEnvironment()->getRevertCloseIndex(getMainBucketIndex(), indexToInteract);
 	return ifSlotIsOccupied(index);
 }
@@ -570,7 +570,8 @@ Urho3D::Vector2 Unit::getPosToUse() {
 	return {position.x_, position.z_};
 }
 
-void Unit::setOccupiedSlot(unsigned char index, bool value) {
+void Unit::setOccupiedIndexSlot(unsigned char index, bool value) {
+	assert(index < 8);
 	if (value) {
 		useSockets |= Flags::bitFlags[index];
 	} else {
@@ -579,5 +580,6 @@ void Unit::setOccupiedSlot(unsigned char index, bool value) {
 }
 
 bool Unit::ifSlotIsOccupied(const unsigned char index) const {
+	assert(index < 8);
 	return useSockets & Flags::bitFlags[index];
 }

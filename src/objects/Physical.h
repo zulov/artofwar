@@ -44,10 +44,10 @@ public:
 	void setPlayer(unsigned char player) { this->player = player; }
 	bool isSelected() const;
 	void load(dbload_physical* dbloadPhysical);
-	virtual bool isSlotOccupied(int indexToInteract) { return false; }
+	virtual bool isIndexSlotOccupied(int indexToInteract) { return false; }
 	virtual bool isFirstThingInSameSocket() const { return true; }
 
-	virtual void setOccupiedSlot(unsigned char index, bool value) { }
+	virtual void setOccupiedIndexSlot(unsigned char index, bool value) { }
 
 	void indexHasChangedReset() { indexHasChanged = false; }
 

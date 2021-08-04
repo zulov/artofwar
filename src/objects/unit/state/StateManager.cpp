@@ -48,7 +48,7 @@ bool StateManager::changeState(Unit* unit, UnitState stateTo) {
 }
 
 bool StateManager::toDefaultState(Unit* unit) {
-	return changeState(unit, UnitState::STOP, Consts::EMPTY_ACTION_PARAMETER);//TODO mo¿e lepiej move
+	return changeState(unit, UnitState::STOP, Consts::EMPTY_ACTION_PARAMETER); //TODO mo¿e lepiej move
 }
 
 bool StateManager::canStartState(Unit* unit, UnitState stateTo, const ActionParameter& actionParameter,
@@ -88,14 +88,18 @@ void StateManager::execute(Unit* unit, float timeStamp) {
 void StateManager::executeChange(std::vector<Unit*>* units) {
 	if (instance->unitHasChanged) {
 		instance->unitHasChanged = false;
-		for (auto unit : *units) {
+		for (const auto unit : *units) {
 			if (unit->hasStateChangePending()) {
 				State* stateFrom = instance->states[cast(unit->getState())];
 				State* toState = instance->states[cast(unit->getNextState())];
-
-				stateFrom->onEnd(unit);
-				unit->setState(unit->getNextState());
-				toState->onStart(unit, unit->getNextActionParameter());
+				//assert(canStartState(unit, unit->getNextState(), unit->getNextActionParameter(), stateFrom, toState));
+				if (canStartState(unit, unit->getNextState(), unit->getNextActionParameter(), stateFrom, toState)) {
+					stateFrom->onEnd(unit);
+					unit->setState(unit->getNextState());
+					toState->onStart(unit, unit->getNextActionParameter());
+					
+				}
+				unit->setState(unit->getState());
 				unit->getNextActionParameter().resetUsed();
 			}
 		}
@@ -120,7 +124,7 @@ void StateManager::executeChange(std::vector<Building*>* buildings) {
 		instance->buildingHasChanged = false;
 		for (auto building : *buildings) {
 			executeChange(building);
-		}	
+		}
 	}
 }
 
