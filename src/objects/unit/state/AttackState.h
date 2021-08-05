@@ -23,19 +23,24 @@ public:
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		//assert(parameter.index != parameter.thingToInteract->getMainBucketIndex());
-		return parameter.isFirstThingAlive()
-			&& unit->getMainBucketIndex() == parameter.index
-			&& parameter.thingToInteract->isFirstThingInSameSocket()
-			&& !parameter.thingToInteract->isIndexSlotOccupied(parameter.index);
+		if (parameter.isFirstThingAlive()) {
+			auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
+			return std::ranges::find(indexesToUse, unit->getMainBucketIndex()) != indexesToUse.end();
+				//?&& parameter.thingToInteract->isFirstThingInSameSocket()
+				//&& !parameter.thingToInteract->isIndexSlotOccupied(parameter.index);
+		}
+		return false;
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
-		assert(parameter.index != parameter.thingToInteract->getMainBucketIndex());
+		auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
+		auto *found =std::ranges::find(indexesToUse, unit->getMainBucketIndex())
+		assert(found != indexesToUse.end());
 		unit->currentFrameState = 1;
 
 		unit->thingsToInteract.clear();
 		unit->thingsToInteract.push_back(parameter.thingToInteract);
-		unit->indexToInteract = parameter.index;
+		unit->indexToInteract = *found;
 
 		unit->slotToInteract = Game::getEnvironment()->getRevertCloseIndex(
 			unit->thingsToInteract[0]->getMainBucketIndex(), unit->indexToInteract);
@@ -63,6 +68,7 @@ public:
 	}
 
 	void execute(Unit* unit, float timeStep) override {
+		ifchange try ti change slot
 		if (isInRange(unit)) {
 			if (unit->currentFrameState % unit->dbLevel->closeAttackReload == 0) {
 				const auto [value, died] = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->closeAttackVal);
