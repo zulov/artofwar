@@ -12,8 +12,7 @@
 Static::Static(Urho3D::Vector3& _position, int mainCell, bool withNode) : Physical(_position, withNode),
                                                                           mainCell(mainCell),
                                                                           state(StaticState::ALIVE),
-                                                                          nextState(StaticState::ALIVE) {
-}
+                                                                          nextState(StaticState::ALIVE) {}
 
 Static::~Static() {
 	delete data;
@@ -58,10 +57,10 @@ void Static::populate() {
 		surroundCells1.end());
 
 	data = new int[occupiedCells1.size() + surroundCells1.size()];
-	occupiedCells = std::span{data,occupiedCells1.size()};
-	surroundCells = std::span{data+occupiedCells1.size(),surroundCells1.size()};
-	std::ranges::copy(occupiedCells1,occupiedCells.begin());
-	std::ranges::copy(surroundCells1,surroundCells.begin());
+	occupiedCells = std::span{data, occupiedCells1.size()};
+	surroundCells = std::span{data + occupiedCells1.size(), surroundCells1.size()};
+	std::ranges::copy(occupiedCells1, occupiedCells.begin());
+	std::ranges::copy(surroundCells1, surroundCells.begin());
 }
 
 float Static::getAuraSize(const Urho3D::Vector3& boundingBox) const {
@@ -113,6 +112,7 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Static::getPosToUseWithDist(Un
 
 std::vector<int> Static::getIndexesForUse(Unit* user) {
 	std::vector<int> indexes;
+	if (belowCloseLimit() <= 0) { return indexes; }
 	indexes.reserve(surroundCells.size());
 	for (auto index : surroundCells) {
 		if (canCollect(index)) {

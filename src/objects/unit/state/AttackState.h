@@ -3,6 +3,7 @@
 #include "database/db_strcut.h"
 #include "State.h"
 #include "StateManager.h"
+#include "StateUtils.h"
 #include "objects/unit/ActionParameter.h"
 #include "objects/unit/Unit.h"
 #include "UnitState.h"
@@ -16,8 +17,7 @@ public:
 	AttackState(): State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD,
 		UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
-	}) {
-	}
+	}) { }
 
 	~AttackState() = default;
 
@@ -25,59 +25,65 @@ public:
 		//assert(parameter.index != parameter.thingToInteract->getMainBucketIndex());
 		if (parameter.isFirstThingAlive()) {
 			auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
-			return std::ranges::find(indexesToUse, unit->getMainBucketIndex()) != indexesToUse.end();
-				//?&& parameter.thingToInteract->isFirstThingInSameSocket()
-				//&& !parameter.thingToInteract->isIndexSlotOccupied(parameter.index);
+			return std::ranges::find(indexesToUse, unit->getMainBucketIndex()) != indexesToUse.end()
+				&& parameter.thingToInteract->belowCloseLimit() > 0;
+			//?&& parameter.thingToInteract->indexChanged()
+			//&& !parameter.thingToInteract->isIndexSlotOccupied(parameter.index);
 		}
 		return false;
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
-		auto *found =std::ranges::find(indexesToUse, unit->getMainBucketIndex())
+		const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());
 		assert(found != indexesToUse.end());
 		unit->currentFrameState = 1;
 
-		unit->thingsToInteract.clear();
-		unit->thingsToInteract.push_back(parameter.thingToInteract);
-		unit->indexToInteract = *found;
+		setStartData(unit, *found, parameter.thingToInteract);
+		setSlotData(unit, *found, parameter.thingToInteract);//TODO bug dla unitów tylko to ma sens
 
-		unit->slotToInteract = Game::getEnvironment()->getRevertCloseIndex(
-			unit->thingsToInteract[0]->getMainBucketIndex(), unit->indexToInteract);
-
-		unit->thingsToInteract[0]->upClose();
-		unit->thingsToInteract[0]->setOccupiedIndexSlot(unit->slotToInteract, true);
 		unit->maxSpeed = unit->dbLevel->maxSpeed / 2;
 	}
 
 	void onEnd(Unit* unit) override {
 		if (unit->isFirstThingAlive()) {
-			unit->thingsToInteract[0]->reduceClose();
-			unit->thingsToInteract[0]->setOccupiedIndexSlot(unit->slotToInteract, false);
-			unit->thingsToInteract.clear();
+			reduce(unit, unit->thingsToInteract[0]);
 		}
 		unit->maxSpeed = unit->dbLevel->maxSpeed;
 		unit->thingsToInteract.clear();
 		unit->indexToInteract = -1;
 	}
 
-	bool isInRange(const Unit* unit) {
-		return unit->isFirstThingAlive()
-			&& unit->isInRightSocket()
-			&& unit->thingsToInteract[0]->isFirstThingInSameSocket();
+	void reduce(Unit* unit, Physical* first) {
+		first->reduceClose();
+		first->setOccupiedIndexSlot(unit->slotToInteract, false);
 	}
 
 	void execute(Unit* unit, float timeStep) override {
-		ifchange try ti change slot
-		if (isInRange(unit)) {
-			if (unit->currentFrameState % unit->dbLevel->closeAttackReload == 0) {
-				const auto [value, died] = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->closeAttackVal);
-				Game::getEnvironment()->addAttack(unit, value);
-				Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(unit->thingsToInteract[0]);
-			}
-			++unit->currentFrameState;
-		} else {
+		if (!unit->isFirstThingAlive()) {
 			StateManager::toDefaultState(unit);
+			return;
 		}
+		auto first = unit->thingsToInteract[0];
+		if (unit->indexChanged() || first->indexChanged()) {
+			reduce(unit, first);
+			unit->thingsToInteract.clear();
+
+			auto const indexesToUse = first->getIndexesForUse(unit);
+			const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());
+			if (found != indexesToUse.end()) {
+				setStartData(unit, *found, first);
+				setSlotData(unit, *found, first);//TODO bug dla unitów tylko to ma sens
+			} else {
+				StateManager::toDefaultState(unit);
+				return;
+			}
+		}
+		if (unit->currentFrameState % unit->dbLevel->closeAttackReload == 0) {
+			const auto [value, died] = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->closeAttackVal);
+			Game::getEnvironment()->addAttack(unit, value);
+			Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(unit->thingsToInteract[0]);
+		}
+		++unit->currentFrameState;
 	}
 };

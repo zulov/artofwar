@@ -45,9 +45,9 @@ public:
 	bool isSelected() const;
 	void load(dbload_physical* dbloadPhysical);
 	virtual bool isIndexSlotOccupied(int indexToInteract) { return false; }
-	virtual bool isFirstThingInSameSocket() const { return true; }
+	virtual bool indexChanged() const { return false; }
 
-	virtual void setOccupiedIndexSlot(unsigned char index, bool value) { }
+	virtual void setOccupiedIndexSlot(char index, bool value) { }
 
 	void indexHasChangedReset() { indexHasChanged = false; }
 

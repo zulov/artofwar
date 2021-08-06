@@ -287,8 +287,8 @@ void Unit::action(UnitAction unitAction) {
 	action(unitAction, Consts::EMPTY_ACTION_PARAMETER);
 }
 
-bool Unit::isFirstThingInSameSocket() const {
-	return !indexHasChanged;
+bool Unit::indexChanged() const {
+	return indexHasChanged;
 }
 
 void Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
@@ -375,16 +375,6 @@ void Unit::setPositionInFormation(short _pos) {
 
 void Unit::clearAims() {
 	aims.clear();
-}
-
-bool Unit::closeEnoughToAttack() {
-	const float sqRange = sqDist(position, getPosToUse());
-	return dbLevel->canCloseAttack && sqRange < dbLevel->sqCloseAttackRange
-		|| dbLevel->canRangeAttack && sqRange < dbLevel->sqRangeAttackRange;
-}
-
-bool Unit::isInRightSocket() const {
-	return indexToInteract == getMainBucketIndex();
 }
 
 void Unit::setNextState(UnitState stateTo, const ActionParameter& actionParameter) {
@@ -510,7 +500,7 @@ float Unit::getSightRadius() const {
 	return dbLevel->sightRadius;
 }
 
-Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
+Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {//TODO bug co to za dziwna funkcja
 	const auto vector = Consts::circleCords[i] * (dbLevel->minDist + toFollow->getMinimalDistance()) * 2;
 	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().z_ + vector.y_};
 }
@@ -548,6 +538,7 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit
 
 std::vector<int> Unit::getIndexesForUse(Unit* user) {
 	std::vector<int> indexes;
+	if (belowCloseLimit() <= 0) { return indexes; }
 	const int mainIndex = getMainBucketIndex();
 	const std::vector<unsigned char>& closeTabIndexes = Game::getEnvironment()->getCloseTabIndexes(mainIndex);
 	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
@@ -563,15 +554,9 @@ std::vector<int> Unit::getIndexesForUse(Unit* user) {
 	return indexes;
 }
 
-Urho3D::Vector2 Unit::getPosToUse() {
-	if (isFirstThingAlive() && indexToInteract != -1) {
-		return getSocketPos(dynamic_cast<Unit*>(thingsToInteract[0]), indexToInteract);
-	}
-	return {position.x_, position.z_};
-}
-
-void Unit::setOccupiedIndexSlot(unsigned char index, bool value) {
+void Unit::setOccupiedIndexSlot(char index, bool value) {
 	assert(index < 8);
+	assert(index >= 0);
 	if (value) {
 		useSockets |= Flags::bitFlags[index];
 	} else {
@@ -579,7 +564,8 @@ void Unit::setOccupiedIndexSlot(unsigned char index, bool value) {
 	}
 }
 
-bool Unit::ifSlotIsOccupied(const unsigned char index) const {
+bool Unit::ifSlotIsOccupied(char index) const {
 	assert(index < 8);
+	assert(index >= 0);
 	return useSockets & Flags::bitFlags[index];
 }

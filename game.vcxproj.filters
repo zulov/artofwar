@@ -539,6 +539,7 @@
     <ClInclude Include="src\simulation\env\influence\map\VisibilityType.h" />
     <ClInclude Include="src\simulation\env\bucket\StaticGrid.h" />
     <ClInclude Include="src\objects\SelectedObject.h" />
+    <ClInclude Include="src\objects\unit\state\StateUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

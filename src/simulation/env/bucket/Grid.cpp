@@ -83,7 +83,7 @@ const std::vector<short>& Grid::getCloseIndexes(int center) const {
 	return closeIndexes->get(center);
 }
 
-const std::vector<unsigned char>& Grid::getCloseTabIndexes(short center) const {
+const std::vector<unsigned char>& Grid::getCloseTabIndexes(int center) const {
 	return closeIndexes->getTabIndexes(center);
 }
 

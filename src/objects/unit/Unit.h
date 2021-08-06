@@ -86,8 +86,7 @@ public:
 	void removeCurrentAim();
 	void setIndexToInteract(int index);
 	int getIndexToInteract() const { return indexToInteract; }
-	bool closeEnoughToAttack();
-	bool isInRightSocket() const;
+	
 	void setNextState(UnitState stateTo, const ActionParameter& actionParameter);
 	void setNextState(UnitState stateTo);
 	ActionParameter& getNextActionParameter();
@@ -117,9 +116,8 @@ public:
 	void setTeamBucket(int _bucketIndex, char param);
 	bool isIndexSlotOccupied(int indexToInteract) override;
 
-	Urho3D::Vector2 getPosToUse();
-	void setOccupiedIndexSlot(unsigned char index, bool value) override;
-	bool ifSlotIsOccupied(unsigned char index) const;
+	void setOccupiedIndexSlot(char index, bool value) override;
+	bool ifSlotIsOccupied(char index) const;
 
 	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* follower) override;
 	std::vector<int> getIndexesForUse(Unit* follower) override;
@@ -127,7 +125,7 @@ public:
 	void action(UnitAction unitAction, const ActionParameter& parameter);
 	void action(UnitAction unitAction);
 
-	bool isFirstThingInSameSocket() const override;
+	bool indexChanged() const override;
 	std::string getValues(int precision) override;
 	Urho3D::String toMultiLineString() override;
 	float getMaxHpBarSize() const override;
@@ -139,6 +137,8 @@ public:
 	float getSightRadius() const override;
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 	short getCostSum() const override;
+	std::vector<Physical*>& getThingsToInteract() { return thingsToInteract; }
+	void setSlotToInteract(char slot) { slotToInteract = slot; }
 private:
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);
@@ -160,7 +160,7 @@ private:
 
 	float maxSpeed;
 
-	int indexToInteract = -1;
+	int indexToInteract = -1;//TODO moze sie tego pozbyc
 	char slotToInteract = -1;
 
 	unsigned short currentFrameState = 0;

@@ -20,7 +20,7 @@ public:
 	bool hasAnyFreeSpace() const;
 	static bool canCollect(int index);
 
-	bool isFirstThingInSameSocket() const override { return true; }
+	bool indexChanged() const override { return false; }
 	StaticState getNextState() const { return nextState; }
 	StaticState getState() const { return state; }
 	bool isUsable() const override { return state == StaticState::ALIVE; }
