@@ -33,14 +33,20 @@ public:
 		return false;
 	}
 
+	void setData(Unit* unit, int found, Physical* const thing) {
+		setStartData(unit, found, thing);
+		if (thing->getType() == ObjectType::UNIT) {
+			setSlotData(unit, found, thing);
+		}
+	}
+
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
 		const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());
 		assert(found != indexesToUse.end());
 		unit->currentFrameState = 1;
 
-		setStartData(unit, *found, parameter.thingToInteract);
-		setSlotData(unit, *found, parameter.thingToInteract);//TODO bug dla unitów tylko to ma sens
+		setData(unit, *found, parameter.thingToInteract);
 
 		unit->maxSpeed = unit->dbLevel->maxSpeed / 2;
 	}
@@ -72,17 +78,16 @@ public:
 			auto const indexesToUse = first->getIndexesForUse(unit);
 			const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());
 			if (found != indexesToUse.end()) {
-				setStartData(unit, *found, first);
-				setSlotData(unit, *found, first);//TODO bug dla unitów tylko to ma sens
+				setData(unit, *found, first);
 			} else {
 				StateManager::toDefaultState(unit);
 				return;
 			}
 		}
 		if (unit->currentFrameState % unit->dbLevel->closeAttackReload == 0) {
-			const auto [value, died] = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->closeAttackVal);
+			const auto [value, died] = first->absorbAttack(unit->dbLevel->closeAttackVal);
 			Game::getEnvironment()->addAttack(unit, value);
-			Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(unit->thingsToInteract[0]);
+			Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(first);
 		}
 		++unit->currentFrameState;
 	}

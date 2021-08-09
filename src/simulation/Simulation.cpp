@@ -125,7 +125,7 @@ void Simulation::tryToAttack(Unit* unit, UnitAction order,
 }
 
 void Simulation::tryToCollect(Unit* unit) const {
-	auto id = unit->getLastActionThingId();
+	const auto id = unit->getLastActionThingId();
 	std::vector<Physical*>* list = nullptr;
 
 	if (id >= 0) {
@@ -182,14 +182,14 @@ void Simulation::loadEntities(SceneLoader& loader) const {
 
 void Simulation::addTestEntities() const {
 	if constexpr (UNITS_NUMBER > 0) {
-		auto b = Urho3D::Vector2(0, 130);
+		auto b = Urho3D::Vector2(0, 120);
 		// Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.1f, 0, Urho3D::Vector2(0, 100), 0);
 		// Game::getActionCenter()->addUnits(UNITS_NUMBER  * 0.1f, 2, Urho3D::Vector2(0, 70), 1);
 
-		Game::getActionCenter()->addUnits(1, 0, Urho3D::Vector2(0, 100), 0);
-		Game::getActionCenter()->addUnits(10, 2, Urho3D::Vector2(0, 70), 1);
+		Game::getActionCenter()->addUnits(3, 0, Urho3D::Vector2(0, 100), 0);
+		//Game::getActionCenter()->addUnits(10, 2, Urho3D::Vector2(0, 70), 1);
 
-		//Game::getActionCenter()->addBuilding(1, b, 1, true);
+		Game::getActionCenter()->addBuilding(1, b, 1, true);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.5f, 1, Urho3D::Vector2(300, 212), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 0.2f, 1, Urho3D::Vector2(290, 210), 0);
 		//Game::getActionCenter()->addUnits(UNITS_NUMBER * 10, 4, Urho3D::Vector2(10, 240), 1);
