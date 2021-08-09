@@ -85,7 +85,10 @@ public:
 			}
 		}
 		if (unit->currentFrameState % unit->dbLevel->closeAttackReload == 0) {
-			const auto [value, died] = first->absorbAttack(unit->dbLevel->closeAttackVal);
+			const auto val = first->getType() == ObjectType::UNIT
+				                 ? unit->dbLevel->closeAttackVal
+				                 : unit->dbLevel->buildingAttackVal;
+			const auto [value, died] = first->absorbAttack(val);
 			Game::getEnvironment()->addAttack(unit, value);
 			Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(first);
 		}

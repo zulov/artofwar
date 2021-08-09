@@ -45,6 +45,8 @@ struct db_attack {
 	const bool canChargeAttack;
 	const bool canBuildingAttack;
 
+	const float collectSpeed;
+
 
 	bool initFlag(float val) {
 		if (val > 0.f) {
@@ -54,7 +56,7 @@ struct db_attack {
 	}
 
 	db_attack(float closeAttackVal, float rangeAttackVal, float chargeAttackVal, float buildingAttackVal,
-	          short closeAttackReload, short rangeAttackReload, short rangeAttackRange, float armor)
+	          short closeAttackReload, short rangeAttackReload, short rangeAttackRange, float armor, float collectSpeed)
 		: closeAttackVal(closeAttackVal),
 		  rangeAttackVal(rangeAttackVal),
 		  chargeAttackVal(chargeAttackVal),
@@ -69,7 +71,8 @@ struct db_attack {
 		  canCloseAttack(initFlag(closeAttackVal)),
 		  canRangeAttack(initFlag(rangeAttackVal)),
 		  canChargeAttack(initFlag(chargeAttackVal)),
-		  canBuildingAttack(initFlag(buildingAttackVal)) { }
+		  canBuildingAttack(initFlag(buildingAttackVal)),
+		  collectSpeed(collectSpeed) { }
 };
 
 struct db_static {
@@ -91,7 +94,7 @@ struct db_cost {
 struct db_with_cost {
 	std::vector<db_cost*> costs;
 	short sumCost = 0;
-	
+
 	unsigned short getSumCost() const {
 		return sumCost;
 	}
@@ -182,7 +185,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 
 	const float maxSpeed;
 	const float minSpeed;
-	const float collectSpeed;
+
 	const float upgradeSpeed;
 	const float maxForce;
 	const float sqMinSpeed;
@@ -200,7 +203,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	              float armor):
 		db_entity(id), db_level(level), db_with_name(name),
 		db_attack(closeAttackVal, rangeAttackVal, chargeAttackVal, buildingAttackVal,
-		          closeAttackSpeed, rangeAttackSpeed, rangeAttackRange, armor),
+		          closeAttackSpeed, rangeAttackSpeed, rangeAttackRange, armor, collectSpeed),
 		db_with_hp(maxHp), db_sight(10.f),
 		unit(unit),
 		minDist(minDist),
@@ -210,7 +213,6 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 		invMass(1 / mass),
 		maxSpeed(maxSpeed),
 		minSpeed(minSpeed),
-		collectSpeed(collectSpeed),
 		upgradeSpeed(upgradeSpeed),
 		maxForce(maxForce),
 		sqMinSpeed(minSpeed * minSpeed),
@@ -294,7 +296,7 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_s
 	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity,
 	                  float rangeAttackVal, short rangeAttackSpeed, short rangeAttackRange, float armor, short maxHp)
 		: db_entity(id), db_level(level), db_with_name(name),
-		  db_attack(0.f, rangeAttackVal, 0.f, 0.f, 0.f, rangeAttackSpeed, rangeAttackRange, armor),
+		  db_attack(0.f, rangeAttackVal, 0.f, 0.f, 0.f, rangeAttackSpeed, rangeAttackRange, armor, 0.f),
 		  db_with_hp(maxHp), db_sight(15.f),
 		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity) { }
 

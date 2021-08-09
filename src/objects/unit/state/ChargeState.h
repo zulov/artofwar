@@ -42,10 +42,9 @@ public:
 					if (unit->getTeam() != physical->getTeam()) {
 						const auto before = physical->getHealthPercent();
 						
-						physical->absorbAttack(unit->dbLevel->chargeAttackVal);
-						const auto [value, died] = unit->thingsToInteract[0]->absorbAttack(unit->dbLevel->closeAttackVal);
+						const auto [value, died] =  physical->absorbAttack(unit->dbLevel->chargeAttackVal);
 						Game::getEnvironment()->addAttack(unit, value);
-						Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(unit->thingsToInteract[0]);
+						Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(physical);
 						
 						const auto after = physical->getHealthPercent();
 						if (!unit->chargeData->updateHit(before, after)) {
