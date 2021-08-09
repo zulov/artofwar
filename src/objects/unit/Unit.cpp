@@ -167,16 +167,19 @@ std::pair<float, bool> Unit::absorbAttack(float attackCoef) {
 	return {val, false};
 }
 
-void Unit::toActionIfInRange(Physical* closest, UnitAction order) {
+bool Unit::toActionIfInRange(Physical* closest, UnitAction order) {
 	if (closest && sqDistAs2D(getPosition(), closest->getPosition()) < dbLevel->sqInterestRange) {
-		toAction(closest, order);
+		return toAction(closest, order);
 	}
+	return false;
 }
 
-void Unit::toAction(Physical* closest, UnitAction order) {
+bool Unit::toAction(Physical* closest, UnitAction order) {
 	if (closest) {
 		addOrder(new IndividualOrder(this, order, closest, true));
+		return true;
 	}
+	return false;
 }
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {
@@ -500,7 +503,8 @@ float Unit::getSightRadius() const {
 	return dbLevel->sightRadius;
 }
 
-Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {//TODO bug co to za dziwna funkcja
+Urho3D::Vector2 Unit::getSocketPos(Unit* toFollow, int i) const {
+	//TODO bug co to za dziwna funkcja
 	const auto vector = Consts::circleCords[i] * (dbLevel->minDist + toFollow->getMinimalDistance()) * 2;
 	return {toFollow->getPosition().x_ + vector.x_, toFollow->getPosition().z_ + vector.y_};
 }

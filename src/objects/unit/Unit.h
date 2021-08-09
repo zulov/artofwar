@@ -69,8 +69,8 @@ public:
 
 	void toCharge(std::vector<Physical*>* enemies);
 
-	void toActionIfInRange(Physical* closest, UnitAction order);
-	void toAction(Physical* closest, UnitAction order);
+	bool toActionIfInRange(Physical* closest, UnitAction order);
+	bool toAction(Physical* closest, UnitAction order);
 
 	void updateHeight(float y, double timeStep);
 

@@ -128,21 +128,22 @@ void Simulation::tryToCollect(Unit* unit) const {
 	const auto id = unit->getLastActionThingId();
 	std::vector<Physical*>* list = nullptr;
 
+	bool result = false;
 	if (id >= 0) {
 		list = enviroment->getResources(unit->getPosition(), id, unit->getLevel()->interestRange);
+		result = toAction(unit, list, UnitAction::COLLECT, belowClose);
 	}
-	if (id < 0 || list->empty()) {
+	if (id < 0 || !result) {
 		list = enviroment->getResources(unit->getPosition(), -1, unit->getLevel()->interestRange);
+		toAction(unit, list, UnitAction::COLLECT, belowClose);
 	}
-
-	toAction(unit, list, UnitAction::COLLECT, belowClose);
 }
 
-void Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
+bool Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
                           const std::function<bool(Physical*)>& condition) const {
 	const auto closest = enviroment->closestPhysical(unit, list, condition,
 	                                                 unit->getLevel()->interestRange * unit->getLevel()->interestRange);
-	unit->toActionIfInRange(closest, order);
+	return unit->toActionIfInRange(closest, order);
 }
 
 void Simulation::selfAI() const {
@@ -242,11 +243,11 @@ void Simulation::levelUp(QueueElement* done, char player) const {
 
 void Simulation::updateBuildingQueues(const float time) const {
 	for (auto build : *buildings) {
-		auto done = build->updateQueue(time);
+		const auto done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {
 			case QueueActionType::UNIT_CREATE: {
-				auto center = enviroment->getCenter(build->getDeploy().value());
+				const auto center = enviroment->getCenter(build->getDeploy().value());
 				Game::getActionCenter()->addUnits(done->getAmount(),
 				                                  done->getId(), center,
 				                                  build->getPlayer());
@@ -268,7 +269,7 @@ void Simulation::updateBuildingQueues(const float time) const {
 void Simulation::updateQueues() const {
 	updateBuildingQueues(TIME_PER_UPDATE);
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-		auto done = player->updateQueue(TIME_PER_UPDATE);
+		const auto done = player->updateQueue(TIME_PER_UPDATE);
 		if (done) {
 			switch (done->getType()) {
 			case QueueActionType::BUILDING_LEVEL:
@@ -339,7 +340,7 @@ void Simulation::aiPlayers() const {
 }
 
 void Simulation::moveUnitsAndCheck(const float timeStep) {
-	auto camInfo = Game::getCameraManager()->getCamInfo(UPDATE_DRAW_DISTANCE);
+	const auto camInfo = Game::getCameraManager()->getCamInfo(UPDATE_DRAW_DISTANCE);
 
 	for (auto unit : *units) {
 		const bool hasMoved = unit->move(timeStep, camInfo);
