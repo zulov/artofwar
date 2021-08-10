@@ -15,6 +15,8 @@
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Graphics/Material.h>
+
+#include "math/SpanUtils.h"
 #include "objects/queue/QueueElement.h"
 #include "simulation/env/Environment.h"
 
@@ -148,7 +150,7 @@ void Building::fillValues(std::span<float> weights) const {
 	auto nation = Game::getPlayersMan()->getPlayer(player)->getNation();
 
 	auto data = dbLevel->dbBuildingMetricPerNation[nation]->getParamsAsSpan();
-
+	assert(validateSpan(__LINE__, __FILE__, data));
 	std::ranges::copy(data, weights.begin());
 	auto percent = hp / dbLevel->maxHp;
 	for (auto& weight : weights) {
@@ -161,6 +163,7 @@ void Building::addValues(std::span<float> vals) const {
 	auto nation = Game::getPlayersMan()->getPlayer(player)->getNation();
 
 	auto data = dbLevel->dbBuildingMetricPerNation[nation]->getParamsAsSpan();
+	assert(validateSpan(__LINE__, __FILE__, data));
 
 	assert(vals.size()==data.size()-1); //without cost
 	for (int i = 0; i < vals.size(); ++i) {

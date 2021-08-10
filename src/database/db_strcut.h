@@ -21,6 +21,10 @@ struct db_building_level;
 struct db_cost;
 struct db_unit_level;
 
+float inline safeDiv(float first, short second) {
+	return first > 0.f ? first / second * FRAMES_IN_PERIOD : 0.f;
+}
+
 struct db_attack {
 	const float closeAttackVal;
 	const float rangeAttackVal;
@@ -219,11 +223,12 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 		canCollect(initFlag(collectSpeed)) { }
 
 	void finish(float sumCreateCost) {
+
 		dbUnitMetric = new db_unit_metric(armor * maxHp,
-		                                  rangeAttackVal / rangeAttackReload * FRAMES_IN_PERIOD,
-		                                  closeAttackVal / closeAttackReload * FRAMES_IN_PERIOD,
+		                                  safeDiv(rangeAttackVal, rangeAttackReload),
+		                                  safeDiv(closeAttackVal, closeAttackReload),
 		                                  chargeAttackVal,
-		                                  buildingAttackVal / rangeAttackReload * FRAMES_IN_PERIOD,
+		                                  safeDiv(buildingAttackVal, rangeAttackReload),
 		                                  sumCreateCost);
 	}
 
@@ -321,7 +326,7 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_s
 				}
 				dbBuildingMetricPerNation[i] =
 					new db_building_metric(armor * maxHp,
-					                       rangeAttackVal / rangeAttackReload * FRAMES_IN_PERIOD,
+					                       safeDiv(rangeAttackVal, rangeAttackReload),
 					                       sums[cast(UnitMetric::DEFENCE)],
 					                       sums[cast(UnitMetric::DISTANCE_ATTACK)],
 					                       sums[cast(UnitMetric::CLOSE_ATTACK)],

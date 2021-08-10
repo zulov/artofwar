@@ -75,7 +75,7 @@ std::span<float> AiInputProvider::getBuildingsInput(char playerId) {
 	const auto basic = getBasicInput(playerId);
 
 	auto* player = Game::getPlayersMan()->getPlayer(playerId);
-
+	assert(validateSpan(__LINE__, __FILE__, player->getPossession().getBuildingsMetrics()));
 	copyTo(buildingsInputSpan, basic, player->getPossession().getBuildingsMetrics());
 
 	std::transform(buildingsInputSpan.begin() + basic.size(), buildingsInputSpan.end(), wBuildingsSumInput,
