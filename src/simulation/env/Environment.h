@@ -38,6 +38,8 @@ public:
 	std::vector<Physical*>* getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius);
 	std::vector<Physical*>* getResources(Urho3D::Vector3& center, int id, float radius);
 
+	std::vector<Physical*>* getBuildingsFromTeamNotEq(Physical* physical, int id, float radius, int team);
+
 	void updateInfluenceUnits1(std::vector<Unit*>* units) const;
 	void updateInfluenceUnits2(std::vector<Unit*>* units) const;
 

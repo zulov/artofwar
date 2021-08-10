@@ -143,13 +143,25 @@ std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int i
 			}
 		}
 	}
-	
-	
+
+
 	return neights;
 }
 
 std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int id, float radius) {
 	return getNeighbours(center, resourceStaticGrid, id, radius, -1);
+}
+
+std::vector<Physical*>*
+Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius, int team) {
+	neights2->clear();
+
+	auto neightLocal = getNeighbours(physical, buildingGrid, radius);
+	for (auto local : *neightLocal)
+		albo copy_if
+	neights2->insert(neights2->end(), neightLocal->begin(), neightLocal->end());
+
+	return neights2;
 }
 
 void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) const {

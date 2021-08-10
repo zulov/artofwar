@@ -120,8 +120,12 @@ SimInfo* Simulation::update(float timeStep) {
 
 void Simulation::tryToAttack(Unit* unit, UnitAction order,
                              const std::function<bool(Physical*)>& condition) const {
-	toAction(unit, enviroment->getNeighboursFromTeamNotEq(unit, unit->getLevel()->interestRange, unit->getTeam()),
+	bool result = toAction(unit, enviroment->getNeighboursFromTeamNotEq(unit, unit->getLevel()->interestRange, unit->getTeam()),
 	         order, condition);
+	if(!result) {
+		 toAction(unit, enviroment->getBuildingsFromTeamNotEq(unit, unit->getLevel()->interestRange, unit->getTeam()),
+	         order, condition);
+	}
 }
 
 void Simulation::tryToCollect(Unit* unit) const {
