@@ -42,7 +42,7 @@ std::vector<Physical*>* Environment::getNeighboursFromTeamNotEq(Physical* physic
 	neights2->clear();
 	for (int i = 0; i < MAX_PLAYERS; ++i) {
 		if (team != i) {
-			auto neightLocal = getNeighbours(physical, teamUnitGrid[i], radius);
+			const auto neightLocal = getNeighbours(physical, teamUnitGrid[i], radius);
 			neights2->insert(neights2->end(), neightLocal->begin(), neightLocal->end());
 		}
 	}
@@ -63,22 +63,20 @@ void Environment::initStaticGrid() {
 
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
 	neights->clear();
-
-	const auto& center = physical->getPosition();
 	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius);
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
-		addIfInRange(physical, center, sqRadius, neight);
+		addIfInRange(physical, sqRadius, neight);
 	}
 
 	return neights;
 }
 
-void Environment::addIfInRange(Physical* physical, const Urho3D::Vector3& center, const float sqRadius,
+void Environment::addIfInRange(Physical* physical, const float sqRadius,
                                Physical* neight) const {
 	if (physical != neight
-		&& sqDistAs2D(center, neight->getPosition()) < sqRadius) {
+		&& sqDistAs2D(physical->getPosition(), neight->getPosition()) < sqRadius) {
 		neights->push_back(neight);
 	}
 }
@@ -156,10 +154,13 @@ std::vector<Physical*>*
 Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius, int team) {
 	neights2->clear();
 
-	auto neightLocal = getNeighbours(physical, buildingGrid, radius);
-	for (auto local : *neightLocal)
-		albo copy_if
-	neights2->insert(neights2->end(), neightLocal->begin(), neightLocal->end());
+	auto pred = [id, team](const Physical* physical) {
+		return (id < 0 || physical->getId() == id) && (physical->getTeam() != team || team < 0);
+	}; //TODO pref wrzucić to do środa i nie dodawać do neights2
+
+	const auto neightLocal = getNeighbours(physical, buildingGrid, radius);
+
+	std::copy_if(neightLocal->begin(), neightLocal->end(), std::back_inserter(*neights2), pred);
 
 	return neights2;
 }

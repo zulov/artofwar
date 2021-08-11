@@ -134,7 +134,7 @@ private:
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
 	                                      float prevRadius) const;
-	void addIfInRange(Physical* physical, const Urho3D::Vector3& center, float sqRadius, Physical* neight) const;
+	void addIfInRange(Physical* physical, float sqRadius, Physical* neight) const;
 	float mapSize;
 	MainGrid mainGrid;
 	Grid buildingGrid;

@@ -69,7 +69,7 @@ struct db_attack {
 		  closeAttackReload(closeAttackReload),
 		  rangeAttackReload(rangeAttackReload),
 		  rangeAttackRange(rangeAttackRange), sqRangeAttackRange(rangeAttackRange * rangeAttackRange),
-		  closeAttackRange(1.f), sqCloseAttackRange(1.f),
+		  closeAttackRange(1), sqCloseAttackRange(1),
 		  interestRange(rangeAttackRange * 10.f),
 		  sqInterestRange(interestRange * interestRange),
 		  canCloseAttack(initFlag(closeAttackVal)),

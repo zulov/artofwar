@@ -184,9 +184,9 @@ bool Unit::toAction(Physical* closest, UnitAction order) {
 
 void Unit::toCharge(std::vector<Physical*>* enemies) {
 	thingsToInteract.clear();
+	const auto sqRange = chargeData->attackRange * chargeData->attackRange;
 	for (auto entity : *enemies) {
-		if (entity->isAlive() && sqDist(getPosition(), entity->getPosition()) <= chargeData->attackRange *
-			chargeData->attackRange) {
+		if (entity->isAlive() && sqDist(getPosition(), entity->getPosition()) <= sqRange) {
 			thingsToInteract.push_back(entity);
 		}
 	}
