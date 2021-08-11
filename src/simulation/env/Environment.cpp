@@ -157,7 +157,7 @@ Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius,
 	auto pred = [id, team](const Physical* physical) {
 		return (id < 0 || physical->getId() == id) && (physical->getTeam() != team || team < 0);
 	}; //TODO pref wrzucić to do środa i nie dodawać do neights2
-
+	// const std::function<bool(Physical*)>& condition
 	const auto neightLocal = getNeighbours(physical, buildingGrid, radius);
 
 	std::copy_if(neightLocal->begin(), neightLocal->end(), std::back_inserter(*neights2), pred);

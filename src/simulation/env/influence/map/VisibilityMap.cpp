@@ -49,8 +49,12 @@ void VisibilityMap::updateInt(int index, int value) const {
 void VisibilityMap::reset() {
 	valuesForInfluenceReady = false;
 	percentReady = false;
-	auto func = [](VisibilityType vt) -> float { return vt == VisibilityType::VISIBLE; };
-	std::replace_if(values, values + arraySize, func, VisibilityType::SEEN);
+	char* end = (char*)values + arraySize;
+	for (char* i = (char*)values; i < end; i++) {
+		*i &= 1;
+	}
+	// auto func = [](VisibilityType vt) -> float { return vt == VisibilityType::VISIBLE; };
+	// std::replace_if(values, values + arraySize, func, VisibilityType::SEEN);
 }
 
 char VisibilityMap::getValueAt(const Urho3D::Vector2& pos) const {

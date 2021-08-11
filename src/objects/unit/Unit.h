@@ -154,7 +154,7 @@ private:
 	ChargeData* chargeData{};
 	MissileData* missileData{};
 
-	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O
+	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O, dac tylko jeden a reszte do ChargeAttack
 
 	int teamBucketIndex[BUCKET_SET_NUMBER];
 
@@ -170,6 +170,6 @@ private:
 	UnitState nextState;
 	bool stateChangePending = false;
 	unsigned char useSockets = 0;
-	short lastActionThingId = -1; //TODO reset po jakimœ czasie
+	char lastActionThingId = -1; //TODO reset po jakimœ czasie
 	ActionParameter nextActionParameter;
 };

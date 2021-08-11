@@ -1,6 +1,6 @@
 #pragma once
 enum class VisibilityType : char {
 	NONE =0,
-	SEEN,
-	VISIBLE
+	SEEN=1,
+	VISIBLE=3
 };

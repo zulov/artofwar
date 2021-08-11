@@ -32,7 +32,8 @@ ActionMaker::ActionMaker(Player* player, db_nation* nation):
 
 	ifUnitCreate(BrainProvider::get(std::string(nation->actionPrefix[5].CString()) + "ifUnitCreate_w.csv")),
 	whichUnitCreate(BrainProvider::get(std::string(nation->actionPrefix[6].CString()) + "whichUnitCreate_w.csv")),
-	whereUnitCreate(BrainProvider::get(std::string(nation->actionPrefix[7].CString()) + "whereUnitCreate_w.csv")) {}
+	whereUnitCreate(BrainProvider::get(std::string(nation->actionPrefix[7].CString()) + "whereUnitCreate_w.csv")) {
+}
 
 bool ActionMaker::createBuilding(const std::span<float> buildingsInput) {
 	const auto whichOutput = whichBuildingCreate->decide(buildingsInput);
@@ -180,10 +181,11 @@ db_building_level* ActionMaker::chooseBuildingLevelUp() {
 }
 
 db_unit* ActionMaker::chooseUnit(std::span<float> result) {
-	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
-	std::vector<db_unit*> unitsWithoutWorker(units.size());
 	auto pred = [this](db_unit* unit) { return !player->getLevelForUnit(unit->id)->canCollect; };
-	std::ranges::copy_if(units, std::back_inserter(unitsWithoutWorker), pred);
+	auto& units = Game::getDatabase()->getNation(player->getNation())->units;
+	std::vector<db_unit*> unitsWithoutWorker;
+	unitsWithoutWorker.reserve(units.size());
+	std::copy_if(units.begin(), units.end(), std::back_inserter(unitsWithoutWorker), pred);
 
 	std::valarray<float> center(result.data(), result.size()); //TODO perf valarraay test
 	std::vector<float> diffs;
