@@ -1,4 +1,5 @@
 #pragma once
+#include <iomanip>
 #include <string>
 #include <vector>
 #include <sstream>
@@ -28,4 +29,11 @@ std::string join(Iterator begin, Iterator end, char separator = ';') {
 template <typename T>
 std::string join(std::span<T> span, char separator = ';') {
 	return join(span.begin(), span.end(), separator);
+}
+
+
+inline std::string asStringF(float val) {
+	std::stringstream ss;
+	ss << std::fixed << std::setprecision(2) << val;
+	return ss.str();
 }

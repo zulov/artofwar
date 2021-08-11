@@ -256,6 +256,6 @@
 		"pl":"Używane przez"
 	},	
 	"ml_build":{
-		"pl":"\nAtak: %f\nObrona: %f\nZdrowie: %d/%d\nUżytkowników: %d/%d\nStan: %s"
+		"pl":"\nAtak: %s\nObrona: %s\nZdrowie: %d/%d\nUżytkowników: %d/%d\nStan: %s"
 	}
 }

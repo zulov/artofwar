@@ -277,9 +277,9 @@ void Unit::setIndexToInteract(int index) {
 Urho3D::String Unit::toMultiLineString() {
 	return Urho3D::String(dbUnit->name + " " + dbLevel->name)
 	       .Append("\nAtak: ").Append(Urho3D::String(dbLevel->closeAttackVal))
-	       .Append(Urho3D::String(dbLevel->rangeAttackVal))
-	       .Append(Urho3D::String(dbLevel->chargeAttackVal))
-	       .Append(Urho3D::String(dbLevel->buildingAttackVal))
+	       .Append("|").Append(Urho3D::String(dbLevel->rangeAttackVal))
+	       .Append("|").Append(Urho3D::String(dbLevel->chargeAttackVal))
+	       .Append("|").Append(Urho3D::String(dbLevel->buildingAttackVal))
 	       .Append("\nObrona: ").Append(Urho3D::String(dbLevel->armor))
 	       .Append("\nZdrowie: ").Append(Urho3D::String(hp))
 	       .Append("/").Append(Urho3D::String(dbLevel->maxHp))

@@ -15,6 +15,7 @@
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Graphics/Material.h>
+#include <iomanip>
 
 #include "math/SpanUtils.h"
 #include "objects/queue/QueueElement.h"
@@ -90,7 +91,8 @@ Urho3D::String Building::toMultiLineString() {
 	auto l10n = Game::getLocalization();
 
 	return Urho3D::String(dbBuilding->name + " " + dbLevel->name)
-		.AppendWithFormat(l10n->Get("ml_build").CString(), dbLevel->rangeAttackVal, dbLevel->armor, (int)hp,
+		.AppendWithFormat(l10n->Get("ml_build").CString(), asStringF(dbLevel->rangeAttackVal).c_str(), asStringF(dbLevel->armor).c_str(),
+		                  (int)hp,
 		                  dbLevel->maxHp,
 		                  closeUsers,
 		                  getMaxCloseUsers(), magic_enum::enum_name(state).data());

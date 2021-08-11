@@ -52,7 +52,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 		buildingsQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 		econQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 
-		visibilityPerPlayer.emplace_back(new VisibilityMap(mapSize / VISIBILITY_GRID_FIELD_SIZE, mapSize, 2));
+		visibilityPerPlayer.emplace_back(new VisibilityMap(mapSize / VISIBILITY_GRID_FIELD_SIZE, mapSize, 3));
 	}
 
 	resourceInfluence = new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40);
@@ -162,10 +162,10 @@ void InfluenceManager::updateQuadOther() const {
 
 void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const {
 	resetMaps(visibilityPerPlayer);
-	for (auto unit : (*units)) {
+	for (const auto unit : (*units)) {
 		visibilityPerPlayer[unit->getPlayer()]->update(unit);
 	}
-	for (auto building : (*buildings)) {
+	for (const auto building : (*buildings)) {
 		visibilityPerPlayer[building->getPlayer()]->update(building);
 	}
 }
