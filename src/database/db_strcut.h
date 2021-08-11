@@ -7,6 +7,7 @@
 #include <Urho3D/Math/Vector2.h>
 
 #include "db_basic_struct.h"
+#include "math/SpanUtils.h"
 #include "objects/Metrics.h"
 #include "objects/unit/state/UnitState.h"
 #include "simulation/SimGlobals.h"
@@ -22,6 +23,7 @@ struct db_cost;
 struct db_unit_level;
 
 float inline safeDiv(float first, short second) {
+	second = second <= 0 ? 1 : second;
 	return first > 0.f ? first / second * FRAMES_IN_PERIOD : 0.f;
 }
 
@@ -76,14 +78,16 @@ struct db_attack {
 		  canRangeAttack(initFlag(rangeAttackVal)),
 		  canChargeAttack(initFlag(chargeAttackVal)),
 		  canBuildingAttack(initFlag(buildingAttackVal)),
-		  collectSpeed(collectSpeed) { }
+		  collectSpeed(collectSpeed) {
+	}
 };
 
 struct db_static {
 	const Urho3D::IntVector2 size;
 
 	explicit db_static(const Urho3D::IntVector2& size)
-		: size(size) { }
+		: size(size) {
+	}
 };
 
 struct db_cost {
@@ -92,7 +96,8 @@ struct db_cost {
 
 	db_cost(short resource, short value)
 		: resource(resource),
-		  value(value) { }
+		  value(value) {
+	}
 };
 
 struct db_with_cost {
@@ -128,7 +133,7 @@ public:
 
 		paramsAsSpan = std::span{params};
 		paramsNormAsSpan = std::span{paramsNorm};
-
+		assert(validateSpan(__LINE__, __FILE__, params));
 		assert(paramsNormAsSpan.size()==AI_WEIGHTS.wUnitInputSpan.size());
 
 		std::transform(paramsNormAsSpan.begin(), paramsNormAsSpan.end(), AI_WEIGHTS.wUnitInputSpan.begin(),
@@ -149,6 +154,7 @@ public:
 		  paramsNorm{val1, val2, val3, val4, val5, val6, val7, val8} {
 		paramsAsSpan = std::span{params};
 		paramsNormAsSpan = std::span{paramsNorm};
+		assert(validateSpan(__LINE__, __FILE__, params));
 		assert(paramsNormAsSpan.size()==AI_WEIGHTS.wBuildingInputSpan.size());
 		std::transform(paramsNormAsSpan.begin(), paramsNormAsSpan.end(), AI_WEIGHTS.wBuildingInputSpan.begin(),
 		               paramsNormAsSpan.begin(), std::divides<>());
@@ -160,14 +166,16 @@ struct db_level {
 	const char level;
 
 	explicit db_level(char level)
-		: level(level) { }
+		: level(level) {
+	}
 };
 
 struct db_sight {
 	const float sightRadius;
 
 	explicit db_sight(float sightRadius)
-		: sightRadius(sightRadius) { }
+		: sightRadius(sightRadius) {
+	}
 };
 
 struct db_with_hp {
@@ -175,7 +183,8 @@ struct db_with_hp {
 	const float invMaxHp;
 
 	explicit db_with_hp(unsigned short maxHp)
-		: maxHp(maxHp), invMaxHp(1.f / maxHp) { }
+		: maxHp(maxHp), invMaxHp(1.f / maxHp) {
+	}
 };
 
 struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp, db_sight {
@@ -220,15 +229,15 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 		upgradeSpeed(upgradeSpeed),
 		maxForce(maxForce),
 		sqMinSpeed(minSpeed * minSpeed),
-		canCollect(initFlag(collectSpeed)) { }
+		canCollect(initFlag(collectSpeed)) {
+	}
 
 	void finish(float sumCreateCost) {
-
 		dbUnitMetric = new db_unit_metric(armor * maxHp,
 		                                  safeDiv(rangeAttackVal, rangeAttackReload),
 		                                  safeDiv(closeAttackVal, closeAttackReload),
 		                                  chargeAttackVal,
-		                                  safeDiv(buildingAttackVal, rangeAttackReload),
+		                                  safeDiv(buildingAttackVal, closeAttackReload), //TODO jaki reload?
 		                                  sumCreateCost);
 	}
 
@@ -248,7 +257,8 @@ struct db_unit : db_with_name, db_with_cost, db_entity {
 	db_unit(short id, char* name, char* icon, short actionState)
 		: db_entity(id), db_with_name(name),
 		  icon(icon),
-		  actionState(actionState) { }
+		  actionState(actionState) {
+	}
 
 	std::optional<db_unit_level*> getLevel(short level) {
 		if (levels.size() > level) {
@@ -276,7 +286,8 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 
 	db_building(short id, char* name, short sizeX, short sizeZ, char* icon)
 		: db_entity(id), db_with_name(name), db_static({sizeX, sizeZ}),
-		  icon(icon) { }
+		  icon(icon) {
+	}
 
 	std::optional<db_building_level*> getLevel(short level) {
 		if (levels.size() > level) {
@@ -303,7 +314,8 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_s
 		: db_entity(id), db_level(level), db_with_name(name),
 		  db_attack(0.f, rangeAttackVal, 0.f, 0.f, 0.f, rangeAttackSpeed, rangeAttackRange, armor, 0.f),
 		  db_with_hp(maxHp), db_sight(15.f),
-		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity) { }
+		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity) {
+	}
 
 	~db_building_level() {
 		clear_vector(unitsPerNation);
@@ -350,7 +362,8 @@ struct db_nation : db_entity, db_with_name {
 		: db_entity(id), db_with_name(name),
 		  actionPrefix(Urho3D::String(actionPrefix).Split(SPLIT_SIGN)),
 		  orderPrefix(Urho3D::String(orderPrefix).Split(SPLIT_SIGN)),
-		  orderThresholdPrefix(Urho3D::String(orderThresholdPrefix).Split(SPLIT_SIGN)) { }
+		  orderThresholdPrefix(Urho3D::String(orderThresholdPrefix).Split(SPLIT_SIGN)) {
+	}
 
 	void refresh() {
 		assert(id<MAX_PLAYERS); //TODO BUG to sa troszke inne rzeczy
@@ -379,5 +392,6 @@ struct db_resource : db_with_name, db_static, db_with_hp, db_entity {
 		  icon(icon),
 		  nodeName(Urho3D::String(nodeName).Split(SPLIT_SIGN)),
 		  maxUsers(maxUsers),
-		  mini_map_color(mini_map_color) { }
+		  mini_map_color(mini_map_color) {
+	}
 };

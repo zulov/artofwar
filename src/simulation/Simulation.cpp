@@ -397,7 +397,7 @@ void Simulation::calculateForces() {
 		stats.result();
 
 		unit->setAcceleration(newForce);
-		unit->debug(DebugUnitType::INTERACT, stats); //TODO przeniesc do Controls
+		unit->debug(DebugUnitType::AIM, stats); //TODO przeniesc do Controls
 	}
 	DebugLineRepo::commit(DebugLineType::UNIT_LINES);
 }

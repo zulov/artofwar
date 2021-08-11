@@ -17,6 +17,7 @@
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
 #include "camera/CameraInfo.h"
+#include "math/SpanUtils.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "utils/consts.h"
@@ -483,7 +484,7 @@ void Unit::clean() {
 void Unit::fillValues(std::span<float> weights) const {
 	assert(weights.size(), dbLevel->dbUnitMetric->getParamsNormAsSpan().size());
 	auto data = dbLevel->dbUnitMetric->getParamsAsSpan();
-
+	assert(validateSpan(__LINE__, __FILE__, data));
 	std::copy(data.begin(), data.end(), weights.begin());
 	auto percent = hp / dbLevel->maxHp;
 	for (auto& weight : weights) {
@@ -494,6 +495,7 @@ void Unit::fillValues(std::span<float> weights) const {
 void Unit::addValues(std::span<float> vals) const {
 	const auto percent = hp * dbLevel->invMaxHp;
 	assert(vals.size()==dbLevel->dbUnitMetric->getParamsAsSpan().size()-1); //without cost
+	assert(validateSpan(__LINE__, __FILE__, dbLevel->dbUnitMetric->getParamsAsSpan()));
 	for (int i = 0; i < vals.size(); ++i) {
 		vals[i] += percent * dbLevel->dbUnitMetric->getParamsAsSpan()[i];
 	}

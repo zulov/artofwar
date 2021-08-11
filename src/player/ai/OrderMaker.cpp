@@ -37,7 +37,7 @@ void OrderMaker::action() {
 	auto& possesion = player->getPossession();
 
 	bool ifAttack = attackThreshold->ifDo(possesion.getFreeArmyMetrics());
-	if (ifAttack && false) {
+	if (ifAttack || true) {
 		char id = attackThreshold->getBest(possesion.getFreeArmyMetrics());
 
 		const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
@@ -49,15 +49,18 @@ void OrderMaker::action() {
 			for (auto subArmy : subArmies) {
 				if (!subArmy.empty()) {
 					auto center = computeLocalCenter(subArmy);
-					if (sqDist(posOpt.value(), center) > 10 * 10) {
+					const auto dist = sqDist(posOpt.value(), center);
+
+					if (dist > 30 * 30) {
 						Game::getActionCenter()->addUnitAction(
 							new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), posOpt.value()),
 							player->getId());
 					} else {
-						//TODO tryToAttack
-						// Game::getActionCenter()->addUnitAction(
-						// 	new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::ATTACK), posOpt.value()),
-						// 	player->getId());
+						std::cout<<dist;
+						znalezc cos do attaku?
+						 Game::getActionCenter()->addUnitAction(
+						 	new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::ATTACK), ),
+						 	player->getId());
 					}
 				}
 			}
