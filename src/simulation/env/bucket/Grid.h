@@ -19,14 +19,16 @@ public:
 	Grid(const Grid& rhs) = delete;
 	virtual ~Grid();
 
-	virtual void update(Unit* unit, char team) const;
-	virtual void update(Physical* physical) const;
+	//virtual void updateSparse(Unit* unit, char team) const;
+	virtual int update(Physical* physical, int currentIndex) const;
 
-	virtual void remove(Unit* unit, char team) const;
-	virtual void remove(Physical* physical) const;
+	//virtual void remove(Unit* unit, char team) const;
+	//virtual void remove(Physical* physical) const;
 
-	virtual void updateNew(Unit* unit, char team) const;
-	virtual void updateNew(Physical* physical) const;
+	void removeAt(int index, Physical* entity) const;
+
+	//virtual int updateNew(Unit* unit, char team) const;
+	virtual int updateNew(Physical* physical) const;
 
 	const std::vector<Physical*>& getContentAt(int index) const;
 
@@ -56,7 +58,6 @@ private:
 	const std::vector<Physical*>& getNotSafeContentAt(short x, short z) const;
 
 	void addAt(int index, Physical* entity) const;
-	void removeAt(int index, Physical* entity) const;
 
 	BucketIterator iterator;
 

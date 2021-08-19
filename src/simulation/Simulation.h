@@ -64,11 +64,6 @@ private:
 	void selfAI() const;
 	void addTestEntities() const;
 
-	void tryToAttack(Unit* unit, UnitAction order, const std::function<bool(Physical*)>& condition) const;
-	bool toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
-	              const std::function<bool(Physical*)>& condition) const;
-	void tryToCollect(Unit* unit) const;
-
 	float accumulateTime = 0;
 	unsigned int secondsElapsed = 0;
 	unsigned char currentFrame = 0;

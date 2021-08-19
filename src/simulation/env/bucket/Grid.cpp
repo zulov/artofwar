@@ -24,52 +24,24 @@ Grid::~Grid() {
 	delete tempSelected;
 }
 
-void Grid::update(Unit* unit, const char team) const {
-	assert(!unit->isToDispose());
-
-	const int index = calculator->indexFromPosition(unit->getPosition());
-	if (unit->teamBucketHasChanged(index, team)) {
-		removeAt(unit->getBucketIndex(team), unit);
-		addAt(index, unit);
-		unit->setTeamBucket(index, team);
-	}
-}
-
-void Grid::update(Physical* physical) const {
+int Grid::update(Physical* physical, int currentIndex) const {
 	assert(!physical->isToDispose());
 
 	const int index = calculator->indexFromPosition(physical->getPosition());
-	if (physical->bucketHasChanged(index)) {
-		removeAt(physical->getMainBucketIndex(), physical);
+	if (currentIndex != index) {
+		removeAt(currentIndex, physical);
 		addAt(index, physical);
-		physical->setBucket(index);
-	} else {
-		physical->indexHasChangedReset();
+		return index;
 	}
+	return -1;
 }
 
-void Grid::remove(Unit* unit, char team) const {
-	removeAt(unit->getBucketIndex(team), unit);
-}
-
-void Grid::remove(Physical* physical) const {
-	removeAt(physical->getMainBucketIndex(), physical);
-}
-
-void Grid::updateNew(Physical* physical) const {
+int Grid::updateNew(Physical* physical) const {
 	//assert(physical->getMainBucketIndex(), -1);
 	const int index = calculator->indexFromPosition(physical->getPosition());
 	addAt(index, physical);
-	physical->setBucket(index);
+	return index;
 }
-
-void Grid::updateNew(Unit* unit, char team) const {
-	assert(unit->getBucketIndex(team), -1);
-	const int index = calculator->indexFromPosition(unit->getPosition());
-	addAt(index, unit);
-	unit->setTeamBucket(index, team);
-}
-
 
 BucketIterator& Grid::getArrayNeight(Urho3D::Vector3& position, float radius) {
 	return *iterator.init(levelCache->get(radius), calculator->indexFromPosition(position), this);
@@ -92,6 +64,7 @@ bool Grid::onlyOneInside(int index) const {
 }
 
 void Grid::removeAt(int index, Physical* entity) const {
+	assert(index >= 0);
 	if (calculator->isValidIndex(index)) {
 		buckets[index].remove(entity);
 	}

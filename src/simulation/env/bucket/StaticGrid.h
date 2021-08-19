@@ -10,12 +10,13 @@ public:
 	StaticGrid(const StaticGrid& rhs) = delete;
 	~StaticGrid() override;
 
-	void update(Unit* unit, char team) const override;
-	void remove(Unit* unit, char team) const override;
-	void updateNew(Unit* unit, char team) const override;
-	void update(Physical* physical) const override;
+	//void updateSparse(Unit* unit, char team) const override;
+	//void remove(Unit* unit, char team) const override;
+	//int updateNew(Physical* unit) const override;
+	int update(Physical* physical, int currentIndex) const override;
+	void remove(Physical* physical) const;
 
-	void remove(Physical* physical) const override;
+	//void remove(Physical* physical) const override;
 	void updateStatic(Static* staticObj, bool bulkAdd) const;
 	
 	void initAdd() const;

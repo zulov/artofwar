@@ -10,8 +10,7 @@
 
 class SelectedObject;
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Node;
 	class StaticModel;
 }
@@ -31,11 +30,13 @@ public:
 	void updateHealthBar() const;
 	virtual float getHealthBarSize() const;
 
-	bool bucketHasChanged(int _bucketIndex) const { return indexInGrid != _bucketIndex; }
-
 	void setBucket(int _bucketIndex) {
-		indexInGrid = _bucketIndex;
-		indexHasChanged = true;
+		if (_bucketIndex < 0) {
+			indexHasChanged = false;
+		} else {
+			indexInGrid = _bucketIndex;
+			indexHasChanged = true;
+		}
 	}
 
 	void updateBillboards() const;
@@ -48,8 +49,6 @@ public:
 	virtual bool indexChanged() const { return false; }
 
 	virtual void setOccupiedIndexSlot(char index, bool value) { }
-
-	void indexHasChangedReset() { indexHasChanged = false; }
 
 	virtual std::string getValues(int precision);
 	virtual bool isUsable() const { return isAlive(); }

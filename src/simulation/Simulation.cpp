@@ -24,6 +24,7 @@
 #include "stats/Stats.h"
 #include "PerFrameAction.h"
 #include "SimInfo.h"
+#include "objects/unit/order/OrderUtils.h"
 
 Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
 	simObjectManager = new SimulationObjectManager();
@@ -118,40 +119,6 @@ SimInfo* Simulation::update(float timeStep) {
 	return simInfo;
 }
 
-void Simulation::tryToAttack(Unit* unit, UnitAction order,
-                             const std::function<bool(Physical*)>& condition) const {
-	bool result = toAction(
-		unit, enviroment->getNeighboursFromTeamNotEq(unit, unit->getLevel()->interestRange, unit->getTeam()),
-		order, condition);
-	if (!result) {
-		toAction(
-			unit, enviroment->getBuildingsFromTeamNotEq(unit, -1, unit->getLevel()->interestRange, unit->getTeam()),
-			order, condition);
-	}
-}
-
-void Simulation::tryToCollect(Unit* unit) const {
-	const auto id = unit->getLastActionThingId();
-	std::vector<Physical*>* list = nullptr;
-
-	bool result = false;
-	if (id >= 0) {
-		list = enviroment->getResources(unit->getPosition(), id, unit->getLevel()->interestRange);
-		result = toAction(unit, list, UnitAction::COLLECT, belowClose);
-	}
-	if (id < 0 || !result) {
-		list = enviroment->getResources(unit->getPosition(), -1, unit->getLevel()->interestRange);
-		toAction(unit, list, UnitAction::COLLECT, belowClose);
-	}
-}
-
-bool Simulation::toAction(Unit* unit, std::vector<Physical*>* list, UnitAction order,
-                          const std::function<bool(Physical*)>& condition) const {
-	const auto closest = enviroment->closestPhysical(unit, list, condition,
-	                                                 unit->getLevel()->interestRange * unit->getLevel()->interestRange);
-	return unit->toActionIfInRange(closest, order);
-}
-
 void Simulation::selfAI() const {
 	if (PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, currentFrame)) {
 		for (auto unit : *units) {
@@ -159,13 +126,13 @@ void Simulation::selfAI() const {
 				if (StateManager::canChangeState(unit, unit->getActionState())) {
 					switch (unit->getActionState()) {
 					case UnitState::ATTACK:
-						tryToAttack(unit, UnitAction::ATTACK, belowClose);
+						tryToAttack(unit, belowClose);
 						break;
 					case UnitState::COLLECT:
 						tryToCollect(unit);
 						break;
 					case UnitState::SHOT:
-						tryToAttack(unit, UnitAction::ATTACK, belowRange);
+						tryToAttack(unit, belowRange);
 						break;
 					}
 				}
@@ -175,16 +142,16 @@ void Simulation::selfAI() const {
 }
 
 void Simulation::loadEntities(SceneLoader& loader) const {
-	for (auto unit : *loader.getData()->units) {
+	for (const auto unit : *loader.getData()->units) {
 		simObjectManager->load(unit);
 	}
-	for (auto resource : *loader.getData()->resource_entities) {
+	for (const auto resource : *loader.getData()->resource_entities) {
 		simObjectManager->load(resource);
 	}
-	Game::getEnvironment()->initStaticGrid();
-	for (auto building : *loader.getData()->buildings) {
+	for (const auto building : *loader.getData()->buildings) {
 		simObjectManager->load(building);
 	}
+	Game::getEnvironment()->initStaticGrid();
 }
 
 void Simulation::addTestEntities() const {
@@ -354,7 +321,7 @@ void Simulation::moveUnitsAndCheck(const float timeStep) {
 		unit->checkAim();
 		if (hasMoved) {
 			enviroment->update(unit);
-		} else { unit->indexHasChangedReset(); }
+		} else { unit->setBucket(-1); }
 	}
 	enviroment->invalidateCaches();
 

@@ -15,13 +15,10 @@ Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolut
 	mainGrid(mainMapResolution, mapSize, 24),
 	resourceStaticGrid(mapSize / BUCKET_GRID_FIELD_SIZE_RESOURCE, mapSize, {64.f, 128.f, 256.f}),
 	buildingGrid(mapSize / BUCKET_GRID_FIELD_SIZE_BUILD, mapSize, false, 256.f),
-	teamUnitGrid{
-		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, false, 256.f},
-		{(short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, false, 256.f}
-	}, influenceManager(MAX_PLAYERS, mapSize), terrain(terrain),
+	sparseUnitGrid((short)(mapSize / BUCKET_GRID_FIELD_SIZE_ENEMY), mapSize, false, 256.f),
+	influenceManager(MAX_PLAYERS, mapSize), terrain(terrain),
 	calculator(GridCalculatorProvider::get(mainMapResolution, mapSize)) {
 	neights = new std::vector<Physical*>();
-	neights2 = new std::vector<Physical*>();
 
 	auto a = {160, 192, 256, 320, 384, 512};
 	assert(std::ranges::any_of(a, [mainMapResolution](int i) {return mainMapResolution == i; }));
@@ -30,23 +27,19 @@ Environment::Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolut
 
 Environment::~Environment() {
 	delete neights;
-	delete neights2;
 }
 
-std::vector<Physical*>* Environment::getNeighboursFromTeamEq(Physical* physical, const float radius, const int team) {
-	return getNeighbours(physical, teamUnitGrid[team], radius);
+std::vector<Physical*>* Environment::getNeighboursFromSparseSamePlayer(Physical* physical, const float radius,
+                                                                       char player) {
+	return getNeighbours(physical, sparseUnitGrid, radius,
+	                     [player](const Physical* thing) { return thing->getPlayer() == player; });
 }
 
-std::vector<Physical*>* Environment::getNeighboursFromTeamNotEq(Physical* physical,
-                                                                const float radius, const int team) {
-	neights2->clear();
-	for (int i = 0; i < MAX_PLAYERS; ++i) {
-		if (team != i) {
-			const auto neightLocal = getNeighbours(physical, teamUnitGrid[i], radius);
-			neights2->insert(neights2->end(), neightLocal->begin(), neightLocal->end());
-		}
-	}
-	return neights2;
+std::vector<Physical*>* Environment::getNeighboursFromTeamNotEq(Physical* physical, const float radius) {
+	auto player = physical->getPlayer();
+
+	return getNeighbours(physical, sparseUnitGrid, radius,
+	                     [player](const Physical* thing) { return thing->getPlayer() != player; });
 }
 
 bool Environment::isVisible(char player, const Urho3D::Vector2& pos) {
@@ -57,25 +50,26 @@ float Environment::getVisibilityScore(char player) {
 	return influenceManager.getVisibilityScore(player);
 }
 
-void Environment::initStaticGrid() {
+void Environment::initStaticGrid() const {
 	resourceStaticGrid.initAdd();
 }
 
-std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const {
+std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
+                                                   const std::function<bool(Physical*)>& condition) const {
 	neights->clear();
 	BucketIterator& bucketIterator = bucketGrid.getArrayNeight(physical->getPosition(), radius);
 	const float sqRadius = radius * radius;
 
 	while (Physical* neight = bucketIterator.next()) {
-		addIfInRange(physical, sqRadius, neight);
+		addIfInRange(physical, neight, sqRadius, condition);
 	}
 
 	return neights;
 }
 
-void Environment::addIfInRange(Physical* physical, const float sqRadius,
-                               Physical* neight) const {
-	if (physical != neight
+void Environment::addIfInRange(Physical* physical, Physical* neight, const float sqRadius,
+                               const std::function<bool(Physical*)>& condition) const {
+	if (physical != neight && condition(neight)
 		&& sqDistAs2D(physical->getPosition(), neight->getPosition()) < sqRadius) {
 		neights->push_back(neight);
 	}
@@ -85,7 +79,7 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	const auto currentIdx = unit->getMainBucketIndex();
 	assert(currentIdx>=0);
 	if (mainGrid.onlyOneInside(currentIdx)) {
-		return getNeighbours(unit, mainGrid, radius);
+		return getNeighbours(unit, mainGrid, radius, [](Physical* physical) { return true; });
 	}
 	const auto simpleNeght = mainGrid.getAllFromCache(currentIdx, radius);
 
@@ -151,18 +145,12 @@ std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int i
 }
 
 std::vector<Physical*>*
-Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius, int team) {
-	neights2->clear();
-
-	auto pred = [id, team](const Physical* physical) {
+Environment::getBuildingsFromTeamNotEq(Physical* physical, int id, float radius) {
+	auto team = physical->getTeam();
+	auto condition = [id, team](const Physical* physical) {
 		return (id < 0 || physical->getId() == id) && (physical->getTeam() != team || team < 0);
-	}; //TODO pref wrzucić to do środa i nie dodawać do neights2
-	// const std::function<bool(Physical*)>& condition
-	const auto neightLocal = getNeighbours(physical, buildingGrid, radius);
-
-	std::copy_if(neightLocal->begin(), neightLocal->end(), std::back_inserter(*neights2), pred);
-
-	return neights2;
+	};
+	return getNeighbours(physical, buildingGrid, radius, condition);
 }
 
 void Environment::updateInfluenceUnits1(std::vector<Unit*>* units) const {
@@ -192,14 +180,15 @@ void Environment::updateVisibility(std::vector<Building*>* buildings, std::vecto
 }
 
 void Environment::update(Unit* unit) const {
-	mainGrid.update(unit);
-	teamUnitGrid[unit->getTeam()].update(unit, unit->getTeam());
+	unit->setBucket(mainGrid.update(unit, unit->getMainBucketIndex()));
+	unit->setSparseIndex(sparseUnitGrid.update(unit, unit->getSparseIndex()));
 }
 
 void Environment::addNew(const std::vector<Unit*>& units) {
-	for (auto unit : units) {
-		mainGrid.updateNew(unit);
-		teamUnitGrid[unit->getTeam()].updateNew(unit, unit->getTeam());
+	for (const auto unit : units) {
+		assert(unit->getMainBucketIndex() == -1);
+		unit->setBucket(mainGrid.updateNew(unit));
+		unit->setSparseIndex(sparseUnitGrid.updateNew(unit));
 	}
 
 	invalidateCaches();
@@ -207,9 +196,7 @@ void Environment::addNew(const std::vector<Unit*>& units) {
 
 void Environment::invalidateCaches() {
 	mainGrid.invalidateCache();
-	for (auto& unitGrid : teamUnitGrid) {
-		unitGrid.invalidateCache();
-	}
+	sparseUnitGrid.invalidateCache();
 }
 
 void Environment::updateAll(std::vector<Building*>* const buildings) const {
@@ -217,9 +204,10 @@ void Environment::updateAll(std::vector<Building*>* const buildings) const {
 }
 
 void Environment::addNew(Building* building) const {
+	assert(building->getMainBucketIndex() == -1);
 	mainGrid.addStatic(building);
-	buildingGrid.updateNew(building);
-	for (auto cell : building->getSurroundCells()) {
+	building->setBucket(buildingGrid.updateNew(building));
+	for (const auto cell : building->getSurroundCells()) {
 		if (mainGrid.isBuildable(cell)) {
 			building->setDeploy(cell);
 			break;
@@ -231,6 +219,7 @@ void Environment::addNew(Building* building) const {
 }
 
 void Environment::addNew(ResourceEntity* resource, bool bulkAdd) const {
+	assert(resource->getMainBucketIndex() == -1);
 	mainGrid.addStatic(resource);
 	resourceStaticGrid.updateStatic(resource, bulkAdd);
 }
@@ -330,20 +319,20 @@ void Environment::updateCell(int index, char val, CellState cellState) const {
 }
 
 void Environment::removeFromGrids(const std::vector<Unit*>& units) const {
-	for (auto unit : units) {
-		mainGrid.remove(unit);
-		teamUnitGrid[unit->getTeam()].remove(unit, unit->getTeam());
+	for (const auto unit : units) {
+		mainGrid.removeAt(unit->getMainBucketIndex(), unit);
+		sparseUnitGrid.removeAt(unit->getSparseIndex(), unit);
 	}
 }
 
 void Environment::removeFromGrids(const std::vector<Building*>& buildingsToDispose,
                                   const std::vector<ResourceEntity*>& resourceToDispose) const {
-	for (auto building : buildingsToDispose) {
+	for (const auto building : buildingsToDispose) {
 		mainGrid.removeStatic(building);
 		mainGrid.removeDeploy(building);
-		buildingGrid.remove(building);
+		buildingGrid.removeAt(building->getMainBucketIndex(), building);
 	}
-	for (auto resource : resourceToDispose) {
+	for (const auto resource : resourceToDispose) {
 		mainGrid.removeStatic(resource);
 		resourceStaticGrid.remove(resource);
 	}
@@ -377,9 +366,9 @@ std::optional<Urho3D::Vector2> Environment::getPosToCreate(db_building* building
 	std::vector<int>* indexes = influenceManager.getAreas(result, player);
 
 	const float ratio = influenceManager.getFieldSize() / mainGrid.getFieldSize();
-	for (auto centerIndex : *indexes) {
+	for (const auto centerIndex : *indexes) {
 		Urho3D::Vector2 center = influenceManager.getCenter(centerIndex);
-		for (auto index : mainGrid.getCloseCenters(center, ratio)) {
+		for (const auto index : mainGrid.getCloseCenters(center, ratio)) {
 			//ten index jest widoczny
 			auto gridCenter = calculator->getCenter(index);
 			if (validateStatic(building->size, gridCenter) && influenceManager.isVisible(player, gridCenter)) {
@@ -473,11 +462,15 @@ float Environment::getPositionFromPercent(float value) const {
 	return mapSize * (value - 0.5);
 }
 
-Physical* Environment::closestPhysical(Unit* unit, std::vector<Physical*>* things,
+Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>* things,
                                        const std::function<bool(Physical*)>& condition, int limit) const {
+	if (things->empty()) {
+		return nullptr;
+	}
 	std::vector<int> allIndexes;
 	std::unordered_map<int, Physical*> idxToPhysical;
-	for (auto entity : *things) {
+
+	for (const auto entity : *things) {
 		if (entity->isAlive() && condition(entity)) {
 			auto const idxs = entity->getIndexesForUse(unit);
 			allIndexes.insert(allIndexes.end(), idxs.begin(), idxs.end());

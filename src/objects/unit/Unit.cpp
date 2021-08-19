@@ -42,8 +42,6 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 	if (dbLevel->canCollect) {
 		missileData = new MissileData(150, 2);
 	}
-
-	std::fill_n(teamBucketIndex, BUCKET_SET_NUMBER, -1);
 }
 
 Unit::~Unit() {
@@ -326,6 +324,12 @@ void Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 	}
 }
 
+void Unit::setSparseIndex(int index) {
+	if (index >= 0) {
+		sparseIndexInGrid = index;
+	}
+}
+
 void Unit::changeColor(float value, float maxValue) const {
 	changeMaterial(Game::getColorPaletteRepo()->getColor(ColorPallet::RED, value, maxValue), model);
 }
@@ -454,15 +458,7 @@ float Unit::getMaxSeparationDistance() const {
 }
 
 UnitState Unit::getActionState() const {
-	return UnitState(dbUnit->actionState);
-}
-
-bool Unit::teamBucketHasChanged(int _bucketIndex, char param) const {
-	return teamBucketIndex[param] != _bucketIndex;
-}
-
-void Unit::setTeamBucket(int _bucketIndex, char param) {
-	teamBucketIndex[param] = _bucketIndex;
+	return dbUnit->actionState;
 }
 
 bool Unit::isIndexSlotOccupied(int indexToInteract) {

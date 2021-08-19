@@ -34,18 +34,16 @@ public:
 		if (!unit->aims.hasCurrent() && !unit->hasStateChangePending()) {
 			StateManager::toDefaultState(unit);
 		} else {
-			unit->toCharge(
-				Game::getEnvironment()->
-				getNeighboursFromTeamNotEq(unit, unit->chargeData->attackRange, unit->getTeam()));
+			unit->toCharge(Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, unit->chargeData->attackRange));
 			if (unit->chargeData->updateFrame()) {
 				for (auto physical : unit->thingsToInteract) {
 					if (unit->getTeam() != physical->getTeam()) {
 						const auto before = physical->getHealthPercent();
-						
-						const auto [value, died] =  physical->absorbAttack(unit->dbLevel->chargeAttackVal);
+
+						const auto [value, died] = physical->absorbAttack(unit->dbLevel->chargeAttackVal);
 						Game::getEnvironment()->addAttack(unit, value);
 						Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(physical);
-						
+
 						const auto after = physical->getHealthPercent();
 						if (!unit->chargeData->updateHit(before, after)) {
 							StateManager::changeState(unit, UnitState::MOVE);

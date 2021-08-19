@@ -12,6 +12,7 @@ class Threshold;
 class OrderMaker {
 public:
 	explicit OrderMaker(Player* player, db_nation* nation);
+	void semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>& things);
 	OrderMaker(const OrderMaker& rhs) = delete;
 
 	void action();

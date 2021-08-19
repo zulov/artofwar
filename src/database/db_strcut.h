@@ -247,7 +247,7 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 };
 
 struct db_unit : db_with_name, db_with_cost, db_entity {
-	const short actionState;
+	const UnitState actionState;
 	const Urho3D::String icon;
 
 	std::vector<db_unit_level*> levels;
@@ -257,7 +257,7 @@ struct db_unit : db_with_name, db_with_cost, db_entity {
 	db_unit(short id, char* name, char* icon, short actionState)
 		: db_entity(id), db_with_name(name),
 		  icon(icon),
-		  actionState(actionState) {
+		  actionState(UnitState(actionState)) {
 	}
 
 	std::optional<db_unit_level*> getLevel(short level) {

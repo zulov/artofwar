@@ -8,7 +8,6 @@
 #include "bucket/StaticGrid.h"
 #include "debug/EnvironmentDebugMode.h"
 #include "influence/InfluenceManager.h"
-#include "utils/defines.h"
 
 enum class CenterType:char;
 struct db_building;
@@ -28,8 +27,8 @@ public:
 	explicit Environment(Urho3D::Terrain* terrain, unsigned short mainMapResolution);
 	~Environment();
 
-	std::vector<Physical*>* getNeighboursFromTeamEq(Physical* physical, float radius, int team);
-	std::vector<Physical*>* getNeighboursFromTeamNotEq(Physical* physical, float radius, int team);
+	std::vector<Physical*>* getNeighboursFromSparseSamePlayer(Physical* physical, float radius, char player);
+	std::vector<Physical*>* getNeighboursFromTeamNotEq(Physical* physical, float radius);
 
 	std::vector<Physical*>* getNeighboursWithCache(Unit* unit, float radius);
 	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
@@ -38,7 +37,7 @@ public:
 	std::vector<Physical*>* getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius);
 	std::vector<Physical*>* getResources(Urho3D::Vector3& center, int id, float radius);
 
-	std::vector<Physical*>* getBuildingsFromTeamNotEq(Physical* physical, int id, float radius, int team);
+	std::vector<Physical*>* getBuildingsFromTeamNotEq(Physical* physical, int id, float radius);
 
 	void updateInfluenceUnits1(std::vector<Unit*>* units) const;
 	void updateInfluenceUnits2(std::vector<Unit*>* units) const;
@@ -48,7 +47,7 @@ public:
 	void updateInfluenceOther(std::vector<Building*>* buildings) const;
 	void updateQuadOther() const;
 	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const;
-	
+
 	void invalidateCaches();
 	void update(Unit* unit) const;
 
@@ -85,7 +84,7 @@ public:
 	void prepareGridToFind() const;
 	content_info* getContentInfo(Urho3D::Vector2 centerPercent, bool checks[], int activePlayer);
 	float getPositionFromPercent(float value) const;
-	Physical* closestPhysical(Unit* unit, std::vector<Physical*>* things,
+	Physical* closestPhysical(Unit* unit, const std::vector<Physical*>* things,
 	                          const std::function<bool(Physical*)>& condition, int limit) const;
 	Urho3D::Vector3 getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos, float min) const;
 
@@ -99,7 +98,10 @@ public:
 	int getIndex(Urho3D::Vector2& pos) const { return calculator->indexFromPosition(pos); }
 	int getIndex(short x, short z) const { return calculator->getIndex(x, z); }
 	Urho3D::IntVector2 getCords(int index) const { return calculator->getIndexes(index); }
-	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) { return calculator->getIndexes(calculator->indexFromPosition(pos)); }
+
+	Urho3D::IntVector2 getCords(const Urho3D::Vector2& pos) {
+		return calculator->getIndexes(calculator->indexFromPosition(pos));
+	}
 
 	bool cellInState(int index, CellState state) const;
 	void updateCell(int index, char val, CellState cellState) const;
@@ -128,23 +130,26 @@ public:
 	short getResolution() const { return calculator->getResolution(); }
 	bool isVisible(char player, const Urho3D::Vector2& pos);
 	float getVisibilityScore(char player);
-	void initStaticGrid();
+	void initStaticGrid() const;
 
 private:
-	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
+	//std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
+	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
+	                                      const std::function<bool(Physical*)>& condition) const;
 	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
 	                                      float prevRadius) const;
-	void addIfInRange(Physical* physical, float sqRadius, Physical* neight) const;
+	void addIfInRange(Physical* physical, Physical* neight, const float sqRadius,
+		const std::function<bool(Physical*)>& condition) const;
 	float mapSize;
 	MainGrid mainGrid;
 	Grid buildingGrid;
 	StaticGrid resourceStaticGrid;
-	Grid teamUnitGrid[MAX_PLAYERS];//TODO nie per player a poprostu rzadkie
+	Grid sparseUnitGrid;
 	InfluenceManager influenceManager;
 	Grid* grids[3] = {&mainGrid, &buildingGrid, &resourceStaticGrid};
 	Urho3D::Terrain* terrain;
 	GridCalculator* calculator;
 
-	std::vector<Physical*> *neights, *neights2; //TODO tu bedzie trzeba tablica jesli beda watki
+	std::vector<Physical*>* neights; //TODO tu bedzie trzeba tablica jesli beda watki
 
 };

@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include "objects/Physical.h"
+
 int Bucket::getSize() const {
 	return content.size();
 }

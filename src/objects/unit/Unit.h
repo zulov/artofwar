@@ -19,7 +19,6 @@ namespace Urho3D {
 	class Vector3;
 }
 
-constexpr char BUCKET_SET_NUMBER = 2;
 constexpr char USE_SOCKETS_NUMBER = 8;
 
 enum class UnitAction : char;
@@ -111,9 +110,9 @@ public:
 	db_unit_level* getLevel() const { return dbLevel; }
 	short getLastActionThingId() const { return lastActionThingId; }
 	float getAttackRange() const;
-	bool teamBucketHasChanged(int _bucketIndex, char param) const;
-	int getBucketIndex(char param) const { return teamBucketIndex[param]; }
-	void setTeamBucket(int _bucketIndex, char param);
+
+	int getSparseIndex() const { return sparseIndexInGrid; }
+
 	bool isIndexSlotOccupied(int indexToInteract) override;
 
 	void setOccupiedIndexSlot(char index, bool value) override;
@@ -139,6 +138,7 @@ public:
 	short getCostSum() const override;
 	std::vector<Physical*>& getThingsToInteract() { return thingsToInteract; }
 	void setSlotToInteract(char slot) { slotToInteract = slot; }
+	void setSparseIndex(int index);
 private:
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);
@@ -156,12 +156,11 @@ private:
 
 	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O, dac tylko jeden a reszte do ChargeAttack
 
-	int teamBucketIndex[BUCKET_SET_NUMBER];
+	int sparseIndexInGrid;
 
 	float maxSpeed;
 
 	int indexToInteract = -1;//TODO moze sie tego pozbyc
-	char slotToInteract = -1;
 
 	unsigned short currentFrameState = 0;
 	short posInFormation = -1, formation = -1;
@@ -169,6 +168,7 @@ private:
 	UnitState state;
 	UnitState nextState;
 	bool stateChangePending = false;
+	char slotToInteract = -1;
 	unsigned char useSockets = 0;
 	char lastActionThingId = -1; //TODO reset po jakimœ czasie
 	ActionParameter nextActionParameter;

@@ -18,14 +18,29 @@
 #include "objects/unit/GroupUtils.h"
 #include "objects/unit/order/GroupOrder.h"
 #include "objects/unit/order/enums/UnitActionType.h"
+#include "simulation/env/influence/CenterType.h"
 #include "threshold/Threshold.h"
 #include "threshold/ThresholdProvider.h"
+
+constexpr float SEMI_CLOSE = 30.f;
 
 OrderMaker::OrderMaker(Player* player, db_nation* nation)
 	: player(player),
 	  whichResource(BrainProvider::get(std::string(nation->orderPrefix[0].CString()) + "whichResource_w.csv")),
 	  attackThreshold(
-		  ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {
+		  ThresholdProvider::get(std::string(nation->orderThresholdPrefix[0].CString()) + "attack_t.csv")) {}
+
+void OrderMaker::semiCloseAttack(const std::vector<Unit*>& subArmy, const std::vector<Physical*>& things) {
+	if (!things.empty()) {
+		const auto closest = Game::getEnvironment()->closestPhysical(subArmy.at(0), &things, belowClose,
+		                                                             SEMI_CLOSE * SEMI_CLOSE);
+		if (closest) {
+			Game::getActionCenter()->addUnitAction(
+				new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::ATTACK),
+				               closest),
+				player->getId());
+		}
+	}
 }
 
 void OrderMaker::action() {
@@ -39,28 +54,42 @@ void OrderMaker::action() {
 	bool ifAttack = attackThreshold->ifDo(possesion.getFreeArmyMetrics());
 	if (ifAttack || true) {
 		char id = attackThreshold->getBest(possesion.getFreeArmyMetrics());
-
+		auto env = Game::getEnvironment();
 		const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
-		auto posOpt = Game::getEnvironment()->getCenterOf(CenterType(id), enemy);
+		const CenterType centerType = static_cast<CenterType>(id);
+		const auto posOpt = env->getCenterOf(centerType, enemy);
 		if (posOpt.has_value()) {
 			std::vector<Unit*> army = possesion.getFreeArmy();
 			//TODO perf podzieliæ armie
-			auto subArmies = divide(army);
-			for (auto subArmy : subArmies) {
+			const auto subArmies = divide(army);
+			for (auto& subArmy : subArmies) {
 				if (!subArmy.empty()) {
 					auto center = computeLocalCenter(subArmy);
 					const auto dist = sqDist(posOpt.value(), center);
 
-					if (dist > 30 * 30) {
+					if (dist > SEMI_CLOSE * SEMI_CLOSE) {
 						Game::getActionCenter()->addUnitAction(
-							new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::GO), posOpt.value()),
+							new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), posOpt.value()),
 							player->getId());
 					} else {
-						std::cout<<dist;
-						znalezc cos do attaku?
-						 Game::getActionCenter()->addUnitAction(
-						 	new GroupOrder(army, UnitActionType::ORDER, cast(UnitAction::ATTACK), ),
-						 	player->getId());
+						auto unit = subArmy.at(0);
+
+						if (centerType == CenterType::BUILDING) {
+							const auto buildings = Game::getEnvironment()->getBuildingsFromTeamNotEq(unit, -1, SEMI_CLOSE);
+							semiCloseAttack(subArmy, *buildings);
+
+						} else if (centerType == CenterType::ECON) {
+							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+							std::vector<Physical*> workers;
+							workers.resize(neights->size());
+							auto pred = [](const Physical* physical) {
+								return ((Unit*)physical)->getLevel()->canCollect;
+							};
+							std::copy_if(neights->begin(), neights->end(), std::back_inserter(workers), pred);
+							semiCloseAttack(subArmy, workers);
+						} else {
+							
+						}
 					}
 				}
 			}
@@ -80,7 +109,8 @@ std::vector<Unit*> OrderMaker::findFreeWorkers() const {
 
 Physical* OrderMaker::closetInRange(Unit* worker, int resourceId) {
 	float prevRadius = -1.f;
-	for (auto radius : {64.f, 128.f, 256.f}) {// {64.f, 128.f, 256.f}
+	for (auto radius : {64.f, 128.f, 256.f}) {
+		// {64.f, 128.f, 256.f}
 		const auto list = Game::getEnvironment()->getResources(worker->getPosition(), resourceId, radius, prevRadius);
 		const auto closest = Game::getEnvironment()->closestPhysical(worker, list, belowClose, radius * radius);
 		if (closest) {

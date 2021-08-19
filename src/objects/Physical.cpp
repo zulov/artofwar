@@ -14,7 +14,7 @@
 
 
 Physical::Physical(Urho3D::Vector3& _position, bool withNode):
-	position(_position), indexInGrid(INT_MIN) {
+	position(_position) {
 	if (withNode) {
 		node = Game::getScene()->CreateChild();
 		node->SetVar("link", this);

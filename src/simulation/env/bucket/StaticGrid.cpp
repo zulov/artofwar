@@ -18,21 +18,18 @@ StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRad
 }
 
 StaticGrid::~StaticGrid() {
-	for (auto buckets : bucketsPerRadius) {
+	for (const auto buckets : bucketsPerRadius) {
 		delete[] buckets;
 	}
 }
 
-void StaticGrid::update(Unit* unit, char team) const {
+int StaticGrid::update(Physical* entity, int currentIndex) const {
 	assert(false);
-}
-
-void StaticGrid::update(Physical* entity) const {
-	assert(false);
+	return -1;
 }
 
 void StaticGrid::remove(Physical* physical) const {
-	Grid::remove(physical);
+	Grid::removeAt(physical->getMainBucketIndex(), physical);
 	const int centerIndex = calculator->indexFromPosition(physical->getPosition());
 	const auto centerCords = calculator->getIndexes(centerIndex);
 	for (int i = 0; i < queryRadius.size(); ++i) {
@@ -50,19 +47,11 @@ void StaticGrid::remove(Physical* physical) const {
 	}
 }
 
-void StaticGrid::remove(Unit* unit, char team) const {
-	assert(false);
-}
-
-void StaticGrid::updateNew(Unit* unit, char team) const {
-	assert(false);
-}
-
 
 inline bool StaticGrid::inside(int val) const { return val >= 0 && val < calculator->getResolution(); }
 
 void StaticGrid::updateStatic(Static* staticObj, bool bulkAdd) const {
-	Grid::updateNew(staticObj);
+	staticObj->setBucket(Grid::updateNew(staticObj));
 
 	if (!bulkAdd) {
 		const int centerIndex = calculator->indexFromPosition(staticObj->getPosition());

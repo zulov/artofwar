@@ -16,7 +16,7 @@ ResourceActionCommand::ResourceActionCommand(const std::vector<Physical*>& resou
 }
 
 void ResourceActionCommand::execute() {
-	for (auto resource : resources) {
+	for (const auto resource : resources) {
 		resource->action(action, player);
 	}
 }
