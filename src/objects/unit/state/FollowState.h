@@ -19,7 +19,7 @@ public:
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->setAim(parameter.aim);
-		unit->thingsToInteract.clear();
+		unit->thingToInteract = nullptr;
 	}
 
 	void execute(Unit* unit, float timeStep) override {

@@ -2,6 +2,7 @@
 #include "State.h"
 #include "../Unit.h"
 #include "database/db_strcut.h"
+#include "math/MathUtils.h"
 #include "objects/unit/ChargeData.h"
 
 struct ActionParameter;
@@ -34,9 +35,10 @@ public:
 		if (!unit->aims.hasCurrent() && !unit->hasStateChangePending()) {
 			StateManager::toDefaultState(unit);
 		} else {
-			unit->toCharge(Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, unit->chargeData->attackRange));
+			const auto thingsToInteract = toCharge(
+				Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, unit->chargeData->attackRange), unit);
 			if (unit->chargeData->updateFrame()) {
-				for (auto physical : unit->thingsToInteract) {
+				for (const auto physical : thingsToInteract) {
 					if (unit->getTeam() != physical->getTeam()) {
 						const auto before = physical->getHealthPercent();
 
@@ -55,5 +57,16 @@ public:
 				StateManager::changeState(unit, UnitState::MOVE);
 			}
 		}
+	}
+
+	std::vector<Physical*> toCharge(const std::vector<Physical*>* enemies, Unit* unit) const {
+		std::vector<Physical*> thingsToInteract;
+		const auto sqRange = unit->chargeData->attackRange * unit->chargeData->attackRange;
+		for (auto entity : *enemies) {
+			if (entity->isAlive() && sqDist(unit->getPosition(), entity->getPosition()) <= sqRange) {
+				thingsToInteract.push_back(entity);
+			}
+		}
+		return thingsToInteract;
 	}
 };

@@ -66,8 +66,6 @@ public:
 
 	std::pair<float, bool> absorbAttack(float attackCoef) override;
 
-	void toCharge(std::vector<Physical*>* enemies);
-
 	bool toActionIfInRange(Physical* closest, UnitAction order);
 	bool toAction(Physical* closest, UnitAction order);
 
@@ -85,7 +83,7 @@ public:
 	void removeCurrentAim();
 	void setIndexToInteract(int index);
 	int getIndexToInteract() const { return indexToInteract; }
-	
+
 	void setNextState(UnitState stateTo, const ActionParameter& actionParameter);
 	void setNextState(UnitState stateTo);
 	ActionParameter& getNextActionParameter();
@@ -136,9 +134,13 @@ public:
 	float getSightRadius() const override;
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 	short getCostSum() const override;
-	std::vector<Physical*>& getThingsToInteract() { return thingsToInteract; }
 	void setSlotToInteract(char slot) { slotToInteract = slot; }
 	void setSparseIndex(int index);
+
+	void setThingToInteract(Physical* toUse) {
+		thingToInteract = toUse;
+	}
+
 private:
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);
@@ -154,13 +156,13 @@ private:
 	ChargeData* chargeData{};
 	MissileData* missileData{};
 
-	std::vector<Physical*> thingsToInteract; //TODO jak to wczytac :O, dac tylko jeden a reszte do ChargeAttack
+	Physical* thingToInteract{}; //TODO jak to wczytac :O
 
 	int sparseIndexInGrid;
 
 	float maxSpeed;
 
-	int indexToInteract = -1;//TODO moze sie tego pozbyc
+	int indexToInteract = -1; //TODO moze sie tego pozbyc
 
 	unsigned short currentFrameState = 0;
 	short posInFormation = -1, formation = -1;

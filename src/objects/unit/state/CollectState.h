@@ -29,7 +29,6 @@ public:
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
-
 		auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
 		const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());
 		assert(found != indexesToUse.end());
@@ -43,7 +42,7 @@ public:
 
 	void onEnd(Unit* unit) override {
 		if (unit->isFirstThingAlive()) {
-			unit->thingsToInteract[0]->reduceClose();
+			unit->thingToInteract->reduceClose();
 		}
 		Game::getEnvironment()->updateCell(unit->indexToInteract, -1, CellState::NONE);
 		//assert(unit->getMainBucketIndex() == unit->indexToInteract);
@@ -56,10 +55,10 @@ public:
 			StateManager::toDefaultState(unit);
 			return;
 		}
-		auto first = unit->thingsToInteract[0];
+		auto first = unit->thingToInteract;
 		if (unit->indexChanged()) {
 			first->reduceClose();
-			unit->thingsToInteract.clear();
+			unit->thingToInteract = nullptr;
 
 			auto const indexesToUse = first->getIndexesForUse(unit);
 			const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());
@@ -72,7 +71,7 @@ public:
 		}
 
 		auto& resources = Game::getPlayersMan()->getPlayer(unit->player)->getResources();
-		auto resource = unit->thingsToInteract[0];
+		const auto resource = unit->thingToInteract;
 		const auto [value, died] = resource->absorbAttack(unit->dbLevel->collectSpeed * timeStep);
 		Game::getEnvironment()->addCollect(unit, value);
 		resources.add(resource->getId(), value);

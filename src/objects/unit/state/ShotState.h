@@ -8,28 +8,27 @@ class ShotState : public State {
 public:
 	ShotState() : State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
-	}) {
-	}
+	}) { }
 
 	~ShotState() = default;
 
 	void shot(Unit* unit) {
 		unit->missileData->reset();
 		unit->missileData->init(unit->getPosition(),
-		                        unit->thingsToInteract[0]->getPosition(),
-		                        unit->thingsToInteract[0]);
+		                        unit->thingToInteract->getPosition(),
+		                        unit->thingToInteract);
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		shot(unit);
-		unit->thingsToInteract[0]->upRange();
+		unit->thingToInteract->upRange();
 		unit->currentFrameState = 1;
 	}
 
 	void onEnd(Unit* unit) override {
 		if (unit->isFirstThingAlive()) {
-			unit->thingsToInteract[0]->reduceRange();
-			unit->thingsToInteract.clear();
+			unit->thingToInteract->reduceRange();
+			unit->thingToInteract = nullptr;
 		}
 	}
 

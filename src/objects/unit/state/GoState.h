@@ -9,18 +9,17 @@ public:
 		UnitState::STOP, UnitState::MOVE, UnitState::DEFEND,
 		UnitState::DEAD, UnitState::GO, UnitState::FOLLOW,
 		UnitState::CHARGE
-	}) {
-	}
+	}) { }
 
 	~GoState() = default;
-	
+
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		return parameter.aim != nullptr;
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		unit->setAim(parameter.aim);
-		unit->thingsToInteract.clear();
+		unit->thingToInteract = nullptr;
 	}
 
 	void onEnd(Unit* unit) override {

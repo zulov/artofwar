@@ -53,10 +53,10 @@ public:
 
 	void onEnd(Unit* unit) override {
 		if (unit->isFirstThingAlive()) {
-			reduce(unit, unit->thingsToInteract[0]);
+			reduce(unit, unit->thingToInteract);
 		}
 		unit->maxSpeed = unit->dbLevel->maxSpeed;
-		unit->thingsToInteract.clear();
+		unit->thingToInteract = nullptr;
 		unit->indexToInteract = -1;
 	}
 
@@ -70,10 +70,10 @@ public:
 			StateManager::toDefaultState(unit);
 			return;
 		}
-		auto first = unit->thingsToInteract[0];
+		const auto first = unit->thingToInteract;
 		if (unit->indexChanged() || first->indexChanged()) {
 			reduce(unit, first);
-			unit->thingsToInteract.clear();
+			unit->thingToInteract = nullptr;
 
 			auto const indexesToUse = first->getIndexesForUse(unit);
 			const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());

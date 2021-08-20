@@ -6,7 +6,7 @@
 #include "objects/Physical.h"
 
 inline auto isAlivePred = [](Physical* physical) {
-	return physical == nullptr || !physical->isAlive();
+	return physical != nullptr && physical->isAlive();
 };
 
 template <typename T>

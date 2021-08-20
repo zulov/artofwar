@@ -5,9 +5,7 @@
 
 
 inline void setStartData(Unit* unit, int index, Physical* toUse) {
-	auto &list = unit->getThingsToInteract();
-	list.clear();
-	list.push_back(toUse);
+	unit->setThingToInteract(toUse);
 	unit->setIndexToInteract(index);
 	toUse->upClose();
 }

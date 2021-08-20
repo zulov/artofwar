@@ -68,7 +68,7 @@ void Unit::checkAim() {
 void Unit::updatePosition() const {
 	if (isVisible) {
 		if (isInStates(state, {UnitState::ATTACK, UnitState::COLLECT, UnitState::SHOT}) && isFirstThingAlive()) {
-			const auto dir = dirTo(position, thingsToInteract[0]->getPosition());
+			const auto dir = dirTo(position, thingToInteract->getPosition());
 
 			node->SetTransform(
 				position,
@@ -180,16 +180,6 @@ bool Unit::toAction(Physical* closest, UnitAction order) {
 	return false;
 }
 
-void Unit::toCharge(std::vector<Physical*>* enemies) {
-	thingsToInteract.clear();
-	const auto sqRange = chargeData->attackRange * chargeData->attackRange;
-	for (auto entity : *enemies) {
-		if (entity->isAlive() && sqDist(getPosition(), entity->getPosition()) <= sqRange) {
-			thingsToInteract.push_back(entity);
-		}
-	}
-}
-
 void Unit::updateHeight(float y, double timeStep) {
 	velocity *= 1 + (position.y_ - y) * 0.1f * dbLevel->mass * timeStep;
 	position.y_ = y;
@@ -245,7 +235,7 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 				break;
 			case DebugUnitType::AIM:
 				if (aims.hasCurrent()) {
-					auto lines = aims.getDebugLines(this);
+					const auto lines = aims.getDebugLines(this);
 					if (!lines.empty()) {
 						for (int i = 0; i < lines.size() - 1; ++i) {
 							DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, lines[i], lines[i + 1]);
@@ -253,10 +243,8 @@ void Unit::debug(DebugUnitType type, ForceStats& stats) {
 					}
 				}
 				break;
-			case DebugUnitType::INTERACT:
-				for (const auto toInteract : thingsToInteract) {
-					DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, position, toInteract->getPosition());
-				}
+			case DebugUnitType::INTERACT: //TODO charge
+				DebugLineRepo::drawLine(DebugLineType::UNIT_LINES, position, thingToInteract->getPosition());
 				break;
 			default: ;
 			}
@@ -466,14 +454,14 @@ bool Unit::isIndexSlotOccupied(int indexToInteract) {
 }
 
 bool Unit::isFirstThingAlive() const {
-	return !thingsToInteract.empty()
-		&& thingsToInteract[0] != nullptr
-		&& thingsToInteract[0]->isUsable();
+	return thingToInteract != nullptr
+		&& thingToInteract->isUsable();
 }
 
 void Unit::clean() {
-	thingsToInteract.erase(std::remove_if(thingsToInteract.begin(), thingsToInteract.end(), isAlivePred),
-	                       thingsToInteract.end());
+	if (!isAlivePred(thingToInteract)) {
+		thingToInteract = nullptr;
+	}
 }
 
 void Unit::fillValues(std::span<float> weights) const {
