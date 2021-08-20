@@ -51,7 +51,7 @@ class Unit : public Physical {
 	friend class MoveState;
 public:
 	Unit(Urho3D::Vector3& _position, int id, int player, int level);
-	~Unit();
+	~Unit() override;
 
 	void populate() override;
 	void checkAim();
@@ -118,8 +118,8 @@ public:
 	void setOccupiedIndexSlot(char index, bool value) override;
 	bool ifSlotIsOccupied(char index) const;
 
-	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* follower) override;
-	std::vector<int> getIndexesForUse(Unit* follower) override;
+	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) override;
+	std::vector<int> getIndexesForUse(Unit* user) override;
 
 	void action(UnitAction unitAction, const ActionParameter& parameter);
 	void action(UnitAction unitAction);

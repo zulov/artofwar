@@ -207,6 +207,8 @@ void Environment::addNew(Building* building) const {
 	assert(building->getMainBucketIndex() == -1);
 	mainGrid.addStatic(building);
 	building->setBucket(buildingGrid.updateNew(building));
+	building->setIndexInInfluence(influenceManager.getIndex(building->getPosition()));
+
 	for (const auto cell : building->getSurroundCells()) {
 		if (mainGrid.isBuildable(cell)) {
 			building->setDeploy(cell);
@@ -221,6 +223,7 @@ void Environment::addNew(Building* building) const {
 void Environment::addNew(ResourceEntity* resource, bool bulkAdd) const {
 	assert(resource->getMainBucketIndex() == -1);
 	mainGrid.addStatic(resource);
+	resource->setIndexInInfluence(influenceManager.getIndex(resource->getPosition()));
 	resourceStaticGrid.updateStatic(resource, bulkAdd);
 }
 
@@ -234,7 +237,7 @@ std::optional<Urho3D::Vector2> Environment::validatePosition(Urho3D::Vector3& po
 
 const std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,
                                                          char player) {
-	for (auto grid : grids) {
+	for (const auto grid : grids) {
 		const auto result = grid->getArrayNeight(pair, player);
 		if (!result->empty()) {
 			return result;

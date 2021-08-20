@@ -24,6 +24,12 @@ void Static::load(dbload_static* dbloadStatic) {
 	this->nextState = StaticState(dbloadStatic->nextState);
 }
 
+void Static::setIndexInInfluence(int index) {
+	assert(index < std::numeric_limits<unsigned short>::max());
+	assert(index >= 0);
+	indexInInfluence = index;
+}
+
 void Static::populate() {
 	std::vector<int> occupiedCells1;
 

@@ -4,6 +4,8 @@
 #include <array>
 #include <optional>
 #include <vector>
+#include <Urho3D/Math/Vector3.h>
+
 #include "player/ai/InfluenceDataType.h"
 
 class VisibilityMap;
@@ -61,6 +63,7 @@ public:
 	bool isVisible(char player, const Urho3D::Vector2& pos);
 	Urho3D::Vector2 getCenter(int index) const;
 	float getVisibilityScore(char player);
+	int getIndex(const Urho3D::Vector3& position) const;
 
 private:
 	std::vector<int>* centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;

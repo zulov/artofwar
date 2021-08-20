@@ -98,8 +98,12 @@ void InfluenceMapQuad::update(int index, float value) {
 }
 
 void InfluenceMapQuad::updateInt(Physical* thing, int value) {
+	updateInt(calculator->indexFromPosition(thing->getPosition()), value);
+}
+
+void InfluenceMapQuad::updateInt(int index, int value) {
 	dataReady = false;
-	maps.back()[calculator->indexFromPosition(thing->getPosition())] += value;
+	maps.back()[index] += value;
 }
 
 void InfluenceMapQuad::reset() {

@@ -77,6 +77,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 	DebugLineRepo::init(DebugLineType::INFLUENCE, MAX_DEBUG_PARTS_INFLUENCE);
 
 	arraySize = calculator->getResolution() * calculator->getResolution();
+	assert(arraySize <= std::numeric_limits<unsigned short>::max());
 	intersection = new float[arraySize];
 	tempIndexes = new std::vector<int>();
 
@@ -109,7 +110,7 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 	resetMaps(unitsNumberPerPlayer);
 	resetMaps(unitsInfluencePerPlayer);
 
-	for (auto unit : (*units)) {
+	for (const auto unit : (*units)) {
 		const auto pId = unit->getPlayer();
 		const auto index = calculator->indexFromPosition(unit->getPosition());
 		unitsNumberPerPlayer[pId]->updateInt(index);
@@ -120,31 +121,31 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 
 void InfluenceManager::update(std::vector<Building*>* buildings) const {
 	resetMaps(buildingsInfluencePerPlayer);
-	for (auto building : (*buildings)) {
-		buildingsInfluencePerPlayer[building->getPlayer()]->tempUpdate(building);
+	for (const auto building : (*buildings)) {
+		buildingsInfluencePerPlayer[building->getPlayer()]->tempUpdate(building->getIndexInInfluence());
 	}
 	finalize(buildingsInfluencePerPlayer);
 }
 
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 	resourceInfluence->reset();
-	for (auto resource : (*resources)) {
-		resourceInfluence->tempUpdate(resource, resource->getHealthPercent());
+	for (const auto resource : (*resources)) {
+		resourceInfluence->tempUpdate(resource->getIndexInInfluence(), resource->getHealthPercent());
 	}
 	resourceInfluence->updateFromTemp();
 }
 
 void InfluenceManager::updateQuadUnits(std::vector<Unit*>* units) const {
 	resetMaps(unitsQuad);
-	for (auto unit : (*units)) {
+	for (const auto unit : (*units)) {
 		unitsQuad[unit->getPlayer()]->updateInt(unit);
 	}
 }
 
 void InfluenceManager::updateQuadBuildings(std::vector<Building*>* buildings) const {
 	resetMaps(buildingsQuad);
-	for (auto building : (*buildings)) {
-		buildingsQuad[building->getPlayer()]->updateInt(building);
+	for (const auto building : (*buildings)) {
+		buildingsQuad[building->getPlayer()]->updateInt(building->getIndexInInfluence());
 	}
 }
 
@@ -399,6 +400,10 @@ Urho3D::Vector2 InfluenceManager::getCenter(int index) const {
 
 float InfluenceManager::getVisibilityScore(char player) {
 	return visibilityPerPlayer[player]->getPercent();
+}
+
+int InfluenceManager::getIndex(const Urho3D::Vector3& position) const {
+	return calculator->indexFromPosition(position);
 }
 
 std::vector<int>* InfluenceManager::centersFromIndexes(float* values, const std::vector<unsigned>& indexes,

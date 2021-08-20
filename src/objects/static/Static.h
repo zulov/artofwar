@@ -34,14 +34,17 @@ public:
 	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) override;
 	std::vector<int> getIndexesForUse(Unit* user) override;
 	std::string getValues(int precision) override;
+	unsigned short getIndexInInfluence() const { return indexInInfluence; }
+	void setIndexInInfluence(int index);
 protected:
 	void populate() override;
 	float getHealthBarThick() const override { return 0.15f; }
 	float getAuraSize(const Urho3D::Vector3& boundingBox) const override;
-	int mainCell{};
 
+	int mainCell{};
+	unsigned short indexInInfluence;
 	StaticState state, nextState;
 
 	std::span<int> occupiedCells, surroundCells;
-	int * data{};
+	int* data{};
 };
