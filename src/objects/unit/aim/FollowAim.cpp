@@ -18,7 +18,7 @@ std::vector<Urho3D::Vector3> FollowAim::getDebugLines(Unit* follower) const {
 	}
 	auto position = follower->getPosition();
 	std::vector<Urho3D::Vector3> points;
-	auto optPos = physical->getPosToUseBy(follower);
+	const auto optPos = physical->getPosToUseBy(follower);
 	if (optPos.has_value()) {
 		auto pos = optPos.value();
 		points.emplace_back(position);
@@ -44,7 +44,7 @@ bool FollowAim::ifReach(Unit* follower) {
 	if (subTarget) {
 		return subTarget->ifReach(follower);
 	}
-	auto opt = physical->getPosToUseBy(follower);
+	const auto opt = physical->getPosToUseBy(follower);
 	if (opt.has_value()) {
 		return sqDist(follower->getPosition(), opt.value()) < radiusSq;
 	}
@@ -52,5 +52,5 @@ bool FollowAim::ifReach(Unit* follower) {
 }
 
 bool FollowAim::expired() {
-	return !physical->isAlive();
+	return !physical->isAlive(); || physical->indexChanged() || haspostToUSe?
 }
