@@ -52,7 +52,7 @@ void OrderMaker::action() {
 	auto& possesion = player->getPossession();
 
 	bool ifAttack = attackThreshold->ifDo(possesion.getFreeArmyMetrics());
-	if (ifAttack || true) {
+	if (ifAttack && false) {
 		char id = attackThreshold->getBest(possesion.getFreeArmyMetrics());
 		auto env = Game::getEnvironment();
 		const char enemy = Game::getPlayersMan()->getEnemyFor(player->getId());
@@ -72,14 +72,14 @@ void OrderMaker::action() {
 							new GroupOrder(subArmy, UnitActionType::ORDER, cast(UnitAction::GO), posOpt.value()),
 							player->getId());
 					} else {
-						auto unit = subArmy.at(0);
+						const auto unit = subArmy.at(0);
 
 						if (centerType == CenterType::BUILDING) {
 							const auto buildings = Game::getEnvironment()->getBuildingsFromTeamNotEq(unit, -1, SEMI_CLOSE);
 							semiCloseAttack(subArmy, *buildings);
 
 						} else if (centerType == CenterType::ECON) {
-							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);//TODO perf wrzuciæ predykat do œrodka
 							std::vector<Physical*> workers;
 							workers.resize(neights->size());
 							auto pred = [](const Physical* physical) {
@@ -87,8 +87,9 @@ void OrderMaker::action() {
 							};
 							std::copy_if(neights->begin(), neights->end(), std::back_inserter(workers), pred);
 							semiCloseAttack(subArmy, workers);
-						} else {
-							
+						} else {//CenterType::UNITS
+							const auto neights = Game::getEnvironment()->getNeighboursFromTeamNotEq(unit, SEMI_CLOSE);
+							semiCloseAttack(subArmy, *neights);
 						}
 					}
 				}

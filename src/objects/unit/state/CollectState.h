@@ -17,13 +17,9 @@ public:
 	~CollectState() = default;
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
-		//assert(parameter.index != parameter.thingToInteract->getMainBucketIndex());
 		if (parameter.isFirstThingAlive()) {
 			auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
 			return std::ranges::find(indexesToUse, unit->getMainBucketIndex()) != indexesToUse.end();
-			//&& Game::getEnvironment()->cellIsCollectable(unit->getMainBucketIndex())
-			//?&& parameter.thingToInteract->indexChanged()
-			//&& !parameter.thingToInteract->isIndexSlotOccupied(parameter.index);
 		}
 		return false;
 	}
@@ -45,7 +41,7 @@ public:
 			unit->thingToInteract->reduceClose();
 		}
 		Game::getEnvironment()->updateCell(unit->indexToInteract, -1, CellState::NONE);
-		//assert(unit->getMainBucketIndex() == unit->indexToInteract);
+
 		unit->indexToInteract = -1;
 	}
 

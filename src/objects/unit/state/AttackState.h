@@ -22,13 +22,10 @@ public:
 	~AttackState() = default;
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
-		//assert(parameter.index != parameter.thingToInteract->getMainBucketIndex());
 		if (parameter.isFirstThingAlive()) {
 			auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
 			return std::ranges::find(indexesToUse, unit->getMainBucketIndex()) != indexesToUse.end()
 				&& parameter.thingToInteract->belowCloseLimit() > 0;
-			//?&& parameter.thingToInteract->indexChanged()
-			//&& !parameter.thingToInteract->isIndexSlotOccupied(parameter.index);
 		}
 		return false;
 	}

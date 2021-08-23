@@ -100,8 +100,6 @@ void SimulationObjectManager::addBuilding(Building* building) const {
 		Game::getPlayersMan()->getPlayer(building->getPlayer())->add(building);
 		Game::getEnvironment()->addNew(building);
 		simulationInfo->setAmountBuildingChanged();
-
-		Game::getEnvironment()->updateAll(buildings);
 	} else {
 		Game::getLog()->Write(0, "Building loading not possible");
 	}

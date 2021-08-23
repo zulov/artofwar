@@ -59,8 +59,6 @@ public:
 	void removeFromGrids(const std::vector<Building*>& buildingsToDispose,
 	                     const std::vector<ResourceEntity*>& resourceToDispose) const;
 
-	void updateAll(std::vector<Building*>* buildings) const;
-
 	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
 	std::optional<Urho3D::Vector2> validatePosition(Urho3D::Vector3& position) const;
 

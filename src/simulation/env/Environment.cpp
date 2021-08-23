@@ -167,7 +167,6 @@ void Environment::updateInfluenceResources(std::vector<ResourceEntity*>* resourc
 
 void Environment::updateInfluenceOther(std::vector<Building*>* buildings) const {
 	influenceManager.update(buildings);
-	influenceManager.updateQuadBuildings(buildings);
 	influenceManager.updateWithHistory();
 }
 
@@ -197,10 +196,6 @@ void Environment::addNew(const std::vector<Unit*>& units) {
 void Environment::invalidateCaches() {
 	mainGrid.invalidateCache();
 	sparseUnitGrid.invalidateCache();
-}
-
-void Environment::updateAll(std::vector<Building*>* const buildings) const {
-	influenceManager.update(buildings);
 }
 
 void Environment::addNew(Building* building) const {

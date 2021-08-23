@@ -119,14 +119,6 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 	finalize(unitsInfluencePerPlayer);
 }
 
-void InfluenceManager::update(std::vector<Building*>* buildings) const {
-	resetMaps(buildingsInfluencePerPlayer);
-	for (const auto building : (*buildings)) {
-		buildingsInfluencePerPlayer[building->getPlayer()]->tempUpdate(building->getIndexInInfluence());
-	}
-	finalize(buildingsInfluencePerPlayer);
-}
-
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 	resourceInfluence->reset();
 	for (const auto resource : (*resources)) {
@@ -142,11 +134,16 @@ void InfluenceManager::updateQuadUnits(std::vector<Unit*>* units) const {
 	}
 }
 
-void InfluenceManager::updateQuadBuildings(std::vector<Building*>* buildings) const {
+void InfluenceManager::update(std::vector<Building*>* buildings) const {
+	resetMaps(buildingsInfluencePerPlayer);
 	resetMaps(buildingsQuad);
 	for (const auto building : (*buildings)) {
-		buildingsQuad[building->getPlayer()]->updateInt(building->getIndexInInfluence());
+		const auto player = building->getPlayer();
+		const auto index = building->getIndexInInfluence();
+		buildingsInfluencePerPlayer[player]->tempUpdate(index);
+		buildingsQuad[player]->updateInt(index);
 	}
+	finalize(buildingsInfluencePerPlayer);
 }
 
 void InfluenceManager::updateWithHistory() const {
