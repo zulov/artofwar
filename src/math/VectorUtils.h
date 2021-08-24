@@ -6,16 +6,15 @@
 #include "objects/Physical.h"
 
 
-inline auto notAlivePred = [](Physical* physical) {
+inline auto notAlive = [](Physical* physical) {
 	return physical == nullptr || !physical->isAlive();
 };
-
 
 template <typename T>
 static void cleanDead(std::vector<T*>& vector, bool sthDead = true) {
 	if (sthDead) {
 		vector.erase(
-			std::remove_if(vector.begin(), vector.end(), notAlivePred),
+			std::remove_if(vector.begin(), vector.end(), notAlive),
 			vector.end());
 	}
 }
@@ -24,7 +23,7 @@ template <typename T>
 static void cleanDead(std::vector<T*>* vector, bool sthDead = true) {
 	if (sthDead) {
 		vector->erase(
-			std::remove_if(vector->begin(), vector->end(), notAlivePred),
+			std::remove_if(vector->begin(), vector->end(), notAlive),
 			vector->end());
 	}
 }
