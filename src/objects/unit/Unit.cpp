@@ -459,7 +459,7 @@ bool Unit::isFirstThingAlive() const {
 }
 
 void Unit::clean() {
-	if (!isAlivePred(thingToInteract)) {
+	if (notAlivePred(thingToInteract)) {
 		thingToInteract = nullptr;
 	}
 }

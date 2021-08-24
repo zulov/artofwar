@@ -5,15 +5,17 @@
 #include <span>
 #include "objects/Physical.h"
 
-inline auto isAlivePred = [](Physical* physical) {
-	return physical != nullptr && physical->isAlive();
+
+inline auto notAlivePred = [](Physical* physical) {
+	return physical == nullptr || !physical->isAlive();
 };
+
 
 template <typename T>
 static void cleanDead(std::vector<T*>& vector, bool sthDead = true) {
 	if (sthDead) {
 		vector.erase(
-			std::remove_if(vector.begin(), vector.end(), isAlivePred),
+			std::remove_if(vector.begin(), vector.end(), notAlivePred),
 			vector.end());
 	}
 }
@@ -22,7 +24,7 @@ template <typename T>
 static void cleanDead(std::vector<T*>* vector, bool sthDead = true) {
 	if (sthDead) {
 		vector->erase(
-			std::remove_if(vector->begin(), vector->end(), isAlivePred),
+			std::remove_if(vector->begin(), vector->end(), notAlivePred),
 			vector->end());
 	}
 }
