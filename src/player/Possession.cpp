@@ -104,13 +104,13 @@ void Possession::add(Unit* unit) {
 	}
 }
 
-void Possession::updateAndClean(Resources& resources, const ObjectsInfo* simInfo) {
+void Possession::updateAndClean(const Resources& resources, const ObjectsInfo* simInfo) {
 	cleanDead(buildings, simInfo->ifBuildingDied());
 	cleanDead(units, simInfo->ifUnitDied());
 	cleanDead(workers, simInfo->ifUnitDied());
 
 	if (simInfo->ifBuildingDied()) {
-		for (auto perId : buildingsPerId) {
+		for (const auto perId : buildingsPerId) {
 			if (perId) {
 				cleanDead(perId);
 			}
@@ -118,7 +118,7 @@ void Possession::updateAndClean(Resources& resources, const ObjectsInfo* simInfo
 	}
 	resetSpan(unitsValuesAsSpan);
 	resetSpan(freeArmyMetricsAsSpan);
-	for (auto unit : units) {
+	for (const auto unit : units) {
 		unit->addValues(unitsValuesAsSpan);
 
 		if (isFreeSolider(unit)) {
@@ -126,7 +126,7 @@ void Possession::updateAndClean(Resources& resources, const ObjectsInfo* simInfo
 		}
 	}
 	resetSpan(buildingsValuesAsSpan);
-	for (auto building : buildings) {
+	for (const auto building : buildings) {
 		building->addValues(buildingsValuesAsSpan);
 	}
 

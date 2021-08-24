@@ -34,8 +34,7 @@ Urho3D::Vector2 FollowAim::getDirection(Unit* follower) {
 	}
 	const auto opt = physical->getPosToUseBy(follower);
 	if (opt.has_value()) {
-		auto val = opt.value();
-		return dirTo(follower->getPosition(), val);
+		return dirTo(follower->getPosition(), opt.value());
 	}
 	return {};
 }
@@ -52,5 +51,5 @@ bool FollowAim::ifReach(Unit* follower) {
 }
 
 bool FollowAim::expired() {
-	return !physical->isAlive(); || physical->indexChanged() || haspostToUSe?
+	return !physical->isAlive() || physical->indexChanged();// || haspostToUSe?
 }
