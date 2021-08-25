@@ -202,3 +202,7 @@ float Building::getSightRadius() const {
 short Building::getCostSum() const {
 	return dbBuilding->getSumCost();
 }
+
+bool Building::canUse(int index) const {
+	return Game::getEnvironment()->cellIsAttackable(index);
+}

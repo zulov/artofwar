@@ -87,6 +87,10 @@ void ResourceEntity::action(ResourceActionType type, char player) {
 
 }
 
+bool ResourceEntity::canUse(int index) const {
+	return Game::getEnvironment()->cellIsCollectable(index);
+}
+
 std::pair<float, bool> ResourceEntity::absorbAttack(float collectSpeed) {
 	if (hp - collectSpeed >= 0) {
 		hp -= collectSpeed;

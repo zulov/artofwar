@@ -235,6 +235,10 @@ bool MainGrid::cellIsCollectable(int index) const {
 	return complexData[index].cellIsCollectable();
 }
 
+bool MainGrid::cellIsAttackable(int index) const {
+	return complexData[index].cellIsAttackable();
+}
+
 bool MainGrid::anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const {
 	//TODO perf dac square anie sqroot
 	const auto centerCord = calculator->getIndexes(center);

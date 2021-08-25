@@ -46,6 +46,7 @@ public:
 		setData(unit, *found, parameter.thingToInteract);
 
 		unit->maxSpeed = unit->dbLevel->maxSpeed / 2;
+		Game::getEnvironment()->updateCell(unit->getMainBucketIndex(), 1, CellState::ATTACK);
 	}
 
 	void onEnd(Unit* unit) override {
@@ -55,6 +56,7 @@ public:
 		unit->maxSpeed = unit->dbLevel->maxSpeed;
 		unit->thingToInteract = nullptr;
 		unit->indexToInteract = -1;
+		Game::getEnvironment()->updateCell(unit->indexToInteract, -1, CellState::NONE);
 	}
 
 	void reduce(Unit* unit, Physical* first) {

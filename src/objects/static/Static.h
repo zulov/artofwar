@@ -18,7 +18,7 @@ public:
 	int belowCloseLimit() override;
 	int hasFreeSpace() const;
 	bool hasAnyFreeSpace() const;
-	static bool canCollect(int index);
+	virtual bool canUse(int index) const =0;
 
 	bool indexChanged() const override { return false; }
 	StaticState getNextState() const { return nextState; }

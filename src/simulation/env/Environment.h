@@ -123,6 +123,7 @@ public:
 	void drawInfluence();
 	bool cellIsPassable(int index) const;
 	bool cellIsCollectable(int index) const;
+	bool cellIsAttackable(int index) const;
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
 	short getResolution() const { return calculator->getResolution(); }

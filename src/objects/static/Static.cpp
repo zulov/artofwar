@@ -12,7 +12,8 @@
 Static::Static(Urho3D::Vector3& _position, int mainCell, bool withNode) : Physical(_position, withNode),
                                                                           mainCell(mainCell),
                                                                           state(StaticState::ALIVE),
-                                                                          nextState(StaticState::ALIVE) {}
+                                                                          nextState(StaticState::ALIVE) {
+}
 
 Static::~Static() {
 	delete data;
@@ -75,7 +76,7 @@ float Static::getAuraSize(const Urho3D::Vector3& boundingBox) const {
 }
 
 int Static::belowCloseLimit() {
-	auto freeClose = Physical::belowCloseLimit();
+	const auto freeClose = Physical::belowCloseLimit();
 	if (freeClose <= 0) {
 		return 0;
 	}
@@ -83,29 +84,19 @@ int Static::belowCloseLimit() {
 }
 
 bool Static::hasAnyFreeSpace() const {
-	return std::ranges::any_of(surroundCells, [](int index) { return canCollect(index); });
+	return std::ranges::any_of(surroundCells, [this](int index) { return canUse(index); });
 }
 
 int Static::hasFreeSpace() const {
-	int freeSpaces = 0;
-	for (auto index : surroundCells) {
-		if (canCollect(index)) {
-			++freeSpaces;
-		}
-	}
-	return freeSpaces;
-}
-
-bool Static::canCollect(int index) {
-	return Game::getEnvironment()->cellIsCollectable(index);
+	return std::ranges::count_if(surroundCells, [this](int index) { return canUse(index); });
 }
 
 std::optional<std::tuple<Urho3D::Vector2, float>> Static::getPosToUseWithDist(Unit* user) {
-	float minDistance = 999999;
+	float minDistance = 9999999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
 	for (auto index : surroundCells) {
-		if (canCollect(index)) {
+		if (canUse(index)) {
 			const auto vec = Game::getEnvironment()->getCenter(index);
 			setClosest(minDistance, closest, closestIndex, index, vec, user->getPosition());
 		}
@@ -121,9 +112,7 @@ std::vector<int> Static::getIndexesForUse(Unit* user) {
 	if (belowCloseLimit() <= 0) { return indexes; }
 	indexes.reserve(surroundCells.size());
 	for (auto index : surroundCells) {
-		if (canCollect(index)) {
-			//if (belowCloseLimit() == 0) { std::cout << "#"; }
-			//TODO bug a co z attakiem?
+		if (canUse(index)) {
 			indexes.push_back(index);
 		}
 	}

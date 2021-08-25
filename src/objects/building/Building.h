@@ -46,6 +46,8 @@ public:
 
 	float getSightRadius() const override;
 	short getCostSum() const override;
+
+	bool canUse(int index) const override;
 private:
 	int deployIndex = -1;
 	bool ready = true;

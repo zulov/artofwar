@@ -66,7 +66,7 @@ void FormationOrder::addChargeAim() {
 }
 
 void FormationOrder::followAndAct(float distThreshold) {
-	if (auto optLeader = formation->getLeader(); optLeader.has_value()) {
+	if (const auto optLeader = formation->getLeader(); optLeader.has_value()) {
 		Unit* leader = optLeader.value();
 		auto const indexes = toUse->getIndexesForUse(leader);
 		if (!indexes.empty()) {

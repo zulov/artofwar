@@ -402,6 +402,10 @@ bool Environment::cellIsCollectable(int index) const {
 	return mainGrid.cellIsCollectable(index);
 }
 
+bool Environment::cellIsAttackable(int index) const {
+	return mainGrid.cellIsAttackable(index);
+}
+
 std::optional<Urho3D::Vector2> Environment::getCenterOf(CenterType id, char player) {
 	return influenceManager.getCenterOf(id, player);
 }

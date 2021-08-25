@@ -28,6 +28,8 @@ public:
 
 	void action(ResourceActionType type, char player);
 
+	bool canUse(int index) const override;
+
 	ObjectType getType() const override { return ObjectType::RESOURCE; }
 	unsigned char getMaxCloseUsers() const override;
 	short getCostSum() const override { return 0; }
