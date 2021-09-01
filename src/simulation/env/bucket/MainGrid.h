@@ -31,7 +31,7 @@ public:
 	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::IntVector2 bucketCords) const;
 	void addStatic(Static* object) const;
 	void removeStatic(Static* object) const;
-	std::optional<Urho3D::Vector2> getDirectionFrom(Urho3D::Vector3& position) const;
+	std::optional<Urho3D::Vector2> getDirectionFrom(int index, Urho3D::Vector3& position) const;
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const;
 

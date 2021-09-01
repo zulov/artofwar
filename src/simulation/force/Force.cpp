@@ -42,7 +42,7 @@ void Force::separationUnits(Urho3D::Vector2& newForce, Unit* unit, std::vector<P
 	const bool isLeader = Game::getFormationManager()->isLeader(unit);
 
 	for (auto physical : *neights) {
-		auto neight = dynamic_cast<Unit*>(physical);//TODO perf rzutoac calosc vectoru
+		auto neight = dynamic_cast<Unit*>(physical); //TODO perf rzutoac calosc vectoru
 		float sqSepDist = unit->getMaxSeparationDistance() + neight->getMinimalDistance();
 		sqSepDist *= sqSepDist;
 
@@ -142,7 +142,7 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
-	const auto opt = Game::getEnvironment()->validatePosition(unit->getPosition());
+	const auto opt = Game::getEnvironment()->validatePosition(unit->getMainBucketIndex(), unit->getPosition());
 	if (opt.has_value()) {
 		auto force = opt.value() * escapeCoef * boostCoef;
 

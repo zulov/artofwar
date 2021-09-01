@@ -226,8 +226,8 @@ Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) const {
 	return mainGrid.repulseObstacle(unit);
 }
 
-std::optional<Urho3D::Vector2> Environment::validatePosition(Urho3D::Vector3& position) const {
-	return mainGrid.getDirectionFrom(position);
+std::optional<Urho3D::Vector2> Environment::validatePosition(int index, Urho3D::Vector3& position) const {
+	return mainGrid.getDirectionFrom(index, position);
 }
 
 const std::vector<Physical*>* Environment::getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair,

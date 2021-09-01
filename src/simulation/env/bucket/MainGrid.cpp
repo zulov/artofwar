@@ -326,8 +326,7 @@ void MainGrid::removeStatic(Static* object) const {
 	}
 }
 
-std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(Urho3D::Vector3& position) const {
-	int index = calculator->indexFromPosition(position);
+std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, Urho3D::Vector3& position) const {
 	//assert(unit->getMainBucketIndex()==index);//TODO perf zamienic jezeli ok
 	auto& data = complexData[index];
 

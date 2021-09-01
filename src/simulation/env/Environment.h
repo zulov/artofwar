@@ -60,7 +60,7 @@ public:
 	                     const std::vector<ResourceEntity*>& resourceToDispose) const;
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
-	std::optional<Urho3D::Vector2> validatePosition(Urho3D::Vector3& position) const;
+	std::optional<Urho3D::Vector2> validatePosition(int index, Urho3D::Vector3& position) const;
 
 	const std::vector<Physical*>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 
