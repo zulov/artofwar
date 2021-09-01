@@ -59,8 +59,10 @@ std::pair<std::vector<short>*, std::vector<Urho3D::IntVector2>*> LevelCache::get
 	assert(levelsCacheCords[0] != nullptr);
 	const int index = radius * invDiff;
 	if (index < RES_SEP_DIST) {
+		assert(levelsCache[index]->size() == levelsCacheCords[index]->size());
 		return {levelsCache[index], levelsCacheCords[index]};
 	}
+	assert(levelsCache[RES_SEP_DIST - 1]->size() == levelsCacheCords[RES_SEP_DIST - 1]->size());
 	return {levelsCache[RES_SEP_DIST - 1], levelsCacheCords[RES_SEP_DIST - 1]};
 }
 

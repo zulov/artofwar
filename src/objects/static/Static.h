@@ -33,6 +33,8 @@ public:
 
 	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) override;
 	std::vector<int> getIndexesForUse(Unit* user) override;
+	std::vector<int> getIndexesForRangeUse(Unit* user) override;
+
 	std::string getValues(int precision) override;
 	unsigned short getIndexInInfluence() const { return indexInInfluence; }
 	void setIndexInInfluence(int index);

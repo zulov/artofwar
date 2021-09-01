@@ -71,6 +71,7 @@ public:
 	bool cellIsCollectable(int index) const;
 	bool cellIsAttackable(int index) const;
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
+	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range);
 
 private:
 	PathFinder* pathFinder;

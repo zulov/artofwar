@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "colors/ColorPaletteRepo.h"
 #include "debug/DebugLineRepo.h"
+#include "levels/LevelCache.h"
 #include "math/MathUtils.h"
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
@@ -242,12 +243,29 @@ bool MainGrid::cellIsAttackable(int index) const {
 bool MainGrid::anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const {
 	//TODO perf dac square anie sqroot
 	const auto centerCord = calculator->getIndexes(center);
-	for (auto index : indexes) {
+	for (const auto index : indexes) {
 		if (calculator->getDistance(centerCord, index) < distThreshold) {
 			return true;
 		}
 	}
 	return false;
+}
+
+std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, float range) {
+	std::vector<int> allIndexes;
+	const auto centerIdx = calculator->indexFromPosition(center);
+
+	const auto centerCords = calculator->getIndexes(centerIdx);
+
+	auto const [indexes, cords] = levelCache->getBoth(range);
+	auto ptrIdx = indexes->begin();
+	for (const auto& shiftCords : *cords) {
+		if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_, shiftCords.y_ + centerCords.y_)) {
+			allIndexes.push_back(*ptrIdx);
+		}
+		++ptrIdx;
+	}
+	return allIndexes;
 }
 
 bool MainGrid::isInLocalArea(const int center, int indexOfAim) const {

@@ -39,9 +39,9 @@ struct db_attack {
 	const short rangeAttackReload;
 
 	const short closeAttackRange;
-	const short rangeAttackRange;
 	const short sqCloseAttackRange;
 	const short sqRangeAttackRange;
+	const float rangeAttackRange;
 
 	const float interestRange;
 	const float sqInterestRange;
@@ -62,7 +62,8 @@ struct db_attack {
 	}
 
 	db_attack(float closeAttackVal, float rangeAttackVal, float chargeAttackVal, float buildingAttackVal,
-	          short closeAttackReload, short rangeAttackReload, short rangeAttackRange, float armor, float collectSpeed)
+	          short closeAttackReload, short rangeAttackReload, float rangeAttackRange, float armor, float collectSpeed,
+	          float interestRange)
 		: closeAttackVal(closeAttackVal),
 		  rangeAttackVal(rangeAttackVal),
 		  chargeAttackVal(chargeAttackVal),
@@ -72,7 +73,7 @@ struct db_attack {
 		  rangeAttackReload(rangeAttackReload),
 		  rangeAttackRange(rangeAttackRange), sqRangeAttackRange(rangeAttackRange * rangeAttackRange),
 		  closeAttackRange(1), sqCloseAttackRange(1),
-		  interestRange(rangeAttackRange * 10.f),
+		  interestRange(interestRange),
 		  sqInterestRange(interestRange * interestRange),
 		  canCloseAttack(initFlag(closeAttackVal)),
 		  canRangeAttack(initFlag(rangeAttackVal)),
@@ -212,11 +213,11 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	db_unit_level(short id, short level, short unit, char* name, float minDist, float maxSep, char* nodeName,
 	              float mass, short maxHp, float maxSpeed, float minSpeed, float upgradeSpeed, float collectSpeed,
 	              float maxForce, float closeAttackVal, float rangeAttackVal, float chargeAttackVal,
-	              float buildingAttackVal, short closeAttackSpeed, short rangeAttackSpeed, short rangeAttackRange,
-	              float armor):
+	              float buildingAttackVal, short closeAttackSpeed, short rangeAttackSpeed, float rangeAttackRange,
+	              float armor, float interestRange):
 		db_entity(id), db_level(level), db_with_name(name),
 		db_attack(closeAttackVal, rangeAttackVal, chargeAttackVal, buildingAttackVal,
-		          closeAttackSpeed, rangeAttackSpeed, rangeAttackRange, armor, collectSpeed),
+		          closeAttackSpeed, rangeAttackSpeed, rangeAttackRange, armor, collectSpeed, interestRange),
 		db_with_hp(maxHp), db_sight(10.f),
 		unit(unit),
 		minDist(minDist),
@@ -310,9 +311,9 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_s
 	std::vector<db_building_metric*> dbBuildingMetricPerNation;
 
 	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity,
-	                  float rangeAttackVal, short rangeAttackSpeed, short rangeAttackRange, float armor, short maxHp)
+	                  float rangeAttackVal, short rangeAttackSpeed, float rangeAttackRange, float armor, short maxHp)
 		: db_entity(id), db_level(level), db_with_name(name),
-		  db_attack(0.f, rangeAttackVal, 0.f, 0.f, 0.f, rangeAttackSpeed, rangeAttackRange, armor, 0.f),
+		  db_attack(0.f, rangeAttackVal, 0.f, 0.f, 0.f, rangeAttackSpeed, rangeAttackRange, armor, 0.f, 0.f),
 		  db_with_hp(maxHp), db_sight(15.f),
 		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity) {
 	}

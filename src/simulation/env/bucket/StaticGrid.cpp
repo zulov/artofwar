@@ -39,16 +39,13 @@ void StaticGrid::remove(Physical* physical) const {
 
 		auto ptrIdx = indexes->begin();
 		for (const auto& shiftCords : *cords) {
-			if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
+			if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_,shiftCords.y_ + centerCords.y_)) {
 				itr[centerIndex + *ptrIdx].remove(physical);
 			}
 			++ptrIdx;
 		}
 	}
 }
-
-
-inline bool StaticGrid::inside(int val) const { return val >= 0 && val < calculator->getResolution(); }
 
 void StaticGrid::updateStatic(Static* staticObj, bool bulkAdd) const {
 	staticObj->setBucket(Grid::updateNew(staticObj));
@@ -64,7 +61,7 @@ void StaticGrid::updateStatic(Static* staticObj, bool bulkAdd) const {
 			auto ptrIdx = indexes->begin();
 			auto x = itr + centerIndex;
 			for (const auto& shiftCords : *cords) {
-				if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
+				if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_,shiftCords.y_ + centerCords.y_)) {
 					(*(x + *ptrIdx)).add(staticObj);
 				}
 				++ptrIdx;
@@ -89,7 +86,7 @@ void StaticGrid::initAdd() const {
 				auto ptrIdx = indexes->begin();
 				const auto ptrSize = sizes + k;
 				for (const auto& shiftCords : *cords) {
-					if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
+					if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_,shiftCords.y_ + centerCords.y_)) {
 						*(ptrSize + *ptrIdx) += bucket.getContent().size();
 					}
 					++ptrIdx;
@@ -121,7 +118,7 @@ void StaticGrid::initAdd() const {
 				auto ptrIdx = indexes->begin();
 				auto x = itr + k;
 				for (const auto& shiftCords : *cords) {
-					if (inside(shiftCords.x_ + centerCords.x_) && inside(shiftCords.y_ + centerCords.y_)) {
+					if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_,shiftCords.y_ + centerCords.y_)) {
 						(*(x + *ptrIdx)).add(bucket.getContent());
 					}
 					++ptrIdx;

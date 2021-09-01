@@ -1,5 +1,6 @@
 #include "IndividualOrder.h"
 #include "Game.h"
+#include "database/db_strcut.h"
 #include "objects/unit/Unit.h"
 #include "objects/unit/order/enums/UnitAction.h"
 #include "simulation/env/Environment.h"
@@ -32,7 +33,8 @@ void IndividualOrder::addCollectAim() {
 }
 
 void IndividualOrder::addTargetAim() {
-	unit->action(static_cast<UnitAction>(id), getTargetAim(unit->getMainBucketIndex(), *vector)); //TODO execute i akajca
+	unit->action(static_cast<UnitAction>(id), getTargetAim(unit->getMainBucketIndex(), *vector));
+	//TODO execute i akajca
 	unit->resetFormation();
 
 	Game::getEnvironment()->invalidatePathCache();
@@ -70,6 +72,14 @@ void IndividualOrder::simpleAction() const {
 }
 
 void IndividualOrder::followAndAct() {
+	if (static_cast<UnitAction>(id) == UnitAction::ATTACK) {
+		if (unit->getLevel()->canRangeAttack) {
+			if (toUse->belowRangeLimit()) {
+			auto indexes=	toUse->getIndexesForRangeUse(unit);
+			int a = 5;
+			}
+		}
+	}
 	auto const indexes = toUse->getIndexesForUse(unit);
 	if (!indexes.empty()) {
 		const auto find = std::ranges::find(indexes, unit->getMainBucketIndex());
@@ -80,7 +90,7 @@ void IndividualOrder::followAndAct() {
 				unit->action(UnitAction::FOLLOW, param);
 				unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, true));
 			}
-		} else {	
+		} else {
 			unit->action(static_cast<UnitAction>(id), ActionParameter(toUse));
 		}
 	}

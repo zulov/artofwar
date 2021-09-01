@@ -130,6 +130,7 @@ public:
 	bool isVisible(char player, const Urho3D::Vector2& pos);
 	float getVisibilityScore(char player);
 	void initStaticGrid() const;
+	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range);
 
 private:
 	//std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;

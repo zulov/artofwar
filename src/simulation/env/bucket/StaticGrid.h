@@ -24,7 +24,6 @@ public:
 	const std::vector<Physical*>& get(const Urho3D::Vector3& center, float radius);
 
 private:
-	inline bool inside(int val) const;
 	int getIndexForRadius(float radius) const;
 	std::vector<float> queryRadius;
 	std::vector<Bucket*> bucketsPerRadius;

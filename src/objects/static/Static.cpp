@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "math/MathUtils.h"
 #include "../unit/Unit.h"
+#include "database/db_strcut.h"
 #include "scene/load/dbload_container.h"
 #include "simulation/env/Environment.h"
 #include "utils/OtherUtils.h"
@@ -118,6 +119,14 @@ std::vector<int> Static::getIndexesForUse(Unit* user) {
 	}
 
 	return indexes;
+}
+
+std::vector<int> Static::getIndexesForRangeUse(Unit* user) {
+	std::vector<int> indexes;
+	if (belowRangeLimit() <= 0) { return indexes; }
+	
+	std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(this->getPosition(), user->getLevel()->rangeAttackRange);
+
 }
 
 std::string Static::getValues(int precision) {

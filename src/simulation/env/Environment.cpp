@@ -54,6 +54,10 @@ void Environment::initStaticGrid() const {
 	resourceStaticGrid.initAdd();
 }
 
+std::vector<int> Environment::getIndexesInRange(const Urho3D::Vector3& center, float range) {
+	return mainGrid.getIndexesInRange(center, range);
+}
+
 std::vector<Physical*>* Environment::getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
                                                    const std::function<bool(Physical*)>& condition) const {
 	neights->clear();
