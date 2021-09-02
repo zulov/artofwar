@@ -13,8 +13,7 @@
 Static::Static(Urho3D::Vector3& _position, int mainCell, bool withNode) : Physical(_position, withNode),
                                                                           mainCell(mainCell),
                                                                           state(StaticState::ALIVE),
-                                                                          nextState(StaticState::ALIVE) {
-}
+                                                                          nextState(StaticState::ALIVE) {}
 
 Static::~Static() {
 	delete data;
@@ -124,9 +123,15 @@ std::vector<int> Static::getIndexesForUse(Unit* user) {
 std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {
 	std::vector<int> indexes;
 	if (belowRangeLimit() <= 0) { return indexes; }
-	
-	std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(getPosition(), user->getLevel()->rangeAttackRange);
 
+	std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
+		getPosition(), user->getLevel()->rangeAttackRange);
+	for (auto index : allIndexes) {
+		if (canUse(index)) {
+			indexes.push_back(index);
+		}
+
+	}
 }
 
 std::string Static::getValues(int precision) {
