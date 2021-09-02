@@ -34,8 +34,8 @@ public:
 	const std::vector<Physical*>* getNeighboursSimilarAs(Physical* clicked) const;
 
 	//std::vector<Physical*>* getResources(Physical* physical, float radius);
-	std::vector<Physical*>* getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius);
-	std::vector<Physical*>* getResources(Urho3D::Vector3& center, int id, float radius);
+	std::vector<Physical*>* getResources(const Urho3D::Vector3& center, int id, float radius, float prevRadius);
+	std::vector<Physical*>* getResources(const Urho3D::Vector3& center, int id, float radius);
 
 	std::vector<Physical*>* getBuildingsFromTeamNotEq(Physical* physical, int id, float radius);
 
@@ -60,7 +60,7 @@ public:
 	                     const std::vector<ResourceEntity*>& resourceToDispose) const;
 
 	Urho3D::Vector2 repulseObstacle(Unit* unit) const;
-	std::optional<Urho3D::Vector2> validatePosition(int index, Urho3D::Vector3& position) const;
+	std::optional<Urho3D::Vector2> validatePosition(int index, const Urho3D::Vector3& position) const;
 
 	const std::vector<Physical*>* getNeighbours(std::pair<Urho3D::Vector3*, Urho3D::Vector3*>& pair, char player);
 
@@ -130,13 +130,13 @@ public:
 	bool isVisible(char player, const Urho3D::Vector2& pos);
 	float getVisibilityScore(char player);
 	void initStaticGrid() const;
-	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range);
+	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
 
 private:
 	//std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,
 	                                      const std::function<bool(Physical*)>& condition) const;
-	std::vector<Physical*>* getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
+	std::vector<Physical*>* getNeighbours(const Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
 	                                      float prevRadius) const;
 	void addIfInRange(Physical* physical, Physical* neight, const float sqRadius,
 		const std::function<bool(Physical*)>& condition) const;

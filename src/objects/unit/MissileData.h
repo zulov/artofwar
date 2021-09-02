@@ -33,7 +33,7 @@ struct MissileData {
 
 	MissileData(const MissileData&) = delete;
 
-	void init(Urho3D::Vector3& _start, Urho3D::Vector3& _end, Physical* _aim, float _speed = 7) {
+	void init(const Urho3D::Vector3& _start, const Urho3D::Vector3& _end, Physical* _aim, float _speed = 7) {
 		start = _start;
 		end = _end;
 		aim = _aim;

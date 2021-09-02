@@ -43,7 +43,7 @@ int Grid::updateNew(Physical* physical) const {
 	return index;
 }
 
-BucketIterator& Grid::getArrayNeight(Urho3D::Vector3& position, float radius) {
+BucketIterator& Grid::getArrayNeight(const Urho3D::Vector3& position, float radius) {
 	return *iterator.init(levelCache->get(radius), calculator->indexFromPosition(position), this);
 }
 

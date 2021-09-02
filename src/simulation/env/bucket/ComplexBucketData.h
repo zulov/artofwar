@@ -22,7 +22,7 @@ public:
 	void clear();
 
 	void setEscapeThrough(int val);
-	Urho3D::Vector2 getDirectionFrom(Urho3D::Vector3& position, Urho3D::Vector2 centerEscape);
+	Urho3D::Vector2 getDirectionFrom(const Urho3D::Vector3& position, Urho3D::Vector2 centerEscape);
 
 	void setNeightOccupied(unsigned char index);
 	void setNeightFree(unsigned char index);

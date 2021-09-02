@@ -251,7 +251,7 @@ bool MainGrid::anyCloseEnough(std::vector<int> const& indexes, int center, float
 	return false;
 }
 
-std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, float range) {
+std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, float range) const {
 	std::vector<int> allIndexes;
 	const auto centerIdx = calculator->indexFromPosition(center);
 
@@ -344,7 +344,7 @@ void MainGrid::removeStatic(Static* object) const {
 	}
 }
 
-std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, Urho3D::Vector3& position) const {
+std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3D::Vector3& position) const {
 	//assert(unit->getMainBucketIndex()==index);//TODO perf zamienic jezeli ok
 	auto& data = complexData[index];
 

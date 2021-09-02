@@ -54,7 +54,7 @@ void Environment::initStaticGrid() const {
 	resourceStaticGrid.initAdd();
 }
 
-std::vector<int> Environment::getIndexesInRange(const Urho3D::Vector3& center, float range) {
+std::vector<int> Environment::getIndexesInRange(const Urho3D::Vector3& center, float range) const {
 	return mainGrid.getIndexesInRange(center, range);
 }
 
@@ -98,7 +98,7 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getNeighbours(Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
+std::vector<Physical*>* Environment::getNeighbours(const Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
                                                    float prevRadius) const {
 	neights->clear();
 
@@ -126,7 +126,7 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 	return grids[cast(clicked->getType())]->getArrayNeightSimilarAs(clicked, 20.f);
 }
 
-std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int id, float radius, float prevRadius) {
+std::vector<Physical*>* Environment::getResources(const Urho3D::Vector3& center, int id, float radius, float prevRadius) {
 	//return getNeighbours(center, resourceStaticGrid, id, radius, prevRadius);//TODO perf? czy to moze jedna szybsze?
 	const float sqRadius = radius * radius;
 	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
@@ -144,7 +144,7 @@ std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int i
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getResources(Urho3D::Vector3& center, int id, float radius) {
+std::vector<Physical*>* Environment::getResources(const Urho3D::Vector3& center, int id, float radius) {
 	return getNeighbours(center, resourceStaticGrid, id, radius, -1);
 }
 
@@ -230,7 +230,7 @@ Urho3D::Vector2 Environment::repulseObstacle(Unit* unit) const {
 	return mainGrid.repulseObstacle(unit);
 }
 
-std::optional<Urho3D::Vector2> Environment::validatePosition(int index, Urho3D::Vector3& position) const {
+std::optional<Urho3D::Vector2> Environment::validatePosition(int index, const Urho3D::Vector3& position) const {
 	return mainGrid.getDirectionFrom(index, position);
 }
 

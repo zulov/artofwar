@@ -121,11 +121,11 @@ std::vector<int> Static::getIndexesForUse(Unit* user) {
 	return indexes;
 }
 
-std::vector<int> Static::getIndexesForRangeUse(Unit* user) {
+std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {
 	std::vector<int> indexes;
 	if (belowRangeLimit() <= 0) { return indexes; }
 	
-	std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(this->getPosition(), user->getLevel()->rangeAttackRange);
+	std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(getPosition(), user->getLevel()->rangeAttackRange);
 
 }
 

@@ -49,7 +49,7 @@ inline Urho3D::Vector2 dirTo(const Urho3D::Vector3& a, const Urho3D::Vector3& b)
 }
 
 inline void setClosest(float& minDistance, Urho3D::Vector2& closest, int& closestindex, int i,
-                       Urho3D::Vector2 posToFollow, Urho3D::Vector3& pos1) {
+                       Urho3D::Vector2 posToFollow, const Urho3D::Vector3& pos1) {
 	auto dist = sqDist(pos1, posToFollow);
 
 	if (dist < minDistance) {

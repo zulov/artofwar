@@ -30,7 +30,7 @@ void ComplexBucketData::setEscapeThrough(int val) {
 	escapeBucketIndex = val;
 }
 
-Urho3D::Vector2 ComplexBucketData::getDirectionFrom(Urho3D::Vector3& position, Urho3D::Vector2 centerEscape) {
+Urho3D::Vector2 ComplexBucketData::getDirectionFrom(const Urho3D::Vector3& position, Urho3D::Vector2 centerEscape) {
 	return {centerEscape.x_ - position.x_, centerEscape.y_ - position.z_};
 }
 

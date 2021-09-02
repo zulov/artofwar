@@ -31,7 +31,7 @@ public:
 	bool validateAdd(const Urho3D::IntVector2& size, Urho3D::IntVector2 bucketCords) const;
 	void addStatic(Static* object) const;
 	void removeStatic(Static* object) const;
-	std::optional<Urho3D::Vector2> getDirectionFrom(int index, Urho3D::Vector3& position) const;
+	std::optional<Urho3D::Vector2> getDirectionFrom(int index, const Urho3D::Vector3& position) const;
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::Vector2& pos) const;
 	Urho3D::Vector2 getValidPosition(const Urho3D::IntVector2& size, const Urho3D::IntVector2& cords) const;
 
@@ -71,7 +71,7 @@ public:
 	bool cellIsCollectable(int index) const;
 	bool cellIsAttackable(int index) const;
 	bool anyCloseEnough(std::vector<int> const& indexes, int center, float distThreshold) const;
-	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range);
+	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
 
 private:
 	PathFinder* pathFinder;

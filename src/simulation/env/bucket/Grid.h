@@ -37,7 +37,7 @@ public:
 	std::vector<int> getCloseCenters(Urho3D::Vector2& center, float radius) const;
 	void invalidateCache();
 	void invalidateCache(int currentIdx, float radius);
-	BucketIterator& getArrayNeight(Urho3D::Vector3& position, float radius);
+	BucketIterator& getArrayNeight(const Urho3D::Vector3& position, float radius);
 	BucketIterator& getArrayNeight(int center, float radius);
 	const std::vector<short>& getCloseIndexes(int center) const;
 	const std::vector<unsigned char>& getCloseTabIndexes(int center) const;
