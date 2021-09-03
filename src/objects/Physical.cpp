@@ -109,7 +109,7 @@ std::string Physical::getValues(int precision) {
 		+ std::to_string(getLevelNum()) + ",";
 }
 
-int Physical::belowCloseLimit() {
+int Physical::belowCloseLimit() const {
 	return Urho3D::Max(getMaxCloseUsers() - closeUsers, 0);
 }
 

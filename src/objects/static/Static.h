@@ -15,7 +15,7 @@ public:
 	void setState(StaticState state) { this->state = state; }
 	void load(dbload_static* dbloadStatic);
 
-	int belowCloseLimit() override;
+	int belowCloseLimit() const override;
 	int hasFreeSpace() const;
 	bool hasAnyFreeSpace() const;
 	virtual bool canUse(int index) const =0;
@@ -32,7 +32,7 @@ public:
 	const std::span<int>& getSurroundCells() const { return surroundCells; }
 
 	std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) override;
-	std::vector<int> getIndexesForUse(Unit* user) override;
+	std::vector<int> getIndexesForUse(Unit* user) const override;
 	std::vector<int> getIndexesForRangeUse(Unit* user) const override;
 
 	std::string getValues(int precision) override;

@@ -526,7 +526,7 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit
 	return {};
 }
 
-std::vector<int> Unit::getIndexesForUse(Unit* user) {
+std::vector<int> Unit::getIndexesForUse(Unit* user) const {
 	std::vector<int> indexes;
 	if (belowCloseLimit() <= 0) { return indexes; }
 	const int mainIndex = getMainBucketIndex();
@@ -541,6 +541,24 @@ std::vector<int> Unit::getIndexesForUse(Unit* user) {
 		}
 	}
 
+	return indexes;
+}
+
+std::vector<int> Unit::getIndexesForRangeUse(Unit* user) const {
+	std::vector<int> indexes;
+	if (belowRangeLimit() <= 0) { return indexes; }
+
+	std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
+		getPosition(), user->getLevel()->rangeAttackRange);
+	for (auto index : allIndexes) {
+
+		if (canUse(index)
+			&& std::ranges::find(surroundCells, index) == surroundCells.end()
+			&& std::ranges::find(occupiedCells, index) == occupiedCells.end()) {
+			indexes.push_back(index);
+		}
+
+	}
 	return indexes;
 }
 

@@ -75,7 +75,7 @@ float Static::getAuraSize(const Urho3D::Vector3& boundingBox) const {
 	return Urho3D::Max(gridSize.x_, gridSize.y_) * 1.2f;
 }
 
-int Static::belowCloseLimit() {
+int Static::belowCloseLimit() const {
 	const auto freeClose = Physical::belowCloseLimit();
 	if (freeClose <= 0) {
 		return 0;
@@ -107,7 +107,7 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Static::getPosToUseWithDist(Un
 	return {};
 }
 
-std::vector<int> Static::getIndexesForUse(Unit* user) {
+std::vector<int> Static::getIndexesForUse(Unit* user) const {
 	std::vector<int> indexes;
 	if (belowCloseLimit() <= 0) { return indexes; }
 	indexes.reserve(surroundCells.size());
@@ -129,8 +129,8 @@ std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {
 	for (auto index : allIndexes) {
 
 		if (canUse(index)
-			&& std::find(surroundCells.begin(), surroundCells.end(), index) == surroundCells.end()
-			&& std::find(occupiedCells.begin(), occupiedCells.end(), index) == occupiedCells.end()) {
+			&& std::ranges::find(surroundCells, index) == surroundCells.end()
+			&& std::ranges::find(occupiedCells, index) == occupiedCells.end()) {
 			indexes.push_back(index);
 		}
 

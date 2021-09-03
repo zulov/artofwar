@@ -53,7 +53,7 @@ public:
 	virtual std::string getValues(int precision);
 	virtual bool isUsable() const { return isAlive(); }
 
-	virtual int belowCloseLimit();
+	virtual int belowCloseLimit() const;
 	void reduceClose() { --closeUsers; }
 	void upClose() { ++closeUsers; }
 
@@ -75,7 +75,7 @@ public:
 
 	virtual bool isToDispose() const { return false; }
 
-	virtual std::vector<int> getIndexesForUse(Unit* user) = 0;
+	virtual std::vector<int> getIndexesForUse(Unit* user) const = 0;
 	virtual std::vector<int> getIndexesForRangeUse(Unit* user) const = 0;
 	virtual std::optional<std::tuple<Urho3D::Vector2, float>> getPosToUseWithDist(Unit* user) = 0;
 	std::optional<Urho3D::Vector2> getPosToUseBy(Unit* follower);
