@@ -127,11 +127,15 @@ std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {
 	std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
 		getPosition(), user->getLevel()->rangeAttackRange);
 	for (auto index : allIndexes) {
-		if (canUse(index)) {
+
+		if (canUse(index)
+			&& std::find(surroundCells.begin(), surroundCells.end(), index) == surroundCells.end()
+			&& std::find(occupiedCells.begin(), occupiedCells.end(), index) == occupiedCells.end()) {
 			indexes.push_back(index);
 		}
 
 	}
+	return indexes;
 }
 
 std::string Static::getValues(int precision) {
