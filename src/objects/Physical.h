@@ -48,7 +48,8 @@ public:
 	virtual bool isIndexSlotOccupied(int indexToInteract) { return false; }
 	virtual bool indexChanged() const { return false; }
 
-	virtual void setOccupiedIndexSlot(char index, bool value) { }
+	virtual void setOccupiedIndexSlot(char index, bool value) {
+	}
 
 	virtual std::string getValues(int precision);
 	virtual bool isUsable() const { return isAlive(); }
@@ -71,7 +72,8 @@ public:
 
 	int getMainBucketIndex() const { return indexInGrid; }
 
-	virtual void populate() { }
+	virtual void populate() {
+	}
 
 	virtual bool isToDispose() const { return false; }
 
@@ -94,10 +96,12 @@ public:
 
 	virtual char getLevelNum();
 
-	virtual void addValues(std::span<float> vals) const { }
+	virtual void addValues(std::span<float> vals) const {
+	}
 
 	virtual unsigned char getMaxRangeUsers() const { return 8; }
 	virtual unsigned char getMaxCloseUsers() const { return 8; }
+	virtual bool isInCloseRange(int index) const = 0;
 
 protected:
 	void loadXml(const Urho3D::String& xmlName);

@@ -38,7 +38,7 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 		chargeData = new ChargeData(150, 2);
 	}
 
-	if (dbLevel->canCollect) {
+	if (dbLevel->canRangeAttack) {
 		missileData = new MissileData(150, 2);
 	}
 }
@@ -272,41 +272,38 @@ Urho3D::String Unit::toMultiLineString() {
 	       .Append("\nStan:").Append(Urho3D::String(magic_enum::enum_name(state).data()));
 }
 
-void Unit::action(UnitAction unitAction) {
-	action(unitAction, Consts::EMPTY_ACTION_PARAMETER);
+bool Unit::action(UnitAction unitAction) {
+	return action(unitAction, Consts::EMPTY_ACTION_PARAMETER);
 }
 
-bool Unit::indexChanged() const {
-	return indexHasChanged;
-}
-
-void Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
+bool Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 	switch (unitAction) {
 	case UnitAction::GO:
-		StateManager::changeState(this, UnitState::GO, parameter);
-		break;
+		return StateManager::changeState(this, UnitState::GO, parameter);
 	case UnitAction::STOP:
-		StateManager::changeState(this, UnitState::STOP, parameter);
-		break;
+		return StateManager::changeState(this, UnitState::STOP, parameter);
 	case UnitAction::CHARGE:
-		StateManager::changeState(this, UnitState::CHARGE, parameter);
-		break;
+		return StateManager::changeState(this, UnitState::CHARGE, parameter);
 	case UnitAction::ATTACK:
-		StateManager::changeState(this, UnitState::ATTACK, parameter);
+		if (getLevel()->canRangeAttack) {
+			//TODO perf chyba trzeba dodacparamter do actionParameter
+			if (!parameter.thingToInteract->isInCloseRange(getMainBucketIndex())) {
+				//jezeli nie jest in close range
+				return StateManager::changeState(this, UnitState::SHOT, parameter);
+			}
+		}
+		return StateManager::changeState(this, UnitState::ATTACK, parameter);
+
 		break;
 	case UnitAction::DEAD:
-		StateManager::changeState(this, UnitState::DEAD, parameter);
-		break;
+		return StateManager::changeState(this, UnitState::DEAD, parameter);
 	case UnitAction::DEFEND:
 		resetFormation();
-		StateManager::changeState(this, UnitState::DEFEND, parameter);
-		break;
+		return StateManager::changeState(this, UnitState::DEFEND, parameter);
 	case UnitAction::FOLLOW:
-		StateManager::changeState(this, UnitState::FOLLOW, parameter);
-		break;
+		return StateManager::changeState(this, UnitState::FOLLOW, parameter);
 	case UnitAction::COLLECT:
-		StateManager::changeState(this, UnitState::COLLECT, parameter);
-		break;
+		return StateManager::changeState(this, UnitState::COLLECT, parameter);
 	default: ;
 	}
 }
@@ -402,7 +399,6 @@ std::string Unit::getValues(int precision) {
 		std::to_string(state) + "," +
 		std::to_string(velocity_x) + "," +
 		std::to_string(velocity_z);
-
 }
 
 void Unit::applyForce(float timeStep) {
@@ -499,6 +495,10 @@ short Unit::getCostSum() const {
 	return dbUnit->getSumCost();
 }
 
+bool Unit::isInCloseRange(int index) const {
+	return Game::getEnvironment()->isInLocalArea(getMainBucketIndex(), index);
+}
+
 std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit* user) {
 	float minDistance = 99999;
 	Urho3D::Vector2 closest;
@@ -548,13 +548,17 @@ std::vector<int> Unit::getIndexesForRangeUse(Unit* user) const {
 	std::vector<int> indexes;
 	if (belowRangeLimit() <= 0) { return indexes; }
 
-	std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
+	const std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
 		getPosition(), user->getLevel()->rangeAttackRange);
+	const int mainIndex = getMainBucketIndex();
+	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
+
 	for (auto index : allIndexes) {
 
-		if (canUse(index)
-			&& std::ranges::find(surroundCells, index) == surroundCells.end()
-			&& std::ranges::find(occupiedCells, index) == occupiedCells.end()) {
+		if (Game::getEnvironment()->cellIsAttackable(index)
+			&& mainIndex != index
+			&& std::ranges::find(closeIndexes, index - mainIndex) == closeIndexes.end()) {
+			//czy to ok?
 			indexes.push_back(index);
 		}
 

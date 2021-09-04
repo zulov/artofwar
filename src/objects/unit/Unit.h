@@ -120,10 +120,10 @@ public:
 	std::vector<int> getIndexesForUse(Unit* user) const override;
 	std::vector<int> getIndexesForRangeUse(Unit* user) const override;
 
-	void action(UnitAction unitAction, const ActionParameter& parameter);
-	void action(UnitAction unitAction);
+	bool action(UnitAction unitAction, const ActionParameter& parameter);
+	bool action(UnitAction unitAction);
 
-	bool indexChanged() const override;
+	bool indexChanged() const override { return indexHasChanged; }
 	std::string getValues(int precision) override;
 	Urho3D::String toMultiLineString() override;
 	float getMaxHpBarSize() const override;
@@ -135,6 +135,7 @@ public:
 	float getSightRadius() const override;
 	Urho3D::Vector2 getSocketPos(Unit* toFollow, int i) const;
 	short getCostSum() const override;
+	bool isInCloseRange(int index) const override;
 	void setSlotToInteract(char slot) { slotToInteract = slot; }
 	void setSparseIndex(int index);
 

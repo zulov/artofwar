@@ -19,7 +19,18 @@ public:
 		                        unit->thingToInteract);
 	}
 
+	bool canStart(Unit* unit, const ActionParameter& parameter) override {
+		assert(unit->missileData);
+		if (parameter.isFirstThingAlive()) {
+			auto const indexesToUse = parameter.thingToInteract->getIndexesForRangeUse(unit);
+			return std::ranges::find(indexesToUse, unit->getMainBucketIndex()) != indexesToUse.end()
+				&& parameter.thingToInteract->belowRangeLimit() > 0;
+		}
+		return false;
+	}
+
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
+		unit->thingToInteract=parameter.thingToInteract;
 		shot(unit);
 		unit->thingToInteract->upRange();
 		unit->currentFrameState = 1;
@@ -44,7 +55,7 @@ public:
 			unit->missileData->reset();
 			StateManager::toDefaultState(unit);
 		} else if (!unit->missileData->isUp() && unit->currentFrameState % unit->dbLevel->rangeAttackReload == 0) {
-			if (closeEnough(unit)) {
+			if (closeEnough(unit)) {//TODO tu cos innego
 				shot(unit);
 			} else {
 				unit->missileData->reset();

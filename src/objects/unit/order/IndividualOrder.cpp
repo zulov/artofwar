@@ -72,15 +72,19 @@ void IndividualOrder::simpleAction() const {
 }
 
 void IndividualOrder::followAndAct() {
+	//TODO to trzeba dobrze przemuœleæ
+	std::vector<int> indexes;
 	if (static_cast<UnitAction>(id) == UnitAction::ATTACK) {
 		if (unit->getLevel()->canRangeAttack) {
 			if (toUse->belowRangeLimit()) {
-			auto indexes=	toUse->getIndexesForRangeUse(unit);
-			int a = 5;
+				indexes = toUse->getIndexesForRangeUse(unit);
 			}
 		}
 	}
-	auto const indexes = toUse->getIndexesForUse(unit);
+	if(indexes.empty()) {
+		 indexes = toUse->getIndexesForUse(unit);
+	}
+	
 	if (!indexes.empty()) {
 		const auto find = std::ranges::find(indexes, unit->getMainBucketIndex());
 

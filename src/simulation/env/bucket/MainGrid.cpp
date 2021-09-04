@@ -261,7 +261,7 @@ std::vector<int> MainGrid::getIndexesInRange(const Urho3D::Vector3& center, floa
 	auto ptrIdx = indexes->begin();
 	for (const auto& shiftCords : *cords) {
 		if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_, shiftCords.y_ + centerCords.y_)) {
-			allIndexes.push_back(*ptrIdx);
+			allIndexes.push_back(*ptrIdx + centerIdx);
 		}
 		++ptrIdx;
 	}

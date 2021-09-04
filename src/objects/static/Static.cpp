@@ -13,7 +13,8 @@
 Static::Static(Urho3D::Vector3& _position, int mainCell, bool withNode) : Physical(_position, withNode),
                                                                           mainCell(mainCell),
                                                                           state(StaticState::ALIVE),
-                                                                          nextState(StaticState::ALIVE) {}
+                                                                          nextState(StaticState::ALIVE) {
+}
 
 Static::~Static() {
 	delete data;
@@ -29,6 +30,10 @@ void Static::setIndexInInfluence(int index) {
 	assert(index < std::numeric_limits<unsigned short>::max());
 	assert(index >= 0);
 	indexInInfluence = index;
+}
+
+bool Static::isInCloseRange(int index) const {
+	return std::ranges::find(surroundCells, index) != surroundCells.end();
 }
 
 void Static::populate() {
@@ -124,12 +129,11 @@ std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {
 	std::vector<int> indexes;
 	if (belowRangeLimit() <= 0) { return indexes; }
 
-	std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
+	const std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
 		getPosition(), user->getLevel()->rangeAttackRange);
 	for (auto index : allIndexes) {
-
 		if (canUse(index)
-			&& std::ranges::find(surroundCells, index) == surroundCells.end()
+			&& !isInCloseRange(index)
 			&& std::ranges::find(occupiedCells, index) == occupiedCells.end()) {
 			indexes.push_back(index);
 		}
