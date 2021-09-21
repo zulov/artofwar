@@ -25,6 +25,7 @@ private:
 
 	void simpleAction() const;
 	void followAndAct();
+	std::vector<int> getIndexesToAct() const;
 
 	Unit* unit;
 };

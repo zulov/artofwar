@@ -121,24 +121,35 @@ SimInfo* Simulation::update(float timeStep) {
 
 void Simulation::selfAI() const {
 	if (PER_FRAME_ACTION.get(PerFrameAction::SELF_AI, currentFrame)) {
-		for (auto unit : *units) {
+		for (const auto unit : *units) {
 			if (isFree(unit)) {
 				if (StateManager::canChangeState(unit, unit->getActionState())) {
 					switch (unit->getActionState()) {
 					case UnitState::ATTACK:
-						tryToAttack(unit, belowClose);
+					case UnitState::SHOT:
+						tryToAttack(unit, getCondition(unit->getLevel()));
 						break;
 					case UnitState::COLLECT:
 						tryToCollect(unit);
-						break;
-					case UnitState::SHOT:
-						tryToAttack(unit, belowRange);
 						break;
 					}
 				}
 			}
 		}
 	}
+}
+
+std::function<bool(Physical*)> Simulation::getCondition(db_unit_level* level) const {
+	if (level->canRangeAttack) {
+		if (level->canCloseAttack) {
+			return belowCloseOrRange;
+		}
+		return belowRange;
+	}
+	if (level->canCloseAttack) {
+		return belowClose;
+	}
+	return alwaysFalse;
 }
 
 void Simulation::loadEntities(SceneLoader& loader) const {

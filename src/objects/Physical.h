@@ -99,8 +99,8 @@ public:
 	virtual void addValues(std::span<float> vals) const {
 	}
 
-	virtual unsigned char getMaxRangeUsers() const { return 8; }
-	virtual unsigned char getMaxCloseUsers() const { return 16; }
+	virtual unsigned char getMaxRangeUsers() const { return 128; }
+	virtual unsigned char getMaxCloseUsers() const { return 8; }
 	virtual bool isInCloseRange(int index) const = 0;
 	virtual const Urho3D::String& getName() const = 0;
 

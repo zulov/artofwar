@@ -145,6 +145,8 @@ public:
 		thingToInteract = toUse;
 	}
 
+	unsigned char getMaxRangeUsers() const { return 16; }
+
 private:
 	void changeColor(float value, float maxValue) const;
 	void setAim(Aim* aim);

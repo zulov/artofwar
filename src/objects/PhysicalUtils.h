@@ -4,12 +4,20 @@
 #include "unit/Unit.h"
 #include "unit/state/StateManager.h"
 
+inline bool alwaysFalse(Physical* physical) {
+	return false;
+}
+
 inline bool belowClose(Physical* physical) {
 	return physical->belowCloseLimit();
 }
 
 inline bool belowRange(Physical* physical) {
 	return physical->belowRangeLimit();
+}
+
+inline bool belowCloseOrRange(Physical* physical) {
+	return physical->belowRangeLimit() || physical->belowCloseLimit();
 }
 
 inline bool isFree(Unit* unit) {

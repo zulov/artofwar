@@ -73,18 +73,8 @@ void IndividualOrder::simpleAction() const {
 
 void IndividualOrder::followAndAct() {
 	//TODO to trzeba dobrze przemuœleæ
-	std::vector<int> indexes;
-	if (static_cast<UnitAction>(id) == UnitAction::ATTACK) {
-		if (unit->getLevel()->canRangeAttack) {
-			if (toUse->belowRangeLimit()) {
-				indexes = toUse->getIndexesForRangeUse(unit);
-			}
-		}
-	}
-	if(indexes.empty()) {
-		 indexes = toUse->getIndexesForUse(unit);
-	}
-	
+	std::vector<int> indexes = getIndexesToAct();
+
 	if (!indexes.empty()) {
 		const auto find = std::ranges::find(indexes, unit->getMainBucketIndex());
 
@@ -98,4 +88,21 @@ void IndividualOrder::followAndAct() {
 			unit->action(static_cast<UnitAction>(id), ActionParameter(toUse));
 		}
 	}
+}
+
+std::vector<int> IndividualOrder::getIndexesToAct() const {
+	//TODO to coœ przemyœleæ
+	std::vector<int> indexes;
+	if (static_cast<UnitAction>(id) == UnitAction::ATTACK) {
+		if (unit->getLevel()->canRangeAttack) {
+			if (toUse->belowRangeLimit()) {
+				indexes = toUse->getIndexesForRangeUse(unit);
+			}
+		}
+	}
+	if (indexes.empty()) {
+		//close and collect
+		indexes = toUse->getIndexesForUse(unit);
+	}
+	return indexes;
 }

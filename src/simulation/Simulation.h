@@ -4,6 +4,8 @@
 #include <vector>
 #include <functional>
 
+#include "database/db_strcut.h"
+
 enum class UnitAction : char;
 enum class UnitState : char;
 enum class SimColorMode : char;
@@ -61,6 +63,7 @@ private:
 	void levelUp(QueueElement* done, char player) const;
 	void updateBuildingQueues(float time) const;
 	void updateQueues() const;
+	std::function<bool(Physical*)> getCondition(db_unit_level* level) const;
 	void selfAI() const;
 	void addTestEntities() const;
 
