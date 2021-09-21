@@ -8,15 +8,14 @@ class ShotState : public State {
 public:
 	ShotState() : State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE
-	}) { }
+	}) {
+	}
 
 	~ShotState() = default;
 
 	void shot(Unit* unit) {
 		unit->missileData->reset();
-		unit->missileData->init(unit->getPosition(),
-		                        unit->thingToInteract->getPosition(),
-		                        unit->thingToInteract);
+		unit->missileData->init(unit->getPosition(), unit->thingToInteract);
 	}
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
@@ -30,7 +29,7 @@ public:
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
-		unit->thingToInteract=parameter.thingToInteract;
+		unit->thingToInteract = parameter.thingToInteract;
 		shot(unit);
 		unit->thingToInteract->upRange();
 		unit->currentFrameState = 1;
@@ -55,7 +54,8 @@ public:
 			unit->missileData->reset();
 			StateManager::toDefaultState(unit);
 		} else if (!unit->missileData->isUp() && unit->currentFrameState % unit->dbLevel->rangeAttackReload == 0) {
-			if (closeEnough(unit)) {//TODO tu cos innego
+			if (closeEnough(unit)) {
+				//TODO tu cos innego
 				shot(unit);
 			} else {
 				unit->missileData->reset();

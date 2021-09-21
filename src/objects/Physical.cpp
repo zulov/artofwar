@@ -126,6 +126,10 @@ void Physical::unSelect() {
 	}
 }
 
+float Physical::getHeight() const {
+	return model->GetModel()->GetBoundingBox().Size().y_ * node->GetScale().y_;
+}
+
 void Physical::loadXml(const Urho3D::String& xmlName) {
 	Urho3D::String name;
 	if (SIM_GLOBALS.HEADLESS) {

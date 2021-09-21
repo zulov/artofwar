@@ -103,6 +103,7 @@ public:
 	virtual unsigned char getMaxCloseUsers() const { return 8; }
 	virtual bool isInCloseRange(int index) const = 0;
 	virtual const Urho3D::String& getName() const = 0;
+	float getHeight() const;
 
 protected:
 	void loadXml(const Urho3D::String& xmlName);
