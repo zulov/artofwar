@@ -1,4 +1,7 @@
 ﻿#include "Unit.h"
+
+#include <Urho3D/Resource/Localization.h>
+
 #include "colors/ColorPaletteRepo.h"
 #include "colors/ColorPallet.h"
 #include "database/DatabaseCache.h"
@@ -260,16 +263,23 @@ void Unit::setIndexToInteract(int index) {
 	indexToInteract = index;
 }
 
-Urho3D::String Unit::toMultiLineString() {
+Urho3D::String Unit::getInfo() const {
+	const auto l10n = Game::getLocalization();
 	return Urho3D::String(dbUnit->name + " " + dbLevel->name)
-	       .Append("\nAtak: ").Append(Urho3D::String(dbLevel->closeAttackVal))
-	       .Append("|").Append(Urho3D::String(dbLevel->rangeAttackVal))
-	       .Append("|").Append(Urho3D::String(dbLevel->chargeAttackVal))
-	       .Append("|").Append(Urho3D::String(dbLevel->buildingAttackVal))
-	       .Append("\nObrona: ").Append(Urho3D::String(dbLevel->armor))
-	       .Append("\nZdrowie: ").Append(Urho3D::String(hp))
-	       .Append("/").Append(Urho3D::String(dbLevel->maxHp))
-	       .Append("\nStan:").Append(Urho3D::String(magic_enum::enum_name(state).data()));
+		.AppendWithFormat(l10n->Get("info_unit").CString(),
+		                  asStringF(dbLevel->closeAttackVal, 1).c_str(),
+		                  asStringF(dbLevel->rangeAttackVal, 1).c_str(),
+		                  asStringF(dbLevel->chargeAttackVal, 1).c_str(),
+		                  asStringF(dbLevel->buildingAttackVal, 1).c_str(),
+		                  asStringF(dbLevel->armor).c_str(),
+		                  (int)hp, dbLevel->maxHp,
+		                  closeUsers, getMaxCloseUsers(),
+		                  rangeUsers, getMaxRangeUsers(),
+		                  Urho3D::String(magic_enum::enum_name(state).data()));
+}
+
+const Urho3D::String&  Unit::getName() const {
+	return dbUnit->name;
 }
 
 bool Unit::action(UnitAction unitAction) {

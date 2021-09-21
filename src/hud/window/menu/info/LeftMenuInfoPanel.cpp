@@ -13,7 +13,8 @@
 #include "player/PlayersManager.h"
 #include "utils/NamesUtils.h"
 
-LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "LeftMenuInfoPanel", {}) {}
+LeftMenuInfoPanel::LeftMenuInfoPanel(Urho3D::XMLFile* _style) : SimplePanel(_style, "LeftMenuInfoPanel", {}) {
+}
 
 void LeftMenuInfoPanel::createBody() {
 	text = addChildText(window, "MyText", style);
@@ -25,16 +26,25 @@ void LeftMenuInfoPanel::updateSelected(SelectedInfo* selectedInfo) {
 		if (selectedInfo->getAllNumber() == 1) {
 			auto optInfoTypes = selectedInfo->getOneSelectedTypeInfo();
 			if (optInfoTypes.has_value()) {
-				text->SetText(optInfoTypes.value()->getData().at(0)->toMultiLineString());
+				text->SetText(optInfoTypes.value()->getData().at(0)->getInfo());
 				setVisible(true);
 			}
 		} else if (selectedInfo->isSthSelected()) {
 			Urho3D::String msg = "";
-			for (auto& selectedType : selectedInfo->getSelectedTypes()) {
-				if (!selectedType->getData().empty()) {
-					auto phy = selectedType->getData().at(0);
-					msg.Append(getName(phy->getType(), phy->getId()))
-					   .Append(": ").Append(Urho3D::String(selectedType->getData().size())).Append("\n");
+			for (const auto& selectedType : selectedInfo->getSelectedTypes()) {
+				auto& data = selectedType->getData();
+
+				if (!data.empty()) {
+					float sumHpPer = 0.f;
+					for (const auto physical : data) {
+						sumHpPer += physical->getHealthPercent();
+					}
+					sumHpPer *= 100;
+					sumHpPer /= data.size();
+
+					msg.Append(data.at(0)->getName())
+					   .Append(": ").Append(Urho3D::String(data.size())).Append(" | ")
+					   .Append(asStringF(sumHpPer, 1).c_str()).Append("%\n");
 				}
 			}
 			text->SetText(msg);

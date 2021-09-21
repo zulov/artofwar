@@ -125,7 +125,9 @@ public:
 
 	bool indexChanged() const override { return indexHasChanged; }
 	std::string getValues(int precision) override;
-	Urho3D::String toMultiLineString() override;
+	Urho3D::String getInfo() const override;
+	const Urho3D::String& getName() const override;
+
 	float getMaxHpBarSize() const override;
 	bool isAlive() const override;
 	char getLevelNum() override;

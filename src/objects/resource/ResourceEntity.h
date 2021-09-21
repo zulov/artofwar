@@ -23,7 +23,9 @@ public:
 	const Urho3D::IntVector2 getGridSize() const override;
 
 	float getMaxHpBarSize() const override;
-	Urho3D::String toMultiLineString() override;
+	Urho3D::String getInfo() const override;
+	const Urho3D::String& getName() const override;
+
 	std::string getValues(int precision) override;
 
 	void action(ResourceActionType type, char player);

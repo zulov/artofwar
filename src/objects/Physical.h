@@ -92,7 +92,7 @@ public:
 	void unSelect();
 
 	virtual float getSightRadius() const { return -1.f; }
-	virtual Urho3D::String toMultiLineString();
+	virtual Urho3D::String getInfo() const = 0;
 
 	virtual char getLevelNum();
 
@@ -100,8 +100,9 @@ public:
 	}
 
 	virtual unsigned char getMaxRangeUsers() const { return 8; }
-	virtual unsigned char getMaxCloseUsers() const { return 8; }
+	virtual unsigned char getMaxCloseUsers() const { return 16; }
 	virtual bool isInCloseRange(int index) const = 0;
+	virtual const Urho3D::String& getName() const = 0;
 
 protected:
 	void loadXml(const Urho3D::String& xmlName);

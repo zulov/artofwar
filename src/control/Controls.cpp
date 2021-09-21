@@ -524,7 +524,7 @@ void Controls::defaultControl() {
 
 		if (raycast(hitData)) {
 			if (hitData.clicked) {
-				Game::getLog()->Write(3, hitData.clicked->toMultiLineString());
+				Game::getLog()->Write(3, hitData.clicked->getInfo());
 			}
 			Game::getLog()->Write(3, hitData.position.ToString());
 		}

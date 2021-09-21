@@ -40,13 +40,17 @@ float ResourceEntity::getMaxHpBarSize() const {
 	return 1;
 }
 
-Urho3D::String ResourceEntity::toMultiLineString() {
-	auto l10n = Game::getLocalization();
+Urho3D::String ResourceEntity::getInfo() const {
+	const auto l10n = Game::getLocalization();
 
 	return Urho3D::String(dbResource->name)
-	       .Append("\n" + l10n->Get("ml_res_1") + ": ").Append(Urho3D::String((int)hp))
-	       .Append("\n" + l10n->Get("ml_res_2") + ": ").Append(Urho3D::String((int)closeUsers))
-	       .Append("/").Append(Urho3D::String((int)getMaxCloseUsers()));
+		.AppendWithFormat(l10n->Get("info_resource").CString(),
+		                  (int)hp, dbResource->maxHp,
+		                  closeUsers, getMaxCloseUsers());
+}
+
+const Urho3D::String& ResourceEntity::getName() const {
+	return dbResource->name;
 }
 
 std::string ResourceEntity::getValues(int precision) {

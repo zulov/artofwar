@@ -32,8 +32,8 @@ std::string join(std::span<T> span, char separator = ';') {
 }
 
 
-inline std::string asStringF(float val) {
+inline std::string asStringF(float val, int precision = 2) {
 	std::stringstream ss;
-	ss << std::fixed << std::setprecision(2) << val;
+	ss << std::fixed << std::setprecision(precision) << val;
 	return ss.str();
 }

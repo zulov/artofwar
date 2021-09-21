@@ -87,15 +87,21 @@ std::pair<float, bool> Building::absorbAttack(float attackCoef) {
 	return {val, false};
 }
 
-Urho3D::String Building::toMultiLineString() {
-	auto l10n = Game::getLocalization();
+Urho3D::String Building::getInfo() const {
+	const auto l10n = Game::getLocalization();
 
 	return Urho3D::String(dbBuilding->name + " " + dbLevel->name)
-		.AppendWithFormat(l10n->Get("ml_build").CString(), asStringF(dbLevel->rangeAttackVal).c_str(), asStringF(dbLevel->armor).c_str(),
-		                  (int)hp,
-		                  dbLevel->maxHp,
-		                  closeUsers,
-		                  getMaxCloseUsers(), magic_enum::enum_name(state).data());
+		.AppendWithFormat(l10n->Get("info_build").CString(),
+		                  asStringF(dbLevel->rangeAttackVal, 1).c_str(),
+		                  asStringF(dbLevel->armor).c_str(),
+		                  (int)hp, dbLevel->maxHp,
+		                  closeUsers, getMaxCloseUsers(),
+		                  rangeUsers, getMaxRangeUsers(),
+		                  Urho3D::String(magic_enum::enum_name(state).data()));
+}
+
+const Urho3D::String& Building::getName() const {
+	return dbBuilding->name;
 }
 
 void Building::action(BuildingActionType type, short id) const {

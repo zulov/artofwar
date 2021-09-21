@@ -93,10 +93,6 @@ void Physical::load(dbload_physical* dbloadPhysical) {
 	hp = dbloadPhysical->hp;
 }
 
-Urho3D::String Physical::toMultiLineString() {
-	return "Physical";
-}
-
 char Physical::getLevelNum() {
 	return -1;
 }

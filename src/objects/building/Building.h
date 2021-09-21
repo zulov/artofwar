@@ -28,7 +28,9 @@ public:
 	AbstractQueueManager* getQueue() const { return queue; }
 	bool isReady() const { return ready; }
 
-	Urho3D::String toMultiLineString() override;
+	Urho3D::String getInfo() const override;
+	const Urho3D::String& getName() const override;
+
 	std::pair<float, bool> absorbAttack(float attackCoef) override;
 
 	ObjectType getType() const override { return ObjectType::BUILDING; }
