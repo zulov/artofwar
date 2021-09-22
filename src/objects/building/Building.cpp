@@ -19,6 +19,7 @@
 
 #include "math/SpanUtils.h"
 #include "objects/queue/QueueElement.h"
+#include "objects/unit/MissileData.h"
 #include "simulation/env/Environment.h"
 
 
@@ -69,6 +70,10 @@ void Building::populate() {
 		queue = new QueueManager(dbLevel->queueMaxCapacity);
 	} else {
 		queue = new SimpleQueueManager();
+	}
+	delete missileData;
+	if (dbLevel->canRangeAttack) {
+		missileData = new MissileData(150, 7);
 	}
 }
 

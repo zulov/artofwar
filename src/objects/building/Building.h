@@ -2,6 +2,7 @@
 #include "objects/static/Static.h"
 
 
+struct MissileData;
 class AbstractQueueManager;
 struct dbload_building;
 enum class BuildingActionType : char;
@@ -57,4 +58,5 @@ private:
 	db_building_level* dbLevel;
 
 	AbstractQueueManager* queue{};
+	MissileData* missileData{};
 };
