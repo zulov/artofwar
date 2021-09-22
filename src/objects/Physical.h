@@ -125,7 +125,7 @@ protected:
 
 	short id = -1; // optm
 	float invMaxHp; // optm
-	float hp;
+	float hp = -1;
 private:
 	virtual float getAuraSize(const Urho3D::Vector3& boundingBox) const;
 

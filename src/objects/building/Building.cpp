@@ -98,7 +98,7 @@ Urho3D::String Building::getInfo() const {
 		                  (int)hp, dbLevel->maxHp,
 		                  closeUsers, getMaxCloseUsers(),
 		                  rangeUsers, getMaxRangeUsers(),
-		                  Urho3D::String(magic_enum::enum_name(state).data()));
+		                  magic_enum::enum_name(state).data());
 }
 
 const Urho3D::String& Building::getName() const {
@@ -131,7 +131,11 @@ void Building::action(BuildingActionType type, short id) const {
 
 void Building::levelUp(char level) {
 	dbLevel = dbBuilding->getLevel(level).value(); //TODO BUG value()
+	const int hpTemp = hp;
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
+	if (hpTemp >= 0) {
+		hp = hpTemp;
+	}
 }
 
 Building* Building::load(dbload_building* dbloadBuilding) {

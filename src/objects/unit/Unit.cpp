@@ -21,7 +21,6 @@
 #include "state/StateManager.h"
 #include "camera/CameraInfo.h"
 #include "player/Player.h"
-#include "player/PlayersManager.h"
 #include "utils/consts.h"
 #include "utils/Flags.h"
 
@@ -42,7 +41,7 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 	}
 
 	if (dbLevel->canRangeAttack) {
-		missileData = new MissileData(150, 2);
+		missileData = new MissileData(150, 7);
 	}
 }
 
@@ -270,7 +269,7 @@ Urho3D::String Unit::getInfo() const {
 		                  (int)hp, dbLevel->maxHp,
 		                  closeUsers, getMaxCloseUsers(),
 		                  rangeUsers, getMaxRangeUsers(),
-		                  Urho3D::String(magic_enum::enum_name(state).data()));
+		                  magic_enum::enum_name(state).data());
 }
 
 const Urho3D::String&  Unit::getName() const {
