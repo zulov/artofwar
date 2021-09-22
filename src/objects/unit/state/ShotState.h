@@ -45,6 +45,7 @@ public:
 			unit->thingToInteract->reduceRange();
 			unit->thingToInteract = nullptr;
 		}
+		unit->missileData->reset();
 	}
 
 	bool closeEnough(Unit* unit) const {

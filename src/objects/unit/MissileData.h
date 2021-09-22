@@ -5,9 +5,9 @@
 
 struct MissileData {
 	Urho3D::Vector2 direction;
-	float startHeight;
-
 	Urho3D::Node* node;
+	float startHeight;
+	float endHeight;
 
 	float distance;
 	float distanceSoFar;
@@ -28,6 +28,7 @@ struct MissileData {
 
 	void init(const Urho3D::Vector3& start, const Urho3D::Vector3& end) {
 		startHeight = start.y_;
+		endHeight = end.y_;
 
 		direction = dirTo(start, end);
 		distance = direction.Length();
@@ -48,7 +49,8 @@ struct MissileData {
 
 		pos.x_ += direction.x_ * timeStep;
 		pos.z_ += direction.y_ * timeStep;
-		pos.y_ = sin(distanceSoFar * Urho3D::M_PI / distance) * peakHeight + startHeight;
+		pos.y_ = sin(distanceSoFar * Urho3D::M_PI / distance) * peakHeight + startHeight * (distance - distanceSoFar) /
+			distance + distanceSoFar / distance * endHeight;
 		node->SetDirection(pos - node->GetPosition());
 		node->SetPosition(pos);
 
