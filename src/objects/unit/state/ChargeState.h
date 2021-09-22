@@ -12,7 +12,8 @@ public:
 	ChargeState(): State({
 		UnitState::STOP, UnitState::DEFEND, UnitState::DEAD, UnitState::GO, UnitState::FOLLOW, UnitState::CHARGE,
 		UnitState::MOVE
-	}) { }
+	}) {
+	}
 
 	~ChargeState() = default;
 
@@ -44,7 +45,9 @@ public:
 
 						const auto [value, died] = physical->absorbAttack(unit->dbLevel->chargeAttackVal);
 						Game::getEnvironment()->addAttack(unit, value);
-						Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(physical);
+						if (died) {
+							Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(physical);
+						}
 
 						const auto after = physical->getHealthPercent();
 						if (!unit->chargeData->updateHit(before, after)) {

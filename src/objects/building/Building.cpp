@@ -64,6 +64,7 @@ void Building::populate() {
 	hp = dbLevel->maxHp;
 	id = dbBuilding->id;
 	invMaxHp = dbLevel->invMaxHp;
+	delete queue;
 	if (dbLevel->queueMaxCapacity > 0) {
 		queue = new QueueManager(dbLevel->queueMaxCapacity);
 	} else {
@@ -198,7 +199,9 @@ void Building::setDeploy(int cell) {
 
 void Building::complete() {
 	ready = true;
+	const int hpTemp = hp;
 	loadXml("Objects/buildings/" + dbLevel->nodeName);
+	hp = hpTemp;
 }
 
 float Building::getSightRadius() const {

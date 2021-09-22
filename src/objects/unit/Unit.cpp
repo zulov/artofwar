@@ -87,11 +87,6 @@ void Unit::updatePosition() const {
 }
 
 bool Unit::move(float timeStep, const CameraInfo* camInfo) {
-	if (missileData && missileData->isUp()) {
-		auto [value, died] = missileData->update(timeStep, dbLevel->rangeAttackVal);
-		Game::getEnvironment()->addAttack(this, value);
-		Game::getPlayersMan()->getPlayer(getPlayer())->addKilled(missileData->getAim());
-	}
 	bool hasMoved = false;
 	const bool prevVisible = isVisible;
 

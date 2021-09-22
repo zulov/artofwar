@@ -28,7 +28,7 @@ public:
 		auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
 		const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());
 		assert(found != indexesToUse.end());
-		unit->currentFrameState = 1;
+
 		setStartData(unit, *found, parameter.thingToInteract);
 
 		unit->lastActionThingId = parameter.thingToInteract->getId();

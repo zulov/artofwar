@@ -126,7 +126,7 @@ void Physical::unSelect() {
 	}
 }
 
-float Physical::getHeight() const {
+float Physical::getModelHeight() const {
 	return model->GetModel()->GetBoundingBox().Size().y_ * node->GetScale().y_;
 }
 

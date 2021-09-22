@@ -41,7 +41,7 @@ public:
 		auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
 		const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());
 		assert(found != indexesToUse.end());
-		unit->currentFrameState = 1;
+		unit->currentFrameState = 0;
 
 		setData(unit, *found, parameter.thingToInteract);
 
@@ -83,13 +83,15 @@ public:
 				return;
 			}
 		}
-		if (unit->currentFrameState % unit->dbLevel->closeAttackReload == 0) {
+		if (unit->currentFrameState >= unit->dbLevel->closeAttackReload) {
 			const auto val = first->getType() == ObjectType::UNIT
 				                 ? unit->dbLevel->closeAttackVal
 				                 : unit->dbLevel->buildingAttackVal;
 			const auto [value, died] = first->absorbAttack(val);
 			Game::getEnvironment()->addAttack(unit, value);
-			Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(first);
+			if(died) {
+				Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(first);
+			}
 		}
 		++unit->currentFrameState;
 	}

@@ -1,5 +1,4 @@
 #pragma once
-#include "objects/Physical.h"
 #include "objects/NodeUtils.h"
 #include "math/MathUtils.h"
 #include <Urho3D/Math/Vector3.h>
@@ -9,7 +8,7 @@ struct MissileData {
 	Urho3D::Vector3 end;
 	Urho3D::Vector3 direction;
 
-	Physical* aim;
+	//Physical* aim;
 	Urho3D::Node* node;
 
 	float distance;
@@ -23,8 +22,6 @@ struct MissileData {
 		node = nullptr;
 	}
 
-	Physical* getAim() const { return aim; }
-
 	MissileData(float peakHeight, float speed)
 		: peakHeight(peakHeight),
 		  speed(speed) {
@@ -33,13 +30,10 @@ struct MissileData {
 
 	MissileData(const MissileData&) = delete;
 
-	void init(const Urho3D::Vector3& _start, Physical* _aim, float _speed = 7) {
-		end = _aim->getPosition();
-		end.y_ += _aim->getHeight() / 2;
-
-		start = _start;
-		aim = _aim;
-		speed = _speed;
+	void init(const Urho3D::Vector3& start, const Urho3D::Vector3& end, float speed = 7) {
+		this->end = end;
+		this->start = start;
+		this->speed = speed;
 
 		direction = end - start;
 		distance = direction.Length();
@@ -54,7 +48,7 @@ struct MissileData {
 		node->SetPosition(start);
 	}
 
-	std::pair<float, bool> update(float timeStep, float attackCoef) {
+	bool update(float timeStep) {
 		distanceSoFar += speed * timeStep;
 		auto pos = node->GetPosition();
 		pos += direction * timeStep; //TODO uwzglednic tylko 2 wymiary
@@ -63,12 +57,15 @@ struct MissileData {
 		node->SetPosition(pos);
 
 		if (finished()) {
-			if (aim && aim->isAlive()
-				&& sqDist(aim->getPosition(), getPosition()) < 3 * 3) {
-				return aim->absorbAttack(attackCoef);
-			}
 			reset();
+			return true;
+			// if (aim && aim->isAlive()
+			// 	&& sqDist(aim->getPosition(), getPosition()) < 3 * 3) {
+			// 	return aim->absorbAttack(attackCoef);
+			// }
+			//
 		}
+		return false;
 	}
 
 	void reset() const {

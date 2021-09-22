@@ -56,5 +56,5 @@ private:
 	db_building* dbBuilding;
 	db_building_level* dbLevel;
 
-	AbstractQueueManager* queue;
+	AbstractQueueManager* queue{};
 };

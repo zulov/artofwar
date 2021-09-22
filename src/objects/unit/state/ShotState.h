@@ -15,7 +15,12 @@ public:
 
 	void shot(Unit* unit) {
 		unit->missileData->reset();
-		unit->missileData->init(unit->getPosition(), unit->thingToInteract);
+		const auto enemy = unit->thingToInteract;
+		auto end = enemy->getPosition();
+		end.y_ += enemy->getModelHeight() / 2;
+
+		unit->missileData->init(unit->getPosition(), end);
+		unit->currentFrameState = 0;
 	}
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
@@ -32,7 +37,7 @@ public:
 		unit->thingToInteract = parameter.thingToInteract;
 		shot(unit);
 		unit->thingToInteract->upRange();
-		unit->currentFrameState = 1;
+		unit->currentFrameState = 0;
 	}
 
 	void onEnd(Unit* unit) override {
@@ -43,17 +48,24 @@ public:
 	}
 
 	bool closeEnough(Unit* unit) const {
-		return sqDist(unit->getPosition(), unit->missileData->aim->getPosition()) < unit->dbLevel->sqRangeAttackRange *
-			unit->dbLevel->rangeAttackRange;
+		return sqDist(unit->getPosition(), unit->thingToInteract->getPosition()) < unit->dbLevel->sqRangeAttackRange;
 	}
 
 	void execute(Unit* unit, float timeStep) override {
-		unit->velocity = Urho3D::Vector2::ZERO;
+		//unit->velocity = Urho3D::Vector2::ZERO;
 
-		if (!unit->missileData->aim || !unit->missileData->aim->isAlive()) {
+		if (!unit->thingToInteract || !unit->thingToInteract->isAlive()) {
 			unit->missileData->reset();
 			StateManager::toDefaultState(unit);
-		} else if (!unit->missileData->isUp() && unit->currentFrameState % unit->dbLevel->rangeAttackReload == 0) {
+		} else if (unit->missileData->isUp()) {
+			if (unit->missileData->update(timeStep)) {
+				const auto [value, died] = unit->thingToInteract->absorbAttack(unit->dbLevel->rangeAttackVal);
+				Game::getEnvironment()->addAttack(unit, value);
+				if (died) {
+					Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(unit->thingToInteract);
+				}
+			}
+		} else if (!unit->missileData->isUp() && unit->currentFrameState >= unit->dbLevel->rangeAttackReload) {
 			if (closeEnough(unit)) {
 				//TODO tu cos innego
 				shot(unit);
