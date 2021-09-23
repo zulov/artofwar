@@ -277,6 +277,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\objects\projectile\ProjectileManager.cpp" />
     <ClCompile Include="src\objects\SelectedObject.cpp" />
     <ClCompile Include="src\objects\queue\SimpleQueueManager.cpp" />
     <ClCompile Include="src\objects\unit\ActionParameter.cpp" />
@@ -400,6 +401,7 @@
     <ClCompile Include="src\simulation\env\bucket\StaticGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
     <ClInclude Include="src\objects\SelectedObject.h" />
     <ClInclude Include="src\objects\queue\AbstractQueueManager.h" />
     <ClInclude Include="src\objects\queue\SimpleQueueManager.h" />
@@ -483,7 +485,7 @@
     <ClInclude Include="src\objects\NodeUtils.h" />
     <ClInclude Include="src\objects\unit\ChargeData.h" />
     <ClInclude Include="src\objects\unit\SimColorMode.h" />
-    <ClInclude Include="src\objects\unit\MissileData.h" />
+    <ClInclude Include="src\objects\projectile\ProjectileData.h" />
     <ClInclude Include="src\utils\OtherUtils.h" />
     <ClInclude Include="src\utils\replace_utils.h" />
     <ClInclude Include="src\simulation\env\bucket\path\DrawGridUtils.h" />

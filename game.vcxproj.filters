@@ -206,6 +206,7 @@
     <ClCompile Include="src\simulation\env\influence\map\VisibilityMap.cpp" />
     <ClCompile Include="src\simulation\env\bucket\StaticGrid.cpp" />
     <ClCompile Include="src\objects\SelectedObject.cpp" />
+    <ClCompile Include="src\objects\projectile\ProjectileManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Main.h" />
@@ -426,7 +427,7 @@
     <ClInclude Include="src\simulation\env\Environment.h">
       <Filter>simulation\env</Filter>
     </ClInclude>
-    <ClInclude Include="src\objects\unit\MissileData.h" />
+    <ClInclude Include="src\objects\projectile\ProjectileData.h" />
     <ClInclude Include="src\objects\ActionType.h" />
     <ClInclude Include="src\colors\ColorPaletteRepo.h" />
     <ClInclude Include="src\simulation\env\bucket\path\PathFinder.h" />
@@ -540,6 +541,7 @@
     <ClInclude Include="src\simulation\env\bucket\StaticGrid.h" />
     <ClInclude Include="src\objects\SelectedObject.h" />
     <ClInclude Include="src\objects\unit\state\StateUtils.h" />
+    <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CoreData" />

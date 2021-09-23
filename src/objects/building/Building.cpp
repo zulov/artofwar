@@ -65,15 +65,15 @@ void Building::populate() {
 	hp = dbLevel->maxHp;
 	id = dbBuilding->id;
 	invMaxHp = dbLevel->invMaxHp;
-	delete queue;
+	delete queue; //TODO optimize
 	if (dbLevel->queueMaxCapacity > 0) {
 		queue = new QueueManager(dbLevel->queueMaxCapacity);
 	} else {
 		queue = new SimpleQueueManager();
 	}
-	delete missileData;
+	delete missileData; //TODO optimize
 	if (dbLevel->canRangeAttack) {
-		missileData = new MissileData(150, 7);
+		missileData = new ProjectileData(150, 7);
 	}
 }
 

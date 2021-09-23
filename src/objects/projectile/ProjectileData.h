@@ -3,7 +3,7 @@
 #include "math/MathUtils.h"
 #include <Urho3D/Math/Vector3.h>
 
-struct MissileData {
+struct ProjectileData {
 	Urho3D::Vector2 direction;
 	Urho3D::Node* node;
 	float startHeight;
@@ -15,16 +15,16 @@ struct MissileData {
 	float peakHeight;
 	float speed;
 
-	~MissileData() {
+	~ProjectileData() {
 		node->Remove();
 		node = nullptr;
 	}
 
-	MissileData(float peakHeight, float speed) : peakHeight(peakHeight), speed(speed) {
+	ProjectileData(float peakHeight, float speed) : peakHeight(peakHeight), speed(speed) {
 		node = createNode("Objects/units/additional/missile.xml");
 	}
 
-	MissileData(const MissileData&) = delete;
+	ProjectileData(const ProjectileData&) = delete;
 
 	void init(const Urho3D::Vector3& start, const Urho3D::Vector3& end) {
 		startHeight = start.y_;

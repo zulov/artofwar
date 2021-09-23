@@ -41,7 +41,7 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 	}
 
 	if (dbLevel->canRangeAttack) {
-		missileData = new MissileData(150, 7);
+		missileData = new ProjectileData(150, 7);
 	}
 }
 
