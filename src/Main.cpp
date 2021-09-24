@@ -31,6 +31,7 @@
 #include "math/RandGen.h"
 #include "math/SpanUtils.h"
 #include "objects/ActionType.h"
+#include "objects/projectile/ProjectileManager.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
 #include "scene/LevelBuilder.h"
@@ -59,6 +60,7 @@ Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE),
 	MySprite::RegisterObject(context);
 	Game::init();
 	RandGen::init();
+	ProjectileManager::init();
 }
 
 void Main::Setup() {
@@ -161,6 +163,8 @@ void Main::Stop() {
 	Game::setDatabaseCache(nullptr);
 	Game::dispose();
 	RandGen::dispose();
+	ProjectileManager::dispose();
+
 	if (!SIM_GLOBALS.HEADLESS) { engine_->DumpResources(true); }
 	auto a = std::chrono::system_clock::now().time_since_epoch();
 	auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(a).count();

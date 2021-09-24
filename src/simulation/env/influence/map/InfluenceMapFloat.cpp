@@ -34,6 +34,9 @@ void InfluenceMapFloat::updateInt(Physical* thing, int value) {
 void InfluenceMapFloat::tempUpdate(Physical* thing, float value) {
 	tempUpdate(calculator->indexFromPosition(thing->getPosition()), value);
 }
+void InfluenceMapFloat::tempUpdate(const Urho3D::Vector3& pos, float value) {
+	tempUpdate(calculator->indexFromPosition(pos), value);
+}
 
 void InfluenceMapFloat::tempUpdate(int index, float value) {
 	tempVals[index] += value;

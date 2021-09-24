@@ -88,7 +88,7 @@ public:
 				                 ? unit->dbLevel->closeAttackVal
 				                 : unit->dbLevel->buildingAttackVal;
 			const auto [value, died] = first->absorbAttack(val);
-			Game::getEnvironment()->addAttack(unit, value);
+			Game::getEnvironment()->addAttack(unit->getPlayer(), first->getPosition(), value);
 			if(died) {
 				Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(first);
 			}

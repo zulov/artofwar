@@ -2,6 +2,7 @@
 
 #include <Urho3D/Resource/Localization.h>
 
+#include "Game.h"
 #include "colors/ColorPaletteRepo.h"
 #include "colors/ColorPallet.h"
 #include "database/DatabaseCache.h"
@@ -10,7 +11,6 @@
 #include "debug/DebugUnitType.h"
 #include "math/VectorUtils.h"
 #include "objects/unit/ChargeData.h"
-#include "objects/unit/MissileData.h"
 #include "objects/unit/SimColorMode.h"
 #include "order/IndividualOrder.h"
 #include "order/enums/UnitAction.h"
@@ -20,10 +20,12 @@
 #include "simulation/formation/FormationManager.h"
 #include "state/StateManager.h"
 #include "camera/CameraInfo.h"
+#include "math/MathUtils.h"
 #include "player/Player.h"
 #include "utils/consts.h"
 #include "utils/Flags.h"
 
+#include "objects/NodeUtils.h"
 
 Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical(_position, true),
                                                                         state(UnitState::STOP),
@@ -39,15 +41,10 @@ Unit::Unit(Urho3D::Vector3& _position, int id, int player, int level) : Physical
 	if (dbLevel->canChargeAttack) {
 		chargeData = new ChargeData(150, 2);
 	}
-
-	if (dbLevel->canRangeAttack) {
-		missileData = new ProjectileData(150, 7);
-	}
 }
 
 Unit::~Unit() {
 	delete chargeData;
-	delete missileData;
 }
 
 bool Unit::isAlive() const {

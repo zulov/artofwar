@@ -57,7 +57,7 @@ public:
 	float getFieldSize() const;
 	std::vector<int>* getAreas(const std::span<float> result, char player);
 	void addCollect(Unit* unit, float value);
-	void addAttack(Unit* attacker, float value);
+	void addAttack(char player, const Urho3D::Vector3& position, float value);
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
 	bool isVisible(char player, const Urho3D::Vector2& pos);
 	Urho3D::Vector2 getCenter(int index) const;

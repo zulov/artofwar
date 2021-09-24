@@ -58,5 +58,4 @@ private:
 	db_building_level* dbLevel;
 
 	AbstractQueueManager* queue{};
-	ProjectileData* missileData{};
 };

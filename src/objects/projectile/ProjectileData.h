@@ -3,9 +3,16 @@
 #include "math/MathUtils.h"
 #include <Urho3D/Math/Vector3.h>
 
+#include "objects/Physical.h"
+#include "player/Player.h"
+#include "player/PlayersManager.h"
+#include "simulation/env/Environment.h"
+
 struct ProjectileData {
 	Urho3D::Vector2 direction;
 	Urho3D::Node* node;
+	Physical* aim;
+
 	float startHeight;
 	float endHeight;
 
@@ -15,65 +22,90 @@ struct ProjectileData {
 	float peakHeight;
 	float speed;
 
-	~ProjectileData() {
-		node->Remove();
-		node = nullptr;
+	float attackVal;
+
+	char player;
+	bool active = false;
+
+	ProjectileData(Urho3D::Node* node): node(node) {
 	}
 
-	ProjectileData(float peakHeight, float speed) : peakHeight(peakHeight), speed(speed) {
-		node = createNode("Objects/units/additional/missile.xml");
+	~ProjectileData() {
+		// if (node) {
+		// 	node->Remove();
+		// }
 	}
 
 	ProjectileData(const ProjectileData&) = delete;
 
-	void init(const Urho3D::Vector3& start, const Urho3D::Vector3& end) {
-		startHeight = start.y_;
-		endHeight = end.y_;
+	void init(const Urho3D::Vector3& start, Physical* aim, float speed, char player, float attackVal) {
+		this->speed = speed;
+		this->aim = aim;
+		this->player = player;
+		this->attackVal = attackVal;
+
+		auto end = aim->getPosition();
 
 		direction = dirTo(start, end);
 		distance = direction.Length();
-		direction.Normalize();
-		direction *= speed;
-
-		peakHeight = distance / 3;
 
 		distanceSoFar = 0;
+		if (node) {
+			end.y_ += aim->getModelHeight() / 2;
+			startHeight = start.y_;
 
-		node->SetEnabled(true);
-		node->SetPosition(start);
+			endHeight = end.y_;
+			peakHeight = distance / 3; //+ rand() % 3-1;
+			direction.Normalize();
+			direction *= speed;
+			node->SetEnabled(true);
+			node->SetPosition(start);
+		}
+
+		active = true;
 	}
 
 	bool update(float timeStep) {
+		if (aim && !aim->isAlive()) {
+			aim = nullptr;
+		}
 		distanceSoFar += speed * timeStep;
-		auto pos = node->GetPosition();
+		if (node) {
+			auto pos = node->GetPosition();
 
-		pos.x_ += direction.x_ * timeStep;
-		pos.z_ += direction.y_ * timeStep;
-		pos.y_ = sin(distanceSoFar * Urho3D::M_PI / distance) * peakHeight + startHeight * (distance - distanceSoFar) /
-			distance + distanceSoFar / distance * endHeight;
-		node->SetDirection(pos - node->GetPosition());
-		node->SetPosition(pos);
+			pos.x_ += direction.x_ * timeStep;
+			pos.z_ += direction.y_ * timeStep;
+			pos.y_ = sin(distanceSoFar * Urho3D::M_PI / distance) * peakHeight + startHeight * (distance -
+					distanceSoFar) /
+				distance + distanceSoFar / distance * endHeight;
+			node->SetDirection(pos - node->GetPosition());
+			node->SetPosition(pos);
+		}
+		if (distanceSoFar >= distance && active) {
+			if (aim && aim->isAlive()) {
+				const auto [value, died] = aim->absorbAttack(attackVal);
+				Game::getEnvironment()->addAttack(player, aim->getPosition(), value);
+				if (died) {
+					Game::getPlayersMan()->getPlayer(player)->addKilled(aim);
+				}
+			}
 
-		if (finished()) {
 			reset();
 			return true;
 		}
 		return false;
 	}
 
-	void reset() const {
-		node->SetEnabled(false);
+	void reset() {
+		if (node) {
+			node->SetEnabled(false);
+		}
+		aim = nullptr;
+		active = false;
 	}
 
-	bool isUp() const {
-		return node->IsEnabled();
+	bool isActive() const {
+		return active;
 	}
 
-	bool finished() const {
-		return distanceSoFar >= distance && node->IsEnabled();
-	}
-
-	const Urho3D::Vector3& getPosition() const {
-		return node->GetPosition();
-	}
 };

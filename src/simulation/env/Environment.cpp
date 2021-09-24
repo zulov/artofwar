@@ -389,8 +389,8 @@ void Environment::addCollect(Unit* unit, float value) {
 	influenceManager.addCollect(unit, value);
 }
 
-void Environment::addAttack(Unit* attacker, float value) {
-	influenceManager.addAttack(attacker, value);
+void Environment::addAttack(char player, const Urho3D::Vector3& position, float value) {
+	influenceManager.addAttack(player, position, value);
 }
 
 void Environment::drawInfluence() {

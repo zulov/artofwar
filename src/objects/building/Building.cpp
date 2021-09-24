@@ -15,11 +15,9 @@
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Graphics/Material.h>
-#include <iomanip>
 
 #include "math/SpanUtils.h"
 #include "objects/queue/QueueElement.h"
-#include "objects/unit/MissileData.h"
 #include "simulation/env/Environment.h"
 
 
@@ -70,10 +68,6 @@ void Building::populate() {
 		queue = new QueueManager(dbLevel->queueMaxCapacity);
 	} else {
 		queue = new SimpleQueueManager();
-	}
-	delete missileData; //TODO optimize
-	if (dbLevel->canRangeAttack) {
-		missileData = new ProjectileData(150, 7);
 	}
 }
 

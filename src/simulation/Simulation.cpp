@@ -24,6 +24,7 @@
 #include "stats/Stats.h"
 #include "PerFrameAction.h"
 #include "SimInfo.h"
+#include "objects/projectile/ProjectileManager.h"
 #include "objects/unit/order/OrderUtils.h"
 
 Simulation::Simulation(Environment* enviroment): enviroment(enviroment) {
@@ -98,6 +99,7 @@ SimInfo* Simulation::update(float timeStep) {
 		applyForce(); //zmiany stanu
 
 		moveUnitsAndCheck(TIME_PER_UPDATE); //zmiany stanu
+		ProjectileManager::update(TIME_PER_UPDATE);//TODO czy to dobre miejsce? mog¹ tu ginaæ
 		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac w tym zmiany stanu
 		executeStateTransition();
 		updateQueues();

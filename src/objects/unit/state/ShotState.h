@@ -1,6 +1,6 @@
 #pragma once
 #include "math/MathUtils.h"
-#include "objects/unit/MissileData.h"
+#include "objects/projectile/ProjectileManager.h"
 #include "objects/unit/state/State.h"
 
 
@@ -14,17 +14,13 @@ public:
 	~ShotState() = default;
 
 	void shot(Unit* unit) {
-		unit->missileData->reset();
-		const auto enemy = unit->thingToInteract;
-		auto end = enemy->getPosition();
-		end.y_ += enemy->getModelHeight() / 2;
-
-		unit->missileData->init(unit->getPosition(), end);
+		ProjectileManager::shoot(unit->getPosition(), unit->thingToInteract, 7, unit->getPlayer(),
+		                         unit->getLevel()->rangeAttackVal);
 		unit->currentFrameState = 0;
 	}
 
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
-		assert(unit->missileData);
+		assert(unit->getLevel()->canRangeAttack);
 		if (parameter.isFirstThingAlive()) {
 			auto const indexesToUse = parameter.thingToInteract->getIndexesForRangeUse(unit);
 			return std::ranges::find(indexesToUse, unit->getMainBucketIndex()) != indexesToUse.end()
@@ -45,7 +41,6 @@ public:
 			unit->thingToInteract->reduceRange();
 			unit->thingToInteract = nullptr;
 		}
-		unit->missileData->reset();
 	}
 
 	bool closeEnough(Unit* unit) const {
@@ -56,22 +51,12 @@ public:
 		//unit->velocity = Urho3D::Vector2::ZERO;
 
 		if (!unit->thingToInteract || !unit->thingToInteract->isAlive()) {
-			unit->missileData->reset();
 			StateManager::toDefaultState(unit);
-		} else if (unit->missileData->isUp()) {
-			if (unit->missileData->update(timeStep)) {
-				const auto [value, died] = unit->thingToInteract->absorbAttack(unit->dbLevel->rangeAttackVal);
-				Game::getEnvironment()->addAttack(unit, value);
-				if (died) {
-					Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(unit->thingToInteract);
-				}
-			}
-		} else if (!unit->missileData->isUp() && unit->currentFrameState >= unit->dbLevel->rangeAttackReload) {
+		} else if (unit->currentFrameState >= unit->dbLevel->rangeAttackReload) {
 			if (closeEnough(unit)) {
 				//TODO tu cos innego
 				shot(unit);
 			} else {
-				unit->missileData->reset();
 				StateManager::toDefaultState(unit);
 			}
 		}

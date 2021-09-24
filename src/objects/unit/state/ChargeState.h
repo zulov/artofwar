@@ -44,7 +44,7 @@ public:
 						const auto before = physical->getHealthPercent();
 
 						const auto [value, died] = physical->absorbAttack(unit->dbLevel->chargeAttackVal);
-						Game::getEnvironment()->addAttack(unit, value);
+						Game::getEnvironment()->addAttack(unit->getPlayer(), physical->getPosition(), value);
 						if (died) {
 							Game::getPlayersMan()->getPlayer(unit->getPlayer())->addKilled(physical);
 						}
