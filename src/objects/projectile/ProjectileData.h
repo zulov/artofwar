@@ -64,7 +64,7 @@ struct ProjectileData {
 				changeMaterial("Materials/projectiles/brown.xml", model);
 			}
 
-			startHeight = start.y_;
+			startHeight = start.y_;//plus height
 
 			endHeight = end.y_ + aim->getModelHeight() / (RandGen::nextRand(RandFloatType::OTHER, 3) + 2.f);
 			peakHeight = distance / (RandGen::nextRand(RandFloatType::OTHER, 3) + 4.1f);

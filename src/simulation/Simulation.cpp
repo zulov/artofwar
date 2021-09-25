@@ -138,9 +138,9 @@ void Simulation::selfAI() const {
 				}
 			}
 		}
-		for (const auto building : *buildings) {
-			building->updateAi();
-		}
+	}
+	for (const auto building : *buildings) {
+		building->updateAi();
 	}
 }
 

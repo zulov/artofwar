@@ -14,7 +14,6 @@
 #include <string>
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Resource/Localization.h>
-#include <Urho3D/Graphics/Material.h>
 
 #include "math/MathUtils.h"
 #include "math/SpanUtils.h"
@@ -156,7 +155,6 @@ void Building::updateAi() {
 		currentFrameState = 0;
 	}
 	if (dbLevel->canRangeAttack) {
-
 		if (thingToInteract && currentFrameState >= dbLevel->rangeAttackReload) {
 			ProjectileManager::shoot(position, thingToInteract, 7, player, dbLevel);
 			currentFrameState = 0;
@@ -172,6 +170,7 @@ void Building::updateAi() {
 			}
 		}
 	}
+
 }
 
 std::optional<int> Building::getDeploy() {
