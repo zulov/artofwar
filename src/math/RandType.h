@@ -3,7 +3,8 @@
 enum class RandFloatType : char {
 	AI=0,
 	RESOURCE_ROTATION,
-	COLLISION_FORCE
+	COLLISION_FORCE,
+	OTHER
 };
 
 enum class RandIntType : char {

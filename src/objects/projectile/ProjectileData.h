@@ -3,6 +3,7 @@
 #include "math/MathUtils.h"
 #include <Urho3D/Math/Vector3.h>
 
+#include "math/RandGen.h"
 #include "objects/Physical.h"
 #include "player/Player.h"
 #include "player/PlayersManager.h"
@@ -51,11 +52,18 @@ struct ProjectileData {
 
 		distanceSoFar = 0;
 		if (node) {
-			end.y_ += aim->getModelHeight() / 2;
+			const auto model = node->GetComponent<Urho3D::StaticModel>();
+			if (aim->getType() == ObjectType::BUILDING) {
+				changeMaterial("Materials/projectiles/black.xml", model);
+			} else {
+				changeMaterial("Materials/projectiles/brown.xml", model);
+			}
+
+			end.y_ += aim->getModelHeight() / (RandGen::nextRand(RandFloatType::OTHER, 3) + 2.f);
 			startHeight = start.y_;
 
 			endHeight = end.y_;
-			peakHeight = distance / 3; //+ rand() % 3-1;
+			peakHeight = distance / (RandGen::nextRand(RandFloatType::OTHER, 3) + 4.1f);
 			direction.Normalize();
 			direction *= speed;
 			node->SetEnabled(true);

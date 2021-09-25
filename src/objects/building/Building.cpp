@@ -39,7 +39,7 @@ Building::~Building() {
 void Building::postCreate() {
 	ready = false;
 	queue->add(1, QueueActionType::BUILDING_CREATE, getId(), 1);
-	changeMaterial(Game::getCache()->GetResource<Urho3D::Material>("Materials/orange_overlay.xml"), model);
+	changeMaterial("Materials/orange_overlay.xml", model);
 }
 
 float Building::getMaxHpBarSize() const {

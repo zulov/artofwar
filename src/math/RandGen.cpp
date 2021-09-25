@@ -16,7 +16,7 @@ void RandGen::init() {
 		std::mt19937 gen(2);
 		std::uniform_real_distribution disFloat(0.0, 1.0);
 		std::fill_n(instance->indexesFloat, magic_enum::enum_count<RandFloatType>(), 0);
-		for (int i = 0; i < magic_enum::enum_count<RandIntType>(); ++i) {
+		for (int i = 0; i < magic_enum::enum_count<RandFloatType>(); ++i) {
 			instance->dataFloat[i].reserve(RAND_TAB_SIZE);
 			for (int j = 0; j < RAND_TAB_SIZE; ++j) {
 				instance->dataFloat[i].push_back(disFloat(gen));

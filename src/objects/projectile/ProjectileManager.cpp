@@ -19,6 +19,7 @@ void ProjectileManager::update(float timeStep) {
 
 void ProjectileManager::shoot(const Urho3D::Vector3& start, Physical* aim, float speed, char player, float attackVal) {
 	ProjectileData* data = findNext();
+
 	data->init(start, aim, speed, player, attackVal);
 }
 
@@ -31,7 +32,7 @@ ProjectileData* ProjectileManager::findNext() {
 
 	Urho3D::Node* node = nullptr;
 	if (instance->projectiles.size() < MAX_PROJECTILE_NODES && !SIM_GLOBALS.HEADLESS) {
-		node = createNode("Objects/units/additional/missile.xml");
+		node = createNode("Objects/projectiles/arrow.xml");
 	}
 	const auto projectile = new ProjectileData(node);
 	instance->projectiles.push_back(projectile);

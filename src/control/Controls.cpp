@@ -569,7 +569,7 @@ void Controls::buildControl() {
 			} else {
 				textureName = "Materials/red_overlay.xml";
 			}
-			changeMaterial(Game::getCache()->GetResource<Urho3D::Material>(textureName), tempBuildingModel);
+			changeMaterial(textureName, tempBuildingModel);
 		}
 	}
 
