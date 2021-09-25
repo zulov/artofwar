@@ -15,7 +15,7 @@ public:
 
 	void shot(Unit* unit) {
 		ProjectileManager::shoot(unit->getPosition(), unit->thingToInteract, 7, unit->getPlayer(),
-		                         unit->getLevel()->rangeAttackVal);
+		                         unit->getLevel());
 		unit->currentFrameState = 0;
 	}
 

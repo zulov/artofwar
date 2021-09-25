@@ -39,13 +39,18 @@ struct ProjectileData {
 
 	ProjectileData(const ProjectileData&) = delete;
 
-	void init(const Urho3D::Vector3& start, Physical* aim, float speed, char player, float attackVal) {
+	void init(const Urho3D::Vector3& start, Physical* aim, float speed, char player, db_attack* dbAttack) {
 		this->speed = speed;
 		this->aim = aim;
 		this->player = player;
+		if (aim->getType() == ObjectType::BUILDING) {
+			this->attackVal = dbAttack->buildingAttackVal;
+		} else {
+			this->attackVal = dbAttack->rangeAttackVal;
+		}
 		this->attackVal = attackVal;
 
-		auto end = aim->getPosition();
+		const auto end = aim->getPosition();
 
 		direction = dirTo(start, end);
 		distance = direction.Length();
@@ -59,10 +64,9 @@ struct ProjectileData {
 				changeMaterial("Materials/projectiles/brown.xml", model);
 			}
 
-			end.y_ += aim->getModelHeight() / (RandGen::nextRand(RandFloatType::OTHER, 3) + 2.f);
 			startHeight = start.y_;
 
-			endHeight = end.y_;
+			endHeight = end.y_ + aim->getModelHeight() / (RandGen::nextRand(RandFloatType::OTHER, 3) + 2.f);
 			peakHeight = distance / (RandGen::nextRand(RandFloatType::OTHER, 3) + 4.1f);
 			direction.Normalize();
 			direction *= speed;

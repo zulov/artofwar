@@ -17,10 +17,10 @@ void ProjectileManager::update(float timeStep) {
 	}
 }
 
-void ProjectileManager::shoot(const Urho3D::Vector3& start, Physical* aim, float speed, char player, float attackVal) {
+void ProjectileManager::shoot(const Urho3D::Vector3& start, Physical* aim, float speed, char player, db_attack* dbAttack) {
 	ProjectileData* data = findNext();
 
-	data->init(start, aim, speed, player, attackVal);
+	data->init(start, aim, speed, player, dbAttack);
 }
 
 ProjectileData* ProjectileManager::findNext() {

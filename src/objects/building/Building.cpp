@@ -16,7 +16,9 @@
 #include <Urho3D/Resource/Localization.h>
 #include <Urho3D/Graphics/Material.h>
 
+#include "math/MathUtils.h"
 #include "math/SpanUtils.h"
+#include "objects/projectile/ProjectileManager.h"
 #include "objects/queue/QueueElement.h"
 #include "simulation/env/Environment.h"
 
@@ -146,6 +148,32 @@ QueueElement* Building::updateQueue(float time) const {
 	return queue->update(time);
 }
 
+void Building::updateAi() {
+	if (thingToInteract &&
+		(!thingToInteract->isAlive() || sqDistAs2D(thingToInteract->getPosition(), position) >
+			dbLevel->sqRangeAttackRange)) {
+		thingToInteract = nullptr;
+		currentFrameState = 0;
+	}
+	if (dbLevel->canRangeAttack) {
+
+		if (thingToInteract && currentFrameState >= dbLevel->rangeAttackReload) {
+			ProjectileManager::shoot(position, thingToInteract, 7, player, dbLevel);
+			currentFrameState = 0;
+		} else {
+			if (thingToInteract) {
+				++currentFrameState;
+			} else {
+				const auto thingsToInteract = Game::getEnvironment()->getNeighboursFromTeamNotEq(
+					this, dbLevel->rangeAttackRange);
+				const auto closest = Game::getEnvironment()->closestPhysicalSimple(
+					this, thingsToInteract, dbLevel->rangeAttackRange);
+				thingToInteract = closest;
+			}
+		}
+	}
+}
+
 std::optional<int> Building::getDeploy() {
 	if (deployIndex > -1) {
 		return deployIndex;
@@ -159,7 +187,7 @@ std::string Building::getValues(int precision) {
 }
 
 void Building::fillValues(std::span<float> weights) const {
-	auto nation = Game::getPlayersMan()->getPlayer(player)->getNation();
+	const auto nation = Game::getPlayersMan()->getPlayer(player)->getNation();
 
 	auto data = dbLevel->dbBuildingMetricPerNation[nation]->getParamsAsSpan();
 	assert(validateSpan(__LINE__, __FILE__, data));
@@ -217,4 +245,8 @@ short Building::getCostSum() const {
 
 bool Building::canUse(int index) const {
 	return Game::getEnvironment()->cellIsAttackable(index);
+}
+
+db_building_level* Building::getLevel() const {
+	return dbLevel;
 }

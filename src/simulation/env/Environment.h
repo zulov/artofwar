@@ -84,6 +84,7 @@ public:
 	float getPositionFromPercent(float value) const;
 	Physical* closestPhysical(Unit* unit, const std::vector<Physical*>* things,
 	                          const std::function<bool(Physical*)>& condition, int limit) const;
+	Physical* closestPhysicalSimple(const Physical* physical, const std::vector<Physical*>* things, float range) const;
 	Urho3D::Vector3 getValidPosForCamera(float percentX, float percentY, const Urho3D::Vector3& pos, float min) const;
 
 	Urho3D::Vector2 getCenter(int index) const;
@@ -139,7 +140,7 @@ private:
 	std::vector<Physical*>* getNeighbours(const Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
 	                                      float prevRadius) const;
 	void addIfInRange(Physical* physical, Physical* neight, const float sqRadius,
-		const std::function<bool(Physical*)>& condition) const;
+	                  const std::function<bool(Physical*)>& condition) const;
 	float mapSize;
 	MainGrid mainGrid;
 	Grid buildingGrid;

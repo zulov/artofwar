@@ -98,7 +98,8 @@ std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float ra
 	return neights;
 }
 
-std::vector<Physical*>* Environment::getNeighbours(const Urho3D::Vector3& center, Grid& bucketGrid, int id, float radius,
+std::vector<Physical*>* Environment::getNeighbours(const Urho3D::Vector3& center, Grid& bucketGrid, int id,
+                                                   float radius,
                                                    float prevRadius) const {
 	neights->clear();
 
@@ -126,7 +127,8 @@ const std::vector<Physical*>* Environment::getNeighboursSimilarAs(Physical* clic
 	return grids[cast(clicked->getType())]->getArrayNeightSimilarAs(clicked, 20.f);
 }
 
-std::vector<Physical*>* Environment::getResources(const Urho3D::Vector3& center, int id, float radius, float prevRadius) {
+std::vector<Physical*>*
+Environment::getResources(const Urho3D::Vector3& center, int id, float radius, float prevRadius) {
 	//return getNeighbours(center, resourceStaticGrid, id, radius, prevRadius);//TODO perf? czy to moze jedna szybsze?
 	const float sqRadius = radius * radius;
 	const float sqPrevRadius = prevRadius < 0.f ? prevRadius : prevRadius * prevRadius;
@@ -486,10 +488,29 @@ Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>*
 		}
 	}
 	if (!allIndexes.empty()) {
-		auto path = mainGrid.findPath(unit->getMainBucketIndex(), allIndexes, limit);
+		const auto path = mainGrid.findPath(unit->getMainBucketIndex(), allIndexes, limit);
 		if (!path->empty()) {
 			return idxToPhysical[path->back()];
 		}
 	}
 	return nullptr;
+}
+
+Physical* Environment::closestPhysicalSimple(const Physical* physical, const std::vector<Physical*>* things,
+                                             float range) const {
+	if (things->empty()) {
+		return nullptr;
+	}
+	range *= range;
+	float closestDist = 9999999;
+	Physical* closest = nullptr;
+	const auto center = physical->getPosition();
+	for (const auto entity : *things) {
+		const float dist = sqDistAs2D(center, entity->getPosition());
+		if (dist < closestDist && dist <= range) {
+			closestDist = dist;
+			closest = entity;
+		}
+	}
+	return closest;
 }

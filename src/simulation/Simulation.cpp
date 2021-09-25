@@ -99,7 +99,7 @@ SimInfo* Simulation::update(float timeStep) {
 		applyForce(); //zmiany stanu
 
 		moveUnitsAndCheck(TIME_PER_UPDATE); //zmiany stanu
-		ProjectileManager::update(TIME_PER_UPDATE);//TODO czy to dobre miejsce? mog¹ tu ginaæ
+		ProjectileManager::update(TIME_PER_UPDATE); //TODO czy to dobre miejsce? mog¹ tu ginaæ
 		performStateAction(TIME_PER_UPDATE); //tutaj moga umierac w tym zmiany stanu
 		executeStateTransition();
 		updateQueues();
@@ -137,6 +137,9 @@ void Simulation::selfAI() const {
 					}
 				}
 			}
+		}
+		for (const auto building : *buildings) {
+			building->updateAi();
 		}
 	}
 }
@@ -229,7 +232,7 @@ void Simulation::levelUp(QueueElement* done, char player) const {
 }
 
 void Simulation::updateBuildingQueues(const float time) const {
-	for (auto build : *buildings) {
+	for (const auto build : *buildings) {
 		const auto done = build->updateQueue(time);
 		if (done) {
 			switch (done->getType()) {

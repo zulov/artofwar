@@ -22,6 +22,7 @@ public:
 	Building* load(dbload_building* dbloadBuilding);
 
 	QueueElement* updateQueue(float time) const;
+	void updateAi();
 
 	std::optional<int> getDeploy();
 
@@ -51,11 +52,14 @@ public:
 	short getCostSum() const override;
 
 	bool canUse(int index) const override;
+	db_building_level* getLevel() const;
 private:
 	int deployIndex = -1;
+	unsigned short currentFrameState = 0;
 	bool ready = true;
 	db_building* dbBuilding;
 	db_building_level* dbLevel;
 
 	AbstractQueueManager* queue{};
+	Physical* thingToInteract{};
 };
