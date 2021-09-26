@@ -156,7 +156,7 @@ void Building::updateAi() {
 	}
 	if (dbLevel->canRangeAttack) {
 		if (thingToInteract && currentFrameState >= dbLevel->rangeAttackReload) {
-			ProjectileManager::shoot(position, thingToInteract, 7, player, dbLevel);
+			ProjectileManager::shoot(this, thingToInteract, 7, player, dbLevel);
 			currentFrameState = 0;
 		} else {
 			if (thingToInteract) {

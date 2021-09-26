@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
 
+struct ProjectileBase;
 struct db_attack;
 class Physical;
-struct ProjectileData;
 
 namespace Urho3D {
 	class Vector3;
@@ -13,8 +13,8 @@ namespace Urho3D {
 class ProjectileManager {
 public:
 	static void update(float timeStep);
-	static void shoot(const Urho3D::Vector3& start, Physical* aim, float speed, char player, db_attack* dbAttack);
-	static ProjectileData* findNext();
+	static void shoot(Physical* shooter, Physical* aim, float speed, char player, db_attack* dbAttack);
+	static ProjectileBase* findNext();
 	static void init();
 	static void dispose();
 
@@ -24,5 +24,5 @@ private:
 
 	static ProjectileManager* instance;
 
-	std::vector<ProjectileData*> projectiles;
+	std::vector<ProjectileBase*> projectiles;
 };

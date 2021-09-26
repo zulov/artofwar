@@ -277,6 +277,7 @@
     <None Include="Data" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\objects\projectile\ProjectileBase.h" />
     <ClCompile Include="src\objects\projectile\ProjectileManager.cpp" />
     <ClCompile Include="src\objects\SelectedObject.cpp" />
     <ClCompile Include="src\objects\queue\SimpleQueueManager.cpp" />
@@ -485,7 +486,7 @@
     <ClInclude Include="src\objects\NodeUtils.h" />
     <ClInclude Include="src\objects\unit\ChargeData.h" />
     <ClInclude Include="src\objects\unit\SimColorMode.h" />
-    <ClInclude Include="src\objects\projectile\ProjectileData.h" />
+    <ClInclude Include="src\objects\projectile\ProjectileWithNode.h" />
     <ClInclude Include="src\utils\OtherUtils.h" />
     <ClInclude Include="src\utils\replace_utils.h" />
     <ClInclude Include="src\simulation\env\bucket\path\DrawGridUtils.h" />

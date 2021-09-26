@@ -14,7 +14,7 @@ public:
 	~ShotState() = default;
 
 	void shot(Unit* unit) {
-		ProjectileManager::shoot(unit->getPosition(), unit->thingToInteract, 7, unit->getPlayer(),
+		ProjectileManager::shoot(unit, unit->thingToInteract, 7, unit->getPlayer(),
 		                         unit->getLevel());
 		unit->currentFrameState = 0;
 	}

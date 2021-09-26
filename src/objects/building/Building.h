@@ -2,7 +2,7 @@
 #include "objects/static/Static.h"
 
 
-struct ProjectileData;
+struct ProjectileWithNode;
 class AbstractQueueManager;
 struct dbload_building;
 enum class BuildingActionType : char;

@@ -1,9 +1,8 @@
 #include "ProjectileManager.h"
 
-#include "ProjectileData.h"
+#include "ProjectileWithNode.h"
 #include "simulation/SimGlobals.h"
 #include "objects/NodeUtils.h"
-#include "simulation/env/Environment.h"
 #include "utils/DeleteUtils.h"
 
 ProjectileManager* ProjectileManager::instance = nullptr;
@@ -17,13 +16,12 @@ void ProjectileManager::update(float timeStep) {
 	}
 }
 
-void ProjectileManager::shoot(const Urho3D::Vector3& start, Physical* aim, float speed, char player, db_attack* dbAttack) {
-	ProjectileData* data = findNext();
-
-	data->init(start, aim, speed, player, dbAttack);
+void ProjectileManager::shoot(Physical* shooter, Physical* aim, float speed, char player,
+                              db_attack* dbAttack) {
+	findNext()->init(shooter, aim, speed, player, dbAttack);
 }
 
-ProjectileData* ProjectileManager::findNext() {
+ProjectileBase* ProjectileManager::findNext() {
 	for (const auto projectile : instance->projectiles) {
 		if (!projectile->isActive()) {
 			return projectile;
@@ -31,10 +29,13 @@ ProjectileData* ProjectileManager::findNext() {
 	}
 
 	Urho3D::Node* node = nullptr;
+	ProjectileBase* projectile;
 	if (instance->projectiles.size() < MAX_PROJECTILE_NODES && !SIM_GLOBALS.HEADLESS) {
-		node = createNode("Objects/projectiles/arrow.xml");
+		projectile = new ProjectileWithNode(createNode("Objects/projectiles/arrow.xml"));
+	} else {
+		projectile = new ProjectileBase();
 	}
-	const auto projectile = new ProjectileData(node);
+
 	instance->projectiles.push_back(projectile);
 
 	return projectile;

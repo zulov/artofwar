@@ -28,7 +28,7 @@ struct ForceStats;
 struct db_unit_level;
 struct db_unit;
 struct dbload_unit;
-struct ProjectileData;
+struct ProjectileWithNode;
 struct ChargeData;
 struct ActionParameter;
 struct CameraInfo;
@@ -160,7 +160,6 @@ private:
 	Urho3D::Material* basic{};
 
 	ChargeData* chargeData{};
-	//ProjectileData* missileData{};
 
 	Physical* thingToInteract{}; //TODO jak to wczytac :O
 
