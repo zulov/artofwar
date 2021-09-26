@@ -41,7 +41,7 @@ struct ProjectileWithNode : public ProjectileBase {
 		startHeight = start.y_ + shooter->getModelHeight() * 0.9f;
 
 		endHeight = end.y_ + aim->getModelHeight() / (RandGen::nextRand(RandFloatType::OTHER, 3) + 2.f);
-		peakHeight = distance / (RandGen::nextRand(RandFloatType::OTHER, 3) + 4.1f);
+		peakHeight = direction.Length() / (RandGen::nextRand(RandFloatType::OTHER, 3) + 4.1f);
 		direction.Normalize();
 		direction *= speed;
 		node->SetEnabled(true);
@@ -55,9 +55,9 @@ struct ProjectileWithNode : public ProjectileBase {
 
 		pos.x_ += direction.x_ * timeStep;
 		pos.z_ += direction.y_ * timeStep;
-		auto percent = distanceSoFar / distance;
+		const auto percent = 1.f - percentToGo;
 		pos.y_ = peakHeight * sin(percent * Urho3D::M_PI)
-			+ startHeight * (1.f - percent)
+			+ startHeight * percentToGo
 			+ endHeight * percent;
 		node->SetDirection(pos - node->GetPosition());
 		node->SetPosition(pos);

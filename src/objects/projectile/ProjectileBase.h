@@ -9,8 +9,7 @@
 struct ProjectileBase {
 	Physical* aim;
 
-	float distance;
-	float distanceSoFar;
+	float percentToGo;
 
 	float speed;
 
@@ -24,7 +23,7 @@ struct ProjectileBase {
 	ProjectileBase(const ProjectileBase&) = delete;
 
 	virtual void init(Physical* shooter, Physical* aim, float speed, char player, db_attack* dbAttack) {
-		this->speed = speed;
+		
 		this->aim = aim;
 		this->player = player;
 		if (aim->getType() == ObjectType::BUILDING) {
@@ -36,9 +35,9 @@ struct ProjectileBase {
 		const auto start = shooter->getPosition();
 		const auto end = aim->getPosition();
 
-		distance = sqrt(sqDistAs2D(start, end));
+		this->speed = speed/sqrt(sqDistAs2D(start, end));
 
-		distanceSoFar = 0;
+		percentToGo = 1.f;
 
 		active = true;
 	}
@@ -47,9 +46,9 @@ struct ProjectileBase {
 		if (aim && !aim->isAlive()) {
 			aim = nullptr;
 		}
-		distanceSoFar += speed * timeStep;
+		percentToGo -= speed * timeStep;
 
-		if (distanceSoFar >= distance && active) {
+		if (percentToGo <= 0.f && active) {
 			if (aim && aim->isAlive()) {
 				const auto [value, died] = aim->absorbAttack(attackVal);
 				Game::getEnvironment()->addAttack(player, aim->getPosition(), value);
