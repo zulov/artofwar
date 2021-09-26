@@ -269,9 +269,11 @@ void Main::changeCamera(CameraBehaviorType type) {
 }
 
 void Main::InitLocalizationSystem() const {
-	auto l10n = GetSubsystem<Localization>();
+	const auto l10n = GetSubsystem<Localization>();
+	if (!SIM_GLOBALS.HEADLESS) {
+		l10n->LoadJSONFile("lang/language.json");
+	}
 
-	l10n->LoadJSONFile("lang/language.json");
 	Game::setLocalization(l10n);
 }
 
@@ -316,9 +318,9 @@ void Main::load(const String& saveName, Loading& progress) {
 		controls = new Controls(GetSubsystem<Input>());
 		SetupViewport();
 
-		Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());	
+		Game::getPlayersMan()->load(loader.loadPlayers(), loader.loadResources());
 		//Game::getStats()->init();
-		
+
 		if (!engineParameters_[EP_HEADLESS].GetBool()) {
 			controls->init();
 			subscribeToUIEvents();
@@ -635,7 +637,7 @@ void Main::readParameters() {
 				SimGlobals::ALL_PLAYER_AI = true;
 			} else if (argument == "noplayerai") {
 				SimGlobals::NO_PLAYER_AI = true;
-			}  else if (argument == "aioutput") {
+			} else if (argument == "aioutput") {
 				SimGlobals::AI_OUTPUT = true;
 			} else if (argument == "savename") {
 				saveToLoad = value;
