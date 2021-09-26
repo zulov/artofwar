@@ -10,9 +10,7 @@ struct ProjectileBase {
 	Physical* aim;
 
 	float percentToGo;
-
 	float speed;
-
 	float attackVal;
 
 	char player;
@@ -23,7 +21,6 @@ struct ProjectileBase {
 	ProjectileBase(const ProjectileBase&) = delete;
 
 	virtual void init(Physical* shooter, Physical* aim, float speed, char player, db_attack* dbAttack) {
-		
 		this->aim = aim;
 		this->player = player;
 		if (aim->getType() == ObjectType::BUILDING) {
@@ -31,11 +28,11 @@ struct ProjectileBase {
 		} else {
 			this->attackVal = dbAttack->rangeAttackVal;
 		}
-		this->attackVal = attackVal;
+
 		const auto start = shooter->getPosition();
 		const auto end = aim->getPosition();
 
-		this->speed = speed/sqrt(sqDistAs2D(start, end));
+		this->speed = speed / sqrt(sqDistAs2D(start, end));
 
 		percentToGo = 1.f;
 

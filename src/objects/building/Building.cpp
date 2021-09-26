@@ -40,7 +40,9 @@ Building::~Building() {
 void Building::postCreate() {
 	ready = false;
 	queue->add(1, QueueActionType::BUILDING_CREATE, getId(), 1);
-	changeMaterial("Materials/orange_overlay.xml", model);
+	if (!SIM_GLOBALS.HEADLESS) {
+		changeMaterial("Materials/orange_overlay.xml", model);
+	}
 }
 
 float Building::getMaxHpBarSize() const {
