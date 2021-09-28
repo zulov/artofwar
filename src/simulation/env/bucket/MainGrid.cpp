@@ -77,7 +77,7 @@ bool MainGrid::validateAdd(const Urho3D::IntVector2& size, const Urho3D::IntVect
 }
 
 Urho3D::Vector2 MainGrid::repulseObstacle(Unit* unit) const {
-	auto index = unit->getMainBucketIndex();
+	auto index = unit->getMainGridIndex();
 
 	auto& data = complexData[index];
 
@@ -112,7 +112,7 @@ void MainGrid::updateCell(int index, char val, CellState cellState) const {
 }
 
 Urho3D::Vector2 MainGrid::getPositionInBucket(Unit* unit) {
-	const auto index = unit->getMainBucketIndex();
+	const auto index = unit->getMainGridIndex();
 	char ordinal = -1;
 	char max = 0;
 	const auto state = unit->getState();
@@ -300,7 +300,7 @@ int MainGrid::closestPassableCell(int posIndex) const {
 }
 
 void MainGrid::addStatic(Static* object) const {
-	const auto bucketPos = calculator->getIndexes(object->getMainCell());
+	const auto bucketPos = calculator->getIndexes(object->getMainGridIndex());
 
 	for (auto index : object->getOccupiedCells()) {
 		complexData[index].setStatic(object);
@@ -345,7 +345,7 @@ void MainGrid::removeStatic(Static* object) const {
 }
 
 std::optional<Urho3D::Vector2> MainGrid::getDirectionFrom(int index, const Urho3D::Vector3& position) const {
-	//assert(unit->getMainBucketIndex()==index);//TODO perf zamienic jezeli ok
+	//assert(unit->getMainGridIndex()==index);//TODO perf zamienic jezeli ok
 	auto& data = complexData[index];
 
 	if (!data.isPassable()) {

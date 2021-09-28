@@ -27,5 +27,7 @@ void Bucket::remove(Physical* entity) {
 		content.erase(content.begin() + pos);
 		// std::iter_swap(content.begin() + pos, content.end()-1);
 		// content.erase(content.end()-1);
+	} else {
+		assert(false);
 	}
 }

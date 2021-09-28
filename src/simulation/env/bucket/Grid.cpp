@@ -37,7 +37,7 @@ int Grid::update(Physical* physical, int currentIndex) const {
 }
 
 int Grid::updateNew(Physical* physical) const {
-	//assert(physical->getMainBucketIndex(), -1);
+	//assert(physical->getMainGridIndex(), -1);
 	const int index = calculator->indexFromPosition(physical->getPosition());
 	addAt(index, physical);
 	return index;
@@ -70,6 +70,11 @@ void Grid::removeAt(int index, Physical* entity) const {
 	}
 }
 
+void Grid::remove(Physical* physical) const {
+	auto index = calculator->indexFromPosition(physical->getPosition());
+	buckets[index].remove(physical);
+}
+
 void Grid::addAt(int index, Physical* entity) const {
 	buckets[index].add(entity);
 }
@@ -99,7 +104,7 @@ std::vector<Physical*>* Grid::getArrayNeight(std::pair<Urho3D::Vector3*, Urho3D:
 		for (short j = posBeginZ; j <= posEndZ; ++j) {
 			const auto& content = getNotSafeContentAt(i, j);
 			std::ranges::copy_if(content, std::back_inserter(*tempSelected),
-			                     [player](Physical* p) { return p->getPlayer() < 0 || p->getPlayer() == player; });
+			                     [player](Physical* p) { return (p->getPlayer() < 0 || p->getPlayer() == player) && p->isAlive(); });
 		}
 	}
 
@@ -150,7 +155,7 @@ std::vector<Physical*>* Grid::getArrayNeightSimilarAs(Physical* clicked, float r
 			auto& content = getNotSafeContentAt(i, j);
 			std::ranges::copy_if(content, std::back_inserter(*tempSelected),
 			                     [clicked](Physical* p) {
-				                     return p->getId() == clicked->getId() && p->getPlayer() == clicked->getPlayer();
+				                     return p->getId() == clicked->getId() && p->getPlayer() == clicked->getPlayer() && p->isAlive();
 			                     });
 		}
 	}

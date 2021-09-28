@@ -122,7 +122,7 @@ void Formation::updateIds() {
 			if (leader == unit) {
 				continue;
 			}
-			int bucketId = unit->getMainBucketIndex();
+			int bucketId = unit->getMainGridIndex();
 			const auto pos = unit->getPosition();
 			const auto currentPos = Urho3D::Vector2(pos.x_, pos.z_);
 

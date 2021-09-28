@@ -19,21 +19,21 @@ public:
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		if (parameter.isFirstThingAlive()) {
 			auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
-			return std::ranges::find(indexesToUse, unit->getMainBucketIndex()) != indexesToUse.end();
+			return std::ranges::find(indexesToUse, unit->getMainGridIndex()) != indexesToUse.end();
 		}
 		return false;
 	}
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
-		const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());
+		const auto found = std::ranges::find(indexesToUse, unit->getMainGridIndex());
 		assert(found != indexesToUse.end());
 
 		setStartData(unit, *found, parameter.thingToInteract);
 
 		unit->lastActionThingId = parameter.thingToInteract->getId();
 		unit->velocity = Urho3D::Vector2::ZERO;
-		Game::getEnvironment()->updateCell(unit->getMainBucketIndex(), 1, CellState::COLLECT);
+		Game::getEnvironment()->updateCell(unit->getMainGridIndex(), 1, CellState::COLLECT);
 	}
 
 	void onEnd(Unit* unit) override {
@@ -47,7 +47,7 @@ public:
 
 	void execute(Unit* unit, float timeStep) override {
 		if (!unit->isFirstThingAlive() || !Game::getEnvironment()->cellInState(
-			unit->getMainBucketIndex(), CellState::COLLECT)) {
+			unit->getMainGridIndex(), CellState::COLLECT)) {
 			StateManager::toDefaultState(unit);
 			return;
 		}
@@ -57,7 +57,7 @@ public:
 			unit->thingToInteract = nullptr;
 
 			auto const indexesToUse = first->getIndexesForUse(unit);
-			const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());
+			const auto found = std::ranges::find(indexesToUse, unit->getMainGridIndex());
 			if (found != indexesToUse.end()) {
 				setStartData(unit, *found, first);
 			} else {

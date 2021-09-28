@@ -39,7 +39,7 @@ void FormationOrder::addTargetAim() {
 	auto opt = formation->getLeader();
 	if (opt.has_value() && vector) {
 		Unit* leader = opt.value();
-		leader->action(static_cast<UnitAction>(id), getTargetAim(leader->getMainBucketIndex(), *vector));
+		leader->action(static_cast<UnitAction>(id), getTargetAim(leader->getMainGridIndex(), *vector));
 		formation->stopAllBesideLeader();
 		Game::getEnvironment()->invalidatePathCache();
 	}
@@ -53,7 +53,7 @@ void FormationOrder::addFollowAim() {
 
 		auto const indexes = toUse->getIndexesForUse(leader);
 		if (!indexes.empty()) {
-			leader->action(static_cast<UnitAction>(id), getFollowAim(leader->getMainBucketIndex(), indexes));
+			leader->action(static_cast<UnitAction>(id), getFollowAim(leader->getMainGridIndex(), indexes));
 		}
 	}
 }
@@ -70,7 +70,7 @@ void FormationOrder::followAndAct(float distThreshold) {
 		Unit* leader = optLeader.value();
 		auto const indexes = toUse->getIndexesForUse(leader);
 		if (!indexes.empty()) {
-			if (Game::getEnvironment()->anyCloseEnough(indexes, leader->getMainBucketIndex(), distThreshold)) {
+			if (Game::getEnvironment()->anyCloseEnough(indexes, leader->getMainGridIndex(), distThreshold)) {
 				for (auto* unit : formation->getUnits()) {
 					unit->resetFormation();
 					unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, false));
@@ -80,7 +80,7 @@ void FormationOrder::followAndAct(float distThreshold) {
 				formation->remove();
 			} else {
 				//auto pos = std::get<0>(postToUse);
-				leader->action(UnitAction::FOLLOW, getFollowAim(leader->getMainBucketIndex(), indexes));
+				leader->action(UnitAction::FOLLOW, getFollowAim(leader->getMainGridIndex(), indexes));
 				formation->addOrder(new FormationOrder(formation, id, toUse, true));
 				//Dodanie celu po dojsciu
 			}

@@ -33,7 +33,7 @@ void IndividualOrder::addCollectAim() {
 }
 
 void IndividualOrder::addTargetAim() {
-	unit->action(static_cast<UnitAction>(id), getTargetAim(unit->getMainBucketIndex(), *vector));
+	unit->action(static_cast<UnitAction>(id), getTargetAim(unit->getMainGridIndex(), *vector));
 	//TODO execute i akajca
 	unit->resetFormation();
 
@@ -43,7 +43,7 @@ void IndividualOrder::addTargetAim() {
 void IndividualOrder::addFollowAim() {
 	const auto indexes = toUse->getIndexesForUse(unit);
 	if (indexes.empty()) {
-		unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainBucketIndex(), indexes));
+		unit->action(static_cast<UnitAction>(id), getFollowAim(unit->getMainGridIndex(), indexes));
 	}
 }
 
@@ -76,10 +76,10 @@ void IndividualOrder::followAndAct() {
 	std::vector<int> indexes = getIndexesToAct();
 
 	if (!indexes.empty()) {
-		const auto find = std::ranges::find(indexes, unit->getMainBucketIndex());
+		const auto find = std::ranges::find(indexes, unit->getMainGridIndex());
 
 		if (find == indexes.end()) {
-			const auto param = getFollowAim(unit->getMainBucketIndex(), indexes);
+			const auto param = getFollowAim(unit->getMainGridIndex(), indexes);
 			if (param.aim != nullptr) {
 				unit->action(UnitAction::FOLLOW, param);
 				unit->addOrder(new IndividualOrder(unit, UnitAction(id), toUse, true));

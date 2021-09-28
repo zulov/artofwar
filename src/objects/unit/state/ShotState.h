@@ -23,7 +23,7 @@ public:
 		assert(unit->getLevel()->canRangeAttack);
 		if (parameter.isFirstThingAlive()) {
 			auto const indexesToUse = parameter.thingToInteract->getIndexesForRangeUse(unit);
-			return std::ranges::find(indexesToUse, unit->getMainBucketIndex()) != indexesToUse.end()
+			return std::ranges::find(indexesToUse, unit->getMainGridIndex()) != indexesToUse.end()
 				&& parameter.thingToInteract->belowRangeLimit() > 0;
 		}
 		return false;

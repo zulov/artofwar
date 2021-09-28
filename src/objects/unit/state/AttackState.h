@@ -24,7 +24,7 @@ public:
 	bool canStart(Unit* unit, const ActionParameter& parameter) override {
 		if (parameter.isFirstThingAlive()) {
 			auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
-			return std::ranges::find(indexesToUse, unit->getMainBucketIndex()) != indexesToUse.end()
+			return std::ranges::find(indexesToUse, unit->getMainGridIndex()) != indexesToUse.end()
 				&& parameter.thingToInteract->belowCloseLimit() > 0;
 		}
 		return false;
@@ -39,14 +39,14 @@ public:
 
 	void onStart(Unit* unit, const ActionParameter& parameter) override {
 		auto const indexesToUse = parameter.thingToInteract->getIndexesForUse(unit);
-		const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());
+		const auto found = std::ranges::find(indexesToUse, unit->getMainGridIndex());
 		assert(found != indexesToUse.end());
 		unit->currentFrameState = 0;
 
 		setData(unit, *found, parameter.thingToInteract);
 
 		unit->maxSpeed = unit->dbLevel->maxSpeed / 2;
-		Game::getEnvironment()->updateCell(unit->getMainBucketIndex(), 1, CellState::ATTACK);
+		Game::getEnvironment()->updateCell(unit->getMainGridIndex(), 1, CellState::ATTACK);
 	}
 
 	void onEnd(Unit* unit) override {
@@ -75,7 +75,7 @@ public:
 			unit->thingToInteract = nullptr;
 
 			auto const indexesToUse = first->getIndexesForUse(unit);
-			const auto found = std::ranges::find(indexesToUse, unit->getMainBucketIndex());
+			const auto found = std::ranges::find(indexesToUse, unit->getMainGridIndex());
 			if (found != indexesToUse.end()) {
 				setData(unit, *found, first);
 			} else {

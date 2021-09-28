@@ -29,7 +29,7 @@ int StaticGrid::update(Physical* entity, int currentIndex) const {
 }
 
 void StaticGrid::remove(Physical* physical) const {
-	Grid::removeAt(physical->getMainBucketIndex(), physical);
+	Grid::remove(physical);
 	const int centerIndex = calculator->indexFromPosition(physical->getPosition());
 	const auto centerCords = calculator->getIndexes(centerIndex);
 	for (int i = 0; i < queryRadius.size(); ++i) {

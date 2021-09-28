@@ -11,7 +11,7 @@ inline void setStartData(Unit* unit, int index, Physical* toUse) {
 }
 
 inline void setSlotData(Unit* unit, int index, Physical* toUse) {
-	const char slot = Game::getEnvironment()->getRevertCloseIndex(toUse->getMainBucketIndex(), index);
+	const char slot = Game::getEnvironment()->getRevertCloseIndex(toUse->getMainGridIndex(), index);
 	unit->setSlotToInteract(slot);
 	toUse->setOccupiedIndexSlot(slot, true);
 }

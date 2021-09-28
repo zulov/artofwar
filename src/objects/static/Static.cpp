@@ -10,10 +10,10 @@
 #include "simulation/env/Environment.h"
 #include "utils/OtherUtils.h"
 
-Static::Static(Urho3D::Vector3& _position, int mainCell, bool withNode) : Physical(_position, withNode),
-                                                                          mainCell(mainCell),
+Static::Static(Urho3D::Vector3& _position, int indexInGrid, bool withNode) : Physical(_position, withNode),
                                                                           state(StaticState::ALIVE),
                                                                           nextState(StaticState::ALIVE) {
+	this->indexInMainGrid=indexInGrid;
 }
 
 Static::~Static() {
@@ -33,14 +33,16 @@ void Static::setIndexInInfluence(int index) {
 }
 
 bool Static::isInCloseRange(int index) const {
-	return std::ranges::find(surroundCells, index) != surroundCells.end();
+	auto cells = getSurroundCells();
+	return std::ranges::find(cells, index) != cells.end();
 }
 
 void Static::populate() {
+	//assert(mainCell==indexInMainGrid);
 	std::vector<int> occupiedCells1;
 
 	auto gridSize = getGridSize();
-	const auto cordsCell = Game::getEnvironment()->getCords(mainCell);
+	const auto cordsCell = Game::getEnvironment()->getCords(indexInMainGrid);
 	const auto sizeX = calculateSize(gridSize.x_, cordsCell.x_);
 	const auto sizeZ = calculateSize(gridSize.y_, cordsCell.y_);
 	occupiedCells1.reserve(gridSize.x_ * gridSize.y_);
@@ -67,10 +69,12 @@ void Static::populate() {
 				                       end();
 		                       }).begin(),
 		surroundCells1.end());
+	occupiedCellsSize = occupiedCells1.size();
+	surroundCellsSize = surroundCells1.size();
 
-	data = new int[occupiedCells1.size() + surroundCells1.size()];
-	occupiedCells = std::span{data, occupiedCells1.size()};
-	surroundCells = std::span{data + occupiedCells1.size(), surroundCells1.size()};
+	data = new int[occupiedCellsSize + surroundCellsSize];
+	auto occupiedCells = getOccupiedCells();
+	auto surroundCells = getSurroundCells();
 	std::ranges::copy(occupiedCells1, occupiedCells.begin());
 	std::ranges::copy(surroundCells1, surroundCells.begin());
 }
@@ -89,18 +93,19 @@ int Static::belowCloseLimit() const {
 }
 
 bool Static::hasAnyFreeSpace() const {
-	return std::ranges::any_of(surroundCells, [this](int index) { return canUse(index); });
+	return std::ranges::any_of(getSurroundCells(), [this](int index) { return canUse(index); });
 }
 
 int Static::hasFreeSpace() const {
-	return std::ranges::count_if(surroundCells, [this](int index) { return canUse(index); });
+	return std::ranges::count_if(getSurroundCells(), [this](int index) { return canUse(index); });
 }
 
 std::optional<std::tuple<Urho3D::Vector2, float>> Static::getPosToUseWithDist(Unit* user) {
 	float minDistance = 9999999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
-	for (auto index : surroundCells) {
+
+	for (auto index : getSurroundCells()) {
 		if (canUse(index)) {
 			const auto vec = Game::getEnvironment()->getCenter(index);
 			setClosest(minDistance, closest, closestIndex, index, vec, user->getPosition());
@@ -115,8 +120,8 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Static::getPosToUseWithDist(Un
 std::vector<int> Static::getIndexesForUse(Unit* user) const {
 	std::vector<int> indexes;
 	if (belowCloseLimit() <= 0) { return indexes; }
-	indexes.reserve(surroundCells.size());
-	for (auto index : surroundCells) {
+	indexes.reserve(surroundCellsSize);
+	for (auto index : getSurroundCells()) {
 		if (canUse(index)) {
 			indexes.push_back(index);
 		}
@@ -131,10 +136,12 @@ std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {
 
 	const std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
 		getPosition(), user->getLevel()->rangeAttackRange);
+	auto cells = getOccupiedCells();
+
 	for (auto index : allIndexes) {
 		if (canUse(index)
 			&& !isInCloseRange(index)
-			&& std::ranges::find(occupiedCells, index) == occupiedCells.end()) {
+			&& std::ranges::find(cells, index) == cells.end()) {
 			indexes.push_back(index);
 		}
 
@@ -143,7 +150,7 @@ std::vector<int> Static::getIndexesForRangeUse(Unit* user) const {
 }
 
 std::string Static::getValues(int precision) {
-	const auto cordsCell = Game::getEnvironment()->getCords(mainCell);
+	const auto cordsCell = Game::getEnvironment()->getCords(indexInMainGrid);
 	return Physical::getValues(precision)
 		+ std::to_string(cordsCell.x_) + ","
 		+ std::to_string(cordsCell.y_) + ","

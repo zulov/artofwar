@@ -34,7 +34,7 @@ public:
 		if (_bucketIndex < 0) {
 			indexHasChanged = false;
 		} else {
-			indexInGrid = _bucketIndex;
+			indexInMainGrid = _bucketIndex;
 			indexHasChanged = true;
 		}
 	}
@@ -70,7 +70,7 @@ public:
 
 	virtual char getPlayer() const { return player; }
 
-	int getMainBucketIndex() const { return indexInGrid; }
+	int getMainGridIndex() const { return indexInMainGrid; }
 
 	virtual void populate() {
 	}
@@ -119,15 +119,15 @@ protected:
 
 	unsigned char closeUsers = 0,
 	              rangeUsers = 0;
-	bool indexHasChanged = false;
+	bool indexHasChanged = false;///TODO to tylko dla unit
 
 	bool isVisible = false;
 
 	short id = -1; // optm
 	float invMaxHp; // optm
 	float hp = -1;
+	int indexInMainGrid = -1;
 private:
 	virtual float getAuraSize(const Urho3D::Vector3& boundingBox) const;
 
-	int indexInGrid = -1;
 };

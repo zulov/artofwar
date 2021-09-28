@@ -14,8 +14,8 @@
 #include "simulation/env/Environment.h"
 
 
-ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, int id, int level, int mainCell, bool withNode)
-	: Static(_position, mainCell, withNode) {
+ResourceEntity::ResourceEntity(Urho3D::Vector3 _position, int id, int level, int indexInGrid, bool withNode)
+	: Static(_position, indexInGrid, withNode) {
 	dbResource = Game::getDatabase()->getResource(id);
 
 	loadXml("Objects/resources/" + dbResource->nodeName[RandGen::nextRand(

@@ -288,7 +288,7 @@ bool Unit::action(UnitAction unitAction, const ActionParameter& parameter) {
 	case UnitAction::ATTACK:
 		if (getLevel()->canRangeAttack) {
 			//TODO perf chyba trzeba dodacparamter do actionParameter
-			if (!parameter.thingToInteract->isInCloseRange(getMainBucketIndex())) {
+			if (!parameter.thingToInteract->isInCloseRange(getMainGridIndex())) {
 				//jezeli nie jest in close range
 				return StateManager::changeState(this, UnitState::SHOT, parameter);
 			}
@@ -446,7 +446,7 @@ UnitState Unit::getActionState() const {
 }
 
 bool Unit::isIndexSlotOccupied(int indexToInteract) {
-	const unsigned char index = Game::getEnvironment()->getRevertCloseIndex(getMainBucketIndex(), indexToInteract);
+	const unsigned char index = Game::getEnvironment()->getRevertCloseIndex(getMainGridIndex(), indexToInteract);
 	return ifSlotIsOccupied(index);
 }
 
@@ -497,14 +497,14 @@ short Unit::getCostSum() const {
 }
 
 bool Unit::isInCloseRange(int index) const {
-	return Game::getEnvironment()->isInLocalArea(getMainBucketIndex(), index);
+	return Game::getEnvironment()->isInLocalArea(getMainGridIndex(), index);
 }
 
 std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit* user) {
 	float minDistance = 99999;
 	Urho3D::Vector2 closest;
 	int closestIndex = -1;
-	const int mainIndex = getMainBucketIndex();
+	const int mainIndex = getMainGridIndex();
 	const std::vector<unsigned char>& closeTabIndexes = Game::getEnvironment()->getCloseTabIndexes(mainIndex);
 	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
 	for (auto i : closeTabIndexes) {
@@ -514,7 +514,7 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit
 			if (Game::getEnvironment()->cellIsPassable(index)) {
 				//TODO2 to chyba sprawdza to samo prawie?
 				Urho3D::Vector2 posToFollow = getSocketPos(this, i);
-				if (index == user->getMainBucketIndex()) {
+				if (index == user->getMainGridIndex()) {
 					return {{posToFollow, 0}};
 				}
 				setClosest(minDistance, closest, closestIndex, index, posToFollow, user->getPosition());
@@ -530,7 +530,7 @@ std::optional<std::tuple<Urho3D::Vector2, float>> Unit::getPosToUseWithDist(Unit
 std::vector<int> Unit::getIndexesForUse(Unit* user) const {
 	std::vector<int> indexes;
 	if (belowCloseLimit() <= 0) { return indexes; }
-	const int mainIndex = getMainBucketIndex();
+	const int mainIndex = getMainGridIndex();
 	const std::vector<unsigned char>& closeTabIndexes = Game::getEnvironment()->getCloseTabIndexes(mainIndex);
 	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
 	for (auto i : closeTabIndexes) {
@@ -551,7 +551,7 @@ std::vector<int> Unit::getIndexesForRangeUse(Unit* user) const {
 
 	const std::vector<int> allIndexes = Game::getEnvironment()->getIndexesInRange(
 		getPosition(), user->getLevel()->rangeAttackRange);
-	const int mainIndex = getMainBucketIndex();
+	const int mainIndex = getMainGridIndex();
 	const std::vector<short>& closeIndexes = Game::getEnvironment()->getCloseIndexs(mainIndex);
 
 	for (auto index : allIndexes) {

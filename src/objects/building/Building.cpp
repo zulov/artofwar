@@ -22,8 +22,8 @@
 #include "simulation/env/Environment.h"
 
 
-Building::Building(Urho3D::Vector3 _position, int id, int player, int level, int mainCell, bool withNode):
-	Static(_position, mainCell, withNode) {
+Building::Building(Urho3D::Vector3 _position, int id, int player, int level, int indexInGrid, bool withNode):
+	Static(_position, indexInGrid, withNode) {
 	setPlayerAndTeam(player);
 	dbBuilding = Game::getDatabase()->getBuilding(id);
 	levelUp(level);
@@ -156,7 +156,7 @@ void Building::updateAi() {
 		thingToInteract = nullptr;
 		currentFrameState = 0;
 	}
-	if (dbLevel->canRangeAttack) {
+	if (ready && dbLevel->canRangeAttack) {
 		if (thingToInteract && currentFrameState >= dbLevel->rangeAttackReload) {
 			ProjectileManager::shoot(this, thingToInteract, 7, player, dbLevel);
 			currentFrameState = 0;
@@ -218,7 +218,7 @@ const Urho3D::IntVector2 Building::getGridSize() const {
 
 void Building::createDeploy() {
 	deployIndex = -1;
-	for (auto i : surroundCells) {
+	for (auto i : getSurroundCells()) {
 		if (Game::getEnvironment()->cellIsPassable(i)) {
 			deployIndex = i;
 		}

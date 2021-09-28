@@ -32,14 +32,14 @@ Environment::~Environment() {
 std::vector<Physical*>* Environment::getNeighboursFromSparseSamePlayer(Physical* physical, const float radius,
                                                                        char player) {
 	return getNeighbours(physical, sparseUnitGrid, radius,
-	                     [player](const Physical* thing) { return thing->getPlayer() == player; });
+	                     [player](const Physical* thing) { return thing->getPlayer() == player && thing->isAlive(); });
 }
 
 std::vector<Physical*>* Environment::getNeighboursFromTeamNotEq(Physical* physical, const float radius) {
 	auto player = physical->getPlayer();
 
 	return getNeighbours(physical, sparseUnitGrid, radius,
-	                     [player](const Physical* thing) { return thing->getPlayer() != player; });
+	                     [player](const Physical* thing) { return thing->getPlayer() != player && thing->isAlive(); });
 }
 
 bool Environment::isVisible(char player, const Urho3D::Vector2& pos) {
@@ -80,7 +80,7 @@ void Environment::addIfInRange(Physical* physical, Physical* neight, const float
 }
 
 std::vector<Physical*>* Environment::getNeighboursWithCache(Unit* unit, float radius) {
-	const auto currentIdx = unit->getMainBucketIndex();
+	const auto currentIdx = unit->getMainGridIndex();
 	assert(currentIdx>=0);
 	if (mainGrid.onlyOneInside(currentIdx)) {
 		return getNeighbours(unit, mainGrid, radius, [](Physical* physical) { return true; });
@@ -185,13 +185,13 @@ void Environment::updateVisibility(std::vector<Building*>* buildings, std::vecto
 }
 
 void Environment::update(Unit* unit) const {
-	unit->setBucket(mainGrid.update(unit, unit->getMainBucketIndex()));
+	unit->setBucket(mainGrid.update(unit, unit->getMainGridIndex()));
 	unit->setSparseIndex(sparseUnitGrid.update(unit, unit->getSparseIndex()));
 }
 
 void Environment::addNew(const std::vector<Unit*>& units) {
 	for (const auto unit : units) {
-		assert(unit->getMainBucketIndex() == -1);
+		assert(unit->getMainGridIndex() == -1);
 		unit->setBucket(mainGrid.updateNew(unit));
 		unit->setSparseIndex(sparseUnitGrid.updateNew(unit));
 	}
@@ -205,9 +205,9 @@ void Environment::invalidateCaches() {
 }
 
 void Environment::addNew(Building* building) const {
-	assert(building->getMainBucketIndex() == -1);
 	mainGrid.addStatic(building);
-	building->setBucket(buildingGrid.updateNew(building));
+	buildingGrid.updateNew(building);
+
 	building->setIndexInInfluence(influenceManager.getIndex(building->getPosition()));
 
 	for (const auto cell : building->getSurroundCells()) {
@@ -222,7 +222,6 @@ void Environment::addNew(Building* building) const {
 }
 
 void Environment::addNew(ResourceEntity* resource, bool bulkAdd) const {
-	assert(resource->getMainBucketIndex() == -1);
 	mainGrid.addStatic(resource);
 	resource->setIndexInInfluence(influenceManager.getIndex(resource->getPosition()));
 	resourceStaticGrid.updateStatic(resource, bulkAdd);
@@ -324,7 +323,7 @@ void Environment::updateCell(int index, char val, CellState cellState) const {
 
 void Environment::removeFromGrids(const std::vector<Unit*>& units) const {
 	for (const auto unit : units) {
-		mainGrid.removeAt(unit->getMainBucketIndex(), unit);
+		mainGrid.removeAt(unit->getMainGridIndex(), unit);
 		sparseUnitGrid.removeAt(unit->getSparseIndex(), unit);
 	}
 }
@@ -334,7 +333,7 @@ void Environment::removeFromGrids(const std::vector<Building*>& buildingsToDispo
 	for (const auto building : buildingsToDispose) {
 		mainGrid.removeStatic(building);
 		mainGrid.removeDeploy(building);
-		buildingGrid.removeAt(building->getMainBucketIndex(), building);
+		buildingGrid.remove(building);
 	}
 	for (const auto resource : resourceToDispose) {
 		mainGrid.removeStatic(resource);
@@ -488,7 +487,7 @@ Physical* Environment::closestPhysical(Unit* unit, const std::vector<Physical*>*
 		}
 	}
 	if (!allIndexes.empty()) {
-		const auto path = mainGrid.findPath(unit->getMainBucketIndex(), allIndexes, limit);
+		const auto path = mainGrid.findPath(unit->getMainGridIndex(), allIndexes, limit);
 		if (!path->empty()) {
 			return idxToPhysical[path->back()];
 		}

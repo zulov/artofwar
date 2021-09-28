@@ -105,7 +105,7 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 			auto pos = posOpt.value();
 			const auto aimIndex = Game::getEnvironment()->getIndex(pos);
 			Urho3D::Vector2 force;
-			if (Game::getEnvironment()->isInLocalArea(unit->getMainBucketIndex(), aimIndex)) {
+			if (Game::getEnvironment()->isInLocalArea(unit->getMainGridIndex(), aimIndex)) {
 				force = dirTo(unit->getPosition(), pos);
 			} else {
 				int nextIndex = Game::getFormationManager()->getCachePath(unit, aimIndex);
@@ -113,7 +113,7 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 					auto center = Game::getEnvironment()->getCenter(nextIndex);
 					force = dirTo(unit->getPosition(), center);
 				} else if (nextIndex == -1) {
-					auto* const path = Game::getEnvironment()->findPath(unit->getMainBucketIndex(), aimIndex, 64);
+					auto* const path = Game::getEnvironment()->findPath(unit->getMainGridIndex(), aimIndex, 64);
 					//std::cout << unit->getMainCell() << "||" << aimIndex << "||" << path->size() << std::endl;
 					if (!path->empty()) {
 						Game::getFormationManager()->addCachePath(unit, aimIndex, path->at(0));
@@ -142,7 +142,7 @@ void Force::formation(Urho3D::Vector2& newForce, Unit* unit) {
 }
 
 void Force::escapeFromInvalidPosition(Urho3D::Vector2& newForce, Unit* unit) {
-	const auto opt = Game::getEnvironment()->validatePosition(unit->getMainBucketIndex(), unit->getPosition());
+	const auto opt = Game::getEnvironment()->validatePosition(unit->getMainGridIndex(), unit->getPosition());
 	if (opt.has_value()) {
 		auto force = opt.value() * escapeCoef * boostCoef;
 

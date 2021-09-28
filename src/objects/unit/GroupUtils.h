@@ -21,7 +21,7 @@ inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) {
 	std::vector<int> allIndexes;
 	allIndexes.reserve(units.size());
 	for (auto* unit : units) {
-		allIndexes.push_back(unit->getMainBucketIndex());
+		allIndexes.push_back(unit->getMainGridIndex());
 	}
 	std::ranges::sort(allIndexes);
 	allIndexes.erase(std::unique(allIndexes.begin(), allIndexes.end()), allIndexes.end());
@@ -64,7 +64,7 @@ inline std::vector<std::vector<Unit*>> divide(const std::vector<Unit*>& units) {
 		//temp.reserve()
 		for (auto index : groupedIndex) {
 			for (auto value : units) {
-				if (value->getMainBucketIndex() == index) {
+				if (value->getMainGridIndex() == index) {
 					temp.push_back(value);
 				}
 			}

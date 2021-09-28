@@ -1,5 +1,6 @@
 #pragma once
 #include "BucketIterator.h"
+#include "objects/building/Building.h"
 
 namespace Urho3D {
 	class Vector2;
@@ -24,6 +25,7 @@ public:
 
 	//virtual void remove(Unit* unit, char team) const;
 	//virtual void remove(Physical* physical) const;
+	virtual void remove(Physical* physical) const;
 
 	void removeAt(int index, Physical* entity) const;
 
