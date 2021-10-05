@@ -1,5 +1,6 @@
 #pragma once
 
+#include <span>
 #include <Urho3D/Engine/Application.h>
 #include "Benchmark.h"
 #include "GameState.h"
@@ -77,7 +78,7 @@ private:
 	void newGame(NewGameForm* form, Loading& progress);
 	void changeState(GameState newState);
 
-	void writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs) const;
+	void writeOutput(std::initializer_list<const std::function<std::span<float>(Player*)>> funcs) const;
 	void writeOutput() const;
 
 	Urho3D::MouseMode useMouseMode_;

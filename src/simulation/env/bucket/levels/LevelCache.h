@@ -24,6 +24,6 @@ private:
 
 	GridCalculator* calculator;
 	std::vector<short>* levelsCache[RES_SEP_DIST];
-	std::vector<Urho3D::IntVector2>* levelsCacheCords[RES_SEP_DIST]; //TODO perf to nie zawsze i tylko dla kilku
+	std::vector<Urho3D::IntVector2>* levelsCacheCords[RES_SEP_DIST];
 
 };

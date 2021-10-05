@@ -118,11 +118,16 @@ void Main::Start() {
 	changeState(GameState::LOADING);
 }
 
-void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs) const {
+void Main::writeOutput(std::initializer_list<const std::function<std::span<float>(Player*)>> funcs) const {
 	std::ofstream outFile(("result/" + outputName).CString(), std::ios_base::out);
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
 		outFile << std::to_string(player->getId());
-		for (auto& func : funcs) { outFile << ";" << func(player); }
+		for (auto& func : funcs) {
+			auto vals = func(player);
+			for (const auto val : vals) {
+				outFile << ";" << val;
+			}
+		}
 		outFile << "\n";
 	}
 	outFile.close();
@@ -131,24 +136,16 @@ void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>
 void Main::writeOutput() const {
 	if (!outputName.Empty()) {
 		writeOutput({
-			[](Player* p) -> float { return p->getScore(); },
-			[](Player* p) -> float { return sumSpan(p->getResources().getValues()); },
-			[](Player* p) -> float {
-				return minSpan(p->getResources().getSumValues()) + maxSpanRoot(p->getResources().getSumValues());
+			[](Player* p) -> std::span<float> {
+				float a = p->getScore();//TODO tu jest cos zle
+				return std::span{&a, 1};
 			},
-			[](Player* p) -> float { return sumSpan(p->getPossession().getUnitsMetrics()); },
-			[](Player* p) -> float {
-				return p->getPossession().getBuildingsVal(BuildingMetric::DEFENCE)
-					+ p->getPossession().getUnitsVal(UnitMetric::DEFENCE);
-			},
-			[](Player* p) -> float {
-				auto& poss = p->getPossession();
-				return poss.getBuildingsVal(BuildingMetric::DISTANCE_ATTACK)
-					+ poss.getUnitsVal(UnitMetric::DISTANCE_ATTACK)
-					+ poss.getUnitsVal(UnitMetric::BUILDING_ATTACK)
-					+ poss.getUnitsVal(UnitMetric::CHARGE_ATTACK)
-					+ poss.getUnitsVal(UnitMetric::CLOSE_ATTACK);
-			}
+
+			[](Player* p) -> std::span<float> { return p->getResources().getValues(); },
+			[](Player* p) -> std::span<float> { return p->getResources().getSumValues(); },
+
+			[](Player* p) -> std::span<float> { return p->getPossession().getUnitsMetrics(); },
+			[](Player* p) -> std::span<float> { return p->getPossession().getBuildingsMetrics(); }
 		});
 	}
 }
