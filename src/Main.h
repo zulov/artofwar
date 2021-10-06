@@ -26,7 +26,7 @@ class Simulation;
 class ObjectsInfo;
 
 class Main : public Urho3D::Application {
-URHO3D_OBJECT(Main, Application)
+	URHO3D_OBJECT(Main, Application)
 
 	explicit Main(Urho3D::Context* context);
 
@@ -36,7 +36,6 @@ URHO3D_OBJECT(Main, Application)
 	void HandleUpdate(Urho3D::StringHash eventType, Urho3D::VariantMap& eventData);
 
 protected:
-
 	void InitMouseMode(Urho3D::MouseMode mode);
 	void SetupViewport();
 
@@ -78,7 +77,8 @@ private:
 	void newGame(NewGameForm* form, Loading& progress);
 	void changeState(GameState newState);
 
-	void writeOutput(std::initializer_list<const std::function<std::span<float>(Player*)>> funcs) const;
+	void writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs1,
+	                 std::initializer_list<const std::function<std::span<float>(Player*)>> funcs2) const;
 	void writeOutput() const;
 
 	Urho3D::MouseMode useMouseMode_;
@@ -102,7 +102,7 @@ private:
 	NewGameForm* newGameForm;
 	Urho3D::String saveToLoad = "quicksave.db";
 
-	
+
 	Urho3D::String outputName = "test.txt";
 	std::chrono::system_clock::time_point start;
 };

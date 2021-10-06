@@ -118,11 +118,16 @@ void Main::Start() {
 	changeState(GameState::LOADING);
 }
 
-void Main::writeOutput(std::initializer_list<const std::function<std::span<float>(Player*)>> funcs) const {
+void Main::writeOutput(std::initializer_list<const std::function<float(Player*)>> funcs1,
+                       std::initializer_list<const std::function<std::span<float>(Player*)>> funcs2) const {
 	std::ofstream outFile(("result/" + outputName).CString(), std::ios_base::out);
-	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
+	for (const auto player : Game::getPlayersMan()->getAllPlayers()) {
 		outFile << std::to_string(player->getId());
-		for (auto& func : funcs) {
+		for (auto& func : funcs1) {
+			outFile << ";" << func(player);
+		}
+
+		for (auto& func : funcs2) {
 			auto vals = func(player);
 			for (const auto val : vals) {
 				outFile << ";" << val;
@@ -135,18 +140,17 @@ void Main::writeOutput(std::initializer_list<const std::function<std::span<float
 
 void Main::writeOutput() const {
 	if (!outputName.Empty()) {
-		writeOutput({
-			[](Player* p) -> std::span<float> {
-				float a = p->getScore();//TODO tu jest cos zle
-				return std::span{&a, 1};
+		writeOutput(
+			{
+				[](Player* p) -> float { return p->getScore(); }
 			},
+			{
+				[](Player* p) -> std::span<float> { return p->getResources().getValues(); },
+				[](Player* p) -> std::span<float> { return p->getResources().getSumValues(); },
 
-			[](Player* p) -> std::span<float> { return p->getResources().getValues(); },
-			[](Player* p) -> std::span<float> { return p->getResources().getSumValues(); },
-
-			[](Player* p) -> std::span<float> { return p->getPossession().getUnitsMetrics(); },
-			[](Player* p) -> std::span<float> { return p->getPossession().getBuildingsMetrics(); }
-		});
+				[](Player* p) -> std::span<float> { return p->getPossession().getUnitsMetrics(); },
+				[](Player* p) -> std::span<float> { return p->getPossession().getBuildingsMetrics(); }
+			});
 	}
 }
 
