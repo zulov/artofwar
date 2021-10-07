@@ -12,7 +12,7 @@
 #include "simulation/env/Environment.h"
 #include "utils/OtherUtils.h"
 
-constexpr float THRESHOLD_MIN = 0.01f;
+constexpr float THRESHOLD_MIN = 0.3f;
 constexpr float THRESHOLD_MAX = 0.5f;
 
 Formation::Formation(short _id, const std::vector<Unit*>& _units, FormationType _type, Urho3D::Vector2 _direction) :
@@ -169,10 +169,10 @@ void Formation::updateSideSize() {
 	sideB = units.size() / sideA;
 }
 
-void Formation::calculateNotWellFormed() {
+void Formation::calculateCohesion() {
 	notWellFormed = 0;
 	notWellFormedExact = 0;
-	for (auto unit : units) {
+	for (const auto unit : units) {
 		const auto desiredPos = getPositionFor(unit->getPositionInFormation());
 		const auto dist = sqDist(unit->getPosition(), desiredPos);
 
@@ -203,7 +203,7 @@ void Formation::innerUpdate() {
 	if (!units.empty()) {
 		updateIds();
 		setCenter();
-		calculateNotWellFormed();
+		calculateCohesion();
 	} else {
 		changeState(FormationState::EMPTY);
 	}
@@ -242,13 +242,11 @@ void Formation::update() {
 	switch (state) {
 	case FormationState::FORMING:
 		innerUpdate();
+
 		if (notWellFormed < THRESHOLD_MIN) {
 			changeState(FormationState::MOVING);
 			if (!leader->hasAim()) {
-				if (pendingOrder) {
-					delete pendingOrder;
-					pendingOrder = nullptr;
-				}
+				removePending();
 				if (!unitOrders.empty()) {
 					pendingOrder = unitOrders[0];
 					unitOrders.erase(unitOrders.begin());
@@ -256,7 +254,6 @@ void Formation::update() {
 					stopAllBesideLeader();
 				}
 			}
-
 		}
 		break;
 	case FormationState::MOVING:
@@ -264,10 +261,7 @@ void Formation::update() {
 		if (notWellFormed > THRESHOLD_MAX) {
 			changeState(FormationState::FORMING);
 		} else if (notWellFormedExact < THRESHOLD_MIN && !leader->hasAim()) {
-			if (pendingOrder) {
-				delete pendingOrder;
-				pendingOrder = nullptr;
-			}
+			removePending();
 			if (unitOrders.empty()) {
 				changeState(FormationState::REACHED);
 			} else {
@@ -282,6 +276,13 @@ void Formation::update() {
 		units.clear();
 		changeState(FormationState::EMPTY);
 		break;
+	}
+}
+
+void Formation::removePending() {
+	if (pendingOrder) {
+		delete pendingOrder;
+		pendingOrder = nullptr;
 	}
 }
 

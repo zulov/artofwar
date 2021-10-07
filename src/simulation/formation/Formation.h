@@ -39,8 +39,9 @@ private:
 	void setCenter();
 	void updateIds();
 	void updateSideSize();
-	void calculateNotWellFormed();
+	void calculateCohesion();
 	void innerUpdate();
+	void removePending();
 
 	void electLeader();
 	void setFormationClearPosition();
