@@ -18,13 +18,13 @@ public:
 
 	//void remove(Physical* physical) const override;
 	void updateStatic(Static* staticObj, bool bulkAdd) const;
-	
-	void initAdd() const;
 
+	void ensureInited(int index, int centerIndex);
 	const std::vector<Physical*>& get(const Urho3D::Vector3& center, float radius);
 
 private:
 	int getIndexForRadius(float radius) const;
 	std::vector<float> queryRadius;
 	std::vector<Bucket*> bucketsPerRadius;
+	std::vector<bool*> inited;
 };

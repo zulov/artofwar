@@ -50,10 +50,6 @@ float Environment::getVisibilityScore(char player) {
 	return influenceManager.getVisibilityScore(player);
 }
 
-void Environment::initStaticGrid() const {
-	resourceStaticGrid.initAdd();
-}
-
 std::vector<int> Environment::getIndexesInRange(const Urho3D::Vector3& center, float range) const {
 	return mainGrid.getIndexesInRange(center, range);
 }

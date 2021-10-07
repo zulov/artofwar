@@ -6,6 +6,7 @@
 #include "Bucket.h"
 #include "levels/LevelCache.h"
 #include "objects/Physical.h"
+#include "utils/DeleteUtils.h"
 
 StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRadius): Grid(resolution, size, true,
 	queryRadius.back()), queryRadius(queryRadius) {
@@ -14,13 +15,15 @@ StaticGrid::StaticGrid(short resolution, float size, std::vector<float> queryRad
 
 	for (int i = 0; i < queryRadius.size(); ++i) {
 		bucketsPerRadius.push_back(new Bucket[sqResolution]);
+		bool* arr = new bool[sqResolution];
+		std::fill_n(arr, sqResolution, false);
+		inited.push_back(arr);
 	}
 }
 
 StaticGrid::~StaticGrid() {
-	for (const auto buckets : bucketsPerRadius) {
-		delete[] buckets;
-	}
+	clear_vector_array(bucketsPerRadius);
+	clear_vector_array(inited);
 }
 
 int StaticGrid::update(Physical* entity, int currentIndex) const {
@@ -39,8 +42,10 @@ void StaticGrid::remove(Physical* physical) const {
 
 		auto ptrIdx = indexes->begin();
 		for (const auto& shiftCords : *cords) {
-			if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_,shiftCords.y_ + centerCords.y_)) {
-				itr[centerIndex + *ptrIdx].remove(physical);
+			if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_, shiftCords.y_ + centerCords.y_)) {
+				if (inited[i][centerIndex + *ptrIdx]) {
+					itr[centerIndex + *ptrIdx].remove(physical); //TODDO notafe or if inited
+				}
 			}
 			++ptrIdx;
 		}
@@ -55,14 +60,15 @@ void StaticGrid::updateStatic(Static* staticObj, bool bulkAdd) const {
 		const auto centerCords = calculator->getIndexes(centerIndex);
 		for (int i = 0; i < queryRadius.size(); ++i) {
 			auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
-			assert(indexes->size() == cords->size());
 			const auto itr = bucketsPerRadius[i];
 
 			auto ptrIdx = indexes->begin();
 			auto x = itr + centerIndex;
 			for (const auto& shiftCords : *cords) {
-				if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_,shiftCords.y_ + centerCords.y_)) {
-					(*(x + *ptrIdx)).add(staticObj);
+				if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_, shiftCords.y_ + centerCords.y_)) {
+					if (inited[i][centerIndex + *ptrIdx]) {
+						(*(x + *ptrIdx)).add(staticObj);
+					}
 				}
 				++ptrIdx;
 			}
@@ -70,67 +76,31 @@ void StaticGrid::updateStatic(Static* staticObj, bool bulkAdd) const {
 	}
 }
 
-void StaticGrid::initAdd() const {
-	unsigned short* sizes = new unsigned short[sqResolution];
-	for (int i = 0; i < queryRadius.size(); ++i) {
-		std::fill_n(sizes, sqResolution, 0);
+void StaticGrid::ensureInited(int index, int centerIndex) {
+	if (inited[index][centerIndex]) { return; }
+	inited[index][centerIndex] = true;
 
-		auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
-		assert(indexes->size() == cords->size());
-		for (int k = 0; k < sqResolution; ++k) {
-			auto& bucket = buckets[k];
+	auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(index));
+	const auto centerCords = calculator->getIndexes(centerIndex);
 
-			if (bucket.getSize() > 0) {
-				const auto centerCords = calculator->getIndexes(k);
+	auto ptrIdx = indexes->begin();
+	//TODO pref? reserver size
+	auto& bucketRad = bucketsPerRadius[index][centerIndex];
 
-				auto ptrIdx = indexes->begin();
-				const auto ptrSize = sizes + k;
-				for (const auto& shiftCords : *cords) {
-					if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_,shiftCords.y_ + centerCords.y_)) {
-						*(ptrSize + *ptrIdx) += bucket.getContent().size();
-					}
-					++ptrIdx;
-				}
-			}
+	for (const auto& shiftCords : *cords) {
+		if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_, shiftCords.y_ + centerCords.y_)) {
+			bucketRad.add(buckets[centerIndex + *ptrIdx].getContent());
 		}
-		auto itr = bucketsPerRadius[i];
-		for (int k = 0; k < sqResolution; ++k) {
-			const auto val = sizes[k];
-			if (val > 0) {
-				itr->reserve(val);
-			}
-			++itr;
-		}
-	}
-
-	delete[]sizes;
-
-	for (int k = 0; k < sqResolution; ++k) {
-		auto& bucket = buckets[k];
-
-		if (bucket.getSize() > 0) {
-			const auto centerCords = calculator->getIndexes(k);
-			for (int i = 0; i < queryRadius.size(); ++i) {
-				auto const [indexes, cords] = levelCache->getBoth(queryRadius.at(i));
-				assert(indexes->size() == cords->size());
-				const auto itr = bucketsPerRadius[i];
-
-				auto ptrIdx = indexes->begin();
-				auto x = itr + k;
-				for (const auto& shiftCords : *cords) {
-					if (calculator->isValidIndex(shiftCords.x_ + centerCords.x_,shiftCords.y_ + centerCords.y_)) {
-						(*(x + *ptrIdx)).add(bucket.getContent());
-					}
-					++ptrIdx;
-				}
-			}
-		}
+		++ptrIdx;
 	}
 }
 
 const std::vector<Physical*>& StaticGrid::get(const Urho3D::Vector3& center, float radius) {
 	const int index = getIndexForRadius(radius);
 	const int centerIndex = calculator->indexFromPosition(center);
+
+	ensureInited(index, centerIndex);
+
 	return bucketsPerRadius[index][centerIndex].getContent();
 }
 

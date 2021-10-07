@@ -130,7 +130,7 @@ public:
 	short getResolution() const { return calculator->getResolution(); }
 	bool isVisible(char player, const Urho3D::Vector2& pos);
 	float getVisibilityScore(char player);
-	void initStaticGrid() const;
+
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
 
 private:
