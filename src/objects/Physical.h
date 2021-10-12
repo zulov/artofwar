@@ -103,9 +103,12 @@ public:
 	virtual unsigned char getMaxCloseUsers() const { return 8; }
 	virtual bool isInCloseRange(int index) const = 0;
 	virtual const Urho3D::String& getName() const = 0;
-	float getModelHeight() const;
+	virtual float getModelHeight() const =0;
+	virtual float getAuraSize() const =0;
 
 protected:
+	virtual void setModelData(float modelHeight, float auraSize) const =0;
+
 	void loadXml(const Urho3D::String& xmlName);
 	void setPlayerAndTeam(int player);
 	virtual float getHealthBarThick() const { return 0.12f; }
@@ -118,8 +121,6 @@ protected:
 	float invMaxHp; // optm
 	short id = -1; // optm
 
-	unsigned char height, auraSize;
-
 	char team, player = -1;
 
 	unsigned char closeUsers = 0,
@@ -130,6 +131,6 @@ protected:
 
 	SelectedObject* selectedObject{};
 private:
-	virtual float getAuraSize(const Urho3D::Vector3& boundingBox) const;
+	virtual float calculateAuraSize(const Urho3D::Vector3& boundingBox) const;
 
 };

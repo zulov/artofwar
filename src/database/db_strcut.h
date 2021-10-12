@@ -188,7 +188,12 @@ struct db_with_hp {
 	}
 };
 
-struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp, db_sight {
+struct db_with_model {
+	float modelHeight = -1.f;
+	float auraSize = -1.f;
+};
+
+struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp, db_sight, db_with_model {
 	const bool canCollect;
 	const unsigned short unit;
 
@@ -298,7 +303,8 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 	}
 };
 
-struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_sight, db_with_hp, db_attack {
+struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_sight, db_with_hp, db_attack,
+                           db_with_model {
 	const short building;
 	const short queueMaxCapacity;
 	const Urho3D::String nodeName;
@@ -380,7 +386,7 @@ struct db_nation : db_entity, db_with_name {
 	}
 };
 
-struct db_resource : db_with_name, db_static, db_with_hp, db_entity {
+struct db_resource : db_with_name, db_static, db_with_hp, db_entity, db_with_model {
 	const short maxUsers;
 	const unsigned mini_map_color;
 	const Urho3D::String icon;

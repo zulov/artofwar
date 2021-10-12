@@ -79,7 +79,7 @@ void Static::populate() {
 	std::ranges::copy(surroundCells1, surroundCells.begin());
 }
 
-float Static::getAuraSize(const Urho3D::Vector3& boundingBox) const {
+float Static::calculateAuraSize(const Urho3D::Vector3& boundingBox) const {
 	auto gridSize = getGridSize();
 	return Urho3D::Max(gridSize.x_, gridSize.y_) * 1.2f;
 }

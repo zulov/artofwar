@@ -251,3 +251,16 @@ bool Building::canUse(int index) const {
 db_building_level* Building::getLevel() const {
 	return dbLevel;
 }
+
+float Building::getModelHeight() const {
+	return dbLevel->modelHeight;
+}
+
+float Building::getAuraSize() const {
+	return dbLevel->auraSize;
+}
+
+void Building::setModelData(float modelHeight, float auraSize) const {
+	dbLevel->modelHeight = modelHeight;
+	dbLevel->auraSize = auraSize;
+}

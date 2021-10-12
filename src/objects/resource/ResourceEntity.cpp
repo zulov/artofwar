@@ -95,6 +95,19 @@ bool ResourceEntity::canUse(int index) const {
 	return Game::getEnvironment()->cellIsCollectable(index);
 }
 
+float ResourceEntity::getModelHeight() const {
+	return dbResource->modelHeight;
+}
+
+float ResourceEntity::getAuraSize() const {
+	return dbResource->auraSize;
+}
+
+void ResourceEntity::setModelData(float modelHeight, float auraSize) const {
+	dbResource->modelHeight = modelHeight;
+	dbResource->auraSize = auraSize;
+}
+
 std::pair<float, bool> ResourceEntity::absorbAttack(float collectSpeed) {
 	if (hp - collectSpeed >= 0) {
 		hp -= collectSpeed;

@@ -271,7 +271,7 @@ Urho3D::String Unit::getInfo() const {
 		                  magic_enum::enum_name(state).data());
 }
 
-const Urho3D::String&  Unit::getName() const {
+const Urho3D::String& Unit::getName() const {
 	return dbUnit->name;
 }
 
@@ -315,6 +315,19 @@ void Unit::setSparseIndex(int index) {
 	if (index >= 0) {
 		sparseIndexInGrid = index;
 	}
+}
+
+float Unit::getModelHeight() const {
+	return dbLevel->modelHeight;
+}
+
+float Unit::getAuraSize() const {
+	return dbLevel->auraSize;
+}
+
+void Unit::setModelData(float modelHeight, float auraSize) const {
+	dbLevel->modelHeight = modelHeight;
+	dbLevel->auraSize = auraSize;
 }
 
 void Unit::changeColor(float value, float maxValue) const {

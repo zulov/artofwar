@@ -1,8 +1,7 @@
 #pragma once
 #include "objects/static/Static.h"
 
-namespace Urho3D
-{
+namespace Urho3D {
 	class Vector3;
 }
 
@@ -31,6 +30,10 @@ public:
 	void action(ResourceActionType type, char player);
 
 	bool canUse(int index) const override;
+
+	float getModelHeight() const override;
+	float getAuraSize() const override;
+	void setModelData(float modelHeight, float auraSize) const override;
 
 	ObjectType getType() const override { return ObjectType::RESOURCE; }
 	unsigned char getMaxCloseUsers() const override;
