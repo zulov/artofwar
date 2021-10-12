@@ -46,18 +46,16 @@ float Physical::getAuraSize(const Urho3D::Vector3& boundingBox) const {
 
 void Physical::updateBillboards() const {
 	if (selectedObject) {
-		const auto b = model->GetModel()->GetBoundingBox().Size() * node->GetScale();
 		auto const healthBar = selectedObject->getHealthBar();
 		if (healthBar) {
-			healthBar->position_ = node->GetPosition() + Urho3D::Vector3{0, b.y_ * 1.3f, 0};
+			healthBar->position_ = node->GetPosition() + Urho3D::Vector3{0, height * 1.3f, 0};
 			healthBar->size_ = {getHealthBarSize(), getHealthBarThick()};
 			healthBar->enabled_ = true;
 		}
 		auto const aura = selectedObject->getAura();
 		if (aura) {
-			const auto auraSize = getAuraSize(b);
 			aura->position_ = node->GetPosition();
-			aura->size_ = {auraSize, auraSize};
+			aura->size_ = Urho3D::Vector2(auraSize, auraSize);
 			aura->enabled_ = true;
 		}
 	}
@@ -127,7 +125,7 @@ void Physical::unSelect() {
 }
 
 float Physical::getModelHeight() const {
-	return model->GetModel()->GetBoundingBox().Size().y_ * node->GetScale().y_;
+	return height;
 }
 
 void Physical::loadXml(const Urho3D::String& xmlName) {
@@ -146,7 +144,11 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 	if (!name.Empty()) {
 		node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(name)->GetRoot());
 		node->SetVar("link", this);
-		model = node->GetComponent<Urho3D::StaticModel>();
+		const auto model = node->GetComponent<Urho3D::StaticModel>();
+		const auto boundingBox = model->GetModel()->GetBoundingBox().Size() * node->GetScale();
+
+		height = Urho3D::Max(1, boundingBox.y_);
+		auraSize = Urho3D::Max(1, getAuraSize(boundingBox));
 	}
 
 	populate();

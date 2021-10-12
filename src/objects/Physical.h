@@ -110,23 +110,25 @@ protected:
 	void setPlayerAndTeam(int player);
 	virtual float getHealthBarThick() const { return 0.12f; }
 	Urho3D::Node* node{};
-	Urho3D::StaticModel* model{};
-
-	SelectedObject* selectedObject{};
 	Urho3D::Vector3 position;
+
+	int indexInMainGrid = -1;
+
+	float hp = -1;
+	float invMaxHp; // optm
+	short id = -1; // optm
+
+	unsigned char height, auraSize;
 
 	char team, player = -1;
 
 	unsigned char closeUsers = 0,
 	              rangeUsers = 0;
-	bool indexHasChanged = false;///TODO to tylko dla unit
+	bool indexHasChanged = false; ///TODO to tylko dla unit
 
 	bool isVisible = false;
 
-	short id = -1; // optm
-	float invMaxHp; // optm
-	float hp = -1;
-	int indexInMainGrid = -1;
+	SelectedObject* selectedObject{};
 private:
 	virtual float getAuraSize(const Urho3D::Vector3& boundingBox) const;
 

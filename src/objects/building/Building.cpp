@@ -41,7 +41,7 @@ void Building::postCreate() {
 	ready = false;
 	queue->add(1, QueueActionType::BUILDING_CREATE, getId(), 1);
 	if (!SIM_GLOBALS.HEADLESS) {
-		changeMaterial("Materials/orange_overlay.xml", model);
+		changeMaterial("Materials/orange_overlay.xml", node->GetComponent<Urho3D::StaticModel>());
 	}
 }
 

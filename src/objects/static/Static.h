@@ -49,7 +49,6 @@ protected:
 	unsigned short indexInInfluence;
 	StaticState state, nextState;
 
-	//std::span<int> occupiedCells, surroundCells;
 	unsigned char occupiedCellsSize = 0;
 	unsigned char surroundCellsSize = 0;
 	int* data{};
