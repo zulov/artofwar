@@ -20,13 +20,13 @@ InfluenceMapFloat(unsigned short resolution, float size, float coef, char level,
 	std::fill_n(values, arraySize, 0.f);
 	std::fill_n(tempVals, arraySize, 0.f);
 
+
 	auto* ptr = templateV;
 	for (short i = -level; i <= level; ++i) {
 		const auto a = i * i;
-
 		for (short j = -level; j <= level; ++j) {
 			const auto b = j * j;
-			*(ptr++) += 1 / ((a + b) * coef + 1.f);
+			*(ptr++) = 1 / ((a + b) * coef + 1.f);
 		}
 	}
 
@@ -73,17 +73,13 @@ void InfluenceMapFloat::update(float value, const unsigned short centerX, const 
 	const auto minJ = calculator->getValidLow(centerZ - level);
 	const auto maxJ = calculator->getValidHigh(centerZ + level);
 
+	const auto jStart = (minJ - centerZ + level);
 	for (short i = minI; i <= maxI; ++i) {
-		//const auto a = (i - centerX) * (i - centerX);
 		const int index = calculator->getNotSafeIndex(i, minJ);
 		auto* t = &values[index];
-		auto idx = (i - centerX + level) * levelRes + (minJ - centerZ + level);
+		auto idx = (i - centerX + level) * levelRes + jStart;
 		auto ptr = templateV + idx;
 		for (short j = minJ; j <= maxJ; ++j) {
-			//const auto b = (j - centerZ) * (j - centerZ);
-			//auto idx = (i - centerX + level) * levelRes + (j - centerZ + level);
-			//std::cout << (i - centerX) << ";" << (j - centerZ) <<";"<< ((a + b) * coef + 1.f) << ";" << templateV[idx]<< std::endl;
-			//*(t++) += value / ((a + b) * coef + 1.f);
 			*(t++) += value * *(ptr++);
 		}
 	}
