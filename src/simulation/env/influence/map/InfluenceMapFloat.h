@@ -38,4 +38,6 @@ private:
 	void update(float value, unsigned short centerX, unsigned short centerZ) const;
 
 	unsigned char level;
+	unsigned char levelRes;
+	float* templateV;
 };

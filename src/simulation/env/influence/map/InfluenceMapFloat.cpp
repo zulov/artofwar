@@ -1,5 +1,6 @@
 #include "InfluenceMapFloat.h"
 #include <algorithm>
+#include <iostream>
 #include <numeric>
 #include "math/MathUtils.h"
 #include "objects/Physical.h"
@@ -10,16 +11,32 @@ InfluenceMapFloat(unsigned short resolution, float size, float coef, char level,
 	InfluenceMap(resolution, size, valueThresholdDebug),
 	coef(coef),
 	level(level) {
+	levelRes = level * 2 + 1;
+
 	values = new float[arraySize];
 	tempVals = new float[arraySize];
+	templateV = new float[levelRes * levelRes];
+
 	std::fill_n(values, arraySize, 0.f);
 	std::fill_n(tempVals, arraySize, 0.f);
+
+	auto* ptr = templateV;
+	for (short i = -level; i <= level; ++i) {
+		const auto a = i * i;
+
+		for (short j = -level; j <= level; ++j) {
+			const auto b = j * j;
+			*(ptr++) += 1 / ((a + b) * coef + 1.f);
+		}
+	}
+
 	assert(level > 0);
 }
 
 InfluenceMapFloat::~InfluenceMapFloat() {
 	delete[] values;
 	delete[] tempVals;
+	delete[] templateV;
 }
 
 void InfluenceMapFloat::update(Physical* thing, float value) {
@@ -34,6 +51,7 @@ void InfluenceMapFloat::updateInt(Physical* thing, int value) {
 void InfluenceMapFloat::tempUpdate(Physical* thing, float value) {
 	tempUpdate(calculator->indexFromPosition(thing->getPosition()), value);
 }
+
 void InfluenceMapFloat::tempUpdate(const Urho3D::Vector3& pos, float value) {
 	tempUpdate(calculator->indexFromPosition(pos), value);
 }
@@ -56,13 +74,17 @@ void InfluenceMapFloat::update(float value, const unsigned short centerX, const 
 	const auto maxJ = calculator->getValidHigh(centerZ + level);
 
 	for (short i = minI; i <= maxI; ++i) {
-		const auto a = (i - centerX) * (i - centerX);
+		//const auto a = (i - centerX) * (i - centerX);
 		const int index = calculator->getNotSafeIndex(i, minJ);
 		auto* t = &values[index];
+		auto idx = (i - centerX + level) * levelRes + (minJ - centerZ + level);
+		auto ptr = templateV + idx;
 		for (short j = minJ; j <= maxJ; ++j) {
-			const auto b = (j - centerZ) * (j - centerZ);
-
-			*(t++) += value / ((a + b) * coef + 1.f);
+			//const auto b = (j - centerZ) * (j - centerZ);
+			//auto idx = (i - centerX + level) * levelRes + (j - centerZ + level);
+			//std::cout << (i - centerX) << ";" << (j - centerZ) <<";"<< ((a + b) * coef + 1.f) << ";" << templateV[idx]<< std::endl;
+			//*(t++) += value / ((a + b) * coef + 1.f);
+			*(t++) += value * *(ptr++);
 		}
 	}
 }
@@ -115,7 +137,7 @@ std::vector<int> InfluenceMapFloat::getIndexesWithByValue(float percent, float t
 	float* iter = values;
 	std::vector<int> indexes;
 	indexes.reserve(16);
-	auto pred = [minV,maxV](float i) { return i >= minV && i <= maxV; };
+	auto pred = [minV,maxV](float i){ return i >= minV && i <= maxV; };
 	while ((iter = std::find_if(iter, values + arraySize, pred)) != values + arraySize) {
 		//TODO performance!!!	
 		indexes.push_back(iter - values);
