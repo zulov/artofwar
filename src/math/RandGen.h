@@ -7,7 +7,7 @@ enum class RandType : char;
 
 class RandGen {
 public:
-	static void init();
+	static void init(bool isRandom);
 	static void dispose();
 	static float nextRand(RandFloatType type, float max = 1.f);
 	static int nextRand(RandIntType type, int max = 255.f);

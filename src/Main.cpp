@@ -29,7 +29,6 @@
 #include "hud/window/main_menu/new_game/NewGameForm.h"
 #include "hud/window/selected/SelectedHudElement.h"
 #include "math/RandGen.h"
-#include "math/SpanUtils.h"
 #include "objects/ActionType.h"
 #include "objects/projectile/ProjectileManager.h"
 #include "player/Player.h"
@@ -53,13 +52,13 @@ using namespace Urho3D;
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
                                gameState(GameState::STARTING), loadingProgress(6),
                                newGameProgress(6) {
-	start = std::chrono::system_clock::now();
-	auto a = std::chrono::system_clock::now().time_since_epoch();
-	auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(a).count();
+	//start = std::chrono::system_clock::now();
+	//auto a = std::chrono::system_clock::now().time_since_epoch();
+	//auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(a).count();
 	//std::cout << "Start " << millis<< " ms" << std::endl;
 	MySprite::RegisterObject(context);
 	Game::init();
-	RandGen::init();
+
 	ProjectileManager::init();
 }
 
@@ -83,6 +82,7 @@ void Main::Setup() {
 	engine_->SetMinFps(graphSettings->min_fps);
 
 	readParameters();
+	RandGen::init(SIM_GLOBALS.RANDOM);
 	if (SIM_GLOBALS.HEADLESS) {
 		engineParameters_[EP_LOG_NAME] = "";
 		GetSubsystem<Log>()->SetLevel(LOG_NONE);
@@ -677,6 +677,9 @@ void Main::readParameters() {
 				++i;
 			} else if (argument == "camposy" && !value.Empty()) {
 				SimGlobals::CAMERA_START.y_ = ToInt(value);
+				++i;
+			} else if (argument == "random") {
+				SimGlobals::RANDOM = true;
 				++i;
 			}
 		}

@@ -21,6 +21,8 @@ inline struct SimGlobals {
 	inline static bool NO_PLAYER_AI = FORCE_NO_PLAYER_AI;
 	inline static bool HEADLESS = false;
 	inline static bool FAKE_TERRAIN = false;
+	inline static bool RANDOM = false;
+	
 	inline static Urho3D::String DATABASE_NUMBER = "";
 	inline static Urho3D::String ACTION_AI_PATH[MAX_PLAYERS] = {Urho3D::String::EMPTY, Urho3D::String::EMPTY};
 	inline static Urho3D::String ORDER_AI_PATH[MAX_PLAYERS] = {Urho3D::String::EMPTY, Urho3D::String::EMPTY};
