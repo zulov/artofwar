@@ -52,7 +52,7 @@ using namespace Urho3D;
 Main::Main(Context* context) : Application(context), useMouseMode_(MM_ABSOLUTE), saver(100),
                                gameState(GameState::STARTING), loadingProgress(6),
                                newGameProgress(6) {
-	//start = std::chrono::system_clock::now();
+	start = std::chrono::system_clock::now();
 	//auto a = std::chrono::system_clock::now().time_since_epoch();
 	//auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(a).count();
 	//std::cout << "Start " << millis<< " ms" << std::endl;
