@@ -76,8 +76,6 @@ public:
 private:
 	PathFinder* pathFinder;
 
-	std::array<Urho3D::Vector2, 2> posInBucket2;
-	std::array<Urho3D::Vector2, 3> posInBucket3;
 	std::array<Urho3D::Vector2, 4> posInBucket4;
 
 	ComplexBucketData* complexData;

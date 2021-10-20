@@ -193,7 +193,17 @@ struct db_with_model {
 	float auraSize = -1.f;
 };
 
-struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp, db_sight, db_with_model {
+struct db_build_upgrade {
+	short buildTime = -1;
+	short upgradeTime = -1;
+
+	db_build_upgrade(short buildTime, short upgradeTime)
+		: buildTime(buildTime), upgradeTime(upgradeTime) {
+	}
+};
+
+struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attack, db_with_hp, db_sight, db_with_model,
+                       db_build_upgrade {
 	const bool canCollect;
 	const unsigned short unit;
 
@@ -205,7 +215,6 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	const float maxSpeed;
 	const float minSpeed;
 
-	const float upgradeSpeed;
 	const float maxForce;
 	const float sqMinSpeed;
 
@@ -216,14 +225,14 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 	std::vector<unsigned char> ordersIds;
 
 	db_unit_level(short id, short level, short unit, char* name, float minDist, float maxSep, char* nodeName,
-	              float mass, short maxHp, float maxSpeed, float minSpeed, float upgradeSpeed, float collectSpeed,
+	              float mass, short maxHp, float maxSpeed, float minSpeed, float collectSpeed,
 	              float maxForce, float closeAttackVal, float rangeAttackVal, float chargeAttackVal,
 	              float buildingAttackVal, short closeAttackSpeed, short rangeAttackSpeed, float rangeAttackRange,
-	              float armor, float interestRange):
+	              float armor, float interestRange, short buildSpeed, short upgradeSpeed):
 		db_entity(id), db_level(level), db_with_name(name),
 		db_attack(closeAttackVal, rangeAttackVal, chargeAttackVal, buildingAttackVal,
 		          closeAttackSpeed, rangeAttackSpeed, rangeAttackRange, armor, collectSpeed, interestRange),
-		db_with_hp(maxHp), db_sight(10.f),
+		db_with_hp(maxHp), db_sight(10.f), db_build_upgrade(buildSpeed, upgradeSpeed),
 		unit(unit),
 		minDist(minDist),
 		maxSep(maxSep),
@@ -232,7 +241,6 @@ struct db_unit_level : db_entity, db_level, db_with_name, db_with_cost, db_attac
 		invMass(1 / mass),
 		maxSpeed(maxSpeed),
 		minSpeed(minSpeed),
-		upgradeSpeed(upgradeSpeed),
 		maxForce(maxForce),
 		sqMinSpeed(minSpeed * minSpeed),
 		canCollect(initFlag(collectSpeed)) {
@@ -304,7 +312,7 @@ struct db_building : db_entity, db_with_name, db_with_cost, db_static {
 };
 
 struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_sight, db_with_hp, db_attack,
-                           db_with_model {
+                           db_with_model, db_build_upgrade {
 	const short building;
 	const short queueMaxCapacity;
 	const Urho3D::String nodeName;
@@ -317,10 +325,11 @@ struct db_building_level : db_with_name, db_with_cost, db_entity, db_level, db_s
 	std::vector<db_building_metric*> dbBuildingMetricPerNation;
 
 	db_building_level(short id, short level, short building, char* name, char* nodeName, short queueMaxCapacity,
-	                  float rangeAttackVal, short rangeAttackSpeed, float rangeAttackRange, float armor, short maxHp)
+	                  float rangeAttackVal, short rangeAttackSpeed, float rangeAttackRange, float armor, short maxHp,
+	                  short buildSpeed, short upgradeSpeed)
 		: db_entity(id), db_level(level), db_with_name(name),
 		  db_attack(0.f, rangeAttackVal, 0.f, 0.f, 0.f, rangeAttackSpeed, rangeAttackRange, armor, 0.f, 0.f),
-		  db_with_hp(maxHp), db_sight(15.f),
+		  db_with_hp(maxHp), db_sight(15.f), db_build_upgrade(buildSpeed, upgradeSpeed),
 		  building(building), nodeName(nodeName), queueMaxCapacity(queueMaxCapacity) {
 	}
 

@@ -2,15 +2,16 @@
 #include "Game.h"
 #include "QueueActionType.h"
 #include "database/DatabaseCache.h"
+#include "objects/building/Building.h"
 
 inline float getSecToComplete(QueueActionType type, short id, int level) {
 	switch (type) {
 	case QueueActionType::UNIT_CREATE:
-		return 15;
+		return Game::getDatabase()->getUnit(id)->getLevel(level).value()->buildTime;
 	case QueueActionType::BUILDING_CREATE:
-		return 30;
+		return Game::getDatabase()->getBuilding(id)->getLevel(level)->;
 	case QueueActionType::UNIT_LEVEL:
-		return Game::getDatabase()->getUnit(id)->getLevel(level).value()->upgradeSpeed; //TODO BUG value
+		return Game::getDatabase()->getUnit(id)->getLevel(level).value()->upgradeTime; //TODO BUG value
 	case QueueActionType::BUILDING_LEVEL:
 		return 15;
 	default:

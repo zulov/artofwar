@@ -16,15 +16,11 @@
 
 MainGrid::MainGrid(short resolution, float size, float maxQueryRadius): Grid(resolution, size, true, maxQueryRadius) {
 	complexData = new ComplexBucketData[sqResolution];
-	auto quater = calculator->getFieldSize() / 4;
-	posInBucket2 = {Urho3D::Vector2(quater, quater), Urho3D::Vector2(-quater, -quater)};
-	posInBucket3 = {
-		Urho3D::Vector2(quater, quater), Urho3D::Vector2(-quater, quater),
-		Urho3D::Vector2(-quater, 0)
-	};
+	const auto quater = calculator->getFieldSize() / 4;
+
 	posInBucket4 = {
-		Urho3D::Vector2(quater, quater), Urho3D::Vector2(-quater, quater),
-		Urho3D::Vector2(quater, -quater), Urho3D::Vector2(-quater, -quater)
+		Urho3D::Vector2(quater, quater), Urho3D::Vector2(-quater, -quater),
+		Urho3D::Vector2(quater, -quater), Urho3D::Vector2(-quater, quater)
 	};
 	pathFinder = new PathFinder(resolution, size, complexData);
 
@@ -129,9 +125,7 @@ Urho3D::Vector2 MainGrid::getPositionInBucket(Unit* unit) {
 	case 1:
 		return center;
 	case 2:
-		return posInBucket2[ordinal] + center;
 	case 3:
-		return posInBucket3[ordinal] + center;
 	case 4:
 		return posInBucket4[ordinal] + center;
 	}
