@@ -1,10 +1,10 @@
 #include "QueueElement.h"
 #include "QueueActionType.h"
 
-QueueElement::QueueElement(QueueActionType type, short id, short maxCapacity, float initialSecondsToComplete,
-                           float secondsToCompletePerInstance): type(type), id(id), maxCapacity(maxCapacity), amount(0),
-                                                                secondsToComplete(initialSecondsToComplete), elapsedSeconds(0),
-                                                                secondsToCompletePerInstance(secondsToCompletePerInstance) {
+QueueElement::QueueElement(QueueActionType type, short id, short maxCapacity, short initialTicksToComplete,
+                           short ticksToCompletePerInstance): type(type), id(id), maxCapacity(maxCapacity), amount(0),
+                                                                ticksToComplete(initialTicksToComplete), elapsedTicks(0),
+                                                                ticksToCompletePerInstance(ticksToCompletePerInstance) {
 }
 
 bool QueueElement::checkType(QueueActionType _type, short _id) const {
