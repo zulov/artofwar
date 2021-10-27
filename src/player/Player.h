@@ -41,7 +41,7 @@ public:
 
 	void deactivate();
 	void activate();
-	QueueElement* updateQueue(float time) const;
+	QueueElement* updateQueue() const;
 	QueueManager* getQueue() const;
 	db_unit_level* getLevelForUnit(short id) const;
 	db_building_level* getLevelForBuilding(short id) const;

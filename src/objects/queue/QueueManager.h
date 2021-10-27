@@ -12,7 +12,7 @@ public:
 	~QueueManager();
 
 	void add(short number, QueueActionType type, short id, unsigned short localMaxCapacity) override;
-	QueueElement* update(float time) override;
+	QueueElement* update() override;
 	short getSize() const override;
 	QueueElement* getAt(short i) override;
 private:

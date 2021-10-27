@@ -18,7 +18,7 @@ short QueueElement::add(short value) {
 		amount = maxCapacity;
 	} else {
 		amount += value;
-		secondsToComplete += value * secondsToCompletePerInstance;
+		ticksToComplete += value * ticksToCompletePerInstance;
 		rest = 0;
 	}
 	return rest;
@@ -26,10 +26,10 @@ short QueueElement::add(short value) {
 
 void QueueElement::reduce(short value) {
 	amount -= value;
-	secondsToComplete -= value * secondsToCompletePerInstance;
+	ticksToComplete -= value * ticksToCompletePerInstance;
 }
 
-bool QueueElement::update(float time) {
-	elapsedSeconds += time;
-	return elapsedSeconds >= secondsToComplete;
+bool QueueElement::update() {
+	++elapsedTicks ;
+	return elapsedTicks >= ticksToComplete;
 }

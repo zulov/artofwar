@@ -145,8 +145,8 @@ Building* Building::load(dbload_building* dbloadBuilding) {
 	return this;
 }
 
-QueueElement* Building::updateQueue(float time) const {
-	return queue->update(time);
+QueueElement* Building::updateQueue() const {
+	return queue->update();
 }
 
 void Building::updateAi() {

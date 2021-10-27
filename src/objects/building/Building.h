@@ -21,7 +21,7 @@ public:
 	void postCreate();
 	Building* load(dbload_building* dbloadBuilding);
 
-	QueueElement* updateQueue(float time) const;
+	QueueElement* updateQueue() const;
 	void updateAi();
 
 	std::optional<int> getDeploy();

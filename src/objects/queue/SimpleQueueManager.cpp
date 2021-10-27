@@ -14,7 +14,7 @@ void SimpleQueueManager::add(short number, QueueActionType type, short id, unsig
 	}
 }
 
-QueueElement* SimpleQueueManager::update(float time) {
+QueueElement* SimpleQueueManager::update() {
 	if (element) {
 		if (element->getAmount() <= 0) {
 			delete element;
@@ -22,7 +22,7 @@ QueueElement* SimpleQueueManager::update(float time) {
 		}
 	}
 	if (element) {
-		if (element->update(time)) {
+		if (element->update()) {
 			auto el = element;
 			element = nullptr;
 			return el;

@@ -4,7 +4,6 @@
 #include "database/DatabaseCache.h"
 
 inline float getSecToComplete(QueueActionType type, short id, int level) {
-	Game::getPlayersMan()
 	switch (type) {
 	case QueueActionType::UNIT_CREATE:
 		

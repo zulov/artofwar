@@ -61,7 +61,7 @@ private:
 	void countFrame();
 	void applyForce() const;
 	void levelUp(QueueElement* done, char player) const;
-	void updateBuildingQueues(float time) const;
+	void updateBuildingQueues() const;
 	void updateQueues() const;
 	std::function<bool(Physical*)> getCondition(db_unit_level* level) const;
 	void selfAI() const;

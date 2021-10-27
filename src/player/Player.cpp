@@ -123,8 +123,8 @@ void Player::activate() {
 	resources.change();
 }
 
-QueueElement* Player::updateQueue(float time) const {
-	return queue->update(time);
+QueueElement* Player::updateQueue() const {
+	return queue->update();
 }
 
 QueueManager* Player::getQueue() const {

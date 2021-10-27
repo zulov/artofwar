@@ -11,7 +11,7 @@ public:
 	bool checkType(QueueActionType _type, short _id) const;
 	short add(short value);
 	void reduce(short value);
-	bool update(float time);
+	bool update();
 	
 	QueueActionType getType() const { return type; }
 	short getId() const { return id; }

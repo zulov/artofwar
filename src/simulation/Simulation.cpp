@@ -230,9 +230,9 @@ void Simulation::levelUp(QueueElement* done, char player) const {
 	));
 }
 
-void Simulation::updateBuildingQueues(const float time) const {
+void Simulation::updateBuildingQueues() const {
 	for (const auto build : *buildings) {
-		const auto done = build->updateQueue(time);
+		const auto done = build->updateQueue();
 		if (done) {
 			switch (done->getType()) {
 			case QueueActionType::UNIT_CREATE: {
@@ -256,9 +256,9 @@ void Simulation::updateBuildingQueues(const float time) const {
 }
 
 void Simulation::updateQueues() const {
-	updateBuildingQueues(TIME_PER_UPDATE);
+	updateBuildingQueues();
 	for (auto player : Game::getPlayersMan()->getAllPlayers()) {
-		const auto done = player->updateQueue(TIME_PER_UPDATE);
+		const auto done = player->updateQueue();
 		if (done) {
 			switch (done->getType()) {
 			case QueueActionType::BUILDING_LEVEL:
