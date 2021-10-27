@@ -3,6 +3,8 @@
 #include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Graphics/Terrain.h>
+#include <Urho3D/Graphics/TerrainPatch.h>
+#include <Urho3D/Graphics/Geometry.h>
 #include "database/DatabaseCache.h"
 #include "database/db_other_struct.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
@@ -57,6 +59,9 @@ void LevelBuilder::createGround(const Urho3D::String& xmlName, int size) {
 
 		terrain->GetMaterial()->SetUVTransform(Urho3D::Vector2(0, 0), 0.f, 16.f * hSpacing);
 
+		auto a = terrain->GetPatch(2, 2);
+		auto mat = Game::getCache()->GetResource<Urho3D::Material>("Materials/test1.xml");
+		a->SetMaterial(mat);
 		if (!SIM_GLOBALS.HEADLESS) {
 			terrain->SetSmoothing(true);
 			node->SetVar("ground", true);
