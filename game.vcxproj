@@ -400,6 +400,7 @@
     <ClCompile Include="src\player\ai\threshold\ThresholdProvider.cpp" />
     <ClCompile Include="src\simulation\env\influence\map\VisibilityMap.cpp" />
     <ClCompile Include="src\simulation\env\bucket\StaticGrid.cpp" />
+    <ClCompile Include="src\simulation\env\influence\VisibilityManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\objects\projectile\ProjectileManager.h" />
@@ -415,6 +416,7 @@
     <ClInclude Include="src\objects\unit\GroupUtils.h" />
     <ClInclude Include="src\objects\unit\state\StateUtils.h" />
     <ClInclude Include="src\scene\save\SQLConsts.h" />
+    <ClInclude Include="src\simulation\env\influence\MapsUtils.h" />
     <ClInclude Include="src\simulation\env\influence\map\VisibilityType.h" />
     <ClInclude Include="src\simulation\FrameInfo.h" />
     <ClInclude Include="src\simulation\SimInfo.h" />
@@ -625,6 +627,7 @@
     <ClInclude Include="src\player\ai\threshold\ThresholdProvider.h" />
     <ClInclude Include="src\simulation\env\influence\map\VisibilityMap.h" />
     <ClInclude Include="src\simulation\env\bucket\StaticGrid.h" />
+    <ClInclude Include="src\simulation\env\influence\VisibilityManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,7 +1,7 @@
 <material>
     <technique name="Techniques/DiffGround.xml" quality="1" />
     <texture unit="diffuse" name="Textures/test.png" />
-    <parameter name="MatSpecColor" value="1 0.0 0.0 16" />
+    <parameter name="MatDiffColor" value="0.1 0.1 0.1 1"/>
     <parameter name="UOffset" value="16 0 0 0" />
     <parameter name="VOffset" value="0 16 0 0" />
 	<renderorder value="10" />

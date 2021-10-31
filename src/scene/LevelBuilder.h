@@ -2,7 +2,9 @@
 
 #include <Urho3D/Container/Ptr.h>
 
-namespace Urho3D {
+namespace Urho3D
+{
+	class Material;
 	class Scene;
 	class Terrain;
 }
@@ -23,4 +25,6 @@ private:
 	void createGround(const Urho3D::String& xmlName, int size);
 
 	Urho3D::Terrain* terrain{};
+	Urho3D::SharedPtr<Urho3D::Material> darkMat;
+	Urho3D::SharedPtr<Urho3D::Material> extraDarkMat;
 };

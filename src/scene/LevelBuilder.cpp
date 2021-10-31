@@ -59,9 +59,15 @@ void LevelBuilder::createGround(const Urho3D::String& xmlName, int size) {
 
 		terrain->GetMaterial()->SetUVTransform(Urho3D::Vector2(0, 0), 0.f, 16.f * hSpacing);
 
-		auto a = terrain->GetPatch(2, 2);
-		auto mat = Game::getCache()->GetResource<Urho3D::Material>("Materials/test1.xml");
-		a->SetMaterial(mat);
+		darkMat = terrain->GetMaterial()->Clone();
+		darkMat->SetShaderParameter("MatDiffColor", Urho3D::Color(0.5, 0.5, 0.5, 1));
+
+		extraDarkMat = terrain->GetMaterial()->Clone();
+		extraDarkMat->SetShaderParameter("MatDiffColor", Urho3D::Color(0.2, 0.2, 0.2, 2));
+
+		terrain->GetPatch(8, 16)->SetMaterial(darkMat);
+		terrain->GetPatch(9, 16)->SetMaterial(extraDarkMat);
+		
 		if (!SIM_GLOBALS.HEADLESS) {
 			terrain->SetSmoothing(true);
 			node->SetVar("ground", true);

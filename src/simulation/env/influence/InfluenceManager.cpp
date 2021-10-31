@@ -1,11 +1,13 @@
 ﻿#include "InfluenceManager.h"
 
 #include <exprtk/exprtk.hpp>
+
+#include "MapsUtils.h"
+#include "VisibilityManager.h"
 #include "map/InfluenceMapHistory.h"
 #include "map/InfluenceMapQuad.h"
 #include "debug/DebugLineRepo.h"
 #include "map/InfluenceMapInt.h"
-#include "map/VisibilityMap.h"
 #include "map/VisibilityType.h"
 #include "math/VectorUtils.h"
 #include "objects/CellState.h"
@@ -15,11 +17,6 @@
 #include "simulation/env/ContentInfo.h"
 #include "simulation/env/GridCalculatorProvider.h"
 #include "utils/AssertUtils.h"
-
-constexpr char MAX_DEBUG_PARTS_INFLUENCE = 32;
-constexpr char INF_LEVEL = 4;
-constexpr short INF_GRID_FIELD_SIZE = 8.f;
-constexpr short VISIBILITY_GRID_FIELD_SIZE = INF_GRID_FIELD_SIZE / 2;
 
 
 InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
@@ -32,7 +29,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 	unitsQuad.reserve(numberOfPlayers);
 	buildingsQuad.reserve(numberOfPlayers);
 	econQuad.reserve(numberOfPlayers);
-	visibilityPerPlayer.reserve(numberOfPlayers);
+
 	mapsForAiPerPlayer.reserve(numberOfPlayers);
 	mapsForCentersPerPlayer.reserve(numberOfPlayers);
 
@@ -51,8 +48,6 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 		unitsQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 		buildingsQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
 		econQuad.emplace_back(new InfluenceMapQuad(mapSize / INF_GRID_FIELD_SIZE, mapSize));
-
-		visibilityPerPlayer.emplace_back(new VisibilityMap(mapSize / VISIBILITY_GRID_FIELD_SIZE, mapSize, 3));
 	}
 
 	resourceInfluence = new InfluenceMapFloat(mapSize / INF_GRID_FIELD_SIZE, mapSize, 0.5f, INF_LEVEL, 40);
@@ -71,6 +66,7 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 		});
 		assert(validSizes(mapsForAiPerPlayer.at(player)));
 	}
+	visibilityManager = new VisibilityManager(numberOfPlayers, mapSize);
 
 	calculator = GridCalculatorProvider::get(mapSize / INF_GRID_FIELD_SIZE, mapSize);
 	ci = new content_info();
@@ -83,7 +79,6 @@ InfluenceManager::InfluenceManager(char numberOfPlayers, float mapSize) {
 
 	assert(unitsNumberPerPlayer[0]->getResolution() == unitsInfluencePerPlayer[0]->getResolution()
 		&& calculator->getResolution() == unitsNumberPerPlayer[0]->getResolution());
-	assert(visibilityPerPlayer[0]->getResolution() / buildingsInfluencePerPlayer[0]->getResolution()==2);
 }
 
 InfluenceManager::~InfluenceManager() {
@@ -99,7 +94,7 @@ InfluenceManager::~InfluenceManager() {
 	clear_vector(buildingsQuad);
 	clear_vector(econQuad);
 
-	clear_vector(visibilityPerPlayer);
+	delete visibilityManager;
 	delete ci;
 
 	delete[]intersection;
@@ -107,8 +102,8 @@ InfluenceManager::~InfluenceManager() {
 }
 
 void InfluenceManager::update(std::vector<Unit*>* units) const {
-	resetMaps(unitsNumberPerPlayer);
-	resetMaps(unitsInfluencePerPlayer);
+	MapsUtils::resetMaps(unitsNumberPerPlayer);
+	MapsUtils::resetMaps(unitsInfluencePerPlayer);
 
 	for (const auto unit : (*units)) {
 		const auto pId = unit->getPlayer();
@@ -116,7 +111,7 @@ void InfluenceManager::update(std::vector<Unit*>* units) const {
 		unitsNumberPerPlayer[pId]->updateInt(index);
 		unitsInfluencePerPlayer[pId]->tempUpdate(index);
 	}
-	finalize(unitsInfluencePerPlayer);
+	MapsUtils::finalize(unitsInfluencePerPlayer);
 }
 
 void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
@@ -128,71 +123,38 @@ void InfluenceManager::update(std::vector<ResourceEntity*>* resources) const {
 }
 
 void InfluenceManager::updateQuadUnits(std::vector<Unit*>* units) const {
-	resetMaps(unitsQuad);
+	MapsUtils::resetMaps(unitsQuad);
 	for (const auto unit : (*units)) {
 		unitsQuad[unit->getPlayer()]->updateInt(unit);
 	}
 }
 
 void InfluenceManager::update(std::vector<Building*>* buildings) const {
-	resetMaps(buildingsInfluencePerPlayer);
-	resetMaps(buildingsQuad);
+	MapsUtils::resetMaps(buildingsInfluencePerPlayer);
+	MapsUtils::resetMaps(buildingsQuad);
 	for (const auto building : (*buildings)) {
 		const auto player = building->getPlayer();
 		const auto index = building->getIndexInInfluence();
 		buildingsInfluencePerPlayer[player]->tempUpdate(index);
 		buildingsQuad[player]->updateInt(index);
 	}
-	finalize(buildingsInfluencePerPlayer);
+	MapsUtils::finalize(buildingsInfluencePerPlayer);
 }
 
 void InfluenceManager::updateWithHistory() const {
-	resetMaps(gatherSpeed);
-	resetMaps(attackSpeed);
+	MapsUtils::resetMaps(gatherSpeed);
+	MapsUtils::resetMaps(attackSpeed);
 
-	finalize(gatherSpeed);
-	finalize(attackSpeed);
+	MapsUtils::finalize(gatherSpeed);
+	MapsUtils::finalize(attackSpeed);
 }
 
 void InfluenceManager::updateQuadOther() const {
-	resetMaps(econQuad);
+	MapsUtils::resetMaps(econQuad);
 }
 
 void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const {
-	resetMaps(visibilityPerPlayer);
-	for (const auto unit : (*units)) {
-		visibilityPerPlayer[unit->getPlayer()]->update(unit);
-	}
-	for (const auto building : (*buildings)) {
-		visibilityPerPlayer[building->getPlayer()]->update(building);
-	}
-}
-
-template <typename T>
-void InfluenceManager::resetMaps(const std::vector<T*>& maps) const {
-	for (auto map : maps) {
-		map->reset();
-	}
-}
-
-template <typename T>
-void InfluenceManager::finalize(const std::vector<T*>& maps) const {
-	for (auto map : maps) {
-		map->updateFromTemp();
-	}
-}
-
-template <typename T>
-void InfluenceManager::drawAll(const std::vector<T*>& maps, Urho3D::String name) const {
-	for (int i = 0; i < maps.size(); ++i) {
-		maps[i]->print(name + "_" + Urho3D::String(i) + "_");
-	}
-}
-
-template <typename T>
-void InfluenceManager::drawMap(char index, const std::vector<T*>& maps) const {
-	index = index % maps.size();
-	maps[index]->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
+	visibilityManager->updateVisibility(buildings, units);
 }
 
 void InfluenceManager::draw(InfluenceDataType type, char index) {
@@ -203,22 +165,22 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 	case InfluenceDataType::NONE:
 		break;
 	case InfluenceDataType::UNITS_NUMBER_PER_PLAYER:
-		drawMap(index, unitsNumberPerPlayer);
+		MapsUtils::drawMap(currentDebugBatch, index, unitsNumberPerPlayer);
 		break;
 	case InfluenceDataType::UNITS_INFLUENCE_PER_PLAYER:
-		drawMap(index, unitsInfluencePerPlayer);
+		MapsUtils::drawMap(currentDebugBatch, index, unitsInfluencePerPlayer);
 		break;
 	case InfluenceDataType::BUILDING_INFLUENCE_PER_PLAYER:
-		drawMap(index, buildingsInfluencePerPlayer);
+		MapsUtils::drawMap(currentDebugBatch, index, buildingsInfluencePerPlayer);
 		break;
 	case InfluenceDataType::RESOURCE_INFLUENCE:
 		resourceInfluence->draw(currentDebugBatch, MAX_DEBUG_PARTS_INFLUENCE);
 		break;
 	case InfluenceDataType::GATHER_SPEED:
-		drawMap(index, gatherSpeed);
+		MapsUtils::drawMap(currentDebugBatch, index, gatherSpeed);
 		break;
 	case InfluenceDataType::ATTACK_SPEED:
-		drawMap(index, attackSpeed);
+		MapsUtils::drawMap(currentDebugBatch, index, attackSpeed);
 		break;
 		// case InfluenceDataType::ECON_QUAD:
 		// 	drawMap(index, econQuad);
@@ -230,7 +192,7 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 		// 	drawMap(index, unitsQuad);
 		// 	break;
 	case InfluenceDataType::VISIBILITY:
-		drawMap(index, visibilityPerPlayer);
+		visibilityManager->drawMaps(currentDebugBatch, index);
 		break;
 	default: ;
 	}
@@ -243,17 +205,17 @@ void InfluenceManager::draw(InfluenceDataType type, char index) {
 }
 
 void InfluenceManager::drawAll() const {
-	drawAll(unitsNumberPerPlayer, "unitsInt");
-	drawAll(buildingsInfluencePerPlayer, "buildingsInt");
-	drawAll(unitsInfluencePerPlayer, "units");
+	MapsUtils::drawAll(unitsNumberPerPlayer, "unitsInt");
+	MapsUtils::drawAll(buildingsInfluencePerPlayer, "buildingsInt");
+	MapsUtils::drawAll(unitsInfluencePerPlayer, "units");
 	resourceInfluence->print("resource_");
 
-	drawAll(gatherSpeed, "gather");
-	drawAll(attackSpeed, "attack");
+	MapsUtils::drawAll(gatherSpeed, "gather");
+	MapsUtils::drawAll(attackSpeed, "attack");
 
-	drawAll(unitsQuad, "unitsQuad");
-	drawAll(buildingsQuad, "buildingsQuad");
-	drawAll(econQuad, "econQuad");
+	MapsUtils::drawAll(unitsQuad, "unitsQuad");
+	MapsUtils::drawAll(buildingsQuad, "buildingsQuad");
+	MapsUtils::drawAll(econQuad, "econQuad");
 }
 
 void InfluenceManager::switchDebug() {
@@ -353,7 +315,7 @@ std::vector<Urho3D::Vector2> InfluenceManager::getAreasIterative(const std::span
 std::vector<int>* InfluenceManager::getAreas(const std::span<float> result, char player) {
 	auto& maps = mapsForAiPerPlayer[player];
 	assert(result.size() == maps.size());
-	assert(arraySize * 4 == visibilityPerPlayer[player]->getResolution()* visibilityPerPlayer[player]->getResolution());
+	//assert(arraySize * 4 == visibilityPerPlayer[player]->getResolution()* visibilityPerPlayer[player]->getResolution());
 
 	std::fill_n(intersection, arraySize, 0.f);
 	int times = 0;
@@ -361,8 +323,7 @@ std::vector<int>* InfluenceManager::getAreas(const std::span<float> result, char
 		const auto ok = maps[i]->getIndexesWithByValue(result[i], intersection);
 		times += ok;
 	}
-
-	visibilityPerPlayer[player]->removeUnseen(intersection);
+	visibilityManager->removeUnseen(player, intersection);
 
 	const auto inx = sort_indexes(std::span(intersection, arraySize), 256);
 	return centersFromIndexes(intersection, inx, 0.1f * times);
@@ -387,16 +348,16 @@ std::optional<Urho3D::Vector2> InfluenceManager::getCenterOf(CenterType id, char
 	return mapsForCentersPerPlayer[player][cast(id)]->getCenter();
 }
 
-bool InfluenceManager::isVisible(char player, const Urho3D::Vector2& pos) {
-	return visibilityPerPlayer[player]->getValueAt(pos) == static_cast<char>(VisibilityType::VISIBLE);
+bool InfluenceManager::isVisible(char player, const Urho3D::Vector2& pos) const {
+	return visibilityManager->isVisible(player, pos);
 }
 
 Urho3D::Vector2 InfluenceManager::getCenter(int index) const {
 	return calculator->getCenter(index);
 }
 
-float InfluenceManager::getVisibilityScore(char player) {
-	return visibilityPerPlayer[player]->getPercent();
+float InfluenceManager::getVisibilityScore(char player) const {
+	return visibilityManager->getVisibilityScore(player);
 }
 
 int InfluenceManager::getIndex(const Urho3D::Vector3& position) const {

@@ -5,9 +5,11 @@
 #include <optional>
 #include <vector>
 #include <Urho3D/Math/Vector3.h>
+#include <Urho3D/Math/Vector3.h>
 
 #include "player/ai/InfluenceDataType.h"
 
+class VisibilityManager;
 class VisibilityMap;
 enum class CenterType:char;
 struct GridCalculator;
@@ -59,23 +61,14 @@ public:
 	void addCollect(Unit* unit, float value);
 	void addAttack(char player, const Urho3D::Vector3& position, float value);
 	std::optional<Urho3D::Vector2> getCenterOf(CenterType id, char player);
-	bool isVisible(char player, const Urho3D::Vector2& pos);
+	bool isVisible(char player, const Urho3D::Vector2& pos) const;
 	Urho3D::Vector2 getCenter(int index) const;
-	float getVisibilityScore(char player);
+	float getVisibilityScore(char player) const;
 	int getIndex(const Urho3D::Vector3& position) const;
 
 private:
 	std::vector<int>* centersFromIndexes(float* values, const std::vector<unsigned>& indexes, float minVal) const;
 	std::vector<Urho3D::Vector2> centersFromIndexes(const std::vector<int>& intersection) const;
-
-	template <typename T>
-	void resetMaps(const std::vector<T*>& maps) const;
-	template <typename T>
-	void finalize(const std::vector<T*>& maps) const;
-	template <typename T>
-	void drawMap(char index, const std::vector<T*>& maps) const;
-	template <typename T>
-	void drawAll(const std::vector<T*>& maps, Urho3D::String name) const;
 
 	std::vector<std::array<InfluenceMapFloat*, 5>> mapsForAiPerPlayer;
 	std::vector<std::array<InfluenceMapQuad*, 3>> mapsForCentersPerPlayer;
@@ -93,7 +86,7 @@ private:
 	std::vector<InfluenceMapQuad*> buildingsQuad;
 	std::vector<InfluenceMapQuad*> unitsQuad;
 
-	std::vector<VisibilityMap*> visibilityPerPlayer;
+	VisibilityManager* visibilityManager;
 
 	content_info* ci;
 	GridCalculator* calculator;
