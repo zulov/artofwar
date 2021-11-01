@@ -12,7 +12,8 @@
 enum class CenterType:char;
 struct db_building;
 
-namespace Urho3D {
+namespace Urho3D
+{
 	class Terrain;
 }
 
@@ -132,7 +133,7 @@ public:
 	float getVisibilityScore(char player);
 
 	std::vector<int> getIndexesInRange(const Urho3D::Vector3& center, float range) const;
-
+	Urho3D::Terrain* getTerrain() { return terrain; }
 private:
 	//std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius) const;
 	std::vector<Physical*>* getNeighbours(Physical* physical, Grid& bucketGrid, float radius,

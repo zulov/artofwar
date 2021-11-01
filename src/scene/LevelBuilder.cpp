@@ -64,9 +64,6 @@ void LevelBuilder::createGround(const Urho3D::String& xmlName, int size) {
 
 		extraDarkMat = terrain->GetMaterial()->Clone();
 		extraDarkMat->SetShaderParameter("MatDiffColor", Urho3D::Color(0.2, 0.2, 0.2, 2));
-
-		terrain->GetPatch(8, 16)->SetMaterial(darkMat);
-		terrain->GetPatch(9, 16)->SetMaterial(extraDarkMat);
 		
 		if (!SIM_GLOBALS.HEADLESS) {
 			terrain->SetSmoothing(true);

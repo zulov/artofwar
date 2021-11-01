@@ -1,11 +1,14 @@
 #include "VisibilityManager.h"
 
+#include "Game.h"
 #include "MapsUtils.h"
 #include "map/VisibilityMap.h"
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
 #include "utils/DeleteUtils.h"
 #include "map/VisibilityType.h"
+#include "player/PlayersManager.h"
+#include "simulation/env/Environment.h"
 
 
 VisibilityManager::VisibilityManager(char numberOfPlayers, float mapSize) {
@@ -26,6 +29,14 @@ void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std:
 	}
 	for (const auto building : (*buildings)) {
 		visibilityPerPlayer[building->getPlayer()]->update(building);
+	}
+	
+	const auto terrain = Game::getEnvironment()->getTerrain();
+	if (terrain) {
+		auto current = visibilityPerPlayer[Game::getPlayersMan()->getActivePlayerID()];
+		Game::getColorPaletteRepo()
+		terrain->GetPatch(8, 16)->SetMaterial(darkMat);
+		terrain->GetPatch(9, 16)->SetMaterial(extraDarkMat);
 	}
 }
 
