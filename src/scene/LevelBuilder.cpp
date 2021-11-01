@@ -5,6 +5,8 @@
 #include <Urho3D/Graphics/Terrain.h>
 #include <Urho3D/Graphics/TerrainPatch.h>
 #include <Urho3D/Graphics/Geometry.h>
+
+#include "colors/ColorPaletteRepo.h"
 #include "database/DatabaseCache.h"
 #include "database/db_other_struct.h"
 #include "hud/window/main_menu/new_game/NewGameForm.h"
@@ -57,15 +59,10 @@ void LevelBuilder::createGround(const Urho3D::String& xmlName, int size) {
 		s.z_ = hSpacing;
 		terrain->SetSpacing(s);
 
-		terrain->GetMaterial()->SetUVTransform(Urho3D::Vector2(0, 0), 0.f, 16.f * hSpacing);
-
-		darkMat = terrain->GetMaterial()->Clone();
-		darkMat->SetShaderParameter("MatDiffColor", Urho3D::Color(0.5, 0.5, 0.5, 1));
-
-		extraDarkMat = terrain->GetMaterial()->Clone();
-		extraDarkMat->SetShaderParameter("MatDiffColor", Urho3D::Color(0.2, 0.2, 0.2, 2));
-		
 		if (!SIM_GLOBALS.HEADLESS) {
+			terrain->GetMaterial()->SetUVTransform(Urho3D::Vector2(0, 0), 0.f, 16.f * hSpacing);
+			Game::getColorPaletteRepo()->setTerrainColors(terrain);
+
 			terrain->SetSmoothing(true);
 			node->SetVar("ground", true);
 		}

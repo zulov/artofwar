@@ -1,13 +1,18 @@
 #include "VisibilityManager.h"
 
+#include <iostream>
+#include <Urho3D/Graphics/TerrainPatch.h>
+
 #include "Game.h"
 #include "MapsUtils.h"
+#include "colors/ColorPaletteRepo.h"
 #include "map/VisibilityMap.h"
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
 #include "utils/DeleteUtils.h"
 #include "map/VisibilityType.h"
 #include "player/PlayersManager.h"
+#include "simulation/SimGlobals.h"
 #include "simulation/env/Environment.h"
 
 
@@ -30,13 +35,31 @@ void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std:
 	for (const auto building : (*buildings)) {
 		visibilityPerPlayer[building->getPlayer()]->update(building);
 	}
-	
+
 	const auto terrain = Game::getEnvironment()->getTerrain();
-	if (terrain) {
+	if (terrain && !SIM_GLOBALS.HEADLESS) {
 		auto current = visibilityPerPlayer[Game::getPlayersMan()->getActivePlayerID()];
-		Game::getColorPaletteRepo()
-		terrain->GetPatch(8, 16)->SetMaterial(darkMat);
-		terrain->GetPatch(9, 16)->SetMaterial(extraDarkMat);
+		auto a = Game::getColorPaletteRepo()->getTerrainColor(VisibilityType::NONE);
+		auto b = Game::getColorPaletteRepo()->getTerrainColor(VisibilityType::SEEN);
+		auto c = Game::getColorPaletteRepo()->getTerrainColor(VisibilityType::VISIBLE);
+		
+
+		for (int i = 0; i < current->getResolution()*current->getResolution(); ++i) {
+			
+			auto patch  = terrain->GetPatch(i);
+			char val =current->getValueAt(i);;
+			
+			if (val == static_cast<char>(VisibilityType::VISIBLE)) {
+				patch->SetMaterial(c);
+			}
+			else if (val == static_cast<char>(VisibilityType::SEEN)) {
+				patch->SetMaterial(b);
+			}
+			else if (val == static_cast<char>(VisibilityType::NONE)) {
+				patch->SetMaterial(a);
+			}
+		}
+		
 	}
 }
 
