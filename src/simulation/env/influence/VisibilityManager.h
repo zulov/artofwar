@@ -4,6 +4,7 @@
 #include "objects/building/Building.h"
 #include "objects/unit/Unit.h"
 
+struct GridCalculator;
 class VisibilityMap;
 
 class VisibilityManager {
@@ -17,5 +18,5 @@ public:
 	void removeUnseen(char player, float* intersection);
 private:
 	std::vector<VisibilityMap*> visibilityPerPlayer;
-	
+	GridCalculator* calculator;
 };

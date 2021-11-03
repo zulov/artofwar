@@ -14,6 +14,7 @@
 #include "player/PlayersManager.h"
 #include "simulation/SimGlobals.h"
 #include "simulation/env/Environment.h"
+#include "simulation/env/GridCalculatorProvider.h"
 
 
 VisibilityManager::VisibilityManager(char numberOfPlayers, float mapSize) {
@@ -21,6 +22,7 @@ VisibilityManager::VisibilityManager(char numberOfPlayers, float mapSize) {
 	for (int player = 0; player < numberOfPlayers; ++player) {
 		visibilityPerPlayer.emplace_back(new VisibilityMap(mapSize / VISIBILITY_GRID_FIELD_SIZE, mapSize, 3));
 	}
+	calculator = GridCalculatorProvider::get(mapSize / VISIBILITY_GRID_FIELD_SIZE, mapSize);
 }
 
 VisibilityManager::~VisibilityManager() {
@@ -42,24 +44,20 @@ void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std:
 		auto a = Game::getColorPaletteRepo()->getTerrainColor(VisibilityType::NONE);
 		auto b = Game::getColorPaletteRepo()->getTerrainColor(VisibilityType::SEEN);
 		auto c = Game::getColorPaletteRepo()->getTerrainColor(VisibilityType::VISIBLE);
-		
 
-		for (int i = 0; i < current->getResolution()*current->getResolution(); ++i) {
-			
-			auto patch  = terrain->GetPatch(i);
-			char val =current->getValueAt(i);;
-			
+		for (int i = 0; i < current->getResolution() * current->getResolution(); ++i) {
+			auto cords = calculator->getIndexes(i);
+			auto patch = terrain->GetPatch(cords.x_, cords.y_);
+			char val = current->getValueAt(i);
+
 			if (val == static_cast<char>(VisibilityType::VISIBLE)) {
 				patch->SetMaterial(c);
-			}
-			else if (val == static_cast<char>(VisibilityType::SEEN)) {
+			} else if (val == static_cast<char>(VisibilityType::SEEN)) {
 				patch->SetMaterial(b);
-			}
-			else if (val == static_cast<char>(VisibilityType::NONE)) {
+			} else if (val == static_cast<char>(VisibilityType::NONE)) {
 				patch->SetMaterial(a);
 			}
 		}
-		
 	}
 }
 

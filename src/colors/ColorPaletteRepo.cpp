@@ -83,7 +83,7 @@ void ColorPaletteRepo::setTerrainColors(Urho3D::Terrain* terrain) {
 		auto darkMat = material->Clone();
 		darkMat->SetShaderParameter("MatDiffColor", Urho3D::Color(0.5, 0.5, 0.5, 1));
 		auto extraDarkMat = material->Clone();
-		extraDarkMat->SetShaderParameter("MatDiffColor", Urho3D::Color(0.2, 0.2, 0.2, 2));
+		extraDarkMat->SetShaderParameter("MatDiffColor", Urho3D::Color(0.1, 0.1, 0.1, 1));
 
 		terrainMaterials[cast(VisibilityType::VISIBLE)] = material;
 		terrainMaterials[cast(VisibilityType::SEEN)] = darkMat.Detach();
