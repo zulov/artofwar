@@ -38,6 +38,7 @@ public:
 	ObjectType getType() const override { return ObjectType::RESOURCE; }
 	unsigned char getMaxCloseUsers() const override;
 	short getCostSum() const override { return 0; }
+
 private:
 	db_resource* dbResource;
 };

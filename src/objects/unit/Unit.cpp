@@ -67,7 +67,7 @@ void Unit::checkAim() {
 }
 
 void Unit::updatePosition() const {
-	if (isVisible) {
+	if (shouldUpdate) {
 		if (isInStates(state, {UnitState::ATTACK, UnitState::COLLECT, UnitState::SHOT}) && isFirstThingAlive()) {
 			const auto dir = dirTo(position, thingToInteract->getPosition());
 
@@ -86,18 +86,18 @@ void Unit::updatePosition() const {
 
 bool Unit::move(float timeStep, const CameraInfo* camInfo) {
 	bool hasMoved = false;
-	const bool prevVisible = isVisible;
+	const bool prevVisible = shouldUpdate;
 
 	if (state != UnitState::STOP) {
 		hasMoved = true;
 		position.x_ += velocity.x_ * timeStep;
 		position.z_ += velocity.y_ * timeStep;
-		isVisible = ifVisible(true, camInfo);
+		shouldUpdate = ifVisible(true, camInfo);
 		updatePosition();
 	} else {
-		isVisible = ifVisible(false, camInfo);
+		shouldUpdate = ifVisible(false, camInfo);
 	}
-	if (prevVisible == false && isVisible == true) {
+	if (prevVisible == false && shouldUpdate == true) {
 		node->SetPosition(position);
 	}
 
@@ -106,7 +106,7 @@ bool Unit::move(float timeStep, const CameraInfo* camInfo) {
 
 bool Unit::ifVisible(bool hasMoved, const CameraInfo* camInfo) const {
 	if (!(camInfo->hasMoved || hasMoved)) {
-		return isVisible;
+		return shouldUpdate;
 	}
 	auto& boundary = camInfo->boundary;
 
@@ -196,7 +196,7 @@ void Unit::drawLineTo(const Urho3D::Vector3& second,
 
 void Unit::debug(DebugUnitType type, ForceStats& stats) {
 	if constexpr (DEBUG_LINES_ENABLED) {
-		if (selectedObject || isVisible) {
+		if (selectedObject || shouldUpdate) {
 			switch (type) {
 			case DebugUnitType::NONE:
 				break;

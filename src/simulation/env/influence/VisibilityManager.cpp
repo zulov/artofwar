@@ -29,7 +29,7 @@ VisibilityManager::~VisibilityManager() {
 	clear_vector(visibilityPerPlayer);
 }
 
-void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const {
+void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources) const {
 	MapsUtils::resetMaps(visibilityPerPlayer);
 	for (const auto unit : (*units)) {
 		visibilityPerPlayer[unit->getPlayer()]->update(unit);
@@ -40,16 +40,16 @@ void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std:
 
 	const auto terrain = Game::getEnvironment()->getTerrain();
 	if (terrain && !SIM_GLOBALS.HEADLESS) {
-		auto current = visibilityPerPlayer[Game::getPlayersMan()->getActivePlayerID()];
+		 auto current = visibilityPerPlayer[Game::getPlayersMan()->getActivePlayerID()];
 		auto a = Game::getColorPaletteRepo()->getTerrainColor(VisibilityType::NONE);
 		auto b = Game::getColorPaletteRepo()->getTerrainColor(VisibilityType::SEEN);
 		auto c = Game::getColorPaletteRepo()->getTerrainColor(VisibilityType::VISIBLE);
-
+		
 		for (int i = 0; i < current->getResolution() * current->getResolution(); ++i) {
 			auto cords = calculator->getIndexes(i);
 			auto patch = terrain->GetPatch(cords.x_, cords.y_);
 			char val = current->getValueAt(i);
-
+		
 			if (val == static_cast<char>(VisibilityType::VISIBLE)) {
 				patch->SetMaterial(c);
 			} else if (val == static_cast<char>(VisibilityType::SEEN)) {
@@ -58,6 +58,17 @@ void VisibilityManager::updateVisibility(std::vector<Building*>* buildings, std:
 				patch->SetMaterial(a);
 			}
 		}
+
+		for (const auto resource : (*resources)) {
+			auto pos = resource->getPosition();
+
+			if (current->getValueAt(Urho3D::Vector2(pos.x_, pos.z_)) == static_cast<char>(VisibilityType::VISIBLE)) {
+				resource->setVisibility(true);
+			}else {
+				resource->setVisibility(false);
+			}
+		}
+
 	}
 }
 

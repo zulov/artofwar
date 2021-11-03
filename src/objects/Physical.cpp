@@ -21,7 +21,7 @@ Physical::Physical(Urho3D::Vector3& _position, bool withNode):
 		node->SetPosition(position);
 	}
 
-	isVisible = true;
+	shouldUpdate = true;
 }
 
 Physical::~Physical() {
@@ -125,6 +125,12 @@ void Physical::unSelect() {
 	}
 }
 
+void Physical::setVisibility(bool value) {
+	if (node->IsEnabled() != value) {
+		node->SetEnabled(value);
+	}
+}
+
 void Physical::loadXml(const Urho3D::String& xmlName) {
 	Urho3D::String name;
 	if (SIM_GLOBALS.HEADLESS) {
@@ -141,11 +147,11 @@ void Physical::loadXml(const Urho3D::String& xmlName) {
 	if (!name.Empty()) {
 		node->LoadXML(Game::getCache()->GetResource<Urho3D::XMLFile>(name)->GetRoot());
 		node->SetVar("link", this);
-		if (getModelHeight()<0.f) {
+		if (getModelHeight() < 0.f) {
 			const auto model = node->GetComponent<Urho3D::StaticModel>();
 			const auto boundingBox = model->GetModel()->GetBoundingBox().Size() * node->GetScale();
 
-			setModelData(Urho3D::Max(1.f, boundingBox.y_), Urho3D::Max(1.f, calculateAuraSize(boundingBox)));	
+			setModelData(Urho3D::Max(1.f, boundingBox.y_), Urho3D::Max(1.f, calculateAuraSize(boundingBox)));
 		}
 	}
 

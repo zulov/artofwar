@@ -41,7 +41,8 @@ public:
 	void updateQuadUnits(std::vector<Unit*>* units) const;
 	void updateWithHistory() const;
 	void updateQuadOther() const;
-	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const;
+	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units,
+	                      std::vector<ResourceEntity*>* resources) const;
 
 	void draw(InfluenceDataType type, char index);
 	void drawAll() const;

@@ -176,8 +176,8 @@ void Environment::updateQuadOther() const {
 	influenceManager.updateQuadOther();
 }
 
-void Environment::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const {
-	influenceManager.updateVisibility(buildings, units);
+void Environment::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources) const {
+	influenceManager.updateVisibility(buildings, units, resources);
 }
 
 void Environment::update(Unit* unit) const {

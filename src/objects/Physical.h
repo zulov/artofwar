@@ -105,6 +105,7 @@ public:
 	virtual const Urho3D::String& getName() const = 0;
 	virtual float getModelHeight() const =0;
 	virtual float getAuraSize() const =0;
+	void setVisibility(bool value);
 
 protected:
 	virtual void setModelData(float modelHeight, float auraSize) const =0;
@@ -127,7 +128,7 @@ protected:
 	              rangeUsers = 0;
 	bool indexHasChanged = false; ///TODO to tylko dla unit
 
-	bool isVisible = false;
+	bool shouldUpdate = false;
 
 	SelectedObject* selectedObject{};
 private:

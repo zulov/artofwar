@@ -153,8 +153,8 @@ void InfluenceManager::updateQuadOther() const {
 	MapsUtils::resetMaps(econQuad);
 }
 
-void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const {
-	visibilityManager->updateVisibility(buildings, units);
+void InfluenceManager::updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources) const {
+	visibilityManager->updateVisibility(buildings, units, resources);
 }
 
 void InfluenceManager::draw(InfluenceDataType type, char index) {

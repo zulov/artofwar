@@ -47,7 +47,7 @@ public:
 
 	void updateInfluenceOther(std::vector<Building*>* buildings) const;
 	void updateQuadOther() const;
-	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units) const;
+	void updateVisibility(std::vector<Building*>* buildings, std::vector<Unit*>* units, std::vector<ResourceEntity*>* resources) const;
 
 	void invalidateCaches();
 	void update(Unit* unit) const;
