@@ -3,8 +3,6 @@
 #include <Urho3D/Graphics/Terrain.h>
 #include <Urho3D/Math/Color.h>
 #include "objects/unit/state/UnitState.h"
-#include "simulation/env/influence/map/VisibilityType.h"
-#include "utils/OtherUtils.h"
 
 enum class VisibilityType : char;
 enum class CellState : char;
@@ -24,13 +22,10 @@ public:
 	Urho3D::Material* getColor(UnitState state);
 	Urho3D::Material* getLineMaterial() const;
 	std::tuple<bool, Urho3D::Color> getInfoForGrid(CellState state);
-	Urho3D::Material* getTerrainColor(VisibilityType type);
-	void setTerrainColors(Urho3D::Terrain* terrain);
 private:
 
 	Urho3D::Material* redPallet[PALLET_RESOLUTION + 1];
 	Urho3D::Material* statePallet[magic_enum::enum_count<UnitState>()];
 	Urho3D::Material* lineMaterial;
 	Urho3D::Color basicSpectrum[SPECTRUM_RESOLUTION + 1];
-	Urho3D::Material* terrainMaterials[4];
 };

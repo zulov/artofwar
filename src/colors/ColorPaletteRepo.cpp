@@ -72,21 +72,3 @@ std::tuple<bool, Urho3D::Color> ColorPaletteRepo::getInfoForGrid(CellState state
 	default: ;
 	}
 }
-
-Urho3D::Material* ColorPaletteRepo::getTerrainColor(VisibilityType type) {
-	return terrainMaterials[cast(type)];
-}
-
-void ColorPaletteRepo::setTerrainColors(Urho3D::Terrain* terrain) {
-	if (!SIM_GLOBALS.HEADLESS) {//TODO bug czy to nie jakis wyceik pamieci?
-		const auto material = terrain->GetMaterial();
-		auto darkMat = material->Clone();
-		darkMat->SetShaderParameter("MatDiffColor", Urho3D::Color(0.5, 0.5, 0.5, 1));
-		auto extraDarkMat = material->Clone();
-		extraDarkMat->SetShaderParameter("MatDiffColor", Urho3D::Color(0.1, 0.1, 0.1, 1));
-
-		terrainMaterials[cast(VisibilityType::VISIBLE)] = material;
-		terrainMaterials[cast(VisibilityType::SEEN)] = darkMat.Detach();
-		terrainMaterials[cast(VisibilityType::NONE)] = extraDarkMat.Detach();
-	}
-}

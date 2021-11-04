@@ -61,7 +61,6 @@ void LevelBuilder::createGround(const Urho3D::String& xmlName, int size) {
 
 		if (!SIM_GLOBALS.HEADLESS) {
 			terrain->GetMaterial()->SetUVTransform(Urho3D::Vector2(0, 0), 0.f, 16.f * hSpacing);
-			Game::getColorPaletteRepo()->setTerrainColors(terrain);
 
 			terrain->SetSmoothing(true);
 			node->SetVar("ground", true);

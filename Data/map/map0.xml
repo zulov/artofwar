@@ -3,7 +3,7 @@
 		<attribute name="Height Map" value="Image;map/HeightMap.png" />
 		<attribute name="Material" value="Material;Materials/StoneTiled.xml" />
 		<attribute name="Vertex Spacing" value="1 0.05 1" />
-		<attribute name="Patch Size" value="1" />
+		<attribute name="Patch Size" value="32" />
 		<attribute name="Is Occluder" value="false" />
 	</component>
 </node>
